@@ -1,0 +1,669 @@
+# gnome-print italian translation file.
+# Copyright (C) 1999 Free Software Foundation, Inc.
+# Giovanni Iachello <giac@dei.unipd.it>, 1999.
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-print 0.1\n"
+"POT-Creation-Date: 2003-02-02 20:53-0500\n"
+"PO-Revision-Date: 2001-07-02 03:44+02:00\n"
+"Last-Translator: Christopher R. Gabriel <cgabriel@pluto.linux.it>\n"
+"Language-Team: italian <it@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# libgnomeprint/gnome-font-dialog.c:138
+#. Family frame
+#: libgnomeprintui/gnome-font-dialog.c:164
+#: libgnomeprintui/gnome-font-dialog.c:199
+msgid "Font family"
+msgstr "Famiglia carattere"
+
+#: libgnomeprintui/gnome-font-dialog.c:200
+msgid "The list of font families available"
+msgstr ""
+
+# libgnomeprint/gnome-font-dialog.c:171
+#. Style frame
+#: libgnomeprintui/gnome-font-dialog.c:209
+msgid "Style"
+msgstr "Stile"
+
+# libgnomeprint/gnome-font-dialog.c:233
+#: libgnomeprintui/gnome-font-dialog.c:250
+#, fuzzy
+msgid "Font style"
+msgstr "Dimensione carattere:"
+
+#: libgnomeprintui/gnome-font-dialog.c:251
+msgid "The list of styles available for the selected font family"
+msgstr ""
+
+# libgnomeprint/gnome-font-dialog.c:233
+#: libgnomeprintui/gnome-font-dialog.c:284
+#, fuzzy
+msgid "Font _size:"
+msgstr "Dimensione carattere:"
+
+#: libgnomeprintui/gnome-font-dialog.c:775
+msgid "This font does not have sample"
+msgstr ""
+
+# libgnomeprint/gnome-print-dialog.c:186
+#: libgnomeprintui/gnome-font-dialog.c:882
+#, fuzzy
+msgid "Font Preview"
+msgstr "Anteprima"
+
+#: libgnomeprintui/gnome-font-dialog.c:883
+msgid "Displays some example text in the selected font"
+msgstr ""
+
+# libgnomeprint/gnome-font-dialog.c:752
+#: libgnomeprintui/gnome-font-dialog.c:898
+msgid "Font Selection"
+msgstr "Selezione carattere"
+
+# libgnomeprint/gnome-print-copies.c:232
+#: libgnomeprintui/gnome-print-copies.c:245
+msgid "Copies"
+msgstr "Copie"
+
+# libgnomeprint/gnome-print-copies.c:243
+#: libgnomeprintui/gnome-print-copies.c:254
+msgid "N_umber of copies:"
+msgstr "_Numero di copie:"
+
+#: libgnomeprintui/gnome-print-copies.c:281
+msgid ""
+"Image showing the collation sequence when multiple copies of the document "
+"are printed"
+msgstr ""
+
+# libgnomeprint/gnome-print-copies.c:264
+#: libgnomeprintui/gnome-print-copies.c:283
+msgid "_Collate"
+msgstr "_Rilega"
+
+#: libgnomeprintui/gnome-print-copies.c:288
+msgid ""
+"If copies of the document are printed separately, one after another, rather "
+"than being interleaved"
+msgstr ""
+
+# libgnomeprint/gnome-printer-dialog.c:188
+# libgnomeprint/gnome-print-dialog.c:164
+#: libgnomeprintui/gnome-print-dialog.c:163
+#, fuzzy
+msgid "Print range"
+msgstr "Stampa range"
+
+# libgnomeprint/gnome-print-dialog.c:333
+#: libgnomeprintui/gnome-print-dialog.c:201
+msgid "_All"
+msgstr "_Tutti"
+
+# libgnomeprint/gnome-printer-dialog.c:141
+# libgnomeprint/gnome-print-dialog.c:363
+# libgnomeprint/gnome-print-dialog.c:377
+#: libgnomeprintui/gnome-print-dialog.c:223
+msgid "_Selection"
+msgstr "_Selezione"
+
+#: libgnomeprintui/gnome-print-dialog.c:300
+msgid "Job"
+msgstr ""
+
+# libgnomeprint/gnome-printer-dialog.c:188
+# libgnomeprint/gnome-printer-dialog.c:235
+#: libgnomeprintui/gnome-print-dialog.c:314
+#: libgnomeprintui/gnome-printer-selector.c:108
+msgid "Printer"
+msgstr "Stampante"
+
+#: libgnomeprintui/gnome-print-dialog.c:324
+msgid "Paper"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:331
+msgid "Error while loading printer configuration"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-dialog.c:336
+msgid "Gnome Print Dialog"
+msgstr ""
+
+# libgnomeprint/gnome-print-dialog.c:495
+#: libgnomeprintui/gnome-print-dialog.c:482
+#, fuzzy
+msgid "_From:"
+msgstr "_da:"
+
+#: libgnomeprintui/gnome-print-dialog.c:496
+msgid "Sets the start of the range of pages to be printed"
+msgstr ""
+
+# libgnomeprint/gnome-print-dialog.c:512
+#: libgnomeprintui/gnome-print-dialog.c:506
+#, fuzzy
+msgid "_To:"
+msgstr "a:"
+
+#: libgnomeprintui/gnome-print-dialog.c:520
+msgid "Sets the end of the range of pages to be printed"
+msgstr ""
+
+# libgnomeprint/gnome-print-dialog.c:186
+#: libgnomeprintui/gnome-print-job-preview.c:614
+#, fuzzy
+msgid "Page Preview"
+msgstr "Anteprima"
+
+#: libgnomeprintui/gnome-print-job-preview.c:615
+msgid "The preview of a page in the document to be printed"
+msgstr ""
+
+# libgnomeprint/gnome-print-master-preview.c:625
+#: libgnomeprintui/gnome-print-job-preview.c:666
+#, fuzzy
+msgid "P_age: "
+msgstr "Pagina:"
+
+#. We are displaying 'Page: XXX of XXX'.
+#: libgnomeprintui/gnome-print-job-preview.c:682
+msgid "of"
+msgstr ""
+
+# libgnomeprint/gnome-print-master-preview.c:625
+#: libgnomeprintui/gnome-print-job-preview.c:688
+#, fuzzy
+msgid "Page total"
+msgstr "Pagina:"
+
+#: libgnomeprintui/gnome-print-job-preview.c:689
+msgid "The total number of pages in the document"
+msgstr ""
+
+# libgnomeprint/gnome-print-master-preview.c:680
+#: libgnomeprintui/gnome-print-job-preview.c:741
+msgid "Prints the current file"
+msgstr "Stampa il file corrente"
+
+#: libgnomeprintui/gnome-print-job-preview.c:745
+msgid "Closes print preview window"
+msgstr ""
+
+# libgnomeprint/gnome-print-master-preview.c:652
+# libgnomeprint/gnome-print-master-preview.c:683
+#: libgnomeprintui/gnome-print-job-preview.c:750
+msgid "Shows the first page"
+msgstr "Mostra la prima pagina"
+
+# libgnomeprint/gnome-print-master-preview.c:655
+# libgnomeprint/gnome-print-master-preview.c:686
+#: libgnomeprintui/gnome-print-job-preview.c:752
+msgid "Shows the previous page"
+msgstr "Mostra la pagina precedente"
+
+# libgnomeprint/gnome-print-master-preview.c:658
+# libgnomeprint/gnome-print-master-preview.c:689
+#: libgnomeprintui/gnome-print-job-preview.c:754
+msgid "Shows the next page"
+msgstr "Mostra la pagina successiva"
+
+# libgnomeprint/gnome-print-master-preview.c:661
+# libgnomeprint/gnome-print-master-preview.c:692
+#: libgnomeprintui/gnome-print-job-preview.c:756
+msgid "Shows the last page"
+msgstr "Mostra l'ultima pagina"
+
+# libgnomeprint/gnome-print-master-preview.c:666
+#: libgnomeprintui/gnome-print-job-preview.c:761
+#, fuzzy
+msgid "Zooms 1:1"
+msgstr "Ingrandisce la visuale"
+
+# libgnomeprint/gnome-print-master-preview.c:697
+#: libgnomeprintui/gnome-print-job-preview.c:763
+msgid "Zooms to fit the whole page"
+msgstr "Adatta la pagina alla dimensione della finestra"
+
+# libgnomeprint/gnome-print-master-preview.c:695
+#: libgnomeprintui/gnome-print-job-preview.c:765
+msgid "Zooms the page in"
+msgstr "Ingrandisce la pagina"
+
+# libgnomeprint/gnome-print-master-preview.c:696
+#: libgnomeprintui/gnome-print-job-preview.c:767
+msgid "Zooms the page out"
+msgstr "Riduce la pagina"
+
+#: libgnomeprintui/gnome-print-job-preview.c:882
+msgid "Gnome Print Preview"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-job-preview.c:907
+msgid ""
+"<markup>1   <span foreground=\"red\" weight=\"ultrabold\" background=\"white"
+"\">No visible output was created.</span></markup>"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:381
+msgid "Pt"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:382
+msgid "mm"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:383
+msgid "cm"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:384
+msgid "m"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:385
+msgid "in"
+msgstr ""
+
+#. Create frame for selection menus
+#: libgnomeprintui/gnome-print-paper-selector.c:550
+msgid "Paper and layout"
+msgstr ""
+
+#. Paper size selector
+#: libgnomeprintui/gnome-print-paper-selector.c:563
+msgid "Paper _size:"
+msgstr ""
+
+#. Custom paper Width
+#: libgnomeprintui/gnome-print-paper-selector.c:575
+msgid "_Width:"
+msgstr ""
+
+#. Custom paper Height
+#: libgnomeprintui/gnome-print-paper-selector.c:592
+msgid "_Height:"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:616
+msgid "Metric selector"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:617
+msgid ""
+"Specifies the metric to use when setting the width and height of the paper"
+msgstr ""
+
+#. Feed orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:620
+msgid "_Feed orientation:"
+msgstr ""
+
+#. Page orientation
+#: libgnomeprintui/gnome-print-paper-selector.c:635
+msgid "Page _orientation:"
+msgstr ""
+
+#. Layout
+#: libgnomeprintui/gnome-print-paper-selector.c:647
+msgid "_Layout:"
+msgstr ""
+
+# libgnomeprint/gnome-print-dialog.c:186
+#. Preview frame
+#: libgnomeprintui/gnome-print-paper-selector.c:659
+#: libgnomeprintui/gnome-print-paper-selector.c:669
+msgid "Preview"
+msgstr "Anteprima"
+
+#: libgnomeprintui/gnome-print-paper-selector.c:670
+msgid "Preview of the page size, orientation and layout"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:688
+msgid "Margins"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:722
+msgid "Top"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:725
+msgid "Bottom"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:728
+msgid "Left"
+msgstr ""
+
+#: libgnomeprintui/gnome-print-paper-selector.c:731
+msgid "Right"
+msgstr ""
+
+# libgnomeprint/gnome-printer-dialog.c:150
+# libgnomeprint/gnome-printer-dialog.c:189
+#: libgnomeprintui/gnome-printer-selector.c:123
+msgid "State:"
+msgstr "Stato:"
+
+# libgnomeprint/gnome-printer-dialog.c:151
+# libgnomeprint/gnome-printer-dialog.c:190
+#: libgnomeprintui/gnome-printer-selector.c:126
+msgid "Type:"
+msgstr "Tipo:"
+
+# libgnomeprint/gnome-printer-dialog.c:153
+# libgnomeprint/gnome-printer-dialog.c:192
+#: libgnomeprintui/gnome-printer-selector.c:129
+msgid "Comment:"
+msgstr "Commento:"
+
+#: libgnomeprintui/gnome-printer-selector.c:131
+#, fuzzy
+msgid "Co_nfigure"
+msgstr "Configurazione"
+
+#: libgnomeprintui/gnome-printer-selector.c:139
+msgid "Adjust the settings of the selected printer"
+msgstr ""
+
+# libgnomeprint/gnome-printer-dialog.c:188
+# libgnomeprint/gnome-printer-dialog.c:235
+#: libgnomeprintui/gnome-printer-selector.c:150
+#, fuzzy
+msgid "Pr_inter:"
+msgstr "Stampante:"
+
+#: libgnomeprintui/gnome-printer-selector.c:159
+#, fuzzy
+msgid "_Settings:"
+msgstr "Impostazioni:"
+
+# libgnomeprint/gnome-printer-dialog.c:152
+# libgnomeprint/gnome-printer-dialog.c:191
+#: libgnomeprintui/gnome-printer-selector.c:168
+#, fuzzy
+msgid "_Location:"
+msgstr "Locazione:"
+
+# libgnomeprint/gnome-print-master-preview.c:689
+#: libgnomeprintui/gnome-canvas-hacktext.c:128
+#, fuzzy
+msgid "Text"
+msgstr "Avanti"
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:129
+msgid "Text to render"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:148
+#: libgnomeprintui/gnome-canvas-hacktext.c:149
+msgid "Glyphlist"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:155
+#: libgnomeprintui/gnome-canvas-hacktext.c:163
+msgid "Color"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:156
+msgid "Text color, as string"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:164
+msgid "Text color, as an R/G/B/A combined integer"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:171
+msgid "Font"
+msgstr ""
+
+#: libgnomeprintui/gnome-canvas-hacktext.c:172
+msgid "Font as a GnomeFont struct"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-option-menu.c:179
+#: libgnomeprintui/gpaui/gpa-option-menu.c:229
+#: libgnomeprintui/gpaui/gpa-transport-selector.c:247
+msgid "No options are defined"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-printer-selector.c:156
+msgid "No printers could be loaded"
+msgstr ""
+
+# libgnomeprint/gnome-printer.c:117
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:180
+#, fuzzy
+msgid "No printer selected"
+msgstr "La stampante è attiva"
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:191
+msgid "No settings available"
+msgstr ""
+
+#: libgnomeprintui/gpaui/gpa-settings-selector.c:234
+msgid "Add new settings"
+msgstr ""
+
+# gnome-font-install.c:574
+#~ msgid "Print out debugging information"
+#~ msgstr "Stampa informazioni di debug"
+
+#~ msgid "Do not try to read existing fontmaps"
+#~ msgstr "Non tentare di leggere le fontmap esistenti"
+
+#~ msgid "Search directories recursively"
+#~ msgstr "Ricerca nelle directory ricorsivamente"
+
+#~ msgid "Output file name"
+#~ msgstr "Nome del file creato"
+
+# gnome-font-install.c:585
+#~ msgid "Search this path for .alias files."
+#~ msgstr "Utilizza questo percorso per i file .alias."
+
+# gnome-font-install.c:585 gnome-font-install.c:587 gnome-font-install.c:589
+# gnome-font-install.c:592 gnome-font-install.c:594
+#~ msgid "PATH"
+#~ msgstr "PERCORSO"
+
+# libgnomeprint/gnome-font-face.c:398
+#~ msgid "The quick brown fox jumps over the lazy dog."
+#~ msgstr "La Marianna la va in campagna quando il sole tramonterà"
+
+# libgnomeprint/gnome-font.c:693
+# libgnomeprint/gnome-font-face.c:1056
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "stato caricamento %s = %d\n"
+
+# libgnomeprint/gnome-printer-dialog.c:188
+# libgnomeprint/gnome-print-dialog.c:185
+# libgnomeprint/gnome-print-master-preview.c:680
+#~ msgid "Print"
+#~ msgstr "Stampa"
+
+# libgnomeprint/gnome-print-dialog.c:436
+#~ msgid "from:"
+#~ msgstr "da:"
+
+# libgnomeprint/gnome-print-dialog.c:450
+#~ msgid "to:"
+#~ msgstr "a:"
+
+#~ msgid ""
+#~ "'%s' is about to be overwritten.\n"
+#~ "\n"
+#~ "Do you want to continue?"
+#~ msgstr ""
+#~ "'%s' sta per essere sovrascritto.\n"
+#~ "\n"
+#~ "Continuare?"
+
+# libgnomeprint/gnome-printer-dialog.c:141
+# libgnomeprint/gnome-printer-dialog.c:180
+#~ msgid "Select output file"
+#~ msgstr "Seleziona file di output"
+
+# libgnomeprint/gnome-print-master-preview.c:652
+#~ msgid "_First page"
+#~ msgstr "_Prima pagina"
+
+# libgnomeprint/gnome-print-master-preview.c:655
+#~ msgid "_Previous page"
+#~ msgstr "Precedente"
+
+# libgnomeprint/gnome-print-master-preview.c:658
+#~ msgid "_Next page"
+#~ msgstr "Successiva"
+
+# libgnomeprint/gnome-print-master-preview.c:661
+#~ msgid "_Last page"
+#~ msgstr "Ultima"
+
+# libgnomeprint/gnome-print-master-preview.c:666
+#~ msgid "Zoom _in"
+#~ msgstr "Ingrandisci"
+
+# libgnomeprint/gnome-print-master-preview.c:667
+#~ msgid "Zoom _out"
+#~ msgstr "Riduci"
+
+# libgnomeprint/gnome-print-master-preview.c:667
+#~ msgid "Zooms out"
+#~ msgstr "Riduce la visuale"
+
+# libgnomeprint/gnome-print-master-preview.c:674
+#~ msgid "_View"
+#~ msgstr "_Vista"
+
+# libgnomeprint/gnome-print-master-preview.c:683
+#~ msgid "First"
+#~ msgstr "Primo"
+
+# libgnomeprint/gnome-print-master-preview.c:686
+#~ msgid "Back"
+#~ msgstr "Indietro"
+
+# libgnomeprint/gnome-print-master-preview.c:692
+#~ msgid "Last"
+#~ msgstr "Ultimo"
+
+# libgnomeprint/gnome-print-master-preview.c:695
+#~ msgid "Zoom in"
+#~ msgstr "Ingrandisci"
+
+# libgnomeprint/gnome-print-master-preview.c:696
+#~ msgid "Zoom out"
+#~ msgstr "Riduci"
+
+# libgnomeprint/gnome-print-master-preview.c:697
+#~ msgid "Fit"
+#~ msgstr "Adatta"
+
+# libgnomeprint/gnome-print-master-preview.c:698
+#~ msgid "Fit Wide"
+#~ msgstr "Adatta in larghezza"
+
+# libgnomeprint/gnome-print-master-preview.c:698
+#~ msgid "Zooms to fit the width of the page"
+#~ msgstr "Adatta alla larghezza della pagina"
+
+# libgnomeprint/gnome-print-master-preview.c:699
+#~ msgid "Fit Tall"
+#~ msgstr "Adatta in altezza"
+
+# libgnomeprint/gnome-print-master-preview.c:699
+#~ msgid "Zooms to fit the height of the page"
+#~ msgstr "Adatta all'altezza della pagina"
+
+#~ msgid ""
+#~ "gnome-print-admin was not found.\n"
+#~ "\n"
+#~ "Please install gnome-print-admin to configure this printer"
+#~ msgstr ""
+#~ "gnome-print-admin non è stato trovato.\n"
+#~ "\n"
+#~ "Installare gnome-print-admin per configurare questa stampante"
+
+# libgnomeprint/gnome-print-master-preview.c:680
+#~ msgid "Print to file"
+#~ msgstr "Stampa su file"
+
+# libgnomeprint/gnome-print-copies.c:232
+#~ msgid "Properties"
+#~ msgstr "Proprietà"
+
+# libgnomeprint/gnome-printer-dialog.c:141
+# libgnomeprint/gnome-printer-dialog.c:180
+#~ msgid "Select printer"
+#~ msgstr "Seleziona la stampante"
+
+# libgnomeprint/gnome-printer-dialog.c:186
+# libgnomeprint/gnome-printer-dialog.c:226
+#~ msgid "_Name:"
+#~ msgstr "_Nome:"
+
+# libgnomeprint/gnome-printer-dialog.c:188
+# libgnomeprint/gnome-printer-dialog.c:235
+#~ msgid "_Printer"
+#~ msgstr "_Stampante"
+
+# libgnomeprint/gnome-printer-dialog.c:199
+# libgnomeprint/gnome-printer-dialog.c:248
+#~ msgid "_File"
+#~ msgstr "_File"
+
+# libgnomeprint/gnome-printer-dialog.c:396
+# libgnomeprint/gnome-printer-dialog.c:489
+#~ msgid "Select Printer"
+#~ msgstr "Seleziona la Stampante"
+
+#~ msgid "Generic Postscript"
+#~ msgstr "Generic PostScript"
+
+# libgnomeprint/gnome-printer.c:120
+#~ msgid "Printer is ready to print"
+#~ msgstr "La stampante è pronta a stampare"
+
+# libgnomeprint/gnome-printer.c:123
+#~ msgid "Printer is off-line"
+#~ msgstr "La stampante è scollegata"
+
+# libgnomeprint/gnome-printer.c:126
+#~ msgid "Can not communicate with printer"
+#~ msgstr "Impossibile comunicare con la stampante"
+
+# libgnomeprint/gnome-printer.c:129
+#~ msgid "Unknown status"
+#~ msgstr "Stato sconosciuto"
+
+#~ msgid "extracts the first font from output.pdf and places it in font.dump."
+#~ msgstr "estrae il primo font da output.pdf e lo inserisce in font.dump."
+
+#~ msgid "extracts the font header from font.dump"
+#~ msgstr "estrae l'intestazione del font da font.dump"
+
+#~ msgid "extracts the font body "
+#~ msgstr "estrae il corpo del font"
+
+#~ msgid "decrypts the font body "
+#~ msgstr "decritta il corpo del font"
+
+# testprint.c:31 testprint.c:39
+# tests/testprint.c:117 tests/testprint.c:125
+#~ msgid "Gnome-print test page, rotated"
+#~ msgstr "Pagina di test per Gnome-print, ruotata"
+
+# testprint.c:31 testprint.c:39
+# tests/testprint.c:132
+#~ msgid "Gnome-print test page, slanted"
+#~ msgstr "Pagina di test per Gnome-print, rovesciata"
+
+# testprint.c:31 testprint.c:39
+# tests/testprint.c:140
+#~ msgid "Gnome-print test page, slanted. Small"
+#~ msgstr "Pagina di test per Gnome-print, rovesciata. Piccola"

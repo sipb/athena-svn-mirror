@@ -300,5 +300,7 @@ gpa_transport_selector_construct (GPAWidget *gpaw)
 
 	gpa_transport_selector_connect (ts);
 	gpa_transport_selector_rebuild_menu (ts);
+
+	return TRUE;
 }
 

@@ -1,5 +1,5 @@
-This is the examples directory inside libgnomeprintui. If you are going to be running this examples i
-recommend setting your default printer to print to file, since there isn't any gui for this yet you
+This is the examples directory inside libgnomeprintui. If you are going to be running this examples I
+recommend setting your default printer to print to file, since there isn't any gui for this yet. You
 can modify libgnomeprint/data/printers/Generic.printer and change the line that says:
   <Key Id="Backend" Value="lpr"/>
 to
@@ -15,7 +15,7 @@ Here is a brief description of what each example does.
 
 example_01.c
 ------------
-Smallest non-gui gnome-print application. Shows basic GnomePrintMaster & GnomePrintContext usage.
+Smallest non-gui gnome-print application. Shows basic GnomePrintJob & GnomePrintContext usage.
 
 example_02.c
 ------------
@@ -46,7 +46,7 @@ GnomePrintDialog with a job page, using ranges.
 example_08.c
 ------------
 Appending custom widgets to a GnomePrintDialog. This example also dumps a GnomePrintConfig tree
-when the "Dump Tree" button is clicked (used for debuggin purposes)
+when the "Dump Tree" button is clicked (used for debugging purposes)
 
 example_09.c
 ------------
@@ -63,13 +63,6 @@ example_11.c (not yet implemented)
 Directly printing without going thru a GnomePrintDilaog. Prints a PDF file from the File->Export
 menu and print previews it form File->Print Preview.
 
-example_12.c (not yet implemented)
-------------
-Directly printing without going thru a GnomePrintDilaog. Prints a PDF file from the File->Export
-menu and print previews it form File->Print Preview.
-
 TODO:
 ----
-- We are leaking objects, when should we close, free or unref them? (04)
-- What happens when the user hits preview? (04)
-- printable area.
+- Add an example printable area example, with N-up printing

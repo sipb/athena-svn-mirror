@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-<anchor id="GnomePrinterSelector">
 <synopsis>
 
 
@@ -25,28 +24,6 @@ struct      <link linkend="GnomePrinterSelectorClass">GnomePrinterSelectorClass<
 
 </synopsis>
 </refsynopsisdiv>
-
-<refsect1>
-<title>Object Hierarchy</title>
-<synopsis>
-
-  <link linkend="GObject">GObject</link>
-   +----<link linkend="GtkObject">GtkObject</link>
-         +----<link linkend="GtkWidget">GtkWidget</link>
-               +----<link linkend="GtkContainer">GtkContainer</link>
-                     +----<link linkend="GtkBin">GtkBin</link>
-                           +----<link linkend="GPAWidget">GPAWidget</link>
-                                 +----GnomePrinterSelector
-</synopsis>
-
-</refsect1>
-
-<refsect1>
-<title>Implemented Interfaces</title>
-<para>
-GnomePrinterSelector implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
-</refsect1>
 
 
 
@@ -79,41 +56,53 @@ GnomePrinterSelector implements <link linkend="AtkImplementorIface">AtkImplement
                                             (void);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-printer-selector-new">gnome_printer_selector_new ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_printer_selector_new      (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-printer-selector-get-config">gnome_printer_selector_get_config ()</title>
 <programlisting><link linkend="GnomePrintConfig">GnomePrintConfig</link>* gnome_printer_selector_get_config
                                             (<link linkend="GnomePrinterSelector">GnomePrinterSelector</link> *psel);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>psel</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>psel</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 

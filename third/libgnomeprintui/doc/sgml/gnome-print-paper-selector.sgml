@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-<anchor id="GnomePaperSelector"><anchor id="GnomePrintUnitSelector">
 <synopsis>
 
 
@@ -60,54 +59,8 @@ void        <link linkend="gnome-print-unit-selector-remove-adjustment">gnome_pr
 </synopsis>
 </refsynopsisdiv>
 
-<refsect1>
-<title>Object Hierarchy</title>
-<synopsis>
-
-  <link linkend="GObject">GObject</link>
-   +----<link linkend="GtkObject">GtkObject</link>
-         +----<link linkend="GtkWidget">GtkWidget</link>
-               +----<link linkend="GtkContainer">GtkContainer</link>
-                     +----<link linkend="GtkBox">GtkBox</link>
-                           +----<link linkend="GtkHBox">GtkHBox</link>
-                                 +----GnomePaperSelector
-</synopsis>
-<synopsis>
-
-  <link linkend="GObject">GObject</link>
-   +----<link linkend="GtkObject">GtkObject</link>
-         +----<link linkend="GtkWidget">GtkWidget</link>
-               +----<link linkend="GtkContainer">GtkContainer</link>
-                     +----<link linkend="GtkBox">GtkBox</link>
-                           +----<link linkend="GtkHBox">GtkHBox</link>
-                                 +----GnomePrintUnitSelector
-</synopsis>
-
-</refsect1>
-
-<refsect1>
-<title>Implemented Interfaces</title>
-<para>
-GnomePaperSelector implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
-</refsect1>
-<refsect1>
-<title>Implemented Interfaces</title>
-<para>
-GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImplementorIface</link>.
-</para>
-</refsect1>
 
 
-
-<refsect1>
-<title>Signal Prototypes</title>
-<synopsis>
-
-&quot;<link linkend="GnomePrintUnitSelector-modified">modified</link>&quot;  void        user_function      (<link linkend="GnomePrintUnitSelector">GnomePrintUnitSelector</link> *printunitselector,
-                                            <link linkend="gpointer">gpointer</link> user_data);
-</synopsis>
-</refsect1>
 
 
 <refsect1>
@@ -122,7 +75,6 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
 <refsect2>
 <title><anchor id="GnomePaperPreview">struct GnomePaperPreview</title>
 <programlisting>struct GnomePaperPreview {
-
 	GtkHBox box;
 
 	GtkWidget *canvas;
@@ -154,65 +106,85 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PAPER-SELECTOR-CLASS-CAPS">GNOME_PAPER_SELECTOR_CLASS()</title>
 <programlisting>#define GNOME_PAPER_SELECTOR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST    ((k), GNOME_TYPE_PAPER_SELECTOR, GnomePaperSelectorClass))
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>k</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GNOME-IS-PAPER-SELECTOR-CAPS">GNOME_IS_PAPER_SELECTOR()</title>
 <programlisting>#define GNOME_IS_PAPER_SELECTOR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PAPER_SELECTOR))
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GNOME-IS-PAPER-SELECTOR-CLASS-CAPS">GNOME_IS_PAPER_SELECTOR_CLASS()</title>
 <programlisting>#define GNOME_IS_PAPER_SELECTOR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE    ((k), GNOME_TYPE_PAPER_SELECTOR))
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>k</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PAPER-SELECTOR-GET-CLASS-CAPS">GNOME_PAPER_SELECTOR_GET_CLASS()</title>
 <programlisting>#define GNOME_PAPER_SELECTOR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS  ((o), GNOME_TYPE_PAPER_SELECTOR, GnomePaperSelectorClass))
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GnomePaperSelector-struct">struct GnomePaperSelector</title>
 <programlisting>struct GnomePaperSelector;</programlisting>
@@ -238,65 +210,85 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-UNIT-SELECTOR-CLASS-CAPS">GNOME_PRINT_UNIT_SELECTOR_CLASS()</title>
 <programlisting>#define GNOME_PRINT_UNIT_SELECTOR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k),    GNOME_TYPE_PRINT_UNIT_SELECTOR, GnomePrintUnitSelectorClass))
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>k</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GNOME-IS-PRINT-UNIT-SELECTOR-CAPS">GNOME_IS_PRINT_UNIT_SELECTOR()</title>
 <programlisting>#define GNOME_IS_PRINT_UNIT_SELECTOR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_UNIT_SELECTOR))
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GNOME-IS-PRINT-UNIT-SELECTOR-CLASS-CAPS">GNOME_IS_PRINT_UNIT_SELECTOR_CLASS()</title>
 <programlisting>#define GNOME_IS_PRINT_UNIT_SELECTOR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),    GNOME_TYPE_PRINT_UNIT_SELECTOR))
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>k</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>k</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-UNIT-SELECTOR-GET-CLASS-CAPS">GNOME_PRINT_UNIT_SELECTOR_GET_CLASS()</title>
 <programlisting>#define GNOME_PRINT_UNIT_SELECTOR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o),  GNOME_TYPE_PRINT_UNIT_SELECTOR, GnomePrintUnitSelectorClass))
 </programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="GnomePrintUnitSelector-struct">struct GnomePrintUnitSelector</title>
 <programlisting>struct GnomePrintUnitSelector;</programlisting>
@@ -314,40 +306,52 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_paper_preview_new         (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-paper-selector-get-type">gnome_paper_selector_get_type ()</title>
 <programlisting><link linkend="GType">GType</link>       gnome_paper_selector_get_type   (void);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-paper-selector-new">gnome_paper_selector_new ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_paper_selector_new        (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-paper-selector-new-with-flags">gnome_paper_selector_new_with_flags ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_paper_selector_new_with_flags
@@ -355,59 +359,75 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
                                              <link linkend="gint">gint</link> flags);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>flags</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>flags</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-selector-get-type">gnome_print_unit_selector_get_type ()</title>
 <programlisting><link linkend="GType">GType</link>       gnome_print_unit_selector_get_type
                                             (void);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-selector-new">gnome_print_unit_selector_new ()</title>
 <programlisting><link linkend="GtkWidget">GtkWidget</link>*  gnome_print_unit_selector_new   (<link linkend="guint">guint</link> bases);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>bases</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>bases</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-selector-get-unit">gnome_print_unit_selector_get_unit ()</title>
 <programlisting>const <link linkend="GnomePrintUnit">GnomePrintUnit</link>* gnome_print_unit_selector_get_unit
                                             (<link linkend="GnomePrintUnitSelector">GnomePrintUnitSelector</link> *selector);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>selector</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>selector</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-selector-set-bases">gnome_print_unit_selector_set_bases ()</title>
 <programlisting>void        gnome_print_unit_selector_set_bases
@@ -415,16 +435,20 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
                                              <link linkend="guint">guint</link> bases);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>selector</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>bases</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>selector</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>bases</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-selector-set-unit">gnome_print_unit_selector_set_unit ()</title>
 <programlisting>void        gnome_print_unit_selector_set_unit
@@ -432,16 +456,20 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
                                              const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *unit);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>selector</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>unit</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>selector</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>unit</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-selector-add-adjustment">gnome_print_unit_selector_add_adjustment ()</title>
 <programlisting>void        gnome_print_unit_selector_add_adjustment
@@ -449,16 +477,20 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
                                              <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>selector</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>selector</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>adjustment</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-unit-selector-remove-adjustment">gnome_print_unit_selector_remove_adjustment ()</title>
 <programlisting>void        gnome_print_unit_selector_remove_adjustment
@@ -466,26 +498,23 @@ GnomePrintUnitSelector implements <link linkend="AtkImplementorIface">AtkImpleme
                                              <link linkend="GtkAdjustment">GtkAdjustment</link> *adjustment);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>selector</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>adjustment</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>selector</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>adjustment</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 
-<refsect1>
-<title>Signals</title>
-<refsect2><title><anchor id="GnomePrintUnitSelector-modified">The &quot;modified&quot; signal</title>
-<programlisting>void        user_function                  (<link linkend="GnomePrintUnitSelector">GnomePrintUnitSelector</link> *printunitselector,
-                                            <link linkend="gpointer">gpointer</link> user_data);</programlisting>
-</refsect2>
-</refsect1>
 
 
 

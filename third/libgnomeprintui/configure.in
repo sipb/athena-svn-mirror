@@ -1,10 +1,10 @@
 -*- mode: m4 -*-
 AC_PREREQ(2.52)
-AC_INIT(libgnomeprintui, 2.2.1,
+AC_INIT(libgnomeprintui, 2.2.1.1,
 	http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-print)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(libgnomeprintui,2.2.1)
+AM_INIT_AUTOMAKE(libgnomeprintui,2.2.1.1)
 
 AM_MAINTAINER_MODE
 
@@ -30,7 +30,7 @@ GETTEXT_PACKAGE=libgnomeprintui-2.2
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Gettext package])
 
-ALL_LINGUAS="az be bg cs da de ca es et eu he hi ja ko lv ms pl pt ro ru sl sv ta vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg cs da de ca el es et eu fi fr ga gl he hi hr hu it ja ko lt lv mn ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 dnl ==========================================
@@ -45,7 +45,7 @@ fi
 AC_SUBST(HTML_DIR)
 
 AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
-gtk_doc_min_version=0.10
+gtk_doc_min_version=0.9
 if $GTKDOC ; then
     gtk_doc_version=`gtkdoc-mkdb --version`
     AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
@@ -96,7 +96,7 @@ dnl =================
 dnl pkg-config checks
 dnl =================
 PKG_CHECK_MODULES(LIBGNOMEPRINTUI,
-	libgnomeprint-2.2 >= 2.2.0 \
+	libgnomeprint-2.2 >= 2.2.1.1 \
 	libgnomecanvas-2.0 >= 1.117.0)
 AC_SUBST(LIBGNOMEPRINTUI_CFLAGS)
 AC_SUBST(LIBGNOMEPRINTUI_LIBS)

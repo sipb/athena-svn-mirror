@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-<anchor id="GnomePrintPreview">
 <synopsis>
 
 
@@ -27,18 +26,6 @@ struct      <link linkend="GnomePrintPreviewClass">GnomePrintPreviewClass</link>
 
 </synopsis>
 </refsynopsisdiv>
-
-<refsect1>
-<title>Object Hierarchy</title>
-<synopsis>
-
-  <link linkend="GObject">GObject</link>
-   +----<link linkend="GnomePrintContext">GnomePrintContext</link>
-         +----GnomePrintPreview
-</synopsis>
-
-</refsect1>
-
 
 
 
@@ -74,16 +61,20 @@ Creates a new PrintPreview object that use the <parameter>canvas</parameter> Gno
 as its rendering backend.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>canvas</parameter>&nbsp;:</term>
-<listitem><simpara> Canvas on which we display the print preview
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A GnomePrintContext suitable for using with the GNOME print API.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>canvas</parameter>&nbsp;:</entry>
+<entry> Canvas on which we display the print preview
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A GnomePrintContext suitable for using with the GNOME print API.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-preview-new-full">gnome_print_preview_new_full ()</title>
 <programlisting><link linkend="GnomePrintContext">GnomePrintContext</link>* gnome_print_preview_new_full
@@ -93,24 +84,28 @@ as its rendering backend.</para>
                                              const <link linkend="ArtDRect">ArtDRect</link> *region);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>canvas</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>transform</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>region</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>canvas</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>transform</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>region</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 

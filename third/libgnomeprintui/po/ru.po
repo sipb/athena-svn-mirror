@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprintui\n"
-"POT-Creation-Date: 2003-01-21 00:48-0500\n"
-"PO-Revision-Date: 2002-06-09 21:04+0400\n"
+"POT-Creation-Date: 2003-02-02 20:53-0500\n"
+"PO-Revision-Date: 2002-07-14 12:24+0400\n"
 "Last-Translator: Dmitry G.Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -397,35 +397,56 @@ msgstr "Установки недоступны"
 msgid "Add new settings"
 msgstr "Добавить новые установки"
 
-#~ msgid "Select Printer"
-#~ msgstr "Выбрать принтер"
-
-#~ msgid "Portrait"
-#~ msgstr "Портрет"
-
-#~ msgid "Landscape"
-#~ msgstr "Альбом"
-
-#~ msgid "Rotate 180"
-#~ msgstr "Поворот на 180"
-
-#~ msgid "Manage printers"
-#~ msgstr "Управлять принтерами"
-
-#~ msgid "Add new printer"
-#~ msgstr "Добавить новый принтер"
-
-#~ msgid "Default printer"
-#~ msgstr "Принтер по умолчанию"
-
 #~ msgid "P_rinter"
 #~ msgstr "П_ринтер"
+
+#~ msgid "/_Preview"
+#~ msgstr "/Посмотреть образе_ц"
+
+#~ msgid "/Preview/_Print"
+#~ msgstr "/Посмотреть образец/На_печатать"
+
+#~ msgid "/Preview/_Close"
+#~ msgstr "/Посмотреть образец/_Закрыть"
+
+#~ msgid "/_View"
+#~ msgstr "/_Вид"
+
+#~ msgid "/View/Zoom _1:1"
+#~ msgstr "/Вид/Масштабировать 1:1"
+
+#~ msgid "/View/Zoom to _Fit"
+#~ msgstr "/Вид/Масштабировать до _заполнения"
+
+#~ msgid "/View/Zoom _In"
+#~ msgstr "/Вид/У_величить масштаб"
+
+#~ msgid "/View/Zoom _Out"
+#~ msgstr "/Вид/У_меньшить масштаб"
+
+#~ msgid "/_Go"
+#~ msgstr "/Пере_ход"
+
+#~ msgid "/Go/_First Page"
+#~ msgstr "/Переход/К _первой странице"
+
+#~ msgid "/Go/_Previous Page"
+#~ msgstr "/Переход/К пре_дыдущей странице"
+
+#~ msgid "/Go/_Next Page"
+#~ msgstr "/Переход/К _следующей станице"
+
+#~ msgid "/Go/_Last Page"
+#~ msgstr "/Переход/К пос_ледней странице"
 
 #~ msgid "No papers defined"
 #~ msgstr "Не определён формат"
 
 #~ msgid "No layouts defined"
 #~ msgstr "Не определено размещение"
+
+#~ msgid "Select Printer"
+#~ msgstr "Выбрать принтер"
 
 #~ msgid "Select printer model"
 #~ msgstr "Выбрать модель принтера"
@@ -444,6 +465,24 @@ msgstr "Добавить новые установки"
 
 #~ msgid "From PPD..."
 #~ msgstr "Из PPD..."
+
+#~ msgid "Portrait"
+#~ msgstr "Портрет"
+
+#~ msgid "Landscape"
+#~ msgstr "Альбом"
+
+#~ msgid "Rotate 180"
+#~ msgstr "Поворот на 180"
+
+#~ msgid "Manage printers"
+#~ msgstr "Управлять принтерами"
+
+#~ msgid "Add new printer"
+#~ msgstr "Добавить новый принтер"
+
+#~ msgid "Default printer"
+#~ msgstr "Принтер по умолчанию"
 
 #~ msgid "My App Print Preview"
 #~ msgstr "Мой просмотр образца печати"
@@ -514,9 +553,6 @@ msgstr "Добавить новые установки"
 
 #~ msgid "Scaling"
 #~ msgstr "Масштаб"
-
-#~ msgid "Fit to Page"
-#~ msgstr "Уместить на странице"
 
 #~ msgid "%0.3g%s x %0.3g%s"
 #~ msgstr "%0.3g%s x %0.3g%s"

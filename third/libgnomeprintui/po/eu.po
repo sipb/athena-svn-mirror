@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprintui 1.104.0\n"
-"POT-Creation-Date: 2003-01-21 00:48-0500\n"
+"POT-Creation-Date: 2003-02-02 20:53-0500\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Unmantained\n"
 "Language-Team: Euskara\n"
