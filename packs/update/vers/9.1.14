@@ -1,0 +1,17 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  if [ -h /usr/java ]; then
+    case `ls -l /usr/java` in
+    *java1.1)
+      rm -f /usr/java
+      ln -s java1.2 /usr/java
+      ;;
+    esac
+  fi
+  ;;
+
+sgi)
+  ;;
+esac
