@@ -28,7 +28,7 @@ end		return END;
 .		{ return (*yytext); }
 %%
 #ifndef lint
-static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/et_lex.lex.l,v 1.3 1997-11-02 23:43:03 ghudson Exp $";
+static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/et_lex.lex.l,v 1.4 1997-11-03 13:03:21 ghudson Exp $";
 #endif
 
 int yywrap()
