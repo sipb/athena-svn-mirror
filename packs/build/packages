@@ -1,4 +1,4 @@
-# $Id: packages,v 1.51 1998-12-18 18:09:36 danw Exp $
+# $Id: packages,v 1.52 1998-12-27 15:50:59 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -25,6 +25,7 @@ athena/lib/al
 third/krb5
 athena/etc/synctree
 athena/lib/Mu
+athena/lib/Xj
 third/wcl
 third/tcp_wrappers
 third/tcsh
@@ -72,6 +73,7 @@ athena/etc/busyd
 athena/etc/larvnetd
 athena/etc/cviewd
 athena/etc/athinfod
+athena/etc/console
 athena/bin/aklog
 athena/bin/newpag
 athena/bin/voldump
@@ -86,6 +88,8 @@ athena/bin/access
 athena/bin/dent
 athena/bin/attach
 athena/bin/dash
+athena/bin/xcluster
+athena/bin/bugme
 athena/bin/xmore
 athena/bin/xdsc
 athena/bin/rkinit
@@ -96,7 +100,7 @@ athena/bin/getcluster
 athena/bin/gms
 athena/bin/hostinfo
 athena/bin/lert
-athena/bin/machtype
+athena/bin/machtype		-irix
 athena/bin/write
 athena/bin/athdir
 athena/bin/lpr
