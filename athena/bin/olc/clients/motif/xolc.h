@@ -4,7 +4,7 @@
 #include "olc.h"
 
 #include <zephyr/zephyr.h>
-#include "XmAppl.h"          /*  Motif Toolkit  */
+#include "MrmAppl.h"		/* Motif Toolkit */
 
 #include <signal.h>
 #include <sys/file.h>
@@ -35,7 +35,7 @@
 #define  MOTD_FORM	20
 #define  MOTD_SCRL	21
 
-Widget			/* Widget ID's */
+Widget				/* Widget ID's */
   w_newq_btn,
   w_contq_btn,
   w_stock_btn,
