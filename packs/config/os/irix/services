@@ -1,7 +1,7 @@
 #
 # Network services, Internet style
 #
-# $Id: services,v 1.2 1999-06-28 21:00:46 ghudson Exp $
+# $Id: services,v 1.3 2000-03-13 18:15:27 rbasch Exp $
 #
 tcpmux		1/tcp			# TCP port multiplexer (RFC 1078)
 echo		7/tcp
@@ -40,8 +40,8 @@ iso-tsap	102/tcp
 x400		103/tcp				# ISO mail
 x400-snd	104/tcp
 csnet-ns	105/tcp
-pop-2		109/tcp				# Post Office
-pop-3		110/tcp
+pop2		109/tcp		pop-2		# Post Office
+pop3		110/tcp		pop-3
 sunrpc		111/tcp		rpcbind
 sunrpc		111/udp		rpcbind
 auth		113/tcp		authentication
@@ -128,6 +128,7 @@ sgi-mekton6	5146/udp			# mekton port
 sgi-mekton7	5147/udp			# mekton port
 sgi-pointblank	5150/udp			# pointblank port
 sbm-comm	5555/udp			# Space Boulders port
+sgi-esphttp	5554/tcp                        # ESP web console server port
 
 sgi-dgl		5232/tcp			# SGI Distributed Graphics Lib.
 sgi-arrayd	5434/tcp			# SGI array services daemon
