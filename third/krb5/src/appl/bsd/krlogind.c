@@ -206,6 +206,8 @@ struct winsize {
 #include <utmp.h>
 #endif
 
+#include <al.h>
+
 int auth_sys = 0;	/* Which version of Kerberos used to authenticate */
 
 #define KRB5_RECVAUTH_V4	4
@@ -1040,7 +1042,7 @@ do_krb_login(host)
     krb5_error_code status;
     struct passwd *pwd;
     char *msg_fail = NULL;
-    int valid_checksum;
+    int valid_checksum, local_acct;
 
     if (getuid()) {
 	exit(1);
@@ -1067,7 +1069,12 @@ do_krb_login(host)
 	  fatal(netf, "This server does not support Kerberos V4");
   }
 #endif
-    
+
+    if (al_login_allowed(lusername, 1, &local_acct, NULL) != 0)
+	fatal(netf, "You are not authorized to log in here remotely");
+
+    if (!local_acct)
+	al_acct_create(lusername, NULL, getpid(), 0, 0, NULL);
 
 #if (defined(ALWAYS_V5_KUSEROK) || !defined(KRB5_KRB4_COMPAT))
 	/* krb5_kuserok returns 1 if OK */
@@ -1085,7 +1092,8 @@ do_krb_login(host)
 	}
 #endif
 
-    
+    if (!local_acct)
+	al_acct_revert(lusername, getpid());
 
     if (checksum_required && !valid_checksum) {
 	if (auth_sent & AUTH_KRB5) {

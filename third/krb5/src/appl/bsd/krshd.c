@@ -154,6 +154,8 @@ char copyright[] =
 Key_schedule v4_schedule;
 #endif
 
+#include <al.h>
+
 #define ARGSTR	"ek54ciD:S:M:AP:?L:"
 
 
@@ -573,7 +575,7 @@ void doit(f, fromp)
     char buf[RSHD_BUFSIZ], sig;
     struct sockaddr_in fromaddr;
     struct sockaddr_in localaddr;
-    int non_privileged = 0;
+    int non_privileged = 0, local_acct;
 #ifdef POSIX_SIGNALS
     struct sigaction sa;
 #endif
@@ -1019,6 +1021,14 @@ void doit(f, fromp)
 
 #ifdef KERBEROS
 
+    if (al_login_allowed(locuser, 1, &local_acct, NULL) != 0) {
+	error("You are not authorized to log in here remotely.\n");
+	goto signout_please;
+    }
+
+    if (!local_acct)
+	al_acct_create(locuser, NULL, getpid(), 0, 0, NULL);
+
 #if defined(KRB5_KRB4_COMPAT) && !defined(ALWAYS_V5_KUSEROK)
 	if (auth_sys == KRB5_RECVAUTH_V4) {
 	    /* kuserok returns 0 if OK */
@@ -1042,7 +1052,8 @@ void doit(f, fromp)
 		    ((auth_sys == KRB5_RECVAUTH_V4) ? AUTH_KRB4 : AUTH_KRB5);
 	}
 
-	
+    if (!local_acct)
+	al_acct_revert(locuser, getpid());
 #else
     if (pwd->pw_passwd != 0 && *pwd->pw_passwd != '\0' &&
 	ruserok(hostname, pwd->pw_uid == 0, remuser, locuser) < 0) {
