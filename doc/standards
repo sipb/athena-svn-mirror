@@ -113,7 +113,24 @@ Environment variable names should be in all capitals; shell variable
 names should be in all lowercase.  Avoid writing ${varname} for
 variable expansion except when necessary; just write $varname.  In
 most cases, if you intend to expand a variable as a single word, you
-should write "$varname" with double quotes.
+should write "$varname" with double quotes.  This is not necessary in
+the switch expression of a case statement or in variable assignments,
+though.
+
+Test expressions in shell scripts can be a mine field of ungraceful
+failures if the variables being tested are empty, contain spaces or
+glob characters, or begin with a dash.  To handle all such corner
+cases gracefully without adding unnecessary hair, use the following
+test expressions:
+
+	To test if a variable is...	Write
+	---------------------------	-----
+	empty				-z "$varname"
+	non-empty			-n "$varname"
+	equal to a literal		literal = "$varname"
+	equal to another variable	"x$varname" = "x$othervarname"
+	set				${varname+set} = set
+	not set				${varname+set} != set
 
 Software engineering practices
 ------------------------------
