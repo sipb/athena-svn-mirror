@@ -157,7 +157,7 @@ requirements right now:
 	  an alternative location with the -b option.
 
 	* You must have write access to a destination tree, and be
-	  able to chown file and make setuid root files in that tree.
+	  able to chown files and make setuid root files in that tree.
 	  The default location is /srvd; you can specify an
 	  alternative location with the -d option.
 
@@ -171,6 +171,53 @@ requirements right now:
 	* On Solaris, you need system:authuser access to the Athena
 	  cell in order to build third/gcc (since it is bootstrapped
 	  with the sunsoft compiler).
+
+Therefore, if you have a machine newly installed with the vendor
+operating system and AFS, and you want to build the Athena source tree
+for the first time, you have to do a little work beforehand:
+
+	* Make a symlink for /source and a temporary directory to put
+	  these binaries in (just to make the following instructions
+	  easier to express):
+
+		ln -s /afs/dev.mit.edu/source/src-current /source
+		mkdir /var/tmp/bin
+		set path = ($path /var/tmp/bin) # for csh-based shells
+
+	* You need a functioning synctree.  The sources are in
+	  athena/etc/synctree; because they are not world-readable,
+	  you may need to copy the sources somewhere temporary from
+	  another workstation in order to get them onto the machine
+	  you're building on.  Once you have a copy of the sources,
+	  building them is relatively easy:
+
+		imake -I/source/packs/build/config -DUseInstalled
+		make
+		cp synctree /var/tmp/bin
+		rehash # for csh-based shells
+
+	* You need a functioning kinit.  In the worst case, you may
+	  need to do a complete build of third/cns.
+
+		cd /var/tmp; mkdir cns; cd cns
+		synctree -s /source/third/cns -d . -a /source/.rconf
+		./configure --site=athena
+		make
+		cp kuser/kinit /var/tmp/bin
+		mkdir /etc/athena
+		cp /source/packs/config/krb.conf /etc/athena
+		cp /source/packs/config/krb.realms /etc/athena
+
+	* You need a functioning aklog.
+
+		cd /var/tmp; mkdir aklog; cd aklog
+		synctree -s /source/athena/bin/aklog -d . -a /source/.rconf
+		imake -I/source/packs/build/config -DUseInstalled
+		make # or "make AFSDIR=/wherever" if AFS libs not in /usr/afsws
+		cp aklog /var/tmp/bin
+
+With these tools, you should be able to set up the build environment
+as documented above.
 
 Imake templates
 ---------------
