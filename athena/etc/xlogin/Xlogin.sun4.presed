@@ -1,4 +1,4 @@
-! $Id: Xlogin.sun4.presed,v 1.8 2001-06-20 17:37:49 ghudson Exp $
+! $Id: Xlogin.sun4.presed,v 1.8.2.1 2002-03-13 21:50:09 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -407,7 +407,7 @@ xlogin.Geometry: 		580x325
 			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
 			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
 			WcSetValueCB(*lmenuEntry7.leftBitmap: white), \
-			WcSetValueCB(*selection.label: )
+			WcSetValueCB(*selection.label: )
 *lmenuEntry2.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
 			WcSetValueCB(*lmenuEntry2.leftBitmap: check), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
