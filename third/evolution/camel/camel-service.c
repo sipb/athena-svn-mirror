@@ -595,7 +595,7 @@ camel_service_gethost (CamelService *service, CamelException *ex)
 		if (hesiod_init(&context) != 0)
 			goto lose;
 		args.context = context;
-		domain = hesiod_to_bind(context, getenv("USER"), "pobox");
+		domain = hesiod_to_bind(context, g_get_user_name(), "pobox");
 		if (domain == NULL)
 			goto lose;
 		if (ares_init(&channel) != ARES_SUCCESS)
