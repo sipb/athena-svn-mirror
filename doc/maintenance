@@ -119,7 +119,7 @@ scratch, intended to alert the source tree maintainers when someone
 checks in a change which causes the source tree to stop building.  The
 general architecture of the wash process is:
 
-	* Each night at midnight, a machine (currently sourcery)
+	* Each night at midnight, a machine (currently small-gods)
 	  performs a cvs update of the checked-out tree in
 	  /afs/dev.mit.edu/source/src-current.  If the cvs update
 	  fails, the update script sends mail to source-wash@mit.edu.
