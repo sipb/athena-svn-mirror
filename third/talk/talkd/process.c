@@ -33,7 +33,7 @@
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)process.c	5.10 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: process.c,v 1.3 1997-06-27 23:08:45 ghudson Exp $";
+static char rcsid[] = "$Id: process.c,v 1.4 1997-10-17 06:51:19 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -82,17 +82,17 @@ process_request(mp, rp)
 		return;
 	}
 	mp->id_num = ntohl(mp->id_num);
-	mp->addr.sa_family = ntohs(mp->addr.sa_family);
-	if (mp->addr.sa_family != AF_INET) {
+	mp->addr.family = ntohs(mp->addr.family);
+	if (mp->addr.family != AF_INET) {
 		syslog(LOG_WARNING, "Bad address, family %d",
-		    mp->addr.sa_family);
+		    mp->addr.family);
 		rp->answer = BADADDR;
 		return;
 	}
-	mp->ctl_addr.sa_family = ntohs(mp->ctl_addr.sa_family);
-	if (mp->ctl_addr.sa_family != AF_INET) {
+	mp->ctl_addr.family = ntohs(mp->ctl_addr.family);
+	if (mp->ctl_addr.family != AF_INET) {
 		syslog(LOG_WARNING, "Bad control address, family %d",
-		    mp->ctl_addr.sa_family);
+		    mp->ctl_addr.family);
 		rp->answer = BADCTLADDR;
 		return;
 	}
@@ -119,7 +119,7 @@ process_request(mp, rp)
 		if (ptr != (CTL_MSG *)0) {
 			rp->id_num = htonl(ptr->id_num);
 			rp->addr = ptr->addr;
-			rp->addr.sa_family = htons(ptr->addr.sa_family);
+			rp->addr.family = htons(ptr->addr.family);
 			rp->answer = SUCCESS;
 		} else
 			rp->answer = NOT_HERE;

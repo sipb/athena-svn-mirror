@@ -81,7 +81,7 @@ invite_remote()
 		p_error("Error on attempt to listen for caller");
 	/* copy new style sockaddr to old, swap family (short in old) */
 	msg.addr = *(struct oldsockaddr *)&my_addr;  /* XXX new to old  style*/
-	msg.addr.sa_family = htons(my_addr.sin_family);
+	msg.addr.family = htons(my_addr.sin_family);
 	msg.id_num = htonl(-1);		/* an impossible id_num */
 	invitation_waiting = 1;
 	announce_invite();
