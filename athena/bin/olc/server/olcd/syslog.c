@@ -7,13 +7,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v $
- *	$Id: syslog.c,v 1.14 1991-03-28 23:11:01 lwvanels Exp $
+ *	$Id: syslog.c,v 1.15 1991-04-10 14:52:33 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.14 1991-03-28 23:11:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/syslog.c,v 1.15 1991-04-10 14:52:33 lwvanels Exp $";
 #endif
 #endif
 
@@ -56,6 +56,12 @@ static FILE *status_log = (FILE *)NULL;
 static FILE *error_log = (FILE *)NULL;
 static FILE *admin_log = (FILE *) NULL;
 
+#ifdef NEEDS_ERRNO_DEFS
+extern int      errno;
+extern char     *sys_errlist[];
+extern int      sys_nerr;
+#endif
+
 /*
  * Function:	open_log
  * Purpose:	Opens a log file.  If the file cannot be opened, an
@@ -85,7 +91,7 @@ open_log (filename)
 	return file;
     /* We lose.  */
     sprintf (msgbuf, "OLCD fatal error: unable to open log file %s: %s",
-	     filename, error_message (errno));
+	     filename, sys_errlist[errno]);
     fprintf (stderr,
 #if __STDC__
 	     "\a%s\a\n",
