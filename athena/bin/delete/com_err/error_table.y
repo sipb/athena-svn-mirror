@@ -1,6 +1,9 @@
 %{
 #include <stdio.h>
-char *str_concat(), *ds(), *quote(), *malloc(), *realloc();
+#if !defined(__STDC__) || defined(__HIGHC__)
+char *malloc(), *realloc();
+#endif     
+char *str_concat(), *ds(), *quote();
 char *current_token = (char *)NULL;
 extern char *table_name;
 %}
@@ -73,10 +76,9 @@ description	:	QUOTED_STRING
 
 #ifndef	lint
 static char const rcsid_error_table_y[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/error_table.y,v 1.1 1989-11-07 16:16:16 jik Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/com_err/error_table.y,v 1.2 1989-11-07 18:55:08 jik Exp $";
 #endif
 
-char *malloc(), *realloc();
 extern FILE *hfile, *cfile;
 
 static long gensym_n = 0;
