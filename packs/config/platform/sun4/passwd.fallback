@@ -8,5 +8,7 @@ smtp:x:0:0:mail daemon user:/:
 uucp:x:5:5:0000-uucp(0000):/usr/lib/uucp:
 nuucp:x:9:9:0000-uucp(0000):/var/spool/uucppublic:/usr/lib/uucp/uucico
 listen:x:37:4:Network Admin:/usr/net/nls:
+pop:x:50:101:Post Office Protocol,,,,:/var/spool/pop:/dev/null
+discuss:x:32000:101:Discuss System,,,,:/var/spool/discuss:/dev/null
 nobody:x:60001:60001:uid no body:/:
 noaccess:x:60002:60002:uid no access:/:

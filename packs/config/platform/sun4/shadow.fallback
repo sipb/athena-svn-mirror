@@ -8,5 +8,7 @@ smtp:NP:6445::::::
 uucp:NP:6445::::::
 nuucp:NP:6445::::::
 listen:*LK*:::::::
+pop:NP:6445::::::
+discuss:NP:6445::::::
 nobody:NP:6445::::::
 noaccess:NP:6445::::::
