@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.2 1999-05-07 15:30:58 danw Exp $";
+"$Id: lpr.c,v 1.3 1999-05-11 21:11:32 danw Exp $";
 
 
 #include "lp.h"
@@ -269,6 +269,42 @@ void Get_parms(int argc, char *argv[] )
 {
 	int option, i;
 	char *name, *s;
+
+	/* If LPROPT environment variable is set, prepend those
+	 * options to the command line.
+	 */
+	s = getenv( "LPROPT" );
+	if( s ){
+		char *p, *opts, **nargv;
+		int n;
+
+		n = 0;
+		p = opts = safestrdup(s,__FILE__,__LINE__);
+		while( *p ){
+			n++;
+			while( *p && !isspace(*p) )
+				p++;
+			while( isspace(*p) )
+				p++;
+		}
+
+		nargv = malloc_or_die((n + argc + 1) * sizeof(char *),
+				      __FILE__,__LINE__);
+		nargv[0] = argv[0];
+		for( n = 0, p = opts; *p; ){
+			nargv[++n] = p;
+			while( *p && !isspace(*p) )
+				p++;
+			*p++ = '\0';
+			while( isspace(*p) )
+				p++;
+		}
+		for( i = 1; i < argc; i++ )
+			nargv[n + i] = argv[i];
+
+		argv = nargv;
+		argc += n;
+	}
 
 	if( argv[0] && (name = strrchr( argv[0], '/' )) ) {
 		++name;
