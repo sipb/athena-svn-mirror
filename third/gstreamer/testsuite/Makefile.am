@@ -1,0 +1,29 @@
+# FIXME : threads bytestream
+SUBDIRS = caps plugin elements clock refcounting threads indexers ## cleanup dynparams
+
+GST_PLUGIN_PATH = $(shell cd $(top_builddir) && pwd)
+TESTS_ENVIRONMENT = GST_PLUGIN_PATH=$(GST_PLUGIN_PATH) GST_REGISTRY=`pwd`/test-registry.xml
+
+if BUILD_FAILING_TESTS
+testprogs = test_gst_init
+inspectcheck = gst-inspect-check
+else
+testprogs =
+inspectcheck = 
+endif
+
+TESTS = $(top_builddir)/tools/gst-register $(testprogs) $(inspectcheck)
+
+check_PROGRAMS = $(testprogs)
+
+# we have nothing but apps here, we can do this safely
+LIBS = $(GST_LIBS)
+AM_CFLAGS = $(GST_CFLAGS)
+
+# we makes them, we gots to clean them
+CLEANFILES = test-registry.xml elementstest-registry.xml
+
+DIST_SUBDIRS = bytestream caps cleanup clock dynparams elements indexers \
+		plugin refcounting threads
+
+EXTRA_DIST = gst-inspect-check

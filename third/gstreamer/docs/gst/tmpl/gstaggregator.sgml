@@ -1,0 +1,41 @@
+<!-- ##### SECTION Title ##### -->
+GstAggregator
+
+<!-- ##### SECTION Short_Description ##### -->
+Combine buffers.
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+The aggregator is mainly used for testing purposes. It has several
+methods to request buffers from its pads.
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### VARIABLE gst_aggregator_details ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM GstAggregatorSchedType ##### -->
+<para>
+
+</para>
+
+@AGGREGATOR_LOOP: 
+@AGGREGATOR_LOOP_SELECT: 
+@AGGREGATOR_CHAIN: 
+
+<!-- ##### FUNCTION gst_aggregator_factory_init ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
