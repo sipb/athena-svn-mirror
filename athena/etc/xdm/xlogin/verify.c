@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.91 1998-05-31 15:44:15 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.92 1998-06-01 04:41:02 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,7 +82,6 @@ extern FILE *xdmstream;
 pid_t fork_and_store(pid_t *var);
 extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
-extern void set_busy();
 char *get_tickets(), *strsave();
 int abort_verify();
 extern pid_t attach_pid, attachhelp_pid, quota_pid;
@@ -600,14 +599,8 @@ char *dologin(user, passwd, option, script, tty, session, display)
   if (nanny_setupUser(pwd->pw_name, environment, newargv))
     return lose("failed to setup for login");
 
-#ifndef XDM
-  set_busy(1);
-#endif
   exit(0);
 #else
-#ifndef XDM
-  set_busy(1);
-#endif
   execle(session, "sh", errbuf, script, NULL, environment);
 #endif /* sgi */
 
