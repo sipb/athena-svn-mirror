@@ -34,7 +34,7 @@
 #include <glib.h>
 
 #include <brltty/brldefs.h>
-#include <brltty/brlapi.h>
+#include <brltty/api.h>
 
 #include "braille.h"
 
@@ -63,6 +63,8 @@ brltty_brl_send_dots (guchar 	*dots,
     gint 		i, 
 			len = dd.x * dd.y;
     guchar 	        sendbuff[256];
+
+    brlapi_writeStruct ws = BRLAPI_WRITESTRUCT_INITIALIZER;
   
     if (count > len) 
 	return 0;
@@ -75,21 +77,21 @@ brltty_brl_send_dots (guchar 	*dots,
 	guchar val = 0;
 	
 	if (dots[i] & 0x01 ) 
-	    val = val|B1;
+	    val = val|BRL_DOT1;
 	if (dots[i] & 0x02 ) 
-	    val = val|B2;
+	    val = val|BRL_DOT2;
 	if (dots[i] & 0x04 ) 
-	    val = val|B3;
+	    val = val|BRL_DOT3;
 	if (dots[i] & 0x08 ) 
-	    val = val|B4;
+	    val = val|BRL_DOT4;
 	if (dots[i] & 0x10 ) 
-	    val = val|B5;
+	    val = val|BRL_DOT5;
 	if (dots[i] & 0x20 ) 
-	    val = val|B6;
+	    val = val|BRL_DOT6;
 	if (dots[i] & 0x40 ) 
-	    val = val|B7;
+	    val = val|BRL_DOT7;
 	if (dots[i] & 0x80 ) 
-	    val = val|B8;
+	    val = val|BRL_DOT8;
 	
 	sendbuff[i] = val;
     }
@@ -98,7 +100,8 @@ brltty_brl_send_dots (guchar 	*dots,
 	memset (&sendbuff[count], 0, len-count);
     }
 
-    if (brlapi_writeBrlDots(sendbuff) == 0) 
+    ws.attrOr = sendbuff;
+    if (brlapi_write(&ws) == 0) 
 	return 1;
     else 
 	return 0;
@@ -121,40 +124,42 @@ brltty_brl_glib_cb (GIOChannel   *source,
     BRLEventCode 	bec;
     BRLEventData 	bed;
 
-    while (brlapi_readCommand (0, &keypress) == 1) 
+    while (brlapi_readKey (0, &keypress) == 1) 
     {
 	/* TODO: Find a better way to map brltty commands to gnopernicus keys. */
-	switch (keypress & ~VAL_TOGGLE_MASK) 
+	switch (keypress & ~BRL_FLG_TOGGLE_MASK) 
 	{
-	    case CMD_LNUP:
+	    case BRL_CMD_LNUP:
     		sprintf(&dd.key_codes[0], "DK00");
     		bec = BRL_EVCODE_KEY_CODES;
     		bed.key_codes = dd.key_codes;						
     		client_callback (bec, &bed);
     	    break;
       
-	    case CMD_HOME:
+	    case BRL_CMD_HOME:
     		sprintf(&dd.key_codes[0], "DK01");
     		bec = BRL_EVCODE_KEY_CODES;
     		bed.key_codes = dd.key_codes;						
     		client_callback (bec, &bed);
     	    break;
 
-	    case CMD_LNDN:
+	    case BRL_CMD_LNDN:
     		sprintf(&dd.key_codes[0], "DK02");
     		bec = BRL_EVCODE_KEY_CODES;
     		bed.key_codes = dd.key_codes;						
     		client_callback (bec, &bed);
     	    break;
       
-	    case CMD_FWINLT:
+	    case BRL_CMD_FWINLT:
+	    case BRL_CMD_FWINLTSKIP:
     		sprintf(&dd.key_codes[0], "DK03");
     		bec = BRL_EVCODE_KEY_CODES;
     		bed.key_codes = dd.key_codes;						
     		client_callback (bec, &bed);
     	    break;
       
-	    case CMD_FWINRT:
+	    case BRL_CMD_FWINRT:
+	    case BRL_CMD_FWINRTSKIP:
     		sprintf(&dd.key_codes[0], "DK05");
         	bec = BRL_EVCODE_KEY_CODES;
     		bed.key_codes = dd.key_codes;						
@@ -164,12 +169,12 @@ brltty_brl_glib_cb (GIOChannel   *source,
     	    /* TBD: Default action (DK01DK02) and repeat last */
 	    default: 
 	    {
-    		gint key = keypress & VAL_BLK_MASK;
-    		gint arg = keypress & VAL_ARG_MASK;
+    		gint key = keypress & BRL_MSK_BLK;
+    		gint arg = keypress & BRL_MSK_ARG;
 
     		switch (key) 
     		{
-    		    case CR_ROUTE:
+    		    case BRL_BLK_ROUTE:
 			sprintf(&dd.sensor_codes[0], "HMS%02d", arg);
 			bec = BRL_EVCODE_SENSOR;
 			bed.sensor.sensor_codes = dd.sensor_codes;
@@ -189,29 +194,29 @@ brltty_brl_glib_cb (GIOChannel   *source,
 static void
 ignore_block (gint block)
 {
-    brlapi_ignoreKeys(block, block|VAL_ARG_MASK);
+    brlapi_ignoreKeyRange(block, block|BRL_MSK_ARG);
 }
 
 static void
 ignore_input (gint block)
 {
     static const gint flags[] = {
-                0 |         0 |        0 |           0,
-                0 |         0 |        0 | VPC_CONTROL,
-                0 |         0 | VPC_META |           0,
-                0 |         0 | VPC_META | VPC_CONTROL,
-                0 | VPC_UPPER |        0 |           0,
-                0 | VPC_UPPER |        0 | VPC_CONTROL,
-                0 | VPC_UPPER | VPC_META |           0,
-                0 | VPC_UPPER | VPC_META | VPC_CONTROL,
-        VPC_SHIFT |         0 |        0 |           0,
-        VPC_SHIFT |         0 |        0 | VPC_CONTROL,
-        VPC_SHIFT |         0 | VPC_META |           0,
-        VPC_SHIFT |         0 | VPC_META | VPC_CONTROL,
-        VPC_SHIFT | VPC_UPPER |        0 |           0,
-        VPC_SHIFT | VPC_UPPER |        0 | VPC_CONTROL,
-        VPC_SHIFT | VPC_UPPER | VPC_META |           0,
-        VPC_SHIFT | VPC_UPPER | VPC_META | VPC_CONTROL
+    		         0 |		      0 |          	  0 |           	 0,
+	                 0 |         	      0 |        	  0 | BRL_FLG_CHAR_CONTROL,
+    		         0 |         	      0 | BRL_FLG_CHAR_META |           	 0,
+	                 0 |         	      0 | BRL_FLG_CHAR_META | BRL_FLG_CHAR_CONTROL,
+            		 0 | BRL_FLG_CHAR_UPPER |        	  0 |           	 0,
+    		         0 | BRL_FLG_CHAR_UPPER |        	  0 | BRL_FLG_CHAR_CONTROL,
+	                 0 | BRL_FLG_CHAR_UPPER | BRL_FLG_CHAR_META |            	 0,
+            		 0 | BRL_FLG_CHAR_UPPER | BRL_FLG_CHAR_META | BRL_FLG_CHAR_CONTROL,
+        BRL_FLG_CHAR_SHIFT |         	      0 |        	  0 |           	 0,
+        BRL_FLG_CHAR_SHIFT |         	      0 |        	  0 | BRL_FLG_CHAR_CONTROL,
+        BRL_FLG_CHAR_SHIFT |         	      0 | BRL_FLG_CHAR_META |           	 0,
+        BRL_FLG_CHAR_SHIFT |   		      0 | BRL_FLG_CHAR_META | BRL_FLG_CHAR_CONTROL,
+        BRL_FLG_CHAR_SHIFT | BRL_FLG_CHAR_UPPER |        	  0 |           	 0,
+        BRL_FLG_CHAR_SHIFT | BRL_FLG_CHAR_UPPER |        	  0 | BRL_FLG_CHAR_CONTROL,
+        BRL_FLG_CHAR_SHIFT | BRL_FLG_CHAR_UPPER | BRL_FLG_CHAR_META |           	 0,
+        BRL_FLG_CHAR_SHIFT | BRL_FLG_CHAR_UPPER | BRL_FLG_CHAR_META | BRL_FLG_CHAR_CONTROL
     };
     const gint *flag = flags + (sizeof(flags) / sizeof(*flag));
     do {
@@ -227,15 +232,15 @@ brltty_brl_open_device (gchar* 			device_name,
 {
     gint fd;
 
-    if ((fd = brlapi_initializeConnection (NULL, NULL) ) < 0) 
+    if ((fd = brlapi_initializeConnection (NULL, NULL)) < 0) 
     {
-	fprintf(stderr, "Error opening brlapi connection");
+	brlapi_perror("Error opening brlapi connection");
 	return 0;
     }
 
     if (brlapi_getDisplaySize (&dd.x, &dd.y) != 0) 
     {
-	fprintf(stderr, "Unable to get display size");
+	brlapi_perror("Unable to get display size");
 	return 0;
     }
 
@@ -264,11 +269,11 @@ brltty_brl_open_device (gchar* 			device_name,
      variable
      CONTROLVT="$(grep "using VT number" "/var/log/XFree86.$(echo "$DISPLAY" | sed -e "s/^.*::*\([0-9]*\).*$/\1/").log" | sed -e "s/^.*using VT number \([0-9]*\).*$/\1/")"
     */
-    brlapi_getTty (0, BRLCOMMANDS, NULL);
+    brlapi_getTty (0, BRLCOMMANDS);
 
-    ignore_input(VAL_PASSCHAR);
-    ignore_input(VAL_PASSDOTS);
-    ignore_block(VAL_PASSKEY);
+    ignore_input(BRL_BLK_PASSCHAR);
+    ignore_input(BRL_BLK_PASSDOTS);
+    ignore_block(BRL_BLK_PASSKEY);
 
     return 1;
 }

@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnopernicus 0.9.10\n"
-"POT-Creation-Date: 2004-09-15 12:38+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-20 13:49+0200\n"
 "PO-Revision-Date: 2004-09-12 18:04+0800\n"
 "Last-Translator: Chao-Hsiung Liao <pesder.liao@msa.hinet.net>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: KBabel 1.3.1\n"
 
@@ -134,16 +134,16 @@ msgstr "字型 %s 並未安裝。"
 msgid "Can not parse color string."
 msgstr "無法分析字串成為色彩設定。"
 
-#: brlmon/brlmonui.c:1111
+#: brlmon/brlmonui.c:1112
 msgid "Status"
 msgstr "狀態"
 
-#: brlmon/brlmonui.c:1318
+#: brlmon/brlmonui.c:1319
 #, c-format
 msgid "Too many cells on display. [Max %d]"
 msgstr "太多儲存格要顯示。[最大值 %d]"
 
-#: brlmon/brlmonui.c:1319
+#: brlmon/brlmonui.c:1320
 #, c-format
 msgid "Load default display size. Line: %d Column: %d."
 msgstr "讀取預設顯示大小。行: %d 欄: %d。"
@@ -1097,7 +1097,7 @@ msgstr "不能載入 glade2 檔案"
 
 #. if (WIFSIGNALED (gn_srcore_status) != 0)
 #. sru_message ("signal no: %d", WTERMSIG (gn_srcore_status));
-#: gnopi/gnopi.c:659
+#: gnopi/gnopi.c:663
 msgid "srcore exited."
 msgstr "srcore 已存在。"
 
@@ -2131,7 +2131,7 @@ msgid "Presentation"
 msgstr "展示"
 
 #: gnopi/gnopi_files/Presentation/presentation.glade2.h:5
-#: srcore/default.xml.in.h:10 srcore/verbose.xml.in.h:10
+#: srcore/default.xml.in.h:19 srcore/verbose.xml.in.h:19
 msgid "Verbose"
 msgstr "詳細"
 
@@ -2747,7 +2747,7 @@ msgstr "<b>Gnopernicus 偵測到系統並未啟用輔助技術。</b>\n"
 msgid "About"
 msgstr "關於"
 
-#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:759
+#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:810
 msgid "Alert"
 msgstr "警告訊息"
 
@@ -2811,7 +2811,7 @@ msgstr "偏好設定"
 msgid "Preferences..."
 msgstr "偏好設定..."
 
-#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1032
+#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1035
 msgid "Question"
 msgstr "問題"
 
@@ -2931,7 +2931,7 @@ msgstr "不能移除縮放器，因為這個版本並不支援多重縮放器。
 msgid "Zoomers"
 msgstr "放大鏡"
 
-#: gnopi/magui.c:1588
+#: gnopi/magui.c:1627
 #, c-format
 msgid "Zoomer Options (%s)"
 msgstr "放大鏡選項 (%s)"
@@ -3157,7 +3157,7 @@ msgstr "Yankee"
 msgid "Zulu"
 msgstr "Zulu"
 
-#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1759
+#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1770
 msgid "space"
 msgstr "space"
 
@@ -3195,51 +3195,185 @@ msgstr "設定組態資料失敗。"
 msgid "Failed set data."
 msgstr "設定資料失敗。"
 
-#: srcore/default.xml.in.h:1 srcore/verbose.xml.in.h:1
+#. translators: a single whitespace or suitable delimiter between 'words', if appropriate
+#. translators: the letter ' ' (space), in parentheses.
+#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
 msgid "( )"
 msgstr "( )"
 
-#: srcore/default.xml.in.h:2 srcore/verbose.xml.in.h:2
+#. translators: the letter 'C' for "checked", in parentheses.
+#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
 msgid "(C)"
 msgstr "(C)"
 
-#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
+#. translators: the letter 'E' for "expanded", in parentheses.
+#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
 msgid "(E)"
 msgstr "(E)"
 
-#: srcore/default.xml.in.h:4 srcore/verbose.xml.in.h:4
+#. translators: the letter 'P' for "[button] pressed", in parentheses.
+#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
 msgid "(P)"
 msgstr "(P)"
 
-#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
+#. translators: the letter 'U', for "unavailable", in parentheses.
+#: srcore/default.xml.in.h:11 srcore/verbose.xml.in.h:11
 msgid "(U)"
 msgstr "(U)"
 
-#: srcore/default.xml.in.h:6 srcore/verbose.xml.in.h:6
+#. translators: the letter 'c' for "collapsed", in parentheses.
+#: srcore/default.xml.in.h:13 srcore/verbose.xml.in.h:13
 msgid "(c)"
 msgstr "(c)"
 
-#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
+#. translators: the letter 'm' for "minimized", in parentheses.
+#: srcore/default.xml.in.h:15 srcore/verbose.xml.in.h:15
 msgid "(m)"
 msgstr "(m)"
 
-#: srcore/default.xml.in.h:8 srcore/verbose.xml.in.h:8
+#. translators: the letter 'n' for "not minimized", in parentheses.
+#: srcore/default.xml.in.h:17 srcore/verbose.xml.in.h:17
 msgid "(n)"
 msgstr "(n)"
 
-#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
+#: srcore/default.xml.in.h:18 srcore/verbose.xml.in.h:18
 msgid "Give maximum speech and braille output."
 msgstr "給予最大的語音和點字輸出。"
 
-#: srcore/default.xml.in.h:11 srcore/srctrl.c:2258 srcore/srctrl.c:2409
-#: srcore/verbose.xml.in.h:11
+#. translators: 'keyboard accelerator'
+#: srcore/default.xml.in.h:21 srcore/verbose.xml.in.h:21
+msgid "accelerator"
+msgstr "捷徑鍵"
+
+#: srcore/default.xml.in.h:22 srcore/verbose.xml.in.h:22
+msgid "available"
+msgstr ""
+
+#. translators: "checked" as in "checkbox is checked"
+#: srcore/default.xml.in.h:24 srcore/verbose.xml.in.h:24
+msgid "checked"
+msgstr ""
+
+#: srcore/default.xml.in.h:25 srcore/verbose.xml.in.h:25
+msgid "closing tab"
+msgstr ""
+
+#: srcore/default.xml.in.h:26 srcore/verbose.xml.in.h:26
+msgid "closing window"
+msgstr "關閉視窗"
+
+#: srcore/default.xml.in.h:27 srcore/verbose.xml.in.h:27
+msgid "collapsed"
+msgstr ""
+
+#: srcore/default.xml.in.h:28 srcore/verbose.xml.in.h:28
+msgid "column header"
+msgstr "欄位標頭"
+
+#: srcore/default.xml.in.h:29 srcore/verbose.xml.in.h:29
+msgid "create tab"
+msgstr ""
+
+#: srcore/default.xml.in.h:30 srcore/verbose.xml.in.h:30
+msgid "create window"
+msgstr "産生視窗"
+
+#: srcore/default.xml.in.h:31 srcore/verbose.xml.in.h:31
+msgid "current value"
+msgstr ""
+
+#: srcore/default.xml.in.h:32 srcore/srctrl.c:2669 srcore/verbose.xml.in.h:32
+msgid "empty line"
+msgstr "空行"
+
+#: srcore/default.xml.in.h:33 srcore/verbose.xml.in.h:33
+msgid "expanded"
+msgstr ""
+
+#: srcore/default.xml.in.h:34 srcore/srctrl.c:2258 srcore/srctrl.c:2409
+#: srcore/verbose.xml.in.h:34
 msgid "item"
 msgid_plural "items"
 msgstr[0] "項目"
 
-#: srcore/default.xml.in.h:12 srcore/verbose.xml.in.h:12
+#: srcore/default.xml.in.h:35 srcore/verbose.xml.in.h:35
 msgid "items"
 msgstr "項目"
+
+#: srcore/default.xml.in.h:36 srcore/verbose.xml.in.h:36
+msgid "level"
+msgstr ""
+
+#: srcore/default.xml.in.h:37 srcore/verbose.xml.in.h:37
+msgid "maximize window"
+msgstr "視窗最大化"
+
+#: srcore/default.xml.in.h:38 srcore/verbose.xml.in.h:38
+msgid "minimize window"
+msgstr "視窗最小化"
+
+#: srcore/default.xml.in.h:39 srcore/verbose.xml.in.h:39
+msgid "minimized"
+msgstr "最小化"
+
+# FIXME: Not sure if selection means text selection or widget -- Abel
+#: srcore/default.xml.in.h:40 srcore/verbose.xml.in.h:40
+msgid "no selection anymore"
+msgstr "沒有選取任何內容"
+
+#: srcore/default.xml.in.h:41 srcore/verbose.xml.in.h:41
+msgid "normal"
+msgstr "正常"
+
+#: srcore/default.xml.in.h:42 srcore/verbose.xml.in.h:42
+msgid "pressed"
+msgstr "已按下"
+
+#: srcore/default.xml.in.h:43 srcore/verbose.xml.in.h:43
+msgid "rename window"
+msgstr "視窗重新命名"
+
+#: srcore/default.xml.in.h:44 srcore/verbose.xml.in.h:44
+msgid "restore window"
+msgstr "回復視窗狀態"
+
+#: srcore/default.xml.in.h:45 srcore/verbose.xml.in.h:45
+msgid "row header"
+msgstr "列標頭"
+
+#. translators: 'keyboard shortcut'
+#: srcore/default.xml.in.h:47 srcore/verbose.xml.in.h:47
+msgid "shortcut"
+msgstr "捷徑鍵"
+
+#: srcore/default.xml.in.h:48 srcore/verbose.xml.in.h:48
+msgid "show tool tip"
+msgstr "顯示工具提示"
+
+#: srcore/default.xml.in.h:49 srcore/verbose.xml.in.h:49
+msgid "switch tab"
+msgstr ""
+
+#: srcore/default.xml.in.h:50 srcore/verbose.xml.in.h:50
+msgid "switch to window"
+msgstr "切換至視窗"
+
+#: srcore/default.xml.in.h:51 srcore/verbose.xml.in.h:51
+msgid "titleize window"
+msgstr ""
+
+#: srcore/default.xml.in.h:52 srcore/verbose.xml.in.h:52
+msgid "unavailable"
+msgstr ""
+
+#. translators: "checkbox is unchecked"
+#: srcore/default.xml.in.h:54 srcore/verbose.xml.in.h:54
+msgid "unchecked"
+msgstr "未選取"
+
+#: srcore/default.xml.in.h:55 srcore/verbose.xml.in.h:55
+msgid "unpressed"
+msgstr "未按下"
 
 #: srcore/srctrl.c:1012
 msgid "no parent"
@@ -3353,1178 +3487,1174 @@ msgstr "的程式"
 msgid "on a"
 msgstr "於"
 
-#: srcore/srctrl.c:2614
+#: srcore/srctrl.c:2629
 msgid "first line"
 msgstr "首行"
 
-#: srcore/srctrl.c:2621
+#: srcore/srctrl.c:2636
 msgid "last line"
 msgstr "尾行"
 
-#: srcore/srctrl.c:2629 srcore/srctrl.c:2631
+#: srcore/srctrl.c:2644 srcore/srctrl.c:2646
 msgid "[first line]"
 msgstr "[首行]"
 
-#: srcore/srctrl.c:2636 srcore/srctrl.c:2638
+#: srcore/srctrl.c:2651 srcore/srctrl.c:2653
 msgid "[last line]"
 msgstr "[尾行]"
 
-#: srcore/srctrl.c:2654
-msgid "empty line"
-msgstr "空行"
-
-#: srcore/srctrl.c:2661
+#: srcore/srctrl.c:2676
 #, c-format
 msgid "%d empty line"
 msgid_plural "%d empty lines"
 msgstr[0] "%d 行空行"
 
-#: srcore/srctrl.c:2682 srcore/srctrl.c:2684
+#: srcore/srctrl.c:2697 srcore/srctrl.c:2699
 msgid "[empty line]"
 msgstr "[空行]"
 
-#: srcore/srctrl.c:2689
+#: srcore/srctrl.c:2704
 #, c-format
 msgid "[%d empty line]"
 msgid_plural "[%d empty lines]"
 msgstr[0] "[%d 行空行]"
 
-#: srcore/srctrl.c:2771 srcore/srctrl.c:2772 srcore/srctrl.c:2780
-#: srcore/srctrl.c:2935 srcore/srctrl.c:2936
+#: srcore/srctrl.c:2786 srcore/srctrl.c:2787 srcore/srctrl.c:2795
+#: srcore/srctrl.c:2950 srcore/srctrl.c:2951
 msgid "cannot make flat review for current window"
 msgstr "不能為目前視窗製作平面檢閱"
 
-#: srcore/srctrl.c:3007
+#: srcore/srctrl.c:3022
 msgid "flat review mode"
 msgstr "平面檢閱模式"
 
-#: srcore/srctrl.c:3023
+#: srcore/srctrl.c:3038
 msgid "focus tracking mode"
 msgstr "焦點追蹤模式"
 
-#: srcore/srctrl.c:3562
+#: srcore/srctrl.c:3577
 #, c-format
 msgid "\"%s\" entry has invalid value at position %d."
 msgstr "“%s”項目具無效的數值於地點 %d。"
 
-#: srcore/srctrl.c:3583
+#: srcore/srctrl.c:3598
 #, c-format
 msgid "key \"%s\" has an invalid value at position %d."
 msgstr "按鍵“%s”具無效的數值於地點 %d。"
 
-#: srcore/srctrl.c:3619
+#: srcore/srctrl.c:3634
 msgid "Can not get key pad commands mapping from gconf."
 msgstr "不能自 gconf 取得鍵盤指令對映。"
 
-#: srcore/srctrl.c:3630
+#: srcore/srctrl.c:3645
 msgid "Can not get braille display commands mapping from gconf."
 msgstr "不能自 gconf 取得點字顯示指令對映。"
 
-#: srcore/srctrl.c:3641
+#: srcore/srctrl.c:3656
 msgid "Can not get user defined commands mapping from gconf."
 msgstr "不能自 gconf 取得使用者定義指令對映。"
 
-#: srcore/srctrl.c:3745
+#: srcore/srctrl.c:3760
 msgid "no role available"
 msgstr "沒有可用的角色"
 
-#: srcore/srmain.c:68 srcore/srmain.c:71
+#: srcore/srmain.c:69 srcore/srmain.c:72
 msgid "No focus"
 msgstr "沒有輸入焦點"
 
-#: srcore/srmain.c:74
+#: srcore/srmain.c:75
 msgid "No accessible object is focused"
 msgstr "沒有可存取的物件供聚焦"
 
-#: srcore/srmain.c:434
+#: srcore/srmain.c:440
 msgid "unknown location"
 msgstr "未知的位置"
 
-#: srcore/srmain.c:471
+#: srcore/srmain.c:477
 msgid "no details"
 msgstr "沒有詳細資訊"
 
-#: srcore/srmain.c:511
+#: srcore/srmain.c:517
 msgid "layer"
 msgstr "層次"
 
-#: srcore/srmain.c:532
+#: srcore/srmain.c:538
 msgid "back to layer"
 msgstr "回到層次"
 
-#: srcore/srmain.c:898
+#: srcore/srmain.c:904
 msgid "cursor on"
 msgstr "游標開啟"
 
-#: srcore/srmain.c:898
+#: srcore/srmain.c:904
 msgid "cursor off"
 msgstr "游標關閉"
 
-#: srcore/srmain.c:916
+#: srcore/srmain.c:922
 msgid "current cursor is"
 msgstr "目前游標為"
 
-#: srcore/srmain.c:934
+#: srcore/srmain.c:940
 msgid "cursor size"
 msgstr "游標大小"
 
-#: srcore/srmain.c:951
+#: srcore/srmain.c:957
 msgid "cursor magnification on"
 msgstr "游標放大鏡開啟"
 
-#: srcore/srmain.c:952
+#: srcore/srmain.c:958
 msgid "cursor magnification off"
 msgstr "游標放大鏡關閉"
 
-#: srcore/srmain.c:970
+#: srcore/srmain.c:976
 msgid "cursor color"
 msgstr "游標色彩"
 
-#: srcore/srmain.c:987
+#: srcore/srmain.c:993
 msgid "crosshair on"
 msgstr "十字游標開啟"
 
-#: srcore/srmain.c:987
+#: srcore/srmain.c:993
 msgid "crosshair off"
 msgstr "十字游標關閉"
 
-#: srcore/srmain.c:1004
+#: srcore/srmain.c:1010
 msgid "crosshair clip on"
 msgstr "十字游標剪裁開啟"
 
-#: srcore/srmain.c:1005
+#: srcore/srmain.c:1011
 msgid "crosshair clip off"
 msgstr "十字游標剪裁關閉"
 
-#: srcore/srmain.c:1023
+#: srcore/srmain.c:1029
 msgid "crosshair size"
 msgstr "十字游標大小"
 
-#: srcore/srmain.c:1041
+#: srcore/srmain.c:1047
 msgid "crosshair color"
 msgstr "十字游標色彩"
 
-#: srcore/srmain.c:1059
+#: srcore/srmain.c:1065
 msgid "zoomer placement left"
 msgstr "縮放器放置在左"
 
-#: srcore/srmain.c:1077
+#: srcore/srmain.c:1083
 msgid "zoomer placement top"
 msgstr "縮放器放置在頂端"
 
-#: srcore/srmain.c:1095
+#: srcore/srmain.c:1101
 msgid "zoomer placement width"
 msgstr "縮放器放置寬度"
 
-#: srcore/srmain.c:1113
+#: srcore/srmain.c:1119
 msgid "zoomer placement height"
 msgstr "縮放器放置高度"
 
-#: srcore/srmain.c:1143
+#: srcore/srmain.c:1149
 msgid "magnifier target"
 msgstr "放大鏡目標"
 
-#: srcore/srmain.c:1161
+#: srcore/srmain.c:1167
 msgid "magnifier source"
 msgstr "放大鏡來源"
 
-#: srcore/srmain.c:1179
+#: srcore/srmain.c:1185
 msgid "zoom factor x"
 msgstr "縮放因素 X"
 
-#: srcore/srmain.c:1197
+#: srcore/srmain.c:1203
 msgid "zoom factor y"
 msgstr "縮放因素 Y"
 
-#: srcore/srmain.c:1214
+#: srcore/srmain.c:1220
 msgid "zoom factor locked"
 msgstr "縮放因素已鎖定"
 
-#: srcore/srmain.c:1215
+#: srcore/srmain.c:1221
 msgid "zoom factor unlocked"
 msgstr "縮放因素解鎖"
 
-#: srcore/srmain.c:1232
+#: srcore/srmain.c:1238
 msgid "invert on"
 msgstr "反轉開啟"
 
-#: srcore/srmain.c:1232
+#: srcore/srmain.c:1238
 msgid "invert off"
 msgstr "反轉關閉"
 
-#: srcore/srmain.c:1250
+#: srcore/srmain.c:1256
 msgid "magnifier smoothing type"
 msgstr "放大鏡平滑化類型"
 
-#: srcore/srmain.c:1273
+#: srcore/srmain.c:1279
 msgid "mouse tracking mode"
 msgstr "滑鼠追蹤模式"
 
-#: srcore/srmain.c:1295
+#: srcore/srmain.c:1301
 msgid "panning on"
 msgstr "全景開啟"
 
-#: srcore/srmain.c:1295
+#: srcore/srmain.c:1301
 msgid "panning off"
 msgstr "全景關閉"
 
-#: srcore/srmain.c:1667
+#: srcore/srmain.c:1673
 msgid "alt"
 msgstr "alt"
 
-#: srcore/srmain.c:1672
+#: srcore/srmain.c:1678
 msgid "control"
 msgstr "control"
 
-#: srcore/srmain.c:1677
+#: srcore/srmain.c:1683
 msgid "shift"
 msgstr "shift"
 
-#: srcore/srmain.c:1682
+#: srcore/srmain.c:1688
 msgid "caps lock"
 msgstr "caps lock"
 
-#: srcore/srmain.c:1686
+#: srcore/srmain.c:1692
 msgid "num lock"
 msgstr "num·lock"
 
-#: srcore/srmain.c:1694 srcore/srmain.c:1738
+#: srcore/srmain.c:1700 srcore/srmain.c:1744
 msgid "right"
 msgstr "right"
 
-#: srcore/srmain.c:1696 srcore/srmain.c:1740
+#: srcore/srmain.c:1702 srcore/srmain.c:1746
 msgid "left"
 msgstr "left"
 
-#: srcore/srmain.c:1730
+#: srcore/srmain.c:1736
 msgid "home"
 msgstr "home"
 
-#: srcore/srmain.c:1732
+#: srcore/srmain.c:1738
 msgid "end"
 msgstr "end"
 
-#: srcore/srmain.c:1734
+#: srcore/srmain.c:1740
 msgid "page up"
 msgstr "page up"
 
-#: srcore/srmain.c:1736
+#: srcore/srmain.c:1742
 msgid "page down"
 msgstr "page down"
 
-#: srcore/srmain.c:1742
+#: srcore/srmain.c:1748
 msgid "down"
 msgstr "down"
 
-#: srcore/srmain.c:1744
+#: srcore/srmain.c:1750
 msgid "up"
 msgstr "up"
 
-#: srcore/srmain.c:1746
+#: srcore/srmain.c:1752
 msgid "backspace"
 msgstr "backspace"
 
-#: srcore/srmain.c:1748
+#: srcore/srmain.c:1754
 msgid "delete"
 msgstr "delete"
 
-#: srcore/srmain.c:1750
+#: srcore/srmain.c:1756
 msgid "escape"
 msgstr "escape"
 
-#: srcore/srmain.c:2269
+#: srcore/srmain.c:2275
 msgid "Welcome to Gnopernicus"
 msgstr "歡迎使用 Gnopernicus"
 
-#: srcore/srmain.c:2373
+#: srcore/srmain.c:2379
 msgid "braille device can not be initialized"
 msgstr "無法初始化點字裝置"
 
-#: srcore/srmain.c:2385
+#: srcore/srmain.c:2391
 msgid "Gnopernicus is now exiting. Have a nice day!"
 msgstr "Gnopernicus 現在正在關閉。祝您有愉快的一天！"
 
-#: srcore/srmain.c:2662
+#: srcore/srmain.c:2668
 msgid "srcore"
 msgstr "srcore"
 
-#: srcore/srpres.c:757
+#: srcore/srpres.c:808
 msgid "UNK"
 msgstr "UNK"
 
-#: srcore/srpres.c:757
+#: srcore/srpres.c:808
 msgid "UNKNOWN"
 msgstr "未知"
 
-#: srcore/srpres.c:757
+#: srcore/srpres.c:808
 msgid "Unknown"
 msgstr "未知"
 
-#: srcore/srpres.c:758
+#: srcore/srpres.c:809
 msgid "???"
 msgstr "???"
 
-#: srcore/srpres.c:758
+#: srcore/srpres.c:809
 msgid "INVALID"
 msgstr "無效的"
 
-#: srcore/srpres.c:758
+#: srcore/srpres.c:809
 msgid "Invalid"
 msgstr "無效的"
 
-#: srcore/srpres.c:759
+#: srcore/srpres.c:810
 msgid "ALR"
 msgstr "ALR"
 
-#: srcore/srpres.c:759
+#: srcore/srpres.c:810
 msgid "ALERT"
 msgstr "警示"
 
-#: srcore/srpres.c:760
+#: srcore/srpres.c:811
 msgid "CNV"
 msgstr "CNV"
 
-#: srcore/srpres.c:760
+#: srcore/srpres.c:811
 msgid "CANVAS"
 msgstr "畫布"
 
-#: srcore/srpres.c:760
+#: srcore/srpres.c:811
 msgid "Canvas"
 msgstr "畫布"
 
-#: srcore/srpres.c:761
+#: srcore/srpres.c:812
 msgid "CHK"
 msgstr "CHK"
 
-#: srcore/srpres.c:761
+#: srcore/srpres.c:812
 msgid "CHECK_BOX"
 msgstr "核取方塊"
 
-#: srcore/srpres.c:761
+#: srcore/srpres.c:812
 msgid "Check box"
 msgstr "核取方塊"
 
-#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+#: srcore/srpres.c:813 srcore/srpres.c:836 srcore/srpres.c:846
 msgid "MIT"
 msgstr "MIT"
 
-#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+#: srcore/srpres.c:813 srcore/srpres.c:836 srcore/srpres.c:846
 msgid "MENU ITEM"
 msgstr "選單項目"
 
-#: srcore/srpres.c:762
+#: srcore/srpres.c:813
 msgid "Check Menu item"
 msgstr "檢查選單項目"
 
-#: srcore/srpres.c:763
+#: srcore/srpres.c:814
 msgid "CCH"
 msgstr "CCH"
 
-#: srcore/srpres.c:763
+#: srcore/srpres.c:814
 msgid "COLOR CHOOSER"
 msgstr "色彩選擇器"
 
-#: srcore/srpres.c:763
+#: srcore/srpres.c:814
 msgid "Color chooser"
 msgstr "色彩選擇器"
 
-#: srcore/srpres.c:764
+#: srcore/srpres.c:815
 msgid "CHD"
 msgstr "CHD"
 
-#: srcore/srpres.c:764
+#: srcore/srpres.c:815
 msgid "COLUMN HEADER"
 msgstr "欄位標頭"
 
-#: srcore/srpres.c:764
+#: srcore/srpres.c:815
 msgid "Column header"
 msgstr "欄位標頭"
 
-#: srcore/srpres.c:765
+#: srcore/srpres.c:816
 msgid "CBO"
 msgstr "CBO"
 
-#: srcore/srpres.c:765
+#: srcore/srpres.c:816
 msgid "COMBO BOX"
 msgstr "組合方塊"
 
-#: srcore/srpres.c:765
+#: srcore/srpres.c:816
 msgid "Combo box"
 msgstr "組合方塊"
 
-#: srcore/srpres.c:766
+#: srcore/srpres.c:817
 msgid "DIC"
 msgstr "DIC"
 
-#: srcore/srpres.c:766
+#: srcore/srpres.c:817
 msgid "DESKTOP ICON"
 msgstr "桌面圖示"
 
-#: srcore/srpres.c:766
+#: srcore/srpres.c:817
 msgid "Desktop icon"
 msgstr "桌面圖示"
 
-#: srcore/srpres.c:767
+#: srcore/srpres.c:818
 msgid "DFR"
 msgstr "DFR"
 
-#: srcore/srpres.c:767
+#: srcore/srpres.c:818
 msgid "DESKTOP FRAME"
 msgstr "桌面框架"
 
-#: srcore/srpres.c:767
+#: srcore/srpres.c:818
 msgid "Desktop frame"
 msgstr "桌面框架"
 
-#: srcore/srpres.c:768
+#: srcore/srpres.c:819
 msgid "DLG"
 msgstr "DLG"
 
-#: srcore/srpres.c:768
+#: srcore/srpres.c:819
 msgid "DIALOG"
 msgstr "對話盒"
 
-#: srcore/srpres.c:768
+#: srcore/srpres.c:819
 msgid "Dialog"
 msgstr "對話盒"
 
-#: srcore/srpres.c:769
+#: srcore/srpres.c:820
 msgid "DIP"
 msgstr "DIP"
 
-#: srcore/srpres.c:769
+#: srcore/srpres.c:820
 msgid "DIRECTORY PANE"
 msgstr "目錄窗格"
 
-#: srcore/srpres.c:769
+#: srcore/srpres.c:820
 msgid "Directory pane"
 msgstr "目錄窗格"
 
-#: srcore/srpres.c:770
+#: srcore/srpres.c:821
 msgid "FCH"
 msgstr "FCH"
 
-#: srcore/srpres.c:770
+#: srcore/srpres.c:821
 msgid "FILE CHOOSER"
 msgstr "檔案選擇器"
 
-#: srcore/srpres.c:770
+#: srcore/srpres.c:821
 msgid "File chooser"
 msgstr "檔案選擇器"
 
-#: srcore/srpres.c:771
+#: srcore/srpres.c:822
 msgid "FLR"
 msgstr "FLR"
 
-#: srcore/srpres.c:771
+#: srcore/srpres.c:822
 msgid "FILLER"
 msgstr "填充"
 
-#: srcore/srpres.c:771
+#: srcore/srpres.c:822
 msgid "Filler"
 msgstr "填充"
 
-#: srcore/srpres.c:772
+#: srcore/srpres.c:823
 msgid "FRM"
 msgstr "FRM"
 
-#: srcore/srpres.c:772
+#: srcore/srpres.c:823
 msgid "FRAME"
 msgstr "框架"
 
-#: srcore/srpres.c:772
+#: srcore/srpres.c:823
 msgid "Frame"
 msgstr "框架"
 
-#: srcore/srpres.c:773
+#: srcore/srpres.c:824
 msgid "GPN"
 msgstr "GPN"
 
-#: srcore/srpres.c:773
+#: srcore/srpres.c:824
 msgid "GLASS PANE"
 msgstr "眼鏡窗格"
 
-#: srcore/srpres.c:773
+#: srcore/srpres.c:824
 msgid "Glass pane"
 msgstr "眼鏡窗格"
 
-#: srcore/srpres.c:774
+#: srcore/srpres.c:825
 msgid "HTM"
 msgstr "HTM"
 
-#: srcore/srpres.c:774
+#: srcore/srpres.c:825
 msgid "HTML CONTAINER"
 msgstr "HTML 容器"
 
-#: srcore/srpres.c:774
+#: srcore/srpres.c:825
 msgid "H T M L container"
 msgstr "H T M L 容器"
 
-#: srcore/srpres.c:775 srcore/srpres.c:780
+#: srcore/srpres.c:826 srcore/srpres.c:831
 msgid "LNK"
 msgstr "LNK"
 
-#: srcore/srpres.c:775 srcore/srpres.c:780
+#: srcore/srpres.c:826 srcore/srpres.c:831
 msgid "LINK"
 msgstr "連結"
 
-#: srcore/srpres.c:775 srcore/srpres.c:780
+#: srcore/srpres.c:826 srcore/srpres.c:831
 msgid "link"
 msgstr "連結"
 
-#: srcore/srpres.c:776
+#: srcore/srpres.c:827
 msgid "ICO"
 msgstr "ICO"
 
-#: srcore/srpres.c:776
+#: srcore/srpres.c:827
 msgid "ICON"
 msgstr "圖示"
 
-#: srcore/srpres.c:776
+#: srcore/srpres.c:827
 msgid "Icon"
 msgstr "圖示"
 
-#: srcore/srpres.c:777
+#: srcore/srpres.c:828
 msgid "IFR"
 msgstr "IFR"
 
-#: srcore/srpres.c:777
+#: srcore/srpres.c:828
 msgid "INTERNAL FRAME"
 msgstr "內部框架"
 
-#: srcore/srpres.c:777
+#: srcore/srpres.c:828
 msgid "Internal frame"
 msgstr "內部框架"
 
-#: srcore/srpres.c:778
+#: srcore/srpres.c:829
 msgid "LBL"
 msgstr "LBL"
 
-#: srcore/srpres.c:778
+#: srcore/srpres.c:829
 msgid "LABEL"
 msgstr "標籤"
 
-#: srcore/srpres.c:778
+#: srcore/srpres.c:829
 msgid "Label"
 msgstr "標籤"
 
-#: srcore/srpres.c:779
+#: srcore/srpres.c:830
 msgid "LPN"
 msgstr "LPN"
 
-#: srcore/srpres.c:779
+#: srcore/srpres.c:830
 msgid "LAYERED PANE"
 msgstr "層次窗格"
 
-#: srcore/srpres.c:779
+#: srcore/srpres.c:830
 msgid "Layered pane"
 msgstr "層次窗格"
 
-#: srcore/srpres.c:781
+#: srcore/srpres.c:832
 msgid "LST"
 msgstr "LST"
 
-#: srcore/srpres.c:781
+#: srcore/srpres.c:832
 msgid "LIST"
 msgstr "清單"
 
-#: srcore/srpres.c:781
+#: srcore/srpres.c:832
 msgid "List"
 msgstr "清單"
 
-#: srcore/srpres.c:782
+#: srcore/srpres.c:833
 msgid "LIT"
 msgstr "LIT"
 
-#: srcore/srpres.c:782
+#: srcore/srpres.c:833
 msgid "LIST ITEM"
 msgstr "清單項目"
 
-#: srcore/srpres.c:782
+#: srcore/srpres.c:833
 msgid "List item"
 msgstr "清單項目"
 
-#: srcore/srpres.c:783
+#: srcore/srpres.c:834
 msgid "MNU"
 msgstr "MNU"
 
-#: srcore/srpres.c:783
+#: srcore/srpres.c:834
 msgid "MENU"
 msgstr "選單"
 
-#: srcore/srpres.c:783
+#: srcore/srpres.c:834
 msgid "Menu"
 msgstr "選單"
 
-#: srcore/srpres.c:784
+#: srcore/srpres.c:835
 msgid "MBR"
 msgstr "MBR"
 
-#: srcore/srpres.c:784
+#: srcore/srpres.c:835
 msgid "MENU BAR"
 msgstr "選單列"
 
-#: srcore/srpres.c:784
+#: srcore/srpres.c:835
 msgid "Menu bar"
 msgstr "選單列"
 
-#: srcore/srpres.c:785
+#: srcore/srpres.c:836
 msgid "Menu item"
 msgstr "選單項目"
 
-#: srcore/srpres.c:786
+#: srcore/srpres.c:837
 msgid "OPN"
 msgstr "OPN"
 
-#: srcore/srpres.c:786
+#: srcore/srpres.c:837
 msgid "OPTION PANE"
 msgstr "選項窗格"
 
-#: srcore/srpres.c:786
+#: srcore/srpres.c:837
 msgid "Option pane"
 msgstr "選項窗格"
 
-#: srcore/srpres.c:787
+#: srcore/srpres.c:838
 msgid "PGT"
 msgstr "PGT"
 
-#: srcore/srpres.c:787
+#: srcore/srpres.c:838
 msgid "PAGE TAB"
 msgstr "標籤頁"
 
-#: srcore/srpres.c:787
+#: srcore/srpres.c:838
 msgid "Page tab"
 msgstr "標籤頁"
 
-#: srcore/srpres.c:788
+#: srcore/srpres.c:839
 msgid "PTL"
 msgstr "PTL"
 
-#: srcore/srpres.c:788
+#: srcore/srpres.c:839
 msgid "PAGE TAB LIST"
 msgstr "標籤頁清單"
 
-#: srcore/srpres.c:788
+#: srcore/srpres.c:839
 msgid "Page tab list"
 msgstr "標籤頁清單"
 
-#: srcore/srpres.c:789
+#: srcore/srpres.c:840
 msgid "PNL"
 msgstr "PNL"
 
-#: srcore/srpres.c:789
+#: srcore/srpres.c:840
 msgid "PANEL"
 msgstr "面板"
 
-#: srcore/srpres.c:789
+#: srcore/srpres.c:840
 msgid "Panel"
 msgstr "面板"
 
-#: srcore/srpres.c:790
+#: srcore/srpres.c:841
 msgid "PWD"
 msgstr "PWD"
 
-#: srcore/srpres.c:790
+#: srcore/srpres.c:841
 msgid "PASSWORD TEXT"
 msgstr "密碼文字"
 
-#: srcore/srpres.c:790
+#: srcore/srpres.c:841
 msgid "Password text"
 msgstr "密碼文字"
 
-#: srcore/srpres.c:791
+#: srcore/srpres.c:842
 msgid "PMN"
 msgstr "PMN"
 
-#: srcore/srpres.c:791
+#: srcore/srpres.c:842
 msgid "POPUP MENU"
 msgstr "彈出式選單"
 
-#: srcore/srpres.c:791
+#: srcore/srpres.c:842
 msgid "Popup menu"
 msgstr "彈出式選單"
 
-#: srcore/srpres.c:792
+#: srcore/srpres.c:843
 msgid "PRG"
 msgstr "PRG"
 
-#: srcore/srpres.c:792
+#: srcore/srpres.c:843
 msgid "PROGRESS BAR"
 msgstr "進度列"
 
-#: srcore/srpres.c:792
+#: srcore/srpres.c:843
 msgid "Progress bar"
 msgstr "進度列"
 
-#: srcore/srpres.c:793
+#: srcore/srpres.c:844
 msgid "PBT"
 msgstr "PBT"
 
-#: srcore/srpres.c:793
+#: srcore/srpres.c:844
 msgid "PUSH BUTTON"
 msgstr "按下按鈕"
 
-#: srcore/srpres.c:793
+#: srcore/srpres.c:844
 msgid "Push button"
 msgstr "按下按鈕"
 
-#: srcore/srpres.c:794
+#: srcore/srpres.c:845
 msgid "RAD"
 msgstr "RAD"
 
-#: srcore/srpres.c:794
+#: srcore/srpres.c:845
 msgid "RADIO BUTTON"
 msgstr "選擇鈕"
 
-#: srcore/srpres.c:794
+#: srcore/srpres.c:845
 msgid "Radio button"
 msgstr "選擇鈕"
 
-#: srcore/srpres.c:795
+#: srcore/srpres.c:846
 msgid "Radio Menu item"
 msgstr "選擇鈕選單項目"
 
-#: srcore/srpres.c:796
+#: srcore/srpres.c:847
 msgid "RPN"
 msgstr "RPN"
 
-#: srcore/srpres.c:796
+#: srcore/srpres.c:847
 msgid "ROOT PANE"
 msgstr "根窗格"
 
-#: srcore/srpres.c:796
+#: srcore/srpres.c:847
 msgid "Root pane"
 msgstr "根窗格"
 
-#: srcore/srpres.c:797
+#: srcore/srpres.c:848
 msgid "RHD"
 msgstr "RHD"
 
-#: srcore/srpres.c:797
+#: srcore/srpres.c:848
 msgid "ROW HEADER"
 msgstr "列標頭"
 
-#: srcore/srpres.c:797
+#: srcore/srpres.c:848
 msgid "Row header"
 msgstr "列標頭"
 
-#: srcore/srpres.c:798
+#: srcore/srpres.c:849
 msgid "SCR"
 msgstr "SCR"
 
-#: srcore/srpres.c:798
+#: srcore/srpres.c:849
 msgid "SCROLL BAR"
 msgstr "捲軸列"
 
-#: srcore/srpres.c:798
+#: srcore/srpres.c:849
 msgid "Scroll bar"
 msgstr "捲軸列"
 
-#: srcore/srpres.c:799 srcore/srpres.c:827
+#: srcore/srpres.c:850 srcore/srpres.c:878
 msgid "SPN"
 msgstr "SPN"
 
-#: srcore/srpres.c:799
+#: srcore/srpres.c:850
 msgid "SCROLL PANE"
 msgstr "捲軸窗格"
 
-#: srcore/srpres.c:799
+#: srcore/srpres.c:850
 msgid "Scroll pane"
 msgstr "捲軸窗格"
 
-#: srcore/srpres.c:800
+#: srcore/srpres.c:851
 msgid "SEP"
 msgstr "SEP"
 
-#: srcore/srpres.c:800
+#: srcore/srpres.c:851
 msgid "SEPARATOR"
 msgstr "分隔子"
 
-#: srcore/srpres.c:800
+#: srcore/srpres.c:851
 msgid "Separator"
 msgstr "分隔子"
 
-#: srcore/srpres.c:801
+#: srcore/srpres.c:852
 msgid "SLD"
 msgstr "SLD"
 
-#: srcore/srpres.c:801
+#: srcore/srpres.c:852
 msgid "SLIDER"
 msgstr "滑動軸"
 
-#: srcore/srpres.c:801
+#: srcore/srpres.c:852
 msgid "Slider"
 msgstr "滑動軸"
 
-#: srcore/srpres.c:802
+#: srcore/srpres.c:853
 msgid "SPP"
 msgstr "SPP"
 
-#: srcore/srpres.c:802
+#: srcore/srpres.c:853
 msgid "SPLIT PANE"
 msgstr "分割窗格"
 
-#: srcore/srpres.c:802
+#: srcore/srpres.c:853
 msgid "Split pane"
 msgstr "分割窗格"
 
-#: srcore/srpres.c:803
+#: srcore/srpres.c:854
 msgid "STA"
 msgstr "STA"
 
-#: srcore/srpres.c:803
+#: srcore/srpres.c:854
 msgid "STATUS BAR"
 msgstr "狀態列"
 
-#: srcore/srpres.c:803
+#: srcore/srpres.c:854
 msgid "Status bar"
 msgstr "狀態列"
 
-#: srcore/srpres.c:804
+#: srcore/srpres.c:855
 msgid "TAB"
 msgstr "TAB"
 
-#: srcore/srpres.c:804
+#: srcore/srpres.c:855
 msgid "TABLE"
 msgstr "表格"
 
-#: srcore/srpres.c:804
+#: srcore/srpres.c:855
 msgid "Table"
 msgstr "表格"
 
-#: srcore/srpres.c:805
+#: srcore/srpres.c:856
 msgid "CEL"
 msgstr "CEL"
 
-#: srcore/srpres.c:805
+#: srcore/srpres.c:856
 msgid "TABLE CELL"
 msgstr "表格細格"
 
-#: srcore/srpres.c:805
+#: srcore/srpres.c:856
 msgid "Table cell"
 msgstr "表格細格"
 
-#: srcore/srpres.c:806 srcore/srpres.c:831
+#: srcore/srpres.c:857 srcore/srpres.c:882
 msgid "TCH"
 msgstr "TCH"
 
-#: srcore/srpres.c:806
+#: srcore/srpres.c:857
 msgid "TABLE COLUMN HEADER"
 msgstr "表格欄標頭"
 
-#: srcore/srpres.c:806
+#: srcore/srpres.c:857
 msgid "Table column header"
 msgstr "表格欄標頭"
 
-#: srcore/srpres.c:807
+#: srcore/srpres.c:858
 msgid "TRH"
 msgstr "TRH"
 
-#: srcore/srpres.c:807
+#: srcore/srpres.c:858
 msgid "TABLE ROW HEADER"
 msgstr "表格列標頭"
 
-#: srcore/srpres.c:807
+#: srcore/srpres.c:858
 msgid "Table row header"
 msgstr "表格列標頭"
 
-#: srcore/srpres.c:808 srcore/srpres.c:809
+#: srcore/srpres.c:859 srcore/srpres.c:860
 msgid "TXT"
 msgstr "TXT"
 
-#: srcore/srpres.c:808
+#: srcore/srpres.c:859
 msgid "MULTI LINE TEXT"
 msgstr "多行文字"
 
-#: srcore/srpres.c:808
+#: srcore/srpres.c:859
 msgid "Multi Line Text"
 msgstr "多行文字"
 
-#: srcore/srpres.c:809
+#: srcore/srpres.c:860
 msgid "SINGLE LINE TEXT"
 msgstr "單行文字"
 
-#: srcore/srpres.c:809
+#: srcore/srpres.c:860
 msgid "Single Line Text"
 msgstr "單行文字"
 
-#: srcore/srpres.c:810
+#: srcore/srpres.c:861
 msgid "TOG"
 msgstr "TOG"
 
-#: srcore/srpres.c:810
+#: srcore/srpres.c:861
 msgid "TOGGLE BUTTON"
 msgstr "切換鈕"
 
-#: srcore/srpres.c:810
+#: srcore/srpres.c:861
 msgid "Toggle button"
 msgstr "切換鈕"
 
-#: srcore/srpres.c:811
+#: srcore/srpres.c:862
 msgid "TOL"
 msgstr "TOL"
 
-#: srcore/srpres.c:811
+#: srcore/srpres.c:862
 msgid "TOOL BAR"
 msgstr "工具列"
 
-#: srcore/srpres.c:811
+#: srcore/srpres.c:862
 msgid "Tool bar"
 msgstr "工具列"
 
-#: srcore/srpres.c:812
+#: srcore/srpres.c:863
 msgid "TIP"
 msgstr "TIP"
 
-#: srcore/srpres.c:812
+#: srcore/srpres.c:863
 msgid "TOOL TIP"
 msgstr "工具提示"
 
-#: srcore/srpres.c:812
+#: srcore/srpres.c:863
 msgid "Tool tip"
 msgstr "工具提示"
 
-#: srcore/srpres.c:813
+#: srcore/srpres.c:864
 msgid "TRE"
 msgstr "TRE"
 
-#: srcore/srpres.c:813
+#: srcore/srpres.c:864
 msgid "TREE"
 msgstr "樹"
 
-#: srcore/srpres.c:813
+#: srcore/srpres.c:864
 msgid "Tree"
 msgstr "樹"
 
-#: srcore/srpres.c:814
+#: srcore/srpres.c:865
 msgid "TRI"
 msgstr "TRI"
 
-#: srcore/srpres.c:814
+#: srcore/srpres.c:865
 msgid "TREE ITEM"
 msgstr "樹狀項目"
 
-#: srcore/srpres.c:814
+#: srcore/srpres.c:865
 msgid "Tree item"
 msgstr "樹狀項目"
 
-#: srcore/srpres.c:815
+#: srcore/srpres.c:866
 msgid "TRT"
 msgstr "TRT"
 
-#: srcore/srpres.c:815
+#: srcore/srpres.c:866
 msgid "TREE TABLE"
 msgstr "樹狀表格"
 
-#: srcore/srpres.c:815
+#: srcore/srpres.c:866
 msgid "Tree table"
 msgstr "樹狀表格"
 
-#: srcore/srpres.c:816
+#: srcore/srpres.c:867
 msgid "VWP"
 msgstr "VWP"
 
-#: srcore/srpres.c:816
+#: srcore/srpres.c:867
 msgid "VIEWPORT"
 msgstr "檢視埠"
 
-#: srcore/srpres.c:816
+#: srcore/srpres.c:867
 msgid "Viewport"
 msgstr "檢視埠"
 
-#: srcore/srpres.c:817
+#: srcore/srpres.c:868
 msgid "WND"
 msgstr "WND"
 
-#: srcore/srpres.c:817
+#: srcore/srpres.c:868
 msgid "WINDOW"
 msgstr "視窗"
 
-#: srcore/srpres.c:817
+#: srcore/srpres.c:868
 msgid "Window"
 msgstr "視窗"
 
-#: srcore/srpres.c:818
+#: srcore/srpres.c:869
 msgid "ACC"
 msgstr "ACC"
 
-#: srcore/srpres.c:818
+#: srcore/srpres.c:869
 msgid "ACCELERATOR LABEL"
 msgstr "加速器標籤"
 
-#: srcore/srpres.c:818
+#: srcore/srpres.c:869
 msgid "Accelerator label"
 msgstr "加速器標籤"
 
-#: srcore/srpres.c:819
+#: srcore/srpres.c:870
 msgid "ANI"
 msgstr "ANI"
 
-#: srcore/srpres.c:819
+#: srcore/srpres.c:870
 msgid "ANIMATION"
 msgstr "動畫"
 
-#: srcore/srpres.c:819
+#: srcore/srpres.c:870
 msgid "Animation"
 msgstr "動畫"
 
-#: srcore/srpres.c:820
+#: srcore/srpres.c:871
 msgid "ARR"
 msgstr "ARR"
 
-#: srcore/srpres.c:820
+#: srcore/srpres.c:871
 msgid "ARROW"
 msgstr "箭頭"
 
-#: srcore/srpres.c:820
+#: srcore/srpres.c:871
 msgid "Arrow"
 msgstr "箭頭"
 
-#: srcore/srpres.c:821
+#: srcore/srpres.c:872
 msgid "CAL"
 msgstr "CAL"
 
-#: srcore/srpres.c:821
+#: srcore/srpres.c:872
 msgid "CALENDAR"
 msgstr "日曆"
 
-#: srcore/srpres.c:821
+#: srcore/srpres.c:872
 msgid "Calendar"
 msgstr "日曆"
 
-#: srcore/srpres.c:822
+#: srcore/srpres.c:873
 msgid "DAT"
 msgstr "DAT"
 
-#: srcore/srpres.c:822
+#: srcore/srpres.c:873
 msgid "DATE EDITOR"
 msgstr "日期編緝器"
 
-#: srcore/srpres.c:822
+#: srcore/srpres.c:873
 msgid "Date editor"
 msgstr "日期編緝器"
 
-#: srcore/srpres.c:823
+#: srcore/srpres.c:874
 msgid "DIL"
 msgstr "DIL"
 
-#: srcore/srpres.c:823
+#: srcore/srpres.c:874
 msgid "DIAL"
 msgstr "播號"
 
-#: srcore/srpres.c:823
+#: srcore/srpres.c:874
 msgid "Dial"
 msgstr "播號"
 
-#: srcore/srpres.c:824
+#: srcore/srpres.c:875
 msgid "DRW"
 msgstr "DRW"
 
-#: srcore/srpres.c:824
+#: srcore/srpres.c:875
 msgid "DRAWING AREA"
 msgstr "繪圖區"
 
-#: srcore/srpres.c:824
+#: srcore/srpres.c:875
 msgid "Drawing area"
 msgstr "繪圖區"
 
-#: srcore/srpres.c:825
+#: srcore/srpres.c:876
 msgid "FNT"
 msgstr "FNT"
 
-#: srcore/srpres.c:825
+#: srcore/srpres.c:876
 msgid "FONT CHOOSER"
 msgstr "字型選擇器"
 
-#: srcore/srpres.c:825
+#: srcore/srpres.c:876
 msgid "Font chooser"
 msgstr "字型選擇器"
 
-#: srcore/srpres.c:826
+#: srcore/srpres.c:877
 msgid "IMG"
 msgstr "IMG"
 
-#: srcore/srpres.c:826
+#: srcore/srpres.c:877
 msgid "IMAGE"
 msgstr "影像"
 
-#: srcore/srpres.c:826
+#: srcore/srpres.c:877
 msgid "Image"
 msgstr "影像"
 
-#: srcore/srpres.c:827
+#: srcore/srpres.c:878
 msgid "SPIN BUTTON"
 msgstr "旋鈕"
 
-#: srcore/srpres.c:827
+#: srcore/srpres.c:878
 msgid "Spin button"
 msgstr "旋鈕"
 
-#: srcore/srpres.c:828
+#: srcore/srpres.c:879
 msgid "TRM"
 msgstr "TRM"
 
-#: srcore/srpres.c:828
+#: srcore/srpres.c:879
 msgid "TERMINAL"
 msgstr "終端機"
 
-#: srcore/srpres.c:828
+#: srcore/srpres.c:879
 msgid "Terminal"
 msgstr "終端機"
 
-#: srcore/srpres.c:829
+#: srcore/srpres.c:880
 msgid "EXT"
 msgstr "EXT"
 
-#: srcore/srpres.c:829
+#: srcore/srpres.c:880
 msgid "EXTENDED"
 msgstr "延伸的"
 
-#: srcore/srpres.c:829
+#: srcore/srpres.c:880
 msgid "Extended"
 msgstr "延伸的"
 
-#: srcore/srpres.c:830
+#: srcore/srpres.c:881
 msgid "TLI"
 msgstr "TLI"
 
-#: srcore/srpres.c:830
+#: srcore/srpres.c:881
 msgid "TABLE LINE"
 msgstr "表格行"
 
-#: srcore/srpres.c:830
+#: srcore/srpres.c:881
 msgid "Table line"
 msgstr "表格行"
 
-#: srcore/srpres.c:831
+#: srcore/srpres.c:882
 msgid "TABLE COLUMNS HEADER"
 msgstr "表格欄標頭"
 
-#: srcore/srpres.c:831
+#: srcore/srpres.c:882
 msgid "Table columns header"
 msgstr "表格欄標頭"
 
-#: srcore/srpres.c:832
+#: srcore/srpres.c:883
 msgid "TIT"
 msgstr "TIT"
 
-#: srcore/srpres.c:832
+#: srcore/srpres.c:883
 msgid "TITLE BAR"
 msgstr "標題列"
 
-#: srcore/srpres.c:832
+#: srcore/srpres.c:883
 msgid "Title bar"
 msgstr "標題列"
 
-#: srcore/srpres.c:833
+#: srcore/srpres.c:884
 msgid "EDB"
 msgstr "EDB"
 
-#: srcore/srpres.c:833
+#: srcore/srpres.c:884
 msgid "EDIT BAR"
 msgstr "編緝列"
 
-#: srcore/srpres.c:833
+#: srcore/srpres.c:884
 msgid "Edit bar"
 msgstr "編緝列"
 
@@ -4533,422 +4663,367 @@ msgstr "編緝列"
 msgid "Incorrect parameters for voice \"%s%s\""
 msgstr "用於聲音“%s%s”的錯誤參數"
 
-#: srcore/srspc.c:481
+#: srcore/srspc.c:484
 #, c-format
 msgid "failed to send to speech next string \"%s\""
 msgstr "傳送讀出下個字串“%s”失敗"
 
-#: srcore/srspc.c:547
+#: srcore/srspc.c:550
 #, c-format
 msgid "could not create/modify voice \"%s\""
 msgstr "無法建立/修改聲音“%s”"
 
-#: srcore/srspc.c:707
+#: srcore/srspc.c:710
 #, c-format
 msgid "voice \"%s\" will sound this way"
 msgstr "聲音“%s”聽起來是這樣"
 
-#: srcore/srspc.c:712
+#: srcore/srspc.c:715
 #, c-format
 msgid "could not test voice \"%s\""
 msgstr "無法測試聲音“%s”"
 
-#: srcore/srspc.c:801
+#: srcore/srspc.c:804
 #, c-format
 msgid "value not supported for speech count mode \"%s\""
 msgstr "數值並不被語音計數模式“%s”支援"
 
-#: srcore/srspc.c:837
+#: srcore/srspc.c:840
 #, c-format
 msgid "value not supported for speech modifiers type \"%s\""
 msgstr "數值並不被語音修改字元類型“%s”支援"
 
-#: srcore/srspc.c:873
+#: srcore/srspc.c:876
 #, c-format
 msgid "value not supported for speech cursors type \"%s\""
 msgstr "數值並不被語音游標類型“%s”支援"
 
-#: srcore/srspc.c:909
+#: srcore/srspc.c:912
 #, c-format
 msgid "value not supported for speech spaces type \"%s\""
 msgstr "數值並不被語音空白類型“%s”支援"
 
-#: srcore/srspc.c:945
+#: srcore/srspc.c:948
 #, c-format
 msgid "value not supported for speech dictionary type \"%s\""
 msgstr "數值並不被語音字典類型“%s”支援"
 
-#: srcore/srspc.c:982
+#: srcore/srspc.c:985
 #, c-format
 msgid "value not supported for speech text echo type \"%s\""
 msgstr "數值並不被語音文字回應類型“%s”支援"
 
-#: srcore/srspc.c:1001
+#: srcore/srspc.c:1004
 msgid "Tilde"
 msgstr "Tilde"
 
-#: srcore/srspc.c:1001
+#: srcore/srspc.c:1004
 msgid "Tildaes"
 msgstr "Tildaes"
 
-#: srcore/srspc.c:1002
+#: srcore/srspc.c:1005
 msgid "Exclamation"
 msgstr "驚嘆號"
 
-#: srcore/srspc.c:1002
+#: srcore/srspc.c:1005
 msgid "Exclamations"
 msgstr "驚嘆號"
 
-#: srcore/srspc.c:1003
+#: srcore/srspc.c:1006
 msgid "At"
 msgstr "At"
 
-#: srcore/srspc.c:1003
+#: srcore/srspc.c:1006
 msgid "Ats"
 msgstr "Ats"
 
-#: srcore/srspc.c:1004
+#: srcore/srspc.c:1007
 msgid "Hash"
 msgstr "Hash"
 
-#: srcore/srspc.c:1004
+#: srcore/srspc.c:1007
 msgid "Hashes"
 msgstr "Hashes"
 
-#: srcore/srspc.c:1005
+#: srcore/srspc.c:1008
 msgid "Dollar"
 msgstr "Dollar"
 
-#: srcore/srspc.c:1005
+#: srcore/srspc.c:1008
 msgid "Dollars"
 msgstr "Dollars"
 
-#: srcore/srspc.c:1006
+#: srcore/srspc.c:1009
 msgid "Percent"
 msgstr "Percent"
 
-#: srcore/srspc.c:1006
+#: srcore/srspc.c:1009
 msgid "Percents"
 msgstr "Percents"
 
-#: srcore/srspc.c:1007
+#: srcore/srspc.c:1010
 msgid "Caret"
 msgstr "Caret"
 
-#: srcore/srspc.c:1007
+#: srcore/srspc.c:1010
 msgid "Carets"
 msgstr "Carets"
 
-#: srcore/srspc.c:1008
+#: srcore/srspc.c:1011
 msgid "And"
 msgstr "And"
 
-#: srcore/srspc.c:1008
+#: srcore/srspc.c:1011
 msgid "Ands"
 msgstr "Ands"
 
-#: srcore/srspc.c:1009
+#: srcore/srspc.c:1012
 msgid "Asterisk"
 msgstr "Asterisk"
 
-#: srcore/srspc.c:1009
+#: srcore/srspc.c:1012
 msgid "Asterisks"
 msgstr "Asterisks"
 
-#: srcore/srspc.c:1010
+#: srcore/srspc.c:1013
 msgid "Left Paranthesis"
 msgstr "Left Paranthesis"
 
-#: srcore/srspc.c:1011
+#: srcore/srspc.c:1014
 msgid "Right Paranthesis"
 msgstr "Right Paranthesis"
 
-#: srcore/srspc.c:1012
+#: srcore/srspc.c:1015
 msgid "Underscore"
 msgstr "Underscore"
 
-#: srcore/srspc.c:1012
+#: srcore/srspc.c:1015
 msgid "Underscores"
 msgstr "Underscores"
 
-#: srcore/srspc.c:1013
+#: srcore/srspc.c:1016
 msgid "Plus"
 msgstr "Plus"
 
-#: srcore/srspc.c:1013
+#: srcore/srspc.c:1016
 msgid "Pluses"
 msgstr "Pluses"
 
-#: srcore/srspc.c:1014
+#: srcore/srspc.c:1017
 msgid "Equal"
 msgstr "Equal"
 
-#: srcore/srspc.c:1014
+#: srcore/srspc.c:1017
 msgid "Equals"
 msgstr "Equals"
 
-#: srcore/srspc.c:1015
+#: srcore/srspc.c:1018
 msgid "Minus"
 msgstr "Minus"
 
-#: srcore/srspc.c:1015
+#: srcore/srspc.c:1018
 msgid "Minuses"
 msgstr "Minuses"
 
-#: srcore/srspc.c:1016
+#: srcore/srspc.c:1019
 msgid "Quote"
 msgstr "Quote"
 
-#: srcore/srspc.c:1016
+#: srcore/srspc.c:1019
 msgid "Quotes"
 msgstr "Quotes"
 
-#: srcore/srspc.c:1017
+#: srcore/srspc.c:1020
 msgid "Left Bracket"
 msgstr "Left Bracket"
 
-#: srcore/srspc.c:1017
+#: srcore/srspc.c:1020
 msgid "Left Brackets"
 msgstr "Left Brackets"
 
-#: srcore/srspc.c:1018
+#: srcore/srspc.c:1021
 msgid "Right Bracket"
 msgstr "Right Bracket"
 
-#: srcore/srspc.c:1018
+#: srcore/srspc.c:1021
 msgid "Right Brackets"
 msgstr "Right Brackets"
 
-#: srcore/srspc.c:1019
+#: srcore/srspc.c:1022
 msgid "Left Brace"
 msgstr "Left Brace"
 
-#: srcore/srspc.c:1019
+#: srcore/srspc.c:1022
 msgid "Left Braces"
 msgstr "Left Braces"
 
-#: srcore/srspc.c:1020
+#: srcore/srspc.c:1023
 msgid "Right Brace"
 msgstr "Right Brace"
 
-#: srcore/srspc.c:1020
+#: srcore/srspc.c:1023
 msgid "Right Braces"
 msgstr "Right Braces"
 
-#: srcore/srspc.c:1021
+#: srcore/srspc.c:1024
 msgid "Semicolon"
 msgstr "Semicolon"
 
-#: srcore/srspc.c:1021
+#: srcore/srspc.c:1024
 msgid "Semicolons"
 msgstr "Semicolons"
 
-#: srcore/srspc.c:1022
+#: srcore/srspc.c:1025
 msgid "Colon"
 msgstr "Colon"
 
-#: srcore/srspc.c:1022
+#: srcore/srspc.c:1025
 msgid "Colons"
 msgstr "Colons"
 
-#: srcore/srspc.c:1023
+#: srcore/srspc.c:1026
 msgid "Double quote"
 msgstr "Double quote"
 
-#: srcore/srspc.c:1023
+#: srcore/srspc.c:1026
 msgid "Double quotes"
 msgstr "Double quotes"
 
-#: srcore/srspc.c:1024
+#: srcore/srspc.c:1027
 msgid "Apostrophe"
 msgstr "Apostrophe"
 
-#: srcore/srspc.c:1024
+#: srcore/srspc.c:1027
 msgid "Apostrophes"
 msgstr "Apostrophes"
 
-#: srcore/srspc.c:1025
+#: srcore/srspc.c:1028
 msgid "Back Slash"
 msgstr "Back Slash"
 
-#: srcore/srspc.c:1025
+#: srcore/srspc.c:1028
 msgid "Back Slashes"
 msgstr "Back Slashes"
 
-#: srcore/srspc.c:1026
+#: srcore/srspc.c:1029
 msgid "Bar"
 msgstr "Bar"
 
-#: srcore/srspc.c:1026
+#: srcore/srspc.c:1029
 msgid "Bars"
 msgstr "Bars"
 
-#: srcore/srspc.c:1027
+#: srcore/srspc.c:1030
 msgid "Greater"
 msgstr "Greater"
 
-#: srcore/srspc.c:1027
+#: srcore/srspc.c:1030
 msgid "Greaters"
 msgstr "Greaters"
 
-#: srcore/srspc.c:1028
+#: srcore/srspc.c:1031
 msgid "Less"
 msgstr "Less"
 
-#: srcore/srspc.c:1028
+#: srcore/srspc.c:1031
 msgid "Lesses"
 msgstr "Lesses"
 
-#: srcore/srspc.c:1029
+#: srcore/srspc.c:1032
 msgid "Comma"
 msgstr "Comma"
 
-#: srcore/srspc.c:1029
+#: srcore/srspc.c:1032
 msgid "Commas"
 msgstr "Commas"
 
-#: srcore/srspc.c:1030
+#: srcore/srspc.c:1033
 msgid "Dot"
 msgstr "Dot"
 
-#: srcore/srspc.c:1030
+#: srcore/srspc.c:1033
 msgid "Dots"
 msgstr "Dots"
 
-#: srcore/srspc.c:1031
+#: srcore/srspc.c:1034
 msgid "Slash"
 msgstr "Slash"
 
-#: srcore/srspc.c:1031
+#: srcore/srspc.c:1034
 msgid "Slashes"
 msgstr "Slashes"
 
-#: srcore/srspc.c:1032
+#: srcore/srspc.c:1035
 msgid "Questions"
 msgstr "Questions"
 
-#: srcore/srspc.c:1106
+#: srcore/srspc.c:1109
 #, c-format
 msgid "value not supported for speech punctuation type \"%s\""
 msgstr "數值不被語音標點符號類型支援“%s”"
 
-#: srcore/srspc.c:1364
+#: srcore/srspc.c:1375
 msgid "Unable to initialize hashtable"
 msgstr "無法初始化湊雜表"
 
-#: srcore/srspc.c:1370
+#: srcore/srspc.c:1381
 msgid "Unable to load dictionary from gconf"
 msgstr "無法根據 gconf 設定值載入字典"
 
-#: srcore/srspc.c:1561
+#: srcore/srspc.c:1572
 msgid "speech initialization succeded"
 msgstr "成功初始化語音合成功能"
 
-#: srcore/srspc.c:1565
+#: srcore/srspc.c:1576
 msgid "speech initialization failed"
 msgstr "初始化語音合成功能不成功"
 
-#: srcore/srspc.c:1761
+#: srcore/srspc.c:1772
 msgid "enter"
 msgstr "enter"
 
-#: srcore/srspc.c:1844
+#: srcore/srspc.c:1855
 #, c-format
 msgid "can not find \"%s\" voice. use default voice"
 msgstr "找不到“%s”聲音，使用預設聲音"
 
-#: srcore/srspc.c:1861
+#: srcore/srspc.c:1872
 msgid "voices pitch will be set to default value"
 msgstr "音高會使用預設值"
 
-#: srcore/srspc.c:1863
+#: srcore/srspc.c:1874
 msgid "voices pitch will be decreased"
 msgstr "會使用較尖的聲音"
 
-#: srcore/srspc.c:1865
+#: srcore/srspc.c:1876
 msgid "voices pitch will be increased"
 msgstr "會使用較沉的聲音"
 
-#: srcore/srspc.c:1909
+#: srcore/srspc.c:1920
 msgid "voices rate will be set to default value"
 msgstr "讀字速度會使用預設值"
 
-#: srcore/srspc.c:1911
+#: srcore/srspc.c:1922
 msgid "voices rate will be decreased"
 msgstr "讀字速度會減慢"
 
-#: srcore/srspc.c:1913
+#: srcore/srspc.c:1924
 msgid "voices rate will be increased"
 msgstr "讀字速度會加快"
 
-#: srcore/srspc.c:1958
+#: srcore/srspc.c:1969
 msgid "voices volume will be set to default value"
 msgstr "音量會使用預設值"
 
-#: srcore/srspc.c:1960
+#: srcore/srspc.c:1971
 msgid "voices volume will be decreased"
 msgstr "音量將會減低"
 
-#: srcore/srspc.c:1962
+#: srcore/srspc.c:1973
 msgid "voices volume will be increased"
 msgstr "音量將會提高"
 
-#: srcore/srspc.c:2088
+#: srcore/srspc.c:2099
 #, c-format
 msgid "no support for speech key \"%s\""
 msgstr "不支援語音按鍵“%s”"
-
-#~ msgid "accelerator"
-#~ msgstr "捷徑鍵"
-
-#~ msgid "closing window"
-#~ msgstr "關閉視窗"
-
-#~ msgid "column header"
-#~ msgstr "欄位標頭"
-
-#~ msgid "create window"
-#~ msgstr "産生視窗"
-
-#~ msgid "maximize window"
-#~ msgstr "視窗最大化"
-
-#~ msgid "minimize window"
-#~ msgstr "視窗最小化"
-
-#~ msgid "minimized"
-#~ msgstr "最小化"
-
-# FIXME: Not sure if selection means text selection or widget -- Abel
-#~ msgid "no selection anymore"
-#~ msgstr "沒有選取任何內容"
-
-#~ msgid "normal"
-#~ msgstr "正常"
-
-#~ msgid "pressed"
-#~ msgstr "已按下"
-
-#~ msgid "rename window"
-#~ msgstr "視窗重新命名"
-
-#~ msgid "restore window"
-#~ msgstr "回復視窗狀態"
-
-#~ msgid "row header"
-#~ msgstr "列標頭"
-
-#~ msgid "shortcut"
-#~ msgstr "捷徑鍵"
-
-#~ msgid "show tool tip"
-#~ msgstr "顯示工具提示"
-
-#~ msgid "switch to window"
-#~ msgstr "切換至視窗"
-
-#~ msgid "unchecked"
-#~ msgstr "未選取"
-
-#~ msgid "unpressed"
-#~ msgstr "未按下"

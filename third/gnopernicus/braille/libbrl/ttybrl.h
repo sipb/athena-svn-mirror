@@ -22,7 +22,6 @@
 #ifndef __TTYBRL_H__
 #define __TTYBRL_H__
 
-#include <gail.h>
 #include "braille.h"
 
 gint brltty_brl_open_device (gchar          *device_name, 

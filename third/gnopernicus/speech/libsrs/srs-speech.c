@@ -543,7 +543,7 @@ srs_sp_clb (gpointer 	   id,
 	    if (srs_crt_out->markers & SRS_MARKER_TEXT_STARTED)
 		srs_sp_callback_wrap (srs_crt_out, tout, SRS_MARKER_TEXT_STARTED,  -1);
 	}
-	if (offset >= 0)
+	if (srs_crt_out->markers & SRS_MARKER_TEXT_PROGRESS && offset >= 0)
 	    srs_sp_callback_wrap (srs_crt_out, tout, SRS_MARKER_TEXT_PROGRESS, offset);
     }
     last = srs_crt_out;

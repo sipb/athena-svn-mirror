@@ -62,5 +62,7 @@ gboolean srl_mouse_button_down 	(gint button);
 gboolean srl_mouse_button_up 	(gint button);
 gboolean srl_set_watch_for_object (SRObject *obj);
 void     srl_unwatch_all_objects ();
+gboolean srl_is_object_watched (SRObject *obj);
+gboolean srl_is_object_focused (SRObject *obj);
 
 #endif 	/*_SRLOW_H*/

@@ -1,3 +1,437 @@
+2004-12-20 Dragan Sarbut <ds@baum.ro>
+
+	* configure.in:
+	Update version to 0.9.19.
+	
+	* NEWS:
+	Updated
+
+2004-12-17 Dana Ormenisan (patch from Ada Telescu <at@baum.ro>)
+
+	* gnopi/gnopi.c:
+	(gn_check_accessibility_key):
+	Changed to provide an ATK_ROLE_ALERT role for the dialogs asking to 
+	set the accessiblility key and to reboot the computer.
+	
+	Fixes for bug #159423.
+
+2004-14-10 Dragan Sarbut <ds@baum.ro>
+	
+	* gnopi/magui.c:
+	(magui_taget_changed):
+	(magui_source_changed):
+	Renamed to (magui_set_source_screen) / (magui_set_target_screen) and
+	modified to check the validity of the screens.
+	(magui_check_for_valid_screen):
+	Added this function to check the validity of the chosen screen.
+	(magui_set_handlers_magnification_option):
+	Removed glade_xml_signal_connect to the source/target setting functions.
+	(magui_magnification_options_response):
+	Added cases for when the user presses "OK" and "Apply" buttons.
+
+	* gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2:
+	Added "OK" and "Apply" buttons. 
+	Removed text-changed signal for source and target gtk_entrys.
+	The source/target screens will change ONLY when the user hits "Apply" 
+	or "OK".
+	
+	Fixes for bugs: #159334, #159335, #153622.
+
+2004-14-10 Dragan Sarbut <ds@baum.ro>
+	
+	* srlow/libsrlow/SRObject.c:
+	(sro_text_get_caret_location):
+	Fixed so that when text is inserted in a widget, the magnifier will 
+	display	the caret correctly at focus tracking.
+	Fix for bug #160821.
+
+2004-12-10 Irene Ryan <irene.ryan@sun.com>
+
+	* help/gnopernicus/C/gnopernicus.xml: updated manual
+	* help/gnopernicus/C/gnopernicus-C.omf: updated OMF
+	  with latest revision numbers and dates
+	* help/gnopernicus/C/figures/gnopernicus.png: latest screenshot
+
+2004-12-09 Remus Draica <rd@baum.ro>
+
+	* srcore/default.xml.in:
+	* srcore/verbose.xml.in:
+	Present the difference in case of terminal and text-insert event.
+
+	* srcore/srmain.c:
+	(src_present_real_sro_for_speech):
+	In case of terminal, do not shut up previous output.
+
+	* srcore/srspc.c:
+	(src_speech_shutup):
+	Free items' list waiting to be spoken.
+
+	Fixies for bug #157786.
+
+2004-12-08 Dana Ormenisan <do@baum.ro>
+
+	* srcore/default.xml.in:
+	* srcore/verbose.xml.in:
+	Changed the presentation for 'object:property-changed:accessible-content'
+	event for 'combo box' role to present also the name of the combo box.
+	
+	* srlow/libsrlow/SRObject.c:
+	(sro_default_get_name):
+	Changed the name report for SR_ROLE_COMBO_BOX:
+	 - for combo boxes which don't implement AtkText, associate label (if exists)+
+	   AccessibleName (if exists) will be reported as name;
+         - for combo boxes which implement AtkText, if there is an associate label 
+	   it will be reported as name, otherwise the AccessibleName will be reported.
+
+	Fises for bug #158055. 
+
+2004-12-08 Remus Draica <rd@baum.ro>
+
+	* gnopi/gnopi.c:
+	(main):
+	Start srcore process before UI interface (fix for #152147).
+
+2004-12-07 Dana Ormenisan <do@baum.ro>
+
+	* srlow/libsrlow/screen-review.c:
+	(srw_boundary_rect_new0):
+	(srw_boundary_rect_clone):
+	(srw_boundary_rect_free):
+	(screen_review_init):
+	Changed to define a clip_bounds for SPI_LAYER_INVALID widgets.
+	
+	Fixes for bug #160064.
+
+2004-12-06 Remus Draica <rd@baum.ro>
+
+	* configure.in:
+	(with_brltty_prefix): Do not set it if prefix is none or NONE.
+
+	* braille/libbrl/ttybrl.c: (patches from samuel.thibault@ens-lyon.org)
+	(brltty_brl_send_dots):
+	Send content of sendbuff instead of dots.
+	(brltty_brl_open_device):
+	Use brlapi error messages.
+
+	Fixies for bug 156463.
+
+2004-11-30 Dana Ormenisan <do@baum.ro>
+
+	* srcore/srpres.c:
+	(src_presentation_get_info_from_sro):
+	Changed to present the entire line (instead of presenting a single character)
+	if caret was increasing with 1 but the line was changed.
+	
+	Fixes for bug #153410.
+
+2004-11-30 Dana Ormenisan <do@baum.ro>
+
+	* srlow/libsrlow/SRLow.c:
+	(srl_get_context):
+	Changed to include SPI_ROLE_PANEL as a container child.
+	
+	Fixes for bug #158429.
+
+2004-11-29 Dragan Sarbut <ds@baum.ro>
+
+	* configure.in:
+	Update version to 0.9.17.
+	
+	* NEWS:
+	Updated
+
+2004-11-22 Dana Ormenisan <do@baum.ro>
+
+	* srcore/srmain.c:
+	(src_present_real_sro_for_speech):
+	Changed to interrupt the speech output in case of 'focus:' event for
+	SPI_ROLE_STATUS_BAR.
+	
+	Fixes for bug #157935.
+
+2004-11-10 Remus Draica <rd@baum.ro>
+
+	* srcore/srmain.c:
+	(src_present_real_sro_for_speach):
+	Present objects in case of "object:context-switched" events.
+
+	* srlow/libsrlow/SRLow.[ch]:
+	(srl_is_object_focused):
+	Added.
+
+2004-11-10 Remus Draica <rd@baum.ro>
+
+	* configure.in:
+	Update version to 0.9.17.
+
+	* NEWS:
+	Updated.
+
+2004-11-10 Remus Draica <rd@baum.ro>
+
+	* srlow/libsrlow/screen-review.c:
+	(pixels_per_line): Do not let it to be lower than a minimum value.
+
+2004-11-05 Remus Draica <rd@baum.ro>
+
+	* speech/libsrs/srs-speech.c:
+	(srs_sp_clb):
+	Report speech progress markers only if the client of speech library
+	is interested in them (bug #157262). 
+
+2004-11-05 Dana Ormenisan <do@baum.ro>  (patch from <padraig.obriain@sun.com>)
+
+	* gnopi/gnopi.c:
+	(main):
+	Changed to avoid the at-spi-registryd core dump if accessibility support
+	is enabled via gnopernicus.
+	
+	Fix for bug #152147.
+
+2004-11-05 Dana Ormenisan <do@baum.ro>
+
+	* srlow/libsrlow/SRObject.c:
+	(sro_is_word_navigation):
+	Changed to not provide a word-by-word navigation if the current 
+	reported word is not on the current line.
+	
+	Fix for bug #153410.
+
+2004-11-05 Remus Draica <rd@baum.ro>
+
+	* configure.in:
+	Check if brltty is installed. Add --with-brltty-dir parameter to allow
+	user to specify where brltty is installed.
+
+	* braille/libbrl/Makefile.am:
+	* braille/test/Makefile.am:
+	* srcore/Makefile.am:
+	Add brltty dependencies.
+
+	* braille/libbrl/braille.c:
+	Replace __BRLTTY_SUPPORT__ with BRLTTY_SUPPORT.
+
+	* braille/libbrl/ttybrl.c:
+	Changes according with brltty version 3.6 API changes.
+
+	Fixies for bug 156463.
+
+2004-11-05 Remus Draica <rd@baum.ro>
+
+	* srlow/libsrlow/SRLow.c:
+	(srle_set_acc):
+	(srle_change_type):
+	Present current selected icon for layered-pane objects (#149146).
+
+2004-10-13 Dana Ormenisan <do@baum.ro> (patch from Remus Draica <rd@baum.ro>)
+
+	* speech/libsrs/srs-gs.c:
+    	(srs_gs_callback):
+	Changed to remove information from queue (srs_gs_outs) for an end of
+	speech marker only if the marker is for text for which information is.
+	
+	Fix for bug #154250.
+
+	* configure.in:
+	Update version to 0.9.16.
+
+	* NEWS:
+	Updated
+
+2004-10-13 Dragan Sarbut <ds@baum.ro>
+
+	* configure.in:
+	Update version to 0.9.15.
+	
+	* NEWS:
+	Updated
+
+2004-10-12  James Henstridge  <james@jamesh.id.au>
+
+	* configure.in: only call AC_PROG_INTLTOOL once.  This fixes a
+	build failure with newer versions of intltool.
+
+2004-10-07 Dragan Sarbut <ds@baum.ro>
+	
+	* po/ro.po:
+	Fixed error so gnopernicus build  will not fail.
+
+2004-10-05 Remus Draica <rd@baum.ro>
+
+	* configure.in:
+	Add ro to ALL_LINGUAS.
+
+2004-10-05 Remus Draica <rd@baum.ro>
+
+	* srcore/srbrl.c:
+	Handle more signal which may be sent to srcore.
+	Extension for bug #145206.
+
+2004-10-05 Remus Draica <rd@baum.ro>
+
+	* srcore/srmain.c:
+	(src_present_real_sro_for_speech):
+	Check if event is for watched object in case it doesn't have 
+	FOCUSED state.
+
+	* srlow/libsrlow/SRLow.[ch]:
+	(srl_is_object_watched):
+	Added.
+
+	Fixies for bug #153920.
+
+2004-10-05 Remus Draica <rd@baum.ro>
+
+	* gnopi/Makefile.am:
+	(EXTRA_DIST):
+	Add destop_in_files to dist instead of desktop_DATA.
+
+	* srcore/Makefile.am:
+	(xml_in_files):
+	Add verbose.xml.in instead of verbose.xml.
+
+2004-10-01 Remus Draica <rd@baum.ro>
+
+	* srcore/default.xml.in:
+	* srcore/verbose.xml.in:
+	Add presentation for tool-bar, for object:context-switched, for speech.
+
+	* srlow/libsrlow/SRLow.c:
+	(srl_get_context):
+	Check if current object has as ancestor an object with role tool-bar.
+
+	Fixies for bug #144315.
+
+2004-09-30 Dragan Sarbut <ds@baum.ro>
+
+	* configure.in:
+	Update version to 0.9.14.
+	
+	* NEWS:
+	Updated
+
+2004-09-29 Dragan Sarbut <ds@baum.ro>
+
+	* configure.in:
+	Update version to 0.9.13.
+	
+	* NEWS:
+	Updated
+
+2004-09-28 Remus Draica <rd@baum.ro>
+
+	* srcore/srpres.c:
+	Retain for presentation only nodes in current language.
+	Fix for #152707.
+
+2004-09-28 Remus Draica <rd@baum.ro>
+
+	* srcore/srbrl.c:
+	(src_brlmon_send):
+	(src_braille_send):
+	* srcore/srmag.c:
+	(src_magnifier_send):
+	* srcore/srpres.c:
+	(src_speech_send):
+	Change the message in case invalid UTF-8 strings.
+
+	* srcore/srmain.c:
+	(src_xml_process_string):
+	Allow '\t' and '\n' to be send to gnopernicus modules.
+
+	Fixies for bug #150073.
+
+2004-09-27 Remus Draica <rd@baum.ro>
+
+	* srcore/srbrl.c:
+	(src_braille_exited):
+	Added.
+	(brl_mon_run_process):
+	Add a signal handler for SIGTERM.
+
+	Fixies for bug #145206.
+
+2004-09-24 Dana Ormenisan <do@baum.ro> (patch from <heikki.tauriainen@hut.fi>)
+
+	* srcore/srmain.c,h:
+	Define login_time in srmain.c. This change will allow to build gnopernicus
+	with '-fno-common' option.
+	
+	Fixies for bug #153057.
+
+2004-09-23 Dana Ormenisan <do@baum.ro> (patch from <padraig.obriain@sun.com>)
+
+	* autogen.sh:
+	* configure.in:
+	* xmldocs.make:
+	* braille/libbrl/Makefile.am:
+	* docs/Makefile.am:
+	* kbd_mouse/libke/Makefile.am:
+	* magnifier/libmag/Makefile.am:
+	* speech/libsrs/Makefile.am:
+	* srconf/libsrconf/Makefile.am:
+	* srlow/libsrlow/Makefile.am:
+	* srutil/Makefile.am:
+	Changed to use version 1.7 of autotools.
+	
+	Fixies for bug #145019.
+
+2004-09-23 Dana Ormenisan <do@baum.ro>
+
+	* srcore/srctrl.c:
+        (src_present_line_for_speech):
+	Changed to not ignore the delimiter cells. A space will be insert in the
+	string which will be sent to speech for a SRW_DELIMITER_CELL.
+	
+	* srlow/libsrlow/screen-review.c:
+	Change the maximum value for 'pixels_per_column' to 10000, instead of
+	G_MAXINT.
+	(srw_text_chunk_from_accessible):
+	Changed to set pixels_per_column if the current Accessible object is not
+	a text object.
+	
+	Fixies for bug #149788.
+
+2004-09-23 Remus Draica <rd@baum.ro>
+
+	* gnopi/magui.c:
+	(magui_set_zoomfactor_x):
+	Remove a message about changing the value for zoomfactor.
+
+	* magnifier/libmag/mag_ctrl.c:
+	Check environment variable for all CORBA and bonobo calls 
+	(fix for #152745).
+
+2004-09-17 Remus Draica <rd@baum.ro>
+
+	* srcore/srbrl.c:
+	(src_brlmon_send):
+	(src_braille_send):
+	* srcore/srmag.c:
+	(src_magnifier_send):
+	* srcore/srspc.c:
+	(src_speech_send):
+	Avoid to send the XML string to apropiate module if it is not a valid
+	UFT-8 string.
+
+	* srcore/srmain.c:
+	(src_xml_process_string):
+	Check if string contains only valid XML characters ans use GString for
+	concatenation.
+
+	* srcore/srpres.c:
+	(src_presentation_get_info_from_sro):
+	Check if information obtained is valid UTF-8 string.
+
+	Fixies for bug #150073.
+
+2004-09-17 Remus Draica <rd@baum.ro>
+
+	* speech/libsrs/srs-gs-wrap.c:
+	(srs_gs_wrap_get_activated_server_from_server_info):
+	Check the return value from GNOME_Speech_SynthesisDriver_driverInit.
+	Reapply patch for #150518.
+
 2004-09-15 Dragan Sarbut <ds@baum.ro>
 
 	* configure.in:

@@ -2,23 +2,18 @@
 <omf>
   <resource>
     <creator>
-      Pat Costello, Sun Microsystems.
+      gdocteam@sun.com (Sun Java Desktop System Documentation Team)
     </creator>
     <maintainer>
-      Pat Costello, Sun Microsystems. 
+      gdocteam@sun.com (Sun Java Desktop System Documentation Team)
     </maintainer>
-<!--
     <title>
-      gnopernicus Manual V2.0
-    </title>
--->
-    <title>
-      Gnopernicus Manual V2.0
+      Gnopernicus Manual
     </title>    
     <date>
-      2004-03-09
+      2004-11-11
     </date>
-    <version identifier="2.0" date="2004-03-09" description="Updated for GNOME 2.6, program version 2.0.2"/>
+    <version identifier="2.2" date="2004-11-11" description="Updated to support program version 0.9.14"/>
     <subject category="GNOME|Accessibility"/>
     <description>
       User manual for the Gnopernicus screen reader and magnifier. 
@@ -30,6 +25,6 @@
     <identifier url="gnopernicus.xml"/>
     <language code="C"/>
     <relation seriesid="e1afad9c-1f4e-11d8-93e6-b29c1d931de0"/>
-    <rights type="GNU FDL" license.version="1.1" holder="Sun Microsystems"/>
+    <rights type="GNU FDL" license.version="1.1" holder="Sun Microsystems, Inc."/>
   </resource>        
 </omf>

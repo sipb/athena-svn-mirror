@@ -620,8 +620,11 @@ srle_set_acc (SRLEvent *event)
 		Accessible_unref (parent);
 	}
     }
-    else if (srle_has_type (event, SRL_EVENT_FOCUS) &&
-	srle_acc_has_state (event, SPI_STATE_MANAGES_DESCENDANTS))
+    else if ((srle_has_type (event, SRL_EVENT_FOCUS) &&
+		    srle_acc_has_state (event, SPI_STATE_MANAGES_DESCENDANTS)) ||
+	     ( (srle_has_type (event, SRL_EVENT_SELECTION_CHANGED)  ||
+	           srle_has_type (event, SRL_EVENT_FOCUS)) &&
+		srle_acc_has_role (event, SPI_ROLE_LAYERED_PANE)))
     {
 	AccessibleSelection *selection;
 	selection = Accessible_getSelection ((Accessible*)srle_get_acc (event));
@@ -1130,7 +1133,11 @@ srl_report_event (SRLEvent *event)
 	ev = srl_last_events[i];
 	srl_last_events[i] = NULL;
 	if (ev)
+	{
+	    if (ev->type == SRL_EVENT_TEXT_CHANGED_INSERT && Accessible_getRole (ev->acc_ev->source) == SPI_ROLE_TERMINAL)
+		srl_notify_clients_obj (ev, SR_EVENT_SRO);
 	    srle_free (ev);
+	}
     }
 	    
     srl_last_events[priority] = srle_dup (event);
@@ -1307,6 +1314,12 @@ srle_change_type (SRLEvent *event)
     else if (srle_has_type (event, SRL_EVENT_LINK_SELECTED))
     {
 	if (srl_acc_has_toolkit (srle_get_acc (event), SRL_TOOLKIT_MOZILLA))
+	    event->type = SRL_EVENT_FOCUS;
+    }
+    else if (srle_has_type (event, SRL_EVENT_SELECTION_CHANGED))
+    {
+	if ((Accessible_getRole (event->acc_ev->source) == SPI_ROLE_LAYERED_PANE) &&
+	          (Accessible_getRole (event->acc) == SPI_ROLE_ICON))
 	    event->type = SRL_EVENT_FOCUS;
     }
     
@@ -1785,7 +1798,7 @@ srl_get_context (Accessible *acc)
 	    Accessible_unref (acc);
 	    acc = parent;
 	    role = Accessible_getRole (acc);
-	    if (role == SPI_ROLE_EMBEDDED)
+	    if (role == SPI_ROLE_EMBEDDED || role == SPI_ROLE_TOOL_BAR)
 	    {
 		context = acc;
 		Accessible_ref (context);
@@ -1803,7 +1816,8 @@ srl_get_context (Accessible *acc)
 		    if (label && container)
 		    {
 			if (Accessible_getRole (label) == SPI_ROLE_LABEL &&
-			    Accessible_getRole (container) == SPI_ROLE_FILLER)
+			    (Accessible_getRole (container) == SPI_ROLE_FILLER ||
+			     Accessible_getRole (container) == SPI_ROLE_PANEL))
 			{
 			    gchar *name = Accessible_getName (label);
 			    if (name && name[0])
@@ -1896,10 +1910,9 @@ srl_process_event (SRLEvent *event)
     process = srl_event_is_reported (event);	
     
     if (srle_has_type (event, SRL_EVENT_FOCUS) ||
-	srle_has_type (event, SRL_EVENT_FOCUS2))
+	srle_has_type (event, SRL_EVENT_FOCUS2) ||
+	srle_has_type (event, SRL_EVENT_FOCUS1))
 	    srl_set_last_focus2 ((Accessible*)srle_get_acc (event));
-    else if (srle_has_type (event, SRL_EVENT_FOCUS1))
-	srl_set_last_focus2 (NULL);
 	
     if (process)
 	srl_report_event (event);
@@ -2175,4 +2188,20 @@ srl_unwatch_all_objects ()
     if (srl_watched_acc)
 	Accessible_unref (srl_watched_acc);
     srl_watched_acc = NULL;
+}
+
+gboolean
+srl_is_object_watched (SRObject *obj)
+{
+    srl_assert (obj);
+
+    return sro_get_acc (obj) == srl_watched_acc;
+}
+
+gboolean
+srl_is_object_focused (SRObject *obj)
+{
+    srl_assert (obj);
+
+    return sro_get_acc (obj) == srl_last_focus || sro_get_acc (obj) == srl_last_focus2;
 }

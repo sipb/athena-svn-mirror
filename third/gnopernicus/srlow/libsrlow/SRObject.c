@@ -1117,9 +1117,46 @@ sro_default_get_name (const SRObject *obj,
 		}       
 	    }
 	    break;
+	case SR_ROLE_COMBO_BOX: /* bug 158055 */
+	    {
+		AccessibleText *text;
+		gchar *name2, *tmp;
+		name2 = get_name_from_label_rel (acc);
+		tmp = Accessible_getName (acc);
+		text = get_text_from_acc (acc);
+		if (!text)
+		{ 
+		    if (tmp && tmp[0])
+		    {
+			if (name2)
+			{
+			    gchar *tmp2;
+		    	    tmp2 = g_strconcat (name2, " ", tmp, NULL);
+			    name_ = SR_strdup (tmp2);
+			    SR_freeString (name2);
+			    g_free (tmp2);
+			}
+			else
+			    name_ = SR_strdup (tmp);
+		    }
+		    else
+			name_ = name2;
+		}
+		else
+		{
+		    if (name2)
+			name_ = name2;
+		    else
+			if (tmp && tmp[0])
+			    name_ = SR_strdup (tmp);
+		    AccessibleText_unref (text);
+		}
+		SPI_freeString (tmp);
+	    }
+	    break;
 	case SR_ROLE_TEXT_SL:
 	case SR_ROLE_TEXT_ML:
-	case SR_ROLE_COMBO_BOX:
+/*	case SR_ROLE_COMBO_BOX: bug 158055 */
 	case SR_ROLE_SPIN_BUTTON:
 	case SR_ROLE_SLIDER:
 	    name_ = get_name_from_label_rel (acc);
@@ -3957,7 +3994,8 @@ sro_is_word_navigation (SRObject *obj,
 {
     Accessible *acc = NULL;
     AccessibleText *acc_text = NULL;
-    SRLong start_crt, end_crt, start_last, end_last;
+    SRLong start_crt_word, end_crt_word, start_last_word, end_last_word,
+           start_crt_line, end_crt_line, start_last_line, end_last_line;
     gchar *temp = NULL;
     gboolean rv;
     
@@ -3973,10 +4011,15 @@ sro_is_word_navigation (SRObject *obj,
 	return FALSE;
 	
     temp = AccessibleText_getTextAtOffset (acc_text, crt_offset, SPI_TEXT_BOUNDARY_WORD_START, 
-						&start_crt, &end_crt);	
+						&start_crt_word, &end_crt_word);	
     temp = AccessibleText_getTextAtOffset (acc_text, last_offset, SPI_TEXT_BOUNDARY_WORD_START,   
-						&start_last, &end_last);						
-    if (start_crt == end_last || start_last == end_crt)
+						&start_last_word, &end_last_word);						
+    temp = AccessibleText_getTextAtOffset (acc_text, crt_offset, SPI_TEXT_BOUNDARY_LINE_START, 
+						&start_crt_line, &end_crt_line);	
+    temp = AccessibleText_getTextAtOffset (acc_text, last_offset, SPI_TEXT_BOUNDARY_LINE_START,   
+						&start_last_line, &end_last_line);												
+    if ((start_crt_word == end_last_word  && start_crt_word >= start_crt_line) || /* down navigation */
+        (start_last_word == end_crt_word && start_last_word >= start_last_line))  /* up navigation */
 	rv = TRUE;
     else
 	rv = FALSE;		
@@ -4083,7 +4126,6 @@ sro_text_get_caret_location (SRObject *obj,
     Accessible *acc;
     AccessibleText *acc_text;
     long int x, y, w, h, offset;
-    gboolean last = FALSE;
     AccessibleCoordType acc_type;
 
     srl_return_val_if_fail (obj && location, FALSE);
@@ -4100,23 +4142,13 @@ sro_text_get_caret_location (SRObject *obj,
     acc_type = sr_2_acc_coord (type);
     offset = AccessibleText_getCaretOffset (acc_text);
     if (offset == AccessibleText_getCharacterCount (acc_text) && offset > 0)
-    {
 	offset--;
-	last = TRUE;
-    }
+
     AccessibleText_getCharacterExtents (acc_text, offset, &x, &y, &w, &h, acc_type);
     AccessibleText_unref (acc_text);
-    if (!last)
-    {
-	location->x = x;
-	location->y = y;
-    }
-    else
-    {
-	location->x = x + w;
-	location->y = y + h;
-    }
-    location->width = 1;
+    location->x = x;
+    location->y = y;
+    location->width = w;
     location->height = h;
     return TRUE;
 }
@@ -4873,6 +4905,8 @@ prel_key_binding (gchar *key)
     for (tmp = strstr (key, "<"); tmp; tmp = strstr (key, "<"))
     {
 	gchar *tmp2 = strstr (tmp, ">");
+	if (!tmp2)
+	    return NULL;
 	*tmp2 = '\0';
 	tmp_key = g_stpcpy (tmp_key, tmp + 1);
 	tmp_key = g_stpcpy (tmp_key, " ");	

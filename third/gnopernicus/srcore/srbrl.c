@@ -527,7 +527,10 @@ src_brlmon_send (gchar *monoutput)
 {
     if (monoutput)
     {
-	src_brl_chop_output (monoutput);
+	if (g_utf8_validate (monoutput, -1, NULL))
+	    src_brl_chop_output (monoutput);
+	else
+	    sru_warning ("brlmon output: invalid UTF-8 received");
     }
 }
 
@@ -574,7 +577,10 @@ src_braille_send (gchar *brloutput)
 {
     if (brloutput)
     {
-	brl_xml_output(brloutput, strlen(brloutput));
+    	if (g_utf8_validate (brloutput, -1, NULL))
+	    brl_xml_output(brloutput, strlen(brloutput));
+	else
+	    sru_warning ("braille output: invalid UTF-8 received");
 #ifdef _BRAILLE_DEBUG_
 	fprintf (stderr, "\n%s", brloutput); 
 #endif
@@ -654,9 +660,29 @@ src_braille_restart ()
 
 extern void brl_xml_input_proc (gchar *, gint);
 
+static void
+src_braille_exited (gint signal)
+{
+    if (signal == SIGTERM ||
+	signal == SIGQUIT ||
+	signal == SIGINT  ||
+	signal == SIGKILL ||
+	signal == SIGSEGV)
+    {
+	kill (src_brlmon_pid, SIGTERM);
+	exit (1);
+    }
+}
+
 gboolean 
 brl_mon_run_process (void)
 {
+    signal (SIGTERM, src_braille_exited);
+    signal (SIGQUIT, src_braille_exited);
+    signal (SIGINT, src_braille_exited);
+    signal (SIGKILL, src_braille_exited);
+    signal (SIGSEGV, src_braille_exited);
+
     if (g_file_test ("../brlmon/brlmonitor", G_FILE_TEST_EXISTS) &&
         g_file_test ("../brlmon/brlmonitor", G_FILE_TEST_IS_EXECUTABLE) &&
         g_file_test ("../brlmon/brlmonitor", G_FILE_TEST_IS_REGULAR))

@@ -470,7 +470,10 @@ src_speech_send (gchar *spcoutput)
     if (busy)
 	return FALSE;
     busy = TRUE;
-    srs_output (spcoutput, strlen(spcoutput)); 
+    if (g_utf8_validate (spcoutput, -1, NULL))
+	srs_output (spcoutput, strlen(spcoutput)); 
+    else
+	    sru_warning ("speech output: invalid UTF-8 received");
     rv = TRUE;
     
 /*     fprintf (stderr, "\n%s", spcoutput); */
@@ -1133,6 +1136,14 @@ src_speech_shutup ()
         srcs_out_terminate (last_out);
 	last_out = NULL;
     }
+    if (srcs_outs)
+    {
+	GSList *crt, *tmp = srcs_outs;
+	srcs_outs = NULL;
+	for (crt = tmp; crt; crt = crt->next)
+	    srcs_out_terminate (crt->data);
+	g_slist_free (tmp);
+    }
 
     src_speech_send ("<SRSOUT><SHUTUP/></SRSOUT>");
 }
@@ -1229,12 +1240,12 @@ src_speech_send_chunk (gchar *chunk,
 	srcs_outs = g_slist_remove_link (srcs_outs, tmp);
     }
 										        
-    srcs_outs = g_slist_append (srcs_outs, out);
     if (last_out && srcs_out_can_shutup_out (last_out, out))
     {
 	src_speech_shutup ();
     }
 
+    srcs_outs = g_slist_append (srcs_outs, out);
 #ifdef SRS_NO_MARKERS_SUPPORTED
     if (!src_speech_callback)
 	src_speech_send_from_queue ();

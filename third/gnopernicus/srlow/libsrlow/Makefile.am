@@ -6,7 +6,7 @@ INCLUDES = -I$(top_builddir)         		\
 	   $(LIBSRLOW_CFLAGS)			\
 	   -DG_LOG_DOMAIN=\"gnopernicus\"
 
-LDFLAGS = $(LIBSRLOW_LIBS) @LT_VERSION_INFO@
+AM_LDFLAGS = $(LIBSRLOW_LIBS) @LT_VERSION_INFO@
 
 LDADD = $(LIBSRLOW_LIBS)  
 

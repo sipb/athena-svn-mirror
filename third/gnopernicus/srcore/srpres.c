@@ -98,6 +98,20 @@ typedef struct _SRCPresentationItem
     gpointer			voice;
 }SRCPresentationItem;
 
+static const gchar *src_pres_lang = NULL;
+
+static const gchar*
+srcp_get_lang (void)
+{
+    if (!src_pres_lang)
+    {
+	src_pres_lang = g_getenv ("LANG");
+	if (!src_pres_lang)
+	    src_pres_lang = "C";
+    }
+    return src_pres_lang;
+}
+
 static SRCPresentationItem*
 src_presentation_item_new ()
 {
@@ -271,13 +285,43 @@ src_presentation_get_presentation_item_from_dots (xmlNode *node,
     return item;
 }
 
+static const xmlNode*
+src_presentation_get_literal_node_lang (xmlNode *start,
+					xmlChar *lang)
+{
+    xmlNode *crt;
+    xmlNode *c = NULL, *partial = NULL;
+
+    sru_assert (start && lang);
+
+    for (crt = start; crt && xmlStrcmp (crt->name, "literal") == 0; crt= crt->next)
+    {
+	xmlChar *nlang = xmlNodeGetLang (crt);
+	if (nlang && xmlStrcmp (lang, nlang) == 0) /* perfect match */
+	{
+	    xmlFree (nlang);
+	    return crt;
+	}
+	if (nlang && xmlStrncmp (lang, nlang, 2) == 0) /* partial match */
+	    partial = crt;
+	if (!nlang && !c)
+	    c = crt;
+	xmlFree (nlang);
+    }
+
+    return partial ? partial : c;
+}
+
+
 static gchar*
 src_presentation_get_from_true_false (xmlNode *node)
 {
-    xmlNode *crt;
-    for (crt = node->xmlChildrenNode; crt; crt= crt->next)
-    	if (xmlStrcmp (crt->name, "literal") == 0)
-	    return g_strdup (xmlNodeGetContent (crt));
+    const xmlNode *crt = NULL;
+
+    if (node && node->xmlChildrenNode)
+	crt = src_presentation_get_literal_node_lang (node->xmlChildrenNode, (xmlChar*)srcp_get_lang ());
+    if (crt)
+	return xmlNodeGetContent ((xmlNode*)crt);
     return NULL;
 }
 
@@ -429,8 +473,15 @@ src_presentation_get_presentation_items_from_node (xmlNode *node,
     for (crt = node->xmlChildrenNode; crt; crt = crt->next)
     {
 	SRCPresentationItem *item = NULL;
+	xmlNode *ant;
 	if (xmlStrcmp (crt->name, "literal") == 0)
-	    item = src_presentation_get_presentation_item_from_literal (crt, device);
+	{
+	    const xmlNode *literal = src_presentation_get_literal_node_lang (crt, (xmlChar*)srcp_get_lang ());
+	    if (literal)
+		item = src_presentation_get_presentation_item_from_literal ((xmlNode*)literal, device);
+	    for (ant = crt ; ant && xmlStrcmp (ant->name, "literal") == 0; ant = ant->next)
+		crt = ant;
+	}
 	else if (xmlStrcmp (crt->name, "brdots") == 0)
 	    item = src_presentation_get_presentation_item_from_dots (crt, device);
 	else if (xmlStrcmp (crt->name, "conditional") == 0)
@@ -1059,8 +1110,12 @@ src_presentation_get_info_from_sro (SRObject *obj,
 		
 		if (last_offset == crt_offset)
 		    last_offset = last_offset2;
-		if (abs (crt_offset - last_offset) == 1)
+		if (abs (crt_offset - last_offset) == 1 &&
+		    sro_text_is_same_line (obj, last_offset, SR_INDEX_CONTAINER))
 		    type = SR_TEXT_BOUNDARY_CHAR;
+		else if (abs (crt_offset - last_offset) == 1 &&
+		         !sro_text_is_same_line (obj, last_offset, SR_INDEX_CONTAINER))
+		    type = SR_TEXT_BOUNDARY_LINE;    
 		else if (sro_text_is_same_line (obj, last_offset, SR_INDEX_CONTAINER) ||
 		         sro_is_word_navigation (obj, crt_offset, last_offset, SR_INDEX_CONTAINER))
 		    type = SR_TEXT_BOUNDARY_WORD;
@@ -1162,6 +1217,16 @@ src_presentation_get_info_from_sro (SRObject *obj,
 	    fprintf (stderr, "\n%d", info_type);/* removable */
 	    sru_assert_not_reached ();	
 	    break;
+    }
+    if (info && *(gchar**)info)
+    {
+	if (!g_utf8_validate (*((gchar**)info), -1, NULL))
+	{
+	    sru_warning ("Invalid info queried (%d) ", info_type);
+	    g_free (*(gchar**)info);
+	    *(gchar**)info = NULL;
+	    rv = FALSE;
+	}
     }
     return rv;
 }

@@ -6,7 +6,7 @@ INCLUDES = -I$(top_builddir)         		\
 	   $(LIBMAG_CFLAGS)			\
 	   -DG_LOG_DOMAIN=\"gnopernicus\"
 
-LDFLAGS =$(LIBMAG_LIBS) @LT_VERSION_INFO@
+AM_LDFLAGS =$(LIBMAG_LIBS) @LT_VERSION_INFO@
 
 LDADD = ../../srconf/libsrconf/libsrconf.la $(LIBMAG_LIBS)
 

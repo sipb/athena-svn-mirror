@@ -39,6 +39,7 @@
 #include "screen-review.h"
 #include <libxml/parser.h>
 
+gboolean login_time;
 
 static SRLClientHandle src_srl_client;
 gboolean src_use_braille = FALSE;
@@ -212,8 +213,9 @@ src_present_real_sro_for_speech (SRObject *obj, gchar *reason)
 
     src_enable_format_string = TRUE; 
     sro_get_role (obj, &role, SR_INDEX_CONTAINER);
-    if (strcmp (reason, "object:text-changed:insert") == 0
-	    && (role == SR_ROLE_TEXT_SL || role == SR_ROLE_TEXT_ML || role == SR_ROLE_TERMINAL))
+
+    if (strcmp (reason, "object:text-changed:insert") == 0 && role != SR_ROLE_TERMINAL
+	    && (role == SR_ROLE_TEXT_SL || role == SR_ROLE_TEXT_ML))
     {
 	gchar *diff;
 	if (sro_text_get_difference (obj, &diff, SR_INDEX_CONTAINER))
@@ -254,20 +256,24 @@ src_present_real_sro_for_speech (SRObject *obj, gchar *reason)
 	if (txt && txt[0])
 	{
 	    SRObjectRoles role;
-	    SRState state;
 	    sro_get_role (obj, &role, SR_INDEX_CONTAINER);
-	    sro_get_state (obj, &state, SR_INDEX_CONTAINER);
-	    if (state & SR_STATE_FOCUSED || strcmp (reason, "present") == 0)
+	    if (srl_is_object_focused (obj) || strcmp (reason, "present") == 0 ||
+		strcmp (reason, "object:context-switched") == 0)
 	    {
 		if ( role == SR_ROLE_STATUS_BAR && strcmp (reason , "focus:") == 0)
-		    src_speech_send_chunk (txt, SRC_SPEECH_PRIORITY_SYSTEM, FALSE);
+		    src_speech_send_chunk (txt, SRC_SPEECH_PRIORITY_SYSTEM, TRUE);
 		else if ((role == SR_ROLE_TABLE || role == SR_ROLE_TREE_TABLE) &&
 			strcmp (reason , "focus:") == 0)
 		    src_speech_send_chunk (txt, SRC_SPEECH_PRIORITY_IDLE, FALSE);
 		else
-		    src_speech_send_chunk (txt, SRC_SPEECH_PRIORITY_IDLE, TRUE);
+		{
+		    gboolean interrupt = TRUE;
+		    if (strcmp (reason, "object:text-changed:insert") == 0 && role == SR_ROLE_TERMINAL)
+			interrupt = FALSE;
+		    src_speech_send_chunk (txt, SRC_SPEECH_PRIORITY_IDLE, interrupt);
+		}
 	    }
-	    else
+	    else if (srl_is_object_watched (obj))
 	    {
 		src_speech_send_chunk (txt, SRC_SPEECH_PRIORITY_SYSTEM, TRUE);
 	    }
@@ -2715,10 +2721,9 @@ main (gint argc,
 gchar*
 src_xml_process_string (gchar *str_)
 {
-    gint len, i, pos;
-    gchar *rv, *crt;
-    gchar *str;
-    
+    gchar *crt, *str;
+    GString *rv;
+
     if (!str_ || !str_[0])
 	return NULL;
 
@@ -2727,45 +2732,56 @@ src_xml_process_string (gchar *str_)
     if (!str)
 	return NULL;    
     
-    len = strlen (str);
-    /* 6 = maximum lengt of xml_ch din translate table */
-    crt = rv = (gchar*) g_malloc ((len * 6 + 1) * sizeof (gchar));
-    if (!rv)
+    if (!g_utf8_validate (str, -1, NULL))
 	return NULL;
-	
-    for (i = 0, pos = 0; i < len; ++i)
+
+    rv = g_string_new (NULL);
+    crt = str;
+    while (*crt)
     {
-	static struct
+	gchar *next = g_utf8_next_char (crt);
+	gunichar uni = g_utf8_get_char (crt);
+        gboolean special = FALSE;
+	
+	if (g_unichar_iscntrl (uni) && (uni != '\n') && (uni != '\t'))
 	{
-	    gchar ch;
-	    gchar *xml_ch;
-	}translate[] = {
+	    g_string_free (rv, TRUE);
+	    g_free (str);
+	    sru_warning ("string contains control characters. Skipping it from presentation");
+	    return NULL;
+	}
+	if (next - crt == 1)
+	{
+	    static struct
+	    {
+		gchar ch;
+		gchar *xml_ch;
+	    }translate[] = {
 		    {'<',	"&lt;"	},
 		    {'>',	"&gt;"	},
 		    {'&',	"&amp;"	},
 		    {'\'',	"&apos;"},
 		    {'\"',	"&quot;"},
 		};
-	gint j;
-	gboolean special = FALSE;
-	
-	for (j = 0; j < G_N_ELEMENTS (translate); j++)
-	{
-	    if (str[i] == translate[j].ch)
+	    gint j;
+
+	    for (j = 0; j < G_N_ELEMENTS (translate); j++)
 	    {
-	    	crt = g_stpcpy (crt, translate[j].xml_ch);
-		special = TRUE;
+		if (*crt == translate[j].ch)
+		{
+	    	    g_string_append (rv, translate[j].xml_ch);
+		    special = TRUE;
+		}
 	    }
 	}
 	if (!special)
-	{
-	    *crt = str[i];
-	    crt++;
-	}
+	    g_string_append_len (rv, crt, next - crt);
+
+	crt = next;
     }
-    *crt = '\0';
+
     g_free (str);
-    return rv;
+    return g_string_free (rv, FALSE);
 }		
 
 gchar*

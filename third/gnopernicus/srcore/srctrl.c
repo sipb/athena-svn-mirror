@@ -2462,12 +2462,27 @@ src_present_line_for_speech (SRWAccLine *line)
 
         cell = g_array_index (line->srw_acc_line, SRWAccCell *, i);
 	    
-        if (cell->id > 0)
+        switch (cell->id)
 	{
-	    gchar *tmp;
-	    tmp = spout;
-	    spout = g_strconcat (spout, cell->ch, NULL);
-	    g_free (tmp);
+	    case SRW_DELIMITER_CELL:
+	    {
+		gchar *tmp;
+		tmp = spout;
+		spout = g_strconcat (spout, " ", NULL);
+		g_free (tmp);
+	    };
+	    break;
+	    default: 
+	    {
+		if (cell->id > 0)
+		{
+		    gchar *tmp;
+		    tmp = spout;
+		    spout = g_strconcat (spout, cell->ch, NULL);
+		    g_free (tmp);
+		}    
+	    };
+	    break;
 	}
     }
     

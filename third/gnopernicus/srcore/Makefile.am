@@ -43,10 +43,11 @@ LDADD = ../speech/libsrs/libsrs.la       \
 	../kbd_mouse/libke/libke.la      \
 	../magnifier/libmag/libmag.la    \
 	$(SRCORE_LIBS)			 \
-	$(X_LIBS)
+	$(X_LIBS)			 \
+	$(BRLTTY_LIBRARY)
 
 xml_in_files = default.xml.in \
-	       verbose.xml
+	       verbose.xml.in
 
 xml_files = $(xml_in_files:.xml.in=.xml)
 @INTLTOOL_XML_RULE@

@@ -14,14 +14,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
-"POT-Creation-Date: 2004-09-15 12:38+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-20 13:49+0200\n"
 "PO-Revision-Date: 2004-08-31 22:54-0300\n"
 "Last-Translator: Nikos Charonitakis <charosn@her.forthnet.gr>\n"
 "Language-Team:  <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.3.1\n"
 
@@ -142,16 +142,16 @@ msgstr "η γραμματοσειρά %s δεν έχει εγκατασταθε�
 msgid "Can not parse color string."
 msgstr "Αδυναμία ανάλυσης χρώματος αλφαριθμητικού."
 
-#: brlmon/brlmonui.c:1111
+#: brlmon/brlmonui.c:1112
 msgid "Status"
 msgstr "Κατάσταση"
 
-#: brlmon/brlmonui.c:1318
+#: brlmon/brlmonui.c:1319
 #, fuzzy, c-format
 msgid "Too many cells on display. [Max %d]"
 msgstr "Πάρα πολλά κελιά για εμφάνιση.  [Max %d]"
 
-#: brlmon/brlmonui.c:1319
+#: brlmon/brlmonui.c:1320
 #, c-format
 msgid "Load default display size. Line: %d Column: %d."
 msgstr "Φόρτωση προεπιλεγμένου μεγέθους οθόνης. Γραμμή: %d Στήλη: %d."
@@ -1106,7 +1106,7 @@ msgstr "Αδύνατη η φόρτωση του αρχείου .glade2"
 
 #. if (WIFSIGNALED (gn_srcore_status) != 0)
 #. sru_message ("signal no: %d", WTERMSIG (gn_srcore_status));
-#: gnopi/gnopi.c:659
+#: gnopi/gnopi.c:663
 msgid "srcore exited."
 msgstr "srcore τερματίστηκε."
 
@@ -2147,7 +2147,7 @@ msgid "Presentation"
 msgstr "Παρουσίαση"
 
 #: gnopi/gnopi_files/Presentation/presentation.glade2.h:5
-#: srcore/default.xml.in.h:10 srcore/verbose.xml.in.h:10
+#: srcore/default.xml.in.h:19 srcore/verbose.xml.in.h:19
 msgid "Verbose"
 msgstr "Verbose"
 
@@ -2764,7 +2764,7 @@ msgstr ""
 msgid "About"
 msgstr "Περί"
 
-#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:759
+#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:810
 msgid "Alert"
 msgstr "Συναγερμός"
 
@@ -2828,7 +2828,7 @@ msgstr "Προτιμήσεις"
 msgid "Preferences..."
 msgstr "Προτιμήσεις..."
 
-#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1032
+#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1035
 msgid "Question"
 msgstr "Ερώτηση"
 
@@ -2950,7 +2950,7 @@ msgstr ""
 msgid "Zoomers"
 msgstr "Μεγεθυντές"
 
-#: gnopi/magui.c:1588
+#: gnopi/magui.c:1627
 #, c-format
 msgid "Zoomer Options (%s)"
 msgstr "Επιλογές μεγεθυντή (%s)"
@@ -3176,7 +3176,7 @@ msgstr "Yankee"
 msgid "Zulu"
 msgstr "Ζουλού"
 
-#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1759
+#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1770
 msgid "space"
 msgstr "διάστημα"
 
@@ -3214,52 +3214,197 @@ msgstr "Αποτυχία ορισμού δεδομένων ρυθμίσεων."
 msgid "Failed set data."
 msgstr "Αποτυχία ορισμού δεδομένων."
 
-#: srcore/default.xml.in.h:1 srcore/verbose.xml.in.h:1
+#. translators: a single whitespace or suitable delimiter between 'words', if appropriate
+#. translators: the letter ' ' (space), in parentheses.
+#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
 msgid "( )"
 msgstr "( )"
 
-#: srcore/default.xml.in.h:2 srcore/verbose.xml.in.h:2
+#. translators: the letter 'C' for "checked", in parentheses.
+#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
 msgid "(C)"
 msgstr "(C)"
 
-#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
+#. translators: the letter 'E' for "expanded", in parentheses.
+#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
 msgid "(E)"
 msgstr "(E)"
 
-#: srcore/default.xml.in.h:4 srcore/verbose.xml.in.h:4
+#. translators: the letter 'P' for "[button] pressed", in parentheses.
+#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
 msgid "(P)"
 msgstr "(P)"
 
-#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
+#. translators: the letter 'U', for "unavailable", in parentheses.
+#: srcore/default.xml.in.h:11 srcore/verbose.xml.in.h:11
 msgid "(U)"
 msgstr "(U)"
 
-#: srcore/default.xml.in.h:6 srcore/verbose.xml.in.h:6
+#. translators: the letter 'c' for "collapsed", in parentheses.
+#: srcore/default.xml.in.h:13 srcore/verbose.xml.in.h:13
 msgid "(c)"
 msgstr "(c)"
 
-#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
+#. translators: the letter 'm' for "minimized", in parentheses.
+#: srcore/default.xml.in.h:15 srcore/verbose.xml.in.h:15
 msgid "(m)"
 msgstr "(m)"
 
-#: srcore/default.xml.in.h:8 srcore/verbose.xml.in.h:8
+#. translators: the letter 'n' for "not minimized", in parentheses.
+#: srcore/default.xml.in.h:17 srcore/verbose.xml.in.h:17
 msgid "(n)"
 msgstr "(n)"
 
-#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
+#: srcore/default.xml.in.h:18 srcore/verbose.xml.in.h:18
 msgid "Give maximum speech and braille output."
 msgstr "Μέγιστο αποτέλεσμα λόγου και μπράΙγ."
 
-#: srcore/default.xml.in.h:11 srcore/srctrl.c:2258 srcore/srctrl.c:2409
-#: srcore/verbose.xml.in.h:11
+#. translators: 'keyboard accelerator'
+#: srcore/default.xml.in.h:21 srcore/verbose.xml.in.h:21
+#, fuzzy
+msgid "accelerator"
+msgstr "Διαχωριστικό"
+
+#: srcore/default.xml.in.h:22 srcore/verbose.xml.in.h:22
+#, fuzzy
+msgid "available"
+msgstr "δεν υπάρχει διαθέσιμος ρόλος"
+
+#. translators: "checked" as in "checkbox is checked"
+#: srcore/default.xml.in.h:24 srcore/verbose.xml.in.h:24
+msgid "checked"
+msgstr ""
+
+#: srcore/default.xml.in.h:25 srcore/verbose.xml.in.h:25
+msgid "closing tab"
+msgstr ""
+
+#: srcore/default.xml.in.h:26 srcore/verbose.xml.in.h:26
+msgid "closing window"
+msgstr ""
+
+#: srcore/default.xml.in.h:27 srcore/verbose.xml.in.h:27
+#, fuzzy
+msgid "collapsed"
+msgstr "Δολλάρια"
+
+#: srcore/default.xml.in.h:28 srcore/verbose.xml.in.h:28
+#, fuzzy
+msgid "column header"
+msgstr "Μέτρηση χαρακτήρων"
+
+#: srcore/default.xml.in.h:29 srcore/verbose.xml.in.h:29
+#, fuzzy
+msgid "create tab"
+msgstr "μείωση ρυθμού"
+
+#: srcore/default.xml.in.h:30 srcore/verbose.xml.in.h:30
+#, fuzzy
+msgid "create window"
+msgstr "Η περιοχή σκόπευσης είναι ένα παράθυρο"
+
+#: srcore/default.xml.in.h:31 srcore/verbose.xml.in.h:31
+#, fuzzy
+msgid "current value"
+msgstr "ο τρέχων δρομέας είναι"
+
+#: srcore/default.xml.in.h:32 srcore/srctrl.c:2669 srcore/verbose.xml.in.h:32
+msgid "empty line"
+msgstr "άδεια γραμμή"
+
+#: srcore/default.xml.in.h:33 srcore/verbose.xml.in.h:33
+msgid "expanded"
+msgstr ""
+
+#: srcore/default.xml.in.h:34 srcore/srctrl.c:2258 srcore/srctrl.c:2409
+#: srcore/verbose.xml.in.h:34
 msgid "item"
 msgid_plural "items"
 msgstr[0] "αντικείμενο"
 msgstr[1] "αντικείμενα"
 
-#: srcore/default.xml.in.h:12 srcore/verbose.xml.in.h:12
+#: srcore/default.xml.in.h:35 srcore/verbose.xml.in.h:35
 msgid "items"
 msgstr "αντικείμενα"
+
+#: srcore/default.xml.in.h:36 srcore/verbose.xml.in.h:36
+msgid "level"
+msgstr ""
+
+#: srcore/default.xml.in.h:37 srcore/verbose.xml.in.h:37
+msgid "maximize window"
+msgstr ""
+
+#: srcore/default.xml.in.h:38 srcore/verbose.xml.in.h:38
+msgid "minimize window"
+msgstr ""
+
+#: srcore/default.xml.in.h:39 srcore/verbose.xml.in.h:39
+#, fuzzy
+msgid "minimized"
+msgstr "Εκκίνηση σε ελα_χιστοποίηση"
+
+#: srcore/default.xml.in.h:40 srcore/verbose.xml.in.h:40
+msgid "no selection anymore"
+msgstr ""
+
+#: srcore/default.xml.in.h:41 srcore/verbose.xml.in.h:41
+#, fuzzy
+msgid "normal"
+msgstr "_Κανονικό"
+
+#: srcore/default.xml.in.h:42 srcore/verbose.xml.in.h:42
+#, fuzzy
+msgid "pressed"
+msgstr "Λιγότερα"
+
+#: srcore/default.xml.in.h:43 srcore/verbose.xml.in.h:43
+msgid "rename window"
+msgstr ""
+
+#: srcore/default.xml.in.h:44 srcore/verbose.xml.in.h:44
+msgid "restore window"
+msgstr ""
+
+#: srcore/default.xml.in.h:45 srcore/verbose.xml.in.h:45
+#, fuzzy
+msgid "row header"
+msgstr "Μέτρηση χαρακτήρων"
+
+#. translators: 'keyboard shortcut'
+#: srcore/default.xml.in.h:47 srcore/verbose.xml.in.h:47
+msgid "shortcut"
+msgstr ""
+
+#: srcore/default.xml.in.h:48 srcore/verbose.xml.in.h:48
+msgid "show tool tip"
+msgstr ""
+
+#: srcore/default.xml.in.h:49 srcore/verbose.xml.in.h:49
+msgid "switch tab"
+msgstr ""
+
+#: srcore/default.xml.in.h:50 srcore/verbose.xml.in.h:50
+msgid "switch to window"
+msgstr ""
+
+#: srcore/default.xml.in.h:51 srcore/verbose.xml.in.h:51
+msgid "titleize window"
+msgstr ""
+
+#: srcore/default.xml.in.h:52 srcore/verbose.xml.in.h:52
+#, fuzzy
+msgid "unavailable"
+msgstr "δεν υπάρχει διαθέσιμος ρόλος"
+
+#. translators: "checkbox is unchecked"
+#: srcore/default.xml.in.h:54 srcore/verbose.xml.in.h:54
+msgid "unchecked"
+msgstr ""
+
+#: srcore/default.xml.in.h:55 srcore/verbose.xml.in.h:55
+msgid "unpressed"
+msgstr ""
 
 #: srcore/srctrl.c:1012
 msgid "no parent"
@@ -3376,1201 +3521,1197 @@ msgstr "_Εφαρμογή"
 msgid "on a"
 msgstr "σε"
 
-#: srcore/srctrl.c:2614
+#: srcore/srctrl.c:2629
 msgid "first line"
 msgstr "πρώτη γραμμή"
 
-#: srcore/srctrl.c:2621
+#: srcore/srctrl.c:2636
 msgid "last line"
 msgstr "τελευταία γραμμή"
 
-#: srcore/srctrl.c:2629 srcore/srctrl.c:2631
+#: srcore/srctrl.c:2644 srcore/srctrl.c:2646
 msgid "[first line]"
 msgstr "[πρώτη γραμμή]"
 
-#: srcore/srctrl.c:2636 srcore/srctrl.c:2638
+#: srcore/srctrl.c:2651 srcore/srctrl.c:2653
 msgid "[last line]"
 msgstr "[τελευταία γραμμή]"
 
-#: srcore/srctrl.c:2654
-msgid "empty line"
-msgstr "άδεια γραμμή"
-
-#: srcore/srctrl.c:2661
+#: srcore/srctrl.c:2676
 #, c-format
 msgid "%d empty line"
 msgid_plural "%d empty lines"
 msgstr[0] "%d άδεια γραμμή"
 msgstr[1] "%d άδειες γραμμές"
 
-#: srcore/srctrl.c:2682 srcore/srctrl.c:2684
+#: srcore/srctrl.c:2697 srcore/srctrl.c:2699
 msgid "[empty line]"
 msgstr "[άδεια γραμμή]"
 
-#: srcore/srctrl.c:2689
+#: srcore/srctrl.c:2704
 #, c-format
 msgid "[%d empty line]"
 msgid_plural "[%d empty lines]"
 msgstr[0] "[%d άδεια γραμμή]"
 msgstr[1] "[%d άδειες γραμμές]"
 
-#: srcore/srctrl.c:2771 srcore/srctrl.c:2772 srcore/srctrl.c:2780
-#: srcore/srctrl.c:2935 srcore/srctrl.c:2936
+#: srcore/srctrl.c:2786 srcore/srctrl.c:2787 srcore/srctrl.c:2795
+#: srcore/srctrl.c:2950 srcore/srctrl.c:2951
 msgid "cannot make flat review for current window"
 msgstr "αδυναμία επίπεδης επισκόπησης για το τρέχον παράθυρο"
 
-#: srcore/srctrl.c:3007
+#: srcore/srctrl.c:3022
 msgid "flat review mode"
 msgstr "λειτουργία επίπεδης επισκόπησης"
 
-#: srcore/srctrl.c:3023
+#: srcore/srctrl.c:3038
 msgid "focus tracking mode"
 msgstr "Λειτουργία tracking εστίασης"
 
-#: srcore/srctrl.c:3562
+#: srcore/srctrl.c:3577
 #, c-format
 msgid "\"%s\" entry has invalid value at position %d."
 msgstr "Η καταχώρηση \"%s\" έχει άκυρη τιμή στην θέση %d."
 
-#: srcore/srctrl.c:3583
+#: srcore/srctrl.c:3598
 #, c-format
 msgid "key \"%s\" has an invalid value at position %d."
 msgstr "κλειδί \"%s\"έχει μια μή έγκυρη τιμή στην θέση %d."
 
-#: srcore/srctrl.c:3619
+#: srcore/srctrl.c:3634
 msgid "Can not get key pad commands mapping from gconf."
 msgstr "Αδυναμία λήψης εντολών χαρτογράφησης key pad από το gconf."
 
-#: srcore/srctrl.c:3630
+#: srcore/srctrl.c:3645
 msgid "Can not get braille display commands mapping from gconf."
 msgstr "Αδυναμία λήψης εντολών χαρτογράφησης εμφάνισης μπράϊγ από το gconf."
 
-#: srcore/srctrl.c:3641
+#: srcore/srctrl.c:3656
 msgid "Can not get user defined commands mapping from gconf."
 msgstr ""
 "Αδυναμία λήψης εντολών χαρτογράφησης καθορισμένων από το χρήστη από το gconf."
 
-#: srcore/srctrl.c:3745
+#: srcore/srctrl.c:3760
 msgid "no role available"
 msgstr "δεν υπάρχει διαθέσιμος ρόλος"
 
-#: srcore/srmain.c:68 srcore/srmain.c:71
+#: srcore/srmain.c:69 srcore/srmain.c:72
 msgid "No focus"
 msgstr "Δεν υπάρχει εστίαση"
 
-#: srcore/srmain.c:74
+#: srcore/srmain.c:75
 msgid "No accessible object is focused"
 msgstr "Δεν υπάρχει εστίαση σε προσβάσιμο αντικείμενο"
 
-#: srcore/srmain.c:434
+#: srcore/srmain.c:440
 msgid "unknown location"
 msgstr "άγνωστη τοποθεσία"
 
-#: srcore/srmain.c:471
+#: srcore/srmain.c:477
 msgid "no details"
 msgstr "δεν υπάρχουν λεπτομέρειες"
 
-#: srcore/srmain.c:511
+#: srcore/srmain.c:517
 msgid "layer"
 msgstr "layer"
 
-#: srcore/srmain.c:532
+#: srcore/srmain.c:538
 msgid "back to layer"
 msgstr "πίσω στο  layer"
 
-#: srcore/srmain.c:898
+#: srcore/srmain.c:904
 msgid "cursor on"
 msgstr "δρομέας ενεργός"
 
-#: srcore/srmain.c:898
+#: srcore/srmain.c:904
 msgid "cursor off"
 msgstr "δρομέας ανενεργός"
 
-#: srcore/srmain.c:916
+#: srcore/srmain.c:922
 msgid "current cursor is"
 msgstr "ο τρέχων δρομέας είναι"
 
-#: srcore/srmain.c:934
+#: srcore/srmain.c:940
 msgid "cursor size"
 msgstr "μέγεθος δρομέα"
 
-#: srcore/srmain.c:951
+#: srcore/srmain.c:957
 msgid "cursor magnification on"
 msgstr "μεγέθυνση δρομέα ενεργή"
 
-#: srcore/srmain.c:952
+#: srcore/srmain.c:958
 msgid "cursor magnification off"
 msgstr "μεγέθυνση δρομέα ανενεργή"
 
-#: srcore/srmain.c:970
+#: srcore/srmain.c:976
 msgid "cursor color"
 msgstr "χρώμα δρομέα"
 
-#: srcore/srmain.c:987
+#: srcore/srmain.c:993
 msgid "crosshair on"
 msgstr "crosshair on"
 
-#: srcore/srmain.c:987
+#: srcore/srmain.c:993
 msgid "crosshair off"
 msgstr "crosshair off"
 
-#: srcore/srmain.c:1004
+#: srcore/srmain.c:1010
 msgid "crosshair clip on"
 msgstr "crosshair clip on"
 
-#: srcore/srmain.c:1005
+#: srcore/srmain.c:1011
 msgid "crosshair clip off"
 msgstr "crosshair clip off"
 
-#: srcore/srmain.c:1023
+#: srcore/srmain.c:1029
 msgid "crosshair size"
 msgstr "μέγεθος crosshair "
 
-#: srcore/srmain.c:1041
+#: srcore/srmain.c:1047
 msgid "crosshair color"
 msgstr "χρώμα crosshair "
 
-#: srcore/srmain.c:1059
+#: srcore/srmain.c:1065
 msgid "zoomer placement left"
 msgstr "τοποθέτηση μεγεθυντή αριστερά"
 
-#: srcore/srmain.c:1077
+#: srcore/srmain.c:1083
 msgid "zoomer placement top"
 msgstr "τοποθέτηση μεγεθυντή πάνω"
 
-#: srcore/srmain.c:1095
+#: srcore/srmain.c:1101
 msgid "zoomer placement width"
 msgstr "πλάτος τοποθέτησης μεγεθυντή"
 
-#: srcore/srmain.c:1113
+#: srcore/srmain.c:1119
 msgid "zoomer placement height"
 msgstr "ύψος τοποθέτησης μεγεθυντή"
 
-#: srcore/srmain.c:1143
+#: srcore/srmain.c:1149
 #, fuzzy
 msgid "magnifier target"
 msgstr "επίκεντρο μεγεθυντή"
 
-#: srcore/srmain.c:1161
+#: srcore/srmain.c:1167
 msgid "magnifier source"
 msgstr "πηγή μεγεθυντή"
 
-#: srcore/srmain.c:1179
+#: srcore/srmain.c:1185
 msgid "zoom factor x"
 msgstr "παράγοντας μεγέθυνσης x"
 
-#: srcore/srmain.c:1197
+#: srcore/srmain.c:1203
 msgid "zoom factor y"
 msgstr "παράγοντας μεγέθυνσης y"
 
-#: srcore/srmain.c:1214
+#: srcore/srmain.c:1220
 msgid "zoom factor locked"
 msgstr "παράγοντας μεγέθυνσης κλειδωμένος"
 
-#: srcore/srmain.c:1215
+#: srcore/srmain.c:1221
 msgid "zoom factor unlocked"
 msgstr "παράγοντας μεγέθυνσης ξεκλειδώθηκε"
 
-#: srcore/srmain.c:1232
+#: srcore/srmain.c:1238
 msgid "invert on"
 msgstr "αναστροφή ενεργή"
 
-#: srcore/srmain.c:1232
+#: srcore/srmain.c:1238
 msgid "invert off"
 msgstr "αναστροφή ανενεργή"
 
-#: srcore/srmain.c:1250
+#: srcore/srmain.c:1256
 msgid "magnifier smoothing type"
 msgstr "τύπος εξομάλυνσης μεγεθυντή"
 
-#: srcore/srmain.c:1273
+#: srcore/srmain.c:1279
 msgid "mouse tracking mode"
 msgstr "λειτουργία mouse tracking"
 
-#: srcore/srmain.c:1295
+#: srcore/srmain.c:1301
 msgid "panning on"
 msgstr "panning on"
 
-#: srcore/srmain.c:1295
+#: srcore/srmain.c:1301
 msgid "panning off"
 msgstr "panning off"
 
-#: srcore/srmain.c:1667
+#: srcore/srmain.c:1673
 msgid "alt"
 msgstr "alt"
 
-#: srcore/srmain.c:1672
+#: srcore/srmain.c:1678
 msgid "control"
 msgstr "control"
 
-#: srcore/srmain.c:1677
+#: srcore/srmain.c:1683
 msgid "shift"
 msgstr "shift"
 
-#: srcore/srmain.c:1682
+#: srcore/srmain.c:1688
 msgid "caps lock"
 msgstr "caps lock"
 
-#: srcore/srmain.c:1686
+#: srcore/srmain.c:1692
 msgid "num lock"
 msgstr "num lock"
 
-#: srcore/srmain.c:1694 srcore/srmain.c:1738
+#: srcore/srmain.c:1700 srcore/srmain.c:1744
 msgid "right"
 msgstr "δεξιά"
 
-#: srcore/srmain.c:1696 srcore/srmain.c:1740
+#: srcore/srmain.c:1702 srcore/srmain.c:1746
 msgid "left"
 msgstr "αριστερά"
 
-#: srcore/srmain.c:1730
+#: srcore/srmain.c:1736
 msgid "home"
 msgstr "home"
 
-#: srcore/srmain.c:1732
+#: srcore/srmain.c:1738
 msgid "end"
 msgstr "end"
 
-#: srcore/srmain.c:1734
+#: srcore/srmain.c:1740
 msgid "page up"
 msgstr "page up"
 
-#: srcore/srmain.c:1736
+#: srcore/srmain.c:1742
 msgid "page down"
 msgstr "page down"
 
-#: srcore/srmain.c:1742
+#: srcore/srmain.c:1748
 msgid "down"
 msgstr "κάτω"
 
-#: srcore/srmain.c:1744
+#: srcore/srmain.c:1750
 msgid "up"
 msgstr "πάνω"
 
-#: srcore/srmain.c:1746
+#: srcore/srmain.c:1752
 msgid "backspace"
 msgstr "backspace"
 
-#: srcore/srmain.c:1748
+#: srcore/srmain.c:1754
 msgid "delete"
 msgstr "delete"
 
-#: srcore/srmain.c:1750
+#: srcore/srmain.c:1756
 msgid "escape"
 msgstr "escape"
 
-#: srcore/srmain.c:2269
+#: srcore/srmain.c:2275
 msgid "Welcome to Gnopernicus"
 msgstr "Καλώς ήλθατε στο Gnopernicus"
 
-#: srcore/srmain.c:2373
+#: srcore/srmain.c:2379
 msgid "braille device can not be initialized"
 msgstr "αδυναμία αρχικοποίησης συσκευής μπράϊγ"
 
-#: srcore/srmain.c:2385
+#: srcore/srmain.c:2391
 msgid "Gnopernicus is now exiting. Have a nice day!"
 msgstr "Ο Gnopernicus τώρα τερματίζεται. Να περνάτε καλά!"
 
-#: srcore/srmain.c:2662
+#: srcore/srmain.c:2668
 msgid "srcore"
 msgstr "srcore"
 
-#: srcore/srpres.c:757
+#: srcore/srpres.c:808
 msgid "UNK"
 msgstr ""
 
-#: srcore/srpres.c:757
+#: srcore/srpres.c:808
 msgid "UNKNOWN"
 msgstr "ΑΓΝΩΣΤΟ"
 
-#: srcore/srpres.c:757
+#: srcore/srpres.c:808
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: srcore/srpres.c:758
+#: srcore/srpres.c:809
 msgid "???"
 msgstr ";;;"
 
-#: srcore/srpres.c:758
+#: srcore/srpres.c:809
 msgid "INVALID"
 msgstr "ΜΗ ΕΓΚΥΡΟ"
 
-#: srcore/srpres.c:758
+#: srcore/srpres.c:809
 msgid "Invalid"
 msgstr "Μη έγκυρο"
 
-#: srcore/srpres.c:759
+#: srcore/srpres.c:810
 msgid "ALR"
 msgstr ""
 
-#: srcore/srpres.c:759
+#: srcore/srpres.c:810
 msgid "ALERT"
 msgstr ""
 
-#: srcore/srpres.c:760
+#: srcore/srpres.c:811
 msgid "CNV"
 msgstr ""
 
-#: srcore/srpres.c:760
+#: srcore/srpres.c:811
 msgid "CANVAS"
 msgstr ""
 
-#: srcore/srpres.c:760
+#: srcore/srpres.c:811
 msgid "Canvas"
 msgstr ""
 
-#: srcore/srpres.c:761
+#: srcore/srpres.c:812
 msgid "CHK"
 msgstr ""
 
-#: srcore/srpres.c:761
+#: srcore/srpres.c:812
 msgid "CHECK_BOX"
 msgstr ""
 
-#: srcore/srpres.c:761
+#: srcore/srpres.c:812
 msgid "Check box"
 msgstr ""
 
-#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+#: srcore/srpres.c:813 srcore/srpres.c:836 srcore/srpres.c:846
 msgid "MIT"
 msgstr ""
 
-#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+#: srcore/srpres.c:813 srcore/srpres.c:836 srcore/srpres.c:846
 msgid "MENU ITEM"
 msgstr ""
 
-#: srcore/srpres.c:762
+#: srcore/srpres.c:813
 msgid "Check Menu item"
 msgstr ""
 
-#: srcore/srpres.c:763
+#: srcore/srpres.c:814
 msgid "CCH"
 msgstr ""
 
-#: srcore/srpres.c:763
+#: srcore/srpres.c:814
 msgid "COLOR CHOOSER"
 msgstr ""
 
-#: srcore/srpres.c:763
+#: srcore/srpres.c:814
 msgid "Color chooser"
 msgstr "Επιλογέας χρώματος"
 
-#: srcore/srpres.c:764
+#: srcore/srpres.c:815
 msgid "CHD"
 msgstr ""
 
-#: srcore/srpres.c:764
+#: srcore/srpres.c:815
 msgid "COLUMN HEADER"
 msgstr ""
 
-#: srcore/srpres.c:764
+#: srcore/srpres.c:815
 #, fuzzy
 msgid "Column header"
 msgstr "Μέτρηση χαρακτήρων"
 
-#: srcore/srpres.c:765
+#: srcore/srpres.c:816
 msgid "CBO"
 msgstr ""
 
-#: srcore/srpres.c:765
+#: srcore/srpres.c:816
 msgid "COMBO BOX"
 msgstr ""
 
-#: srcore/srpres.c:765
+#: srcore/srpres.c:816
 msgid "Combo box"
 msgstr ""
 
-#: srcore/srpres.c:766
+#: srcore/srpres.c:817
 msgid "DIC"
 msgstr ""
 
-#: srcore/srpres.c:766
+#: srcore/srpres.c:817
 msgid "DESKTOP ICON"
 msgstr ""
 
-#: srcore/srpres.c:766
+#: srcore/srpres.c:817
 #, fuzzy
 msgid "Desktop icon"
 msgstr "_Επιφάνεια Εργασίας"
 
-#: srcore/srpres.c:767
+#: srcore/srpres.c:818
 msgid "DFR"
 msgstr ""
 
-#: srcore/srpres.c:767
+#: srcore/srpres.c:818
 msgid "DESKTOP FRAME"
 msgstr ""
 
-#: srcore/srpres.c:767
+#: srcore/srpres.c:818
 #, fuzzy
 msgid "Desktop frame"
 msgstr "_Επιφάνεια Εργασίας"
 
-#: srcore/srpres.c:768
+#: srcore/srpres.c:819
 msgid "DLG"
 msgstr ""
 
-#: srcore/srpres.c:768
+#: srcore/srpres.c:819
 msgid "DIALOG"
 msgstr ""
 
-#: srcore/srpres.c:768
+#: srcore/srpres.c:819
 #, fuzzy
 msgid "Dialog"
 msgstr "Kilo"
 
-#: srcore/srpres.c:769
+#: srcore/srpres.c:820
 msgid "DIP"
 msgstr ""
 
-#: srcore/srpres.c:769
+#: srcore/srpres.c:820
 msgid "DIRECTORY PANE"
 msgstr ""
 
-#: srcore/srpres.c:769
+#: srcore/srpres.c:820
 msgid "Directory pane"
 msgstr ""
 
-#: srcore/srpres.c:770
+#: srcore/srpres.c:821
 msgid "FCH"
 msgstr ""
 
-#: srcore/srpres.c:770
+#: srcore/srpres.c:821
 msgid "FILE CHOOSER"
 msgstr ""
 
-#: srcore/srpres.c:770
+#: srcore/srpres.c:821
 msgid "File chooser"
 msgstr ""
 
-#: srcore/srpres.c:771
+#: srcore/srpres.c:822
 msgid "FLR"
 msgstr ""
 
-#: srcore/srpres.c:771
+#: srcore/srpres.c:822
 msgid "FILLER"
 msgstr ""
 
-#: srcore/srpres.c:771
+#: srcore/srpres.c:822
 #, fuzzy
 msgid "Filler"
 msgstr "μπράιγ"
 
-#: srcore/srpres.c:772
+#: srcore/srpres.c:823
 msgid "FRM"
 msgstr ""
 
-#: srcore/srpres.c:772
+#: srcore/srpres.c:823
 msgid "FRAME"
 msgstr ""
 
-#: srcore/srpres.c:772
+#: srcore/srpres.c:823
 #, fuzzy
 msgid "Frame"
 msgstr "βαρεία"
 
-#: srcore/srpres.c:773
+#: srcore/srpres.c:824
 msgid "GPN"
 msgstr ""
 
-#: srcore/srpres.c:773
+#: srcore/srpres.c:824
 msgid "GLASS PANE"
 msgstr ""
 
-#: srcore/srpres.c:773
+#: srcore/srpres.c:824
 msgid "Glass pane"
 msgstr ""
 
-#: srcore/srpres.c:774
+#: srcore/srpres.c:825
 msgid "HTM"
 msgstr ""
 
-#: srcore/srpres.c:774
+#: srcore/srpres.c:825
 msgid "HTML CONTAINER"
 msgstr ""
 
-#: srcore/srpres.c:774
+#: srcore/srpres.c:825
 msgid "H T M L container"
 msgstr ""
 
-#: srcore/srpres.c:775 srcore/srpres.c:780
+#: srcore/srpres.c:826 srcore/srpres.c:831
 msgid "LNK"
 msgstr ""
 
-#: srcore/srpres.c:775 srcore/srpres.c:780
+#: srcore/srpres.c:826 srcore/srpres.c:831
 msgid "LINK"
 msgstr ""
 
-#: srcore/srpres.c:775 srcore/srpres.c:780
+#: srcore/srpres.c:826 srcore/srpres.c:831
 msgid "link"
 msgstr "σύνδεσμος"
 
-#: srcore/srpres.c:776
+#: srcore/srpres.c:827
 msgid "ICO"
 msgstr ""
 
-#: srcore/srpres.c:776
+#: srcore/srpres.c:827
 msgid "ICON"
 msgstr "ΕΙΚΟΝΙΔΙΟ"
 
-#: srcore/srpres.c:776
+#: srcore/srpres.c:827
 msgid "Icon"
 msgstr "Εικονίδιο"
 
-#: srcore/srpres.c:777
+#: srcore/srpres.c:828
 msgid "IFR"
 msgstr ""
 
-#: srcore/srpres.c:777
+#: srcore/srpres.c:828
 msgid "INTERNAL FRAME"
 msgstr ""
 
-#: srcore/srpres.c:777
+#: srcore/srpres.c:828
 msgid "Internal frame"
 msgstr ""
 
-#: srcore/srpres.c:778
+#: srcore/srpres.c:829
 msgid "LBL"
 msgstr ""
 
-#: srcore/srpres.c:778
+#: srcore/srpres.c:829
 msgid "LABEL"
 msgstr "ΕΤΙΚΕΤΑ"
 
-#: srcore/srpres.c:778
+#: srcore/srpres.c:829
 msgid "Label"
 msgstr "Ετικέτα"
 
-#: srcore/srpres.c:779
+#: srcore/srpres.c:830
 msgid "LPN"
 msgstr ""
 
-#: srcore/srpres.c:779
+#: srcore/srpres.c:830
 msgid "LAYERED PANE"
 msgstr ""
 
-#: srcore/srpres.c:779
+#: srcore/srpres.c:830
 #, fuzzy
 msgid "Layered pane"
 msgstr "Αριθμός Layer"
 
-#: srcore/srpres.c:781
+#: srcore/srpres.c:832
 msgid "LST"
 msgstr ""
 
-#: srcore/srpres.c:781
+#: srcore/srpres.c:832
 msgid "LIST"
 msgstr "ΛΙΣΤΑ"
 
-#: srcore/srpres.c:781
+#: srcore/srpres.c:832
 msgid "List"
 msgstr "Λίστα"
 
-#: srcore/srpres.c:782
+#: srcore/srpres.c:833
 msgid "LIT"
 msgstr ""
 
-#: srcore/srpres.c:782
+#: srcore/srpres.c:833
 msgid "LIST ITEM"
 msgstr ""
 
-#: srcore/srpres.c:782
+#: srcore/srpres.c:833
 #, fuzzy
 msgid "List item"
 msgstr "αντικείμενο"
 
-#: srcore/srpres.c:783
+#: srcore/srpres.c:834
 msgid "MNU"
 msgstr ""
 
-#: srcore/srpres.c:783
+#: srcore/srpres.c:834
 msgid "MENU"
 msgstr "ΜΕΝΟΥ"
 
-#: srcore/srpres.c:783
+#: srcore/srpres.c:834
 msgid "Menu"
 msgstr "Μενού"
 
-#: srcore/srpres.c:784
+#: srcore/srpres.c:835
 msgid "MBR"
 msgstr ""
 
-#: srcore/srpres.c:784
+#: srcore/srpres.c:835
 msgid "MENU BAR"
 msgstr ""
 
-#: srcore/srpres.c:784
+#: srcore/srpres.c:835
 #, fuzzy
 msgid "Menu bar"
 msgstr "δεν υπάρχει εργαλειοθήκη μενού"
 
-#: srcore/srpres.c:785
+#: srcore/srpres.c:836
 #, fuzzy
 msgid "Menu item"
 msgstr "αντικείμενο"
 
-#: srcore/srpres.c:786
+#: srcore/srpres.c:837
 msgid "OPN"
 msgstr ""
 
-#: srcore/srpres.c:786
+#: srcore/srpres.c:837
 msgid "OPTION PANE"
 msgstr ""
 
-#: srcore/srpres.c:786
+#: srcore/srpres.c:837
 msgid "Option pane"
 msgstr ""
 
-#: srcore/srpres.c:787
+#: srcore/srpres.c:838
 msgid "PGT"
 msgstr ""
 
-#: srcore/srpres.c:787
+#: srcore/srpres.c:838
 msgid "PAGE TAB"
 msgstr ""
 
-#: srcore/srpres.c:787
+#: srcore/srpres.c:838
 msgid "Page tab"
 msgstr ""
 
-#: srcore/srpres.c:788
+#: srcore/srpres.c:839
 msgid "PTL"
 msgstr ""
 
-#: srcore/srpres.c:788
+#: srcore/srpres.c:839
 msgid "PAGE TAB LIST"
 msgstr ""
 
-#: srcore/srpres.c:788
+#: srcore/srpres.c:839
 msgid "Page tab list"
 msgstr ""
 
-#: srcore/srpres.c:789
+#: srcore/srpres.c:840
 msgid "PNL"
 msgstr ""
 
-#: srcore/srpres.c:789
+#: srcore/srpres.c:840
 msgid "PANEL"
 msgstr ""
 
-#: srcore/srpres.c:789
+#: srcore/srpres.c:840
 msgid "Panel"
 msgstr ""
 
-#: srcore/srpres.c:790
+#: srcore/srpres.c:841
 msgid "PWD"
 msgstr ""
 
-#: srcore/srpres.c:790
+#: srcore/srpres.c:841
 msgid "PASSWORD TEXT"
 msgstr ""
 
-#: srcore/srpres.c:790
+#: srcore/srpres.c:841
 msgid "Password text"
 msgstr ""
 
-#: srcore/srpres.c:791
+#: srcore/srpres.c:842
 msgid "PMN"
 msgstr ""
 
-#: srcore/srpres.c:791
+#: srcore/srpres.c:842
 msgid "POPUP MENU"
 msgstr ""
 
-#: srcore/srpres.c:791
+#: srcore/srpres.c:842
 #, fuzzy
 msgid "Popup menu"
 msgstr "πήγαινε στο μενού"
 
-#: srcore/srpres.c:792
+#: srcore/srpres.c:843
 msgid "PRG"
 msgstr ""
 
-#: srcore/srpres.c:792
+#: srcore/srpres.c:843
 msgid "PROGRESS BAR"
 msgstr ""
 
-#: srcore/srpres.c:792
+#: srcore/srpres.c:843
 msgid "Progress bar"
 msgstr ""
 
-#: srcore/srpres.c:793
+#: srcore/srpres.c:844
 msgid "PBT"
 msgstr ""
 
-#: srcore/srpres.c:793
+#: srcore/srpres.c:844
 msgid "PUSH BUTTON"
 msgstr ""
 
-#: srcore/srpres.c:793
+#: srcore/srpres.c:844
 msgid "Push button"
 msgstr ""
 
-#: srcore/srpres.c:794
+#: srcore/srpres.c:845
 msgid "RAD"
 msgstr ""
 
-#: srcore/srpres.c:794
+#: srcore/srpres.c:845
 msgid "RADIO BUTTON"
 msgstr ""
 
-#: srcore/srpres.c:794
+#: srcore/srpres.c:845
 msgid "Radio button"
 msgstr ""
 
-#: srcore/srpres.c:795
+#: srcore/srpres.c:846
 msgid "Radio Menu item"
 msgstr ""
 
-#: srcore/srpres.c:796
+#: srcore/srpres.c:847
 msgid "RPN"
 msgstr ""
 
-#: srcore/srpres.c:796
+#: srcore/srpres.c:847
 msgid "ROOT PANE"
 msgstr ""
 
-#: srcore/srpres.c:796
+#: srcore/srpres.c:847
 #, fuzzy
 msgid "Root pane"
 msgstr "μετάβαση στο μητρικό"
 
-#: srcore/srpres.c:797
+#: srcore/srpres.c:848
 msgid "RHD"
 msgstr ""
 
-#: srcore/srpres.c:797
+#: srcore/srpres.c:848
 msgid "ROW HEADER"
 msgstr ""
 
-#: srcore/srpres.c:797
+#: srcore/srpres.c:848
 msgid "Row header"
 msgstr ""
 
-#: srcore/srpres.c:798
+#: srcore/srpres.c:849
 msgid "SCR"
 msgstr ""
 
-#: srcore/srpres.c:798
+#: srcore/srpres.c:849
 msgid "SCROLL BAR"
 msgstr "ΓΡΑΜΜΗ ΚΥΛΙΣΗΣ"
 
-#: srcore/srpres.c:798
+#: srcore/srpres.c:849
 msgid "Scroll bar"
 msgstr "Γραμμή κύλισης"
 
-#: srcore/srpres.c:799 srcore/srpres.c:827
+#: srcore/srpres.c:850 srcore/srpres.c:878
 msgid "SPN"
 msgstr ""
 
-#: srcore/srpres.c:799
+#: srcore/srpres.c:850
 msgid "SCROLL PANE"
 msgstr ""
 
-#: srcore/srpres.c:799
+#: srcore/srpres.c:850
 msgid "Scroll pane"
 msgstr ""
 
-#: srcore/srpres.c:800
+#: srcore/srpres.c:851
 msgid "SEP"
 msgstr ""
 
-#: srcore/srpres.c:800
+#: srcore/srpres.c:851
 msgid "SEPARATOR"
 msgstr "ΔΙΑΧΩΡΙΣΤΙΚΟ"
 
-#: srcore/srpres.c:800
+#: srcore/srpres.c:851
 msgid "Separator"
 msgstr "Διαχωριστικό"
 
-#: srcore/srpres.c:801
+#: srcore/srpres.c:852
 msgid "SLD"
 msgstr ""
 
-#: srcore/srpres.c:801
+#: srcore/srpres.c:852
 msgid "SLIDER"
 msgstr ""
 
-#: srcore/srpres.c:801
+#: srcore/srpres.c:852
 #, fuzzy
 msgid "Slider"
 msgstr "Sierra"
 
-#: srcore/srpres.c:802
+#: srcore/srpres.c:853
 msgid "SPP"
 msgstr ""
 
-#: srcore/srpres.c:802
+#: srcore/srpres.c:853
 msgid "SPLIT PANE"
 msgstr ""
 
-#: srcore/srpres.c:802
+#: srcore/srpres.c:853
 msgid "Split pane"
 msgstr ""
 
-#: srcore/srpres.c:803
+#: srcore/srpres.c:854
 msgid "STA"
 msgstr ""
 
-#: srcore/srpres.c:803
+#: srcore/srpres.c:854
 msgid "STATUS BAR"
 msgstr "ΓΡΑΜΜΗ ΚΑΤΑΣΤΑΣΗΣ"
 
-#: srcore/srpres.c:803
+#: srcore/srpres.c:854
 msgid "Status bar"
 msgstr "Γραμμή κατάστασης"
 
-#: srcore/srpres.c:804
+#: srcore/srpres.c:855
 msgid "TAB"
 msgstr ""
 
-#: srcore/srpres.c:804
+#: srcore/srpres.c:855
 msgid "TABLE"
 msgstr "ΠΙΝΑΚΑΣ"
 
-#: srcore/srpres.c:804
+#: srcore/srpres.c:855
 msgid "Table"
 msgstr "Πίνακας"
 
-#: srcore/srpres.c:805
+#: srcore/srpres.c:856
 msgid "CEL"
 msgstr ""
 
-#: srcore/srpres.c:805
+#: srcore/srpres.c:856
 msgid "TABLE CELL"
 msgstr "ΚΕΛΙ ΠΙΝΑΚΑ"
 
-#: srcore/srpres.c:805
+#: srcore/srpres.c:856
 msgid "Table cell"
 msgstr "Κελι πίνακα"
 
-#: srcore/srpres.c:806 srcore/srpres.c:831
+#: srcore/srpres.c:857 srcore/srpres.c:882
 msgid "TCH"
 msgstr ""
 
-#: srcore/srpres.c:806
+#: srcore/srpres.c:857
 msgid "TABLE COLUMN HEADER"
 msgstr ""
 
-#: srcore/srpres.c:806
+#: srcore/srpres.c:857
 msgid "Table column header"
 msgstr ""
 
-#: srcore/srpres.c:807
+#: srcore/srpres.c:858
 msgid "TRH"
 msgstr ""
 
-#: srcore/srpres.c:807
+#: srcore/srpres.c:858
 msgid "TABLE ROW HEADER"
 msgstr ""
 
-#: srcore/srpres.c:807
+#: srcore/srpres.c:858
 msgid "Table row header"
 msgstr ""
 
-#: srcore/srpres.c:808 srcore/srpres.c:809
+#: srcore/srpres.c:859 srcore/srpres.c:860
 msgid "TXT"
 msgstr ""
 
-#: srcore/srpres.c:808
+#: srcore/srpres.c:859
 msgid "MULTI LINE TEXT"
 msgstr ""
 
-#: srcore/srpres.c:808
+#: srcore/srpres.c:859
 msgid "Multi Line Text"
 msgstr ""
 
-#: srcore/srpres.c:809
+#: srcore/srpres.c:860
 msgid "SINGLE LINE TEXT"
 msgstr ""
 
-#: srcore/srpres.c:809
+#: srcore/srpres.c:860
 msgid "Single Line Text"
 msgstr ""
 
-#: srcore/srpres.c:810
+#: srcore/srpres.c:861
 msgid "TOG"
 msgstr ""
 
-#: srcore/srpres.c:810
+#: srcore/srpres.c:861
 msgid "TOGGLE BUTTON"
 msgstr ""
 
-#: srcore/srpres.c:810
+#: srcore/srpres.c:861
 msgid "Toggle button"
 msgstr ""
 
-#: srcore/srpres.c:811
+#: srcore/srpres.c:862
 msgid "TOL"
 msgstr ""
 
-#: srcore/srpres.c:811
+#: srcore/srpres.c:862
 msgid "TOOL BAR"
 msgstr ""
 
-#: srcore/srpres.c:811
+#: srcore/srpres.c:862
 #, fuzzy
 msgid "Tool bar"
 msgstr "δεν υπάρχει εργαλειοθήκη"
 
-#: srcore/srpres.c:812
+#: srcore/srpres.c:863
 msgid "TIP"
 msgstr ""
 
-#: srcore/srpres.c:812
+#: srcore/srpres.c:863
 msgid "TOOL TIP"
 msgstr ""
 
-#: srcore/srpres.c:812
+#: srcore/srpres.c:863
 msgid "Tool tip"
 msgstr ""
 
-#: srcore/srpres.c:813
+#: srcore/srpres.c:864
 msgid "TRE"
 msgstr ""
 
-#: srcore/srpres.c:813
+#: srcore/srpres.c:864
 msgid "TREE"
 msgstr ""
 
-#: srcore/srpres.c:813
+#: srcore/srpres.c:864
 msgid "Tree"
 msgstr ""
 
-#: srcore/srpres.c:814
+#: srcore/srpres.c:865
 msgid "TRI"
 msgstr ""
 
-#: srcore/srpres.c:814
+#: srcore/srpres.c:865
 msgid "TREE ITEM"
 msgstr ""
 
-#: srcore/srpres.c:814
+#: srcore/srpres.c:865
 #, fuzzy
 msgid "Tree item"
 msgstr "Επιλεγμένο αντικείμενο"
 
-#: srcore/srpres.c:815
+#: srcore/srpres.c:866
 msgid "TRT"
 msgstr ""
 
-#: srcore/srpres.c:815
+#: srcore/srpres.c:866
 msgid "TREE TABLE"
 msgstr ""
 
-#: srcore/srpres.c:815
+#: srcore/srpres.c:866
 msgid "Tree table"
 msgstr ""
 
-#: srcore/srpres.c:816
+#: srcore/srpres.c:867
 msgid "VWP"
 msgstr ""
 
-#: srcore/srpres.c:816
+#: srcore/srpres.c:867
 msgid "VIEWPORT"
 msgstr ""
 
-#: srcore/srpres.c:816
+#: srcore/srpres.c:867
 msgid "Viewport"
 msgstr ""
 
-#: srcore/srpres.c:817
+#: srcore/srpres.c:868
 msgid "WND"
 msgstr ""
 
-#: srcore/srpres.c:817
+#: srcore/srpres.c:868
 msgid "WINDOW"
 msgstr "ΠΑΡΑΘΥΡΟ"
 
-#: srcore/srpres.c:817
+#: srcore/srpres.c:868
 msgid "Window"
 msgstr "Παράθυρο"
 
-#: srcore/srpres.c:818
+#: srcore/srpres.c:869
 msgid "ACC"
 msgstr ""
 
-#: srcore/srpres.c:818
+#: srcore/srpres.c:869
 msgid "ACCELERATOR LABEL"
 msgstr ""
 
-#: srcore/srpres.c:818
+#: srcore/srpres.c:869
 msgid "Accelerator label"
 msgstr ""
 
-#: srcore/srpres.c:819
+#: srcore/srpres.c:870
 msgid "ANI"
 msgstr ""
 
-#: srcore/srpres.c:819
+#: srcore/srpres.c:870
 msgid "ANIMATION"
 msgstr "ΚΙΝΗΣΗ"
 
-#: srcore/srpres.c:819
+#: srcore/srpres.c:870
 #, fuzzy
 msgid "Animation"
 msgstr "Κίνηση"
 
-#: srcore/srpres.c:820
+#: srcore/srpres.c:871
 msgid "ARR"
 msgstr ""
 
-#: srcore/srpres.c:820
+#: srcore/srpres.c:871
 msgid "ARROW"
 msgstr ""
 
-#: srcore/srpres.c:820
+#: srcore/srpres.c:871
 msgid "Arrow"
 msgstr ""
 
-#: srcore/srpres.c:821
+#: srcore/srpres.c:872
 msgid "CAL"
 msgstr ""
 
-#: srcore/srpres.c:821
+#: srcore/srpres.c:872
 msgid "CALENDAR"
 msgstr ""
 
-#: srcore/srpres.c:821
+#: srcore/srpres.c:872
 msgid "Calendar"
 msgstr ""
 
-#: srcore/srpres.c:822
+#: srcore/srpres.c:873
 msgid "DAT"
 msgstr ""
 
-#: srcore/srpres.c:822
+#: srcore/srpres.c:873
 msgid "DATE EDITOR"
 msgstr ""
 
-#: srcore/srpres.c:822
+#: srcore/srpres.c:873
 msgid "Date editor"
 msgstr ""
 
-#: srcore/srpres.c:823
+#: srcore/srpres.c:874
 msgid "DIL"
 msgstr ""
 
-#: srcore/srpres.c:823
+#: srcore/srpres.c:874
 msgid "DIAL"
 msgstr ""
 
-#: srcore/srpres.c:823
+#: srcore/srpres.c:874
 #, fuzzy
 msgid "Dial"
 msgstr "_Διπλό"
 
-#: srcore/srpres.c:824
+#: srcore/srpres.c:875
 msgid "DRW"
 msgstr ""
 
-#: srcore/srpres.c:824
+#: srcore/srpres.c:875
 msgid "DRAWING AREA"
 msgstr "ΠΕΡΙΟΧΗ ΣΧΕΔΙΑΣΗΣ"
 
-#: srcore/srpres.c:824
+#: srcore/srpres.c:875
 msgid "Drawing area"
 msgstr "Περιοχή σχεδίασης"
 
-#: srcore/srpres.c:825
+#: srcore/srpres.c:876
 msgid "FNT"
 msgstr ""
 
-#: srcore/srpres.c:825
+#: srcore/srpres.c:876
 msgid "FONT CHOOSER"
 msgstr ""
 
-#: srcore/srpres.c:825
+#: srcore/srpres.c:876
 #, fuzzy
 msgid "Font chooser"
 msgstr "Μέγεθος γραμματοσειράς"
 
-#: srcore/srpres.c:826
+#: srcore/srpres.c:877
 msgid "IMG"
 msgstr ""
 
-#: srcore/srpres.c:826
+#: srcore/srpres.c:877
 msgid "IMAGE"
 msgstr "ΕΙΚΟΝΑ"
 
-#: srcore/srpres.c:826
+#: srcore/srpres.c:877
 msgid "Image"
 msgstr "Εικόνα"
 
-#: srcore/srpres.c:827
+#: srcore/srpres.c:878
 msgid "SPIN BUTTON"
 msgstr ""
 
-#: srcore/srpres.c:827
+#: srcore/srpres.c:878
 msgid "Spin button"
 msgstr ""
 
-#: srcore/srpres.c:828
+#: srcore/srpres.c:879
 msgid "TRM"
 msgstr ""
 
-#: srcore/srpres.c:828
+#: srcore/srpres.c:879
 msgid "TERMINAL"
 msgstr "ΤΕΡΜΑΤΙΚΟ"
 
-#: srcore/srpres.c:828
+#: srcore/srpres.c:879
 msgid "Terminal"
 msgstr "Τερματικό"
 
-#: srcore/srpres.c:829
+#: srcore/srpres.c:880
 msgid "EXT"
 msgstr ""
 
-#: srcore/srpres.c:829
+#: srcore/srpres.c:880
 msgid "EXTENDED"
 msgstr ""
 
-#: srcore/srpres.c:829
+#: srcore/srpres.c:880
 msgid "Extended"
 msgstr ""
 
-#: srcore/srpres.c:830
+#: srcore/srpres.c:881
 msgid "TLI"
 msgstr ""
 
-#: srcore/srpres.c:830
+#: srcore/srpres.c:881
 msgid "TABLE LINE"
 msgstr "ΓΡΑΜΜΗ ΠΙΝΑΚΑ"
 
-#: srcore/srpres.c:830
+#: srcore/srpres.c:881
 msgid "Table line"
 msgstr "Γραμμή πίνακα"
 
-#: srcore/srpres.c:831
+#: srcore/srpres.c:882
 msgid "TABLE COLUMNS HEADER"
 msgstr ""
 
-#: srcore/srpres.c:831
+#: srcore/srpres.c:882
 msgid "Table columns header"
 msgstr ""
 
-#: srcore/srpres.c:832
+#: srcore/srpres.c:883
 msgid "TIT"
 msgstr ""
 
-#: srcore/srpres.c:832
+#: srcore/srpres.c:883
 msgid "TITLE BAR"
 msgstr ""
 
-#: srcore/srpres.c:832
+#: srcore/srpres.c:883
 #, fuzzy
 msgid "Title bar"
 msgstr "δεν υπάρχει εργαλειοθήκη"
 
-#: srcore/srpres.c:833
+#: srcore/srpres.c:884
 msgid "EDB"
 msgstr ""
 
-#: srcore/srpres.c:833
+#: srcore/srpres.c:884
 msgid "EDIT BAR"
 msgstr ""
 
-#: srcore/srpres.c:833
+#: srcore/srpres.c:884
 #, fuzzy
 msgid "Edit bar"
 msgstr "Επεξεργασία λεξικού"
@@ -4580,368 +4721,368 @@ msgstr "Επεξεργασία λεξικού"
 msgid "Incorrect parameters for voice \"%s%s\""
 msgstr "Άκυρες παράμετροι για φωνή \"%s%s\""
 
-#: srcore/srspc.c:481
+#: srcore/srspc.c:484
 #, c-format
 msgid "failed to send to speech next string \"%s\""
 msgstr "αποτυχία αποστολής επόμενου αλφαριθμητικού \"%s\" στην ομιλία"
 
-#: srcore/srspc.c:547
+#: srcore/srspc.c:550
 #, c-format
 msgid "could not create/modify voice \"%s\""
 msgstr "αδυναμία δημιουργίας/τροποποίησς φωνής \"%s\""
 
-#: srcore/srspc.c:707
+#: srcore/srspc.c:710
 #, c-format
 msgid "voice \"%s\" will sound this way"
 msgstr "η φωνή  \"%s\" θα ακούγετε με αυτό τον τρόπο"
 
-#: srcore/srspc.c:712
+#: srcore/srspc.c:715
 #, c-format
 msgid "could not test voice \"%s\""
 msgstr "αδυναμία δοκιμής φωνής \"%s\""
 
-#: srcore/srspc.c:801
+#: srcore/srspc.c:804
 #, c-format
 msgid "value not supported for speech count mode \"%s\""
 msgstr "η τιμή δεν υποστηρίζεται για την λειτουργία μέτρησης ομιλίας \"%s\""
 
-#: srcore/srspc.c:837
+#: srcore/srspc.c:840
 #, c-format
 msgid "value not supported for speech modifiers type \"%s\""
 msgstr "η τιμή δεν υποστηρίζεται για τον τύπο τροποποιητών ομιλίας \"%s\""
 
-#: srcore/srspc.c:873
+#: srcore/srspc.c:876
 #, c-format
 msgid "value not supported for speech cursors type \"%s\""
 msgstr "η τιμή δεν υποστηρίζεται για τον τύπο δρμέων ομιλίας \"%s\""
 
-#: srcore/srspc.c:909
+#: srcore/srspc.c:912
 #, c-format
 msgid "value not supported for speech spaces type \"%s\""
 msgstr "η τιμή δεν υποστηρίζεται για τον τύπο διαστημάτων ομιλίας \"%s\""
 
-#: srcore/srspc.c:945
+#: srcore/srspc.c:948
 #, c-format
 msgid "value not supported for speech dictionary type \"%s\""
 msgstr "η τιμή δεν υποστηρίζεται για τον τύπο λεξικού ομιλίας \"%s\""
 
-#: srcore/srspc.c:982
+#: srcore/srspc.c:985
 #, c-format
 msgid "value not supported for speech text echo type \"%s\""
 msgstr "η τιμή δεν υποστηρίζεται για τον τύπο echo κειμένου  ομιλίας \"%s\""
 
-#: srcore/srspc.c:1001
+#: srcore/srspc.c:1004
 msgid "Tilde"
 msgstr "Tilde"
 
-#: srcore/srspc.c:1001
+#: srcore/srspc.c:1004
 msgid "Tildaes"
 msgstr "Tildaes"
 
-#: srcore/srspc.c:1002
+#: srcore/srspc.c:1005
 msgid "Exclamation"
 msgstr "Θαυμαστικό"
 
-#: srcore/srspc.c:1002
+#: srcore/srspc.c:1005
 msgid "Exclamations"
 msgstr "Θαυμαστικά"
 
-#: srcore/srspc.c:1003
+#: srcore/srspc.c:1006
 msgid "At"
 msgstr "At"
 
-#: srcore/srspc.c:1003
+#: srcore/srspc.c:1006
 msgid "Ats"
 msgstr "Ats"
 
-#: srcore/srspc.c:1004
+#: srcore/srspc.c:1007
 msgid "Hash"
 msgstr "Hash"
 
-#: srcore/srspc.c:1004
+#: srcore/srspc.c:1007
 msgid "Hashes"
 msgstr "Hashes"
 
-#: srcore/srspc.c:1005
+#: srcore/srspc.c:1008
 msgid "Dollar"
 msgstr "Δολλάριο"
 
-#: srcore/srspc.c:1005
+#: srcore/srspc.c:1008
 msgid "Dollars"
 msgstr "Δολλάρια"
 
-#: srcore/srspc.c:1006
+#: srcore/srspc.c:1009
 msgid "Percent"
 msgstr "Ποσοστό"
 
-#: srcore/srspc.c:1006
+#: srcore/srspc.c:1009
 msgid "Percents"
 msgstr "Ποσοστά"
 
-#: srcore/srspc.c:1007
+#: srcore/srspc.c:1010
 msgid "Caret"
 msgstr "Caret"
 
-#: srcore/srspc.c:1007
+#: srcore/srspc.c:1010
 msgid "Carets"
 msgstr "Carets"
 
-#: srcore/srspc.c:1008
+#: srcore/srspc.c:1011
 msgid "And"
 msgstr "Και"
 
-#: srcore/srspc.c:1008
+#: srcore/srspc.c:1011
 msgid "Ands"
 msgstr "Και"
 
-#: srcore/srspc.c:1009
+#: srcore/srspc.c:1012
 msgid "Asterisk"
 msgstr "Αστερίσκος"
 
-#: srcore/srspc.c:1009
+#: srcore/srspc.c:1012
 msgid "Asterisks"
 msgstr "Αστερίσκοι"
 
-#: srcore/srspc.c:1010
+#: srcore/srspc.c:1013
 msgid "Left Paranthesis"
 msgstr "Αριστερή Παρένθεση"
 
-#: srcore/srspc.c:1011
+#: srcore/srspc.c:1014
 msgid "Right Paranthesis"
 msgstr "Δεξιά Παρένθεση"
 
-#: srcore/srspc.c:1012
+#: srcore/srspc.c:1015
 msgid "Underscore"
 msgstr "Υπογράμμιση"
 
-#: srcore/srspc.c:1012
+#: srcore/srspc.c:1015
 msgid "Underscores"
 msgstr "Υπογραμμίσεις"
 
-#: srcore/srspc.c:1013
+#: srcore/srspc.c:1016
 msgid "Plus"
 msgstr "Συν"
 
-#: srcore/srspc.c:1013
+#: srcore/srspc.c:1016
 msgid "Pluses"
 msgstr "Συν"
 
-#: srcore/srspc.c:1014
+#: srcore/srspc.c:1017
 msgid "Equal"
 msgstr "Ίσον"
 
-#: srcore/srspc.c:1014
+#: srcore/srspc.c:1017
 msgid "Equals"
 msgstr "Ίσον"
 
-#: srcore/srspc.c:1015
+#: srcore/srspc.c:1018
 msgid "Minus"
 msgstr "Μείον"
 
-#: srcore/srspc.c:1015
+#: srcore/srspc.c:1018
 msgid "Minuses"
 msgstr "Μείον"
 
-#: srcore/srspc.c:1016
+#: srcore/srspc.c:1019
 msgid "Quote"
 msgstr "Εισαγωγικό"
 
-#: srcore/srspc.c:1016
+#: srcore/srspc.c:1019
 msgid "Quotes"
 msgstr "Εισαγωγικά"
 
-#: srcore/srspc.c:1017
+#: srcore/srspc.c:1020
 msgid "Left Bracket"
 msgstr "Αριστερή Παρένθεση"
 
-#: srcore/srspc.c:1017
+#: srcore/srspc.c:1020
 msgid "Left Brackets"
 msgstr "Αριστερές Παρενθέσεις"
 
-#: srcore/srspc.c:1018
+#: srcore/srspc.c:1021
 msgid "Right Bracket"
 msgstr "Δεξιά Παρένθεση"
 
-#: srcore/srspc.c:1018
+#: srcore/srspc.c:1021
 msgid "Right Brackets"
 msgstr "Δεξιές Παρενθέσεις"
 
-#: srcore/srspc.c:1019
+#: srcore/srspc.c:1022
 msgid "Left Brace"
 msgstr "Αριστερό άγκιστρο"
 
-#: srcore/srspc.c:1019
+#: srcore/srspc.c:1022
 msgid "Left Braces"
 msgstr "Αριστερά άγκιστρα"
 
-#: srcore/srspc.c:1020
+#: srcore/srspc.c:1023
 msgid "Right Brace"
 msgstr "Δεξιό άγκιστρο"
 
-#: srcore/srspc.c:1020
+#: srcore/srspc.c:1023
 msgid "Right Braces"
 msgstr "Δεξιά άγκιστρα"
 
-#: srcore/srspc.c:1021
+#: srcore/srspc.c:1024
 msgid "Semicolon"
 msgstr "Άνω τελεία"
 
-#: srcore/srspc.c:1021
+#: srcore/srspc.c:1024
 msgid "Semicolons"
 msgstr "Άνω τελείες"
 
-#: srcore/srspc.c:1022
+#: srcore/srspc.c:1025
 msgid "Colon"
 msgstr "Άνω-κάτω τελεία"
 
-#: srcore/srspc.c:1022
+#: srcore/srspc.c:1025
 msgid "Colons"
 msgstr "Άνω-κάτω τελείες"
 
-#: srcore/srspc.c:1023
+#: srcore/srspc.c:1026
 msgid "Double quote"
 msgstr "Διπλή παρένθεση"
 
-#: srcore/srspc.c:1023
+#: srcore/srspc.c:1026
 msgid "Double quotes"
 msgstr "Διπλές παρενθέσεις"
 
-#: srcore/srspc.c:1024
+#: srcore/srspc.c:1027
 msgid "Apostrophe"
 msgstr "Απόστροφος"
 
-#: srcore/srspc.c:1024
+#: srcore/srspc.c:1027
 msgid "Apostrophes"
 msgstr "Απόστροφοι"
 
-#: srcore/srspc.c:1025
+#: srcore/srspc.c:1028
 msgid "Back Slash"
 msgstr "Δεξιότροπη κάθετος"
 
-#: srcore/srspc.c:1025
+#: srcore/srspc.c:1028
 msgid "Back Slashes"
 msgstr "Δεξιότροποι κάθετοι"
 
-#: srcore/srspc.c:1026
+#: srcore/srspc.c:1029
 msgid "Bar"
 msgstr "Μπάρα"
 
-#: srcore/srspc.c:1026
+#: srcore/srspc.c:1029
 msgid "Bars"
 msgstr "Μπάρες"
 
-#: srcore/srspc.c:1027
+#: srcore/srspc.c:1030
 msgid "Greater"
 msgstr "Μεγαλύτερο"
 
-#: srcore/srspc.c:1027
+#: srcore/srspc.c:1030
 msgid "Greaters"
 msgstr "Μεγαλύτερα"
 
-#: srcore/srspc.c:1028
+#: srcore/srspc.c:1031
 msgid "Less"
 msgstr "Λιγότερο"
 
-#: srcore/srspc.c:1028
+#: srcore/srspc.c:1031
 msgid "Lesses"
 msgstr "Λιγότερα"
 
-#: srcore/srspc.c:1029
+#: srcore/srspc.c:1032
 msgid "Comma"
 msgstr "Κόμμα"
 
-#: srcore/srspc.c:1029
+#: srcore/srspc.c:1032
 msgid "Commas"
 msgstr "Κόμματα"
 
-#: srcore/srspc.c:1030
+#: srcore/srspc.c:1033
 msgid "Dot"
 msgstr "Τελεία"
 
-#: srcore/srspc.c:1030
+#: srcore/srspc.c:1033
 msgid "Dots"
 msgstr "Τελείες"
 
-#: srcore/srspc.c:1031
+#: srcore/srspc.c:1034
 msgid "Slash"
 msgstr "Slash"
 
-#: srcore/srspc.c:1031
+#: srcore/srspc.c:1034
 msgid "Slashes"
 msgstr "Slashes"
 
-#: srcore/srspc.c:1032
+#: srcore/srspc.c:1035
 msgid "Questions"
 msgstr "Ερωτήσεις"
 
-#: srcore/srspc.c:1106
+#: srcore/srspc.c:1109
 #, c-format
 msgid "value not supported for speech punctuation type \"%s\""
 msgstr "η τιμή δεν υποστηρίζεται για τύπο στίξης ομιλίας  \"%s\""
 
-#: srcore/srspc.c:1364
+#: srcore/srspc.c:1375
 msgid "Unable to initialize hashtable"
 msgstr "Αδυναμία αρχικοποίησης  hashtable"
 
-#: srcore/srspc.c:1370
+#: srcore/srspc.c:1381
 msgid "Unable to load dictionary from gconf"
 msgstr "Αδυναμία φόρτωσης λεξικού από το gconf"
 
-#: srcore/srspc.c:1561
+#: srcore/srspc.c:1572
 msgid "speech initialization succeded"
 msgstr "επιτυχία αρχικοποίησης ομιλίας"
 
-#: srcore/srspc.c:1565
+#: srcore/srspc.c:1576
 msgid "speech initialization failed"
 msgstr "απέτυχε η αρχικοποίηση ομιλίας"
 
-#: srcore/srspc.c:1761
+#: srcore/srspc.c:1772
 #, fuzzy
 msgid "enter"
 msgstr "κεντραρισμένο"
 
-#: srcore/srspc.c:1844
+#: srcore/srspc.c:1855
 #, c-format
 msgid "can not find \"%s\" voice. use default voice"
 msgstr "αδυναμία εύρεσης φωνής \"%s\". χρήση προεπιλεγμένης φωνής "
 
-#: srcore/srspc.c:1861
+#: srcore/srspc.c:1872
 msgid "voices pitch will be set to default value"
 msgstr "το βήμα φωνής θα οριστεί στην προεπιλεγμένη τιμή"
 
-#: srcore/srspc.c:1863
+#: srcore/srspc.c:1874
 msgid "voices pitch will be decreased"
 msgstr "το βήμα φωνής θα μειωθεί"
 
-#: srcore/srspc.c:1865
+#: srcore/srspc.c:1876
 msgid "voices pitch will be increased"
 msgstr "το βήμα φωνής θα αυξηθεί"
 
-#: srcore/srspc.c:1909
+#: srcore/srspc.c:1920
 msgid "voices rate will be set to default value"
 msgstr "ο ρυθμός φωνής θα οριστεί στην προεπιλεγμένη τιμή"
 
-#: srcore/srspc.c:1911
+#: srcore/srspc.c:1922
 msgid "voices rate will be decreased"
 msgstr "ο ρυθμός φωνής θα μειωθεί"
 
-#: srcore/srspc.c:1913
+#: srcore/srspc.c:1924
 msgid "voices rate will be increased"
 msgstr "ο ρυθμός φωνής θα αυξηθεί"
 
-#: srcore/srspc.c:1958
+#: srcore/srspc.c:1969
 msgid "voices volume will be set to default value"
 msgstr "η ένταση φωνής θα οριστεί στην προεπιλεγμένη τιμή"
 
-#: srcore/srspc.c:1960
+#: srcore/srspc.c:1971
 msgid "voices volume will be decreased"
 msgstr "η ένταση  φωνής θα μειωθεί"
 
-#: srcore/srspc.c:1962
+#: srcore/srspc.c:1973
 msgid "voices volume will be increased"
 msgstr "η ένταση  φωνής θα αυξηθεί"
 
-#: srcore/srspc.c:2088
+#: srcore/srspc.c:2099
 #, c-format
 msgid "no support for speech key \"%s\""
 msgstr "δεν υπάρχει υποστήριξη για κλειδί φωνής \"%s\""

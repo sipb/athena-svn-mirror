@@ -8,7 +8,7 @@ INCLUDES = -I$(top_builddir)         		\
 	   $(LIBSRCONF_CFLAGS)			\
 	   -DG_LOG_DOMAIN=\"gnopernicus\"
 
-LDFLAGS = $(LIBSRCONF_LIBS) @LT_VERSION_INFO@
+AM_LDFLAGS = $(LIBSRCONF_LIBS) @LT_VERSION_INFO@
 
 LDADD = ../../srutil/libsrutil.la $(LIBSRCONF_LIBS)
 

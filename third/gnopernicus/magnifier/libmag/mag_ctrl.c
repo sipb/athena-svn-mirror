@@ -31,16 +31,18 @@ MagRectangle zp_rect;
 gchar *source_display = NULL;
 gchar *target_display = NULL;
 
-void
+static gboolean
 check_return_value (CORBA_Environment 	*env, 
 		    int 		line)
 {
-    if ( (env) && (env)->_major != CORBA_NO_EXCEPTION) 
+    if ((env) && BONOBO_EX (env)) 
     {
 	fprintf (stderr,"\n\ngnopernicus-magnifier : Exception \"%s\" occured at %d line.",
 			bonobo_exception_get_text (env), line);
 	 CORBA_exception_free (env);
+	 return FALSE;
     }
+    return TRUE;
 }
 
 
@@ -49,7 +51,6 @@ get_magnifier (void)
 {
     CORBA_Object		oclient;
     char 			*obj_id;
-    CORBA_Environment 		ev;
 
     CORBA_exception_init (&ev);
   
@@ -65,13 +66,18 @@ get_magnifier (void)
 		   ("Activation error: during magnifier activation: %s\n"),
 		   CORBA_exception_id (&ev) );
 	CORBA_exception_free (&ev);
+	oclient = CORBA_OBJECT_NIL;
     }
+
+    
 
     if (CORBA_Object_is_nil (oclient, &ev) )
     {
 	g_warning ("Could not locate magnifier");
+	check_return_value (&ev, __LINE__);
+	oclient = CORBA_OBJECT_NIL;
     }
-    
+
     source_display = NULL;
     target_display = NULL;    
     
@@ -81,7 +87,7 @@ get_magnifier (void)
 void
 magnifier_exit (GNOME_Magnifier_Magnifier	magnifier)
 {
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	GNOME_Magnifier_Magnifier_clearAllZoomRegions (magnifier,
 						       &ev);
@@ -89,6 +95,7 @@ magnifier_exit (GNOME_Magnifier_Magnifier	magnifier)
 /*	GNOME_Magnifier_Magnifier_unref (magnifier, 
 					 &ev);
 */	GNOME_Magnifier_Magnifier_dispose (magnifier, &ev);
+	check_return_value (&ev, __LINE__);
     }
     g_free (source_display);
     g_free (target_display);
@@ -101,7 +108,7 @@ magnifier_set_source_screen (GNOME_Magnifier_Magnifier 	magnifier,
 {
     g_free (source_display);
     source_display = g_strdup (source_display_screen);
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	GNOME_Magnifier_Magnifier__set_SourceDisplay (magnifier,
 						      source_display_screen,
@@ -116,7 +123,7 @@ magnifier_set_target_screen (GNOME_Magnifier_Magnifier 	magnifier,
 {
     g_free (target_display);
     target_display = g_strdup (target_display_screen);
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	    GNOME_Magnifier_Magnifier__set_TargetDisplay (magnifier,
 						    	  target_display_screen,
@@ -135,44 +142,46 @@ magnifier_get_source (GNOME_Magnifier_Magnifier 	magnifier,
     Bonobo_PropertyBag 		properties;
 
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	properties = GNOME_Magnifier_Magnifier_getProperties (magnifier,
 			    				      &ev);
-	check_return_value (&ev, __LINE__);
-	if (properties)
+	if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 	{
 	    rectangle_any = Bonobo_PropertyBag_getValue (properties,
     			    				 "source-display-bounds",
   							 &ev);
-	    check_return_value (&ev, __LINE__);
-	    rectangle = (GNOME_Magnifier_RectBounds *) rectangle_any->_value;
-	    if (rectangle)
-	    {
-		if (source_rect)
+	    if (rectangle_any != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))						 
+            {
+		rectangle = (GNOME_Magnifier_RectBounds *) rectangle_any->_value;
+		if (rectangle)
 		{
-		    
-		    source_rect->left   = (long) rectangle->x1;
-		    source_rect->top    = (long) rectangle->y1;
-		    source_rect->width  = (long) rectangle->x2;
-		    source_rect->height = (long) rectangle->y2;
+		    if (source_rect)
+		    {
+			source_rect->left   = (long) rectangle->x1;
+			source_rect->top    = (long) rectangle->y1;
+			source_rect->width  = (long) rectangle->x2;
+			source_rect->height = (long) rectangle->y2;
+		    }
+		    CORBA_free (rectangle);
+		    rectangle = NULL;
 		}
-		CORBA_free (rectangle);
-		rectangle = NULL;
-	    }
-	    else
-	    {
-		source_rect->left   = -1;
-		source_rect->top    = -1;
-		source_rect->width  = -1;
-		source_rect->height = -1;
-	    }/*end if (rectangle)*/
+		else
+		{
+		    source_rect->left   = -1;
+		    source_rect->top    = -1;
+		    source_rect->width  = -1;
+		    source_rect->height = -1;
+		}/*end if (rectangle)*/
+	    }/*end if (rectangle_any)*/	
+
+	    bonobo_object_release_unref (properties, &ev);
+	    check_return_value (&ev, __LINE__);
 	}
 	else
 	{
 	    fprintf (stderr, "\nmagnifier_get_source : Properties are NIL");
 	}/*end if (properties) */
-	bonobo_object_release_unref (properties, NULL);
     }
     else
     {
@@ -188,40 +197,43 @@ void magnifier_get_target (GNOME_Magnifier_Magnifier	magnifier,
     CORBA_any 			*rectangle_any 	= NULL;
     Bonobo_PropertyBag 		properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {    
 	properties = GNOME_Magnifier_Magnifier_getProperties (magnifier,
 			    				      &ev);
-	check_return_value (&ev, __LINE__);
-	if (properties)
+	if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 	{
 	    rectangle_any = Bonobo_PropertyBag_getValue (properties,
     			    				 "target-display-bounds",
   							 &ev);
-    	    check_return_value (&ev, __LINE__);
-	    rectangle = (GNOME_Magnifier_RectBounds *) rectangle_any->_value;
+    	    if (rectangle_any != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
+	    {
+		rectangle = (GNOME_Magnifier_RectBounds *) rectangle_any->_value;
 
-	    if (rectangle)
-	    {
-		if (target_rect)
+		if (rectangle)
 		{
-		    target_rect->left   = (long) rectangle->x1;
-		    target_rect->top    = (long) rectangle->y1;
-		    target_rect->width  = (long) rectangle->x2;
-		    target_rect->height = (long) rectangle->y2;
+		    if (target_rect)
+		    {
+			target_rect->left   = (long) rectangle->x1;
+			target_rect->top    = (long) rectangle->y1;
+			target_rect->width  = (long) rectangle->x2;
+			target_rect->height = (long) rectangle->y2;
+		    }
+		    CORBA_free (rectangle);
+		    rectangle = NULL;
 		}
-		CORBA_free (rectangle);
-		rectangle = NULL;
-	    }
-	    else
-	    {
-		target_rect->left   = -1;
-		target_rect->top    = -1;
-		target_rect->width  = -1;
-		target_rect->height = -1;
-	    }		
+		else
+		{
+		    target_rect->left   = -1;
+		    target_rect->top    = -1;
+		    target_rect->width  = -1;
+		    target_rect->height = -1;
+		}
+	    }			
+	
+	    bonobo_object_release_unref (properties, &ev);
+	    check_return_value (&ev, __LINE__);
 	}
-	bonobo_object_release_unref (properties, NULL);
     }
 }
 
@@ -232,12 +244,11 @@ void magnifier_set_target (GNOME_Magnifier_Magnifier	magnifier,
     CORBA_any 			*rectangle_any	= NULL;
     Bonobo_PropertyBag 		properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {    
 	properties = GNOME_Magnifier_Magnifier_getProperties (magnifier,
 			    				      &ev);
-	check_return_value (&ev, __LINE__);
-	if (properties)
+	if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 	{
 	    rectangle = GNOME_Magnifier_RectBounds__alloc ();
 	    rectangle_any = CORBA_any__alloc ();
@@ -255,8 +266,10 @@ void magnifier_set_target (GNOME_Magnifier_Magnifier	magnifier,
 				        rectangle_any,
   				        &ev);
 	    check_return_value (&ev, __LINE__);
+	
+	    bonobo_object_release_unref (properties, &ev);
+	    check_return_value (&ev, __LINE__);
 	}
-	bonobo_object_release_unref (properties, NULL);
     }
 }
 
@@ -269,13 +282,12 @@ magnifier_set_cursor (GNOME_Magnifier_Magnifier	magnifier,
 {
     Bonobo_PropertyBag	properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	properties = GNOME_Magnifier_Magnifier_getProperties (magnifier,
 							      &ev);
-	if (properties)
+	if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 	{
-
 	    if (cursor_name)
 	    {
 		BonoboArg *arg = bonobo_arg_new (BONOBO_ARG_STRING);
@@ -292,6 +304,7 @@ magnifier_set_cursor (GNOME_Magnifier_Magnifier	magnifier,
 				bonobo_arg_new_from (BONOBO_ARG_FLOAT,
 						     &cursor_zoom_factor),
 				&ev);
+	    check_return_value (&ev, __LINE__);
 /*	else
 	if (cursor_size > 0)
 	{
@@ -303,8 +316,10 @@ magnifier_set_cursor (GNOME_Magnifier_Magnifier	magnifier,
 						 &cursor_size),
 					     &ev);
 	    check_return_value (&ev, __LINE__);
+	    
+	    bonobo_object_release_unref (properties, &ev);
+	    check_return_value (&ev, __LINE__);
 	}
-	bonobo_object_release_unref (properties, NULL);
     }
 }
 
@@ -314,11 +329,11 @@ magnifier_set_cursor_color (GNOME_Magnifier_Magnifier	magnifier,
 {
     Bonobo_PropertyBag	properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	properties = GNOME_Magnifier_Magnifier_getProperties (magnifier,
 							      &ev);
-	if (properties)
+	if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 	{
 
 	    if (cursor_color >= 0)
@@ -330,7 +345,8 @@ magnifier_set_cursor_color (GNOME_Magnifier_Magnifier	magnifier,
 
 		check_return_value (&ev, __LINE__);
 	    }
-	    bonobo_object_release_unref (properties, NULL);
+	    bonobo_object_release_unref (properties, &ev);
+	    check_return_value (&ev, __LINE__);
 	}
     }
 }
@@ -342,11 +358,11 @@ magnifier_set_crosswire_size (GNOME_Magnifier_Magnifier 	magnifier,
 {
     Bonobo_PropertyBag 	properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	properties = GNOME_Magnifier_Magnifier_getProperties (magnifier,
 			    				      &ev);
-	if (properties)
+	if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 	{
 	    if (crosswire_size >= 0)
 	    {
@@ -356,8 +372,10 @@ magnifier_set_crosswire_size (GNOME_Magnifier_Magnifier 	magnifier,
 					  &ev);
 		check_return_value (&ev, __LINE__);
 	    }
+	    
+	    bonobo_object_release_unref (properties, &ev);
+	    check_return_value (&ev, __LINE__);
 	}
-	bonobo_object_release_unref (properties, &ev);
     }
 }
 
@@ -367,11 +385,11 @@ magnifier_set_crosswire_color (GNOME_Magnifier_Magnifier 	magnifier,
 {
     Bonobo_PropertyBag properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	properties = GNOME_Magnifier_Magnifier_getProperties (magnifier,
 							      &ev);
-	if (properties)
+	if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 	{
 	    if (crosswire_color >= 0)
 	    {
@@ -381,8 +399,10 @@ magnifier_set_crosswire_color (GNOME_Magnifier_Magnifier 	magnifier,
 				    	  &ev);
 		check_return_value (&ev, __LINE__);
 	    }
+	
+	    bonobo_object_release_unref (properties, &ev);
+	    check_return_value (&ev, __LINE__);
 	}
-	bonobo_object_release_unref (properties, &ev);
     }
 }
 
@@ -392,20 +412,22 @@ magnifier_set_crosswire_clip (GNOME_Magnifier_Magnifier 	magnifier,
 {
     Bonobo_PropertyBag 	properties;
     
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	properties = GNOME_Magnifier_Magnifier_getProperties
     			    (magnifier,
 			     &ev);
-	if (properties)
+	if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 	{
     	    bonobo_pbclient_set_boolean (properties,
     		    		        "crosswire-clip",
 				        crosswire_clip,
 				        &ev);
 	    check_return_value (&ev, __LINE__);
+	
+	    bonobo_object_release_unref (properties, &ev);
+	    check_return_value (&ev, __LINE__);
 	}
-	bonobo_object_release_unref (properties, &ev);
     }
 }
 
@@ -465,11 +487,12 @@ magnifier_set_roi (GNOME_Magnifier_Magnifier 	magnifier,
     
     roi = mag_rect_clip_to_source (roi);
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions (magnifier,
 							    &ev);
-	if (regions 		&& 
+	if (regions != CORBA_OBJECT_NIL      &&
+	    check_return_value (&ev, __LINE__) &&
 	    regions->_length 	&& 
 	    (zoom_region + 1 <= regions->_length) )
 	{
@@ -497,11 +520,12 @@ void magnifier_get_viewport (GNOME_Magnifier_Magnifier	magnifier,
     CORBA_any 				*rectangle_any 	= NULL;
     Bonobo_PropertyBag 			properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions (magnifier,
 							    &ev);
-	if (regions 		&& 
+	if (regions != CORBA_OBJECT_NIL  	&& 
+	    check_return_value (&ev, __LINE__) &&
 	    regions->_length 	&& 
 	    (zoom_region + 1 <= regions->_length) )
 	{
@@ -510,39 +534,42 @@ void magnifier_get_viewport (GNOME_Magnifier_Magnifier	magnifier,
 		properties = GNOME_Magnifier_ZoomRegion_getProperties
 				(regions->_buffer[zoom_region],
 			        &ev);
-		if (properties)
+		if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
 		{
 		    rectangle_any = Bonobo_PropertyBag_getValue (properties,
     			    					"viewport",
   								&ev);
-		    check_return_value (&ev, __LINE__);
-		    rectangle = (GNOME_Magnifier_RectBounds *) 
-				rectangle_any->_value;
-		    if (rectangle)
+		    if (rectangle_any != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))						
 		    {
-			if (viewport_rect)
+			rectangle = (GNOME_Magnifier_RectBounds *) 
+				    rectangle_any->_value;
+			if (rectangle)
 			{
-			    viewport_rect->left   = (long) rectangle->x1;
-			    viewport_rect->top    = (long) rectangle->y1;
-			    viewport_rect->width  = (long) rectangle->x2;
-			    viewport_rect->height = (long) rectangle->y2;
+			    if (viewport_rect)
+			    {
+				viewport_rect->left   = (long) rectangle->x1;
+				viewport_rect->top    = (long) rectangle->y1;
+				viewport_rect->width  = (long) rectangle->x2;
+				viewport_rect->height = (long) rectangle->y2;
+			    }
+			    CORBA_free (rectangle);
+			    rectangle = NULL;
 			}
-			CORBA_free (rectangle);
-			rectangle = NULL;
-		    }
-		    else
-		    {
-			viewport_rect->left   = -1;
-			viewport_rect->top    = -1;
-			viewport_rect->width  = -1;
-			viewport_rect->height = -1;
-		    }/*end if (rectangle)*/
+			else
+			{
+			    viewport_rect->left   = -1;
+			    viewport_rect->top    = -1;
+			    viewport_rect->width  = -1;
+			    viewport_rect->height = -1;
+			}/*end if (rectangle)*/
+		    }/*end if (rectangle_any)*/	
+		    bonobo_object_release_unref (properties, &ev);
+		    check_return_value (&ev, __LINE__);
 		}
 		else
 		{
 		    fprintf (stderr, "\nmagnifier_get_viewport : Properties are NIL");
 		}/*end if (properties) */
-		bonobo_object_release_unref (properties, &ev);
 	    }
 	    else
 	    {
@@ -560,11 +587,12 @@ magnifier_set_is_managed  (GNOME_Magnifier_Magnifier	magnifier,
     GNOME_Magnifier_ZoomRegionList 	*regions;
     Bonobo_PropertyBag 			properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions (magnifier,
 							    &ev);
-	if (regions 		&& 
+	if (regions != CORBA_OBJECT_NIL &&
+	    check_return_value (&ev, __LINE__) && 
 	    regions->_length 	&& 
 	    (zoom_region + 1 <= regions->_length) )
 	{
@@ -573,11 +601,17 @@ magnifier_set_is_managed  (GNOME_Magnifier_Magnifier	magnifier,
     		properties = GNOME_Magnifier_ZoomRegion_getProperties
     				( (regions->_buffer)[zoom_region],
 			         &ev);
-    	        bonobo_pbclient_set_boolean (properties,
+		if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
+		{
+    	    	    bonobo_pbclient_set_boolean (properties,
 					    "is-managed",
 					     is_managed,
 					     &ev);
-		bonobo_object_release_unref (properties, &ev);
+		    check_return_value (&ev, __LINE__);
+
+		    bonobo_object_release_unref (properties, &ev);
+		    check_return_value (&ev, __LINE__);
+		}
     	    }
 	}
     }
@@ -591,11 +625,12 @@ magnifier_set_invert (GNOME_Magnifier_Magnifier	magnifier,
     Bonobo_PropertyBag			properties;
     GNOME_Magnifier_ZoomRegionList 	*regions;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions (magnifier,
 							    &ev);
-	if (regions 		&& 
+	if (regions != CORBA_OBJECT_NIL && 
+	    check_return_value (&ev, __LINE__) &&
 	    regions->_length 	&& 
 	    (zoom_region + 1 <= regions->_length) )
 	{		  
@@ -603,13 +638,18 @@ magnifier_set_invert (GNOME_Magnifier_Magnifier	magnifier,
     	    {
     		properties = GNOME_Magnifier_ZoomRegion_getProperties
     			    ( (regions->_buffer) [zoom_region],
-			     &ev);
-
-    	        bonobo_pbclient_set_boolean (properties,
+	    		     &ev);
+		if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
+    	        {
+		    bonobo_pbclient_set_boolean (properties,
     					    "inverse-video",
 					     invert,
-					     &ev);		    
-		bonobo_object_release_unref (properties, &ev);
+					     &ev);
+		    check_return_value (&ev, __LINE__);		    
+
+		    bonobo_object_release_unref (properties, &ev);
+		    check_return_value (&ev, __LINE__);
+		}
     	    }
 	}				    
     }				    
@@ -623,11 +663,12 @@ magnifier_set_smoothing_type (GNOME_Magnifier_Magnifier 	magnifier,
     GNOME_Magnifier_ZoomRegionList 	*regions;
     Bonobo_PropertyBag 			properties;
   
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions (magnifier,
 							    &ev);
-	if (regions 		&& 
+	if (regions != CORBA_OBJECT_NIL && 
+	    check_return_value (&ev, __LINE__) &&
 	    regions->_length 	&& 
 	    (zoom_region + 1 <= regions->_length) )
 	{		  
@@ -636,15 +677,19 @@ magnifier_set_smoothing_type (GNOME_Magnifier_Magnifier 	magnifier,
     		properties = GNOME_Magnifier_ZoomRegion_getProperties
     				( (regions->_buffer)[zoom_region],
 			        &ev);
-		if (smoothing_type)
-    		{
-		    bonobo_pbclient_set_string (properties,
+		if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
+		{
+		    if (smoothing_type)
+    		    {
+			bonobo_pbclient_set_string (properties,
     						"smoothing-type",
 						smoothing_type,
 						&ev);
+			check_return_value (&ev, __LINE__);
+		    }
+		    bonobo_object_release_unref (properties, &ev);
+		    check_return_value (&ev, __LINE__);
 		}
-
-		bonobo_object_release_unref (properties, &ev);		
     	    }
 	}				    
     }				    
@@ -658,12 +703,13 @@ magnifier_set_contrast (GNOME_Magnifier_Magnifier 	magnifier,
     GNOME_Magnifier_ZoomRegionList 	*regions;
     Bonobo_PropertyBag 			properties;  
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions
     		( magnifier,
 		  &ev);
-	if (regions 		&& 
+	if (regions != CORBA_OBJECT_NIL && 
+	    check_return_value (&ev, __LINE__) &&
 	    regions->_length 	&& 
 	    (zoom_region + 1 <= regions->_length) )
 	{		  
@@ -672,13 +718,17 @@ magnifier_set_contrast (GNOME_Magnifier_Magnifier 	magnifier,
     		properties = GNOME_Magnifier_ZoomRegion_getProperties
     				( (regions->_buffer)[zoom_region],
 			        &ev);
-
-    	        bonobo_pbclient_set_float (properties,
+		if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
+    	        {
+		    bonobo_pbclient_set_float (properties,
     					  "contrast",
 					   contrast,
 					   &ev);
+		    check_return_value (&ev, __LINE__);
 
-		bonobo_object_release_unref (properties, &ev);					   
+		    bonobo_object_release_unref (properties, &ev);
+		    check_return_value (&ev, __LINE__);
+		}    
     	    }
 	}				    
     }				    
@@ -694,11 +744,12 @@ magnifier_set_border (GNOME_Magnifier_Magnifier 	magnifier,
     GNOME_Magnifier_ZoomRegionList 	*regions;
     Bonobo_PropertyBag 			properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions (magnifier,
 							    &ev);
-	if (regions 		&& 
+	if (regions != CORBA_OBJECT_NIL && 
+	    check_return_value (&ev, __LINE__) &&
 	    regions->_length 	&& 
 	    (zoom_region + 1 <= regions->_length) )
 	{
@@ -707,19 +758,29 @@ magnifier_set_border (GNOME_Magnifier_Magnifier 	magnifier,
     		properties = GNOME_Magnifier_ZoomRegion_getProperties
     				( (regions->_buffer)[zoom_region],
 			         &ev);
-
-		if ( border_size > -1)
-    	    	    bonobo_pbclient_set_long (properties,
+		if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
+		{
+    		    if ( border_size > -1)
+		    {
+    	    		bonobo_pbclient_set_long (properties,
     					     "border-size",
 					      border_size,
 					      &ev);
+			check_return_value (&ev, __LINE__);
+		    }
 
-		if ( border_color > -1)
-    	    	    bonobo_pbclient_set_long (properties,
+		    if ( border_color > -1)
+		    {
+    	    		bonobo_pbclient_set_long (properties,
     					     "border-color",
 					      border_color,
 					      &ev);
-    		bonobo_object_release_unref (properties, NULL);
+			check_return_value (&ev, __LINE__);
+		    }
+
+    		    bonobo_object_release_unref (properties, NULL);
+		    check_return_value (&ev, __LINE__);
+		}
 	    }
 	}
     }
@@ -734,11 +795,12 @@ magnifier_set_alignment (GNOME_Magnifier_Magnifier	magnifier,
     GNOME_Magnifier_ZoomRegionList 	*regions;
     Bonobo_PropertyBag 			properties;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions (magnifier,
     							    &ev);
-	if (regions 		&& 
+	if (regions != CORBA_OBJECT_NIL && 
+	    check_return_value (&ev, __LINE__) &&
 	    regions->_length 	&& 
 	    (zoom_region + 1 <= regions->_length) )
 	{		  
@@ -747,20 +809,29 @@ magnifier_set_alignment (GNOME_Magnifier_Magnifier	magnifier,
     		properties = GNOME_Magnifier_ZoomRegion_getProperties
     			    ( (regions->_buffer)[zoom_region],
 			     &ev);
-
-		if ( alignment_x > -1)
-    	    	    bonobo_pbclient_set_long (properties,
+		if (properties != CORBA_OBJECT_NIL && check_return_value (&ev, __LINE__))
+		{
+		    if ( alignment_x > -1)
+		    {
+    	    		bonobo_pbclient_set_long (properties,
     					     "x-alignment",
 					      alignment_x,
 					      &ev);
+			check_return_value (&ev, __LINE__);
+		    }
 
-		if ( alignment_y > -1)
-    	    	    bonobo_pbclient_set_long (properties,
+		    if ( alignment_y > -1)
+		    {
+    	    		bonobo_pbclient_set_long (properties,
     					     "y-alignment",
 					      alignment_y,
 					      &ev);
-    		bonobo_object_release_unref (properties, NULL);					      
+			check_return_value (&ev, __LINE__);
+		    }
 
+    		    bonobo_object_release_unref (properties, NULL);					      
+		    check_return_value (&ev, __LINE__);
+		}
     	    }
 	}				    
     }				    
@@ -774,13 +845,13 @@ magnifier_resize_region (GNOME_Magnifier_Magnifier	magnifier,
 {
     GNOME_Magnifier_ZoomRegionList	*regions;
     
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions (magnifier,
 		    					    &ev);
-        check_return_value (&ev, __LINE__);		  
-	if (regions 		&& 
-	    regions->_length 	&& 
+	if (check_return_value (&ev, __LINE__) &&
+	    regions != CORBA_OBJECT_NIL && 
+	    regions->_length 	               && 
 	    (zoom_region + 1 <= regions->_length) )
 	{		  
     	    if (regions->_buffer[zoom_region] != CORBA_OBJECT_NIL)
@@ -802,7 +873,7 @@ magnifier_resize_region (GNOME_Magnifier_Magnifier	magnifier,
 void
 magnifier_clear_all_regions (GNOME_Magnifier_Magnifier	magnifier)
 {
-    if (magnifier) 
+    if (magnifier != CORBA_OBJECT_NIL) 
     {
 	GNOME_Magnifier_Magnifier_clearAllZoomRegions (magnifier,
 						       &ev);
@@ -813,7 +884,7 @@ magnifier_clear_all_regions (GNOME_Magnifier_Magnifier	magnifier)
 void
 magnifier_unref (GNOME_Magnifier_Magnifier 	magnifier)
 {
-    if (magnifier) 
+    if (magnifier != CORBA_OBJECT_NIL) 
     {
 	GNOME_Magnifier_Magnifier_unref (magnifier,
 					 &ev);
@@ -832,7 +903,7 @@ magnifier_create_region (GNOME_Magnifier_Magnifier 	magnifier,
     GNOME_Magnifier_ZoomRegion 	region;
     int 			retval = -1;
 
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	region = GNOME_Magnifier_Magnifier_createZoomRegion
 		(magnifier,
@@ -841,15 +912,15 @@ magnifier_create_region (GNOME_Magnifier_Magnifier 	magnifier,
 		 (GNOME_Magnifier_RectBounds *) roi,
 		 (GNOME_Magnifier_RectBounds *) viewport,
 		 &ev);
-	check_return_value (&ev, __LINE__);		 
 
-	if ( region != CORBA_OBJECT_NIL ) 
+	if ((region != CORBA_OBJECT_NIL) && check_return_value (&ev, __LINE__)) 
 	{
 	    retval = (short) GNOME_Magnifier_Magnifier_addZoomRegion 
 			    (magnifier,
 			     region,
 			     &ev);
-	    check_return_value (&ev, __LINE__);			     
+	    if (!check_return_value (&ev, __LINE__))
+		retval = -1;
 	}
     }
     return  retval;
@@ -863,14 +934,14 @@ magnifier_set_magnification (GNOME_Magnifier_Magnifier	magnifier,
 {
     GNOME_Magnifier_ZoomRegionList	*regions;
   
-    if (magnifier)
+    if (magnifier != CORBA_OBJECT_NIL)
     {
 	regions = GNOME_Magnifier_Magnifier_getZoomRegions 
     		( magnifier,
 		  &ev);
-        check_return_value (&ev, __LINE__);		  
-	if (regions 		&& 
-	    regions->_length 	&& 
+	if (check_return_value (&ev, __LINE__) &&
+	    regions != CORBA_OBJECT_NIL && 
+	    regions->_length 	               && 
 	    (zoom_region + 1  <= regions->_length) )
 	{		   
     	    if (regions->_buffer[zoom_region])
