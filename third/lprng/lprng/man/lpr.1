@@ -44,6 +44,9 @@ lpr \- off line print
 .BI \-m " mailTo"
 ]
 [
+.B \-N
+]
+[
 .BI \-P " printer"
 ]
 [
@@ -249,6 +252,9 @@ and the default_printer entry from the
 configuration file,
 and finally the hard coded (site dependent) default_printer
 value.
+.TP 5
+.B \-N
+Disable zephyr notifcation of success or failure of jobs.
 .TP 5
 .B \-Q
 Put the name of the spool queue into the job file.

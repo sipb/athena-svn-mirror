@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_status.c,v 1.5 2000-03-31 16:21:13 mwhitson Exp $";
+"$Id: lpd_status.c,v 1.6 2001-01-03 20:23:24 ghudson Exp $";
 
 
 #include "lp.h"
@@ -671,7 +671,7 @@ void Get_queue_status( struct line_list *tokens, int *sock,
 				Pr_disabled(&Spool_control)?"yes":"no",
 				Pr_aborted(&Spool_control)?"yes":"no",
 				Sp_disabled(&Spool_control)?"yes":"no");
-	} else if( displayformat == REQ_DLONG ){
+	} else if( displayformat == REQ_DLONG || displayformat == REQ_DSHORT ){
 		flag = 0;
 		if( Pr_disabled(&Spool_control) || Sp_disabled(&Spool_control) || Pr_aborted(&Spool_control) ){
 			plp_snprintf( header+len, sizeof(header) - len, " (" );

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: errormsg.c,v 1.3 2000-03-31 16:21:12 mwhitson Exp $";
+"$Id: errormsg.c,v 1.4 2000-09-27 04:39:06 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -153,10 +153,10 @@ const char * Errormsg ( int err )
 		openlog(s, LOG_PID | LOG_NOWAIT, SYSLOG_FACILITY);
         init = 1;
     }
-    (void) syslog(kind, msg);
+    (void) syslog(kind, "%s", msg);
 
 #else
-    (void) syslog(SYSLOG_FACILITY | kind, msg);
+    (void) syslog(SYSLOG_FACILITY | kind, "%s", msg);
 #endif							/* HAVE_OPENLOG */
 #endif                          /* HAVE_SYSLOG_H */
 }

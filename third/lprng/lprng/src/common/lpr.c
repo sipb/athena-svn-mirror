@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.9 2000-03-31 16:21:14 mwhitson Exp $";
+"$Id: lpr.c,v 1.10 2000-11-16 16:35:13 zacheiss Exp $";
 
 
 #include "lp.h"
@@ -285,6 +285,11 @@ void Get_parms(int argc, char *argv[] )
 	int option, i;
 	char *name, *s;
 
+	/* Make zephyring the default, unless the user explicitly
+	 * turns it off.
+	 */
+	Zephyr = 1;
+
 	/* If LPROPT environment variable is set, prepend those
 	 * options to the command line.
 	 */
@@ -454,7 +459,7 @@ void Get_parms(int argc, char *argv[] )
 			}
 		    break;
 		case 'N':
-			Check_for_nonprintable_DYN = 0;
+			Zephyr = 0;
 			break;
 		case 'P':
 		    if( Printer_DYN ){
@@ -542,7 +547,6 @@ void Get_parms(int argc, char *argv[] )
 		    Check_int_dup( option, &Pwidth, Optarg, 0);
 		    break;
 		case 'z':
-		    Zephyr = 1;
 		    break;
 
 		/* Throw a sop to the whiners - let them wipe themselves out... */
@@ -587,6 +591,7 @@ void Get_parms(int argc, char *argv[] )
  -k          - non seKure filter operation, create temp file for input\n\
  -K copies, -# copies   - number of copies\n\
  -m mailaddr - mail error status to mailaddr\n\
+ -N          = Disable zephyr notification of completed jobs\n\
  -Pprinter[@host] - printer on host (default environment variable PRINTER)\n\
  -r          - remove named files after spooling\n\
  -w width    - width to use\n\
