@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v $
- *	$Id: db.c,v 1.11 1990-12-05 21:19:11 lwvanels Exp $
+ *	$Id: db.c,v 1.12 1990-12-12 15:14:12 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.11 1990-12-05 21:19:11 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/db.c,v 1.12 1990-12-12 15:14:12 lwvanels Exp $";
 #endif
 #endif
 
@@ -223,5 +223,8 @@ int
 save_user_info(user)
      USER *user;
 {
+  /* This needs to be written */
+
+  user = user;
   return(ERROR);
 }
