@@ -9,7 +9,6 @@
 /etc/inet/inetd.conf
 /etc/inet/services
 /etc/ftpusers
-/etc/minor_perm
 /etc/resolv.conf
 /etc/mail/aliases
 /etc/mail/sendmail.cf
