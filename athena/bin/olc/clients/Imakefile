@@ -1,16 +1,19 @@
 #
-# $Id: Imakefile,v 1.8 1992-01-28 17:56:51 lwvanels Exp $
+# $Id: Imakefile,v 1.9 1997-04-30 17:32:56 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/Imakefile,v $
-# $Author: lwvanels $ 
+# $Author: ghudson $ 
 #
 # For copying and distribution information,
 # please see the file <mit-copyright.h>.
 #
 #
 
+# "osend" directory isn't listed because it doesn't produce a useful binary.
+# [I'd say "yet", but I don't think it's a matter of time. =)]  --bert
+
 #define IHaveSubdirs
 #if HaveMotif
-SUBDIRS= lib parser tty olc motif oreplay osend
+SUBDIRS= lib parser tty olc motif oreplay
 #else
-SUBDIRS= lib parser tty olc oreplay osend
+SUBDIRS= lib parser tty olc oreplay
 #endif
