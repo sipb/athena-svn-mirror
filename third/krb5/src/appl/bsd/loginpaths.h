@@ -99,8 +99,8 @@
 #endif
 
 #ifdef _PATH_DEFPATH
-#define LPATH _PATH_DEFPATH
-#define RPATH _PATH_DEFPATH
+#define LPATH APATH _PATH_DEFPATH
+#define RPATH APATH _PATH_DEFPATH
 #endif
 
 /* catch-all entries for operating systems we haven't looked up
