@@ -4,9 +4,11 @@
  * SYNOPSIS:  any VAX Running Mt. Xinu MORE/bsd
  *
  * DESCRIPTION:
- * This is the machine-dependent module for Sequent Dynix 3
+ * This is the machine-dependent module for Mt. Xinu MORE/bsd
  * This makes top work on the following systems:
- *	Mt. Xinu MORE/bsd
+ *      Mt. Xinu MORE/bsd
+ *
+ * CFLAGS: -Dpid_t=int -DORDER
  *
  * AUTHOR:  Daniel Trinkle <trinkle@cs.purdue.edu>
  */
@@ -34,8 +36,8 @@
 
 struct handle
 {
-    struct proc **next_proc;	/* points to next valid proc pointer */
-    int remaining;		/* number of pointers remaining */
+    struct proc **next_proc;    /* points to next valid proc pointer */
+    int remaining;              /* number of pointers remaining */
 };
 
 /* declarations for load_avg */
@@ -45,26 +47,32 @@ typedef long pctcpu;
 #define intload(i) ((int)((i) * FSCALE))
 #define pctdouble(p) ((double)(p) / FSCALE)
 
+/* process time is only available in u area, so retrieve it from u.u_ru and
+   store a copy in unused (by top) p_mmsize field of struct proc
+   struct timeval field tv_sec is a long, p_mmsize is an int, but both are the
+   same size on VAX and MIPS, so this is safe */
+#define PROCTIME(pp) ((pp)->p_mmsize)
+
 /* what we consider to be process size: */
 #define PROCSIZE(pp) ((pp)->p_tsize + (pp)->p_dsize + (pp)->p_ssize)
 
 /* definitions for indices in the nlist array */
-#define X_AVENRUN	0
-#define X_CCPU		1
-#define X_MPID		2
-#define X_NPROC		3
-#define X_PROC		4
-#define X_TOTAL		5
-#define X_CP_TIME	6
+#define X_AVENRUN       0
+#define X_CCPU          1
+#define X_MPID          2
+#define X_NPROC         3
+#define X_PROC          4
+#define X_TOTAL         5
+#define X_CP_TIME       6
 
 static struct nlist nlst[] = {
-    { "_avenrun" },		/* 0 */
-    { "_ccpu" },		/* 1 */
-    { "_mpid" },		/* 2 */
-    { "_nproc" },		/* 3 */
-    { "_proc" },		/* 4 */
-    { "_total" },		/* 5 */
-    { "_cp_time" },		/* 6 */
+    { "_avenrun" },             /* 0 */
+    { "_ccpu" },                /* 1 */
+    { "_mpid" },                /* 2 */
+    { "_nproc" },               /* 3 */
+    { "_proc" },                /* 4 */
+    { "_total" },               /* 5 */
+    { "_cp_time" },             /* 6 */
     { 0 }
 };
 
@@ -146,6 +154,23 @@ char *memorynames[] = {
     "K (", "K) real, ", "K (", "K) virtual, ", "K free", NULL
 };
 
+/* these are names given to allowed sorting orders -- first is default */
+char *ordernames[] =
+{"cpu", "size", "res", "time", NULL};
+
+/* forward definitions for comparison functions */
+int compare_cpu();
+int compare_size();
+int compare_res();
+int compare_time();
+
+int (*proc_compares[])() = {
+    compare_cpu,
+    compare_size,
+    compare_res,
+    compare_time,
+    NULL };
+
 /* these are for keeping track of the proc array */
 
 static int bytes;
@@ -153,7 +178,7 @@ static int pref_len;
 static struct proc *pbase;
 static struct proc **pref;
 
-#define pagetok(size)	((size) >> (LOG1024 - PGSHIFT))
+#define pagetok(size)   ((size) >> (LOG1024 - PGSHIFT))
 
 /* useful externals */
 extern int errno;
@@ -194,11 +219,11 @@ struct statics *statics;
     }
 
     /* get the symbol values out of kmem */
-    (void) getkval(nlst[X_PROC].n_value,   (int *)(&proc),	sizeof(proc),
+    (void) getkval(nlst[X_PROC].n_value,   (int *)(&proc),      sizeof(proc),
 	    nlst[X_PROC].n_name);
-    (void) getkval(nlst[X_NPROC].n_value,  &nproc,		sizeof(nproc),
+    (void) getkval(nlst[X_NPROC].n_value,  &nproc,              sizeof(nproc),
 	    nlst[X_NPROC].n_name);
-    (void) getkval(nlst[X_CCPU].n_value,   (int *)(&ccpu),	sizeof(ccpu),
+    (void) getkval(nlst[X_CCPU].n_value,   (int *)(&ccpu),      sizeof(ccpu),
 	    nlst[X_CCPU].n_name);
 
     /* stash away certain offsets for later use */
@@ -226,6 +251,7 @@ struct statics *statics;
     statics->procstate_names = procstatenames;
     statics->cpustate_names = cpustatenames;
     statics->memory_names = memorynames;
+    statics->order_names = ordernames;
 
     /* all done! */
     return(0);
@@ -312,6 +338,7 @@ int (*compare)();
     register int active_procs;
     register struct proc **prefp;
     register struct proc *pp;
+    register struct user u;
 
     /* these are copied out of sel for speed */
     int show_idle;
@@ -353,6 +380,11 @@ int (*compare)();
 	    {
 		*prefp++ = pp;
 		active_procs++;
+
+		if (getu(pp, &u) == -1)
+		  PROCTIME(pp) = 0;
+		else
+		  PROCTIME(pp) = u.u_ru.ru_utime.tv_sec + u.u_ru.ru_stime.tv_sec;
 	    }
 	}
     }
@@ -373,7 +405,7 @@ int (*compare)();
     return((caddr_t)&handle);
 }
 
-char fmt[MAX_COLS];		/* static area where result is built */
+char fmt[MAX_COLS];             /* static area where result is built */
 
 /* define what weighted cpu is.  */
 #define weighted_cpu(pct, pp) ((pp)->p_time == 0 ? 0.0 : \
@@ -386,7 +418,6 @@ char *(*get_userid)();
 
 {
     register struct proc *pp;
-    register long cputime;
     register double pct;
     struct user u;
     struct handle *hp;
@@ -395,13 +426,12 @@ char *(*get_userid)();
     hp = (struct handle *)handle;
     pp = *(hp->next_proc++);
     hp->remaining--;
-    
+
 
     /* get the process's user struct and set cputime */
     if (getu(pp, &u) == -1)
     {
 	(void) strcpy(u.u_comm, "<swapped>");
-	cputime = 0;
     }
     else
     {
@@ -417,8 +447,6 @@ char *(*get_userid)();
 		(void) strcpy(u.u_comm, "Pager");
 	    }
 	}
-
-	cputime = u.u_ru.ru_utime.tv_sec + u.u_ru.ru_stime.tv_sec;
     }
 
     /* calculate the base for cpu percentages */
@@ -434,7 +462,7 @@ char *(*get_userid)();
 	    format_k(pagetok(PROCSIZE(pp))),
 	    format_k(pagetok(pp->p_rssize)),
 	    state_abbrev[pp->p_stat],
-	    format_time(cputime),
+	    format_time(PROCTIME(pp)),
 	    100.0 * weighted_cpu(pct, pp),
 	    100.0 * pct,
 	    printable(u.u_comm));
@@ -445,9 +473,9 @@ char *(*get_userid)();
 
 /*
  *  getu(p, u) - get the user structure for the process whose proc structure
- *	is pointed to by p.  The user structure is put in the buffer pointed
- *	to by u.  Return 0 if successful, -1 on failure (such as the process
- *	being swapped out).
+ *      is pointed to by p.  The user structure is put in the buffer pointed
+ *      to by u.  Return 0 if successful, -1 on failure (such as the process
+ *      being swapped out).
  */
 
 getu(p, u)
@@ -479,12 +507,12 @@ struct user *u;
     {
 	/* we can't seem to get to it, so pretend it's swapped out */
 	return(-1);
-    } 
+    }
     upage = (caddr_t)u;
     pte = uptes;
     for (nbytes = sizeof(struct user); nbytes > 0; nbytes -= NBPG)
     {
-    	(void) lseek(mem, (long)(pte++->pg_pfnum * NBPG), 0);
+	(void) lseek(mem, (long)(pte++->pg_pfnum * NBPG), 0);
 	n = MIN(nbytes, NBPG);
 	if (read(mem, upage, n) != n)
 	{
@@ -498,9 +526,9 @@ struct user *u;
 
 /*
  * check_nlist(nlst) - checks the nlist to see if any symbols were not
- *		found.  For every symbol that was not found, a one-line
- *		message is printed to stderr.  The routine returns the
- *		number of symbols NOT found.
+ *              found.  For every symbol that was not found, a one-line
+ *              message is printed to stderr.  The routine returns the
+ *              number of symbols NOT found.
  */
 
 int check_nlist(nlst)
@@ -531,14 +559,14 @@ register struct nlist *nlst;
 
 /*
  *  getkval(offset, ptr, size, refstr) - get a value out of the kernel.
- *	"offset" is the byte offset into the kernel for the desired value,
- *  	"ptr" points to a buffer into which the value is retrieved,
- *  	"size" is the size of the buffer (and the object to retrieve),
- *  	"refstr" is a reference string used when printing error meessages,
- *	    if "refstr" starts with a '!', then a failure on read will not
- *  	    be fatal (this may seem like a silly way to do things, but I
- *  	    really didn't want the overhead of another argument).
- *  	
+ *      "offset" is the byte offset into the kernel for the desired value,
+ *      "ptr" points to a buffer into which the value is retrieved,
+ *      "size" is the size of the buffer (and the object to retrieve),
+ *      "refstr" is a reference string used when printing error meessages,
+ *          if "refstr" starts with a '!', then a failure on read will not
+ *          be fatal (this may seem like a silly way to do things, but I
+ *          really didn't want the overhead of another argument).
+ *
  */
 
 getkval(offset, ptr, size, refstr)
@@ -565,8 +593,8 @@ char *refstr;
 	{
 	    /* we lost the race with the kernel, process isn't in memory */
 	    return(0);
-	} 
-	else 
+	}
+	else
 	{
 	    fprintf(stderr, "%s: reading %s: %s\n",
 		KMEM, refstr, sys_errlist[errno]);
@@ -575,32 +603,52 @@ char *refstr;
     }
     return(1);
 }
-    
-/* comparison routine for qsort */
+
+/* comparison routines for qsort */
 
 /*
- *  proc_compare - comparison function for "qsort"
- *	Compares the resource consumption of two processes using five
- *  	distinct keys.  The keys (in descending order of importance) are:
- *  	percent cpu, cpu ticks, state, resident set size, total virtual
- *  	memory usage.  The process states are ordered as follows (from least
- *  	to most important):  WAIT, zombie, sleep, stop, start, run.  The
- *  	array declaration below maps a process state index into a number
- *  	that reflects this ordering.
+ * There are currently four possible comparison routines.  main selects
+ * one of these by indexing in to the array proc_compares.
+ *
+ * Possible keys are defined as macros below.  Currently these keys are
+ * defined:  percent cpu, cpu ticks, process state, resident set size,
+ * total virtual memory usage.  The process states are ordered as follows
+ * (from least to most important):  WAIT, zombie, sleep, stop, start, run.
+ * The array declaration below maps a process state index into a number
+ * that reflects this ordering.
  */
+
+/* First, the possible comparison keys.  These are defined in such a way
+   that they can be merely listed in the source code to define the actual
+   desired ordering.
+ */
+
+#define ORDERKEY_PCTCPU  if (lresult = p2->p_pctcpu - p1->p_pctcpu,\
+			     (result = lresult < 0 ? -1 : 1) == 0)
+#define ORDERKEY_CPTICKS if ((result = PROCTIME(p2) - PROCTIME(p1)) == 0)
+#define ORDERKEY_STATE   if ((result = (long) (sorted_state[p2->p_stat] - \
+			       sorted_state[p1->p_stat])) == 0)
+#define ORDERKEY_PRIO    if ((result = p2->p_pri - p1->p_pri) == 0)
+#define ORDERKEY_RSSIZE  if ((result = p2->p_rssize - p1->p_rssize) == 0)
+#define ORDERKEY_MEM     if ((result = (PROCSIZE(p2) - PROCSIZE(p1))) == 0)
+
+/* Now the array that maps process state to a weight */
 
 static unsigned char sorted_state[] =
 {
-    0,	/* not used		*/
-    3,	/* sleep		*/
-    1,	/* ABANDONED (WAIT)	*/
-    6,	/* run			*/
-    5,	/* start		*/
-    2,	/* zombie		*/
-    4	/* stop			*/
+    0,  /* not used             */
+    3,  /* sleep                */
+    1,  /* ABANDONED (WAIT)     */
+    6,  /* run                  */
+    5,  /* start                */
+    2,  /* zombie               */
+    4   /* stop                 */
 };
- 
-proc_compare(pp1, pp2)
+
+
+/* compare_cpu - the comparison function for sorting by cpu percentage */
+
+compare_cpu(pp1, pp2)
 
 struct proc **pp1;
 struct proc **pp2;
@@ -615,33 +663,97 @@ struct proc **pp2;
     p1 = *pp1;
     p2 = *pp2;
 
-    /* compare percent cpu (pctcpu) */
-    if ((lresult = p2->p_pctcpu - p1->p_pctcpu) == 0)
-    {
-	/* use cpticks to break the tie */
-	if ((result = p2->p_cpticks - p1->p_cpticks) == 0)
-	{
-	    /* use process state to break the tie */
-	    if ((result = sorted_state[p2->p_stat] -
-			  sorted_state[p1->p_stat])  == 0)
-	    {
-		/* use priority to break the tie */
-		if ((result = p2->p_pri - p1->p_pri) == 0)
-		{
-		    /* use resident set size (rssize) to break the tie */
-		    if ((result = p2->p_rssize - p1->p_rssize) == 0)
-		    {
-			/* use total memory to break the tie */
-			result = PROCSIZE(p2) - PROCSIZE(p1);
-		    }
-		}
-	    }
-	}
-    }
-    else
-    {
-	result = lresult < 0 ? -1 : 1;
-    }
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
+
+    return(result);
+}
+
+/* compare_size - the comparison function for sorting by total memory usage */
+
+compare_size(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_MEM
+    ORDERKEY_RSSIZE
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return(result);
+}
+
+/* compare_res - the comparison function for sorting by resident set size */
+
+compare_res(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return(result);
+}
+
+/* compare_time - the comparison function for sorting by total cpu time */
+
+compare_time(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_CPTICKS
+    ORDERKEY_PCTCPU
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
 
     return(result);
 }
@@ -649,12 +761,12 @@ struct proc **pp2;
 
 /*
  * proc_owner(pid) - returns the uid that owns process "pid", or -1 if
- *		the process does not exist.
- *		It is EXTREMLY IMPORTANT that this function work correctly.
- *		If top runs setuid root (as in SVR4), then this function
- *		is the only thing that stands in the way of a serious
- *		security problem.  It validates requests for the "kill"
- *		and "renice" commands.
+ *              the process does not exist.
+ *              It is EXTREMLY IMPORTANT that this function work correctly.
+ *              If top runs setuid root (as in SVR4), then this function
+ *              is the only thing that stands in the way of a serious
+ *              security problem.  It validates requests for the "kill"
+ *              and "renice" commands.
  */
 
 int proc_owner(pid)

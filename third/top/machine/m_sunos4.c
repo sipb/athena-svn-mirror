@@ -14,6 +14,7 @@
  *	SunOS 4.1.1
  *	SunOS 4.1.2 (including MP architectures)
  *	SunOS 4.1.3 (including MP architectures)
+ *      SunOS 4.1.3_U1 (including MP architectures)
  *      SunOS 4.1.4 (including MP architectures)
  *	Solbourne OS/MP PRIOR to 4.1A
  *
@@ -21,7 +22,7 @@
  *
  * CFLAGS: -DHAVE_GETOPT -DORDER
  *
- * AUTHOR:  William LeFebvre <phil@eecs.nwu.edu>
+ * AUTHOR:  William LeFebvre <wnl@groupsys.com>
  * Solbourne support by David MacKenzie <djm@eng.umd.edu>
  */
 
@@ -214,19 +215,17 @@ char *memorynames[] = {
 
 /* these are names given to allowed sorting orders -- first is default */
 char *ordernames[] = 
-{"cpu", "size", "res", "time", NULL};
+{"cpu", "size", "res", NULL};
 
 /* forward definitions for comparison functions */
 int compare_cpu();
 int compare_size();
 int compare_res();
-int compare_time();
 
 int (*proc_compares[])() = {
     compare_cpu,
     compare_size,
     compare_res,
-    compare_time,
     NULL };
 
 
@@ -793,8 +792,6 @@ char *refstr;
     return(1);
 }
     
-/* comparison routine for qsort */
-
 /* comparison routines for qsort */
 
 /*
@@ -919,35 +916,6 @@ struct proc **pp2;
 
     return(result);
 }
-
-/* compare_time - the comparison function for sorting by total cpu time */
-
-compare_time(pp1, pp2)
-
-struct proc **pp1;
-struct proc **pp2;
-
-{
-    register struct proc *p1;
-    register struct proc *p2;
-    register int result;
-    register pctcpu lresult;
-
-    /* remove one level of indirection */
-    p1 = *pp1;
-    p2 = *pp2;
-
-    ORDERKEY_CPTICKS
-    ORDERKEY_PCTCPU
-    ORDERKEY_STATE
-    ORDERKEY_PRIO
-    ORDERKEY_RSSIZE
-    ORDERKEY_MEM
-    ;
-
-    return(result);
-}
-
 
 /*
  * proc_owner(pid) - returns the uid that owns process "pid", or -1 if

@@ -9,17 +9,21 @@
  * Originally written for BSD4.4 system by Christos Zoulas.
  * Ported to FreeBSD 2.0 by Steven Wallace && Wolfram Schneider
  *
- * This is the machine-dependent module for FreeBSD 2.0
+ * This is the machine-dependent module for FreeBSD 2.x
  * Works for:
  *	FreeBSD 2.0
+ *	FreeBSD 2.1.5
+ *	FreeBSD 2.2
  *
  * LIBS: -lkvm
+ *
+ * CFLAGS: -DHAVE_GETOPT
  *
  * AUTHOR:  Christos Zoulas <christos@ee.cornell.edu>
  *          Steven Wallace  <swallace@freebsd.org>
  *          Wolfram Schneider <wosch@cs.tu-berlin.de>
  *
- * $Id: m_freebsd20.c,v 1.1.1.1 1996-10-07 20:10:21 ghudson Exp $
+ * $Id: m_freebsd20.c,v 1.1.1.2 2001-05-08 21:47:43 ghudson Exp $
  */
 
 
@@ -46,6 +50,9 @@
 #include <sys/dkstat.h>
 #include <sys/file.h>
 #include <sys/time.h>
+
+#include <sys/vmmeter.h>
+#include <sys/user.h>
 
 #ifdef USE_SWAP
 #include <stdlib.h>

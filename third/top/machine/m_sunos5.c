@@ -11,17 +11,17 @@
  *         SunOS 5.1
  *         SunOS 5.2
  *         SunOS 5.3
+ *         SunOS 5.4
+ *         SunOS 5.5
+ *         SunOS 5.6
+ *         SunOS 5.7
  *
  *     Tested on a SPARCclassic with SunOS 5.1, using gcc-2.3.3, and
  *     SPARCsystem 600 with SunOS 5.2, using Sun C
  *
- *     Note that this same file is used for SunOS 5.4, but only with
- *     SOLARIS24 defined.  Use the file "m_sunos54.c" to make that happen
- *     automagically.
- *
  * LIBS: -lelf -lkvm -lkstat
  *
- * CFLAGS: -DHAVE_GETOPT -DORDER
+ * CFLAGS: -DHAVE_GETOPT -DORDER -DHAVE_STRERROR
  *
  *
  * AUTHORS:      Torsten Kasch 		<torsten@techfak.uni-bielefeld.de>
@@ -30,10 +30,40 @@
  *               Charles Hedrick 	<hedrick@geneva.rutgers.edu>
  *	         William L. Jones 	<jones@chpc>
  *               Petri Kutvonen         <kutvonen@cs.helsinki.fi>
- *	         Casper Dik             <casper@fwi.uva.nl>
+ *	         Casper Dik             <casper.dik@sun.com>
  *               Tim Pugh               <tpugh@oce.orst.edu>
  */
+
 #define _KMEMUSER
+
+#if (OSREV == 551)
+#undef OSREV
+#define OSREV 55
+#endif
+
+#define USE_NEW_PROC
+#if defined(USE_NEW_PROC) && OSREV >= 56
+#define _STRUCTURED_PROC 1
+#define prpsinfo psinfo
+#include <sys/procfs.h>
+#define pr_fill pr_nlwp
+/* These require an ANSI C compiler "Reisser cpp" doesn't like this */
+#define pr_state pr_lwp.pr_state
+#define pr_oldpri pr_lwp.pr_oldpri
+#define pr_nice pr_lwp.pr_nice
+#define pr_pri pr_lwp.pr_pri
+#define pr_onpro pr_lwp.pr_onpro
+#define ZOMBIE(p)	((p)->pr_nlwp == 0)
+#define SIZE_K(p)	((p)->pr_size)
+#define RSS_K(p)	((p)->pr_rssize)
+#else
+#undef USE_NEW_PROC
+#define ZOMBIE(p)	((p)->pr_zomb)
+#define SIZE_K(p)	((p)->pr_bysize/1024)
+#define RSS_K(p)	((p)->pr_byrssize/1024)
+#define pr_onpro 	pr_filler[5]
+#endif
+
 #include "top.h"
 #include "machine.h"
 #include "utils.h"
@@ -64,11 +94,28 @@
 #include <sys/priocntl.h>
 #include <sys/tspriocntl.h>
 #include <sys/processor.h>
+#include <sys/swap.h>
 #include <vm/anon.h>
 #include <math.h>
+
+#if OSREV >= 53
 #define USE_KSTAT
+#endif
 #ifdef USE_KSTAT
 #include <kstat.h>
+/*
+ * Some kstats are fixed at 32 bits, these will be specified as ui32; some
+ * are "natural" size (32 bit on 32 bit Solaris, 64 on 64 bit Solaris
+ * we'll make those unsigned long)
+ * Older Solaris doesn't define KSTAT_DATA_UINT32, those are always 32 bit.
+ */
+# ifndef KSTAT_DATA_UINT32
+#  define ui32 ul
+# endif
+#endif
+
+#ifdef SC_AINFO
+#undef USE_ANONINFO				/* Use swapctl() instead */
 #endif
 
 #define UNIX "/dev/ksyms"
@@ -90,7 +137,7 @@
 #define loaddouble(la) ((double)(la) / FSCALE)
 #define dbl_align(x)	(((unsigned long)(x)+(sizeof(double)-1)) & \
 						~(sizeof(double)-1))
-#ifdef SOLARIS24
+#if (OSREV >= 54)
     /*
      * snarfed from <sys/procfs.h>:
      * The following percent numbers are 16-bit binary
@@ -105,37 +152,44 @@
 #endif
 
 /* definitions for indices in the nlist array */
-#define X_AVENRUN		 0
+#define X_V			 0
 #define X_MPID			 1
-#define X_CPU			 2
-#define X_V			 3
-#define X_NPROC			 4
-#define X_ANONINFO		 5
-#define X_FREEMEM		 6
-#define X_MAXMEM		 7
-#define X_AVAILRMEM		 8
-#define X_SWAPFS_MINFREE	 9
+#define X_ANONINFO		 2
+#define X_MAXMEM		 3
+#define X_SWAPFS_MINFREE	 4
+#define X_FREEMEM		 5
+#define X_AVAILRMEM		 6
+#define X_AVENRUN		 7
+#define X_CPU			 8
+#define X_NPROC			 9
 #define X_NCPUS		   	10
 
 static struct nlist nlst[] =
 {
-  {"avenrun"},			/* 0 */
+  {"v"},			/* 0 */	/* replaced by dynamic allocation */
   {"mpid"},			/* 1 */
-  {"cpu"},			/* 2 */
-  {"v"},			/* 3 */
-  {"nproc"},			/* 4 */
-  {"anoninfo"},			/* 5 */
-  {"freemem"},			/* 6 */
-  {"maxmem"},			/* 7 */
-  {"availrmem"},		/* 8 */
-  {"swapfs_minfree"},		/* 9 */
-  {"ncpus"},			/* 10 */
+#if OSREV >= 56
+  /* this structure really has some extra fields, but the first three match */
+  {"k_anoninfo"},		/* 2 */
+#else
+  {"anoninfo"},			/* 2 */
+#endif
+  {"maxmem"},			/* 3 */ /* use sysconf */
+  {"swapfs_minfree"},		/* 4 */	/* used only w/ USE_ANONINFO */
+  {"freemem"},			/* 5 */	/* available from kstat >= 2.5 */
+  {"availrmem"},		/* 6 */	/* available from kstat >= 2.5 */
+  {"avenrun"},			/* 7 */ /* available from kstat */
+  {"cpu"},			/* 8 */ /* available from kstat */
+  {"nproc"},			/* 9 */ /* available from kstat */
+  {"ncpus"},			/* 10 */ /* available from kstat */
   {0}
 };
 
 static unsigned long avenrun_offset;
 static unsigned long mpid_offset;
 #ifdef USE_KSTAT
+#define NO_NPROC
+static kstat_ctl_t *kc = NULL;
 static kstat_t **cpu_ks;
 static cpu_stat_t *cpu_stat;
 #else
@@ -147,6 +201,8 @@ static unsigned long maxmem_offset;
 static unsigned long availrmem_offset;
 static unsigned long swapfs_minfree_offset;
 static unsigned long anoninfo_offset;
+static void reallocproc(int n);
+static int maxprocs;
 
 /* get_process_info passes back a handle.  This is what it looks like: */
 struct handle
@@ -180,17 +236,25 @@ int oldprocs;			/* size of table */
 /*
  *  These definitions control the format of the per-process area
  */
+#if OSREV >= 58
 static char header[] =
-"  PID X        PRI NICE  SIZE   RES STATE   TIME   WCPU    CPU COMMAND";
+"   PID X        THR PRI NICE  SIZE   RES STATE    TIME    CPU COMMAND";
+/* 0123456   -- field to fill in starts at header+6 */
+#define UNAME_START 7
+
+#define Proc_format \
+        "%6d %-8.8s %3d %3d %4d %5s %5s %-6s %6s %5.2f%% %s"
+#else
+static char header[] =
+"  PID X        THR PRI NICE  SIZE   RES STATE    TIME    CPU COMMAND";
 /* 0123456   -- field to fill in starts at header+6 */
 #define UNAME_START 6
 
 #define Proc_format \
-        "%5d %-8.8s %3d %4d %5s %5s %-5s %6s %5.2f%% %5.2f%% %s"
+        "%5d %-8.8s %3d %3d %4d %5s %5s %-6s %6s %5.2f%% %s"
+#endif
 
 /* process state names for the "STATE" column of the display */
-/* the extra nulls in the string "run" are for adding a slash and
-   the processor number when needed */
 char *state_abbrev[] =
 {"", "sleep", "run", "zombie", "stop", "start", "cpu", "swap"};
 
@@ -212,7 +276,7 @@ char *cpustatenames[] =
 /* these are for detailing the memory statistics */
 int memory_stats[5];
 char *memorynames[] =
-{"K real, ", "K active, ", "K free, ", "K swap, ", "K free swap", NULL};
+{"K real, ", "K active, ", "K free, ", "K swap in use, ", "K swap free", NULL};
 
 /* these are names given to allowed sorting orders -- first is default */
 char *ordernames[] = 
@@ -248,8 +312,6 @@ static int (*p_pagetok) ();
 #define pagetok(size) ((*p_pagetok)(size))
 
 /* useful externals */
-extern int errno;
-extern char *sys_errlist[];
 extern char *myname;
 extern int check_nlist ();
 extern int gettimeofday ();
@@ -283,14 +345,30 @@ machine_init (struct statics *statics)
     static struct var v;
     struct oldproc *op, *endbase;
     int i;
+    char *p;
+#ifndef USE_KSTAT
     int offset;
-    processor_info_t pi;
+#endif
 
-    /* perform the kvm_open */
-    kd = kvm_open (NULL, NULL, NULL, O_RDONLY, "top");
+    /* There's a buffer overflow bug in curses that can be exploited when
+       we run as root.  By making sure that TERMINFO is set to something
+       this bug is avoided.  This code thanks to Casper */
+    if ((p = getenv("TERMINFO")) == NULL || *p == '\0')
+    {
+        putenv("TERMINFO=/usr/share/lib/terminfo/");
+    }
 
-    /* turn off super user privs */
-    seteuid(getuid());
+    /* perform the kvm_open - suppress error here */
+    kd = kvm_open (NULL, NULL, NULL, O_RDONLY, NULL);
+
+    /*
+     * turn off super group/user privs - but beware; we might
+     * want the privs back later and we still have a fd to
+     * /dev/kmem open so we can't use setgid()/setuid() as that
+     * would allow a debugger to attach to this process. CD
+     */
+    setegid(getgid());
+    seteuid(getuid()); /* super user not needed for NEW_PROC */
 
     /* fill in the statics information */
     statics->procstate_names = procstatenames;
@@ -298,23 +376,37 @@ machine_init (struct statics *statics)
     statics->memory_names = memorynames;
     statics->order_names = ordernames;
 
-    /* test kvm_open return value */
+    /*
+     * test kvm_open return value - print error message and exit
+     * when we need to read kernel memory (older releases)
+     */
     if (kd == NULL)
       {
-	perror ("kvm_open");
+#ifndef USE_KSTAT
+	/* Print the failure message here */
+	(void) kvm_open (NULL, NULL, NULL, O_RDONLY, "top");
+	perror("kvm_open");
 	return (-1);
+#endif
       }
-    if (kvm_nlist (kd, nlst) < 0)
+    if (kd)
       {
-	perror ("kvm_nlist");
-	return (-1);
+      if (kvm_nlist (kd, nlst) < 0)
+        {
+	  perror ("kvm_nlist");
+	  return (-1);
+        }
+      if (check_nlist (nlst) != 0)
+        return (-1);
       }
-    if (check_nlist (nlst) != 0)
-      return (-1);
 
+#ifndef NO_NPROC
     /* NPROC Tuning parameter for max number of processes */
     (void) getkval (nlst[X_V].n_value, &v, sizeof (struct var), nlst[X_V].n_name);
     nproc = v.v_proc;
+
+    reallocproc(nproc);
+#endif
 
     /* stash away certain offsets for later use */
     mpid_offset = nlst[X_MPID].n_value;
@@ -326,13 +418,11 @@ machine_init (struct statics *statics)
     availrmem_offset = nlst[X_AVAILRMEM].n_value;
     swapfs_minfree_offset = nlst[X_SWAPFS_MINFREE].n_value;
 
+
+#ifndef USE_KSTAT
     (void) getkval (nlst[X_NCPUS].n_value, (int *) (&ncpus),
 		    sizeof (ncpus), "ncpus");
 
-#ifdef USE_KSTAT
-    cpu_ks = (kstat_t **) malloc (ncpus * sizeof (kstat_t *));
-    cpu_stat = (cpu_stat_t *) malloc (ncpus * sizeof (cpu_stat_t));
-#else
     cpu_offset = (unsigned long *) malloc (ncpus * sizeof (unsigned long));
     for (i = offset = 0; i < ncpus; offset += sizeof(unsigned long)) {
         (void) getkval (nlst[X_CPU].n_value + offset,
@@ -372,26 +462,6 @@ machine_init (struct statics *statics)
 	pageshift = -pageshift;
     }
 
-    /* allocate space for proc structure array and array of pointers */
-    bytes = nproc * PRPSINFOSIZE;
-    pbase = (struct prpsinfo *) malloc (bytes);
-    pref = (struct prpsinfo **) malloc (nproc * sizeof (struct prpsinfo *));
-    oldbase = (struct oldproc *) malloc (2 * nproc * sizeof (struct oldproc));
-
-
-    /* Just in case ... */
-    if (pbase == (struct prpsinfo *) NULL || pref == (struct prpsinfo **) NULL
-	|| oldbase == (struct oldproc *) NULL)
-      {
-	fprintf (stderr, "%s: can't allocate sufficient memory\n", myname);
-	return (-1);
-      }
-
-    oldprocs = 2 * nproc;
-    endbase = oldbase + oldprocs;
-    for (op = oldbase; op < endbase; op++)
-      op->oldpid = -1;
-
     if (!(procdir = opendir (PROCFS)))
       {
 	(void) fprintf (stderr, "Unable to open %s\n", PROCFS);
@@ -425,88 +495,132 @@ format_header (register char *uname_field)
 #define UPDKCID(nk,ok) \
 if (nk == -1) { \
   perror("kstat_read "); \
-  exit(1); \
+  quit(1); \
 } \
 if (nk != ok)\
   goto kcid_changed;
 
-kupdate()
+int kupdate(int avenrun[3])
 {
-  kstat_t *ks;
-  kid_t nkcid;
-  int i;
-  int changed = 0;
-  static kstat_ctl_t *kc = NULL;
-  int ncpu = 0;
-  static kid_t kcid = 0;
+    kstat_t *ks;
+    kid_t nkcid;
+    int i;
+    int changed = 0;
+    static int ncpu = 0;
+    static kid_t kcid = 0;
+    kstat_named_t *kn;
 
-/*
- * 0. kstat_open
- */
 
-  if (!kc) {
-    kc = kstat_open();
-    if (!kc) {
-      perror("kstat_open ");
-      exit(1);
-    }
-    changed = 1;
-    kcid = kc->kc_chain_id;
-  }
+    /*
+     * 0. kstat_open
+     */
 
-  /* keep doing it until no more changes */
- kcid_changed:
-
-/*
- * 1.  kstat_chain_update
- */
-
-  nkcid = kstat_chain_update(kc);
-  if (nkcid) {  /* UPDKCID will abort if nkcid is -1, so no need to check */
-    changed = 1;
-    kcid = nkcid;
-  }
-  UPDKCID(nkcid,0);
-
-  if (changed) {
-
-/*
- * 2. get data addresses
- */
-
-    ncpu = 0;
-    for (ks = kc->kc_chain; ks; 
-	 ks = ks->ks_next) {
-
-      if (strncmp(ks->ks_name, "cpu_stat", 8) == 0) {
-	nkcid = kstat_read(kc, ks, NULL);
-	UPDKCID(nkcid, kcid);  /* if kcid changed, pointer might be invalid */
-
-	cpu_ks[ncpu] = ks;
-	ncpu++;
-	if (ncpu > ncpus) {
-	  fprintf(stderr, "kstat finds % CPUs, should be %d\n", ncpu, ncpus);
-	  exit(1);
+    if (!kc)
+    {
+	kc = kstat_open();
+	if (!kc)
+	{
+	    perror("kstat_open ");
+	    quit(1);
 	}
-      }
+	changed = 1;
+	kcid = kc->kc_chain_id;
     }
-    if (ncpu != ncpus) {
-      fprintf(stderr, "kstat finds % CPUs, should be %d\n", ncpu, ncpus);
-      exit(1);
+
+    /* keep doing it until no more changes */
+  kcid_changed:
+
+    /*
+     * 1.  kstat_chain_update
+     */
+    nkcid = kstat_chain_update(kc);
+    if (nkcid)
+    {
+	/* UPDKCID will abort if nkcid is -1, so no need to check */
+	changed = 1;
+	kcid = nkcid;
     }
-    changed = 0;
-  }
+    UPDKCID(nkcid,0);
 
+    ks = kstat_lookup(kc, "unix", 0, "system_misc");
+    if (kstat_read(kc, ks, 0) == -1) {
+	perror("kstat_read");
+	quit(1);
+    }
 
-/*
- * 3. get data
- */
+    /* load average */
+    kn = kstat_data_lookup(ks, "avenrun_1min");
+    if (kn)
+	avenrun[0] = kn->value.ui32;
+    kn = kstat_data_lookup(ks, "avenrun_5min");
+    if (kn)
+	avenrun[1] = kn->value.ui32;
+    kn = kstat_data_lookup(ks, "avenrun_15min");
+    if (kn)
+	avenrun[2] = kn->value.ui32;
 
-  for (i = 0; i < ncpus; i++) {
-    nkcid = kstat_read(kc, cpu_ks[i], &cpu_stat[i]);
-    UPDKCID(nkcid, kcid);  /* if kcid changed, pointer might be invalid */
-  }
+    /* nproc */
+    kn = kstat_data_lookup(ks, "nproc");
+    if (kn) {
+	nproc = kn->value.ui32;
+#ifdef NO_NPROC
+	if (nproc > maxprocs)
+	    reallocproc(2 * nproc);
+#endif
+    }
 
+    if (changed) {
+
+	/*
+	 * 2. get data addresses
+	 */
+
+	ncpu = 0;
+
+	kn = kstat_data_lookup(ks, "ncpus");
+	if (kn && kn->value.ui32 > ncpus) {
+	    ncpus = kn->value.ui32;
+	    cpu_ks = (kstat_t **) realloc (cpu_ks, ncpus * sizeof (kstat_t *));
+	    cpu_stat = (cpu_stat_t *) realloc (cpu_stat,
+			ncpus * sizeof (cpu_stat_t));
+	}
+
+	for (ks = kc->kc_chain; ks; 
+	     ks = ks->ks_next)
+	{
+	    if (strncmp(ks->ks_name, "cpu_stat", 8) == 0)
+	    {
+		nkcid = kstat_read(kc, ks, NULL);
+		/* if kcid changed, pointer might be invalid */
+		UPDKCID(nkcid, kcid);
+
+		cpu_ks[ncpu] = ks;
+		ncpu++;
+		if (ncpu > ncpus)
+		{
+		    fprintf(stderr, "kstat finds too many cpus: should be %d\n",
+			    ncpus);
+		    quit(1);
+		}
+	    }
+	}
+	/* note that ncpu could be less than ncpus, but that's okay */
+	changed = 0;
+    }
+
+    /*
+     * 3. get data
+     */
+
+    for (i = 0; i < ncpu; i++)
+    {
+	nkcid = kstat_read(kc, cpu_ks[i], &cpu_stat[i]);
+	/* if kcid changed, pointer might be invalid */
+	UPDKCID(nkcid, kcid);
+    }
+
+    /* return the number of cpus found */
+    return(ncpu);
 }
 
 #endif /* USE_KSTAT */
@@ -514,26 +628,34 @@ kupdate()
 void
 get_system_info (struct system_info *si)
 {
-  long avenrun[3];
-  struct cpu cpu;
-  static int freemem;
-  static int maxmem;
-  static int availrmem;
-  static int swapfs_minfree;
+  int avenrun[3];
+  static long freemem;
+  static long maxmem;
+  static long availrmem;
+  static long swapfs_minfree;
+  static int swap_total;
+  static int swap_free;
   struct anoninfo anoninfo;
   static long cp_time[CPUSTATES];
   static long cp_old[CPUSTATES];
   static long cp_diff[CPUSTATES];
   register int j, i;
+#ifdef USE_KSTAT
+  kstat_t *ks;
+  kstat_named_t *kn;
+  int cpus_found;
+#else
+  struct cpu cpu;
+#endif
 
   /* get the cp_time array */
   for (j = 0; j < CPUSTATES; j++)
     cp_time[j] = 0L;
 
 #ifdef USE_KSTAT
-  /* use kstat to upadte all processor information */
-  kupdate();
-  for (i = 0; i < ncpus; i++)
+  /* use kstat to update all processor information */
+  cpus_found = kupdate(avenrun);
+  for (i = 0; i < cpus_found; i++)
     {
       /* sum counters up to, but not including, wait state counter */
       for (j = 0; j < CPU_WAIT; j++)
@@ -544,6 +666,31 @@ get_system_info (struct system_info *si)
                                   (long) cpu_stat[i].cpu_sysinfo.wait[W_PIO];
       cp_time[CPUSTATE_SWAP] += (long) cpu_stat[i].cpu_sysinfo.wait[W_SWAP];
     }
+    /* avenrun */
+
+#if OSREV >= 55
+    /*
+     * The system_pages kstat is extremely expensive on systems with large
+     * amounts of physical memory.  But since we only need freemem/availrmem
+     * and those are readily avaiable in the kernel cheaply, we read the
+     * kernel if kvm_open succeeded.
+     */
+    if (kd == NULL) {
+	ks = kstat_lookup(kc, "unix", 0, "system_pages");
+	if (kstat_read(kc, ks, 0) == -1) {
+	    perror("kstat_read");
+	    quit(1);
+	}
+#ifdef USE_ANONINFO
+	kn = kstat_data_lookup(ks, "availrmem");
+	if (kn)
+	    availrmem = kn->value.ul;
+#endif
+	kn = kstat_data_lookup(ks, "freemem");
+	if (kn)
+	    freemem = kn->value.ul;
+    }
+#endif /* OSREV >= 55 */
 
 #else /* !USE_KSTAT */
 
@@ -563,32 +710,58 @@ get_system_info (struct system_info *si)
       cp_time[CPUSTATE_SWAP] += (long) cpu.cpu_stat.cpu_sysinfo.wait[W_SWAP];
     }
 
+  /* get load average array */
+  (void) getkval (avenrun_offset, (int *) avenrun, sizeof (avenrun), "avenrun");
+
+
 #endif /* USE_KSTAT */
 
   /* convert cp_time counts to percentages */
   (void) percentages (CPUSTATES, cpu_states, cp_time, cp_old, cp_diff);
 
-  /* get mpid -- process id of last process */
-  (void) getkval (mpid_offset, &(si->last_pid), sizeof (si->last_pid), "mpid");
-
-  /* get load average array */
-  (void) getkval (avenrun_offset, (int *) avenrun, sizeof (avenrun), "avenrun");
+   /* get mpid -- process id of last process */
+  if (kd)
+    (void) getkval(mpid_offset, &(si->last_pid), sizeof (si->last_pid), "mpid");
+  else
+    si->last_pid = -1;
 
   /* convert load averages to doubles */
   for (i = 0; i < 3; i++)
     si->load_avg[i] = loaddouble (avenrun[i]);
 
   /* get system wide main memory usage structure */
-  (void) getkval (freemem_offset, (int *) (&freemem), sizeof (freemem), "freemem");
+#if 1
+  maxmem = sysconf(_SC_PHYS_PAGES);
+#else
   (void) getkval (maxmem_offset, (int *) (&maxmem), sizeof (maxmem), "maxmem");
+#endif
+
+#if defined(USE_KSTAT) && OSREV >= 55
+   if (kd != NULL)		/* always get freemem from kvm if we can*/
+#endif
+      (void) getkval (freemem_offset, (int *) (&freemem),
+		    sizeof (freemem), "freemem");
+
   memory_stats[0] = pagetok (maxmem);
   memory_stats[1] = 0;
   memory_stats[2] = pagetok (freemem);
+
+#ifdef USE_ANONINFO
   (void) getkval (anoninfo_offset, (int *) (&anoninfo), sizeof (anoninfo), "anoninfo");
-  (void) getkval (availrmem_offset, (int *) (&availrmem), sizeof (availrmem), "availrmem");
+#if defined(USE_KSTAT) && OSREV >= 55
+   if (kd != NULL)		/* always get availrmem from kvm if we can*/
+#endif
+      (void) getkval (availrmem_offset, (int *) (&availrmem),
+		    sizeof (availrmem), "availrmem");
+
   (void) getkval (swapfs_minfree_offset, (int *) (&swapfs_minfree), sizeof (swapfs_minfree), "swapfs_minfree");
   memory_stats[3] = pagetok (anoninfo.ani_resv);
   memory_stats[4] = pagetok (MAX ((int) (anoninfo.ani_max - anoninfo.ani_resv), 0) + availrmem - swapfs_minfree);
+#else
+  get_swapinfo(&swap_total, &swap_free);
+  memory_stats[3] = pagetok(swap_total - swap_free);
+  memory_stats[4] = pagetok(swap_free);
+#endif
 
   /* set arrays and strings */
   si->cpustates = cpu_states;
@@ -614,8 +787,11 @@ get_process_info (
   int show_system;
   int show_uid;
 
+#ifndef USE_KSTAT
   /* Get current number of processes */
+  /* Got this when calling system info if using kstat */
   (void) getkval (nproc_offset, (int *) (&nproc), sizeof (nproc), "nproc");
+#endif
 
   /* read all the proc structures */
   getptable (pbase);
@@ -648,7 +824,7 @@ get_process_info (
 	{
 	  total_procs++;
 	  process_states[pp->pr_state]++;
-	  if ((!pp->pr_zomb) &&
+	  if ((!ZOMBIE(pp)) &&
 	      (show_idle || percent_cpu (pp) || (pp->pr_state == SRUN) || (pp->pr_state == SONPROC)) &&
 	      (!show_uid || pp->pr_uid == (uid_t) sel->uid))
 	    {
@@ -683,6 +859,7 @@ format_next_process (
   struct handle *hp;
   register long cputime;
   register double pctcpu;
+  char sb[10];
 
   /* find and remember the next proc structure */
   hp = (struct handle *) handle;
@@ -693,18 +870,23 @@ format_next_process (
   cputime = pp->pr_time.tv_sec;
   pctcpu = percent_cpu (pp);
 
+  if (pp->pr_state == SONPROC && ncpus > 1)
+    sprintf(sb,"cpu/%-2d", pp->pr_onpro); /* XXX large #s may overflow colums */
+  else
+    *sb = '\0';
+
   /* format this entry */
   sprintf (fmt,
 	   Proc_format,
 	   pp->pr_pid,
 	   (*get_userid) (pp->pr_uid),
-	   pp->pr_pri - PZERO,
+	   (u_short)pp->pr_fill < 999 ? (u_short)pp->pr_fill : 999,
+	   pp->pr_pri,
 	   pp->pr_nice - NZERO,
-	   format_k(pp->pr_bysize / 1024),
-	   format_k(pp->pr_byrssize / 1024),
-	   state_abbrev[pp->pr_state],
+	   format_k(SIZE_K(pp)),
+	   format_k(RSS_K(pp)),
+	   *sb ? sb : state_abbrev[pp->pr_state],
 	   format_time(cputime),
-	   weighted_cpu (pp),
 	   pctcpu,
 	   pp->pr_fname);
 
@@ -766,7 +948,7 @@ getkval (unsigned long offset,
 	}
       else
 	{
-	  fprintf (stderr, "top: kvm_read for %s: %s\n", refstr, sys_errlist[errno]);
+	  fprintf (stderr, "top: kvm_read for %s: %s\n", refstr, strerror(errno));
 	  quit (23);
 	}
     }
@@ -935,6 +1117,9 @@ void
 getptable (struct prpsinfo *baseptr)
 {
   struct prpsinfo *currproc;	/* pointer to current proc structure	*/
+#ifndef USE_NEW_PROC
+  struct prstatus prstatus;     /* for additional information */
+#endif
   int numprocs = 0;
   int i;
   struct dirent *direntp;
@@ -981,12 +1166,31 @@ getptable (struct prpsinfo *baseptr)
 
   /* before reading /proc files, turn on root privs */
   /* (we don't care if this fails since it will be caught later) */
+#ifndef USE_NEW_PROC
   seteuid(0);
+#endif
 
   for (rewinddir (procdir); (direntp = readdir (procdir));)
     {
       int fd;
+      char buf[30];
 
+      if (direntp->d_name[0] == '.')
+	continue;
+
+#ifdef USE_NEW_PROC
+      snprintf(buf, sizeof(buf), "%s/psinfo", direntp->d_name);
+
+      if ((fd = open (buf, O_RDONLY)) < 0)
+	continue;
+
+      if (read(fd, currproc, sizeof(psinfo_t)) != sizeof(psinfo_t))
+	{
+	  (void) close (fd);
+	  continue;
+	}
+       
+#else
       if ((fd = open (direntp->d_name, O_RDONLY)) < 0)
 	continue;
 
@@ -996,10 +1200,23 @@ getptable (struct prpsinfo *baseptr)
 	  continue;
 	}
 
+      if (ioctl (fd, PIOCSTATUS, &prstatus) < 0)
+      {
+	  /* not a show stopper -- just fill in the needed values */
+	  currproc->pr_fill = 0;
+	  currproc->pr_onpro = 0;
+       } else {
+	  /* copy over the values we need from prstatus */
+	  currproc->pr_fill = (short)prstatus.pr_nlwp;
+	  currproc->pr_onpro = prstatus.pr_processor;
+       }
+#endif
+
       /*
        * SVr4 doesn't keep track of CPU% in the kernel, so we have
        * to do our own.  See if we've heard of this process before.
        * If so, compute % based on CPU since last time.
+       * NOTE:  Solaris 2.4 and higher do maintain CPU% in prpsinfo.
        */
       op = oldbase + HASH (currproc->pr_pid);
       while (1)
@@ -1008,7 +1225,7 @@ getptable (struct prpsinfo *baseptr)
 	    break;
 	  if (op->oldpid == currproc->pr_pid)
 	    {			/* found old data */
-#ifndef SOLARIS24
+#if (OSREV < 54)
 	      percent_cpu (currproc) =
 		((currproc->pr_time.tv_sec * 1.0e9 +
 		  currproc->pr_time.tv_nsec)
@@ -1027,7 +1244,7 @@ getptable (struct prpsinfo *baseptr)
       /* Otherwise, it's new, so use all of its CPU time */
       if (op->oldpid == -1)
 	{
-#ifdef SOLARIS24
+#if (OSREV >= 54)
 	  weighted_cpu (currproc) =
 	    percent_cpu (currproc);
 #else
@@ -1050,10 +1267,20 @@ getptable (struct prpsinfo *baseptr)
       numprocs++;
       currproc = (struct prpsinfo *) ((char *) currproc + PRPSINFOSIZE);
       (void) close (fd);
+#ifdef NO_NPROC
+      /* Atypical place for growth */
+      if (numprocs >= maxprocs) {
+	    reallocproc(2 * numprocs);
+	    currproc = (struct prpsinfo *)
+		    ((char *)baseptr + PRPSINFOSIZE * numprocs);
+      }
+#endif
     }
 
+#ifndef USE_NEW_PROC
   /* turn off root privs */
   seteuid(getuid());
+#endif
 
   if (nproc != numprocs)
     nproc = numprocs;
@@ -1111,6 +1338,7 @@ proc_owner (pid_t pid)
   return (-1);
 }
 
+#if OSREV < 55
 int
 setpriority (int dummy, int who, int niceval)
 {
@@ -1139,4 +1367,117 @@ setpriority (int dummy, int who, int niceval)
     return (-1);
 
   return (0);
+}
+#endif
+
+#ifndef USE_ANONINFO
+get_swapinfo(int *total, int *fr)
+
+{
+#ifdef SC_AINFO
+    struct anoninfo anon;
+
+    if (swapctl(SC_AINFO, &anon) == -1) {
+	*total = *fr = 0;
+	return;
+    }
+    *total = anon.ani_max;
+    *fr = anon.ani_max - anon.ani_resv;
+#else
+    register int cnt, i;
+    register int t, f;
+    struct swaptable *swt;
+    struct swapent *ste;
+    static char path[256];
+
+    /* get total number of swap entries */
+    cnt = swapctl(SC_GETNSWP, 0);
+
+    /* allocate enough space to hold count + n swapents */
+    swt = (struct swaptable *)malloc(sizeof(int) +
+				     cnt * sizeof(struct swapent));
+    if (swt == NULL)
+    {
+	*total = 0;
+	*fr = 0;
+	return;
+    }
+    swt->swt_n = cnt;
+
+    /* fill in ste_path pointers: we don't care about the paths, so we point
+       them all to the same buffer */
+    ste = &(swt->swt_ent[0]);
+    i = cnt;
+    while (--i >= 0)
+    {
+	ste++->ste_path = path;
+    }
+
+    /* grab all swap info */
+    swapctl(SC_LIST, swt);
+
+    /* walk thru the structs and sum up the fields */
+    t = f = 0;
+    ste = &(swt->swt_ent[0]);
+    i = cnt;
+    while (--i >= 0)
+    {
+	/* dont count slots being deleted */
+	if (!(ste->ste_flags & ST_INDEL) &&
+	    !(ste->ste_flags & ST_DOINGDEL))
+	{
+	    t += ste->ste_pages;
+	    f += ste->ste_free;
+	}
+	ste++;
+    }
+
+    /* fill in the results */
+    *total = t;
+    *fr = f;
+    free(swt);
+#endif /* SC_AINFO */
+}
+#endif /* USE_ANONINFO */
+
+/*
+ * When we reach a proc limit, we need to realloc the stuff.
+ */
+static void reallocproc(int n)
+{
+    int bytes;
+    struct oldproc *op, *endbase;
+
+    if (n < maxprocs)
+	return;
+
+    maxprocs = n;
+
+    /* allocate space for proc structure array and array of pointers */
+    bytes = maxprocs * PRPSINFOSIZE;
+    pbase = (struct prpsinfo *) realloc(pbase, bytes);
+    pref = (struct prpsinfo **) realloc(pref,
+			maxprocs * sizeof(struct prpsinfo *));
+    oldbase = (struct oldproc *) realloc(oldbase,
+			2 * maxprocs * sizeof(struct oldproc));
+
+    /* Just in case ... */
+    if (pbase == (struct prpsinfo *) NULL || pref == (struct prpsinfo **) NULL
+	|| oldbase == (struct oldproc *) NULL)
+      {
+	fprintf (stderr, "%s: can't allocate sufficient memory\n", myname);
+	quit(1);
+      }
+
+    /*
+     * We're growing from 0 to some number, only then we need to
+     * init the oldproc stuff
+     */
+    if (!oldprocs) {
+	oldprocs = 2 * maxprocs;
+
+	endbase = oldbase + oldprocs;
+	for (op = oldbase; op < endbase; op++)
+	  op->oldpid = -1;
+    }
 }

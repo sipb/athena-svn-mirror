@@ -7,7 +7,7 @@
  * This module makes top work on the following systems:
  *	Encore Multimax running UMAX 4.3 release 4.0 and later
  *
- * AUTHOR:  William LeFebvre <phil@eecs.nwu.edu>
+ * AUTHOR:  William LeFebvre <wnl@groupsys.com>
  */
 
 /*

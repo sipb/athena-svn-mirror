@@ -5,11 +5,11 @@
  *
  * DESCRIPTION:
  * This is the machine-dependent module for AIX 4.1.2.0
- * It is currenlty only tested on PowerPC architectures.
+ * Works for: PowerPC, RS/6000
  *
  * TERMCAP: -lcurses
  *
- * CFLAGS: -DORDER
+ * CFLAGS: -DORDER -DHAVE_GETOPT
  *
  * AUTHOR:  Joep Vesseur <joep@fwi.uva.nl>
  */
@@ -27,7 +27,7 @@
 
 
 #define PROCRESS(p) (((p)->pi_trss + (p)->pi_drss)*4)
-#define PROCSIZE(p) (((p)->pi_tsize/1024+(p)->pi_dvm)*4)
+#define PROCSIZE(p) ((p)->pi_tsize/1024+(p)->pi_dvm*4)
 #define PROCTIME(pi) (pi->pi_ru.ru_utime.tv_sec + pi->pi_ru.ru_stime.tv_sec)
 
 
@@ -77,12 +77,12 @@ struct handle
  *  These definitions control the format of the per-process area
  */
 static char header[] =
-  "  PID X        PRI NICE   SIZE   RES STATE   TIME   WCPU    CPU COMMAND";
-/* 0123456   -- field to fill in starts at header+6 */
-#define UNAME_START 6
+  "   PID X        PRI NICE   SIZE   RES STATE   TIME   WCPU    CPU COMMAND";
+/* 01234567   -- field to fill in starts at header+7 */
+#define UNAME_START 7
 
 #define Proc_format \
-	"%5d %-8.8s %3d %4d %5d%c %4d%c %-5s %6s %5.2f%% %5.2f%% %.14s%s"
+	"%6d %-8.8s %3d %4d %5d%c %4d%c %-5s %6s %5.2f%% %5.2f%% %.14s%s"
 
 
 /* these are for detailing the process states */
@@ -104,7 +104,7 @@ char *cpustatenames[] = {
 /* these are for detailing the memory statistics */
 int memory_stats[7];
 char *memorynames[] = {
-    "M Total. Real: ", "M, ", "M Free, ", "M Buffers. Virtual: ", "M, ", "M Free, ", NULL
+    "M Total. Real: ", "M, ", "M Free, ", "M Buffers. Virt: ", "M, ", "M Free, ", NULL
 };
 #define M_TOTAL	   0
 #define M_REAL     1
@@ -315,7 +315,7 @@ caddr_t get_process_info(si, sel, compare)
 		     &procsindex, nprocs);
     if (nproc < 0) {
 	perror("getprocs");
-	exit(1);
+	quit(1);
     }
 
     /* the swapper has no cmd-line attached */
@@ -405,7 +405,7 @@ char *format_next_process(handle, get_userid)
     cpu_time = PROCTIME(pi);
 
     /* we disply sizes up to 10M in KiloBytes, beyond 10M in MegaBytes */
-    if ((proc_size = (pi->pi_tsize/1024+pi->pi_dvm)*4) > 10240) {
+    if ((proc_size = pi->pi_tsize/1024+pi->pi_dvm*4) > 10240) {
 	proc_size /= 1024;
 	size_unit = 'M';
     }
@@ -463,7 +463,7 @@ getkval(offset, ptr, size, refstr)
 
     if (lseek(kmem, offset, SEEK_SET) != offset) {
 	fprintf(stderr, "top: lseek failed\n");
-	exit(-1);
+	quit(2);
     }
 
     if (readx(kmem, ptr, size, upper_2gb) != size) {
@@ -472,7 +472,7 @@ getkval(offset, ptr, size, refstr)
 	else {
 	    fprintf(stderr, "top: kvm_read for %s: %s\n", refstr,
 		    sys_errlist[errno]);
-	    exit(-1);
+	    quit(2);
 	}
     }
 

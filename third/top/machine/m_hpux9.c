@@ -13,6 +13,8 @@
  *
  * LIBS: 
  *
+ * CFLAGS: -DHAVE_GETOPT
+ *
  * AUTHOR: Kevin Schmidt <kevin@mcl.ucsb.edu> 
  *         adapted from Christos Zoulas <christos@ee.cornell.edu>
  */
@@ -443,8 +445,14 @@ int (*compare)();
 	{
 	    total_procs++;
 	    process_states[pp->p_stat]++;
+	    /*
+	     * idle processes can be selectively ignored:  a process is
+	     * considered idle when cpticks is zero AND it is not in the run
+	     * state.  Zombies are always ignored.  We also skip over 
+	     * processes that have been excluded via a uid selection
+	     */
 	    if ((pp->p_stat != SZOMB) &&
-		(show_idle || (p_percentcpu(pp) != 0) || (pp->p_stat == SRUN)) &&
+		(show_idle || (pp->p_cpticks != 0) || (pp->p_stat == SRUN)) &&
 		(!show_uid || pp->p_uid == (uid_t)sel->uid))
 	    {
 		*prefp++ = pp;

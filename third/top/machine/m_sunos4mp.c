@@ -1,7 +1,7 @@
 /*
  * top - a top users display for Unix
  *
- * SYNOPSIS:  any multi-processor Sun running SunOS versions 4.1.2 or 4.1.3
+ * SYNOPSIS:  any multi-processor Sun running SunOS versions 4.1.2 or later
  *
  * DESCRIPTION:
  * This is the machine-dependent module for SunOS 4.x with multi-processor
@@ -10,13 +10,15 @@
  * such as sun4m).  This makes top work on the following systems:
  *	SunOS 4.1.2 (MP architectures only)
  *	SunOS 4.1.3 (MP architectures only)
+ *      SunOS 4.1.3_U1 (MP architectures only)
+ *      SunOS 4.1.4 (MP architectures only)
  *	Solbourne running os/mp 4.1b or later only
  *
  * LIBS:  -lkvm
  *
- * CFLAGS: -DHAVE_GETOPT
+ * CFLAGS: -DHAVE_GETOPT -DORDER
  *
- * AUTHOR:  William LeFebvre <phil@eecs.nwu.edu>
+ * AUTHOR:  William LeFebvre <wnl@groupsys.com>
  * Solbourne support by David MacKenzie <djm@eng.umd.edu>
  */
 
@@ -198,6 +200,24 @@ char *memorynames[] = {
     "K available, ", "K in use, ", "K free, ", "K locked", NULL
 };
 
+/* these are names given to allowed sorting orders -- first is default */
+char *ordernames[] =
+{"cpu", "size", "res", "time", NULL};
+
+/* forward definitions for comparison functions */
+int compare_cpu();
+int compare_size();
+int compare_res();
+int compare_time();
+
+int (*proc_compares[])() = {
+    compare_cpu,
+    compare_size,
+    compare_res,
+    compare_time,
+    NULL };
+
+
 /* these are for keeping track of the proc array */
 
 static int bytes;
@@ -336,6 +356,9 @@ struct statics *statics;
     statics->procstate_names = procstatenames;
     statics->cpustate_names = cpustatenames;
     statics->memory_names = memorynames;
+#ifdef ORDER
+    statics->order_names = ordernames;
+#endif
 
     /* all done! */
     return(0);
@@ -731,18 +754,35 @@ char *refstr;
     return(1);
 }
     
-/* comparison routine for qsort */
+/* comparison routines for qsort */
 
 /*
- *  proc_compare - comparison function for "qsort"
- *	Compares the resource consumption of two processes using five
- *  	distinct keys.  The keys (in descending order of importance) are:
- *  	percent cpu, cpu ticks, state, resident set size, total virtual
- *  	memory usage.  The process states are ordered as follows (from least
- *  	to most important):  WAIT, zombie, sleep, stop, start, run.  The
- *  	array declaration below maps a process state index into a number
- *  	that reflects this ordering.
+ * There are currently four possible comparison routines.  main selects
+ * one of these by indexing in to the array proc_compares.
+ *
+ * Possible keys are defined as macros below.  Currently these keys are
+ * defined:  percent cpu, cpu ticks, process state, resident set size,
+ * total virtual memory usage.  The process states are ordered as follows
+ * (from least to most important):  WAIT, zombie, sleep, stop, start, run.
+ * The array declaration below maps a process state index into a number
+ * that reflects this ordering.
  */
+  
+/* First, the possible comparison keys.  These are defined in such a way
+   that they can be merely listed in the source code to define the actual
+   desired ordering.
+ */
+
+#define ORDERKEY_PCTCPU  if (lresult = p2->p_pctcpu - p1->p_pctcpu,\
+                           (result = lresult > 0 ? 1 : lresult < 0 ? -1 : 0) == 0)
+#define ORDERKEY_CPTICKS if ((result = p2->p_cpticks - p1->p_cpticks) == 0)
+#define ORDERKEY_STATE   if ((result = sorted_state[p2->p_stat] - \
+                            sorted_state[p1->p_stat])  == 0)
+#define ORDERKEY_PRIO    if ((result = p2->p_pri - p1->p_pri) == 0)
+#define ORDERKEY_RSSIZE  if ((result = p2->p_rssize - p1->p_rssize) == 0)
+#define ORDERKEY_MEM     if ((result = PROCSIZE(p2) - PROCSIZE(p1)) == 0)
+
+/* Now the array that maps process state to a weight */
 
 static unsigned char sorted_state[] =
 {
@@ -755,7 +795,9 @@ static unsigned char sorted_state[] =
     4	/* stop			*/
 };
  
-proc_compare(pp1, pp2)
+/* compare_cpu - the comparison function for sorting by cpu percentage */
+
+compare_cpu(pp1, pp2)
 
 struct proc **pp1;
 struct proc **pp2;
@@ -770,36 +812,110 @@ struct proc **pp2;
     p1 = *pp1;
     p2 = *pp2;
 
-    /* compare percent cpu (pctcpu) */
-    if ((lresult = p2->p_pctcpu - p1->p_pctcpu) == 0)
-    {
-	/* use cpticks to break the tie */
-	if ((result = p2->p_cpticks - p1->p_cpticks) == 0)
-	{
-	    /* use process state to break the tie */
-	    if ((result = sorted_state[p2->p_stat] -
-			  sorted_state[p1->p_stat])  == 0)
-	    {
-		/* use priority to break the tie */
-		if ((result = p2->p_pri - p1->p_pri) == 0)
-		{
-		    /* use resident set size (rssize) to break the tie */
-		    if ((result = p2->p_rssize - p1->p_rssize) == 0)
-		    {
-			/* use total memory to break the tie */
-			result = PROCSIZE(p2) - PROCSIZE(p1);
-		    }
-		}
-	    }
-	}
-    }
-    else
-    {
-	result = lresult < 0 ? -1 : 1;
-    }
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
 
     return(result);
 }
+
+/* compare_size - the comparison function for sorting by total memory usage */
+
+compare_size(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_MEM
+    ORDERKEY_RSSIZE
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return(result);
+}
+
+/* compare_res - the comparison function for sorting by resident set size */
+
+compare_res(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return(result);
+}
+
+/* compare_time - the comparison function for sorting by total cpu time */
+
+compare_time(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_CPTICKS
+    ORDERKEY_PCTCPU
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
+  
+    return(result);
+}
+
+/*
+ * proc_owner(pid) - returns the uid that owns process "pid", or -1 if
+ *              the process does not exist.
+ *              It is EXTREMLY IMPORTANT that this function work correctly.
+ *              If top runs setuid root (as in SVR4), then this function
+ *              is the only thing that stands in the way of a serious
+ *              security problem.  It validates requests for the "kill"
+ *              and "renice" commands.
+ */
 
 int proc_owner(pid)
 

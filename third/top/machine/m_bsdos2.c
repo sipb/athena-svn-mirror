@@ -10,6 +10,8 @@
  * Works for:
  *	i386 and maybe sparc
  *
+ * CFLAGS: -DHAVE_GETOPT
+ *
  * LIBS: -lkvm
  *
  * AUTHOR:  Jeff Polk <polk@bsdi.com> based on the m_44bsd.c code 
@@ -72,8 +74,7 @@ struct handle
 			 ((pct) / (1.0 - exp(PP((pp), p_swtime) * logcpu))))
 
 /* what we consider to be process size: */
-#define PROCSIZE(pp) (VP((pp), vm_tsize) + VP((pp), vm_dsize) + VP((pp), vm_ss
-ize))
+#define PROCSIZE(pp) (VP((pp), vm_tsize) + VP((pp), vm_dsize) + VP((pp), vm_ssize))
 
 /* definitions for indices in the nlist array */
 #define X_CCPU		0

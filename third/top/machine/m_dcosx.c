@@ -131,7 +131,7 @@ static int nproc;
 static int bytes;
 static struct prpsinfo *pbase;
 static struct prpsinfo **pref;
-static DIR *procdir;
+static DIR *xprocdir;
 
 /* useful externals */
 extern int errno;
@@ -195,7 +195,7 @@ machine_init (struct statics *statics)
 	return (-1);
       }
 
-    if (!(procdir = opendir (PROCFS)))
+    if (!(xprocdir = opendir (PROCFS)))
       {
 	(void) fprintf (stderr, "Unable to open %s\n", PROCFS);
 	return (-1);
@@ -584,7 +584,7 @@ getptable (struct prpsinfo *baseptr)
   int numprocs = 0;
   struct dirent *direntp;
 
-  for (rewinddir (procdir); direntp = readdir (procdir);)
+  for (rewinddir (xprocdir); direntp = readdir (xprocdir);)
     {
       int fd;
 
