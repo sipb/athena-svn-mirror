@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.11 1989-11-06 21:56:17 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.12 1989-11-22 21:24:54 jik Exp $";
 #endif
 
 #ifdef AFS_MOUNTPOINTS
@@ -383,3 +383,29 @@ struct stat *oldbuf;
 
      return 0;
 }
+
+#ifdef DEBUG
+char *Malloc(size)
+unsigned size;
+{
+     extern char *malloc();
+
+     static int count = 0;
+     char buf[10];
+     
+     count++;
+
+     fprintf(stderr, "This is call number %d to Malloc, for %u bytes.\n",
+	     count, size);
+     fprintf(stdout, "Shall I return NULL for this malloc? ");
+     fgets(buf, 10, stdin);
+     if ((*buf == 'y') || (*buf == 'Y')) {
+	  errno = ENOMEM;
+	  return ((char *) NULL);
+     }
+     else
+	  return (malloc(size));
+}
+#endif
+
+	  

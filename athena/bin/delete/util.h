@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.7 1989-11-06 19:54:47 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.8 1989-11-22 21:24:44 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -18,6 +18,12 @@ char *firstpart();
 char *lastpart();
 char *strindex();
 char *strrindex();
+#ifdef DEBUG
+char *Malloc();
+#else
+#define Malloc(a) malloc(a)
+extern char *malloc();
+#endif
 
 int is_mountpoint(), is_link();
 
