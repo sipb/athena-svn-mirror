@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.32 1996-08-10 21:43:36 cfields Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.33 1997-06-02 17:40:30 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -169,6 +169,7 @@ xlogin.Geometry: 		580x325+205+105
 
 *name_input.wcClassName:	AsciiText
 *name_input*length:		8
+*name_input.borderColor: 	black
 *name_input*string:		
 *name_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
 *name_input*editType:		edit
@@ -248,6 +249,7 @@ xlogin.Geometry: 		580x325+205+105
 
 *pword_input.wcClassName:	AsciiText
 *pword_input.wcCallback:	WcSetValueCB(this.borderColor: white)
+*pword_input.borderColor: 	white
 *pword_input*length:		128
 *pword_input*string:		
 *pword_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
@@ -300,10 +302,13 @@ xlogin.Geometry: 		580x325+205+105
 	<Key>F5:	callbackACT(*lmenuEntry5) \n\
 	<Key>F6:	callbackACT(*lmenuEntry6) \n\
 	<Key>Return:	WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.borderColor: black) \
 			login() \n\
 	<Key>KP_Enter:	WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.borderColor: black) \
 			login() \n\
 	Ctrl<Key>m:	WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(*name_input.borderColor: black) \
 			login() \n\
 	<Key>Prior:	signalConsoleACT(show) \n\
 	<Key>Next:	signalConsoleACT(hide) \n\

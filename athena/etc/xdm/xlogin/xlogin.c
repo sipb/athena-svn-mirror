@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.60 1997-04-04 17:53:19 ghudson Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.61 1997-06-02 17:40:33 ghudson Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -1367,8 +1367,6 @@ caddr_t unused;
     WcSetValueCB(appShell, "*lmenuEntry5.leftBitmap: white", NULL);
     WcSetValueCB(appShell, "*selection.label:  ", NULL);
     WcSetValueCB(appShell, "*name_input.displayCaret: TRUE", NULL);
-    WcSetValueCB(appShell, "*name_input.borderColor: black", NULL);
-    WcSetValueCB(appShell, "*pword_input.borderColor: white", NULL);
 
     tb.firstPos = tb.length = 0;
     tb.ptr = "";
