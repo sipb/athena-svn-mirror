@@ -1,4 +1,4 @@
-# $Id: packages,v 1.166 2002-04-09 03:41:16 ghudson Exp $
+# $Id: packages,v 1.167 2002-04-13 22:06:56 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -190,7 +190,7 @@ third/mdoc
 third/mingetty			on linux
 third/motif			on linux
 third/motif/clients/mwm		on solaris
-third/nautilus			except irix requires bonobo,eel,GConf,esound,imlib,popt,gnome-vfs,gtk,libxml,oaf,scrollkeeper,libghttp
+third/nautilus			requires bonobo,eel,GConf,esound,imlib,popt,gnome-vfs,gtk,libxml,oaf,scrollkeeper,libghttp
 third/nmh			requires krb5,hesiod
 third/nvi			on linux
 third/oaf			requires libxml,ORBit,popt,flex
