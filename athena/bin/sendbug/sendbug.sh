@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.3 1989-12-04 15:22:54 raeburn Exp $
+# $Id: sendbug.sh,v 1.4 1989-12-08 12:49:52 epeisach Exp $
 # make sure stuff this script needs is up front
 eval `/etc/athena/sh_commands_path`
 PATH=$PATH:/bin/athena
@@ -44,17 +44,18 @@ Subject: $machtype $short_version: $subject
 System name:		$hostname
 Type and version:	$cpu $version
 Display type:		$dpy
+
 What were you trying to do?
-	[Please fill this in.]
+	[Please replace this line with your information.]
 
 What's wrong:
-	[Please fill this in.]
+	[Please replace this line with your information.]
 
 What should have happened:
-	[Please fill this in.]
+	[Please replace this line with your information.]
 
 Please describe any relevant documentation references:
-	[Please fill this in.]
+	[Please replace this line with your information.]
 EOF
 
 fmt << EOF
