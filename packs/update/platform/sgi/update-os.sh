@@ -4,17 +4,6 @@ if [ -f $CONFVARS ]; then
 	. $CONFVARS
 fi
 
-# This code is needed for Irix 5.3 only.
-if [ -s "$OLDBINS" ]; then
-	echo "Making copies of OS binaries we need"
-	mkdir -p /tmp/bin
-	bins="`cat $OLDBINS`"
-	for i in $bins; do
-		cp -p $i /tmp/bin/`basename $i`
-	done
-	PATH=/tmp/bin:$PATH; export PATH
-fi
-
 if [ -s "$DEADFILES" ]; then
 	echo "Removing outdated files"
 	dead="`cat $DEADFILES`"
