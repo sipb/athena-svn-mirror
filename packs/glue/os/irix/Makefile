@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2002-02-05 17:53:41 zacheiss Exp $
+# $Id: Makefile,v 1.6 2002-04-09 05:53:40 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -35,10 +35,10 @@ install:
 	ln -s /usr/sbin/vacation ${DESTDIR}${ATHBINDIR}/vacation.real
 	rm -f ${DESTDIR}${IAFLIBDIR}/scheme
 	ln -s /bin/login ${DESTDIR}${IAFLIBDIR}/scheme
-	install -m -c 555 bos ${DESTDIR}${ATHRBINDIR}
-	install -m -c 555 klog ${DESTDIR}${ATHRBINDIR}
-	install -m -c 555 pts ${DESTDIR}${ATHRBINDIR}
-	install -m -c 555 vos ${DESTDIR}${ATHRBINDIR}
+	install -c -m 555 bos ${DESTDIR}${ATHRBINDIR}
+	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
+	install -c -m 555 pts ${DESTDIR}${ATHRBINDIR}
+	install -c -m 555 vos ${DESTDIR}${ATHRBINDIR}
 
 clean:
 	rm -f ${ATTACHRUN}
