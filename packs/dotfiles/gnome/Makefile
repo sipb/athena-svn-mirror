@@ -1,15 +1,15 @@
-# $Id: Makefile,v 1.2 2003-04-22 15:33:25 ghudson Exp $
+# $Id: Makefile,v 1.3 2003-05-03 15:23:03 ghudson Exp $
 
 PIXMAPDIR=/usr/athena/share/pixmaps
 GNOMEATHDIR=/usr/athena/share/gnome/athena
 SCHEMASDIR=/etc/athena/gconf/schemas
 AFSMENUS=/afs/athena.mit.edu/system/config/panel/menus
 
-all: athena-panel-config.schemas
+all: athena.schemas
 
-athena-panel-config.schemas: athena-panel-config.schemas.in
+athena.schemas: athena.schemas.in
 	rm -f $@
-	perl gen-schemas.pl athena-panel-config.schemas.in > $@
+	perl gen-schemas.pl athena.schemas.in > $@
 
 check:
 
@@ -35,7 +35,7 @@ install:
 	install -c -m 0644 terminal-icon ${DESTDIR}${GNOMEATHDIR}
 	install -c -m 0644 info.png ${DESTDIR}${PIXMAPDIR}
 	install -c -m 0644 logout-icon-menu.png ${DESTDIR}${PIXMAPDIR}
-	install -c -m 0644 athena-panel-config.schemas ${DESTDIR}${SCHEMASDIR}
+	install -c -m 0644 athena.schemas ${DESTDIR}${SCHEMASDIR}
 	rm -f $(DESTDIR)$(GNOMEATHDIR)/menus
 	ln -s $(AFSMENUS)-$(ATHENA_MAJOR_VERSION).$(ATHENA_MINOR_VERSION) \
 		$(DESTDIR)$(GNOMEATHDIR)/menus
