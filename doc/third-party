@@ -158,6 +158,7 @@ Distribution sites for software under third
 	openssl		ftp.openssl.org:source
 	ORBit		ftp.gnome.org:pub/GNOME/stable/sources/ORBit
 	patch		ftp.gnu.org:pub/gnu/patch
+	pcre		ftp.sourceforge.net:pub/sourceforge/pcre
 	perl		ftp.cpan.org:pub/CPAN/src
 	pine		ftp.cac.washington.edu:pine
 			ftp.cac.washington.edu:mail/kerberos4-patches.tar.Z
