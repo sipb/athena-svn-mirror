@@ -8,6 +8,7 @@ Xmh.SendBreakWidth:		2000
 *Command.BorderWidth:	1
 *MenuButton.BorderWidth:	1
 *toc*cursor:			left_ptr
+*bitmapFilePath:		/usr/athena/include/X11/bitmaps
 
 *menuBox.folderButton.Label:	Folder
 *menuBox.folderButton.borderWidth: 1
