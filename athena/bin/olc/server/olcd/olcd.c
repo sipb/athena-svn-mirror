@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.48 1991-11-06 15:44:58 lwvanels Exp $
+ *	$Id: olcd.c,v 1.49 1992-01-07 20:27:01 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.48 1991-11-06 15:44:58 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.49 1992-01-07 20:27:01 lwvanels Exp $";
 #endif
 #endif
 
@@ -890,7 +890,7 @@ authenticate(request, addr)
 #else /* KERBEROS */
 
     result = krb_rd_req(&(request->kticket),K_SERVICE,K_INSTANCEbuf,
-			addr,&data,SRVTAB_FILE);
+			addr,&data,"");
 
     strcpy(request->requester.username,data.pname);
     strcpy(request->requester.realm,data.prealm);
@@ -912,7 +912,7 @@ get_kerberos_ticket()
   
   /* If the ticket time is going to expire in 15 minutes or less, get a */
   /* new one */
-  if(ticket_time < NOW - ((96L * 5L) - 15L) * 60)
+  if(ticket_time < NOW - ((DEFAULT_TKT_LIFE * 5L) - 15L) * 60)
     {
       strcpy(principal,K_SERVICE);
       strcpy(sinstance,DaemonHost);
@@ -926,7 +926,7 @@ get_kerberos_ticket()
       dest_tkt();
       ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM,
 			       "krbtgt", SERVER_REALM,
-			       96, SRVTAB_FILE);
+			       DEFAULT_TKT_LIFE, "");
       if (ret != KSUCCESS) {
 	sprintf(buf,"get_tkt: %s", krb_err_txt[ret]);
 	log_error(buf);
