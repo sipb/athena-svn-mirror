@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.6 1990-08-21 20:37:47 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.7 1990-09-10 10:21:35 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.6 1990-08-21 20:37:47 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.7 1990-09-10 10:21:35 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -22,6 +22,8 @@ static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include "quota_db.h"
 #include "gquota_db.h"
 #include "uuid.h"
+#include <sys/file.h>
+
 extern char qcurrency[];             /* The quota currency */
 char *set_service();
 
@@ -46,7 +48,7 @@ quota_report *qreport;
 
 	CHECK_PROTECT();
 
-	if (QD) return(QDBDOWN);
+	if (QD || !access(SHUTDOWNFILE, F_OK)) return(QDBDOWN);
 
 	service = set_service(qid->service);
 	if(ret=check_krb_auth(h, auth, &ad)) 
@@ -238,7 +240,8 @@ quota_value qamount;
 
 	CHECK_PROTECT();
 
-	if (QD && qtype != U_NEW) return(QDBDOWN);
+	if ((QD && (qtype != U_NEW)) || !access(SHUTDOWNFILE, F_OK) ) 
+	    return(QDBDOWN);
 
 #if 0
 	syslog(LOG_DEBUG, "Quotamodify %s, %s, %d:amt %d, type %d\n", 
@@ -391,7 +394,8 @@ quota_value qamount;
 
 	CHECK_PROTECT();
 
-	if (QD) return(QDBDOWN);
+	if ((QD && (qtype != A_NEW)) || !access(SHUTDOWNFILE, F_OK) ) 
+	    return(QDBDOWN);
 
 	service=set_service(qid->service);
 
@@ -504,7 +508,7 @@ quota_value qamount;
 		return QGROUPDELETED;
 	}
 
-	switch (qtype) {
+	switch ((int) qtype) {
 	case A_SET:
 	    gquotarec.quotaLimit = qamount;
             break;
@@ -614,18 +618,21 @@ ndr_$long_int *flag;
         int authuser = 0;       /* If user is in the access list for special */
 	int read_group_record = 0;
 
-        service = set_service(qid->service);
+	service = set_service(qid->service);
 	CHECK_PROTECT();
 
-	/* Initialize so in case of error return, we are ok */
+        /* Initialize so in case of error return, we are ok */
         qret->currency[0] = NULL;
         qret->message[0] = NULL;
+
 	*numadmin = *numuser = 0;
 	*flag = GQUOTA_NONE;
 	for (i = 0; i < G_ADMINMAXRETURN; i++)
 	    admin[i][0] = '\0';
 	for (i = 0; i < G_USERMAXRETURN; i++)
 	    user[i][0] = '\0';
+
+	if (QD) return(QDBDOWN);
 
         if(check_krb_auth(h, auth, &ad))
             return QBADTKTS;
