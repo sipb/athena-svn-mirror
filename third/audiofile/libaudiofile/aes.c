@@ -1,6 +1,7 @@
 /*
 	Audio File Library
 	Copyright (C) 1998-1999, Michael Pruett <michael@68k.org>
+	Copyright (C) 2000, Silicon Graphics, Inc.
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -13,8 +14,8 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
@@ -29,48 +30,75 @@
 
 #include "audiofile.h"
 #include "afinternal.h"
+#include "util.h"
 
-void afInitAESChannelData (AFfilesetup setup, int track)
+void afInitAESChannelData (AFfilesetup setup, int trackid)
 {
-	assert(track == AF_DEFAULT_TRACK);
-	assert(setup);
+	_TrackSetup	*track;
 
-	setup->aesDataPresent = 1;
+	if (!_af_filesetup_ok(setup))
+		return;
+
+	if ((track = _af_filesetup_get_tracksetup(setup, trackid)) == NULL)
+		return;
+
+	track->aesDataSet = AF_TRUE;
 }
 
-void afInitAESChannelDataTo (AFfilesetup setup, int track, int willBeData)
+void afInitAESChannelDataTo (AFfilesetup setup, int trackid, int willBeData)
 {
-	assert(track == AF_DEFAULT_TRACK);
-	assert(setup);
+	_TrackSetup	*track;
 
-	setup->aesDataPresent = willBeData;
+	if (!_af_filesetup_ok(setup))
+		return;
+
+	if ((track = _af_filesetup_get_tracksetup(setup, trackid)) == NULL)
+		return;
+
+	track->aesDataSet = willBeData;
 }
 
-int afGetAESChannelData (AFfilehandle file, int track, unsigned char buf[24])
+/*
+	What is with these return values?
+*/
+int afGetAESChannelData (AFfilehandle file, int trackid, unsigned char buf[24])
 {
-	assert(file);
-	assert(track == AF_DEFAULT_TRACK);
-	assert(buf);
+	_Track *track;
 
-	if (file->aesDataPresent)
+	if ((track = _af_filehandle_get_track(file, trackid)) == NULL)
+		return -1;
+
+	if (track->hasAESData == AF_FALSE)
 	{
-		memcpy(buf, file->aesData, 24);
-		return 1;
+		if (buf)
+			memset(buf, 0, 24);
+		return 0;
+	}
+
+	if (buf)
+		memcpy(buf, track->aesData, 24);
+
+	return 1;
+}
+
+void afSetAESChannelData (AFfilehandle file, int trackid, unsigned char buf[24])
+{
+	_Track	*track;
+
+	if ((track = _af_filehandle_get_track(file, trackid)) == NULL)
+		return;
+
+	if (!_af_filehandle_can_write(file))
+		return;
+
+	if (track->hasAESData)
+	{
+		memcpy(track->aesData, buf, 24);
 	}
 	else
 	{
-		return 0;
-	}
-}
-
-void afSetAESChannelData (AFfilehandle file, int track, unsigned char buf[24])
-{
-	assert(file);
-	assert(track == AF_DEFAULT_TRACK);
-	assert(buf);
-
-	if (file->aesDataPresent)
-	{
-		memcpy(file->aesData, buf, 24);
+		_af_error(AF_BAD_NOAESDATA,
+			"unable to store AES channel status data for track %d",
+			trackid);
 	}
 }

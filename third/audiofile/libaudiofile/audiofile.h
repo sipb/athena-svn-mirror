@@ -1,6 +1,6 @@
 /*
 	Audio File Library
-	Copyright (C) 1998-1999, Michael Pruett <michael@68k.org>
+	Copyright (C) 1998-2000, Michael Pruett <michael@68k.org>
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -13,8 +13,8 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
@@ -27,15 +27,18 @@
 #ifndef AUDIOFILE_H
 #define AUDIOFILE_H
 
-typedef struct _AF_VirtualFile AF_VirtualFile;
-
 #include <sys/types.h>
-#include "aupvlist.h"
+#include <aupvlist.h>
+
+#define LIBAUDIOFILE_MAJOR_VERSION 0
+#define LIBAUDIOFILE_MINOR_VERSION 2
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif /* __cplusplus */
+
+typedef struct _AFvirtualfile AFvirtualfile;
 
 typedef struct _AFfilesetup *AFfilesetup;
 typedef struct _AFfilehandle *AFfilehandle;
@@ -79,32 +82,22 @@ enum
 	AF_FILE_NEXTSND = 3,
 	AF_FILE_WAVE = 4,
 	AF_FILE_BICSF = 5,
-	AF_FILE_MPEG1BITSTREAM = 6,
-	AF_FILE_SOUNDDESIGNER1 = 7,
-	AF_FILE_SOUNDDESIGNER2 = 8,
-	AF_FILE_AVR = 9,
-	AF_FILE_IFF_8SVX = 10,
-	AF_FILE_SAMPLEVISION = 11,
-	AF_FILE_VOC = 12,
-	AF_FILE_NIST_SPHERE = 13,
-	AF_FILE_SOUNDFONT2 = 14
+	AF_FILE_IRCAM = AF_FILE_BICSF
 };
-
-#define AF_FILE_IRCAM AF_FILE_BICSF
 
 enum
 {
 	AF_LOOP_MODE_NOLOOP = 0,
 	AF_LOOP_MODE_FORW = 1,
-	AF_LOOP_MODE_FORWBACKW = 2
+	AF_LOOP_MODE_FORWBAKW = 2
 };
 
 enum
 {
-	AF_SAMPFMT_TWOSCOMP = 401,
-	AF_SAMPFMT_UNSIGNED = 402,
-	AF_SAMPFMT_FLOAT = 403,
-	AF_SAMPFMT_DOUBLE = 404
+	AF_SAMPFMT_TWOSCOMP = 401, /* linear two's complement */
+	AF_SAMPFMT_UNSIGNED = 402, /* unsigned integer */
+	AF_SAMPFMT_FLOAT = 403, /* 32-bit IEEE floating-point */
+	AF_SAMPFMT_DOUBLE = 404 /* 64-bit IEEE double-precision floating-point */
 };
 
 enum
@@ -145,14 +138,14 @@ enum
 	AF_MISC_APPL = 205,	/* application-specific data */
 	AF_MISC_MIDI = 206,	/* MIDI exclusive data */
 	AF_MISC_PCMMAP = 207,	/* PCM mapping information (future use) */
-	AF_MISC_NeXT = 208,	/* misc binary data appended to NeXT hdr */
+	AF_MISC_NeXT = 208,	/* misc binary data appended to NeXT header */
 	AF_MISC_IRCAM_PEAKAMP = 209,	/* peak amplitude information */
 	AF_MISC_IRCAM_COMMENT = 210,	/* BICSF text comment */
 	AF_MISC_COMMENT = 210,	/* general text comment */
 
-	AF_MISC_ICMT = AF_MISC_COMMENT,	/* comments chunk (WAV format) */
-	AF_MISC_ICRD = 211,  /* creation date (WAV format) */
-	AF_MISC_ISFT = 212  /* software name (WAV format) */
+	AF_MISC_ICMT = AF_MISC_COMMENT,	/* comments chunk (WAVE format) */
+	AF_MISC_ICRD = 211,  /* creation date (WAVE format) */
+	AF_MISC_ISFT = 212  /* software name (WAVE format) */
 };
 
 enum
@@ -170,21 +163,11 @@ enum
 	AF_COMPRESSION_APPLE_MAC3 = 506,
 	AF_COMPRESSION_APPLE_MAC6 = 507,
 
-	AF_COMPRESSION_MPEG1 = 515,
-	AF_COMPRESSION_AWARE_MULTIRATE = 516,
-
 	AF_COMPRESSION_G726 = 517,
 	AF_COMPRESSION_G728 = 518,
 	AF_COMPRESSION_DVI_AUDIO = 519,
 	AF_COMPRESSION_GSM = 520,
-	AF_COMPRESSION_FS1016 = 521,
-
-	AF_COMPRESSION_DEFAULT_MPEG_I = 508,
-	AF_COMPRESSION_DEFAULT_MPEG1_LAYERI = AF_COMPRESSION_DEFAULT_MPEG_I,
-	AF_COMPRESSION_DEFAULT_MPEG_II = 509,
-	AF_COMPRESSION_DEFAULT_MPEG1_LAYERII = AF_COMPRESSION_DEFAULT_MPEG_II,
-	AF_COMPRESSION_DEFAULT_MULTIRATE = 513,
-	AF_COMPRESSION_DEFAULT_LOSSLESS = 514
+	AF_COMPRESSION_FS1016 = 521
 };
 
 /* tokens for afQuery() -- see the man page for instructions */
@@ -414,12 +397,12 @@ int afIdentifyNamedFD (int, const char *filename, int *implemented);
 
 AFfilehandle afOpenFile (const char *filename, const char *mode,
 	AFfilesetup setup);
-AFfilehandle afOpenVirtualFile(AF_VirtualFile *vfile, const char *mode, AFfilesetup setup);
+AFfilehandle afOpenVirtualFile (AFvirtualfile *vfile, const char *mode,
+	AFfilesetup setup);
 AFfilehandle afOpenFD (int fd, const char *mode, AFfilesetup setup);
 AFfilehandle afOpenNamedFD (int fd, const char *mode, AFfilesetup setup,
 	const char *filename);
 
-int afGetFD (AFfilehandle file);
 void afSaveFilePosition (AFfilehandle file);
 void afRestoreFilePosition (AFfilehandle file);
 int afSyncFile (AFfilehandle file);
@@ -434,14 +417,12 @@ int afGetTrackIDs (AFfilehandle, int *trackids);
 
 /* track data: reading, writng, seeking, sizing frames */
 int afReadFrames (AFfilehandle, int track, void *buffer, int frameCount);
-int afWriteFrames (AFfilehandle, int track, void *buffer, int frameCount);
+int afWriteFrames (AFfilehandle, int track, const void *buffer, int frameCount);
 AFframecount afSeekFrame (AFfilehandle, int track, AFframecount frameoffset);
 AFfileoffset afTellFrame (AFfilehandle, int track);
 AFfileoffset afGetTrackBytes (AFfilehandle, int track);
 float afGetFrameSize (AFfilehandle, int track, int expand3to4);
-#if 0
 float afGetVirtualFrameSize (AFfilehandle, int track, int expand3to4);
-#endif
 
 /* track data: AES data */
 /* afInitAESChannelData is obsolete -- use afInitAESChannelDataTo() */
@@ -485,12 +466,10 @@ void afGetSampleFormat (AFfilehandle file, int track, int *sampfmt,
 	int *sampwidth);
 void afGetVirtualSampleFormat (AFfilehandle file, int track, int *sampfmt,
 	int *sampwidth);
-#if 0
 int afSetVirtualSampleFormat (AFfilehandle, int track,
 	int sampleFormat, int sampleWidth);
 void afGetVirtualSampleFormat (AFfilehandle, int track,
 	int *sampleFormat, int *sampleWidth);
-#endif
 
 /* track data: sampling rate */
 void afInitRate (AFfilesetup, int track, double rate);
@@ -522,7 +501,6 @@ void afGetVirtualCompressionParams (AFfilehandle, int track, int *compression,
 	AUpvlist params, int parameterCount);
 #endif
 
-#if 0
 /* track data: pcm mapping */
 void afInitPCMMapping (AFfilesetup filesetup, int track,
 	double slope, double intercept, double minClip, double maxClip);
@@ -538,8 +516,6 @@ int afSetVirtualPCMMapping (AFfilehandle file, int track,
 	double slope, double intercept, double minClip, double maxClip);
 void afGetVirtualPCMMapping (AFfilehandle file, int track,
 	double *slope, double *intercept, double *minClip, double *maxClip);
-
-#endif
 
 /* track data: data offset within the file */
 /* initialize for raw reading only */

@@ -33,6 +33,12 @@
 #include <audiofile.h>
 #endif
 
+#ifdef DEBUG
+#define DEBG printf
+#else
+#define DEBG
+#endif
+
 char copyright[] = "1998 Michael Pruett";
 char name[] = "Michael Pruett's home-brew methamphetamines";
 
@@ -53,6 +59,7 @@ int main (int argc, char **argv)
 	}
 
 	setup = afNewFileSetup();
+	afInitFileFormat(setup, AF_FILE_AIFF);
 	afInitMiscIDs(setup, miscids, 2);
 	afInitMiscType(setup, 1, AF_MISC_COPY);
 	afInitMiscType(setup, 2, AF_MISC_NAME);
@@ -62,9 +69,12 @@ int main (int argc, char **argv)
 	file = afOpenFile(argv[1], "w", setup);
 
 	result = afWriteMisc(file, 1, copyright, strlen(copyright));
-	printf("result = %d\n", result);
+	DEBG("wrote miscellaneous data of type %d with length = %d\n",
+		afGetMiscType(file, 1), result);
 	result = afWriteMisc(file, 2, name, strlen(name));
-	printf("result = %d\n", result);
+
+	DEBG("wrote miscellaneous data of type %d with length = %d\n",
+		afGetMiscType(file, 2), result);
 
 	/* Write out two token frames of sample data. */
 	afWriteFrames(file, AF_DEFAULT_TRACK, data, 2);

@@ -23,6 +23,7 @@
 	adddcoffset.c
 
 	This program adds a user-specified DC offset term to a sound file.
+	It's not very useful.
 */
 
 #include <stdio.h>

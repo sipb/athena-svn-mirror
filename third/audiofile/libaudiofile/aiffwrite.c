@@ -1,6 +1,7 @@
 /*
 	Audio File Library
-	Copyright (C) 1998, Michael Pruett <michael@68k.org>
+	Copyright (C) 1998-2000, Michael Pruett <michael@68k.org>
+	Copyright (C) 2000-2001, Silicon Graphics, Inc.
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public
@@ -13,8 +14,8 @@
 	Library General Public License for more details.
 
 	You should have received a copy of the GNU Library General Public
-	License along with this library; if not, write to the 
-	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+	License along with this library; if not, write to the
+	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 	Boston, MA  02111-1307  USA.
 */
 
@@ -28,235 +29,318 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "extended.h"
 #include "afinternal.h"
 #include "audiofile.h"
 #include "aiff.h"
 #include "byteorder.h"
-#include "block.h"
+#include "util.h"
+#include "setup.h"
 
-int aiffWriteFrames (const AFfilehandle file, int track, void *samples, const int count);
-int aiffSyncFile (AFfilehandle file);
-void aiffOpenFileWrite (AFfilehandle file);
+status _af_aiff_update (AFfilehandle file);
 
-static void WriteCOMM (const AFfilehandle file);
-static AFframecount WriteSSND (const AFfilehandle file, void *samples, size_t count);
-static void WriteMARK (AFfilehandle file);
-static void WriteINST (AFfilehandle file);
-static void WriteFVER (AFfilehandle file);
-static void WriteAESD (AFfilehandle file);
-static void WriteMiscellaneous (AFfilehandle file);
+static status WriteCOMM (AFfilehandle file);
+static status WriteSSND (AFfilehandle file);
+static status WriteMARK (AFfilehandle file);
+static status WriteINST (AFfilehandle file);
+static status WriteFVER (AFfilehandle file);
+static status WriteAESD (AFfilehandle file);
+static status WriteMiscellaneous (AFfilehandle file);
 
-void aiffOpenFileWrite (AFfilehandle file)
+static _AIFFInfo *aiffinfo_new (void)
+{
+	_AIFFInfo	*aiff = _af_malloc(sizeof (_AIFFInfo));
+
+	aiff->miscellaneousPosition = 0;
+	aiff->FVER_offset = 0;
+	aiff->COMM_offset = 0;
+	aiff->MARK_offset = 0;
+	aiff->INST_offset = 0;
+	aiff->AESD_offset = 0;
+	aiff->SSND_offset = 0;
+
+	return aiff;
+}
+
+status _af_aiff_write_init (AFfilesetup setup, AFfilehandle file)
 {
 	u_int32_t	fileSize = HOST_TO_BENDIAN_INT32(0);
 
+	assert(file);
+	assert(file->fileFormat == AF_FILE_AIFF ||
+		file->fileFormat == AF_FILE_AIFFC);
+
+	if (_af_filesetup_make_handle(setup, file) == AF_FAIL)
+		return AF_FAIL;
+
+	file->formatSpecific = aiffinfo_new();
+
 	af_fwrite("FORM", 4, 1, file->fh);
 	af_fwrite(&fileSize, 4, 1, file->fh);
+
 	if (file->fileFormat == AF_FILE_AIFF)
 		af_fwrite("AIFF", 4, 1, file->fh);
 	else if (file->fileFormat == AF_FILE_AIFFC)
 		af_fwrite("AIFC", 4, 1, file->fh);
-	else
-		assert(0);
 
 	if (file->fileFormat == AF_FILE_AIFFC)
 		WriteFVER(file);
 
 	WriteCOMM(file);
-	WriteAESD(file);
 	WriteMARK(file);
 	WriteINST(file);
+	WriteAESD(file);
 	WriteMiscellaneous(file);
+	WriteSSND(file);
+
+	return AF_SUCCEED;
 }
 
-/* aiffWriteFrames is endian-clean. */
-int aiffWriteFrames (const AFfilehandle file, int track, void *samples, const int count)
+status _af_aiff_update (AFfilehandle file)
 {
-	AFframecount	finalCount;
-
-	assert(file);
-	assert(samples);
-
-	finalCount = WriteSSND(file, samples, count);
-
-#ifdef DEBUG
-	_af_printfilehandle(file);
-#endif
-
-	return finalCount;
-}
-
-int aiffSyncFile (AFfilehandle file)
-{
+	_Track		*track;
 	u_int32_t	length;
 
 	assert(file);
 
+	track = _af_filehandle_get_track(file, AF_DEFAULT_TRACK);
+
 #ifdef DEBUG
-	printf("aiffSyncFile called.\n");
+	printf("_af_aiff_update called.\n");
 #endif
 
-	if (file->dataStart != 0)
-	{
-		/* get the length of the file */
-		af_fseek(file->fh, 0, SEEK_END);
-		length = af_ftell(file->fh);
-		length -= 8;
-		length = HOST_TO_BENDIAN_INT32(length);
+	/* Get the length of the file. */
+	length = af_flength(file->fh);
+	length -= 8;
+	length = HOST_TO_BENDIAN_INT32(length);
 
-		/* set the length of the FORM chunk */
-		af_fseek(file->fh, 4, SEEK_SET);
-		af_fwrite(&length, 4, 1, file->fh);
+	/* Set the length of the FORM chunk. */
+	af_fseek(file->fh, 4, SEEK_SET);
+	af_fwrite(&length, 4, 1, file->fh);
 
-		/* Update the SSND chunk's chunk size. */
-		af_fseek(file->fh, file->dataStart - 12, SEEK_SET);
-		length =
-			file->frameCount * ((file->sampleWidth + 7) / 8) * file->channelCount + 8;
-		length = HOST_TO_BENDIAN_INT32(length);
-		af_fwrite(&length, 4, 1, file->fh);
+	if (file->fileFormat == AF_FILE_AIFFC)
+		WriteFVER(file);
 
-		/* Update the COMM chunk's count of sample frames. */
-		af_fseek(file->fh, 12, SEEK_SET);
-		if (file->fileFormat == AF_FILE_AIFFC)
-			WriteFVER(file);
+	WriteCOMM(file);
+	WriteMARK(file);
+	WriteINST(file);
+	WriteAESD(file);
+	WriteMiscellaneous(file);
+	WriteSSND(file);
 
-		WriteCOMM(file);
-		WriteAESD(file);
-	}
-
-	return 0;
+	return AF_SUCCEED;
 }
 
-/* WriteCOMM is believed to be endian-clean. */
-static void WriteCOMM (const AFfilehandle file)
+static status WriteCOMM (const AFfilehandle file)
 {
-	u_int32_t		size;
-	u_int16_t		sb;
-	u_int32_t		lb;
+	_Track		*track;
+	u_int32_t	chunkSize;
+	_AIFFInfo	*aiff;
+	bool		isAIFFC;
+
+	u_int16_t	sb;
+	u_int32_t	lb;
 	unsigned char	eb[10];
 
-	size = 18;
-	if (file->fileFormat == AF_FILE_AIFFC)
-		size = 38;
+	u_int8_t	compressionTag[4];
+	/* Pascal strings can occupy only 255 bytes (+ a size byte). */
+	char		compressionName[256];
+
+	isAIFFC = file->fileFormat == AF_FILE_AIFFC;
+
+	aiff = file->formatSpecific;
+
+	/*
+		If COMM_offset hasn't been set yet, set it to the
+		current offset.
+	*/
+	if (aiff->COMM_offset == 0)
+		aiff->COMM_offset = af_ftell(file->fh);
+	else
+		af_fseek(file->fh, aiff->COMM_offset, SEEK_SET);
+
+	track = _af_filehandle_get_track(file, AF_DEFAULT_TRACK);
+
+	if (isAIFFC)
+	{
+		if (track->f.compressionType == AF_COMPRESSION_NONE)
+		{
+			if (track->f.sampleFormat == AF_SAMPFMT_TWOSCOMP)
+			{
+				memcpy(compressionTag, "NONE", 4);
+				strcpy(compressionName, "not compressed");
+			}
+			else if (track->f.sampleFormat == AF_SAMPFMT_FLOAT)
+			{
+				memcpy(compressionTag, "fl32", 4);
+				strcpy(compressionName, "32-bit Floating Point");
+			}
+			else if (track->f.sampleFormat == AF_SAMPFMT_DOUBLE)
+			{
+				memcpy(compressionTag, "fl64", 4);
+				strcpy(compressionName, "64-bit Floating Point");
+			}
+			/*
+				We disallow unsigned sample data for
+				AIFF files in _af_aiff_complete_setup,
+				so the next condition should never be
+				satisfied.
+			*/
+			else if (track->f.sampleFormat == AF_SAMPFMT_UNSIGNED)
+			{
+				_af_error(AF_BAD_SAMPFMT,
+					"AIFF/AIFF-C format does not support unsigned data");
+				assert(0);
+				return AF_FAIL;
+			}
+		}
+		else if (track->f.compressionType == AF_COMPRESSION_G711_ULAW)
+		{
+			memcpy(compressionTag, "ulaw", 4);
+			strcpy(compressionName, "CCITT G.711 u-law");
+		}
+		else if (track->f.compressionType == AF_COMPRESSION_G711_ALAW)
+		{
+			memcpy(compressionTag, "alaw", 4);
+			strcpy(compressionName, "CCITT G.711 A-law");
+		}
+	}
 
 	af_fwrite("COMM", 4, 1, file->fh);
-	size = HOST_TO_BENDIAN_INT32(size);
-	af_fwrite(&size, 4, 1, file->fh);
+
+	/*
+		For AIFF-C files, the length of the COMM chunk is 22
+		plus the length of the compression name plus the size
+		byte.  If the length of the data is an odd number of
+		bytes, add a zero pad byte at the end, but don't
+		include the pad byte in the chunk's size.
+	*/
+	if (isAIFFC)
+		chunkSize = 22 + strlen(compressionName) + 1;
+	else
+		chunkSize = 18;
+	chunkSize = HOST_TO_BENDIAN_INT32(chunkSize);
+	af_fwrite(&chunkSize, 4, 1, file->fh);
 
 	/* number of channels, 2 bytes */
-	sb = HOST_TO_BENDIAN_INT16(file->channelCount);
+	sb = HOST_TO_BENDIAN_INT16(track->f.channelCount);
 	af_fwrite(&sb, 2, 1, file->fh);
 
 	/* number of sample frames, 4 bytes */
-	lb = HOST_TO_BENDIAN_INT32(file->frameCount);
+	lb = HOST_TO_BENDIAN_INT32(track->totalfframes);
 	af_fwrite(&lb, 4, 1, file->fh);
 
 	/* sample size, 2 bytes */
-	sb = HOST_TO_BENDIAN_INT16(file->sampleWidth);
+	sb = HOST_TO_BENDIAN_INT16(track->f.sampleWidth);
 	af_fwrite(&sb, 2, 1, file->fh);
 
 	/* sample rate, 10 bytes */
-	ConvertToIeeeExtended(file->sampleRate, eb);
+	ConvertToIeeeExtended(track->f.sampleRate, eb);
 	af_fwrite(eb, 10, 1, file->fh);
 
 	if (file->fileFormat == AF_FILE_AIFFC)
 	{
-		char	sizeByte, zero = 0;
-		char	compressionName[] = "not compressed";
+		u_int8_t	sizeByte, zero = 0;
 
-		af_fwrite("NONE", 4, 1, file->fh);
+		af_fwrite(compressionTag, 4, 1, file->fh);
 
 		sizeByte = strlen(compressionName);
 
 		af_fwrite(&sizeByte, 1, 1, file->fh);
 		af_fwrite(compressionName, sizeByte, 1, file->fh);
+
+		/*
+			If sizeByte is even, then 1+sizeByte
+			(the length of the string) is odd.  Add an
+			extra byte to make the chunk's extent even
+			(even though the chunk's size may be odd).
+		*/
 		if ((sizeByte % 2) == 0)
 			af_fwrite(&zero, 1, 1, file->fh);
 	}
+
+	return AF_SUCCEED;
 }
 
-/* The AESD chunk contains information pertinent to audio recording devices. */
-/* WriteAESD is endian-clean. */
-
 /*
-	The AESD chunk always follows the COMM chunk.  Whenever the file
-	is created or the file is synchronized, these two chunks are
-	always rewritten as AES data is able to be changed after
-	afOpenFile.
+	The AESD chunk contains information pertinent to audio recording
+	devices.
 */
-static void WriteAESD (const AFfilehandle file)
+static status WriteAESD (const AFfilehandle file)
 {
+	_Track		*track;
 	u_int32_t	size = 24;
+	_AIFFInfo	*aiff;
 
 	assert(file);
 
-	if (!file->aesDataPresent)
-		return;
+	aiff = file->formatSpecific;
 
-	af_fwrite("AESD", 4, 1, file->fh);
+	track = _af_filehandle_get_track(file, AF_DEFAULT_TRACK);
+
+	if (track->hasAESData == AF_FALSE)
+		return AF_SUCCEED;
+
+	if (aiff->AESD_offset == 0)
+		aiff->AESD_offset = af_ftell(file->fh);
+	else
+		af_fseek(file->fh, aiff->AESD_offset, SEEK_SET);
+
+	if (af_fwrite("AESD", 4, 1, file->fh) < 1)
+		return AF_FAIL;
 
 	size = HOST_TO_BENDIAN_INT32(size);
-	af_fwrite(&size, 4, 1, file->fh);
 
-	af_fwrite(file->aesData, 24, 1, file->fh);
+	if (af_fwrite(&size, 4, 1, file->fh) < 1)
+		return AF_FAIL;
+
+	if (af_fwrite(track->aesData, 24, 1, file->fh) < 1)
+		return AF_FAIL;
+
+	return AF_SUCCEED;
 }
 
-/* WriteSSND is believed to be endian-clean. */
-static AFframecount WriteSSND (const AFfilehandle file, void *samples, size_t count)
+static status WriteSSND (AFfilehandle file)
 {
-	u_int32_t	length, chunkSize, frameSize, zero = 0;
-	AFframecount	finalCount = 0;
+	_Track		*track;
+	u_int32_t	chunkSize, zero = 0;
+	_AIFFInfo	*aiff;
 
 	assert(file);
 	assert(file->fh);
-	assert(samples);
 
-#ifdef DEBUG
-	printf("WriteSSND called.\n");
-#endif
+	aiff = file->formatSpecific;
 
-	frameSize = file->channelCount * ((file->sampleWidth + 7) / 8);
+	track = _af_filehandle_get_track(file, AF_DEFAULT_TRACK);
 
-	length = (file->frameCount + count) * frameSize;
-	chunkSize = length + 8;
+	if (aiff->SSND_offset == 0)
+		aiff->SSND_offset = af_ftell(file->fh);
+	else
+		af_fseek(file->fh, aiff->SSND_offset, SEEK_SET);
 
-#ifdef DEBUG
-	printf("count: %d\n", count);
-	printf("chunkSize: %d\n", chunkSize);
-#endif
+	chunkSize = _af_format_frame_size(&track->f, AF_FALSE) *
+		track->totalfframes + 8;
 
-	if (file->dataStart == 0)
-	{
-		af_fwrite("SSND", 4, 1, file->fh);
-		/* initial size set to zero */
-		af_fwrite(&zero, 4, 1, file->fh);
+	af_fwrite("SSND", 4, 1, file->fh);
+	chunkSize = HOST_TO_BENDIAN_INT32(chunkSize);
+	af_fwrite(&chunkSize, 4, 1, file->fh);
 
-		/* offset */
-		af_fwrite(&zero, 4, 1, file->fh);
-		/* block size */
-		af_fwrite(&zero, 4, 1, file->fh);
+	/* data offset */
+	af_fwrite(&zero, 4, 1, file->fh);
+	/* block size */
+	af_fwrite(&zero, 4, 1, file->fh);
 
-		file->dataStart = af_ftell(file->fh);
-	}
+	if (track->fpos_first_frame == 0)
+		track->fpos_first_frame = af_ftell(file->fh);
 
-	finalCount = _af_blockWriteFrames(file, AF_DEFAULT_TRACK, samples, count);
-
-#if 0
-	/* seek to the four-byte length indicator for the SSND chunk */
-	af_fseek(file->fh, file->dataStart - 12, SEEK_SET);
-	lb = HOST_TO_BENDIAN_INT32(chunkSize);
-	af_fwrite(&lb, 4, 1, file->fh);
-	af_fseek(file->fh, 0, SEEK_END);
-#endif
-
-	return finalCount;
+	return AF_SUCCEED;
 }
 
-static void WriteINST (AFfilehandle file)
+static status WriteINST (AFfilehandle file)
 {
-	u_int32_t		length;
+	u_int32_t	length;
 	struct _INST	instrumentdata;
 
 	length = 20;
@@ -310,27 +394,38 @@ static void WriteINST (AFfilehandle file)
 	af_fwrite(&instrumentdata.releaseLoopPlayMode, 2, 1, file->fh);
 	af_fwrite(&instrumentdata.releaseLoopBegin, 2, 1, file->fh);
 	af_fwrite(&instrumentdata.releaseLoopEnd, 2, 1, file->fh);
+
+	return AF_SUCCEED;
 }
 
-/* This function is probably fairly endian-clean. */
-static void WriteMARK (AFfilehandle file)
+static status WriteMARK (AFfilehandle file)
 {
-	off_t		start, end;
-	u_int32_t	length;
+	off_t		chunkStartPosition, chunkEndPosition;
+	u_int32_t	length = 0;
 	u_int16_t	numMarkers, sb;
-	int			i, *markids;
+	int		i, *markids;
+	_AIFFInfo	*aiff;
 
 	assert(file);
 
-	length = 0;
+	numMarkers = afGetMarkIDs(file, AF_DEFAULT_TRACK, NULL);
+	if (numMarkers == 0)
+		return AF_SUCCEED;
+
+	aiff = file->formatSpecific;
+
+	if (aiff->MARK_offset == 0)
+		aiff->MARK_offset = af_ftell(file->fh);
+	else
+		af_fseek(file->fh, aiff->MARK_offset, SEEK_SET);
 
 	af_fwrite("MARK", 4, 1, file->fh);
 	af_fwrite(&length, 4, 1, file->fh);
 
-	start = af_ftell(file->fh);
+	chunkStartPosition = af_ftell(file->fh);
 
-	numMarkers = file->markerCount;
-	markids = (int *) malloc(numMarkers * sizeof (int));
+	markids = _af_calloc(numMarkers, sizeof (int));
+	assert(markids);
 	afGetMarkIDs(file, AF_DEFAULT_TRACK, markids);
 
 	sb = HOST_TO_BENDIAN_INT16(numMarkers);
@@ -341,9 +436,10 @@ static void WriteMARK (AFfilehandle file)
 		u_int8_t	namelength, zero = 0;
 		u_int16_t	id;
 		u_int32_t	position;
+		char		*name;
 
 		id = markids[i];
-		position = afGetMarkPosition(file, AF_DEFAULT_TRACK, id);
+		position = afGetMarkPosition(file, AF_DEFAULT_TRACK, markids[i]);
 
 		id = HOST_TO_BENDIAN_INT16(id);
 		position = HOST_TO_BENDIAN_INT32(position);
@@ -351,35 +447,58 @@ static void WriteMARK (AFfilehandle file)
 		af_fwrite(&id, 2, 1, file->fh);
 		af_fwrite(&position, 4, 1, file->fh);
 
-		/* Write the strings in Pascal style. */
-		assert(file->markers[i].name);
-		namelength = strlen(file->markers[i].name);
-		af_fwrite(&namelength, 1, 1, file->fh);
-		af_fwrite(file->markers[i].name, 1, namelength, file->fh);
+		name = afGetMarkName(file, AF_DEFAULT_TRACK, markids[i]);
+		assert(name);
+		namelength = strlen(name);
 
+		/* Write the name as a Pascal-style string. */
+		af_fwrite(&namelength, 1, 1, file->fh);
+		af_fwrite(name, 1, namelength, file->fh);
+
+		/*
+			We need a pad byte if the length of the
+			Pascal-style string (including the size byte)
+			is odd, i.e. if namelength + 1 % 2 == 1.
+		*/
 		if ((namelength % 2) == 0)
 			af_fwrite(&zero, 1, 1, file->fh);
 	}
 
-	end = af_ftell(file->fh);
-	length = end - start;
+	free(markids);
+
+	chunkEndPosition = af_ftell(file->fh);
+	length = chunkEndPosition - chunkStartPosition;
 
 #ifdef DEBUG
-	printf(" end: %d\n", end);
-	printf(" length: %d\n", end - start);
+	printf(" end: %d\n", chunkEndPosition);
+	printf(" length: %d\n", length);
 #endif
 
-	af_fseek(file->fh, start - 4, SEEK_SET);
+	af_fseek(file->fh, chunkStartPosition - 4, SEEK_SET);
 
 	length = HOST_TO_BENDIAN_INT32(length);
 	af_fwrite(&length, 4, 1, file->fh);
-	af_fseek(file->fh, end, SEEK_SET);
+	af_fseek(file->fh, chunkEndPosition, SEEK_SET);
+
+	return AF_SUCCEED;
 }
 
-/* This function is endian-clean. */
-static void WriteFVER (AFfilehandle file)
+/*
+	The FVER chunk, if present, is always the first chunk in the file.
+*/
+static status WriteFVER (AFfilehandle file)
 {
 	u_int32_t	chunkSize, timeStamp;
+	_AIFFInfo	*aiff;
+
+	assert(file->fileFormat == AF_FILE_AIFFC);
+
+	aiff = file->formatSpecific;
+
+	if (aiff->FVER_offset == 0)
+		aiff->FVER_offset = af_ftell(file->fh);
+	else
+		af_fseek(file->fh, aiff->FVER_offset, SEEK_SET);
 
 	af_fwrite("FVER", 4, 1, file->fh);
 
@@ -390,20 +509,31 @@ static void WriteFVER (AFfilehandle file)
 	timeStamp = AIFCVersion1;
 	timeStamp = HOST_TO_BENDIAN_INT32(timeStamp);
 	af_fwrite(&timeStamp, 4, 1, file->fh);
+
+	return AF_SUCCEED;
 }
 
 /*
 	WriteMiscellaneous writes all the miscellaneous data chunks in a
 	file handle structure to an AIFF or AIFF-C file.
 */
-static void WriteMiscellaneous (AFfilehandle file)
+static status WriteMiscellaneous (AFfilehandle file)
 {
-	int	i;
+	_AIFFInfo	*aiff;
+	int		i;
+
+	aiff = (_AIFFInfo *) file->formatSpecific;
+
+	if (aiff->miscellaneousPosition == 0)
+		aiff->miscellaneousPosition = af_ftell(file->fh);
+	else
+		af_fseek(file->fh, aiff->miscellaneousPosition, SEEK_SET);
 
 	for (i=0; i<file->miscellaneousCount; i++)
 	{
-		struct _Miscellaneous	*misc = &file->miscellaneous[i];
-		u_int32_t				chunkType, chunkSize;
+		_Miscellaneous	*misc = &file->miscellaneous[i];
+		u_int32_t	chunkType, chunkSize;
+		u_int8_t	padByte = 0;
 
 #ifdef DEBUG
 		printf("WriteMiscellaneous: %d, type %d\n", i, misc->type);
@@ -429,11 +559,19 @@ static void WriteMiscellaneous (AFfilehandle file)
 
 		af_fwrite(&chunkType, 4, 1, file->fh);
 		af_fwrite(&chunkSize, 4, 1, file->fh);
-		misc->offset = af_ftell(file->fh);
 		/*
-			Skip the appropriate number of bytes, leaving room for a
-			pad byte.
+			Write the miscellaneous buffer and then a pad byte
+			if necessary.  If the buffer is null, skip the space
+			for now.
 		*/
-		af_fseek(file->fh, misc->size + (misc->size % 2), SEEK_CUR);
+		if (misc->buffer != NULL)
+			af_fwrite(misc->buffer, misc->size, 1, file->fh);
+		else
+			af_fseek(file->fh, misc->size, SEEK_CUR);
+
+		if (misc->size % 2 != 0)
+			af_fwrite(&padByte, 1, 1, file->fh);
 	}
+
+	return AF_SUCCEED;
 }

@@ -30,6 +30,9 @@
  * u-law, A-law and linear PCM conversions.
  */
 
+#ifndef G711_H
+#define G711_H
+
 /*
  * linear2alaw() - Convert a 16-bit linear PCM value to 8-bit A-law
  *
@@ -104,3 +107,5 @@ unsigned char _af_linear2ulaw (int pcm_val);
  */
 
 int _af_ulaw2linear (unsigned char u_val);
+
+#endif /* G711_H */

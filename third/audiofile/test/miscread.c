@@ -33,9 +33,6 @@
 #include <audiofile.h>
 #endif
 
-char copyright[] = "1998 Michael Pruett";
-char name[] = "Michael Pruett's home-brew methamphetamines";
-
 /* Two frames of 16-bit stereo samples. */
 u_int16_t data[] = {0, 1, 2, 3};
 
@@ -59,13 +56,20 @@ int main (int argc, char **argv)
 	for (i=0; i<misccount; i++)
 	{
 		char	*data;
-		int		datasize;
+		int	datasize;
 
 		datasize = afGetMiscSize(file, miscids[i]);
-		printf("Miscellaneous %d, %d bytes:\n", afGetMiscType(file, miscids[i]),
-				datasize);
-		data = malloc(datasize);
+		printf("Miscellaneous %d, %d bytes:\n",
+			afGetMiscType(file, miscids[i]), datasize);
+
+		/*
+			We know that the data in this test is a string,
+			so make the buffer large enough for a null terminator.
+		*/
+		data = malloc(datasize+1);
 		afReadMisc(file, miscids[i], data, datasize);
+		data[datasize] = '\0';
+
 		puts(data);
 		free(data);
 	}
