@@ -1,15 +1,16 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfsid.1,v $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfsid.1,v 1.1 1990-07-16 07:46:49 jfc Exp $
-.\"	$Author: jfc $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfsid.1,v 1.2 1990-11-16 15:58:19 probe Exp $
+.\"	$Author: probe $
 .\"
 .TH NFSID 1 "25 March 1988"
 .ds ]W MIT Project Athena
 .SH NAME
 .nf
-nfsid \- Perform NFS authorization functions to NFS servers
+fsid, nfsid \- Perform authorization functions to remote file servers
 .fi
 .SH SYNOPSIS
 .nf
+fsid [ [ options ] [-f filesystem ...] [host ...] ] ...
 nfsid [ [ options ] [-f filesystem ...] [host ...] ] ...
 .fi
 .SH DESCRIPTION
