@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_uloc_c[] =
-  "$Id: uloc.c,v 1.49 1993-09-24 21:19:36 probe Exp $";
+  "$Id: uloc.c,v 1.50 1993-11-19 15:52:28 probe Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -1151,7 +1151,6 @@ ulogin_flush_user(notice)
 
 	/* copy old entries */
 	while (i < num_locs && &locations[i] < loc2) {
-	  /* XXX should _BCOPY */
 	  loc[i] = locations[i];
 	  i++;
 	}
@@ -1163,7 +1162,6 @@ ulogin_flush_user(notice)
 
 	/* copy the rest */
 	while (i < num_locs) {
-		/* XXX should _BCOPY */
 		loc[i - num_match] = locations[i];
 		i++;
 	}
