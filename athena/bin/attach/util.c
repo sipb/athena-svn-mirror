@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: epeisach $
+ *	$Author: miki $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.18 1992-08-02 11:32:55 epeisach Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.19 1994-03-25 15:55:24 miki Exp $";
 
 #include "attach.h"
 
@@ -225,7 +225,7 @@ int parse_hes(hes, at, errorname)
     struct hostent *hent;
     int		type;
 
-    bzero(at, sizeof(struct _attachtab));
+    memset(at, 0, sizeof(struct _attachtab));
     
     if (!*hes)
 	    goto bad_hes_line;
@@ -254,7 +254,7 @@ int parse_hes(hes, at, errorname)
 
     if (type & TYPE_MUL) {
 	    t = at->hostdir;
-	    while (t = index(t,' '))
+	    while (t = strchr(t,' '))
 		    *t = ',';
 	    at->mode = '-';
 	    strcpy(at->mntpt, "localhost");
@@ -266,7 +266,7 @@ int parse_hes(hes, at, errorname)
 	    if (at->mode == 'x')
 		    at->mode = 'w';  /* Backwards compatibility */
 	    if (at->fs->good_flags) {
-		    if (!index(at->fs->good_flags, at->mode))
+		    if (!strchr(at->fs->good_flags, at->mode))
 			    goto bad_hes_line;	/* Bad attach mode */
 	    }
 
@@ -283,7 +283,11 @@ int parse_hes(hes, at, errorname)
 		    fprintf(stderr, abort_msg);
 		    return(-1);
 	    }
+#ifdef POSIX
+            memmove(&at->hostaddr[0].s_addr, hent->h_addr_list[0], 4);
+#else
 	    bcopy(hent->h_addr_list[0], &at->hostaddr[0].s_addr, 4);
+#endif
 	    strcpy(at->host, hent->h_name);
     } else
 	    at->hostaddr[0].s_addr = (long) 0;
@@ -308,7 +312,7 @@ int make_mntpt(at)
 
     strcpy(bfr, at->mntpt);
     if (at->fs->flags & AT_FS_PARENTMNTPT) {
-	    ptr = rindex(bfr, '/');
+	    ptr = strrchr(bfr, '/');
 	    if (ptr)
 		    *ptr = 0;
 	    else
@@ -331,7 +335,7 @@ int make_mntpt(at)
 	
     while (ptr && *ptr) {
 	strcpy(bfr, at->mntpt);
-	ptr = index(ptr, '/');
+	ptr = strchr(ptr, '/');
 	if (ptr)
 	    *ptr++ = '\0';
 	if (debug_flag)
@@ -363,7 +367,7 @@ int rm_mntpt(at)
     ptr = bfr;
 
     if (at->fs->flags & AT_FS_PARENTMNTPT) {
-	    ptr = rindex(bfr, '/');
+	    ptr = strrchr(bfr, '/');
 	    if (ptr)
 		    *ptr = 0;
 	    else
@@ -381,7 +385,7 @@ int rm_mntpt(at)
 		return (FAILURE);
 	    }
 	}
-	ptr = rindex(bfr, '/');
+	ptr = strrchr(bfr, '/');
 	if (ptr)
 	    *ptr = '\0';
 	else
@@ -591,11 +595,11 @@ void add_options(mopt, string)
 
 	orig_str = str = strdup(string);
 	while (str && *str) {
-		next = index(str, ',');
+		next = strchr(str, ',');
 		if (next) {
 			*next++ = '\0';
 		}
-		arg = index(str, '=');
+		arg = strchr(str, '=');
 		if (arg)
 			*arg++ = '\0';
 		if (!strcmp(str, "ro")) {
@@ -894,7 +898,11 @@ int host_compare(host1, host2)
 		strcpy(last_host, host1);
 		if ((sin1.s_addr = inet_addr(host1)) == -1) {
 			if (host = gethostbyname(host1))
+#ifdef POSIX
+                                memmove(&sin1, host->h_addr, (sizeof sin1));
+#else
 				bcopy(host->h_addr, &sin1, (sizeof sin1));
+#endif
 			else {
 				if (debug_flag) {
 					sprintf(bfr, "%s: gethostbyname",
@@ -907,7 +915,11 @@ int host_compare(host1, host2)
 	}
 	if ((sin2.s_addr = inet_addr(host2)) == -1) {
 		if (host = gethostbyname(host2))
+#ifdef POSIX
+                        memmove(&sin2, host->h_addr, (sizeof sin2));
+#else
 			bcopy(host->h_addr, &sin2, (sizeof sin2));
+#endif
 		else {
 			if (debug_flag) {
 				sprintf(bfr, "%s: gethostbyname", host2);
