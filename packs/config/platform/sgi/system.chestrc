@@ -1,0 +1,127 @@
+################################################################################
+#                                                                              #
+#                   Oz chest RESOURCE DESCRIPTION FILE                    #
+#                                                                              #
+################################################################################
+
+
+#
+# menu pane descriptions
+#
+
+# Top Level Menu Description
+Menu ToolChest
+{	
+    "Desktop"	f.menu Desktop
+     no-label           f.separator
+    "Selected"	f.menu Selected
+     no-label           f.separator
+    "Find"	f.menu Software
+     no-label           f.separator
+    "System"	f.menu System
+}
+
+
+Menu Desktop
+{
+    "Desks Overview"	f.checkexec.sh "/usr/sbin/ov"
+     no-label           f.separator
+    "Home Directory"	f.checkexec.sh "/usr/lib/desktop/startdesktop"
+    "Remote Directory"	f.checkexec.sh "/usr/lib/desktop/newdir"
+    "Customize"		f.menu Customize
+    "Audio Control"	f.checkexec.sh "/usr/sbin/apanel"
+    "Empty Dumpster"	f.checkexpr.sh "test \! -f $HOME/.desktop-`hostname`/nodesktop -a -x /usr/lib/desktop/telldesktop" "/usr/lib/desktop/telldesktop 'empty dumpster'"
+    "Unix Shell"	f.checkexec.sh "/usr/sbin/winterm" 
+     no-label           f.separator
+    "Log Out"           f.checkexec.sh "/usr/bin/X11/endsession"
+}
+
+Menu Software dynamic
+{
+    "An Icon"	        f.checkexec.sh "/usr/sbin/findanicon"
+    "Search For"	f.menu Searchable
+    "Graphics Demos"	f.checkexec.sh "/usr/demos/buttonfly"
+     no-label           f.separator
+    "Applications"	f.checkexec.sh "/usr/sbin/iconbook /usr/lib/desktop/iconbook/syspages/Applications"
+    "Collaboration"	f.checkexec.sh "/usr/sbin/iconbook /usr/lib/desktop/iconbook/syspages/Collaboration"
+    "Demos"	f.checkexec.sh "/usr/sbin/iconbook /usr/lib/desktop/iconbook/syspages/Demos"
+    "Desktop Tools"		f.checkexec.sh "/usr/sbin/iconbook /usr/lib/desktop/iconbook/syspages/DesktopTools"
+    "Media Tools"	f.checkexec.sh "/usr/sbin/iconbook /usr/lib/desktop/iconbook/syspages/MediaTools"
+    "Control Panels"	f.checkexec.sh "/usr/sbin/iconbook /usr/lib/desktop/iconbook/syspages/ControlPanels"
+}
+
+Menu Help
+{
+    "Desktop Help" f.checkexec.sh "/usr/sbin/desktophelp"
+    "Online Books" f.checkexec.sh "/usr/sbin/insight"
+    no-label            f.separator
+    "Man Pages"	f.checkexec.sh /usr/bin/X11/xman
+    "Release Notes" f.checkexec.sh /usr/sbin/grelnotes
+    no-label            f.separator
+    "Legal Notice"      f.checkexec.sh "/usr/bin/X11/xconfirm -c -header \"Legal Notice\" -b Dismiss -file /usr/share/misc/legal_notice  >/dev/null"
+}
+
+
+Menu Customize
+{
+    "Windows" 	f.checkexec.sh /usr/sbin/windows
+    "Desktop" 	f.checkexec.sh /usr/sbin/desktop
+    "Background"	f.checkexec.sh /usr/sbin/background
+    "Color Schemes"	f.checkexec.sh /usr/sbin/schemebr
+    "Screen Saver"	f.checkexec.sh /usr/sbin/ssaver
+    "System Errors"	f.checkexec.sh /usr/sbin/syserrpanel
+     no-label           f.separator
+    "Mouse"	f.checkexec.sh /usr/sbin/mouse
+    "Keyboard"	f.checkexec.sh /usr/sbin/keyboard
+    "Language"	f.checkexec.sh /usr/sbin/ipanel
+}
+
+Menu System
+{
+    "System Manager"        f.checkexec.sh "/usr/Cadmin/bin/chost"
+    "Disk Manager"   f.checkexec.sh "/usr/Cadmin/bin/cfile"
+    "User Manager"    f.checkexec.sh "/usr/Cadmin/bin/cpeople"
+    "NFS Mount Manager"   f.checkexec.sh "/usr/Cadmin/bin/cimport"
+    "Printer Manager"    f.checkexec.sh "/usr/sbin/printers"
+    "Software Manager"  f.checkexec.sh "/usr/sbin/SoftwareManager"
+     no-label           f.separator
+    "Backup & Restore"	f.checkexec.sh "/usr/lib/vadmin/backup_restore"
+    "View System Log" f.checkexec.sh "/usr/sbin/sysmon"
+    "Run Confidence Tests" f.checkexec.sh "/usr/sbin/confidence"
+    no-label		f.separator
+    "Start New Console"	f.checkexec.sh "/usr/sbin/startconsole"
+    "Restart Window Manager"	f.checkexec.sh "/usr/bin/X11/tellwm restart"
+    no-label		f.separator
+    "System Shutdown"   f.checkexec.sh "/usr/Cadmin/bin/chaltsys"
+    "Restart System"    f.checkexec.sh "/usr/Cadmin/bin/crestart"
+
+}
+
+
+Menu Searchable dynamic
+{
+    "Files"		f.checkexec.sh "/usr/sbin/searchbook /usr/lib/desktop/searchbook/syspages/Files"
+     no-label           f.separator
+    "Printers"		f.checkexec.sh "/usr/sbin/searchbook /usr/lib/desktop/searchbook/syspages/Printers"
+    "Hosts"		f.checkexec.sh "/usr/sbin/searchbook /usr/lib/desktop/searchbook/syspages/Hosts"
+    "Disk Drives"	f.checkexec.sh "/usr/sbin/searchbook /usr/lib/desktop/searchbook/syspages/DiskDrives"
+    "Tape Drives"	f.checkexec.sh "/usr/sbin/searchbook /usr/lib/desktop/searchbook/syspages/TapeDrives"
+     no-label           f.separator
+    "People"	f.checkexec.sh "/usr/sbin/searchbook /usr/lib/desktop/searchbook/syspages/People"
+}
+
+Menu Selected dynamic
+{
+}
+
+#include the system chests and any user's private chests
+sinclude /usr/lib/X11/app-chests
+sinclude ~/.auxchestrc
+
+#make sure the help menu is at the end of the toolchest, after all
+#user additions
+Menu ToolChest
+{	
+     no-label           f.separator
+    "Help"	f.menu Help
+}
