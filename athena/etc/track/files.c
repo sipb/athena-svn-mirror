@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.8 1996-05-01 18:54:36 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.9 1997-11-11 19:33:07 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.8  1996/05/01 18:54:36  ghudson
+ *	getwd -> getcwd
+ *
  *	Revision 4.7  1995/05/14 00:57:26  cfields
  *	Never checked in.
  *	Reversion to 4.5, probably by Miki.
@@ -61,7 +64,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.8 1996-05-01 18:54:36 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 4.9 1997-11-11 19:33:07 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -306,11 +309,7 @@ unsigned int type;
 		fprintf(stderr,"removing %s %s\n",type_str,name);
 	}
 	if ( type == S_IFDIR);
-#ifdef i386
-	else if ( unlink( name) == -1 && rmslink(name) == -1) {
-#else
 	else if ( unlink( name)) {
-#endif
 		sprintf( errmsg, "can't remove %s %s", type_str, name);
 		do_gripe();
 		return(-1);
