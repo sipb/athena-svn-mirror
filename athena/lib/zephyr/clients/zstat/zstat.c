@@ -22,7 +22,7 @@
 #include "zserver.h"
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.15 1993-11-19 15:33:41 probe Exp $";
+static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.16 1993-11-24 01:07:47 probe Exp $";
 #endif
 		     
 extern long atol();
@@ -178,13 +178,17 @@ hm_stat(host,server)
 	
 	sin.sin_family = AF_INET;
 
-	if ((hp = gethostbyname(host)) == NULL) {
+	if ((sin.sin_addr.s_addr = inet_addr(host)) == (unsigned)(-1)) {
+	    if ((hp = gethostbyname(host)) == NULL) {
 		fprintf(stderr,"Unknown host: %s\n",host);
 		exit(-1);
-	}
-	(void) memcpy((char *) &sin.sin_addr, hp->h_addr, hp->h_length);
+	    }
+	    (void) memcpy((char *) &sin.sin_addr, hp->h_addr, hp->h_length);
 
-	printf("Hostmanager stats: %s\n",hp->h_name);
+	    printf("Hostmanager stats: %s\n", hp->h_name);
+	} else {
+	    printf("Hostmanager stats: %s\n", host);
+	}
 	
 	(void) memset((char *)&notice, 0, sizeof(notice));
 	notice.z_kind = STAT;
@@ -283,13 +287,17 @@ srv_stat(host)
 	
 	sin.sin_family = AF_INET;
 
-	if ((hp = gethostbyname(host)) == NULL) {
+	if ((sin.sin_addr.s_addr = inet_addr(host)) == (unsigned)(-1)) {
+	    if ((hp = gethostbyname(host)) == NULL) {
 		fprintf(stderr,"Unknown host: %s\n",host);
 		exit(-1);
-	}
-	(void) memcpy((char *) &sin.sin_addr, hp->h_addr, hp->h_length);
+	    }
+	    (void) memcpy((char *) &sin.sin_addr, hp->h_addr, hp->h_length);
 
-	printf("Server stats: %s\n",hp->h_name);
+	    printf("Server stats: %s\n", hp->h_name);
+	} else {
+	    printf("Server stats: %s\n", host);
+	}
 	
 	(void) memset((char *)&notice, 0, sizeof(notice));
 	notice.z_kind = UNSAFE;
