@@ -49,6 +49,8 @@ static char sccsid[] = "@(#)res_query.c	5.5 (Berkeley) 9/21/88";
 #define MAXPACKET	1024
 #endif
 
+extern int server_specified;
+extern struct in_addr server_addr;
 extern int errno;
 int h_errno;
 
@@ -73,6 +75,10 @@ res_query(name, class, type, answer, anslen)
 
 	if ((_res.options & RES_INIT) == 0 && res_init() == -1)
 		return (-1);
+
+	if(server_specified)
+	  _res.nsaddr.sin_addr = server_addr;
+          
 #ifdef DEBUG
 	if (_res.options & RES_DEBUG)
 		printf("res_query(%s, %d, %d)\n", name, class, type);
