@@ -1,0 +1,448 @@
+<HTML
+><HEAD
+><TITLE
+>GConf Conventions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GConf Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="GConfClient higher-level API"
+HREF="gconf-client.html"><LINK
+REL="NEXT"
+TITLE="gconftool Utility Program"
+HREF="gconftool.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GConf Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconf-client.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&nbsp;</B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gconftool.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CONVENTIONS">GConf Conventions</H1
+><P
+>      This chapter describes <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>conventions</I
+></SPAN
+> that
+      GConf clients should obey, though the library does not enforce
+      them.
+    </P
+><BR
+CLEAR="all"><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN323">Namespace division</H1
+><P
+>        When choosing GConf keys, you should follow these conventions.
+      </P
+><P
+>        <P
+></P
+><UL
+><LI
+STYLE="list-style-type: disc"
+><P
+>              Schemas should go under the <TT
+CLASS="LITERAL"
+>/schemas</TT
+>
+              toplevel directory. Under <TT
+CLASS="LITERAL"
+>/schemas</TT
+>,
+              the normal GConf namespace should be mirrored. So, if you have a
+              key <TT
+CLASS="LITERAL"
+>/foo/bar/baz</TT
+>, the schema for that key should
+              be at <TT
+CLASS="LITERAL"
+>/schemas/foo/bar/baz</TT
+>. If you apply the same
+              schema to multiple keys, then obviously the schema name will have
+              to differ from the key names; but you should mirror as much of the
+              key names as possible. For example, <TT
+CLASS="LITERAL"
+>/foo/bar/baz</TT
+>
+              and <TT
+CLASS="LITERAL"
+>/foo/bar/boo</TT
+> might have the schema
+              <TT
+CLASS="LITERAL"
+>/schemas/foo/bar/baz_and_boo</TT
+>.
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              The GNOME libraries may store preferences for GNOME apps
+              under the
+              <TT
+CLASS="LITERAL"
+>/apps/gnome-settings/<TT
+CLASS="REPLACEABLE"
+><I
+>appname</I
+></TT
+></TT
+>
+              directory.
+              <TT
+CLASS="LITERAL"
+><TT
+CLASS="REPLACEABLE"
+><I
+>appname</I
+></TT
+></TT
+> will be
+              replaced with the name of your app, as passed in to
+              <TT
+CLASS="FUNCTION"
+>gnome_init()</TT
+> (perhaps canonicalized to be a
+              legal GConf key). You should not put your own
+              settings in this directory, because you may get notifications when
+              gnome-libs keys change and gnome-libs may get notifications when
+              your keys change. This would be confusing.
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              Preferences for applications should go under an
+              <TT
+CLASS="LITERAL"
+>/apps/<TT
+CLASS="REPLACEABLE"
+><I
+>appname</I
+></TT
+></TT
+>
+              directory. Try to make
+              <TT
+CLASS="LITERAL"
+><TT
+CLASS="REPLACEABLE"
+><I
+>appname</I
+></TT
+></TT
+> match the
+              one passed to <TT
+CLASS="FUNCTION"
+>gnome_init()</TT
+>, also used in the
+              <TT
+CLASS="LITERAL"
+>/apps/gnome-settings/<TT
+CLASS="REPLACEABLE"
+><I
+>appname</I
+></TT
+></TT
+>
+              directory.  Vendors are encouraged to include their vendor name in
+              <TT
+CLASS="REPLACEABLE"
+><I
+>appname</I
+></TT
+>, to avoid namespace clashes.
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              Preferences for the desktop environment should go under
+              <TT
+CLASS="LITERAL"
+>/desktop</TT
+>. None should be immediately
+              under <TT
+CLASS="LITERAL"
+>/desktop</TT
+>, however. GNOME-specific
+              preferences should be under <TT
+CLASS="LITERAL"
+>/desktop/gnome</TT
+>.
+              Settings standardized among multiple desktops should go under
+              <TT
+CLASS="LITERAL"
+>/desktop/standard</TT
+>. Other specific desktops should
+              select a directory to use (<TT
+CLASS="LITERAL"
+>/desktop/kde</TT
+>,
+              <TT
+CLASS="LITERAL"
+>/desktop/xfce</TT
+>, etc.)
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              System-level preferences (such as the host name, though
+              I'm sure that specific example will never be in GConf) should go
+              under <TT
+CLASS="LITERAL"
+>/system</TT
+>. None should be
+              immediately under <TT
+CLASS="LITERAL"
+>/system</TT
+>, however; select a
+              descriptive subdirectory.
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              In general, keys under <TT
+CLASS="LITERAL"
+>/system</TT
+> and
+              <TT
+CLASS="LITERAL"
+>/desktop</TT
+> are for use by multiple applications,
+              and keys under
+              <TT
+CLASS="LITERAL"
+>/apps/<TT
+CLASS="REPLACEABLE"
+><I
+>appname</I
+></TT
+></TT
+> are
+              for use by a single application.
+            </P
+></LI
+><LI
+STYLE="list-style-type: disc"
+><P
+>              If you have a "weird" key that doesn't fit into any of the above
+              categories, please mail me (<TT
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:hp@redhat.com"
+>hp@redhat.com</A
+>&#62;</TT
+>) and ask
+              for a new directory to be invented. Alternatively, place your key
+              under the <TT
+CLASS="LITERAL"
+>/extra</TT
+> toplevel directory.
+            </P
+></LI
+></UL
+>
+      </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconf-client.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&nbsp;</B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gconftool.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+> higher-level API</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><SPAN
+CLASS="APPLICATION"
+>gconftool</SPAN
+> Utility Program</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

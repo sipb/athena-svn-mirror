@@ -1,0 +1,310 @@
+<refentry id="gconf-gconf-error">
+<refmeta>
+<refentrytitle>GError</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GCONF Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>GError</refname><refpurpose>
+error reporting.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+enum        <link linkend="GConfError">GConfError</link>;
+<link linkend="GError">GError</link>*     <link linkend="gconf-error-new">gconf_error_new</link>                 (<link linkend="GConfError">GConfError</link> en,
+                                             const <link linkend="gchar">gchar</link> *format,
+                                             ...);
+void        <link linkend="gconf-set-error">gconf_set_error</link>                 (<link linkend="GError">GError</link> **err,
+                                             <link linkend="GConfError">GConfError</link> en,
+                                             const <link linkend="gchar">gchar</link> *format,
+                                             ...);
+<link linkend="GError">GError</link>*     <link linkend="gconf-compose-errors">gconf_compose_errors</link>            (<link linkend="GError">GError</link> *err1,
+                                             <link linkend="GError">GError</link> *err2);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The <link linkend="GError">GError</link> object is used to report errors that occur in GConf
+library routines. All functions that report errors work the same way:
+<itemizedlist>
+<listitem>
+<para>
+The last argument to the function is a <link linkend="GError">GError</link>**, a pointer to a
+location where a <link linkend="GError">GError</link>* can be placed.
+</para>
+</listitem>
+<listitem>
+<para>
+This last argument may be <symbol>NULL</symbol>, in which case no
+error will be returned.
+</para>
+</listitem>
+<listitem>
+<para>
+If non-<symbol>NULL</symbol>, the argument should be the address of a 
+<link linkend="GError">GError</link>* variable, which should be initialized to
+<symbol>NULL</symbol>. 
+</para>
+</listitem>
+<listitem>
+<para>
+If an error occurs, a <link linkend="GError">GError</link> will be allocated and placed in the
+return location; the caller must free the <link linkend="GError">GError</link> with
+<link linkend="g-error-free">g_error_free</link>(). If no error occurs, the return location will be
+left untouched. That is, the test <literal>error != NULL</literal> 
+should always be a reliable indicator of whether the operation failed.
+</para>
+</listitem>
+</itemizedlist>
+</para>
+
+<para>
+It's also common that the return value of a function indicates whether
+or not an error occurred. Typically, <symbol>TRUE</symbol> is returned
+on success. In some cases, a <symbol>NULL</symbol> return value
+indicates failure. Either way, if the return value indicates failure
+and you passed a non-<symbol>NULL</symbol> value for the last argument
+to the function, a <link linkend="GError">GError</link> will be returned. If the return value
+indicates success, then a <link linkend="GError">GError</link> will never be returned.  These
+relationships are guaranteed; that is, you can reliably use the return
+value to decide whether a <link linkend="GError">GError</link> was placed in the return
+location. If a function does <emphasis>not</emphasis> indicate
+success/failure by return value, you must check whether the
+<link linkend="GError">GError</link> is <symbol>NULL</symbol> to detect errors.
+</para>
+
+<para>
+Here's a short error handling example:
+<programlisting>
+  GError* err = NULL;
+
+  if (!gconf_init(&amp;err))
+    {
+      fprintf(stderr, _("Failed to init GConf: <literal>s</literal>\n"), err->message);
+      g_error_free(err); 
+      err = NULL;
+    }
+</programlisting>
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GConfError">enum GConfError</title>
+<programlisting>typedef enum { /*&lt; prefix=GCONF_ERROR &gt;*/
+  GCONF_ERROR_SUCCESS = 0,
+  GCONF_ERROR_FAILED = 1,        /* Something didn't work, don't know why, probably unrecoverable
+                                    so there's no point having a more specific errno */
+
+  GCONF_ERROR_NO_SERVER = 2,     /* Server can't be launched/contacted */
+  GCONF_ERROR_NO_PERMISSION = 3, /* don't have permission for that */
+  GCONF_ERROR_BAD_ADDRESS = 4,   /* Address couldn't be resolved */
+  GCONF_ERROR_BAD_KEY = 5,       /* directory or key isn't valid (contains bad
+                                    characters, or malformed slash arrangement) */
+  GCONF_ERROR_PARSE_ERROR = 6,   /* Syntax error when parsing */
+  GCONF_ERROR_CORRUPT = 7,       /* Fatal error parsing/loading information inside the backend */
+  GCONF_ERROR_TYPE_MISMATCH = 8, /* Type requested doesn't match type found */
+  GCONF_ERROR_IS_DIR = 9,        /* Requested key operation on a dir */
+  GCONF_ERROR_IS_KEY = 10,       /* Requested dir operation on a key */
+  GCONF_ERROR_OVERRIDDEN = 11,   /* Read-only source at front of path has set the value */
+  GCONF_ERROR_OAF_ERROR = 12,    /* liboaf error */
+  GCONF_ERROR_LOCAL_ENGINE = 13, /* Tried to use remote operations on a local engine */
+  GCONF_ERROR_LOCK_FAILED = 14,  /* Failed to get a lockfile */
+  GCONF_ERROR_NO_WRITABLE_DATABASE = 15, /* nowhere to write a value */
+  GCONF_ERROR_IN_SHUTDOWN = 16   /* server is shutting down */
+} GConfError;
+</programlisting>
+<para>
+The <link linkend="GConfError">GConfError</link> enumeration allows client applications to
+differentiate between different kinds of error. You may wish to take
+specific actions depending on the error type.
+</para><informaltable pgwide="1" frame="none" role="enum">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row>
+<entry><literal>GCONF_ERROR_SUCCESS</literal></entry>
+<entry>indicates that no error occurred, won't be returned in a <link linkend="GError">GError</link>.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_FAILED</literal></entry>
+<entry>indicates failure, but no more specific <link linkend="GConfError">GConfError</link> applied.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_NO_SERVER</literal></entry>
+<entry>indicates that the GConf server couldn't be contacted, probably a CORBA problem.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_NO_PERMISSION</literal></entry>
+<entry>indicates that permission to access some resource was denied.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_BAD_ADDRESS</literal></entry>
+<entry>indicates that a configuration source address was syntactically invalid or impossible to resolve.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_BAD_KEY</literal></entry>
+<entry>indicates that a key was malformed.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_PARSE_ERROR</literal></entry>
+<entry>indicates that some parsing was done (perhaps in a backend) and it failed.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_CORRUPT</literal></entry>
+<entry>indicates that some part of the database is corrupt.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_TYPE_MISMATCH</literal></entry>
+<entry>indicates that a specific type was required, and another type was found.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_IS_DIR</literal></entry>
+<entry>indicates that an operation only applicable to keys was performed on a directory.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_IS_KEY</literal></entry>
+<entry>indicates that an operation only applicable to directories was performed on a key.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_OVERRIDDEN</literal></entry>
+<entry>indicates that the administrator has imposed a mandatory value, and it could not be changed.
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_OAF_ERROR</literal></entry>
+<entry>
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_LOCAL_ENGINE</literal></entry>
+<entry>
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_LOCK_FAILED</literal></entry>
+<entry>
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_NO_WRITABLE_DATABASE</literal></entry>
+<entry>
+</entry>
+</row>
+<row>
+<entry><literal>GCONF_ERROR_IN_SHUTDOWN</literal></entry>
+<entry>
+
+</entry>
+</row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-error-new">gconf_error_new ()</title>
+<programlisting><link linkend="GError">GError</link>*     gconf_error_new                 (<link linkend="GConfError">GConfError</link> en,
+                                             const <link linkend="gchar">gchar</link> *format,
+                                             ...);</programlisting>
+<para>
+Creates a new error. Normally the GConf library does this, but you
+might find a reason to do it as well. <parameter>en</parameter> is the error number, <parameter>format</parameter>
+is a printf()-style format for the error message, and the variable
+argument list is the same as in printf(). 
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>en</parameter>&nbsp;:</entry>
+<entry>the error number.
+</entry></row>
+<row><entry align="right"><parameter>format</parameter>&nbsp;:</entry>
+<entry>printf()-style format for error description.
+</entry></row>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry>arguments required by the <parameter>format</parameter>.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>newly-allocated <link linkend="GError">GError</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-set-error">gconf_set_error ()</title>
+<programlisting>void        gconf_set_error                 (<link linkend="GError">GError</link> **err,
+                                             <link linkend="GConfError">GConfError</link> en,
+                                             const <link linkend="gchar">gchar</link> *format,
+                                             ...);</programlisting>
+<para>
+Internal function.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>err</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>en</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>format</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gconf-compose-errors">gconf_compose_errors ()</title>
+<programlisting><link linkend="GError">GError</link>*     gconf_compose_errors            (<link linkend="GError">GError</link> *err1,
+                                             <link linkend="GError">GError</link> *err2);</programlisting>
+<para>
+Internal function.
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>err1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>err2</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

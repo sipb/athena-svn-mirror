@@ -1,0 +1,5613 @@
+<HTML
+><HEAD
+><TITLE
+>GConfValue, GConfEntry, GConfMetaInfo</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GConf Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="GConf Reference Documentation"
+HREF="gconf-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="GError"
+HREF="gconf-gconf-error.html"><LINK
+REL="NEXT"
+TITLE="gconf-schema"
+HREF="gconf-gconf-schema.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GConf Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconf-gconf-error.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="gconf-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gconf-gconf-schema.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GCONF-GCONF-VALUE">GConfValue, GConfEntry, GConfMetaInfo</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2628"
+></A
+><H2
+>Name</H2
+>GConfValue, GConfEntry, GConfMetaInfo&nbsp;--&nbsp;A <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> stores a dynamically-typed value. A <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> stores a
+key-value pair.  A <A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> stores metainformation about a key.</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN2634"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+enum        <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+>;
+struct      <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>;
+#define     <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-TYPE-VALID-CAPS"
+>GCONF_VALUE_TYPE_VALID</A
+>          (x)
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-NEW"
+>gconf_value_new</A
+>                 (<A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> type);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-COPY"
+>gconf_value_copy</A
+>                (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *src);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-FREE"
+>gconf_value_free</A
+>                (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+const char* <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-STRING"
+>gconf_value_get_string</A
+>          (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+int         <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-INT"
+>gconf_value_get_int</A
+>             (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+double      <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-FLOAT"
+>gconf_value_get_float</A
+>           (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-LIST-TYPE"
+>gconf_value_get_list_type</A
+>    (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+<A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A>*     <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-LIST"
+>gconf_value_get_list</A
+>            (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-CAR"
+>gconf_value_get_car</A
+>             (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-CDR"
+>gconf_value_get_cdr</A
+>             (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-BOOL"
+>gconf_value_get_bool</A
+>            (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+<A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-SCHEMA"
+>gconf_value_get_schema</A
+>         (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-INT"
+>gconf_value_set_int</A
+>             (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> the_int);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-STRING"
+>gconf_value_set_string</A
+>          (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *the_str);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-FLOAT"
+>gconf_value_set_float</A
+>           (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> the_float);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-BOOL"
+>gconf_value_set_bool</A
+>            (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> the_bool);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-SCHEMA"
+>gconf_value_set_schema</A
+>          (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             const <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> *sc);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-SCHEMA-NOCOPY"
+>gconf_value_set_schema_nocopy</A
+>   (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> *sc);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-CAR"
+>gconf_value_set_car</A
+>             (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *car);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-CAR-NOCOPY"
+>gconf_value_set_car_nocopy</A
+>      (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *car);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-CDR"
+>gconf_value_set_cdr</A
+>             (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *cdr);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-CDR-NOCOPY"
+>gconf_value_set_cdr_nocopy</A
+>      (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *cdr);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-LIST-TYPE"
+>gconf_value_set_list_type</A
+>       (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> type);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-LIST-NOCOPY"
+>gconf_value_set_list_nocopy</A
+>     (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> *list);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-LIST"
+>gconf_value_set_list</A
+>            (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> *list);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-TO-STRING"
+>gconf_value_to_string</A
+>           (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);
+struct      <A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+>;
+<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-META-INFO-NEW"
+>gconf_meta_info_new</A
+>          (void);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-META-INFO-FREE"
+>gconf_meta_info_free</A
+>            (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi);
+const char* <A
+HREF="gconf-gconf-value.html#GCONF-META-INFO-GET-SCHEMA"
+>gconf_meta_info_get_schema</A
+>      (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi);
+const char* <A
+HREF="gconf-gconf-value.html#GCONF-META-INFO-GET-MOD-USER"
+>gconf_meta_info_get_mod_user</A
+>    (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi);
+<A
+HREF=../glib/glib-date-and-time-functions.html#GTIME
+>GTime</A>       <A
+HREF="gconf-gconf-value.html#GCONF-META-INFO-MOD-TIME"
+>gconf_meta_info_mod_time</A
+>        (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-META-INFO-SET-SCHEMA"
+>gconf_meta_info_set_schema</A
+>      (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *schema_name);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-META-INFO-SET-MOD-USER"
+>gconf_meta_info_set_mod_user</A
+>    (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *mod_user);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-META-INFO-SET-MOD-TIME"
+>gconf_meta_info_set_mod_time</A
+>    (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi,
+                                             <A
+HREF=../glib/glib-date-and-time-functions.html#GTIME
+>GTime</A> mod_time);
+struct      <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>;
+<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-NEW-NOCOPY"
+>gconf_entry_new_nocopy</A
+>          (<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *val);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-FREE"
+>gconf_entry_free</A
+>                (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);
+const char* <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-GET-KEY"
+>gconf_entry_get_key</A
+>             (const <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-GET-VALUE"
+>gconf_entry_get_value</A
+>           (const <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-STEAL-VALUE"
+>gconf_entry_steal_value</A
+>         (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-GET-IS-DEFAULT"
+>gconf_entry_get_is_default</A
+>      (const <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);
+const char* <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-GET-SCHEMA-NAME"
+>gconf_entry_get_schema_name</A
+>     (const <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-SET-IS-DEFAULT"
+>gconf_entry_set_is_default</A
+>      (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> is_default);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-SET-SCHEMA-NAME"
+>gconf_entry_set_schema_name</A
+>     (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *name);
+void        <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-SET-VALUE-NOCOPY"
+>gconf_entry_set_value_nocopy</A
+>    (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *val);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2765"
+></A
+><H2
+>Description</H2
+><P
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> stores one of the value types GConf understands; GConf
+uses <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to pass values around because it doesn't know the
+type of its values at compile time. </P
+><P
+>A <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> pairs a relative key
+name with a value, for example if the value "10" is stored at the key 
+"/foo/bar/baz", the <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> will store "baz" and "10".</P
+><P
+>A <A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> object holds metainformation about a key, such as 
+its last modification time and the name of the schema associated with
+it. You should rarely if ever need to use <A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+>.
+(In fact you can't get the metainfo for a key using the current API.)</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2776"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2778"
+></A
+><H3
+><A
+NAME="GCONFVALUETYPE"
+></A
+>enum GConfValueType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum { /*&lt; prefix=GCONF_VALUE &gt;*/
+  GCONF_VALUE_INVALID,
+  GCONF_VALUE_STRING,
+  GCONF_VALUE_INT,
+  GCONF_VALUE_FLOAT,
+  GCONF_VALUE_BOOL,
+  GCONF_VALUE_SCHEMA,
+
+  /* unfortunately these aren't really types; we want list_of_string,
+     list_of_int, etc.  but it's just too complicated to implement.
+     instead we'll complain in various places if you do something
+     moronic like mix types in a list or treat pair&lt;string,int&gt; and
+     pair&lt;float,bool&gt; as the same type. */
+  GCONF_VALUE_LIST,
+  GCONF_VALUE_PAIR
+  
+} GConfValueType;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Used to indicate the type of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2784"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#F0F0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_INVALID</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Never the type of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> obtained from GConf functions; used to indicate errors and the like.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>String value (<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Integer value (<A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Floating point value (<A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A>).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Boolean value (<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Schema value (<A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>).</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>List of <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>; <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> elements must have
+a primitive type (i.e. they may not be lists or pairs), and all elements
+of a list must have the same type.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Pair of <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>; the first field (car) and the second
+field (cdr) may have different types. The two elements of a pair must be primitive
+types, not lists or pairs.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2830"
+></A
+><H3
+><A
+NAME="GCONFVALUE"
+></A
+>struct GConfValue</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GConfValue {
+  GConfValueType type;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>Represents a dynamically-typed value. The <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+> field tells you the
+type of the value; the other fields should be accessed with the
+accessor functions and macros.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>A <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> should always
+be initialized before use. That is, you should not use a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>
+unless you have called one of the functions beginning with
+"gconf_value_set_".</I
+></SPAN
+>. For lists, initialization has two
+steps: first you must set the list element type, then you must set the
+list value.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2840"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFF0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> <TT
+CLASS="STRUCTFIELD"
+><I
+>type</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>The <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> of this <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>. The only field of
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> you should access directly.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2853"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-TYPE-VALID-CAPS"
+></A
+>GCONF_VALUE_TYPE_VALID()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GCONF_VALUE_TYPE_VALID(x) (((x) &gt; GCONF_VALUE_INVALID) &amp;&amp; ((x) &lt;= GCONF_VALUE_PAIR))</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2858"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>x</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2867"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-NEW"
+></A
+>gconf_value_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_value_new                 (<A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>. The type is immutable after
+creation; values have a fixed type. You <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>must</I
+></SPAN
+>
+initialize the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> after creation; that is, you must set its 
+value with one of the "setter" functions.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2878"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>type of the new <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>newly-allocated <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2893"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-COPY"
+></A
+>gconf_value_copy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_value_copy                (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *src);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Copies a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>. The copy is a deep copy, that is, any allocated
+memory inside the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> will also be copied.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2902"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>src</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to copy.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a newly-allocated <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> identical to <TT
+CLASS="PARAMETER"
+><I
+>src</I
+></TT
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2918"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-FREE"
+></A
+>gconf_value_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_free                (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Deallocates a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>. Also deallocates any allocated memory
+inside the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> (such as lists, pair members, strings, and schemas).</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2926"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to destroy.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2936"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-STRING"
+></A
+>gconf_value_get_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gconf_value_get_string          (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns a <SPAN
+CLASS="SYMBOL"
+>const gchar*</SPAN
+> for a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+>. The returned string is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> a
+copy, don't try to free it. It is "owned" by the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> and will
+be destroyed when the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is destroyed.</P
+><P
+>If the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is not initialized (i.e. no one has called
+<A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-STRING"
+>gconf_value_set_string</A
+>()) then the string may be
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>, but of course you should not try to use an
+uninitialized <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2953"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2966"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-INT"
+></A
+>gconf_value_get_int ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>int         gconf_value_get_int             (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns a <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> for a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+>. </P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2975"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2988"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-FLOAT"
+></A
+>gconf_value_get_float ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>double      gconf_value_get_float           (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns a <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> for a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_DOUBLE</TT
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2998"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3011"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-LIST-TYPE"
+></A
+>gconf_value_get_list_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> gconf_value_get_list_type    (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns the type of the list elements in a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type 
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3020"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3033"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-LIST"
+></A
+>gconf_value_get_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A>*     gconf_value_get_list            (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns a <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> containing <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> objects. Each <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> in
+the returned list will have the type returned by
+<A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-LIST-TYPE"
+>gconf_value_get_list_type</A
+>(). Remember that the empty <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> is equal to
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>.  The list is not a copy; it is "owned" by the
+<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> and will be destroyed when the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is destroyed.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3048"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3061"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-CAR"
+></A
+>gconf_value_get_car ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_value_get_car             (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns the first member (car) of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>. The car is another <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>, with a primitive
+type (bool, int, float, string, schema).</P
+><P
+>The returned value is not a copy; it is "owned" by the pair and will
+be destroyed when the pair is destroyed.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3072"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3085"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-CDR"
+></A
+>gconf_value_get_cdr ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_value_get_cdr             (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns the second member (cdr) of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>. The cdr is another <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>, with a primitive
+type (bool, int, float, string, schema).</P
+><P
+>The returned value is not a copy; it is "owned" by the pair and will
+be destroyed when the pair is destroyed.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3096"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3109"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-BOOL"
+></A
+>gconf_value_get_bool ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_value_get_bool            (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns a <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> for a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+>. </P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3119"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3132"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-GET-SCHEMA"
+></A
+>gconf_value_get_schema ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>* gconf_value_get_schema         (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Returns a <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> for a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+>. If the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is uninitialized, it 
+may return <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>; but of course you should have
+initialized the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>. The GConf library will not return values
+with a <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> schema.</P
+><P
+>The returned value is not a copy; it is "owned" by the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> and will
+be destroyed when the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is destroyed.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3149"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3162"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-INT"
+></A
+>gconf_value_set_int ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_int             (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A> the_int);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3171"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> of type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_INT</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>the_int</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the integer.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3186"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-STRING"
+></A
+>gconf_value_set_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_string          (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *the_str);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>the_str</I
+></TT
+> is copied.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3196"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> of type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_STRING</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>the_str</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the string.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3211"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-FLOAT"
+></A
+>gconf_value_set_float ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_float           (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-basic-types.html#GDOUBLE
+>gdouble</A> the_float);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+>. </P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3220"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> of type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_FLOAT</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>the_float</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the floating point number.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3235"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-BOOL"
+></A
+>gconf_value_set_bool ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_bool            (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> the_bool);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+>. </P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3244"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> of type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_BOOL</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>the_bool</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a boolean value (<SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> or <SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+>).
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3261"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-SCHEMA"
+></A
+>gconf_value_set_schema ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_schema          (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             const <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> *sc);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+>. The
+<A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> is copied. Alternatively you can use
+<A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-SCHEMA-NOCOPY"
+>gconf_value_set_schema_nocopy</A
+>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3272"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>sc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3288"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-SCHEMA-NOCOPY"
+></A
+>gconf_value_set_schema_nocopy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_schema_nocopy   (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> *sc);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+>. The <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+> is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+>
+copied; the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> takes ownership of it, and it should only be
+accessed via the <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-GET-SCHEMA"
+>gconf_value_get_schema</A
+>() macro. This function is provided 
+as a more efficient version of <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-SCHEMA"
+>gconf_value_set_schema</A
+>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3302"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_SCHEMA</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>sc</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-schema.html#GCONFSCHEMA"
+>GConfSchema</A
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3318"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-CAR"
+></A
+>gconf_value_set_car ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_car             (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *car);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of the first field (car) of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>. The <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is copied. Alternatively, use
+<A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-CAR-NOCOPY"
+>gconf_value_set_car_nocopy</A
+>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3329"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>car</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to set as the car of the pair.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3345"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-CAR-NOCOPY"
+></A
+>gconf_value_set_car_nocopy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_car_nocopy      (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *car);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of the first field (car) of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>. The <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> copied;
+the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> takes ownership of it. Alternatively, use
+<A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-CAR"
+>gconf_value_set_car</A
+>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3358"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>car</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to set as the car of the pair.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3374"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-CDR"
+></A
+>gconf_value_set_cdr ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_cdr             (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *cdr);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of the second field (cdr) of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>. The <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is copied. Alternatively, use
+<A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-CDR-NOCOPY"
+>gconf_value_set_cdr_nocopy</A
+>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3385"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cdr</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to set as the cdr of the pair.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3401"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-CDR-NOCOPY"
+></A
+>gconf_value_set_cdr_nocopy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_cdr_nocopy      (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *cdr);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of the second field (cdr) of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>. The <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> copied;
+the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> takes ownership of it. Alternatively, use
+<A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-CDR"
+>gconf_value_set_cdr</A
+>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3414"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_PAIR</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>cdr</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to set as the cdr of the pair.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3430"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-LIST-TYPE"
+></A
+>gconf_value_set_list_type ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_list_type       (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUETYPE"
+>GConfValueType</A
+> type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the type of the elements in a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> of type
+<TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+>. All the elements in the list must have the same
+type. You must set the list type before you can set the list value.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3439"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the type of elements in this list.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3454"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-LIST-NOCOPY"
+></A
+>gconf_value_set_list_nocopy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_list_nocopy     (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+>.  The
+<TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+> argument should be a <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> of <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>. Each <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> in
+the list must have the same type, and this type must be specified in
+advance with <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-LIST-TYPE"
+>gconf_value_set_list_type</A
+>(). This function does
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> copy the list; the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> will take
+ownership of the list and its contents, and they will be destroyed
+when the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> is destroyed. Alternatively, use
+<A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-LIST"
+>gconf_value_set_list</A
+>() to make a copy.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3472"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> of <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to set as the list value.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3489"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-SET-LIST"
+></A
+>gconf_value_set_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_value_set_list            (<A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value,
+                                             <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the value of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+>.  The
+<TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+> argument should be a <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> of <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>. Each <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> in
+the list must have the same type, and this type must be specified in
+advance with <A
+HREF="gconf-gconf-value.html#GCONF-VALUE-SET-LIST-TYPE"
+>gconf_value_set_list_type</A
+>(). This function copies the
+list; it will not modify the <TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+> argument.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3504"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> with type <TT
+CLASS="LITERAL"
+>GCONF_VALUE_LIST</TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the <A
+HREF=../glib/glib-singly-linked-lists.html#GSLIST
+>GSList</A> of <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> to set as the list value.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3521"
+></A
+><H3
+><A
+NAME="GCONF-VALUE-TO-STRING"
+></A
+>gconf_value_to_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gconf_value_to_string           (const <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a human-readable string representation of a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>. This
+is intended for debugging and the like; the string representation is
+not suitable for reliable machine parsing (that is, you shouldn't use
+this function to save a value to a file or anything like that). The
+exact nature of the string representation may change in future
+versions. The returned string is newly-allocated and must be freed
+with <A
+HREF=../glib/glib-memory-allocation.html#G-FREE
+>g_free</A>().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3530"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a newly-allocated string representing the <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3545"
+></A
+><H3
+><A
+NAME="GCONFMETAINFO"
+></A
+>struct GConfMetaInfo</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GConfMetaInfo {
+  gchar* schema;
+  gchar* mod_user; /* user owning the daemon that made the last modification */
+  GTime  mod_time; /* time of the modification */
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3550"
+></A
+><H3
+><A
+NAME="GCONF-META-INFO-NEW"
+></A
+>gconf_meta_info_new ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+>* gconf_meta_info_new          (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3556"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3565"
+></A
+><H3
+><A
+NAME="GCONF-META-INFO-FREE"
+></A
+>gconf_meta_info_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_meta_info_free            (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3571"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gcmi</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3580"
+></A
+><H3
+><A
+NAME="GCONF-META-INFO-GET-SCHEMA"
+></A
+>gconf_meta_info_get_schema ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gconf_meta_info_get_schema      (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3586"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gcmi</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3599"
+></A
+><H3
+><A
+NAME="GCONF-META-INFO-GET-MOD-USER"
+></A
+>gconf_meta_info_get_mod_user ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gconf_meta_info_get_mod_user    (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3605"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gcmi</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3618"
+></A
+><H3
+><A
+NAME="GCONF-META-INFO-MOD-TIME"
+></A
+>gconf_meta_info_mod_time ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-date-and-time-functions.html#GTIME
+>GTime</A>       gconf_meta_info_mod_time        (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3625"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gcmi</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3638"
+></A
+><H3
+><A
+NAME="GCONF-META-INFO-SET-SCHEMA"
+></A
+>gconf_meta_info_set_schema ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_meta_info_set_schema      (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *schema_name);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3645"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gcmi</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>schema_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3658"
+></A
+><H3
+><A
+NAME="GCONF-META-INFO-SET-MOD-USER"
+></A
+>gconf_meta_info_set_mod_user ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_meta_info_set_mod_user    (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *mod_user);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3665"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gcmi</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mod_user</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3678"
+></A
+><H3
+><A
+NAME="GCONF-META-INFO-SET-MOD-TIME"
+></A
+>gconf_meta_info_set_mod_time ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_meta_info_set_mod_time    (<A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> *gcmi,
+                                             <A
+HREF=../glib/glib-date-and-time-functions.html#GTIME
+>GTime</A> mod_time);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3685"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>gcmi</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mod_time</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3698"
+></A
+><H3
+><A
+NAME="GCONFENTRY"
+></A
+>struct GConfEntry</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GConfEntry {
+  char *key;
+  GConfValue *value;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>Stores an entry from a GConf "directory," including a key-value pair,
+the name of the schema applicable to this entry, whether the value is
+a default value, and whether GConf can write a new value at this
+key. <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> should be an absolute key, not a relative key.  (Note that
+internally GConf breaks this rule sometimes; but in the public
+interface, <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> is always an absolute key.)  To access the key and
+value, use <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-GET-KEY"
+>gconf_entry_get_key</A
+>() and <A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-GET-VALUE"
+>gconf_entry_get_value</A
+>().</P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>Value can be <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>, indicating that the
+value is not set.</P
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3710"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFF0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>char *<TT
+CLASS="STRUCTFIELD"
+><I
+>key</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>an absolute key name</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *<TT
+CLASS="STRUCTFIELD"
+><I
+>value</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3724"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-NEW-NOCOPY"
+></A
+>gconf_entry_new_nocopy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>* gconf_entry_new_nocopy          (<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *key,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *val);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Creates a new <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> with key <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> and value <TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> should be a full
+path to the key, starting with '/'. Neither the key nor the value is copied;
+both are freed when the <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> is freed. The string will be freed with
+<A
+HREF=../glib/glib-memory-allocation.html#G-FREE
+>g_free</A>() so should be allocated with a GLib function, not malloc().</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3739"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the key name</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>the value</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a new <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfentry</A
+>.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3757"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-FREE"
+></A
+>gconf_entry_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_entry_free                (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Destroys a <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>, freeing the key, the value, and the entry itself.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3764"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> to free.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3774"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-GET-KEY"
+></A
+>gconf_entry_get_key ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gconf_entry_get_key             (const <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Accesses the <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> field of a <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>. The returned key is not a
+copy, and should not be freed or modified.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3782"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3795"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-GET-VALUE"
+></A
+>gconf_entry_get_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_entry_get_value           (const <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Accesses the <TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+> field of a <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>. The returned value is not
+a copy, and should not be freed or modified. If you have called
+<A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-STEAL-VALUE"
+>gconf_entry_steal_value</A
+>(), the returned value will be
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3806"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3819"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-STEAL-VALUE"
+></A
+>gconf_entry_steal_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+>* gconf_entry_steal_value         (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Extracts the value from a <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>, leaving the <TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+> field in
+<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> set to <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>. Destroying the <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>
+will <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> destroy the value; the caller of
+<A
+HREF="gconf-gconf-value.html#GCONF-ENTRY-STEAL-VALUE"
+>gconf_entry_steal_value</A
+>() assumes ownership of it.</P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3833"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> that the caller must free.
+&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3848"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-GET-IS-DEFAULT"
+></A
+>gconf_entry_get_is_default ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gconf_entry_get_is_default      (const <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3855"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3868"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-GET-SCHEMA-NAME"
+></A
+>gconf_entry_get_schema_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gconf_entry_get_schema_name     (const <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3874"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3887"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-SET-IS-DEFAULT"
+></A
+>gconf_entry_set_is_default ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_entry_set_is_default      (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> is_default);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3894"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>is_default</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3907"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-SET-SCHEMA-NAME"
+></A
+>gconf_entry_set_schema_name ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_entry_set_schema_name     (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *name);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3914"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3927"
+></A
+><H3
+><A
+NAME="GCONF-ENTRY-SET-VALUE-NOCOPY"
+></A
+>gconf_entry_set_value_nocopy ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_entry_set_value_nocopy    (<A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> *entry,
+                                             <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> *val);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3934"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>entry</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>val</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconf-gconf-error.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="gconf-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gconf-gconf-schema.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GError</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>gconf-schema</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

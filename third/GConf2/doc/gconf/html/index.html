@@ -1,0 +1,460 @@
+<HTML
+><HEAD
+><TITLE
+>GConf Manual</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="NEXT"
+TITLE="Introduction to GConf"
+HREF="c21.html"></HEAD
+><BODY
+CLASS="BOOK"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="BOOK"
+><DIV
+CLASS="TITLEPAGE"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+ALIGN="center"
+VALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="7"
+><P
+CLASS="TITLE"
+><A
+NAME="AEN2"
+>GConf Manual</A
+></P
+></FONT
+></TH
+></TR
+></TABLE
+><H3
+CLASS="AUTHOR"
+><A
+NAME="AEN4">Havoc Pennington</H3
+><DIV
+CLASS="AFFILIATION"
+><SPAN
+CLASS="ORGNAME"
+>Red Hat Advanced Development Labs<BR></SPAN
+></DIV
+><P
+CLASS="COPYRIGHT"
+>Copyright &copy; 1999 by Havoc Pennington</P
+><DIV
+><DIV
+CLASS="ABSTRACT"
+><A
+NAME="AEN16"><P
+></P
+><P
+>        GConf is a system for storing configuration information, that is,
+        key-value pairs. GConf provides a notification service so applications
+        can be notified when a key's value is changed.  GConf also allows for
+        pluggable storage mechanisms (text files, databases, etc.); allows
+        administrators to install default values; and allows application authors
+        to document their configuration keys for the benefit of administrators.
+      </P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="LEGALNOTICE"
+><A
+NAME="AEN18"><P
+></P
+><P
+>	This document may be distributed subject to the terms and
+        conditions set forth in the Open Publication License, v1.0 or
+        later (the latest version is presently available at <A
+HREF=" http://www.opencontent.org/openpub/"
+TARGET="_top"
+>http://www.opencontent.org/openpub/</A
+> )
+      </P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c21.html"
+>Introduction to GConf</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c21.html#AEN25"
+>Motivation</A
+></DT
+><DT
+><A
+HREF="x42.html"
+>Terms and Concepts</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="x42.html#AEN45"
+>Namespace</A
+></DT
+><DT
+><A
+HREF="x42.html#AEN50"
+>GConf Data Types</A
+></DT
+><DT
+><A
+HREF="x42.html#AEN86"
+>Configuration Sources</A
+></DT
+><DT
+><A
+HREF="x42.html#CONCEPTS-SCHEMAS"
+>Schemas</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+><A
+HREF="c120.html"
+>C Language Client Library</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c120.html#AEN125"
+>Error Handling</A
+></DT
+><DT
+><A
+HREF="x184.html"
+>The <SPAN
+CLASS="STRUCTNAME"
+>GConfEngine</SPAN
+> object</A
+></DT
+><DT
+><A
+HREF="x236.html"
+>The <SPAN
+CLASS="STRUCTNAME"
+>GConfValue</SPAN
+> Datatype</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="x236.html#AEN244"
+>Accessing <SPAN
+CLASS="STRUCTNAME"
+>GConfValue</SPAN
+></A
+></DT
+><DT
+><A
+HREF="x236.html#AEN254"
+>Creating/destroying a <SPAN
+CLASS="STRUCTNAME"
+>GConfValue</SPAN
+></A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="x289.html"
+>Reading/Writing Configuration Values</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="x289.html#AEN291"
+>Reading</A
+></DT
+><DT
+><A
+HREF="x289.html#AEN303"
+>Writing</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+><A
+HREF="gconf-client.html"
+><SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+> higher-level API</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="gconf-client.html#GCONFCLIENT-EXAMPLE"
+>A Complete Example</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="conventions.html"
+>GConf Conventions</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="conventions.html#AEN323"
+>Namespace division</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="gconftool.html"
+><SPAN
+CLASS="APPLICATION"
+>gconftool</SPAN
+> Utility Program</A
+></DT
+><DT
+><A
+HREF="c381.html"
+>Schema Files</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c381.html#AEN387"
+>Schema File Format</A
+></DT
+><DT
+><A
+HREF="x462.html"
+>Installing Schemas</A
+></DT
+><DT
+><A
+HREF="x485.html"
+>Schema File DTD</A
+></DT
+></DL
+></DD
+><DT
+><A
+HREF="c490.html"
+>Checklist/Summary</A
+></DT
+><DT
+><A
+HREF="gconf-reference.html"
+>GConf Reference Documentation</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="gconf-gconf-engine.html"
+>GConfEngine</A
+>&nbsp;--&nbsp;a GConf "database"</DT
+><DT
+><A
+HREF="gconf-gconf.html"
+>GConf Core Interfaces</A
+>&nbsp;--&nbsp;Basic functions to initialize GConf and get/set values</DT
+><DT
+><A
+HREF="gconf-gconf-error.html"
+>GError</A
+>&nbsp;--&nbsp;error reporting.</DT
+><DT
+><A
+HREF="gconf-gconf-value.html"
+>GConfValue, GConfEntry, GConfMetaInfo</A
+>&nbsp;--&nbsp;A <A
+HREF="gconf-gconf-value.html#GCONFVALUE"
+>GConfValue</A
+> stores a dynamically-typed value. A <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> stores a
+key-value pair.  A <A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> stores metainformation about a key.</DT
+><DT
+><A
+HREF="gconf-gconf-schema.html"
+>gconf-schema</A
+>&nbsp;--&nbsp;</DT
+><DT
+><A
+HREF="gconf-gconf-changeset.html"
+>GConfChangeSet</A
+>&nbsp;--&nbsp;a set of configuration changes to be made.</DT
+></DL
+></DD
+><DT
+><A
+HREF="gconf-client-reference.html"
+><SPAN
+CLASS="STRUCTNAME"
+>GtkObject</SPAN
+> Wrapper Reference (<SPAN
+CLASS="STRUCTNAME"
+>GConfClient</SPAN
+>)</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="gconfclient.html"
+>GConfClient</A
+>&nbsp;--&nbsp;GtkObject-based convenience wrapper</DT
+></DL
+></DD
+><DT
+><A
+HREF="gconf-internals-reference.html"
+>GConf Internal Reference</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="gconf-gconf-backend.html"
+>gconf-backend</A
+>&nbsp;--&nbsp;</DT
+><DT
+><A
+HREF="gconf-gconf-internals.html"
+>gconf-internals</A
+>&nbsp;--&nbsp;</DT
+><DT
+><A
+HREF="gconf-gconf-listeners.html"
+>gconf-listeners</A
+>&nbsp;--&nbsp;</DT
+><DT
+><A
+HREF="gconf-gconf-locale.html"
+>gconf-locale</A
+>&nbsp;--&nbsp;</DT
+><DT
+><A
+HREF="gconf-gconf-sources.html"
+>gconf-sources</A
+>&nbsp;--&nbsp;</DT
+></DL
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+>&nbsp;</TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&nbsp;</B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&nbsp;</B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="c21.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+>&nbsp;</TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Introduction to GConf</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

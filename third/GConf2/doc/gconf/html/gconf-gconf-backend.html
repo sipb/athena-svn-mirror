@@ -1,0 +1,1628 @@
+<HTML
+><HEAD
+><TITLE
+>gconf-backend</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
+"><LINK
+REL="HOME"
+TITLE="GConf Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="GConf Internal Reference"
+HREF="gconf-internals-reference.html"><LINK
+REL="PREVIOUS"
+TITLE="GConf Internal Reference"
+HREF="gconf-internals-reference.html"><LINK
+REL="NEXT"
+TITLE="gconf-internals"
+HREF="gconf-gconf-internals.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GConf Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconf-internals-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="gconf-internals-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gconf-gconf-internals.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GCONF-GCONF-BACKEND">gconf-backend</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN7154"
+></A
+><H2
+>Name</H2
+>gconf-backend&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN7157"><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="gconf-gconf-backend.html#GCONFBACKENDVTABLE"
+>GConfBackendVTable</A
+>;
+struct      <A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+>;
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gconf-gconf-backend.html#GCONF-ADDRESS-BACKEND"
+>gconf_address_backend</A
+>           (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gconf-gconf-backend.html#GCONF-ADDRESS-RESOURCE"
+>gconf_address_resource</A
+>          (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address);
+<A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      <A
+HREF="gconf-gconf-backend.html#GCONF-BACKEND-FILE"
+>gconf_backend_file</A
+>              (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address);
+<A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+>* <A
+HREF="gconf-gconf-backend.html#GCONF-GET-BACKEND"
+>gconf_get_backend</A
+>             (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);
+void        <A
+HREF="gconf-gconf-backend.html#GCONF-BACKEND-REF"
+>gconf_backend_ref</A
+>               (<A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+> *backend);
+void        <A
+HREF="gconf-gconf-backend.html#GCONF-BACKEND-UNREF"
+>gconf_backend_unref</A
+>             (<A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+> *backend);
+<A
+HREF="gconf-gconf-sources.html#GCONFSOURCE"
+>GConfSource</A
+>* <A
+HREF="gconf-gconf-backend.html#GCONF-BACKEND-RESOLVE-ADDRESS"
+>gconf_backend_resolve_address</A
+>  (<A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+> *backend,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN7184"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN7187"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7189"
+></A
+><H3
+><A
+NAME="GCONFBACKENDVTABLE"
+></A
+>struct GConfBackendVTable</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GConfBackendVTable {
+  void                (* shutdown)        (GError** err);
+
+  GConfSource*        (* resolve_address) (const gchar* address,
+                                           GError** err);
+
+  /* Thread locks. If the backend is thread-safe, then these
+   * can be NULL. If per-source locks are needed, then these
+   * calls should lock a mutex stored in the GConfSource.
+   * If a per-backend lock is needed, then the calls can ignore
+   * their source argument and lock the whole backend.
+   */
+  void                (* lock)            (GConfSource* source,
+                                           GError** err);
+
+  void                (* unlock)          (GConfSource* source,
+                                           GError** err);
+
+  /* Report whether a given key (and its subkeys) can be read/written.
+   * Sources may not permit reading/writing from/to /foo but forbid
+   * writing to /foo/bar; if a key can be read or written then its
+   * subkeys may also be read/written.
+   *
+   * This field allows backends to be configured so that they only
+   * store certain kinds of data in certain sections of the GConf
+   * namespace.
+   *
+   * If these functions return an error, they MUST return FALSE as
+   * well.
+   */
+
+  gboolean           (* readable)         (GConfSource* source,
+                                           const gchar* key,
+                                           GError** err);
+
+  gboolean           (* writable)        (GConfSource* source,
+                                           const gchar* key,
+                                           GError** err);
+  
+  /* schema_name filled if NULL or GCONF_VALUE_IGNORE_SUBSEQUENT returned.
+     if schema_name is NULL, it isn't filled */
+  GConfValue*         (* query_value)     (GConfSource* source, 
+                                           const gchar* key,
+                                           const gchar** locales,
+                                           gchar** schema_name,
+                                           GError** err);
+  
+  GConfMetaInfo*      (* query_metainfo)  (GConfSource* source,
+                                           const gchar* key,
+                                           GError** err);
+  
+  void                (* set_value)       (GConfSource* source, 
+                                           const gchar* key, 
+                                           const GConfValue* value,
+                                           GError** err);
+
+  /* Returns list of GConfEntry with key set to a relative
+   * pathname. In the public client-side API the key
+   * is always absolute though.
+   */
+  GSList*             (* all_entries)     (GConfSource* source,
+                                           const gchar* dir,
+                                           const gchar** locales,
+                                           GError** err);
+
+  /* Returns list of allocated strings, relative names */
+  GSList*             (* all_subdirs)     (GConfSource* source,
+                                           const gchar* dir,
+                                           GError** err);
+
+  void                (* unset_value)     (GConfSource* source,
+                                           const gchar* key,
+                                           const gchar* locale,
+                                           GError** err);
+
+  gboolean            (* dir_exists)      (GConfSource* source,
+                                           const gchar* dir,
+                                           GError** err);
+        
+  void                (* remove_dir)      (GConfSource* source,
+                                           const gchar* dir,
+                                           GError** err);
+  
+  void                (* set_schema)      (GConfSource* source,
+                                           const gchar* key,
+                                           const gchar* schema_key,
+                                           GError** err);
+
+  gboolean            (* sync_all)        (GConfSource* source,
+                                           GError** err);
+
+  void                (* destroy_source)  (GConfSource* source);
+
+  /* This is basically used by the test suite */
+  void                (* clear_cache)     (GConfSource* source);
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+>The <A
+HREF="gconf-gconf-backend.html#GCONFBACKENDVTABLE"
+>GConfBackendVTable</A
+> is a table of methods that any GConf backend must
+implement.  The dynamically loaded library module should export a function
+called gconf_backend_get_vtable() that returns a pointer to a
+<A
+HREF="gconf-gconf-backend.html#GCONFBACKENDVTABLE"
+>GConfBackendVTable</A
+>.</P
+><P
+>Here are the methods the backend must implement, and their specification:
+
+<DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7198"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFFFFF"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>shutdown</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Called prior to unloading the dynamic
+module. Should ensure that no functions or static/global variables from the
+module will ever be accessed again. Should free any memory that the backend
+no longer needs.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>resolve_address</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Should create a <A
+HREF="gconf-gconf-sources.html#GCONFSOURCE"
+>GConfSource</A
+> for accessing the supplied address. Should set the
+<TT
+CLASS="LITERAL"
+>GCONF_SOURCE_ALL_READABLE</TT
+> and <TT
+CLASS="LITERAL"
+>GCONF_SOURCE_ALL_WRITEABLE</TT
+> flags if
+appropriate. If these are not set, the backend must implement the <TT
+CLASS="PARAMETER"
+><I
+>writable</I
+></TT
+> and
+<TT
+CLASS="PARAMETER"
+><I
+>readable</I
+></TT
+> methods. If <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> is returned, then the error should
+be set.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>If the backend is thread safe (does its own locking or whatever), then
+<TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>unlock</I
+></TT
+> can be <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>.  If the backend requires a lock
+for each source, then <TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>unlock</I
+></TT
+> should lock/unlock that lock. If the
+backend has a global lock for all uses of the backend, then <TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>unlock</I
+></TT
+>
+should ignore their arguments and lock the entire backend.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>unlock</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>See description of <TT
+CLASS="PARAMETER"
+><I
+>lock</I
+></TT
+>.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>readable</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>If the <TT
+CLASS="LITERAL"
+>GCONF_SOURCE_ALL_READABLE</TT
+> flag is set, this method is never called and
+may be <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>. If <TT
+CLASS="LITERAL"
+>GCONF_SOURCE_ALL_READABLE</TT
+> is unset, and this
+method is <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>, then the source is write-only. If this method
+is implemented, it should return <SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> if the given key could be
+read from the given source. <SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> should be returned even if the
+key is unset; this function returns something similar to permissions, it is not
+asking whether the key exists. <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>If an error is set, then
+<SPAN
+CLASS="SYMBOL"
+>FALSE</SPAN
+> must be returned.</I
+></SPAN
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>writable</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Analagous to <TT
+CLASS="PARAMETER"
+><I
+>readable</I
+></TT
+>, but for writing.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>query_value</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>This method must be implemented if the source is readable. It returns the
+value of a key.  The "locales" argument is a <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>-terminated
+vector of locale names, where the first locale in the vector is the preferred
+locale, the next is the second choice, etc. if the "schema_name" argument is
+non-<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>, then it should be filled with an allocated string
+giving the name of the schema attached to the key, if and only if
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> is returned. This is an optimization to avoid looking up
+the same key again in the database if it's unset and we need to ask for its
+default value from the schema. If <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> is returned, indicating
+that the key is unset, then schema_name should not be filled in. If this method
+sets an error, <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> must be returned. It may not set an error
+while also returning a value. The returned value will be destroyed by the
+caller, so should be a copy of the backend's internal data.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>query_metainfo</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>This method must be implemented. If any metainfo is
+available about a key, it returns a <A
+HREF="gconf-gconf-value.html#GCONFMETAINFO"
+>GConfMetaInfo</A
+> with that metainfo set.  If
+none is available, <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> is returned. <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>
+should also be returned if an error is set.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>set_value</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>This method must be implemented if the source is
+writable. It sets the value of a key. If the key is already set, its value
+should be replaced. Setting a value should update the modification time of the
+key.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>all_entries</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>This method must be implemented. It returns a list of all keys in the
+given directory for which some information is available (metainfo or
+values). The returned list should contain <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+> objects. On error,
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+> should be returned and the error set. Subdirectories
+should not be included in the returned list. The list and the <A
+HREF="gconf-gconf-value.html#GCONFENTRY"
+>GConfEntry</A
+>
+objects will be freed by the caller.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>all_subdirs</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>This method must be implemented. It returns a list of all the subdirectories in a given
+directory.  It should return the subdirectories as relative paths, i.e. there
+should not be any slashes in the subdirectory name. Each subdirectory in the list
+should be an allocated string; the list and the strings will be freed by the caller.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>unset_value</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>If the given key has a value, then this method should unset the value.
+If a value is unset, subsequent calls to <TT
+CLASS="PARAMETER"
+><I
+>query_value</I
+></TT
+> should return
+<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>. If the locale string passed in to <TT
+CLASS="PARAMETER"
+><I
+>unset_value</I
+></TT
+> is
+non-<SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>, then only the value for that locale should be
+unset. If <SPAN
+CLASS="SYMBOL"
+>NULL</SPAN
+>, the value should be globally unset for all
+locales.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>dir_exists</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Determines whether a directory exists. Should return
+<SPAN
+CLASS="SYMBOL"
+>TRUE</SPAN
+> if there is a directory with the given name.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>remove_dir</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Should remove a directory, recursively: including all its subdirectories and 
+all the values and keys inside the directory.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>set_schema</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Should associate a schema name with a key.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>sync_all</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Should ensure that all data is stored on permanent media, or whatever makes
+sense for the backend. Called periodically by the GConf daemon.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>destroy_source</I
+></TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>Should destroy a source obtained with <TT
+CLASS="PARAMETER"
+><I
+>resolve_address</I
+></TT
+>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7312"
+></A
+><H3
+><A
+NAME="GCONFBACKEND"
+></A
+>struct GConfBackend</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct GConfBackend {
+  const gchar* name;
+  guint refcount;
+  GConfBackendVTable* vtable;
+  GModule* module;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7317"
+></A
+><H3
+><A
+NAME="GCONF-ADDRESS-BACKEND"
+></A
+>gconf_address_backend ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gconf_address_backend           (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7324"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>address</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7337"
+></A
+><H3
+><A
+NAME="GCONF-ADDRESS-RESOURCE"
+></A
+>gconf_address_resource ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gconf_address_resource          (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7344"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>address</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7357"
+></A
+><H3
+><A
+NAME="GCONF-BACKEND-FILE"
+></A
+>gconf_backend_file ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A>*      gconf_backend_file              (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7364"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>address</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7377"
+></A
+><H3
+><A
+NAME="GCONF-GET-BACKEND"
+></A
+>gconf_get_backend ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+>* gconf_get_backend             (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7385"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>address</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7402"
+></A
+><H3
+><A
+NAME="GCONF-BACKEND-REF"
+></A
+>gconf_backend_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_backend_ref               (<A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+> *backend);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7408"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>backend</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7417"
+></A
+><H3
+><A
+NAME="GCONF-BACKEND-UNREF"
+></A
+>gconf_backend_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gconf_backend_unref             (<A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+> *backend);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7423"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>backend</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7432"
+></A
+><H3
+><A
+NAME="GCONF-BACKEND-RESOLVE-ADDRESS"
+></A
+>gconf_backend_resolve_address ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gconf-gconf-sources.html#GCONFSOURCE"
+>GConfSource</A
+>* gconf_backend_resolve_address  (<A
+HREF="gconf-gconf-backend.html#GCONFBACKEND"
+>GConfBackend</A
+> *backend,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *address,
+                                             <A
+HREF=../glib/glib-error-reporting.html#GERROR
+>GError</A> **err);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7441"><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>backend</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>address</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>err</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+></SPAN
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gconf-internals-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="gconf-internals-reference.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gconf-gconf-internals.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>GConf Internal Reference</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>gconf-internals</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
