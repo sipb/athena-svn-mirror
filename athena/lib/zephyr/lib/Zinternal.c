@@ -11,7 +11,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.35 1997-09-23 05:58:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/Zinternal.c,v 1.36 1997-09-23 19:25:32 ghudson Exp $ */
 
 #include <internal.h>
 #include <arpa/inet.h>
@@ -20,7 +20,7 @@
 
 #ifndef lint
 static const char rcsid_Zinternal_c[] =
-  "$Id: Zinternal.c,v 1.35 1997-09-23 05:58:27 ghudson Exp $";
+  "$Id: Zinternal.c,v 1.36 1997-09-23 19:25:32 ghudson Exp $";
 static const char copyright[] =
   "Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.";
 #endif
@@ -48,8 +48,8 @@ int __subscriptions_next;
 
 #ifdef ZEPHYR_USES_KERBEROS
 C_Block __Zephyr_session;
-char __Zephyr_realm[REALM_SZ];
 #endif
+char __Zephyr_realm[REALM_SZ];
 
 #ifdef Z_DEBUG
 void (*__Z_debug_print) __P((const char *fmt, va_list args, void *closure));
