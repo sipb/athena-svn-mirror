@@ -3,7 +3,7 @@
  *  Copyright (c) 1995, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/lert/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: ghudson $ 
  *
  * For copying and distribution information, please see the file
  * <mit-copyright.h>. 
@@ -44,7 +44,7 @@ LERTSRVOBJS	=	lertsrv.o
 
 CFILES	=	lert.c lertload.c lertdump.c lertstop.c lertsaid.c lertused.c lertsrv.c
 
-LIBS		=	-lkrb -ldes -lhesiod
+LIBS		=	-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lhesiod
 
 DEFINES		=	
 

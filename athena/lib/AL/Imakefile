@@ -2,7 +2,7 @@
  * Imakefile for the Athena Login library
  *
  * $Author: ghudson $
- * $Id: Imakefile,v 1.7 1996-09-20 04:20:12 ghudson Exp $
+ * $Id: Imakefile,v 1.8 1997-10-13 22:44:51 ghudson Exp $
  *
  * Copyright 1994 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file
@@ -16,7 +16,7 @@ OBJ=etale.o etalw.o init.o setuser.o passwd.o modify.o group.o \
 	start.o homedir.o utmp.o
 
 
-LIB=-lcom_err -lkrb -ldes -lhesiod
+LIB=-lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lhesiod
 
 INC=-I..
 

@@ -3,10 +3,10 @@
  *
  *	MIT Project Athena
  * 
- * $Id: Imakefile,v 1.2 1991-05-27 13:17:11 probe Exp $
+ * $Id: Imakefile,v 1.3 1997-10-13 22:43:59 ghudson Exp $
  */
 
-LIBS =  -lhesiod -lzephyr -lcom_err -lkrb -ldes
+LIBS =  -lhesiod -lzephyr -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err
 OBJECTS = finger.o
 
 SimpleProgram(finger,$(OBJECTS),$(LIBS),$(ATHBINDIR))

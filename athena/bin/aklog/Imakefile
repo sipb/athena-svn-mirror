@@ -1,4 +1,4 @@
-/* $Id: Imakefile,v 1.6 1996-06-08 01:11:48 ghudson Exp $
+/* $Id: Imakefile,v 1.7 1997-10-13 22:43:16 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/Imakefile,v $
  */
 
@@ -10,7 +10,8 @@ OSLIBS=-lbsd
 
 AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lprot -lauth -lrxkad -lubik \
 	$(AFSDIR)/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys
-LIBS=-lknet -lkrb $(AFSDIR)/lib/libdes.a -lhesiod -lcom_err $(OSLIBS)
+LIBS=-lkrb4 -lkrb5 $(AFSDIR)/lib/libdes.a -lcrypto -lhesiod \
+	-lcom_err $(OSLIBS)
 
 OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.17 1997-06-08 20:25:01 ghudson Exp $
+ * $Id: Imakefile,v 1.18 1997-10-13 22:44:18 ghudson Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
@@ -22,7 +22,7 @@ OLIBS=-lmapmalloc
 #endif
 
 DEFINES=-DBSD -DSYSLOG -DZEPHYR ${OCFLAGS}
-LIBS= -lzephyr -lcom_err -lkrb -ldes $(OLIBS)
+LIBS= -lzephyr -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err $(OLIBS)
 
 create_dir($(PSLIBDIR))
 

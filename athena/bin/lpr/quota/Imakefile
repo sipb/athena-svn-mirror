@@ -1,6 +1,6 @@
 /* 
- *	$Id: Imakefile,v 1.14 1993-06-29 14:58:11 vrt Exp $
- *	$Author: vrt $
+ *	$Id: Imakefile,v 1.15 1997-10-13 22:44:14 ghudson Exp $
+ *	$Author: ghudson $
  *	$Locker:  $
  *
  *      Copyright 1990 Massachusetts Institute of Technology.
@@ -16,10 +16,11 @@
 
 
 DEFINES= -DHESIOD -DKERBEROS -DZEPHYR $(V1COMPAT) ${OCFLAGS} $(NCSINC)
-LIBS=${OPTLIBFLAGS} $(NCSLIB)  -lhesiod \
-	-lzephyr -lacl -lkrb -ldes -lcom_err ${DBMLIB} ${POSTLIBFLAGS}
+LIBS=${OPTLIBFLAGS} $(NCSLIB)  -lhesiod -lzephyr -lacl -lkrb4 -lkrb5 \
+	-ldes425 -lcrypto -lcom_err ${DBMLIB} ${POSTLIBFLAGS}
 
-DBLIBS=${OPTLIBFLAGS} -lkrb ${DBMLIB} ${POSTLIBFLAGS}
+DBLIBS=${OPTLIBFLAGS} -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err ${DBMLIB} \
+	${POSTLIBFLAGS}
 COMPILE_ET=$(ATHBINDIR)/compile_et
 
 SRCS=	gquota_dba.c uid_strings.c \

@@ -1,9 +1,9 @@
 /* 
  * Imakefile for the FX (file exchange) intermediate level
  *
- * $Author: cfields $
+ * $Author: ghudson $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.6 1995-07-21 00:20:13 cfields Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/lib/Imakefile,v 1.7 1997-10-13 22:45:01 ghudson Exp $
  *
  * Copyright (c) 1989, Massachusetts Institute of Technology
  *
@@ -48,7 +48,7 @@ INCLUDES = -I../include
 #else
 INCLUDES = -I../rpc3.9/usr/include -I../include
 #endif
-LIBS = -L../rpc3.9/usr/lib -L/usr/athena/lib -lhesiod -lkrb -ldes -lcom_err -lfxrpc
+LIBS = -L../rpc3.9/usr/lib -L/usr/athena/lib -lhesiod -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lfxrpc
 
 DEFINES = ${INCLUDES} -DKERBEROS -DHESIOD
 

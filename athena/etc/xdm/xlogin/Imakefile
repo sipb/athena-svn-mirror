@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.40 1997-06-29 00:29:03 cfields Exp $
+# $Id: Imakefile,v 1.41 1997-10-13 22:44:48 ghudson Exp $
 
 #ifdef SOLARIS
 MACHDEFS=-DSOLARIS_MAE
@@ -11,7 +11,6 @@ MACHLIBS = ../misc/libnanny.a
 #endif
 
 KRB5_DEFS = -DKRB5
-KRB5_LIBS = -lkrb5 -lcrypto
 
 DEFINES = -DSETPAG $(KRB5_DEFS) $(MACHDEFS)
 AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp -lsys
@@ -19,8 +18,8 @@ AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp -lsys
 
 SRCS = xlogin.c verify.c SmeBSB.c StringToPixel.c Clock.c
 OBJS = xlogin.o verify.o SmeBSB.o StringToPixel.o Clock.o
-LIBS = -lWc -lXp -lXmu -lXaw -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
-	$(KRB5_LIBS) $(AFSLIBS) $(MACHLIBS) -lcom_err -lm
+LIBS = -lWc -lXp -lXmu -lXaw -lXt -lXext -lX11 -lkrb4 -ldes425 -lkrb5 \
+	-lcrypto -lhesiod $(AFSLIBS) $(MACHLIBS) -lcom_err -lm
 
 #ifdef SOLARIS
 PRESOURCES=Xlogin.sun4.presed
