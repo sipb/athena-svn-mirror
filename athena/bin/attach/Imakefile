@@ -37,23 +37,43 @@ OBJS = 	main.o util.o attachtab.o attach.o detach.o nfs.o rvd.o\
 	ufs.o rpc.o mount.o unmount.o zephyr.o getrealm.o\
 	rvdutil.o pathcan.o config.o strtok.o $(AFSOBJ) $(XOBJS)
 
-all: attach
+all:: attach
 
-clean:
+clean::
 	rm -f *.bak *~ *.o core \#* attach
 
-attach: $(OBJS)
+attach:: $(OBJS)
 	$(CC) $(LDFLAGS) -o attach $(OBJS) $(LIBS) $(AFSDEF)
 
-depend:
+depend::
 	@-rm -f Make.depend
 	@-touch Make.depend
 	makedepend $(SRCS) $(CFLAGS) -fMake.depend
 
-Makefile: Imakefile
+Makefile:: Imakefile
 	-mv -f Makefile Makefile.bak
 	/lib/cpp -E Imakefile Makefile $(AFSDEF)
 
 install:: attach
-	@echo "Rel-eng should have put an install command here"
-	@false
+	rm -f ${DESTDIR}/bin/athena/attach
+	rm -f ${DESTDIR}/bin/athena/detach
+	rm -f ${DESTDIR}/bin/athena/nfsid
+	rm -f $(DESTDIR)/etc/athena/zinit
+	rm -f ${DESTDIR}/usr/man/man1/attach.1
+	rm -f ${DESTDIR}/usr/man/man1/detach.1
+	rm -f ${DESTDIR}/usr/man/man1/nfsid.1
+	rm -f ${DESTDIR}/usr/man/man5/attach.conf.5
+	rm -f ${DESTDIR}/usr/man/man5/attachtab.5
+	rm -f ${DESTDIR}/usr/man/man8/zinit.8
+	install -c -m 0444 attach.1 ${DESTDIR}/usr/man/man1
+	install -c -m 0444 detach.1 ${DESTDIR}/usr/man/man1
+	install -c -m 0444 nfsid.1 ${DESTDIR}/usr/man/man1
+	install -c -m 0444 attach.conf.5 ${DESTDIR}/usr/man/man5
+	install -c -m 0444 attachtab.5 ${DESTDIR}/usr/man/man5
+	install -c -m 0444 zinit.8 ${DESTDIR}/usr/man/man8
+	install -c -s -m 4755 -o root attach ${DESTDIR}/bin/athena/attach
+	ln -s attach ${DESTDIR}/bin/athena/detach
+	ln -s attach ${DESTDIR}/bin/athena/nfsid
+	ln -s /bin/athena/attach $(DESTDIR)/etc/athena/zinit
+
+Makefiles::
