@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.15 1991-06-30 11:06:00 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.16 1991-09-22 11:45:21 lwvanels Exp $
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  */
@@ -22,6 +22,11 @@
 #include <strings.h>
 #include <ctype.h>
 #include <syslog.h>
+
+#if defined(__STDC__) && !defined(__HIGHC__)
+/* Stupid High-C claims to be ANSI but doesn't have the include files.. */
+#include <stdlib.h>
+#endif
 
 #ifndef MIN
 #define        MIN(a,b) (((a)<(b))?(a):(b))
@@ -72,9 +77,6 @@ int acl_check P((char *acl, char *principal));
 void acl_canonicalize_principal P((char *principal , char *canon ));
 int acl_exact_match P((char *acl , char *principal ));
 #endif /* KERBEROS */
-
-/* rpd.c */
-int clean_up P((int signal));
 
 /* fdcache.c */
 void init_cache P((void ));
