@@ -25,4 +25,4 @@ mkdir -m 1777 -p $RPM_BUILD_ROOT/var/preserve/vi.recover
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" | sort > rpm.filelist
-echo "%dir /var/athena/sessions" >> rpm.filelist
+echo "%dir /var/preserve/vi.recover" >> rpm.filelist
