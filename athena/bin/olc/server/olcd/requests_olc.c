@@ -20,20 +20,19 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.30 1991-01-01 14:05:13 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.31 1991-01-03 15:54:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.30 1991-01-01 14:05:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.31 1991-01-03 15:54:24 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
 #include <olcd.h>
-
 
 /*
  * Function:	olc_on() signs a user on to the OLC system.  If
@@ -840,9 +839,7 @@ olc_ask(fd, request)
         
   if(!isme(request))
     {
-      status = match_knuckle(request->target.username, 
-			     request->target.instance,
-			     &target);
+      status = find_knuckle(&(request->target), &target);
       if (status)
 	return(send_response(fd, status));
     }
@@ -1440,15 +1437,21 @@ olc_comment(fd, request)
   if ((msg = read_text_from_fd(fd)) == (char *)NULL)
     return(send_response(fd, ERROR));
   
+  send_response(fd, SUCCESS);
+
 #ifdef LOG
-  sprintf(mesg,"%s [%d] comments in %s [%d]'s log",
-	  requester->user->username, requester->instance,
-	  target->user->username,target->instance);
+  if(is_option(request->options,PRIV_COMMENT_OPT))
+    sprintf(mesg,"%s [%d] comments privately in %s [%d]'s log",
+	    requester->user->username, requester->instance,
+	    target->user->username,target->instance);
+  else
+    sprintf(mesg,"%s [%d] privately in %s [%d]'s log",
+	    requester->user->username, requester->instance,
+	    target->user->username,target->instance);
   log_status(mesg);
 #endif /* LOG */
 
-  send_response(fd, SUCCESS);
-  log_comment(target,requester,msg);
+  log_comment(target,requester,msg,(request->options &PRIV_COMMENT_OPT));
   return(SUCCESS);
 }
 
@@ -1564,6 +1567,9 @@ olc_replay(fd, request)
   KNUCKLE *target;             /* target user */
   int status;
   int instance;
+  int can_monitor;
+  char censored_filename[NAME_SIZE];
+
 #ifdef LOG
   char mesg[BUFSIZ];
 #endif /* LOG */
@@ -1583,9 +1589,11 @@ olc_replay(fd, request)
   else
     target = requester;
 
+  can_monitor = is_allowed(requester->user,MONITOR_ACL);
+
   if(!(is_me(target,requester)) &&
      !(is_connected_to(target,requester)) &&
-     !(is_allowed(requester->user,MONITOR_ACL)))
+     !(can_monitor))
     return(send_response(fd,PERMISSION_DENIED));
 
   status = NO_QUESTION;
@@ -1600,7 +1608,13 @@ olc_replay(fd, request)
     return(send_response(fd, NO_QUESTION));
 
   send_response(fd, SUCCESS);
-  write_file_to_fd(fd, target->question->logfile);
+  if (can_monitor)
+    write_file_to_fd(fd, target->question->logfile);
+  else {
+/* Can't monitor, so send censored version of the log */
+    sprintf(censored_filename,"%s.censored",target->question->logfile);
+    write_file_to_fd(fd, censored_filename);
+  }    
 
   if((is_me(target,requester)) && 
      !(is_option(request->options, NOFLUSH_OPT)))
@@ -1985,24 +1999,12 @@ olc_verify_topic(fd, request)
      REQUEST *request;
 {
   KNUCKLE *requester;
-  KNUCKLE *target;
   int status;
   char *text;
 
   status = find_knuckle(&(request->requester), &requester);
   if(status)
     return(send_response(fd,status));
-
-  if(!isme(request))
-    {        
-      status = match_knuckle(request->target.username, 
-			     request->target.instance,
-			     &target);
-      if(status)
-	return(send_response(fd,status));
-    }
-  else
-    target = requester;
 
   if(!(is_allowed(requester->user,OLC_ACL)))
     return(send_response(fd,PERMISSION_DENIED));
@@ -2011,10 +2013,9 @@ olc_verify_topic(fd, request)
   text = read_text_from_fd(fd);
 
   if(verify_topic(text) != FAILURE)
-      return(send_response(fd,SUCCESS));
+    return(send_response(fd,SUCCESS));
   else
     return(send_response(fd,INVALID_TOPIC));
-
 }
 
 
@@ -2079,6 +2080,37 @@ olc_motd(fd, request)
   send_response(fd,SUCCESS);
   check_motd_timeout();
   status = write_file_to_fd(fd,MOTD_FILE);    
+  return(status);
+}
+
+
+ERRCODE
+olc_get_hours(fd, request)
+     int fd;
+     REQUEST *request;
+{
+  KNUCKLE *requester;
+  int status;
+  
+#ifdef LOG
+  char mesg[BUFSIZ];
+#endif /* LOG */
+
+  status = find_knuckle(&(request->requester), &requester);
+  if(status)
+    return(send_response(fd,status));
+
+  if(!is_allowed(requester->user,OLC_ACL))
+    return(send_response(fd,PERMISSION_DENIED));
+
+#ifdef LOG
+  sprintf(mesg,"%s [%d] gets hours",
+	  requester->user->username, requester->instance);
+  log_status(mesg);
+#endif /* LOG */
+
+  send_response(fd,SUCCESS);
+  status = write_file_to_fd(fd,HOURS_FILE);
   return(status);
 }
 
