@@ -1,6 +1,0 @@
-TODO:
-
- * Add GError support in the loader, rather then the g_warnings
-   that we currently use.
-
- * Make error messages translatable (requires adding gettext).
