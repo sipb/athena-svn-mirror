@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/zlocate.1,v $
 .\"	$Author: jtkohl $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/zlocate.1,v 1.3 1988-07-01 15:49:13 jtkohl Exp $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/zlocate.1,v 1.4 1988-07-21 08:56:32 jtkohl Exp $
 .\"
 .\" Copyright 1987,1988 by the Massachusetts Institute of Technology
 .\" All rights reserved.  The file /usr/include/zephyr/mit-copyright.h
@@ -21,7 +21,8 @@ zlocate \- find a user
 uses the
 .I Zephyr(1)
 Notification Service to find where a user is currently logged in.  If
-the user is not logged in, or does not want to be found,
+the user is not logged in, or has set his location information such that
+you do not have access to see it,
 .I zlocate
 prints "Hidden or not logged-in".  Otherwise, each machine that the
 user is currently logged into is printed, along with the time of
@@ -29,6 +30,10 @@ login and location.  The location is usually the X window system display
 name of the user's display, but may be the terminal name if he is not
 using X or for some other reason is only using the terminal interface to
 .I zwgc(1).
+.PP
+.I zlocate
+exits with status zero (0) if at least one user was found, and one (1)
+if no users were found.
 .SH SEE ALSO
 zctl(1), zephyr(1), znol(1), zwgc(1), zhm(8), zephyrd(8), X(1)
 .br
