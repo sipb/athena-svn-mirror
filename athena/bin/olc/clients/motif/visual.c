@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/visual.c,v $
- *	$Id: visual.c,v 1.6 1991-04-18 21:51:57 lwvanels Exp $
+ *	$Id: visual.c,v 1.7 1992-01-07 19:53:55 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -36,7 +36,7 @@
 #include "xolc.xbm"
 
 Widget				/* Widget ID's */
-  toplevel,
+  xolc,
   main_form,
   w,
 
@@ -113,17 +113,17 @@ MakeInterface()
  */
 
   XtSetArg(args[0], XtNiconPixmap, &icon_pixmap);
-  XtGetValues(toplevel,args,1);
+  XtGetValues(xolc,args,1);
   if (icon_pixmap == None) {
     XtSetArg(args[0], XtNiconPixmap,
-             XCreateBitmapFromData(XtDisplay(toplevel),
-                                   XtScreen(toplevel)->root,
+             XCreateBitmapFromData(XtDisplay(xolc),
+                                   XtScreen(xolc)->root,
                                    xolc_bits, xolc_width, xolc_height));
-    XtSetValues (toplevel, args, 1);
+    XtSetValues (xolc, args, 1);
   }
 
 
-  w = main_form = XmCreateForm(toplevel, "main", NULL, 0);
+  w = main_form = XmCreateForm(xolc, "main", NULL, 0);
 
 /*  Buttons along the top row:  [new_ques, cont_ques], stock, quit, help  */
 
@@ -377,7 +377,7 @@ MakeDialogs()
 
 /*  Send Form holds a title, scrolled text widget, and rowcolumn.  */
 
-  w_send_form = XmCreateFormDialog(toplevel, "send_form", NULL, 0);
+  w_send_form = XmCreateFormDialog(xolc, "send_form", NULL, 0);
 
 /*  Send label.  Used to prompt user to type in message.  */
 

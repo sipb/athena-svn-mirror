@@ -15,7 +15,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.14 1991-06-30 12:22:26 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.15 1992-01-07 19:53:55 lwvanels Exp $";
 #endif
 #endif
 
@@ -112,7 +112,7 @@ main(argc, argv)
  *  If opening display was successful, then initialize toolkit, display,
  *  interface, etc.
  */
-  toplevel = XtInitialize("xolc" , "Xolc", NULL, 0, &argc, argv);
+  xolc = XtInitialize("xolc" , "Xolc", NULL, 0, &argc, argv);
 
   ++argv, --argc;
   while (argc > 0 && argv[0][0] == '-') {
@@ -139,9 +139,9 @@ main(argc, argv)
 
   n=0;
   XtSetArg(args[n], XmNallowShellResize, TRUE); n++;
-  XtSetValues(toplevel, args, n);
+  XtSetValues(xolc, args, n);
 
-  MuInitialize(toplevel);
+  MuInitialize(xolc);
 
   MakeInterface();
   MakeContqForm();
@@ -151,7 +151,7 @@ main(argc, argv)
 /*
  * 
  */
-  XtRealizeWidget(toplevel);
+  XtRealizeWidget(xolc);
 
   olc_init();
 
