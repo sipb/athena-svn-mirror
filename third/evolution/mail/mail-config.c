@@ -24,6 +24,7 @@
 #include <config.h>
 #endif
 
+#include <sys/stat.h>
 #include <pwd.h>
 #include <ctype.h>
 
@@ -288,16 +289,97 @@ mail_config_clear (void)
 	}
 }
 
+static void make_mit_account (const char *name, const char *url)
+{
+	MailConfigAccount *account;
+	MailConfigIdentity *id;
+	MailConfigService *source;
+	MailConfigService *transport;
+
+	account = g_new0 (MailConfigAccount, 1);
+	account->name = g_strdup (name);
+	account->drafts_folder_name = g_strdup ("Drafts");
+	account->drafts_folder_uri =
+		g_strdup_printf ("file://%s/evolution/local/Drafts",
+				 g_get_home_dir ());
+	account->sent_folder_name = g_strdup ("Sent");
+	account->sent_folder_uri =
+		g_strdup_printf ("file://%s/evolution/local/Sent",
+				 g_get_home_dir ());
+	id = g_new0 (MailConfigIdentity, 1);
+	id->name = g_strdup (g_get_real_name ());
+	id->address = g_strdup_printf ("%s@mit.edu", g_get_user_name ());
+	id->organization = g_strdup ("");
+	id->signature = g_strdup ("");
+	id->html_signature = g_strdup ("");
+	source = g_new0 (MailConfigService, 1);
+	source->url = g_strdup (url);
+	source->enabled = TRUE;
+	transport = g_new0 (MailConfigService, 1);
+	transport->url = g_strdup ("sendmail:");
+	account->id = id;
+	account->source = source;
+	account->transport = transport;
+	config->accounts = g_slist_append (config->accounts, account);
+}
+
+static void setup_mit_config (void)
+{
+	char *url, *path, buf[1024];
+	FILE *fp;
+	const char *p;
+	struct stat st;
+
+	/* Make the IMAP account. */
+	url = g_strdup_printf ("imap://%s;auth=KERBEROS_V4@_hesiod/"
+			       ";use_lsub;check_all", g_get_user_name ());
+	make_mit_account ("MIT mail", url);
+	g_free (url);
+
+	/* Make the MH account, if the user has an MH directory. */
+	path = g_strdup_printf ("%s/.mh_profile", g_get_home_dir ());
+	fp = fopen (path, "r");
+	g_free (path);
+	if (!fp)
+		return;
+	while (fgets (buf, sizeof (buf), fp) != NULL) {
+		if (strncmp(buf, "Path:", strlen ("Path:")) == 0) {
+			if (buf[strlen (buf) - 1] == '\n')
+				buf[strlen (buf) - 1] = 0;
+			p = buf + strlen ("Path:");
+			while (isspace (*p))
+				p++;
+
+			path = (*p == '/') ? g_strdup (p) :
+				g_strdup_printf ("%s/%s",
+						 g_get_home_dir (), p);
+			if (stat (path, &st) == 0 && S_ISDIR (st.st_mode)) {
+				url = g_strdup_printf ("mh:%s", path);
+				make_mit_account ("Old MH mail", url);
+				g_free (url);
+			}
+			g_free (path);
+			break;
+		}
+	}
+	fclose (fp);
+}
+
 static void
 config_read (void)
 {
 	int len, i, default_num;
+	gboolean def;
 	
 	mail_config_clear ();
 	
 	len = bonobo_config_get_long_with_default (config->db, 
-	        "/Mail/Accounts/num", 0, NULL);
-	
+	        "/Mail/Accounts/num", 0, &def);
+
+	/* Athena local hack: set up default mail configuration. */
+	if (def)
+		setup_mit_config();
+
 	for (i = 0; i < len; i++) {
 		MailConfigAccount *account;
 		MailConfigIdentity *id;
