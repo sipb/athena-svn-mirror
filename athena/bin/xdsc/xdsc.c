@@ -349,6 +349,7 @@ BuildUserInterface()
 			args,
 			n);
 
+#ifdef LOGGING_ON
 /*
 ** Cheezy hack...Set borderwidth of pane to zero to turn off logging.
 */
@@ -364,6 +365,7 @@ BuildUserInterface()
 		XtSetArg(args[n], XtNborderWidth, 0);		n++;
 		XtSetValues (paneW, args, n);
 	}
+#endif
 
 	n = 0;
 	topboxW = XtCreateManagedWidget(
