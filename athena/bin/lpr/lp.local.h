@@ -60,7 +60,7 @@
 #define	DEFLP		"default"
 #define DEFLOCK		"lock"
 #define DEFSTAT		"status"
-#define	DEFSPOOL	"/usr/spool/printer/lpd"
+#define DEFSPOOL        "/usr/spool/printer"
 #define	DEFDAEMON	"/usr/lib/lpd"
 #define	DEFLOGF		"/dev/console"
 #define	DEFDEVLP	"/dev/lp"
