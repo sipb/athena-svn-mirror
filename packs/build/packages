@@ -1,4 +1,4 @@
-# $Id: packages,v 1.260 2004-03-06 17:17:59 ghudson Exp $
+# $Id: packages,v 1.261 2004-03-10 03:14:45 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -237,7 +237,7 @@ third/librep			requires gettext,gmp,gdbm,readline,texinfo
 third/librsvg			except linux requires gtk2,glib2,libart_lgpl,libxml2,pango,popt
 third/libsoup			requires glib2,openssl
 third/libungif			except linux
-third/libwnck			except linux requires gettext,startup-notification,gtk2,glib2
+third/libwnck			requires gettext,startup-notification,gtk2,glib2
 third/libxml
 third/libxml2			except linux
 third/libxslt			except linux requires libxml2
