@@ -1,6 +1,6 @@
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v $
 .\"     $Author: epeisach $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v 1.6 1990-11-16 15:20:16 epeisach Exp $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v 1.7 1991-03-01 12:16:54 epeisach Exp $
 .\"
 .\" Copyright 1990 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -27,6 +27,8 @@ lpquota \- enquire about print quota
 .B \-q
 ] [
 .BI \-l
+] [
+.BI \-I
 ] [
 .BI \-f allowed
 ] [
@@ -68,6 +70,11 @@ the printer name contained in the environment variable
 .B PRINTER 
 is used.
 .PP
+The 
+.B \-I
+option asks the quota server for a status. This can be used to determine
+if the server is running.
+.B
 The
 .B \-Qquotaserver
 can be used to explicitly specify the machine that the
