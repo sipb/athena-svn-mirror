@@ -17,6 +17,7 @@
 /etc/lpd.perms
 /etc/mail/aliases
 /etc/mail/sendmail.cf
+/etc/mail/sendmail-noauth.cf
 /etc/named.conf
 /etc/ntp.conf
 /etc/profile
