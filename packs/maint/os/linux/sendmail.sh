@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendmail.sh,v 1.1.2.2 2003-11-04 19:32:37 ghudson Exp $
+# $Id: sendmail.sh,v 1.1.2.3 2003-11-13 01:52:14 ghudson Exp $
 
 # If we don't have tickets, we must do direct delivery and not do
 # authentication.
@@ -14,7 +14,8 @@ if [ $? != 0 ]; then
   DIRECT_DELIVERY=1; export DIRECT_DELIVERY
 fi
 
-if [ "$MAILRELAY" != "default" -o -n "$DIRECT_DELIVERY" ]; then
+if [ "$MAILRELAY" != "default" -o ! -f /etc/athena/sendmail.conf \
+     -o -n "$DIRECT_DELIVERY" ]; then
   flags="-U"
 else
   flags="-P 587"
