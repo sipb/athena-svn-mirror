@@ -1,3 +1,4 @@
+INSTALL = :
 CFLAGS = $(CCOPTS) $(DEFS) $(LOCALINCLUDE)
 SED = sed
 
