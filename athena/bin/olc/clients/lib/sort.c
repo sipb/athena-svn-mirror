@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v $
- *	$Id: sort.c,v 1.9 1990-11-13 15:45:11 lwvanels Exp $
+ *	$Id: sort.c,v 1.10 1991-01-22 13:29:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.9 1990-11-13 15:45:11 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/sort.c,v 1.10 1991-01-22 13:29:27 lwvanels Exp $";
 #endif
 #endif
 
@@ -181,6 +181,10 @@ OSortListByRule(list,rule)
 	    k++->key = sort_key__topic;
 	else if (string_eq(*rule,"nseen"))
 	    k++->key = sort_key__nseen;
+	else if (string_eq(*rule,"rev_nseen")) {
+	    k->key = sort_key__nseen;
+	    k++->reversed = 1;
+	  }
 	else if (string_eq(*rule,"uusername") || string_eq(*rule,"username"))
 	    k++->key = sort_key__user_name;
 	else if(string_eq(*rule,"cusername"))
