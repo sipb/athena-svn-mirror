@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.29 1990-12-17 08:33:30 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.30 1991-01-01 14:05:13 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.29 1990-12-17 08:33:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.30 1991-01-01 14:05:13 lwvanels Exp $";
 #endif
 #endif
 
@@ -604,7 +604,7 @@ olc_done(fd, request)
 		     cap(requester->title), requester->user->username, 
 		     target->question->topic);
       
-      (void) write_message_to_user(target, msgbuf, NULL_FLAG);
+      (void) write_message_to_user(target, msgbuf, NO_RESPOND);
     }
   
   terminate_log_answered(target);
@@ -617,6 +617,8 @@ olc_done(fd, request)
   
   consultant = target->connected;
   free_new_messages(target);
+  if (target->connected != NULL)
+    free_new_messages(target->connected);
   deactivate(target);
   disconnect_knuckles(target, target->connected);
   free((char *) target->question);
@@ -783,6 +785,8 @@ olc_cancel(fd, request)
 /*  if(requester->instance > 0 && target->connected == requester)
     deactivate(requester);*/
 
+  if (target->connected != NULL)
+    free_new_messages(target->connected);
   free_new_messages(target);
   deactivate(target);
   disconnect_knuckles(target, consultant);
@@ -1291,8 +1295,7 @@ olc_send(fd, request)
   if ((msg = read_text_from_fd(fd)) == (char *) NULL)
     return(send_response(fd, ERROR));
   
-  if(!is_me(target,requester))
-    new_message(target, requester,  msg);
+  new_message(target, requester,  msg);
   log_message(target,requester,msg);
 
   if(is_me(target,requester) && !is_connected(target))
@@ -1559,8 +1562,8 @@ olc_replay(fd, request)
 {
   KNUCKLE *requester;	       /* Current user  making request */
   KNUCKLE *target;             /* target user */
-  long    timestamp;
   int status;
+  int instance;
 #ifdef LOG
   char mesg[BUFSIZ];
 #endif /* LOG */
@@ -1585,33 +1588,25 @@ olc_replay(fd, request)
      !(is_allowed(requester->user,MONITOR_ACL)))
     return(send_response(fd,PERMISSION_DENIED));
 
-  if(!has_question(target))
+  status = NO_QUESTION;
+  for(instance=0;instance<target->user->no_knuckles;instance++)
+    if (has_question(target->user->knuckles[instance])) {
+      target = target->user->knuckles[instance];
+      status = SUCCESS;
+      break;
+    }
+
+  if (status != SUCCESS)
     return(send_response(fd, NO_QUESTION));
 
-  timestamp = 100000;  /* not implemented */
-  if(timestamp == target->question->logfile_timestamp)
-    send_response(fd,UNCHANGED);
-  else
-    {
-      send_response(fd, SUCCESS);
-      write_file_to_fd(fd, target->question->logfile);
-    }
+  send_response(fd, SUCCESS);
+  write_file_to_fd(fd, target->question->logfile);
 
   if((is_me(target,requester)) && 
      !(is_option(request->options, NOFLUSH_OPT)))
     {
       free_new_messages(target);
     }
-
-/*  Why should replaying (in ANY case) set status to serviced?  */
-/*
-  if ((! owns_question(target) &&
-       is_connected(target) &&
-       is_me(target,requester))
-      || (owns_question(target) &&
-	  is_connected_to(target,requester)))
-    set_status(target->question->owner, SERVICED);
-*/
 
 #ifdef LOG
   sprintf(mesg,"%s [%d] replays %s [%d]'s log",
