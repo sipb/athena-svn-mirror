@@ -18,18 +18,19 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v $
- *	$Id: x_instance.c,v 1.4 1991-03-24 14:33:52 lwvanels Exp $
- *      $Author: lwvanels $
+ *	$Id: x_instance.c,v 1.5 1991-08-23 13:54:15 raek Exp $
+ *      $Author: raek $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.4 1991-03-24 14:33:52 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.5 1991-08-23 13:54:15 raek Exp $";
 #endif
 
 #include <mit-copyright.h>
 
 #include "xolc.h"
 
+ERRCODE
 t_set_default_instance(Request)
      REQUEST *Request;
 {
