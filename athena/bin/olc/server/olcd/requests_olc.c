@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.65.2.1 2003-07-30 18:39:38 ghudson Exp $
+ *	$Id: requests_olc.c,v 1.65.2.2 2003-08-20 16:53:06 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.65.2.1 2003-07-30 18:39:38 ghudson Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.65.2.2 2003-08-20 16:53:06 ghudson Exp $";
 #endif
 #endif
 
@@ -1865,6 +1865,7 @@ olc_topic(fd, request)
 #endif /* OLCD_LOG_ACTIONS */
   send_response(fd,SUCCESS);
   write_text_to_fd(fd,target->question->topic);
+  needs_backup = TRUE;
   return(SUCCESS);
 }
 
