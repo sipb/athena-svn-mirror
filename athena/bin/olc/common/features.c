@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/features.c,v $
- *      $Id: features.c,v 1.1 1994-09-18 05:07:41 cfields Exp $
- *      $Author: cfields $
+ *      $Id: features.c,v 1.2 1996-09-20 02:19:26 ghudson Exp $
+ *      $Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/features.c,v 1.1 1994-09-18 05:07:41 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/features.c,v 1.2 1996-09-20 02:19:26 ghudson Exp $";
 #endif
 #endif
 
@@ -105,21 +105,21 @@ get_features_from_buf(buf, buflen, data, num)
     while(isspace(*buf))
       buf++;
     kwd = buf;
-    if ((p = index(buf,' ')) == NULL)
+    if ((p = strchr(buf,' ')) == NULL)
       return(OLCC_BAD_FEATURE_FORMAT);
     *p = '\0'; /* Put null at end of keyword string */
     buf = p+1;
     while(isspace(*buf))
       buf++;
     v_num = buf;
-    if ((p = index(buf,' ')) == NULL)
+    if ((p = strchr(buf,' ')) == NULL)
       return(OLCC_BAD_FEATURE_FORMAT);
     *p = '\0'; /* Put null at end of version number */
     while(isspace(*buf))
       buf++;
     buf = p+1;
     kwd_data = buf;
-    if ((p = index(buf,'\n')) == NULL)
+    if ((p = strchr(buf,'\n')) == NULL)
       return(OLCC_BAD_FEATURE_FORMAT);
     *p = '\0'; /* Put null at end of keyword data */
     buf = p + 1;

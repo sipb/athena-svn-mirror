@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.36 1994-08-21 18:16:58 cfields Exp $
- *	$Author: cfields $
+ *	$Id: olc.c,v 1.37 1996-09-20 02:15:28 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.36 1994-08-21 18:16:58 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.37 1996-09-20 02:15:28 ghudson Exp $";
 #endif
 #endif
 
@@ -43,7 +43,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 
 #ifdef KERBEROS
 extern int krb_ap_req_debug;
@@ -180,7 +180,7 @@ main(argc, argv)
  * to play after dinner.
  */
 
-  program = rindex(*argv,'/');
+  program = strrchr(*argv,'/');
   if(program == (char *) NULL)
      program = *argv;
   if(*program == '/')

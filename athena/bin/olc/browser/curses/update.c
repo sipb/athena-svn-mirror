@@ -27,8 +27,8 @@
  * the functions in this file.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
- *	$Author: vrt $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.13 1994-03-14 15:01:41 vrt Exp $
+ *	$Author: ghudson $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.14 1996-09-20 02:11:35 ghudson Exp $
  */
 
 #ifndef lint
@@ -44,7 +44,7 @@ static char *rcsid_update_c = "$Header: ";
 #include <errno.h>			/* Error codes. */
 #include <sys/types.h>
 #include <sys/file.h>			/* System file defs. */
-#include <strings.h>			/* For string functions. */
+#include <string.h>			/* For string functions. */
 #include <fcntl.h>
 #include <ctype.h>			/* Character type macros. */
 
@@ -138,7 +138,7 @@ parse_contents()
 	continue;
       if (*ptr == (char) NULL)
 	continue;
-      if ( (delim_ptr = index(ptr, CONTENTS_DELIM)) == NULL)
+      if ( (delim_ptr = strchr(ptr, CONTENTS_DELIM)) == NULL)
 	{
 	  sprintf(line1, "Broken index file for entry: %s",Entry_Table[Current_Ind-1].title);
 	  messages(line1, "Please select another entry.");
@@ -152,7 +152,7 @@ parse_contents()
 	Entry_Table[i].type = CREF_FILE;
       else
 	Entry_Table[i].type = CREF_DIR;
-      if ( (delim_ptr = index(title_ptr, CONTENTS_DELIM)) == NULL)
+      if ( (delim_ptr = strchr(title_ptr, CONTENTS_DELIM)) == NULL)
 	{
 	  sprintf(line1, "Broken index file: %s", contents_name);
 	  sprintf(line2, "Invalid title field (field 2) in line %d",i+1);
@@ -165,7 +165,7 @@ parse_contents()
       *delim_ptr = (char) NULL;
       strcpy(Entry_Table[i].title, title_ptr);
       filename_ptr = delim_ptr + 1;
-      if ( (delim_ptr = index(filename_ptr, CONTENTS_DELIM)) == NULL)
+      if ( (delim_ptr = strchr(filename_ptr, CONTENTS_DELIM)) == NULL)
 	{
 	  sprintf(line1, "Broken index file: %s", contents_name);
 	  sprintf(line2, "Invalid filename field (field 3) in line %d",i+1);
@@ -180,7 +180,7 @@ parse_contents()
       strcat(Entry_Table[i].filename, "/");
       strcat(Entry_Table[i].filename, filename_ptr);
       format_ptr = delim_ptr + 1;
-      if ( (delim_ptr = index(format_ptr, CONTENTS_DELIM)) == NULL)
+      if ( (delim_ptr = strchr(format_ptr, CONTENTS_DELIM)) == NULL)
 	{
 	  sprintf(line1, "Broken index file: %s", contents_name);
 	  sprintf(line2, "Invalid formatter field (field 4) in line %d",i+1);
@@ -298,7 +298,7 @@ char *parent_dir;
 {
   register char *p;
 
-  p = rindex(dir_path,'/');
+  p = strrchr(dir_path,'/');
   copyn(parent_dir, dir_path, (p--) - dir_path);
     
   return(*parent_dir);
@@ -311,7 +311,7 @@ char *tail;
 {
   register char *p;
 
-  p = rindex(dir_path,'/');
+  p = strrchr(dir_path,'/');
   copyn(tail, ++p, MAXPATHLEN);
     
   return(*tail);

@@ -10,12 +10,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v $
- *      $Author: lwvanels $
+ *      $Author: ghudson $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.18 1992-06-11 17:14:21 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.19 1996-09-20 02:14:59 ghudson Exp $";
 #endif
 #endif
 
@@ -77,7 +77,7 @@ main(argc, argv)
   char buf[BUFSIZ];
 #endif
 
-  program = rindex(*argv,'/');
+  program = strrchr(*argv,'/');
   if(program == (char *) NULL)
      program = *argv;
   if(*program == '/')

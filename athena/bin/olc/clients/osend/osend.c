@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/osend/osend.c,v $
- *	$Id: osend.c,v 1.1 1994-09-18 05:07:40 cfields Exp $
- *	$Author: cfields $
+ *	$Id: osend.c,v 1.2 1996-09-20 02:17:40 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/osend/osend.c,v 1.1 1994-09-18 05:07:40 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/osend/osend.c,v 1.2 1996-09-20 02:17:40 ghudson Exp $";
 #endif
 #endif
 
@@ -145,7 +145,7 @@ init_request(req)
 #endif /* KERBEROS */
   struct passwd *pwd;
 
-  bzero(req, sizeof(REQUEST));
+  memset(req, 0, sizeof(REQUEST));
 
   req->options = NO_OPT;
   req->version = CURRENT_VERSION;

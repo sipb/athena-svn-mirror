@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v $
- *	$Id: io.c,v 1.21 1992-03-10 23:21:21 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: io.c,v 1.22 1996-09-20 02:13:58 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.21 1992-03-10 23:21:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/io.c,v 1.22 1996-09-20 02:13:58 ghudson Exp $";
 #endif
 #endif
 
@@ -89,26 +89,26 @@ send_request(fd, request)
   printf("%d %d\n",request->requester.uid,CURRENT_VERSION);
 #endif /* TEST */
 
-  bzero((char *) &net_req, sizeof(net_req));
+  memset(&net_req, 0, sizeof(net_req));
 
 /* build up struct to send over */
 
   i = htonl((u_long) CURRENT_VERSION);
-  bcopy((char *) &i, (char *) net_req.data, sizeof(i));
+  memcpy(net_req.data, &i, sizeof(i));
   
   i = htonl((u_long) request->request_type);
-  bcopy((char *) &i, (char *) (net_req.data+4), sizeof(i));
+  memcpy(net_req.data+4, &i, sizeof(i));
 
   i = htonl((u_long) request->options);
-  bcopy((char *) &i, (char *) (net_req.data+8), sizeof(i));
+  memcpy(net_req.data+8, &i, sizeof(i));
 
 /* options unset */
 
   i = htonl((u_long) request->requester.uid);
-  bcopy((char *) &i, (char *) (net_req.data+16), sizeof(i));
+  memcpy(net_req.data+16, &i, sizeof(i));
 
   i = htonl((u_long) request->requester.instance);
-  bcopy((char *) &i, (char *) (net_req.data+20), sizeof(i));
+  memcpy(net_req.data+20, &i, sizeof(i));
 
   strncpy((char *) (net_req.data+24), request->requester.username,10);
   strncpy((char *) (net_req.data+34), request->requester.realname,32);
@@ -121,10 +121,10 @@ send_request(fd, request)
   strncpy((char *) (net_req.data+194), request->requester.machine,32);
 
   i = htonl((u_long) request->target.uid);
-  bcopy((char *) &i, (char *) (net_req.data+228), sizeof(i));
+  memcpy(net_req.data+228, &i, sizeof(i));
 
   i = htonl((u_long) request->target.instance);
-  bcopy((char *) &i, (char *) (net_req.data+232), sizeof(i));
+  memcpy(net_req.data+232, &i, sizeof(i));
 
   strncpy((char *) (net_req.data+236), request->target.username,10);
   strncpy((char *) (net_req.data+246), request->target.realname,32);
@@ -182,9 +182,9 @@ read_list(fd, list)
   int len;
   IO_LIST net_req;
 
-  bzero((char *)list, sizeof(LIST));
+  memset(list, 0, sizeof(LIST));
 
-  bzero((char *) &net_req, sizeof(IO_LIST));
+  memset(&net_req, 0, sizeof(IO_LIST));
 
   len = 0;
   while (len < sizeof(IO_LIST)) {
@@ -313,8 +313,8 @@ open_connection_to_named_daemon(request, fd, hostname)
       return(ERROR_NAME_RESOLVE);
     }
       
-    bzero(&sin, sizeof (sin));
-    bcopy(hp->h_addr, &sin.sin_addr, hp->h_length);
+    memset(&sin, 0, sizeof (sin));
+    memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
 
     sin.sin_family = AF_INET;
 
@@ -375,8 +375,8 @@ open_connection_to_nl_daemon(fd)
       }
     }
 
-    bzero(&sin,sizeof(sin));
-    bcopy(hp->h_addr,(char *)&sin.sin_addr,hp->h_length);
+    memset(&sin,0,sizeof(sin));
+    memcpy(&sin.sin_addr,hp->h_addr,hp->h_length);
     sin.sin_family = AF_INET;
     sin.sin_port = service->s_port;
     init = 1;

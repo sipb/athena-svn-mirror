@@ -41,7 +41,7 @@ static char *rcsid_commands_c = "$Header: ";
 #include <ctype.h>			/* Character type macros. */
 #include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
-#include <strings.h>
+#include <string.h>
 #include "cref.h"			/* CREF finder defs. */
 #include "globals.h"			/* Global variable defs. */
 
@@ -62,7 +62,7 @@ main(argc, argv)
      int argc;
      char *argv[];
 {
-  Prog_Name = rindex(*argv,'/');
+  Prog_Name = strrchr(*argv,'/');
   if(Prog_Name == (char *) NULL)
      Prog_Name = *argv;
   if(*Prog_Name == '/')

@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Id: psbanner.c,v 1.4 1995-12-01 21:49:05 miki Exp $";
+_NOTICE RCSID[]="$Id: psbanner.c,v 1.5 1996-09-20 02:09:00 ghudson Exp $";
 #endif
 
 /* psbanner.c
@@ -63,6 +63,9 @@ adobe:shore  Job: test.data  Date: Tue Sep 18 16:22:33 1984
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1995/12/01 21:49:05  miki
+ * Changed psbanner to call the macro Banner instead of do_flagpage
+ *
  * Revision 1.3  1995/10/23  21:17:51  miki
  * Change Banner directive with do_flagpage directive
  *
@@ -121,7 +124,7 @@ adobe:shore  Job: test.data  Date: Tue Sep 18 16:22:33 1984
 
 #include <stdio.h>
 #include <signal.h>
-#include <strings.h>
+#include <string.h>
 #include "transcript.h"
 #include "psspool.h"
 

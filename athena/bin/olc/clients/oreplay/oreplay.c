@@ -11,7 +11,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.25 1991-10-30 16:21:45 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.26 1996-09-20 02:15:49 ghudson Exp $";
 #endif
 #endif
 
@@ -22,7 +22,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <sys/socket.h>
 #include <sys/file.h>
@@ -81,7 +81,7 @@ main(argc,argv)
   hp = NULL;
   i_show = 0;
 
-  buf = rindex(argv[0],'/');
+  buf = strrchr(argv[0],'/');
   if (buf != NULL) argv[0] = buf+1;
   if (!strcmp(argv[0],"olist"))
     i_list = 1;
@@ -268,54 +268,54 @@ main(argc,argv)
     len = strlen(tusername);
 
     nq = atoi(p1);
-    p1 = index(p1,'\n')+1;
+    p1 = strchr(p1,'\n')+1;
     
     for(i=0;i<nq;i++) {
-      p1 = index(p1,'\n')+1; /* Scan past queue name */
+      p1 = strchr(p1,'\n')+1; /* Scan past queue name */
       n = atoi(p1);           /* number of users in this queue */
-      p1 = index(p1,'\n')+1;  /* past number of users */
+      p1 = strchr(p1,'\n')+1;  /* past number of users */
       for(;n>0;n--) {
 	if (strncmp(tusername,p1,len) == 0)
 	  right_user = 1;
 	else
 	  right_user = 0;
-	p1 = index(p1,'\n')+1;
-	p1 = index(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
 	inst = atoi(p1);
-	p1 = index(p1,'\n')+1;
-	p1 = index(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
 	status = p1;
-	p1 = index(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
 	if (strncmp(tusername,p1,len) == 0) {
-	  p1 = index(p1,'\n')+1;
+	  p1 = strchr(p1,'\n')+1;
 	  inst = atoi(p1);
-	  p1 = index(p1,'\n')+1;
+	  p1 = strchr(p1,'\n')+1;
 	  if (strncmp(p1,"off",3) != 0) {
-	    p2 = index(p1,'\n');
+	    p2 = strchr(p1,'\n');
 	    *p2 = '\0';
 	    sprintf(obuf,"%d\n%s\n",inst,status);
 	    write(output_fd,obuf,strlen(obuf));
 	    goto done;               /* Get out of this whole mess */
 	  }
 	} else {
-	  p1 = index(p1,'\n')+1;
-	  p1 = index(p1,'\n')+1;
+	  p1 = strchr(p1,'\n')+1;
+	  p1 = strchr(p1,'\n')+1;
 	}
-	p1 = index(p1,'\n')+1;
-	p1 = index(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
 	
 	/* username right, check instance */
 	if (right_user && (strncmp(p1,"on-duty",7) ==0) ) {
-	  p2 = index(status,'\n');
+	  p2 = strchr(status,'\n');
 	  *p2 = '\0';
 	  sprintf(obuf,"%d\n%s\n",inst,status);
 	  write(output_fd,obuf,strlen(obuf));
 	  goto done;               /* Get out of this whole mess */
 	}
-	p1 = index(p1,'\n')+1;
-	p1 = index(p1,'\n')+1;
-	p1 = index(p1,'\n')+1;
-	p1 = index(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
+	p1 = strchr(p1,'\n')+1;
       }
     }
     write(output_fd,"off\n",4);
@@ -408,7 +408,7 @@ f_gets(input_file,a,n)
   char *p;
 
   fgets(a,n,input_file);
-  p = index(a,'\n');
+  p = strchr(a,'\n');
   if (p != NULL) *p = '\0';
   return(a);
 }  

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.20 1992-08-31 12:11:25 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: init.c,v 1.21 1996-09-20 02:13:56 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.20 1992-08-31 12:11:25 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.21 1996-09-20 02:13:56 ghudson Exp $";
 #endif
 #endif
 
@@ -37,7 +37,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/param.h>
 #include <pwd.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 
 extern int OLC;
 
@@ -110,7 +110,7 @@ OInitialize()
       
   {
     char *cp;
-    if ((cp = index(User.realname, ',')) != 0)
+    if ((cp = strchr(User.realname, ',')) != 0)
       *cp = '\0';
   }
       

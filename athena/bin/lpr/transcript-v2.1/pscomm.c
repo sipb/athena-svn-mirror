@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.14 1995-10-13 21:09:32 cfields Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.15 1996-09-20 02:09:04 ghudson Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,6 +85,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.14  1995/10/13 21:09:32  cfields
+ * Check for null string before %s'ing it.
+ *
  * Revision 1.13  1995/07/11  21:31:37  miki
  * POSIX setjmp, signal, wait handling, but not for ultrix
  * Changed bcopy/bzero to memcpy/memset [ANSI]
@@ -243,7 +246,7 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
 #endif
 #include <signal.h>
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <errno.h>
 
 #include <sys/types.h>
@@ -545,7 +548,7 @@ main(argc,argv)            /* MAIN ROUTINE */
     prog = *av;
 
     /* parse the calling program name */
-    if ((filter_name = (char *)rindex(argv[0], '/'))) filter_name++;
+    if ((filter_name = (char *)strrchr(argv[0], '/'))) filter_name++;
     else filter_name = argv[0];
 
     while (--argc) {
@@ -1315,7 +1318,7 @@ register int c;
 			Status(match+15, 2);
 		    }
 		    else {
-			last = index(match,';');
+			last = strchr(match,';');
 			*last = '\0';
 			Status(match+15, 2);
 		    }
@@ -1329,7 +1332,7 @@ register int c;
 			Status(match+10, 2);
 		    }
 		    else {
-			last = index(match,';');
+			last = strchr(match,';');
 			*last = '\0';
 			Status(match+10, 2);
 		    }

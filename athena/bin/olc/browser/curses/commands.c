@@ -34,7 +34,7 @@ static char *rcsid_commands_c = "$Header: ";
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 #include <ctype.h>			/* Character type macros. */
-#include <strings.h>			/* String defs. */
+#include <string.h>			/* String defs. */
 #include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
 #include <errno.h>			/* System error codes. */
@@ -138,7 +138,7 @@ up_level()
   char *tail;				/* Ptr. to tail of path. */
   
   strcpy(new_dir, Current_Dir);
-  tail = rindex(new_dir, '/');
+  tail = strrchr(new_dir, '/');
   if (tail != NULL)
     {
       *tail = (char) NULL;

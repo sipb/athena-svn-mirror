@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.22 1994-08-21 18:15:52 cfields Exp $
- *	$Author: cfields $
+ *	$Id: utils.c,v 1.23 1996-09-20 02:14:00 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.22 1994-08-21 18:15:52 cfields Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.23 1996-09-20 02:14:00 ghudson Exp $";
 #endif
 #endif
 
@@ -42,7 +42,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <errno.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#include <strings.h>
+#include <string.h>
 
 ERRCODE
 OFillRequest(req)
@@ -60,7 +60,7 @@ fill_request(req)
   int status;
 #endif /* KERBEROS */
 
-  bzero(req, sizeof(REQUEST));
+  memset(req, 0, sizeof(REQUEST));
 
   req->options = NO_OPT;
   req->version = CURRENT_VERSION;
@@ -127,8 +127,8 @@ open_connection_to_mailhost()
        return(ERROR);
      }
 
-  bzero((char *)&sin, sizeof (sin));
-  bcopy(hp_local->h_addr, (char *)&sin.sin_addr, hp_local->h_length);
+  memset(&sin, 0, sizeof (sin));
+  memcpy(&sin.sin_addr, hp_local->h_addr, hp_local->h_length);
   sin.sin_family = AF_INET;
   sin.sin_port = sp_local->s_port;
   if (connect(s, (struct sockaddr *)(&sin), sizeof(sin)) < 0)
@@ -292,7 +292,7 @@ expand_hostname(hostname, instance, realm)
   int i;
 
   realm[0] = '\0';
-  p = index(hostname, '.');
+  p = strchr(hostname, '.');
   
   if(p == NULL)
     {

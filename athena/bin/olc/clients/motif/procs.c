@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.26 1996-07-26 21:06:09 ghudson Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.27 1996-09-20 02:15:01 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -200,7 +200,7 @@ olc_send_newq (w, tag, callback_data)
 
   WAIT_CURSOR;
 
-  bzero(buf,BUFSIZ);
+  memset(buf,0,BUFSIZ);
   q_text = XmTextGetString(w_newq_scrl);
   if (current_topic[0] == '\0')
       strcpy(buf,"You must select a topic for your question from the list in the\ntop half of this window.  Simply click on the line that most\nclosely matches the topic of your question.\n\n");
