@@ -1,4 +1,4 @@
-# $Id: packages,v 1.118 2000-12-30 05:04:59 ghudson Exp $
+# $Id: packages,v 1.119 2001-02-10 23:49:44 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -119,13 +119,16 @@ athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
 third/afsbin			package afs
+third/ammonite			requires gnome-libs,libxml,GConf,oaf
 third/audiofile			except linux
 third/bash
 third/bind
+third/bonobo			requires gnome-libs,libxml,gnome-print,gdk-pixbuf,oaf
 third/db			except linux
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf
 third/emacs			requires hesiod,krb5
 third/esound			except linux requires audiofile
+third/GConf			requires gtk,oaf,ORBit
 third/gdbm			except linux
 third/gdk-pixbuf		requires libpng,libungif,jpeg,gtk
 third/gettext			except linux
@@ -133,6 +136,8 @@ third/glib
 third/gmp			except linux
 third/gnome-core		requires gnome-libs,control-center,gdk-pixbuf
 third/gnome-libs		requires gtk,imlib,db,ORBit,xpm
+third/gnome-print		requires gnome-libs,libxml
+third/gnome-vfs			requires gnome-libs,control-center,oaf,GConf
 third/gtk			requires glib
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
@@ -159,10 +164,12 @@ third/mdoc
 third/motif			on linux
 third/motif/clients/mwm		on solaris
 third/nmh			requires krb5,hesiod
+third/oaf			requires libxml,ORBit,popt
 third/nvi			on linux
 third/ORBit			requires glib,gettext
 third/patch			on solaris
 third/perl
+third/popt			except linux
 third/rcs			on solaris
 third/read-edid			on linux
 third/readline
