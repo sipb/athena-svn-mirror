@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/visual.c,v $
- *	$Id: visual.c,v 1.7 1992-01-07 19:53:55 lwvanels Exp $
+ *	$Id: visual.c,v 1.8 1992-03-16 15:31:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -319,6 +319,8 @@ MakeContqForm()
 void
 MakeMotdForm()
 {
+  Arg arg;
+
 
 /*
  * The "motd_form" will contain the motd at start up time.  The MOTD
@@ -348,6 +350,8 @@ MakeMotdForm()
   w = w_motd_scrl = XmCreateScrolledText(w_motd_frame, "motd_scrl", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
+  XtSetArg(arg, XmNheight, 250);
+  XtSetValues(w, &arg, 1);
 }
 
 
