@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.9.2.2 1997-05-17 08:51:00 ghudson Exp $
+## $Id: os_rvd,v 1.9.2.3 1997-05-24 21:45:03 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -461,7 +461,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> defaults
 		-> diffh
 		-> firmware
-		-> fs/fd
 		-> fs/hsfs
 		-> font
 		-> fonts
