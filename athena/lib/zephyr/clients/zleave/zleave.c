@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.6 1988-06-28 16:22:29 jtkohl Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.7 1988-06-28 16:23:57 jtkohl Exp $";
 #endif lint
 
 /*
@@ -83,15 +83,16 @@ char **argv;
 				"Can't find WindowGram subscription port.\n");
 			fprintf(stderr,"Will write directly to terminal.\n");
 			use_zephyr = 0;
+		} else {
+			sub.class = MESSAGE_CLASS;
+			sub.classinst = INSTANCE;
+			sub.recipient = ZGetSender();
+			if (ZSubscribeTo(&sub,1,(u_short)port) != ZERR_NONE) {
+				fprintf(stderr,
+					"Subscription error!  Writing to your terminal...\n");
+				use_zephyr = 0;
+			} 
 		}
-		sub.class = MESSAGE_CLASS;
-		sub.classinst = INSTANCE;
-		sub.recipient = ZGetSender();
-		if (ZSubscribeTo(&sub,1,(u_short)port) != ZERR_NONE) {
-			fprintf(stderr,
-				"Subscription error!  Writing to your terminal...\n");
-			use_zephyr = 0;
-		} 
 	}	
 
 	if (argc < 2) {
