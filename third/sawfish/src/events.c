@@ -1,5 +1,5 @@
 /* events.c -- Event handling
-   $Id: events.c,v 1.1.1.3 2001-03-09 19:35:31 ghudson Exp $
+   $Id: events.c,v 1.1.1.3.2.1 2001-07-18 14:33:00 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -771,9 +771,7 @@ unmap_notify (XEvent *ev)
 	}
 	Fcall_window_hook (Qunmap_notify_hook, rep_VAL(w), Qnil, Qnil);
 
-	if (focus_window == w)
-	    focus_on_window (0);
-
+	focus_off_window (w);
 	XDeleteProperty (dpy, w->id, xa_wm_state);
     }
 }
@@ -887,6 +885,9 @@ focus_in (XEvent *ev)
     if (w != 0 && w->visible)
     {
 	focus_window = w;
+	if (pending_focus_window == w)
+	    pending_focus_window = 0;
+
 	if (last_focused != w)
 	{
 	    last_focused = w;
