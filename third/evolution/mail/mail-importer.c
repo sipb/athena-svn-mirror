@@ -3,7 +3,7 @@
  *
  * Authors: Iain Holmes <iain@ximian.com>
  *
- * Copyright (C) 2001  Ximian, Inc.
+ * Copyright (C) 2001-2003 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -24,10 +24,10 @@
 #include <config.h>
 #endif
 
+#include <string.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <gmodule.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <evolution-storage.h>
 #include <camel/camel-folder.h>
@@ -39,64 +39,91 @@
 #include "mail-local.h"
 #include "mail.h"
 
-
 static GList *importer_modules = NULL;
-
 extern char *evolution_dir;
-
 static GNOME_Evolution_Storage local_storage = NULL;
-
-/* Prototype */
 
 void mail_importer_uninit (void);
 
-/**
- * mail_importer_create_folder:
- * parent_path: The path of the parent folder.
- * name: The name of the folder to be created.
- * description: A description of the folder.
- * listener: A BonoboListener for notification.
- *
- * Attempts to create the folder @parent_path/@name. When the folder has been
- * created, or there is an error, the "evolution-shell:folder-created" event is
- * emitted on @listener. The BonoboArg that is sent to @listener is a 
- * GNOME_Evolution_Storage_FolderResult which has two elements: result and path.
- * Result contains the error code, or success, and path contains the complete
- * physical path to the newly created folder.
- */
-void
-mail_importer_create_folder (const char *parent_path,
-			     const char *name,
-			     const char *description,
-			     const BonoboListener *listener)
+struct _create_data {
+	GNOME_Evolution_Storage_Result create_result;
+	int create_done:1;
+};
+
+static void
+folder_created_cb(BonoboListener *listener, const char *event_name, const BonoboArg *event_data,
+		  CORBA_Environment *ev, struct _create_data *data)
 {
-	Bonobo_Listener corba_listener;
+	GNOME_Evolution_Storage_FolderResult *result;
+
+	data->create_done = TRUE;
+
+	if (strcmp (event_name, "evolution-shell:folder_created") != 0) {
+		return; /* Unknown event */
+	}
+
+	result = event_data->_value;
+	data->create_result = result->result;
+}
+
+/**
+ * mail_importer_make_local_folder:
+ * @folderpath: 
+ * 
+ * Check a local folder exists at path @folderpath, and if not, create it.
+ * 
+ * Return value: The physical uri of the folder, or NULL if the folder did
+ * not exist and could not be created.
+ **/
+char *
+mail_importer_make_local_folder(const char *folderpath)
+{
 	CORBA_Environment ev;
-	char *path, *physical;
-	char *real_description;
+	char *uri = NULL, *tmp;
+	GNOME_Evolution_Folder *fi;
+	BonoboListener *listener;
 
-	g_return_if_fail (local_storage != NULL);
-	g_return_if_fail (listener != NULL);
-	g_return_if_fail (BONOBO_IS_LISTENER (listener));
-
-	path = g_concat_dir_and_file (parent_path, name);
-	physical = g_strdup_printf ("file://%s/local/%s", evolution_dir,
-				    parent_path);
-
-	corba_listener = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
-
-	/* Darn CORBA wanting non-NULL values for strings */
-	real_description = CORBA_string_dup (description ? description : "");
-
-	
 	CORBA_exception_init (&ev);
-	GNOME_Evolution_Storage_asyncCreateFolder (local_storage, 
-						   path, "mail", 
-						   real_description, physical,
-						   corba_listener, &ev);
+
+	/* first, check, does this folder exist, if so, use the right path */
+	fi = GNOME_Evolution_Storage_getFolderAtPath(local_storage, folderpath, &ev);
+	if (fi) {
+		printf("folder %s exists @ %s\n", folderpath, fi->physicalUri);
+		uri = g_strdup(fi->physicalUri);
+		CORBA_free(fi);
+	} else {
+		struct _create_data data = { GNOME_Evolution_Storage_GENERIC_ERROR, FALSE };
+
+		tmp = g_strdup_printf("file://%s/local", evolution_dir);
+		uri = e_path_to_physical(tmp, folderpath);
+		g_free(tmp);
+		tmp = strrchr(uri, '/');
+		tmp[0] = 0;
+
+		printf("Creating folder %s, parent %s\n", folderpath, uri);
+
+		listener = bonobo_listener_new (NULL, NULL);
+		g_signal_connect(listener, "event-notify", G_CALLBACK (folder_created_cb), &data);
+
+		GNOME_Evolution_Storage_asyncCreateFolder(local_storage, folderpath, "mail",  "", uri,
+							  bonobo_object_corba_objref((BonoboObject *)listener), &ev);
+
+		while (!data.create_done)
+			g_main_context_iteration(NULL, TRUE);
+
+		bonobo_object_unref((BonoboObject *)listener);
+
+		if (data.create_result != GNOME_Evolution_Storage_OK) {
+			g_free(uri);
+			uri = NULL;
+		} else {
+			*tmp = '/';
+		}
+	}
+
 	CORBA_exception_free (&ev);
-	g_free (path);
-	g_free (physical);
+
+	return uri;
 }
 
 /**
@@ -117,12 +144,10 @@ mail_importer_add_line (MailImporter *importer,
 	CamelMessageInfo *info;
 	CamelException *ex;
 	
-	if (importer->mstream == NULL) {
+	if (importer->mstream == NULL)
 		importer->mstream = CAMEL_STREAM_MEM (camel_stream_mem_new ());
-	}
 
-	camel_stream_write (CAMEL_STREAM (importer->mstream), str, 
-			    strlen (str));
+	camel_stream_write (CAMEL_STREAM (importer->mstream), str,  strlen (str));
 	
 	if (finished == FALSE)
 		return;
@@ -135,12 +160,12 @@ mail_importer_add_line (MailImporter *importer,
 	camel_data_wrapper_construct_from_stream (CAMEL_DATA_WRAPPER (msg),
 						  CAMEL_STREAM (importer->mstream));
 	
-	camel_object_unref (CAMEL_OBJECT (importer->mstream));
+	camel_object_unref (importer->mstream);
 	importer->mstream = NULL;
 
 	ex = camel_exception_new ();
 	camel_folder_append_message (importer->folder, msg, info, NULL, ex);
-	camel_object_unref (CAMEL_OBJECT (msg));
+	camel_object_unref (msg);
 
 	camel_exception_free (ex);
 	g_free (info);
@@ -167,7 +192,7 @@ get_importer_list (void)
 		if (!ext || strcmp (ext, ".so") != 0)
 			continue;
 
-		path = g_concat_dir_and_file (MAIL_IMPORTERSDIR, d->d_name);
+		path = g_build_filename (MAIL_IMPORTERSDIR, d->d_name, NULL);
 		importers_ret = g_list_prepend (importers_ret, path);
 	}
 

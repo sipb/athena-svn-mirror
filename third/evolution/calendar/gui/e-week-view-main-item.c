@@ -29,7 +29,6 @@
 #include <config.h>
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "e-week-view-main-item.h"
 
@@ -73,30 +72,9 @@ enum {
 	ARG_WEEK_VIEW
 };
 
-
-GtkType
-e_week_view_main_item_get_type (void)
-{
-	static GtkType e_week_view_main_item_type = 0;
-
-	if (!e_week_view_main_item_type) {
-		GtkTypeInfo e_week_view_main_item_info = {
-			"EWeekViewMainItem",
-			sizeof (EWeekViewMainItem),
-			sizeof (EWeekViewMainItemClass),
-			(GtkClassInitFunc) e_week_view_main_item_class_init,
-			(GtkObjectInitFunc) e_week_view_main_item_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		e_week_view_main_item_type = gtk_type_unique (gnome_canvas_item_get_type (), &e_week_view_main_item_info);
-	}
-
-	return e_week_view_main_item_type;
-}
-
+E_MAKE_TYPE (e_week_view_main_item, "EWeekViewMainItem", EWeekViewMainItem,
+	     e_week_view_main_item_class_init, e_week_view_main_item_init,
+	     GNOME_TYPE_CANVAS_ITEM);
 
 static void
 e_week_view_main_item_class_init (EWeekViewMainItemClass *class)
@@ -104,7 +82,7 @@ e_week_view_main_item_class_init (EWeekViewMainItemClass *class)
 	GtkObjectClass  *object_class;
 	GnomeCanvasItemClass *item_class;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type());
+	parent_class = g_type_class_peek_parent (class);
 
 	object_class = (GtkObjectClass *) class;
 	item_class = (GnomeCanvasItemClass *) class;
@@ -227,27 +205,37 @@ e_week_view_main_item_draw_day (EWeekViewMainItem *wvmitem,
 	EWeekView *week_view;
 	GtkStyle *style;
 	GdkGC *gc;
-	GdkFont *font;
 	gint right_edge, bottom_edge, date_width, date_x, line_y;
 	gboolean show_day_name, show_month_name, selected;
 	gchar buffer[128], *format_string;
 	gint month, day_of_month, max_width;
 	GdkColor *bg_color;
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
+	PangoLayout *layout;
 
 #if 0
 	g_print ("Drawing Day:%i at %i,%i\n", day, x, y);
 #endif
 	week_view = wvmitem->week_view;
-	style = GTK_WIDGET (week_view)->style;
-	font = style->font;
+	style = gtk_widget_get_style (GTK_WIDGET (week_view));
 	gc = week_view->main_gc;
+
+	/* Set up Pango prerequisites */
+	font_desc = style->font_desc;
+	pango_context = gtk_widget_get_pango_context (GTK_WIDGET (week_view));
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
 
 	g_return_if_fail (gc != NULL);
 
 	month = g_date_month (date);
 	day_of_month = g_date_day (date);
-	line_y = y + E_WEEK_VIEW_DATE_T_PAD + font->ascent
-		+ font->descent	+ E_WEEK_VIEW_DATE_LINE_T_PAD;
+	line_y = y + E_WEEK_VIEW_DATE_T_PAD +
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics)) +
+		E_WEEK_VIEW_DATE_LINE_T_PAD;
 
 	/* Draw the background of the day. In the month view odd months are
 	   one color and even months another, so you can easily see when each
@@ -276,19 +264,23 @@ e_week_view_main_item_draw_day (EWeekViewMainItem *wvmitem,
 
 	/* If the day is selected, draw the blue background. */
 	selected = TRUE;
-	if (!GTK_WIDGET_HAS_FOCUS (week_view)
-	    || week_view->selection_start_day == -1
+	if (week_view->selection_start_day == -1
 	    || week_view->selection_start_day > day
 	    || week_view->selection_end_day < day)
 		selected = FALSE;
 	if (selected) {
-		gdk_gc_set_foreground (gc, &week_view->colors[E_WEEK_VIEW_COLOR_SELECTED]);
+		if (GTK_WIDGET_HAS_FOCUS (week_view))
+			gdk_gc_set_foreground (gc, &week_view->colors[E_WEEK_VIEW_COLOR_SELECTED]);
+		else
+			gdk_gc_set_foreground (gc, &week_view->colors[E_WEEK_VIEW_COLOR_SELECTED_UNFOCUSSED]);
+
 		if (week_view->multi_week_view) {
 			gdk_draw_rectangle (drawable, gc, TRUE,
 					    x + 2, y + 1,
 					    width - 5,
-					    E_WEEK_VIEW_DATE_T_PAD - 1
-					    + font->ascent + font->descent);
+					    E_WEEK_VIEW_DATE_T_PAD - 1 +
+					    PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+					    PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics)));
 		} else {
 			gdk_draw_rectangle (drawable, gc, TRUE,
 					    x + 2, y + 1,
@@ -347,12 +339,6 @@ e_week_view_main_item_draw_day (EWeekViewMainItem *wvmitem,
 			format_string = _("%d %b");
 	}
 
-	g_date_strftime (buffer, sizeof (buffer),
-			 format_string ? format_string : "%d", date);
-	date_width = gdk_string_width (font, buffer);
-	date_x = x + width - date_width - E_WEEK_VIEW_DATE_R_PAD;
-	date_x = MAX (date_x, x + 1);
-
 	if (selected) {
 		gdk_gc_set_foreground (gc, &week_view->colors[E_WEEK_VIEW_COLOR_DATES_SELECTED]);
 	} else if (week_view->multi_week_view) {
@@ -369,10 +355,20 @@ e_week_view_main_item_draw_day (EWeekViewMainItem *wvmitem,
 	} else {
 		gdk_gc_set_foreground (gc, &week_view->colors[E_WEEK_VIEW_COLOR_DATES]);
 	}
-	
-	gdk_draw_string (drawable, font, gc,
-			 date_x, y + E_WEEK_VIEW_DATE_T_PAD + font->ascent,
-			 buffer);
+
+	g_date_strftime (buffer, sizeof (buffer),
+			 format_string ? format_string : "%d", date);
+
+	layout = gtk_widget_create_pango_layout (GTK_WIDGET (week_view), buffer);
+	pango_layout_get_pixel_size (layout, &date_width, NULL);
+	date_x = x + width - date_width - E_WEEK_VIEW_DATE_R_PAD;
+	date_x = MAX (date_x, x + 1);
+
+	gdk_draw_layout (drawable, gc,
+			 date_x,
+			 y + E_WEEK_VIEW_DATE_T_PAD,
+			 layout);
+	g_object_unref (layout);
 
 	/* Draw the line under the date. */
 	if (!week_view->multi_week_view) {
@@ -381,6 +377,8 @@ e_week_view_main_item_draw_day (EWeekViewMainItem *wvmitem,
 			       x + E_WEEK_VIEW_DATE_LINE_L_PAD, line_y,
 			       right_edge, line_y);
 	}
+
+	pango_font_metrics_unref (font_metrics);
 }
 
 

@@ -35,8 +35,12 @@
 
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-listener.h>
 
 #include <gdk/gdkx.h>
+#include <gtk/gtkmain.h>
+
+#include <string.h>
 
 
 #define PARENT_TYPE E_TYPE_STORAGE
@@ -48,9 +52,10 @@ struct _ECorbaStoragePrivate {
 	GNOME_Evolution_Storage storage_interface;
 
 	/* The Evolution::StorageListener interface we expose.  */
-
 	GNOME_Evolution_StorageListener storage_listener_interface;
 	StorageListenerServant *storage_listener_servant;
+
+	GList *pending_opens;
 };
 
 
@@ -72,7 +77,6 @@ storage_listener_servant_new (ECorbaStorage *corba_storage)
 
 	servant->servant.vepv = &storage_listener_vepv;
 
-	gtk_object_ref (GTK_OBJECT (corba_storage));
 	servant->storage = E_STORAGE (corba_storage);
 
 	return servant;
@@ -81,8 +85,6 @@ storage_listener_servant_new (ECorbaStorage *corba_storage)
 static void
 storage_listener_servant_free (StorageListenerServant *servant)
 {
-	gtk_object_unref (GTK_OBJECT (servant->storage));
-
 	g_free (servant);
 }
 
@@ -124,7 +126,7 @@ impl_StorageListener_notifyFolderCreated (PortableServer_Servant servant,
 				     CORBA_USER_EXCEPTION,
 				     ex_GNOME_Evolution_StorageListener_Exists,
 				     NULL);
-		gtk_object_unref (GTK_OBJECT (e_folder));
+		g_object_unref (e_folder);
 		return;
 	}
 }
@@ -184,7 +186,7 @@ impl_StorageListener_notifyHasSubfolders (PortableServer_Servant servant,
 	storage_listener_servant = (StorageListenerServant *) servant;
 	storage = storage_listener_servant->storage;
 
-	if (! e_storage_has_subfolders (storage, path, message)) {
+	if (! e_storage_declare_has_subfolders (storage, path, message)) {
 		g_warning ("Cannot register subfolder tree -- %s\n", path);
 		CORBA_exception_set (ev,
 				     CORBA_USER_EXCEPTION,
@@ -233,10 +235,10 @@ setup_storage_listener (ECorbaStorage *corba_storage)
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	CORBA_Environment ev;
 	ECorbaStorage *corba_storage;
@@ -250,10 +252,13 @@ destroy (GtkObject *object)
 	if (priv->storage_interface != CORBA_OBJECT_NIL) {
 		Bonobo_Unknown_unref (priv->storage_interface, &ev);
 		CORBA_Object_release (priv->storage_interface, &ev);
+		priv->storage_interface = CORBA_OBJECT_NIL;
 	}
 
-	if (priv->storage_listener_interface != CORBA_OBJECT_NIL)
+	if (priv->storage_listener_interface != CORBA_OBJECT_NIL) {
 		CORBA_Object_release (priv->storage_listener_interface, &ev);
+		priv->storage_listener_interface = CORBA_OBJECT_NIL;
+	}
 
 	if (priv->storage_listener_servant != NULL) {
 		PortableServer_ObjectId *object_id;
@@ -262,21 +267,77 @@ destroy (GtkObject *object)
 							      &ev);
 		PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
 
-		POA_GNOME_Evolution_StorageListener__fini (priv->storage_listener_servant, &ev);
 		CORBA_free (object_id);
+
+		storage_listener_servant_free (priv->storage_listener_servant);
+		priv->storage_listener_servant = NULL;
 	}
 
 	CORBA_exception_free (&ev);
 
-	g_free (priv);
+	if (priv->pending_opens != NULL) {
+		g_warning ("destroying ECorbaStorage with pending async ops");
+		priv->pending_opens = NULL;
+	}
 
-	corba_storage->priv = NULL;
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+static void
+impl_finalize (GObject *object)
+{
+	ECorbaStorage *corba_storage;
+
+	corba_storage = E_CORBA_STORAGE (object);
+
+	g_free (corba_storage->priv);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 /* EStorage methods.  */
+
+static void
+get_folder_cb (EStorage *storage, EStorageResult result,
+	       const char *path, gpointer data)
+{
+	gboolean *done = data;
+
+	*done = TRUE;
+}
+
+static EFolder *
+get_folder (EStorage *storage, const char *path)
+{
+	EFolder *folder;
+	char *path_dup, *p;
+
+	folder = (* E_STORAGE_CLASS (parent_class)->get_folder) (storage, path);
+	if (folder)
+		return folder;
+
+	/* If @path points to a part of the storage that hasn't been
+	 * opened yet, do that.
+	 */
+	path_dup = g_strdup (path);
+	p = strchr (path_dup + 1, '/');
+	while (p) {
+		*p = '\0';
+		if (e_storage_get_has_subfolders (storage, path_dup)) {
+			gboolean done = FALSE;
+
+			e_storage_async_open_folder (storage, path_dup,
+						     get_folder_cb, &done);
+			while (!done)
+				gtk_main_iteration ();
+		}
+		*p = '/';
+		p = strchr (p + 1, '/');
+	}
+
+	return (* E_STORAGE_CLASS (parent_class)->get_folder) (storage, path);
+}
 
 struct async_folder_closure {
 	EStorageResultCallback callback;
@@ -285,8 +346,10 @@ struct async_folder_closure {
 };
 
 static void
-async_folder_cb (BonoboListener *listener, char *event_name, 
-		 CORBA_any *any, CORBA_Environment *ev,
+async_folder_cb (BonoboListener *listener,
+		 const char *event_name, 
+		 const CORBA_any *any,
+		 CORBA_Environment *ev,
 		 gpointer user_data)
 {
 	struct async_folder_closure *closure = user_data;
@@ -298,6 +361,40 @@ async_folder_cb (BonoboListener *listener, char *event_name,
 
 	(* closure->callback) (closure->storage, result, closure->data);
 	bonobo_object_unref (BONOBO_OBJECT (listener));
+
+	g_object_unref (closure->storage);
+	g_free (closure);
+}
+
+
+struct async_create_open_closure {
+	EStorage *storage;
+	char *path, *type, *description;
+	EStorageResultCallback callback;
+	void *data;
+};
+
+static void
+async_create_open_cb (EStorage *storage, EStorageResult result,
+		      const char *path, void *data)
+{
+	struct async_create_open_closure *closure = data;
+
+	if (result != E_STORAGE_OK) {
+		(* closure->callback) (closure->storage, result,
+				       closure->data);
+	} else {
+		e_storage_async_create_folder (closure->storage,
+					       closure->path, closure->type,
+					       closure->description,
+					       closure->callback,
+					       closure->data);
+	}
+
+	g_object_unref (closure->storage);
+	g_free (closure->path);
+	g_free (closure->type);
+	g_free (closure->description);
 	g_free (closure);
 }
 
@@ -320,18 +417,39 @@ async_create_folder (EStorage *storage, const char *path,
 
 	p = strrchr (path, '/');
 	if (p && p != path) {
-		char *parent_path;
 		EFolder *parent;
+		char *parent_path;
 
 		parent_path = g_strndup (path, p - path);
 		parent = e_storage_get_folder (storage, parent_path);
 		parent_uri = e_folder_get_physical_uri (parent);
+
+		if (e_folder_get_has_subfolders (parent)) {
+			struct async_create_open_closure *open_closure;
+
+			/* Force the parent folder to resolve its
+			 * children before creating the new folder.
+			 */
+			open_closure = g_new (struct async_create_open_closure, 1);
+			open_closure->storage = storage;
+			g_object_ref (storage);
+			open_closure->path = g_strdup (path);
+			open_closure->type = g_strdup (type);
+			open_closure->description = g_strdup (description);
+			open_closure->callback = callback;
+			open_closure->data = data;
+			e_storage_async_open_folder (storage, parent_path,
+						     async_create_open_cb,
+						     open_closure);
+			return;
+		}
 	} else
 		parent_uri = "";
 
 	closure = g_new (struct async_folder_closure, 1);
 	closure->callback = callback;
 	closure->storage = storage;
+	g_object_ref (storage);
 	closure->data = data;
 	listener = bonobo_listener_new (async_folder_cb, closure);
 	corba_listener = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
@@ -345,6 +463,7 @@ async_create_folder (EStorage *storage, const char *path,
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		(* callback) (storage, E_STORAGE_GENERICERROR, data);
 		bonobo_object_unref (BONOBO_OBJECT (listener));
+		g_object_unref (storage);
 		g_free (closure);
 	}
 	CORBA_exception_free (&ev);
@@ -380,6 +499,7 @@ async_remove_folder (EStorage *storage,
 	closure = g_new (struct async_folder_closure, 1);
 	closure->callback = callback;
 	closure->storage = storage;
+	g_object_ref (storage);
 	closure->data = data;
 	listener = bonobo_listener_new (async_folder_cb, closure);
 	corba_listener = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
@@ -393,6 +513,7 @@ async_remove_folder (EStorage *storage,
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		(* callback) (storage, E_STORAGE_GENERICERROR, data);
 		bonobo_object_unref (BONOBO_OBJECT (listener));
+		g_object_unref (storage);
 		g_free (closure);
 	}
 	CORBA_exception_free (&ev);
@@ -424,6 +545,7 @@ async_xfer_folder (EStorage *storage,
 	closure = g_new (struct async_folder_closure, 1);
 	closure->callback = callback;
 	closure->storage = storage;
+	g_object_ref (storage);
 	closure->data = data;
 	listener = bonobo_listener_new (async_folder_cb, closure);
 	corba_listener = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
@@ -436,49 +558,121 @@ async_xfer_folder (EStorage *storage,
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		(* callback) (storage, E_STORAGE_GENERICERROR, data);
 		bonobo_object_unref (BONOBO_OBJECT (listener));
+		g_object_unref (storage);
 		g_free (closure);
 	}
 	CORBA_exception_free (&ev);
 }
 
+struct async_open_closure {
+	EStorageDiscoveryCallback callback;
+	EStorage *storage;
+	void *data;
+	char *path;
+};
+
+static void
+async_open_cb (BonoboListener *listener, const char *event_name, 
+	       const CORBA_any *any, CORBA_Environment *ev,
+	       gpointer user_data)
+{
+	struct async_open_closure *orig_closure = user_data, *closure;
+	GNOME_Evolution_Storage_Result *corba_result;
+	ECorbaStoragePrivate *priv;
+	EStorageResult result;
+	GList *p;
+
+	corba_result = any->_value;
+	result = e_corba_storage_corba_result_to_storage_result (*corba_result);
+	bonobo_object_unref (BONOBO_OBJECT (listener));
+
+	priv = E_CORBA_STORAGE (orig_closure->storage)->priv;
+	p = priv->pending_opens;
+	while (p) {
+		closure = p->data;
+		if (!strcmp (closure->path, orig_closure->path)) {
+			(* closure->callback) (closure->storage, result,
+					       closure->path, closure->data);
+			if (closure != orig_closure) {
+				g_object_unref (orig_closure->storage);
+				g_free (closure->path);
+				g_free (closure);
+			}
+			priv->pending_opens = g_list_remove (priv->pending_opens, p->data);
+			p = priv->pending_opens;
+		} else
+			p = p->next;
+	}
+
+	g_object_unref (orig_closure->storage);
+	g_free (orig_closure->path);
+	g_free (orig_closure);
+}
+
 static gboolean
 async_open_folder_idle (gpointer data)
 {
-	gpointer *pair = data;
-
-	EStorage *storage = pair[0];
-	char *path = pair[1];
-
+	struct async_open_closure *closure = data, *old_closure;
+	EStorage *storage = closure->storage;
 	ECorbaStorage *corba_storage;
+	ECorbaStoragePrivate *priv;
+	BonoboListener *listener;
+	Bonobo_Listener corba_listener;
 	CORBA_Environment ev;
+	GList *p;
 
 	corba_storage = E_CORBA_STORAGE (storage);
+	priv = corba_storage->priv;
 
-	if (corba_storage->priv != NULL) {
-
-		CORBA_exception_init (&ev);
-		GNOME_Evolution_Storage_asyncOpenFolder (corba_storage->priv->storage_interface,
-							 path, &ev);
-		CORBA_exception_free (&ev);
+	for (p = priv->pending_opens; p; p = p->next) {
+		old_closure = p->data;
+		if (!strcmp (closure->path, old_closure->path)) {
+			priv->pending_opens = g_list_prepend (priv->pending_opens, closure);
+			return FALSE;
+		}
 	}
 
-	gtk_object_unref (GTK_OBJECT (storage));
-	g_free (path);
-	g_free (pair);
+	listener = bonobo_listener_new (async_open_cb, closure);
+	corba_listener = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
+
+	priv->pending_opens = g_list_prepend (priv->pending_opens, closure);
+
+	CORBA_exception_init (&ev);
+	GNOME_Evolution_Storage_asyncOpenFolder (priv->storage_interface,
+						 closure->path,
+						 corba_listener, &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		(* closure->callback) (storage, E_STORAGE_GENERICERROR,
+				       closure->path, closure->data);
+		bonobo_object_unref (BONOBO_OBJECT (listener));
+		g_object_unref (closure->storage);
+		g_free (closure->path);
+		g_free (closure);
+
+		priv->pending_opens = g_list_delete_link (priv->pending_opens,
+							  priv->pending_opens);
+	}
+	CORBA_exception_free (&ev);
 
 	return FALSE;
 }
 
 static void
 async_open_folder (EStorage *storage,
-		   const char *path)
+		   const char *path,
+		   EStorageDiscoveryCallback callback,
+		   void *data)
 {
-	gpointer *pair = g_new (gpointer, 2);
-	pair[0] = storage;
-	gtk_object_ref (GTK_OBJECT (storage));
-	pair[1] = g_strdup (path);
+	struct async_open_closure *closure;
 
-	g_idle_add (async_open_folder_idle, pair);
+	closure = g_new (struct async_open_closure, 1);
+	closure->callback = callback;
+	closure->storage = storage;
+	g_object_ref (storage);
+	closure->data = data;
+	closure->path = g_strdup (path);
+
+	g_idle_add (async_open_folder_idle, closure);
 }
 
 
@@ -506,8 +700,10 @@ supports_shared_folders (EStorage *storage)
 }
 
 static void
-async_folder_discovery_cb (BonoboListener *listener, char *event_name, 
-			   CORBA_any *any, CORBA_Environment *ev,
+async_folder_discovery_cb (BonoboListener *listener,
+			   const char *event_name, 
+			   const CORBA_any *any,
+			   CORBA_Environment *ev,
 			   gpointer user_data)
 {
 	struct async_folder_closure *closure = user_data;
@@ -527,6 +723,7 @@ async_folder_discovery_cb (BonoboListener *listener, char *event_name,
 	(* callback) (closure->storage, result, path, closure->data);
 
 	bonobo_object_unref (BONOBO_OBJECT (listener));
+	g_object_unref (closure->storage);
 	g_free (closure);
 }
 
@@ -550,6 +747,7 @@ async_discover_shared_folder (EStorage *storage,
 	closure = g_new (struct async_folder_closure, 1);
 	closure->callback = (EStorageResultCallback)callback;
 	closure->storage = storage;
+	g_object_ref (storage);
 	closure->data = data;
 	listener = bonobo_listener_new (async_folder_discovery_cb, closure);
 	corba_listener = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
@@ -561,6 +759,7 @@ async_discover_shared_folder (EStorage *storage,
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		(* callback) (storage, E_STORAGE_GENERICERROR, NULL, data);
 		bonobo_object_unref (BONOBO_OBJECT (listener));
+		g_object_unref (storage);
 		g_free (closure);
 	}
 	CORBA_exception_free (&ev);
@@ -582,7 +781,7 @@ cancel_discover_shared_folder (EStorage *storage,
 	GNOME_Evolution_Storage_cancelDiscoverSharedFolder (priv->storage_interface,
 							    owner, folder_name, &ev);
 	if (BONOBO_EX (&ev))
-		g_warning ("Error invoking cancelDiscoverSharedFolder -- %s", BONOBO_EX_ID (&ev));
+		g_warning ("Error invoking cancelDiscoverSharedFolder -- %s", BONOBO_EX_REPOID (&ev));
 	CORBA_exception_free (&ev);
 }
 
@@ -605,6 +804,7 @@ async_remove_shared_folder (EStorage *storage,
 	closure = g_new (struct async_folder_closure, 1);
 	closure->callback = callback;
 	closure->storage = storage;
+	g_object_ref (storage);
 	closure->data = data;
 	listener = bonobo_listener_new (async_folder_cb, closure);
 	corba_listener = bonobo_object_corba_objref (BONOBO_OBJECT (listener));
@@ -616,6 +816,7 @@ async_remove_shared_folder (EStorage *storage,
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		(* callback) (storage, E_STORAGE_GENERICERROR, data);
 		bonobo_object_unref (BONOBO_OBJECT (listener));
+		g_object_unref (storage);
 		g_free (closure);
 	}
 	CORBA_exception_free (&ev);
@@ -648,13 +849,15 @@ corba_class_init (void)
 static void
 class_init (ECorbaStorageClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	EStorageClass *storage_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	storage_class = E_STORAGE_CLASS (klass);
+	storage_class->get_folder                    = get_folder;
 	storage_class->async_create_folder           = async_create_folder;
 	storage_class->async_remove_folder           = async_remove_folder;
 	storage_class->async_xfer_folder             = async_xfer_folder;
@@ -666,7 +869,7 @@ class_init (ECorbaStorageClass *klass)
 
 	corba_class_init ();
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 }
 
 static void
@@ -676,6 +879,7 @@ init (ECorbaStorage *corba_storage)
 
 	priv = g_new (ECorbaStoragePrivate, 1);
 	priv->storage_interface = CORBA_OBJECT_NIL;
+	priv->pending_opens = NULL;
 
 	corba_storage->priv = priv;
 }  
@@ -724,7 +928,7 @@ e_corba_storage_new (const GNOME_Evolution_Storage storage_interface,
 	g_return_val_if_fail (storage_interface != CORBA_OBJECT_NIL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-	new = gtk_type_new (e_corba_storage_get_type ());
+	new = g_object_new (e_corba_storage_get_type (), NULL);
 
 	e_corba_storage_construct (E_CORBA_STORAGE (new),
 				   storage_interface, name);
@@ -802,7 +1006,7 @@ e_corba_storage_free_property_items_list (GSList *list)
 		item = (ECorbaStoragePropertyItem *) p->data;
 
 		if (item->icon != NULL)
-			gdk_pixbuf_unref (item->icon);
+			g_object_unref (item->icon);
 		g_free (item->label);
 		g_free (item->tooltip);
 		g_free (item);
@@ -829,7 +1033,7 @@ e_corba_storage_show_folder_properties (ECorbaStorage *corba_storage,
 						      GDK_WINDOW_XWINDOW (parent_window),
 						      &ev);
 	if (BONOBO_EX (&ev))
-		g_warning ("Error in Storage::showFolderProperties -- %s", BONOBO_EX_ID (&ev));
+		g_warning ("Error in Storage::showFolderProperties -- %s", BONOBO_EX_REPOID (&ev));
 
 	CORBA_exception_free (&ev);
 }

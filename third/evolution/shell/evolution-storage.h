@@ -23,12 +23,14 @@
 #ifndef __EVOLUTION_STORAGE_H__
 #define __EVOLUTION_STORAGE_H__
 
-#include <glib.h>
-#include <bonobo/bonobo-object.h>
-
 #include "Evolution.h"
 
+#include <glib.h>
+#include <glib-object.h>
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
+
+#include <bonobo/bonobo-object.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,10 +38,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define EVOLUTION_TYPE_STORAGE            (evolution_storage_get_type ())
-#define EVOLUTION_STORAGE(obj)            (GTK_CHECK_CAST ((obj), EVOLUTION_TYPE_STORAGE, EvolutionStorage))
-#define EVOLUTION_STORAGE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_STORAGE, EvolutionStorageClass))
-#define EVOLUTION_IS_STORAGE(obj)         (GTK_CHECK_TYPE ((obj), EVOLUTION_TYPE_STORAGE))
-#define EVOLUTION_IS_STORAGE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_STORAGE))
+#define EVOLUTION_STORAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), EVOLUTION_TYPE_STORAGE, EvolutionStorage))
+#define EVOLUTION_STORAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), EVOLUTION_TYPE_STORAGE, EvolutionStorageClass))
+#define EVOLUTION_IS_STORAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), EVOLUTION_TYPE_STORAGE))
+#define EVOLUTION_IS_STORAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), EVOLUTION_TYPE_STORAGE))
 
 
 typedef struct _EvolutionStorage        EvolutionStorage;
@@ -102,6 +104,7 @@ struct _EvolutionStorageClass {
 			     gboolean remove_source);
 
 	void (*open_folder) (EvolutionStorage *storage,
+			     const Bonobo_Listener listener,
 			     const char *path);
 
 	void (*update_folder) (EvolutionStorage *storage,
@@ -125,14 +128,13 @@ struct _EvolutionStorageClass {
 					const char *path,
 					unsigned int itemNumber,
 					unsigned long parentWindowId);
+
+	POA_GNOME_Evolution_Storage__epv epv;
 };
 
 
-POA_GNOME_Evolution_Storage__epv *evolution_storage_get_epv            (void);
-
-GtkType                 evolution_storage_get_type             (void);
+GType                   evolution_storage_get_type             (void);
 void                    evolution_storage_construct            (EvolutionStorage                *storage,
-								GNOME_Evolution_Storage          corba_object,
 								const char                      *name,
 								gboolean                         has_shared_folders);
 EvolutionStorage       *evolution_storage_new                  (const char                      *name,

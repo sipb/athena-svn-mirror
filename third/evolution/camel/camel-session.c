@@ -33,13 +33,13 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-transport.h"
 #include "camel-exception.h"
 #include "string-utils.h"
 #include "camel-url.h"
-#include "hash-table-utils.h"
 #include "camel-vee-store.h"
 
 #include "camel-private.h"
@@ -109,7 +109,7 @@ camel_session_destroy_provider (gpointer key, gpointer value, gpointer user_data
 
 	for (i = 0; i < CAMEL_NUM_PROVIDER_TYPES; i++) {
 		if (prov->service_cache[i])
-			g_hash_table_destroy (prov->service_cache[i]);
+			camel_object_bag_destroy (prov->service_cache[i]);
 	}
 	return TRUE;
 }
@@ -203,25 +203,29 @@ register_provider (CamelSession *session, CamelProvider *provider)
 
 	for (i = 0; i < CAMEL_NUM_PROVIDER_TYPES; i++) {
 		if (provider->object_types[i])
-			provider->service_cache[i] = g_hash_table_new (provider->url_hash, provider->url_equal);
+			provider->service_cache[i] = camel_object_bag_new (provider->url_hash, provider->url_equal,
+									   (CamelCopyFunc)camel_url_copy, (GFreeFunc)camel_url_free);
 	}
 
 	/* Translate all strings here */
-	provider->name = _(provider->name);
-	provider->description = _(provider->description);
+
+#define P_(string) dgettext (provider->translation_domain, string)
+
+	provider->name = P_(provider->name);
+	provider->description = P_(provider->description);
 	conf = provider->extra_conf;
 	if (conf) {
 		for (i=0;conf[i].type != CAMEL_PROVIDER_CONF_END;i++) {
 			if (conf[i].text)
-				conf[i].text = _(conf[i].text);
+				conf[i].text = P_(conf[i].text);
 		}
 	}
 	l = provider->authtypes;
 	while (l) {
 		CamelServiceAuthType *auth = l->data;
 
-		auth->name = _(auth->name);
-		auth->description = _(auth->description);
+		auth->name = P_(auth->name);
+		auth->description = P_(auth->description);
 		l = l->next;
 	}
 
@@ -380,24 +384,6 @@ camel_session_get_provider (CamelSession *session, const char *url_string,
 	return provider;
 }
 
-
-static void
-service_cache_remove (CamelService *service, gpointer event_data, gpointer user_data)
-{
-	CamelSession *session = service->session;
-	CamelProviderType type = GPOINTER_TO_INT (user_data);
-
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-	g_return_if_fail (service != NULL);
-	g_return_if_fail (service->url != NULL);
-
-	CAMEL_SESSION_LOCK(session, lock);
-
-	g_hash_table_remove (service->provider->service_cache[type], service->url);
-
-	CAMEL_SESSION_UNLOCK(session, lock);
-}
-
 static CamelService *
 get_service (CamelSession *session, const char *url_string,
 	     CamelProviderType type, CamelException *ex)
@@ -433,10 +419,9 @@ get_service (CamelSession *session, const char *url_string,
 		camel_url_set_path (url, NULL);
 	
 	/* Now look up the service in the provider's cache */
-	service = g_hash_table_lookup (provider->service_cache[type], url);
+	service = camel_object_bag_reserve(provider->service_cache[type], url);
 	if (service != NULL) {
 		camel_url_free (url);
-		camel_object_ref (CAMEL_OBJECT (service));
 		return service;
 	}
 
@@ -445,15 +430,13 @@ get_service (CamelSession *session, const char *url_string,
 	camel_service_construct (service, session, provider, url, &internal_ex);
 	if (camel_exception_is_set (&internal_ex)) {
 		camel_exception_xfer (ex, &internal_ex);
-		camel_object_unref (CAMEL_OBJECT (service));
+		camel_object_unref (service);
 		service = NULL;
+		camel_object_bag_abort(provider->service_cache[type], url);
 	} else {
-		g_hash_table_insert (provider->service_cache[type], url, service);
-		camel_object_hook_event (CAMEL_OBJECT (service), "finalize",
-					 (CamelObjectEventHookFunc) service_cache_remove,
-					 GINT_TO_POINTER (type));
+		camel_object_bag_add(provider->service_cache[type], url, service);
 	}
-	
+
 	return service;
 }
 
@@ -581,6 +564,7 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
  * camel_session_get_password:
  * @session: session object
  * @prompt: prompt to provide to user
+ * @reprompt: TRUE if the prompt should force a reprompt
  * @secret: whether or not the data is secret (eg, a password, as opposed
  * to a smartcard response)
  * @service: the service this query is being made by
@@ -604,14 +588,15 @@ camel_session_get_storage_path (CamelSession *session, CamelService *service,
  **/
 char *
 camel_session_get_password (CamelSession *session, const char *prompt,
-			    gboolean secret, CamelService *service,
-			    const char *item, CamelException *ex)
+			    gboolean reprompt, gboolean secret,
+			    CamelService *service, const char *item,
+			    CamelException *ex)
 {
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (prompt != NULL, NULL);
 	g_return_val_if_fail (item != NULL, NULL);
-
-	return CS_CLASS (session)->get_password (session, prompt, secret, service, item, ex);
+	
+	return CS_CLASS (session)->get_password (session, prompt, reprompt, secret, service, item, ex);
 }
 
 
@@ -723,7 +708,7 @@ static void *session_thread_msg_new(CamelSession *session, CamelSessionThreadOps
 
 	CAMEL_SESSION_LOCK(session, thread_lock);
 	m->id = session->priv->thread_id++;
-	g_hash_table_insert(session->priv->thread_active, (void *)m->id, m);
+	g_hash_table_insert(session->priv->thread_active, GINT_TO_POINTER(m->id), m);
 	CAMEL_SESSION_UNLOCK(session, thread_lock);
 
 	return m;
@@ -736,7 +721,7 @@ static void session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg
 	d(printf("free message %p session %p\n", msg, session));
 
 	CAMEL_SESSION_LOCK(session, thread_lock);
-	g_hash_table_remove(session->priv->thread_active, (void *)msg->id);
+	g_hash_table_remove(session->priv->thread_active, GINT_TO_POINTER(msg->id));
 	CAMEL_SESSION_UNLOCK(session, thread_lock);
 
 	d(printf("free msg, ops->free = %p\n", msg->ops->free));
@@ -784,7 +769,7 @@ static void session_thread_wait(CamelSession *session, int id)
 	/* we just busy wait, only other alternative is to setup a reply port? */
 	do {
 		CAMEL_SESSION_LOCK(session, thread_lock);
-		wait = g_hash_table_lookup(session->priv->thread_active, (void *)id) != NULL;
+		wait = g_hash_table_lookup(session->priv->thread_active, GINT_TO_POINTER(id)) != NULL;
 		CAMEL_SESSION_UNLOCK(session, thread_lock);
 		if (wait) {
 			usleep(20000);
@@ -827,7 +812,7 @@ void camel_session_thread_msg_free(CamelSession *session, CamelSessionThreadMsg 
 	g_assert(msg != NULL);
 	g_assert(msg->ops != NULL);
 
-	return CS_CLASS (session)->thread_msg_free(session, msg);
+	CS_CLASS (session)->thread_msg_free(session, msg);
 }
 
 /**
@@ -864,7 +849,7 @@ void camel_session_thread_wait(CamelSession *session, int id)
 	if (id == -1)
 		return;
 
-	return CS_CLASS (session)->thread_wait(session, id);
+	CS_CLASS (session)->thread_wait(session, id);
 }
 
 #endif

@@ -25,7 +25,10 @@
  * ECalendarItem - canvas item displaying a calendar.
  */
 
+
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include "e-calendar-item.h"
 
@@ -37,7 +40,6 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <gal/util/e-util.h>
 
@@ -214,6 +216,7 @@ static void e_calendar_item_on_menu_item_activate(GtkWidget	*menuitem,
 static void e_calendar_item_position_menu	(GtkMenu            *menu,
 						 gint               *x,
 						 gint               *y,
+						 gboolean           *push_in,
 						 gpointer            user_data);
 static void e_calendar_item_date_range_changed	(ECalendarItem	*calitem);
 static void e_calendar_item_queue_signal_emission	(ECalendarItem	*calitem);
@@ -228,8 +231,9 @@ enum {
 	ARG_Y1,
 	ARG_X2,
 	ARG_Y2,
-	ARG_FONT,
+	ARG_FONT_DESC,
 	ARG_WEEK_NUMBER_FONT,
+	ARG_WEEK_NUMBER_FONT_DESC,
 	ARG_ROW_HEIGHT,
 	ARG_COLUMN_WIDTH,
 	ARG_MINIMUM_ROWS,
@@ -267,7 +271,7 @@ e_calendar_item_class_init (ECalendarItemClass *class)
 	GtkObjectClass  *object_class;
 	GnomeCanvasItemClass *item_class;
 
-	parent_class = gtk_type_class (gnome_canvas_item_get_type());
+	parent_class = g_type_class_ref(gnome_canvas_item_get_type());
 
 	object_class = (GtkObjectClass *) class;
 	item_class = (GnomeCanvasItemClass *) class;
@@ -290,12 +294,12 @@ e_calendar_item_class_init (ECalendarItemClass *class)
 	gtk_object_add_arg_type ("ECalendarItem::y2",
 				 GTK_TYPE_DOUBLE, GTK_ARG_READWRITE,
 				 ARG_Y2);
-	gtk_object_add_arg_type ("ECalendarItem::font",
-				 GTK_TYPE_GDK_FONT, GTK_ARG_READWRITE,
-				 ARG_FONT);
-	gtk_object_add_arg_type ("ECalendarItem::week_number_font",
-				 GTK_TYPE_GDK_FONT, GTK_ARG_READWRITE,
-				 ARG_WEEK_NUMBER_FONT);
+	gtk_object_add_arg_type ("ECalendarItem::font_desc",
+				 GTK_TYPE_POINTER, GTK_ARG_READWRITE,
+				 ARG_FONT_DESC);
+	gtk_object_add_arg_type ("ECalendarItem::week_number_font_desc",
+				 GTK_TYPE_POINTER, GTK_ARG_READWRITE,
+				 ARG_WEEK_NUMBER_FONT_DESC);
 	gtk_object_add_arg_type ("ECalendarItem::row_height",
 				 GTK_TYPE_INT, GTK_ARG_READABLE,
 				 ARG_ROW_HEIGHT);
@@ -339,21 +343,17 @@ e_calendar_item_class_init (ECalendarItemClass *class)
 	e_calendar_item_signals[DATE_RANGE_CHANGED] =
 		gtk_signal_new ("date_range_changed",
 				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ECalendarItemClass, date_range_changed),
+				GTK_CLASS_TYPE (object_class),
+				G_STRUCT_OFFSET (ECalendarItemClass, date_range_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	e_calendar_item_signals[SELECTION_CHANGED] =
 		gtk_signal_new ("selection_changed",
 				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ECalendarItemClass, selection_changed),
+				GTK_CLASS_TYPE (object_class),
+				G_STRUCT_OFFSET (ECalendarItemClass, selection_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, e_calendar_item_signals,
-				      LAST_SIGNAL);
-
 
 	object_class->destroy = e_calendar_item_destroy;
 	object_class->get_arg = e_calendar_item_get_arg;
@@ -440,17 +440,25 @@ e_calendar_item_destroy		(GtkObject *o)
 	e_calendar_item_set_style_callback (calitem, NULL, NULL, NULL);
 	e_calendar_item_set_get_time_callback (calitem, NULL, NULL, NULL);
 
-	g_free (calitem->styles);
+	if (calitem->styles) {
+		g_free (calitem->styles);
+		calitem->styles = NULL;
+	}
 
 	if (calitem->signal_emission_idle_id != 0) {
 		g_source_remove (calitem->signal_emission_idle_id);
 		calitem->signal_emission_idle_id = 0;
 	}
 
-	if (calitem->old_font)
-		gdk_font_unref (calitem->old_font);
-	if (calitem->old_week_number_font)
-		gdk_font_unref (calitem->old_week_number_font);
+	if (calitem->font_desc) {
+		pango_font_description_free (calitem->font_desc);
+		calitem->font_desc = NULL;
+	}
+
+	if (calitem->week_number_font_desc) {
+		pango_font_description_free (calitem->week_number_font_desc);
+		calitem->week_number_font_desc = NULL;
+	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (o);
@@ -485,11 +493,11 @@ e_calendar_item_get_arg (GtkObject *o, GtkArg *arg, guint arg_id)
 	case ARG_Y2:
 		GTK_VALUE_DOUBLE (*arg) = calitem->y2;
 		break;
-	case ARG_FONT:
-		GTK_VALUE_BOXED (*arg) = calitem->font;
+	case ARG_FONT_DESC:
+		GTK_VALUE_BOXED (*arg) = calitem->font_desc;
 		break;
-	case ARG_WEEK_NUMBER_FONT:
-		GTK_VALUE_BOXED (*arg) = calitem->week_number_font;
+	case ARG_WEEK_NUMBER_FONT_DESC:
+		GTK_VALUE_BOXED (*arg) = calitem->week_number_font_desc;
 		break;
 	case ARG_ROW_HEIGHT:
 		e_calendar_item_recalc_sizes (calitem);
@@ -543,7 +551,7 @@ e_calendar_item_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
 {
 	GnomeCanvasItem *item;
 	ECalendarItem *calitem;
-	GdkFont *font;
+	PangoFontDescription *font_desc;
 	gboolean need_update = FALSE;
 	gdouble dvalue;
 	gint ivalue;
@@ -591,27 +599,19 @@ e_calendar_item_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
 			need_update = TRUE;
 		}
 		break;
-	case ARG_FONT:
-		font = GTK_VALUE_BOXED (*arg);
-		if (calitem->font != font) {
-			if (calitem->font)
-				gdk_font_unref (calitem->font);
-			calitem->font = font;
-			if (font)
-				gdk_font_ref (font);
-			need_update = TRUE;
-		}
+	case ARG_FONT_DESC:
+		font_desc = GTK_VALUE_BOXED (*arg);
+		if (calitem->font_desc)
+			pango_font_description_free (calitem->font_desc);
+		calitem->font_desc = pango_font_description_copy (font_desc);
+		need_update = TRUE;
 		break;
-	case ARG_WEEK_NUMBER_FONT:
-		font = GTK_VALUE_BOXED (*arg);
-		if (calitem->week_number_font != font) {
-			if (calitem->week_number_font)
-				gdk_font_unref (calitem->week_number_font);
-			calitem->week_number_font = font;
-			if (font)
-				gdk_font_ref (font);
-			need_update = TRUE;
-		}
+	case ARG_WEEK_NUMBER_FONT_DESC:
+		font_desc = GTK_VALUE_BOXED (*arg);
+		if (calitem->week_number_font_desc)
+			pango_font_description_free (calitem->week_number_font_desc);
+		calitem->week_number_font_desc = pango_font_description_copy (font_desc);
+		need_update = TRUE;
 		break;
 	case ARG_MINIMUM_ROWS:
 		ivalue = GTK_VALUE_INT (*arg);
@@ -737,8 +737,11 @@ e_calendar_item_unrealize	(GnomeCanvasItem *item)
 
 	colormap = gtk_widget_get_colormap (GTK_WIDGET (item->canvas));
 
-	for (i = 0; i < E_CALENDAR_ITEM_COLOR_LAST; i++)
-		gdk_colors_free (colormap, &calitem->colors[i].pixel, 1, 0);
+	for (i = 0; i < E_CALENDAR_ITEM_COLOR_LAST; i++) {
+		/* FIXME: gdk_colors_free expects gulong* here but the pixel value in GdkColor
+		   is guint32.  GDK bug?  */
+		gdk_colors_free (colormap, (gulong *) &calitem->colors[i].pixel, 1, 0);
+	}
 
 	if (GNOME_CANVAS_ITEM_CLASS (parent_class)->unrealize)
 		(* GNOME_CANVAS_ITEM_CLASS (parent_class)->unrealize) (item);
@@ -770,22 +773,30 @@ e_calendar_item_update		(GnomeCanvasItem *item,
 {
 	ECalendarItem *calitem;
 	GtkStyle *style;
-	GdkFont *font;
 	gint char_height, width, height, space, space_per_cal, space_per_cell;
 	gint rows, cols, xthickness, ythickness;
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
 
 	if (GNOME_CANVAS_ITEM_CLASS (parent_class)->update)
 		(* GNOME_CANVAS_ITEM_CLASS (parent_class)->update) (item, affine, clip_path, flags);
 
 	calitem = E_CALENDAR_ITEM (item);
 	style = GTK_WIDGET (item->canvas)->style;
-	xthickness = style->klass->xthickness;
-	ythickness = style->klass->ythickness;
+	xthickness = style->xthickness;
+	ythickness = style->ythickness;
 
 	item->x1 = calitem->x1;
 	item->y1 = calitem->y1;
 	item->x2 = calitem->x2 >= calitem->x1 ? calitem->x2 : calitem->x1;
 	item->y2 = calitem->y2 >= calitem->y1 ? calitem->y2 : calitem->y1;
+
+	/* Set up Pango prerequisites */
+	font_desc = style->font_desc;
+	pango_context = gtk_widget_get_pango_context (GTK_WIDGET (item->canvas));
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
 
 	/*
 	 * Calculate the new layout of the calendar.
@@ -829,10 +840,9 @@ e_calendar_item_update		(GnomeCanvasItem *item,
 	   cells and the spaces around the calendar, otherwise we place the
 	   calendars in the center of the available area. */
 
-	font = calitem->font;
-	if (!font)
-		font = style->font;
-	char_height = font->ascent + font->descent;
+	char_height =
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics));
 
 	calitem->month_width = calitem->min_month_width;
 	calitem->month_height = calitem->min_month_height;
@@ -881,6 +891,8 @@ e_calendar_item_update		(GnomeCanvasItem *item,
 
 	gnome_canvas_request_redraw (item->canvas, item->x1, item->y1,
 				     item->x2, item->y2);
+
+	pango_font_metrics_unref (font_metrics);
 }
 
 
@@ -898,10 +910,12 @@ e_calendar_item_draw		(GnomeCanvasItem *canvas_item,
 {
 	ECalendarItem *calitem;
 	GtkStyle *style;
-	GdkFont *font;
 	GdkGC *base_gc, *bg_gc;
 	gint char_height, row, col, row_y, bar_height, col_x;
 	gint xthickness, ythickness;
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
 
 #if 0
 	g_print ("In e_calendar_item_draw %i,%i %ix%i\n",
@@ -909,12 +923,20 @@ e_calendar_item_draw		(GnomeCanvasItem *canvas_item,
 #endif
 	calitem = E_CALENDAR_ITEM (canvas_item);
 	style = GTK_WIDGET (canvas_item->canvas)->style;
-	font = calitem->font;
-	if (!font)
-		font = style->font;
-	char_height = font->ascent + font->descent;
-	xthickness = style->klass->xthickness;
-	ythickness = style->klass->ythickness;
+
+	/* Set up Pango prerequisites */
+	font_desc = calitem->font_desc;
+	if (!font_desc)
+		font_desc = style->font_desc;
+	pango_context = gtk_widget_get_pango_context (GTK_WIDGET (canvas_item->canvas));
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+
+	char_height =
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics));
+	xthickness = style->xthickness;
+	ythickness = style->ythickness;
 	base_gc = style->base_gc[GTK_STATE_NORMAL];
 	bg_gc = style->bg_gc[GTK_STATE_NORMAL];
 
@@ -973,8 +995,27 @@ e_calendar_item_draw		(GnomeCanvasItem *canvas_item,
 
 		row_y += calitem->month_height;
 	}
+
+	pango_font_metrics_unref (font_metrics);
 }
 
+
+static void
+layout_set_day_text (ECalendarItem *calitem, PangoLayout *layout, int day_index)
+{
+	char *day;
+	int char_size = 0;
+
+	day = g_utf8_offset_to_pointer (calitem->days, day_index);
+
+	/* we use strlen because we actually want to count bytes */
+	if (day_index == 6)
+		char_size = strlen (day); 
+	else
+		char_size = strlen (day) - strlen (g_utf8_find_next_char (day, NULL));
+
+	pango_layout_set_text (layout, day, char_size);	
+}
 
 static void
 e_calendar_item_draw_month	(ECalendarItem   *calitem,
@@ -989,7 +1030,7 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 	GnomeCanvasItem *item;
 	GtkWidget *widget;
 	GtkStyle *style;
-	GdkFont *font;
+	PangoFontDescription *font_desc;
 	GdkGC *fg_gc;
 	struct tm tmp_tm;
 	GdkRectangle clip_rect;
@@ -1000,6 +1041,9 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 	gint day, day_index, cells_x, cells_y, min_cell_width, text_width;
 	gint clip_width, clip_height;
 	gchar buffer[64];
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
+	PangoLayout *layout;
 
 #if 0
 	g_print ("In e_calendar_item_draw_month: %i,%i %ix%i row:%i col:%i\n",
@@ -1008,13 +1052,23 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 	item = GNOME_CANVAS_ITEM (calitem);
 	widget = GTK_WIDGET (item->canvas);
 	style = widget->style;
-	font = calitem->font;
-	if (!font)
-		font = style->font;
-	char_height = font->ascent + font->descent;
-	xthickness = style->klass->xthickness;
-	ythickness = style->klass->ythickness;
+
+	/* Set up Pango prerequisites */
+	font_desc = calitem->font_desc;
+	if (!font_desc)
+		font_desc = style->font_desc;
+	pango_context = gtk_widget_get_pango_context (widget);
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+
+	char_height =
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics));
+	xthickness = style->xthickness;
+	ythickness = style->ythickness;
 	fg_gc = style->fg_gc[GTK_STATE_NORMAL];
+
+	pango_font_metrics_unref (font_metrics);
 
 	/* Calculate the top-left position of the entire month display. */
 	month_x = item->x1 + xthickness + calitem->x_offset
@@ -1036,6 +1090,9 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 
 	/* Draw the month name & year, with clipping. Note that the top row
 	   needs extra space around it for the buttons. */
+
+	layout = gtk_widget_create_pango_layout (widget, NULL);
+
 	if (row == 0 && col == 0)
 		min_x = E_CALENDAR_ITEM_XPAD_BEFORE_MONTH_NAME_WITH_BUTTON;
 	else
@@ -1047,7 +1104,7 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 	else
 		max_x -= E_CALENDAR_ITEM_XPAD_AFTER_MONTH_NAME;
 
-	text_y = month_y + style->klass->ythickness
+	text_y = month_y + style->ythickness
 		+ E_CALENDAR_ITEM_YPAD_ABOVE_MONTH_NAME;
 	clip_rect.x = month_x + min_x;
 	clip_rect.x = MAX (0, clip_rect.x);
@@ -1067,16 +1124,21 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 		gdk_gc_set_clip_rectangle (fg_gc, &clip_rect);
 
 		/* This is a strftime() format. %B = Month name, %Y = Year. */
-		strftime (buffer, sizeof (buffer), _("%B %Y"), &tmp_tm);
+		e_utf8_strftime (buffer, sizeof (buffer), _("%B %Y"), &tmp_tm);
+
+		pango_layout_set_font_description (layout, font_desc);
+		pango_layout_set_text (layout, buffer, -1);
 
 		/* Ideally we place the text centered in the month, but we
 		   won't go to the left of the minimum x position. */
-		text_width = gdk_string_width (font, buffer);
+		pango_layout_get_pixel_size (layout, &text_width, NULL);
 		text_x = (calitem->month_width - text_width) / 2;
 		text_x = MAX (min_x, text_x);
 
-		gdk_draw_string (drawable, font, fg_gc,
-				 month_x + text_x, text_y + font->ascent, buffer);
+		gdk_draw_layout (drawable, fg_gc,
+				 month_x + text_x,
+				 text_y,
+				 layout);
 	}
 
 	/* Set the clip rectangle for the main month display. */
@@ -1085,8 +1147,10 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 	clip_width = month_x + month_w - clip_rect.x;
 	clip_height = month_y + month_h - clip_rect.y;
 
-	if (clip_width <= 0 || clip_height <= 0)
+	if (clip_width <= 0 || clip_height <= 0) {
+		g_object_unref (layout);
 		return;
+	}
 
 	clip_rect.width = clip_width;
 	clip_rect.height = clip_height;
@@ -1115,12 +1179,15 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 		+ E_CALENDAR_ITEM_YPAD_BELOW_DAY_LETTERS + 1
 		+ E_CALENDAR_ITEM_YPAD_ABOVE_CELLS;
 
-	text_y += font->ascent;
 	day_index = calitem->week_start_day;
+	pango_layout_set_font_description (layout, font_desc);
 	for (day = 0; day < 7; day++) {
-		gdk_draw_text (drawable, font, fg_gc,
-			       text_x - calitem->day_widths[day_index], text_y,
-			       &calitem->days[day_index], 1);
+		layout_set_day_text (calitem, layout, day_index);
+		gdk_draw_layout (drawable, fg_gc,
+				 text_x - calitem->day_widths [day_index],
+				 text_y,
+				 layout);
+
 		text_x += calitem->cell_width;
 		day_index++;
 		if (day_index == 7)
@@ -1149,6 +1216,7 @@ e_calendar_item_draw_month	(ECalendarItem   *calitem,
 	}
 
 	gdk_gc_set_clip_rectangle (fg_gc, NULL);
+	g_object_unref (layout);
 }
 
 
@@ -1168,7 +1236,7 @@ e_calendar_item_draw_day_numbers (ECalendarItem	*calitem,
 	GnomeCanvasItem *item;
 	GtkWidget *widget;
 	GtkStyle *style;
-	GdkFont *font, *wkfont;
+	PangoFontDescription *font_desc, *wkfont_desc;
 	GdkGC *fg_gc;
 	GdkColor *bg_color, *fg_color, *box_color;
 	struct tm today_tm;
@@ -1184,22 +1252,36 @@ e_calendar_item_draw_day_numbers (ECalendarItem	*calitem,
 	gint today_year, today_month, today_mday, month_offset;
 	gchar buffer[2];
 	gint day_style = 0;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
+	PangoLayout *layout;
 
 	item = GNOME_CANVAS_ITEM (calitem);
 	widget = GTK_WIDGET (item->canvas);
 	style = widget->style;
-	font = calitem->font;
-	if (!font)
-		font = style->font;
-	wkfont = calitem->week_number_font;
-	if (!wkfont)
-		wkfont = font;
+
+	/* Set up Pango prerequisites */
+	font_desc = calitem->font_desc;
+	if (!font_desc)
+		font_desc = style->font_desc;
+	wkfont_desc = calitem->week_number_font_desc;
+	if (!wkfont_desc)
+		wkfont_desc = font_desc;
 	fg_gc = style->fg_gc[GTK_STATE_NORMAL];
-	char_height = font->ascent + font->descent;
+
+	pango_context = gtk_widget_get_pango_context (widget);
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+
+	char_height =
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics));
 
 	min_cell_width = calitem->max_digit_width * 2
 		+ E_CALENDAR_ITEM_MIN_CELL_XPAD;
 	min_cell_height = char_height + E_CALENDAR_ITEM_MIN_CELL_YPAD;
+
+	layout = gtk_widget_create_pango_layout (widget, NULL);
 
 	/* Calculate the number of days in the previous, current, and next
 	   months. */
@@ -1284,9 +1366,13 @@ e_calendar_item_draw_day_numbers (ECalendarItem	*calitem,
 
 			gdk_gc_set_foreground (fg_gc,
 					       &style->fg[GTK_STATE_NORMAL]);
-			gdk_draw_text (drawable, wkfont, fg_gc,
-				       text_x, text_y + font->ascent,
-				       buffer, num_chars);
+
+			pango_layout_set_font_description (layout, wkfont_desc);
+			pango_layout_set_text (layout, buffer, num_chars);
+			gdk_draw_layout (drawable, fg_gc,
+					 text_x,
+					 text_y,
+					 layout);
 		}
 
 		for (dcol = 0; dcol < 7; dcol++) {
@@ -1389,17 +1475,20 @@ e_calendar_item_draw_day_numbers (ECalendarItem	*calitem,
 							       &style->fg[GTK_STATE_NORMAL]);
 				}
 
-				gdk_draw_text (drawable, font, fg_gc,
-					       day_x,
-					       day_y + font->ascent,
-					       buffer, num_chars);
+				pango_layout_set_font_description (layout, font_desc);
+				pango_layout_set_text (layout, buffer, num_chars);
+				gdk_draw_layout (drawable, fg_gc,
+						 day_x,
+						 day_y,
+						 layout);
+
 				/* We use a stupid technique for bold. Just
 				   draw it again 1 pixel to the left. */
 				if (bold)
-					gdk_draw_text (drawable, font, fg_gc,
-						       day_x - 1,
-						       day_y + font->ascent,
-						       buffer, num_chars);
+					gdk_draw_layout (drawable, fg_gc,
+							 day_x - 1,
+							 day_y,
+							 layout);
 			}
 
 			/* See if we've reached the end of a month. */
@@ -1428,6 +1517,9 @@ e_calendar_item_draw_day_numbers (ECalendarItem	*calitem,
 
 	/* Reset the foreground color. */
 	gdk_gc_set_foreground (fg_gc, &style->fg[GTK_STATE_NORMAL]);
+
+	g_object_unref (layout);
+	pango_font_metrics_unref (font_metrics);
 }
 
 
@@ -1437,37 +1529,38 @@ e_calendar_item_get_week_number	(ECalendarItem *calitem,
 				 gint		month,
 				 gint		year)
 {
-	GDate tmp_date;
-	gint weekday, yearday, offset, week_num;
-
+	GDate date;
+	guint weekday, yearday;
+	int offset, week_num;
+	
 	/* FIXME: check what happens at year boundaries. */
-
-	g_date_clear (&tmp_date, 1);
-	g_date_set_dmy (&tmp_date, day, month + 1, year);
-
-	/* This results in a value of 0 (Monday) - 6 (Sunday). */
-	weekday = g_date_weekday (&tmp_date) - 1;
-
+	
+	g_date_clear (&date, 1);
+	g_date_set_dmy (&date, day, month + 1, year);
+	
+	/* This results in a value of 0 (Monday) - 6 (Sunday). (or -1 on error - oops!!) */
+	weekday = g_date_get_weekday (&date) - 1;
+	
 	/* Calculate the offset from the start of the week. */
 	offset = (calitem->week_start_day + 7 - weekday) % 7;
-
+	
 	/* Calculate the day of the year, from 0 to 365. */
-	yearday = g_date_day_of_year (&tmp_date) - 1;
-
+	yearday = g_date_get_day_of_year (&date) - 1;
+	
 	/* If the week starts on or after 29th December, it is week 1 of the
 	   next year, since there are 4 days in the next year. */
-	g_date_subtract_days (&tmp_date, offset);
-	if (g_date_month (&tmp_date) == 12 && g_date_day (&tmp_date) >= 29)
+	g_date_subtract_days (&date, offset);
+	if (g_date_get_month (&date) == 12 && g_date_get_day (&date) >= 29)
 		return 1;
-
+	
 	/* Calculate the week number, from 0. */
 	week_num = (yearday - offset) / 7;
-
+	
 	/* If the first week starts on or after Jan 5th, then we need to add
 	   1 since the previous week will really be the first week. */
 	if ((yearday - offset) % 7 >= 4)
 		week_num++;
-
+	
 	/* Add 1 so week numbers are from 1 to 53. */
 	return week_num + 1;
 }
@@ -1517,10 +1610,13 @@ e_calendar_item_recalc_sizes		(ECalendarItem *calitem)
 {
 	GnomeCanvasItem *canvas_item;
 	GtkStyle *style;
-	GdkFont *font, *wkfont;
 	gchar *digits = "0123456789";
 	gint day, digit, max_digit_width, max_week_number_digit_width;
 	gint char_height, width, min_cell_width, min_cell_height;
+	PangoFontDescription *font_desc, *wkfont_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
+	PangoLayout *layout;
 
 	canvas_item = GNOME_CANVAS_ITEM (calitem);
 	style = GTK_WIDGET (canvas_item->canvas)->style;
@@ -1528,53 +1624,55 @@ e_calendar_item_recalc_sizes		(ECalendarItem *calitem)
 	if (!style)
 		return;
 
-	font = calitem->font;
-	if (!font)
-		font = style->font;
-	wkfont = calitem->week_number_font;
-	if (!wkfont)
-		wkfont = font;
+	/* Set up Pango prerequisites */
+	font_desc = calitem->font_desc;
+	wkfont_desc = calitem->week_number_font_desc;
+	if (!font_desc)
+		font_desc = style->font_desc;
 
-	g_return_if_fail (font != NULL);
-	g_return_if_fail (wkfont != NULL);
+	pango_context = gtk_widget_create_pango_context (GTK_WIDGET (canvas_item->canvas));
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+	layout = pango_layout_new (pango_context);
 
-	char_height = font->ascent + font->descent;
 
-	/* If both fonts are the same, just return. */
-	if (font != calitem->old_font
-	    || wkfont != calitem->old_week_number_font) {
-		if (calitem->old_font)
-			gdk_font_unref (calitem->old_font);
-		calitem->old_font = font;
-		gdk_font_ref (font);
+	char_height =
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics));
 
-		if (calitem->old_week_number_font)
-			gdk_font_unref (calitem->old_week_number_font);
-		calitem->old_week_number_font = wkfont;
-		gdk_font_ref (wkfont);
-
-		for (day = 0; day < 7; day++)
-			calitem->day_widths[day] = gdk_char_width (font, calitem->days[day]);
-
-		max_digit_width = 0;
-		max_week_number_digit_width = 0;
-		for (digit = 0; digit < 10; digit++) {
-			width = gdk_char_width (font, digits[digit]);
-			calitem->digit_widths[digit] = width;
-			max_digit_width = MAX (max_digit_width, width);
-
-			if (wkfont) {
-				width = gdk_char_width (wkfont, digits[digit]);
-				calitem->week_number_digit_widths[digit] = width;
-				max_week_number_digit_width = MAX (max_week_number_digit_width, width);
-			} else {
-				calitem->week_number_digit_widths[digit] = width;
-				max_week_number_digit_width = max_digit_width;
-			}
-		}
-		calitem->max_digit_width = max_digit_width;
-		calitem->max_week_number_digit_width = max_week_number_digit_width;
+	for (day = 0; day < 7; day++) {
+		layout_set_day_text (calitem, layout, day);
+		pango_layout_get_pixel_size (layout, &calitem->day_widths [day], NULL);
 	}
+
+	max_digit_width = 0;
+	max_week_number_digit_width = 0;
+	for (digit = 0; digit < 10; digit++) {
+		pango_layout_set_text (layout, &digits [digit], 1);
+		pango_layout_get_pixel_size (layout, &width, NULL);
+
+		calitem->digit_widths[digit] = width;
+		max_digit_width = MAX (max_digit_width, width);
+
+		if (wkfont_desc) {
+			pango_context_set_font_description (pango_context, wkfont_desc);
+			pango_layout_context_changed (layout);
+
+			pango_layout_set_text (layout, &digits [digit], 1);
+			pango_layout_get_pixel_size (layout, &width, NULL);
+
+			calitem->week_number_digit_widths[digit] = width;
+			max_week_number_digit_width = MAX (max_week_number_digit_width, width);
+
+			pango_context_set_font_description (pango_context, font_desc);
+			pango_layout_context_changed (layout);
+		} else {
+			calitem->week_number_digit_widths[digit] = width;
+			max_week_number_digit_width = max_digit_width;
+		}
+	}
+	calitem->max_digit_width = max_digit_width;
+	calitem->max_week_number_digit_width = max_week_number_digit_width;
 
 	min_cell_width = calitem->max_digit_width * 2
 		+ E_CALENDAR_ITEM_MIN_CELL_XPAD;
@@ -1588,13 +1686,17 @@ e_calendar_item_recalc_sizes		(ECalendarItem *calitem)
 			+ E_CALENDAR_ITEM_XPAD_AFTER_WEEK_NUMBERS + 1;
 	}
 
-	calitem->min_month_height = style->klass->ythickness * 2
+	calitem->min_month_height = style->ythickness * 2
 		+ E_CALENDAR_ITEM_YPAD_ABOVE_MONTH_NAME + char_height
 		+ E_CALENDAR_ITEM_YPAD_BELOW_MONTH_NAME + 1
 		+ E_CALENDAR_ITEM_YPAD_ABOVE_DAY_LETTERS
 		+ char_height + E_CALENDAR_ITEM_YPAD_BELOW_DAY_LETTERS + 1
 		+ E_CALENDAR_ITEM_YPAD_ABOVE_CELLS + min_cell_height * 6
 		+ E_CALENDAR_ITEM_YPAD_BELOW_CELLS;
+
+	g_object_unref (layout);
+	g_object_unref (pango_context);
+	pango_font_metrics_unref (font_metrics);
 }
 
 
@@ -1963,13 +2065,28 @@ e_calendar_item_convert_position_to_day	(ECalendarItem	*calitem,
 	gint x, y, row, col, cells_x, cells_y, day_row, day_col;
 	gint first_day_offset, days_in_month, days_in_prev_month;
 	gint week_num_x1, week_num_x2;
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
 
 	item = GNOME_CANVAS_ITEM (calitem);
 	widget = GTK_WIDGET (item->canvas);
 	style = widget->style;
-	char_height = style->font->ascent + style->font->descent;
-	xthickness = style->klass->xthickness;
-	ythickness = style->klass->ythickness;
+
+	font_desc = calitem->font_desc;
+	if (!font_desc)
+		font_desc = style->font_desc;
+	pango_context = gtk_widget_create_pango_context (widget);
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+
+	char_height =
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics)) +
+		PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics));
+	xthickness = style->xthickness;
+	ythickness = style->ythickness;
+
+	pango_font_metrics_unref (font_metrics);
 
 	*entire_week = FALSE;
 
@@ -2622,15 +2739,15 @@ e_calendar_item_set_selection	(ECalendarItem	*calitem,
 
 	if (end_date == NULL)
 		end_date = start_date;
-		
+	
 	g_return_if_fail (g_date_compare (start_date, end_date) <= 0);
-
-	start_year = g_date_year (start_date);
-	start_month = g_date_month (start_date) - 1;
-	start_day = g_date_day (start_date);
-	end_year = g_date_year (end_date);
-	end_month = g_date_month (end_date) - 1;
-	end_day = g_date_day (end_date);
+	
+	start_year = g_date_get_year (start_date);
+	start_month = g_date_get_month (start_date) - 1;
+	start_day = g_date_get_day (start_date);
+	end_year = g_date_get_year (end_date);
+	end_month = g_date_get_month (end_date) - 1;
+	end_day = g_date_get_day (end_date);
 
 	need_update = e_calendar_item_ensure_days_visible (calitem,
 							   start_year,
@@ -2702,13 +2819,10 @@ e_calendar_item_ensure_days_visible	(ECalendarItem	*calitem,
 					&current_end_month);
 
 	/* Try to ensure that the end month is shown. */
-	if (end_year > current_end_year
-	    || (end_year == current_end_year
-		&& end_month > current_end_month)) {
-		
-		/* First we see if the end of the selection will fit in the
+	if ((end_year == current_end_year + 1 && current_end_month == 11 && end_month == 0) ||
+	    (end_year == current_end_year && end_month == current_end_month + 1)) {
+		/* See if the end of the selection will fit in the
 		   leftover days of the month after the last one shown. */
-		calitem->year = end_year;
 		calitem->month += (months_shown - 1);
 		e_calendar_item_normalize_date (calitem, &calitem->year,
 						&calitem->month);
@@ -2717,15 +2831,29 @@ e_calendar_item_ensure_days_visible	(ECalendarItem	*calitem,
 						&first_day_offset,
 						&days_in_month,
 						&days_in_prev_month);
-		
+
 		if (end_day >= E_CALENDAR_ROWS_PER_MONTH * E_CALENDAR_COLS_PER_MONTH - 
 		    first_day_offset - days_in_month) {
 			need_update = TRUE;
 
 			calitem->year = end_year;
 			calitem->month = end_month - months_shown + 1;
+		} else {
+			calitem->month -= (months_shown - 1);
 		}
-		
+
+		e_calendar_item_normalize_date (calitem, &calitem->year,
+						&calitem->month);
+	}
+	else if (end_year > current_end_year ||
+		 (end_year == current_end_year && end_month > current_end_month)) {
+		/* The selection will definitely not fit in the leftover days
+		 * of the month after the last one shown. */
+		need_update = TRUE;
+
+		calitem->year = end_year;
+		calitem->month = end_month - months_shown + 1;
+
 		e_calendar_item_normalize_date (calitem, &calitem->year,
 						&calitem->month);
 	}
@@ -2783,9 +2911,9 @@ e_calendar_item_show_popup_menu		(ECalendarItem	*calitem,
 		submenu = gtk_menu_new ();
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem), submenu);
 
-		gtk_object_set_data (GTK_OBJECT (submenu), "year",
+		g_object_set_data(G_OBJECT(submenu), "year",
 				     GINT_TO_POINTER (year));
-		gtk_object_set_data (GTK_OBJECT (submenu), "month_offset",
+		g_object_set_data(G_OBJECT(submenu), "month_offset",
 				     GINT_TO_POINTER (month_offset));
 
 		for (month = 0; month < 12; month++) {
@@ -2795,7 +2923,7 @@ e_calendar_item_show_popup_menu		(ECalendarItem	*calitem,
 			tmp_tm.tm_mday = 1;
 			tmp_tm.tm_isdst = -1;
 			mktime (&tmp_tm);
-			strftime (buffer, sizeof (buffer), "%B", &tmp_tm);
+			e_utf8_strftime (buffer, sizeof (buffer), "%B", &tmp_tm);
 
 			menuitem = gtk_menu_item_new ();
 			gtk_widget_show (menuitem);
@@ -2806,17 +2934,17 @@ e_calendar_item_show_popup_menu		(ECalendarItem	*calitem,
 			gtk_widget_show (label);
 			gtk_container_add (GTK_CONTAINER (menuitem), label);
 
-			gtk_object_set_data (GTK_OBJECT (menuitem), "month",
+			g_object_set_data(G_OBJECT(menuitem), "month",
 					     GINT_TO_POINTER (month));
 
-			gtk_signal_connect (GTK_OBJECT (menuitem), "activate",
-					    GTK_SIGNAL_FUNC (e_calendar_item_on_menu_item_activate), calitem);
+			g_signal_connect((menuitem), "activate",
+					    G_CALLBACK (e_calendar_item_on_menu_item_activate), calitem);
 		}
 	}
 
 	/* Run the menu modal so we can destroy it after. */
-	gtk_signal_connect (GTK_OBJECT (menu), "deactivate",
-			    GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+	g_signal_connect((menu), "deactivate",
+			    G_CALLBACK (gtk_main_quit), NULL);
 	gtk_menu_popup (GTK_MENU (menu), NULL, NULL,
 			e_calendar_item_position_menu, calitem,
 			event->button, event->time);
@@ -2833,9 +2961,9 @@ e_calendar_item_on_menu_item_activate	(GtkWidget	*menuitem,
 {
 	gint year, month_offset, month;
 
-	year = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menuitem->parent), "year"));
-	month_offset = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menuitem->parent), "month_offset"));
-	month = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menuitem), "month"));
+	year = GPOINTER_TO_INT (g_object_get_data(G_OBJECT(menuitem->parent), "year"));
+	month_offset = GPOINTER_TO_INT (g_object_get_data(G_OBJECT(menuitem->parent), "month_offset"));
+	month = GPOINTER_TO_INT (g_object_get_data(G_OBJECT(menuitem), "month"));
 
 	month -= month_offset;
 	e_calendar_item_normalize_date (calitem, &year, &month);
@@ -2847,6 +2975,7 @@ static void
 e_calendar_item_position_menu	(GtkMenu            *menu,
 				 gint               *x,
 				 gint               *y,
+				 gboolean           *push_in,
 				 gpointer            user_data)
 {
 	GtkRequisition requisition;
@@ -2917,7 +3046,7 @@ e_calendar_item_signal_emission_idle_cb	(gpointer data)
 
 	/* We ref the calitem & check in case it gets destroyed, since we
 	   were getting a free memory write here. */
-	gtk_object_ref (GTK_OBJECT (calitem));
+	g_object_ref((calitem));
 
 	if (calitem->date_range_changed) {
 		calitem->date_range_changed = FALSE;
@@ -2925,15 +3054,13 @@ e_calendar_item_signal_emission_idle_cb	(gpointer data)
 				 e_calendar_item_signals[DATE_RANGE_CHANGED]);
 	}
 
-	if (GTK_OBJECT_DESTROYED (calitem)) {
-		g_warning ("e_calendar_item_signal_emission_idle_cb: item destroyed");
-	} else if (calitem->selection_changed) {
+	if (calitem->selection_changed) {
 		calitem->selection_changed = FALSE;
 		gtk_signal_emit (GTK_OBJECT (calitem),
 				 e_calendar_item_signals[SELECTION_CHANGED]);
 	}
 
-	gtk_object_unref (GTK_OBJECT (calitem));
+	g_object_unref((calitem));
 
 	GDK_THREADS_LEAVE ();
 	return FALSE;

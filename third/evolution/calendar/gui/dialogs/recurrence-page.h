@@ -1,11 +1,12 @@
 /* Evolution calendar - Recurrence page of the calendar component dialogs
  *
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 2001-2003 Ximian, Inc.
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *          Miguel de Icaza <miguel@ximian.com>
  *          Seth Alves <alves@hungry.com>
  *          JP Rosevear <jpr@ximian.com>
+ *          Hans Petter Jansson <hpj@ximian.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -26,15 +27,15 @@
 
 #include "comp-editor-page.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 
 
 #define TYPE_RECURRENCE_PAGE            (recurrence_page_get_type ())
-#define RECURRENCE_PAGE(obj)            (GTK_CHECK_CAST ((obj), TYPE_RECURRENCE_PAGE, RecurrencePage))
-#define RECURRENCE_PAGE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), TYPE_RECURRENCE_PAGE, RecurrencePageClass))
-#define IS_RECURRENCE_PAGE(obj)         (GTK_CHECK_TYPE ((obj), TYPE_RECURRENCE_PAGE))
-#define IS_RECURRENCE_PAGE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), TYPE_RECURRENCE_PAGE))
+#define RECURRENCE_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_RECURRENCE_PAGE, RecurrencePage))
+#define RECURRENCE_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_RECURRENCE_PAGE, RecurrencePageClass))
+#define IS_RECURRENCE_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_RECURRENCE_PAGE))
+#define IS_RECURRENCE_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), TYPE_RECURRENCE_PAGE))
 
 typedef struct _RecurrencePagePrivate RecurrencePagePrivate;
 
@@ -56,6 +57,6 @@ RecurrencePage *recurrence_page_new       (void);
 
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif

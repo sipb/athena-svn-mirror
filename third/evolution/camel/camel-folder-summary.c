@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Copyright (C) 2000 Ximian Inc.
+ *  Copyright (C) 2000-2003 Ximian Inc.
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
@@ -50,7 +50,7 @@
 #include <camel/camel-stream-null.h>
 #include <camel/camel-stream-filter.h>
 
-#include "hash-table-utils.h"
+#include "string-utils.h"
 #include "e-util/md5-utils.h"
 #include "e-util/e-memory.h"
 
@@ -535,7 +535,7 @@ perform_content_info_load(CamelFolderSummary *s, FILE *in)
 			my_list_append((struct _node **)&ci->childs, (struct _node *)part);
 			part->parent = ci;
 		} else {
-			g_warning("Summary file format messed up?");
+			d(fprintf (stderr, "Summary file format messed up?"));
 			camel_folder_summary_content_info_free(s, ci);
 			return NULL;
 		}
@@ -589,9 +589,11 @@ camel_folder_summary_load(CamelFolderSummary *s)
 	return 0;
 
 error:
-	g_warning("Cannot load summary file: %s", strerror(ferror(in)));
+	if (errno != EINVAL)
+		g_warning ("Cannot load summary file: `%s': %s", s->summary_path, g_strerror (errno));
+	
 	CAMEL_SUMMARY_UNLOCK(s, io_lock);
-	fclose(in);
+	fclose (in);
 	s->flags |= ~CAMEL_SUMMARY_DIRTY;
 
 	return -1;
@@ -756,7 +758,7 @@ summary_assign_uid(CamelFolderSummary *s, CamelMessageInfo *info)
 		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
 		if (mi == info)
 			return 0;
-		g_warning("Trying to insert message with clashing uid (%s).  new uid re-assigned", camel_message_info_uid(info));
+		d(printf ("Trying to insert message with clashing uid (%s).  new uid re-assigned", camel_message_info_uid(info)));
 		camel_message_info_set_uid(info, camel_folder_summary_next_uid_string(s));
 		uid = camel_message_info_uid(info);
 		info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
@@ -905,7 +907,7 @@ CamelMessageInfo *camel_folder_summary_info_new_from_parser(CamelFolderSummary *
 {
 	CamelMessageInfo *info = NULL;
 	char *buffer;
-	int len;
+	size_t len;
 	struct _CamelFolderSummaryPrivate *p = _PRIVATE(s);
 	off_t start;
 	CamelIndexName *name = NULL;
@@ -1184,6 +1186,48 @@ void camel_folder_summary_remove_index(CamelFolderSummary *s, int index)
 	}
 }
 
+/**
+ * camel_folder_summary_remove_range:
+ * @s: 
+ * @start: initial index
+ * @end: last index to remove
+ * 
+ * Removes an indexed range of info records.
+ **/
+void camel_folder_summary_remove_range(CamelFolderSummary *s, int start, int end)
+{
+	if (end <= start+1)
+		return;
+
+	CAMEL_SUMMARY_LOCK(s, summary_lock);
+	if (start < s->messages->len) {
+		CamelMessageInfo **infos;
+		int i;
+
+		end = MIN(end+1, s->messages->len);
+		infos = g_malloc((end-start)*sizeof(infos[0]));
+
+		for (i=start;i<end;i++) {
+			CamelMessageInfo *info = s->messages->pdata[i];
+
+			infos[i-start] = info;
+			g_hash_table_remove(s->messages_uid, camel_message_info_uid(info));
+		}
+
+		memmove(s->messages->pdata+start, s->messages->pdata+end, (s->messages->len-end)*sizeof(s->messages->pdata[0]));
+		g_ptr_array_set_size(s->messages, s->messages->len - (end - start));
+		s->flags |= CAMEL_SUMMARY_DIRTY;
+
+		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+
+		for (i=start;i<end;i++)
+			camel_folder_summary_info_free(s, infos[i-start]);
+		g_free(infos);
+	} else {
+		CAMEL_SUMMARY_UNLOCK(s, summary_lock);
+	}
+}
+
 /* should be sorted, for binary search */
 /* This is a tokenisation mechanism for strings written to the
    summary - to save space.
@@ -1305,7 +1349,7 @@ camel_folder_summary_decode_token(FILE *in, char **str)
 	io(printf("Decode token ...\n"));
 	
 	if (camel_file_util_decode_uint32(in, &len) == -1) {
-		g_warning("Could not decode token from file");
+		io(printf ("Could not decode token from file"));
 		*str = NULL;
 		return -1;
 	}
@@ -1316,12 +1360,12 @@ camel_folder_summary_decode_token(FILE *in, char **str)
 		} else if (len<= tokens_len) {
 			ret = g_strdup(tokens[len-1]);
 		} else {
-			g_warning("Invalid token encountered: %d", len);
+			io(printf ("Invalid token encountered: %d", len));
 			*str = NULL;
 			return -1;
 		}
 	} else if (len > 10240) {
-		g_warning("Got broken string header length: %d bytes", len);
+		io(printf ("Got broken string header length: %d bytes", len));
 		*str = NULL;
 		return -1;
 	} else {
@@ -1387,7 +1431,8 @@ summary_header_load(CamelFolderSummary *s, FILE *in)
 	s->time = time;
 	s->saved_count = count;
 	if (s->version != version) {
-		g_warning("Summary header version mismatch");
+		d(printf ("Summary header version mismatch"));
+		errno = EINVAL;
 		return -1;
 	}
 	return 0;
@@ -1467,14 +1512,14 @@ static CamelMessageContentInfo * content_info_new_from_message(CamelFolderSummar
 }
 
 static char *
-summary_format_address(struct _header_raw *h, const char *name)
+summary_format_address(struct _header_raw *h, const char *name, const char *charset)
 {
 	struct _header_address *addr;
 	const char *text;
 	char *ret;
 
 	text = header_raw_find (&h, name, NULL);
-	addr = header_address_decode (text);
+	addr = header_address_decode (text, charset);
 	if (addr) {
 		ret = header_address_list_format (addr);
 		header_address_list_clear (&addr);
@@ -1575,13 +1620,13 @@ message_info_new(CamelFolderSummary *s, struct _header_raw *h)
 	     && (charset = header_content_type_param(ct, "charset"))
 	     && (strcasecmp(charset, "us-ascii") == 0))
 		charset = NULL;
-
-	charset = e_iconv_charset_name(charset);
-
+	
+	charset = charset ? e_iconv_charset_name (charset) : NULL;
+	
 	subject = summary_format_string(h, "subject", charset);
-	from = summary_format_address(h, "from");
-	to = summary_format_address(h, "to");
-	cc = summary_format_address(h, "cc");
+	from = summary_format_address(h, "from", charset);
+	to = summary_format_address(h, "to", charset);
+	cc = summary_format_address(h, "cc", charset);
 	mlist = header_raw_check_mailing_list(&h);
 
 	if (ct)
@@ -1837,7 +1882,7 @@ content_info_new (CamelFolderSummary *s, struct _header_raw *h)
 	
 	ci = camel_folder_summary_content_info_new (s);
 	
-	charset = e_iconv_locale_charset();
+	charset = e_iconv_locale_charset ();
 	ci->id = header_msgid_decode (header_raw_find (&h, "content-id", NULL));
 	ci->description = header_decode_string (header_raw_find (&h, "content-description", NULL), NULL);
 	ci->encoding = header_content_encoding_decode (header_raw_find (&h, "content-transfer-encoding", NULL));
@@ -1951,7 +1996,8 @@ next_uid_string(CamelFolderSummary *s)
 static CamelMessageContentInfo *
 summary_build_content_info(CamelFolderSummary *s, CamelMessageInfo *msginfo, CamelMimeParser *mp)
 {
-	int state, len;
+	int state;
+	size_t len;
 	char *buffer;
 	CamelMessageContentInfo *info = NULL;
 	struct _header_content_type *ct;
@@ -2482,7 +2528,7 @@ camel_system_flag (const char *name)
 	g_return_val_if_fail (name != NULL, 0);
 	
 	for (flag = flag_names; *flag->name; flag++)
-		if (!g_strcasecmp (name, flag->name))
+		if (!strcasecmp (name, flag->name))
 			return flag->value;
 	
 	return 0;
@@ -2562,13 +2608,13 @@ camel_message_info_new_from_header (struct _header_raw *header)
 	    && (charset = header_content_type_param(ct, "charset"))
 	    && (strcasecmp(charset, "us-ascii") == 0))
 		charset = NULL;
-
-	charset = e_iconv_charset_name(charset);
+	
+	charset = charset ? e_iconv_charset_name (charset) : NULL;
 	
 	subject = summary_format_string(header, "subject", charset);
-	from = summary_format_address(header, "from");
-	to = summary_format_address(header, "to");
-	cc = summary_format_address(header, "cc");
+	from = summary_format_address(header, "from", charset);
+	to = summary_format_address(header, "to", charset);
+	cc = summary_format_address(header, "cc", charset);
 	date = header_raw_find(&header, "date", NULL);
 	mlist = header_raw_check_mailing_list(&header);
 

@@ -32,11 +32,13 @@
 
 #include "Evolution.h"
 
-#include <bonobo-conf/Bonobo_Config.h>
 #include <bonobo/bonobo-exception.h>
 
 #include <libgnome/gnome-i18n.h>
 #include <gtk/gtkwidget.h>
+#include <gtk/gtksignal.h>
+
+#include <gconf/gconf-client.h>
 
 
 typedef struct {
@@ -44,7 +46,6 @@ typedef struct {
 
 	GtkWidget *control_widget;
 
-	Bonobo_ConfigDatabase db;
 	EvolutionShellClient *shell_client;
 } EvolutionAutocompletionConfig;
 
@@ -56,10 +57,13 @@ folder_list_changed_callback (EFolderList *efl,
 }
 
 static void
-config_control_destroy_callback (EvolutionConfigControl *config_control,
-				 EvolutionAutocompletionConfig *ac)
+config_control_destroy_notify (void *data,
+			       GObject *where_the_config_control_was)
 {
-	bonobo_object_unref (BONOBO_OBJECT (ac->shell_client));
+	EvolutionAutocompletionConfig *ac = (EvolutionAutocompletionConfig *) data;
+
+	g_object_unref (ac->shell_client);
+
 	g_free (ac);
 }
 
@@ -68,41 +72,41 @@ static void
 config_control_apply_callback (EvolutionConfigControl *config_control,
 			       EvolutionAutocompletionConfig *ac)
 {
+	GConfClient *client;
 	char *xml;
-	CORBA_Environment ev;
 
-	CORBA_exception_init (&ev);
+	client = gconf_client_get_default ();
 
 	xml = e_folder_list_get_xml (E_FOLDER_LIST (ac->control_widget));
-	bonobo_config_set_string (ac->db, "/Addressbook/Completion/uris", xml, &ev);
+	gconf_client_set_string (client, "/apps/evolution/addressbook/completion/uris", xml, NULL);
 	g_free (xml);
 
-	CORBA_exception_free (&ev);
+	g_object_unref (client);
 }
 
 GtkWidget *
 e_shell_config_autocompletion_create_widget (EShell *shell, EvolutionConfigControl *config_control)
 {
-	GNOME_Evolution_Shell shell_dup;
 	EvolutionAutocompletionConfig *ac;
-	char *xml;
 	CORBA_Environment ev;
+	GConfClient *client;
 	static const char *possible_types[] = { "contacts/*", NULL };
+	char *xml;
 
 	ac = g_new0 (EvolutionAutocompletionConfig, 1);
-	ac->db = e_shell_get_config_db (shell);
 
 	CORBA_exception_init (&ev);
 
-	shell_dup = CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (shell)), &ev);
-	ac->shell_client = evolution_shell_client_new (shell_dup);
+	ac->shell_client = evolution_shell_client_new (BONOBO_OBJREF (shell));
 
-	xml = bonobo_config_get_string (ac->db, "/Addressbook/Completion/uris", &ev);
+	client = gconf_client_get_default ();
+	xml = gconf_client_get_string (client, "/apps/evolution/addressbook/completion/uris", NULL);
+	g_object_unref (client);
 
 	ac->control_widget = e_folder_list_new (ac->shell_client, xml);
 	g_free (xml);
 
-	gtk_object_set (GTK_OBJECT (ac->control_widget),
+	g_object_set((ac->control_widget),
 			"title", _("Extra Completion folders"),
 			"possible_types", possible_types,
 			NULL);
@@ -111,12 +115,12 @@ e_shell_config_autocompletion_create_widget (EShell *shell, EvolutionConfigContr
 
 	ac->config_control = config_control;
 
-	gtk_signal_connect (GTK_OBJECT (ac->control_widget), "changed",
-			    GTK_SIGNAL_FUNC (folder_list_changed_callback), ac);
-	gtk_signal_connect (GTK_OBJECT (ac->config_control), "apply",
-			    GTK_SIGNAL_FUNC (config_control_apply_callback), ac);
-	gtk_signal_connect (GTK_OBJECT (ac->config_control), "destroy",
-			    GTK_SIGNAL_FUNC (config_control_destroy_callback), ac);
+	g_signal_connect (ac->control_widget, "changed",
+			  G_CALLBACK (folder_list_changed_callback), ac);
+	g_signal_connect (ac->config_control, "apply",
+			  G_CALLBACK (config_control_apply_callback), ac);
+
+	g_object_weak_ref (G_OBJECT (ac->config_control), config_control_destroy_notify, ac);
 
 	CORBA_exception_free (&ev);
 

@@ -7,6 +7,7 @@
  */
 
 #include <config.h>
+#include <bonobo/bonobo-main.h>
 #include "addressbook.h"
 #include "pas-card-cursor.h"
 
@@ -22,22 +23,20 @@ struct _PASCardCursorPrivate {
 static BonoboObjectClass *parent_class;
 
 /*
- * The VEPV for the CardCursor object
- */
-static POA_GNOME_Evolution_Addressbook_CardCursor__vepv cursor_vepv;
-
-/*
- * Implemented GtkObject::destroy
+ * Implemented GObject::dispose
  */
 static void
-pas_card_cursor_destroy (GtkObject *object)
+pas_card_cursor_dispose (GObject *object)
 {
 	PASCardCursor *cursor = PAS_CARD_CURSOR (object);
 
-	if ( cursor->priv )
+	if ( cursor->priv ) {
 		g_free ( cursor->priv );
+		cursor->priv = NULL;
+	}
 
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	if (G_OBJECT_CLASS (parent_class)->dispose)
+		G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 /*
@@ -47,7 +46,7 @@ static CORBA_long
 impl_pas_card_cursor_get_length (PortableServer_Servant  servant,
 			       CORBA_Environment      *ev)
 {
-	PASCardCursor *cursor = PAS_CARD_CURSOR (bonobo_object_from_servant (servant));
+	PASCardCursor *cursor = PAS_CARD_CURSOR (bonobo_object (servant));
 	if ( cursor->priv->get_length )
 		return cursor->priv->get_length( cursor, cursor->priv->data );
 	else
@@ -62,7 +61,7 @@ impl_pas_card_cursor_get_nth (PortableServer_Servant  servant,
 			    const CORBA_long        n,
 			    CORBA_Environment      *ev)
 {
-	PASCardCursor *cursor = PAS_CARD_CURSOR (bonobo_object_from_servant (servant));
+	PASCardCursor *cursor = PAS_CARD_CURSOR (bonobo_object (servant));
 	if ( cursor->priv->get_nth ) {
 		char *vcard = cursor->priv->get_nth( cursor, n, cursor->priv->data );
 		char *retval = CORBA_string_dup (vcard);
@@ -72,134 +71,48 @@ impl_pas_card_cursor_get_nth (PortableServer_Servant  servant,
 		return CORBA_string_dup ("");
 }
 
-/*
- * If you want users to derive classes from your implementation
- * you need to support this method.
- */
-POA_GNOME_Evolution_Addressbook_CardCursor__epv *
-pas_card_cursor_get_epv (void)
-{
-	POA_GNOME_Evolution_Addressbook_CardCursor__epv *epv;
-
-	epv = g_new0 (POA_GNOME_Evolution_Addressbook_CardCursor__epv, 1);
-
-	/*
-	 * This is the method invoked by CORBA
-	 */
-	epv->count  = impl_pas_card_cursor_get_length;
-	epv->getNth = impl_pas_card_cursor_get_nth;
-
-	return epv;
-}
-
-static void
-init_pas_card_cursor_corba_class (void)
-{
-	cursor_vepv.Bonobo_Unknown_epv       = bonobo_object_get_epv ();
-	cursor_vepv.GNOME_Evolution_Addressbook_CardCursor_epv = pas_card_cursor_get_epv ();
-}
-
 static void
 pas_card_cursor_class_init (PASCardCursorClass *klass)
 {
-	GtkObjectClass *object_class = (GtkObjectClass *) klass;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	POA_GNOME_Evolution_Addressbook_CardCursor__epv *epv;
 
-	parent_class = gtk_type_class (bonobo_object_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = pas_card_cursor_destroy;
+	object_class->dispose = pas_card_cursor_dispose;
 
-	init_pas_card_cursor_corba_class ();
+
+	epv = &klass->epv;
+
+	epv->count  = impl_pas_card_cursor_get_length;
+	epv->getNth = impl_pas_card_cursor_get_nth;
 }
 
 static void
 pas_card_cursor_init (PASCardCursor *cursor)
 {
-	cursor->priv = g_new(PASCardCursorPrivate, 1);
+	cursor->priv = g_new0(PASCardCursorPrivate, 1);
 	cursor->priv->get_length = NULL;
 	cursor->priv->get_nth = NULL;
 	cursor->priv->data = NULL;
 }
 
-GtkType
-pas_card_cursor_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (!type){
-		GtkTypeInfo info = {
-			"PASCardCursor",
-			sizeof (PASCardCursor),
-			sizeof (PASCardCursorClass),
-			(GtkClassInitFunc) pas_card_cursor_class_init,
-			(GtkObjectInitFunc) pas_card_cursor_init,
-			NULL, /* reserved 1 */
-			NULL, /* reserved 2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		type = gtk_type_unique (bonobo_object_get_type (), &info);
-	}
-
-	return type;
-}
-
-PASCardCursor *
+static void
 pas_card_cursor_construct (PASCardCursor           *cursor,
-			   GNOME_Evolution_Addressbook_CardCursor     corba_cursor,
 			   PASCardCursorLengthFunc  get_length,
 			   PASCardCursorNthFunc     get_nth,
 			   gpointer data)
 {
-	g_return_val_if_fail (cursor != NULL, NULL);
-	g_return_val_if_fail (PAS_IS_CARD_CURSOR (cursor), NULL);
-	g_return_val_if_fail (corba_cursor != CORBA_OBJECT_NIL, NULL);
+	PASCardCursorPrivate *priv;
 
-	/*
-	 * Call parent constructor
-	 */
-	if (!bonobo_object_construct (BONOBO_OBJECT (cursor), (CORBA_Object) corba_cursor))
-		return NULL;
+	g_return_if_fail (cursor != NULL);
+	g_return_if_fail (PAS_IS_CARD_CURSOR (cursor));
 
-	/*
-	 * Initialize cursor
-	 */
-	cursor->priv->get_length = get_length;
-	cursor->priv->get_nth = get_nth;
-	cursor->priv->data = data;
-	
-	/*
-	 * Success: return the GtkType we were given
-	 */
-	return cursor;
-}
+	priv = cursor->priv;
 
-/*
- * This routine creates the ORBit CORBA server and initializes the
- * CORBA side of things
- */
-static GNOME_Evolution_Addressbook_CardCursor
-create_cursor (BonoboObject *cursor)
-{
-	POA_GNOME_Evolution_Addressbook_CardCursor *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_GNOME_Evolution_Addressbook_CardCursor *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &cursor_vepv;
-
-	CORBA_exception_init (&ev);
-	POA_GNOME_Evolution_Addressbook_CardCursor__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION){
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	/*
-	 * Activates the CORBA object.
-	 */
-	return (GNOME_Evolution_Addressbook_CardCursor) bonobo_object_activate_servant (cursor, servant);
+	priv->get_length   = get_length;
+	priv->get_nth = get_nth;
+	priv->data = data;
 }
 
 PASCardCursor *
@@ -208,19 +121,19 @@ pas_card_cursor_new (PASCardCursorLengthFunc  get_length,
 		     gpointer data)
 {
 	PASCardCursor *cursor;
-	GNOME_Evolution_Addressbook_CardCursor corba_cursor;
 
-	cursor = gtk_type_new (pas_card_cursor_get_type ());
-	corba_cursor = create_cursor (BONOBO_OBJECT (cursor));
+	cursor = g_object_new (PAS_TYPE_CARD_CURSOR, NULL);
 
-	if (corba_cursor == CORBA_OBJECT_NIL){
-		gtk_object_unref (GTK_OBJECT (cursor));
-		return NULL;
-	}
-	
-	return pas_card_cursor_construct (cursor,
-					  corba_cursor,
-					  get_length,
-					  get_nth,
-					  data);
+	pas_card_cursor_construct (cursor,
+				   get_length,
+				   get_nth,
+				   data);
+
+	return cursor;
 }
+
+BONOBO_TYPE_FUNC_FULL (
+		       PASCardCursor,
+		       GNOME_Evolution_Addressbook_CardCursor,
+		       BONOBO_TYPE_OBJECT,
+		       pas_card_cursor);

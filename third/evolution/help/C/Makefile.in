@@ -11,38 +11,72 @@
 # PARTICULAR PURPOSE.
 
 
-# To use this template:
-#     1) Define: figs, docname, lang, omffile, sgml_ents although figs, 
-#        omffile, and sgml_ents may be empty in your Makefile.am which 
-#        will "include" this one 
-#     2) Figures must go under figures/ and be in PNG format
-#     3) You should only have one document per directory 
 #
-#        Note that this makefile forces the directory name under
-#        $prefix/share/gnome/help/ to be the same as the SGML filename
-#        of the document.  This is required by GNOME. eg:
-#        $prefix/share/gnome/help/fish_applet/C/fish_applet.sgml
-#                                 ^^^^^^^^^^^   ^^^^^^^^^^^
-# Definitions:
-#   figs         A list of screenshots which will be included in EXTRA_DIST
-#                Note that these should reside in figures/ and should be .png
-#                files, or you will have to make modifications below.
-#   docname      This is the name of the SGML file: <docname>.sgml
-#   lang         This is the document locale
-#   omffile      This is the name of the OMF file.  Convention is to name
-#                it <docname>-<locale>.omf.
-#   sgml_ents    This is a list of SGML entities which must be installed 
-#                with the main SGML file and included in EXTRA_DIST. 
-# eg:
-#   figs = \
-#          figures/fig1.png            \
-#          figures/fig2.png
+# No modifications of this Makefile should be necessary.
+#
+# To use this template:
+#     1) Define: figdir, docname, lang, omffile, and entities in
+#        your Makefile.am file for each document directory,
+#        although figdir, omffile, and entities may be empty
+#     2) Make sure the Makefile in (1) also includes 
+#	 "include $(top_srcdir)/xmldocs.make" and
+#	 "dist-hook: app-dist-hook".
+#     3) Optionally define 'entities' to hold xml entities which
+#        you would also like installed
+#     4) Figures must go under $(figdir)/ and be in PNG format
+#     5) You should only have one document per directory 
+#     6) Note that the figure directory, $(figdir)/, should not have its
+#        own Makefile since this Makefile installs those figures.
+#
+# example Makefile.am:
+#   figdir = figures
 #   docname = scrollkeeper-manual
 #   lang = C
 #   omffile=scrollkeeper-manual-C.omf
-#   sgml_ents = fdl.sgml
-#   include $(top_srcdir)/help/sgmldocs.make
+#   entities = fdl.xml
+#   include $(top_srcdir)/xmldocs.make
 #   dist-hook: app-dist-hook
+#
+# About this file:
+#	This file was taken from scrollkeeper_example2, a package illustrating
+#	how to install documentation and OMF files for use with ScrollKeeper 
+#	0.3.x and 0.4.x.  For more information, see:
+#		http://scrollkeeper.sourceforge.net/
+#	Version: 0.1.2 (last updated: March 20, 2002)
+#
+
+# ************* Begin of section some packagers may need to modify  **************
+# This variable (docdir) specifies where the documents should be installed.
+# This default value should work for most packages.
+# docdir = $(datadir)/@PACKAGE@/doc/$(docname)/$(lang)
+
+
+# 
+# No modifications of this Makefile should be necessary.
+#
+# This file contains the build instructions for installing OMF files.  It is
+# generally called from the makefiles for particular formats of documentation.
+#
+# Note that you must configure your package with --localstatedir=/var/lib
+# so that the scrollkeeper-update command below will update the database
+# in the standard scrollkeeper directory.
+#
+# If it is impossible to configure with --localstatedir=/var/lib, then
+# modify the definition of scrollkeeper_localstate_dir so that
+# it points to the correct location. Note that you must still use 
+# $(localstatedir) in this or when people build RPMs it will update
+# the real database on their system instead of the one under RPM_BUILD_ROOT.
+#
+# Note: This make file is not incorporated into xmldocs.make because, in
+#       general, there will be other documents install besides XML documents
+#       and the makefiles for these formats should also include this file.
+#
+# About this file:
+#	This file was taken from scrollkeeper_example2, a package illustrating
+#	how to install documentation and OMF files for use with ScrollKeeper
+#	0.3.x and 0.4.x.  For more information, see:
+#		http://scrollkeeper.sourceforge.net/	
+# 	Version: 0.1.2 (last updated: March 20, 2002)
 #
 
 
@@ -95,9 +129,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -119,12 +152,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -132,54 +162,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -194,14 +223,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -211,75 +237,66 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
-figs =  	figures/calendar.png				figures/config-cal.png				figures/config-mail.png				figures/contact-editor.png			figures/contact.png				figures/exchange-identity.png			figures/exchange-receive-options.png		figures/exchange-receive.png			figures/filter-assist-fig.png			figures/filter-new-fig.png			figures/full-1.png				figures/full-2.png				figures/full-3.png				figures/full-4.png				figures/full-5.png				figures/full-6.png				figures/full-7.png				figures/mail-composer.png			figures/mail-druid-pic.png			figures/mail-inbox.png				figures/mail-threaded.png			figures/mainwindow-pic.png			figures/newmsg.png				figures/print-dest.png				figures/print-preview.png			figures/replymsg.png				figures/schedule.png				figures/small_desktop.png			figures/summary.png				figures/vfolder-createrule-fig.png
+figs =  	figures/calendar.png				figures/config-cal.png				figures/config-mail.png				figures/contact-editor.png			figures/contact.png				figures/exchange-identity.png			figures/exchange-receive-options.png		figures/exchange-receive.png			figures/exchange-delegation.png			figures/filter-new-fig.png			figures/folder-bar.png				figures/full-1.png				figures/full-2.png				figures/full-3.png				figures/full-4.png				figures/full-5.png				figures/full-6.png				figures/full-7.png				figures/mail-druid-pic.png			figures/mail-inbox.png				figures/mail-threaded.png			figures/mainwindow-pic.png			figures/newmsg.png				figures/print-dest.png				figures/print-preview.png			figures/replymsg.png				figures/schedule.png				figures/summary.png				figures/vfolder-createrule-fig.png
 
-
-docname = evolution
+figdir = figures
+docname = evolution-1.4
 lang = C
-omffile = evolution-C.omf
-sgml_ents =  	apx-authors.sgml		apx-bugs.sgml			apx-gloss.sgml			apx-fdl.sgml			apx-gpl.sgml			config-prefs.sgml		config-sync.sgml		menuref.sgml			preface.sgml			usage-calendar.sgml		usage-contact.sgml		usage-exec-summary.sgml		usage-exchange.sgml		usage-mail-org.sgml		usage-mail.sgml			usage-mainwindow.sgml		usage-print.sgml		usage-sync.sgml
+omffile = evolution-1.4-C.omf
+entities =  	apx-authors.xml			apx-bugs.xml			apx-fdl.xml			apx-gloss.xml			apx-gpl.xml			config-prefs.xml		config-sync.xml			legal.xml			menuref.xml			preface.xml			usage-calendar.xml		usage-contact.xml		usage-exec-summary.xml		usage-exchange.xml		usage-mail-org.xml		usage-mail.xml			usage-mainwindow.xml		usage-print.xml			usage-sync.xml
 
 
 docdir = $(datadir)/gnome/help/$(docname)/$(lang)
 
-doc_DATA = index.html
+# **************  You should not have to edit below this line  *******************
+xml_files = $(entities) $(docname).xml
 
-sgml_files = $(sgml_ents) $(docname).sgml
-
-omf_dir = $(top_srcdir)/omf-install
-
-EXTRA_DIST = $(sgml_files) $(doc_DATA) $(omffile) $(figs)
-
+EXTRA_DIST = $(xml_files) $(omffile)
 CLEANFILES = omf_timestamp
+
+omf_dest_dir = $(datadir)/omf/@PACKAGE@
+scrollkeeper_localstate_dir = $(localstatedir)/scrollkeeper
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(doc_DATA)
-
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -289,32 +306,13 @@ TAR = tar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/help/sgmldocs.make
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/help/xmldocs.make $(top_srcdir)/help/omf.make
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps help/C/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-
-install-docDATA: $(doc_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(docdir)
-	@list='$(doc_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(docdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(docdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(docdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(docdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-docDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(doc_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(docdir)/$$p; \
-	done
 tags: TAGS
 TAGS:
 
@@ -324,7 +322,6 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = help/C
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/figures
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -347,20 +344,21 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-docDATA
+install-data-am: install-data-local
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-docDATA uninstall-local
+uninstall-am: uninstall-local
 uninstall: uninstall-am
-all-am: Makefile $(DATA)
+all-am: Makefile
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(docdir)
 
 
 mostlyclean-generic:
@@ -392,111 +390,85 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-docDATA install-docDATA tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
+.PHONY: tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-local install-data-am install-data install-am install \
 uninstall-local uninstall-am uninstall all-redirect all-am all \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
-all: index.html omf
-
 omf: omf_timestamp
 
 omf_timestamp: $(omffile)
-	-for file in $(srcdir)/$(omffile); do \
-	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-	  scrollkeeper-preinstall $(docdir)/index.html $$file $(omf_dir)/$$basefile; \
+	-for file in $(omffile); do \
+	  scrollkeeper-preinstall $(docdir)/$(docname).xml $(srcdir)/$$file $$file.out; \
 	done
 	touch omf_timestamp
 
-index.html: $(docname)/index.html
-	-cp $(docname)/index.html .
+install-data-hook-omf:
+	$(mkinstalldirs) $(DESTDIR)$(omf_dest_dir)
+	for file in $(omffile); do \
+		$(INSTALL_DATA) $$file.out $(DESTDIR)$(omf_dest_dir)/$$file; \
+	done
+	-scrollkeeper-update -p $(scrollkeeper_localstate_dir) -o $(DESTDIR)$(omf_dest_dir)
 
-$(docname).sgml: $(sgml_ents)
+uninstall-local-omf:
+	-for file in $(srcdir)/*.omf; do \
+		basefile=`basename $$file`; \
+		rm -f $(omf_dest_dir)/$$basefile; \
+	done
+	-rmdir $(omf_dest_dir)
+	-scrollkeeper-update -p $(scrollkeeper_localstate_dir)
+
+# If the following file is in a subdir (like help/) you need to add that to the path
+
+all: omf
+
+$(docname).xml: $(entities)
 	-ourdir=`pwd`;  \
-        cd $(srcdir);   \
-        cp $(sgml_ents) $$ourdir
+	cd $(srcdir);   \
+	cp $(entities) $$ourdir
 
-# The weird srcdir trick is because the db2html from the Cygnus RPMs
-# cannot handle relative filenames
-$(docname)/index.html: $(srcdir)/$(docname).sgml
-	-srcdir=`cd $(srcdir) && pwd`;			\
-	if test "$(HAVE_JW)" = 'yes' ; then 		\
-		jw -c /etc/sgml/catalog $$srcdir/$(docname).sgml -o $$srcdir/$(docname); \
-	else 						\
-		db2html $$srcdir/$(docname).sgml; 	\
-	 fi
+app-dist-hook:
+	if test "$(figdir)"; then \
+	  $(mkinstalldirs) $(distdir)/$(figdir); \
+	  for file in $(srcdir)/$(figdir)/*.png; do \
+	    basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	    $(INSTALL_DATA) $$file $(distdir)/$(figdir)/$$basefile; \
+	  done \
+	fi
 
-app-dist-hook: index.html
-	-$(mkinstalldirs) $(distdir)/$(docname)/stylesheet-images
-	-$(mkinstalldirs) $(distdir)/figures
-	-cp $(srcdir)/$(docname)/*.html $(distdir)/$(docname)
-	-for file in $(srcdir)/$(docname)/*.css; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  cp $$file $(distdir)/$(docname)/$$basefile ; \
+install-data-local: omf
+	$(mkinstalldirs) $(DESTDIR)$(docdir)
+	for file in $(xml_files); do \
+	  cp $(srcdir)/$$file $(DESTDIR)$(docdir); \
 	done
-	-for file in $(srcdir)/$(docname)/stylesheet-images/*.gif; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  cp $$file $(distdir)/$(docname)/stylesheet-images/$$basefile ; \
-	done
-	-if [ -f topic.dat ]; then \
-		cp $(srcdir)/topic.dat $(distdir); \
-	 fi
+	if test "$(figdir)"; then \
+	  $(mkinstalldirs) $(DESTDIR)$(docdir)/$(figdir); \
+	  for file in $(srcdir)/$(figdir)/*.png; do \
+	    basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	    $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/$(figdir)/$$basefile; \
+	  done \
+	fi
 
-install-data-am: index.html omf
-	-$(mkinstalldirs) $(DESTDIR)$(docdir)/stylesheet-images
-	-$(mkinstalldirs) $(DESTDIR)$(docdir)/figures
-	-$(mkinstalldirs) $(DESTDIR)$(docdir)/sgml
+install-data-hook: install-data-hook-omf
 
-	-for file in $(sgml_files); do \
-         $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(docdir)/sgml ; \
-        done
+uninstall-local: uninstall-local-doc uninstall-local-omf
 
-	-for file in $(srcdir)/$(docname)/*.html $(srcdir)/$(docname)/*.css; do \
-	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/$$basefile; \
-	done
-	-for file in $(srcdir)/figures/*.png; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/figures/$$basefile; \
-	done
-	-for file in $(srcdir)/$(docname)/stylesheet-images/*.gif; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/stylesheet-images/$$basefile; \
-	done
-	-if [ -f $(srcdir)/topic.dat ]; then \
-		$(INSTALL_DATA) $(srcdir)/topic.dat $(DESTDIR)$(docdir); \
-	 fi
-
-$(docname).ps: $(srcdir)/$(docname).sgml
-	-srcdir=`cd $(srcdir) && pwd`; \
-	db2ps $$srcdir/$(docname).sgml
-
-$(docname).rtf: $(srcdir)/$(docname).sgml
-	-srcdir=`cd $(srcdir) && pwd`; \
-	db2ps $$srcdir/$(docname).sgml
-
-uninstall-local:
-	-for file in $(srcdir)/$(docname)/stylesheet-images/*.gif; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  rm -f $(docdir)/stylesheet-images/$$basefile; \
-	done
-	-for file in $(srcdir)/figures/*.png; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  rm -f $(docdir)/figures/$$basefile; \
-	done
-	-for file in $(srcdir)/$(docname)/*.html $(srcdir)/$(docname)/*.css; do \
-	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \
-	  rm -f $(DESTDIR)$(docdir)/$$basefile; \
-	done
-	-for file in $(sgml_files); do \
+uninstall-local-doc:
+	-if test "$(figdir)"; then \
+	  for file in $(srcdir)/$(figdir)/*.png; do \
+	    basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	    rm -f $(docdir)/$(figdir)/$$basefile; \
+	  done; \
+	  rmdir $(DESTDIR)$(docdir)/$(figdir); \
+	fi
+	-for file in $(xml_files); do \
 	  rm -f $(DESTDIR)$(docdir)/$$file; \
 	done
-	-rmdir $(DESTDIR)$(docdir)/stylesheet-images
-	-rmdir $(DESTDIR)$(docdir)/figures
 	-rmdir $(DESTDIR)$(docdir)
+
 dist-hook: app-dist-hook
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

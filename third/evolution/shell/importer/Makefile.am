@@ -1,32 +1,39 @@
-INCLUDES =							\
-	-I$(top_srcdir)						\
-	-I$(top_srcdir)/shell					\
-	-I$(top_builddir)/shell					\
-	-I$(includedir)						\
-	-DG_LOG_DOMAIN=\"Evolution-Importer\" 			\
-	-DEVOLUTION_GLADEDIR=\"$(datadir)/evolution/glade\" 	\
+INCLUDES =					\
+	-I$(top_srcdir)				\
+	-I$(top_srcdir)/shell			\
+	-I$(top_builddir)/shell			\
+	-DG_LOG_DOMAIN=\"Evolution-Importer\"	\
+	-DEVOLUTION_GLADEDIR="\"$(gladedir)\""	\
 	$(SHELL_CFLAGS)
 
-lib_LTLIBRARIES = libevolution-importer.la
+privlib_LTLIBRARIES = libevolution-importer.la
+
+
+# IDL stuff
 
 IDLS = GNOME_Evolution_Importer.idl
 
-IDL_GENERATED = 	\
-	GNOME_Evolution_Importer.h	\
+IDL_GENERATED_H = 			\
+	GNOME_Evolution_Importer.h
+
+IDL_GENERATED_C =				\
 	GNOME_Evolution_Importer-common.c	\
 	GNOME_Evolution_Importer-skels.c	\
 	GNOME_Evolution_Importer-stubs.c
 
-GNOME_Evolution_Importer-impl.o: GNOME_Evolution_Importer.h
+IDL_GENERATED = $(IDL_GENERATED_H) $(IDL_GENERATED_C)
 
-$(IDL_GENERATED): $(IDLS)
-	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`	\
-		$(srcdir)/GNOME_Evolution_Importer.idl
+$(IDL_GENERATED_H): $(IDLS)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(srcdir)/GNOME_Evolution_Importer.idl
 
-idldir = $(datadir)/idl
+$(IDL_GENERATED_C): $(IDL_GENERATED_H)
+
 idl_DATA = $(IDLS)
 
-libevolution_importerincludedir = $(includedir)/evolution/importer
+
+# Component
+
+libevolution_importerincludedir = $(privincludedir)/importer
 libevolution_importer_la_SOURCES = 		\
 	$(IDL_GENERATED)			\
 	evolution-intelligent-importer.c	\
@@ -47,13 +54,13 @@ libevolution_importer_la_LIBADD =		\
 	$(top_builddir)/e-util/libeutil.la 	\
 	$(SHELL_LIBS)
 
-gladedir = $(datadir)/evolution/glade
 glade_DATA = import.glade
 
 EXTRA_DIST = $(glade_DATA) $(IDLS)
 
-BUILT_SOURCES=$(IDL_GENERATED)
+BUILT_SOURCES= $(IDL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
+
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
 

@@ -4,8 +4,9 @@
  * Copyright (C) 2002  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of version 2 of the GNU General Public
- * License as published by the Free Software Foundation.
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +28,7 @@
 #include <config.h>
 #endif
 
-#include <bonobo/bonobo-xobject.h>
+#include <bonobo/bonobo-object.h>
 #include "Evolution-Wombat.h"
 
 #ifdef __cplusplus
@@ -47,18 +48,18 @@ typedef struct _WombatInterfaceCheckPrivate WombatInterfaceCheckPrivate;
 typedef struct _WombatInterfaceCheckClass   WombatInterfaceCheckClass;
 
 struct _WombatInterfaceCheck {
-	BonoboXObject parent;
+	BonoboObject parent;
 };
 
 struct _WombatInterfaceCheckClass {
-	BonoboXObjectClass parent_class;
+	BonoboObjectClass parent_class;
 
 	POA_GNOME_Evolution_WombatInterfaceCheck__epv epv;
 };
 
 
-GtkType               wombat_interface_check_get_type  (void);
-WombatInterfaceCheck *wombat_interface_check_new       (void);
+GType wombat_interface_check_get_type  (void);
+WombatInterfaceCheck *wombat_interface_check_new (void);
 
 #ifdef __cplusplus
 }

@@ -24,10 +24,10 @@
 
 #include <string.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
-#include <libgnomeui/gnome-canvas-text.h>
+#include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
+#include <libgnomecanvas/gnome-canvas-text.h>
+#include <gal/util/e-util.h>
 #include "weekday-picker.h"
 
 
@@ -64,7 +64,7 @@ enum {
 
 static void weekday_picker_class_init (WeekdayPickerClass *class);
 static void weekday_picker_init (WeekdayPicker *wp);
-static void weekday_picker_finalize (GtkObject *object);
+static void weekday_picker_destroy (GtkObject *object);
 
 static void weekday_picker_realize (GtkWidget *widget);
 static void weekday_picker_size_request (GtkWidget *widget, GtkRequisition *requisition);
@@ -77,36 +77,8 @@ static guint wp_signals[LAST_SIGNAL];
 
 
 
-/**
- * weekday_picker_get_type:
- * 
- * Registers the #WeekdayPicker class if necessary, and returns the type ID
- * associated to it.
- * 
- * Return value: The type ID of the #WeekdayPicker class.
- **/
-GtkType
-weekday_picker_get_type (void)
-{
-	static GtkType weekday_picker_type = 0;
-
-	if (!weekday_picker_type) {
-		static const GtkTypeInfo weekday_picker_info = {
-			"WeekdayPicker",
-			sizeof (WeekdayPicker),
-			sizeof (WeekdayPickerClass),
-			(GtkClassInitFunc) weekday_picker_class_init,
-			(GtkObjectInitFunc) weekday_picker_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		weekday_picker_type = gtk_type_unique (GNOME_TYPE_CANVAS, &weekday_picker_info);
-	}
-
-	return weekday_picker_type;
-}
+E_MAKE_TYPE (weekday_picker, "WeekdayPicker", WeekdayPicker,
+	     weekday_picker_class_init, weekday_picker_init, GNOME_TYPE_CANVAS);
 
 /* Class initialization function for the weekday picker */
 static void
@@ -118,19 +90,17 @@ weekday_picker_class_init (WeekdayPickerClass *class)
 	object_class = (GtkObjectClass *) class;
 	widget_class = (GtkWidgetClass *) class;
 
-	parent_class = gtk_type_class (GNOME_TYPE_CANVAS);
+	parent_class = g_type_class_peek_parent (class);
 
 	wp_signals[CHANGED] =
 		gtk_signal_new ("changed",
 				GTK_RUN_FIRST,
-				object_class->type,
+				G_TYPE_FROM_CLASS (object_class),
 				GTK_SIGNAL_OFFSET (WeekdayPickerClass, changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 
-	gtk_object_class_add_signals (object_class, wp_signals, LAST_SIGNAL);
-
-	object_class->finalize = weekday_picker_finalize;
+	object_class->destroy = weekday_picker_destroy;
 
 	widget_class->realize = weekday_picker_realize;
 	widget_class->size_request = weekday_picker_size_request;
@@ -201,16 +171,12 @@ create_items (WeekdayPicker *wp)
 		priv->boxes[i] = gnome_canvas_item_new (parent,
 							GNOME_TYPE_CANVAS_RECT,
 							NULL);
-		gtk_signal_connect (GTK_OBJECT (priv->boxes[i]), "event",
-				    GTK_SIGNAL_FUNC (day_event_cb),
-				    wp);
+		g_signal_connect (priv->boxes[i], "event", G_CALLBACK (day_event_cb), wp);
 
 		priv->labels[i] = gnome_canvas_item_new (parent,
 							 GNOME_TYPE_CANVAS_TEXT,
 							 NULL);
-		gtk_signal_connect (GTK_OBJECT (priv->labels[i]), "event",
-				    GTK_SIGNAL_FUNC (day_event_cb),
-				    wp);
+		g_signal_connect (priv->labels[i], "event", G_CALLBACK (day_event_cb), wp);
 	}
 }
 
@@ -231,7 +197,7 @@ weekday_picker_init (WeekdayPicker *wp)
 
 /* Finalize handler for the weekday picker */
 static void
-weekday_picker_finalize (GtkObject *object)
+weekday_picker_destroy (GtkObject *object)
 {
 	WeekdayPicker *wp;
 	WeekdayPickerPrivate *priv;
@@ -245,8 +211,8 @@ weekday_picker_finalize (GtkObject *object)
 	g_free (priv);
 	wp->priv = NULL;
 
-	if (GTK_OBJECT_CLASS (parent_class)->finalize)
-		(* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
+	if (GTK_OBJECT_CLASS (parent_class)->destroy)
+		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void
@@ -296,13 +262,30 @@ colorize_items (WeekdayPicker *wp)
 }
 
 /* Configures the items in the weekday picker by setting their attributes. */
+static char *
+get_day_text (int day_index)
+{
+	const char *str = _("SMTWTFS");
+	char *day;
+	int char_size = 0;
+
+	day = g_utf8_offset_to_pointer (str, day_index);
+
+	/* we use strlen because we actually want to count bytes */
+	if (day_index == 6)
+		char_size = strlen (day); 
+	else
+		char_size = strlen (day) - strlen (g_utf8_find_next_char (day, NULL));
+
+	return g_strndup (day, char_size);
+}
+
 static void
 configure_items (WeekdayPicker *wp)
 {
 	WeekdayPickerPrivate *priv;
 	int width, height;
 	int box_width;
-	const char *str;
 	int i;
 
 	priv = wp->priv;
@@ -311,7 +294,6 @@ configure_items (WeekdayPicker *wp)
 	height = GTK_WIDGET (wp)->allocation.height;
 
 	box_width = (width - 1) / 7;
-	str = _("SMTWTFS");
 
 	for (i = 0; i < 7; i++) {
 		char *c;
@@ -329,10 +311,12 @@ configure_items (WeekdayPicker *wp)
 				       "width_pixels", 0,
 				       NULL);
 
-		c = g_strndup (str + day, 1);
+		c = get_day_text (day);
 		gnome_canvas_item_set (priv->labels[i],
 				       "text", c,
-				       "font_gdk", GTK_WIDGET (wp)->style->font,
+#if 0
+				       "font_gdk", gtk_style_get_font (gtk_widget_get_style (GTK_WIDGET (wp))),
+#endif
 				       "x", (double) (i * box_width) + box_width / 2.0,
 				       "y", (double) (1 + PADDING),
 				       "anchor", GTK_ANCHOR_N,
@@ -395,24 +379,36 @@ weekday_picker_style_set (GtkWidget *widget, GtkStyle *previous_style)
 	WeekdayPicker *wp;
 	WeekdayPickerPrivate *priv;
 	int max_width;
-	const char *str;
-	int i, len;
+	int i;
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
+	PangoLayout *layout;
 
 	wp = WEEKDAY_PICKER (widget);
 	priv = wp->priv;
 
-	priv->font_ascent = widget->style->font->ascent;
-	priv->font_descent = widget->style->font->descent;
+	/* Set up Pango prerequisites */
+	font_desc = gtk_widget_get_style (widget)->font_desc;
+	pango_context = gtk_widget_get_pango_context (widget);
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
+	layout = pango_layout_new (pango_context);
+
+	priv->font_ascent = PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics));
+	priv->font_descent = PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics));
 
 	max_width = 0;
 
-	str = _("SMTWTFS");
-	len = strlen (str);
-
-	for (i = 0; i < len; i++) {
+	for (i = 0; i < 7; i++) {
+		char *c;
 		int w;
 
-		w = gdk_char_measure (widget->style->font, str[i]);
+		c = get_day_text (i);
+		pango_layout_set_text (layout, c, strlen (c));
+		pango_layout_get_pixel_size (layout, &w, NULL);
+		g_free (c);
+		
 		if (w > max_width)
 			max_width = w;
 	}
@@ -420,6 +416,8 @@ weekday_picker_style_set (GtkWidget *widget, GtkStyle *previous_style)
 	priv->max_letter_width = max_width;
 
 	configure_items (wp);
+	g_object_unref (layout);
+	pango_font_metrics_unref (font_metrics);
 
 	if (GTK_WIDGET_CLASS (parent_class)->style_set)
 		(* GTK_WIDGET_CLASS (parent_class)->style_set) (widget, previous_style);
@@ -438,7 +436,7 @@ weekday_picker_style_set (GtkWidget *widget, GtkStyle *previous_style)
 GtkWidget *
 weekday_picker_new (void)
 {
-	return gtk_type_new (TYPE_WEEKDAY_PICKER);
+	return g_object_new (TYPE_WEEKDAY_PICKER, NULL);
 }
 
 /**

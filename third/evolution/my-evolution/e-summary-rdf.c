@@ -28,16 +28,16 @@
 #include <glib.h>
 #include <gtk/gtkmain.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-
 
 #include <gal/widgets/e-unicode.h>
 
 #include <libsoup/soup.h>
+
+#include <string.h>
 
 #include "e-summary.h"
 
@@ -63,7 +63,7 @@ typedef struct _RDF {
 	SoupMessage *message;
 } RDF;
 
-int xmlSubstituteEntitiesDefaultValue = 1;
+extern int xmlSubstituteEntitiesDefaultValue;
 
 char *
 e_summary_rdf_get_html (ESummary *summary)
@@ -103,8 +103,8 @@ layer_find (xmlNodePtr node,
 		printf("%s.\n", node->name);
 #endif
 		if (strcasecmp (node->name, match)==0) {
-			if (node->childs != NULL && node->childs->content != NULL) {
-				return node->childs->content;
+			if (node->children != NULL && node->children->content != NULL) {
+				return node->children->content;
 			} else {
 				return fail;
 			}
@@ -180,6 +180,7 @@ tree_walk (xmlNodePtr root,
 	int i;
 	char *t, *u;
 	char *tmp;
+	char *charset;
 
 	if (r->summary->preferences == NULL) {
 		limit = 10;
@@ -187,19 +188,28 @@ tree_walk (xmlNodePtr root,
 		limit = r->summary->preferences->limit;
 	}
 
+	/* check in-memory encoding first, fallback to transport encoding, which may or may not be correct */
+	if (r->cache->charset == XML_CHAR_ENCODING_UTF8
+	    || r->cache->charset == XML_CHAR_ENCODING_ASCII) {
+		charset = NULL;
+	} else {
+		/* bad/missing encoding, fallback to latin1 (locale?) */
+		charset = r->cache->encoding ? r->cache->encoding : "iso-8859-1";
+	}
+
 	/* FIXME: Need arrows */
 	if (r->shown == FALSE) {
 		char *p;
 
 		/* FIXME: Hash table & UID */
-		p = g_strdup_printf ("<font size=\"-2\"><a href=\"rdf://%d\">(+)</a></font>", GPOINTER_TO_INT (r));
+		p = g_strdup_printf ("<a href=\"rdf://%d\" style=\"text-decoration: none; color: black\">&#x25b6;</a>", GPOINTER_TO_INT (r));
 		g_string_append (html, p);
 		g_free (p);
 	} else {
 		char *p;
 
 		/* FIXME: Hash table & UID */
-		p = g_strdup_printf ("<font size=\"-2\"><a href=\"rdf://%d\">(-)</a></font>", GPOINTER_TO_INT (r));
+		p = g_strdup_printf ("<a href=\"rdf://%d\" style=\"text-decoration: none; color: black\">&#x25BC;</a>", GPOINTER_TO_INT (r));
 		g_string_append (html, p);
 		g_free (p);
 	}
@@ -213,12 +223,12 @@ tree_walk (xmlNodePtr root,
 			printf ("%p, %s\n", walk, walk->name);
 #endif
 			if (strcasecmp (walk->name, "rdf") == 0) {
-				rewalk = walk->childs;
+				rewalk = walk->children;
 				walk = walk->next;
 				continue;
 			}
 			if (strcasecmp (walk->name, "rss") == 0){
-				rewalk = walk->childs;
+				rewalk = walk->children;
 				walk = walk->next;
 				continue;
 			}
@@ -228,7 +238,7 @@ tree_walk (xmlNodePtr root,
 #endif
 			if (strcasecmp (walk->name, "channel") == 0) {
 				channel = walk;
-				rewalk = channel->childs;
+				rewalk = channel->children;
 			}
 			if (strcasecmp (walk->name, "image") == 0) {
 				image = walk;
@@ -246,20 +256,22 @@ tree_walk (xmlNodePtr root,
 		return;
 	}
 
-	t = layer_find(channel->childs, "title", "");
-	u = layer_find(channel->childs, "link", "");
+	t = layer_find(channel->children, "title", "");
+	u = layer_find(channel->children, "link", "");
 
 	if (*u != '\0')
-		g_string_sprintfa (html, "<a href=\"%s\">", u);
-	if (r->cache->encoding)
-		t = e_utf8_from_charset_string (r->cache->encoding, t);
-	else
-		t = e_utf8_from_locale_string (t);
-	g_string_append (html, t);
-	g_free (t);
-	if (*u != '\0') {
-		g_string_append (html, "</a>");
+		g_string_sprintfa (html, "<a href=\"%s\" style=\"text-decoration: none; color: black;\"><b>", u);
+
+	if (charset) {
+		char *tmp = e_utf8_from_charset_string (charset, t);
+		g_string_append (html, tmp);
+		g_free (tmp);
+	} else {
+		g_string_append (html, t);
 	}
+
+	if (*u != '\0')
+		g_string_append (html, "</a>");
 	g_string_append (html, "</b></dt>");
 
 	if (r->shown == FALSE) {
@@ -271,20 +283,21 @@ tree_walk (xmlNodePtr root,
 
 	items = MIN (limit, items);
 	for (i = 0; i < items; i++) {
-		char *p = layer_find (item[i]->childs, "title", "No information");
+		char *p = layer_find (item[i]->children, "title", "No information");
 		
-		tmp = g_strdup_printf ("<LI><font size=\"-1\"><A href=\"%s\">\n", layer_find_url(item[i]->childs, "link", ""));
+		tmp = g_strdup_printf ("<LI><font size=\"-1\"><A href=\"%s\" style=\"text-decoration: none; color: black;\">\n", layer_find_url(item[i]->children, "link", ""));
 		g_string_append (html, tmp);
 		g_free (tmp);
-		
-		if (r->cache->encoding)
-			p = e_utf8_from_charset_string (r->cache->encoding, p);
-		else
-			p = e_utf8_from_locale_string (p);
-		tmp = g_strdup_printf ("%s\n</A></font></li>", p);
-		g_free (p);
-		g_string_append (html, tmp);
-		g_free (tmp);
+
+		if (charset) {
+			char *tmp = e_utf8_from_charset_string (charset, p);
+			g_string_append (html, tmp);
+			g_free (tmp);
+		} else {
+			g_string_append (html, p);
+		}
+
+		g_string_append (html, "\n</A></font></li>");
 	}
 	g_string_append (html, "</UL>");
 }
@@ -298,18 +311,11 @@ display_doc (RDF *r)
 			     "width=\"48\" height=\"48\">");
 
 	if (r->cache == NULL) {
-		char *tmp_utf, *str;
-
-		str = g_strdup_printf ("<b>%s:</b><br>%s", _("Error downloading RDF"),
-				       r->uri);
-		tmp_utf = e_utf8_from_locale_string (str);
-		g_free (str);
-
-		g_string_append (html, tmp_utf);
-		g_string_append (html, "</dt>");
-		g_free (tmp_utf);
+		g_string_append_printf (html, "<b>%s:</b><br>%s</dt>",
+					_("Error downloading RDF"),
+					r->uri);
 	} else {
-		tree_walk (r->cache->root, r, html);
+		tree_walk (xmlDocGetRootElement (r->cache), r, html);
 	}
 
 	g_free (r->html);
@@ -342,6 +348,7 @@ message_finished (SoupMessage *msg,
 		r->cache = NULL;
 	}
 
+	xmlSubstituteEntitiesDefaultValue = 1;
 	doc = xmlParseMemory (msg->response.body, msg->response.length);
 	r->cache = doc;
 	r->message = NULL;
@@ -356,7 +363,7 @@ e_summary_rdf_update (ESummary *summary)
 	GList *r;
 
 	if (summary->rdf->online == FALSE) {
-		g_warning ("%s: Repolling but offline", __FUNCTION__);
+		g_warning ("%s: Repolling but offline", G_GNUC_FUNCTION);
 		return TRUE;
 	}
 
@@ -504,9 +511,11 @@ e_summary_rdf_set_online (ESummary *summary,
 
 	if (online == TRUE) {
 		e_summary_rdf_update (summary);
-		rdf->timeout = gtk_timeout_add (summary->preferences->rdf_refresh_time * 1000,
-						(GtkFunction) e_summary_rdf_update,
-						summary);
+
+		if (summary->preferences->rdf_refresh_time != 0)
+			rdf->timeout = gtk_timeout_add (summary->preferences->rdf_refresh_time * 1000,
+							(GtkFunction) e_summary_rdf_update,
+							summary);
 	} else {
 		for (p = rdf->rdfs; p; p = p->next) {
 			RDF *r;
@@ -531,12 +540,15 @@ e_summary_rdf_init (ESummary *summary)
 	ESummaryPrefs *prefs;
 	ESummaryRDF *rdf;
 	ESummaryConnection *connection;
+	GSList *p;
 	int timeout;
 
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (IS_E_SUMMARY (summary));
 
 	prefs = summary->preferences;
+	g_assert (prefs != NULL);
+
 	rdf = g_new0 (ESummaryRDF, 1);
 	summary->rdf = rdf;
 
@@ -553,22 +565,19 @@ e_summary_rdf_init (ESummary *summary)
 	e_summary_add_online_connection (summary, connection);
 
 	e_summary_add_protocol_listener (summary, "rdf", e_summary_rdf_protocol, rdf);
-	if (prefs == NULL) {
-		e_summary_rdf_add_uri (summary, "http://linuxtoday.com/backend/my-netscape.rdf");
-		e_summary_rdf_add_uri (summary, "http://www.salon.com/feed/RDF/salon_use.rdf");
-		timeout = 600;
-	} else {
-		GList *p;
 
-		for (p = prefs->rdf_urls; p; p = p->next) {
-			e_summary_rdf_add_uri (summary, p->data);
-		}
-		timeout = prefs->rdf_refresh_time;
+	for (p = prefs->rdf_urls; p; p = p->next) {
+		e_summary_rdf_add_uri (summary, p->data);
 	}
+	timeout = prefs->rdf_refresh_time;
 
 	e_summary_rdf_update (summary);
-	rdf->timeout = gtk_timeout_add (timeout * 1000,
-					(GtkFunction) e_summary_rdf_update, summary);
+
+	if (rdf->timeout == 0)
+		rdf->timeout = 0;
+	else
+		rdf->timeout = gtk_timeout_add (timeout * 1000,
+						(GtkFunction) e_summary_rdf_update, summary);
 
 	return;
 }
@@ -578,6 +587,7 @@ e_summary_rdf_reconfigure (ESummary *summary)
 {
 	ESummaryRDF *rdf;
 	GList *old, *p;
+	GSList *sp;
 
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (IS_E_SUMMARY (summary));
@@ -585,7 +595,10 @@ e_summary_rdf_reconfigure (ESummary *summary)
 	rdf = summary->rdf;
 
 	/* Stop timeout */
-	gtk_timeout_remove (rdf->timeout);
+	if (rdf->timeout != 0) {
+		gtk_timeout_remove (rdf->timeout);
+		rdf->timeout = 0;
+	}
 
 	old = rdf->rdfs;
 	rdf->rdfs = NULL;
@@ -597,11 +610,14 @@ e_summary_rdf_reconfigure (ESummary *summary)
 	}
 	g_list_free (old);
 
-	for (p = summary->preferences->rdf_urls; p; p = p->next) {
-		e_summary_rdf_add_uri (summary, p->data);
+	for (sp = summary->preferences->rdf_urls; sp; sp = sp->next) {
+		e_summary_rdf_add_uri (summary, sp->data);
 	}
 
-	rdf->timeout = gtk_timeout_add (summary->preferences->rdf_refresh_time * 1000, (GtkFunction) e_summary_rdf_update, summary);
+	if (summary->preferences->rdf_refresh_time != 0)
+		rdf->timeout = gtk_timeout_add (summary->preferences->rdf_refresh_time * 1000,
+						(GtkFunction) e_summary_rdf_update, summary);
+
 	e_summary_rdf_update (summary);
 }
 
@@ -616,9 +632,9 @@ e_summary_rdf_free (ESummary *summary)
 
 	rdf = summary->rdf;
 
-	if (rdf->timeout != 0) {
+	if (rdf->timeout != 0)
 		gtk_timeout_remove (rdf->timeout);
-	}
+
 	for (p = rdf->rdfs; p; p = p->next) {
 		RDF *r = p->data;
 

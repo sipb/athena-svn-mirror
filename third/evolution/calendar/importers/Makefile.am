@@ -1,10 +1,12 @@
-bin_PROGRAMS = evolution-calendar-importer
+importersdir = $(privlibdir)/evolution-calendar-importers
 
-sounddir = $(datadir)/evolution/sounds
+importers_LTLIBRARIES = libevolution-calendar-importers.la
+
+# privlibexec_PROGRAMS = evolution-calendar-importer
 
 INCLUDES = 						\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
-	-DEVOLUTION_SOUNDDIR=\""$(sounddir)"\"		\
+	-DEVOLUTION_SOUNDDIR=\""$(soundsdir)"\"		\
 	-DG_LOG_DOMAIN=\"Evolution-Importer\"		\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)/shell				\
@@ -18,26 +20,39 @@ INCLUDES = 						\
 	-I$(top_srcdir)/libical/src/libicalvcal		\
 	$(EVOLUTION_CALENDAR_CFLAGS)
 
-evolution_calendar_importer_SOURCES = 	\
-	evolution-calendar-importer.h	\
-	icalendar-importer.c		\
+libevolution_calendar_importers_la_SOURCES = \
+	evolution-calendar-importer.h	     \
+	icalendar-importer.c		     \
 	main.c
 
-evolution_calendar_importer_LDADD =				\
-	$(top_builddir)/shell/libeshell.la			\
+libevolution_calendar_importers_la_LDFLAGS = -avoid-version -module
+
+libevolution_calendar_importers_la_LIBADD = \
 	$(top_builddir)/shell/importer/libevolution-importer.la \
-	$(top_builddir)/calendar/cal-util/libcal-util.la	\
-	$(top_builddir)/calendar/cal-client/libcal-client.la	\
-	$(top_builddir)/libwombat/libwombat.la			\
-	$(top_builddir)/libical/src/libical/libical-evolution.la	\
 	$(top_builddir)/libical/src/libicalvcal/libicalvcal-evolution.la \
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(IMPORTERS_LIBS)
 
-oafdir = $(datadir)/oaf
-oaf_in_files = GNOME_Evolution_Calendar_Importer.oaf.in
+# evolution_calendar_importer_SOURCES = 	\
+# 	evolution-calendar-importer.h	\
+# 	icalendar-importer.c		\
+# 	main.c
+#
+# evolution_calendar_importer_LDADD =				\
+# 	$(top_builddir)/shell/libeshell.la			\
+# 	$(top_builddir)/shell/importer/libevolution-importer.la \
+# 	$(top_builddir)/calendar/cal-util/libcal-util.la	\
+# 	$(top_builddir)/calendar/cal-client/libcal-client.la	\
+# 	$(top_builddir)/libwombat/libwombat.la			\
+# 	$(top_builddir)/libical/src/libical/libical-evolution.la	\
+# 	$(top_builddir)/libical/src/libicalvcal/libicalvcal-evolution.la \
+# 	$(EVOLUTION_CALENDAR_LIBS)
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_in_files = GNOME_Evolution_Calendar_Importer.server.in.in
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
+server_DATA = $(server_in_files:.server.in.in=.server)
+%.server.in: %.server.in.in
+	sed -e "s|\@IMPORTERSDIR\@|$(importersdir)|" $< > $@
 
-@XML_I18N_MERGE_OAF_RULE@
+EXTRA_DIST = $(server_in_files) $(server_DATA)
+
+@INTLTOOL_SERVER_RULE@

@@ -103,15 +103,11 @@ AC_DEFUN(EVO_LDAP_CHECK, [
 	esac
 
 	if test "$with_openldap" != no; then
-		AC_DEFINE(HAVE_LDAP)
+		AC_DEFINE(HAVE_LDAP,1,[Define if you have LDAP support])
 
 		case $with_static_ldap in
 		no|"")
-			if test -f $with_openldap/lib/libldap.la; then
-				with_static_ldap=yes
-			else
-				with_static_ldap=no
-			fi
+			with_static_ldap=no
 			;;
 		*)
 			with_static_ldap=yes
@@ -167,4 +163,20 @@ AC_DEFUN(EVO_LDAP_CHECK, [
 		AC_SUBST(LDAP_LIBS)
 	fi
 	AM_CONDITIONAL(ENABLE_LDAP, test $with_openldap != no)
+])
+
+# EVO_PTHREAD_CHECK
+AC_DEFUN([EVO_PTHREAD_CHECK],[
+	PTHREAD_LIB=""
+	AC_CHECK_LIB(pthread, pthread_create, PTHREAD_LIB="-lpthread",
+		[AC_CHECK_LIB(pthreads, pthread_create, PTHREAD_LIB="-lpthreads",
+		    [AC_CHECK_LIB(c_r, pthread_create, PTHREAD_LIB="-lc_r",
+			[AC_CHECK_LIB(pthread, __pthread_attr_init_system, PTHREAD_LIB="-lpthread",
+				[AC_CHECK_FUNC(pthread_create)]
+			)]
+		    )]
+		)]
+	)
+	AC_SUBST(PTHREAD_LIB)
+	AC_PROVIDE([EVO_PTHREAD_CHECK])
 ])

@@ -25,7 +25,7 @@
 #define _E_WEEK_VIEW_H_
 
 #include <gtk/gtktable.h>
-#include <libgnomeui/gnome-canvas.h>
+#include <libgnomecanvas/gnome-canvas.h>
 #include <gal/widgets/e-popup-menu.h>
 
 #include "gnome-cal.h"
@@ -105,6 +105,7 @@ typedef enum
 	E_WEEK_VIEW_COLOR_EVENT_TEXT,
 	E_WEEK_VIEW_COLOR_GRID,
 	E_WEEK_VIEW_COLOR_SELECTED,
+	E_WEEK_VIEW_COLOR_SELECTED_UNFOCUSSED,
 	E_WEEK_VIEW_COLOR_DATES,
 	E_WEEK_VIEW_COLOR_DATES_SELECTED,
 	E_WEEK_VIEW_COLOR_TODAY,
@@ -270,7 +271,7 @@ struct _EWeekView
 	gboolean use_small_font;
 
 	/* Small font to display the minutes. */
-	GdkFont *small_font;
+	PangoFontDescription *small_font_desc;
 
 	/* The widths of various pieces of text, used to determine which of
 	   several date formats to display, set in e_week_view_style_set(). */
@@ -464,9 +465,12 @@ void       e_week_view_copy_clipboard           (EWeekView      *week_view);
 void       e_week_view_paste_clipboard          (EWeekView      *week_view);
 
 void       e_week_view_delete_event		(EWeekView      *week_view);
+void       e_week_view_delete_occurrence        (EWeekView      *week_view);
 
 /* Returns the number of selected events (0 or 1 at present). */
 gint	   e_week_view_get_num_events_selected	(EWeekView	*week_view);
+
+CalComponent *e_week_view_get_selected_event    (EWeekView      *week_view);
 
 /*
  * Internal functions called by the associated canvas items.

@@ -2,21 +2,23 @@
 #ifndef _E_ADDRESSBOOK_MODEL_H_
 #define _E_ADDRESSBOOK_MODEL_H_
 
+#include <glib.h>
+#include <glib-object.h>
 #include "addressbook/backend/ebook/e-book.h"
 #include "addressbook/backend/ebook/e-book-view.h"
 #include "addressbook/backend/ebook/e-card-simple.h"
 
-#define E_ADDRESSBOOK_MODEL_TYPE        (e_addressbook_model_get_type ())
-#define E_ADDRESSBOOK_MODEL(o)          (GTK_CHECK_CAST ((o), E_ADDRESSBOOK_MODEL_TYPE, EAddressbookModel))
-#define E_ADDRESSBOOK_MODEL_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), E_ADDRESSBOOK_MODEL_TYPE, EAddressbookModelClass))
-#define E_IS_ADDRESSBOOK_MODEL(o)       (GTK_CHECK_TYPE ((o), E_ADDRESSBOOK_MODEL_TYPE))
-#define E_IS_ADDRESSBOOK_MODEL_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), E_ADDRESSBOOK_MODEL_TYPE))
+#define E_TYPE_ADDRESSBOOK_MODEL        (e_addressbook_model_get_type ())
+#define E_ADDRESSBOOK_MODEL(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_ADDRESSBOOK_MODEL, EAddressbookModel))
+#define E_ADDRESSBOOK_MODEL_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_ADDRESSBOOK_MODEL, EAddressbookModelClass))
+#define E_IS_ADDRESSBOOK_MODEL(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_ADDRESSBOOK_MODEL))
+#define E_IS_ADDRESSBOOK_MODEL_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_ADDRESSBOOK_MODEL))
 
 typedef struct _EAddressbookModel EAddressbookModel;
 typedef struct _EAddressbookModelClass EAddressbookModelClass;
 
 struct _EAddressbookModel {
-	GtkObject parent;
+	GObject parent;
 
 	/* item specific fields */
 	EBook *book;
@@ -29,7 +31,9 @@ struct _EAddressbookModel {
 	int data_count;
 	int allocated_count;
 
-	int create_card_id, remove_card_id, modify_card_id, status_message_id, writable_status_id, sequence_complete_id, backend_died_id;
+	int create_card_id, remove_card_id, modify_card_id;
+	int status_message_id, writable_status_id, sequence_complete_id;
+	int backend_died_id;
 
 	guint search_in_progress : 1;
 	guint editable : 1;
@@ -39,12 +43,13 @@ struct _EAddressbookModel {
 
 
 struct _EAddressbookModelClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/*
 	 * Signals
 	 */
 	void (*writable_status)    (EAddressbookModel *model, gboolean writable);
+	void (*search_started)     (EAddressbookModel *model);
 	void (*search_result)      (EAddressbookModel *model, EBookViewStatus status);
 	void (*status_message)     (EAddressbookModel *model, const gchar *message);
 	void (*folder_bar_message) (EAddressbookModel *model, const gchar *message);
@@ -57,7 +62,7 @@ struct _EAddressbookModelClass {
 };
 
 
-GtkType            e_addressbook_model_get_type                  (void);
+GType              e_addressbook_model_get_type                  (void);
 EAddressbookModel *e_addressbook_model_new                       (void);
 
 /* Returns object with ref count of 1. */

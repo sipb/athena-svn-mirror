@@ -200,9 +200,9 @@ button_realize_cb (GtkWidget *widget,
 	gtk_container_add (GTK_CONTAINER (priv->button), hbox);
 
 	gdk_pixmap_unref (close_pixmap);
-	gdk_bitmap_unref (close_mask);
+	g_object_unref (close_mask);
 	gdk_pixmap_unref (pin_pixmap);
-	gdk_bitmap_unref (pin_mask);
+	g_object_unref (pin_mask);
 
 	show_and_hide_pixmaps_according_to_mode (title_bar);
 }
@@ -231,10 +231,10 @@ label_button_press_event_cb (GtkWidget *widget,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	ETitleBar *title_bar;
 	ETitleBarPrivate *priv;
@@ -244,38 +244,36 @@ destroy (GtkObject *object)
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (ETitleBarClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = (GtkObjectClass*) klass;
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = impl_finalize;
 
-	parent_class = gtk_type_class (gtk_frame_get_type ());
+	parent_class = g_type_class_ref(gtk_frame_get_type ());
 
 	signals[LABEL_BUTTON_PRESS_EVENT] = 
 		gtk_signal_new ("label_button_press_event",
 				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ETitleBarClass, label_button_press_event),
+				GTK_CLASS_TYPE (object_class),
+				G_STRUCT_OFFSET (ETitleBarClass, label_button_press_event),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1,
-				GTK_TYPE_GDK_EVENT);
+				GTK_TYPE_POINTER);
 
 	signals[BUTTON_CLICKED] = 
 		gtk_signal_new ("button_clicked",
 				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (ETitleBarClass, button_clicked),
+				GTK_CLASS_TYPE (object_class),
+				G_STRUCT_OFFSET (ETitleBarClass, button_clicked),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
@@ -307,7 +305,7 @@ e_title_bar_construct (ETitleBar *title_bar,
 
 	priv = title_bar->priv;
 
-	priv->label = e_clipped_label_new (title);
+	priv->label = e_clipped_label_new (title, PANGO_WEIGHT_BOLD, 1.0);
 	gtk_misc_set_alignment (GTK_MISC (priv->label), 0.0, 0.5);
 	gtk_misc_set_padding (GTK_MISC (priv->label), 2, 0);
 	gtk_widget_show (priv->label);
@@ -325,12 +323,12 @@ e_title_bar_construct (ETitleBar *title_bar,
 
 	gtk_container_add (GTK_CONTAINER (title_bar), hbox);
 
-	gtk_signal_connect (GTK_OBJECT (priv->button), "realize",
-			    GTK_SIGNAL_FUNC (button_realize_cb), title_bar);
-	gtk_signal_connect (GTK_OBJECT (priv->button), "clicked",
-			    GTK_SIGNAL_FUNC (button_clicked_cb), title_bar);
-	gtk_signal_connect (GTK_OBJECT (priv->label), "button_press_event",
-			    GTK_SIGNAL_FUNC (label_button_press_event_cb), title_bar);
+	g_signal_connect((priv->button), "realize",
+			    G_CALLBACK (button_realize_cb), title_bar);
+	g_signal_connect((priv->button), "clicked",
+			    G_CALLBACK (button_clicked_cb), title_bar);
+	g_signal_connect((priv->label), "button_press_event",
+			    G_CALLBACK (label_button_press_event_cb), title_bar);
 }
 
 GtkWidget *

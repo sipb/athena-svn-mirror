@@ -31,8 +31,6 @@
 #include "e-summary-tasks.h"
 #include "e-summary.h"
 
-#include "e-util/e-config-listener.h"
-
 #include <cal-client/cal-client.h>
 #include <cal-util/timeutil.h>
 
@@ -41,8 +39,9 @@
 #include <bonobo/bonobo-listener.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-object.h>
-#include <bonobo-conf/bonobo-config-database.h>
-#include <liboaf/liboaf.h>
+
+#include <gconf/gconf-client.h>
+
 
 #define MAX_RELOAD_TRIES 10
 
@@ -55,7 +54,8 @@ struct _ESummaryTasks {
 
 	char *default_uri;
 
-	EConfigListener *config_listener;
+	GConfClient *gconf_client;
+	int gconf_value_changed_handler_id;
 
 	int cal_open_reload_timeout_id;
 	int reload_count;
@@ -322,30 +322,22 @@ generate_html (gpointer data)
 	}
 
 	if (uids == NULL) {
-		char *s1, *s2;
-
-		s1 = e_utf8_from_locale_string (_("Tasks"));
-		s2 = e_utf8_from_locale_string (_("No tasks"));
 		g_free (tasks->html);
 		tasks->html = g_strconcat ("<dl><dt><img src=\"myevo-post-it.png\" align=\"middle\" "
-					   "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"", tasks->default_uri, "\">",
-					   s1, "</a></b></dt><dd><b>", s2, "</b></dd></dl>", NULL);
-		g_free (s1);
-		g_free (s2);
-
+					   "alt=\"\" width=\"48\" height=\"48\"> "
+					   "<b><a href=\"", tasks->default_uri, "\">",
+					   _("Tasks"),
+					   "</a></b></dt><dd><b>", _("No tasks"), "</b></dd></dl>",
+					   NULL);
 		return FALSE;
 	} else {
-		char *s;
-
 		uids = cal_list_sort (uids, sort_uids, tasks->client);
 		string = g_string_new (NULL);
 		g_string_sprintf (string, "<dl><dt><img src=\"myevo-post-it.png\" align=\"middle\" "
 				  "alt=\"\" width=\"48\" height=\"48\"> <b><a href=\"%s\">", tasks->default_uri);
-		
-		s = e_utf8_from_locale_string (_("Tasks"));
-		g_string_append (string, s);
-		g_free (s);
+		g_string_append (string, _("Tasks"));
 		g_string_append (string, "</a></b></dt><dd>");
+
 		for (l = uids; l; l = l->next) {
 			char *uid;
 			CalComponent *comp;
@@ -378,11 +370,11 @@ generate_html (gpointer data)
 						       text.value);
 #endif
 				cal_component_free_icaltimetype (completed);
-				gtk_object_unref (GTK_OBJECT (comp));
+				g_object_unref (comp);
 				continue;
 			}
 
-			gtk_object_unref (GTK_OBJECT (comp));
+			g_object_unref (comp);
 			g_string_append (string, tmp);
 			g_free (tmp);
 		}
@@ -454,10 +446,10 @@ e_summary_tasks_protocol (ESummary *summary,
 
 	/* Get the factory */
 	CORBA_exception_init (&ev);
-	factory = oaf_activate_from_id ("OAFIID:GNOME_Evolution_Calendar_CompEditorFactory", 0, NULL, &ev);
+	factory = bonobo_activation_activate_from_id ("OAFIID:GNOME_Evolution_Calendar_CompEditorFactory", 0, NULL, &ev);
 	if (BONOBO_EX (&ev)) {
-		g_message ("%s: Could not activate the component editor factory (%s)", __FUNCTION__,
-			   CORBA_exception_id (&ev));
+		g_message ("%s: Could not activate the component editor factory (%s)",
+			   G_GNUC_FUNCTION, CORBA_exception_id (&ev));
 		CORBA_exception_free (&ev);
 		return;
 	}
@@ -465,8 +457,8 @@ e_summary_tasks_protocol (ESummary *summary,
 	GNOME_Evolution_Calendar_CompEditorFactory_editExisting (factory, comp_uri, (char *)uri + 7, &ev);
 	
 	if (BONOBO_EX (&ev)) {
-		g_message ("%s: Execption while editing the component (%s)", __FUNCTION__, 
-			   CORBA_exception_id (&ev));
+		g_message ("%s: Execption while editing the component (%s)",
+			   G_GNUC_FUNCTION, CORBA_exception_id (&ev));
 	}
 	
 	CORBA_exception_free (&ev);
@@ -480,7 +472,7 @@ setup_task_folder (ESummary *summary)
 
 	tasks = summary->tasks;
 	g_assert (tasks != NULL);
-	g_assert (tasks->config_listener != NULL);
+	g_assert (tasks->gconf_client != NULL);
 
 	if (tasks->cal_open_reload_timeout_id != 0) {
 		g_source_remove (tasks->cal_open_reload_timeout_id);
@@ -492,18 +484,16 @@ setup_task_folder (ESummary *summary)
 	g_free (tasks->overdue_colour);
 	g_free (tasks->default_uri);
 	
-	tasks->due_today_colour = e_config_listener_get_string_with_default (tasks->config_listener,
-									     "/Calendar/Tasks/Colors/TasksDueToday", "blue", NULL);
-	tasks->overdue_colour = e_config_listener_get_string_with_default (tasks->config_listener,
-									   "/Calendar/Tasks/Colors/TasksOverdue", "red", NULL);
+	tasks->due_today_colour = gconf_client_get_string (tasks->gconf_client,
+							   "/apps/evolution/calendar/tasks/colors/TasksDueToday", NULL);
+	tasks->overdue_colour = gconf_client_get_string (tasks->gconf_client,
+							 "/apps/evolution/calendar/tasks/colors/TasksOverdue", NULL);
 
-	tasks->default_uri = e_config_listener_get_string_with_default (tasks->config_listener,
-									"/DefaultFolders/tasks_path",
-									NULL,
-									NULL);
+	tasks->default_uri = gconf_client_get_string (tasks->gconf_client,
+						      "/apps/evolution/shell/default_folders/tasks_path", NULL);
 
 	if (tasks->client != NULL)
-		gtk_object_unref (GTK_OBJECT (tasks->client));
+		g_object_unref (tasks->client);
 	
 	tasks->client = cal_client_new ();
 	if (tasks->client == NULL) {
@@ -511,39 +501,40 @@ setup_task_folder (ESummary *summary)
 		return;
 	}
 
-	gtk_signal_connect (GTK_OBJECT (tasks->client), "cal-opened",
-			    GTK_SIGNAL_FUNC (cal_opened_cb), summary);
-	gtk_signal_connect (GTK_OBJECT (tasks->client), "obj-updated",
-			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
-	gtk_signal_connect (GTK_OBJECT (tasks->client), "obj-removed",
-			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
+	g_signal_connect (tasks->client, "cal-opened", G_CALLBACK (cal_opened_cb), summary);
+	g_signal_connect (tasks->client, "obj-updated", G_CALLBACK (obj_changed_cb), summary);
+	g_signal_connect (tasks->client, "obj-removed", G_CALLBACK (obj_changed_cb), summary);
 
 	if (! cal_client_open_default_tasks (tasks->client, FALSE))
 		g_message ("Open tasks failed");
 }
 
 static void
-config_listener_key_changed_cb (EConfigListener *config_listener,
-				const char *key,
-				void *user_data)
+gconf_client_value_changed_cb (GConfClient *gconf_client,
+			       const char *key,
+			       GConfValue *value,
+			       void *user_data)
 {
 	setup_task_folder (E_SUMMARY (user_data));
-
 	generate_html (user_data);
 }
 
 static void
-setup_config_listener (ESummary *summary)
+setup_gconf_client (ESummary *summary)
 {
 	ESummaryTasks *tasks;
 
 	tasks = summary->tasks;
 	g_assert (tasks != NULL);
 
-	tasks->config_listener = e_config_listener_new ();
+	tasks->gconf_client = gconf_client_get_default ();
 
-	gtk_signal_connect (GTK_OBJECT (tasks->config_listener), "key_changed",
-			    GTK_SIGNAL_FUNC (config_listener_key_changed_cb), summary);
+	gconf_client_add_dir (tasks->gconf_client, "/apps/evolution/calendar/tasks/colors", FALSE, NULL);
+	gconf_client_add_dir (tasks->gconf_client, "/apps/evolution/shell/default_folders", FALSE, NULL);
+
+	tasks->gconf_value_changed_handler_id
+		= g_signal_connect (tasks->gconf_client, "value_changed",
+				    G_CALLBACK (gconf_client_value_changed_cb), summary);
 }
 
 void
@@ -554,11 +545,10 @@ e_summary_tasks_init (ESummary *summary)
 	g_return_if_fail (summary != NULL);
 
 	tasks = g_new0 (ESummaryTasks, 1);
-	tasks->config_listener = e_config_listener_new ();
 
 	summary->tasks = tasks;
 
-	setup_config_listener (summary);
+	setup_gconf_client (summary);
 	setup_task_folder (summary);
 
 	e_summary_add_protocol_listener (summary, "tasks", e_summary_tasks_protocol, tasks);
@@ -584,13 +574,16 @@ e_summary_tasks_free (ESummary *summary)
 	if (tasks->cal_open_reload_timeout_id != 0)
 		g_source_remove (tasks->cal_open_reload_timeout_id);
 
-	gtk_object_unref (GTK_OBJECT (tasks->client));
+	g_object_unref (tasks->client);
 	g_free (tasks->html);
 	g_free (tasks->due_today_colour);
 	g_free (tasks->overdue_colour);
 	g_free (tasks->default_uri);
 
-	gtk_object_unref (GTK_OBJECT (tasks->config_listener));
+	if (tasks->gconf_value_changed_handler_id != 0)
+		g_signal_handler_disconnect (tasks->gconf_client,
+					     tasks->gconf_value_changed_handler_id);
+	g_object_unref (tasks->gconf_client);
 
 	g_free (tasks);
 	summary->tasks = NULL;

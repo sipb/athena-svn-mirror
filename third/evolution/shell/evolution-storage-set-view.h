@@ -53,12 +53,13 @@ struct _EvolutionStorageSetView {
 
 struct _EvolutionStorageSetViewClass {
 	BonoboObjectClass parent_class;
+
+	POA_GNOME_Evolution_StorageSetView__epv epv;
 };
 
 
 GtkType                  evolution_storage_set_view_get_type   (void);
 void                     evolution_storage_set_view_construct  (EvolutionStorageSetView  *storage_set_view,
-								GNOME_Evolution_StorageSetView  corba_object,
 								EStorageSetView          *storage_set_view_widget);
 EvolutionStorageSetView *evolution_storage_set_view_new        (EStorageSetView          *storage_set_view_widget);
 

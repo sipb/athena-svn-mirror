@@ -28,15 +28,10 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <gtk/gtkobject.h>
-#include <gtk/gtkwidget.h>
 
-#include <libgnome/gnome-defs.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomeui/gnome-file-entry.h>
-#include <gal/widgets/e-unicode.h>
 
 #include "filter-file.h"
 #include "e-util/e-sexp.h"
@@ -44,48 +39,41 @@
 #define d(x)
 
 static gboolean validate (FilterElement *fe);
-static int file_eq(FilterElement *fe, FilterElement *cm);
-static void xml_create(FilterElement *fe, xmlNodePtr node);
-static xmlNodePtr xml_encode(FilterElement *fe);
-static int xml_decode(FilterElement *fe, xmlNodePtr node);
-static GtkWidget *get_widget(FilterElement *fe);
-static void build_code(FilterElement *fe, GString *out, struct _FilterPart *ff);
-static void format_sexp(FilterElement *, GString *);
+static int file_eq (FilterElement *fe, FilterElement *cm);
+static void xml_create (FilterElement *fe, xmlNodePtr node);
+static xmlNodePtr xml_encode (FilterElement *fe);
+static int xml_decode (FilterElement *fe, xmlNodePtr node);
+static GtkWidget *get_widget (FilterElement *fe);
+static void build_code (FilterElement *fe, GString *out, struct _FilterPart *ff);
+static void format_sexp (FilterElement *, GString *);
 
-static void filter_file_class_init	(FilterFileClass *class);
-static void filter_file_init	(FilterFile *gspaper);
-static void filter_file_finalise	(GtkObject *obj);
+static void filter_file_class_init (FilterFileClass *klass);
+static void filter_file_init (FilterFile *ff);
+static void filter_file_finalise (GObject *obj);
 
-#define _PRIVATE(x) (((FilterFile *)(x))->priv)
 
-struct _FilterFilePrivate {
-};
+static FilterElementClass *parent_class = NULL;
 
-static FilterElementClass *parent_class;
 
-enum {
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
-GtkType
+GType
 filter_file_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	
 	if (!type) {
-		GtkTypeInfo type_info = {
-			"FilterFile",
-			sizeof (FilterFile),
+		static const GTypeInfo info = {
 			sizeof (FilterFileClass),
-			(GtkClassInitFunc) filter_file_class_init,
-			(GtkObjectInitFunc) filter_file_init,
-			(GtkArgSetFunc) NULL,
-			(GtkArgGetFunc) NULL
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc) filter_file_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (FilterFile),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) filter_file_init,
 		};
 		
-		type = gtk_type_unique (filter_element_get_type (), &type_info);
+		type = g_type_register_static (FILTER_TYPE_ELEMENT, "FilterFile", &info, 0);
 	}
 	
 	return type;
@@ -94,45 +82,39 @@ filter_file_get_type (void)
 static void
 filter_file_class_init (FilterFileClass *klass)
 {
-	GtkObjectClass *object_class = (GtkObjectClass *) klass;
-	FilterElementClass *filter_element = (FilterElementClass *) klass;
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	FilterElementClass *fe_class = FILTER_ELEMENT_CLASS (klass);
 	
-	parent_class = gtk_type_class (filter_element_get_type ());
+	parent_class = g_type_class_ref (FILTER_TYPE_ELEMENT);
 	
 	object_class->finalize = filter_file_finalise;
 	
 	/* override methods */
-	filter_element->validate = validate;
-	filter_element->eq = file_eq;
-	filter_element->xml_create = xml_create;
-	filter_element->xml_encode = xml_encode;
-	filter_element->xml_decode = xml_decode;
-	filter_element->get_widget = get_widget;
-	filter_element->build_code = build_code;
-	filter_element->format_sexp = format_sexp;
-	
-	/* signals */
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+	fe_class->validate = validate;
+	fe_class->eq = file_eq;
+	fe_class->xml_create = xml_create;
+	fe_class->xml_encode = xml_encode;
+	fe_class->xml_decode = xml_decode;
+	fe_class->get_widget = get_widget;
+	fe_class->build_code = build_code;
+	fe_class->format_sexp = format_sexp;
 }
 
 static void
-filter_file_init (FilterFile *o)
+filter_file_init (FilterFile *ff)
 {
-	o->priv = g_malloc0 (sizeof (*o->priv));
+	;
 }
 
 static void
-filter_file_finalise (GtkObject *obj)
+filter_file_finalise (GObject *obj)
 {
-	FilterFile *o = (FilterFile *) obj;
+	FilterFile *ff = (FilterFile *) obj;
 	
-	xmlFree (o->type);
-	g_free (o->path);
+	xmlFree (ff->type);
+	g_free (ff->path);
 	
-	g_free (o->priv);
-	
-        ((GtkObjectClass *)(parent_class))->finalize (obj);
+        G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 /**
@@ -145,7 +127,7 @@ filter_file_finalise (GtkObject *obj)
 FilterFile *
 filter_file_new (void)
 {
-	return (FilterFile *) gtk_type_new (filter_file_get_type ());
+	return (FilterFile *) g_object_new (FILTER_TYPE_FILE, NULL, NULL);
 }
 
 
@@ -175,9 +157,17 @@ validate (FilterElement *fe)
 	struct stat st;
 	
 	if (!file->path) {
-		dialog = gnome_ok_dialog (_("You must specify a file name"));
+		/* FIXME: FilterElement should probably have a
+                   GtkWidget member pointing to the value gotten with
+                   ::get_widget() so that we can get the parent window
+                   here. */
+		dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+						 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+						 "%s", _("You must specify a file name."));
 		
-		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+		gtk_dialog_run ((GtkDialog *) dialog);
+		gtk_widget_destroy (dialog);
+		
 		return FALSE;
 	}
 	
@@ -185,14 +175,18 @@ validate (FilterElement *fe)
 	
 	if (strcmp (file->type, "file") == 0) {
 		if (stat (file->path, &st) == -1 || !S_ISREG (st.st_mode)) {
-			char *errmsg;
+			/* FIXME: FilterElement should probably have a
+			   GtkWidget member pointing to the value gotten with
+			   ::get_widget() so that we can get the parent window
+			   here. */
+			dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+							 _("File '%s' does not exist or is not a regular file."),
+							 file->path);
 			
-			errmsg = g_strdup_printf (_("File '%s' does not exist or is not a regular file."),
-						  file->path);
-			dialog = gnome_ok_dialog (errmsg);
-			g_free (errmsg);
+			gtk_dialog_run ((GtkDialog *) dialog);
+			gtk_widget_destroy (dialog);
 			
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 			return FALSE;
 		}
 	} else if (strcmp (file->type, "command") == 0) {
@@ -209,10 +203,10 @@ file_eq (FilterElement *fe, FilterElement *cm)
 {
 	FilterFile *ff = (FilterFile *)fe, *cf = (FilterFile *)cm;
 	
-        return ((FilterElementClass *)(parent_class))->eq(fe, cm)
-		&& ((ff->path && cf->path && strcmp(ff->path, cf->path) == 0)
+        return FILTER_ELEMENT_CLASS (parent_class)->eq (fe, cm)
+		&& ((ff->path && cf->path && strcmp (ff->path, cf->path) == 0)
 		    || (ff->path == NULL && cf->path == NULL))
-		&& ((ff->type && cf->type && strcmp(ff->type, cf->type) == 0)
+		&& ((ff->type && cf->type && strcmp (ff->type, cf->type) == 0)
 		    || (ff->type == NULL && cf->type == NULL));
 }
 
@@ -220,7 +214,7 @@ static void
 xml_create (FilterElement *fe, xmlNodePtr node)
 {
 	/* parent implementation */
-        ((FilterElementClass *)(parent_class))->xml_create (fe, node);
+        FILTER_ELEMENT_CLASS (parent_class)->xml_create (fe, node);
 }
 
 static xmlNodePtr
@@ -228,7 +222,7 @@ xml_encode (FilterElement *fe)
 {
 	FilterFile *file = (FilterFile *) fe;
 	xmlNodePtr cur, value;
-	char *encstr, *type;
+	char *type;
 	
 	type = file->type ? file->type : "file";
 	
@@ -239,9 +233,7 @@ xml_encode (FilterElement *fe)
 	xmlSetProp (value, "type", type);
 	
 	cur = xmlNewChild (value, NULL, type, NULL);
-	encstr = e_utf8_xml1_encode (file->path);
-	xmlNodeSetContent (cur, encstr);
-	g_free (encstr);
+	xmlNodeSetContent (cur, file->path);
 	
 	return value;
 }
@@ -264,23 +256,23 @@ xml_decode (FilterElement *fe, xmlNodePtr node)
 	xmlFree (file->type);
 	file->type = type;
 	
-	n = node->childs;
-	if (!strcmp (n->name, type)) {
-		char *decstr;
-		
-		str = xmlNodeGetContent (n);
-		if (str) {
-			
-			decstr = e_utf8_xml1_decode (str);
+	g_free (file->path);
+	file->path = NULL;
+	
+	n = node->children;
+	while (n != NULL) {
+		if (!strcmp (n->name, type)) {
+			str = xmlNodeGetContent (n);
+			file->path = g_strdup (str ? str : "");
 			xmlFree (str);
-		} else
-			decstr = g_strdup ("");
+			
+			d(printf ("  '%s'\n", file->path));
+			break;
+		} else if (n->type == XML_ELEMENT_NODE) {
+			g_warning ("Unknown node type '%s' encountered decoding a %s\n", n->name, type);
+		}
 		
-		d(printf ("  '%s'\n", decstr));
-		
-		file->path = decstr;
-	} else {
-		g_warning ("Unknown node type '%s' encountered decoding a %s\n", n->name, type);
+		n = n->next;
 	}
 	
 	return 0;
@@ -290,12 +282,12 @@ static void
 entry_changed (GtkEntry *entry, FilterElement *fe)
 {
 	FilterFile *file = (FilterFile *) fe;
-	char *new;
+	const char *new;
 	
-	new = e_utf8_gtk_entry_get_text (entry);
+	new = gtk_entry_get_text (entry);
 	
 	g_free (file->path);
-	file->path = new;
+	file->path = g_strdup (new);
 }
 
 static GtkWidget *
@@ -309,9 +301,9 @@ get_widget (FilterElement *fe)
 	gnome_file_entry_set_modal (GNOME_FILE_ENTRY (fileentry), TRUE);
 	
 	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (fileentry));
-	e_utf8_gtk_entry_set_text (GTK_ENTRY (entry), file->path);
+	gtk_entry_set_text (GTK_ENTRY (entry), file->path);
 	
-	gtk_signal_connect (GTK_OBJECT (entry), "changed", entry_changed, fe);
+	g_signal_connect (entry, "changed", G_CALLBACK (entry_changed), fe);
 	
 	return fileentry;
 }

@@ -1,8 +1,10 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Copyright (C) 2000 Ximian Inc.
+ *  Copyright (C) 2000-2002 Ximian Inc.
  *
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
  *           Jeffrey Stedfast <fejj@ximian.com>
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
  * License as published by the Free Software Foundation.
@@ -18,39 +20,32 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <config.h>
 
-#include <glib.h>
-#include <gtk/gtkframe.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
-#include <glade/glade.h>
-#include <gal/widgets/e-unicode.h>
-#include <gal/util/e-unicode-i18n.h>
-#include "rule-editor.h"
-#include "rule-context.h"
-#include "filter-rule.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 /* for getenv only, remove when getenv need removed */
 #include <stdlib.h>
 
-static int enable_undo;
+#include <libgnome/gnome-i18n.h>
 
-void rule_editor_add_undo(RuleEditor *re, int type, FilterRule *rule, int rank, int newrank);
-void rule_editor_play_undo(RuleEditor *re);
+#include "rule-editor.h"
 
-#define d(x) x
+static int enable_undo = 0;
 
-static void set_source(RuleEditor *re, const char *source);
-static void set_sensitive(RuleEditor *re);
-static FilterRule *create_rule(RuleEditor *re);
+void rule_editor_add_undo (RuleEditor *re, int type, FilterRule *rule, int rank, int newrank);
+void rule_editor_play_undo (RuleEditor *re);
 
-static void rule_editor_class_init(RuleEditorClass *class);
-static void rule_editor_init (RuleEditor *gspaper);
-static void rule_editor_finalise (GtkObject *obj);
+#define d(x)
+
+static void set_source (RuleEditor *re, const char *source);
+static void set_sensitive (RuleEditor *re);
+static FilterRule *create_rule (RuleEditor *re);
+
+static void rule_editor_class_init (RuleEditorClass *klass);
+static void rule_editor_init (RuleEditor *re);
+static void rule_editor_finalise (GObject *obj);
 static void rule_editor_destroy (GtkObject *obj);
 
 #define _PRIVATE(x)(((RuleEditor *)(x))->priv)
@@ -68,84 +63,77 @@ struct _RuleEditorPrivate {
 	GtkButton *buttons[BUTTON_LAST];
 };
 
-static GnomeDialogClass *parent_class;
+static GtkDialogClass *parent_class = NULL;
 
-enum {
-	LAST_SIGNAL
-};
 
-static guint signals[LAST_SIGNAL] = { 0 };
-
-guint
-rule_editor_get_type(void)
+GtkType
+rule_editor_get_type (void)
 {
-	static guint type = 0;
+	static GtkType type = 0;
 	
 	if (!type) {
-		GtkTypeInfo type_info = {
-			"RuleEditor",
-			sizeof (RuleEditor),
+		static const GTypeInfo info = {
 			sizeof (RuleEditorClass),
-			(GtkClassInitFunc) rule_editor_class_init,
-			(GtkObjectInitFunc) rule_editor_init,
-			(GtkArgSetFunc) NULL,
-			(GtkArgGetFunc) NULL
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc) rule_editor_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (RuleEditor),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) rule_editor_init,
 		};
-
+		
 		/* TODO: Remove when it works (or never will) */
-		enable_undo = getenv("EVOLUTION_RULE_UNDO") != NULL;
-
-		type = gtk_type_unique (gnome_dialog_get_type (), &type_info);
+		enable_undo = getenv ("EVOLUTION_RULE_UNDO") != NULL;
+		
+		type = g_type_register_static (gtk_dialog_get_type (), "RuleEditor", &info, 0);
 	}
 	
 	return type;
 }
 
 static void
-rule_editor_class_init (RuleEditorClass *class)
+rule_editor_class_init (RuleEditorClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+	GtkObjectClass *object_class = (GtkObjectClass *) klass;
 	
-	object_class = (GtkObjectClass *)class;
-	parent_class = gtk_type_class(gnome_dialog_get_type());
+	parent_class = g_type_class_ref(gtk_dialog_get_type ());
 	
-	object_class->finalize = rule_editor_finalise;
+	gobject_class->finalize = rule_editor_finalise;
 	object_class->destroy = rule_editor_destroy;
 	
 	/* override methods */
-	class->set_source = set_source;
-	class->set_sensitive = set_sensitive;
-	class->create_rule = create_rule;
-	
-	/* signals */
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+	klass->set_source = set_source;
+	klass->set_sensitive = set_sensitive;
+	klass->create_rule = create_rule;
 }
 
 static void
-rule_editor_init (RuleEditor *o)
+rule_editor_init (RuleEditor *re)
 {
-	o->priv = g_malloc0 (sizeof (*o->priv));
+	re->priv = g_malloc0 (sizeof (*re->priv));
 }
 
 static void
-rule_editor_finalise (GtkObject *obj)
+rule_editor_finalise (GObject *obj)
 {
 	RuleEditor *re = (RuleEditor *)obj;
 	RuleEditorUndo *undo, *next;
-
-	gtk_object_unref (GTK_OBJECT (re->context));
+	
+	g_object_unref (re->context);
 	g_free (re->priv);
-
+	
 	undo = re->undo_log;
 	while (undo) {
 		next = undo->next;
-		gtk_object_unref((GtkObject *)undo->rule);
-		g_free(undo);
+		g_object_unref (undo->rule);
+		g_free (undo);
 		undo = next;
 	}
 	
-	((GtkObjectClass *)(parent_class))->finalize (obj);
+	G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 static void
@@ -153,8 +141,10 @@ rule_editor_destroy (GtkObject *obj)
 {
 	RuleEditor *re = (RuleEditor *) obj;
 	
-	if (re->dialog)
+	if (re->dialog) {
 		gtk_widget_destroy (GTK_WIDGET (re->dialog));
+		re->dialog = NULL;
+	}
 	
 	((GtkObjectClass *)(parent_class))->destroy (obj);
 }
@@ -167,42 +157,42 @@ rule_editor_destroy (GtkObject *obj)
  * Return value: A new #RuleEditor object.
  **/
 RuleEditor *
-rule_editor_new (RuleContext *f, const char *source)
+rule_editor_new (RuleContext *rc, const char *source)
 {
+	RuleEditor *re = (RuleEditor *) g_object_new (RULE_TYPE_EDITOR, NULL);
 	GladeXML *gui;
-	RuleEditor *o = (RuleEditor *)gtk_type_new (rule_editor_get_type ());
 	GtkWidget *w;
 	
-	gui = glade_xml_new (FILTER_GLADEDIR "/filter.glade", "rule_editor");
-	rule_editor_construct (o, f, gui, source);
+	gui = glade_xml_new (FILTER_GLADEDIR "/filter.glade", "rule_editor", NULL);
+	rule_editor_construct (re, rc, gui, source);
 	
         w = glade_xml_get_widget (gui, "rule_frame");
-	gtk_frame_set_label ((GtkFrame *)w, _("Rules"));
+	gtk_frame_set_label ((GtkFrame *) w, _("Rules"));
 	
-	gtk_object_unref (GTK_OBJECT (gui));
+	g_object_unref (gui);
 	
-	return o;
+	return re;
 }
 
 /* used internally by implementations if required */
 void
 rule_editor_set_sensitive (RuleEditor *re)
 {
-	return ((RuleEditorClass *)((GtkObject *)re)->klass)->set_sensitive(re);
+	RULE_EDITOR_GET_CLASS (re)->set_sensitive (re);
 }
 
 /* used internally by implementations */
 void
 rule_editor_set_source (RuleEditor *re, const char *source)
 {
-	return ((RuleEditorClass *)((GtkObject *)re)->klass)->set_source(re, source);
+	RULE_EDITOR_GET_CLASS (re)->set_source (re, source);
 }
 
 /* factory method for "add" button */
 FilterRule *
 rule_editor_create_rule (RuleEditor *re)
 {
-	return ((RuleEditorClass *)((GtkObject *)re)->klass)->create_rule(re);
+	return RULE_EDITOR_GET_CLASS (re)->create_rule (re);
 }
 
 static FilterRule *
@@ -219,69 +209,65 @@ create_rule (RuleEditor *re)
 }
 
 static void
-add_editor_clicked (GtkWidget *dialog, int button, RuleEditor *re)
+editor_destroy (RuleEditor *re, GObject *deadbeef)
 {
-	GtkWidget *item;
-	GList *l = NULL;
-	char *string;
+	if (re->edit) {
+		g_object_unref (re->edit);
+		re->edit = NULL;
+	}
+	
+	re->dialog = NULL;
+	
+	gtk_widget_set_sensitive (GTK_WIDGET (re), TRUE);
+	rule_editor_set_sensitive (re);
+}
 
-	switch (button) {
-	case 0:
+static void
+add_editor_response (GtkWidget *dialog, int button, RuleEditor *re)
+{
+	GtkTreeSelection *selection;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	
+	if (button == GTK_RESPONSE_ACCEPT) {
 		if (!filter_rule_validate (re->edit)) {
 			/* no need to popup a dialog because the validate code does that. */
 			return;
 		}
-
-		if (rule_context_find_rule(re->context, re->edit->name, re->edit->source)) {
-			GtkWidget *dialog;
-			char *what;
-
-			what = g_strdup_printf(_("Rule name '%s' is not unique, choose another"), re->edit->name);
-			dialog = gnome_ok_dialog (what);
-			g_free(what);
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-
+		
+		if (rule_context_find_rule (re->context, re->edit->name, re->edit->source)) {
+			dialog = gtk_message_dialog_new ((GtkWindow *) dialog, GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+							 _("Rule name '%s' is not unique, choose another."),
+							 re->edit->name);
+			
+			gtk_dialog_run ((GtkDialog *) dialog);
+			gtk_widget_destroy (dialog);
+			
 			return;
 		}
 		
-		gtk_object_ref (GTK_OBJECT (re->edit));
-		string = e_utf8_to_gtk_string (GTK_WIDGET (re->list), re->edit->name);
-		item = gtk_list_item_new_with_label (string);
-		g_free (string);
+		g_object_ref (re->edit);
 		
-		gtk_object_set_data (GTK_OBJECT (item), "rule", re->edit);
-		gtk_widget_show (item);
+		gtk_list_store_append (re->model, &iter);
+		gtk_list_store_set (re->model, &iter, 0, re->edit->name, 1, re->edit, -1);
+		selection = gtk_tree_view_get_selection (re->list);
+		gtk_tree_selection_select_iter (selection, &iter);
 		
-		l = g_list_append (l, GTK_LIST_ITEM (item));
-		
-		gtk_list_append_items (re->list, l);
-		gtk_list_select_child (re->list, item);
+		/* scroll to the newly added row */
+		path = gtk_tree_model_get_path ((GtkTreeModel *) re->model, &iter);
+		gtk_tree_view_scroll_to_cell (re->list, path, NULL, TRUE, 1.0, 0.0);
+		gtk_tree_path_free (path);
 		
 		re->current = re->edit;
 		rule_context_add_rule (re->context, re->current);
-
-		gtk_object_ref((GtkObject *)re->current);
-		rule_editor_add_undo(re, RULE_EDITOR_LOG_ADD, re->current, rule_context_get_rank_rule (re->context, re->current, re->current->source), 0);
-	case 1:
-	default:
-		gnome_dialog_close (GNOME_DIALOG (dialog));
-	case -1:
-                if (re->edit) {
-                        gtk_object_unref (GTK_OBJECT (re->edit));
-			re->edit = NULL;
-		}
 		
-		re->dialog = NULL;
-		
-		gtk_widget_set_sensitive (GTK_WIDGET (re), TRUE);
-		rule_editor_set_sensitive (re);
+		g_object_ref (re->current);
+		rule_editor_add_undo (re, RULE_EDITOR_LOG_ADD, re->current,
+				      rule_context_get_rank_rule (re->context, re->current, re->current->source), 0);
 	}
-}
-
-static void
-add_editor_destroyed(GtkWidget *w, RuleEditor *re)
-{
-	add_editor_clicked(w, -1, re);
+	
+	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -296,82 +282,74 @@ rule_add (GtkWidget *widget, RuleEditor *re)
 	filter_rule_set_source (re->edit, re->source);
 	rules = filter_rule_get_widget (re->edit, re->context);
 	
-	re->dialog = gnome_dialog_new (_("Add Rule"),
-				       GNOME_STOCK_BUTTON_OK,
-				       GNOME_STOCK_BUTTON_CANCEL,
-				       NULL);
+	re->dialog = gtk_dialog_new ();
+	gtk_dialog_add_buttons ((GtkDialog *) re->dialog,
+				GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+				GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+				NULL);
 	
+	gtk_window_set_title ((GtkWindow *) re->dialog, _("Add Rule"));
 	gtk_window_set_default_size (GTK_WINDOW (re->dialog), 650, 400);
-	gtk_window_set_policy (GTK_WINDOW (re->dialog), FALSE, TRUE, FALSE);
-	gtk_widget_set_parent_window (GTK_WIDGET (re->dialog), GTK_WIDGET (re)->window);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (re->dialog)->vbox), rules, TRUE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (re->dialog), "clicked", add_editor_clicked, re);
-	gtk_signal_connect (GTK_OBJECT (re->dialog), "destroy", add_editor_destroyed, re);
+	gtk_window_set_resizable (GTK_WINDOW (re->dialog), TRUE);
+	gtk_window_set_transient_for ((GtkWindow *) re->dialog, (GtkWindow *) re);
+	gtk_container_set_border_width ((GtkContainer *) re->dialog, 6);
+	
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (re->dialog)->vbox), rules, TRUE, TRUE, 3);
+	
+	g_signal_connect (re->dialog, "response", G_CALLBACK (add_editor_response), re);
+	g_object_weak_ref ((GObject *) re->dialog, (GWeakNotify) editor_destroy, re);
+	
 	gtk_widget_set_sensitive (GTK_WIDGET (re), FALSE);
 	
 	gtk_widget_show (re->dialog);
 }
 
 static void
-edit_editor_clicked (GtkWidget *dialog, int button, RuleEditor *re)
+edit_editor_response (GtkWidget *dialog, int button, RuleEditor *re)
 {
-	GtkWidget *item;
-	char *string;
+	FilterRule *rule;
+	GtkTreePath *path;
+	GtkTreeIter iter;
 	int pos;
-	struct _FilterRule *rule;
-
-	switch (button) {
-	case 0:
+	
+	if (button == GTK_RESPONSE_ACCEPT) {
 		if (!filter_rule_validate (re->edit)) {
 			/* no need to popup a dialog because the validate code does that. */
 			return;
 		}
-
-		rule = rule_context_find_rule(re->context, re->edit->name, re->edit->source);
+		
+		rule = rule_context_find_rule (re->context, re->edit->name, re->edit->source);
 		if (rule != NULL && rule != re->current) {
-			GtkWidget *dialog;
-			char *what;
-
-			what = g_strdup_printf(_("Rule name '%s' is not unique, choose another"), re->edit->name);
-			dialog = gnome_ok_dialog (what);
-			g_free(what);
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-
+			dialog = gtk_message_dialog_new ((GtkWindow *) dialog,
+							 GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+							 _("Rule name '%s' is not unique, choose another."),
+							 re->edit->name);
+			
+			gtk_dialog_run ((GtkDialog *) dialog);
+			gtk_widget_destroy (dialog);
+			
 			return;
 		}
 		
 		pos = rule_context_get_rank_rule (re->context, re->current, re->source);
 		if (pos != -1) {
-			item = g_list_nth_data (GTK_LIST (re->list)->children, pos);
-			string = e_utf8_to_gtk_string (GTK_WIDGET (item), re->edit->name);
-			gtk_label_set_text (GTK_LABEL (GTK_BIN (item)->child), string);
-			g_free (string);
-
-			rule_editor_add_undo(re, RULE_EDITOR_LOG_EDIT, filter_rule_clone(re->current), pos, 0);
-
+			path = gtk_tree_path_new ();
+			gtk_tree_path_append_index (path, pos);
+			gtk_tree_model_get_iter (GTK_TREE_MODEL (re->model), &iter, path);
+			gtk_tree_path_free (path);
+			
+			gtk_list_store_set (re->model, &iter, 0, re->edit->name, -1);
+			
+			rule_editor_add_undo (re, RULE_EDITOR_LOG_EDIT, filter_rule_clone (re->current),
+					      pos, 0);
+			
 			/* replace the old rule with the new rule */
 			filter_rule_copy (re->current, re->edit);
 		}
-	case 1:
-	default:
-		gnome_dialog_close (GNOME_DIALOG (dialog));
-	case -1:
-		if (re->edit) {
-			gtk_object_unref (GTK_OBJECT (re->edit));
-			re->edit = NULL;
-		}
-		
-		re->dialog = NULL;
-		
-		gtk_widget_set_sensitive (GTK_WIDGET (re), TRUE);
-		rule_editor_set_sensitive (re);
 	}
-}
-
-static void
-edit_editor_destroyed(GtkWidget *w, RuleEditor *re)
-{
-	edit_editor_clicked(w, -1, re);
+	
+	gtk_widget_destroy (dialog);
 }
 
 static void
@@ -385,17 +363,23 @@ rule_edit (GtkWidget *widget, RuleEditor *re)
 	re->edit = filter_rule_clone (re->current);
 	
 	rules = filter_rule_get_widget (re->edit, re->context);
-	re->dialog = gnome_dialog_new (_("Edit Rule"),
-				       GNOME_STOCK_BUTTON_OK,
-				       GNOME_STOCK_BUTTON_CANCEL,
-				       NULL);
 	
-	gnome_dialog_set_parent (GNOME_DIALOG (re->dialog), GTK_WINDOW (re));
-	gtk_window_set_default_size (GTK_WINDOW (re->dialog), 600, 400);
-	gtk_window_set_policy (GTK_WINDOW (re->dialog), FALSE, TRUE, FALSE);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (re->dialog)->vbox), rules, TRUE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (re->dialog), "clicked", edit_editor_clicked, re);
-	gtk_signal_connect (GTK_OBJECT (re->dialog), "destroy", edit_editor_destroyed, re);
+	re->dialog = gtk_dialog_new ();
+	gtk_dialog_add_buttons ((GtkDialog *) re->dialog,
+				GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+				GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+				NULL);
+	
+	gtk_window_set_title ((GtkWindow *) re->dialog, _("Edit Rule"));
+	gtk_window_set_default_size (GTK_WINDOW (re->dialog), 650, 400);
+	gtk_window_set_resizable (GTK_WINDOW (re->dialog), TRUE);
+	gtk_widget_set_parent_window (GTK_WIDGET (re->dialog), GTK_WIDGET (re)->window);
+	gtk_container_set_border_width ((GtkContainer *) re->dialog, 6);
+	
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (re->dialog)->vbox), rules, TRUE, TRUE, 3);
+	
+	g_signal_connect (re->dialog, "response", G_CALLBACK (edit_editor_response), re);
+	g_object_weak_ref ((GObject *) re->dialog, (GWeakNotify) editor_destroy, re);
 	
 	gtk_widget_set_sensitive (GTK_WIDGET (re), FALSE);
 	
@@ -405,32 +389,47 @@ rule_edit (GtkWidget *widget, RuleEditor *re)
 static void
 rule_delete (GtkWidget *widget, RuleEditor *re)
 {
-	int pos;
-	GList *l;
-	GtkListItem *item;
+	GtkTreeSelection *selection;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	int pos, len;
 	
 	d(printf ("delete rule\n"));
 	pos = rule_context_get_rank_rule (re->context, re->current, re->source);
 	if (pos != -1) {
-		int len;
-		
 		rule_context_remove_rule (re->context, re->current);
 		
-		item = g_list_nth_data (GTK_LIST (re->list)->children, pos);
-		l = g_list_append (NULL, item);
-		gtk_list_remove_items (re->list, l);
-		g_list_free (l);
+		path = gtk_tree_path_new ();
+		gtk_tree_path_append_index (path, pos);
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (re->model), &iter, path);
+		gtk_list_store_remove (re->model, &iter);
+		gtk_tree_path_free (path);
 		
-		rule_editor_add_undo(re, RULE_EDITOR_LOG_REMOVE, re->current, rule_context_get_rank_rule(re->context, re->current, re->current->source), 0);
+		rule_editor_add_undo (re, RULE_EDITOR_LOG_REMOVE, re->current,
+				      rule_context_get_rank_rule (re->context, re->current, re->current->source), 0);
 #if 0		
-		gtk_object_unref (GTK_OBJECT (re->current));
+		g_object_unref (re->current);
 #endif
 		re->current = NULL;
 		
 		/* now select the next rule */
-		len = g_list_length (GTK_LIST (re->list)->children);
+		len = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (re->model), NULL);
 		pos = pos >= len ? len - 1 : pos;
-		gtk_list_select_item (GTK_LIST (re->list), pos);
+		
+		if (pos >= 0) {
+			path = gtk_tree_path_new ();
+			gtk_tree_path_append_index (path, pos);
+			gtk_tree_model_get_iter (GTK_TREE_MODEL (re->model), &iter, path);
+			gtk_tree_path_free (path);
+			
+			selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (re->list));
+			gtk_tree_selection_select_iter (selection, &iter);
+			
+			/* scroll to the selected row */
+			path = gtk_tree_model_get_path ((GtkTreeModel *) re->model, &iter);
+			gtk_tree_view_scroll_to_cell (re->list, path, NULL, FALSE, 0.0, 0.0);
+			gtk_tree_path_free (path);
+		}
 	}
 	
 	rule_editor_set_sensitive (re);
@@ -439,20 +438,41 @@ rule_delete (GtkWidget *widget, RuleEditor *re)
 static void
 rule_move (RuleEditor *re, int from, int to)
 {
-	GList *l;
-	GtkListItem *item;
-
-	gtk_object_ref((GtkObject *)re->current);
-	rule_editor_add_undo(re, RULE_EDITOR_LOG_RANK, re->current, rule_context_get_rank_rule(re->context, re->current, re->current->source), to);
+	GtkTreeSelection *selection;
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	FilterRule *rule;
+	
+	g_object_ref (re->current);
+	rule_editor_add_undo (re, RULE_EDITOR_LOG_RANK, re->current,
+			      rule_context_get_rank_rule (re->context, re->current, re->source), to);
 	
 	d(printf ("moving %d to %d\n", from, to));
-	rule_context_rank_rule (re->context, re->current, to);
+	rule_context_rank_rule (re->context, re->current, re->source, to);
 	
-	item = g_list_nth_data (re->list->children, from);
-	l = g_list_append (NULL, item);
-	gtk_list_remove_items_no_unref (re->list, l);
-	gtk_list_insert_items (re->list, l, to);			      
-	gtk_list_select_child (re->list, GTK_WIDGET (item));
+	path = gtk_tree_path_new ();
+	gtk_tree_path_append_index (path, from);
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (re->model), &iter, path);
+	gtk_tree_path_free (path);
+	
+	gtk_tree_model_get (GTK_TREE_MODEL (re->model), &iter, 1, &rule, -1);
+	g_assert (rule != NULL);
+	
+	/* remove and then re-insert the row at the new location */
+	gtk_list_store_remove (re->model, &iter);
+	gtk_list_store_insert (re->model, &iter, to);
+	
+	/* set the data on the row */
+	gtk_list_store_set (re->model, &iter, 0, rule->name, 1, rule, -1);
+	
+	/* select the row */
+	selection = gtk_tree_view_get_selection (re->list);
+	gtk_tree_selection_select_iter (selection, &iter);
+	
+	/* scroll to the selected row */
+	path = gtk_tree_model_get_path ((GtkTreeModel *) re->model, &iter);
+	gtk_tree_view_scroll_to_cell (re->list, path, NULL, FALSE, 0.0, 0.0);
+	gtk_tree_path_free (path);
 	
 	rule_editor_set_sensitive (re);
 }
@@ -483,11 +503,11 @@ static struct {
 	char *name;
 	GtkSignalFunc func;
 } edit_buttons[] = {
-	{ "rule_add", rule_add },
-	{ "rule_edit", rule_edit },
-	{ "rule_delete", rule_delete },
-	{ "rule_up", rule_up },
-	{ "rule_down", rule_down },
+	{ "rule_add",    G_CALLBACK (rule_add)    },
+	{ "rule_edit",   G_CALLBACK (rule_edit)   },
+	{ "rule_delete", G_CALLBACK (rule_delete) },
+	{ "rule_up",     G_CALLBACK (rule_up)     },
+	{ "rule_down",   G_CALLBACK (rule_down)   },
 };
 
 static void
@@ -496,7 +516,7 @@ set_sensitive (RuleEditor *re)
 	FilterRule *rule = NULL;
 	int index = -1, count = 0;
 	
-	while ((rule = rule_context_next_rule(re->context, rule, re->source))) {
+	while ((rule = rule_context_next_rule (re->context, rule, re->source))) {
 		if (rule == re->current)
 			index = count;
 		count++;
@@ -514,47 +534,44 @@ set_sensitive (RuleEditor *re)
 
 
 static void
-select_rule (GtkWidget *w, GtkWidget *child, RuleEditor *re)
+cursor_changed (GtkTreeView *treeview, RuleEditor *re)
 {
-	re->current = gtk_object_get_data (GTK_OBJECT (child), "rule");
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 	
-	g_assert (re->current);
-	
-	rule_editor_set_sensitive (re);
+	selection = gtk_tree_view_get_selection (re->list);
+	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+		gtk_tree_model_get (GTK_TREE_MODEL (re->model), &iter, 1, &re->current, -1);
+		
+		g_assert (re->current);
+		
+		rule_editor_set_sensitive (re);
+	}
 }
 
-static gboolean
-double_click (GtkWidget *widget, GdkEventButton *event, RuleEditor *re)
+static void
+double_click (GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, RuleEditor *re)
 {
-	if (re->current && event->type == GDK_2BUTTON_PRESS)
-		rule_edit (widget, re);
-	
-	return TRUE;
+	if (re->current)
+		rule_edit ((GtkWidget *) treeview, re);
 }
 
 static void
 set_source (RuleEditor *re, const char *source)
 {
 	FilterRule *rule = NULL;
-	GList *newitems = NULL;
+	GtkTreeIter iter;
 	
-	gtk_list_clear_items(GTK_LIST(re->list), 0, -1);
+	gtk_list_store_clear (re->model);
 	
-	d(printf("Checking for rules that are of type %s\n", source?source:"<nil>"));
-	while ((rule = rule_context_next_rule(re->context, rule, source)) != NULL) {
-		GtkWidget *item;
-		char *s;
-		
-		d(printf("   hit %s(%s)\n", rule->name, source?source:"<nil>"));
-		s = e_utf8_to_gtk_string (GTK_WIDGET (re->list), rule->name);
-		item = gtk_list_item_new_with_label (s);
-		g_free (s);
-		gtk_object_set_data (GTK_OBJECT (item), "rule", rule);
-		gtk_widget_show (GTK_WIDGET (item));
-		newitems = g_list_append (newitems, item);
+	d(printf("Checking for rules that are of type %s\n", source ? source : "<nil>"));
+	while ((rule = rule_context_next_rule (re->context, rule, source)) != NULL) {
+		d(printf("Adding row '%s'\n", rule->name));
+		gtk_list_store_append (re->model, &iter);
+		gtk_list_store_set (re->model, &iter, 0, rule->name, 1, rule, -1);
 	}
 	
-	gtk_list_append_items (re->list, newitems);
 	g_free (re->source);
 	re->source = g_strdup (source);
 	re->current = NULL;
@@ -562,30 +579,30 @@ set_source (RuleEditor *re, const char *source)
 }
 
 void
-rule_editor_add_undo(RuleEditor *re, int type, FilterRule *rule, int rank, int newrank)
+rule_editor_add_undo (RuleEditor *re, int type, FilterRule *rule, int rank, int newrank)
 {
 	RuleEditorUndo *undo;
-
+	
 	if (!re->undo_active && enable_undo) {
-		undo = g_malloc0(sizeof(*undo));
+		undo = g_malloc0 (sizeof (*undo));
 		undo->rule = rule;
 		undo->type = type;
 		undo->rank = rank;
 		undo->newrank = newrank;
-
+		
 		undo->next = re->undo_log;
 		re->undo_log = undo;
 	} else {
-		gtk_object_unref((GtkObject *)rule);
+		g_object_unref (rule);
 	}
 }
 
 void
-rule_editor_play_undo(RuleEditor *re)
+rule_editor_play_undo (RuleEditor *re)
 {
 	RuleEditorUndo *undo, *next;
 	FilterRule *rule;
-
+	
 	re->undo_active = TRUE;
 	undo = re->undo_log;
 	re->undo_log = NULL;
@@ -593,60 +610,99 @@ rule_editor_play_undo(RuleEditor *re)
 		next = undo->next;
 		switch (undo->type) {
 		case RULE_EDITOR_LOG_EDIT:
-			printf("Undoing edit on rule '%s'\n", undo->rule->name);
-			rule = rule_context_find_rank_rule(re->context, undo->rank, undo->rule->source);
+			d(printf ("Undoing edit on rule '%s'\n", undo->rule->name));
+			rule = rule_context_find_rank_rule (re->context, undo->rank, undo->rule->source);
 			if (rule) {
-				printf(" name was '%s'\n", rule->name);
-				filter_rule_copy(rule, undo->rule);
-				printf(" name is '%s'\n", rule->name);
+				d(printf (" name was '%s'\n", rule->name));
+				filter_rule_copy (rule, undo->rule);
+				d(printf (" name is '%s'\n", rule->name));
 			} else {
-				g_warning("Could not find the right rule to undo against?\n");
+				g_warning ("Could not find the right rule to undo against?");
 			}
 			break;
 		case RULE_EDITOR_LOG_ADD:
-			printf("Undoing add on rule '%s'\n", undo->rule->name);
-			rule = rule_context_find_rank_rule(re->context, undo->rank, undo->rule->source);
+			d(printf ("Undoing add on rule '%s'\n", undo->rule->name));
+			rule = rule_context_find_rank_rule (re->context, undo->rank, undo->rule->source);
 			if (rule)
-				rule_context_remove_rule(re->context, rule);
+				rule_context_remove_rule (re->context, rule);
 			break;
 		case RULE_EDITOR_LOG_REMOVE:
-			printf("Undoing remove on rule '%s'\n", undo->rule->name);
-			gtk_object_ref((GtkObject *)undo->rule);
-			rule_context_add_rule(re->context, undo->rule);
-			rule_context_rank_rule(re->context, undo->rule, undo->rank);
+			d(printf ("Undoing remove on rule '%s'\n", undo->rule->name));
+			g_object_ref (undo->rule);
+			rule_context_add_rule (re->context, undo->rule);
+			rule_context_rank_rule (re->context, undo->rule, re->source, undo->rank);
 			break;
 		case RULE_EDITOR_LOG_RANK:
-			rule = rule_context_find_rank_rule(re->context, undo->newrank, undo->rule->source);
+			rule = rule_context_find_rank_rule (re->context, undo->newrank, undo->rule->source);
 			if (rule)
-				rule_context_rank_rule(re->context, rule, undo->rank);
+				rule_context_rank_rule (re->context, rule, re->source, undo->rank);
 			break;
 		}
-		gtk_object_unref((GtkObject *)undo->rule);
-		g_free(undo);
+		
+		g_object_unref (undo->rule);
+		g_free (undo);
 		undo = next;
 	}
 	re->undo_active = FALSE;
 }
 
 static void
-editor_clicked (GtkWidget *dialog, int button, RuleEditor *re)
+editor_response (GtkWidget *dialog, int button, RuleEditor *re)
 {
-	if (button != 0) {
+	if (button == GTK_RESPONSE_REJECT) {
 		if (enable_undo)
-			rule_editor_play_undo(re);
+			rule_editor_play_undo (re);
 		else {
 			RuleEditorUndo *undo, *next;
-
+			
 			undo = re->undo_log;
 			re->undo_log = 0;
 			while (undo) {
 				next = undo->next;
-				gtk_object_unref((GtkObject *)undo->rule);
-				g_free(undo);
+				g_object_unref (undo->rule);
+				g_free (undo);
 				undo = next;
 			}
 		}
 	}
+}
+
+GtkWidget *rule_editor_treeview_new (char *widget_name, char *string1, char *string2,
+				     int int1, int int2);
+
+GtkWidget *
+rule_editor_treeview_new (char *widget_name, char *string1, char *string2, int int1, int int2)
+{
+	GtkWidget *table, *scrolled;
+	GtkTreeSelection *selection;
+	GtkCellRenderer *renderer;
+	GtkListStore *model;
+	
+	scrolled = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
+					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	
+	model = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_POINTER);
+	table = gtk_tree_view_new_with_model ((GtkTreeModel *) model);
+	gtk_tree_view_set_headers_visible ((GtkTreeView *) table, FALSE);
+	
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_insert_column_with_attributes ((GtkTreeView *) table, -1,
+						     _("Rule name"), renderer,
+						     "text", 0, NULL);
+	
+	selection = gtk_tree_view_get_selection ((GtkTreeView *) table);
+	gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+	
+	gtk_container_add (GTK_CONTAINER (scrolled), table);
+	
+	g_object_set_data ((GObject *) scrolled, "table", table);
+	g_object_set_data ((GObject *) scrolled, "model", model);
+	
+	gtk_widget_show (scrolled);
+	gtk_widget_show (table);
+	
+	return scrolled;
 }
 
 void
@@ -656,29 +712,39 @@ rule_editor_construct (RuleEditor *re, RuleContext *context, GladeXML *gui, cons
 	int i;
 	
 	re->context = context;
-	gtk_object_ref (GTK_OBJECT (context));
+	g_object_ref (context);
 	
-	gtk_window_set_policy (GTK_WINDOW (re), FALSE, TRUE, FALSE);
+	gtk_window_set_resizable ((GtkWindow *) re, TRUE);
+	gtk_window_set_default_size ((GtkWindow *) re, 350, 400);
+	gtk_container_set_border_width ((GtkContainer *) re, 6);
 	
         w = glade_xml_get_widget (gui, "rule_editor");
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (re)->vbox), w, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (re)->vbox), w, TRUE, TRUE, 3);
 	
 	for (i = 0; i < BUTTON_LAST; i++) {
-		re->priv->buttons[i] = (GtkButton *)w = glade_xml_get_widget (gui, edit_buttons[i].name);
-		gtk_signal_connect (GTK_OBJECT (w), "clicked", edit_buttons[i].func, re);
+		re->priv->buttons[i] = (GtkButton *) w = glade_xml_get_widget (gui, edit_buttons[i].name);
+		g_signal_connect (w, "clicked", edit_buttons[i].func, re);
 	}
 	
-        re->list = (GtkList *) w = glade_xml_get_widget(gui, "rule_list");
-	gtk_signal_connect (GTK_OBJECT (w), "select_child", select_rule, re);
-	gtk_signal_connect (GTK_OBJECT (w), "button_press_event",
-			    GTK_SIGNAL_FUNC (double_click), re);
-
-	gtk_signal_connect (GTK_OBJECT (re), "clicked", editor_clicked, re);
+	w = glade_xml_get_widget (gui, "rule_list");
+	re->list = (GtkTreeView *) g_object_get_data ((GObject *) w, "table");
+	re->model = (GtkListStore *) g_object_get_data ((GObject *) w, "model");
+	
+	g_signal_connect (re->list, "cursor-changed", G_CALLBACK (cursor_changed), re);
+	g_signal_connect (re->list, "row-activated", G_CALLBACK (double_click), re);
+	
+	g_signal_connect (re, "response", G_CALLBACK (editor_response), re);
 	rule_editor_set_source (re, source);
-
+	
 	if (enable_undo) {
-		gnome_dialog_append_buttons (GNOME_DIALOG (re), GNOME_STOCK_BUTTON_OK,
-					     GNOME_STOCK_BUTTON_CANCEL, NULL);
-	} else
-		gnome_dialog_append_buttons (GNOME_DIALOG (re), GNOME_STOCK_BUTTON_OK, NULL);
+		gtk_dialog_add_buttons ((GtkDialog *) re,
+					GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
+					GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+					NULL);
+	} else {
+		gtk_dialog_add_buttons ((GtkDialog *) re,
+					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+					NULL);
+	}
 }

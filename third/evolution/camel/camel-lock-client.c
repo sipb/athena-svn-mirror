@@ -107,9 +107,9 @@ static int camel_lock_helper_init(CamelException *ex)
 
 	if (pipe(lock_stdin_pipe) == -1
 	    || pipe(lock_stdout_pipe) == -1) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Cannot build locking helper pipe: %s"),
-				     strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot build locking helper pipe: %s"),
+				      g_strerror (errno));
 		return -1;
 	}
 
@@ -120,9 +120,9 @@ static int camel_lock_helper_init(CamelException *ex)
 		close(lock_stdin_pipe[1]);
 		close(lock_stdout_pipe[0]);
 		close(lock_stdout_pipe[1]);
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Cannot fork locking helper: %s"),
-				     strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot fork locking helper: %s"),
+				      g_strerror (errno));
 		return -1;
 	case 0:
 		close(STDIN_FILENO);
@@ -135,7 +135,7 @@ static int camel_lock_helper_init(CamelException *ex)
 		close(lock_stdout_pipe[1]);
 		for (i=3;i<255;i++)
 			     close(i);
-		execl(CAMEL_SBINDIR "/camel-lock-helper", "camel-lock-helper", NULL);
+		execl(CAMEL_LIBEXECDIR "/camel-lock-helper", "camel-lock-helper", NULL);
 		d(fprintf(stderr, "shit, couldn't exec lock helper!\n"));
 		/* it'll pick this up when it tries to use us */
 		exit(255);

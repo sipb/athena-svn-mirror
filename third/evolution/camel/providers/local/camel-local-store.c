@@ -151,24 +151,25 @@ get_folder(CamelStore * store, const char *folder_name, guint32 flags, CamelExce
 
 	if (errno != ENOENT
 	    || (flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				     _("Cannot get folder: %s: %s"), path, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+				      _("Cannot get folder: %s: %s"),
+				      path, g_strerror (errno));
 		return NULL;
 	}
 
 	/* need to create the dir heirarchy */
-	sub = alloca(strlen(path)+1);
-	strcpy(sub, path);
+	sub = g_alloca (strlen (path) + 1);
+	strcpy (sub, path);
 	slash = sub;
 	do {
-		slash = strchr(slash+1, '/');
+		slash = strchr (slash + 1, '/');
 		if (slash)
 			*slash = 0;
-		if (stat(sub, &st) == -1) {
-			if (errno != ENOENT
-			    || mkdir(sub, 0700) == -1) {
-				camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-						     _("Cannot get folder: %s: %s"), path, strerror(errno));
+		if (stat (sub, &st) == -1) {
+			if (errno != ENOENT || mkdir (sub, 0700) == -1) {
+				camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+						      _("Cannot get folder: %s: %s"),
+						      path, g_strerror (errno));
 				return NULL;
 			}
 		}
@@ -234,8 +235,9 @@ create_folder(CamelStore *store, const char *parent_name, const char *folder_nam
 		name = g_strdup_printf("%s/%s", path, folder_name);
 
 	if (stat(name, &st) == 0 || errno != ENOENT) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				     _("Cannot get folder: %s: %s"), name, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+				      _("Cannot get folder: %s: %s"),
+				      name, g_strerror (errno));
 		g_free(name);
 		return NULL;
 	}
@@ -302,9 +304,9 @@ static int xrename(const char *oldp, const char *newp, const char *prefix, const
 	}
 
 	if (ret == -1) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Could not rename folder %s to %s: %s"),
-				     old, new, strerror(err));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not rename folder %s to %s: %s"),
+				      old, new, g_strerror (err));
 	}
 
 	g_free(old);
@@ -317,7 +319,7 @@ static void
 rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex)
 {
 	char *path = CAMEL_LOCAL_STORE (store)->toplevel_dir;
-	CamelLocalFolder *folder;
+	CamelLocalFolder *folder = NULL;
 	char *newibex = g_strdup_printf("%s%s.ibex", path, new);
 	char *oldibex = g_strdup_printf("%s%s.ibex", path, old);
 
@@ -325,8 +327,7 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 
 	d(printf("local rename folder '%s' '%s'\n", old, new));
 
-	CAMEL_STORE_LOCK(store, cache_lock);
-	folder = g_hash_table_lookup(store->folders, old);
+	folder = camel_object_bag_get(store->folders, old);
 	if (folder && folder->index) {
 		if (camel_index_rename(folder->index, newibex) == -1)
 			goto ibex_failed;
@@ -342,10 +343,11 @@ rename_folder(CamelStore *store, const char *old, const char *new, CamelExceptio
 	if (xrename(old, new, path, "", FALSE, ex))
 		goto base_failed;
 
-	CAMEL_STORE_UNLOCK(store, cache_lock);
-
 	g_free(newibex);
 	g_free(oldibex);
+
+	if (folder)
+		camel_object_unref(folder);
 
 	return;
 
@@ -359,13 +361,15 @@ summary_failed:
 	} else
 		camel_text_index_rename(newibex, oldibex);
 ibex_failed:
-	camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-			     _("Could not rename '%s': %s"),
-			     old, strerror(errno));
+	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+			      _("Could not rename '%s': %s"),
+			      old, g_strerror (errno));
 
-	CAMEL_STORE_UNLOCK(store, cache_lock);
 	g_free(newibex);
 	g_free(oldibex);
+
+	if (folder)
+		camel_object_unref(folder);
 }
 
 /* default implementation, only delete metadata */
@@ -380,9 +384,9 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	str = g_strdup_printf("%s.ev-summary", name);
 	if (unlink(str) == -1 && errno != ENOENT) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Could not delete folder summary file `%s': %s"),
-				     str, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not delete folder summary file `%s': %s"),
+				      str, g_strerror (errno));
 		g_free(str);
 		g_free (name);
 		return;
@@ -390,9 +394,9 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	g_free(str);
 	str = g_strdup_printf("%s.ibex", name);
 	if (camel_text_index_remove(str) == -1 && errno != ENOENT) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
-				     _("Could not delete folder index file `%s': %s"),
-				     str, strerror(errno));
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Could not delete folder index file `%s': %s"),
+				      str, g_strerror (errno));
 		g_free(str);
 		g_free (name);
 		return;
@@ -402,7 +406,7 @@ delete_folder(CamelStore *store, const char *folder_name, CamelException *ex)
 	
 	fi = g_new0 (CamelFolderInfo, 1);
 	fi->full_name = g_strdup (folder_name);
-	fi->name = g_strdup (g_basename (folder_name));
+	fi->name = g_path_get_basename (folder_name);
 	fi->url = g_strdup_printf ("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
 	fi->unread_message_count = -1;
 	camel_folder_info_build_path(fi, '/');

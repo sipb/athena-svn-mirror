@@ -37,7 +37,7 @@
 #include "e-summary-preferences.h"
 #include "evolution-shell-component-utils.h" /* For E_PIXMAP */
 
-BonoboUIVerb verbs[] = {
+static BonoboUIVerb summary_verbs[] = {
 	BONOBO_UI_VERB ("PrintMyEvolution", e_summary_print),
 	BONOBO_UI_VERB ("Reload", e_summary_reload),
 	BONOBO_UI_VERB_END
@@ -57,15 +57,15 @@ control_activate (BonoboControl *control,
 {
 	Bonobo_UIContainer container;
 
-	container = bonobo_control_get_remote_ui_container (control);
-	bonobo_ui_component_set_container (ui_component, container);
+	container = bonobo_control_get_remote_ui_container (control, NULL);
+	bonobo_ui_component_set_container (ui_component, container, NULL);
 	bonobo_object_release_unref (container, NULL);
 
-	bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, summary);
+	bonobo_ui_component_add_verb_list_with_data (ui_component, summary_verbs, summary);
 	bonobo_ui_component_freeze (ui_component, NULL);
 
-	bonobo_ui_util_set_ui (ui_component, EVOLUTION_DATADIR,
-			       "my-evolution.xml", "my-evolution");
+	bonobo_ui_util_set_ui (ui_component, PREFIX,
+			       EVOLUTION_UIDIR "/my-evolution.xml", "my-evolution", NULL);
   	e_pixmaps_update (ui_component, pixmaps); 
 
 	bonobo_ui_component_thaw (ui_component, NULL);
@@ -76,7 +76,7 @@ control_deactivate (BonoboControl *control,
 		    BonoboUIComponent *ui_component,
 		    ESummary *summary)
 {
-	bonobo_ui_component_unset_container (ui_component);
+	bonobo_ui_component_unset_container (ui_component, NULL);
 }
 
 static void
@@ -87,26 +87,6 @@ control_activate_cb (BonoboControl *control,
 	BonoboUIComponent *ui_component;
 	
 	ui_component = bonobo_control_get_ui_component (control);
-	
-	if (summary->shell_view_interface == NULL) {
-		Bonobo_ControlFrame control_frame;
-		CORBA_Environment ev;
-
-		control_frame = bonobo_control_get_control_frame (control);
-		if (control_frame == NULL) {
-			goto out;
-		}
-
-		CORBA_exception_init (&ev);
-		summary->shell_view_interface = Bonobo_Unknown_queryInterface (control_frame, "IDL:GNOME/Evolution/ShellView:1.0", &ev);
-
-		if (BONOBO_EX (&ev)) {
-			g_warning ("Error getting ShellView. %s", CORBA_exception_id (&ev));
-			summary->shell_view_interface = CORBA_OBJECT_NIL;
-		}
-		CORBA_exception_free (&ev);
-	}
- out:
 
 	if (activate)
 		control_activate (control, ui_component, summary);
@@ -118,7 +98,7 @@ static void
 control_destroy_cb (BonoboControl *control,
 		    ESummary *summary)
 {
-	gtk_object_destroy (GTK_OBJECT (summary));
+	gtk_widget_destroy (GTK_WIDGET (summary));
 }
 
 BonoboControl *
@@ -130,7 +110,7 @@ e_summary_factory_new_control (const char *uri,
 	BonoboControl *control;
 	GtkWidget *summary;
 
-	summary = e_summary_new (shell, global_preferences);
+	summary = e_summary_new (global_preferences);
 	if (summary == NULL) {
 		return NULL;
 	}
@@ -141,14 +121,14 @@ e_summary_factory_new_control (const char *uri,
 	control = bonobo_control_new (summary);
 
 	if (control == NULL) {
-		gtk_object_destroy (GTK_OBJECT (summary));
+		gtk_widget_destroy (summary);
 		return NULL;
 	}
 
-	gtk_signal_connect (GTK_OBJECT (control), "activate",
-			    control_activate_cb, summary);
-	gtk_signal_connect (GTK_OBJECT (control), "destroy",
-			    control_destroy_cb, summary);
+	e_summary_set_control (summary, control);
+	
+	g_signal_connect (control, "activate", G_CALLBACK (control_activate_cb), summary);
+	g_signal_connect (control, "destroy", G_CALLBACK (control_destroy_cb), summary);
 
 	/* FIXME: We register the factory here as it needs the summary object.
 	   Sigh, this is really wrong.  */

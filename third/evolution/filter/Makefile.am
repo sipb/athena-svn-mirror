@@ -1,5 +1,4 @@
 
-gladedir = $(datadir)/evolution/glade
 glade_DATA = filter.glade
 
 INCLUDES = 					\
@@ -7,11 +6,10 @@ INCLUDES = 					\
 	-I $(top_srcdir)/camel			\
 	-I $(top_srcdir)/e-util			\
 	-I $(top_srcdir)/shell			\
-	-I $(top_srcdir)/camel/providers/mbox	\
-	-I $(top_builddir)/shell		\
-	-I $(GNOME_INCLUDEDIR)			\
 	-DFILTER_GLADEDIR=\"$(gladedir)\"	\
 	-DG_LOG_DOMAIN=\"filter\"		\
+	-DG_DISABLE_DEPRECATED			\
+	-DGTK_DISABLE_DEPRECATED		\
 	$(LIBFILTER_CFLAGS)
 
 noinst_LTLIBRARIES =				\
@@ -42,6 +40,8 @@ libfilter_la_SOURCES =				\
 	filter-int.h				\
 	filter-label.c				\
 	filter-label.h				\
+	filter-marshal.c			\
+	filter-marshal.h			\
 	filter-option.c				\
 	filter-option.h				\
 	filter-part.c				\
@@ -69,11 +69,16 @@ libfilter_la_SOURCES =				\
 
 libfilter_la_DEPENDENCIES = libfilter-i18n.h
 
-EXTRA_DIST = filtertypes.xml vfoldertypes.xml \
-	$(glade_DATA) libfilter-i18n.h
+EXTRA_DIST =					\
+	$(glade_DATA)				\
+	ChangeLog.pre-1-4			\
+	filter-marshal.list			\
+	filtertypes.xml				\
+	libfilter-i18n.h			\
+	vfoldertypes.xml
 
 # basic rules.
-filterdir = $(datadir)/evolution
+filterdir = $(privdatadir)
 filter_DATA = filtertypes.xml vfoldertypes.xml
 
 libfilter-i18n.h: filtertypes.xml vfoldertypes.xml
@@ -81,3 +86,16 @@ libfilter-i18n.h: filtertypes.xml vfoldertypes.xml
 	cat $(srcdir)/filtertypes.xml $(srcdir)/vfoldertypes.xml |	      \
 		sed -n -e 's:.*<title>\(.*\)</title>:char *s = N_("\1");:p' | \
 		sort -u >> $@
+
+filter-marshal.h: filter-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=filter_marshal filter-marshal.list --header > filter-marshal.tmp \
+	&& mv filter-marshal.tmp filter-marshal.h ) \
+	|| ( rm -f filter-marshal.tmp && exit 1 )
+
+filter-marshal.c: filter-marshal.h
+	( @GLIB_GENMARSHAL@ --prefix=filter_marshal filter-marshal.list --body > filter-marshal.tmp \
+	&& mv filter-marshal.tmp filter-marshal.c ) \
+	|| ( rm -f filter-marshal.tmp && exit 1 )
+
+MARSHAL_GENERATED = filter-marshal.c filter-marshal.h
+

@@ -23,7 +23,7 @@
 #ifndef _E_CALENDAR_ITEM_H_
 #define _E_CALENDAR_ITEM_H_
 
-#include <libgnomeui/gnome-canvas.h>
+#include <libgnomecanvas/gnome-canvas.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -78,11 +78,11 @@ typedef struct tm (*ECalendarItemGetTimeCallback) (ECalendarItem *calitem,
 						   gpointer	  data);
 
 
-#define E_CALENDAR_ITEM(obj)     (GTK_CHECK_CAST((obj), \
+#define E_CALENDAR_ITEM(obj)     (G_TYPE_CHECK_INSTANCE_CAST ((obj), \
         e_calendar_item_get_type (), ECalendarItem))
-#define E_CALENDAR_ITEM_CLASS(k) (GTK_CHECK_CLASS_CAST ((k),\
+#define E_CALENDAR_ITEM_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k),\
 	e_calendar_item_get_type ()))
-#define E_IS_CALENDAR_ITEM(o)    (GTK_CHECK_TYPE((o), \
+#define E_IS_CALENDAR_ITEM(o)    (G_TYPE_CHECK_INSTANCE_TYPE ((o), \
 	e_calendar_item_get_type ()))
 
 struct _ECalendarItem
@@ -198,8 +198,8 @@ struct _ECalendarItem
 
 	/* Fonts for drawing text. If font isn't set it uses the font from the
 	   canvas widget. If week_number_font isn't set it uses font. */
-	GdkFont *font, *old_font;
-	GdkFont *week_number_font, *old_week_number_font;
+	PangoFontDescription *font_desc;
+	PangoFontDescription *week_number_font_desc;
 
 	ECalendarItemStyleCallback style_callback;
 	gpointer style_callback_data;

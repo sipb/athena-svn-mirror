@@ -32,8 +32,10 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkvbox.h>
+
 #include <libgnomeui/gnome-app.h>
-#include <libgnomeui/gnome-init.h>
+#include <libgnomeui/gnome-ui-init.h>
+
 #include "e-calendar.h"
 
 /* Drag and Drop stuff. */
@@ -87,8 +89,8 @@ main (int argc, char **argv)
 	gtk_window_set_policy (GTK_WINDOW (app), FALSE, TRUE, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (app), 8);
 
-	gtk_signal_connect (GTK_OBJECT (app), "delete_event",
-			    GTK_SIGNAL_FUNC (delete_event_cb), NULL);
+	g_signal_connect((app), "delete_event",
+			    G_CALLBACK (delete_event_cb), NULL);
 
 	cal = e_calendar_new ();
 	e_calendar_set_minimum_size (E_CALENDAR (cal), 1, 1);
@@ -97,10 +99,10 @@ main (int argc, char **argv)
 	e_calendar_item_set_style_callback (calitem, get_day_style,
 					    NULL, NULL);
 
-	gtk_signal_connect (GTK_OBJECT (calitem), "date_range_changed",
-			    GTK_SIGNAL_FUNC (on_date_range_changed), NULL);
-	gtk_signal_connect (GTK_OBJECT (calitem), "selection_changed",
-			    GTK_SIGNAL_FUNC (on_selection_changed), NULL);
+	g_signal_connect((calitem), "date_range_changed",
+			    G_CALLBACK (on_date_range_changed), NULL);
+	g_signal_connect((calitem), "selection_changed",
+			    G_CALLBACK (on_selection_changed), NULL);
 
 
 	gtk_drag_dest_set (cal,
@@ -152,12 +154,12 @@ on_selection_changed (ECalendarItem *calitem)
 	e_calendar_item_get_selection	(calitem, &start_date, &end_date);
 
 	g_print ("Selection changed (D/M/Y): %i/%i/%i - %i/%i/%i\n",
-		 g_date_day (&start_date),
-		 g_date_month (&start_date),
-		 g_date_year (&start_date),
-		 g_date_day (&end_date),
-		 g_date_month (&end_date),
-		 g_date_year (&end_date));
+		 g_date_get_day (&start_date),
+		 g_date_get_month (&start_date),
+		 g_date_get_year (&start_date),
+		 g_date_get_day (&end_date),
+		 g_date_get_month (&end_date),
+		 g_date_get_year (&end_date));
 }
 
 

@@ -1,6 +1,6 @@
 SUBDIRS	= select-names
 
-INCLUDES =							\
+INCLUDES =									\
 	-DG_LOG_DOMAIN=\"evolution-addressbook\"		\
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
@@ -16,26 +16,29 @@ INCLUDES =							\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"			\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"		\
-	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"			\
+	-DEVOLUTION_IMAGESDIR=\""$(imagesdir)"\"		\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
-	-DCAMEL_PROVIDERDIR=\""$(providerdir)"\"		\
-	-DEVOLUTION_IMAGESDIR=\""$(datadir)"/images/evolution\" \
+	-DEVOLUTION_UIDIR=\""$(evolutionuidir)"\"		\
+	-DPREFIX=\""$(prefix)"\"				\
 	$(LDAP_CFLAGS)						\
+	-DG_DISABLE_DEPRECATED					\
+	-DGTK_DISABLE_DEPRECATED				\
+	-DLIBGNOME_DISABLE_DEPRECATED				\
+	-DLIBGNOMEUI_DISABLE_DEPRECATED				\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
-bin_PROGRAMS =	\
-	evolution-addressbook
+component_LTLIBRARIES = libevolution-addressbook.la
 
-evolution_addressbook_SOURCES = 	\
+libevolution_addressbook_la_SOURCES = 	\
 	addressbook-component.c		\
 	addressbook-component.h		\
 	addressbook-config.c		\
 	addressbook-config.h		\
-	addressbook-factory.c		\
 	addressbook-storage.c		\
 	addressbook-storage.h		\
 	addressbook.c			\
 	addressbook.h			\
+	component-factory.c		\
 	e-cardlist-model.c		\
 	e-cardlist-model.h		\
 	e-address-widget.h		\
@@ -43,46 +46,54 @@ evolution_addressbook_SOURCES = 	\
 	e-address-popup.h		\
 	e-address-popup.c
 
-evolution_addressbook_LDADD =								\
+libevolution_addressbook_la_LIBADD =							\
 	select-names/libeselectnames.la							\
 	$(top_builddir)/shell/libeshell.la						\
-	$(top_builddir)/addressbook/gui/widgets/libeminicard.a				\
-	$(top_builddir)/addressbook/backend/ebook/libebook.la				\
-	$(top_builddir)/camel/libcamel.la						\
-	$(top_builddir)/e-util/ename/libename.la					\
-	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a	\
-	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a		\
-	$(top_builddir)/libversit/libversit.a						\
-	$(top_builddir)/widgets/misc/libemiscwidgets.a 					\
-	$(top_builddir)/addressbook/printing/libecontactprint.a				\
-	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.a			\
-	$(top_builddir)/addressbook/gui/merging/libecardmerging.a			\
+	$(top_builddir)/addressbook/gui/widgets/libeminicard.la				\
+	$(top_builddir)/addressbook/printing/libecontactprint.la			\
+	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.la			\
 	$(top_builddir)/filter/libfilter.la						\
-	$(top_builddir)/e-util/libeutil.la						\
+	$(top_builddir)/addressbook/backend/ebook/libebook.la				\
+	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.la	\
+	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.la		\
+	$(top_builddir)/widgets/misc/libemiscwidgets.la					\
+	$(top_builddir)/addressbook/gui/merging/libecardmerging.la			\
 	$(top_builddir)/widgets/menus/libmenus.la					\
 	$(EVOLUTION_ADDRESSBOOK_LIBS) $(LDAP_LIBS)
 
-evolution_addressbook_LDFLAGS = `gnome-config --libs gdk_pixbuf` -export-dynamic
 
-@XML_I18N_MERGE_OAF_RULE@
 
-oafdir = $(datadir)/oaf
-oaf_in_files = GNOME_Evolution_Addressbook.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+libevolution_addressbook_la_LDFLAGS = -module -avoid-version
 
-gladedir   = $(datadir)/evolution/glade
+# GConf schemas
+
+schemadir   = $(GCONF_SCHEMA_FILE_DIR)
+schema_DATA = apps_evolution_addressbook.schemas
+
+install-data-local:
+	if test -z "$(DESTDIR)" ; then \
+		for p in $(schema_DATA) ; do \
+			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$$p; \
+		done \
+	fi
+
+server_in_files = GNOME_Evolution_Addressbook.server.in.in
+server_DATA = $(server_in_files:.server.in.in=.server)
+%.server.in: %.server.in.in
+	sed -e "s|\@COMPONENTDIR\@|$(componentdir)|" $< > $@
+
+@INTLTOOL_SERVER_RULE@
+
 glade_DATA = ldap-config.glade
 
-iconsdir = $(datadir)/images/evolution
+BUILT_SOURCES = $(server_DATA)
+CLEANFILES    = $(BUILT_SOURCES)
 
-etspecdir = $(datadir)/evolution/etspec
-etspec_DATA = addressbook-config.etspec
-
-EXTRA_DIST = 				\
-	$(glade_DATA)			\
-	$(oaf_DATA)			\
-	$(oaf_in_files)			\
-	$(etspec_DATA)
+EXTRA_DIST =			\
+	$(glade_DATA)		\
+	$(schema_DATA)		\
+	$(server_DATA)		\
+	$(server_in_files)
 
 if ENABLE_PURIFY
 PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@

@@ -19,29 +19,29 @@
 #include <addressbook/backend/ebook/e-destination.h>
 
 #define E_TYPE_SELECT_NAMES_MODEL            (e_select_names_model_get_type ())
-#define E_SELECT_NAMES_MODEL(obj)            (GTK_CHECK_CAST ((obj), E_TYPE_SELECT_NAMES_MODEL, ESelectNamesModel))
-#define E_SELECT_NAMES_MODEL_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), E_TYPE_SELECT_NAMES_MODEL, ESelectNamesModelClass))
-#define E_IS_SELECT_NAMES_MODEL(obj)         (GTK_CHECK_TYPE ((obj), E_TYPE_SELECT_NAMES_MODEL))
-#define E_IS_SELECT_NAMES_MODEL_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_SELECT_NAMES_MODEL))
+#define E_SELECT_NAMES_MODEL(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SELECT_NAMES_MODEL, ESelectNamesModel))
+#define E_SELECT_NAMES_MODEL_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_SELECT_NAMES_MODEL, ESelectNamesModelClass))
+#define E_IS_SELECT_NAMES_MODEL(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SELECT_NAMES_MODEL))
+#define E_IS_SELECT_NAMES_MODEL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_SELECT_NAMES_MODEL))
 
 typedef struct _ESelectNamesModel ESelectNamesModel;
 typedef struct _ESelectNamesModelClass ESelectNamesModelClass;
 struct _ESelectNamesModelPrivate;
 
 struct _ESelectNamesModel {
-	GtkObject object;
+	GObject object;
 	
 	struct _ESelectNamesModelPrivate *priv;
 };
 
 struct _ESelectNamesModelClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	void (*changed) (ESelectNamesModel *model);
 	void (*resized) (ESelectNamesModel *model, gint index, gint old_len, gint new_len);
 };
 
-GtkType e_select_names_model_get_type  (void);
+GType   e_select_names_model_get_type  (void);
 
 ESelectNamesModel *e_select_names_model_new       (void);
 ESelectNamesModel *e_select_names_model_duplicate (ESelectNamesModel *old);

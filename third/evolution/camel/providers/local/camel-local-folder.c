@@ -79,6 +79,7 @@ static GPtrArray *local_search_by_expression(CamelFolder *folder, const char *ex
 static GPtrArray *local_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex);
 static void local_search_free(CamelFolder *folder, GPtrArray * result);
 
+static void local_delete(CamelFolder *folder);
 static void local_rename(CamelFolder *folder, const char *newname);
 
 static void local_finalize(CamelObject * object);
@@ -104,6 +105,7 @@ camel_local_folder_class_init(CamelLocalFolderClass * camel_local_folder_class)
 	camel_folder_class->search_by_uids = local_search_by_uids;
 	camel_folder_class->search_free = local_search_free;
 
+	camel_folder_class->delete = local_delete;
 	camel_folder_class->rename = local_rename;
 
 	camel_local_folder_class->lock = local_lock;
@@ -208,9 +210,9 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 
 	root_dir_path = camel_local_store_get_toplevel_dir(CAMEL_LOCAL_STORE(folder->parent_store));
 	/* strip the trailing '/' which is always present */
-	len = strlen(root_dir_path);
-	tmp = alloca(len+1);
-	strcpy(tmp, root_dir_path);
+	len = strlen (root_dir_path);
+	tmp = g_alloca (len + 1);
+	strcpy (tmp, root_dir_path);
 	if (len>1 && tmp[len-1] == '/')
 		tmp[len-1] = 0;
 
@@ -253,7 +255,7 @@ camel_local_folder_construct(CamelLocalFolder *lf, CamelStore *parent_store, con
 		lf->index = (CamelIndex *)camel_text_index_new(lf->index_path, flag);
 		if (lf->index == NULL) {
 			/* yes, this isn't fatal at all */
-			g_warning("Could not open/create index file: %s: indexing not performed", strerror(errno));
+			g_warning("Could not open/create index file: %s: indexing not performed", strerror (errno));
 			forceindex = FALSE;
 			/* record that we dont have an index afterall */
 			flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
@@ -344,8 +346,8 @@ local_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
 				if (tmp == NULL)
 					goto skip;
 
-				path = alloca(strlen(tmp)+strlen(folder->full_name)+1);
-				sprintf(path, "%s/%s", tmp, folder->full_name);
+				path = g_alloca (strlen (tmp) + strlen (folder->full_name) + 1);
+				sprintf (path, "%s/%s", tmp, folder->full_name);
 
 				if ((tmp = getenv("HOME")) && strncmp(tmp, path, strlen(tmp)) == 0)
 					/* $HOME relative path + protocol string */
@@ -434,6 +436,17 @@ local_expunge(CamelFolder *folder, CamelException *ex)
 	/* Just do a sync with expunge, serves the same purpose */
 	/* call the callback directly, to avoid locking problems */
 	CAMEL_FOLDER_CLASS (CAMEL_OBJECT_GET_CLASS(folder))->sync(folder, TRUE, ex);
+}
+
+static void
+local_delete(CamelFolder *folder)
+{
+	CamelLocalFolder *lf = (CamelLocalFolder *)folder;
+	
+	if (lf->index)
+		camel_index_delete(lf->index);
+
+	parent_class->delete(folder);
 }
 
 static void

@@ -82,6 +82,9 @@ RANLIB = @RANLIB@
 STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
+privlibdir = @privlibdir@
 python_val = @python_val@
 
 EXTRA_DIST =  mkderivedcomponents.pl mkderivedparameters.pl mkderivedproperties.pl mkderivedvalues.pl mkparameterrestrictions.pl mkrestrictionrecords.pl mkrestrictiontable.pl readvaluesfile.pl 

@@ -20,7 +20,7 @@
  */
 
 #include <config.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-widget.h>
@@ -31,6 +31,7 @@
 #include <gnome.h>
 #include <ical.h>
 #include <glade/glade.h>
+#include <gal/util/e-util.h>
 #include <widgets/misc/e-map.h>
 #include <ebook/e-destination.h>
 #include "Evolution-Addressbook-SelectNames.h"
@@ -57,49 +58,27 @@ static const char *section_name = "Delegate To";
 
 static void e_delegate_dialog_class_init	(EDelegateDialogClass *class);
 static void e_delegate_dialog_init		(EDelegateDialog      *edd);
-static void e_delegate_dialog_destroy		(GtkObject	*object);
+static void e_delegate_dialog_finalize		(GObject	*object);
 
 static gboolean get_widgets			(EDelegateDialog *edd);
 static void addressbook_clicked_cb              (GtkWidget *widget, gpointer data);
 
 static GtkObjectClass *parent_class;
 
-
-GtkType
-e_delegate_dialog_get_type (void)
-{
-	static GtkType e_delegate_dialog_type = 0;
-
-	if (!e_delegate_dialog_type) {
-		static const GtkTypeInfo e_delegate_dialog_info = {
-			"EDelegateDialog",
-			sizeof (EDelegateDialog),
-			sizeof (EDelegateDialogClass),
-			(GtkClassInitFunc) e_delegate_dialog_class_init,
-			(GtkObjectInitFunc) e_delegate_dialog_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
-		};
-
-		e_delegate_dialog_type = gtk_type_unique (GTK_TYPE_OBJECT,
-							  &e_delegate_dialog_info);
-	}
-
-	return e_delegate_dialog_type;
-}
+E_MAKE_TYPE (e_delegate_dialog, "EDelegateDialog", EDelegateDialog, e_delegate_dialog_class_init,
+	     e_delegate_dialog_init, G_TYPE_OBJECT);
 
 /* Class initialization function for the event editor */
 static void
 e_delegate_dialog_class_init (EDelegateDialogClass *class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *gobject_class;
 
-	object_class = (GtkObjectClass *) class;
+	gobject_class = (GObjectClass *) class;
 
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
-	object_class->destroy = e_delegate_dialog_destroy;
+	gobject_class->finalize = e_delegate_dialog_finalize;
 }
 
 /* Object initialization function for the event editor */
@@ -116,7 +95,7 @@ e_delegate_dialog_init (EDelegateDialog *edd)
 
 /* Destroy handler for the event editor */
 static void
-e_delegate_dialog_destroy (GtkObject *object)
+e_delegate_dialog_finalize (GObject *object)
 {
 	EDelegateDialog *edd;
 	EDelegateDialogPrivate *priv;
@@ -138,8 +117,8 @@ e_delegate_dialog_destroy (GtkObject *object)
 	g_free (priv);
 	edd->priv = NULL;
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (parent_class)->finalize)
+		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -151,6 +130,7 @@ e_delegate_dialog_construct (EDelegateDialog *edd, const char *name, const char 
 	EDestination *destv[2] = {NULL, NULL};
 	Bonobo_Control corba_control;
 	CORBA_Environment ev;
+	char *str;
 
 	g_return_val_if_fail (edd != NULL, NULL);
 	g_return_val_if_fail (E_IS_DELEGATE_DIALOG (edd), NULL);
@@ -160,7 +140,7 @@ e_delegate_dialog_construct (EDelegateDialog *edd, const char *name, const char 
 	/* Load the content widgets */
 
 	priv->xml = glade_xml_new (EVOLUTION_GLADEDIR "/e-delegate-dialog.glade",
-				   NULL);
+				   NULL, NULL);
 	if (!priv->xml) {
 		g_message ("e_delegate_dialog_construct(): Could not load the Glade XML file!");
 		goto error;
@@ -173,7 +153,7 @@ e_delegate_dialog_construct (EDelegateDialog *edd, const char *name, const char 
 	
 	CORBA_exception_init (&ev);
 	
-	priv->corba_select_names = oaf_activate_from_id (SELECT_NAMES_OAFID, 0, NULL, &ev);
+	priv->corba_select_names = bonobo_activation_activate_from_id (SELECT_NAMES_OAFID, 0, NULL, &ev);
 	GNOME_Evolution_Addressbook_SelectNames_addSectionWithLimit (priv->corba_select_names, 
 								     section_name, 
 								     section_name,
@@ -196,7 +176,7 @@ e_delegate_dialog_construct (EDelegateDialog *edd, const char *name, const char 
 
 	priv->entry = bonobo_widget_new_control_from_objref (corba_control, CORBA_OBJECT_NIL);
 	gtk_widget_show (priv->entry);
-	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->entry, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (priv->hbox), priv->entry, TRUE, TRUE, 6);
 
 	dest = e_destination_new ();
 	destv[0] = dest;
@@ -204,17 +184,19 @@ e_delegate_dialog_construct (EDelegateDialog *edd, const char *name, const char 
 		e_destination_set_name (dest, name);
 	if (address != NULL && *address)
 		e_destination_set_email (dest, address);
-	bonobo_widget_set_property (BONOBO_WIDGET (priv->entry), "destinations", e_destination_exportv (destv), NULL);
-	gtk_object_unref (GTK_OBJECT (dest));
+	str = e_destination_exportv(destv);
+	bonobo_widget_set_property (BONOBO_WIDGET (priv->entry), "destinations", TC_CORBA_string, str, NULL);
+	g_free(str);
+	g_object_unref((dest));
 		
-	gtk_signal_connect (GTK_OBJECT (priv->addressbook), "clicked",
-			    GTK_SIGNAL_FUNC (addressbook_clicked_cb), edd);
+	g_signal_connect((priv->addressbook), "clicked",
+			    G_CALLBACK (addressbook_clicked_cb), edd);
 
 	return edd;
 
  error:
 
-	gtk_object_unref (GTK_OBJECT (edd));
+	g_object_unref((edd));
 	return NULL;
 }
 
@@ -266,7 +248,7 @@ e_delegate_dialog_new (const char *name, const char *address)
 {
 	EDelegateDialog *edd;
 
-	edd = E_DELEGATE_DIALOG (gtk_type_new (E_TYPE_DELEGATE_DIALOG));
+	edd = E_DELEGATE_DIALOG (g_object_new (E_TYPE_DELEGATE_DIALOG, NULL));
 	return e_delegate_dialog_construct (E_DELEGATE_DIALOG (edd), name, address);
 }
 
@@ -282,7 +264,7 @@ e_delegate_dialog_get_delegate		(EDelegateDialog  *edd)
 
 	priv = edd->priv;
 	
-	bonobo_widget_get_property (BONOBO_WIDGET (priv->entry), "destinations", &string, NULL);
+	bonobo_widget_get_property (BONOBO_WIDGET (priv->entry), "destinations", TC_CORBA_string, &string, NULL);
 	destv = e_destination_importv (string);
 	
 	if (destv && destv[0] != NULL) {
@@ -309,7 +291,7 @@ e_delegate_dialog_get_delegate_name		(EDelegateDialog  *edd)
 
 	priv = edd->priv;
 
-	bonobo_widget_get_property (BONOBO_WIDGET (priv->entry), "destinations", &string, NULL);
+	bonobo_widget_get_property (BONOBO_WIDGET (priv->entry), "destinations", TC_CORBA_string, &string, NULL);
 	destv = e_destination_importv (string);
 	
 	g_message ("importv: [%s]", string);

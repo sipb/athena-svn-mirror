@@ -28,6 +28,7 @@
 
 #include "e-storage-set-view.h"
 #include "e-shell-constants.h"
+#include "e-shell-marshal.h"
 
 #include <glib.h>
 #include <gtk/gtkobject.h>
@@ -169,10 +170,8 @@ storage_callback (EStorage *storage,
 								storage_callback_data->data);
 
 	if (storage_callback_data->operation == OPERATION_MOVE)
-		gtk_signal_emit (GTK_OBJECT (storage_callback_data->storage_set),
-				 signals[MOVED_FOLDER],
-				 storage_callback_data->source_path,
-				 storage_callback_data->destination_path);
+		g_signal_emit (storage_callback_data->storage_set, signals[MOVED_FOLDER], 0,
+			       storage_callback_data->source_path, storage_callback_data->destination_path);
 
 	storage_callback_data_free (storage_callback_data);
 }
@@ -213,7 +212,7 @@ storage_new_folder_cb (EStorage *storage,
 	storage_set = E_STORAGE_SET (data);
 
 	full_path = make_full_path (storage, path);
-	gtk_signal_emit (GTK_OBJECT (storage_set), signals[NEW_FOLDER], full_path);
+	g_signal_emit (storage_set, signals[NEW_FOLDER], 0, full_path);
 	g_free (full_path);
 }
 
@@ -228,7 +227,7 @@ storage_updated_folder_cb (EStorage *storage,
 	storage_set = E_STORAGE_SET (data);
 
 	full_path = make_full_path (storage, path);
-	gtk_signal_emit (GTK_OBJECT (storage_set), signals[UPDATED_FOLDER], full_path);
+	g_signal_emit (storage_set, signals[UPDATED_FOLDER], 0, full_path);
 	g_free (full_path);
 }
 
@@ -243,22 +242,7 @@ storage_removed_folder_cb (EStorage *storage,
 	storage_set = E_STORAGE_SET (data);
 
 	full_path = make_full_path (storage, path);
-	gtk_signal_emit (GTK_OBJECT (storage_set), signals[REMOVED_FOLDER], full_path);
-	g_free (full_path);
-}
-
-static void
-storage_close_folder_cb (EStorage *storage,
-			 const char *path,
-			 void *data)
-{
-	EStorageSet *storage_set;
-	char *full_path;
-
-	storage_set = E_STORAGE_SET (data);
-
-	full_path = make_full_path (storage, path);
-	gtk_signal_emit (GTK_OBJECT (storage_set), signals[CLOSE_FOLDER], full_path);
+	g_signal_emit (storage_set, signals[REMOVED_FOLDER], 0, full_path);
 	g_free (full_path);
 }
 
@@ -309,7 +293,7 @@ signal_new_folder_for_all_folders_under_paths (EStorageSet *storage_set,
 		path = (const char *) p->data;
 
 		path_with_storage = g_strconcat (E_PATH_SEPARATOR_S, e_storage_get_name (storage), path, NULL);
-		gtk_signal_emit (GTK_OBJECT (storage_set), signals[NEW_FOLDER], path_with_storage);
+		g_signal_emit (storage_set, signals[NEW_FOLDER], 0, path_with_storage);
 		g_free (path_with_storage);
 
 		sub_path_list = e_storage_get_subfolder_paths (storage, path);
@@ -337,7 +321,7 @@ signal_new_folder_for_all_folders_in_storage (EStorageSet *storage_set,
 /* GtkObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EStorageSet *storage_set;
 	EStorageSetPrivate *priv;
@@ -345,89 +329,112 @@ destroy (GtkObject *object)
 	storage_set = E_STORAGE_SET (object);
 	priv = storage_set->priv;
 
-	e_free_object_list (priv->storages);
+	if (priv->storages != NULL) {
+		e_free_object_list (priv->storages);
+		priv->storages = NULL;
+	}
 
-	gtk_object_unref (GTK_OBJECT (priv->folder_type_registry));
+	if (priv->folder_type_registry != NULL) {
+		g_object_unref (priv->folder_type_registry);
+		priv->folder_type_registry = NULL;
+	}
 
-	g_hash_table_foreach (priv->name_to_named_storage,
-			      (GHFunc) name_to_named_storage_foreach_destroy, NULL);
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EStorageSet *storage_set;
+	EStorageSetPrivate *priv;
+
+	storage_set = E_STORAGE_SET (object);
+	priv = storage_set->priv;
+
+	g_hash_table_foreach (priv->name_to_named_storage, (GHFunc) name_to_named_storage_foreach_destroy, NULL);
 	g_hash_table_destroy (priv->name_to_named_storage);
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (EStorageSetClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
-	object_class = GTK_OBJECT_CLASS (klass);
+	parent_class = g_type_class_ref(gtk_object_get_type ());
+	object_class = G_OBJECT_CLASS (klass);
 
-	object_class->destroy = destroy;
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	signals[NEW_STORAGE] = 
-		gtk_signal_new ("new_storage",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EStorageSetClass, new_storage),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_POINTER);
+		g_signal_new ("new_storage",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EStorageSetClass, new_storage),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__POINTER,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_POINTER);
 	signals[REMOVED_STORAGE] = 
-		gtk_signal_new ("removed_storage",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EStorageSetClass, removed_storage),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_POINTER);
+		g_signal_new ("removed_storage",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EStorageSetClass, removed_storage),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__POINTER,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_POINTER);
 	signals[NEW_FOLDER] = 
-		gtk_signal_new ("new_folder",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EStorageSetClass, new_folder),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_STRING);
+		g_signal_new ("new_folder",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EStorageSetClass, new_folder),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__STRING,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_STRING);
 	signals[UPDATED_FOLDER] = 
-		gtk_signal_new ("updated_folder",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EStorageSetClass, updated_folder),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_STRING);
+		g_signal_new ("updated_folder",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EStorageSetClass, updated_folder),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__STRING,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_STRING);
 	signals[REMOVED_FOLDER] = 
-		gtk_signal_new ("removed_folder",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EStorageSetClass, removed_folder),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_STRING);
+		g_signal_new ("removed_folder",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EStorageSetClass, removed_folder),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__STRING,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_STRING);
 	signals[MOVED_FOLDER] = 
-		gtk_signal_new ("moved_folder",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EStorageSetClass, moved_folder),
-				gtk_marshal_NONE__POINTER_POINTER,
-				GTK_TYPE_NONE, 2,
-				GTK_TYPE_STRING,
-				GTK_TYPE_STRING);
+		g_signal_new ("moved_folder",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EStorageSetClass, moved_folder),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__STRING_STRING,
+			      G_TYPE_NONE, 2,
+			      G_TYPE_STRING,
+			      G_TYPE_STRING);
 	signals[CLOSE_FOLDER] = 
-		gtk_signal_new ("close_folder",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EStorageSetClass, close_folder),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_STRING);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("close_folder",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (EStorageSetClass, close_folder),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__STRING,
+			      G_TYPE_NONE, 1,
+			      G_TYPE_STRING);
 }
 
 static void
@@ -455,7 +462,7 @@ e_storage_set_construct (EStorageSet *storage_set,
 
 	GTK_OBJECT_UNSET_FLAGS (storage_set, GTK_FLOATING);
 
-	gtk_object_ref (GTK_OBJECT (folder_type_registry));
+	g_object_ref (folder_type_registry);
 	storage_set->priv->folder_type_registry = folder_type_registry;
 }
 
@@ -464,7 +471,7 @@ e_storage_set_new (EFolderTypeRegistry *folder_type_registry)
 {
 	EStorageSet *new;
 
-	new = gtk_type_new (e_storage_set_get_type ());
+	new = g_object_new (e_storage_set_get_type (), NULL);
 
 	e_storage_set_construct (new, folder_type_registry);
 
@@ -486,7 +493,7 @@ e_storage_set_get_storage_list (EStorageSet *storage_set)
 
 	list = NULL;
 	for (p = priv->storages; p != NULL; p = p->next) {
-		gtk_object_ref (GTK_OBJECT (p->data));
+		g_object_ref (p->data);
 		list = g_list_prepend (list, p->data);
 	}
 
@@ -519,23 +526,21 @@ e_storage_set_add_storage (EStorageSet *storage_set,
 	if (g_hash_table_lookup (priv->name_to_named_storage, storage_name) != NULL)
 		return FALSE;
 
-	gtk_object_ref (GTK_OBJECT (storage));
+	g_object_ref (storage);
 
-	gtk_signal_connect (GTK_OBJECT (storage), "new_folder",
-			    GTK_SIGNAL_FUNC (storage_new_folder_cb), storage_set);
-	gtk_signal_connect (GTK_OBJECT (storage), "updated_folder",
-			    GTK_SIGNAL_FUNC (storage_updated_folder_cb), storage_set);
-	gtk_signal_connect (GTK_OBJECT (storage), "removed_folder",
-			    GTK_SIGNAL_FUNC (storage_removed_folder_cb), storage_set);
-	gtk_signal_connect (GTK_OBJECT (storage), "close_folder",
-			    GTK_SIGNAL_FUNC (storage_close_folder_cb), storage_set);
+	g_signal_connect (storage, "new_folder",
+			  G_CALLBACK (storage_new_folder_cb), storage_set);
+	g_signal_connect (storage, "updated_folder",
+			  G_CALLBACK (storage_updated_folder_cb), storage_set);
+	g_signal_connect (storage, "removed_folder",
+			  G_CALLBACK (storage_removed_folder_cb), storage_set);
 
 	priv->storages = g_list_append (priv->storages, storage);
 
 	named_storage = named_storage_new (storage);
 	g_hash_table_insert (priv->name_to_named_storage, named_storage->name, named_storage);
 
-	gtk_signal_emit (GTK_OBJECT (storage_set), signals[NEW_STORAGE], storage);
+	g_signal_emit (storage_set, signals[NEW_STORAGE], 0, storage);
 
 	signal_new_folder_for_all_folders_in_storage (storage_set, storage);
 
@@ -566,8 +571,8 @@ e_storage_set_remove_storage (EStorageSet *storage_set,
 
 	priv->storages = g_list_remove (priv->storages, storage);
 
-	gtk_signal_emit (GTK_OBJECT (storage_set), signals[REMOVED_STORAGE], storage);
-	gtk_object_unref (GTK_OBJECT (storage));
+	g_signal_emit (storage_set, signals[REMOVED_STORAGE], 0, storage);
+	g_object_unref (storage);
 
 	return TRUE;
 }
@@ -588,8 +593,8 @@ e_storage_set_remove_all_storages (EStorageSet *storage_set)
 
 		storage = E_STORAGE (p->data);
 
-		gtk_signal_emit (GTK_OBJECT (storage_set), signals[REMOVED_STORAGE], storage);
-		gtk_object_unref (GTK_OBJECT (storage));
+		g_signal_emit (storage_set, signals[REMOVED_STORAGE], 0, storage);
+		g_object_unref (storage);
 	}
 
 	g_hash_table_foreach_remove (priv->name_to_named_storage,
@@ -642,6 +647,19 @@ e_storage_set_get_folder (EStorageSet *storage_set,
 
 
 static void
+async_open_cb (EStorage *storage, EStorageResult result,
+	       const char *path, gpointer storage_set)
+{
+	if (result != E_STORAGE_OK) {
+		char *full_path;
+
+		full_path = make_full_path (storage, path);
+		g_signal_emit (storage_set, signals[CLOSE_FOLDER], 0, full_path);
+		g_free (full_path);
+	}
+}
+
+static void
 storage_set_view_folder_opened (EStorageSetView *storage_set_view,
 				const char *path,
 				EStorageSet *storage_set)
@@ -653,7 +671,8 @@ storage_set_view_folder_opened (EStorageSetView *storage_set_view,
 	if (storage == NULL)
 		return;
 
-	e_storage_async_open_folder (storage, subpath);
+	e_storage_async_open_folder (storage, subpath,
+				     async_open_cb, storage_set);
 }
 
 GtkWidget *
@@ -666,9 +685,9 @@ e_storage_set_create_new_view (EStorageSet *storage_set,
 	g_return_val_if_fail (E_IS_STORAGE_SET (storage_set), NULL);
 
 	storage_set_view = e_storage_set_view_new (storage_set, ui_container);
-	gtk_signal_connect (GTK_OBJECT (storage_set_view), "folder_opened",
-			    GTK_SIGNAL_FUNC (storage_set_view_folder_opened),
-			    storage_set);
+	g_signal_connect (storage_set_view, "folder_opened",
+			  G_CALLBACK (storage_set_view_folder_opened),
+			  storage_set);
 
 	return storage_set_view;
 }

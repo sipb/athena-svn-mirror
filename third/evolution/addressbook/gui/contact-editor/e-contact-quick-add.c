@@ -26,16 +26,15 @@
 
 #include <config.h>
 #include <ctype.h>
+#include <string.h>
 #include <glib.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtktable.h>
-#include <libgnome/gnome-defs.h>
+#include <gtk/gtkdialog.h>
+#include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-app.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-stock.h>
-#include <gal/widgets/e-unicode.h>
 #include <addressbook/gui/component/addressbook.h>
 #include <addressbook/backend/ebook/e-book.h>
 #include <addressbook/backend/ebook/e-book-util.h>
@@ -85,7 +84,7 @@ quick_add_unref (QuickAdd *qa)
 		if (qa->refs == 0) {
 			g_free (qa->name);
 			g_free (qa->email);
-			gtk_object_unref (GTK_OBJECT (qa->card));
+			g_object_unref (qa->card);
 			g_free (qa);
 		}
 	}
@@ -104,7 +103,7 @@ quick_add_set_name (QuickAdd *qa, const gchar *name)
 	card_name = e_card_name_from_string (name);
 	qa->name = e_card_name_to_string (card_name);
 
-	gtk_object_set (GTK_OBJECT (qa->card),
+	g_object_set (qa->card,
 			"full_name", qa->name,
 			NULL);
 
@@ -125,7 +124,7 @@ quick_add_set_email (QuickAdd *qa, const gchar *email)
 	simple = e_card_simple_new (qa->card);
 	e_card_simple_set (simple, E_CARD_SIMPLE_FIELD_EMAIL, email);
 	e_card_simple_sync_card (simple);
-	gtk_object_unref (GTK_OBJECT (simple));
+	g_object_unref (simple);
 }
 
 static void
@@ -133,13 +132,15 @@ merge_cb (EBook *book, EBookStatus status, gpointer closure)
 {
 	QuickAdd *qa = (QuickAdd *) closure;
 
-	if (book != NULL) {
+	if (status == E_BOOK_STATUS_SUCCESS) {
 		e_card_merging_book_add_card (book, qa->card, NULL, NULL);
 		if (qa->cb)
 			qa->cb (qa->card, qa->closure);
-		gtk_object_unref (GTK_OBJECT (book));
+		g_object_unref (book);
 	} else {
 		/* Something went wrong. */
+		if (book)
+			g_object_unref (book);
 		if (qa->cb)
 			qa->cb (NULL, qa->closure);
 	}
@@ -155,10 +156,7 @@ quick_add_merge_card (QuickAdd *qa)
 	quick_add_ref (qa);
 
 	book = e_book_new ();
-	if (!addressbook_load_default_book (book, merge_cb, qa)) {
-		gtk_object_unref (GTK_OBJECT (book));
-		merge_cb (book, E_BOOK_STATUS_OTHER_ERROR, qa);
-	}
+	addressbook_load_default_book (book, merge_cb, qa);
 }
 
 
@@ -169,7 +167,7 @@ quick_add_merge_card (QuickAdd *qa)
 static void
 card_added_cb (EContactEditor *ce, EBookStatus status, ECard *card, gpointer closure)
 {
-	QuickAdd *qa = (QuickAdd *) gtk_object_get_data (GTK_OBJECT (ce), "quick_add");
+	QuickAdd *qa = (QuickAdd *) g_object_get_data (G_OBJECT (ce), "quick_add");
 
 	if (qa) {
 
@@ -177,20 +175,20 @@ card_added_cb (EContactEditor *ce, EBookStatus status, ECard *card, gpointer clo
 			qa->cb (qa->card, qa->closure);
 	
 		/* We don't need to unref qa because we set_data_full below */
-		gtk_object_set_data (GTK_OBJECT (ce), "quick_add", NULL);
+		g_object_set_data (G_OBJECT (ce), "quick_add", NULL);
 	}
 }
 
 static void
 editor_closed_cb (GtkWidget *w, gpointer closure)
 {
-	QuickAdd *qa = (QuickAdd *) gtk_object_get_data (GTK_OBJECT (w), "quick_add");
+	QuickAdd *qa = (QuickAdd *) g_object_get_data (G_OBJECT (w), "quick_add");
 
 	if (qa)
 		/* We don't need to unref qa because we set_data_full below */
-		gtk_object_set_data (GTK_OBJECT (w), "quick_add", NULL);
+		g_object_set_data (G_OBJECT (w), "quick_add", NULL);
 
-	gtk_object_unref (GTK_OBJECT (w));
+	g_object_unref (w);
 }
 
 static void
@@ -198,33 +196,35 @@ ce_have_book (EBook *book, EBookStatus status, gpointer closure)
 {
 	QuickAdd *qa = (QuickAdd *) closure;
 
-	if (book == NULL) {
+	if (status != E_BOOK_STATUS_SUCCESS) {
+		if (book)
+			g_object_unref (book);
 		g_warning ("Couldn't open local address book.");
 		quick_add_unref (qa);
 	} else {
 		EContactEditor *contact_editor = e_contact_editor_new (book, qa->card, TRUE, TRUE /* XXX */);
 
 		/* mark it as changed so the Save buttons are enabled when we bring up the dialog. */
-		gtk_object_set (GTK_OBJECT(contact_editor),
+		g_object_set (contact_editor,
 				"changed", TRUE,
 				NULL);
 
 		/* We pass this via object data, so that we don't get a dangling pointer referenced if both
 		   the "card_added" and "editor_closed" get emitted.  (Which, based on a backtrace in bugzilla,
 		   I think can happen and cause a crash. */
-		gtk_object_set_data_full (GTK_OBJECT (contact_editor), "quick_add", qa,
-					  (GtkDestroyNotify) quick_add_unref);
+		g_object_set_data_full (G_OBJECT (contact_editor), "quick_add", qa,
+					(GDestroyNotify) quick_add_unref);
 
-		gtk_signal_connect (GTK_OBJECT (contact_editor),
-				    "card_added",
-				    GTK_SIGNAL_FUNC (card_added_cb),
-				    NULL);
-		gtk_signal_connect (GTK_OBJECT (contact_editor),
-				    "editor_closed",
-				    GTK_SIGNAL_FUNC (editor_closed_cb),
-				    NULL);
+		g_signal_connect (contact_editor,
+				  "card_added",
+				  G_CALLBACK (card_added_cb),
+				  NULL);
+		g_signal_connect (contact_editor,
+				  "editor_closed",
+				  G_CALLBACK (editor_closed_cb),
+				  NULL);
 
-		gtk_object_unref (GTK_OBJECT (book));
+		g_object_unref (book);
 	}
 }
 
@@ -233,11 +233,10 @@ edit_card (QuickAdd *qa)
 {
 	EBook *book;
 	book = e_book_new ();
-	if (!addressbook_load_default_book (book, ce_have_book, qa)) {
-		gtk_object_unref (GTK_OBJECT (book));
-		ce_have_book (book, E_BOOK_STATUS_OTHER_ERROR, qa);
-	}
+	addressbook_load_default_book (book, ce_have_book, qa);
 }
+
+#define QUICK_ADD_RESPONSE_EDIT_FULL 2
 
 static void
 clicked_cb (GtkWidget *w, gint button, gpointer closure)
@@ -245,22 +244,20 @@ clicked_cb (GtkWidget *w, gint button, gpointer closure)
 	QuickAdd *qa = (QuickAdd *) closure;
 
 	/* Get data out of entries. */
-	if (button == 0 || button == 1) {
+	if (button == GTK_RESPONSE_OK || button == QUICK_ADD_RESPONSE_EDIT_FULL) {
 		gchar *name = NULL;
 		gchar *email = NULL;
 
 		if (qa->name_entry) {
 			gchar *tmp;
 			tmp = gtk_editable_get_chars (GTK_EDITABLE (qa->name_entry), 0, -1);
-			name = e_utf8_from_gtk_string (qa->name_entry, tmp);
-			g_free (tmp);
+			name = tmp;
 		}
 
 		if (qa->email_entry) {
 			gchar *tmp;
 			tmp = gtk_editable_get_chars (GTK_EDITABLE (qa->email_entry), 0, -1);
-			email = e_utf8_from_gtk_string (qa->email_entry, tmp);
-			g_free (tmp);
+			email = tmp;
 		}
 
 		quick_add_set_name (qa, name);
@@ -272,12 +269,12 @@ clicked_cb (GtkWidget *w, gint button, gpointer closure)
 
 	gtk_widget_destroy (w);
 
-	if (button == 0) {
+	if (button == GTK_RESPONSE_OK) {
 
 		/* OK */
 		quick_add_merge_card (qa);
 
-	} else if (button == 1) {
+	} else if (button == QUICK_ADD_RESPONSE_EDIT_FULL) {
 		
 		/* EDIT FULL */
 		edit_card (qa);
@@ -294,54 +291,51 @@ build_quick_add_dialog (QuickAdd *qa)
 {
 	GtkWidget *dialog;
 	GtkTable *table;
-	const gint xpad=1, ypad=1;
+	const gint xpad=6, ypad=6;
 
 	g_return_val_if_fail (qa != NULL, NULL);
 
-	dialog = gnome_dialog_new (_("Contact Quick-Add"),
-				   GNOME_STOCK_BUTTON_OK,
-				   _("Edit Full"),
-				   GNOME_STOCK_BUTTON_CANCEL,
-				   NULL);
+	dialog = gtk_dialog_new_with_buttons (_("Contact Quick-Add"),
+					      NULL, /* XXX */
+					      (GtkDialogFlags) 0,
+					      _("_Edit Full"), QUICK_ADD_RESPONSE_EDIT_FULL,
+					        GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+					      NULL);
 
-	gtk_signal_connect (GTK_OBJECT (dialog),
-			    "clicked",
-			    clicked_cb,
-			    qa);
+	g_signal_connect (dialog, "response", G_CALLBACK (clicked_cb), qa);
 
 	qa->name_entry = gtk_entry_new ();
-	if (qa->name) {
-		gchar *str = e_utf8_to_gtk_string (qa->name_entry, qa->name);
-		gtk_entry_set_text (GTK_ENTRY (qa->name_entry), str);
-		g_free (str);
-	}
+	if (qa->name)
+		gtk_entry_set_text (GTK_ENTRY (qa->name_entry), qa->name);
 
 
 	qa->email_entry = gtk_entry_new ();
-	if (qa->email) {
-		gchar *str = e_utf8_to_gtk_string (qa->email_entry, qa->email);
-		gtk_entry_set_text (GTK_ENTRY (qa->email_entry), str);
-		g_free (str);
-	}
+	if (qa->email)
+		gtk_entry_set_text (GTK_ENTRY (qa->email_entry), qa->email);
 
 	table = GTK_TABLE (gtk_table_new (2, 2, FALSE));
 
-	gtk_table_attach (table, gtk_label_new (_("Full Name")),
+	gtk_table_attach (table, gtk_label_new_with_mnemonic (_("_Full Name:")),
 			  0, 1, 0, 1,
 			  0, 0, xpad, ypad);
 	gtk_table_attach (table, qa->name_entry,
 			  1, 2, 0, 1,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND, xpad, ypad);
-	gtk_table_attach (table, gtk_label_new (_("E-mail")),
+	gtk_table_attach (table, gtk_label_new_with_mnemonic (_("E-_mail:")),
 			  0, 1, 1, 2,
 			  0, 0, xpad, ypad);
 	gtk_table_attach (table, qa->email_entry,
 			  1, 2, 1, 2,
 			  GTK_EXPAND | GTK_FILL, GTK_EXPAND, xpad, ypad);
+	gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), 
+					6);
 
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox),6);
+
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    GTK_WIDGET (table),
-			    TRUE, TRUE, 0);
+			    TRUE, TRUE, 6);
 	gtk_widget_show_all (GTK_WIDGET (table));
 			  
 	

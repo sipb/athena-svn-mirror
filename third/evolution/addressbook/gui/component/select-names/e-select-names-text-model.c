@@ -15,6 +15,7 @@
 #include <ctype.h>
 
 #include <gal/e-text/e-text-model-repos.h>
+#include <libgnome/gnome-i18n.h>
 
 #include <addressbook/gui/contact-editor/e-contact-editor.h>
 #include "e-select-names-text-model.h"
@@ -24,15 +25,15 @@ static FILE *out = NULL; /* stream for debugging spew */
 
 /* Object argument IDs */
 enum {
-	ARG_0,
-	ARG_SOURCE,
+	PROP_0,
+	PROP_SOURCE,
 };
 
 static void e_select_names_text_model_class_init (ESelectNamesTextModelClass *klass);
 static void e_select_names_text_model_init       (ESelectNamesTextModel *model);
-static void e_select_names_text_model_destroy    (GtkObject *object);
-static void e_select_names_text_model_set_arg    (GtkObject *object, GtkArg *arg, guint arg_id);
-static void e_select_names_text_model_get_arg    (GtkObject *object, GtkArg *arg, guint arg_id);
+static void e_select_names_text_model_dispose      (GObject *object);
+static void e_select_names_text_model_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
+static void e_select_names_text_model_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
 
 static void e_select_names_text_model_set_source (ESelectNamesTextModel *model, ESelectNamesModel *source);
 
@@ -62,43 +63,48 @@ static ETextModelClass *parent_class;
 GtkType
 e_select_names_text_model_get_type (void)
 {
-	static GtkType model_type = 0;
+	static GType type = 0;
 
-	if (!model_type) {
-		GtkTypeInfo model_info = {
-			"ESelectNamesTextModel",
-			sizeof (ESelectNamesTextModel),
+	if (!type) {
+		static const GTypeInfo info =  {
 			sizeof (ESelectNamesTextModelClass),
-			(GtkClassInitFunc) e_select_names_text_model_class_init,
-			(GtkObjectInitFunc) e_select_names_text_model_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL,           /* base_init */
+			NULL,           /* base_finalize */
+			(GClassInitFunc) e_select_names_text_model_class_init,
+			NULL,           /* class_finalize */
+			NULL,           /* class_data */
+			sizeof (ESelectNamesTextModel),
+			0,             /* n_preallocs */
+			(GInstanceInitFunc) e_select_names_text_model_init,
 		};
 
-		model_type = gtk_type_unique (PARENT_TYPE, &model_info);
+		type = g_type_register_static (PARENT_TYPE, "ESelectNamesTextModel", &info, 0);
 	}
 
-	return model_type;
+	return type;
 }
 
 static void
 e_select_names_text_model_class_init (ESelectNamesTextModelClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	ETextModelClass *text_model_class;
 
-	object_class = GTK_OBJECT_CLASS(klass);
+	object_class = G_OBJECT_CLASS(klass);
 	text_model_class = E_TEXT_MODEL_CLASS(klass);
 
-	parent_class = gtk_type_class(PARENT_TYPE);
+	parent_class = g_type_class_peek_parent (klass);
 
-	gtk_object_add_arg_type ("ESelectNamesTextModel::source",
-				 GTK_TYPE_OBJECT, GTK_ARG_READWRITE, ARG_SOURCE);
+	object_class->dispose = e_select_names_text_model_dispose;
+	object_class->get_property = e_select_names_text_model_get_property;
+	object_class->set_property = e_select_names_text_model_set_property;
 
-	object_class->destroy = e_select_names_text_model_destroy;
-	object_class->get_arg = e_select_names_text_model_get_arg;
-	object_class->set_arg = e_select_names_text_model_set_arg;
+	g_object_class_install_property (object_class, PROP_SOURCE, 
+					 g_param_spec_object ("source",
+							      _("Source"),
+							      /*_( */"XXX blurb" /*)*/,
+							      E_TYPE_SELECT_NAMES_MODEL,
+							      G_PARAM_READWRITE));
 
 	text_model_class->get_text      = e_select_names_text_model_get_text;
 	text_model_class->set_text      = e_select_names_text_model_set_text;
@@ -151,50 +157,59 @@ e_select_names_text_model_init (ESelectNamesTextModel *model)
 }
 
 static void
-e_select_names_text_model_destroy (GtkObject *object)
+e_select_names_text_model_dispose (GObject *object)
 {
 	ESelectNamesTextModel *model;
 	
 	model = E_SELECT_NAMES_TEXT_MODEL (object);
 
-	g_free (model->text);
-	g_free (model->sep);
+	if (model->text) {
+		g_free (model->text);
+		model->text = NULL;
+	}
+	if (model->sep) {
+		g_free (model->sep);
+		model->sep = NULL;
+	}
 	
 	e_select_names_text_model_set_source (model, NULL);
 	
-	if (GTK_OBJECT_CLASS(parent_class)->destroy)
-		GTK_OBJECT_CLASS(parent_class)->destroy(object);
+	if (G_OBJECT_CLASS(parent_class)->dispose)
+		G_OBJECT_CLASS(parent_class)->dispose(object);
 }
 
 static void
-e_select_names_text_model_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+e_select_names_text_model_set_property (GObject *object, guint prop_id,
+					 const GValue *value, GParamSpec *pspec)
 {
 	ESelectNamesTextModel *model;
 	
 	model = E_SELECT_NAMES_TEXT_MODEL (object);
 
-	switch (arg_id) {
-	case ARG_SOURCE:
-		e_select_names_text_model_set_source(model, E_SELECT_NAMES_MODEL (GTK_VALUE_OBJECT (*arg)));
+	switch (prop_id) {
+	case PROP_SOURCE:
+		e_select_names_text_model_set_source(model, E_SELECT_NAMES_MODEL (g_value_get_object(value)));
 		break;
 	default:
-		return;
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
 	}
 }
 
 static void
-e_select_names_text_model_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+e_select_names_text_model_get_property (GObject *object, guint prop_id,
+					 GValue *value, GParamSpec *pspec)
 {
 	ESelectNamesTextModel *model;
 
 	model = E_SELECT_NAMES_TEXT_MODEL (object);
 
-	switch (arg_id) {
-	case ARG_SOURCE:
-		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(model->source);
+	switch (prop_id) {
+	case PROP_SOURCE:
+		g_value_set_object (value, model->source);
 		break;
 	default:
-		arg->type = GTK_TYPE_INVALID;
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
 	}
 }
@@ -227,7 +242,7 @@ resize_cb (ESelectNamesModel *source, gint index, gint old_len, gint new_len, ET
 }
 
 static void
-changed_cb (ETextModel *model)
+changed_cb (ESelectNamesModel *source, ETextModel *model)
 {
 	ESelectNamesTextModel *text_model = E_SELECT_NAMES_TEXT_MODEL (model);
 	
@@ -246,30 +261,30 @@ e_select_names_text_model_set_source (ESelectNamesTextModel *model,
 		return;
 	
 	if (model->source) {
-		gtk_signal_disconnect (GTK_OBJECT (model->source), model->source_changed_id);
-		gtk_signal_disconnect (GTK_OBJECT (model->source), model->source_resize_id);
-		gtk_object_unref (GTK_OBJECT (model->source));
+		g_signal_handler_disconnect (model->source, model->source_changed_id);
+		g_signal_handler_disconnect (model->source, model->source_resize_id);
+		g_object_unref (model->source);
 	}
 
 	model->source = source;
 
 	if (model->source) {
-		gtk_object_ref (GTK_OBJECT (model->source));
-		model->source_changed_id = gtk_signal_connect_object (GTK_OBJECT(model->source),
-								      "changed",
-								      GTK_SIGNAL_FUNC (changed_cb),
-								      GTK_OBJECT (model));
-		model->source_resize_id = gtk_signal_connect (GTK_OBJECT(model->source),
-							      "resized",
-							      GTK_SIGNAL_FUNC (resize_cb),
-							      model);
+		g_object_ref (model->source);
+		model->source_changed_id = g_signal_connect (model->source,
+							     "changed",
+							     G_CALLBACK (changed_cb),
+							     model);
+		model->source_resize_id = g_signal_connect (model->source,
+							    "resized",
+							    G_CALLBACK (resize_cb),
+							    model);
 	}
 }
 
 ETextModel *
 e_select_names_text_model_new (ESelectNamesModel *source)
 {
-	ETextModel *model = E_TEXT_MODEL (gtk_type_new (e_select_names_text_model_get_type()));
+	ETextModel *model = g_object_new (E_TYPE_SELECT_NAMES_TEXT_MODEL, NULL);
 	e_select_names_text_model_set_source (E_SELECT_NAMES_TEXT_MODEL (model), source);
 	return model;
 }
@@ -282,7 +297,7 @@ e_select_names_text_model_set_separator (ESelectNamesTextModel *model, const cha
 
 	g_free (model->sep);
 	model->sep = g_strdup (sep);
-	model->seplen = strlen (sep);
+	model->seplen = g_utf8_strlen (sep, -1);
 }
 
 static const gchar *
@@ -310,7 +325,7 @@ e_select_names_text_model_set_text (ETextModel *model, const gchar *text)
 static void
 e_select_names_text_model_insert (ETextModel *model, gint position, const gchar *text)
 {
-	e_select_names_text_model_insert_length (model, position, text, strlen (text));
+	e_select_names_text_model_insert_length (model, position, text, g_utf8_strlen (text, -1));
 }
 
 static void
@@ -318,57 +333,68 @@ e_select_names_text_model_insert_length (ETextModel *model, gint pos, const gcha
 {
 	ESelectNamesTextModel *text_model = E_SELECT_NAMES_TEXT_MODEL (model);
 	ESelectNamesModel *source = text_model->source;
-
-	gint i;
+	const char *t;
+	gchar *tmp;
 
 	if (out) {
-		gchar *tmp = g_strndup (text, length);
+		tmp = g_strndup (text, length);
 		fprintf (out, ">> insert  \"%s\" (len=%d) at %d\n", tmp, length, pos);
 		g_free (tmp);
 	}
 
-	pos = CLAMP (pos, 0, strlen (e_select_names_model_get_textification (source, text_model->sep)));
+	tmp = e_select_names_model_get_textification (source, text_model->sep);
+	pos = CLAMP (pos, 0, g_utf8_strlen (tmp, -1));
+	g_free (tmp);
 
 	/* We want to control all cursor motions ourselves, rather than taking hints
 	   from the ESelectNamesModel. */
-	gtk_signal_handler_block (GTK_OBJECT (source), text_model->source_resize_id);
+	g_signal_handler_block (source, text_model->source_resize_id);
 
 	/* We handle this one character at a time. */
 
-	for (i = 0; i < length && text[i]; ++i) {
+	for (t = text; length >= 0; t = g_utf8_next_char (t), length--) {
 		gint index, start_pos, text_len;
 		gboolean inside_quote = FALSE;
+		gunichar ut = g_utf8_get_char (t);
+
+		if (ut == 0)
+			break;
 
 		text_model->last_magic_comma_pos = -1;
 
 		if (out) 
-			fprintf (out, "processing [%c]\n", text[i]);
+			fprintf (out, "processing [%d]\n", ut);
 
 		e_select_names_model_text_pos (source, text_model->seplen, pos, &index, &start_pos, &text_len);
 
 		if (out) 
 			fprintf (out, "index=%d start_pos=%d text_len=%d\n", index, start_pos, text_len);
 
-		if (text[i] == *text_model->sep && index >= 0) { /* Is this a quoted or an unquoted separator we are dealing with? */
+		/* Is this a quoted or an unquoted separator we are dealing with? */
+		if (ut == g_utf8_get_char(text_model->sep) && index >= 0) {
 			const EDestination *dest = e_select_names_model_get_destination (source, index);
 			if (dest) {
-				const gchar *str = e_destination_get_textrep (dest);
-				gint j;
+				const gchar *str = e_destination_get_textrep (dest, FALSE);
+				int j;
+				const char *jp;
+
 				if (out)
 					fprintf (out, "str=%s pos=%d\n", str, pos);
-				for (j=0; j<pos-start_pos && str[j]; ++j)
-					if (str[j] == '"') {
+
+				for (jp = str, j = 0; j<pos-start_pos && *jp; jp = g_utf8_next_char (jp), ++j) {
+					if (*jp == '"') {
 						inside_quote = !inside_quote;
 						if (out)
 							fprintf (out, "flip to %d at %d\n", start_pos+j, inside_quote);
 					}
+				}
 			}
 			if (out)
 				fprintf (out, inside_quote ? "inside quote\n" : "not inside quote\n");
 		}
 
 
-		if (text[i] == *text_model->sep && !inside_quote) {
+		if (ut == g_utf8_get_char (text_model->sep) && !inside_quote) {
 
 			/* This is the case of hitting , first thing in an empty entry */
 			if (index == -1) {
@@ -434,9 +460,9 @@ e_select_names_text_model_insert_length (ETextModel *model, gint pos, const gcha
 			EReposInsertShift repos;
 			gint offset = MAX (pos - start_pos, 0);
 			const gchar *str;
-			gchar *new_str = NULL;
+			GString *new_str = g_string_new (NULL);
 			gint this_length = 1;
-			gboolean whitespace = isspace ((gint) text[i]);
+			gboolean whitespace = g_unichar_isspace (ut);
 
 			str = index >= 0 ? e_select_names_model_get_string (source, index) : NULL;
 			if (str && *str) {
@@ -447,27 +473,34 @@ e_select_names_text_model_insert_length (ETextModel *model, gint pos, const gcha
 					} else {
 						/* Adjust for our "magic white space" */
 						/* FIXME: This code does the wrong thing if seplen > 2 */
-						new_str = g_strdup_printf("%c%s%s", text[i], pos < start_pos ? " " : "", str);
+						g_string_append_unichar (new_str, ut);
+						g_string_append (new_str, pos < start_pos ? " " : "");
+						g_string_append (new_str, str);
 						if (pos < start_pos)
 							++this_length;
 					}
 				} else {
-					new_str = g_strdup_printf ("%.*s%c%s", offset, str, text[i], str + offset);
+					const char *u;
+					int n;
+					for (u = str, n = 0; n < offset; u = g_utf8_next_char (u), n++) 
+						g_string_append_unichar (new_str, g_utf8_get_char (u));
+					g_string_append_unichar (new_str, ut);
+					g_string_append (new_str, u);
 				}
 			} else {
 				if (whitespace) {
 					/* swallow leading whitespace */
 					this_length = 0;
 				} else {
-					new_str = g_strdup_printf ("%c", text[i]);
+					g_string_append_unichar (new_str, ut);
 				}
 			}
 
-			if (new_str) {
+			if (new_str->len) {
 
 				EDestination *dest;
 				dest = index >= 0 ? e_destination_copy (e_select_names_model_get_destination (source, index)) : e_destination_new ();
-				e_destination_set_raw (dest, new_str);
+				e_destination_set_raw (dest, new_str->str);
 				e_select_names_model_replace (source, index, dest);
 				
 				/* e_select_names_model_replace (source, index, dest); */
@@ -480,15 +513,14 @@ e_select_names_text_model_insert_length (ETextModel *model, gint pos, const gcha
 
 					pos += this_length;
 				}
-
-				g_free (new_str);
 			}
+			g_string_free (new_str, TRUE);
 		}
 	}
 
 	dump_model (text_model);
 
-	gtk_signal_handler_unblock (GTK_OBJECT (source), text_model->source_resize_id);
+	g_signal_handler_unblock (source, text_model->source_resize_id);
 }
 
 
@@ -534,7 +566,7 @@ e_select_names_text_model_delete (ETextModel *model, gint pos, gint length)
 
 	/* We want to control all cursor motions ourselves, rather than taking hints
 	   from the ESelectNamesModel. */
-	gtk_signal_handler_block (GTK_OBJECT (source), E_SELECT_NAMES_TEXT_MODEL (model)->source_resize_id);
+	g_signal_handler_block (source, E_SELECT_NAMES_TEXT_MODEL (model)->source_resize_id);
 
 	/* First, we handle a few tricky cases. */
 
@@ -651,11 +683,40 @@ e_select_names_text_model_delete (ETextModel *model, gint pos, gint length)
 		offset = pos - start_pos;
 		
 		str = e_select_names_model_get_string (source, index);
-		new_str = str ? g_strdup_printf ("%.*s%s", offset, str, str + offset + length) : NULL;
-		
-		if (new_str) {
+
+		if (str) {
+			const char *p;
+			char *np;
+			int i;
 			EReposDeleteShift repos;
 			EDestination *dest;
+
+			new_str = g_new0 (char, strlen (str) * 6 + 1); /* worse case it can't be any longer than this */
+
+			/* copy the region before the deletion */
+			for (p = str, i = 0, np = new_str; i < offset; i++) {
+				gunichar ch;
+
+				ch = g_utf8_get_char (p);
+				g_unichar_to_utf8 (ch, np);
+
+				np = g_utf8_next_char (np);
+				p = g_utf8_next_char (p);
+			}
+
+			/* skip the deleted segment */
+			for (i = 0; i < length; i++)
+				p = g_utf8_next_char (p);
+
+			/* copy the region after the deletion */
+			for (; *p; p = g_utf8_next_char (p)) {
+				gunichar ch;
+
+				ch = g_utf8_get_char (p);
+				g_unichar_to_utf8 (ch, np);
+
+				np = g_utf8_next_char (np);
+			}
 
 			dest = index >= 0 ? e_destination_copy (e_select_names_model_get_destination (source, index)) : e_destination_new ();
 			e_destination_set_raw (dest, new_str);
@@ -691,7 +752,7 @@ e_select_names_text_model_delete (ETextModel *model, gint pos, gint length)
 
  finished:
 	E_SELECT_NAMES_TEXT_MODEL (model)->last_magic_comma_pos = -1;
-	gtk_signal_handler_unblock (GTK_OBJECT (source), E_SELECT_NAMES_TEXT_MODEL (model)->source_resize_id);
+	g_signal_handler_unblock (source, E_SELECT_NAMES_TEXT_MODEL (model)->source_resize_id);
 	dump_model (E_SELECT_NAMES_TEXT_MODEL (model));
 }
 
@@ -753,7 +814,7 @@ e_select_names_text_model_get_nth_obj (ETextModel *model, gint n, gint *len)
 	
 	if (text_model->text == NULL)
 		text_model->text = e_select_names_model_get_textification (source, text_model->sep);
-	return text_model->text + pos;
+	return g_utf8_offset_to_pointer (text_model->text, pos);
 }
 
 static void

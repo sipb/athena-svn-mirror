@@ -18,10 +18,10 @@
 #include "shell/Evolution.h"
 
 #define FOLDER_BROWSER_TYPE        (folder_browser_get_type ())
-#define FOLDER_BROWSER(o)          (GTK_CHECK_CAST ((o), FOLDER_BROWSER_TYPE, FolderBrowser))
-#define FOLDER_BROWSER_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), FOLDER_BROWSER_TYPE, FolderBrowserClass))
-#define IS_FOLDER_BROWSER(o)       (GTK_CHECK_TYPE ((o), FOLDER_BROWSER_TYPE))
-#define IS_FOLDER_BROWSER_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), FOLDER_BROWSER_TYPE))
+#define FOLDER_BROWSER(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), FOLDER_BROWSER_TYPE, FolderBrowser))
+#define FOLDER_BROWSER_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), FOLDER_BROWSER_TYPE, FolderBrowserClass))
+#define IS_FOLDER_BROWSER(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), FOLDER_BROWSER_TYPE))
+#define IS_FOLDER_BROWSER_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), FOLDER_BROWSER_TYPE))
 
 #define FB_DEFAULT_CHARSET _("Default")
 
@@ -59,15 +59,20 @@ struct  _FolderBrowser {
 	guint	     loading_id;
 	guint        seen_id;
 	
+	gulong       paned_resize_id;
+	
 	/* a folder we are expunging, dont use other than to compare the pointer value */
 	CamelFolder *expunging;
-	
+	int expunge_mlfocussed;	/* true if the ml was focussed before we expunged */
+
 	MessageList *message_list;
 	MailDisplay *mail_display;
 	GtkWidget   *vpaned;
 	
 	EFilterBar  *search;
 	FilterRule  *search_full; /* if we have a full search active */
+
+	struct _EMeta *meta;	/* various per-folder meta-data */
 	
 	guint32 preview_shown  : 1;
 	guint32 threaded       : 1;

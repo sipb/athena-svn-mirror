@@ -28,11 +28,12 @@
 #include <gtk/gtkctree.h>
 #include <gtk/gtkmain.h>
 
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-config.h>
 
 #include <gal/widgets/e-unicode.h>
+
+#include <string.h>
 
 #include "e-summary.h"
 #include "e-summary-shown.h"
@@ -69,10 +70,9 @@ e_summary_weather_get_html (ESummary *summary)
 	string = g_string_new ("<dl><img src=\"ico-weather.png\" align=\"middle\" "
 	                       "alt=\"\" width=\"48\" height=\"48\"><b>"
 	                       "<a href=\"http://www.metoffice.gov.uk\">");
-	s = e_utf8_from_locale_string (_("My Weather"));
-	g_string_append (string, s);
-	g_free (s);
+	g_string_append (string, _("My Weather"));
 	g_string_append (string, "</a></b>");
+
 	for (weathers = summary->weather->weathers; weathers; weathers = weathers->next) {
 		if (((Weather *)weathers->data)->html == NULL) {
 			continue;
@@ -132,17 +132,12 @@ weather_make_html (Weather *w)
 	temp = weather_temp_string (w);
 	cond = (char *) weather_conditions_string (w);
 
-	s = e_utf8_from_locale_string (sky);
-	g_string_append (string, s);
-	g_free (s);
+	g_string_append (string, sky);
 	g_string_append_c (string, ' ');
-	s = e_utf8_from_locale_string (cond);
-	g_string_append (string, s);
-	g_free (s);
+	g_string_append (string, cond);
 	g_string_append_c (string, ' ');
-	s = e_utf8_from_locale_string (temp);
-	g_string_append (string, s);
-	g_free (s);
+	g_string_append (string, temp);
+
 	g_free (temp);
 
 #if 0
@@ -255,7 +250,6 @@ message_finished (SoupMessage *msg,
 	}
 
 	if (SOUP_MESSAGE_IS_ERROR (msg)) {
-		char *mess;
 		ESummaryWeatherLocation *location;
 
 		g_warning ("Message failed: %d\n%s", msg->errorcode,
@@ -264,12 +258,9 @@ message_finished (SoupMessage *msg,
 
 		location = g_hash_table_lookup (locations_hash, w->location);
 
-		mess = g_strdup_printf ("<br><b>%s %s</b></br>",
-					_("There was an error downloading data for"),
-					location ? location->name : w->location);
-
-		w->html = e_utf8_from_locale_string (mess);
-		g_free (mess);
+		w->html = g_strdup_printf ("<br><b>%s %s</b></br>",
+					   _("There was an error downloading data for"),
+					   location ? location->name : w->location);
 
 		e_summary_draw (w->summary);
 		return;
@@ -305,7 +296,7 @@ e_summary_weather_update (ESummary *summary)
 	GList *w;
 
 	if (summary->weather->online == FALSE) {
-		g_warning ("%s: Repolling but offline", __FUNCTION__);
+		g_warning ("%s: Repolling but offline", G_GNUC_FUNCTION);
 		return TRUE;
 	}
 
@@ -367,7 +358,6 @@ e_summary_weather_add_location (ESummary *summary,
 static gboolean
 e_summary_weather_init_locations (void) 
 {
-	char *key, *path;
 	int nregions, iregions;
 	char **regions;
 
@@ -376,13 +366,8 @@ e_summary_weather_init_locations (void)
 	}
 
 	locations_hash = g_hash_table_new (g_str_hash, g_str_equal);
-	path = g_strdup (EVOLUTION_DATADIR "/evolution/Locations");
 
-	key = g_strdup_printf ("=%s=/", path);
-	g_free (path);
-
-	gnome_config_push_prefix (key);
-	g_free (key);
+	gnome_config_push_prefix ("=" LOCATIONDIR "/Locations=/");
 
 	gnome_config_get_vector ("Main/regions", &nregions, &regions);
 	for (iregions = nregions - 1; iregions >= 0; iregions--) {
@@ -410,7 +395,7 @@ e_summary_weather_init_locations (void)
 			iter = gnome_config_init_iterator (state_path);
 
 			while ((iter = gnome_config_iterator_next (iter, &iter_key, &iter_val)) != NULL) {
-				if (strstr (iter_key, "loc") != NULL) {
+				if (strstr ((const char *) iter_key, "loc") != NULL) {
 					char **locdata;
 					int nlocdata;
 					ESummaryWeatherLocation *location;
@@ -418,7 +403,13 @@ e_summary_weather_init_locations (void)
 					gnome_config_make_vector (iter_val,
 								  &nlocdata,
 								  &locdata);
-					g_return_val_if_fail (nlocdata == 4, FALSE);
+
+					if (nlocdata != 4) {
+						g_warning ("Invalid location in Locations file: %s\n", iter_val);
+						g_free (iter_key);
+						g_free (iter_val);
+						continue;
+					}
 
 					if (!g_hash_table_lookup (locations_hash, locdata[1])) {
 						location = weather_location_new (locdata);
@@ -456,7 +447,6 @@ e_summary_weather_protocol (ESummary *summary,
 			    const char *uri,
 			    void *closure)
 {
-
 }
 
 static int
@@ -529,9 +519,11 @@ e_summary_weather_set_online (ESummary *summary,
 
 	if (online == TRUE) {
 		e_summary_weather_update (summary);
-		weather->timeout = gtk_timeout_add (summary->preferences->weather_refresh_time * 1000,
-						    (GtkFunction) e_summary_weather_update,
-						    summary);
+
+		if (summary->preferences->weather_refresh_time != 0)
+			weather->timeout = gtk_timeout_add (summary->preferences->weather_refresh_time * 1000,
+							    (GtkFunction) e_summary_weather_update,
+							    summary);
 	} else {
 		for (p = weather->weathers; p; p = p->next) {
 			Weather *w;
@@ -598,7 +590,7 @@ e_summary_weather_init (ESummary *summary)
 		g_strfreev (stations_v);
 		timeout = 600;
 	} else {
-		GList *p;
+		GSList *p;
 
 		for (p = prefs->stations; p; p = p->next) {
 			e_summary_weather_add_location (summary, p->data);
@@ -607,10 +599,13 @@ e_summary_weather_init (ESummary *summary)
 	}
 
 	e_summary_weather_update (summary);
-	
-	weather->timeout = gtk_timeout_add (timeout * 1000, 
-					    (GtkFunction) e_summary_weather_update,
-					    summary);
+
+	if (timeout == 0)
+		weather->timeout = 0;
+	else 
+		weather->timeout = gtk_timeout_add (timeout * 1000, 
+						    (GtkFunction) e_summary_weather_update,
+						    summary);
 	return;
 }
 
@@ -636,7 +631,7 @@ e_summary_weather_code_to_name (const char *code)
 static gboolean
 is_weather_shown (const char *code)
 {
-	GList *p;
+	GSList *p;
 	ESummaryPrefs *global_preferences;
 
 	global_preferences = e_summary_preferences_get_global ();
@@ -654,20 +649,15 @@ e_summary_weather_fill_etable (ESummaryShown *ess)
 {
 	ETreePath region, state, location;
 	ESummaryShownModelEntry *entry;
-	char *key, *path;
 	int nregions, iregions;
 	char **regions;
 
-	path = g_strdup (EVOLUTION_DATADIR "/evolution/Locations");
-
-	key = g_strdup_printf ("=%s=/", path);
-	g_free (path);
-
-	gnome_config_push_prefix (key);
-	g_free (key);
+	gnome_config_push_prefix ("=" LOCATIONDIR "/Locations=/");
 
 	gnome_config_get_vector ("Main/regions", &nregions, &regions);
 	region = NULL;
+
+	e_summary_shown_freeze (ess);
 	for (iregions = nregions - 1; iregions >= 0; iregions--) {
 		int nstates, istates;
 		char **states;
@@ -716,19 +706,24 @@ e_summary_weather_fill_etable (ESummaryShown *ess)
 					gnome_config_make_vector (iter_val,
 								  &nlocdata,
 								  &locdata);
-					g_return_if_fail (nlocdata == 4);
+					if (nlocdata != 4) {
+						g_warning ("Invalid location in Locations file: %s\n", iter_val);
+						g_free (iter_key);
+						g_free (iter_val);
+						continue;
+					}
 					
 					entry = g_new (ESummaryShownModelEntry, 1);
 					entry->location = g_strdup (locdata[1]);
 					entry->name = g_strdup (locdata[0]);
 					entry->showable = TRUE;
 
-					location = e_summary_shown_add_node (ess, TRUE, entry, state, TRUE, NULL);
+					location = e_summary_shown_add_node (ess, TRUE, entry, state, FALSE, NULL);
 					if (is_weather_shown (locdata[1]) == TRUE) {
 						entry = g_new (ESummaryShownModelEntry, 1);
 						entry->location = g_strdup (locdata[1]);
 						entry->name = g_strdup (locdata[0]);
-						location = e_summary_shown_add_node (ess, FALSE, entry, NULL, TRUE, NULL);
+						location = e_summary_shown_add_node (ess, FALSE, entry, NULL, FALSE, NULL);
 					}
 					g_strfreev (locdata);
 				}
@@ -750,6 +745,7 @@ e_summary_weather_fill_etable (ESummaryShown *ess)
 
 	g_strfreev (regions);
 	gnome_config_pop_prefix ();
+	e_summary_shown_thaw (ess);
 
 	return;
 }
@@ -758,8 +754,9 @@ void
 e_summary_weather_reconfigure (ESummary *summary)
 {
 	ESummaryWeather *weather;
-	GList *old, *p;
+	GList *old;
 	GList *weather_list;
+	GSList *p;
 
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (IS_E_SUMMARY (summary));
@@ -787,8 +784,12 @@ e_summary_weather_reconfigure (ESummary *summary)
 		e_summary_weather_add_location (summary, p->data);
 	}
 
-	weather->timeout = gtk_timeout_add (summary->preferences->weather_refresh_time * 1000, 
-					    (GtkFunction) e_summary_weather_update, summary);
+	if (summary->preferences->weather_refresh_time == 0)
+		weather->timeout = 0;
+	else
+		weather->timeout = gtk_timeout_add (summary->preferences->weather_refresh_time * 1000, 
+						    (GtkFunction) e_summary_weather_update, summary);
+
 	e_summary_weather_update (summary);
 }
 

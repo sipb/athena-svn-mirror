@@ -12,17 +12,17 @@ INCLUDES =						\
 LDADD = \
 	$(top_builddir)/camel/libcamel.la 		\
 	$(top_builddir)/e-util/libeutil.la		\
-	$(GNOME_LIBDIR) 				\
 	$(top_builddir)/camel/tests/lib/libcameltest.a	\
-	$(GNOMEUI_LIBS) 				\
 	$(INTLLIBS) 					\
 	$(EVOLUTION_MAIL_LIBS)
 
 check_PROGRAMS =  	\
 	test1	test2	test3	\
 	test4	test5	test6	\
-	test7	test8	test9
+	test7	test8	test9	\
+	test10
 
 TESTS = test1 	test2 	test3 	\
 	test4 	test5 	test6 	\
-	test7	test8	test9
+	test7	test8	test9	\
+	test10

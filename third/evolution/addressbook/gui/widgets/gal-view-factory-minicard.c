@@ -9,14 +9,12 @@
  */
 #include <config.h>
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "gal-view-factory-minicard.h"
 #include "gal-view-minicard.h"
+#include "gal/util/e-util.h"
 
-#define GVFE_CLASS(e) ((GalViewFactoryMinicardClass *)((GtkObject *)e)->klass)
-
-#define PARENT_TYPE gal_view_factory_get_type ()
+#define PARENT_TYPE GAL_VIEW_FACTORY_TYPE
 
 static GalViewFactoryClass *gal_view_factory_minicard_parent_class;
 
@@ -40,24 +38,14 @@ gal_view_factory_minicard_get_type_code (GalViewFactory *factory)
 }
 
 static void
-gal_view_factory_minicard_destroy         (GtkObject *object)
-{
-#if 0
-	GalViewFactoryMinicard *factory = GAL_VIEW_FACTORY_MINICARD(object);
-#endif
-}
-
-static void
-gal_view_factory_minicard_class_init      (GtkObjectClass *object_class)
+gal_view_factory_minicard_class_init      (GObjectClass *object_class)
 {
 	GalViewFactoryClass *view_factory_class = GAL_VIEW_FACTORY_CLASS(object_class);
-	gal_view_factory_minicard_parent_class    = gtk_type_class (PARENT_TYPE);
+	gal_view_factory_minicard_parent_class    = g_type_class_ref (PARENT_TYPE);
 
 	view_factory_class->get_title           = gal_view_factory_minicard_get_title;
 	view_factory_class->new_view            = gal_view_factory_minicard_new_view;
 	view_factory_class->get_type_code       = gal_view_factory_minicard_get_type_code;
-
-	object_class->destroy                   = gal_view_factory_minicard_destroy;
 }
 
 static void
@@ -76,7 +64,7 @@ gal_view_factory_minicard_init            (GalViewFactoryMinicard *factory)
 GalViewFactory *
 gal_view_factory_minicard_new        (void)
 {
-	return gal_view_factory_minicard_construct (gtk_type_new (gal_view_factory_minicard_get_type ()));
+	return gal_view_factory_minicard_construct (g_object_new (GAL_TYPE_VIEW_FACTORY_MINICARD, NULL));
 }
 
 /**
@@ -94,27 +82,4 @@ gal_view_factory_minicard_construct  (GalViewFactoryMinicard *factory)
 	return GAL_VIEW_FACTORY(factory);
 }
 
-GtkType
-gal_view_factory_minicard_get_type  (void)
-{
-	static guint type = 0;
-	
-	if (!type)
-	{
-		GtkTypeInfo info =
-		{
-			"GalViewFactoryMinicard",
-			sizeof (GalViewFactoryMinicard),
-			sizeof (GalViewFactoryMinicardClass),
-			(GtkClassInitFunc) gal_view_factory_minicard_class_init,
-			(GtkObjectInitFunc) gal_view_factory_minicard_init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-		};
-		
-		type = gtk_type_unique (PARENT_TYPE, &info);
-	}
-
-	return type;
-}
+E_MAKE_TYPE(gal_view_factory_minicard, "GalViewFactoryMinicard", GalViewFactoryMinicard, gal_view_factory_minicard_class_init, gal_view_factory_minicard_init, PARENT_TYPE)

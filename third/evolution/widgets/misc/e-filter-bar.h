@@ -20,8 +20,8 @@
 #ifndef __E_FILTER_BAR_H__
 #define __E_FILTER_BAR_H__
 
-#include <gtk/gtkobject.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtk.h>
+
 #include "e-search-bar.h"
 
 #include "filter/rule-context.h"
@@ -42,10 +42,10 @@ extern "C" {
  */
 
 #define E_FILTER_BAR_TYPE			(e_filter_bar_get_type ())
-#define E_FILTER_BAR(obj)			(GTK_CHECK_CAST ((obj), E_FILTER_BAR_TYPE, EFilterBar))
-#define E_FILTER_BAR_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), E_FILTER_BAR_TYPE, EFilterBarClass))
-#define E_IS_FILTER_BAR(obj)		(GTK_CHECK_TYPE ((obj), E_FILTER_BAR_TYPE))
-#define E_IS_FILTER_BAR_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), E_FILTER_BAR_TYPE))
+#define E_FILTER_BAR(obj)			(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_FILTER_BAR_TYPE, EFilterBar))
+#define E_FILTER_BAR_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), E_FILTER_BAR_TYPE, EFilterBarClass))
+#define E_IS_FILTER_BAR(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_FILTER_BAR_TYPE))
+#define E_IS_FILTER_BAR_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((obj), E_FILTER_BAR_TYPE))
 
 typedef struct _EFilterBar       EFilterBar;
 typedef struct _EFilterBarClass  EFilterBarClass;
@@ -57,13 +57,13 @@ struct _EFilterBar {
 	
 	int menu_base, option_base;
 	GPtrArray *menu_rules, *option_rules;
-
+	
 	ESearchBarItem *default_items;
 	
-	GtkWidget *save_dialogue; /* current save dialogue (so we dont pop up multiple ones) */
+	GtkWidget *save_dialog;    /* current save dialogue (so we dont pop up multiple ones) */
 	
 	FilterRule *current_query; /* as it says */
-	int setquery;		/* true when we're setting a query directly to advanced, so dont popup the dialogue */
+	int setquery;		   /* true when we're setting a query directly to advanced, so dont popup the dialogue */
 	
 	RuleContext *context;
 	char *systemrules;
@@ -102,7 +102,8 @@ const char * strings[] = {
 #endif
 
 
-GtkType     e_filter_bar_get_type (void);
+GType       e_filter_bar_get_type (void);
+
 EFilterBar *e_filter_bar_new      (RuleContext *context,
 				   const char *systemrules,
 				   const char *userrules,

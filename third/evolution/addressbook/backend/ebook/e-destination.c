@@ -30,18 +30,16 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include <gtk/gtkobject.h>
-#include <gtk/gtkmain.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
 #include "e-book.h"
+#include "e-book-marshal.h"
 #include "e-book-util.h"
 #include <gal/widgets/e-unicode.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+
+#include <glib.h>
+#include <libxml/xmlmemory.h>
 #include <camel/camel-internet-address.h>
 
-#define d(x) x
+#define d(x)
 
 enum {
 	CHANGED,
@@ -91,55 +89,55 @@ struct _EDestinationPrivate {
 static void e_destination_clear_card    (EDestination *);
 static void e_destination_clear_strings (EDestination *);
 
-static GtkObjectClass *parent_class;
+static GObjectClass *parent_class;
 
 static void
-e_destination_destroy (GtkObject *obj)
+e_destination_dispose (GObject *obj)
 {
 	EDestination *dest = E_DESTINATION (obj);
 
-	e_destination_clear (dest);
+	if (dest->priv) {
+		e_destination_clear (dest);
 
-	if (dest->priv->old_card)
-		gtk_object_unref (GTK_OBJECT (dest->priv->old_card));
+		if (dest->priv->old_card)
+			g_object_unref (dest->priv->old_card);
 	
-	if (dest->priv->cardify_book)
-		gtk_object_unref (GTK_OBJECT (dest->priv->cardify_book));
+		if (dest->priv->cardify_book)
+			g_object_unref (dest->priv->cardify_book);
 
-	g_free (dest->priv->old_textrep);
+		g_free (dest->priv->old_textrep);
 
-	g_free (dest->priv);
-
-	if (parent_class->destroy)
-		parent_class->destroy (obj);
+		g_free (dest->priv);
+		dest->priv = NULL;
+	}
 }
 
 static void
 e_destination_class_init (EDestinationClass *klass)
 {
-	GtkObjectClass *object_class = GTK_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-	parent_class = GTK_OBJECT_CLASS (gtk_type_class (GTK_TYPE_OBJECT));
+	parent_class = g_type_class_ref (G_TYPE_OBJECT);
 
-	object_class->destroy = e_destination_destroy;
+	object_class->dispose = e_destination_dispose;
 
 	e_destination_signals[CHANGED] =
-		gtk_signal_new ("changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EDestinationClass, changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("changed",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EDestinationClass, changed),
+			      NULL, NULL,
+			      e_book_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 
 	e_destination_signals[CARDIFIED] =
-		gtk_signal_new ("cardified",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EDestinationClass, cardified),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, e_destination_signals, LAST_SIGNAL);
+		g_signal_new ("cardified",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EDestinationClass, cardified),
+			      NULL, NULL,
+			      e_book_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 }
 
 static void
@@ -153,23 +151,25 @@ e_destination_init (EDestination *dest)
 	dest->priv->pending_cardification = 0;
 }
 
-GtkType
+GType
 e_destination_get_type (void)
 {
-	static GtkType dest_type = 0;
+	static GType dest_type = 0;
 
 	if (!dest_type) {
-		GtkTypeInfo dest_info = {
-			"EDestination",
-			sizeof (EDestination),
+		GTypeInfo dest_info = {
 			sizeof (EDestinationClass),
-			(GtkClassInitFunc) e_destination_class_init,
-			(GtkObjectInitFunc) e_destination_init,
-			NULL, NULL, /* reserved */
-			(GtkClassInitFunc) NULL
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc)  e_destination_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (EDestination),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) e_destination_init
 		};
 
-		dest_type = gtk_type_unique (gtk_object_get_type (), &dest_info);
+		dest_type = g_type_register_static (G_TYPE_OBJECT, "EDestination", &dest_info, 0);
 	}
 
 	return dest_type;
@@ -178,7 +178,7 @@ e_destination_get_type (void)
 EDestination *
 e_destination_new (void)
 {
-	return E_DESTINATION (gtk_type_new (E_TYPE_DESTINATION));
+	return g_object_new (E_TYPE_DESTINATION, NULL);
 }
 
 static void
@@ -205,7 +205,7 @@ void
 e_destination_changed (EDestination *dest)
 {
 	if (dest->priv->freeze_count == 0) {
-		gtk_signal_emit (GTK_OBJECT (dest), e_destination_signals[CHANGED]);
+		g_signal_emit (dest, e_destination_signals[CHANGED], 0);
 		dest->priv->pending_change = FALSE;
 		dest->priv->cannot_cardify = FALSE;
 	
@@ -235,11 +235,11 @@ e_destination_copy (const EDestination *dest)
 
 	new_dest->priv->card     = dest->priv->card;
 	if (new_dest->priv->card)
-		gtk_object_ref (GTK_OBJECT (new_dest->priv->card));
+		g_object_ref (new_dest->priv->card);
 
 	new_dest->priv->old_card = dest->priv->old_card;
 	if (new_dest->priv->old_card)
-		gtk_object_ref (GTK_OBJECT (new_dest->priv->old_card));
+		g_object_ref (new_dest->priv->old_card);
 
 	new_dest->priv->html_mail_override = dest->priv->html_mail_override;
 	new_dest->priv->wants_html_mail    = dest->priv->wants_html_mail;
@@ -257,13 +257,13 @@ e_destination_clear_card (EDestination *dest)
 {
 	if (dest->priv->card) {
 		if (dest->priv->old_card)
-			gtk_object_unref (GTK_OBJECT (dest->priv->old_card));
+			g_object_unref (dest->priv->old_card);
 		
 		dest->priv->old_card = dest->priv->card;
 		dest->priv->old_card_email_num = dest->priv->card_email_num;
 		
 		g_free (dest->priv->old_textrep);
-		dest->priv->old_textrep = g_strdup (e_destination_get_textrep (dest));
+		dest->priv->old_textrep = g_strdup (e_destination_get_textrep (dest, FALSE));
 	}
 	
 	g_free (dest->priv->book_uri);
@@ -274,7 +274,7 @@ e_destination_clear_card (EDestination *dest)
 	dest->priv->card = NULL;
 	dest->priv->card_email_num = -1;
 	
-	g_list_foreach (dest->priv->list_dests, (GFunc) gtk_object_unref, NULL);
+	g_list_foreach (dest->priv->list_dests, (GFunc) g_object_unref, NULL);
 	g_list_free (dest->priv->list_dests);
 	dest->priv->list_dests = NULL;
 	
@@ -401,13 +401,13 @@ e_destination_equal (const EDestination *a, const EDestination *b)
 	/* Just in case name returns NULL */
 	na = e_destination_get_name (a);
 	nb = e_destination_get_name (b);
-	if ((na || nb) && !(na && nb && ! g_utf8_strcasecmp (na, nb)))
+	if ((na || nb) && !(na && nb && ! e_utf8_casefold_collate (na, nb)))
 		return FALSE;
 	
-	if (!g_strcasecmp (e_destination_get_email (a), e_destination_get_email (b)))
+	if (!g_ascii_strcasecmp (e_destination_get_email (a), e_destination_get_email (b)))
 		return TRUE;
-	
-	return FALSE;
+	else
+		return FALSE;
 }
 
 void
@@ -424,7 +424,7 @@ e_destination_set_card (EDestination *dest, ECard *card, gint email_num)
 		e_destination_clear (dest);
 		
 		dest->priv->card = card;
-		gtk_object_ref (GTK_OBJECT (dest->priv->card));
+		g_object_ref (dest->priv->card);
 		
 		dest->priv->card_email_num = email_num;
 		
@@ -448,7 +448,7 @@ e_destination_set_book_uri (EDestination *dest, const gchar *uri)
 		if (dest->priv->card) {
 			EBook *book = e_card_get_book (dest->priv->card);
 			if ((!book) || strcmp (uri, e_book_get_uri (book))) {
-				gtk_object_unref (GTK_OBJECT (dest->priv->card));
+				g_object_unref (dest->priv->card);
 				dest->priv->card = NULL;
 			}
 		}
@@ -474,7 +474,7 @@ e_destination_set_card_uid (EDestination *dest, const gchar *uid, gint email_num
 		/* If we already have a card, remove it unless it's uri matches the one
 		   we just set. */
 		if (dest->priv->card && strcmp (uid, e_card_get_id (dest->priv->card))) {
-			gtk_object_unref (GTK_OBJECT (dest->priv->card));
+			g_object_unref (dest->priv->card);
 			dest->priv->card = NULL;
 		}
 		
@@ -594,7 +594,7 @@ use_card_cb (ECard *card, gpointer closure)
 	
 	if (card != NULL && uc->dest->priv->card == NULL) {
 		uc->dest->priv->card = card;
-		gtk_object_ref (GTK_OBJECT (uc->dest->priv->card));
+		g_object_ref (uc->dest->priv->card);
 		e_destination_changed (uc->dest);
 	}
 	
@@ -603,7 +603,7 @@ use_card_cb (ECard *card, gpointer closure)
 	}
 	
 	/* We held a copy of the destination during the callback. */
-	gtk_object_unref (GTK_OBJECT (uc->dest));
+	g_object_unref (uc->dest);
 	g_free (uc);
 }
 
@@ -620,7 +620,7 @@ e_destination_use_card (EDestination *dest, EDestinationCardCallback cb, gpointe
 		
 		uc->dest = dest;
 		/* Hold a reference to the destination during the callback. */
-		gtk_object_ref (GTK_OBJECT (uc->dest));
+		g_object_ref (uc->dest);
 		uc->cb = cb;
 		uc->closure = closure;
 		e_card_load_uri (dest->priv->book_uri, dest->priv->card_uid, use_card_cb, uc);
@@ -722,7 +722,6 @@ e_destination_get_name (const EDestination *dest)
 	}
 	
 	return priv->name;
-	
 }
 
 const gchar *
@@ -838,7 +837,7 @@ e_destination_set_raw (EDestination *dest, const gchar *raw)
 }
 
 const gchar *
-e_destination_get_textrep (const EDestination *dest)
+e_destination_get_textrep (const EDestination *dest, gboolean include_email)
 {
 	const char *name, *email;
 	
@@ -850,7 +849,7 @@ e_destination_get_textrep (const EDestination *dest)
 	name  = e_destination_get_name (dest);
 	email = e_destination_get_email (dest);
 	
-	if (e_destination_from_card (dest) && name != NULL)
+	if (e_destination_from_card (dest) && name != NULL && (!include_email || !email || !*email))
 		return name;
 	
 	/* Make sure that our address gets quoted properly */
@@ -940,13 +939,13 @@ static void
 set_cardify_book (EDestination *dest, EBook *book)
 {
 	if (dest->priv->cardify_book && dest->priv->cardify_book != book) {
-		gtk_object_unref (GTK_OBJECT (dest->priv->cardify_book));
+		g_object_unref (dest->priv->cardify_book);
 	}
 		
 	dest->priv->cardify_book = book;
 	
 	if (book)
-		gtk_object_ref (GTK_OBJECT (book));
+		g_object_ref (book);
 }
 
 static void
@@ -971,7 +970,7 @@ name_and_email_simple_query_cb (EBook *book, EBookSimpleQueryStatus status, cons
 			dest->priv->has_been_cardified = TRUE;
 			e_destination_set_card (dest, card, email_num);
 			e_destination_set_book_uri (dest, book_uri);
-			gtk_signal_emit (GTK_OBJECT (dest), e_destination_signals[CARDIFIED]);
+			g_signal_emit (dest, e_destination_signals[CARDIFIED], 0);
 		}
 	}
 	
@@ -979,7 +978,7 @@ name_and_email_simple_query_cb (EBook *book, EBookSimpleQueryStatus status, cons
 		dest->priv->cannot_cardify = TRUE;
 	}
 	
-	gtk_object_unref (GTK_OBJECT (dest)); /* drop the reference held by the query */
+	g_object_unref (dest); /* drop the reference held by the query */
 }
 
 
@@ -997,23 +996,23 @@ nickname_simple_query_cb (EBook *book, EBookSimpleQueryStatus status, const GLis
 			dest->priv->has_been_cardified = TRUE;
 			e_destination_set_card (dest, E_CARD (cards->data), 0); /* Uses primary e-mail by default. */
 			e_destination_set_book_uri (dest, book_uri);
-			gtk_signal_emit (GTK_OBJECT (dest), e_destination_signals[CARDIFIED]);
+			g_signal_emit (dest, e_destination_signals[CARDIFIED], 0);
 			
-			gtk_object_unref (GTK_OBJECT (dest)); /* drop the reference held by the query */
+			g_object_unref (dest); /* drop the reference held by the query */
 			
 		} else {
 			/* We can only end up here if we don't look at all like an e-mail address, so
 			   we do a name-only query on the textrep */
 			
 			e_book_name_and_email_query (book,
-						     e_destination_get_textrep (dest),
+						     e_destination_get_textrep (dest, FALSE),
 						     NULL,
 						     name_and_email_simple_query_cb,
 						     dest);
 		}
 	} else {
 		/* Something went wrong with the query: drop our ref to the destination and return. */
-		gtk_object_unref (GTK_OBJECT (dest));
+		g_object_unref (dest);
 	}
 }
 
@@ -1023,7 +1022,7 @@ launch_cardify_query (EDestination *dest)
 	if (! e_destination_is_valid (dest)) {
 		/* If it doesn't look like an e-mail address, see if it is a nickname. */
 		e_book_nickname_query (dest->priv->cardify_book,
-				       e_destination_get_textrep (dest),
+				       e_destination_get_textrep (dest, FALSE),
 				       nickname_simple_query_cb,
 				       dest);
 
@@ -1040,12 +1039,15 @@ static void
 use_default_book_cb (EBook *book, gpointer closure)
 {
 	EDestination *dest = E_DESTINATION (closure);
-	if (dest->priv->cardify_book == NULL) {
+	if (book != NULL && dest->priv->cardify_book == NULL) {
 		dest->priv->cardify_book = book;
-		gtk_object_ref (GTK_OBJECT (book));
+		g_object_ref (book);
 	}
 	
-	launch_cardify_query (dest);
+	if (dest->priv->cardify_book)
+		launch_cardify_query (dest);
+	else
+		g_object_unref (dest);
 }
 
 
@@ -1059,7 +1061,7 @@ e_destination_reverting_is_a_good_idea (EDestination *dest)
 	if (dest->priv->old_textrep == NULL)
 		return FALSE;
 	
-	textrep = e_destination_get_textrep (dest);
+	textrep = e_destination_get_textrep (dest, FALSE);
 	
 	len = g_utf8_strlen (textrep, -1);
 	old_len = g_utf8_strlen (dest->priv->old_textrep, -1);
@@ -1107,7 +1109,7 @@ e_destination_cardify (EDestination *dest, EBook *book)
 	
 	/* If we have a book ready, proceed.  We hold a reference to ourselves
 	   until our query is complete. */
-	gtk_object_ref (GTK_OBJECT (dest));
+	g_object_ref (dest);
 	if (dest->priv->cardify_book != NULL) {
 		launch_cardify_query (dest);
 	} else {
@@ -1137,7 +1139,7 @@ e_destination_cardify_delayed (EDestination *dest, EBook *book, gint delay)
 	
 	set_cardify_book (dest, book);
 	
-	dest->priv->pending_cardification = gtk_timeout_add (delay, do_cardify_delayed, dest);
+	dest->priv->pending_cardification = g_timeout_add (delay, do_cardify_delayed, dest);
 }
 
 void
@@ -1146,7 +1148,7 @@ e_destination_cancel_cardify (EDestination *dest)
 	g_return_if_fail (E_IS_DESTINATION (dest));
 	
 	if (dest->priv->pending_cardification) {
-		gtk_timeout_remove (dest->priv->pending_cardification);
+		g_source_remove (dest->priv->pending_cardification);
 		dest->priv->pending_cardification = 0;
 	}
 }
@@ -1520,7 +1522,7 @@ e_destination_import (const gchar *str)
 	if (dest_doc && dest_doc->xmlRootNode) {
 		dest = e_destination_new ();
 		if (! e_destination_xml_decode (dest, dest_doc->xmlRootNode)) {
-			gtk_object_unref (GTK_OBJECT (dest));
+			g_object_unref (dest);
 			dest = NULL;
 		}
 	}
@@ -1593,7 +1595,7 @@ e_destination_importv (const gchar *str)
 		if (e_destination_xml_decode (dest, node) && !e_destination_is_empty (dest)) {
 			g_ptr_array_add (dest_array, dest);
 		} else {
-			gtk_object_unref (GTK_OBJECT (dest));
+			g_object_unref (dest);
 		}
 		
 		node = node->next;
@@ -1648,7 +1650,7 @@ e_destination_freev (EDestination **destv)
 	
 	if (destv) {
 		for (i = 0; destv[i] != NULL; ++i) {
-			gtk_object_unref (GTK_OBJECT (destv[i]));
+			g_object_unref (destv[i]);
 		}
 		g_free (destv);
 	}

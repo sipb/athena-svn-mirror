@@ -23,9 +23,8 @@
 #ifndef _E_SHELL_H_
 #define _E_SHELL_H_
 
-#include <liboaf/liboaf.h>	/* For the registration stuff.  */
-#include <bonobo/bonobo-xobject.h>
-#include <bonobo-conf/bonobo-config-database.h>
+#include <bonobo-activation/bonobo-activation.h>
+#include <bonobo/bonobo-object.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,13 +66,13 @@ enum _EShellStartupLineMode {
 typedef enum _EShellStartupLineMode EShellStartupLineMode;
 
 struct _EShell {
-	BonoboXObject parent;
+	BonoboObject parent;
 
 	EShellPrivate *priv;
 };
 
 struct _EShellClass {
-	BonoboXObjectClass parent_class;
+	BonoboObjectClass parent_class;
 
 	POA_GNOME_Evolution_Shell__epv epv;
 
@@ -129,13 +128,10 @@ EFolderTypeRegistry *e_shell_get_folder_type_registry  (EShell          *shell);
 EUriSchemaRegistry  *e_shell_get_uri_schema_registry   (EShell          *shell);
 
 gboolean             e_shell_save_settings             (EShell          *shell);
-gboolean             e_shell_restore_from_settings     (EShell          *shell,
-							gboolean         restore_all_views);
 
 void                 e_shell_destroy_all_views         (EShell          *shell);
 
 void                 e_shell_unregister_all            (EShell          *shell);
-void                 e_shell_disconnect_db             (EShell          *shell);
 
 void                 e_shell_component_maybe_crashed   (EShell          *shell,
 							const char      *uri,
@@ -148,15 +144,11 @@ void              e_shell_go_offline       (EShell     *shell,
 void              e_shell_go_online        (EShell     *shell,
 					    EShellView *action_view);
 
-void  e_shell_set_interactive  (EShell *shell,
-				gboolean interactive);
-
 void e_shell_send_receive  (EShell     *shell);
 void e_shell_show_settings (EShell     *shell,
 			    const char *type,
 			    EShellView *shell_view);
 
-Bonobo_ConfigDatabase            e_shell_get_config_db                     (EShell *shell);
 EComponentRegistry              *e_shell_get_component_registry            (EShell *shell);
 EShellUserCreatableItemsHandler *e_shell_get_user_creatable_items_handler  (EShell *shell);
 

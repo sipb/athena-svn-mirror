@@ -13,20 +13,26 @@
 #define __PAS_BOOK_H__
 
 #include <bonobo/bonobo-object.h>
-#include <libgnome/gnome-defs.h>
 #include <pas/addressbook.h>
 #include <pas/pas-book-view.h>
 #include "e-util/e-list.h"
 
-typedef struct _PASBook        PASBook;
-typedef struct _PASBookPrivate PASBookPrivate;
-
 #include <pas/pas-backend.h>
 #include <pas/pas-card-cursor.h>
 
+#define PAS_TYPE_BOOK        (pas_book_get_type ())
+#define PAS_BOOK(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), PAS_TYPE_BOOK, PASBook))
+#define PAS_BOOK_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), PAS_BOOK_FACTORY_TYPE, PASBookClass))
+#define PAS_IS_BOOK(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), PAS_TYPE_BOOK))
+#define PAS_IS_BOOK_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), PAS_TYPE_BOOK))
+#define PAS_BOOK_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), PAS_TYPE_BOOK, PASBookClass))
+
+typedef struct _PASBook        PASBook;
+typedef struct _PASBookPrivate PASBookPrivate;
+
 typedef enum {
 	CreateCard,
-	RemoveCard,
+	RemoveCards,
 	ModifyCard,
 	GetVCard,
 	GetCursor,
@@ -35,7 +41,8 @@ typedef enum {
 	GetChanges,
 	CheckConnection,
 	AuthenticateUser,
-	GetSupportedFields
+	GetSupportedFields,
+	GetSupportedAuthMethods
 } PASOperation;
 
 typedef struct {
@@ -46,8 +53,8 @@ typedef struct {
 
 typedef struct {
 	PASOperation op;
-	char *id;
-} PASRemoveCardRequest;
+	GList *ids;
+} PASRemoveCardsRequest;
 
 typedef struct {
 	PASOperation op;
@@ -97,20 +104,25 @@ typedef struct {
 	PASOperation op;
 } PASGetSupportedFieldsRequest;
 
-typedef union {
-	PASOperation                 op;
+typedef struct {
+	PASOperation op;
+} PASGetSupportedAuthMethodsRequest;
 
-	PASCreateCardRequest         create;
-	PASRemoveCardRequest         remove;
-	PASModifyCardRequest         modify;
-	PASGetVCardRequest           get_vcard;
-	PASGetCursorRequest          get_cursor;
-	PASGetBookViewRequest        get_book_view;
-	PASGetCompletionViewRequest  get_completion_view;
-	PASGetChangesRequest         get_changes;
-	PASCheckConnectionRequest    check_connection;
-	PASAuthenticateUserRequest   auth_user;
-	PASGetSupportedFieldsRequest get_supported_fields;
+typedef union {
+	PASOperation                      op;
+
+	PASCreateCardRequest              create;
+	PASRemoveCardsRequest             remove;
+	PASModifyCardRequest              modify;
+	PASGetVCardRequest                get_vcard;
+	PASGetCursorRequest               get_cursor;
+	PASGetBookViewRequest             get_book_view;
+	PASGetCompletionViewRequest       get_completion_view;
+	PASGetChangesRequest              get_changes;
+	PASCheckConnectionRequest         check_connection;
+	PASAuthenticateUserRequest        auth_user;
+	PASGetSupportedFieldsRequest      get_supported_fields;
+	PASGetSupportedAuthMethodsRequest get_supported_auth_methods;
 } PASRequest;
 
 struct _PASBook {
@@ -121,9 +133,12 @@ struct _PASBook {
 typedef struct {
 	BonoboObjectClass parent_class;
 
+	POA_GNOME_Evolution_Addressbook_Book__epv epv;
+
 	/* Signals */
 	void (*requests_queued) (void);
 } PASBookClass;
+
 
 typedef gboolean (*PASBookCanWriteFn)     (PASBook *book);
 typedef gboolean (*PASBookCanWriteCardFn) (PASBook *book, const char *id);
@@ -149,6 +164,9 @@ void                    pas_book_respond_authenticate_user (PASBook             
 void                    pas_book_respond_get_supported_fields (PASBook *book,
 							       GNOME_Evolution_Addressbook_BookListener_CallStatus  status,
 							       EList   *fields);
+void                    pas_book_respond_get_supported_auth_methods (PASBook *book,
+								     GNOME_Evolution_Addressbook_BookListener_CallStatus  status,
+								     EList   *fields);
 
 void                    pas_book_respond_get_cursor     (PASBook                           *book,
 							 GNOME_Evolution_Addressbook_BookListener_CallStatus  status,
@@ -171,12 +189,6 @@ void                    pas_book_report_connection      (PASBook                
 void                    pas_book_report_writable        (PASBook                           *book,
 							 gboolean                           writable);
 
-GtkType                 pas_book_get_type               (void);
-
-#define PAS_BOOK_TYPE        (pas_book_get_type ())
-#define PAS_BOOK(o)          (GTK_CHECK_CAST ((o), PAS_BOOK_TYPE, PASBook))
-#define PAS_BOOK_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), PAS_BOOK_FACTORY_TYPE, PASBookClass))
-#define PAS_IS_BOOK(o)       (GTK_CHECK_TYPE ((o), PAS_BOOK_TYPE))
-#define PAS_IS_BOOK_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), PAS_BOOK_TYPE))
+GType                   pas_book_get_type               (void);
 
 #endif /* ! __PAS_BOOK_H__ */

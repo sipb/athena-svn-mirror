@@ -26,7 +26,7 @@
 
 #include <time.h>
 #include <gtk/gtktable.h>
-#include <libgnomeui/gnome-canvas.h>
+#include <libgnomecanvas/gnome-canvas.h>
 #include <gal/widgets/e-popup-menu.h>
 
 #include "gnome-cal.h"
@@ -141,6 +141,7 @@ typedef enum
 	E_DAY_VIEW_COLOR_BG_WORKING,
 	E_DAY_VIEW_COLOR_BG_NOT_WORKING,
 	E_DAY_VIEW_COLOR_BG_SELECTED,
+	E_DAY_VIEW_COLOR_BG_SELECTED_UNFOCUSSED,
 	E_DAY_VIEW_COLOR_BG_GRID,
 
 	E_DAY_VIEW_COLOR_BG_TOP_CANVAS,
@@ -361,7 +362,7 @@ struct _EDayView
 
 	/* The large font used to display the hours. I don't think we need a
 	   fontset since we only display numbers. */
-	GdkFont *large_font;
+	PangoFontDescription *large_font_desc;
 
 	/* The GC used for painting in different colors. */
 	GdkGC *main_gc;
@@ -608,11 +609,13 @@ void       e_day_view_copy_clipboard            (EDayView       *day_view);
 void       e_day_view_paste_clipboard           (EDayView       *day_view);
 
 void       e_day_view_delete_event		(EDayView       *day_view);
+void       e_day_view_delete_occurrence         (EDayView       *day_view);
 
 
 /* Returns the number of selected events (0 or 1 at present). */
 gint	   e_day_view_get_num_events_selected	(EDayView	*day_view);
 
+CalComponent *e_day_view_get_selected_event     (EDayView       *day_view);
 
 /*
  * Internal functions called by the associated canvas items.
@@ -624,6 +627,11 @@ gint	   e_day_view_convert_time_to_row	(EDayView	*day_view,
 gint	   e_day_view_convert_time_to_position	(EDayView	*day_view,
 						 gint		 hour,
 						 gint		 minute);
+gboolean   e_day_view_get_event_rows            (EDayView *day_view,
+						 gint day,
+						 gint event_num,
+						 gint *start_row_out,
+						 gint *end_row_out);
 gboolean   e_day_view_get_event_position	(EDayView	*day_view,
 						 gint		 day,
 						 gint		 event_num,

@@ -38,15 +38,16 @@
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <dirent.h>
 
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
+
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+
 #include <gal/util/e-util.h>
-#include <gal/widgets/e-unicode.h>
-#include <gal/util/e-unicode-i18n.h>
+
 #include "e-util/e-path.h"
 #include "e-local-folder.h"
 #include "e-shell-constants.h"
@@ -173,14 +174,14 @@ setup_folder_as_stock (ELocalStorage *local_storage,
 static void
 setup_stock_folders (ELocalStorage *local_storage)
 {
-	setup_folder_as_stock (local_storage, "/Calendar", U_("Calendar"), NULL);
-	setup_folder_as_stock (local_storage, "/Contacts", U_("Contacts"), NULL);
-	setup_folder_as_stock (local_storage, "/Drafts", U_("Drafts"), NULL);
-	setup_folder_as_stock (local_storage, "/Inbox", U_("Inbox"), "inbox");
-	setup_folder_as_stock (local_storage, "/Outbox", U_("Outbox"), "outbox");
-	setup_folder_as_stock (local_storage, "/Sent", U_("Sent"), NULL);
-	setup_folder_as_stock (local_storage, "/Tasks", U_("Tasks"), NULL);
-	setup_folder_as_stock (local_storage, "/Trash", U_("Trash"), NULL);
+	setup_folder_as_stock (local_storage, "/Calendar", _("Calendar"), NULL);
+	setup_folder_as_stock (local_storage, "/Contacts", _("Contacts"), NULL);
+	setup_folder_as_stock (local_storage, "/Drafts", _("Drafts"), NULL);
+	setup_folder_as_stock (local_storage, "/Inbox", _("Inbox"), "inbox");
+	setup_folder_as_stock (local_storage, "/Outbox", _("Outbox"), "outbox");
+	setup_folder_as_stock (local_storage, "/Sent", _("Sent"), NULL);
+	setup_folder_as_stock (local_storage, "/Tasks", _("Tasks"), NULL);
+	setup_folder_as_stock (local_storage, "/Trash", _("Trash"), NULL);
 }
 
 static gboolean
@@ -195,20 +196,42 @@ load_folder (const char *physical_path,
 
 	folder = e_local_folder_new_from_path (physical_path);
 	if (folder == NULL) {
-		g_warning ("No folder metadata in %s... ignoring", physical_path);
+		/* g_warning ("No folder metadata in %s... ignoring", physical_path); FIXME */
 		return TRUE;
 	}
 
-	/* Ignore the folder if it uses an unknown type.  */
-	if (! e_folder_type_registry_type_registered (local_storage->priv->folder_type_registry,
-						      e_folder_get_type_string (folder))) {
-		g_warning ("Folder in %s has unknown type (%s)... ignoring",
-			   physical_path, e_folder_get_type_string (folder));
-		return TRUE;
-	}
-
-	new_folder (local_storage, path, folder);
+	e_storage_new_folder ((EStorage *)local_storage, path, folder);
 	return TRUE;
+}
+
+static void
+setup_corba_storage (ELocalStorage *local_storage,
+		     const char *path)
+{
+	GList *subfolder_paths;
+	EFolder *folder;
+	GList *p;
+
+	folder = e_storage_get_folder (E_STORAGE (local_storage), path);
+
+	if (folder != NULL)
+		evolution_storage_new_folder (EVOLUTION_STORAGE (local_storage->priv->bonobo_interface),
+					      path,
+					      e_folder_get_name (folder),
+					      e_folder_get_type_string (folder),
+					      e_folder_get_physical_uri (folder),
+					      e_folder_get_description (folder),
+					      e_folder_get_custom_icon_name (folder),
+					      e_folder_get_unread_count (folder),
+					      FALSE,
+					      0);
+
+	subfolder_paths = e_storage_get_subfolder_paths (E_STORAGE (local_storage), path);
+
+	for (p = subfolder_paths; p != NULL; p = p->next)
+		setup_corba_storage (local_storage, (const char *) p->data);
+
+	e_free_string_list (subfolder_paths);
 }
 
 static gboolean
@@ -223,6 +246,8 @@ load_all_folders (ELocalStorage *local_storage)
 	e_path_find_folders (base_path, load_folder, local_storage);
 
 	setup_stock_folders (local_storage);
+
+	setup_corba_storage (local_storage, "/");
 
 	return TRUE;
 }
@@ -312,16 +337,16 @@ component_async_create_folder_callback (EvolutionShellComponentClient *shell_com
 				    callback_data->path, folder);
 		} else {
 			rmdir (callback_data->physical_path);
-			gtk_object_unref (GTK_OBJECT (folder));
+			g_object_unref (folder);
 			storage_result = E_STORAGE_IOERROR;
 		}
 	}
 
-	bonobo_object_unref (BONOBO_OBJECT (shell_component_client));
+	g_object_unref (shell_component_client);
 
 	if (callback_data->listener != CORBA_OBJECT_NIL)
 		notify_listener (callback_data->listener, storage_result,
-					callback_data->physical_path);
+				 callback_data->physical_path);
 
 	if (callback_data->callback != NULL)
 		(* callback_data->callback) (callback_data->storage,
@@ -349,7 +374,7 @@ create_folder_directory (ELocalStorage *local_storage,
 {
 	EStorage *storage;
 	ELocalStoragePrivate *priv;
-	const char *folder_name;
+	char *parent_path;
 	char *physical_path;
 	
 	storage = E_STORAGE (local_storage);
@@ -358,26 +383,27 @@ create_folder_directory (ELocalStorage *local_storage,
 	*physical_path_return = NULL;
 	g_assert (g_path_is_absolute (path));
 	
-	folder_name = g_basename (path);
+	parent_path = g_path_get_dirname(path);
 
-	if (folder_name != path + 1) {
+	if (strlen(parent_path) > 1) {
 		char *subfolders_directory_physical_path;
-		char *parent_path;
-		
-		/* Create the `subfolders' subdirectory under the parent.  */
-		
-		parent_path = g_strndup (path, folder_name - path);
-		subfolders_directory_physical_path = e_path_to_physical (priv->base_path, parent_path);
-		g_free (parent_path);
+		char *parent;
 
-		if (! g_file_exists (subfolders_directory_physical_path)) {
-			if (mkdir (subfolders_directory_physical_path, 0700) == -1) {
-				g_free (subfolders_directory_physical_path);
-				return errno_to_storage_result ();
-			}
+		/* Create the `subfolders' subdirectory under the parent.  */
+		parent = g_strdup_printf ("%s/", parent_path);
+		subfolders_directory_physical_path = e_path_to_physical (priv->base_path, parent);
+
+		if (mkdir (subfolders_directory_physical_path, 0700) == -1 && errno != EEXIST) {
+			g_free (subfolders_directory_physical_path);
+			g_free (parent);
+			return errno_to_storage_result ();
 		}
+
 		g_free (subfolders_directory_physical_path);
+		g_free (parent);
 	}
+
+	g_free (parent_path);
 
 	physical_path = e_path_to_physical (priv->base_path, path);
 
@@ -405,7 +431,7 @@ create_folder (ELocalStorage *local_storage,
 	EvolutionShellComponentClient *component_client;
 	AsyncCreateFolderCallbackData *callback_data;
 	EStorageResult result;
-	const char *folder_name;
+	char *folder_name;
 	char *physical_path;
 	char *physical_uri;
 	
@@ -434,7 +460,7 @@ create_folder (ELocalStorage *local_storage,
 		return;
 	}
 	
-	folder_name = g_basename (path);
+	folder_name = g_path_get_basename (path);
 
 	/* Finally tell the component to do the job of creating the physical files in it.  */
 
@@ -455,13 +481,15 @@ create_folder (ELocalStorage *local_storage,
 	callback_data->callback      = callback;
 	callback_data->callback_data = data;
 
-	bonobo_object_ref (BONOBO_OBJECT (component_client));
+	g_object_ref (component_client);
 
 	evolution_shell_component_client_async_create_folder (component_client,
 							      physical_uri,
 							      type,
 							      component_async_create_folder_callback,
 							      callback_data);
+
+	g_free (folder_name);
 }
 
 struct _AsyncRemoveFolderCallbackData {
@@ -476,24 +504,25 @@ remove_folder_directory (ELocalStorage *local_storage,
 {
 	EStorage *storage;
 	ELocalStoragePrivate *priv;
-	const char *folder_name;
+	char *folder_name;
 	char *file_name;
 	char *physical_path;
 
 	priv = local_storage->priv;
 
 	storage = E_STORAGE (local_storage);
-	folder_name = g_basename (path);
+	folder_name = g_path_get_basename (path);
 
 	/* Delete the metadata file associated with this folder.  */
 	physical_path = e_path_to_physical (priv->base_path, path);
-	file_name = g_concat_dir_and_file (physical_path, E_LOCAL_FOLDER_METADATA_FILE_NAME);
+	file_name = g_build_filename (physical_path, E_LOCAL_FOLDER_METADATA_FILE_NAME, NULL);
 	unlink (file_name);
 	g_free (file_name);
 
 	/* Delete the physical directory.  */
 	if (rmdir (physical_path) == -1) {
 		g_free (physical_path);
+		g_free (folder_name);
 		return E_STORAGE_GENERICERROR;
 	}
 
@@ -504,7 +533,7 @@ remove_folder_directory (ELocalStorage *local_storage,
 		char *subfolders_directory_physical_path;
 		char *parent_path;
 		
-		parent_path = g_strndup (path, folder_name - path);
+		parent_path = g_strndup (path, strlen (path) - strlen (folder_name));
 		subfolders_directory_physical_path = e_path_to_physical (priv->base_path, parent_path);
 		g_free (parent_path);
 
@@ -512,6 +541,7 @@ remove_folder_directory (ELocalStorage *local_storage,
 		g_free (subfolders_directory_physical_path);
 	}
 
+	g_free (folder_name);
 	return E_STORAGE_OK;
 }
 
@@ -543,7 +573,7 @@ component_async_remove_folder_callback (EvolutionShellComponentClient *shell_com
 		g_print ("...Error removing %s!\n", path);
 	}
 
-	bonobo_object_unref (BONOBO_OBJECT (shell_component_client));
+	g_object_unref (shell_component_client);
 
 	/* Now go on and delete the next subfolder in the list that still
 	   exists, deallocating the elements in the list in the process.  */
@@ -596,7 +626,7 @@ remove_folder_step (AsyncRemoveFolderCallbackData *callback_data)
 	type = e_folder_get_type_string (folder);
 	client = e_folder_type_registry_get_handler_for_type (priv->folder_type_registry, type);
 
-	bonobo_object_ref (BONOBO_OBJECT (client));
+	g_object_ref (client);
 
 	evolution_shell_component_client_async_remove_folder (client, physical_uri, type,
 							      component_async_remove_folder_callback,
@@ -676,7 +706,7 @@ remove_folder (ELocalStorage *local_storage,
 /* GtkObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	ELocalStorage *local_storage;
 	ELocalStoragePrivate *priv;
@@ -687,19 +717,34 @@ impl_destroy (GtkObject *object)
 
 	CORBA_exception_init (&ev);
 
-	g_free (priv->base_path);
+	if (priv->folder_type_registry != NULL) {
+		g_object_unref (priv->folder_type_registry);
+		priv->folder_type_registry = NULL;
+	}
 
-	if (priv->folder_type_registry != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->folder_type_registry));
-
-	if (priv->bonobo_interface != NULL)
+	if (priv->bonobo_interface != NULL) {
 		bonobo_object_unref (BONOBO_OBJECT (priv->bonobo_interface));
-
-	g_free (priv);
+		priv->bonobo_interface = NULL;
+	}
 
 	CORBA_exception_free (&ev);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	ELocalStorage *local_storage;
+	ELocalStoragePrivate *priv;
+
+	local_storage = E_LOCAL_STORAGE (object);
+	priv = local_storage->priv;
+
+	g_free (priv->base_path);
+	g_free (priv);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -784,14 +829,15 @@ append_xfer_item_list (EStorage *storage,
 
 	subfolders = e_storage_get_subfolder_paths (storage, source_path);
 	for (p = subfolders; p != NULL; p = p->next) {
+		char *base_name;
 		char *source_subpath;
 		char *destination_subpath;
 
 		source_subpath = g_strdup ((const char *) p->data);
-		destination_subpath = g_concat_dir_and_file (destination_path,
-							     g_basename (source_subpath));
-
+		base_name = g_path_get_basename (source_subpath);
+		destination_subpath = g_build_filename (destination_path, base_name, NULL);
 		append_xfer_item_list (storage, source_subpath, destination_subpath, list);
+		g_free (base_name);
 	}
 
 	e_free_string_list (subfolders);
@@ -1062,13 +1108,15 @@ static void
 class_init (ELocalStorageClass *class)
 {
 	EStorageClass *storage_class;
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	parent_class  = gtk_type_class (e_storage_get_type ());
-	object_class  = GTK_OBJECT_CLASS (class);
+	parent_class  = g_type_class_ref(e_storage_get_type ());
+
+	object_class  = G_OBJECT_CLASS (class);
 	storage_class = E_STORAGE_CLASS (class);
 
-	object_class->destroy              = impl_destroy;
+	object_class->finalize = impl_finalize;
+	object_class->dispose  = impl_dispose;
 
 	storage_class->async_create_folder = impl_async_create_folder;
 	storage_class->async_remove_folder = impl_async_remove_folder;
@@ -1098,8 +1146,12 @@ construct (ELocalStorage *local_storage,
 	ELocalStoragePrivate *priv;
 	EFolder *root_folder;
 	int base_path_len;
+	char *uri;
 
-	root_folder = e_folder_new (U_("Local Folders"), "noselect", "");
+	root_folder = e_folder_new (_("Local Folders"), "noselect", "");
+	uri = g_strdup_printf("file://%s;noselect", base_path);
+	e_folder_set_physical_uri(root_folder, uri);
+	g_free(uri);
 	e_storage_construct (E_STORAGE (local_storage),
 			     E_LOCAL_STORAGE_NAME,
 			     root_folder);
@@ -1113,7 +1165,7 @@ construct (ELocalStorage *local_storage,
 	g_return_val_if_fail (base_path_len != 0, FALSE);
 
 	g_assert (priv->folder_type_registry == NULL);
-	gtk_object_ref (GTK_OBJECT (folder_type_registry));
+	g_object_ref (folder_type_registry);
 	priv->folder_type_registry = folder_type_registry;
 
 	g_assert (priv->base_path == NULL);
@@ -1122,15 +1174,15 @@ construct (ELocalStorage *local_storage,
 	g_assert (priv->bonobo_interface == NULL);
 	priv->bonobo_interface = evolution_storage_new (E_LOCAL_STORAGE_NAME, FALSE);
 
-	gtk_signal_connect (GTK_OBJECT (priv->bonobo_interface), "create_folder",
-			    GTK_SIGNAL_FUNC (bonobo_interface_create_folder_cb), 
-			    local_storage);
-	gtk_signal_connect (GTK_OBJECT (priv->bonobo_interface), "remove_folder",
-			    GTK_SIGNAL_FUNC (bonobo_interface_remove_folder_cb),
-			    local_storage);
-	gtk_signal_connect (GTK_OBJECT (priv->bonobo_interface), "update_folder",
-			    GTK_SIGNAL_FUNC (bonobo_interface_update_folder_cb),
-			    local_storage);
+	g_signal_connect (priv->bonobo_interface, "create_folder",
+			  G_CALLBACK (bonobo_interface_create_folder_cb), 
+			  local_storage);
+	g_signal_connect (priv->bonobo_interface, "remove_folder",
+			  G_CALLBACK (bonobo_interface_remove_folder_cb),
+			  local_storage);
+	g_signal_connect (priv->bonobo_interface, "update_folder",
+			  G_CALLBACK (bonobo_interface_update_folder_cb),
+			  local_storage);
 
 	return load_all_folders (local_storage);
 }
@@ -1145,10 +1197,10 @@ e_local_storage_open (EFolderTypeRegistry *folder_type_registry,
 	g_return_val_if_fail (E_IS_FOLDER_TYPE_REGISTRY (folder_type_registry), NULL);
 	g_return_val_if_fail (base_path != NULL, NULL);
 
-	new = gtk_type_new (e_local_storage_get_type ());
+	new = g_object_new (e_local_storage_get_type (), NULL);
 
 	if (! construct (E_LOCAL_STORAGE (new), folder_type_registry, base_path)) {
-		gtk_object_unref (GTK_OBJECT (new));
+		g_object_unref (new);
 		return NULL;
 	}
 

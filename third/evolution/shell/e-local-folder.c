@@ -45,11 +45,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
+
 #include <gal/util/e-util.h>
 #include <gal/util/e-xml-utils.h>
 
@@ -255,7 +255,7 @@ retrieve_info (ELocalFolder *local_folder,
 
 	priv = local_folder->priv;
 
-	for (p = root_xml_node->childs; p != NULL; p = p->next) {
+	for (p = root_xml_node->children; p != NULL; p = p->next) {
 		if (xmlStrcmp (p->name, "info") == 0)
 			retrieve_info_item (local_folder, p);
 	}
@@ -268,13 +268,14 @@ construct_loading_metadata (ELocalFolder *local_folder,
 	EFolder *folder;
 	xmlDoc *doc;
 	xmlNode *root;
+	char *base_name;
 	char *type;
 	char *metadata_path;
 	char *physical_uri;
 
 	folder = E_FOLDER (local_folder);
 
-	metadata_path = g_concat_dir_and_file (path, E_LOCAL_FOLDER_METADATA_FILE_NAME);
+	metadata_path = g_build_filename (path, E_LOCAL_FOLDER_METADATA_FILE_NAME, NULL);
 
 	doc = xmlParseFile (metadata_path);
 	if (doc == NULL) {
@@ -283,7 +284,7 @@ construct_loading_metadata (ELocalFolder *local_folder,
 	}
 
 	root = xmlDocGetRootElement (doc);
-	if (root == NULL || strcmp (root->name, "efolder") != 0) {
+	if (root == NULL || root->name == NULL || strcmp (root->name, "efolder") != 0) {
 		g_free (metadata_path);
 		xmlFreeDoc (doc);
 		return FALSE;
@@ -296,7 +297,9 @@ construct_loading_metadata (ELocalFolder *local_folder,
 		return FALSE;
 	}
 
-	e_local_folder_construct (local_folder, g_basename (path), type, NULL);
+	base_name = g_path_get_basename (path);
+	e_local_folder_construct (local_folder, base_name, type, NULL);
+	g_free (base_name);
 	g_free (type);
 
 	retrieve_info (local_folder, root);
@@ -335,7 +338,7 @@ save_metadata (ELocalFolder *local_folder)
 				 (xmlChar *) e_folder_get_description (folder));
 
 	physical_directory = e_folder_get_physical_uri (folder) + URI_PREFIX_LEN - 1;
-	physical_path = g_concat_dir_and_file (physical_directory, E_LOCAL_FOLDER_METADATA_FILE_NAME);
+	physical_path = g_build_filename (physical_directory, E_LOCAL_FOLDER_METADATA_FILE_NAME, NULL);
 
 	if (xmlSaveFile (physical_path, doc) < 0) {
 		unlink (physical_path);
@@ -354,7 +357,7 @@ save_metadata (ELocalFolder *local_folder)
 /* GtkObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	ELocalFolder *local_folder;
 	ELocalFolderPrivate *priv;
@@ -369,19 +372,19 @@ destroy (GtkObject *object)
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (ELocalFolderClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	parent_class = gtk_type_class (e_folder_get_type ());
+	parent_class = g_type_class_ref(e_folder_get_type ());
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = impl_finalize;
 
 	setup_global_language_id ();
 }
@@ -430,7 +433,7 @@ e_local_folder_new (const char *name,
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (type != NULL, NULL);
 
-	local_folder = gtk_type_new (e_local_folder_get_type ());
+	local_folder = g_object_new (e_local_folder_get_type (), NULL);
 
 	e_local_folder_construct (local_folder, name, type, description);
 
@@ -444,10 +447,10 @@ e_local_folder_new_from_path (const char *path)
 
 	g_return_val_if_fail (g_path_is_absolute (path), NULL);
 
-	folder = gtk_type_new (e_local_folder_get_type ());
+	folder = g_object_new (e_local_folder_get_type (), NULL);
 
 	if (! construct_loading_metadata (E_LOCAL_FOLDER (folder), path)) {
-		gtk_object_unref (GTK_OBJECT (folder));
+		g_object_unref (folder);
 		return NULL;
 	}
 

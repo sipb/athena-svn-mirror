@@ -34,12 +34,15 @@
 #include "e-calendar.h"
 
 #include <glib.h>
+#include <gtk/gtkarrow.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtksignal.h>
-#include <libgnomeui/gnome-canvas-widget.h>
+#include <libgnomecanvas/gnome-canvas-widget.h>
 #include <gal/util/e-util.h>
+
+#define E_CALENDAR_SMALL_FONT_PTSIZE 6
 
 #define E_CALENDAR_SMALL_FONT	\
 	"-adobe-utopia-regular-r-normal-*-*-100-*-*-p-*-iso8859-*"
@@ -65,35 +68,6 @@
 #define E_CALENDAR_AUTO_MOVE_TIMEOUT		150
 #define E_CALENDAR_AUTO_MOVE_TIMEOUT_DELAY	2
 
-static char * left_arrow_xpm[] = {
-	"7 7 3 1",
-	" 	c None",
-	".	c #949594",
-	"+	c #000000",
-	"     .+",
-	"   .+++",
-	" .+++++",
-	"+++++++",
-	" .+++++",
-	"   .+++",
-	"     .+"
-};
-
-static char * right_arrow_xpm[] = {
-	"7 7 3 1",
-	" 	c None",
-	".	c #949594",
-	"+	c #000000",
-	"+.     ",
-	"+++.   ",
-	"+++++. ",
-	"+++++++",
-	"+++++. ",
-	"+++.   ",
-	"+.     "
-};
-
-
 static void e_calendar_class_init	(ECalendarClass *class);
 static void e_calendar_init		(ECalendar	*cal);
 static void e_calendar_destroy		(GtkObject	*object);
@@ -104,8 +78,6 @@ static void e_calendar_size_request	(GtkWidget      *widget,
 					 GtkRequisition *requisition);
 static void e_calendar_size_allocate	(GtkWidget	*widget,
 					 GtkAllocation	*allocation);
-static void e_calendar_draw		(GtkWidget	*widget,
-					 GdkRectangle	*area);
 static gint e_calendar_drag_motion	(GtkWidget      *widget,
 					 GdkDragContext *context,
 					 gint            x,
@@ -141,8 +113,8 @@ e_calendar_class_init (ECalendarClass *class)
 	object_class = (GtkObjectClass *) class;
 	widget_class = (GtkWidgetClass *) class;
 
-	parent_class = gtk_type_class (E_CANVAS_TYPE);
-	grandparent_class = gtk_type_class (GTK_TYPE_LAYOUT);
+	parent_class = g_type_class_ref(E_CANVAS_TYPE);
+	grandparent_class = g_type_class_ref(GTK_TYPE_LAYOUT);
 
 	object_class->destroy = e_calendar_destroy;
 
@@ -150,7 +122,6 @@ e_calendar_class_init (ECalendarClass *class)
 	widget_class->style_set		   = e_calendar_style_set;
  	widget_class->size_request	   = e_calendar_size_request;
  	widget_class->size_allocate	   = e_calendar_size_allocate;
-	widget_class->draw		   = e_calendar_draw;
 	widget_class->drag_motion	   = e_calendar_drag_motion;
 	widget_class->drag_leave	   = e_calendar_drag_leave;
 }
@@ -160,31 +131,26 @@ static void
 e_calendar_init (ECalendar *cal)
 {
 	GnomeCanvasGroup *canvas_group;
-	GdkFont *small_font;
+	PangoFontDescription *small_font_desc;
 	GtkWidget *button, *pixmap;
-	GdkColormap *colormap;
-	GdkPixmap *gdk_pixmap;
-	GdkBitmap *gdk_mask;
 
 	GTK_WIDGET_UNSET_FLAGS (cal, GTK_CAN_FOCUS);
 
 	/* Create the small font. */
-	small_font = gdk_font_load (E_CALENDAR_SMALL_FONT);
-	if (!small_font)
-		small_font = gdk_font_load (E_CALENDAR_SMALL_FONT_FALLBACK);
-	if (!small_font)
-		g_warning ("Couldn't load font");
+
+	small_font_desc =
+		pango_font_description_copy (gtk_widget_get_style (GTK_WIDGET (cal))->font_desc);
+	pango_font_description_set_size (small_font_desc,
+					 E_CALENDAR_SMALL_FONT_PTSIZE * PANGO_SCALE);
 
 	canvas_group = GNOME_CANVAS_GROUP (GNOME_CANVAS (cal)->root);
 
 	cal->calitem = E_CALENDAR_ITEM (gnome_canvas_item_new (canvas_group,
 							       e_calendar_item_get_type (),
-							       "week_number_font", small_font,
+							       "week_number_font_desc", small_font_desc,
 							       NULL));
 
-	if (small_font)
-		gdk_font_unref (small_font);
-
+	pango_font_description_free (small_font_desc);
 
 	/* Create the arrow buttons to move to the previous/next month. */
 	button = gtk_button_new ();
@@ -192,20 +158,14 @@ e_calendar_init (ECalendar *cal)
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
 	gtk_widget_show (button);
 	gtk_signal_connect_object (GTK_OBJECT (button), "pressed",
-				   GTK_SIGNAL_FUNC (e_calendar_on_prev_pressed),
+				   G_CALLBACK (e_calendar_on_prev_pressed),
 				   GTK_OBJECT (cal));
 	gtk_signal_connect_object (GTK_OBJECT (button), "released",
-				   GTK_SIGNAL_FUNC (e_calendar_on_prev_released),
+				   G_CALLBACK (e_calendar_on_prev_released),
 				   GTK_OBJECT (cal));
 
-	colormap = gtk_widget_get_colormap (GTK_WIDGET (cal));
-	gdk_pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap,
-							    &gdk_mask, NULL,
-							    left_arrow_xpm);
-	pixmap = gtk_pixmap_new (gdk_pixmap, gdk_mask);
+	pixmap = gtk_arrow_new (GTK_ARROW_LEFT, GTK_SHADOW_NONE);
 	gtk_widget_show (pixmap);
-	gdk_pixmap_unref (gdk_pixmap);
-	gdk_bitmap_unref (gdk_mask);
 	gtk_container_add (GTK_CONTAINER (button), pixmap);
 
 	cal->prev_item = gnome_canvas_item_new (canvas_group,
@@ -218,19 +178,14 @@ e_calendar_init (ECalendar *cal)
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
 	gtk_widget_show (button);
 	gtk_signal_connect_object (GTK_OBJECT (button), "pressed",
-				   GTK_SIGNAL_FUNC (e_calendar_on_next_pressed),
+				   G_CALLBACK (e_calendar_on_next_pressed),
 				   GTK_OBJECT (cal));
 	gtk_signal_connect_object (GTK_OBJECT (button), "released",
-				   GTK_SIGNAL_FUNC (e_calendar_on_next_released),
+				   G_CALLBACK (e_calendar_on_next_released),
 				   GTK_OBJECT (cal));
 
-	gdk_pixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, colormap,
-							    &gdk_mask, NULL,
-							    right_arrow_xpm);
-	pixmap = gtk_pixmap_new (gdk_pixmap, gdk_mask);
+	pixmap = gtk_arrow_new (GTK_ARROW_RIGHT, GTK_SHADOW_NONE);
 	gtk_widget_show (pixmap);
-	gdk_pixmap_unref (gdk_pixmap);
-	gdk_bitmap_unref (gdk_mask);
 	gtk_container_add (GTK_CONTAINER (button), pixmap);
 
 	cal->next_item = gnome_canvas_item_new (canvas_group,
@@ -323,7 +278,7 @@ e_calendar_size_request		(GtkWidget      *widget,
 	cal = E_CALENDAR (widget);
 	style = GTK_WIDGET (cal)->style;
 
-	gtk_object_get (GTK_OBJECT (cal->calitem),
+	g_object_get((cal->calitem),
 			"row_height", &row_height,
 			"column_width", &col_width,
 			NULL);
@@ -331,8 +286,8 @@ e_calendar_size_request		(GtkWidget      *widget,
 	height = row_height * cal->min_rows;
 	width = col_width * cal->min_cols;
 
-	requisition->width = width + style->klass->xthickness * 2;
-	requisition->height = height + style->klass->ythickness * 2;
+	requisition->width = width + style->xthickness * 2;
+	requisition->height = height + style->ythickness * 2;
 }
 
 
@@ -341,16 +296,23 @@ e_calendar_size_allocate	(GtkWidget	*widget,
 				 GtkAllocation	*allocation)
 {
 	ECalendar *cal;
-	GdkFont *font;
+	PangoFontDescription *font_desc;
+	PangoContext *pango_context;
+	PangoFontMetrics *font_metrics;
 	gdouble old_x2, old_y2, new_x2, new_y2;
 	gdouble xthickness, ythickness, arrow_button_size;
 
 	cal = E_CALENDAR (widget);
-	font = widget->style->font;
-	xthickness = widget->style->klass->xthickness;
-	ythickness = widget->style->klass->ythickness;
+	xthickness = widget->style->xthickness;
+	ythickness = widget->style->ythickness;
 
 	(*GTK_WIDGET_CLASS (parent_class)->size_allocate) (widget, allocation);
+
+	/* Set up Pango prerequisites */
+	font_desc = gtk_widget_get_style (widget)->font_desc;
+	pango_context = gtk_widget_get_pango_context (widget);
+	font_metrics = pango_context_get_metrics (pango_context, font_desc,
+						  pango_context_get_language (pango_context));
 
 	/* Set the scroll region to its allocated size, if changed. */
 	gnome_canvas_get_scroll_region (GNOME_CANVAS (cal),
@@ -371,7 +333,9 @@ e_calendar_size_allocate	(GtkWidget	*widget,
 
 
 	/* Position the arrow buttons. */
-	arrow_button_size = font->ascent + font->descent
+	arrow_button_size =
+		PANGO_PIXELS (pango_font_metrics_get_ascent (font_metrics))
+		+ PANGO_PIXELS (pango_font_metrics_get_descent (font_metrics))
 		+ E_CALENDAR_ITEM_YPAD_ABOVE_MONTH_NAME
 		+ E_CALENDAR_ITEM_YPAD_BELOW_MONTH_NAME
 		- E_CALENDAR_ARROW_BUTTON_Y_PAD * 2;
@@ -394,25 +358,9 @@ e_calendar_size_allocate	(GtkWidget	*widget,
 			       "width", arrow_button_size,
 			       "height", arrow_button_size,
 			       NULL);
+
+	pango_font_metrics_unref (font_metrics);
 }
-
-
-static void
-e_calendar_draw			(GtkWidget	*widget,
-				 GdkRectangle	*area)
-{
-	ECalendar *cal;
-
-	cal = E_CALENDAR (widget);
-
-	(*GTK_WIDGET_CLASS (parent_class)->draw) (widget, area);
-
-	/* GnomeCanvas bug workaround to draw the GnomeCanvasWidgets. */
-#if 0
-	(*GTK_WIDGET_CLASS (grandparent_class)->draw) (widget, area);
-#endif
-}
-
 
 void
 e_calendar_set_minimum_size	(ECalendar	*cal,
@@ -467,10 +415,10 @@ e_calendar_get_border_size	(ECalendar	*cal,
 	style = GTK_WIDGET (cal)->style;
 
 	if (style) {
-		*top    = style->klass->ythickness;
-		*bottom = style->klass->ythickness;
-		*left   = style->klass->xthickness;
-		*right  = style->klass->xthickness;
+		*top    = style->ythickness;
+		*bottom = style->ythickness;
+		*left   = style->xthickness;
+		*right  = style->xthickness;
 	} else {
 		*top = *bottom = *left = *right = 0;
 	}

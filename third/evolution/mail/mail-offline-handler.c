@@ -29,13 +29,14 @@
 #include "mail-offline-handler.h"
 #include "mail.h"
 #include "mail-ops.h"
+#include "mail-folder-cache.h"
 
 #include <gtk/gtkmain.h>
 
 #include <gal/util/e-util.h>
 
-#define PARENT_TYPE bonobo_x_object_get_type ()
-static BonoboXObjectClass *parent_class = NULL;
+#define PARENT_TYPE bonobo_object_get_type ()
+static BonoboObjectClass *parent_class = NULL;
 
 struct _MailOfflineHandlerPrivate {
 	GHashTable *sync_table;
@@ -290,10 +291,10 @@ impl_goOnline (PortableServer_Servant servant,
 	mail_storages_foreach (storage_go_online, NULL);
 }
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_finalise (GObject *object)
 {
 	MailOfflineHandler *offline_handler;
 	MailOfflineHandlerPrivate *priv;
@@ -303,8 +304,8 @@ impl_destroy (GtkObject *object)
 	g_hash_table_destroy(priv->sync_table);
 	g_free (priv);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (G_OBJECT_CLASS (parent_class)->finalize != NULL)
+		(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 /* GTK+ type initialization.  */
@@ -312,11 +313,11 @@ impl_destroy (GtkObject *object)
 static void
 mail_offline_handler_class_init (MailOfflineHandlerClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	POA_GNOME_Evolution_Offline__epv *epv;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = impl_finalise;
 
 	epv = & klass->epv;
 	epv->_get_isOffline    = impl__get_isOffline;
@@ -326,7 +327,7 @@ mail_offline_handler_class_init (MailOfflineHandlerClass *klass)
 	epv->goOffline         = impl_goOffline;
 	epv->goOnline          = impl_goOnline;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 }
 
 static void
@@ -345,9 +346,9 @@ mail_offline_handler_new (void)
 {
 	MailOfflineHandler *new;
 
-	new = gtk_type_new (mail_offline_handler_get_type ());
+	new = g_object_new(mail_offline_handler_get_type (), NULL);
 
 	return new;
 }
 
-BONOBO_X_TYPE_FUNC_FULL (MailOfflineHandler, GNOME_Evolution_Offline, PARENT_TYPE, mail_offline_handler);
+BONOBO_TYPE_FUNC_FULL (MailOfflineHandler, GNOME_Evolution_Offline, PARENT_TYPE, mail_offline_handler);

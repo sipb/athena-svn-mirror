@@ -28,6 +28,7 @@
 
 #include "e-folder-dnd-bridge.h"
 #include "e-shell-constants.h"
+#include "e-shell-marshal.h"
 #include "e-shortcuts-view-model.h"
 
 #include "e-util/e-request.h"
@@ -36,17 +37,20 @@
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtklabel.h>
-#include <libgnome/gnome-defs.h>
+
 #include <libgnome/gnome-i18n.h>
+
 #include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-app-helper.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-popup-menu.h>
-#include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
+
+#include <gtk/gtkmessagedialog.h>
+#include <gtk/gtkstock.h>
+
 #include <gal/util/e-util.h>
-#include <gal/widgets/e-unicode.h>
+
+#include <string.h>
 
 
 #define PARENT_TYPE E_TYPE_SHORTCUT_BAR
@@ -73,7 +77,7 @@ show_new_group_dialog (EShortcutsView *view)
 	char *group_name;
 
 	group_name = e_request_string (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
-				       _("Create new shortcut group"),
+				       _("Create New Shortcut Group"),
 				       _("Group name:"),
 				       NULL);
 
@@ -138,7 +142,7 @@ hide_shortcut_bar_cb (GtkWidget *widget,
 
 	shortcut_view = E_SHORTCUTS_VIEW (menu_data->shortcuts_view);
 
-	gtk_signal_emit (GTK_OBJECT (shortcut_view), signals[HIDE_REQUESTED]);
+	g_signal_emit (shortcut_view, signals[HIDE_REQUESTED], 0);
 }
 
 static void
@@ -160,30 +164,40 @@ destroy_group_cb (GtkWidget *widget,
 	EShortcuts *shortcuts;
 	EShortcutsView *shortcuts_view;
 	EShortcutsViewPrivate *priv;
-	GtkWidget *message_box;
-	char *question, *title;
+	GtkWidget *message_dialog;
+	GtkResponseType response;
 
 	menu_data = (RightClickMenuData *) data;
 	shortcuts_view = menu_data->shortcuts_view;
 	priv = shortcuts_view->priv;
 	shortcuts = priv->shortcuts;
 
-	title = e_utf8_to_locale_string (e_shortcuts_get_group_title (
-	                                 shortcuts, menu_data->group_num));
-	question = g_strdup_printf (_("Do you really want to remove group\n"
-	                              "`%s' from the shortcut bar?"), title);
-	g_free (title);
+	message_dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (menu_data->shortcuts_view))),
+						 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+						 GTK_MESSAGE_QUESTION,
+						 GTK_BUTTONS_NONE,
+						 _("Do you really want to remove group "
+						   "\"%s\" from the shortcut bar?"),
+						 e_shortcuts_get_group_title (shortcuts, menu_data->group_num));
 
-	message_box = gnome_message_box_new (question, GNOME_MESSAGE_BOX_QUESTION,
-					     _("Remove"), _("Don't remove"), NULL);
-	gnome_dialog_set_parent (GNOME_DIALOG (message_box),
-				 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (shortcuts_view))));
-	g_free (question);
+	gtk_dialog_add_buttons (GTK_DIALOG (message_dialog),
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+				GTK_STOCK_DELETE, GTK_RESPONSE_OK,
+				NULL);
 
-	if (gnome_dialog_run_and_close (GNOME_DIALOG (message_box)) != 0)
-		return;
+	gtk_window_set_title (GTK_WINDOW (message_dialog), "Remove Shortcut Group"); 
 
-	e_shortcuts_remove_group (shortcuts, menu_data->group_num);
+	gtk_container_set_border_width (GTK_CONTAINER (message_dialog), 6); 
+	
+	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (message_dialog)->vbox), 6);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (message_dialog), GTK_RESPONSE_OK);
+
+	response = gtk_dialog_run (GTK_DIALOG (message_dialog));
+	gtk_widget_destroy (message_dialog);
+
+	if (response == GTK_RESPONSE_OK)
+		e_shortcuts_remove_group (shortcuts, menu_data->group_num);
 }
 
 static void
@@ -253,7 +267,7 @@ static GnomeUIInfo right_click_menu_uiinfo[] = {
 
 	GNOMEUIINFO_SEPARATOR,
 
-	{ GNOME_APP_UI_ITEM, N_("_New Group..."),
+	{ GNOME_APP_UI_ITEM, N_("_Add Group..."),
 	  N_("Create a new shortcut group"), create_new_group_cb, NULL,
 	  NULL, 0, 0, 0, 0 },
 	{ GNOME_APP_UI_ITEM, N_("_Remove this Group..."),
@@ -303,10 +317,10 @@ pop_up_right_click_menu_for_group (EShortcutsView *shortcuts_view,
 	if (group_num == 0)
 		gtk_widget_set_sensitive (right_click_menu_uiinfo[3].widget, FALSE);
 
-	gnome_popup_menu_do_popup_modal (popup_menu, NULL, NULL, event, menu_data);
+	gnome_popup_menu_do_popup_modal (popup_menu, NULL, NULL, event, menu_data, GTK_WIDGET (shortcuts_view));
 
 	g_free (menu_data);
-	gtk_widget_unref (popup_menu);
+	gtk_widget_destroy (popup_menu);
 }
 
 
@@ -337,8 +351,8 @@ open_shortcut_helper (ShortcutRightClickMenuData *menu_data,
 	if (shortcut_item == NULL)
 		return;
 
-	gtk_signal_emit (GTK_OBJECT (shortcuts_view), signals[ACTIVATE_SHORTCUT],
-			 shortcuts, shortcut_item->uri, in_new_window);
+	g_signal_emit (shortcuts_view, signals[ACTIVATE_SHORTCUT], 0,
+		       shortcuts, shortcut_item->uri, in_new_window);
 }
 
 static void
@@ -391,7 +405,7 @@ rename_shortcut_cb (GtkWidget *widget,
 	shortcut_item = e_shortcuts_get_shortcut (shortcuts, menu_data->group_num, menu_data->item_num);
 
 	new_name = e_request_string (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (shortcuts_view))),
-				     _("Rename shortcut"),
+				     _("Rename Shortcut"),
 				     _("Rename selected shortcut to:"),
 				     shortcut_item->name);
 
@@ -406,14 +420,14 @@ rename_shortcut_cb (GtkWidget *widget,
 
 static GnomeUIInfo shortcut_right_click_menu_uiinfo[] = {
 	GNOMEUIINFO_ITEM_STOCK (N_("_Open"), N_("Open the folder linked to this shortcut"),
-				open_shortcut_cb, GNOME_STOCK_MENU_OPEN), 
+				open_shortcut_cb, GTK_STOCK_OPEN), 
 	GNOMEUIINFO_ITEM_NONE  (N_("Open in New _Window"), N_("Open the folder linked to this shortcut in a new window"),
 				open_shortcut_in_new_window_cb),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_NONE (N_("_Rename"), N_("Rename this shortcut"),
-				rename_shortcut_cb),
+			       rename_shortcut_cb),
 	GNOMEUIINFO_ITEM_STOCK (N_("Re_move"), N_("Remove this shortcut from the shortcut bar"),
-				remove_shortcut_cb, GNOME_STOCK_MENU_TRASH),
+				remove_shortcut_cb, GTK_STOCK_REMOVE),
 	GNOMEUIINFO_END
 };
 
@@ -433,7 +447,7 @@ pop_up_right_click_menu_for_shortcut (EShortcutsView *shortcuts_view,
 
 	popup_menu = gnome_popup_menu_new (shortcut_right_click_menu_uiinfo);
 
-	gnome_popup_menu_do_popup_modal (popup_menu, NULL, NULL, event, menu_data);
+	gnome_popup_menu_do_popup_modal (popup_menu, NULL, NULL, event, menu_data, GTK_WIDGET (shortcuts_view));
 
 	g_free (menu_data);
 	gtk_widget_destroy (popup_menu);
@@ -460,10 +474,10 @@ group_change_icon_size_callback (EShortcuts *shortucts,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EShortcutsViewPrivate *priv;
 	EShortcutsView *shortcuts_view;
@@ -472,11 +486,24 @@ destroy (GtkObject *object)
 
 	priv = shortcuts_view->priv;
 
-	gtk_object_unref (GTK_OBJECT (priv->shortcuts));
+	if (priv->shortcuts != NULL) {
+		g_object_unref (priv->shortcuts);
+		priv->shortcuts = NULL;
+	}
 
-	g_free (priv);
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+static void
+impl_finalize (GObject *object)
+{
+	EShortcutsView *shortcuts_view;
+
+	shortcuts_view = E_SHORTCUTS_VIEW (object);
+
+	g_free (shortcuts_view->priv);
+
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
@@ -514,8 +541,8 @@ item_selected (EShortcutBar *shortcut_bar,
 	if (shortcut_item == NULL)
 		return;
 
-	gtk_signal_emit (GTK_OBJECT (shortcuts_view), signals[ACTIVATE_SHORTCUT],
-			 shortcuts, shortcut_item->uri, FALSE);
+	g_signal_emit (shortcuts_view, signals[ACTIVATE_SHORTCUT], 0,
+		       shortcuts, shortcut_item->uri, FALSE);
 }
 
 static void
@@ -674,11 +701,12 @@ impl_shortcut_drag_data_received (EShortcutBar *shortcut_bar,
 static void
 class_init (EShortcutsViewClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	EShortcutBarClass *shortcut_bar_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
 
 	shortcut_bar_class = E_SHORTCUT_BAR_CLASS (klass);
 	shortcut_bar_class->item_selected               = item_selected;
@@ -687,29 +715,29 @@ class_init (EShortcutsViewClass *klass)
 	shortcut_bar_class->shortcut_drag_motion        = impl_shortcut_drag_motion;
 	shortcut_bar_class->shortcut_drag_data_received = impl_shortcut_drag_data_received;
 
-	parent_class = gtk_type_class (e_shortcut_bar_get_type ());
+	parent_class = g_type_class_ref(e_shortcut_bar_get_type ());
 
 	signals[ACTIVATE_SHORTCUT] =
-		gtk_signal_new ("activate_shortcut",
-				GTK_RUN_LAST | GTK_RUN_ACTION,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EShortcutsViewClass, activate_shortcut),
-				e_marshal_NONE__POINTER_POINTER_INT,
-				GTK_TYPE_NONE, 3,
-				GTK_TYPE_POINTER,
-				GTK_TYPE_STRING,
-				GTK_TYPE_BOOL);
+		g_signal_new ("activate_shortcut",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+			      G_STRUCT_OFFSET (EShortcutsViewClass, activate_shortcut),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__POINTER_STRING_BOOL,
+			      G_TYPE_NONE, 3,
+			      G_TYPE_POINTER,
+			      G_TYPE_STRING,
+			      G_TYPE_BOOLEAN);
 
 	signals[HIDE_REQUESTED] =
-		gtk_signal_new ("hide_requested",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (EShortcutsViewClass,
-						   hide_requested),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("hide_requested",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EShortcutsViewClass,
+					       hide_requested),
+			      NULL, NULL,
+			      e_shell_marshal_NONE__NONE,
+			      G_TYPE_NONE, 0);
 }
 
 static void
@@ -737,14 +765,13 @@ e_shortcuts_view_construct (EShortcutsView *shortcuts_view,
 	priv = shortcuts_view->priv;
 
 	priv->shortcuts = shortcuts;
-	gtk_object_ref (GTK_OBJECT (priv->shortcuts));
+	g_object_ref (priv->shortcuts);
 
 	e_shortcut_bar_set_model (E_SHORTCUT_BAR (shortcuts_view),
 				  E_SHORTCUT_MODEL (e_shortcuts_view_model_new (shortcuts)));
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (shortcuts), "group_change_icon_size",
-					GTK_SIGNAL_FUNC (group_change_icon_size_callback),
-					shortcuts_view, GTK_OBJECT (shortcuts_view));
+	g_signal_connect_object (shortcuts, "group_change_icon_size",
+				 G_CALLBACK (group_change_icon_size_callback), shortcuts_view, 0);
 
 	num_groups = e_shortcuts_get_num_groups (shortcuts);
 	for (i = 0; i < num_groups; i ++) {
@@ -763,7 +790,7 @@ e_shortcuts_view_new (EShortcuts *shortcuts)
 	g_return_val_if_fail (shortcuts != NULL, NULL);
 	g_return_val_if_fail (E_IS_SHORTCUTS (shortcuts), NULL);
 
-	new = gtk_type_new (e_shortcuts_view_get_type ());
+	new = g_object_new (e_shortcuts_view_get_type (), NULL);
 	e_shortcuts_view_construct (E_SHORTCUTS_VIEW (new), shortcuts);
 
 	return new;

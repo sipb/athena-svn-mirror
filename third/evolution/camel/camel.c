@@ -79,7 +79,7 @@ camel_init (const char *configdir, gboolean nss_init)
 	/* initialise global camel_object_type */
 	camel_object_get_type();
 	
-	camel_mime_utils_init();
+	camel_mime_utils_init ();
 	
 #ifdef HAVE_NSS
 	if (nss_init) {

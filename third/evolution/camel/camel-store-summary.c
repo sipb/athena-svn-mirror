@@ -35,7 +35,7 @@
 
 #include "camel-file-utils.h"
 
-#include "hash-table-utils.h"
+#include "string-utils.h"
 #include "e-util/md5-utils.h"
 #include "e-util/e-memory.h"
 
@@ -371,9 +371,9 @@ camel_store_summary_load(CamelStoreSummary *s)
 
 error:
 	i = ferror (in);
-	g_warning("Cannot load summary file: %s", strerror(ferror(in)));
+	g_warning ("Cannot load summary file: %s", strerror (ferror (in)));
 	CAMEL_STORE_SUMMARY_UNLOCK(s, io_lock);
-	fclose(in);
+	fclose (in);
 	s->flags |= ~CAMEL_STORE_SUMMARY_DIRTY;
 	errno = i;
 	
@@ -409,13 +409,13 @@ camel_store_summary_save(CamelStoreSummary *s)
 
 	fd = open(s->summary_path, O_RDWR|O_CREAT|O_TRUNC, 0600);
 	if (fd == -1) {
-		io(printf("**  open error: %s\n", strerror(errno)));
+		io(printf("**  open error: %s\n", strerror (errno)));
 		return -1;
 	}
 	out = fdopen(fd, "w");
 	if ( out == NULL ) {
 		i = errno;
-		printf("**  fdopen error: %s\n", strerror(errno));
+		printf("**  fdopen error: %s\n", strerror (errno));
 		close(fd);
 		errno = i;
 		return -1;
@@ -795,7 +795,7 @@ const char *camel_store_info_string(CamelStoreSummary *s, const CamelStoreInfo *
 
 void camel_store_info_set_string(CamelStoreSummary *s, CamelStoreInfo *mi, int type, const char *value)
 {
-	return ((CamelStoreSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->store_info_set_string(s, mi, type, value);
+	((CamelStoreSummaryClass *)(CAMEL_OBJECT_GET_CLASS(s)))->store_info_set_string(s, mi, type, value);
 }
 
 static CamelStoreInfo *

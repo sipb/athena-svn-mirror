@@ -28,20 +28,20 @@ extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
-#include <gtk/gtkwindow.h>
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtk.h>
 #include <libgnomeui/gnome-file-entry.h>
+
 #include "mail-account-gui.h"
 #include "mail-accounts.h"
 
 #define MAIL_ACCOUNT_EDITOR_TYPE        (mail_account_editor_get_type ())
-#define MAIL_ACCOUNT_EDITOR(o)          (GTK_CHECK_CAST ((o), MAIL_ACCOUNT_EDITOR_TYPE, MailAccountEditor))
-#define MAIL_ACCOUNT_EDITOR_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), MAIL_ACCOUNT_EDITOR_TYPE, MailAccountEditorClass))
-#define MAIL_IS_ACCOUNT_EDITOR(o)       (GTK_CHECK_TYPE ((o), MAIL_ACCOUNT_EDITOR_TYPE))
-#define MAIL_IS_ACCOUNT_EDITOR_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), MAIL_ACCOUNT_EDITOR_TYPE))
+#define MAIL_ACCOUNT_EDITOR(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), MAIL_ACCOUNT_EDITOR_TYPE, MailAccountEditor))
+#define MAIL_ACCOUNT_EDITOR_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), MAIL_ACCOUNT_EDITOR_TYPE, MailAccountEditorClass))
+#define MAIL_IS_ACCOUNT_EDITOR(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), MAIL_ACCOUNT_EDITOR_TYPE))
+#define MAIL_IS_ACCOUNT_EDITOR_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), MAIL_ACCOUNT_EDITOR_TYPE))
 
 struct _MailAccountEditor {
-	GnomeDialog parent;
+	GtkDialog parent_object;
 	
 	MailAccountGui *gui;
 	GtkNotebook *notebook;
@@ -50,7 +50,7 @@ struct _MailAccountEditor {
 typedef struct _MailAccountEditor MailAccountEditor;
 
 typedef struct {
-	GnomeDialogClass parent_class;
+	GtkDialogClass parent_class;
 	
 	/* signals */
 	
@@ -58,7 +58,7 @@ typedef struct {
 
 GtkType mail_account_editor_get_type (void);
 
-MailAccountEditor *mail_account_editor_new (MailConfigAccount *account, GtkWindow *parent, MailAccountsTab *dialog);
+MailAccountEditor *mail_account_editor_new (EAccount *account, GtkWindow *parent, MailAccountsTab *dialog);
 
 #ifdef __cplusplus
 }

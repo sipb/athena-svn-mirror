@@ -23,6 +23,7 @@
 #include <config.h>
 #endif
 
+#include <string.h>
 #include "calendar-config.h"
 #include "comp-util.h"
 #include "dialogs/delete-comp.h"
@@ -229,7 +230,7 @@ cal_comp_is_on_server (CalComponent *comp, CalClient *client)
 
 	switch (status) {
 	case CAL_CLIENT_GET_SUCCESS:
-		gtk_object_unref (GTK_OBJECT (server_comp));
+		g_object_unref (server_comp);
 		return TRUE;
 
 	case CAL_CLIENT_GET_SYNTAX_ERROR:

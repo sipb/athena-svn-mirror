@@ -39,15 +39,14 @@ extern "C" {
 #include <camel/camel-types.h>	/* this is a @##$@#SF stupid header */
 
 /* this crap shouldn't be here */
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
+#include <camel/camel-i18n.h>
 
 #ifdef ENABLE_THREADS
 #include <pthread.h>
 #endif
 
 /* turn on so that camel_object_class_dump_tree() dumps object instances as well */
-/*#define CAMEL_OBJECT_TRACK_INSTANCES*/
+#define CAMEL_OBJECT_TRACK_INSTANCES
 
 typedef struct _CamelObjectClass *CamelType;
 
@@ -176,7 +175,7 @@ CamelType camel_type_register(CamelType parent, const char * name, /*unsigned in
 /* object class methods (types == classes now) */
 const char *camel_type_to_name (CamelType type);
 CamelType camel_name_to_type (const char *name);
-void camel_object_class_add_event (CamelObjectClass *class, const char *name, CamelObjectEventPrepFunc prep);
+void camel_object_class_add_event (CamelObjectClass *klass, const char *name, CamelObjectEventPrepFunc prep);
 
 void camel_object_class_dump_tree (CamelType root);
 
@@ -214,6 +213,19 @@ int camel_object_getv(void *obj, struct _CamelException *ex, CamelArgGetV *);
 
 /* free a bunch of objects, list must be 0 terminated */
 void camel_object_free(void *vo, guint32 tag, void *value);
+
+/* for managing bags of weakly-ref'd 'child' objects */
+typedef struct _CamelObjectBag CamelObjectBag;
+typedef void *(*CamelCopyFunc)(const void *vo);
+
+CamelObjectBag *camel_object_bag_new(GHashFunc hash, GEqualFunc equal, CamelCopyFunc keycopy, GFreeFunc keyfree);
+void *camel_object_bag_get(CamelObjectBag *bag, const void *key);
+void *camel_object_bag_reserve(CamelObjectBag *bag, const void *key);
+void camel_object_bag_add(CamelObjectBag *bag, const void *key, void *o);
+void camel_object_bag_abort(CamelObjectBag *bag, const void *key);
+GPtrArray *camel_object_bag_list(CamelObjectBag *bag);
+void camel_object_bag_remove(CamelObjectBag *bag, void *o);
+void camel_object_bag_destroy(CamelObjectBag *bag);
 
 #ifdef __cplusplus
 }

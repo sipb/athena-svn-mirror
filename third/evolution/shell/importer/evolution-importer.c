@@ -31,7 +31,7 @@
 
 #include "GNOME_Evolution_Importer.h"
 
-#define PARENT_TYPE BONOBO_X_OBJECT_TYPE
+#define PARENT_TYPE BONOBO_OBJECT_TYPE
 static BonoboObjectClass *parent_class = NULL;
 
 struct _EvolutionImporterPrivate {
@@ -71,7 +71,8 @@ impl_GNOME_Evolution_Importer_supportFormat (PortableServer_Servant servant,
 static CORBA_boolean
 impl_GNOME_Evolution_Importer_loadFile (PortableServer_Servant servant,
 					const CORBA_char *filename,
-					const CORBA_char *folderpath,
+					const CORBA_char *physical_uri,
+					const CORBA_char *folder_type,
 					CORBA_Environment *ev)
 {
 	EvolutionImporter *importer;
@@ -81,8 +82,7 @@ impl_GNOME_Evolution_Importer_loadFile (PortableServer_Servant servant,
 	priv = importer->priv;
 
 	if (priv->load_file_fn != NULL)
-		return (priv->load_file_fn) (importer, filename, 
-					     folderpath, priv->closure);
+		return (priv->load_file_fn) (importer, filename, physical_uri, folder_type, priv->closure);
 	else
 		return FALSE;
 }
@@ -125,7 +125,7 @@ impl_GNOME_Evolution_Importer_getError (PortableServer_Servant servant,
 
 
 static void
-destroy (GtkObject *object)
+finalise (GObject *object)
 {
 	EvolutionImporter *importer;
 	EvolutionImporterPrivate *priv;
@@ -139,19 +139,19 @@ destroy (GtkObject *object)
 	g_free (priv);
 	importer->priv = NULL;
 
-	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
 evolution_importer_class_init (EvolutionImporterClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	POA_GNOME_Evolution_Importer__epv *epv = &klass->epv;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = finalise;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 	epv->supportFormat = impl_GNOME_Evolution_Importer_supportFormat;
 	epv->loadFile = impl_GNOME_Evolution_Importer_loadFile;
 	epv->processItem = impl_GNOME_Evolution_Importer_processItem;
@@ -217,13 +217,13 @@ evolution_importer_new (EvolutionImporterSupportFormatFn support_format_fn,
 {
 	EvolutionImporter *importer;
 
-	importer = gtk_type_new (evolution_importer_get_type ());
+	importer = g_object_new(evolution_importer_get_type (), NULL);
 	evolution_importer_construct (importer, support_format_fn, load_file_fn,
 				      process_item_fn, get_error_fn, closure);
 	return importer;
 }
 
-BONOBO_X_TYPE_FUNC_FULL (EvolutionImporter,
-			 GNOME_Evolution_Importer,
-			 PARENT_TYPE,
-			 evolution_importer);
+BONOBO_TYPE_FUNC_FULL (EvolutionImporter,
+		       GNOME_Evolution_Importer,
+		       PARENT_TYPE,
+		       evolution_importer);

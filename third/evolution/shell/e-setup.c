@@ -25,6 +25,22 @@
 #include <config.h>
 #endif
 
+#include "e-setup.h"
+
+#include "e-local-folder.h"
+#include "e-shell-config.h"
+#include "e-shell-constants.h"
+
+#include "e-util/e-dialog-utils.h"
+#include "e-util/e-path.h"
+
+#include <gconf/gconf-client.h>
+
+#include <gtk/gtklabel.h>
+
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
+
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -33,18 +49,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <gtk/gtklabel.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-stock.h>
-#include <gal/widgets/e-gui-utils.h>
-
-#include "e-local-folder.h"
-#include "e-shell-config.h"
-#include "e-shell-constants.h"
-
-#include "e-setup.h"
+#define DEFAULT_USER_PATH  EVOLUTION_DATADIR "/evolution/" BASE_VERSION "/default_user"
 
 
 static GList *
@@ -77,10 +82,8 @@ check_dir_recur (const char *evolution_directory,
 			continue;
 		}
 
-		fullname = g_concat_dir_and_file (evolution_directory,
-						  current->d_name);
-		fulldefaultname = g_concat_dir_and_file (current_directory,
-							 current->d_name);
+		fullname = g_build_filename (evolution_directory, current->d_name, NULL);
+		fulldefaultname = g_build_filename (current_directory, current->d_name, NULL);
 
 		if (stat (fullname, &buf) == -1) {
 			char *name;
@@ -107,41 +110,13 @@ check_dir_recur (const char *evolution_directory,
 static gboolean
 check_evolution_directory (const char *evolution_directory)
 {
-	GtkWidget *dialog;
-	GtkWidget *label1, *label2;
 	gboolean retval;
 	GList *newfiles, *l;
-	char *defaultdir;
-	int result;
 
-	defaultdir = g_strdup (EVOLUTION_DATADIR "/evolution/default_user");
-	newfiles = g_list_concat (NULL, check_dir_recur (evolution_directory,
-							 defaultdir));
+	newfiles = g_list_concat (NULL, check_dir_recur (evolution_directory, DEFAULT_USER_PATH));
 
 	if (newfiles == NULL) {
 		retval = TRUE;
-		goto out;
-	}
-
-	dialog = gnome_dialog_new (_("Evolution installation"),
-				   GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL,
-				   NULL);
-
-	label1 = gtk_label_new (_("This new version of Evolution needs to install additional files\ninto your personal Evolution directory"));
-	label2 = gtk_label_new (_("Please click \"OK\" to install the files, or \"Cancel\" to exit."));
-
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), label1, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), label2, TRUE, TRUE, 0);
-
-	gtk_widget_show (label1);
-	gtk_widget_show (label2);
-
-	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, TRUE, FALSE);
-
-	result = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-
-	if (result != 0) {
-		retval = FALSE;
 		goto out;
 	}
 
@@ -150,7 +125,7 @@ check_evolution_directory (const char *evolution_directory)
 		char *command;
 		char *shortpath;
 
-		shortpath = l->data + strlen (EVOLUTION_DATADIR "/evolution/default_user/");
+		shortpath = l->data + strlen (DEFAULT_USER_PATH);
 		command = g_strconcat ("cp -r ",
 				       l->data, " ",
 				       evolution_directory, "/",
@@ -167,7 +142,7 @@ check_evolution_directory (const char *evolution_directory)
 	}
 
 	if (retval == FALSE)
-		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+		e_notice (NULL, GTK_MESSAGE_ERROR,
 			  _("Could not update files correctly"));
 
  out:
@@ -176,7 +151,6 @@ check_evolution_directory (const char *evolution_directory)
 		g_free (l->data);
 
 	g_list_free (newfiles);
-	g_free (defaultdir);
 
 	return retval;
 }
@@ -187,39 +161,26 @@ copy_default_stuff (const char *evolution_directory)
 {
 	gboolean retval;
 	char *command;
-	char *old_default_shortcuts_file;
 
 	if (mkdir (evolution_directory, 0700)) {
-		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+		e_notice (NULL, GTK_MESSAGE_ERROR,
 			  _("Cannot create the directory\n%s\nError: %s"),
 			  evolution_directory,
 			  g_strerror (errno));
 		return FALSE;
 	}
 
-	command = g_strconcat ("cp -r ",
-			       EVOLUTION_DATADIR,
-			       "/evolution/default_user/* ",
-			       evolution_directory,
-			       NULL);
+	command = g_strconcat ("cp -r " DEFAULT_USER_PATH "/* ", evolution_directory, NULL);
 
 	if (system (command) != 0) {
 		/* FIXME: Give more help.  */
-		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+		e_notice (NULL, GTK_MESSAGE_ERROR,
 			  _("An error occurred in copying files into\n`%s'."), evolution_directory);
 		retval = FALSE;
 	} else {
 		retval = TRUE;
 	}
 
-	/* Temporary block of code to keep it from using the older
-           shortcuts.xml that exists for current users in
-           $GNOME/share/evolution/default_user.  Remove this by 1.0 */
-	old_default_shortcuts_file = g_concat_dir_and_file (evolution_directory,
-							    "shortcuts.xml");
-	unlink (old_default_shortcuts_file);
-	g_free (old_default_shortcuts_file);
-	
 	g_free (command);
 
 	return retval;
@@ -255,7 +216,7 @@ e_shell_rm_dir (const char *path)
 				continue;
 			}
 
-			fullpath = g_concat_dir_and_file (path, contents->d_name);
+			fullpath = g_build_filename (path, contents->d_name, NULL);
 			e_shell_rm_dir (fullpath);
 			g_free (fullpath);
 
@@ -265,52 +226,6 @@ e_shell_rm_dir (const char *path)
 		closedir (base);
 		rmdir (path);
 	}
-}
-
-
-/* FIXME: This is a workaround for bonobo-conf breakage.  */
-static gboolean
-setup_bonobo_conf_private_directory (const char *evolution_directory)
-{
-	char *name;
-	struct stat buf;
-
-	name = g_concat_dir_and_file (evolution_directory, "private");
-	if (stat (name, &buf) == -1) {
-		if (mkdir (name, 0700) != 0) {
-			e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-				  _("Evolution could not create directory\n"
-				    "%s:\n%s"),
-				  name, strerror (errno));
-			g_free (name);
-			return FALSE;
-		}
-
-		g_free (name);
-		return TRUE;
-	}
-
-	if (S_ISDIR (buf.st_mode) && access (name, R_OK | W_OK | X_OK) == 0) {
-		g_free (name);
-		return TRUE;
-	}
-
-	if (S_ISDIR (buf.st_mode)) {
-		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-			  _("Directory %s\n"
-			    "does not have the right permissions. Please make it\n"
-			    "readable and executable and restart Evolution."),
-			  name);
-	} else {
-		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-			  _("File %s\n"
-			    "should be removed to allow Evolution to work correctly.\n"
-			    "Please remove this file and restart Evolution."),
-			  name, strerror (errno));
-	}
-
-	g_free (name);
-	return FALSE;
 }
 
 
@@ -325,46 +240,16 @@ e_setup (const char *evolution_directory)
 	}
 
 	if (! S_ISDIR (statinfo.st_mode)) {
-		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+		e_notice (NULL, GTK_MESSAGE_ERROR,
 			  _("The file `%s' is not a directory.\n"
 			    "Please move it in order to allow installation\n"
 			    "of the Evolution user files."));
 		return FALSE;
 	}
 
-	/* Make sure this is really our directory, not an Evolution
-	 * build tree or something like that.
-	 */
-	file = g_strdup_printf ("%s/local/Executive-Summary", evolution_directory);
-	if (stat (file, &statinfo) == 0) {
-		if (S_ISDIR (statinfo.st_mode)) {
-			GtkWidget *dialog;
-
-			dialog = gnome_message_box_new (_("Evolution has detected an old\n"
-							  "Executive-Summary directory.\n"
-							  "This needs to be removed before\n"
-							  "Evolution will run.\n"
-							  "Do you want me to remove this directory?"),
-							GNOME_MESSAGE_BOX_INFO,
-							GNOME_STOCK_BUTTON_YES,
-							GNOME_STOCK_BUTTON_NO,
-							NULL);
-			switch (gnome_dialog_run_and_close (GNOME_DIALOG (dialog))) {
-			case 0:
-				e_shell_rm_dir (file);
-				break;
-
-			default:
-				return FALSE;
-			}
-		}
-	}
-
-	g_free (file);
-
 	file = g_strdup_printf ("%s/searches.xml", evolution_directory);
 	if (stat (file, &statinfo) != 0) {
-		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+		e_notice (NULL, GTK_MESSAGE_ERROR,
 			  _("The directory `%s' exists but is not the\n"
 			    "Evolution directory.  Please move it in order\n"
 			    "to allow installation of the Evolution user "
@@ -374,85 +259,75 @@ e_setup (const char *evolution_directory)
 	}
 	g_free (file);
 
-	/* If the user has an old-style config file, replace it with
-	 * the new-style config directory. FIXME: This should be
-	 * temporary.
-	 */
-	file = g_strdup_printf ("%s/config", evolution_directory);
-	if (stat (file, &statinfo) == 0 && ! S_ISDIR (statinfo.st_mode)) {
-		char *old = g_strdup_printf ("%s.old", file);
-
-		rename (file, old);
-		mkdir (file, 0700);
-		g_free (old);
-	}
-	g_free (file);
-
-	/* If the user has an old style trash folder, remove it so it gets
-	 * replaced by the new vfolder-based trash folder.  FIXME: This should
-	 * go away at some point.  */
-	file = g_strdup_printf ("%s/local/Trash", evolution_directory);
-	if (stat (file, &statinfo) == 0 && S_ISDIR (statinfo.st_mode)) {
-		EFolder *local_folder;
-
-		local_folder = e_local_folder_new_from_path (file);
-		if (local_folder != NULL
-		    && strcmp (e_folder_get_type_string (local_folder), "mail") == 0) {
-			char *old = g_strdup_printf ("%s.old", file);
-
-			rename (file, old);
-			g_free (old);
-		}
-
-		gtk_object_unref (GTK_OBJECT (local_folder));
-	}
-	g_free (file);
-
-	if (! setup_bonobo_conf_private_directory (evolution_directory))
-		return FALSE;
-
 	/* User has evolution directory...
 	   Check if it is up to date. */
 	return check_evolution_directory (evolution_directory);
 }
 
 
-void
-e_setup_check_db (Bonobo_ConfigDatabase db, const char *evolution_directory)
+static void
+set_default_folder_physical_uri_from_path (GConfClient *client,
+					   const char *evolution_directory,
+					   const char *path_key_name)
 {
-	char *uri;
+	char *gconf_path;
+	char *path_value;
 
-	if (bonobo_config_get_string_with_default (db, "/DefaultFolders/mail_path", NULL, NULL) == NULL) {
-		bonobo_config_set_string (db, "/DefaultFolders/mail_path",
-					  E_LOCAL_INBOX_URI, NULL);
-		uri = g_strconcat ("file://", evolution_directory, "/local",
-				   strrchr (E_LOCAL_INBOX_URI, '/'), NULL);
-		bonobo_config_set_string (db, "/DefaultFolders/mail_uri",
-					  uri, NULL);
-		g_free (uri);
+	gconf_path = g_strconcat ("/apps/evolution/shell/default_folders/", path_key_name, NULL);
+	path_value = gconf_client_get_string (client, gconf_path, NULL);
+	g_free (gconf_path);
 
-		bonobo_config_set_string (db, "/DefaultFolders/contacts_path",
-					  E_LOCAL_CONTACTS_URI, NULL);
-		uri = g_strconcat ("file://", evolution_directory, "/local",
-				   strrchr (E_LOCAL_CONTACTS_URI, '/'), NULL);
-		bonobo_config_set_string (db, "/DefaultFolders/contacts_uri",
-					  uri, NULL);
-		g_free (uri);
+	if (path_value != NULL
+	    && strncmp (path_value, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0
+	    && strncmp (path_value + E_SHELL_URI_PREFIX_LEN, "/local/", 7) == 0) {
+		char *key_prefix;
+		char *local_physical_uri;
+		char *file_uri_prefix;
 
-		bonobo_config_set_string (db, "/DefaultFolders/calendar_path",
-					  E_LOCAL_CALENDAR_URI, NULL);
-		uri = g_strconcat ("file://", evolution_directory, "/local",
-				   strrchr (E_LOCAL_CALENDAR_URI, '/'), NULL);
-		bonobo_config_set_string (db, "/DefaultFolders/calendar_uri",
-					  uri, NULL);
-		g_free (uri);
+		key_prefix = g_strndup (path_key_name, strchr (path_key_name, '_') - path_key_name);
+		gconf_path = g_strconcat ("/apps/evolution/shell/default_folders/", key_prefix, "_uri", NULL);
+		file_uri_prefix = g_strconcat ("file://", evolution_directory, "/local", NULL);
+		local_physical_uri = e_path_to_physical (file_uri_prefix, path_value + E_SHELL_URI_PREFIX_LEN + 6);
 
-		bonobo_config_set_string (db, "/DefaultFolders/tasks_path",
-					  E_LOCAL_TASKS_URI, NULL);
-		uri = g_strconcat ("file://", evolution_directory, "/local",
-				   strrchr (E_LOCAL_TASKS_URI, '/'), NULL);
-		bonobo_config_set_string (db, "/DefaultFolders/tasks_uri",
-					  uri, NULL);
-		g_free (uri);
+		gconf_client_set_string (client, gconf_path, local_physical_uri, NULL);
+
+		g_free (gconf_path);
+		g_free (key_prefix);
+		g_free (local_physical_uri);
+		g_free (file_uri_prefix);
 	}
+}
+
+void
+e_setup_check_config (const char *evolution_directory)
+{
+	GConfClient *client;
+	char *tmp;
+	gboolean present = FALSE;
+
+	client = gconf_client_get_default ();
+
+	tmp = gconf_client_get_string (client, "/apps/evolution/shell/default_folders/mail_uri", NULL);
+	if (tmp != NULL) {
+		if (*tmp != 0)
+			present = TRUE;
+		g_free (tmp);
+	}
+
+	if (present) {
+		g_object_unref (client);
+		return;
+	}
+
+	/* The following ugliness is to initially set up the physical URIs
+	   based on the default path values (which come from GConf).  Of
+	   course, this way of configuring the default folders is a bit of a
+	   mess and needs to be cleaned up...  */
+
+	set_default_folder_physical_uri_from_path (client, evolution_directory, "mail_path");
+	set_default_folder_physical_uri_from_path (client, evolution_directory, "contacts_path");
+	set_default_folder_physical_uri_from_path (client, evolution_directory, "calendar_path");
+	set_default_folder_physical_uri_from_path (client, evolution_directory, "tasks_path");
+
+	g_object_unref (client);
 }

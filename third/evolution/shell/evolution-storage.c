@@ -33,8 +33,10 @@
 #include "e-shell-constants.h"
 #include "e-shell-corba-icon-utils.h"
 
-#include <gal/util/e-util.h>
+#include "e-shell-marshal.h"
 
+#include <string.h>
+#include <gal/util/e-util.h>
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-exception.h>
@@ -231,31 +233,6 @@ folder_destroy_notify (EFolderTree *tree,
 
 /* CORBA interface implementation.  */
 
-static POA_GNOME_Evolution_Storage__vepv Storage_vepv;
-
-static POA_GNOME_Evolution_Storage *
-create_servant (void)
-{
-	POA_GNOME_Evolution_Storage *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_GNOME_Evolution_Storage *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = &Storage_vepv;
-
-	CORBA_exception_init (&ev);
-
-	POA_GNOME_Evolution_Storage__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_free (servant);
-		CORBA_exception_free (&ev);
-		return NULL;
-	}
-
-	CORBA_exception_free (&ev);
-
-	return servant;
-}
-
 static CORBA_char *
 impl_Storage__get_name (PortableServer_Servant servant,
 			CORBA_Environment *ev)
@@ -335,7 +312,6 @@ get_folder_list_foreach (EFolderTree *tree,
 	corba_folder = (GNOME_Evolution_Folder *) data;
 	folder_list = (GNOME_Evolution_FolderList *) closure;
 
-	/* The root folder has no data.  */
 	if (corba_folder == NULL)
 		return;
 
@@ -366,7 +342,7 @@ impl_Storage__get_folderList (PortableServer_Servant servant,
 	priv = storage->priv;
 	
 	folder_list = GNOME_Evolution_FolderList__alloc ();
-	folder_list->_maximum = e_folder_tree_get_count (priv->folder_tree) - 1;
+	folder_list->_maximum = e_folder_tree_get_count (priv->folder_tree);
 	folder_list->_length = 0;
 	folder_list->_buffer = CORBA_sequence_GNOME_Evolution_Folder_allocbuf (folder_list->_maximum);
 
@@ -393,8 +369,8 @@ impl_Storage_asyncCreateFolder (PortableServer_Servant servant,
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
 	obj_dup = CORBA_Object_duplicate (listener, ev);
-	gtk_signal_emit (GTK_OBJECT (storage), signals[CREATE_FOLDER],
-			 obj_dup, path, type, description, parent_physical_uri);
+	g_signal_emit (storage, signals[CREATE_FOLDER], 0,
+		       obj_dup, path, type, description, parent_physical_uri);
 }
 
 
@@ -413,8 +389,8 @@ impl_Storage_asyncRemoveFolder (PortableServer_Servant servant,
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
 	obj_dup = CORBA_Object_duplicate (listener, ev);
-	gtk_signal_emit (GTK_OBJECT (storage), signals[REMOVE_FOLDER],
-			 obj_dup, path, physical_uri);
+	g_signal_emit (storage, signals[REMOVE_FOLDER], 0,
+		       obj_dup, path, physical_uri);
 }
 
 static void
@@ -433,8 +409,8 @@ impl_Storage_asyncXferFolder (PortableServer_Servant servant,
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
 	obj_dup = CORBA_Object_duplicate (listener, ev);
-	gtk_signal_emit (GTK_OBJECT (storage), signals[XFER_FOLDER],
-			 obj_dup, source_path, destination_path, remove_source);
+	g_signal_emit (storage, signals[XFER_FOLDER], 0,
+		       obj_dup, source_path, destination_path, remove_source);
 }
 
 static void
@@ -451,8 +427,8 @@ impl_Storage_updateFolder (PortableServer_Servant servant,
 	bonobo_object = bonobo_object_from_servant (servant);
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
-	gtk_signal_emit (GTK_OBJECT (storage), signals[UPDATE_FOLDER],
-			 path, unread_count);
+	g_signal_emit (storage, signals[UPDATE_FOLDER], 0,
+		       path, unread_count);
 
 	priv = storage->priv;
 
@@ -476,15 +452,19 @@ impl_Storage_updateFolder (PortableServer_Servant servant,
 static void
 impl_Storage_asyncOpenFolder (PortableServer_Servant servant,
 			      const CORBA_char *path,
+			      Bonobo_Listener listener,
 			      CORBA_Environment *ev)
 {
 	BonoboObject *bonobo_object;
 	EvolutionStorage *storage;
+	CORBA_Object obj_dup;
 
 	bonobo_object = bonobo_object_from_servant (servant);
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
-	gtk_signal_emit (GTK_OBJECT (storage), signals[OPEN_FOLDER], path);
+	obj_dup = CORBA_Object_duplicate (listener, ev);
+	g_signal_emit (storage, signals[OPEN_FOLDER], 0,
+		       obj_dup, path);
 }
 
 static void
@@ -502,8 +482,8 @@ impl_Storage_asyncDiscoverSharedFolder (PortableServer_Servant servant,
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
 	obj_dup = CORBA_Object_duplicate (listener, ev);
-	gtk_signal_emit (GTK_OBJECT (storage), signals[DISCOVER_SHARED_FOLDER],
-			 obj_dup, user, folder_name);
+	g_signal_emit (storage, signals[DISCOVER_SHARED_FOLDER], 0,
+		       obj_dup, user, folder_name);
 }
 
 static void
@@ -518,8 +498,8 @@ impl_Storage_cancelDiscoverSharedFolder (PortableServer_Servant servant,
 	bonobo_object = bonobo_object_from_servant (servant);
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
-	gtk_signal_emit (GTK_OBJECT (storage), signals[CANCEL_DISCOVER_SHARED_FOLDER],
-			 user, folder_name);
+	g_signal_emit (storage, signals[CANCEL_DISCOVER_SHARED_FOLDER], 0,
+		       user, folder_name);
 }
 
 static void
@@ -536,8 +516,8 @@ impl_Storage_asyncRemoveSharedFolder (PortableServer_Servant servant,
 	storage = EVOLUTION_STORAGE (bonobo_object);
 
 	obj_dup = CORBA_Object_duplicate (listener, ev);
-	gtk_signal_emit (GTK_OBJECT (storage), signals[REMOVE_SHARED_FOLDER],
-			 obj_dup, path);
+	g_signal_emit (storage, signals[REMOVE_SHARED_FOLDER], 0,
+		       obj_dup, path);
 }
 
 static void
@@ -580,8 +560,8 @@ impl_Storage_showFolderProperties (PortableServer_Servant servant,
 	EvolutionStorage *storage;
 
 	storage = EVOLUTION_STORAGE (bonobo_object_from_servant (servant));
-	gtk_signal_emit (GTK_OBJECT (storage), signals[SHOW_FOLDER_PROPERTIES],
-			 path, item_number, parent_window_id);
+	g_signal_emit (storage, signals[SHOW_FOLDER_PROPERTIES], 0,
+		       path, item_number, parent_window_id);
 }
 
 static GNOME_Evolution_Storage_FolderPropertyItemList *
@@ -620,7 +600,7 @@ impl_Storage__get_folderPropertyItems (PortableServer_Servant servant,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
 free_mapping (gpointer key, gpointer value, gpointer user_data)
@@ -630,24 +610,15 @@ free_mapping (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-destroy (GtkObject *object)
+impl_dispose (GObject *object)
 {
 	EvolutionStorage *storage;
 	EvolutionStoragePrivate *priv;
 	CORBA_Environment ev;
 	GList *p;
-	GSList *sp;
 
 	storage = EVOLUTION_STORAGE (object);
 	priv = storage->priv;
-
-	g_free (priv->name);
-	if (priv->folder_tree != NULL)
-		e_folder_tree_destroy (priv->folder_tree);
-	if (priv->uri_to_path != NULL) {
-		g_hash_table_foreach (priv->uri_to_path, free_mapping, NULL);
-		g_hash_table_destroy (priv->uri_to_path);
-	}
 
 	CORBA_exception_init (&ev);
 
@@ -663,224 +634,61 @@ destroy (GtkObject *object)
 	}
 
 	g_list_free (priv->corba_storage_listeners);
+	priv->corba_storage_listeners = NULL;
 
 	CORBA_exception_free (&ev);
 
-	for (sp = priv->folder_property_items; p != NULL; p = p->next) {
+	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+}
+
+static void
+impl_finalize (GObject *object)
+{
+	EvolutionStorage *storage;
+	EvolutionStoragePrivate *priv;
+	GSList *sp;
+
+	storage = EVOLUTION_STORAGE (object);
+	priv = storage->priv;
+
+	g_free (priv->name);
+	if (priv->folder_tree != NULL)
+		e_folder_tree_destroy (priv->folder_tree);
+	if (priv->uri_to_path != NULL) {
+		g_hash_table_foreach (priv->uri_to_path, free_mapping, NULL);
+		g_hash_table_destroy (priv->uri_to_path);
+	}
+
+	for (sp = priv->folder_property_items; sp != NULL; sp = sp->next) {
 		FolderPropertyItem *item;
 
-		item = (FolderPropertyItem *) p->data;
+		item = (FolderPropertyItem *) sp->data;
 
 		g_free (item->label);
 		g_free (item->tooltip);
 		if (item->icon != NULL)
-			gdk_pixbuf_unref (item->icon);
+			g_object_unref (item->icon);
 		g_free (item);
 	}
 	g_slist_free (priv->folder_property_items);
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
-corba_class_init (void)
-{
-	POA_GNOME_Evolution_Storage__vepv *vepv;
-
-	PortableServer_ServantBase__epv *base_epv;
-
-	base_epv = g_new0 (PortableServer_ServantBase__epv, 1);
-	base_epv->_private    = NULL;
-	base_epv->finalize    = NULL;
-	base_epv->default_POA = NULL;
-
-	vepv = &Storage_vepv;
-	vepv->_base_epv = base_epv;
-	vepv->Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	vepv->GNOME_Evolution_Storage_epv = evolution_storage_get_epv ();
-}
-
-/* The worst signal marshaller in Scotland */
-typedef void (*GtkSignal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER) (GtkObject *,
-									 gpointer, gpointer, gpointer, gpointer, gpointer,
-									 gpointer user_data);
-
-static void
-e_marshal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER (GtkObject *object,
-							 GtkSignalFunc func,
-							 gpointer func_data,
-							 GtkArg *args)
-{
-	GtkSignal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER rfunc;
-
-	rfunc = (GtkSignal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER) func;
-	(*rfunc) (object,
-		  GTK_VALUE_POINTER (args[0]),
-		  GTK_VALUE_POINTER (args[1]),
-		  GTK_VALUE_POINTER (args[2]),
-		  GTK_VALUE_POINTER (args[3]),
-		  GTK_VALUE_POINTER (args[4]),
-		  func_data);
-}
-
-typedef void (*GtkSignal_NONE__POINTER_POINTER_POINTER) (GtkObject *,
-							 gpointer, gpointer, gpointer,
-							 gpointer user_data);
-
-static void
-e_marshal_NONE__POINTER_POINTER_POINTER (GtkObject *object,
-					 GtkSignalFunc func,
-					 gpointer func_data,
-					 GtkArg *args)
-{
-	GtkSignal_NONE__POINTER_POINTER_POINTER rfunc;
-
-	rfunc = (GtkSignal_NONE__POINTER_POINTER_POINTER) func;
-	(*rfunc) (object,
-		  GTK_VALUE_POINTER (args[0]),
-		  GTK_VALUE_POINTER (args[1]),
-		  GTK_VALUE_POINTER (args[2]),
-		  func_data);
-}
-
-static void
-class_init (EvolutionStorageClass *klass)
-{
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
-
-	parent_class = gtk_type_class (bonobo_object_get_type ());
-
-	signals[CREATE_FOLDER] = gtk_signal_new ("create_folder",
-						 GTK_RUN_LAST,
-						 object_class->type,
-						 GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-								    create_folder),
-						 e_marshal_NONE__POINTER_POINTER_POINTER_POINTER_POINTER,
-						 GTK_TYPE_NONE, 5,
-						 GTK_TYPE_POINTER,
-						 GTK_TYPE_STRING,
-						 GTK_TYPE_STRING,
-						 GTK_TYPE_STRING,
-						 GTK_TYPE_STRING);
-
-	signals[REMOVE_FOLDER] = gtk_signal_new ("remove_folder",
-						 GTK_RUN_LAST,
-						 object_class->type,
-						 GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-								    remove_folder),
-						 e_marshal_NONE__POINTER_POINTER_POINTER,
-						 GTK_TYPE_NONE, 3,
-						 GTK_TYPE_POINTER,
-						 GTK_TYPE_STRING,
-						 GTK_TYPE_STRING);
-
-	signals[XFER_FOLDER] = gtk_signal_new ("xfer_folder",
-					       GTK_RUN_LAST,
-					       object_class->type,
-					       GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-								  xfer_folder),
-					       e_marshal_NONE__POINTER_POINTER_POINTER_BOOL,
-					       GTK_TYPE_NONE, 4,
-					       GTK_TYPE_POINTER,
-					       GTK_TYPE_STRING,
-					       GTK_TYPE_STRING,
-					       GTK_TYPE_BOOL);
-	
-	signals[UPDATE_FOLDER] = gtk_signal_new ("update_folder",
-						 GTK_RUN_FIRST,
-						 object_class->type,
-						 GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-								    update_folder),
-						 gtk_marshal_NONE__POINTER_INT,
-						 GTK_TYPE_NONE, 2,
-						 GTK_TYPE_STRING,
-						 GTK_TYPE_INT);
-
-	signals[OPEN_FOLDER] = gtk_signal_new ("open_folder",
-					       GTK_RUN_LAST,
-					       object_class->type,
-					       GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-								  open_folder),
-					       gtk_marshal_NONE__POINTER,
-					       GTK_TYPE_NONE, 1,
-					       GTK_TYPE_STRING);
-
-	signals[DISCOVER_SHARED_FOLDER] = gtk_signal_new ("discover_shared_folder",
-							  GTK_RUN_LAST,
-							  object_class->type,
-							  GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-									     discover_shared_folder),
-							  e_marshal_NONE__POINTER_POINTER_POINTER,
-							  GTK_TYPE_NONE, 3,
-							  GTK_TYPE_POINTER,
-							  GTK_TYPE_STRING,
-							  GTK_TYPE_STRING);
-
-	signals[CANCEL_DISCOVER_SHARED_FOLDER] = gtk_signal_new ("cancel_discover_shared_folder",
-								 GTK_RUN_LAST,
-								 object_class->type,
-								 GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-										    cancel_discover_shared_folder),
-								 gtk_marshal_NONE__POINTER_POINTER,
-								 GTK_TYPE_NONE, 2,
-								 GTK_TYPE_STRING,
-								 GTK_TYPE_STRING);
-
-	signals[REMOVE_SHARED_FOLDER] = gtk_signal_new ("remove_shared_folder",
-							GTK_RUN_LAST,
-							object_class->type,
-							GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-									   remove_shared_folder),
-							gtk_marshal_NONE__POINTER_POINTER,
-							GTK_TYPE_NONE, 2,
-							GTK_TYPE_STRING,
-							GTK_TYPE_POINTER);
-
-	signals[SHOW_FOLDER_PROPERTIES] = gtk_signal_new ("show_folder_properties",
-							  GTK_RUN_LAST,
-							  object_class->type,
-							  GTK_SIGNAL_OFFSET (EvolutionStorageClass,
-									     show_folder_properties),
-							  gtk_marshal_NONE__POINTER_INT_INT,
-							  GTK_TYPE_NONE, 3,
-							  GTK_TYPE_STRING,
-							  GTK_TYPE_INT,
-							  GTK_TYPE_INT);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
-
-	corba_class_init ();
-}
-
-static void
-init (EvolutionStorage *storage)
-{
-	EvolutionStoragePrivate *priv;
-
-	priv = g_new (EvolutionStoragePrivate, 1);
-	priv->name                    = NULL;
-	priv->has_shared_folders      = FALSE;
-	priv->folder_tree             = e_folder_tree_new (folder_destroy_notify, storage);
-	priv->uri_to_path             = g_hash_table_new (g_str_hash, g_str_equal);
-	priv->corba_storage_listeners = NULL;
-	priv->folder_property_items   = NULL;
-
-	storage->priv = priv;
-}
-
-
-POA_GNOME_Evolution_Storage__epv *
-evolution_storage_get_epv (void)
+evolution_storage_class_init (EvolutionStorageClass *klass)
 {
 	POA_GNOME_Evolution_Storage__epv *epv;
+	GObjectClass *object_class;
 
-	epv = g_new0 (POA_GNOME_Evolution_Storage__epv, 1);
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->dispose  = impl_dispose;
+	object_class->finalize = impl_finalize;
+
+	epv = & klass->epv;
 	epv->_get_name                  = impl_Storage__get_name;
 	epv->_get_hasSharedFolders      = impl_Storage__get_hasSharedFolders;
 	epv->getFolderAtPath            = impl_Storage_getFolderAtPath;
@@ -898,33 +706,147 @@ evolution_storage_get_epv (void)
 	epv->showFolderProperties       = impl_Storage_showFolderProperties;
 	epv->_get_folderPropertyItems   = impl_Storage__get_folderPropertyItems;
 
-	return epv;
+	parent_class = g_type_class_ref(PARENT_TYPE);
+
+	signals[CREATE_FOLDER] 
+		= g_signal_new ("create_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, create_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__POINTER_STRING_STRING_STRING_STRING,
+				G_TYPE_NONE, 5,
+				G_TYPE_POINTER,
+				G_TYPE_STRING,
+				G_TYPE_STRING,
+				G_TYPE_STRING,
+				G_TYPE_STRING);
+
+	signals[REMOVE_FOLDER] 
+		= g_signal_new ("remove_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, remove_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__POINTER_STRING_STRING,
+				G_TYPE_NONE, 3,
+				G_TYPE_POINTER,
+				G_TYPE_STRING,
+				G_TYPE_STRING);
+
+	signals[XFER_FOLDER] 
+		= g_signal_new ("xfer_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, xfer_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__POINTER_STRING_STRING_BOOL,
+				G_TYPE_NONE, 4,
+				G_TYPE_POINTER,
+				G_TYPE_STRING,
+				G_TYPE_STRING,
+				G_TYPE_BOOLEAN);
+	
+	signals[UPDATE_FOLDER] 
+		= g_signal_new ("update_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_FIRST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, update_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING_INT,
+				G_TYPE_NONE, 2,
+				G_TYPE_STRING,
+				G_TYPE_INT);
+
+	signals[OPEN_FOLDER] 
+		= g_signal_new ("open_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, open_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__POINTER_STRING,
+				G_TYPE_NONE, 2,
+				G_TYPE_POINTER,
+				G_TYPE_STRING);
+
+	signals[DISCOVER_SHARED_FOLDER] 
+		= g_signal_new ("discover_shared_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, discover_shared_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__POINTER_STRING_STRING,
+				G_TYPE_NONE, 3,
+				G_TYPE_POINTER,
+				G_TYPE_STRING,
+				G_TYPE_STRING);
+
+	signals[CANCEL_DISCOVER_SHARED_FOLDER] 
+		= g_signal_new ("cancel_discover_shared_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, cancel_discover_shared_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING_STRING,
+				G_TYPE_NONE, 2,
+				G_TYPE_STRING,
+				G_TYPE_STRING);
+
+	signals[REMOVE_SHARED_FOLDER] 
+		= g_signal_new ("remove_shared_folder",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, remove_shared_folder),
+				NULL, NULL,
+				e_shell_marshal_NONE__POINTER_STRING,
+				G_TYPE_NONE, 2,
+				G_TYPE_POINTER,
+				G_TYPE_STRING);
+
+	signals[SHOW_FOLDER_PROPERTIES] 
+		= g_signal_new ("show_folder_properties",
+				G_OBJECT_CLASS_TYPE (object_class),
+				G_SIGNAL_RUN_LAST,
+				G_STRUCT_OFFSET (EvolutionStorageClass, show_folder_properties),
+				NULL, NULL,
+				e_shell_marshal_NONE__STRING_INT_INT,
+				G_TYPE_NONE, 3,
+				G_TYPE_STRING,
+				G_TYPE_INT,
+				G_TYPE_INT);
 }
 
+static void
+evolution_storage_init (EvolutionStorage *storage)
+{
+	EvolutionStoragePrivate *priv;
+
+	priv = g_new (EvolutionStoragePrivate, 1);
+	priv->name                    = NULL;
+	priv->has_shared_folders      = FALSE;
+	priv->folder_tree             = e_folder_tree_new (folder_destroy_notify, storage);
+	priv->uri_to_path             = g_hash_table_new (g_str_hash, g_str_equal);
+	priv->corba_storage_listeners = NULL;
+	priv->folder_property_items   = NULL;
+
+	storage->priv = priv;
+}
+
+
 void
 evolution_storage_construct (EvolutionStorage *storage,
-			     GNOME_Evolution_Storage corba_object,
 			     const char *name,
 			     gboolean has_shared_folders)
 {
 	EvolutionStoragePrivate *priv;
-	CORBA_Environment ev;
 
-	g_return_if_fail (storage != NULL);
 	g_return_if_fail (EVOLUTION_IS_STORAGE (storage));
-	g_return_if_fail (corba_object != CORBA_OBJECT_NIL);
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (name[0] != '\0');
-
-	CORBA_exception_init (&ev);
-
-	bonobo_object_construct (BONOBO_OBJECT (storage), corba_object);
 
 	priv = storage->priv;
 	priv->name               = g_strdup (name);
 	priv->has_shared_folders = !! has_shared_folders;
-
-	CORBA_exception_free (&ev);
 }
 
 EvolutionStorage *
@@ -932,20 +854,13 @@ evolution_storage_new (const char *name,
 		       gboolean has_shared_folders)
 {
 	EvolutionStorage *new;
-	POA_GNOME_Evolution_Storage *servant;
-	GNOME_Evolution_Storage corba_object;
 
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (name[0] != '\0', NULL);
 
-	servant = create_servant ();
-	if (servant == NULL)
-		return NULL;
+	new = g_object_new (evolution_storage_get_type (), 0);
 
-	new = gtk_type_new (evolution_storage_get_type ());
-
-	corba_object = bonobo_object_activate_servant (BONOBO_OBJECT (new), servant);
-	evolution_storage_construct (new, corba_object, name, has_shared_folders);
+	evolution_storage_construct (new, name, has_shared_folders);
 
 	return new;
 }
@@ -1224,8 +1139,8 @@ evolution_storage_update_folder (EvolutionStorage *evolution_storage,
 
 	priv = evolution_storage->priv;
 
-	gtk_signal_emit (GTK_OBJECT (evolution_storage), signals[UPDATE_FOLDER],
-			 path, unread_count);
+	g_signal_emit (evolution_storage, signals[UPDATE_FOLDER], 0,
+		       path, unread_count);
 
 	if (priv->corba_storage_listeners == NULL)
 		return EVOLUTION_STORAGE_ERROR_NOTREGISTERED;
@@ -1421,11 +1336,14 @@ evolution_storage_add_property_item  (EvolutionStorage *evolution_storage,
 	item->tooltip = g_strdup (tooltip);
 	item->icon    = icon;
 	if (icon != NULL)
-		gdk_pixbuf_ref (icon);
+		g_object_ref (icon);
 
 	evolution_storage->priv->folder_property_items = g_slist_append (evolution_storage->priv->folder_property_items,
 									 item);
 }
 
 
-E_MAKE_TYPE (evolution_storage, "EvolutionStorage", EvolutionStorage, class_init, init, PARENT_TYPE)
+BONOBO_TYPE_FUNC_FULL (EvolutionStorage,
+		       GNOME_Evolution_Storage,
+		       PARENT_TYPE,
+		       evolution_storage)

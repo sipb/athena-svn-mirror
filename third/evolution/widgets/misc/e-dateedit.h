@@ -44,16 +44,12 @@
 #include <glib.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkwidget.h>
-#include <libgnome/gnome-defs.h>
  
-BEGIN_GNOME_DECLS
-
-
 #define E_TYPE_DATE_EDIT            (e_date_edit_get_type ())
-#define E_DATE_EDIT(obj)            (GTK_CHECK_CAST ((obj), E_TYPE_DATE_EDIT, EDateEdit))
-#define E_DATE_EDIT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), E_TYPE_DATE_EDIT, EDateEditClass))
-#define E_IS_DATE_EDIT(obj)         (GTK_CHECK_TYPE ((obj), E_TYPE_DATE_EDIT))
-#define E_IS_DATE_EDIT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_DATE_EDIT))
+#define E_DATE_EDIT(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_DATE_EDIT, EDateEdit))
+#define E_DATE_EDIT_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_DATE_EDIT, EDateEditClass))
+#define E_IS_DATE_EDIT(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_DATE_EDIT))
+#define E_IS_DATE_EDIT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_DATE_EDIT))
 
 typedef struct _EDateEdit        EDateEdit;
 typedef struct _EDateEditPrivate EDateEditPrivate;
@@ -77,7 +73,7 @@ struct _EDateEditClass {
 	void (* changed) (EDateEdit *dedit);
 };
 
-guint      e_date_edit_get_type			(void);
+GType      e_date_edit_get_type			(void);
 GtkWidget* e_date_edit_new			(void);
 
 /* Analogous to gtk_entry_set_editable.  disable editing, while still
@@ -178,7 +174,5 @@ void	   e_date_edit_set_get_time_callback	(EDateEdit	*dedit,
 						 EDateEditGetTimeCallback cb,
 						 gpointer	 data,
 						 GtkDestroyNotify destroy);
-
-END_GNOME_DECLS
 
 #endif

@@ -25,12 +25,13 @@
 #endif
 
 #include "e-folder.h"
+#include "e-shell-marshal.h"
 
 #include "e-util/e-corba-utils.h"
 
+#include <string.h>
 #include <glib.h>
 #include <gtk/gtksignal.h>
-
 #include <gal/util/e-util.h>
 
 
@@ -51,11 +52,12 @@ struct _EFolderPrivate {
 	   priority value are compared by name, while folders with a higher
 	   priority number always come after the folders with a lower priority
 	   number.  */
-	 int sorting_priority;
+	int sorting_priority;
 
 	unsigned int self_highlight : 1;
 	unsigned int is_stock : 1;
 	unsigned int can_sync_offline : 1;
+	unsigned int has_subfolders : 1;
 
 	/* Custom icon for this folder; if NULL the folder will just use the
 	   icon for its type.  */
@@ -78,40 +80,40 @@ static guint signals[LAST_SIGNAL] = { 0 };
 /* EFolder methods.  */
 
 static gboolean
-save_info (EFolder *folder)
+impl_save_info (EFolder *folder)
 {
 	g_warning ("`%s' does not implement `EFolder::save_info()'",
-		   gtk_type_name (GTK_OBJECT_TYPE (folder)));
+		   G_OBJECT_TYPE_NAME (folder));
 	return FALSE;
 }
 
 static gboolean
-load_info (EFolder *folder)
+impl_load_info (EFolder *folder)
 {
 	g_warning ("`%s' does not implement `EFolder::load_info()'",
-		   gtk_type_name (GTK_OBJECT_TYPE (folder)));
+		   G_OBJECT_TYPE_NAME (folder));
 	return FALSE;
 }
 
 static gboolean
-remove (EFolder *folder)
+impl_remove (EFolder *folder)
 {
 	g_warning ("`%s' does not implement `EFolder::remove()'",
-		   gtk_type_name (GTK_OBJECT_TYPE (folder)));
+		   G_OBJECT_TYPE_NAME (folder));
 	return FALSE;
 }
 
 static const char *
-get_physical_uri (EFolder *folder)
+impl_get_physical_uri (EFolder *folder)
 {
 	return folder->priv->physical_uri;
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EFolder *folder;
 	EFolderPrivate *priv;
@@ -128,40 +130,40 @@ destroy (GtkObject *object)
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (EFolderClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_ref(gtk_object_get_type ());
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = impl_finalize;
 
-	signals[CHANGED] = gtk_signal_new ("changed",
-					   GTK_RUN_FIRST,
-					   object_class->type,
-					   GTK_SIGNAL_OFFSET (EFolderClass, changed),
-					   gtk_marshal_NONE__NONE,
-					   GTK_TYPE_NONE, 0);
+	signals[CHANGED] = g_signal_new ("changed",
+					 G_OBJECT_CLASS_TYPE (object_class),
+					 G_SIGNAL_RUN_FIRST,
+					 G_STRUCT_OFFSET (EFolderClass, changed),
+					 NULL, NULL,
+					 e_shell_marshal_NONE__NONE,
+					 G_TYPE_NONE, 0);
 
-	signals[NAME_CHANGED] = gtk_signal_new ("name_changed",
-						GTK_RUN_FIRST,
-						object_class->type,
-						GTK_SIGNAL_OFFSET (EFolderClass, name_changed),
-						gtk_marshal_NONE__NONE,
-						GTK_TYPE_NONE, 0);
+	signals[NAME_CHANGED] = g_signal_new ("name_changed",
+					      G_OBJECT_CLASS_TYPE (object_class),
+					      G_SIGNAL_RUN_FIRST,
+					      G_STRUCT_OFFSET (EFolderClass, name_changed),
+					      NULL, NULL,
+					      e_shell_marshal_NONE__NONE,
+					      G_TYPE_NONE, 0);
 
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
-
-	klass->save_info 	= save_info;
-	klass->load_info 	= load_info;
-	klass->remove    	= remove;
-	klass->get_physical_uri = get_physical_uri;
+	klass->save_info 	= impl_save_info;
+	klass->load_info 	= impl_load_info;
+	klass->remove    	= impl_remove;
+	klass->get_physical_uri = impl_get_physical_uri;
 }
 
 static void
@@ -180,9 +182,12 @@ init (EFolder *folder)
 	priv->self_highlight   = FALSE;
 	priv->is_stock         = FALSE;
 	priv->can_sync_offline = FALSE;
+	priv->has_subfolders   = FALSE;
 	priv->custom_icon_name = NULL;
 
 	folder->priv = priv;
+
+	GTK_OBJECT_UNSET_FLAGS (GTK_OBJECT (folder), GTK_FLOATING);
 }
 
 
@@ -198,8 +203,6 @@ e_folder_construct (EFolder *folder,
 	g_return_if_fail (E_IS_FOLDER (folder));
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (type != NULL);
-
-	GTK_OBJECT_UNSET_FLAGS (GTK_OBJECT (folder), GTK_FLOATING);
 
 	priv = folder->priv;
 
@@ -219,7 +222,7 @@ e_folder_new (const char *name,
 	g_return_val_if_fail (type != NULL, NULL);
 	g_return_val_if_fail (description != NULL, NULL);
 
-	folder = gtk_type_new (E_TYPE_FOLDER);
+	folder = g_object_new (E_TYPE_FOLDER, NULL);
 
 	e_folder_construct (folder, name, type, description);
 
@@ -298,6 +301,14 @@ e_folder_get_can_sync_offline (EFolder *folder)
 	return folder->priv->can_sync_offline;
 }
 
+gboolean
+e_folder_get_has_subfolders (EFolder *folder)
+{
+	g_return_val_if_fail (E_IS_FOLDER (folder), FALSE);
+
+	return folder->priv->has_subfolders;
+}
+
 /**
  * e_folder_get_custom_icon:
  * @folder: An EFolder
@@ -344,8 +355,8 @@ e_folder_set_name (EFolder *folder,
 	g_free (folder->priv->name);
 	folder->priv->name = g_strdup (name);
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[NAME_CHANGED]);
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[NAME_CHANGED], 0);
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 void
@@ -359,7 +370,7 @@ e_folder_set_type_string (EFolder *folder,
 	g_free (folder->priv->type);
 	folder->priv->type = g_strdup (type);
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 void
@@ -373,7 +384,7 @@ e_folder_set_description (EFolder *folder,
 	g_free (folder->priv->description);
 	folder->priv->description = g_strdup (description);
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 void
@@ -390,7 +401,7 @@ e_folder_set_physical_uri (EFolder *folder,
 	g_free (folder->priv->physical_uri);
 	folder->priv->physical_uri = g_strdup (physical_uri);
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 void
@@ -402,7 +413,7 @@ e_folder_set_unread_count (EFolder *folder,
 
 	folder->priv->unread_count = unread_count;
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 void
@@ -417,7 +428,7 @@ e_folder_set_child_highlight (EFolder *folder,
 	else
 		folder->priv->child_highlight--;
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 void
@@ -429,7 +440,7 @@ e_folder_set_is_stock (EFolder *folder,
 
 	folder->priv->is_stock = !! is_stock;
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 void
@@ -440,7 +451,18 @@ e_folder_set_can_sync_offline (EFolder *folder,
 
 	folder->priv->can_sync_offline = !! can_sync_offline;
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[CHANGED], 0);
+}
+
+void
+e_folder_set_has_subfolders (EFolder *folder,
+			     gboolean has_subfolders)
+{
+	g_return_if_fail (E_IS_FOLDER (folder));
+
+	folder->priv->has_subfolders = !! has_subfolders;
+
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 /**
@@ -466,7 +488,7 @@ e_folder_set_custom_icon (EFolder *folder,
 		g_free (folder->priv->custom_icon_name);
 		folder->priv->custom_icon_name = g_strdup (icon_name);
 
-		gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+		g_signal_emit (folder, signals[CHANGED], 0);
 	}
 }
 
@@ -492,7 +514,7 @@ e_folder_set_sorting_priority (EFolder *folder,
 
 	folder->priv->sorting_priority = sorting_priority;
 
-	gtk_signal_emit (GTK_OBJECT (folder), signals[CHANGED]);
+	g_signal_emit (folder, signals[CHANGED], 0);
 }
 
 

@@ -21,17 +21,16 @@
 #ifndef __E_DELEGATE_DIALOG_H__
 #define __E_DELEGATE_DIALOG_H__
 
-#include <libgnome/gnome-defs.h>
 #include <gtk/gtkwidget.h>
 
 
 
 #define E_TYPE_DELEGATE_DIALOG       (e_delegate_dialog_get_type ())
-#define E_DELEGATE_DIALOG(obj)       (GTK_CHECK_CAST ((obj), E_TYPE_DELEGATE_DIALOG, EDelegateDialog))
-#define E_DELEGATE_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), E_TYPE_DELEGATE_DIALOG,	\
+#define E_DELEGATE_DIALOG(obj)       (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_DELEGATE_DIALOG, EDelegateDialog))
+#define E_DELEGATE_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_DELEGATE_DIALOG,	\
 				      EDelegateDialogClass))
-#define E_IS_DELEGATE_DIALOG(obj)    (GTK_CHECK_TYPE ((obj), E_TYPE_DELEGATE_DIALOG))
-#define E_IS_DELEGATE_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), E_TYPE_DELEGATE_DIALOG))
+#define E_IS_DELEGATE_DIALOG(obj)    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_DELEGATE_DIALOG))
+#define E_IS_DELEGATE_DIALOG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_DELEGATE_DIALOG))
 
 
 typedef struct _EDelegateDialog		EDelegateDialog;

@@ -29,12 +29,15 @@
 #include <gal/menus/gal-view-instance.h>
 #include <gal/menus/gal-view-factory-etable.h>
 #include <gal/menus/gal-view-etable.h>
+
 #include "e-util/e-url.h"
 #include "widgets/menus/gal-view-menus.h"
+#include "dialogs/delete-error.h"
 #include "dialogs/task-editor.h"
 #include "cal-search-bar.h"
 #include "calendar-config.h"
-#include "component-factory.h"
+#include "calendar-component.h"
+#include "comp-util.h"
 #include "misc.h"
 
 #include "e-tasks.h"
@@ -86,7 +89,7 @@ E_MAKE_TYPE (e_tasks, "ETasks", ETasks,
 
 
 /* Class initialization function for the gnome calendar */
-static void
+	static void
 e_tasks_class_init (ETasksClass *class)
 {
 	GtkObjectClass *object_class;
@@ -98,13 +101,11 @@ e_tasks_class_init (ETasksClass *class)
 	e_tasks_signals[SELECTION_CHANGED] =
 		gtk_signal_new ("selection_changed",
 				GTK_RUN_LAST,
-				object_class->type,
+				G_TYPE_FROM_CLASS (object_class), 
 				GTK_SIGNAL_OFFSET (ETasksClass, selection_changed),
 				gtk_marshal_NONE__INT,
 				GTK_TYPE_NONE, 1,
 				GTK_TYPE_INT);
-
-	gtk_object_class_add_signals (object_class, e_tasks_signals, LAST_SIGNAL);
 
 	object_class->destroy = e_tasks_destroy;
 
@@ -192,10 +193,10 @@ setup_widgets (ETasks *tasks)
 	priv = tasks->priv;
 
 	priv->search_bar = cal_search_bar_new ();
-	gtk_signal_connect (GTK_OBJECT (priv->search_bar), "sexp_changed",
-			    GTK_SIGNAL_FUNC (search_bar_sexp_changed_cb), tasks);
-	gtk_signal_connect (GTK_OBJECT (priv->search_bar), "category_changed",
-			    GTK_SIGNAL_FUNC (search_bar_category_changed_cb), tasks);
+	g_signal_connect (priv->search_bar, "sexp_changed",
+			  G_CALLBACK (search_bar_sexp_changed_cb), tasks);
+	g_signal_connect (priv->search_bar, "category_changed",
+			  G_CALLBACK (search_bar_category_changed_cb), tasks);
 
 	gtk_table_attach (GTK_TABLE (tasks), priv->search_bar, 0, 1, 0, 1,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0, 0, 0);
@@ -214,8 +215,7 @@ setup_widgets (ETasks *tasks)
 
 	calendar_config_configure_e_calendar_table (E_CALENDAR_TABLE (priv->tasks_view));
 
-	gtk_signal_connect (GTK_OBJECT (etable), "selection_change",
-			    GTK_SIGNAL_FUNC (table_selection_change_cb), tasks);
+	g_signal_connect (etable, "selection_change", G_CALLBACK (table_selection_change_cb), tasks);
 }
 
 /* Callback used when the set of categories changes in the calendar client */
@@ -248,12 +248,12 @@ e_tasks_construct (ETasks *tasks)
 	if (!priv->client)
 		return NULL;
 
-	gtk_signal_connect (GTK_OBJECT (priv->client), "cal_opened",
-			    GTK_SIGNAL_FUNC (cal_opened_cb), tasks);
-	gtk_signal_connect (GTK_OBJECT (priv->client), "backend_error",
-			    GTK_SIGNAL_FUNC (backend_error_cb), tasks);
-	gtk_signal_connect (GTK_OBJECT (priv->client), "categories_changed",
-			    GTK_SIGNAL_FUNC (client_categories_changed_cb), tasks);
+	g_signal_connect (priv->client, "cal_opened",
+			  G_CALLBACK (cal_opened_cb), tasks);
+	g_signal_connect (priv->client, "backend_error",
+			  G_CALLBACK (backend_error_cb), tasks);
+	g_signal_connect (priv->client, "categories_changed",
+			  G_CALLBACK (client_categories_changed_cb), tasks);
 
 	model = e_calendar_table_get_model (E_CALENDAR_TABLE (priv->tasks_view));
 	g_assert (model != NULL);
@@ -269,11 +269,11 @@ e_tasks_new (void)
 {
 	ETasks *tasks;
 
-	tasks = gtk_type_new (e_tasks_get_type ());
+	tasks = g_object_new (e_tasks_get_type (), NULL);
 
 	if (!e_tasks_construct (tasks)) {
 		g_message ("e_tasks_new(): Could not construct the tasks GUI");
-		gtk_object_unref (GTK_OBJECT (tasks));
+		g_object_unref (tasks);
 		return NULL;
 	}
 
@@ -306,15 +306,17 @@ e_tasks_destroy (GtkObject *object)
 	tasks = E_TASKS (object);
 	priv = tasks->priv;
 
-	if (priv->client) {
-		gtk_object_unref (GTK_OBJECT (priv->client));
-		priv->client = NULL;
+	if (priv) {
+		if (priv->client) {
+			g_object_unref (priv->client);
+			priv->client = NULL;
+		}
+		
+		g_free (priv);
+		tasks->priv = NULL;
+	
+		all_tasks = g_list_remove (all_tasks, tasks);
 	}
-
-	g_free (priv);
-	tasks->priv = NULL;
-
-	all_tasks = g_list_remove (all_tasks, tasks);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -528,7 +530,7 @@ e_tasks_new_task			(ETasks		*tasks)
 	cal_component_set_categories (comp, category);
 
 	comp_editor_edit_comp (COMP_EDITOR (tedit), comp);
-	gtk_object_unref (GTK_OBJECT (comp));
+	g_object_unref (comp);
 
 	comp_editor_focus (COMP_EDITOR (tedit));
 }
@@ -605,7 +607,7 @@ query_obj_updated_cb (CalQuery *query, const char *uid,
 	tasks = E_TASKS (data);
 	priv = tasks->priv;
 	
-	cal_client_remove_object (priv->client, uid);
+	delete_error_dialog (cal_client_remove_object (priv->client, uid), CAL_COMPONENT_TODO);
 }
 
 /* Callback used when an evaluation error occurs when running a query */
@@ -622,8 +624,9 @@ query_eval_error_cb (CalQuery *query, const char *error_str, gpointer data)
 
 	set_status_message (tasks, NULL);
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (priv->query), tasks);
-	gtk_object_unref (GTK_OBJECT (priv->query));
+	g_signal_handlers_disconnect_matched (priv->query, G_SIGNAL_MATCH_DATA,
+					      0, 0, NULL, NULL, tasks);
+	g_object_unref (priv->query);
 	priv->query = NULL;
 }
 
@@ -641,8 +644,9 @@ query_query_done_cb (CalQuery *query, CalQueryDoneStatus status, const char *err
 
 	set_status_message (tasks, NULL);
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (priv->query), tasks);
-	gtk_object_unref (GTK_OBJECT (priv->query));
+	g_signal_handlers_disconnect_matched (priv->query, G_SIGNAL_MATCH_DATA,
+					      0, 0, NULL, NULL, tasks);
+	g_object_unref (priv->query);
 	priv->query = NULL;
 }
 /**
@@ -678,12 +682,9 @@ e_tasks_delete_completed (ETasks *tasks)
 		return;
 	}
 
-	gtk_signal_connect (GTK_OBJECT (priv->query), "obj_updated",
-			    GTK_SIGNAL_FUNC (query_obj_updated_cb), tasks);
-	gtk_signal_connect (GTK_OBJECT (priv->query), "query_done",
-			    GTK_SIGNAL_FUNC (query_query_done_cb), tasks);
-	gtk_signal_connect (GTK_OBJECT (priv->query), "eval_error",
-			    GTK_SIGNAL_FUNC (query_eval_error_cb), tasks);
+	g_signal_connect (priv->query, "obj_updated", G_CALLBACK (query_obj_updated_cb), tasks);
+	g_signal_connect (priv->query, "query_done", G_CALLBACK (query_query_done_cb), tasks);
+	g_signal_connect (priv->query, "eval_error", G_CALLBACK (query_eval_error_cb), tasks);
 }
 
 /* Callback used from the view collection when we need to display a new view */
@@ -738,7 +739,7 @@ e_tasks_setup_view_menus (ETasks *tasks, BonoboUIComponent *uic)
 
 		dir = gnome_util_prepend_user_home ("/evolution/views/tasks/");
 		gal_view_collection_set_storage_directories (collection,
-							     EVOLUTION_DATADIR "/evolution/views/tasks/",
+							     EVOLUTION_GALVIEWSDIR "/tasks/",
 							     dir);
 		g_free (dir);
 
@@ -749,9 +750,9 @@ e_tasks_setup_view_menus (ETasks *tasks, BonoboUIComponent *uic)
 						      EVOLUTION_ETSPECDIR "/e-calendar-table.etspec");
 
 		factory = gal_view_factory_etable_new (spec);
-		gtk_object_unref (GTK_OBJECT (spec));
+		g_object_unref (spec);
 		gal_view_collection_add_factory (collection, factory);
-		gtk_object_unref (GTK_OBJECT (factory));
+		g_object_unref (factory);
 
 		/* Load the collection and create the menus */
 
@@ -762,8 +763,7 @@ e_tasks_setup_view_menus (ETasks *tasks, BonoboUIComponent *uic)
 
 	priv->view_menus = gal_view_menus_new (priv->view_instance);
 	gal_view_menus_apply (priv->view_menus, uic, NULL);
-	gtk_signal_connect (GTK_OBJECT (priv->view_instance), "display_view",
-			    GTK_SIGNAL_FUNC (display_view_cb), tasks);
+	g_signal_connect (priv->view_instance, "display_view", G_CALLBACK (display_view_cb), tasks);
 	display_view_cb (priv->view_instance, gal_view_instance_get_current_view (priv->view_instance), tasks);
 }
 
@@ -790,10 +790,10 @@ e_tasks_discard_view_menus (ETasks *tasks)
 	g_assert (priv->view_instance != NULL);
 	g_assert (priv->view_menus != NULL);
 
-	gtk_object_unref (GTK_OBJECT (priv->view_instance));
+	g_object_unref (priv->view_instance);
 	priv->view_instance = NULL;
 
-	gtk_object_unref (GTK_OBJECT (priv->view_menus));
+	g_object_unref (priv->view_menus);
 	priv->view_menus = NULL;
 }
 

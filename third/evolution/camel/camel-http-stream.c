@@ -167,6 +167,7 @@ camel_http_stream_new (CamelHttpMethod method, CamelService *service, CamelURL *
 	return CAMEL_STREAM (stream);
 }
 
+#define SSL_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
 
 static CamelStream *
 http_connect (CamelService *service, CamelURL *url)
@@ -177,7 +178,7 @@ http_connect (CamelService *service, CamelURL *url)
 	
 	if (!strcasecmp (url->protocol, "https")) {
 #ifdef HAVE_SSL
-		stream = camel_tcp_stream_ssl_new (service, url->host);
+		stream = camel_tcp_stream_ssl_new (service, url->host, SSL_FLAGS);
 #endif
 	} else {
 		stream = camel_tcp_stream_raw_new ();
@@ -253,7 +254,8 @@ http_get_headers (CamelHttpStream *http)
 	struct _header_raw *headers, *node, *tail;
 	const char *type;
 	char *buf;
-	int len, err;
+	size_t len;
+	int err;
 	
 	if (http->parser)
 		camel_object_unref (CAMEL_OBJECT (http->parser));

@@ -1,13 +1,33 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*
+ *  Authors: Jeffrey Stedfast <fejj@ximian.com>
+ *
+ *  Copyright 2002 Ximian, Inc. (www.ximian.com)
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ *
+ */
+
 
 #ifndef _MAIL_DISPLAY_H_
 #define _MAIL_DISPLAY_H_
 
 #include <gtk/gtkvbox.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtkhtml/gtkhtml.h>
 #include <gtkhtml/gtkhtml-stream.h>
-
-#include <gal/widgets/e-scroll-frame.h>
 
 #include <camel/camel-stream.h>
 #include <camel/camel-mime-message.h>
@@ -16,19 +36,20 @@
 
 #include "mail-types.h"
 #include "mail-config.h" /*display_style*/
+#include "mail-display-stream.h"
 
 #define MAIL_DISPLAY_TYPE        (mail_display_get_type ())
-#define MAIL_DISPLAY(o)          (GTK_CHECK_CAST ((o), MAIL_DISPLAY_TYPE, MailDisplay))
-#define MAIL_DISPLAY_CLASS(k)    (GTK_CHECK_CLASS_CAST((k), MAIL_DISPLAY_TYPE, MailDisplayClass))
-#define IS_MAIL_DISPLAY(o)       (GTK_CHECK_TYPE ((o), MAIL_DISPLAY_TYPE))
-#define IS_MAIL_DISPLAY_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), MAIL_DISPLAY_TYPE))
+#define MAIL_DISPLAY(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), MAIL_DISPLAY_TYPE, MailDisplay))
+#define MAIL_DISPLAY_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), MAIL_DISPLAY_TYPE, MailDisplayClass))
+#define IS_MAIL_DISPLAY(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), MAIL_DISPLAY_TYPE))
+#define IS_MAIL_DISPLAY_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), MAIL_DISPLAY_TYPE))
 
 struct _MailDisplay {
 	GtkVBox parent;
 	
 	struct _MailDisplayPrivate *priv;
 	
-	EScrollFrame *scroll;
+	GtkScrolledWindow *scroll;
 	GtkHTML *html;
 	/* GtkHTMLStream *stream; */
 	gint redisplay_counter;
@@ -58,6 +79,7 @@ struct _MailDisplay {
 	MailConfigDisplayStyle display_style;
 	
 	guint printing : 1;
+	guint destroyed: 1;
 };
 
 typedef struct {
@@ -95,15 +117,13 @@ void           mail_display_set_charset (MailDisplay *mail_display,
 
 void           mail_display_load_images (MailDisplay *mail_display);
 
-
-#define mail_html_write(html, stream, string) gtk_html_write (html, stream, string, strlen (string))
-
-void           mail_text_write          (GtkHTML *html,
-					 GtkHTMLStream *stream,
+void           mail_text_write          (MailDisplayStream *stream,
+					 MailDisplay *md,
+					 CamelMimePart *part,
+					 gint idx,
 					 gboolean printing,
 					 const char *text);
-void           mail_error_printf        (GtkHTML *html,
-					 GtkHTMLStream *stream,
+void           mail_error_printf        (MailDisplayStream *stream,
 					 const char *format, ...);
 
 char *mail_display_add_url (MailDisplay *md, const char *kind, char *url, gpointer data);

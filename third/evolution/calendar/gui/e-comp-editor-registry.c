@@ -25,6 +25,7 @@
 #endif
 
 #include <gnome.h>
+#include <gal/util/e-util.h>
 #include "e-comp-editor-registry.h"
 
 struct _ECompEditorRegistryPrivate {
@@ -65,7 +66,7 @@ class_init (ECompEditorRegistryClass *klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->destroy = destroy;
 }
@@ -84,33 +85,13 @@ init (ECompEditorRegistry *reg)
 
 
 
-GtkType
-e_comp_editor_registry_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (type == 0) {
-		static const GtkTypeInfo info = {
-			"ECompEditorRegistry",
-			sizeof (ECompEditorRegistry),
-			sizeof (ECompEditorRegistryClass),
-			(GtkClassInitFunc) class_init,
-			(GtkObjectInitFunc) init,
-			/* reserved_1 */ NULL,
-			/* reserved_2 */ NULL,
-			(GtkClassInitFunc) NULL,
-		};
-
-		type = gtk_type_unique (gtk_object_get_type (), &info);
-	}
-
-	return type;
-}
+E_MAKE_TYPE (e_comp_editor_registry, "ECompEditorRegistry", ECompEditorRegistry,
+	     class_init, init, gtk_object_get_type ());
 
 GtkObject *
 e_comp_editor_registry_new (void)
 {
-	return gtk_type_new (E_TYPE_COMP_EDITOR_REGISTRY);
+	return g_object_new (E_TYPE_COMP_EDITOR_REGISTRY, NULL);
 }
 
 void
@@ -137,7 +118,7 @@ e_comp_editor_registry_add (ECompEditorRegistry *reg, CompEditor *editor, gboole
 	rdata->uid = g_strdup (uid);
 	g_hash_table_insert (priv->editors, rdata->uid, rdata);
 
-	gtk_signal_connect (GTK_OBJECT (editor), "destroy", editor_destroy_cb, reg);
+	g_signal_connect (editor, "destroy", G_CALLBACK (editor_destroy_cb), reg);
 
 }
 
@@ -167,11 +148,11 @@ foreach_close_cb (gpointer key, gpointer value, gpointer data)
 
 	rdata = value;
 
-	gtk_signal_handler_block_by_data (GTK_OBJECT (rdata->editor), data);
+	g_signal_handlers_block_matched (rdata->editor, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, data);
 	
 	comp_editor_focus (rdata->editor);
 	if (!comp_editor_close (rdata->editor)) {
-		gtk_signal_handler_unblock_by_data (GTK_OBJECT (rdata->editor), data);
+		g_signal_handlers_unblock_matched (rdata->editor, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, data);
 		return FALSE;
 	}
 	

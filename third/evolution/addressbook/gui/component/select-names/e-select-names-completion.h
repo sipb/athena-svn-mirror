@@ -31,13 +31,13 @@
 #include <addressbook/backend/ebook/e-book.h>
 #include "e-select-names-text-model.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
-#define E_SELECT_NAMES_COMPLETION_TYPE        (e_select_names_completion_get_type ())
-#define E_SELECT_NAMES_COMPLETION(o)          (GTK_CHECK_CAST ((o), E_SELECT_NAMES_COMPLETION_TYPE, ESelectNamesCompletion))
-#define E_SELECT_NAMES_COMPLETION_CLASS(k)    (GTK_CHECK_CLASS_CAST ((k), E_SELECT_NAMES_COMPLETION_TYPE, ESelectNamesCompletionClass))
-#define E_IS_SELECT_NAMES_COMPLETION(o)       (GTK_CHECK_TYPE ((o), E_SELECT_NAMES_COMPLETION_TYPE))
-#define E_IS_SELECT_NAMES_COMPLETION_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), E_SELECT_NAMES_COMPLETION_TYPE))
+#define E_TYPE_SELECT_NAMES_COMPLETION        (e_select_names_completion_get_type ())
+#define E_SELECT_NAMES_COMPLETION(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_SELECT_NAMES_COMPLETION, ESelectNamesCompletion))
+#define E_SELECT_NAMES_COMPLETION_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_SELECT_NAMES_COMPLETION, ESelectNamesCompletionClass))
+#define E_IS_SELECT_NAMES_COMPLETION(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_SELECT_NAMES_COMPLETION))
+#define E_IS_SELECT_NAMES_COMPLETION_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_SELECT_NAMES_COMPLETION))
 
 typedef struct _ESelectNamesCompletion ESelectNamesCompletion;
 typedef struct _ESelectNamesCompletionClass ESelectNamesCompletionClass;
@@ -54,15 +54,15 @@ struct _ESelectNamesCompletionClass {
 
 };
 
-GtkType      e_select_names_completion_get_type (void);
+GType        e_select_names_completion_get_type (void);
 
 ECompletion *e_select_names_completion_new                     (ESelectNamesTextModel *);
 void         e_select_names_completion_add_book                (ESelectNamesCompletion *, EBook *);
 void         e_select_names_completion_clear_books             (ESelectNamesCompletion *);
+void         e_select_names_completion_set_minimum_query_length (ESelectNamesCompletion *, int);
 gboolean     e_select_names_completion_get_match_contact_lists (ESelectNamesCompletion *);
 void         e_select_names_completion_set_match_contact_lists (ESelectNamesCompletion *, gboolean);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* E_SELECT_NAMES_COMPLETION_H */
-

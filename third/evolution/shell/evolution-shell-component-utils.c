@@ -25,14 +25,15 @@
 
 #include "evolution-shell-component-utils.h"
 
-#include <libgnome/gnome-defs.h>
+#include "e-util/e-dialog-utils.h"
+
+#include <string.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-exception.h>
-#include <liboaf/oaf.h>
-#include <gal/widgets/e-gui-utils.h>
+#include <bonobo-activation/bonobo-activation.h>
 
 static void free_pixmaps (void);
 static GSList *inited_arrays = NULL;
@@ -55,15 +56,14 @@ void e_pixmaps_update (BonoboUIComponent *uic, EPixmap *pixcache)
 			char *path;
 			GdkPixbuf *pixbuf;
 
-			path = g_concat_dir_and_file (EVOLUTION_IMAGES,
-						      pixcache [i].fname);
+			path = g_build_filename (EVOLUTION_IMAGES, pixcache [i].fname, NULL);
 
-			pixbuf = gdk_pixbuf_new_from_file (path);
+			pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 			if (pixbuf == NULL) {
 				g_warning ("Cannot load image -- %s", path);
 			} else {
 				pixcache [i].pixbuf = bonobo_ui_util_pixbuf_to_xml (pixbuf);
-				gdk_pixbuf_unref (pixbuf);
+				g_object_unref (pixbuf);
 				bonobo_ui_component_set_prop (uic,
 					pixcache [i].path, "pixname",
 					pixcache [i].pixbuf, NULL);
@@ -122,14 +122,14 @@ e_activation_failure_dialog (GtkWindow *parent, const char *msg,
 			CORBA_Object_release (object, &ev);
 		}
 		errmsg = g_strdup_printf (_("%s\n\nUnknown error."), msg);
-	} else if (strcmp (CORBA_exception_id (&ev), ex_OAF_GeneralError) != 0) {
+	} else if (strcmp (CORBA_exception_id (&ev), ex_Bonobo_GeneralError) != 0) {
 		char *bonobo_err = bonobo_exception_get_text (&ev);
 		errmsg = g_strdup_printf (_("%s\n\nThe error from the "
 					    "component system is:\n%s"),
 					  msg, bonobo_err);
 		g_free (bonobo_err);
 	} else {
-		OAF_GeneralError *errval = CORBA_exception_value (&ev);
+		Bonobo_GeneralError *errval = CORBA_exception_value (&ev);
 
 		errmsg = g_strdup_printf (_("%s\n\nThe error from the "
 					    "activation system is:\n%s"),
@@ -137,7 +137,7 @@ e_activation_failure_dialog (GtkWindow *parent, const char *msg,
 	}
 	CORBA_exception_free (&ev);
 
-	e_notice (parent, GNOME_MESSAGE_BOX_ERROR, errmsg);
+	e_notice (parent, GTK_MESSAGE_ERROR, errmsg);
 	g_free (errmsg);
 }
 
@@ -158,10 +158,10 @@ e_get_activation_failure_msg (CORBA_Environment *ev)
 	if (CORBA_exception_id (ev) == NULL)
 		return NULL;
 
-	if (strcmp (CORBA_exception_id (ev), ex_OAF_GeneralError) != 0) {
+	if (strcmp (CORBA_exception_id (ev), ex_Bonobo_GeneralError) != 0) {
 		return bonobo_exception_get_text (ev); 
 	} else {
-		const OAF_GeneralError *oaf_general_error;
+		const Bonobo_GeneralError *oaf_general_error;
 
 		oaf_general_error = CORBA_exception_value (ev);
 		return g_strdup (oaf_general_error->description);

@@ -811,8 +811,8 @@ match_words_index(CamelFolderSearch *search, struct _camel_search_words *words, 
 								int mask;
 								const char *uid = camel_message_info_uid(mi);
 
-								mask = ((int)g_hash_table_lookup(ht, uid)) | (1<<i);
-								g_hash_table_insert(ht, (char *)uid, (void *)mask);
+								mask = (GPOINTER_TO_INT(g_hash_table_lookup(ht, uid))) | (1<<i);
+								g_hash_table_insert(ht, (char *)uid, GINT_TO_POINTER(mask));
 							}
 						}
 						camel_object_unref((CamelObject *)nc);
@@ -1052,25 +1052,20 @@ search_system_flag (struct _ESExp *f, int argc, struct _ESExpResult **argv, Came
 	return r;
 }
 
-static ESExpResult *search_user_tag(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *search)
+static ESExpResult *
+search_user_tag(struct _ESExp *f, int argc, struct _ESExpResult **argv, CamelFolderSearch *search)
 {
+	const char *value = NULL;
 	ESExpResult *r;
-
+	
 	r(printf("executing user-tag\n"));
-
-	/* are we inside a match-all? */
-	if (search->current) {
-		const char *value = NULL;
-		if (argc == 1) {
-			value = camel_tag_get(&search->current->user_tags, argv[0]->value.string);
-		}
-		r = e_sexp_result_new(f, ESEXP_RES_STRING);
-		r->value.string = g_strdup(value?value:"");
-	} else {
-		r = e_sexp_result_new(f, ESEXP_RES_ARRAY_PTR);
-		r->value.ptrarray = g_ptr_array_new();
-	}
-
+	
+	if (argc == 1)
+		value = camel_tag_get (&search->current->user_tags, argv[0]->value.string);
+	
+	r = e_sexp_result_new(f, ESEXP_RES_STRING);
+	r->value.string = g_strdup (value ? value : "");
+	
 	return r;
 }
 

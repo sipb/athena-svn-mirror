@@ -1,7 +1,9 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Copyright (C) 2000 Ximian Inc.
+ *  Copyright (C) 2000-2002 Ximian Inc.
  *
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
+ *           Jeffrey Stedfast <fejj@ximian.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU General Public
@@ -18,6 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -25,14 +28,9 @@
 #include <string.h>
 #include <sys/types.h>
 #include <regex.h>
-#include <gtk/gtkobject.h>
-#include <gtk/gtkwidget.h>
 
-#include <libgnome/gnome-defs.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
-#include <gal/widgets/e-unicode.h>
 
 #include "filter-input.h"
 #include "e-util/e-sexp.h"
@@ -40,97 +38,83 @@
 #define d(x) 
 
 static gboolean validate (FilterElement *fe);
-static int input_eq(FilterElement *fe, FilterElement *cm);
-static void xml_create(FilterElement *fe, xmlNodePtr node);
-static xmlNodePtr xml_encode(FilterElement *fe);
-static int xml_decode(FilterElement *fe, xmlNodePtr node);
-static GtkWidget *get_widget(FilterElement *fe);
-static void build_code(FilterElement *fe, GString *out, struct _FilterPart *ff);
-static void format_sexp(FilterElement *, GString *);
+static int input_eq (FilterElement *fe, FilterElement *cm);
+static void xml_create (FilterElement *fe, xmlNodePtr node);
+static xmlNodePtr xml_encode (FilterElement *fe);
+static int xml_decode (FilterElement *fe, xmlNodePtr node);
+static GtkWidget *get_widget (FilterElement *fe);
+static void build_code (FilterElement *fe, GString *out, struct _FilterPart *ff);
+static void format_sexp (FilterElement *, GString *);
 
-static void filter_input_class_init	(FilterInputClass *class);
-static void filter_input_init	(FilterInput *gspaper);
-static void filter_input_finalise	(GtkObject *obj);
+static void filter_input_class_init (FilterInputClass *klass);
+static void filter_input_init (FilterInput *fi);
+static void filter_input_finalise (GObject *obj);
 
-#define _PRIVATE(x) (((FilterInput *)(x))->priv)
 
-struct _FilterInputPrivate {
-};
+static FilterElementClass *parent_class = NULL;
 
-static FilterElementClass *parent_class;
 
-enum {
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL] = { 0 };
-
-guint
+GType
 filter_input_get_type (void)
 {
-	static guint type = 0;
+	static GType type = 0;
 	
 	if (!type) {
-		GtkTypeInfo type_info = {
-			"FilterInput",
-			sizeof(FilterInput),
-			sizeof(FilterInputClass),
-			(GtkClassInitFunc)filter_input_class_init,
-			(GtkObjectInitFunc)filter_input_init,
-			(GtkArgSetFunc)NULL,
-			(GtkArgGetFunc)NULL
+		static const GTypeInfo info = {
+			sizeof (FilterInputClass),
+			NULL, /* base_class_init */
+			NULL, /* base_class_finalize */
+			(GClassInitFunc) filter_input_class_init,
+			NULL, /* class_finalize */
+			NULL, /* class_data */
+			sizeof (FilterInput),
+			0,    /* n_preallocs */
+			(GInstanceInitFunc) filter_input_init,
 		};
 		
-		type = gtk_type_unique(filter_element_get_type (), &type_info);
+		type = g_type_register_static (FILTER_TYPE_ELEMENT, "FilterInput", &info, 0);
 	}
 	
 	return type;
 }
 
 static void
-filter_input_class_init (FilterInputClass *class)
+filter_input_class_init (FilterInputClass *klass)
 {
-	GtkObjectClass *object_class;
-	FilterElementClass *filter_element = (FilterElementClass *)class;
-
-	object_class = (GtkObjectClass *)class;
-	parent_class = gtk_type_class(filter_element_get_type ());
-
-	object_class->finalize = filter_input_finalise;
-
-	/* override methods */
-	filter_element->validate = validate;
-	filter_element->eq = input_eq;
-	filter_element->xml_create = xml_create;
-	filter_element->xml_encode = xml_encode;
-	filter_element->xml_decode = xml_decode;
-	filter_element->get_widget = get_widget;
-	filter_element->build_code = build_code;
-	filter_element->format_sexp = format_sexp;
-
-	/* signals */
-
-	gtk_object_class_add_signals(object_class, signals, LAST_SIGNAL);
-}
-
-static void
-filter_input_init (FilterInput *o)
-{
-	o->priv = g_malloc0 (sizeof (*o->priv));
-}
-
-static void
-filter_input_finalise (GtkObject *obj)
-{
-	FilterInput *o = (FilterInput *)obj;
-
-	xmlFree (o->type);
-	g_list_foreach(o->values, (GFunc)g_free, NULL);
-	g_list_free(o->values);
-
-	g_free(o->priv);
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	FilterElementClass *fe_class = FILTER_ELEMENT_CLASS (klass);
 	
-        ((GtkObjectClass *)(parent_class))->finalize(obj);
+	parent_class = g_type_class_ref (FILTER_TYPE_ELEMENT);
+	
+	object_class->finalize = filter_input_finalise;
+	
+	/* override methods */
+	fe_class->validate = validate;
+	fe_class->eq = input_eq;
+	fe_class->xml_create = xml_create;
+	fe_class->xml_encode = xml_encode;
+	fe_class->xml_decode = xml_decode;
+	fe_class->get_widget = get_widget;
+	fe_class->build_code = build_code;
+	fe_class->format_sexp = format_sexp;
+}
+
+static void
+filter_input_init (FilterInput *fi)
+{
+	;
+}
+
+static void
+filter_input_finalise (GObject *obj)
+{
+	FilterInput *fi = (FilterInput *) obj;
+	
+	xmlFree (fi->type);
+	g_list_foreach (fi->values, (GFunc)g_free, NULL);
+	g_list_free (fi->values);
+	
+        G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
 /**
@@ -143,18 +127,20 @@ filter_input_finalise (GtkObject *obj)
 FilterInput *
 filter_input_new (void)
 {
-	FilterInput *o = (FilterInput *)gtk_type_new(filter_input_get_type ());
-	return o;
+	return (FilterInput *) g_object_new (FILTER_TYPE_INPUT, NULL, NULL);
 }
 
 FilterInput *
 filter_input_new_type_name (const char *type)
 {
-	FilterInput *o = filter_input_new ();
-	o->type = xmlStrdup (type);
+	FilterInput *fi;
 	
-	d(printf("new type %s = %p\n", type, o));
-	return o;
+	fi = filter_input_new ();
+	fi->type = xmlStrdup (type);
+	
+	d(printf("new type %s = %p\n", type, fi));
+	
+	return fi;
 }
 
 void
@@ -177,19 +163,18 @@ validate (FilterElement *fe)
 {
 	FilterInput *fi = (FilterInput *)fe;
 	gboolean valid = TRUE;
+	GtkWidget *dialog;
 	
 	if (fi->values && !strcmp (fi->type, "regex")) {
-		regex_t regexpat;        /* regex patern */
-		gint regerr;
-		char *text;
+		const char *pattern;
+		regex_t regexpat;
+		int regerr;
 		
-		text = fi->values->data;
+		pattern = fi->values->data;
 		
-		regerr = regcomp (&regexpat, text, REG_EXTENDED | REG_NEWLINE | REG_ICASE);
-		if (regerr) {
-			GtkWidget *dialog;
-			gchar *regmsg, *errmsg;
+		if ((regerr = regcomp (&regexpat, pattern, REG_EXTENDED | REG_NEWLINE | REG_ICASE))) {
 			size_t reglen;
+			char *regmsg;
 			
 			/* regerror gets called twice to get the full error string 
 			   length to do proper posix error reporting */
@@ -197,15 +182,19 @@ validate (FilterElement *fe)
 			regmsg = g_malloc0 (reglen + 1);
 			regerror (regerr, &regexpat, regmsg, reglen);
 			
-			errmsg = g_strdup_printf (_("Error in regular expression '%s':\n%s"),
-						  text, regmsg);
+			/* FIXME: FilterElement should probably have a
+			   GtkWidget member pointing to the value gotten with
+			   ::get_widget() so that we can get the parent window
+			   here. */
+			dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
+							 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+							 _("Error in regular expression '%s':\n%s"),
+							 pattern, regmsg);
+			
+			gtk_dialog_run ((GtkDialog *) dialog);
+			gtk_widget_destroy (dialog);
 			g_free (regmsg);
 			
-			dialog = gnome_ok_dialog (errmsg);
-			
-			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-			
-			g_free (errmsg);
 			valid = FALSE;
 		}
 		
@@ -216,35 +205,34 @@ validate (FilterElement *fe)
 }
 
 static int
-list_eq(GList *al, GList *bl)
+list_eq (GList *al, GList *bl)
 {
 	int truth = TRUE;
-
+	
 	while (truth && al && bl) {
-		truth = strcmp((char *)al->data, (char *)bl->data) == 0;
+		truth = strcmp ((char *) al->data, (char *) bl->data) == 0;
 		al = al->next;
 		bl = bl->next;
 	}
-
+	
 	return truth && al == NULL && bl == NULL;
 }
 
 static int
-input_eq(FilterElement *fe, FilterElement *cm)
+input_eq (FilterElement *fe, FilterElement *cm)
 {
 	FilterInput *fi = (FilterInput *)fe, *ci = (FilterInput *)cm;
-
-	return ((FilterElementClass *)(parent_class))->eq(fe, cm)
-		&& strcmp(fi->type, ci->type) == 0
-		&& list_eq(fi->values, ci->values);
+	
+	return FILTER_ELEMENT_CLASS (parent_class)->eq (fe, cm)
+		&& strcmp (fi->type, ci->type) == 0
+		&& list_eq (fi->values, ci->values);
 }
 
 static void
 xml_create (FilterElement *fe, xmlNodePtr node)
 {
 	/* parent implementation */
-        ((FilterElementClass *)(parent_class))->xml_create(fe, node);
-	
+        FILTER_ELEMENT_CLASS (parent_class)->xml_create (fe, node);
 }
 
 static xmlNodePtr
@@ -264,15 +252,12 @@ xml_encode (FilterElement *fe)
 	xmlSetProp (value, "type", type);
 	l = fi->values;
 	while (l) {
-                xmlNodePtr cur;
+		xmlNodePtr cur;
 		char *str = l->data;
-		char *encstr;
 		
                 cur = xmlNewChild (value, NULL, type, NULL);
-		encstr = e_utf8_xml1_encode (str);
-		xmlNodeSetContent (cur, encstr);
-		g_free (encstr);
-                l = g_list_next (l);
+		xmlNodeSetContent (cur, str);
+		l = l->next;
 	}
 	
 	return value;
@@ -294,20 +279,16 @@ xml_decode (FilterElement *fe, xmlNodePtr node)
 	fe->name = name;
 	xmlFree (fi->type);
 	fi->type = type;
-	n = node->childs;
+	n = node->children;
 	while (n) {
 		if (!strcmp (n->name, type)) {
-			gchar *decstr;
-			str = xmlNodeGetContent (n);
-			if (str) {
-				decstr = e_utf8_xml1_decode (str);
-				xmlFree (str);
-			} else
-				decstr = g_strdup("");
-
-			d(printf ("  '%s'\n", decstr));
-			fi->values = g_list_append (fi->values, decstr);
-		} else {
+			if (!(str = xmlNodeGetContent (n)))
+				str = xmlStrdup ("");
+			
+			d(printf ("  '%s'\n", str));
+			fi->values = g_list_append (fi->values, g_strdup (str));
+			xmlFree (str);
+		} else if (n->type == XML_ELEMENT_NODE) {
 			g_warning ("Unknown node type '%s' encountered decoding a %s\n", n->name, type);
 		}
 		n = n->next;
@@ -319,22 +300,22 @@ xml_decode (FilterElement *fe, xmlNodePtr node)
 static void
 entry_changed (GtkEntry *entry, FilterElement *fe)
 {
-	char *new;
-	FilterInput *fi = (FilterInput *)fe;
+	FilterInput *fi = (FilterInput *) fe;
+	const char *new;
 	GList *l;
 	
-	new = e_utf8_gtk_entry_get_text(entry);
+	new = gtk_entry_get_text (entry);
 	
 	/* NOTE: entry only supports a single value ... */
 	l = fi->values;
 	while (l) {
 		g_free (l->data);
-		l = g_list_next (l);
+		l = l->next;
 	}
 	
 	g_list_free (fi->values);
 	
-	fi->values = g_list_append (NULL, new);
+	fi->values = g_list_append (NULL, g_strdup (new));
 }
 
 static GtkWidget *
@@ -344,11 +325,10 @@ get_widget (FilterElement *fe)
 	FilterInput *fi = (FilterInput *)fe;
 	
 	entry = gtk_entry_new ();
-	if (fi->values && fi->values->data) {
-		e_utf8_gtk_entry_set_text (GTK_ENTRY (entry), fi->values->data);
-	}
+	if (fi->values && fi->values->data)
+		gtk_entry_set_text (GTK_ENTRY (entry), (const char *) fi->values->data);
 	
-	gtk_signal_connect (GTK_OBJECT (entry), "changed", entry_changed, fe);
+	g_signal_connect (entry, "changed", G_CALLBACK (entry_changed), fe);
 	
 	return entry;
 }
@@ -356,18 +336,18 @@ get_widget (FilterElement *fe)
 static void
 build_code (FilterElement *fe, GString *out, struct _FilterPart *ff)
 {
-	return;
+	;
 }
 
 static void
 format_sexp (FilterElement *fe, GString *out)
 {
+	FilterInput *fi = (FilterInput *) fe;
 	GList *l;
-	FilterInput *fi = (FilterInput *)fe;
 	
 	l = fi->values;
 	while (l) {
 		e_sexp_encode_string (out, l->data);
-		l = g_list_next (l);
+		l = l->next;
 	}
 }

@@ -45,10 +45,10 @@ struct _EConfigPagePrivate {
 };
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EConfigPage *page;
 	EConfigPagePrivate *priv;
@@ -58,35 +58,33 @@ impl_destroy (GtkObject *object)
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (EConfigPageClass *class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = impl_finalize;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref(PARENT_TYPE);
 
 	signals[APPLY] = gtk_signal_new ("apply",
 					 GTK_RUN_LAST,
-					 object_class->type,
-					 GTK_SIGNAL_OFFSET (EConfigPageClass, apply),
+					 GTK_CLASS_TYPE (object_class),
+					 G_STRUCT_OFFSET (EConfigPageClass, apply),
 					 gtk_marshal_NONE__NONE,
 					 GTK_TYPE_NONE, 0);
 
 	signals[CHANGED] = gtk_signal_new ("changed",
 					   GTK_RUN_FIRST,
-					   object_class->type,
-					   GTK_SIGNAL_OFFSET (EConfigPageClass, changed),
+					   GTK_CLASS_TYPE (object_class),
+					   G_STRUCT_OFFSET (EConfigPageClass, changed),
 					   gtk_marshal_NONE__NONE,
 					   GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void

@@ -28,6 +28,7 @@
 #include "evolution-config-control.h"
 #include "evolution-folder-selector-button.h"
 
+#include <string.h>
 #include <bonobo/bonobo-generic-factory.h>
 
 
@@ -56,10 +57,9 @@ e_shell_config_factory_register (EShell *shell)
 
 	g_return_val_if_fail (E_IS_SHELL (shell), FALSE);
 
-	factory = bonobo_generic_factory_new_multi (
-		E_SHELL_CONFIG_FACTORY_OAFIID,
-		config_control_factory_cb,
-		shell);
+	factory = bonobo_generic_factory_new (E_SHELL_CONFIG_FACTORY_OAFIID,
+					      config_control_factory_cb,
+					      shell);
 
 	if (factory == NULL) {
 		g_warning ("Cannot register factory %s", E_SHELL_CONFIG_FACTORY_OAFIID);

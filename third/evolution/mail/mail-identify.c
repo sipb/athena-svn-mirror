@@ -30,8 +30,9 @@
 #include <string.h>
 
 #include <glib.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
-#include <libgnomevfs/gnome-vfs-mime-sniff-buffer.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include "mail.h"
 
 static const char *identify_by_magic (CamelDataWrapper *data, MailDisplay *md);
@@ -52,20 +53,20 @@ mail_identify_mime_part (CamelMimePart *part, MailDisplay *md)
 {
 	const char *filename, *name_type = NULL, *magic_type = NULL;
 	CamelDataWrapper *data;
-
+	
 	filename = camel_mime_part_get_filename (part);
 	if (filename) {
 		/* GNOME-VFS will misidentify TNEF attachments as MPEG */
 		if (!strcmp (filename, "winmail.dat"))
 			return g_strdup ("application/vnd.ms-tnef");
-
-		name_type = gnome_vfs_mime_type_from_name_or_default (filename, NULL);
+		
+		name_type = gnome_vfs_mime_type_from_name (filename);
 	}
-
+	
 	data = camel_medium_get_content_object (CAMEL_MEDIUM (part));
 	if (!camel_data_wrapper_is_offline (data))
 		magic_type = identify_by_magic (data, md);
-
+	
 	if (magic_type && name_type) {
 		/* If GNOME-VFS doesn't recognize the data by magic, but it
 		 * contains English words, it will call it text/plain. If the
@@ -74,29 +75,29 @@ mail_identify_mime_part (CamelMimePart *part, MailDisplay *md)
 		 */
 		if (!strcmp (magic_type, "text/plain"))
 			return g_strdup (name_type);
-
+		
 		/* If if returns "application/octet-stream" try to
 		 * do better with the filename check.
 		 */
 		if (!strcmp (magic_type, "application/octet-stream"))
 			return g_strdup (name_type);
 	}
-
+	
 	/* If the MIME part data was online, and the magic check
 	 * returned something, use that, since it's more reliable.
 	 */
 	if (magic_type)
 		return g_strdup (magic_type);
-
+	
 	/* Otherwise try guessing based on the filename */
 	if (name_type)
 		return g_strdup (name_type);
-
+	
 	/* Another possibility to try is the x-mac-type / x-mac-creator
 	 * parameter to Content-Type used by some Mac email clients. That
 	 * would require a Mac type to mime type conversion table.
 	 */
-
+	
 #if 0
 	/* If the data part is offline, then we didn't try magic
 	 * before, so force it to be loaded so we can try again later.
@@ -108,28 +109,22 @@ mail_identify_mime_part (CamelMimePart *part, MailDisplay *md)
 	if (camel_data_wrapper_is_offline (data))
 		mail_content_loaded (data, md, TRUE, NULL, NULL, NULL);
 #endif
-
+	
 	return NULL;
 }
 
 static const char *
 identify_by_magic (CamelDataWrapper *data, MailDisplay *md)
 {
-	GnomeVFSMimeSniffBuffer *sniffer;
-	CamelStream *memstream;
+	CamelStreamMem *memstream;
 	const char *type;
-	GByteArray *ba;
 
-	ba = g_byte_array_new ();
-	memstream = camel_stream_mem_new_with_byte_array (ba);
-	camel_data_wrapper_write_to_stream (data, memstream);
-	if (ba->len) {
-		sniffer = gnome_vfs_mime_sniff_buffer_new_from_memory (ba->data, ba->len);
-		type = gnome_vfs_get_mime_type_for_buffer (sniffer);
-		gnome_vfs_mime_sniff_buffer_free (sniffer);
-	} else
+	memstream = (CamelStreamMem *)camel_stream_mem_new();
+	if (camel_data_wrapper_write_to_stream (data, (CamelStream *)memstream) > 0)
+		type = gnome_vfs_get_mime_type_for_data(memstream->buffer->data, memstream->buffer->len);
+	else
 		type = NULL;
-	camel_object_unref (CAMEL_OBJECT (memstream));
+	camel_object_unref(memstream);
 
 	return type;
 }

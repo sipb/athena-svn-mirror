@@ -256,10 +256,10 @@ shortcuts_update_shortcut_cb (EShortcuts *shortcuts,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EShortcutsViewModel *view_model;
 	EShortcutsViewModelPrivate *priv;
@@ -269,20 +269,19 @@ impl_destroy (GtkObject *object)
 
 	g_free (priv);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
 static void
 class_init (EShortcutsViewModelClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (klass);
+	object_class->finalize = impl_finalize;
 
-	parent_class = gtk_type_class (e_shortcut_model_get_type ());
+	parent_class = g_type_class_ref(e_shortcut_model_get_type ());
 }
 
 static void
@@ -315,24 +314,12 @@ e_shortcuts_view_model_construct (EShortcutsViewModel *model,
 
 	load_all_shortcuts_into_model (model);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (priv->shortcuts),
-					"new_group", GTK_SIGNAL_FUNC (shortcuts_new_group_cb), model,
-					GTK_OBJECT (model));
-	gtk_signal_connect_while_alive (GTK_OBJECT (priv->shortcuts),
-					"remove_group", GTK_SIGNAL_FUNC (shortcuts_remove_group_cb), model,
-					GTK_OBJECT (model));
-	gtk_signal_connect_while_alive (GTK_OBJECT (priv->shortcuts),
-					"rename_group", GTK_SIGNAL_FUNC (shortcuts_rename_group_cb), model,
-					GTK_OBJECT (model));
-	gtk_signal_connect_while_alive (GTK_OBJECT (priv->shortcuts),
-					"new_shortcut", GTK_SIGNAL_FUNC (shortcuts_new_shortcut_cb), model,
-					GTK_OBJECT (model));
-	gtk_signal_connect_while_alive (GTK_OBJECT (priv->shortcuts),
-					"remove_shortcut", GTK_SIGNAL_FUNC (shortcuts_remove_shortcut_cb), model,
-					GTK_OBJECT (model));
-	gtk_signal_connect_while_alive (GTK_OBJECT (priv->shortcuts),
-					"update_shortcut", GTK_SIGNAL_FUNC (shortcuts_update_shortcut_cb), model,
-					GTK_OBJECT (model));
+	g_signal_connect_object (priv->shortcuts, "new_group", G_CALLBACK (shortcuts_new_group_cb), model, 0);
+	g_signal_connect_object (priv->shortcuts, "remove_group", G_CALLBACK (shortcuts_remove_group_cb), model, 0);
+	g_signal_connect_object (priv->shortcuts, "rename_group", G_CALLBACK (shortcuts_rename_group_cb), model, 0);
+	g_signal_connect_object (priv->shortcuts, "new_shortcut", G_CALLBACK (shortcuts_new_shortcut_cb), model, 0);
+	g_signal_connect_object (priv->shortcuts, "remove_shortcut", G_CALLBACK (shortcuts_remove_shortcut_cb), model, 0);
+	g_signal_connect_object (priv->shortcuts, "update_shortcut", G_CALLBACK (shortcuts_update_shortcut_cb), model, 0);
 }
 
 EShortcutsViewModel *
@@ -343,7 +330,7 @@ e_shortcuts_view_model_new (EShortcuts *shortcuts)
 	g_return_val_if_fail (shortcuts != NULL, NULL);
 	g_return_val_if_fail (E_IS_SHORTCUTS (shortcuts), NULL);
 
-	new = gtk_type_new (e_shortcuts_view_model_get_type ());
+	new = g_object_new (e_shortcuts_view_model_get_type (), NULL);
 
 	e_shortcuts_view_model_construct (new, shortcuts);
 

@@ -25,30 +25,32 @@
 #define __MESSAGE_TAG_EDITOR_H__
 
 #include <gtk/gtkwidget.h>
-#include <libgnomeui/gnome-dialog.h>
+#include <gtk/gtkdialog.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-folder-summary.h>
-#include <time.h>
 
 #ifdef __cplusplus
 extern "C" {
 #pragma }
 #endif /* __cplusplus */
 
-#define MESSAGE_TAG_EDITOR(obj)	        GTK_CHECK_CAST (obj, message_tag_editor_get_type (), MessageTagEditor)
-#define MESSAGE_TAG_EDITOR_CLASS(klass)	GTK_CHECK_CLASS_CAST (klass, message_tag_editor_get_type (), MessageTagEditorClass)
-#define IS_MESSAGE_TAG_EDITOR(obj)      GTK_CHECK_TYPE (obj, message_tag_editor_get_type ())
+#define MESSAGE_TAG_EDITOR_TYPE            (message_tag_editor_get_type ())
+#define MESSAGE_TAG_EDITOR(obj)	           (G_TYPE_CHECK_INSTANCE_CAST (obj, MESSAGE_TAG_EDITOR_TYPE, MessageTagEditor))
+#define MESSAGE_TAG_EDITOR_CLASS(klass)	   (G_TYPE_CHECK_CLASS_CAST (klass, MESSAGE_TAG_EDITOR_TYPE, MessageTagEditorClass))
+#define IS_MESSAGE_TAG_EDITOR(obj)         (G_TYPE_CHECK_INSTANCE_TYPE (obj, MESSAGE_TAG_EDITOR_TYPE))
+#define IS_MESSAGE_TAG_EDITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), MESSAGE_TAG_EDITOR_TYPE))
+#define MESSAGE_TAG_EDITOR_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), MESSAGE_TAG_EDITOR_TYPE, MessageTagEditorClass))
 
 typedef struct _MessageTagEditor MessageTagEditor;
 typedef struct _MessageTagEditorClass MessageTagEditorClass;
 
 struct _MessageTagEditor {
-	GnomeDialog parent;
+	GtkDialog parent;
 	
 };
 
 struct _MessageTagEditorClass {
-	GnomeDialogClass parent_class;
+	GtkDialogClass parent_class;
 	
 	/* virtual methods */
 	CamelTag * (*get_tag_list) (MessageTagEditor *editor);

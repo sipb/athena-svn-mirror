@@ -60,9 +60,8 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
+BASE_VERSION = @BASE_VERSION@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
-CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -84,12 +83,9 @@ EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
 EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
 EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
-EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
 EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
 EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
-EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
-EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
 EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
 EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
@@ -97,54 +93,53 @@ E_NAME_CFLAGS = @E_NAME_CFLAGS@
 E_NAME_LIBS = @E_NAME_LIBS@
 E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
 E_UTIL_LIBS = @E_UTIL_LIBS@
-E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
-E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
-GCONF_CFLAGS = @GCONF_CFLAGS@
-GCONF_CONFIG = @GCONF_CONFIG@
-GCONF_LIBS = @GCONF_LIBS@
+GAL_REQUIRED = @GAL_REQUIRED@
+GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
-GENCAT = @GENCAT@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GLIB_LIBS = @GLIB_LIBS@
+GLIB_MKENUMS = @GLIB_MKENUMS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
-GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
-GNOMEUI_LIBS = @GNOMEUI_LIBS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
-GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
-GNOME_CONFIG = @GNOME_CONFIG@
-GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
 GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
 GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
-GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
-GNOME_LIBDIR = @GNOME_LIBDIR@
-GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
-GNOME_PREFIX = @GNOME_PREFIX@
-GNORBA_CFLAGS = @GNORBA_CFLAGS@
-GNORBA_LIBS = @GNORBA_LIBS@
+GOBJECT_QUERY = @GOBJECT_QUERY@
 GTKDOC = @GTKDOC@
 GTKHTML_CFLAGS = @GTKHTML_CFLAGS@
 GTKHTML_DATADIR = @GTKHTML_DATADIR@
 GTKHTML_LIBS = @GTKHTML_LIBS@
-GTKXMHTML_LIBS = @GTKXMHTML_LIBS@
-GTK_CFLAGS = @GTK_CFLAGS@
-GTK_CONFIG = @GTK_CONFIG@
-GTK_LIBS = @GTK_LIBS@
-GT_NO = @GT_NO@
-GT_YES = @GT_YES@
+GTKHTML_REQUIRED = @GTKHTML_REQUIRED@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IDL_INCLUDES = @IDL_INCLUDES@
 IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
 IMPORTERS_LIBS = @IMPORTERS_LIBS@
-INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
 INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
-KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -159,14 +154,11 @@ LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANUAL_NSPR_CFLAGS = @MANUAL_NSPR_CFLAGS@
+MANUAL_NSPR_LIBS = @MANUAL_NSPR_LIBS@
+MANUAL_NSS_CFLAGS = @MANUAL_NSS_CFLAGS@
+MANUAL_NSS_LIBS = @MANUAL_NSS_LIBS@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NSPR_CFLAGS = @NSPR_CFLAGS@
-NSPR_LDFLAGS = @NSPR_LDFLAGS@
-NSS_CFLAGS = @NSS_CFLAGS@
-NSS_LDFLAGS = @NSS_LDFLAGS@
-OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
-OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
-OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
@@ -176,55 +168,50 @@ ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
 ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
-PISOCK_CFLAGS = @PISOCK_CFLAGS@
-PISOCK_LIBS = @PISOCK_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
-SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
-SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
-SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
 SHELL_CFLAGS = @SHELL_CFLAGS@
 SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
 WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
 WOMBAT_LIBS = @WOMBAT_LIBS@
-XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
-XML_I18N_MERGE = @XML_I18N_MERGE@
-XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
-XML_I18N_MERGE_DIRECTORY_RULE = @XML_I18N_MERGE_DIRECTORY_RULE@
-XML_I18N_MERGE_KEYS_RULE = @XML_I18N_MERGE_KEYS_RULE@
-XML_I18N_MERGE_OAF_RULE = @XML_I18N_MERGE_OAF_RULE@
-XML_I18N_MERGE_PONG_RULE = @XML_I18N_MERGE_PONG_RULE@
-XML_I18N_MERGE_SERVER_RULE = @XML_I18N_MERGE_SERVER_RULE@
-XML_I18N_MERGE_SHEET_RULE = @XML_I18N_MERGE_SHEET_RULE@
-XML_I18N_MERGE_SOUNDLIST_RULE = @XML_I18N_MERGE_SOUNDLIST_RULE@
-XML_I18N_MERGE_XML_RULE = @XML_I18N_MERGE_XML_RULE@
-XML_I18N_UPDATE = @XML_I18N_UPDATE@
-XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
-ZVT_LIBS = @ZVT_LIBS@
+buttonsdir = @buttonsdir@
 camel_providerdir = @camel_providerdir@
-cflags_set = @cflags_set@
+componentdir = @componentdir@
 cxxflags_set = @cxxflags_set@
-l = @l@
+etspecdir = @etspecdir@
+evolutionuidir = @evolutionuidir@
+gladedir = @gladedir@
+idldir = @idldir@
+imagesdir = @imagesdir@
 localedir = @localedir@
+privdatadir = @privdatadir@
+privincludedir = @privincludedir@
 privlibdir = @privlibdir@
+privlibexecdir = @privlibexecdir@
+serverdir = @serverdir@
+soundsdir = @soundsdir@
+viewsdir = @viewsdir@
 
 importersdir = $(privlibdir)/evolution-mail-importers
 
-importers_LTLIBRARIES = liboutlook.la libmbox.la
+importers_LTLIBRARIES = liboutlook.la libmbox.la 	libevolution-elm-importer.la		libevolution-pine-importer.la		libevolution-netscape-importer.la
 
-INCLUDES = -I.. 						-I$(srcdir)/..						-I$(top_srcdir)						-I$(top_srcdir)/shell					-I$(top_builddir)/shell					-I$(includedir)						-DG_LOG_DOMAIN=\"evolution-mail-importer\"		$(IMPORTERS_CFLAGS)
+
+INCLUDES = -I.. 						-I$(srcdir)/..						-I$(top_srcdir)						-I$(top_srcdir)/shell					-I$(top_builddir)/shell					-DG_LOG_DOMAIN=\"evolution-mail-importer\"		-I$(top_srcdir)/addressbook/backend             	-I$(top_builddir)/addressbook/backend           	-DEVOLUTION_PRIVDATADIR=\""$(privdatadir)"\"		$(IMPORTERS_CFLAGS)
 
 
 liboutlook_la_SOURCES =  	evolution-outlook-importer.c
@@ -235,13 +222,56 @@ libmbox_la_SOURCES = evolution-mbox-importer.c 		     mozilla-status-headers.h
 
 libmbox_la_LDFLAGS = -avoid-version -module
 
-oafdir = $(datadir)/oaf
-oaf_in_files = GNOME_Evolution_Mail_Mbox_Importer.oaf.in		GNOME_Evolution_Mail_Outlook_Importer.oaf.in
+IDLS =  	$(top_srcdir)/mail/Mailer.idl
 
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+MAIL_GENERATED_H =  	Mailer.h
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
+MAIL_GENERATED_C =  	Mailer-common.c		Mailer-skels.c		Mailer-stubs.c
+
+MAIL_GENERATED = $(MAIL_GENERATED_C) $(MAIL_GENERATED_H)
+
+libevolution_netscape_importer_la_SOURCES =  	$(MAIL_GENERATED)			netscape-importer.c
+
+
+libevolution_netscape_importer_la_LDFLAGS = -avoid-version -module
+
+libevolution_netscape_importer_la_LIBADD =  	$(top_builddir)/shell/importer/libevolution-importer.la 	$(top_builddir)/camel/libcamel.la				$(top_builddir)/e-util/libeutil.la				$(top_builddir)/filter/libfilter.la				$(top_builddir)/shell/libeshell.la				$(IMPORTERS_LIBS)
+
+
+libevolution_elm_importer_la_SOURCES =  	elm-importer.c
+
+
+libevolution_elm_importer_la_LDFLAGS = -avoid-version -module
+
+libevolution_elm_importer_la_LIBADD =  	$(top_builddir)/shell/importer/libevolution-importer.la 	$(top_builddir)/e-util/libeutil.la				$(IMPORTERS_LIBS)
+
+
+libevolution_pine_importer_la_SOURCES =  	pine-importer.c
+
+
+libevolution_pine_importer_la_LDFLAGS = -avoid-version -module
+
+libevolution_pine_importer_la_LIBADD =  	$(top_builddir)/shell/importer/libevolution-importer.la 	$(top_builddir)/addressbook/backend/ebook/libebook.la		$(top_builddir)/camel/libcamel.la				$(IMPORTERS_LIBS)
+
+
+# evolution_gnomecard_importer_SOURCES =	\
+# 	evolution-gnomecard-importer.c
+
+# evolution_gnomecard_importer_LDADD =				\
+#         $(top_builddir)/shell/importer/libevolution-importer.la \
+#         $(top_builddir)/addressbook/backend/ebook/libebook.la   \
+# 	$(top_builddir)/camel/libcamel.la			\
+# 	$(IMPORTERS_LIBS)
+
+server_in_files = GNOME_Evolution_Mail_Mbox_Importer.server.in.in		GNOME_Evolution_Mail_Outlook_Importer.server.in.in			GNOME_Evolution_Mail_Netscape_Intelligent_Importer.server.in.in		GNOME_Evolution_Mail_Elm_Intelligent_Importer.server.in.in		GNOME_Evolution_Mail_Pine_Intelligent_Importer.server.in.in
+
+server_DATA = $(server_in_files:.server.in.in=.server)
+
+EXTRA_DIST = $(server_in_files) $(server_DATA)
+
+BUILT_SOURCES = $(MAIL_GENERATED) $(server_DATA)
+CLEANFILES = $(BUILT_SOURCES)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -256,12 +286,27 @@ liboutlook_la_LIBADD =
 liboutlook_la_OBJECTS =  evolution-outlook-importer.lo
 libmbox_la_LIBADD = 
 libmbox_la_OBJECTS =  evolution-mbox-importer.lo
+libevolution_elm_importer_la_DEPENDENCIES =  \
+$(top_builddir)/shell/importer/libevolution-importer.la \
+$(top_builddir)/e-util/libeutil.la
+libevolution_elm_importer_la_OBJECTS =  elm-importer.lo
+libevolution_pine_importer_la_DEPENDENCIES =  \
+$(top_builddir)/shell/importer/libevolution-importer.la \
+$(top_builddir)/addressbook/backend/ebook/libebook.la \
+$(top_builddir)/camel/libcamel.la
+libevolution_pine_importer_la_OBJECTS =  pine-importer.lo
+libevolution_netscape_importer_la_DEPENDENCIES =  \
+$(top_builddir)/shell/importer/libevolution-importer.la \
+$(top_builddir)/camel/libcamel.la $(top_builddir)/e-util/libeutil.la \
+$(top_builddir)/filter/libfilter.la $(top_builddir)/shell/libeshell.la
+libevolution_netscape_importer_la_OBJECTS =  Mailer-common.lo \
+Mailer-skels.lo Mailer-stubs.lo netscape-importer.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
-DATA =  $(oaf_DATA)
+DATA =  $(server_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -270,8 +315,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-SOURCES = $(liboutlook_la_SOURCES) $(libmbox_la_SOURCES)
-OBJECTS = $(liboutlook_la_OBJECTS) $(libmbox_la_OBJECTS)
+SOURCES = $(liboutlook_la_SOURCES) $(libmbox_la_SOURCES) $(libevolution_elm_importer_la_SOURCES) $(libevolution_pine_importer_la_SOURCES) $(libevolution_netscape_importer_la_SOURCES)
+OBJECTS = $(liboutlook_la_OBJECTS) $(libmbox_la_OBJECTS) $(libevolution_elm_importer_la_OBJECTS) $(libevolution_pine_importer_la_OBJECTS) $(libevolution_netscape_importer_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -359,23 +404,32 @@ liboutlook.la: $(liboutlook_la_OBJECTS) $(liboutlook_la_DEPENDENCIES)
 libmbox.la: $(libmbox_la_OBJECTS) $(libmbox_la_DEPENDENCIES)
 	$(LINK) -rpath $(importersdir) $(libmbox_la_LDFLAGS) $(libmbox_la_OBJECTS) $(libmbox_la_LIBADD) $(LIBS)
 
-install-oafDATA: $(oaf_DATA)
+libevolution-elm-importer.la: $(libevolution_elm_importer_la_OBJECTS) $(libevolution_elm_importer_la_DEPENDENCIES)
+	$(LINK) -rpath $(importersdir) $(libevolution_elm_importer_la_LDFLAGS) $(libevolution_elm_importer_la_OBJECTS) $(libevolution_elm_importer_la_LIBADD) $(LIBS)
+
+libevolution-pine-importer.la: $(libevolution_pine_importer_la_OBJECTS) $(libevolution_pine_importer_la_DEPENDENCIES)
+	$(LINK) -rpath $(importersdir) $(libevolution_pine_importer_la_LDFLAGS) $(libevolution_pine_importer_la_OBJECTS) $(libevolution_pine_importer_la_LIBADD) $(LIBS)
+
+libevolution-netscape-importer.la: $(libevolution_netscape_importer_la_OBJECTS) $(libevolution_netscape_importer_la_DEPENDENCIES)
+	$(LINK) -rpath $(importersdir) $(libevolution_netscape_importer_la_LDFLAGS) $(libevolution_netscape_importer_la_OBJECTS) $(libevolution_netscape_importer_la_LIBADD) $(LIBS)
+
+install-serverDATA: $(server_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(oafdir)
-	@list='$(oaf_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(oafdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(oafdir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(oafdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(oafdir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-oafDATA:
+uninstall-serverDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(oaf_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(oafdir)/$$p; \
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
 	done
 
 tags: TAGS
@@ -422,6 +476,23 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+elm-importer.lo elm-importer.o : elm-importer.c ../../config.h \
+	../../shell/importer/evolution-intelligent-importer.h \
+	../../shell/importer/GNOME_Evolution_Importer.h \
+	../../shell/importer/evolution-importer-client.h \
+	../../shell/importer/evolution-importer.h \
+	../../shell/importer/evolution-importer-listener.h \
+	../../mail/mail-importer.h ../../camel/camel-folder.h \
+	../../camel/camel-object.h ../../camel/camel-arg.h \
+	../../camel/camel-types.h ../../camel/camel-i18n.h \
+	../../camel/camel-folder-summary.h \
+	../../camel/camel-mime-parser.h ../../camel/camel-mime-utils.h \
+	../../camel/camel-mime-filter.h ../../camel/camel-stream.h \
+	../../camel/camel-index.h ../../camel/camel-exception.h \
+	../../camel/camel-exception-list.def \
+	../../camel/camel-stream-mem.h \
+	../../camel/camel-seekable-stream.h \
+	../../shell/evolution-shell-client.h ../../shell/Evolution.h
 evolution-mbox-importer.lo evolution-mbox-importer.o : \
 	evolution-mbox-importer.c ../../config.h \
 	../../camel/camel-exception.h ../../camel/camel-types.h \
@@ -429,9 +500,9 @@ evolution-mbox-importer.lo evolution-mbox-importer.o : \
 	../../camel/camel-mime-message.h ../../camel/camel-mime-part.h \
 	../../camel/camel-medium.h ../../camel/camel-data-wrapper.h \
 	../../camel/camel-object.h ../../camel/camel-arg.h \
-	../../camel/camel-mime-utils.h ../../camel/camel-mime-parser.h \
-	../../camel/camel-mime-filter.h ../../camel/camel-stream.h \
-	../../camel/camel-internet-address.h \
+	../../camel/camel-i18n.h ../../camel/camel-mime-utils.h \
+	../../camel/camel-mime-parser.h ../../camel/camel-mime-filter.h \
+	../../camel/camel-stream.h ../../camel/camel-internet-address.h \
 	../../camel/camel-address.h \
 	../../camel/camel-mime-filter-bestenc.h \
 	../../camel/camel-charset-map.h \
@@ -453,7 +524,10 @@ evolution-mbox-importer.lo evolution-mbox-importer.o : \
 	../../camel/camel-disco-folder.h \
 	../../camel/camel-disco-store.h ../../camel/camel-vee-folder.h \
 	../../camel/camel-mime-filter-basic.h \
+	../../camel/camel-mime-filter-canon.h \
 	../../camel/camel-mime-filter-charset.h \
+	../../camel/camel-mime-filter-enriched.h \
+	../../camel/camel-mime-filter-from.h \
 	../../camel/camel-mime-filter-index.h \
 	../../camel/camel-mime-filter-save.h \
 	../../camel/camel-mime-filter-crlf.h \
@@ -472,7 +546,6 @@ evolution-mbox-importer.lo evolution-mbox-importer.o : \
 	../../camel/camel-tcp-stream.h \
 	../../camel/camel-tcp-stream-ssl.h \
 	../../camel/camel-transport.h ../../camel/camel-uid-cache.h \
-	../../camel/gstring-util.h ../../camel/hash-table-utils.h \
 	../../camel/string-utils.h ../../camel/camel-filter-driver.h \
 	../../e-util/e-path.h
 evolution-outlook-importer.lo evolution-outlook-importer.o : \
@@ -483,7 +556,7 @@ evolution-outlook-importer.lo evolution-outlook-importer.o : \
 	../../camel/camel-exception-list.def ../../e-util/e-memory.h \
 	../mail-importer.h ../../camel/camel-folder.h \
 	../../camel/camel-object.h ../../camel/camel-arg.h \
-	../../camel/camel-folder-summary.h \
+	../../camel/camel-i18n.h ../../camel/camel-folder-summary.h \
 	../../camel/camel-mime-parser.h ../../camel/camel-mime-utils.h \
 	../../camel/camel-mime-filter.h ../../camel/camel-stream.h \
 	../../camel/camel-index.h ../../camel/camel-stream-mem.h \
@@ -506,7 +579,10 @@ evolution-outlook-importer.lo evolution-outlook-importer.o : \
 	../../camel/camel-disco-folder.h \
 	../../camel/camel-disco-store.h ../../camel/camel-vee-folder.h \
 	../../camel/camel-mime-filter-basic.h \
+	../../camel/camel-mime-filter-canon.h \
 	../../camel/camel-mime-filter-charset.h \
+	../../camel/camel-mime-filter-enriched.h \
+	../../camel/camel-mime-filter-from.h \
 	../../camel/camel-mime-filter-index.h \
 	../../camel/camel-mime-filter-save.h \
 	../../camel/camel-mime-filter-crlf.h \
@@ -525,8 +601,61 @@ evolution-outlook-importer.lo evolution-outlook-importer.o : \
 	../../camel/camel-tcp-stream.h \
 	../../camel/camel-tcp-stream-ssl.h \
 	../../camel/camel-transport.h ../../camel/camel-uid-cache.h \
-	../../camel/gstring-util.h ../../camel/hash-table-utils.h \
 	../../camel/string-utils.h ../../camel/camel-filter-driver.h
+Mailer-common.lo Mailer-common.o : Mailer-common.c Mailer.h
+Mailer-skels.lo Mailer-skels.o : Mailer-skels.c Mailer.h
+Mailer-stubs.lo Mailer-stubs.o : Mailer-stubs.c Mailer.h
+netscape-importer.lo netscape-importer.o : netscape-importer.c \
+	../../config.h \
+	../../shell/importer/evolution-intelligent-importer.h \
+	../../shell/importer/GNOME_Evolution_Importer.h \
+	../../shell/importer/evolution-importer-client.h \
+	../../shell/importer/evolution-importer.h \
+	../../shell/importer/evolution-importer-listener.h \
+	../../filter/filter-context.h ../../filter/rule-context.h \
+	../../filter/filter-part.h ../../filter/filter-input.h \
+	../../filter/filter-element.h ../../filter/filter-rule.h \
+	../../filter/filter-filter.h ../../filter/filter-option.h \
+	../../filter/filter-folder.h ../../filter/filter-int.h \
+	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
+	Mailer.h ../../mail/mail-importer.h ../../camel/camel-folder.h \
+	../../camel/camel-object.h ../../camel/camel-arg.h \
+	../../camel/camel-types.h ../../camel/camel-i18n.h \
+	../../camel/camel-folder-summary.h \
+	../../camel/camel-mime-parser.h ../../camel/camel-mime-utils.h \
+	../../camel/camel-mime-filter.h ../../camel/camel-stream.h \
+	../../camel/camel-index.h ../../camel/camel-exception.h \
+	../../camel/camel-exception-list.def \
+	../../camel/camel-stream-mem.h \
+	../../camel/camel-seekable-stream.h
+pine-importer.lo pine-importer.o : pine-importer.c ../../config.h \
+	../../shell/importer/evolution-intelligent-importer.h \
+	../../shell/importer/GNOME_Evolution_Importer.h \
+	../../shell/importer/evolution-importer-client.h \
+	../../shell/importer/evolution-importer.h \
+	../../shell/importer/evolution-importer-listener.h \
+	../../mail/mail-importer.h ../../camel/camel-folder.h \
+	../../camel/camel-object.h ../../camel/camel-arg.h \
+	../../camel/camel-types.h ../../camel/camel-i18n.h \
+	../../camel/camel-folder-summary.h \
+	../../camel/camel-mime-parser.h ../../camel/camel-mime-utils.h \
+	../../camel/camel-mime-filter.h ../../camel/camel-stream.h \
+	../../camel/camel-index.h ../../camel/camel-exception.h \
+	../../camel/camel-exception-list.def \
+	../../camel/camel-stream-mem.h \
+	../../camel/camel-seekable-stream.h \
+	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
+	../../addressbook/backend/ebook/e-book.h \
+	../../addressbook/backend/ebook/e-card.h \
+	../../addressbook/backend/ebook/e-card-types.h \
+	../../e-util/e-list.h ../../e-util/e-list-iterator.h \
+	../../e-util/e-iterator.h \
+	../../addressbook/backend/ebook/e-card-cursor.h \
+	../../addressbook/backend/ebook/addressbook.h \
+	../../addressbook/backend/ebook/e-book-view.h \
+	../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../addressbook/backend/ebook/e-book-types.h \
+	../../addressbook/backend/ebook/e-card-simple.h
 
 info-am:
 info: info-am
@@ -539,31 +668,33 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-importersLTLIBRARIES install-oafDATA
+install-data-am: install-importersLTLIBRARIES install-serverDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-importersLTLIBRARIES uninstall-oafDATA
+uninstall-am: uninstall-importersLTLIBRARIES uninstall-serverDATA
 uninstall: uninstall-am
 all-am: Makefile $(LTLIBRARIES) $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(importersdir) $(DESTDIR)$(oafdir)
+	$(mkinstalldirs)  $(DESTDIR)$(importersdir) $(DESTDIR)$(serverdir)
 
 
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 mostlyclean-am:  mostlyclean-importersLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
@@ -596,8 +727,8 @@ clean-importersLTLIBRARIES maintainer-clean-importersLTLIBRARIES \
 uninstall-importersLTLIBRARIES install-importersLTLIBRARIES \
 mostlyclean-compile distclean-compile clean-compile \
 maintainer-clean-compile mostlyclean-libtool distclean-libtool \
-clean-libtool maintainer-clean-libtool uninstall-oafDATA \
-install-oafDATA tags mostlyclean-tags distclean-tags clean-tags \
+clean-libtool maintainer-clean-libtool uninstall-serverDATA \
+install-serverDATA tags mostlyclean-tags distclean-tags clean-tags \
 maintainer-clean-tags distdir info-am info dvi-am dvi check check-am \
 installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
@@ -606,7 +737,15 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-@XML_I18N_MERGE_OAF_RULE@
+$(MAIL_GENERATED_H): $(IDLS)
+	$(ORBIT_IDL) -I $(srcdir) $(IDL_INCLUDES) $(top_srcdir)/mail/Mailer.idl
+$(MAIL_GENERATED_C): $(MAIL_GENERATED_H)
+%.server.in: %.server.in.in
+	sed -e "s|\@BINDIR\@|$(bindir)|"				\
+	    -e "s|\@VERSION\@|$(BASE_VERSION)|"				\
+	    $< > $@
+
+@INTLTOOL_SERVER_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -37,8 +37,8 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 
-#define PARENT_TYPE gnome_dialog_get_type ()
-static GnomeDialogClass *parent_class = NULL;
+#define PARENT_TYPE gtk_dialog_get_type ()
+static GtkDialogClass *parent_class = NULL;
 
 #define SWITCH_PAGE_INTERVAL 250
 
@@ -93,11 +93,11 @@ update_buttons (EMultiConfigDialog *dialog)
 	priv = dialog->priv;
 
 	if (priv->num_unapplied > 0) {
-		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog), 0, TRUE); /* OK */
-		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog), 1, TRUE); /* Apply */
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, TRUE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_APPLY, TRUE);
 	} else {
-		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog), 0, FALSE); /* OK */
-		gnome_dialog_set_sensitive (GNOME_DIALOG (dialog), 1, FALSE); /* Apply */
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
+		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_APPLY, FALSE);
 	}
 }
 
@@ -110,8 +110,7 @@ create_page_container (const char *description,
 {
 	GtkWidget *vbox;
 
-	vbox = gtk_vbox_new (FALSE, 3);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 3);
+	vbox = gtk_vbox_new (FALSE, 0);
 
 #if 0
 	label = e_clipped_label_new (description);
@@ -125,7 +124,7 @@ create_page_container (const char *description,
 	gtk_widget_show (separator);
 #endif
 
-	gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0); 
 
 	gtk_widget_show (widget);
 	gtk_widget_show (vbox);
@@ -175,7 +174,7 @@ set_page_timeout_callback (void *data)
 static void
 do_close (EMultiConfigDialog *dialog)
 {
-	gnome_dialog_close (GNOME_DIALOG (dialog));
+	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
@@ -231,10 +230,10 @@ table_cursor_change_callback (ETable *etable,
 }
 
 
-/* GtkObject methods.  */
+/* GObject methods.  */
 
 static void
-impl_destroy (GtkObject *object)
+impl_finalize (GObject *object)
 {
 	EMultiConfigDialog *dialog;
 	EMultiConfigDialogPrivate *priv;
@@ -245,22 +244,19 @@ impl_destroy (GtkObject *object)
 	if (priv->set_page_timeout_id != 0)
 		g_source_remove (priv->set_page_timeout_id);
 
-	if (priv->list_e_table_model != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->list_e_table_model));
-
 	g_slist_free (priv->pages);
 
 	g_free (priv);
 
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 
-/* GnomeDialog methods.  */
+/* GtkDialog methods.  */
 
 static void
-impl_clicked (GnomeDialog *dialog,
-	      int button_number)
+impl_response (GtkDialog *dialog,
+	       int response_id)
 {
 	EMultiConfigDialog *multi_config_dialog;
 	EMultiConfigDialogPrivate *priv;
@@ -268,37 +264,36 @@ impl_clicked (GnomeDialog *dialog,
 	multi_config_dialog = E_MULTI_CONFIG_DIALOG (dialog);
 	priv = multi_config_dialog->priv;
 
-	switch (button_number) {
-	case 0:			/* OK */
+	switch (response_id) {
+	case GTK_RESPONSE_OK:
 		do_ok (multi_config_dialog);
 		break;
-	case 1:			/* Apply */
+	case GTK_RESPONSE_APPLY:
 		do_apply (multi_config_dialog);
 		break;
-	case 2:			/* Close */
+	case GTK_RESPONSE_CLOSE:
+	default:
 		do_close (multi_config_dialog);
 		break;
-	default:
-		g_assert_not_reached ();
 	}
 }
 
 
-/* GTK+ ctors.  */
+/* GObject ctors.  */
 
 static void
 class_init (EMultiConfigDialogClass *class)
 {
-	GnomeDialogClass *dialog_class;
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
+	GtkDialogClass *dialog_class;
 
-	object_class = GTK_OBJECT_CLASS (class);
-	object_class->destroy = impl_destroy;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = impl_finalize;
 
-	dialog_class = GNOME_DIALOG_CLASS (class);
-	dialog_class->clicked = impl_clicked;
+	dialog_class = GTK_DIALOG_CLASS (class);
+	dialog_class->response = impl_response;
 
-	parent_class = gtk_type_class (PARENT_TYPE);
+	parent_class = g_type_class_ref (PARENT_TYPE);
 }
 
 #define RGB_COLOR(color) (((color).red & 0xff00) << 8 | \
@@ -331,7 +326,7 @@ fill_in_pixbufs (EMultiConfigDialog *dialog, int row)
 								       1,
 								       colors[i], colors[i]);
 		e_table_model_set_value_at (dialog->priv->list_e_table_model, i + 2, row, pixbuf);
-		gdk_pixbuf_unref(pixbuf);
+		g_object_unref(pixbuf);
 	}
 }
 
@@ -361,7 +356,7 @@ init (EMultiConfigDialog *multi_config_dialog)
 {
 	EMultiConfigDialogPrivate *priv;
 	ETableModel *list_e_table_model;
-	GtkWidget *gnome_dialog_vbox;
+	GtkWidget *dialog_vbox;
 	GtkWidget *hbox;
 	GtkWidget *notebook;
 	GtkWidget *list_e_table;
@@ -370,41 +365,42 @@ init (EMultiConfigDialog *multi_config_dialog)
 	ECell *text;
 	ECell *vbox;
 
-	hbox = gtk_hbox_new (FALSE, 2);
-	gnome_dialog_vbox = GNOME_DIALOG (multi_config_dialog)->vbox;
-	gtk_container_add (GTK_CONTAINER (gnome_dialog_vbox), hbox);
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox), 6); 
+	dialog_vbox = GTK_DIALOG (multi_config_dialog)->vbox;
+	gtk_box_set_spacing (GTK_BOX (dialog_vbox), 6); 
+	
+	gtk_container_add (GTK_CONTAINER (dialog_vbox), hbox);
 
 	list_e_table_model = e_table_memory_store_new (columns);
 
 	vbox = e_cell_vbox_new ();
 
 	pixbuf = e_cell_pixbuf_new();
-	gtk_object_set (GTK_OBJECT (pixbuf),
-			"focused_column", 2,
-			"selected_column", 3,
-			"unselected_column", 4,
-			NULL);
+	g_object_set (G_OBJECT (pixbuf),
+		      "focused_column", 2,
+		      "selected_column", 3,
+		      "unselected_column", 4,
+		      NULL);
 	e_cell_vbox_append (E_CELL_VBOX (vbox), pixbuf, 1);
-	gtk_object_unref (GTK_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 
 	text = e_cell_text_new (NULL, GTK_JUSTIFY_CENTER);
 	e_cell_vbox_append (E_CELL_VBOX (vbox), text, 0);
-	gtk_object_unref (GTK_OBJECT (text));
+	g_object_unref (text);
 
 	extras = e_table_extras_new ();
 	e_table_extras_add_cell (extras, "vbox", vbox);
 
 	list_e_table = e_table_scrolled_new (list_e_table_model, extras, list_e_table_spec, NULL);
-	e_scroll_frame_set_policy (E_SCROLL_FRAME (list_e_table), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_signal_connect (GTK_OBJECT (e_table_scrolled_get_table (E_TABLE_SCROLLED (list_e_table))),
-			    "cursor_change", GTK_SIGNAL_FUNC (table_cursor_change_callback),
-			    multi_config_dialog);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_e_table), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	g_signal_connect (e_table_scrolled_get_table (E_TABLE_SCROLLED (list_e_table)),
+			  "cursor_change", G_CALLBACK (table_cursor_change_callback), multi_config_dialog);
 
-	gtk_signal_connect (GTK_OBJECT (e_table_scrolled_get_table (E_TABLE_SCROLLED (list_e_table))->table_canvas),
-			    "realize", GTK_SIGNAL_FUNC (canvas_realize),
-			    multi_config_dialog);
+	g_signal_connect (e_table_scrolled_get_table (E_TABLE_SCROLLED (list_e_table))->table_canvas,
+			  "realize", G_CALLBACK (canvas_realize), multi_config_dialog);
 
-	gtk_object_unref (GTK_OBJECT (extras));
+	g_object_unref (extras);
 
 	gtk_box_pack_start (GTK_BOX (hbox), list_e_table, FALSE, TRUE, 0);
 
@@ -417,12 +413,13 @@ init (EMultiConfigDialog *multi_config_dialog)
 	gtk_widget_show (notebook);
 	gtk_widget_show (list_e_table);
 
-	gnome_dialog_append_buttons (GNOME_DIALOG (multi_config_dialog),
-				     GNOME_STOCK_BUTTON_OK,
-				     GNOME_STOCK_BUTTON_APPLY,
-				     GNOME_STOCK_BUTTON_CLOSE,
-				     NULL);
-	gnome_dialog_set_default (GNOME_DIALOG (multi_config_dialog), 0);
+	gtk_dialog_add_buttons (GTK_DIALOG (multi_config_dialog),
+				GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
+				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+				GTK_STOCK_OK, GTK_RESPONSE_OK,
+				NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (multi_config_dialog), GTK_RESPONSE_OK);
+	
 
 	gtk_window_set_policy (GTK_WINDOW (multi_config_dialog),
 			       FALSE /* allow_shrink */,
@@ -494,8 +491,7 @@ e_multi_config_dialog_add_page (EMultiConfigDialog *dialog,
 	if (! e_config_page_is_applied (page_widget))
 		priv->num_unapplied ++;
 
-	gtk_signal_connect (GTK_OBJECT (page_widget), "changed",
-			    GTK_SIGNAL_FUNC (page_changed_callback), dialog);
+	g_signal_connect (page_widget, "changed", G_CALLBACK (page_changed_callback), dialog);
 
 	update_buttons (dialog);
 }
