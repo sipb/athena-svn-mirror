@@ -5,13 +5,14 @@
  * For re-distribution and warranty information, see <mit-copyright.h>
  *
  * 
- * $Id: afs.c,v 1.1 1991-06-25 11:33:38 probe Exp $
+ * $Id: afs.c,v 1.2 1992-11-05 15:27:10 miki Exp $
  */
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
 
 #include <afs/param.h>
+#include <netinet/in.h>
 #include <afs/venus.h>
 #include <afs/afsint.h>
 
