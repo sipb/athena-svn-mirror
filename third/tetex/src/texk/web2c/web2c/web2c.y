@@ -135,6 +135,7 @@ DEF:
 /* program statement.  Ignore any files.  */
 PROGRAM_HEAD:
 	  program_tok undef_id_tok PROGRAM_FILE_PART ';'
+	;
 
 PROGRAM_FILE_PART:
 	  '(' PROGRAM_FILE_LIST ')'
