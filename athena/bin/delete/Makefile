@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.23 1990-09-26 04:12:16 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.24 1991-01-31 18:26:40 jik Exp $
 #
 
 DESTDIR=
@@ -93,7 +93,7 @@ all: $(TARGETS)
 
 lint_all: lint_delete lint_undelete lint_expunge lint_lsdel
 
-install: bin_install man_install
+install:: bin_install man_install
 
 # Errors are ignored on bin_install and man_install because make on
 # some platforms, in combination with the shell, does really stupid
@@ -167,7 +167,7 @@ patch: $(ARCHIVE)
 	mv patch delete.patch`cat PATCHLEVEL`
 	shar delete.patch`cat PATCHLEVEL` > delete.patch`cat PATCHLEVEL`.shar
 
-clean:
+clean::
 	-rm -f *~ *.bak *.o delete undelete lsdel expunge purge\
 		delete_errs.h delete_errs.c
 
