@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.12 1991-06-28 13:35:07 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.13 1991-07-02 16:51:56 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.12 1991-06-28 13:35:07 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.13 1991-07-02 16:51:56 epeisach Exp $";
 #endif lint
 
 /*
@@ -218,7 +218,7 @@ main(argc, argv)
 		}
 		sin.sin_family = AF_INET;
 		sin.sin_port = sp->s_port;
-		if (bind(finet, &sin, sizeof(sin), 0) < 0) {
+		if (bind(finet, &sin, sizeof(sin)) < 0) {
 			syslog(LOG_ERR, "bind: %m");
 			mcleanup();
 		}
