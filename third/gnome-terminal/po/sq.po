@@ -1,14 +1,15 @@
-# Romanian translation for gnome-terminal
-# This file is distributed under the same license as the PACKAGE package.
-# Mugurel Tudor <mugurelu@go.ro>, 2002-2003.
+# Albanian translation fot gnome-terminal.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-terminal package.
+# Laurent Dhima <laurenti@alblinux.net>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-terminal\n"
+"Project-Id-Version: gnome-terminal 2.2.x\n"
 "POT-Creation-Date: 2003-02-05 21:34-0500\n"
-"PO-Revision-Date: 2003-01-20 22:47+0200\n"
-"Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
-"Language-Team: română <ro@li.org>\n"
+"PO-Revision-Date: 2003-01-27 23:41+0100\n"
+"Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
+"Language-Team: albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,7 +17,7 @@ msgstr ""
 
 #: gnome-terminal.desktop.in.h:1
 msgid "Command line"
-msgstr "Linie de comandă"
+msgstr "Rreshti i komandës"
 
 #: gnome-terminal.desktop.in.h:2 src/terminal-accels.c:172
 #: src/terminal-profile.c:275 src/terminal-window.c:651 src/terminal.c:1080
@@ -25,90 +26,90 @@ msgstr "Terminal"
 
 #: src/eggcellrendererkeys.c:160 src/eggcellrendererkeys.c:161
 msgid "Accelerator key"
-msgstr "Combinaţie taste"
+msgstr "Pulsant përshpejtues"
 
 #: src/eggcellrendererkeys.c:170 src/eggcellrendererkeys.c:171
 msgid "Accelerator modifiers"
-msgstr "Modificatori pentru acceleratori"
+msgstr "Modifikues të përshpejtuesit"
 
 #: src/eggcellrendererkeys.c:180
 msgid "Accelerator Mode"
-msgstr "Combinaţie taste"
+msgstr "Modalitet përshpejtues"
 
 #: src/eggcellrendererkeys.c:181
 msgid "The type of accelerator."
-msgstr "Tipul combinaţiei de taste."
+msgstr "Lloji i përshpejtuesit."
 
 #: src/eggcellrendererkeys.c:219 src/gnome-terminal.glade2.h:28
 #: src/terminal-accels.c:717
 msgid "Disabled"
-msgstr "Dezactivată"
+msgstr "Deaktivuar"
 
 #: src/eggcellrendererkeys.c:330 src/eggcellrendererkeys.c:564
 msgid "Type a new accelerator, or press Backspace to clear"
-msgstr "Tastaţi un nou accelerator, sau apăsaţi Backspace pentru a şterge"
+msgstr "Shtyp përshpejtuesin e ri, ose shtyp Backspace për ta deaktivuar "
 
 #: src/eggcellrendererkeys.c:567
 msgid "Type a new accelerator"
-msgstr "Tastaţi un nou accelerator"
+msgstr "Shtyp përshpejtuesin e ri"
 
 #: src/encoding.c:57
 msgid "Current Locale"
-msgstr "Codarea locală"
+msgstr "Gjuha aktuale"
 
 #: src/encoding.c:60 src/encoding.c:86 src/encoding.c:129 src/encoding.c:177
 #: src/encoding.c:201
 msgid "Western"
-msgstr "Vestică"
+msgstr "Perëndimor"
 
 #: src/encoding.c:62 src/encoding.c:131 src/encoding.c:157 src/encoding.c:197
 msgid "Central European"
-msgstr "Europa centrală"
+msgstr "Europa Qendrore"
 
 #: src/encoding.c:64
 msgid "South European"
-msgstr "Europa de sud"
+msgstr "Europa Jugore"
 
 #: src/encoding.c:66 src/encoding.c:82 src/encoding.c:211
 msgid "Baltic"
-msgstr "Baltică"
+msgstr "Baltik"
 
 #: src/encoding.c:68 src/encoding.c:133 src/encoding.c:146 src/encoding.c:150
 #: src/encoding.c:161 src/encoding.c:199
 msgid "Cyrillic"
-msgstr "Chirilică"
+msgstr "Cyrillic"
 
 #: src/encoding.c:70 src/encoding.c:139 src/encoding.c:155 src/encoding.c:209
 msgid "Arabic"
-msgstr "Arabică"
+msgstr "Arabisht"
 
 #: src/encoding.c:72 src/encoding.c:167 src/encoding.c:203
 msgid "Greek"
-msgstr "Greacă"
+msgstr "Greqisht"
 
 #: src/encoding.c:74
 msgid "Hebrew Visual"
-msgstr "Ebraică vizuală"
+msgstr "Hebraike vizuale"
 
 #: src/encoding.c:76 src/encoding.c:137 src/encoding.c:173 src/encoding.c:207
 msgid "Hebrew"
-msgstr "Ebraică"
+msgstr "Hebraike"
 
 #: src/encoding.c:78 src/encoding.c:135 src/encoding.c:181 src/encoding.c:205
 msgid "Turkish"
-msgstr "Turcă"
+msgstr "Turqisht"
 
 #: src/encoding.c:80
 msgid "Nordic"
-msgstr "Nordică"
+msgstr "Nordic"
 
 #: src/encoding.c:84
 msgid "Celtic"
-msgstr "Celtică"
+msgstr "Celtic"
 
 #: src/encoding.c:88 src/encoding.c:179
 msgid "Romanian"
-msgstr "Română"
+msgstr "Romanisht"
 
 #: src/encoding.c:91 src/encoding.c:93 src/encoding.c:95 src/encoding.c:97
 #: src/encoding.c:99
@@ -117,43 +118,43 @@ msgstr "Unicode"
 
 #: src/encoding.c:102
 msgid "Armenian"
-msgstr "Armeană"
+msgstr "Armenisht"
 
 #: src/encoding.c:104 src/encoding.c:106 src/encoding.c:115
 msgid "Chinese Traditional"
-msgstr "Chineză tradiţională"
+msgstr "Kineze tradicionale"
 
 #: src/encoding.c:108
 msgid "Cyrillic/Russian"
-msgstr "Chirilică/Rusă"
+msgstr "Cyrillic/Rusisht"
 
 #: src/encoding.c:111 src/encoding.c:142 src/encoding.c:186
 msgid "Japanese"
-msgstr "Japoneză"
+msgstr "Japonisht"
 
 #: src/encoding.c:113 src/encoding.c:144 src/encoding.c:148 src/encoding.c:192
 msgid "Korean"
-msgstr "Coreană"
+msgstr "Koreane"
 
 #: src/encoding.c:118 src/encoding.c:120 src/encoding.c:122 src/encoding.c:126
 msgid "Chinese Simplified"
-msgstr "Chineză simplificată"
+msgstr "Kineze e thjeshtuar"
 
 #: src/encoding.c:124
 msgid "Georgian"
-msgstr "Georgiană"
+msgstr "Georgian"
 
 #: src/encoding.c:152 src/encoding.c:183
 msgid "Cyrillic/Ukrainian"
-msgstr "Chirilică/Ucrainiană"
+msgstr "Cyrillic/Ukraina"
 
 #: src/encoding.c:159
 msgid "Croatian"
-msgstr "Croată"
+msgstr "Kroate"
 
 #: src/encoding.c:163
 msgid "Hindi"
-msgstr "Hindusă"
+msgstr "Hindi"
 
 #: src/encoding.c:165
 msgid "Farsi"
@@ -169,33 +170,33 @@ msgstr "Gurmukhi"
 
 #: src/encoding.c:175
 msgid "Icelandic"
-msgstr "Islandeză"
+msgstr "Islandeze"
 
 #: src/encoding.c:188 src/encoding.c:194 src/encoding.c:213
 msgid "Vietnamese"
-msgstr "Vietnameză"
+msgstr "Vietnameze"
 
 #: src/encoding.c:190
 msgid "Thai"
-msgstr "Tailandeză"
+msgstr "Thai"
 
 #: src/encoding.c:379
 msgid "User Defined"
-msgstr "Definită de utilizator"
+msgstr "E përcaktuar nga përdoruesi"
 
 #: src/encoding.c:442 src/profile-editor.c:889 src/terminal-window.c:2510
 #: src/terminal.c:2742
 #, c-format
 msgid "There was an error displaying help: %s"
-msgstr "A survenit o eroare la afişarea ajutorului: %s"
+msgstr "U verifikua një gabim gjatë shfaqjes së ndihmës: %s"
 
 #: src/encoding.c:764 src/encoding.c:828
 msgid "_Description"
-msgstr "_Descriere"
+msgstr "_Përshkrimi"
 
 #: src/encoding.c:773 src/encoding.c:837
 msgid "_Encoding"
-msgstr "_Codare"
+msgstr "_Kodifikimi"
 
 #: src/encoding.c:1006
 #, c-format
@@ -203,8 +204,8 @@ msgid ""
 "There was an error subscribing to notification of terminal encoding list "
 "changes. (%s)\n"
 msgstr ""
-"A intervenit o eroare la notificarea schimbării listei de codări a "
-"terminalului. (%s)\n"
+"Gabim gjatë regjistrimit për njoftimin e ndryshimeve në listën e "
+"kodifikimeve të terminalit. (%s)\n"
 
 #: src/gnome-terminal.glade2.h:1 src/x-font-selector.c:883
 msgid "*"
@@ -212,47 +213,47 @@ msgstr "*"
 
 #: src/gnome-terminal.glade2.h:2
 msgid "<b>Background</b>"
-msgstr "<b>Fundal</b>"
+msgstr "<b>Sfondi</b>"
 
 #: src/gnome-terminal.glade2.h:3
 msgid "<b>Command</b>"
-msgstr "<b>Comandă</b>"
+msgstr "<b>Komanda</b>"
 
 #: src/gnome-terminal.glade2.h:4
 msgid "<b>Compatibility</b>"
-msgstr "<b>Compatibilitate</b>"
+msgstr "<b>Kompatibiliteti</b>"
 
 #: src/gnome-terminal.glade2.h:5
 msgid "<b>Foreground and Background</b>"
-msgstr "<b>Prim plan şi fundal</b>"
+msgstr "<b>Balli dhe sfondi</b>"
 
 #: src/gnome-terminal.glade2.h:6
 msgid "<b>General</b>"
-msgstr "<b>General</b>"
+msgstr "<b>Përgjithshme</b>"
 
 #: src/gnome-terminal.glade2.h:7
 msgid "<b>Palette</b>"
-msgstr "<b>Paleta</b>"
+msgstr "<b>Palette</b>"
 
 #: src/gnome-terminal.glade2.h:8
 msgid "<b>Scrolling</b>"
-msgstr "<b>Defilare</b>"
+msgstr "<b>Rëshqitje</b>"
 
 #: src/gnome-terminal.glade2.h:9
 msgid "<b>Title</b>"
-msgstr "<b>Titlu</b>"
+msgstr "<b>Titulli</b>"
 
 #: src/gnome-terminal.glade2.h:10
 msgid "<big>S/Key Challenge Response</big>"
-msgstr "<big>Răspuns îndrăzneţ s/key</big>"
+msgstr "<big>Përgjigjia e Challenge S/Key</big>"
 
 #: src/gnome-terminal.glade2.h:11
 msgid "<small><i>Maximum</i></small>"
-msgstr "<small><i>Maxim</i></small>"
+msgstr "<small><i>Maksimum</i></small>"
 
 #: src/gnome-terminal.glade2.h:12
 msgid "<small><i>None</i></small>"
-msgstr "<small><i>Nici unul</i></small>"
+msgstr "<small><i>Bosh</i></small>"
 
 #: src/gnome-terminal.glade2.h:13
 msgid "ASCII DEL"
@@ -260,39 +261,39 @@ msgstr "ASCII DEL"
 
 #: src/gnome-terminal.glade2.h:14
 msgid "A_vailable encodings:"
-msgstr "Codări _disponibile:"
+msgstr "Kodifikime në dis_pozicion:"
 
 #: src/gnome-terminal.glade2.h:15
 msgid "Background image _scrolls"
-msgstr "Imaginea de fundal _defilează"
+msgstr "Imazh sfondi rrë_shqitës"
 
 #: src/gnome-terminal.glade2.h:16
 msgid "Built-_in schemes:"
-msgstr "Scheme _predefinite:"
+msgstr "Skemat e për_caktuara:"
 
 #: src/gnome-terminal.glade2.h:17
 msgid "Built-in _schemes:"
-msgstr "Scheme p_redefinite:"
+msgstr "Skemat e përc_aktuara:"
 
 #: src/gnome-terminal.glade2.h:18
 msgid "Choose terminal background color"
-msgstr "Alege culoarea de fundal a terminalului"
+msgstr "Zgjidh ngjyrën e sfondit të terminalit"
 
 #: src/gnome-terminal.glade2.h:19
 msgid "Choose terminal text color"
-msgstr "Alege culoarea de text a terminalului"
+msgstr "Zgjidh ngjyrën e tekstit të terminalit"
 
 #: src/gnome-terminal.glade2.h:20
 msgid "Color _palette:"
-msgstr "_Paleta de culori:"
+msgstr "Paletta e n_gjyrave:"
 
 #: src/gnome-terminal.glade2.h:21
 msgid "Colors"
-msgstr "Culori"
+msgstr "Ngjyrat"
 
 #: src/gnome-terminal.glade2.h:22
 msgid "Compatibility"
-msgstr "Compatibilitate"
+msgstr "Kompatibiliteti"
 
 #: src/gnome-terminal.glade2.h:23
 msgid "Control-H"
@@ -300,198 +301,200 @@ msgstr "Control-H"
 
 #: src/gnome-terminal.glade2.h:24
 msgid "Cursor _blinks"
-msgstr "Cursor _clipitor"
+msgstr "Kursor _interminent"
 
 #: src/gnome-terminal.glade2.h:25
 msgid "Custom co_mmand:"
-msgstr "Comandă _personalizată:"
+msgstr "Ko_mandë e personalizuar:"
 
 #: src/gnome-terminal.glade2.h:26
 msgid "Disable all menu m_nemonics (such as Alt+f to open File menu)"
 msgstr ""
-"Dezactivează toate m_nemonicele din meniu (cum ar fi Alt+f pentru meniul "
-"Fişier)"
+"Deaktivo të gjithë përshpejtuesit e _menu (si p.sh. Alt+f për të hapur menu-"
+"në File)"
 
 #: src/gnome-terminal.glade2.h:27
 msgid "Disable menu acc_ess key (F10 by default)"
-msgstr "Dezactivează tastele pentru acc_es la meniu (implicit F10)"
+msgstr "Deaktivo pulsantin e hyrj_es në menu (F10 i prezgjedhur)"
 
 #: src/gnome-terminal.glade2.h:29
 msgid "E_ncodings shown in menu:"
-msgstr "C_odări arătate în meniu:"
+msgstr "Kodifiki_me të shfaqura në menu:"
 
 #: src/gnome-terminal.glade2.h:30
 msgid "Effects"
-msgstr "Efecte"
+msgstr "Efekte"
 
 #: src/gnome-terminal.glade2.h:31
 msgid "Escape sequence"
-msgstr "Secvenţă escape"
+msgstr "Sekuencë e escape"
 
 #: src/gnome-terminal.glade2.h:32
 msgid "Exit the terminal"
-msgstr "Părăseşte terminalul"
+msgstr "Dil nga terminali"
 
 #: src/gnome-terminal.glade2.h:33
 msgid "General"
-msgstr "General"
+msgstr "Përgjithshëm"
 
 #: src/gnome-terminal.glade2.h:34
 msgid "Goes after initial title"
-msgstr "E plasat după titlul iniţial"
+msgstr "Mbas titullit fillues"
 
 #: src/gnome-terminal.glade2.h:35
 msgid "Goes before initial title"
-msgstr "E plasat înaintea titlului iniţial"
+msgstr "Para titullit fillues"
 
 #: src/gnome-terminal.glade2.h:36
 msgid "Initial _title:"
-msgstr "Titlul _iniţial:"
+msgstr "Ti_tulli fillues:"
 
 #: src/gnome-terminal.glade2.h:37
 msgid "Isn't displayed"
-msgstr "Nu este afişat"
+msgstr "Nuk duket"
 
 #: src/gnome-terminal.glade2.h:38
 msgid "Keybindings Editor"
-msgstr "Editează combinaţiile de taste"
+msgstr "Edituesi i shpejtimeve"
 
 #: src/gnome-terminal.glade2.h:39
 msgid "On the left side"
-msgstr "În partea stângă"
+msgstr "Në krahun e majtë"
 
 #: src/gnome-terminal.glade2.h:40
 msgid "On the right side"
-msgstr "În partea dreaptă"
+msgstr "Në krahun e djathtë"
 
 #: src/gnome-terminal.glade2.h:41
 msgid "Palette entry 1"
-msgstr "Paleta numărul 1"
+msgstr "Elementi 1 i palette"
 
 #: src/gnome-terminal.glade2.h:42
 msgid "Palette entry 10"
-msgstr "Paleta numărul 10"
+msgstr "Elementi 10 i palette"
 
 #: src/gnome-terminal.glade2.h:43
 msgid "Palette entry 11"
-msgstr "Paleta numărul 11"
+msgstr "Elementi 11 i palette"
 
 #: src/gnome-terminal.glade2.h:44
 msgid "Palette entry 12"
-msgstr "Paleta numărul 12"
+msgstr "Elementi 12 i palette"
 
 #: src/gnome-terminal.glade2.h:45
 msgid "Palette entry 13"
-msgstr "Paleta numărul 13"
+msgstr "Elementi 13 i palette"
 
 #: src/gnome-terminal.glade2.h:46
 msgid "Palette entry 14"
-msgstr "Paleta numărul 14"
+msgstr "Elementi 14 i palette"
 
 #: src/gnome-terminal.glade2.h:47
 msgid "Palette entry 15"
-msgstr "Paleta numărul 15"
+msgstr "Elementi 15 i palette"
 
 #: src/gnome-terminal.glade2.h:48
 msgid "Palette entry 16"
-msgstr "Paleta numărul 16"
+msgstr "Elementi 16 i palette"
 
 #: src/gnome-terminal.glade2.h:49
 msgid "Palette entry 2"
-msgstr "Paleta numărul 2"
+msgstr "Elementi 2 i palette"
 
 #: src/gnome-terminal.glade2.h:50
 msgid "Palette entry 3"
-msgstr "Paleta numărul 3"
+msgstr "Elementi 3 i palette"
 
 #: src/gnome-terminal.glade2.h:51
 msgid "Palette entry 4"
-msgstr "Paleta numărul 4"
+msgstr "Elementi 4 i palette"
 
 #: src/gnome-terminal.glade2.h:52
 msgid "Palette entry 5"
-msgstr "Paleta numărul 5"
+msgstr "Elementi 5 i palette"
 
 #: src/gnome-terminal.glade2.h:53
 msgid "Palette entry 6"
-msgstr "Paleta numărul 6"
+msgstr "Elementi 6 i palette"
 
 #: src/gnome-terminal.glade2.h:54
 msgid "Palette entry 7"
-msgstr "Paleta numărul 7"
+msgstr "Elementi 7 i palette"
 
 #: src/gnome-terminal.glade2.h:55
 msgid "Palette entry 8"
-msgstr "Paleta numărul 8"
+msgstr "Elementi 8 i palette"
 
 #: src/gnome-terminal.glade2.h:56
 msgid "Palette entry 9"
-msgstr "Paleta numărul 9"
+msgstr "Elementi 9 i palette"
 
 #: src/gnome-terminal.glade2.h:57
 msgid "Password:"
-msgstr "Parolă:"
+msgstr "Password:"
 
 #: src/gnome-terminal.glade2.h:58
 msgid "Profile Editor"
-msgstr "Editor de profiluri"
+msgstr "Edituesi i Profilit"
 
 #: src/gnome-terminal.glade2.h:59
 msgid "Profile _icon:"
-msgstr "_Iconiţa profilului:"
+msgstr "_Ikona për profilin:"
 
 #: src/gnome-terminal.glade2.h:60
 msgid "R_un a custom command instead of my shell"
-msgstr "_Rulează o comandă personalizată în locul shell-ului meu"
+msgstr "Z_bato një komandë të personalizuar në vend të shell"
 
 #: src/gnome-terminal.glade2.h:61
 msgid "Replaces initial title"
-msgstr "Înlocuieşte titlul iniţial"
+msgstr "Zevëndëson titullin fillues"
 
 #: src/gnome-terminal.glade2.h:62
 msgid "Restart the command"
-msgstr "Restartează comanda"
+msgstr "Rifillo komandën"
 
 #: src/gnome-terminal.glade2.h:63
 msgid "S_croll on keystroke"
-msgstr "_Defilează după apăsarea unei taste"
+msgstr "S_croll on keystroke"
 
 #: src/gnome-terminal.glade2.h:64
 msgid "Sc_roll on output"
-msgstr "Defilează după _ieşirea comenzii"
+msgstr "Sc_roll on output"
 
 #: src/gnome-terminal.glade2.h:65
 msgid "Scr_ollback:"
-msgstr "Defilare î_napoi:"
+msgstr "Scr_ollback:"
 
 #: src/gnome-terminal.glade2.h:66
 msgid "Scrolling"
-msgstr "Defilare"
+msgstr "Rrëshqitje"
 
 #: src/gnome-terminal.glade2.h:67
 msgid "Select-by-_word characters:"
-msgstr "Caractere selectează-după-_cuvânt:"
+msgstr "Konsideroi _gërmat si pjesë e një fjale:"
 
 #: src/gnome-terminal.glade2.h:68
 msgid "Show _menubar by default in new terminals"
-msgstr "Arată implicit bara de meniuri în terminale noi "
+msgstr "Trego gjithmonë kornizën e menu tek terminalet e rinj"
 
 #: src/gnome-terminal.glade2.h:69
 msgid "Terminal Encodings"
-msgstr "Codări terminal"
+msgstr "Kodifikimet e terminalit"
 
 #: src/gnome-terminal.glade2.h:70
 msgid "Terminal _bell"
-msgstr "Activează _sunet"
+msgstr "Sinjal a_kustik"
 
 #: src/gnome-terminal.glade2.h:71
 msgid "Terminal applications have these colors available to them."
-msgstr "Terminalele au aceste culori disponibile pentru ele."
+msgstr "Ngjyrat në dispozicion për aplikativët nga terminali."
 
 #: src/gnome-terminal.glade2.h:72
 msgid ""
 "The command running inside the terminal may dynamically set a new title."
-msgstr "Comanda care rulează în terminal poate seta dinamic un nou titlu."
+msgstr ""
+"Komanda në ekzekutim në terminal mund të vendosë automatikisht një titull të "
+"ri."
 
 #: src/gnome-terminal.glade2.h:73
 msgid ""
@@ -499,94 +502,94 @@ msgid ""
 "They are only here to allow you to work around certain applications\n"
 "and operating sytems that expect different terminal behavior."
 msgstr ""
-"Aceste opţiuni pot face ca anumite aplicaţii să nu funcţioneze corect.\n"
-"Sunt doar pentru a vă permite să rezolvaţi diferite probleme generate\n"
-"de unele aplicaţii şi sisteme de operare ce aşteaptă un anumit\n"
-"comportament al terminalului."
+"Këto opcione mund të shkaktojnë sjellje jo korrekte për disa aplikativë.\n"
+"Mund të provohet të punohet mbi to për të kapërcyer problemet me disa\n"
+"aplikativë dhe sisteme operativë që kanë nevojë për një sjellje të ndryshme\n"
+"terminali."
 
 #: src/gnome-terminal.glade2.h:76
 msgid "Title and Command"
-msgstr "Titlu şi comandă"
+msgstr "Titulli dhe komanda"
 
 #: src/gnome-terminal.glade2.h:77
 msgid "Use colors from s_ystem theme"
-msgstr "Foloseşte culori din tema sistemului"
+msgstr "Përdor ngjyrat e temës së s_istemit"
 
 #: src/gnome-terminal.glade2.h:78
 msgid "When command _exits:"
-msgstr "Când comanda se _termină:"
+msgstr "_Kur komanda përfundon:"
 
 #: src/gnome-terminal.glade2.h:79
 msgid "_Accelerators:"
-msgstr "_Acceleratori:"
+msgstr "_Përshpejtues:"
 
 #: src/gnome-terminal.glade2.h:80
 msgid "_Allow bold text"
-msgstr "_Permite text aldin"
+msgstr "_Lejo tekstin me të gërma të theksuara:"
 
 #: src/gnome-terminal.glade2.h:81
 msgid "_Background color:"
-msgstr "_Culoarea de fundal:"
+msgstr "Ngjyra e _sfondit:"
 
 #: src/gnome-terminal.glade2.h:82
 msgid "_Background image"
-msgstr "_Imagine de fundal"
+msgstr "Figura e _sfondit"
 
 #: src/gnome-terminal.glade2.h:83
 msgid "_Backspace key generates:"
-msgstr "Tasta _backspace generează:"
+msgstr "Pulsanti _Backspace gjeneron:"
 
 #: src/gnome-terminal.glade2.h:84
 msgid "_Delete key generates:"
-msgstr "Tasta _delete generează:"
+msgstr "Pulsanti _Delete gjeneron:"
 
 #: src/gnome-terminal.glade2.h:85
 msgid "_Dynamically-set title:"
-msgstr "Titlul setat _dinamic:"
+msgstr "Titull i vendosur _dinamikisht:"
 
 #: src/gnome-terminal.glade2.h:86
 msgid "_Image file:"
-msgstr "_Fişierul imagine:"
+msgstr "File i _Imazhit:"
 
 #: src/gnome-terminal.glade2.h:87
 msgid "_None (use solid color)"
-msgstr "_Nici unul (foloseşte o singură culoare)"
+msgstr "_Asnjë (përdor një ngjyrë)"
 
 #: src/gnome-terminal.glade2.h:88
 msgid "_Profile name:"
-msgstr "_Nume profil:"
+msgstr "Emri i _Profilit:"
 
 #: src/gnome-terminal.glade2.h:89
 msgid "_Reset compatibility options to defaults"
-msgstr "_Resetează opţiunile de compatibilitate la cele implicite"
+msgstr "_Rikthe opcionet e kompatibilitetit në vlerat e prezgjedhura"
 
 #: src/gnome-terminal.glade2.h:90
 msgid "_Run command as a login shell"
-msgstr "_Rulează comanda ca un shell de logare"
+msgstr "_Zbato komandën si një shell i login"
 
 #: src/gnome-terminal.glade2.h:91
 msgid "_Scrollbar is:"
-msgstr "Bara de scroll este:"
+msgstr "_Scrollbar is:"
 
 #: src/gnome-terminal.glade2.h:92
 msgid "_Shade transparent or image background:"
-msgstr "_Umbreşte fundalul transparent sau imaginea:"
+msgstr "_Opaciteti i trasparencës ose intensiteti i imazhit të sfondit:"
 
 #: src/gnome-terminal.glade2.h:93
 msgid "_Text color:"
-msgstr "_Culoarea textului:"
+msgstr "Ngjyra e _tekstit:"
 
 #: src/gnome-terminal.glade2.h:94
 msgid "_Transparent background"
-msgstr "Fundal _transparent"
+msgstr "Sfond _Trasparent"
 
 #: src/gnome-terminal.glade2.h:95
 msgid "_Update utmp/wtmp records when command is launched"
-msgstr "_Actualizează înregistrările utmp/wtmp când comanda este lansată"
+msgstr "_Rifresko regjistrimet e utmp/wtmp kur zbatohet një komandë"
 
 #: src/gnome-terminal.glade2.h:96
 msgid "_Use the same size font as other applications"
-msgstr "_Foloseşte aceeaşi mărime pentru font ca alte aplicaţii"
+msgstr "_Përdor të njëjtën madhësi të gërmave si programet e tjerë"
 
 #: src/gnome-terminal.glade2.h:97
 msgid "_kilobytes"
@@ -594,7 +597,7 @@ msgstr "_kilobytes"
 
 #: src/gnome-terminal.glade2.h:98
 msgid "_lines"
-msgstr "_linii"
+msgstr "_rreshta"
 
 #: src/gnome-terminal.glade2.h:99
 msgid "kilobytes"
@@ -602,27 +605,27 @@ msgstr "kilobytes"
 
 #: src/profile-editor.c:50
 msgid "Black on light yellow"
-msgstr "Negru pe galben deschis"
+msgstr "E zezë mbi të verdhë e hapur"
 
 #: src/profile-editor.c:52
 msgid "Black on white"
-msgstr "Negru pe alb"
+msgstr "E zezë mbi të bardhë"
 
 #: src/profile-editor.c:54
 msgid "Gray on black"
-msgstr "Gri pe negru"
+msgstr "Gri mbi të zezë"
 
 #: src/profile-editor.c:56
 msgid "Green on black"
-msgstr "Verde pe negru"
+msgstr "Jeshile mbi të zezë"
 
 #: src/profile-editor.c:58
 msgid "White on black"
-msgstr "Alb pe negru"
+msgstr "E bardhë mbi të zezë"
 
 #: src/profile-editor.c:71
 msgid "Linux console"
-msgstr "Consolă linux"
+msgstr "Konsolë e Linux"
 
 #: src/profile-editor.c:72
 msgid "XTerm"
@@ -634,11 +637,11 @@ msgstr "Rxvt"
 
 #: src/profile-editor.c:813 src/profile-editor.c:843
 msgid "Custom"
-msgstr "Personalizat"
+msgstr "Personalizuar"
 
 #: src/profile-editor.c:1230
 msgid "Choose a terminal font"
-msgstr "Alege un font pentru terminal"
+msgstr "Zgjidh një font për terminalin"
 
 #: src/profile-editor.c:1240 src/simple-x-font-selector.c:327
 msgid "_Font:"
@@ -647,213 +650,213 @@ msgstr "_Font:"
 #: src/profile-editor.c:1515
 #, c-format
 msgid "Editing profile \"%s\""
-msgstr "Editează profilul \"%s\""
+msgstr "Ndryshimi i profilit \"%s\""
 
 #: src/simple-x-font-selector.c:332
 msgid "Si_ze:"
-msgstr "_Mărime:"
+msgstr "Ma_dhësia:"
 
 #: src/simple-x-font-selector.c:334
 msgid "_Use bold version of font"
-msgstr "_Foloseşte versiunea aldină a fontului"
+msgstr "_Përdor gërmat e theksuara"
 
 #: src/simple-x-font-selector.c:342
 msgid "Click to choose font type"
-msgstr "Apăsaţi butonul pentru a alege tipul de font"
+msgstr "Kliko për të zgjedhur llojin e font"
 
 #: src/simple-x-font-selector.c:348
 msgid "Click to choose font size"
-msgstr "Apăsaţi butonul pentru a alege mărimea fontului"
+msgstr "Kliko për të zgjedhur madhësinë e font"
 
 #: src/simple-x-font-selector.c:659 src/x-font-selector.c:1964
 msgid "roman"
-msgstr "roman"
+msgstr "rrumbullt"
 
 #: src/simple-x-font-selector.c:660 src/x-font-selector.c:1213
 #: src/x-font-selector.c:1965
 msgid "italic"
-msgstr "italic"
+msgstr "pjerrët"
 
 #: src/simple-x-font-selector.c:661 src/x-font-selector.c:1214
 #: src/x-font-selector.c:1966
 msgid "oblique"
-msgstr "oblic"
+msgstr "oblique"
 
 #: src/simple-x-font-selector.c:662 src/x-font-selector.c:1215
 #: src/x-font-selector.c:1967
 msgid "reverse italic"
-msgstr "italic inversat"
+msgstr "i pjerrët në të kundërt"
 
 #: src/simple-x-font-selector.c:663 src/x-font-selector.c:1216
 #: src/x-font-selector.c:1968
 msgid "reverse oblique"
-msgstr "oblic inversat"
+msgstr "ablique në të kundërt"
 
 #: src/simple-x-font-selector.c:664 src/x-font-selector.c:1217
 #: src/x-font-selector.c:1969
 msgid "other"
-msgstr "altul"
+msgstr "tjetër"
 
 #: src/simple-x-font-selector.c:671 src/x-font-selector.c:1976
 msgid "proportional"
-msgstr "proporţional"
+msgstr "në proporcion"
 
 #: src/simple-x-font-selector.c:672 src/x-font-selector.c:1977
 msgid "monospaced"
-msgstr "monospaţiat"
+msgstr "monohapsirë"
 
 #: src/simple-x-font-selector.c:673 src/x-font-selector.c:1978
 msgid "char cell"
-msgstr "celulă caracter"
+msgstr "qelia e gërmës"
 
 #: src/simple-x-font-selector.c:1268 src/x-font-selector.c:2654
 msgid "MAX_FONTS exceeded. Some fonts may be missing."
-msgstr "MAX_FONTS depăşit.Unele fonturi ar putea lipsi."
+msgstr "Vlera MAX_FONTS jashtë shkallës. Disa nga gërmat mund të mungojnë."
 
 #: src/terminal-accels.c:75
 msgid "New Tab"
-msgstr "Tab nou"
+msgstr "Skedë e re"
 
 #: src/terminal-accels.c:77
 msgid "New Window"
-msgstr "Fereastră nouă"
+msgstr "Dritare e Re"
 
 #: src/terminal-accels.c:79 src/terminal.c:2166
 msgid "New Profile"
-msgstr "Profil nou"
+msgstr "Profil i Ri"
 
 #: src/terminal-accels.c:81
 msgid "Close Tab"
-msgstr "Închide tabul"
+msgstr "Mbylle skedën"
 
 #: src/terminal-accels.c:83
 msgid "Close Window"
-msgstr "Închide fereastra"
+msgstr "Mbyll Dritaren"
 
 #: src/terminal-accels.c:89
 msgid "Copy"
-msgstr "Copiază"
+msgstr "Kopjo"
 
 #: src/terminal-accels.c:91
 msgid "Paste"
-msgstr "Lipeşte"
+msgstr "Ngjit"
 
 #: src/terminal-accels.c:97
 msgid "Hide and Show menubar"
-msgstr "Ascunde şi arată bara de meniu"
+msgstr "Mbulo dhe Zbulo kornizën e menu"
 
 #: src/terminal-accels.c:99
 msgid "Full Screen"
-msgstr "Pe tot ecranul"
+msgstr "Ekran i plotë"
 
 #: src/terminal-accels.c:101
 msgid "Zoom In"
-msgstr "Măreşte"
+msgstr "Zmadho"
 
 #: src/terminal-accels.c:103
 msgid "Zoom Out"
-msgstr "Micşorează"
+msgstr "Zvogëlo"
 
 #: src/terminal-accels.c:105
 msgid "Normal Size"
-msgstr "Mărime normală"
+msgstr "Madhësi normale"
 
 #: src/terminal-accels.c:111
 msgid "Set Title"
-msgstr "Setează titlul"
+msgstr "Vendos titullin"
 
 #: src/terminal-accels.c:113
 msgid "Reset"
-msgstr "Resetează"
+msgstr "Reset"
 
 #: src/terminal-accels.c:115
 msgid "Reset and Clear"
-msgstr "Resetează şi şterge"
+msgstr "Reset dhe pastro"
 
 #: src/terminal-accels.c:121
 msgid "Switch to Previous Tab"
-msgstr "Du-te la tabul anterior"
+msgstr "Kalo tek skeda paraardhëse"
 
 #: src/terminal-accels.c:123
 msgid "Switch to Next Tab"
-msgstr "Du-te la tabul următor"
+msgstr "Kalo tek skeda në vazhdim"
 
 #: src/terminal-accels.c:125
 msgid "Switch to Tab 1"
-msgstr "Du-te la tabul 1"
+msgstr "Kalo tek Skeda 1"
 
 #: src/terminal-accels.c:128
 msgid "Switch to Tab 2"
-msgstr "Du-te la tabul 2"
+msgstr "Kalo tek Skeda 2"
 
 #: src/terminal-accels.c:131
 msgid "Switch to Tab 3"
-msgstr "Du-te la tabul 3"
+msgstr "Kalo tek Skeda 3"
 
 #: src/terminal-accels.c:134
 msgid "Switch to Tab 4"
-msgstr "Du-te la tabul 4"
+msgstr "Kalo tek Skeda 4"
 
 #: src/terminal-accels.c:137
 msgid "Switch to Tab 5"
-msgstr "Du-te la tabul 5"
+msgstr "Kalo tek Skeda 5"
 
 #: src/terminal-accels.c:140
 msgid "Switch to Tab 6"
-msgstr "Du-te la tabul 6"
+msgstr "Kalo tek Skeda 6"
 
 #: src/terminal-accels.c:143
 msgid "Switch to Tab 7"
-msgstr "Du-te la tabul 7"
+msgstr "Kalo tek Skeda 7"
 
 #: src/terminal-accels.c:146
 msgid "Switch to Tab 8"
-msgstr "Du-te la tabul 8"
+msgstr "Kalo tek Skeda 8"
 
 #: src/terminal-accels.c:149
 msgid "Switch to Tab 9"
-msgstr "Du-te la tabul 9"
+msgstr "Kalo tek Skeda 9"
 
 #: src/terminal-accels.c:152
 msgid "Switch to Tab 10"
-msgstr "Du-te la tabul 10"
+msgstr "Kalo tek Skeda 10"
 
 #: src/terminal-accels.c:155
 msgid "Switch to Tab 11"
-msgstr "Du-te la tabul 11"
+msgstr "Kalo tek Skeda 11"
 
 #: src/terminal-accels.c:158
 msgid "Switch to Tab 12"
-msgstr "Du-te la tabul 12"
+msgstr "Kalo tek Skeda 12"
 
 #: src/terminal-accels.c:164
 msgid "Contents"
-msgstr "Conţinut"
+msgstr "Përmbajtja"
 
 #: src/terminal-accels.c:169
 msgid "File"
-msgstr "Fişier"
+msgstr "File"
 
 #: src/terminal-accels.c:170
 msgid "Edit"
-msgstr "Editare"
+msgstr "Ndrysho"
 
 #: src/terminal-accels.c:171
 msgid "View"
-msgstr "Vizualizare"
+msgstr "Paraqitja"
 
 #: src/terminal-accels.c:173
 msgid "Go"
-msgstr "Du-te"
+msgstr "Shko"
 
 #: src/terminal-accels.c:174
 msgid "Help"
-msgstr "Ajutor"
+msgstr "Ndihmë"
 
 #: src/terminal-accels.c:264 src/terminal-profile.c:391 src/terminal.c:1469
 #, c-format
 msgid "There was an error loading config from %s. (%s)\n"
-msgstr "A intervenit o eroare la încărcarea configurării din %s. (%s)\n"
+msgstr "Gabim gjatë ngarkimit të konfigurimit nga %s. (%s)\n"
 
 #: src/terminal-accels.c:278
 #, c-format
@@ -861,35 +864,33 @@ msgid ""
 "There was an error subscribing to notification of terminal keybinding "
 "changes. (%s)\n"
 msgstr ""
-"A intervenit o eroare la notificarea schimbărilor combinaţiilor de taste ale "
-"terminalului. (%s)\n"
+"Gabim gjatë regjistrimit për të kryer njoftimin mbi ndryshimet e funksioneve "
+"të pulsantëve. (%s)\n"
 
 #: src/terminal-accels.c:319
 #, c-format
 msgid "There was an error loading a terminal keybinding. (%s)\n"
 msgstr ""
-"A intervenit o eroare la încărcarea unei combinaţii de taste a terminalului. "
-"(%s)\n"
+"Gabim gjatë ngarkimit të një funksioni të pulsantëve për terminalin. (%s)\n"
 
 #: src/terminal-accels.c:335
 #, c-format
 msgid "The value of configuration key %s is not valid; value is \"%s\"\n"
 msgstr ""
-"Valoarea cheiei de configurare %s nu este validă; valoarea este \"%s\"\n"
+"Vlera e çelsit të konfigurimit %s nuk është e vlefshme; vlera është \"%s\"\n"
 
 #: src/terminal-accels.c:358 src/terminal-window.c:1028
 #, c-format
 msgid ""
 "There was an error loading config value for whether to use mnemonics. (%s)\n"
 msgstr ""
-"A intervenit o eroare la încărcarea setării referitoare la folosirea "
-"mnemonicilor. (%s)\n"
+"Gabim gjatë ngarkimit të vlerës së konfigurimit që përcakton nëse do të "
+"përdoren mnemonics. (%s)\n"
 
 #: src/terminal-accels.c:372
 #, c-format
 msgid "There was an error subscribing to notification for use_mnemonics (%s)\n"
-msgstr ""
-"A intervenit o eroare la notificarea pentru folosirea mnemonicilor (%s)\n"
+msgstr "Gabim gjatë regjistrimit për njoftimin mbi use_mnemonics (%s)\n"
 
 #: src/terminal-accels.c:383
 #, c-format
@@ -897,46 +898,47 @@ msgid ""
 "There was an error loading config value for whether to use menu "
 "accelerators. (%s)\n"
 msgstr ""
-"A intervenit o eroare la încărcarea setării referitoare la folosirea "
-"acceleratorilor pentru meniu. (%s)\n"
+"Gabim gjatë ngarkimit të vlerës së konfigurimit për përdorimin e "
+"përshpejtuesve të menu. (%s)\n"
 
 #: src/terminal-accels.c:399
 #, c-format
 msgid ""
 "There was an error subscribing to notification for use_menu_accelerators (%"
 "s)\n"
-msgstr ""
-"A intervenit o eroare la notificarea pentru folosirea acceleratorilor pentru "
-"meniu (% s)\n"
+msgstr "Gabim gjatë regjistrimit për njoftimin e use_menu_accelerators (%s)\n"
 
 #: src/terminal-accels.c:777
 #, c-format
 msgid "Error propagating accelerator change to configuration database: %s\n"
-msgstr "Eroare la schimbarea acceleratorilor din configuraţie: %s\n"
+msgstr ""
+"Gabim gjatë sistemimit tek databaza e konfigurimit ndryshimet e "
+"përshpejtuesve: %s\n"
 
 #: src/terminal-accels.c:947
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
-msgstr "Eroare la setarea noului accelerator din configuraţie: %s\n"
+msgstr ""
+"Gabim gjatë sistemimit të përshpejtuesit të ri në databazën e konfigurimit: %"
+"s\n"
 
 #: src/terminal-accels.c:978
 #, c-format
 msgid "Error setting use_mnemonics key: %s\n"
-msgstr "Eroare la setarea tastei de folosire de mnemonice: %s\n"
+msgstr "Gabim gjatë vendosjes së çelsit use_mnemonics: %s\n"
 
 #: src/terminal-accels.c:1008
 #, c-format
 msgid "Error setting use_menu_accelerators key: %s\n"
-msgstr ""
-"Eroare la setarea tastei pentru folosirea acceleratorilor de meniu: %s\n"
+msgstr "Gabim gjatë vendosjes së çelsit use_menu_accelerators: %s\n"
 
 #: src/terminal-accels.c:1127
 msgid "_Action"
-msgstr "_Acţiune"
+msgstr "_Veprimi"
 
 #: src/terminal-accels.c:1147
 msgid "Accelerator _Key"
-msgstr "Combinaţie de _taste"
+msgstr "_Pulsanti përshpejtues"
 
 #: src/terminal-profile.c:406
 #, c-format
@@ -944,63 +946,64 @@ msgid ""
 "There was an error subscribing to notification of terminal profile changes. "
 "(%s)\n"
 msgstr ""
-"A intervenit o eroare la notificarea schimbării profilului terminalului. (%"
-"s)\n"
+"Gabim gjatë regjistrimit për njoftimin e ndryshimeve të profilit të "
+"terminalit. (%s)\n"
 
 #: src/terminal-profile.c:1001
 #, c-format
 msgid "Could not find an icon called \"%s\" for terminal profile \"%s\"\n"
 msgstr ""
-"Nu am putut găsi o iconiţă numită \"%s\" pentru profilul terminalului \"%s"
-"\"\n"
+"E pamundur gjetja e ikonës me emrin \"%s\" për profilin e terminalit \"%s\"\n"
 
 #: src/terminal-profile.c:1015
 #, c-format
 msgid "Failed to load icon \"%s\" for terminal profile \"%s\": %s\n"
 msgstr ""
-"Eşuare la încărcarea iconiţei \"%s\" pentru profilul terminalului \"%s\":%s\n"
+"Ngarkimi i ikonës \"%s\" dështoi për profilin e terminalit \"%s\": %s\n"
 
 #: src/terminal-profile.c:1192
 #, c-format
 msgid ""
 "Could not find a background image called \"%s\" for terminal profile \"%s\"\n"
 msgstr ""
-"Nu am putut găsi o imagine de fundal numită \"%s\" pentru profilul "
-"terminalului \"%s\"\n"
+"Nuk arrij të gjej imazhin e sfondit me emrin \"%s\" për profilin e "
+"terminalit \"%s\"\n"
 
 #: src/terminal-profile.c:1206
 #, c-format
 msgid ""
 "Failed to load background image \"%s\" for terminal profile \"%s\": %s\n"
 msgstr ""
-"Eşuare la încărcarea imaginii de fundal \"%s\" pentru profilul terminalului "
-"\"%s\": %s\n"
+"Ngarkimi i imazhit \"%s\" të sfondit dështoi për profilin e terminalit \"%s"
+"\": %s\n"
 
 #: src/terminal-profile.c:1860
 #, c-format
 msgid ""
 "GNOME Terminal: font name \"%s\" set in configuration database is not valid\n"
-msgstr "Terminalul GNOME: fontul \"%s\" setat în configuraţie nu este valid\n"
+msgstr ""
+"Gërma me emrin \"%s\" e përcaktuar në databazën e konfigurimit të terminalit "
+"GNOME nuk është e vlefshme\n"
 
 #: src/terminal-profile.c:2161
 #, c-format
 msgid "Error getting default value of %s: %s\n"
-msgstr "Eroare la obţinerea valorii implicite %s: %s\n"
+msgstr "Gabim gjatë leximit të vlerës së prezgjedhur të %s: %s\n"
 
 #: src/terminal-profile.c:2167
 #, c-format
 msgid "There wasn't a default value for %s\n"
-msgstr "Nu există o valoare implicită pentru %s\n"
+msgstr "Nuk ekziston një vlerë e paracaktuar për %s\n"
 
 #: src/terminal-profile.c:2182
 #, c-format
 msgid "Error setting key %s back to default: %s\n"
-msgstr "Eroare la setarea cheiei %s înapoi la cea implicită: %s\n"
+msgstr "Gabim gjatë kthimit të çelsit %s në vlerën e paracaktuar: %s\n"
 
 #: src/terminal-profile.c:2385
 #, c-format
 msgid "There was an error forgetting profile dir %s. (%s)\n"
-msgstr "A intervenit o eroare la uitarea profilului %s. (%s)\n"
+msgstr "Gabim gjatë harrimit të dir për profilin %s. (%s)\n"
 
 #: src/terminal-profile.c:2442
 #, c-format
@@ -1008,41 +1011,41 @@ msgid ""
 "There was an error subscribing to notification of changes to default "
 "profile. (%s)\n"
 msgstr ""
-"A intervenit o eroare la notificarea schimbărilor asupra profilului implicit."
-"(%s)\n"
+"Gabim gjatë regjistrimit për njoftimin e ndryshimeve tek profili i "
+"paracaktuar. (%s)\n"
 
 #: src/terminal-profile.c:2487
 msgid "_Details"
-msgstr "_Detalii"
+msgstr "_Hollësi"
 
 #: src/terminal-profile.c:2922
 #, c-format
 msgid "There was an error creating the profile \"%s\""
-msgstr "A intervenit o eroare la crearea profilului \"%s\""
+msgstr "Gabim gjatë krijimit të profilit \"%s\""
 
 #: src/terminal-profile.c:3002
 msgid "There was an error deleting the profiles"
-msgstr "A intervenit o eroare la ştergerea profilurilor"
+msgstr "Gabim gjatë fshirjes së profilit"
 
 #: src/terminal-profile.c:3071
 #, c-format
 msgid "Could not parse string \"%s\" as a color palette\n"
-msgstr "Nu am putut parsa şirul \"%s\" drept paletă de culori\n"
+msgstr "E pamundur analiza e string-ës \"%s\" si palette ngjyrash\n"
 
 #: src/terminal-profile.c:3080
 #, c-format
 msgid "Palette had %d entries instead of %d\n"
-msgstr "Paleta are %d intrări în loc de %d\n"
+msgstr "Palette e ngjyrave ka %d vlera në vend të %d\n"
 
 #: src/terminal-screen.c:662
 #, c-format
 msgid "Could not load font \"%s\"\n"
-msgstr "Nu am putut încărca fontul \"%s\"\n"
+msgstr "I pamundur ngarkimi i font \"%s\"\n"
 
 #: src/terminal-screen.c:819
 #, c-format
 msgid "There was a problem with the command for this terminal: %s"
-msgstr "A intervenit o problemă cu comanda pentru acest terminal: %s"
+msgstr "Problem me komandën për këtë terminal: %s"
 
 #: src/terminal-screen.c:1142
 #, c-format
@@ -1050,111 +1053,112 @@ msgid ""
 "Could not open the address \"%s\":\n"
 "%s"
 msgstr ""
-"Nu am putut deschide adresa \"%s\":\n"
+"E pamundur hapja e adresës \"%s\":\n"
 "%s"
 
 #: src/terminal-screen.c:1264 src/terminal-window.c:699
 msgid "_New Window"
-msgstr "_Fereastră nouă"
+msgstr "Dritare e _Re"
 
 #: src/terminal-screen.c:1271 src/terminal-window.c:702
 msgid "New _Tab"
-msgstr "_Tab nou"
+msgstr "_Skedë e Re"
 
 #: src/terminal-screen.c:1295 src/terminal-window.c:803
 msgid "_Profile"
-msgstr "_Profil"
+msgstr "_Profili"
 
 #: src/terminal-screen.c:1345
 msgid "_Edit Current Profile..."
-msgstr "_Editează profilul curent..."
+msgstr "_Ndrysho Profilin Aktual..."
 
 #: src/terminal-screen.c:1351
 msgid "_Input Methods"
-msgstr "Metode de _intrare"
+msgstr "Metodat e sht_imit të tekstit"
 
 #: src/terminal-screen.c:1367
 msgid "Hide _Menubar"
-msgstr "_Ascunde bara de meniu"
+msgstr "Mbulo Kornizën e _Menu"
 
 #: src/terminal-screen.c:1372
 msgid "Show _Menubar"
-msgstr "Arată _bara de meniu"
+msgstr "Shfaq Kornizën e _Menu"
 
 #: src/terminal-screen.c:1381
 msgid "Secure _Keyboard"
-msgstr "Securizează _tastatura"
+msgstr "Blloko _Tastierën"
 
 #: src/terminal-screen.c:1387
 msgid "_Open Link"
-msgstr "_Deschide legătura"
+msgstr "_Hap Lidhjen"
 
 #: src/terminal-screen.c:1394
 msgid "_Copy Link Address"
-msgstr "_Copiază adresa legăturii"
+msgstr "_Kopjo Adresën e Lidhjes "
 
 #: src/terminal-screen.c:1743
 msgid "Change terminal title"
-msgstr "Schimbă titlul terminalului"
+msgstr "Ndrysho titullin e terminalit"
 
 #: src/terminal-screen.c:1770
 msgid "_Title:"
-msgstr "_Titlu:"
+msgstr "_Titulli:"
 
 #: src/terminal-screen.c:1888
 #, c-format
 msgid "text/plain dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
-"text/simplu trimis către terminal are greşit formatul (%d) sau lungimea (%"
-"d)\n"
+"teksti i thjeshtë i spostuar në terminal ka format të gabuar (%d) ose "
+"gjatësi të gabuar (%d)\n"
 
 #: src/terminal-screen.c:1911
 #, c-format
 msgid "Color dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
-"Culoarea trimisă către terminal are greşit formatul (%d) sau lungimea (%d)\n"
+"Ngjyra e spostuar në terminal ka format të gabuar (%d) ose gjatësi të gabuar "
+"(%d)\n"
 
 #: src/terminal-screen.c:1954
 #, c-format
 msgid "Mozilla url dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
-"URL-ul mozilla trimis către terminal are greşit formatul (%d) sau lungimea (%"
-"d)\n"
+"Url e Mozilla e tërhequar në terminal ka format të gabuar (%d) ose gjatësi "
+"të gabuar (%d)\n"
 
 #: src/terminal-screen.c:2003
 #, c-format
 msgid "URI list dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
-"Lista URI trimisă către terminal are greşit formatul (%d) sau lungimea (%d)\n"
+"Lista me URI e tërhequr në terminal ka format të gabuar (%d) ose gjatësi të "
+"gabuar (%d)\n"
 
 #: src/terminal-screen.c:2057
 #, c-format
 msgid ""
 "Image filename dropped on terminal had wrong format (%d) or length (%d)\n"
 msgstr ""
-"Numele fişierului imagine trimis către terminal are greşit formatul (%d) sau "
-"lungimea (%d)\n"
+"Imazhi i tërhequr në terminal ka format të gabuar (%d) ose gjatësi të gabuar "
+"(%d)\n"
 
 #: src/terminal-screen.c:2083
 #, c-format
 msgid "Error converting URI \"%s\" into filename: %s\n"
-msgstr "Eroare la convertirea URI \"%s\" în nume fişier: %s\n"
+msgstr "Gabim gjatë konvertimit të URI \"%s\" tek file: %s\n"
 
 #: src/terminal-widget-zvt.c:1069
 #, c-format
 msgid "There was an error creating the child process for this terminal: %s"
-msgstr ""
-"A intervenit o eroare la crearea unui proces copil pentru acest terminal: %s"
+msgstr "Gabim gjatë krijimit të procesit bir për këtë terminal: %s"
 
 #: src/terminal-widget-zvt.c:1085
 #, c-format
 msgid "Could not set working directory to \"%s\": %s\n"
-msgstr "Nu am putut seta directorul de lucru la \"%s\": %s\n"
+msgstr "I pamundur përcaktimi i directory së punës në \"%s\": %s\n"
 
 #: src/terminal-widget-zvt.c:1091
 #, c-format
 msgid "Could not execute command %s: %s\n"
-msgstr "Nu am putut executa comanda %s: %s\n"
+msgstr "I pamundur ekzekutimi i komandës %s: %s\n"
 
 #: src/terminal-window.c:466
 #, c-format
@@ -1168,86 +1172,86 @@ msgstr "_%c. %s"
 
 #: src/terminal-window.c:613
 msgid "_Add or Remove..."
-msgstr "_Adaugă sau şterge..."
+msgstr "_Shto ose Hiq..."
 
 #. This is fairly bogus to have here but I don't know
 #. * where else to put it really
 #.
 #: src/terminal-window.c:707
 msgid "New _Profile..."
-msgstr "_Profil nou..."
+msgstr "_Profil i Ri..."
 
 #: src/terminal-window.c:713
 msgid "_Close Window"
-msgstr "_Închide fereastra"
+msgstr "_Mbyll Dritaren"
 
 #: src/terminal-window.c:718
 msgid "C_lose Tab"
-msgstr "Î_nchide tabul"
+msgstr "M_byll skedën"
 
 #: src/terminal-window.c:747
 msgid "C_urrent Profile..."
-msgstr "P_rofilul curent..."
+msgstr "Profili _Aktual..."
 
 #: src/terminal-window.c:750
 msgid "_Keybindings..."
-msgstr "_Combinaţii de taste..."
+msgstr "_Keybindings..."
 
 #: src/terminal-window.c:753
 msgid "P_rofiles..."
-msgstr "P_rofiluri..."
+msgstr "P_rofilet..."
 
 #: src/terminal-window.c:766
 msgid "Hide Menu_bar"
-msgstr "Ascunde bara de _meniu"
+msgstr "Fshi Menu_bar"
 
 #: src/terminal-window.c:769
 msgid "_Full Screen"
-msgstr "_Pe tot ecranul"
+msgstr "Ekran i _Plotë"
 
 #: src/terminal-window.c:773
 msgid "_Zoom In"
-msgstr "_Măreşte"
+msgstr "_Zmadho"
 
 #: src/terminal-window.c:777
 msgid "Zoom _Out"
-msgstr "M_icşorează"
+msgstr "Zvogël_o"
 
 #: src/terminal-window.c:781
 msgid "_Normal Size"
-msgstr "Mărime _normală"
+msgstr "_Madhësi Normale"
 
 #: src/terminal-window.c:806
 msgid "_Set Title..."
-msgstr "_Setează titlul..."
+msgstr "_Vendos Titullin..."
 
 #: src/terminal-window.c:813
 msgid "_Character Coding"
-msgstr "Codare _caracter"
+msgstr "_Character Coding"
 
 #: src/terminal-window.c:820
 msgid "_Reset"
-msgstr "_Resetează"
+msgstr "_Rivendos"
 
 #: src/terminal-window.c:823
 msgid "Reset and C_lear"
-msgstr "Resetează şi _şterge"
+msgstr "Rivendos dhe P_astro"
 
 #: src/terminal-window.c:837
 msgid "_Previous Tab"
-msgstr "La tabul _anterior"
+msgstr "Skeda _Paraardhëse"
 
 #: src/terminal-window.c:841
 msgid "_Next Tab"
-msgstr "La tabul _următor"
+msgstr "Skeda _në Vazhdim"
 
 #: src/terminal-window.c:860
 msgid "_Contents"
-msgstr "_Conţinut"
+msgstr "_Përmbajtja"
 
 #: src/terminal-window.c:869
 msgid "_About"
-msgstr "_Despre"
+msgstr "_Rreth"
 
 #: src/terminal-window.c:1047
 #, c-format
@@ -1255,20 +1259,20 @@ msgid ""
 "There was an error subscribing to notification of terminal window "
 "configuration changes. (%s)\n"
 msgstr ""
-"A intervenit o eroare la notificarea schimbărilor de configurare ale "
-"ferestrei terminal. (%s)\n"
+"Gabim gjatë regjistrimit për njoftimin e ndryshimeve të konfigurimit të "
+"dritares së terminalit. (%s)\n"
 
 #: src/terminal-window.c:1922
 msgid "_File"
-msgstr "_Fişier"
+msgstr "_File"
 
 #: src/terminal-window.c:1924 src/terminal.c:2773
 msgid "_Edit"
-msgstr "_Editare"
+msgstr "_Ndrysho"
 
 #: src/terminal-window.c:1926
 msgid "_View"
-msgstr "_Vizualizare"
+msgstr "_Paraqitja"
 
 #: src/terminal-window.c:1928
 msgid "_Terminal"
@@ -1276,19 +1280,19 @@ msgstr "_Terminal"
 
 #: src/terminal-window.c:1930
 msgid "_Go"
-msgstr "_Taburi"
+msgstr "_Shko"
 
 #: src/terminal-window.c:1932
 msgid "_Help"
-msgstr "_Ajutor"
+msgstr "_Ndihmë"
 
 #: src/terminal-window.c:2054
 msgid "_Restore normal size"
-msgstr "_Restaurează mărimea normală"
+msgstr "_Rivendos madhësinë normale"
 
 #: src/terminal-window.c:2058
 msgid "_Full screen"
-msgstr "_Pe tot ecranul"
+msgstr "_Ekran i plotë"
 
 #: src/terminal-window.c:2254
 msgid ""
@@ -1296,78 +1300,78 @@ msgid ""
 " (In technical terms, you need a window manager with support for the "
 "_NET_WM_STATE_FULLSCREEN property.)"
 msgstr ""
-"Mediul dumneavoastră desktop nu suportă deocamdată\n"
-"vizualizarea pe tot ecranul. (În termeni tehnici, aveţi nevoie de un manager "
-"de ferestre cu suport corect pentru _NET_WM_STATE_FULLSCREEN.)"
+"Ambienti aktual desktop nuk suporton opcionin e ekranit të plotë.\n"
+" (Në terme teknikë, nevoitet një window manager me suportin për "
+"_NET_WM_STATE_FULLSCREEN.)"
 
 #: src/terminal-window.c:2540
 msgid "translator_credits"
-msgstr "Mugurel Tudor <mugurelu@go.ro>"
+msgstr "Laurent Dhima  <laurenti@alblinux.net>"
 
 #: src/terminal-window.c:2554
 msgid "GNOME Terminal"
-msgstr "Terminalul GNOME"
+msgstr "Terminali i GNOME"
 
 #: src/terminal.c:181
 msgid "Execute the argument to this option inside the terminal."
-msgstr "Execută argumentul acestei opţiuni în terminal."
+msgstr "Ekzekuton argumentin e këtij opcioni brenda terminalit."
 
 #: src/terminal.c:190
 msgid "Execute the remainder of the command line inside the terminal."
-msgstr "Execută restul liniei de comandă în terminal. "
+msgstr "Ekzekuton vazhdimin e komandës brenda terminalit."
 
 #: src/terminal.c:199
 msgid ""
 "Open a new window containing a tab with the given profile. More than one of "
 "these options can be provided."
 msgstr ""
-"Deschide o nouă fereastră conţinând un tab cu profilul dat. Mai multe astfel "
-"de opţiuni pot fi furnizate."
+"Hap një dritare të re që përmban një skedë me profilin e dhënë. Mund të "
+"jepen më shumë se një nga këto opcione."
 
 #: src/terminal.c:200 src/terminal.c:209
 msgid "PROFILENAME"
-msgstr "PROFILENAME"
+msgstr "EMRIPROFILIT"
 
 #: src/terminal.c:208
 msgid ""
 "Open a new tab in the last-opened window with the given profile. More than "
 "one of these options can be provided."
 msgstr ""
-"Deschide un nou tab în ultima fereastră deschisă cu numele profilului.Mai "
-"multe astfel de opţiuni pot fi furnizate. "
+"Hap një skedë të re në dritaren e fundit të hapur me profilin e dhënë. Mund "
+"të jepen më shumë se një nga këto opcione."
 
 #: src/terminal.c:217
 msgid ""
 "Open a new window containing a tab with the given profile ID. Used "
 "internally to save sessions."
 msgstr ""
-"Deschide o nouă fereastră conţinând un tab cu ID-ul profilului. Folosit "
-"intern pentru a salva sesiunile."
+"Hap një dritare të re që përmban një skedë me ID e profilit të dhënë. "
+"Përdorim i brëndshëm për të shpëtuar seancat."
 
 #: src/terminal.c:218 src/terminal.c:227
 msgid "PROFILEID"
-msgstr "PROFILEID"
+msgstr "IDPROFILIT"
 
 #: src/terminal.c:226
 msgid ""
 "Open a new tab in the last-opened window with the given profile ID. Used "
 "internally to save sessions."
 msgstr ""
-"Deschide un nou tab în ultima fereastră deschisă conţinând ID-ul profilului. "
-"Folosit intern pentru a salva sesiunile."
+"Hap një skedë të re me dritaren e fundit të hapur me ID e profilit të dhënë. "
+"Përdorim i brëndshëm për të shpëtuar seancat."
 
 #: src/terminal.c:235
 msgid ""
 "Set the role for the last-specified window; applies to only one window; can "
 "be specified once for each window you create from the command line."
 msgstr ""
-"Setează rolul pentru ferestra specificată ultima; se aplică doar unei "
-"ferestre; poate fi specificată o singură dată pentru fiecare fereastră "
-"creată din linia de comandă. "
+"Vendos rolin për dritaren e fundit të specifikuar; mund ti aplikohet vetëm "
+"një dritareje; mund të specifikohet për çdo dritare që do të krijohet nga "
+"rreshti komandës. "
 
 #: src/terminal.c:236
 msgid "ROLE"
-msgstr "ROLE"
+msgstr "ROLI"
 
 #: src/terminal.c:244
 msgid ""
@@ -1375,9 +1379,9 @@ msgid ""
 "window; can be specified once for each window you create from the command "
 "line."
 msgstr ""
-"Afişează bara de meniu pentru ultima fereastră specificată; se aplică doar "
-"unei ferestre; poate fi specificată o singură dată pentru fiecare fereastră "
-"creată din linia de comandă. "
+"Shfaq kornizën e menu për dritaren e fundit të specifikuar; mund ti "
+"aplikohet vetëm një dritareje; mund të specifikohet për çdo dritare që do të "
+"krijohet nga rreshti komandës."
 
 #: src/terminal.c:253
 msgid ""
@@ -1385,170 +1389,169 @@ msgid ""
 "window; can be specified once for each window you create from the command "
 "line."
 msgstr ""
-"Ascunde bara de meniu pentru ultima fereastră specificată; se aplică unei "
-"singure ferestre ; poate fi specificată pentru fiecare fereastră creată din "
-"linia de comandă."
+"Mbulon kornizën e menu për dritaren e fundit të specifikuar; mund ti "
+"aplikohet vetëm një dritareje; mund të specifikohet për çdo dritare që do të "
+"krijohet nga rreshti komandës."
 
 #: src/terminal.c:262
 msgid ""
 "X geometry specification (see \"X\" man page), can be specified once per "
 "window to be opened."
 msgstr ""
-"Specificaţiile geometriei X (vezi pagina de manual \"X\"), poate fi "
-"specificată o singură dată pentru o fereastră ce va fi deschisă."
+"Mund të specifikohet gjeometria e X vetëm një herë para se të hapet çdo "
+"dritare («man X» për hollësi të tjera)."
 
 #: src/terminal.c:263
 msgid "GEOMETRY"
-msgstr "GEOMETRY"
+msgstr "GJEOMETRIA"
 
 #: src/terminal.c:271
 msgid ""
 "Do not register with the activation nameserver, do not re-use an active "
 "terminal"
 msgstr ""
-"Nu înregistra către numele serverului de activare, nu refolosi un terminal "
-"activ"
+"Nuk regjistron me activation nameserver, pa ripërdorur një terminal aktiv"
 
 #: src/terminal.c:280
 msgid "ID for startup notification protocol."
-msgstr "ID pentru protocolul de notificare la pornire."
+msgstr "ID për protokollin e njoftimit të nisjes."
 
 #: src/terminal.c:289
 msgid "Set the terminal's title"
-msgstr "Setează titlul terminalului"
+msgstr "Vendos titullin e terminalit"
 
 #: src/terminal.c:290
 msgid "TITLE"
-msgstr "TITLE"
+msgstr "TITULLI"
 
 #: src/terminal.c:298
 msgid "Set the terminal's working directory"
-msgstr "Setează directorul de lucru al terminalului"
+msgstr "Vendos directory e punës së terminalit"
 
 #: src/terminal.c:299
 msgid "DIRNAME"
-msgstr "DIRNAME"
+msgstr "EMRIDIR"
 
 #: src/terminal.c:308
 msgid "Set the terminal's zoom factor (1.0 = normal size)"
-msgstr "Setează factorul de zoom al terminalului (1.0 = mărime normală)"
+msgstr "Vendos shkallën e zmadhimit të terminalit (1.0 = madhësi normale)"
 
 #: src/terminal.c:309
 msgid "ZOOMFACTOR"
-msgstr "ZOOMFACTOR"
+msgstr "SHKALLAZMADHIMIT"
 
 #: src/terminal.c:653
 #, c-format
 msgid "Could not load icon \"%s\": %s\n"
-msgstr "Nu am putut încărca iconiţa \"%s\": %s\n"
+msgstr "I pamundur ngarkimi i ikonës \"%s\": %s\n"
 
 #: src/terminal.c:718
 msgid "Option --command/-e requires specifying the command to run\n"
-msgstr ""
-"Trebuie să specificaţi comanda care rulează pentru opţiunea --command/-e\n"
+msgstr "Opcioni --command/-e kërkon specifikimin e komandës që duhet zbatuar\n"
 
 #: src/terminal.c:726
 #, c-format
 msgid "Argument to --command/-e is not a valid command: %s\n"
-msgstr "Argumentul --command/-e nu este o comandă validă: %s\n"
+msgstr "Argumenti i --command/-e nuk është një komandë e vlefshme: %s\n"
 
 #: src/terminal.c:736 src/terminal.c:758
 msgid ""
 "--command/-e/--execute/-x specified more than once for the same window or "
 "tab\n"
 msgstr ""
-"--command/-e/--execute/-x este specificată de mai multe ori pentru aceaşi "
-"fereastră sau tab\n"
+"--command/-e/--execute/-x të specifikuar më shumë se një herë në të njëjtën "
+"dritare apo skedë\n"
 
 #: src/terminal.c:750
 msgid ""
 "Option --execute/-x requires specifying the command to run on the rest of "
 "the command line\n"
 msgstr ""
-"Opţiunea --execute/-x necesită specificarea comenzii rulate pentru restul "
-"liniei de comandă\n"
+"Opcioni --execute/-x kërkon specifikimin e komandës që duhet zbatuar tek "
+"vazhdimi i komandës në rresht\n"
 
 #: src/terminal.c:775
 msgid ""
 "Option --window-with-profile requires an argument specifying what profile to "
 "use\n"
 msgstr ""
-"Opţiunea --window-with-profile necesită un argument care să specifice "
-"profilul terminalului folosit\n"
+"Opcioni --window-with-profile kërkon që të jetë specifikuar si argument "
+"profili që duhet përdorur\n"
 
 #: src/terminal.c:792
 msgid ""
 "Option --tab-with-profile requires an argument specifying what profile to "
 "use\n"
 msgstr ""
-"Opţiunea --tab-with-profile necesită un argument care să specifice profilul "
-"folosit\n"
+"Opcioni --tab-with-profile kërkon një argument që specifikon profilin që "
+"duhet përdorur\n"
 
 #: src/terminal.c:823
 msgid "--show-menubar option given twice for the same window\n"
 msgstr ""
-"Opţiunea --show-menubar este dată de două ori pentru aceaşi fereastră\n"
+"Opcioni --show-menubar është specifikuar dy herë në të njëjtën dritare\n"
 
 #: src/terminal.c:849
 msgid "--hide-menubar option given twice for the same window\n"
 msgstr ""
-"Opţiunea --hide-menubar este dată de două ori pentru aceaşi fereastră\n"
+"Opcioni --hide-menubar është specifikuar dy herë në të njëjtën dritare\n"
 
 #: src/terminal.c:872
 msgid "Option --role requires an argument giving the role\n"
-msgstr "Opţiunea --role necesită un argument referitor la rol\n"
+msgstr "Opcioni --role kërkon një argument që specifikon një rol\n"
 
 #: src/terminal.c:881
 msgid "Two roles given for one window\n"
-msgstr "Două roluri date pentru o singură fereastră\n"
+msgstr "Dy role të specifikuar në të njëjtën dritare\n"
 
 #: src/terminal.c:897
 msgid "Option --geometry requires an argument giving the geometry\n"
-msgstr "Opţiunea --geometry necesită un argument referitor la geometrie\n"
+msgstr "Opcioni --geometry kërkon një argument që specifikon gjeometrinë\n"
 
 #: src/terminal.c:906 src/terminal.c:916
 msgid "Two geometries given for one window\n"
-msgstr "Două geometrii date pentru o singură fereastră\n"
+msgstr "Janë specifikuar dy gjeometri për të njëjtën dritare\n"
 
 #: src/terminal.c:938
 msgid "Option --title requires an argument giving the title\n"
-msgstr "Opţiunea --title necesită un argument referitor la titlu\n"
+msgstr "Opcioni --title kërkon një argument që specifikon titullin\n"
 
 #: src/terminal.c:946
 msgid "Two titles given for one tab\n"
-msgstr "Două titluri date pentru un singur tab\n"
+msgstr "Janë specifikuar dy tituj për të njëjtën faqe\n"
 
 #: src/terminal.c:961
 msgid "Option --working-directory requires an argument giving the directory\n"
 msgstr ""
-"Opţiunea --working-directory necesită un argument referitor la director\n"
+"Opcioni --working-directory kërkon një argument që specifikon një directory\n"
 
 #: src/terminal.c:969
 msgid "Two working directories given for one tab\n"
-msgstr "Două directoare de lucru date pentru un singur tab\n"
+msgstr "Janë specifikuar dy directories pune për të njëjtën faqe\n"
 
 #: src/terminal.c:985
 msgid "Option --zoom requires an argument giving the zoom factor\n"
-msgstr "Opţiunea --zoom necesită un argument referitor la factorul de zoom\n"
+msgstr ""
+"Opcioni --zoom ka nevojë për një argument që jep shkallën e zmadhimit\n"
 
 #: src/terminal.c:993
 msgid "Two zoom factors given for one tab\n"
-msgstr "Doi factori de zoom daţi pentru un singur tab\n"
+msgstr "Janë specifikuar dy shkallë zmadhimi për të njëjtën fletë\n"
 
 #: src/terminal.c:1008
 #, c-format
 msgid "\"%s\" is not a valid zoom factor\n"
-msgstr "\"%s\" nu este un factor valid de zoom\n"
+msgstr "\"%s\" nuk është një shkallë e vlefshme zmadhimi\n"
 
 #: src/terminal.c:1016
 #, c-format
 msgid "Zoom factor \"%g\" is too small, using %g\n"
-msgstr "Factorul de zoom \"%g\" este prea mic, folosesc %g\n"
+msgstr "Shkalla e zmadhimit \"%g\" është shumë e ulët, po përdor %g\n"
 
 #: src/terminal.c:1023
 #, c-format
 msgid "Zoom factor \"%g\" is too large, using %g\n"
-msgstr "Factorul de zoom \"%g\" este prea mare, folosesc %g\n"
+msgstr "Shkalla e zmadhimit \"%g\" është shumë e lartë, po përdor %g\n"
 
 #: src/terminal.c:1035
 msgid ""
@@ -1556,35 +1559,35 @@ msgid ""
 "you might want to create a profile with the desired setting, and use the new "
 "--window-with-profile option\n"
 msgstr ""
-"Opţiunea furnizată nu mai este suportată în această versiune de gnome-"
-"terminal; aţi putea în schimb să creaţi un profil cu setarea dorită, şi apoi "
-"să folosiţi noua opţiune --window-with-profile\n"
+"Opcioni i specifikuar nuk suportohet më nga ky version i gnome-terminal; "
+"krijoni një profil me zgjedhjet e dëshiruara dhe përdorni opcionin e ri --"
+"window-with-profile\n"
 
 #: src/terminal.c:1041
 msgid "--startup-id option given twice\n"
-msgstr "Opţiunea --startup-id este dată de două ori\n"
+msgstr "Opcioni --startup-id është specifikuar dy herë\n"
 
 #: src/terminal.c:1046
 msgid "--startup-id option requires an argument\n"
-msgstr "Opţiunea --startup-id necesită un argument\n"
+msgstr "Opcioni --startup-id ka nevojë për një argument\n"
 
 #: src/terminal.c:1163
 msgid "No argument given to --display option\n"
-msgstr "Nici un argument nu este dat pentru opţiunea --display\n"
+msgstr "Asnjë argument për opcionin --display\n"
 
 #: src/terminal.c:1185
 msgid "No argument given to --screen option\n"
-msgstr "Nici un argument nu este dat pentru opţiunea --screen\n"
+msgstr "Asnjë argument i specifikuar për opcionin --screen\n"
 
 #: src/terminal.c:1269
 #, c-format
 msgid "No such profile '%s', using default profile\n"
-msgstr "Nu există profilul '%s', folosesc profilul implicit\n"
+msgstr "Profili '%s' nuk ekziston, po përdor profilin e paracaktuar\n"
 
 #: src/terminal.c:1431
 #, c-format
 msgid "Invalid argument: \"%s\"\n"
-msgstr "Argument invalid:\"%s\"\n"
+msgstr "Argument i pasaktë: \"%s\"\n"
 
 #: src/terminal.c:1485
 #, c-format
@@ -1592,108 +1595,107 @@ msgid ""
 "There was an error subscribing to notification of terminal profile list "
 "changes. (%s)\n"
 msgstr ""
-"A intervenit o eroare la notificarea schimbărilor listei de profiluri a "
-"terminalului. (%s)\n"
+"Gabim gjatë regjistrimit për njoftimin e ndryshimeve në listën e profilëve "
+"të terminalit. (%s)\n"
 
 #: src/terminal.c:1721
 #, c-format
 msgid "Invalid geometry string \"%s\"\n"
-msgstr "Formatul geometriei \"%s\" este invalid\n"
+msgstr "Stringë gjeometrike e pasaktë \"%s\"\n"
 
 #: src/terminal.c:1781
 #, c-format
 msgid "There was an error getting the list of terminal profiles. (%s)\n"
-msgstr ""
-"A intervenit o eroare la încărcarea listei profilurilor terminalului. (%s)\n"
+msgstr "Gabim gjatë marrjes së listës me profilet e terminalit. (%s)\n"
 
 #: src/terminal.c:2060
 msgid "You have to name your profile."
-msgstr "Trebuie să daţi un nume profilului."
+msgstr "Duhet ti jepni një emër profilit tuaj."
 
 #: src/terminal.c:2070
 #, c-format
 msgid "You already have a profile called \"%s\""
-msgstr "Aveţi deja un profil numit \"%s\""
+msgstr "Një profil me emrin \"%s\" ekziston"
 
 #: src/terminal.c:2107
 msgid ""
 "The profile you selected as a base for your new profile no longer exists"
-msgstr ""
-"Profilul pe care l-aţi selectat drept bază pentru noul profil nu mai există"
+msgstr "Profili i zgjedhur si bazë për profilin e ri nuk ekziston"
 
 #: src/terminal.c:2171
 msgid "C_reate"
-msgstr "C_reează"
+msgstr "K_rijo"
 
 #: src/terminal.c:2196
 msgid "Profile _name:"
-msgstr "_Nume profil:"
+msgstr "_Emri i profilit:"
 
 #: src/terminal.c:2200
 msgid "Enter profile name"
-msgstr "Introduceţi numele profilului"
+msgstr "Shkruaj emrin e profilit"
 
 #: src/terminal.c:2215
 msgid "_Base on:"
-msgstr "_Bazat pe:"
+msgstr "_Bazuar tek:"
 
 #: src/terminal.c:2363
 msgid "Profile list"
-msgstr "Listă de profiluri"
+msgstr "Lista e profileve"
 
 #: src/terminal.c:2436
 msgid "You must select one or more profiles to delete."
-msgstr "Trebuie să selectaţi un profil sau mai multe pentru ştergere."
+msgstr "Duhet të zgjidhni një apo disa profile për të eleminuar."
 
 #: src/terminal.c:2459
 msgid "You must have at least one profile; you can't delete all of them."
-msgstr "Trebuie să aveţi măcar un profil; nu le puteţi şterge pe toate."
+msgstr ""
+"I pamundur eleminimi i të gjithë profilve, duhet të ekzistojë të paktën një."
 
 #: src/terminal.c:2477
 msgid "Delete these two profiles?\n"
-msgstr "Ştergeţi cele două profiluri ?\n"
+msgstr "Eleminoj këta dy profile?\n"
 
 #: src/terminal.c:2479
 #, c-format
 msgid "Delete these %d profiles?\n"
-msgstr "Ştergeţi cele %d profiluri ?\n"
+msgstr "Eleminoj këta %d profile?\n"
 
 #: src/terminal.c:2497
 #, c-format
 msgid "Delete profile \"%s\"?"
-msgstr "Ştergeţi profilul \"%s\" ?"
+msgstr "Eleminoj profilin \"%s\"?"
 
 #: src/terminal.c:2519
 msgid "Delete Profile"
-msgstr "Şterge profilul"
+msgstr "Elemino Profilin"
 
 #: src/terminal.c:2806
 msgid "Edit Profiles"
-msgstr "Editează profilele"
+msgstr "Ndrysho Profilet"
 
 #: src/terminal.c:2846
 msgid "Profile _used when launching a new terminal:"
-msgstr "Profilul _folosit la pornirea terminalului:"
+msgstr "Profili i _përdorur kur hapet një terminal i ri:"
 
 #: src/terminal.c:2868
 msgid "_Profiles:"
-msgstr "_Profiluri:"
+msgstr "_Profilet:"
 
 #: src/terminal.c:2917
 msgid "Click to open new profile dialog"
-msgstr "Apăsaţi butonul pentru a porni dialogul despre un nou profil"
+msgstr "Kliko për të hapur dritaren e dialogut për një profil të ri"
 
 #: src/terminal.c:2930
 msgid "Click to open edit profile dialog"
-msgstr "Apăsaţi butonul pentru a deschide dialogul pentru editarea profilului"
+msgstr "Kliko për të hapur dialogun e ndryshimit të profilit"
 
 #: src/terminal.c:2940
 msgid "Click to delete selected profile"
-msgstr "Apasă butonul pentru a şterge profilul selectat"
+msgstr "Kliko për të eleminuar profilet e zgjedhur"
 
 #: src/terminal.c:2989
 msgid "Click button to choose profile"
-msgstr "Apasă butonul pentru a alege profilul"
+msgstr "Shtyp pulsantin për të zgjedhur profilin"
 
 #: src/terminal.c:3410
 #, c-format
@@ -1701,94 +1703,95 @@ msgid ""
 "The file \"%s\" is missing. This indicates that the application is installed "
 "incorrectly, so the dialog can't be displayed."
 msgstr ""
-"Fişierul \"%s\" lipseşte. Acest lucru indică faptul că această aplicaţie a "
-"fost instalată incorect, prin urmare dialogul nu +va fi afişat."
+"File \"%s\" mungon. Kjo do të thotë që aplikacioni nuk është instaluar "
+"korrektësisht, prandaj dialogu nuk mund të hapet."
 
 #: src/terminal.c:3583
 msgid ""
 "It appears that you do not have gnome-terminal.server installed in a valid "
 "location. Factory mode disabled.\n"
 msgstr ""
-"Se pare că nu aveţi gnome-terminal.server instalat într-o locaţie validă. "
-"Modul factory va fi dezactivat.\n"
+"Mesa duket gnome-terminal.server nuk është instaluar në një pozicion të "
+"vlefshëm. Opcioni «fabrikë» u deaktivua.\n"
 
 #: src/terminal.c:3586
 msgid ""
 "Error registering terminal with the activation service; factory mode "
 "disabled.\n"
 msgstr ""
-"Eroare la înregistrarea terminalului către serviciul de activare; modul "
-"factory dezactivat.\n"
+"Gabim gjatë regjistrimit të terminalit me shërbimin e aktivimit; opcioni "
+"«fabrikë» u deaktivua.\n"
 
 #: src/terminal.c:3622
 msgid "Failed to retrieve terminal server from activation server\n"
-msgstr "Eşuare la primirea serverului terminal de la serverul de activare\n"
+msgstr ""
+"Dështim gjatë rekuperimit të «terminal server» nga «activation server»\n"
 
 #: src/x-font-selector.c:201
 msgid "Foundry:"
-msgstr "Fondator:"
+msgstr "Fonderia:"
 
 #: src/x-font-selector.c:202
 msgid "Family:"
-msgstr "Familie:"
+msgstr "Stili:"
 
 #: src/x-font-selector.c:203
 msgid "Weight:"
-msgstr "Greutate:"
+msgstr "Pesha:"
 
 #: src/x-font-selector.c:204
 msgid "Slant:"
-msgstr "Înclinare:"
+msgstr "Pjerrësia:"
 
 #: src/x-font-selector.c:205
 msgid "Set Width:"
-msgstr "Setează lăţime:"
+msgstr "Vendos Gjërësinë:"
 
 #: src/x-font-selector.c:206
 msgid "Add Style:"
-msgstr "Adaugă stil:"
+msgstr "Shto Stilin:"
 
 #: src/x-font-selector.c:207
 msgid "Pixel Size:"
-msgstr "Mărime pixel:"
+msgstr "Madhësia në pixel:"
 
 #: src/x-font-selector.c:208
 msgid "Point Size:"
-msgstr "Mărime punct:"
+msgstr "Madhësia në pikë:"
 
 #: src/x-font-selector.c:209
 msgid "Resolution X:"
-msgstr "Rezoluţia X:"
+msgstr "Thellësia e X:"
 
 #: src/x-font-selector.c:210
 msgid "Resolution Y:"
-msgstr "Rezoluţia Y:"
+msgstr "Thellësia e Y:"
 
 #: src/x-font-selector.c:211
 msgid "Spacing:"
-msgstr "Spaţiere:"
+msgstr "Hapsira:"
 
 #: src/x-font-selector.c:212
 msgid "Average Width:"
-msgstr "Lăţimea medie:"
+msgstr "Gjërësia mesatare:"
 
 #: src/x-font-selector.c:213
 msgid "Charset:"
-msgstr "Set caractere:"
+msgstr "Grupi i gërmave:"
 
 #. Number of internationalized titles here must match number
 #. of NULL initializers above
 #: src/x-font-selector.c:450
 msgid "Font Property"
-msgstr "Proprietate fonturi"
+msgstr "Pronësia e font"
 
 #: src/x-font-selector.c:451
 msgid "Requested Value"
-msgstr "Valoare cerută"
+msgstr "Vlera e kërkuar"
 
 #: src/x-font-selector.c:452
 msgid "Actual Value"
-msgstr "Valoare actuală"
+msgstr "Vlera aktuale"
 
 #: src/x-font-selector.c:485
 msgid "Font"
@@ -1801,57 +1804,57 @@ msgstr "Font:"
 
 #: src/x-font-selector.c:500
 msgid "Font Style:"
-msgstr "Stil font:"
+msgstr "Stili i Font:"
 
 #: src/x-font-selector.c:505
 msgid "Size:"
-msgstr "Mărime:"
+msgstr "Madhësia:"
 
 #: src/x-font-selector.c:637 src/x-font-selector.c:861
 msgid "Reset Filter"
-msgstr "Resetează filtrul"
+msgstr "Kthe në zero filtrin"
 
 #: src/x-font-selector.c:651
 msgid "Metric:"
-msgstr "Metrica:"
+msgstr "Metrike:"
 
 #: src/x-font-selector.c:655
 msgid "Points"
-msgstr "Puncte"
+msgstr "Pikë"
 
 #: src/x-font-selector.c:662
 msgid "Pixels"
-msgstr "Pixeli"
+msgstr "Pixels"
 
 #. create the text entry widget
 #: src/x-font-selector.c:678
 msgid "Preview:"
-msgstr "Previzualizare:"
+msgstr "Pamja e parë:"
 
 #: src/x-font-selector.c:709
 msgid "Font Information"
-msgstr "Informaţii despre font"
+msgstr "Informacione mbi gërmat"
 
 #: src/x-font-selector.c:742
 msgid "Requested Font Name:"
-msgstr "Numele fontului cerut:"
+msgstr "Emri i gërmës së kërkuar:"
 
 #: src/x-font-selector.c:753
 msgid "Actual Font Name:"
-msgstr "Numele fontului actual:"
+msgstr "Emri aktual i gërmës:"
 
 #: src/x-font-selector.c:764
 #, c-format
 msgid "%i fonts available with a total of %i styles."
-msgstr "%i fonturi disponibile cu un total de %i stiluri."
+msgstr "Kemi %i fonts në dispozicion me një total prej %i stilesh."
 
 #: src/x-font-selector.c:779
 msgid "Filter"
-msgstr "Filtru"
+msgstr "Filtër"
 
 #: src/x-font-selector.c:792
 msgid "Font Types:"
-msgstr "Tipuri de fonturi:"
+msgstr "Llojet e font:"
 
 #: src/x-font-selector.c:800
 msgid "Bitmap"
@@ -1859,20 +1862,20 @@ msgstr "Bitmap"
 
 #: src/x-font-selector.c:806
 msgid "Scalable"
-msgstr "Scalabil"
+msgstr "Ridimensionueshëm"
 
 #: src/x-font-selector.c:812
 msgid "Scaled Bitmap"
-msgstr "Bitmap scalabil"
+msgstr "Bitmap i ridimensionuar"
 
 #. Convert '(nil)' weights to 'regular', since it looks nicer.
 #: src/x-font-selector.c:1208
 msgid "(nil)"
-msgstr "(nul)"
+msgstr "(nil)"
 
 #: src/x-font-selector.c:1208
 msgid "regular"
-msgstr "regulat"
+msgstr "rregullt"
 
 #: src/x-font-selector.c:1224
 msgid "[M]"
@@ -1884,91 +1887,28 @@ msgstr "[C]"
 
 #: src/x-font-selector.c:1785
 msgid "The selected font is not available."
-msgstr "Fontul selectat nu este disponibil."
+msgstr "Font e zgjedhur nuk ekziston."
 
 #: src/x-font-selector.c:1791
 msgid "The selected font is not a valid font."
-msgstr "Fontul selectat nu este un font valid."
+msgstr "Font e zgjedhur është e pavlefshme."
 
 #: src/x-font-selector.c:1847
 msgid "This is a 2-byte font and may not be displayed correctly."
-msgstr ""
-"Acesta este un font de 2 octeţi şi există posibilitatea de a nu fi afişat "
-"corect."
+msgstr "Ky është një 2-byte font dhe mund të mos paraqitet korrektësisht."
 
 #: src/x-font-selector.c:1953
 msgid "(unknown)"
-msgstr "(necunoscut)"
+msgstr "(panjohur)"
 
 #: src/x-font-selector.c:2178
 msgid "Font: (Filter Applied)"
-msgstr "Font: (filtru aplicat)"
+msgstr "Font: (Filtri i Aplikuar)"
 
 #: src/x-font-selector.c:3502
 msgid "Font Selection"
-msgstr "Selectare font"
+msgstr "Zgjedhja e Font"
 
 #: src/x-font-selector.c:3598
 msgid "Select a font"
-msgstr "Selectaţi un font"
-
-#~ msgid "Copyright 2002 Havoc Pennington"
-#~ msgstr "Copyright 2002 Havoc Pennington"
-
-#~ msgid "Title"
-#~ msgstr "Titlu"
-
-#~ msgid ""
-#~ "The file \"%s\" is missing. This indicates that the application is "
-#~ "installed incorrectly, so the profile editor can't be displayed."
-#~ msgstr ""
-#~ "Fişierul \"%s\" lipseşte. Acest lucru indică faptul că aplicaţia este "
-#~ "instalată incorect, prin urmare editorul de profiluri nu poate fi afişat."
-
-#~ msgid ""
-#~ "The file \"%s\" is missing. This indicates that the application is "
-#~ "installed incorrectly, so the keybindings dialog can't be displayed."
-#~ msgstr ""
-#~ "Fişierul \"%s\" lipseşte. Acest lucru indică faptul că această aplicaţie "
-#~ "a fost instalată incorect, prin urmare dialogul despre combinaţii de "
-#~ "taste nu va fi afişat."
-
-#~ msgid "Silence terminal _bell"
-#~ msgstr "Dezactivează _beep-ul"
-
-#~ msgid "_Blink cursor"
-#~ msgstr "Cursorul _clipeşte"
-
-#~ msgid "_About GNOME Terminal"
-#~ msgstr "_Despre terminalul GNOME"
-
-#~ msgid ""
-#~ "--geometry given prior to options that create a new window, must be given "
-#~ "after\n"
-#~ msgstr ""
-#~ "Opţiunea --geometry este furnizată înaintea opţiunilor de creare a unei "
-#~ "noi ferestre, trebuie dată după\n"
-
-#~ msgid "New terminal profile"
-#~ msgstr "Profil nou pentru terminal"
-
-#~ msgid "Profile _Name:"
-#~ msgstr "_Nume profil:"
-
-#~ msgid "_No"
-#~ msgstr "_Nu"
-
-#~ msgid "_Delete"
-#~ msgstr "_Şterge"
-
-#~ msgid "Manage terminal profiles"
-#~ msgstr "Gestionează profilurile terminalului"
-
-#~ msgid "_New..."
-#~ msgstr "_Nou..."
-
-#~ msgid "_Edit..."
-#~ msgstr "_Editează..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_Şterge..."
+msgstr "Zgjidhni një font"

@@ -1644,7 +1644,7 @@ fi
 
 PACKAGE=gnome-terminal
 
-VERSION=2.2.0
+VERSION=2.2.1
 
 if test "`cd $srcdir && pwd`" != "`pwd`" && test -f $srcdir/config.status; then
   { { echo "$as_me:$LINENO: error: source directory already configured; run \"make distclean\" there first" >&5
@@ -7769,7 +7769,7 @@ if test "x$GCC" = "xyes"; then
   fi
 fi
 
-ALL_LINGUAS="am ar be bg ca cs da de el en_GB es et fi fr gl he hu ja ko lt lv mk ms nl no pl pt pt_BR ro ru sk sl sv tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar be bg ca cs da de el en_GB es et fi fr gl he hu it ja ko lt lv mk mn ms nl no pl pt pt_BR ro ru sk sl sq sv tr uk vi wa zh_CN zh_TW"
 
 
 for ac_header in locale.h
