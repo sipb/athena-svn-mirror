@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.18 2004-05-27 18:37:06 ghudson Exp $
+# $Id: xsession,v 1.19 2004-08-03 17:18:31 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -165,10 +165,21 @@ if ( ! $?ATHENA_DASH_INTERFACE) then
   # spawn one before we start any in the background.
   $gconftool --spawn
 
-  # Run the GNOME capplets unless the user has chosen to skip them.
+  # Run gnome-settings-daemon unless the user has chosen to skip it.
+  # (We used to run a series of capplets with an init flag; thus the
+  # skip variable is named skip_capplets.)
   if (! $?skip_capplets) then
     if ($?verbose_login) echo "Initializing settings..."
-    (gnome-settings-daemon >& /dev/null &)
+
+    # This incantation causes gnome-settings-daemon to be run via
+    # Bonobo, such that we won't continue until the settings-daemon
+    # object has been initialized and all settings have been
+    # propagated.  If we just naively run gnome-settings-daemon in the
+    # background, settings may not propagate before GNOME programs
+    # run.  In particular, GNOME programs might render text before the
+    # Xft settings have been propagated, leading to incorrect font
+    # selection.
+    activation-client -s "iid == 'OAFIID:GNOME_SettingsDaemon'" > /dev/null
   endif
 
   # Run the GNOME panel unless the user has chosen to skip it.  For
