@@ -65,6 +65,7 @@ ctl_transact(target, msg, type, rp)
 	struct timeval wait;
 
 	msg.type = type;
+	daemon_addr.sin_family = AF_INET;
 	daemon_addr.sin_addr = target;
 	daemon_addr.sin_port = daemon_port;
 	ctl_mask = 1 << ctl_sockt;
