@@ -13,6 +13,7 @@ RSAIX)
 SUN*)
 	rm -rf /etc/athena/login
 	rm -rf /usr/openwin
+	rm /etc/rc*.d/*     
 	echo "NEWUNIX=true"		>> ${CONFVARS}
 	echo "NEWBOOT=true"		>> ${CONFVARS}
 	echo "NEWDEV=true"		>> ${CONFVARS}
