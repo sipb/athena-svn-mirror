@@ -2,7 +2,7 @@
 # Convert GNOME 1 conf files to GNOME 2 GConf keys
 # Copyright (C) 2002 Christian Marillat <marillat.christian@wanadoo.fr>
 # Copyright (C) 2002 Colin Walters <walters@debian.org>
-# $Id: gnome-stuff-1-to-2,v 1.1 2003-04-20 01:41:46 ghudson Exp $
+# $Id: gnome-stuff-1-to-2,v 1.2 2003-05-29 16:31:04 ghudson Exp $
 
 DEBIAN_ADD_UPGRADE_CHECK="false"
 for arg in "$@";do
@@ -412,7 +412,7 @@ if [ ! -e ~/.gconf/apps/gnome-terminal/global/%gconf.xml ]; then
 
     for GT_COLORS in $GT_PALETTE
     do
-      NEW_GT_COLORS=$NEW_GT_COLORS'#'`expr substr $GT_COLORS 7 2``expr substr $GT_COLORS 12 2``expr substr $GT_COLORS 17 2`':'
+      NEW_GT_COLORS=$NEW_GT_COLORS'#'`echo $GT_COLORS | cut -b 7-8,12-13,17-18`':'
     done
     NEW_GT_COLORS=`echo $NEW_GT_COLORS | cut -f-16 -d':'`
     gconftool string "/apps/gnome-terminal/profiles/Default/palette" "$NEW_GT_COLORS"
