@@ -1,15 +1,15 @@
 # Makefile for "track" automatic update program
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v $
-#	$Author: treese $
+#	$Author: don $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.7 1987-12-06 16:57:53 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/Makefile,v 1.8 1988-05-17 18:58:06 don Exp $
 DESTDIR=
 INCDIR= /usr/include
 CFLAGS=	-O -I${INCDIR}
 LIBS= -ll
 
-PROGS= track nullmail
+PROGS= track # nullmail
 
 TRACK_OBJS= track.o y.tab.o stamp.o except.o files.o misc.o update.o
 
@@ -39,6 +39,7 @@ install:
 	for i in $(PROGS); do \
 		(install -c -s $$i $(DESTDIR)/etc/athena/$$i); \
 	done
+	chmod 4755 $(DESTDIR)/etc/athena/track
 	(cd doc; make install )
 
 clean:
