@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.10 1994-03-25 15:59:13 miki Exp $";
+static char rcsid_zephyr_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zephyr.c,v 1.11 1998-04-17 20:14:32 ghudson Exp $";
 #endif
 
 #include "attach.h"
@@ -43,14 +43,19 @@ static int zephyr_op(func)
     int count, count2;
     ZSubscription_t shortsubs[ZEPHYR_MAXONEPACKET];
     Code_t retval;
+    int opretval;
 #ifdef POSIX
     struct sigaction newsig, oldsig;
 #else
     sig_catch	(*oldsig)();
 #endif
 
-    if (setjmp(timeout))
-	    return 1;		/* We timed out, punt */
+    if (setjmp(timeout)) {
+	/* We timed out, punt */
+	opretval = 1;
+	goto cleanup;
+    }
+
 
 #ifdef POSIX
     newsig.sa_handler = zephyr_timeout;
@@ -60,26 +65,32 @@ static int zephyr_op(func)
 #else
     oldsig = signal(SIGALRM, zephyr_timeout);
 #endif
+    if (inited < 0) {
+	opretval = 1;
+	goto cleanup;
+    }
+
+    if (!num_subs) {
+	/* Can't lose if doing nothing */
+	opretval = 0; 
+	goto cleanup;
+    }
+
     alarm(ZEPHYR_TIMEOUT);
-    
-    if (inited < 0)
-	return 1;
-
-    if (!num_subs)
-	return 0;	/* Can't lose if doing nothing */
-
     if (!inited) {
 	if ((retval = ZInitialize()) != ZERR_NONE) {
 	    com_err(progname, retval, "while intializing Zephyr library");
 	    inited = -1;
-	    return 1;
+	    opretval = 1;
+	    goto cleanup;
 	}
 	if ((wgport = ZGetWGPort()) == -1) {
 	    /*
 	     * Be quiet about windowgram lossage
 	     */
 	    inited = -1;
-	    return 1;
+	    opretval = 1;
+	    goto cleanup;
 	}
 	inited = 1;
     }
@@ -93,16 +104,19 @@ static int zephyr_op(func)
 	    fprintf(stderr, "Error while subscribing: %s\n",
 		    error_message(retval));
 	    inited = -1;
-	    return 1;
+	    opretval = 1;
+	    goto cleanup;
 	}
     }
+    opretval = 0;
+cleanup:
     alarm(0);
 #ifdef POSIX
     sigaction(SIGALRM, &oldsig, (struct sigaction *)0);
 #else
     (void) signal(SIGALRM, oldsig);
 #endif
-    return 0;
+    return opretval;
 }
 
 void zephyr_addsub(class)
