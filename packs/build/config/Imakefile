@@ -1,24 +1,4 @@
-/*
- * 
- * This is used to recreate imake.  Makefile.ini is used to generate imake
- * the first time.
- */
+build_program(ccimake,ccimake.o,,)
+build_program(imake,imake.o,,)
 
-DEPLIBS = 
-HEADERS = imakemdep.h 
-CFFILES = $(HEADERS) Imake.rules Imake.tmpl site.def *.bac *.cf
-DEFINES = $(SIGNAL_DEFINES)
-
-#undef ImakeDependency
-#define ImakeDependency(dummy) @@\
-Makefile::  imake
-
-imake: imake.o
-	${CC} ${CFLAGS} -o imake imake.o
-
-create_depend(imake.c)
-
-clean::
-	rm ccimake
-
-install::
+SpecialObject(imake.o,ccimake,`./ccimake`)
