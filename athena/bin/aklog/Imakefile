@@ -1,18 +1,15 @@
-/* $Id: Imakefile,v 1.5 1996-05-16 21:40:05 ghudson Exp $
+/* $Id: Imakefile,v 1.6 1996-06-08 01:11:48 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/Imakefile,v $
  */
 
 DEFINES=-I$(AFSDIR)/include
 
 #ifdef SOLARIS
-OSLIBS=-lucb
-#endif
-#ifdef sgi
-OSLIBS=-lsys
+OSLIBS=-lbsd
 #endif
 
 AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lprot -lauth -lrxkad -lubik \
-	$(AFSDIR)/lib/afs/util.a -laudit -lsys -lrx -llwp
+	$(AFSDIR)/lib/afs/util.a -laudit -lsys -lrx -llwp -lsys
 LIBS=-lknet -lkrb $(AFSDIR)/lib/libdes.a -lhesiod -lcom_err $(OSLIBS)
 
 OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o
