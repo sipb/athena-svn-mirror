@@ -17,9 +17,10 @@
  * and processing timers.
  */
 
-static const char rcsid[] = "$Id: timer.c,v 1.1 1998-09-01 20:57:47 ghudson Exp $";
+static const char rcsid[] = "$Id: timer.c,v 1.2 1998-09-15 15:03:37 ghudson Exp $";
 
 #include <sys/types.h>
+#include <sys/time.h>
 #include <stdlib.h>
 #include <time.h>
 #include <syslog.h>
