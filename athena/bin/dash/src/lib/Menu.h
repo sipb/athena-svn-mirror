@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.h,v $
- * $Author: vanharen $ 
+ * $Author: ghudson $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -60,7 +60,7 @@ typedef struct _Menu {
    * Self and child-dependent variables - known or computed at
    * initialization time
    */
-  int machtype;
+  int supported;
   Boolean verify;
   struct _Menu *child;
   int weight;
@@ -91,7 +91,7 @@ typedef struct _ItemU {
 #ifdef MENU_COMPILER
   char *activateString;
 #endif
-  int machtype;
+  int supported;
   Boolean verify;
 } ItemU;
 

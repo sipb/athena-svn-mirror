@@ -11,11 +11,13 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.10 1996-09-19 22:23:28 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.11 1997-12-03 21:49:36 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <X11/Xos.h>
 #include <ctype.h>
 #include <X11/Xlib.h>
@@ -33,12 +35,6 @@ static char *rcsid =
 #include <X11/Xatom.h>
 
 #include <sys/time.h>
-
-#if  defined(NEED_ERRNO_DEFS)
-extern int errno;
-extern char *sys_errlist[];
-extern int sys_nerr;
-#endif
 
 extern int DEBUG;
 
@@ -571,7 +567,7 @@ static Boolean parseMenuEntry(me, string, info)
 {
   int qnum, done, got_one;
   int inquotes = 0;
-  char *ptr, *end, *beginning;
+  char *ptr, *end, *beginning, *hosttype;
   Item *lookup;
   Boolean unfinished = True;
   char errtext[100];
@@ -592,6 +588,7 @@ static Boolean parseMenuEntry(me, string, info)
   if (!strncmp(ptr, "item", 4))
     {
       info->type = ItemITEM;
+      info->u.i.supported = 1;
       ptr += 5;
     }
   else if (!strncmp(ptr, "menu", 4))
@@ -651,72 +648,28 @@ static Boolean parseMenuEntry(me, string, info)
       switch(*ptr)
 	{
  /*
-  *  Parse machtype or menu orientation
+  *  Parse hosttype or menu orientation
   */
 	case '+': /* should do this right someday... */
 	case '-':
 	  if (info->type == ItemITEM)
 	    {
-	      /*
-	       * Machtype flags
-	       */
-	      if (strncasecmp(ptr + 1, VAX, strlen(VAX)) == 0)
-		{
-		  info->u.i.machtype |= (VAXNUM << ((*ptr == '+') ? 0 : 8));
-		  ptr += strlen(VAX) + 1;
-		  break;
-		}
-
-	      if (strncasecmp(ptr + 1, RT, strlen(RT)) == 0)
-		{
-		  info->u.i.machtype |= (RTNUM << ((*ptr == '+') ? 0 : 8));
-		  ptr += strlen(RT) + 1;
-		  break;
-		}
-
-	      if (strncasecmp(ptr + 1, DECMIPS, strlen(DECMIPS)) == 0)
-		{
-		  info->u.i.machtype |=
-		    (DECMIPSNUM << ((*ptr == '+') ? 0 : 8));
-		  ptr += strlen(DECMIPS) + 1;
-		  break;
-		}
-
-	      if (strncasecmp(ptr + 1, PS2, strlen(PS2)) == 0)
-		{
-		  info->u.i.machtype |= (PS2NUM << ((*ptr == '+') ? 0 : 8));
-		  ptr += strlen(PS2) + 1;
-		  break;
-		}
-
-	      if (strncasecmp(ptr + 1, RSAIX, strlen(RSAIX)) == 0)
-		{
-		  info->u.i.machtype |= (RSAIXNUM << ((*ptr == '+') ? 0 : 8));
-		  ptr += strlen(RSAIX) + 1;
-		  break;
-		}
-
-	      if (strncasecmp(ptr + 1, SUN4, strlen(SUN4)) == 0)
-		{
-		  info->u.i.machtype |= (SUN4NUM << ((*ptr == '+') ? 0 : 8));
-		  ptr += strlen(SUN4) + 1;
-		  break;
-		}
-
-	      if (strncasecmp(ptr + 1, SGI, strlen(SGI)) == 0)
-		{
-		  info->u.i.machtype |= (SGINUM << ((*ptr == '+') ? 0 : 8));
-		  ptr += strlen(SGI) + 1;
-		  break;
-		}
+	      hosttype = getenv("HOSTTYPE");
+	      if (!hosttype)
+		  hosttype = HOSTTYPE;
+	      if (strncasecmp(ptr + 1, hosttype, strlen(hosttype)) == 0)
+		info->u.i.supported = (*ptr == '+');
 
 	      if (strncasecmp(ptr + 1, "verify", 6) == 0)
 		{
 		  info->flags |= verifyFLAG;
-		  info->u.i.verify = ((*ptr) == '+');
-		  ptr += 6 + 1;
-		  break;
+		  info->u.i.verify = (*ptr == '+');
 		}
+
+	      ptr++;
+	      while (*ptr && !isspace(*ptr))
+		ptr++;
+	      break;
 	    }
 	  /*
 	   * Menu orientation flags
@@ -1073,8 +1026,7 @@ static Boolean addMenuEntry(me, info, i)
     {
       (void)hash_store(me->menu.Names, info->name, i);
       memset(i, 0, sizeof(Item)); /* if new, init to zeroes */
-      i->u.i.machtype =
-	VAXNUM | RTNUM | DECMIPSNUM | PS2NUM | RSAIXNUM	| SUN4NUM | SGINUM;
+      i->u.i.supported = 1;
       i->u.i.verify = True;
     }
 
@@ -1113,8 +1065,7 @@ static Boolean addMenuEntry(me, info, i)
   if (info->flags & verifyFLAG)
     i->u.i.verify = info->u.i.verify;
 
-  i->u.i.machtype &= ~((info->u.i.machtype >> 8) & 255);
-  i->u.i.machtype |= (info->u.i.machtype & 255);
+  i->u.i.supported = i->u.i.supported && info->u.i.supported;
 
   if (info->flags & parentsFLAG)
     {
@@ -1209,7 +1160,7 @@ static void printTable(t)
 	      t->type,
 	      XrmQuarkToString(t->name),
 	      t->flags,
-	      (t->type == MenuITEM) ? t->u.m.orientation : t->u.i.machtype,
+	      (t->type == MenuITEM) ? t->u.m.orientation : t->u.i.supported,
 	      (t->type == ItemITEM) ? t->u.i.verify : 0,
 	      t->title);
 
@@ -1424,12 +1375,12 @@ static Boolean createItem(me, what)
 		{
 		  item->orientation = what->u.m.orientation;
 		  item->child = NULL;
-		  item->machtype = ~0;
+		  item->supported = 1;
 		}
 	      else
 		{
 		  item->activateProc = what->u.i.activateProc;
-		  item->machtype = what->u.i.machtype;
+		  item->supported = what->u.i.supported;
 		  item->verify = what->u.i.verify;
 
 		  if (NULL != what->u.i.help)
@@ -1514,11 +1465,7 @@ static char *loadFile(filename)
 
     if (-1 == (fd = open(filename, O_RDONLY, 0)))
       {
-	if (errno == 0 || errno > sys_nerr)
-	  sprintf(errtext, "loading file - error %d opening '%s'",
-		  errno, filename);
-	else
-	  sprintf(errtext, "opening '%s': %s", filename, sys_errlist[errno]);
+	sprintf(errtext, "opening '%s': %s", filename, strerror(errno));
 
 	XjWarning(errtext);
 	return NULL;
@@ -1526,11 +1473,7 @@ static char *loadFile(filename)
 
     if (-1 == fstat(fd, &buf)) /* could only return EIO */
       {
-	if (errno == 0 || errno > sys_nerr)
-	  sprintf(errtext, "loading file - error %d in fstat for '%s'",
-		  errno, filename);
-	else
-	  sprintf(errtext, "fstat '%s': %s", filename, sys_errlist[errno]);
+	sprintf(errtext, "fstat '%s': %s", filename, strerror(errno));
 
 	XjWarning(errtext);
 	close(fd);
@@ -1543,11 +1486,7 @@ static char *loadFile(filename)
 
     if (-1 == read(fd, info, size))
       {
-	if (errno == 0 || errno > sys_nerr)
-	  sprintf(errtext, "loading file - error %d reading '%s'",
-		  errno, filename);
-	else
-	  sprintf(errtext, "reading '%s': %s", filename, sys_errlist[errno]);
+	sprintf(errtext, "reading '%s': %s", filename, strerror(errno));
 
 	XjWarning(errtext);
 	close(fd);
@@ -1678,316 +1617,6 @@ int loadNewMenus(me, file)
 }
 
 
-/************************************************************************
- *
- *  createTablesFromCompiledFile  --  long enough name or what?
- *
- ************************************************************************/
-static int
-createTablesFromCompiledFile(me, file, fontname)
-     MenuJet me;
-     char *file, *fontname;
-{
-  char *comp_file;		/* "compiled" file name */
-  struct stat buf;
-  time_t mod_time;
-  int i, num;
-  Item *loc;
-  char *str, *end;
-  int samefont = False;
-
-  int qnum;
-  int tmp, mach_or_orntn, verify;
-  int j;
-  char *ptr;
-  TypeDef *t;
-
-
-  struct timeval start, t_end;
-
-  if (DEBUG)
-    {
-      gettimeofday(&start, NULL);
-      printf("createTablesFromCompiledFile: - %d.%d + \n", start.tv_sec, start.tv_usec);
-    }
-
-  if (file[0] == '\0'  ||  file == NULL)
-    return False;
-
-  if (-1 == stat(file, &buf))
-    return False;
-  mod_time = buf.st_mtime;
-
-  if ((comp_file = XjMalloc((unsigned)strlen(file) + 5)) == NULL)
-    return False;
-
-  (void) strcpy(comp_file, file);
-  (void) strcat(comp_file, ".cmp");
-
-  if (-1 == stat(comp_file, &buf))
-    {
-      XjFree(comp_file);
-      return False;
-    }
-
-  if (buf.st_mtime < mod_time)
-    {
-      XjFree(comp_file);
-      return False;
-    }
-
-  str = loadFile(comp_file);
-  XjFree(comp_file);
-
-  if (str == NULL)
-    return False;
-
-  num = atoi(str);
-  str += 5;
-
-  tmp = atoi(str);
-  str += 4;
-  *(end = str+tmp) = '\0';
-  if (!strcasecmp(str, fontname))
-    samefont = True;
-  str = ++end;
-
-  loc = (Item *)XjMalloc(num * sizeof(Item));
-  memset(loc, 0, num * sizeof(Item));
-
-  for (i=0; i < num; i++)
-    {
-      loc->type = atoi(str);
-      str += 2;
-      tmp = atoi(str);
-      str += 5;
-      *(end = str+tmp) = '\0';
-      /*      end = strchr(str, ' ');       *end = '\0';       */
-      loc->name = XrmStringToQuark(str);
-      str = ++end;
-      loc->flags = atoi(str);
-      str += 6;
-      mach_or_orntn = atoi(str);
-      str += 6;
-      verify = atoi(str);
-      str += 2;
-      
-      tmp = atoi(str);
-      str += 5;
-      *(end = str+tmp) = '\0';
-      /* end = strchr(str, '\n');      *end = '\0';       */
-      loc->title = str;
-      str = ++end;
-
-      if (samefont)
-	loc->title_width = atoi(str);
-      str += 6;
-
-      switch(loc->type)
-	{
-	  /*
-	   *  If an item, parse this-a-way...
-	   */
-	case ItemITEM:
-	  loc->next = me->menu.firstItem;
-	  me->menu.firstItem = loc;
-	  loc->u.i.machtype = mach_or_orntn;
-	  loc->u.i.verify = verify;
-	  break;
-
-	  /*
-	   *  ...else, if a menu, parse that-a-way...
-	   */
-	case MenuITEM:
-	  loc->next = me->menu.firstMenu;
-	  me->menu.firstMenu = loc;
-	  loc->u.m.orientation = mach_or_orntn;
-
-	  j = 0;
-	  do
-	    {
-	      tmp = atoi(str);
-	      str += 5;
-	      *(end = str+tmp) = '\0';
-	      /* end = strchr(str, ' ');      *end = '\0';       */
-	      loc->u.m.children[j++] = XrmStringToQuark(str);
-	      str = end+1;
-	    }
-	  while ( *str != '\n' );
-	  str++;
-/*
-	  ret = sscanf(str, "%s %s %s %s %s",
-		       strs[0], strs[1], strs[2], strs[3], strs[4]);
-	  for (j=0; j < ret; j++)
-	    loc->u.m.children[j] = XrmStringToQuark(strs[j]);
-*/
-
-	  break;
-	}
-
-      /*
-       *  Both menus and items have parents, so share this
-       *  line-parsing...
-       */
-
-      qnum = 0;
-      while (*str != '!')
-	{
-	  do
-	    {
-	      end = strchr(str, ' ');
-	      *end = '\0';
-	      loc->parents[qnum] = XrmStringToQuark(str);
-	      str = ++end;
-	      loc->weight[qnum++] = atoi(str);
-	      str += 5;
-	    }
-	  while ( *str != '\n' );
-	  str++;
-
-	  if (qnum != MAXPARENTS)
-	    {
-	      loc->parents[qnum] = (XrmQuark) NULL;
-	      loc->weight[qnum++] = 1;
-	    }	  
-/*
-	  ret = sscanf(str, "%s %d %s %d %s %d %s %d %s %d %s %d %s %d %s %d %s %d %s %d",
-		       strs[0], &wts[0], strs[1], &wts[1], strs[2], &wts[2],
-		       strs[3], &wts[3], strs[4], &wts[4], strs[5], &wts[5],
-		       strs[6], &wts[6], strs[7], &wts[7], strs[8], &wts[8],
-		       strs[9], &wts[9]);
-	  for (j=0; j < ret/2; j++)
-	    {
-	      loc->parents[qnum] = XrmStringToQuark(strs[j]);
-	      loc->weight[qnum++] = wts[j];
-	    }
-
-	  str = ++end;
-	  end = strchr(str, '\n');
-	  *end = '\0';
-*/
-
-	}
-      if (qnum != MAXPARENTS)
-	{
-	  qnum--;
-	  loc->parents[qnum] = (XrmQuark) NULL;
-	  loc->weight[qnum] = 0;
-	}
-
-      str += 2;
-
-      switch(loc->type)
-	{
-	  /*
-	   *  If an item, parse this-a-way...
-	   */
-	case ItemITEM:
-	  tmp = atoi(str);
-	  str += 5;
-	  *(end = str+tmp) = '\0';
-	  /*  end = strchr(str, '\n');	  *end = '\0'; */
-	  ptr = str;
-
-	  if (strncmp("(null)", ptr, 6))
-	    {
-	      if (NULL ==
-		  (loc->u.i.activateProc = XjConvertStringToCallback(&ptr)))
-		{
-		  char errtext[100];
-		  sprintf(errtext,
-			  "'%s' - couldn't grok callback; ignoring entry",
-			  XrmQuarkToString(loc->name));
-		  XjWarning(errtext);
-		  loc->flags &= ~activateFLAG; /* is this right??? */
-		}
-	    }
-
-	  str = ++end;
-	  tmp = atoi(str);
-	  str += 5;
-	  *(end = str+tmp) = '\0';
-	  /* end = strchr(str, '!');	  while ( *(end-1) != '\n' ) */
-	  /* end = strchr(end+1, '!');	  *end = '\0';  */
-	  if (strncmp("(null)", str, 6))
-	    {
-	      loc->u.i.help = str;
-	    }
-
-	  str = end+3;
-
-	  if (samefont)
-	    {
-	      loc->u.i.help_width = atoi(str);
-	      str += 6;
-	      loc->u.i.help_height = atoi(str);
-	      str += 6;
-	    }
-	  else
-	    str += 12;
-
-	  break;
-
-	  /*
-	   *  ...else, if a menu, parse that-a-way...
-	   */
-	case MenuITEM:
-	  /*
-	   * Add the new ones...
-	   */
-	  for (j = 0; loc->u.m.children[j] != 0 && j < MAXCHILDREN; j++)
-	    {
-	      t = (TypeDef *)hash_lookup(me->menu.Types, loc->u.m.children[j]);
-	      if (t == NULL)
-		{
-		  t = (TypeDef *)XjMalloc(sizeof(TypeDef));
-		  memset(t, 0, sizeof(TypeDef));
-		  (void)hash_store(me->menu.Types, loc->u.m.children[j], t);
-		  t->type = loc->u.m.children[j];
-		  t->menus[0] = loc;
-		}
-	      else
-		{
-		  int m;
-
-		  for (m = 0; m < MAXMENUSPERTYPE && t->menus[m] != 0; m++);
-		  if (m == MAXMENUSPERTYPE)
-		    {
-		      char errtext[100];
-		      
-		      sprintf(errtext, "'%s' not typed as %s due to overflow",
-			      XrmQuarkToString(loc->name),
-			      XrmQuarkToString(t->type));
-		      XjWarning(errtext);
-		    }
-		  else
-		    t->menus[m] = loc;
-		}
-	    }
-	  break;
-	}
-
-      (void)hash_store(me->menu.Names, loc->name, loc);
-      loc++;
-    }
-
-  if (DEBUG)
-    {
-      gettimeofday(&t_end, NULL);
-      printf("createTablesFromCompiledFile: %d.%d = %d.%06.6d\n",
-	     t_end.tv_sec, t_end.tv_usec,
-	     (t_end.tv_usec > start.tv_usec)
-	     ? t_end.tv_sec - start.tv_sec
-	     : t_end.tv_sec - start.tv_sec - 1,
-	     (t_end.tv_usec > start.tv_usec)
-	     ? t_end.tv_usec - start.tv_usec
-	     : t_end.tv_usec + 1000000 - start.tv_usec );
-    }
-
-  return True;
-}
-
-
 
 /************************************************************************
  *
@@ -2017,35 +1646,28 @@ static void initialize(me)
   me->menu.firstItem = NULL;
   me->menu.firstMenu = NULL;
 
-  /*
-   * load up default menus...
-   */
-  if (!createTablesFromCompiledFile(me, me->menu.file,
-				    font_prop ? fontname : "" ))
+  me->menu.items = loadFile(me->menu.file);
+
+  if (me->menu.items == NULL  &&  me->menu.fallback[0] != '\0')
     {
-      if (me->menu.file[0] != '\0')
-	me->menu.items = loadFile(me->menu.file);
+      Jet root=(Jet)me;
 
-      if (me->menu.items == NULL  &&  me->menu.fallback[0] != '\0')
-	{
-	  Jet root=(Jet)me;
+      XjWarning("trying fallback file");
+      while (XjParent(root))
+	root=XjParent(root);
 
-	  XjWarning("trying fallback file");
-	  while (XjParent(root))
-	    root=XjParent(root);
-
-	  XjUserWarning(root, NULL, False,
-			"Unable to load menu file, trying fallback file.",
-			"Try restarting dash later to get up-to-date menus.");
-	  me->menu.items = loadFile(me->menu.fallback);
-	}
-
-      if (me->menu.items != NULL &&
-	  me->menu.items[0] != '\0') /* a bit of a lose, but... */
-	createTablesFromString(me, me->menu.items);
-      else
-	createTablesFromString(me, NOMENU);
+      XjUserWarning(root, NULL, False,
+		    "Unable to load menu file, trying fallback file.",
+		    "Try restarting dash later to get up-to-date menus.");
+      me->menu.items = loadFile(me->menu.fallback);
     }
+
+  if (me->menu.items != NULL &&
+      me->menu.items[0] != '\0') /* a bit of a lose, but... */
+    createTablesFromString(me, me->menu.items);
+  else
+    createTablesFromString(me, NOMENU);
+
   if (font_prop)
     XjFree(fontname);
 
@@ -2728,19 +2350,15 @@ static void setMenu(me, menu, newState, warp)
 	{
 	case CLOSED:
 	  highlightMenu(me, menu, SELECTED,
-			(menu->activateProc == NULL ||
-		(MACHNUM != UNKNOWNNUM && (MACHNUM & menu->machtype) == 0)) ?
-			me->menu.dot_gc : me->menu.gc);
+			(menu->activateProc && menu->supported) ?
+			me->menu.gc : me->menu.dot_gc);
 	  break;
 	case OPENED:
 	  closeMenu(me, menu, warp);
 	  highlightMenu(me, menu, OPENED, me->menu.background_gc);
 	  highlightMenu(me, menu, SELECTED,
-			(menu->activateProc == NULL ||
-		(MACHNUM != UNKNOWNNUM && (MACHNUM & menu->machtype) == 0)) ?
-			me->menu.dot_gc : me->menu.gc);
-/*	  highlightMenu(me, menu, SELECTED, menu->activateProc == NULL ?
-			me->menu.dot_gc : me->menu.gc); */
+			(menu->activateProc && menu->supported) ?
+			me->menu.gc : me->menu.dot_gc);
 	  break;
 	case SELECTED:
 	  break;
@@ -2859,18 +2477,14 @@ static void drawPane(me, eventMenu)
 	{
 	  if (m->activateProc != NULL)
 	    XDrawString(me->core.display, eventMenu->menuPane,
-			(MACHNUM != UNKNOWNNUM && (MACHNUM & m->machtype) == 0) ?
-			me->menu.dim_gc : me->menu.gc,
+			m->supported ? me->menu.gc : me->menu.dim_gc,
 			m->label_x + me->menu.hMenuPadding / 2 - 10,
 			m->label_y + me->menu.vMenuPadding / 2 +
 			me->menu.font->ascent,
 			"*", 1);
 
 	  XDrawString(me->core.display, eventMenu->menuPane,
-		      /* (m->activateProc != NULL ||
-			 (m->paneType != HELP && m->child != NULL)) ? */
-		      (MACHNUM != UNKNOWNNUM && (MACHNUM & m->machtype) == 0) ?
-		      me->menu.dim_gc : me->menu.gc,
+		      m->supported ? me->menu.gc : me->menu.dim_gc,
 		      m->label_x + me->menu.hMenuPadding / 2,
 		      m->label_y + me->menu.vMenuPadding / 2 +
 		      me->menu.font->ascent,
@@ -2884,9 +2498,8 @@ static void drawPane(me, eventMenu)
 
 	    case SELECTED:
 	      highlightMenu(me, m, SELECTED,
-			    (m->activateProc == NULL ||
-	       (MACHNUM != UNKNOWNNUM && (MACHNUM & m->machtype) == 0)) ?
-			    me->menu.dot_gc : me->menu.gc);
+			    (m->activateProc && m->supported) ?
+			    me->menu.gc : me->menu.dot_gc);
 	      break;
 
 	    case CLOSED:
@@ -3006,9 +2619,8 @@ static Boolean event_handler(me, event)
 		{
 		  info.null = NULL;
 		  info.menu = me->menu.deepestOpened;
-		  if (MACHNUM == UNKNOWNNUM ||
-		      (MACHNUM & me->menu.deepestOpened->machtype) != 0 &&
-		      me->menu.deepestOpened->activateProc != NULL)
+		  if (me->menu.deepestOpened->supported &&
+		      me->menu.deepestOpened->activateProc)
 		    if (me->menu.verifyProc != NULL &&
 			me->menu.deepestOpened->verify)
 		      XjCallCallbacks(&info,
