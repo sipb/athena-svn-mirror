@@ -1,0 +1,8 @@
+liboaf/oaf-mainloop.c
+liboaf/oaf-registration.c
+oafd/ac-corba.c
+oafd/main.c
+oafd/od-activate.c
+oafd/od-load.c
+oafd/od-utils.c
+utils/oaf-sysconf.c

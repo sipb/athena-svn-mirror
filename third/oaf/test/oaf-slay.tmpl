@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+$oaf_dir="@oafdir@";
+$killall='killall';
+$kill_params=' -q -9 ';
+
+print "Warning, this program may arbitrarily terminate all manner of vital apps\n use with extreme caution...\n";
+
+chdir ($oaf_dir);
+opendir (DIR, $oaf_dir) || die "can't opendir oaf_dir: $!";
+@files = readdir (DIR);
+closedir DIR;
+
+while ($fname = shift (@files)) {
+	open (FILE, $fname);
+	while (<FILE>) {
+		$line = $_;
+		if ($line =~m/location[ \t]*\=/) {
+			$line =~s/.*location[ \t]*\="//;
+			$line =~s/".*//;
+			chomp ($line);
+
+			$line =~s/\.\///;
+			if (not ($line =~m/^OAFIID:/)) {
+				$cmd = $killall . $kill_params . $line;
+#				print "'", $cmd, "'\n";
+				system ($cmd);
+			}
+		}
+	}
+	close (FILE);
+}
+system ($killall . $kill_params . "oafd");
