@@ -3,6 +3,7 @@
 /etc/default/sys-suspend
 /etc/inet/datemsk.ndpd
 /etc/inet/wanboot.conf.sample
+/etc/init.d/ANNOUNCE
 /etc/init.d/PRESERVE
 /etc/init.d/autoinstall
 /etc/init.d/cachefs.root
@@ -31,6 +32,7 @@
 /etc/rc0.d/K39spc
 /etc/rc0.d/K40cron
 /etc/rc0.d/K90dhcpagent
+/etc/rc1.d/K00ANNOUNCE
 /etc/rc1.d/K05volmgt
 /etc/rc1.d/K06mipagent
 /etc/rc1.d/K35volmgt
