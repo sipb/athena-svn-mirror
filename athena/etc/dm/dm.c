@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.8 1999-10-28 14:29:15 kcr Exp $
+/* $Id: dm.c,v 1.9 1999-10-28 14:32:07 kcr Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -44,7 +44,7 @@
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.8 1999-10-28 14:29:15 kcr Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.9 1999-10-28 14:32:07 kcr Exp $";
 #endif
 
 /* Process states */
@@ -67,9 +67,10 @@ pid_t xpid, consolepid, loginpid;
 volatile int alarm_running = NONEXISTENT;
 volatile int x_running = NONEXISTENT;
 volatile int console_running = NONEXISTENT;
-volatile int console_tty = 0, console_failed = FALSE;
+volatile int console_failed = FALSE;
 volatile int login_running = NONEXISTENT;
 char *logintty;
+int console_tty = 0;
 
 #if defined(UTMP_FILE)
 char *utmpf = UTMP_FILE;
@@ -100,18 +101,24 @@ static void loginready(int signo);
 static char *getconf(char *file, char *name);
 static char **parseargs(char *line, char *extra, char *extra1, char *extra2);
 static void console_login(char *conf, char *msg);
-static void start_console(char *line, char **argv, int redir);
+static void start_console(int fd, char **argv, int redir);
 static void cleanup(char *tty);
 static pid_t fork_and_store(pid_t *var);
 static void x_stop_wait(void);
 static void writepid(char *file, pid_t pid);
 
 #ifndef HAVE_LOGOUT
-void logout(const char *line);
+static void logout(const char *line);
 #endif
 #ifndef HAVE_LOGIN_TTY
-int login_tty(int fd);
+static int login_tty(int fd);
 #endif
+#ifndef HAVE_OPENPTY
+static int openpty(int *amaster, int *aslave, char *name,
+		   struct termios *termp, struct winsize *winp);
+static int termsetup(int fd, struct termios *termp, struct winsize *winp);
+#endif
+
 
 /* the console process will run as daemon */
 #define DAEMON 1
@@ -146,6 +153,10 @@ int main(int argc, char **argv)
   int on;
 #endif
   int fd;
+  char loginttyname[256];
+  int ttyfd;
+
+  logintty = &loginttyname[5]; /* skip over the /dev/ */
 
   sigemptyset(&sigact.sa_mask);
   sigact.sa_flags = 0;
@@ -221,7 +232,7 @@ int main(int argc, char **argv)
     redir = FALSE;
 
   /* parse argument lists */
-  logintty = argv[2];
+  /* ignore argv[2] */
   consoletty = argv[argc - 1];
 
   openlog("dm", 0, LOG_USER);
@@ -290,7 +301,7 @@ int main(int argc, char **argv)
   strcpy(line, "/dev/");
   strcat(line, consoletty);
 
-  fd=open(line, O_RDWR);
+  fd = open(line, O_RDWR);
   if (fd == -1)
     {
       syslog(LOG_ERR, "Cannot open %s: %m", line);
@@ -423,13 +434,12 @@ int main(int argc, char **argv)
    *   this code had never been added.
    */
 
+  /* set up the console pty */
+  if (openpty(&console_tty, &ttyfd, loginttyname, NULL, NULL)==-1)
+    console_login(conf, "Cannot allocate pseudo-terminal\n");
+
   /* start up console */
-  strcpy(line, "/dev/");
-  strcat(line, logintty);
-  start_console(line, consoleargv, redir);
-  /* had to use a different tty, make sure xlogin uses it too */
-  if (strcmp(logintty, &line[5]))
-    strcpy(logintty, &line[5]);
+  start_console(console_tty, consoleargv, redir);
 
   /* Fire up the X login */
   for (tries = 0; tries < 3; tries++)
@@ -443,15 +453,14 @@ int main(int argc, char **argv)
 	case 0:
 	  max_fd = sysconf(_SC_OPEN_MAX);
 	  for (file = 0; file < max_fd; file++)
-	    close(file);
+	    {
+	      if (file != ttyfd)
+		close(file);
+	    }
 
-	  /* setup new tty */
-	  strcpy(line, "/dev/");
-	  strcat(line, logintty);
-	  file=open(line, O_RDWR);
-	  login_tty(file);
+	  login_tty(ttyfd);
 	  
-	  file=open("/dev/null", O_RDONLY);
+	  file = open("/dev/null", O_RDONLY);
 	  if (file >= 0)
 	    {
 	      dup2(file, 0);
@@ -574,7 +583,7 @@ int main(int argc, char **argv)
 	    last_console_failure = now;
 	}
       if (console_running == NONEXISTENT && !console_failed)
-	start_console(line, consoleargv, redir);
+	start_console(console_tty, consoleargv, redir);
       if (login_running == NONEXISTENT || x_running == NONEXISTENT)
 	{
 	  syslog(LOG_DEBUG, "login_running=%d, x_running=%d, quitting",
@@ -641,7 +650,7 @@ static void console_login(char *conf, char *msg)
   else
     fprintf(stderr, "%s", nl);
 
-  fd=open("/dev/console", O_RDWR);
+  fd = open("/dev/console", O_RDWR);
   if (fd >= 0)
     login_tty(fd);
 
@@ -657,46 +666,20 @@ static void console_login(char *conf, char *msg)
  * from the display manager.
  */
 
-static void start_console(char *line, char **argv, int redir)
+static void start_console(int fd, char **argv, int redir)
 {
   int file, i;
   char c;
 
   syslog(LOG_DEBUG, "Starting console");
-  if (console_tty == 0)
+
+  /* Create console log file owned by daemon */
+  if (access(consolelog, F_OK) != 0)
     {
-      /* Open master side of pty */
-      line[5] = 'p';
-      console_tty = open(line, O_RDONLY, 0);
-      if (console_tty < 0)
-	{
-	  /* failed to open this tty, find another one */
-	  for (c = 'p'; c <= 's'; c++)
-	    {
-	      line[8] = c;
-	      for (i = 0; i < 16; i++)
-		{
-		  line[9] = "0123456789abcdef"[i];
-		  console_tty = open(line, O_RDONLY, 0);
-		  if (console_tty >= 0)
-		    break;
-		}
-	      if (console_tty >= 0)
-		break;
-	    }
-	}
-      /* out of ptys, use stdout (/dev/console) */
-      if (console_tty < 0)
-	console_tty = 1;
-      /* Create console log file owned by daemon */
-      if (access(consolelog, F_OK) != 0)
-	{
-	  file = open(consolelog, O_CREAT, 0644);
-	  close(file);
-	}
-      chown(consolelog, DAEMON, 0);
+      file = open(consolelog, O_CREAT, 0644);
+      close(file);
     }
-  line[5] = 't';
+  chown(consolelog, DAEMON, 0);
 
   console_running = RUNNING;
   switch (fork_and_store(&consolepid))
@@ -706,11 +689,11 @@ static void start_console(char *line, char **argv, int redir)
       close(0);
       max_fd = sysconf(_SC_OPEN_MAX);
       for (file = 3; file < max_fd; file++)
-	if (file != console_tty)
+	if (file != fd)
 	  close(file);
       setsid();
-      dup2(console_tty, 0);
-      close(console_tty);
+      dup2(fd, 0);
+      close(fd);
 
       setgid(DAEMON);
       setuid(DAEMON);
@@ -1037,7 +1020,7 @@ static void writepid(char *file, pid_t pid)
 
 #ifndef HAVE_LOGOUT
 #ifdef HAVE_PUTUTLINE
-void logout(const char *line)
+static void logout(const char *line)
 {
   struct utmp utmp;
   struct utmp *putmp;
@@ -1050,7 +1033,7 @@ void logout(const char *line)
 
   strcpy(utmp.ut_line, line);
   setutent();
-  putmp=getutline(&utmp);
+  putmp = getutline(&utmp);
   if (putmp != NULL)
     {
       time(&utmp.ut_time);
@@ -1075,7 +1058,7 @@ void logout(const char *line)
 #endif
 
 #ifndef HAVE_LOGIN_TTY
-int login_tty(int fd)
+static int login_tty(int fd)
 {
 #ifndef TIOCSCTTY
   char *name;
@@ -1087,13 +1070,13 @@ int login_tty(int fd)
 #ifdef TIOCSCTTY
   if (ioctl(fd, TIOCSCTTY, NULL) == -1)
     return(-1);
-  ttyfd=fd;
+  ttyfd = fd;
 #else
-  name=ttyname(fd);
+  name = ttyname(fd);
   if (ttyname == NULL)
     return(-1);
   close(fd);
-  ttyfd=open(name, O_RDWR);
+  ttyfd = open(name, O_RDWR);
 #endif
 
   if (ttyfd == -1)
@@ -1105,6 +1088,173 @@ int login_tty(int fd)
 
   if (ttyfd > STDERR_FILENO)
     close(ttyfd);
+
+  return(0);
+}
+#endif
+
+#ifndef HAVE_OPENPTY
+#if HAVE__GETPTY
+/* Oooh, we're on an sgi. */
+static int openpty(int *amaster, int *aslave, char *name,
+		   struct termios *termp, struct winsize *winp)
+{
+  char *p;
+
+  p = _getpty(amaster, O_RDWR, 0600, 0);
+
+  if (p == NULL)
+    return(-1);
+
+  if (name != NULL)
+    strcpy(name, p);
+
+  *aslave = open(p, O_RDWR);
+  if (*aslave < 0)
+    {
+      close(*amaster);
+      return(-1);
+    }
+
+  if (termsetup(*aslave, termp, winp) < 0)
+    {
+      close(*amaster);
+      close(*aslave);
+      return(-1);
+    }
+
+  return(0);
+}
+#elif HAVE_GRANTPT
+static int openpty(int *amaster, int *aslave, char *name,
+		   struct termios *termp, struct winsize *winp)
+{
+  char *p;
+  
+  *amaster = open("/dev/ptmx", O_RDWR);
+  if (*amaster < 0)
+    return(-1);
+
+  if (grantpt(*amaster) < 0)
+    {
+      close(*amaster);
+      return(-1);
+    }
+
+  if (unlockpt(*amaster) < 0)
+    {
+      close(*amaster);
+      return(-1);
+    }
+
+  p = ptsname(*amaster);
+
+  if (name != NULL)
+    strcpy(name, p);
+
+  *aslave = open(p, O_RDWR);
+  if(*aslave < 0)
+    {
+      close(*amaster);
+      return(-1);
+    }
+
+  if (ioctl(*aslave, I_PUSH, "ptem") < 0)
+
+    {
+      close(*amaster);
+      close(*aslave);
+      return(-1);
+    }
+  
+  if (ioctl(*aslave, I_PUSH, "ldterm") < 0)
+    {
+      close(*amaster);
+      close(*aslave);
+      return(-1);
+    }
+  
+  if (ioctl(*aslave, I_PUSH, "ttcompat") < 0)
+    {
+      close(*amaster);
+      close(*aslave);
+      return(-1);
+    }
+
+  if (termsetup(*aslave, termp, winp) < 0)
+    {
+      close(*amaster);
+      close(*aslave);
+      return(-1);
+    }
+
+  return(0);
+}
+#else
+/* traditional bsd way */
+static int openpty(int *amaster, int *aslave, char *name,
+		   struct termios *termp, struct winsize *winp);
+{
+  char s[20];
+  char *p, *q;
+
+  *amaster == -1;
+
+  strcpy(s, "/dev/ptyxx");
+  for (p = "pqrstuvwxyzPQRST"; *p; p++)
+    {
+      s[8] = *p;
+      for(q = "0123456789abcdef"; *q; q++)
+	{
+	  s[9] = *q;
+
+	  *amaster = open(s, O_RDWR);
+	  if (*amaster == ENOENT)
+	    return(-1);
+	  else
+	    continue;
+
+	  s[5]='t';
+
+	  break;
+	}
+      
+      if (*amaster != -1)
+	  break;
+    }
+
+  if (name != NULL)
+    strcpy(s, name);
+
+  *aslave = open(s, O_RDWR);
+
+  if (*aslave < 0)
+    {
+      close(*amaster);
+      return(-1);
+    }
+
+
+  if (termsetup(*aslave, termp, winp) < 0)
+    {
+      close(*amaster);
+      close(*aslave);
+      return(-1);
+    }
+
+  return(0);
+}
+#endif
+
+static int termsetup(int fd, struct termios *termp, struct winsize *winp)
+{
+  if (termp != NULL)
+      if (tcsetattr(fd, TCSANOW, termp) < 0)
+	  return(-1);
+
+  if (winp != NULL)
+    if (ioctl(fd, TIOCSWINSZ, winp) < 0)
+      return(-1);
 
   return(0);
 }
