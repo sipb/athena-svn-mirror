@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.14 1991-04-18 22:25:27 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.15 1991-09-22 11:33:36 lwvanels Exp $";
 #endif
 #endif
 
@@ -29,6 +29,12 @@ int fd;		/* the accepting socket */
 static int dump_profile P((int sig ));
 static int start_profile P((int sig ));
 #endif /* PROFILE */
+
+#ifdef VOID_SIGRET
+static void clean_up P((int sig));
+#else
+static int clean_up P((int sig));
+#endif
 #undef P
 
 main(argc, argv)
@@ -195,7 +201,11 @@ start_profile(sig)
 }
 #endif /* PROFILE */
 
+#ifdef VOID_SIGRET
+void
+#else
 int
+#endif
 clean_up(signal)
      int signal;
 {
@@ -203,6 +213,9 @@ clean_up(signal)
   close(sock);
   syslog(LOG_NOTICE,"rpd shutting down on signal %d",signal);
   exit(0);
-/* make lint happy */
+#ifdef VOID_SIGRET
+  return;
+#else
   return 0;
+#endif
 }
