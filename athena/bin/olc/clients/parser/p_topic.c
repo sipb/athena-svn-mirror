@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.4 1989-08-04 11:09:42 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.5 1989-08-04 11:16:09 tjcoppet Exp $";
 #endif
 
 
@@ -101,13 +101,13 @@ do_olc_topic(arguments)
 	{
 	  if(OLC)
 	    fprintf(stderr,
-		  "Usage is: \ttopic [\-list] [-file <file name>] \n");
+		  "Usage is: \ttopic [-list] [-file <file name>] \n");
 	  else
 	    {
 	      fprintf(stderr,
 		      "Usage is: \ttopic  [<username> <instance id>] ");
 	      fprintf(stderr,
-		      "[\-topic <topic>] [\-list]\n\t\t[-file <file name>]\n");
+		      "[-topic <topic>] [-list]\n\t\t[-file <file name>]\n");
 	    }
 	  return(ERROR);
 	}
