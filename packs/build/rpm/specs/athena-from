@@ -3,7 +3,7 @@ Summary: Print a list of the user's unread mail
 License: MIT
 Group: Applications/Communications
 
-Requires: athena-hesiod athena-krb5
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
 
 %description
 The from program prints out mail header lines in incoming mail to show
