@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.16 1991-02-20 17:36:03 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.17 1991-02-20 17:42:15 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -387,7 +387,7 @@ filerec *file_ent;
      if (noop) {
 	  bytes_removed += file_ent->specs.st_size;
 	  printf("%s: %s (%dk) would be expunged (%dk total)\n", whoami, user,
-		 size_to_k(file_ent->specs.st_blocks),
+		 size_to_k(file_ent->specs.st_size),
 		 size_to_k(bytes_removed));
 	  return 0;
      }
@@ -400,7 +400,7 @@ filerec *file_ent;
 	  bytes_removed += file_ent->specs.st_size;
 	  if (verbose)
 	       printf("%s: %s (%dk) expunged (%dk total)\n", whoami, user,
-		      size_to_k(file_ent->specs.st_blocks),
+		      size_to_k(file_ent->specs.st_size),
 		      size_to_k(bytes_removed));
 	  return 0;
      }
