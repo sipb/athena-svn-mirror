@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.18 1998-04-18 16:58:43 danw Exp $
+ * $Id: Imakefile,v 1.19 1998-09-10 16:39:08 rbasch Exp $
  */
 
 #ifdef SOLARIS
@@ -22,6 +22,6 @@ machtype_$(NAME).o:	${ATHVERS} machtype_$(NAME).c
 	-DOSNAME=\"${OSNAME}\" -DOSVERS=\"${OSVERS}\" $*.c
 
 build_program(machtype, machtype_${NAME}.o,,${LIBS})
-install_program(machtype,-m 4755 -o root,${ATHRBINDIR})
+install_program(machtype,-m 2755 -o root -g sys,${ATHRBINDIR})
 
 install_man(machtype.1,machtype.1)
