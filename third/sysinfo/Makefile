@@ -4,7 +4,7 @@
 # for profit or used for commercial gain and the author is credited 
 # appropriately.
 #
-# $Revision: 1.5 $
+# $Revision: 1.6 $
 #
 # Sysinfo Makefile
 #
@@ -246,7 +246,7 @@ bindist: $(PROG) $(BINDistFiles)
 	rm -f $$vername $$filelist; \
 	echo DIST File is $$vername.tar.gz
 
-install: $(LIBDIR) $(BIN) metasysinfo
+install: ${DESTDIR}$(LIBDIR) ${DESTDIR}$(BIN) metasysinfo
 	@$(MAKE) $(MFLAGS) $(MKPARAMS) install.cf CONFDIR=${CONFDIR}
 	@if [ ! -z "$(LIBDIR)" ]; then \
 		RTPLATFORM=`${BUILDINFO} -rtplatform`; \
