@@ -47,6 +47,7 @@
 extern ServerOptions options;
 extern u_char *session_id2;
 extern int session_id2_len;
+extern int is_local_acct;
 
 
 typedef struct ssh_gssapi_cred_cache {
@@ -98,7 +99,14 @@ ssh_gssapi_krb5_userok(Authctxt *authctxt) {
 
 	if (ssh_gssapi_krb5_init(authctxt) == 0)
 		return 0;
-		
+
+	/* If this isn't a local account and the user hasn't specified
+	 * ticket forwarding, fail through to password authentication.
+	 * The shell the user gets won't be useful without tickets anyway.
+	 */
+	if (!is_local_acct && !gssapi_client_creds)
+	        return 0;
+	
 	if ((retval=krb5_parse_name(authctxt->krb5_ctx, 
 				    gssapi_client_name.value, 
 				    &princ))) {
