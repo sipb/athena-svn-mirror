@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
- *	$Author: builder $
+ *	$Author: treese $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.1 1985-05-27 16:17:18 builder Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.2 1987-02-21 21:16:25 treese Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.1 1985-05-27 16:17:18 builder Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.2 1987-02-21 21:16:25 treese Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -18,6 +18,18 @@ static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include <netdb.h>
 #include <signal.h>
 #include <setjmp.h>
+
+/* On the RT, we need to explicitly make this an unsigned long.  The VAX
+   pcc does not accept this syntax, however.
+   - Win Treese, 2/21/86
+ */
+
+#ifdef ibm032
+#define TM_OFFSET 2208988800UL
+#else
+#define TM_OFFSET 2208988800
+#endif rtpc
+
 char buffer[512];
 char *ctime();
 struct timeval tv;
@@ -92,7 +104,7 @@ main(argc, argv)
 	}
 	recv (s, buffer, 512, 0);  /* Wait for the reply */
 	nettime = (int *)buffer;
-	hosttime = (long) ntohl (*nettime) - 2208988800;
+	hosttime = (long) ntohl (*nettime) - TM_OFFSET;
 	fprintf (stdout, "%s", ctime(&hosttime));
 	(&tv)->tv_sec = hosttime;
 	if (setflg) {
