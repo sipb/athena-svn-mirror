@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.10 1987-07-29 15:16:50 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.11 1987-07-30 13:44:02 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.10 1987-07-29 15:16:50 rfrench Exp $";
+static char rcsid_ZLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.11 1987-07-30 13:44:02 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -67,7 +67,7 @@ Code_t ZLocateUser(user,nlocs)
 		if (!*ptr)
 			__locate_num++;
 
-	__locate_num /= 2;
+	__locate_num /= 3;
 
 	__locate_list = (ZLocations_t *)malloc((unsigned)__locate_num*
 					       sizeof(ZLocations_t));
@@ -86,6 +86,12 @@ Code_t ZLocateUser(user,nlocs)
 		if (!__locate_list[i].time)
 			return (ENOMEM);
 		(void) strcpy(__locate_list[i].time,ptr);
+		ptr += strlen(ptr)+1;
+		__locate_list[i].tty = (char *)malloc((unsigned)strlen(ptr)+
+						      1);
+		if (!__locate_list[i].tty)
+			return (ENOMEM);
+		(void) strcpy(__locate_list[i].tty,ptr);
 		ptr += strlen(ptr)+1;
 	}
 
