@@ -1,8 +1,0 @@
-#!/bin/sh
-
-athretcdir=/etc/athena
-
-mkdir -p $2$athretcdir
-
-cp $1/packs/config/os/$OS/attach.conf $2$athretcdir
-chmod 644 $2$athretcdir/attach.conf
