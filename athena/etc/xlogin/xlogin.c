@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.30 2004-06-17 21:25:48 jweiss Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.31 2004-07-02 23:51:38 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -899,6 +899,8 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
     }
 
   XtMapWidget(appShell);
+  if (isWindow)
+    XCopyArea(dpy, isPixmap, isWindow, isGC, 0, 0, isWidth, isHeight, 0, 0);
   XtPopup(WcFullNameToWidget(appShell, "*warningShell"), XtGrabExclusive);
   tb.firstPos = 0;
   tb.length = strlen(tb.ptr);
