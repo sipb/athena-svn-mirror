@@ -3,7 +3,7 @@
 # Build a standard Athena package into an RPM.
 # Currently this is hardwired for Linux.
 
-usage="build-package -n [-s srcdir] [-d destdir] [-v version] [-r release]"
+usage="build-package [-s srcdir] [-d destdir] [-v version] [-r release]"
 usage="$usage source rpmname"
 
 sourcedir=/mit/source
@@ -23,9 +23,18 @@ while getopts s:d:v:r: opt; do
   r)
     release="$OPTARG"
     ;;
+  \?)
+    echo "$usage" 1>&2
+    exit 1
+    ;;
   esac
 done
 shift `expr $OPTIND - 1`
+
+if [ $# -ne 2 ]; then
+  echo "$usage" 1>&2
+  exit 1
+fi
 
 athena_dir=$1
 package_name=$2
