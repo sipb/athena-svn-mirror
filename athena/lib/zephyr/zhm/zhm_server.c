@@ -4,7 +4,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v $
- *      $Author: opus $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.4 1988-03-14 02:58:49 opus Exp $";
+static char rcsid_hm_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm_server.c,v 1.5 1988-06-02 16:50:20 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -46,7 +46,8 @@ char *op;
      notice.z_opcode = op;
      notice.z_sender = "HM";
      notice.z_recipient = "";
-     notice.z_default_format = 0;
+     notice.z_default_format = "";
+     notice.z_num_other_fields = 0;
      notice.z_message_len = 0;
   
      /* Notify server that this host is here */
@@ -77,7 +78,8 @@ char *op;
      notice.z_opcode = op;
      notice.z_sender = "HM";
      notice.z_recipient = "";
-     notice.z_default_format = 0;
+     notice.z_default_format = "";
+     notice.z_num_other_fields = 0;
      notice.z_message_len = 0;
 
      /* Tell server to lose us */
