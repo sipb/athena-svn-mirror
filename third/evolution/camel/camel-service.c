@@ -756,7 +756,7 @@ camel_service_gethost (CamelService *service, CamelException *ex)
 			return NULL;
 		}
 
-		host = camel_get_host_byname(args.hostname, ex);
+		host = camel_gethostbyname(args.hostname, ex);
 		g_free(args.hostname);
 		return host;
 	}

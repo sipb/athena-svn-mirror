@@ -159,7 +159,7 @@ storage_sort_callback (ETreeMemory *etmm,
 		       ETreePath node1,
 		       ETreePath node2,
 		       void *closure)
-<{
+{
 	char *folder_path_1;
 	char *folder_path_2;
 	gboolean path_1_local;
