@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: oscheck.sh,v 1.3 2000-06-26 22:11:17 ghudson Exp $
+# $Id: oscheck.sh,v 1.4 2001-09-11 21:11:07 rbasch Exp $
 
 # This script checks the integrity of the Solaris OS installation, by
 # running the os-checkfiles program against the appropriate set of
@@ -76,7 +76,7 @@ fi
 # We don't want to bother with anything tracked from the srvd, so
 # extract all srvd paths from the srvd stats file, to add them to
 # the exception list.
-awk '{ print substr($1, 2, length($1) - 1); }' $srvdstats >> $exceptions
+nawk '{ print substr($1, 2, length($1) - 1); }' $srvdstats >> $exceptions
 sed -e 's,^/,,' $configfiles >> $exceptions
 
 # If machine is not PUBLIC, we allow for other OS packages to be
@@ -86,7 +86,7 @@ if [ false = "$PUBLIC" ]; then
   rm -f $myprods $myprods.uniq $osprods $osprods.uniq
 
   # Get a list of products installed on this machine.
-  pkginfo -R $rootdir | awk '{ print $2; }' | sort -u > $myprods
+  pkginfo -R $rootdir | nawk '{ print $2; }' | sort -u > $myprods
 
   # Get a list of the products in a standard installation.
   if [ -r $libdir/prods.$platform ]; then
@@ -99,7 +99,7 @@ if [ false = "$PUBLIC" ]; then
   comm -13 $osprods $myprods > $myprods.uniq
   if [ -s $myprods.uniq ]; then
     for i in `cat $myprods.uniq`; do
-      grep $i $contents | awk '{ print $1; }' >> $exceptions
+      grep $i $contents | nawk '{ print $1; }' >> $exceptions
     done
   fi
 
@@ -108,7 +108,7 @@ if [ false = "$PUBLIC" ]; then
   comm -23 $osprods $myprods > $osprods.uniq
   if [ -s $osprods.uniq ]; then
     for i in `cat $osprods.uniq`; do
-      grep $i $contents | awk '{ print $1; }' >> $exceptions
+      grep $i $contents | nawk '{ print $1; }' >> $exceptions
     done
   fi
 
