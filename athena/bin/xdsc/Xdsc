@@ -23,7 +23,8 @@
 <Key>Right:	forward-character() \n\
 <Key>Left:	backward-character() \n\
 <Key>Down:	next-line() \n\
-<Key>Up:	previous-line() \n\
+Shift<Key>Up:	FetchIfNecessary(Up,5) previous-line() \n\
+<Key>Up:	FetchIfNecessary(Up,1) previous-line() \n\
 Ctrl<Key>r:     search(backward) \n\
 Ctrl<Key>s:     search(forward) \n\
 <Key>:		Stub()
@@ -50,6 +51,7 @@ Ctrl<Key>s:     search(forward) \n\
 *enterpopup.pane.bodytext.scrollHorizontal:	whenNeeded
 *enterpopup.pane.bodytext.scrollVertical:       always
 *enterpopup.pane.bodytext.height:               150
+*enterpopup*Text.displayCaret:			off
 *enterpopup*subjecttext.translations: \
 #override \n\
 Ctrl<Key>Return:	TriggerSend(Go) \n\
@@ -58,9 +60,7 @@ Ctrl<Key>Return:	TriggerSend(Go) \n\
 <Btn1Down>:		TriggerFocusMove(Here) \n\
 <MapNotify>:		TriggerFocusMove(Here) \n\
 <FocusIn>:		display-caret(on) \n\
-<FocusOut>:		display-caret(off) \n\
-<Enter>:		display-caret(on) \n\
-<Leave>:		display-caret(off)
+<FocusOut>:		display-caret(off)
 
 *enterpopup*bodytext.translations: \
 #override \n\
@@ -69,9 +69,7 @@ Ctrl<Key>Return:	TriggerSend(Go) \n\
 <Key>Escape:		TriggerSend(Cancel) \n\
 <Btn1Down>:		TriggerFocusMove(Here) \n\
 <FocusIn>:		display-caret(on) \n\
-<FocusOut>:		display-caret(off) \n\
-<Enter>:		display-caret(on) \n\
-<Leave>:		display-caret(off)
+<FocusOut>:		display-caret(off)
 
 *enterpopup.pane.botbox.send.label:             Send
 *enterpopup.pane.botbox.abort.label:            Abort
@@ -105,6 +103,43 @@ Ctrl<Key>Return:	TriggerSend(Go) \n\
 *helppopup.pane.box.okay.label:		dismiss
 *helppopup.pane.helptext.height:	500
 *helppopup.pane.helptext.allowResize:	True
+*helppopup*string: \
+\n\
+                      What the buttons mean:\n\
+---------------------------------------------------------------------\n\
+  Down          Enter the next meeting with unread transactions\n\
+  Up            Enter the previous meeting with unread transactions\n\
+  update        Check for new transactions\n\
+  configure     Change the list of meetings you attend\n\
+  mode          Choose between listing meetings or transactions\n\
+  show          Choose how many transactions should be listed\n\
+  HELP          Display this screen\n\
+  QUIT          Quit\n\
+\n\
+  <downarrow>   Move cursor to the next line\n\
+  <uparrow>     Move cursor to the previous line\n\
+  <return>      Read the meeting or transaction the cursor is on\n\
+---------------------------------------------------------------------\n\
+  next          Read the next transaction in the current meeting\n\
+  prev          Read the previous transaction in the current meeting\n\
+  Next in chain Read the next transaction in this chain\n\
+  Prev in chain Read the previous transaction in this chain\n\
+  goto          Choose a specific transaction to read\n\
+  enter         Enter a new transaction or reply to the current one\n\
+  write         Save the current transaction to a file or mail it\n\
+\n\
+  <spacebar>    'do the right thing'\n\
+  <backspace>   reverse what space did\n\
+---------------------------------------------------------------------\n\
+You can also enter a meeting by doubleclicking on its title.\n\
+\n\
+The keyboard equivalent for clicking on a button is always the first\n\
+character on the button.\n\
+\n\
+If a button is grayed out, this action is not possible at this time.\n\
+For example, the 'enter' button will gray out when you do not have\n\
+permission to enter transactions in a meeting.
+
 
 *addpopup.pane.width:			600
 *addpopup.pane.label.label:		Adding a meeting
@@ -118,6 +153,7 @@ Ctrl<Key>Return:	TriggerSend(Go) \n\
 *addpopup.pane.box3.add.label:		Add
 *addpopup.pane.box3.abort.label:	Abort
 *addpopup.pane.box3.allowResize:	False
+*addpopup*Text.displayCaret:		off
 *addpopup*hosttext.translations: \
 #override \n\
 <Key>Escape:            TriggerAdd(Cancel) \n\
@@ -235,6 +271,7 @@ Shift<Key>Q:    KeyCallback(quitbutton) \n\
 <MapNotify>:	TriggerFocusMove(Here) \n\
 <Key>d:		TriggerPopdown(Go) \n\
 <Key>Return:	TriggerPopdown(Go) \n\
+<Key>space:	TriggerPopdown(Go) \n\
 
 *helppopup*translations: \
 #override \n\
