@@ -17,7 +17,7 @@
  * miscellaneous functions.
  */
 
-static const char rcsid[] = "$Id: util.c,v 1.6 1998-04-08 02:15:33 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.7 1998-05-07 17:08:13 ghudson Exp $";
 
 #include <sys/param.h>
 #include <assert.h>
@@ -51,6 +51,7 @@ const char *al_strerror(int code, char **mem)
     "Could not add user to passwd file",
     "Could not modify user's session record",
     "Permission denied while modifying system files",
+    "No such file or directory",
     "Out of memory",
     "Bad session record overwritten",
     "Could not add you to group file",
