@@ -13,6 +13,10 @@ static char sccsid[] = "@(#)necf.c	5.1 (Berkeley) 5/15/85";
 
 #define PAGESIZE	66
 
+#ifdef _AUX_SOURCE
+char	_sobuf[BUFSIZ];
+#endif
+
 main()
 {
 	extern char _sobuf[BUFSIZ];
