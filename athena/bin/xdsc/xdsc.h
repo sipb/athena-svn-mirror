@@ -1,4 +1,5 @@
 #define		MAX_BUTTONS		8
+#define		MAX_MENU_LEN		4
 #define		BUFSIZE			512
 #define		HELL_FROZEN_OVER	0
 #define		LONGNAMELEN		100
@@ -36,4 +37,4 @@ typedef struct entryrec {
         struct entryrec *nextrec;
 } EntryRec;
 
-static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.3 1991-02-05 09:12:50 sao Exp $";
+static char rcsidh[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.h,v 1.4 1991-02-11 16:31:15 sao Exp $";
