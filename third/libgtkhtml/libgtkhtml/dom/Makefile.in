@@ -89,27 +89,18 @@ libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml/dom
 
 SUBDIRS = core html events views traversal
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	$(GTKHTML2_CFLAGS)
+INCLUDES =  	-I$(top_srcdir) 	$(GTKHTML2_CFLAGS)
 
 
 noinst_LTLIBRARIES = libdom.la
 
-libdom_la_SOURCES = \
-	dom.h
+libdom_la_SOURCES =  	dom.h
 
 
-libgtkhtmlinclude_HEADERS = \
-	dom-types.h
+libgtkhtmlinclude_HEADERS =  	dom-types.h
 
 
-libdom_la_LIBADD = \
-	$(top_builddir)/libgtkhtml/dom/core/libdomcore.la	\
-	$(top_builddir)/libgtkhtml/dom/html/libdomhtml.la	\
-	$(top_builddir)/libgtkhtml/dom/events/libdomevents.la  \
-	$(top_builddir)/libgtkhtml/dom/views/libdomviews.la	\
-	$(top_builddir)/libgtkhtml/dom/traversal/libdomtraversal.la
+libdom_la_LIBADD =  	$(top_builddir)/libgtkhtml/dom/core/libdomcore.la		$(top_builddir)/libgtkhtml/dom/html/libdomhtml.la		$(top_builddir)/libgtkhtml/dom/events/libdomevents.la  	$(top_builddir)/libgtkhtml/dom/views/libdomviews.la		$(top_builddir)/libgtkhtml/dom/traversal/libdomtraversal.la
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -139,7 +130,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libdom_la_SOURCES)
 OBJECTS = $(libdom_la_OBJECTS)

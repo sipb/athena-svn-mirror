@@ -87,31 +87,15 @@ VERSION = @VERSION@
 
 libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml/dom/traversal
 
-INCLUDES = \
-	-I$(top_srcdir) 		\
-	-I$(top_srcdir)/src/dom		\
-	-I$(top_srcdir)/src/dom/core	\
-	$(GTKHTML2_CFLAGS) 
+INCLUDES =  	-I$(top_srcdir) 			-I$(top_srcdir)/src/dom			-I$(top_srcdir)/src/dom/core		$(GTKHTML2_CFLAGS) 
 
 
 noinst_LTLIBRARIES = libdomtraversal.la
 
-libdomtraversal_la_SOURCES = \
-	dom-documenttraversal.c	\
-	dom-documenttraversal.h	\
-	dom-nodefilter.c	\
-	dom-nodefilter.h	\
-	dom-nodeiterator.c	\
-	dom-nodeiterator.h	\
-	dom-traversal-utils.c	\
-	dom-traversal-utils.h
+libdomtraversal_la_SOURCES =  	dom-documenttraversal.c		dom-documenttraversal.h		dom-nodefilter.c		dom-nodefilter.h		dom-nodeiterator.c		dom-nodeiterator.h		dom-traversal-utils.c		dom-traversal-utils.h
 
 
-libgtkhtmlinclude_HEADERS = \
-	dom-documenttraversal.h	\
-	dom-nodefilter.h	\
-	dom-nodeiterator.h	\
-	dom-traversal-utils.h
+libgtkhtmlinclude_HEADERS =  	dom-documenttraversal.h		dom-nodefilter.h		dom-nodeiterator.h		dom-traversal-utils.h
 
 
 libdomtraversal_la_LIBADD = $(GTKHTML2_LIBS) 
@@ -139,7 +123,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libdomtraversal_la_SOURCES)
 OBJECTS = $(libdomtraversal_la_OBJECTS)
@@ -270,6 +254,10 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
+
+
 
 info-am:
 info: info-am

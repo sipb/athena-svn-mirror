@@ -105,6 +105,9 @@ write_pixbuf (HtmlStream *stream, const gchar *data, guint size, HtmlImage *imag
 static void 
 close_pixbuf (HtmlStream *stream, HtmlImage *image)
 {
+	if (!image)
+		return;
+
 	image->loading = FALSE;
 	
 	if (html_stream_get_written (stream) == 0) {

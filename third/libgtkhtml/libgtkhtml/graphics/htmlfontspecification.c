@@ -164,13 +164,13 @@ html_font_specification_get_pango_font_description (HtmlFontSpecification *spec)
 	PangoFontDescription *desc;
 
 	desc = pango_font_description_new ();
-
-	/* Map between HTML and Pango name for mono-spaced font. */
+	
+        /* Map between HTML and Pango name for mono-spaced font. */
         if (!strcmp (spec->family, "monospace"))
                 pango_font_description_set_family (desc, "mono");
         else
 		pango_font_description_set_family (desc, spec->family);
-	
+
 	pango_font_description_set_style (desc, pango_style[spec->style]);
 	pango_font_description_set_variant (desc, pango_variant[spec->variant]);
 	pango_font_description_set_weight (desc, pango_weight[spec->weight]);

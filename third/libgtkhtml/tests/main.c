@@ -39,6 +39,8 @@ main (gint argc, gchar **argv)
 	gnome_vfs_init ();
 
 	browser = browser_window_new (NULL);
+	g_signal_connect (G_OBJECT (browser), "destroy",
+			  G_CALLBACK (gtk_main_quit), NULL);
 	gtk_widget_show (browser);
 
 	gtk_main ();

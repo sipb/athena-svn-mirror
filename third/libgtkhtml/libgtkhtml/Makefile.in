@@ -89,39 +89,23 @@ SUBDIRS = util css document dom layout graphics view a11y
 
 libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/libgtkhtml \
-	$(GTKHTML2_CFLAGS) \
-	-DG_LOG_DOMAIN=\"GtkHtml\"
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/libgtkhtml 	$(GTKHTML2_CFLAGS) 	-DG_LOG_DOMAIN=\"GtkHtml\"
 
 
-DGNOMELOCALEDIR = \"$(datadir)/locale\" \
-	-I../intl -I$(top_srcdir)/intl
+DGNOMELOCALEDIR = \"$(datadir)/locale\" 	-I../intl -I$(top_srcdir)/intl
 
 
 lib_LTLIBRARIES = libgtkhtml-2.la
 
-libgtkhtml_2_la_SOURCES = \
-	gtkhtmlcontext.c 
+libgtkhtml_2_la_SOURCES =  	gtkhtmlcontext.c 
 
 
-libgtkhtmlinclude_HEADERS = \
-	gtkhtmlcontext.h \
-	gtkhtml.h
+libgtkhtmlinclude_HEADERS =  	gtkhtmlcontext.h 	gtkhtml.h
 
-@ENABLE_ACCESSIBILITY_TRUE@A11Y_LT_LIB = @ENABLE_ACCESSIBILITY_TRUE@$(top_builddir)/libgtkhtml/a11y/libhtmla11y.la
+@ENABLE_ACCESSIBILITY_TRUE@A11Y_LT_LIB = $(top_builddir)/libgtkhtml/a11y/libhtmla11y.la
 @ENABLE_ACCESSIBILITY_FALSE@A11Y_LT_LIB = 
 
-libgtkhtml_2_la_LIBADD = \
-	$(top_builddir)/libgtkhtml/css/libhtmlcss.la \
-	$(top_builddir)/libgtkhtml/document/libhtmldocument.la \
-	$(top_builddir)/libgtkhtml/dom/libdom.la \
-	$(top_builddir)/libgtkhtml/graphics/libhtmlgraphics.la \
-	$(top_builddir)/libgtkhtml/layout/libhtmllayout.la \
-	$(top_builddir)/libgtkhtml/util/libhtmlutil.la \
-	$(top_builddir)/libgtkhtml/view/libhtmlview.la \
-	$(A11Y_LT_LIB) $(GTKHTML2_LIBS) $(GAILUTIL_LIBS)
+libgtkhtml_2_la_LIBADD =  	$(top_builddir)/libgtkhtml/css/libhtmlcss.la 	$(top_builddir)/libgtkhtml/document/libhtmldocument.la 	$(top_builddir)/libgtkhtml/dom/libdom.la 	$(top_builddir)/libgtkhtml/graphics/libhtmlgraphics.la 	$(top_builddir)/libgtkhtml/layout/libhtmllayout.la 	$(top_builddir)/libgtkhtml/util/libhtmlutil.la 	$(top_builddir)/libgtkhtml/view/libhtmlview.la 	$(A11Y_LT_LIB) $(GTKHTML2_LIBS) $(GAILUTIL_LIBS)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -162,7 +146,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libgtkhtml_2_la_SOURCES)
 OBJECTS = $(libgtkhtml_2_la_OBJECTS)
@@ -379,6 +363,7 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+
 
 info-am:
 info: info-recursive

@@ -87,36 +87,15 @@ VERSION = @VERSION@
 
 libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml/dom/html
 
-INCLUDES = \
-	-I$(top_srcdir) 		\
-	-I$(top_srcdir)/libgtkhtml	\
-	$(GTKHTML2_CFLAGS) 
+INCLUDES =  	-I$(top_srcdir) 			-I$(top_srcdir)/libgtkhtml		$(GTKHTML2_CFLAGS) 
 
 
 noinst_LTLIBRARIES = libdomhtml.la
 
-libdomhtml_la_SOURCES = \
-	dom-htmlanchorelement.c	\
-	dom-htmlelement.c	\
-	dom-htmlformelement.c	\
-	dom-htmlinputelement.c	\
-	dom-htmlselectelement.c	\
-	dom-htmloptionelement.c	\
-	dom-htmlobjectelement.c	\
-	dom-htmltextareaelement.c	\
-	dom-htmlcollection.c
+libdomhtml_la_SOURCES =  	dom-htmlanchorelement.c		dom-htmlelement.c		dom-htmlformelement.c		dom-htmlinputelement.c		dom-htmlselectelement.c		dom-htmloptionelement.c		dom-htmlobjectelement.c		dom-htmltextareaelement.c		dom-htmlcollection.c
 
 
-libgtkhtmlinclude_HEADERS = \
-	dom-htmlanchorelement.h	\
-	dom-htmlelement.h	\
-	dom-htmlformelement.h	\
-	dom-htmlinputelement.h	\
-	dom-htmlselectelement.h	\
-	dom-htmloptionelement.h	\
-	dom-htmlobjectelement.h	\
-	dom-htmltextareaelement.h	\
-	dom-htmlcollection.h
+libgtkhtmlinclude_HEADERS =  	dom-htmlanchorelement.h		dom-htmlelement.h		dom-htmlformelement.h		dom-htmlinputelement.h		dom-htmlselectelement.h		dom-htmloptionelement.h		dom-htmlobjectelement.h		dom-htmltextareaelement.h		dom-htmlcollection.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
@@ -144,7 +123,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libdomhtml_la_SOURCES)
 OBJECTS = $(libdomhtml_la_OBJECTS)
@@ -275,6 +254,15 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
+
+
+
+
+
+
+
 
 info-am:
 info: info-am

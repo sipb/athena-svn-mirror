@@ -100,9 +100,11 @@ html_box_embedded_radio_finalize (GObject *object)
 {
 	HtmlBox *box = HTML_BOX (object);
 	
-	g_signal_handlers_disconnect_matched (G_OBJECT (box->dom_node),
-					      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
-					      0, 0, NULL, widget_toggled, box);
+	if (box->dom_node) {
+		g_signal_handlers_disconnect_matched (G_OBJECT (box->dom_node),
+						      G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+						      0, 0, NULL, widget_toggled, box);
+	}
 
 	G_OBJECT_CLASS(parent_class)->finalize (object);
 }

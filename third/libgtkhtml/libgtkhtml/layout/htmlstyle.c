@@ -1,3 +1,25 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*
+   Copyright (C) 2000 CodeFactory AB
+   Copyright (C) 2000 Jonas Borgstr\366m <jonas@codefactory.se>
+   Copyright (C) 2000 Anders Carlsson <andersca@codefactory.se>
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public
+   License as published by the Free Software Foundation; either
+   version 2 of the License, or (at your option) any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public License
+   along with this library; see the file COPYING.LIB.  If not, write to
+   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+*/
+
 #include <glib.h>
 #include <string.h>
 
@@ -13,6 +35,7 @@ static GtkStyle *
 html_style_get_gtk_style (void)
 {
   	GtkStyle *style;
+
 	style = gtk_rc_get_style_by_paths (gtk_settings_get_default(),
                                            "GtkTextView",
                                            "TextView",
@@ -26,27 +49,20 @@ html_style_get_gtk_style (void)
 			style = gtk_style_new ();
                 }
         }
-      
+
         return style;
 }
 
 static PangoFontDescription*
-html_style_get_default_font_desc ()
+html_style_get_gtk_font_desc (GtkStyle *style)
 {
-	GtkStyle *style;
-
-	style = html_style_get_gtk_style ();
-
 	return style->font_desc;
 }
 
 static HtmlColor*
-html_style_get_default_text_color ()
+html_style_get_gtk_text_color (GtkStyle *style)
 {
 	GdkColor  text_color;
-        GtkStyle *style;
-
-        style = html_style_get_gtk_style ();
 
 	text_color = style->text[GTK_STATE_NORMAL];
 
@@ -191,11 +207,13 @@ html_default_style_new (void)
 	HtmlStyleBackground *background = html_style_background_new ();
 	HtmlStyleBorder *border = html_style_border_new ();
 	HtmlStyleOutline *outline = html_style_outline_new ();
-        gchar *font_name;
-        GtkSettings *settings;
-        PangoFontDescription *font_desc;
-        const gchar *family;
-        gfloat size;
+	GtkStyle *gtk_style;
+	gchar *font_name;
+	GtkSettings *settings;
+	PangoFontDescription *font_desc;
+	const gchar *family;
+	gfloat size;
+	HtmlColor *color;
 
 	/* Set refcount to 1 so it never will be deallocated */
 	result->refcount = 1;
@@ -214,7 +232,8 @@ html_default_style_new (void)
 	
 	html_style_set_outline_width (result, HTML_BORDER_WIDTH_MEDIUM);
 
-	font_desc = html_style_get_default_font_desc ();
+	gtk_style = html_style_get_gtk_style ();
+	font_desc = html_style_get_gtk_font_desc (gtk_style);
         
 	family = pango_font_description_get_family (font_desc);
 	size = pango_font_description_get_size (font_desc) / (gfloat)PANGO_SCALE;
@@ -228,12 +247,38 @@ html_default_style_new (void)
                                              HTML_FONT_DECORATION_NONE, 
                                              size);
 	
-	/* Set the default color to match the GTK+ theme */
-	html_style_set_color (result, html_style_get_default_text_color ());
+	/*
+	 * Set the default color to match the GTK+ theme  
+	 * and free the HtmlColor
+	 */
+	color = html_style_get_gtk_text_color (gtk_style);
+	html_style_set_color (result, color);
+	html_color_unref (color);
+	g_object_unref (gtk_style);
 	
 	return result;
 }
 
+static void
+html_style_notify_settings (GObject *obj, GParamSpec *pspec)
+{
+	if (strcmp (pspec->name, "gtk-theme-name") == 0) {
+		GtkStyle *gtk_style;
+		HtmlColor *color;
+
+		/*
+		 * Update the default color
+		 */
+		gtk_style = html_style_get_gtk_style ();
+		color =  html_style_get_gtk_text_color (gtk_style);
+		g_object_unref (gtk_style);
+		default_style->inherited->color->red =  color->red;
+		default_style->inherited->color->green =  color->green;
+		default_style->inherited->color->blue =  color->blue;
+		g_free (color);
+	}
+}
+                            
 HtmlStyle *
 html_style_new (HtmlStyle *parent)
 {
@@ -241,6 +286,10 @@ html_style_new (HtmlStyle *parent)
 
 	if (!default_style) {
 		default_style = html_default_style_new ();
+		g_signal_connect (gtk_settings_get_default (),
+				  "notify",
+				  G_CALLBACK (html_style_notify_settings),
+				  NULL);
 	}
 
 	/* FIXME: Eeeek, very ugly */

@@ -87,23 +87,15 @@ VERSION = @VERSION@
 
 libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml/dom/views
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/src \
-	$(GTKHTML2_CFLAGS) \
-	-DG_LOG_DOMAIN=\"DomViews\"
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/src 	$(GTKHTML2_CFLAGS) 	-DG_LOG_DOMAIN=\"DomViews\"
 
 
 noinst_LTLIBRARIES = libdomviews.la
 
-libdomviews_la_SOURCES = \
-	dom-abstractview.c \
-	dom-documentview.c 
+libdomviews_la_SOURCES =  	dom-abstractview.c 	dom-documentview.c 
 
 
-libgtkhtmlinclude_HEADERS = \
-	dom-abstractview.h \
-	dom-documentview.h
+libgtkhtmlinclude_HEADERS =  	dom-abstractview.h 	dom-documentview.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
@@ -128,7 +120,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libdomviews_la_SOURCES)
 OBJECTS = $(libdomviews_la_OBJECTS)
@@ -259,6 +251,8 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
 
 info-am:
 info: info-am

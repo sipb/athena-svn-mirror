@@ -87,29 +87,15 @@ VERSION = @VERSION@
 
 libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml/css
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/libgtkhtml \
-	$(GTKHTML2_CFLAGS) \
-	-DG_LOG_DOMAIN=\"HtmlCss\"
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/libgtkhtml 	$(GTKHTML2_CFLAGS) 	-DG_LOG_DOMAIN=\"HtmlCss\"
 
 
 noinst_LTLIBRARIES = libhtmlcss.la
 
-libhtmlcss_la_SOURCES = \
-	cssdebug.h \
-	cssmatcher.c \
-	cssparser.c \
-	cssstylesheet.c \
-	cssvalue.c \
-	html.css.h
+libhtmlcss_la_SOURCES =  	cssdebug.h 	cssmatcher.c 	cssparser.c 	cssstylesheet.c 	cssvalue.c 	html.css.h
 
 
-libgtkhtmlinclude_HEADERS = \
-	cssmatcher.h \
-	cssparser.h \
-	cssstylesheet.h \
-	cssvalue.h 
+libgtkhtmlinclude_HEADERS =  	cssmatcher.h 	cssparser.h 	cssstylesheet.h 	cssvalue.h 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -135,7 +121,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libhtmlcss_la_SOURCES)
 OBJECTS = $(libhtmlcss_la_OBJECTS)
@@ -266,6 +252,10 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
+
+
 
 info-am:
 info: info-am

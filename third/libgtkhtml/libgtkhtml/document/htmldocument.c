@@ -367,9 +367,14 @@ html_document_parsed_document_node (HtmlParser *parser, DomDocument *dom_documen
 {
 	DomEventListener *listener;
 
+	listener = g_object_get_data (G_OBJECT (document), "dom-event-listener");
+	if (listener)
+		return;
+
 	listener = dom_event_listener_signal_new ();
 	g_signal_connect (G_OBJECT (listener), "event",
 			  G_CALLBACK (html_document_dom_event), document);
+	g_object_set_data (G_OBJECT (document), "dom-event-listener", listener);
 	
 	dom_EventTarget_addEventListener (DOM_EVENT_TARGET (document->dom_document),
 					  "DOMNodeInserted", listener, FALSE);
@@ -412,10 +417,10 @@ html_document_finalize (GObject *object)
 {
 	HtmlDocument *document = HTML_DOCUMENT (object);
 
+	html_document_clear (document);
+
 	if (document->parser)
 		g_object_unref (G_OBJECT (document->parser));
-
-	html_document_clear (document);
 
 	parent_class->finalize (object);
 }
@@ -715,6 +720,8 @@ html_document_clear (HtmlDocument *document)
 	DomNode *node;
 	DomNode *tmp_node;
 	GSList *ss;
+	xmlNodePtr top_node;
+	DomEventListener *listener;
 	
 	if (!document->dom_document)
 		return;
@@ -724,14 +731,44 @@ html_document_clear (HtmlDocument *document)
 	html_document_update_active_node (document, NULL);
 	html_document_update_focus_element (document, NULL);
 	
+	listener = g_object_get_data (G_OBJECT (document), "dom-event-listener");
+	if (listener) {
+		g_object_set_data (G_OBJECT (document), "dom-event-listener", NULL);
+	
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "DOMNodeInserted", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "DOMNodeRemoved", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "DOMCharacterDataModified", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "StyleChanged", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "mousedown", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "mouseup", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "click", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "mouseover", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "mouseout", listener, FALSE);
+		dom_EventTarget_removeEventListener (DOM_EVENT_TARGET (document->dom_document),
+						     "submit", listener, FALSE);
+		g_object_unref (listener);
+	}
+
 	node = dom_Node__get_firstChild (DOM_NODE (document->dom_document));
 	while (node) {
 		tmp_node = node;
 		
+		top_node =  node->xmlnode;
 		node = dom_Node__get_nextSibling (node);
 		dom_Node_removeChild (DOM_NODE (document->dom_document), tmp_node, NULL);
 		g_object_unref (tmp_node);
 	}
+
+	xmlFreeNode (top_node);
 
 	g_object_unref (document->dom_document);
 	

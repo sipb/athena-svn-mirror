@@ -1,8 +1,393 @@
-2002-11-18  Mikael Hallendal  <micke@codefactory.se>
+2003-01-20  Padraig O'Briain  <padraig.obriain@sun.com>
 
-	* Release 2.0.3
+	* Release 2.2.0
 
-	* configure.in: Bumped to 2.0.3
+	* configure.in: bumped to 2.2.0
+
+	* NEWS: Updated for 2.2.0,
+
+2003-01-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/htmlview.c
+	(html_view_realize): Store the font size so we can adjust size in 
+	HtmlFontSpecification if the size changes.
+	(html_view_update_box_style_size): New function which traverses all the
+	HtmlBox structures and updates size field of its style's 
+	htmlFontSpecification, if it has not been updated already.
+	(html_view_style_set): Make function static.
+	Add check whether font size has changed and if it has, call
+	html_view_update_box_style_size() on the view root.
+ 
+	* libgtkhtml/layout/htmlstyle.c (html_default_style_new): Unref
+	HtmlColor used to set color in default style to avoid leaking it. 
+
+2003-01-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/parser.c (css_parser_parse_string): Update changes 
+	made for bug #84480 to avoid regression displaying http://slashdot.org.
+	(bug #102742)
+
+	Problem reported by Ali Akcaagac.
+
+	* libgtkhtml/document/parser.c: (html_parser_new): Remove call to
+	htmlHandleOmittedElem(). (bug #102008)
+
+	* libgtkhtml/layout/htmlboxblock.c 
+	(html_box_block_create_inline_lines): Apply alternative fix for 
+	bug #98577.
+
+	* libgtkhtml/layout/htmlboxtablerow.c 
+	(html_box_table_row_update_spaninfo): Avoid warning about casting
+	HtmlBoxForm to HtmlBoxTableRow.
+
+	* libgtkhtml/layout/htmllinbebox.c (html_line_box_add_inlines):
+	Remove previous fix for bug #98577 as it causes a regression.
+
+	Problem reported by Ali Akcaagac.
+
+	* libgtkhtml/layout/html/htmlboxembeddedentry.c 
+	(html_box_embedded_entry_finalize): Check box->dom_node still exists
+	before disconnecting signal handlers.
+
+	* libgtkhtml/layout/html/htmlboxembeddedradio.c 
+	(html_box_embedded_radio_finalize): Check box->dom_node still exists
+	before disconnecting signal handlers.
+
+2002-01-07  Naba Kumar  <naba@gnome.org>
+
+	* configure.in: Added hi (hindi) in ALL_LINGUAS
+
+2003-01-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.1.8
+
+	* configure.in: bumped to 2.1.8
+
+	* NEWS: Updated for 2.1.8,
+
+2003-01-06  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* README: Refer to HACKING file
+
+	* libgtkhtml/layout/htmlboxroot.c (html_box_root_get_boundaries): Do
+	not update boxwidth if child of HtmlBoxRoot is not a HtmlBoxBlock.
+
+	This fixes bug #86657.
+
+	* libgtkhtml/layout/htmllinebox.c (html_line_box_add_inlines):
+	Increment box if box is not being displayed.
+
+	This fixes bug # 98577.
+
+2002-12-23  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.1.7
+
+	* configure.in: bumped to 2.1.7
+
+2002-12-23  Biswapesh Chattopadhyay <biswapesh_chatterjee@tcscal.co.in>
+	* libgtkhtml/layout/html/htmlboxembeddedselect.c: GCC ompile fix.
+
+2002-12-18  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.1.6
+
+	* configure.in: bumped to 2.1.6
+
+2002-12-18  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/html/htmlboxembeddedselect.c
+	(html_box_embedded-slect_finalize): Check that box's dom_node still
+	exists before referring to it.
+
+	* libgtkhtml/layout/html/htmlboximage.c
+	(html_box_image_update_scaled_pixbuf): Add reference to 
+	image->scaled_pixbuf no matter how it is created.
+	(html_box_image_finalize): Unreference scaled_pixbuf.
+
+	This fixes a crasher bug reported by Frederic Crozat
+
+2002-12-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.1.5
+
+	* configure.in: bumped to 2.1.5
+
+2002-12-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/graphics/htmlimagefactory.c (close_pixbuf): Check whether
+	the HtmlStream still has an image. The image may have been destroyed 
+	before the HtmlStream is closed.
+
+	* libgtkhtml/util/htmlstream.c (html_stream_new): Add weak pointer
+	to user_data so that it is set to NULL if user_data is destroyed.
+
+	This fixes bug #82962.
+
+	* tests/browser-window.c (free_stream_data): Add object reference in
+	htmlStream cancel function before calling html_stream_close() as both
+	html_stream_cancel() and html_stream_close() remove object reference.
+
+	* libgtkhtml/view/htmlview.c
+	(html_view_paint): Add check that the HtmlView's root's dom_node is 
+	non-NULL.
+	(html_view_insert_node): Add call to g_object_add_weak_pointer() to
+	set box's dom_node to NULL where it is deleted.
+
+	This fixes bug #101113.
+	 
+2002-12-12  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssparser.c (css_parser_parse_string): Add
+	support for escaping. This fixes bug #84480.
+
+	* libgtkhtml/dom/html/dom-htmlselectelement.c: Make parent_class
+	static.
+
+	* libgtkhtml/view/htmlview.c (html_view_insert_node): If a HtmlBox 
+	does not have a parent and is not a HtmlBoxRoot make it a child of 
+	root. This fixes bug #82503.
+	
+	* tests/simple.c: Remove a document from a HtmlView before calling
+	html_document_clear(). This fixes bug #100941.
+
+2002-12-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlstyle.c:
+	Ensure that GtkStyle returned by html_style_get_gtk_style() is not 
+	leaked. Use same GtkStyle for font_spec and color.
+
+	This fixes bug # 95931.
+
+	* libgtkhtml/document/htmldocument.c 
+	(html_document_finalize): Call to html_document_clear() before 
+	calling g_object_unref() on document->parser. This prevents 
+	references to memory which has been freed.
+	(html_document_clear): Remove signal handlers before removing nodes 
+	from DOM. This fixes bugs #79782 and #87567.
+
+	* libgtkhtml/graphics/htmlcolor.c (html_color_new_from_name):
+	Finish when color found. This prevents a small number of CPU cycles 
+	being wasted.
+
+	* libgtkhtml/layout/htmlstyleborder.c
+	* libgtkhtml/layout/htmlstylebox.c
+	* libgtkhtml/layout/htmlstylesurround.c
+	Remove redundant tests for variable being NULL.
+
+
+2002-12-07  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.1.4
+
+	* configure.in: bumped to 2.1.4
+
+2002-12-04  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/css/cssdebug.c libgtkhtml/css/cssdebug.h
+	libgtkhtml/css/cssmatcher.c libgtkhtml/css/cssmatcher.h
+	libgtkhtml/css/cssparser.c libgtkhtml/css/cssparser.h
+	libgtkhtml/css/cssstylesheet.c libgtkhtml/css/cssstylesheet.h
+	libgtkhtml/css/cssvalue.c libgtkhtml/css/cssvalue.h
+	libgtkhtml/css/html.css.h libgtkhtml/css/test-css-parser.c
+	libgtkhtml/document/htmlfocusiterator.c
+	libgtkhtml/document/htmlfocusiterator.h
+	libgtkhtml/dom/dom-types.h libgtkhtml/dom/dom.h
+	libgtkhtml/dom/core/dom-attr.c libgtkhtml/dom/core/dom-attr.h
+	libgtkhtml/dom/core/dom-characterdata.c
+	libgtkhtml/dom/core/dom-characterdata.h
+	libgtkhtml/dom/core/dom-comment.c
+	libgtkhtml/dom/core/dom-comment.h
+	libgtkhtml/dom/core/dom-core-utils.c
+	libgtkhtml/dom/core/dom-core-utils.h
+	libgtkhtml/dom/core/dom-core.c libgtkhtml/dom/core/dom-core.h
+	libgtkhtml/dom/core/dom-document.c
+	libgtkhtml/dom/core/dom-document.h
+	libgtkhtml/dom/core/dom-documenttype.c
+	libgtkhtml/dom/core/dom-documenttype.h
+	libgtkhtml/dom/core/dom-domimplementation.c
+	libgtkhtml/dom/core/dom-domimplementation.h
+	libgtkhtml/dom/core/dom-element.c
+	libgtkhtml/dom/core/dom-element.h
+	libgtkhtml/dom/core/dom-entity.c
+	libgtkhtml/dom/core/dom-entity.h
+	libgtkhtml/dom/core/dom-namednodemap.c
+	libgtkhtml/dom/core/dom-namednodemap.h
+	libgtkhtml/dom/core/dom-node.c libgtkhtml/dom/core/dom-node.h
+	libgtkhtml/dom/core/dom-nodelist.c
+	libgtkhtml/dom/core/dom-nodelist.h
+	libgtkhtml/dom/core/dom-string.c
+	libgtkhtml/dom/core/dom-text.h libgtkhtml/dom/core/test-core.c
+	libgtkhtml/dom/css/dom-cssrule.c
+	libgtkhtml/dom/css/dom-cssrule.h
+	libgtkhtml/dom/css/dom-cssrulelist.c
+	libgtkhtml/dom/css/dom-cssrulelist.h
+	libgtkhtml/dom/css/dom-cssstyledeclaration.c
+	libgtkhtml/dom/css/dom-cssstyledeclaration.h
+	libgtkhtml/dom/css/dom-cssstylerule.c
+	libgtkhtml/dom/css/dom-cssstylerule.h
+	libgtkhtml/dom/css/dom-cssstylesheet.c
+	libgtkhtml/dom/css/dom-cssstylesheet.h
+	libgtkhtml/dom/css/dom-cssvalue.c
+	libgtkhtml/dom/css/dom-cssvalue.h
+	libgtkhtml/dom/events/dom-event-utils.c
+	libgtkhtml/dom/events/dom-event-utils.h
+	libgtkhtml/dom/events/dom-eventlistener.c
+	libgtkhtml/dom/events/dom-eventlistener.h
+	libgtkhtml/dom/events/dom-events.c
+	libgtkhtml/dom/events/dom-events.h
+	libgtkhtml/dom/events/dom-eventtarget.c
+	libgtkhtml/dom/events/dom-eventtarget.h
+	libgtkhtml/dom/events/dom-mouseevent.h
+	libgtkhtml/dom/events/dom-mutationevent.c
+	libgtkhtml/dom/events/dom-mutationevent.h
+	libgtkhtml/dom/events/dom-styleevent.c
+	libgtkhtml/dom/events/dom-styleevent.h
+	libgtkhtml/dom/html/dom-htmlanchorelement.c
+	libgtkhtml/dom/html/dom-htmlanchorelement.h
+	libgtkhtml/dom/html/dom-htmlcollection.c
+	libgtkhtml/dom/html/dom-htmlcollection.h
+	libgtkhtml/dom/html/dom-htmlelement.c
+	libgtkhtml/dom/html/dom-htmlelement.h
+	libgtkhtml/dom/html/dom-htmlformelement.c
+	libgtkhtml/dom/html/dom-htmlformelement.h
+	libgtkhtml/dom/html/dom-htmlinputelement.c
+	libgtkhtml/dom/html/dom-htmlinputelement.h
+	libgtkhtml/dom/html/dom-htmlobjectelement.c
+	libgtkhtml/dom/html/dom-htmlobjectelement.h
+	libgtkhtml/dom/html/dom-htmloptionelement.c
+	libgtkhtml/dom/html/dom-htmloptionelement.h
+	libgtkhtml/dom/html/dom-htmlselectelement.c
+	libgtkhtml/dom/html/dom-htmlselectelement.h
+	libgtkhtml/dom/html/dom-htmltextareaelement.c
+	libgtkhtml/dom/html/dom-htmltextareaelement.h
+	libgtkhtml/dom/stylesheets/dom-stylesheet.c
+	libgtkhtml/dom/stylesheets/dom-stylesheet.h
+	libgtkhtml/dom/traversal/dom-documenttraversal.c
+	libgtkhtml/dom/traversal/dom-documenttraversal.h
+	libgtkhtml/dom/traversal/dom-nodefilter.c
+	libgtkhtml/dom/traversal/dom-nodefilter.h
+	libgtkhtml/dom/traversal/dom-nodeiterator.c
+	libgtkhtml/dom/traversal/dom-nodeiterator.h
+	libgtkhtml/dom/traversal/dom-traversal-utils.c
+	libgtkhtml/dom/traversal/dom-traversal-utils.h
+	libgtkhtml/graphics/htmlcolor.c
+	libgtkhtml/graphics/htmlcolor.h
+	libgtkhtml/graphics/htmlimage.c
+	libgtkhtml/graphics/htmlimage.h
+	libgtkhtml/graphics/htmlstylepainter.c
+	libgtkhtml/graphics/htmlstylepainter.h
+	libgtkhtml/layout/htmlbox.h libgtkhtml/layout/htmlboxblock.h
+	libgtkhtml/layout/htmlboxfactory.c
+	libgtkhtml/layout/htmlboxfactory.h
+	libgtkhtml/layout/htmlboxlistitem.h
+	libgtkhtml/layout/htmlboxroot.c
+	libgtkhtml/layout/htmlboxroot.h
+	libgtkhtml/layout/htmlboxtable.c
+	libgtkhtml/layout/htmlboxtable.h
+	libgtkhtml/layout/htmlboxtablecaption.c
+	libgtkhtml/layout/htmlboxtablecaption.h
+	libgtkhtml/layout/htmlboxtablecell.c
+	libgtkhtml/layout/htmlboxtablecell.h
+	libgtkhtml/layout/htmlboxtablerow.c
+	libgtkhtml/layout/htmlboxtablerow.h
+	libgtkhtml/layout/htmlboxtablerowgroup.c
+	libgtkhtml/layout/htmlboxtablerowgroup.h
+	libgtkhtml/layout/htmlstyle.c libgtkhtml/layout/htmlstyle.h
+	libgtkhtml/layout/htmlstylebackground.c
+	libgtkhtml/layout/htmlstyleborder.c
+	libgtkhtml/layout/htmlstylebox.c
+	libgtkhtml/layout/htmlstyleinherited.c
+	libgtkhtml/layout/htmlstyleoutline.c
+	libgtkhtml/layout/htmlstylesurround.c
+	libgtkhtml/util/htmlstreambuffer.c
+	libgtkhtml/util/htmlstreambuffer.h libgtkhtml/util/rfc1738.c
+	libgtkhtml/util/rfc1738.h libgtkhtml/util/test-atoms.c
+	libgtkhtml/view/htmlselection.c tests/dom-test-node-menu.c
+	tests/dom-test-node-menu.h tests/dom-test-pixmaps.h
+	tests/dom-test-tree-model.c tests/dom-test-tree-model.h
+	tests/dom-test-window.c tests/dom-test-window.h
+	tests/dom-test.c tests/simple.c: Add Copyright headers
+
+	* libgtkhtml/view/htmlselection.c (html_selection_get_text):
+	Add check whether HtmlBoxText contains any text.
+
+	This fixes bug #94575.
+
+2002-12-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/document/htmldocument.c 
+	(html_document_parsed_document_node): Create DomEventListener only if
+	it does not already exist. Store the listener in object data.
+	(html_document_clear): Remove DomEventListener if it exists
+
+	* dom/core/dom-node.c (dom_Node_removeEventListener): Fix code.
+
+	This fixes bug #79783.
+
+2002-11-27  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/document/htmldocument.c (html_document_clear):
+	Call xmlFreeNode() to free memory allocated to parsed document
+
+	* libgtkhtml/document/htmlparser.c (html_parser_finalize):
+	Call xmlFreeDoc() when freeing parser context
+
+	This fixes the DOM leaks when displaying html pages in yelp 
+	(bug #73631)
+
+	* libgtkhtml/dom/core/dom-node.c (dom_node_finalize): Remove call to
+	xmlFreeNode as its argument is always NULL.
+
+2002-11-22  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* Release 2.1.3
+
+	* configure.in: bumped to 2.1.3
+
+2002-11-21  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libgtkhtml/layout/htmlstyle.c
+	(html_style_notify_settings): New signal handler for notify
+	signal for GtkSettings; used to find when gtk-theme has changed
+	and update the default color.
+	(html_style_new): Connect signal handler for notify signal on
+	GtkSettings.
+
+	*libgtkhtml/view/htmlview.c
+	(html_view_style_set): New signal handler for style-set signal
+	which sets bg color to base color
+	(html_view_new): Connect signal handler for style-set signal for
+	HtmlView.
+
+	This addresses part of bug #95190.
+
+	* libgtkhtml/css/cssmatcher.c (css_matcher_apply_rule):
+	Avoid defererence of potentially NULL parent_style.
+	(Fixes bug #94415, patch from peterbloomfield@mindspring.com)
+
+2002-11-13  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	*libgtkhtml/a11y/htmlboxaccessible.c (html_box_accessible_get_parent):
+	use atk_object_set_parent() when setting parent. Fixes bug #98388)
+
+2002-11-01  Mikael Hallendal  <micke@codefactory.se>
+
+	* Release 2.1.2
+
+	* configure.in: bumped to 2.1.2
+
+2002-10-28  Richard Hult  <rhult@codefactory.se>
+
+	* libgtkhtml/view/htmlselection.c (set_traversal): Fix bug where
+	selection the last character on a line would select the first on
+	the line below as well.
+
+2002-10-21  Mikael Hallendal  <micke@codefactory.se>
+
+	* Release 2.1.1
+
+	* configure.in: bumped to 2.1.1
 
 2002-10-21  Richard Hult  <rhult@codefactory.se>
 
@@ -18,21 +403,23 @@
 2002-10-11  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* libgtkhtml2/a11y/htmlboxembeddedaccessible.c
-	(html_box_embedded_accessible_ref_child): Omit warning if index is 
+	(html_box_embedded_accessible_ref_child): Omit warning if index is
 	invalid.
 	* libgtkhtml2/a11y/htmlviewaccessible.c
 	(html_view_accessible_ref_child): Correct checking for invalid index.
 	(bug #95498)
 
-2002-09-05  jacob berkman  <jacob@ximian.com>
+2002-10-03  Mikael Hallendal  <micke@codefactory.se>
 
-	* autogen.sh: use automake-1.4
+	* Release 2.1.0
+
+	* configure.in: bumped to 2.1.0
 
 2002-09-02  Padraig O'Briain  <padraig.obriain@sun.com>
 
-	* libgtkhtml/a11y/htmllinkaccessible.[ch]: Add action_idle_handler
+	* libgtkhtml/a11y/htmllinkaccessible.[ch]: Add action_idle_handler 
 	HtmlLinkAccessible data structure.
-	(html_link_accessible_do_action): Do action in idle handler
+	(html_link_accessible_do_action): Do action in idle handler 
 	idle_do_action().
 	Return FALSE if action pending.
 	(idle_do_action): New idle handler which does the actions.
@@ -45,7 +432,7 @@
 
 	* libgtkhtml/a11y/htmlviewaccessible.c: Add include of <string.h>
 	for strcasecmp().
-
+	
 2002-08-23  Mikael Hallendal  <micke@codefactory.se>
 
 	* Release 2.0.2
@@ -58,31 +445,45 @@
 	(html_style_get_gtk_style): added, used from other places.
 
 2002-08-22  Ross Burton  <ross@burtonini.com>
-
+ 
 	* libgtkhtml/graphics/htmlfontspecification.c:
 	* libgtkhtml/graphics/htmlfontspecification.h:
-	* libgtkhtml/layout/htmlstyle.c: Use gloat instead of gint to store
-	the base font size in points. Fixes #90540.
-
+	* libgtkhtml/layout/htmlstyle.c: Use gloat instead of gint to
+	  store the base font size in points. Fixes #90540.
+	
 2002-08-22  Kristian Rietveld  <kris@gtk.org>
- 
+
 	* libgtkhtml/view/htmlview.c (html_view_realize): make a copy
- 	  of the style before changing the color, so we don't set another 
- 	  background color for all other widgets in a program (this was
-	  causing the "white menus" issue in yelp).
+	of the style before changing the color, so we don't set another
+	background color for all other widgets in a program (this was causing
+	the "white menus" issue in yelp).
 
 2002-08-20  Ross Burton  <ross@burtonini.com>
-
+ 
 	* libgtkhtml/layout/htmlstyle.c: Read the entire font descriptor
-	instead of just the size from the from GTK+ styles. Also allow the
-	RC files to set styles on GtkHTML, falling back to
-	GtkTextView. Fixes #90541.
+ 	instead of just the size from the from GTK+ styles. Also allow the
+ 	RC files to set styles on GtkHTML, falling back to
+ 	GtkTextView. Fixes #90541.
+
+2002-08-18  Havoc Pennington  <hp@pobox.com>
+
+	* autogen.sh: hardcode aclocal-1.4/automake-1.4 so that users with
+	both automake 1.6 and 1.4 installed get the right automake. Means
+	compilation from CVS will now require the latest automake 1.4
+	release, or manually creating symlinks called "automake-1.4" and
+	"aclocal-1.4"
 
 2002-08-16  Mikael Hallendal  <micke@codefactory.se>
 
 	* libgtkhtml/view/htmlview.c (html_view_realize): 
-	- Applied patch from Padraig O'Brian that makes Gtkhtml2 draw
-	  background with correct color.
+ 	- Applied patch from Padraig O'Brian that makes Gtkhtml2 draw
+ 	  background with correct color.
+	
+2002-08-08  Richard Hult  <rhult@codefactory.se>
+
+	* libgtkhtml/view/htmlview.h:
+	* libgtkhtml/view/htmlview.c (html_view_scroll_to_node): Make
+	non-static so it can be used from the outside, e.g. Yelp.
 
 2002-08-07  Pasupathi Duraisamy <pasupathi.duraisamy@wipro.com>
  

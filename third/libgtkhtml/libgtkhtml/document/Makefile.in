@@ -87,29 +87,18 @@ VERSION = @VERSION@
 
 libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml/document
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/libgtkhtml \
-	-DG_LOG_DOMAIN=\"HtmlDocument\" \
-	$(GTKHTML2_CFLAGS)
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/libgtkhtml 	-DG_LOG_DOMAIN=\"HtmlDocument\" 	$(GTKHTML2_CFLAGS)
 
 
-DGNOMELOCALEDIR = \"$(datadir)/locale\" \
-	-I../intl -I$(top_srcdir)/intl
+DGNOMELOCALEDIR = \"$(datadir)/locale\" 	-I../intl -I$(top_srcdir)/intl
 
 
 noinst_LTLIBRARIES = libhtmldocument.la
 
-libhtmldocument_la_SOURCES = \
-	htmldocument.c \
-	htmlfocusiterator.c \
-	htmlfocusiterator.h \
-	htmlparser.c 
+libhtmldocument_la_SOURCES =  	htmldocument.c 	htmlfocusiterator.c 	htmlfocusiterator.h 	htmlparser.c 
 
 
-libgtkhtmlinclude_HEADERS = \
-	htmldocument.h \
-	htmlparser.h
+libgtkhtmlinclude_HEADERS =  	htmldocument.h 	htmlparser.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -135,7 +124,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libhtmldocument_la_SOURCES)
 OBJECTS = $(libhtmldocument_la_OBJECTS)
@@ -266,6 +255,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
+
 
 info-am:
 info: info-am

@@ -1,0 +1,21 @@
+Overview of Changes in gtkhtml2 2.2.0
+=====================================
+
+* Update size in HtmlFontSpecification if HtmlView's style size changes
+font size.
+
+* Fix regression in display of http://slashdot.org, bug #102742.
+
+* Show html is tag is missing, bug #102008
+
+* Implement alternative fix for bug 98577 as previous fix caused regression.
+
+* Add Hindi language.
+
+Overview of Changes in gtkhtml2 2.1.7
+=====================================
+
+* Fix infinite loop caused by invalid HTML. bug #98677.
+
+* Fix another looping problem, bug #86657
+

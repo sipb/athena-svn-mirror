@@ -82,13 +82,14 @@ html_box_image_paint_border (HtmlBox *box, HtmlPainter *painter, GdkRectangle *a
 static void
 html_box_image_update_scaled_pixbuf (HtmlBoxImage *image, gint width, gint height)
 {
-	if (image->scaled_pixbuf && image->scaled_pixbuf != image->image->pixbuf)
-		gdk_pixbuf_unref (image->scaled_pixbuf);
+	if (image->scaled_pixbuf)
+		g_object_unref (image->scaled_pixbuf);
 
 	if (width == gdk_pixbuf_get_width (image->image->pixbuf) &&
-	    height == gdk_pixbuf_get_height (image->image->pixbuf)) 
+	    height == gdk_pixbuf_get_height (image->image->pixbuf)) {
 		image->scaled_pixbuf = image->image->pixbuf;
-	else {
+		g_object_ref (image->scaled_pixbuf);
+	} else {
 		/* FIXME: gdk_pixbuf_scale_simple() expects width & height to
 		   be > 0, so we use 1 at least. Maybe we need some special
 		   handling if the width or height should be 0. */
@@ -185,8 +186,8 @@ html_box_image_finalize (GObject *object)
 {
 	HtmlBoxImage *image = HTML_BOX_IMAGE (object);
 
-	if (image->scaled_pixbuf && image->scaled_pixbuf != image->image->pixbuf)
-		gdk_pixbuf_unref (image->scaled_pixbuf);
+	if (image->scaled_pixbuf)
+		g_object_unref (image->scaled_pixbuf);
 
 	parent_class->finalize (object);
 }

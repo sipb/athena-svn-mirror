@@ -87,39 +87,18 @@ VERSION = @VERSION@
 
 libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml/graphics
 
-INCLUDES = -I$(top_srcdir) \
-	-I$(top_srcdir)/libgtkhtml \
-	$(GTKHTML2_CFLAGS) \
-	-DG_LOG_DOMAIN=\"HtmlGraphics\"
+INCLUDES = -I$(top_srcdir) 	-I$(top_srcdir)/libgtkhtml 	$(GTKHTML2_CFLAGS) 	-DG_LOG_DOMAIN=\"HtmlGraphics\"
 
 
 noinst_LTLIBRARIES = libhtmlgraphics.la
 
-libhtmlgraphics_la_SOURCES = \
-	htmlimage.c \
-	htmlimagefactory.c \
-	htmlfontspecification.c \
-	htmlpainter.c \
-	htmlgdkpainter.c \
-	htmlstylepainter.c \
-	htmlcolor.c 
+libhtmlgraphics_la_SOURCES =  	htmlimage.c 	htmlimagefactory.c 	htmlfontspecification.c 	htmlpainter.c 	htmlgdkpainter.c 	htmlstylepainter.c 	htmlcolor.c 
 
 
-libgtkhtmlinclude_HEADERS = \
-	htmlcolor.h \
-	htmlfontspecification.h \
-	htmlgdkpainter.h \
-	htmlimagefactory.h \
-	htmlimage.h \
-	htmlpainter.h \
-	htmlstylepainter.h
+libgtkhtmlinclude_HEADERS =  	htmlcolor.h 	htmlfontspecification.h 	htmlgdkpainter.h 	htmlimagefactory.h 	htmlimage.h 	htmlpainter.h 	htmlstylepainter.h
 
 
-EXTRA_DIST = \
-	images/error_image.xpm		\
-	images/hand_cursor.xbm		\
-	images/hand_cursor_mask.xbm	\
-	images/loading_image.xpm
+EXTRA_DIST =  	images/error_image.xpm			images/hand_cursor.xbm			images/hand_cursor_mask.xbm		images/loading_image.xpm
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -146,7 +125,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libhtmlgraphics_la_SOURCES)
 OBJECTS = $(libhtmlgraphics_la_OBJECTS)
@@ -278,6 +257,13 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
+
+
+
+
+
 
 info-am:
 info: info-am

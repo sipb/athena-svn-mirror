@@ -85,34 +85,12 @@ RANLIB = @RANLIB@
 STRIP = @STRIP@
 VERSION = @VERSION@
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/libgtkhtml \
-	$(GTKHTML2_CFLAGS) \
-	$(GAILUTIL_CFLAGS) \
-	-DG_LOG_DOMAIN=\"HtmlA11y\"
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/libgtkhtml 	$(GTKHTML2_CFLAGS) 	$(GAILUTIL_CFLAGS) 	-DG_LOG_DOMAIN=\"HtmlA11y\"
 
 
-@ENABLE_ACCESSIBILITY_TRUE@noinst_LTLIBRARIES = @ENABLE_ACCESSIBILITY_TRUE@libhtmla11y.la
+@ENABLE_ACCESSIBILITY_TRUE@noinst_LTLIBRARIES = libhtmla11y.la
 
-libhtmla11y_la_SOURCES = \
-	htmlaccessiblefactory.h \
-	htmlviewaccessible.c \
-	htmlviewaccessible.h \
-	htmlviewaccessiblefactory.c \
-	htmlviewaccessiblefactory.h \
-	htmlboxaccessible.c	\
-	htmlboxaccessible.h	\
-	htmlboxblockaccessible.c	\
-	htmlboxblockaccessible.h	\
-	htmlboxembeddedaccessible.c	\
-	htmlboxembeddedaccessible.h	\
-	htmlboxtableaccessible.c	\
-	htmlboxtableaccessible.h	\
-	htmlboxtextaccessible.c	\
-	htmlboxtextaccessible.h	\
-	htmllinkaccessible.c	\
-	htmllinkaccessible.h
+libhtmla11y_la_SOURCES =  	htmlaccessiblefactory.h 	htmlviewaccessible.c 	htmlviewaccessible.h 	htmlviewaccessiblefactory.c 	htmlviewaccessiblefactory.h 	htmlboxaccessible.c		htmlboxaccessible.h		htmlboxblockaccessible.c		htmlboxblockaccessible.h		htmlboxembeddedaccessible.c		htmlboxembeddedaccessible.h		htmlboxtableaccessible.c		htmlboxtableaccessible.h		htmlboxtextaccessible.c		htmlboxtextaccessible.h		htmllinkaccessible.c		htmllinkaccessible.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -139,7 +117,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libhtmla11y_la_SOURCES)
 OBJECTS = $(libhtmla11y_la_OBJECTS)
@@ -255,6 +233,14 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
+
+
+
+
+
+
 
 info-am:
 info: info-am

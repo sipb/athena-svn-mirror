@@ -286,7 +286,7 @@ html_line_box_add_inlines (HtmlLineBox *line, HtmlRelayout *relayout, HtmlBox *b
 		/*  Only display: inline boxes should be on the line  */
 		if (HTML_BOX_GET_STYLE (box)->display != HTML_DISPLAY_INLINE && 
 		    HTML_BOX_GET_STYLE (box)->display != HTML_DISPLAY_INLINE_TABLE && 
-		    !HTML_IS_BOX_TEXT (box))
+		    !HTML_IS_BOX_TEXT (box)) 
 			break;
 		
 		/* We don't have to set box->x it is overridden in html_line_box_layout_line_ltr|trl */

@@ -87,29 +87,15 @@ VERSION = @VERSION@
 
 libgtkhtmlincludedir = $(includedir)/gtkhtml-2.0/libgtkhtml/util
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	$(GTKHTML2_CFLAGS) \
-	-DG_LOG_DOMAIN=\"HtmlUtil\"
+INCLUDES =  	-I$(top_srcdir) 	$(GTKHTML2_CFLAGS) 	-DG_LOG_DOMAIN=\"HtmlUtil\"
 
 
 noinst_LTLIBRARIES = libhtmlutil.la
 
-libhtmlutil_la_SOURCES = \
-	htmlatomlist.c \
-	htmlglobalatoms.c \
-	htmlstream.c \
-	rfc1738.c \
-	htmlstreambuffer.c
+libhtmlutil_la_SOURCES =  	htmlatomlist.c 	htmlglobalatoms.c 	htmlstream.c 	rfc1738.c 	htmlstreambuffer.c
 
 
-libgtkhtmlinclude_HEADERS = \
-	htmlatomlist.h \
-	htmlglobalatoms.h \
-	htmlstreambuffer.h \
-	htmlglobalatomlist.h \
-	rfc1738.h \
-	htmlstream.h
+libgtkhtmlinclude_HEADERS =  	htmlatomlist.h 	htmlglobalatoms.h 	htmlstreambuffer.h 	htmlglobalatomlist.h 	rfc1738.h 	htmlstream.h
 
 
 BUILT_SOURCES = htmlmarshal.h htmlmarshal.c
@@ -125,8 +111,7 @@ EXTRA_DIST = htmlmarshal.list $(BUILT_SOURCES)
 
 noinst_PROGRAMS = test-atoms
 
-test_atoms_SOURCES = \
-	test-atoms.c
+test_atoms_SOURCES =  	test-atoms.c
 
 
 test_atoms_LDADD = $(top_builddir)/libgtkhtml/util/libhtmlutil.la $(GTKHTML2_LIBS)
@@ -161,7 +146,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP_ENV = --best
 SOURCES = $(libhtmlutil_la_SOURCES) $(test_atoms_SOURCES)
 OBJECTS = $(libhtmlutil_la_OBJECTS) $(test_atoms_OBJECTS)
@@ -305,6 +290,12 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+
+
+
+
+
 
 info-am:
 info: info-am

@@ -1,3 +1,25 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*
+   Copyright (C) 2000 CodeFactory AB
+   Copyright (C) 2000 Jonas Borgstr\366m <jonas@codefactory.se>
+   Copyright (C) 2000 Anders Carlsson <andersca@codefactory.se>
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Library General Public
+   License as published by the Free Software Foundation; either
+   version 2 of the License, or (at your option) any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	 See the GNU
+   Library General Public License for more details.
+
+   You should have received a copy of the GNU Library General Public License
+   along with this library; see the file COPYING.LIB.  If not, write to
+   the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+*/
+
 #include <gtk/gtk.h>
 #include <libxml/debugXML.h>
 #include <string.h>
@@ -11,6 +33,7 @@
 
 HtmlDocument *document;
 HtmlParser *parser;
+GtkWidget *view;
 
 typedef struct {
 	gchar *title;
@@ -192,7 +215,9 @@ load_file (const gchar *filename)
 		
 	memset (buffer, 0, sizeof (buffer));
 	
+	html_view_set_document (HTML_VIEW (view), NULL);
 	html_document_clear (document);
+	html_view_set_document (HTML_VIEW (view), document);
 	
 	file = fopen (path, "r");
 	g_free (path);
@@ -289,7 +314,9 @@ cb_delete_event (GtkWidget *widget, gpointer data)
 static gboolean
 cb_clear_doc (GtkWidget *widget, gpointer data)
 {
+	html_view_set_document (HTML_VIEW (view), NULL);
   	html_document_clear (document);
+	html_view_set_document (HTML_VIEW (view), document);
 
 	return FALSE;
 }
@@ -379,7 +406,7 @@ gint
 main (gint argc, gchar **argv)
 {
 	GtkWidget *window;
-	GtkWidget *view, *frame;
+	GtkWidget *frame;
 	GtkWidget *tree_view;
 	GtkWidget *vbox, *hbox;
 	GtkWidget *hpaned, *button, *sw;
