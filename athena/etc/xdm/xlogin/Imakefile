@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.2 1991-06-28 20:20:50 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.3 1991-06-28 20:27:15 probe Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -14,7 +14,7 @@ LINTFLAGS = $(CFLAGS) -b -h -u -v -z
   OBJS = xlogin.o AriRegAll.o verify.o
 #if defined(_AIX) && (AIXV >= 30)
   LIBS = -lXaw -lm ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
-	 -lodm -lcfg
+	 -lodm -lcfg -ls
 #else
   LIBS = -lXaw -lm ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod
 #endif
@@ -34,6 +34,13 @@ install_file(owleyes2.xbm,/etc/athena/login/owleyes2.xbm)
 install_file(owleyes3.xbm,/etc/athena/login/owleyes3.xbm)
 install_file(owleyes4.xbm,/etc/athena/login/owleyes4.xbm)
 install_file(owleyes5.xbm,/etc/athena/login/owleyes5.xbm)
+install_file(is,/etc/athena/login/is)
+install_file(is0.xbm,/etc/athena/login/is0.xbm)
+install_file(is1.xbm,/etc/athena/login/is1.xbm)
+install_file(is2.xbm,/etc/athena/login/is2.xbm)
+install_file(is3.xbm,/etc/athena/login/is3.xbm)
+install_file(is4.xbm,/etc/athena/login/is4.xbm)
+install_file(is5.xbm,/etc/athena/login/is5.xbm)
 #if defined(_AIX) && defined(i386)
 install_file(Xlogin.ps2,/etc/athena/login/Xlogin)
 #else

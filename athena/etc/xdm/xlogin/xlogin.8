@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.8,v 1.3 1990-12-05 12:36:54 mar Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.8,v 1.4 1991-06-28 20:27:32 probe Exp $
 .TH XLOGIN 8 "16 November 1990"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -46,6 +46,14 @@ Name of the tty to log the user in on.
 .IP -session
 Name of the global session script to run when logging the user in.
 .SH RESOURCES
+There are keyboard accelerators for the menu items.  The six
+things on the "Login Options" menu may be selected using keys F1
+through F6, respectively.  The first nine things on the "Other
+Options" menu may be selected using keys SHIFT-F1 through SHIFT-F9.
+The "Page Up" or "Prev Screen" key will display the console window,
+while the "Page Down" or "Next Screen" key will remove it.  CONTROL-P
+will shutdown the window system.
+
 The following resources correspond to the options named above:
 .IP *saveTimeout
 Amount of idle time before the screen saver kicks in

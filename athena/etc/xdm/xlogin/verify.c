@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.15 1991-04-17 17:40:08 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.16 1991-06-28 20:27:29 probe Exp $
  */
 
 #include <stdio.h>
@@ -17,40 +17,51 @@
 #include <hesiod.h>
 #include <errno.h>
 #include <syslog.h>
+#ifdef _IBMR2
+#include <userpw.h>
+#include <usersec.h>
+#endif
 
 
+#ifndef TRUE
 #define FALSE 0
 #define TRUE (!FALSE)
+#endif
 
 #define ROOT 0
-#define LOGIN_TKT_DEFAULT_LIFETIME 96 /* 8 hours */
+#define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
 #define PASSWORD_LEN 14
 #define TEMP_DIR_PERM 0710
-#define MAXENVIRON 10
+#define MAXENVIRON 32
 
 /* homedir status */
 #define HD_LOCAL 0
 #define HD_ATTACHED 1
 #define HD_TEMP 2
 
+#ifndef NOLOGIN
 #define	NOLOGIN "/etc/nologin"
+#endif
+#ifndef NOCREATE
 #define NOCREATE "/etc/nocreate"
+#endif
+#ifndef NOATTACH
 #define NOATTACH "/etc/noattach"
+#endif
+#ifndef NOWLOCAL
 #define NOWLOCAL "/etc/nowarnlocal"
-#define ATTACH "/bin/athena/attach"
-#define DETACH "/bin/athena/detach"
+#endif
 #define MOTD "/etc/motd"
 #define UTMP "/etc/utmp"
 #define WTMP "/usr/adm/wtmp"
-#define QUOTA "/usr/ucb/quota"
 #define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
 
-char *defaultpath = "/srvd/patch:/usr/athena:/bin/athena:/usr/bin/X:/usr/new:/usr/new/mh/bin:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
+char *defaultpath = "/srvd/patch:/usr/athena:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/new/mh/bin:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 
 #define file_exists(f) (access((f), F_OK) == 0)
 
 
-extern char *crypt(), *lose();
+extern char *crypt(), *lose(), *getenv();
 extern char *krb_get_phost(); /* should be in <krb.h> */
 char *get_tickets(), *attachhomedir(), *malloc(), *strsave(), *add_to_group();
 int abort_verify();
@@ -79,6 +90,10 @@ char *display;
     char saltc[2], c;
     char encrypt[PASSWORD_LEN+1];
     char **environment, **glist;
+    char fixed_tty[16], *p;
+#if defined(_AIX) && defined(_IBMR2)
+    char *newargv[4];
+#endif
     int i;
 
     /* state variables: */
@@ -122,12 +137,25 @@ char *display;
 	return(errbuf);
     }
 
-    sprintf(tkt_file, "/tmp/tkt_%s", tty);
+    /* The terminal name on the Rios is likely to be something like pts/0; we */
+    /* don't want any  /'s in the path name; replace them with _'s */
+    strcpy(fixed_tty,tty);
+    while (p = index(fixed_tty,'/'))
+      *p = '_';
+    sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
     setenv("KRBTKFILE", tkt_file, 1);
+    /* we set the ticket file here because a previous dest_tkt() might
+       have cached the wrong ticket file. */
+    krb_set_tkt_string(tkt_file);
 
     /* set real uid/gid for kerberos library */
+#ifdef _IBMR2
+    setruid_rios(pwd->pw_uid);
+    setrgid_rios(pwd->pw_gid);
+#else
     setruid(pwd->pw_uid);
     setrgid(pwd->pw_gid);
+#endif
 
     if ((msg = get_tickets(user, passwd)) != NULL && pwd->pw_uid) {
 	if (!local_ok) {
@@ -188,6 +216,30 @@ char *display;
 	}
     }
 
+    /* if mail-check login selected, do that now. */
+    if (option == 4) {
+	attach_state = -1;
+	switch(attach_pid = fork()) {
+	case -1:
+	    fprintf(stderr, "Unable to fork to check your mail.\n");
+	    break;
+	case 0:
+	    if (setuid(pwd->pw_uid) != 0) {
+		fprintf(stderr, "Unable to set user ID to check your mail.\n");
+		_exit(-1);
+	    }
+	    printf("Electronic mail status:\n");
+	    execlp("from", "from", "-r", user, NULL);
+	    fprintf(stderr, "Unable to run mailcheck program.\n");
+	    _exit(-1);
+	default:
+	    while (attach_state == -1)
+	      sigpause(0);
+	    printf("\n");
+	    prompt_user("A summary of your waiting email is displayed in the console window.  Continue with full login session or logout now?", abort_verify);
+	}
+    }
+
     if (msg = attachhomedir(pwd)) {
 	cleanup(pwd);
 	return(msg);
@@ -208,8 +260,8 @@ char *display;
 	    fprintf(stderr, "Unable to set user ID to check your filesystem quota.\n");
 	    _exit(-1);
 	}
-	execl(QUOTA, QUOTA, NULL);
-	fprintf(stderr, "Unable to run quota command %s\n", QUOTA);
+	execlp("quota", "quota", NULL);
+	fprintf(stderr, "Unable to run quota command %s\n", "quota");
 	_exit(-1);
     default:
 	  ;
@@ -247,6 +299,9 @@ char *display;
       return("Out of memory while trying to initialize user environment variables.");
 
     i = 0;
+#if defined(_AIX) && defined(_IBMR2)
+    environment[i++] = "USRENVIRON:";
+#endif
     sprintf(errbuf, "HOME=%s", pwd->pw_dir);
     environment[i++] = strsave(errbuf);
     sprintf(errbuf, "PATH=%s", defaultpath);
@@ -269,11 +324,25 @@ char *display;
 #if defined(_AIX) && defined(i386)
     environment[i++] = "hosttype=ps2";
 #endif
+#if defined(_AIX) && defined(_IBMR2)
+    environment[i++] = "hosttype=rsaix";
+#endif
     msg = getenv("TZ");
-    if (msg) {		/* Pass along timezone */
+    if (msg) {                /* Pass along timezone */
 	sprintf(errbuf, "TZ=%s", msg);
 	environment[i++] = strsave(errbuf);
     }
+#if defined(_AIX) && defined(_IBMR2)
+    environment[i++] = "SYSENVIRON:";
+    sprintf(errbuf,"LOGIN=%s",pwd->pw_name);
+    environment[i++] = strsave(errbuf);
+    sprintf(errbuf,"LOGNAME=%s",pwd->pw_name);
+    environment[i++] = strsave(errbuf);
+    sprintf(errbuf,"NAME=%s",pwd->pw_name);
+    environment[i++] = strsave(errbuf);
+    sprintf(errbuf,"TTY=%s",tty);
+    environment[i++] = strsave(errbuf);
+#endif
     environment[i++] = NULL;
 
     add_utmp(user, tty, display);
@@ -303,7 +372,15 @@ char *display;
       fprintf(stderr, "Unable to connect to your home directory.\n");
 
     sprintf(errbuf, "%d", option);
+#if defined(_AIX) && defined(_IBMR2)
+    newargv[0] = session;
+    newargv[1] = errbuf;
+    newargv[2] = script;
+    newargv[3] = NULL;
+    setpenv(pwd->pw_name,PENV_KLEEN|PENV_INIT|PENV_ARGV,environment,newargv);
+#else
     execle(session, "sh", errbuf, script, NULL, environment);
+#endif
 
     return(lose("Failed to start session."));
 }
@@ -355,7 +432,7 @@ char *password;
 	return(NULL);
     }
     strncpy (phost, krb_get_phost (hostname), sizeof (phost));
-    phost[sizeof(phost)-1] = 0;
+    phost[sizeof(phost)-1] = '\0';
 
     /* without srvtab, cannot verify tickets */
     if (read_service_key(rcmd, phost, realm, 0, KEYFILE, key) == KFAILURE)
@@ -405,7 +482,7 @@ struct passwd *pwd;
 			"Could not execute dettach command as user %s,\n",
 			pwd->pw_name);
 	    }
-	    execl(DETACH, DETACH, "-quiet", pwd->pw_name, NULL);
+	    execlp("detach", "detach", "-quiet", pwd->pw_name, NULL);
 	    _exit(-1);
 	default:
 	    while (attach_state == -1)
@@ -430,6 +507,59 @@ struct passwd *p;
     int i, fd = -1;
     FILE *etc_passwd;
 
+#ifdef _IBMR2
+    struct userpw pw_stuff;
+    int id;
+
+    /* Do real locking of the user database */
+    for (i = 0; i < 10; i++)
+      if (setuserdb(S_WRITE) == 0) {
+	fd = 1;
+	break;
+      }
+      else
+	sleep(1);
+
+    if (fd != 1)
+      return(errno);
+
+/* Need to have these to create empty stanzas, in the */
+/* /etc/security/{environ, limits, user} files so that they pick up */
+/* the default values */
+    putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_NEW);
+    putuserattr(p->pw_name,S_ID,p->pw_uid,SEC_INT);
+    putuserattr(p->pw_name,S_PWD,"!",SEC_CHAR);
+    putuserattr(p->pw_name,S_PGRP,"mit",SEC_CHAR);
+    putuserattr(p->pw_name,S_HOME,p->pw_dir,SEC_CHAR);
+    putuserattr(p->pw_name,S_SHELL,p->pw_shell,SEC_CHAR);
+    putuserattr(p->pw_name,S_GECOS,p->pw_gecos,SEC_CHAR);
+    putuserattr(p->pw_name,S_LOGINCHK,1,SEC_BOOL);
+    putuserattr(p->pw_name,S_SUCHK,1,SEC_BOOL);
+    putuserattr(p->pw_name,S_RLOGINCHK,1,SEC_BOOL);
+    putuserattr(p->pw_name,S_ADMIN,0,SEC_BOOL);
+    putuserattr(p->pw_name,(char *)NULL,((void *) 0),SEC_COMMIT);
+    enduserdb();
+
+/* Now, lock the shadow password file */
+    fd = -1;
+    for (i = 0; i < 10; i++)
+      if (setpwdb(S_WRITE) == 0) {
+	fd = 1;
+	break;
+      }
+      else
+	sleep(1);
+
+    if (fd != 1)
+      return(errno);
+
+    strncpy(pw_stuff.upw_name,p->pw_name,PW_NAMELEN);
+    pw_stuff.upw_passwd = p->pw_passwd;
+    pw_stuff.upw_flags = 0;
+    pw_stuff.upw_lastupdate = 0;
+    putuserpw(&pw_stuff);
+    endpwdb();
+#else	/* RIOS */
     for (i = 0; i < 10; i++)
       if ((fd = open("/etc/ptmp", O_RDWR | O_CREAT | O_EXCL, 0644)) == -1 &&
 	  errno == EEXIST)
@@ -460,6 +590,7 @@ struct passwd *p;
     (void) fclose(etc_passwd);
     (void) close(fd);
     (void) unlink("/etc/ptmp");
+#endif	/* RIOS */
 
     /* This tells the display manager to cleanup the password file for
      * us after we exit
@@ -470,6 +601,23 @@ struct passwd *p;
 }
 
 
+#if defined(_AIX) && defined(_IBMR2)
+remove_from_passwd(p)
+struct passwd *p;
+{
+  char buf[1024];
+
+  switch (quota_pid = fork()) {
+  case -1:
+      fprintf(stderr, "Unable to fork to edit password file.\n");
+      break;
+  case 0:
+      execl("/bin/rmuser", "rmuser", "-p", p->pw_name, NULL);
+      fprintf(stderr, "Unable to exec rmuser to edit passwd file.\n");
+      _exit(-1);
+  }
+}
+#else /* RIOS */
 remove_from_passwd(p)
 struct passwd *p;
 {
@@ -507,6 +655,7 @@ struct passwd *p;
     (void) rename("/etc/ptmp", "/etc/passwd");
     return(0);
 }
+#endif /* RIOS */
 
 
 abort_verify()
@@ -554,7 +703,7 @@ struct passwd *pwd;
  	    fprintf(stderr, "Filesystem mappings may be incorrect.\n");
  	}
 	/* don't do zephyr here since user doesn't have zwgc started anyway */
-	execl(ATTACH, ATTACH, "-quiet", "-nozephyr", pwd->pw_name, NULL);
+	execlp("attach", "attach", "-quiet", "-nozephyr", pwd->pw_name, NULL);
 	_exit(-1);
     default:
 	break;
@@ -564,11 +713,38 @@ struct passwd *pwd;
     }
 
     if (attach_state != 0 || !file_exists(pwd->pw_dir)) {
+	prompt_user("Your home directory could not be attached.  Try again?",
+		    abort_verify);
+	/* attempt attach again */
+	attach_state = -1;
+	switch (attach_pid = fork()) {
+	case -1:
+	    return("Unable to attach your home directory (could not fork to create attach process).  Try another workstation.");
+	case 0:
+	    if (setuid(pwd->pw_uid) != 0) {
+		fprintf(stderr,
+			"Could not execute attach command as user %s,\n",
+			pwd->pw_name);
+		fprintf(stderr, "Filesystem mappings may be incorrect.\n");
+	    }
+	    /* don't do zephyr here since user doesn't have zwgc started */
+	    execlp("attach", "attach", "-quiet", "-nozephyr",
+		   pwd->pw_name, NULL);
+	    _exit(-1);
+	default:
+	    break;
+	}
+	while (attach_state == -1) {
+	    sigpause(0);
+	}
+    }
+
+    if (attach_state != 0 || !file_exists(pwd->pw_dir)) {
 	/* do tempdir here */
 	char buf[BUFSIZ];
 	homedir_status = HD_TEMP;
 
-	prompt_user("Your home directory is unavailable.  A temporary directory will be created for you.  However, it will be DELETED when you logout.  Any mail that you incorporate during this session will be lost when you logout.  Continue with this session anyway?", abort_verify);
+	prompt_user("Your home directory is still unavailable.  A temporary directory will be created for you.  However, it will be DELETED when you logout.  Any mail that you incorporate during this session WILL BE LOST when you logout.  Continue with this session anyway?", abort_verify);
 	sprintf(buf, "/tmp/%s", pwd->pw_name);
 	pwd->pw_dir = malloc(strlen(buf)+1);
 	strcpy(pwd->pw_dir, buf);
@@ -636,7 +812,13 @@ char *dir;
 {
   int f;
   char c;
+  struct stat stbuf;
   
+  if (lstat(dir, &stbuf))
+    return(FALSE);
+  if (!(stbuf.st_mode & S_IFDIR))
+    return(TRUE);
+
   if ((f = open(dir, O_RDONLY, 0)) < 0)
     return(FALSE);
 
@@ -692,7 +874,7 @@ char *display;
 {
     struct utmp ut_entry;
     int f;
-#ifndef _AIX
+#if !(defined(_AIX) && defined(i386)) /* not PS/2 */
     int slot = ttyslot();
 #endif
 
@@ -709,7 +891,7 @@ char *display;
     ut_entry.ut_type = USER_PROCESS;
 #endif /* _AIX */
 
-#ifndef _AIX
+#if !(defined(_AIX) && defined(i386)) /* not PS/2 */
     if ((f = open( UTMP, O_WRONLY )) >= 0) {
 	lseek(f, (long) ( slot * sizeof(ut_entry) ), L_SET);
 #else /* _AIX */
@@ -735,6 +917,139 @@ char *display;
 
 #define MAXGNAMELENGTH	32
 
+#ifdef _IBMR2
+char *add_to_group(name, glist)
+char *name;
+char *glist;
+{
+  char *cp,*p;			/* temporary */
+  char *gname, *new_list;
+  char *fix_gname();
+  int gid;
+  int len,namelen;
+  int i, fd = -1, ngroups,found;
+  static char data[BUFSIZ];
+  char *members;
+  
+  for (i = 0; i < 10; i++)
+    if (setuserdb(S_WRITE) == -1)
+      sleep(1);
+    else {
+      fd = 1;
+      break;
+    }
+
+  if (fd == -1) {
+    sprintf(data, "Locking of user db failed: errno %d", errno);
+    enduserdb();
+    return(data);
+  }
+  
+  /* count groups (there are 2 ':'s in the group list per group, except
+     the first group only has one) */
+  cp = glist;
+  ngroups = 1;
+  while (cp = index(cp, ':')) {
+    ngroups++;
+    cp++;
+  }
+  ngroups /= 2;
+  if (ngroups > NGROUPS) {
+    fprintf(stderr, "Warning - you are in too many groups.  Some of them will be ignored.\n");
+  }
+
+  cp = glist;
+  for (i = 0; i < ngroups; i++) {
+    gname = cp;
+    cp = index(cp, ':');
+    *cp++ = '\0';
+    gid = atoi(cp);
+    if (cp = index(cp, ':'))
+      *cp++ = '\0';
+    
+    /* AIX restricts group names to 8 alphanumeric characters; the first */
+    /* must be alpha.  Many existing groups do not meet this criteria, and */
+    /* must be mapped into a group named "G###" where ### is the gid */
+    /* Not a perfect solution- */
+    gname = fix_gname(gname,gid);
+    /* Make sure the group exists */
+    if (getgroupattr(gname,S_USERS,(void *)&members,SEC_LIST) == -1) {
+      if (errno == ENOENT) {
+	/* Create group */
+	if (putgroupattr(gname,(char *)NULL,((void *) 0),SEC_NEW) != 0) {
+	  fprintf(stderr,"Error creating group %s (%d)\n",gname,gid);
+	  continue;
+	}
+	putgroupattr(gname,S_ID,gid,SEC_INT);
+	putgroupattr(gname,S_ADMIN,0,SEC_BOOL);
+	putgroupattr(gname,(char *)NULL,((void *) 0),SEC_COMMIT);
+      }
+    }
+    /* Add user to group */
+
+    p = members;
+    found = 0;
+    while (1) {
+      if (strcmp(p,name) == 0) {
+	found = 1;
+	break;
+      }
+      p = index(p,'\0')+1;
+      if (*p == '\0')
+	break;
+    }
+  
+    if (found)
+      continue;
+    
+    /* Add user to group */
+    len = p - members + 1;
+    namelen = strlen(name);
+    new_list = (char *)malloc(len+namelen+1);
+    bcopy(name,new_list,namelen+1);
+    bcopy(members,(char *)(new_list+namelen+1),len);
+    if (putgroupattr(gname,S_USERS,new_list,SEC_LIST) == -1) {
+      sprintf(data,"Update of group %s failed; errno %d", gname, errno);
+      return(data);
+    }
+    
+    if (putgroupattr(gname,(char *)NULL,((void *) 0),SEC_COMMIT) == -1) {
+      sprintf(data,"Commit of group %s failed; errno %d", gname, errno);
+      return(data);
+    }
+  }
+  enduserdb();
+  return(NULL);
+}
+
+char *
+fix_gname(gname,gid)
+     char *gname;
+     int gid;
+{
+  int valid=1;
+  static char mname[8];
+  char *p;
+
+  if ((strlen(gname) > 8) || (!isalpha(gname[0])))
+    valid = 0;
+  else {
+    for(p=gname;(*p)!='\0';p++)
+      if (!isalnum(*p)) {
+	valid = 0;
+	break;
+      }
+  }
+
+  if (valid)
+    return(gname);
+  else {
+    sprintf(mname,"G%d",gid);
+    return(mname);
+  }
+}
+
+#else /* _IBMR2 */
 char *add_to_group(name, glist)
 char *name;
 char *glist;
@@ -875,3 +1190,161 @@ char *glist;
     free(gnames);
     return("Failed to update your access control groups");
 }
+#endif /* _IBMR2 */
+
+
+#if defined(_AIX) && defined(_IBMR2)
+#include <sys/id.h>
+
+/*
+ * AIX 3.1 has bizzarre ideas about changing uids and gids around.  They are
+ * such that the sete{u,g}id and setr{u,g}id calls here fail.  For this reason
+ * we are replacing the sete{u,g}id and setr{u,g}id calls.
+ * 
+ * The bizzarre ideas are as follows:
+ *
+ * The effective ID may be changed only to the current real or
+ * saved IDs.
+ *
+ * The saved uid may be set only if the real and effective
+ * uids are being set to the same value.
+ *
+ * The real uid may be set only if the effective
+ * uid is being set to the same value.
+ *
+ * Yes, POSIX rears its head..
+ */
+
+#ifdef __STDC__
+static int setruid_rios(uid_t ruid)
+#else
+static int setruid_rios(ruid)
+  uid_t ruid;
+#endif /* __STDC__ */
+{
+    uid_t euid;
+
+    if (ruid == -1)
+        return (0);
+
+    euid = geteuid();
+
+    if (setuidx(ID_REAL | ID_EFFECTIVE, ruid) == -1)
+        return (-1);
+    
+    return (setuidx(ID_EFFECTIVE, euid));
+}
+
+
+#ifdef __STDC__
+static int seteuid_rios(uid_t euid)
+#else
+static int seteuid_rios(euid)
+  uid_t euid;
+#endif /* __STDC__ */
+{
+    uid_t ruid;
+
+    if (euid == -1)
+        return (0);
+
+    ruid = getuid();
+
+    if (setuidx(ID_SAVED | ID_REAL | ID_EFFECTIVE, euid) == -1)
+        return (-1);
+    
+    return (setruid_rios(ruid));
+}
+
+
+#ifdef __STDC__
+static int setreuid_rios(uid_t ruid, uid_t euid)
+#else
+static int setreuid_rios(ruid, euid)
+  uid_t ruid;
+  uid_t euid;
+#endif /* __STDC__ */
+{
+    if (seteuid_rios(euid) == -1)
+        return (-1);
+
+    return (setruid_rios(ruid));
+}
+
+#ifdef __STDC__
+static int setuid_rios(uid_t uid)
+#else
+static int setuid_rios(uid)
+  uid_t uid;
+#endif /* __STDC__ */
+{
+    return (setreuid_rios(uid, uid));
+}
+
+#ifdef __STDC__
+static int setrgid_rios(gid_t rgid)
+#else
+static int setrgid_rios(rgid)
+  gid_t rgid;
+#endif /* __STDC__ */
+{
+    gid_t egid;
+
+    if (rgid == -1)
+        return (0);
+
+    egid = getegid();
+
+    if (setgidx(ID_REAL | ID_EFFECTIVE, rgid) == -1)
+        return (-1);
+    
+    return (setgidx(ID_EFFECTIVE, egid));
+}
+
+
+#ifdef __STDC__
+static int setegid_rios(gid_t egid)
+#else
+static int setegid_rios(egid)
+  gid_t egid;
+#endif /* __STDC__ */
+{
+    gid_t rgid;
+
+    if (egid == -1)
+        return (0);
+
+    rgid = getgid();
+
+    if (setgidx(ID_SAVED | ID_REAL | ID_EFFECTIVE, egid) == -1)
+        return (-1);
+    
+    return (setrgid_rios(rgid));
+}
+
+
+#ifdef __STDC__
+static int setregid_rios(gid_t rgid, gid_t egid)
+#else
+static int setregid_rios(rgid, egid)
+  gid_t rgid;
+  gid_t egid;
+#endif /* __STDC__ */
+{
+    if (setegid_rios(egid) == -1)
+        return (-1);
+
+    return (setrgid_rios(rgid));
+}
+
+#ifdef __STDC__
+static int setgid_rios(gid_t gid)
+#else
+static int setgid_rios(gid)
+  gid_t gid;
+#endif /* __STDC__ */
+{
+    return (setregid_rios(gid, gid));
+}
+
+#endif /* RIOS */

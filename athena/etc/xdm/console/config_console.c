@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.2 1990-11-21 10:54:27 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/console/config_console.c,v 1.3 1991-06-28 20:28:32 probe Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -10,7 +10,9 @@
 
 #include <stdio.h>
 #include <signal.h>
+#include <sys/types.h>
 #include <sys/file.h>
+#include <sys/stat.h>
 #include <strings.h>
 
 char *pidfile = "/etc/athena/console.pid";
@@ -22,7 +24,8 @@ char **argv;
 {
     char *name, buf[256];
     FILE *f;
-    int pid;
+    struct stat before, after;
+    int pid, i = 0;
     int sig = SIGHUP;
 
     name = rindex(argv[0], '/');
@@ -47,6 +50,13 @@ char **argv;
 	exit(2);
     }
 
+    if (stat(pidfile, &before)) {
+	sprintf(buf, "%s: unable to find console", name);
+	perror(buf);
+	fprintf(stderr, "\tlooking for file %s\n", pidfile);
+	exit(1);
+    }
+
     f = fopen(pidfile, "r");
     if (f == NULL) {
 	sprintf(buf, "%s: unable to find console", name);
@@ -58,7 +68,7 @@ char **argv;
     fclose(f);
 
     pid = atoi(buf);
-    if (pid == 0 || pid == 1) {
+    if (pid < 2) {
 	fprintf(stderr, "%s: unable to find proper console\n", name);
 	fprintf(stderr, "\tconsole cannot have PID %d\n", pid);
 	exit(1);
@@ -69,5 +79,11 @@ char **argv;
 	perror(buf);
 	exit(1);
     }
+
+    do {
+	sleep(1);
+	if (stat(pidfile, &after))
+	  break;
+    } while (before.st_mtime == after.st_mtime && i++ < 10);
     exit(0);
 }

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.12 1991-03-27 15:44:49 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.13 1991-06-28 20:27:33 probe Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -38,7 +38,7 @@ static void move_instructions(), screensave(), unsave(), start_reactivate();
 static void blinkOwl(), initOwl(), catch_child(), setFontPath();
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
-void sigconsACT(), sigconsCB(), callbackACT();
+void sigconsACT(), sigconsCB(), callbackACT(), attachandrunCB();
 char *malloc(), *strdup();
 
 
@@ -60,6 +60,7 @@ typedef struct _XLoginResources {
   String tty;
   String session;
   String fontpath;
+  String srvdcheck;
 } XLoginResources;
 
 /*
@@ -79,6 +80,7 @@ static XrmOptionDescRec options[] = {
   {"-restart",	"*restartTimeout",	XrmoptionSepArg,	NULL},
   {"-tty",	"*loginTty",		XrmoptionSepArg,	NULL},
   {"-session",	"*sessionScript",	XrmoptionSepArg,	NULL},
+  {"-srvdcheck","*srvdCheck",		XrmoptionSepArg,	NULL},
   {"-fp",	"*fontPath",		XrmoptionSepArg,	NULL},
 };
 
@@ -111,7 +113,9 @@ static XtResource my_resources[] = {
   {"loginTty", XtCFile, XtRString, sizeof(String),
      Offset(tty), XtRImmediate, (caddr_t) "ttyv0"},
   {"sessionScript", XtCFile, XtRString, sizeof(String),
-     Offset(session), XtRImmediate, (caddr_t) "/etc/athena/xdm/Xsession"},
+     Offset(session), XtRImmediate, (caddr_t) "/etc/athena/login/Xsession"},
+  {"srvdcheck", XtCFile, XtRString, sizeof(String),
+     Offset(srvdcheck), XtRImmediate, (caddr_t) "/srvd/.rvdinfo"},
   {"fontPath", XtCString, XtRString, sizeof(String),
      Offset(fontpath), XtRImmediate, "/usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/100dpi/" },
 };
@@ -143,18 +147,19 @@ XtIntervalId curr_timerid = 0, blink_timerid = 0, react_timerid = 0;
 Widget appShell;
 Widget saver, ins;
 XLoginResources resources;
-GC owlGC;
+GC owlGC, isGC;
 Display *dpy;
-Window owlWindow;
-int owlNumBitmaps;
-unsigned int owlWidth, owlHeight;
+Window owlWindow, isWindow;
+int owlNumBitmaps, isNumBitmaps;
+unsigned int owlWidth, owlHeight, isWidth, isHeight;
 int owlState, owlDelta, owlTimeout;
-Pixmap owlBitmaps[20];
+Pixmap owlBitmaps[20], isBitmaps[20];
 struct timeval starttime;
 int activation_state, activation_pid, activate_count = 0;
 int attach_state, attach_pid;
 int attachhelp_state, attachhelp_pid, quota_pid;
 int exiting = FALSE;
+extern char *defaultpath;
 
 
 /******************************************************************************
@@ -185,9 +190,9 @@ main(argc, argv)
    */
   for (i = 1; i < argc; i++)
     if (!strcmp(argv[i], "-config") && (i+1 < argc)) {
-	setenv("XAPPLRESDIR", argv[i+1]);
+	setenv("XAPPLRESDIR", argv[i+1], 1);
 	sprintf(hname, "%s/Xlogin.local", argv[i+1]);
-	setenv("XENVIRONMENT", hname);
+	setenv("XENVIRONMENT", hname, 1);
 	break;
     }
 
@@ -212,6 +217,7 @@ main(argc, argv)
   WcRegisterCallback(app, "resetCB", resetCB, NULL);
   WcRegisterCallback(app, "signalConsoleCB", sigconsCB, NULL);
   WcRegisterCallback(app, "idleResetCB", idleReset, NULL);
+  WcRegisterCallback(app, "attachAndRunCB", attachandrunCB, NULL);
 
   /*
    *  Register all Athena widget classes
@@ -266,7 +272,7 @@ main(argc, argv)
   gettimeofday(&starttime, NULL);
   resetCB(namew, NULL, NULL);
 
-  if (access("/srvd/.rvdinfo", F_OK) != 0)
+  if (access(resources.srvdcheck, F_OK) != 0)
     start_reactivate(NULL, NULL);
   else
     activation_state = ACTIVATED;
@@ -277,6 +283,8 @@ main(argc, argv)
   dpy1 = XOpenDisplay(DisplayString(dpy));
   dup(XConnectionNumber(dpy1));
   XCloseDisplay(dpy1);
+
+  setenv("PATH", defaultpath, 1);
 
   /* tell display manager we're ready, just like X server handshake */
   if (signal(SIGUSR1, SIG_IGN) == SIG_IGN)
@@ -338,7 +346,11 @@ start_reactivate(data, timerid)
 
     if ((file = open(utmpf, O_RDONLY, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
-	    if (utmp.ut_name[0] != 0) {
+	    if (utmp.ut_name[0] != 0
+#if defined(_AIX)
+		&& utmp.ut_type == USER_PROCESS
+#endif
+		) {
 		in_use = 1;
 		break;
 	    }
@@ -495,7 +507,7 @@ Cardinal *n;
     Arg args[2];
     char *login, *passwd, *script;
     int mode = 1;
-    Pixmap bm1, bm2, bm3, bm4;
+    Pixmap bm1, bm2, bm3, bm4, bm5;
     XawTextBlock tb;
     extern char *dologin();
     XEvent e;
@@ -516,15 +528,19 @@ Cardinal *n;
     XtGetValues(WcFullNameToWidget(appShell, "*lmenuEntry3"), args, 1);
     XtSetArg(args[0], XtNleftBitmap, &bm4);
     XtGetValues(WcFullNameToWidget(appShell, "*lmenuEntry4"), args, 1);
+    XtSetArg(args[0], XtNleftBitmap, &bm5);
+    XtGetValues(WcFullNameToWidget(appShell, "*lmenuEntry5"), args, 1);
 
-    /* determine which option was selected by seeing which 3 of the 4 match */
-    if (bm1 == bm2 && bm1 == bm3)
+    /* determine which option was selected by seeing which 4 of the 5 match */
+    if (bm1 == bm2 && bm1 == bm3 && bm1 == bm4)
+      mode = 5;
+    if (bm1 == bm2 && bm1 == bm3 && bm1 == bm5)
       mode = 4;
-    if (bm1 == bm2 && bm1 == bm4)
+    if (bm1 == bm2 && bm1 == bm4 && bm1 == bm5)
       mode = 3;
-    if (bm1 == bm3 && bm1 == bm4)
+    if (bm1 == bm3 && bm1 == bm4 && bm1 == bm5)
       mode = 2;
-    if (bm2 == bm3 && bm2 == bm4)
+    if (bm2 == bm3 && bm2 == bm4 && bm2 == bm5)
       mode = 1;
 
     XtSetArg(args[0], XtNstring, &script);
@@ -542,7 +558,11 @@ Cardinal *n;
      * the timers.
      */
     if (activation_state != ACTIVATED) {
+#ifdef POSIX
+	void (*oldsig)();
+#else
 	int (*oldsig)();
+#endif
 
 	fprintf(stderr, "Waiting for workstation to finish activating...");
 	fflush(stderr);
@@ -554,7 +574,7 @@ Cardinal *n;
 	fprintf(stderr, "done.\n");
     }
 
-    if (access("/srvd/.rvdinfo", F_OK) != 0)
+    if (access(resources.srvdcheck, F_OK) != 0)
       tb.ptr = "Workstation failed to activate successfully.  Please notify Athena operations.";
     else {
  	setFontPath();
@@ -595,8 +615,23 @@ String *p;
 Cardinal *n;
 {
     Widget target;
+    static int done_once = 0;
 
     target = WcFullNameToWidget(appShell, p[0]);
+
+#if defined(_AIX) && defined(_IBMR2)
+    /* This crock works around the an invalid argument error on the
+     * XSetInputFocus() call below the very first time it is called,
+     * only when running on the RIOS.  We still don't know just what
+     * causes it.
+     */
+    if (done_once == 0) {
+	done_once++;
+	XSync(dpy, FALSE);
+	sleep(1);
+	XSync(dpy, FALSE);
+    }
+#endif
     XSetInputFocus(dpy, XtWindow(target), RevertToPointerRoot, CurrentTime);
 }
 
@@ -655,7 +690,6 @@ char **p;
 Cardinal *n;
 {
     char **argv;
-    extern char *defaultpath;
     int i;
 
     unfocusACT(w, event, p, n);
@@ -671,7 +705,7 @@ Cardinal *n;
       fprintf(stderr, "Waiting for workstation to finish activating...\n");
     while (activation_state != ACTIVATED)
       sigpause(0);
-    if (access("/srvd/.rvdinfo", F_OK) != 0) {
+    if (access(resources.srvdcheck, F_OK) != 0) {
 	fprintf(stderr, "Workstation failed to activate successfully.  Please notify Athena operations.");
 	return;
     }
@@ -680,12 +714,15 @@ Cardinal *n;
     XFlush(dpy);
     XtCloseDisplay(dpy);
 
-    setenv("PATH", defaultpath);
-    setenv("USER", "daemon");
-    setenv("SHELL", "/bin/sh");
-    setenv("DISPLAY", ":0");
+    setenv("PATH", defaultpath, 1);
+    setenv("USER", "daemon", 1);
+    setenv("SHELL", "/bin/sh", 1);
+    setenv("DISPLAY", ":0", 1);
 #if defined(_AIX) && defined(i386)
-    setenv("hosttype", "ps2");
+    setenv("hosttype", "ps2", 1);
+#endif
+#if defined(_AIX) && defined(_IBMR2)
+    setenv("hosttype", "rsaix", 1);
 #endif
 
     setreuid(DAEMON, DAEMON);
@@ -703,6 +740,49 @@ caddr_t unused;
     Cardinal i = 1;
 
     runACT(w, NULL, &s, &i);
+}
+
+
+void attachandrunCB(w, s, unused)
+Widget w;
+char *s;
+caddr_t unused;
+{
+    char *cmd, locker[256];
+    Cardinal i = 1;
+
+    cmd = index(s, ',');
+    if (cmd == NULL) {
+	fprintf(stderr,
+		"Xlogin warning: need two arguments in AttachAndRun(%s)\n",
+		s);
+	return;
+    }
+    strncpy(locker, s, cmd - s);
+    locker[cmd - s] = 0;
+    cmd++;
+
+
+    attach_state = -1;
+    switch (attach_pid = fork()) {
+    case 0:
+	execlp("attach", "attach", "-n", "-h", "-q", locker, NULL);
+	fprintf(stderr, "Xlogin warning: unable to attach locker %s\n", locker);
+	_exit(1);
+    case -1:
+	fprintf(stderr, "Xlogin: unable to fork to attach locker\n");
+	break;
+    default:
+	while (attach_state == -1)
+	  sigpause(0);
+	if (attach_state != 0) {
+	    fprintf(stderr, "Unable to attach locker %s, aborting...\n",
+		    locker);
+	    return;
+	}
+    }
+    
+    runACT(w, NULL, &cmd, &i);
 }
 
 
@@ -771,10 +851,10 @@ caddr_t unused;
       exit(0);
     focusCB(appShell, "*name_input", NULL);
     WcSetValueCB(appShell, "*lmenuEntry1.leftBitmap: check", NULL);
-    WcSetValueCB(appShell, "*lmenuEntry1.leftBitmap: check", NULL);
     WcSetValueCB(appShell, "*lmenuEntry2.leftBitmap: white", NULL);
     WcSetValueCB(appShell, "*lmenuEntry3.leftBitmap: white", NULL);
     WcSetValueCB(appShell, "*lmenuEntry4.leftBitmap: white", NULL);
+    WcSetValueCB(appShell, "*lmenuEntry5.leftBitmap: white", NULL);
     WcSetValueCB(appShell, "*selection.label:  ", NULL);
     WcSetValueCB(appShell, "*name_input.displayCaret: TRUE", NULL);
     WcSetValueCB(appShell, "*name_input.borderColor: black", NULL);
@@ -810,7 +890,7 @@ void (*abort_proc)();
     XawTextBlock tb;
     XEvent e;
     static void (*oldcallback)() = NULL;
-    int done;
+    static int done;
 
     XtPopup(WcFullNameToWidget(appShell, "*queryShell"), XtGrabExclusive);
     tb.firstPos = 0;
@@ -850,13 +930,16 @@ void (*abort_proc)();
 #define updateOwl()	XCopyPlane(dpy, owlBitmaps[owlCurBitmap], \
 				   owlWindow, owlGC, 0, 0, \
 				   owlWidth, owlHeight, 0, 0, 1)
+#define updateIs()	XCopyPlane(dpy, isBitmaps[isCurBitmap], \
+				   isWindow, isGC, 0, 0, \
+				   isWidth, isHeight, 0, 0, 1)
 
 static void
 blinkOwl(data, intervalid)
      XtPointer data;
      XtIntervalId *intervalid;
 {
-  static int owlCurBitmap;
+  static int owlCurBitmap, isCurBitmap;
   owlTimeout = 0;
 
   if (owlNumBitmaps == 0) return;
@@ -865,14 +948,18 @@ blinkOwl(data, intervalid)
     {
     case OWL_BLINKINGCLOSED:	/* your eyelids are getting heavy... */
       owlCurBitmap++;
+      isCurBitmap++;
       updateOwl();
+      updateIs();
       if (owlCurBitmap == owlNumBitmaps - 1)
 	owlDelta = OWL_BLINKINGOPEN;
       break;
 
     case OWL_BLINKINGOPEN:	/* you will awake, feeling refreshed... */
       owlCurBitmap--;
+      isCurBitmap--;
       updateOwl();
+      updateIs();
       if (owlCurBitmap == ((owlState == OWL_SLEEPY) * (owlNumBitmaps) / 2))
 	{
 	  owlTimeout = random() % (10 * 1000);
@@ -882,7 +969,9 @@ blinkOwl(data, intervalid)
 
     case OWL_SLEEPING:		/* transition to sleeping state */
       owlCurBitmap++;
+      isCurBitmap++;
       updateOwl();
+      updateIs();
       if (owlCurBitmap == ((owlState == OWL_SLEEPY) * (owlNumBitmaps) / 2))
 	{
 	  owlState = OWL_SLEEPY;
@@ -892,7 +981,9 @@ blinkOwl(data, intervalid)
 
     case OWL_WAKING:		/* transition to waking state */
       owlCurBitmap--;
+      isCurBitmap--;
       updateOwl();
+      updateIs();
       if (owlCurBitmap == 0)
 	{
 	  owlState = OWL_AWAKE;
@@ -912,9 +1003,9 @@ blinkOwl(data, intervalid)
 static void initOwl(search)
      Widget search;
 {
-  Widget owl;
+  Widget owl, is;
   Arg args[3];
-  int n = 0, done = 0, scratch;
+  int n, done, scratch;
   char *filenames, *ptr;
   XGCValues values;
   XtGCMask valuemask;
@@ -926,6 +1017,8 @@ static void initOwl(search)
       owlWindow = XtWindow(owl);
       if (owlWindow != None)
 	{
+	  n = 0;
+	  done = 0;
 	  XtSetArg(args[n], XtNlabel, &filenames); n++;
 	  XtSetArg(args[n], XtNforeground, &values.foreground); n++;
 	  XtSetArg(args[n], XtNbackground, &values.background); n++;
@@ -953,12 +1046,6 @@ static void initOwl(search)
 						   &scratch, &scratch))
 		return; /* abort */
 
-#ifdef notdef
-	      XtConvert(owl, XtTString, filenames,
-			XtRBitmap, &owlBitmaps[owlNumBitmaps]);
-	      if (owlBitmaps[owlNumBitmaps] == NULL)
-		return; /* abort */
-#endif
 	      owlNumBitmaps++;
 	      if (!done)
 		{
@@ -974,6 +1061,59 @@ static void initOwl(search)
 	  owlDelta = OWL_BLINKINGCLOSED;
 	}
     }
+
+
+  is = WcFullNameToWidget(search, "*logo2");
+
+  if (is != NULL)
+    {
+      isWindow = XtWindow(is);
+      if (isWindow != None)
+	{
+	  n = 0;
+	  done = 0;
+	  XtSetArg(args[n], XtNlabel, &filenames); n++;
+	  XtSetArg(args[n], XtNforeground, &values.foreground); n++;
+	  XtSetArg(args[n], XtNbackground, &values.background); n++;
+	  XtGetValues(is, args, n);
+
+	  values.function = GXcopy;
+	  valuemask = GCForeground | GCBackground | GCFunction;
+
+	  isNumBitmaps = 0;
+	  ptr = filenames;
+	  while (ptr != NULL && !done)
+	    {
+	      while (*ptr != '\0' && !isspace(*ptr))
+		ptr++;
+
+	      if (*ptr == '\0')
+		done = 1;
+	      else
+		*ptr = '\0';
+
+	      if (BitmapSuccess != XReadBitmapFile(dpy, isWindow,
+						   filenames,
+						   &isWidth, &isHeight,
+						   &isBitmaps[isNumBitmaps],
+						   &scratch, &scratch))
+		return; /* abort */
+
+	      isNumBitmaps++;
+	      if (!done)
+		{
+		  *ptr = ' ';
+		  while (isspace(*ptr))
+		    ptr++;
+		}
+	      filenames = ptr;
+	    }
+
+	  isGC = XtGetGC(is, valuemask, &values);
+	}
+    }
+  if (isNumBitmaps != owlNumBitmaps)
+    fprintf(stderr, "number of owl bitmaps differs from number of IS bitmaps (%d != %d)\n", owlNumBitmaps, isNumBitmaps);
 }
 
 
@@ -993,6 +1133,9 @@ static void catch_child()
     union wait status;
     char *number();
 
+    /* Necessary on the rios- it sets the signal handler to SIG_DFL */
+    /* during the execution of a signal handler */
+    signal(SIGCHLD,catch_child);
     pid = wait3(&status, WNOHANG, 0);
 
     if (pid == activation_pid) {

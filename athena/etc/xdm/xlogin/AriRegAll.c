@@ -83,10 +83,13 @@ void AriRegisterAthena ( app )
     /* Simple Widgets (Chapt 3) */
     RCN("Command",			commandWidgetClass	);
     RCP("commandWidgetClass",		commandWidgetClass	);
+#ifdef notdef
     RCN("Grip",				gripWidgetClass		);
     RCP("gripWidgetClass",		gripWidgetClass		);
+#endif
     RCN("Label",			labelWidgetClass	);
     RCP("labelWidgetClass",		labelWidgetClass	);
+#ifdef notdef
     RCN("List",				listWidgetClass		);
     RCP("listWidgetClass",		listWidgetClass		);
     RCN("Scrollbar",			scrollbarWidgetClass	);
@@ -97,6 +100,7 @@ void AriRegisterAthena ( app )
     RCP("stripChartWidgetClass",	stripChartWidgetClass	);
     RCN("Toggle",			toggleWidgetClass	);
     RCP("toggleWidgetClass",		toggleWidgetClass	);
+#endif
 
     /* Menus (Chapt 4) */
     RCN("SimpleMenu",			simpleMenuWidgetClass	);
@@ -105,38 +109,48 @@ void AriRegisterAthena ( app )
     RCP("smeBSBObjectClass",		smeBSBObjectClass	);
     RCN("SmeLine",			smeLineObjectClass	);
     RCP("smeLineObjectClass",		smeLineObjectClass	);
+#ifdef notdef
     RCN("Sme",				smeObjectClass		);
     RCP("smeObjectClass",		smeObjectClass		);
+#endif
     RCN("MenuButton",			menuButtonWidgetClass	);
     RCP("menuButtonWidgetClass",	menuButtonWidgetClass	);
 
     /* Text Widgets (Chapt 5) */
     RCN("AsciiText",			asciiTextWidgetClass	); /* NB name */
     RCP("asciiTextWidgetClass",		asciiTextWidgetClass	);
+#ifdef notdef
     RCN("AsciiSrc",			asciiSrcObjectClass	);
     RCP("asciiSrcObjectClass",		asciiSrcObjectClass	);
     RCN("AsciiSink",			asciiSinkObjectClass	);
     RCP("asciiSinkObjectClass",		asciiSinkObjectClass	);
+#endif
     RCN("Text",				textWidgetClass		);
     RCP("textWidgetClass",		textWidgetClass		);
 
     /* Composite and Constraint Widgets (Chapt 6) */
+#ifdef notdef
     RCN("Box",				boxWidgetClass		);
     RCP("boxWidgetClass",		boxWidgetClass		);
+#endif
     RCN("Dialog",			dialogWidgetClass	);
     RCP("dialogWidgetClass",		dialogWidgetClass	);
     RCN("Form",				formWidgetClass		);
     RCP("formWidgetClass",		formWidgetClass		);
+#ifdef notdef
     RCN("Paned",			panedWidgetClass	);
     RCP("panedWidgetClass",		panedWidgetClass	);
     RCN("Viewport",			viewportWidgetClass	);
     RCP("viewportWidgetClass",		viewportWidgetClass	);
+#endif
 
     /* Other Interestng Widgets (not in ref manual) */
     RCN("ClockWidget",			clockWidgetClass	);
     RCP("clockWidgetClass",		clockWidgetClass	);
+#ifdef notdef
     RCN("LogoWidget",			logoWidgetClass		);
     RCP("logoWidgetClass",		logoWidgetClass		);
+#endif
 
 #undef RCN
 #undef RCP

@@ -1,4 +1,4 @@
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.1,v 1.3 1990-12-05 12:40:39 mar Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.1,v 1.4 1991-06-28 20:27:26 probe Exp $
 .TH TIMEOUT 1 "16 November 1990"
 .ds ]W MIT Project Athena
 .SH NAME
@@ -8,16 +8,14 @@ timeout \- run an application and force it to exit if the user is inactive
 timeout seconds application command line
 .fi
 .SH DESCRIPTION
-\fITimeout\fR will execute the specified command line.  Note that the
-user's search path will not be used in starting the application, so
-the complete path to the program must be specified.  If the user does
+\fITimeout\fR will execute the specified command line.  If the user does
 not type anything for \fIseconds\fR seconds, \fItimeout\fR will kill
 the application and then exit itself.  If the application exits before
 it has been idle too long, \fItimeout\fR will exit as well.
 
 .SH EXAMPLE
 .nf
-timeout 60 /usr/athena/olh -tty
+timeout 60 olh -tty
 .fi
 This will run OnLine Help in terminal mode, and force it to quit if
 the user goes for more than 1 minute without typing anything.

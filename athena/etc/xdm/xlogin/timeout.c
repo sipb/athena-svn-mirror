@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.3 1991-03-07 15:09:24 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/timeout.c,v 1.4 1991-06-28 20:27:28 probe Exp $ */
 
 #include <mit-copyright.h>
 #include <stdio.h>
@@ -44,7 +44,7 @@ char **argv;
     /* launch application */
     switch (app_pid = fork()) {
     case 0:
-	execv(argv[0], argv);
+	execvp(argv[0], argv);
 	sprintf(msg, "%s: failed to exec application %s\n", name, argv[0]);
 	perror(msg);
 	exit(1);
