@@ -1,0 +1,29 @@
+<Root>
+<menu>
+	<placeholder name="Services Placeholder">
+		<submenu name="Fonts" _label="_Fonts">
+			<menuitem name="Helvetica" 
+			  _label="_Helvetica" 
+			  _tip="Use the Helvetica Font"
+			  type="radio" group="font group"
+			  id="helvetica"/>
+			<menuitem name="Times" 
+			  _label="_Times" 
+			  _tip="Use the Times Font"
+			  type="radio" group="font group"
+			  id="times"/>
+			<menuitem name="Courier" 
+			  _label="_Courier" 
+			  _tip="Use the Courier Font"
+			  type="radio" group="font group"
+			  id="courier"/>
+			<menuitem name="Lucida" 
+			  _label="Lucida" 
+			  _tip="Use the Lucida Font"
+			  type="radio" group="font group"
+			  id="lucida"/>
+		</submenu>
+
+	</placeholder>
+</menu>
+</Root>

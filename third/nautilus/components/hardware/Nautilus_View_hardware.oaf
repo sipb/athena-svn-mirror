@@ -1,0 +1,60 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce" type="exe" location="nautilus-hardware-view">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/ObjectFactory:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="description" type="string" value="Factory for hardware view"/>
+	<oaf_attribute name="description-es" type="string" value="Configuraci&#243;n Original para vista de hardware"/>
+	<oaf_attribute name="description-sv" type="string" value="Fabrik f&#246;r h&#229;rdvaruvy"/>
+	<oaf_attribute name="description-de" type="string" value="Factory f&#252;r Hardware-Ansicht"/>
+	<oaf_attribute name="description-da" type="string" value="Fabrik for maskinelvisning"/>
+	<oaf_attribute name="description-sk" type="string" value="Vytv&#225;racie rozhranie pre hardwarov&#253; poh&#181;ad"/>
+
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_hardware_view:4a3f3793-bab4-4640-9f56-e7871fe8e150" type="factory" location="OAFIID:nautilus_hardware_view_factory:8c80e55a-5c03-4403-9e51-3a5711b8a5ce">
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:Bonobo/Unknown:1.0"/>
+		<item value="IDL:Bonobo/Control:1.0"/>
+		<item value="IDL:Nautilus/View:1.0"/>
+	</oaf_attribute>
+	<oaf_attribute name="name" type="string" value="Hardware view"/>
+	<oaf_attribute name="name-da" type="string" value="Maskinelvisning"/>
+	<oaf_attribute name="name-es" type="string" value="Vista de Hardware"/>
+	<oaf_attribute name="name-sv" type="string" value="H&#229;rdvaruvy"/>
+	<oaf_attribute name="name-de" type="string" value="Hardware-Ansicht"/>
+	<oaf_attribute name="name-ko" type="string" value="&#199;&#207;&#181;&#229;&#191;&#254;&#190;&#238; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="name-ja" type="string" value="&#165;&#207;&#161;&#188;&#165;&#201;&#165;&#166;&#165;&#167;&#165;&#162;&#165;&#211;&#165;&#229;&#161;&#188;"/>
+	<oaf_attribute name="name-no" type="string" value="Maskinvarevisning"/>
+	<oaf_attribute name="name-sk" type="string" value="Hardwarov&#253; poh&#181;ad"/>
+
+	<oaf_attribute name="description" type="string" value="hardware view"/>
+	<oaf_attribute name="description-da" type="string" value="maskinelvisning"/>
+	<oaf_attribute name="description-es" type="string" value="vista hardware"/>
+	<oaf_attribute name="description-sv" type="string" value="h&#229;rdvaruvy"/>
+	<oaf_attribute name="description-de" type="string" value="Hardware-Ansicht"/>
+	<oaf_attribute name="description-ko" type="string" value="&#199;&#207;&#181;&#229;&#191;&#254;&#190;&#238; &#186;&#184;&#177;&#226;"/>
+	<oaf_attribute name="description-ja" type="string" value="&#165;&#207;&#161;&#188;&#165;&#201;&#165;&#166;&#165;&#167;&#165;&#162;&#165;&#211;&#165;&#229;&#161;&#188;"/>
+	<oaf_attribute name="description-no" type="string" value="maskinvarevisning"/>
+	<oaf_attribute name="description-sk" type="string" value="hardwarov&#253; poh&#181;ad"/>
+
+	<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+		<item value="hardware"/>
+	</oaf_attribute>
+	<oaf_attribute name="nautilus:view_as_name" type="string" value="Hardware"/>
+	<oaf_attribute name="nautilus:view_as_name-uk" type="string" value="&#225;&#208;&#193;&#210;&#193;&#212;&#206;&#197; &#218;&#193;&#194;&#197;&#218;&#208;&#197;&#222;&#197;&#206;&#206;&#209;"/>
+	<oaf_attribute name="nautilus:view_as_name-da" type="string" value="maskinel"/>
+	<oaf_attribute name="nautilus:view_as_name-ru" type="string" value="&#239;&#194;&#207;&#210;&#213;&#196;&#207;&#215;&#193;&#206;&#201;&#197;"/>
+	<oaf_attribute name="nautilus:view_as_name-es" type="string" value="Hardware"/>
+	<oaf_attribute name="nautilus:view_as_name-sv" type="string" value="H&#229;rdvara"/>
+	<oaf_attribute name="nautilus:view_as_name-de" type="string" value="Hardware"/>
+	<oaf_attribute name="nautilus:view_as_name-ko" type="string" value="&#199;&#207;&#181;&#229;&#191;&#254;&#190;&#238;"/>
+	<oaf_attribute name="nautilus:view_as_name-ja" type="string" value="&#165;&#207;&#161;&#188;&#165;&#201;&#165;&#166;&#165;&#167;&#165;&#162;"/>
+	<oaf_attribute name="nautilus:view_as_name-pl" type="string" value="Sprz&#234;t"/>
+	<oaf_attribute name="nautilus:view_as_name-no" type="string" value="Maskinvare"/>
+	<oaf_attribute name="nautilus:view_as_name-sk" type="string" value="Hardware"/>
+
+</oaf_server>
+
+</oaf_info>

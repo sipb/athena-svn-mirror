@@ -1,0 +1,464 @@
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AMMONITE_CFLAGS = @AMMONITE_CFLAGS@
+AMMONITE_LIBS = @AMMONITE_LIBS@
+APPLETS_CFLAGS = @APPLETS_CFLAGS@
+APPLETS_LIBS = @APPLETS_LIBS@
+AS = @AS@
+BONOBOX_CFLAGS = @BONOBOX_CFLAGS@
+BONOBOX_LIBS = @BONOBOX_LIBS@
+BONOBO_CFLAGS = @BONOBO_CFLAGS@
+BONOBO_LIBS = @BONOBO_LIBS@
+BONOBO_PRINT_CFLAGS = @BONOBO_PRINT_CFLAGS@
+BONOBO_PRINT_LIBS = @BONOBO_PRINT_LIBS@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CPP = @CPP@
+CXX = @CXX@
+DATADIRNAME = @DATADIRNAME@
+DLLTOOL = @DLLTOOL@
+EAZEL_SERVICES = @EAZEL_SERVICES@
+ENABLE_PROFILER = @ENABLE_PROFILER@
+ESD_CFLAGS = @ESD_CFLAGS@
+ESD_CONFIG = @ESD_CONFIG@
+ESD_LIBS = @ESD_LIBS@
+FREETYPE2_CFLAGS = @FREETYPE2_CFLAGS@
+FREETYPE2_LIBS = @FREETYPE2_LIBS@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_CONFIG = @GCONF_CONFIG@
+GCONF_LIBS = @GCONF_LIBS@
+GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
+GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
+GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
+GENCAT = @GENCAT@
+GHTTP_CFLAGS = @GHTTP_CFLAGS@
+GHTTP_LIBS = @GHTTP_LIBS@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_CONFIG = @GLIB_CONFIG@
+GLIB_LIBS = @GLIB_LIBS@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+GNOMECANVASPIXBUF_INCLUDEDIR = @GNOMECANVASPIXBUF_INCLUDEDIR@
+GNOMECANVASPIXBUF_LIBS = @GNOMECANVASPIXBUF_LIBS@
+GNOMEUI_CFLAGS = @GNOMEUI_CFLAGS@
+GNOMEUI_LIBS = @GNOMEUI_LIBS@
+GNOME_CFLAGS = @GNOME_CFLAGS@
+GNOME_CONFIG = @GNOME_CONFIG@
+GNOME_LIBS = @GNOME_LIBS@
+GNORBA_CFLAGS = @GNORBA_CFLAGS@
+GNORBA_LIBS = @GNORBA_LIBS@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_CONFIG = @GTK_CONFIG@
+GTK_LIBS = @GTK_LIBS@
+GT_NO = @GT_NO@
+GT_YES = @GT_YES@
+HAVE_APPLETS = @HAVE_APPLETS@
+IDL_CFLAGS = @IDL_CFLAGS@
+INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
+INSTOBJEXT = @INSTOBJEXT@
+INTLDEPS = @INTLDEPS@
+INTLLIBS = @INTLLIBS@
+INTLOBJS = @INTLOBJS@
+LIBPNG = @LIBPNG@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MEDUSA_CFLAGS = @MEDUSA_CFLAGS@
+MEDUSA_LIBS = @MEDUSA_LIBS@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+MOZILLA_COMPONENT_CFLAGS = @MOZILLA_COMPONENT_CFLAGS@
+MOZILLA_COMPONENT_DEBUG_FLAGS = @MOZILLA_COMPONENT_DEBUG_FLAGS@
+MOZILLA_COMPONENT_LDFLAGS = @MOZILLA_COMPONENT_LDFLAGS@
+MOZILLA_COMPONENT_LIBS = @MOZILLA_COMPONENT_LIBS@
+MOZILLA_COMPONENT_RPATH_FLAGS = @MOZILLA_COMPONENT_RPATH_FLAGS@
+MOZILLA_MILESTONE = @MOZILLA_MILESTONE@
+OAF_CFLAGS = @OAF_CFLAGS@
+OAF_CONFIG = @OAF_CONFIG@
+OAF_LIBS = @OAF_LIBS@
+OBJDUMP = @OBJDUMP@
+ORBIT_CFLAGS = @ORBIT_CFLAGS@
+ORBIT_CONFIG = @ORBIT_CONFIG@
+ORBIT_IDL = @ORBIT_IDL@
+ORBIT_LIBS = @ORBIT_LIBS@
+PACKAGE = @PACKAGE@
+PACKAGESYSTEM = @PACKAGESYSTEM@
+PAM_LIBS = @PAM_LIBS@
+POFILES = @POFILES@
+POSUB = @POSUB@
+RANLIB = @RANLIB@
+RPM_LIBS = @RPM_LIBS@
+RPM_VERSION = @RPM_VERSION@
+USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+VFS_CFLAGS = @VFS_CFLAGS@
+VFS_LIBS = @VFS_LIBS@
+XML_CFLAGS = @XML_CFLAGS@
+XML_CONFIG = @XML_CONFIG@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
+XML_LIBS = @XML_LIBS@
+ZVT_LIBS = @ZVT_LIBS@
+Z_LIBS = @Z_LIBS@
+gnomelocaledir = @gnomelocaledir@
+l = @l@
+
+NULL = 
+
+lib_LTLIBRARIES = libnautilus-extensions.la
+
+INCLUDES =  	-I$(top_srcdir) 					-I$(top_srcdir)/src/file-manager 			-I$(top_builddir) 					-I$(top_builddir)/libnautilus 				-I$(top_srcdir)/cut-n-paste-code 			$(BONOBO_PRINT_CFLAGS) 					$(BONOBOX_CFLAGS) 					$(ESD_CFLAGS)						$(GCONF_CFLAGS) 					$(GHTTP_CFLAGS) 					$(GNOME_CFLAGS) 					$(MEDUSA_CFLAGS) 					$(OAF_CFLAGS) 						$(VFS_CFLAGS) 						$(XML_CFLAGS) 						-D_REENTRANT 						-DDATADIR=\""$(datadir)"\" 				-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		$(NULL)
+
+
+dependency_static_libs =  	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la 	$(top_builddir)/cut-n-paste-code/widgets/nautilusclist/libnautilusclist.la 	$(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la 	$(top_builddir)/librsvg/librsvg.la 	$(NULL)
+
+
+libnautilus_extensions_la_LDFLAGS =  	$(dependency_static_libs)		$(BONOBO_PRINT_LIBS) 			$(BONOBOX_LIBS) 			$(ESD_LIBS)				$(FREETYPE2_LIBS)			$(GCONF_LIBS)				$(GHTTP_LIBS) 				$(GNOMECANVASPIXBUF_LIBS)		$(GNOME_LIBS) 				$(LIBPNG) 				$(MEDUSA_LIBS) 				$(OAF_LIBS) 				$(VFS_LIBS) 				$(XML_LIBS) 				$(NULL)
+
+
+libnautilus_extensions_la_SOURCES =  	bug-5712-pr3-workaround--gdk-pixbuf-drawable.c 	bug-5712-pr3-workaround--gdkimage.c 	bug-5712-pr3-workaround--gdk-pixbuf-private.h 	nautilus-art-extensions.c			nautilus-art-gtk-extensions.c			nautilus-background-canvas-group.c		nautilus-background.c				nautilus-bonobo-extensions.c			nautilus-bookmark.c				nautilus-caption-table.c			nautilus-caption.c				nautilus-ctree.c				nautilus-customization-data.c			nautilus-dateedit-extensions.c			nautilus-debug-drawing.c			nautilus-debug.c				nautilus-default-file-icon.c			nautilus-directory-async.c			nautilus-directory-background.c			nautilus-directory-metafile.c			nautilus-directory.c				nautilus-drag-window.c				nautilus-drag.c					nautilus-druid-page-eazel.c			nautilus-druid.c				nautilus-entry.c				nautilus-enumeration.c				nautilus-file-changes-queue.c			nautilus-file-operations-progress.c		nautilus-file-operations.c			nautilus-file-utilities.c			nautilus-file.c					nautilus-font-factory.c				nautilus-font-picker.c				nautilus-gconf-extensions.c			nautilus-gdk-extensions.c			nautilus-gdk-font-extensions.c			nautilus-gdk-pixbuf-extensions.c		nautilus-generous-bin.c				nautilus-glib-extensions.c			nautilus-global-preferences.c			nautilus-gnome-extensions.c			nautilus-graphic-effects.c			nautilus-gtk-extensions.c			nautilus-horizontal-splitter.c			nautilus-icon-canvas-item.c       		nautilus-icon-container.c			nautilus-icon-dnd.c				nautilus-icon-factory.c				nautilus-icon-text-item.c			nautilus-image-with-background.c		nautilus-image.c				nautilus-keep-last-vertical-box.c		nautilus-label-with-background.c		nautilus-label.c				nautilus-lib-self-check-functions.c		nautilus-link-set.c				nautilus-link.c					nautilus-list-column-title.c			nautilus-list.c                         	nautilus-merged-directory.c			nautilus-mime-actions.c				nautilus-password-dialog.c			nautilus-preferences-box.c			nautilus-preferences-dialog.c			nautilus-preferences-group.c			nautilus-preferences-item.c			nautilus-preferences-pane.c			nautilus-preferences.c				nautilus-program-chooser.c			nautilus-program-choosing.c			nautilus-radio-button-group.c			nautilus-scalable-font.c			nautilus-search-uri.c				nautilus-self-checks.c				nautilus-smooth-widget.c			nautilus-sound.c				nautilus-stock-dialogs.c			nautilus-string-list.c				nautilus-string-map.c				nautilus-string-picker.c			nautilus-string.c				nautilus-tabs.c					nautilus-text-caption.c				nautilus-theme.c				nautilus-thumbnails.c				nautilus-trash-directory.c			nautilus-trash-file.c				nautilus-trash-monitor.c			nautilus-undo-context.c				nautilus-undo-manager.c				nautilus-undo-signal-handlers.c			nautilus-vfs-directory.c			nautilus-vfs-file.c				nautilus-view-identifier.c			nautilus-viewport.c				nautilus-volume-monitor.c			nautilus-xml-extensions.c			$(NULL)
+
+
+# Everything is private for now
+noinst_HEADERS =  	nautilus-art-extensions.h			nautilus-art-gtk-extensions.h			nautilus-background-canvas-group.h		nautilus-background.h				nautilus-bonobo-extensions.h			nautilus-bookmark.h				nautilus-caption-table.h			nautilus-caption.h				nautilus-cdrom-extensions.h			nautilus-ctree.h				nautilus-customization-data.h			nautilus-dateedit-extensions.h 			nautilus-debug-drawing.h			nautilus-debug.h				nautilus-default-file-icon.h			nautilus-directory-background.h			nautilus-directory-metafile.h			nautilus-directory-notify.h			nautilus-directory-private.h			nautilus-directory.h				nautilus-drag-window.h				nautilus-drag.h					nautilus-druid-page-eazel.h			nautilus-druid.h				nautilus-entry.h				nautilus-enumeration.h				nautilus-file-attributes.h			nautilus-file-changes-queue.h			nautilus-file-operations-progress.h 		nautilus-file-operations.h 			nautilus-file-private.h				nautilus-file-utilities.h			nautilus-file.h					nautilus-font-factory.h				nautilus-font-picker.h				nautilus-gconf-extensions.h			nautilus-gdk-extensions.h			nautilus-gdk-font-extensions.h			nautilus-gdk-pixbuf-extensions.h		nautilus-generous-bin.h				nautilus-glib-extensions.h			nautilus-global-preferences.h			nautilus-gnome-extensions.h			nautilus-graphic-effects.h			nautilus-gtk-extensions.h			nautilus-gtk-macros.h				nautilus-horizontal-splitter.h			nautilus-icon-canvas-item.h			nautilus-icon-container.h			nautilus-icon-dnd.h				nautilus-icon-factory-private.h			nautilus-icon-factory.h				nautilus-icon-private.h				nautilus-icon-text-item.h			nautilus-image-with-background.h		nautilus-image.h				nautilus-iso9660.h				nautilus-keep-last-vertical-box.h		nautilus-label-with-background.h		nautilus-label.h				nautilus-lib-self-check-functions.h		nautilus-link-set.h				nautilus-link.h					nautilus-list-column-title.h			nautilus-list.h                         	nautilus-merged-directory.h			nautilus-metadata.h				nautilus-mime-actions.h				nautilus-password-dialog.h			nautilus-preferences-box.h			nautilus-preferences-dialog.h			nautilus-preferences-group.h			nautilus-preferences-item.h			nautilus-preferences-pane.h			nautilus-preferences-private.h			nautilus-preferences.h				nautilus-program-chooser.h			nautilus-program-choosing.h			nautilus-radio-button-group.h			nautilus-scalable-font-private.h		nautilus-scalable-font-private.h		nautilus-scalable-font.h			nautilus-search-uri.h				nautilus-self-checks.h				nautilus-smooth-widget.h			nautilus-sound.h				nautilus-stock-dialogs.h			nautilus-string-list.h				nautilus-string-map.h				nautilus-string-picker.h			nautilus-string.h				nautilus-tabs.h					nautilus-text-caption.h				nautilus-theme.h				nautilus-thumbnails.h				nautilus-trash-directory.h			nautilus-trash-file.h				nautilus-trash-monitor.h			nautilus-undo-context.h				nautilus-undo-manager.h				nautilus-undo-signal-handlers.h			nautilus-vfs-directory.h			nautilus-vfs-file.h				nautilus-view-identifier.h			nautilus-viewport.h				nautilus-volume-monitor.h			nautilus-xml-extensions.h			$(NULL)
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+libnautilus_extensions_la_LIBADD = 
+libnautilus_extensions_la_OBJECTS =  \
+bug-5712-pr3-workaround--gdk-pixbuf-drawable.lo \
+bug-5712-pr3-workaround--gdkimage.lo nautilus-art-extensions.lo \
+nautilus-art-gtk-extensions.lo nautilus-background-canvas-group.lo \
+nautilus-background.lo nautilus-bonobo-extensions.lo \
+nautilus-bookmark.lo nautilus-caption-table.lo nautilus-caption.lo \
+nautilus-ctree.lo nautilus-customization-data.lo \
+nautilus-dateedit-extensions.lo nautilus-debug-drawing.lo \
+nautilus-debug.lo nautilus-default-file-icon.lo \
+nautilus-directory-async.lo nautilus-directory-background.lo \
+nautilus-directory-metafile.lo nautilus-directory.lo \
+nautilus-drag-window.lo nautilus-drag.lo nautilus-druid-page-eazel.lo \
+nautilus-druid.lo nautilus-entry.lo nautilus-enumeration.lo \
+nautilus-file-changes-queue.lo nautilus-file-operations-progress.lo \
+nautilus-file-operations.lo nautilus-file-utilities.lo nautilus-file.lo \
+nautilus-font-factory.lo nautilus-font-picker.lo \
+nautilus-gconf-extensions.lo nautilus-gdk-extensions.lo \
+nautilus-gdk-font-extensions.lo nautilus-gdk-pixbuf-extensions.lo \
+nautilus-generous-bin.lo nautilus-glib-extensions.lo \
+nautilus-global-preferences.lo nautilus-gnome-extensions.lo \
+nautilus-graphic-effects.lo nautilus-gtk-extensions.lo \
+nautilus-horizontal-splitter.lo nautilus-icon-canvas-item.lo \
+nautilus-icon-container.lo nautilus-icon-dnd.lo \
+nautilus-icon-factory.lo nautilus-icon-text-item.lo \
+nautilus-image-with-background.lo nautilus-image.lo \
+nautilus-keep-last-vertical-box.lo nautilus-label-with-background.lo \
+nautilus-label.lo nautilus-lib-self-check-functions.lo \
+nautilus-link-set.lo nautilus-link.lo nautilus-list-column-title.lo \
+nautilus-list.lo nautilus-merged-directory.lo nautilus-mime-actions.lo \
+nautilus-password-dialog.lo nautilus-preferences-box.lo \
+nautilus-preferences-dialog.lo nautilus-preferences-group.lo \
+nautilus-preferences-item.lo nautilus-preferences-pane.lo \
+nautilus-preferences.lo nautilus-program-chooser.lo \
+nautilus-program-choosing.lo nautilus-radio-button-group.lo \
+nautilus-scalable-font.lo nautilus-search-uri.lo \
+nautilus-self-checks.lo nautilus-smooth-widget.lo nautilus-sound.lo \
+nautilus-stock-dialogs.lo nautilus-string-list.lo \
+nautilus-string-map.lo nautilus-string-picker.lo nautilus-string.lo \
+nautilus-tabs.lo nautilus-text-caption.lo nautilus-theme.lo \
+nautilus-thumbnails.lo nautilus-trash-directory.lo \
+nautilus-trash-file.lo nautilus-trash-monitor.lo \
+nautilus-undo-context.lo nautilus-undo-manager.lo \
+nautilus-undo-signal-handlers.lo nautilus-vfs-directory.lo \
+nautilus-vfs-file.lo nautilus-view-identifier.lo nautilus-viewport.lo \
+nautilus-volume-monitor.lo nautilus-xml-extensions.lo
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(noinst_HEADERS)
+
+DIST_COMMON =  README Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(libnautilus_extensions_la_SOURCES)
+OBJECTS = $(libnautilus_extensions_la_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) $(top_srcdir)/Makefile.shared
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps libnautilus-extensions/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libnautilus-extensions.la: $(libnautilus_extensions_la_OBJECTS) $(libnautilus_extensions_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libnautilus_extensions_la_LDFLAGS) $(libnautilus_extensions_la_OBJECTS) $(libnautilus_extensions_la_LIBADD) $(LIBS)
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = libnautilus-extensions
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
+
+install-data-am:
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+$(lib_LTLIBRARIES): $(dependency_static_libs)
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
