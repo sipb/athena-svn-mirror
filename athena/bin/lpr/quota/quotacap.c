@@ -14,6 +14,7 @@ static char sccsid[] = "@(#)printcap.c	5.1 (Berkeley) 6/6/85";
 #ifdef HESIOD
 #include <hesiod.h>
 #endif
+#include <strings.h>
 
 #define MAXHOP	32	/* max number of tc= indirections */
 #ifndef BUFSIZ
@@ -99,7 +100,7 @@ getclus()
 	char **hv;
 	int len = 4;  /* length of string "lpr " */
 
-	gethostname(host, sizeof (host));
+	(void) gethostname(host, sizeof (host));
 	if ((hv = hes_resolve(host, "cluster")) == NULL)
 		return NULL;
 	while (*hv) {
