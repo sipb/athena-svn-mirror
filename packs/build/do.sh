@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.29 1999-02-27 16:55:00 ghudson Exp $
+# $Id: do.sh,v 1.30 1999-02-28 18:30:45 ghudson Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -103,26 +103,26 @@ SunOS)
 	LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
 	PATH=/usr/ccs/bin:$athtoolroot/usr/athena/bin:/usr/bin:/usr/ucb
 	PATH=${PATH}:/usr/openwin/bin
-	compiler="/usr/gcc/bin/gcc -DSOLARIS"
+	CC=/usr/gcc/bin/gcc
 	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 	ERROR_CFLAGS=-Werror
 	;;
 IRIX)
 	OS=irix
 	PATH=$athtoolroot/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
-	compiler=cc
+	CC=cc
 	WARN_CFLAGS=-fullwarn
 	ERROR_CFLAGS=-w2
 	;;
 Linux)
 	OS=linux
 	PATH=$athtoolroot/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
-	compiler=cc
+	CC=cc
 	WARN_CFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 	ERROR_CFLAGS=-Werror
 	;;
 esac
-export WARN_CFLAGS ERROR_CFLAGS
+export WARN_CFLAGS ERROR_CFLAGS CC
 
 # Determine if gmake is available. (It should be, unless this is a
 # full build and we haven't built it yet.)
@@ -136,7 +136,7 @@ if [ -r Makefile.athena ]; then
 	export SRVD SOURCE COMPILER CONFIGDIR XCONFIGDIR ATHTOOLROOT
 	SRVD=$srvd
 	SOURCE=$source
-	COMPILER=$compiler
+	COMPILER=$CC
 	CONFIGDIR=$source/packs/build/config
 	XCONFIGDIR=$source/packs/build/xconfig
 	ATHTOOLROOT=$athtoolroot
@@ -175,7 +175,7 @@ elif [ -r Makefile ]; then
 	case $operation in
 		prepare)	;;
 		clean)		$make $n clean "ATHTOOLROOT=$athtoolroot";;
-		all)		$make $n all CC="$compiler" \
+		all)		$make $n all CC="$CC" \
 					"ATHTOOLROOT=$athtoolroot";;
 		check)		;;
 		install)	$make $n install "DESTDIR=$srvd" \

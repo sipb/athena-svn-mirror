@@ -1,18 +1,8 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.26 1999-02-26 23:07:27 danw Exp $
+# $Id: config.site,v 1.27 1999-02-28 18:30:46 ghudson Exp $
 #
 
 athena=true
-
-# Set compiler.
-case "$HOSTTYPE" in
-	sun4)
-		CC=/usr/gcc/bin/gcc
-		;;
-	*)
-		CC=cc
-		;;
-esac
 
 # Compile programs with debugging and without optimization, for ease
 # of maintenance.  Use headers and libraries from /usr/athena.
