@@ -18,8 +18,9 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.9 2000-08-22 05:34:07 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.10 2000-08-23 19:04:54 ghudson Exp $";
 
+#define _GNU_SOURCE
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/utsname.h>
@@ -86,11 +87,13 @@ static void parse_line(const char *path, char **pkgname, int *epoch,
 		       char **version, char **release, char **filename);
 struct package *get_package(struct package **table, const char *pkgname);
 static unsigned int hash(const char *str);
-const char *find_back(const char *start, const char *end, char c);
+static const char *find_back(const char *start, const char *end, char c);
+static const char *skip_to_value(const char *p, const char *varname);
 static void *emalloc(size_t size);
 static void *erealloc(void *ptr, size_t size);
 static char *estrdup(const char *s);
-char *estrndup(const char *s, size_t n);
+static char *estrndup(const char *s, size_t n);
+static int easprintf(char **ptr, const char *fmt, ...);
 static int read_line(FILE *fp, char **buf, int *bufsize);
 static void die(const char *fmt, ...);
 static void usage(void);
@@ -323,7 +326,7 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun,
 	   * going to erase.
 	   */
 	  if (hashmarks)
-	    printf("Scheduling removal of package %s\n", rpmtrans); 
+	    printf("Scheduling removal of package %s\n", pkgname); 
 	  rpmtransRemovePackage(rpmdep, offset);
 	}
       headerFree(h);
@@ -495,7 +498,8 @@ static void update_lilo(struct package *pkg)
 {
   const char *name = "/etc/lilo.conf", *savename = "/etc/lilo.conf.rpmsave";
   FILE *in, *out;
-  char *buf = NULL, *oldkname, *newkname, *p;
+  char *buf = NULL, *oldkname, *newkname, *newiname, *initrdcmd;
+  const char *p;
   int bufsize = 0, status, replaced;
   struct stat statbuf;
 
@@ -505,16 +509,15 @@ static void update_lilo(struct package *pkg)
     return;
 
   /* Figure out kernel names. */
-  oldkname = emalloc(strlen("/boot/vmlinuz-")
-		     + strlen(pkg->instrev.version) + strlen("-")
-		     + strlen(pkg->instrev.release) + 1);
-  sprintf(oldkname, "/boot/vmlinuz-%s-%s", pkg->instrev.version,
-	  pkg->instrev.release);
-  newkname = emalloc(strlen("/boot/vmlinuz-")
-		     + strlen(pkg->newlistrev.version) + strlen("-")
-		     + strlen(pkg->newlistrev.release) + 1);
-  sprintf(newkname, "/boot/vmlinuz-%s-%s", pkg->newlistrev.version,
-	  pkg->newlistrev.release);
+  easprintf(&oldkname, "/boot/vmlinuz-%s-%s", pkg->instrev.version,
+	    pkg->instrev.release);
+  easprintf(&newkname, "/boot/vmlinuz-%s-%s", pkg->newlistrev.version,
+	    pkg->newlistrev.release);
+  easprintf(&newiname, "/boot/initrd-%s-%s.img", pkg->newlistrev.version,
+	    pkg->newlistrev.release);
+  easprintf(&initrdcmd, "/sbin/mkinitrd -f /boot/initrd-%s-%s.img %s-%s",
+	    pkg->newlistrev.version, pkg->newlistrev.release,
+	    pkg->newlistrev.version, pkg->newlistrev.release);
 
   if (stat(name, &statbuf) == -1)
     die("Can't stat lilo.conf for rewrite.");
@@ -532,8 +535,8 @@ static void update_lilo(struct package *pkg)
   fchmod(fileno(out), statbuf.st_mode & 0777);
 
   /* Rewrite lilo.conf, changing the old kernel name to the new kernel
-   * name in "image" lines.  Remove "initrd" lines following images we
-   * replace, since we don't currently use a ramdisk.
+   * name in "image" lines.  Update "initrd" following images we
+   * replace, if it exists, for the benefit of machines that need it.
    */
   replaced = 0;
   while ((status = read_line(in, &buf, &bufsize)) == 0)
@@ -555,7 +558,16 @@ static void update_lilo(struct package *pkg)
 	    replaced = 0;
 	}
       else if (replaced && strncmp(p, "initrd", 6) == 0 && !isalpha(p[6]))
-	continue;
+        {
+	  p = skip_to_value(p, "initrd");
+	  if (p != NULL)
+	    {
+	      fprintf(out, "%.*s%s\n", p - buf, buf, newiname);
+	      if (system(initrdcmd) != 0)
+		fprintf(stderr, "Error running %s", initrdcmd);
+	      continue;
+	    }
+	}
       fprintf(out, "%s\n", buf);
     }
   fclose(in);
@@ -565,6 +577,10 @@ static void update_lilo(struct package *pkg)
       die("Error rewriting lilo.conf: %s", strerror(errno));
     }
 
+  free(oldkname);
+  free(newkname);
+  free(newiname);
+  free(initrdcmd);
   system("/sbin/lilo");
 }
 
@@ -615,10 +631,8 @@ static char *fudge_arch_in_filename(char *filename)
   /* We have to downgrade the architecture of the filename.  Make a
    * new string and free the old one.
    */
-  newfile = malloc(strlen(filename) - strlen(arches[i]) +
-		   strlen(arches[j]) + 1);
-  sprintf(newfile, "%.*s%s%s", p - filename, filename, arches[j],
-	  p + strlen(arches[i]));
+  easprintf(&newfile, "%.*s%s%s", p - filename, filename, arches[j],
+	    p + strlen(arches[i]));
   free(filename);
   return newfile;
 }
@@ -778,7 +792,7 @@ static unsigned int hash(const char *str)
 }
 
 /* Find c in the range start..end-1, or return NULL if it isn't there. */
-const char *find_back(const char *start, const char *end, char c)
+static const char *find_back(const char *start, const char *end, char c)
 {
   const char *p;
 
@@ -788,6 +802,22 @@ const char *find_back(const char *start, const char *end, char c)
 	return p;
     }
   return NULL;
+}
+
+/* Assuming p points to a string beginning with varname, return a
+ * pointer to the value part.
+ */
+static const char *skip_to_value(const char *p, const char *varname)
+{
+  p += strlen(varname);
+  while (isspace(*p))
+    p++;
+  if (*p != '=')
+    return NULL;
+  p++;
+  while (isspace(*p))
+    p++;
+  return p;
 }
 
 static void *emalloc(size_t size)
@@ -817,7 +847,7 @@ static char *estrdup(const char *s)
   return new_s;
 }
 
-char *estrndup(const char *s, size_t n)
+static char *estrndup(const char *s, size_t n)
 {
   char *new_s;
 
@@ -825,6 +855,19 @@ char *estrndup(const char *s, size_t n)
   memcpy(new_s, s, n);
   new_s[n] = 0;
   return new_s;
+}
+
+static int easprintf(char **ptr, const char *fmt, ...)
+{
+  va_list ap;
+  int ret;
+
+  va_start(ap, fmt);
+  ret = vasprintf(ptr, fmt, ap);
+  va_end(ap);
+  if (ret == -1)
+    die("asprintf malloc failed for format string %s", fmt);
+  return ret;
 }
 
 /* Read a line from a file into a dynamically allocated buffer,
