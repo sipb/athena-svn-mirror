@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1997-01-11 19:16:56 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1997-03-26 04:51:02 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -31,7 +31,7 @@ check:
 install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
-	${INSTALL_PROGRAM} -m 555 access_off ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} -m 4555 access_off ${DESTDIR}${bindir}
 	rm -f ${DESTDIR}${bindir}/access_on
 	ln -s access_off ${DESTDIR}${bindir}/access_on
 	${INSTALL} -m 444 ${srcdir}/access_off.1 ${DESTDIR}${mandir}/man1
