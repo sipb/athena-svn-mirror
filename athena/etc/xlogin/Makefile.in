@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 1999-11-17 00:01:26 ghudson Exp $
+# $Id: Makefile.in,v 1.6 1999-11-17 13:22:53 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -60,7 +60,7 @@ install:
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
 	${INSTALL_PROGRAM} xlogin ${DESTDIR}${lsbindir}
 	${INSTALL_PROGRAM} timeout ${DESTDIR}${bindir}
-	${INSTALL} -m 444 ${srcdir}/timeout.${DESTDIR}1 ${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/timeout.1 ${DESTDIR}${mandir}/man1
 	${INSTALL} -m 444 ${srcdir}/xlogin.8 ${DESTDIR}${mandir}/man8
 	${INSTALL} -m 444 ${srcdir}/Xlogin ${DESTDIR}${logindir}
 	${INSTALL} -m 755 ${srcdir}/machine ${DESTDIR}${logindir}
