@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.1 1990-04-26 16:35:06 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.2 1990-04-26 18:02:01 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/26  16:35:06  tom
+ * Initial revision
+ * 
  * Revision 1.2  89/12/08  15:21:36  snmpdev
  * added chris tengi's patch for default snmm[trap] port numbers (in case
  * snmp and snmptrap don't occure in /etc/services -- kolb
@@ -26,7 +29,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.1 1990-04-26 16:35:06 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.2 1990-04-26 18:02:01 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
@@ -243,20 +246,19 @@ extern int set_intf();
 
 /* MIT Athena Stuff */
 
-#ifdef ATHENA
-extern int lu_machtype();
-extern int lu_rcvar();
-extern int lu_relvers();
+#ifdef MIT
 extern int lu_kernvers();
 extern int lu_status();
 extern int lu_vmstat();
 extern int lu_pstat();
 extern int lu_tuchtime();
-extern int lu_relvers();
 extern int lu_disk();
 extern int lu_ndparts();
-extern int lu_vmstat();
-extern int lu_pstat();
+#ifdef ATHENA
+extern int lu_rcvar();
+extern int lu_relvers();
+extern int lu_machtype();
+#endif ATHENA
 #ifdef RPC
 extern int lu_rpccl();
 extern int lu_rpcsv();
@@ -277,4 +279,4 @@ extern int lu_kerberos();
 #ifdef LOGIN
 extern int get_inuse();         /* for trap generation in main   */
 #endif LOGIN
-#endif ATHENA
+#endif MIT

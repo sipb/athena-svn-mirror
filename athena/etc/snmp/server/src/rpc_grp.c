@@ -1,10 +1,37 @@
 /*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the RPC (Remote Procedure Call) portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rpc_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
  *
  */
-#include "include.h"
 
-#ifdef ATHENA
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rpc_grp.c,v 1.2 1990-04-26 17:56:42 tom Exp $";
+#endif
+
+#include "include.h"
+#include <mit-copyright.h>
+
+#ifdef MIT
 #ifdef RPC
+
+
+/* 
+ * rpc stats structs
+ */
 
 struct 
 {
@@ -28,6 +55,14 @@ struct
 } rsv;
 
 
+
+/*
+ * Function:    lu_rpccl()
+ * Description: Top level callback for RPC. Supports client side RPC stats.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+int
 lu_rpccl(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -98,7 +133,11 @@ lu_rpccl(varnode, repl, instptr, reqflg)
 
 
 
-
+/*
+ * Function:    lu_rpcsv()
+ * Description: Top level callback for RPC. Supports server side RPC stats.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
 
 lu_rpcsv(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
@@ -164,4 +203,4 @@ lu_rpcsv(varnode, repl, instptr, reqflg)
 
 
 #endif RPC
-#endif ATHENA
+#endif MIT

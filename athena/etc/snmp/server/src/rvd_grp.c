@@ -1,10 +1,35 @@
 /*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the RVD (Remote Virtual Disk) portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
  *
  */
+
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rvd_grp.c,v 1.2 1990-04-26 17:59:06 tom Exp $";
+#endif
+
 #include "include.h"
 
-#ifdef ATHENA
+#ifdef MIT
 #ifdef RVD
+
+/* 
+ * this gets set again
+ */
 
 #ifdef UNUSED
 #undef UNUSED
@@ -15,6 +40,13 @@
 char    *vd_control_name = "/dev/rvdcontrol";
 int     vdcntrl;
 
+/*
+ * Function:    lu_rvdcl()
+ * Description: Top level callback for RVD. Supports client side RVD stats.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+int
 lu_rvdcl(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -28,6 +60,10 @@ lu_rvdcl(varnode, repl, instptr, reqflg)
       varnode->offset <= 0 ||     /* not expecting offset here */
       ((varnode->flags & NULL_OBJINST) && (reqflg == NXT)))
     return (BUILD_ERR);
+
+  /* 
+   * Get RVD data
+   */
 
    if((vdcntrl = open(vd_control_name, O_RDONLY, 0)) < 0) 
      {
@@ -114,4 +150,4 @@ lu_rvdcl(varnode, repl, instptr, reqflg)
 
 
 #endif RVD
-#endif ATHENA
+#endif MIT

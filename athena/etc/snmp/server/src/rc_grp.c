@@ -1,10 +1,45 @@
-/* Copyright MIT */
+/*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the Athena configuration portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
+ *
+ */
+
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v 1.2 1990-04-26 17:53:39 tom Exp $";
+#endif
+
 
 #include "include.h"
+#include <mit-copyright.h>
+
+#ifdef MIT
+#ifdef ATHENA
 
 #define MAX_REPLY_SIZE 32
+static void get_variable();
+
+/*
+ * Function:    lu_rcvar()
+ * Description: Top level callback. Supports variables in rc.conf.
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
 
 
+int
 lu_rcvar(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -130,10 +165,18 @@ lu_rcvar(varnode, repl, instptr, reqflg)
 }
 
 
-get_variable(var,string,size)
+
+/*
+ * Function:    get_variable()
+ * Description: gets var and puts size of it into string. 
+ *               getenv() is a lousy copout.
+ */
+
+static void
+get_variable(var, string, size)
   char *var;
   char *string;
-  int size;
+  int  size;
 {
   char *ptr;
 
@@ -141,3 +184,7 @@ get_variable(var,string,size)
   strncpy(string,ptr,size);
   string[size-1] = '\0';
 }
+
+
+#endif ATHENA
+#endif MIT
