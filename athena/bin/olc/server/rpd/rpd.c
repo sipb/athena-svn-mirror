@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.6 1990-12-02 23:21:07 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.7 1990-12-31 20:49:36 lwvanels Exp $";
 #endif
 #endif
 
@@ -33,6 +33,7 @@ main()
   openlog("rpd",LOG_CONS | LOG_PID,SYSLOG_FACILITY);
 #endif
 
+#ifndef SABER
   /* Fork off */
   switch (fork()) {
   case 0:		/* Child */
@@ -43,7 +44,7 @@ main()
   default:
     exit(0);		/* Parent */
   }
-
+#endif
   max_fd = getdtablesize();
 
   for(fd = 0;fd<max_fd;fd++)
