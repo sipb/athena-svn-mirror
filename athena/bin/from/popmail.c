@@ -1,12 +1,12 @@
 /* 
- * $Id: popmail.c,v 1.6 1997-08-22 22:32:46 ghudson Exp $
+ * $Id: popmail.c,v 1.7 1997-10-02 18:57:57 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/popmail.c,v $
  * $Author: ghudson $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: popmail.c,v 1.6 1997-08-22 22:32:46 ghudson Exp $";
+static char *rcsid = "$Id: popmail.c,v 1.7 1997-10-02 18:57:57 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -16,12 +16,12 @@ static char *rcsid = "$Id: popmail.c,v 1.6 1997-08-22 22:32:46 ghudson Exp $";
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#ifdef HESIOD
-#include <hesiod.h>
-#endif
 #include <netinet/in.h>
 #include <netdb.h>
-#ifdef KPOP
+#ifdef HAVE_HESIOD
+#include <hesiod.h>
+#endif
+#ifdef HAVE_KRB4
 #include <krb.h>
 #endif
 
@@ -29,10 +29,10 @@ static char *rcsid = "$Id: popmail.c,v 1.6 1997-08-22 22:32:46 ghudson Exp $";
 #define OK 0
 #define DONE 1
 
-FILE *sfi;
-FILE *sfo;
-char Errmsg[80];
-#ifdef KPOP
+extern FILE *sfi;
+extern FILE *sfo;
+extern char Errmsg[80];
+#ifdef HAVE_KRB4
 char *PrincipalHostname();
 #define KPOP_PORT 1109
 #endif
@@ -46,7 +46,7 @@ char *host;
     int lport = IPPORT_RESERVED - 1;
     struct sockaddr_in sin;
     register int s;
-#ifdef KPOP
+#ifdef HAVE_KRB4
     KTEXT ticket = (KTEXT)NULL;
     int rem;
     long authopts;
@@ -60,7 +60,7 @@ char *host;
 	return(NOTOK);
     }
 
-#ifdef KPOP
+#ifdef HAVE_KRB4
     sp = getservbyname("kpop", "tcp");
     if (sp == 0) 
         sin.sin_port = htons(KPOP_PORT);
@@ -77,7 +77,7 @@ char *host;
 
     sin.sin_family = hp->h_addrtype;
     memcpy(&sin.sin_addr, hp->h_addr, hp->h_length);
-#ifdef KPOP
+#ifdef HAVE_KRB4
     s = socket(AF_INET, SOCK_STREAM, 0);
 #else
     s = rresvport(&lport);
@@ -92,7 +92,7 @@ char *host;
 	(void) close(s);
 	return(NOTOK);
     }
-#ifdef KPOP
+#ifdef HAVE_KRB4
     ticket = (KTEXT)malloc( sizeof(KTEXT_ST) );
     if (ticket == NULL) {
 	fprintf (stderr, "from: out of memory");
