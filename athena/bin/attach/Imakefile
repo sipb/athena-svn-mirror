@@ -10,7 +10,7 @@ XLIBS = -lPW -lc
 RPCLIB=-lrpcsvc
 #endif
 
-LIBS = -lhesiod -lkrb -ldes $(RPCLIB) -lzephyr -lcom_err $(XLIBS)
+LIBS = -lhesiod -lkrb -ldes $(RPCLIB) -lzephyr -lcom_err $(XLIBS) -ladm -lmail
 
 SRCS = main.c util.c attachtab.c attach.c detach.c mul.c nfs.c rvd.c\
 	afs.c ufs.c rpc.c mount.c unmount.c zephyr.c getrealm.c\
