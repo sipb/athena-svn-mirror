@@ -10,12 +10,16 @@ AFSLIBS = $(AFSDIR)/lib/afs/libauth.a $(AFSDIR)/lib/afs/libsys.a
 #ifdef vax
 MACHDEP=-DPOSIX -DSYSLOG42
 #else
-MACHDEP=-DPOSIX -DSYSLOG42 -Olimit 600
+MACHDEP=-DPOSIX -Olimit 600
 #endif
 #endif
 #ifdef i386
 MACHDEP=-DPOSIX -DSYSV -DINITTAB -DNOPFLAG
 #endif
 
+#ifdef ultrix
+build_program(login,login.o,,$(AFSLIBS) -lknet -lkrb -ldes -lhesiod -lnsyslog)
+#else
 build_program(login,login.o,,$(AFSLIBS) -lknet -lkrb -ldes -lhesiod)
+#endif
 install_program(login,-o root -m 4555,/bin/login)
