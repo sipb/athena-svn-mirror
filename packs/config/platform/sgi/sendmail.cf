@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v 1.12 1998-06-25 18:39:03 danw Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v 1.13 1998-08-07 14:09:14 danw Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/sendmail.cf,v $
 #	$Author: danw $
 #
@@ -232,6 +232,11 @@ R@			$#local$:MAILER-DAEMON		handle <> form
 # extract special suffixes
 R$*<$*.LOCAL>$*		$1<$2>$3.LOCAL			Extract .LOCAL
 R$*<$*.POP>$*		$1<$2>.POP			Extract .POP
+
+# deliver obviously local mail first so root's junk mail won't
+# get bounced to postmaster if we fall off the net and can't resolve our
+# hostname below.
+R$*<@$j>$*		$#local$:$1
 
 # Resolve name (so our CNAMES work)
 R$*<@$+.$D>$*		$:$1<$[$2$]:@$2>$3		@something.mit.edu
