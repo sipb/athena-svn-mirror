@@ -6,8 +6,8 @@
 # For copying and distribution information, see the file "mit-copyright.h."
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/Imakefile,v $
-#	$Id: Imakefile,v 1.2 1994-08-14 16:26:12 cfields Exp $
-#	$Author: cfields $
+#	$Id: Imakefile,v 1.3 1997-04-30 18:18:12 ghudson Exp $
+#	$Author: ghudson $
 #
 
 L_SRCS=	log.c
@@ -19,11 +19,7 @@ D_OBJS= bbd.o
 NormalLibraryTarget(logger,$(L_OBJS))
 SaberLibraryTarget(logger,$(L_SRCS),$(L_OBJS))
 
-#ifndef SOLARIS
 NormalProgramTarget(bbd,$(D_OBJS),,,)
-#else
-NormalProgramTarget(bbd,$(D_OBJS),,/usr/athena/lib/libbsd.a,)
-#endif
 SaberProgramTarget(bbd,$(D_SRCS),$(D_OBJS),,)
 
 DependSrcs()
