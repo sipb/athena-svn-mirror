@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.14 1991-04-18 22:25:15 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/handle_request.c,v 1.15 1991-05-07 11:08:17 lwvanels Exp $";
 #endif
 #endif
 
@@ -161,7 +161,7 @@ handle_request(fd, from)
 
 #ifdef KERBEROS
   auth = krb_rd_req(&their_auth,K_SERVICE,instance_buffer,
-		    (unsigned long) from.sin_addr.s_addr,&their_info,"");
+		    (unsigned long) from.sin_addr.s_addr,&their_info,SRVTAB);
   if (auth != RD_AP_OK) {
     /* Twit! */
     syslog(LOG_WARNING,"Kerberos error: %s\n from %s",krb_err_txt[auth],
