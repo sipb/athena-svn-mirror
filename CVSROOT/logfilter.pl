@@ -35,11 +35,11 @@ if ($files[0] eq "-") {
 
     open(COMMITMAIL, "| $sendmail $commit_addr");
     print COMMITMAIL "To: $commit_addr\n";
-    print COMMITMAIL "Subject: $dir\n\n";
+    print COMMITMAIL "Subject: $ARGV[0]\n\n";
 
     open(DIFFMAIL, "| $sendmail $diff_addr");
     print DIFFMAIL "To: $diff_addr\n";
-    print DIFFMAIL "Subject: $dir\n\n";
+    print DIFFMAIL "Subject: $ARGV[0]\n\n";
 
     while (<STDIN>) {
 	print COMMITMAIL;
