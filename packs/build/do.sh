@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.35 1999-07-14 20:49:06 ghudson Exp $
+# $Id: do.sh,v 1.36 1999-07-14 20:49:39 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -155,7 +155,7 @@ if [ -r Makefile.athena ]; then
 	XCONFIGDIR=$source/packs/build/xconfig
 	ATHTOOLROOT=$athtoolroot
 	$make $n -f Makefile.athena "$operation"
-elif [ -x configure ]; then
+elif [ -f configure.in ]; then
 	export ATHTOOLROOT
 	ATHTOOLROOT=$athtoolroot
 	if [ -x configure.athena ]; then
@@ -165,6 +165,19 @@ elif [ -x configure ]; then
 	fi
 	case $operation in
 	prepare)
+		# Copy in support files and run autoconf if this is a
+		# directory using the Athena build system.
+		if [ -f config.do -o ! -f configure ]; then
+			$maybe touch config.do
+			$maybe rm -f mkinstalldirs install-sh config.guess
+			$maybe rm -f config.sub aclocal.m4
+			$maybe cp "$source/third/autoconf/mkinstalldirs" .
+			$maybe cp "$source/third/autoconf/install-sh" .
+			$maybe cp "$source/third/autoconf/config.guess" .
+			$maybe cp "$source/third/autoconf/config.sub" .
+			$maybe cp "$source/packs/build/aclocal.m4" .
+			$maybe autoconf || exit 1
+		fi
 		$maybe rm -f config.cache
 		$maybe "./$configure"
 		;;
