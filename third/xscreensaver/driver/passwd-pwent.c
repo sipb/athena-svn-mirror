@@ -302,7 +302,8 @@ explicit_lock_init (saver_preferences *p)
 Bool
 explicit_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
 {
-  if (explicit_passwd && passwds_match_p (typed_passwd, explicit_passwd))
+  if (explicit_passwd && *explicit_passwd &&
+      passwds_match_p (typed_passwd, explicit_passwd))
     return True;
   else
     return False;
