@@ -482,6 +482,7 @@ int maxlogs;
 
 #define NMAX   16 
 
+pid_t acctpid = 0;
 int pid;
 char locuser[NMAX+1];
 char remuser[NMAX +1];
@@ -529,6 +530,8 @@ cleanup(signumber)
     
     pty_logwtmp(ttyn,"","");
     syslog(LOG_INFO ,"Daemon terminated via signal %d.", signumber);
+    if (acctpid)
+	al_acct_revert(locuser, acctpid);
     if (ccache)
 	krb5_cc_destroy(bsd_context, ccache);
     exit(0);
@@ -577,7 +580,7 @@ void doit(f, fromp)
     char buf[RSHD_BUFSIZ], sig;
     struct sockaddr_in fromaddr;
     struct sockaddr_in localaddr;
-    int non_privileged = 0, local_acct;
+    int non_privileged = 0;
 #ifdef POSIX_SIGNALS
     struct sigaction sa;
 #endif
@@ -1023,14 +1026,6 @@ void doit(f, fromp)
 
 #ifdef KERBEROS
 
-    if (al_login_allowed(locuser, 1, &local_acct, NULL) != 0) {
-	error("You are not authorized to log in here remotely.\n");
-	goto signout_please;
-    }
-
-    if (!local_acct)
-	al_acct_create(locuser, NULL, getpid(), 0, 0, NULL);
-
 #if defined(KRB5_KRB4_COMPAT) && !defined(ALWAYS_V5_KUSEROK)
 	if (auth_sys == KRB5_RECVAUTH_V4) {
 	    /* kuserok returns 0 if OK */
@@ -1054,8 +1049,6 @@ void doit(f, fromp)
 		    ((auth_sys == KRB5_RECVAUTH_V4) ? AUTH_KRB4 : AUTH_KRB5);
 	}
 
-    if (!local_acct)
-	al_acct_revert(locuser, getpid());
 #else
     if (pwd->pw_passwd != 0 && *pwd->pw_passwd != '\0' &&
 	ruserok(hostname, pwd->pw_uid == 0, remuser, locuser) < 0) {
@@ -1273,6 +1266,8 @@ if(port)
 #endif
 	    /* Finish session in wmtp */
 	    pty_logwtmp(ttyn,"","");
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    if (ccache)
 		krb5_cc_destroy(bsd_context, ccache);
 	    exit(0);
@@ -1459,6 +1454,8 @@ if(port)
     exit(1);
     
   signout_please:
+    if (acctpid)
+	al_acct_revert(locuser, acctpid);
     if (ccache)
 	krb5_cc_destroy(bsd_context, ccache);
     ccache = NULL;
@@ -1732,7 +1729,7 @@ recvauth(netf, peersin, valid_checksum)
     krb5_error_code status;
     struct sockaddr_in laddr;
     char krb_vers[KRB_SENDAUTH_VLEN + 1];
-    int len;
+    int len, local_acct;
     krb5_data inbuf;
     char v4_instance[INST_SZ];	/* V4 Instance */
     char v4_version[9];
@@ -1894,6 +1891,16 @@ recvauth(netf, peersin, valid_checksum)
 				    &inbuf))) {
 	error("Error reading message: %s\n", error_message(status));
 	exit(1);
+    }
+
+    if (al_login_allowed(locuser, 1, &local_acct, NULL) != 0) {
+	error("You are not authorized to log in here remotely.\n");
+	exit(1);
+    }
+
+    if (!local_acct) {
+	acctpid = getpid();
+	al_acct_create(locuser, NULL, acctpid, 0, 0, NULL);
     }
 
     if (inbuf.length) { /* Forwarding being done, read creds */
