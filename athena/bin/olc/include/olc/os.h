@@ -7,7 +7,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.4 1990-12-09 23:37:54 lwvanels Exp $
+ *	$Id: os.h,v 1.5 1990-12-17 08:29:15 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -72,10 +72,15 @@ int setlinebuf P((FILE *));
 int setsockopt P((int, int, int, void *, int));
 int setenv P((const char *, const char *, int));
 int listen P((int, int));
+int select P((int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfs,
+	      struct timeval *timeout));
 int gettimeofday P((struct timeval *, struct timezone *));
+
+int fflush P((FILE *stream));
 
 /* man page uses varargs.h, but ... */
 /*#include <stdarg.h>*/
 int _doprnt P((const char *, /*va_list*/void *, FILE *));
 
+#undef P
 #endif /* __olc_os_h */
