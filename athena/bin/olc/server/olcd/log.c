@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.35 1991-03-28 16:03:53 lwvanels Exp $
+ *	$Id: log.c,v 1.36 1991-03-28 23:52:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.35 1991-03-28 16:03:53 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.36 1991-03-28 23:52:50 lwvanels Exp $";
 #endif
 #endif
 
@@ -35,7 +35,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>		/* System type declarations. */
 #include <sys/stat.h>		/* File status definitions. */
 #include <sys/file.h>
-#include <string.h>		/* Defs. for string functions. */
+#include <strings.h>		/* Defs. for string functions. */
 #ifdef DISCUSS
 #include <lumberjack.h>
 #endif
@@ -382,7 +382,11 @@ init_log(knuckle, question, machinfo)
   write_line_to_log(logfile, question);
   write_line_to_log(clogfile, question);
   if (machinfo != NULL) 
+#ifdef ATHENA
     fprintf(logfile, "\nMachine info:%s\n", trans_m_i(machinfo));
+#else
+    fprintf(logfile, "\nMachine info:%s\n", machinfo);
+#endif
   write_line_to_log(logfile,"___________________________________________________________\n\n");
   write_line_to_log(clogfile,"___________________________________________________________\n\n");
   fprintf(logfile, "\n");
@@ -605,6 +609,7 @@ dispose_of_log(knuckle)
   return(SUCCESS);
 }
 
+#ifdef ATHENA
 /* Translates obsure stuff from machtype -v in os to "english" */
 
 static char *
@@ -718,3 +723,4 @@ char *os;
   strcat(stuff,tmp_buf);
   return(stuff);
 }
+#endif
