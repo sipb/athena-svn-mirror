@@ -1,18 +1,17 @@
-# $Id: Makefile,v 1.22 1997-12-24 10:10:53 ghudson Exp $
+# $Id: Makefile,v 1.23 1998-01-11 00:22:56 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
 ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
-ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help kermit klog \
-	listmaint mkserv mailmaint moira mrcheck namespace olc_answers olh \
-	olh_ascii olh_motif pts usermaint userreg vos xinfo
+ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
+	listmaint mkserv mailmaint moira mrcheck namespace olc_answers \
+	olh olh_ascii olh_motif pts usermaint userreg vos xinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
 HELP=/afs/athena.mit.edu/system/help
 MKSERV=/afs/athena.mit.edu/system/mkserv
-MODEM=/afs/athena.mit.edu/system/modem
 TELLME=/afs/athena.mit.edu/system/config/tellme
 
 # We make a lot of symlinks here, so we're going to make a hack to make it
@@ -37,8 +36,6 @@ SYMLINKS=	kpasswd				${ATHBINDIR}/passwd \
 		${MOIRA}/man/cat1/listmaint.1	${ATHMANDIR}/cat1/listmaint.1 \
 		${MOIRA}/man/man1/mailmaint.1	${ATHMANDIR}/man1/mailmaint.1 \
 		${MOIRA}/man/cat1/mailmaint.1	${ATHMANDIR}/cat1/mailmaint.1 \
-		${MODEM}/man/man1/kermit.1	${ATHMANDIR}/man1/kermit.1 \
-		${MODEM}/man/cat1/kermit.1	${ATHMANDIR}/cat1/kermit.1 \
 		${MOIRA}/man/man1/moira.1	${ATHMANDIR}/man1/moira.1 \
 		${MOIRA}/man/cat1/moira.1	${ATHMANDIR}/cat1/moira.1 \
 		${MOIRA}/man/man1/mrcheck.1	${ATHMANDIR}/man1/mrcheck.1 \
@@ -92,7 +89,6 @@ install:
 	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 emacs19.sh ${DESTDIR}${ATHBINDIR}/emacs19
 	install -c -m 555 help ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 kermit ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 klog ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 mkserv ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 listmaint ${DESTDIR}${ATHBINDIR}
