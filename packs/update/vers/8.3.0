@@ -255,8 +255,8 @@ esac
 if [ -f /var/athena/attachtab ]; then
 	mv /var/athena/attachtab /var/athena/attachtab.old
 	mkdir /var/athena/attachtab
-	mkdir /var/athena/attachtab/lockers
-	mkdir /var/athena/attachtab/mountpoints
-	mkdir /var/athena/attachtab/directories
+	mkdir /var/athena/attachtab/locker
+	mkdir /var/athena/attachtab/mountpoint
+	mkdir /var/athena/attachtab/directory
 	/srvd/usr/athena/etc/atconvert /var/athena/attachtab.old
 fi

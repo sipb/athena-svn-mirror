@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 1999-02-26 23:56:18 danw Exp $
+# $Id: Makefile,v 1.10 1999-03-23 18:48:45 danw Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -53,9 +53,9 @@ install:
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat8
 	mkdir -p -m 700 ${DESTDIR}${ATHVARDIR}/sessions
 	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab
-	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab/lockers
-	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab/mountpoints
-	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab/directories
+	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab/locker
+	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab/mountpoint
+	mkdir -p ${DESTDIR}${ATHVARDIR}/attachtab/directory
 	rm -f ${DESTDIR}/usr/athena/emacs
 	ln -s bin/emacs ${DESTDIR}/usr/athena/emacs
 	rm -f ${DESTDIR}/usr/athena/zmailnotify
