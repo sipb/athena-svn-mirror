@@ -21,7 +21,7 @@
 #include <sys/file.h>
 #include <sys/param.h>
 #ifndef lint
-static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.10 1988-06-30 17:27:47 jtkohl Exp $";
+static char rcsid_zctl_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.11 1988-07-01 10:43:37 jtkohl Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -119,7 +119,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.10 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.11 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
@@ -348,6 +348,26 @@ set_var(argc,argv)
 		}
 		return;
 	} 
+}
+
+do_hide(argc,argv)
+	int argc;
+	char *argv[];
+{
+	char *exp_level = NULL;
+	Code_t retval;
+
+	if (argc != 1) {
+		fprintf(stderr, "Usage: %s\n",argv[0]);
+		return;
+	}
+	if (!strcmp(argv[0],"unhide"))
+		exp_level = EXPOSE_REALMVIS;
+	else
+		exp_level = EXPOSE_OPSTAFF;
+	if ((retval = ZSetLocation(exp_level)) != ZERR_NONE)
+		ss_perror(sci_idx,retval,"while changing exposure status");
+	return;
 }
 
 unset_var(argc,argv)
