@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *	$Id: t_send.c,v 1.18 1991-01-23 14:00:13 lwvanels Exp $
+ *	$Id: t_send.c,v 1.19 1991-02-24 11:40:41 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.18 1991-01-23 14:00:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.19 1991-02-24 11:40:41 lwvanels Exp $";
 #endif
 #endif
 
@@ -37,7 +37,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/errno.h>
-#ifdef mips
+#if defined(mips) || defined(m68k)
   extern char *sys_errlist[];
 #endif
 
