@@ -18,8 +18,8 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
- *	$Id: macros.h,v 1.6 1990-05-25 15:10:05 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: macros.h,v 1.7 1990-07-24 14:06:50 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -43,11 +43,11 @@
 
 #ifndef FALSE
 #define FALSE            0
-#endif  FALSE
+#endif  /* FALSE */
 
 #ifndef TRUE
 #define TRUE             1
-#endif  TRUE
+#endif  /* TRUE */
 
 
 /* 
@@ -67,11 +67,11 @@ typedef int     RESPONSE;       /* A response code. */
 
 #ifndef min
 #define min(a,b) a < b ? a : b
-#endif  min
+#endif  /* min */
 
 #ifndef max
 #define max(a,b) a > b ? a : b
-#endif max
+#endif /* max */
 
 #define is_option(r,option) r & option
 #define set_option(r,option) r |= option
