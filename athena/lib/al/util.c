@@ -17,7 +17,7 @@
  * miscellaneous functions.
  */
 
-static const char rcsid[] = "$Id: util.c,v 1.7 1998-05-07 17:08:13 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.8 1999-09-02 14:37:20 ghudson Exp $";
 
 #include <sys/param.h>
 #include <assert.h>
@@ -123,9 +123,9 @@ static struct passwd *lookup(const DBT *key)
   struct passwd *pwd;
 
   /* Open the insecure or secure database depending on whether we're root. */
-  db = dbopen(_PATH_SMP_DB, O_RDONLY, 0, DB_HASH, NULL);
+  db = _dbopen(_PATH_SMP_DB, O_RDONLY, 0, DB_HASH, NULL);
   if (!db)
-    db = dbopen(_PATH_MP_DB, O_RDONLY, 0, DB_HASH, NULL);
+    db = _dbopen(_PATH_MP_DB, O_RDONLY, 0, DB_HASH, NULL);
   if (!db)
     return NULL;
 
