@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1999-01-19 23:41:56 jweiss Exp $
+# $Id: Makefile,v 1.5 1999-04-05 15:42:10 miki Exp $
 
 INSTALL=/install
 INSTALL_DEV=/install/devices
@@ -15,6 +15,7 @@ install:
 	install -c -m 0444 format.input.SUN1.05 ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.SUN2.1G ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.SUN4.2G ${DESTDIR}${INSTALL}
+	install -c -m 0444 format.input.SUN9.0G ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST34321A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST34342A ${DESTDIR}${INSTALL}
 	install -c -m 0444 format.input.ST39140A ${DESTDIR}${INSTALL}
