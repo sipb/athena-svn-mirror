@@ -1,8 +1,9 @@
-# $Id: Makefile,v 1.4 1996-12-28 18:51:33 ghudson Exp $
+# $Id: Makefile,v 1.5 1997-02-22 19:42:38 ghudson Exp $
 
 ATHRBINDIR=/bin/athena
 ATHRETCDIR=/etc/athena
 MODULES=/kernel/fs
+ETC=/etc
 INITD=/etc/init.d
 RC0=/etc/rc0.d
 RC2=/etc/rc2.d
@@ -16,6 +17,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHRBINDIR}
 	mkdir -p ${DESTDIR}${ATHRETCDIR}
 	mkdir -p ${DESTDIR}${MODULES}
+	mkdir -p ${DESTDIR}${ETC}
 	mkdir -p ${DESTDIR}${INITD}
 	mkdir -p ${DESTDIR}${RC0}
 	mkdir -p ${DESTDIR}${RC2}
@@ -27,7 +29,7 @@ install:
 	install -c -m 555 fs ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 tokens ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 unlog ${DESTDIR}${ATHRBINDIR}
-	install -c -m 555 afsd ${DESTDIR}${ATHRETCDIR}
+	install -c -m 555 afsd ${DESTDIR}${ETC}
 	install -c -m 444 libafs.nonfs.o ${DESTDIR}${MODULES}/afs
 	install -c -m 555 afs.rc ${DESTDIR}${INITD}/afs
 	rm -f ${DESTDIR}${RC0}/K66afs
