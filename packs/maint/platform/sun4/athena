@@ -211,6 +211,11 @@ if [ "${SENDMAIL}" = "true" ]; then
 	/usr/lib/sendmail -bd -q1h;
 fi
 
+if [ "${ZSERVER}" = "true" ] ; then
+	echo  "zephyrd... \c"
+	/usr/athena/etc/zephyrd
+fi
+
 if [ "${ZCLIENT}" = "true" ]; then
 	echo  "zhm... \c"					>/dev/console
 	rm -f /var/athena/zhm.pid

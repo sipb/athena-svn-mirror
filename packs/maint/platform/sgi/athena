@@ -167,6 +167,11 @@ $ECHO "Starting Athena daemons: \c"
 $ECHO "inetd... \c"
 /etc/athena/inetd &
 
+if [ "${ZSERVER}" = "true" ] ; then
+	$ECHO "zephyrd... \c"
+	/usr/athena/etc/zephyrd
+fi
+
 if [ "${ZCLIENT}" = "true" ]; then
 	$ECHO "zhm... \c"
 	rm -f /var/athena/zhm.pid
