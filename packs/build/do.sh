@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.34 1999-04-20 19:59:30 danw Exp $
+# $Id: do.sh,v 1.35 1999-07-14 20:49:06 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -164,36 +164,58 @@ elif [ -x configure ]; then
 		configure=configure
 	fi
 	case $operation in
-		prepare)	$maybe rm -f config.cache
-				$maybe ./$configure ;;
-		clean)		$make $n clean ;;
-		all)		$make $n all ;;
-		check)		;;
-		install)	$make $n install "DESTDIR=$srvd" ;;
+	prepare)
+		$maybe rm -f config.cache
+		$maybe "./$configure"
+		;;
+	clean)
+		$make $n clean
+		;;
+	all)
+		$make $n all
+		;;
+	check)
+		;;
+	install)
+		$make $n install "DESTDIR=$srvd"
+		;;
 	esac
 elif [ -r Imakefile ]; then
 	case $operation in
-		prepare)
-			$maybe imake "-I$source/packs/build/config" \
-				-DUseInstalled "-DTOPDIR=$source/packs/build" \
-				"-DTOOLROOT=$athtoolroot"
-			$maybe $make Makefiles
-			$maybe $make depend
-			;;
-		clean)		$make $n clean ;;
-		all)		$make $n all ;;
-		check)		;;
-		install)	$make $n install install.man "DESTDIR=$srvd" ;;
+	prepare)
+		$maybe imake "-I$source/packs/build/config" \
+			-DUseInstalled "-DTOPDIR=$source/packs/build" \
+			"-DTOOLROOT=$athtoolroot"
+		$maybe $make Makefiles
+		$maybe $make depend
+		;;
+	clean)
+		$make $n clean
+		;;
+	all)
+		$make $n all
+		;;
+	check)
+		;;
+	install)
+		$make $n install install.man "DESTDIR=$srvd"
+		;;
 	esac
 elif [ -r Makefile ]; then
 	case $operation in
-		prepare)	;;
-		clean)		$make $n clean "ATHTOOLROOT=$athtoolroot";;
-		all)		$make $n all CC="$CC" \
-					"ATHTOOLROOT=$athtoolroot";;
-		check)		;;
-		install)	$make $n install "DESTDIR=$srvd" \
-					"ATHTOOLROOT=$athtoolroot";;
+	prepare)
+		;;
+	clean)
+		$make $n clean "ATHTOOLROOT=$athtoolroot"
+		;;
+	all)
+		$make $n all CC="$CC" "ATHTOOLROOT=$athtoolroot"
+		;;
+	check)
+		;;
+	install)
+		$make $n install "DESTDIR=$srvd" "ATHTOOLROOT=$athtoolroot"
+		;;
 	esac
 else
 	echo Nothing to do in `pwd` 1>&2
