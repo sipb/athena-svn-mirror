@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.9 1990-11-08 10:03:23 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.10 1990-11-16 15:06:17 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.9 1990-11-08 10:03:23 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.10 1990-11-16 15:06:17 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -640,7 +640,7 @@ usage()
     fprintf(stderr, "\t [-Q quotaserver] - Name of quotaserver\n");
     fprintf(stderr, "\t [-P printer]     - Name of printer\n");
     fprintf(stderr, "\t [-S service]     - Name of service\n");
-    fprintf(stderr, "\t [-g group_no]    - Group account number\n");
+    fprintf(stderr, "\t [-a account_no]  - Group account number\n");
     fprintf(stderr, "\t [-c]             - Create new user or group account\n");
     fprintf(stderr, "\t [-q]             - Display user or group usage\n");
     fprintf(stderr, "\t [-l]             - Display user or group logs\n");
@@ -648,7 +648,7 @@ usage()
     fprintf(stderr, "\t [-i amount]      - Increase quota by amount\n");
     fprintf(stderr, "\t [-d amount]      - Decrease quota by amount\n");
     fprintf(stderr, "\t [-s amount]      - Set quota to amount\n");
-    fprintf(stderr, "\t [-a amount]      - Credit usage by amount (adjustment)\n");
+    fprintf(stderr, "\t [-k amount]      - Credit usage by amount (adjustment)\n");
     fprintf(stderr, "\t [+A]             - Add user to group admin list\n");
     fprintf(stderr, "\t [-A]             - Remove user from group admin list\n");
     fprintf(stderr, "\t [+U]             - Add user from group user list\n");

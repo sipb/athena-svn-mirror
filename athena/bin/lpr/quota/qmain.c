@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.9 1990-11-08 10:06:47 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.10 1990-11-16 15:06:49 epeisach Exp $
  */
 
 /*
@@ -11,12 +11,13 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.9 1990-11-08 10:06:47 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.10 1990-11-16 15:06:49 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
 #include "quota.h"
 #include <sys/param.h>
+#include <sys/types.h>
 #include <sys/file.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -72,6 +73,13 @@ static char *uidFile  = "/usr/spool/quota/uid.db";
 
 extern char	*sys_errlist[];
 extern int	sys_nerr;
+
+#ifdef _AUX_SOURCE
+/* They defined fds_bits correctly, but lose by not defining this */
+#define FD_ZERO(p)  ((p)->fds_bits[0] = 0)
+#define FD_SET(n, p)   ((p)->fds_bits[0] |= (1 << (n)))
+#define FD_ISSET(n, p)   ((p)->fds_bits[0] & (1 << (n)))
+#endif
 
 main(argc, argv)
         int argc;

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.4 1990-11-08 15:41:33 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.5 1990-11-16 15:06:56 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v $ */
 /* $Author: epeisach $ */
 
@@ -20,6 +20,7 @@
 #endif
 #include <sys/param.h> 
 #include <errno.h>
+#include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 /* This is the Strings Database section of the code. */

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v 1.2 1990-11-08 15:43:10 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v 1.3 1990-11-16 15:07:05 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v $ */
 /* $Author: epeisach $ */
 
@@ -15,6 +15,7 @@
 #include <strings.h>
 #include <sys/param.h> 
 #include <errno.h>
+#include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 
