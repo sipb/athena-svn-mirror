@@ -2,10 +2,11 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype.c,v 1.3 1999-09-22 00:26:48 danw Exp $
+ *    $Id: machtype.c,v 1.4 2002-03-21 04:24:55 ghudson Exp $
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include "machtype.h"
