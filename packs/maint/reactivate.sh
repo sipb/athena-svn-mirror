@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.44 2000-01-11 19:08:31 ghudson Exp $
+# $Id: reactivate.sh,v 1.45 2000-01-21 15:35:43 ghudson Exp $
 
 trap "" 1 15
 
@@ -139,7 +139,7 @@ if [ "$full" = true ]; then
 	fi
 
 	if [ "$RVDCLIENT" = true ]; then
-		/bin/athena/attach	$quiet -h -n -o hard -O $SYSLIB
+		/bin/athena/attach $quiet -h -n -O $SYSLIB
 	fi
 
 	# Perform an update if appropriate
