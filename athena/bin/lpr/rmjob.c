@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v $
  *	$Author: ghudson $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.9 1997-10-13 21:52:47 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.10 1998-06-17 17:27:33 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.9 1997-10-13 21:52:47 ghudson Exp $";
+static char *rcsid_rmjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/rmjob.c,v 1.10 1998-06-17 17:27:33 ghudson Exp $";
 #endif lint
 
 /*
@@ -368,15 +368,19 @@ chkremote()
 	 */
 	fflush(stdout);
 
-	sprintf(buf, "\5%s %s", RP, all ? "-all" : person);
+	sprintf(buf, "\5%.*s %.*s", 300, RP, 300, all ? "-all" : person);
 	cp = buf;
 	for (i = 0; i < users; i++) {
 		cp += strlen(cp);
+		if (cp - buf + strlen(user[i]) + 1 > sizeof(buf) - 2)
+		    break;
 		*cp++ = ' ';
 		(void) strcpy(cp, user[i]);
 	}
 	for (i = 0; i < requests; i++) {
 		cp += strlen(cp);
+		if (cp - buf + 11 > sizeof(buf) - 2)
+		    break;
 		(void) sprintf(cp, " %d", requ[i]);
 	}
 	(void) strcat(cp, "\n");
