@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: vrt $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -50,7 +50,7 @@ D_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} \
 			${XMULIB} ${K_LIB} ${M_LIB}
 CMP_LIBS	=	${LOCAL_LIBS} ${XJLIB} -lX11
 
-#if (HasPutenv)
+#if (HasPutenv) || defined(AIXArchitecture)
 PUTENV_DEF	=	-DHAS_PUTENV
 #else
 PUTENV_DEF	=
