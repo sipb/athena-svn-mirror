@@ -2,9 +2,9 @@
 <gnome-version>
   <platform>2</platform>
   <minor>8</minor>
-  <micro>0</micro>
+  <micro>3</micro>
   <distributor>GNOME.Org</distributor>
-  <date>2004-09-13</date>
+  <date>2005-02-14</date>
   <description>
     
     <p>GNOME is a Free, usable, stable, accessible desktop environment for the Unix-like family of operating systems.</p>
@@ -49,7 +49,8 @@
     <p xml:lang="nl">GNOME is een vrije (Libre), gebruiksvriendelijke, krachtige en toegankelijke werkomgeving voor de besturingssystemen die tot de Unix-familie behoren.</p>
     <p xml:lang="nn">GNOME er eit fritt, lettbrukt, stabilt og tilgjengeleg skrivebordsmiljø for UNIX-liknande operativsystem.</p>
     <p xml:lang="no">GNOME er et fritt, brukervennlig, tilgjengelig og stabilt skrivebordsmiljø for UNIX-lignende operativsystemer.</p>
-    <p xml:lang="pa">ਗਨੋਮ ਯੂਨੈਕਸ ਵਰਗੇ ਓਪਰੇਟੀਇੰਗ ਸਿਸਟਮ ਲਈ ਇਕ ਮੁਫਤ, ਵਰਤੋਯੋਗ, ਟਿਕਾਊ ਵਿਹਡ਼ਾ ਹੈ ।</p>
+    <p xml:lang="nso">GNOME ke tikologo ya teseke ya Bolokologi, e diriegago, e sa uthego, e tsenegago bakeng sa lapa le swanago le Unix la ditshepedio te omago.</p>
+    <p xml:lang="pa">ਗਨੋਮ ਯੂਨੈਕਸ ਵਰਗੇ ਓਪਰੇਟੀਇੰਗ ਸਿਸਟਮ ਲਈ ਇਕ ਮੁਫਤ, ਵਰਤੋਯੋਗ, ਟਿਕਾਊ ਵਿਹੜਾ ਹੈ।</p>
     <p xml:lang="pl">GNOME jest wolnodostępnym, użytecznym, stabilnym, dostępnym środowiskiem graficznym dla systemów operacyjnych z rodziny Uniksa.</p>
     <p xml:lang="pt">O GNOME é um ambiente de trabalho Livre, utilizável, estável e com acessibilidade para a familia Unix de sistemas operativos.</p>
     <p xml:lang="pt_BR">O GNOME é um ambiente de trabalho livre, estável, acessível, e com boa usabilidade para sistemas operacionais da família Unix-like.</p>
@@ -71,6 +72,7 @@
     <p xml:lang="yo">GNOME Jẹ oun tí ò gbààyè, tì o ṣé lò, tí o fẹsẹ múlẹ, abánirẹ àyíká ìlànà kọmpútà fún ojúlùmọ Unix ti ìdarí kọmpútà</p>
     <p xml:lang="zh_CN">对于类 Unix 家族操作系统来说，GNOME 桌面环境完全自由、可用性强、功能强劲。</p>
     <p xml:lang="zh_TW">GNOME 是一套自由、易用而且穩定的桌面環境，支援無障礙環境，可在 Unix 類型的作業系統中運行。</p>
+    <p xml:lang="zu">GNOME imahala, iyasebenziseka, iyangenela endwaweni yokusentshenzelwa ebusweni besiga-nyezi njengomndeni we UNIX.</p>
     <p>GNOME includes most of what you see on your computer, including the file manager, web browser, menus, and many applications.</p>
     <p xml:lang="af">GNOME sluit meeste van dit wat jy op jou rekenaar sien in,insluitend die lêerbestuurder, webblaaier, kieslyste en veletoepassings.</p>
     <p xml:lang="ar">يتضمن جنوم معظم ما تراه على حاسوبك من مدير ملفّات و متصفّح إنترنت و القوائم و العديد من التطبيقات.</p>
@@ -113,7 +115,8 @@
     <p xml:lang="nl">GNOME is hetgeen waarmee u werkt en wat op uw computer zichtbaar is, waaronder het bestandsbeheer, de menu's, en diverse toepassingen zoals een web-browser.</p>
     <p xml:lang="nn">GNOME har det meste av det du ser på datamaskinen din, inkludert ein filhandsamar, ein nettlesar, menyar og mange applikasjonar.</p>
     <p xml:lang="no">GNOME tilbyr det meste av det du vanligvis finner på en datamaskin; filhåndterer, nettleser, menyer og mange applikasjoner.</p>
-    <p xml:lang="pa">ਗਨੋਮ ਵਿਚ ਉਹ ਸਭ ਕੁਝ ਹੈ ਜੋ ਤੁਸੀ ਆਪਣੀ ਮਸ਼ੀਨ ਤੇ ਵੇਖਣਾ ਚਾਹੋਗੇ ਜਿਵੇ ਕਿ ਫਾਇਲ ਪ੍ਬੰਧਕ, ਵੈਬ ਝਲਕਾਰਾ, ਸੂਚੀਆਂ ਅਤੇ ਹੋਰ ਕੰਮ ਦੀਆਂ ਚੀਜਾਂ ।</p>
+    <p xml:lang="nso">GNOME e akareta bontsi bja seo o se bonago khomphuthareng ya gago, go akareta le molaodi wa faele, go fetleka wepe, malokelelo a dikagare, le ditirio te dinti.</p>
+    <p xml:lang="pa">ਗਨੋਮ ਵਿਚ ਉਹ ਸਭ ਕੁਝ ਹੈ, ਜੋ ਤੁਸੀ ਆਪਣੀ ਮਸ਼ੀਨ ਤੇ ਵੇਖਣਾ ਚਾਹੋਗੇ, ਜਿਵੇ ਕਿ ਫਾਇਲ ਪ੍ਰਬੰਧਕ, ਵੈੱਬ ਝਲਕਾਰਾ, ਸੂਚੀਆਂ ਅਤੇ ਹੋਰ ਕੰਮ ਦੀਆਂ ਚੀਜਾਂ।</p>
     <p xml:lang="pl">GNOME zawiera większość tego co widać na ekranie komputera, włączając menedżera plików, przeglądarkę internetową, menu i wiele aplikacji.</p>
     <p xml:lang="pt">GNOME representa a maior parte do que vê no seu computador, incluindo o gestor de ficheiros, o navegador web, menus e muitas aplicações.</p>
     <p xml:lang="pt_BR">O GNOME inclui a maior parte do que você vê no seu computador, como o gerenciador de arquivos, navegador da Internet, e muitas aplicações.</p>
@@ -135,6 +138,7 @@
     <p xml:lang="yo">GNOME pẹlúu ọpọ àwọn ohun tí ó yọ lójú kọmpútà, tí ò pẹlú páálí ìwéolùdarí, ìbojúwo ìwunpọ, ètò, àti ọpọlọpọ ìdarí kọmpútà.</p>
     <p xml:lang="zh_CN">GNOME 囊括了您计算机上最经常使用的软件，如文件管理器、菜单和像浏览器这样的应用程序。</p>
     <p xml:lang="zh_TW">GNOME 包括您最常用的東西，包括檔案總管、網頁瀏覽器、選單和大量的應用程式。</p>
+    <p xml:lang="zu">GNOME uphethe kwisiga-nyezi, njengomphathi hele, okulayaluza kwelwembu, uhlu, nezisentshenziso eziningi.</p>
     <p>GNOME also includes a complete development platform for applications programmers, allowing the creation of powerful and complex applications.</p>
     <p xml:lang="af">GNOME bevat ook 'n volledige ontwikkelingsplatform virtoepassings programmeerders, wat die skep van kragtige en kompleksetoepassings toelaat.</p>
     <p xml:lang="ar">يتضمّن جنوم كذلك بيئة تطوير لمكزري البريمجيّات، ممّا يمكّنهم من إنشاء تطبيقات جبّارة و معقّدة.</p>
@@ -177,7 +181,8 @@
     <p xml:lang="nl">GNOME bevat tevens een compleet platform voor softwareontwikkelaars waarmee krachtige en complexe toepassingen kunnen worden gebouwd.</p>
     <p xml:lang="nn">GNOME har også ein komplett utviklingsplattform for applikasjonsutviklarar. Denne plattformen gjer det mogleg å laga kraftige og innfløkte applikasjonar.</p>
     <p xml:lang="no">GNOME inkluderer også en komplett utviklingsplattform for applikasjonsutvilkere som gjør det mulig å lage kraftige og komplekse applikasjoner.</p>
-    <p xml:lang="pa">ਗਨੋਮ ਵਿਚ ਸ਼ਕਤੀਸ਼ਾਲੀ ਅਤੇ ਗੁੰਝਲ ਕਾਰਜ ਵਿਕਾਸ ਲਈ ਕਾਰਜ ਵਿਕਾਸਵੲਦੀਆਂ ਲਈ ਗੁੰਝਲਦਾਰ ਵਿਕਾਸ ਪਲੇਟਫਾਰਮ ਹੈ ।</p>
+    <p xml:lang="nso">GNOME gape e akareta twelopele e feletego ya sethala bakeng sa barulaganyi ba ditirio, e dumelela go hlangwa ga ditirio te matla le te di raraganego.</p>
+    <p xml:lang="pa">ਗਨੋਮ ਵਿਚ ਸ਼ਕਤੀਸ਼ਾਲੀ ਅਤੇ ਗੁੰਝਲ ਕਾਰਜ ਵਿਕਾਸ ਲਈ ਕਾਰਜ ਵਿਕਾਸਵੲਦੀਆਂ ਲਈ ਗੁੰਝਲਦਾਰ ਵਿਕਾਸ ਪਲੇਟਫਾਰਮ ਹੈ।</p>
     <p xml:lang="pl">GNOME także zawiera platformę programistyczną umożliwiającą programistom tworzenie złożonych i wydajnych aplikacji.</p>
     <p xml:lang="pt">GNOME também inclui uma completa plataforma de desenvolvimento para programadores, que lhes permite criarem complexas e poderosas aplicações.</p>
     <p xml:lang="pt_BR">O GNOME também inclui uma plataforma de desenvolvimento completa para programadores, permitindo a criação de aplicações complexas e poderosas.</p>
@@ -199,6 +204,7 @@
     <p xml:lang="yo">GNOME tún ní àpapọ ète ìdàgbàsókè fún ìdarí kọmpútà</p>
     <p xml:lang="zh_CN">GNOME 同时还提供了一种开发平台，以帮助程序员创建复杂强大的应用程序。</p>
     <p xml:lang="zh_TW">GNOME 也為開發者提供完整的開發平台，允許開發者編寫強大而複雜的程式。</p>
+    <p xml:lang="zu">GNOME unomganga wokuthuthukisa, wabahleli bezinhlelo zokusentshenziswa ezivumela ukwakhiwa kwezinhlelo ezilukhuni.</p>
     <p>GNOME's focus on usability and accessibility, regular release cycle, and strong corporate backing make it unique among Free Software desktops.</p>
     <p xml:lang="af">GNOME se fokus op bruikbaarheid en toeganklikheid, gereeldevrystellingssiklusse, en sterk korporatiewe ondersteuning maak dituniek onder Gratis Sagteware-werkareas.</p>
     <p xml:lang="ar">تركيز جنوم على سهولة الإستعمال و سهولة النفاذ و دورات النشر المنتظمة كما دعم الشركات القوي له يجعله مميّزأ بين مكاتب البرامج الحرّة.</p>
@@ -222,7 +228,7 @@
     <p xml:lang="fi">Gnomen keskittyminen käytettävyyteen ja esteettömyyteen, säännöllinen julkaisutahti ja yhtiöiden tuki tekee Gnomesta ainutlaatuisen vapaaohjelmistoihin perustuvien työpöytien joukossa.</p>
     <p xml:lang="fr">L'attention de GNOME sur l'utilisabilité et l'accessibilité, un cycle de distribution régulier, et le suivi de grandes entreprises le rend unique entre tous les environnements de bureau Libre.</p>
     <p xml:lang="gl">O enfoque de GNOME na usabilidade e accesibilidade, o ciclo regular de publicación de versións, e un forte apoio empresarial, fai que sexa único entre os escritorios de software libre.</p>
-    <p xml:lang="gu">જીનોમ અને અને સોફ્ટવેર.</p>
+    <p xml:lang="gu">જીનોમનું ઉપયોગિતાપણુ અને સુલભતાપણુ પરનું ફોક્સ, તથા નિયમિત પ્રકાશન ચક્ર અને મજબૂત બેકઅપનો આધાર તેને મુક્ત સોફ્ટવેર ડેસ્કટોપમાં અનન્ય બનાવે છે.</p>
     <p xml:lang="he">GNOME מתמקד על שמישות ונגישות, מחזור שחרור קבוע, וגיבוי מסחרי חזק העושה אותו ייחודי בין שולחנות העבודה של התוכנה החופשית.</p>
     <p xml:lang="hi">मुफ्त सॉफ्टवेयर डेस्कटॉप के बीच गनोम को उसकी ये विशेषताएँ बेजोड़ बनाती हैं - उपयोगिता और पंहुच पर संकेंद्रीकरण, नियमित रिलीज चक्र तथा सशक्त निगमों का समर्थन.</p>
     <p xml:lang="hr">GNOME se usredotočuje na iskoristivost i pristupačnost, redovita izdanja novihmogućnosti i snažnu korporacijsku potporu koja ga čini jedinstvenim u slobodnim radnim okruženjima.</p>
@@ -240,7 +246,8 @@
     <p xml:lang="nl">GNOME richt zich op gebruiksvriendelijkheid en toegankelijkheid, het regelmatig uitbrengen van verbeterde versies, en een krachtige ondersteuning vanuit het bedrijfsleven. Dit alles zorgt dat GNOME uniek is binnen de werkomgevingen van de vrije software.</p>
     <p xml:lang="nn">GNOME fokuserer på å vera brukarvennleg og tilgjengeleg, å koma i nye utgåver med jamne mellomrom, og å bruka støtte frå sterke verksemder til å verta unik blant skrivebordsmiljøa i fri programvare-miljøet.</p>
     <p xml:lang="no">GNOME fokuserer på brukervennlighet og tilgjengelighet, tidsbasert utviklingssyklus og hjelp fra sterke bedrifter for å bli unikt blant skrivebordsmiljøene i fri programvare.</p>
-    <p xml:lang="pa">ਗਨੋਮ ਨੂੰ ਇਸ ਦੀ ਉਪਯੋਗਤਾ ਤੇ ਪਹੁੰਚ ਤੇ ਕੇਦਰਿਤ ਰਹਿਣਾ, ਨਿਯਮਿਤ ਜਾਰੀ ਕਰਨਾ ਅਤੇ ਸ਼ਕਤੀਸ਼ਾਲੀ ਸਹਿਕਾਰੀ ਸਹਿਯੋਗ , ਇਸ ਨੂੰ ਮੁਫਤ ਸਾਫਟਵੇਅਰ ਵਿਹਡ਼ਿਆਂ ਵਿਚ ਵੱਖਰਾ ਕਰਦਾ ਹੈ ।</p>
+    <p xml:lang="nso">Go lebia tlhokomelo ga GNOME tabeng ya go diriwa le go fihlelelega, modikologo wa go lokolla ka mehla le thekgo ya tiriano e matla go dira gore e be ya moswana-noi gare ga diteseke ta Software ya Bolokologi.</p>
+    <p xml:lang="pa">ਗਨੋਮ ਨੂੰ ਇਸ ਦੀ ਉਪਯੋਗਤਾ ਤੇ ਪਹੁੰਚ ਤੇ ਕੇਂਦਰਿਤ ਰਹਿਣਾ, ਨਿਯਮਿਤ ਜਾਰੀ ਕਰਨਾ ਅਤੇ ਸ਼ਕਤੀਸ਼ਾਲੀ ਸਹਿਕਾਰੀ ਸਹਿਯੋਗ , ਇਸ ਨੂੰ ਮੁਫਤ ਸਾਫਟਵੇਅਰ ਵਿਹੜਿਆਂ ਵਿਚ ਵੱਖਰਾ ਕਰਦਾ ਹੈ।</p>
     <p xml:lang="pl">Koncentracja GNOME na użyteczności i dostępności, regularnym cyklu wydawniczym i silnym wsparciu korporacyjnym, czyni je unikalnym pośród innych wolnodostępnych środowisk.</p>
     <p xml:lang="pt">O foco do GNOME na usabilidade e acessibilidade, ciclos regulares de novas versões e forte apoio empresarial tornam-no único entre os ambientes de trabalho de Aplicações Livres.</p>
     <p xml:lang="pt_BR">O foco do GNOME em ter boa usabilidade e acessibilidade, o ciclo regular de lançamentos e o forte apoio de corporações o tornam único entre os ambientes de trabalho livres.</p>
@@ -261,6 +268,7 @@
     <p xml:lang="yo">Ìfojúsí GNOME Lórí lílò àti ìbánirẹ , ìlọ-dédé, àti àtìlẹyìn ìgbóra àjọṣepọ mú kí ó ní ìyàtọ  láàrin ojú ìdarí kọmpútà</p>
     <p xml:lang="zh_CN">GNOME 专注于可用性和辅助功能，规范的版本释放循环，以及强劲的合作机制，使得它在自由软件桌面领域独树一帜。</p>
     <p xml:lang="zh_TW">GNOME 著重於可用性、無障礙環境，會準時推出新版本，而且得到企業的全面支援，這些都令它在各種屬於自由軟體的桌面環境中享有特殊地位。</p>
+    <p xml:lang="zu">ukusebenziseka nokungeniseka nokuyingiliza, nokusekelwa kwe GNOME kuyenze yaba ekhethekile kosoftware abakhululekiyo bobuso beziga-nyezi.</p>
     <p>GNOME's greatest strength is our strong community. Virtually anyone, with or without coding skills, can contribute to making GNOME better.</p>
     <p xml:lang="af">GNOME se grootste sterkpunt is ons sterk gemeenskap.Feitlik elkeen, met of sonder koderingsvaardighede,kan 'n bydrae lewer tot die verbetering van GNOME.</p>
     <p xml:lang="ar">أعظم قوّة لجنوم هي جمهورنا العظيم. يمكن لكل إنسان بمعارف·تشفير·أو·بدونها المساهمة في جعل جنوم أفضل..</p>
@@ -284,7 +292,7 @@
     <p xml:lang="fi">Gnomen suurin vahvuus on vahva yhteisö. Käytännössä kuka tahansa, ohjelmointitaitoinen tai ei, voi osallistua Gnomen kehittämiseen.</p>
     <p xml:lang="fr">La plus grande force de GNOME est sa puissante communauté. À peu près n'importe qui, avec ou sans compétence en programmation, peut contribuer à rendre GNOME meilleur.</p>
     <p xml:lang="gl">A maior fortaleza de GNOME é a grande comunidade. Virtualmente calquera persoa, con ou sen habilidades para programar, pode contribuír para mellorar GNOME.</p>
-    <p xml:lang="gu">જીનોમ ની સાથે જીનોમ.</p>
+    <p xml:lang="gu">જીનોમની શ્રેષ્ઠ મજબૂતાઈ એ આપણી મજબૂત જાતિ છે. વર્ચ્યુઅલ રીતે, કોઈપણ કોડીંગ કરવાની જાણકારી વિના અથવા તેની સાથે જીનોમને વધુ સારું બનાવવા માટે ફાળો આપી શકે છે.</p>
     <p xml:lang="he">העוצמה הגדולה ביותר של GNOME היא הקהילה החזקה שלו. למעשה כל אחד, עם או בלי כישורי כתיבת קוד, יכול לתרום כדי לעשות את GNOME טוב יותר.</p>
     <p xml:lang="hi">गनोम की विशाल शक्ति है हमारा मजबूत समुदाय. वास्तव में कोई भी,  कोडिंग कौशल हो या न हो, गनोम को बेहतर बनाने में अपना योगदान दे सकता है.</p>
     <p xml:lang="hr">GNOME-ova najveća snaga je zajednica okupljena oko njega. Gotovo svatko, saili bez vještina programiranja, može doprinijeti poboljšavanju GNOME-a.</p>
@@ -302,7 +310,8 @@
     <p xml:lang="nl">De grootste kracht van GNOME is onze hechte gemeenschap. Bijna iedereen kan bijdragen aan het verbeteren van GNOME, ook degenen die niet kunnen programmeren.</p>
     <p xml:lang="nn">Den største styrka med GNOME er det sterke miljøet rundt. Så å seia alle, med eller utan programmeringskunnskap, kan bidra til å gjera GNOME betre.</p>
     <p xml:lang="no">GNOME's største styrke er det sterke miljøet rundt det. Hvem som helst, med og uten programmeringskunnskap kan bidra til å gjøre GNOME bedre.</p>
-    <p xml:lang="pa">ਗਨੋਮ ਦੀ ਅਸਲੀ ਤਾਕਤ ਇਸ ਦਾ ਮਜ਼ਬੂਤ ਸੰਗਠਨ ਹੈ। ਸਹੀ ਤਾਂ ਇਹ ਹੈ ਕਿ ਕੋਈ ਵੀ, ਭਾਵੇ ਉਹ ਜਾਣਕਾਰ ਹੈ ਜਾਂ ਨਹੀ, ਗਨੋਮ ਨੂੰ ਚੰਗਾ ਬਣਾਉਣ ਲਈ ਕੰਮ ਕਰ ਸਕਦਾ ਹੈ ।</p>
+    <p xml:lang="nso">Thekgo e kgolo yeo GNOME e nago le yona ke sethaba sa rena se matla. Motho le ge e le ofe yo mongwe tweletong ya go itiragalela, a ka ba a e na le bokgoni bja ta molao goba a se na bjona, a ka tsenya letsogo go kaonafateng GNOME.</p>
+    <p xml:lang="pa">ਗਨੋਮ ਦੀ ਅਸਲੀ ਤਾਕਤ ਇਸ ਦਾ ਮਜ਼ਬੂਤ ਸੰਗਠਨ ਹੈ। ਸਹੀ ਤਾਂ ਇਹ ਹੈ ਕਿ ਕੋਈ ਵੀ, ਭਾਵੇਂ ਉਹ ਜਾਣਕਾਰ ਹੈ ਜਾਂ ਨਹੀ, ਗਨੋਮ ਨੂੰ ਚੰਗਾ ਬਣਾਉਣ ਲਈ ਕੰਮ ਕਰ ਸਕਦਾ ਹੈ।</p>
     <p xml:lang="pl">Największą siłą GNOME jest nasza energiczna społeczność. Prawie każdy, potrafiący programować lub nie, może przyczynić się do rozwoju GNOME.</p>
     <p xml:lang="pt">A maior força do GNOME está na sua forte comunidade. Vitualmente qualquer um, com ou sem conhecimentos de programação, pode contribuir para melhorar o GNOME.</p>
     <p xml:lang="pt_BR">A maior vantagem do GNOME é a nossa comunidade. Praticamente qualquer um, sendo ou não um programador, pode contribuir para fazer o GNOME melhor.</p>
@@ -322,8 +331,9 @@
     <p xml:lang="vi">Sức mạnh lớn nhất của GNOME là cộng đồng vững mạnh của chúng ta. Một người nào đó đóng góp mã hay không cũng có thể góp phần làm GNOME tốt hơn.</p>
     <p xml:lang="wa">Li pus grande foice di Gnome c' est nosse cominålté. Tot l' minme kî, avou ou sins cnoxhances di programaedje, pout apoirter si ptite pire eyet contribuwer po fé ki Gnome soeye meyeu.</p>
     <p xml:lang="yo">Ipa pàtàkì GNOME Jẹ ìgbóra àgbèègbè wa. Ódàbì pé ẹnikẹni tí ó ní ìmọ ojútùú tàbí tí kò ní, lè sapa àti mú GNOME dára si.</p>
-    <p xml:lang="zh_CN">GNOME 最引以自豪的，就是我们强大的社区。任何人都可以为 GNOME 共享力量，而不管他是否懂得编程。</p>
+    <p xml:lang="zh_CN">GNOME 最引以自豪的，就是其强大的社区。任何人都可以为 GNOME 贡献力量，而不管他是否懂得编程。</p>
     <p xml:lang="zh_TW">GNOME 最優勝的地方在於我們的社群。無論任何人，不論懂不懂編程，都可以作出貢獻，令 GNOME 不斷進步。</p>
+    <p xml:lang="zu">Amandla e GNOME asemandleni omphakathi wethu. Empeleni wonke umuntu, onokuhlakanipha kokubhala izinhelo nongenakho, angabanomthelele ukwenza ngcono GNOME.</p>
     <p>Hundreds of people have contributed code to GNOME since it was started in 1997; many more have contributed in other important ways, including translations, documentation, and quality assurance.</p>
     <p xml:lang="af">Honderde mense het kodes tot GNOME bygedra sedert dit in 1997 ontstaan het; nog meer het op ander belangrike maniere bydraes gelewer, insluitend vertalings, dokumentasieen kwaliteitsversekering.</p>
     <p xml:lang="ar">المئات من الناس ساهموا بشفرات لجنوم منذ إنشائه في سنة 1997، العديد الآخرون ساهموا بطرق آخرى مهمّة مثل الترجمة و التوثيق و </p>
@@ -366,7 +376,8 @@
     <p xml:lang="nl">Sinds de start van GNOME in 1997 hebben al honderden mensen programmacode voor GNOME geschreven. Nog meer mensen hebben bijgedragen op een andere belangrijke manier door bijvoorbeeld te vertalen, te documenteren, en te zorgen voor kwaliteit.</p>
     <p xml:lang="nn">Hundrevis av menneske har vore med og programmert GNOME sidan prosjektet starta i 1997. Mange fleire har hjelpt til på andre viktige måtar, t.d. omsetjing, dokumentasjon og kvalitetssikring.</p>
     <p xml:lang="no">Hundrevis av mennesker har bidratt kode til GNOME siden prosjektet ble startet i 1997. Mange flere har bidratt på andre viktige måter som oversettelse, dokumentasjon og kvalitetssikring.</p>
-    <p xml:lang="pa">੧੯੯੭ ਤੋ ਕਈ ਸੈਕਡ਼ੈ ਲੋਕ ਗਨੋਮ ਨੂੰ ਕੋਡ ਲਈ ਸਹਿਯੋਗ ਕਰ ਰਿਹੇ ਹਨ, ਕਈ ਹੋਰ ਲੋਕ ਹੋਰ ਤਰ੍ਰਾਂ ਸਹਿਯੋਗ ਕਰ ਰਿਹੇ ਹਨ ਜਿਵੇ ਕਿ ਭਾਸ਼ਾ ਤਬਦੀਲ, ਦਸਤਾਵੇਜ਼ ਜਾਂ ਮਿਆਰੀ ਬਣਾਉਣ ਲਈ ।</p>
+    <p xml:lang="nso">Batho ba makgolo ba tsenthite letsogo khoutung go GNOME ga e sa le e thoma ka 1997; ba banti ba tsenthite letsogo ka ditsela te dingwe te bohlokwa, go akaretwa diphetolelo, ditweleto, le kgonthieto ya khwaliti.</p>
+    <p xml:lang="pa">੧੯੯੭ ਤੋ ਕਈ ਸੈਂਕੜੈਂ ਲੋਕ ਗਨੋਮ ਨੂੰ ਕੋਡ ਲਈ ਸਹਿਯੋਗ ਕਰ ਰਹੇ ਹਨ, ਕਈ ਹੋਰ ਲੋਕ ਹੋਰ ਤਰਾਂ ਸਹਿਯੋਗ ਕਰ ਰਹੇ ਹਨ ਜਿਵੇ ਕਿ ਭਾਸ਼ਾ ਤਬਦੀਲ, ਦਸਤਾਵੇਜ਼ ਜਾਂ ਮਿਆਰੀ ਬਣਾਉਣ ਲਈ।</p>
     <p xml:lang="pl">Od rozpoczęcia projektu GNOME w 1997 roku, współudział w tworzeniu kodu miało setki osób; dużo więcej brało udział na inne ważne sposoby, włączając tłumaczenia, dokumentację oraz zapewnienie jakości.</p>
     <p xml:lang="pt">Centenas de pessoas contribuiram com código para o GNOME desde que este foi iniciado, em 1997; muitos mais contribuiram de outras formas importantes, incluindo traduções, documentação e controlo de qualidade.</p>
     <p xml:lang="pt_BR">Centenas de pessoas contribuíram código para o GNOME desde o seu início em 1997; muitos outros contribuíram de outras formas importantes, como incluindo traduções, documentação e garantia de qualidade.</p>
@@ -385,7 +396,8 @@
     <p xml:lang="uk">Сотні людей долучили свій код до проекту GNOME, який було засновано у 1997 році. Значно більше людей долучилися до проекту іншими способами, включаючи переклади, документування і контроль якості.</p>
     <p xml:lang="vi">Hàng trăm người đã đóng góp mã cho GNOME kể từ 1997, rất nhiều người đóng góp vào các phần quan trọng khác như dịch thuật, viết tài liệu và quản lý chất lượng.</p>
     <p xml:lang="wa">Des cints et des cints di djins ont contribuwé å côde di Gnome dispoy k' il a stî enondé e 1997; co bén pus ont contribuwé dins ds ôtes manires, tot ossu impôrtantes, come li ratournaedje, li scrijhaedje del documintåcion, eyet li contrôle del cwålité.</p>
-    <p xml:lang="zh_CN">自 GNOME 项目 1997 年启动一来，数以百计的人不断地贡献出他们编写的代码。此外，还有更多的人做出了其它方面重要的努力，包括翻译、文档和质量控制。</p>
+    <p xml:lang="zh_CN">自 GNOME 项目 1997 年启动一来，数以百计的人不断地贡献出他们编写的代码。此外，还有更多人在其它方面做出了重要努力，包括翻译、文档和质量控制。</p>
     <p xml:lang="zh_TW">在 1997 年創立後，數以百計的人都在編寫 GNOME 方面作出貢獻；還有更多人以其它方式貢獻，包括翻譯、撰寫文件和進行品質測試。</p>
+    <p xml:lang="zu">Amakhulukhlu abantu anikele ukubhalwa kwezinhlelo ku GNOME kususela iqanjwa ngo-1997; abanye abaningi banikele ngezinye izindlela ezibalulekile, kufakwa nokuhunyushwa, ukubhalwa, nokugcizelela okuhle.</p>
   </description>
 </gnome-version>
