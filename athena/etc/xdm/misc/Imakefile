@@ -20,15 +20,22 @@ error_table(pc_err)
 
 NANNY		=	nanny
 
+ELMER		=	elmer
+
 LIBOBJS		=	pc_err.o nannylib.o pc_bsd.o cons_sysv.o var.o cvt.o
 
 NANNYOBJS	=	nanny.o
+
+ELMEROBJS	=	elmer.o
 
 CFILES		=	pc_err.c nanny.c pc_bsd.c cons_sysv.c var.c cvt.c \
 			nannylib.c testtty.c testsetUser.c testloginUser.c
 
 LIBS		=	-L/source/athena/lib/AL -lAL -L. -lnanny -lcom_err \
 			-lhesiod
+
+AFSLIBS = $(AFSDIR)/lib/afs/libsys.a \
+        $(AFSDIR)/lib/librx.a $(AFSDIR)/lib/liblwp.a
 
 DEFINES		=	-I/source/athena/lib
 
@@ -38,8 +45,10 @@ build_library(nanny, ${LIBOBJS})
 build_program(testtty, testtty.o,, ${LIBS})
 build_program(testsetUser, testsetUser.o,, ${LIBS})
 build_program(testloginUser, testloginUser.o,, ${LIBS})
+build_program(testlogoutUser, testlogoutUser.o,, ${LIBS})
 
 SimpleProgram(${NANNY},${NANNYOBJS},${LIBS},${ATHRETCDIR}/${NANNY})
+SimpleProgram(${ELMER},${ELMEROBJS},${LIBS} ${AFSLIBS},${ATHRETCDIR}/${ELMER})
 install_man(${NANNY}.man,${NANNY}.1)
 
 create_depend(${CFILES})
