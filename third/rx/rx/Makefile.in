@@ -64,11 +64,11 @@ gen_c_files=rgx.x
 all: librx.a
 
 install: all
-	test -d $(libdir) || mkdir $(libdir)
-	test -d $(includedir) || mkdir $(includedir)
-	$(INSTALL) librx.a $(libdir)/librx.a
-	$(RANLIB) $(libdir)/librx.a
-	$(INSTALL) $(srcdir)/inst-rxposix.h $(includedir)/rxposix.h
+	test -d $(DESTDIR)$(libdir) || mkdir $(DESTDIR)$(libdir)
+	test -d $(DESTDIR)$(includedir) || mkdir $(DESTDIR)$(includedir)
+	$(INSTALL) librx.a $(DESTDIR)$(libdir)/librx.a
+	$(RANLIB) $(DESTDIR)$(libdir)/librx.a
+	$(INSTALL) $(srcdir)/inst-rxposix.h $(DESTDIR)$(includedir)/regex.h
 
 
 uninstall:
