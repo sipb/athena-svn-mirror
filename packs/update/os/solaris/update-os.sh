@@ -54,9 +54,9 @@ if [ -s "$PATCHES" ]; then
     -M /patches/patches.link `cat $PATCHES`
 fi
 
-if [ -s "$LOCALPACKAGES" -o -s "$LINKPACKAGES" -o -s "$PATCHES" ]; then
+if [ "$OSCHANGES" = true ]; then
   echo "Performing local OS changes"
-  sh /srvd/usr/athena/lib/update/oschanges
+  sh /srvd/install/oschanges
 
   # Restore any config file that pkgadd has replaced.
   echo "Re-copying config files after OS update"
