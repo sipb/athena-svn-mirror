@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.16 1997-03-26 21:03:35 ghudson Exp $
+# $Id: update_ws.sh,v 1.17 1997-03-28 10:32:02 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -178,6 +178,12 @@ EOF
 	exit 1
 fi
 
+# Make sure /var/athena exists (it was introduced in 8.1.0) so we have a
+# place to put the desync state file and the update log.
+if [ ! -d /var/athena ]; then
+	mkdir -m 755 /var/athena
+fi
+
 if [ "$AUTO" = true ]; then
 	# The packs are newer and we want to take the update, but not
 	# necessarily right now.  Use desync to stagger the update
@@ -185,7 +191,7 @@ if [ "$AUTO" = true ]; then
 	# now to make sure the -t option works, since that option was
 	# not introduced until 8.1.)
 
-	/srvd/etc/athena/desync -t /etc/athena/.update.desync 14400
+	/srvd/etc/athena/desync -t /var/athena/update.desync 14400
 	if [ $? -ne 0 ]; then
 		exit 0
 	fi
@@ -244,12 +250,6 @@ if [ "$AUTO" = true ]; then
 	echo
 	echo PLEASE DO NOT DISTURB IT WHILE THIS IS IN PROGRESS.
 	echo
-fi
-
-# Make sure /var/athena exists (it was introduced in 8.1.0) so we have a
-# place to put the update log.
-if [ ! -d /var/athena ]; then
-	mkdir -m 755 /var/athena
 fi
 
 # Everything is all set; do the actual update.
