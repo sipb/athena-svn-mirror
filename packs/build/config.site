@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.19 1999-01-09 03:05:20 ghudson Exp $
+# $Id: config.site,v 1.20 1999-01-29 18:58:11 ghudson Exp $
 #
 
 athena=true
@@ -13,6 +13,9 @@ case "$HOSTTYPE" in
 	sgi)
 		CC=cc
 		WARN_CPPFLAGS=-fullwarn
+	linux)
+		CC=cc
+		WARN_CPPFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
 		;;
 esac
 
@@ -31,6 +34,12 @@ case "$HOSTTYPE" in
 		x_libraries=/usr/openwin/lib
 		with_motif=/usr/dt
 		;;
+	linux)
+		x_includes=/usr/X11R6/include
+		x_libraries=/usr/X11R6/lib
+		with_motif=yes
+		# Kludge.  libresolv only defines __res_foo.
+		ac_cv_lib_resolv_res_send=yes
 	*)
 		x_includes=
 		x_libraries=

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.21 1998-10-03 20:04:41 ghudson Exp $
+# $Id: do.sh,v 1.22 1999-01-29 18:58:10 ghudson Exp $
 
 source=/mit/source
 srvd=/srvd
@@ -71,6 +71,9 @@ case `uname -srm` in
 "IRIX 6.3 "*)
 	ATHENA_SYS=sgi_63
 	ATHENA_SYS_COMPAT=sgi_62:sgi_53:sgi_52
+Linux\ 2.2.*\ i?86)
+	ATHENA_SYS=i386_linux22
+	ATHENA_SYS_COMPAT=i386_linux3:i386_linux2:i386_linux1
 	;;
 esac
 
@@ -81,6 +84,9 @@ case `uname -sm` in
 	;;
 "IRIX "*)
 	HOSTTYPE=sgi
+	;;
+"Linux "i?86)
+	HOSTTYPE=linux
 	;;
 esac
 
@@ -97,6 +103,10 @@ SunOS)
 IRIX)
 	OS=irix
 	PATH=$athtoolroot/usr/athena/bin:/usr/bsd:/usr/bin:/usr/bin/X11
+	compiler=cc
+Linux)
+	OS=linux
+	PATH=$athtoolroot/usr/athena/bin:/usr/bin:/bin:/usr/X11R6/bin
 	compiler=cc
 	;;
 esac

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.21 1998-11-28 22:18:21 ghudson Exp $
+# $Id: build.sh,v 1.22 1999-01-29 18:58:10 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -43,6 +43,7 @@ end="${2-$1}"
 case `uname -s` in
 	SunOS)		os=solaris ;;
 	IRIX)		os=irix ;;
+	Linux)		os=linux ;;
 esac
 
 # Read in the list of packages, filtering for operating system.
