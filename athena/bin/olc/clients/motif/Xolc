@@ -1,26 +1,24 @@
-xolc*XmMessageBox.labelFontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
-xolc*XmSelectionBox.labelFontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
-xolc*XmPushButtonGadget.fontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
-xolc*XmPushButton.fontList:		-adobe-*schoolbook-medium-r-*-*-*-140-*
-xolc*XmLabelGadget.fontList:		-adobe-*schoolbook-medium-r-*-*-*-120-*
-xolc*XmText.blinkRate:			300
-xolc*XmFrame.shadowThickness:		0
-xolc*XmFrame.borderWidth:		0
-xolc*XmForm.shadowThickness:		2
-xolc*XmForm.borderWidth:		0
-xolc*XmForm.paneMinimum:		150
-xolc*XmForm.horizontalSpacing:		5
-xolc*XmForm.verticalSpacing:		5
-xolc*XmList.listMarginWidth:		5
-xolc*XmList.listMarginHeight:		5
-xolc*fontList:				fixed
-xolc*title:				On-Line Consulting
-xolc*iconName:				OLC
+*XmMessageBox.labelFontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
+*XmSelectionBox.labelFontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
+*XmPushButtonGadget.fontList:	-adobe-*schoolbook-medium-r-*-*-*-140-*
+*XmPushButton.fontList:		-adobe-*schoolbook-medium-r-*-*-*-140-*
+*XmLabelGadget.fontList:	-adobe-*schoolbook-medium-r-*-*-*-120-*
+*XmText.blinkRate:			300
+*XmFrame.shadowThickness:		0
+*XmFrame.borderWidth:			0
+*XmForm.shadowThickness:		2
+*XmForm.borderWidth:			0
+*XmForm.paneMinimum:			183
+*XmForm.horizontalSpacing:		5
+*XmForm.verticalSpacing:		5
+*XmList.listMarginWidth:		5
+*XmList.listMarginHeight:		5
+*fontList:				fixed
+*title:					On-Line Consulting
+*iconName:				OLC
 !
-*main.width:			530
-*main.height:			400
-*main.minWidth:			530
-*main.minHeight:			355
+*main.Width:			560
+*main.Height:			430
 !
 *main.topAttachment:			ATTACH_FORM
 *main.leftAttachment:			ATTACH_FORM
@@ -95,14 +93,14 @@ xolc*iconName:				OLC
 *list_frame.rightAttachment:		ATTACH_FORM
 *list_frame.bottomAttachment:		ATTACH_FORM
 !
-*topic_listSW.selectionPolicy:		SINGLE_SELECT
-*topic_listSW.scrollBarDisplayPolicy:	AS_NEEDED
-*topic_listSW.scrollBarPlacement:	BOTTOM_RIGHT
+*topic_list*selectionPolicy:		SINGLE_SELECT
+*topic_list*scrollBarDisplayPolicy:	AS_NEEDED
+*topic_list*scrollBarPlacement:		BOTTOM_RIGHT
 !
 *bottom_form.marginWidth:		0
 *bottom_form.marginHeight:		0
 !
-*bottom_lbl.labelString:		Click the mouse in the box below and type in the initial text of your question.
+*bottom_lbl.labelString:		Type in the initial text of your question.
 *bottom_lbl.topAttachment:		ATTACH_FORM
 *bottom_lbl.leftAttachment:		ATTACH_FORM
 *bottom_lbl.rightAttachment:		ATTACH_FORM
@@ -180,7 +178,7 @@ xolc*iconName:				OLC
 *cancel_btn.labelString:		Cancel
 *savelog_btn.labelString:		Save to file...
 *motd_btn.labelString:			MOTD
-*update_btn.labelString:		Update/Show
+*update_btn.labelString:		Show new messages
 !
 *replay_frame.rightAttachment:		ATTACH_FORM
 *replay_frame.leftAttachment:		ATTACH_FORM
@@ -196,6 +194,7 @@ xolc*iconName:				OLC
 *replay_scrl.wordWrap:			TRUE
 *replay_scrl.scrollHorizontal:		FALSE
 *replay_scrl.scrollVertical:		TRUE
+*replay_scrl.insertionPointVisible:	FALSE
 !
 ! Motd form
 !
@@ -240,9 +239,10 @@ xolc*iconName:				OLC
 *motd_dlg.dialogType:			DIALOG_INFORMATION
 *motd_dlg.borderWidth:			5
 !
-!
 *help_dlg.dialogStyle:			DIALOG_MODELESS
 *help_dlg.borderWidth:			5
+!
+*save_dlg.selectionLabelString:		Please enter the name of a file to save in:
 !
 !
 *send_form.marginWidth:			0
@@ -251,7 +251,7 @@ xolc*iconName:				OLC
 *send_form.width:		530
 *send_form.height:		250
 !
-*send_lbl.labelString:			Click the mouse in the box below and type your message.
+*send_lbl.labelString:			Type your message in the box below.
 *send_lbl.topAttachment:		ATTACH_FORM
 *send_lbl.leftAttachment:		ATTACH_FORM
 *send_lbl.rightAttachment:		ATTACH_FORM
@@ -283,6 +283,7 @@ xolc*iconName:				OLC
 *send_scrl.wordWrap:			TRUE
 *send_scrl.scrollHorizontal:		FALSE
 *send_scrl.scrollVertical:		TRUE
+
 !
 *XmPushButton.translations:		#override \
 					<Btn1Down>: Arm() \n\
