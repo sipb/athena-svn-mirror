@@ -1,4 +1,4 @@
-# $Id: packages,v 1.82 1999-08-18 12:12:45 danw Exp $
+# $Id: packages,v 1.83 1999-08-19 11:50:45 danw Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -115,7 +115,7 @@ athena/bin/cxref
 athena/bin/access
 athena/bin/dent
 athena/bin/attach		requires locker
-athena/bin/dash			requires Xj,krb5
+athena/bin/dash			requires Xj,krb5,athena/lib/athdir
 athena/bin/xcluster		requires Xj,hesiod
 athena/bin/bugme		requires Xj
 athena/bin/xmore
