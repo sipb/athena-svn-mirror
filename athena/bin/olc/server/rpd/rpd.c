@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.15 1991-09-22 11:33:36 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.16 1992-06-15 17:36:43 lwvanels Exp $";
 #endif
 #endif
 
@@ -201,6 +201,7 @@ start_profile(sig)
 }
 #endif /* PROFILE */
 
+static
 #ifdef VOID_SIGRET
 void
 #else
