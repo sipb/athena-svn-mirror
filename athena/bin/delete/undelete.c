@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.12 1989-01-27 02:58:46 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.13 1989-01-27 08:24:21 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -444,7 +444,7 @@ char *filename;
      if (lstat(filename, &stat_buf))
 	  return(1);
 
-     if (stat_buf.st_mode & S_IFDIR) {
+     if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 	  dirp = opendir(filename);
 	  if (! dirp)
 	       return(1);
@@ -508,7 +508,7 @@ int *num_found;
 	       else if (! directoriesonly) {
 		    if (lstat(matches[i], &stat_buf))
 			 continue;
-		    if (stat_buf.st_mode & S_IFDIR) {
+		    if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 			 contents_found = find_deleted_contents(matches[i],
 								&num_contents);
 			 add_arrays(&found, &num, &contents_found,

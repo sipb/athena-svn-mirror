@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.2 1989-01-27 03:20:08 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.3 1989-01-27 08:24:09 jik Exp $";
 #endif
 
 /*
@@ -457,7 +457,7 @@ int *num_found;
 	       }
 	       if (lstat(matches[i], &stat_buf))
 		    continue;
-	       if (stat_buf.st_mode & S_IFDIR) {
+	       if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 		    contents_found = find_deleted_contents_recurs(matches[i],
 							       &num_contents);
 		    add_arrays(&found, &num, &contents_found,

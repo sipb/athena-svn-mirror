@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.4 1989-01-27 02:58:15 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.5 1989-01-27 08:24:16 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -315,7 +315,7 @@ int *num_found;
 	  found_num++;
 	  if (lstat(newname, &stat_buf))
 	       continue;
-	  if (stat_buf.st_mode & S_IFDIR) {
+	  if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 	       new_found = find_recurses(newname, &new_found_num);
 	       add_arrays(&found, &found_num, &new_found, &new_found_num);
 	  }
@@ -361,7 +361,7 @@ int *num_found;
 	       perror("foobar");
 	       continue;
 	  }
-	  if (stat_buf.st_mode & S_IFDIR) {
+	  if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 	       new_found = find_deleted_recurses(newname, &new_found_num);
 	       add_arrays(&found, &found_num, &new_found, &new_found_num);
 	  }
@@ -466,7 +466,7 @@ int *num_found;
 	       num += 1;
 	       if (lstat(newname, &stat_buf))
 		    continue;
-	       if (stat_buf.st_mode & S_IFDIR) {
+	       if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 		    new_found = find_recurses(newname, &new_found_num);
 		    add_arrays(&found, &num, &new_found, &new_found_num);
 	       }

@@ -11,7 +11,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.7 1989-01-27 07:44:51 jik Exp $";
+     static char rcsid_directories_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.8 1989-01-27 08:23:44 jik Exp $";
 #endif
 
 /*
@@ -172,7 +172,7 @@ char *path;
 	  path[strlen(path) - 1] = '\0';
      if (lstat(path, &buf))
 	  return (FtUnknown);
-     else if (buf.st_mode & S_IFDIR)
+     else if ((buf.st_mode & S_IFMT) == S_IFDIR)
 	  return (FtDirectory);
      else
 	  return (FtFile);
