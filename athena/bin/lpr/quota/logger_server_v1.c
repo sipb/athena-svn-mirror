@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.3 1990-11-14 17:08:29 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.5 1991-01-23 15:07:00 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.3 1990-11-14 17:08:29 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server_v1.c,v 1.5 1991-01-23 15:07:00 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -74,10 +74,12 @@ quota_currency currency;
 
     CHECK_PROTECT();
 
+    syslog(LOG_INFO, "v1 request received");
 /* First verify that the user is authenticated - you must be authenticated for
    any info */
     if(check_krb_auth(h, auth, &ad))
 	return QBADTKTS;
+    syslog(LOG_INFO, "v1 request from %x", ad.address);
 
     make_kname(ad.pname, ad.pinst, ad.prealm, name1);
 
@@ -90,7 +92,7 @@ quota_currency currency;
 
     /* Find out who the info is about!!! */
 
-    parse_username((char *) qid->username, rname, rinstance, rrealm);
+    parse_username(qid->username, rname, rinstance, rrealm);
 
     if(((strcmp(rname, uname) != 0) || (strcmp(rinstance, uinstance) != 0) ||
        (strcmp(rrealm, urealm) != 0)) && (authuser == 0)) {
@@ -154,7 +156,8 @@ quota_currency currency;
     /* Memory for all - start shipping the stuff... */
 
     for(i=1, lent = LogEnts; i <= maxnum; i++, lent++) {
-	if((ent = logger_journal_get_line(start)) == (log_entity *) NULL){
+	if((ent = logger_journal_get_line((Pointer) start))
+	   == (log_entity *) NULL){
 	    /* We have an error - don't know why */
 	    syslog(LOG_INFO, "LoggerJournal - could not read entry #%d", start);
 	    /* Not quite the right error */
