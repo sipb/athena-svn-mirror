@@ -13,17 +13,17 @@ xss-button \- display a button to run xss
 .B \-prefs
 .I command
 ] [
-.B \-logoWidth
+.B \-logo-width
 .I width
 ] [
-.B \-logoHeight
+.B \-logo-height
 .I height
 ] [
 .B \-redirect
 |
 .B \-noredirect
 ] [
-.B \-logFile
+.B \-log-file
 .I file
 ]
 .SH DESCRIPTION
@@ -127,13 +127,13 @@ option.
 .TP 8
 .B xrogerWidth (\fPclass\fB Width)
 Specifies the width of the xss logo.  Same as the
-.B \-logoWidth
+.B \-logo-width
 option.  The width of the window is the width of this logo plus the
 border width of the Label widget.
 .TP 8
 .B xrogerHeight (\fPclass\fB Height)
 Specifies the height of the xss logo.  Same as the
-.B \-logoHeight
+.B \-logo-height
 option.  The height of the window is the height of this logo plus the
 border width of the Label widget.
 .TP 8
@@ -145,11 +145,11 @@ and
 .B \-noredirect
 options.  Defaults to True.
 .TP 8
-.B logFile (\fPclass\fB LogFile)
+.B log-file (\fPclass\fB LogFile)
 The name of the file to send stdout and stderr to, if the
 .B redirect
 resource is True.  Same as the
-.B \-logFile
+.B \-log-file
 option.  Defaults to an unqualified ".xss-log".
 .SH SEE ALSO
 .BR xss (1),
