@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v $
- *	$Author: miki $
+ *	$Author: rbasch $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v 1.2 1994-03-30 10:30:51 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v 1.3 1998-12-18 18:25:54 rbasch Exp $
  */
 
 #ifndef lint
-static char *rcsid_just_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v 1.2 1994-03-30 10:30:51 miki Exp $";
+static char *rcsid_just_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/just/just.c,v 1.3 1998-12-18 18:25:54 rbasch Exp $";
 #endif	lint
 
 /*
@@ -40,6 +40,7 @@ static char *rcsid_just_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 #define errmsg		perror
 
 #include <stdio.h>
+#include <string.h>
 
 #define MAXLINE 512
 #define LINESIZE	65	/* default line_length */
