@@ -1,20 +1,19 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.12 1990-11-19 11:34:03 epeisach Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.13 1991-01-22 16:14:16 probe Exp $";
 #endif lint
 
 #include "attach.h"
 #include <signal.h>
-#include <string.h>
 
-int attach_mul();
+extern int mul_attach();
 
 /*
  * Attempt to attach a filesystem.  Lookup the name with Hesiod as
@@ -98,7 +97,7 @@ retry:
 	    unlock_attachtab();
 
 	    if (atp->fs->type == TYPE_MUL)
-		return attach_mul(atp);
+		return mul_attach(atp, (struct mntopts *)0, 0);
 	    
 	    if (print_path)
 		printf("%s\n", atp->mntpt);
@@ -230,7 +229,7 @@ try_attach(name, hesline, errorout)
     int	attach_suid;
 #ifdef ZEPHYR
     char instbfr[BUFSIZ];
-#endif ZEPHYR
+#endif
     struct mntopts	mopt;
     char	*default_options;
 
@@ -357,29 +356,10 @@ try_attach(name, hesline, errorout)
 			zephyr_addsub(at.host);
 		}
 	}
-#endif ZEPHYR
+#endif
 	free_attachtab();
     } else
 	    if (at.fs->flags & FS_MNTPT)
 		    rm_mntpt(&at);
     return (status);
-}
-
-attach_mul(atp, mopt, errorout)
-struct _attachtab *atp;
-struct mntopts *mopt;
-int errorout;
-{
-	char mul_buf[BUFSIZ], *cp, *mp;
-	
-	strcpy(cp = mul_buf, atp->hostdir);
-	while (mp = cp) {
-		cp = index(mp, ',');
-		if (cp)
-			*cp = '\0';
-		attach(mp);
-		if (cp)
-			cp++;
-	}
-	return SUCCESS;
 }

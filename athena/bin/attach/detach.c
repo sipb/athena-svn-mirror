@@ -6,12 +6,10 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.6 1990-11-16 08:50:48 probe Exp $";
+static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.7 1991-01-22 16:14:42 probe Exp $";
 
 #include "attach.h"
 #include <string.h>
-
-int detach_mul();
 
 /*
  * Detach the filesystem called name.
@@ -267,25 +265,4 @@ void detach_host(host)
 	}
 	free_attachtab();
 	explicit = tempexp;
-}
-
-
-detach_mul(atp)
-struct _attachtab *atp;
-{
-    int status = SUCCESS;
-    char mul_buf[BUFSIZ], *cp;
-    
-    strcpy(mul_buf, atp->hostdir);
-    cp = &mul_buf[strlen(mul_buf)];
-    while (cp-- >= mul_buf)
-	if (cp < mul_buf || *cp == ',') {
-	    if (detach(cp+1) != SUCCESS && error_status!=ERR_DETACHNOTATTACHED)
-		status = FAILURE;
-	    if (cp >= mul_buf)
-		*cp = '\0';
-	}
-
-    error_status = (status == SUCCESS) ? ERR_NONE : ERR_SOMETHING;
-    return status;
 }
