@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.18 1990-06-07 22:33:45 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.19 1990-11-13 21:34:12 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -416,6 +416,7 @@ Boolean match_undeleted, match_deleted;
      char first[MAXNAMLEN], rest[MAXPATHLEN];
      int retval;
      int strsize;
+     struct stat statbuf;
 #ifdef PATTERN_DEBUG
      int j;
 #endif
@@ -566,13 +567,17 @@ Boolean match_undeleted, match_deleted;
 	       (void) pop(&dirp, sizeof(DIR *));
 	       continue;
 	  }
-	  
-	  dirp = Opendir(base);
+
+	  if (! stat(base, &statbuf)) {
+	       if ((statbuf.st_mode & S_IFMT) == S_IFDIR)
+		    dirp = Opendir(base);
+	  }
+	  else {
+	       dirp = NULL;
+	  }
 	  if (! dirp) {
-	       if (errno != ENOTDIR) {
-		    set_error(errno);
-		    error(base);
-	       }
+	       set_error(errno);
+	       error(base);
 	       string_pop(base);
 	       string_pop(rest);
 	       string_pop(first);
@@ -660,8 +665,8 @@ Boolean match_undeleted, match_deleted;
  * start:
  *   initialze found and num_found
  *   strcopy(base, name)
- *   dirp = Opendir(base)
  *   check if we just opened a deleted symlink and return if we did
+ *   dirp = Opendir(base)
  *   check RECURS options and set FIND options as appropriate
  * 
  * loop:
@@ -748,28 +753,29 @@ int options;
      }
      *num_found = 0;
      strcpy(base, name);
-     
+
+     if (stat(base, &statbuf)) {
+	  set_error(errno);
+	  error(base);
+	  return error_code;
+     }
+	 
      /* Never follow deleted symlinks */
-     if (is_deleted(lastpart(base)) && is_link(base, (struct stat *) NULL)) {
+     if (is_deleted(lastpart(base)) && is_link(base, &statbuf)) {
 	  return 0;
      }
+
+     if ((statbuf.st_mode & S_IFMT) != S_IFDIR)
+	  return 0;
      
      dirp = Opendir(base);
      if (! dirp) {
-	  /* If the problem is that it isn't a directory, just return */
-	  /* with zero matches -- the file exists, but cannot be      */
-	  /* recursively searched.  Otherwise, actually signal an     */
-	  /* error. 						      */
-	  if (errno != ENOTDIR) {
 #ifdef DEBUG
-	       fprintf(stderr, "Couldn't open %s.\n", base);
+	  fprintf(stderr, "Couldn't open %s.\n", base);
 #endif
-	       set_error(errno);
-	       error(base);
-	       return error_code;
-	  }
-	  else
-	       return 0;
+	  set_error(errno);
+	  error(base);
+	  return error_code;
      }
 
      if (options & (RECURS_FIND_DELETED | RECURS_DELETED))
