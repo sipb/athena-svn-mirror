@@ -1,0 +1,22 @@
+# $Id: Makefile.athena,v 1.1 1998-12-12 22:40:14 ghudson Exp $
+
+SHELL=/bin/sh
+
+prepare:
+	rm -f src/config.cache
+	./configure --enable-button-logout=0 \
+		--enable-default-button-logout=20 --without-rplay \
+		--without-nas --enable-session-logout --enable-xlockrc \
+		--enable-kerberos5 --disable-setuid --disable-allow-root \
+		--without-afs
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"
