@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.65 2003-06-04 18:16:54 zacheiss Exp $
+ *	$Id: requests_olc.c,v 1.65.2.1 2003-07-30 18:39:38 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.65 2003-06-04 18:16:54 zacheiss Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.65.2.1 2003-07-30 18:39:38 ghudson Exp $";
 #endif
 #endif
 
@@ -350,7 +350,7 @@ olc_who(fd,request)
   get_list_info(target, &list);
   send_list(fd, request, &list);
 
-  if(is_logout(requester) && is_active(requester))
+  if(is_logout(requester) && is_active(requester) && has_question(requester))
     {
       if(has_new_messages(requester))
 	{
