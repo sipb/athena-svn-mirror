@@ -1,4 +1,3 @@
-
 #
 # Athena additions
 #
@@ -28,7 +27,7 @@ zephyr-srv      2102/udp                        # Zephyr server
 zephyr-clt      2103/udp                        # Zephyr serv-hm connection
 zephyr-hm       2104/udp                        # Zephyr hostmanager
 
-write		811/tcp 			# Athena addition
+write		811/tcp 			# Athena remote write service
 discuss		2100/tcp			# Networked conferencing.
 globalmessage	2106/udp			# Global message system
 rkinit		2108/tcp	rkinitd		# Remote ticket granting svc.
@@ -39,6 +38,9 @@ cview		3704/tcp			# Cluster monitoring
 						# 3705 reserved for SNMP/NOC
 afs-nfs		3706/tcp			# AFS-NFS translator
 athena-olh-ezviewer	3707/tcp
-afs-cmd		3708/tcp			# AFS intermediary cmd server
 calserver	3709/tcp			# Athena calendar server
 athena-timed	3710/udp			# Athena timed
+technotify	3713/udp			# TechNotify mail notification
+#
+# End of Athena additions
+#
