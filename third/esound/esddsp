@@ -21,6 +21,9 @@ while test $# -gt 0; do
 		echo "-m, --mixer               enable mixer support"
 		echo "-n, --name=NAME           use name to identify player to esd"
 		echo "-v, --verbose             show parameters"
+		echo "--mmap                    use memory mapping emulation"
+		echo "                          (useful for games like quake)"
+
 		exit 0
 		;;
 
@@ -73,6 +76,12 @@ while test $# -gt 0; do
 		shift
 		;;
 
+	--mmap)
+	    ESDDSP_MMAP=1
+	    export ESDDSP_MMAP
+	    shift
+	    ;;
+
 	*)
 		# no more esddsp options, get on with life
 		break
@@ -94,7 +103,7 @@ if test "$verbose" = 1; then
 fi
 
 # setup esd to hijack calls made to /dev/dsp
-prefix=/usr
+prefix=/usr/local
 exec_prefix=${prefix}
 
 LD_PRELOAD="${exec_prefix}/lib/libesddsp.so.0 ${exec_prefix}/lib/libesd.so.0 $LD_PRELOAD"

@@ -6,7 +6,7 @@ AM_CONFIG_HEADER(config.h)
 
 ESD_MAJOR_VERSION=0
 ESD_MINOR_VERSION=2
-ESD_MICRO_VERSION=34
+ESD_MICRO_VERSION=35
 ESD_VERSION=$ESD_MAJOR_VERSION.$ESD_MINOR_VERSION.$ESD_MICRO_VERSION
 
 dnl set version info for libesd.so to package rev - $MAJOR + $MINOR : $MICRO : $MINOR
@@ -413,7 +413,7 @@ dsp_ok=no DL_LIB=
 
 AC_MSG_CHECKING([if your platform supports esddsp])
 case "$host_os" in
-  linux* | freebsd* | bsdi4* )
+  linux* | freebsd* | kfreebsd*-gnu | bsdi4* )
     dsp_ok=yes
     ;;
 esac
