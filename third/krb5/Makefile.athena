@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.8 1997-09-29 08:57:14 ghudson Exp $
+# $Id: Makefile.athena,v 1.9 1997-10-01 07:28:09 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -9,9 +9,9 @@ ATHINCDIR=/usr/athena/include
 # compatibility.
 prepare:
 	rm -f src/config.cache
-	cd src && CONFIG_SITE= ./configure --prefix=/usr/athena \
-	 --datadir=/usr/athena/lib --sbindir=/usr/athena/etc \
-	 --sysconfdir=/etc/athena
+	cd src && CC="$COMPILER" CONFIG_SITE= \
+		./configure --prefix=/usr/athena --datadir=/usr/athena/lib \
+		--sbindir=/usr/athena/etc --sysconfdir=/etc/athena
 
 clean:
 	cd src && ${MAKE} clean
