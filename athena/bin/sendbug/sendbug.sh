@@ -1,7 +1,7 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.12 1995-03-01 03:02:49 cfields Exp $
+# $Id: sendbug.sh,v 1.13 1995-03-01 03:52:35 cfields Exp $
 # make sure stuff this script needs is up front
-PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin
+PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin:/usr/bsd
 bugs_address=bugs@MIT.EDU
 sendmail="/usr/lib/sendmail -t -oi"
 report_file=/tmp/bug$$.text
