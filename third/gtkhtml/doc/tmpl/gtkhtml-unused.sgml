@@ -1,0 +1,225 @@
+<!-- ##### SIGNAL GtkHTML::title-changed ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GtkHTML::insertion-color-changed ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GtkHTML::set-base-target ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### STRUCT GtkHTML ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GtkHTML::cursor-move ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GtkHTML::submit ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### SIGNAL GtkHTML::insertion-font-style-changed ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### STRUCT GtkHTMLEmbeddedPrivate ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GtkHTML::command ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GtkHTML::scroll ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+@arg2: 
+@arg3: 
+
+<!-- ##### STRUCT GtkHTMLEditorAPI ##### -->
+<para>
+
+</para>
+
+@check_word: 
+@suggestion_request: 
+@add_to_session: 
+@add_to_personal: 
+@command: 
+@event: 
+@create_input_line: 
+
+<!-- ##### SIGNAL GtkHTML::current-paragraph-style-changed ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GtkHTML::set-base ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GtkHTML::redirect ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GtkHTML::size-changed ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+
+<!-- ##### STRUCT GtkHTMLClassProperties ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GtkHTML::load-done ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+
+<!-- ##### SIGNAL GtkHTML::link-clicked ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GtkHTML::url-requested ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### SIGNAL GtkHTML::object-requested ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+@Returns: 
+
+<!-- ##### SIGNAL GtkHTML::on-url ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### STRUCT GtkHTMLPrivate ##### -->
+<para>
+
+</para>
+
+@idle_handler_id: 
+@scroll_timeout_id: 
+@paragraph_style: 
+@paragraph_indentation: 
+@paragraph_alignment: 
+@insertion_font_style: 
+@last_selection_type: 
+@content_type: 
+@ic: 
+
+<!-- ##### STRUCT GtkHTMLEmbeddedClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL GtkHTML::current-paragraph-alignment-changed ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL GtkHTML::current-paragraph-indentation-changed ##### -->
+<para>
+
+</para>
+
+@html: the object which received the signal.
+@arg1: 
+
+<!-- ##### STRUCT GtkHTMLClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### STRUCT GtkHTMLStream ##### -->
+<para>
+
+</para>
+
+@write_func: 
+@close_func: 
+@user_data: 
+

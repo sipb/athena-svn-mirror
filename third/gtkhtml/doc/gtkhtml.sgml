@@ -1,0 +1,119 @@
+<!doctype book PUBLIC "-//Davenport//DTD DocBook V3.0//EN"[
+
+<!entity part-gtkhtml SYSTEM "sgml/gtkhtml.sgml">
+<!entity part-embedded SYSTEM "sgml/gtkhtml-embedded.sgml">
+<!entity part-types   SYSTEM "sgml/gtkhtml-types.sgml">
+<!entity part-enums   SYSTEM "sgml/gtkhtml-enums.sgml">
+<!entity part-stream  SYSTEM "sgml/gtkhtml-stream.sgml">
+
+<!entity gtkhtml "<application>GtkHTML</application>">
+]>
+
+<book id="index">
+  <bookinfo>
+    <title>The &gtkhtml; Library</title>
+
+    <authorgroup>
+      <author>
+	<firstname>Radek</firstname>
+	<surname>Doulik</surname>
+	<affiliation>
+	  <address>
+	    <email>rodo@ximian.com</email>
+	  </address>
+	</affiliation>
+      </author>
+    </authorgroup>
+
+    <copyright>
+      <year>2001</year>
+      <holder>Ximian, Inc.</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>
+	Permission is granted to copy, distribute and/or modify this
+	document under the terms of the <citetitle>GNU Free
+	Documentation License</citetitle>, Version 1.1 or any later
+	version published by the Free Software Foundation with no
+	Invariant Sections, no Front-Cover Texts, and no Back-Cover
+	Texts. You may obtain a copy of the <citetitle>GNU Free
+	Documentation License</citetitle> from the Free Software
+	Foundation by visiting <ulink type="http"
+	url="http://www.fsf.org">their Web site</ulink> or by writing
+	to:
+
+	<address>
+	  The Free Software Foundation, Inc.,
+	  <street>59 Temple Place</street> - Suite 330,
+	  <city>Boston</city>, <state>MA</state> <postcode>02111-1307</postcode>,
+	  <country>USA</country>
+	</address>
+      </para>
+
+      <para>
+	Many of the names used by companies to distinguish their
+	products and services are claimed as trademarks. Where those
+	names appear in any GNOME documentation, and those trademarks
+	are made aware to the members of the GNOME Documentation
+	Project, the names have been printed in caps or initial caps.
+      </para>
+    </legalnotice>
+  </bookinfo>
+
+  <reference>
+    <title>API Reference</title>
+
+    <partintro>
+      <para>
+	This part presents the class and function reference for the
+	&gtkhtml; library.  Classes are described together with
+	their methods; individual functions are grouped by functional
+	group.
+      </para>
+    </partintro>
+
+    &part-gtkhtml;
+    &part-embedded;
+    &part-stream;
+    &part-enums;
+    &part-types;
+
+  </reference>
+
+  <!-- License -->
+
+  <appendix id="license">
+    <title>License</title>
+	
+    <para>
+      This library is free software; you can redistribute it and/or
+      modify it under the terms of the <citetitle>GNU Library General
+      Public License</citetitle> as published by the Free Software
+      Foundation; either version 2 of the License, or (at your option)
+      any later version.
+    </para>
+
+    <para>
+      This library is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      <citetitle>GNU Library General Public License</citetitle> for
+      more details.
+    </para>
+
+    <para>
+      You may obtain a copy of the <citetitle>GNU Library General
+      Public License</citetitle> from the Free Software Foundation by
+      visiting <ulink type="http" url="http://www.fsf.org">their Web
+      site</ulink> or by writing to:
+
+      <address>
+	Free Software Foundation, Inc.
+	<street>59 Temple Place</street> - Suite 330
+	<city>Boston</city>, <state>MA</state> <postcode>02111-1307</postcode>
+	<country>USA</country>
+      </address>
+    </para>
+  </appendix>
+</book>

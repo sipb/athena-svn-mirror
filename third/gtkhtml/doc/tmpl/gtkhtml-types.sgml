@@ -1,0 +1,79 @@
+<!-- ##### SECTION Title ##### -->
+Types
+
+<!-- ##### SECTION Short_Description ##### -->
+List of types
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### STRUCT GtkHTMLEmbedded ##### -->
+<para>
+
+</para>
+
+@bin: 
+@classid: 
+@name: 
+@type: 
+@data: 
+@width: 
+@height: 
+@params: 
+@priv: 
+@descent: 
+
+<!-- ##### USER_FUNCTION GtkHTMLStreamCloseFunc ##### -->
+<para>
+
+</para>
+
+@stream: 
+@status: 
+@user_data: 
+
+
+<!-- ##### USER_FUNCTION GtkHTMLStreamWriteFunc ##### -->
+<para>
+
+</para>
+
+@stream: 
+@buffer: 
+@size: 
+@user_data: 
+
+
+<!-- ##### USER_FUNCTION GtkHTMLSaveReceiverFn ##### -->
+<para>
+
+</para>
+
+@engine: 
+@data: 
+@len: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION GtkHTMLPrintCallback ##### -->
+<para>
+
+</para>
+
+@html: 
+@print_context: 
+@x: 
+@y: 
+@width: 
+@height: 
+@user_data: 
+
+

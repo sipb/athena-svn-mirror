@@ -1,0 +1,19 @@
+2001-07-18  Larry Ewing  <lewing@ximian.com>
+
+	* gtkhtml.types: add gtkhtml-embedded initializer.
+
+	* gtkhtml.sgml: add a chapter for gtkhtml-embedded.
+
+2001-07-17  Larry Ewing  <lewing@ximian.com>
+
+	* tmpl/gtkhtml-embedded.sgml: start to fill in the embedded
+	template.
+
+2001-01-25  Radek Doulik  <rodo@helixcode.com>
+
+	* gtkhtml-sections.txt: added gtk_html_new_from_string
+	removed </SUBSECTION>'s
+
+	* Makefile.am: new file, copied from gdk-pixbuf and edited
+	(all): added rule all:
+
