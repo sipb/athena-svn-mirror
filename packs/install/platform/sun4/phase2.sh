@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.17 1996-05-10 19:25:09 ghudson Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.18 1996-05-10 21:13:11 ghudson Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -27,6 +27,8 @@ rusrdrive=/dev/rdsk/c0t3d0s5
 vardrive=/dev/dsk/c0t3d0s6
 rvardrive=/dev/rdsk/c0t3d0s6
 
+export rootdrive rrootdrive cachedrive rcachedrive usrdrive rusrdrive
+export vardrive rvardrive
 
 
 echo "formatting  "
