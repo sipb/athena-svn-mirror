@@ -340,3 +340,4 @@ Boston, MA 02111-1307, USA.  */
 
 #define BSD_PGRPS
 #define setpgrp(pid,pgid) setpgid(pid,pgid)
+#define getpgrp(n) getpgid()
