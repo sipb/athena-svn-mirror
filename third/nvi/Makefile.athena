@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.5 2001-07-09 21:47:49 ghudson Exp $
+# $Id: Makefile.athena,v 1.6 2003-03-23 01:15:11 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -6,9 +6,8 @@ dist:
 
 prepare:
 	rm -f build/config.cache
-	cd build && CFLAGS='-g -I/usr/include/db1' LIBS=-ldb1 \
-		./configure --disable-curses --disable-db --prefix=/usr \
-		--bindir=/bin --mandir=/usr/share/man
+	cd build && CFLAGS=-g ./configure --disable-curses --prefix=/usr \
+	  --bindir=/bin --mandir=/usr/share/man
 
 clean:
 	cd build && ${MAKE} clean
