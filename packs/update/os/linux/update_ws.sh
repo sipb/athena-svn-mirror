@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.19 2001-03-09 21:17:59 ghudson Exp $
+# $Id: update_ws.sh,v 1.20 2001-03-21 19:32:45 jweiss Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -202,6 +202,8 @@ fi
 
 oldlist=/var/athena/release-rpms
 if [ ! -r "$oldlist" ]; then
+	logger -t "$HOST" -p user.notice \
+		Cannot read $oldlist, unable to take update
 	errorout "Cannot read old release list $oldlist."
 fi
 
@@ -211,6 +213,8 @@ fi
 if [ -d /var/server ]; then
 	MACH=$MACHINE VERS=$newvers mkserv updatetest
 	if [ $? -ne 0 ]; then
+		logger -t "$HOST" -p user.notice \
+			missing mkserv services, unable to take update
 		errorout "Not all mkserv services available for $newvers."
 	fi
 fi

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.50 2001-02-14 03:02:26 jweiss Exp $
+# $Id: update_ws.sh,v 1.51 2001-03-21 19:32:14 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -250,6 +250,7 @@ sun4)
   if [ 92160 -gt "$usrsize" ]; then
     echo "/usr partition is not big enough for Athena release 8.4 and higher."
     echo "You must reinstall to take this update."
+    logger -t "$HOST" -p user.notice /usr too small to take update
     failupdate
   fi
 
@@ -270,6 +271,7 @@ sun4)
     if [ 35840 -gt "$usrspace" ]; then
       echo "The /usr partition must have 35MB free for this update.  Please"
       echo "reinstall of clean local files off of the /usr partition."
+      logger -t "$HOST" -p user.notice /usr too full to take update
       failupdate
     fi
     ;;
@@ -309,12 +311,14 @@ sgi)
     echo "Root partition low on space (less than ${rootneeded}MB); not"
     echo "performing update.  Please reinstall or clean local files off root"
     echo "partition."
+    logger -t "$HOST" -p user.notice / too full to take update
     failupdate
   fi
 
   if [ 64 -gt "`hinv -t memory | awk '{ print $4; }'`" ]; then
     echo "Insufficient memory (less than 64MB); not performing update.  Please"
     echo "add more memory or reinstall."
+    logger -t "$HOST" -p user.notice insufficient memory to take update
     failupdate
   fi
   ;;
@@ -327,6 +331,7 @@ if [ -d /var/server ] ; then
   if [ $? -ne 0 ]; then
     echo "mkserv services cannot be found for all services.  Update cannot be"
     echo "performed."
+    logger -t "$HOST" -p user.notice missing mkserv services, unable to take update
     failupdate
   fi
 fi
