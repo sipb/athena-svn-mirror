@@ -1,7 +1,7 @@
 /**********************************************************************
  * File Exchange client library
  *
- * $Id: _fx_rpc_errno.c,v 1.1 1999-09-28 22:07:17 danw Exp $
+ * $Id: _fx_rpc_errno.c,v 1.2 2002-03-10 17:54:42 ghudson Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 #include <mit-copyright.h>
 
 #ifndef lint
-static char rcsid__fx_rpc_errno_c[] = "$Id: _fx_rpc_errno.c,v 1.1 1999-09-28 22:07:17 danw Exp $";
+static char rcsid__fx_rpc_errno_c[] = "$Id: _fx_rpc_errno.c,v 1.2 2002-03-10 17:54:42 ghudson Exp $";
 #endif /* lint */
 
 #include "fxcl.h"
@@ -22,7 +22,6 @@ _fx_rpc_errno(cl)
      CLIENT *cl;
 {
   struct rpc_err err;
-  extern struct rpc_createerr rpc_createerr;
 
   if (cl) {
     clnt_geterr(cl, &err);
