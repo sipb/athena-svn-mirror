@@ -1,7 +1,7 @@
 /*
  *  session_gate - Keeps session alive by continuing to run
  *
- *	$Id: session_gate.c,v 1.18 1999-09-21 20:09:49 danw Exp $
+ *	$Id: session_gate.c,v 1.19 2000-04-20 14:32:20 tb Exp $
  */
 
 #include <fcntl.h>
@@ -46,7 +46,6 @@ void SGISession_Debug(char *message);
 
 static char filename[80];
 
-int itoa(int x, char *buf);
 void cleanup(void);
 void logout(void);
 void clean_child(void);
@@ -58,7 +57,6 @@ void write_pid_to_file(pid_t pid, int fd);
 int main(int argc, char **argv)
 {
     pid_t pid, parentpid;
-    char buf[10];
     time_t mtime;
     int dologout = 0;
     struct sigaction sa;
@@ -107,9 +105,7 @@ int main(int argc, char **argv)
 
     /*  Figure out the filename  */
 
-    strcpy(filename, PID_FILE_TEMPLATE);
-    itoa(getuid(), buf);
-    strcat(filename, buf);
+    sprintf (filename, "%s%d", PID_FILE_TEMPLATE, getuid());
 
     /*  Put pid in file for the first time  */
 
@@ -325,26 +321,6 @@ void SGISession_Debug(char *message)
 }
 #endif
 
-
-static int powers[] = {100000,10000,1000,100,10,1,0};
-
-int itoa(int x, char *buf)
-{
-    int i;
-    int pos=0;
-    int digit;
-
-    for (i = 0; powers[i]; i++)
-      {
-	  digit = (x/powers[i]) % 10;
-	  if ((pos > 0) || (digit != 0) || (powers[i+1] == 0))
-	    buf[pos++] = '0' + (char) digit;
-      }
-    buf[pos] = '\0';
-    return pos;
-}
-
-
 void cleanup(void)
 {
     unlink(filename);
@@ -467,9 +443,8 @@ time_t update_pid_file(char* filename, pid_t pid)
 
 void write_pid_to_file(pid_t pid, int fd)
 {
-    char buf[10];
+    char buf[50];
 
-    itoa(pid, buf);
-    strcat(buf, "\n");
+    sprintf (buf, "%d\n", pid);
     write(fd, buf, strlen(buf));
 }
