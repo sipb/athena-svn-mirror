@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *	$Id: data.c,v 1.15 1990-12-12 17:48:09 lwvanels Exp $
+ *	$Id: data.c,v 1.16 1990-12-17 08:30:12 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.15 1990-12-12 17:48:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.16 1990-12-17 08:30:12 lwvanels Exp $";
 #endif
 #endif
 
@@ -49,6 +49,7 @@ char *STDERR_LOG         = "/usr/adm/olc/errors";
 char *TOPIC_FILE         = "/usr/lib/olc/topics";
 char *MOTD_FILE          = "/usr/lib/olc/motd";
 char *MOTD_TIMEOUT_FILE  = "/usr/lib/olc/motd_timeout";
+char *MOTD_HOLD_FILE	 = "/usr/lib/olc/motd_hold";
 char *MACH_TRANS_FILE    = "/usr/lib/olc/translations";
 
 char *LIST_FILE_NAME     = "/usr/spool/olc/qlist_-1.log";

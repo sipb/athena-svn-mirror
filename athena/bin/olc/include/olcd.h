@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.24 1990-12-12 15:08:23 lwvanels Exp $
+ *	$Id: olcd.h,v 1.25 1990-12-17 08:32:57 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -62,6 +62,7 @@ extern char *DATABASE_FILE;
 extern char *TOPIC_FILE;
 extern char *MOTD_FILE;
 extern char *MOTD_TIMEOUT_FILE;
+extern char *MOTD_HOLD_FILE;
 extern char *MACH_TRANS_FILE;
 extern char *LIST_FILE_NAME;
 extern char *LIST_TMP_NAME;
