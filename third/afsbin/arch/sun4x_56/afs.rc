@@ -24,6 +24,8 @@ killproc() {            # kill the named process(es)
 case $1 in
 'start')
 
+umask 022
+
 #
 # Athena additions
 #
