@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.22 1991-04-08 21:13:07 lwvanels Exp $
+ *	$Id: s_io.c,v 1.23 1991-04-09 01:27:05 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.22 1991-04-08 21:13:07 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.23 1991-04-09 01:27:05 lwvanels Exp $";
 #endif
 #endif
 
@@ -138,12 +138,18 @@ read_request(fd, request)
 
 /* Always read ticket data; may just be ignored if not using kerberos */
   
+  if (sread(fd, (char *) &(request->kticket.length), sizeof(int)) !=
+      sizeof(int)) {
+    log_error("error reading ticket length: %m");
+    return(ERROR);
+  }
+
   request->kticket.length  = ntohl((u_long) request->kticket.length);
   
   if (request->kticket.length != 0) {
     if (sread(fd, (char *) request->kticket.dat,request->kticket.length) !=
 	request->kticket.length) {
-      log_error("error on read: kdata failure: %s");
+      log_error("error on read: kdata failure: %m");
       return(ERROR);
     }
   }
