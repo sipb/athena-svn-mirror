@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.26 1988-06-03 14:51:26 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.27 1988-06-15 22:51:51 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987,1988 Massachusetts Institute of Technology.\n";
 #ifdef CONCURRENT
 char concurrent[] = "Brain-dump concurrency enabled";
@@ -164,7 +164,6 @@ char **argv;
 #endif DEBUG
 
 	/* open log */
-	/* XXX eventually make this LOG_DAEMON */
 	openlog(programname, LOG_PID, LOG_LOCAL6);
 
 #ifdef DEBUG
