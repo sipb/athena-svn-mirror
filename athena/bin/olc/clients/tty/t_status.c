@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.3 1989-08-04 11:13:24 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_status.c,v 1.4 1989-08-07 13:49:24 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -91,21 +91,50 @@ t_display_personal_status(Request,list)
       if(list->nseen >= 0)
 	{
 	  if(list->connected.uid >= 0)
-	    printf("You are currently connected to %s %s (%s@%s)\n",
+	    {
+	      if(isme(Request))
+		printf("You are ");
+	      else
+		printf("%s %s is ",list->user.title, list->user.username);
+
+	      printf("currently connected to %s %s (%s@%s)\n",
 		   list->connected.title,list->connected.realname,
-		   list->connected.username,list->connected.machine);
+		     list->connected.username,list->connected.machine);
+	    }		
 	  else
-	    printf("You currently have %s \"%s\" question in the queue.\n",
+	    {
+	      if(isme(Request))
+		printf("You currently have ");
+	      else
+		printf("%s %s has ",list->user.title, list->user.username);
+
+	      printf("%s \"%s\" question in the queue.\n",
 		   article(list->topic),list->topic);
+	      if(OLC)
+		printf("You are waiting to be connected to a consultant.\n");
+	    }
 	}
       else
 	{
 	  if(list->connected.uid >= 0)
-	    printf("You are connected to user %s (%s@%s)\n",
-		   list->connected.realname,
-		   list->connected.username,list->connected.machine);
+	    {
+	      if(isme(Request))
+		printf("You are ");
+	      else
+		printf("%s is ",list->user.username);
+	      
+	      printf("connected to %s %s (%s@%s)\n",
+		     list->connected.title,list->connected.realname,
+		     list->connected.username,list->connected.machine);
+	    }
 	  else
-	    printf("You are signed on to OLC!\n");
+	    {
+	      if(isme(Request))
+		printf("You are ");
+	      else
+		printf("%s is ",list->user.username);
+	      printf("You are signed on to OLC!\n");
+	    }
 	}
     }
   else
