@@ -1,7 +1,8 @@
 [Desktop Entry]
 _Name=GNOME Control Center
 _Comment=The GNOME configuration tool
-Icon=control-center.png
-Exec=gnomecc
+Icon=control-center2.png
+Exec=gnome-control-center
 Terminal=0
 Type=Application
+Categories=Application;Settings;

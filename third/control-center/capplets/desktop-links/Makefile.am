@@ -1,58 +1,51 @@
-ccenterdir = $(datadir)/control-center
-Multimediadir	= $(ccenterdir)/Multimedia
-Desktopdir	= $(ccenterdir)/Desktop
-UIOptionsdir    = $(ccenterdir)/UIOptions
-Peripheralsdir  = $(ccenterdir)/Peripherals
-Sessiondir	= $(ccenterdir)/Session
-Documentsdir	= $(ccenterdir)/Documents
+## removed legacy applications for now -- grdb is not part of GNOME2
+capplets = 
 
-paneldir        = $(datadir)/gnome/apps/Settings
-Multimediadirp	= $(paneldir)/Multimedia
-Desktopdirp	= $(paneldir)/Desktop
-UIOptionsdirp   = $(paneldir)/UIOptions
-Peripheralsdirp = $(paneldir)/Peripherals
-Sessiondirp	= $(paneldir)/Session
-Documentsdirp	= $(paneldir)/Documents
+## Pixmaps
+
+pixmaps_pre = $(capplets:=-capplet.png)
+pixmaps_DATA = $(pixmaps_pre) advanced-directory.png accessibility-directory.png
+pixmapsdir = $(GNOMECC_ICONS_DIR)
+
+##
+##  Desktop files
+##
+
+desktop_files = $(capplets:=.desktop)
+desktop_in_files = $(desktop_files:.desktop=.desktop.in)
+desktop_in_in_files = $(desktop_files:.desktop=.desktop.in.in)
+
+desktopfilesdir = $(GNOMECC_DESKTOP_DIR)
+desktopfiles_DATA = $(desktop_files)
+
+CLEANFILES = $(desktop_files) $(desktop_in_files)
+EXTRA_DIST = $(desktop_in_in_files) $(groups_in_in_files) $(pixmaps_DATA)
+
+$(desktop_in_files): %.desktop.in: %.desktop.in.in
+	    cp $< $@
+
+@INTLTOOL_DESKTOP_RULE@
+
+all-local: $(desktop_files) $(groups_files)
 
 
 
-directory_in_files =				\
-	Gnome.directory.in			\
-	Desktop.directory.in			\
-	Peripherals.directory.in		\
-	Multimedia.directory.in			\
-	Session.directory.in			\
-	Documents.directory.in			\
-	UIOptions.directory.in
+## Create the .directory file
+##
+## foo.directory.in is created from foo.directory.in.in and substituting the Icon field with
+## the full path of the icon.
+## foo.directory.in is merged with the translations to create foo.directory
+## foo.directory is installed and renamed
+##
+groups = Advanced Accessibility
+groups_files = $(groups:=.directory)
+groups_in_files = $(groups_files:.directory=.directory.in)
+groups_in_in_files = $(groups_files:.directory=.directory.in.in)
 
-noinst_DATA = $(directory_in_files:.directory.in=.directory)
-@XML_I18N_MERGE_DIRECTORY_RULE@
+Gnomeccdir = $(datadir)/gnome/vfolders
+Gnomecc_DATA = $(groups_files)
 
-EXTRA_DIST = $(directory_in_files) $(noinst_DATA)
+$(groups_in_files): %.directory.in: %.directory.in.in
+	    cp $< $@
 
-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(Desktopdir)
-	$(mkinstalldirs) $(DESTDIR)$(Multimediadir)
-	$(mkinstalldirs) $(DESTDIR)$(UIOptionsdir)
-	$(mkinstalldirs) $(DESTDIR)$(Peripheralsdir)
-	$(mkinstalldirs) $(DESTDIR)$(Sessiondir)
-	$(mkinstalldirs) $(DESTDIR)$(Documentsdir)
-	$(INSTALL_DATA) $(srcdir)/Gnome.directory $(DESTDIR)$(ccenterdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Multimedia.directory $(DESTDIR)$(Multimediadir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Desktop.directory $(DESTDIR)$(Desktopdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/UIOptions.directory $(DESTDIR)$(UIOptionsdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Peripherals.directory $(DESTDIR)$(Peripheralsdir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Session.directory $(DESTDIR)$(Sessiondir)/.directory
-	$(INSTALL_DATA) $(srcdir)/Documents.directory $(DESTDIR)$(Documentsdir)/.directory
-	$(mkinstalldirs) $(DESTDIR)$(Desktopdirp)
-	$(mkinstalldirs) $(DESTDIR)$(Multimediadirp)
-	$(mkinstalldirs) $(DESTDIR)$(UIOptionsdirp)
-	$(mkinstalldirs) $(DESTDIR)$(Peripheralsdirp)
-	$(mkinstalldirs) $(DESTDIR)$(Sessiondirp)
-	$(mkinstalldirs) $(DESTDIR)$(Documentsdirp)
-	$(INSTALL_DATA) $(srcdir)/Multimedia.directory $(DESTDIR)$(Multimediadirp)/.directory
-	$(INSTALL_DATA) $(srcdir)/Desktop.directory $(DESTDIR)$(Desktopdirp)/.directory
-	$(INSTALL_DATA) $(srcdir)/UIOptions.directory $(DESTDIR)$(UIOptionsdirp)/.directory
-	$(INSTALL_DATA) $(srcdir)/Peripherals.directory $(DESTDIR)$(Peripheralsdirp)/.directory
-	$(INSTALL_DATA) $(srcdir)/Session.directory $(DESTDIR)$(Sessiondirp)/.directory
-	$(INSTALL_DATA) $(srcdir)/Documents.directory $(DESTDIR)$(Documentsdirp)/.directory
+@INTLTOOL_DIRECTORY_RULE@

@@ -1,4 +1,4 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+/* config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
 
 /* Define if using alloca.c.  */
 #undef C_ALLOCA
@@ -40,25 +40,16 @@
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
-/* Define if lex declares yytext as a char * by default, not a char[].  */
-#undef YYTEXT_POINTER
+/* Define if the X Window System is missing or not being used.  */
+#undef X_DISPLAY_MISSING
 
-#undef ENABLE_NLS
-#undef HAVE_CATGETS
-#undef HAVE_DEVGTK
-#undef HAVE_GETTEXT
-#undef HAVE_LC_MESSAGES
-#undef HAVE_STPCPY
-#undef HAVE_LIBSM
-#undef HAVE_PROGRAM_INVOCATION_SHORT_NAME
-#undef HAVE_PROGRAM_INVOCATION_NAME
-#undef PACKAGE
+#undef GNOMECC_DATA_DIR
+
+#undef GETTEXT_PACKAGE
 #undef VERSION
 
-#undef HAVE_ESD
-#undef HAVE_LIBESD
-
-#undef GNOME_ICONDIR
+#undef HAVE_PUTENV
+#undef HAVE_SETENV
 
 /* Define if you have the __argz_count function.  */
 #undef HAVE___ARGZ_COUNT
@@ -72,17 +63,8 @@
 /* Define if you have the dcgettext function.  */
 #undef HAVE_DCGETTEXT
 
-/* Define if you have the dlopen function.  */
-#undef HAVE_DLOPEN
-
-/* Define if you have the flockfile function.  */
-#undef HAVE_FLOCKFILE
-
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
-
-/* Define if you have the getline function.  */
-#undef HAVE_GETLINE
 
 /* Define if you have the getpagesize function.  */
 #undef HAVE_GETPAGESIZE
@@ -99,9 +81,6 @@
 /* Define if you have the setlocale function.  */
 #undef HAVE_SETLOCALE
 
-/* Define if you have the stpcpy function.  */
-#undef HAVE_STPCPY
-
 /* Define if you have the strcasecmp function.  */
 #undef HAVE_STRCASECMP
 
@@ -114,17 +93,14 @@
 /* Define if you have the usleep function.  */
 #undef HAVE_USLEEP
 
-/* Define if you have the <X11/SM/SMlib.h> header file.  */
-#undef HAVE_X11_SM_SMLIB_H
+/* Define if you have the <X11/extensions/XKB.h> header file.  */
+#undef HAVE_X11_EXTENSIONS_XKB_H
 
 /* Define if you have the <X11/extensions/xf86misc.h> header file.  */
 #undef HAVE_X11_EXTENSIONS_XF86MISC_H
 
 /* Define if you have the <argz.h> header file.  */
 #undef HAVE_ARGZ_H
-
-/* Define if you have the <dl.h> header file.  */
-#undef HAVE_DL_H
 
 /* Define if you have the <dlfcn.h> header file.  */
 #undef HAVE_DLFCN_H
@@ -141,29 +117,14 @@
 /* Define if you have the <nl_types.h> header file.  */
 #undef HAVE_NL_TYPES_H
 
-/* Define if you have the <stdlib.h> header file.  */
-#undef HAVE_STDLIB_H
-
 /* Define if you have the <string.h> header file.  */
 #undef HAVE_STRING_H
 
 /* Define if you have the <sys/param.h> header file.  */
 #undef HAVE_SYS_PARAM_H
 
-/* Define if you have the <sys/stat.h> header file.  */
-#undef HAVE_SYS_STAT_H
-
-/* Define if you have the <sys/types.h> header file.  */
-#undef HAVE_SYS_TYPES_H
-
 /* Define if you have the <unistd.h> header file.  */
 #undef HAVE_UNISTD_H
-
-/* Define if you have the gnomeui library (-lgnomeui).  */
-#undef HAVE_LIBGNOMEUI
-
-/* Define if you have the i library (-li).  */
-#undef HAVE_LIBI
 
 /* Name of package */
 #undef PACKAGE
@@ -173,4 +134,10 @@
 
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
+
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#undef HAVE_GETTEXT
+
+/* always defined to indicate that i18n is enabled */
+#undef ENABLE_NLS
 

@@ -1,0 +1,8 @@
+[Desktop Entry]
+_Name=Font
+_Comment=Select fonts for the desktop
+Exec=gnome-font-properties
+Icon=font-capplet.png
+Terminal=0
+Type=Application
+Categories=Settings;Appearance;

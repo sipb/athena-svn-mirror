@@ -1,58 +1,28 @@
-NULL =
-
 SUBDIRS = libuuid
 
-INCLUDES = -I. 						\
-	-I$(top_srcdir) 				\
-	-I$(srcdir) 					\
-	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
-	-I$(top_srcdir)/libgnomevfs			\
-	-I$(srcdir)/../../control-center		\
-	$(GNOME_INCLUDEDIR)				\
-	$(GTK_CFLAGS)					\
-	$(PIXBUF_CFLAGS)				\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	-I$(includedir)					\
-	$(VFS_CFLAGS) $(WERROR)				\
-	$(NULL)
+bin_PROGRAMS = gnome-file-types-properties
 
+gnome_file_types_properties_LDADD = $(GNOMECC_CAPPLETS_LIBS) $(VFS_CAPPLET_LIBS) libuuid/libuuid.a
 
-bin_PROGRAMS = file-types-capplet
+gnome_file_types_properties_SOURCES =					\
+	file-types-capplet.c						\
+	mime-types-model.c		mime-types-model.h		\
+	model-entry.c			model-entry.h			\
+	mime-type-info.c		mime-type-info.h		\
+	mime-edit-dialog.c		mime-edit-dialog.h		\
+	mime-category-edit-dialog.c	mime-category-edit-dialog.h	\
+	service-info.c			service-info.h			\
+	service-edit-dialog.c		service-edit-dialog.h
 
-file_types_capplet_SOURCES =			\
-	file-types-capplet.h 		\
-	file-types-capplet-dialogs.h 	\
-	file-types-icon-entry.h		\
-	file-types-capplet.c		\
-	file-types-capplet-dialogs.c 	\
-	file-types-icon-entry.c		\
-	$(NULL)
+@INTLTOOL_DESKTOP_RULE@
 
+Gladedir   = $(GNOMECC_GLADE_DIR)
+Glade_DATA = file-types-properties.glade
 
-file_types_capplet_LDADD =			\
-	../../control-center/libcapplet.la	\
-	$(ORBIT_LIBS)				\
-	$(INTLLIBS)				\
-	$(VFS_LIBS)				\
-	$(PIXBUF_LIBS)				\
-	$/libuuid/libuuid.a			\
-	$(NULL)
+desktopdir = $(GNOMECC_DESKTOP_DIR)
+Desktop_in_files = file-types.desktop.in
+desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
 
-
-sysdir = $(datadir)/control-center/Documents
-sys_in_files = file-types-capplet.desktop.in 
-sys_DATA = $(sys_in_files:.desktop.in=.desktop)
-
-settingsdir = $(datadir)/gnome/apps/Settings
-settings_DATA = $(sys_DATA)
-
-@XML_I18N_MERGE_DESKTOP_RULE@
-
-EXTRA_DIST = \
-	$(sys_DATA) $(sys_in_files)
-
-
-
-
-
-
+INCLUDES   = $(GNOMECC_CAPPLETS_CFLAGS) $(VFS_CAPPLET_CFLAGS)
+CLEANFILES = $(GNOMECC_CAPPLETS_CLEANFILES)
+EXTRA_DIST = $(Glade_DATA) $(Desktop_in_files)
