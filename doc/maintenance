@@ -133,11 +133,11 @@ general architecture of the wash process is:
 	  lines of the wash log, and saves the wash log in /var/wash
 	  on the local disk.
 
-The souce for the wash scripts lives in /afs/dev.mit.edu/service/wash.
+Source for the wash scripts lives in /afs/dev.mit.edu/service/wash.
 They are installed in /usr/local on the wash machines, along with a
 copy of krbtgp from the net-tools locker in /usr/local/bin.  Logs of
 the start and end times of the wash processes on each machine live in
-/var/wash/log.
+/afs/dev.mit.edu/service/wash/status/`hostname`.
 
 Imake templates
 ---------------
@@ -151,6 +151,9 @@ We don't like imake, but we maintain two sets of imake templates:
 		and one glorious day in the future they will no longer
 		be necessary.
 
+		For these templates, you should define TOPDIR to the
+		top-level source directory.
+
 	* packs/build/xconfig
 
 		These templates are used for building software which
@@ -160,8 +163,8 @@ We don't like imake, but we maintain two sets of imake templates:
 		the imake model isn't really adequate for dealing with
 		third-party software and local site customizations.
 
-Both sets of templates require you to define SRCDIR if you're going to
-do a "make Makefiles" or "make Makefile".
+		For these templates, you should define TOPDIR to "."
+		and SRCDIR to the top-level source directory.
 
 Release cycles
 --------------
