@@ -1,10 +1,12 @@
-# $Id: Makefile,v 1.11 2002-08-23 19:40:19 mwhitson Exp $
+# $Id: Makefile,v 1.12 2002-08-29 19:45:04 mwhitson Exp $
 
 SHELL=/bin/sh
 PROTOTYPE=/usr/prototype_user
 PROTOTMP=/usr/athena/lib/prototype_tmpuser
 SYSTEM=/usr/athena/lib/init
 ATHMANDIR=/usr/athena/man
+ATHRETCDIR=/etc/athena
+ATHLOGINDIR=${ATHRETCDIR}/login
 
 all:
 	cd os/${OS} && ${MAKE} $@
@@ -18,8 +20,10 @@ install:
 	mkdir -p ${DESTDIR}${SYSTEM}
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man7
+	mkdir -p ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 README.mail ${DESTDIR}${PROTOTYPE}
 	install -c -m 0644 README.mail ${DESTDIR}${PROTOTMP}
+	install -c -m 0755 Xsession ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 cshrc ${DESTDIR}${SYSTEM}
 	install -c -m 0644 dot.cshrc ${DESTDIR}${PROTOTYPE}/.cshrc
 	install -c -m 0644 dot.cshrc ${DESTDIR}${PROTOTMP}/.cshrc
@@ -42,6 +46,7 @@ install:
 	install -c -m 0644 temp.mh_profile ${DESTDIR}${PROTOTMP}/.mh_profile
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTYPE}
 	install -c -m 0644 welcome ${DESTDIR}${PROTOTMP}
+	install -c -m 0755 xsession ${DESTDIR}${SYSTEM}
 	cd os/${OS} && ${MAKE} $@
 
 clean:
