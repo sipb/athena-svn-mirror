@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.2 1989-11-17 13:57:47 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.3 1989-12-18 10:24:35 raeburn Exp $";
 #endif
 
 
@@ -89,7 +89,7 @@ read_request(fd, request)
   request->requester.instance = ntohl((u_long) io_req.requester.instance);
   request->version            = ntohl((u_long) io_req.version);
 
-#ifdef TEST
+#if 0
   printf("%d %d\n",request->requester.uid,request->version);
 #endif TEST
 
@@ -109,7 +109,7 @@ read_request(fd, request)
   
   request->kticket.length  = ntohl((u_long) request->kticket.length);
 
-#ifdef TEST
+#if 0
   printf("klength: %d\n",request->kticket.length);
 #endif TEST
 
