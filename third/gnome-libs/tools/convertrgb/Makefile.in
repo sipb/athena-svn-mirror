@@ -144,7 +144,7 @@ gnomelocaledir = @gnomelocaledir@
 l = @l@
 need_gnome_support = @need_gnome_support@
 
-INCLUDES =          -I$(includedir) @GLIB_CFLAGS@
+INCLUDES =          @GLIB_CFLAGS@
 
 
 noinst_PROGRAMS = convertrgb
@@ -287,16 +287,13 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-convertrgb.o: convertrgb.c convertrgb.h ../../config.h
-loadpng.o: loadpng.c convertrgb.h ../../config.h
-
 info-am:
 info: info-am
 dvi-am:

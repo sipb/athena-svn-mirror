@@ -146,7 +146,7 @@ need_gnome_support = @need_gnome_support@
 
 libgtkxmhtmlincludedir = $(includedir)/gtk-xmhtml
 
-INCLUDES = -I.. -I$(srcdir)/.. -I$(includedir) @GTK_CFLAGS@            -DWITH_GTK -DDEBUG -DGNOME_LIB
+INCLUDES = -I.. -I$(srcdir)/.. @GTK_CFLAGS@            -DWITH_GTK -DDEBUG -DGNOME_LIB
 
 
 lib_LTLIBRARIES = libgtkxmhtml.la
@@ -347,7 +347,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -355,93 +355,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-callbacks.lo callbacks.o : callbacks.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h toolkit.h
-colors.lo colors.o : colors.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-debug.lo debug.o : debug.c ../config.h XmHTMLfuncs.h debug.h
-events.lo events.o : events.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-fonts.lo fonts.o : fonts.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-format.lo format.o : format.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-frames.lo frames.o : frames.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h toolkit.h
-gtk-error.lo gtk-error.o : gtk-error.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-gtk-forms.lo gtk-forms.o : gtk-forms.c XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-images.lo images.o : images.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h plc.h toolkit.h LZWStream.h \
-	bitmaps/boomerang.xpm bitmaps/noboomerang.xpm
-layout.lo layout.o : layout.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-LZWStream.lo LZWStream.o : LZWStream.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h LZWStream.h
-map.lo map.o : map.c ../config.h XmHTMLP.h toolkit.h XmHTML.h HTML.h \
-	XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h XmHTMLfuncs.h \
-	debug.h
-paint.lo paint.o : paint.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-parse.lo parse.o : parse.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-plc.lo plc.o : plc.c ../config.h toolkit.h XmHTMLP.h XmHTML.h HTML.h \
-	XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h XmHTMLfuncs.h \
-	debug.h plc.h toolkit.h LZWStream.h
-quantize.lo quantize.o : quantize.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-readBitmap.lo readBitmap.o : readBitmap.c ../config.h XmHTMLP.h \
-	toolkit.h XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h \
-	gtk-xmhtml-p.h XmHTMLfuncs.h debug.h plc.h toolkit.h \
-	LZWStream.h
-readFLG.lo readFLG.o : readFLG.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-readGIF.lo readGIF.o : readGIF.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h LZWStream.h
-readGIFplc.lo readGIFplc.o : readGIFplc.c ../config.h XmHTMLP.h \
-	toolkit.h XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h \
-	gtk-xmhtml-p.h XmHTMLfuncs.h debug.h LZWStream.h plc.h \
-	toolkit.h
-readJPEG.lo readJPEG.o : readJPEG.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-readJPEGplc.lo readJPEGplc.o : readJPEGplc.c ../config.h XmHTMLP.h \
-	toolkit.h XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h \
-	gtk-xmhtml-p.h XmHTMLfuncs.h debug.h plc.h toolkit.h \
-	LZWStream.h
-readPNG.lo readPNG.o : readPNG.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h
-readXPM.lo readXPM.o : readXPM.c ../config.h XmHTMLP.h toolkit.h \
-	XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h plc.h toolkit.h LZWStream.h
-StringUtil.lo StringUtil.o : StringUtil.c ../config.h toolkit.h \
-	XmHTMLP.h XmHTML.h HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h \
-	gtk-xmhtml-p.h XmHTMLfuncs.h debug.h escapes.h
-test.o: test.c gtk-xmhtml.h toolkit.h XmHTML.h HTML.h XmHTMLP.h \
-	XmHTMLI.h gtk-xmhtml-p.h
-XmHTML.lo XmHTML.o : XmHTML.c ../config.h XmHTMLP.h toolkit.h XmHTML.h \
-	HTML.h XmHTMLI.h gtk-xmhtml.h XmHTMLP.h gtk-xmhtml-p.h \
-	XmHTMLfuncs.h debug.h bitmaps/fingers.xbm bitmaps/fingers_m.xbm \
-	gtk-xmhtml.c
-
 info-am:
 info: info-am
 dvi-am:
