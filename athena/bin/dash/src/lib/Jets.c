@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.6 1996-09-19 22:21:40 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Jets.c,v 1.7 1998-08-27 20:21:43 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -607,7 +607,8 @@ void XjFillInValue(display, window, where, resource, type, address)
     {
       memcpy(where + resource->resource_offset,
 	    &address,
-	    (resource->resource_size > 4) ? 4 : resource->resource_size);
+	    (resource->resource_size > sizeof(caddr_t)) ? sizeof(caddr_t) : 
+	     resource->resource_size);
       return;
     }
 
@@ -1386,8 +1387,8 @@ va_dcl
 	  if (!strcmp(valName, resource.resource_name))
 	    {
 	      GetVal(((caddr_t)jet) + resource.resource_offset, &val,
-		     (resource.resource_size > 4)
-		     ? 4 : resource.resource_size);
+		     (resource.resource_size > sizeof(caddr_t))
+		     ? sizeof(caddr_t) : resource.resource_size);
 	      break;
 	    }
 	}

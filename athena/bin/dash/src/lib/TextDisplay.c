@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v 1.4 1996-09-19 22:23:31 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v 1.5 1998-08-27 20:21:44 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -48,9 +48,9 @@ static XjResource resources[] = {
       offset(textDisplay.foreground), XjRString, XjDefaultForeground },
   { XjNbackground, XjCBackground, XjRColor, sizeof(int),
       offset(textDisplay.background), XjRString, XjDefaultBackground },
-  { XjNhighlightForeground, XjCForeground, XjRString, sizeof(int),
+  { XjNhighlightForeground, XjCForeground, XjRString, sizeof(char*),
       offset(textDisplay.hl_fg_name), XjRString, "" },
-  { XjNhighlightBackground, XjCBackground, XjRString, sizeof(int),
+  { XjNhighlightBackground, XjCBackground, XjRString, sizeof(char*),
       offset(textDisplay.hl_bg_name), XjRString, "" },
   { XjNreverseVideo, XjCReverseVideo, XjRBoolean, sizeof(Boolean),
       offset(textDisplay.reverseVideo), XjRBoolean, (caddr_t)False },

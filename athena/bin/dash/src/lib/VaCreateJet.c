@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/VaCreateJet.c,v 1.3 1997-02-21 21:51:50 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/VaCreateJet.c,v 1.4 1998-08-27 20:21:44 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -37,14 +37,16 @@ void XjCopyValue(where, resource, value)
 {
   memcpy((char *) where + resource->resource_offset,
 	 &value,
-	(resource->resource_size > 4) ? 4 : resource->resource_size);
+	(resource->resource_size > sizeof(void*)) ? sizeof(void*) : 
+	 resource->resource_size);
 }
 #endif
 
 #define XjCopyValue(where, resource, value) \
   memcpy((char *)(where) + (resource)->resource_offset, \
 	&(value), \
-	((resource)->resource_size > 4) ? 4 : (resource)->resource_size)
+	((resource)->resource_size > sizeof(void*)) ? sizeof(void*) : \
+	 (resource)->resource_size)
 
 Jet XjVaCreateJet(name, class, parent, va_alist)
 char *name;
