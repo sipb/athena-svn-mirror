@@ -6,6 +6,7 @@ all: llib-lacl.ln libacl.a
 
 install: all
 	install libacl.a ${DESTDIR}/usr/athena/lib/libacl.a
+	ranlib ${DESTDIR}/usr/athena/lib/libacl.a
 	cp llib-lacl.ln ${DESTDIR}/usr/athena/lib/llib-lacl.ln
 
 clean:
