@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.6 2000-02-23 21:32:23 ghudson Exp $
+# $Id: update_ws.sh,v 1.7 2000-02-29 19:42:55 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -90,33 +90,12 @@ fi
 # Change to the system area.
 cd "$SYSPREFIX" || errorout "Can't change to system area $SYSPREFIX."
 
-# Read the control file.
-exec 3< "$SYSCONTROL" || errorout "Can't read control file $SYSCONTROL."
-unset newvers scripts oldlist newlist
-while read version filename throw_away_the_rest <&3; do
-	# Ignore blank lines and comments.
-	if [ -z "$version" -o `expr "$version" : '#'` -ne 0 ]; then
-		continue
-	fi
+# Get the latest version from the control file.
+set -- `tail -1 $SYSCONTROL`
+newvers=$1
+newlist=$2
 
-	if [ "x$version" = "x$oldvers" ]; then
-		# Remember the old list filename.
-		oldlist=$filename
-	elif [ -n "$oldlist" ]; then
-		# We've passed the old version; set the new version
-		# and new list filename (we'll keep resetting those
-		# until we reach the end).
-		newvers=$version
-		newlist=$filename
-	fi
-done
-exec 3<&-
-
-if [ -z "$oldlist" ]; then
-	errorout "Couldn't find $oldvers in $SYSCONTROL."
-fi
-
-if [ -z "$newlist" ]; then
+if [ "x$newvers" = "x$oldvers" ]; then
 	# There's no new version available.  Print something and exit.
 	# XXX This is where we should deal with NEW_TESTING_RELEASE and
 	# NEW_PRODUCTION_RELEASE, but right now we don't have a manual
@@ -145,11 +124,19 @@ if [ true = "$auto" -a reactivate = "$why" ]; then
 	fi
 fi
 
-# Translate public status into command-line flag.
+# Translate public status into command-line flag and old list filename.
+# rpmupdate does not use the information from the old list for public
+# updates.
 if [ true = "$PUBLIC" ]; then
 	publicflag=-p
+	oldlist=/dev/null
 else
 	publicflag=
+	oldlist=/var/athena/release-rpms
+fi
+
+if [ ! -r "$oldlist" ]; then
+	errorout "Cannot read old release list $oldlist."
 fi
 
 # If we're doing a dry run, here's where we get off the train.
@@ -173,6 +160,7 @@ failupdate() {
 	echo "Athena Workstation ($hosttype) Version Update `date`" >> \
 		/etc/athena/version
 	rpmupdate $publicflag "$oldlist" "$newlist" || failupdate
+	cp "$newlist" "$oldlist" || failupdate
 	echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
 		/etc/athena/version
 	echo "Ending update from $oldvers to $newvers at `date`."
