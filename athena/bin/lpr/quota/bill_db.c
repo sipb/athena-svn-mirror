@@ -221,8 +221,7 @@ char semester;
 	if (quota_db_get_principal(temp.name, temp.instance, temp.service,
 				   temp.realm, &qrec, (unsigned int)1,
 				   &more) == 1) { 
-	  billing_amount = qrec.quotaAmount - qrec.quotaLimit
-	    - qrec.yearToDateCharge;
+	  billing_amount = qrec.quotaAmount - qrec.quotaLimit;
 	  if (billing_amount < 500) {  /* restore and continue */
 	    qrec.pendingCharge = billing_amount;
 	    if (quota_db_put_principal(&qrec, (unsigned int)1) <= 0)
@@ -258,10 +257,10 @@ char semester;
       continue;
     }
     /* else the username was not found */
-    if (temp.quotaAmount - temp.quotaLimit - temp.yearToDateCharge > 500) {
+    if (temp.quotaAmount - temp.quotaLimit > 500) {
       fprintf(stderr, "%s was not found in list and ", temp.name);
       fprintf(stderr, "needs to be billed for %d.\n",
-	      temp.quotaAmount - temp.quotaLimit - temp.yearToDateCharge);
+	      temp.quotaAmount - temp.quotaLimit);
     }
     bzero(&temp, sizeof(temp));
   }
