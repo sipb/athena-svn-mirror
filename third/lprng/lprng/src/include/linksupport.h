@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: linksupport.h,v 1.1.1.2 1999-05-04 18:07:15 danw Exp $
+ * $Id: linksupport.h,v 1.1.1.2.2.1 2000-01-07 21:05:48 ghudson Exp $
  ***************************************************************************/
 
 
@@ -14,6 +14,7 @@
 
 /* PROTOTYPES */
 int Link_setreuse( int sock );
+int Link_setkeepalive( int sock );
 int connect_timeout( int timeout,
 	int sock, struct sockaddr *name, int namelen);
 int getconnection ( char *hostname, char *dest_port,

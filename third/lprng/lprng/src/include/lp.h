@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lp.h,v 1.7 1999-05-24 18:34:56 danw Exp $
+ * $Id: lp.h,v 1.7.2.1 2000-01-07 21:05:48 ghudson Exp $
  ***************************************************************************/
 
 
@@ -313,6 +313,7 @@ EXTERN char* IF_Filter_DYN; /* filter command, run on a per-file basis */
 EXTERN int IPV6Protocol_DYN;	/* IPV4 or IPV6 protocol */
 EXTERN int Ignore_requested_user_priority_DYN;	 /* ignore requested user priority */
 EXTERN int KA_DYN;
+EXTERN int Keepalive_DYN;	/* TCP keepalive enabled */
 EXTERN char* Kerberos_keytab_DYN;	/* kerberos keytab file */
 EXTERN char* Kerberos_dest_id_DYN;	/* kerberos keytab file */
 EXTERN char* Kerberos_life_DYN;	/* kerberos lifetime */

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: linksupport.c,v 1.1.1.1.2.1 1999-06-28 19:32:11 ghudson Exp $";
+"$Id: linksupport.c,v 1.1.1.1.2.2 2000-01-07 21:05:37 ghudson Exp $";
 
 
 /***************************************************************************
@@ -192,7 +192,29 @@ int Link_setreuse( int sock )
 		}
 	}
 #endif
+	return( option );
+}
 
+int Link_setkeepalive( int sock )
+{
+	int option = 0;
+#ifdef SO_KEEPALIVE
+	int len;
+
+	len = sizeof( option );
+
+	if( getsockopt( sock, SOL_SOCKET, SO_KEEPALIVE, (char *)&option, &len ) ){
+		logerr_die( LOG_ERR, "Link_setkeepalive: getsockopt SO_KEEPALIVE failed" );
+	}
+	DEBUGF(DNW4) ("SO_KEEPALIVE: socket %d, value %d", sock, option);
+	if( option == 0 ){
+		option = 1;
+		if( setsockopt( sock, SOL_SOCKET, SO_KEEPALIVE,
+				(char *)&option, sizeof(option) ) ){
+			logerr_die( LOG_ERR, "Link_setkeepalive: setsockopt KEEPALIVE failed" );
+		}
+	}
+#endif
 	return( option );
 }
 /*
@@ -415,6 +437,17 @@ int getconnection ( char *hostname, char *dest_port,
 				plp_unblock_all_signals( &oblock );
 				DEBUGF(DNW2) ("getconnection: bind returns %d, sock %d, port %d, src '%s'",
 					status, sock, ntohs(src_sin.sin_port), inet_ntoa(src_sin.sin_addr) );
+			}
+			if( status >= 0 && Keepalive_DYN ){
+				/* we do the next without interrupts */
+				plp_block_all_signals( &oblock );
+				if( UID_root ) (void)To_root();
+				status = Link_setkeepalive( sock );
+				err = errno;
+				if( UID_root ) (void)To_uid( euid );
+				plp_unblock_all_signals( &oblock );
+				DEBUGF(DNW2) ("getconnection: sock %d, keepalive status %d",
+					sock, status );
 			}
 		} while( status < 0 && ++port_count < range );
 		if( status < 0 ){

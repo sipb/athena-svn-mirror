@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: vars.c,v 1.6 1999-05-24 18:34:54 danw Exp $";
+"$Id: vars.c,v 1.6.2.1 2000-01-07 21:05:37 ghudson Exp $";
 
 
 /* force local definitions */
@@ -210,6 +210,8 @@ struct keywords Pc_var_list[] = {
 { "ipv6",  FLAG_K,  &IPV6Protocol_DYN,0,0},
    /*  Old Athena Kerberos authentication flag */
 { "ka",  FLAG_K, &KA_DYN,0,0},
+	/* TCP keepalive enabled */
+{ "keepalive", FLAG_K, &Keepalive_DYN,0,0,"1"},
 	/* keytab file location for kerberos, used by server */
 { "kerberos_keytab", STRING_K, &Kerberos_keytab_DYN,0,0,"=/etc/lpd.keytab"},
 	/* key lifetime for kerberos, used by server */
