@@ -5,7 +5,7 @@
 #    
 #       $Source: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v $
 #       $Author: probe $
-#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.7 1989-06-13 18:28:51 probe Exp $
+#       $Header: /afs/dev.mit.edu/source/repository/athena/bin/xquota/Makefile,v 1.8 1989-06-13 18:50:42 probe Exp $
 #       
 #          Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #    
@@ -33,14 +33,14 @@ CC=pcc		# hc1.4 can't deal with widget.c
 all:		xquota
 xquota:		${OBJS}
 		cc ${CFLAGS} ${LDFLAGS} ${OBJS} -o xquota ${LIBS}
-clean: 	;
+clean:
 	rm -f *~ *.o xquota xquota.shar core xquota.cat 
 
-install: 	xquota
+install:
 	install -c -s xquota ${DESTDIR}/usr/athena/xquota
-	install -c Xquota.ad ${DESTDIR}${LIBDIR}/Xquota.ad
-	install -c top_help.txt ${DESTDIR}${LIBDIR}/top_help.txt
-	install -c pop_help.txt ${DESTDIR}${LIBDIR}/pop_help.txt
+	for i in Xquota.ad top_help.txt pop_help.txt; do \
+		install -c -m 0444 $$i ${DESTDIR}${LIBDIR}/$$i; \
+		done
 
 depend:
 	makedepend  -s "# DO NOT DELETE THIS LINE -- make depend uses it"\
