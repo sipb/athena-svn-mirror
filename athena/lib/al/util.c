@@ -17,7 +17,7 @@
  * miscellaneous functions.
  */
 
-static const char rcsid[] = "$Id: util.c,v 1.3 1997-11-13 21:56:35 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.4 1997-11-20 22:16:47 ghudson Exp $";
 
 #include <sys/param.h>
 #include <assert.h>
@@ -305,4 +305,19 @@ int al__read_line(FILE *fp, char **buf, int *bufsize)
       *buf = newbuf;
       *bufsize *= 2;
     }
+}
+
+/* Disallow usernames which might walk the filesystem, usernames which
+ * contain nonprintables, or usernames which might not play nice with the
+ * passwd file. */
+int al__username_valid(const char *username)
+{
+  if (!*username || *username == '.')
+    return 0;
+  for (; *username; username++)
+    {
+      if (!isprint(*username) || *username == '/' || *username == ':')
+	return 0;
+    }
+  return 1;
 }
