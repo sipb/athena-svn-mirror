@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.26 1998-03-18 15:12:34 miki Exp $
+# $Id: phase3.sh,v 1.27 1998-03-31 22:01:11 miki Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -66,7 +66,7 @@ cp -rp "/os/platform/$platform" "/root/platform/$platform"
 echo "Create devices and dev"
 mkdir /root/dev
 mkdir /root/devices
-if [ -f /srvd/install/devices ]; then
+if [ -d /srvd/install/devices ]; then
 	cd /root/devices; tar xf /srvd/install/devices/devices.pseudo.tar
 	cd /root/dev; tar xf /srvd/install/devices/dev.pseudo.tar
 	cd /root
