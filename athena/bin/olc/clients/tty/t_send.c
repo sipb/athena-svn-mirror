@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v $
- *	$Id: t_send.c,v 1.15 1991-01-21 01:12:06 lwvanels Exp $
+ *	$Id: t_send.c,v 1.16 1991-01-21 17:11:32 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.15 1991-01-21 01:12:06 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.16 1991-01-21 17:11:32 lwvanels Exp $";
 #endif
 #endif
 
@@ -200,12 +200,13 @@ t_comment(Request,file,editor)
 
 
 ERRCODE
-t_mail(Request,file,editor,smargs, check,noedit)
+t_mail(Request,file,editor,smargs, check,noedit, header)
      REQUEST *Request;
      char *file, *editor;
      char **smargs;
      int check;
      int noedit;
+     int header;
 {
   int status;
   LIST list;
@@ -266,14 +267,15 @@ t_mail(Request,file,editor,smargs, check,noedit)
 
       make_temp_name(tmp_file);
 
-      (void) OMailHeader(Request, tmp_file, username, realname,
-			 list.topic, DEFAULT_MAILHUB, message);
+      if (header)
+	(void) OMailHeader(Request, tmp_file, username, realname,
+			   list.topic, DEFAULT_MAILHUB, message);
 
       if (file[0] != '\0') {
 	int fd1, fd2;
 	char *tmp;
 
-	fd1 = open(tmp_file,O_WRONLY,0644);
+	fd1 = open(tmp_file,O_WRONLY|O_CREAT,0644);
 	fd2 = open(file,O_RDONLY,0644);
 	if (fd2 < 0) {
 	  fprintf(stderr,"No such file %s. . . aborting\n",file);
