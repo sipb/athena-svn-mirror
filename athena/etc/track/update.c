@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.5 1988-09-19 20:27:49 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.6 1991-02-28 11:35:53 epeisach Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.5  88/09/19  20:27:49  don
+ * bellcore copyright.
+ * 
  * Revision 4.4  88/06/13  16:27:24  don
  * fixed a bug in device-handling: if device major/minor #'s are wrong,
  * have to delete the node & call mknode().
@@ -64,7 +67,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.5 1988-09-19 20:27:49 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.6 1991-02-28 11:35:53 epeisach Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -73,12 +76,7 @@ static char
 #include "track.h"
 #include <sys/errno.h>
 
-/* this array converts stat()'s type-bits to a character string:
- * to make the index, right-shift the st_mode field by 13 bits.
- */
-static char *type_str[] = { "ERROR", "char-device", "directory",
-	"block-device", "file", "symlink", "socket(ERROR)", "nonexistent"
-};
+extern char *mode_to_string();
 
 #define DIFF( l, r, field) (short)(((l).sbuf.field) != ((r).sbuf.field))
 
@@ -204,7 +202,7 @@ struct currentness *r, *l;
 	    if ( get_currentness( rpath, r)) {
 		sprintf( errmsg,
 			 "master-copy doesn't exist:\n\t%s should be a %s.\n",
-			 rpath[ ROOT], type_str[ remote_type >> 13]);
+			 rpath[ ROOT], mode_to_string(remote_type));
 		do_gripe();
 
 		/* for nopullflag, 
@@ -460,11 +458,15 @@ struct stat *r;
 	return( error);
 } 
 
+#ifndef MAXBSIZE
+#define	MAXBSIZE 8192
+#endif
+
 copy_file(from,to)
 char *from,*to;
 {
-	char buf[MAXBSIZE],temp[LINELEN];
 	int cc, fdf, fdt;
+	char buf[MAXBSIZE],temp[LINELEN];
 
 	fdf = open(from,O_RDONLY);
 	if ( 0 > fdf) {
@@ -525,8 +527,8 @@ struct currentness *r, *l, *d;
 	char fill[ LINELEN], *lfill = "", *rfill = "";
 	int dlen;
 
-	ltype = type_str[ TYPE( *ls) >> 13];
-	rtype = type_str[ TYPE( *rs) >> 13];
+	ltype = mode_to_string(TYPE(*ls));
+	rtype = mode_to_string(TYPE(*rs));
 
 	dlen =	strlen( lname) - strlen( rname) +
 		strlen( ltype) - strlen( rtype);
