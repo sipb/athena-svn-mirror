@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.21 1994-05-10 11:40:21 cfields Exp $
+ * $Id: finger.c,v 1.22 1994-06-02 14:49:14 vrt Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.21 1994-05-10 11:40:21 cfields Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.22 1994-06-02 14:49:14 vrt Exp $";
 #endif lint
 
 /*
@@ -190,11 +190,13 @@ char ttnames[MAXTTYS][LMAX];	/* TTY names */
 long logouts[MAXTTYS];		/* Logout times */
 
 struct passwd *pwdcopy();
+#ifndef _IBMR2
 char *strcpy();
 char *strcat();
 char *strncpy();
 char *malloc();
 char *ctime();
+#endif
 
 long time();
 
