@@ -1,4 +1,4 @@
-#!@PERL@
+#!/usr/athena/bin/perl
 # shell for PCL banner printing 
 #
 #   
