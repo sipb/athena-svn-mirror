@@ -3,7 +3,7 @@
 # MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.8 1998-05-17 03:48:31 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.9 1998-08-11 18:14:15 danw Exp $
 #
 
 # Services moved from SGI's inetd.conf to be switched.
@@ -11,7 +11,7 @@
 shell	stream	tcp	nowait	switched	root	/usr/etc/rshd	rshd
 login	stream	tcp	nowait	switched	root	/usr/etc/rlogind	rlogind
 
-# Services moved from SGI's inted.conf here because IRIX 5.3's inetd is stupid
+# Services moved from SGI's inetd.conf here because IRIX 5.3's inetd is stupid
 # and logs errors when a service is run as a user other than root.
 
 finger	stream	tcp	nowait	unswitched	guest	/usr/etc/fingerd	fingerd
