@@ -8,8 +8,13 @@ static	char sccsid[] = "@(#)rquotaxdr.c 1.1 86/02/05 Copyr 1985 Sun Micro";
  */
 
 #include <stdio.h>
-#include <rpc/rpc.h>
+#include <sys/types.h>
+#ifdef _IBMR2
+#include <sys/select.h>
+#else
 #include <ufs/quota.h>
+#endif
+#include <rpc/rpc.h>
 #include <rpcsvc/rquota.h>
 
 

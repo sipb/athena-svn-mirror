@@ -1,15 +1,13 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/param.h>
-#include <rpc/rpc.h>
-
-#if !defined(ultrix) && !defined(_AIX)
-#include <ufs/quota.h>
-#endif
 #if defined(_AIX)
 #include <sys/select.h>
 #endif
-
+#if !defined(ultrix) && !defined(_AIX)
+#include <ufs/quota.h>
+#endif
+#include <rpc/rpc.h>
 #include <rpcsvc/rcquota.h>
 
 bool_t

@@ -4,6 +4,10 @@ static	char sccsid[] = "@(#)mountxdr.c 1.1 86/02/05 Copyr 1984 Sun Micro";
 #endif
 
 #include <stdio.h>
+#include <sys/types.h>
+#ifdef _IBMR2
+#include <sys/select.h>
+#endif
 #include <rpc/rpc.h>
 #include <sys/time.h>
 #include <sys/errno.h>
