@@ -9,7 +9,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/polld.h,v $
- *	$Id: polld.h,v 1.3 1991-01-27 17:04:06 lwvanels Exp $
+ *	$Id: polld.h,v 1.4 1991-11-05 13:58:36 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -23,6 +23,7 @@
 #include <olc/olc.h>
 #include <common.h>
 #include <olc/procs.h>
+#include <server_defines.h>
 
 #ifdef ZEPHYR
 #include <zephyr/zephyr.h>
@@ -66,6 +67,7 @@ struct hostent *c_gethostbyname P((char *name ));
 
 /* locate.c */
 int locate_person P((PTF *person ));
+void check_zephyr P((void));
 
 /* polld.c */
 int main P((int argc , char *argv []));
