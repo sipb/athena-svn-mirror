@@ -51,6 +51,7 @@ static char rcsid[] = "$NetBSD: io.c,v 1.4 1994/12/09 02:14:20 jtc Exp $";
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <curses.h>
 #include "talk.h"
 
 #define A_LONG_TIME 10000000
@@ -64,10 +65,13 @@ talk()
 {
 	register int read_template, sockt_mask;
 	int read_set, nb;
-	char buf[BUFSIZ];
+	char buf[BUFSIZ], *p;
 	struct timeval wait;
 
-	message("Connection established\007\007\007");
+	message("Connection established");
+	beep();
+	beep();
+	beep();
 	current_line = 0;
 	sockt_mask = (1<<sockt);
 
@@ -100,11 +104,11 @@ talk()
 			display(&his_win, buf, nb);
 		}
 		if (read_set & STDIN_MASK) {
-			/*
-			 * We can't make the tty non_blocking, because
-			 * curses's output routines would screw up
-			 */
 			nb = read(0, buf, sizeof(buf));
+			for (p = buf; p < buf + nb; p++) {
+				if (*p == '\r')
+					*p = '\n';
+			}
 			display(&my_win, buf, nb);
 			/* might lose data here because sockt is non-blocking */
 			write(sockt, buf, nb);
