@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.18 1988-03-09 16:02:21 treese Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.19 1988-05-31 14:42:00 shanzer Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.18 1988-03-09 16:02:21 treese Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.19 1988-05-31 14:42:00 shanzer Exp $";
 #endif	lint
 
 /*
@@ -429,6 +429,7 @@ main(argc, argv)
 				(void) insert_pwent(pwd);
 				tmppwflag = TRUE;
 			}
+			chown(getenv(KRB_ENVIRON), pwd->pw_uid, pwd->pw_gid);
 			/* If we already have a homedir, use it.
 			 * Otherwise, try to attach.  If that fails,
 			 * try to create.
@@ -657,7 +658,6 @@ leavethis:
 	close(f);
     }
     chown(ttyn, pwd->pw_uid, TTYGID(pwd->pw_gid));
-    if(krbflag) chown(getenv(KRB_ENVIRON), pwd->pw_uid, pwd->pw_gid);
 
     if (!hflag && !rflag && !pflag && !kflag && !Kflag)		/* XXX */
 	ioctl(0, TIOCSWINSZ, &win);
