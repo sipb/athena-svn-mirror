@@ -1,7 +1,7 @@
 /* Copyright (C) 1997, 1998, 1999 Marius Vollmer
  * Copyright (C) 1999-2000 John Harper <john@dcs.warwick.ac.uk>
  *
- * $Id: rep-types.c,v 1.1.1.1 2000-11-12 06:16:31 ghudson Exp $
+ * $Id: rep-types.c,v 1.1.1.2 2003-01-05 00:30:07 ghudson Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,6 +230,13 @@ list_length (repv list)
 {
     repv len = Flength (list);
     return (len && rep_INTP (len)) ? rep_INT (len) : 0;
+}
+
+/* namespace fuckage. needed so we can represent GObject base class */
+GType
+gobject_get_type (void)
+{
+  return G_TYPE_OBJECT;
 }
 
 
@@ -587,8 +594,6 @@ sgtk_cvec_to_rep (sgtk_cvec *cvec, repv (*toscm)(void *), size_t sz)
 repv
 rep_dl_init (void)
 {
-    repv tem = rep_push_structure ("gui.gtk.types");
-    /* ::alias:sgtk-types gui.gtk.types:: */
-    rep_alias_structure ("sgtk-types");
+    repv tem = rep_push_structure ("gui.gtk-2.types");
     return rep_pop_structure (tem);
 }

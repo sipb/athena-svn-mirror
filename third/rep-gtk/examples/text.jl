@@ -12,17 +12,15 @@ exec rep --batch "$0" "$@"
 
   (define window (gtk-window-new 'toplevel))
 
-  (define button (gtk-button-new-with-label "say hello"))
+  (define view (gtk-text-view-new))
 
-  (gtk-container-set-border-width window 10)
+  (define buffer (gtk-text-view-get-buffer view))
 
-  (g-signal-connect window "delete_event" (lambda (w) (throw 'quit 0)))
+  (g-signal-connect window "delete_event" (lambda () (throw 'quit 0)))
 
-  (g-signal-connect button "clicked"
-		    (lambda ()
-		      (write standard-output "hello, world\n")))
-
-  (gtk-container-add window button)
+  (gtk-text-buffer-set-text buffer "Hello, this is some text" -1)
+  (gtk-container-add window view)
+  (gtk-window-set-default-size window 300 200)
   (gtk-widget-show-all window)
 
   (setq interrupt-mode 'exit)

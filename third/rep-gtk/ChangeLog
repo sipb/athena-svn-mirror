@@ -1,3 +1,225 @@
+2002-11-09  John Harper  <jsh@unfactored.org>
+
+	* configure.in: version 0.17
+
+2002-11-03  John Harper  <jsh@unfactored.org>
+
+	* gtk.defs (gtk_widget_set_size_request,
+	gtk_widget_get_size_request): added these two functions
+
+2002-10-24  John Harper  <jsh@unfactored.org>
+
+	* examples/text.jl, examples/hello.jl, examples/clist.jl:
+	tidied up these examples
+
+	* gdk.defs (GdkSelection): cast items to integers to avoid
+	generating compiler errors on IRIX
+
+2002-07-11  John Harper  <jsh@unfactored.org>
+
+	* gtk-compat.c (gtk_color_selection_set_color_interp,
+	gtk_color_selection_get_color_interp): Include space for alpha
+	in calls to gtk_color_selection_{get,set}_color. Fixes #87959
+
+2002-06-22  John Harper  <jsh@unfactored.org>
+
+	* configure.in: version 0.16
+
+	* rep-gtk.spec.in: updated, untested
+
+2002-04-01  John Harper  <jsh@unfactored.org>
+
+	* gtk.defs, glib.defs (g-signal-connect, g-signal-disconnect):
+	moved to glib.defs file, take GObject arg, and named g-foo not
+	gtk-foo
+
+	* examples/text.jl, examples/hello.jl, examples/gnome-test,
+	examples/clist.jl, examples/canvas-test,
+	examples/canvas-pixbuf-test: changed for signal functions
+
+2002-03-31  John Harper  <jsh@unfactored.org>
+
+	* configure.in: don't use gnome-config to check if gnome is
+	installed or not, use "pkg-config libgnome-2.0"
+
+2002-03-14  John Harper  <jsh@pixelslut.com>
+
+	* rep-gtk.c (sgtk_build_args, Fg_object_new, Fg_object_get,
+	Fg_object_list): made this stuff actually work! g-object-list
+	is a new function, it lists all properties of an object.
+	g-object-new and g-object-set have a new calling format:
+
+	(g-object-new TYPE PROP1 VALUE1 PROP2 VALUE2 ...)
+	(g-object-set OBJECT PROP1 VALUE1 PROP2 VALUE2 ...)
+
+	* rep-gtk.c (sgtk_gvalue_to_rep): gracefully handle GValue's
+	containing null pointers (return Qnil instead of crashing)
+
+2002-03-13  jacob berkman  <jacob@ximian.com>
+
+	* rep-gtk.c (sgtk_try_missing_type): add GtkTextIter (from jsh,
+	fixes #74528)
+
+2002-03-03  John Harper  <jsh@pixelslut.com>
+
+	* gtktext.defs: added some default values
+
+	* rep-gtk.c (sgtk_gvalue_to_rep): accept G_TYPE_INVALID to
+	silence error messages
+
+2002-02-13  Sander Vesik <Sander.Vesik@sun.com>
+
+	* gtk-compat.c: update menu_popup_position to reflect API
+	change in gtk+
+
+2002-02-12  John Harper  <jsh@unfactored.org>
+
+	Status: gtk mostly all ported except for Tree classes. Removed
+	deprecated functions.
+
+	* gtktext.defs, gtk.defs, glib.defs, gdk.defs, gdk-pixbuf.defs:
+	updated for current state of gtk-2. gtktext.defs is a new file
+	describing the various classes of the new Text widget. Only
+	thing left to do for complete gtk coverage (modulo from the
+	usual number of functions that aren't easy to wrap) is the new
+	Tree widget
+
+	* rep-types.c, rep-gtk.h, gtk-support.c, gtk-compat.c,
+	configure.in, build-gtk.jl, README, Makefile.in: more random
+	porting changes
+
+	* examples/hello.jl, examples/clist.jl: ported
+	* examples/text.jl: new, needs more code
+
+2002-01-30  John Harper  <jsh@unfactored.org>
+
+	All modules now compile and link. Though the gnome example
+	scripts crash immediately. I'll leave that adventure for
+	another day..
+
+	* rep-gtk.h, rep-gtk.c, gnomeui.defs, gnome-canvas.defs,
+	gnome-canvas-support.c: whacked until it compiles
+
+	* configure.in: fixed canvas configuration
+
+	* build-gtk.jl: bodged support for short and ushort types
+
+2002-01-29  John Harper  <jsh@unfactored.org>
+
+	* rep-types.c, rep-gtk.spec.in, rep-gtk.h, rep-gtk.c,
+	libglade-support.c, gnomeui-support.c, gnomelib.defs,
+	gnomelib-support.c, gnome-canvas.defs, gnome-canvas-support.c,
+	gnome-canvas-pixbuf.defs, glib.defs, gdk-pixbuf.defs,
+	configure.in, README-GTK-2, README, Makefile.in, HACKING,
+	AUTHORS, .cvsignore: 
+
+	* examples/test-libglade, examples/rep-ui, examples/hello.jl,
+	examples/gtk-dialog.jl, examples/gnome-test, examples/clist.jl,
+	examples/canvas-test, examples/canvas-pixbuf-test: 
+
+	Lots of minor changes. Changed module hierarchy so that all
+	modules are installed under the gui.gtk-2 prefix. This will
+	allow both versions of rep-gtk to be installed concurrently
+
+	I remove some of Sander's fixes to enable me to tackle the task
+	of porting the GNOME2 library descriptions (probably need to
+	add support for GError first, which may be ugly since
+	build-gtk.jl doesn't allow "invisible" arguments which would be
+	the best way of converting between GError and lisp exceptions)
+
+	Still need to update the gtk.defs file, ugh..
+
+2002-01-17 Sander Vesik <sander.vesik@sun.com>
+
+	* configure.in: disable libgnome binding for the moment
+
+	* gdk-pixbuf.defs: gdk_pixbuf_from_file now has an additional
+	  parameter
+
+	NB! This is an unauthorised temporary patch to have a building
+	rep-gtk for gnome2 alpha release.
+
+Sat Dec  1 13:57:17 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* gnomelib.defs (includes): Remove references
+	to now gone gnome_file_convert().
+
+	* rep-gtk.[ch]: Remove unneeded args information
+	from sgtk_object_info().
+
+	* rep-gtk.c (sgtk_find_arg_info): Remove unused function.
+
+	* rep-gtk.c (gtk_signal_new_generic): Remove 
+	unnecessary call to gtk_object_class_add_signals.
+
+	* rep-gtk.[ch] (sgtk_build_args): Rework to use GObject
+	introspection instead of sgtk_object_info.
+
+	* rep-gtk.[ch]: (sgtk_valid_arg_type): Rename from
+	valid_arg(), take GType instead of GtkArg.
+
+	* rep-gtk.c: Make gtk_object_new/set/get use GObject/
+	GParamSpec instead of obsolete GtkObject equivalents.
+
+	* rep-gtk.c (sgtk_get_type_info): Use type "qdata"
+	rather than a hash table.
+
+	* rep-gtk.c (sgtk_find_object_info): Use %lu when
+	printing out types.
+
+	* gtk-support.c: Include gdkx.h not gdkprivate.h.
+
+	* rep-gtk.h: Fix guint => GType.
+
+2001-11-17  John Harper  <jsh@unfactored.org>
+
+	* rep-libglade.h, rep-gtk.c, libglade.defs, libglade-support.c,
+	gtk.defs, configure.in, config.h.in, README.gtk-defs: 
+
+	More porting. Libglade now compiles. Haven't tested it (don't
+	have a new enough glade), but it _should_ work..
+
+2001-11-17  John Harper  <jsh@unfactored.org>
+
+	* rep-gtk.h, rep-gtk.c, gtk.defs, glib.defs, gdk.defs,
+	build-gtk.jl, Makefile.in:
+
+	More porting. Use GType[Info] and GObject almost wholly instead
+	of GtkType[Info] and GtkObject now
+
+	Also reinstated the full-callback calling mechanism since lots
+	of Gtk functions use it and don't provide closured variants..
+
+	Biggest task left is to support the GParam stuff for
+	constructing and modifying GObjects.
+
+2001-11-16  John Harper  <jsh@unfactored.org>
+
+	* rep-gtk.h, rep-gtk.c, rep-gnome.h, gtk.defs, gtk-support.c,
+	gnomelib.defs, gnomelib-support.c, gdk.defs, configure.in,
+	build-gtk.jl:
+
+	Many hacks (some extremely dubious) to get to first stage of
+	Gtk-2 port.
+
+	Current status: gtk/gdk wrappers compile (i.e. you must specify
+	--without-gnome --without-libglade --without-gdk-pixbuf to
+	configure) and they mostly work
+
+	I basically did the minimum necessary to make it compile. Then
+	added support for GClosure's and GValue's so that signal
+	handling works. The hello.jl and clist.jl example programs run
+	correctly without modification
+
+	Next step: remove the GtkArg crap, random cleanup, use
+	GObject's instead of GtkObject's, and various gtk_ -> g_
+	changes..
+
+2001-01-17  John Harper  <jsh@eazel.com>
+
+	* rep-gtk.spec.in: unset LC_ALL, LINGUAS and LANG before
+	building
+
 2000-12-04  John Harper  <jsh@eazel.com>
 
 	* configure.in: version 0.15

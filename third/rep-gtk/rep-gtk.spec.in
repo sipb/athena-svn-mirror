@@ -3,7 +3,7 @@ Name: rep-gtk
 Version: @version@
 Release: 1
 Summary: GTK+ binding for librep Lisp environment
-Requires: librep >= 0.13, gtk+ >= 1.2
+Requires: librep >= 0.16, gtk+ >= 2.0
 Copyright: GPL
 Group: Development/Languages
 Source: http://download.sourceforge.net/rep-gtk/rep-gtk-%{version}.tar.gz
@@ -42,6 +42,12 @@ GNOME version of libglade.
 %setup
 
 %build
+
+LC_ALL=""
+LINGUAS=""
+LANG=""
+export LC_ALL LINGUAS LANG
+
 %configure
 make host_type=%{_target_platform}
 
@@ -57,34 +63,24 @@ make install \
 %files
 %defattr(-,root,root)
 %doc README README.guile-gtk BUGS ChangeLog gtk.defs gdk.defs
-%{_libexecdir}/rep/%{_target_platform}/gui/gtk
-%{_libexecdir}/rep/%{_target_platform}/gui/gtk.so
-%{_libexecdir}/rep/%{_target_platform}/gui/gtk.la
-%{_libexecdir}/rep/%{_target_platform}/sgtk-types.so
-%{_libexecdir}/rep/%{_target_platform}/sgtk-types.la
-%{_libexecdir}/rep/%{_target_platform}/gtk.so
-%{_libexecdir}/rep/%{_target_platform}/gtk.la
+%{_libexecdir}/rep/%{_target_platform}/gui/gtk-2/gtk.so*
+%{_libexecdir}/rep/%{_target_platform}/gui/gtk-2/gtk.la
+%{_libexecdir}/rep/%{_target_platform}/gui/gtk-2/types.so*
+%{_libexecdir}/rep/%{_target_platform}/gui/gtk-2/types.la
 
 %files libglade
 %defattr(-,root,root)
 %doc libglade.defs examples/test-libglade examples/simple.glade
 %doc examples/rep-ui examples/rep-ui.glade
-%{_libexecdir}/rep/%{_target_platform}/libglade.so*
-%{_libexecdir}/rep/%{_target_platform}/libglade.la
+%{_libexecdir}/rep/%{_target_platform}/gui/gtk-2/libglade.so*
+%{_libexecdir}/rep/%{_target_platform}/gui/gtk-2/libglade.la
 
 %files gnome
 %defattr(-,root,root)
 %doc gnome*.defs gdk-pixbuf.defs libglade.defs
 %doc examples/gnome-test examples/canvas-test
-%{_libexecdir}/rep/%{_target_platform}/gui/gnome
-%{_libexecdir}/rep/%{_target_platform}/gui/gnome.so
-%{_libexecdir}/rep/%{_target_platform}/gui/gnome.la
-%{_libexecdir}/rep/%{_target_platform}/gnome*.so
-%{_libexecdir}/rep/%{_target_platform}/gnome*.la
-%{_libexecdir}/rep/%{_target_platform}/libglade-gnome.so
-%{_libexecdir}/rep/%{_target_platform}/libglade-gnome.la
-%{_libexecdir}/rep/%{_target_platform}/gdk-pixbuf.so
-%{_libexecdir}/rep/%{_target_platform}/gdk-pixbuf.la
+%{_libexecdir}/rep/%{_target_platform}/gui/gtk-2/gnome*.so*
+%{_libexecdir}/rep/%{_target_platform}/gui/gtk-2/gnome*.la
 
 %changelog
 * Tue Jun 13 2000 John Harper <john@dcs.warwick.ac.uk>

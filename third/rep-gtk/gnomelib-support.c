@@ -1,5 +1,5 @@
 /* gnomelib-support.c -- helper functions for GNOME binding
-   $Id: gnomelib-support.c,v 1.1.1.1 2000-11-12 06:16:30 ghudson Exp $ */
+   $Id: gnomelib-support.c,v 1.1.1.2 2003-01-05 00:30:04 ghudson Exp $ */
 
 #include <config.h>
 #include <assert.h>
@@ -10,6 +10,8 @@
 
 
 /* metadata */
+
+#ifdef XXX
 
 GnomeMetadataError_t
 sgtk_gnome_metadata_set (const char *file, const char *name, repv data)
@@ -73,15 +75,15 @@ sgtk_gnome_metadata_type_add (const char *regex, const char *key, repv data)
     }
 }
 
+#endif /* XXX */
+
 
 /* dl hooks / init */
 
 repv
 rep_dl_init (void)
 {
-    repv s = rep_push_structure ("gui.gnome.lib");
-    /* ::alias:gnomelib gui.gnome.lib:: */
-    rep_alias_structure ("gnomelib");
+    repv s = rep_push_structure ("gui.gtk-2.gnome-lib");
     sgtk_gnome_init_gnome_glue ();
     return rep_pop_structure (s);
 }

@@ -1,7 +1,7 @@
 /* Copyright (C) 1997, 1998, 1999 Marius Vollmer
  * Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
  *
- * $Id: rep-gtk.h,v 1.1.1.1 2000-11-12 06:16:26 ghudson Exp $
+ * $Id: rep-gtk.h,v 1.1.1.2 2003-01-05 00:30:07 ghudson Exp $
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 
 typedef struct _sgtk_type_info {
   char *name;
-  GtkType type;
+  GType type;
   repv (*conversion) (repv);
 } sgtk_type_info;
 
@@ -67,20 +67,16 @@ typedef struct _sgtk_boxed_info {
 
 typedef struct _sgtk_object_info {
   sgtk_type_info header;
-  GtkType (*init_func) ();
+  GType (*init_func) ();
 
   struct _sgtk_object_info *parent;
-  guint n_args;
-  GtkArg *args;
-  guint *args_flags;
-  char **args_short_names;
 } sgtk_object_info;
 
 void sgtk_register_type_infos (sgtk_type_info **infos);
-sgtk_type_info *sgtk_get_type_info (guint type_seqno);
-void sgtk_register_type_infos_gtk (GtkTypeInfo **infos);
-sgtk_type_info* sgtk_maybe_find_type_info (GtkType type);
-sgtk_type_info *sgtk_find_type_info (GtkType type);
+sgtk_type_info *sgtk_get_type_info (GType type_seqno);
+void sgtk_register_type_infos_gtk (GTypeInfo **infos);
+sgtk_type_info* sgtk_maybe_find_type_info (GType type);
+sgtk_type_info *sgtk_find_type_info (GType type);
 
 int sgtk_valid_int (repv obj);
 int sgtk_valid_uint (repv obj);
@@ -108,6 +104,11 @@ int sgtk_valid_fd (repv obj);
 int sgtk_rep_to_fd (repv obj);
 repv sgtk_fd_to_rep (int fd);
 
+repv sgtk_wrap_gobj (GObject *obj);
+int sgtk_is_a_gobj (guint type, repv obj);
+GObject *sgtk_get_gobj (repv obj);
+
+/* compatibility */
 repv sgtk_wrap_gtkobj (GtkObject *obj);
 int sgtk_is_a_gtkobj (guint type, repv obj);
 GtkObject *sgtk_get_gtkobj (repv obj);
@@ -140,6 +141,8 @@ int sgtk_valid_pointer (repv obj);
 void *sgtk_rep_to_pointer (repv obj);
 repv sgtk_pointer_to_rep (void *ptr);
 
+GType gobject_get_type (void);
+
 int sgtk_valid_point (repv obj);
 GdkPoint sgtk_rep_to_point (repv obj);
 repv sgtk_point_to_rep (GdkPoint p);
@@ -148,10 +151,10 @@ int sgtk_valid_rect (repv obj);
 GdkRectangle sgtk_rep_to_rect (repv obj);
 repv sgtk_rect_to_rep (GdkRectangle p);
 
-GtkType sgtk_type_from_name (char *name);
+GType sgtk_type_from_name (char *name);
 int sgtk_valid_type (repv obj);
-GtkType sgtk_rep_to_type (repv obj);
-repv sgtk_type_to_rep (GtkType t);
+GType sgtk_rep_to_type (repv obj);
+repv sgtk_type_to_rep (GType t);
 
 int sgtk_valid_composite (repv obj, int (*predicate)(repv));
 int sgtk_valid_complen (repv obj, int (*predicate)(repv), int len);
@@ -181,23 +184,42 @@ sgtk_protshell *sgtk_protect (repv protector, repv obj);
 void sgtk_unprotect (sgtk_protshell *);
 repv sgtk_get_protect (sgtk_protshell *prot);
 
-void sgtk_callback_marshal (GtkObject *,
+void sgtk_set_gclosure (repv protector, GClosure *closure);
+repv sgtk_get_gclosure (GClosure *closure);
+GClosure *sgtk_new_gclosure (repv obj);
+GClosure *sgtk_gclosure (repv protector, repv obj);
+
+void sgtk_gclosure_callback_marshal (GClosure *closure,
+				     GValue *return_value,
+				     guint n_param_values,
+				     const GValue *param_values,
+				     gpointer invocation_hint,
+				     gpointer marshal_data);
+void sgtk_gclosure_callback_destroy (gpointer data, GClosure *closure);
+
+void sgtk_callback_marshal (GtkObject *obj,
 			    gpointer data,
 			    guint n_args,
 			    GtkArg *args);
 void sgtk_callback_destroy (gpointer data);
+
 repv sgtk_callback_trampoline (repv new_trampoline);
 void sgtk_callback_postfix (void);
 
-int sgtk_valid_arg (GtkArg *, repv val);
+int sgtk_valid_arg_type (GType, repv val);
 repv sgtk_arg_to_rep (GtkArg *a, int free_mem);
 void sgtk_rep_to_arg (GtkArg *a, repv obj, repv protector);
 void sgtk_rep_to_ret (GtkArg *a, repv obj);
 
-sgtk_object_info *sgtk_find_object_info_from_type (GtkType type);
-sgtk_object_info *sgtk_find_object_info (char *name);
-GtkArg *sgtk_build_args (sgtk_object_info *info, int *n_argsp,
-			 repv rep_args, repv protector, char *subr);
+repv sgtk_gvalue_to_rep (const GValue *a);
+int sgtk_valid_gvalue (const GValue *a, repv obj);
+void sgtk_rep_to_gvalue (GValue *a, repv obj);
+
+sgtk_object_info *sgtk_find_object_info_from_type (GType type);
+sgtk_object_info *sgtk_find_object_info (const char *name);
+void sgtk_free_args (GParameter *args, int n_args);
+GParameter *sgtk_build_args (GObjectClass *objclass, int *n_argsp,
+			     repv rep_args, char *subr);
 
 repv sgtk_color_conversion (repv color);
 repv sgtk_font_conversion (repv color);
@@ -270,6 +292,9 @@ void gtk_menu_popup_interp (GtkMenu *menu,
 GtkWidget*
 gtk_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
 						gchar            *label);
+GtkWidget*
+gtk_radio_menu_item_new_with_mnemonic_from_widget (GtkRadioMenuItem *group,
+						   gchar            *label);
 GtkWidget* gtk_radio_menu_item_new_from_widget (GtkRadioMenuItem *group);
 GtkWidget* gtk_pixmap_new_interp (char *file, GtkWidget *intended_parent);
 
@@ -286,6 +311,7 @@ GdkColormap *gtk_widget_peek_colormap (void);
 #endif
 
 void gtk_list_append_item (GtkList *list, GtkListItem *item);
+void gtk_list_prepend_item (GtkList *list, GtkListItem *item);
 
 #ifndef HAVE_GTK_TYPE_GET_INFO
 gboolean gtk_type_get_info (GtkType type, GtkTypeInfo *info);
@@ -314,6 +340,7 @@ void gtk_color_selection_set_color_interp (GtkColorSelection *sel, GdkColor *col
 GdkColor *gtk_color_selection_get_color_interp (GtkColorSelection *sel);
 extern void gtk_widget_draw_interp (GtkWidget *widget);
 
+GtkTextIter *gtk_text_iter_new (void);
 repv sgtk_gtk_widget_get_allocation (GtkWidget *w);
 
 extern rep_xsubr *sgtk_subrs[];

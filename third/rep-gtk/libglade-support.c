@@ -1,5 +1,5 @@
 /* libglade-support.c -- support functions for libglade
-   $Id: libglade-support.c,v 1.1.1.1 2000-11-12 06:16:30 ghudson Exp $
+   $Id: libglade-support.c,v 1.1.1.2 2003-01-05 00:30:04 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -25,17 +25,6 @@
 #include "rep-gtk.h"
 #include "rep-libglade.h"
 #include <string.h>
-
-#ifdef GLADE_GNOME
-# define GLADE_INIT_FUNC glade_gnome_init
-# define GLADE_MODULE "gui.gnome.libglade"
-# define GLADE_ALIAS "libglade-gnome"
-# define GLADE_EXTRA_ALIAS "libglade"
-#else
-# define GLADE_INIT_FUNC glade_init
-# define GLADE_MODULE "gui.gtk.libglade"
-# define GLADE_ALIAS "libglade"
-#endif
 
 typedef struct {
     repv func;
@@ -99,17 +88,6 @@ sgtk_glade_xml_new_from_string (repv text, const char *root,
 				      root, domain);
 }
 
-char *
-sgtk_glade_xml_textdomain (GladeXML *xml)
-{
-#ifdef LIBGLADE_XML_TXTDOMAIN
-    /* libglade 0.13 onwards */
-    return xml->txtdomain;
-#else
-    return xml->textdomain;
-#endif
-}
-
 
 /* dl hooks / init */
 
@@ -119,16 +97,9 @@ rep_dl_init (void)
     repv s;
     char *tem = getenv ("REP_GTK_DONT_INITIALIZE");
     if (tem == 0 || atoi (tem) == 0)
-	GLADE_INIT_FUNC ();
+	glade_init ();
 
-    s = rep_push_structure (GLADE_MODULE);
-
-    /* ::alias:libglade gui.gtk.libglade::
-       ::alias:libglade-gnome gui.gnome.libglade:: */
-    rep_alias_structure (GLADE_ALIAS);
-#ifdef GLADE_EXTRA_ALIAS
-    rep_alias_structure (GLADE_EXTRA_ALIAS);
-#endif
+    s = rep_push_structure ("gui.gtk-2.libglade");
 
     sgtk_init_gtk_libglade_glue ();
     return rep_pop_structure (s);

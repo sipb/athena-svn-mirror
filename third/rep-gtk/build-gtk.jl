@@ -1,6 +1,6 @@
 ;;;; build-gtk.jl -- translate guile-gtk .defs file to rep C code
 ;;;  Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
-;;;  $Id: build-gtk.jl,v 1.1.1.1 2000-11-12 06:16:28 ghudson Exp $
+;;;  $Id: build-gtk.jl,v 1.1.1.2 2003-01-05 00:30:07 ghudson Exp $
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 ;;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 (provide 'build-gtk)
+
+(setq debug-on-error '(bad-arg invalid-function missing-arg))
 
 ;; Notes:
 
@@ -57,7 +59,7 @@
 
 (defvar gtk-type-alist nil)
 
-(defun define-type (type c-type rep-to-gtk gtk-to-rep type-pred &rest options)
+(defun define-type (type c-type rep-to-gtk gtk-to-rep type-pred . options)
   (setq gtk-type-alist (cons (list* type c-type rep-to-gtk
 				    gtk-to-rep type-pred options)
 			     gtk-type-alist)))
@@ -196,10 +198,9 @@
 				    'read)))
 		(or file (error "Can't open input file: %s" (nth 1 def)))
 		(unwind-protect
-		    (if (eq (car def) 'import)
-			(let
-			    ((gtk-importing t))
-			  (parse-gtk file))
+		    (let ((gtk-importing (if (eq (car def) 'import)
+					     t
+					   gtk-importing)))
 		      (parse-gtk file))
 		  (close-file file))))
 	     ((eq (car def) 'define-enum)
@@ -299,7 +300,7 @@
 
 ;; Code generation
 
-(defmacro @ (&rest args)
+(defmacro @ args
   (list* 'format 'output args))
 
 (defun output-header (output)
@@ -314,7 +315,6 @@
 (defun output-footer (output)
   (let*
       ((feature (gtk-get-option 'provide gtk-options))
-       (c-feature (and feature (gtk-unhyphenate-name (symbol-name feature))))
        (aliases (gtk-get-options 'alias gtk-options))
        (init (gtk-get-option 'init-func gtk-options)))
     (when feature
@@ -355,7 +355,7 @@
 	      (@ "};\n")
 	      ;; write type info struct
 	      (@ "sgtk_enum_info sgtk_%s_info = {\n" cname)
-	      (@ "  { \"%s\", GTK_TYPE_ENUM }, %d, _%s_literals,\n"
+	      (@ "  { \"%s\", G_TYPE_ENUM }, %d, _%s_literals,\n"
 		 name (length values) cname)
 	      (@ "};\n\n")))
 	  gtk-enums)))
@@ -387,7 +387,7 @@
 	      (@ "};\n")
 	      ;; write type info struct
 	      (@ "sgtk_senum_info sgtk_%s_info = {\n" cname)
-	      (@ "  { \"%s\", GTK_TYPE_INVALID }, %d, _%s_literals,\n"
+	      (@ "  { \"%s\", G_TYPE_INVALID }, %d, _%s_literals,\n"
 		 name (length values) cname)
 	      (@ "};\n\n")))
 	  gtk-string-enums)))
@@ -419,7 +419,7 @@
 	      (@ "};\n")
 	      ;; write type info struct
 	      (@ "sgtk_enum_info sgtk_%s_info = {\n" cname)
-	      (@ "  { \"%s\", GTK_TYPE_FLAGS }, %d, _%s_literals,\n"
+	      (@ "  { \"%s\", G_TYPE_FLAGS }, %d, _%s_literals,\n"
 		 name (length values) cname)
 	      (@ "};\n\n")))
 	  gtk-flags)))
@@ -446,7 +446,7 @@
 	      (when conv
 		(@ "repv %s (repv);\n" conv))
 	      (@ "sgtk_boxed_info sgtk_%s_info = {\n" cname)
-	      (@ "  { \"%s\", GTK_TYPE_BOXED, %s },\n" name (or conv "NULL"))
+	      (@ "  { \"%s\", G_TYPE_BOXED, %s },\n" name (or conv "NULL"))
 	      (@ "  (void *(*)(void*))%s,\n"
 		 (or (car (cdr (assq 'copy attrs))) "NULL"))
 	      (@ "  (void (*)(void*))%s,\n"
@@ -474,7 +474,7 @@
 		((name (car obj))
 		 (cname (gtk-canonical-name (symbol-name name))))
 	      (@ "sgtk_object_info sgtk_%s_info = {\n" cname)
-	      (@ "  { \"%s\", GTK_TYPE_OBJECT }, %s_get_type\n" name cname)
+	      (@ "  { \"%s\", G_TYPE_OBJECT }, %s_get_type\n" name cname)
 	      (@ "};\n\n"))) gtk-objects)))
 
 (defun output-type-info (output)
@@ -519,6 +519,7 @@
       (mapc (lambda (cname)
 	      (@ "      rep_ADD_SUBR(S%s);\n" cname)) (nreverse gtk-subrs))
       (mapc (lambda (code)
+	      (declare (unused code))
 	      (@ "      %s\n")) extra-init)
       (when system-init
 	(@ "      {\n")
@@ -617,7 +618,7 @@
   `(nth 3 ,typage))
 
 (defmacro gtk-type-pred (typage)
-  `(nth 4 typage))
+  `(nth 4 ,typage))
 
 (defun gtk-type-prop (type prop)
   (gtk-typage-prop (gtk-type-info type) prop))
@@ -641,6 +642,7 @@
 ;; Type output functions
 
 (defun output-complex-type (type typage)
+  (declare (unused typage))
   (setq type (gtk-outer-type type))
   (if (or (assq type gtk-enums) (assq type gtk-imported-enums)
 	  (assq type gtk-flags) (assq type gtk-imported-flags))
@@ -656,12 +658,14 @@
 
 (define (output-static-to-rep x)
   (lambda (output type gtk-var typage)
+    (declare (unused typage))
     (setq type (gtk-outer-type type))
     (let ((name (gtk-canonical-name (symbol-name type))))
       (@ "sgtk_%s_to_rep \(%s, &sgtk_%s_info\)" x gtk-var name))))
 
 (define (output-static-pred x)
   (lambda (output type rep-var typage)
+    (declare (unused typage))
     (@ "sgtk_valid_%s \(%s, &sgtk_%s_info\)"
        x rep-var (gtk-canonical-name (symbol-name type)))))
 
@@ -678,10 +682,12 @@
 (define output-flags-pred (output-static-pred 'flags))
 
 (defun output-rep-to-boxed (output type rep-var typage)
+  (declare (unused typage))
   (setq type (gtk-outer-type type))
   (@ "\(%s*\) sgtk_rep_to_boxed \(%s\)" type rep-var))
 
 (defun output-boxed-to-rep (output type gtk-var typage)
+  (declare (unused typage))
   (let*
       ((base-type (gtk-outer-type type))
        (name (gtk-canonical-name (symbol-name base-type)))
@@ -692,22 +698,27 @@
        gtk-var name (if copy 1 0))))
 
 (defun output-boxed-pred (output type rep-var typage)
+  (declare (unused typage))
   (@ "sgtk_valid_boxed \(%s, &sgtk_%s_info\)"
      rep-var (gtk-canonical-name (symbol-name type))))
 
 (defun output-rep-to-object (output type rep-var typage)
+  (declare (unused typage))
   (setq type (gtk-outer-type type))
-  (@ "\(%s*\) sgtk_get_gtkobj \(%s\)" type rep-var))
+  (@ "\(%s*\) sgtk_get_gobj \(%s\)" type rep-var))
 
 (defun output-object-to-rep (output type gtk-var typage)
+  (declare (unused typage))
   (setq type (gtk-outer-type type))
-  (@ "sgtk_wrap_gtkobj \(\(GtkObject*\) %s\)" gtk-var))
+  (@ "sgtk_wrap_gobj \(\(GObject*\) %s\)" gtk-var))
 
 (defun output-object-pred (output type rep-var typage)
-  (@ "sgtk_is_a_gtkobj \(%s_get_type \(\), %s\)"
+  (declare (unused typage))
+  (@ "sgtk_is_a_gobj \(%s_get_type \(\), %s\)"
      (gtk-canonical-name (symbol-name type)) rep-var))
 
 (defun output-rep-to-full-callback (output type rep-var typage options)
+  (declare (unused typage type))
   (let
       ((protect (gtk-get-option 'protection options)))
     (cond ((eq protect '*result*)
@@ -719,18 +730,39 @@
 	   (@ "sgtk_protect \(Qt, %s\)" rep-var)))))
 
 (defun output-full-callback-args (output type var options)
+  (declare (unused typage type options))
   (@ "0, sgtk_callback_marshal, (gpointer)%s, sgtk_callback_destroy" var))
 
 (defun output-full-callback-finish (output type g-var r-var options)
+  (declare (unused typage type r-var))
   (let
       ((protect (gtk-get-option 'protection options)))
     (when (eq protect '*result*)
       (@ "  sgtk_set_protect \(pr_ret, %s\);\n" g-var))))
 
+(defun output-rep-to-gclosure (output type rep-var typage options)
+  (declare (unused typage type))
+  (let
+      ((protect (gtk-get-option 'protection options)))
+    (cond ((eq protect '*result*)
+	   (@ "sgtk_new_gclosure \(%s\)" rep-var))
+	  ((and (not (eq protect t))
+		(not (eq protect nil)))
+	   (@ "sgtk_gclosure \(p_%s, %s\)" protect rep-var))
+	  (t
+	   (@ "sgtk_gclosure \(Qt, %s\)" rep-var)))))
+
+(defun output-gclosure-finish (output type g-var r-var options)
+  (declare (unused typage type r-var))
+  (let
+      ((protect (gtk-get-option 'protection options)))
+    (when (eq protect '*result*)
+      (@ "  sgtk_set_gclosure \(pr_ret, %s\);\n" g-var))))
+
 (defun output-rep-to-cvec (output type rep-var typage)
+  (declare (unused typage))
   (let*
-      ((outer-type (gtk-outer-type type))
-       (inner-type (gtk-inner-type type))
+      ((inner-type (gtk-inner-type type))
        (inner-typage (gtk-type-info inner-type))
        (decl (gtk-type-decl inner-type inner-typage))
        (mode (gtk-composite-type-mode type)))
@@ -743,9 +775,9 @@
        decl)))
 
 (defun output-cvec-to-rep (output type gtk-var typage)
+  (declare (unused typage))
   (let*
-      ((outer-type (gtk-outer-type type))
-       (inner-type (gtk-inner-type type))
+      ((inner-type (gtk-inner-type type))
        (inner-typage (gtk-type-info inner-type))
        (decl (gtk-type-decl inner-type inner-typage)))
     (output-helper inner-type standard-output)
@@ -753,10 +785,9 @@
        gtk-var inner-type decl)))
 
 (defun output-cvec-pred (output type rep-var typage)
+  (declare (unused typage))
   (let*
-      ((outer-type (gtk-outer-type type))
-       (inner-type (gtk-inner-type type))
-       (inner-typage (gtk-type-info inner-type))
+      ((inner-type (gtk-inner-type type))
        (mode (gtk-composite-type-mode type))
        (len (gtk-composite-type-len type)))
     (output-helper inner-type standard-output)
@@ -772,6 +803,7 @@
 	 rep-var inner-type))))
 
 (defun output-cvec-args (output type var options)
+  (declare (unused typage options))
   (let*
       ((outer-type (gtk-outer-type type))
        (inner-type (gtk-inner-type type))
@@ -787,9 +819,9 @@
 	   (gtk-warning "Don't know how to pass type %s" type)))))
 
 (defun output-cvec-finish (output type gtk-var rep-var options)
+  (declare (unused typage options))
   (let*
-      ((outer-type (gtk-outer-type type))
-       (inner-type (gtk-inner-type type))
+      ((inner-type (gtk-inner-type type))
        (inner-typage (gtk-type-info inner-type))
        (decl (gtk-type-decl inner-type inner-typage))
        (mode (gtk-composite-type-mode type)))
@@ -801,6 +833,7 @@
        decl)))
 
 (defun output-rep-to-list (output type rep-var typage)
+  (declare (unused typage))
   (let
       ((outer-type (gtk-outer-type type))
        (inner-type (gtk-inner-type type)))
@@ -809,6 +842,7 @@
        outer-type rep-var inner-type)))
        
 (defun output-list-to-rep (output type gtk-var typage)
+  (declare (unused typage))
   (let
       ((outer-type (gtk-outer-type type))
        (inner-type (gtk-inner-type type)))
@@ -817,6 +851,7 @@
        outer-type gtk-var inner-type)))
 
 (defun output-list-finish (output type gtk-var rep-var options)
+  (declare (unused typage options))
   (let
       ((outer-type (gtk-outer-type type))
        (inner-type (gtk-inner-type type))
@@ -830,7 +865,7 @@
 
 ;; Function generation
 
-(defun output-function (def output &optional function-callback)
+(defun output-function (def output #!optional function-callback)
   (let*
       ((ret (nth 1 def))
        (args (nth 2 def))
@@ -1066,7 +1101,7 @@
 	    (output-type-predicate (car def) output)))
 	type-list))
 
-(defun output-field-accessors (datatype field output &optional settable getter)
+(defun output-field-accessors (datatype field output #!optional settable getter)
   (let*
       ((type (car field))
        (cdatatype (gtk-canonical-name (symbol-name datatype)))
@@ -1192,7 +1227,7 @@
       (translate-string (copy-sequence name) gtk-unhyphen-map)
     name))
 
-(defun gtk-warning (fmt &rest args)
+(defun gtk-warning (fmt . args)
   (apply format standard-error fmt args)
   (write standard-error ?\n))
 
@@ -1206,6 +1241,12 @@
 	     "sgtk_char_to_rep" "sgtk_valid_char")
 
 (define-type 'bool "int" "sgtk_rep_to_bool" "sgtk_bool_to_rep" nil)
+
+;; XXX fix the validation functions
+(define-type 'short "short" "sgtk_rep_to_int" "sgtk_int_to_rep"
+	     "sgtk_valid_int" '(listable . t))
+(define-type 'ushort "gushort" "sgtk_rep_to_uint" "sgtk_uint_to_rep"
+	     "sgtk_valid_uint" '(listable . t))
 
 (define-type 'int "gint" "sgtk_rep_to_int" "sgtk_int_to_rep"
 	     "sgtk_valid_int" '(listable . t))
@@ -1249,6 +1290,9 @@
 (define-type 'full-callback "sgtk_protshell*" output-rep-to-full-callback nil
 	     "sgtk_valid_function" (cons 'c2args output-full-callback-args)
 	     (cons 'finish output-full-callback-finish))
+
+(define-type 'gclosure "GClosure*" output-rep-to-gclosure nil
+	     "sgtk_valid_function" (cons 'finish output-full-callback-finish))
 
 (define-type 'file-descriptor "int" "sgtk_rep_to_fd"
 	     "sgtk_fd_to_rep" "sgtk_valid_fd")

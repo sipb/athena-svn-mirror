@@ -16,7 +16,7 @@ gtk_label_get_interp (GtkLabel *label)
 /* cheap cop-out. */
 
 static void
-menu_popup_position (GtkMenu *menu, gint *xp, gint *yp, gpointer data)
+menu_popup_position (GtkMenu *menu, gint *xp, gint *yp, gboolean *p, gpointer data)
 {
     gulong coded = (gulong) data;
     gint x = coded & 0xffff;
@@ -68,6 +68,14 @@ gtk_radio_menu_item_new_with_label_from_widget (GtkRadioMenuItem *group,
 {
   GSList *g = group? gtk_radio_menu_item_group (group) : NULL;
   return gtk_radio_menu_item_new_with_label (g, label);
+}
+
+GtkWidget*
+gtk_radio_menu_item_new_with_mnemonic_from_widget (GtkRadioMenuItem *group,
+						   gchar            *label)
+{
+  GSList *g = group? gtk_radio_menu_item_group (group) : NULL;
+  return gtk_radio_menu_item_new_with_mnemonic (g, label);
 }
 
 GtkWidget*
@@ -216,11 +224,12 @@ gtk_signal_set_class_function_full (GtkType            type,
 void 
 gtk_color_selection_set_color_interp (GtkColorSelection *selection, GdkColor *color)
 {
-  gdouble vals[3];
+  gdouble vals[4];
   
   vals[0] = color->red / 65535.0; 
   vals[1] = color->green / 65535.0; 
   vals[2] = color->blue / 65535.0; 
+  vals[3] = 1.0;
 
   gtk_color_selection_set_color (selection, vals);
 }
@@ -229,7 +238,7 @@ gtk_color_selection_set_color_interp (GtkColorSelection *selection, GdkColor *co
 GdkColor *
 gtk_color_selection_get_color_interp (GtkColorSelection *selection)
 {
-  gdouble vals[3];
+  gdouble vals[4];
   GdkColor dummy, *color;
 
   gtk_color_selection_get_color (selection, vals);
