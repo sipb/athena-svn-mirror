@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.34 1993-05-14 17:21:35 miki Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.35 1993-07-26 08:33:05 vrt Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -512,7 +512,7 @@ start_reactivate(data, timerid)
     if ((file = open(UTMPF, O_RDONLY, 0)) >= 0) {
 	while (read(file, (char *) &utmp, sizeof(utmp)) > 0) {
 	    if (utmp.ut_name[0] != 0
-#if defined(_AIX)
+#if defined(_AIX) || defined(SOLARIS)
 		&& utmp.ut_type == USER_PROCESS
 #endif
 		) {
