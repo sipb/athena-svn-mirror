@@ -19,31 +19,33 @@ module olc
 include file 'XmAppl.uil';
 
 !
-! External procedures used in callbacks
+! External procedures used in callbacks.
 !
 
 procedure
+	olc_ask		();
+	olc_stock	();
+	olc_help	();
+	olc_quit	();
 	olc_send	();
 	olc_done	();
 	olc_cancel	();
 	olc_save_log	();
-	olc_stock	();
 	olc_motd	();
-	olc_help	();
-	olc_quit	();
-	helpbox_create	(integer);
-	replay_create	();
-	Scroll		();
+	olc_update	();
+	widget_create	(integer);
 
 !
-! Value declarations
+! Value declarations.
 !
 
 value
 
-! Fonts
+! Fonts.
 
 	TitleFont:	font('*-times-bold-i-*-*-*-240-*');
+	WelcomeFont:	font('*-times-bold-i-*-*-*-180-*');
+	CopyrightFont:	font('*-times-bold-i-*-*-*-140-*');
 	ButtonFont1:	font('*-times-medium-i-*-*-*-140-*');
 	ButtonFont2:	font('*-times-bold-i-*-*-*-140-*');
 	LabelFont:	font('*-times-medium-r-*-*-*-140-*');
@@ -51,121 +53,74 @@ value
 	Courier14:	font('*-courier-medium-r-*-*-*-140-*');
 	Fixed:		font('fixed');
 
-! Integers
+! Widget_create callback values.
 
+	ASKBOX:		1;
+	REPLAYBOX:	2;
+	HELPBOX:	3;
+	ERRORBOX:	4;
+	MOTDBOX:	5;
+	MOTDFRAME:	6;
+	MOTD:		7;
+
+! Random integers, spacing, borders, and the like.
+
+	Main_height:		32;
 	Default_width:		530;
 	Default_height:		318;
 	Vert_spacing:		5;
-	Horiz_spacing:		10;
+	Horiz_spacing:		5;
 	Normal_shadow:		2;
 	Normal_border:		2;
 	Menu_border:		1;
 	Toggle_border:		1;
 	Menu_spacing:		2;
 	Quit_help_spacing:	5;
-	Text_columns:		40;
 	Normal_spacing:		5;
+	NONE:			0;
 
-! Labels
+! Labels, Text strings
 
 	Title_label:	"OLC";
+	Ask_label:	"Ask a question in OLC";
+	Stock_label:	"Browse the stock answers";
 	Send_label:	"Send message";
 	Done_label:	"Done question";
 	Cancel_label:	"Cancel question";
 	Save_label:	"Save log...";
-	Stock_label:	"Stock";
 	Motd_label:	"MOTD";
-!	Send_label:	"Send message to consultant";
-!	Done_label:	"Mark the question DONE";
-!	Cancel_label:	"Cancel your question";
-!	Save_label:	"Save this conversation in a file...";
-!	Stock_label:	"Browse the stock answers";
-!	Motd_label:	"Display the message of the day";
+	Update_label:	"Update status";
 	Quit_label:	"QUIT OLC";
 	Help_label:	"HELP";
+	Welcome_text:	"Welcome to Project Athena's On-Line Consulting system.";
+	Copyright_text:	"Copyright (c) 1989 by the Massachusetts Institute of Technology.";
 	Help_text:	"Help is not yet implemented.";
 	Topic_text:	"Your question topic is: ";
-
-! Colors and color tables
-
-	yellow:		color('yellow', foreground);
-	red:		color('red', background);
-
-	ct:		color_table(	yellow='o',
-					red='.',
-					background color=' ');
-	ct_hilite:	color_table(	yellow='.',
-					red='o',
-					background color=' ');
-
-! Button icons
-
-	scroll_up_icon: icon(color_table=ct,
-		'                        ',
-		'           oo           ',
-		'          oooo          ',
-		'         oooooo         ',
-		'        oo....oo        ',
-		'       oo......oo       ',
-		'      oo........oo      ',
-		'     oo..........oo     ',
-		'    oo............oo    ',
-		'   oo..............oo   ',
-		'  oo................oo  ',
-		' oooooo..........oooooo ',
-		' oooooo..........oooooo ',
-		'     oo..........oo     ',
-		'     oo..........oo     ',
-		'     oo..........oo     ',
-		'     oo..........oo     ',
-		'     oo..........oo     ',
-		'     oooooooooooooo     ',
-		'                        ');
-
-	scroll_down_icon: icon(color_table=ct,
-		'                        ',
-		'     oooooooooooooo     ',
-		'     oo..........oo     ',
-		'     oo..........oo     ',
-		'     oo..........oo     ',
-		'     oo..........oo     ',
-		'     oo..........oo     ',
-		' oooooo..........oooooo ',
-		' oooooo..........oooooo ',
-		'  oo................oo  ',
-		'   oo..............oo   ',
-		'    oo............oo    ',
-		'     oo..........oo     ',
-		'      oo........oo      ',
-		'       oo......oo       ',
-		'        oo....oo        ',
-		'         oooooo         ',
-		'          oooo          ',
-		'           oo           ',
-		'                        ');
-
-! The main form of the interface
+!
+! The main form of the interface.  This is actually a "topbox" that lets
+!  the user select whether to ask a question or go somewhere else for
+!  help.  It also provides a "quit" and "help" button.
+!
 
 object main:	form {
 	arguments {
-		width = Default_width;
 		height = Default_height;
+		width = Default_width;
 		vertical_spacing = Vert_spacing;
 		horizontal_spacing = Horiz_spacing;
 		shadow_thickness = Normal_shadow;
 		border_width = Normal_border;
 	};
 	controls {
-		label		title_label;
-		separator	title_separator;
-		form		status_form;
-		separator	status_separator;
-		frame		replay_frame;
-		separator	bottom_separator;
-		row_column	options_menu;
-		form		quit_help_form;
-		unmanaged message_dialog	helpbox;
-		unmanaged error_dialog		errorbox;
+		label title_label;
+		push_button ask_button;
+!		unmanaged push_button cont_ques_button;
+		push_button stock_button;
+		push_button quit_button;
+		push_button help_button;
+		unmanaged form ask_form;
+		unmanaged form motd_form;
+		unmanaged message_dialog motdbox;
 	};
 };
 
@@ -173,10 +128,97 @@ object title_label:	label {
 	arguments {
 		top_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
-		right_attachment = XmATTACH_FORM;
 		alignment = XmALIGNMENT_CENTER;
 		font_list = TitleFont;
 		label_label = Title_label;
+	};
+};
+
+object ask_button:	push_button {
+	arguments {
+		top_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_WIDGET;
+		right_widget = push_button stock_button;
+		font_list = ButtonFont1;
+		label_string = Ask_label;
+	};
+	callbacks {
+		activate = procedure olc_ask ();
+	};
+};
+
+object stock_button:	push_button {
+	arguments {
+		top_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_WIDGET;
+		right_widget = push_button quit_button;
+		font_list = ButtonFont1;
+		label_string = Stock_label;
+	};
+	callbacks {
+		activate = procedure olc_stock ();
+	};
+};
+
+object quit_button:	push_button {
+	arguments {
+		top_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_WIDGET;
+		right_widget = push_button help_button;
+		font_list = ButtonFont2;
+		label_string = Quit_label;
+		margin_bottom = 2;
+	};
+	callbacks {
+		activate = procedure olc_quit ();
+	};
+};
+
+object help_button:	push_button {
+	arguments {
+		top_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_FORM;
+		font_list = ButtonFont2;
+		label_string = Help_label;
+		margin_bottom = 2;
+	};
+	callbacks {
+		activate = procedure olc_help ();
+	};
+};
+
+!
+! The "ask_form" will contain regions for showing the replay of the log
+!  in progress, as well as frames for sending a message to the
+!  consultant and buttons for canceling, don'ing, and getting the MOTD.
+!
+
+object ask_form:	form {
+	arguments {
+		right_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		bottom_attachment = XmATTACH_FORM;
+		top_attachment = XmATTACH_WIDGET;
+		top_widget = label title_label;
+		width = Default_width;
+		height = Default_height;
+		vertical_spacing = Vert_spacing;
+		horizontal_spacing = Horiz_spacing;
+		shadow_thickness = NONE;
+		border_width = NONE;
+		margin_width = NONE;
+		margin_height = NONE;
+	};
+	controls {
+		separator title_separator;
+		form status_form;
+		frame replay_frame;
+		row_column options_menu;
+		unmanaged message_dialog helpbox;
+		unmanaged error_dialog errorbox;
+	};
+	callbacks {
+		create = procedure widget_create(ASKBOX);
 	};
 };
 
@@ -184,14 +226,13 @@ object title_separator:		separator {
 	arguments {
 		orientation = XmHORIZONTAL;
 		separator_type = XmSHADOW_ETCHED_IN;
-	        top_attachment = XmATTACH_WIDGET;
-		top_widget = label title_label;
+		top_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
 		right_attachment = XmATTACH_FORM;
 	};
 };
 
-object status_form:		form {
+object status_form:	form {
 	arguments {
 		right_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
@@ -205,7 +246,7 @@ object status_form:		form {
 	};
 };
 
-object connect_status:		label {
+object connect_status:	label {
 	arguments {
 		top_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
@@ -216,7 +257,7 @@ object connect_status:		label {
 	};
 };
 
-object topic_text:		label {
+object topic_text:	label {
 	arguments {
 		top_attachment = XmATTACH_FORM;
 		bottom_attachment = XmATTACH_FORM;
@@ -228,7 +269,7 @@ object topic_text:		label {
 	};
 };
 
-object current_topic:			label {
+object current_topic:	label {
 	arguments {
 		top_attachment = XmATTACH_FORM;
 		bottom_attachment = XmATTACH_FORM;
@@ -239,105 +280,59 @@ object current_topic:			label {
 	};
 };
 
-object status_separator:	separator {
-	arguments {
-		orientation = XmHORIZONTAL;
-		separator_type = XmSHADOW_ETCHED_IN;
-	        top_attachment = XmATTACH_WIDGET;
-		top_widget = form status_form;
-		left_attachment = XmATTACH_FORM;
-		right_attachment = XmATTACH_FORM;
-	};
-};
-
-object replay_frame:		frame {
+object replay_frame:	frame {
 	arguments {
 		right_attachment = XmATTACH_FORM;
 		left_attachment = XmATTACH_FORM;
 		top_attachment = XmATTACH_WIDGET;
-		top_widget = separator status_separator;
+		top_widget = form status_form;
 		bottom_attachment = XmATTACH_WIDGET;
-		bottom_widget = separator bottom_separator;
+		bottom_widget = row_column options_menu;
+		border_width = NONE;
+		shadow_thickness = NONE;
 	};
 	controls {
-		scrolled_window replaybox;
+		scrolled_text replaybox;
 	};
 };
 
-object replaybox:		scroll_window  {
+object replaybox:	scrolled_text  {
 	arguments {
-		scrolling_policy = XmAPPLICATION_DEFINED;
-		visual_policy = XmVARIABLE;
-		update_slider_size = true;
-		scroll_bar_display_policy = XmSTATIC;
-		scroll_bar_placement = XmBOTTOM_LEFT;
-		vertical_scroll_bar = scroll_bar scrbar;
-		work_window = text replbox;
-		border_width = 0;
-		spacing = 2;
-	};
-	controls {
-		scroll_bar scrbar;
-		text replbox;
-	};
-};
-
-object scrbar:			scroll_bar {
-	arguments{
-		orientation = XmVERTICAL;
-		unit_type = 0;
-		processing_direction = XmMAX_ON_BOTTOM;
-		show_arrows = true;
-		initial_delay = 1;
-	};
-	callbacks {
-		value_changed = procedure Scroll();
-	};
-};
-
-object replbox:			text {
-	arguments{
 		editable = false;
-		unit_type = 0;
-		text_value = "This text is exactly 80 characters long.  I fear the first char is being lost...\n";
+		edit_mode = XmMULTI_LINE_EDIT;
 		font_list = Fixed;
 		word_wrap = true;
+		scroll_horizontal = false;
+		scroll_vertical = true;
+		scroll_left_side = true;
 	};
 	callbacks {
-		create = procedure replay_create();
+		create = procedure widget_create(REPLAYBOX);
 	};
 };
 
-object bottom_separator:	separator {
-	arguments {
-		orientation = XmHORIZONTAL;
-		separator_type = XmSHADOW_ETCHED_IN;
-	        bottom_attachment = XmATTACH_WIDGET;
-		bottom_widget = row_column options_menu;
-		left_attachment = XmATTACH_FORM;
-		right_attachment = XmATTACH_FORM;
-	};
-};
-
-object options_menu:		row_column {
+object options_menu:	row_column {
 	arguments {
 		left_attachment = XmATTACH_FORM;
 		right_attachment = XmATTACH_FORM;
-		bottom_attachment = XmATTACH_WIDGET;
-		bottom_widget = form quit_help_form;
+		bottom_attachment = XmATTACH_FORM;
+		border_width = NONE;
+		margin_width = NONE;
+		margin_height = NONE;
 		orientation = XmHORIZONTAL;
 		packing = XmPACK_TIGHT;
 	};
 	controls {
-		push_button send;
-		push_button done;
-		push_button cancel;
-		push_button save_log;
-		push_button motd;
+		push_button send_button;
+		push_button done_button;
+		push_button cancel_button;
+		push_button save_log_button;
+		push_button motd_button;
+		push_button update_button;
 	};
 };
 
-object send:		push_button {
+object send_button:		push_button {
 	arguments {
 		font_list = ButtonFont1;
 		label_string = Send_label;
@@ -347,7 +342,7 @@ object send:		push_button {
 	};
 };
 
-object done:		push_button {
+object done_button:		push_button {
 	arguments {
 		font_list = ButtonFont1;
 		label_string = Done_label;
@@ -357,7 +352,7 @@ object done:		push_button {
 	};
 };
 
-object cancel:		push_button {
+object cancel_button:		push_button {
 	arguments {
 		font_list = ButtonFont1;
 		label_string = Cancel_label;
@@ -367,7 +362,7 @@ object cancel:		push_button {
 	};
 };
 
-object save_log:	push_button {
+object save_log_button:		push_button {
 	arguments {
 		font_list = ButtonFont1;
 		label_string = Save_label;
@@ -377,17 +372,7 @@ object save_log:	push_button {
 	};
 };
 
-object stock:		push_button {
-	arguments {
-		font_list = ButtonFont1;
-		label_string = Stock_label;
-	};
-	callbacks {
-		activate = procedure olc_stock ();
-	};
-};
-
-object motd:		push_button {
+object motd_button:		push_button {
 	arguments {
 		font_list = ButtonFont1;
 		label_string = Motd_label;
@@ -397,58 +382,39 @@ object motd:		push_button {
 	};
 };
 
-object quit_help_form:	form {
+object update_button:		push_button {
 	arguments {
-		horizontal_spacing = Quit_help_spacing;
-		right_attachment = XmATTACH_FORM;
-		bottom_attachment = XmATTACH_FORM;
+		font_list = ButtonFont1;
+		label_string = Update_label;
 	};
-	controls {
-		push_button quit;
-		push_button help;
+	callbacks {
+		activate = procedure olc_update ();
 	};
 };
 
-object quit:		push_button {
+object motdbox:		message_dialog {
 	arguments {
-		top_attachment = XmATTACH_FORM;
-		bottom_attachment = XmATTACH_FORM;
-		left_attachment = XmATTACH_FORM;
-		font_list = ButtonFont2;
-		label_string = Quit_label;
-		margin_bottom = 2;
+		dialog_style = XmDIALOG_APPLICATION_MODAL;
+		button_font_list = ButtonFont1;
+		text_font_list = LabelFont;
+		message_alignment = XmALIGNMENT_BEGINNING;
+		border_width = Normal_border;
 	};
 	callbacks {
-		activate = procedure olc_quit ();
-	};
-};
-
-object help:		push_button {
-	arguments {
-		top_attachment = XmATTACH_FORM;
-		bottom_attachment = XmATTACH_FORM;
-		left_attachment = XmATTACH_WIDGET;
-		left_widget = push_button quit;
-		font_list = ButtonFont2;
-		label_string = Help_label;
-		margin_bottom = 2;
-	};
-	callbacks {
-		activate = procedure olc_help ();
+		create = procedure widget_create(MOTDBOX);
 	};
 };
 
 object helpbox:		message_dialog {
 	arguments {
-		dialog_style = XmDIALOG_MODELESS;
+		dialog_style = XmDIALOG_APPLICATION_MODAL;
 		button_font_list = ButtonFont1;
 		text_font_list = LabelFont;
 		message_alignment = XmALIGNMENT_BEGINNING;
 		border_width = Normal_border;
-!!!!!!!!!	message_string = Help_text;
 	};
 	callbacks {
-		create = procedure helpbox_create(1);
+		create = procedure widget_create(HELPBOX);
 	};
 };
 
@@ -462,10 +428,116 @@ object errorbox:	error_dialog {
 		border_width = Normal_border;
 	};
 	callbacks {
-		create = procedure helpbox_create(2);
+		create = procedure widget_create(ERRORBOX);
 	};
 };
 
+
+
+
+
+
+
+
+
+!
+! The "motd_form" will contain the motd at start up time.  The MOTD
+!  will be displayed initially until the user wants to do something else,
+!  then it will be unmanaged and the new thing popped in it's place.
+!
+
+object motd_form:	form {
+	arguments {
+		right_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		top_attachment = XmATTACH_WIDGET;
+		bottom_attachment = XmATTACH_FORM;
+		top_widget = label title_label;
+		width = Default_width;
+		vertical_spacing = Vert_spacing;
+		horizontal_spacing = Horiz_spacing;
+		shadow_thickness = NONE;
+		border_width = NONE;
+		margin_width = NONE;
+		margin_height = NONE;
+	};
+	controls {
+		separator motd_separator;
+		label welcome_label;
+		label copyright_label;
+		frame motd_frame;
+	};
+	callbacks {
+		create = procedure widget_create(MOTDFRAME);
+	};
+};
+
+object motd_separator:		separator {
+	arguments {
+		orientation = XmHORIZONTAL;
+		separator_type = XmSHADOW_ETCHED_IN;
+		top_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		right_attachment = XmATTACH_FORM;
+	};
+};
+
+object welcome_label:	label {
+	arguments {
+		right_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		alignment = XmALIGNMENT_CENTER;
+		top_attachment = XmATTACH_WIDGET;
+		top_widget = separator motd_separator;
+		font_list = WelcomeFont;
+		label_label = Welcome_text;
+	};
+};
+
+object copyright_label:		label {
+	arguments {
+		right_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		alignment = XmALIGNMENT_CENTER;
+		top_attachment = XmATTACH_WIDGET;
+		top_widget = label welcome_label;
+		font_list = CopyrightFont;
+		label_label = Copyright_text;
+	};
+};
+
+object motd_frame:	frame {
+	arguments {
+		right_attachment = XmATTACH_FORM;
+		left_attachment = XmATTACH_FORM;
+		top_attachment = XmATTACH_WIDGET;
+		top_widget = label copyright_label;
+		bottom_attachment = XmATTACH_FORM;
+		border_width = NONE;
+		shadow_thickness = NONE;
+	};
+	controls {
+		scrolled_text motd_text;
+	};
+};
+
+object motd_text:	scrolled_text  {
+	arguments {
+		editable = false;
+		edit_mode = XmMULTI_LINE_EDIT;
+		font_list = LabelFont;
+!		word_wrap = true;
+!
+!  Serious brain damage here.  Have to leave the horizontal scrollbar on
+!  in order to display the motd correctly.
+		scroll_horizontal = false;
+		scroll_vertical = true;
+		scroll_left_side = true;
+	};
+	callbacks {
+		create = procedure widget_create(MOTD);
+	};
+};
 
 end module;
 
