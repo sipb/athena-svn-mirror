@@ -14,14 +14,14 @@ mkdir $RPM_BUILD_ROOT
 # Extra file
 %ifos linux
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-cp olc.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
-chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/olc
+cp athena-olc.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-olc
+chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-olc
 %else
 mkdir -p $RPM_BUILD_ROOT/etc/init.d
 mkdir -p $RPM_BUILD_ROOT/etc/rc2.d
 mkdir -p $RPM_BUILD_ROOT/etc/rc0.d
-cp olc.rc $RPM_BUILD_ROOT/etc/init.d/olc
-chmod +x $RPM_BUILD_ROOT/etc/init.d/olc
+cp athena-olc.rc $RPM_BUILD_ROOT/etc/init.d/athena-olc
+chmod +x $RPM_BUILD_ROOT/etc/init.d/athena-olc
 ln -s ../init.d/athena-olc $RPM_BUILD_ROOT/etc/rc2.d/S91athena-olc
 ln -s ../init.d/athena-olc $RPM_BUILD_ROOT/etc/rc0.d/K91athena-olc
 %endif
@@ -35,7 +35,7 @@ OLC=false;		export OLC		#  OLC daemon?
 EOF
 
 %ifos linux
-chkconfig --add olc
+chkconfig --add athena-olc
 %endif
 
 %description
@@ -45,6 +45,9 @@ interaction with the Athena Online Consultants.
 %ifos linux
 %preun
 if [ $1 = 0 ]; then
-  chkconfig --del olc
+  chkconfig --del athena-olc
 fi
+
+%triggerpostun -- athena-olc < 9.2
+chkconfig --del olc
 %endif
