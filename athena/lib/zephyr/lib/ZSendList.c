@@ -10,17 +10,17 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.4 1987-06-23 17:07:17 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendList.c,v 1.5 1987-07-06 02:09:51 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
-Code_t ZSendList(notice,list,nitems,cert)
+Code_t ZSendList(notice,list,nitems,cert_routine)
 	ZNotice_t	*notice;
 	char		*list[];
 	int		nitems;
-	int		cert;
+	int		(*cert_routine)();
 {
 	Code_t retval;
 	char *buffer;
@@ -31,7 +31,7 @@ Code_t ZSendList(notice,list,nitems,cert)
 		return (ENOMEM);
 
 	if ((retval = ZFormatNoticeList(notice,list,nitems,buffer,
-					Z_MAXPKTLEN,&len,cert))
+					Z_MAXPKTLEN,&len,cert_routine))
 	    != ZERR_NONE) {
 		free(buffer);
 		return (retval);

@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.8 1987-07-01 04:37:10 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.9 1987-07-06 02:09:20 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -22,7 +22,7 @@ Code_t ZLocateUser(user,nlocs)
 {
 	int locate_pred();
 	
-	int i,retval,auth;
+	int i,retval;
 	ZNotice_t notice,retnotice;
 	ZPacket_t buffer;
 	char *ptr,*end;
@@ -41,10 +41,10 @@ Code_t ZLocateUser(user,nlocs)
 	notice.z_recipient = "";
 	notice.z_message_len = 0;
 
-	if ((retval = ZSendNotice(&notice,0)) != ZERR_NONE)
+	if ((retval = ZSendNotice(&notice,ZNOAUTH)) != ZERR_NONE)
 		return (retval);
 
-	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,&auth,
+	if ((retval = Z_NoAuthIfNotice(buffer,sizeof buffer,&retnotice,
 				ZCompareUIDPred,(char *)&notice.z_uid)) !=
 	    ZERR_NONE)
 		return (retval);

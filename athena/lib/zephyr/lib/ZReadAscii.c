@@ -1,5 +1,5 @@
 /* This file is part of the Project Athena Zephyr Notification System.
- * It contains source for the ZParseNotice function.
+ * It contains source for the ZReadAscii function.
  *
  *	Created by:	Robert French
  *
@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.5 1987-07-01 04:37:42 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZReadAscii.c,v 1.6 1987-07-06 02:09:44 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
