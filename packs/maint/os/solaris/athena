@@ -1,4 +1,4 @@
-# $Id: athena,v 1.12 1999-08-12 15:47:47 danw Exp $
+# $Id: athena,v 1.13 1999-10-18 17:17:12 danw Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
@@ -104,6 +104,11 @@ if [ "$PUBLIC" = true ]; then
 	rm -f /var/athena/attachtab/mountpoint/*
 	rm -f /var/athena/attachtab/locker/*
 	rm -rf /srvd /os
+
+	# Early public workstation cleanup: remove cluster.local and
+	# cluster.fallback before calling save_cluster_info, since
+	# it may look at them.
+	rm -f /etc/athena/cluster.local /etc/athena/cluster.fallback
 fi
 
 if [ "$RVDCLIENT" = true ]; then
