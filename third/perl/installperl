@@ -2,8 +2,6 @@
 
 require './lib/importenv.pl';
 
-$mainperldir = "/usr/bin";
-
 while (@ARGV) {
     $nonono = 1 if $ARGV[0] eq '-n';
     $versiononly = 1 if $ARGV[0] eq '-v';
@@ -91,17 +89,6 @@ if ($bdev != $ddev || $bino != $dino) {
     &unlink("$installbin/a2p");
     &cmd("cp x2p/a2p $installbin/a2p");
     &chmod(0755, "$installbin/a2p");
-}
-
-# Make some enemies in the name of standardization.   :-)
-
-($udev,$uino) = stat($mainperldir);
-
-if (-w _ && ($udev != $bdev || $uino != $bino) && !$nonono) {
-    &unlink("$mainperldir/perl");
-    eval 'link("$installbin/perl", "$mainperldir/perl")' ||
-    eval 'symlink("$installbin/perl", "$mainperldir/perl")' ||
-    &cmd("cp $installbin/perl $mainperldir");
 }
 
 # Install scripts.
