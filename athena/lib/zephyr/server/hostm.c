@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.11 1987-07-24 16:36:45 jtkohl Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.12 1987-08-01 11:36:40 rfrench Exp $";
 #endif SABER
 #endif lint
 
@@ -555,6 +555,8 @@ ZServerDesc_t *server;
 	shutnotice.z_opcode = SERVER_SHUTDOWN;
 	shutnotice.z_sender = HM_CTL_SERVER;
 	shutnotice.z_recipient = "hm@ATHENA.MIT.EDU";
+	shutnotice.z_default_format = "";
+	
 	if (server) {
 		shutnotice.z_message = inet_ntoa(server->zs_addr.sin_addr);
 		shutnotice.z_message_len = strlen(shutnotice.z_message);

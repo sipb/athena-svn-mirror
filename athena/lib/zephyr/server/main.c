@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.10 1987-07-22 17:54:05 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.11 1987-08-01 11:35:45 rfrench Exp $";
 char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 #endif SABER
 #endif lint
@@ -115,7 +115,7 @@ int argc;
 char **argv;
 {
 	int nfound;			/* #fildes ready on select */
-	int authentic;			/* authentic flag for ZParseNotice */
+	int authentic;			/* authentic flag */
 	Code_t status;
 	ZNotice_t new_notice;		/* parsed from input_packet */
 	ZPacket_t input_packet;		/* from the network */
@@ -250,9 +250,7 @@ char **argv;
 				npackets++;
 				if (status = ZParseNotice(input_packet,
 							  input_len,
-							  &new_notice,
-							  &authentic,
-							  &whoisit)) {
+							  &new_notice)) {
 					syslog(LOG_ERR,
 					       "bad notice parse: %s",
 					       error_message(status));
@@ -267,17 +265,14 @@ char **argv;
 					input_sin.sin_addr.s_addr = new_notice.z_sender_addr.s_addr;
 					input_sin.sin_port = new_notice.z_port;
 					input_sin.sin_family = AF_INET;
-					if (status = ZParseNotice(input_packet,
-								  input_len,
-								  &new_notice,
-								  &authentic,
-								  &input_sin)) {
-						syslog(LOG_ERR,
-						       "bad srv notice parse: %s",
-						       error_message(status));
-						continue;
-					}
+					authentic = ZCheckAuthentication(&new_notice,
+									 input_packet,
+									 &input_sin);
 				}
+				else
+					authentic = ZCheckAuthentication(&new_notice,
+									 input_packet,
+									 &whoisit);
 				if (whoisit.sin_port != hm_port &&
 				    strcmp(new_notice.z_class,ZEPHYR_ADMIN_CLASS) &&
 				    whoisit.sin_port != sock_sin.sin_port &&
