@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.14 1991-07-01 09:47:12 probe Exp $
+ * $Id: attach.h,v 1.15 1992-07-31 19:18:57 probe Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -56,7 +56,7 @@
 #define	M_RDONLY	MNT_READONLY
 #endif
 
-#if defined(_AUX_SOURCE) || defined(NeXT)
+#if defined(_AUX_SOURCE) || defined(NeXT) || defined(_AIX)
 #define	vfork	fork
 #endif
 
