@@ -2022,7 +2022,7 @@ gtk_widget_clip_rect (GtkWidget *widget,
 	}
       if (rect->y < 0)
 	{
-	  rect->height = (rect->height > -rect->y) ? rect->width + rect->y : 0;
+	  rect->height = (rect->height > -rect->y) ? rect->height + rect->y : 0;
 	  rect->y = 0;
 	}
       if (rect->x + rect->width > width)
@@ -4533,8 +4533,8 @@ gtk_widget_real_unrealize (GtkWidget *widget)
    */
 
    /* We must do unrealize child widget BEFORE container widget.
-    * gdk_window_destroy() destroys specified xwindow and it's sub-xwindows.
-    * So, unrealizing container widget bofore it's children causes the problem 
+    * gdk_window_destroy() destroys specified xwindow and its sub-xwindows.
+    * So, unrealizing container widget bofore its children causes the problem 
     * (for example, gdk_ic_destroy () with destroyed window causes crash. )
     */
 

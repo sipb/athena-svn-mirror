@@ -1,4 +1,4 @@
-This is gtk.info, produced by makeinfo version 3.12s from gtk.texi.
+This is gtk.info, produced by makeinfo version 4.0 from gtk.texi.
 
    This file documents GTK, the GIMP Toolkit
 
@@ -25,127 +25,127 @@ END-INFO-DIR-ENTRY
 
 
 Indirect:
-gtk.info-1: 953
-gtk.info-2: 49889
-gtk.info-3: 99068
-gtk.info-4: 148332
-gtk.info-5: 198097
-gtk.info-6: 205440
+gtk.info-1: 951
+gtk.info-2: 49892
+gtk.info-3: 99071
+gtk.info-4: 148335
+gtk.info-5: 198100
+gtk.info-6: 205443
 
 Tag Table:
 (Indirect)
-Node: Top953
-Node: Copying1765
-Node: Overview3306
-Node: Types4865
-Node: Type introduction6007
-Node: Basics13816
-Node: Simple types22146
-Node: Enumerations and flags24084
-Node: Strings24229
-Node: Boxed types24343
-Node: Callbacks24452
-Node: Composite types24565
-Node: Objects24670
-Node: Signals29740
-Node: Widgets44531
-Node: GtkAlignment49889
-Node: GtkArrow53125
-Node: GtkAspectFrame55429
-Node: GtkBin57056
-Node: GtkBox58305
-Node: GtkButtonBox64551
-Node: GtkButton69359
-Node: GtkCheckButton71303
-Node: GtkCheckMenuItem73062
-Node: GtkCList74977
-Node: GtkColorSelection82326
-Node: GtkCombo84747
-Node: GtkContainer86357
-Node: GtkCTree89078
-Node: GtkCurve93577
-Node: GtkGammaCurve95158
-Node: GtkDialog96568
-Node: GtkDrawingArea97714
-Node: GtkEntry99068
-Node: GtkEventBox102250
-Node: GtkFileSelection103304
-Node: GtkFixed104629
-Node: GtkFrame105765
-Node: GtkGamma107104
-Node: GtkHBox108038
-Node: GtkHButtonBox109501
-Node: GtkHPaned110836
-Node: GtkHRuler111768
-Node: GtkHScale112728
-Node: GtkHScrollbar113713
-Node: GtkHSeparator114758
-Node: GtkImage115781
-Node: GtkInputDialog116985
-Node: GtkItem118229
-Node: GtkLabel119253
-Node: GtkList120583
-Node: GtkListItem122585
-Node: GtkMenu123942
-Node: GtkMenuBar125536
-Node: GtkMenuItem126810
-Node: GtkMenuShell128842
-Node: GtkMisc130089
-Node: GtkNotebook131103
-Node: GtkOptionMenu133057
-Node: GtkPaned134461
-Node: GtkPixmap135495
-Node: GtkPreview136618
-Node: GtkProgressBar138895
-Node: GtkRadioButton140152
-Node: GtkRadioMenuItem141712
-Node: GtkRange143079
-Node: GtkRuler145164
-Node: GtkScale146361
-Node: GtkScrollbar147528
-Node: GtkScrolledWindow148332
-Node: GtkSeparator149941
-Node: GtkStatusbar150748
-Node: GtkTable151912
-Node: GtkText153972
-Node: GtkToggleButton155710
-Node: GtkToolbar157617
-Node: GtkTooltips160071
-Node: GtkTree161528
-Node: GtkTreeItem163486
-Node: GtkVBox165147
-Node: GtkVButtonBox166653
-Node: GtkViewport167986
-Node: GtkVPaned169369
-Node: GtkVRuler170327
-Node: GtkVScale171283
-Node: GtkVScrollbar172264
-Node: GtkVSeparator173359
-Node: GtkWidget174363
-Node: GtkWindow181071
-Node: Other Objects186610
-Node: GtkAcceleratorTable187004
-Node: GtkAdjustment188201
-Node: GtkGC189184
-Node: GtkData189523
-Node: GtkStyle190221
-Node: Miscellaneous190373
-Node: Initialization and exit190954
-Node: Customization192510
-Node: Menu Factories193636
-Node: Tree Factories193793
-Node: Tool Tips193946
-Node: Resource Files194118
-Node: Standard Macros194252
-Node: Examples195884
-Node: Simple196241
-Node: Hello World198097
-Node: Hello World II198761
-Node: Hello World III199663
-Node: Object Implementation200884
-Node: Signal Implementation205141
-Node: Widget Implementation205294
-Node: Function Index205440
-Node: Concept Index250662
+Node: Top951
+Node: Copying1763
+Node: Overview3304
+Node: Types4863
+Node: Type introduction6005
+Node: Basics13817
+Node: Simple types22149
+Node: Enumerations and flags24087
+Node: Strings24232
+Node: Boxed types24346
+Node: Callbacks24455
+Node: Composite types24568
+Node: Objects24673
+Node: Signals29743
+Node: Widgets44534
+Node: GtkAlignment49892
+Node: GtkArrow53128
+Node: GtkAspectFrame55432
+Node: GtkBin57059
+Node: GtkBox58308
+Node: GtkButtonBox64554
+Node: GtkButton69362
+Node: GtkCheckButton71306
+Node: GtkCheckMenuItem73065
+Node: GtkCList74980
+Node: GtkColorSelection82329
+Node: GtkCombo84750
+Node: GtkContainer86360
+Node: GtkCTree89081
+Node: GtkCurve93580
+Node: GtkGammaCurve95161
+Node: GtkDialog96571
+Node: GtkDrawingArea97717
+Node: GtkEntry99071
+Node: GtkEventBox102253
+Node: GtkFileSelection103307
+Node: GtkFixed104632
+Node: GtkFrame105768
+Node: GtkGamma107107
+Node: GtkHBox108041
+Node: GtkHButtonBox109504
+Node: GtkHPaned110839
+Node: GtkHRuler111771
+Node: GtkHScale112731
+Node: GtkHScrollbar113716
+Node: GtkHSeparator114761
+Node: GtkImage115784
+Node: GtkInputDialog116988
+Node: GtkItem118232
+Node: GtkLabel119256
+Node: GtkList120586
+Node: GtkListItem122588
+Node: GtkMenu123945
+Node: GtkMenuBar125539
+Node: GtkMenuItem126813
+Node: GtkMenuShell128845
+Node: GtkMisc130092
+Node: GtkNotebook131106
+Node: GtkOptionMenu133060
+Node: GtkPaned134464
+Node: GtkPixmap135498
+Node: GtkPreview136621
+Node: GtkProgressBar138898
+Node: GtkRadioButton140155
+Node: GtkRadioMenuItem141715
+Node: GtkRange143082
+Node: GtkRuler145167
+Node: GtkScale146364
+Node: GtkScrollbar147531
+Node: GtkScrolledWindow148335
+Node: GtkSeparator149944
+Node: GtkStatusbar150751
+Node: GtkTable151915
+Node: GtkText153975
+Node: GtkToggleButton155713
+Node: GtkToolbar157620
+Node: GtkTooltips160074
+Node: GtkTree161531
+Node: GtkTreeItem163489
+Node: GtkVBox165150
+Node: GtkVButtonBox166656
+Node: GtkViewport167989
+Node: GtkVPaned169372
+Node: GtkVRuler170330
+Node: GtkVScale171286
+Node: GtkVScrollbar172267
+Node: GtkVSeparator173362
+Node: GtkWidget174366
+Node: GtkWindow181074
+Node: Other Objects186613
+Node: GtkAcceleratorTable187007
+Node: GtkAdjustment188204
+Node: GtkGC189187
+Node: GtkData189526
+Node: GtkStyle190224
+Node: Miscellaneous190376
+Node: Initialization and exit190957
+Node: Customization192513
+Node: Menu Factories193639
+Node: Tree Factories193796
+Node: Tool Tips193949
+Node: Resource Files194121
+Node: Standard Macros194255
+Node: Examples195887
+Node: Simple196244
+Node: Hello World198100
+Node: Hello World II198764
+Node: Hello World III199666
+Node: Object Implementation200887
+Node: Signal Implementation205144
+Node: Widget Implementation205297
+Node: Function Index205443
+Node: Concept Index250665
 
 End Tag Table

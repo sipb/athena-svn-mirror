@@ -49,22 +49,23 @@ of GTK_LIST(AnyGtkList)->selection:
 selection_mode          GTK_LIST()->selection contents
 ------------------------------------------------------
 
-GTK_SELECTION_SINGLE)   selection is either NULL
+GTK_SELECTION_SINGLE    selection is either NULL
                         or contains a GList* pointer
                         for a single selected item.
 
-GTK_SELECTION_BROWSE)   selection is NULL if the list
+GTK_SELECTION_BROWSE    selection is NULL if the list
                         contains no widgets, otherwise
                         it contains a GList* pointer
                         for one GList structure.
-GTK_SELECTION_MULTIPLE) selection is NULL if no listitems
+
+GTK_SELECTION_MULTIPLE  selection is NULL if no listitems
                         are selected or a a GList* pointer
                         for the first selected item. that
                         in turn points to a GList structure
                         for the second selected item and so
-                        on
+                        on.
 
-GTK_SELECTION_EXTENDED) selection is NULL.
+GTK_SELECTION_EXTENDED  selection is NULL.
 </PRE>
 <P>The data field of the GList structure GTK_LIST(MyGtkList)->selection points
 to the first GtkListItem that is selected.  So if you would like to determine 
@@ -118,8 +119,28 @@ which listitems are selected you should go like this:
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
+<H2><A NAME="ss6.2">6.2 How do I stop the column headings of a GtkCList disappearing</A>
+when the list is scrolled?</H2>
+
+<P>This happens when a GtkCList is packed into a GtkScrolledWindow using
+the function <CODE>gtk_scroll_window_add_with_viewport()</CODE>. The prefered
+method of adding a CList to a scrolled window is to use the function
+<CODE>gtk_container_add</CODE>, as in:
 <P>
-<H2><A NAME="ss6.2">6.2 I don't want the user of my applications to enter text into a GtkCombo. Any idea?</A>
+<BLOCKQUOTE><CODE>
+<PRE>
+    GtkWidget *scrolled, *clist;
+    char *titles[] = { "Title1" , "Title2" };
+
+    scrolled = gtk_scrolled_window_new(NULL, NULL);
+
+    clist = gtk_clist_new_with_titles(2, titles);
+    gtk_container_add(GTK_CONTAINER(scrolled), clist);
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>
+<P>
+<H2><A NAME="ss6.3">6.3 I don't want the user of my applications to enter text into a GtkCombo. Any idea?</A>
 </H2>
 
 <P>A GtkCombo has an associated entry which can be accessed using the
@@ -141,10 +162,11 @@ entry, you can use the gtk_entry_set_editable() function:
 </CODE></BLOCKQUOTE>
 <P>Set the editable parameter to FALSE to disable typing into the entry.
 <P>
-<H2><A NAME="ss6.3">6.3 How do I catch a combo box change?</A>
+<H2><A NAME="ss6.4">6.4 How do I catch a combo box change?</A>
 </H2>
 
-<P>The entry which is associated to your GtkCombo send a "changed" signal when:
+<P>The entry which is associated to your GtkCombo send a "changed" signal
+when:
 <UL>
 <LI>some text is typed in</LI>
 <LI>the selection of the combo box is changed</LI>
@@ -160,7 +182,7 @@ entry, you can use the gtk_entry_set_editable() function:
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="ss6.4">6.4 How can I define a separation line in a menu? </A>
+<H2><A NAME="ss6.5">6.5 How can I define a separation line in a menu? </A>
 </H2>
 
 <P>See the 
@@ -176,11 +198,11 @@ gtk_widget_show(menuitem);
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="ss6.5">6.5 How can I right justify a menu, such as Help? </A>
+<H2><A NAME="ss6.6">6.6 How can I right justify a menu, such as Help? </A>
 </H2>
 
-<P>Depending on if you use the MenuFactory or not, there are two ways to proceed.
-With the MenuFactory, use something like the following:
+<P>Depending on if you use the MenuFactory or not, there are two ways to
+proceed.  With the MenuFactory, use something like the following:
 <P>
 <BLOCKQUOTE><CODE>
 <PRE>
@@ -196,14 +218,14 @@ gtk_menu_item_right_justify(my_menu_item);
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="ss6.6">6.6 How do I add some underlined accelerators to menu items?</A>
+<H2><A NAME="ss6.7">6.7 How do I add some underlined accelerators to menu items?</A>
 </H2>
 
-<P>Damon Chaplin, the technical force behind the Glade project, provided the
-following code sample (this code is an output from Glade). It creates a
-small <CODE>File</CODE> menu item with only one child (<CODE>New</CODE>). The F in <CODE>File</CODE> 
-and the N in <CODE>New</CODE> are underlined, and the relevant accelerators are 
-created.
+<P>Damon Chaplin, the technical force behind the Glade project, provided
+the following code sample (this code is an output from Glade). It
+creates a small <CODE>File</CODE> menu item with only one child
+(<CODE>New</CODE>). The F in <CODE>File</CODE> and the N in <CODE>New</CODE> are underlined,
+and the relevant accelerators are created.
 <P>
 <BLOCKQUOTE><CODE>
 <PRE>
@@ -237,21 +259,69 @@ created.
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="ss6.7">6.7 How do I right (or otherwise) justify a GtkLabel?</A>
+<H2><A NAME="ss6.8">6.8 How can I retrieve the text from a GtkMenuItem?</A>
 </H2>
 
-<P>Are you sure you want to <EM>justify</EM> the labels?  The label class contains 
-the <CODE>gtk_label_set_justify()</CODE> function that is used to control the 
-justification of a multi-line label.
-<P>What you probably want is to set the <EM>alignment</EM> of the label, ie right 
-align it, center it or left align it. If you want to do this, you 
-should use:
+<P>You can usually retrieve the label of a specific GtkMenuItem with:
 <P>
 <BLOCKQUOTE><CODE>
 <PRE>
-void gtk_misc_set_alignment     (GtkMisc *misc,
-                                gfloat xalign,
-                                gfloat yalign);
+    if (GTK_BIN (menu_item)->child)
+    {
+      GtkWidget *child = GTK_BIN (menu_item)->child;
+  
+      /* do stuff with child */
+      if (GTK_IS_LABEL (child))
+      {
+        gchar *text;
+    
+        gtk_label_get (GTK_LABEL (child), &amp;text);
+        g_print ("menu item text: %s\n", text);
+      }
+    }
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>To get the active menu item from a GtkOptionMenu you can do:
+<BLOCKQUOTE><CODE>
+<PRE>
+if (GTK_OPTION_MENU (option_menu)->menu_item)
+{
+  GtkWidget *menu_item = GTK_OPTION_MENU (option_menu)->menu_item;
+}
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>But, there's a catch. For this specific case, you can <B>not</B> get
+the label widget from <CODE>menu_item</CODE> with the above code, because the
+option menu reparents the menu_item's child temporarily to display the
+currently active contents. So to retrive the child of the currently
+active menu_item of an option menu, you'll have to do:
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+    if (GTK_BIN (option_menu)->child)
+    {
+      GtkWidget *child = GTK_BIN (option_menu)->child;
+
+      /* do stuff with child */
+    }
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>
+<H2><A NAME="ss6.9">6.9 How do I right (or otherwise) justify a GtkLabel?</A>
+</H2>
+
+<P>Are you sure you want to <EM>justify</EM> the labels?  The label class
+contains the <CODE>gtk_label_set_justify()</CODE> function that is used to
+control the justification of a multi-line label.
+<P>What you probably want is to set the <EM>alignment</EM> of the label,
+ie right align it, center it or left align it. If you want to do this,
+you should use:
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+void gtk_misc_set_alignment (GtkMisc *misc,
+                             gfloat xalign,
+                             gfloat yalign);
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>where the <CODE>xalign</CODE> and <CODE>yalign</CODE> values are floats in [0.00;1.00].
@@ -271,7 +341,7 @@ gtk_misc_set_alignment(GTK_MISK(label), 1.0f, 1.0f);
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="ss6.8">6.8 How do I set the background color of a GtkLabel widget?</A>
+<H2><A NAME="ss6.10">6.10 How do I set the background color of a GtkLabel widget?</A>
 </H2>
 
 <P>The Gtklabel widget is one of a few GTK+ widgets that don't create
@@ -281,7 +351,7 @@ themselves directly onto their parents window.
 widget, you need to change the background color of its parent,
 i.e. the object that you pack it into.
 <P>
-<H2><A NAME="ss6.9">6.9 How do I set the color and font of a GtkLabel using a Resource File?</A>
+<H2><A NAME="ss6.11">6.11 How do I set the color and font of a GtkLabel using a Resource File?</A>
 </H2>
 
 <P>The widget name path constructed for a Label consists of the widget
@@ -312,12 +382,12 @@ widget, which can be done using:
   gtk_widget_show(label);
 </PRE>
 <P>
-<H2><A NAME="ss6.10">6.10 How do I configure Tooltips in a Resource File?</A>
+<H2><A NAME="ss6.12">6.12 How do I configure Tooltips in a Resource File?</A>
 </H2>
 
-<P>The tooltip's window is named "gtk-tooltips", GtkTooltips in itself is not
-a GtkWidget (though a GtkObject) and as such is not attempted to match any
-widget styles.
+<P>The tooltip's window is named "gtk-tooltips", GtkTooltips in itself is
+not a GtkWidget (though a GtkObject) and as such is not attempted to
+match any widget styles.
 <P>So, you resource file should look something like:
 <PRE>
  
@@ -328,15 +398,7 @@ style "postie"
 widget "gtk-tooltips*" style "postie"
 </PRE>
 <P>
-<H2><A NAME="ss6.11">6.11 How do I use horizontal scrollbars with a GtkText widget?</A>
-</H2>
-
-<P>The short answer is that you can't. The current version of the GtkText
-widget does not support horizontal scrolling. There is an intention to
-completely rewrite the GtkText widget, at which time this limitation
-will be removed.
-<P>
-<H2><A NAME="ss6.12">6.12 I can't add more than (something like) 2000 chars in a GtkEntry. What's wrong?</A>
+<H2><A NAME="ss6.13">6.13 I can't add more than (something like) 2000 chars in a GtkEntry. What's wrong?</A>
 </H2>
 
 <P>There is now a known problem in the GtkEntry widget. In the
@@ -357,7 +419,105 @@ the number of chars in the entry to 2047.
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="ss6.13">6.13 How do I change the font of a GtkText widget?</A>
+<H2><A NAME="ss6.14">6.14 How do I make a GtkEntry widget activate on pressing the Return key?</A>
+</H2>
+
+<P>The Entry widget emits an 'activate' signal when you press return in
+it. Just attach to the activate signal on the entry and do whatever you
+want to do. Typical code would be:
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+  entry = gtk_entry_new();
+  gtk_signal_connect (GTK_OBJECT(entry), "activate",
+                      GTK_SIGNAL_FUNC(entry_callback),
+                      NULL);
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>
+<H2><A NAME="ss6.15">6.15 How do I validate/limit/filter the input to a GtkEntry?</A>
+</H2>
+
+<P>If you want to validate the text that a user enters into a GtkEntry
+widget you can attach to the "insert_text" signal of the entry, and
+modify the text within the callback function. The example below forces
+all characters to uppercase, and limits the range of characters to
+A-Z. Note that the entry is cast to an object of type GtkEditable,
+from which GtkEntry is derived.
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+#include &lt;ctype.h>
+#include &lt;gtk/gtk.h>
+
+void insert_text_handler (GtkEntry    *entry,
+                          const gchar *text,
+                          gint         length,
+                          gint        *position,
+                          gpointer     data)
+{
+  GtkEditable *editable = GTK_EDITABLE(entry);
+  int i, count=0;
+  gchar *result = g_new (gchar, length);
+
+  for (i=0; i &lt; length; i++) {
+    if (!isalpha(text[i]))
+      continue;
+    result[count++] = islower(text[i]) ? toupper(text[i]) : text[i];
+  }
+  
+  if (count > 0) {
+    gtk_signal_handler_block_by_func (GTK_OBJECT (editable),
+                                      GTK_SIGNAL_FUNC (insert_text_handler),
+                                      data);
+    gtk_editable_insert_text (editable, result, count, position);
+    gtk_signal_handler_unblock_by_func (GTK_OBJECT (editable),
+                                        GTK_SIGNAL_FUNC (insert_text_handler),
+                                        data);
+  }
+  gtk_signal_emit_stop_by_name (GTK_OBJECT (editable), "insert_text");
+  
+  g_free (result);
+}
+
+int main (int   argc,
+          char *argv[])
+{
+  GtkWidget *window;
+  GtkWidget *entry;
+  
+  gtk_init (&amp;argc, &amp;argv);
+  
+  /* create a new window */
+  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title(GTK_WINDOW (window), "GTK Entry");
+  gtk_signal_connect(GTK_OBJECT (window), "delete_event",
+                     (GtkSignalFunc) gtk_exit, NULL);
+  
+  entry = gtk_entry_new();
+  gtk_signal_connect(GTK_OBJECT(entry), "insert_text",
+                     GTK_SIGNAL_FUNC(insert_text_handler),
+                     NULL);
+  gtk_container_add(GTK_CONTAINER (window), entry);
+  gtk_widget_show(entry);
+  
+  gtk_widget_show(window);
+  
+  gtk_main();
+  return(0);
+}
+</PRE>
+</CODE></BLOCKQUOTE>
+<P>
+<H2><A NAME="ss6.16">6.16 How do I use horizontal scrollbars with a GtkText widget?</A>
+</H2>
+
+<P>The short answer is that you can't. The current version of the GtkText
+widget does not support horizontal scrolling. There is an intention to
+completely rewrite the GtkText widget, at which time this limitation
+will be removed.
+<P>
+<H2><A NAME="ss6.17">6.17 How do I change the font of a GtkText widget?</A>
 </H2>
 
 <P>There are a couple of ways of doing this. As GTK+ allows the
@@ -384,28 +544,29 @@ load a font using, for example:
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>
-<H2><A NAME="ss6.14">6.14 How do I set the cursor position in a GtkText object?</A>
+<H2><A NAME="ss6.18">6.18 How do I set the cursor position in a GtkText object?</A>
 </H2>
 
 <P>Notice that the response is valid for any object that inherits from the 
 GtkEditable class.
-<P>Are you sure that you want to move the cursor position? Most of the time,
-while the cursor position is good, the insertion point does not match the
-cursor position. If this apply to what you really want, then you should use
-the <CODE>gtk_text_set_point()</CODE> function. If you want to set the insertion point
-at the current cursor position, use the following:
+<P>Are you sure that you want to move the cursor position? Most of the
+time, while the cursor position is good, the insertion point does not
+match the cursor position. If this apply to what you really want, then
+you should use the <CODE>gtk_text_set_point()</CODE> function. If you want to
+set the insertion point at the current cursor position, use the
+following:
 <P>
 <BLOCKQUOTE><CODE>
 <PRE>
   gtk_text_set_point(GTK_TEXT(text),
-      gtk_editable_get_position(GTK_EDITABLE(text)));
+  gtk_editable_get_position(GTK_EDITABLE(text)));
 </PRE>
 </CODE></BLOCKQUOTE>
 <P>If you want the insertion point to follow the cursor at all time, you
 should probably catch the button press event, and then move the
-insertion point. Be careful : you'll have to catch it after the widget 
-has changed the cursor position though. Thomas Mailund Jensen proposed the
-following code:
+insertion point. Be careful : you'll have to catch it after the widget
+has changed the cursor position though. Thomas Mailund Jensen proposed
+the following code:
 <P>
 <BLOCKQUOTE><CODE>
 <PRE>
@@ -414,7 +575,7 @@ insert_bar (GtkWidget *text)
 {
   /* jump to cursor mark */
   gtk_text_set_point (GTK_TEXT (text),
-      gtk_editable_get_position (GTK_EDITABLE  (text)));
+  gtk_editable_get_position (GTK_EDITABLE  (text)));
 
   gtk_text_insert (GTK_TEXT (text), NULL, NULL, NULL,
      "bar", strlen ("bar"));

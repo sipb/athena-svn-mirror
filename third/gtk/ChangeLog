@@ -1,3 +1,116 @@
+Thu May 25 02:30:57 2000  Tim Janik  <timj@gtk.org>
+
+	* configure.in: gtk version 1.2.8, interface age 3, binary age 8.
+
+Fri May 19 09:54:53 2000  Tim Janik  <timj@gtk.org>
+
+	* gtk/gtkwidget.c (gtk_widget_clip_rect): fix mangling of rectangle
+	height with its width, spotted by Justin David Smith (Ytinasni)
+	<justins@velius.chaos2.org>.
+
+Fri May 19 06:49:23 2000  Tim Janik  <timj@gtk.org>
+
+	* gtk/gtkfontsel.c (gtk_font_selection_get_font_name): handle
+	"(nil)" foundries, patch from Grigorios Magklis.
+
+	* gtk/gtkfontsel.c (gtk_font_selection_load_font): don't crash
+	on non-available fonts, based on a patch by Grigorios Magklis
+	<maglis@cs.rochester.edu>.
+
+Fri May 19 05:52:08 2000  Tim Janik  <timj@gtk.org>
+
+	* gdk/gdkx.h: wrap contents into extern "C" { }, patch by Leonardo
+	Zide (leo@lokigames.com).
+
+Wed May 17 01:03:50 2000  Raph Levien  <raph@acm.org>
+
+	* gdk/gdkrgb.c (gdk_rgb_try_colormap): Changed the behavior
+	when the number of colors requested (gdk_rgb_min_colors)
+	exceeds the maximum cube tried. Old behavior segfaulted. New
+	behavior just uses the maximum cube.
+
+Mon May  8 16:16:53 1999  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+        * gtk/gtkrc.*: added "*-r-*" to all fontsets; that works quite well,
+	always finding a font (maybe not very nice, but at least readable)
+
+Thu May  4 02:04:46 2000  Tim Janik  <timj@gtk.org>
+
+        * configure.in (STRIP_DUMMY): some Make 3.79 $(strip ) versions are
+        broken and require an empty arg, give it to them.
+
+Sun Mar 26 03:21:28 2000  Tim Janik  <timj@gtk.org>
+
+	* gtk/gtksignal.c (gtk_signal_handlers_destroy): when unref-ing
+	the handlers, also invalidate them. bug nailed down by Karl Nelson
+	<kenelson@ece.ucdavis.edu>.
+
+Mon Mar 13 18:37:55 2000  Owen Taylor  <otaylor@redhat.com>
+
+	* gdk/gdkdnd.c: Fix a bunch of cases where XGetWindowProperty()
+	is called without trapping X errors.
+
+Thu Mar  9 22:10:56 GMT 2000  Tony Gale <gale@gtk.org>
+
+        * docs/gtkfaq.sgml: FAQ Update:
+          - Minor cleanups (Emmanuel, me)
+          - New questions:
+                I need to add a new signal to a GTK+ widget. Any idea? (timj)
+                How can I retrieve the text from a GtkMenuItem? (timj)
+                How do I validate/limit/filter the input to a GtkEntry? (me)
+                Memory does not seem to be released when I free the list
+                        nodes I've allocated (timj)
+
+Tue Feb 29 13:10:00 GMT 2000  Tony Gale <gale@gtk.org>
+
+        * gdk/gdkwindow.h gdk/x11/gxid.c gtk/gtkclist.c gtk/gtkclist.h
+          gtk/gtkctree.c gtk/gtkmenu.h gtk/gtkwidget.c gtk/testgtk.c
+          docs/styles.txt docs/refcounting.txt docs/gtkfaq.sgml
+          docs/gtk_tut.sgml docs/gtk.texi TODO:
+
+          Spelling/grammar fixes from Martin Buchholz <martin@xemacs.org>
+
+Fri Feb 25 10:48:53 2000  Owen Taylor  <otaylor@redhat.com>
+
+	* gtk/gtkrc.*: Fix problem where stray '"' characters found their
+	way into the fontset lists.
+
+Thu Feb 24 16:12:27 GMT 2000  Tony Gale <gale@gtk.org>
+
+	* gtk/gtkcalendar.c: Implement num_marked_dates,
+	  and don't emit mutiple day_selected signals on
+	  month_prev.
+ 
+Wed Feb 23 10:54:14 GMT 2000  Tony Gale <gale@gtk.org>
+
+	* docs/gtk_tut.sgml: New section on GtkCalendar
+	* examples/calendar: Update example code
+
+Tue Feb 22 13:54:12 GMT 2000  Tony Gale <gale@gtk.org>
+
+        * docs/gtkfaq.sgml: FAQ Update
+
+Tue Feb 22 08:52:52 2000  Tim Janik  <timj@gtk.org>
+
+	* gtk/gtkthemes.h: add extern "C" scope.
+
+Mon Feb 21 20:16:42 2000  Lars Hamann  <lars@gtk.org>
+
+	* gtk/gtkclist.c: applied  patch from Guy Harris <guy@netapp.com>
+	to make appends to the list constant. (gtk-guy-990901-0.patch)
+
+2000-02-19  Havoc Pennington  <hp@pobox.com>
+
+	* docs/gtk_tut.sgml: Don't recommend the use of 
+	gtk_signal_handlers_destroy, closes bug #6390
+
+Thu Feb 17 02:19:32 2000  Tim Janik  <timj@gtk.org>
+
+	* gdk/gdk.h:
+	* gtk/gtkaccelgroup.h:
+	* gtk/gtkthemes.h: remove extraneous prototypes, patch from
+	Sam O'Connor <oconnor@eiffel.com>.
+
 Wed Feb 16 05:22:36 CST 2000 Shawn T. Amundson <amundson@gtk.org>
 
 	* Released GTK+ 1.2.7

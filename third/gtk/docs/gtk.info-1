@@ -1,4 +1,4 @@
-This is gtk.info, produced by makeinfo version 3.12s from gtk.texi.
+This is gtk.info, produced by makeinfo version 4.0 from gtk.texi.
 
    This file documents GTK, the GIMP Toolkit
 
@@ -228,8 +228,8 @@ form that is easier to parse.  Tools for generating bindings of Gtk to
 other languages can read these declarations and--because all the
 important details are defined--automatically generate the bulk of the
 needed glue code.  It is also possible to feed these declarations into a
-running application (a interface builder, say) and thus make it aware of
-new widgets and functions without recompiling anything.
+running application (an interface builder, say) and thus make it aware
+of new widgets and functions without recompiling anything.
 
    The run-time side of the type system is also somewhat introspective.
 This means that you can query Gtk about all the members of an
@@ -260,7 +260,7 @@ a fundamental type, as is `GtkObject'.  All widgets derive from
 `GtkObject' and so the rules for `GtkObject' apply to all widgets as
 well.
 
-   This derivation defines a type hierachy, but this hierachy is not
+   This derivation defines a type hierarchy, but this hierarchy is not
 completely general.  You can't derive from `int' for example, and you
 can only have one level of derivation from `enum'.  The fundamental
 type `GtkObject', however, is the basis for the large and deep
@@ -331,8 +331,8 @@ unique name.
 
  - Data type: GtkType
      The type `GtkType' holds the run-time representation of a type.  It
-     is a integer of a certain size.  The follwing macros are defined to
-     access the basic properties of a `GtkType':
+     is an integer of a certain size.  The follwing macros are defined
+     to access the basic properties of a `GtkType':
 
       - Macro: unsigned int GTK_TYPE_SEQNO (GtkType type)
           Returns the sequence number of TYPE.  The sequence numbers are
@@ -399,7 +399,7 @@ there the rules are simple.
 
    * The `class_init_func' and `base_class_init_func' fields are
      callbacks which are used by the type mechanism to initialize class
-     specific fields. The single argument these function taks is a
+     specific fields. The single argument these functions take is a
      pointer to a class structure.  When you do not need one or both of
      them, set the corresponding field to `NULL'.  The
      `class_init_func' will be called at most once, right after the

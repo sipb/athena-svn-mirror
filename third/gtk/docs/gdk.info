@@ -1,4 +1,4 @@
-This is gdk.info, produced by makeinfo version 3.12s from gdk.texi.
+This is gdk.info, produced by makeinfo version 4.0 from gdk.texi.
 
    This file documents GDK, the General Drawing Kit
 
@@ -306,23 +306,23 @@ Concept Index
 
 
 Tag Table:
-Node: Top935
-Node: Copying2001
-Node: Overview3543
-Node: Initialization4220
-Node: Events5245
-Node: Visuals7518
-Node: Windows7658
-Node: Graphics Contexts7799
-Node: Pixmaps7940
-Node: Images8060
-Node: Color8166
-Node: Fonts8272
-Node: Drawing8375
-Node: XInput Support8491
-Node: Miscellany8624
-Node: Examples8736
-Node: Function Index8844
-Node: Concept Index9334
+Node: Top933
+Node: Copying1999
+Node: Overview3541
+Node: Initialization4218
+Node: Events5243
+Node: Visuals7516
+Node: Windows7656
+Node: Graphics Contexts7797
+Node: Pixmaps7938
+Node: Images8058
+Node: Color8164
+Node: Fonts8270
+Node: Drawing8373
+Node: XInput Support8489
+Node: Miscellany8622
+Node: Examples8734
+Node: Function Index8842
+Node: Concept Index9332
 
 End Tag Table

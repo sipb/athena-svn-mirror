@@ -29,9 +29,9 @@ extern "C" {
  */
 #define GTK_MAJOR_VERSION				(1)
 #define GTK_MINOR_VERSION				(2)
-#define GTK_MICRO_VERSION				(7)
-#define GTK_BINARY_AGE					(7)
-#define GTK_INTERFACE_AGE				(2)
+#define GTK_MICRO_VERSION				(8)
+#define GTK_BINARY_AGE					(8)
+#define GTK_INTERFACE_AGE				(3)
 #define	GTK_CHECK_VERSION(major,minor,micro)	\
     (GTK_MAJOR_VERSION > (major) || \
      (GTK_MAJOR_VERSION == (major) && GTK_MINOR_VERSION > (minor)) || \

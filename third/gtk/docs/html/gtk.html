@@ -1,10 +1,8 @@
 <HTML>
 <HEAD>
-<!-- This HTML file has been created by texi2html 1.54
-     from gtk.texi on 24 March 1999 -->
+<!-- Created by texi2html 1.56k from gtk.texi on 25 May 2000 -->
 
 <TITLE>GTK</TITLE>
-
 </HEAD>
 <BODY>
 <H1>The GIMP Toolkit</H1>
@@ -19,9 +17,9 @@
 <P>
 <A NAME="IDX4"></A>
 
-</P>
+
 <P>
-GTK is <STRONG>free</STRONG>; this means that everyone is free to use it and free
+GTK is <EM>free</EM>; this means that everyone is free to use it and free
 to redistribute it on a free basis. GTK is not in the public domain; it
 is copyrighted and there are restrictions on its distribution, but
 these restrictions are designed to permit everything that a good
@@ -29,14 +27,14 @@ cooperating citizen would want to do. What is not allowed is to try to
 prevent others from further sharing any version of GTK that they might
 get from you.
 
-</P>
+
 <P>
 Specifically, we want to make sure that you have the right to give away
 copies of GTK, that you receive source code or else can get it if you
 want it, that you can change GTK or use pieces of it in new free
 programs, and that you know you can do these things.
 
-</P>
+
 <P>
 To make sure that everyone has such rights, we have to forbid you to
 deprive anyone else of these rights. For example, if you distribute
@@ -44,7 +42,7 @@ copies of GTK, you must give the recipients all the rights that you
 have. You must make sure that they, too, receive or can get the source
 code. And you must tell them their rights.
 
-</P>
+
 <P>
 Also, for our own protection, we must make certain that everyone finds
 out that there is no warranty for GTK. If GTK is modified by someone
@@ -52,12 +50,11 @@ else and passed on, we want their recipients to know that what they have
 is not what we distributed, so that any problems introduced by others
 will no reflect on our reputation.
 
-</P>
+
 <P>
 The precise conditions of the licenses for GTK are found in the General
 Public Licenses that accompany it.
 
-</P>
 
 
 
@@ -65,7 +62,7 @@ Public Licenses that accompany it.
 <P>
 <A NAME="IDX5"></A>
 
-</P>
+
 <P>
 GTK is a library for creating graphical user interfaces similar to the
 Motif "look and feel". It is designed to be small and efficient, but
@@ -76,7 +73,7 @@ buttons, menus, lists and frames. It also provides several "container"
 widgets which can be used to control the layout of the user interface
 elements.
 
-</P>
+
 <P>
 GTK provides some unique features. (At least, I know of no other widget
 library which provides them). For example, a button does not contain a
@@ -85,7 +82,6 @@ label. However, the child widget can also be a pixmap, image or any
 combination possible the programmer desires. This flexibility is adhered
 to throughout the library.
 
-</P>
 
 <P>
 To make life easier for you, GTK presents this flexibility in a uniform
@@ -98,7 +94,7 @@ than C.  Especially more dynamic languages like Perl, Python or Scheme
 will find amble support, and in fact, bindings to these languages
 already exist.
 
-</P>
+
 
 
 <H1><A NAME="SEC3" HREF="gtk_toc.html#TOC3">Types</A></H1>
@@ -107,7 +103,7 @@ already exist.
 <A NAME="IDX7"></A>
 <A NAME="IDX8"></A>
 
-</P>
+
 
 <PRE>
 Other kid's games are all such a bore!
@@ -123,7 +119,6 @@ system is intended to be general enough to allow both a smooth binding
 of dynamically typed languages to Gtk, as well as to serve for a
 rigorous and formalistic definition of the larger part of the Gtk API.
 
-</P>
 
 <P>
 The classes for the individual widgets are by far the most important
@@ -132,7 +127,6 @@ basics of the type system itself.  This is mostly of interest for widget
 writers and language binders, so you might want to skip ahead to the
 next chapter, which talks about the object oriented stuff.
 
-</P>
 
 
 
@@ -150,14 +144,14 @@ more higher level approach and define such things as <SAMP>`string'</SAMP>,
 which is just like a <CODE>char*</CODE> but with additional rules about how to
 manage the memory that it points to.
 
-</P>
+
 <P>
 The type system has two purposes: to define a formal system with which
 to describe the various exported features of Gtk; and to implement this
-system at run-time so that we get sound and flexible <STRONG>dynamic</STRONG> types
+system at run-time so that we get sound and flexible <EM>dynamic</EM> types
 for the dynamic languages that want to interface with Gtk.
 
-</P>
+
 <P>
 Let me restate this with different words, because I think it is
 important to understand this idea.  We will see in a moment that the
@@ -170,7 +164,7 @@ between the name of a type and its unique number.  Maybe more useful,
 there is a big discriminated union that can be used to pass around a
 value of any representable type, together with its precise type.
 
-</P>
+
 <P>
 This is the run-time or dynamic side of the type system.  Mostly, you do
 not need to use it when you don't want to.  The compile-time or static
@@ -178,7 +172,7 @@ side of the type system can is used to statically define the programming
 interface of Gtk.  For example, suppose there is function <CODE>gtk_foo</CODE>
 in the Gtk API that has a prototype
 
-</P>
+
 
 <PRE>
 char *gtk_foo (char *);
@@ -201,7 +195,7 @@ it eventually and it can be sure that nobody else scribbles in it.  When
 <SAMP>`gtk_foo'</SAMP> really obeys these rules, we can say that it takes one
 argument, which is a <SAMP>`string'</SAMP>, and it returns a <SAMP>`string'</SAMP>.
 
-</P>
+
 <P>
 Now we can understand why it makes sense to have a more restrictive type
 system than that of C.  With it, it is possible to be more precise and
@@ -217,7 +211,7 @@ are nice to have but not essential.  The reward is an instant
 accessibility of your code from a huge number of scripting and extension
 languages such as Perl, Python, and Guile.
 
-</P>
+
 <P>
 These formal specifications of the Gtk interface are contained in
 special declarations in the header files of Gtk.  They are ignored by
@@ -227,20 +221,20 @@ form that is easier to parse.  Tools for generating bindings of Gtk to
 other languages can read these declarations and--because all the
 important details are defined--automatically generate the bulk of the
 needed glue code.  It is also possible to feed these declarations into a
-running application (a interface builder, say) and thus make it aware of
+running application (an interface builder, say) and thus make it aware of
 new widgets and functions without recompiling anything.
 
-</P>
+
 <P>
 The run-time side of the type system is also somewhat introspective.
 This means that you can query Gtk about all the members of an
 enumeration for example.  Gtk provides tools that help you provide this
 introspection for your definitions also.
 
-</P>
+
 <P>
 Types are not enough to completely specify an interface, so GTK also has
-<STRONG>modes</STRONG>.  A mode specifies what happens to a value when it crosses a
+<EM>modes</EM>.  A mode specifies what happens to a value when it crosses a
 module boundary; it can be <SAMP>`in'</SAMP>, <SAMP>`out'</SAMP>, or <SAMP>`inout'</SAMP>.  Most
 fundamental types (and their derived types) support only mode <SAMP>`in'</SAMP>.
 The modes <SAMP>`out'</SAMP> and <SAMP>`inout'</SAMP> can only be used with the
@@ -252,12 +246,12 @@ changes need to be propagated back to the originator of the value.  Mode
 beginning and should not be read.  Mode <SAMP>`in'</SAMP> specifies that the
 called module is not allowed to change the value in any way.
 
-</P>
+
 <P>
 The type system allows for an unbounded number of types.  Every widget
 is a type for example and you can add new widget types at any time
 without confusing the run-time implementation of the type system.
-Nevertheless, all types are derived from a certain <STRONG>fundamental</STRONG>
+Nevertheless, all types are derived from a certain <EM>fundamental</EM>
 type, and there are only a small and finite number of fundamental types.
 We only specify rules for the fundamental types and all other types
 inherit these rules from their fundamental type.  For example,
@@ -265,20 +259,20 @@ inherit these rules from their fundamental type.  For example,
 derive from <SAMP>`GtkObject'</SAMP> and so the rules for <SAMP>`GtkObject'</SAMP> apply
 to all widgets as well.
 
-</P>
+
 <P>
-This derivation defines a type hierachy, but this hierachy is not
+This derivation defines a type hierarchy, but this hierarchy is not
 completely general.  You can't derive from <SAMP>`int'</SAMP> for example, and
 you can only have one level of derivation from <SAMP>`enum'</SAMP>.  The
 fundamental type <SAMP>`GtkObject'</SAMP>, however, is the basis for the large
 and deep hierarchy of widget types.
 
-</P>
+
 <P>
 The individual fundamental types are defined and explained in the
 following sections.  Here is a complete list of them:
 
-</P>
+
 <DL COMPACT>
 
 <DT><SAMP>`none'</SAMP>
@@ -331,7 +325,7 @@ they are represented by members of the <CODE>GtkFundamentalType</CODE>
 enumeration.  For the static declarations, they are identified with a
 unique name.
 
-</P>
+
 <P>
 <DL>
 <DT><U>Enumeration:</U> <B>GtkFundamentalType</B>
@@ -340,7 +334,7 @@ This enumeration contains a member for each defined fundamental type.
 Most members are listed along with the description of their semantics,
 but one is listed here:
 
-</P>
+
 <DL COMPACT>
 
 <DT><CODE>GTK_TYPE_INVALID</CODE>
@@ -356,10 +350,10 @@ to a fundamental type and thus there is no name for it.
 <DT><U>Data type:</U> <B>GtkType</B>
 <DD><A NAME="IDX10"></A>
 The type <CODE>GtkType</CODE> holds the run-time representation of a type.  It
-is a integer of a certain size.  The follwing macros are defined to
+is an integer of a certain size.  The follwing macros are defined to
 access the basic properties of a <CODE>GtkType</CODE>:
 
-</P>
+
 <P>
 <DL>
 <DT><U>Macro:</U> unsigned int <B>GTK_TYPE_SEQNO</B> <I>(GtkType type)</I>
@@ -370,7 +364,7 @@ table need not be much larger than the number of different GtkTypes that
 you might encounter.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Macro:</U> GtkFundamentalType <B>GTK_FUNDAMENTAL_TYPE</B> <I>(GtkType type)</I>
@@ -378,13 +372,13 @@ you might encounter.
 Returns the fundamental type of <VAR>type</VAR>.
 </DL>
 
-</P>
+
 <P>
 Both macros simply access different bit-fields of a <CODE>GtkType</CODE>, so
 they are very efficient.
 </DL>
 
-</P>
+
 <P>
 New types are registered with the <CODE>gtk_type_unique</CODE> function.  Any
 kind oftype can be registered with <CODE>gtk_type_unique</CODE> but there are
@@ -395,13 +389,13 @@ right.  So, don't be put off by the apparent complexity of the interface
 to <CODE>gtk_type_unique</CODE>.  You will be using it only for new widgets,
 and there the rules are simple.
 
-</P>
+
 <P>
 The <CODE>GtkTypeInfo</CODE> structure is used to communicate information to
 <CODE>gtk_type_unique</CODE> as opposed to passing in large numbers of
 parameters.
 
-</P>
+
 
 <PRE>
 typedef struct _GtkTypeInfo GtkTypeInfo;
@@ -456,7 +450,7 @@ always return <CODE>NULL</CODE>.
 
 The <CODE>class_init_func</CODE> and <CODE>base_class_init_func</CODE> fields are
 callbacks which are used by the type mechanism to initialize class
-specific fields. The single argument these function taks is a pointer to
+specific fields. The single argument these functions take is a pointer to
 a class structure.  When you do not need one or both of them, set the
 corresponding field to <CODE>NULL</CODE>.  The <CODE>class_init_func</CODE> will be
 called at most once, right after the class structure of size
@@ -488,12 +482,12 @@ fundamental type.  You should <B>never</B> register new fundamental types.
 <VAR>type_info</VAR> is a pointer to a structure which contains necessary
 information for construction of the new type.
 
-</P>
+
 <P>
 You can only register a specific name once.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gchar* <B>gtk_type_name</B> <I>(GtkType <VAR>type</VAR>)</I>
@@ -502,7 +496,7 @@ The returned string is the name of <VAR>type</VAR> as specified to
 <CODE>gtk_type_unique</CODE>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkType <B>gtk_type_from_name</B> <I>(guchar *<VAR>name</VAR>)</I>
@@ -511,7 +505,7 @@ Return the type associated with <VAR>name</VAR>. If there is no type
 associated with <VAR>name</VAR>, then GTK_TYPE_INVALID will be returned.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkType <B>gtk_type_parent</B> <I>(GtkType <VAR>type</VAR>)</I>
@@ -520,7 +514,7 @@ Returns the parent type of <VAR>type</VAR> or GTK_TYPE_INVALID if <VAR>type</VAR
 is a fundamental type.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gpointer <B>gtk_type_class</B> <I>(GtkType <VAR>type</VAR>)</I>
@@ -529,14 +523,13 @@ Returns the initialized class structure for <VAR>type</VAR>. The class
 structure is actually created and initialized the first time it is
 needed.  Refer to see section <A HREF="gtk.html#SEC12">Objects</A> for details on how this initialization works for GTK_TYPE_OBJECT derived types.
 
-</P>
 
 <P>
 The returned structure is shared by all objects of <VAR>type</VAR> and, as
 such, should not be modified.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gpointer <B>gtk_type_new</B> <I>(GtkType <VAR>type</VAR>)</I>
@@ -544,7 +537,7 @@ such, should not be modified.
 Returns a new instance of an <VAR>type</VAR> object.  This works only for GTK_TYPE_OBJECT derived types.  Please see see section <A HREF="gtk.html#SEC12">Objects</A>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_type_describe_heritage</B> <I>(GtkType <VAR>type</VAR>)</I>
@@ -553,7 +546,7 @@ Prints the type heritage for <VAR>type</VAR>. The heritage for a type
 includes the type and all its parent types up the type tree.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_type_describe_tree</B> <I>(GtkType <VAR>type</VAR>, gboolean <VAR>show_size</VAR>)</I>
@@ -562,7 +555,7 @@ Prints the type tree which starts at <VAR>type</VAR>. <VAR>show_size</VAR> is a
 boolean which determines whether type sizes are printed.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gboolean <B>gtk_type_is_a</B> <I>(GtkType <VAR>type</VAR>, GtkType <VAR>is_a_type</VAR>)</I>
@@ -571,13 +564,12 @@ A predicate function which determines whether the relation <VAR>type</VAR>
 is_a <VAR>is_a_type</VAR> is true.
 </DL>
 
-</P>
 
 <P>
 Values of all types can be handled uniformly by storing them into a
 <CODE>GtkArg</CODE> structure.  The <CODE>GtkArg</CODE> has the following fields:
 
-</P>
+
 <DL COMPACT>
 
 <DT><CODE>gchar *name</CODE>
@@ -605,7 +597,7 @@ a lvalue.
 For example, the accessor for the fundamental type GTK_TYPE_INT is
 called GTK_VALUE_INT and you could use it like this:
 
-</P>
+
 
 <PRE>
 GtkArg value;
@@ -624,44 +616,42 @@ The Gtk type system has a full set of the usual simple types: integers,
 floating point numbers, but also boolean and character.  You can not
 derive new types from these.
 
-</P>
-<TABLE>
 
-<TR>Enum <TD> Name <TD> Description
-<BR>
-<TR>GTK_TYPE_NONE <TD> "void"
-<TD> A type without value.
-<BR>
-<TR>GTK_TYPE_CHAR <TD> "char"
-<TD> A 8-bit unsigned number representing a character.  Numbers
+<LI>Enum </TD><TD> Name </TD><TD> Description
+
+<LI>GTK_TYPE_NONE </TD><TD> "void"
+
+</TD><TD> A type without value.
+<LI>GTK_TYPE_CHAR </TD><TD> "char"
+
+</TD><TD> A 8-bit unsigned number representing a character.  Numbers
      between 0 and 127 are ASCII, the rest is undefined.
-<BR>
-<TR>GTK_TYPE_BOOL <TD> "gboolean"
-<TD> The boolean type.  It is some small integer where the number 0
+<LI>GTK_TYPE_BOOL </TD><TD> "gboolean"
+
+</TD><TD> The boolean type.  It is some small integer where the number 0
      represents false and 1 is true.  No other values are allowed.
-<BR>
-<TR>GTK_TYPE_INT <TD> "gint"
-<TD> A signed integer with at least 32 bits.
-<BR>
-<TR>GTK_TYPE_UINT <TD> "guint"
-<TD> A unsigned integer with at least 32 bits.
-<BR>
-<TR>GTK_TYPE_LONG <TD> "glong"
-<TD> A signed integer with at least 32 bits.
-<BR>
-<TR>GTK_TYPE_ULONG <TD> "gulong"
-<TD> A unsigned integer with at least 32 bits.  This is large enough to
+<LI>GTK_TYPE_INT </TD><TD> "gint"
+
+</TD><TD> A signed integer with at least 32 bits.
+<LI>GTK_TYPE_UINT </TD><TD> "guint"
+
+</TD><TD> A unsigned integer with at least 32 bits.
+<LI>GTK_TYPE_LONG </TD><TD> "glong"
+
+</TD><TD> A signed integer with at least 32 bits.
+<LI>GTK_TYPE_ULONG </TD><TD> "gulong"
+
+</TD><TD> A unsigned integer with at least 32 bits.  This is large enough to
      hold a coerced pointer.
-<BR>
-<TR>GTK_TYPE_FLOAT <TD> "gfloat"
-<TD> A single precision floating point number.
-<BR>
-<TR>GTK_TYPE_DOUBLE <TD> "gfloat"
-<TD> A souble precision floating point number.
-<BR>
-<TR>GTK_TYPE_POINTER <TD> "gpointer"
-<TD> A untyped pointer.  Do not use this if you can avoid it.
-</TABLE>
+<LI>GTK_TYPE_FLOAT </TD><TD> "gfloat"
+
+</TD><TD> A single precision floating point number.
+<LI>GTK_TYPE_DOUBLE </TD><TD> "gfloat"
+
+</TD><TD> A souble precision floating point number.
+<LI>GTK_TYPE_POINTER </TD><TD> "gpointer"
+
+</TD><TD> A untyped pointer.  Do not use this if you can avoid it.
 
 The values of these types are all represented `directly' with the C
 types that are indicated in the `name' column above.  see section <A HREF="gtk.html#SEC9">Boxed Types</A> for a discussion of this.
@@ -700,11 +690,11 @@ provides a minimal set of fields used to implement the actual object,
 class and signal mechanisms, as well as several utility routines which
 make dealing with objects easier.
 
-</P>
+
 <P>
 For the adventurous, see section <A HREF="gtk.html#SEC414">Object internals</A>.
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> guint <B>gtk_object_get_type</B> <I>(void)</I>
@@ -712,7 +702,7 @@ For the adventurous, see section <A HREF="gtk.html#SEC414">Object internals</A>.
 Returns the <CODE>GtkObject</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_class_add_signals</B> <I>(GtkObjectClass *<VAR>class</VAR>, gint *<VAR>signals</VAR>, gint <VAR>nsignals</VAR>)</I>
@@ -721,77 +711,76 @@ Adds <VAR>signals</VAR> to the <CODE>signals</CODE> field in the GtkObjectClass
 structure <VAR>class</VAR>. See section <A HREF="gtk.html#SEC14">Signals Overview</A>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkObject* <B>gtk_object_new</B> <I>(guint <VAR>type</VAR>, ...)</I>
 <DD><A NAME="IDX24"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkObject* <B>gtk_object_newv</B> <I>(guint <VAR>type</VAR>, guint <VAR>nargs</VAR>, GtkArg *<VAR>args</VAR>)</I>
 <DD><A NAME="IDX25"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_ref</B> <I>(GtkObject *<VAR>object</VAR>);</I>
 <DD><A NAME="IDX26"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_unref</B> <I>(GtkObject *<VAR>object</VAR>);</I>
 <DD><A NAME="IDX27"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_getv</B> <I>(GtkObject *<VAR>object</VAR>, guint <VAR>nargs</VAR>, GtkArg *<VAR>args</VAR>)</I>
 <DD><A NAME="IDX28"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_set</B> <I>(GtkObject *<VAR>object</VAR>, ...)</I>
 <DD><A NAME="IDX29"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_setv</B> <I>(GtkObject *<VAR>object</VAR>, guint <VAR>nargs</VAR>, GtkArg *<VAR>args</VAR>)</I>
 <DD><A NAME="IDX30"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkArg* <B>gtk_object_query_args</B> <I>(GtkType <VAR>class_type</VAR>, guint *<VAR>nargs</VAR>)</I>
 <DD><A NAME="IDX31"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_add_arg_type</B> <I>(gchar *<VAR>arg_name</VAR>, GtkType <VAR>arg_type</VAR>, guint <VAR>arg_id</VAR>)</I>
 <DD><A NAME="IDX32"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkType <B>gtk_object_get_arg_type</B> <I>(gchar *<VAR>arg_name</VAR>)</I>
 <DD><A NAME="IDX33"></A>
 </DL>
 
-</P>
 
 <P>
 <DL>
@@ -808,7 +797,7 @@ processing of the other signal we check whether the object needs to be
 destroyed.
 </DL>
 
-</P>
+
 <P>
 The GtkObject type provides a mechanism for associating arbitrary
 amounts of data with an object. The data is associated with the object
@@ -818,7 +807,7 @@ interface to this mechanism. Two other routines,
 <CODE>gtk_object_set_user_data</CODE> and <CODE>gtk_object_get_user_data</CODE>,
 exist as convenience functions which simply use the same mechanism.
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_set_data</B> <I>(GtkObject *<VAR>object</VAR>, const char *<VAR>key</VAR>, gpointer <VAR>data</VAR>)</I>
@@ -826,7 +815,7 @@ exist as convenience functions which simply use the same mechanism.
 Associate <VAR>data</VAR> with <VAR>key</VAR> in the data list of <VAR>object</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gpointer <B>gtk_object_get_data</B> <I>(GtkObject *<VAR>object</VAR>, const char *<VAR>key</VAR>)</I>
@@ -834,7 +823,7 @@ Associate <VAR>data</VAR> with <VAR>key</VAR> in the data list of <VAR>object</V
 Retrieve the data associated with <VAR>key</VAR> in the data list of <VAR>object</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_remove_data</B> <I>(GtkObject *<VAR>object</VAR>, const char *<VAR>key</VAR>)</I>
@@ -842,7 +831,7 @@ Retrieve the data associated with <VAR>key</VAR> in the data list of <VAR>object
 Remove the data associated with <VAR>key</VAR> in the data list of <VAR>object</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_set_user_data</B> <I>(GtkObject *<VAR>object</VAR>, gpointer <VAR>data</VAR>)</I>
@@ -850,7 +839,7 @@ Remove the data associated with <VAR>key</VAR> in the data list of <VAR>object</
 Sets <VAR>data</VAR> into the <CODE>user_data</CODE> field of <VAR>object</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gpointer <B>gtk_object_get_user_data</B> <I>(GtkObject *<VAR>object</VAR>)</I>
@@ -858,7 +847,6 @@ Sets <VAR>data</VAR> into the <CODE>user_data</CODE> field of <VAR>object</VAR>.
 Returns the <CODE>user_data</CODE> field of <VAR>object</VAR>.
 </DL>
 
-</P>
 
 <P>
 The GtkObject type also provides a mechanism for specifying
@@ -869,14 +857,14 @@ are non-visible when created. However, the "visible" value for widgets
 may be specified so that widgets are made visible when created. (FIXME:
 unfinished).
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_value_stack_new</B> <I>(guint <VAR>object_type</VAR>, const gchar *<VAR>value_id</VAR>, GtkParamType <VAR>value_type</VAR>)</I>
 <DD><A NAME="IDX40"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_push_value</B> <I>(guint <VAR>object_type</VAR>, const gchar *<VAR>value_id</VAR>, ...)</I>
@@ -888,7 +876,7 @@ explicitly in the function call). Only a single extra argument is
 expected which is the data which is to be placed on the stack.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_object_pop_value</B> <I>(guint <VAR>object_type</VAR>, const gchar *<VAR>value_id</VAR>)</I>
@@ -897,7 +885,7 @@ Pop a value of the value stack specified by <VAR>object_type</VAR> and
 <VAR>value_id</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_object_peek_value</B> <I>(guint <VAR>object_type</VAR>, const gchar *<VAR>value_id</VAR>, gpointer <VAR>data</VAR>)</I>
@@ -911,7 +899,6 @@ or does not exist or an error occurs, <CODE>gtk_object_peek_value</CODE> will
 return <CODE>FALSE</CODE>. On success it will return <CODE>TRUE</CODE>.
 </DL>
 
-</P>
 
 
 
@@ -919,14 +906,14 @@ return <CODE>FALSE</CODE>. On success it will return <CODE>TRUE</CODE>.
 <P>
 <A NAME="IDX44"></A>
 
-</P>
+
 <P>
 Signals are GTK's method for objects to perform callbacks. A signal is
 an event which occurs upon an object. The programmer can connect to a
 signal of an object which involves specifying a function to be called
 when that signal is emitted in the specified object.
 
-</P>
+
 <P>
 When a signal is emitted, both the class function associated with the
 signal (when it was defined) and all signal handlers installed for that
@@ -946,7 +933,7 @@ example is used in the file selection dialog to implement tab completion
 of filenames and prevent the entry widget from inserting the tab into
 its buffer.
 
-</P>
+
 <P>
 Signals are selected using either an integer identifier or a character
 string name. It is convention to name the signal the same as the class
@@ -954,7 +941,7 @@ function which is associated with it. There are two versions of most of
 the signal functions, one which takes an integer identifier and one
 which takes a character string name for the signal.
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_new</B> <I>(gchar *<VAR>name</VAR>, GtkSignalRunType <VAR>run_type</VAR>, gint <VAR>object_type</VAR>, gint <VAR>function_offset</VAR>, GtkSignalMarshaller <VAR>marshaller</VAR>, GtkParamType <VAR>return_val</VAR>, gint <VAR>nparams</VAR>, ...)</I>
@@ -965,7 +952,7 @@ Create a new signal and give it the character string identifier
 <VAR>object_type</VAR> cannot create a signal type with the same name as a
 signal type created by one of its parent types.
 
-</P>
+
 <P>
 <VAR>run_type</VAR> specifies whether the class function should be run before
 (<CODE>GTK_RUN_FIRST</CODE>), after (<CODE>GTK_RUN_LAST</CODE>) or both before and
@@ -980,7 +967,7 @@ specify the semantics of signal emission on a per signal
 basis. (The <CODE>GTK_RUN_NO_RECURSE</CODE> flag is used by the GtkAdjustment
 widget).
 
-</P>
+
 <P>
 The <VAR>function_offset</VAR> is the byte offset from the start of the class
 structure to the class function field within the class structure. The
@@ -994,7 +981,7 @@ absolute location since there will be multiple instances of a class
 structure being referenced. (The <CODE>GtkWidgetClass</CODE> structure "is
 a" <CODE>GtkObjectClass</CODE> structure, etc.)
 
-</P>
+
 <P>
 The <VAR>marshaller</VAR> function is used to invoke a signal handler. Since
 signal handlers may take different parameters and return values and a
@@ -1002,7 +989,7 @@ general mechanism for invoking them is not apparent, the approach of
 making the signal creator responsible for invoking the signal handler
 was taken. (FIXME: unfinished).
 
-</P>
+
 <P>
 The <VAR>return_val</VAR> and <VAR>nparams</VAR> and the remaining arguments
 specify the return value and the arguments to the signal handler
@@ -1016,19 +1003,19 @@ to specify <CODE>GTK_PARAM_NONE</CODE> as an argument type, however it is OK
 to use <CODE>GTK_PARAM_NONE</CODE> for <VAR>return_val</VAR>. (This corresponds to
 returning a <CODE>void</CODE>).
 
-</P>
+
 <P>
 <CODE>gtk_signal_new</CODE> returns the integer identifier of the newly
 created signal. Signal identifiers start numbering at 1 and increase
 upwards. A value of -1 will be returned if an error occurs.
 
-</P>
+
 <P>
 <STRONG>Note:</STRONG> <CODE>gtk_signal_new</CODE> is only needed by widget writers. A
 normal user of GTK will never needed to invoke this function.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_lookup</B> <I>(gchar *<VAR>name</VAR>, gint <VAR>object_type</VAR>)</I>
@@ -1039,14 +1026,14 @@ and <VAR>object_type</VAR>. If <VAR>object_type</VAR> does not define the signal
 type recursively.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gchar* <B>gtk_signal_name</B> <I>(gint <VAR>signal_num</VAR>)</I>
 <DD><A NAME="IDX47"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_emit</B> <I>(GtkObject *<VAR>object</VAR>, gint <VAR>signal_type</VAR>, ...)</I>
@@ -1057,7 +1044,7 @@ return <CODE>FALSE</CODE> and will return <CODE>TRUE</CODE> on success. The sign
 definition determines the parameters passed in the variable argument
 list (<CODE>...</CODE>). For example, if the signal is defined as:
 
-</P>
+
 
 <PRE>
   gint (* event) (GtkWidget *widget, GdkEvent *event);
@@ -1066,7 +1053,7 @@ list (<CODE>...</CODE>). For example, if the signal is defined as:
 <P>
 Then a call to emit the "event" signal would look like:
 
-</P>
+
 
 <PRE>
   GdkEvent event;
@@ -1090,7 +1077,7 @@ which know the signal identifier (since they defined the signal) and can
 therefore side-step the cost of calling <CODE>gtk_signal_lookup</CODE>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_emit_by_name</B> <I>(GtkObject *<VAR>object</VAR>, gchar *<VAR>name</VAR>, ...)</I>
@@ -1099,7 +1086,7 @@ Similar to <CODE>gtk_signal_emit</CODE> except that the signal is referenced
 by <VAR>name</VAR> instead of by its integer identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_emit_stop</B> <I>(GtkObject *<VAR>object</VAR>, gint <VAR>signal_type</VAR>)</I>
@@ -1113,7 +1100,7 @@ by name. Attempting to stop the emission of a signal that isn't being
 emitted does nothing.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_emit_stop_by_name</B> <I>(GtkObject *<VAR>object</VAR>, gchar *<VAR>name</VAR>)</I>
@@ -1122,7 +1109,7 @@ Similar to <CODE>gtk_signal_emit_stop</CODE> except that the signal is
 referenced by <VAR>name</VAR> instead of by its integer identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_connect</B> <I>(GtkObject *<VAR>object</VAR>, gchar *<VAR>name</VAR>, GtkSignalFunc <VAR>func</VAR>, gpointer <VAR>func_data</VAR>)</I>
@@ -1135,7 +1122,7 @@ the arguments and return type of the signal <VAR>name</VAR>. However,
 calling convention it is OK to ignore the extra argument. (It is OK to
 ignore all the arguments in fact).
 
-</P>
+
 <P>
 <CODE>gtk_signal_connect</CODE> returns an integer identifier for the
 connection which can be used to refer to it in the future. Specifically
@@ -1143,7 +1130,7 @@ it is useful for removing the connection and/or blocking it from being
 used.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_connect_after</B> <I>(GtkObject *<VAR>object</VAR>, gchar *<VAR>name</VAR>, GtkSignalFunc <VAR>func</VAR>, gpointer <VAR>func_data</VAR>)</I>
@@ -1154,13 +1141,13 @@ guaranteed to run after other signal handlers connected to the same
 signal on the same object and after the class function associated with
 the signal.
 
-</P>
+
 <P>
 Like <CODE>gtk_signal_connect</CODE>, <CODE>gtk_signal_connect_after</CODE> returns
 an integer identifier which can be used to refer to the connection.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_connect_object</B> <I>(GtkObject *<VAR>object</VAR>, gchar *<VAR>name</VAR>, GtkSignalFunc <VAR>func</VAR>, GtkObject *<VAR>slot_object</VAR>)</I>
@@ -1181,7 +1168,7 @@ mechanism. Returns an integer identifier which can be used to refer to
 the connection.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_connect_object_after</B> <I>(GtkObject *<VAR>object</VAR>, gchar *<VAR>name</VAR>, GtkSignalFunc <VAR>func</VAR>, GtkObject *<VAR>slot_object</VAR>)</I>
@@ -1194,14 +1181,14 @@ the signal. Returns an integer identifier which can be used to refer to
 the connection.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_signal_connect_interp</B> <I>(GtkObject *<VAR>object</VAR>, gchar *<VAR>name</VAR>, GtkCallbackMarshal <VAR>func</VAR>, gpointer <VAR>data</VAR>, GtkDestroyNotify <VAR>destroy_func</VAR>, gint <VAR>after</VAR>)</I>
 <DD><A NAME="IDX56"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_disconnect</B> <I>(GtkObject *<VAR>object</VAR>, gint <VAR>id</VAR>)</I>
@@ -1211,7 +1198,7 @@ identified by the integer <VAR>id</VAR> which is returned by the
 <CODE>gtk_signal_connect*</CODE> family of functions.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_disconnect_by_data</B> <I>(GtkObject *<VAR>object</VAR>, gpointer <VAR>data</VAR>)</I>
@@ -1222,7 +1209,7 @@ argument to the <CODE>gtk_signal_connect*</CODE> family of functions. For the
 <CODE>gtk_signal_connect_object*</CODE> functions, <VAR>data</VAR> refers to the
 <VAR>slot_object</VAR>.
 
-</P>
+
 <P>
 <STRONG>Note:</STRONG> This will remove all signal handlers connected to
 <VAR>object</VAR> which were connected using <VAR>data</VAR> as their
@@ -1230,7 +1217,7 @@ argument to the <CODE>gtk_signal_connect*</CODE> family of functions. For the
 with this call.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_handler_block</B> <I>(GtkObject *<VAR>object</VAR>, gint <VAR>id</VAR>)</I>
@@ -1241,7 +1228,7 @@ handler is identified by the integer <VAR>id</VAR> which is returned by the
 blocked no change is made.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_handler_block_by_data</B> <I>(GtkObject *<VAR>object</VAR>, gint <VAR>data</VAR>)</I>
@@ -1253,7 +1240,7 @@ functions. For the <CODE>gtk_signal_connect_object*</CODE> functions,
 <VAR>data</VAR> refers to the <VAR>slot_object</VAR>. If the signal is already
 blocked no change is made.
 
-</P>
+
 <P>
 <STRONG>Note:</STRONG> This will block all signal handlers connected to
 <VAR>object</VAR> which were connected using <VAR>data</VAR> as their
@@ -1261,7 +1248,7 @@ blocked no change is made.
 with this call.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_handler_unblock</B> <I>(GtkObject *<VAR>object</VAR>, gint <VAR>id</VAR>)</I>
@@ -1272,7 +1259,7 @@ handler is identified by the integer <VAR>id</VAR> which is returned by the
 unblocked no change is made.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_handler_unblock_by_data</B> <I>(GtkObject *<VAR>object</VAR>, gint <VAR>data</VAR>)</I>
@@ -1284,7 +1271,7 @@ functions. For the <CODE>gtk_signal_connect_object*</CODE> functions,
 <VAR>data</VAR> refers to the <VAR>slot_object</VAR>. If the signal is already
 unblocked no change is made.
 
-</P>
+
 <P>
 <STRONG>Note:</STRONG> This will unblock all signal handlers connected to
 <VAR>object</VAR> which were connected using <VAR>data</VAR> as their
@@ -1292,7 +1279,7 @@ unblocked no change is made.
 with this call.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_handlers_destroy</B> <I>(GtkObject *<VAR>object</VAR>)</I>
@@ -1302,7 +1289,7 @@ should normally never be reason to call this function as it is called
 automatically when <VAR>object</VAR> is destroyed.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_default_marshaller</B> <I>(GtkObject *<VAR>object</VAR>, GtkSignalFunc <VAR>func</VAR>, gpointer <VAR>func_data</VAR>, GtkSignalParam *<VAR>params</VAR>)</I>
@@ -1311,7 +1298,7 @@ automatically when <VAR>object</VAR> is destroyed.
 signal handler for a particular signal. The vast majority of signals are
 of the particular form:
 
-</P>
+
 
 <PRE>
   (* std_signal) (gpointer std_arg);
@@ -1322,14 +1309,13 @@ of the particular form:
 marshals arguments for a signal of that form.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_signal_set_funcs</B> <I>(GtkSignalMarshal <VAR>marshal_func</VAR>, GtkSignalDestroy <VAR>destroy_fun</VAR>)</I>
 <DD><A NAME="IDX65"></A>
 </DL>
 
-</P>
 
 
 
@@ -1337,7 +1323,6 @@ marshals arguments for a signal of that form.
 <P>
 <A NAME="IDX66"></A>
 
-</P>
 
 <P>
 Widgets are the general term used to describe user interface objects. A
@@ -1346,21 +1331,21 @@ to. This interface allows a uniform method for dealing with operations
 common to all objects such as hiding and showing, size requisition and
 allocation and events.
 
-</P>
+
 <P>
 The common interface that widgets must adhere to is described by the
 GtkWidget and GtkWidgetClass structure. For the purposes of using GTK
 these structures can be considered read-only and, for the most part,
 opaque.
 
-</P>
+
 <P>
 All widget creation routines in GTK return pointers to GtkWidget
 structures. In reality, all widget creation routines create structures
 that can be viewed as equivalent to the GtkWidget structure, but often
 have contain additional information. See section <A HREF="gtk.html#SEC414">Object internals</A>.
 
-</P>
+
 <P>
 The widgets available for use are implemented in a hierarchy. Several
 widgets exist solely as common bases for more specific widgets. For
@@ -1368,11 +1353,10 @@ example, it is not possible to create a ruler widget itself, but the
 ruler widget provides a base and functionality common to the horizontal
 and vertical rulers.
 
-</P>
+
 <P>
 The available widgets (in alphabetical order):
 
-</P>
 
 
 
@@ -1388,7 +1372,7 @@ the bin widget (see section <A HREF="gtk.html#SEC31">The bin widget</A>). Its en
 programmer flexibility in how the child it manages is positioned when a
 window is resized.
 
-</P>
+
 <P>
 Normally, a widget is allocated at least as much size as it
 requests. (see section <A HREF="gtk.html#SEC75">The container widget</A> for a discussion of geometry
@@ -1399,7 +1383,7 @@ not desired. The alignment widget allows the programmer to specify how a
 widget should expand and position itself to fill the area it is
 allocated.
 
-</P>
+
 
 
 <H3><A NAME="SEC18" HREF="gtk_toc.html#TOC18">Options</A></H3>
@@ -1417,7 +1401,7 @@ child widget is allocated all of the space in a dimension. A scale value
 of 1.0 for both x and y is equivalent to not using an alignment widget.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>xalign</B>
@@ -1434,7 +1418,7 @@ is to specify <VAR>xalign</VAR> and <VAR>yalign</VAR> to be 0.5 which causes the
 widget to be centered within its allocated area.
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC19" HREF="gtk_toc.html#TOC19">Signals</A></H3>
@@ -1450,7 +1434,7 @@ widget to be centered within its allocated area.
 Returns the <CODE>GtkAlignment</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_alignment_new</B> <I>(gfloat <VAR>xalign</VAR>, gfloat <VAR>yalign</VAR>, gfloat <VAR>xscale</VAR>, gfloat <VAR>yscale</VAR>)</I>
@@ -1461,7 +1445,7 @@ new widget is returned as a pointer to a <CODE>GtkWidget</CODE>
 object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_alignment_set</B> <I>(GtkAlignment *<VAR>alignment</VAR>, gfloat <VAR>xalign</VAR>, gfloat <VAR>yalign</VAR>, gfloat <VAR>xscale</VAR>, gfloat <VAR>yscale</VAR>)</I>
@@ -1472,11 +1456,11 @@ of an alignment widget. It is important to not set the fields of the
 derived from <CODE>GtkObject</CODE>).
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Alignment, ALIGNMENT}
 
-</P>
+
 
 
 <H2><A NAME="SEC21" HREF="gtk_toc.html#TOC21">The arrow widget</A></H2>
@@ -1493,7 +1477,7 @@ functionality and basically only draws itself in a particular direction
 and with a particular shadow type. The arrow widget will expand to fill
 all the space it is allocated.
 
-</P>
+
 
 
 <H3><A NAME="SEC23" HREF="gtk_toc.html#TOC23">Options</A></H3>
@@ -1508,7 +1492,7 @@ point. It can be one of <CODE>GTK_ARROW_UP</CODE>, <CODE>GTK_ARROW_DOWN</CODE>,
 pointing in the direction specified.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>shadow_type</B>
@@ -1519,7 +1503,7 @@ arrow. Currently, only the <CODE>GTK_SHADOW_IN</CODE> and
 arrows. Other shadow types will cause nothing to be drawn.
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC24" HREF="gtk_toc.html#TOC24">Signals</A></H3>
@@ -1535,7 +1519,7 @@ arrows. Other shadow types will cause nothing to be drawn.
 Returns the <CODE>GtkArrow</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_arrow_new</B> <I>(GtkArrowType <VAR>arrow_type</VAR>, GtkShadowType <VAR>shadow_type</VAR>)</I>
@@ -1546,7 +1530,7 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on
 failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_arrow_set</B> <I>(GtkArrow *<VAR>arrow</VAR>, GtkArrowType <VAR>arrow_type</VAR>, GtkShadowType <VAR>shadow_type</VAR>)</I>
@@ -1557,11 +1541,10 @@ structure directly (or, for that matter, any type derived from
 <CODE>GtkObject</CODE>).
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Arrow, ARROW}
 
-</P>
 
 
 
@@ -1576,7 +1559,7 @@ Ensure that the child window has a specified aspect ratio or, if
 obey_child, has the same aspect ratio as its requested size.  Derived
 from see section <A HREF="gtk.html#SEC125">The frame widget</A>).
 
-</P>
+
 
 
 <H3><A NAME="SEC28" HREF="gtk_toc.html#TOC28">Options</A></H3>
@@ -1587,35 +1570,35 @@ from see section <A HREF="gtk.html#SEC125">The frame widget</A>).
 <DD><A NAME="IDX79"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>xalign</B>
 <DD><A NAME="IDX80"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>yalign</B>
 <DD><A NAME="IDX81"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>ratio</B>
 <DD><A NAME="IDX82"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>obey_child</B>
 <DD><A NAME="IDX83"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC29" HREF="gtk_toc.html#TOC29">Signals</A></H3>
@@ -1631,7 +1614,7 @@ from see section <A HREF="gtk.html#SEC125">The frame widget</A>).
 Returns the <CODE>GtkAspectFrame</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_aspect_frame_new</B> <I>(gchar *<VAR>label</VAR>, gfloat <VAR>xalign</VAR>, gfloat <VAR>yalign</VAR>, gfloat <VAR>ratio</VAR>, gint <VAR>obey_child</VAR>)</I>
@@ -1642,19 +1625,18 @@ The new widget is returned as a pointer to a <CODE>GtkWidget</CODE> object.
 <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_aspect_frame_set</B> <I>(GtkAspectFrame *<VAR>aspect_frame</VAR>, gfloat <VAR>xalign</VAR>, gfloat <VAR>yalign</VAR>, gfloat <VAR>ratio</VAR>, gint <VAR>obey_child</VAR>)</I>
 <DD><A NAME="IDX86"></A>
 </DL>
 
-</P>
 
 <P>
 @gtkstdmacros{AspectFrame, ASPECT_FRAME}
 
-</P>
+
 
 
 <H2><A NAME="SEC31" HREF="gtk_toc.html#TOC31">The bin widget</A></H2>
@@ -1673,7 +1655,7 @@ child. These widgets include alignments (see section <A HREF="gtk.html#SEC16">Th
 (see section <A HREF="gtk.html#SEC125">The frame widget</A>), items (see section <A HREF="gtk.html#SEC180">The item widget</A>), viewports
 (see section <A HREF="gtk.html#SEC342">The viewport widget</A>) and windows (see section <A HREF="gtk.html#SEC374">The window widget</A>)
 
-</P>
+
 
 
 <H3><A NAME="SEC33" HREF="gtk_toc.html#TOC33">Options</A></H3>
@@ -1693,11 +1675,10 @@ child. These widgets include alignments (see section <A HREF="gtk.html#SEC16">Th
 Returns the <CODE>GtkBin</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Bin, BIN}
 
-</P>
 
 
 
@@ -1713,7 +1694,7 @@ container widget. It is an abstract base class used by the horizontal
 box (see section <A HREF="gtk.html#SEC135">The horizontal box widget</A>), the vertical box (see section <A HREF="gtk.html#SEC332">The vertical box widget</A>) and the 
 (see section <A HREF="gtk.html#SEC41">The button box widget</A>) widgets to provide a base of common functionality.
 
-</P>
+
 <P>
 A box provides an abstraction for organizing the position and size of
 widgets. Widgets in a box are laid out horizontally or vertically. By
@@ -1721,7 +1702,7 @@ using a box widget appropriately, a programmer can control how widgets
 are positioned and how they will be allocated space when a window gets
 resized.
 
-</P>
+
 <P>
 The key attribute of boxes is that they position their children in a
 single row (horizontal boxes) or column (vertical boxes). In the case of
@@ -1733,7 +1714,7 @@ the largest horizontal requisition of all of its children. An alignment
 widget (see section <A HREF="gtk.html#SEC16">The alignment widget</A>) can be used to control child allocation
 more precisely on a per child basis.
 
-</P>
+
 <P>
 The second attribute of boxes is how they expand children. In the case
 of a horizontal box, the main control is over how children are expanded
@@ -1741,7 +1722,7 @@ horizontally to fill the allocated area. (The rest of this discussion
 will focus on horizontal boxes but it applies to vertical boxes as
 well).
 
-</P>
+
 <P>
 There are two flags which can be set controlling how a widget is
 expanded horizontally in a horizontal box. These are the <CODE>expand</CODE>
@@ -1754,7 +1735,7 @@ the child) and the actual allocated area (which is the area the box
 widget actual allocates for the widget via
 <CODE>gtk_widget_size_allocate</CODE>).
 
-</P>
+
 <P>
 The allocation of space to children occurs as follows (for horizontal
 boxes):
@@ -1804,7 +1785,7 @@ to left in the boxes allocated area.
 See section <A HREF="gtk.html#SEC135">The horizontal box widget</A>, and section <A HREF="gtk.html#SEC332">The vertical box widget</A>, for code examples of using horizontal
 and vertical boxes.
 
-</P>
+
 
 
 <H3><A NAME="SEC38" HREF="gtk_toc.html#TOC38">Options</A></H3>
@@ -1815,28 +1796,27 @@ and vertical boxes.
 <DD><A NAME="IDX88"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>fill</B>
 <DD><A NAME="IDX89"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>padding</B>
 <DD><A NAME="IDX90"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>expand</B>
 <DD><A NAME="IDX91"></A>
 </DL>
 
-</P>
 
 
 
@@ -1853,7 +1833,7 @@ and vertical boxes.
 Returns the <CODE>GtkBox</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_box_pack_start</B> <I>(GtkBox *<VAR>box</VAR>, GtkWidget *<VAR>child</VAR>, gint <VAR>expand</VAR>, gint <VAR>fill</VAR>, gint <VAR>padding</VAR>)</I>
@@ -1863,7 +1843,7 @@ Add <VAR>child</VAR> to the front of <VAR>box</VAR>. The flags <VAR>expand</VAR>
 <VAR>child</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_box_pack_end</B> <I>(GtkBox *<VAR>box</VAR>, GtkWidget *<VAR>child</VAR>, gint <VAR>expand</VAR>, gint <VAR>fill</VAR>, gint <VAR>padding</VAR>)</I>
@@ -1873,14 +1853,14 @@ Add <VAR>child</VAR> to the end of <VAR>box</VAR>. The flags <VAR>expand</VAR> a
 <VAR>child</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_box_pack_start_defaults</B> <I>(GtkBox *<VAR>box</VAR>, GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX95"></A>
 A convenience function which is equivalent to the following:
 
-</P>
+
 
 <PRE>
   gtk_box_pack_start (<VAR>box</VAR>, <VAR>widget</VAR>, TRUE, TRUE, 0);
@@ -1894,7 +1874,7 @@ A convenience function which is equivalent to the following:
 <DD><A NAME="IDX96"></A>
 A convenience function which is equivalent to the following:
 
-</P>
+
 
 <PRE>
   gtk_box_pack_start (<VAR>box</VAR>, <VAR>widget</VAR>, TRUE, TRUE, 0);
@@ -1909,39 +1889,38 @@ A convenience function which is equivalent to the following:
 Set the homogeneous setting of this box to <VAR>homogeneous</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_box_set_spacing</B> <I>(GtkBox *<VAR>box</VAR>, gint <VAR>spacing</VAR>)</I>
 <DD><A NAME="IDX98"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_box_reorder_child</B> <I>(GtkBox *<VAR>box</VAR>, GtkWidget *<VAR>child</VAR>, guint <VAR>pos</VAR>)</I>
 <DD><A NAME="IDX99"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_box_query_child_packing</B> <I>(GtkBox *<VAR>box</VAR>, GtkWidget *<VAR>child</VAR>, gint *<VAR>expand</VAR>, gint *<VAR>fill</VAR>, gint *<VAR>padding</VAR>, GtkPackType *<VAR>pack_type</VAR>)</I>
 <DD><A NAME="IDX100"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_box_set_child_packing</B> <I>(GtkBox *<VAR>box</VAR>, GtkWidget *<VAR>child</VAR>, gint <VAR>expand</VAR>, gint <VAR>fill</VAR>, gint <VAR>padding</VAR>, GtkPackType *<VAR>pack_type</VAR>)</I>
 <DD><A NAME="IDX101"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Box, BOX}
 
-</P>
 
 
 
@@ -1956,7 +1935,7 @@ The button box widget is a container (see section <A HREF="gtk.html#SEC75">The c
 button box (see section <A HREF="gtk.html#SEC140">The horizontal button box widget</A>) and the vertical button box 
 (see section <A HREF="gtk.html#SEC337">The vertical button box widget</A>) widgets to provide a base of common functionality.
 
-</P>
+
 <P>
 The button box, like the box widget, (see section <A HREF="gtk.html#SEC36">The box widget</A>) provides an abstraction
 for organizing position and size of widgets. In the case of the button box
@@ -2036,14 +2015,14 @@ the parent window is re-sized.
 <DD><A NAME="IDX103"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>height</B>
 <DD><A NAME="IDX104"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>ipad_x</B>
@@ -2052,7 +2031,7 @@ the parent window is re-sized.
 <DD><A NAME="IDX106"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC44" HREF="gtk_toc.html#TOC44">Signals</A></H3>
@@ -2068,49 +2047,49 @@ the parent window is re-sized.
 Returns the <CODE>GtkButtonBox</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_set_child_size_default</B> <I>(gint <VAR>width</VAR>, gint<VAR>height</VAR>)</I>
 <DD><A NAME="IDX108"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_set_child_ipadding_default</B> <I>(gint <VAR>ipad_x</VAR>, gint <VAR>ipad_y</VAR>)</I>
 <DD><A NAME="IDX109"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_get_child_size_default</B> <I>(gint *<VAR>width</VAR>, gint *<VAR>height</VAR>)</I>
 <DD><A NAME="IDX110"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_get_child_ipadding_default</B> <I>(gint *<VAR>ipad_x</VAR>, gint *<VAR>ipad_y</VAR>)</I>
 <DD><A NAME="IDX111"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_set_child_size</B> <I>(GtkButtonBox *<VAR>widget</VAR>, gint <VAR>width</VAR>, gint <VAR>height</VAR>)</I>
 <DD><A NAME="IDX112"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_set_child_ipadding</B> <I>(GtkButtonBox *<VAR>widget</VAR>, gint <VAR>ipad_x</VAR>, gint <VAR>ipad_y</VAR>)</I>
 <DD><A NAME="IDX113"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_set_layout</B> <I>(GtkButtonBox *<VAR>widget</VAR>, gint <VAR>layout_style</VAR>)</I>
@@ -2119,7 +2098,7 @@ This will set the layout style of the buttons within this box. Currently it can
 be set to one of <CODE>GTK_BUTTONBOX_SPREAD</CODE>, <CODE>GTK_BUTTONBOX_EDGE</CODE>, 
 <CODE>GTK_BUTTONBOX_START</CODE> or <CODE>GTK_BUTTONBOX_END</CODE>.
 
-</P>
+
 <P>
 The following example:
 
@@ -2129,11 +2108,11 @@ The following example:
 </PRE>
 
 <P>
-Will set the <VAR>box</VAR> argument to the <STRONG>SPREAD</STRONG> layout style described 
+Will set the <VAR>box</VAR> argument to the <EM>SPREAD</EM> layout style described 
 above.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_button_box_get_spacing</B> <I>(GtkButtonBox *<VAR>widget</VAR>)</I>
@@ -2143,14 +2122,14 @@ the amount of space that will be between the individual buttons contained by
 this box.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_get_child_size</B> <I>(GtkButtonBox *<VAR>widget</VAR>, gint *<VAR>width</VAR>, gint *<VAR>height</VAR>)</I>
 <DD><A NAME="IDX116"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_box_get_child_ipadding</B> <I>(GtkButtonBox *<VAR>widget</VAR>, gint *<VAR>ipad_x</VAR>, gint *<VAR>ipad_y</VAR>)</I>
@@ -2159,7 +2138,7 @@ Get the per widget value for the padding inside the buttons. This value
 controls how large the buttons will be within the box.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_button_box_get_layout</B> <I>(GtkButtonBox *<VAR>widget</VAR>)</I>
@@ -2167,7 +2146,7 @@ controls how large the buttons will be within the box.
 Get the <VAR>layout_style</VAR> for the <CODE>GtkButtonBox</CODE> object passed to this
 function in the <VAR>widget</VAR> variable.
 
-</P>
+
 
 <PRE>
    layout = gtk_button_box_get_layout(GTK_BUTTON_BOX (box));
@@ -2178,7 +2157,7 @@ function in the <VAR>widget</VAR> variable.
 <P>
 @gtkstdmacros{ButtonBox, BUTTON_BOX}
 
-</P>
+
 
 
 <H2><A NAME="SEC46" HREF="gtk_toc.html#TOC46">The button widget</A></H2>
@@ -2192,7 +2171,7 @@ A pressable button.  Contains a widget.  Changes its appearance
 (hilites) when it gets the focus.  Changes its appearance (pressed) when
 activated.  Derived from see section <A HREF="gtk.html#SEC75">The container widget</A>.
 
-</P>
+
 
 
 <H3><A NAME="SEC48" HREF="gtk_toc.html#TOC48">Signals</A></H3>
@@ -2203,35 +2182,35 @@ activated.  Derived from see section <A HREF="gtk.html#SEC75">The container widg
 <DD><A NAME="IDX119"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkButton::released</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX120"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkButton::clicked</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX121"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkButton::enter</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX122"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkButton::leave</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX123"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC49" HREF="gtk_toc.html#TOC49">Functions</A></H3>
@@ -2243,7 +2222,7 @@ activated.  Derived from see section <A HREF="gtk.html#SEC75">The container widg
 Returns the <CODE>GtkButton</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_button_new</B> <I>(void)</I>
@@ -2252,7 +2231,7 @@ Create a new <CODE>GtkButton</CODE> object. The new widget is returned as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_button_new_with_label</B> <I>(gchar *<VAR>label</VAR>)</I>
@@ -2262,46 +2241,45 @@ on the button to <VAR>label</VAR>. The new widget is returned as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_pressed</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX127"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_released</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX128"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_clicked</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX129"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_enter</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX130"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_button_leave</B> <I>(GtkButton *<VAR>button</VAR>)</I>
 <DD><A NAME="IDX131"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Button, BUTTON}
 
-</P>
 
 
 
@@ -2316,7 +2294,7 @@ Another form of toggle button (see section <A HREF="gtk.html#SEC307">The toggle 
 indicator.  Contains a widget to the right of the indicator.  Changes
 its appearance (hilites) when it gets the focus.
 
-</P>
+
 
 
 <H3><A NAME="SEC52" HREF="gtk_toc.html#TOC52">Options</A></H3>
@@ -2336,7 +2314,7 @@ its appearance (hilites) when it gets the focus.
 Returns the <CODE>GtkCheckButton</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_check_button_new</B> <I>(void)</I>
@@ -2346,7 +2324,7 @@ default values in the library. The new widget is returned as a pointer
 to a <CODE>GtkWidget</CODE> object. A <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_check_button_new_with_label</B> <I>(gchar *<VAR>label</VAR>)</I>
@@ -2356,32 +2334,32 @@ values <VAR>label</VAR>. The new widget is returned as a pointer to a
 <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on any failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkCheckButton* <B>GTK_CHECK_BUTTON</B> <I>(gpointer <VAR>obj</VAR>)</I>
 <DD><A NAME="IDX135"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkCheckButtonClass* <B>GTK_CHECK_BUTTON_CLASS</B> <I>(gpointer <VAR>class</VAR>)</I>
 <DD><A NAME="IDX136"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>GTK_IS_CHECK_BUTTON</B> <I>(gpointer <VAR>obj</VAR>)</I>
 <DD><A NAME="IDX137"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{CheckButton, CHECK_BUTTON}
 
-</P>
+
 
 
 <H2><A NAME="SEC55" HREF="gtk_toc.html#TOC55">The check menu item widget</A></H2>
@@ -2396,7 +2374,7 @@ Derived from see section <A HREF="gtk.html#SEC208">The menu item widget</A>.  Ve
 state which is displayed in a small rectangle to the left of the
 contained widget.
 
-</P>
+
 
 
 <H3><A NAME="SEC57" HREF="gtk_toc.html#TOC57">Options</A></H3>
@@ -2407,14 +2385,14 @@ contained widget.
 <DD><A NAME="IDX138"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>state</B>
 <DD><A NAME="IDX139"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC58" HREF="gtk_toc.html#TOC58">Signals</A></H3>
@@ -2425,7 +2403,7 @@ contained widget.
 <DD><A NAME="IDX140"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC59" HREF="gtk_toc.html#TOC59">Functions</A></H3>
@@ -2437,7 +2415,7 @@ contained widget.
 Returns the <CODE>GtkCheckMenuItem</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_check_menu_item_new</B> <I>(void)</I>
@@ -2446,7 +2424,7 @@ Create a new <CODE>GtkCheckMenuItem</CODE> object. The new widget is returned as
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_check_menu_item_new_with_label</B> <I>(gchar *<VAR>label</VAR>)</I>
@@ -2456,25 +2434,25 @@ Create a new <CODE>GtkCheckMenuItem</CODE> object and initialize it with the val
 object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_check_menu_item_set_state</B> <I>(GtkCheckMenuItem *<VAR>check_menu_item</VAR>, gint <VAR>state</VAR>)</I>
 <DD><A NAME="IDX144"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_check_menu_item_toggled</B> <I>(GtkCheckMenuItem *<VAR>check_menu_item</VAR>)</I>
 <DD><A NAME="IDX145"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{CheckMenuItem, CHECK_MENU_ITEM}
 
-</P>
+
 
 
 <H2><A NAME="SEC60" HREF="gtk_toc.html#TOC60">The compound list widget</A></H2>
@@ -2489,7 +2467,7 @@ delete rows.  The user can scroll around and select a row.  Derived from
 see section <A HREF="gtk.html#SEC75">The container widget</A>.  Cells can be empty, have a text and/or pixmap, or
 be a widget.
 
-</P>
+
 
 
 <H3><A NAME="SEC62" HREF="gtk_toc.html#TOC62">Options</A></H3>
@@ -2509,7 +2487,7 @@ be a widget.
 Returns the <CODE>GtkCList</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_clist_new</B> <I>(int <VAR>columns</VAR>)</I>
@@ -2519,7 +2497,6 @@ The new widget is returned as a pointer to a <CODE>GtkWidget</CODE> object.
 <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
 
 <P>
 <DL>
@@ -2527,7 +2504,7 @@ The new widget is returned as a pointer to a <CODE>GtkWidget</CODE> object.
 <DD><A NAME="IDX148"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_border</B> <I>(GtkCList *<VAR>clist</VAR>, GtkShadowType <VAR>border</VAR>)</I>
@@ -2535,7 +2512,7 @@ The new widget is returned as a pointer to a <CODE>GtkWidget</CODE> object.
 Set the border style of the <VAR>clist</VAR> to the shadow type <VAR>border</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_selection_mode</B> <I>(GtkCList *<VAR>clist</VAR> GtkSelectionMode <VAR>mode</VAR>)</I>
@@ -2543,7 +2520,7 @@ Set the border style of the <VAR>clist</VAR> to the shadow type <VAR>border</VAR
 Set the selection mode on the <VAR>clist</VAR> to the <VAR>mode</VAR> selection mode.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_policy</B> <I>(GtkCList *<VAR>clist</VAR>, GtkPolicyType <VAR>vscrollbar_policy</VAR>, GtkPolicyType <VAR>hscrollbar_policy</VAR>)</I>
@@ -2551,7 +2528,7 @@ Set the selection mode on the <VAR>clist</VAR> to the <VAR>mode</VAR> selection 
 Set the policy on the scrollbars on the <VAR>clist</VAR> to <VAR>vscrollbar_policy</VAR> and <VAR>hscrollbar_policy</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_freeze</B> <I>(GtkCList *<VAR>clist</VAR>)</I>
@@ -2560,7 +2537,7 @@ Stop all visual updates of the <VAR>clist</VAR>. Useful for when making a large
 number of changes to a <CODE>GtkCList</CODE>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_thaw</B> <I>(GtkCList *<VAR>clist</VAR>)</I>
@@ -2568,7 +2545,7 @@ number of changes to a <CODE>GtkCList</CODE>.
 Allow all visual updates of the <VAR>clist</VAR> to resume. 
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_column_titles_show</B> <I>(GtkCList *<VAR>clist</VAR>)</I>
@@ -2576,7 +2553,7 @@ Allow all visual updates of the <VAR>clist</VAR> to resume.
 Show the column title buttons on the <VAR>clist</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_column_titles_hide</B> <I>(GtkCList *<VAR>clist</VAR>)</I>
@@ -2584,7 +2561,7 @@ Show the column title buttons on the <VAR>clist</VAR>.
 Hide the column title buttons on the <VAR>clist</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_column_title</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>column</VAR>, gchar *<VAR>title</VAR>)</I>
@@ -2592,7 +2569,7 @@ Hide the column title buttons on the <VAR>clist</VAR>.
 Set the title in column <VAR>column</VAR> of the <VAR>clist</VAR> button to <VAR>title</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_column_widget</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>column</VAR>, GtkWidget *<VAR>widget</VAR>)</I>
@@ -2601,7 +2578,7 @@ Set the <VAR>widget</VAR> instead of the title button for the column <VAR>column
 in the <VAR>clist</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_column_justification</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>column</VAR>, GtkJustification <VAR>justification</VAR>)</I>
@@ -2609,7 +2586,7 @@ in the <VAR>clist</VAR>.
 Set the <VAR>column</VAR>'s justification, in the <VAR>clist</VAR> to <VAR>justification</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_column_width</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>column</VAR>, gint <VAR>width</VAR>)</I>
@@ -2620,7 +2597,7 @@ to <VAR>width</VAR>. This function is a necessary step in creating a
 of the column title, which is almost never correct.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_row_height</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>height</VAR>)</I>
@@ -2629,7 +2606,7 @@ Change the height of the rows in the <VAR>clist</VAR> to <VAR>height</VAR>. The 
 is the height of the current font.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_moveto</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gint<VAR>column</VAR>, gfloat <VAR>row_align</VAR>, gfloat <VAR>col_align</VAR>)</I>
@@ -2643,7 +2620,7 @@ be the bottom or right of the viewing area. If the <VAR>row</VAR> or <VAR>column
 is -1 then there is no change.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_text</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gint <VAR>column</VAR>, gchar *<VAR>text</VAR>)</I>
@@ -2652,7 +2629,7 @@ Set a given cell's text, located by the <VAR>row</VAR> and <VAR>column</VAR>, to
 <VAR>text</VAR> replacing its current contents.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_pixmap</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gint <VAR>column</VAR>, GdkPixmap *<VAR>pixmap</VAR>, GdkBitmap *<VAR>mask</VAR>)</I>
@@ -2662,7 +2639,7 @@ to the pixmap described by the <VAR>pixmap</VAR> argument using the <VAR>mask</V
 its mask. The current contents of the cell will be replaced.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_setpixtext</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gint <VAR>column</VAR>, gchar *<VAR>text</VAR>, guint8 <VAR>spacing</VAR>, GdkPixmap *<VAR>pixmap</VAR>, GdkBitmap *<VAR>mask</VAR>)</I>
@@ -2673,7 +2650,7 @@ arguments. The <VAR>mask</VAR> will be used for the pixmap mask and the
 <VAR>spacing</VAR> argument specifies the spacing between the two.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_foreground</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, GdkColor *<VAR>color</VAR>)</I>
@@ -2683,7 +2660,7 @@ Set the foreground color of row <VAR>row</VAR> to <VAR>color</VAR> in the
 already be allocated.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_background</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, GdkColor *<VAR>color</VAR>)</I>
@@ -2693,7 +2670,7 @@ Set the background color of row <VAR>row</VAR> to <VAR>color</VAR> in the
 allocated.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_shift</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gint <VAR>column</VAR>, gint <VAR>vertical</VAR>, gint <VAR>horizontal</VAR>)</I>
@@ -2703,7 +2680,7 @@ located at <VAR>row</VAR> and <VAR>column</VAR>. The <VAR>vertical</VAR> and <VA
 arguments can be positive or negative. 
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_clist_append</B> <I>(GtkCList *<VAR>clist</VAR>, gchar *<VAR>text[]</VAR>)</I>
@@ -2713,7 +2690,7 @@ pointed to by the <VAR>clist</VAR>. The return value is the index of the row tha
 was just added.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_insert</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gchar *<VAR>text[]</VAR>)</I>
@@ -2722,7 +2699,7 @@ Insert a row into the <CODE>GtkCList</CODE> pointed to by <VAR>clist</VAR> at ro
 <VAR>row</VAR> with the text in <VAR>text[]</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_remove</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>)</I>
@@ -2730,7 +2707,7 @@ Insert a row into the <CODE>GtkCList</CODE> pointed to by <VAR>clist</VAR> at ro
 Remove row index <VAR>row</VAR> from the <VAR>clist</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_set_row_data</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gpointer <VAR>data</VAR>)</I>
@@ -2739,7 +2716,7 @@ Will set an arbitrary data pointer, <VAR>data</VAR>, for row <VAR>row</VAR> in t
 <CODE>GtkCList</CODE> pointed to by <VAR>clist</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gpointer <B>gtk_clist_get_row_data</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>)</I>
@@ -2748,7 +2725,7 @@ Return the data that was set for row <VAR>row</VAR> from the <CODE>GtkCList</COD
 to by <VAR>clist</VAR>. <CODE>NULL</CODE> is returned if no data was set.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_select_row</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gint <VAR>column</VAR>)</I>
@@ -2757,7 +2734,7 @@ Force selection of a row, located by <VAR>row</VAR> and <VAR>column</VAR>, in th
 <CODE>GtkCList</CODE> pointed to by <VAR>clist</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_unselect_row</B> <I>(GtkCList *<VAR>clist</VAR>, gint <VAR>row</VAR>, gint <VAR>column</VAR>)</I>
@@ -2766,7 +2743,7 @@ Force the unselection of a row, located by <VAR>row</VAR> and <VAR>column</VAR>,
 <CODE>GtkCList</CODE> pointed to by <VAR>clist</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_clist_clear</B> <I>(GtkCList *<VAR>clist</VAR>)</I>
@@ -2776,11 +2753,11 @@ This is much faster then removing each item separately with
 <CODE>gtk_clist_remove</CODE>.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{CList, CLIST}
 
-</P>
+
 
 
 <H2><A NAME="SEC65" HREF="gtk_toc.html#TOC65">The color selector widget</A></H2>
@@ -2796,7 +2773,7 @@ saturation, value, red, green, or blue with a slider, or by entering
 values.  Also allows the user to set an alpha (opacity) value.  Derived
 from see section <A HREF="gtk.html#SEC332">The vertical box widget</A>.
 
-</P>
+
 
 
 <H3><A NAME="SEC67" HREF="gtk_toc.html#TOC67">Options</A></H3>
@@ -2825,21 +2802,21 @@ GTK_UPDATE_DELAYED
 <DD><A NAME="IDX177"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>use_opacity</B>
 <DD><A NAME="IDX178"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>title</B>
 <DD><A NAME="IDX179"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC68" HREF="gtk_toc.html#TOC68">Signals</A></H3>
@@ -2855,7 +2832,7 @@ GTK_UPDATE_DELAYED
 Returns the <CODE>GtkColorSelection</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_color_selection_new</B> <I>(void)</I>
@@ -2864,35 +2841,35 @@ Create a new <CODE>GtkColorSelection</CODE> object. The new object is returned a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_color_selection_set_update_policy</B> <I>(GtkColorSelection *<VAR>colorsel</VAR>, GtkUpdateType <VAR>policy</VAR>)</I>
 <DD><A NAME="IDX182"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_color_selection_set_color</B> <I>(GtkColorSelection *<VAR>colorsel</VAR>, gdouble *<VAR>color</VAR>)</I>
 <DD><A NAME="IDX183"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_color_selection_get_color</B> <I>(GtkColorSelection *<VAR>colorsel</VAR>, gdouble *<VAR>color</VAR>)</I>
 <DD><A NAME="IDX184"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_color_selection_set_opacity</B> <I>(GtkColorSelection *<VAR>colorsel</VAR>, gint <VAR>use_opacity</VAR>)</I>
 <DD><A NAME="IDX185"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> guint <B>gtk_color_selection_dialog_get_type</B> <I>(void)</I>
@@ -2900,7 +2877,7 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkColorSelection</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_color_selection_dialog_new</B> <I>(gchar *<VAR>title</VAR>)</I>
@@ -2910,11 +2887,11 @@ the resulting dialog to <VAR>title</VAR>. The new widget is returned as a pointe
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{ColorSelection, COLOR_SELECTION}
 
-</P>
+
 
 
 <H2><A NAME="SEC70" HREF="gtk_toc.html#TOC70">The combo widget</A></H2>
@@ -2927,7 +2904,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Text input box which also lets you choose from pre-defined values from a
 drop-down menu.  Derived from see section <A HREF="gtk.html#SEC135">The horizontal box widget</A>.
 
-</P>
+
 
 
 <H3><A NAME="SEC72" HREF="gtk_toc.html#TOC72">Options</A></H3>
@@ -2947,7 +2924,7 @@ drop-down menu.  Derived from see section <A HREF="gtk.html#SEC135">The horizont
 Returns the <CODE>GtkCombo</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_combo_new</B> <I>(void)</I>
@@ -2956,53 +2933,53 @@ Create a new <CODE>GtkCombo</CODE> object returning the new widget as a pointer 
 a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_combo_set_value_in_list</B> <I>(GtkCombo *<VAR>combo</VAR>, gint <VAR>val</VAR>, gint <VAR>ok_if_empty</VAR>)</I>
 <DD><A NAME="IDX190"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_combo_set_use_arrows</B> <I>(GtkCombo *<VAR>combo</VAR>, gint <VAR>val</VAR>)</I>
 <DD><A NAME="IDX191"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_combo_set_use_arrows_always</B> <I>(GtkCombo *<VAR>combo</VAR>, gint <VAR>val</VAR>)</I>
 <DD><A NAME="IDX192"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_combo_set_case_sensitive</B> <I>(GtkCombo *<VAR>combo</VAR>, gint <VAR>val</VAR>)</I>
 <DD><A NAME="IDX193"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_combo_set_item_string</B> <I>(GtkCombo *<VAR>combo</VAR>, GtkItem *<VAR>item</VAR>, gchar *<VAR>item_value</VAR>)</I>
 <DD><A NAME="IDX194"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_combo_set_popdown_strings</B> <I>(GtkCombo *<VAR>combo</VAR>, GList *<VAR>strings</VAR>)</I>
 <DD><A NAME="IDX195"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Combo, COMBO}
 
-</P>
+
 
 
 <H2><A NAME="SEC75" HREF="gtk_toc.html#TOC75">The container widget</A></H2>
@@ -3017,7 +2994,7 @@ widgets are containers.  For example, a button contains a widget.  That
 widget might be a text label (usually is), or a pixmap, or even an hbox
 which has a label and a pixmap.
 
-</P>
+
 
 
 <H3><A NAME="SEC77" HREF="gtk_toc.html#TOC77">Options</A></H3>
@@ -3028,7 +3005,7 @@ which has a label and a pixmap.
 <DD><A NAME="IDX196"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC78" HREF="gtk_toc.html#TOC78">Signals</A></H3>
@@ -3039,35 +3016,35 @@ which has a label and a pixmap.
 <DD><A NAME="IDX197"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkContainer::remove</B> <I>(GtkContainer *<VAR>container</VAR>, GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX198"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkContainer::need_resize</B> <I>(GtkContainer *<VAR>container</VAR>, GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX199"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkContainer::foreach</B> <I>(GtkContainer *<VAR>container</VAR>, GtkCallback <VAR>callback</VAR>, gpointer <VAR>callback_data</VAR>)</I>
 <DD><A NAME="IDX200"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkContainer::focus</B> <I>(GtkContainer *<VAR>container</VAR>, GtkDirectionType <VAR>direction</VAR>)</I>
 <DD><A NAME="IDX201"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC79" HREF="gtk_toc.html#TOC79">Functions</A></H3>
@@ -3079,14 +3056,14 @@ which has a label and a pixmap.
 Returns the <CODE>GtkContainer</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_border_width</B> <I>(GtkContainer *<VAR>container</VAR>, gint <VAR>border_width</VAR>)</I>
 <DD><A NAME="IDX203"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_add</B> <I>(GtkContainer *<VAR>container</VAR>, GtkWidget *<VAR>widget</VAR>)</I>
@@ -3094,7 +3071,7 @@ Returns the <CODE>GtkContainer</CODE> type identifier.
 Add <VAR>widget</VAR> to the <VAR>container</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_remove</B> <I>(GtkContainer *<VAR>container</VAR>, GtkWidget *<VAR>widget</VAR>)</I>
@@ -3102,74 +3079,74 @@ Add <VAR>widget</VAR> to the <VAR>container</VAR>.
 Remove <VAR>widget</VAR> from <VAR>container</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_disable_resize</B> <I>(GtkContainer *<VAR>container</VAR>)</I>
 <DD><A NAME="IDX206"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_enable_resize</B> <I>(GtkContainer *<VAR>container</VAR>)</I>
 <DD><A NAME="IDX207"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_block_resize</B> <I>(GtkContainer *<VAR>container</VAR>)</I>
 <DD><A NAME="IDX208"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_unblock_resize</B> <I>(GtkContainer *<VAR>container</VAR>)</I>
 <DD><A NAME="IDX209"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_container_need_resize</B> <I>(GtkContainer *<VAR>container</VAR>, GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX210"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_check_resize</B> <I>(GtkContainer *<VAR>container</VAR>, GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX211"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_foreach</B> <I>(GtkContainer *<VAR>container</VAR>, GtkCallback <VAR>callback</VAR>, gpointer <VAR>callback_data</VAR>)</I>
 <DD><A NAME="IDX212"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_container_focus</B> <I>(GtkContainer *<VAR>container</VAR>, GtkDirectionType <VAR>direction</VAR>)</I>
 <DD><A NAME="IDX213"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GList* <B>gtk_container_children</B> <I>(GtkContainer <VAR>container</VAR>)</I>
 <DD><A NAME="IDX214"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Container, CONTAINER}
 
-</P>
+
 
 
 <H2><A NAME="SEC80" HREF="gtk_toc.html#TOC80">The multi-column tree widget</A></H2>
@@ -3184,20 +3161,20 @@ The GtkCTree widget is a multi-columned list with a designated column, the
 either a folder (a branch of the tree) or a leaf. Nodes can be
 (recursively) expanded, collapsed, (un)selected, removed, moved, sorted etc. 
 
-</P>
+
 <P>
 GtkCTree is a descendant of see section <A HREF="gtk.html#SEC60">The compound list widget</A>. Therefore, a cell in a column
 other than the tree column can only contain a string, a pixmap, both or 
 nothing. A node in the tree column can contain a string and up to two pixmaps
 and masks, indicating the "folder openend" and "folder closed" status.
 
-</P>
+
 <P>
 Compared to GtkCList, there is no concept of row numbers. Therefore, a number
 of GtkCList methods had to be re-implemented taking <CODE>GList *node</CODE> 
 arguments instead of <CODE>gint row</CODE>.
 
-</P>
+
 
 
 <H3><A NAME="SEC82" HREF="gtk_toc.html#TOC82">Options</A></H3>
@@ -3228,7 +3205,7 @@ arguments instead of <CODE>gint row</CODE>.
 <DD><A NAME="IDX219"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC84" HREF="gtk_toc.html#TOC84">Functions</A></H3>
@@ -3240,31 +3217,31 @@ arguments instead of <CODE>gint row</CODE>.
 Returns the <CODE>GtkCTree</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_ctree_new</B> <I>(gint <VAR>columns</VAR>, gint <VAR>tree_column</VAR>)</I>
 <DD><A NAME="IDX221"></A>
 Creates a new GtkCTree widget with the given number of columns and the given tree column.
 
-</P>
+
 <P>
 On success, a pointer to the newly created widget is returned, and <CODE>NULL</CODE> otherwise.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_ctree_new_with_titles</B> <I>(gint <VAR>columns</VAR>, gint <VAR>tree_column</VAR>, gchar *<VAR>titles[]</VAR>)</I>
 <DD><A NAME="IDX222"></A>
 Creates a new GtkCTree widget with the given number of columns and the given tree column. The column titles are initialized to the strings of the array <VAR>titles</VAR>.
 
-</P>
+
 <P>
 On success, a pointer to the newly created widget is returned, and <CODE>NULL</CODE> otherwise.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GList* <B>gtk_ctree_insert</B> <I>(GtkCTree *<VAR>ctree</VAR>, GList *<VAR>parent</VAR>, GList *<VAR>sibling</VAR>, gchar *<VAR>text[]</VAR>, guint8 <VAR>spacing</VAR>, GdkPixmap *<VAR>pixmap_closed</VAR>, GdkPixmap *<VAR>mask_closed</VAR>, GdkPixmap *<VAR>pixmap_opened</VAR>, GdkPixmap *<VAR>mask_opened</VAR>, gboolean <VAR>is_leaf</VAR>, gboolean <VAR>expanded</VAR>)</I>
@@ -3277,13 +3254,13 @@ of the node. <VAR>spacing</VAR> is the number of pixels between pixmap and text.
 If <VAR>is_leaf</VAR> == TRUE, the node cannot have any children.
 The initial expanded/collapsed status is given by <VAR>expanded</VAR>.
 
-</P>
+
 <P>
 On success, the pointer to the newly inserted node is returned, and NULL 
 otherwise.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_ctree_remove</B> <I>(GtkCTree *<VAR>ctree</VAR>, GList *<VAR>node</VAR>)</I>
@@ -3291,7 +3268,7 @@ otherwise.
 Removes the given node and all its children.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_ctree_clear</B> <I>(GtkCTree *<VAR>ctree</VAR>)</I>
@@ -3299,7 +3276,7 @@ Removes the given node and all its children.
 Removes all nodes of <VAR>ctree</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_ctree_post_recursive</B> <I>(GtkCTree *<VAR>ctree</VAR>, GList *<VAR>node</VAR>, GtkCTreeFunc <VAR>func</VAR>, gpointer <VAR>data</VAR>)</I>
@@ -3308,7 +3285,7 @@ Apply <VAR>func</VAR> to <VAR>node</VAR> and all its children, traversing <VAR>c
 post-order.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_ctree_pre_recursive</B> <I>(GtkCTree *<VAR>ctree</VAR>, GList *<VAR>node</VAR>, GtkCTreeFunc <VAR>func</VAR>, gpointer <VAR>data</VAR>)</I>
@@ -3317,7 +3294,7 @@ Apply <VAR>func</VAR> to <VAR>node</VAR> and all its children, traversing <VAR>c
 pre-order.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gboolean <B>gtk_ctree_is_visible</B> <I>(GtkCTree *<VAR>ctree</VAR>, GList *<VAR>node</VAR>)</I>
@@ -3327,12 +3304,11 @@ if in the chain of parent nodes every node is expanded. Or : the node is
 currently being displayed (but not necessarily inside the viewing area).
 </DL>
 
-</P>
 
 <P>
 @gtkstdmacros{CTree, CTREE}
 
-</P>
+
 
 
 <H2><A NAME="SEC85" HREF="gtk_toc.html#TOC85">The curve widget</A></H2>
@@ -3344,7 +3320,7 @@ currently being displayed (but not necessarily inside the viewing area).
 <P>
 Derived from see section <A HREF="gtk.html#SEC100">The drawing area widget</A>.
 
-</P>
+
 
 
 <H3><A NAME="SEC87" HREF="gtk_toc.html#TOC87">Options</A></H3>
@@ -3380,7 +3356,7 @@ Derived from see section <A HREF="gtk.html#SEC100">The drawing area widget</A>.
 Returns the <CODE>GtkCurve</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_curve_new</B> <I>(void)</I>
@@ -3389,53 +3365,53 @@ Create a new <CODE>GtkCurve</CODE> returning the new widget as a pointer to a
 <CODE>GtkWidget</CODE> object.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_curve_reset</B> <I>(GtkCurve *<VAR>curve</VAR>)</I>
 <DD><A NAME="IDX232"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_curve_set_gamma</B> <I>(GtkCurve *<VAR>curve</VAR>, gfloat <VAR>gamma</VAR>)</I>
 <DD><A NAME="IDX233"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_curve_set_range</B> <I>(GtkCurve *<VAR>curve</VAR>, gfloat <VAR>min_x</VAR>, gfloat <VAR>max_x</VAR>, gfloat <VAR>min_y</VAR>, gfloat <VAR>max_y</VAR>)</I>
 <DD><A NAME="IDX234"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_curve_get_vector</B> <I>(GtkCurve *<VAR>curve</VAR>, int <VAR>veclen</VAR>, gfloat <VAR>vector[]</VAR>)</I>
 <DD><A NAME="IDX235"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_curve_set_vector</B> <I>(GtkCurve *<VAR>curve</VAR>, int <VAR>veclen</VAR>, gfloat <VAR>vector[]</VAR>)</I>
 <DD><A NAME="IDX236"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_curve_set_curve_type</B> <I>(GtkCurve *<VAR>curve</VAR>, GtkCurveType <VAR>type</VAR>)</I>
 <DD><A NAME="IDX237"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Curve, CURVE}
 
-</P>
+
 
 
 <H2><A NAME="SEC90" HREF="gtk_toc.html#TOC90">The gamma curve widget</A></H2>
@@ -3453,7 +3429,7 @@ that every input value will have a (not necessarily unique) output value
 specified.  Derived from see section <A HREF="gtk.html#SEC332">The vertical box widget</A>.  Makes use of see section <A HREF="gtk.html#SEC85">The curve widget</A> to
 draw the curve.
 
-</P>
+
 
 
 <H3><A NAME="SEC92" HREF="gtk_toc.html#TOC92">Options</A></H3>
@@ -3473,7 +3449,7 @@ draw the curve.
 Returns the <CODE>GtkGamma</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_gamma_curve_new</B> <I>(void)</I>
@@ -3482,11 +3458,11 @@ Create a new <CODE>GtkGamma</CODE> returning the new widget as a pointer to a
 <CODE>GtkWidget</CODE> object.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{GammaCurve, GAMMACURVE}
 
-</P>
+
 
 
 <H2><A NAME="SEC95" HREF="gtk_toc.html#TOC95">The dialog widget</A></H2>
@@ -3499,7 +3475,7 @@ The dialog widget is a window (see section <A HREF="gtk.html#SEC374">The window 
 (see section <A HREF="gtk.html#SEC332">The vertical box widget</A>), a horizontal box (see section <A HREF="gtk.html#SEC135">The horizontal box widget</A>), separated with a 
 horizontal separator (see section <A HREF="gtk.html#SEC165">The horizontal separator widget</A>).
 
-</P>
+
 
 
 <H3><A NAME="SEC97" HREF="gtk_toc.html#TOC97">Options</A></H3>
@@ -3519,7 +3495,7 @@ horizontal separator (see section <A HREF="gtk.html#SEC165">The horizontal separ
 Returns the <CODE>GtkDialog</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_dialog_new</B> <I>(void)</I>
@@ -3528,11 +3504,10 @@ Create a new <CODE>GtkDialog</CODE> object and return the new widget as a pointe
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Dialog, DIALOG}
 
-</P>
 
 
 
@@ -3546,7 +3521,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 A base class for widgets that need a box to draw into.  So far, only
 used by GtkCurve.
 
-</P>
+
 
 
 <H3><A NAME="SEC102" HREF="gtk_toc.html#TOC102">Options</A></H3>
@@ -3557,14 +3532,14 @@ used by GtkCurve.
 <DD><A NAME="IDX242"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>height</B>
 <DD><A NAME="IDX243"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC103" HREF="gtk_toc.html#TOC103">Signals</A></H3>
@@ -3580,7 +3555,7 @@ used by GtkCurve.
 Returns the <CODE>GtkDrawingArea</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_drawing_area_new</B> <I>(void)</I>
@@ -3589,7 +3564,7 @@ Create a new <CODE>GtkDrawingArea</CODE> object returning the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_drawing_area_size</B> <I>(GtkDrawingArea *<VAR>darea</VAR>, gint <VAR>width</VAR>, gint <VAR>height</VAR>)</I>
@@ -3597,11 +3572,10 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Set the size of the <VAR>darea</VAR> widget, created previously, to <VAR>width</VAR> and <VAR>height</VAR>.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{DrawingArea, DRAWING_AREA}
 
-</P>
 
 
 
@@ -3615,7 +3589,7 @@ Set the size of the <VAR>darea</VAR> widget, created previously, to <VAR>width</
 Enter text into this widget.  Derived from GtkEditable.  Can be
 set so it isn't editable.
 
-</P>
+
 
 
 <H3><A NAME="SEC107" HREF="gtk_toc.html#TOC107">Options</A></H3>
@@ -3628,7 +3602,7 @@ With this option it is possible to set the <VAR>text_max_length</VAR> to the
 value specified in the <VAR>max</VAR> option. This value is a guint16 value.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>text</B>
@@ -3637,7 +3611,7 @@ With this option it is possible to 'preload' the text that will be displayed
 in the <CODE>entry</CODE> widget to the string pointed to by <VAR>text</VAR>.
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC108" HREF="gtk_toc.html#TOC108">Signals</A></H3>
@@ -3648,35 +3622,35 @@ in the <CODE>entry</CODE> widget to the string pointed to by <VAR>text</VAR>.
 <DD><A NAME="IDX249"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkEntry::delete_text</B> <I>(GtkEntry *<VAR>entry</VAR>, gint <VAR>start_pos</VAR>, gint <VAR>end_pos</VAR>)</I>
 <DD><A NAME="IDX250"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkEntry::changed</B> <I>(GtkEntry *<VAR>entry</VAR>)</I>
 <DD><A NAME="IDX251"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkEntry::set_text</B> <I>(GtkEntry *<VAR>entry</VAR>)</I>
 <DD><A NAME="IDX252"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkEntry::activate</B> <I>(GtkEntry *<VAR>entry</VAR>)</I>
 <DD><A NAME="IDX253"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC109" HREF="gtk_toc.html#TOC109">Functions</A></H3>
@@ -3688,7 +3662,7 @@ in the <CODE>entry</CODE> widget to the string pointed to by <VAR>text</VAR>.
 Returns the <CODE>GtkEntry</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_entry_new</B> <I>(void)</I>
@@ -3698,7 +3672,7 @@ as a pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned o
 failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_entry_new_with_max_length</B> <I>(guint16 <VAR>max</VAR>)</I>
@@ -3708,7 +3682,7 @@ The new widget is returned as a pointer to a <CODE>GtkWidget</CODE> object.
 <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_entry_set_text</B> <I>(GtkEntry *<VAR>entry</VAR>, gchar *<VAR>text</VAR>)</I>
@@ -3719,7 +3693,7 @@ structure directly (or, for that matter, any type derived from
 <CODE>GtkObject</CODE>).
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_entry_append_text</B> <I>(GtkEntry *<VAR>entry</VAR>, gchar *<VAR>text</VAR>)</I>
@@ -3728,7 +3702,7 @@ Append the text that is in the <VAR>text</VAR> argument to the widgets text. It 
 important to not set the fields of the <CODE>GtkEntry</CODE> structure directly.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_entry_prepend_text</B> <I>(GtkEntry *<VAR>entry</VAR>, gchar *<VAR>text</VAR>)</I>
@@ -3738,14 +3712,14 @@ widget. It is important to not set the fields of the <CODE>GtkEntry</CODE> struc
 directly.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_entry_set_position</B> <I>(GtkEntry *<VAR>entry</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX260"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_entry_set_visibility</B> <I>(GtkEntry *<VAR>entry</VAR>, gint <VAR>visible</VAR>)</I>
@@ -3754,7 +3728,7 @@ Will make the keystrokes entered into the <CODE>GtkEntry</CODE> object invisible
 when <VAR>visible</VAR> is <CODE>TRUE</CODE>. Defaults to <CODE>FALSE</CODE>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gchar* <B>gtk_entry_get_text</B> <I>(GtkEntry *<VAR>entry</VAR>)</I>
@@ -3763,11 +3737,11 @@ Returns the text that is contained in the <CODE>GtkEntry</CODE> as a pointer to 
 <CODE>gchar</CODE> variable.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Entry, ENTRY}
 
-</P>
+
 
 
 <H2><A NAME="SEC110" HREF="gtk_toc.html#TOC110">The event box widget</A></H2>
@@ -3779,7 +3753,7 @@ Returns the text that is contained in the <CODE>GtkEntry</CODE> as a pointer to 
 <P>
 Derived from see section <A HREF="gtk.html#SEC31">The bin widget</A>.  Used by see section <A HREF="gtk.html#SEC327">The tree item widget</A>.
 
-</P>
+
 
 
 <H3><A NAME="SEC112" HREF="gtk_toc.html#TOC112">Options</A></H3>
@@ -3798,7 +3772,7 @@ Derived from see section <A HREF="gtk.html#SEC31">The bin widget</A>.  Used by s
 Returns the <CODE>GtkEventBox</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_event_box_new</B> <I>(void)</I>
@@ -3807,11 +3781,11 @@ Create a new <CODE>GtkEventBox</CODE> returning the new widget as a pointer to
 a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{GtkEventBox, EVENT_BOX}
 
-</P>
+
 
 
 <H2><A NAME="SEC115" HREF="gtk_toc.html#TOC115">The file selection dialog widget</A></H2>
@@ -3830,14 +3804,14 @@ a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 <DD><A NAME="IDX265"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>filename</B>
 <DD><A NAME="IDX266"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC118" HREF="gtk_toc.html#TOC118">Signals</A></H3>
@@ -3853,7 +3827,7 @@ a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkFileSelection</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_file_selection_new</B> <I>(gchar *<VAR>title</VAR>)</I>
@@ -3862,25 +3836,25 @@ Create a new <CODE>GtkFileSelection</CODE> object and return the new widget as a
 pointer to a <CODE>GtkWidget</CODE>. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_file_selection_set_filename</B> <I>(GtkFileSelection *<VAR>filesel</VAR>, gchar *<VAR>filename</VAR>)</I>
 <DD><A NAME="IDX269"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gchar* <B>gtk_file_selection_get_filename</B> <I>(GtkFileSelection *<VAR>filesel</VAR>)</I>
 <DD><A NAME="IDX270"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{FileSelection, FILE_SELECTION}
 
-</P>
+
 
 
 <H2><A NAME="SEC120" HREF="gtk_toc.html#TOC120">The fixed widget</A></H2>
@@ -3908,7 +3882,7 @@ pointer to a <CODE>GtkWidget</CODE>. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkFixed</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_fixed_new</B> <I>(void)</I>
@@ -3917,25 +3891,25 @@ Create a new <CODE>GtkFixed</CODE> object returning the new widget as a pointer 
 a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_fixed_put_new</B> <I>(GtkFixed *<VAR>fixed</VAR>, GtkWidget *<VAR>widget</VAR>, gint16 <VAR>x</VAR>, gint16 <VAR>y</VAR>)</I>
 <DD><A NAME="IDX273"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_fixed_move</B> <I>(GtkFixed *<VAR>fixed</VAR>, GtkWidget *<VAR>widget</VAR>, gint16 <VAR>x</VAR>, gint16 <VAR>y</VAR>)</I>
 <DD><A NAME="IDX274"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Fixed, FIXED}
 
-</P>
+
 
 
 <H2><A NAME="SEC125" HREF="gtk_toc.html#TOC125">The frame widget</A></H2>
@@ -3949,28 +3923,28 @@ a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 <DD><A NAME="IDX275"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>xalign</B>
 <DD><A NAME="IDX276"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>yalign</B>
 <DD><A NAME="IDX277"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>type</B>
 <DD><A NAME="IDX278"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC127" HREF="gtk_toc.html#TOC127">Description</A></H3>
@@ -3990,7 +3964,7 @@ a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkFrame</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_frame_new</B> <I>(gchar *<VAR>label</VAR>)</I>
@@ -4000,32 +3974,32 @@ Create a new <CODE>GtkFrame</CODE> object initializing it with the value in
 object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_frame_set_label</B> <I>(GtkFrame *<VAR>frame</VAR>, gchar *<VAR>label</VAR>)</I>
 <DD><A NAME="IDX281"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_frame_set_label_align</B> <I>(GtkFrame *<VAR>frame</VAR>, gfloat <VAR>xalign</VAR>, gfloat <VAR>yalign</VAR>)</I>
 <DD><A NAME="IDX282"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_frame_set_shadow_type</B> <I>(GtkFrame *<VAR>frame</VAR>, GtkShadowType <VAR>type</VAR>)</I>
 <DD><A NAME="IDX283"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Frame, FRAME}
 
-</P>
+
 
 
 <H2><A NAME="SEC130" HREF="gtk_toc.html#TOC130">The gamma widget</A></H2>
@@ -4053,7 +4027,7 @@ object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkGamma</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_gamma_curve_new</B> <I>(void)</I>
@@ -4062,11 +4036,11 @@ Create a new <CODE>GtkGamma</CODE> object returning the new widget as a pointer
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Gamma, GAMMA}
 
-</P>
+
 
 
 <H2><A NAME="SEC135" HREF="gtk_toc.html#TOC135">The horizontal box widget</A></H2>
@@ -4089,7 +4063,7 @@ the <VAR>expand</VAR> option to the <CODE>gtk_box_pack</CODE> (see section <A HR
 is always set to <CODE>TRUE</CODE>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>spacing</B>
@@ -4098,7 +4072,7 @@ This option controls the amount of space that is added between the objects
 packed into this <CODE>GtkVBox</CODE> object.
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC138" HREF="gtk_toc.html#TOC138">Signals</A></H3>
@@ -4114,7 +4088,7 @@ packed into this <CODE>GtkVBox</CODE> object.
 Returns the <CODE>GtkHBox</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_hbox_new</B> <I>(gint <VAR>homogeneous</VAR>, gint <VAR>spacing</VAR>)</I>
@@ -4124,11 +4098,11 @@ Create a new <CODE>GtkHBox</CODE> object initializing it with the values in
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{HBox, HBOX}
 
-</P>
+
 
 
 <H2><A NAME="SEC140" HREF="gtk_toc.html#TOC140">The horizontal button box widget</A></H2>
@@ -4147,14 +4121,14 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 <DD><A NAME="IDX290"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>layout</B>
 <DD><A NAME="IDX291"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC143" HREF="gtk_toc.html#TOC143">Signals</A></H3>
@@ -4170,7 +4144,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkHButtonBox</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_hbutton_box_new</B> <I>(void)</I>
@@ -4179,39 +4153,39 @@ Create a new <CODE>GtkHButtonBox</CODE> object returning the new widget as a poi
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_hbutton_box_set_spacing_default</B> <I>(gint <VAR>spacing</VAR>)</I>
 <DD><A NAME="IDX294"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_hbutton_box_set_layout_default</B> <I>(gint <VAR>layout</VAR>)</I>
 <DD><A NAME="IDX295"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_hbutton_box_get_spacing_default</B> <I>(void)</I>
 <DD><A NAME="IDX296"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_hbutton_box_get_layout_default</B> <I>(void)</I>
 <DD><A NAME="IDX297"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros {HButtonBox, HBUTTON_BOX}
 
-</P>
+
 
 
 <H2><A NAME="SEC145" HREF="gtk_toc.html#TOC145">The horizontal paned widget</A></H2>
@@ -4239,7 +4213,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkHPaned</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_hpaned_new</B> <I>(void)</I>
@@ -4248,11 +4222,11 @@ Create a new <CODE>GtkHPaned</CODE> object returning the new widget as a pointer
 to a <CODE>GtkWidget</CODE> object.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{HPaned, HPANED}
 
-</P>
+
 
 
 <H2><A NAME="SEC150" HREF="gtk_toc.html#TOC150">The horizontal ruler widget</A></H2>
@@ -4280,7 +4254,7 @@ to a <CODE>GtkWidget</CODE> object.
 Returns the <CODE>GtkHRuler</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_hruler_new</B> <I>(void)</I>
@@ -4289,11 +4263,10 @@ Create a new <CODE>GtkHRuler</CODE> object returning the new widget as a pointer
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{HRuler, HRULER}
 
-</P>
 
 
 
@@ -4322,7 +4295,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkHScale</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_hscale_new</B> <I>(GtkAdjustment *<VAR>adjustment</VAR>)</I>
@@ -4331,11 +4304,10 @@ Create a new <CODE>GtkHScale</CODE> object returning the new widget as a pointer
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{HScale, HSCALE}
 
-</P>
 
 
 
@@ -4364,7 +4336,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkHScrollbar</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_hscrollbar_new</B> <I>(GtkAdjustment *<VAR>adjustment</VAR>)</I>
@@ -4373,11 +4345,10 @@ Create a new <CODE>GtkHScrollbar</CODE> object returning the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{HScrollbar, HSCROLLBAR}
 
-</P>
 
 
 
@@ -4406,7 +4377,7 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkHSeparator</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_hseparator_new</B> <I>(void)</I>
@@ -4415,11 +4386,10 @@ Create a new <CODE>GtkHSeparator</CODE> object returning the new widget as a poi
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{HSeparator, HSEPARATOR}
 
-</P>
 
 
 
@@ -4448,7 +4418,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkImage</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_image_new</B> <I>(GdkImage *<VAR>val</VAR>, GdkBitmap *<VAR>mask</VAR>)</I>
@@ -4458,25 +4428,25 @@ Create a new <CODE>GtkImage</CODE> object initializing it with the values in
 <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_image_set</B> <I>(GtkImage *<VAR>image</VAR>, GdkImage *<VAR>val</VAR>, GdkBitmap *<VAR>mask</VAR>)</I>
 <DD><A NAME="IDX310"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_image_get</B> <I>(GtkImage *<VAR>image</VAR>, GdkImage **<VAR>val</VAR>, GdkBitmap **<VAR>mask</VAR>)</I>
 <DD><A NAME="IDX311"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Image, IMAGE}
 
-</P>
+
 
 
 <H2><A NAME="SEC175" HREF="gtk_toc.html#TOC175">The input dialog widget</A></H2>
@@ -4499,14 +4469,14 @@ Create a new <CODE>GtkImage</CODE> object initializing it with the values in
 <DD><A NAME="IDX312"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkInputDialog::disable_device</B> <I>(GtkInputDialog *<VAR>inputd</VAR>, guint32 <VAR>devid</VAR>, gpointer *<VAR>data</VAR>)</I>
 <DD><A NAME="IDX313"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC179" HREF="gtk_toc.html#TOC179">Functions</A></H3>
@@ -4518,7 +4488,7 @@ Create a new <CODE>GtkImage</CODE> object initializing it with the values in
 Returns the <CODE>GtkInputDialog</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_input_dialog_new</B> <I>(void)</I>
@@ -4527,12 +4497,11 @@ Create a new <CODE>GtkInputDialog</CODE> object and return the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
 
 <P>
 @gtkstdmacros{InputDialog, INPUTDIALOG}
 
-</P>
+
 
 
 <H2><A NAME="SEC180" HREF="gtk_toc.html#TOC180">The item widget</A></H2>
@@ -4551,21 +4520,21 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 <DD><A NAME="IDX316"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkItem::deselect</B> <I>(GtkItem *<VAR>item</VAR>)</I>
 <DD><A NAME="IDX317"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkItem::toggle</B> <I>(GtkItem *<VAR>toggle</VAR>)</I>
 <DD><A NAME="IDX318"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC183" HREF="gtk_toc.html#TOC183">Functions</A></H3>
@@ -4577,32 +4546,31 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkItem</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_item_select</B> <I>(GtkItem *<VAR>item</VAR>)</I>
 <DD><A NAME="IDX320"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_item_deselect</B> <I>(GtkItem *<VAR>item</VAR>)</I>
 <DD><A NAME="IDX321"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_item_toggle</B> <I>(GtkItem *<VAR>item</VAR>)</I>
 <DD><A NAME="IDX322"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Item, ITEM}
 
-</P>
 
 
 
@@ -4622,7 +4590,7 @@ Returns the <CODE>GtkItem</CODE> type identifier.
 <DD><A NAME="IDX323"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC187" HREF="gtk_toc.html#TOC187">Signals</A></H3>
@@ -4638,7 +4606,7 @@ Returns the <CODE>GtkItem</CODE> type identifier.
 Returns the <CODE>GtkLabel</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_label_new</B> <I>(GtkLabel *<VAR>label</VAR>, gchar *<VAR>str</VAR>)</I>
@@ -4648,7 +4616,7 @@ text in <VAR>str</VAR>. The new widget is returned as a pointer to a
 <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_label_set</B> <I>(GtkLabel *<VAR>label</VAR>, gchar *<VAR>str</VAR>)</I>
@@ -4657,7 +4625,7 @@ Set the <CODE>GtkLabel</CODE> label value to the value passed in the <VAR>str</V
 argument.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_label_get</B> <I>(GtkLabel *<VAR>label</VAR>, gchar **<VAR>str</VAR>)</I>
@@ -4666,11 +4634,10 @@ Copies the current value in the <CODE>GtkLabel</CODE> label field to the variabl
 passed in the <VAR>str</VAR> argument.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Label, LABEL}
 
-</P>
 
 
 
@@ -4690,21 +4657,21 @@ passed in the <VAR>str</VAR> argument.
 <DD><A NAME="IDX328"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkList::select_child</B> <I>(GtkList *<VAR>list</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX329"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkList::unselect_child</B> <I>(GtkList *<VAR>list</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX330"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC192" HREF="gtk_toc.html#TOC192">Functions</A></H3>
@@ -4716,7 +4683,7 @@ passed in the <VAR>str</VAR> argument.
 Returns the <CODE>GtkList</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_list_new</B> <I>(void)</I>
@@ -4725,88 +4692,87 @@ Create a new <CODE>GtkList</CODE> object and return the new widget as a pointer 
 a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_insert_items</B> <I>(GtkList *<VAR>list</VAR>, GList *<VAR>items</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX333"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_append_items</B> <I>(GtkList *<VAR>list</VAR>, GList *<VAR>items</VAR>)</I>
 <DD><A NAME="IDX334"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_prepend_items</B> <I>(GtkList *<VAR>list</VAR>, GList *<VAR>items</VAR>)</I>
 <DD><A NAME="IDX335"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_remove_items</B> <I>(GtkList *<VAR>list</VAR>, GList *<VAR>items</VAR>)</I>
 <DD><A NAME="IDX336"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_clear_items</B> <I>(GtkList *<VAR>list</VAR>, gint <VAR>start</VAR>, gint <VAR>end</VAR>)</I>
 <DD><A NAME="IDX337"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_select_item</B> <I>(GtkList *<VAR>list</VAR>, gint <VAR>item</VAR>)</I>
 <DD><A NAME="IDX338"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_unselect_item</B> <I>(GtkList *<VAR>list</VAR>, gint <VAR>item</VAR>)</I>
 <DD><A NAME="IDX339"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_select_child</B> <I>(GtkList *<VAR>list</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX340"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_unselect_child</B> <I>(GtkList *<VAR>list</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX341"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_list_child_position</B> <I>(GtkList *<VAR>list</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX342"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_set_selection_mode</B> <I>(GtkList *<VAR>list</VAR>, GtkSelectionMode <VAR>mode</VAR>)</I>
 <DD><A NAME="IDX343"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{List, LIST}
 
-</P>
 
 
 
@@ -4835,7 +4801,7 @@ a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkListItem</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_list_item_new</B> <I>(void)</I>
@@ -4844,7 +4810,7 @@ Create a new <CODE>GtkListItem</CODE> object and return the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_list_item_new_with_label</B> <I>(gchar *<VAR>label</VAR>)</I>
@@ -4854,25 +4820,24 @@ The new widget is returned as a pointer to a <CODE>GtkWidget</CODE> object.
 <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_item_select</B> <I>(GtkListItem *<VAR>list_item</VAR>)</I>
 <DD><A NAME="IDX347"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_list_item_deselect</B> <I>(GtkListItem *<VAR>list_item</VAR>)</I>
 <DD><A NAME="IDX348"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{ListItem, LIST_ITEM}
 
-</P>
 
 
 
@@ -4901,7 +4866,7 @@ The new widget is returned as a pointer to a <CODE>GtkWidget</CODE> object.
 Returns the <CODE>GtkMenu</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_menu_new</B> <I>(void)</I>
@@ -4910,67 +4875,66 @@ Create a new <CODE>GtkMenu</CODE> object returning the new widget as a pointer t
 a <CODE>GtkWidget</CODE>. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_append</B> <I>(GtkMenu *<VAR>menu</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX351"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_prepend</B> <I>(GtkMenu *<VAR>menu</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX352"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_insert</B> <I>(GtkMenu *<VAR>menu</VAR>, GtkWidget *<VAR>child</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX353"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_popup</B> <I>(GtkMenu *<VAR>menu</VAR>, GtkWidget *<VAR>parent_menu_shell</VAR>, GtkWidget *<VAR>parent_menu_item</VAR>, GtkMenuPositionFunc <VAR>func</VAR>, gpointer <VAR>data</VAR>, gint <VAR>button</VAR>)</I>
 <DD><A NAME="IDX354"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_popdown</B> <I>(GtkMenu *<VAR>menu</VAR>)</I>
 <DD><A NAME="IDX355"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_menu_get_active</B> <I>(GtkMenu *<VAR>menu</VAR>)</I>
 <DD><A NAME="IDX356"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_set_active</B> <I>(GtkMenu *<VAR>menu</VAR>)</I>
 <DD><A NAME="IDX357"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_set_accelerator_table</B> <I>(GtkMenu *<VAR>menu</VAR>, GtkAcceleratorTable *<VAR>table</VAR>)</I>
 <DD><A NAME="IDX358"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Menu, MENU}
 
-</P>
 
 
 
@@ -4990,7 +4954,7 @@ a <CODE>GtkWidget</CODE>. <CODE>NULL</CODE> is returned on failure.
 <DD><A NAME="IDX359"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC206" HREF="gtk_toc.html#TOC206">Signals</A></H3>
@@ -5006,7 +4970,7 @@ a <CODE>GtkWidget</CODE>. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkMenuBar</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_menu_bar_new</B> <I>(void)</I>
@@ -5015,32 +4979,31 @@ Create a new <CODE>GtkMenuBar</CODE> object returning the new widget as a pointe
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_bar_append</B> <I>(GtkMenuBar *<VAR>menu_bar</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX362"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_bar_prepend</B> <I>(GtkMenuBar *<VAR>menu_bar</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX363"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_bar_insert</B> <I>(GtkMenuBar *<VAR>menu_bar</VAR>, GtkWidget *<VAR>child</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX364"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{MenuBar, MENU_BAR}
 
-</P>
 
 
 
@@ -5064,7 +5027,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 <DD><A NAME="IDX365"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC212" HREF="gtk_toc.html#TOC212">Functions</A></H3>
@@ -5076,7 +5039,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkMenuItem</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_menu_item_new</B> <I>(void)</I>
@@ -5085,7 +5048,7 @@ Create a new <CODE>GtkMenuItem</CODE> object returning the new widget as a point
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_menu_item_new_with_label</B> <I>(gchar *<VAR>label</VAR>)</I>
@@ -5095,67 +5058,66 @@ Create a new <CODE>GtkMenuItem</CODE> object initializing it with the value in
 object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_item_set_submenu</B> <I>(GtkMenuItem *<VAR>menu_item</VAR>, GtkWidget *<VAR>submenu</VAR>)</I>
 <DD><A NAME="IDX369"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_item_set_placement</B> <I>(GtkMenuItem *<VAR>menu_item</VAR>, GtkSubmenuPlacement <VAR>placement</VAR>)</I>
 <DD><A NAME="IDX370"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_item_accelerator_size</B> <I>(GtkMenuItem *<VAR>menu_item</VAR>)</I>
 <DD><A NAME="IDX371"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_item_accelerator_text</B> <I>(GtkMenuItem *<VAR>menu_item</VAR>, gchar *<VAR>buffer</VAR>)</I>
 <DD><A NAME="IDX372"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_item_configure</B> <I>(GtkMenuItem *<VAR>menu_item</VAR>, gint <VAR>show_toggle_indicator</VAR>, gint <VAR>show_submenu_indicator</VAR>)</I>
 <DD><A NAME="IDX373"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_item_select</B> <I>(GtkMenuItem *<VAR>menu_item</VAR>)</I>
 <DD><A NAME="IDX374"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_item_deselect</B> <I>(GtkMenuItem *<VAR>menu_item</VAR>)</I>
 <DD><A NAME="IDX375"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_item_activate</B> <I>(GtkMenuItem *<VAR>menu_item</VAR>)</I>
 <DD><A NAME="IDX376"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{MenuItem, MENU_ITEM}
 
-</P>
 
 
 
@@ -5179,7 +5141,7 @@ object. <CODE>NULL</CODE> is returned on failure.
 <DD><A NAME="IDX377"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC217" HREF="gtk_toc.html#TOC217">Functions</A></H3>
@@ -5191,39 +5153,38 @@ object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkMenuShell</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_shell_append</B> <I>(GtkMenuShell *<VAR>menu_shell</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX379"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_shell_prepend</B> <I>(GtkMenuShell *<VAR>menu_shell</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX380"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_shell_insert</B> <I>(GtkMenuShell *<VAR>menu_shell</VAR>, GtkWidget *<VAR>child</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX381"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_menu_shell_deactivate</B> <I>(GtkMenuShell *<VAR>menu_shell</VAR>)</I>
 <DD><A NAME="IDX382"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{MenuShell, MENU_SHELL}
 
-</P>
 
 
 
@@ -5243,28 +5204,28 @@ Returns the <CODE>GtkMenuShell</CODE> type identifier.
 <DD><A NAME="IDX383"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>yalign</B>
 <DD><A NAME="IDX384"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>xpad</B>
 <DD><A NAME="IDX385"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>ypad</B>
 <DD><A NAME="IDX386"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC221" HREF="gtk_toc.html#TOC221">Signals</A></H3>
@@ -5280,25 +5241,24 @@ Returns the <CODE>GtkMenuShell</CODE> type identifier.
 Returns the <CODE>GtkMisc</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_misc_set_alignment</B> <I>(GtkMisc *<VAR>misc</VAR>, gfloat <VAR>xalign</VAR>, gfloat <VAR>yalign</VAR>)</I>
 <DD><A NAME="IDX388"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_misc_set_padding</B> <I>(GtkMisc *<VAR>misc</VAR>, gint <VAR>xpad</VAR>, gint <VAR>ypad</VAR>)</I>
 <DD><A NAME="IDX389"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Misc, MISC}
 
-</P>
 
 
 
@@ -5327,7 +5287,7 @@ Returns the <CODE>GtkMisc</CODE> type identifier.
 Returns the <CODE>GtkNotebook</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_notebook_new</B> <I>(void)</I>
@@ -5336,81 +5296,80 @@ Create a new <CODE>GtkNotebook</CODE> object returning the new widget as a point
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on a failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_append_page</B> <I>(GtkNotebook *<VAR>notebook</VAR>, GtkWidget *<VAR>child</VAR>, GtkWidget *<VAR>tab_label</VAR>)</I>
 <DD><A NAME="IDX392"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_prepend_page</B> <I>(GtkNotebook *<VAR>notebook</VAR>, GtkWidget *<VAR>child</VAR>, GtkWidget *<VAR>tab_label</VAR>)</I>
 <DD><A NAME="IDX393"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_insert_page</B> <I>(GtkNotebook *<VAR>notebook</VAR>, GtkWidget *<VAR>child</VAR>, GtkWidget *<VAR>tab_label</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX394"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_remove_page</B> <I>(GtkNotebook *<VAR>notebook</VAR>, gint <VAR>page_num</VAR>)</I>
 <DD><A NAME="IDX395"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_set_page</B> <I>(GtkNotebook *<VAR>notebook</VAR>, gint <VAR>page_num</VAR>)</I>
 <DD><A NAME="IDX396"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_next_page</B> <I>(GtkNotebook *<VAR>notebook</VAR>)</I>
 <DD><A NAME="IDX397"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_prev_page</B> <I>(GtkNotebook *<VAR>notebook</VAR>)</I>
 <DD><A NAME="IDX398"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_set_tab_pos</B> <I>(GtkNotebook *<VAR>notebook</VAR>, GtkPositionType <VAR>pos</VAR>)</I>
 <DD><A NAME="IDX399"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_set_show_tabs</B> <I>(GtkNotebook *<VAR>notebook</VAR>, gint <VAR>show_tabs</VAR>)</I>
 <DD><A NAME="IDX400"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_notebook_set_show_border</B> <I>(GtkNotebook *<VAR>notebook</VAR>, gint <VAR>show_border</VAR>)</I>
 <DD><A NAME="IDX401"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Notebook, NOTEBOOK}
 
-</P>
 
 
 
@@ -5430,7 +5389,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on a failure.
 <DD><A NAME="IDX402"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC231" HREF="gtk_toc.html#TOC231">Signals</A></H3>
@@ -5446,7 +5405,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on a failure.
 Returns the <CODE>GtkOptionMenu</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_option_menu_new</B> <I>(void)</I>
@@ -5455,39 +5414,39 @@ Create a new <CODE>GtkOptionMenu</CODE> object returning the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_option_menu_get_menu</B> <I>(GtkOptionMenu *<VAR>option_menu</VAR>)</I>
 <DD><A NAME="IDX405"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_option_menu_set_menu</B> <I>(GtkOptionMenu *<VAR>option_menu</VAR>, GtkWidget *<VAR>menu</VAR>)</I>
 <DD><A NAME="IDX406"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_option_menu_remove_menu</B> <I>(GtkOptionMenu *<VAR>option_menu</VAR>)</I>
 <DD><A NAME="IDX407"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_option_menu_set_history</B> <I>(GtkOptionMenu *<VAR>option_menu</VAR>, gint <VAR>index</VAR>)</I>
 <DD><A NAME="IDX408"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{OptionMenu, OPTION_MENU}
 
-</P>
+
 
 
 <H2><A NAME="SEC233" HREF="gtk_toc.html#TOC233">The paned widget</A></H2>
@@ -5515,28 +5474,27 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkPaned</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_paned_add1</B> <I>(GtkPaned *<VAR>paned</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX410"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_paned_add2</B> <I>(GtkPaned *<VAR>paned</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX411"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_paned_handle_size</B> <I>(GtkPaned *<VAR>paned</VAR>, guint16 <VAR>size</VAR>)</I>
 <DD><A NAME="IDX412"></A>
 </DL>
 
-</P>
 
 <P>
 <DL>
@@ -5544,11 +5502,11 @@ Returns the <CODE>GtkPaned</CODE> type identifier.
 <DD><A NAME="IDX413"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Paned, PANED}
 
-</P>
+
 
 
 <H2><A NAME="SEC238" HREF="gtk_toc.html#TOC238">The pixmap widget</A></H2>
@@ -5576,32 +5534,31 @@ Returns the <CODE>GtkPaned</CODE> type identifier.
 Returns the <CODE>GtkPixmap</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_pixmap_new</B> <I>(GdkPixmap *<VAR>normal</VAR>, GdkPixmap *<VAR>active</VAR>, GdkPixmap *<VAR>prelight</VAR>, GdkPixmap *<VAR>selected</VAR>, GdkPixmap *<VAR>insensitive</VAR>)</I>
 <DD><A NAME="IDX415"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_pixmap_set</B> <I>(GtkPixmap *<VAR>pixmap</VAR>, GdkPixmap *<VAR>val</VAR>, GtkStateType <VAR>state</VAR>)</I>
 <DD><A NAME="IDX416"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_pixmap_get</B> <I>(GtkPixmap *<VAR>pixmap</VAR>, GdkPixmap **<VAR>val</VAR>, GtkStateType <VAR>state</VAR>)</I>
 <DD><A NAME="IDX417"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Pixmap, PIXMAP}
 
-</P>
 
 
 
@@ -5621,21 +5578,21 @@ Returns the <CODE>GtkPixmap</CODE> type identifier.
 <DD><A NAME="IDX418"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>width</B>
 <DD><A NAME="IDX419"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>height</B>
 <DD><A NAME="IDX420"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC246" HREF="gtk_toc.html#TOC246">Signals</A></H3>
@@ -5651,14 +5608,14 @@ Returns the <CODE>GtkPixmap</CODE> type identifier.
 Returns the <CODE>GtkPreview</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_uninit</B> <I>(void)</I>
 <DD><A NAME="IDX422"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_preview_new</B> <I>(GtkPreviewType <VAR>type</VAR>)</I>
@@ -5668,7 +5625,7 @@ Create a new <CODE>GtkPreview</CODE> object initializing it with the values in
 object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_size</B> <I>(GtkPreview *<VAR>preview</VAR>, gint <VAR>width</VAR>, gint <VAR>height</VAR>)</I>
@@ -5676,88 +5633,87 @@ object. <CODE>NULL</CODE> is returned on failure.
 Set the size of the <VAR>preview</VAR> object to <VAR>width</VAR> and <VAR>height</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_put</B> <I>(GtkPreview *<VAR>preview</VAR>, GdkWindow *<VAR>window</VAR>, GdkGC *<VAR>gc</VAR>, gint <VAR>srcx</VAR>, gint <VAR>srcy</VAR>, gint <VAR>destx</VAR>, gint <VAR>desty</VAR>, gint <VAR>width</VAR>, gint <VAR>height</VAR>)</I>
 <DD><A NAME="IDX425"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_put_row</B> <I>(GtkPreview *<VAR>preview</VAR>, guchar *<VAR>src</VAR>, guchar *<VAR>dest</VAR>, gint <VAR>x</VAR>, gint <VAR>y</VAR>, gint <VAR>w</VAR>)</I>
 <DD><A NAME="IDX426"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_draw_row</B> <I>(GtkPreview *<VAR>preview</VAR>, guchar <VAR>data</VAR>, gint <VAR>x</VAR>, gint <VAR>y</VAR>, gint <VAR>w</VAR>)</I>
 <DD><A NAME="IDX427"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_set_expand</B> <I>(GtkPreview *<VAR>preview</VAR>, gint <VAR>expand</VAR>)</I>
 <DD><A NAME="IDX428"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_set_gamma</B> <I>(double <VAR>gamma</VAR>)</I>
 <DD><A NAME="IDX429"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_set_color_cube</B> <I>(guint <VAR>nred_shades</VAR>, guint <VAR>ngreen_shades</VAR>, guint <VAR>nblue_shades</VAR>, guint <VAR>ngray_shades</VAR>)</I>
 <DD><A NAME="IDX430"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_set_install_cmap</B> <I>(gint <VAR>install_cmap</VAR>)</I>
 <DD><A NAME="IDX431"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_preview_set_reserved</B> <I>(gint <VAR>nreserved</VAR>)</I>
 <DD><A NAME="IDX432"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GdkVisual* <B>gtk_preview_get_visual</B> <I>(void)</I>
 <DD><A NAME="IDX433"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GdkColormap* <B>gtk_preview_get_cmap</B> <I>(void)</I>
 <DD><A NAME="IDX434"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkPreviewInfo* <B>gtk_preview_get_info</B> <I>(void)</I>
 <DD><A NAME="IDX435"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Preview, PREVIEW}
 
-</P>
 
 
 
@@ -5777,7 +5733,7 @@ Set the size of the <VAR>preview</VAR> object to <VAR>width</VAR> and <VAR>heigh
 <DD><A NAME="IDX436"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC251" HREF="gtk_toc.html#TOC251">Signals</A></H3>
@@ -5793,7 +5749,7 @@ Set the size of the <VAR>preview</VAR> object to <VAR>width</VAR> and <VAR>heigh
 Returns the <CODE>GtkProgressBar</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_progress_bar_new</B> <I>(void)</I>
@@ -5802,7 +5758,7 @@ Create a new <CODE>GtkProgressBar</CODE> object returning the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_progress_bar_update</B> <I>(GtkProgressBar *<VAR>pbar</VAR>, gfloat <VAR>percentage</VAR>)</I>
@@ -5811,11 +5767,10 @@ Cause the <CODE>GtkProgressBar</CODE> to update its visual appearance to reflect
 <VAR>percentage</VAR>.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{ProgressBar, PROGRESS_BAR}
 
-</P>
 
 
 
@@ -5835,14 +5790,14 @@ Cause the <CODE>GtkProgressBar</CODE> to update its visual appearance to reflect
 <DD><A NAME="IDX440"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>label</B>
 <DD><A NAME="IDX441"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC256" HREF="gtk_toc.html#TOC256">Signals</A></H3>
@@ -5858,7 +5813,7 @@ Cause the <CODE>GtkProgressBar</CODE> to update its visual appearance to reflect
 Returns the <CODE>GtkRadioButton</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_radio_button_new</B> <I>(GSList *<VAR>group</VAR>)</I>
@@ -5868,7 +5823,7 @@ in the <VAR>group</VAR> argument. The new widget is returned as a pointer to a
 <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_radio_button_new_with_label</B> <I>(GSList *<VAR>group</VAR>, gchar *<VAR>label</VAR>)</I>
@@ -5878,18 +5833,17 @@ the <VAR>group</VAR> and <VAR>label</VAR> arguments. The new widget is returned 
 pointer to <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GSList* <B>gtk_radio_button_group</B> <I>(GtkRadioButton *<VAR>radio_button</VAR>)</I>
 <DD><A NAME="IDX445"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{RadioButton, RADIO_BUTTON}
 
-</P>
 
 
 
@@ -5909,14 +5863,14 @@ pointer to <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failu
 <DD><A NAME="IDX446"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>label</B>
 <DD><A NAME="IDX447"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC261" HREF="gtk_toc.html#TOC261">Signals</A></H3>
@@ -5932,7 +5886,7 @@ pointer to <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failu
 Returns the <CODE>GtkRadioMenuItem</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_radio_menu_item_new</B> <I>(GSList *<VAR>group</VAR>)</I>
@@ -5942,25 +5896,24 @@ values in <VAR>group</VAR>. The new widget is returned as a pointer to a
 <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_radio_menu_item_new_with_label</B> <I>(GSList *<VAR>group</VAR>, gchar *<VAR>label</VAR>)</I>
 <DD><A NAME="IDX450"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GSList* <B>gtk_radio_menu_item_group</B> <I>(GtkRadioMenuItem *<VAR>radio_menu_item</VAR>)</I>
 <DD><A NAME="IDX451"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{RadioMenuItem, RADIO_MENU_ITEM}
 
-</P>
 
 
 
@@ -5989,130 +5942,129 @@ values in <VAR>group</VAR>. The new widget is returned as a pointer to a
 Returns the <CODE>GtkRange</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkAdjustment* <B>gtk_range_get_adjustment</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX453"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_set_update_policy</B> <I>(GtkRange *<VAR>range</VAR>, GtkUpdatePolicy <VAR>policy</VAR>)</I>
 <DD><A NAME="IDX454"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_set_adjustment</B> <I>(GtkRange *<VAR>range</VAR>, GtkAdjustment *<VAR>adjustment</VAR>)</I>
 <DD><A NAME="IDX455"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_draw_background</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX456"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_draw_trough</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX457"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_draw_slider</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX458"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_draw_step_forw</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX459"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_draw_step_back</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX460"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_slider_update</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX461"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_range_trough_click</B> <I>(GtkRange *<VAR>range</VAR>, gint <VAR>x</VAR>, gint <VAR>y</VAR>)</I>
 <DD><A NAME="IDX462"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_default_hslider_update</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX463"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_default_vslider_update</B> <I>(GtkRange *<VAR>range</VAR>)</I>
 <DD><A NAME="IDX464"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_range_default_htrough_click</B> <I>(GtkRange *<VAR>range</VAR>, gint <VAR>x</VAR>, gint <VAR>y</VAR>)</I>
 <DD><A NAME="IDX465"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_range_default_vtrough_click</B> <I>(GtkRange *<VAR>range</VAR>, gint <VAR>x</VAR>, gint <VAR>y</VAR>)</I>
 <DD><A NAME="IDX466"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_default_hmotion</B> <I>(GtkRange *<VAR>range</VAR>, gint <VAR>xdelta</VAR>, gint <VAR>ydelta</VAR>)</I>
 <DD><A NAME="IDX467"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_range_default_vmotion</B> <I>(GtkRange *<VAR>range</VAR>, gint <VAR>xdelta</VAR>, gint <VAR>ydelta</VAR>)</I>
 <DD><A NAME="IDX468"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gfloat <B>gtk_range_calc_value</B> <I>(GtkRange *<VAR>range</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX469"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Range, RANGE}
 
-</P>
 
 
 
@@ -6132,35 +6084,35 @@ Returns the <CODE>GtkRange</CODE> type identifier.
 <DD><A NAME="IDX470"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>lower</B>
 <DD><A NAME="IDX471"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>upper</B>
 <DD><A NAME="IDX472"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>position</B>
 <DD><A NAME="IDX473"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>max_size</B>
 <DD><A NAME="IDX474"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC271" HREF="gtk_toc.html#TOC271">Signals</A></H3>
@@ -6176,39 +6128,38 @@ Returns the <CODE>GtkRange</CODE> type identifier.
 Returns the <CODE>GtkRuler</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_ruler_set_metric</B> <I>(GtkRuler *<VAR>ruler</VAR>, GtkMetricType <VAR>metric</VAR>)</I>
 <DD><A NAME="IDX476"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_ruler_set_range</B> <I>(GtkRuler *<VAR>ruler</VAR>, gfloat <VAR>lower</VAR>, gfloat <VAR>upper</VAR>, gfloat <VAR>position</VAR>, gfloat <VAR>max_size</VAR>)</I>
 <DD><A NAME="IDX477"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_ruler_draw_ticks</B> <I>(GtkRuler *<VAR>ruler</VAR>)</I>
 <DD><A NAME="IDX478"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_ruler_draw_pos</B> <I>(GtkRuler *<VAR>ruler</VAR>)</I>
 <DD><A NAME="IDX479"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Ruler, RULER}
 
-</P>
 
 
 
@@ -6228,21 +6179,21 @@ Returns the <CODE>GtkRuler</CODE> type identifier.
 <DD><A NAME="IDX480"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>draw_value</B>
 <DD><A NAME="IDX481"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>pos</B>
 <DD><A NAME="IDX482"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC276" HREF="gtk_toc.html#TOC276">Signals</A></H3>
@@ -6258,46 +6209,45 @@ Returns the <CODE>GtkRuler</CODE> type identifier.
 Returns the <CODE>GtkScale</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_scale_set_digits</B> <I>(GtkScale *<VAR>scale</VAR>, gint <VAR>digits</VAR>)</I>
 <DD><A NAME="IDX484"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_scale_set_draw_value</B> <I>(GtkScale *<VAR>scale</VAR>, gint <VAR>draw_value</VAR>)</I>
 <DD><A NAME="IDX485"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_scale_set_value_pos</B> <I>(GtkScale *<VAR>scale</VAR>, gint <VAR>pos</VAR>)</I>
 <DD><A NAME="IDX486"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_scale_value_width</B> <I>(GtkScale *<VAR>scale</VAR>)</I>
 <DD><A NAME="IDX487"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_scale_draw_value</B> <I>(GtkScale *<VAR>scale</VAR>)</I>
 <DD><A NAME="IDX488"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Scale, SCALE}
 
-</P>
 
 
 
@@ -6326,11 +6276,10 @@ Returns the <CODE>GtkScale</CODE> type identifier.
 Returns the <CODE>GtkScrollbar</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Scrollbar, SCROLLBAR}
 
-</P>
 
 
 
@@ -6359,7 +6308,7 @@ Returns the <CODE>GtkScrollbar</CODE> type identifier.
 Returns the <CODE>GtkScrolledWindow</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_scrolled_window_new</B> <I>(GtkAdjustment *<VAR>hadjustment</VAR>, GtkAdjustment *<VAR>vadjustment</VAR>)</I>
@@ -6369,32 +6318,31 @@ Create a new <CODE>GtkScrolledWindow</CODE> object initializing it with the valu
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkAdjustment* <B>gtk_scrolled_window_get_hadjustment</B> <I>(GtkScrolledWindow *<VAR>scrolled_window</VAR>)</I>
 <DD><A NAME="IDX492"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkAdjustment* <B>gtk_scrolled_window_get_vadjustment</B> <I>(GtkScrolledWindow *<VAR>scrolled_window</VAR>)</I>
 <DD><A NAME="IDX493"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_scrolled_window_set_policy</B> <I>(GtkScrolledWindow *<VAR>scrolled_window</VAR>, GtkPolicyType <VAR>hscrollbar_policy</VAR>, GtkPolicyType <VAR>vscrollbar_policy</VAR>)</I>
 <DD><A NAME="IDX494"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{ScrolledWindow, SCROLLED_WINDOW}
 
-</P>
 
 
 
@@ -6423,11 +6371,11 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkSeparator</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Separator, SEPARATOR}
 
-</P>
+
 
 
 <H2><A NAME="SEC293" HREF="gtk_toc.html#TOC293">The statusbar widget</A></H2>
@@ -6455,7 +6403,7 @@ Returns the <CODE>GtkSeparator</CODE> type identifier.
 Returns the <CODE>GtkStatusbar</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_statusbar_new</B> <I>(void)</I>
@@ -6464,25 +6412,25 @@ Create a new <CODE>GtkStatusbar</CODE> object returning the new widget as a poin
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_statusbar_push</B> <I>(GtkStatusbar *<VAR>statusbar</VAR>, gchar *<VAR>text</VAR>)</I>
 <DD><A NAME="IDX498"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_statusbar_pop</B> <I>(GtkStatusbar *<VAR>statusbar</VAR>, gint <VAR>context_id</VAR>)</I>
 <DD><A NAME="IDX499"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Statusbar, STATUSBAR}
 
-</P>
+
 
 
 <H2><A NAME="SEC298" HREF="gtk_toc.html#TOC298">The table widget</A></H2>
@@ -6501,14 +6449,14 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 <DD><A NAME="IDX500"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>columns</B>
 <DD><A NAME="IDX501"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>homogeneous</B>
@@ -6517,7 +6465,7 @@ This option controls whether all child widgets in the <CODE>GtkTable</CODE> will
 be of the same size. The child widgets will be the size of the largest child.
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC301" HREF="gtk_toc.html#TOC301">Signals</A></H3>
@@ -6533,7 +6481,7 @@ be of the same size. The child widgets will be the size of the largest child.
 Returns the <CODE>GtkTable</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_table_new</B> <I>(gint <VAR>rows</VAR>, gint <VAR>columns</VAR>, gint <VAR>homogeneous</VAR>)</I>
@@ -6543,53 +6491,52 @@ Create a new <CODE>GtkTable</CODE> object initializing it with the values in
 as a pointer to a <CODE>GtkWidget</CODE>. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_table_attach</B> <I>(GtkTable *<VAR>table</VAR>, GtkWidget *<VAR>child</VAR>, gint <VAR>left_attach</VAR>, gint <VAR>right_attach</VAR>, gint <VAR>top_attach</VAR>, gint <VAR>bottom_attach</VAR>, gint <VAR>xoptions</VAR>, gint <VAR>yoptions</VAR>, gint <VAR>xpadding</VAR>, gint <VAR>ypadding</VAR>)</I>
 <DD><A NAME="IDX505"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_table_attach_defaults</B> <I>(GtkTable *<VAR>table</VAR>, GtkWidget *<VAR>widget</VAR>, gint <VAR>left_attach</VAR>, gint <VAR>right_attach</VAR>, gint <VAR>top_attach</VAR>, gint <VAR>bottom_attach</VAR>)</I>
 <DD><A NAME="IDX506"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_table_set_row_spacing</B> <I>(GtkTable *<VAR>table</VAR>, gint <VAR>row</VAR>, gint <VAR>spacing</VAR>)</I>
 <DD><A NAME="IDX507"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_table_set_col_spacing</B> <I>(GtkTable *<VAR>table</VAR>, gint <VAR>col</VAR>, gint <VAR>spacing</VAR>)</I>
 <DD><A NAME="IDX508"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_table_set_row_spacings</B> <I>(GtkTable *<VAR>table</VAR>, gint <VAR>spacing</VAR>)</I>
 <DD><A NAME="IDX509"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_table_set_col_spacings</B> <I>(GtkTable *<VAR>table</VAR>, gint <VAR>spacing</VAR>)</I>
 <DD><A NAME="IDX510"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Table, TABLE}
 
-</P>
 
 
 
@@ -6614,7 +6561,7 @@ as a pointer to a <CODE>GtkWidget</CODE>. <CODE>NULL</CODE> is returned on failu
 Returns the <CODE>GtkText</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_text_new</B> <I>(GtkAdjustment *<VAR>hadj</VAR>, GtkAdjustment *<VAR>vadj</VAR>);</I>
@@ -6624,82 +6571,80 @@ Create a new <CODE>GtkText</CODE> object initializing it with the values in
 <CODE>GtkWidget</CODE>. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_text_set_editable</B> <I>(GtkText *<VAR>text</VAR>, gint <VAR>editable</VAR>)</I>
 <DD><A NAME="IDX513"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_text_set_adjustments</B> <I>(GtkText *<VAR>text</VAR>, GtkAdjustment *<VAR>hadj</VAR>, GtkAdjustment *<VAR>vadj</VAR>)</I>
 <DD><A NAME="IDX514"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_text_set_point</B> <I>(GtkText *<VAR>text</VAR>, guint <VAR>index</VAR>)</I>
 <DD><A NAME="IDX515"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> guint <B>gtk_text_get_point</B> <I>(GtkText *<VAR>text</VAR>)</I>
 <DD><A NAME="IDX516"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> guint <B>gtk_text_get_length</B> <I>(GtkText *<VAR>text</VAR>)</I>
 <DD><A NAME="IDX517"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_text_freeze</B> <I>(GtkText *<VAR>text</VAR>)</I>
 <DD><A NAME="IDX518"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_text_thaw</B> <I>(GtkText *<VAR>text</VAR>)</I>
 <DD><A NAME="IDX519"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_text_insert</B> <I>(GtkText *<VAR>text</VAR>, GdkFont *<VAR>font</VAR>, GdkColor *<VAR>fore</VAR>, GdkColor *<VAR>back</VAR>, char *<VAR>chars</VAR>, gint <VAR>length</VAR>)</I>
 <DD><A NAME="IDX520"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_text_forward_delete</B> <I>(GtkText *<VAR>text</VAR>, guint <VAR>nchars</VAR>)</I>
 <DD><A NAME="IDX521"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_text_backward_delete</B> <I>(GtkText *<VAR>text</VAR>, guint <VAR>nchars</VAR>)</I>
 <DD><A NAME="IDX522"></A>
 </DL>
 
-</P>
 
 <P>
 @gtkstdmacros{Text, TEXT}
 
-</P>
 
 
 
@@ -6714,7 +6659,7 @@ Another form of button (see section <A HREF="gtk.html#SEC46">The button widget</
 The appearance is that of a button which stays pressed on the first
 click, and is released on the second click.
 
-</P>
+
 
 
 <H3><A NAME="SEC309" HREF="gtk_toc.html#TOC309">Options</A></H3>
@@ -6725,7 +6670,7 @@ click, and is released on the second click.
 <DD><A NAME="IDX523"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC310" HREF="gtk_toc.html#TOC310">Signals</A></H3>
@@ -6736,7 +6681,7 @@ click, and is released on the second click.
 <DD><A NAME="IDX524"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC311" HREF="gtk_toc.html#TOC311">Functions</A></H3>
@@ -6748,7 +6693,7 @@ click, and is released on the second click.
 Returns the <CODE>GtkToggleButton</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_toggle_button_new</B> <I>(void)</I>
@@ -6757,7 +6702,7 @@ Create a new <CODE>GtkToggleButton</CODE> object returning the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_toggle_button_new_with_label</B> <I>(gchar *<VAR>label</VAR>)</I>
@@ -6767,32 +6712,31 @@ Create a new <CODE>GtkToggleButton</CODE> object initializing it with the values
 object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toggle_button_set_mode</B> <I>(GtkToggleButton *<VAR>toggle_button</VAR>, gint <VAR>draw_indicator</VAR>)</I>
 <DD><A NAME="IDX528"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toggle_button_set_state</B> <I>(GtkToggleButton *<VAR>toggle_button</VAR>, gint <VAR>state</VAR>)</I>
 <DD><A NAME="IDX529"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toggle_button_toggled</B> <I>(GtkToggleButton *<VAR>toggle_button</VAR>)</I>
 <DD><A NAME="IDX530"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{ToggleButton, TOGGLE_BUTTON}
 
-</P>
 
 
 
@@ -6842,7 +6786,7 @@ object. <CODE>NULL</CODE> is returned on failure.
 <DD><A NAME="IDX533"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC315" HREF="gtk_toc.html#TOC315">Signals</A></H3>
@@ -6858,7 +6802,7 @@ object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkToolbar</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_toolbar_new</B> <I>(GtkOrientation <VAR>orientation</VAR>, GtkToolbarStyle <VAR>style</VAR>)</I>
@@ -6867,56 +6811,56 @@ Create a new <CODE>GtkToolbar</CODE> object initializing it with the values
 <VAR>orientation</VAR> and <VAR>style</VAR>. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_append_item</B> <I>(GtkToolbar *<VAR>toolbar</VAR>, char *<VAR>text</VAR>, char *<VAR>tooltip_text</VAR>, GtkPixmap *<VAR>icon</VAR>, GtkSignalFunc <VAR>callback</VAR>, gpointer <VAR>user_data</VAR>)</I>
 <DD><A NAME="IDX536"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_prepend_item</B> <I>(GtkToolbar *<VAR>toolbar</VAR>, char *<VAR>text</VAR>, char *<VAR>tooltip_text</VAR>, GtkPixmap *<VAR>icon</VAR>, GtkSignalFunc <VAR>callback</VAR>, gpointer <VAR>user_data</VAR>)</I>
 <DD><A NAME="IDX537"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_insert_item</B> <I>(GtkToolbar *<VAR>toolbar</VAR>, char *<VAR>text</VAR>, char *<VAR>tooltip_text</VAR>, GtkPixmap *<VAR>icon</VAR>, GtkSignalFunc <VAR>callback</VAR>, gpointer <VAR>user_data</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX538"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_append_space</B> <I>(GtkToolbar *<VAR>toolbar</VAR>)</I>
 <DD><A NAME="IDX539"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_prepend_space</B> <I>(GtkToolbar *<VAR>toolbar</VAR>)</I>
 <DD><A NAME="IDX540"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_insert_space</B> <I>(GtkToolbar *<VAR>toolbar</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX541"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_set_orientation</B> <I>(GtkToolbar *<VAR>toolbar</VAR>, GtkOrientation <VAR>orientation</VAR>)</I>
 <DD><A NAME="IDX542"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_set_style</B> <I>(GtkToolbar *<VAR>toolbar</VAR>, GtkToolbarStyle <VAR>style</VAR>)</I>
@@ -6924,26 +6868,24 @@ Create a new <CODE>GtkToolbar</CODE> object initializing it with the values
 Set the <VAR>style</VAR> of the <VAR>toolbar</VAR> to <VAR>style</VAR>.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_set_space_size</B> <I>(GtkToolbar *<VAR>toolbar</VAR>, gint <VAR>space_size</VAR>)</I>
 <DD><A NAME="IDX544"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_toolbar_set_tooltips</B> <I>(GtkToolbar *<VAR>toolbar</VAR>, gint <VAR>enable</VAR>)</I>
 <DD><A NAME="IDX545"></A>
 </DL>
 
-</P>
 
 <P>
 @gtkstdmacros{Toolbar, TOOLBAR}
 
-</P>
 
 
 
@@ -6973,61 +6915,59 @@ Create a new <CODE>GtkTooltips</CODE> object returning the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkTooltips* <B>gtk_tooltips_ref</B> <I>(GtkTooltips *<VAR>tooltips</VAR>)</I>
 <DD><A NAME="IDX547"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tooltips_unref</B> <I>(GtkTooltips *<VAR>tooltips</VAR>)</I>
 <DD><A NAME="IDX548"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tooltips_free_string</B> <I>(gpointer <VAR>data</VAR>, gpointer <VAR>user_data</VAR>)</I>
 <DD><A NAME="IDX549"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tooltips_enable</B> <I>(GtkTooltips *<VAR>tooltips</VAR>)</I>
 <DD><A NAME="IDX550"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tooltips_disable</B> <I>(GtkTooltips *<VAR>tooltips</VAR>)</I>
 <DD><A NAME="IDX551"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tooltips_set_delay</B> <I>(GtkTooltips *<VAR>tooltips</VAR>, GtkWidget *<VAR>widget</VAR>, gchar *<VAR>tips_text</VAR>)</I>
 <DD><A NAME="IDX552"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tooltips_set_colors</B> <I>(GtkTooltips *<VAR>tooltips</VAR>, GdkColor *<VAR>background</VAR>, GdkColor *<VAR>foreground</VAR>)</I>
 <DD><A NAME="IDX553"></A>
 </DL>
 
-</P>
 
 <P>
 @gtkstdmacros{Tooltips, TOOLTIPS}
 
-</P>
 
 
 
@@ -7056,7 +6996,7 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkTree</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_tree_new</B> <I>(void)</I>
@@ -7065,103 +7005,101 @@ Create a new <CODE>GtkTree</CODE> object returning the new widget as a pointer t
 a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_append</B> <I>(GtkTree *<VAR>tree</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX556"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_prepend</B> <I>(GtkTree *<VAR>tree</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX557"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_insert</B> <I>(GtkTree *<VAR>tree</VAR>, GtkWidget *<VAR>child</VAR>, gint <VAR>position</VAR>)</I>
 <DD><A NAME="IDX558"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_tree_child_position</B> <I>(GtkTree *<VAR>tree</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX559"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_clear_items</B> <I>(GtkTree *<VAR>tree</VAR>, gint <VAR>start</VAR>, gint <VAR>end</VAR>)</I>
 <DD><A NAME="IDX560"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_remove_items</B> <I>(GtkTree *<VAR>tree</VAR>, GList *<VAR>items</VAR>)</I>
 <DD><A NAME="IDX561"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_select_child</B> <I>(GtkTree *<VAR>tree</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX562"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_select_item</B> <I>(GtkTree *<VAR>tree</VAR>, gint <VAR>item</VAR>)</I>
 <DD><A NAME="IDX563"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_unselect_child</B> <I>(GtkTree *<VAR>tree</VAR>, GtkWidget *<VAR>child</VAR>)</I>
 <DD><A NAME="IDX564"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_unselect_item</B> <I>(GtkTree *<VAR>tree</VAR>, gint <VAR>item</VAR>)</I>
 <DD><A NAME="IDX565"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_set_selection_mode</B> <I>(GtkTree *<VAR>tree</VAR>, GtkSelectionMode <VAR>mode</VAR>)</I>
 <DD><A NAME="IDX566"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_set_view_mode</B> <I>(GtkTree *<VAR>tree</VAR>, GtkTreeViewMode <VAR>mode</VAR>)</I>
 <DD><A NAME="IDX567"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_set_view_lines</B> <I>(GtkTree *<VAR>tree</VAR>, guint <VAR>flag</VAR>)</I>
 <DD><A NAME="IDX568"></A>
 </DL>
 
-</P>
 
 <P>
 @gtkstdmacros{Tree, TREE}
 
-</P>
 
 
 
@@ -7190,7 +7128,7 @@ a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkTreeItem</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_tree_item_new</B> <I>(void)</I>
@@ -7199,7 +7137,7 @@ Create a new <CODE>GtkTreeItem</CODE> object returning the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_tree_item_new_with_label</B> <I>(gchar *<VAR>label</VAR>)</I>
@@ -7209,54 +7147,53 @@ Create a new <CODE>GtkTreeItem</CODE> object initializing it with the values in
 object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_item_set_subtree</B> <I>(GtkTreeItem *<VAR>tree_item</VAR>, GtkWidget *<VAR>subtree</VAR>)</I>
 <DD><A NAME="IDX572"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_item_select</B> <I>(GtkTreeItem *<VAR>tree_item</VAR>)</I>
 <DD><A NAME="IDX573"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_item_deselect</B> <I>(GtkTreeItem *<VAR>tree_item</VAR>)</I>
 <DD><A NAME="IDX574"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_item_expand</B> <I>(GtkTreeItem *<VAR>tree_item</VAR>)</I>
 <DD><A NAME="IDX575"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_item_collapse</B> <I>(GtkTreeItem *<VAR>tree_item</VAR>)</I>
 <DD><A NAME="IDX576"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_tree_item_remove_subtree</B> <I>(GtkTreeItem *<VAR>item</VAR>)</I>
 <DD><A NAME="IDX577"></A>
 </DL>
 
-</P>
 
 <P>
 @gtkstdmacros{TreeItem, TREE_ITEM}
 
-</P>
+
 
 
 <H2><A NAME="SEC332" HREF="gtk_toc.html#TOC332">The vertical box widget</A></H2>
@@ -7279,7 +7216,7 @@ then the <VAR>expand</VAR> option to the <CODE>gtk_box_pack</CODE> (see section 
 routines is always turned on.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>spacing</B>
@@ -7288,7 +7225,6 @@ This option sets the amount of space that is added between the objects packed
 into this <CODE>GtkVBox</CODE> object.
 </DL>
 
-</P>
 
 
 
@@ -7296,7 +7232,7 @@ into this <CODE>GtkVBox</CODE> object.
 <P>
 This widget does not define any new signals.
 
-</P>
+
 
 
 <H3><A NAME="SEC336" HREF="gtk_toc.html#TOC336">Functions</A></H3>
@@ -7308,7 +7244,7 @@ This widget does not define any new signals.
 Returns the <CODE>GtkVBox</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_vbox_new</B> <I>(gint <VAR>homogeneous</VAR>, gint <VAR>spacing</VAR>)</I>
@@ -7318,11 +7254,11 @@ Create a new <CODE>GtkVBox</CODE> object initializing it with the values in
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{VBox, VBOX}
 
-</P>
+
 
 
 <H2><A NAME="SEC337" HREF="gtk_toc.html#TOC337">The vertical button box widget</A></H2>
@@ -7340,14 +7276,14 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 <DD><A NAME="IDX582"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>layout</B>
 <DD><A NAME="IDX583"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC340" HREF="gtk_toc.html#TOC340">Signals</A></H3>
@@ -7363,7 +7299,7 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkVButtonBox</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_vbutton_box_new</B> <I>(void)</I>
@@ -7372,39 +7308,38 @@ Create a new <CODE>GtkVButtonBox</CODE> object returning the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_vbutton_box_set_spacing_default</B> <I>(gint <VAR>spacing</VAR>)</I>
 <DD><A NAME="IDX586"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_vbutton_box_set_layout_default</B> <I>(gint <VAR>layout</VAR>)</I>
 <DD><A NAME="IDX587"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_vbutton_box_get_spacing_default</B> <I>(void)</I>
 <DD><A NAME="IDX588"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_vbutton_box_get_layout_default</B> <I>(void)</I>
 <DD><A NAME="IDX589"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{VButtonBox, VBUTTON_BOX}
 
-</P>
 
 
 
@@ -7429,53 +7364,53 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkViewport</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_viewport_new</B> <I>(GtkAdjustment *<VAR>hadjustment</VAR>, GtkAdjustment *<VAR>vadjustment</VAR>)</I>
 <DD><A NAME="IDX591"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkAdjustment* <B>gtk_viewport_get_hadjustment</B> <I>(GtkViewport *<VAR>viewport</VAR>)</I>
 <DD><A NAME="IDX592"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkAdjustment* <B>gtk_viewport_get_vadjustment</B> <I>(GtkViewport *<VAR>viewport</VAR>)</I>
 <DD><A NAME="IDX593"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_viewport_set_hadjustment</B> <I>(GtkViewport *<VAR>viewport</VAR>, GtkAdjustment *<VAR>adjustment</VAR>)</I>
 <DD><A NAME="IDX594"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_viewport_set_vadjustment</B> <I>(GtkViewport *<VAR>viewport</VAR>, GtkAdjustment *<VAR>adjustment</VAR>)</I>
 <DD><A NAME="IDX595"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_viewport_set_shadow_type</B> <I>(GtkViewport *<VAR>viewport</VAR>, GtkShadowType <VAR>type</VAR>)</I>
 <DD><A NAME="IDX596"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Viewport, VIEWPORT}
 
-</P>
+
 
 
 <H2><A NAME="SEC346" HREF="gtk_toc.html#TOC346">The vertical paned widget</A></H2>
@@ -7503,7 +7438,7 @@ Returns the <CODE>GtkViewport</CODE> type identifier.
 Returns the <CODE>GtkVPaned</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_vpaned_new</B> <I>(void)</I>
@@ -7512,11 +7447,11 @@ Create a new <CODE>GtkVPaned</CODE> object returning the new widget as a pointer
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{VPaned, VPANED}
 
-</P>
+
 
 
 <H2><A NAME="SEC351" HREF="gtk_toc.html#TOC351">The vertical ruler widget</A></H2>
@@ -7544,7 +7479,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkVRuler</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_vruler_new</B> <I>(void)</I>
@@ -7553,11 +7488,10 @@ Create a new <CODE>GtkVRuler</CODE> object returning the new widget as a pointer
 a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{VRuler, VRULER}
 
-</P>
 
 
 
@@ -7586,7 +7520,7 @@ a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkVScale</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_vscale_new</B> <I>(GtkAdjustment *<VAR>adjustment</VAR>)</I>
@@ -7595,11 +7529,10 @@ Create a new <CODE>GtkVScale</CODE> object returning the new widget as a pointer
 to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{VScale, VSCALE}
 
-</P>
 
 
 
@@ -7628,7 +7561,7 @@ to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkVScrollbar</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_vscrollbar_new</B> <I>(GtkAdjustment *<VAR>adjustment</VAR>)</I>
@@ -7638,11 +7571,10 @@ Create a new <CODE>GtkVScrollbar</CODE> object initializing it with the values i
 object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{VScrollbar, VSCROLLBAR}
 
-</P>
 
 
 
@@ -7667,7 +7599,7 @@ object. <CODE>NULL</CODE> is returned on failure.
 Returns the <CODE>GtkVSeparator</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_vseparator_new</B> <I>(void)</I>
@@ -7676,11 +7608,10 @@ Create a new <CODE>GtkVSeparator</CODE> object and return the new widget as a
 pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on failure.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{VSeparator, VSEPARATOR}
 
-</P>
 
 
 
@@ -7700,259 +7631,259 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 <DD><A NAME="IDX607"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::hide</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX608"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::map</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX609"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::unmap</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX610"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::realize</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX611"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::unrealize</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX612"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::draw</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkRectangle *<VAR>area</VAR>)</I>
 <DD><A NAME="IDX613"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::draw_focus</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX614"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::draw_default</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX615"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::size_request</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkRequisition *<VAR>requisition</VAR>)</I>
 <DD><A NAME="IDX616"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::size_allocate</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkAllocation *<VAR>allocation</VAR>)</I>
 <DD><A NAME="IDX617"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::state_changed</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX618"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::install_accelerator</B> <I>(GtkWidget *<VAR>widget</VAR>, gchar *<VAR>signal_name</VAR>, gchar <VAR>key</VAR>, guint8 <VAR>modifiers</VAR>)</I>
 <DD><A NAME="IDX619"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWidget::remove_accelerator</B> <I>(GtkWidget *<VAR>widget</VAR>, gchar *<VAR>signal_name</VAR>)</I>
 <DD><A NAME="IDX620"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEvent *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX621"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::button_press_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventButton *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX622"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::button_release_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventButton *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX623"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::motion_notify_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventMotion *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX624"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::delete_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventAny *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX625"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::destroy_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventAny *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX626"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::expose_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventExpose *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX627"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::key_press_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventKey *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX628"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::key_release_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventKey *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX629"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::enter_notify_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventCrossing *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX630"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::leave_notify_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventCrossing *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX631"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::configure_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventConfigure *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX632"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::focus_in_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventFocus *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX633"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::focus_out_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventFocus *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX634"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::map_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventAny *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX635"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::unmap_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventAny *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX636"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::property_notify_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventProperty *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX637"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::selection_clear_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventSelection *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX638"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::selection_request_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventSelection *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX639"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::selection_notify_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventSelection *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX640"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::drop_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventDrop *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX641"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::drag_begin_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventDragBegin *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX642"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> gint <B>GtkWidget::other_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEventOther *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX643"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC373" HREF="gtk_toc.html#TOC373">Functions</A></H3>
@@ -7964,256 +7895,255 @@ pointer to a <CODE>GtkWidget</CODE> object. <CODE>NULL</CODE> is returned on fai
 Returns the <CODE>GtkWidget</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_class_init</B> <I>(GtkWidgetClass *<VAR>class</VAR>)</I>
 <DD><A NAME="IDX645"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_init</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX646"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_destroy</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX647"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_show</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX648"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_hide</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX649"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_map</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX650"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_unmap</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX651"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_realize</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX652"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_unrealize</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX653"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_draw</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkRectangle *<VAR>area</VAR>)</I>
 <DD><A NAME="IDX654"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_draw_focus</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX655"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_draw_children</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX656"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_size_request</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkRequisition *<VAR>requisition</VAR>)</I>
 <DD><A NAME="IDX657"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_size_allocate</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkAllocation *<VAR>allocation</VAR>)</I>
 <DD><A NAME="IDX658"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_install_accelerator</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkAcceleratorTable *<VAR>table</VAR>, gchar *<VAR>signal_name</VAR>, gchar <VAR>key</VAR>, guint8 <VAR>modifiers</VAR>)</I>
 <DD><A NAME="IDX659"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_remove_accelerator</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkAcceleratorTable *<VAR>table</VAR>, gchar *<VAR>signal_name</VAR>)</I>
 <DD><A NAME="IDX660"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_widget_event</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkEvent *<VAR>event</VAR>)</I>
 <DD><A NAME="IDX661"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_reparent</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkWidget *<VAR>new_parent</VAR>)</I>
 <DD><A NAME="IDX662"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_popup</B> <I>(GtkWidget *<VAR>widget</VAR>, gint <VAR>x</VAR>, gint <VAR>y</VAR>)</I>
 <DD><A NAME="IDX663"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_widget_intersect</B> <I>(GtkWidget *<VAR>widget</VAR>, GdkRectangle *<VAR>area</VAR>, GdkRectangle *<VAR>intersection</VAR>)</I>
 <DD><A NAME="IDX664"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_grab_focus</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX665"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_grab_default</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX666"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_restore_state</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX667"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_set_name</B> <I>(GtkWidget *<VAR>widget</VAR>, gchar *<VAR>name</VAR>)</I>
 <DD><A NAME="IDX668"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_set_state</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkStateType <VAR>state</VAR>)</I>
 <DD><A NAME="IDX669"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_set_sensitive</B> <I>(GtkWidget *<VAR>widget</VAR>, gint sensitive)</I>
 <DD><A NAME="IDX670"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_set_parent</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkWidget *<VAR>parent</VAR>)</I>
 <DD><A NAME="IDX671"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_set_style</B> <I>(GtkWidget *<VAR>widget</VAR>, GtkStyle *<VAR>style</VAR>)</I>
 <DD><A NAME="IDX672"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_set_uposition</B> <I>(GtkWidget *<VAR>widget</VAR>, gint <VAR>x</VAR>, gint <VAR>y</VAR>)</I>
 <DD><A NAME="IDX673"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_widget_set_usize</B> <I>(GtkWidget *<VAR>widget</VAR>, gint <VAR>width</VAR>, gint <VAR>height</VAR>)</I>
 <DD><A NAME="IDX674"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_widget_get_toplevel</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX675"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_widget_get_ancestor</B> <I>(GtkWidget *<VAR>widget</VAR>, gint <VAR>type</VAR>)</I>
 <DD><A NAME="IDX676"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GdkColormap* <B>gtk_widget_get_colormap</B> <I>(GtkWidget *<VAR>widget</VAR>)</I>
 <DD><A NAME="IDX677"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GdkVisual* <B>gtk_widget_get_visual</B> <I>(GtkWidget *<VAR>visual</VAR>)</I>
 <DD><A NAME="IDX678"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkStyle* <B>gtk_widget_get_style</B> <I>(GtkWidget *<VAR>style</VAR>)</I>
 <DD><A NAME="IDX679"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Widget, WIDGET}
 
-</P>
 
 
 
@@ -8294,7 +8224,7 @@ The <VAR>title</VAR> option will set the title of the window in the window manag
 will not be seen.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>User Option:</U> <B>position</B>
@@ -8303,7 +8233,7 @@ The <VAR>position</VAR> option will determine where the window will be displayed
 when it is finally drawn to the screen. Currently the following positions 
  and the effect they have on window placement can be specified.
 
-</P>
+
 
 <UL>
 
@@ -8357,14 +8287,14 @@ warning/error/informational dialogs where user interaction is desired.
 <DD><A NAME="IDX683"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Signal:</U> void <B>GtkWindow::set_focus</B> <I>(GtkWindow *<VAR>window</VAR>, GtkWidget *<VAR>focus</VAR>)</I>
 <DD><A NAME="IDX684"></A>
 </DL>
 
-</P>
+
 
 
 <H3><A NAME="SEC378" HREF="gtk_toc.html#TOC378">Functions</A></H3>
@@ -8376,7 +8306,7 @@ warning/error/informational dialogs where user interaction is desired.
 Returns the <CODE>GtkWindow</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkWidget* <B>gtk_window_new</B> <I>(GtkWindowType <VAR>type</VAR>)</I>
@@ -8388,7 +8318,7 @@ The <VAR>type</VAR> can be one of <CODE>GTK_WINDOW_TOPLEVEL</CODE>,
 value determines how this widget will interact with the window manager.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_window_set_title</B> <I>(GtkWindow *<VAR>window</VAR>, gchar *<VAR>title</VAR>)</I>
@@ -8397,42 +8327,42 @@ Set the title of this window to the text in the <VAR>title</VAR> argument. It is
 important to not set the fields of the <CODE>GtkWindow</CODE> structure directly.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_window_set_focus</B> <I>(GtkWindow *<VAR>window</VAR>, GtkWidget *<VAR>focus</VAR>)</I>
 <DD><A NAME="IDX688"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_window_set_default</B> <I>(GtkWindow *<VAR>window</VAR>, GtkWidget *<VAR>defaultw</VAR>)</I>
 <DD><A NAME="IDX689"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_window_set_policy</B> <I>(GtkWindow *<VAR>window</VAR>, gint <VAR>allow_shrink</VAR>, gint <VAR>allow_grow</VAR>, gint <VAR>auto_shrink</VAR>)</I>
 <DD><A NAME="IDX690"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_window_add_accelerator_table</B> <I>(GtkWindow *<VAR>window</VAR>, GtkAcceleratorTable *<VAR>table</VAR>)</I>
 <DD><A NAME="IDX691"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_window_remove_accelerator_table</B> <I>(GtkWindow *<VAR>window</VAR>, GtkAcceleratorTable *<VAR>table</VAR>)</I>
 <DD><A NAME="IDX692"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_window_position</B> <I>(GtkWindow *<VAR>window</VAR>, GtkWindowPosition <VAR>position</VAR>)</I>
@@ -8442,11 +8372,10 @@ screen. The <VAR>position</VAR> argument effects the the position as described
 above.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Window, WINDOW}
 
-</P>
 
 
 
@@ -8470,56 +8399,56 @@ above.
 <DD><A NAME="IDX694"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkAcceleratorTable* <B>gtk_accelerator_table_find</B> <I>(GtkObject *<VAR>object</VAR>, gchar *<VAR>signal_name</VAR>, guchar <VAR>accelerator_key</VAR>, guint8 <VAR>accelerator_mods</VAR>)</I>
 <DD><A NAME="IDX695"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkAccelerator <B>*gtk_accelerator_table_ref</B> <I>(GtkAcceleratorTable *<VAR>table</VAR>)</I>
 <DD><A NAME="IDX696"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_accelerator_table_unref</B> <I>(GtkAcceleratorTable *<VAR>table</VAR>)</I>
 <DD><A NAME="IDX697"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_accelerator_table_install</B> <I>(GtkAcceleratorTable *<VAR>table</VAR>, GtkObject *<VAR>object</VAR>, gchar *<VAR>signal_name</VAR>, guchar <VAR>accelerator_key</VAR>, guint8 <VAR>accelerator_mods</VAR>)</I>
 <DD><A NAME="IDX698"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_accelerator_table_remove</B> <I>(GtkAcceleratorTable *<VAR>table</VAR>, GtkObject *<VAR>object</VAR>, gchar *<VAR>signal_name</VAR>)</I>
 <DD><A NAME="IDX699"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_accelerator_table_check</B> <I>(GtkAcceleratorTable *<VAR>table</VAR>, guchar <VAR>accelerator_key</VAR>, guint8 <VAR>accelerator_mods</VAR>)</I>
 <DD><A NAME="IDX700"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_accelerator_table_set_mod_mask</B> <I>(GtkAcceleratorTable *<VAR>table</VAR>, guint8 <VAR>modifier_mask</VAR>)</I>
 <DD><A NAME="IDX701"></A>
 </DL>
 
-</P>
+
 
 
 <H2><A NAME="SEC383" HREF="gtk_toc.html#TOC383">The adjustment object</A></H2>
@@ -8539,18 +8468,18 @@ above.
 Returns the <CODE>GtkAdjustment</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> GtkObject* <B>gtk_adjustment_new</B> <I>(gfloat <VAR>value</VAR>, gfloat <VAR>lower</VAR>, gfloat <VAR>upper</VAR>, gfloat <VAR>step_increment</VAR>, gfloat <VAR>page_increment</VAR>, gfloat <VAR>page_size</VAR>)</I>
 <DD><A NAME="IDX703"></A>
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{GtkAdjustment, ADJUSTMENT}
 
-</P>
+
 
 
 <H2><A NAME="SEC386" HREF="gtk_toc.html#TOC386">The GC object</A></H2>
@@ -8569,14 +8498,14 @@ Returns the <CODE>GtkAdjustment</CODE> type identifier.
 <DD><A NAME="IDX704"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_gc_release</B> <I>(GdkGC *<VAR>gc</VAR>)</I>
 <DD><A NAME="IDX705"></A>
 </DL>
 
-</P>
+
 
 
 <H2><A NAME="SEC389" HREF="gtk_toc.html#TOC389">The data object</A></H2>
@@ -8596,7 +8525,7 @@ Returns the <CODE>GtkAdjustment</CODE> type identifier.
 Returns the <CODE>GtkData</CODE> type identifier.
 </DL>
 
-</P>
+
 <P>
 @gtkstdmacros{Data, DATA}
 
@@ -8629,7 +8558,7 @@ you pass to this function should be the same arguments that were passed to
 your application. This function will parse the arguments that it understands
 and handle initializing the GDK library for you.
 
-</P>
+
 
 
 <H3><A NAME="SEC398" HREF="gtk_toc.html#TOC398">Exiting</A></H3>
@@ -8645,7 +8574,7 @@ and handle initializing the GDK library for you.
 Function to initialize GTK and GDK for you. This function will remove any
 command line arguments from <VAR>argc</VAR> and <VAR>argv</VAR> that it understands.
 
-</P>
+
 
 <PRE>
 int main (int argc, char *argv[])
@@ -8668,7 +8597,7 @@ Exit GTK and perform any necessary cleanup. <CODE>gtk_exit</CODE> will call the
 systems <CODE>exit</CODE> function passing <VAR>error_code</VAR> as the parameter.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>gtk_events_pending</B> <I>(void)</I>
@@ -8676,21 +8605,21 @@ systems <CODE>exit</CODE> function passing <VAR>error_code</VAR> as the paramete
 Returns the number of events pending on the event queue.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_main</B> <I>(void)</I>
 <DD><A NAME="IDX710"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> guint <B>gtk_main_level</B> <I>(void)</I>
 <DD><A NAME="IDX711"></A>
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_main_quit</B> <I>(void)</I>
@@ -8699,7 +8628,7 @@ A call to this function will cause the <CODE>gtk_main</CODE> function to exit,
 thereby allowing your application to exit.
 </DL>
 
-</P>
+
 
 
 <H2><A NAME="SEC400" HREF="gtk_toc.html#TOC400">Customization of the library</A></H2>
@@ -8715,14 +8644,14 @@ widgets. All this is handled through a similar method as in the standard
 X-windows environment, through the use of 'rc' files. The format and 
 functions available in these files is discussed below.
 
-</P>
+
 
 
 <H3><A NAME="SEC402" HREF="gtk_toc.html#TOC402">Functions</A></H3>
 <P>
 The following functions are available to handle the rc files.
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_rc_parse</B> <I>(char *<VAR>filename</VAR>)</I>
@@ -8731,7 +8660,7 @@ This function will parse the <VAR>filename</VAR> that is passed to it as its
 argument. It will use the style settings for the widget types defined there.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> void <B>gtk_rc_init</B> <I>(void)</I>
@@ -8741,7 +8670,7 @@ be called directly as the <CODE>gtk_rc_parse</CODE> function will handle this fo
 you.
 </DL>
 
-</P>
+
 
 
 <H2><A NAME="SEC403" HREF="gtk_toc.html#TOC403">Simplified menu creation</A></H2>
@@ -8778,7 +8707,7 @@ are used everywhere in GTK and would normally be turned off in a public
 release of a product. Note: The functions below are indeed macros, but
 they may be considered functions for most purposes.
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> Gtk&#60;ObjectType&#62;* <B>GTK_&#60;OBJECT_TYPE&#62;</B> <I>(gpointer <VAR>obj</VAR>)</I>
@@ -8789,7 +8718,7 @@ stages of code development since it is possible to examine the actual
 type of object (using <CODE>gtk_type_is_a</CODE>) before performing the cast.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> Gtk&#60;ObjectType&#62;Class* <B>GTK_&#60;OBJECT_TYPE&#62;_CLASS</B> <I>(gpointer <VAR>class</VAR>)</I>
@@ -8798,7 +8727,7 @@ Cast a generic pointer to <CODE>Gtk&#60;ObjectType&#62;Class*</CODE>. Like
 <CODE>GTK_&#60;ObjectType&#62;</CODE>, this function is, in reality, a macro.
 </DL>
 
-</P>
+
 <P>
 <DL>
 <DT><U>Function:</U> gint <B>GTK_IS_&#60;ObjectType&#62;</B> <I>(gpointer <VAR>obj</VAR>)</I>
@@ -8808,7 +8737,6 @@ object. This function is, in reality, a macro wrapper around the
 <CODE>gtk_type_is_a</CODE> function (see section <A HREF="gtk.html#SEC3">Types</A>).
 </DL>
 
-</P>
 
 
 
@@ -8816,7 +8744,6 @@ object. This function is, in reality, a macro wrapper around the
 <P>
 <A NAME="IDX718"></A>
 
-</P>
 
 
 
@@ -8830,7 +8757,7 @@ when compiled and run, will create a single window 200x200 pixels in
 size. The program does not exit until its is explicitly killed using the
 shell or a window manager function.
 
-</P>
+
 
 <PRE>
 #include &#60;gtk/gtk.h&#62;
@@ -8855,7 +8782,7 @@ main (int argc, char *argv[])
 The first point of interest in this program is the standard
 initialization line.
 
-</P>
+
 
 <PRE>
   gtk_init (&#38;argc, &#38;argv);
@@ -8866,11 +8793,11 @@ Almost every GTK program will contain such a line. GTK will initialize
 itself and GDK and remove any command line arguments it recognizes from
 <VAR>argc</VAR> and <VAR>argv</VAR>.
 
-</P>
+
 <P>
 The next two lines of code create and display a window.
 
-</P>
+
 
 <PRE>
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -8885,11 +8812,11 @@ pixels in size. But, this is not the case because a window that has no
 children defaults to 200x200 pixels in size. Mainly because 0x0 windows
 are annoying to manipulate or even see in some cases.
 
-</P>
+
 <P>
 The last line enters the GTK main processing loop.
 
-</P>
+
 
 <PRE>
   gtk_main ();
@@ -8899,7 +8826,6 @@ The last line enters the GTK main processing loop.
 Normally, <CODE>gtk_main</CODE> is called once and the program should exit
 when it returns. See section <A HREF="gtk.html#SEC396">Initializing and exiting GTK</A>.
 
-</P>
 
 
 
@@ -9029,7 +8955,7 @@ main (int argc, char *argv[])
 <P>
 <A NAME="IDX719"></A>
 
-</P>
+
 <P>
 Objects (or the <CODE>GtkObject</CODE> type) and the class hierarchy in
 general is implemented via a hierarchy of structs and type casting. Be
@@ -9037,7 +8963,7 @@ aware that when classes are mentioned it is the conceptual idea of
 classes that is being referred to. GTK is written entirely in C which
 provides no direct support for classes.
 
-</P>
+
 <P>
 The first part to the class mechanism is the object fields. These are
 fields that will be used on a per object basis. For example, the widget
@@ -9045,7 +8971,7 @@ type contains a field for the widgets parent. Every derived type needs a
 reference to its parent type. A descendant class of <CODE>GtkObject</CODE>
 would define itself like:
 
-</P>
+
 
 <PRE>
 struct Descendant
@@ -9062,7 +8988,7 @@ first in the descendant type structure. This allows pointers to objects
 of type <CODE>Descendant</CODE> to be cast to pointers to <CODE>GtkObject</CODE>'s
 and vice-versa.
 
-</P>
+
 <P>
 The second part to the class mechanism is the class fields. These fields
 are defined on a per class basis. In the case of widgets, the class
@@ -9076,13 +9002,13 @@ specifically, the actual function call depends on the class structure
 that is pointed to by the <CODE>klass</CODE> field of the <CODE>GtkObject</CODE>
 structure.
 
-</P>
+
 <P>
 To see how the class fields work it is necessary to see the object
 fields for a <CODE>GtkObject</CODE>. The <CODE>GtkObject</CODE> type is defined as
 follows:
 
-</P>
+
 
 <PRE>
 typedef struct _GtkObject GtkObject;
@@ -9102,7 +9028,7 @@ class structure even if it is unnecessary. As an example, the
 hypothetical <CODE>Descendant</CODE> class would define its class structure
 as:
 
-</P>
+
 
 <PRE>
 struct DescendantClass
@@ -9119,7 +9045,7 @@ in this case), <CODE>parent_class</CODE>. For the same reason as stated above
 for the object structure, the parent class field must be the first field
 in the class structure.
 
-</P>
+
 <P>
 <STRONG>Note:</STRONG> GTK assumes that the first field in a structure will be
 placed by the compiler at the start of the structure. This is certainly
@@ -9129,21 +9055,21 @@ required or simply done for simplicity. I'm not too worried about this
 assumption, though, as every C compiler I've ever encountered would work
 with GTK.
 
-</P>
+
 <P>
 The <CODE>flags</CODE> field of the <CODE>GtkObject</CODE> structure is used to keep
 track of a relatively few object flags and is also used by the
 <CODE>GtkWidget</CODE> type to store additional flags. At this time, the upper
 16 bits of the flags field are reserved but unused.
 
-</P>
+
 <P>
 The <CODE>object_data</CODE> field of the <CODE>GtkObject</CODE> structure is an
 opaque pointer used by the object data mechanism. In truth, it is a
 pointer to the beginning of the data list which is composed of the
 following structures.
 
-</P>
+
 
 <PRE>
 typedef struct _GtkObjectData GtkObjectData;
@@ -9166,7 +9092,6 @@ OK. Future work on the data mechanism might make use of a resizable
 array instead of a linked list. This would shrink the overhead of the
 <CODE>GtkObjectData</CODE> structure by 4 bytes on 32 bit architectures.
 
-</P>
 
 
 
@@ -9174,7 +9099,6 @@ array instead of a linked list. This would shrink the overhead of the
 <P>
 <A NAME="IDX720"></A>
 
-</P>
 
 
 
@@ -9182,18 +9106,22 @@ array instead of a linked list. This would shrink the overhead of the
 <P>
 <A NAME="IDX721"></A>
 
-</P>
 
 
 
 <H1><A NAME="SEC417" HREF="gtk_toc.html#TOC417">Function Index</A></H1>
 
 <P>
-<H2>*</H2>
+Jump to:
+<A HREF="#findex_*">*</A>
+-
+<A HREF="#findex_g">g</A>
+<P>
+<H2><A NAME="findex_*">*</A></H2>
 <DIR>
 <LI><A HREF="gtk.html#IDX696">*gtk_accelerator_table_ref</A>
 </DIR>
-<H2>g</H2>
+<H2><A NAME="findex_g">g</A></H2>
 <DIR>
 <LI><A HREF="gtk.html#IDX715">GTK_&#60;OBJECT_TYPE&#62;</A>
 <LI><A HREF="gtk.html#IDX716">GTK_&#60;OBJECT_TYPE&#62;_CLASS</A>
@@ -9823,48 +9751,58 @@ array instead of a linked list. This would shrink the overhead of the
 <LI><A HREF="gtk.html#IDX684">GtkWindow::set_focus</A>
 </DIR>
 
-</P>
 
 
 
 <H1><A NAME="SEC418" HREF="gtk_toc.html#TOC418">Concept Index</A></H1>
 
 <P>
-<H2>c</H2>
+Jump to:
+<A HREF="#cindex_c">c</A>
+-
+<A HREF="#cindex_o">o</A>
+-
+<A HREF="#cindex_s">s</A>
+-
+<A HREF="#cindex_t">t</A>
+-
+<A HREF="#cindex_u">u</A>
+-
+<A HREF="#cindex_w">w</A>
+<P>
+<H2><A NAME="cindex_c">c</A></H2>
 <DIR>
 <LI><A HREF="gtk.html#IDX8">class</A>
 <LI><A HREF="gtk.html#IDX4">Copying</A>
 </DIR>
-<H2>o</H2>
+<H2><A NAME="cindex_o">o</A></H2>
 <DIR>
 <LI><A HREF="gtk.html#IDX719">Object Implementation</A>
 <LI><A HREF="gtk.html#IDX5">Overview</A>
 </DIR>
-<H2>s</H2>
+<H2><A NAME="cindex_s">s</A></H2>
 <DIR>
 <LI><A HREF="gtk.html#IDX720">Signal Implementation</A>
 <LI><A HREF="gtk.html#IDX44">Signals</A>
 </DIR>
-<H2>t</H2>
+<H2><A NAME="cindex_t">t</A></H2>
 <DIR>
 <LI><A HREF="gtk.html#IDX6">type</A>
 <LI><A HREF="gtk.html#IDX7">type system</A>
 </DIR>
-<H2>u</H2>
+<H2><A NAME="cindex_u">u</A></H2>
 <DIR>
 <LI><A HREF="gtk.html#IDX718">Using GTK</A>
 </DIR>
-<H2>w</H2>
+<H2><A NAME="cindex_w">w</A></H2>
 <DIR>
 <LI><A HREF="gtk.html#IDX721">Widget Implementation</A>
 <LI><A HREF="gtk.html#IDX66">Widgets</A>
 </DIR>
 
-</P>
 
 <P><HR><P>
-This document was generated on 24 March 1999 using the
-<A HREF="http://wwwcn.cern.ch/dci/texi2html/">texi2html</A>
-translator version 1.54.</P>
+This document was generated on 25 May 2000 using
+<A HREF="http://wwwinfo.cern.ch/dis/texi2html/">texi2html</A>&nbsp;1.56k.
 </BODY>
 </HTML>

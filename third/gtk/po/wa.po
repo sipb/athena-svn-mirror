@@ -5,14 +5,15 @@
 # <srtxg@chanae.alphanet.ch>; nos avans co bråmint di l' ovraedje a fé.
 #
 # Copyright (C) 1999 Free Software Foundation, Inc.
-# Pablo Saratxaga <srtxg@chanae.alphanet.ch> 1999
+# Pablo Saratxaga <pablo@mandrakesoft.com> 1999-2000
+# Lucyin Mahin, 2000
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gtk+ 1.2.6\n"
-"POT-Creation-Date: 2000-02-16 05:29-0600\n"
+"Project-Id-Version: gtk+ 1.2.7\n"
+"POT-Creation-Date: 2000-05-19 07:11+0200\n"
 "PO-Revision-Date: 1999-02-07 17:37+0100\n"
-"Last-Translator: Pablo Saratxaga <srtxg@chanae.alphanet.ch>\n"
+"Last-Translator: Pablo Saratxaga <pablo@mandrakesoft.com>\n"
 "Language-Team: walon <linux-wa@chanae.alphanet.ch>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -47,14 +48,14 @@ msgid "Opacity:"
 msgstr "Zeroveyaedje:"
 
 #. The OK button
-#: gtk/gtkcolorsel.c:1727 gtk/gtkfilesel.c:469 gtk/gtkfontsel.c:3490
+#: gtk/gtkcolorsel.c:1727 gtk/gtkfilesel.c:469 gtk/gtkfontsel.c:3492
 #: gtk/gtkgamma.c:416
 msgid "OK"
 msgstr "I Va"
 
 #. The Cancel button
 #: gtk/gtkcolorsel.c:1733 gtk/gtkfilesel.c:476 gtk/gtkfilesel.c:856
-#: gtk/gtkfilesel.c:956 gtk/gtkfilesel.c:1071 gtk/gtkfontsel.c:3503
+#: gtk/gtkfilesel.c:956 gtk/gtkfilesel.c:1071 gtk/gtkfontsel.c:3505
 #: gtk/gtkgamma.c:424
 msgid "Cancel"
 msgstr "Rinoncî"
@@ -102,7 +103,7 @@ msgstr "Aroke"
 #. close button
 #: gtk/gtkfilesel.c:745 gtk/gtkinputdialog.c:354
 msgid "Close"
-msgstr "Cloyu"
+msgstr "Clôre"
 
 #: gtk/gtkfilesel.c:820
 msgid "Create Directory"
@@ -353,11 +354,11 @@ msgstr "Fonte: (passete eployî)"
 msgid "MAX_FONTS exceeded. Some fonts may be missing."
 msgstr "MAX_FONTS passé. Sacwantès fontes polèt manker"
 
-#: gtk/gtkfontsel.c:3497
+#: gtk/gtkfontsel.c:3499
 msgid "Apply"
 msgstr "Mete èn oûve"
 
-#: gtk/gtkfontsel.c:3519
+#: gtk/gtkfontsel.c:3521
 msgid "Font Selection"
 msgstr "Tchwezi les fontes"
 
@@ -472,29 +473,29 @@ msgstr "Dji n' pout nén trover on module tcherdjåve è module_path: \"%s\","
 msgid "--- No Tip ---"
 msgstr "--- Nole Racsegne ---"
 
-#~ msgid "thin"
-#~ msgstr "tenes"
-
-#~ msgid "extralight"
-#~ msgstr "foirt ledjîres"
-
-#~ msgid "light"
-#~ msgstr "ledjîres"
-
-#~ msgid "normal"
-#~ msgstr "miernuwes"
-
-#~ msgid "medium"
-#~ msgstr "moyénnes"
-
-#~ msgid "demibold"
-#~ msgstr "demi cråsses"
-
-#~ msgid "bold"
-#~ msgstr "cråsses"
+#~ msgid "heavy"
+#~ msgstr "pezantes"
 
 #~ msgid "extrabold"
 #~ msgstr "foirt cråsses"
 
-#~ msgid "heavy"
-#~ msgstr "pezantes"
+#~ msgid "bold"
+#~ msgstr "cråsses"
+
+#~ msgid "demibold"
+#~ msgstr "demi cråsses"
+
+#~ msgid "medium"
+#~ msgstr "moyénnes"
+
+#~ msgid "normal"
+#~ msgstr "miernuwes"
+
+#~ msgid "light"
+#~ msgstr "ledjîres"
+
+#~ msgid "extralight"
+#~ msgstr "foirt ledjîres"
+
+#~ msgid "thin"
+#~ msgstr "tenes"

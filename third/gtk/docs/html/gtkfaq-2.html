@@ -55,21 +55,22 @@ in the gtk+-version/ directory.
 <H2><A NAME="ss2.4">2.4 When compiling GTK+ I get an error like: <CODE>make: file `Makefile' line 456: Syntax error</CODE></A>
 </H2>
 
-<P>Make sure that you are using GNU make (use <CODE>make -v</CODE> to check). There are
-many weird and wonderful versions of make out there, and not all of them
-handle the automatically generated Makefiles.
+<P>Make sure that you are using GNU make (use <CODE>make -v</CODE> to
+check). There are many weird and wonderful versions of make out there,
+and not all of them handle the automatically generated Makefiles.
 <P>
 <P>
 <H2><A NAME="ss2.5">2.5 I've compiled and installed GTK+, but I can't get any programs to link with it!</A>
 </H2>
 
-<P>This problem is most often encountered when the GTK+ libraries can't be 
-found or are the wrong version. Generally, the compiler will complain about an
-'unresolved symbol'.  There are two things you need to check:
+<P>This problem is most often encountered when the GTK+ libraries can't
+be found or are the wrong version. Generally, the compiler will
+complain about an 'unresolved symbol'.  There are two things you need
+to check:
 <UL>
-<LI>Make sure that the libraries can be found. You want to edit 
-/etc/ld.so.conf to include the directories which contain the GTK libraries,
-so it looks something like:
+<LI>Make sure that the libraries can be found. You want to edit
+/etc/ld.so.conf to include the directories which contain the GTK
+libraries, so it looks something like:
 <PRE>
 /usr/X11R6/lib
 /usr/local/lib
@@ -104,20 +105,20 @@ system), issue the command
 rpm -e gtk gtk-devel
 </PRE>
 
-You may also want to remove the packages that depend on gtk (rpm will tell you
-which ones they are).  If you don't have a RedHat Linux system, check to make sure
-that neither 
+You may also want to remove the packages that depend on gtk (rpm will
+tell you which ones they are). If you don't have a RedHat Linux
+system, check to make sure that neither 
 <PRE>
 /usr/lib
 </PRE>
- or 
+ or
 <PRE>
 /usr/local/lib
 </PRE>
- contain any of
-the libraries libgtk, libgdk, libglib, or libgck.  If they do exist, remove them
-(and any gtk include files, such as /usr/include/gtk and /usr/include/gdk) 
-and reinstall gtk+.</LI>
+ contain any of the libraries libgtk,
+libgdk, libglib, or libgck.  If they do exist, remove them (and any
+gtk include files, such as /usr/include/gtk and /usr/include/gdk) and
+reinstall gtk+.  </LI>
 </UL>
 <P>
 <H2><A NAME="ss2.6">2.6 When compiling programs with GTK+, I get compiler error messages about not being able to find <CODE>"glibconfig.h"</CODE>.</A>
