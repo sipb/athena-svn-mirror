@@ -2,6 +2,10 @@ XCOMM $XConsortium: Imakefile,v 2.22 91/07/22 13:56:17 converse Exp $
         DEPLIBS = XawClientDepLibs
 LOCAL_LIBRARIES = XawClientLibs
 
+#ifdef LinuxArchitecture
+         XAWLIB = /usr/X11R6/lib/libXaw.so.6
+#endif
+
     XMH_BITMAPS = black6 box6
            SRCS = bbox.c command.c compfuncs.c folder.c init.c main.c \
                   menu.c mlist.c msg.c pick.c popup.c screen.c toc.c \

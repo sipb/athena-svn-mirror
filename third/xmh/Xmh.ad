@@ -10,6 +10,12 @@ Xmh.SendBreakWidth:		2000
 *toc*cursor:			left_ptr
 
 *menuBox.folderButton.Label:	Folder
+*menuBox.folderButton.borderWidth: 1
+*menuBox.folderButton.translations: #override\n\
+<EnterWindow>:highlight()\n\
+<LeaveWindow>:reset()\n\
+<BtnDown>:reset()PopupMenu()\n
+
 *menuBox.tocButton.Label:	Table of Contents
 *menuBox.messageButton.Label:	Message
 *menuBox.sequenceButton.Label:	Sequence
@@ -62,7 +68,7 @@ Xmh.prompt.Dialog.cancel.Label:	Cancel
 Xmh.error.Dialog.OK.Label:	Acknowledged
 
 *toc.rightMargin:		0
-*toc.scrollVertical:		WhenNeeded
+*toc.scrollVertical:		Always
 *view.scrollVertical:		Always
 *view.scrollHorizontal:		WhenNeeded
 *view.autoFill:			True
