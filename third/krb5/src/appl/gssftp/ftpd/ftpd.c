@@ -141,7 +141,11 @@ static char *temp_auth_type;
 krb5_context kcontext;
 krb5_ccache ccache;
 int have_creds = 0;
+#ifdef SIGSYS
 void try_afscall(int (*func)());
+#else
+#define try_afscall(func) func()
+#endif /* SIGSYS */
 extern int setpag(), ktc_ForgetAllTokens();
 
 /*
@@ -2520,6 +2524,7 @@ attach(pw, locker)
 	sigprocmask(SIG_SETMASK, &osmask, NULL);
 }
 
+#ifdef SIGSYS
 void try_afscall(int (*func)(void))
 {
     struct sigaction sa, osa;
@@ -2531,3 +2536,4 @@ void try_afscall(int (*func)(void))
     func();
     sigaction(SIGSYS, &osa, NULL);
 }
+#endif /* SIGSYS */

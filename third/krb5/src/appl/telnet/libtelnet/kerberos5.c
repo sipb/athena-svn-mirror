@@ -85,7 +85,11 @@ extern char *malloc();
 
 #include <al.h>
 int k5_haveauth = 0;
+#ifdef SIGSYS
 void try_afscall(int (*func)(void));
+#else
+#define try_afscall(func) func()
+#endif /* SIGSYS */
 int setpag(), ktc_ForgetAllTokens();
 
 extern auth_debug_mode;
@@ -876,6 +880,7 @@ cleanup:
 }
 #endif	/* FORWARD */
 
+#ifdef SIGSYS
 void try_afscall(int (*func)(void))
 {
     struct sigaction sa, osa;
@@ -887,4 +892,5 @@ void try_afscall(int (*func)(void))
     func();
     sigaction(SIGSYS, &osa, NULL);
 }
+#endif /* SIGSYS */
 #endif /* KRB5 */
