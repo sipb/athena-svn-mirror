@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v $
- *	$Author: probe $
+ *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.8 1993-10-09 18:13:48 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.9 1995-07-11 15:41:32 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.8 1993-10-09 18:13:48 probe Exp $";
+static char *rcsid_cmds_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/cmds.c,v 1.9 1995-07-11 15:41:32 miki Exp $";
 #endif lint
 
 /*
@@ -24,7 +24,16 @@ static char sccsid[] = "@(#)cmds.c	5.2 (Berkeley) 3/30/86";
  */
 
 #include "lp.h"
+#include <string.h>
+#if defined(POSIX) && !defined(ultrix)
+#include "posix.h" /* for flock() */
+#endif
 #include <sys/time.h>
+
+char	*user[MAXUSERS];		/* users to process */
+int	users;				/* # of users in user array */
+int	requ[MAXREQUESTS];		/* job number of spool entries */
+int	requests;			/* # of spool requests */
 
 /* Currently "lpc" runs only off information in /etc/printcap.
  * If you want it to query Hesiod, #define HESIOD_LPC here.
@@ -120,7 +129,7 @@ abortpr(dis)
 	/*
 	 * Kill the current daemon to stop printing now.
 	 */
-	if ((fp = fopen(line, "r")) == NULL) {
+	if ((fp = fopen(line, "r+")) == NULL) {
 		printf("\tcannot open lock file\n");
 		return;
 	}
@@ -474,7 +483,7 @@ down(argc, argv)
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
-			putmsg(argc - 2, argv + 2);
+			aputmsg(argc - 2, argv + 2);
 		}
 		return;
 	}
@@ -497,10 +506,10 @@ down(argc, argv)
 		return;
 	}
 #endif HESIOD_LPC
-	putmsg(argc - 2, argv + 2);
+	aputmsg(argc - 2, argv + 2);
 }
 
-putmsg(argc, argv)
+aputmsg(argc, argv)
 	char **argv;
 {
 	register int fd;
@@ -982,11 +991,24 @@ topq(argc, argv)
 	if (changed && stat(LO, &stbuf) >= 0)
 		(void) chmod(LO, (stbuf.st_mode & 0777) | 01);
 } 
-
+#ifdef POSIX
 /*
  * Reposition the job by changing the modification time of
  * the control file.
  */
+#include <utime.h>
+ 
+touch(q)
+	struct queue_ *q;
+{
+	struct utimbuf tvp;
+
+	tvp.modtime = --mtime;
+	tvp.actime = 0;
+	return(utimes(q->q_name, tvp));
+}
+#else
+
 touch(q)
 	struct queue_ *q;
 {
@@ -996,7 +1018,7 @@ touch(q)
 	tvp[0].tv_usec = tvp[1].tv_usec = 0;
 	return(utimes(q->q_name, tvp));
 }
-
+#endif
 /*
  * Checks if specified job name is in the printer's queue.
  * Returns:  negative (-1) if argument name is not in the queue.
@@ -1015,7 +1037,7 @@ doarg(job)
 	 * Look for a job item consisting of system name, colon, number 
 	 * (example: ucbarpa:114)  
 	 */
-	if ((cp = index(job, ':')) != NULL) {
+	if ((cp = strchr(job, ':')) != NULL) {
 		machine = job;
 		*cp++ = '\0';
 		job = cp;
@@ -1144,7 +1166,7 @@ lookat(argc, argv)
 			while ((c = *cp2++) && c != '|' && c != ':')
 				*cp1++ = c;
 			*cp1 = '\0';
-			lookatpr();
+			displayq(0);
 		}
 		return;
 	}
@@ -1167,42 +1189,9 @@ lookat(argc, argv)
 			printf("unknown printer %s\n", printer);
 			continue;
 		}
-#endif HESIOD_LPC
-		lookatpr();
+#endif /* HESIOD_LPC */
+		displayq(0);
 	}
-}
-
-lookatpr ()
-{
-	char cmdbuf[255];
-	char *command = "/usr/ucb/lpq";
-
-#ifdef DEBUG
-	command = "./lpq";
-#endif
-
-	(void) sprintf (cmdbuf, "-P%s", printer);
-
-#ifdef DEBUG
-	printf ("WARNING:  Using program %s to examine print queue %s\n",
-		command, printer);
-#endif
-
-	printf ("%s:\n", printer);
-	switch(fork())
-	  {
-	  case 0: /* Child */
-	    execl(command, "lpq", cmdbuf, 0);
-	    perror("Can't exec /usr/ucb/lpq");
-	    exit(1);
-	    /*NOTREACHED*/
-	  case -1:
-	    perror("fork");
-	  default:
-	    wait(0);
-	  }
-	printf ("\n");
-	return;
 }
 
 /*
