@@ -9,6 +9,7 @@ rje::8:rje,shqer
 lp:*:9:
 nuucp::10:nuucp
 user::20:
+tty::885:
 other::995:
 demos:*:997:
 guest:*:998:
