@@ -184,7 +184,7 @@ name:: FRC								@@\
 	@for d in subdirs; \						@@\
 	do \								@@\
 		(cd $$d; echo "### Making" name "in $(CWD)/$$d"; \	@@\
-			make $(MFLAGS) flgs DESTDIR=$(DESTDIR) name; \	@@\
+			$(MAKE) $(MFLAGS) flgs DESTDIR=$(DESTDIR) name; \ @@\
 			echo "### Done with $(CWD)/$$d"); \		@@\
 	done
 
@@ -195,7 +195,7 @@ name:: FRC								@@\
 	foreach_subdirs_flags(depend, subdirs, flgs)			@@\
 subdirs:: FRC								@@\
 	@(cd $@; echo "### Making" all "in $(CWD)/$@"; \		@@\
-		make $(MFLAGS) flgs DESTDIR=$(DESTDIR) all ; \		@@\
+		$(MAKE) $(MFLAGS) flgs DESTDIR=$(DESTDIR) all ; \	@@\
 		echo "### Done with $(CWD)/$@")
 
 #define foreach_subdirs(name,subdirs)					@@\
@@ -225,9 +225,9 @@ Makefiles:: Makefile							@@\
 		  if [ -f Makefile ]; then \				@@\
 			$(RM) Makefile.bak; \				@@\
 		 	mv Makefile Makefile.bak; fi; \			@@\
-		  make -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \	@@\
+		  $(MAKE) -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \ @@\
 			CWD=$(CWD)/$$d Makefile; \			@@\
-		  make $(MFLAGS) Makefiles; \				@@\
+		  $(MAKE) $(MFLAGS) Makefiles; \			@@\
 		  echo "### Done with $(CWD)/$$d" ) ; \			@@\
 	done
 
@@ -252,9 +252,9 @@ Makefiles:: Makefile							@@\
 		  if [ -f Makefile ]; then \				@@\
 			$(RM) Makefile.bak; \				@@\
 		 	mv Makefile Makefile.bak; fi; \			@@\
-		  make -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \	@@\
+		  $(MAKE) -f $${newtop}/Makefile TOP=$${newtop}/$(TOP) \ @@\
 			CWD=$(CWD)/$$d XMakefile; \			@@\
-		  make $(MFLAGS) Makefiles; \				@@\
+		  $(MAKE) $(MFLAGS) Makefiles; \			@@\
 		  echo "### Done with $(CWD)/$$d" ) ; \			@@\
 	done
 
