@@ -167,7 +167,7 @@ EXTRASYS    = set_a0_hack.o
 #ifdef sparc
 DEFS        = -Dsun -Dsparc -DBSD -DINET
 EXTRALIBS   =
-EXTRACFLAGS =
+EXTRACFLAGS = -I/usr/athena/include
 #else
 DEFS        = -Dsun -Dm68000 -DBSD -DINET -DTASKING
 CPSROOT     = ../../cps
