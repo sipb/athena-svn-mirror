@@ -21,7 +21,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_zstat_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v 1.6 1988-06-28 10:42:54 jtkohl Exp $";
+static char rcsid_zstat_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/zstat.c,v 1.7 1988-11-14 11:51:40 jtkohl Exp $";
 #endif SABER
 #endif lint
 		     
@@ -92,15 +92,15 @@ main(argc, argv)
 		exit(1);
 	}
 
-	if (!(sp = getservbyname("zephyr-hm","udp"))) {
-		fprintf(stderr,"zephyr-hm/udp: unknown service\n");
+	if (!(sp = getservbyname(HM_SVCNAME,"udp"))) {
+		fprintf(stderr,"%s/udp: unknown service\n", HM_SVCNAME);
 		exit(-1);
 	}
 
 	hm_port = sp->s_port;
 
-	if (!(sp = getservbyname("zephyr-clt","udp"))) {
-		fprintf(stderr,"zephyr-clt/udp: unknown service\n");
+	if (!(sp = getservbyname(SERVER_SVCNAME,"udp"))) {
+		fprintf(stderr,"%s/udp: unknown service\n",SERVER_SVCNAME);
 		exit(-1);
 	}
 
