@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.2 1990-04-25 11:48:15 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.3 1990-07-11 10:07:38 epeisach Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.2 1990-04-25 11:48:15 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.3 1990-07-11 10:07:38 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -26,18 +26,27 @@ static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/
 #include "quota_ncs.h"
 #include <pfm.h>
 #include "quota_db.h"
+#include "gquota_db.h"
 #include "logger.h"
 #include "logger_ncs.h"
-#include "signal.h"
+#include <signal.h>
+#include <errno.h>
+
+#ifdef V1COMPAT
+#include "quota_ncs_v1.h"
+#include "logger_ncs_v1.h"
+#endif
 
 short KA;    /* Kerberos Authentication */
 short MA;    /* Mutual Authentication   */
 int   DQ;    /* Default quota */
 char *AF;    /* Acl File */
 char *QF;    /* Master quota file */
+char *GF;    /* Group quota file */
 char *RF;    /* Report file for logger to grok thru */
 char *QC;    /* Quota currency */
 char *SA;    /* SAcl File */
+int  QD;    /* Quota server "down" (i.e. allow to print) */
 
 char *progname;
 char pbuf[BUFSIZ/2];
@@ -49,8 +58,9 @@ int logger_debug=0;
 #endif
 
 char aclname[MAXPATHLEN];       /* Acl filename */
-char saclname[MAXPATHLEN];       /* Service Acl filename */
+char saclname[MAXPATHLEN];      /* Service Acl filename */
 char qfilename[MAXPATHLEN];     /* Master quota database */
+char gfilename[MAXPATHLEN];     /* Group quota database */
 char rfilename[MAXPATHLEN];     /* Report file */
 char qcapfilename[MAXPATHLEN];  /* Required by quotacap routines */
 char qcurrency[30];             /* The quota currency */
@@ -62,7 +72,10 @@ char my_realm[REALM_SZ];
 static char *stringFile = "/usr/spool/quota/string.db";
 static char *userFile = "/usr/spool/quota/user.db";
 static char *jourFile = "/usr/spool/quota/journal.db";
+static char *uidFile  = "/usr/spool/quota/uid.db";
 
+extern char	*sys_errlist[];
+extern int	sys_nerr;
 
 main(argc, argv)
         int argc;
@@ -81,10 +94,12 @@ main(argc, argv)
 
     progname = argv[0];
     argv++;
-    aclname[0] = saclname[0] = qfilename[0] = rfilename[0] = quota_name[0] = '\0';
+    aclname[0] = saclname[0] = qfilename[0] = gfilename[0] = rfilename[0] 
+	= quota_name[0] = '\0';
     strcpy(aclname, DEFACLFILE);
     strcpy(saclname, DEFSACLFILE);
     strcpy(qfilename, DBM_DEF_FILE);
+    strcpy(gfilename, DBM_GDEF_FILE);
     strcpy(qcapfilename, DEFCAPFILE);
 
     while(--argc) {
@@ -112,6 +127,11 @@ main(argc, argv)
 	case 'q':
 	    if(!argv[0][2]) argc--, argv++;
 	    if(argc) strcpy(qfilename, argv[0]);
+	    else usage();	/* Doesn't return */
+	    break;
+	case 'g':
+	    if(!argv[0][2]) argc--, argv++;
+	    if(argc) strcpy(gfilename, argv[0]);
 	    else usage();	/* Doesn't return */
 	    break;
 	case 'c':
@@ -152,13 +172,21 @@ main(argc, argv)
 	fprintf(stderr,"%s: could not set database name %s\n", progname, qfilename);
 	exit(2);
     }
+    if(gquota_db_set_name(gfilename)) {
+	fprintf(stderr,"%s: could not set group database name %s\n", progname, gfilename);
+	exit(2);
+    }
 
     setpgrp(0, getpid());
     /* If this fails then we're not root... */
     krb_get_lrealm(my_realm, 1);
     
+#ifdef LOG_LPR
     openlog("lpqd", LOG_PID, LOG_LPR);
-    
+#else
+    openlog("lpqd", LOG_PID);
+#endif
+
 #ifndef DEBUG
     for (f = 0; f < 5; f++)
 	(void) close(f);
@@ -234,16 +262,21 @@ read_quotacap()
     if (DQ = -1)
 	DQ = qdefault= DEFQUOTA;
 
+    QD = qgetnum("qd");
+    if (QD = -1)
+	QD = 0;
+
     if ((AF = (char *)qgetstr("af", &bp)) == NULL) {
 	AF = aclname;
     }
-
     if ((SA = (char *)qgetstr("sa", &bp)) == NULL) {
-	SA = aclname;
+	SA = saclname;
     }
-
     if ((QF = (char *)qgetstr("qf", &bp)) == NULL) {
 	QF = qfilename;
+    }
+    if ((GF = (char *)qgetstr("gf", &bp)) == NULL) {
+	GF = gfilename;
     }
     if ((RF = (char *)qgetstr("rf", &bp)) == NULL) {
 	RF = rfilename;
@@ -258,7 +291,8 @@ read_quotacap()
 usage()
 {
     fprintf(stderr, "%s: [-a aclfile] [-q quota_database_file]\n", progname);
-    fprintf(stderr, "    [-c quotacap] [-n quota_name] [-s saclfile]\n",
+    fprintf(stderr, "    [-g group_database] [-c quotacap]\n");
+    fprintf(stderr, "    [-n quota_name] [-s saclfile]\n",
 	    progname);
     exit(1);
 }
@@ -292,67 +326,74 @@ int *fd;
 
 handle_requests(fd) 
 int fd;
-    {
-	int addrlen;
-	struct sockaddr addr;
-	char buf[1024], outbuf[1024];
-	fd_set	fdread;
-	char serv[SERV_SZ], princ[ANAME_SZ], inst[INST_SZ], realm[REALM_SZ];
-	char name[MAX_K_NAME_SZ];
-	int acct, more, retval, ret;
-	char *service, *set_service();
-	quota_rec quotarec;
-
-	while(1) {
-	    FD_ZERO(&fdread);
-	    FD_SET(fd, &fdread);
-	    if(select(fd+1, &fdread, 0, 0, NULL) <=0) {
-		syslog(LOG_NOTICE, "Select failed\n");
+{
+    int addrlen;
+    struct sockaddr addr;
+    char buf[1024], outbuf[1024];
+    fd_set	fdread;
+    char serv[SERV_SZ], princ[ANAME_SZ], inst[INST_SZ], realm[REALM_SZ];
+    char name[MAX_K_NAME_SZ];
+    int acct, more, retval, ret;
+    char *service, *set_service();
+    quota_rec quotarec;
+    gquota_rec gquotarec;
+    
+    while(1) {
+	FD_ZERO(&fdread);
+	FD_SET(fd, &fdread);
+	if(select(fd+1, &fdread, 0, 0, NULL) <=0) {
+	    syslog(LOG_NOTICE, "Select failed\n");
+	    continue;
+	}
+	
+	if(!FD_ISSET(fd, &fdread)) {
+	    syslog(LOG_NOTICE, "Bogus response received to quotaserver\n");
+	    continue;
+	}
+	
+	/* Handle the UDP packet from the lpd server. */
+	addrlen = sizeof(addr);
+	if (recvfrom(fd, buf, 1024, 0, &addr, &addrlen) < 0) {
+	    syslog(LOG_NOTICE, "Error in recvfrom\n");
+	    continue;
+	}
+	if(buf[0] == 0) {
+	    /* PING protocol */
+	    /* Copy version and sequence & timestamp back */
+	    bcopy(buf, outbuf, 13);	
+	    if(sendto(fd, outbuf, 13, 0, &addr, addrlen) != 13) {
+		syslog(LOG_NOTICE, "sendto ping failed\n");
 		continue;
 	    }
+	    continue;
+	}
+	
+	if(buf[0] != UDPPROTOCOL) {
+	    syslog(LOG_ERR, "Wrong protocol sent.\n");
+	    continue;
+	}
 
-	    if(!FD_ISSET(fd, &fdread)) {
-		syslog(LOG_NOTICE, "Bogus response received to quotaserver\n");
-		continue;
-	    }
+	/* Handle lookup request */
+	/* Start by copying to outbuf whatever can... */
+	/* Copy Protocol, seq #, printer name */
+	bcopy(buf, outbuf, 36);
+	bcopy(buf + 35, &acct, 4);
+	bcopy(buf + 39, serv, 20);
+	bcopy(buf + 59, princ, ANAME_SZ);
+	bcopy(buf + 59 + ANAME_SZ, inst, INST_SZ);
+	bcopy(buf + 59 + ANAME_SZ + INST_SZ, realm, REALM_SZ);
+	acct = ntohl(acct);
+	service = set_service(serv);	    
 
-	    /* Handle the UDP packet from the lpd server. */
-	    addrlen = sizeof(addr);
-	    if (recvfrom(fd, buf, 1024, 0, &addr, &addrlen) < 0) {
-		syslog(LOG_NOTICE, "Error in recvfrom\n");
-		continue;
-	    }
-	    if(buf[0] == 0) {
-		/* PING protocol */
-		/* Copy vesion and sequence & timestamp back */
-		bcopy(buf, outbuf, 13);	
-		if(sendto(fd, outbuf, 13, 0, &addr, addrlen) != 13) {
-		    syslog(LOG_NOTICE, "sendto ping failed\n");
-		    continue;
-		}
-		continue;
-	    }
-
-	    if(buf[0] != UDPPROTOCOL) {
-		syslog(LOG_ERR, "Wrong protocol sent.\n");
-		continue;
-	    }
-
-	    /* Handle lookup request */
-	    /* Start by copying to outbuf whatever can... */
-	    /* Copy Protocol, seq #, printer name */
-	    bcopy(buf, outbuf, 36);
-	    bcopy(buf + 35, &acct, 4);
-	    bcopy(buf + 39, serv, 20);
-	    bcopy(buf + 59, princ, ANAME_SZ);
-	    bcopy(buf + 59 + ANAME_SZ, inst, INST_SZ);
-	    bcopy(buf + 59 + ANAME_SZ + INST_SZ, realm, REALM_SZ);
-	    acct = htonl(acct);
-	    service = set_service(serv);	    
-
-	    /* Frob the realms and instance properly... */
-	    make_kname(princ, inst, realm, name);
-	    parse_username(name, princ, inst, realm);
+	/* Frob the realms and instance properly... */
+	make_kname(princ, inst, realm, name);
+	parse_username(name, princ, inst, realm);
+	
+	if (QD) {
+	    /* Quota server is marked as down */
+	    /* Allow everyone to print */
+	    ret = ALLOWEDTOPRINT;
+	} else 	if (acct == (long)0) {
 	    /* Now lookup!!! */
 	    retval = quota_db_get_principal(princ, inst,
 					    service,
@@ -363,17 +404,42 @@ int fd;
 	    if(!retval) {
 		/* User does not exist */
 		ret = UNKNOWNUSER;
-	    } else if(quotarec.allowedToPrint == FALSE)
+	    } else if (quotarec.deleted == TRUE) {
+		ret = USERDELETED;
+	    } else if (quotarec.allowedToPrint == FALSE) {
 		ret = NOALLOWEDTOPRINT;
-
-	    outbuf[35] = (char) ret;
-	    if(sendto(fd, outbuf, 36, 0, &addr, addrlen) != 36) {
-		syslog(LOG_NOTICE, "sendto lookup failed\n");
 	    }
-	    continue;
-		
+	} else {
+	    retval = gquota_db_get_group(acct, service,
+					 &gquotarec, (unsigned int)1,
+					 &more);
+	    ret = ALLOWEDTOPRINT;
+	    if (!retval) {
+		ret = UNKNOWNGROUP;
+	    } else if (gquotarec.deleted == TRUE) {
+		ret = GROUPDELETED;
+	    } else if (gquotarec.allowedToPrint == FALSE) {
+		ret = NOALLOWEDTOPRINT;
+	    } else {
+		/* Ok, we have a valid group, now lookup user */
+		retval = quota_db_get_principal(princ, inst,
+						service,
+						realm, &quotarec,
+						(unsigned int)1, &more);
+		if (!retval) 
+		    ret = UNKNOWNUSER;
+		else if (!is_group_user(quotarec.uid, &gquotarec))
+			ret = USERNOTINGROUP;
+	    }
 	}
-}		
+	
+	outbuf[35] = (char) ret;
+	if(sendto(fd, outbuf, 36, 0, &addr, addrlen) != 36) {
+	    syslog(LOG_NOTICE, "sendto lookup failed\n");
+	}
+	continue;		
+    }
+}
 	
 Exit()
 {
@@ -397,26 +463,45 @@ init_qncs()
     socket_$addr_t loc;
     unsigned long llen = sizeof(loc);
 
+    if(uid_string_set_name(uidFile)) {
+	syslog(LOG_ERR, "Unable to open uid database %s - FATAL", uidFile);
+	exit(1);
+    }
+
+    if(uid_read_strings() < 0 ) {
+	syslog(LOG_ERR, "Unable to read uid database %s: %s - FATAL", 
+	       stringFile, 
+	       (errno > sys_nerr) ? (char *) "Unknown error" : 
+	       sys_errlist[errno]);
+	exit(1);
+    }
+
+
     fst = pfm_$cleanup(crec);
     if (fst.all != pfm_$cleanup_set) {
 	if (fst.all != status_$ok)
 	    syslog(LOG_NOTICE, "*** Exception raised - %s\n", error_text(fst));
 	pfm_$signal(fst);
     }
-    rpc_$use_family_wk (socket_$internet, &print_quota_v1$if_spec,
+
+    rpc_$use_family_wk (socket_$internet, &print_quota_v2$if_spec,
 			&loc, &llen, &st);
     
     if (st.all != 0) {
-	syslog(LOG_ERR,"Can't use_family - %s\n", error_text(st));
+	syslog(LOG_ERR,"Can't ~use_family - %s\n", error_text(st));
 	exit(1);
     }
 
+#ifdef V1COMPAT
     register_quota_manager_v1();
+#endif
+
+    register_quota_manager_v2();
 
     signal(SIGHUP, Exit);
     signal(SIGINT, Exit);
     signal(SIGKILL, Exit);
-
+    signal(SIGTERM, Exit);
 
 #if notneeded
     rpc_$register (&print_quota_v1$if_spec, print_quota_v1$server_epv, &st);
@@ -438,27 +523,29 @@ init_lncs()
     void logger_periodic();
 
     if(logger_string_set_name(stringFile)) {
-	syslog(LOG_INFO, "Unable to open string file database %s.", stringFile);
+	syslog(LOG_ERR, "Unable to open string file database %s - FATAL", 
+	       stringFile);
 	exit(1);
     }
 
     if(logger_read_strings() < 0 ) {
-	syslog(LOG_INFO, "Unable to read string file database %s: %s", 
+	syslog(LOG_ERR, "Unable to read string file database %s: %s - FATAL", 
 	       stringFile, 
 	       (errno > sys_nerr) ? (char *) "Unknown error" : sys_errlist[errno]);
 	exit(1);
     }
 
     if(logger_user_set_name(userFile)) {
-	syslog(LOG_INFO, "Unable to open user file database %s.", userFile);
+	syslog(LOG_ERR, "Unable to open user file database %s - FATAL", 
+	       userFile);
 	exit(1);
     }
 
     if(logger_journal_set_name(jourFile)) {
-	syslog(LOG_INFO, "Unable to open user file database %s.", jourFile);
+	syslog(LOG_ERR, "Unable to open user file database %s.- FATAL", 
+	       jourFile);
 	exit(1);
     }
-
 
     fst = pfm_$cleanup(crec);
     if (fst.all != pfm_$cleanup_set) {
@@ -466,7 +553,8 @@ init_lncs()
 	    syslog(LOG_NOTICE, "*** Exception raised - %s\n", error_text(fst));
 	pfm_$signal(fst);
     }
-    rpc_$use_family_wk (socket_$internet, &print_logger_v1$if_spec,
+
+    rpc_$use_family_wk (socket_$internet, &print_logger_v2$if_spec,
 			&loc, &llen, &st);
     
     if (st.all != 0) {
@@ -476,10 +564,13 @@ init_lncs()
 
     rpc_$periodically(logger_periodic, "Periodic logger handler", PERIODICTIME);
 
+#ifdef V1COMPAT
     register_logger_manager_v1();
+#endif V1COMPAT
+    register_logger_manager_v2();
 
 #ifdef notused
-    rpc_$register (&print_logger_v1$if_spec, print_logger_v1$server_epv, &st);
+    rpc_$register (&print_logger_v2$if_spec, print_logger_v2$server_epv, &st);
 
     if (st.all != 0) {
 	syslog(LOG_ERR, "Can't register - %s\n", error_text(st));
