@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.5 1991-01-23 13:19:38 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.6 1991-02-09 13:15:37 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.5 1991-01-23 13:19:38 epeisach Exp $";
+static char *rcsid_lpc_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpc.c,v 1.6 1991-02-09 13:15:37 epeisach Exp $";
 #endif lint
 
 /*
@@ -245,7 +245,7 @@ help(argc, argv)
 		for (i = 0; i < lines; i++) {
 			for (j = 0; j < columns; j++) {
 				c = cmdtab + j * lines + i;
-				printf("%s", c->c_name);
+				if(c->c_name) printf("%s", c->c_name);
 				if (c + lines >= &cmdtab[NCMDS]) {
 					printf("\n");
 					break;
