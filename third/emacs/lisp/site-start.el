@@ -1,8 +1,7 @@
 ; mh-rmail won't find mh programs by default; tell it where they are.
 (setq mh-progs "/usr/athena/bin/"
       mh-lib "/usr/athena/libexec/"
-      mh-comp-formfile "/usr/athena/etc/components"
-      mh-repl-formfile "/usr/athena/etc/replcomps")
+      mh-repl-formfile nil)
 
 ; Security measure.
 (setq inhibit-local-variables t)
