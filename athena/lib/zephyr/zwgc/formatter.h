@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: formatter.h,v 1.5 1999-01-22 23:20:21 ghudson Exp $
+ *      $Id: formatter.h,v 1.6 1999-05-19 19:43:38 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -28,7 +28,7 @@ typedef struct _desctype {
 #define DT_NL	4	/* Newline.		*/
     
     char *str;		/* Name of environment, string to be displayed.	*/
-    short int len;	/* Length of string/environment name for
+    int len;		/* Length of string/environment name for
 			   ENV, STR, END.  Undefined for EOF */
 } desctype;
 
