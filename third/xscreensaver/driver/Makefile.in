@@ -211,7 +211,7 @@ install-program: $(EXES)
 	   inst="$(INSTALL_SETUID)" ;					\
 	fi ;								      \
 	echo $$inst xscreensaver $(install_prefix)$(bindir)/xss ;    \
-	$$inst xscreensaver $(install_prefix)$(bindir)/xscreensaver
+	$$inst xscreensaver $(install_prefix)$(bindir)/xss
 	@echo $(INSTALL_PROGRAM) xscreensaver-command \
 	  $(install_prefix)$(bindir)/xss-command ; \
 	$(INSTALL_PROGRAM) xscreensaver-command \
