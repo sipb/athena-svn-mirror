@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.3 1990-06-01 09:52:13 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.4 1990-07-10 20:21:16 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.3 1990-06-01 09:52:13 epeisach Exp $";
+static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_notify.c,v 1.4 1990-07-10 20:21:16 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "quota.h"
@@ -19,6 +19,7 @@ static char quota_notify_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 #include "quota_ncs.h"
 #include "quota_err.h"
 #include "quota_db.h"
+#include "gquota_db.h"
 #ifdef ZEPHYR
 #include <zephyr/zephyr.h>
 #endif
@@ -116,7 +117,7 @@ quota_rec 		*quotaRec;
 			qcurrency,
 			quotaRec->service);
 	    else
-		sprintf(message,"%s\nThere is $%.2f left in your %s print quota.\n",
+		sprintf(message,"%s\nThere are $%.2f left in your %s print quota.\n",
 			message1,
 			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
 			quotaRec->service);
@@ -145,6 +146,133 @@ quota_rec 		*quotaRec;
     return 0;
 #endif
 }
+
+
+QuotaReport_group_notify(qid, qreport, quotaRec, isadmin)
+quota_identifier   	*qid;
+quota_report	  	*qreport;
+gquota_rec 		*quotaRec;
+int                     isadmin;
+{
+    char message[1024], message1[1024] ;
+    char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ];
+    float ratio;
+
+    parse_username(qid->username, qprincipal, qinstance, qrealm);
+
+    if(quotaRec->quotaAmount > quotaRec->quotaLimit) {
+	sprintf(message,
+		"Your last print job to account #%d (%s) was %d pages.\nThe account was charged %d %s.",
+		qid->account,
+		quotaRec->service,
+		qreport->pages, 
+		(qreport->pages * qreport->pcost), 
+		qcurrency);
+	if (isadmin) {
+	    if(strcmp(qcurrency, "cents")) 
+		sprintf(message1, 
+			"%s\nThe total print charges to the account this semester is %d %s.",
+		    message, (quotaRec->quotaAmount - quotaRec->quotaLimit),
+		    qcurrency);
+	else
+	    sprintf(message1, 
+		    "%s\nThe total print charges to the account this semester is $%.2f.",
+		    message, (float) (quotaRec->quotaAmount - quotaRec->quotaLimit)/100.0);
+	    goto notify;
+	}
+    }
+
+    message1[0] = '\0';
+    
+    if((quotaRec->quotaLimit != 0) &&
+       (100 * (quotaRec->quotaLimit - quotaRec->quotaAmount))
+       /quotaRec->quotaLimit < 10) {
+	if(strcmp(qcurrency, "cents"))
+	    sprintf(message1, 
+		    "There are %d %s left in %d (%s) account print quota.\nLast job printed at %d %s/page\n",
+		    (quotaRec->quotaLimit - quotaRec->quotaAmount),
+		    qcurrency,
+		    qid->account,
+		    quotaRec->service,
+		    qreport->pcost, qcurrency);
+	else
+	    sprintf(message1, 
+		    "There are $%.2f left in %d (%s) account print quota.\nLast job printed at %d %s/page\n",
+		    (float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
+		    qid->account,
+		    quotaRec->service,
+		    qreport->pcost, qcurrency);
+
+    }
+
+    if(qreport->pcost != 0) {
+	ratio = ((float) (quotaRec->quotaLimit - quotaRec->quotaAmount)) / 
+	    ((qreport->pages == 0) ? 1 : 
+	     (qreport->pages * qreport->pcost));
+	
+	if(ratio >=1 && ratio < 2) {
+	    if(strcmp(qcurrency, "cents"))
+		sprintf(message,"%s\nThere are %d %s left in the %d (%s) account print quota.\n",
+			message1,
+			(quotaRec->quotaLimit - quotaRec->quotaAmount), 
+			qcurrency,
+			qid->account,
+			quotaRec->service);
+	    else
+		sprintf(message,"%s\nThere are $%.2f left in the %d (%s) account print quota.\n",
+			message1,
+			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0, 
+			qid->account,
+			quotaRec->service);
+	    sprintf(message1, "%sThe last print job was %d pages.\n",
+		    message, qreport->pages);
+	    sprintf(message, "%sYou can print only one more print job of\n",
+		    message1);
+	    sprintf(message1, "%sthat size without going over the account quota.\n",
+		    message);
+	    goto notify;
+	}
+	
+	if(ratio < 1) {
+	    if(strcmp(qcurrency, "cents"))
+		sprintf(message,"%s\nThere are %d %s left in the %d (%s) account print quota.\n",
+			message1,
+			quotaRec->quotaLimit - quotaRec->quotaAmount,
+			qcurrency,
+			qid->account,
+			quotaRec->service);
+	    else
+		sprintf(message,"%s\nThere are $%.2f left in the %d (%s) account print quota.\n",
+			message1,
+			(float) (quotaRec->quotaLimit - quotaRec->quotaAmount)/100.0,
+			qid->account,
+			quotaRec->service);
+	    sprintf(message1, "%sYour last print job was %d pages.\n",
+		    message, qreport->pages);
+	    sprintf(message, "%sYou cannot print another print job of\n",
+		    message1);
+	    sprintf(message1, "%sthat size without going over the account quota.\n",
+		    message);
+	    goto notify;
+	}
+
+    } /* if pcost = 0 */
+    /* Don't notify */
+    return 0;
+
+    /* We use notify user with the proper user and message as needed. */
+    /* At Athena, although the kerberos instance is valid as a part of the username
+       we cannot send mail to someone that way. Use of principal only then. */
+
+ notify:
+    if(message1[0] == '\0') return 0;
+#ifdef ZEPHYR
+    return(NotifyUser(qprincipal, message1));
+#else
+    return 0;
+#endif
+}
+
 
 
 #ifdef ZEPHYR
