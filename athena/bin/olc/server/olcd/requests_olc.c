@@ -19,12 +19,12 @@
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: requests_olc.c,v 1.61 2000-01-10 21:54:17 zacheiss Exp $
+ *	$Id: requests_olc.c,v 1.62 2000-11-19 05:35:30 zacheiss Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: requests_olc.c,v 1.61 2000-01-10 21:54:17 zacheiss Exp $";
+static char rcsid[] ="$Id: requests_olc.c,v 1.62 2000-11-19 05:35:30 zacheiss Exp $";
 #endif
 #endif
 
@@ -1314,18 +1314,19 @@ olc_send(fd, request)
 	     target->user->username,target->instance);
 #endif /* OLCD_LOG_ACTIONS */
 
-  if (owns_question(requester))
+  /* Always set the status to PENDING if it was previously in PICKUP */
+  if (target->status == PICKUP)
+    set_status(target, PENDING);
+
+  if (!is_connected(target))
     {
-      requester->question->stats.n_urepl++;
-      if (requester->status == PICKUP)
-	set_status(requester, PENDING);
-      if (! is_connected(target))
-	{
-	  sprintf(mesg,"%s %s [%d] has sent a message.\n",target->title,
-		  target->user->username, target->instance);
-	  olc_broadcast_message("lonely_hearts",mesg, requester->question->topic);
-	}
+      sprintf(mesg,"%s %s [%d] has sent a message.\n", target->title,
+	      target->user->username, target->instance);
+      olc_broadcast_message("lonely_hearts", mesg, target->question->topic);
     }
+
+  if (owns_question(requester))
+    requester->question->stats.n_urepl++;
   else
     {
       if (target->question->stats.time_to_fr == -1) {
