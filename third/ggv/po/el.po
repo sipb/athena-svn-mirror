@@ -1,0 +1,1283 @@
+# GNOME ggv Greek translation.
+# Copyright (C) 2000, 2001 Free Software Foundation, Inc.
+# Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 2000.
+# Simos Xenitellis <simos@hellug.gr>, 2000, 2001.
+#
+# Initial translation by Spiros.
+# Simos updated to 131 messages. (lost initial count)
+# simos: 145 messages, 16Feb2001, visual verification passed.
+# simos: 145 messages, 19Feb2001, one got fuzzy.
+# simos: 154 messages, 26Mar2001, (beasgprgmt).
+# simos: 160 messages, 4Jun2001, (tengo cumple).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ggv 1.1.0\n"
+"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"PO-Revision-Date: 2001-06-04 16:42:00+0900\n"
+"Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
+"Language-Team: Greek <nls@tux.hellug.gr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/GNOME_GGV.server.in.in.h:1
+msgid "GGV PostScript Document Control"
+msgstr "Έλεγχος Εγγράφου PostScript GGV"
+
+#: bonobo/GNOME_GGV.server.in.in.h:2
+msgid "GGV PostScript View"
+msgstr "Όψη PostScript GGV"
+
+#: bonobo/GNOME_GGV.server.in.in.h:3
+msgid "GGV PostScript viewer factory"
+msgstr "Εργοστάσιο εμφάνισης PostScript GGV"
+
+#: bonobo/ggv-control-ui.xml.h:2
+#, no-c-format
+msgid "15_0%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:3
+msgid "1:1"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:5
+#, no-c-format
+msgid "25%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:6
+msgid "Change zoom factor to default"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:7
+msgid "Decrease zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:8
+msgid "Fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:9
+msgid "Fit Width"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:10
+msgid "Fit _Width"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:11
+#, fuzzy
+msgid "Fit to Page _Size"
+msgstr "_Μέγεθος Σελίδας"
+
+#: bonobo/ggv-control-ui.xml.h:12
+msgid "Fit to Page _Width"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:13
+msgid "In"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:14
+msgid "Increase zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:15
+msgid "Other"
+msgstr "Άλλα"
+
+#: bonobo/ggv-control-ui.xml.h:16
+msgid "Out"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:17
+msgid "Zoom _In"
+msgstr "_Μεγένθυση"
+
+#: bonobo/ggv-control-ui.xml.h:18
+msgid "Zoom _Out"
+msgstr "_Σμίκρυνση"
+
+#: bonobo/ggv-control-ui.xml.h:19
+msgid "Zoom the page to be as wide as the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:20
+msgid "Zoom the page to fit in the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:22
+#, no-c-format
+msgid "_100%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:24
+#, no-c-format
+msgid "_200%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:26
+#, no-c-format
+msgid "_400%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:28
+#, no-c-format
+msgid "_50%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:30
+#, no-c-format
+msgid "_75%"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:31
+msgid "_Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:32
+#, fuzzy
+msgid "_Default Zoom"
+msgstr "Εξ' ορισμού Μεγέθυνση"
+
+#: bonobo/ggv-control-ui.xml.h:33
+#, fuzzy
+msgid "_Fit Window"
+msgstr "_Νέο Παράθυρο"
+
+#: bonobo/ggv-control-ui.xml.h:34
+msgid "_No Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:35
+msgid "_Zoom"
+msgstr "Μεγέν_θυση"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:1
+msgid "10x14"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:2
+msgid "A0"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:3
+msgid "A1"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:4
+msgid "A2"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:5
+msgid "A3"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:6
+msgid "A4"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:7
+msgid "A5"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:8
+msgid "B4"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:9
+msgid "B5"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:10
+msgid "BBox"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:11
+msgid "Executive"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:12
+#, fuzzy
+msgid "First"
+msgstr "_Πρώτη Σελίδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:13
+msgid "Folio"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:14
+#, fuzzy
+msgid "GGV _Preferences"
+msgstr "Προτιμήσεις GGV"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:15
+#, fuzzy
+msgid "Go to first page"
+msgstr "Εμφάνιση πρώτης σελίδας"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:16
+#, fuzzy
+msgid "Go to last page"
+msgstr "Εμφάνιση τελευταίας σελίδας"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:17
+#, fuzzy
+msgid "Go to next page"
+msgstr "Μετακίνηση στην επόμενη σελίδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:18
+#, fuzzy
+msgid "Go to previous page"
+msgstr "Μετακίνηση στην προηγούμενη σελίδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:19
+#, fuzzy
+msgid "Last"
+msgstr "Διαμόρφωση"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:20
+msgid "Ledger"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:21
+msgid "Legal"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:22
+msgid "Letter"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:23
+#, fuzzy
+msgid "Next"
+msgstr "Επόμενη σελίδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:24
+msgid "Open the preferences dialog"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:25
+msgid "Prev"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:26
+msgid "Print marked pages"
+msgstr "Εκτύπωση σημαδεμένων σελίδων"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:27
+#, fuzzy
+msgid "Print the whole document"
+msgstr "Εκτύπωση εγγράφου"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:28
+msgid "Quarto"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:29
+#, fuzzy
+msgid "Save marked pages to a file"
+msgstr "Αποθήκευση σημαδεμένων σελίδων σε νέο αρχείο"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:30
+msgid "Statement"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:31
+msgid "Tabloid"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:32
+#, fuzzy
+msgid "_Document Orientation"
+msgstr "_Παράκαμψη Προσανατολισμού Εγγράφου"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:33
+#, fuzzy
+msgid "_Document Size"
+msgstr "Έ_γγραφο"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:34
+#, fuzzy
+msgid "_First page"
+msgstr "_Πρώτη Σελίδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:35
+msgid "_Landscape"
+msgstr "_Τοπίο"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:36
+#, fuzzy
+msgid "_Last page"
+msgstr "_Τελευταία Σελίδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:37
+#, fuzzy
+msgid "_Next page"
+msgstr "Επόμενη σελίδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:38
+#, fuzzy
+msgid "_Orientation"
+msgstr "Προσανατολισ_μός"
+
+# Not sure how the terms "portrait" and "landscape" are usually
+# translated; if anyone knows what the term in the Greek version
+# of MSWindoze is and if it is better (or equally good), maybe we
+# would want to use that for consistency and for the sake of newbies?
+#: bonobo/ggv-postscript-view-ui.xml.h:39
+msgid "_Portrait"
+msgstr "_Πορτραίτο"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:40
+#, fuzzy
+msgid "_Previous page"
+msgstr "Προηγ. σελίδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:41
+#, fuzzy
+msgid "_Print document"
+msgstr "Εκτύπωση εγγράφου"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:42
+#, fuzzy
+msgid "_Print marked pages"
+msgstr "Εκτύπωση σημαδεμένων σελίδων"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:43
+#, fuzzy
+msgid "_Save marked pages"
+msgstr "Αποθήκευση ση_μαδεμένων σελίδων..."
+
+#: bonobo/ggv-postscript-view-ui.xml.h:44
+msgid "_Seascape"
+msgstr "Ανάπο_δο τοπίο"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:45
+#, fuzzy
+msgid "_Size"
+msgstr "_Μέγεθος Σελίδας"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:46
+#, fuzzy
+msgid "_Upside down"
+msgstr "Ανάποδα"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
+msgid "_View"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:746
+#, c-format
+msgid ""
+"Unable to execute print command:\n"
+"%s"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:800
+#, fuzzy
+msgid ""
+"No pages have been marked.\n"
+"Do you want to save the whole document?"
+msgstr ""
+"Δεν υπάρχουν σημαδεμένες σελίδες.\n"
+"Θέλετε να εκτυπώσετε όλο το έγγραφο;"
+
+#: bonobo/ggv-postscript-view.c:820
+msgid "Select a file to save pages as"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:832
+msgid ""
+"A file with this name already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:871
+#, fuzzy
+msgid ""
+"No pages have been marked.\n"
+"Do you want to print the whole document?"
+msgstr ""
+"Δεν υπάρχουν σημαδεμένες σελίδες.\n"
+"Θέλετε να εκτυπώσετε όλο το έγγραφο;"
+
+#: bonobo/ggv-postscript-view.c:1754
+msgid "Display"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:1951
+#, fuzzy
+msgid "GhostScript output"
+msgstr "Ghostscript"
+
+#: bonobo/ggv-postscript-view.c:1985
+#, fuzzy
+msgid "Document title"
+msgstr "Έγγραφο"
+
+#: bonobo/ggv-postscript-view.c:1989
+msgid "GGV control status"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:1993
+msgid "Number of pages"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:1997
+#, fuzzy
+msgid "Page names"
+msgstr "_Μέγεθος Σελίδας"
+
+#: bonobo/ggv-postscript-view.c:2001
+#, fuzzy
+msgid "Current page number"
+msgstr "Κεντράρισμα παρούσας σελίδας"
+
+#: bonobo/ggv-postscript-view.c:2005
+#, fuzzy
+msgid "Document width"
+msgstr "Έγγραφο"
+
+#: bonobo/ggv-postscript-view.c:2009
+#, fuzzy
+msgid "Document height"
+msgstr "Έγγραφο"
+
+#: bonobo/ggv-postscript-view.c:2013
+#, fuzzy
+msgid "Document orientation"
+msgstr "Αγνόηση προσανατολισμού από έγγραφο"
+
+#: bonobo/ggv-postscript-view.c:2017
+#, fuzzy
+msgid "Default orientation"
+msgstr "Προσανατολισμός πορτραίτου"
+
+#: bonobo/ggv-postscript-view.c:2021
+#, fuzzy
+msgid "Default size"
+msgstr "Εξ' ορισμού Μεγέθυνση"
+
+#: bonobo/ggv-postscript-view.c:2025
+msgid "Override document orientation"
+msgstr "Αγνόηση προσανατολισμού από έγγραφο"
+
+#: bonobo/ggv-postscript-view.c:2029
+#, fuzzy
+msgid "Override document size"
+msgstr "_Παράκαμψη Μεγέθους Εγγράφου"
+
+#: bonobo/ggv-postscript-view.c:2033
+#, fuzzy
+msgid "Respect EOF comment"
+msgstr "Διατήρηση σχολίων τέλους αρχείου"
+
+#: bonobo/ggv-postscript-view.c:2037
+#, fuzzy
+msgid "Watch displayed file for changes"
+msgstr "Ενημέρωση οθόνης αν αλλάξει το αρχείο."
+
+#: bonobo/ggv-postscript-view.c:2041
+msgid "Antialiasing"
+msgstr "Εξομάλυνση"
+
+#: bonobo/ggv-sidebar.c:309
+#, fuzzy
+msgid "Toggle marked state of all pages"
+msgstr "Μεταβολή όλων των σελίδων"
+
+#: bonobo/ggv-sidebar.c:310
+msgid ""
+"Toggle marked state of all pages: previously marked pages will be unmarked "
+"and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:322
+#, fuzzy
+msgid "Toggle marked state of odd pages"
+msgstr "Μεταβολή περιττών σελίδων"
+
+#: bonobo/ggv-sidebar.c:323
+msgid ""
+"Toggle marked state of odd pages: previously marked odd pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:336
+#, fuzzy
+msgid "Toggle marked state of even pages"
+msgstr "Μεταβολή άρτιων σελίδων"
+
+#: bonobo/ggv-sidebar.c:337
+msgid ""
+"Toggle marked state of even pages: previously marked even pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:350
+msgid "Clear marked state of all pages"
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:351
+msgid "Clear marked state of all pages: all pages will be unmarked."
+msgstr ""
+
+#: ggv.desktop.in.h:1
+msgid "A Ghostscript frontend to visualize PostScript files"
+msgstr "Προεπισκόπηση αρχείων PostScript μέσω του Ghostscript"
+
+#: ggv.desktop.in.h:2
+#, fuzzy
+msgid "GGV PostScript Viewer"
+msgstr "Όψη PostScript GGV"
+
+#: src/ggv-prefs-ui.c:311
+msgid "_Use GNOME defaults"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:312
+msgid "Show _both icons and text"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:313
+msgid "Show only _icons"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:314
+#, fuzzy
+msgid "Show only t_ext"
+msgstr "Εμφάνιση επόμενης σελίδας"
+
+#: src/ggv-prefs-ui.c:378
+msgid "GGV Preferences"
+msgstr "Προτιμήσεις GGV"
+
+#. zoom choice menu
+#: src/ggv-prefs-ui.c:389
+#, fuzzy
+msgid "_Default Zoom:"
+msgstr "Εξ' ορισμού Μεγέθυνση"
+
+#. auto-fit choice menu
+#: src/ggv-prefs-ui.c:424
+msgid "A_uto-fit mode:"
+msgstr ""
+
+#. units choice menu
+#: src/ggv-prefs-ui.c:456
+#, fuzzy
+msgid "_Coordinate units:"
+msgstr "Μονάδες συντεταγμένων"
+
+# The translation for "fallback" sucks completely!
+#. size choice menu
+#: src/ggv-prefs-ui.c:488
+#, fuzzy
+msgid "_Fallback page size:"
+msgstr "Μέγεθος χαρτιού προσφυγής"
+
+#. override media size
+#: src/ggv-prefs-ui.c:519
+#, fuzzy
+msgid "Override _document size"
+msgstr "_Παράκαμψη Μεγέθους Εγγράφου"
+
+#. orientation choice menu
+#: src/ggv-prefs-ui.c:530
+#, fuzzy
+msgid "Fallback _media orientation:"
+msgstr "Προσανατολισμός μέσου προσφυγής"
+
+#. override orientation media
+#: src/ggv-prefs-ui.c:560
+#, fuzzy
+msgid "O_verride document orientation"
+msgstr "Αγνόηση προσανατολισμού από έγγραφο"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:571
+#, fuzzy
+msgid "A_ntialiasing"
+msgstr "Εξομάλυνση"
+
+#. respect EOF
+#: src/ggv-prefs-ui.c:582
+#, fuzzy
+msgid "_Respect EOF comments"
+msgstr "Διατήρηση σχολίων τέλους αρχείου"
+
+#. watch file
+#: src/ggv-prefs-ui.c:593
+#, fuzzy
+msgid "_Watch file"
+msgstr "Παρακολούθηση αρχείου"
+
+#: src/ggv-prefs-ui.c:603
+msgid "Document"
+msgstr "Έγγραφο"
+
+#. show side panel
+#: src/ggv-prefs-ui.c:612
+#, fuzzy
+msgid "_Show side panel"
+msgstr "Εμφάνιση _Πλευρικού Ταμπλώ"
+
+#: src/ggv-prefs-ui.c:622
+msgid "_Put side panel on the right-hand side"
+msgstr ""
+
+#. show menubar
+#: src/ggv-prefs-ui.c:633
+#, fuzzy
+msgid "Show _menubar"
+msgstr "Εμφάνιση _Μενού"
+
+#. show toolbar
+#: src/ggv-prefs-ui.c:643
+#, fuzzy
+msgid "Show _toolbar"
+msgstr "Εμφάνιση _Εργαλειοθήκης"
+
+#. toolbar style
+#: src/ggv-prefs-ui.c:654
+msgid "Toolbar style"
+msgstr ""
+
+#. show statusbar
+#: src/ggv-prefs-ui.c:676
+#, fuzzy
+msgid "Show s_tatusbar"
+msgstr "Εμφάνιση _Εργαλειοθήκης"
+
+#. save geometry
+#: src/ggv-prefs-ui.c:687
+#, fuzzy
+msgid "Save _geometry"
+msgstr "Αποθήκευση γεωμετρίας"
+
+#: src/ggv-prefs-ui.c:697
+msgid "Layout"
+msgstr "Διαμόρφωση"
+
+#. auto jump to beginning of page
+#: src/ggv-prefs-ui.c:707
+#, fuzzy
+msgid "_Jump to beginning of page"
+msgstr "Μετάβαση στην αρχή σελίδας κατά τη χρήση πληκτρολογίου"
+
+#. automatically flip pages
+#: src/ggv-prefs-ui.c:717
+msgid "Automatically _flip pages"
+msgstr ""
+
+#. show previously visible part
+#: src/ggv-prefs-ui.c:728
+msgid "Outline _last visible part when scrolling"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:742
+#, fuzzy
+msgid "Amount of _visible area to scroll"
+msgstr "Μεταβολή του μεγέθους του εγγράφου για να χωρέσει στη σελίδα"
+
+#: src/ggv-prefs-ui.c:759
+msgid "Navigation"
+msgstr ""
+
+#. interpreter
+#: src/ggv-prefs-ui.c:768
+#, fuzzy
+msgid "_Interpreter:"
+msgstr "Διερμηνέας"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:790
+#, fuzzy
+msgid "A_ntialiasing:"
+msgstr "Εξομάλυνση"
+
+#. scan PDF command
+#: src/ggv-prefs-ui.c:812
+msgid "Convert _PDF to PS:"
+msgstr ""
+
+#. unzip command: gzip
+#: src/ggv-prefs-ui.c:834
+#, fuzzy
+msgid "_Gzip:"
+msgstr "Gzip"
+
+#. unzip command: bzip2
+#: src/ggv-prefs-ui.c:856
+#, fuzzy
+msgid "_Bzip2:"
+msgstr "Bzip2"
+
+#: src/ggv-prefs-ui.c:877
+msgid "Ghostscript"
+msgstr "Ghostscript"
+
+#. print command
+#: src/ggv-prefs-ui.c:886
+#, fuzzy
+msgid "_Print command:"
+msgstr "Εντολή εκτύπωσης"
+
+#: src/ggv-prefs-ui.c:906
+msgid "Printing"
+msgstr "Εκτύπωση"
+
+#: src/ggv-ui.xml.h:1
+#, fuzzy
+msgid "About this application"
+msgstr "Ρύθμιση της εφαρμογής"
+
+#: src/ggv-ui.xml.h:2
+msgid "Cancel"
+msgstr ""
+
+#: src/ggv-ui.xml.h:3
+#, fuzzy
+msgid "Close"
+msgstr "_Κλείσιμο"
+
+#: src/ggv-ui.xml.h:4
+msgid "Close this window"
+msgstr "Κλείσιμο παρόντος παραθύρου"
+
+#: src/ggv-ui.xml.h:5
+msgid "E_xit"
+msgstr "Έ_ξοδος"
+
+#: src/ggv-ui.xml.h:6
+msgid "Exit the program"
+msgstr ""
+
+#: src/ggv-ui.xml.h:7
+msgid "Fullscreen mode"
+msgstr ""
+
+#: src/ggv-ui.xml.h:8
+#, fuzzy
+msgid "Help for this application"
+msgstr "Ρύθμιση της εφαρμογής"
+
+#: src/ggv-ui.xml.h:9
+#, fuzzy
+msgid "New _window"
+msgstr "_Νέο Παράθυρο"
+
+#: src/ggv-ui.xml.h:10
+#, fuzzy
+msgid "New window"
+msgstr "_Νέο Παράθυρο"
+
+#: src/ggv-ui.xml.h:11
+msgid "Open"
+msgstr "Άνοιγμα"
+
+#: src/ggv-ui.xml.h:12
+#, fuzzy
+msgid "Open a new PostScript document"
+msgstr "Ανάγνωση εγγράφου Postscript"
+
+#: src/ggv-ui.xml.h:13
+msgid "Open a new window"
+msgstr "Άνοιγμα νέου παραθύρου"
+
+#: src/ggv-ui.xml.h:14
+#, fuzzy
+msgid "Open in new window"
+msgstr "Άνοιγμα νέου παραθύρου"
+
+#: src/ggv-ui.xml.h:15
+#, fuzzy
+msgid "Open in this window"
+msgstr "Κλείσιμο παρόντος παραθύρου"
+
+#: src/ggv-ui.xml.h:16
+msgid "Reload"
+msgstr "Επανάγνωση"
+
+#: src/ggv-ui.xml.h:17
+#, fuzzy
+msgid "Reload current document"
+msgstr "Επανανάγνωση τρέχοντος εγγράφου από το δίσκο"
+
+#: src/ggv-ui.xml.h:18
+#, fuzzy
+msgid "Show Side_bar"
+msgstr "Εμφάνιση _Εργαλειοθήκης"
+
+#: src/ggv-ui.xml.h:19
+msgid "Show _Menus"
+msgstr "Εμφάνιση _Μενού"
+
+#: src/ggv-ui.xml.h:20
+#, fuzzy
+msgid "Show _Statusbar"
+msgstr "Εμφάνιση _Εργαλειοθήκης"
+
+#: src/ggv-ui.xml.h:21
+msgid "Show _Toolbar"
+msgstr "Εμφάνιση _Εργαλειοθήκης"
+
+#: src/ggv-ui.xml.h:22
+#, fuzzy
+msgid "Show/hide the menus"
+msgstr "_Εμφάνιση Μενού"
+
+#: src/ggv-ui.xml.h:23
+#, fuzzy
+msgid "Show/hide the sidebar"
+msgstr "Απενεργοποίηση πλευρικού ταμπλώ"
+
+#: src/ggv-ui.xml.h:24
+msgid "Show/hide the statusbar"
+msgstr ""
+
+#: src/ggv-ui.xml.h:25
+#, fuzzy
+msgid "Show/hide the toolbar"
+msgstr "Εμφάνιση Εργαλειοθήκης"
+
+# Need a better (more precise/descriptive) term for "toggle" ...
+#: src/ggv-ui.xml.h:26
+#, fuzzy
+msgid "Toggle fullscreen mode"
+msgstr "Μεταβολή _τρέχουσας σελίδας"
+
+#: src/ggv-ui.xml.h:27
+msgid "_About..."
+msgstr ""
+
+#: src/ggv-ui.xml.h:28
+msgid "_Close"
+msgstr "_Κλείσιμο"
+
+#: src/ggv-ui.xml.h:29
+#, fuzzy
+msgid "_Contents"
+msgstr "Μονάδες συντεταγμένων"
+
+#: src/ggv-ui.xml.h:30
+#, fuzzy
+msgid "_Edit"
+msgstr "Έ_ξοδος"
+
+#: src/ggv-ui.xml.h:31
+#, fuzzy
+msgid "_File"
+msgstr "_Παρακολούθηση αρχείου"
+
+#: src/ggv-ui.xml.h:32
+msgid "_Help"
+msgstr ""
+
+#: src/ggv-ui.xml.h:33
+#, fuzzy
+msgid "_Layout"
+msgstr "Διαμόρφωση"
+
+#: src/ggv-ui.xml.h:34
+#, fuzzy
+msgid "_Open"
+msgstr "Άνοιγμα"
+
+#: src/ggv-ui.xml.h:35
+msgid "_Reload"
+msgstr "Επα_νανάγνωση"
+
+#: src/ggv-window.c:332 src/ggv-window.c:877
+msgid "GGV: no document loaded"
+msgstr ""
+
+#: src/ggv-window.c:373
+#, fuzzy
+msgid "Select a PostScript document"
+msgstr "Ανάγνωση εγγράφου Postscript"
+
+#: src/ggv-window.c:382
+#, fuzzy, c-format
+msgid ""
+"Unable to load file:\n"
+"%s"
+msgstr "Ανάγνωση του %s αδύνατη."
+
+#. Translator Credits
+#: src/ggv-window.c:568
+msgid "translator_credits"
+msgstr ""
+
+#: src/ggv-window.c:578
+msgid "Gnome Ghostview"
+msgstr "Gnome Ghostview"
+
+#: src/ggv-window.c:581
+#, fuzzy
+msgid "The GNOME PostScript document previewer"
+msgstr "Έλεγχος Εγγράφου PostScript GGV"
+
+#: src/ggv-window.c:1046
+msgid "GGV: "
+msgstr ""
+
+# Not sure how the terms "portrait" and "landscape" are usually
+# translated; if anyone knows what the term in the Greek version
+# of MSWindoze is and if it is better (or equally good), maybe we
+# would want to use that for consistency and for the sake of newbies?
+#: src/ggvutils.c:42
+msgid "Portrait"
+msgstr "Πορτραίτο"
+
+#: src/ggvutils.c:43
+msgid "Landscape"
+msgstr "Τοπίο"
+
+#: src/ggvutils.c:44
+msgid "Upside Down"
+msgstr "Ανάποδα"
+
+#: src/ggvutils.c:45
+msgid "Seascape"
+msgstr "Tοπίο"
+
+#: src/ggvutils.c:53
+msgid "inch"
+msgstr "ίντσα"
+
+#: src/ggvutils.c:54
+msgid "mm"
+msgstr "mm"
+
+#: src/ggvutils.c:55
+msgid "cm"
+msgstr "cm"
+
+#: src/ggvutils.c:56
+msgid "point"
+msgstr "στιγμή"
+
+#: src/ggvutils.c:79
+#, fuzzy
+msgid "None"
+msgstr "Όχι"
+
+#: src/ggvutils.c:79
+msgid "Fit to page width"
+msgstr ""
+
+#: src/ggvutils.c:79
+msgid "Fit to page size"
+msgstr ""
+
+#: src/gtkgs.c:358
+msgid "No document loaded."
+msgstr ""
+
+#: src/gtkgs.c:491
+#, fuzzy
+msgid "File is not a valid PostScript document."
+msgstr "Ανάγνωση εγγράφου Postscript"
+
+#: src/gtkgs.c:1060
+msgid "Broken pipe."
+msgstr "Διακοπείσα σωλήνωση."
+
+#: src/gtkgs.c:1249
+#, fuzzy
+msgid "Interpreter failed."
+msgstr "Διερμηνέας"
+
+#. report error
+#: src/gtkgs.c:1352
+#, c-format
+msgid "Error while decompressing file %s:\n"
+msgstr "Σφάλμα κατά την αποσυμπίεση του αρχείου %s:\n"
+
+#: src/gtkgs.c:1424
+#, fuzzy, c-format
+msgid "Error while converting pdf file %s:\n"
+msgstr "Σφάλμα κατά την ανάγνωση του αρχείου PDF %s:\n"
+
+#: src/gtkgs.c:1754
+#, fuzzy, c-format
+msgid "Cannot open file %s.\n"
+msgstr "Άνοιγμα αρχείου %s αδύνατον\n"
+
+#: src/gtkgs.c:1756
+#, fuzzy
+msgid "File is not readable."
+msgstr "Το %s δεν είναι κανονικό αρχείο."
+
+#: src/gtkgs.c:1777
+#, c-format
+msgid "Error while scanning file %s\n"
+msgstr "Σφάλμα κατά την ανάγνωση του αρχείου %s\n"
+
+#: src/gtkgs.c:1780
+#, fuzzy
+msgid "The file is not a PostScript document."
+msgstr "Ανάγνωση εγγράφου Postscript"
+
+#: src/gtkgs.c:1820
+#, fuzzy
+msgid "Document loaded."
+msgstr "Έγγραφο"
+
+#: src/main.c:57
+#, c-format
+msgid "Invalid geometry string \"%s\"\n"
+msgstr ""
+
+#: src/main.c:175
+#, fuzzy
+msgid "Specify the number of empty windows to open."
+msgstr "Καθορισμός γεωμετρίας κυρίως παραθύρου"
+
+#: src/main.c:176
+msgid "Number of empty windows"
+msgstr ""
+
+#: src/main.c:178
+msgid "X geometry specification (see \"X\" man page)."
+msgstr ""
+
+#: src/main.c:179
+msgid "GEOMETRY"
+msgstr "ΓΕΩΜΕΤΡΙΑ"
+
+#: src/main.c:225
+#, fuzzy
+msgid "Could not initialize Bonobo!\n"
+msgstr "Αδύνατη η αρχικοποίηση του Bonobo"
+
+#~ msgid "At end"
+#~ msgstr "Στο τέλος"
+
+#~ msgid "Unspecified"
+#~ msgstr "Μη ορισμένο"
+
+#~ msgid "Unknown"
+#~ msgstr "Άγνωστο"
+
+#~ msgid "Encapsulated Postscript"
+#~ msgstr "Ενσωματωμένο PostScript"
+
+#~ msgid "Structured Postscript"
+#~ msgstr "Δομημένο PostScript"
+
+#~ msgid "Unstructured Postscript"
+#~ msgstr "Αδόμητο PostScript"
+
+#~ msgid ""
+#~ "Filename: %s %s. Magnification %3d%%. Document Orientation: %s. Override "
+#~ "Media: %s"
+#~ msgstr ""
+#~ "Όνομα αρχείου: %s %s. Μεγέθυνση %3d%%. Προσανατολισμός Εγγράφου: %s. "
+#~ "Παράκαμψη Μέσου: %s"
+
+#~ msgid "Yes"
+#~ msgstr "Ναι"
+
+#~ msgid "gs warnings for %s"
+#~ msgstr "Προειδοποιήσεις από gs για το %s"
+
+#~ msgid "Opening %s..."
+#~ msgstr "Άνοιγμα του %s..."
+
+#~ msgid "Successfully loaded %s."
+#~ msgstr "Ανάγνωση του %s επιτυχής."
+
+#~ msgid "Successfully saved marked pages to file %s."
+#~ msgstr "Αποθήκευση σημαδεμένων σελίδων στο αρχείο %s επιτυχής."
+
+#~ msgid "Unable to create %s."
+#~ msgstr "Δημιουργία του %s ανεπιτυχής."
+
+#~ msgid "_Next Page"
+#~ msgstr "Επόμε_νη Σελίδα"
+
+#~ msgid "_Previous Page"
+#~ msgstr "_Προηγούμενη Σελίδα"
+
+#~ msgid "_Recenter Page"
+#~ msgstr "Κεντ_ράρισμα Σελίδας"
+
+#~ msgid "Toggle _all pages"
+#~ msgstr "Μεταβολή _όλων των σελίδων"
+
+#~ msgid "Toggle o_dd pages"
+#~ msgstr "Μεταβολή _περιττών σελίδων"
+
+#~ msgid "Toggle _even pages"
+#~ msgstr "Μεταβολή _άρτιων σελίδων"
+
+#~ msgid "_Unmark all pages"
+#~ msgstr "_Αποσημάδευση όλων των σελίδων"
+
+#~ msgid "Landscape orientation"
+#~ msgstr "Προσανατολισμός τοπίου"
+
+#~ msgid "Upside down orientation"
+#~ msgstr "Ανάποδος προσανατολισμός"
+
+#~ msgid "Seascape orientation"
+#~ msgstr "Ανάποδος προσανατολισμός τοπίου"
+
+#~ msgid "Override the orientation of the document."
+#~ msgstr "Παράκαμψη του προσανατολισμού του αρχείου."
+
+#~ msgid "Override the size of page to use."
+#~ msgstr "Παράκαμψη του μεγέθους του χαρτιού που θα χρησιμοποιηθεί."
+
+#~ msgid "Zoom to _Fit"
+#~ msgstr "_Ταίριασμα στη Σελίδα"
+
+#~ msgid "Toggle menu visibility"
+#~ msgstr "Μεταβολή ορατότητας μενού"
+
+#~ msgid "Toggle side panel visibility"
+#~ msgstr "Μεταβολή ορατότητας πλευρικού ταμπλώ"
+
+#~ msgid "Toggle toolbar visibility"
+#~ msgstr "Μεταβολή ορατότητας εργαλειοθήκης"
+
+#~ msgid "_Open..."
+#~ msgstr "_Άνοιγμα..."
+
+#~ msgid "_Print"
+#~ msgstr "Εκτύ_πωση"
+
+#~ msgid "Prin_t marked pages"
+#~ msgstr "Εκ_τύπωση σημαδεμένων σελίδων"
+
+#~ msgid "Exit GGv"
+#~ msgstr "Τερματισμός του GGv"
+
+#~ msgid "Show previous page"
+#~ msgstr "Εμφάνιση προηγούμενης σελίδας"
+
+#~ msgid "Toggle _odd pages"
+#~ msgstr "Μεταβολή _περιττών σελίδων"
+
+#~ msgid "Antia_liasing"
+#~ msgstr "Εξο_μάλυνση"
+
+#~ msgid "Toggle antialiasing"
+#~ msgstr "Απ/ενεργοποίση εξομάλυνσης"
+
+#~ msgid "New"
+#~ msgstr "Νέο"
+
+#~ msgid "Create a new window"
+#~ msgstr "Δημιουργία νέου παραθύρου"
+
+#~ msgid "Zoom out"
+#~ msgstr "Σμίκρυνση"
+
+#~ msgid "Zoom in"
+#~ msgstr "Μεγένθυση"
+
+#~ msgid "Print marked"
+#~ msgstr "Εκτύπωση σημαδεμένων σελίδων"
+
+#~ msgid "Save marked"
+#~ msgstr "Αποθήκευση σημαδεμένων σελίδων"
+
+#~ msgid "Preferences"
+#~ msgstr "Προτιμήσεις"
+
+#~ msgid "Unmark all pages"
+#~ msgstr "Αποσημάδευση όλων των σελίδων"
+
+#~ msgid "Override media size"
+#~ msgstr "Αγνόηση μέγεθος μέσου"
+
+# Using standard term for "default" for consistency, but it is
+# not particularly suitable in the expression...
+#~ msgid "Show side panel by default"
+#~ msgstr "Εξ' ορισμού εμφάνιση πλευρικού ταμπλώ"
+
+#~ msgid "Show menubar by default"
+#~ msgstr "Εξ' ορισμού εμφάνιση γραμμής μενού"
+
+#~ msgid "Show toolbar by default"
+#~ msgstr "Εξ' ορισμού εμφάνιση εργαλειοθήκης"
+
+#~ msgid "Scan PDF"
+#~ msgstr "Ανίχνευση PDF"
+
+#~ msgid "Do not use sidebar and toolbar (deprecated)"
+#~ msgstr ""
+#~ "Να μην γίνει χρήση πλάγιας μπάρας και εργαλειοθήκης (μη συνιστώμενο)"
+
+#~ msgid "SPARTAN"
+#~ msgstr "ΛΙΤΟ"
+
+#~ msgid "NOSIDEBAR"
+#~ msgstr "ΧΩΡΙΣΠΛΑΓΙΑΜΠΑΡΑ"
+
+#~ msgid "Do not use a menu bar"
+#~ msgstr "Απενεργοποίηση γραμμής μενού"
+
+#~ msgid "NOMENUBAR"
+#~ msgstr "ΧΩΡΙΣΜΕΝΟΥ"
+
+#~ msgid "Do not use a tool bar"
+#~ msgstr "Απενεργοποίηση εργαλειοθήκης"
+
+#~ msgid "NOTOOLBAR"
+#~ msgstr "ΧΩΡΙΣΕΡΓΑΛΕΙΟΘΗΚΗ"
+
+#~ msgid "Use the whole screen for the main window"
+#~ msgstr "Χρήση ολόκληρης οθόνης για το κυρίως παράθυρο"
+
+#~ msgid "FULLSCREEN"
+#~ msgstr "ΠΛΗΡΗΣΟΘΟΝΗ"
+
+#~ msgid "%s does not exist."
+#~ msgstr "Το %s δεν υπάρχει."
+
+#~ msgid ""
+#~ "PostScript(TM) document viewer.\n"
+#~ "Based on Tim Theisen's excellent Ghostview application."
+#~ msgstr ""
+#~ "Πρόγραμμα απεικόνισης εγγράφων PostScript(TM).\n"
+#~ "Βασισμένο στην άριστη εφαρμογή Ghostscript του  Tim Theisen's."
+
+#~ msgid "GGv: Open File"
+#~ msgstr "GGv: Άνοιγμα Αρχείου"
+
+#~ msgid "There are no marked pages."
+#~ msgstr "Δεν υπάρχουν σημαδεμένες σελίδες."
+
+#~ msgid "GGv: Save marked pages"
+#~ msgstr "GGv: Αποθήκευση σημαδεμένων σελίδων"
+
+#~ msgid "Couldn't find the GGv manual!"
+#~ msgstr "Το εγχειρίδιο του GGv δε βρέθηκε!"
+
+#~ msgid "GGV Embeddable PostScript Document"
+#~ msgstr "Προσαρτήσιμο Έγγραφο Postscript GGV"
+
+#~ msgid "GNOME Ghostview"
+#~ msgstr "Προεπισκόπηση αρχείων PostScript"
+
+#~ msgid "Next Page"
+#~ msgstr "Επόμενη Σελίδα"
+
+#~ msgid "Previous Page"
+#~ msgstr "Προηγ. Σελίδα"
+
+#~ msgid "Recenter Page"
+#~ msgstr "Κεντράρισμα Σελίδας"
+
+#~ msgid "S_how Side Panel"
+#~ msgstr "Ε_μφάνιση Πλευρικού Ταμπλώ"
+
+#~ msgid "_Antialiasing"
+#~ msgstr "Ε_ξομάλυνση"

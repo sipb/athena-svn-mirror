@@ -1,0 +1,993 @@
+# GGV Bahasa Melayu (ms)
+# Jika takut risiko, Jangan bicara tentang Perjuangan
+# Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ggv\n"
+"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"PO-Revision-Date: 2002-12-19 02:16+0800\n"
+"Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
+"Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/GNOME_GGV.server.in.in.h:1
+msgid "GGV PostScript Document Control"
+msgstr "Kawalan Dokumen PostScript GGV"
+
+#: bonobo/GNOME_GGV.server.in.in.h:2
+msgid "GGV PostScript View"
+msgstr "Paparan PostScript GGV"
+
+#: bonobo/GNOME_GGV.server.in.in.h:3
+msgid "GGV PostScript viewer factory"
+msgstr "Kilang pelihat PostScript GGV"
+
+#: bonobo/ggv-control-ui.xml.h:2
+#, no-c-format
+msgid "15_0%"
+msgstr "15_0%"
+
+#: bonobo/ggv-control-ui.xml.h:3
+msgid "1:1"
+msgstr "1:1"
+
+#: bonobo/ggv-control-ui.xml.h:5
+#, no-c-format
+msgid "25%"
+msgstr "25%"
+
+#: bonobo/ggv-control-ui.xml.h:6
+msgid "Change zoom factor to default"
+msgstr "Tukar faktor zoom ke default"
+
+#: bonobo/ggv-control-ui.xml.h:7
+msgid "Decrease zoom factor"
+msgstr "Kurangkan faktor zoom"
+
+#: bonobo/ggv-control-ui.xml.h:8
+msgid "Fit"
+msgstr "Muat"
+
+#: bonobo/ggv-control-ui.xml.h:9
+msgid "Fit Width"
+msgstr "Lebar Muat"
+
+#: bonobo/ggv-control-ui.xml.h:10
+msgid "Fit _Width"
+msgstr "_Lebar Muat"
+
+#: bonobo/ggv-control-ui.xml.h:11
+msgid "Fit to Page _Size"
+msgstr "Muat _Saiz Halaman"
+
+#: bonobo/ggv-control-ui.xml.h:12
+msgid "Fit to Page _Width"
+msgstr "Muat kepada _Lebar Halaman"
+
+#: bonobo/ggv-control-ui.xml.h:13
+msgid "In"
+msgstr "Masuk"
+
+#: bonobo/ggv-control-ui.xml.h:14
+msgid "Increase zoom factor"
+msgstr "TInggikan faktor zoom"
+
+#: bonobo/ggv-control-ui.xml.h:15
+msgid "Other"
+msgstr "Lain-lain"
+
+#: bonobo/ggv-control-ui.xml.h:16
+msgid "Out"
+msgstr "Keluar"
+
+#: bonobo/ggv-control-ui.xml.h:17
+msgid "Zoom _In"
+msgstr "Zoom _Masuk"
+
+#: bonobo/ggv-control-ui.xml.h:18
+msgid "Zoom _Out"
+msgstr "Zoom _Keluar"
+
+#: bonobo/ggv-control-ui.xml.h:19
+msgid "Zoom the page to be as wide as the window"
+msgstr "Zoom halaman supaya sama lebar dengan tetingkap"
+
+#: bonobo/ggv-control-ui.xml.h:20
+msgid "Zoom the page to fit in the window"
+msgstr "Zoom halaman supaya muat pada tetingkap"
+
+#: bonobo/ggv-control-ui.xml.h:22
+#, no-c-format
+msgid "_100%"
+msgstr "_100%"
+
+#: bonobo/ggv-control-ui.xml.h:24
+#, no-c-format
+msgid "_200%"
+msgstr "_200%"
+
+#: bonobo/ggv-control-ui.xml.h:26
+#, no-c-format
+msgid "_400%"
+msgstr "_400%"
+
+#: bonobo/ggv-control-ui.xml.h:28
+#, no-c-format
+msgid "_50%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:30
+#, no-c-format
+msgid "_75%"
+msgstr "_75%"
+
+#: bonobo/ggv-control-ui.xml.h:31
+msgid "_Auto-fit"
+msgstr "_Auto-muat"
+
+#: bonobo/ggv-control-ui.xml.h:32
+msgid "_Default Zoom"
+msgstr "Zoom _Default"
+
+#: bonobo/ggv-control-ui.xml.h:33
+msgid "_Fit Window"
+msgstr "_Muat Tetingkap"
+
+#: bonobo/ggv-control-ui.xml.h:34
+msgid "_No Auto-fit"
+msgstr "_Tiada Auto-muat"
+
+#: bonobo/ggv-control-ui.xml.h:35
+msgid "_Zoom"
+msgstr "_Zoom"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:1
+msgid "10x14"
+msgstr "10x14"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:2
+msgid "A0"
+msgstr "A0"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:3
+msgid "A1"
+msgstr "A1"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:4
+msgid "A2"
+msgstr "A2"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:5
+msgid "A3"
+msgstr "A3"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:6
+msgid "A4"
+msgstr "A4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:7
+msgid "A5"
+msgstr "A5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:8
+msgid "B4"
+msgstr "B4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:9
+msgid "B5"
+msgstr "B5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:10
+msgid "BBox"
+msgstr "BBox"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:11
+msgid "Executive"
+msgstr "Eksekutif"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:12
+msgid "First"
+msgstr "Pertama"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:13
+msgid "Folio"
+msgstr "Folio"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:14
+msgid "GGV _Preferences"
+msgstr "Ke_utamaan GGV"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:15
+msgid "Go to first page"
+msgstr "Pergi ke halaman pertama"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:16
+msgid "Go to last page"
+msgstr "Pergi ke halaman terakhir"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:17
+msgid "Go to next page"
+msgstr "Ke halaman seterusnya"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:18
+msgid "Go to previous page"
+msgstr "Ke halaman terdahulu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:19
+msgid "Last"
+msgstr "Akhir"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:20
+msgid "Ledger"
+msgstr "Lejer"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:21
+msgid "Legal"
+msgstr "Perundangan"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:22
+msgid "Letter"
+msgstr "Letter"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:23
+msgid "Next"
+msgstr "Seterusnya"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:24
+msgid "Open the preferences dialog"
+msgstr "Buka dialog keutamaan"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:25
+msgid "Prev"
+msgstr "Terdahulu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:26
+msgid "Print marked pages"
+msgstr "Cetak halaman ditanda"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:27
+msgid "Print the whole document"
+msgstr "Cetak seluruh dokumen"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:28
+msgid "Quarto"
+msgstr "Quarto"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:29
+msgid "Save marked pages to a file"
+msgstr "Simpan halaman ditanda ke satu fail"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:30
+msgid "Statement"
+msgstr "Kenyataan"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:31
+msgid "Tabloid"
+msgstr "Tabloid"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:32
+msgid "_Document Orientation"
+msgstr "Orientasi _Dokumen"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:33
+msgid "_Document Size"
+msgstr "Saiz _Dokumen"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:34
+msgid "_First page"
+msgstr "Halaman _Pertama"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:35
+msgid "_Landscape"
+msgstr "_Lanskap"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:36
+msgid "_Last page"
+msgstr "Halaman _Terakhir"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:37
+msgid "_Next page"
+msgstr "Halaman _seterusnya"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:38
+msgid "_Orientation"
+msgstr "_Orientasi"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:39
+msgid "_Portrait"
+msgstr "_Potret"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:40
+msgid "_Previous page"
+msgstr "Halaman _terdahulu"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:41
+msgid "_Print document"
+msgstr "_Cetak dokumen"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:42
+msgid "_Print marked pages"
+msgstr "_Cetak halaman ditanda"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:43
+msgid "_Save marked pages"
+msgstr "Simpan halaman ditanda"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:44
+msgid "_Seascape"
+msgstr "_Seascape"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:45
+msgid "_Size"
+msgstr "_Saiz"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:46
+msgid "_Upside down"
+msgstr "_Tergonggeng"
+
+# ui/galeon.glade.h:134
+#: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
+msgid "_View"
+msgstr "_Lihat"
+
+#: bonobo/ggv-postscript-view.c:746
+#, c-format
+msgid ""
+"Unable to execute print command:\n"
+"%s"
+msgstr ""
+"Gagal untuk melaksanakan arahan cetakan:\n"
+".%s"
+
+#: bonobo/ggv-postscript-view.c:800
+msgid ""
+"No pages have been marked.\n"
+"Do you want to save the whole document?"
+msgstr ""
+"Tiada halaman yang ditanda.\n"
+"Adakah anda ingin menyimpan keseluruh dokumen?"
+
+#: bonobo/ggv-postscript-view.c:820
+msgid "Select a file to save pages as"
+msgstr "Pilih fail untuk menyimpan halaman"
+
+#: bonobo/ggv-postscript-view.c:832
+msgid ""
+"A file with this name already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"Fail dengan nama ini sudah tersedia ada.\n"
+"Adakah anda ingin menindihnya?"
+
+#: bonobo/ggv-postscript-view.c:871
+msgid ""
+"No pages have been marked.\n"
+"Do you want to print the whole document?"
+msgstr ""
+"Tiada halaman yang ditanda.\n"
+"Adakah anda ingin menyimpan keseluruh dokumen?"
+
+#: bonobo/ggv-postscript-view.c:1754
+msgid "Display"
+msgstr "Papar"
+
+#: bonobo/ggv-postscript-view.c:1951
+msgid "GhostScript output"
+msgstr "Output GhostScript"
+
+#: bonobo/ggv-postscript-view.c:1985
+msgid "Document title"
+msgstr "Tajuk dokumen"
+
+#: bonobo/ggv-postscript-view.c:1989
+msgid "GGV control status"
+msgstr "Status kawalan GGV"
+
+#: bonobo/ggv-postscript-view.c:1993
+msgid "Number of pages"
+msgstr "Bilangan halaman"
+
+#: bonobo/ggv-postscript-view.c:1997
+msgid "Page names"
+msgstr "Nama halaman"
+
+#: bonobo/ggv-postscript-view.c:2001
+msgid "Current page number"
+msgstr "Nombor halaman semasa"
+
+#: bonobo/ggv-postscript-view.c:2005
+msgid "Document width"
+msgstr "Lebar dokumen"
+
+#: bonobo/ggv-postscript-view.c:2009
+msgid "Document height"
+msgstr "Tinggi dokumen"
+
+#: bonobo/ggv-postscript-view.c:2013
+msgid "Document orientation"
+msgstr "Orientasi dokumen"
+
+#: bonobo/ggv-postscript-view.c:2017
+msgid "Default orientation"
+msgstr "Orientasi default"
+
+#: bonobo/ggv-postscript-view.c:2021
+msgid "Default size"
+msgstr "Saiz default"
+
+#: bonobo/ggv-postscript-view.c:2025
+msgid "Override document orientation"
+msgstr "Tindih orientasi dokumen"
+
+#: bonobo/ggv-postscript-view.c:2029
+msgid "Override document size"
+msgstr "Tindih saiz dokumen"
+
+#: bonobo/ggv-postscript-view.c:2033
+msgid "Respect EOF comment"
+msgstr "Hormat komen EOF"
+
+#: bonobo/ggv-postscript-view.c:2037
+msgid "Watch displayed file for changes"
+msgstr "Perhati perubahan fail dipapar"
+
+#: bonobo/ggv-postscript-view.c:2041
+msgid "Antialiasing"
+msgstr "Anti Alias"
+
+#: bonobo/ggv-sidebar.c:309
+msgid "Toggle marked state of all pages"
+msgstr "Togol keadaan ditanda bagi semua halaman"
+
+#: bonobo/ggv-sidebar.c:310
+msgid ""
+"Toggle marked state of all pages: previously marked pages will be unmarked "
+"and unmarked ones will become marked."
+msgstr ""
+"Togol keadaan ditanda bagi semua halaman: halaman ditanda sebelum ini akan "
+"dibuangtanda dan yang akan tak bertanda menjadi ditanda"
+
+#: bonobo/ggv-sidebar.c:322
+msgid "Toggle marked state of odd pages"
+msgstr "Togol keadaan ditanda bagi halaman ganjil"
+
+#: bonobo/ggv-sidebar.c:323
+msgid ""
+"Toggle marked state of odd pages: previously marked odd pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+"Togol keadaan ditanda bagi halaman ganjil: halaman ditanda ganjil sebelum "
+"ini akan dibuangtanda dan yang akan tak bertanda menjadi ditanda"
+
+#: bonobo/ggv-sidebar.c:336
+msgid "Toggle marked state of even pages"
+msgstr "Togol keadaan ditanda bagi halaman genap"
+
+#: bonobo/ggv-sidebar.c:337
+msgid ""
+"Toggle marked state of even pages: previously marked even pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+"Togol keadaan ditanda bagi halaman genap: halaman ditanda genap sebelum ini "
+"akan dibuangtanda dan yang akan tak bertanda menjadi ditanda"
+
+#: bonobo/ggv-sidebar.c:350
+msgid "Clear marked state of all pages"
+msgstr "Buang keadaan ditanda bagi semua halaman"
+
+#: bonobo/ggv-sidebar.c:351
+msgid "Clear marked state of all pages: all pages will be unmarked."
+msgstr ""
+"Kosongkan  keadaan ditanda bagi semua halaman: Semua ini akan akan "
+"dibuangtanda."
+
+#: ggv.desktop.in.h:1
+msgid "A Ghostscript frontend to visualize PostScript files"
+msgstr "Antaramuka depan  Ghostscript untuk melihat fail PostScript"
+
+#: ggv.desktop.in.h:2
+msgid "GGV PostScript Viewer"
+msgstr "Pelihat PostScript GGV"
+
+#: src/ggv-prefs-ui.c:311
+#, fuzzy
+msgid "_Use GNOME defaults"
+msgstr "Guna default GNOME"
+
+#: src/ggv-prefs-ui.c:312
+#, fuzzy
+msgid "Show _both icons and text"
+msgstr "Papar kedua-dua ikon dan teks"
+
+#: src/ggv-prefs-ui.c:313
+#, fuzzy
+msgid "Show only _icons"
+msgstr "Papar hanya ikon"
+
+#: src/ggv-prefs-ui.c:314
+#, fuzzy
+msgid "Show only t_ext"
+msgstr "Papar hanya teks"
+
+#: src/ggv-prefs-ui.c:378
+msgid "GGV Preferences"
+msgstr "Keutamaan GGV"
+
+#. zoom choice menu
+#: src/ggv-prefs-ui.c:389
+#, fuzzy
+msgid "_Default Zoom:"
+msgstr "Zoom Default:"
+
+#. auto-fit choice menu
+#: src/ggv-prefs-ui.c:424
+#, fuzzy
+msgid "A_uto-fit mode:"
+msgstr "Mod Auto-muat:"
+
+#. units choice menu
+#: src/ggv-prefs-ui.c:456
+#, fuzzy
+msgid "_Coordinate units:"
+msgstr "Unit kordinat:"
+
+#. size choice menu
+#: src/ggv-prefs-ui.c:488
+#, fuzzy
+msgid "_Fallback page size:"
+msgstr "Muat saiz halaman"
+
+#. override media size
+#: src/ggv-prefs-ui.c:519
+#, fuzzy
+msgid "Override _document size"
+msgstr "Tindih saiz dokumen"
+
+#. orientation choice menu
+#: src/ggv-prefs-ui.c:530
+#, fuzzy
+msgid "Fallback _media orientation:"
+msgstr "Orientasi dokumen"
+
+#. override orientation media
+#: src/ggv-prefs-ui.c:560
+#, fuzzy
+msgid "O_verride document orientation"
+msgstr "Tindih orientasi dokumen"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:571
+#, fuzzy
+msgid "A_ntialiasing"
+msgstr "Anti Alias"
+
+#. respect EOF
+#: src/ggv-prefs-ui.c:582
+#, fuzzy
+msgid "_Respect EOF comments"
+msgstr "Hormat komen EOF"
+
+#. watch file
+#: src/ggv-prefs-ui.c:593
+#, fuzzy
+msgid "_Watch file"
+msgstr "Perhati fail"
+
+#: src/ggv-prefs-ui.c:603
+msgid "Document"
+msgstr "Dokumen"
+
+#. show side panel
+#: src/ggv-prefs-ui.c:612
+#, fuzzy
+msgid "_Show side panel"
+msgstr "Papar panel bar tepi"
+
+#: src/ggv-prefs-ui.c:622
+#, fuzzy
+msgid "_Put side panel on the right-hand side"
+msgstr "Letak panel tepi pada Nautlus di sebelah kanan"
+
+#. show menubar
+#: src/ggv-prefs-ui.c:633
+#, fuzzy
+msgid "Show _menubar"
+msgstr "Papar bar menu"
+
+#. show toolbar
+#: src/ggv-prefs-ui.c:643
+#, fuzzy
+msgid "Show _toolbar"
+msgstr "Papar Toolbar"
+
+#. toolbar style
+#: src/ggv-prefs-ui.c:654
+msgid "Toolbar style"
+msgstr "Gaya Toolbar"
+
+#. show statusbar
+#: src/ggv-prefs-ui.c:676
+#, fuzzy
+msgid "Show s_tatusbar"
+msgstr "Papar bar _status"
+
+#. save geometry
+#: src/ggv-prefs-ui.c:687
+#, fuzzy
+msgid "Save _geometry"
+msgstr "Simpan geometri"
+
+#: src/ggv-prefs-ui.c:697
+msgid "Layout"
+msgstr "Susunatur"
+
+#. auto jump to beginning of page
+#: src/ggv-prefs-ui.c:707
+#, fuzzy
+msgid "_Jump to beginning of page"
+msgstr "Lompat ke permulaan halaman"
+
+#. automatically flip pages
+#: src/ggv-prefs-ui.c:717
+msgid "Automatically _flip pages"
+msgstr ""
+
+#. show previously visible part
+#: src/ggv-prefs-ui.c:728
+#, fuzzy
+msgid "Outline _last visible part when scrolling"
+msgstr "Jumlah kawasan tampak untuk diskrol"
+
+#: src/ggv-prefs-ui.c:742
+#, fuzzy
+msgid "Amount of _visible area to scroll"
+msgstr "Jumlah kawasan tampak untuk diskrol"
+
+#: src/ggv-prefs-ui.c:759
+msgid "Navigation"
+msgstr "Navigasi"
+
+#. interpreter
+#: src/ggv-prefs-ui.c:768
+#, fuzzy
+msgid "_Interpreter:"
+msgstr "Pentafsir:"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:790
+#, fuzzy
+msgid "A_ntialiasing:"
+msgstr "Anti Alias:"
+
+#. scan PDF command
+#: src/ggv-prefs-ui.c:812
+#, fuzzy
+msgid "Convert _PDF to PS:"
+msgstr "Tukar PDF ke PS:"
+
+#. unzip command: gzip
+#: src/ggv-prefs-ui.c:834
+#, fuzzy
+msgid "_Gzip:"
+msgstr "Gzip:"
+
+#. unzip command: bzip2
+#: src/ggv-prefs-ui.c:856
+#, fuzzy
+msgid "_Bzip2:"
+msgstr "Bzip2:"
+
+#: src/ggv-prefs-ui.c:877
+msgid "Ghostscript"
+msgstr "Ghostscript"
+
+#. print command
+#: src/ggv-prefs-ui.c:886
+#, fuzzy
+msgid "_Print command:"
+msgstr "Arahan cetakan:"
+
+#: src/ggv-prefs-ui.c:906
+msgid "Printing"
+msgstr "Cetak"
+
+#: src/ggv-ui.xml.h:1
+msgid "About this application"
+msgstr "Perihal aplikasi ini"
+
+#: src/ggv-ui.xml.h:2
+msgid "Cancel"
+msgstr "Batal"
+
+#: src/ggv-ui.xml.h:3
+msgid "Close"
+msgstr "Tutup"
+
+#: src/ggv-ui.xml.h:4
+msgid "Close this window"
+msgstr "Tutup tetingkap ini"
+
+#: src/ggv-ui.xml.h:5
+msgid "E_xit"
+msgstr "Ke_luar"
+
+#: src/ggv-ui.xml.h:6
+msgid "Exit the program"
+msgstr "Keluar Perisian"
+
+#: src/ggv-ui.xml.h:7
+msgid "Fullscreen mode"
+msgstr "Mod skrinpenuh"
+
+#: src/ggv-ui.xml.h:8
+msgid "Help for this application"
+msgstr "Bantuan bagi aplikasi ini"
+
+#: src/ggv-ui.xml.h:9
+msgid "New _window"
+msgstr "_Tetingkap baru"
+
+#: src/ggv-ui.xml.h:10
+msgid "New window"
+msgstr "Tetingkap Baru"
+
+#: src/ggv-ui.xml.h:11
+msgid "Open"
+msgstr "Buka"
+
+#: src/ggv-ui.xml.h:12
+msgid "Open a new PostScript document"
+msgstr "Buka dokumen PostScript baru"
+
+#: src/ggv-ui.xml.h:13
+msgid "Open a new window"
+msgstr "Buka tetingkap baru"
+
+#: src/ggv-ui.xml.h:14
+msgid "Open in new window"
+msgstr "Buka di tetingkap baru"
+
+#: src/ggv-ui.xml.h:15
+msgid "Open in this window"
+msgstr "Buka di tetingkap ini"
+
+#: src/ggv-ui.xml.h:16
+msgid "Reload"
+msgstr "Ulangmuat"
+
+#: src/ggv-ui.xml.h:17
+msgid "Reload current document"
+msgstr "Ulangmuat dokumen semasa"
+
+#: src/ggv-ui.xml.h:18
+msgid "Show Side_bar"
+msgstr "Papar _Bar Tepi"
+
+#: src/ggv-ui.xml.h:19
+msgid "Show _Menus"
+msgstr "Papar _Menu"
+
+#: src/ggv-ui.xml.h:20
+msgid "Show _Statusbar"
+msgstr "Papar Bar _Status"
+
+#: src/ggv-ui.xml.h:21
+msgid "Show _Toolbar"
+msgstr "Papar _Toolbar"
+
+#: src/ggv-ui.xml.h:22
+msgid "Show/hide the menus"
+msgstr "Papar/sorok menu"
+
+#: src/ggv-ui.xml.h:23
+msgid "Show/hide the sidebar"
+msgstr "Papar/sorok bar tepi"
+
+#: src/ggv-ui.xml.h:24
+msgid "Show/hide the statusbar"
+msgstr "Papar/sorok bar status"
+
+#: src/ggv-ui.xml.h:25
+msgid "Show/hide the toolbar"
+msgstr "Papar/sorok toolbar"
+
+#: src/ggv-ui.xml.h:26
+msgid "Toggle fullscreen mode"
+msgstr "Togol mod skrinpenuh"
+
+#: src/ggv-ui.xml.h:27
+msgid "_About..."
+msgstr "_Perihal..."
+
+#: src/ggv-ui.xml.h:28
+msgid "_Close"
+msgstr "_Tutup"
+
+#: src/ggv-ui.xml.h:29
+msgid "_Contents"
+msgstr "_Kandungan"
+
+#: src/ggv-ui.xml.h:30
+msgid "_Edit"
+msgstr "_Edit"
+
+# ui/galeon.glade.h:134
+#: src/ggv-ui.xml.h:31
+msgid "_File"
+msgstr "_Fail"
+
+#: src/ggv-ui.xml.h:32
+msgid "_Help"
+msgstr "_Bantuan"
+
+#: src/ggv-ui.xml.h:33
+msgid "_Layout"
+msgstr "_Susunatur"
+
+#: src/ggv-ui.xml.h:34
+msgid "_Open"
+msgstr "_Buka"
+
+#: src/ggv-ui.xml.h:35
+msgid "_Reload"
+msgstr "_Ulangmuat"
+
+#: src/ggv-window.c:332 src/ggv-window.c:877
+msgid "GGV: no document loaded"
+msgstr "GGV: tiada dokumen dimuatkan."
+
+#: src/ggv-window.c:373
+msgid "Select a PostScript document"
+msgstr "Pilih dokumen PostScript"
+
+#: src/ggv-window.c:382
+#, c-format
+msgid ""
+"Unable to load file:\n"
+"%s"
+msgstr ""
+"Tak dapat memuatkan fail:\n"
+"%s"
+
+#. Translator Credits
+#: src/ggv-window.c:568
+msgid "translator_credits"
+msgstr "Hasbullah Bin Pit <sebol@ikhlas.com> Merlimau."
+
+#: src/ggv-window.c:578
+msgid "Gnome Ghostview"
+msgstr "Ghostview Gnome"
+
+#: src/ggv-window.c:581
+msgid "The GNOME PostScript document previewer"
+msgstr "Pemprebiu dokumen PostScript GNOME"
+
+#: src/ggv-window.c:1046
+msgid "GGV: "
+msgstr "GGV:"
+
+#: src/ggvutils.c:42
+msgid "Portrait"
+msgstr "Potret"
+
+#: src/ggvutils.c:43
+msgid "Landscape"
+msgstr "Lanskap"
+
+#: src/ggvutils.c:44
+msgid "Upside Down"
+msgstr "Tertonggeng"
+
+#: src/ggvutils.c:45
+msgid "Seascape"
+msgstr ""
+
+#: src/ggvutils.c:53
+msgid "inch"
+msgstr "Inci"
+
+#: src/ggvutils.c:54
+msgid "mm"
+msgstr "mm"
+
+#: src/ggvutils.c:55
+msgid "cm"
+msgstr "sm"
+
+# src/prefs.c:618
+# ui/galeon.glade.h:140
+#: src/ggvutils.c:56
+msgid "point"
+msgstr "titik"
+
+#: src/ggvutils.c:79
+msgid "None"
+msgstr "Tiada"
+
+#: src/ggvutils.c:79
+msgid "Fit to page width"
+msgstr "Muat lebar halaman"
+
+#: src/ggvutils.c:79
+msgid "Fit to page size"
+msgstr "Muat saiz halaman"
+
+#: src/gtkgs.c:358
+msgid "No document loaded."
+msgstr "Tiada dokumen dimuatkan."
+
+#: src/gtkgs.c:491
+msgid "File is not a valid PostScript document."
+msgstr "Fail adalah bukan dokumen PostScript yang sah."
+
+#: src/gtkgs.c:1060
+msgid "Broken pipe."
+msgstr "Paip pecah"
+
+#: src/gtkgs.c:1249
+msgid "Interpreter failed."
+msgstr "Pentafsir gagal."
+
+#. report error
+#: src/gtkgs.c:1352
+#, c-format
+msgid "Error while decompressing file %s:\n"
+msgstr "Ralat bila nyahmampat fail%s:\n"
+
+#: src/gtkgs.c:1424
+#, c-format
+msgid "Error while converting pdf file %s:\n"
+msgstr "Ralat bila menukar fail pdf %s:\n"
+
+#: src/gtkgs.c:1754
+#, c-format
+msgid "Cannot open file %s.\n"
+msgstr "Tak dapat buka fail %s.\n"
+
+#: src/gtkgs.c:1756
+msgid "File is not readable."
+msgstr "Fail tak boleh dibaca."
+
+#: src/gtkgs.c:1777
+#, c-format
+msgid "Error while scanning file %s\n"
+msgstr "Ralat bila mengimbas fail %s\n"
+
+#: src/gtkgs.c:1780
+msgid "The file is not a PostScript document."
+msgstr "Fail adalah bukan dokumen PostScript."
+
+#: src/gtkgs.c:1820
+msgid "Document loaded."
+msgstr "Dokumen dimuatkan."
+
+#: src/main.c:57
+#, c-format
+msgid "Invalid geometry string \"%s\"\n"
+msgstr "Rentetan geometri tidak sah \"%s\"\n"
+
+#: src/main.c:175
+msgid "Specify the number of empty windows to open."
+msgstr "Nyatakan bilangan tetingkap kosong untuk dibuka."
+
+#: src/main.c:176
+msgid "Number of empty windows"
+msgstr "Bilangan tetingkap kosong"
+
+#: src/main.c:178
+msgid "X geometry specification (see \"X\" man page)."
+msgstr "Spesifikasi geometri X (lihat halaman man \"X\".)"
+
+#: src/main.c:179
+msgid "GEOMETRY"
+msgstr "GEOMETRI"
+
+#: src/main.c:225
+msgid "Could not initialize Bonobo!\n"
+msgstr "Gagal menginitialisasikan Bonobo!\n"
+
+#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
+#~ msgstr "Copyright (C) 1998-2002 The Free Software Foundation"

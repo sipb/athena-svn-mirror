@@ -1,0 +1,762 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "1.99.6">
+  <!ENTITY manrevision "2.2">
+  <!ENTITY date "August 2002">
+  <!ENTITY app "GGV">
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="en">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo> 
+    <title>GNOME Ghostview Manual V&manrevision;</title>       
+
+	 <copyright> 
+		<year>2002</year>
+		<holder>Sun Microsystems</holder> 
+	 </copyright>
+	 <copyright> 
+		<year>1999</year>
+		<holder>Tuomas Lukka</holder> 
+	 </copyright>
+	 <!-- translators: uncomment this:
+  	 <copyright>
+   		<year>2002</year>
+   		<holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  	 </copyright>
+   	 -->
+
+    <publisher> 
+      <publishername> GNOME Documentation Project </publishername> 
+    </publisher> 
+
+   &legal;
+   <!-- This file  contains link to license for the documentation (GNU FDL), and 
+        other legal stuff such as "NO WARRANTY" statement. Please do not change 
+	any of this. -->
+
+	 <authorgroup> 
+		<author> 
+		  <firstname>Sun</firstname>
+		  <surname>GNOME Documentation Team</surname> 
+		  <affiliation> 
+			 <orgname>Sun Microsystems</orgname>
+			 <address> <email>gdocteam@sun.com</email> </address>
+		  </affiliation>
+		</author>
+		<author> 
+		  <firstname>Tuomas</firstname>
+		  <surname>Lukka</surname> 
+		  <affiliation> 
+			 <orgname>GNOME Documentation Project</orgname>
+			 <address> <email>lukka@iki.fi</email> </address>
+		  </affiliation>
+		</author>
+		<author> 
+		  <firstname>Daniel M.</firstname>
+		  <surname>German</surname> 
+		  <affiliation> 
+			 <orgname>GNOME Documentation Project</orgname>
+			 <address> <email>dmg@csg.uwaterloo.ca</email> </address>
+		  </affiliation>
+		</author> 
+<!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+    <revhistory>
+      <revision> 
+		<revnumber>GNOME Ghostview Manual V&manrevision;</revnumber> 
+		<date>&date;</date> 
+		<revdescription> 
+	  		<para role="author">Sun GNOME Documentation Team
+	    	<email>gdocteam@sun.com</email>
+	  		</para>
+	  		<para role="publisher">GNOME Documentation Project</para>
+		</revdescription> 
+      </revision>
+      <revision> 
+		<revnumber>GNOME Ghostview Manual V2.1</revnumber> 
+		<date>July 2002</date> 
+		<revdescription> 
+	  		<para role="author">Sun GNOME Documentation Team
+	    	<email>gdocteam@sun.com</email>
+	  		</para>
+	  		<para role="publisher">GNOME Documentation Project</para>
+		</revdescription> 
+      </revision>
+      <revision> 
+		<revnumber>GNOME Ghostview Manual V2.0</revnumber> 
+		<date>March 2002</date> 
+		<revdescription> 
+	  		<para role="author">Sun GNOME Documentation Team
+	    	<email>gdocteam@sun.com</email>
+	  		</para>
+	  		<para role="publisher">GNOME Documentation Project</para>
+		</revdescription> 
+      </revision> 
+      <revision> 
+		<revnumber>GGv Documentation</revnumber> 
+		<date>1999</date> 
+		<revdescription> 
+	  		<para role="author">Tuomas Lukka 
+	    	<email>lukka@iki.fi</email>
+	  		</para>
+	  		<para role="author">Daniel M. German 
+	    	<email>dmg@csg.uwaterloo.ca</email>
+	  		</para>	  
+	  		<para role="publisher">GNOME Documentation Project</para>
+		</revdescription> 
+      </revision> 
+    </revhistory> 
+
+    <releaseinfo>This manual describes version &appversion; of &app;.
+    </releaseinfo> 
+    <legalnotice> 
+      <title>Feedback</title> 
+      <para>To report a bug or make a suggestion regarding the &app; application or
+	this manual, follow the directions in the 
+	<ulink url="ghelp:gnome-feedback"
+	  type="help">GNOME Feedback Page</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice> 
+  </articleinfo> 
+
+  <indexterm> 
+    <primary>GGV</primary> 
+  </indexterm>
+  <indexterm> 
+    <primary>GNOME Ghostview</primary> 
+  </indexterm> 
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+  <sect1 id="ggv-introduction"> 
+	 <title>Introduction</title>
+	 <para>The <application>GNOME Ghostview (GGV)</application> application
+		enables you to view PostScript and Portable Document Format (PDF) files. The
+		application is based on <application>GNU GhostView</application>.
+		<application>&app;</application> runs the <application>Ghostscript</application>
+		application in the background, which interprets PostScript and PDF files.
+		<application>&app;</application> provides the user with a simple user interface
+		to display PostScript or PDF files on screen or print the files to a printer.
+		</para>
+  </sect1>
+<!-- =========== Getting Started ============================== -->
+  <sect1 id="ggv-getting-started"> 
+	 <title>Getting Started</title>
+
+	 <sect2 id="ggv-to-start"> 
+		<title>To Start &app;</title>
+		
+		<para>You can start <application>&app;</application> in the following ways:</para>
+		
+		<variablelist>
+			<varlistentry>
+			<term><guimenu>Applications</guimenu> menu</term>
+			<listitem>
+			<para>Choose 
+				<menuchoice>
+				<guisubmenu>Graphics</guisubmenu>
+				<guimenuitem>GGV PostScript Viewer</guimenuitem>
+				</menuchoice>. </para>
+			</listitem>
+			</varlistentry>
+			<varlistentry>
+			<term>Command line</term>
+			<listitem>
+			<para>Type <command>ggv</command>, then press <keycap>Return</keycap>.</para>
+			<para>You can use command line options to modify the way in which you run
+		  	<application>&app;</application>. To view the command line options that are
+		  	available, type <command>ggv --help</command>, then press
+		  	<keycap>Return</keycap>.</para>
+			</listitem>
+			</varlistentry>
+	</variablelist>
+
+	</sect2>
+	
+	<sect2 id="ggv-when-you-start">
+	<title>When You Start &app;</title>
+	<para>When you start <application>&app;</application>, the following
+	window is displayed.</para>
+	<!-- ==== Figure ==== -->
+		<figure id="ggv_window"> 
+		  <title>&app; Window</title>
+		  <screenshot> 
+			 <mediaobject> 
+				<imageobject><imagedata fileref="figures/ggv_window.png" format="PNG"/>
+					 </imageobject>
+				<textobject> <phrase>Shows GNOME Ghostview main window.</phrase>
+				</textobject> </mediaobject>
+		  </screenshot>
+		</figure>
+	<!-- ==== End of Figure ==== -->
+	
+	<para>The <application>&app;</application> window contains the following elements: </para>
+		<itemizedlist> 
+		  <listitem><para>Menubar</para>
+			 <para>The menus on the menubar contain all of the commands that you
+				need to work with files in <application>&app;</application>. Choose 
+				<menuchoice> <guimenu>Settings</guimenu> <guimenuitem>Show
+				  Menus</guimenuitem> </menuchoice>
+				to deselect this option and hide the menubar.</para>
+		  </listitem>
+		  <listitem><para>Toolbar</para>
+			 <para>The toolbar contains a subset of the commands that you can
+				access from the menubar. Choose 
+				<menuchoice> <guimenu>Settings</guimenu> <guimenuitem>Show
+				  Toolbar</guimenuitem> </menuchoice>
+				to deselect this option and hide the toolbar.</para>
+		  </listitem>
+		  <listitem><para>Sidebar</para>
+			 <para>The sidebar contains the following items:</para>
+			 <itemizedlist mark="dash"> 
+				<listitem><para>Zoom spin box: enables you to enlarge
+				or shrink the content of the display pane.</para>
+				</listitem>
+				<listitem><para>Toggle buttons: enable you to mark pages so that
+					 you can perform an action on the marked pages. The following toggle buttons are
+					 available: </para>
+					 <itemizedlist mark="none"> 
+						<listitem><para>Toggle all pages</para>
+						</listitem>
+						<listitem><para>Toggle odd pages</para>
+						</listitem>
+						<listitem><para>Toggle even pages</para>
+						</listitem>
+						<listitem><para>Unmark all pages buttons</para>
+						</listitem>
+					 </itemizedlist>
+					 <para>See <xref linkend="ggv-mark-pages"/> for more information
+					 about the toggle buttons.</para>
+				</listitem>
+			 </itemizedlist>
+			 <para>Choose 
+				<menuchoice> 
+				<guimenu>Settings</guimenu> 
+				<guimenuitem>Show Sidebar</guimenuitem> </menuchoice>
+				to deselect this option and hide the sidebar.</para>
+		  </listitem>
+		  <listitem><para>Display pane</para>
+			 <para>The display pane displays the PostScript or PDF file.
+				Right-click in the display pane to invoke a popup menu.</para>
+		  </listitem>
+		  <listitem><para>Statusbar</para>
+			 <para>The statusbar displays information about current application
+				activity and contextual information about the menu items.</para>
+		  </listitem>
+		</itemizedlist>
+	 </sect2>
+
+  </sect1>
+
+<!-- ================ Usage ================================ -->
+  <sect1 id="ggv-usage"> 
+	 <title>Usage</title>
+
+	 <sect2 id="ggv-open-file"> 
+		<title>To Open a File</title>
+		<para>To open a file, choose 
+		  <menuchoice> <guimenu>File</guimenu> <guimenuitem>Open</guimenuitem>
+			 </menuchoice>
+		  to display the <guilabel>Open File</guilabel> dialog. Select the file
+		  that you want to open, then click <guibutton>OK</guibutton>. </para>
+		<para>You can also drag files from another application, such as a file
+		  manager, to the <application>&app;</application> window. The application
+		  displays the files in new <application>&app;</application> windows.</para>
+	 </sect2>
+	 
+	 <sect2 id="ggv-view-file"> 
+		<title>To View a File</title>
+		<para>To view a file, you can use the following options:</para>
+		<itemizedlist> 
+		  <listitem><para>To view the next page, choose 
+				<menuchoice> 
+				<guimenu>View</guimenu> 
+				<guimenuitem>Next page</guimenuitem> 
+				</menuchoice>.</para>
+		  </listitem>
+		  <listitem><para>To view the previous page, choose 
+				<menuchoice> 
+				<guimenu>View</guimenu> 
+				<guimenuitem>Previous page</guimenuitem> 
+				</menuchoice>.</para>
+		  </listitem>
+		  <listitem><para>To view the first page in the file, choose 
+				<menuchoice> 
+				<guimenu>View</guimenu> 
+				<guimenuitem>First page</guimenuitem> 
+				</menuchoice>.</para>
+		  </listitem>
+		  <listitem><para>To view the last page in the file, choose 
+				<menuchoice> 
+				<guimenu>View</guimenu> 
+				<guimenuitem>Last page</guimenuitem> 
+				</menuchoice>.</para>
+		  </listitem>
+		  <listitem><para>If a page is larger than the display pane, use the
+				scrollbars to scroll the current page. You can also use the arrow
+				keys on the keyboard to scroll the current page. To view the whole page, choose 
+				<menuchoice> 
+				<guimenu>View</guimenu> 
+				<guisubmenu>Zoom</guisubmenu>
+				<guimenuitem>Fit Window</guimenuitem> 
+				</menuchoice>.</para>
+		  </listitem>
+		  <listitem><para>To enlarge or shrink the content that is displayed in
+				the display pane, choose 
+				<menuchoice> 
+				<guimenu>View</guimenu>
+				<guisubmenu>Zoom</guisubmenu> 
+				</menuchoice>, then select the appropriate zoom
+				level. </para>
+		  </listitem>
+		</itemizedlist>
+		<para>To reload a file and update the display in the display pane, choose		  
+		  <menuchoice> 
+		  <guimenu>File</guimenu> 
+		  <guimenuitem>Reload</guimenuitem>
+		  </menuchoice>.</para>
+	 </sect2>
+	 
+	 <sect2 id="ggv-change-orientation"> 
+		<title>To Change the Orientation of a File</title>
+		<para>To change the orientation of a file, choose 
+		  <menuchoice> 
+		  <guimenu>View</guimenu>
+		  <guisubmenu>Orientation</guisubmenu> 
+		  </menuchoice>, then select the orientation
+		  option that you want.</para>
+		   
+		<note>
+		<para>If the orientation of the file is set in the 
+		properties of the file, you must choose 
+		  <menuchoice> 
+		  <guimenu>View</guimenu>
+		  <guisubmenu>Orientation</guisubmenu> 
+		  <guimenuitem>Override Orientation</guimenuitem> 
+		  </menuchoice>
+		  before you can change the orientation of the file.</para>
+		</note>  
+		<para>The orientation options are as follows:</para>
+		<itemizedlist> 
+		  <listitem><para><guimenuitem>Portrait</guimenuitem></para>
+		  </listitem>
+		  <listitem><para><guimenuitem>Landscape</guimenuitem></para>
+		  </listitem>
+		  <listitem><para><guimenuitem>Upside Down</guimenuitem></para>
+		  </listitem>
+		  <listitem><para><guimenuitem>Seascape</guimenuitem></para>
+		  </listitem>
+		</itemizedlist>
+		
+	 </sect2>
+	 
+	 <sect2 id="ggv-change-pagesize"> 
+		<title>To Change the Page Size of the File</title>
+		<para>The page size of the file determines the height and width of each
+		  page in the file. To change the page size, choose 
+		  <menuchoice> 
+		  <guimenu>View</guimenu> 
+		  <guisubmenu>Size</guisubmenu> 
+		  </menuchoice>, then select the page size that you want from
+		  the list of page sizes available. </para>
+		<note>
+		<para>If the page size of the file is set in the
+		properties of the file, you must choose 
+		<menuchoice> 
+		<guimenu>View</guimenu> 
+		<guisubmenu>Size</guisubmenu> 
+		<guimenuitem>Override Size</guimenuitem>
+		</menuchoice> before you can change the page size of the file.</para>
+		</note>
+	 </sect2>
+	 
+	 <sect2 id="ggv-mark-pages"> 
+		<title>To Mark Pages</title>
+		<para>You can mark pages in a file for the following reasons:</para>
+		<itemizedlist> 
+		  <listitem><para>To print only marked pages.</para>
+		  </listitem>
+		  <listitem><para>To save only marked pages to a new file.</para>
+		  </listitem>
+		</itemizedlist>
+		
+		<para>To mark and unmark pages, perform the following actions: </para>
+		
+		<informaltable>
+		<tgroup cols="2">
+		<colspec colname="col1"/>
+		<colspec colname="col2"/>
+		<thead>
+		<row valign="top">
+			<entry colname="col1"><para>Action</para></entry>
+			<entry colname="col2"><para>Button</para></entry>
+		</row>
+		</thead>
+		<tbody>
+		<row valign="top">
+			<entry colname="col1"><para>Mark all of the pages in the file.</para></entry>
+			<entry colname="col2" align="center"><para>
+			<inlinemediaobject>
+			<imageobject><imagedata fileref="figures/toggle_all_button.png" format="PNG"/>
+			</imageobject>
+			<textobject>
+			<phrase>Shows Toggle all button. </phrase>
+			</textobject>
+		  	</inlinemediaobject>
+		  	</para></entry>
+		</row>
+		<row valign="top">
+			<entry colname="col1"><para>Mark all of the odd pages in the file.</para></entry>
+			<entry colname="col2" align="center"><para>
+			<inlinemediaobject>
+			<imageobject><imagedata fileref="figures/toggle_odd_button.png" format="PNG"/>
+			</imageobject>
+			<textobject>
+			<phrase>Shows Toggle odd button. </phrase>
+			</textobject>
+		  	</inlinemediaobject>
+		  	</para></entry>
+		</row>
+		<row valign="top">
+			<entry colname="col1"><para>Mark all of the even pages in the file.</para></entry>
+			<entry colname="col2" align="center"><para>
+			<inlinemediaobject>
+			<imageobject><imagedata fileref="figures/toggle_even_button.png" format="PNG"/>
+			</imageobject>
+			<textobject>
+			<phrase>Shows Toggle even button. </phrase>
+			</textobject>
+		  	</inlinemediaobject>
+		  	</para></entry>
+		</row>
+		<row valign="top">
+			<entry colname="col1"><para>Unmark the marked pages in a file.</para></entry>
+			<entry colname="col2" align="center"><para>
+			<inlinemediaobject>
+			<imageobject><imagedata fileref="figures/unmark_all_button.png" format="PNG"/>
+			</imageobject>
+			<textobject>
+			<phrase>Shows Unmark all button. </phrase>
+			</textobject>
+		  	</inlinemediaobject>
+		  	</para></entry>
+		</row>
+		</tbody>
+		</tgroup>
+		</informaltable>
+				
+		<para>To save the marked pages in a file to a new file, choose 
+		  <menuchoice> <guimenu>File</guimenu> <guimenuitem>Save marked
+			 pages</guimenuitem> </menuchoice>. The <guilabel>Save marked pages</guilabel>
+		  dialog is displayed. Enter a name for the output file, then click
+		  <guibutton>OK</guibutton>. The application saves the pages to the new file,
+		  maintaining the original page numbers of the pages.</para>
+	 </sect2>
+	 
+	 <sect2 id="ggv-print-file"> 
+		<title>To Print a File</title>
+		<para>To print a file to the default system printer, choose 
+		  <menuchoice> 
+		  <guimenu>File</guimenu> 
+		  <guimenuitem>Print document</guimenuitem>
+		  </menuchoice>. To print only the marked pages in a file, choose 
+		  <menuchoice> <guimenu>File</guimenu> <guimenuitem>Print marked
+			 pages</guimenuitem> </menuchoice>. </para>
+	 </sect2>
+	 
+	 <sect2 id="ggv-close-file"> 
+		<title>To Close a File</title>
+		<para>To close a file, choose 
+		  <menuchoice> <guimenu>File</guimenu> <guimenuitem>Close</guimenuitem>
+			 </menuchoice>. If you close the last file that is open, the application exits.
+		  </para>
+	 </sect2>
+  </sect1>
+
+  <!-- ============= Customization ============================= -->
+  <sect1 id="ggv-settings">   
+	 <title>Preferences</title>
+	 <para>To configure <application>&app;</application>, choose 
+		<menuchoice> 
+		<guimenu>Edit</guimenu>
+		<guimenuitem>GGV Preferences</guimenuitem> 
+		</menuchoice>. The <guilabel>GGV Preferences</guilabel> dialog contains the following tabbed
+		sections:</para>
+	 <itemizedlist> 
+		<listitem><para><link
+			 linkend="ggv-prefs-document"><guilabel>Document</guilabel></link></para>
+		</listitem>
+		<listitem><para><link
+			 linkend="ggv-prefs-layout"><guilabel>Layout</guilabel></link></para>
+		</listitem>
+		<listitem><para><link
+			 linkend="ggv-prefs-ghostscript"><guilabel>Ghostscript</guilabel></link></para>
+		</listitem>
+		<listitem><para><link
+			 linkend="ggv-prefs-printing"><guilabel>Printing</guilabel></link></para>
+		</listitem>
+	 </itemizedlist>
+	 
+	 <sect2 id="ggv-prefs-document"> 
+		<title>Document</title>
+		<variablelist> 
+		  <varlistentry> <term><guilabel>Default Zoom</guilabel> </term> 
+			 <listitem> 
+				<para>Use this drop-down list box to specify the default zoom level
+				  for viewing files. </para>
+				<para>Default: <guilabel>1:1</guilabel>.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Coordinate units</guilabel> </term> 
+			 <listitem> 
+				<para>As you move the mouse pointer around an open document, 
+				<application>&app;</application> displays the position of the 
+				pointer in the sidebar. Use this drop-down list box to specify 
+				the measurement unit in which to display the pointer position. </para>
+				<para>Default: <guilabel>inch</guilabel>.</para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry> <term><guilabel>Fallback page size</guilabel> </term> 
+			 <listitem> 
+				<para>Use this drop-down list box to specify the paper size to use
+				  if the properties of the file do not specify a paper size. </para>
+				<para>Default: <guilabel>Letter</guilabel>.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Override document size</guilabel> </term> 
+			 <listitem> 
+				<para>Select this option to use the paper size specified in the
+				  <guilabel>Fallback page size</guilabel> drop-down list box regardless whether
+				  or not a paper size is specified in the properties of the file. </para>
+				<para>Default: unselected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Fallback media orientation</guilabel>
+			 </term> 
+			 <listitem> 
+				<para>Use this drop-down list box to specify the orientation in
+				  which to display a file if the properties of a file do not specify the
+				  orientation. </para>
+				<para>Default: <guilabel>Portrait</guilabel>.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Override document orientation</guilabel>
+			 </term> 
+			 <listitem> 
+				<para>Select this option to use the orientation specified in the
+				  <guilabel> Fallback media orientation</guilabel> drop-down list box regardless
+				  whether or not the orientation is specified in the properties of the file.
+				  </para>
+				<para>Default: unselected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Antialiasing</guilabel> </term> 
+			 <listitem> 
+				<para>Select this option to use antialiasing to display the file.
+				  Antialiasing produces a better quality display. </para>
+				<para>Default: selected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Respect EOF comments</guilabel> </term> 
+			 <listitem> 
+				<para>Select this option to instruct the application to acknowledge
+				  end-of-file comments. </para>
+				<para>Default: selected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Watch file</guilabel> </term> 
+			 <listitem> 
+				<para>Select this option to monitor the content of the file that
+				  you are viewing and reload the file if the content changes. </para>
+				<para>Default: unselected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Outline last visible part when scrolling</guilabel> </term> 
+			 <listitem> 
+				<para>Select this option to display a box around the last section of the 
+				document that <application>&app;</application> displayed when you are
+				scrolling through the document. </para>
+				<para>Default: selected.</para>
+			 </listitem>
+		  </varlistentry>
+		</variablelist>
+	 </sect2>
+	 
+	 <sect2 id="ggv-prefs-layout"> 
+		<title>Layout</title>
+		<variablelist> 
+		  <varlistentry> <term><guilabel>Show side panel by default</guilabel>
+			 </term> 
+			 <listitem> 
+				<para>Select this option to show the side panel by default when you
+				  start the application. </para>
+				<para>Default: selected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Put side panel in Nautilus</guilabel>
+			 </term> 
+			 <listitem> 
+				<para>Information about this option will be provided in the next release of 
+				the manual.</para>
+				<para>Default: unselected.</para>
+			 </listitem>
+		  </varlistentry>
+
+		  <varlistentry> <term><guilabel>Show menubar by default</guilabel>
+			 </term> 
+			 <listitem> 
+				<para>Select this option to show the menubar by default when you
+				  start the application. </para>
+				<para>Default: selected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Show toolbar by default</guilabel>
+			 </term> 
+			 <listitem> 
+				<para>Select this option to show the toolbar by default when you
+				  start the application. </para>
+				<para>Default: selected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Toolbar style</guilabel>
+			 </term> 
+			 <listitem> 
+				<para>Select one of the following options to determine the style 
+				of the <application>&app;</application> toolbar:</para>
+				<itemizedlist>
+				<listitem>
+				<para><guilabel>Use GNOME defaults</guilabel></para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Show both icons and text</guilabel></para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Show only icons</guilabel></para>
+				</listitem>
+				<listitem>
+				<para><guilabel>Show only text</guilabel></para>
+				</listitem>
+				</itemizedlist>
+				<para>Default: <guilabel>Use GNOME defaults</guilabel></para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Show statusbar by default</guilabel> </term> 
+			 <listitem> 
+				<para>Select this option to show the statusbar by default when you
+				start the application. </para>
+				<para>Default: selected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Save geometry</guilabel> </term> 
+			 <listitem> 
+				<para>Select this option to save the geometry of the
+				  <application>&app;</application> window and the <guilabel>Open File</guilabel>
+				  dialog when you quit the application. When you start the application again,
+				  <application>&app;</application> displays the windows using the saved geometry
+				  settings. </para>
+				<para>Default: unselected.</para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Jump to beginning of page when using
+			 keyboard</guilabel> </term> 
+			 <listitem> 
+				<para>Select this option to display the top left corner of the next
+				  or previous page when you use the <keycap>Page Up</keycap> and <keycap>Page
+				  Down</keycap> keys on the keyboard to navigate a file. To activate a change to
+				  this setting, you must restart the application. </para>
+				<para>Default: selected.</para>
+			 </listitem>
+		  </varlistentry>
+		</variablelist>
+	 </sect2>
+	 
+	 <sect2 id="ggv-prefs-ghostscript"> 
+		<title>Ghostscript</title>
+		<variablelist> 
+		  <varlistentry> <term><guilabel>Interpreter</guilabel> </term> 
+			 <listitem> 
+				<para>Type the command required to run the
+				  <application>Ghostscript</application> PostScript interpreter. Include the path
+				  to the <application>Ghostscript</application> executable file and any options
+				  that you want to use to run the application. </para>
+				<para>Default: <command>system-specific-path/gs</command></para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Antialiasing</guilabel> </term> 
+			 <listitem> 
+				<para>Type the command required antialias a file. </para>
+				<para>Default: <command>-s DEVICE=x11alpha</command></para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Scan PDF</guilabel> </term> 
+			 <listitem> 
+				<para>Type the command required to run
+				  <application>Ghostscript</application> and the options required to scan PDF
+				  files. </para>
+				<para>Default: <command>system-specific-path/gs -dNODISPLAY -dQUIET
+				  -sPDFname="&percnt;s" -sDSCname="&percnt;s" pdf2dsc.ps -c quit</command></para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Gzip</guilabel> </term> 
+			 <listitem> 
+				<para>Type the command required to run the
+				  <application>Gzip</application> application to decompress a compressed .gz
+				  file. When <application>&app;</application> opens a compressed .gz file,
+				  <application>&app;</application> runs this command and opens the file. </para>
+				<para>Default: <command>gzip -cd</command></para>
+			 </listitem>
+		  </varlistentry>
+		  <varlistentry> <term><guilabel>Bzip2</guilabel> </term> 
+			 <listitem> 
+				<para>Type the command required to run the
+				  <application>Bzip2</application> application to decompress a compressed .bz2
+				  file. When <application>&app;</application> opens a compressed .bz2 file,
+				  <application>&app;</application> runs this command and opens the file. </para>
+				<para>Default: <command>bzip2 -cd</command></para>
+			 </listitem>
+		  </varlistentry>
+		</variablelist>
+	 </sect2>
+	 
+	 <sect2 id="ggv-prefs-printing"> 
+		<title>Printing</title>
+		<variablelist> 
+		  <varlistentry> <term><guilabel>Print command</guilabel> </term> 
+			 <listitem> 
+				<para>Type the command required to print a PostScript file from the
+				  <application> &app;</application> window. </para>
+				<para>Default: <command>/usr/ucb/lpr</command></para>
+			 </listitem>
+		  </varlistentry>
+		</variablelist>
+	 </sect2>
+	 
+  </sect1>
+  
+</article>

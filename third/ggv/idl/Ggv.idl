@@ -1,0 +1,29 @@
+#include <Bonobo.idl>
+
+module GNOME {
+  module GGV {
+    enum Orientation {
+      ORIENTATION_PORTRAIT,
+      ORIENTATION_LANDSCAPE,
+      ORIENTATION_UPSIDEDOWN,
+      ORIENTATION_SEASCAPE
+    };
+
+    typedef string Size;
+    typedef string PageName;
+    typedef sequence<PageName> PageNameList;
+    typedef long Page;
+    typedef sequence<Page> PageList;
+    
+    exception DocumentError {
+      string moreInfo;
+    };
+
+    interface PostScriptView : Bonobo::Unknown {
+      string getDocument() raises (DocumentError);
+      string getPages(in PageList pages) raises (DocumentError);
+      void reload();
+      void close();
+    };
+  };
+};

@@ -1,0 +1,989 @@
+# Tamil translation of GGV.
+# Copyright (C) 2002 GNU Foundation...
+# This file is distributed under the same license as the ggv package.
+# Dinesh Nadarajah <n_dinesh@yahoo.com>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"PO-Revision-Date: 2002-10-16 09:56+0200\n"
+"Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
+"Language-Team: Tamil <tamilgnome@yahoogroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/GNOME_GGV.server.in.in.h:1
+msgid "GGV PostScript Document Control"
+msgstr ""
+
+#: bonobo/GNOME_GGV.server.in.in.h:2
+msgid "GGV PostScript View"
+msgstr ""
+
+#: bonobo/GNOME_GGV.server.in.in.h:3
+msgid "GGV PostScript viewer factory"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:2
+#, fuzzy, no-c-format
+msgid "15_0%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:3
+msgid "1:1"
+msgstr "1:1"
+
+#: bonobo/ggv-control-ui.xml.h:5
+#, no-c-format
+msgid "25%"
+msgstr "25%"
+
+#: bonobo/ggv-control-ui.xml.h:6
+msgid "Change zoom factor to default"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:7
+msgid "Decrease zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:8
+msgid "Fit"
+msgstr "¦À¡ÕòÐ"
+
+#: bonobo/ggv-control-ui.xml.h:9
+msgid "Fit Width"
+msgstr "«¸ÄôÀÊ"
+
+#: bonobo/ggv-control-ui.xml.h:10
+msgid "Fit _Width"
+msgstr "«¸Äò¾¢ø _¦À¡ÕóÐÁ¡Ú"
+
+#: bonobo/ggv-control-ui.xml.h:11
+msgid "Fit to Page _Size"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:12
+#, fuzzy
+msgid "Fit to Page _Width"
+msgstr "«¸Äò¾¢ø _¦À¡ÕóÐÁ¡Ú"
+
+#: bonobo/ggv-control-ui.xml.h:13
+msgid "In"
+msgstr "¦ÀÃ¢Ð"
+
+#: bonobo/ggv-control-ui.xml.h:14
+msgid "Increase zoom factor"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:15
+msgid "Other"
+msgstr "¾É¢ôÀÂÉ¡¸"
+
+#: bonobo/ggv-control-ui.xml.h:16
+msgid "Out"
+msgstr "º¢È¢Ð"
+
+#: bonobo/ggv-control-ui.xml.h:17
+msgid "Zoom _In"
+msgstr "_¦ÀÃ¢¾¡¸ì ¸¡ðÎ¸"
+
+#: bonobo/ggv-control-ui.xml.h:18
+msgid "Zoom _Out"
+msgstr "_º¢È¢¾¡¸ì ¸¡ðÎ¸"
+
+#: bonobo/ggv-control-ui.xml.h:19
+msgid "Zoom the page to be as wide as the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:20
+msgid "Zoom the page to fit in the window"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:22
+#, no-c-format
+msgid "_100%"
+msgstr "_100%"
+
+#: bonobo/ggv-control-ui.xml.h:24
+#, no-c-format
+msgid "_200%"
+msgstr "_200%"
+
+#: bonobo/ggv-control-ui.xml.h:26
+#, no-c-format
+msgid "_400%"
+msgstr "_400%"
+
+#: bonobo/ggv-control-ui.xml.h:28
+#, no-c-format
+msgid "_50%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:30
+#, fuzzy, no-c-format
+msgid "_75%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:31
+msgid "_Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:32
+msgid "_Default Zoom"
+msgstr "_¦¸¡¼¡ ¿¢¨Äì ¸¡ðº¢"
+
+#: bonobo/ggv-control-ui.xml.h:33
+msgid "_Fit Window"
+msgstr "_º¡ÇÃò¾¢ø ¦À¡ÕóÐÁ¡Ú"
+
+#: bonobo/ggv-control-ui.xml.h:34
+msgid "_No Auto-fit"
+msgstr ""
+
+#: bonobo/ggv-control-ui.xml.h:35
+msgid "_Zoom"
+msgstr "_¦ÀÃ¢Â/º¢È¢Â ¸¡ðº¢"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:1
+msgid "10x14"
+msgstr "10x14"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:2
+msgid "A0"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:3
+msgid "A1"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:4
+msgid "A2"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:5
+msgid "A3"
+msgstr "A3"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:6
+msgid "A4"
+msgstr "A4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:7
+msgid "A5"
+msgstr "A5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:8
+msgid "B4"
+msgstr "B4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:9
+msgid "B5"
+msgstr "B5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:10
+msgid "BBox"
+msgstr "BBox"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:11
+msgid "Executive"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:12
+msgid "First"
+msgstr "Ó¾ø"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:13
+msgid "Folio"
+msgstr "Folio"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:14
+msgid "GGV _Preferences"
+msgstr "GGV _Å¢ÕôÀí¸û"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:15
+msgid "Go to first page"
+msgstr "Ó¾ø Àì¸ò¾¢ðÌô §À¡¸×õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:16
+msgid "Go to last page"
+msgstr "¸¨¼º¢ Àì¸ò¾¢ðÌô §À¡¸×õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:17
+msgid "Go to next page"
+msgstr "«Îò¾ Àì¸ò¾¢ðÌô §À¡¸×õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:18
+msgid "Go to previous page"
+msgstr "þ¾üÌÓý Àì¸ò¾¢ðÌô §À¡¸×õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:19
+msgid "Last"
+msgstr "¸¨¼º¢"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:20
+msgid "Ledger"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:21
+msgid "Legal"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:22
+msgid "Letter"
+msgstr "¸Ê¾õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:23
+msgid "Next"
+msgstr "«ÎòÐ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:24
+msgid "Open the preferences dialog"
+msgstr "Å¢ÕôÀí¸û ¯¨ÃÂ¡¼¨Äò ¾¢Èì¸×õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:25
+msgid "Prev"
+msgstr "Óý"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:26
+msgid "Print marked pages"
+msgstr "¦¾Ã¢× ¦ºöÂôÀð¼ Àì¸í¸¨Ç «îº¢Î¸"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:27
+msgid "Print the whole document"
+msgstr "ÓØ ¬Å½ò¨¾Ôõ «îº¢Î¸"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:28
+msgid "Quarto"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:29
+msgid "Save marked pages to a file"
+msgstr "¦¾Ã¢× ¦ºöÂôÀð¼ Àì¸í¸¨Ç ´÷ §¸¡ôÀ¢ø §ºÁ¢ì¸×õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:30
+msgid "Statement"
+msgstr "ÜüÚ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:31
+msgid "Tabloid"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:32
+#, fuzzy
+msgid "_Document Orientation"
+msgstr "¬Å½ò¾¢ý ¾¢¨º «¨Á×"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:33
+#, fuzzy
+msgid "_Document Size"
+msgstr "¬Å½ò¾¢ý ¾¨ÄôÒ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:34
+msgid "_First page"
+msgstr "_Ó¾øô Àì¸õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:35
+msgid "_Landscape"
+msgstr "_¿¢Äì¸¡ðº¢"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:36
+msgid "_Last page"
+msgstr "_¸¨¼º¢ô Àì¸õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:37
+msgid "_Next page"
+msgstr "_«Îò¾ Àì¸õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:38
+msgid "_Orientation"
+msgstr "_¾¢¨º «¨Á×"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:39
+msgid "_Portrait"
+msgstr "_¯ÕÅì¸¡ðº¢"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:40
+msgid "_Previous page"
+msgstr "_þ¾üÌ ÓýÀì¸õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:41
+msgid "_Print document"
+msgstr "_¬Å½ò¨¾ «îº¢Î¸"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:42
+msgid "_Print marked pages"
+msgstr "_¦¾Ã¢× ¦ºöÂôÀð¼ Àì¸í¸¨Ç «îº¢Î¸"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:43
+msgid "_Save marked pages"
+msgstr "_¦¾Ã¢× ¦ºöÂôÀð¼ Àì¸í¸¨Ç §ºÁ¢ì¸×õ"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:44
+msgid "_Seascape"
+msgstr ""
+
+#: bonobo/ggv-postscript-view-ui.xml.h:45
+msgid "_Size"
+msgstr "_«Ç×"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:46
+msgid "_Upside down"
+msgstr "_¾¨Ä¸£Æ¡¸"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
+msgid "_View"
+msgstr "_¸¡ðº¢"
+
+#: bonobo/ggv-postscript-view.c:746
+#, c-format
+msgid ""
+"Unable to execute print command:\n"
+"%s"
+msgstr ""
+"'«îº¢Î' ¸ð¼¨Ç¨Â þÂì¸ÓÊÂÅ¢ø¨Ä:\n"
+"%s"
+
+#: bonobo/ggv-postscript-view.c:800
+msgid ""
+"No pages have been marked.\n"
+"Do you want to save the whole document?"
+msgstr ""
+"Àì¸í¸û ²Ðõ ¦¾Ã¢× ¦ºöÂÅ¢ø¨Ä.\n"
+"ÓØ ¬Å½ò¨¾Ôõ §ºÁ¢ì¸ Å¢ÕôÀÁ¡?"
+
+#: bonobo/ggv-postscript-view.c:820
+msgid "Select a file to save pages as"
+msgstr "Àì¸í¸¨Ç §ºÁ¢ì¸ µ÷ §¸¡ôÒ ¦¾Ã¢× ¦ºöÂ×õ"
+
+#: bonobo/ggv-postscript-view.c:832
+msgid ""
+"A file with this name already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"þô¦ÀÂ¨Ãì ¦¸¡ñ¼ §¸¡ôÒ ²ü¸É§Å þÕì¸¢ýÈÐ.\n"
+"«¨¾ «Æ¢òÐ «¾ý§Áø ±Ø¾ Å¢ÕôÀÁ¡?"
+
+#: bonobo/ggv-postscript-view.c:871
+msgid ""
+"No pages have been marked.\n"
+"Do you want to print the whole document?"
+msgstr ""
+"Àì¸í¸û ²Ðõ ¦¾Ã¢× ¦ºöÂÅ¢ø¨Ä.\n"
+"ÓØ ¬Å½ò¨¾Ôõ «îº¢¼ Å¢ÕôÀÁ¡?"
+
+#: bonobo/ggv-postscript-view.c:1754
+msgid "Display"
+msgstr "¸¡ðº¢Â¸õ"
+
+#: bonobo/ggv-postscript-view.c:1951
+msgid "GhostScript output"
+msgstr "GhostScript ¦ÅÇ¢Â£ðÎ"
+
+#: bonobo/ggv-postscript-view.c:1985
+msgid "Document title"
+msgstr "¬Å½ò¾¢ý ¾¨ÄôÒ"
+
+#: bonobo/ggv-postscript-view.c:1989
+msgid "GGV control status"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:1993
+msgid "Number of pages"
+msgstr "Àì¸í¸Ç¢ý ±ñ½¢ì¨¸"
+
+#: bonobo/ggv-postscript-view.c:1997
+msgid "Page names"
+msgstr "Àì¸í¸Ç¢ý ¦ÀÂ÷¸û"
+
+#: bonobo/ggv-postscript-view.c:2001
+msgid "Current page number"
+msgstr "¾ü§À¡¨¾Â Àì¸ò¾¢ý ±ñ"
+
+#: bonobo/ggv-postscript-view.c:2005
+msgid "Document width"
+msgstr "¬Å½ò¾¢ý «¸Äõ"
+
+#: bonobo/ggv-postscript-view.c:2009
+msgid "Document height"
+msgstr "¬Å½ò¾¢ý ¯ÂÃõ"
+
+#: bonobo/ggv-postscript-view.c:2013
+msgid "Document orientation"
+msgstr "¬Å½ò¾¢ý ¾¢¨º «¨Á×"
+
+#: bonobo/ggv-postscript-view.c:2017
+msgid "Default orientation"
+msgstr "¦¸¡¼¡ ¿¢¨Ä ¾¢¨º «¨Á×"
+
+#: bonobo/ggv-postscript-view.c:2021
+msgid "Default size"
+msgstr "¦¸¡¼¡ ¿¢¨Ä «Ç×"
+
+#: bonobo/ggv-postscript-view.c:2025
+msgid "Override document orientation"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:2029
+msgid "Override document size"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:2033
+msgid "Respect EOF comment"
+msgstr "EOF ÌÈ¢ôÒìÌ Á¾¢ôÒ¦¸¡Î"
+
+#: bonobo/ggv-postscript-view.c:2037
+msgid "Watch displayed file for changes"
+msgstr ""
+
+#: bonobo/ggv-postscript-view.c:2041
+msgid "Antialiasing"
+msgstr "¾¢Ã¢Òò ¾¢Õò¾õ/Antialiasing"
+
+#: bonobo/ggv-sidebar.c:309
+msgid "Toggle marked state of all pages"
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:310
+msgid ""
+"Toggle marked state of all pages: previously marked pages will be unmarked "
+"and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:322
+msgid "Toggle marked state of odd pages"
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:323
+msgid ""
+"Toggle marked state of odd pages: previously marked odd pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:336
+msgid "Toggle marked state of even pages"
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:337
+msgid ""
+"Toggle marked state of even pages: previously marked even pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:350
+msgid "Clear marked state of all pages"
+msgstr ""
+
+#: bonobo/ggv-sidebar.c:351
+msgid "Clear marked state of all pages: all pages will be unmarked."
+msgstr ""
+
+#: ggv.desktop.in.h:1
+msgid "A Ghostscript frontend to visualize PostScript files"
+msgstr "PostScript §¸¡ôÒ¸¨Ç À¡÷ôÀ¾ð¸¡É µ÷ Ghostscript ÓýÉÉ¢"
+
+#: ggv.desktop.in.h:2
+msgid "GGV PostScript Viewer"
+msgstr "GGV PostScript ¸¡ðÊ"
+
+#: src/ggv-prefs-ui.c:311
+#, fuzzy
+msgid "_Use GNOME defaults"
+msgstr "¸§É¡õ ¦¸¡¼¡ ¿¢¨Ä¸¨Çô ÀÂýÀÎò¾×õ"
+
+#: src/ggv-prefs-ui.c:312
+#, fuzzy
+msgid "Show _both icons and text"
+msgstr "ÌÚõÀ¼í¸¨ÇÔõ ¯¨Ã¸¨ÇÔõ ¸¡ðÎ¸"
+
+#: src/ggv-prefs-ui.c:313
+#, fuzzy
+msgid "Show only _icons"
+msgstr "ÌÚõÀ¼í¸¨Ç ÁðÎõ ¸¡ðÎ¸"
+
+#: src/ggv-prefs-ui.c:314
+#, fuzzy
+msgid "Show only t_ext"
+msgstr "¯¨Ã¸¨Ç ÁðÎõ ¸¡ðÎ¸"
+
+#: src/ggv-prefs-ui.c:378
+msgid "GGV Preferences"
+msgstr "GGV Å¢ÕôÀí¸û"
+
+#. zoom choice menu
+#: src/ggv-prefs-ui.c:389
+#, fuzzy
+msgid "_Default Zoom:"
+msgstr "¦¸¡¼¡ ¿¢¨Ä «Ç×:"
+
+#. auto-fit choice menu
+#: src/ggv-prefs-ui.c:424
+msgid "A_uto-fit mode:"
+msgstr ""
+
+#. units choice menu
+#: src/ggv-prefs-ui.c:456
+#, fuzzy
+msgid "_Coordinate units:"
+msgstr "¬ûÜüÚ «¸õ:"
+
+#. size choice menu
+#: src/ggv-prefs-ui.c:488
+#, fuzzy
+msgid "_Fallback page size:"
+msgstr "À¡Ð¸¡ôÒì¸¡¸ ÀÂýÀÎòÐõ Àì¸ «Ç×:"
+
+#. override media size
+#: src/ggv-prefs-ui.c:519
+#, fuzzy
+msgid "Override _document size"
+msgstr "_¾É¢ôÀÂÉ¡É «Ç×"
+
+#. orientation choice menu
+#: src/ggv-prefs-ui.c:530
+#, fuzzy
+msgid "Fallback _media orientation:"
+msgstr "À¡Ð¸¡ôÒì¸¡¸ ÀÂýÀÎòÐõ °¼¸ ¾¢¨º-«¨Á×:"
+
+#. override orientation media
+#: src/ggv-prefs-ui.c:560
+#, fuzzy
+msgid "O_verride document orientation"
+msgstr "¬Å½ò¾¢ý ¾¢¨º «¨Á×"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:571
+#, fuzzy
+msgid "A_ntialiasing"
+msgstr "¾¢Ã¢Òò ¾¢Õò¾õ/Antialiasing"
+
+#. respect EOF
+#: src/ggv-prefs-ui.c:582
+#, fuzzy
+msgid "_Respect EOF comments"
+msgstr "EOF ÌÈ¢ôÒ¸ÙìÌ Á¾¢ôÒ¦¸¡Î"
+
+#. watch file
+#: src/ggv-prefs-ui.c:593
+#, fuzzy
+msgid "_Watch file"
+msgstr "§¸¡ôÒ À¡÷ì¸×õ"
+
+#: src/ggv-prefs-ui.c:603
+msgid "Document"
+msgstr "¬Å½õ"
+
+#. show side panel
+#: src/ggv-prefs-ui.c:612
+#, fuzzy
+msgid "_Show side panel"
+msgstr "Àì¸òÐô ÀÄ¸ò¨¾ì ¸¡ðÎ¸"
+
+#: src/ggv-prefs-ui.c:622
+#, fuzzy
+msgid "_Put side panel on the right-hand side"
+msgstr "Nautilusþø ¯ûÇ Àì¸òÐô ÀÄ¸ò¨¾ ÅÄÐ Àì¸õ §À¡¼×õ"
+
+#. show menubar
+#: src/ggv-prefs-ui.c:633
+#, fuzzy
+msgid "Show _menubar"
+msgstr "ÀðÊ-Àð¨¼¨Â ¸¡ðÎ¸"
+
+#. show toolbar
+#: src/ggv-prefs-ui.c:643
+#, fuzzy
+msgid "Show _toolbar"
+msgstr "¸ÕÅ¢ôÀð¨¼¨Â ¸¡ðÎ¸"
+
+#. toolbar style
+#: src/ggv-prefs-ui.c:654
+msgid "Toolbar style"
+msgstr "¸ÕÅ¢ôÀð¨¼Â¢ý À¡½¢"
+
+#. show statusbar
+#: src/ggv-prefs-ui.c:676
+#, fuzzy
+msgid "Show s_tatusbar"
+msgstr "¿¢¨ÄôÀð¨¼¨Â ¸¡ðÎ¸"
+
+#. save geometry
+#: src/ggv-prefs-ui.c:687
+#, fuzzy
+msgid "Save _geometry"
+msgstr "ÅÊÅ¢Â¨Äî §ºÁ¢"
+
+#: src/ggv-prefs-ui.c:697
+msgid "Layout"
+msgstr "þ¼ «¨Á×"
+
+#. auto jump to beginning of page
+#: src/ggv-prefs-ui.c:707
+#, fuzzy
+msgid "_Jump to beginning of page"
+msgstr "Àì¸ò¾¢ý Ó¾ø ÅÃ¢¨ºìÌô §À¡¸×õ"
+
+#. automatically flip pages
+#: src/ggv-prefs-ui.c:717
+msgid "Automatically _flip pages"
+msgstr ""
+
+#. show previously visible part
+#: src/ggv-prefs-ui.c:728
+msgid "Outline _last visible part when scrolling"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:742
+msgid "Amount of _visible area to scroll"
+msgstr ""
+
+#: src/ggv-prefs-ui.c:759
+msgid "Navigation"
+msgstr ""
+
+#. interpreter
+#: src/ggv-prefs-ui.c:768
+#, fuzzy
+msgid "_Interpreter:"
+msgstr "ÅÃ¢ ¦Á¡Æ¢Á¡üÈ¢:"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:790
+#, fuzzy
+msgid "A_ntialiasing:"
+msgstr "¾¢Ã¢Òò ¾¢Õò¾õ/Antialiasing:"
+
+#. scan PDF command
+#: src/ggv-prefs-ui.c:812
+msgid "Convert _PDF to PS:"
+msgstr ""
+
+#. unzip command: gzip
+#: src/ggv-prefs-ui.c:834
+#, fuzzy
+msgid "_Gzip:"
+msgstr "Gzip:"
+
+#. unzip command: bzip2
+#: src/ggv-prefs-ui.c:856
+#, fuzzy
+msgid "_Bzip2:"
+msgstr "Bzip2:"
+
+#: src/ggv-prefs-ui.c:877
+msgid "Ghostscript"
+msgstr "Ghostscript"
+
+#. print command
+#: src/ggv-prefs-ui.c:886
+#, fuzzy
+msgid "_Print command:"
+msgstr "«îº¢ÎÅ¾ü¸¡É ¸ð¼¨Ç:"
+
+#: src/ggv-prefs-ui.c:906
+msgid "Printing"
+msgstr "«îº¢ÎÅ¾üÌ"
+
+#: src/ggv-ui.xml.h:1
+msgid "About this application"
+msgstr "þó¾ ¦ºÂøÀ¡ð¨¼ô ÀüÈ¢"
+
+#: src/ggv-ui.xml.h:2
+msgid "Cancel"
+msgstr "¿£ìÌ"
+
+#: src/ggv-ui.xml.h:3
+msgid "Close"
+msgstr "ãÎ"
+
+#: src/ggv-ui.xml.h:4
+msgid "Close this window"
+msgstr "þó¾ º¡ÇÃò¨¾ ãÎ"
+
+#: src/ggv-ui.xml.h:5
+msgid "E_xit"
+msgstr "¦ºÇ¢_î¦ºø"
+
+#: src/ggv-ui.xml.h:6
+msgid "Exit the program"
+msgstr "þó¾ ¦ºÂøÀ¡ðÊÄ¢ÕóÐ ¦ºÇ¢î¦ºø"
+
+#: src/ggv-ui.xml.h:7
+msgid "Fullscreen mode"
+msgstr ""
+
+#: src/ggv-ui.xml.h:8
+msgid "Help for this application"
+msgstr "þó¾ ¦ºÂøÀ¡ðÎì¸¡É ¯¾Å¢"
+
+#: src/ggv-ui.xml.h:9
+msgid "New _window"
+msgstr "Ò¾¢Â _º¡ÇÃõ"
+
+#: src/ggv-ui.xml.h:10
+msgid "New window"
+msgstr "Ò¾¢ÂÐ"
+
+#: src/ggv-ui.xml.h:11
+msgid "Open"
+msgstr "¾¢È¸"
+
+#: src/ggv-ui.xml.h:12
+msgid "Open a new PostScript document"
+msgstr "Ò¾¢Â µ÷ PostScript ¬Å½ò¨¾ ¾¢Èì¸×õ"
+
+#: src/ggv-ui.xml.h:13
+msgid "Open a new window"
+msgstr "Ò¾¢Â ´Õ º¡ÇÃò¨¾ ¾¢Èì¸×õ"
+
+#: src/ggv-ui.xml.h:14
+msgid "Open in new window"
+msgstr "Ò¾¢Â º¡ÇÃò¾¢ø ¾¢Èì¸×õ"
+
+#: src/ggv-ui.xml.h:15
+msgid "Open in this window"
+msgstr "þó¾ º¡ÇÃò¾¢ø ¾¢Èì¸×õ"
+
+#: src/ggv-ui.xml.h:16
+msgid "Reload"
+msgstr "ÒÐìÌ"
+
+#: src/ggv-ui.xml.h:17
+msgid "Reload current document"
+msgstr "þó¾ ¬Å½ò¨¾ ÒÐìÌ"
+
+#: src/ggv-ui.xml.h:18
+msgid "Show Side_bar"
+msgstr "Àì¸òÐ Àð¨¼¨Âì ¸¡ðÎ"
+
+#: src/ggv-ui.xml.h:19
+msgid "Show _Menus"
+msgstr "ÀðÊ¸¨Çì ¸¡ðÎ"
+
+#: src/ggv-ui.xml.h:20
+msgid "Show _Statusbar"
+msgstr "¿¢¨Äô Àð¨¼¨Âì ¸¡ðÎ"
+
+#: src/ggv-ui.xml.h:21
+msgid "Show _Toolbar"
+msgstr "¸ÕÅ¢ô Àð¨¼¨Âì ¸¡ðÎ"
+
+#: src/ggv-ui.xml.h:22
+msgid "Show/hide the menus"
+msgstr "ÀðÊ¸¨Çì ¸¡ðÎ/Á¨È"
+
+#: src/ggv-ui.xml.h:23
+msgid "Show/hide the sidebar"
+msgstr "Àì¸òÐ Àð¨¼¨Â ¸¡ðÎ/Á¨È"
+
+#: src/ggv-ui.xml.h:24
+msgid "Show/hide the statusbar"
+msgstr "¿¢¨Äô Àð¨¼¨Â ¸¡ðÎ/Á¨È"
+
+#: src/ggv-ui.xml.h:25
+msgid "Show/hide the toolbar"
+msgstr "¸ÕÅ¢ô Àð¨¼¨Â ¸¡ðÎ/Á¨È"
+
+#: src/ggv-ui.xml.h:26
+msgid "Toggle fullscreen mode"
+msgstr ""
+
+#: src/ggv-ui.xml.h:27
+msgid "_About..."
+msgstr "_ÀüÈ¢..."
+
+#: src/ggv-ui.xml.h:28
+msgid "_Close"
+msgstr "_ãÎ¸"
+
+#: src/ggv-ui.xml.h:29
+msgid "_Contents"
+msgstr "¯ûÇ¼ì¸í¸û"
+
+#: src/ggv-ui.xml.h:30
+msgid "_Edit"
+msgstr "_¦¾¡Ì"
+
+#: src/ggv-ui.xml.h:31
+msgid "_File"
+msgstr "_§¸¡ôÒ"
+
+#: src/ggv-ui.xml.h:32
+msgid "_Help"
+msgstr "_¯¾Å¢"
+
+#: src/ggv-ui.xml.h:33
+msgid "_Layout"
+msgstr "_þ¼ «¨Á×"
+
+#: src/ggv-ui.xml.h:34
+msgid "_Open"
+msgstr "_¾¢Èì¸×õ"
+
+#: src/ggv-ui.xml.h:35
+msgid "_Reload"
+msgstr "_¬Åñ¾¨¾ ÁÚÀÊÔõ ²üÚ"
+
+#: src/ggv-window.c:332 src/ggv-window.c:877
+msgid "GGV: no document loaded"
+msgstr "GGV: ¬Åñõ ²Ðõ ²üÈôÀ¼Å¢ø¨Ä"
+
+#: src/ggv-window.c:373
+msgid "Select a PostScript document"
+msgstr "µ÷ PostScript ¬Åñò¨¾ ¦¾Ã¢× ¦ºöÂ×õ"
+
+#: src/ggv-window.c:382
+#, c-format
+msgid ""
+"Unable to load file:\n"
+"%s"
+msgstr ""
+"§¸¡ô¨À ²üÈ ÓÊÂÅ¢ø¨Ä :\n"
+"%s"
+
+#. Translator Credits
+#: src/ggv-window.c:568
+msgid "translator_credits"
+msgstr ""
+
+#: src/ggv-window.c:578
+msgid "Gnome Ghostview"
+msgstr "¸§É¡õ Ghostview"
+
+#: src/ggv-window.c:581
+msgid "The GNOME PostScript document previewer"
+msgstr "¸§É¡õ PostScript ¬Å½ì ¸¡ðÊ"
+
+#: src/ggv-window.c:1046
+msgid "GGV: "
+msgstr "GGV: "
+
+#: src/ggvutils.c:42
+msgid "Portrait"
+msgstr "¯ÕÅ¸¡ðº¢"
+
+#: src/ggvutils.c:43
+msgid "Landscape"
+msgstr "¿¢Äì¸¡ðº¢"
+
+#: src/ggvutils.c:44
+msgid "Upside Down"
+msgstr "¾¨Ä ¸£Æ¡¸"
+
+#: src/ggvutils.c:45
+msgid "Seascape"
+msgstr ""
+
+#: src/ggvutils.c:53
+msgid "inch"
+msgstr "þýÍ (inch)"
+
+#: src/ggvutils.c:54
+msgid "mm"
+msgstr "Á¢øÄ¢Á£¼÷ (mm)"
+
+#: src/ggvutils.c:55
+msgid "cm"
+msgstr "¦ºýÊÁ£¼÷ (cm)"
+
+#: src/ggvutils.c:56
+msgid "point"
+msgstr "ÒûÇ¢"
+
+#: src/ggvutils.c:79
+msgid "None"
+msgstr ""
+
+#: src/ggvutils.c:79
+#, fuzzy
+msgid "Fit to page width"
+msgstr "«¸ÄôÀÊ"
+
+#: src/ggvutils.c:79
+#, fuzzy
+msgid "Fit to page size"
+msgstr "À¡Ð¸¡ôÒì¸¡¸ ÀÂýÀÎòÐõ Àì¸ «Ç×:"
+
+#: src/gtkgs.c:358
+msgid "No document loaded."
+msgstr "¬Å½õ ²Ðõ ²üÈôÀ¼Å¢ø¨Ä."
+
+#: src/gtkgs.c:491
+msgid "File is not a valid PostScript document."
+msgstr "§¸¡ôÒ µ÷ ¦ºøÖÀÊÂ¡¸¡¾ PostScript ¬Å½õ"
+
+#: src/gtkgs.c:1060
+msgid "Broken pipe."
+msgstr "¯¨¼ó¾ ÌÆ¡ö."
+
+#: src/gtkgs.c:1249
+msgid "Interpreter failed."
+msgstr "ÅÃ¢ ¦Á¡Æ¢Á¡üÈ¢ ¦¿¡ÊôÀ¨¼óÐûÇÐ."
+
+#. report error
+#: src/gtkgs.c:1352
+#, c-format
+msgid "Error while decompressing file %s:\n"
+msgstr ""
+
+#: src/gtkgs.c:1424
+#, fuzzy, c-format
+msgid "Error while converting pdf file %s:\n"
+msgstr "%s pdf ¬Å½ò¨¾ ÅÕÎõ§À¡Ð À¢¨Æ:\n"
+
+#: src/gtkgs.c:1754
+#, c-format
+msgid "Cannot open file %s.\n"
+msgstr "%s §¸¡ôÒ ¾¢Èì¸ ÓÊÂÅ¢ø¨Ä.\n"
+
+#: src/gtkgs.c:1756
+msgid "File is not readable."
+msgstr "§¸¡ôÒ Å¡º¢ì¸ìÜÊÂÐ «øÄ."
+
+#: src/gtkgs.c:1777
+#, c-format
+msgid "Error while scanning file %s\n"
+msgstr "%s §¸¡ôÒ ÅÕÎõ§À¡Ð À¢¨Æ\n"
+
+#: src/gtkgs.c:1780
+msgid "The file is not a PostScript document."
+msgstr "þì§¸¡ôÒ µ÷ PostScript ¬Å½õ «øÄ."
+
+#: src/gtkgs.c:1820
+msgid "Document loaded."
+msgstr "¬Å½õ ²üÈôÀðÎûÇÐ."
+
+#: src/main.c:57
+#, c-format
+msgid "Invalid geometry string \"%s\"\n"
+msgstr ""
+
+#: src/main.c:175
+msgid "Specify the number of empty windows to open."
+msgstr ""
+
+#: src/main.c:176
+msgid "Number of empty windows"
+msgstr "¦ÅüÈ¡É º¡ÇÃí¸Ç¢ý ±ñ½¢ì¨¸"
+
+#: src/main.c:178
+msgid "X geometry specification (see \"X\" man page)."
+msgstr ""
+
+#: src/main.c:179
+msgid "GEOMETRY"
+msgstr ""
+
+#: src/main.c:225
+msgid "Could not initialize Bonobo!\n"
+msgstr ""
+
+#~ msgid "_Override Orientation"
+#~ msgstr "_¾É¢ôÀÂÉ¡É ¾¢¨º «¨Á×"
+
+#~ msgid "Scan PDF:"
+#~ msgstr "PDF ÅÕ¼ø:"
+
+#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
+#~ msgstr "ÀÊÔÃ¢¨Á (À) 1998-2002 þÄÅº ¦À¡Õû ¿¢ÚÅÉõ"

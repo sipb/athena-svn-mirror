@@ -1,0 +1,1207 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Jaka Mocnik <jaka@gnu.org>, 2000, 2001, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ggv 1.99.x\n"
+"POT-Creation-Date: 2002-12-23 18:49+0100\n"
+"PO-Revision-Date: 2002-06-11 22:50+0100\n"
+"Last-Translator: Jaka Mocnik <jaka@gnu.org>\n"
+"Language-Team: Jaka Mocnik <jaka@gnu.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo/GNOME_GGV.server.in.in.h:1
+msgid "GGV PostScript Document Control"
+msgstr "GGV kontrola za prikaz PostScript dokumentov"
+
+#: bonobo/GNOME_GGV.server.in.in.h:2
+msgid "GGV PostScript View"
+msgstr "GGV prikazovalnik PostScript dokumentov"
+
+#: bonobo/GNOME_GGV.server.in.in.h:3
+msgid "GGV PostScript viewer factory"
+msgstr "GGV tovarna PostScript prikazovalnikov"
+
+#: bonobo/ggv-control-ui.xml.h:2
+#, no-c-format
+msgid "15_0%"
+msgstr "15_0%"
+
+#: bonobo/ggv-control-ui.xml.h:3
+msgid "1:1"
+msgstr "1:1"
+
+#: bonobo/ggv-control-ui.xml.h:5
+#, no-c-format
+msgid "25%"
+msgstr "25%"
+
+#: bonobo/ggv-control-ui.xml.h:6
+msgid "Change zoom factor to default"
+msgstr "Uporabi privzeto povečavo"
+
+#: bonobo/ggv-control-ui.xml.h:7
+msgid "Decrease zoom factor"
+msgstr "Zmanjšaj povečavo"
+
+#: bonobo/ggv-control-ui.xml.h:8
+msgid "Fit"
+msgstr "Velikost strani"
+
+#: bonobo/ggv-control-ui.xml.h:9
+msgid "Fit Width"
+msgstr "Širina strani"
+
+#: bonobo/ggv-control-ui.xml.h:10
+msgid "Fit _Width"
+msgstr "Širina strani"
+
+#: bonobo/ggv-control-ui.xml.h:11
+msgid "Fit to Page _Size"
+msgstr "Prikaži celo stran"
+
+#: bonobo/ggv-control-ui.xml.h:12
+msgid "Fit to Page _Width"
+msgstr "Prikaži širino strani"
+
+#: bonobo/ggv-control-ui.xml.h:13
+msgid "In"
+msgstr "Povečaj"
+
+#: bonobo/ggv-control-ui.xml.h:14
+msgid "Increase zoom factor"
+msgstr "Povečaj povečavo"
+
+#: bonobo/ggv-control-ui.xml.h:15
+msgid "Other"
+msgstr "Drugačna"
+
+#: bonobo/ggv-control-ui.xml.h:16
+msgid "Out"
+msgstr "Zmanjšaj"
+
+#: bonobo/ggv-control-ui.xml.h:17
+msgid "Zoom _In"
+msgstr "_Povečaj"
+
+#: bonobo/ggv-control-ui.xml.h:18
+msgid "Zoom _Out"
+msgstr "_Zmanjšaj"
+
+#: bonobo/ggv-control-ui.xml.h:19
+msgid "Zoom the page to be as wide as the window"
+msgstr "Prilagodi povečavo, tako da prikaže širino stran"
+
+#: bonobo/ggv-control-ui.xml.h:20
+msgid "Zoom the page to fit in the window"
+msgstr "Prilagodi povečavo, tako da prikaže celo stran"
+
+#: bonobo/ggv-control-ui.xml.h:22
+#, no-c-format
+msgid "_100%"
+msgstr "_100%"
+
+#: bonobo/ggv-control-ui.xml.h:24
+#, no-c-format
+msgid "_200%"
+msgstr "_200%"
+
+#: bonobo/ggv-control-ui.xml.h:26
+#, no-c-format
+msgid "_400%"
+msgstr "_400%"
+
+#: bonobo/ggv-control-ui.xml.h:28
+#, no-c-format
+msgid "_50%"
+msgstr "_50%"
+
+#: bonobo/ggv-control-ui.xml.h:30
+#, no-c-format
+msgid "_75%"
+msgstr "_75%"
+
+#: bonobo/ggv-control-ui.xml.h:31
+msgid "_Auto-fit"
+msgstr "Avto-povečava"
+
+#: bonobo/ggv-control-ui.xml.h:32
+msgid "_Default Zoom"
+msgstr "Pri_vzeta"
+
+#: bonobo/ggv-control-ui.xml.h:33
+msgid "_Fit Window"
+msgstr "Prilagodi _oknu"
+
+#: bonobo/ggv-control-ui.xml.h:34
+msgid "_No Auto-fit"
+msgstr "_Brez"
+
+#: bonobo/ggv-control-ui.xml.h:35
+msgid "_Zoom"
+msgstr "P_ovečava"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:1
+msgid "10x14"
+msgstr "10x14"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:2
+msgid "A0"
+msgstr "A0"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:3
+msgid "A1"
+msgstr "A1"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:4
+msgid "A2"
+msgstr "A2"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:5
+msgid "A3"
+msgstr "A3"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:6
+msgid "A4"
+msgstr "A4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:7
+msgid "A5"
+msgstr "A5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:8
+msgid "B4"
+msgstr "B4"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:9
+msgid "B5"
+msgstr "B5"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:10
+msgid "BBox"
+msgstr "BBox"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:11
+msgid "Executive"
+msgstr "Executive"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:12
+msgid "First"
+msgstr "_Prva stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:13
+msgid "Folio"
+msgstr "Folio"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:14
+msgid "GGV _Preferences"
+msgstr "Nastavitve _GGV-ja"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:15
+msgid "Go to first page"
+msgstr "Pokaži prvo stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:16
+msgid "Go to last page"
+msgstr "Pokaži zadnjo stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:17
+msgid "Go to next page"
+msgstr "Pokaži naslednjo stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:18
+msgid "Go to previous page"
+msgstr "Pokaži prejšnjo stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:19
+msgid "Last"
+msgstr "_Zadnja stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:20
+msgid "Ledger"
+msgstr "Ledger"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:21
+msgid "Legal"
+msgstr "Legal"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:22
+msgid "Letter"
+msgstr "Letter"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:23
+msgid "Next"
+msgstr "Naslednja"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:24
+msgid "Open the preferences dialog"
+msgstr "Pokaži dialog z nastavitvami"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:25
+msgid "Prev"
+msgstr "Prejšnja"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:26
+msgid "Print marked pages"
+msgstr "Natisni označene strani"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:27
+msgid "Print the whole document"
+msgstr "Natisni dokument"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:28
+msgid "Quarto"
+msgstr "Quarto"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:29
+msgid "Save marked pages to a file"
+msgstr "Shrani označene strani v novo datoteko"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:30
+msgid "Statement"
+msgstr "Statement"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:31
+msgid "Tabloid"
+msgstr "Tabloid"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:32
+msgid "_Document Orientation"
+msgstr "Orientacija iz dokumenta"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:33
+msgid "_Document Size"
+msgstr "Velikost iz dokumenta"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:34
+msgid "_First page"
+msgstr "Pr_va stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:35
+msgid "_Landscape"
+msgstr "_Ležeče"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:36
+msgid "_Last page"
+msgstr "_Zadnja stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:37
+msgid "_Next page"
+msgstr "_Naslednja stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:38
+msgid "_Orientation"
+msgstr "_Orientacija"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:39
+msgid "_Portrait"
+msgstr "_Pokončno"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:40
+msgid "_Previous page"
+msgstr "_Prejšnja stran"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:41
+msgid "_Print document"
+msgstr "Na_tisni dokument"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:42
+msgid "_Print marked pages"
+msgstr "Natisni označene st_rani"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:43
+msgid "_Save marked pages"
+msgstr "_Shrani označene strani"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:44
+msgid "_Seascape"
+msgstr "_Narobe ležeče"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:45
+msgid "_Size"
+msgstr "_Velikost strani"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:46
+msgid "_Upside down"
+msgstr "Naro_be pokončno"
+
+#: bonobo/ggv-postscript-view-ui.xml.h:47 src/ggv-ui.xml.h:36
+msgid "_View"
+msgstr "_Pogled"
+
+#: bonobo/ggv-postscript-view.c:746
+#, c-format
+msgid ""
+"Unable to execute print command:\n"
+"%s"
+msgstr ""
+"Ne morem izvršiti ukaza za tiskanje:\n"
+"%s"
+
+#: bonobo/ggv-postscript-view.c:800
+msgid ""
+"No pages have been marked.\n"
+"Do you want to save the whole document?"
+msgstr ""
+"Nobena stran ni označena.\n"
+"Želite shraniti celoten dokument?"
+
+#: bonobo/ggv-postscript-view.c:820
+msgid "Select a file to save pages as"
+msgstr "Izberi ime datoteke"
+
+#: bonobo/ggv-postscript-view.c:832
+msgid ""
+"A file with this name already exists.\n"
+"Do you want to overwrite it?"
+msgstr ""
+"Datoteka s tem imenom že obstaja.\n"
+"Želite, da jo prepišem?"
+
+#: bonobo/ggv-postscript-view.c:871
+msgid ""
+"No pages have been marked.\n"
+"Do you want to print the whole document?"
+msgstr ""
+"Nobena stran ni označena.\n"
+"Želite natisniti celoten dokument?"
+
+#: bonobo/ggv-postscript-view.c:1754
+msgid "Display"
+msgstr "Prikaz"
+
+#: bonobo/ggv-postscript-view.c:1951
+msgid "GhostScript output"
+msgstr "Ghostscriptov izhod"
+
+#: bonobo/ggv-postscript-view.c:1985
+msgid "Document title"
+msgstr "Naslov dokumenta"
+
+#: bonobo/ggv-postscript-view.c:1989
+msgid "GGV control status"
+msgstr "Stanje GGV kontrole"
+
+#: bonobo/ggv-postscript-view.c:1993
+msgid "Number of pages"
+msgstr "Število strani"
+
+#: bonobo/ggv-postscript-view.c:1997
+msgid "Page names"
+msgstr "Imena strani"
+
+#: bonobo/ggv-postscript-view.c:2001
+msgid "Current page number"
+msgstr "Številka trenutne strani"
+
+#: bonobo/ggv-postscript-view.c:2005
+msgid "Document width"
+msgstr "Širina dokumenta"
+
+#: bonobo/ggv-postscript-view.c:2009
+msgid "Document height"
+msgstr "Višina dokumenta"
+
+#: bonobo/ggv-postscript-view.c:2013
+msgid "Document orientation"
+msgstr "Orientacija dokumenta"
+
+#: bonobo/ggv-postscript-view.c:2017
+msgid "Default orientation"
+msgstr "Privzeta orientacija"
+
+#: bonobo/ggv-postscript-view.c:2021
+msgid "Default size"
+msgstr "Privzeta velikost strani"
+
+#: bonobo/ggv-postscript-view.c:2025
+msgid "Override document orientation"
+msgstr "Ignoriraj orientacijo določeno v dokumentu"
+
+#: bonobo/ggv-postscript-view.c:2029
+msgid "Override document size"
+msgstr "Ignoriraj velikost strani določeno v dokumentu"
+
+#: bonobo/ggv-postscript-view.c:2033
+msgid "Respect EOF comment"
+msgstr "Spoštuj EOF komentar"
+
+#: bonobo/ggv-postscript-view.c:2037
+msgid "Watch displayed file for changes"
+msgstr "Ponovno naloži datoteko, če se ta spremeni"
+
+#: bonobo/ggv-postscript-view.c:2041
+msgid "Antialiasing"
+msgstr "Antialiasing"
+
+#: bonobo/ggv-sidebar.c:309
+msgid "Toggle marked state of all pages"
+msgstr "Spremeni označitev vseh strani"
+
+#: bonobo/ggv-sidebar.c:310
+msgid ""
+"Toggle marked state of all pages: previously marked pages will be unmarked "
+"and unmarked ones will become marked."
+msgstr "Spremeni označitev vseh strani"
+
+#: bonobo/ggv-sidebar.c:322
+msgid "Toggle marked state of odd pages"
+msgstr "Spremeni označitev lihih strani"
+
+#: bonobo/ggv-sidebar.c:323
+msgid ""
+"Toggle marked state of odd pages: previously marked odd pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr "Spremeni označitev lihih strani."
+
+#: bonobo/ggv-sidebar.c:336
+msgid "Toggle marked state of even pages"
+msgstr "Spremeni označitev sodih strani"
+
+#: bonobo/ggv-sidebar.c:337
+msgid ""
+"Toggle marked state of even pages: previously marked even pages will be "
+"unmarked and unmarked ones will become marked."
+msgstr "Spremeni označitev sodih strani."
+
+#: bonobo/ggv-sidebar.c:350
+msgid "Clear marked state of all pages"
+msgstr "Zbriši označitev vseh strani"
+
+#: bonobo/ggv-sidebar.c:351
+msgid "Clear marked state of all pages: all pages will be unmarked."
+msgstr "Zbriši označitev vseh strani"
+
+#: ggv.desktop.in.h:1
+msgid "A Ghostscript frontend to visualize PostScript files"
+msgstr "Pregledovalnik PostScript dokumentov"
+
+#: ggv.desktop.in.h:2
+msgid "GGV PostScript Viewer"
+msgstr "GGV PostScript prikazovalnik"
+
+#: src/ggv-prefs-ui.c:311
+msgid "_Use GNOME defaults"
+msgstr "Uporabi nastavitve namizja"
+
+#: src/ggv-prefs-ui.c:312
+msgid "Show _both icons and text"
+msgstr "Prikaži ikone in besedil_o"
+
+#: src/ggv-prefs-ui.c:313
+msgid "Show only _icons"
+msgstr "Prikaži le _ikone"
+
+#: src/ggv-prefs-ui.c:314
+msgid "Show only t_ext"
+msgstr "Prikaži le _besedilo"
+
+#: src/ggv-prefs-ui.c:378
+msgid "GGV Preferences"
+msgstr "Nastavitve GGV-ja"
+
+#. zoom choice menu
+#: src/ggv-prefs-ui.c:389
+msgid "_Default Zoom:"
+msgstr "Privzeta _povečava:"
+
+#. auto-fit choice menu
+#: src/ggv-prefs-ui.c:424
+msgid "A_uto-fit mode:"
+msgstr "_Avto-povečava:"
+
+#. units choice menu
+#: src/ggv-prefs-ui.c:456
+msgid "_Coordinate units:"
+msgstr "Enote _koordinat:"
+
+#. size choice menu
+#: src/ggv-prefs-ui.c:488
+msgid "_Fallback page size:"
+msgstr "Privzeta _velikost strani:"
+
+#. override media size
+#: src/ggv-prefs-ui.c:519
+msgid "Override _document size"
+msgstr "Ignoriraj velikost _strani določeno v dokumentu"
+
+#. orientation choice menu
+#: src/ggv-prefs-ui.c:530
+msgid "Fallback _media orientation:"
+msgstr "Privzeta _orientacija dokumenta:"
+
+#. override orientation media
+#: src/ggv-prefs-ui.c:560
+msgid "O_verride document orientation"
+msgstr "Ignoriraj o_rientacijo določeno v dokumentu"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:571
+msgid "A_ntialiasing"
+msgstr "A_ntialiasing"
+
+#. respect EOF
+#: src/ggv-prefs-ui.c:582
+msgid "_Respect EOF comments"
+msgstr "Spoštuj _EOF komentar"
+
+#. watch file
+#: src/ggv-prefs-ui.c:593
+msgid "_Watch file"
+msgstr "_Nadziraj naloženo datoteko"
+
+#: src/ggv-prefs-ui.c:603
+msgid "Document"
+msgstr "Dokument"
+
+#. show side panel
+#: src/ggv-prefs-ui.c:612
+msgid "_Show side panel"
+msgstr "Prikaži stranski _pano"
+
+#: src/ggv-prefs-ui.c:622
+msgid "_Put side panel on the right-hand side"
+msgstr "Postavi stranski pano na _desno stran"
+
+#. show menubar
+#: src/ggv-prefs-ui.c:633
+msgid "Show _menubar"
+msgstr "Prikaži _menu"
+
+#. show toolbar
+#: src/ggv-prefs-ui.c:643
+msgid "Show _toolbar"
+msgstr "Prikaži _orodno vrstico"
+
+#. toolbar style
+#: src/ggv-prefs-ui.c:654
+msgid "Toolbar style"
+msgstr "Prikaz orodne vrstice"
+
+#. show statusbar
+#: src/ggv-prefs-ui.c:676
+msgid "Show s_tatusbar"
+msgstr "Prikaži _statusno vrstico"
+
+#. save geometry
+#: src/ggv-prefs-ui.c:687
+msgid "Save _geometry"
+msgstr "Posnemi _geometrijo okna"
+
+#: src/ggv-prefs-ui.c:697
+msgid "Layout"
+msgstr "Izgled"
+
+#. auto jump to beginning of page
+#: src/ggv-prefs-ui.c:707
+msgid "_Jump to beginning of page"
+msgstr "_Skoči na začetek strani"
+
+#. automatically flip pages
+#: src/ggv-prefs-ui.c:717
+msgid "Automatically _flip pages"
+msgstr "Samodejno _menjaj strani"
+
+#. show previously visible part
+#: src/ggv-prefs-ui.c:728
+msgid "Outline _last visible part when scrolling"
+msgstr "Pokaži prej _vidni položaj med premikanjem"
+
+#: src/ggv-prefs-ui.c:742
+msgid "Amount of _visible area to scroll"
+msgstr "Pomaknjeni _delež vidne površine"
+
+#: src/ggv-prefs-ui.c:759
+msgid "Navigation"
+msgstr "Navigacija"
+
+#. interpreter
+#: src/ggv-prefs-ui.c:768
+msgid "_Interpreter:"
+msgstr "PostScript _interpreter:"
+
+#. antialiasing
+#: src/ggv-prefs-ui.c:790
+msgid "A_ntialiasing:"
+msgstr "A_ntialiasing:"
+
+#. scan PDF command
+#: src/ggv-prefs-ui.c:812
+msgid "Convert _PDF to PS:"
+msgstr "Pretvorba _PDF v PS:"
+
+#. unzip command: gzip
+#: src/ggv-prefs-ui.c:834
+msgid "_Gzip:"
+msgstr "_Gzip:"
+
+#. unzip command: bzip2
+#: src/ggv-prefs-ui.c:856
+msgid "_Bzip2:"
+msgstr "_Bzip2:"
+
+#: src/ggv-prefs-ui.c:877
+msgid "Ghostscript"
+msgstr "Ghostscript"
+
+#. print command
+#: src/ggv-prefs-ui.c:886
+msgid "_Print command:"
+msgstr "Ukaz za _tiskanje:"
+
+#: src/ggv-prefs-ui.c:906
+msgid "Printing"
+msgstr "Tiskanje"
+
+#: src/ggv-ui.xml.h:1
+msgid "About this application"
+msgstr "O aplikaciji"
+
+#: src/ggv-ui.xml.h:2
+msgid "Cancel"
+msgstr "_Prekliči"
+
+#: src/ggv-ui.xml.h:3
+msgid "Close"
+msgstr "_Zapri"
+
+#: src/ggv-ui.xml.h:4
+msgid "Close this window"
+msgstr "Zapri okno"
+
+#: src/ggv-ui.xml.h:5
+msgid "E_xit"
+msgstr "_Končaj"
+
+#: src/ggv-ui.xml.h:6
+msgid "Exit the program"
+msgstr "Končaj program"
+
+#: src/ggv-ui.xml.h:7
+msgid "Fullscreen mode"
+msgstr "Uporabi cel zaslon"
+
+#: src/ggv-ui.xml.h:8
+msgid "Help for this application"
+msgstr "Pomoč za aplikacijo"
+
+#: src/ggv-ui.xml.h:9
+msgid "New _window"
+msgstr "_Novo okno"
+
+#: src/ggv-ui.xml.h:10
+msgid "New window"
+msgstr "Novo okno"
+
+#: src/ggv-ui.xml.h:11
+msgid "Open"
+msgstr "_Odpri"
+
+#: src/ggv-ui.xml.h:12
+msgid "Open a new PostScript document"
+msgstr "Naloži PostScript dokument"
+
+#: src/ggv-ui.xml.h:13
+msgid "Open a new window"
+msgstr "Odpri novo okno"
+
+#: src/ggv-ui.xml.h:14
+msgid "Open in new window"
+msgstr "Odpri v novem oknu"
+
+#: src/ggv-ui.xml.h:15
+msgid "Open in this window"
+msgstr "Odpri v tem oknu"
+
+#: src/ggv-ui.xml.h:16
+msgid "Reload"
+msgstr "_Ponovno naloži"
+
+#: src/ggv-ui.xml.h:17
+msgid "Reload current document"
+msgstr "Ponovno naloži trenutni dokument iz datoteke"
+
+#: src/ggv-ui.xml.h:18
+msgid "Show Side_bar"
+msgstr "Prikaži stranski _pano"
+
+#: src/ggv-ui.xml.h:19
+msgid "Show _Menus"
+msgstr "Prikaži _menije"
+
+#: src/ggv-ui.xml.h:20
+msgid "Show _Statusbar"
+msgstr "Prikaži _statusno vrstico"
+
+#: src/ggv-ui.xml.h:21
+msgid "Show _Toolbar"
+msgstr "Prikaži _orodno vrstico"
+
+#: src/ggv-ui.xml.h:22
+msgid "Show/hide the menus"
+msgstr "Pokaži/skrij menije"
+
+#: src/ggv-ui.xml.h:23
+msgid "Show/hide the sidebar"
+msgstr "Pokaži/skrij stranski pano"
+
+#: src/ggv-ui.xml.h:24
+msgid "Show/hide the statusbar"
+msgstr "Pokaži/skrij statusno vrstico"
+
+#: src/ggv-ui.xml.h:25
+msgid "Show/hide the toolbar"
+msgstr "Pokaži/skrij orodno vrstico"
+
+#: src/ggv-ui.xml.h:26
+msgid "Toggle fullscreen mode"
+msgstr "Uporabi cel zaslon"
+
+#: src/ggv-ui.xml.h:27
+msgid "_About..."
+msgstr "_O aplikaciji..."
+
+#: src/ggv-ui.xml.h:28
+msgid "_Close"
+msgstr "_Zapri"
+
+#: src/ggv-ui.xml.h:29
+msgid "_Contents"
+msgstr "_Vsebina"
+
+#: src/ggv-ui.xml.h:30
+msgid "_Edit"
+msgstr "_Uredi"
+
+#: src/ggv-ui.xml.h:31
+msgid "_File"
+msgstr "_Datoteka"
+
+#: src/ggv-ui.xml.h:32
+msgid "_Help"
+msgstr "_Pomoč"
+
+#: src/ggv-ui.xml.h:33
+msgid "_Layout"
+msgstr "_Izgled"
+
+#: src/ggv-ui.xml.h:34
+msgid "_Open"
+msgstr "_Odpri..."
+
+#: src/ggv-ui.xml.h:35
+msgid "_Reload"
+msgstr "_Ponovno naloži"
+
+#: src/ggv-window.c:332 src/ggv-window.c:877
+msgid "GGV: no document loaded"
+msgstr "GGV: dokument ni naložen."
+
+#: src/ggv-window.c:373
+msgid "Select a PostScript document"
+msgstr "Izberi PostScript dokument"
+
+#: src/ggv-window.c:382
+#, c-format
+msgid ""
+"Unable to load file:\n"
+"%s"
+msgstr ""
+"Ne morem naložiti datoteke:\n"
+"%s"
+
+#. Translator Credits
+#: src/ggv-window.c:568
+msgid "translator_credits"
+msgstr "Jaka Močnik"
+
+#: src/ggv-window.c:578
+msgid "Gnome Ghostview"
+msgstr "Gnome Ghostview"
+
+#: src/ggv-window.c:581
+msgid "The GNOME PostScript document previewer"
+msgstr "Prikazovalnik PostScript dokumentov za namizje GNOME"
+
+#: src/ggv-window.c:1046
+msgid "GGV: "
+msgstr "GGV: "
+
+#: src/ggvutils.c:42
+msgid "Portrait"
+msgstr "Pokončno"
+
+#: src/ggvutils.c:43
+msgid "Landscape"
+msgstr "Ležeče"
+
+#: src/ggvutils.c:44
+msgid "Upside Down"
+msgstr "Narobe pokončno"
+
+#: src/ggvutils.c:45
+msgid "Seascape"
+msgstr "Narobe ležeče"
+
+#: src/ggvutils.c:53
+msgid "inch"
+msgstr "palec"
+
+#: src/ggvutils.c:54
+msgid "mm"
+msgstr "mm"
+
+#: src/ggvutils.c:55
+msgid "cm"
+msgstr "cm"
+
+#: src/ggvutils.c:56
+msgid "point"
+msgstr "pika"
+
+#: src/ggvutils.c:79
+msgid "None"
+msgstr "Brez"
+
+#: src/ggvutils.c:79
+msgid "Fit to page width"
+msgstr "Prikaži širino strani"
+
+#: src/ggvutils.c:79
+msgid "Fit to page size"
+msgstr "Prikaži celo stran"
+
+#: src/gtkgs.c:358
+msgid "No document loaded."
+msgstr "Dokument ni naložen."
+
+#: src/gtkgs.c:491
+msgid "File is not a valid PostScript document."
+msgstr "Datoteka ni PostScript dokument."
+
+#: src/gtkgs.c:1060
+msgid "Broken pipe."
+msgstr "Prekinjena cev."
+
+#: src/gtkgs.c:1249
+msgid "Interpreter failed."
+msgstr "Napaka interpreterja."
+
+#. report error
+#: src/gtkgs.c:1352
+#, c-format
+msgid "Error while decompressing file %s:\n"
+msgstr "Napaka pri dekompresiranju datoteke %s:\n"
+
+#: src/gtkgs.c:1424
+#, c-format
+msgid "Error while converting pdf file %s:\n"
+msgstr "Napaka pri pretvarjanju PDF datoteke %s:\n"
+
+#: src/gtkgs.c:1754
+#, c-format
+msgid "Cannot open file %s.\n"
+msgstr "Ne morem odpreti datoteke %s\n"
+
+#: src/gtkgs.c:1756
+msgid "File is not readable."
+msgstr "Ne morem prebrati datoteke."
+
+#: src/gtkgs.c:1777
+#, c-format
+msgid "Error while scanning file %s\n"
+msgstr "Napaka pri pregledovanju datoteke %s\n"
+
+#: src/gtkgs.c:1780
+msgid "The file is not a PostScript document."
+msgstr "Datoteka ni PostScript dokument."
+
+#: src/gtkgs.c:1820
+msgid "Document loaded."
+msgstr "Dokument naložen."
+
+#: src/main.c:57
+#, c-format
+msgid "Invalid geometry string \"%s\"\n"
+msgstr "Napačen opis geometrije okna: \"%s\"\n"
+
+#: src/main.c:175
+msgid "Specify the number of empty windows to open."
+msgstr "Določi število praznih oken, ki naj jih odprem"
+
+#: src/main.c:176
+msgid "Number of empty windows"
+msgstr "Število praznih oken"
+
+#: src/main.c:178
+msgid "X geometry specification (see \"X\" man page)."
+msgstr "Opis geometrije okna (glej stran z navodili \"X\")"
+
+#: src/main.c:179
+msgid "GEOMETRY"
+msgstr "GEOMETRY"
+
+#: src/main.c:225
+msgid "Could not initialize Bonobo!\n"
+msgstr "Ne morem inicializirati Bonoba!\n"
+
+#~ msgid "_Override Orientation"
+#~ msgstr "Ignoriraj _orientacijo določeno v dokumentu"
+
+#~ msgid "_Override Size"
+#~ msgstr "Ignoriraj _velikost strani določeno v dokumentu"
+
+#~ msgid "Copyright (C) 1998-2002 The Free Software Foundation"
+#~ msgstr "Copyright (C) 1998-2002 The Free Software Foundation"
+
+#~ msgid "Scan PDF:"
+#~ msgstr "Preiskovanje PDF datotek:"
+
+#~ msgid "_Settings"
+#~ msgstr "_Nastavitve"
+
+#~ msgid ""
+#~ "Ghostscript error:\n"
+#~ "Probably the file is not a PostScript file."
+#~ msgstr ""
+#~ "Napaka Ghostscripta:\n"
+#~ "Datoteka verjetno ni PostScript dokument."
+
+#~ msgid "Show side panel by default"
+#~ msgstr "Prikaži stranski pano"
+
+#~ msgid "Show menubar by default"
+#~ msgstr "Prikaži menije"
+
+#~ msgid "Show toolbar by default"
+#~ msgstr "Prikaži orodno vrstico"
+
+#~ msgid "Show statusbar by default"
+#~ msgstr "Prikaži statusno vrstico"
+
+#~ msgid "At end"
+#~ msgstr "Na koncu"
+
+#~ msgid "Unspecified"
+#~ msgstr "Nedoločena"
+
+#~ msgid "Unknown"
+#~ msgstr "Neznana"
+
+#~ msgid "Encapsulated PostScript"
+#~ msgstr "Enkapsuliran PostScript"
+
+#~ msgid "Structured PostScript"
+#~ msgstr "Strukturiran PostScript"
+
+#~ msgid "Unstructured PostScript"
+#~ msgstr "Nestrukturiran PostScript"
+
+#~ msgid ""
+#~ "Filename: %s %s. Magnification %3d%%. Document Orientation: %s. Override "
+#~ "Size: %s"
+#~ msgstr ""
+#~ "Datoteka: %s %s. Povečava %3d%%. Orientacija: %s. Ignoriraj velikost "
+#~ "strani v datoteki: %s"
+
+#~ msgid "Yes"
+#~ msgstr "da"
+
+#~ msgid "gs warnings for %s"
+#~ msgstr "Opozorila Ghostscripta za %s"
+
+#~ msgid "Opening %s..."
+#~ msgstr "Odpiram %s..."
+
+#~ msgid "Successfully loaded %s."
+#~ msgstr "%s uspešno naložen."
+
+#~ msgid "Successfully saved marked pages to file %s."
+#~ msgstr "Označene strani so bile shranjene v datoteko %s."
+
+#~ msgid "Unable to create %s."
+#~ msgstr "Ne morem ustvariti datoteke %s."
+
+#~ msgid "_Next Page"
+#~ msgstr "_Naslednja stran"
+
+#~ msgid "_Previous Page"
+#~ msgstr "_Prejšnja stran"
+
+#~ msgid "_Recenter Page"
+#~ msgstr "Postavi stran na _sredino"
+
+#~ msgid "Toggle _all pages"
+#~ msgstr "Spremeni označitev _vseh strani"
+
+#~ msgid "Toggle o_dd pages"
+#~ msgstr "Spremeni označitev _lihih strani"
+
+#~ msgid "Toggle _even pages"
+#~ msgstr "Spremeni označitev _sodih strani"
+
+#~ msgid "_Unmark all pages"
+#~ msgstr "Zbriši označitev vseh strani"
+
+#~ msgid "Portrait orientation"
+#~ msgstr "Pokončna orientacija dokumenta"
+
+#~ msgid "Landscape orientation"
+#~ msgstr "Ležeča orientacija dokumenta"
+
+#~ msgid "_Upside Down"
+#~ msgstr "Narobe pokončno"
+
+#~ msgid "Upside down orientation"
+#~ msgstr "Narobe obrnjena pokončna orientacija dokumenta"
+
+#~ msgid "Seascape orientation"
+#~ msgstr "Narobe obrnjena ležeča orientacija dokumenta"
+
+#~ msgid "_Override Document Orientation"
+#~ msgstr "Ignoriraj orientacijo dokumenta"
+
+#~ msgid "Override the orientation of the document."
+#~ msgstr "Ignoriraj orientacijo določeno v dokumentu"
+
+#~ msgid "_Override Document Size"
+#~ msgstr "Ignoriraj velikost strani določeno v dokumentu"
+
+#~ msgid "Override the size of page to use."
+#~ msgstr "Ignoriraj velikost strani določeno v dokumentu"
+
+#~ msgid "Zoom document width to fit in visible area"
+#~ msgstr "Prilagodi velikost dokumenta vidni sirini"
+
+#~ msgid "Toggle menu visibility"
+#~ msgstr "Spremeni prikaz menijev"
+
+#~ msgid "Toggle side panel visibility"
+#~ msgstr "Spremeni prikaz stranskega panoja"
+
+#~ msgid "Toggle toolbar visibility"
+#~ msgstr "Spremeni prikaz menijev"
+
+#~ msgid "Toggle statusbar visibility"
+#~ msgstr "Spremeni prikaz statusne vrstice"
+
+#~ msgid "_Open..."
+#~ msgstr "_Odpri..."
+
+#~ msgid "_Print"
+#~ msgstr "_Natisni"
+
+#~ msgid "Prin_t marked pages"
+#~ msgstr "Natisni označene strani"
+
+#~ msgid "Exit GGv"
+#~ msgstr "Konča delo z GGv"
+
+#~ msgid "Show previous page"
+#~ msgstr "Pokaže prejšnjo stran"
+
+#~ msgid "Toggle _odd pages"
+#~ msgstr "Spremeni označitev _lihih strani"
+
+#~ msgid "Antia_liasing"
+#~ msgstr "Spremeni označitev _vseh strani"
+
+#~ msgid "Toggle antialiasing"
+#~ msgstr "Spremeni označitev _vseh strani"
+
+#~ msgid "Updates display if file changes."
+#~ msgstr "Ponovno naloži datoteko, če se ta spremeni"
+
+#~ msgid "Orien_tation"
+#~ msgstr "_Orientacija"
+
+#~ msgid "_Document"
+#~ msgstr "_Dokument"
+
+#~ msgid "New"
+#~ msgstr "Novo okno"
+
+#~ msgid "Create a new window"
+#~ msgstr "Odpri novo okno"
+
+#~ msgid "Previous page"
+#~ msgstr "Prejšnja stran"
+
+#~ msgid "Zoom out"
+#~ msgstr "Zmanjšaj povečavo"
+
+#~ msgid "Zoom in"
+#~ msgstr "Povečaj povečavo"
+
+#~ msgid "Print marked"
+#~ msgstr "Natisni označene strani"
+
+#~ msgid "Save marked"
+#~ msgstr "Shrani _označene strani"
+
+#~ msgid "Preferences"
+#~ msgstr "Nastavitve"
+
+#~ msgid "Unmark all pages"
+#~ msgstr "Zbriši označitev vseh strani"
+
+#~ msgid "Do not use sidebar and toolbar (deprecated)"
+#~ msgstr "Ne prikaži stranskega panoja in ukazne vrstice"
+
+#~ msgid "SPARTAN"
+#~ msgstr "SPARTAN"
+
+#~ msgid "NOSIDEBAR"
+#~ msgstr "NOMENUBAR"
+
+#~ msgid "Do not use a menu bar"
+#~ msgstr "Ne prikaži menijev"
+
+#~ msgid "NOMENUBAR"
+#~ msgstr "NOMENUBAR"
+
+#~ msgid "Do not use a tool bar"
+#~ msgstr "Ne prikaži menijev"
+
+#~ msgid "NOTOOLBAR"
+#~ msgstr "NOTOOLBAR"
+
+#~ msgid "Do not use a status bar"
+#~ msgstr "Ne prikaži statusne vrstice"
+
+#~ msgid "NOSTATUSBAR"
+#~ msgstr "NOSTATUSBAR"
+
+#~ msgid "Use the whole screen for the main window"
+#~ msgstr "Uporabi celoten zaslon za glavno okno"
+
+#~ msgid "FULLSCREEN"
+#~ msgstr "FULLSCREEN"
+
+#~ msgid "%s does not exist."
+#~ msgstr "%s ne obstaja."
+
+#~ msgid ""
+#~ "PostScript(TM) document viewer.\n"
+#~ "Based on Tim Theisen's excellent Ghostview application."
+#~ msgstr ""
+#~ "Prikazovalnik PostScript(TM) dokumentov.\n"
+#~ "Zasnovan na odličnem Ghostviewju Tima Theisena."
+
+#~ msgid "GGv: Open File"
+#~ msgstr "GGv: Odpri datoteko"
+
+#~ msgid "There are no marked pages."
+#~ msgstr "Ni označenih strani."
+
+#~ msgid "GGv: Save marked pages"
+#~ msgstr "GGv: Shrani označene strani"
+
+#~ msgid "Couldn't find the GGv manual!"
+#~ msgstr "Ne najdem navodil za GGv!"
+
+#~ msgid "GNOME Ghostview"
+#~ msgstr "GNOME Ghostview"

@@ -1,0 +1,100 @@
+<Root>
+
+<commands>
+  <cmd name="FileExit" _label="E_xit" _tip="Exit the program"
+       pixtype="stock" pixname="Quit" accel="*Control*q"/>
+  <cmd name="FileOpen" _label="_Open" _tip="Open a new PostScript document"
+       pixtype="stock" pixname="Open" accel="*Control*o"/>
+  <cmd name="FileReload" _label="_Reload" _tip="Reload current document"
+       pixtype="stock" pixname="gtk-refresh" accel="*Control*r"/>  
+  <cmd name="FileClose" _label="_Close" _tip="Close this window"
+       pixtype="stock" pixname="Close" accel="*Control*w"/>
+  <cmd name="FileNew" _label="New _window" _tip="Open a new window"
+       pixtype="stock" pixname="New" accel="*Control*n"/>
+
+  <cmd name="SettingsShowMenus" _label="Show _Menus"
+       type="toggle" _tip="Show/hide the menus"/>
+  <cmd name="SettingsShowSidebar" _label="Show Side_bar"
+       type="toggle" _tip="Show/hide the sidebar"/>
+  <cmd name="SettingsShowToolbar" _label="Show _Toolbar"
+       type="toggle" _tip="Show/hide the toolbar"/>
+  <cmd name="SettingsShowStatusbar" _label="Show _Statusbar"
+       type="toggle" _tip="Show/hide the statusbar"/>
+
+  <cmd name="ViewFullscreen" _label="Fullscreen mode"
+       type="toggle" _tip="Toggle fullscreen mode"/>
+
+   <cmd name="Help" _label="_Contents" _tip="Help for this application"
+       pixtype="stock" pixname="Help" accel="F1"/>
+  <cmd name="HelpAbout" _label="_About..." _tip="About this application"
+       pixtype="stock" pixname="About"/>
+	
+  <cmd name="DnDNewWindow" _label="Open in new window"/>
+  <cmd name="DnDThisWindow" _label="Open in this window"/>
+  <cmd name="DnDCancel" _label="Cancel" pixtype="stock" pixname="Cancel"/>
+</commands>
+
+<menu>
+  <submenu name="File" _label="_File">
+    <menuitem name="FileNew" verb=""/>
+    <menuitem name="FileOpen" verb=""/>
+    <menuitem name="FileReload" verb=""/>
+    <placeholder name="File Items Placeholder" delimit="top"/>
+    <menuitem name="FileClose" verb=""/>
+    <separator/>
+    <menuitem name="FileExit" verb=""/>
+  </submenu>
+  <submenu name="Edit" _label="_Edit">
+    <placeholder name="Edit Items Placeholder" delimit="top"/>
+  </submenu>
+  <submenu name="View" _label="_View">
+    <placeholder name="View Items Placeholder" delimit="bottom"/>
+    <separator/>
+    <menuitem name="ViewFullscreen" verb=""/>
+    <placeholder name="Zoom Items Placeholder" delimit="top"/>
+    <separator/>
+    <submenu name="ViewLayout" _label="_Layout">
+      <menuitem name="SettingsShowMenus" verb=""/>
+      <menuitem name="SettingsShowSidebar" verb=""/>
+      <menuitem name="SettingsShowToolbar" verb=""/>
+      <menuitem name="SettingsShowStatusbar" verb=""/>
+    </submenu>
+  </submenu>
+  <submenu name="Help" _label="_Help">
+    <menuitem name="Help" verb=""/>
+    <menuitem name="HelpAbout" verb=""/>
+  </submenu>
+</menu>
+
+<dockitem name="Toolbar" relief="none" homogeneous="1" behavior="exclusive">
+  <toolitem name="TBNew" _label="New window" pixtype="stock"
+            pixname="New" verb="FileNew" priority="1"/>
+  <toolitem name="TBOpen" _label="Open" pixtype="stock"
+            pixname="Open" verb="FileOpen" priority="1"/>
+  <toolitem name="TBReload" _label="Reload" pixtype="stock"
+            pixname="gtk-refresh" verb="FileReload" priority="1"/>
+  <toolitem name="TBCloseWindow" _label="Close" pixtype="stock"
+            pixname="Close" verb="FileClose"/>
+</dockitem>
+
+<popups>
+  <popup name="DnD">
+    <menuitem name="DnDNewWindow" verb=""/>
+    <menuitem name="DnDThisWindow" verb=""/>
+    <separator/>
+    <menuitem name="DnDCancel" verb=""/>
+  </popup>
+  <popup name="button3">
+    <placeholder name="NavigationMenu"/>
+    <separator/>
+    <menuitem name="ViewFullscreen" verb=""/>
+    <placeholder name="ZoomMenu" delimit="top"/>
+    <separator/>
+    <menuitem name="SettingsShowMenus" verb=""/>
+    <menuitem name="SettingsShowSidebar" verb=""/>
+    <menuitem name="SettingsShowToolbar" verb=""/>
+    <menuitem name="SettingsShowStatusbar" verb=""/>
+  </popup>
+</popups>
+
+</Root>
