@@ -17,7 +17,7 @@
  * functions to set up and revert user home directories.
  */
 
-static const char rcsid[] = "$Id: homedir.c,v 1.6 1997-11-17 22:06:18 danw Exp $";
+static const char rcsid[] = "$Id: homedir.c,v 1.7 1998-01-14 17:09:59 ghudson Exp $";
 
 #include <hesiod.h>
 #include <stdio.h>
@@ -96,12 +96,12 @@ int al__setup_homedir(const char *username, struct al_record *record,
       if (havecred)
 	{
 	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
-		"-nozephyr", username, (char *) 0);
+		"-nozephyr", username, (char *) NULL);
 	}
       else
 	{
 	  execl(PATH_ATTACH, "attach", "-user", username, "-quiet",
-		"-nozephyr", "-nomap", username, (char *) 0);
+		"-nozephyr", "-nomap", username, (char *) NULL);
 	}
       _exit(1);
 
@@ -195,7 +195,7 @@ int al__setup_homedir(const char *username, struct al_record *record,
 	      if (!tmpfile)
 		_exit(1);
 	      sprintf(tmpfile, "%s/%s", PATH_TMPPROTO, entry->d_name);
-	      execlp("cp", "cp", tmpfile, tmpdir, (char *) 0);
+	      execlp("cp", "cp", tmpfile, tmpdir, (char *) NULL);
 	      _exit(1);
 
 	    default:
@@ -278,7 +278,7 @@ int al__revert_homedir(const char *username, struct al_record *record)
 	      || setuid(local_pwd->pw_uid) == -1)
 	    _exit(1);
 	  execl(PATH_DETACH, "detach", "-quiet", "-nozephyr",
-		username, (char *) 0);
+		username, (char *) NULL);
 	  _exit(1);
 
 	default:
