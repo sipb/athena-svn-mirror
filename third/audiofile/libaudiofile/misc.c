@@ -25,6 +25,10 @@
 	Library's internal miscellaneous data types.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,7 +37,7 @@
 #include "afinternal.h"
 #include "util.h"
 
-_Miscellaneous *find_misc_by_id (AFfilehandle file, int id)
+static _Miscellaneous *find_misc_by_id (AFfilehandle file, int id)
 {
 	int	i;
 
@@ -48,7 +52,7 @@ _Miscellaneous *find_misc_by_id (AFfilehandle file, int id)
 	return NULL;
 }
 
-_MiscellaneousSetup *find_miscsetup_by_id (AFfilesetup setup, int id)
+static _MiscellaneousSetup *find_miscsetup_by_id (AFfilesetup setup, int id)
 {
 	int	i;
 

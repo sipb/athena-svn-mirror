@@ -1,7 +1,216 @@
+2003-12-21  Michael Pruett <michael@68k.org>
+
+	* Released version 0.2.5 of the Audio File Library.
+
+2003-12-20  Michael Pruett <michael@68k.org>
+
+	* test/seek.c: Delete temporary file before exiting.
+
+2003-12-17  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/aiff.c: When reading an AIFF-C file with an
+	unknown compression type, return an error.
+
+	* libaudiofile/aiff.c: Skip zero-length miscellaneous chunks.
+
+	* libaudiofile/aiff.c: Add support for reading AIFF-C files with
+	little-endian audio data.
+
+2003-12-17  Michael Pruett <michael@68k.org>
+
+	Fix two bugs related to processing 24-bit audio data.
+
+	* libaudiofile/data.c: Fix calculation of bytes per virtual frame
+	in the case of 24-bit audio data.  Previously, requesting more
+	than _AF_ATOMIC_NVFRAMES from afReadFrames when reading a 24-bit
+	audio file would result in corrupted audio data since the audio
+	data pointer would be incremented using a sample size of 3 bytes
+	rather than 4 bytes.
+
+	* libaudiofile/openclose.c: Set virtual sample width by default to
+	the same value as file sample width.  Previously for 24-bit audio
+	data, the virtual sample width would be incorrectly set to 32.
+
+	* test/twentyfour2.c: Add new test which checks reading and
+	writing a large amount of 24-bit audio data.  This program
+	serves as a regression test for a bug in the Audio File Library
+	in which requesting more than 1024 frames (_AF_ATOMIC_NVFRAMES)
+	from afReadFrames when reading a 24-bit audio file would result
+	in corrupted audio data.
+
+2003-12-08  Michael Pruett <michael@68k.org>
+
+	* examples/*, test/*: Add examples subdirectory. Separate
+	example programs from regression test programs. Remove obsolete
+	test programs.
+
+2003-12-03  Michael Pruett <michael@68k.org>
+
+	* sfcommands/sfconvert.c: Fix argument parsing in sfconvert.
+	* sfcommands/printinfo.c: Fix format strings to handle different
+	sizes of off_t when printing track byte count, data offset,
+	and frame count.
+
+2003-10-01  Michael Pruett <michael@68k.org>
+
+	* sfcommands/printinfo.c: Change printfileinfo to display duration
+	with millisecond accuracy.
+
+2003-09-29  Michael Pruett <michael@68k.org>
+
+	* test/seek.c: Include <string.h> for memcmp.  Thanks to Christian
+	Weisgerber for catching this omission.
+
+2003-09-25  Michael Pruett <michael@68k.org>
+
+	* Released version 0.2.4 of the Audio File Library.
+
+2003-09-24  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/afinternal.h: Remove unused structure definitions.
+	* libaudiofile/audiofile.h: Correct return type of afTellFrame
+	to be AFframecount rather than AFfileoffset.
+
+2003-09-23  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/modules/ima.c: Include <config.h>.
+
+2003-09-16  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/audiofile.h: Define LIBAUDIOFILE_MICRO_VERSION.
+
+2003-09-15  Michael Pruett <michael@68k.org>
+
+	* test/Makefile.am, test/seek.c: Add test case for seeking within
+	an audio file.
+
+2003-09-11  Michael Pruett <michael@68k.org>
+
+	* test/*.c: Update tests to use exit(EXIT_FAILURE) upon abnormal
+	termination.
+
+2003-09-11  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/wave.c, libaudiofile/wavewrite.c: Add support
+	for miscellaneous data in WAVE files.  Thanks to Davy Durham
+	for this patch.
+
+	* test/{misc.sh,miscread.c,miscwrite.c}: Update miscellaneous
+	data tests to support WAVE as well as AIFF.
+
+2003-09-11  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/*.c: Replace use of off_t with AFfileoffset and
+	AFframecount, as appropriate.
+	* configure.in: Add AC_SYS_LARGEFILE in order to support large
+	files.
+
+2003-09-09  Michael Pruett <michael@68k.org>
+
+	* libaudiofile/*.c: Include <config.h> as necessary.
+
+2003-09-08  Michael Pruett <michael@68k.org>
+
+	* test/*.c: Update test programs to include <config.h> as necessary.
+
+2003-09-04  Michael Pruett <michael@68k.org>
+
+	* configure.in, libaudiofile/{aiff.c,aiff.h,aiffwrite.c},
+	libaudiofile/{ircam.c,ircamwrite.c}, libaudiofile/modules.h,
+	libaudiofile/{next.c,nextwrite.c}, libaudiofile/nist.c,
+	libaudiofile/{wave.c,wavewrite.c}, libaudiofile/modules/adpcm.h,
+	test/{pipe.c,sixteen-to-eight.c,twentyfour.c}: Check for
+	<inttypes.h> and include it if available.
+
+	Thanks to Daniel Bergstrom for proposing this change.
+
+2003-08-21  Michael Pruett <mpruett@sgi.com>
+
+	* configure.in, Makefile.am, win32/Makefile.am: Include win32
+	directory in distribution.
+
+2003-07-02  Michael Pruett <mpruett@sgi.com>
+
+	* test/testchannelmatrix.c, test/Makefile.am: Add regression
+	test for channel matrix functionality.
+
+2003-07-01  Michael Pruett <mpruett@sgi.com>
+
+	Applying a patch from Masahiro Sakai to enable building as a
+	DLL under Cygwin.
+
+	* configure.in: Add AC_LIBTOOL_WIN32_DLL and call
+	AM_PROG_LIBTOOL after AC_PROG_CC.
+	* libaudiofile/Makefile.am: Add -no-undefined to
+	libaudiofile_la_LDFLAGS.
+
+2003-06-10  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/format.c: Fix error in channel matrix
+	initialization.  Thanks to Jasmin Frenette for reporting this
+	problem.
+
+2002-09-11  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/raw.c: Account for data offset when calculating
+	frame count on raw audio data files.
+
+	Thanks to Davy Durham for reporting this problem.
+
+	* test/writeraw.c, test/Makefile.am: Add a regression test for
+	raw audio data files.
+
+2002-05-17  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/wave.c: Add support for reading names of markers
+	in WAVE files.  Locations of WAVE markers are now assumed to be
+	in units of frames as is the case with Sound Forge.
+	* libaudiofile/wavewrite.c, libaudiofile/wave.h: Add support
+	for writing markers in WAVE files.
+
+	Thanks to Davy Durham for the above patches.
+
+	* libaudiofile/marker.[ch]: Change static function findMarkByID
+	to non-static _af_mark_find_by_id for use by WAVE file marker
+	code.
+
+	* test/testmarkers.c: Add a regression test for markers.
+	* test/printmarkers.c: Add a utility for printing marker
+	information.
+	* test/Makefile.am: Add testmarkers and printmarkers.
+
+2002-05-16  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/wave.c: Compute the frame count of uncompressed
+	WAVE files using double-precision floating-point arithmetic.
+
+2002-05-16  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/openclose.c: Implement afOpenVirtualFile.
+
+2002-03-24  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/marker.c: afInitMarkerComment was corrupting the
+	marker's name because it would free and allocate the marker's
+	name but write to its comment.  Thanks to Daniel Kobras and
+	Davy Durham for noticing and fixing this problem.
+
+2002-02-20  Michael Pruett <mpruett@sgi.com>
+
+	* libaudiofile/*: Eliminate unnecessary global symbols.  Thanks
+	to Daniel Kobras for fixing this problem.
+
+2002-02-04  Michael Pruett <mpruett@sgi.com>
+
+	* audiofile.spec.in: Add /usr/lib/libaudiofile.la and
+	/usr/lib/pkgconfig/audiofile.pc to the RPM spec file.
+
 2001-10-25  Michael Pruett <mpruett@sgi.com>
 
 	* test/irixread.c: Improve error handling.  Use proper
 	conversion specifications in printf statements.
+
+	* Makefile.am, configure.in, audiofile.pc.in: Add pkgconfig file.
 
 	* Released version 0.2.3 of the Audio File Library.
 

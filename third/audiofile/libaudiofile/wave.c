@@ -34,6 +34,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
 
 #include "audiofile.h"
 #include "util.h"
@@ -352,62 +357,6 @@ static status ParseData (AFfilehandle filehandle, AFvirtualfile *fp,
 	return AF_SUCCEED;
 }
 
-static status ParseInfo (AFfilehandle file, AFvirtualfile *fp,
-	u_int32_t id, size_t size)
-{
-	int	location = 0;
-
-	while (location < size)
-	{
-		int		misctype = AF_MISC_UNRECOGNIZED;
-		u_int32_t	miscid, miscsize;
-
-		af_fread(&miscid, 4, 1, fp);
-		location += 4;
-		af_fread(&miscsize, 4, 1, fp);
-		miscsize = LENDIAN_TO_HOST_INT32(miscsize);
-		location += 4;
-
-		if (memcmp(&miscid, "IART", 4) == 0)
-			misctype = AF_MISC_AUTH;
-		else if (memcmp(&miscid, "INAM", 4) == 0)
-			misctype = AF_MISC_NAME;
-		else if (memcmp(&miscid, "ICOP", 4) == 0)
-			misctype = AF_MISC_COPY;
-		else if (memcmp(&miscid, "ICMT", 4) == 0)
-			misctype = AF_MISC_ICMT;
-		else if (memcmp(&miscid, "ICRD", 4) == 0)
-			misctype = AF_MISC_ICRD;
-		else if (memcmp(&miscid, "ISFT", 4) == 0)
-			misctype = AF_MISC_ISFT;
-
-		if (misctype != AF_MISC_UNRECOGNIZED)
-		{
-			char	*string = _af_malloc(miscsize);
-
-			af_fread(string, miscsize, 1, fp);
-
-			file->miscellaneousCount++;
-			file->miscellaneous = _af_realloc(file->miscellaneous, sizeof (_Miscellaneous) * file->miscellaneousCount);
-
-			file->miscellaneous[file->miscellaneousCount-1].id = file->miscellaneousCount;
-			file->miscellaneous[file->miscellaneousCount-1].type = misctype;
-			file->miscellaneous[file->miscellaneousCount-1].size = miscsize;
-			file->miscellaneous[file->miscellaneousCount-1].position = 0;
-			file->miscellaneous[file->miscellaneousCount-1].buffer = string;
-
-			location += miscsize;
-		}
-
-		/*
-			Make the current position an even number of bytes.
-		*/
-		if (miscsize % 2 != 0)
-			af_fseek(fp, 1, SEEK_CUR);
-	}
-	return AF_SUCCEED;
-}
-
 static status ParsePlayList (AFfilehandle filehandle, AFvirtualfile *fp,
 	u_int32_t id, size_t size)
 {
@@ -440,7 +389,7 @@ static status ParsePlayList (AFfilehandle filehandle, AFvirtualfile *fp,
 	return AF_SUCCEED;
 }
 
-static status ParseCue (AFfilehandle filehandle, AFvirtualfile *fp,
+static status ParseCues (AFfilehandle filehandle, AFvirtualfile *fp,
 	u_int32_t id, size_t size)
 {
 	_Track		*track;
@@ -466,7 +415,7 @@ static status ParseCue (AFfilehandle filehandle, AFvirtualfile *fp,
 	{
 		u_int32_t	id, position, chunkid;
 		u_int32_t	chunkByteOffset, blockByteOffset;
-		u_int32_t	sampleByteOffset;
+		u_int32_t	sampleFrameOffset;
 		_Marker		*marker = &track->markers[i];
 
 		af_fread(&id, 4, 1, fp);
@@ -484,15 +433,167 @@ static status ParseCue (AFfilehandle filehandle, AFvirtualfile *fp,
 		af_fread(&blockByteOffset, 4, 1, fp);
 		blockByteOffset = LENDIAN_TO_HOST_INT32(blockByteOffset);
 
-		af_fread(&sampleByteOffset, 4, 1, fp);
-		sampleByteOffset = LENDIAN_TO_HOST_INT32(sampleByteOffset);
+		/*
+			sampleFrameOffset represents the position of
+			the mark in units of frames.
+		*/
+		af_fread(&sampleFrameOffset, 4, 1, fp);
+		sampleFrameOffset = LENDIAN_TO_HOST_INT32(sampleFrameOffset);
 
 		marker->id = id;
-		marker->position = sampleByteOffset;
+		marker->position = sampleFrameOffset;
 		marker->name = _af_strdup("");
 		marker->comment = _af_strdup("");
 	}
 
+	return AF_SUCCEED;
+}
+
+/* Parse an adtl sub-chunk within a LIST chunk. */
+static status ParseADTLSubChunk (AFfilehandle filehandle, AFvirtualfile *fp,
+	u_int32_t id, size_t size)
+{
+	_Track		*track;
+	AFfileoffset	endPos=af_ftell(fp)+size;
+
+	track = _af_filehandle_get_track(filehandle, AF_DEFAULT_TRACK);
+
+	while (af_ftell(fp) < endPos)
+	{
+		char		chunkID[4];
+		u_int32_t	chunkSize;
+
+		af_fread(chunkID, 4, 1, fp);
+		af_fread(&chunkSize, 4, 1, fp);
+		chunkSize = LENDIAN_TO_HOST_INT32(chunkSize);
+
+		if (memcmp(chunkID, "labl", 4)==0 || memcmp(chunkID, "note", 4)==0)
+		{
+			_Marker *marker=NULL;
+			u_int32_t id;
+			long length=chunkSize-4;
+			char *p=_af_malloc(length);
+
+			af_fread(&id, 4, 1, fp);
+			af_fread(p, length, 1, fp);
+
+			id = LENDIAN_TO_HOST_INT32(id);
+
+			marker = _af_marker_find_by_id(track, id);
+
+			if (marker != NULL)
+			{
+				if (memcmp(chunkID, "labl", 4)==0)
+				{
+					free(marker->name);
+					marker->name = p;
+				}
+				else if (memcmp(chunkID, "note", 4)==0)
+				{
+					free(marker->comment);
+					marker->comment = p;
+				}
+				else
+					free(p);
+			}
+			else
+				free(p);
+
+			/*
+				If chunkSize is odd, skip an extra byte
+				at the end of the chunk.
+			*/
+			if ((chunkSize % 2) != 0)
+				af_fseek(fp, 1, SEEK_CUR);
+		}
+		else
+		{
+			/* If chunkSize is odd, skip an extra byte. */
+			af_fseek(fp, chunkSize + (chunkSize % 2), SEEK_CUR);
+		}
+	}
+	return AF_SUCCEED;
+}
+
+/* Parse an INFO sub-chunk within a LIST chunk. */
+static status ParseINFOSubChunk (AFfilehandle filehandle, AFvirtualfile *fp,
+	u_int32_t id, size_t size)
+{
+	AFfileoffset	endPos=af_ftell(fp)+size;
+
+	while (af_ftell(fp) < endPos)
+	{
+		int		misctype = AF_MISC_UNRECOGNIZED;
+		u_int32_t	miscid, miscsize;
+
+		af_fread(&miscid, 4, 1, fp);
+		af_fread(&miscsize, 4, 1, fp);
+		miscsize = LENDIAN_TO_HOST_INT32(miscsize);
+
+		if (memcmp(&miscid, "IART", 4) == 0)
+			misctype = AF_MISC_AUTH;
+		else if (memcmp(&miscid, "INAM", 4) == 0)
+			misctype = AF_MISC_NAME;
+		else if (memcmp(&miscid, "ICOP", 4) == 0)
+			misctype = AF_MISC_COPY;
+		else if (memcmp(&miscid, "ICMT", 4) == 0)
+			misctype = AF_MISC_ICMT;
+		else if (memcmp(&miscid, "ICRD", 4) == 0)
+			misctype = AF_MISC_ICRD;
+		else if (memcmp(&miscid, "ISFT", 4) == 0)
+			misctype = AF_MISC_ISFT;
+
+		if (misctype != AF_MISC_UNRECOGNIZED)
+		{
+			char	*string = _af_malloc(miscsize);
+
+			af_fread(string, miscsize, 1, fp);
+
+			filehandle->miscellaneousCount++;
+			filehandle->miscellaneous = _af_realloc(filehandle->miscellaneous, sizeof (_Miscellaneous) * filehandle->miscellaneousCount);
+
+			filehandle->miscellaneous[filehandle->miscellaneousCount-1].id = filehandle->miscellaneousCount;
+			filehandle->miscellaneous[filehandle->miscellaneousCount-1].type = misctype;
+			filehandle->miscellaneous[filehandle->miscellaneousCount-1].size = miscsize;
+			filehandle->miscellaneous[filehandle->miscellaneousCount-1].position = 0;
+			filehandle->miscellaneous[filehandle->miscellaneousCount-1].buffer = string;
+		}
+		else
+		{
+			af_fseek(fp, miscsize, SEEK_CUR);
+		}
+
+		/* Make the current position an even number of bytes.  */
+		if (miscsize % 2 != 0)
+			af_fseek(fp, 1, SEEK_CUR);
+	}
+	return AF_SUCCEED;
+}
+
+static status ParseList (AFfilehandle filehandle, AFvirtualfile *fp,
+	u_int32_t id, size_t size)
+{
+	u_int32_t	typeID;
+
+	af_fread(&typeID, 4, 1, fp);
+	size-=4;
+
+	if (memcmp(&typeID, "adtl", 4) == 0)
+	{
+		/* Handle adtl sub-chunks. */
+		return ParseADTLSubChunk(filehandle, fp, typeID, size);
+	}
+	else if (memcmp(&typeID, "INFO", 4) == 0)
+	{
+		/* Handle INFO sub-chunks. */
+		return ParseINFOSubChunk(filehandle, fp, typeID, size);
+	}
+	else
+	{
+		/* Skip unhandled sub-chunks. */
+		af_fseek(fp, size, SEEK_CUR);
+		return AF_SUCCEED;
+	}
 	return AF_SUCCEED;
 }
 
@@ -535,7 +636,7 @@ status _af_wave_read_init (AFfilesetup setup, AFfilehandle filehandle)
 	_Track		*track;
 	u_int32_t	type, size, formtype;
 	u_int32_t	index = 0;
-	bool		hasFormat, hasData, hasCue, hasPlayList, hasFrameCount,
+	bool		hasFormat, hasData, hasCue, hasList, hasPlayList, hasFrameCount,
 			hasINST, hasINFO;
 	_WAVEInfo	*wave = _af_malloc(sizeof (_WAVEInfo));
 
@@ -545,6 +646,7 @@ status _af_wave_read_init (AFfilesetup setup, AFfilehandle filehandle)
 	hasFormat = AF_FALSE;
 	hasData = AF_FALSE;
 	hasCue = AF_FALSE;
+	hasList = AF_FALSE;
 	hasPlayList = AF_FALSE;
 	hasFrameCount = AF_FALSE;
 	hasINST = AF_FALSE;
@@ -634,14 +736,14 @@ status _af_wave_read_init (AFfilesetup setup, AFfilehandle filehandle)
 		else if (memcmp(&chunkid, "cue ", 4) == 0)
 		{
 			hasCue = AF_TRUE;
-			result = ParseCue(filehandle, filehandle->fh, chunkid, chunksize);
+			result = ParseCues(filehandle, filehandle->fh, chunkid, chunksize);
 			if (result == AF_FAIL)
 				return AF_FAIL;
 		}
-		else if (memcmp(&chunkid, "INFO", 4) == 0)
+		else if (memcmp(&chunkid, "LIST", 4) == 0 || memcmp(&chunkid, "list", 4) == 0)
 		{
-			hasINFO = AF_TRUE;
-			result = ParseInfo(filehandle, filehandle->fh, chunkid, chunksize);
+			hasList = AF_TRUE;
+			result = ParseList(filehandle, filehandle->fh, chunkid, chunksize);
 			if (result == AF_FAIL)
 				return AF_FAIL;
 		}
@@ -682,28 +784,12 @@ status _af_wave_read_init (AFfilesetup setup, AFfilehandle filehandle)
 	*/
 	if (hasFrameCount == AF_FALSE)
 	{
-		track->totalfframes = track->data_size /
-			_af_format_frame_size(&track->f, AF_FALSE);
-	}
-
-	/*
-		The format and data chunks must be present.
-
-		The WAVE format requires only that the format chunk must
-		precede the data chunk.  All other chunks can occur in
-		any order.
-
-		Because we allow chunks to come in any order, we must
-		post-process the markers' position now that we know the
-		track's audio format has been initialized.
-
-		Perhaps it's a hack, but no more so than the WAVE format.
-	*/
-	if (hasCue)
-	{
-		int	i;
-		for (i=0; i<track->markerCount; i++)
-			track->markers[i].position /= _af_format_frame_size(&track->f, AF_FALSE);
+		/*
+			Perform arithmetic in double-precision so as
+			to preserve accuracy.
+		*/
+		track->totalfframes = ceil((double) track->data_size /
+			_af_format_frame_size(&track->f, AF_FALSE));
 	}
 
 	if (track->f.compressionType != AF_COMPRESSION_NONE &&

@@ -88,8 +88,6 @@ install_sh = @install_sh@
 INCLUDES = -I$(top_srcdir)/libaudiofile
 
 noinst_PROGRAMS = \
-	adddcoffset \
-	copy \
 	error \
 	floatto24 \
 	transparency \
@@ -101,69 +99,51 @@ noinst_PROGRAMS = \
 	writeircam \
 	writenext \
 	writewave \
+	writeraw \
 	writeulaw \
 	writealaw \
-	virtual \
 	loop \
 	instparamwrite \
 	instparamtest \
 	sixteen-to-eight \
 	testfloat \
 	twentyfour \
-	power \
+	twentyfour2 \
 	pipe \
-	@TEST_BIN@
+	testmarkers \
+	testchannelmatrix \
+	printmarkers \
+	seek
 
 
 EXTRA_DIST = transparency.sh misc.sh pipe.sh
 
-EXTRA_PROGRAMS = irixread irixtestloop linuxtest
-
-TESTS = error writeaiff writeircam writenext writewave \
+TESTS = error writeaiff writeircam writenext writewave writeraw \
 	writeulaw writealaw \
 	misc.sh transparency.sh pipe.sh \
-	query2 sixteen-to-eight twentyfour floatto24 testfloat
+	query2 sixteen-to-eight twentyfour twentyfour2 floatto24 \
+	testfloat testmarkers testchannelmatrix seek
 
-
-irixread_SOURCES = irixread.c sgi.c sgi.h
-irixread_LDADD = $(top_builddir)/libaudiofile/libaudiofile.la @AUDIO_LIB@
-
-irixtestloop_SOURCES = irixtestloop.c sgi.c sgi.h
-irixtestloop_LDADD = $(top_builddir)/libaudiofile/libaudiofile.la @AUDIO_LIB@
-
-linuxtest_SOURCES = linuxtest.c
 
 LDADD = $(top_builddir)/libaudiofile/libaudiofile.la
-LDFLAGS = -static
 
 DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 subdir = test
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-EXTRA_PROGRAMS = irixread$(EXEEXT) irixtestloop$(EXEEXT) \
-	linuxtest$(EXEEXT)
-noinst_PROGRAMS = adddcoffset$(EXEEXT) copy$(EXEEXT) error$(EXEEXT) \
-	floatto24$(EXEEXT) transparency$(EXEEXT) miscread$(EXEEXT) \
-	miscwrite$(EXEEXT) query2$(EXEEXT) testaupv$(EXEEXT) \
-	writeaiff$(EXEEXT) writeircam$(EXEEXT) writenext$(EXEEXT) \
-	writewave$(EXEEXT) writeulaw$(EXEEXT) writealaw$(EXEEXT) \
-	virtual$(EXEEXT) loop$(EXEEXT) instparamwrite$(EXEEXT) \
-	instparamtest$(EXEEXT) sixteen-to-eight$(EXEEXT) \
-	testfloat$(EXEEXT) twentyfour$(EXEEXT) power$(EXEEXT) \
-	pipe$(EXEEXT) @TEST_BIN@
+noinst_PROGRAMS = error$(EXEEXT) floatto24$(EXEEXT) \
+	transparency$(EXEEXT) miscread$(EXEEXT) miscwrite$(EXEEXT) \
+	query2$(EXEEXT) testaupv$(EXEEXT) writeaiff$(EXEEXT) \
+	writeircam$(EXEEXT) writenext$(EXEEXT) writewave$(EXEEXT) \
+	writeraw$(EXEEXT) writeulaw$(EXEEXT) writealaw$(EXEEXT) \
+	loop$(EXEEXT) instparamwrite$(EXEEXT) instparamtest$(EXEEXT) \
+	sixteen-to-eight$(EXEEXT) testfloat$(EXEEXT) \
+	twentyfour$(EXEEXT) twentyfour2$(EXEEXT) pipe$(EXEEXT) \
+	testmarkers$(EXEEXT) testchannelmatrix$(EXEEXT) \
+	printmarkers$(EXEEXT) seek$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
-adddcoffset_SOURCES = adddcoffset.c
-adddcoffset_OBJECTS = adddcoffset.$(OBJEXT)
-adddcoffset_LDADD = $(LDADD)
-adddcoffset_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
-adddcoffset_LDFLAGS =
-copy_SOURCES = copy.c
-copy_OBJECTS = copy.$(OBJEXT)
-copy_LDADD = $(LDADD)
-copy_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
-copy_LDFLAGS =
 error_SOURCES = error.c
 error_OBJECTS = error.$(OBJEXT)
 error_LDADD = $(LDADD)
@@ -186,19 +166,6 @@ instparamwrite_LDADD = $(LDADD)
 instparamwrite_DEPENDENCIES = \
 	$(top_builddir)/libaudiofile/libaudiofile.la
 instparamwrite_LDFLAGS =
-am_irixread_OBJECTS = irixread.$(OBJEXT) sgi.$(OBJEXT)
-irixread_OBJECTS = $(am_irixread_OBJECTS)
-irixread_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
-irixread_LDFLAGS =
-am_irixtestloop_OBJECTS = irixtestloop.$(OBJEXT) sgi.$(OBJEXT)
-irixtestloop_OBJECTS = $(am_irixtestloop_OBJECTS)
-irixtestloop_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
-irixtestloop_LDFLAGS =
-am_linuxtest_OBJECTS = linuxtest.$(OBJEXT)
-linuxtest_OBJECTS = $(am_linuxtest_OBJECTS)
-linuxtest_LDADD = $(LDADD)
-linuxtest_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
-linuxtest_LDFLAGS =
 loop_SOURCES = loop.c
 loop_OBJECTS = loop.$(OBJEXT)
 loop_LDADD = $(LDADD)
@@ -219,16 +186,21 @@ pipe_OBJECTS = pipe.$(OBJEXT)
 pipe_LDADD = $(LDADD)
 pipe_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 pipe_LDFLAGS =
-power_SOURCES = power.c
-power_OBJECTS = power.$(OBJEXT)
-power_LDADD = $(LDADD)
-power_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
-power_LDFLAGS =
+printmarkers_SOURCES = printmarkers.c
+printmarkers_OBJECTS = printmarkers.$(OBJEXT)
+printmarkers_LDADD = $(LDADD)
+printmarkers_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+printmarkers_LDFLAGS =
 query2_SOURCES = query2.c
 query2_OBJECTS = query2.$(OBJEXT)
 query2_LDADD = $(LDADD)
 query2_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 query2_LDFLAGS =
+seek_SOURCES = seek.c
+seek_OBJECTS = seek.$(OBJEXT)
+seek_LDADD = $(LDADD)
+seek_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+seek_LDFLAGS =
 sixteen_to_eight_SOURCES = sixteen-to-eight.c
 sixteen_to_eight_OBJECTS = sixteen-to-eight.$(OBJEXT)
 sixteen_to_eight_LDADD = $(LDADD)
@@ -240,11 +212,22 @@ testaupv_OBJECTS = testaupv.$(OBJEXT)
 testaupv_LDADD = $(LDADD)
 testaupv_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 testaupv_LDFLAGS =
+testchannelmatrix_SOURCES = testchannelmatrix.c
+testchannelmatrix_OBJECTS = testchannelmatrix.$(OBJEXT)
+testchannelmatrix_LDADD = $(LDADD)
+testchannelmatrix_DEPENDENCIES = \
+	$(top_builddir)/libaudiofile/libaudiofile.la
+testchannelmatrix_LDFLAGS =
 testfloat_SOURCES = testfloat.c
 testfloat_OBJECTS = testfloat.$(OBJEXT)
 testfloat_LDADD = $(LDADD)
 testfloat_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 testfloat_LDFLAGS =
+testmarkers_SOURCES = testmarkers.c
+testmarkers_OBJECTS = testmarkers.$(OBJEXT)
+testmarkers_LDADD = $(LDADD)
+testmarkers_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+testmarkers_LDFLAGS =
 transparency_SOURCES = transparency.c
 transparency_OBJECTS = transparency.$(OBJEXT)
 transparency_LDADD = $(LDADD)
@@ -255,11 +238,11 @@ twentyfour_OBJECTS = twentyfour.$(OBJEXT)
 twentyfour_LDADD = $(LDADD)
 twentyfour_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 twentyfour_LDFLAGS =
-virtual_SOURCES = virtual.c
-virtual_OBJECTS = virtual.$(OBJEXT)
-virtual_LDADD = $(LDADD)
-virtual_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
-virtual_LDFLAGS =
+twentyfour2_SOURCES = twentyfour2.c
+twentyfour2_OBJECTS = twentyfour2.$(OBJEXT)
+twentyfour2_LDADD = $(LDADD)
+twentyfour2_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+twentyfour2_LDFLAGS =
 writeaiff_SOURCES = writeaiff.c
 writeaiff_OBJECTS = writeaiff.$(OBJEXT)
 writeaiff_LDADD = $(LDADD)
@@ -280,6 +263,11 @@ writenext_OBJECTS = writenext.$(OBJEXT)
 writenext_LDADD = $(LDADD)
 writenext_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
 writenext_LDFLAGS =
+writeraw_SOURCES = writeraw.c
+writeraw_OBJECTS = writeraw.$(OBJEXT)
+writeraw_LDADD = $(LDADD)
+writeraw_DEPENDENCIES = $(top_builddir)/libaudiofile/libaudiofile.la
+writeraw_LDFLAGS =
 writeulaw_SOURCES = writeulaw.c
 writeulaw_OBJECTS = writeulaw.$(OBJEXT)
 writeulaw_LDADD = $(LDADD)
@@ -294,23 +282,23 @@ writewave_LDFLAGS =
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/adddcoffset.Po $(DEPDIR)/copy.Po \
-@AMDEP_TRUE@	$(DEPDIR)/error.Po $(DEPDIR)/floatto24.Po \
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/error.Po $(DEPDIR)/floatto24.Po \
 @AMDEP_TRUE@	$(DEPDIR)/instparamtest.Po \
-@AMDEP_TRUE@	$(DEPDIR)/instparamwrite.Po $(DEPDIR)/irixread.Po \
-@AMDEP_TRUE@	$(DEPDIR)/irixtestloop.Po $(DEPDIR)/linuxtest.Po \
-@AMDEP_TRUE@	$(DEPDIR)/loop.Po $(DEPDIR)/miscread.Po \
-@AMDEP_TRUE@	$(DEPDIR)/miscwrite.Po $(DEPDIR)/pipe.Po \
-@AMDEP_TRUE@	$(DEPDIR)/power.Po $(DEPDIR)/query2.Po \
-@AMDEP_TRUE@	$(DEPDIR)/sgi.Po $(DEPDIR)/sixteen-to-eight.Po \
-@AMDEP_TRUE@	$(DEPDIR)/testaupv.Po $(DEPDIR)/testfloat.Po \
+@AMDEP_TRUE@	$(DEPDIR)/instparamwrite.Po $(DEPDIR)/loop.Po \
+@AMDEP_TRUE@	$(DEPDIR)/miscread.Po $(DEPDIR)/miscwrite.Po \
+@AMDEP_TRUE@	$(DEPDIR)/pipe.Po $(DEPDIR)/printmarkers.Po \
+@AMDEP_TRUE@	$(DEPDIR)/query2.Po $(DEPDIR)/seek.Po \
+@AMDEP_TRUE@	$(DEPDIR)/sixteen-to-eight.Po $(DEPDIR)/testaupv.Po \
+@AMDEP_TRUE@	$(DEPDIR)/testchannelmatrix.Po \
+@AMDEP_TRUE@	$(DEPDIR)/testfloat.Po $(DEPDIR)/testmarkers.Po \
 @AMDEP_TRUE@	$(DEPDIR)/transparency.Po $(DEPDIR)/twentyfour.Po \
-@AMDEP_TRUE@	$(DEPDIR)/virtual.Po $(DEPDIR)/writeaiff.Po \
+@AMDEP_TRUE@	$(DEPDIR)/twentyfour2.Po $(DEPDIR)/writeaiff.Po \
 @AMDEP_TRUE@	$(DEPDIR)/writealaw.Po $(DEPDIR)/writeircam.Po \
-@AMDEP_TRUE@	$(DEPDIR)/writenext.Po $(DEPDIR)/writeulaw.Po \
-@AMDEP_TRUE@	$(DEPDIR)/writewave.Po
+@AMDEP_TRUE@	$(DEPDIR)/writenext.Po $(DEPDIR)/writeraw.Po \
+@AMDEP_TRUE@	$(DEPDIR)/writeulaw.Po $(DEPDIR)/writewave.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -319,14 +307,14 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 CFLAGS = @CFLAGS@
-DIST_SOURCES = adddcoffset.c copy.c error.c floatto24.c instparamtest.c \
-	instparamwrite.c $(irixread_SOURCES) $(irixtestloop_SOURCES) \
-	$(linuxtest_SOURCES) loop.c miscread.c miscwrite.c pipe.c \
-	power.c query2.c sixteen-to-eight.c testaupv.c testfloat.c \
-	transparency.c twentyfour.c virtual.c writeaiff.c writealaw.c \
-	writeircam.c writenext.c writeulaw.c writewave.c
+DIST_SOURCES = error.c floatto24.c instparamtest.c instparamwrite.c \
+	loop.c miscread.c miscwrite.c pipe.c printmarkers.c query2.c \
+	seek.c sixteen-to-eight.c testaupv.c testchannelmatrix.c \
+	testfloat.c testmarkers.c transparency.c twentyfour.c \
+	twentyfour2.c writeaiff.c writealaw.c writeircam.c writenext.c \
+	writeraw.c writeulaw.c writewave.c
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = adddcoffset.c copy.c error.c floatto24.c instparamtest.c instparamwrite.c $(irixread_SOURCES) $(irixtestloop_SOURCES) $(linuxtest_SOURCES) loop.c miscread.c miscwrite.c pipe.c power.c query2.c sixteen-to-eight.c testaupv.c testfloat.c transparency.c twentyfour.c virtual.c writeaiff.c writealaw.c writeircam.c writenext.c writeulaw.c writewave.c
+SOURCES = error.c floatto24.c instparamtest.c instparamwrite.c loop.c miscread.c miscwrite.c pipe.c printmarkers.c query2.c seek.c sixteen-to-eight.c testaupv.c testchannelmatrix.c testfloat.c testmarkers.c transparency.c twentyfour.c twentyfour2.c writeaiff.c writealaw.c writeircam.c writenext.c writeraw.c writeulaw.c writewave.c
 
 all: all-am
 
@@ -351,12 +339,6 @@ Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-adddcoffset$(EXEEXT): $(adddcoffset_OBJECTS) $(adddcoffset_DEPENDENCIES) 
-	@rm -f adddcoffset$(EXEEXT)
-	$(LINK) $(adddcoffset_LDFLAGS) $(adddcoffset_OBJECTS) $(adddcoffset_LDADD) $(LIBS)
-copy$(EXEEXT): $(copy_OBJECTS) $(copy_DEPENDENCIES) 
-	@rm -f copy$(EXEEXT)
-	$(LINK) $(copy_LDFLAGS) $(copy_OBJECTS) $(copy_LDADD) $(LIBS)
 error$(EXEEXT): $(error_OBJECTS) $(error_DEPENDENCIES) 
 	@rm -f error$(EXEEXT)
 	$(LINK) $(error_LDFLAGS) $(error_OBJECTS) $(error_LDADD) $(LIBS)
@@ -369,15 +351,6 @@ instparamtest$(EXEEXT): $(instparamtest_OBJECTS) $(instparamtest_DEPENDENCIES)
 instparamwrite$(EXEEXT): $(instparamwrite_OBJECTS) $(instparamwrite_DEPENDENCIES) 
 	@rm -f instparamwrite$(EXEEXT)
 	$(LINK) $(instparamwrite_LDFLAGS) $(instparamwrite_OBJECTS) $(instparamwrite_LDADD) $(LIBS)
-irixread$(EXEEXT): $(irixread_OBJECTS) $(irixread_DEPENDENCIES) 
-	@rm -f irixread$(EXEEXT)
-	$(LINK) $(irixread_LDFLAGS) $(irixread_OBJECTS) $(irixread_LDADD) $(LIBS)
-irixtestloop$(EXEEXT): $(irixtestloop_OBJECTS) $(irixtestloop_DEPENDENCIES) 
-	@rm -f irixtestloop$(EXEEXT)
-	$(LINK) $(irixtestloop_LDFLAGS) $(irixtestloop_OBJECTS) $(irixtestloop_LDADD) $(LIBS)
-linuxtest$(EXEEXT): $(linuxtest_OBJECTS) $(linuxtest_DEPENDENCIES) 
-	@rm -f linuxtest$(EXEEXT)
-	$(LINK) $(linuxtest_LDFLAGS) $(linuxtest_OBJECTS) $(linuxtest_LDADD) $(LIBS)
 loop$(EXEEXT): $(loop_OBJECTS) $(loop_DEPENDENCIES) 
 	@rm -f loop$(EXEEXT)
 	$(LINK) $(loop_LDFLAGS) $(loop_OBJECTS) $(loop_LDADD) $(LIBS)
@@ -390,30 +363,39 @@ miscwrite$(EXEEXT): $(miscwrite_OBJECTS) $(miscwrite_DEPENDENCIES)
 pipe$(EXEEXT): $(pipe_OBJECTS) $(pipe_DEPENDENCIES) 
 	@rm -f pipe$(EXEEXT)
 	$(LINK) $(pipe_LDFLAGS) $(pipe_OBJECTS) $(pipe_LDADD) $(LIBS)
-power$(EXEEXT): $(power_OBJECTS) $(power_DEPENDENCIES) 
-	@rm -f power$(EXEEXT)
-	$(LINK) $(power_LDFLAGS) $(power_OBJECTS) $(power_LDADD) $(LIBS)
+printmarkers$(EXEEXT): $(printmarkers_OBJECTS) $(printmarkers_DEPENDENCIES) 
+	@rm -f printmarkers$(EXEEXT)
+	$(LINK) $(printmarkers_LDFLAGS) $(printmarkers_OBJECTS) $(printmarkers_LDADD) $(LIBS)
 query2$(EXEEXT): $(query2_OBJECTS) $(query2_DEPENDENCIES) 
 	@rm -f query2$(EXEEXT)
 	$(LINK) $(query2_LDFLAGS) $(query2_OBJECTS) $(query2_LDADD) $(LIBS)
+seek$(EXEEXT): $(seek_OBJECTS) $(seek_DEPENDENCIES) 
+	@rm -f seek$(EXEEXT)
+	$(LINK) $(seek_LDFLAGS) $(seek_OBJECTS) $(seek_LDADD) $(LIBS)
 sixteen-to-eight$(EXEEXT): $(sixteen_to_eight_OBJECTS) $(sixteen_to_eight_DEPENDENCIES) 
 	@rm -f sixteen-to-eight$(EXEEXT)
 	$(LINK) $(sixteen_to_eight_LDFLAGS) $(sixteen_to_eight_OBJECTS) $(sixteen_to_eight_LDADD) $(LIBS)
 testaupv$(EXEEXT): $(testaupv_OBJECTS) $(testaupv_DEPENDENCIES) 
 	@rm -f testaupv$(EXEEXT)
 	$(LINK) $(testaupv_LDFLAGS) $(testaupv_OBJECTS) $(testaupv_LDADD) $(LIBS)
+testchannelmatrix$(EXEEXT): $(testchannelmatrix_OBJECTS) $(testchannelmatrix_DEPENDENCIES) 
+	@rm -f testchannelmatrix$(EXEEXT)
+	$(LINK) $(testchannelmatrix_LDFLAGS) $(testchannelmatrix_OBJECTS) $(testchannelmatrix_LDADD) $(LIBS)
 testfloat$(EXEEXT): $(testfloat_OBJECTS) $(testfloat_DEPENDENCIES) 
 	@rm -f testfloat$(EXEEXT)
 	$(LINK) $(testfloat_LDFLAGS) $(testfloat_OBJECTS) $(testfloat_LDADD) $(LIBS)
+testmarkers$(EXEEXT): $(testmarkers_OBJECTS) $(testmarkers_DEPENDENCIES) 
+	@rm -f testmarkers$(EXEEXT)
+	$(LINK) $(testmarkers_LDFLAGS) $(testmarkers_OBJECTS) $(testmarkers_LDADD) $(LIBS)
 transparency$(EXEEXT): $(transparency_OBJECTS) $(transparency_DEPENDENCIES) 
 	@rm -f transparency$(EXEEXT)
 	$(LINK) $(transparency_LDFLAGS) $(transparency_OBJECTS) $(transparency_LDADD) $(LIBS)
 twentyfour$(EXEEXT): $(twentyfour_OBJECTS) $(twentyfour_DEPENDENCIES) 
 	@rm -f twentyfour$(EXEEXT)
 	$(LINK) $(twentyfour_LDFLAGS) $(twentyfour_OBJECTS) $(twentyfour_LDADD) $(LIBS)
-virtual$(EXEEXT): $(virtual_OBJECTS) $(virtual_DEPENDENCIES) 
-	@rm -f virtual$(EXEEXT)
-	$(LINK) $(virtual_LDFLAGS) $(virtual_OBJECTS) $(virtual_LDADD) $(LIBS)
+twentyfour2$(EXEEXT): $(twentyfour2_OBJECTS) $(twentyfour2_DEPENDENCIES) 
+	@rm -f twentyfour2$(EXEEXT)
+	$(LINK) $(twentyfour2_LDFLAGS) $(twentyfour2_OBJECTS) $(twentyfour2_LDADD) $(LIBS)
 writeaiff$(EXEEXT): $(writeaiff_OBJECTS) $(writeaiff_DEPENDENCIES) 
 	@rm -f writeaiff$(EXEEXT)
 	$(LINK) $(writeaiff_LDFLAGS) $(writeaiff_OBJECTS) $(writeaiff_LDADD) $(LIBS)
@@ -426,6 +408,9 @@ writeircam$(EXEEXT): $(writeircam_OBJECTS) $(writeircam_DEPENDENCIES)
 writenext$(EXEEXT): $(writenext_OBJECTS) $(writenext_DEPENDENCIES) 
 	@rm -f writenext$(EXEEXT)
 	$(LINK) $(writenext_LDFLAGS) $(writenext_OBJECTS) $(writenext_LDADD) $(LIBS)
+writeraw$(EXEEXT): $(writeraw_OBJECTS) $(writeraw_DEPENDENCIES) 
+	@rm -f writeraw$(EXEEXT)
+	$(LINK) $(writeraw_LDFLAGS) $(writeraw_OBJECTS) $(writeraw_LDADD) $(LIBS)
 writeulaw$(EXEEXT): $(writeulaw_OBJECTS) $(writeulaw_DEPENDENCIES) 
 	@rm -f writeulaw$(EXEEXT)
 	$(LINK) $(writeulaw_LDFLAGS) $(writeulaw_OBJECTS) $(writeulaw_LDADD) $(LIBS)
@@ -439,32 +424,30 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/adddcoffset.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/copy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/error.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/floatto24.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/instparamtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/instparamwrite.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/irixread.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/irixtestloop.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/linuxtest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/loop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/miscread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/miscwrite.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/pipe.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/power.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/printmarkers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/query2.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sgi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/seek.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/sixteen-to-eight.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/testaupv.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/testchannelmatrix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/testfloat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/testmarkers.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/transparency.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/twentyfour.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/virtual.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/twentyfour2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeaiff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writealaw.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeircam.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writenext.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeraw.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writeulaw.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/writewave.Po@am__quote@
 

@@ -3,8 +3,8 @@
 bin_SCRIPTS = \
          audiofile-config
 
-SRC_SUBDIRS = libaudiofile sfcommands test
-SUBDIRS = $(SRC_SUBDIRS) docs
+SRC_SUBDIRS = libaudiofile sfcommands test examples
+SUBDIRS = $(SRC_SUBDIRS) docs win32
 
 EXTRA_DIST= \
 	ACKNOWLEDGEMENTS \

@@ -46,22 +46,6 @@ typedef int status;
 #define AF_SUCCEED (0)
 #define AF_FAIL (-1)
 
-struct _codec
-{
-	AFframecount (*readFrames) (const AFfilehandle file, int track,
-		void *samples, const int count);
-	AFframecount (*writeFrames) (const AFfilehandle file, int track,
-		void *samples, const int count);
-};
-
-typedef struct _Compression
-{
-	int     type;   /* symbolic constant */
-	char    *name;  /* human-readable name */
-
-	struct _codec   *codec;
-} _Compression;
-
 typedef union AFPVu
 {
 	long	l;
@@ -255,8 +239,8 @@ typedef struct _TrackSetup
 	int		markerCount;
 	_MarkerSetup	*markers;
 
-	off_t	dataOffset;
-	off_t	frameCount;
+	AFfileoffset	dataOffset;
+	AFframecount	frameCount;
 } _TrackSetup;
 
 typedef struct _LoopSetup

@@ -25,6 +25,10 @@
 	All routines that operate on loops.
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "audiofile.h"
 #include "afinternal.h"
 #include "util.h"
@@ -99,7 +103,8 @@ int _af_handle_loop_index_from_id (AFfilehandle file, int instno, int loopid)
 	mustWrite is true, only if handle is writable.
 */
 
-_Loop *getLoop (AFfilehandle handle, int instid, int loopid, bool mustWrite)
+static _Loop *getLoop (AFfilehandle handle, int instid, int loopid,
+	bool mustWrite)
 {
 	int	loopno, instno;
 

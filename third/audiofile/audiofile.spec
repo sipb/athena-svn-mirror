@@ -1,4 +1,4 @@
-%define  ver     0.2.3
+%define  ver     0.2.5
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define  prefix  /usr
@@ -63,5 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{prefix}/lib/lib*.so
 %{prefix}/lib/*.a
+%{prefix}/lib/*.la
+%{prefix}/lib/pkgconfig/*.pc
 %{prefix}/include/*
 %{prefix}/share/aclocal/*

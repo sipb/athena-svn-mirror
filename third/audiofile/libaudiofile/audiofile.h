@@ -32,6 +32,7 @@
 
 #define LIBAUDIOFILE_MAJOR_VERSION 0
 #define LIBAUDIOFILE_MINOR_VERSION 2
+#define LIBAUDIOFILE_MICRO_VERSION 4
 
 #ifdef __cplusplus
 extern "C"
@@ -422,7 +423,7 @@ int afGetTrackIDs (AFfilehandle, int *trackids);
 int afReadFrames (AFfilehandle, int track, void *buffer, int frameCount);
 int afWriteFrames (AFfilehandle, int track, const void *buffer, int frameCount);
 AFframecount afSeekFrame (AFfilehandle, int track, AFframecount frameoffset);
-AFfileoffset afTellFrame (AFfilehandle, int track);
+AFframecount afTellFrame (AFfilehandle, int track);
 AFfileoffset afGetTrackBytes (AFfilehandle, int track);
 float afGetFrameSize (AFfilehandle, int track, int expand3to4);
 float afGetVirtualFrameSize (AFfilehandle, int track, int expand3to4);
