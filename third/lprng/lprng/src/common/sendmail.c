@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.2 1999-05-12 02:08:00 danw Exp $";
+"$Id: sendmail.c,v 1.2.2.1 1999-06-30 22:20:52 ghudson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -33,6 +33,10 @@ void Sendmail_to_user( int retval, struct job *job )
 	plp_status_t status;
 	struct line_list files;
 
+	/* Don't notify if we're just forwarding it along. */
+	if (retval == JSUCC && Bounce_queue_dest_DYN)
+	  return;
+
 	/*
 	 * check to see if the user really wanted
 	 * "your file was printed ok" message
@@ -44,7 +48,7 @@ void Sendmail_to_user( int retval, struct job *job )
 	DEBUG2("Sendmail_to_user: MAILNAME '%s' sendmail '%s'", mailname, Sendmail_DYN );
 	if( mailname == 0 ){
 		if( retval != JSUCC ){
-			mailname = Mail_operator_on_error_DYN;
+			if ((mailname = Mail_operator_on_error_DYN) == 0) return;
 		} else
 			return;
 	}
