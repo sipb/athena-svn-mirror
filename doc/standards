@@ -162,14 +162,14 @@ See the file "nonstd" in this directory for descriptions of how to
 handle some of them.
 
 In general, you should use Autoconf to handle portability concerns;
-see the file "build-system" in this directory for how a file in the
+see the file "build-system" in this directory for how a package in the
 athena hierarchy should use autoconf.  If you must perform an
-operating system test (because the source tree you're working on
-doesn't use Autoconf and you don't have the time to make it do so), do
-it in two steps; for instance:
+operating system test (because you are using a plain Makefile,
+typically for something in the packs hierarchy), do it in two steps;
+for instance:
 
 	#define HAVE_STRERROR
-	#if defined(sun) && !defined(__svr4__)
+	#if defined(sun) && !defined(SOLARIS)
 	/* SunOS 4.1.3_U1 doesn't have strerror().  Use sys_errlist
 	 * instead. */
 	#undef HAVE_STRERROR
@@ -197,8 +197,9 @@ This will help future maintainers determine if one can eliminate the
 special consideration altogether when an OS upgrade has happened.
 
 Following is a list of appropriate preprocessor symbols to use to
-detect platforms we care about:
+detect platforms we care about, when using plain Makefiles:
 
+	SunOS:		#if defined(sun) && !defined(SOLARIS)
 	Solaris:	#ifdef SOLARIS
 	IRIX		#ifdef sgi
 	Linux:		#ifdef linux
@@ -207,8 +208,13 @@ detect platforms we care about:
 			if applicable to all BSD 4.4 systems.
 
 SOLARIS is not automatically defined by the compiler on Solaris
-systems; we make sure it's defined when we build our code.  There are
-no reliable automatically defined constants for Solaris systems.
+systems; we make sure it's defined when we build code not using
+autoconf.  There are no reliable automatically defined constants for
+Solaris systems.
+
+For some highly nonportable operations you may need to do a platform
+test even when using Autoconf.  In that case, use AC_CANONICAL_HOST
+rather than the above ifdefs.
 
 Portability considerations for code we release
 ----------------------------------------------
@@ -219,7 +225,9 @@ works.  It is discouraged, but acceptable, to care about platforms
 which are not POSIX-compliant.  Code that cares about such platforms
 should determine whether the platform supports POSIX interfaces by
 using AC_CHECK_HEADERS(unistd.h) to determine whether it can #include
-<unistd.h>, and then checking whether _POSIX_VERSION is defined.
+<unistd.h>, and then checking whether _POSIX_VERSION is defined.  Such
+code should always use POSIX interfaces rather than less portable
+interfaces when they are available.
 
 Portability considerations for code we get from third parties
 -------------------------------------------------------------
