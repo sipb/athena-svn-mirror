@@ -10,7 +10,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/data.h,v $
- *	$Id: data.h,v 1.6 1991-06-29 18:52:11 lwvanels Exp $
+ *	$Id: data.h,v 1.7 1991-08-12 13:44:59 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
@@ -18,7 +18,7 @@
 
 /* File locations */
 
-#define HELP_PATH "/usr/athena/lib/olc/xolc"
+#define HELP_PATH "/usr/athena/lib/olc/motif_help/"
 #define HELP_INIT_NEWQ	"olc.init.newq"
 #define HELP_INIT_CONTQ	"olc.init.contq"
 #define HELP_ASK	"olc.ask"
