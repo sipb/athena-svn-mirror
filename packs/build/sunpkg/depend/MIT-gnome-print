@@ -1,0 +1,4 @@
+P MIT-gnome-libs  The GNOME library package, for Athena
+P MIT-libxml      An XML library used by GNOME, for Athena
+P MIT-gdk-pixbuf  The gdk-pixbuf image handling library, for Athena
+P MIT-perl        The Perl programming language, as configured for Athena

@@ -1,0 +1,2 @@
+P MIT-audiofile   A library for accessing various audio file formats, for Athena
+P MIT-dustbuster  Restrict the lifetime of a command to the current login session

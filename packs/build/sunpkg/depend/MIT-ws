@@ -1,0 +1,5 @@
+P MIT-desync     Desynchronize timed jobs on networks
+P MIT-sendmail   The Sendmail Mail Transport Agent, for Athena
+P MIT-gettime    An Athena program to sychronize the clock with a remote host
+P MIT-ntp        The Network Time Protocol, to keep Athena workstations in sync
+P MIT-machtype   Print Athena machine type to standard output

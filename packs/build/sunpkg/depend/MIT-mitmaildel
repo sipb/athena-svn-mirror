@@ -1,0 +1,3 @@
+P MIT-hesinfo            An Athena program to fetch and print Hesiod records
+P MIT-perl               The Perl programming language, as configured for Athena
+P MIT-cyrus-imap-client  The Cyrus IMAP client utilities and libraries, for Athena.
