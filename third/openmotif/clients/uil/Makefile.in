@@ -1,0 +1,476 @@
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ../..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AGE = @AGE@
+AS = @AS@
+CC = @CC@
+CDE_CONFIGURATION_TOP = @CDE_CONFIGURATION_TOP@
+CDE_INSTALLATION_TOP = @CDE_INSTALLATION_TOP@
+CPP = @CPP@
+CURRENT = @CURRENT@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+INCDIR = @INCDIR@
+LEX = @LEX@
+LIBDIR = @LIBDIR@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+REVISION = @REVISION@
+SLIDE_DIST = @SLIDE_DIST@
+STRIP = @STRIP@
+VERSION = @VERSION@
+XMBINDDIR_FALLBACK = @XMBINDDIR_FALLBACK@
+XMTHEME_DIST = @XMTHEME_DIST@
+X_XMU = @X_XMU@
+YACC = @YACC@
+
+EXTRA_DIST = Uil.msg
+#
+# I don't seem to have all the pieces to make this thing
+#
+bin_PROGRAMS = uil
+
+LDFLAGS = -version-info @CURRENT@:@REVISION@:@AGE@
+
+libUil_la_LIBADD = UilParser.lo ../../lib/Mrm/libMrm.la ../../lib/Xm/libXm.la 
+
+uil_LDADD = ../../lib/Mrm/libMrm.la ../../lib/Xm/libXm.la 
+
+INCLUDES = ${X_CFLAGS} -DINCDIR=\"@INCDIR@\" \
+           -DLIBDIR=\"@LIBDIR@\" \
+           -I$(srcdir)/../../include \
+           -I$(srcdir)/../../lib \
+           -I$(srcdir)/../../tools/wml \
+           -I../../tools/wml
+
+
+COMMON_SRC = UilCmd.c	UilDiags.c	UilKeyTab.c	UilLexAna.c  \
+		UilLexPars.c	UilLstLst.c	UilP2Out.c	UilP2Reslv.c \
+		UilSarComp.c	UilSarExp.c	UilSarInc.c	UilSarMod.c \
+		UilSarObj.c	UilSarProc.c	UilSarVal.c	UilSrcSrc.c  \
+		UilSymNam.c	UilSymStor.c	UilData.c	\
+		UilLstMac.c	UilSemVal.c	UilSemCSet.c	UilDB.c
+
+
+SRCS = $(COMMON_SRC)
+SRCS2 = $(COMMON_SRC)	UilMain.c
+
+HEADERS_1 = Uil.h		UilSymGl.h	UilSymDef.h \
+		UilDef.h	XmAppl.uil
+
+
+uildir = $(includedir)/uil
+
+uil_HEADERS = $(HEADERS_1)
+
+noinst_HEADERS = UilCmdDef.h \
+UilCompGl.h \
+UilDefI.h \
+UilDiagDef.h \
+UilIODef.h \
+UilLexDef.h \
+UilMess.h \
+UilMessTab.h \
+UilSarDef.h \
+UilSrcDef.h
+
+
+lib_LTLIBRARIES = libUil.la
+
+libUil_la_SOURCES = $(SRCS)
+
+libUil_la_DEPENDENCIES = UilDBDef.h UilParser.lo
+
+uil_SOURCES = $(SRCS2)
+
+@MessageCatalog_TRUE@CAT_FILES = @MessageCatalog_TRUE@Uil.cat UilMsgCatI.h
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../../include/config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I../../include
+CPPFLAGS = @CPPFLAGS@
+LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_LIBS = @X_LIBS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+libUil_la_LDFLAGS = 
+libUil_la_OBJECTS =  UilCmd.lo UilDiags.lo UilKeyTab.lo UilLexAna.lo \
+UilLexPars.lo UilLstLst.lo UilP2Out.lo UilP2Reslv.lo UilSarComp.lo \
+UilSarExp.lo UilSarInc.lo UilSarMod.lo UilSarObj.lo UilSarProc.lo \
+UilSarVal.lo UilSrcSrc.lo UilSymNam.lo UilSymStor.lo UilData.lo \
+UilLstMac.lo UilSemVal.lo UilSemCSet.lo UilDB.lo
+bin_PROGRAMS =  uil$(EXEEXT)
+PROGRAMS =  $(bin_PROGRAMS)
+
+uil_OBJECTS =  UilCmd.$(OBJEXT) UilDiags.$(OBJEXT) UilKeyTab.$(OBJEXT) \
+UilLexAna.$(OBJEXT) UilLexPars.$(OBJEXT) UilLstLst.$(OBJEXT) \
+UilP2Out.$(OBJEXT) UilP2Reslv.$(OBJEXT) UilSarComp.$(OBJEXT) \
+UilSarExp.$(OBJEXT) UilSarInc.$(OBJEXT) UilSarMod.$(OBJEXT) \
+UilSarObj.$(OBJEXT) UilSarProc.$(OBJEXT) UilSarVal.$(OBJEXT) \
+UilSrcSrc.$(OBJEXT) UilSymNam.$(OBJEXT) UilSymStor.$(OBJEXT) \
+UilData.$(OBJEXT) UilLstMac.$(OBJEXT) UilSemVal.$(OBJEXT) \
+UilSemCSet.$(OBJEXT) UilDB.$(OBJEXT) UilMain.$(OBJEXT)
+uil_DEPENDENCIES =  ../../lib/Mrm/libMrm.la ../../lib/Xm/libXm.la
+uil_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(noinst_HEADERS) $(uil_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(libUil_la_SOURCES) $(uil_SOURCES)
+OBJECTS = $(libUil_la_OBJECTS) $(uil_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign --include-deps clients/uil/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libUil.la: $(libUil_la_OBJECTS) $(libUil_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libUil_la_LDFLAGS) $(libUil_la_OBJECTS) $(libUil_la_LIBADD) $(LIBS)
+
+mostlyclean-binPROGRAMS:
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+distclean-binPROGRAMS:
+
+maintainer-clean-binPROGRAMS:
+
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+uil$(EXEEXT): $(uil_OBJECTS) $(uil_DEPENDENCIES)
+	@rm -f uil$(EXEEXT)
+	$(LINK) $(uil_LDFLAGS) $(uil_OBJECTS) $(uil_LDADD) $(LIBS)
+
+install-uilHEADERS: $(uil_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(uildir)
+	@list='$(uil_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(uildir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(uildir)/$$p; \
+	done
+
+uninstall-uilHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(uil_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(uildir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = clients/uil
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES install-binPROGRAMS
+install-exec: install-exec-am
+
+install-data-am: install-uilHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
+		uninstall-uilHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
+		$(DESTDIR)$(uildir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-binPROGRAMS \
+		mostlyclean-tags mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
+		clean-binPROGRAMS clean-tags clean-generic \
+		mostlyclean-am clean-local
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-binPROGRAMS distclean-tags \
+		distclean-generic clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-binPROGRAMS maintainer-clean-tags \
+		maintainer-clean-generic distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
+clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
+install-binPROGRAMS uninstall-uilHEADERS install-uilHEADERS tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-am install-data \
+install-am install uninstall-am uninstall all-redirect all-am all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+UilParser.lo: UilParser.c
+	$(LTCOMPILE) -DCALLABLE -c UilParser.c
+
+UilParser.c:
+	test -f UilParser.c || $(LN_S) $(srcdir)/UilMain.c UilParser.c
+
+UilLexPars.c: $(srcdir)/../../tools/wml/Uil.c
+	test -f UilLexPars.c || $(LN_S) $(srcdir)/../../tools/wml/Uil.c UilLexPars.c
+
+UilDBDef.h:
+	$(LN_S) $(srcdir)/../../tools/wml/UilDBDef.h UilDBDef.h
+
+@MessageCatalog_TRUE@$(CAT_FILES): Uil.msg
+@MessageCatalog_TRUE@	$(mkinstalldirs) $(top_builddir)/localized/C/msg
+@MessageCatalog_TRUE@	$(top_builddir)/localized/util/mkcatdefs UilMsgCatI.h $(srcdir)/Uil.msg >$(top_builddir)/localized/C/msg/Uil.msg
+@MessageCatalog_TRUE@	gencat Uil.cat $(top_builddir)/localized/C/msg/Uil.msg
+
+clean-local:
+	$(RM) UilLexPars.c UilParser.c
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
