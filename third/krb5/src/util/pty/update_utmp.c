@@ -117,10 +117,12 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 	&&line)  
 	{
 	  struct utmp *utptr;
-	  strncpy(ut.ut_line, line, sizeof(ut.ut_line));
+	  strncpy(ut.ut_line, ent.ut_line, sizeof(ut.ut_line));
 	  utptr = getutline(&ut);
 	  if (utptr)
 	    strncpy(userbuf,utptr->ut_user,sizeof(ut.ut_user));
+	  /* Reset the file pointer for pututline(). */
+	  setutent();
 	}
 #endif
 
