@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.11 1990-11-26 16:41:42 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.12 1990-11-28 14:39:40 mar Exp $
  *
  * Copyright (c) 1990 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -22,7 +22,7 @@
 
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.11 1990-11-26 16:41:42 mar Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.12 1990-11-28 14:39:40 mar Exp $";
 #endif
 
 #ifndef NULL
@@ -49,6 +49,7 @@ volatile int consolepid, console_running = NONEXISTANT;
 volatile int console_tty = 0, console_failed = FALSE;
 volatile int loginpid, login_running = NONEXISTANT;
 volatile int clflag;
+char *logintty;
 
 /* Programs */
 #ifdef ultrix
@@ -91,7 +92,7 @@ char **argv;
 {
     void die(), child(), catchalarm(), xready(), setclflag(), shutdown();
     void loginready();
-    char *logintty, *consoletty, *conf, *p, *number(), *getconf();
+    char *consoletty, *conf, *p, *number(), *getconf();
     char **xargv, **consoleargv = NULL, **loginargv, **parseargs();
     char line[16], buf[256];
     fd_set readfds;
@@ -606,7 +607,7 @@ char *tty;
     if (console_running == RUNNING)
       kill(consolepid, SIGHUP);
     if (x_running == RUNNING)
-      kill(xpid, SIGKILL);
+      kill(xpid, SIGTERM);
 
     strcpy(tkt_file, "/tmp/tkt_");
     strcat(tkt_file, tty);
@@ -742,20 +743,10 @@ void catchalarm()
 
 void die()
 {
-    int flush;
-
 #ifdef DEBUG
     message("Killing children and exiting\n");
 #endif
-    if (login_running == RUNNING)
-      kill(loginpid, SIGHUP);
-    if (console_running == RUNNING)
-      kill(consolepid, SIGHUP);
-    if (x_running == RUNNING)
-      kill(xpid, SIGKILL);
-
-    flush = 0;
-    ioctl(0, TIOCFLUSH, &flush);
+    cleanup(logintty);
     _exit(0);
 }
 
@@ -917,7 +908,7 @@ char *getconf(file, name)
 char *file;
 char *name;
 {
-    static char buf[1024];
+    static char buf[2048];
     static int inited = 0;
     char *p, *ret, *malloc();
     int i;
@@ -928,6 +919,8 @@ char *name;
 	fd = open(file, O_RDONLY, 0644);
 	if (fd < 0) return(NULL);
 	i = read(fd, buf, sizeof(buf));
+	if (i >= sizeof(buf) - 1)
+	  message("dm: warning - config file is to long to parse\n");
 	buf[i] = 0;
 	close(fd);
 	inited = 1;
