@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1999-04-09 17:53:32 ghudson Exp $
+# $Id: Makefile,v 1.5 1999-09-29 20:40:05 danw Exp $
 
 # Font source directories
 VPATH = Asian Chinese Chinese-BIG Chinese-X Ethiopic European \
@@ -51,6 +51,8 @@ all: $(fonts) fonts.alias
 
 clean:
 	rm -f *.pcf fonts.alias
+
+check:
 
 install: all
 	mkdir -p $(INSTALLDIR)
