@@ -1,10 +1,11 @@
-# $Id: Makefile,v 1.1 1996-10-25 22:07:20 ghudson Exp $
+# $Id: Makefile,v 1.2 1997-02-25 07:33:27 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
 TYPEFACES=/usr/athena/lib/mf/typefaces
 MFMACROS=/usr/athena/lib/mf/macros
 TEXMACROS=/usr/athena/lib/tex/macros
+TEXPS=/usr/athena/lib/tex/ps
 
 all:
 	cd tex/fonts && ${MAKE} $@
@@ -30,6 +31,7 @@ install:
 	-mkdir -p ${DESTDIR}${TEXMACROS}/latex
 	-mkdir -p ${DESTDIR}${TEXMACROS}/other/mainz/doc
 	-mkdir -p ${DESTDIR}${TEXMACROS}/other/mainz/multicol
+	-mkdir -p ${DESTDIR}${TEXPS}
 	install -c -m 444 mf/macros/*.mf* ${DESTDIR}${MFMACROS}
 	install -c -m 444 mf/typefaces/ams/*.mf ${DESTDIR}${TYPEFACES}/ams
 	install -c -m 444 mf/typefaces/cm/*.mf ${DESTDIR}${TYPEFACES}/cm
@@ -55,6 +57,13 @@ install:
 		${DESTDIR}${TEXMACROS}/other/mainz/doc
 	install -c -m 444 tex/macros/other/mainz/multicol/*.* \
 		${DESTDIR}${TEXMACROS}/other/mainz/multicol
+	install -c -m 444 tex/ps/*.pro ${DESTDIR}${TEXPS}
+	rm -f ${DESTDIR}${TEXPS}/bottomtray
+	rm -f ${DESTDIR}${TEXPS}/duplex
+	rm -f ${DESTDIR}${TEXPS}/tumble
+	ln -s bottomtray.pro ${DESTDIR}${TEXPS}/bottomtray
+	ln -s duplex.pro ${DESTDIR}${TEXPS}/duplex
+	ln -s tumble.pro ${DESTDIR}${TEXPS}/tumble
 	cd tex/fonts && ${MAKE} $@
 
 clean:
