@@ -1,5 +1,5 @@
 #include <Xm/Form.h>
-#include <Xm/PushB.h>
+#include <Xm/PushBG.h>
 #include <Xm/SeparatoG.h>
 #include <Xm/LabelG.h>
 #include <Xm/Frame.h>
@@ -9,10 +9,10 @@
 #include <Xm/List.h>
 #include <Xm/PanedW.h>
 #include <Xm/DialogS.h>
+#include <Xm/SelectioB.h>
 
 #include <sys/param.h>
 
-#include "visual.h"
 #include "buttons.h"
 #include "xolc.h"
 
@@ -67,6 +67,7 @@ Widget				/* Widget ID's */
 
   w_motd_dlg,
   w_help_dlg,
+  w_save_dlg,
 
   w_send_form,
   w_send_lbl,
@@ -78,15 +79,16 @@ Widget				/* Widget ID's */
   w_send_scrl
 ;
 
-void MakeInterface()
+void
+MakeInterface()
 {
   Arg args[1];
   Pixmap icon_pixmap = None;
   Widget wl[10];
   int n;
-
+  
   n = 0;
-
+  
 /*
  * The main form of the interface.  This initially displays the MOTD and
  *  lets the user select whether to ask a question or go somewhere else
@@ -105,31 +107,25 @@ void MakeInterface()
 
 
   w = main_form = XmCreateForm(toplevel, "main", NULL, 0);
-  XtManageChild(w);
 
 /*  Buttons along the top row:  [new_ques, cont_ques], stock, quit, help  */
 
-  w = w_newq_btn = XmCreatePushButton(main_form, "new_ques_btn", NULL, 0);
+  w = w_newq_btn = XmCreatePushButtonGadget(main_form, "new_ques_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_new_ques, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, NEWQ_BTN);
 
-  w = w_contq_btn = XmCreatePushButton(main_form, "cont_ques_btn", NULL, 0);
+  w = w_contq_btn = XmCreatePushButtonGadget(main_form, "cont_ques_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_cont_ques, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, CONTQ_BTN);
 
-  w = w_stock_btn = XmCreatePushButton(main_form, "stock_btn", NULL, 0);
+  w = w_stock_btn = XmCreatePushButtonGadget(main_form, "stock_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_stock, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, STOCK_BTN);
   wl[n++] = w;
 
-  w = w_help_btn = XmCreatePushButton(main_form, "help_btn", NULL, 0);
+  w = w_help_btn = XmCreatePushButtonGadget(main_form, "help_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_help, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, HELP_BTN);
   wl[n++] = w;
   
-  w = w_quit_btn = XmCreatePushButton(main_form, "quit_btn", NULL, 0);
+  w = w_quit_btn = XmCreatePushButtonGadget(main_form, "quit_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_quit, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, QUIT_BTN);
   wl[n++] = w;
   
 /*  Separator along the top, below buttons  */
@@ -138,7 +134,7 @@ void MakeInterface()
   wl[n++] = w;
 
   XtManageChildren(wl,(Cardinal) n);
-
+  XtManageChild(main_form);
 }
 
 void
@@ -206,16 +202,14 @@ MakeNewqForm()
 
   n = 0;
 
-  w = w_send_newq_btn = XmCreatePushButton(w_newq_rowcol,
+  w = w_send_newq_btn = XmCreatePushButtonGadget(w_newq_rowcol,
 					   "send_newq_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_send_newq, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, SEND_NEWQ_BTN);
   wl[n++] = w;
 
-  w = w_clear_btn = XmCreatePushButton(w_newq_rowcol,
+  w = w_clear_btn = XmCreatePushButtonGadget(w_newq_rowcol,
 				       "clear_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_clear_newq, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, CLEAR_BTN);
   wl[n++] = w;
   XtManageChildren(wl, (Cardinal) n);
   n = 0;
@@ -230,15 +224,13 @@ MakeNewqForm()
   w = w_newq_scrl = XmCreateScrolledText(w_newq_frame, "newq_scrl", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
-
+  XtSetKeyboardFocus(w_newq_form,w_newq_scrl);
 }
 
 
 void
 MakeContqForm()
 {
-  Arg args[100];
-  int n = 0;
 
 /*
  * The "cont_ques_form" will contain regions for showing the replay of the log
@@ -263,52 +255,44 @@ MakeContqForm()
   XtManageChild( XmCreateLabelGadget(w_status_form,
 				     "your_topic_lbl",NULL, 0));
 
-
 /*  RowColumn containing buttons along bottom:
         send, done, cancel, savelog, motd, update   */
 
-  w = w_options_rowcol = XmCreateRowColumn(w_contq_form,
-					   "optionsRowCol", args, n);
+  w = w_options_rowcol = XmCreateRowColumn(w_contq_form, "optionsRowCol",
+					   NULL, 0);
   XtManageChild(w);
 
-  w = w_send_btn = XmCreatePushButton(w_options_rowcol, "send_btn", args, n);
+  w = w_send_btn = XmCreatePushButtonGadget(w_options_rowcol, "send_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_send, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, SEND_BTN);
   XtManageChild(w);
 
-  w = w_done_btn = XmCreatePushButton(w_options_rowcol, "done_btn", args, n);
+  w = w_done_btn = XmCreatePushButtonGadget(w_options_rowcol, "done_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_done, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, DONE_BTN);
   XtManageChild(w);
 
-  w = w_cancel_btn = XmCreatePushButton(w_options_rowcol,
-					"cancel_btn", args, n);
+  w = w_cancel_btn = XmCreatePushButtonGadget(w_options_rowcol, "cancel_btn",
+					NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_cancel, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, CANCEL_BTN);
   XtManageChild(w);
 
-  w = w_savelog_btn = XmCreatePushButton(w_options_rowcol,
-					 "savelog_btn", args, n);
+  w = w_savelog_btn = XmCreatePushButtonGadget(w_options_rowcol, "savelog_btn",
+					 NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_savelog, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, SAVELOG_BTN);
   XtManageChild(w);
 
-  w = w_motd_btn = XmCreatePushButton(w_options_rowcol, "motd_btn", args, n);
+  w = w_motd_btn = XmCreatePushButtonGadget(w_options_rowcol, "motd_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_motd, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, MOTD_BTN);
   XtManageChild(w);
 
-  w = w_update_btn = XmCreatePushButton(w_options_rowcol,
-					  "update_btn", args, n);
+  w = w_update_btn = XmCreatePushButtonGadget(w_options_rowcol,
+					  "update_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_update, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, UPDATE_BTN);
   XtManageChild(w);
   
 /*  Frame to hold scrolled text replay_frame  */
 
   w = w_replay_frame = XmCreateFrame(w_contq_form, "replay_frame", NULL, 0);
   XtManageChild(w);
-
   w = w_replay_scrl = XmCreateScrolledText(w_replay_frame,
 					   "replay_scrl", NULL, 0);
   XtManageChild(w);
@@ -353,8 +337,6 @@ MakeMotdForm()
 void
 MakeDialogs()
 {
-  Arg args[100];
-  int n = 0;
 
 /*
  *  Unmanaged dialog boxes for communication with user:
@@ -365,6 +347,11 @@ MakeDialogs()
   XtAddCallback(w, XmNokCallback, dlg_ok, MOTD_BTN);
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_CANCEL_BUTTON));
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
+
+  w = w_save_dlg = XmCreatePromptDialog(main_form, "save_dlg", NULL, 0);
+  XtAddCallback(w, XmNokCallback, save_cbk, 0);
+  XtAddCallback(w, XmNcancelCallback, save_cbk, 0);
+  XtDestroyWidget(XmSelectionBoxGetChild(w, XmDIALOG_HELP_BUTTON));
 
   w = w_help_dlg = XmCreateInformationDialog(main_form, "help_dlg", NULL, 0);
   XtAddCallback(w, XmNokCallback, dlg_ok, HELP_BTN);
@@ -386,22 +373,19 @@ MakeDialogs()
   w = w_send_rowcol = XmCreateRowColumn(w_send_form, "sendRowCol", NULL, 0);
   XtManageChild(w);
 
-  w = w_send_msg_btn = XmCreatePushButton(w_send_rowcol,
+  w = w_send_msg_btn = XmCreatePushButtonGadget(w_send_rowcol,
 					  "send_msg_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_send_msg, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, SEND_MSG_BTN);
   XtManageChild(w);
 
-  w = w_clear_msg_btn = XmCreatePushButton(w_send_rowcol,
+  w = w_clear_msg_btn = XmCreatePushButtonGadget(w_send_rowcol,
 					     "clear_msg_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_clear_msg, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, CLEAR_MSG_BTN);
   XtManageChild(w);
 
-  w = w_close_msg_btn = XmCreatePushButton(w_send_rowcol,
+  w = w_close_msg_btn = XmCreatePushButtonGadget(w_send_rowcol,
 					   "close_msg_btn", NULL, 0);
   XtAddCallback(w, XmNactivateCallback, olc_close_msg, NULL);
-  XtAddCallback(w, XmNhelpCallback, Help, CLOSE_MSG_BTN);
   XtManageChild(w);
 
 /*  Frame to hold scrolled text widget.  Scrolled text widget is for
@@ -414,4 +398,6 @@ MakeDialogs()
   w = w_send_scrl = XmCreateScrolledText(w_send_frame, "send_scrl", NULL, 0);
   XtManageChild(w);
   MuSetEmacsBindings(w);
+
+  XtSetKeyboardFocus(w_send_form,w_send_scrl);
 }
