@@ -62,6 +62,24 @@ gnome_dirrelative_file (const char *base, const char *sub, const char *filename,
 		/* Then try the hardcoded path */
 		g_free (fil);
 		fil = g_concat_dir_and_file (base, filename);
+
+#ifdef linux
+		/* Athena hack: also look in /usr, for the sake of
+		 * non-Athena GNOME packages.
+		 */
+		if (!g_file_exists (fil)
+		    && strncmp(fil, "/usr/athena/", 12) == 0) {
+			char *tmp = fil;
+
+			fil = g_strconcat ("/usr/", tmp + 12, (char *) NULL);
+			if (g_file_exists (fil))
+			  g_free (tmp);
+			else {
+			  g_free (fil);
+			  fil = tmp;
+			}
+		}
+#endif
 		
 		if (unconditional || g_file_exists (fil)) {
 			retval = fil; fil = NULL; goto out;
