@@ -49,7 +49,7 @@ AllTarget(${CONSOLE})
 NormalProgramTarget($(CONSOLE),$(OBJS),$(XJLIB),,$(C_LIBS))
 InstallProgram($(CONSOLE),$(DESTDIR)$(CONSOLE_BIN_DIR))
 
-InstallNonExec(${CONSOLE}.8,${DESTDIR}${MAN_DIR}/${CONSOLE}.8)
+InstallNonExec(${CONSOLE}.8,${DESTDIR}${MAN_DIR}/man8/${CONSOLE}.8)
 InstallNonExec(Console,${DESTDIR}${CONSOLE_APP_DIR}/Console)
 InstallNonExec(console.xbm,${DESTDIR}${CONSOLE_XBM_DIR}/console.xbm)
 InstallNonExec(gray,${DESTDIR}${CONSOLE_XBM_DIR}/gray)

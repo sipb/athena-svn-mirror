@@ -98,7 +98,7 @@ NormalProgramTarget($(COMPILE),$(CMP_OBJS),$(XJLIB),,$(CMP_LIBS))
 NormalProgramTarget($(DASH),$(OBJS),$(XJLIB),,$(D_LIBS))
 InstallProgram($(DASH),$(DESTDIR)$(DASH_BIN_DIR))
 
-InstallNonExec(${DASH}.1,${DESTDIR}${MAN_DIR}/${DASH}.1)
+InstallNonExec(${DASH}.1,${DESTDIR}${MAN_DIR}/man1/${DASH}.1)
 InstallNonExec(${DASHRESOURCES},${DESTDIR}${DASH_APP_DIR}/${DASHRESOURCES})
 InstallNonExec(arrow,${DESTDIR}${DASH_XBM_DIR}/arrow)
 InstallNonExec(question,${DESTDIR}${DASH_XBM_DIR}/question)
