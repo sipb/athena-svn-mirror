@@ -52,11 +52,11 @@ struct _GnomeDruidPageEdgePrivate
 	GtkWidget *text_label;
 	GtkWidget *contents;
 
-	gboolean background_color_set : 1;
-	gboolean textbox_color_set : 1;
-	gboolean logo_background_color_set : 1;
-	gboolean title_color_set : 1;
-	gboolean text_color_set : 1;
+	guint background_color_set : 1;
+	guint textbox_color_set : 1;
+	guint logo_background_color_set : 1;
+	guint title_color_set : 1;
+	guint text_color_set : 1;
 };
 
 static void gnome_druid_page_edge_destroy 	(GtkObject                      *object);
@@ -276,7 +276,7 @@ gnome_druid_page_edge_set_color (GnomeDruidPageEdge *page)
 		page->background_color = widget->style->bg[GTK_STATE_SELECTED];
 
 	if (!priv->textbox_color_set)
-		page->textbox_color = widget->style->bg[GTK_STATE_PRELIGHT];
+		page->textbox_color = widget->style->bg[GTK_STATE_NORMAL];
 
 	if (!priv->logo_background_color_set)
 		page->logo_background_color = widget->style->bg[GTK_STATE_SELECTED];
@@ -285,7 +285,7 @@ gnome_druid_page_edge_set_color (GnomeDruidPageEdge *page)
 		page->title_color = widget->style->fg[GTK_STATE_SELECTED];
 
 	if (!priv->text_color_set)
-		page->text_color = widget->style->fg[GTK_STATE_PRELIGHT];
+		page->text_color = widget->style->fg[GTK_STATE_NORMAL];
 
 	gtk_widget_modify_bg (priv->background, GTK_STATE_NORMAL, &page->background_color);
 	gtk_widget_modify_bg (priv->contents, GTK_STATE_NORMAL, &page->textbox_color);

@@ -1,0 +1,219 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeApp</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="application-mgmt.html" title="Application management"><link rel="previous" href="application-mgmt.html" title="Application management"><link rel="next" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeApp.html#id2550675" title="Object Hierarchy"><link rel="section" href="GnomeApp.html#id2550734" title="Implemented Interfaces"><link rel="section" href="GnomeApp.html#id2550752" title="Properties"><link rel="section" href="GnomeApp.html#id2550782" title="Description"><link rel="section" href="GnomeApp.html#id2550826" title="Details"><link rel="section" href="GnomeApp.html#id2552668" title="Properties"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="application-mgmt.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="application-mgmt.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeAppBar.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeApp"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeApp</span></h2><p>GnomeApp &#8212; The main application widget.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+#define     <a href="GnomeApp.html#GNOME-APP-MENUBAR-NAME-CAPS">GNOME_APP_MENUBAR_NAME</a>
+#define     <a href="GnomeApp.html#GNOME-APP-TOOLBAR-NAME-CAPS">GNOME_APP_TOOLBAR_NAME</a>
+struct      <a href="GnomeApp.html#GnomeApp-struct">GnomeApp</a>;
+GtkWidget*  <a href="GnomeApp.html#gnome-app-new">gnome_app_new</a>                   (const gchar *appname,
+                                             const gchar *title);
+void        <a href="GnomeApp.html#gnome-app-construct">gnome_app_construct</a>             (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             const gchar *appname,
+                                             const gchar *title);
+void        <a href="GnomeApp.html#gnome-app-set-menus">gnome_app_set_menus</a>             (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkMenuBar *menubar);
+void        <a href="GnomeApp.html#gnome-app-set-toolbar">gnome_app_set_toolbar</a>           (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkToolbar *toolbar);
+void        <a href="GnomeApp.html#gnome-app-set-statusbar">gnome_app_set_statusbar</a>         (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkWidget *statusbar);
+void        <a href="GnomeApp.html#gnome-app-set-statusbar-custom">gnome_app_set_statusbar_custom</a>  (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkWidget *container,
+                                             GtkWidget *statusbar);
+void        <a href="GnomeApp.html#gnome-app-set-contents">gnome_app_set_contents</a>          (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkWidget *contents);
+void        <a href="GnomeApp.html#gnome-app-add-toolbar">gnome_app_add_toolbar</a>           (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkToolbar *toolbar,
+                                             const gchar *name,
+                                             BonoboDockItemBehavior behavior,
+                                             BonoboDockPlacement placement,
+                                             gint band_num,
+                                             gint band_position,
+                                             gint offset);
+GtkWidget*  <a href="GnomeApp.html#gnome-app-add-docked">gnome_app_add_docked</a>            (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkWidget *widget,
+                                             const gchar *name,
+                                             BonoboDockItemBehavior behavior,
+                                             BonoboDockPlacement placement,
+                                             gint band_num,
+                                             gint band_position,
+                                             gint offset);
+void        <a href="GnomeApp.html#gnome-app-add-dock-item">gnome_app_add_dock_item</a>         (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             BonoboDockItem *item,
+                                             BonoboDockPlacement placement,
+                                             gint band_num,
+                                             gint band_position,
+                                             gint offset);
+void        <a href="GnomeApp.html#gnome-app-enable-layout-config">gnome_app_enable_layout_config</a>  (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             gboolean enable);
+BonoboDock* <a href="GnomeApp.html#gnome-app-get-dock">gnome_app_get_dock</a>              (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app);
+BonoboDockItem* <a href="GnomeApp.html#gnome-app-get-dock-item-by-name">gnome_app_get_dock_item_by_name</a>
+                                            (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             const gchar *name);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2550675"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBin
+                           +----GtkWindow
+                                 +----GnomeApp
+</pre></div><div class="refsect1" lang="en"><a name="id2550734"></a><h2>Implemented Interfaces</h2><p>
+GnomeApp implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2550752"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GnomeApp.html#GnomeApp--app-id">app-id</a>"               gchararray            : Read / Write / Construct
+</pre></div><div class="refsect1" lang="en"><a name="id2550782"></a><h2>Description</h2><p>
+The <i class="parameter"><tt>GnomeApp</tt></i> widget and associated functions provides the easiest way to
+create an almost complete GNOME application in libgnomeui. Simple create an
+instance of the widget, append any menus, toolbar(s) and a status bar, as
+required (this will probably be done with some functions from the following
+pages). Then fill in the main contents with a call to <a href="GnomeApp.html#gnome-app-set-contents"><tt class="function">gnome_app_set_contents()</tt></a>
+and start the main loop (with <tt class="function">gtk_main()</tt>).
+</p></div><div class="refsect1" lang="en"><a name="id2550826"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2550832"></a><h3><a name="GNOME-APP-MENUBAR-NAME-CAPS"></a>GNOME_APP_MENUBAR_NAME</h3><a class="indexterm" name="id2550843"></a><pre class="programlisting">#define GNOME_APP_MENUBAR_NAME "Menubar"
+</pre><p>
+The name of the menubar as it is passed to libbonobo.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2550860"></a><h3><a name="GNOME-APP-TOOLBAR-NAME-CAPS"></a>GNOME_APP_TOOLBAR_NAME</h3><a class="indexterm" name="id2550871"></a><pre class="programlisting">#define GNOME_APP_TOOLBAR_NAME "Toolbar"
+</pre><p>
+The name of the default toolbar that is added to the application widget by
+default.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2550888"></a><h3><a name="GnomeApp-struct"></a>struct GnomeApp</h3><a class="indexterm" name="id2550899"></a><pre class="programlisting">struct GnomeApp;</pre><p>
+A widget representing an entire GNOME application, including the main window,
+menus, toolbar(s) and status bar.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2550916"></a><h3><a name="gnome-app-new"></a>gnome_app_new ()</h3><a class="indexterm" name="id2550926"></a><pre class="programlisting">GtkWidget*  gnome_app_new                   (const gchar *appname,
+                                             const gchar *title);</pre><p>
+Create a new (empty) application window. You must specify the <i class="parameter"><tt>appname</tt></i> (used
+internally as an identifier).  The <i class="parameter"><tt>title</tt></i> param can be left as NULL, in
+which case the window's title will not be set.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appname</tt></i> :</span></td><td> Name of program, used in file names and paths.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> Window title for application.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Pointer to new <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> object.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551032"></a><h3><a name="gnome-app-construct"></a>gnome_app_construct ()</h3><a class="indexterm" name="id2551043"></a><pre class="programlisting">void        gnome_app_construct             (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             const gchar *appname,
+                                             const gchar *title);</pre><p>
+Constructor for language bindings; you don't normally need this.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A newly created <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> object.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>appname</tt></i> :</span></td><td> Name of program, using in file names and paths.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>title</tt></i> :</span></td><td> Window title for application.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551146"></a><h3><a name="gnome-app-set-menus"></a>gnome_app_set_menus ()</h3><a class="indexterm" name="id2551157"></a><pre class="programlisting">void        gnome_app_set_menus             (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkMenuBar *menubar);</pre><p>
+Sets the menu bar of the application window.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>menubar</tt></i> :</span></td><td> Menu bar widget for main application window.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551237"></a><h3><a name="gnome-app-set-toolbar"></a>gnome_app_set_toolbar ()</h3><a class="indexterm" name="id2551248"></a><pre class="programlisting">void        gnome_app_set_toolbar           (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkToolbar *toolbar);</pre><p>
+Sets the main toolbar of the application window.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>toolbar</tt></i> :</span></td><td> Toolbar widget for main app window.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551328"></a><h3><a name="gnome-app-set-statusbar"></a>gnome_app_set_statusbar ()</h3><a class="indexterm" name="id2551339"></a><pre class="programlisting">void        gnome_app_set_statusbar         (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkWidget *statusbar);</pre><p>
+Sets the status bar of the application window.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>statusbar</tt></i> :</span></td><td> Statusbar widget for main app window
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551419"></a><h3><a name="gnome-app-set-statusbar-custom"></a>gnome_app_set_statusbar_custom ()</h3><a class="indexterm" name="id2551430"></a><pre class="programlisting">void        gnome_app_set_statusbar_custom  (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkWidget *container,
+                                             GtkWidget *statusbar);</pre><p>
+Sets the status bar of the application window, but use <i class="parameter"><tt>container</tt></i>
+as its container.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> instance
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>container</tt></i> :</span></td><td> container widget containing the statusbar
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>statusbar</tt></i> :</span></td><td> Statusbar widget for main app window
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551539"></a><h3><a name="gnome-app-set-contents"></a>gnome_app_set_contents ()</h3><a class="indexterm" name="id2551550"></a><pre class="programlisting">void        gnome_app_set_contents          (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkWidget *contents);</pre><p>
+Sets the content area of the main window of <i class="parameter"><tt>app</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>contents</tt></i> :</span></td><td> Widget to be application content area.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551636"></a><h3><a name="gnome-app-add-toolbar"></a>gnome_app_add_toolbar ()</h3><a class="indexterm" name="id2551647"></a><pre class="programlisting">void        gnome_app_add_toolbar           (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkToolbar *toolbar,
+                                             const gchar *name,
+                                             BonoboDockItemBehavior behavior,
+                                             BonoboDockPlacement placement,
+                                             gint band_num,
+                                             gint band_position,
+                                             gint offset);</pre><p>
+Create a new <span class="type">BonoboDockItem</span> widget containing <i class="parameter"><tt>toolbar</tt></i>, and add it
+to <i class="parameter"><tt>app</tt></i>'s dock with the specified layout information.  Notice that,
+if automatic layout configuration is enabled, the layout is
+overridden by the saved configuration, if any.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>toolbar</tt></i> :</span></td><td> Toolbar to be added to <i class="parameter"><tt>app</tt></i>'s dock
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> Name for the dock item that will contain <i class="parameter"><tt>toolbar</tt></i>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>behavior</tt></i> :</span></td><td> Behavior for the new dock item
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>placement</tt></i> :</span></td><td> Placement for the new dock item
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>band_num</tt></i> :</span></td><td> Number of the band where the dock item should be placed
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>band_position</tt></i> :</span></td><td> Position of the new dock item in band <i class="parameter"><tt>band_num</tt></i>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> Offset from the previous dock item in the band; if there is
+no previous item, offset from the beginning of the band.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2551901"></a><h3><a name="gnome-app-add-docked"></a>gnome_app_add_docked ()</h3><a class="indexterm" name="id2551912"></a><pre class="programlisting">GtkWidget*  gnome_app_add_docked            (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             GtkWidget *widget,
+                                             const gchar *name,
+                                             BonoboDockItemBehavior behavior,
+                                             BonoboDockPlacement placement,
+                                             gint band_num,
+                                             gint band_position,
+                                             gint offset);</pre><p>
+Add <i class="parameter"><tt>widget</tt></i> as a dock item according to the specified layout
+information.  Notice that, if automatic layout configuration is
+enabled, the layout is overridden by the saved configuration, if
+any.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> Widget to be added to the <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> Name for the new dock item.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>behavior</tt></i> :</span></td><td> Behavior for the new dock item.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>placement</tt></i> :</span></td><td> Placement for the new dock item.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>band_num</tt></i> :</span></td><td> Number of the band where the dock item should be placed.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>band_position</tt></i> :</span></td><td> Position of the new dock item in band <i class="parameter"><tt>band_num</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> Offset from the previous dock item in the band; if there is
+no previous item, offset from the beginning of the band.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The dock item used to contain the widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552159"></a><h3><a name="gnome-app-add-dock-item"></a>gnome_app_add_dock_item ()</h3><a class="indexterm" name="id2552170"></a><pre class="programlisting">void        gnome_app_add_dock_item         (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             BonoboDockItem *item,
+                                             BonoboDockPlacement placement,
+                                             gint band_num,
+                                             gint band_position,
+                                             gint offset);</pre><p>
+Add <i class="parameter"><tt>item</tt></i> according to the specified layout information.  Notice
+that, if automatic layout configuration is enabled, the layout is
+overridden by the saved configuration, if any.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>item</tt></i> :</span></td><td> Dock item to be added to <i class="parameter"><tt>app</tt></i>'s dock.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>placement</tt></i> :</span></td><td> Placement for the dock item.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>band_num</tt></i> :</span></td><td> Number of the band where the dock item should be placed.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>band_position</tt></i> :</span></td><td> Position of the dock item in band <i class="parameter"><tt>band_num</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>offset</tt></i> :</span></td><td> Offset from the previous dock item in the band; if there is
+no previous item, offset from the beginning of the band.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552360"></a><h3><a name="gnome-app-enable-layout-config"></a>gnome_app_enable_layout_config ()</h3><a class="indexterm" name="id2552371"></a><pre class="programlisting">void        gnome_app_enable_layout_config  (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             gboolean enable);</pre><p>
+Specify whether <i class="parameter"><tt>app</tt></i> should automatically save the dock's
+layout configuration via gnome-config whenever it changes or not.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>enable</tt></i> :</span></td><td> Boolean specifying whether automatic configuration saving
+is enabled.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552459"></a><h3><a name="gnome-app-get-dock"></a>gnome_app_get_dock ()</h3><a class="indexterm" name="id2552470"></a><pre class="programlisting">BonoboDock* gnome_app_get_dock              (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app);</pre><p>
+Retrieves the <span class="type">BonoboDock</span> widget contained in <i class="parameter"><tt>app</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> widget
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The relevant <span class="type">BonoboDock</span> widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2552558"></a><h3><a name="gnome-app-get-dock-item-by-name"></a>gnome_app_get_dock_item_by_name ()</h3><a class="indexterm" name="id2552570"></a><pre class="programlisting">BonoboDockItem* gnome_app_get_dock_item_by_name
+                                            (<a href="GnomeApp.html" title="GnomeApp">GnomeApp</a> *app,
+                                             const gchar *name);</pre><p>
+Retrieve the dock item whose name matches <i class="parameter"><tt>name</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app</tt></i> :</span></td><td> A <a href="GnomeApp.html" title="GnomeApp"><span class="type">GnomeApp</span></a> widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> Name of the dock item to retrieve.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The retrieved dock item.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2552668"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2552674"></a><h3><a name="GnomeApp--app-id"></a>The "<tt class="literal">app-id</tt>" property</h3><pre class="programlisting">  "app-id"               gchararray            : Read / Write / Construct</pre><p>The application ID string.</p><p>Default value: NULL</p></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="application-mgmt.html"><b>&lt;&lt; Application management</b></a></td><td align="right"><a accesskey="n" href="GnomeAppBar.html"><b>GnomeAppBar &gt;&gt;</b></a></td></tr></table></body></html>

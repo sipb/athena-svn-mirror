@@ -1,0 +1,205 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeAppBar</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="application-mgmt.html" title="Application management"><link rel="previous" href="GnomeApp.html" title="GnomeApp"><link rel="next" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeAppBar.html#id2555910" title="Object Hierarchy"><link rel="section" href="GnomeAppBar.html#id2555968" title="Implemented Interfaces"><link rel="section" href="GnomeAppBar.html#id2555986" title="Properties"><link rel="section" href="GnomeAppBar.html#id2556050" title="Signal Prototypes"><link rel="section" href="GnomeAppBar.html#id2556127" title="Description"><link rel="section" href="GnomeAppBar.html#id2556158" title="Details"><link rel="section" href="GnomeAppBar.html#id2557776" title="Properties"><link rel="section" href="GnomeAppBar.html#id2557897" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomeApp.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="application-mgmt.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="libgnomeui-gnome-app-helper.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeAppBar"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeAppBar</span></h2><p>GnomeAppBar &#8212; An application status and progress bar widget</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+#define     <a href="GnomeAppBar.html#GNOME-APPBAR-HAS-STATUS-CAPS">GNOME_APPBAR_HAS_STATUS</a>         (appbar)
+#define     <a href="GnomeAppBar.html#GNOME-APPBAR-HAS-PROGRESS-CAPS">GNOME_APPBAR_HAS_PROGRESS</a>       (appbar)
+#define     <a href="GnomeAppBar.html#GNOME-APPBAR-INTERACTIVE-CAPS">GNOME_APPBAR_INTERACTIVE</a>        (ab)
+struct      <a href="GnomeAppBar.html#GnomeAppBar-struct">GnomeAppBar</a>;
+GtkWidget*  <a href="GnomeAppBar.html#gnome-appbar-new">gnome_appbar_new</a>                (gboolean has_progress,
+                                             gboolean has_status,
+                                             <a href="libgnomeui-gnome-types.html#GnomePreferencesType">GnomePreferencesType</a> interactivity);
+void        <a href="GnomeAppBar.html#gnome-appbar-set-status">gnome_appbar_set_status</a>         (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             const gchar *status);
+GtkWidget*  <a href="GnomeAppBar.html#gnome-appbar-get-status">gnome_appbar_get_status</a>         (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);
+void        <a href="GnomeAppBar.html#gnome-appbar-set-default">gnome_appbar_set_default</a>        (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             const gchar *default_status);
+void        <a href="GnomeAppBar.html#gnome-appbar-push">gnome_appbar_push</a>               (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             const gchar *status);
+void        <a href="GnomeAppBar.html#gnome-appbar-pop">gnome_appbar_pop</a>                (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);
+void        <a href="GnomeAppBar.html#gnome-appbar-clear-stack">gnome_appbar_clear_stack</a>        (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);
+void        <a href="GnomeAppBar.html#gnome-appbar-set-progress-percentage">gnome_appbar_set_progress_percentage</a>
+                                            (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             gfloat percentage);
+GtkProgressBar* <a href="GnomeAppBar.html#gnome-appbar-get-progress">gnome_appbar_get_progress</a>   (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);
+void        <a href="GnomeAppBar.html#gnome-appbar-refresh">gnome_appbar_refresh</a>            (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);
+void        <a href="GnomeAppBar.html#gnome-appbar-set-prompt">gnome_appbar_set_prompt</a>         (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             const gchar *prompt,
+                                             gboolean modal);
+void        <a href="GnomeAppBar.html#gnome-appbar-clear-prompt">gnome_appbar_clear_prompt</a>       (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);
+gchar*      <a href="GnomeAppBar.html#gnome-appbar-get-response">gnome_appbar_get_response</a>       (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2555910"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBox
+                           +----GtkHBox
+                                 +----GnomeAppBar
+</pre></div><div class="refsect1" lang="en"><a name="id2555968"></a><h2>Implemented Interfaces</h2><p>
+GnomeAppBar implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2555986"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GnomeAppBar.html#GnomeAppBar--has-progress">has-progress</a>"         gboolean              : Read / Write / Construct
+  "<a href="GnomeAppBar.html#GnomeAppBar--has-status">has-status</a>"           gboolean              : Read / Write / Construct
+  "<a href="GnomeAppBar.html#GnomeAppBar--interactivity">interactivity</a>"        <a href="libgnomeui-gnome-types.html#GnomePreferencesType">GnomePreferencesType</a>  : Read / Write / Construct
+</pre></div><div class="refsect1" lang="en"><a name="id2556050"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GnomeAppBar.html#GnomeAppBar-clear-prompt">clear-prompt</a>"
+            void        user_function      (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                            gpointer user_data);
+"<a href="GnomeAppBar.html#GnomeAppBar-user-response">user-response</a>"
+            void        user_function      (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2556127"></a><h2>Description</h2><p>
+A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> widget sits (usually) at the bottom of an application window and
+contains a progress bar (for indicating time consuming tasks and their
+completion status) and/or a status bar for sending short one-line message to
+the user. It is also possible (in theory) for the user to edit the contents of
+the status bar, should the application developer choose to allow that, however
+<span class="emphasis"><em>note that this is not really working</em></span> in the present
+implementation, so developers are recommended to avoid using interactive status
+bars and use proper editable widgets instead.
+</p></div><div class="refsect1" lang="en"><a name="id2556158"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2556164"></a><h3><a name="GNOME-APPBAR-HAS-STATUS-CAPS"></a>GNOME_APPBAR_HAS_STATUS()</h3><a class="indexterm" name="id2556175"></a><pre class="programlisting">#define GNOME_APPBAR_HAS_STATUS(appbar) (gnome_appbar_get_status(GNOME_APPBAR(appbar)) != NULL)
+</pre><p>
+Whether or not the application bar contains a status box.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td>A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> is a status box is contained in the appbar.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556234"></a><h3><a name="GNOME-APPBAR-HAS-PROGRESS-CAPS"></a>GNOME_APPBAR_HAS_PROGRESS()</h3><a class="indexterm" name="id2556246"></a><pre class="programlisting">#define GNOME_APPBAR_HAS_PROGRESS(appbar) (gnome_appbar_get_progress(GNOME_APPBAR(appbar)) != NULL)
+</pre><p>
+Whether or not the application bar contains a status box.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td>A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> is a status box is contained in the appbar.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556305"></a><h3><a name="GNOME-APPBAR-INTERACTIVE-CAPS"></a>GNOME_APPBAR_INTERACTIVE()</h3><a class="indexterm" name="id2556316"></a><pre class="programlisting">#define GNOME_APPBAR_INTERACTIVE(ab) ((ab) ? (ab)-&gt;interactive : FALSE)
+</pre><p>
+Whether or not the user can edit the text in the statusbar portion of a
+<a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ab</tt></i> :</span></td><td>A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if the user can edit the statusbar text.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556383"></a><h3><a name="GnomeAppBar-struct"></a>struct GnomeAppBar</h3><a class="indexterm" name="id2556394"></a><pre class="programlisting">struct GnomeAppBar;</pre><p>
+This widget contains the status bar and progress bar (if they are requested).
+After creating a <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> widget (via <a href="GnomeAppBar.html#gnome-appbar-new"><tt class="function">gnome_appbar_new()</tt></a>, for example), it
+can then be passed to <a href="GnomeApp.html#gnome-app-set-statusbar"><tt class="function">gnome_app_set_statusbar()</tt></a> to add it to the main
+application window.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2556441"></a><h3><a name="gnome-appbar-new"></a>gnome_appbar_new ()</h3><a class="indexterm" name="id2556452"></a><pre class="programlisting">GtkWidget*  gnome_appbar_new                (gboolean has_progress,
+                                             gboolean has_status,
+                                             <a href="libgnomeui-gnome-types.html#GnomePreferencesType">GnomePreferencesType</a> interactivity);</pre><p>
+Create a new GNOME application status bar.  If <i class="parameter"><tt>has_progress</tt></i> is
+<tt class="literal">TRUE</tt>, a small progress bar widget will be created, and placed on the
+left side of the appbar.  If <i class="parameter"><tt>has_status</tt></i> is <tt class="literal">TRUE</tt>, a status bar,
+possibly an editable one, is created.
+</p><p>
+The <i class="parameter"><tt>interactivity</tt></i> parameter determines whether the appbar is an interactive
+"minibuffer" or just a status bar.  If it is set to
+<span class="type">GNOME_PREFERENCES_NEVER</span>, it is never interactive.  If it is set to
+<span class="type">GNOME_PREFERENCES_USER</span> we respect user preferences from
+ui-properties. If it's <span class="type">GNOME_PREFERENCES_ALWAYS</span> we are interactive
+whether the user likes it or not. Basically, if your app supports
+both interactive and not (for example, if you use the
+gnome-app-util interfaces), you should use
+<span class="type">GNOME_PREFERENCES_USER</span>. Otherwise, use the setting you
+support. Please note that "interactive" mode is not functional now;
+GtkEntry is inadequate and so a custom widget will be written
+eventually.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>has_progress</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if appbar needs progress bar widget, <tt class="literal">FALSE</tt> if not.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>has_status</tt></i> :</span></td><td> <tt class="literal">TRUE</tt> if appbar needs status bar widget, <tt class="literal">FALSE</tt> if not.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>interactivity</tt></i> :</span></td><td> Level of user activity required.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  Pointer to new <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556675"></a><h3><a name="gnome-appbar-set-status"></a>gnome_appbar_set_status ()</h3><a class="indexterm" name="id2556686"></a><pre class="programlisting">void        gnome_appbar_set_status         (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             const gchar *status);</pre><p>
+Sets the status label without changing widget state; next call to
+<a href="GnomeAppBar.html#gnome-appbar-set-status"><tt class="function">gnome_appbar_set_status()</tt></a> or <a href="GnomeAppBar.html#gnome-appbar-push"><tt class="function">gnome_appbar_push()</tt></a> will destroy this
+permanently.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td> Text to which status label will be set.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556789"></a><h3><a name="gnome-appbar-get-status"></a>gnome_appbar_get_status ()</h3><a class="indexterm" name="id2556800"></a><pre class="programlisting">GtkWidget*  gnome_appbar_get_status         (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);</pre><p>
+Retrieves the statusbar widget.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+A pointer to the statusbar widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556868"></a><h3><a name="gnome-appbar-set-default"></a>gnome_appbar_set_default ()</h3><a class="indexterm" name="id2556880"></a><pre class="programlisting">void        gnome_appbar_set_default        (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             const gchar *default_status);</pre><p>
+What to show when showing nothing else is on the stack; defaults to the
+empty string.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>default_status</tt></i> :</span></td><td> Text for status label.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556960"></a><h3><a name="gnome-appbar-push"></a>gnome_appbar_push ()</h3><a class="indexterm" name="id2556972"></a><pre class="programlisting">void        gnome_appbar_push               (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             const gchar *status);</pre><p>
+Push a new status message onto the status bar stack and display it.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td> Text of status message.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557051"></a><h3><a name="gnome-appbar-pop"></a>gnome_appbar_pop ()</h3><a class="indexterm" name="id2557062"></a><pre class="programlisting">void        gnome_appbar_pop                (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);</pre><p>
+Remove current status message, and display previous status
+message, if any.  It is fine to call this with an empty stack.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557121"></a><h3><a name="gnome-appbar-clear-stack"></a>gnome_appbar_clear_stack ()</h3><a class="indexterm" name="id2557133"></a><pre class="programlisting">void        gnome_appbar_clear_stack        (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);</pre><p>
+Remove all status messages from <i class="parameter"><tt>appbar</tt></i>, and display default status
+message (if present).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557197"></a><h3><a name="gnome-appbar-set-progress-percentage"></a>gnome_appbar_set_progress_percentage ()</h3><a class="indexterm" name="id2557210"></a><pre class="programlisting">void        gnome_appbar_set_progress_percentage
+                                            (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             gfloat percentage);</pre><p>
+Sets progress bar to <i class="parameter"><tt>percentage</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>percentage</tt></i> :</span></td><td> Percentage to which progress bar should be set.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557297"></a><h3><a name="gnome-appbar-get-progress"></a>gnome_appbar_get_progress ()</h3><a class="indexterm" name="id2557308"></a><pre class="programlisting">GtkProgressBar* gnome_appbar_get_progress   (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);</pre><p>
+Retrieves the progress bar widget for further manipulation.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A <span class="type">GtkProgressBar</span> widget which is <i class="parameter"><tt>appbar</tt></i>'s progress bar, or <tt class="literal">NULL</tt>
+if <i class="parameter"><tt>appbar</tt></i> has no progress bar.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557404"></a><h3><a name="gnome-appbar-refresh"></a>gnome_appbar_refresh ()</h3><a class="indexterm" name="id2557415"></a><pre class="programlisting">void        gnome_appbar_refresh            (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);</pre><p>
+Refresh the status message bar by redrawing the item on the top of the
+stack, or the default value if the stack is empty.. Useful to force the
+message from a previous call to <a href="GnomeAppBar.html#gnome-appbar-set-status"><tt class="function">gnome_appbar_set_status()</tt></a> to disappear.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557486"></a><h3><a name="gnome-appbar-set-prompt"></a>gnome_appbar_set_prompt ()</h3><a class="indexterm" name="id2557498"></a><pre class="programlisting">void        gnome_appbar_set_prompt         (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                             const gchar *prompt,
+                                             gboolean modal);</pre><p>
+Put a prompt in the appbar and wait for a response. When the
+user responds or cancels, a 'user_response' signal is emitted.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>prompt</tt></i> :</span></td><td> Text of the prompt message.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>modal</tt></i> :</span></td><td> If <tt class="literal">TRUE</tt>, grabs input.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557607"></a><h3><a name="gnome-appbar-clear-prompt"></a>gnome_appbar_clear_prompt ()</h3><a class="indexterm" name="id2557618"></a><pre class="programlisting">void        gnome_appbar_clear_prompt       (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);</pre><p>
+Remove any prompt from the status message bar.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557676"></a><h3><a name="gnome-appbar-get-response"></a>gnome_appbar_get_response ()</h3><a class="indexterm" name="id2557688"></a><pre class="programlisting">gchar*      gnome_appbar_get_response       (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar);</pre><p>
+Get the response to the prompt, if any.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td> A <a href="GnomeAppBar.html" title="GnomeAppBar"><span class="type">GnomeAppBar</span></a> instance.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+Text from <i class="parameter"><tt>appbar</tt></i> entry widget, as entered by user. This string should be
+freed by the caller (using <tt class="function">gfree()</tt>) when no longer required.
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2557776"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2557781"></a><h3><a name="GnomeAppBar--has-progress"></a>The "<tt class="literal">has-progress</tt>" property</h3><pre class="programlisting">  "has-progress"         gboolean              : Read / Write / Construct</pre><p>Create a progress widget.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2557819"></a><h3><a name="GnomeAppBar--has-status"></a>The "<tt class="literal">has-status</tt>" property</h3><pre class="programlisting">  "has-status"           gboolean              : Read / Write / Construct</pre><p>Create a status widget.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2557857"></a><h3><a name="GnomeAppBar--interactivity"></a>The "<tt class="literal">interactivity</tt>" property</h3><pre class="programlisting">  "interactivity"        <a href="libgnomeui-gnome-types.html#GnomePreferencesType">GnomePreferencesType</a>  : Read / Write / Construct</pre><p>Level of user activity required.</p><p>Default value: GNOME_PREFERENCES_NEVER</p></div></div><div class="refsect1" lang="en"><a name="id2557897"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2557902"></a><h3><a name="GnomeAppBar-clear-prompt"></a>The "clear-prompt" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2557976"></a><h3><a name="GnomeAppBar-user-response"></a>The "user-response" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeAppBar.html" title="GnomeAppBar">GnomeAppBar</a> *appbar,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>appbar</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomeApp.html"><b>&lt;&lt; GnomeApp</b></a></td><td align="right"><a accesskey="n" href="libgnomeui-gnome-app-helper.html"><b>gnome-app-helper &gt;&gt;</b></a></td></tr></table></body></html>

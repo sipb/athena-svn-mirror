@@ -27,6 +27,8 @@
  * Author: Federico Mena <federico@nuclecu.unam.mx>
  */
 
+#ifndef GNOME_DISABLE_DEPRECATED
+
 #ifndef GNOME_COLOR_PICKER_H
 #define GNOME_COLOR_PICKER_H
 
@@ -39,7 +41,7 @@ G_BEGIN_DECLS
 
 /* The GnomeColorPicker widget is a simple color picker in a button.  The button displays a sample
  * of the currently selected color.  When the user clicks on the button, a color selection dialog
- * pops up.  The color picker emits the "color_changed" signal when the color is set
+ * pops up.  The color picker emits the "color_set" signal when the color is set
  *
  * By default, the color picker does dithering when drawing the color sample box.  This can be
  * disabled for cases where it is useful to see the allocated color without dithering.
@@ -115,3 +117,5 @@ const char * gnome_color_picker_get_title (GnomeColorPicker *cp);
 G_END_DECLS
 
 #endif
+
+#endif /* GNOME_DISABLE_DEPRECATED */

@@ -9,503 +9,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeui 1.112.0\n"
-"POT-Creation-Date: 2003-01-23 15:33+0100\n"
-"PO-Revision-Date: 2002-12-05 22:25+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-13 18:30+0200\n"
+"PO-Revision-Date: 2004-08-19 02:24+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
-"Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
-"sourceforge.net>\n"
+"Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: libgnomeui/gnome-about.c:194
-msgid "Credits"
-msgstr "Tekijät"
-
-#: libgnomeui/gnome-about.c:223
-msgid "Written by"
-msgstr "Tekijät"
-
-#: libgnomeui/gnome-about.c:238
-msgid "Documented by"
-msgstr "Dokumentoijat"
-
-#: libgnomeui/gnome-about.c:253
-msgid "Translated by"
-msgstr "Kääntäjät"
-
-#. Add the credits button
-#: libgnomeui/gnome-about.c:310
-msgid "_Credits"
-msgstr "_Tekijät"
-
-#: libgnomeui/gnome-about.c:352
-msgid "Program name"
-msgstr "Ohjelman nimi"
-
-#: libgnomeui/gnome-about.c:353
-msgid "The name of the program"
-msgstr "Ohjelman nimi"
-
-#: libgnomeui/gnome-about.c:360
-msgid "Program version"
-msgstr "Ohjelman versio"
-
-#: libgnomeui/gnome-about.c:361
-msgid "The version of the program"
-msgstr "Ohjelman versio"
-
-#: libgnomeui/gnome-about.c:367
-msgid "Copyright string"
-msgstr "Tekijänoikeudet"
-
-#: libgnomeui/gnome-about.c:368
-msgid "Copyright information for the program"
-msgstr "Ohjelman tekijänoikeustiedot"
-
-#: libgnomeui/gnome-about.c:375
-msgid "Comments string"
-msgstr "Kommentit"
-
-#: libgnomeui/gnome-about.c:376
-msgid "Comments about the program"
-msgstr "Kommentteja ohjelmasta"
-
-#: libgnomeui/gnome-about.c:382
-msgid "Authors"
-msgstr "Tekijät"
-
-#: libgnomeui/gnome-about.c:383
-msgid "List of authors of the programs"
-msgstr "Luettelo ohjelman tekijöistä"
-
-#: libgnomeui/gnome-about.c:385
-msgid "Author entry"
-msgstr "Tekijä"
-
-#: libgnomeui/gnome-about.c:386
-msgid "A single author entry"
-msgstr "Yksittäisen tekijän tiedot"
-
-#: libgnomeui/gnome-about.c:393
-msgid "Documenters"
-msgstr "Dokumentoijat"
-
-#: libgnomeui/gnome-about.c:394
-msgid "List of people documenting the program"
-msgstr "Luettelo ohjelmaa dokumentoivista henkilöistä"
-
-#: libgnomeui/gnome-about.c:396
-msgid "Documenter entry"
-msgstr "Dokumentoija"
-
-#: libgnomeui/gnome-about.c:397
-msgid "A single documenter entry"
-msgstr "Yksittäisen dokumentoijan tiedot"
-
-#: libgnomeui/gnome-about.c:405
-msgid "Translator credits"
-msgstr "Kääntäjä"
-
-#: libgnomeui/gnome-about.c:406
-msgid ""
-"Credits to the translators. This string should be marked as translatable"
-msgstr "Ohjelman kääntäjät. Tämä merkkijono pitäisi merkitä käännettäväksi."
-
-#: libgnomeui/gnome-about.c:413 libgnomeui/gnome-druid-page-standard.c:129
-msgid "Logo"
-msgstr "Logo"
-
-#: libgnomeui/gnome-about.c:414
-msgid "A logo for the about box"
-msgstr "Tietoikkunassa näkyvä logo"
-
-#: libgnomeui/gnome-about.c:493
-#, c-format
-msgid "About %s"
-msgstr "Tietoja ohjelmasta %s"
-
-#: libgnomeui/gnome-appbar.c:747
-msgid "Has Progress"
-msgstr "Edistyspalkki on"
-
-#: libgnomeui/gnome-appbar.c:748
-msgid "Create a progress widget."
-msgstr "Luo edistyspalkkikomponentti"
-
-#: libgnomeui/gnome-appbar.c:755
-msgid "Has Status"
-msgstr "Tila on"
-
-#: libgnomeui/gnome-appbar.c:756
-msgid "Create a status widget."
-msgstr "Luo tilakomponentti."
-
-#: libgnomeui/gnome-appbar.c:763
-msgid "Interactivity"
-msgstr "Interaktiivisuus"
-
-#: libgnomeui/gnome-appbar.c:764
-msgid "Level of user activity required."
-msgstr "Vaadittu käyttäjän aktiivisuuden määrä."
-
-#: libgnomeui/gnome-client.c:860
-msgid "Specify session management ID"
-msgstr "Määrittele istunnonhallinnan ID"
-
-#: libgnomeui/gnome-client.c:860
-msgid "ID"
-msgstr "ID"
-
-#: libgnomeui/gnome-client.c:863
-msgid "Specify prefix of saved configuration"
-msgstr "Määrittele tallennettujen asetusten etuliite"
-
-#: libgnomeui/gnome-client.c:863
-msgid "PREFIX"
-msgstr "ETULIITE"
-
-#: libgnomeui/gnome-client.c:866
-msgid "Disable connection to session manager"
-msgstr "Katkaise yhteys istunnonhallintaan"
-
-#: libgnomeui/gnome-client.c:972
-msgid "Session management"
-msgstr "Istunnonhallinta"
-
-#: libgnomeui/gnome-client.c:2477
-msgid "Cancel Logout"
-msgstr "Peru ulos kirjautuminen"
-
-#: libgnomeui/gnome-color-picker.c:414
-msgid "Received invalid color data\n"
-msgstr "Vastaanotti virheellisiä väritietoja\n"
-
-#: libgnomeui/gnome-color-picker.c:464
-msgid "Color Selector"
-msgstr "Värivalitsin"
-
-#: libgnomeui/gnome-color-picker.c:465
-msgid "Open a dialog to specify the color"
-msgstr "Avaa värinvalintaikkuna"
-
-#: libgnomeui/gnome-color-picker.c:487
-msgid "Pick a color"
-msgstr "Valitse väri"
-
-#: libgnomeui/gnome-dateedit.c:479 libgnomeui/gnome-dateedit.c:776
-msgid "Time"
-msgstr "Aika"
-
-#: libgnomeui/gnome-dateedit.c:480
-msgid "The time currently selected"
-msgstr "Nyt valittu aika"
-
-#: libgnomeui/gnome-dateedit.c:492
-msgid "DateEdit Flags"
-msgstr "DateEditin liput"
-
-#: libgnomeui/gnome-dateedit.c:493
-msgid "Flags for how DateEdit looks"
-msgstr "Liput, jotka säätävät DateEditin toimintaa"
-
-#: libgnomeui/gnome-dateedit.c:502
-msgid "Lower Hour"
-msgstr "Ensimmäinen tunti"
-
-#: libgnomeui/gnome-dateedit.c:503
-msgid "Lower hour in the time popup selector"
-msgstr "Ensimmäinen valittava tunti ajan valitsimessa"
-
-#: libgnomeui/gnome-dateedit.c:513
-msgid "Upper Hour"
-msgstr "Viimeinen tunti"
-
-#: libgnomeui/gnome-dateedit.c:514
-msgid "Upper hour in the time popup selector"
-msgstr "Viimeinen valittava tunti ajan valitsimessa"
-
-#: libgnomeui/gnome-dateedit.c:524
-msgid "Initial Time"
-msgstr "Aika alussa"
-
-#: libgnomeui/gnome-dateedit.c:525
-msgid "The initial time"
-msgstr "Alussa näkyvä aika"
-
-#: libgnomeui/gnome-dateedit.c:739 libgnomeui/gnome-scores.c:97
-msgid "Date"
-msgstr "Päivämäärä"
-
-#: libgnomeui/gnome-dateedit.c:752
-msgid "Select Date"
-msgstr "Valitse päivämäärä"
-
-#: libgnomeui/gnome-dateedit.c:752
-msgid "Select the date from a calendar"
-msgstr "Valitse päivämäärä kalenterista"
-
-#. Calendar label, only shown if the date editor has a time field
-#: libgnomeui/gnome-dateedit.c:763
-msgid "Calendar"
-msgstr "Kalenteri"
-
-#: libgnomeui/gnome-dateedit.c:784
-msgid "Select Time"
-msgstr "Valitse aika"
-
-#: libgnomeui/gnome-dateedit.c:784
-msgid "Select the time from a list"
-msgstr "Valitse aika luettelosta"
-
-#: libgnomeui/gnome-dateedit.c:1003
-msgid "gnome_date_edit_get_date deprecated, use gnome_date_edit_get_time"
-msgstr ""
-"gnome_date_edit_get_date on vanhentunut: käytä gnome_date_edit_get_time'a "
-"sen sijaan."
-
-#: libgnomeui/gnome-druid-page-standard.c:121
-#: libgnomeui/gnome-font-picker.c:155
-msgid "Title"
-msgstr "Otsikko"
-
-#: libgnomeui/gnome-druid-page-standard.c:122
-msgid "Title of the druid"
-msgstr "Druidin otsikko"
-
-#: libgnomeui/gnome-druid-page-standard.c:130
-msgid "Logo image"
-msgstr "Logo"
-
-#: libgnomeui/gnome-druid-page-standard.c:137
-msgid "Top Watermark"
-msgstr "Yläreunan kuva"
-
-#: libgnomeui/gnome-druid-page-standard.c:138
-msgid "Watermark image for the top"
-msgstr "Kuva yläreunaa varten"
-
-#: libgnomeui/gnome-druid-page-standard.c:145
-msgid "Title Foreground"
-msgstr "Otsikon edusta"
-
-#: libgnomeui/gnome-druid-page-standard.c:146
-msgid "Foreground color of the title"
-msgstr "Otsikon edustan väri"
-
-#: libgnomeui/gnome-druid-page-standard.c:153
-msgid "Title Foreground Color"
-msgstr "Otsikon edustaväri"
-
-#: libgnomeui/gnome-druid-page-standard.c:154
-msgid "Foreground color of the title as a GdkColor"
-msgstr "Otsikon edustan väri GdkColor'na."
-
-#: libgnomeui/gnome-druid-page-standard.c:161
-msgid "Title Foreground color set"
-msgstr "Otsikon edustan väri asetettu"
-
-#: libgnomeui/gnome-druid-page-standard.c:162
-msgid "Foreground color of the title is set"
-msgstr "Otsikon edustan väri on asetettu"
-
-#: libgnomeui/gnome-druid-page-standard.c:169
-#: libgnomeui/gnome-druid-page-standard.c:177
-msgid "Background Color"
-msgstr "Taustaväri"
-
-#: libgnomeui/gnome-druid-page-standard.c:170
-msgid "Background color"
-msgstr "Taustaväri"
-
-#: libgnomeui/gnome-druid-page-standard.c:178
-msgid "Background color as a GdkColor"
-msgstr "Taustaväri GdkColor'na"
-
-#: libgnomeui/gnome-druid-page-standard.c:185
-msgid "Background color set"
-msgstr "Taustaväri asetettu"
-
-#: libgnomeui/gnome-druid-page-standard.c:186
-msgid "Background color is set"
-msgstr "Taustaväri on asetettu"
-
-#: libgnomeui/gnome-druid-page-standard.c:193
-#: libgnomeui/gnome-druid-page-standard.c:201
-msgid "Logo Background Color"
-msgstr "Logon taustan väri"
-
-#: libgnomeui/gnome-druid-page-standard.c:194
-msgid "Logo Background color"
-msgstr "Logon taustan väri"
-
-#: libgnomeui/gnome-druid-page-standard.c:202
-msgid "Logo Background color as a GdkColor"
-msgstr "Logon taustan väri GdkColor'na"
-
-#: libgnomeui/gnome-druid-page-standard.c:209
-msgid "Logo Background color set"
-msgstr "Logon taustan väri asetettu"
-
-#: libgnomeui/gnome-druid-page-standard.c:210
-msgid "Logo Background color is set"
-msgstr "Logon taustan väri on asetettu"
-
-#: libgnomeui/gnome-druid.c:150
-msgid "Show Finish"
-msgstr "Näytä \"Valmis\""
-
-#: libgnomeui/gnome-druid.c:151
-msgid "Show the 'Finish' button instead of the 'Next' button"
-msgstr "Näytä \"Valmis\"-painike \"Seuraava\"-painikkeen sijasta"
-
-#: libgnomeui/gnome-druid.c:158
-msgid "Show Help"
-msgstr "Näytä ohje"
-
-#: libgnomeui/gnome-druid.c:159
-msgid "Show the 'Help' button"
-msgstr "Näytä ohjepainike"
-
-#: libgnomeui/gnome-href.c:122
-msgid "URL"
-msgstr "URL"
-
-#: libgnomeui/gnome-href.c:123
-msgid "The URL that GnomeHRef activates"
-msgstr "URL, jonka GnomeHRef aktivoi"
-
-#: libgnomeui/gnome-href.c:130
-msgid "Text"
-msgstr "Teksti"
-
-#: libgnomeui/gnome-href.c:131
-msgid "The text on the button"
-msgstr "Painikkeen teksti"
-
-#: libgnomeui/gnome-href.c:132
-msgid "End World Hunger"
-msgstr "Lopeta nälänhädät"
-
-#: libgnomeui/gnome-href.c:138
-msgid "Link color"
-msgstr "Linkin väri"
-
-#: libgnomeui/gnome-href.c:139
-msgid "Color used to draw the link"
-msgstr "Linkin piirtämisessä käytettävä väri"
-
-#: libgnomeui/gnome-href.c:170
-msgid "This button will take you to the URI that it displays."
-msgstr "Tämä painike vie näyttämälleen URI:lle."
-
-#: libgnomeui/gnome-href.c:393
-msgid ""
-"An error has occured while trying to launch the default web browser.\n"
-"Please check your settings in the 'Preferred Applications' preference tool."
-msgstr ""
-"Oletusarvoisen WWW-selaimen käynnistyksessä tapahtui virhe.\n"
-"Tarkista, että suosittujen sovellusten asetukset ovat oikein."
-
-#: libgnomeui/gnome-ui-init.c:113
-msgid "X display to use"
-msgstr "Käytettävä X-näyttö"
-
-#: libgnomeui/gnome-ui-init.c:113
-msgid "DISPLAY"
-msgstr "NÄYTTÖ"
-
-#: libgnomeui/gnome-ui-init.c:121
-msgid "GNOME GUI Library"
-msgstr "GNOMEn GUI-asetukset"
-
-#. dialog display isn't working out
-#: libgnomeui/gnome-ui-init.c:617
-msgid "Multiple segmentation faults occurred; can't display error dialog\n"
-msgstr "Monia muistialueen ylityksiä tapahtui: virheikkunaa ei voi näyttää\n"
-
-#. Eeeek! Can't show dialog
-#: libgnomeui/gnome-ui-init.c:631
-msgid ""
-"Segmentation fault!\n"
-"Cannot display crash dialog\n"
-msgstr ""
-"Muistinkäsittelyvirhe!\n"
-"Kaatumisikkunaa ei voi näyttää\n"
-
-#: libgnomeui/gnome_segv.c:100
-#, c-format
-msgid ""
-"The GNOME Session Manager (process %d) has crashed\n"
-"due to a fatal error (%s).\n"
-"When you close this dialog, all applications will close and your session "
-"will exit.\n"
-"Please save all your files before closing this dialog."
-msgstr ""
-"GNOME-istunnonhallinta (prosessi %d) on kaatunut\n"
-"vakavaan virheeseen (%s).\n"
-"Kun suljet tämän valintaikkunan, kaikki ohjelmat sulkeutuvat ja tämä istunto "
-"loppuu.\n"
-"Tallenna kaikki avoinna olevat tiedostot ennen tämän valintaikkunan "
-"sulkemista."
-
-#: libgnomeui/gnome_segv.c:110
-#, c-format
-msgid ""
-"Application \"%s\" (process %d) has crashed\n"
-"due to a fatal error.\n"
-"(%s)"
-msgstr ""
-"Sovellus \"%s\" (prosessi %d) on kaatunut vakavaan virheeseen.\n"
-"(%s)"
-
-#: libgnomeui/gnome_segv.c:122
-msgid "Usage: gnome_segv2 appname signum\n"
-msgstr "Käyttö: gnome_segv sovellus signaali\n"
-
-#: libgnomeui/gnome_segv.c:140
-msgid "Submit a bug report"
-msgstr "Täytä virheilmoitus"
-
-#: libgnomeui/gnome_segv.c:151
-msgid "Debug"
-msgstr "Virheidenetsintä"
-
-#: libgnomeui/gnome_segv.c:159
-msgid "http://www.gnome.org/application_crashed.shtml"
-msgstr "http://www.gnome.org/application_crashed.shtml"
-
-#: libgnomeui/gnome_segv.c:165
-msgid "Please visit the GNOME Application Crash page for more information"
-msgstr "Käy katsomassa lisätietoja GNOME Application Crash -sivulta."
-
-#: libgnomeui/gnome-stock-icons.c:137
-msgid "Table Borders"
-msgstr "Taulukon reunat"
-
-#: libgnomeui/gnome-stock-icons.c:138
-msgid "Table Fill"
-msgstr "Taulukon täyttö"
-
-#: libgnomeui/gnome-stock-icons.c:139
-msgid "Bulleted List"
-msgstr "Numeroimaton lista"
-
-#: libgnomeui/gnome-stock-icons.c:140
-msgid "Numbered List"
-msgstr "Numeroitu lista"
-
-#: libgnomeui/gnome-stock-icons.c:141
-msgid "Indent"
-msgstr "Sisennä"
-
-#: libgnomeui/gnome-stock-icons.c:142
-msgid "Un-Indent"
-msgstr "Poista sisennys"
-
-#: libgnomeui/gnome-stock-icons.c:143
-msgid "About"
-msgstr "Tietoja"
 
 #: demos/mdi_demo.c:128
 msgid "Child Item 1"
@@ -522,6 +33,144 @@ msgstr "Lapsikohta 2"
 #: demos/mdi_demo.c:132
 msgid "Hint for item 2"
 msgstr "Kohdan 2 vinkki"
+
+#: file-chooser/gtkfilesystemgnomevfs.c:668
+#, c-format
+msgid "%s is not a folder"
+msgstr "%s ei ole kansio"
+
+#: file-chooser/gtkfilesystemgnomevfs.c:875
+msgid "Filesystem"
+msgstr "Tiedostojärjestelmä"
+
+#: file-chooser/gtkfilesystemgnomevfs.c:1539
+#, c-format
+msgid "Bookmark saving failed (%s)"
+msgstr "Kirjanmerkin tallentaminen epäonnistui (%s)"
+
+#: file-chooser/testfilechooser.c:176
+#, c-format
+msgid "Could not get information for file '%s': %s"
+msgstr "Tiedoston \"%s\" tietoja ei saatu: %s"
+
+#: file-chooser/testfilechooser.c:189
+#, c-format
+msgid "Failed to open file '%s': %s"
+msgstr "Tiedoston \"%s\" avaaminen ei onnistunut: %s"
+
+#: file-chooser/testfilechooser.c:228
+#, c-format
+msgid ""
+"Failed to load image '%s': reason not known, probably a corrupt image file"
+msgstr ""
+"Kuvan \"%s\" lataaminen ei onnistunut: syy tuntematon, mahdollisesti "
+"tiedosto on vioittunut"
+
+#: libgnomeui/gnome-about.c:198
+msgid "Credits"
+msgstr "Tekijät"
+
+#: libgnomeui/gnome-about.c:230
+msgid "Written by"
+msgstr "Tekijät"
+
+#: libgnomeui/gnome-about.c:245
+msgid "Documented by"
+msgstr "Dokumentoijat"
+
+#: libgnomeui/gnome-about.c:260
+msgid "Translated by"
+msgstr "Suomentajat"
+
+#: libgnomeui/gnome-about.c:323
+msgid "C_redits"
+msgstr "Teki_jät"
+
+#: libgnomeui/gnome-about.c:378
+msgid "Program name"
+msgstr "Ohjelman nimi"
+
+#: libgnomeui/gnome-about.c:379
+msgid "The name of the program"
+msgstr "Ohjelman nimi"
+
+#: libgnomeui/gnome-about.c:386
+msgid "Program version"
+msgstr "Ohjelman versio"
+
+#: libgnomeui/gnome-about.c:387
+msgid "The version of the program"
+msgstr "Ohjelman versio"
+
+#: libgnomeui/gnome-about.c:393
+msgid "Copyright string"
+msgstr "Tekijänoikeudet"
+
+#: libgnomeui/gnome-about.c:394
+msgid "Copyright information for the program"
+msgstr "Ohjelman tekijänoikeustiedot"
+
+#: libgnomeui/gnome-about.c:401
+msgid "Comments string"
+msgstr "Kommentit"
+
+#: libgnomeui/gnome-about.c:402
+msgid "Comments about the program"
+msgstr "Kommentteja ohjelmasta"
+
+#: libgnomeui/gnome-about.c:408
+msgid "Authors"
+msgstr "Tekijät"
+
+#: libgnomeui/gnome-about.c:409
+msgid "List of authors of the programs"
+msgstr "Luettelo ohjelman tekijöistä"
+
+#: libgnomeui/gnome-about.c:411
+msgid "Author entry"
+msgstr "Tekijä"
+
+#: libgnomeui/gnome-about.c:412
+msgid "A single author entry"
+msgstr "Yksittäisen tekijän tiedot"
+
+#: libgnomeui/gnome-about.c:419
+msgid "Documenters"
+msgstr "Dokumentoijat"
+
+#: libgnomeui/gnome-about.c:420
+msgid "List of people documenting the program"
+msgstr "Luettelo ohjelmaa dokumentoivista henkilöistä"
+
+#: libgnomeui/gnome-about.c:422
+msgid "Documenter entry"
+msgstr "Dokumentoija"
+
+#: libgnomeui/gnome-about.c:423
+msgid "A single documenter entry"
+msgstr "Yksittäisen dokumentoijan tiedot"
+
+#: libgnomeui/gnome-about.c:431
+msgid "Translator credits"
+msgstr "Kääntäjät"
+
+#: libgnomeui/gnome-about.c:432
+msgid ""
+"Credits to the translators. This string should be marked as translatable"
+msgstr "Ohjelman kääntäjät. Tämä merkkijono pitäisi merkitä käännettäväksi."
+
+#: libgnomeui/gnome-about.c:439 libgnomeui/gnome-druid-page-standard.c:129
+msgid "Logo"
+msgstr "Logo"
+
+#: libgnomeui/gnome-about.c:440
+msgid "A logo for the about box"
+msgstr "Tietoikkunassa näkyvä logo"
+
+#: libgnomeui/gnome-about.c:519
+#, c-format
+msgid "About %s"
+msgstr "Tietoja ohjelmasta %s"
 
 #. Some standard menus
 #: libgnomeui/gnome-app-helper.c:82 libgnomeui/gnome-app-helper.h:551
@@ -717,7 +366,7 @@ msgstr "Tee _uudelleen"
 
 #: libgnomeui/gnome-app-helper.c:181
 msgid "Redo the undone action"
-msgstr "Suorita peruttu toiminto uudestaan"
+msgstr "Tee kumottu toiminto uudestaan"
 
 #. Find
 #: libgnomeui/gnome-app-helper.c:186
@@ -820,11 +469,11 @@ msgstr "Aloita uusi peli"
 
 #: libgnomeui/gnome-app-helper.c:253
 msgid "_Pause game"
-msgstr "_Keskeytä peli"
+msgstr "Pelitau_ko"
 
 #: libgnomeui/gnome-app-helper.c:254
 msgid "Pause the game"
-msgstr "Keskeytä peli"
+msgstr "Pidä pelissä tauko"
 
 #: libgnomeui/gnome-app-helper.c:258
 msgid "_Restart game"
@@ -883,25 +532,25 @@ msgstr "_Sisältö"
 msgid "View help for this application"
 msgstr "Näytä tämä ohjelman ohje"
 
-#: libgnomeui/gnome-app-helper.c:2566
+#: libgnomeui/gnome-app-helper.c:2570
 msgid "Text Below Icons"
 msgstr "Teksti kuvakkeiden alla"
 
-#: libgnomeui/gnome-app-helper.c:2567
+#: libgnomeui/gnome-app-helper.c:2571
 msgid "Priority Text Beside Icons"
 msgstr "Oleellinen teksti kuvakkeiden vierellä"
 
-#: libgnomeui/gnome-app-helper.c:2568
+#: libgnomeui/gnome-app-helper.c:2572
 msgid "Icons Only"
 msgstr "Vain kuvakkeet"
 
-#: libgnomeui/gnome-app-helper.c:2569
+#: libgnomeui/gnome-app-helper.c:2573
 msgid "Text Only"
 msgstr "Vain teksti"
 
-#: libgnomeui/gnome-app-helper.c:2630
+#: libgnomeui/gnome-app-helper.c:2634
 #, c-format
-msgid "Use desktop default (%s)"
+msgid "Use Desktop Default (%s)"
 msgstr "Käytä työpöydän oletusta (%s)"
 
 #: libgnomeui/gnome-app-util.c:99
@@ -952,6 +601,302 @@ msgstr "Ohjelman ID"
 msgid "The application ID string"
 msgstr "Ohjelman ID-merkkijono"
 
+#: libgnomeui/gnome-appbar.c:747
+msgid "Has Progress"
+msgstr "Edistymispalkki on"
+
+#: libgnomeui/gnome-appbar.c:748
+msgid "Create a progress widget."
+msgstr "Luo edistymispalkkikomponentti"
+
+#: libgnomeui/gnome-appbar.c:755
+msgid "Has Status"
+msgstr "Tila on"
+
+#: libgnomeui/gnome-appbar.c:756
+msgid "Create a status widget."
+msgstr "Luo tilakomponentti."
+
+#: libgnomeui/gnome-appbar.c:763
+msgid "Interactivity"
+msgstr "Vuorovaikutteisuus"
+
+#: libgnomeui/gnome-appbar.c:764
+msgid "Level of user activity required."
+msgstr "Vaadittu käyttäjän aktiivisuuden määrä."
+
+#: libgnomeui/gnome-authentication-manager.c:70
+msgid "Your HTTP Proxy requires you to log in.\n"
+msgstr "HTTP-välipalvelin vaatii sisäänkirjautumisen.\n"
+
+#: libgnomeui/gnome-authentication-manager.c:71
+#, c-format
+msgid ""
+"You must log in to access \"%s\".\n"
+"%s"
+msgstr ""
+"Osoitteen \"%s\" käyttämiseksi täytyy kirjautua sisään.\n"
+"%s"
+
+#: libgnomeui/gnome-authentication-manager.c:74
+msgid "Your password will be transmitted unencrypted."
+msgstr "Salasanasi välittyy salaamattomana."
+
+#: libgnomeui/gnome-authentication-manager.c:75
+msgid "Your password will be transmitted encrypted."
+msgstr "Salasanasi välittyy salattuna."
+
+#: libgnomeui/gnome-authentication-manager.c:78
+#: libgnomeui/gnome-authentication-manager.c:307
+msgid "Authentication Required"
+msgstr "Todennus vaaditaan"
+
+#: libgnomeui/gnome-authentication-manager.c:299
+#, c-format
+msgid "You must log in to access %s domain %s\n"
+msgstr ""
+"Osoitteen \"%s\" verkkoalueen \"%s\" käyttämiseksi täytyy kirjautua sisään.\n"
+
+#: libgnomeui/gnome-authentication-manager.c:301
+#, c-format
+msgid "You must log in to access %s\n"
+msgstr "Osoitteen \"%s\" käyttämiseksi täytyy kirjautua sisään.\n"
+
+#: libgnomeui/gnome-client.c:863
+msgid "Specify session management ID"
+msgstr "Määrittele istunnonhallinnan ID"
+
+#: libgnomeui/gnome-client.c:863
+msgid "ID"
+msgstr "ID"
+
+#: libgnomeui/gnome-client.c:866
+msgid "Specify prefix of saved configuration"
+msgstr "Määrittele tallennettujen asetusten etuliite"
+
+#: libgnomeui/gnome-client.c:866
+msgid "PREFIX"
+msgstr "ETULIITE"
+
+#: libgnomeui/gnome-client.c:869
+msgid "Disable connection to session manager"
+msgstr "Katkaise yhteys istunnonhallintaan"
+
+#: libgnomeui/gnome-client.c:975
+msgid "Session management"
+msgstr "Istunnonhallinta"
+
+#: libgnomeui/gnome-client.c:2475
+msgid "Cancel Logout"
+msgstr "Peru ulos kirjautuminen"
+
+#: libgnomeui/gnome-color-picker.c:414
+msgid "Received invalid color data\n"
+msgstr "Vastaanotti virheellisiä väritietoja\n"
+
+#: libgnomeui/gnome-color-picker.c:465
+msgid "Open a dialog to specify the color"
+msgstr "Avaa värinvalintaikkuna"
+
+#: libgnomeui/gnome-color-picker.c:487
+msgid "Pick a color"
+msgstr "Valitse väri"
+
+#: libgnomeui/gnome-dateedit.c:479 libgnomeui/gnome-dateedit.c:776
+msgid "Time"
+msgstr "Aika"
+
+#: libgnomeui/gnome-dateedit.c:480
+msgid "The time currently selected"
+msgstr "Nyt valittu aika"
+
+#: libgnomeui/gnome-dateedit.c:492
+msgid "DateEdit Flags"
+msgstr "DateEditin liput"
+
+#: libgnomeui/gnome-dateedit.c:493
+msgid "Flags for how DateEdit looks"
+msgstr "Liput, jotka säätävät DateEditin toimintaa"
+
+#: libgnomeui/gnome-dateedit.c:502
+msgid "Lower Hour"
+msgstr "Ensimmäinen tunti"
+
+#: libgnomeui/gnome-dateedit.c:503
+msgid "Lower hour in the time popup selector"
+msgstr "Ensimmäinen valittava tunti ajan valitsimessa"
+
+#: libgnomeui/gnome-dateedit.c:513
+msgid "Upper Hour"
+msgstr "Viimeinen tunti"
+
+#: libgnomeui/gnome-dateedit.c:514
+msgid "Upper hour in the time popup selector"
+msgstr "Viimeinen valittava tunti ajan valitsimessa"
+
+#: libgnomeui/gnome-dateedit.c:524
+msgid "Initial Time"
+msgstr "Aika alussa"
+
+#: libgnomeui/gnome-dateedit.c:525
+msgid "The initial time"
+msgstr "Alussa näkyvä aika"
+
+#: libgnomeui/gnome-dateedit.c:739 libgnomeui/gnome-scores.c:97
+msgid "Date"
+msgstr "Päivämäärä"
+
+#: libgnomeui/gnome-dateedit.c:752
+msgid "Select Date"
+msgstr "Valitse päivämäärä"
+
+#: libgnomeui/gnome-dateedit.c:752
+msgid "Select the date from a calendar"
+msgstr "Valitse päivämäärä kalenterista"
+
+#. Calendar label, only shown if the date editor has a time field
+#: libgnomeui/gnome-dateedit.c:763
+msgid "Calendar"
+msgstr "Kalenteri"
+
+#: libgnomeui/gnome-dateedit.c:784
+msgid "Select Time"
+msgstr "Valitse aika"
+
+#: libgnomeui/gnome-dateedit.c:784
+msgid "Select the time from a list"
+msgstr "Valitse aika luettelosta"
+
+#: libgnomeui/gnome-dateedit.c:1003
+msgid "gnome_date_edit_get_date deprecated, use gnome_date_edit_get_time"
+msgstr ""
+"gnome_date_edit_get_date on vanhentunut: käytä gnome_date_edit_get_time-"
+"funktiota sen sijaan."
+
+#: libgnomeui/gnome-druid-page-standard.c:121
+#: libgnomeui/gnome-font-picker.c:155
+msgid "Title"
+msgstr "Otsikko"
+
+#: libgnomeui/gnome-druid-page-standard.c:122
+msgid "Title of the druid"
+msgstr "Ohjatun toiminnon otsikko"
+
+#: libgnomeui/gnome-druid-page-standard.c:130
+msgid "Logo image"
+msgstr "Logo"
+
+#: libgnomeui/gnome-druid-page-standard.c:137
+msgid "Top Watermark"
+msgstr "Yläreunan kuva"
+
+#: libgnomeui/gnome-druid-page-standard.c:138
+msgid "Watermark image for the top"
+msgstr "Kuva yläreunaa varten"
+
+#: libgnomeui/gnome-druid-page-standard.c:145
+msgid "Title Foreground"
+msgstr "Otsikon edusta"
+
+#: libgnomeui/gnome-druid-page-standard.c:146
+msgid "Foreground color of the title"
+msgstr "Otsikon edustan väri"
+
+#: libgnomeui/gnome-druid-page-standard.c:153
+msgid "Title Foreground Color"
+msgstr "Otsikon edustaväri"
+
+#: libgnomeui/gnome-druid-page-standard.c:154
+msgid "Foreground color of the title as a GdkColor"
+msgstr "Otsikon edustan väri GdkColorina."
+
+#: libgnomeui/gnome-druid-page-standard.c:161
+msgid "Title Foreground color set"
+msgstr "Otsikon edustan väri asetettu"
+
+#: libgnomeui/gnome-druid-page-standard.c:162
+msgid "Foreground color of the title is set"
+msgstr "Otsikon edustan väri on asetettu"
+
+#: libgnomeui/gnome-druid-page-standard.c:169
+#: libgnomeui/gnome-druid-page-standard.c:177
+msgid "Background Color"
+msgstr "Taustaväri"
+
+#: libgnomeui/gnome-druid-page-standard.c:170
+msgid "Background color"
+msgstr "Taustaväri"
+
+#: libgnomeui/gnome-druid-page-standard.c:178
+msgid "Background color as a GdkColor"
+msgstr "Taustaväri GdkColorina"
+
+#: libgnomeui/gnome-druid-page-standard.c:185
+msgid "Background color set"
+msgstr "Taustaväri asetettu"
+
+#: libgnomeui/gnome-druid-page-standard.c:186
+msgid "Background color is set"
+msgstr "Taustaväri on asetettu"
+
+#: libgnomeui/gnome-druid-page-standard.c:193
+#: libgnomeui/gnome-druid-page-standard.c:201
+msgid "Contents Background Color"
+msgstr "Sisällön taustaväri"
+
+#: libgnomeui/gnome-druid-page-standard.c:194
+msgid "Contents Background color"
+msgstr "Sisällön taustaväri"
+
+#: libgnomeui/gnome-druid-page-standard.c:202
+msgid "Contents Background color as a GdkColor"
+msgstr "Sisällön taustaväri GdkColorina"
+
+#: libgnomeui/gnome-druid-page-standard.c:209
+msgid "Contents Background color set"
+msgstr "Sisällön taustaväri asetettu"
+
+#: libgnomeui/gnome-druid-page-standard.c:210
+msgid "Contents Background color is set"
+msgstr "Sisällön taustaväri on asetettu"
+
+#: libgnomeui/gnome-druid-page-standard.c:216
+#: libgnomeui/gnome-druid-page-standard.c:224
+msgid "Logo Background Color"
+msgstr "Logon taustan väri"
+
+#: libgnomeui/gnome-druid-page-standard.c:217
+msgid "Logo Background color"
+msgstr "Logon taustan väri"
+
+#: libgnomeui/gnome-druid-page-standard.c:225
+msgid "Logo Background color as a GdkColor"
+msgstr "Logon taustan väri GdkColorina"
+
+#: libgnomeui/gnome-druid-page-standard.c:232
+msgid "Logo Background color set"
+msgstr "Logon taustan väri asetettu"
+
+#: libgnomeui/gnome-druid-page-standard.c:233
+msgid "Logo Background color is set"
+msgstr "Logon taustan väri on asetettu"
+
+#: libgnomeui/gnome-druid.c:150
+msgid "Show Finish"
+msgstr "Näytä \"Valmis\""
+
+#: libgnomeui/gnome-druid.c:151
+msgid "Show the 'Finish' button instead of the 'Next' button"
+msgstr "Näytä \"Valmis\"-painike \"Seuraava\"-painikkeen sijasta"
+
+#: libgnomeui/gnome-druid.c:158
+msgid "Show Help"
+msgstr "Näytä ohje"
+
+#: libgnomeui/gnome-druid.c:159
+msgid "Show the 'Help' button"
+msgstr "Näytä ohjepainike"
+
 #: libgnomeui/gnome-entry.c:193 libgnomeui/gnome-entry.c:194
 msgid "History id"
 msgstr "Historiikin id"
@@ -964,11 +909,11 @@ msgstr "GTK-tekstikenttä"
 msgid "The GTK entry"
 msgstr "GTK-tekstikenttä"
 
-#: libgnomeui/gnome-file-entry.c:220 libgnomeui/gnome-icon-entry.c:176
+#: libgnomeui/gnome-file-entry.c:229 libgnomeui/gnome-icon-entry.c:177
 msgid "History ID"
 msgstr "Historiikin ID"
 
-#: libgnomeui/gnome-file-entry.c:221
+#: libgnomeui/gnome-file-entry.c:230
 msgid ""
 "Unique identifier for the file entry.  This will be used to save the history "
 "list."
@@ -976,53 +921,53 @@ msgstr ""
 "Yksilöllinen tiedostokentän tunniste. Tätä tarvitaan historiikkiluettelon "
 "tallentamiseen."
 
-#: libgnomeui/gnome-file-entry.c:229 libgnomeui/gnome-icon-entry.c:185
+#: libgnomeui/gnome-file-entry.c:238 libgnomeui/gnome-icon-entry.c:186
 msgid "Browse Dialog Title"
 msgstr "Selausikkunan otsikko"
 
-#: libgnomeui/gnome-file-entry.c:230
+#: libgnomeui/gnome-file-entry.c:239
 msgid "Title for the Browse file dialog."
 msgstr "Selausikkunan otsikko."
 
-#: libgnomeui/gnome-file-entry.c:237
+#: libgnomeui/gnome-file-entry.c:246
 msgid "Directory Entry"
-msgstr "Hakemistokenttä"
+msgstr "Kansiokenttä"
 
-#: libgnomeui/gnome-file-entry.c:238
+#: libgnomeui/gnome-file-entry.c:247
 msgid ""
 "Whether the file entry is being used to enter directory names or complete "
 "filenames."
-msgstr "Onko hakemistokenttä hakemistojen vai tiedostojen nimiä varten."
+msgstr "Onko kansiokenttä kansioiden vai tiedostojen nimiä varten."
 
-#: libgnomeui/gnome-file-entry.c:246
+#: libgnomeui/gnome-file-entry.c:255
 msgid "Modal"
 msgstr "Modaalinen"
 
-#: libgnomeui/gnome-file-entry.c:247
+#: libgnomeui/gnome-file-entry.c:256
 msgid "Whether the Browse file window should be modal."
 msgstr "Onko selausikkuna modaalinen."
 
-#: libgnomeui/gnome-file-entry.c:254 libgnomeui/gnome-icon-entry.c:201
+#: libgnomeui/gnome-file-entry.c:263 libgnomeui/gnome-icon-entry.c:202
 msgid "Filename"
 msgstr "Tiedostonimi"
 
-#: libgnomeui/gnome-file-entry.c:255
+#: libgnomeui/gnome-file-entry.c:264
 msgid "Filename that should be displayed in the file entry."
 msgstr "Tiedostonimi, joka näkyy tiedostokentässä."
 
-#: libgnomeui/gnome-file-entry.c:263
+#: libgnomeui/gnome-file-entry.c:272
 msgid "Default Path"
 msgstr "Oletuspolku"
 
-#: libgnomeui/gnome-file-entry.c:264
+#: libgnomeui/gnome-file-entry.c:273
 msgid "Default path for the Browse file window."
 msgstr "Tiedostojen selausikkunan oletuspolku."
 
-#: libgnomeui/gnome-file-entry.c:271
+#: libgnomeui/gnome-file-entry.c:280
 msgid "GnomeEntry"
 msgstr "GnomeEntry"
 
-#: libgnomeui/gnome-file-entry.c:272
+#: libgnomeui/gnome-file-entry.c:281
 msgid ""
 "GnomeEntry that the file entry uses for entering filenames.  You can use "
 "this property to get the GnomeEntry if you need to modify or query any of "
@@ -1032,11 +977,11 @@ msgstr ""
 "kautta voi saada GnomeEntryn, kun sen parametreja tarvitsee muuttaa tai "
 "käyttää."
 
-#: libgnomeui/gnome-file-entry.c:282
+#: libgnomeui/gnome-file-entry.c:291
 msgid "GtkEntry"
 msgstr "GtkEntry"
 
-#: libgnomeui/gnome-file-entry.c:283
+#: libgnomeui/gnome-file-entry.c:292
 msgid ""
 "GtkEntry that the file entry uses for entering filenames.  You can use this "
 "property to get the GtkEntry if you need to modify or query any of its "
@@ -1046,23 +991,35 @@ msgstr ""
 "ominaisuuden kautta voi saada GtkEntryn, kun sen parametreja tarvitsee "
 "muuttaa tai käyttää."
 
-#: libgnomeui/gnome-file-entry.c:527
+#: libgnomeui/gnome-file-entry.c:302
+msgid "Use GtkFileChooser"
+msgstr "Käytä GtkFileChooseria"
+
+#: libgnomeui/gnome-file-entry.c:303
+msgid ""
+"Whether to use the new GtkFileChooser widget or the GtkFileSelection widget "
+"to select files."
+msgstr ""
+"Käytetäänkö GtkFileChooser-säädintä vai GtkFileSelection-säädintä "
+"tiedostojen valitsemiseen."
+
+#: libgnomeui/gnome-file-entry.c:626 libgnomeui/gnome-file-entry.c:660
 msgid "Select file"
 msgstr "Valitse tiedosto"
 
-#: libgnomeui/gnome-file-entry.c:645
+#: libgnomeui/gnome-file-entry.c:786
 msgid "Path"
 msgstr "Polku"
 
-#: libgnomeui/gnome-file-entry.c:645
+#: libgnomeui/gnome-file-entry.c:786
 msgid "Path to file"
 msgstr "Tiedoston polku"
 
-#: libgnomeui/gnome-file-entry.c:672
+#: libgnomeui/gnome-file-entry.c:813
 msgid "_Browse..."
 msgstr "_Selaa..."
 
-#: libgnomeui/gnome-file-entry.c:673
+#: libgnomeui/gnome-file-entry.c:814
 msgid "Pop up a file selector to choose a file"
 msgstr "Avaa tiedoston valitsin"
 
@@ -1168,7 +1125,47 @@ msgstr ""
 "Ohjelman %s asetustietojen lataamisessa tai tallentamisessa tapahtui virhe. "
 "Jotkin asetuksistasi eivät välttämättä toimi kunnolla."
 
-#: libgnomeui/gnome-icon-entry.c:177
+#: libgnomeui/gnome-href.c:123
+msgid "URL"
+msgstr "URL"
+
+#: libgnomeui/gnome-href.c:124
+msgid "The URL that GnomeHRef activates"
+msgstr "URL, jonka GnomeHRef aktivoi"
+
+#: libgnomeui/gnome-href.c:131
+msgid "Text"
+msgstr "Teksti"
+
+#: libgnomeui/gnome-href.c:132
+msgid "The text on the button"
+msgstr "Painikkeen teksti"
+
+#: libgnomeui/gnome-href.c:133
+msgid "End World Hunger"
+msgstr "Lopeta nälänhädät"
+
+#: libgnomeui/gnome-href.c:139
+msgid "Link color"
+msgstr "Linkin väri"
+
+#: libgnomeui/gnome-href.c:140
+msgid "Color used to draw the link"
+msgstr "Linkin piirtämisessä käytettävä väri"
+
+#: libgnomeui/gnome-href.c:171
+msgid "This button will take you to the URI that it displays."
+msgstr "Tämä painike vie näyttämälleen URI:lle."
+
+#: libgnomeui/gnome-href.c:394
+msgid ""
+"An error has occured while trying to launch the default web browser.\n"
+"Please check your settings in the 'Preferred Applications' preference tool."
+msgstr ""
+"Oletusarvoisen WWW-selaimen käynnistyksessä tapahtui virhe.\n"
+"Tarkista, että suosittujen sovellusten asetukset ovat oikein."
+
+#: libgnomeui/gnome-icon-entry.c:178
 msgid ""
 "Unique identifier for the icon entry.  This will be used to save the history "
 "list."
@@ -1176,27 +1173,27 @@ msgstr ""
 "Kuvakekohdan yksilöllinen tunniste. Tätä käytetään historiikkiluettelon "
 "tallentamiseen."
 
-#: libgnomeui/gnome-icon-entry.c:186
+#: libgnomeui/gnome-icon-entry.c:187
 msgid "Title for the Browse icon dialog."
 msgstr "Kuvakkeiden selausikkunan otsikko."
 
-#: libgnomeui/gnome-icon-entry.c:193
-msgid "Pixmap Directory"
-msgstr "Kuvahakemisto"
-
 #: libgnomeui/gnome-icon-entry.c:194
-msgid "Directory that will be searched for icons."
-msgstr "Hakemisto, josta kuvakkeita etsitään."
+msgid "Pixmap Directory"
+msgstr "Kuvakansio"
 
-#: libgnomeui/gnome-icon-entry.c:202
+#: libgnomeui/gnome-icon-entry.c:195
+msgid "Directory that will be searched for icons."
+msgstr "Kansio, josta kuvakkeita etsitään."
+
+#: libgnomeui/gnome-icon-entry.c:203
 msgid "Filename that should be displayed in the icon entry."
 msgstr "Tiedostonimi, joka näkyy tiedostokentässä."
 
-#: libgnomeui/gnome-icon-entry.c:210
+#: libgnomeui/gnome-icon-entry.c:211
 msgid "Picker dialog"
 msgstr "Valitsinikkuna"
 
-#: libgnomeui/gnome-icon-entry.c:211
+#: libgnomeui/gnome-icon-entry.c:212
 msgid ""
 "Icon picker dialog.  You can use this property to get the GtkDialog if you "
 "need to modify or query any of its properties."
@@ -1204,17 +1201,9 @@ msgstr ""
 "Kuvakevalintaikkuna. Tämän ominaisuuden kautta voi saada GtkDialogin, jos "
 "sen ominaisuuksia tarvitsee muuttaa tai käyttää."
 
-#: libgnomeui/gnome-icon-entry.c:320 libgnomeui/gnome-icon-entry.c:979
+#: libgnomeui/gnome-icon-entry.c:320 libgnomeui/gnome-icon-entry.c:980
 msgid "No Icon"
 msgstr "Ei kuvaketta"
-
-#: libgnomeui/gnome-icon-entry.c:531 libgnomeui/gnome-pixmap-entry.c:386
-msgid "Can't find an hbox, using a normal file selection"
-msgstr "Hboxia ei löydy, käytetään tavallista tiedostonvalintaa"
-
-#: libgnomeui/gnome-icon-entry.c:537 libgnomeui/gnome-pixmap-entry.c:392
-msgid "Preview"
-msgstr "Esikatselu"
 
 #: libgnomeui/gnome-icon-entry.c:750
 msgid "Icon selection dialog"
@@ -1232,81 +1221,117 @@ msgstr "Kuvakevalitsin"
 msgid "Please pick the icon you want."
 msgstr "Valitse haluamasi kuvake."
 
-#: libgnomeui/gnome-icon-entry.c:982
+#: libgnomeui/gnome-icon-entry.c:983
 msgid "Icon Selector"
 msgstr "Kuvakevalitsin"
 
-#: libgnomeui/gnome-icon-entry.c:983
+#: libgnomeui/gnome-icon-entry.c:984
 msgid "This button will open a window to let you select an icon."
 msgstr "Tämä painike avaa ikkunan, josta voi valita kuvakkeen."
 
-#: libgnomeui/gnome-icon-entry.c:1006
+#: libgnomeui/gnome-icon-entry.c:1007
 msgid "Browse"
 msgstr "Selaa"
 
-#: libgnomeui/gnome-icon-entry.c:1008
+#: libgnomeui/gnome-icon-entry.c:1009
 msgid "Icon path"
 msgstr "Kuvakkeen polku"
 
-#: libgnomeui/gnome-icon-entry.c:1009
+#: libgnomeui/gnome-icon-entry.c:1010
 msgid ""
 "Here you should enter the name of the directory where icon images are "
 "located."
-msgstr "Tähän voit kirjoittaa hakemiston, jossa kuvakkeita on."
+msgstr "Tähän voit kirjoittaa kansion, jossa kuvakkeita on."
 
 #: libgnomeui/gnome-icon-sel.c:293
 #, c-format
 msgid "GnomeIconSelection: '%s' does not exist or is not a directory"
-msgstr "GnomeIconSelection: \"%s\" ei ole olemassa tai se ei ole hakemisto"
+msgstr "GnomeIconSelection: \"%s\" ei ole olemassa tai se ei ole kansio"
 
 #: libgnomeui/gnome-icon-sel.c:301
 #, c-format
 msgid "GnomeIconSelection: couldn't open directory '%s'"
-msgstr "GnomeIconSelection: hakemisto \"%s\" ei avautunut"
+msgstr "GnomeIconSelection: kansio \"%s\" ei avautunut"
 
 #: libgnomeui/gnome-icon-sel.c:401
 msgid "Loading Icons..."
 msgstr "Lataa kuvakkeita..."
 
-#: libgnomeui/gnome-messagebox.c:108
+#: libgnomeui/gnome-messagebox.c:109
 msgid "Information"
 msgstr "Tiedoksi"
 
-#: libgnomeui/gnome-messagebox.c:113
+#: libgnomeui/gnome-messagebox.c:114
 msgid "Warning"
 msgstr "Varoitus"
 
-#: libgnomeui/gnome-messagebox.c:119
+#: libgnomeui/gnome-messagebox.c:120
 msgid "Error"
 msgstr "Virhe"
 
-#: libgnomeui/gnome-messagebox.c:125
+#: libgnomeui/gnome-messagebox.c:126
 msgid "Question"
 msgstr "Kysymys"
 
-#: libgnomeui/gnome-messagebox.c:130
+#: libgnomeui/gnome-messagebox.c:131
 msgid "Message"
 msgstr "Viesti"
 
-#: libgnomeui/gnome-pixmap-entry.c:113
+#: libgnomeui/gnome-password-dialog.c:252
+msgid "_Username:"
+msgstr "_Tunnus:"
+
+#: libgnomeui/gnome-password-dialog.c:254
+msgid "_Domain:"
+msgstr "_Verkkoalue:"
+
+#: libgnomeui/gnome-password-dialog.c:256
+msgid "_Password:"
+msgstr "_Salasana:"
+
+#: libgnomeui/gnome-password-dialog.c:330
+msgid "Connect _anonymously"
+msgstr "Yhdistä _nimettömänä"
+
+#: libgnomeui/gnome-password-dialog.c:335
+msgid "Connect as _user:"
+msgstr "Yhdistä _käyttäjänä:"
+
+#: libgnomeui/gnome-password-dialog.c:433
+msgid "Remember password for this session"
+msgstr "Muista salasana tämän istunnon ajan"
+
+#: libgnomeui/gnome-password-dialog.c:435
+msgid "Save password in keyring"
+msgstr "Tallenna salasana avainrenkaaseen"
+
+#: libgnomeui/gnome-pixmap-entry.c:114
 msgid "Do Preview"
 msgstr "Esikatselu"
 
-#: libgnomeui/gnome-pixmap-entry.c:114
+#: libgnomeui/gnome-pixmap-entry.c:115
 msgid "Whether the pixmap entry should have a preview."
 msgstr "Onko kuvakentällä esikatselutoiminto."
 
-#: libgnomeui/gnome-pixmap-entry.c:188 libgnomeui/gnome-pixmap-entry.c:450
+#: libgnomeui/gnome-pixmap-entry.c:189 libgnomeui/gnome-pixmap-entry.c:479
 msgid "No Image"
 msgstr "Ei kuvaa"
 
-#: libgnomeui/gnome-pixmap-entry.c:205
+#: libgnomeui/gnome-pixmap-entry.c:206
 msgid "Image Preview"
 msgstr "Kuvan esikatselu"
 
-#: libgnomeui/gnome-pixmap-entry.c:206
+#: libgnomeui/gnome-pixmap-entry.c:207
 msgid "A preview of the image currently specified"
 msgstr "Valitun kuvan esikatselu"
+
+#: libgnomeui/gnome-pixmap-entry.c:414
+msgid "Can't find an hbox, using a normal file selection"
+msgstr "Hboxia ei löydy, käytetään tavallista tiedostonvalintaa"
+
+#: libgnomeui/gnome-pixmap-entry.c:420
+msgid "Preview"
+msgstr "Esikatselu"
 
 #: libgnomeui/gnome-scores.c:78
 msgid "Top Ten"
@@ -1325,11 +1350,144 @@ msgstr "Tulos"
 #.
 #: libgnomeui/gnome-scores.c:194
 msgid "%a %b %d %T %Y"
-msgstr "%a %d. %b %T %Y"
+msgstr "%a %d. %Bta %T %Y"
 
 #: libgnomeui/gnome-scores.c:395
 msgid "Sans 14"
 msgstr "Sans 14"
 
+#: libgnomeui/gnome-stock-icons.c:139
+msgid "Table Borders"
+msgstr "Taulukon reunat"
+
+#: libgnomeui/gnome-stock-icons.c:140
+msgid "Table Fill"
+msgstr "Taulukon täyttö"
+
+#: libgnomeui/gnome-stock-icons.c:141
+msgid "Bulleted List"
+msgstr "Numeroimaton lista"
+
+#: libgnomeui/gnome-stock-icons.c:142
+msgid "Numbered List"
+msgstr "Numeroitu lista"
+
+#: libgnomeui/gnome-stock-icons.c:143
+msgid "Indent"
+msgstr "Sisennä"
+
+#: libgnomeui/gnome-stock-icons.c:144
+msgid "Un-Indent"
+msgstr "Poista sisennys"
+
+#: libgnomeui/gnome-stock-icons.c:145
+msgid "About"
+msgstr "Tietoja"
+
+#: libgnomeui/gnome-ui-init.c:117
+msgid "Disable Crash Dialog"
+msgstr "Poista kaatumisikkuna käytöstä"
+
+#: libgnomeui/gnome-ui-init.c:119
+msgid "X display to use"
+msgstr "Käytettävä X-näyttö"
+
+#: libgnomeui/gnome-ui-init.c:119
+msgid "DISPLAY"
+msgstr "NÄYTTÖ"
+
+#: libgnomeui/gnome-ui-init.c:127
+msgid "GNOME GUI Library"
+msgstr "GNOMEn GUI-asetukset"
+
+#. dialog display isn't working out
+#: libgnomeui/gnome-ui-init.c:708
+#, c-format
+msgid "Multiple segmentation faults occurred; can't display error dialog\n"
+msgstr "Monia muistialueen ylityksiä tapahtui: virheikkunaa ei voi näyttää\n"
+
+#. Eeeek! Can't show dialog
+#: libgnomeui/gnome-ui-init.c:722
+#, c-format
+msgid ""
+"Segmentation fault!\n"
+"Cannot display crash dialog\n"
+msgstr ""
+"Muistinkäsittelyvirhe!\n"
+"Kaatumisikkunaa ei voi näyttää\n"
+
+#: libgnomeui/gnome_segv.c:101
+#, c-format
+msgid ""
+"The GNOME Session Manager (process %d) has crashed\n"
+"due to a fatal error (%s).\n"
+"When you close this dialog, all applications will close and your session "
+"will exit.\n"
+"Please save all your files before closing this dialog."
+msgstr ""
+"GNOME-istunnonhallinta (prosessi %d) on kaatunut\n"
+"vakavaan virheeseen (%s).\n"
+"Kun suljet tämän valintaikkunan, kaikki ohjelmat sulkeutuvat ja tämä istunto "
+"loppuu.\n"
+"Tallenna kaikki avoinna olevat tiedostot ennen tämän valintaikkunan "
+"sulkemista."
+
+#: libgnomeui/gnome_segv.c:112
+#, c-format
+msgid "The Application \"%s\" has quit unexpectedly."
+msgstr "Sovellus \"%s\" on sulkeutunut odottamatta."
+
+#: libgnomeui/gnome_segv.c:117
+#, c-format
+msgid "process %d: %s"
+msgstr "prosessi %d: %s"
+
+#: libgnomeui/gnome_segv.c:118 libgnomeui/gnome_segv.c:123
+msgid ""
+"You can inform the developers of what happened to help them fix it.  Or you "
+"can restart the application right now."
+msgstr ""
+"Voit ottaa yhteyttä sovelluksen kehittäjiin auttaaksesi heitä korjaamaan "
+"vian. Voit myös käynnistää ohjelman uudestaan nyt."
+
+#: libgnomeui/gnome_segv.c:137
+msgid "Usage: gnome_segv2 appname signum\n"
+msgstr "Käyttö: gnome_segv2 sovellus signaali\n"
+
+#: libgnomeui/gnome_segv.c:153
+msgid "_Restart Application"
+msgstr "Käynnistä ohjelma _uudelleen"
+
+#: libgnomeui/gnome_segv.c:165
+msgid "_Inform Developers"
+msgstr "_Ota yhteyttä kehittäjiin"
+
+#: libgnomeui/gnome_segv.c:176
+msgid "_Debug"
+msgstr "_Vianetsintä"
+
 #~ msgid "Exit the test"
 #~ msgstr "Lopeta testi"
+
+#~ msgid " domain %s"
+#~ msgstr " verkkoalue %s"
+
+#~ msgid "Color Selector"
+#~ msgstr "Värivalitsin"
+
+#~ msgid ""
+#~ "Application \"%s\" (process %d) has crashed\n"
+#~ "due to a fatal error.\n"
+#~ "(%s)"
+#~ msgstr ""
+#~ "Sovellus \"%s\" (prosessi %d) on kaatunut vakavaan virheeseen.\n"
+#~ "(%s)"
+
+#~ msgid "Submit a bug report"
+#~ msgstr "Täytä virheilmoitus"
+
+#~ msgid "http://www.gnome.org/application_crashed.shtml"
+#~ msgstr "http://www.gnome.org/application_crashed.shtml"
+
+#~ msgid "Please visit the GNOME Application Crash page for more information"
+#~ msgstr "Käy katsomassa lisätietoja GNOME Application Crash -sivulta."

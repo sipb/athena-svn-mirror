@@ -1,0 +1,162 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeIconEntry</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="fixme.html" title="Miscellaneous Widgets"><link rel="previous" href="GnomeHRef.html" title="GnomeHRef"><link rel="next" href="GnomeIconList.html" title="GnomeIconList"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeIconEntry.html#id2649574" title="Object Hierarchy"><link rel="section" href="GnomeIconEntry.html#id2649631" title="Implemented Interfaces"><link rel="section" href="GnomeIconEntry.html#id2649648" title="Properties"><link rel="section" href="GnomeIconEntry.html#id2649748" title="Signal Prototypes"><link rel="section" href="GnomeIconEntry.html#id2649824" title="Description"><link rel="section" href="GnomeIconEntry.html#id2649834" title="Details"><link rel="section" href="GnomeIconEntry.html#id2650992" title="Properties"><link rel="section" href="GnomeIconEntry.html#id2651188" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomeHRef.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="fixme.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeIconList.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeIconEntry"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeIconEntry</span></h2><p>GnomeIconEntry &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <a href="GnomeIconEntry.html#GnomeIconEntryPrivate">GnomeIconEntryPrivate</a>;
+struct      <a href="GnomeIconEntry.html#GnomeIconEntry-struct">GnomeIconEntry</a>;
+GtkWidget*  <a href="GnomeIconEntry.html#gnome-icon-entry-new">gnome_icon_entry_new</a>            (const gchar *history_id,
+                                             const gchar *browse_dialog_title);
+void        <a href="GnomeIconEntry.html#gnome-icon-entry-construct">gnome_icon_entry_construct</a>      (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *history_id,
+                                             const gchar *browse_dialog_title);
+void        <a href="GnomeIconEntry.html#gnome-icon-entry-set-pixmap-subdir">gnome_icon_entry_set_pixmap_subdir</a>
+                                            (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *subdir);
+gchar*      <a href="GnomeIconEntry.html#gnome-icon-entry-get-filename">gnome_icon_entry_get_filename</a>   (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);
+gboolean    <a href="GnomeIconEntry.html#gnome-icon-entry-set-filename">gnome_icon_entry_set_filename</a>   (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *filename);
+void        <a href="GnomeIconEntry.html#gnome-icon-entry-set-browse-dialog-title">gnome_icon_entry_set_browse_dialog_title</a>
+                                            (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *browse_dialog_title);
+void        <a href="GnomeIconEntry.html#gnome-icon-entry-set-history-id">gnome_icon_entry_set_history_id</a> (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *history_id);
+GtkWidget*  <a href="GnomeIconEntry.html#gnome-icon-entry-pick-dialog">gnome_icon_entry_pick_dialog</a>    (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);
+void        <a href="GnomeIconEntry.html#gnome-icon-entry-set-icon">gnome_icon_entry_set_icon</a>       (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *filename);
+GtkWidget*  <a href="GnomeIconEntry.html#gnome-icon-entry-gnome-file-entry">gnome_icon_entry_gnome_file_entry</a>
+                                            (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);
+GtkWidget*  <a href="GnomeIconEntry.html#gnome-icon-entry-gnome-entry">gnome_icon_entry_gnome_entry</a>    (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);
+GtkWidget*  <a href="GnomeIconEntry.html#gnome-icon-entry-gtk-entry">gnome_icon_entry_gtk_entry</a>      (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2649574"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBox
+                           +----GtkVBox
+                                 +----GnomeIconEntry
+</pre></div><div class="refsect1" lang="en"><a name="id2649631"></a><h2>Implemented Interfaces</h2><p>
+GnomeIconEntry implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2649648"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GnomeIconEntry.html#GnomeIconEntry--browse-dialog-title">browse-dialog-title</a>"  gchararray            : Read / Write
+  "<a href="GnomeIconEntry.html#GnomeIconEntry--filename">filename</a>"             gchararray            : Read / Write
+  "<a href="GnomeIconEntry.html#GnomeIconEntry--history-id">history-id</a>"           gchararray            : Read / Write
+  "<a href="GnomeIconEntry.html#GnomeIconEntry--pick-dialog">pick-dialog</a>"          GtkDialog             : Read
+  "<a href="GnomeIconEntry.html#GnomeIconEntry--pixmap-subdir">pixmap-subdir</a>"        gchararray            : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2649748"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GnomeIconEntry.html#GnomeIconEntry-browse">browse</a>"    void        user_function      (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *iconentry,
+                                            gpointer user_data);
+"<a href="GnomeIconEntry.html#GnomeIconEntry-changed">changed</a>"   void        user_function      (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *iconentry,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2649824"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2649834"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2649839"></a><h3><a name="GnomeIconEntryPrivate"></a>struct GnomeIconEntryPrivate</h3><a class="indexterm" name="id2649850"></a><pre class="programlisting">struct GnomeIconEntryPrivate;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2649865"></a><h3><a name="GnomeIconEntry-struct"></a>struct GnomeIconEntry</h3><a class="indexterm" name="id2649876"></a><pre class="programlisting">struct GnomeIconEntry;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2649892"></a><h3><a name="gnome-icon-entry-new"></a>gnome_icon_entry_new ()</h3><a class="indexterm" name="id2649903"></a><pre class="programlisting">GtkWidget*  gnome_icon_entry_new            (const gchar *history_id,
+                                             const gchar *browse_dialog_title);</pre><p>
+Creates a new icon entry widget</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>history_id</tt></i> :</span></td><td> the id given to <a href="GnomeEntry.html#gnome-entry-new"><span class="type">gnome_entry_new</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>browse_dialog_title</tt></i> :</span></td><td> title of the browse dialog and icon selection dialog
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Returns the new object
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2649994"></a><h3><a name="gnome-icon-entry-construct"></a>gnome_icon_entry_construct ()</h3><a class="indexterm" name="id2650006"></a><pre class="programlisting">void        gnome_icon_entry_construct      (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *history_id,
+                                             const gchar *browse_dialog_title);</pre><p>
+For language bindings and subclassing, from C use
+<a href="GnomeIconEntry.html#gnome-icon-entry-new"><span class="type">gnome_icon_entry_new</span></a></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>history_id</tt></i> :</span></td><td> the id given to <a href="GnomeEntry.html#gnome-entry-new"><span class="type">gnome_entry_new</span></a> in the browse dialog
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>browse_dialog_title</tt></i> :</span></td><td> title of the icon selection dialog
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650118"></a><h3><a name="gnome-icon-entry-set-pixmap-subdir"></a>gnome_icon_entry_set_pixmap_subdir ()</h3><a class="indexterm" name="id2650130"></a><pre class="programlisting">void        gnome_icon_entry_set_pixmap_subdir
+                                            (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *subdir);</pre><p>
+Sets the subdirectory below gnome's default
+pixmap directory to use as the default path for the file
+entry.  The path can also be an absolute one.  If <tt class="literal">NULL</tt> is passed
+then the pixmap directory itself is used.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>subdir</tt></i> :</span></td><td> subdirectory
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650212"></a><h3><a name="gnome-icon-entry-get-filename"></a>gnome_icon_entry_get_filename ()</h3><a class="indexterm" name="id2650224"></a><pre class="programlisting">gchar*      gnome_icon_entry_get_filename   (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);</pre><p>
+Gets the file name of the image if it was possible
+to load it into the preview. That is, it will only return a filename
+if the image exists and it was possible to load it as an image.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string with the path or <tt class="literal">NULL</tt> if it
+couldn't load the file
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650295"></a><h3><a name="gnome-icon-entry-set-filename"></a>gnome_icon_entry_set_filename ()</h3><a class="indexterm" name="id2650307"></a><pre class="programlisting">gboolean    gnome_icon_entry_set_filename   (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *filename);</pre><p>
+Sets the icon of GnomeIconEntry to be the one pointed to by
+<i class="parameter"><tt>filename</tt></i> (in the current subdirectory).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>filename</tt></i> :</span></td><td> a filename
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if icon was loaded ok, <tt class="literal">FALSE</tt> otherwise
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650409"></a><h3><a name="gnome-icon-entry-set-browse-dialog-title"></a>gnome_icon_entry_set_browse_dialog_title ()</h3><a class="indexterm" name="id2650421"></a><pre class="programlisting">void        gnome_icon_entry_set_browse_dialog_title
+                                            (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *browse_dialog_title);</pre><p>
+Set the title of the browse dialog.  It will not effect
+an existing dialog.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>browse_dialog_title</tt></i> :</span></td><td> title of the icon selection dialog
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650497"></a><h3><a name="gnome-icon-entry-set-history-id"></a>gnome_icon_entry_set_history_id ()</h3><a class="indexterm" name="id2650509"></a><pre class="programlisting">void        gnome_icon_entry_set_history_id (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *history_id);</pre><p>
+Set the history_id of the entry in the browse dialog
+and reload the history</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>history_id</tt></i> :</span></td><td> the id given to <a href="GnomeEntry.html#gnome-entry-new"><span class="type">gnome_entry_new</span></a> in the browse dialog
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650591"></a><h3><a name="gnome-icon-entry-pick-dialog"></a>gnome_icon_entry_pick_dialog ()</h3><a class="indexterm" name="id2650603"></a><pre class="programlisting">GtkWidget*  gnome_icon_entry_pick_dialog    (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);</pre><p>
+If a pick dialog exists, return a pointer to it or
+return NULL.  This is if you need to do something with all dialogs.
+You would use the browse signal with connect_after to get the
+pick dialog when it is displayed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The pick dialog or <tt class="literal">NULL</tt> if none exists
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650674"></a><h3><a name="gnome-icon-entry-set-icon"></a>gnome_icon_entry_set_icon ()</h3><a class="indexterm" name="id2650686"></a><pre class="programlisting">void        gnome_icon_entry_set_icon       (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry,
+                                             const gchar *filename);</pre><p>
+Deprecated in favour of <a href="GnomeIconEntry.html#gnome-icon-entry-set-filename"><span class="type">gnome_icon_entry_set_filename</span></a></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>filename</tt></i> :</span></td><td> a filename
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650766"></a><h3><a name="gnome-icon-entry-gnome-file-entry"></a>gnome_icon_entry_gnome_file_entry ()</h3><a class="indexterm" name="id2650779"></a><pre class="programlisting">GtkWidget*  gnome_icon_entry_gnome_file_entry
+                                            (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);</pre><p>
+Get the GnomeFileEntry widget that's part of the entry
+DEPRECATED! Use the "changed" signal for getting changes</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Returns GnomeFileEntry widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650842"></a><h3><a name="gnome-icon-entry-gnome-entry"></a>gnome_icon_entry_gnome_entry ()</h3><a class="indexterm" name="id2650854"></a><pre class="programlisting">GtkWidget*  gnome_icon_entry_gnome_entry    (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);</pre><p>
+Get the GnomeEntry widget that's part of the entry
+DEPRECATED! Use the "changed" signal for getting changes</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Returns GnomeEntry widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2650917"></a><h3><a name="gnome-icon-entry-gtk-entry"></a>gnome_icon_entry_gtk_entry ()</h3><a class="indexterm" name="id2650929"></a><pre class="programlisting">GtkWidget*  gnome_icon_entry_gtk_entry      (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *ientry);</pre><p>
+Get the GtkEntry widget that's part of the entry.
+DEPRECATED! Use the "changed" signal for getting changes</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ientry</tt></i> :</span></td><td> the GnomeIconEntry to work with
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Returns GtkEntry widget
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2650992"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2650998"></a><h3><a name="GnomeIconEntry--browse-dialog-title"></a>The "<tt class="literal">browse-dialog-title</tt>" property</h3><pre class="programlisting">  "browse-dialog-title"  gchararray            : Read / Write</pre><p>Title for the Browse icon dialog.</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><a name="id2651036"></a><h3><a name="GnomeIconEntry--filename"></a>The "<tt class="literal">filename</tt>" property</h3><pre class="programlisting">  "filename"             gchararray            : Read / Write</pre><p>Filename that should be displayed in the icon entry.</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><a name="id2651074"></a><h3><a name="GnomeIconEntry--history-id"></a>The "<tt class="literal">history-id</tt>" property</h3><pre class="programlisting">  "history-id"           gchararray            : Read / Write</pre><p>Unique identifier for the icon entry.  This will be used to save the history list.</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><a name="id2651113"></a><h3><a name="GnomeIconEntry--pick-dialog"></a>The "<tt class="literal">pick-dialog</tt>" property</h3><pre class="programlisting">  "pick-dialog"          GtkDialog             : Read</pre><p>Icon picker dialog.  You can use this property to get the GtkDialog if you need to modify or query any of its properties.</p></div><hr><div class="refsect2" lang="en"><a name="id2651148"></a><h3><a name="GnomeIconEntry--pixmap-subdir"></a>The "<tt class="literal">pixmap-subdir</tt>" property</h3><pre class="programlisting">  "pixmap-subdir"        gchararray            : Read / Write</pre><p>Directory that will be searched for icons.</p><p>Default value: NULL</p></div></div><div class="refsect1" lang="en"><a name="id2651188"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2651194"></a><h3><a name="GnomeIconEntry-browse"></a>The "browse" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *iconentry,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iconentry</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2651267"></a><h3><a name="GnomeIconEntry-changed"></a>The "changed" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeIconEntry.html" title="GnomeIconEntry">GnomeIconEntry</a> *iconentry,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>iconentry</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomeHRef.html"><b>&lt;&lt; GnomeHRef</b></a></td><td align="right"><a accesskey="n" href="GnomeIconList.html"><b>GnomeIconList &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,77 +1,90 @@
-<HTML><HEAD><TITLE>gnome-ui-init</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK REL="HOME" TITLE="GNOME UI Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="Initialization and session management" HREF="c4.html#INITIALIZATION"><LINK REL="PREVIOUS" TITLE="GNOME UI Library (libgnomeui)" HREF="c4.html"><LINK REL="NEXT" TITLE="GnomeClient" HREF="gnomeclient.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.0 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="c4.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="c4.html#INITIALIZATION"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME UI Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="gnomeclient.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="LIBGNOMEUI-GNOME-UI-INIT"></A>gnome-ui-init</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN19"></A><H2>Name</H2>gnome-ui-init&nbsp;--&nbsp;Parameters (and deprecated functions) for initializing libgnomeui applications.</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN22"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-ui-init</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="ch01.html#initialization" title="Initialization and session management"><link rel="previous" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="next" href="GnomeClient.html" title="GnomeClient"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="libgnomeui-gnome-ui-init.html#id2477685" title="Description"><link rel="section" href="libgnomeui-gnome-ui-init.html#id2477724" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html#initialization"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeClient.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeui-gnome-ui-init"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-ui-init</span></h2><p>gnome-ui-init &#8212; Parameters (and deprecated functions) for initializing libgnomeui applications.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
 
 
-#define     <A HREF="libgnomeui-gnome-ui-init.html#LIBGNOMEUI-MODULE-CAPS">LIBGNOMEUI_MODULE</A>
-#define     <A HREF="libgnomeui-gnome-ui-init.html#LIBGNOMEUI-PARAM-CRASH-DIALOG-CAPS">LIBGNOMEUI_PARAM_CRASH_DIALOG</A>
-#define     <A HREF="libgnomeui-gnome-ui-init.html#LIBGNOMEUI-PARAM-DISPLAY-CAPS">LIBGNOMEUI_PARAM_DISPLAY</A>
-#define     <A HREF="libgnomeui-gnome-ui-init.html#LIBGNOMEUI-PARAM-DEFAULT-ICON-CAPS">LIBGNOMEUI_PARAM_DEFAULT_ICON</A>
-int         <A HREF="libgnomeui-gnome-ui-init.html#GNOME-INIT-WITH-POPT-TABLE">gnome_init_with_popt_table</A>      (const char *app_id,
+#define     <a href="libgnomeui-gnome-ui-init.html#LIBGNOMEUI-MODULE-CAPS">LIBGNOMEUI_MODULE</a>
+#define     <a href="libgnomeui-gnome-ui-init.html#LIBGNOMEUI-PARAM-CRASH-DIALOG-CAPS">LIBGNOMEUI_PARAM_CRASH_DIALOG</a>
+#define     <a href="libgnomeui-gnome-ui-init.html#LIBGNOMEUI-PARAM-DISPLAY-CAPS">LIBGNOMEUI_PARAM_DISPLAY</a>
+#define     <a href="libgnomeui-gnome-ui-init.html#LIBGNOMEUI-PARAM-DEFAULT-ICON-CAPS">LIBGNOMEUI_PARAM_DEFAULT_ICON</a>
+int         <a href="libgnomeui-gnome-ui-init.html#gnome-init-with-popt-table">gnome_init_with_popt_table</a>      (const char *app_id,
                                              const char *app_version,
                                              int argc,
                                              char **argv,
                                              const struct poptOption *options,
                                              int flags,
                                              poptContext *return_ctx);
-#define     <A HREF="libgnomeui-gnome-ui-init.html#GNOME-INIT">gnome_init</A>                      (app_id,app_version,argc,argv)&#13;</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN33"></A><H2>Description</H2><P>The initialization functions in this module are deprecated in favour of calls
+#define     <a href="libgnomeui-gnome-ui-init.html#gnome-init">gnome_init</a>                      (app_id,app_version,argc,argv)
+
+</pre></div><div class="refsect1" lang="en"><a name="id2477685"></a><h2>Description</h2><p>
+The initialization functions in this module are deprecated in favour of calls
 to <a
-href="../libgnome/libgnome-gnome-program.html#GNOME-PROGRAM-INIT"
->gnome_program_init</a>() in the libgnome library.</P><P>However, this module does provide some extra parameters on top of those already
+href="../libgnome/libgnome-gnome-program.html#gnome-program-init"
+><tt class="function">gnome_program_init()</tt></a> in the libgnome library.
+</p><p>
+However, this module does provide some extra parameters on top of those already
 defined in libgnome that can be passed to the <a
-href="../libgnome/libgnome-gnome-program.html#GNOME-PROGRAM-INIT"
->gnome_program_init</a>() call. These
-should enable libgnomeui applications to control their appearance precisely.</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN39"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN41"></A><H3><A NAME="LIBGNOMEUI-MODULE-CAPS"></A>LIBGNOMEUI_MODULE</H3><PRE CLASS="PROGRAMLISTING">#define LIBGNOMEUI_MODULE libgnomeui_module_info_get()</PRE><P>A module containing all the information required to initialize libgnomeui and
+href="../libgnome/libgnome-gnome-program.html#gnome-program-init"
+><tt class="function">gnome_program_init()</tt></a> call. These
+should enable libgnomeui applications to control their appearance precisely.
+</p></div><div class="refsect1" lang="en"><a name="id2477724"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2477730"></a><h3><a name="LIBGNOMEUI-MODULE-CAPS"></a>LIBGNOMEUI_MODULE</h3><a class="indexterm" name="id2477738"></a><pre class="programlisting">#define LIBGNOMEUI_MODULE libgnomeui_module_info_get()
+</pre><p>
+A module containing all the information required to initialize libgnomeui and
 its dependents. This should be passed to the <a
-href="../libgnome/libgnome-gnome-program.html#GNOME-PROGRAM-INIT"
->gnome_program_init</a>() call by
-applications using libgnomeui.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN47"></A><H3><A NAME="LIBGNOMEUI-PARAM-CRASH-DIALOG-CAPS"></A>LIBGNOMEUI_PARAM_CRASH_DIALOG</H3><PRE CLASS="PROGRAMLISTING">#define LIBGNOMEUI_PARAM_CRASH_DIALOG	"show-crash-dialog"</PRE><P>If set to <TT CLASS="LITERAL">TRUE</TT>, the standard GNOME crash dialog will appear (offering the user
+href="../libgnome/libgnome-gnome-program.html#gnome-program-init"
+><tt class="function">gnome_program_init()</tt></a> call by
+applications using libgnomeui.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2477767"></a><h3><a name="LIBGNOMEUI-PARAM-CRASH-DIALOG-CAPS"></a>LIBGNOMEUI_PARAM_CRASH_DIALOG</h3><a class="indexterm" name="id2477778"></a><pre class="programlisting">#define LIBGNOMEUI_PARAM_CRASH_DIALOG	"show-crash-dialog"
+</pre><p>
+If set to <tt class="literal">TRUE</tt>, the standard GNOME crash dialog will appear (offering the user
 a chance to automatically file a bug report) should the application crash while
 running. Application authors will almost never want to change the default value
-of this parameter (<TT CLASS="LITERAL">FALSE</TT>). The user may change it however by setting the
-<TT CLASS="ENVAR">GNOME_DISABLE_CRASH_DIALOG</TT> environment variable or passing
-<TT CLASS="LITERAL">--disable-crash-dialog</TT> on the command line.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN56"></A><H3><A NAME="LIBGNOMEUI-PARAM-DISPLAY-CAPS"></A>LIBGNOMEUI_PARAM_DISPLAY</H3><PRE CLASS="PROGRAMLISTING">#define LIBGNOMEUI_PARAM_DISPLAY	"display"</PRE><P>Initially set to the value of the <TT CLASS="ENVAR">DISPLAY</TT> environment variable
-or the <TT CLASS="LITERAL">--display</TT> value passed on the command line, this
-parameter determines which X display the application will start on.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN63"></A><H3><A NAME="LIBGNOMEUI-PARAM-DEFAULT-ICON-CAPS"></A>LIBGNOMEUI_PARAM_DEFAULT_ICON</H3><PRE CLASS="PROGRAMLISTING">#define LIBGNOMEUI_PARAM_DEFAULT_ICON	"default-icon"</PRE><P>Set to the full path of the application's default icon. This can only be set by
-the application.</P></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN68"></A><H3><A NAME="GNOME-INIT-WITH-POPT-TABLE"></A>gnome_init_with_popt_table ()</H3><PRE CLASS="PROGRAMLISTING">int         gnome_init_with_popt_table      (const char *app_id,
+of this parameter (<tt class="literal">FALSE</tt>). The user may change it however by setting the
+<tt class="envar">GNOME_DISABLE_CRASH_DIALOG</tt> environment variable or passing
+<tt class="literal">--disable-crash-dialog</tt> on the command line.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2535480"></a><h3><a name="LIBGNOMEUI-PARAM-DISPLAY-CAPS"></a>LIBGNOMEUI_PARAM_DISPLAY</h3><a class="indexterm" name="id2535492"></a><pre class="programlisting">#define LIBGNOMEUI_PARAM_DISPLAY	"display"
+</pre><p>
+Initially set to the value of the <tt class="envar">DISPLAY</tt> environment variable
+or the <tt class="literal">--display</tt> value passed on the command line, this
+parameter determines which X display the application will start on.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2535520"></a><h3><a name="LIBGNOMEUI-PARAM-DEFAULT-ICON-CAPS"></a>LIBGNOMEUI_PARAM_DEFAULT_ICON</h3><a class="indexterm" name="id2535531"></a><pre class="programlisting">#define LIBGNOMEUI_PARAM_DEFAULT_ICON	"default-icon"
+</pre><p>
+Set to the full path of the application's default icon. This can only be set by
+the application.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2535549"></a><h3><a name="gnome-init-with-popt-table"></a>gnome_init_with_popt_table ()</h3><a class="indexterm" name="id2535561"></a><pre class="programlisting">int         gnome_init_with_popt_table      (const char *app_id,
                                              const char *app_version,
                                              int argc,
                                              char **argv,
                                              const struct poptOption *options,
                                              int flags,
-                                             poptContext *return_ctx);</PRE><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>Warning</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="LITERAL">gnome_init_with_popt_table</TT> is deprecated and should not be used in newly-written code.</P></TD></TR></TABLE></DIV><P>Initializes the application.  This sets up all of the GNOME
+                                             poptContext *return_ctx);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_init_with_popt_table</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Initializes the application.  This sets up all of the GNOME
 internals and prepares them (imlib, gdk, session-management, triggers,
-sound, user preferences).</P><P>Unlike <A HREF="libgnomeui-gnome-ui-init.html#GNOME-INIT">gnome_init</A>, with <A HREF="libgnomeui-gnome-ui-init.html#GNOME-INIT-WITH-POPT-TABLE">gnome_init_with_popt_table</A> you can provide
+sound, user preferences).
+</p><p>
+Unlike <a href="libgnomeui-gnome-ui-init.html#gnome-init"><span class="type">gnome_init</span></a>, with <a href="libgnomeui-gnome-ui-init.html#gnome-init-with-popt-table"><span class="type">gnome_init_with_popt_table</span></a> you can provide
 a table of popt options (popt is the command line argument parsing
-library).</P><P>Deprecated, use <a
-href="../libgnome/libgnome-gnome-program.html#GNOME-PROGRAM-INIT"
->gnome_program_init</a> with the LIBGNOMEUI_MODULE.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN85"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>app_id</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Application id.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN90"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>app_version</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Application version.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN95"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>argc</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> argument count (for example argc as received by main)</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN100"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>argv</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> argument vector (for example argv as received by main)</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN105"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>options</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> poptOption table with options to parse</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN110"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>flags</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> popt flags.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN115"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>return_ctx</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> if non-NULL, the popt context is returned here.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN120"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> 0 (always)</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN125"></A><H3><A NAME="GNOME-INIT"></A>gnome_init()</H3><PRE CLASS="PROGRAMLISTING">#define     gnome_init(app_id,app_version,argc,argv)</PRE><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>Warning</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="LITERAL">gnome_init</TT> is deprecated and should not be used in newly-written code.</P></TD></TR></TABLE></DIV><P>This is identical to a call to gnome_init_with_popt_table with <TT CLASS="LITERAL">NULL</TT> passed in
-as the poptOption table.</P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN135"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>app_id</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Application id.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN140"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>app_version</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Application version.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN145"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>argc</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Argument count (for example, argc as received by the main function).</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN150"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>argv</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P>Argument vector (for example, argv as received by the main function).
-&#13;</P></TD></TR></TBODY></TABLE></DIV></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="c4.html"><B>&lt;&lt;&lt;&nbsp;GNOME UI Library (libgnomeui)</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="gnomeclient.html"><B>GnomeClient&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>
+library).
+</p><p>
+Deprecated, use <a
+href="../libgnome/libgnome-gnome-program.html#gnome-program-init"
+><span class="type">gnome_program_init</span></a> with the LIBGNOMEUI_MODULE.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app_id</tt></i> :</span></td><td> Application id.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>app_version</tt></i> :</span></td><td> Application version.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td> argument count (for example argc as received by main)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td> argument vector (for example argv as received by main)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>options</tt></i> :</span></td><td> poptOption table with options to parse
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>flags</tt></i> :</span></td><td> popt flags.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>return_ctx</tt></i> :</span></td><td> if non-NULL, the popt context is returned here.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> 0 (always)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2535803"></a><h3><a name="gnome-init"></a>gnome_init()</h3><a class="indexterm" name="id2535814"></a><pre class="programlisting">#define     gnome_init(app_id,app_version,argc,argv)</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_init</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This is identical to a call to gnome_init_with_popt_table with <tt class="literal">NULL</tt> passed in
+as the poptOption table.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>app_id</tt></i> :</span></td><td>Application id.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>app_version</tt></i> :</span></td><td>Application version.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argc</tt></i> :</span></td><td>Argument count (for example, argc as received by the main function).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>argv</tt></i> :</span></td><td>Argument vector (for example, argv as received by the main function).
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="ch01.html"><b>&lt;&lt; GNOME UI Library (libgnomeui)</b></a></td><td align="right"><a accesskey="n" href="GnomeClient.html"><b>GnomeClient &gt;&gt;</b></a></td></tr></table></body></html>

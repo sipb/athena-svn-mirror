@@ -1,107 +1,146 @@
-<HTML><HEAD><TITLE>gnome-popup-menu</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.76b+
-"><LINK REL="HOME" TITLE="GNOME UI Library Reference Manual" HREF="index.html"><LINK REL="UP" TITLE="Application management" HREF="application-mgmt.html"><LINK REL="PREVIOUS" TITLE="GnomeAbout" HREF="gnomeabout.html"><LINK REL="NEXT" TITLE="Druids" HREF="druids.html"><META NAME="GENERATOR" CONTENT="GTK-Doc V1.0 (SGML mode)"><STYLE TYPE="text/css">.synopsis, .classsynopsis {
-    background: #eeeeee;
-    border: solid 1px #aaaaaa;
-    padding: 0.5em;
-}
-.programlisting {
-    background: #eeeeff;
-    border: solid 1px #aaaaff;
-    padding: 0.5em;
-}
-.variablelist {
-    padding: 4px;
-    margin-left: 3em;
-}
-.navigation {
-    background: #ffeeee;
-    border: solid 1px #ffaaaa;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-}
-.navigation a {
-    color: #770000;
-}
-.navigation a:visited {
-    color: #550000;
-}
-.navigation .title {
-    font-size: 200%;
-}</STYLE></HEAD><BODY CLASS="REFENTRY" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#840084" ALINK="#0000FF"><TABLE WIDTH="100%" CLASS="navigation" SUMMARY="Navigation header" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD><A ACCESSKEY="p" HREF="gnomeabout.html"><IMG SRC="left.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Prev"></A></TD><TD><A ACCESSKEY="u" HREF="application-mgmt.html"><IMG SRC="up.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Up"></A></TD><TD><A ACCESSKEY="h" HREF="index.html"><IMG SRC="home.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Home"></A></TD><TH WIDTH="100%" align="center">GNOME UI Library Reference Manual</TH><TD><A ACCESSKEY="n" HREF="druids.html"><IMG SRC="right.png" WIDTH="24" HEIGHT="24" BORDER="0" ALT="Next"></A></TD></TR></TABLE><H1><A NAME="LIBGNOMEUI-GNOME-POPUP-MENU"></A>gnome-popup-menu</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN5812"></A><H2>Name</H2>gnome-popup-menu&nbsp;--&nbsp;Create and display popup and context menus.</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN5815"></A><H2>Synopsis</H2><PRE CLASS="SYNOPSIS">&#13;#include &lt;libgnomeui/libgnomeui.h&gt;
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-popup-menu</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="application-mgmt.html" title="Application management"><link rel="previous" href="GnomeAbout.html" title="GnomeAbout"><link rel="next" href="druids.html" title="Druids"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="libgnomeui-gnome-popup-menu.html#id2592530" title="Description"><link rel="section" href="libgnomeui-gnome-popup-menu.html#id2592540" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomeAbout.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="application-mgmt.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="druids.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libgnomeui-gnome-popup-menu"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">gnome-popup-menu</span></h2><p>gnome-popup-menu &#8212; Create and display popup and context menus.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
 
 
-GtkWidget*  <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW">gnome_popup_menu_new</A>            (<A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> *uiinfo);
-GtkWidget*  <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW-WITH-ACCELGROUP">gnome_popup_menu_new_with_accelgroup</A>
-                                            (<A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> *uiinfo,
+GtkWidget*  <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-new">gnome_popup_menu_new</a>            (<a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo">GnomeUIInfo</a> *uiinfo);
+GtkWidget*  <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-new-with-accelgroup">gnome_popup_menu_new_with_accelgroup</a>
+                                            (<a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo">GnomeUIInfo</a> *uiinfo,
                                              GtkAccelGroup *accelgroup);
-GtkAccelGroup* <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-GET-ACCEL-GROUP">gnome_popup_menu_get_accel_group</A>
+GtkAccelGroup* <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-get-accel-group">gnome_popup_menu_get_accel_group</a>
                                             (GtkMenu *menu);
-void        <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-ATTACH">gnome_popup_menu_attach</A>         (GtkWidget *popup,
+void        <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-attach">gnome_popup_menu_attach</a>         (GtkWidget *popup,
                                              GtkWidget *widget,
                                              gpointer user_data);
-void        <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-DO-POPUP">gnome_popup_menu_do_popup</A>       (GtkWidget *popup,
+void        <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-do-popup">gnome_popup_menu_do_popup</a>       (GtkWidget *popup,
                                              GtkMenuPositionFunc pos_func,
                                              gpointer pos_data,
                                              GdkEventButton *event,
                                              gpointer user_data,
                                              GtkWidget *for_widget);
-int         <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-DO-POPUP-MODAL">gnome_popup_menu_do_popup_modal</A> (GtkWidget *popup,
+int         <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-do-popup-modal">gnome_popup_menu_do_popup_modal</a> (GtkWidget *popup,
                                              GtkMenuPositionFunc pos_func,
                                              gpointer pos_data,
                                              GdkEventButton *event,
                                              gpointer user_data,
                                              GtkWidget *for_widget);
-void        <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-APPEND">gnome_popup_menu_append</A>         (GtkWidget *popup,
-                                             <A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> *uiinfo);
-void        <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-GTK-WIDGET-ADD-POPUP-ITEMS">gnome_gtk_widget_add_popup_items</A>
+void        <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-append">gnome_popup_menu_append</a>         (GtkWidget *popup,
+                                             <a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo">GnomeUIInfo</a> *uiinfo);
+void        <a href="libgnomeui-gnome-popup-menu.html#gnome-gtk-widget-add-popup-items">gnome_gtk_widget_add_popup_items</a>
                                             (GtkWidget *widget,
-                                             <A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> *uiinfo,
-                                             gpointer user_data);</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN5853"></A><H2>Description</H2><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN5856"></A><H2>Details</H2><DIV CLASS="REFSECT2"><A NAME="AEN5858"></A><H3><A NAME="GNOME-POPUP-MENU-NEW"></A>gnome_popup_menu_new ()</H3><PRE CLASS="PROGRAMLISTING">GtkWidget*  gnome_popup_menu_new            (<A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> *uiinfo);</PRE><P>This function behaves just like
-<A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW-WITH-ACCELGROUP">gnome_popup_menu_new_with_accelgroup</A>(), except that it creates an
+                                             <a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo">GnomeUIInfo</a> *uiinfo,
+                                             gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2592530"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2592540"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2592545"></a><h3><a name="gnome-popup-menu-new"></a>gnome_popup_menu_new ()</h3><a class="indexterm" name="id2592556"></a><pre class="programlisting">GtkWidget*  gnome_popup_menu_new            (<a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo">GnomeUIInfo</a> *uiinfo);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_popup_menu_new</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This function behaves just like
+<a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-new-with-accelgroup"><tt class="function">gnome_popup_menu_new_with_accelgroup()</tt></a>, except that it creates an
 accelgroup for you and attaches it to the menu object.  Use
-<A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-GET-ACCEL-GROUP">gnome_popup_menu_get_accel_group</A>() to get the accelgroup that is
-created.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5869"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>uiinfo</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A <A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> array describing the new menu.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5875"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A menu widget.&#13;</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN5880"></A><H3><A NAME="GNOME-POPUP-MENU-NEW-WITH-ACCELGROUP"></A>gnome_popup_menu_new_with_accelgroup ()</H3><PRE CLASS="PROGRAMLISTING">GtkWidget*  gnome_popup_menu_new_with_accelgroup
-                                            (<A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> *uiinfo,
-                                             GtkAccelGroup *accelgroup);</PRE><P>Creates a popup menu out of the specified <TT CLASS="PARAMETER"><I>uiinfo</I></TT> array.  Use
-<A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-DO-POPUP">gnome_popup_menu_do_popup</A>() to pop the menu up, or attach it to a
-window with <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-ATTACH">gnome_popup_menu_attach</A>().</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5893"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>uiinfo</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A <A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> array describing the new menu.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5899"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>accelgroup</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A GtkAccelGroup describing the accelerator key structure.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5905"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A menu widget.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN5910"></A><H3><A NAME="GNOME-POPUP-MENU-GET-ACCEL-GROUP"></A>gnome_popup_menu_get_accel_group ()</H3><PRE CLASS="PROGRAMLISTING">GtkAccelGroup* gnome_popup_menu_get_accel_group
-                                            (GtkMenu *menu);</PRE><P>This function is used to retrieve the accelgroup that was created by
-<A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW">gnome_popup_menu_new</A>(). If you want to specify the accelgroup that the popup
-menu accelerators use, then use <A HREF="libgnomeui-gnome-popup-menu.html#GNOME-POPUP-MENU-NEW-WITH-ACCELGROUP">gnome_popup_menu_new_with_accelgroup</A>().</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5921"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>menu</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A menu widget.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5926"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The accelgroup associated with the specified GtkMenu.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN5932"></A><H3><A NAME="GNOME-POPUP-MENU-ATTACH"></A>gnome_popup_menu_attach ()</H3><PRE CLASS="PROGRAMLISTING">void        gnome_popup_menu_attach         (GtkWidget *popup,
+<a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-get-accel-group"><tt class="function">gnome_popup_menu_get_accel_group()</tt></a> to get the accelgroup that is
+created.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uiinfo</tt></i> :</span></td><td> A <a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo"><span class="type">GnomeUIInfo</span></a> array describing the new menu.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A menu widget.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2592663"></a><h3><a name="gnome-popup-menu-new-with-accelgroup"></a>gnome_popup_menu_new_with_accelgroup ()</h3><a class="indexterm" name="id2592675"></a><pre class="programlisting">GtkWidget*  gnome_popup_menu_new_with_accelgroup
+                                            (<a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo">GnomeUIInfo</a> *uiinfo,
+                                             GtkAccelGroup *accelgroup);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_popup_menu_new_with_accelgroup</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Creates a popup menu out of the specified <i class="parameter"><tt>uiinfo</tt></i> array.  Use
+<a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-do-popup"><tt class="function">gnome_popup_menu_do_popup()</tt></a> to pop the menu up, or attach it to a
+window with <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-attach"><tt class="function">gnome_popup_menu_attach()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uiinfo</tt></i> :</span></td><td> A <a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo"><span class="type">GnomeUIInfo</span></a> array describing the new menu.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>accelgroup</tt></i> :</span></td><td> A <span class="type">GtkAccelGroup</span> describing the accelerator key structure.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A menu widget.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2592817"></a><h3><a name="gnome-popup-menu-get-accel-group"></a>gnome_popup_menu_get_accel_group ()</h3><a class="indexterm" name="id2592829"></a><pre class="programlisting">GtkAccelGroup* gnome_popup_menu_get_accel_group
+                                            (GtkMenu *menu);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_popup_menu_get_accel_group</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This function is used to retrieve the accelgroup that was created by
+<a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-new"><tt class="function">gnome_popup_menu_new()</tt></a>. If you want to specify the accelgroup that the popup
+menu accelerators use, then use <a href="libgnomeui-gnome-popup-menu.html#gnome-popup-menu-new-with-accelgroup"><tt class="function">gnome_popup_menu_new_with_accelgroup()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>menu</tt></i> :</span></td><td> A menu widget.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The accelgroup associated with the specified <span class="type">GtkMenu</span>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2592936"></a><h3><a name="gnome-popup-menu-attach"></a>gnome_popup_menu_attach ()</h3><a class="indexterm" name="id2592948"></a><pre class="programlisting">void        gnome_popup_menu_attach         (GtkWidget *popup,
                                              GtkWidget *widget,
-                                             gpointer user_data);</PRE><P>Attaches the specified popup menu to the specified widget.  The
+                                             gpointer user_data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_popup_menu_attach</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Attaches the specified popup menu to the specified widget.  The
 menu can then be activated by pressing mouse button 3 over the
 widget.  When a menu item callback is invoked, the specified
-user_data will be passed to it.</P><P>This function requires the widget to have its own window
+user_data will be passed to it.
+</p><p>
+This function requires the widget to have its own window
 (i.e. GTK_WIDGET_NO_WINDOW (widget) == FALSE), This function will
 try to set the GDK_BUTTON_PRESS_MASK flag on the widget's event
 mask if it does not have it yet; if this is the case, then the
-widget must not be realized for it to work.</P><P>The popup menu can be attached to different widgets at the same
+widget must not be realized for it to work.
+</p><p>
+The popup menu can be attached to different widgets at the same
 time.  A reference count is kept on the popup menu; when all the
 widgets it is attached to are destroyed, the popup menu will be
-destroyed as well.</P><P>Under the current implementation, setting a popup menu for a NO_WINDOW
-widget and then reparenting that widget will cause Bad Things to happen.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5945"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>popup</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A menu widget.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5950"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>widget</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The widget to attach the popup menu to.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5955"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>user_data</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Application specific data passed to the callback.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN5960"></A><H3><A NAME="GNOME-POPUP-MENU-DO-POPUP"></A>gnome_popup_menu_do_popup ()</H3><PRE CLASS="PROGRAMLISTING">void        gnome_popup_menu_do_popup       (GtkWidget *popup,
+destroyed as well.
+</p><p>
+Under the current implementation, setting a popup menu for a NO_WINDOW
+widget and then reparenting that widget will cause Bad Things to happen.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>popup</tt></i> :</span></td><td> A menu widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> The widget to attach the popup menu to.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> Application specific data passed to the callback.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593079"></a><h3><a name="gnome-popup-menu-do-popup"></a>gnome_popup_menu_do_popup ()</h3><a class="indexterm" name="id2593091"></a><pre class="programlisting">void        gnome_popup_menu_do_popup       (GtkWidget *popup,
                                              GtkMenuPositionFunc pos_func,
                                              gpointer pos_data,
                                              GdkEventButton *event,
                                              gpointer user_data,
-                                             GtkWidget *for_widget);</PRE><P>You can use this function to pop up a menu.  When a menu item
-callback is invoked, the specified user_data will be passed to it.</P><P>The pos_func and pos_data parameters are the same as for
-gtk_menu_popup(), i.e. you can use them to specify a function to
+                                             GtkWidget *for_widget);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_popup_menu_do_popup</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+You can use this function to pop up a menu.  When a menu item
+callback is invoked, the specified user_data will be passed to it.
+</p><p>
+The pos_func and pos_data parameters are the same as for
+<tt class="function">gtk_menu_popup()</tt>, i.e. you can use them to specify a function to
 position the menu explicitly.  If you want the default position
-(near the mouse), pass NULL for these parameters.</P><P>The event parameter is needed to figure out the mouse button that
+(near the mouse), pass NULL for these parameters.
+</p><p>
+The event parameter is needed to figure out the mouse button that
 activated the menu and the time at which this happened.  If you
 pass in NULL, then no button and the current time will be used as
-defaults.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5976"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>popup</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A menu widget.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5981"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>pos_func</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A user supplied function to position the menu or <TT CLASS="LITERAL">NULL</TT>.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5987"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>pos_data</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> User supplied data to pass to <TT CLASS="PARAMETER"><I>pos_func</I></TT>.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN5993"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>event</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A GdkEventButton structure containing the event that triggered the
-menu (or <TT CLASS="LITERAL">NULL</TT>).</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6000"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>user_data</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Application specific data passed to the menu callback.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6005"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>for_widget</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The widget for which the popup was triggered.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN6010"></A><H3><A NAME="GNOME-POPUP-MENU-DO-POPUP-MODAL"></A>gnome_popup_menu_do_popup_modal ()</H3><PRE CLASS="PROGRAMLISTING">int         gnome_popup_menu_do_popup_modal (GtkWidget *popup,
+defaults.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>popup</tt></i> :</span></td><td> A menu widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pos_func</tt></i> :</span></td><td> A user supplied function to position the menu or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pos_data</tt></i> :</span></td><td> User supplied data to pass to <i class="parameter"><tt>pos_func</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td> A <span class="type">GdkEventButton</span> structure containing the event that triggered the
+menu (or <tt class="literal">NULL</tt>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> Application specific data passed to the menu callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>for_widget</tt></i> :</span></td><td> The widget for which the popup was triggered.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593317"></a><h3><a name="gnome-popup-menu-do-popup-modal"></a>gnome_popup_menu_do_popup_modal ()</h3><a class="indexterm" name="id2593330"></a><pre class="programlisting">int         gnome_popup_menu_do_popup_modal (GtkWidget *popup,
                                              GtkMenuPositionFunc pos_func,
                                              gpointer pos_data,
                                              GdkEventButton *event,
                                              gpointer user_data,
-                                             GtkWidget *for_widget);</PRE><P>Same as gnome_popup_do_modal(), but runs the popup menu modally.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6024"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>popup</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A menu widget.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6029"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>pos_func</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A user supplied function to position the menu or <TT CLASS="LITERAL">NULL</TT>.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6035"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>pos_data</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> User supplied data to pass to <TT CLASS="PARAMETER"><I>pos_func</I></TT>.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6041"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>event</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A GdkEventButton structure containing the event that triggered the
-menu (or <TT CLASS="LITERAL">NULL</TT>).</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6048"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>user_data</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> Application specific data passed to the menu callback.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6053"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>for_widget</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The widget for which the popup was triggered.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6058"><SPAN STYLE="white-space: nowrap"><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">Returns</I></SPAN> :</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The index of the selected item or -1 if no item selected.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN6063"></A><H3><A NAME="GNOME-POPUP-MENU-APPEND"></A>gnome_popup_menu_append ()</H3><PRE CLASS="PROGRAMLISTING">void        gnome_popup_menu_append         (GtkWidget *popup,
-                                             <A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> *uiinfo);</PRE><P>Appends the menu items in <TT CLASS="PARAMETER"><I>uiinfo</I></TT> the <TT CLASS="PARAMETER"><I>popup</I></TT> menu.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6074"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>popup</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> An existing popup menu.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6079"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>uiinfo</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A <A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> array describing new menu elements.</P></TD></TR></TBODY></TABLE></DIV><HR><DIV CLASS="REFSECT2"><A NAME="AEN6085"></A><H3><A NAME="GNOME-GTK-WIDGET-ADD-POPUP-ITEMS"></A>gnome_gtk_widget_add_popup_items ()</H3><PRE CLASS="PROGRAMLISTING">void        gnome_gtk_widget_add_popup_items
+                                             GtkWidget *for_widget);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_popup_menu_do_popup_modal</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Same as <tt class="function">gnome_popup_do_modal()</tt>, but runs the popup menu modally.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>popup</tt></i> :</span></td><td> A menu widget.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pos_func</tt></i> :</span></td><td> A user supplied function to position the menu or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pos_data</tt></i> :</span></td><td> User supplied data to pass to <i class="parameter"><tt>pos_func</tt></i>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>event</tt></i> :</span></td><td> A <span class="type">GdkEventButton</span> structure containing the event that triggered the
+menu (or <tt class="literal">NULL</tt>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> Application specific data passed to the menu callback.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>for_widget</tt></i> :</span></td><td> The widget for which the popup was triggered.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> The index of the selected item or -1 if no item selected.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593553"></a><h3><a name="gnome-popup-menu-append"></a>gnome_popup_menu_append ()</h3><a class="indexterm" name="id2593564"></a><pre class="programlisting">void        gnome_popup_menu_append         (GtkWidget *popup,
+                                             <a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo">GnomeUIInfo</a> *uiinfo);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_popup_menu_append</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Appends the menu items in <i class="parameter"><tt>uiinfo</tt></i> the <i class="parameter"><tt>popup</tt></i> menu.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>popup</tt></i> :</span></td><td> An existing popup menu.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>uiinfo</tt></i> :</span></td><td> A <a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo"><span class="type">GnomeUIInfo</span></a> array describing new menu elements.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593669"></a><h3><a name="gnome-gtk-widget-add-popup-items"></a>gnome_gtk_widget_add_popup_items ()</h3><a class="indexterm" name="id2593680"></a><pre class="programlisting">void        gnome_gtk_widget_add_popup_items
                                             (GtkWidget *widget,
-                                             <A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> *uiinfo,
-                                             gpointer user_data);</PRE><P>This creates a new popup menu for <TT CLASS="PARAMETER"><I>widget</I></TT> if none exists, and then adds the
-items in <TT CLASS="PARAMETER"><I>uiinfo</I></TT> to the popup menu of <TT CLASS="PARAMETER"><I>widget</I></TT>.</P><P></P><P></P><TABLE CLASS="variablelist" BORDER="0" CELLSPACING="0" CELLPADDING="4"><TBODY><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6098"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>widget</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The widget to append popup menu items for.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6103"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>uiinfo</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> A <A HREF="libgnomeui-gnome-app-helper.html#GNOMEUIINFO">GnomeUIInfo</A> array describing new menu elements.</P></TD></TR><TR><TD ALIGN="LEFT" VALIGN="TOP"><A NAME="AEN6109"><SPAN STYLE="white-space: nowrap"><TT CLASS="PARAMETER"><I>user_data</I></TT>&nbsp;:</SPAN></TD><TD ALIGN="LEFT" VALIGN="TOP"><P> The user_data to pass to the callbacks for the menu items.</P></TD></TR></TBODY></TABLE></DIV></DIV><TABLE CLASS="navigation" WIDTH="100%" SUMMARY="Navigation footer" CELLPADDING="2" CELLSPACING="2"><TR VALIGN="middle"><TD ALIGN="left"><A ACCESSKEY="p" HREF="gnomeabout.html"><B>&lt;&lt;&lt;&nbsp;GnomeAbout</B></A></TD><TD ALIGN="right"><A ACCESSKEY="n" HREF="druids.html"><B>Druids&nbsp;&gt;&gt;&gt;</B></A></TD></TR></TABLE></BODY></HTML>
+                                             <a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo">GnomeUIInfo</a> *uiinfo,
+                                             gpointer user_data);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_gtk_widget_add_popup_items</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+This creates a new popup menu for <i class="parameter"><tt>widget</tt></i> if none exists, and then adds the
+items in <i class="parameter"><tt>uiinfo</tt></i> to the popup menu of <i class="parameter"><tt>widget</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>widget</tt></i> :</span></td><td> The widget to append popup menu items for.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>uiinfo</tt></i> :</span></td><td> A <a href="libgnomeui-gnome-app-helper.html#GnomeUIInfo"><span class="type">GnomeUIInfo</span></a> array describing new menu elements.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td> The user_data to pass to the callbacks for the menu items.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomeAbout.html"><b>&lt;&lt; GnomeAbout</b></a></td><td align="right"><a accesskey="n" href="druids.html"><b>Druids &gt;&gt;</b></a></td></tr></table></body></html>

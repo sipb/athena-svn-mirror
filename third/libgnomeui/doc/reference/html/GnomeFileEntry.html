@@ -1,0 +1,179 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeFileEntry</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="fixme.html" title="Miscellaneous Widgets"><link rel="previous" href="GnomeEntry.html" title="GnomeEntry"><link rel="next" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeFileEntry.html#id2635894" title="Object Hierarchy"><link rel="section" href="GnomeFileEntry.html#id2635960" title="Implemented Interfaces"><link rel="section" href="GnomeFileEntry.html#id2635985" title="Properties"><link rel="section" href="GnomeFileEntry.html#id2636173" title="Signal Prototypes"><link rel="section" href="GnomeFileEntry.html#id2636250" title="Description"><link rel="section" href="GnomeFileEntry.html#id2636260" title="Details"><link rel="section" href="GnomeFileEntry.html#id2637573" title="Properties"><link rel="section" href="GnomeFileEntry.html#id2637961" title="Signals"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomeEntry.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="fixme.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="GnomeFontPicker.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeFileEntry"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeFileEntry</span></h2><p>GnomeFileEntry &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <a href="GnomeFileEntry.html#GnomeFileEntry-struct">GnomeFileEntry</a>;
+GtkWidget*  <a href="GnomeFileEntry.html#gnome-file-entry-new">gnome_file_entry_new</a>            (const char *history_id,
+                                             const char *browse_dialog_title);
+void        <a href="GnomeFileEntry.html#gnome-file-entry-construct">gnome_file_entry_construct</a>      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             const char *history_id,
+                                             const char *browse_dialog_title);
+GtkWidget*  <a href="GnomeFileEntry.html#gnome-file-entry-gnome-entry">gnome_file_entry_gnome_entry</a>    (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry);
+GtkWidget*  <a href="GnomeFileEntry.html#gnome-file-entry-gtk-entry">gnome_file_entry_gtk_entry</a>      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry);
+void        <a href="GnomeFileEntry.html#gnome-file-entry-set-title">gnome_file_entry_set_title</a>      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             const char *browse_dialog_title);
+void        <a href="GnomeFileEntry.html#gnome-file-entry-set-default-path">gnome_file_entry_set_default_path</a>
+                                            (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             const char *path);
+void        <a href="GnomeFileEntry.html#gnome-file-entry-set-directory-entry">gnome_file_entry_set_directory_entry</a>
+                                            (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             gboolean directory_entry);
+gboolean    <a href="GnomeFileEntry.html#gnome-file-entry-get-directory-entry">gnome_file_entry_get_directory_entry</a>
+                                            (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry);
+char*       <a href="GnomeFileEntry.html#gnome-file-entry-get-full-path">gnome_file_entry_get_full_path</a>  (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             gboolean file_must_exist);
+void        <a href="GnomeFileEntry.html#gnome-file-entry-set-filename">gnome_file_entry_set_filename</a>   (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             const char *filename);
+void        <a href="GnomeFileEntry.html#gnome-file-entry-set-modal">gnome_file_entry_set_modal</a>      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             gboolean is_modal);
+gboolean    <a href="GnomeFileEntry.html#gnome-file-entry-get-modal">gnome_file_entry_get_modal</a>      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry);
+void        <a href="GnomeFileEntry.html#gnome-file-entry-set-directory">gnome_file_entry_set_directory</a>  (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             gboolean directory_entry);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2635894"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBox
+                           +----GtkVBox
+                                 +----GnomeFileEntry
+                                       +----<a href="GnomePixmapEntry.html" title="GnomePixmapEntry">GnomePixmapEntry</a>
+</pre></div><div class="refsect1" lang="en"><a name="id2635960"></a><h2>Implemented Interfaces</h2><p>
+GnomeFileEntry implements
+ AtkImplementorIface and  GtkEditable.</p></div><div class="refsect1" lang="en"><a name="id2635985"></a><h2>Properties</h2><pre class="synopsis">
+
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--browse-dialog-title">browse-dialog-title</a>"  gchararray            : Read / Write
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--default-path">default-path</a>"         gchararray            : Read / Write
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--directory-entry">directory-entry</a>"      gboolean              : Read / Write
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--filechooser-action">filechooser-action</a>"   GtkFileChooserAction  : Read / Write
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--filename">filename</a>"             gchararray            : Read / Write
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--gnome-entry">gnome-entry</a>"          <a href="GnomeEntry.html" title="GnomeEntry">GnomeEntry</a>            : Read
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--gtk-entry">gtk-entry</a>"            GtkEntry              : Read
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--history-id">history-id</a>"           gchararray            : Read / Write
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--modal">modal</a>"                gboolean              : Read / Write
+  "<a href="GnomeFileEntry.html#GnomeFileEntry--use-filechooser">use-filechooser</a>"      gboolean              : Read / Write
+</pre></div><div class="refsect1" lang="en"><a name="id2636173"></a><h2>Signal Prototypes</h2><pre class="synopsis">
+
+"<a href="GnomeFileEntry.html#GnomeFileEntry-activate">activate</a>"  void        user_function      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fileentry,
+                                            gpointer user_data);
+"<a href="GnomeFileEntry.html#GnomeFileEntry-browse-clicked">browse-clicked</a>"
+            void        user_function      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fileentry,
+                                            gpointer user_data);
+</pre></div><div class="refsect1" lang="en"><a name="id2636250"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2636260"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2636265"></a><h3><a name="GnomeFileEntry-struct"></a>struct GnomeFileEntry</h3><a class="indexterm" name="id2636277"></a><pre class="programlisting">struct GnomeFileEntry;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2636292"></a><h3><a name="gnome-file-entry-new"></a>gnome_file_entry_new ()</h3><a class="indexterm" name="id2636304"></a><pre class="programlisting">GtkWidget*  gnome_file_entry_new            (const char *history_id,
+                                             const char *browse_dialog_title);</pre><p>
+Creates a new <a href="GnomeFileEntry.html" title="GnomeFileEntry"><span class="type">GnomeFileEntry</span></a> widget.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>history_id</tt></i> :</span></td><td> the id given to <a href="GnomeEntry.html#gnome-entry-new"><span class="type">gnome_entry_new</span></a> (see <a href="GnomeEntry.html" title="GnomeEntry"><span class="type">GnomeEntry</span></a>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>browse_dialog_title</tt></i> :</span></td><td> Title for the file dialog window.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the widget, NULL if it cannot be created.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2636412"></a><h3><a name="gnome-file-entry-construct"></a>gnome_file_entry_construct ()</h3><a class="indexterm" name="id2636424"></a><pre class="programlisting">void        gnome_file_entry_construct      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             const char *history_id,
+                                             const char *browse_dialog_title);</pre><p>
+Constructs a <a href="GnomeFileEntry.html" title="GnomeFileEntry"><span class="type">GnomeFileEntry</span></a></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> A <a href="GnomeFileEntry.html" title="GnomeFileEntry"><span class="type">GnomeFileEntry</span></a> to construct.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>history_id</tt></i> :</span></td><td> the id given to <a href="GnomeEntry.html#gnome-entry-new"><span class="type">gnome_entry_new</span></a> (see <a href="GnomeEntry.html" title="GnomeEntry"><span class="type">GnomeEntry</span></a>).
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>browse_dialog_title</tt></i> :</span></td><td> Title for the file dialog window.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2636549"></a><h3><a name="gnome-file-entry-gnome-entry"></a>gnome_file_entry_gnome_entry ()</h3><a class="indexterm" name="id2636561"></a><pre class="programlisting">GtkWidget*  gnome_file_entry_gnome_entry    (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry);</pre><p>
+It returns a pointer to the gnome entry widget of the
+widget (see<a href="GnomeEntry.html" title="GnomeEntry"><span class="type">GnomeEntry</span></a>).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A pointer to the component <a href="GnomeEntry.html" title="GnomeEntry"><span class="type">GnomeEntry</span></a> widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2636639"></a><h3><a name="gnome-file-entry-gtk-entry"></a>gnome_file_entry_gtk_entry ()</h3><a class="indexterm" name="id2636652"></a><pre class="programlisting">GtkWidget*  gnome_file_entry_gtk_entry      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry);</pre><p>
+Similar to <a href="GnomeFileEntry.html#gnome-file-entry-gnome-entry"><span class="type">gnome_file_entry_gnome_entry</span></a> but
+returns the gtk entry instead of the Gnome entry widget.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> Returns the GtkEntry widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2636723"></a><h3><a name="gnome-file-entry-set-title"></a>gnome_file_entry_set_title ()</h3><a class="indexterm" name="id2636735"></a><pre class="programlisting">void        gnome_file_entry_set_title      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             const char *browse_dialog_title);</pre><p>
+Set the title of the browse dialog to <i class="parameter"><tt>browse_dialog_title</tt></i>.
+The new title will go into effect the next time the browse button is pressed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>browse_dialog_title</tt></i> :</span></td><td> The new title for the file browse dialog window.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2636816"></a><h3><a name="gnome-file-entry-set-default-path"></a>gnome_file_entry_set_default_path ()</h3><a class="indexterm" name="id2636828"></a><pre class="programlisting">void        gnome_file_entry_set_default_path
+                                            (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             const char *path);</pre><p>
+Set the default path of browse dialog to <i class="parameter"><tt>path</tt></i>. The
+default path is only used if the entry is empty or if the current path
+of the entry is not an absolute path, in which case the default
+path is prepended to it before the dialog is started.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td> A path string.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2636910"></a><h3><a name="gnome-file-entry-set-directory-entry"></a>gnome_file_entry_set_directory_entry ()</h3><a class="indexterm" name="id2636923"></a><pre class="programlisting">void        gnome_file_entry_set_directory_entry
+                                            (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             gboolean directory_entry);</pre><p>
+Sets whether this is a directory only entry.  If
+<i class="parameter"><tt>directory_entry</tt></i> is true, then <a href="GnomeFileEntry.html#gnome-file-entry-get-full-path"><span class="type">gnome_file_entry_get_full_path</span></a> will
+check for the file being a directory, and the browse dialog will have
+the file list disabled.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>directory_entry</tt></i> :</span></td><td> boolean
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2637014"></a><h3><a name="gnome-file-entry-get-directory-entry"></a>gnome_file_entry_get_directory_entry ()</h3><a class="indexterm" name="id2637027"></a><pre class="programlisting">gboolean    gnome_file_entry_get_directory_entry
+                                            (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry);</pre><p>
+Gets whether this is a directory only entry.
+See also <a href="GnomeFileEntry.html#gnome-file-entry-set-directory-entry"><span class="type">gnome_file_entry_set_directory_entry</span></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  A boolean.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2637099"></a><h3><a name="gnome-file-entry-get-full-path"></a>gnome_file_entry_get_full_path ()</h3><a class="indexterm" name="id2637110"></a><pre class="programlisting">char*       gnome_file_entry_get_full_path  (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             gboolean file_must_exist);</pre><p>
+Gets the full absolute path of the file from the entry.
+If <i class="parameter"><tt>file_must_exist</tt></i> is false, nothing is tested and the path is returned.
+If <i class="parameter"><tt>file_must_exist</tt></i> is true, then the path is only returned if the path
+actually exists. In case the entry is a directory entry (see
+<a href="GnomeFileEntry.html#gnome-file-entry-set-directory-entry"><span class="type">gnome_file_entry_set_directory_entry</span></a>), then if the path exists and is a
+directory then it's returned; if not, it is assumed it was a file so
+we try to strip it, and try again. It allocates memory for the returned string.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>file_must_exist</tt></i> :</span></td><td> boolean
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated string with the path or NULL if something went
+wrong
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2637222"></a><h3><a name="gnome-file-entry-set-filename"></a>gnome_file_entry_set_filename ()</h3><a class="indexterm" name="id2637234"></a><pre class="programlisting">void        gnome_file_entry_set_filename   (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             const char *filename);</pre><p>
+Sets the internal entry to this string.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>filename</tt></i> :</span></td><td>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2637307"></a><h3><a name="gnome-file-entry-set-modal"></a>gnome_file_entry_set_modal ()</h3><a class="indexterm" name="id2637319"></a><pre class="programlisting">void        gnome_file_entry_set_modal      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             gboolean is_modal);</pre><p>
+Sets the modality of the browse dialog.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>is_modal</tt></i> :</span></td><td> true if the window is to be modal, false otherwise.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2637392"></a><h3><a name="gnome-file-entry-get-modal"></a>gnome_file_entry_get_modal ()</h3><a class="indexterm" name="id2637404"></a><pre class="programlisting">gboolean    gnome_file_entry_get_modal      (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry);</pre><p>
+This function gets the boolean which specifies if
+the browsing dialog is modal or not</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  A boolean.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2637466"></a><h3><a name="gnome-file-entry-set-directory"></a>gnome_file_entry_set_directory ()</h3><a class="indexterm" name="id2637478"></a><pre class="programlisting">void        gnome_file_entry_set_directory  (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fentry,
+                                             gboolean directory_entry);</pre><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p><tt class="literal">gnome_file_entry_set_directory</tt> is deprecated and should not be used in newly-written code.</p></div><p>
+Deprecated, use <a href="GnomeFileEntry.html#gnome-file-entry-set-directory-entry"><span class="type">gnome_file_entry_set_directory_entry</span></a></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fentry</tt></i> :</span></td><td> The GnomeFileEntry widget to work with.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>directory_entry</tt></i> :</span></td><td> boolean
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2637573"></a><h2>Properties</h2><div class="refsect2" lang="en"><a name="id2637578"></a><h3><a name="GnomeFileEntry--browse-dialog-title"></a>The "<tt class="literal">browse-dialog-title</tt>" property</h3><pre class="programlisting">  "browse-dialog-title"  gchararray            : Read / Write</pre><p>Title for the Browse file dialog.</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><a name="id2637617"></a><h3><a name="GnomeFileEntry--default-path"></a>The "<tt class="literal">default-path</tt>" property</h3><pre class="programlisting">  "default-path"         gchararray            : Read / Write</pre><p>Default path for the Browse file window.</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><a name="id2637656"></a><h3><a name="GnomeFileEntry--directory-entry"></a>The "<tt class="literal">directory-entry</tt>" property</h3><pre class="programlisting">  "directory-entry"      gboolean              : Read / Write</pre><p>Whether the file entry is being used to enter directory names or complete filenames.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2637695"></a><h3><a name="GnomeFileEntry--filechooser-action"></a>The "<tt class="literal">filechooser-action</tt>" property</h3><pre class="programlisting">  "filechooser-action"   GtkFileChooserAction  : Read / Write</pre><p>The type of operation that the file selector is performing.</p><p>Default value: GTK_FILE_CHOOSER_ACTION_OPEN</p></div><hr><div class="refsect2" lang="en"><a name="id2637735"></a><h3><a name="GnomeFileEntry--filename"></a>The "<tt class="literal">filename</tt>" property</h3><pre class="programlisting">  "filename"             gchararray            : Read / Write</pre><p>Filename that should be displayed in the file entry.</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><a name="id2637773"></a><h3><a name="GnomeFileEntry--gnome-entry"></a>The "<tt class="literal">gnome-entry</tt>" property</h3><pre class="programlisting">  "gnome-entry"          <a href="GnomeEntry.html" title="GnomeEntry">GnomeEntry</a>            : Read</pre><p>GnomeEntry that the file entry uses for entering filenames.  You can use this property to get the GnomeEntry if you need to modify or query any of its parameters.</p></div><hr><div class="refsect2" lang="en"><a name="id2637809"></a><h3><a name="GnomeFileEntry--gtk-entry"></a>The "<tt class="literal">gtk-entry</tt>" property</h3><pre class="programlisting">  "gtk-entry"            GtkEntry              : Read</pre><p>GtkEntry that the file entry uses for entering filenames.  You can use this property to get the GtkEntry if you need to modify or query any of its parameters.</p></div><hr><div class="refsect2" lang="en"><a name="id2637845"></a><h3><a name="GnomeFileEntry--history-id"></a>The "<tt class="literal">history-id</tt>" property</h3><pre class="programlisting">  "history-id"           gchararray            : Read / Write</pre><p>Unique identifier for the file entry.  This will be used to save the history list.</p><p>Default value: NULL</p></div><hr><div class="refsect2" lang="en"><a name="id2637883"></a><h3><a name="GnomeFileEntry--modal"></a>The "<tt class="literal">modal</tt>" property</h3><pre class="programlisting">  "modal"                gboolean              : Read / Write</pre><p>Whether the Browse file window should be modal.</p><p>Default value: FALSE</p></div><hr><div class="refsect2" lang="en"><a name="id2637920"></a><h3><a name="GnomeFileEntry--use-filechooser"></a>The "<tt class="literal">use-filechooser</tt>" property</h3><pre class="programlisting">  "use-filechooser"      gboolean              : Read / Write</pre><p>Whether to use the new GtkFileChooser widget or the GtkFileSelection widget to select files.</p><p>Default value: FALSE</p></div></div><div class="refsect1" lang="en"><a name="id2637961"></a><h2>Signals</h2><div class="refsect2" lang="en"><a name="id2637967"></a><h3><a name="GnomeFileEntry-activate"></a>The "activate" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fileentry,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fileentry</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2638040"></a><h3><a name="GnomeFileEntry-browse-clicked"></a>The "browse-clicked" signal</h3><pre class="programlisting">void        user_function                  (<a href="GnomeFileEntry.html" title="GnomeFileEntry">GnomeFileEntry</a> *fileentry,
+                                            gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>fileentry</tt></i> :</span></td><td>the object which received the signal.
+
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>user data set when the signal handler was connected.</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomeEntry.html"><b>&lt;&lt; GnomeEntry</b></a></td><td align="right"><a accesskey="n" href="GnomeFontPicker.html"><b>GnomeFontPicker &gt;&gt;</b></a></td></tr></table></body></html>

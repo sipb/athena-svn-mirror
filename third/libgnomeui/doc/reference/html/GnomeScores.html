@@ -1,0 +1,159 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>GnomeScores</title><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="GNOME UI Library Reference Manual"><link rel="up" href="fixme.html" title="Miscellaneous Widgets"><link rel="previous" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="next" href="miscellaneous.html" title="Miscellaneous utility functions and macros"><link rel="chapter" href="ch01.html" title="GNOME UI Library (libgnomeui)"><link rel="refentry" href="libgnomeui-gnome-ui-init.html" title="gnome-ui-init"><link rel="refentry" href="GnomeClient.html" title="GnomeClient"><link rel="refentry" href="GnomeApp.html" title="GnomeApp"><link rel="refentry" href="GnomeAppBar.html" title="GnomeAppBar"><link rel="refentry" href="libgnomeui-gnome-app-helper.html" title="gnome-app-helper"><link rel="refentry" href="libgnomeui-gnome-window.html" title="gnome-window"><link rel="refentry" href="GnomeAbout.html" title="GnomeAbout"><link rel="refentry" href="libgnomeui-gnome-popup-menu.html" title="gnome-popup-menu"><link rel="refentry" href="GnomeDruid.html" title="GnomeDruid"><link rel="refentry" href="GnomeDruidPage.html" title="GnomeDruidPage"><link rel="refentry" href="GnomeDruidPageEdge.html" title="GnomeDruidPageEdge"><link rel="refentry" href="GnomeDruidPageStandard.html" title="GnomeDruidPageStandard"><link rel="refentry" href="GnomeColorPicker.html" title="GnomeColorPicker"><link rel="refentry" href="GnomeDateEdit.html" title="GnomeDateEdit"><link rel="refentry" href="libgnomeui-gnome-dialog-util.html" title="gnome-dialog-util"><link rel="refentry" href="GnomeEntry.html" title="GnomeEntry"><link rel="refentry" href="GnomeFileEntry.html" title="GnomeFileEntry"><link rel="refentry" href="GnomeFontPicker.html" title="GnomeFontPicker"><link rel="refentry" href="GnomeHRef.html" title="GnomeHRef"><link rel="refentry" href="GnomeIconEntry.html" title="GnomeIconEntry"><link rel="refentry" href="GnomeIconList.html" title="GnomeIconList"><link rel="refentry" href="libgnomeui-GnomeIconLookup.html" title="GnomeIconLookup"><link rel="refentry" href="libgnomeui-GnomeIconTheme.html" title="GnomeIconTheme"><link rel="refentry" href="GnomeIconSelection.html" title="GnomeIconSelection"><link rel="refentry" href="libgnomeui-GnomeThemeFile.html" title="GnomeThemeFile"><link rel="refentry" href="libgnomeui-GnomeThumbnail.html" title="GnomeThumbnail"><link rel="refentry" href="GnomePixmap.html" title="GnomePixmap"><link rel="refentry" href="GnomePixmapEntry.html" title="GnomePixmapEntry"><link rel="refentry" href="GnomeScores.html" title="GnomeScores"><link rel="refentry" href="libgnomeui-gnome-stock-icons.html" title="gnome-stock-icons"><link rel="refentry" href="libgnomeui-gnometypebuiltins.html" title="gnometypebuiltins"><link rel="refentry" href="libgnomeui-gnome-types.html" title="gnome-types"><link rel="refentry" href="libgnomeui-gnome-uidefs.html" title="gnome-uidefs"><link rel="refentry" href="libgnomeui-gnome-vfs-util.html" title="gnome-vfs-util"><link rel="refentry" href="libgnomeui-gnome-app-util.html" title="gnome-app-util"><link rel="refentry" href="GnomeMDI.html" title="GnomeMDI"><link rel="refentry" href="GnomeMDIChild.html" title="GnomeMDIChild"><link rel="refentry" href="GnomeMDIGenericChild.html" title="GnomeMDIGenericChild"><link rel="refentry" href="libgnomeui-gnome-mdi-session.html" title="gnome-mdi-session"><link rel="refentry" href="GnomeDialog.html" title="GnomeDialog"><link rel="refentry" href="GnomeMessageBox.html" title="GnomeMessageBox"><link rel="refentry" href="GnomePropertyBox.html" title="GnomePropertyBox"><link rel="section" href="GnomeScores.html#id2690487" title="Object Hierarchy"><link rel="section" href="GnomeScores.html#id2690550" title="Implemented Interfaces"><link rel="section" href="GnomeScores.html#id2690568" title="Description"><link rel="section" href="GnomeScores.html#id2690578" title="Details"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><link rel="stylesheet" href="style.css" type="text/css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="GnomePixmapEntry.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="fixme.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GNOME UI Library Reference Manual</th><td><a accesskey="n" href="miscellaneous.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="GnomeScores"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">GnomeScores</span></h2><p>GnomeScores &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+#include &lt;libgnomeui/libgnomeui.h&gt;
+
+
+struct      <a href="GnomeScores.html#GnomeScores-struct">GnomeScores</a>;
+GtkWidget*  <a href="GnomeScores.html#gnome-scores-display-with-pixmap">gnome_scores_display_with_pixmap</a>
+                                            (const gchar *pixmap_logo,
+                                             const gchar *app_name,
+                                             const gchar *level,
+                                             int pos);
+GtkWidget*  <a href="GnomeScores.html#gnome-scores-new">gnome_scores_new</a>                (guint n_scores,
+                                             gchar **names,
+                                             gfloat *scores,
+                                             time_t *times,
+                                             gboolean clear);
+void        <a href="GnomeScores.html#gnome-scores-construct">gnome_scores_construct</a>          (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             guint n_scores,
+                                             gchar **names,
+                                             gfloat *scores,
+                                             time_t *times,
+                                             gboolean clear);
+void        <a href="GnomeScores.html#gnome-scores-set-logo-label">gnome_scores_set_logo_label</a>     (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             const gchar *txt,
+                                             const gchar *font,
+                                             GdkColor *col);
+void        <a href="GnomeScores.html#gnome-scores-set-logo-pixmap">gnome_scores_set_logo_pixmap</a>    (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             const gchar *pix_name);
+void        <a href="GnomeScores.html#gnome-scores-set-logo-widget">gnome_scores_set_logo_widget</a>    (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             GtkWidget *w);
+void        <a href="GnomeScores.html#gnome-scores-set-color">gnome_scores_set_color</a>          (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             guint n,
+                                             GdkColor *col);
+void        <a href="GnomeScores.html#gnome-scores-set-def-color">gnome_scores_set_def_color</a>      (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             GdkColor *col);
+void        <a href="GnomeScores.html#gnome-scores-set-colors">gnome_scores_set_colors</a>         (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             GdkColor *col);
+void        <a href="GnomeScores.html#gnome-scores-set-logo-label-title">gnome_scores_set_logo_label_title</a>
+                                            (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             const gchar *txt);
+void        <a href="GnomeScores.html#gnome-scores-set-current-player">gnome_scores_set_current_player</a> (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             gint i);
+
+
+</pre></div><div class="refsect1" lang="en"><a name="id2690487"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----GtkObject
+         +----GtkWidget
+               +----GtkContainer
+                     +----GtkBin
+                           +----GtkWindow
+                                 +----GtkDialog
+                                       +----GnomeScores
+</pre></div><div class="refsect1" lang="en"><a name="id2690550"></a><h2>Implemented Interfaces</h2><p>
+GnomeScores implements
+ AtkImplementorIface.</p></div><div class="refsect1" lang="en"><a name="id2690568"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2690578"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2690584"></a><h3><a name="GnomeScores-struct"></a>struct GnomeScores</h3><a class="indexterm" name="id2690595"></a><pre class="programlisting">struct GnomeScores;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2690610"></a><h3><a name="gnome-scores-display-with-pixmap"></a>gnome_scores_display_with_pixmap ()</h3><a class="indexterm" name="id2690622"></a><pre class="programlisting">GtkWidget*  gnome_scores_display_with_pixmap
+                                            (const gchar *pixmap_logo,
+                                             const gchar *app_name,
+                                             const gchar *level,
+                                             int pos);</pre><p>
+Does all the work of displaying the best scores.
+It calls gnome_score_get_notables to retrieve the info, creates the window,
+and show it.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>pixmap_logo</tt></i> :</span></td><td> Filename of a logo pixmap to display
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>app_name</tt></i> :</span></td><td> Name of the application, as in gnome_score_init.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>level</tt></i> :</span></td><td> Level of the game or <tt class="literal">NULL</tt>.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pos</tt></i> :</span></td><td> Position in the top ten of the current player, as returned by gnome_score_log.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>  If a dialog is displayed return it's pointer.  It can also
+be <tt class="literal">NULL</tt> if no dialog is displayed
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2690764"></a><h3><a name="gnome-scores-new"></a>gnome_scores_new ()</h3><a class="indexterm" name="id2690775"></a><pre class="programlisting">GtkWidget*  gnome_scores_new                (guint n_scores,
+                                             gchar **names,
+                                             gfloat *scores,
+                                             time_t *times,
+                                             gboolean clear);</pre><p>
+Creates the high-scores window.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>n_scores</tt></i> :</span></td><td> Number of positions.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>names</tt></i> :</span></td><td> Names of the players.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>scores</tt></i> :</span></td><td> Scores
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>times</tt></i> :</span></td><td> Time in which the scores were done
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>clear</tt></i> :</span></td><td> Add a "Clear" Button?
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A new <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2690931"></a><h3><a name="gnome-scores-construct"></a>gnome_scores_construct ()</h3><a class="indexterm" name="id2690942"></a><pre class="programlisting">void        gnome_scores_construct          (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             guint n_scores,
+                                             gchar **names,
+                                             gfloat *scores,
+                                             time_t *times,
+                                             gboolean clear);</pre><p>
+useful for language bindings and subclassing, not to be used by
+itself, see <a href="GnomeScores.html#gnome-scores-new"><span class="type">gnome_scores_new</span></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>n_scores</tt></i> :</span></td><td> Number of positions.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>names</tt></i> :</span></td><td> Names of the players.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>scores</tt></i> :</span></td><td> Scores
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>times</tt></i> :</span></td><td> Time in which the scores were done
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>clear</tt></i> :</span></td><td> Add a "Clear" Button?
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691110"></a><h3><a name="gnome-scores-set-logo-label"></a>gnome_scores_set_logo_label ()</h3><a class="indexterm" name="id2691122"></a><pre class="programlisting">void        gnome_scores_set_logo_label     (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             const gchar *txt,
+                                             const gchar *font,
+                                             GdkColor *col);</pre><p>
+Creates a label to be the logo</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td> A <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>txt</tt></i> :</span></td><td> Text in the label.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>font</tt></i> :</span></td><td> Font to use in the label.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>col</tt></i> :</span></td><td> Color to use in the label.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691244"></a><h3><a name="gnome-scores-set-logo-pixmap"></a>gnome_scores_set_logo_pixmap ()</h3><a class="indexterm" name="id2691256"></a><pre class="programlisting">void        gnome_scores_set_logo_pixmap    (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             const gchar *pix_name);</pre><p>
+Sets the logo on the scores dialog box to a pixmap</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td> A <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>pix_name</tt></i> :</span></td><td> filename of a pixmap
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691336"></a><h3><a name="gnome-scores-set-logo-widget"></a>gnome_scores_set_logo_widget ()</h3><a class="indexterm" name="id2691348"></a><pre class="programlisting">void        gnome_scores_set_logo_widget    (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             GtkWidget *w);</pre><p>
+Set an arbitrary widget to be the logo.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td> A <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>w</tt></i> :</span></td><td> Widget to be used as logo.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691428"></a><h3><a name="gnome-scores-set-color"></a>gnome_scores_set_color ()</h3><a class="indexterm" name="id2691439"></a><pre class="programlisting">void        gnome_scores_set_color          (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             guint n,
+                                             GdkColor *col);</pre><p>
+Set the color of one entry.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td> A <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>n</tt></i> :</span></td><td> Entry to be changed.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>col</tt></i> :</span></td><td> Color.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691539"></a><h3><a name="gnome-scores-set-def-color"></a>gnome_scores_set_def_color ()</h3><a class="indexterm" name="id2691552"></a><pre class="programlisting">void        gnome_scores_set_def_color      (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             GdkColor *col);</pre><p>
+Set the default color of the entries.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td> A <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>col</tt></i> :</span></td><td> Color
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691630"></a><h3><a name="gnome-scores-set-colors"></a>gnome_scores_set_colors ()</h3><a class="indexterm" name="id2691641"></a><pre class="programlisting">void        gnome_scores_set_colors         (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             GdkColor *col);</pre><p>
+Set the color of all the entries.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td> A <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>col</tt></i> :</span></td><td> Array of colors.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691720"></a><h3><a name="gnome-scores-set-logo-label-title"></a>gnome_scores_set_logo_label_title ()</h3><a class="indexterm" name="id2691733"></a><pre class="programlisting">void        gnome_scores_set_logo_label_title
+                                            (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             const gchar *txt);</pre><p>
+Creates a label to be the logo</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td> A <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>txt</tt></i> :</span></td><td> Name of the logo.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2691812"></a><h3><a name="gnome-scores-set-current-player"></a>gnome_scores_set_current_player ()</h3><a class="indexterm" name="id2691824"></a><pre class="programlisting">void        gnome_scores_set_current_player (<a href="GnomeScores.html" title="GnomeScores">GnomeScores</a> *gs,
+                                             gint i);</pre><p>
+Set the index of the current player in top ten.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>gs</tt></i> :</span></td><td> A <a href="GnomeScores.html" title="GnomeScores"><span class="type">GnomeScores</span></a> widget
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>i</tt></i> :</span></td><td> Index of the current(from 0 to 9).
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="GnomePixmapEntry.html"><b>&lt;&lt; GnomePixmapEntry</b></a></td><td align="right"><a accesskey="n" href="miscellaneous.html"><b>Miscellaneous utility functions and macros &gt;&gt;</b></a></td></tr></table></body></html>

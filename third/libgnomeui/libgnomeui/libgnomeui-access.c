@@ -4,22 +4,20 @@
  *
  * Lib GNOME UI Accessibility support module
  *
- * This code copied from Wipro's panel-access.c.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
- *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 #include <config.h>
 #include <gtk/gtkwidget.h>
@@ -92,6 +90,7 @@ _add_atk_relation (GtkWidget *widget1, GtkWidget *widget2,
 	relation = atk_relation_new (targets, 1, w1_to_w2);
 	atk_relation_set_add (relation_set, relation);
 	g_object_unref (relation);
+	g_object_unref (relation_set);
 
 	/* Create the widget2 -> widget1 relation */
 	relation_set = atk_object_ref_relation_set (atk_widget2);
@@ -99,6 +98,7 @@ _add_atk_relation (GtkWidget *widget1, GtkWidget *widget2,
 	relation = atk_relation_new (targets, 1, w2_to_w1);
 	atk_relation_set_add (relation_set, relation);
 	g_object_unref (relation);
+	g_object_unref (relation_set);
 }
 
 

@@ -185,7 +185,6 @@ md5_equal (gconstpointer  a,
 static GHashTable *
 read_scripts (void)
 {
-  char *file;
   GHashTable *scripts_hash;
   GConfClient *client;
   GSList *subdirs, *l;
@@ -502,12 +501,19 @@ load_thumbnail_info (const char *path)
   if (pixbuf == NULL)
     return NULL;
   
+  thumb_uri = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::URI");
+  thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
+
+  if (thumb_uri == NULL ||
+      thumb_mtime_str == NULL)
+    {
+      g_object_unref (pixbuf);
+      return NULL;
+    }
+
   info = g_new0 (struct ThumbnailInfo, 1);
   
-  thumb_uri = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::URI");
   info->uri = g_strdup (thumb_uri);
-  
-  thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
   info->mtime = atol (thumb_mtime_str);
 
   g_object_unref (pixbuf);
@@ -523,10 +529,9 @@ gnome_thumbnail_factory_ensure_failed_uptodate (GnomeThumbnailFactory *factory)
   struct stat statbuf;
   GnomeThumbnailFactoryPrivate *priv = factory->priv;
 
+  gettimeofday (&tv, NULL);
   if (priv->last_failed_time != 0)
     {
-      gettimeofday (&tv, NULL);
-
       if (tv.tv_sec >= priv->last_failed_time &&
 	  tv.tv_sec < priv->last_failed_time + SECONDS_BETWEEN_STATS)
 	return;
@@ -696,29 +701,38 @@ static gboolean
 mimetype_supported_by_gdk_pixbuf (const char *mime_type)
 {
 	guint i;
-	static GHashTable *formats = NULL;
-	static const char *types [] = {
-	  "image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
-	  "image/png", "image/pnm", "image/ras", "image/tga",
-	  "image/tiff", "image/wbmp", "image/x-xbitmap",
-	  "image/x-xpixmap"
-	};
+	static GHashTable *formats_hash = NULL;
 
-	if (!formats) {
-		formats = g_hash_table_new (g_str_hash, g_str_equal);
+	if (!formats_hash) {
+		GSList *formats, *list;
+		
+		formats_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-		for (i = 0; i < G_N_ELEMENTS (types); i++)
-			g_hash_table_insert (formats,
-					     (gpointer) types [i],
-					     GUINT_TO_POINTER (1));	
+		formats = gdk_pixbuf_get_formats ();
+		list = formats;
+		
+		while (list) {
+			GdkPixbufFormat *format = list->data;
+			gchar **mime_types;
+			
+			mime_types = gdk_pixbuf_format_get_mime_types (format);
+
+			for (i = 0; mime_types[i] != NULL; i++)
+				g_hash_table_insert (formats_hash,
+						     (gpointer) g_strdup (mime_types[i]),
+						     GUINT_TO_POINTER (1));	
+				
+			g_strfreev (mime_types);
+			list = list->next;
+		}
+		g_slist_free (formats);
 	}
 
-	if (g_hash_table_lookup (formats, mime_type))
+	if (g_hash_table_lookup (formats_hash, mime_type))
 		return TRUE;
 
 	return FALSE;
 }
-
 
 /**
  * gnome_thumbnail_factory_can_thumbnail:
@@ -851,7 +865,7 @@ gnome_thumbnail_factory_generate_thumbnail (GnomeThumbnailFactory *factory,
   int width, height, size;
   double scale;
   int exit_status;
-  char tmpname[50];
+  char *tmpname;
 
   /* Doesn't access any volatile fields in factory, so it's threadsafe */
   
@@ -868,10 +882,9 @@ gnome_thumbnail_factory_generate_thumbnail (GnomeThumbnailFactory *factory,
   if (script)
     {
       int fd;
+      GError *error = NULL;
 
-      strcpy (tmpname, "/tmp/.gnome_thumbnail.XXXXXX");
-
-      fd = mkstemp(tmpname);
+      fd = g_file_open_tmp (".gnome_thumbnail.XXXXXX", &tmpname, &error);
 
       if (fd)
 	{
@@ -889,6 +902,8 @@ gnome_thumbnail_factory_generate_thumbnail (GnomeThumbnailFactory *factory,
 	  
 	  unlink(tmpname);
 	}
+      if (tmpname)
+        g_free (tmpname);
     }
 
   /* Fall back to gdk-pixbuf */
@@ -1290,6 +1305,9 @@ gnome_thumbnail_has_uri (GdkPixbuf          *pixbuf,
   const char *thumb_uri;
   
   thumb_uri = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::URI");
+  if (!thumb_uri)
+    return FALSE;
+
   return strcmp (uri, thumb_uri) == 0;
 }
 
@@ -1313,10 +1331,14 @@ gnome_thumbnail_is_valid (GdkPixbuf          *pixbuf,
   time_t thumb_mtime;
   
   thumb_uri = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::URI");
+  if (!thumb_uri)
+    return FALSE;
   if (strcmp (uri, thumb_uri) != 0)
     return FALSE;
   
   thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
+  if (!thumb_mtime_str)
+    return FALSE;
   thumb_mtime = atol (thumb_mtime_str);
   if (mtime != thumb_mtime)
     return FALSE;

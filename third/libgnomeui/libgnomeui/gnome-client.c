@@ -482,8 +482,7 @@ client_set_restart_command (GnomeClient *client)
   vals[i].length = strlen (sm_screen);
   vals[i++].value = (char *)sm_screen;
   vals[i].length = strlen (tmp);
-  vals[i++].value = g_strdup(tmp);
-  g_free(tmp);
+  vals[i++].value = tmp;
 #endif
 
   for (list = client->static_args; list; list = g_list_next (list))
@@ -501,6 +500,10 @@ client_set_restart_command (GnomeClient *client)
   client_set_value (client, SmRestartCommand, SmLISTofARRAY8, i, vals);
 
   g_free (vals);
+
+#ifdef HAVE_GTK_MULTIHEAD
+  g_free (tmp);
+#endif
 }
 
 static void
@@ -954,7 +957,7 @@ gnome_client_module_class_init (GnomeProgramClass *klass, const GnomeModuleInfo 
                 g_param_spec_boolean (GNOME_CLIENT_PARAM_SM_CONNECT, NULL, NULL,
                                       sm_connect_default,
 				      (G_PARAM_READABLE | G_PARAM_WRITABLE |
-				       G_PARAM_CONSTRUCT_ONLY)));
+				       G_PARAM_CONSTRUCT)));
 }
 
 static void
@@ -979,6 +982,8 @@ gnome_client_module_info_get (void)
 
 	if (module_info.requirements == NULL) {
 		static GnomeModuleRequirement req[3];
+
+		bindtextdomain (GETTEXT_PACKAGE, GNOMEUILOCALEDIR);
 
 		req[0].required_version = "1.3.7";
 		req[0].module_info = gnome_gtk_module_info_get ();
@@ -1645,14 +1650,7 @@ gnome_client_set_current_directory (GnomeClient *client,
 }
 
 
-
-/**
- * gnome_client_set_discard_command
- * @client: Pointer to GNOME session client object.
- * @argc: Number of strings in argv.
- * @argv: Vector of strings such as those passed to execv().
- *
- **/
+/* See doc/reference/tmpl/gnome-client.sgml for documentation. */
 
 void
 gnome_client_set_discard_command (GnomeClient *client,

@@ -20,7 +20,12 @@
 #ifndef GNOME_ICON_THEME_H
 #define GNOME_ICON_THEME_H
 
+#ifndef GNOME_DISABLE_DEPRECATED
+
 #include <glib-object.h>
+#include <gtk/gtkicontheme.h>
+
+G_BEGIN_DECLS
 
 #define GNOME_TYPE_ICON_THEME             (gnome_icon_theme_get_type ())
 #define GNOME_ICON_THEME(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GNOME_TYPE_ICON_THEME, GnomeIconTheme))
@@ -29,16 +34,8 @@
 #define GNOME_IS_ICON_THEME_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GNOME_TYPE_ICON_THEME))
 #define GNOME_ICON_THEME_GET_CLASS(obj)   (G_TYPE_CHECK_GET_CLASS ((obj), GNOME_TYPE_ICON_THEME, GnomeIconThemeClass))
 
-typedef struct _GnomeIconTheme GnomeIconTheme;
+typedef GtkIconTheme GnomeIconTheme;
 typedef struct _GnomeIconThemeClass GnomeIconThemeClass;
-typedef struct _GnomeIconThemePrivate GnomeIconThemePrivate;
-
-struct _GnomeIconTheme
-{
-  GObject parent_instance;
-
-  GnomeIconThemePrivate *priv;
-};
 
 struct _GnomeIconThemeClass
 {
@@ -97,6 +94,10 @@ gboolean        gnome_icon_theme_rescan_if_needed      (GnomeIconTheme       *th
 GnomeIconData * gnome_icon_data_dup                    (const GnomeIconData  *icon_data);
 void            gnome_icon_data_free                   (GnomeIconData        *icon_data);
 
+GtkIconTheme   *_gnome_icon_theme_get_gtk_icon_theme    (GnomeIconTheme       *icon_theme);
 
+G_END_DECLS
+
+#endif /* GNOME_DISABLE_DEPRECATED */
 
 #endif /* GNOME_ICON_THEME_H */

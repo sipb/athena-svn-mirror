@@ -1,3 +1,1192 @@
+2004-09-13  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.8.0
+	
+	* NEWS: Update
+
+2004-09-13  Jesus Bravo Alvarez  <suso@trasno.net>
+
+	* configure.in: Added gl (Galician) to ALL_LINGUAS.
+
+2004-09-03  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* file-chooser/gtkfilesystemgnomevfs.c: Include
+	the right header so i18n works properly. Patch
+	from Christian Persch <chpe at gnome org>. Closes
+	bug #144529.
+
+2004-08-30  Federico Mena Quintero  <federico@ximian.com>
+
+	Merged from the gnome-2-6 branch:
+
+	Fix #145200:
+
+	* file-chooser/gtkfilesystemgnomevfs.c (struct
+	_GtkFileSystemGnomeVFS): Added fields to store the signal
+	connection IDs for the volume monitor.
+	(gtk_file_system_gnome_vfs_init): Store the signal connection IDs.
+	Do not create an extra reference to the volume monitor.
+	(gtk_file_system_gnome_vfs_finalize): Disconnect from the volume
+	monitor's signals.  For now, don't unref the monitor.  See
+	http://bugzilla.gnome.org/show_bug.cgi?id=151463 for reference.
+
+=================== 2.7.92 ====================
+
+2004-08-30  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.92
+
+2004-08-25  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-authentication-manager.[ch]:
+	Add gnome_authentication_manager_dialog_is_visible.
+	Its a big hack, but useful.
+
+2004-08-25  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-appbar.c: Bitfield warnings
+	* libgnomeui/gnome-druid-page-edge.c: Same
+	* libgnomeui/gnome-druid.c: Same
+	* libgnomeui/gnome-file-entry.c: Same
+	* libgnomeui/gnome-font-picker.c: Same
+	* libgnomeui/gnome-icon-entry.c: (browse_clicked): Add cast.
+	* libgnomeui/gnome-icon-list.c: (if): NULL vs. FALSE
+	* libgnomeui/gnome-icon-theme.c: (gnome_icon_theme_lookup_icon):
+	Fix a leak.
+	* libgnomeui/gnome-mdi.h: Bitfield warnings
+
+2004-08-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* file-chooser/gtkfilesystemgnomevfs.c: (directory_load_callback):
+	Plug the last remaining leak reported by valgrind. Closes
+	bug #150857.
+
+2004-08-22  William Jon McCann  <mccann@jhu.edu>
+
+	* file-chooser/gtkfilesystemgnomevfs.c (gtk_file_system_gnome_vfs_get_folder):
+	Ref the vfs_info if it is pulled from the hash table.  Fixes #150075.
+
+2004-08-16  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "bs" to ALL_LINGUAS.
+
+=================== 2.7.91 ====================
+	
+2004-08-16  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.91
+
+2004-08-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add this stuff.
+	* po/nb.po: Same.
+
+2004-08-10  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* file-chooser/gtkfilesystemgnomevfs.c: #include <config.h>
+
+2004-08-05  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure.in: Added Breton (br) to ALL_LINGUAS
+
+2004-07-28  Glynn Foster  <glynn.foster@sun.com>
+
+	* libgnomeui/gnome-druid.c: (gnome_druid_set_page): Patch 
+	from Eric Zhao <eric.zhao@sun.com> to unfocus the widgets
+	on the the previous patch. Fixes #135743.
+
+2004-07-20  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix #146185:
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	(lookup_folder_child): Renamed from lookup_vfs_info_in_folder();
+	use lookup_folder_child_from_uri().  Return a FolderChild rather
+	than a GnomeVFSFileInfo.
+	(lookup_folder_child_from_uri): New helper function, code
+	moved over from lookup_vfs_info_in_folder().
+	(gtk_file_system_gnome_vfs_get_folder): Reorder things.  First,
+	ensure that we exist as a child in the parent folder; here we can
+	check whether the child is a folder.  Second, if the parent folder
+	is not loaded, ensure that we are a folder.  Third, actually
+	create the new folder_vfs.
+
+=================== 2.7.2 ===================
+
+Mon Jul 19 23:31:18 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* configure.in: release 2.7.2
+
+	* NEWS: Update
+
+2004-07-18  Colin Walters  <walters@redhat.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	  (gtk_file_system_gnome_vfs_list_volumes): Avoid crash if
+	  gnome_vfs_volume_monitor_get_volume_for_path returns NULL.
+
+2004-06-24  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-authentication-manager.c:
+	Support for anonymous logins. Patch by laszlo.kovacs@sun.com.
+	Implement question callback.
+	
+	* libgnomeui/gnome-password-dialog.c:
+	* libgnomeui/gnome-password-dialog.h:
+	Support for anonymous logins. Patch by laszlo.kovacs@sun.com.
+
+2004-06-22  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes the libgnomeui part of #142308:
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	(lookup_vfs_info_in_folder): Canonicalize the URI before looking
+	it up in the folder's hash table.
+	(gtk_file_system_gnome_vfs_filename_to_path): Canonicalize the
+	URI.
+	(gtk_file_system_gnome_vfs_uri_to_path): Likewise.
+
+2004-06-01  Rodney Dawes  <dobey@novell.com>
+
+	* libgnomeui/gnome-druid-page-edge.c (gnome_druid_page_edge_set_color):
+	Fix the default colors to be theme compliant
+
+	* libgnomeui/gnome-druid-page-standard.c
+	(gnome_druid_page_standard_class_init):
+	Add the "contents-background", "contents-background-gdk" and
+	"contents-background-set" properties to fix #119298
+	(gnome_druid_page_standard_set_color):
+	Fix the default colors to be theme compliant
+
+	Fixes #119298
+
+2004-06-01 Pawan Chitrakar <pawan@nplinux.org>
+	*configure.in: Added "ne" in ALL_LINGUAS
+
+2004-05-31  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.7.1
+
+	* NEWS: Update
+	
+2004-05-29  Martin Wehner  <martin.wehner@epost.de>
+
+	* libgnomeui/gnome-thumbnail.c: (load_thumbnail_info):
+	Handle invalid values from gdk_pixbuf_get_option.
+	Fixes #139473.
+	
+2004-05-29  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "tk" to ALL_LINGUAS.
+
+2004-05-24  Fernando Herrera  <fherrera@onirica.com>
+
+	* libgnomeui/gnome-authentication-manager.c:
+	(construct_full_password_dialog): Only show remember options if
+	GNOME_VFS_MODULE_CALLBACK_FULL_AUTHENTICATION_SAVING_SUPPORTED flag is
+	TRUE.
+
+2004-05-13  James Henstridge  <james@daa.com.au>
+
+	* configure.in (ACLOCAL_AMFLAGS): set so that aclocal gets called
+	with contents of $ACLOCAL_FLAGS environment variable.
+
+	* acconfig.h: remove file since it isn't needed anymore.
+
+	* configure.in: add descriptions to AC_DEFINE() calls.
+
+2004-05-11  James Henstridge  <james@daa.com.au>
+
+	* configure.in (GCONF_CONFIG_SOURCE): get rid of checks for gconf,
+	since the schemas in libgnomeui were removed in 2001.
+
+	* demos/Makefile.am (INCLUDES): same here.
+
+	* libgnomeui/Makefile.am (INCLUDES): don't define
+	GNOMEUILOCALEDIR.
+
+	* configure.in: use AM_GLIB_DEFINE_LOCALEDIR() to define the
+	locale directory.
+
+2004-05-05  James Henstridge  <james@daa.com.au>
+
+	* test-gnome/Makefile.am (test_gnome_SOURCES): move testgnome.h to
+	sources list.
+
+	* libgnomeui/Makefile.am: fix up readonly srcdir build of
+	generated files.  Don't build libgnomeui.defs since it wasn't
+	being distributed and it wasn't being used for anything.
+
+	* Makefile.am: require automake-1.7, and ensure that docs get
+	built during "make distcheck".
+
+	* configure.in: update configure script.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): require Automake 1.7
+
+2004-05-05  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-icon-list.c: (gnome_icon_list_select_all):
+	Use g_return_if_fail. (#141833, Damien Carbery)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-app-helper.c: (create_and_popup_toolbar_menu):
+	Add the worlds worst hack to make the toolbar popup menus translated.
+	(#138730, Takao Fujiwara)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-icon-list.c: (gnome_icon_list_select_all):
+	* libgnomeui/gnome-icon-list.h:
+	Add gnome_icon_list_select_all.
+	(#138553, Laurent Sansonetti)
+	
+2004-05-02  Fernando Herrera  <fherrera@onirica.com>
+ 
+ 	* libgnomeui/gnome-thumbnail.c:
+ 	(gnome_thumbnail_factory_generate_thumbnail): 
+	Use g_file_open_tmp. Fix #133927
+ 
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-authentication-manager.c:
+	(construct_full_password_dialog):
+	Make message work better for RTL languages.
+	(#129254, Christian Rose)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-href.c: (gnome_href_clicked):
+	Use gnome_url_show_on_screen.
+	(#111923, Leena Gunda)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-thumbnail.c: (gnome_thumbnail_has_uri),
+	(gnome_thumbnail_is_valid):
+	Handle invalid values from gdk_pixbuf_get_option.
+	(#141044, Torsten Schoenfeld)
+	
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in:
+	* doc/reference/Makefile.am:
+	* doc/reference/libgnomeui-docs.sgml:
+	* doc/reference/version.xml.in:
+	Put version number in reference docs.
+	(#125759, Steve Chaplin)
+
+=================== 2.6.1.1 ===================
+
+2004-05-02  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Fix soname, depend on gtk+ 2.4.1
+	and release 2.6.1.1
+
+	* file-chooser/gtkfilesystemgnomevfs.c 
+	(gtk_file_system_gnome_vfs_volume_render_icon): It's
+	gnome-dev-harddisk, not gnome-harddisk.
+
+2004-04-21  Federico Mena Quintero  <federico@ximian.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	(gtk_file_system_gnome_vfs_get_folder): Check that the URI exists
+	before creating the folder structure.  Fixes #140095.
+
+==================== 2.6.1 ====================
+
+2004-04-20  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Version 2.6.1 "Magmoor"
+
+	* NEWS: Update
+
+2004-04-16  Alexander Larsson  <alexl@redhat.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c (gtk_file_system_gnome_vfs_volume_render_icon):
+	Use same icon for Filesystem as computer:.
+
+2004-04-16  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-authentication-manager.c:
+	Some threadsafeness for callbacks.
+
+2004-04-16 IÒaki LarraÒaga  <dooteo@euskalgnu.org>
+
+	* configure.in: Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-04-16  Alexander Larsson  <alexl@redhat.com>
+	
+	* file-chooser/gtkfilesystemgnomevfs.c (gtk_file_system_gnome_vfs_init):
+	disconnect volume-monitor callbacks when filesystem object dies
+
+2004-04-15  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* libgnomeui/gnome-about.c (gnome_about_instance_init): Remove
+	setting of role to ATK_ROLE_ALERT for bug #139541.
+
+2004-04-15  John C Barstow  <jbowtie@amathaine.com>
+
+        * configure.in: Added "mi" (Maori) to ALL_LINGUAS.
+
+2004-04-14  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* libgnomeui/gnome-about.c (gnome_about_instance_init): Set role
+	to ATK_ROLE_ALERT. Fixes bug #139541.
+
+2004-04-12  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome_segv.c (main): Remove call to 
+	  gtk_dialog_set_has_separator.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-04-06  Federico Mena Quintero  <federico@ximian.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c (fs_module_init): Ref the
+	type class that we register so that the module won't get unloaded.
+	I'd rather do this with g_module_make_resident(), but at this
+	point in the code we don't have access to the GModule.  Fixes
+	#139254.
+
+2004-03-31  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "af" to ALL_LINGUAS.
+
+2004-03-29  Federico Mena Quintero  <federico@ximian.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	(gtk_file_folder_gnome_vfs_iface_init): Add the implementation of
+	::is_finished_loading().
+	(gtk_file_folder_gnome_vfs_is_finished_loading): Implement.
+	(directory_load_callback): Emit the "finished-loading" signal when
+	we are done.
+
+2004-03-24  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-authentication-manager.c (present_authentication_dialog_nonblocking):
+	Remove leftover gtk_window_set_modal.
+
+2004-03-22  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+==================== 2.6.0 ====================
+
+2004-03-22  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Version 2.6.0 "Zeb"
+
+	* NEWS: Update
+
+	* Makefile.am (EXTRA_DIST): Add NEWS and COPYING.LIB
+
+2004-03-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-authentication-manager.c (present_authentication_dialog_nonblocking),
+	(present_full_authentication_dialog_nonblocking): 
+	Fixed small bug in last change.
+
+2004-03-18  Alexander Larsson  <alexl@redhat.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c: (load_dir),
+	(gtk_file_system_gnome_vfs_get_folder),
+	(gtk_file_system_gnome_vfs_create_folder),
+	(gtk_file_system_gnome_vfs_volume_mount), (get_vfs_info),
+	(lookup_vfs_info_in_folder), (gtk_file_folder_gnome_vfs_get_info),
+	(monitor_callback):
+	Use the new auth push/pop api
+
+	* libgnomeui/Makefile.am:
+	* libgnomeui/gnome-authentication-manager-private.h:
+	* libgnomeui/gnome-authentication-manager.c:
+	Add api to allow auth callback push/pop
+	Make auth dialog modal if there is a grab.
+
+2004-03-15  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.92
+
+2004-03-14  Federico Mena Quintero  <federico@ximian.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	(gtk_file_folder_gnome_vfs_get_info): Handle the path being NULL
+	for root URIs.
+
+Sun Mar 14 01:05:29 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	(gtk_file_system_gnome_vfs_parse): We don't really want to strip
+	whitespace off the end of the string.  This is not the right place
+	to editorialize on the appropriateness of such filenames.
+
+2004-03-13  Mark McLoughlin  <mark@skynet.ie>
+
+	Add a new "filechooser-action" property so we can use file
+	entries in other modes e.g. save mode. API addition approved
+	by the release team.
+
+	* libgnomeui/gnome-file-entry.c: (gnome_file_entry_class_init),
+	(fentry_set_property), (fentry_get_property): impl. the
+	"filechooser-action" property.
+	(browse_clicked): construct the file chooser with the appropriate
+	GtkFileChooserAction and also append the appropriate buttons
+	for that action.
+
+Fri Mar 12 02:48:56 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* file-chooser/gtkfilesystemgnomevfs.c (get_vfs_info): Patch from
+	Alexander Larsson <alexl@redhat.com> to handle parent_path being
+	NULL.
+
+Thu Mar 11 22:33:10 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* file-chooser/Makefile.am (libgnome_vfs_la_LIBADD): patch from
+	Carlos Romero <kidcrash@bellsouth.net> to make the vfs module
+	link with libgnomeui.
+
+2004-03-09  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.91
+
+2004-03-08  Anders Carlsson  <andersca@gnome.org>
+
+	* file-chooser/gtkfilesystemgnomevfs.c:
+	(gtk_file_system_gnome_vfs_init),
+	(gtk_file_system_gnome_vfs_finalize),
+	(gtk_file_system_gnome_vfs_volume_render_icon),
+	(gtk_file_system_gnome_vfs_render_icon):
+	Use an icon for the home directory.
+	
+2004-03-06  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* libgnomeui/gnome-file-entry.c: (browse_clicked):  get the
+	folder-mode of the GtkFileChooser to work again.
+	
+2004-03-05  Joe Marcus Clarke  <marcus@freebsd.org>
+
+	* configure.in:
+	* file-chooser/Makefile.am: install file-chooser GTK+ module in
+	$(libdir)/gtk-2.0/$(GTK_BINARY_VERSION)/filesystems
+
+2004-03-03  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.90.1
+
+2004-02-28  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added "th" (Thai) to ALL_LINGUAS.
+
+2004-02-27  Federico Mena Quintero  <federico@ximian.com>
+
+	* file-chooser/gtkfilesystemgnomevfs.c
+	(gtk_file_system_gnome_vfs_insert_bookmark): Renamed from
+	gtk_file_system_gnome_vfs_add_bookmark(); update to conform to the
+	new API.
+	(gtk_file_system_gnome_vfs_remove_bookmark): Updated.
+
+Thu Feb 26 20:01:03 2004  Jonathan Blandford  <jrb@gnome.org>
+
+	* libgnomeui/gnome-file-entry.c (browse_clicked): use modified
+	gtkfilechooser API.
+
+2004-02-25  Danilo Ö≈Ö†egan  <dsegan@gmx.net>
+
+	* configure.in: Added sr@ije to ALL_LINGUAS.
+
+2004-02-25  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* libgnomeui/gnome-file-entry.c: (browse_clicked):  fix the
+	folder-mode of GtkFileChooser.
+
+2004-02-24  Anders Carlsson  <andersca@gnome.org>
+
+	* Makefile.am:
+	* configure.in:
+	* file-chooser/ChangeLog:
+	* file-chooser/Makefile.am:
+	* file-chooser/gtkfilesystemgnomevfs.c:
+	Move over the file system backend from gnome-vfs.
+
+2004-02-24  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.90
+
+2004-02-20  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-17  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome_segv.c: (main): Mark strings for
+	translation and add mnemonics.
+
+2004-02-16  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	* libgnomeui/libgnomeui/gnome-icon-list.c:
+	Implement Home/End keynavigation for GnomeIconList. Bugzilla
+	bug#92938
+
+2004-02-15  Christian Persch  <chpe@cvs.gnome.org>
+
+	* libgnomeui/gnome-client.c: (gnome_client_module_class_init):
+	* libgnomeui/gnome-ui-init.c: (libgnomeui_class_init): Mark the "sm-connect"
+	and "show-crash-dialog" properties with G_PARAM_CONSTRUCT, so that they are
+	correctly initialised to their defaults on object construction. (Bug #131867).
+
+2004-02-11  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-icon-sel.c (sort_file_list): Use strcoll
+	instead of strcmp.
+
+2004-02-10  Christian Persch  <chpe@cvs.gnome.org>
+
+	* libgnomeui/gnome-client.c: (gnome_client_module_class_init): Remove
+	G_PARAM_CONSTRUCT_ONLY flag from the paramspec of the sm-connect
+	proprety, since it's set after construct time when the args are parsed
+	(Bug #131867).
+
+2004-02-09  Fernando Herrera  <fherrera@onirica.com>
+
+	* glade/glade-gnome.c: (file_entry_set_use_filechooser),
+	(glade_module_register_widgets): Register "use_filechooser" prop in
+	glade
+
+2004-02-09  Carlos Garnacho Parro  <carlosg@gnome.org>
+
+	* libgnomeui/gnome-file-entry.c: added "use_filechooser" property
+	that enables the explicit use of GtkFileChooser instead of 
+	GtkFileSelection
+	* libgnomeui/gnome-pixmap-entry.c: ditto
+	* libgnomeui/gnome-icon-entry.c: made it to use GtkFileChooser API
+
+2004-02-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/Makefile.am: Remove more deprecated flags.
+
+2004-02-04  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* libgnomeui/gnome-color-picker.c (gnome_color_picker_instance_init):
+	Do not set accessible name for GnomeColorPicker. Fixes bug #133200.
+
+	* libgnomeui/gnome-messagebox.c (gnome_message_box_construct): Set
+	role to ATK_ROLE_ALERT. Fixes bug #129567.
+
+2004-02-03  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* libgnomeui/gnome-ui-init.c (libgnomeui_class_init): Don't make
+	the "show-crash-dialog" property CONSTRUCT_ONLY because it can't
+	be set at construct time because we don't get to parse our args
+	until afterwards.
+
+2004-02-03  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.4
+
+2004-01-21  Iain <iain@prettypeople.org>
+
+	* libgnomeui/gnome_segv.c (main): Remove the separator from the window
+
+2004-01-21  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-icon-lookup.c (gnome_icon_lookup):
+	Fix GNOME_ICON_LOOKUP_FLAGS_ALLOW_SVG_AS_THEMSELVES behaviour
+	when gdk-pixbuf supports svgs.
+
+2004-01-21  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-client.c: (gnome_client_module_info_get):
+	* libgnomeui/gnome-ui-init.c: (libgnomeui_module_info_get):
+	Fix translation of program arguments. 
+	(#106549, patch by Hidetoshi Tajima).
+
+2004-01-21  Alex Duggan  <aldug@astrolinux.com>
+
+	* libgnomeui/gnome-scores.c: (gnome_scores_instance_init)
+	Use a close button instead of an OK button in the gnome
+	scores dialog.  Fixes #116440
+
+2004-01-20  Fernando Herrera  <fherrera@onirica.com>
+
+	* libgnomeui/gnome_segv.c: (main): Add a button for restarting
+	the crahsed application. Hide pid and signal information
+	unless GNOME_HACKER env variable is set. Rewrote texts based on
+	feedback for bug #127043. Removed bugzilla url.
+
+2004-01-19  Ross Burton  <ross@burtonini.com>
+
+	* libgnomeui/gnome-icon-theme.c (gnome_icon_theme_finalize):
+	Check that priv->gtk_theme is not NULL before unrefing it.
+
+2004-01-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/libgnomeui.h: Added #include of gnome-window.h.
+
+2004-01-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-app-helper.c: Handle "both-horiz" too.
+	Patch from Bryan Forbes. Closes #125323.
+	* libgnomeui/gnome-icon-theme.h: Merge fix for bug #119788.
+	* libgnomeui/gnome-theme-parser.h:
+
+2004-01-16  Federico Mena Quintero  <federico@ximian.com>
+
+	Fix #124789:
+
+	* libgnomeui/gnome-icon-item.c (gnome_icon_text_item_configure):
+	Don't store the fontname, as it is ignored elsewhere anyway.
+	(gnome_icon_text_item_destroy): Free the private structure.
+
+	* libgnomeui/gnome-icon-list.c (gil_style_set): Don't pass a
+	fontname parameter to gnome_icon_text_item_configure().
+	(gil_realize): Don't copy the style.
+
+2004-01-14  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.3
+
+2004-01-08  David Coulthart  <davec@columbia.edu>
+
+	* libgnomeui/gnome-authentication-manager.c (construct_full_password_dialog):
+	s/gnome_keyring_is_availible/gnome_keyring_is_available/
+
+2004-01-06  Alexander Larsson <alexl@redhat.com>
+
+	* libgnomeui/gnome-icon-lookup.c (gnome_icon_lookup): 
+	Treat image/svg+xml as svgs too.
+
+Mon Jan 05 17:21:19 2004  George Lebl <jirka@5z.com>
+
+	* libgnomeui/gnome-file-entry.c: make _set_default_path work if
+	  the entry field is empty.  That is, set the file selector path
+	  to this.
+
+2004-01-04  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-password-dialog.h: Remove extra comma
+	in enumeration. (#130505, Franz Klammer).
+
+2003-12-30  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/gnome-druid.c (gnome_druid_remove): 
+	Handle the last page being the current page when removing it, 
+	(Fixes #85675, reported by Damon Chaplin).
+
+2003-12-29  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "hr" to ALL_LINGUAS.
+
+2003-12-28  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.2
+
+2003-12-26  Fernando Herrera  <fherrera@onirica.com>
+
+	* glade/glade-gnome.c: Show documenters in gnome-about dialog and only show 
+	translators if they exist. (Fix two typos, bugzilla #119382 and #11934).
+	Patches from Jon Willeke.
+
+2003-12-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-icon-lookup.h:
+	Include gnome-icon-theme.h for backwards compat.
+
+2003-12-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-icon-theme.c:
+	Fix typo that broke build
+
+2003-12-18  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-icon-lookup.c: 
+	* libgnomeui/gnome-icon-theme.[ch]:
+	Remove/Internalize some new api I accidentally added
+
+2003-12-18  Alexander Larsson  <alexl@redhat.com>
+
+        * doc/reference/tmpl/gnome-icon-theme.sgml:
+	* doc/reference/tmpl/gnome-icon-lookup.sgml:
+	Update
+	
+	* libgnomeui/gnome-icon-lookup.[ch]:
+	Use GtkIconThemes instead, but accept GnomeIconThemes for
+	backwards compat.
+
+	* libgnomeui/gnome-icon-theme.[ch]:
+	Turn into a GtkIconTheme wrapper
+	
+2003-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* libgnomeui/gnome-multiscreen.c: (make_environment_for_screen):
+	Fix silly where we weren't actually setting $DISPLAY. Similar
+	patch from Vijaykumar Patwari in bug #129516.
+
+2003-12-14  Fernando Herrera  <fherrera@onirica.com>
+
+	* configure.in: requiere gnome-vfs-2.0 >= 2.5.3 for new auth sutff
+
+2003-12-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* libgnomeui/libgnomeui.h: include gnome-help.h
+	and gnome-url.h
+
+2003-12-10  Richard Hult  <richard@imendio.com>
+
+	* doc/reference/Makefile.am (install-data-local): Install the
+	devhelp file.
+
+2003-12-08  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.1
+
+2003-12-06  Anders Carlsson  <andersca@gnome.org>
+
+	* libgnomeui/pixmaps/stock_attach.png:
+	* libgnomeui/pixmaps/stock_book_blue.png:
+	* libgnomeui/pixmaps/stock_book_green.png:
+	* libgnomeui/pixmaps/stock_book_open.png:
+	* libgnomeui/pixmaps/stock_book_red.png:
+	* libgnomeui/pixmaps/stock_book_yellow.png:
+	* libgnomeui/pixmaps/stock_line_in.png:
+	* libgnomeui/pixmaps/stock_mail.png:
+	* libgnomeui/pixmaps/stock_mail_compose.png:
+	* libgnomeui/pixmaps/stock_mail_forward.png:
+	* libgnomeui/pixmaps/stock_mail_receive.png:
+	* libgnomeui/pixmaps/stock_mail_reply.png:
+	* libgnomeui/pixmaps/stock_mail_send.png:
+	* libgnomeui/pixmaps/stock_mic.png:
+	* libgnomeui/pixmaps/stock_midi.png:
+	* libgnomeui/pixmaps/stock_multiple_file.png:
+	* libgnomeui/pixmaps/stock_not.png:
+	* libgnomeui/pixmaps/stock_scores.png:
+	* libgnomeui/pixmaps/stock_table_borders.png:
+	* libgnomeui/pixmaps/stock_table_fill.png:
+	* libgnomeui/pixmaps/stock_text_bulleted_list.png:
+	* libgnomeui/pixmaps/stock_text_indent.png:
+	* libgnomeui/pixmaps/stock_text_numbered_list.png:
+	* libgnomeui/pixmaps/stock_text_unindent.png:
+	* libgnomeui/pixmaps/stock_timer.png:
+	* libgnomeui/pixmaps/stock_timer_stopped.png:
+	* libgnomeui/pixmaps/stock_trash.png:
+	* libgnomeui/pixmaps/stock_trash_full.png:
+	* libgnomeui/pixmaps/stock_volume.png:
+	Use new icons from Jimmac.
+	
+2003-12-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* libgnomeui/gnome-help.h,
+	  libgnomeui/gnome-url.h,
+	  libgnomeui/gnome-multiscreen.c:
+	(gnome_url_show_on_screen),
+	(gnome_help_display_on_screen),
+	(gnome_help_display_with_doc_id_on_screen),
+	(gnome_help_display_desktop_on_screen),
+	(gnome_help_display_uri_on_screen): Add multi-screen
+	variants of the help and url display methods.
+
+	* libgnomeui/Makefile.am: install gnome-help.h and gnome-url.h.
+	Build gnome-multiscreen.c
+	
+2003-12-05  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-authentication-manager.c:
+	Just show, not show_all. Means we don't show
+	remember checkboxes for old auth dialog.
+
+2003-12-04  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Require gnome-keyring
+
+	* libgnomeui/gnome-authentication-manager.c:
+	Implement new gnome-vfs
+
+2003-12-04  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-icon-lookup.c (gnome_icon_lookup):
+	Fix warning.
+
+	* libgnomeui/gnome-password-dialog.[ch]:
+	Update API for stuff needed for keyring integration.
+
+2003-11-24  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.5.0
+
+2003-11-02  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* libgnomeui/gnome-color-picker.c: Even though this is
+	deprecated, make it build with GDK_DISABLE_DEPRECATED defined.
+
+2003-10-23  Padraig O'Briain <padraig.obriain@sun.com>
+
+        * libgnomeui/libgnomeui.c (_add_atk_relation): Avoid leaking
+        reference to AtkRelationSet.
+
+Tue Oct 14 17:06:59 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* libgnomeui/gnome-file-entry.h:
+	* libgnomeui/gnome-icon-entry.h: undeprecate these two.  They
+	don't have GTK+ equivelants yet.
+
+Mon Oct 13 17:45:16 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* libgnomeui/gnome-dateedit.h: undeprecate.
+
+Mon Oct 13 17:32:40 2003  Jonathan Blandford  <jrb@redhat.com>
+
+	* libgnomeui/gnome-window.h: deprecated
+	* libgnomeui/gnome-color-picker.h: deprecated
+	* libgnomeui/gnome-dateedit.h: deprecated
+	* libgnomeui/gnome-dialog.h: deprecated
+	* libgnomeui/gnome-entry.h: deprecated
+	* libgnomeui/gnome-file-entry.h: deprecated
+	* libgnomeui/gnome-font-picker.h: deprecated
+	* libgnomeui/gnome-pixmap-entry.h: deprecated
+	* libgnomeui/gnome-popup-menu.h: deprecated
+	* libgnomeui/gnome-window.h: deprecated
+
+2003-10-08  Mark McLoughlin  <markmc@sun.com>
+
+	* libgnomeui/libgnomeui-access.[ch]: re-license to LGPL.
+	It should never have been GPL ...
+
+2003-10-06  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "mr" to ALL_LINGUAS.
+
+2003-09-25  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* libgnomeui/gnome-file-entry.c (browse_dialog_ok): Emit changed signal
+	instead of activate signal. Bug #123203
+
+2003-09-17  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-icon-lookup.c (gnome_icon_lookup):
+	Handle vfs icons in mime info with absolute paths.
+
+2003-09-15  Not Zed  <NotZed@Ximian.com>
+
+	* libgnomeui/gnome-icon-list.c (real_select_icon): Only add the
+	icon to the selection if it isn't already in the selected list.
+	Fixes bug #122356.
+
+2003-09-09  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.4.0.1
+
+2003-09-01  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.4.0
+
+2003-08-25  Anders Carlsson  <andersca@gnome.org>
+
+	* configure.in: Release 2.3.7
+
+2003-09-05  Taneem Ahmed  <taneem@bengalinux.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS.
+
+2003-09-01  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+	
+2003-08-11  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 2.3.6
+
+2003-07-04  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 2.3.3.1
+
+Fri Jul  4 04:27:42 2003  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* libgnomeui/gnome-app.c (gnome_app_add_toolbar): remove setting
+	of border width, thus getting rid of double bevels.
+
+2003-07-03  Anders Carlsson  <andersca@codefactory.se>
+
+	* doc/reference/.cvsignore:
+	* doc/reference/Makefile.am:
+	* doc/reference/libgnomeui-docs.sgml:
+	Generate xml reference docs (#111798, Matthias Clasen)
+
+2003-07-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-thumbnail-pixbuf-utils.c (vfs_src): Merge
+	fix for bug #114928
+	* libgnomeui/gnome-ui-init.c: Merge fix for bug #111496.
+
+2003-06-25  Thomas Vander Stichele <thomas at apestaart dot org>
+
+        * po/az.po: removed \- which was causing msgfmt to break
+
+2003-06-15  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnomeui/gnome-icon-theme.c: (load_themes),
+	(string_from_suffix), (suffix_from_name), (scan_directory):
+	Treat files ending with ".svgz" as svg files. 
+	
+2003-06-05  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-thumbnail.c (gnome_thumbnail_factory_ensure_failed_uptodate):
+	Avoid using uninitialized value tv.tv_sec
+
+Wed Jun 04 15:54:18 2003  George Lebl <jirka@5z.com>
+
+	* libgnomeui/gnome-password-dialog.c: fix cast warning
+
+	* libgnomeui/gnome-ui-init.c: things that are normally only
+	  with HAVE_ESD were generating a warning so added #ifdef HAVE_ESD
+	  around those as well.
+
+2003-05-26  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnomeui/gnome-file-entry.c: (browse_dialog_ok):
+	Fix a warning.
+	
+	* libgnomeui/Makefile.am:
+	* libgnomeui/gnome-authentication-manager.c:
+	(construct_password_dialog),
+	(present_authentication_dialog_blocking),
+	(mark_callback_completed), (authentication_dialog_button_clicked),
+	(authentication_dialog_closed), (authentication_dialog_destroyed),
+	(present_authentication_dialog_nonblocking),
+	(vfs_async_authentication_callback), (vfs_authentication_callback),
+	(gnome_authentication_manager_init):
+	* libgnomeui/gnome-authentication-manager.h:
+	* libgnomeui/gnome-password-dialog.c:
+	(gnome_password_dialog_get_type),
+	(gnome_password_dialog_class_init), (gnome_password_dialog_init),
+	(gnome_password_dialog_finalize), (dialog_show_callback),
+	(dialog_close_callback), (add_row), (username_entry_activate),
+	(gnome_password_dialog_new), (gnome_password_dialog_run_and_block),
+	(gnome_password_dialog_set_username),
+	(gnome_password_dialog_set_password),
+	(gnome_password_dialog_set_readonly_username),
+	(gnome_password_dialog_get_username),
+	(gnome_password_dialog_get_password):
+	* libgnomeui/gnome-password-dialog.h:
+	* libgnomeui/gnome-stock-icons.c: (get_default_icons):
+	* libgnomeui/gnome-stock-icons.h:
+	* libgnomeui/libgnomeui.h:
+	* libgnomeui/pixmaps/Makefile.am:
+	* test-gnome/Makefile.am:
+	* test-gnome/test-password-dialog.c: (authenticate_boink_callback),
+	(exit_callback), (main):
+	Add authentication callbacks, a password dialog, and a authentication
+	stock icon.
+	
+2003-05-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-app.c: Merge fix for
+	bug #111168 from stable.
+
+2003-05-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-file-entry.c: Merge fix for
+	bug #110500 from stable.
+	* libgnomeui/gnome-icon-entry.c: Merge fix for
+	bug #106298 from stable branch.
+	* libgnomeui/gnome-icon-entry.c: Merge fix for
+	bug #112651 from stable.
+	* libgnomeui/gnome-color-picker.c: Merge fix for
+	bug #105730 from stable.
+	* libgnomeui/gnome-entry.c: Merge fix for
+	bug #105388 from branch.
+	* libgnomeui/gnome-ui-init.c: Fix the fix for
+	bug #84778. Patch from <malcolm@commsecure.com.au>
+	* libgnomeui/gnome-icon-list.c: Merge fix for
+	bug #83748 from stable branch.
+	* libgnomeui/gnome-app.c: Merge fix for bug #106342
+	from stable branch.
+	
+2003-05-20  Kenneth Rohde Christiansen  <kenneth@gnu.org>
+
+	* configure.in: Added Limburgish to ALL_LINGUAS
+
+2003-05-19  Christian Neumair  <chris@gnome-de.org>
+
+	* libgnomeui/gnome-ui/gnome-about.c: HIGified about dialog.
+
+2003-05-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-ui-init.c: (libgnomeui_segv_handle): Merge fix
+	for bug #84778 from branch.
+
+2003-05-19  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* glade/glade-gnome.c: (icon_entry_set_max_saved):
+	* libgnomeui/gnome-icon-entry.c: (gnome_icon_entry_set_max_saved):
+	* libgnomeui/gnome-icon-entry.h: Patch from Jacob Berkman that
+	adds an API entry point to work around another being deprecated.
+	Fixes bug #79324.
+
+2003-05-15  Jaka Mocnik  <jaka@gnu.org>
+
+	* libgnomeui/gnome-mdi.c: fixed referencing problems. sink the object
+	instead of unrefing them. patch by Ecmel Ercan. this is actually not
+	a Proper(tm) fix, but it serves its purpose: finalization is done
+	properly. the Right Way(tm) would be to make GnomeMDI and
+	GnomeMDIChild GObject descendants, but since the MDI API is
+	deprecated, I won't bother.
+
+2003-05-13  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnomeui/gnome-app-helper.c: Accept both-horiz here too.
+
+2003-05-09  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+                                                                                
+        * configure.in: Added cy to ALL_LINGUAS
+
+2003-05-08  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL which is necessary for
+	building shared library on win32 platform.
+
+	* libgnomeui/Makefile.am (libgnomeui_2_la_LDFLAGS):
+	* glade/Makefile.am (libgnome_la_LDFLAGS):
+	add -no-undefined which is necessary for building shared library
+	on some platforms (e.g. Win32, BeOS).
+
+2003-05-06  Danilo Ö≈Ö†egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-05-01  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnomeui/gnome-about.c: Pass NULL to g_string_new.
+	* libgnomeui/gnome-app-helper.c: Same
+	* libgnomeui/gnome-client.c: Reapply Arjan's leak
+	patch. And don't break it in the process this time :-)
+	Fixes bug #104986.
+
+2003-04-23  Gustavo Giraldez  <gustavo.giraldez@gmx.net>
+
+	* libgnomeui/gnome-icon-theme.c (gnome_icon_theme_class_init):
+	Set parent_class.
+	(gnome_icon_theme_finalize): Chain parent_class' finalize.
+
+2003-04-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* libgnomeui/gnome-icon-theme.c: (theme_lookup_icon):
+	Merge the two seperate iterations of the theme's directory
+	list into a single iteration.
+
+2003-04-02  Loban A Rahman <loban@earthling.net>
+
+	* libgnomeui/gnome-color-picker.h: Fixed bug #106154,
+	  header misdocumentation.
+
+2003-03-27  Anders Carlsson  <andersca@codefactory.se>
+
+	* configure.in: Release 2.3.0
+
+2003-03-26  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "yi" to ALL_LINGUAS.
+
+2003-03-24  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	*libgnomeui/gnome-file-entry.c (browse_clicked): Fix the problem
+	application crash when Gnome File Selector widget's OK button is
+	double clicked. Fixes bugzilla bug#104906
+
+2003-03-19  Paul Duffy <dubhthach@frink.nuigalway.ie>
+
+        * configure.in: Added "ga" to ALL_LINGUAS.
+	
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-03-10  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "eo" to ALL_LINGUAS.
+
+2003-03-09  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	*libgnomeui/gnome-icon-entry.c (ientry_browse): Fix the problem 
+	of Browse dialog(gnome-file-entry) being non-responsive to user 
+	inputs. Fixes bugzilla bug#107255.
+		
+2003-03-08  Sebastian Rittau  <srittau@jroger.in-berlin.de>
+
+	Documentation fixes:
+
+	* libgnomeui/gnome-client.c (gnome_client_set_discard_command): Removed
+	doc string and added a comment where the true doc string can be found.
+	(Namely in the corresponding templates file.)
+	* doc/reference/libgnomeui-sections.txt: Inserted *Class definitions
+	in the Standard sections.
+	* doc/reference/libgnomeui-docs.sgml: FIXME -> Miscellaneous Widgets
+
+2003-03-05  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnomeui/gnome-icon-list.c:
+	Don't return FALSE in pointer functions.
+	#107652, reported by Morten Welinder.
+	
+2003-03-04  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* libgnomeui/gnome-icon-theme.c (gnome_icon_theme_rescan_if_needed):
+	* libgnomeui/gnome-thumbnail-pixbuf-utils.c (convert_cmyk_to_rgb):
+	* libgnomeui/gnome-thumbnail.c (read_scripts):
+	Remove unused variables to eliminate compiler warnings.
+
+	* libgnomeui/gnome-theme-parser.c (parse_key_value):
+	Initialise locale_end to some value (NULL) before use.
+
+2003-03-02  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnomeui/gnome-icon-lookup.c:
+	(mimetype_supported_by_gdk_pixbuf), (gnome_icon_lookup):
+	* libgnomeui/gnome-thumbnail.c: (mimetype_supported_by_gdk_pixbuf):
+	Ask gdk-pixbuf for supported mime types, fixes #106609, reported by
+	Christian Schaller.
+	
+2003-02-21  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-02-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* libgnome/gnome-font-picker.c
+	(gnome_font_picker_label_use_font_in_label): Fix a leak.
+	
+2003-02-10  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation
+	* configure.in: Added "id" to ALL_LINGUAS
+
+2003-02-09  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "kn" to ALL_LINGUAS.
+
+2003-02-04  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnomeui/gnome-client.c: (client_set_restart_command):
+	Revert fix since it caused brokenness.
+	
+2003-02-01  Anders Carlsson  <andersca@codefactory.se>
+
+	* libgnomeui/gnome-client.c (client_set_restart_command): Fix
+	memory leak, patch by Arjan van de Ven, #104986.
+
+2003-01-31  Alexander Larsson  <alexl@redhat.com>
+
+	* libgnomeui/gnome-icon-lookup.c (gnome_icon_lookup):
+	Use gnome-regular for text files if 
+        GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT is set. 
+        This enables top-left text for nautilus.
+
+2003-01-25  SamÖ√Ö∫el JÖ√Ö≥n Gunnarsson  <sammi@techattack.nu>
+
+	* configure.in: Added "is" to ALL_LINUGAS.
+
 2003-01-23  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in (LIBGNOMEUI_AGE):
@@ -639,8 +1828,8 @@ Fri Jul 19 03:14:27 2002  Kristian Rietveld  <kris@gtk.org>
 
 2002-05-22  Federico Mena Quintero  <federico@ximian.com>
 
-	[Falta ver quÈ pasa con "activate" en el entry del GnomeFileEntry,
-	porque emite esa seÒal cuando dan double-click en el file selector
+	[Falta ver quÖ√Ö© pasa con "activate" en el entry del GnomeFileEntry,
+	porque emite esa seÖ√Ö±al cuando dan double-click en el file selector
 	o pican OK]
 
 	* libgnomeui/gnome-icon-entry.c (browse_clicked): Connect to
@@ -1087,7 +2276,7 @@ Sat Mar  2 19:50:24 2002  Owen Taylor  <otaylor@redhat.com>
 	* configure.in: Add $X_LIBS into $SM_LIBS since we no
 	longer inherit them from GTK+.
 
-2002-03-02  Tıivo Leedj‰rv  <leedjarv@interest.ee>
+2002-03-02  TÖ√Öµivo LeedjÖ√Ö§rv  <leedjarv@interest.ee>
 
 	* configure.in: Added et to ALL_LINGUAS.
 
@@ -3225,7 +4414,7 @@ Fri Aug 24 07:16:18 2001  George Lebl <jirka@5z.com>
 
 	* libgnomeui/Makefile.am: Install gnome-macros.h
 
-2001-08-20  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-08-20  Carlos PerellÖ√Ö≥ MarÖ√Ö≠n <carlos@gnome-db.org>
 
 	* configure.in: /s/libgnomeui-2/libgnomeui2/
 
@@ -3399,7 +4588,7 @@ Sun Aug 12 11:22:03 2001  George Lebl <jirka@5z.com>
 
 	* libgnomeui/gnome-stock-icons.[ch]: Cleaned this up.
 
-2001-07-22  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-07-22  Carlos PerellÖ√Ö≥ MarÖ√Ö≠n <carlos@gnome-db.org>
 
 	* test-gnome/testgnome.c: Removed all the references to gnome_less.
 
@@ -3473,7 +4662,7 @@ Sun Aug 12 11:22:03 2001  George Lebl <jirka@5z.com>
 
 	* libgnomeui/.cvsignore: Update for new generated files.
 
-2001-07-15  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-07-15  Carlos PerellÖ√Ö≥ MarÖ√Ö≠n <carlos@gnome-db.org>
 
 	* libgnomeui/Makefile.am (gnometypebuiltins.c): It depends on gnometypebuiltins.h
 
@@ -3523,7 +4712,7 @@ Sat Jun 30 20:31:22 2001  Jonathan Blandford  <jrb@webwynk.net>
 	* libgnomeui/gnome-init.c (libgnomeui_rc_parse): removed #warning, as
 	gtk_rc_init is dead.
 
-2001-07-02  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-07-02  Carlos PerellÖ√Ö≥ MarÖ√Ö≠n <carlos@gnome-db.org>
 
 	* test-gnome/testgnome.[ch]: Some cleanup, but it does not run now :-?. I think
 	that is not my fault, but I'm not sure...
@@ -3533,7 +4722,7 @@ Sat Jun 30 20:31:22 2001  Jonathan Blandford  <jrb@webwynk.net>
 	* libgnomeui/gnome-init.c (libgnomeui_post_args_parse): remove
 	gtk_rc_set_image_loader
 	(libgnomeui_pixbuf_image_loader): kill.
-	[ thanks to: Carlos PerellÛ MarÌn <carlos@gnome-db.org> ]
+	[ thanks to: Carlos PerellÖ√Ö≥ MarÖ√Ö≠n <carlos@gnome-db.org> ]
 	(libgnomeui_rc_parse): remove gtk_rc_init.
 
 	* libgnomeui/pixmaps/Makefile.am (gnome-stock-pixbufs.h): update the stock
@@ -3586,7 +4775,7 @@ Sat Jun 30 20:31:22 2001  Jonathan Blandford  <jrb@webwynk.net>
 
 	* libgnomeui/libgnomeui.h: Don't include gnome-animator.h.
 
-2001-06-19  HÈctor GarcÌa ¡lvarez <hector@scouts-es.org>
+2001-06-19  HÖ√Ö©ctor GarcÖ√Ö≠a Ö√Ålvarez <hector@scouts-es.org>
 
 	* configure.in: added "es" for Spanish to $ALL_LINGUAS
 
@@ -3596,7 +4785,7 @@ Sat Jun 30 20:31:22 2001  Jonathan Blandford  <jrb@webwynk.net>
 
 	* libgnomeui/Makefile.am: Removed gnome-animator
 
-2001-06-17  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-06-17  Carlos PerellÖ√Ö≥ MarÖ√Ö≠n <carlos@gnome-db.org>
 
 	* test-gnome/Started the port to Gnome 2.0
 
@@ -7612,7 +8801,7 @@ Mon Oct 18 21:51:43 1999  George Lebl  <jirka@5z.com>
 	* test-gnome/testgnome.c:
 	s/gtk_container_border_width/gtk_container_set_border_width/
 
-1999-01-15  Szekeres Istv·n <szekeres@cyberspace.mht.bme.hu>
+1999-01-15  Szekeres IstvÖ√Ö°n <szekeres@cyberspace.mht.bme.hu>
         * testgnome.c: as gtk-clock is corrected, it will work here well so
         we can enable it.
 
