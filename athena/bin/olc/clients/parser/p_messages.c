@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v $
- *	$Id: p_messages.c,v 1.12 1992-01-10 20:00:23 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_messages.c,v 1.13 1997-04-30 18:01:18 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.12 1992-01-10 20:00:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.13 1997-04-30 18:01:18 ghudson Exp $";
 #endif
 #endif
 
@@ -195,7 +195,7 @@ do_olc_replay(arguments)
 	
       if(arguments == (char **) NULL)   /* error */
 	{
-	  if(OLC)
+	  if(client_is_user_client())
 	    printf("Usage is: \treplay [-file <file name>]\n");
 	  else
 	    {
@@ -284,7 +284,7 @@ do_olc_show(arguments)
 	  }
       if(arguments == (char **) NULL)   /* error */
 	{
-	  if(OLC)
+	  if(client_is_user_client())
 	    {
 	      printf("Usage is: \tshow [-file <filename>] [-connected]");
 	      printf(" [-noflush]\n");

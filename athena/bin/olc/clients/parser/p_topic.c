@@ -18,13 +18,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v $
- *	$Id: p_topic.c,v 1.13 1992-01-10 20:00:23 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_topic.c,v 1.14 1997-04-30 18:01:20 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.13 1992-01-10 20:00:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.14 1997-04-30 18:01:20 ghudson Exp $";
 #endif
 #endif
 
@@ -109,7 +109,7 @@ do_olc_topic(arguments)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
-	  if(OLC)
+	  if(client_is_user_client())
 	    printf("Usage is: \ttopic [-list] [-file <file name>] \n");
 	  else
 	    {

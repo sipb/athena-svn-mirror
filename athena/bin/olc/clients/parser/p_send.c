@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v $
- *	$Id: p_send.c,v 1.15 1991-01-21 17:18:13 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_send.c,v 1.16 1997-04-30 18:01:19 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.15 1991-01-21 17:18:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.16 1997-04-30 18:01:19 ghudson Exp $";
 #endif
 #endif
 
@@ -85,7 +85,7 @@ do_olc_send(arguments)
 	
       if(arguments == (char **) NULL)   /* error */
 	{
-	  if(OLC)
+	  if(client_is_user_client())
 	    {
 	      printf("Usage is: \tsend [-editor <editor>] ");
 	      printf("[-file <file name>]\n");

@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v $
- *	$Id: p_status.c,v 1.9 1991-01-21 01:15:38 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: p_status.c,v 1.10 1997-04-30 18:01:19 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v 1.9 1991-01-21 01:15:38 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v 1.10 1997-04-30 18:01:19 ghudson Exp $";
 #endif
 #endif
 
@@ -60,7 +60,7 @@ do_olc_status(arguments)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
-	  if(OLC)
+	  if(client_is_user_client())
 	    printf("Usage is: \tstatus\n");
 	  else
 	    {
@@ -96,7 +96,7 @@ do_olc_who(arguments)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
-	  if(OLC)
+	  if(client_is_user_client())
 	    printf("Usage is: \twho\n");
 	  else
 	    {
@@ -130,7 +130,7 @@ do_olc_version(arguments)
 	return(ERROR);
       if(arguments == (char **) NULL)   /* error */
 	{
-	  if(OLC)
+	  if(client_is_user_client())
 	    printf("Usage is: \tversion\n");
 	  else
 	    {
