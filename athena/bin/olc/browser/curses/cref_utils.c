@@ -23,13 +23,13 @@
  * utilities.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
- *	$Author: vrt $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.8 1994-03-14 14:58:21 vrt Exp $
+ *	$Author: ghudson $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.9 1997-04-30 17:27:13 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_commands_c = "$Header: ";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.9 1997-04-30 17:27:13 ghudson Exp $";
 #endif
 #endif
 
@@ -52,11 +52,12 @@ static char *rcsid_commands_c = "$Header: ";
 #include <grp.h>			/* System group defs. */
 #include <sys/time.h>
 
-#include "cref.h"			/* Finder defs. */
-#include "globals.h"			/* Global variable defs. */
+#include <browser/cref.h>		/* Finder defs. */
+#include <browser/cur_globals.h>	/* Global variable defs. */
 
 /* Function:	err_abort() prints an error message and exits.
  * Arguments:	message:	Message to print.
+ *		string:		Additional string to print.
  * Returns:	Doesn't return.
  * Notes:
  */
@@ -79,9 +80,8 @@ err_abort(message, string)
  *		string:		Additional string to print.
  * Returns:	Doesn't return.
  * Notes:
- *	There are two differences between this function and err_abort():
- *	  (1) This is used before the curses window is initialized.
- *	  (2) This allows an additional string argument to be printed.
+ *	The difference between this function and err_abort():
+ *	This should be used before the curses window is initialized.
  */
 
 err_exit(message, string)
@@ -119,16 +119,17 @@ call_program(program, argument)
   extern char *sys_errlist[];		/* System error messages. */
   
 #ifdef NO_VFORK
-  if ( (pid = fork() ) == -1)
+  pid = fork();
 #else
-  if ( (pid = vfork() ) == -1)
+  pid = vfork();
 #endif
+  if (pid == -1)
     {
       sprintf(error, "Can't fork to execute %s\n", program);
       message(1, error);
       return(ERROR);
     }
-  else if ( pid == 0 )
+  else if (pid == 0)
     {
       execlp(program, program, argument, 0);
       sprintf(error,"Error execing %s: %s", program,
@@ -251,7 +252,8 @@ check_cref_dir(dir)
   int fd;				/* File descriptor. */
   
   make_path(dir, CONTENTS, contents);
-  if ( (fd = open(contents, O_RDONLY, 0)) < 0)
+  fd = open(contents, O_RDONLY, 0);
+  if (fd < 0)
     return(FALSE);
   else
     {
@@ -295,13 +297,15 @@ copy_file(src_file, dest_file)
   char error[ERRSIZE];			/* Error message. */
   int nbytes;				/* Number of bytes read. */
 
-  if ((in_fd = open(src_file, O_RDONLY, 0)) < 0)
+  in_fd = open(src_file, O_RDONLY, 0);
+  if (in_fd < 0)
     {
       sprintf(error, "Unable to open input file %s\n", src_file);
       message(1, error);
       return(ERROR);
     }
-  if ((out_fd = open(dest_file, O_WRONLY | O_CREAT | O_TRUNC, CLOSED_FILE)) < 0)
+  out_fd = open(dest_file, O_WRONLY | O_CREAT | O_TRUNC, CLOSED_FILE);
+  if (out_fd < 0)
     {
       sprintf(error, "Unable to open output file %s\n", dest_file);
       message(1, error);
@@ -349,16 +353,20 @@ create_cref_dir(dir)
       printf("\nUnable to create directory %s.\n", dir);
       return(ERROR);
     }
-  else if ( (fp = fopen(contents, "w")) == NULL)
-    {
-      printf("\nUnable to create file %s\n", contents);
-      return(ERROR);
-    }
   else
     {
-    fclose(fp);
-    return(SUCCESS);
-  }
+      fp = fopen(contents, "w");
+      if (fp == NULL)
+	{
+	  printf("\nUnable to create file %s\n", contents);
+	  return(ERROR);
+	}
+      else
+	{
+	  fclose(fp);
+	  return(SUCCESS);
+	}
+    }
 }
 
 log_status(logfile,logstring)
