@@ -355,7 +355,7 @@ make_passwd_window (saver_info *si)
       w2 = w2 + w3 + (pw->shadow_width * 2);
       h2 = MAX (h2, h3);
 
-      if (pw->idle_time > si->prefs.max_idle_time)
+      if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
       {
         /* Measure the logout_label. */
         XTextExtents (pw->label_font,
@@ -461,7 +461,7 @@ draw_passwd_window (saver_info *si)
 	    (3 * MAX ((pw->label_font->ascent + pw->label_font->descent),
 		      (pw->passwd_font->ascent + pw->passwd_font->descent +
 		       (pw->shadow_width * 4)))));
-  if (pw->idle_time > si->prefs.max_idle_time)
+  if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
     height += pw->label_font->ascent + pw->label_font->descent;
   spacing = ((pw->height - (2 * pw->shadow_width) -
 	      pw->internal_border - height)) / 8;
@@ -569,7 +569,7 @@ draw_passwd_window (saver_info *si)
   XDrawString (si->dpy, si->passwd_dialog, gc1, x2, y1,
 	       pw->idle_string, strlen(pw->idle_string));
 
-  if (pw->idle_time > si->prefs.max_idle_time)
+  if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
   {
     /* the "logout" label
      */
@@ -899,7 +899,7 @@ handle_passwd_key (saver_info *si, XKeyEvent *event)
       break;
 
     case '\014':                                         /* Control-L */
-      if (pw->idle_time > si->prefs.max_idle_time)
+      if (si->prefs.max_idle_time && pw->idle_time > si->prefs.max_idle_time)
       {
         update_passwd_window (si, "Logging out...", pw->ratio);
         XSync (si->dpy, False);
