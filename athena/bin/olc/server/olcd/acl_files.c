@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v $
- *	$Author: tjcoppet $
+ *	$Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.3 1989-11-17 13:56:21 tjcoppet Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/acl_files.c,v 1.4 1989-12-14 22:55:55 raeburn Exp $";
 #endif lint
 
 /* CHANGES from std. file:  fixed fd leak and null ptr. deref.
@@ -118,7 +118,7 @@ char *canon;
 	strncpy(canon, atsign, len);
 	canon += len;
 	*canon++ = '\0';
-    } else if(get_krbrlm(canon, 1) != KSUCCESS) {
+    } else if (krb_get_lrealm (canon, 1) != KSUCCESS) {
 	strcpy(canon, KRB_REALM);
     }
 }
@@ -170,6 +170,30 @@ char *acl_file;
     }
 }
 
+/* Abort changes to acl_file written onto FILE *f */
+/* Returns 0 if successful, < 0 otherwise */
+/* Closes f */
+static int acl_abort(acl_file, f)
+char *acl_file;
+FILE *f;     
+{
+    char new[LINESIZE];
+    int ret;
+    struct stat s;
+
+    /* make sure we aren't nuking someone else's file */
+    if(fstat(fileno(f), &s) < 0
+       || s.st_nlink == 0) {
+	   fclose(f);
+	   return(-1);
+       } else {
+	   sprintf(new, NEW_FILE, acl_file);
+	   ret = unlink(new);
+	   fclose(f);
+	   return(ret);
+       }
+}
+
 /* Commit changes to acl_file written onto FILE *f */
 /* Returns zero if successful */
 /* Returns > 0 if lock was broken */
@@ -195,30 +219,6 @@ FILE *f;
     ret = rename(new, acl_file);
     fclose(f);
     return(ret);
-}
-
-/* Abort changes to acl_file written onto FILE *f */
-/* Returns 0 if successful, < 0 otherwise */
-/* Closes f */
-static int acl_abort(acl_file, f)
-char *acl_file;
-FILE *f;     
-{
-    char new[LINESIZE];
-    int ret;
-    struct stat s;
-
-    /* make sure we aren't nuking someone else's file */
-    if(fstat(fileno(f), &s) < 0
-       || s.st_nlink == 0) {
-	   fclose(f);
-	   return(-1);
-       } else {
-	   sprintf(new, NEW_FILE, acl_file);
-	   ret = unlink(new);
-	   fclose(f);
-	   return(ret);
-       }
 }
 
 /* Initialize an acl_file */
