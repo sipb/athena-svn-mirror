@@ -49,9 +49,12 @@ struct _ZoomRegionPrivate {
 	GdkPixmap *cursor_backing_pixels;
 	GdkRectangle cursor_backing_rect;
 	GdkPoint last_cursor_pos;
+	GdkPoint last_drawn_crosswire_pos;
 	GdkInterpType gdk_interp_type;
 	GdkGC *border_gc;
 	gulong expose_handler_id;
+        guint  update_pointer_id;
+        guint  update_handler_id;
 	gboolean test;
 };
 

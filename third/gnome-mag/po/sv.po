@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the gnome-mag package.
 # Christian Rose <menthos@menthos.com>, 2002.
 #
-# $Id: sv.po,v 1.1.1.1 2004-10-06 19:30:56 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2005-03-10 19:59:36 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-mag\n"
-"POT-Creation-Date: 2004-08-30 18:13+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-02-04 16:04+0000\n"
 "PO-Revision-Date: 2002-10-21 17:10+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"

@@ -131,6 +131,9 @@ int main(int argc, char ** argv){
 	CORBA_any *rect_any;
 	GNOME_Magnifier_RectBounds *rectangle;
 
+	CORBA_string target_disp = NULL;
+	CORBA_string source_disp = NULL;
+
 	CORBA_exception_init (&ev);
 	
 	if (!bonobo_init (&argc, argv))
@@ -178,9 +181,19 @@ int main(int argc, char ** argv){
 		break;
         case 's':
 		GNOME_Magnifier_Magnifier__set_SourceDisplay (magnifier, argv[1]+1, &ev);
+		fprintf (stderr, "\n Set Source To : %s\n", argv[1]+1);
+		break;
+	case 'o':	
+		target_disp = GNOME_Magnifier_Magnifier__get_TargetDisplay (magnifier, &ev);
+		fprintf (stderr, "\n Magnifier Target is : %s\n", target_disp);
+		break;
+        case 'p':
+	    	source_disp = GNOME_Magnifier_Magnifier__get_SourceDisplay (magnifier, &ev);
+		fprintf (stderr, "\n Magnifier Source is : %s\n", source_disp);
 		break;
         case 't':
 		GNOME_Magnifier_Magnifier__set_TargetDisplay (magnifier, argv[1]+1, &ev);
+		fprintf (stderr, "\n Set Target to : %s\n", argv[1]+1);
 		break;
         case 'm':
 		properties = GNOME_Magnifier_Magnifier_getProperties (magnifier, &ev);

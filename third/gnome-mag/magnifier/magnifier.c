@@ -25,7 +25,7 @@
 #include <string.h>
 #include <strings.h>
 #include <popt.h>
-#include <gdk/gdkwindow.h>
+#include <gdk/gdk.h>
 #include <libbonobo.h>
 #include <login-helper/login-helper.h>
 #include <gdk/gdkx.h>
@@ -39,6 +39,16 @@
 #include "zoom-region.h"
 #include "zoom-region-private.h"
 #include "GNOME_Magnifier.h"
+
+/* if you #define this, don't forget to set MAG_CLIENT_DEBUG env variable */
+#define DEBUG_CLIENT_CALLS
+
+#ifdef DEBUG_CLIENT_CALLS
+static gboolean client_debug = FALSE;
+#define DBG(a) if (client_debug) { (a); }
+#else
+#define DBG(a)
+#endif
 
 typedef struct
 {
@@ -84,15 +94,54 @@ enum {
 	MAGNIFIER_CROSSWIRE_COLOR_PROP
 } PropIdx;
 
+typedef struct
+{
+	GNOME_Magnifier_RectBounds rectbounds;
+	GNOME_Magnifier_RectBounds viewport;
+	gboolean is_managed;
+	gint scroll_policy;
+	gfloat contrast;
+	gfloat zx;
+	gfloat zy;
+	gint32 xalign;
+	gint32 yalign;
+	guint32 border_color;
+	gint32 border_size;
+	gchar *smoothing_type;
+	gboolean inverse;
+
+} MagnifierZoomRegionSaveProps;
+
+#ifdef DEBUG_CLIENT_CALLS
+gchar* mag_prop_names[MAGNIFIER_CROSSWIRE_COLOR_PROP + 1] = {
+    "SOURCE_DISPLAY",
+    "TARGET_DISPLAY",
+    "SOURCE_SIZE",
+    "TARGET_SIZE",
+    "CURSOR_SET",
+    "CURSOR_SIZE",
+    "CURSOR_ZOOM",
+    "CURSOR_COLOR",
+    "CURSOR_HOTSPOT",
+    "CURSOR_DEFAULT_SIZE",
+    "CROSSWIRE_SIZE",
+    "CROSSWIRE_CLIP",
+    "CROSSWIRE_COLOR"
+};
+#endif
+
 static int _x_error = 0;
 static int fixes_event_base = 0, fixes_error_base;
 static Display *cursor_client_connection;
+static guint    cursor_client_gsource = 0;
 static Magnifier *_this_magnifier = NULL;
 
 static void magnifier_transform_cursor (Magnifier *magnifier);
 static void magnifier_init_cursor_set (Magnifier *magnifier, gchar *cursor_set);
+static void magnifier_init_window (Magnifier *magnifier, GdkScreen *screen);
 static gboolean magnifier_check_set_struts (Magnifier *magnifier);
 static gboolean magnifier_reset_struts_at_idle (gpointer data);
+static void magnifier_init_window (Magnifier *magnifier, GdkScreen *screen);
 static gboolean _is_override_redirect = FALSE;
 
 static Window*
@@ -177,6 +226,18 @@ magnifier_x_error_handler (Display	 *display,
 	return 0;
 }
 
+static gboolean
+can_open_display (gchar *display_name)
+{
+    Display *d;
+    if (d = XOpenDisplay (display_name))
+    {
+	XCloseDisplay (d);
+	return TRUE;
+    }
+    return FALSE;
+}
+
 static void
 magnifier_warp_cursor_to_screen (Magnifier *magnifier)
 {
@@ -184,20 +245,23 @@ magnifier_warp_cursor_to_screen (Magnifier *magnifier)
 	unsigned int mask;
 	Window root_return, child_return;
 
-	if (!XQueryPointer (GDK_DISPLAY_XDISPLAY (magnifier->source_display), 
-			    GDK_WINDOW_XWINDOW (magnifier->priv->root), 
-			    &root_return,
-			    &child_return,
-			    &x, &y,
-			    &unused_x, &unused_y,
-			    &mask))
+	if (magnifier->source_display)
 	{
+	    if (!XQueryPointer (GDK_DISPLAY_XDISPLAY (magnifier->source_display), 
+				GDK_WINDOW_XWINDOW (magnifier->priv->root), 
+				&root_return,
+				&child_return,
+				&x, &y,
+				&unused_x, &unused_y,
+				&mask))
+	    {
 		XWarpPointer (GDK_DISPLAY_XDISPLAY (magnifier->source_display),
 			      None,
 			      GDK_WINDOW_XWINDOW (magnifier->priv->root),
 			      0, 0, 0, 0,
 			      x, y);
 		XSync (GDK_DISPLAY_XDISPLAY (magnifier->source_display), FALSE);
+	    }
 	}
 }
 
@@ -207,6 +271,7 @@ magnifier_zoom_regions_mark_dirty (Magnifier *magnifier, GNOME_Magnifier_RectBou
 	GList *list;
 
 	g_assert (magnifier);
+
 	list = magnifier->zoom_regions;
 	while (list) 
 	{
@@ -242,9 +307,12 @@ magnifier_set_cursor_from_pixbuf (Magnifier *magnifier, GdkPixbuf *cursor_pixbuf
 		height = gdk_pixbuf_get_height (cursor_pixbuf);
 		pixmap = gdk_pixmap_new (drawable, width, height, -1);
 		gc = gdk_gc_new (pixmap);
-		gdk_draw_pixbuf (pixmap, gc, cursor_pixbuf, 0, 0, 0, 0, 
-				 width, height,
-				 GDK_RGB_DITHER_NONE, 0, 0);
+		if (GDK_IS_DRAWABLE (pixmap))
+		    gdk_draw_pixbuf (pixmap, gc, cursor_pixbuf, 0, 0, 0, 0, 
+				     width, height,
+				     GDK_RGB_DITHER_NONE, 0, 0);
+		else
+		    DBG (g_warning ("empty cursor pixmap created."));
 		mask = gdk_pixmap_new (drawable, width, height, 1);
 		gdk_pixbuf_render_threshold_alpha (cursor_pixbuf, mask, 0, 0, 0, 0, 
 						   width, height,
@@ -274,6 +342,19 @@ magnifier_free_cursor_pixels (guchar *pixels, gpointer data)
     /* XFree (data); FIXME why doesn't this work properly? */
 }
 
+#ifdef HAVE_XFIXES
+static void
+magnifier_cursor_convert_to_rgba (Magnifier *magnifier, XFixesCursorImage *cursor_image)
+{
+	int i, count = cursor_image->width * cursor_image->height;
+	for (i = 0; i < count; ++i) 
+	{
+		guint32 pixval = GUINT_TO_LE (cursor_image->pixels[i]);
+		cursor_image->pixels[i] = pixval;
+	}
+}
+#endif
+
 GdkPixbuf *
 magnifier_get_source_pixbuf (Magnifier *magnifier)
 {
@@ -283,6 +364,7 @@ magnifier_get_source_pixbuf (Magnifier *magnifier)
 	gchar s[6];
 	if (cursor_image)
 	{
+	        magnifier_cursor_convert_to_rgba (magnifier, cursor_image);
 		cursor_pixbuf = gdk_pixbuf_new_from_data ((guchar *) cursor_image->pixels, 
 							  GDK_COLORSPACE_RGB, 
 							  TRUE, 8,  
@@ -305,7 +387,6 @@ GdkPixbuf *
 magnifier_get_pixbuf_for_name (Magnifier *magnifier, const gchar *cursor_name)
 {
     GdkPixbuf *retval = NULL;
-    g_message ("cursor %s", cursor_name);
     if (magnifier->priv->cursorlist) 
 	    retval = g_hash_table_lookup (magnifier->priv->cursorlist, cursor_name);
     if (retval) 
@@ -389,8 +470,17 @@ magnifier_cursor_notification_init (Magnifier *magnifier)
     Display *dpy;
     Window rootwin;
 
-    dpy = GDK_DISPLAY_XDISPLAY (magnifier->source_display);
-    cursor_client_connection = XOpenDisplay (0);
+    if (!magnifier->source_display) return FALSE;
+
+    if (cursor_client_connection)
+    {
+        /* remove the old watch */
+	if (cursor_client_gsource) 
+	  g_source_remove (cursor_client_gsource);
+	XCloseDisplay (cursor_client_connection);
+    }
+
+    cursor_client_connection = XOpenDisplay (magnifier->source_display_name);
     rootwin = GDK_WINDOW_XWINDOW (magnifier->priv->root);
 
     if (!XFixesQueryExtension (cursor_client_connection, &fixes_event_base, &fixes_error_base))
@@ -403,8 +493,9 @@ magnifier_cursor_notification_init (Magnifier *magnifier)
 	XFixesSelectCursorInput (cursor_client_connection, rootwin, XFixesDisplayCursorNotifyMask);
 	fd = ConnectionNumber (cursor_client_connection);
 	ioc = g_io_channel_unix_new (fd);
-	g_io_add_watch (ioc, G_IO_IN | G_IO_HUP | G_IO_PRI | G_IO_ERR, magnifier_cursor_notify, 
-			magnifier);
+	cursor_client_gsource = 
+	    g_io_add_watch (ioc, G_IO_IN | G_IO_HUP | G_IO_PRI | G_IO_ERR, magnifier_cursor_notify, 
+			    magnifier);
 	g_io_channel_unref (ioc); 
 	g_message ("added event source to xfixes cursor-notify connection");
  	XFlush (cursor_client_connection); 
@@ -424,8 +515,10 @@ magnifier_notify_damage (Magnifier *magnifier, XRectangle *rect)
 	rect_bounds.y1 = rect->y;
 	rect_bounds.x2 = rect->x + rect->width;
 	rect_bounds.y2 = rect->y + rect->height;
+#undef DEBUG_DAMAGE
 #ifdef DEBUG_DAMAGE
 	g_message ("damage");
+	g_message ("dirty %d, %d to %d, %d", rect_bounds.x1, rect_bounds.y1, rect_bounds.x2, rect_bounds.y2);
 #endif
 	magnifier_zoom_regions_mark_dirty (magnifier, rect_bounds);
 }
@@ -454,11 +547,11 @@ magnifier_expose_filter (GdkXEvent *xevent, GdkEvent *event, gpointer data)
 static void
 magnifier_set_extension_listeners (Magnifier *magnifier, GdkWindow *root)
 {
-	g_message ("adding expose listener on root");
-	/* TODO: remove listener from 'old' root if one was already present */	
-	gdk_window_add_filter (root, magnifier_expose_filter, NULL);
-	magnifier_damage_client_init (magnifier);
-	magnifier_cursor_notification_init (magnifier);
+	if (!magnifier_damage_client_init (magnifier))
+	    g_warning ("Damage client hooks were not initialized.");
+	if (!magnifier_cursor_notification_init (magnifier))
+	    g_warning ("Cursor change notification hooks were not initialized.");
+	magnifier->source_initialized = TRUE;
 }
 
 static void
@@ -520,12 +613,12 @@ magnifier_realize (GtkWidget *widget)
 GdkWindow*
 magnifier_get_root (Magnifier *magnifier)
 {
-	if (!magnifier->priv->root) {
-		magnifier->priv->root = gdk_screen_get_root_window (
-			gdk_display_get_screen (magnifier->source_display,
-						magnifier->source_screen_num));
-	}
-	return magnifier->priv->root;
+    if (!magnifier->priv->root && magnifier->source_display) {
+	magnifier->priv->root = gdk_screen_get_root_window (
+	    gdk_display_get_screen (magnifier->source_display,
+				    magnifier->source_screen_num));
+    }
+    return magnifier->priv->root;
 }
 
 static gint
@@ -585,16 +678,25 @@ magnifier_unref_zoom_region (gpointer data, gpointer user_data)
 	CORBA_Environment ev;
 	GNOME_Magnifier_ZoomRegion zoom_region = data;
 	CORBA_exception_init (&ev);
+	
+	DBG(g_message ("unreffing zoom region"));
+
 	GNOME_Magnifier_ZoomRegion_dispose (zoom_region, &ev);
+	if (!BONOBO_EX (&ev))
+	    Bonobo_Unknown_unref (zoom_region, &ev);
 }
 
-static void
-magnifier_reparent_zoom_regions (Magnifier *magnifier)
+static GSList*
+magnifier_zoom_regions_save (Magnifier *magnifier)
 {
     GList *list;
+    GSList *save_props = NULL;
     
     g_assert (magnifier);
     list = magnifier->zoom_regions;
+
+    DBG(g_message ("saving %d regions", g_list_length (list)));
+
     while (list) 
     {
 	GNOME_Magnifier_ZoomRegion zoom_region;
@@ -603,52 +705,89 @@ magnifier_reparent_zoom_regions (Magnifier *magnifier)
 	CORBA_exception_init (&ev);
 	if (zoom_region)
 	{
-	    GNOME_Magnifier_ZoomRegion new_region;
-	    Bonobo_PropertyBag properties, new_properties;
-	    GNOME_Magnifier_RectBounds rectbounds, viewport;
+	    Bonobo_PropertyBag properties;
 	    CORBA_any *value;
-	    rectbounds = GNOME_Magnifier_ZoomRegion_getROI (zoom_region, &ev);
+	    MagnifierZoomRegionSaveProps *zoomer_props = g_new0 (MagnifierZoomRegionSaveProps, 1);
+
+	    zoomer_props->rectbounds = GNOME_Magnifier_ZoomRegion_getROI (zoom_region, &ev);
 	    properties = GNOME_Magnifier_ZoomRegion_getProperties (zoom_region, &ev);
 	    value = bonobo_pbclient_get_value (properties, "viewport", TC_GNOME_Magnifier_RectBounds, &ev);
-	    memcpy (&viewport, value->_value, sizeof (GNOME_Magnifier_RectBounds));
-	    fprintf (stderr, "reparenting zoomer with viewport %d,%d - %d,%d\n", viewport.x1, viewport.y1, viewport.x2, viewport.y2);
+	    memcpy (&zoomer_props->viewport, value->_value, sizeof (GNOME_Magnifier_RectBounds));
 	    CORBA_free (value);
-	    new_region = GNOME_Magnifier_Magnifier_createZoomRegion (BONOBO_OBJREF (magnifier), 0, 0, &rectbounds, &viewport, &ev);
-	    new_properties = GNOME_Magnifier_ZoomRegion_getProperties (new_region, &ev);
-	    bonobo_pbclient_set_boolean (new_properties, "is-managed", 
-					 bonobo_pbclient_get_boolean (properties, "is-managed", NULL), NULL);
-	    bonobo_pbclient_set_long (new_properties, "smooth-scroll-policy", 
-				       bonobo_pbclient_get_long (properties, "smooth-scroll-policy", NULL), NULL);
-	    bonobo_pbclient_set_float (new_properties, "contrast", 
-					 bonobo_pbclient_get_float (properties, "contrast", NULL), NULL);
-	    bonobo_pbclient_set_float (new_properties, "mag-factor-x", 
-					 bonobo_pbclient_get_float (properties, "mag-factor-x", NULL), NULL);
-	    bonobo_pbclient_set_float (new_properties, "mag-factor-y", 
-					 bonobo_pbclient_get_float (properties, "mag-factor-y", NULL), NULL);
-	    bonobo_pbclient_set_long (new_properties, "x-alignment", 
-					 bonobo_pbclient_get_long (properties, "x-alignment", NULL), NULL);
-	    bonobo_pbclient_set_long (new_properties, "y-alignment", 
-					 bonobo_pbclient_get_long (properties, "y-alignment", NULL), NULL);
-	    bonobo_pbclient_set_long (new_properties, "border-color", 
-				      bonobo_pbclient_get_long (properties, "border-color", NULL), NULL); 
-	    bonobo_pbclient_set_long (new_properties, "border-size", 
-				      bonobo_pbclient_get_long (properties, "border-size", NULL), NULL);
-	    bonobo_pbclient_set_string (new_properties, "smoothing-type", 
-					bonobo_pbclient_get_string (properties, "smoothing-type", NULL), NULL); 
-	    bonobo_pbclient_set_boolean (new_properties, "inverse-video", 
-					 bonobo_pbclient_get_boolean (properties, "inverse-video", NULL), NULL); 
+	    zoomer_props->is_managed = bonobo_pbclient_get_boolean (properties, "is-managed", NULL);
+	    zoomer_props->scroll_policy = bonobo_pbclient_get_short (properties, "smooth-scroll-policy", NULL);
+	    zoomer_props->contrast = bonobo_pbclient_get_float (properties, "contrast", NULL);
+	    zoomer_props->zx = bonobo_pbclient_get_float (properties, "mag-factor-x", NULL);
+	    zoomer_props->zy = bonobo_pbclient_get_float (properties, "mag-factor-y", NULL);
+	    zoomer_props->xalign = bonobo_pbclient_get_long (properties, "x-alignment", NULL);
+	    zoomer_props->yalign = bonobo_pbclient_get_long (properties, "y-alignment", NULL);
+	    zoomer_props->border_color = bonobo_pbclient_get_long (properties, "border-color", NULL); 
+	    zoomer_props->border_size = bonobo_pbclient_get_long (properties, "border-size", NULL);
+	    zoomer_props->smoothing_type = bonobo_pbclient_get_string (properties, "smoothing-type", NULL); 
+	    zoomer_props->inverse = bonobo_pbclient_get_boolean (properties, "inverse-video", NULL); 
+
 	    bonobo_object_release_unref (properties, &ev);
-	    bonobo_object_release_unref (new_properties, &ev);
-	    list->data = new_region;
 	    magnifier_unref_zoom_region ((gpointer) zoom_region, NULL);
+	    save_props = g_slist_append (save_props, zoomer_props);
 	}
 	list = g_list_next (list);
     }   
+
+    magnifier->zoom_regions = NULL;
+
+    return save_props;
+}
+
+static void
+magnifier_zoom_regions_restore (Magnifier *magnifier, GSList *region_params)
+{
+	GSList *list = region_params;
+
+	while (list)
+	{
+		CORBA_Environment ev;
+		MagnifierZoomRegionSaveProps *zoomer_props = list->data;
+		GNOME_Magnifier_ZoomRegion new_region;
+		Bonobo_PropertyBag new_properties;
+
+		CORBA_exception_init (&ev);
+		new_region = GNOME_Magnifier_Magnifier_createZoomRegion (BONOBO_OBJREF (magnifier), zoomer_props->zx, zoomer_props->zy, &zoomer_props->rectbounds, &zoomer_props->viewport, &ev);
+		new_properties = GNOME_Magnifier_ZoomRegion_getProperties (new_region, &ev);
+		bonobo_pbclient_set_boolean (new_properties, "is-managed", 
+					     zoomer_props->is_managed, NULL);
+		bonobo_pbclient_set_short (new_properties, "smooth-scroll-policy", 
+					   zoomer_props->scroll_policy, NULL);
+		bonobo_pbclient_set_float (new_properties, "contrast", 
+					   zoomer_props->contrast, NULL);
+/* NOT YET USED
+		bonobo_pbclient_set_long (new_properties, "x-alignment", 
+					     zoomer_props->xalign, NULL);
+		bonobo_pbclient_set_long (new_properties, "y-alignment", 
+					     zoomer_props->yalign, NULL);
+*/
+		bonobo_pbclient_set_long (new_properties, "border-color", 
+					     zoomer_props->border_color, NULL);
+		bonobo_pbclient_set_long (new_properties, "border-size", 
+					     zoomer_props->border_size, NULL);
+		bonobo_pbclient_set_string (new_properties, "smoothing-type", 
+					     zoomer_props->smoothing_type, NULL);
+		bonobo_pbclient_set_boolean (new_properties, "inverse-video", 
+					     zoomer_props->inverse, NULL);
+		GNOME_Magnifier_Magnifier_addZoomRegion (BONOBO_OBJREF (magnifier), new_region, &ev);
+		g_free (zoomer_props->smoothing_type);
+		g_free (zoomer_props);
+		bonobo_object_release_unref (new_properties, &ev);
+		list = g_slist_next (list);
+	}
+	g_slist_free (region_params);
 }
 
 static void
 magnifier_init_display (Magnifier *magnifier, gchar *display_name, gboolean is_target)
 {
+    if (!can_open_display (display_name))
+	return;
+
     if (is_target)
     {
 	magnifier->target_screen_num =
@@ -657,6 +796,8 @@ magnifier_init_display (Magnifier *magnifier, gchar *display_name, gboolean is_t
 					  NULL);
 	magnifier->target_display =
 	    gdk_display_open (display_name);
+	if (magnifier->target_display_name) g_free (magnifier->target_display_name);
+	magnifier->target_display_name = g_strdup (display_name);
 	magnifier->priv->root =
 	    gdk_screen_get_root_window (
 		gdk_display_get_screen (
@@ -671,11 +812,16 @@ magnifier_init_display (Magnifier *magnifier, gchar *display_name, gboolean is_t
 					  NULL);
 	magnifier->source_display =
 	    gdk_display_open (display_name);
-	magnifier->priv->root =
-	    gdk_screen_get_root_window (
-		gdk_display_get_screen (
-		    magnifier->source_display,
-		    magnifier->source_screen_num));
+	if (magnifier->source_display)
+	{
+	    if (magnifier->source_display_name) g_free (magnifier->source_display_name);
+	    magnifier->source_display_name = g_strdup (display_name);
+	    magnifier->priv->root =
+		gdk_screen_get_root_window (
+		    gdk_display_get_screen (
+			magnifier->source_display,
+			magnifier->source_screen_num));
+	}
     }
 }
 
@@ -781,17 +927,24 @@ magnifier_transform_cursor (Magnifier *magnifier)
 			magnifier->priv->w->window,
 			size_x, size_y,
 			-1);
-		if (!magnifier->priv->cursor) g_warning ("magnifier cursur pixmap is non-null");
+		if (!GDK_IS_DRAWABLE (magnifier->priv->cursor)) 
+		{
+		    DBG (g_warning ("NULL magnifier cursor pixmap."));
+		    return;
+		}
 		magnifier->priv->cursor_mask = gdk_pixmap_new (
 			magnifier->priv->w->window,
 			size_x, size_y,
 			1);
-
-		gdk_draw_pixbuf (magnifier->priv->cursor,
-				 cgc,
-				 scaled_cursor_pixbuf,
-				 0, 0, 0, 0, size_x, size_y,
-				 GDK_RGB_DITHER_NONE, 0, 0 );
+		if (GDK_IS_DRAWABLE (magnifier->priv->cursor)) {
+		    gdk_draw_pixbuf (magnifier->priv->cursor,
+				     cgc,
+				     scaled_cursor_pixbuf,
+				     0, 0, 0, 0, size_x, size_y,
+				     GDK_RGB_DITHER_NONE, 0, 0 );
+		}
+		else
+		    DBG (g_warning ("cursor pixmap is non-drawable."));
 		scaled_mask_pixbuf = gdk_pixbuf_add_alpha (
 			scaled_mask_pixbuf, True, 0, 0, 0);
 		gdk_pixbuf_render_threshold_alpha (scaled_mask_pixbuf,
@@ -843,7 +996,6 @@ magnifier_init_cursor_set (Magnifier *magnifier, gchar *cursor_set)
 		cursor_dirname = g_strconcat (CURSORSDIR, "/", magnifier->cursor_set, NULL);
 		cursor_dir = g_dir_open (cursor_dirname, 0, NULL);
 		/* assignment, not comparison, is intentional */
-		g_message ("cursor_dir=%x", cursor_dir);
 		while (cursor_dir && (filename = g_dir_read_name (cursor_dir)) != NULL) 
 		{
 			if (filename) 
@@ -984,6 +1136,8 @@ magnifier_get_property (BonoboPropertyBag *bag,
 	Magnifier *magnifier = user_data;
 	GNOME_Magnifier_RectBounds rect_bounds;
 	int csize = 0;
+
+	DBG (fprintf (stderr, "Get property: \t%s\n", mag_prop_names[arg_id]));
 	
 	switch (arg_id) {
 	case MAGNIFIER_SOURCE_SIZE_PROP:
@@ -1033,6 +1187,12 @@ magnifier_get_property (BonoboPropertyBag *bag,
 	case MAGNIFIER_CROSSWIRE_COLOR_PROP:
 		BONOBO_ARG_SET_LONG (arg, magnifier->crosswire_color);
 		break;
+        case MAGNIFIER_SOURCE_DISPLAY_PROP:
+		BONOBO_ARG_SET_STRING (arg, magnifier->source_display_name);
+	        break;
+	case MAGNIFIER_TARGET_DISPLAY_PROP:
+		BONOBO_ARG_SET_STRING (arg, magnifier->target_display_name);
+	        break;
 	default:
 		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
 	};
@@ -1048,49 +1208,103 @@ magnifier_set_property (BonoboPropertyBag *bag,
 	Magnifier *magnifier = user_data;
 	GNOME_Magnifier_RectBounds rect_bounds;
 	gchar *full_display_string;
-	
+
 	switch (arg_id) {
 	case MAGNIFIER_SOURCE_DISPLAY_PROP:
 		full_display_string = BONOBO_ARG_GET_STRING (arg);
-		magnifier->source_screen_num =
+		if (can_open_display (full_display_string))
+		{
+		    GSList *zoom_region_params = NULL;
+		    magnifier->source_screen_num =
 			magnifier_parse_display_name (magnifier,
 						      full_display_string,
 						      NULL);
-		magnifier->source_display =
+		    magnifier->source_display =
 			gdk_display_open (full_display_string);
-		magnifier->priv->root =
+		    magnifier->source_display_name = g_strdup (full_display_string);
+		    zoom_region_params = magnifier_zoom_regions_save (magnifier);
+		    magnifier->priv->root =
 			gdk_screen_get_root_window (
-				gdk_display_get_screen (
-					magnifier->source_display,
-					magnifier->source_screen_num));
-		magnifier_warp_cursor_to_screen (magnifier);
-		magnifier_get_display_rect_bounds (magnifier, &magnifier->source_bounds, FALSE);
-		magnifier_check_set_struts (magnifier);
+			    gdk_display_get_screen (
+				magnifier->source_display,
+				magnifier->source_screen_num));
+	             /* attach listeners for DAMAGE, "dirty region", XFIXES cursor changes */
+	            magnifier_set_extension_listeners (magnifier, magnifier_get_root (magnifier));
+		    magnifier_get_display_rect_bounds (magnifier, &magnifier->source_bounds, FALSE);
+		    magnifier_zoom_regions_restore (magnifier, zoom_region_params);
+		    magnifier_warp_cursor_to_screen (magnifier);
+		    magnifier_check_set_struts (magnifier);
+		}
+		DBG(fprintf (stderr, "Set source display: \t%s\n", full_display_string));
 		break;
 	case MAGNIFIER_TARGET_DISPLAY_PROP:
 		full_display_string = BONOBO_ARG_GET_STRING (arg);
-		magnifier->target_screen_num =
+		if (can_open_display (full_display_string))
+		{
+		    magnifier->target_screen_num =
 			magnifier_parse_display_name (magnifier,
 						      full_display_string,
 						      NULL);
-		magnifier->target_display =
+		    magnifier->target_display =
 			gdk_display_open (full_display_string);
-		if (GTK_IS_WINDOW (magnifier->priv->w)) 
+		    magnifier->target_display_name = g_strdup (full_display_string);
+		    if (GTK_IS_WINDOW (magnifier->priv->w)) 
+		    {
+#ifdef REPARENT_GTK_WINDOW_WORKS
 			gtk_window_set_screen (GTK_WINDOW (magnifier->priv->w), 
 					       gdk_display_get_screen (
-						       magnifier->target_display,
-						       magnifier->target_screen_num));
-		magnifier_get_display_rect_bounds (magnifier, &magnifier->target_bounds, TRUE);
-		magnifier_get_display_rect_bounds (magnifier, &magnifier->source_bounds, FALSE);
-		magnifier_reparent_zoom_regions (magnifier);
-		magnifier_init_cursor_set (magnifier, magnifier->cursor_set); /* needed to reset pixmaps */
-		magnifier_check_set_struts (magnifier);
+						   magnifier->target_display,
+						   magnifier->target_screen_num));
+#else
+			GSList *zoom_region_params = NULL;
+			/* disconnect from the old window's destroy signal */
+			g_object_disconnect (magnifier->priv->w,
+				  "any_signal::realize", magnifier_realize, NULL,
+				  "any_signal::size_allocate", magnifier_size_allocate, NULL,
+				  "any_signal::destroy", magnifier_exit, NULL,
+			          NULL);
+			/* save the old zoom region state */
+		        zoom_region_params = magnifier_zoom_regions_save (magnifier);
+			/* destroy the old window */
+			gtk_widget_destroy (magnifier->priv->w);
+			/* and re-initialize... */
+			magnifier_init_window (magnifier, gdk_display_get_screen (
+						   magnifier->target_display,
+						   magnifier->target_screen_num));
+			/* restore the zoom regions in their new host magnifier window */
+			magnifier_zoom_regions_restore (magnifier, zoom_region_params);
+#endif
+		    }
+		    magnifier_get_display_rect_bounds (magnifier, &magnifier->source_bounds, FALSE);
+		    magnifier_init_cursor_set (magnifier, magnifier->cursor_set); /* needed to reset pixmaps */
+		    gtk_window_move (GTK_WINDOW (magnifier->priv->w),
+				     magnifier->target_bounds.x1,
+				     magnifier->target_bounds.y1);
+		    
+		    if ((magnifier->target_bounds.x2 - magnifier->target_bounds.x1 > 0) &&
+			(magnifier->target_bounds.y2 - magnifier->target_bounds.y1) > 0)
+		    {
+			gtk_window_resize (GTK_WINDOW (magnifier->priv->w),
+				       magnifier->target_bounds.x2 - magnifier->target_bounds.x1,
+				       magnifier->target_bounds.y2 - magnifier->target_bounds.y1);
+		    DBG(fprintf (stderr, "Set target size: \t%d,%d to %d,%d\n", 
+			     magnifier->target_bounds.x1, magnifier->target_bounds.y1, magnifier->target_bounds.x2, magnifier->target_bounds.y2));
+		    }
+		    /* N. B. we don't reset the target bounds to the limits of the new display, because */
+		    /* doing so would override the client-specified magnifier size */
+		    /* magnifier_get_display_rect_bounds (magnifier, &magnifier->target_bounds, TRUE); */
+		    magnifier_check_set_struts (magnifier);
+		}
+		DBG(fprintf (stderr, "Set target display: \t%s (screen %d)\n", 
+			      full_display_string, magnifier->target_screen_num));
 		break;
 	case MAGNIFIER_SOURCE_SIZE_PROP:
 	        magnifier->source_bounds = BONOBO_ARG_GET_GENERAL (arg,
 								   TC_GNOME_Magnifier_RectBounds,
 								   GNOME_Magnifier_RectBounds,
 								   NULL);
+		DBG (fprintf (stderr, "Set source size: \t%d,%d to %d,%d\n", 
+			      magnifier->source_bounds.x1, magnifier->source_bounds.y1, magnifier->source_bounds.x2, magnifier->source_bounds.y2));
 		break;
 	case MAGNIFIER_TARGET_SIZE_PROP:
 	        magnifier->target_bounds = BONOBO_ARG_GET_GENERAL (arg,
@@ -1105,17 +1319,22 @@ magnifier_set_property (BonoboPropertyBag *bag,
 				   magnifier->target_bounds.x2 - magnifier->target_bounds.x1,
 				   magnifier->target_bounds.y2 - magnifier->target_bounds.y1);
 		magnifier_check_set_struts (magnifier);
+		DBG(fprintf (stderr, "Set target size: \t%d,%d to %d,%d\n", 
+			      magnifier->target_bounds.x1, magnifier->target_bounds.y1, magnifier->target_bounds.x2, magnifier->target_bounds.y2));
 		break;
 	case MAGNIFIER_CURSOR_SET_PROP:
 		magnifier_init_cursor_set (magnifier, g_strdup (BONOBO_ARG_GET_STRING (arg)));
+		DBG (fprintf (stderr, "Setting cursor set: \t%s\n", BONOBO_ARG_GET_STRING (arg)));
 		break;
 	case MAGNIFIER_CURSOR_SIZE_PROP:
 		magnifier->cursor_size_x = BONOBO_ARG_GET_INT (arg);
 		magnifier->cursor_size_y = BONOBO_ARG_GET_INT (arg);
 		magnifier_transform_cursor (magnifier);
+		DBG (fprintf (stderr, "Setting cursor size: \t%d\n", magnifier->cursor_size_x));
 		break;
 	case MAGNIFIER_CURSOR_ZOOM_PROP:
 		magnifier->cursor_scale_factor = BONOBO_ARG_GET_FLOAT (arg);
+		DBG (fprintf (stderr, "Setting cursor scale factor: \t%f\n", (float) magnifier->cursor_scale_factor));
 		magnifier_transform_cursor (magnifier);
 		break;
 	case MAGNIFIER_CURSOR_COLOR_PROP:
@@ -1124,6 +1343,7 @@ magnifier_set_property (BonoboPropertyBag *bag,
 								  CORBA_unsigned_long, 
 								  NULL);
 		magnifier_transform_cursor (magnifier);
+		DBG (fprintf (stderr, "Setting cursor color: \t%u\n", (unsigned) magnifier->cursor_color));
 		break;
 	case MAGNIFIER_CURSOR_HOTSPOT_PROP:
 		magnifier->cursor_hotspot = BONOBO_ARG_GET_GENERAL (arg,
@@ -1139,13 +1359,16 @@ magnifier_set_property (BonoboPropertyBag *bag,
 		break;
 	case MAGNIFIER_CROSSWIRE_SIZE_PROP:
 		magnifier->crosswire_size = BONOBO_ARG_GET_INT (arg);
+		DBG (fprintf (stderr, "Setting crosswire size: \t%d\n", magnifier->crosswire_size));
 		/* TODO: notify zoomers */
 		break;
 	case MAGNIFIER_CROSSWIRE_CLIP_PROP:
 		magnifier->crosswire_clip = BONOBO_ARG_GET_BOOLEAN (arg);
+		DBG (fprintf (stderr, "Setting crosswire clip: \t%s\n", magnifier->crosswire_clip ? "true" : "false"));
 		break;
 	case MAGNIFIER_CROSSWIRE_COLOR_PROP:
 		magnifier->crosswire_color = BONOBO_ARG_GET_LONG (arg);
+		DBG (fprintf (stderr, "Setting crosswire size: \t%ld\n", (long) magnifier->crosswire_color));
 		break;
 	default:
 		bonobo_exception_set (ev, ex_Bonobo_PropertyBag_NotFound);
@@ -1182,16 +1405,22 @@ impl_magnifier_set_source_display (PortableServer_Servant servant,
 	Magnifier *magnifier = MAGNIFIER (bonobo_object_from_servant (servant));
 	BonoboArg *arg = bonobo_arg_new (BONOBO_ARG_STRING);
 	BONOBO_ARG_SET_STRING (arg, display);
+	
+	DBG (fprintf (stderr, "Set source display: \t%s\n", display));
 
-	magnifier_set_property (magnifier->property_bag,
-				arg,
-				MAGNIFIER_SOURCE_DISPLAY_PROP,
-				ev,
-				magnifier);
+	if (strcmp (display, magnifier->source_display_name)) {
 
-	/* attach listeners for DAMAGE, "dirty region", XFIXES cursor changes */
-	magnifier_set_extension_listeners (magnifier, magnifier_get_root (magnifier));
-
+	    magnifier_set_property (magnifier->property_bag,
+				    arg,
+				    MAGNIFIER_SOURCE_DISPLAY_PROP,
+				    ev,
+				    magnifier);
+	}
+	else
+	{
+	    DBG (fprintf (stderr, "Attempt to set source to same value as previous: %s\n",
+			  display));
+	}
 	bonobo_arg_release (arg);
 }
 
@@ -1203,14 +1432,46 @@ impl_magnifier_set_target_display (PortableServer_Servant servant,
 	Magnifier *magnifier = MAGNIFIER (bonobo_object_from_servant (servant));
 	BonoboArg *arg = bonobo_arg_new (BONOBO_ARG_STRING);
 	BONOBO_ARG_SET_STRING (arg, display);
+	
+	DBG (fprintf (stderr, "Set target display: \t%s\n", display));
 
-	magnifier_set_property (magnifier->property_bag,
-				arg,
-				MAGNIFIER_TARGET_DISPLAY_PROP,
-				ev,
-				magnifier);
-
+	if (strcmp (display, magnifier->target_display_name)) 
+	{
+	    magnifier_set_property (magnifier->property_bag,
+				    arg,
+				    MAGNIFIER_TARGET_DISPLAY_PROP,
+				    ev,
+				    magnifier);
+	}
+	else
+	{
+	    DBG (fprintf (stderr, "Attempt to set target to same value as previous: %s\n",
+			  display));
+	}
 	bonobo_arg_release (arg);
+}
+
+static 
+CORBA_string
+impl_magnifier_get_source_display (PortableServer_Servant servant,
+				   CORBA_Environment *ev)
+{
+        Magnifier *magnifier = MAGNIFIER (bonobo_object_from_servant (servant));
+	DBG (fprintf (stderr, "Get source display: \t%s\n", magnifier->source_display_name));
+
+	return CORBA_string_dup (magnifier->source_display_name ? magnifier->source_display_name : "");
+}
+
+static 
+CORBA_string
+impl_magnifier_get_target_display (PortableServer_Servant servant,
+				   CORBA_Environment *ev)
+{
+        Magnifier *magnifier = MAGNIFIER (bonobo_object_from_servant (servant));
+	DBG (fprintf (stderr, "Get target display: \t%s\n", 
+		      magnifier->target_display_name));
+
+	return CORBA_string_dup (magnifier->target_display_name ? magnifier->target_display_name : "");
 }
 
 static GNOME_Magnifier_ZoomRegion
@@ -1227,10 +1488,13 @@ impl_magnifier_create_zoom_region (PortableServer_Servant servant,
 	Bonobo_PropertyBag properties;
 	GNOME_Magnifier_ZoomRegion retval;
 
+	DBG (fprintf (stderr, "Create zoom region: \tzoom %f,%f, viewport %d,%d to %d,%d\n", (float) zx, (float) zy, viewport->x1, viewport->y1, viewport->x2, viewport->y2));
+
 	/* FIXME:
 	 * shouldn't do this here, since it causes the region to get
 	 * mapped onto the parent, if if it's not explicitly added!
 	 */
+	DBG(g_message ("creating zoom region with parent %p", magnifier));
 	zoom_region->priv->parent = magnifier;
 
 	retval = BONOBO_OBJREF (zoom_region);
@@ -1276,7 +1540,7 @@ impl_magnifier_add_zoom_region (PortableServer_Servant servant,
 {
 	Magnifier *magnifier = MAGNIFIER (bonobo_object_from_servant (servant));
 
-	if (magnifier->zoom_regions == NULL) 
+	if (!magnifier->source_initialized) 
 	{
 		magnifier_set_extension_listeners (magnifier, magnifier_get_root (magnifier));
 	}
@@ -1293,7 +1557,6 @@ impl_magnifier_get_properties (PortableServer_Servant servant,
 			       CORBA_Environment *ev)
 {
 	Magnifier *magnifier = MAGNIFIER (bonobo_object_from_servant (servant));
-
 	return bonobo_object_dup_ref (
 		BONOBO_OBJREF (magnifier->property_bag), ev);
 }
@@ -1320,6 +1583,8 @@ impl_magnifier_get_zoom_regions (PortableServer_Servant servant,
 			CORBA_Object_duplicate (objref, ev);
 	}
 	CORBA_sequence_set_release (list, CORBA_TRUE);
+
+	DBG (fprintf (stderr, "Get zoom regions: \t%d\n", len));
 	
 	return list; 
 }
@@ -1329,8 +1594,8 @@ impl_magnifier_clear_all_zoom_regions (PortableServer_Servant servant,
 				       CORBA_Environment * ev)
 {
 	Magnifier *magnifier = MAGNIFIER (bonobo_object_from_servant (servant));
+	fprintf (stderr, "Clear all zoom regions.\n");
 
-	fprintf (stderr, "Destroying all zoom regions!\n");
 	g_list_foreach (magnifier->zoom_regions,
 			magnifier_unref_zoom_region, magnifier);
 	g_list_free (magnifier->zoom_regions);
@@ -1350,11 +1615,14 @@ magnifier_class_init (MagnifierClass *klass)
 {
         GObjectClass * object_class = (GObjectClass *) klass;
         POA_GNOME_Magnifier_Magnifier__epv *epv = &klass->epv;
+	parent_class = g_type_class_peek (BONOBO_TYPE_OBJECT); /* needed by BONOBO_CALL_PARENT! */
 
 	object_class->dispose = magnifier_gobject_dispose;
 
         epv->_set_SourceDisplay = impl_magnifier_set_source_display;
 	epv->_set_TargetDisplay = impl_magnifier_set_target_display;
+        epv->_get_SourceDisplay = impl_magnifier_get_source_display;
+	epv->_get_TargetDisplay = impl_magnifier_get_target_display;
 	epv->getProperties = impl_magnifier_get_properties;
 	epv->getZoomRegions = impl_magnifier_get_zoom_regions;
 	epv->createZoomRegion = impl_magnifier_create_zoom_region;
@@ -1520,7 +1788,7 @@ magnifier_properties_init (Magnifier *magnifier)
 }
 
 static void
-magnifier_init_window (Magnifier *magnifier)
+magnifier_init_window (Magnifier *magnifier, GdkScreen *screen)
 {
 	GtkWindowType mag_win_type = GTK_WINDOW_TOPLEVEL;
 	if (_is_override_redirect) mag_win_type = GTK_WINDOW_POPUP;
@@ -1539,6 +1807,7 @@ magnifier_init_window (Magnifier *magnifier)
 				  "signal::size_allocate", magnifier_size_allocate, NULL,
 				  "signal::destroy", magnifier_exit, NULL,
 				  NULL);
+	gtk_window_set_screen (GTK_WINDOW (magnifier->priv->w), screen);
 	magnifier->priv->canvas = gtk_fixed_new ();
 	gtk_container_add (GTK_CONTAINER (magnifier->priv->w),
 			   magnifier->priv->canvas);
@@ -1553,6 +1822,8 @@ magnifier_init (Magnifier *magnifier)
 	magnifier->zoom_regions = NULL;
 	magnifier->source_screen_num = 0;
 	magnifier->target_screen_num = 0;
+	magnifier->source_display_name = g_strdup (":0.0");
+	magnifier->target_display_name = g_strdup (":0.0");
 	magnifier->cursor_size_x = 0;
 	magnifier->cursor_size_y = 0;
 	magnifier->cursor_scale_factor = 1.0F;
@@ -1566,8 +1837,13 @@ magnifier_init (Magnifier *magnifier)
 	magnifier->priv->w = NULL;
 	magnifier->priv->use_source_cursor = TRUE;
 	magnifier->priv->cursorlist = NULL;
-	magnifier_init_window (magnifier);
+	magnifier_init_window (magnifier, 
+			       gdk_display_get_screen (magnifier->target_display, 
+						       magnifier->target_screen_num));
 	magnifier_init_cursor_set (magnifier, "default");
+#ifdef DEBUG_CLIENT_CALLS
+	client_debug = (g_getenv ("MAG_CLIENT_DEBUG") != NULL);
+#endif
 }
 
 GdkDrawable *
@@ -1616,8 +1892,6 @@ magnifier_new (gboolean override_redirect)
 		MAGNIFIER_OAFIID, BONOBO_OBJREF (mag));
 	if (ret != Bonobo_ACTIVATION_REG_SUCCESS)
 	    g_error ("Error registering magnifier server.\n");
-	else
-	    g_message ("The magnifier server was successfully registred.\n");
 
 	g_idle_add (magnifier_reset_struts_at_idle, mag);
 

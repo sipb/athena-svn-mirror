@@ -65,6 +65,9 @@ typedef struct {
 	gboolean timing_output;
 	gint timing_pan_rate;
 	gboolean exit_magnifier;
+#ifdef ZOOM_REGION_DEBUG
+        gboolean alive;
+#endif
 } ZoomRegion;
 
 typedef struct {

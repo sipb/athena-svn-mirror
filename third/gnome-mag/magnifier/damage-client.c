@@ -32,7 +32,9 @@
 #include "magnifier.h"
 #include "magnifier-private.h"
 
-Display *damage_client_connection;
+Display *damage_client_connection = NULL;
+guint   damage_client_gsource = 0;
+
 #ifdef HAVE_DAMAGE
 Damage _magnifier_client_damage;
 #endif
@@ -83,9 +85,12 @@ magnifier_damage_handler (GIOChannel *source, GIOCondition condition, gpointer d
       int i, howmany;
       /* TODO: maintain this list on the client instead, to avoid the roundtrip below */
       rectlist = XFixesFetchRegion (damage_client_connection, region, &howmany);
+      if (rectlist == NULL) /* no reply from fetch */
+	  return TRUE;
       for (i=0; i < howmany; ++i) {
 	  magnifier_notify_damage (magnifier, &rectlist[i]);
       }
+      XFree (rectlist);
   }
 
   XFlush (damage_client_connection);
@@ -105,7 +110,9 @@ magnifier_source_has_damage_extension (Magnifier *magnifier)
 	g_assert (magnifier);
 #ifdef HAVE_DAMAGE
 	dpy = GDK_DISPLAY_XDISPLAY (magnifier->source_display);
-	if (!XDamageQueryExtension (dpy, &event_base, &error_base))
+	if (g_getenv ("MAGNIFIER_IGNORE_DAMAGE"))
+	        return FALSE;
+	if (XDamageQueryExtension (dpy, &event_base, &error_base))
 		return TRUE;
 #endif
 	return FALSE;
@@ -120,10 +127,19 @@ magnifier_damage_client_init (Magnifier *magnifier)
     Display *dpy;
     Window rootwin;
 
+    if (damage_client_connection)
+    {
+        /* remove the old watch */
+	if (damage_client_gsource) 
+	  g_source_remove (damage_client_gsource);
+	XCloseDisplay (damage_client_connection);
+    }
+
     if (magnifier)
     {
-	dpy = GDK_DISPLAY_XDISPLAY (magnifier->source_display);
-	damage_client_connection = XOpenDisplay (NULL);
+	/* we need our own connection here to keep from gumming up the works */
+	damage_client_connection = 
+	  XOpenDisplay (magnifier->source_display_name); 
 	rootwin = GDK_WINDOW_XWINDOW (magnifier->priv->root);
     }
     else 
@@ -131,11 +147,18 @@ magnifier_damage_client_init (Magnifier *magnifier)
 	dpy = GDK_DISPLAY ();
 	damage_client_connection = XOpenDisplay (NULL);
 	rootwin = RootWindow (damage_client_connection, DefaultScreen (damage_client_connection));
+	g_message ("warning - using DefaultScreen for DAMAGE connection.");
     }
 
-    if (!XDamageQueryExtension (dpy, &damage_event_base, &damage_error_base))
+    if (!XDamageQueryExtension (damage_client_connection, 
+				&damage_event_base, &damage_error_base))
     {
 	g_warning ("Damage extension not currently active.\n");
+	return FALSE;
+    }
+    else if (g_getenv ("MAGNIFIER_IGNORE_DAMAGE"))
+    {
+	g_warning ("Damage extension being ignored at user request.");
 	return FALSE;
     }
     else
@@ -151,8 +174,9 @@ magnifier_damage_client_init (Magnifier *magnifier)
 #endif
 	fd = ConnectionNumber (damage_client_connection);
 	ioc = g_io_channel_unix_new (fd);
-	g_io_add_watch (ioc, G_IO_IN | G_IO_HUP | G_IO_PRI | G_IO_ERR, magnifier_damage_handler, 
-			magnifier);
+	damage_client_gsource = 
+	  g_io_add_watch (ioc, G_IO_IN | G_IO_HUP | G_IO_PRI | G_IO_ERR, magnifier_damage_handler, 
+			  magnifier);
 	g_io_channel_unref (ioc); 
 	g_message ("added event source to damage connection");
 	g_idle_add (magnifier_damage_reset, NULL);
