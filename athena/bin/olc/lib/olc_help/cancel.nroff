@@ -1,0 +1,13 @@
+.TH CANCEL OLC 
+.UC
+.SH COMMAND 
+cancel \- cancel your question
+.SH USAGE
+.B cancel 
+.br
+.SH DESCRIPTION
+You can withdraw your question by using this command.
+If you wish to resolve your question (mark it done after receiving
+an answer) then use the
+.I done
+command.

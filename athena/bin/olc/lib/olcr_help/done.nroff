@@ -1,0 +1,35 @@
+.TH DONE OLCR
+.UC
+.SH COMMAND 
+done \- resolve a question
+.SH USAGE
+.B done [<username> <instance id>] [\-off] [\-title
+.B  <title>] [\-topic <topic>] [-instance <instance id>]
+.br
+.SH DESCRIPTION
+When no arguments are given to this command, it simply marks your current
+question resolved, indicating that the question has been answered. If
+the user has unread messages, you will be notified and asked if you
+wish to display them.
+.PP
+You will be prompted for a short title (up to 24 characters) 
+before the transaction is shipped off to the logs. This title may also
+be given by using the 
+.I \-title <title>
+option.
+.PP
+If you have consulting privileges, you may specify the
+question connected to a specific instance of yours to resolve by using
+.I\-instance <instance id>.
+.PP
+If you are signed on, OLC will attempt to connect you to
+another question, unless you use the
+.I \-off
+option.
+.PP
+If you have "gresolve" access, you may specify alternate usernames.
+.PP
+The topic may be changed at the time of resolution, by using the 
+.I \-topic <topic>
+option.
+

@@ -1,0 +1,38 @@
+.TH MAIL OLCR 
+.UC
+.SH COMMAND 
+mail \- mail a message
+.SH USAGE
+.B mail [<username> <instance id>] [\-file <filename>]
+.B [\-editor <editor>] [-instance <instance id>] 
+.B [-checkhub]
+.br
+.SH DESCRIPTION
+This command allows consultants to mail messages to the connected
+or specified user (if permitted). An editor is invoked with
+the To: and Subject: lines filled in. These lines may be changed
+to reflect different subjects or include a Cc: line. If the user
+is removed from the To: line, he will not receive the mail.
+.PP
+A copy of the mail is inserted into the log. Bcc lines will also
+appear in the log. No notification is transmitted when mail
+is sent.
+.PP
+The 
+.I -checkhub
+option will check to see if the default recipient is known to the
+local mailhub.  
+.PP
+.SH OPTIONS
+.TP
+.B \-editor <editor>
+To specify an editor in which to edit the message.  If the editor
+argument is missing, the editor used is that specified by your EDITOR
+environment variable, if it is set; otherwise, by default, 
+/usr/athena/emacs will be used.
+.TP
+.B \-file <file name>
+Normally, the file /tmp/OLC<pid> is used as a temporary file
+for editing. This can be overridden with this argument. If this
+argument is used, OLC will not delete the file after the message
+is sent.

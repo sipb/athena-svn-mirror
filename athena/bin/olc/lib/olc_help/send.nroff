@@ -1,0 +1,36 @@
+.TH SEND OLC 
+.UC
+.SH COMMAND 
+send \- send a message
+.SH USAGE
+.B send [\-file <filename>]
+.B [\-editor <editor>] 
+.br
+.SH DESCRIPTION
+When no arguments are given to this command, it simply sends a message
+to your consultant, or, if you are not yet connected to a consultant,
+stores the message in your log. The next consultant to come along
+will then be able to read your message. You can replay
+your entire log using the 
+.I replay
+command.
+.PP
+If you are connected to a consultant when you send a message, 
+he will receive
+notification of the new message via a Zephyr windowgram. If the sending
+of the windowgram is not successful, then OLC may send a message
+directly to the terminal.
+.PP
+.SH OPTIONS
+.TP
+.B \-editor <editor>
+To specify an editor in which to edit the message.  If the editor
+argument is missing, the editor used is that specified by your EDITOR
+environment variable, if it is set; otherwise, by default, 
+/usr/athena/emacs will be used.
+.TP
+.B \-file <file name>
+Normally, the file /tmp/OLC<pid> is used as a temporary file
+for editing. This can be overridden with this argument. If this
+argument is used, OLC will not delete the file after the message
+is sent.

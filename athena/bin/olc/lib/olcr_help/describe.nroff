@@ -1,0 +1,35 @@
+.TH DESCRIBE OLCR
+.UC
+.SH COMMAND 
+describe \- summarize question
+.SH USAGE
+.B describe [username <instance id>] [\-file <filename>] 
+.B [\-note <note>] [\-comments]
+.br
+.SH DESCRIPTION
+This command summarizes relevant information about a specific question.
+In addition to the status information, 
+.I describe
+also displays a note which may be up to 63 characters in length and can be
+used to place arbitrary text flags on a question. These notes may also be
+seen using 
+.I list. 
+Notes may be changed using the
+.I \-note
+option. If the text is passed as an argument, it must be quoted if composed
+of more than one word.
+.PP
+Larger pieces of arbitrary text may also be displayed with the
+.I describe 
+output. This text may be changed using the
+.I \-comment
+option.
+.PP 
+You may specify that the description be added to the question connected to a particular instance by using
+.I -instance <instance id>.
+
+.PP
+.SH OPTIONS
+.TP
+.B \-file <file>
+specify a file in which to dump the comment.

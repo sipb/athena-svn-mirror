@@ -1,0 +1,15 @@
+.TH REPLAY OLC 
+.UC
+.SH COMMAND 
+replay \- read the log of your conversation 
+.SH USAGE
+.B replay [\-file <filename>] 
+.br
+.SH DESCRIPTION
+When no arguments are given to this command, it simply displays your
+current log. 
+.PP
+If you wish to save the log permanently into a file, specify a file name
+after the 
+.I \-file
+argument. 

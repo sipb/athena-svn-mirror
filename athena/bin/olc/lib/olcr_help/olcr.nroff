@@ -1,0 +1,16 @@
+.TH HELP OLCR 
+.UC
+.SH COMMAND
+olcr \- On Line Consulting Reply Program
+.SH USAGE
+.B olcr [<commands>]
+.br
+.SH DESCRIPTION
+.PP
+This is olcr, the on-line consulting response system.  It is part
+of OLC, the Project Athena On-Line Consulting system.  It is used
+by consultants to answer questions from users through olc.  For a
+list  of commands and brief descriptions of their functions, type
+\'?\'.  For more extensive information on  a  command,  type  \'help
+<command>\'. 
+

@@ -1,0 +1,28 @@
+.TH TOPIC OLCR
+.UC
+.SH COMMAND 
+topic \- display, change, or list topics
+.SH USAGE
+.B topic [<username> <instance id>] [\-topic <topic>] 
+.B [\-list] [\-file <file name>] [-instance <instance id>]
+.br
+.SH DESCRIPTION
+When this command is used with no arguments, the topic of the current
+conversation is displayed. You may change the topic of a question
+connected to a particular instance of yours by using the
+.I -instance <instance id>
+option.
+.PP
+Consultants may change the topic of the current conversation, or
+a specified user (if permitted) by using the
+.I \-topic
+argument.
+.SH OPTIONS
+.TP
+.B \-list
+List all OLC topics. 
+.TP
+.B \-file
+Specify a file for output. Only useful in conjunction with the
+.I \-list
+option.

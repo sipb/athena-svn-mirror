@@ -1,0 +1,12 @@
+.TH OFF OLCR
+.UC
+.SH COMMAND 
+off \- sign off
+.SH USAGE
+.B off [\-force]
+.br
+.SH DESCRIPTION
+If you had signed on, this command signs you off. If you wish to forcefully
+disconnect yourself from any users in the process, use the 
+.I force 
+option.

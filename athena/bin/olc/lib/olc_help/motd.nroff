@@ -1,0 +1,15 @@
+.TH MOTD OLC 
+.UC
+.SH COMMAND 
+motd \- read the OLC message of the day
+.SH USAGE
+.B motd  [\-file <filename>] 
+.br
+.SH DESCRIPTION
+When no arguments are given to this command, it simply displays the
+OLC message of the day. 
+.PP
+If you wish to save the message permanently into a file, specify a file name
+after the 
+.I \-file
+argument. 

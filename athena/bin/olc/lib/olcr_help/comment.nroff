@@ -1,0 +1,33 @@
+.TH COMMENT OLCR
+.UC
+.SH COMMAND 
+comment \- comment in a log
+.SH USAGE
+.B comment [<username> <instance id>] [\-file <filename>]
+.B [\-editor <editor>] [-instance <instance id>]
+.br
+.SH DESCRIPTION
+This command allows consultants to enter messages in the log without
+triggering a notification to the user. These messages are visible
+to the user when the 
+.I replay
+command is used.  
+.PP
+If no username is specified, the comment will be put in the log of the
+current conversation. You may also specify the question connected to a
+specific instance of yours to comment in by using  
+.I\-instance <instance id>.
+
+.SH OPTIONS
+.TP
+.B \-editor <editor>
+To specify an editor in which to edit the message.  If the editor
+argument is missing, the editor used is that specified by your EDITOR
+environment variable, if it is set; otherwise, by default, 
+/usr/athena/emacs will be used.
+.TP
+.B \-file <file name>
+Normally, the file /tmp/OLC<pid> is used as a temporary file
+for editing. This can be overridden with this argument. If this
+argument is used, OLC will not delete the file after the message
+is sent.

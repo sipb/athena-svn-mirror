@@ -1,0 +1,14 @@
+.TH WHO OLC 
+.UC
+.SH COMMAND
+who \- print name of connected consultant
+.SH USAGE
+.B who
+.br
+.SH DESCRIPTION
+This command prints the name of the consultant to whom you
+are connected. If you are not connected to a consultant,
+olc will tell you so.
+
+
+
