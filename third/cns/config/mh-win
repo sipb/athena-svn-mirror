@@ -1,0 +1,56 @@
+# Microsoft Windows host configuration file for Cygnus Kerberos
+
+# Directory syntax:
+R=\		# root
+C=.		# current
+S=\		# seperator
+U=..\		# up one level
+
+WHAT=windows
+
+# /* The name of the C compiler for the target */
+CC=cl
+CL=
+
+# /Zi gives debug info in each object file.
+# /Zp packs structures: Required for Windows API (but is not default!!!)
+# /ALw memory model:  Large model for Windows DLL (SS != DS)
+# /GD DLL code generation for Windows 3.0 and up, and defines _WINDOWS
+# /Gs Avoid stack probes (they don't seem to work anyway)
+# /Os optimize for space.  FIXME:  Do not use /Ox; it miscompiles the DES lib!
+# /G2 generate 286 instructions (it complains if you ask for 386!)
+					 	# /Zi /Od
+DBG_LIB=/nologo /Zp /ALw /GD /Gs /Os /G2
+# /Zi gives debug info in each object file.
+# /Zp packs structures: Required for Windows API (but is not default!!!)
+# /AL large memory model
+# /Mq quickwin ascii stdio window, and defines _WINDOWS
+				 		# /Zi /Od
+DBG=/nologo /Zp /AL /Os /Mq
+
+# Need to be able to get to krb_err.h
+LOCALINCLUDE=/I$(SRCTOP)lib$(S)krb
+
+# /* delete one or more files (note: directories and links are not handled) */
+RM=del
+
+# /* rename/more a files (note:doesn't go accross directories) */
+MV=ren
+
+# /* copy a file */
+CP=copy
+
+#
+# Archive handling
+#
+# First, the linker requires that libraries have extension .LIB!
+LIBEXT=lib
+OBJEXT=obj
+EXEEXT=.exe
+
+#
+# no ranlib
+RMLIB=rem
+RANLIB=rem
+ARCHIVE=rem
+ARCHIVEARGS=

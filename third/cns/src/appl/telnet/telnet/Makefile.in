@@ -1,0 +1,78 @@
+# derived from the original Makefile.generic
+#
+# Copyright (c) 1991 The Regents of the University of California.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms are permitted provided
+# that: (1) source distributions retain this entire copyright notice and
+# comment, and (2) distributions including binaries display the following
+# acknowledgement:  ``This product includes software developed by the
+# University of California, Berkeley and its contributors'' in the
+# documentation or other materials provided with the distribution and in
+# all advertising materials mentioning features or use of this software.
+# Neither the name of the University nor the names of its contributors may
+# be used to endorse or promote products derived from this software without
+# specific prior written permission.
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+#
+#	@(#)Makefile.generic	5.5 (Berkeley) 3/1/91
+#
+
+#### include configury here
+
+BUILDTOP=$(C)$(S)$(U)$(U)$(U)
+
+AUTH_DEF=-DAUTHENTICATION -DKRB4 -DENCRYPTION
+OTHERDEFS=-DLINEMODE -DKLUDGELINEMODE -DDIAGNOSTICS -DENV_HACK -DOLD_ENVIRON
+LOCALINCLUDES=-I.. -I$(srcdir)/..
+DEFINES = $(AUTH_DEF) $(OTHERDEFS) $(LOCALINCLUDES)
+ARPA_TELNET= $(srcdir)/../arpa/telnet.h
+#COMERRLIB=$(BUILDTOP)/util/et/libcom_err.a
+#KLIB = $(TOPLIBD)/libkrb5.a $(TOPLIBD)/libcrypto.a $(ISODELIB) $(COMERRLIB)
+KLIB = $(KRB_LIB) $(DES_LIB) $(COM_ERR)
+#DEPKLIB = $(TOPLIBD)/libkrb5.a $(TOPLIBD)/libcrypto.a $(COMERRLIB)
+DEPKLIB = $(KRB_LIBDEP) $(DES_LIBDEP) $(COMM_ERR_DEP)
+
+SRCS=	commands.c main.c network.c ring.c \
+	sys_bsd.c telnet.c terminal.c \
+	utilities.c $(GETOPT_SRC)
+ALLHC=	$(SRCS) \
+	defines.h externs.h fdset.h general.h \
+	ring.h types.h
+
+OBJS=	authenc.o commands.o main.o network.o ring.o sys_bsd.o \
+	telnet.o terminal.o utilities.o $(GETOPT_OBJ)
+
+all: telnet
+
+telnet:	$(OBJS) $(DEPKLIB) ../libtelnet/libtelnet.a
+	$(CC) -o $@ $(CFLAGS) $(OBJS) ../libtelnet/libtelnet.a $(KLIB) $(TERMLIB) $(LIBS)
+
+clean:
+	$(RM) telnet *.o
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+depend:
+
+install:
+	$(INSTALLPROG) telnet $(DESTDIR)$(PROGDIR)/telnet
+	$(INSTALLFILE) $(srcdir)/telnet.1 ${DESTDIR}$(MANDIR)/man1/telnet.1
+	$(INSTALLFILE) $(srcdir)/tmac.doc ${DESTDIR}$(MANDIR)/man1/tmac.doc
+
+authenc.o: authenc.c defines.h externs.h general.h ring.h types.h $(ARPA_TELNET)
+commands.o: commands.c defines.h externs.h general.h ring.h types.h $(ARPA_TELNET)
+main.o: main.c defines.h externs.h ring.h
+network.o: network.c defines.h externs.h fdset.h ring.h $(ARPA_TELNET)
+ring.o: ring.c general.h ring.h
+sys_bsd.o: sys_bsd.c defines.h externs.h fdset.h ring.h types.h $(ARPA_TELNET)
+telnet.o: telnet.c defines.h externs.h general.h ring.h types.h $(ARPA_TELNET)
+terminal.o: terminal.c externs.h ring.h types.h $(ARPA_TELNET)
+tn3270.o: tn3270.c defines.h externs.h fdset.h general.h ring.h $(ARPA_TELNET)
+utilities.o: utilities.c defines.h externs.h fdset.h general.h ring.h $(ARPA_TELNET)
+
+# NOPOSTFIX

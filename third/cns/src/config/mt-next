@@ -1,0 +1,12 @@
+# NeXT machines
+
+# Host support files
+DES_TIME_SRCS=unix_time.c
+DES_TIME_OBJS=unix_time.o
+LIB_KRB_HOSTSRCS=unix_glue.c
+LIB_KRB_HOSTOBJS=unix_glue.o
+
+RPROGS=-DRPROGS_IN_USR_UCB
+TARGET_CDEFS= -DBSD42 -DATHENA -DHAVE_VSPRINTF
+RCP=-DUCB_RCP=\"/usr/ucb/rcp\"
+

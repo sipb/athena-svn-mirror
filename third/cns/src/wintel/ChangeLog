@@ -1,0 +1,5 @@
+Thu Jun 15 15:24:27 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* wintel/screen.c: don't use // comments, even in windows specific
+	code, as it confuses unifdef.
+

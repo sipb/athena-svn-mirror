@@ -1,0 +1,59 @@
+
+Changes from original distribution:
+
+   1. Kerberos authentication  - 
+		
+	Compile -DKERBEROS.                
+
+	Due to historical reasons the ticket must be the first 
+	thing sent in the protocol. Clients must do a krb_send_auth() 
+	just before sending a username. Any hokey password may be sent.
+
+	This popper listens on "kpop", port 1109. This enables us
+	to run both versions of popper on the same server.
+
+   2. Using kerberos as a password server - 
+
+	Compile -DKERBEROS_PASSWD_HACK
+
+	The popper may be compiled to accept a clear text password
+	but use the password to get a kerberos ticket. This would be 
+	done in cases where you cannot alter the client base but do not
+	wish to administor a separate passwd file. 
+
+   3. Supressing Status: lines in message headers:
+
+	Compile -DNOSTATUS
+
+	Our staff was never used to seeing this and there was a big
+	ruckus when they appeared.. so I turned them off.
+
+   4. MH compatibility (why you ask?)
+
+	We have been and still are using mh's spop program to plop
+	mail into the maildrop. For this reason popper was modified
+	to parse their format as well. I hope I didn't break anything.
+
+   5. Other tweaks and fobs
+
+	Many of popper's error messages were improved since the client
+	programs happily print whatever popper tells them to. I have tuned
+	the syslogging a bit to get a better handle on what is going on.
+	The syslog messages are sent to local0, with the following levels:
+
+		debug   - debugging information
+		info    - logs connections
+		notice  - errors (ie: locked maildrop, broken pipe)
+		warning - authentication/authorization errors
+		error   - bigger errors (ie: no resources)
+
+	
+I'd be happy to hear about any bugs I have introduced. There is no
+guarenteed level of support, but I'll try to answer questions and keep
+the software up to date.
+
+Tom Coppeto
+MIT Network Services
+tom@mit.edu
+
+5/1/91

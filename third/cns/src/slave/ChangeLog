@@ -1,0 +1,137 @@
+Tue Jun  4 23:25:21 1996  Marc Horowitz  <marc@mit.edu>
+
+	* kpropd.c: conditionalize sys_errlist declaration on
+ 	HAVE_SYS_ERRLIST_DECL
+
+Fri Jan 12 05:39:53 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* kpropd.c (accept_one_kprop): cmd doesn't need a trailing
+	newline; system() ignores it, and it messes up the diagnostic
+	message that follows.
+
+Wed Jul 26 19:39:55 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* kprop.c (prop_to_slaves): Cast sockaddr_in pointer to sockaddr
+	pointer when calling connect or getsockname.
+	* kpropd.c (main, accept_one_kprop): Likewise, for getpeername,
+	bind, accept, and getsockname.
+
+Fri Jun  2 19:13:05 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (install): unify install rules to avoid ::.
+
+Tue Jan  3 15:13:19 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* in-kpropd.sh: add #!/bin/sh to the top, because otherwise SunOS
+	4 can't exec it from inetd.
+
+Tue Jan  3 01:19:29 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (install): Just install the scripts and chmod them
+	in place, like tests/ does, rather than building them locally.
+
+Mon Nov 21 12:47:39 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kpropd.c (accept_one_kprop): Use from_sock instead of from in
+	HP/UX specific code.
+
+Fri Nov 18 17:19:19 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kpropd.c (usage): Make umsg a pointer, not an array.  Classic C
+	can not initialize an automatic array, and array initialization is
+	slower anyhow.
+
+Thu Nov 17 13:34:32 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* kpropd.c (usage): use klog, but only use stderr if we're not
+	using inetd.
+	(SlowDeath): if using inetd, just exit. Include pid in log
+	message, and make it clearer (no more AAAAAHHHHH).
+
+Mon Nov 14 13:22:27 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* kpropd.c (accept_one_kprop): New function. Factor out a single
+	propagation, to simplify hooking into inetd.
+	(main): Add new arguments -c, -C, -i.
+	* in-kpropd.sh: New file. Most inetd's can't handle long argument
+	list or quoting, so put this script in instead.
+	* Makefile.in: install in.kpropd.
+
+Wed Nov  2 19:21:44 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kprop.c (prop_to_slaves): Change buf and obuf to be unsigned
+	char.
+
+Tue Nov  1 16:54:47 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kprop.c: Include <stdlib.h> and <sys/fcntl.h> before <krb.h>.
+	(main): Don't declare strcat or strcpy.
+	(prop_to_slaves, get_slaves): Don't declare strcpy.
+	* kpropd.c (main): Don't declare strcpy or krb_get_phost.
+
+Fri Oct 28 15:25:13 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kpropd.c: Include <arpa/inet.h> for inet_ntoa declaration.
+	Include <string.h> for strchr declaration.
+
+	* kprop.c (get_slaves): Cast malloc return value.
+
+Wed Aug 31 18:39:40 1994  Mark Eichin  (eichin@tweedledumber.cygnus.com)
+
+	* kpropd.c (main): support KPROPD_RECV_REMOTE_FAILURE,
+	KPROPD_RECV_LOCAL_FAILURE, and KPROPD_SUCCESS returns from
+	recv_auth and recv_clear, and check for them and report them.
+	Also change all forms of SlowDeath in the main loop (which are
+	likely to have been triggered by network-related failures) to
+	close and continue.
+
+Wed Jul 20 21:32:17 1994  Mark Eichin  (eichin@tweedledumber.cygnus.com)
+
+	* kpropd.c (usage): mention "-d database", "-u port".
+	(main): add -u arg, use it before checking getservbyname("krb_prop").
+	Drop colon if found in admhst.
+	* kprop.c (main, get_slaves): add preauth support, specification
+	of port number in slavelist file.
+
+Tue Jul  5 11:12:12 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* kpropd.c (main): Cast gethostbyaddr arg to match prototype on
+	OSF/1.
+
+	* kprop.c [POSIX]: Include stdlib.h.
+
+Fri Jul  1 05:15:58 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kprop.c, kpropd.c:  krb_err_txt => krb_get_err_text.
+
+Fri May  6 02:36:56 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kprop.c, kpropd.c:  Lint.  Remove RCS crud.
+
+Fri Dec  3 13:55:57 1993  Mark Eichin  (eichin@cygnus.com)
+
+	* kprop.c (main): open using O_RDWR even though we never write to
+	the file so that LOCK_EX (when it is emulated by fcntl(F_WRLCK) in
+	emul_flock()) works on the database.
+
+Sun Oct 17 13:42:17 1993  Ken Raeburn  (raeburn@cambridge.cygnus.com)
+
+	* kprop.c: Include <string.h>.
+
+Thu Oct 22 04:26:04 1992  Mark Eichin  (eichin@cygnus.com)
+
+	* kprop.c (prop_to_slaves): always use kprop_service_instance, not
+	KRB_MASTER, since hard coding "rcmd.kerberos" for the exchange key
+	is wrong.
+	(get_slaves): initialize not_time_yet, malloc does *not* guarantee
+	zeros.
+	* kprop.h: set KPROP_SRVTAB to match our normal KRB_SRVTAB.
+	(Should fix this to just use the other variable anyway.
+	* kpropd.c (main): declare krb_get_phost.
+	Initialize s_addr of socket to INADDR_ANY instead of stack
+	garbage.
+	Use krb_get_phost on local hostname for instance.
+	Don't authorize rcmd.kerberos, instead use krb_get_admhst to allow
+	any host listed as an admin server to propagate to us.
+
+

@@ -1,0 +1,67 @@
+
+At the moment, the driver can only be built in Think C with a 
+little help from MPW.  If we could get driver data segments working
+in MPW, we could build the whole thing there.
+
+The files are:
+
+-rw-rw----   1 gnu      cygnus      11982 Jul  1 04:52 %Driver-project
+	The resource fork of the Think C project that builds the driver itself.
+-rw-r-----   1 gnu      cygnus      10531 Jun 30 22:58 %Kerberos.rsrc
+	The resources which are added to the driver as a default
+	configuration file for it, as well as the icons and such.
+-rw-rw----   1 gnu      cygnus       6852 Jul  1 04:52 %LoadDriver-project
+	The resource fork of the Think C project that builds the INIT
+	which loads in the driver at boot time.
+drwxr-x---   2 gnu      cygnus        108 Jun 30 22:58 Aliases
+	This directory needs to be created, but is not checked-in.
+	It should contain an alias for folders that are higher up
+	in the tree but which contain include files.  In this
+	folder, the Aliases point to include, lib/des, and lib/krb.
+-rw-r-----   1 gnu      cygnus      12455 Jun 30 22:58 Driver.c
+	Source for the driver itself.
+-rw-r-----   1 gnu      cygnus       1290 Jun 30 22:58 Driver.h
+	Header file for the driver.
+-rw-r-----   1 gnu      cygnus        622 Jun 30 22:58 Driver.r
+	Resource declarations for the driver.
+-rw-r-----   1 gnu      cygnus      24597 Jun 30 22:58 Kerberos.rsrc.derez
+	A de-rezzed and then edited copy of %Kerberos.rsrc.
+	Running this file through MPW "rez" should produce %Kerberos.rsrc.
+-rw-r-----   1 gnu      cygnus       1253 Jun 30 22:59 MakeFile
+	MPW Makefile for building parts of the Think C Kerberos driver,
+	and contains partial attempts to build an MPW driver.
+-rw-rw----   1 gnu      cygnus          0 Jul  1 05:07 README
+	This file.
+-rw-r-----   1 gnu      cygnus      10217 Jun 30 22:59 ShowINIT.a
+	Assembler code for showing the Kerberos icon at boot time.
+-rw-r-----   1 gnu      cygnus         55 Jun 30 22:59 ShowINIT.a.v
+	A special Think linker file to tell the linker which symbols
+	from assembler-generated object files (which are upper case)
+	should be mapped to mixed case so they'll link with C code.
+-rw-r-----   1 gnu      cygnus        878 Jun 30 22:58 driverInstall.a
+	Assembler code for the driver installation INIT.
+-rw-r-----   1 gnu      cygnus      21782 Jun 30 22:58 driverInstall.c
+	Source for the driver installation INIT.
+-rw-r-----   1 gnu      cygnus       1810 Jun 30 22:58 driverInstall.h
+	Header file for the driver installation INIT.
+-rw-r-----   1 gnu      cygnus       1191 Jun 30 22:58 kerberos.r
+	Resource declarations for MPW "rez" which pulls together the 
+	Driver (DriverAll.think), INIT (LoadDriverAll.think), and
+	kerberos.rsrc to produce the final package which goes into
+	the Extensions folder (DriverShellAll.think).
+
+The Think C driver is built by the following process:
+
+	Go to the lib/des directory.
+		Run Think C on DesLib-project, "Bring up to date".
+	Go to the lib/krb directory
+		Run Think C on KrbLib-project, "Bring up to date".
+	Go to the driver directory
+		Run MPW in this directory.  "make assembly" to build
+			assembler language files into object files.
+		Run Think C on LoadDriver-project, "Build Code Resource"
+		Run Think C on Driver-project, "Build Driver"
+		Run MPW in this directory, "make DriverShellAll.think"
+			to put all the pieces together with rez and SetFile.
+		Copy DriverShellAll.think to the Extensions folder
+			of your startup disk.  Reboot.

@@ -1,0 +1,78 @@
+#!/usr/bin/make -f
+# debian.rules file for Cygnus Network Security Version 4
+# based on:
+## Sample debian.rules file - for GNU Hello (1.3).
+## Copyright 1994,1995 by Ian Jackson.
+## I hereby give you perpetual unlimited permission to copy,
+## modify and relicense this file, provided that you do not remove
+## my name from the file itself.  (I assert my moral right of
+## paternity under the Copyright, Designs and Patents Act 1988.)
+# changes:
+#   handle info specially 
+#   fake source construction
+#   need to fake diff as well?
+
+package=cns4
+version=96q1
+debian=1
+
+# The next section may have to be extensively modified
+
+build:
+	$(checkdir)
+	./configure
+	$(MAKE) DBG=-O2 LEX=flex
+	touch build
+
+clean:
+	$(checkdir)
+	-rm -f build
+	-$(MAKE) -i distclean
+	-rm -rf debian-tmp *~
+
+binary:		checkroot build
+	-rm -rf debian-tmp
+	mkdir debian-tmp debian-tmp/DEBIAN
+	install -d debian-tmp/usr/doc/copyright
+	sed -e '2s/=/$(version)-$(debian)/' \
+		debian.control > debian-tmp/DEBIAN/control
+	cp debian.postinst debian-tmp/DEBIAN/postinst
+	cp debian.prerm debian-tmp/DEBIAN/prerm
+	chmod +x debian-tmp/DEBIAN/{postinst,prerm}
+	$(MAKE) CFLAGS=-O2 LDFLAGS=-s DESTDIR=`pwd`/debian-tmp install
+	$(MAKE) CFLAGS=-O2 LDFLAGS=-s DESTDIR=`pwd`/debian-tmp info
+	install -d debian-tmp/usr/info
+	cp doc/*.info* debian-tmp/usr/info/
+	gzip -9v debian-tmp/usr/info/*
+	cp debian.README debian-tmp/usr/doc/copyright/$(package)
+#	chown -R root.root debian-tmp
+	chmod -R g-ws debian-tmp
+	strip debian-tmp/usr/kerberos/bin/*
+	-strip debian-tmp/usr/kerberos/etc/*
+	dpkg --build debian-tmp
+	mv debian-tmp.deb ../$(package)-$(version)-$(debian).deb
+
+define checkdir
+	test -f Makefile.in
+endef
+
+# Below here is fairly generic really
+
+source:		clean
+	chmod +x debian.rules
+	cd .. && \
+	ln -s kerberos $(package)-$(version) && \
+	tar chf $(package)-$(version)-$(debian).tar $(package)-$(version) && \
+	gzip -9vf $(package)-$(version)-$(debian).tar
+ 
+diff:		clean
+	cd .. && \
+	(diff -ruN $(package)-$(version).orig $(package)-$(version) \
+	 >$(package)-$(version)-$(debian).diff; [ $$? = 1 ]) && \
+	gzip -9vf $(package)-$(version)-$(debian).diff
+
+checkroot:
+	$(checkdir)
+	-test root = "`whoami`"
+
+.PHONY: binary source diff clean checkroot

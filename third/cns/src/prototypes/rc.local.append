@@ -1,0 +1,10 @@
+#
+# Kerberos Server
+#
+(/usr/kerberos/etc/kerberos   ) > /dev/console 2>&1&
+# and admin server.
+(/usr/kerberos/etc/kadmind -n ) > /dev/console 2>&1&
+
+## # Kerberos SLAVE server
+## (/usr/kerberos/etc/kerberos -s  ) > /dev/null < /dev/null 2>&1 &
+## # kpropd can die, so we run it from init.

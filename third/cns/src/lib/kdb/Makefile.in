@@ -1,0 +1,39 @@
+#### include configury here
+BUILDTOP=$(C)$(S)$(U)$(U)
+SRCS	= \
+	krb_dbm.c \
+	krb_lib.c \
+	krb_cache.c \
+	print_princ.c \
+	krb_kdb_utils.c
+
+OBJS	= \
+	krb_dbm.o \
+	krb_lib.o \
+	krb_cache.o \
+	print_princ.o \
+	krb_kdb_utils.o
+
+CODE= ${SRCS} Makefile.in
+
+all:: libkdb.$(LIBEXT)
+
+libkdb.$(LIBEXT): $(OBJS)
+	$(RM) $@
+	$(ARCHIVE) $@ $(OBJS)
+	$(RANLIB) $@
+
+clean::
+	$(RM) libkdb.$(LIBEXT)
+	$(RM) $(OBJS)
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+install::
+	$(INSTALLLIB) libkdb.$(LIBEXT) $(DESTDIR)$(LIBDIR)/libkdb.$(LIBEXT)
+	$(CHMOD) 644 $(DESTDIR)$(LIBDIR)/libkdb.$(LIBEXT)
+	$(RANLIB)    $(DESTDIR)$(LIBDIR)/libkdb.$(LIBEXT)
+	$(CHMOD) 444 $(DESTDIR)$(LIBDIR)/libkdb.$(LIBEXT)
+## 

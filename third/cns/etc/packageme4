@@ -1,0 +1,6 @@
+#!/bin/sh
+# package "this" host
+host=`uname -n`
+triple=`kerberos/config.guess`
+echo "packagecns4 $host-$triple"
+sh kerberos/etc/packagecns4 $host-$triple

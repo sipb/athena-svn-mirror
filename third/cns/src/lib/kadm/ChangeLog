@@ -1,0 +1,157 @@
+Thu Nov  2 16:07:43 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kadm_supp.c (kadm_prin_to_vals): handle attributes
+	correctly. (Since none are defined, this wasn't noticed.)
+
+Fri Jun  2 17:27:42 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (install-unix): unify to avoid ::
+
+Wed Feb 1 12:00:00 1995  John Rivlin  <jrivlin@cygnus.com>
+
+	* Makefile.in: Create install-windows target
+
+Wed Jan 25 23:55:54 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kadm_cli_wrap.c (kadm_change_srvtab): Declare malloc.
+
+Tue Jan 24 01:09:04 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* kadm_cli_wrap.c (kadm_change_srvtab): support for get_srvtab
+	from MIT V4p10.
+
+Mon Jan 16 14:35:56 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kadm_cli_wrap.c (default_client_port): New global variable,
+	defaulting to 1.
+	(kadm_init_link): Set default_client_port to 0 if the port is
+	specified by krb_get_admhst.
+	* kadm_net.c: Include <krbports.h>.
+	(default_client_port): Declare.
+	(kadm_cli_conn): If the connect fails, and default_client_port is
+	non-zero, and the port number is not 751, then try using port 751.
+
+Wed Dec 14 16:13:47 1994  Ian Lance Taylor  <ian@cygnus.com>
+
+	* kadm_stream.c (vals_to_stream): Cast exp_date to unsigned
+	kRB_INT32 before passing it to vts_long.
+	(vts_long): Change argument type from u_long to unsigned
+	KRB_INT32.
+	(stream_to_vals): Catch exp_date value in variable of type
+	unsigned KRB_INT32, rather than storing directly into exp_date.
+	(stv_short): Don't cast pointers to integers.
+	(stv_long): Change argument type from u_long * to unsigned
+	KRB_INT32 *.  Don't cast pointers to integers.
+	* kadm_cli_wrap.c (kadm_cli_send): Cast vts_long argument to
+	unsigned KRB_INT32 rather than u_long.
+
+Thu Nov  3 16:42:11 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kadm_supp.c: Include <string.h>.
+	(prin_vals): Cast key_low and key_high to unsigned long, and use
+	%lu to print them.
+
+Mon Oct 31 19:40:32 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in (CODE): Remove Imakefile.
+
+Tue Aug 9 12:00:00 1994 John Rivlin (jrivlin@fusion.com)
+	
+	* kadm_cli.c (kadm_change_pw2): Set retstring to 0 so
+	that it is not uninitialized on error conditions.
+	
+	* kadm_cli.c: Added definitions for malloc and realloc so 
+	they could be removed from kadm.h.
+
+	* kadm_net.c: Added definitions for malloc so they could
+	be removed from kadm.h.
+
+	* kadm_str.c: Added definitions for malloc and realloc 
+	so they could be removed from kadm.h.
+
+	* ren.msg: Added file to facilitate name mapping under
+	Windows to 8.3.
+
+	* kadm_etxt.c (kadm_get_err_text): Added file to 
+	return the text of error messages.  This avoids the need
+	to deal with the global error handling system under Windows.
+
+	* kadm_cli.c (kdam_init_link): Use new GLOBAL_ERROR_HANDLING
+	flag to suppress calls to init_xxx_err_tbl routines.  Error
+	handling on Windows will be done through a static table.
+
+	* kadm_cli.c (kadm_init_link, kadm_change_pw): Added 
+	to external inteface for kerberos libarary so that 
+	change password could be written in UI program.
+
+	* kadm_cli.c (clear_secrets): Added void to function
+	definition to keep PC compiler happy.
+
+	* kadm_net.c (kadm_cli_conn, kadm_cli_disconn, kadm_cli_out):
+	Added SIGNAL macro to facilitate no-op of signal call on 
+	Windows.  Also removed errno definition	under Windows.  Changed 
+	close to closesocket and errno to SOCKET_ERRNO.
+
+	* Makefile.In: Updated to run under Windows.  Added definitions
+	for ARCHIVEARGS, LIBNAME, SERVER_KADM_OBJS, DBG and pc include 
+	files. Changed .o to $(OBJEXT).  Changed "{" to "(" and "}" to 
+	")".  Changed libkadm.a target to PC format.  Updated clean 
+	target for PC.
+
+Thu Jul 21 17:45:42 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* kadm_cli_wrap.c (kadm_init_link): handle alternate port in
+	krb.conf file (after colon after hostname.) Add one, so that the
+	kadmind runs on the next higher port (though they *could* share
+	the same port, some day we might not want it to.)
+
+Wed Jun 22 15:24:50 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* kadm_supp.c (prin_vals): Convert time to time_t before passing
+	to localtime.
+
+	* kadm_cli_wrap.c (kadm_change_pw2, kadm_check_pw, kadm_cli_send):
+	Changed long to KRB_INT32 where needed.
+
+	* kadm_cli_wrap.c, kadm_stream.c: Include string.h.
+
+Tue Jun 21 00:16:55 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kadm_net.c:  Avoid <sys/socket.h>, which isn't protected
+	against dup inclusion on DECstation.
+
+Sat May 21 04:52:59 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in:  Clea up kadm_err.h slightly.
+
+Fri May 20 01:28:49 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in:  Don't keep .bak file.  Use LIBEXT.
+	(unixdos):  New target, for what needs to run on Unix before
+	building on DOS.
+
+Fri May 13 02:00:30 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in:  Build kadm_err.h without `make depend'.
+	* kadm_cli_wrap.c:  Pull <netdb.h> in favor of <krb.h>.
+
+Sun May  8 19:07:43 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kadm_net.c:  New file, splits out network-dependent code
+	from kadm_cli_wrap.c.
+
+	* kadm_cli_wrap.c (kadm_cli_conn, kadm_cli_disconn, kadm_cli_out):
+	Move to kadm_net.c.  Pull include files we don't need.  Lint.
+	Pull RCS.
+
+	* Makefile.in:  Add kadm_net.c.
+
+Sat May  7 13:42:17 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kadm_cli_wrap.c:  Lint.
+
+Wed Feb 16 21:00:09 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kadm_stream.c (stv_string):  If the input stream is exhausted,
+	don't reference garbage, simply return -1 (no string found).
+

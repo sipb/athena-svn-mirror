@@ -1,0 +1,1067 @@
+\input texinfo
+@input texiplus
+@input smpklug.texi
+@smallbook
+@cropmarks
+@setfilename kerb-devo-man
+
+@setchapternewpage odd
+@settitle Cygnus Network Security
+@titlepage
+@finalout
+@title Cygnus Network Security
+@subtitle Developers Notes for CNS Version 1.0
+@end titlepage
+@page
+
+
+@ifinfo
+@node Top, Defines, (dir), (dir)
+@top
+
+@menu
+* Defines::		where they need to be
+* Oddities::		little frobs
+* Byte order::		Use of HOST_BYTE_ORDER define
+* ttyent::		use of <ttyent.h>
+* POSIX::
+* rlogind::
+* ksrvutil::
+* gettimeofday::
+* svr4::
+* gnu-tools::
+* Unix::		how to configure and build for Unix
+* Microsoft Windows:: 	how to configure and build for MS-Windows
+* Macintosh - MPW:: 	how to configure and build for Macintosh (MPW)
+* Macintosh - Think C::	how to configure and build for Macintosh (Think)
+* Extensions::          Cygnus Extensions to Kerberos V4
+* Kadmin internals::	Internal data structures of the kadmin protocol
+* Multiple Realms::	Serving multiple realms on one machine, clumsily
+@end menu
+@end ifinfo
+
+@node Defines,
+@chapter Defines
+
+Some defines need to go into the makefile because they are either used
+to decide what header files get included before any common one is, or
+because they're relevant in packages like ss or et that don't include
+kerberos headers.
+
+In May 1994, many defines have been moved out of the @file{Makefile} and
+@file{config/} directory
+into @file{include/c-*.h} files after
+examining
+and/or changing the code that uses them.  More could be moved.  I was
+trying to make the @samp{cc} command lines short enough that Microloss
+Windows, NMAKE, and DOS could run them.
+
+header stuff that at one pointed needed to be in the makefile (and still
+might):
+@example
+NOTTYENT
+NEED_SYS_FCNTL_H
+POSIX
+KERBEROS
+NCOMPAT
+MAXPATHLEN (since compile_et.c uses it)
+NEED_SYS_TIME_H
+NEED_TIME_H
+WAIT_USES_INT (list_rqs uses it.)
+@end example
+
+@node Oddities
+@chapter Oddities
+
+@samp{gethostid()} is used by @samp{des_random_key} and
+@samp{des_init_random_number_generator}. Apparently hpux 8 has a
+@samp{gethostid} that takes arguments (but it isn't in any man page.)
+
+
+@node POSIX
+@chapter Use of POSIX define
+
+For @samp{flock}:
+
+The POP server uses @samp{POSIX} only to indicate that we don't have
+flock and need to use @samp{emul_flock} instead.
+
+@samp{krb_dbm} uses it to select @samp{fcntl(F_SETLK)} instead of flock.
+
+@samp{tf_util} uses it to choose to define @samp{emul_flock} (based on
+@samp{fcntl(F_SETLK)}.)
+
+@samp{kprop}, @samp{kpropd} use it to select @samp{emul_flock}.
+
+For terminal control:
+
+@file{login.c} uses it for terminal control; rcp mis-uses it for
+@samp{int} vs. @samp{void}.  @file{rlogind} uses it for terminal and
+setsid; @file{rlogin} uses it for terminal control and misuses it a
+little bit for wait.
+
+@file{rkinit} uses it for explicit password prompting.
+
+@file{lib/des/read_password.c} uses it for terminal control.
+
+For signal types:
+
+@file{kadm.h} (mis?) uses it for typedef sigtype (@file{int} vs. @file{void}).
+@file{admin_server} uses it for sigtype as well.
+
+@file{get_in_tkt} (mis?)uses it for signal types.
+
+@file{makedepend} (mis)uses it to determine signal types.
+
+
+@node Byte order
+@chapter Use of HOST_BYTE_ORDER define
+
+All of these files are in the @file{lib/krb} subdirectory.
+
+@table @file
+@item cr_err_repl.c
+@itemx cr_auth_repl.c
+@itemx cr_death_pkt.c
+@itemx krb_g_pw_in_tkt.c
+@itemx mk_req.c
+ use @samp{HOST_BYTE_ORDER} (as 1 or 0): @code{*t |= HOST_BYTE_ORDER;}
+@item cr_tkt.c
+@code{flags |= HOST_BYTE_ORDER;}
+@item decomp_tkt.c
+@code{if (HOST_BYTE_ORDER != ((*flags >> K_FLAG_ORDER)& 1))}
+@item g_ad_tkt.c
+@itemx krb_g_pw_in_tkt.c
+@itemx kerberos.c
+@code{if (msg_byte_order != HOST_BYTE_ORDER)}
+@item mk_err.c
+@code{*p++ |= HOST_BYTE_ORDER;}
+@item mk_priv.c
+@code{*p++ = AUTH_MSG_PRIVATE | HOST_BYTE_ORDER;}
+@item mk_safe.c
+@code{*p++ = AUTH_MSG_SAFE | HOST_BYTE_ORDER;}
+@item rd_err.c
+@itemx rd_priv.c
+@itemx rd_req.c
+@itemx rd_safe.c
+@code{if ((*p++ & 1) != HOST_BYTE_ORDER)}
+@end table
+
+@node ttyent
+@chapter use of <ttyent.h>
+
+Using @samp{-DNOTTYENT} in a configuration indicates that all ttys are ``secure''
+for root login. This is reasonable; but some systems have a @file{<ttyent.h>}
+and a @samp{getttynam()} that look in something like @file{/etc/ttytab} for flags
+indicating whether the tty is marked ``secure''.
+
+@node rlogind
+@chapter how to hack on rlogind
+
+(We had some diffs and stuff here, but they weren't set up to format
+properly, and were disabled from printing anyhow.)
+
+@node ksrvutil
+@chapter verify that ksrvutil should add krb_err_base explicitly
+
+...
+@table @samp
+@item k_isinst(char*)
+	checks for a valid instance, in @samp{ext_srvtab, kpasswd, kinit}.
+Changed June 94 by gnu@@cygnus.com to allow @samp{.} as valid char in instances.
+@samp{kparse_name} no longer has to quote it, but especially in a real,
+separated-out instance, it is already ok.
+
+@item k_isname
+same thing, never used unless we *know* it's only a name.
+
+@item k_isrealm
+kdb_init, kpasswd, kinit
+
+@item kcmd.c
+kcmd() calls gethostbyname [on arg?], copies the string, then calls
+krb_realmofhost on the copy. But later, it uses bits of hp...
+
+@item rlogin.c
+main() calls krb_realmofhost on host argument, then
+passes host to kcmd.
+(rcp, rsh also use it.)
+
+@item login.c
+do_krb_login() calls gethostbyname, then copies parts and never
+reuses the value. However, it calls gethostbyname on its argument,
+char *host... but that can only come from getopt.
+
+@item kadm_ser_wrap.c
+kadm_ser_init() calls gethostbyname, copies the addr into
+a static, and drops it
+
+@item kadm_cli_wrap.c
+kadm_init_link() calls gethostbyname, copies the values,
+and returns
+
+@item g_phost.c
+krb_get_phost() calls gethostbyname on argument char*alias,
+may call gethostbyaddr on a *copy* of the args, and returns
+a pointer into space returned by gethostby@{name,addr@}...
+
+@item sendauth.c
+krb_sendauth() calls krb_get_phost() on inst,
+which is a char* argument. (It then strcpy's it.)
+
+@item kcmd.c
+kcmd() calls krb_sendauth() on *ahost, which
+is from host_save... so it is safe...
+
+@item send_to_kdc.c
+send_to_kdc() calls gethostbyname on the value from
+krb_get_krbhst(), copies adress returns, calls send_recv, and
+loops around.
+
+
+
+@item realmofhost.c
+krb_realmofhost() calls krb_get_lrealm, and little else
+
+@item g_krbrlm.c
+krb_get_lrealm() calls stdio functions and nothing else
+
+@end table
+
+@node gettimeofday
+@chapter how gettimeofday differs on various platforms
+
+@table @code
+@item solaris
+@example
+     int gettimeofday(struct timeval *tp);
+@end example
+
+A -1 return value indicates that an error occurred and @samp{errno}
+has been set.
+
+@item sunos4.1.3
+
+@example
+     int gettimeofday(tp, tzp)
+     struct timeval *tp;
+     struct timezone *tzp;
+@end example
+
+     returns
+     0    on success;
+     -1   on failure and sets @samp{errno} to indicate the error.
+
+@item SCO
+@example
+    gettimeofday(tp, tzp)
+    struct timeval *tp;
+    struct timezone *tzp;
+@end example
+
+    A return value of zero indicates that the call succeeded.  A return value
+    of -1 indicates that an error occurred, and in this case an error code is
+    stored in the global variable @samp{errno}.
+
+@end table
+
+
+@node svr4
+@chapter things that showed up in the svr4 port
+
+SVR4 csh uses TIOCLGET, which is supplied by the @samp{ttcompat} streams driver (i.e.,
+it is a BSD-compatibility function) and @samp{ttcompat} isn't pushed on pty's by
+default. Under Solaris, it *is* pushed by default. The @samp{ioctl} isn't needed,
+as evidenced by @samp{tcsh} not using it...
+
+csh:
+@example
+ioctl(18, TCGETA, 0x08047C0A)                   = 0
+ioctl(18, TIOCGPGRP, 0x0831EBB4)                = 0
+ioctl(18, TIOCGETD, 0x0831FD64)                 Err#22 EINVAL
+ioctl(17, (('t'<<8)|124), 0x08047BC0)           Err#22 EINVAL
+write(17, " W a r n i n g :   n o  ".., 64)     = 64
+
+/usr/include/sys/filio.h:#define    FIOSETOWN   _IOW('f', 124, int) /* set owner */
+/usr/include/sys/termios.h:#define  TIOCLGET    (tIOC|124)      /* get local modes */
+/usr/include/sys/ttold.h:#define    TIOCLGET    (tIOC|124)      /* get l
+@end example
+
+@node gnu-tools
+@chapter how to build with *only* GNU tools
+
+config/ms-gnu containing:
+
+@example
+BISON=/usr/latest/bin/byacc
+FLEX=/usr/latest/bin/flex
+LEXLIB=/usr/latest/lib/libfl.a
+TARGET_CDEFS:= $(TARGET_CDEFS) -DNO_YYLINENO
+@end example
+
+then @samp{configure --site=gnu} should be a start. Similar work to hack
+dbm as well.
+
+@node Unix
+@chapter Building Cygnus Kerberos for Unix
+
+This info is replicated in @file{README} in the top level of the 
+Kerberos V4 source tree.
+
+@enumerate
+@item
+Unpack the sources; the top level directory will be referred to as
+@samp{$(srcdir)}.
+
+@item
+If you have GNU make, create a build directory somewhere, and refer to it as
+@samp{$(builddir)}; if you don't, @samp{builddir} should be the same as
+@samp{srcdir}.
+
+@item
+Run @samp{cd $(builddir); $(srcdir)/configure}.  The path to @samp{$(srcdir)}
+can be relative.  See below for options that can be given to @samp{configure}.
+
+@item
+@samp{make all}
+
+@item
+@samp{make install DESTDIR=$(buildir)/DESTDIR} (path must be absolute)
+@end enumerate
+
+Now, @file{./DESTDIR} has a @file{usr/kerberos} tree. Tar it up and save
+it -- this is an installation kit. (@samp{tar cf krb-$(host).tar -C
+DESTDIR usr})
+
+You can then use the installation instructions in @file{install.texinfo}
+to install it on your system.
+
+You can add options to the @code{configure} command to change the
+behavior of the build process or the compiled software.  The currently
+supported options include:
+
+@table @code
+@item --disable-ip-address-validation
+This option will cause the Kerberos library to ignore IP addresses when
+verifying the validity of a received authenticator.  (Actually, this
+behavior is controlled by a hidden variable, and this option changes the
+default value of that variable.  It is still possible to change that
+variable and re-enable IP address checking.)
+
+This leads to a greatly increased vulnerability to replay attacks,
+especially if your software does not implement a replay cache.  None(?)
+of the programs distributed with CNS use replay caches.  So we don't
+recommend using this option.
+
+The @samp{--enable} form is available also, but it's the default, so there's no
+point in using it.
+
+@item --enable-xdm
+This option will cause a Kerberos-based version of the X11R5 @samp{xdm} program
+to be built and installed under @file{/usr/kerberos}.  The configuration files
+for this version will reside under this directory; they will not be sought in
+@file{/usr/lib/X11}, @file{/usr/X11R5}, or anywhere else.
+
+Since the CNS source tree uses @samp{configure} rather than @samp{imake}, some
+work may be required to get @samp{xdm} working on various systems that the
+original X11R5 version we started with did work on.  Currently it works on
+SunOS 4 and Solaris 2; the SCO port may also work.
+
+The @samp{--disable} form is available also, but it's the default, so there's
+no point in using it.
+
+@item --site=athena
+Use MIT/Athena pathnames.  Use Hesiod.  Don't use this if you aren't Mark
+Eichin or you aren't building on Solaris for MIT.  It just won't work.
+
+@item --site=gdbm
+Use the GNU DBM library.
+
+@item --with-x11r5-include=@var{dir}
+@itemx --with-x11r5-lib=@var{dir}
+Specify where X11R5 header files and libraries should be found, if they aren't
+in the default search paths used by the compiler and linker.  This option is
+only useful if you are building @samp{xdm}.
+
+@end table
+
+@node Microsoft Windows
+@chapter Cygnus Kerberos for Microsoft Windows
+
+This software runs on Microsoft Windows version 3.1.
+
+The procedure assumes that you have
+Microsoft Visual C/C++ 1.0
+already installed on
+your PC system and available on your path.
+You need to have loaded the large-model libraries with it.
+Microsoft C 7.0, or Borland C++ x.x might also work with minor tweaks.
+Also, zip must be available
+on the UNIX system and PKUNZIP must be available on the PC system.  It
+is also assumed that WINSOCK.DLL is available somewhere on the path.
+
+Building this software for Microsoft Windows requires a special
+configuration procedure at the moment.  
+The first part of the procedure assumes that you have 
+checked out a version of Kerberos on a UNIX system, while the 
+second part, is intended to be performed on a DOS/Windows PC:
+
+@itemize @bullet{}
+@item
+Copy or unpack the source tree.  CD to the src directory.
+@item
+@code{make -f Makefile.in kerbsrc.zip}
+
+This builds two files with "awk", then uses a pair of "zip" commands
+to produce a file called kerbsrc.zip
+@item
+Transport kerbsrc.zip to a Windows machine by whatever technique is 
+convenient.  Move to
+the Windows machine to type the rest of the commands.
+@item
+Make a directory and CD there.
+@item
+Put the kerbsrc.zip file in the new directory.
+@item
+@code{pkunzip -d kerbsrc.zip}
+
+Unpack the kerbsrc.zip file into a directory tree.
+@item
+@code{nmake -c -f makefile.in}
+
+This
+will build the DES library, the KRB library, the KADM library,
+the KSTREAM library, and KERBEROS.DLL, 
+KWIN.EXE, and the WINTEL.EXE program in turn.
+Note that due to DOS/Windows
+limitations, any errors are likely
+to leave you in a directory other than the one in which you started.
+@end itemize
+
+NMAKE will produce some warnings about file names that are too long
+and which have been truncated; these can all be ignored.
+
+If you make modifications to the Kerberos source tree and wish to 
+migrate those modifications back to UNIX, the following procedure 
+should be followed to insure that all shortened file names are
+restored to their proper form.
+The following procedure assumes that you start CDed to the 
+top of the KERBEROS source tree on the PC.
+
+@itemize @bullet{}
+@item
+nmake -c clean
+@item
+pkzip -P -r kerbsrc.zip *.*
+@end itemize
+
+Move the kerbsrc.zip file the UNIX system kerberos/src directory by 
+whatever technique is convenient.
+
+@itemize @bullet{}
+@item
+unzip -a kerbsrc.zip
+@item
+make -f makefile.in ren2long
+@end itemize
+
+Note that not all Makefile targets have been implemented under
+Windows.  In particular, @samp{all} and @samp{clean} are the only targets 
+intended to function properly from the command line.  Other targets 
+may function correctly but have not been tested extensively.
+
+
+The ticket cache
+
+  Kerberos for Windows maintains a single ticket cache in the Heap 
+  segment of the KERBEROS DLL.  Whenever a ticket is present in the 
+  cache, the DLL is locked in memory with a call to LoadLibrary.  As a 
+  result the cache will remain in memory even after the last program 
+  which uses KERBEROS.DLL has exited.  Only when all tickets are 
+  deleted and all programs which called KERBEROS.DLL have exited, 
+  will the KERBEROS.DLL library be allowed to unload.
+
+  Note that the KERBEROS.DLL file will remain in use while the ticket 
+  cache contains tickets, making it impossible to overwrite or delete 
+  the file.
+
+Windows specific implementation
+
+  All pointers in the Windows implementation are assumed to be FAR 
+  pointers.  The interface file kerberos.h casts the pointers 
+  accordingly.
+
+  Note that values which are specified as int will be 16 bits under 
+  Windows.
+
+  Due to the need to formally externalize calls from a DLL, a number 
+  of routines which are only used in kpasswd on UNIX need to be 
+  made visible outside the KERBEROS.DLL.  The routines are used by 
+  the KWIN program on Windows.  These routines reside within the 
+  kadm library and are not usually called by users.
+
+  int kadm_change_pw(des_cblock key);
+  
+  int kadm_change_pw2(des_cblock key, char *password, 
+  	unsigned char **ret_st);
+  
+  int kadm_init_link(char *pwserv_name, char *krb_master, 
+  	char *realm);
+
+  In addition an API call has been added under Windows to give an 
+  interactive application notification when the contents of the ticket 
+  cache change.  The call returns the number of the unique message 
+  which will be sent to all top level windows after the ticket cache 
+  changes.  The KWIN program uses this message to keep its display 
+  current.  The prototype is as follows:
+
+  int krb_get_notification_message(void)
+
+
+Time
+
+  The Kerberos library operates on the assumption that time begins at 
+  00:00 January 1, 1970.  All times expected and returned are in these 
+  units independent of what the C library returns.  Note that C7.0 
+  starts time at January 1, 1900.
+
+  Kerberos reads time from the hardware clock using BIOS interrupt 
+  0x1A.  This avoids problems with the software clock drifting as the 
+  system runs. 
+
+
+Known problems
+
+  WSASetBlockingHook doesn't work in FTP and NetManage WINSOCKs
+  This results in non-cancelable calls to gethostname.  Both 
+  companies are working on a fix for me.
+
+  NetManage does not have a moveable heap. The NetManage implementation 
+  of WINSOCK.DLL has a relatively small heap initial heap size (1k) and 
+  a non-moveable DATA segment, presumably due to the lack of the MOVEABLE 
+  keyword in the .DEF file used to build the DLL.  Windows tries to load 
+  the users environment into the heap when it initializes a DLL if the 
+  heap isn't moveable, it may not be possible to grow the heap in order 
+  to load the DLL, resulting in a load failure of WINSOCK and the program 
+  which called WINSOCK.
+
+
+Here is later documentation from John Rivlin on the process by which
+the Cygnus 95Q1 WIndows release was built:
+
+Subject: More Windoze stuff
+
+I believe it is now possible to create and distribute the various types of Windows
+deliverables.  I tried the windoc target in the doc directory and it didnt seem
+to find a texi2html command.
+
+(Texi2html in /tfm/bin or available at
+@code{http://asis01.cern.ch/infohtml/texi2html.html}.  The version we used
+has enhancements (--no-split) beyond the latest public release at this 
+time (1.31).)
+
+Following is a description of how to perform the various operations necessary 
+to build and distribute CNS for Windows:
+
+How download the source to a Windows machine:  
+
+    This will create a file called krbsrc.zip which can be downloaded to the PC 
+    any way you like.  Note that the kerbsrc.zip file is the source deliverable
+    which should be included on a deliverable floppy.
+
+   1) cd src
+
+   2) make -f Makefile.in kerbsrc.zip
+
+How to unpack the kerbsrc.zip file:
+
+   1) Create a directory on the PC and kerbsrc.zip file in it
+
+   2) pkunzip -d kerbsrc.zip
+
+How to build the binaries on the PC:
+
+   This will compile and link all components of the CNS system.
+
+   1) nmake -f Makefile.in
+
+How to build the floppy disk binary distribution files:
+
+   This procedure must be run after all compilations and links have 
+   taken place.  The procedure copies all necessary binary files, the
+   include files which will be necessary to use CNS in an application 
+   and the *.TXT and *.HTM files from the DOC directory to a 
+   directory called FLOPPY.
+
+   1) nmake install
+
+How to build a binary distribution file appropriate for network distribution.
+
+   This procedure creates a file called kerbdist.zip which contains
+   the files from the floppy directory.
+
+   1) nmake dist
+
+Uploading the sources from a PC back into the unix source tree.
+
+   On the PC:
+
+   1) nmake clean
+
+   2) del kerbsrc.zip
+
+   3) pkzip -P -r kerbsrc.zip
+
+    Upload the kerbsrc.zip file to the Unix system.
+
+    1) cd src
+
+    2) unzip -a -o kerbsrc.zip
+
+    3) make -f makefile.in ren2long
+
+    Note that the floppy directory may be deleted.  Also note that
+    the that the contents of the doc directory should be moved to
+    the doc directory which exists one level above the src directory and 
+    be deleted from the src directory.
+
+To create a distribution floppy, copy all the files from the FLOPPY 
+directory to the root directory of the floppy.  Then copy the 
+kerbsrc.zip file to the root directory of the floppy.
+
+
+@node Macintosh - MPW
+@chapter Cygnus Kerberos for Macintosh with MPW
+
+This software runs on the Apple Macintosh using MacOS 7.1.
+Parts are known to build with MPW C version 3.2 (so far).
+We used Intercon's NFS implementation to share the files
+between Mac and Unix (rather than copying the tree to Mac after
+running the Unix part of the configuration below), despite its
+various bugs.
+
+At the moment, the driver can only be built in Think C with a 
+little help from MPW.  Please refer to the next section, which documents
+the Think C build process.  If we could get driver data segments working
+in MPW, we could build the whole thing there.
+
+Building this software for Macintosh requires a special
+configuration procedure at the moment.  Here it is:
+
+@itemize @bullet{}
+@item
+Copy or unpack the source tree.  Change directories to the top-level
+(kerberos) directory.
+@item
+@samp{./configure m68k-apple-macos7.1}
+
+This will produce files throughout the tree called @file{MakeFile}
+for use with MPW.  It also leaves a Makefile suitable for Unix use
+as @file{Makefile.uni} in each directory.
+@item
+@samp{make -f Makefile.in unixmac}
+
+This builds a few files that need Unix tools like sed and awk.
+Eventually this will be able to happen on the Mac.
+@item
+Now transfer the directory to the Mac, and move to
+there to type the rest of the commands.
+@item
+@samp{directory lib:des;  make}
+
+Make the DES library for Macintosh.
+@item
+@samp{directory ::krb;  make}
+
+Make the KRB library for Macintosh.
+@item
+@samp{directory :::kuser; make kinit}
+
+Build the scaffolding test for the software.  This is as far as we
+have gotten as I type this.
+
+@end itemize
+
+Eventually a driver and a GUI and other software will be built as part
+of this tree.
+
+@node Macintosh - Think C
+@chapter Cygnus Kerberos for Macintosh with Think C
+
+This software runs on the Apple Macintosh using MacOS 7.1.
+It is known to build with Think C version 6.0 (assisted in spots
+by MPW C version 3.2 and Unix).
+We used Intercon's NFS implementation to share the files
+between Mac and Unix (rather than copying the tree to Mac after
+running the Unix part of the configuration below), despite its
+various bugs.
+
+Building this software for Macintosh requires a special
+configuration procedure (the legendary ``simple 15-step process'')
+at the moment.  Here it is:
+
+@table @code
+@item
+Copy or unpack the source tree on a Unix machine.  Change
+directories to the top-level (kerberos) directory.
+@item ./configure m68k-apple-macos7.1
+This will produce files throughout the tree called @file{MakeFile}
+for use with MPW.  
+It also leaves a Makefile suitable for Unix use as @file{Makefile.uni}
+in each directory.
+@item @samp{make -f Makefile.in unixmac}
+This builds a few files that need Unix tools like sed and awk.
+Eventually this will be able to happen on the Mac.
+@item
+Now transfer the directory to the Mac, and move to
+there to type the rest of the commands.
+@item 
+In order for Lightspeed C to locate the kerberos include files,
+you will need to create aliases for the directories which 
+contain them.
+@item
+Open the folder @samp{kerberos/src} and make a new folder there 
+named @samp{Aliases}.  Make an alias of the @samp{src/include} 
+folder and put it into the @samp{Aliases} folder.
+@item
+Open the @samp{src/lib folder}.  Hold down the option key and 
+move a copy of the @samp{Aliases} folder from @samp{kerberos/src} 
+into the @samp{lib/krb} folder and into @samp{the lib/des} folder.
+@item
+Still in the @samp{src/lib folder}, make an alias for the 
+@samp{lib/des folder} and for the @samp{lib/krb} folder.  Move 
+these two aliases into the @samp{Aliases} folder in 
+@samp{kerberos/src}.  Close the @samp{src/lib} folder.
+@item
+Hold down the option key and move a copy of the @samp{Aliases} folder 
+from @samp{kerberos/src}into the @samp{src/driver} directory.  Finally 
+move the @samp{Aliases} folder from @samp{kerberos/src}into the 
+@samp{src/kuser} directory.
+
+
+@item 
+Go to the lib/des directory.
+Run Think C on DesLib-project-A4, and select "Bring up to date" from the Project
+menu.  Avoid the temptation to select "Build Library", since that doesn't work.
+
+@item 
+Go to the lib/krb directory.
+Run Think C on KrbLib-project-A4, "Bring up to date".
+
+@item
+Build a 4-byte ANSI library for use in a driver: In the Think C
+libraries, make a copy of the ANSI-A4 library and rename it
+ANSI-A4-4byte.  Open the ANSI-A4-4byte project and select "Source ->
+add files".  Scroll down the file list to the "C sources" folder, open
+that folder, select alloc.c, and click the Add button followed by the
+done button.  Next select "Edit -> options -> Think C...", click the 
+page changer until you see "4 byte ints", select it, and press done.  
+Select "Project -> bring up to date".
+
+
+@item
+Go to the driver directory.
+Run MPW in this directory.  "make assembly" to build
+assembler language files into object files.
+
+@item
+Still in the driver directory.
+Run Think C on LoadDriver-project, "Build Code Resource"
+Select "Update" and "save" accepting the default file name.
+Run Think C on Driver-project, "Build Device Driver".  Select
+smart link and "save" accepting the default file name for the result.
+
+@item
+Run MPW.  Change directories to the driver directory,
+and run "make 'CNS Kerberos'"
+to put all the pieces together with rez and SetFile.
+Don't forget the quotes around 'CNS Kerberos'.
+Copy CNS Kerberos to the Extensions folder
+of your startup disk.  Reboot.
+
+@c These next two work, but are unnecessary.
+@c @item
+@c Build a 4-byte ANSI library for use in a program: In the Think C
+@c libraries, make a copy of the ANSI library and rename it ANSI-4byte.
+@c Open the ANSI-4byte library.  Select "Edit -> options -> Think C...", click the page
+@c changer until you see "4 byte ints", select it and press done.  Select
+@c "Project -> bring up to date".
+@c 
+@c @item 
+@c Go to the kuser directory.
+@c Run Think C on @samp{kinit-stubs-project}, "Build Application".
+@c The resulting program will let you clumsily get initial tickets.
+@c in the default realm, for testing.
+
+@item
+To build the graphical interface to authentication and configuration,
+run MPW and go to the src/kconfig/kconfig directory.  Type "make kconfig" and 
+execute the resulting commands.  The application file this builds, "KConfig",
+can be copied to any location you choose in the file system.
+
+
+@end table
+
+Eventually Telnet will be built as part
+of this tree.  At the moment, a binary is checked-in in src/mactelnet.
+
+To package it up for release, on a Unix system after building the Mac,
+go to the top level and type @code{mkdir floppy; make -i install-mac
+DESTDIR=`pwd`/floppy}.  Then rename the "floppy" dir to the release name,
+e.g. cns-95q1.  You can copy it directly to a floppy, or run the directory
+into StuffIt (in hierarchical "folder" mode so it unpacks into a single
+folder).
+
+Currently we aren't building 'Kerberos Client Preferences' in the
+driver subdirectory; it gets built by actually running the driver and
+adding a realm.  This is why you have to use @code{make -i install-mac}
+(and then manually copy Kerberos Client Preferences to the floppy
+directory.  This is a driver bug; it should work if there is no
+preferences file (reading the defaults from the CNS Kerberos file's
+resource fork), but it doesn't.
+@c FIXME -- fix this in the driver.
+
+@node Extensions
+@chapter Cygnus Extensions to Kerberos V4
+
+@menu
+* preauthentication::	Hooks to support Preauthentication in V4
+@end menu
+
+@node preauthentication
+@section Hooks to support Preauthentication in V4
+
+There is interest in a simple method of reducing the risk of the offline
+password-guessing attack described originally by Steve Bellovin. While
+Kerberos Version 5 has full preauthentication support, the technique
+described here is of more limited use.
+
+In order to maximize backwards compatibility, the entire protocol change
+consists of one block of data appended to the end of an initial ticket
+request. This preauthentication information will be ignored by a server
+which doesn't support it, resulting in that server providing tickets
+regardless.
+
+In order to provide hooks for user-defined preauthentication, two
+functions have been added to the library. Currently, stub
+implementations that pass the constant string "PREAUTH" are used; these
+will need to be replaced by code that implements the desired
+preauthentication method.
+
+@menu
+* krb_rd_preauth::      Parse preauthentication data.
+* krb_mk_preauth::      Generate preauthentication data.
+* krb_free_preauth::    Deallocate preauthentication data.
+@end menu
+
+@node krb_rd_preauth
+@subsection krb_rd_preauth
+
+@code{krb_rd_preauth} is used by the server to decode a block of
+preauthentication data. It is passed
+@table @samp
+@item pkt
+The original packet as received by the server (since the
+verifying the preauthentication response may depend on knowing what
+ticket is being requested).
+@item preauth_p
+A pointer to the actual preauthentication data.
+@item preauth_len
+The size of the preauthentication data (based on the number of bytes
+remaining in the packet.)
+@end table
+
+This function is only called inside the KDC itself. If it returns a
+non-zero value, the preauthentication is considered to have failed; for
+this purpose, two new protocol error values have been selected:
+@table @samp
+@item KERB_ERR_PREAUTH_SHORT
+The preauthentication data was truncated, based on the length supplied.
+@item KERB_ERR_PREAUTH_MISMATCH
+The preauthentication data was incorrect.
+@end table
+
+The KDC only calls this function if it is invoked with the @samp{-P}
+flag, allowing one KDC to support both preauthenticated and
+non-preauthenticated operation.
+
+@node krb_mk_preauth
+@subsection krb_mk_preauth
+
+@code{krb_mk_preauth} is used by other functions in the kerberos library
+to produce a preauthentication block. It is passed
+
+@table @samp
+@item preauth_p
+Pointer to preauthentication block, passed by reference, initialized
+(and allocated) by this function.
+@item preauth_len
+Length of preauthentication block (in bytes), passed by reference,
+initialized by this function.
+@item key_proc
+Function that creates the key; arguments are four strings (user,
+instance, realm, password) and a C_block (key) which is filled in with
+the actual key. 
+@item aname
+Name of ticket requested. Possibly useful in generating
+preauthentication data.
+@item inst
+Instance of ticket requested. Possibly useful in generating
+preauthentication data.
+@item realm
+Realm in which ticket was requested. Possibly useful in generating
+preauthentication data.
+@item password
+Password string, if already supplied, or NULL.
+@item key
+Key (C_Block) if already supplied, or NULL.
+@end table
+
+This function is only called from @samp{krb_get_pw_in_tkt_preauth} which
+is used by @samp{kinit -p} and @samp{krb_get_svc_in_tkt_preauth} which
+is used by @samp{krb_svc_init_preauth} or directly by clients which need
+to generate their own tickets.
+
+@node krb_free_preauth
+@subsection krb_free_preauth
+
+Finally, @code{krb_free_preauth} cleans up any storage allocated by
+@code{krb_mk_preauth} after the preauthentication data is sent to the
+KDC. It is passed
+@table @samp
+@item preauth_p
+Pointer to preauthentication data.
+@item preauth_len
+Length of preauthentication data.
+@end table
+
+It is called from both places that @samp{krb_mk_preauth} is, immediately
+after the values are used.
+
+@node Kadmin internals
+@chapter Internal data structures of the kadmin protocol
+
+This information is from @file{src/kadmin/Design.txt}.
+
+This node attempts to present the internal functioning of the kerberos
+admin server and interface.
+
+Outer interface (programmers interface)
+
+@samp{kadm_mod_entry(vals *old_dat, vals *new_dat)} returns @samp{vals *cur_dat}
+
+Sends a command telling the server to change all entries which match
+old_dat to entries matching new_dat.
+Returns in cur_dat the actual current values of the modified records.
+implemented with calls to @samp{_vals_to_stream, _send_out, _take_in, and
+_stream_to_vals, _interpret_ret}.
+
+Inner calls:
+
+@samp{_vals_to_stream (vals *, unsigned char *)}
+
+Converts a vals structure to a byte stream for transmission over the net.
+
+@samp{_stream_to_vals (unsigned char *, vals *)}
+
+Converts a byte stream recieved into a vals structure.
+
+@node Multiple Realms
+@chapter Serving multiple realms from one server
+
+(This has a different emphasis than the existing documentation as it
+covers specifically those features which deal with serving multiple
+realms off of one machine. Little of this will be of interest to someone
+setting up a standard release in @file{/usr/kerberos}.)
+
+Choose a database pathname. This is a full pathname for a dbm database
+file; if you use, for example, @file{/site/db/test} then the various programs
+will open @file{/site/db/test.dir} and @file{/site/db/test.pag} as needed.
+
+If you'll be using @samp{kstash} in order to start the KDC and @samp{kadmind} unattended,
+choose a location to stash the key. By default, @file{/.k} is used, but other
+values may make more sense (especially when not running the server as root).
+
+Choose a port number. If you're not running the KDC or @samp{kadmind} as root,
+then you must choose a port number above 1023; the default, 750, requires
+that the server be run as root. If you are running multiple servers
+on the same host, keep in mind that you're reserving two numbers, the 
+given one for the KDC, and the one immediately above it for the kadmind.
+(If you are setting up a slave server, the slave itself won't be running
+a kadmind and thus doesn't need this additional port.)
+
+Choose a location to store logs. You may have privacy needs that determine
+more specifically where these need to be stored. There is a seperate
+log file for the kdc and for the kadmind.
+
+If you're running @samp{kadmind}, choose a location to store the access control
+lists it uses to authorize administrators. This is a directory, which will
+contain the files @file{admin_acl.add}, @file{admin_acl.mod}, and @file{admin_acl.get}.
+
+Choose a location for the @file{krb.conf} configuration file. Normally, applications
+will look for @file{/usr/kerberos/lib/krb.conf}. If you can't use that location,
+set the environment variable @samp{KRB_CONF} to the pathname you chose.
+[bug: support for handling the @file{krb.realms} file the same way is currently
+ absent.]
+
+Also, as in a normal setup, you'll need to choose a realm name.
+
+The necessary commands will follow. Note that lines beginning with @samp{#} are
+not commands but comments; lines begining with @samp{%} are @samp{csh} commands, and
+intervening text is usually input to those commands.
+
+@example
+# Choices made, per above:
+# database path: /site/krb/db/test
+# master key stash: /site/krb/stash/test
+# kadmind acl path: /site/krb/acl/test
+# port number: 3882
+# log path: /site/krb/log/
+# krb.conf: /site/krb/krb.conf
+# realm name: TEST.CH
+# server hostname: beech
+#
+# First, set up krb.conf.
+% setenv KRB_CONF /site/krb/krb.conf
+% cat > $KRB_CONF
+TEST.CH
+TEST.CH beech:3882 admin server
+^D
+% kdb_init TEST.CH /site/krb/db/test
+% kstash -k /site/krb/stash/test -d /site/krb/db/test
+% kdb_edit -n -k /site/krb/stash/test /site/krb/db/test
+# If you'll be running kadmin, then simply add one user's admin instance
+# here; we'll call it "ebs.admin" for now. 
+# If you won't be running kadmin, then add all of your keys here.
+# If you'll be running kprop, be sure not to forget the rcmd entry.
+#
+% kerberos -P -i -k /site/krb/stash/test -l /site/krb/log/krb.log -u 3882 /site/krb/db/test &
+#
+# Note that -P causes the kdc to reject requests without preauthentication,
+# and that -i causes it to ignore ip addresses in authenticators (this should
+# only be used when you're forwarding tickets around deliberately.)
+# Note also that the database is the last argument, it doesn't have a specifier.
+#
+% cat > /site/krb/acl/test/admin_acl.add
+ebs.admin@@TEST.CH
+^D
+% cp /site/krb/acl/test/admin_acl.add /site/krb/acl/test/admin_acl.mod
+% cp /site/krb/acl/test/admin_acl.add /site/krb/acl/test/admin_acl.get
+% kadmind -k /site/krb/stash/test -n -d /site/krb/db/test -u 3882 -a /site/krb/acl/test -f /site/krb/log/test &
+#
+# Note in particular that -u 3882 matches the argument given to the kdc...
+# since the client has to calculate the real port number from the one given
+# in the log file, we have the kadmind calculate it too.
+#
+% kadmin -p -u ebs
+# 
+# Here, the -p is needed only because we started the kdc with -P.
+# The -u ebs causes us to use the name "ebs.admin"; if we were using an
+# account with the unix login name ebs, we could have skipped that argument.
+#
+ank rcmd.beech
+# add_new_key tells kadmin to add a new key to the database under a given
+# name. rcmd is used for rlogin, rsh, and kprop, so we add it now to cover
+# kprop.
+@end example
+@bye

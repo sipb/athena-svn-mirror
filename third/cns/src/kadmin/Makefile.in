@@ -1,0 +1,94 @@
+#### include configury here
+BUILDTOP=$(C)$(S)$(U)
+
+SSRCS = kadm_server.c kadm_funcs.c admin_server.c kadm_ser_wrap.c
+SOBJS = kadm_server.o kadm_funcs.o admin_server.o kadm_ser_wrap.o
+
+PSRCS = kpasswd.c
+POBJS = kpasswd.o
+
+ASRCS = kadmin.c
+AOBJS = kadmin.o kadmin_cmds.o
+
+USRCS = ksrvutil.c
+UOBJS = ksrvutil.o
+
+GSRCS = get_srvtab.c
+GOBJS = get_srvtab.o
+
+MSRCS = mksrvtab.c
+MOBJS = mksrvtab.o
+
+SRCS = $(SSRCS) $(PSRCS) $(ASRCS) $(USRCS) $(MSRCS) $(GSRCS)
+
+CODE=$(SRCS) Makefile.in kadmin_cmds.ct kadm_server.h.sed
+
+# util is for ss/ss.h
+# . is for kadm_server.h
+LOCALINCLUDE= -I$(SRCTOP)util -I$(BUILDTOP)util -I.
+
+all:: kadm_server.h kpasswd kadmin ksrvutil kadmind build_pwfile mksrvtab get_srvtab
+
+kadm_server.h:	kadm_server.h.sed
+	$(RM) kadm_server.h
+	sed -e 's*KDBDIR*$(KDBDIR)*g' < $(srcdir)/kadm_server.h.sed > kadm_server.h
+
+kadm_funcs.o: kadm_server.h
+
+# make_cmds(kadmin_cmds)
+kadmin_cmds.c: kadmin_cmds.ct
+
+# help sunmake
+kadmin_cmds.o: kadmin_cmds.c
+build_pwfile.o: build_pwfile.c
+
+depend:: kadm_server.h
+
+clean::
+	$(RM) kadmin_cmds.c kadmin_cmds.o 
+	$(RM) kadm_server.h
+	$(RM) kpasswd kadmin ksrvutil kadmind build_pwfile mksrvtab get_srvtab
+	$(RM) $(SOBJS) $(POBJS) $(AOBJS) $(UOBJS) $(MOBJS) $(GOBJS) build_pwfile.o
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+# program(kpasswd,$(POBJS),${COM_ERR_DEP} ${KADM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${COM_ERR} ${KADM_LIB} ${KRB_LIB} ${DES_LIB},${PROGDIR})
+kpasswd: $(POBJS) ${COM_ERR_DEP} ${KADM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CCFLAGS) -o $@ $(POBJS) ${COM_ERR} ${KADM_LIB} ${KRB_LIB} ${DES_LIB}
+
+# program(kadmin,$(AOBJS),${SS_LIBDEP} ${COM_ERR_DEP} ${KADM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${SS_LIB} ${COM_ERR} ${KADM_LIB} ${KRB_LIB} ${DES_LIB},${PROGDIR})
+kadmin: $(AOBJS) ${SS_LIBDEP} ${COM_ERR_DEP} ${KADM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CCFLAGS) -o $@ $(AOBJS) ${SS_LIB} ${COM_ERR} ${KADM_LIB} ${KRB_LIB} ${DES_LIB}
+
+# program(ksrvutil,$(UOBJS),${COM_ERR_DEP} ${KADM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${COM_ERR} ${KADM_LIB} ${KRB_LIB} ${DES_LIB},${PROGDIR})
+ksrvutil: $(UOBJS) ${COM_ERR_DEP} ${KADM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CCFLAGS) -o $@ $(UOBJS) ${COM_ERR} ${KADM_LIB} ${KRB_LIB} ${DES_LIB}
+
+# program(kadmind,$(SOBJS),${HESIOD_LIBDEP} ${COM_ERR_DEP} ${ACL_LIBDEP} ${KADM_LIBDEP} ${KDB_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP},${HESIOD_LIB} ${COM_ERR} ${ACL_LIB} ${KADM_LIB} ${KDB_LIB} ${KRB_LIB} ${DES_LIB},${DAEMDIR})
+kadmind: $(SOBJS) ${HESIOD_LIBDEP} ${COM_ERR_DEP} ${ACL_LIBDEP} ${KADM_LIBDEP} ${KDB_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CCFLAGS) -o $@ $(SOBJS) ${HESIOD_LIB} ${COM_ERR} ${ACL_LIB} ${KADM_LIB} ${KDB_LIB} ${KRB_LIB} ${DES_LIB}
+
+# program(build_pwfile,build_pwfile.o,${DES_LIBDEP},${KDB_LIB} ${DES_LIB},${PROGDIR})
+build_pwfile: build_pwfile.o ${KDB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CCFLAGS) -o $@ build_pwfile.o ${KDB_LIB} ${DES_LIB}
+build_pwfile.o: build_pwfile.c
+
+mksrvtab: mksrvtab.o
+	$(CC) $(CCFLAGS) -o $@ mksrvtab.o
+mksrvtab.o: mksrvtab.c
+
+get_srvtab: $(GOBJS) ${COM_ERR_DEP} ${KADM_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+	$(CC) $(CCFLAGS) -o $@ $(GOBJS) ${COM_ERR} ${KADM_LIB} ${KRB_LIB} ${DES_LIB}
+
+install::
+	$(INSTALLPROG) kpasswd ${DESTDIR}$(PROGDIR)/kpasswd
+	$(INSTALLPROG) kadmin ${DESTDIR}$(PROGDIR)/kadmin
+	$(INSTALLPROG) ksrvutil ${DESTDIR}$(PROGDIR)/ksrvutil
+	$(INSTALLPROG) kadmind ${DESTDIR}$(DAEMDIR)/kadmind
+	$(INSTALLPROG) build_pwfile ${DESTDIR}$(PROGDIR)/build_pwfile
+	$(INSTALLPROG) get_srvtab ${DESTDIR}$(PROGDIR)/get_srvtab
+
+depend:: ${CODE} 
+

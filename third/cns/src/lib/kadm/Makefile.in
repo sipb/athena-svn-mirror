@@ -1,0 +1,101 @@
+ARCHIVEARGS= $@ $(OBJS)
+
+# Library to create
+LIBNAME=libkadm.$(LIBEXT)
+
+# These objects are note necessary in Windows
+SERVER_KADM_OBJS=kadm_err.$(OBJEXT)
+
+#### include configury here
+##DOS!include ..\..\config\common
+##DOS!include ..\..\config\mt-win
+
+BUILDTOP=$(C)$(S)$(U)$(U)
+
+SRCS	= \
+	kadm_supp.c \
+	kadm_stream.c \
+	kadm_cli_wrap.c  \
+	kadm_net.c \
+	kadm_etx.c
+
+OBJS	= \
+	kadm_cli_wrap.$(OBJEXT) \
+	kadm_net.$(OBJEXT) \
+	kadm_supp.$(OBJEXT) \
+	kadm_stream.$(OBJEXT) \
+	kadm_etx.$(OBJEXT) \
+	$(SERVER_KADM_OBJS)
+
+CODE=$(SRCS) Makefile.in kadm_err.et
+
+# We want *library* compilation options...
+DBG=$(DBG_LIB)
+
+all::
+
+# comp_et_depend(kadm_err)
+kadm_err.h:: kadm_err.et
+
+kadm_err.c: kadm_err.et
+
+clean:: clean-$(WHAT)
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+clean-unix:: 
+	$(RM) kadm_err.o kadm_err.c kadm_err.h
+
+clean-windows::
+
+unixdos:  kadm_err.h
+
+depend:: kadm_err.h
+
+depend:: $(CODE)
+
+kadm_err.h:: 
+	-if cmp kadm_err.h ../../include/kadm_err.h >/dev/null 2>&1; then \
+		echo ; \
+	else \
+		$(RM) ../../include/kadm_err.h ; \
+		$(CP) kadm_err.h ../../include/kadm_err.h; \
+	fi
+
+
+install:: install-$(WHAT)
+
+install-unix::
+	$(INSTALLRAW) kadm_err.h $(DESTDIR)$(INCLDIR)/kadm_err.h
+	$(INSTALLLIB) libkadm.$(LIBEXT) $(DESTDIR)$(LIBDIR)/libkadm.$(LIBEXT)
+	$(CHMOD) 644 $(DESTDIR)$(LIBDIR)/libkadm.$(LIBEXT)
+	$(RANLIB)    $(DESTDIR)$(LIBDIR)/libkadm.$(LIBEXT)
+	$(CHMOD) 444 $(DESTDIR)$(LIBDIR)/libkadm.$(LIBEXT)
+
+install-windows::
+
+# install_library_target(ss,$(OBJS),$(SRCS),)
+all:: all-$(WHAT)
+all-unix:: kadm_err.h libkadm.$(LIBEXT)
+all-windows:: libkadm.$(LIBEXT)
+
+$(LIBNAME): $(OBJS)
+	$(RMLIB) $@
+	$(ARCHIVE) $(ARCHIVEARGS)
+	$(RANLIB) $@
+
+clean:: clean-$(WHAT)
+	-$(RM) $(LIBNAME)
+	-$(RM) *.$(OBJEXT)
+
+clean-::
+
+clean-windows::
+	-$(RM) libkadm.bak
+	-$(RM) msvc.pdb
+	-$(RM) proj.err
+
+install-windows::
+## 

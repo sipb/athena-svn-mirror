@@ -1,0 +1,24 @@
+#### insert configury here
+BUILDTOP=$(C)$(S)$(U)
+LIBS=${KDB_LIB} ${KRB_LIB} ${DES_LIB}
+DEPLIBS=${KDB_LIBDEP} ${KRB_LIBDEP} ${DES_LIBDEP}
+SRCS	= kerberos.c
+CODE	= ${SRCS} 
+
+all:: kerberos
+
+# program(kerberos,kerberos.o,${DEPLIBS},${LIBS},${SVRDIR})
+kerberos: kerberos.o ${DEPLIBS}
+	$(CC) $(CFLAGS) -o $@ kerberos.o ${LIBS}
+
+install::
+	$(INSTALLPROG) kerberos ${DESTDIR}$(SVRDIR)/kerberos
+
+clean::
+	$(RM) kerberos kerberos.o
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+

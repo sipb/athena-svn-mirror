@@ -1,0 +1,46 @@
+#### include configury here
+
+BUILDTOP=$(C)$(S)$(U)$(U)$(U)
+
+ALL	= ftp
+OBJS	= cmds.o cmdtab.o ftp.o getpass.o glob.o main.o pclose.o \
+	  ruserpass.o domacro.o radix.o secure.o
+
+LOCALINCLUDE = -I$(srcdir)/..
+DEFINES = -DKERBEROS
+
+all:	$(ALL)
+
+$(ALL):	$(OBJS) $(KRB_LIBDEP) $(DES_LIBDEP)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ $(KRB_LIB) $(DES_LIB)
+
+clean:
+	rm -f $(ALL) $(OBJS)
+
+distclean:: clean
+	-rm -f *~ core
+	-rm -f Makefile config.status 
+
+depend:
+
+install:
+	$(INSTALLPROG) ftp $(DESTDIR)$(PROGDIR)/ftp
+	$(INSTALLFILE) $(srcdir)/ftp.1 ${DESTDIR}$(MANDIR)/man1/ftp.1
+
+ftp.o cmds.o main.o:	$(srcdir)/../arpa/ftp.h
+ftp.o cmds.o cmdtab.o domacro.o main.o ruserpass.o: $(srcdir)/ftp_var.h
+secure.o: secure.h
+
+cmds.o: cmds.c
+cmdtab.o: cmdtab.c
+ftp.o: ftp.c
+getpass.o: getpass.c
+glob.o: glob.c
+main.o: main.c
+pclose.o: pclose.c
+ruserpass.o: ruserpass.c
+domacro.o: domacro.c
+radix.o: radix.c
+secure.o: secure.c
+
+# NOPOSTFIX

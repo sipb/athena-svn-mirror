@@ -1,0 +1,417 @@
+\input texinfo      @c -*- texinfo -*-
+@setfilename kerb-mac.info
+
+@ifinfo
+ 
+@emph{Cygnus Network Security 
+Apple Macintosh Client User's Guide} 
+January 1995 
+ 
+Author John Gilmore
+
+ 
+CNS includes documentation and software developed at the Massachusetts
+Institute of Technology, which includes this copyright information:
+ 
+Copyright @copyright{} 1989 by the Massachusetts Institute of Technology. 
+
+@quotation  
+Export of software employing encryption from the United States of
+America is assumed to require a specific license from the United States
+Government.  It is the responsibility of any person or organization
+contemplating export to obtain such a license before exporting.
+@end quotation
+
+WITHIN THAT CONSTRAINT, permission to use, copy, modify, and distribute
+this software and its documentation for any purpose and without fee is
+hereby granted, provided that the above copyright notice appear in all
+copies and that both that copyright notice and this permission notice
+appear in supporting documentation, and that the name of M.I.T. not be
+used in advertising or publicity pertaining to distribution of the
+software without specific, written prior permission.  M.I.T. makes no
+representations about the suitability of this software for any purpose.
+It is provided ``as is'' without express or implied warranty.
+ 
+Copyright @copyright{} 1991, 1992, 1994, 1995  Cygnus Support 
+ 
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.  
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.  
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+@end ifinfo
+ 
+@setchapternewpage odd
+@settitle Cygnus Network Security
+@titlepage
+@finalout
+@title Cygnus Network Security
+@subtitle Apple Macintosh Client User's Guide
+@sp 2
+@subtitle January 1995
+@vfill
+@author John Gilmore
+
+@page
+
+@vskip 0pt plus 1filll
+
+Copyright @copyright{} 1989 by the Massachusetts Institute of Technology. 
+
+@quotation  
+Export of software employing encryption from the United States of
+America is assumed to require a specific license from the United States
+Government.  It is the responsibility of any person or organization
+contemplating export to obtain such a license before exporting.
+@end quotation
+
+WITHIN THAT CONSTRAINT, permission to use, copy, modify, and distribute
+this software and its documentation for any purpose and without fee is
+hereby granted, provided that the above copyright notice appear in all
+copies and that both that copyright notice and this permission notice
+appear in supporting documentation, and that the name of M.I.T. not be
+used in advertising or publicity pertaining to distribution of the
+software without specific, written prior permission.  M.I.T. makes no
+representations about the suitability of this software for any purpose.
+It is provided ``as is'' without express or implied warranty.
+ 
+Copyright @copyright{} 1991, 1992, 1994, 1995  Cygnus Support 
+ 
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.  
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.  
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+
+@end titlepage
+
+@ifinfo
+@node Top
+@top Cygnus Network Security
+
+@menu
+* Introduction::			Introduction to Mac CNS
+* Using CNS on the Macintosh::		Installing and Starting CNS
+* Reading the Online Documentation::	Online doc for Mac CNS
+* Programming Mac CNS::			Building your own applications
+@end menu
+@end ifinfo
+
+@node Introduction
+@chapter Introduction
+
+This is the user's guide to Cygnus Network Security for the
+Apple Macintosh.  It runs on Apple 68K and PowerPC Macintoshes
+using MacOS 7.1 and MacTCP.
+
+Cygnus Support developed Cygnus Network Security (CNS) to provide strong
+system access security, with minimal impact on users' ease of access.
+Using Kerberos Version 4 encryption and client-server technology, CNS
+assures that user identities can be checked securely without
+transmitting passwords in clear over the network.
+
+This guide is intended as a companion volume to the main CNS
+documentation.  It does not contain a complete introduction to CNS nor
+the Kerberos protocol suite used by CNS.  If you want more information
+about CNS, please see those documents, available from your network
+administrator.
+ 
+CNS is intended to provide a handy desktop accessory for Mac users who
+need to securely access network resources and services.  It provides
+authentication across local-area and wide-area networks and
+uses cryptography (the Data Encryption Standard, DES) to prevent third
+parties from impersonating a user.
+
+This guide, like CNS itself, is in development.  We welcome helpful
+comments and critiques of this guide as well as of the user interface
+and other aspects of CNS.  If you would like to give us comments on this
+program, please contact us at: @strong{support@@cygnus.com}
+ 
+@node Using CNS on the Macintosh
+@chapter Using CNS on the Macintosh
+
+To use Cygnus Network Security for Macintosh, you must have a Kerberos
+server on your network, and you personally must have a Kerberos
+`principal' (user name) on the server.  Your network administrator can
+tell you if these are in place.  To use @code{Telnet} to authenticate
+yourself for remote logins, you also need a login account (that matches
+your principal name) on the remote login machine.  That machine must run
+a Kerberized @code{Telnet} server which is included in the Unix version
+of this Cygnus Network Security release.
+
+CNS for the Macintosh is intended to be compatible with Mac applications
+written for the @code{KClient} driver interface.  It also provides an
+easier-to-use traditional subroutine call interface as well.
+
+@menu
+* Installing CNS::
+* Configuring CNS::
+* Logging in to Kerberos::
+* Logging in to other machines::
+* Miscellaneous notes::
+@end menu
+
+@node Installing CNS
+@section Installing CNS
+
+CNS for the Macintosh is distributed either on floppy disks, or in a
+StuffIt archive.  If you receive it in a StuffIt archive, unstuff it
+into a new folder first, then follow the instructions below.
+
+@enumerate
+@item Place @file{CNS Kerberos} (an @code{INIT} which loads the Kerberos
+client driver into the system heap) in the Extensions folder, inside the
+System folder.
+
+@item Place the @file{Kerberos Client Preferences} file in the Preferences
+folder, inside the System folder.  The Kerberos client driver then loads
+at boot time, and an icon, shaped like a key inside a jigsaw puzzle
+piece, is displayed.
+
+@item Place @code{CNS Telnet} and @code{CNS Config} in a convenient location,
+where you can run them as required.
+
+@item The rest of the files in the release are either documentation
+(@samp{.txt} in ASCII, or @samp{.html} in a form that can be easily read
+in a Web browser with the @samp{Open} menu item); or C include files and
+source files that can be used to build applications that call Kerberos;
+or source code (identical to the Unix source release, since the build
+process requires a Unix system anyway).  Move copies of the ones you are
+interested in, onto your hard disk.
+
+@item Reboot to make the installation effective.  You should see the
+Kerberos `key' icon appear during startup.  If you hold down
+@kbd{option} while booting, the same icon displays during startup with a
+red slash through it, and the CNS @code{INIT} does not load the driver.
+@end enumerate
+
+@node Configuring CNS
+@section Configuring CNS
+
+@code{CNS Config} is the graphical interface for end users.  It does not
+need to be installed in any particular place.  If you want it to run at
+startup time to remind the user to authenticate, put it in the `Startup
+items' folder in the System folder.  
+
+To configure CNS for your environment:
+
+@enumerate
+@item Click on the CNS icon.  The `CNS Configuration' opens.
+
+@item Look at the bottom panel that lists `Server IP Address' and
+`Realm Name' information.  This panel maps realm names to the names of
+their Kerberos servers.  This is the equivalent of the @file{krb.conf}
+file on Unix.  If no existing realm names appear in the window, make
+sure that you installed the @file{Kerberos Client Preferences} file into
+the Preferences folder (not the main System Folder), and close and
+reopen the `CNS Config' window; a realm name should appear.
+
+@item Click the bottom `New' button to add your own realm to
+the panel.  Type in the `Host IP address' and `Realm name' for
+your local realm.  The `Host IP address' is simply the domain name
+of the host (e.g. @samp{kerberos.cygnus.com}); you need not enter a
+numeric IP address.  The realm name is case sensitive, and must be in
+all capital letters (e.g., @samp{CYGNUS.COM}).  Click the `Admin server'
+box to indicate that this server is the master Kerberos server for your
+realm, and click `OK'.
+
+@item Now, make a table that maps from domain names of hosts
+into which realm that host is in.  This is the equivalent of the
+Unix @file{krb.realms} file.  Click on the top `New' button.
+
+@item Type in a period and the domain name your realm uses.  For
+example, in the CYGNUS.COM realm, this would be @code{.cygnus.com} and
+the realm field would be @samp{CYGNUS.COM}.  This says that any hostname
+that ends in @samp{.cygnus.com} is in the @samp{CYGNUS.COM} realm.
+
+@item Select your local realm from the menu at the top of the window. 
+@end enumerate
+
+@node Logging in to Kerberos
+@section Logging in to Kerberos
+
+Once you have configured your local realm's information with CNS Config,
+you can use the `Login' or `Change password' buttons.  The
+@kbd{command-L} key or the `List credentials' File-menu item may be used
+to show your tickets after you log in.  The `Logout' button destroys any
+credentials you have from previous logins.
+
+Click on the `Login' button in
+@code{CNS Config}.  Enter a correct Kerberos principal name,
+and the matching password.  Click `OK'.
+If the dialog box disappears and you don't get an error message dialog,
+you were successful at getting an initial Kerberos ticket.
+
+If you instead get an error message, here are some possible cures:
+
+@table @emph
+@item Time is out of bounds
+This means that the clock in your Macintosh is not set to within five
+minutes of the clock on your Kerberos server machine.  Kerberos requires
+that all machines in your realm know the time to within five minutes of
+each other.  Check or adjust time on your local Mac by opening the
+`Date and Time' control panel.
+
+Alternatively, you could be getting this error because your Mac's time
+zone is set wrong.  Kerberos uses Greenwich Mean Time for moving
+timestamps across the network, since you may be in a different time zone
+than your Kerberos server machine.  Open the `Map' control panel and
+verify that the correct offset from Greenwich time is in effect.  For
+example, in the Eastern United States, this value is `5' during Standard
+Time (Eastern Standard Time), or `4' during Daylight Time.
+
+After altering the time or time zone, you can retry by clicking on 
+`Login'.
+
+@item Principal unknown
+This means that the user name you entered was mistyped, or that
+your realm name was mistyped, or that your Kerberos administrator
+has never entered you into the Kerberos database.  Check particularly
+that there are no extraneous characters in your realm name, such
+as extra periods or spaces.  It should be an uppercase name
+like @code{CYGNUS.COM} with no other punctuation.
+
+@item Password incorrect
+Your user name and realm name are okay, but your password was not
+entered properly.  Try again, or have your Kerberos administrator
+set your password to a known value.
+@end table
+
+You can list your new ticket with the @kbd{Command-L} key, or the `List
+credentials' item in the File menu.
+
+
+@node Logging in to other machines
+@section Logging in to other machines
+
+We have included a preliminary version of NCSA @code{Telnet} that
+supports Kerberos for authentication.  This means you do not have to
+type your password across the net when logging in to remote machines.
+To log in:
+
+@enumerate
+@item Log in to Kerberos, getting an initial ticket, as explained above.
+
+@item Run the @code{CNS Telnet} program. 
+
+@item Click on `Open Connection' from the file menu, or press @kbd{Command-O}
+(the `apple' key plus the @emph{letter} `O').
+
+@item Click on the `authenticate' checkbox.  @code{Telnet} negotiates to use
+Kerberos Version 4 authentication with the @code{Telnet} server on the
+machine into which are logging.  (The encrypt checkbox does not work in
+this version of @code{Telnet}, though the lower level encryption
+routines in CNS Kerberos are fully functional.)
+
+@item Enter a host name to connect to.  (You need not enter a window
+name.)
+
+@item Click `Connect' or press @kbd{Return}.  A window appears,
+and initial messages from the remote system are displayed in it.  If
+your authentication is successful, you do not get a `login' prompt or
+have to type a password; instead, you see initial system messages and
+then immediately be logged-in, ready to type commands to the remote
+system.
+
+@end enumerate
+
+@strong{WARNING}: @code{Telnet} does not give any error message if the
+remote machine does not support Kerberos.  You may log in anyway, but
+you will be typing your password across the network, unencrypted.  If
+the remote machine prompts you to `login', or for a user name or
+password in the @code{Telnet} window, do not do it!  Be sure that you
+have a current ticket (list your tickets by running @code{CNS Config}
+and keying @kbd{Command-L}).  If you have a valid ticket, and you
+checked the Authenticate box when opening the connection, but you still
+get prompted for a login or password, your network administrator has not
+installed a @code{telnet} server that supports Kerberos.  Install the
+CNS Kerberos release on the remote machine; it includes the Kerberized
+@code{telnet} server.
+
+@node Miscellaneous notes
+@section Miscellaneous notes
+
+Both @code{CNS Config} and @code{CNS Kerberos} create preferences
+files in the Preferences folder inside the System folder from which
+the Macintosh boots.  These are called @file{CNS Config Preferences} and
+@file{Kerberos Client Preferences}, respectively.
+
+If you have technical questions about this release, send them to
+@strong{network-security@@cygnus.com}.
+
+KNOWN BUGS
+
+In this release, @code{CNS Config} has some known bugs.  The first time
+it runs, it does not show the realm maps.  Simply close it and run it
+again.
+
+If you select the `Change password' button or menu item in @code{CNS
+Config} the first modal dialog that appears is correct.  However, when
+you dismiss this dialog a second dialog appears.  To circumvent the bug,
+fill in the second dialog as well (using your old password).  Changing
+your password also clears your current tickets.
+
+@node Reading the Online Documentation
+@chapter Reading the Online Documentation
+
+Online documentation is provided in both ASCII text files, and in
+HTML files that can be displayed interactively by any Web browser.
+The supplied manuals are:
+
+@table @code
+@item mac.txt, mac.html
+This documentation, which is for end-users and system administrators
+of Macintosh machines.
+@item kerbman.txt, kerbman.html
+The main CNS Kerberos manual for Unix users.
+@item kerbapi.txt, kerbapi.html
+The Application Programmer Interface to Kerberos, for all platforms.
+@item developer-notes.txt, developer-notes.html
+Rough notes for people who are rebuilding CNS Kerberos from source code,
+or fixing bugs or adding features to CNS Kerberos.
+@end table
+
+To read the text files, double-click them; TeachText or SimpleText
+should be able to display them, unless they are too large, in which case
+you must use MPW or a word processor.
+
+To read the HTML files, run a web browser such as NCSA Mosaic or
+Netscape, and select `Open' from the File menu.  Specify one of these
+files to the file dialog that comes up.  This should give you the table
+of contents of a manual.  You can navigate around in the manual by
+clicking on the highlighted areas, or by scrolling or searching the
+document.
+
+@node Programming Mac CNS
+@chapter Programming Mac CNS
+
+Enough files should be provided in this binary release so that you
+can build your own Mac applications that use CNS Kerberos.
+
+The release includes a directory called @file{include} with a set of
+potential include files, and a C source module called
+@file{mac_stubs.c}.  Full instructions are provided in the Kerberos API
+manual.
+
+@contents
+@c end of texinfo file
+@bye

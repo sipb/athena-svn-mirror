@@ -1,0 +1,247 @@
+## common makefile fragment
+# Directory syntax: R=root, C=current, S=Separator, U=Up one level
+R=/
+C=.
+S=/
+U=../
+
+# The default system to build
+WHAT=unix
+
+# from Imake.tmpl
+SRCTOP=$(srcdir)$(S)$(BUILDTOP)
+# There must be some spaces after the tab in the second line of
+# INCLUDEFLAGS, otherwise it looks like <TAB><dash> at the start of a
+# shell command line, to the MPW Makefile conversion scripts.
+INCLUDEFLAGS= $(LOCALINCLUDE) \
+	      -I$(BUILDTOP)include -I$(SRCTOP)include -I$(srcdir)
+GLOBAL_CDEFS=$(TARGET_CDEFS) $(SHMFLAG) $(SITE_CDEFS) $(NOENCFLAG)
+CFLAGS_LINK=$(DBG)
+CFLAGS=$(CFLAGS_LINK) $(INCLUDEFLAGS) $(DEFINES) $(GLOBAL_CDEFS)
+DEPEND=$(BUILDTOP)util$(S)makedepend$(S)makedepend
+
+INSTALL = $(SRCTOP)$(U)install.sh -c
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL_DATA = $(INSTALL) -m 644
+
+srcdir=
+VPATH=$(srcdir)
+prefix = $(R)usr$(S)kerberos
+
+# prefix will have been set by configure
+USRDIR= $(prefix)
+SVRDIR= $(USRDIR)$(S)etc
+DAEMDIR= $(USRDIR)$(S)etc
+PROGDIR=$(USRDIR)$(S)bin
+LIBDIR= $(USRDIR)$(S)lib
+INCLDIR= $(USRDIR)$(S)include
+MANDIR= $(USRDIR)$(S)man
+INFODIR= $(USRDIR)$(S)info
+### /* KDBDIR has the acl's and the key database */
+KDBDIR=$(USRDIR)$(S)database
+### /* KLOGDIR has the security related logs */
+KLOGDIR=$(USRDIR)$(S)database
+SITE_KRB_REALM=error-default-realm
+SRVTAB_FILE =$(R)etc$(S)krb-srvtab
+### /* this is where krb.realms and krb.conf go. */
+CONFDIR=$(LIBDIR)
+### /* this is where installation and testing scripts go */
+INSTDIR=$(USRDIR)$(S)install
+
+### /*
+###  * Define NOENCRYPTION if you do not have the DES library.
+###  */
+### /* #define NOENCRYPTION */
+
+### /*
+###  * Define NEED_SETENV if you don't have setenv() in your libc.
+###  * (likely for older 4.3 systems and pre-4.3 systems)
+###  */
+# used in lib/krb/Imakefile
+#define NEED_SETENV
+SETENVSRCS = setenv.c
+SETENVOBJS = setenv.$(OBJEXT)
+
+### /*
+###  * Define TKT_SHMEM if you want to use shared memory for the session
+###  * keys in your ticket caches.
+###  */
+# used in lib/krb/Imakefile, 
+# via SHM_FLAG: dest_tkt.c, in_tkt.c, tf_util.c, 
+### /* #define TKT_SHMEM */
+
+### if you don't have flock() (ie, posix) then clear this
+FLOCK=-DMAIL_USE_FLOCK
+
+# Filename extensions for file types
+LIBEXT=a
+OBJEXT=o
+EXEEXT=
+
+KRB_LIB=$(BUILDTOP)lib$(S)krb$(S)libkrb.$(LIBEXT)
+KRB_LIBDEP=$(KRB_LIB)
+KADM_LIB=$(BUILDTOP)lib$(S)kadm$(S)libkadm.$(LIBEXT)
+KADM_LIBDEP=$(KADM_LIB)
+ACL_LIB=$(BUILDTOP)lib$(S)acl$(S)libacl.$(LIBEXT)
+ACL_LIBDEP=$(ACL_LIB)
+KSTREAM_LIB=$(BUILDTOP)lib$(S)kstream$(S)libkstream.$(LIBEXT)
+KSTREAM_LIBDEP=$(KSTREAM_LIB)
+
+# Since this is just a Makefile, these #ifdefs are really comments:
+#ifdef NOENCRYPTION
+#NOENCFLAG=-DNOENCRYPTION
+#DES_LIBDEP=
+#DES_LIB=$(BSDLIB)
+#else
+NOENCFLAG=
+DES_LIBDEP=$(BUILDTOP)lib$(S)des$(S)libdes.$(LIBEXT)
+DES_LIB=$(DES_LIBDEP) $(BSDLIB)
+#endif
+
+KDB_LIBDEP=$(BUILDTOP)lib$(S)kdb$(S)libkdb.$(LIBEXT)
+KDB_LIB=$(BUILDTOP)lib$(S)kdb$(S)libkdb.$(LIBEXT) $(LIBNDBM)
+
+## a target should include the line SHMFLAG=-DTKT_SHMEM if they use SHMEM.
+### /*
+###  * The name of a command which compiles error tables.
+###  */
+AWK=awk
+### /* these are invoked as $(...) foo.et, which works, but could be better */
+COMPILE_ET_H= $(AWK) -f $(SRCTOP)util$(S)et$(S)et_h.awk outfile=$@
+COMPILE_ET_C= $(AWK) -f $(SRCTOP)util$(S)et$(S)et_c.awk outfile=$@
+.SUFFIXES:  .h .c .et .ct
+
+.et.h:
+	$(AWK) -f $(SRCTOP)util$(S)et$(S)et_h.awk outfile=$*.h $<
+
+.et.c:
+	$(AWK) -f $(SRCTOP)util$(S)et$(S)et_c.awk outfile=$*.c $<
+
+### /*
+###  * The name of a command which compiles command tables.
+###  */
+MAKE_COMMANDS= $(BUILDTOP)util$(S)ss$(S)mk_cmds
+.ct.c:
+	$(MAKE_COMMANDS) -o $@ $<
+### /*
+###  * Loader argument to get the com_err library
+###  */
+COM_ERR = $(BUILDTOP)util$(S)et$(S)libcom_err.$(LIBEXT)
+### /*
+###  * Dependency name for COM_ERR, if any
+###  */
+COM_ERR_DEP = $(COM_ERR)
+### /*
+###  * Loader argument to get the ss library
+###  */
+SS_LIB = $(BUILDTOP)util$(S)ss$(S)libss.$(LIBEXT)
+### /*
+###  * Dependency name for SS_LIB, if any
+###  */
+SS_LIBDEP = $(SS_LIB)
+
+### /* 
+###  * Define OLD_COMPAT if you want to be able to link old binaries with
+###  * the new library names
+###  */ 
+# used in lib/des/Imakefile, lib/krb/Imakefile
+### /* #define OLD_COMPAT */
+
+### /*
+###  * Define DEBUG_LIBS if you want to create versions of the libraries
+###  * that have useful debugging information (the default rules will strip
+###  * out extra symbols, including debugging symbols, from the symbol
+###  * table.)  NOTE:  This only works if you do NOT turn on PROFILED_LIBS
+###  * below.
+###  * NOTE:  this doesn't turn on the debugging flag for your compiler; do
+###  * that with the DBG make variable, below.
+###  */
+#define DEBUG_LIBS
+
+### /*
+###  * Define PROFILED_LIBS if you want to create profiled versions of the
+###  * libraries used in Kerberos
+###  */
+### /* #define PROFILED_LIBS */
+
+### /*
+###  * Define PROF_FLAG to be the flag to be passed to your C compiler to
+###  * turn on profiling.  For 4.3BSD on a VAX, this should probably be -pg.
+###  * For most other systems, it should probably be -p
+###  */
+### /* #define PROF_FLAG -p */
+
+### /*
+###  * Delete a library file. This broken out so that it may be 
+###  * selectively turned off (for example under DOS).
+###  */
+RMLIB= $(RM)
+### /*
+###  * The name of a command which builds an object library.
+###  */
+ARCHIVE= ar cru
+### /*
+###  * The name of another program needed to post-process the archive.
+###  */
+RANLIB= ranlib
+
+### /* 
+###  * Install commands:  installs a file into the destination tree.
+###  * These commands are called with two arguments: the source and the
+###  * destination of the install.
+###  */
+# since fix-prot sets the modes, never use install at all.
+### /* install a file */
+INSTALLFILE= $(INSTALL_DATA)
+### /* install a library */ 
+INSTALLLIB= $(INSTALL_DATA)
+### /* install a program */
+INSTALLPROG= $(INSTALL_PROGRAM)
+### /* invoke raw install program */
+INSTALLRAW= $(INSTALL_DATA)
+### /* install a program which should run as root */
+INSTALLSUID= echo "FIX UID:"; $(INSTALL_PROGRAM)
+
+# /* The name of the target's linker */
+LD=ld
+
+# /* The name of the target's assembler */
+AS=as
+
+# /* The name of the C compiler for the target */
+CC=gcc
+
+# /* Compile with initialized data read-only [cc -R]
+# & shared (if possible) */
+CCRO=$(CC)
+
+# /* A command which invokes the C preprocessor */
+CPP=$(CC) -E
+
+# /* Debug or optimize? */
+DBG=-g -O
+DBG_LIB=-g -O
+
+# /* Program to index source files */
+TAGGER=etags
+
+# /* delete one or more files/directories/links */
+RM=rm -f
+
+# /* rename/move a file */
+MV=mv
+
+# /* copy a file */
+CP=cp
+
+# /* create a link */
+LN=ln -s
+
+# /* print a file or files */
+LPR=lpr -p
+
+# /* change mode of a file */
+CHMOD=chmod
+
+################### end of config.Imakefile stuff ######################
+TERMLIB=-ltermcap

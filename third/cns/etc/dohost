@@ -1,0 +1,17 @@
+#!/bin/sh
+DIR=$1; shift
+if [ -d /usr/progressive/bin/ ]; then
+	PATH=/usr/progressive/bin:$PATH
+	CC=gcc
+else if [ -d /usr/latest/bin/ ]; then
+	PATH=/usr/latest/bin:$PATH
+	CC=gcc
+else
+	CC=cc;
+fi
+fi
+	export CC;
+export PATH
+cd $DIR
+sh kerberos/etc/buildme4
+sh kerberos/etc/packageme4

@@ -1,0 +1,162 @@
+Tue Jun  4 23:18:55 1996  Marc Horowitz  <marc@mit.edu>
+
+	* secure.c: conditionalize sys_errlist declaration on
+ 	HAVE_SYS_ERRLIST_DECL
+	* ftpd.c: conditionalize sys_errlist declaration on
+ 	HAVE_SYS_ERRLIST_DECL
+	* Makefile.in ($(ALL)): link ftpd against $(CRYPT_LIB), for
+ 	netbsd, which has this in a separate library
+
+Wed Oct 25 14:55:31 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* popen.c (strdup): define locally (as local_strdup) if HAS_STRDUP
+	isn't set.
+
+Wed Oct 25 00:11:43 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* ftpcmd.y: reorder definitions (errcatch, #defines, struct tab
+	type definition, cmdtab and sitetab declarations) so they are in
+	the correct yacc declaration section.
+
+Tue Oct 24 16:09:17 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* secure.c (secure_putbuf, secure_getbyte): use getsockname and
+	getpeername directly on the data channel in order to get the right
+	bindings for krb_mk/rd_priv/safe.
+	* secure.h: no longer need to set hisaddr, myaddr.
+
+Fri Oct 13 13:16:54 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* popen.c (ftpd_popen): malloc (strdup) everything, so everything
+	can be freed consistently later.
+
+Wed Jul 26 21:03:13 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* secure.c: Include string.h.
+
+	* ftpd.c (main): Cast signal() return value to long instead of
+	int; it's more likely to fit.
+
+Thu Feb  2 13:41:24 1995  Ian Lance Taylor  <ian@cygnus.com>
+
+	* ftpcmd.y (NBBY): Explicitly define if __pyrsoft and MIPSEB.
+	(cmd_list): In handling of SYST, undefine BSD if __svr4__ is
+	defined.
+
+	* ftpd.c: Don't try to use IP_TOS if the IP_TOS argument
+	(IPTOS_LOWDELAY, etc.) is not defined.
+
+Wed Jan 18 17:12:22 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* ftpd.8: Include man1/tmac.doc.
+
+Wed Jan 11 15:29:10 1995  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* ftpd.c (authenticate): New variable.
+	(main): Handle -a (require authentication) option.
+	(user): If authenticate is set, reply with an error if kuserok
+	fails or if no Kerberos authentication was used.
+	* ftpcmd.y: Use check_login when parsing the PASV command.
+	* ftpd.8: Document new -a option.
+
+Tue Jan  3 01:25:57 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (clean): explicitly delete ftpcmd.c on clean.
+
+Thu Dec 29 15:17:12 1994  Mark Eichin  <eichin@cygnus.com>
+
+	* ftpcmd.y (rcmd): don't declare atol, since it isn't used here
+	anyhow, and it's a macro under linux.
+	(top level): #define NBBY 8 for linux.
+
+Thu Dec 29 14:51:41 1994  Mark Eichin  <eichin@cygnus.com>
+
+	* ftpd.c (statcmd): don't use NBBY check -- linux doesn't have it,
+	it is in no spec, and if it isn't 8, it won't work anyway. (Use
+	strcat instead of sprintf, while we're at it...)
+
+Tue Dec 27 16:29:24 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* ftpcmd.y (reply, lreply): Declare if STDARG || (__STDC__ && !
+	VARARGS).
+	* ftpd.c:  If STDARG is defined, or if __STDC__ is defined and
+	VARARGS is not defined, include <stdarg.h>.
+	(secure_error): Use <stdarg.h> routines if STDARG || (__STDC__ &&
+	! VARARGS).
+	(reply, lreply): Likewise.
+	(setproctitle): Just use one argument.
+	* secure.c (secure_error): Declare if STDARG || (__STDC__ && !
+	VARARGS).
+
+Fri Dec 23 16:25:44 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* ftpcmd.y (unix): Define if _AIX is defined (AIX compiler does
+	not predefine unix).
+
+Thu Dec 22 15:05:14 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* ftpd.c (keyfile): New global variable.
+	(main): Move option processing before check of remote socket.  Add
+	new options -p, -r, and -s.  Handle -p by accepting a remote
+	connection.
+	(kpass): Use keyfile variable rather than KEYFILE.  Pass keyfile
+	explicitly to krb_rd_req.
+	(auth_data): Likewise.
+	* ftpd.8: Document new -p, -r, and -s options.
+
+Fri Dec 16 11:06:16 1994  Ian Lance Taylor  <ian@cygnus.com>
+
+	Fixes for HP/UX:
+	* ftpd.c: On HP/UX, define seteuid and setegid as macros which
+	call setresuid and setresgid.
+
+	Fixes for UnixWare:
+	* ftpd.c (main): Use a temporary variable rather than calling
+	htons(ntohs(X)).
+	* ftpcmd.y: Include conf.h.
+	(getline): Cast arguments to Kerberos routines to avoid warnings.
+	(toolong): Declare as type sigtype, and add dummy argument.
+
+	Fixes for SCO:
+	* cmdtab.y: Include <sys/types.h>.
+	* ftpd.c (initgroups): Define on SCO.
+	(main): Don't handle SIGURG if it is not defined.
+	(pass): Don't try to use crypt on SCO; instead, require Kerberos
+	password or anonymous login.
+
+	Fixes for AIX:
+	* ftpcmd.y (index): Don't define.
+	(strpbrk, strcpy): Don't declare.
+	* ftpd.c (index, rindex): Don't define.
+	* logwtmp.c (strncpy): Don't declare.
+	* secure.c: Include <netinet/in.h>.
+
+	Fixes for Ultrix:
+	* ftpd.c (main): Define LOG_NDELAY and LOG_DAEMON as zero if they
+	are not already defined by <syslog.h>.
+
+	Fixes for Irix 4:
+	* ftpd.c (retrieve): Don't refer to st_blksize if NOSTBLKSIZE is
+	defined.
+
+	* ftpcmd.y: Fix yacc code to use %union and %type.
+	(yylex): Assign to fields of yylval, rather than to yylval
+	directly.
+
+	General fixes to make it compile on Solaris: Use sigtype for
+	signal handler return values, including conf.h where needed.  Add
+	a dummy argument to signal handler functions. Replace index,
+	rindex, bzero and bcopy with ANSI C functions.  Cast Kerberos
+	routine arguments to avoid warnings.  Also:
+	* ftpd.c: Don't include <varargs.h>.  If POSIX is defined, include
+	unistd.h, otherwise define getcwd to call getwd.
+	(L_SET, L_INCR): Define if not defined.
+	(pwd): Use getcwd instead of getwd.  If POSIX, change the error
+	handling accordingly.
+	* popen.c (getdtablesize): New function on hpux or __svr4__.
+	(ftpd_pclose): If WAIT_USES_INT, use int instead of union wait.
+
+Thu Dec 15 16:13:44 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Initial checkin.  Based on Steve Lunt's ftp program, which was
+        based on BSD code.

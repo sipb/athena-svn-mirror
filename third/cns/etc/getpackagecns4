@@ -1,0 +1,17 @@
+#!/bin/sh
+# if a package has been built but not renamed, use this. 
+host=$1
+cd $host
+hostos=`echo $host | sed 's/^[^-]*-//'`
+mv cns4-bin.taz ../$host-cns4-bin.taz
+if [ -r pkgdir/CNS4.pkg ] ; then
+	mv pkgdir/CNS4.pkg ../$host-CNS4.pkg
+	mv pkgdir/CNS4-SRC.pkg ../$host-CNS4-SRC.pkg
+fi
+cd ..
+for i in cns4-bin.taz CNS4-SRC.pkg CNS4.pkg; do
+	if [ -r $host-$i ] ; then
+		ln -s $host-$i $hostos-$i
+		ls -al $host-$i $hostos-$i
+	fi
+done

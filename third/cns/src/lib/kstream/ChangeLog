@@ -1,0 +1,108 @@
+Wed Feb 1 12:00:00 1995  John Rivlin  <jrivlin@cygnus.com>
+
+	* Makefile.in: Create install-windows target
+
+Tue Jan 7 12:00:00 1994  John Rivlin  (jrivlin@fusion.com)
+
+	* kstream_.c: Removed fprintf calls when DEBUG on.
+
+	* kstream.c: Changed calls to fifo__.. routines to use NULL
+	rather than 0 for pointer values.  Without prototypes on
+	PC 0 produces a short rather than ptr size value.
+	Removed fprintf calls when DEBUG on.
+
+	* Makefile.in: Added compiler switch to compile for a DLL.
+
+Tue Nov  8 14:57:53 1994  Ken Raeburn  <raeburn@cujo.cygnus.com>
+
+	* kstream_des.c [POSIX]: Include stdlib.h.
+
+Mon Oct 31 19:41:26 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* Makefile.in (CODE): Use Makefile.in instead of Imakefile.
+
+Fri Oct 28 15:23:37 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* kstream_des.c (losing_realloc): Cast realloc and malloc return
+	values.
+
+Fri Sep 23 12:00:00 1994  John Rivlin (jrivlin@fusion.com)
+
+	*kstream-int.h: Renamed to kstream_int.h to avoid syntax problems
+	in LIB command on Windows.
+
+	*kstream-des.c: Renamed to kstream_des.c to avoid syntax problems
+	in LIB command on Windows. Use library functions srand and rand
+	instead of random and srandom under Windows as the latter are
+	not defined.
+
+	*Makefile.in: Update to build on Windows in a manner similar
+	to des and kadm libraries.
+
+	*kstream-des.c: Add varios casts to keep Windows compiler happy.
+
+	*kstream.c: Get rid of errno for Windows.  Add INTEFACE specs
+	to external routines.  Define STATIC to avoid statically exported
+	routines on Windows.
+
+Fri Aug 12 17:14:18 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* kstream-des.c: remove system declarations, add <errno.h>; all of
+	them should have been available from header files (and memset was
+	in conflict on the alpha.)
+
+Wed Jun 22 15:37:40 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* kstream.c (kstream_read) [DEBUG]: Make sure printf format and
+	argument types agree, by casting everything to unsigned long and
+	using "%lu" format.
+
+	* kstream-des.c (do_encrypt): Make time() argument correct type.
+
+Fri Jun 10 22:43:21 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kstream-int.h:  #include "krb.h" to get interface defns.
+	Pull RCS crud.  Update copyright.  Remove extraneous #define const.  
+	* kstream-des.h:  Pull RCS crud.
+
+Tue May 24 06:34:31 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kstream-des.c:  Roll together __STDC__ PROTOTYPES of functions.
+	Fix calls to des_pcbc_encrypt and pcbc_encrypt.
+
+Fri May 20 01:34:22 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in:  Use $(LIBEXT).  Don't keep .bak files.
+
+Sat May  7 19:30:35 1994  John Gilmore  (gnu@cygnus.com)
+
+	* kstream_des.c:  Remove <sys/types.h>, unused.
+
+Mon Dec 20 02:47:53 1993  Stu Grossman  (grossman@tweedledumb.cygnus.com)
+
+	* kstream.c (kstream_write):  Call write directly if not
+	doing encryption.  This indirectly fixes a problem with rlogind's
+	usage of non-blocking I/O by not running through krb_net_write,
+	which can't hack that.  It also greatly simplifys the write path.
+
+Wed Jun 30 20:50:32 1993  Mark Eichin  (eichin at tweedledumber)
+
+	* kstream-des.c (decrypt): if protect_rlogin_oob is set, detect
+	that the MSB of the length is non-zero and assume that it is
+	"lost" out-of-band data (and skip it.
+	(_kstream_des_debug_OOB): if set, print out any skipped data for
+	the user.
+
+Thu Feb 11 12:54:06 1993  Ken Raeburn  (raeburn@cambridge.cygnus.com)
+
+	* kstream-des.c (do_encrypt): Handle arbitrary sizes up to 16
+	bytes with padding, so rlogin works.
+	(encrypt): Pass chunks up to 16 bytes without fragmenting.
+	(decrypt): Test assertion that the size of the incoming packet is
+	no larger than our buffer size.
+
+	* kstream.c: Include errno.h.
+	(errno): Declare it.
+	(kstream_read): If insufficient space is available, set errno to
+	ENOMEM, and print a message if DEBUG is defined.  If reading from
+	the net fails, and DEBUG is defined, call perror.

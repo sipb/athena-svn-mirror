@@ -1,0 +1,117 @@
+#### insert configury here
+BUILDTOP=$(C)$(S)$(U)$(U)
+LIBOBJS=   error_message.o et_name.o init_et.o com_err.o
+# for et_lex.lex.c include in error_table.y
+LOCALINCLUDE=-I. 
+
+FILES=	Makefile et_name.c error_message.c compile_et.c \
+		et_lex.lex.l error_table.y init_et.c \
+		com_err.c com_err.h \
+		error_table.h mit-sipb-copyright.h \
+		test_et.c test1.et test2.et \
+		compiler.h internal.h \
+		com_err.texinfo texinfo.tex
+CFILES=	compile_et.c error_table.c error_message.c et_name.c \
+	init_et.c com_err.c
+
+SRCS=$(CFILES)
+
+#
+# what to build...
+#
+
+# cause "all" to become the default target
+all:: compile_et
+
+#
+# rules
+#
+error_table.o: et_lex.lex.c
+
+# for sunmake
+et_lex.lex.c: et_lex.lex.l
+error_table.c: error_table.y
+
+#
+# real entries...
+#
+
+
+#all:: compile_et
+
+install:: install-prog install-headers install-man install-lib
+
+clean:: clean-prog clean-lib clean-other
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+compile_et: compile_et.o error_table.o
+	$(CC) $(CFLAGS) -o $@ compile_et.o error_table.o $(BSDLIB)
+	
+install-prog::
+	$(INSTALLPROG) compile_et ${DESTDIR}$(PROGDIR)/compile_et
+
+clean-prog::
+	$(RM) compile_et compile_et.o error_table.o
+
+depend:: 
+
+install-headers:: com_err.h mit-sipb-copyright.h
+	$(INSTALLFILE) $(srcdir)/com_err.h  $(DESTDIR)$(INCLDIR)/com_err.h
+	$(INSTALLFILE) $(srcdir)/mit-sipb-copyright.h $(DESTDIR)$(INCLDIR)/mit-sipb-copyright.h
+
+install-man:: com_err.3 compile_et.1
+	$(INSTALLFILE) $(srcdir)/com_err.3 ${DESTDIR}${MANDIR}/man3/com_err.3
+	$(INSTALLFILE) $(srcdir)/compile_et.1 ${DESTDIR}${MANDIR}/man1/compile_et.1
+
+
+all:: libcom_err.a
+
+libcom_err.a: $(LIBOBJS)
+	$(RM) $@
+	$(ARCHIVE) $@ $(LIBOBJS)
+	$(RANLIB) $@
+
+clean-lib::
+	$(RM) libcom_err.a
+	$(RM) $(LIBOBJS)
+
+install-lib::
+	$(INSTALLLIB) libcom_err.a $(DESTDIR)$(LIBDIR)/libcom_err.a
+	$(CHMOD) 644 $(DESTDIR)$(LIBDIR)/libcom_err.a
+	$(RANLIB)    $(DESTDIR)$(LIBDIR)/libcom_err.a
+	$(CHMOD) 444 $(DESTDIR)$(LIBDIR)/libcom_err.a
+## 
+
+clean-other::
+	rm -f *~ \#* *.bak \
+		*.otl *.aux *.toc *.PS *.dvi *.x9700 *.ps \
+		*.cp *.fn *.ky *.log *.pg *.tp *.vr \
+		*.o profiled/?*.o libcom_err.a libcom_err_p.a \
+		com_err.o compile_et \
+		et.ar TAGS y.tab.c lex.yy.c error_table.c \
+		et_lex.lex.c \
+		test1.h test1.c test2.h test2.c test_et \
+		eddep makedep *.ln
+
+
+
+com_err.ps : com_err.dvi
+com_err.dvi: com_err.texinfo
+
+libcom_err.o:	$(LIBOBJS)
+	ld -r -s -o libcom_err.o $(LIBOBJS)
+	chmod -x libcom_err.o
+
+
+archive:	et.tar
+
+TAGS:	et_name.c error_message.c compile_et.c error_table.c \
+		lex.yy.c init_et.c
+	etags et_name.c error_message.c compile_et.c \
+		error_table.c init_et.c
+
+depend::  et_lex.lex.c
+

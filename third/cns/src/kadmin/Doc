@@ -1,0 +1,4 @@
+1> get_pw_tkt uses KRB_MASTER as defined in krb.h
+   not from the ticket file
+
+2> 

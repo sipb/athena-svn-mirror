@@ -1,0 +1,3294 @@
+\input texinfo  
+
+@finalout
+@setfilename kerb-man
+
+@ifinfo
+
+@emph{Cygnus Network Security
+---User and Administrator Documentation for CNS Version 1,}
+by Cygnus Support.
+
+CNS includes man pages and software developed at the Massachusetts
+Institute of Technology, which includes this copyright information:
+
+Copyright @copyright{} 1989 by the Massachusetts Institute of Technology
+ 
+@quotation
+Export of software employing encryption from the United States of
+America is assumed to require a specific license from the United
+States Government.  It is the responsibility of any person or
+organization contemplating export to obtain such a license before
+exporting.
+@end quotation
+ 
+WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+distribute this software and its documentation for any purpose and
+without fee is hereby granted, provided that the above copyright
+notice appear in all copies and that both that copyright notice and
+this permission notice appear in supporting documentation, and that
+the name of M.I.T. not be used in advertising or publicity pertaining
+to distribution of the software without specific, written prior
+permission.  M.I.T. makes no representations about the suitability of
+this software for any purpose.  It is provided ``as is'' without express
+or implied warranty.
+
+Copyright @copyright{} 1991, 1992, 1994, 1995 Cygnus Support
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission 
+notice are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+@end ifinfo
+
+@setchapternewpage odd
+@settitle Cygnus Network Security
+@titlepage
+@finalout
+@title Cygnus Network Security
+@subtitle User and Administrator Documentation for CNS Version 1
+@sp 2
+@subtitle January 1995
+@vfill
+@author Mark Eichin
+@author Pat McGregor
+@author Cygnus Support
+
+@page
+
+@vskip 0pt plus 1filll
+
+@emph{Cygnus Network Security
+---User and Administrator Documentation for CNS Version 1,}
+by Cygnus Support.
+
+CNS includes man pages and software developed at the Massachusetts
+Institute of Technology, which includes this copyright information:
+
+Copyright @copyright{} 1989 by the Massachusetts Institute of Technology
+
+@quotation
+Export of software employing encryption from the United States of
+America is assumed to require a specific license from the United
+States Government.  It is the responsibility of any person or
+organization contemplating export to obtain such a license before
+exporting.
+@end quotation
+
+WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+distribute this software and its documentation for any purpose and
+without fee is hereby granted, provided that the above copyright
+notice appear in all copies and that both that copyright notice and
+this permission notice appear in supporting documentation, and that
+the name of M.I.T. not be used in advertising or publicity pertaining
+to distribution of the software without specific, written prior
+permission.  M.I.T. makes no representations about the suitability of
+this software for any purpose.  It is provided ``as is'' without express
+or implied warranty.
+
+Copyright @copyright{} 1992, 1994, 1995 Cygnus Support.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+@end titlepage
+
+@ifinfo
+@node Top
+@top Cygnus Network Security
+
+@menu
+* Introduction::		A brief introduction to CNS
+* User Programs::		General user applications
+* Config Decisions::		Finding current realm and other realms
+* Administration Tools::	Managing a realm
+* Daemons::			Providing Kerberos-based services
+* Glossary::			A brief description of Kerberos terms
+* Authors::			authors and contributors
+* Appendix::                    SecureNet Key Authentication Device
+@end menu
+@end ifinfo
+
+@node Introduction
+@chapter Introduction
+
+@menu
+* CNS Description::	How does CNS work?
+* Bibliography::	Where to get more information
+@end menu
+
+@quotation
+@emph{@strong{Kerberos} The three-headed dog @dots{} guards the entrance
+to Hades.  He kept the living from entering the infernal regions@dots{}}
+@end quotation
+
+@emph{---Dictionary of Classical Mythology--Zimmerman}
+
+Today more than ever, system administrators must balance the ease and
+convenience of Internet access, against the need for system security and
+confidentiality.  There are many tools that can be used to reach and
+manipulate information at remote sites.  Unscrupulous users can pervert
+these tools to gain unauthorized access to connected systems.  It is
+relatively easy, for example, to steal login IDs and unencrypted
+passwords passing over the network during remote logins by legitimate
+users.
+ 
+Popular networking programs such as @code{rlogin}, @code{rsh}, and
+@code{rcp}, were developed when there were few machines on the network,
+and those were owned and managed by central organizations rather than
+individuals.  At that time, the Internet was primarily a research
+network, and it was reasonable to trust a machine's indication that it
+was being used by a particular person.
+
+This is no longer the case.  There are now millions of inexpensive,
+individually owned, machines on the network.  In the current Internet
+environment, it is no longer prudent to trust individual machines over
+the network.  There is no assurance that such machines have adequately
+verified their users, nor even that the machine is not being
+impersonated by another.
+
+Cygnus Support developed Cygnus Network Security (CNS) to provide strong
+system access security, with minimal impact on users' ease of access.
+Using Kerberos Version 4 encryption and client-server technology, CNS
+assures that user identities can be checked securely without
+transmitting passwords in clear over the network.
+
+@node CNS Description
+@section How does CNS work?
+
+CNS is based on Kerberos.  Kerberos uses a single trusted server, which
+other systems access over the network.  The Kerberos server
+@dfn{authenticates} users and application servers.  It guarantees that
+authorized users are who they say they are.  Kerberos sends this
+information is sent across the network encrypted.  Each user and
+application server has a unique secret encryption key it shares with the
+Kerberos server.  These secret keys are based on the password of the
+user or application server.  Kerberos never sends passwords across the
+network in the clear (unencrypted).  Even if an attacker could examine
+all data sent across the network, the attacker would not be able to
+learn these passwords.@footnote{Kerberos authentication assumes the
+Kerberos server is secure.  If an attacker gains superuser access to the
+machine, the attacker may be able to masquerade as an authorized user.}
+
+Kerberos provides users with @samp{tickets} they can use to identify
+themselves to application servers.  A ticket is a sequence of several
+hundred bytes encrypted for a particular user and application.  Kerberos
+tickets can be embedded in most network protocol.@footnote{Practically
+speaking, Kerberos is mostly used in application-level protocols [ISO
+model level 7], such as TELNET or FTP, to provide user to host security.
+It is also used as the implicit authentication system of data stream
+[such as SOCK_STREAM] or RPC mechanisms [ISO model level 6].  It could
+also be used at a lower level for host to host security, in protocols
+like IP, UDP, or TCP [ISO model levels 3 and 4].  Such implementations
+are rare, if they exist at all.}  Users must decrypt the tickets, using
+their correct passwords, before the tickets can be used.@footnote{All
+cryptographic manipulations are done by programs; all the CNS user has
+to do is enter a password.}  The tickets also contain temporary secret
+cryptographic keys (session keys) that permit secure communications
+during individual transactions in addition to secure authentication.
+This is important if you must type a password on the remote machine.
+Using encryption ensures that an attacker watching the network does not
+know what you type.  Encryption is optional because it is
+computationally intensive, and thus slower.
+
+Generally, the first ticket you get from the server is a
+@dfn{ticket-granting ticket}.  It provides authentication to the
+Kerberos server and permits users to get more tickets without having to
+enter their passwords repeatedly.  (Kerberos keeps user passwords in
+memory only long enough to obtain ticket-granting tickets.)  After the
+ticket-granting ticket, subsequent tickets are issued automatically by
+the Kerberos server at the request of CNS applications.  For example, if
+you run the CNS @code{rlogin} program, which starts a login shell on a
+remote machine, you automatically get a ticket for the @code{rlogin}
+service on the remote machine.  The @code{klogind} daemon running on the
+remote machine accepts the ticket as proof of identify and permits the
+login (if CNS has been installed on the remote
+machine).@footnote{Neither users nor application servers know each
+others' cryptographic keys.}
+
+There are Kerberos versions of other familiar network utilities such as
+@code{rlogin}, @code{rcp} and @code{rsh}.  The @code{klogind} daemon is
+an example of an @dfn{application server}.  Each application server has
+a cryptographic keys with which to authenticate itself to the Kerberos
+server.@footnote{Cryptographic keys are kept in a file (normally
+@file{/etc/krb-srvtab}) on each machine which hosts application servers.
+If an attacker becomes a superuser on a remote machine, the attacker can
+replace the CNS daemon programs with programs that, for example, record
+everything the user types.  This can only be done for application
+servers which do not perform mutual authentication.  In general, the CNS
+suite of programs perform mutual authentication when using encryption,
+but not otherwise.}
+
+Currently, CNS does not support authentication forwarding.  In other
+words, if users use @code{rlogin} to login to a remote host, they cannot
+use Kerberos services from that host unless they are authenticated on it
+(for instance with @code{kinit}).  The user can obtain Kerberos tickets
+on the remote host by running CNS programs there in the usual fashion,
+but this requires typing a password.  Since this password is transmitted
+over the network, this should only be done when using an encrypted
+connection.
+
+NOTE: Because CNS software contains DES encryption technology and
+provides it as a user-callable facility, it may not be exported from the
+US without a special license from the US Department of Commerce.
+
+@node Bibliography
+@section Bibliography
+
+The papers listed below have good background information on the Kerberos
+protocol and its use in a network environment. The Internet archive
+information, when known, is listed at the end of the citation. This is
+by no means an exhaustive list of information about Kerberos. Interested
+systems administrators should consider reading the Usenet group
+@emph{comp.protocols.kerberos}.
+
+@noindent
+Jennifer G. Steiner, Clifford Neuman, Jeffrey I. Schiller.
+``Kerberos: An Authentication Service for Open Network Systems,'' 
+@cite{USENIX Mar 1988}.  @file{athena-dist.mit.edu:pub/kerberos/doc/usenix.PS}
+
+@noindent
+S. P. Miller, B. C. Neuman, J. I. Schiller, and J. H. Saltzer, 
+``Kerberos Authentication and Authorization System,'' 12/21/87.
+
+@noindent
+R. M. Needham and M. D.  Schroeder, ``Using Encryption for 
+Authentication in Large Networks of Computers,'' @cite{Communications of the 
+ACM}, Vol.  21(12), pp. 993-999 (December, 1978).
+     
+@noindent
+V. L. Voydock and S. T. Kent, ``Security Mechanisms in High-Level 
+Network Protocols,'' @cite{Computing Surveys}, Vol. 15(2), ACM (June 1983).
+
+@noindent
+Li Gong, ``A Security Risk of Depending on Synchronized Clocks,''
+@cite{Operating Systems Review}, Vol 26, #1, pp 49--53.
+
+@noindent
+S.M. Bellovin and M. Merritt, ``Limitations of the Kerberos 
+Authentication System,'' @cite{USENIX Jan 1991}. @*
+@file{research.att.com: dist/internet_security/kerblimit.usenix.ps}
+
+@noindent
+Refik Molva, Gene Tsudik, Els Van Herreweghen, and Stefano 
+Zatti, ``KryptoKnight Authentication and Key Distribution System.'' 
+@file{jerico.usc.edu: pub/gene/kryptoknight.ps.Z}
+
+@noindent
+C. Neumann and J. Kohl, ``The Kerberos(tm) Network 
+Authentication Service (V5),'' September 1993.  RFC1510.
+
+@noindent
+Barry Jaspan, @code{<bjaspan@@security.ov.com>}, compiler. @cite{Kerberos 
+Users' Frequently Asked Questions}, January 18, 1994.
+ 
+ 
+@c @subsubheading RESTRICTIONS
+@c      COPYRIGHT 1985,1986 Massachusetts Institute of Technology
+
+@node User Programs
+@chapter User Programs
+
+@menu
+* CNS Intro::		Why do you need CNS? 
+* Initial Steps::	Getting registered in CNS
+* CNS for the User::	CNS for the User
+* Replacements::	replacements for familiar network utilities
+* Ticket Management Commands::	Kerberos-specific ticket management tools
+@end menu
+
+@node CNS Intro
+@section Why do you need CNS?
+
+As a network user accessing data on a remote machine, you want to be
+certain that your password can only be used by you.  If you are hooked
+into a remote machine with a direct connection, or a modem on a single
+phone line linked into your remote machine, you can be relatively
+confident that your password is secure.  However, if you use an
+Ethernet-linked network, or use the Internet to access a remote host,
+your password is at risk.  As we said in the introduction, one of the
+easiest ways for your security to be compromised is by the theft of your
+password and login ID.  Passwords and IDs can be stolen fairly easily by
+using monitoring equipment on a network link.
+
+CNS Kerberos technology allows you to be validated locally, rather than
+having to send your passwords and login IDs over the network.  You
+authenticate yourself locally to a Kerberos server, which vouches for
+your authenticity with the remote host.  The remote host then lets you
+use Kerberos versions of familiar remote login programs such as
+@code{rlogin}.
+
+@node Initial Steps
+@section Initial Steps
+ 
+Before you can use CNS, you must be registered in the Kerberos database.
+If you are not sure if you are registered in the database, you may use
+the @code{kinit} (@pxref{kinit}) command to find out.  This command
+tries to get you a Kerberos `ticket-granting ticket'
+(@pxref{Tickets,,Kerberos Tickets}).  @code{kinit} prompts you for a
+principal name and password (for more information about Kerberos
+principal names, @pxref{Principal names,,Your Kerberos principal name}).
+If the Kerberos server issues you a ticket-granting ticket, you have
+already been registered.
+
+If you enter your username and @code{kinit} responds with this message:
+@smallexample
+Principal unknown (kerberos)
+@end smallexample
+@noindent
+you have not been registered as a Kerberos user.  See your system 
+administrator.
+
+When your system administrator registers you in the CNS database, you
+get a Kerberos username and password.  Many people use a different
+password for Kerberos authentication than for their general system
+login.  This is done to increase security.
+
+@node CNS for the User
+@section CNS for the User
+
+@menu
+* Tickets::		What are Kerberos tickets?
+* Ticket management::	Using the commands `kinit' and `kdestroy'
+* Passwords::		Kerberos password changing
+* Principal names::     Your Kerberos principal name
+* Remote access::       Remote login, shell, copy (secured by Kerberos)
+@end menu
+
+@node Tickets
+@subsection Kerberos Tickets
+
+When you authenticate yourself with Kerberos through the @code{kinit}
+command, Kerberos gives you a special ticket called a `ticket-granting
+ticket.'  (Kerberos tickets are encrypted protocol messages that provide
+authentication.)  This special ticket allows you to get tickets for
+application servers without having to enter your password again.  The
+ticket-granting ticket can be used to get tickets for network utilities
+such as @code{rlogin} and @code{rcp}.  The ticket transactions are done
+transparently, so you do not have to worry about their management.
+
+For security reasons, tickets expire.  This protects against users
+accidentally leaving ticket files around on unattended
+machines@footnote{Privileged tickets, such as @samp{root instance}
+tickets, expire in a few minutes, while tickets that carry more ordinary
+privileges may be good for several hours or a day, depending on the
+installation's policy.}.  If your login session extends beyond the time
+limit of your ticket-granting ticket, you have to re-authenticate
+yourself to Kerberos to get a new one.  Use the @code{kinit} command to
+re-authenticate yourself.
+
+If you use the @code{kinit} command to get your tickets, make sure you
+use the @code{kdestroy} command to destroy your tickets before you end
+your login session.  You should probably put the @code{kdestroy} command
+in your @file{.logout} file so that your tickets is destroyed
+automatically when you logout.  For more information about the
+@code{kinit} and @code{kdestroy} commands, see @ref{kinit} and
+@ref{kdestroy}.
+
+@node Ticket management
+@subsection Command specifics: @code{kinit}, @code{kdestroy}, @code{klist}
+
+@code{kinit} (@pxref{kinit,,@code{kinit}---Kerberos login utility})
+requests an initial ticket-granting ticket from Kerberos, then prompts
+for your password and uses it to decrypt the ticket.  By default, this
+ticket is valid for ten hours (to cover a typical eight hour workday).
+The ticket is stored in a file in @file{/tmp/tkt@var{uid}} (where
+@var{uid} specifies your identification number) on the local machine.
+
+@code{kdestroy} (@pxref{kdestroy,,@code{kdestroy}---destroy Kerberos
+ticket}) purges the contents of your ticket file and then deletes the
+file itself, to prevent any later users from using the tickets to access
+services.
+
+@code{klist} (@pxref{klist,,@code{klist}---list currently held tickets})
+shows what tickets you currently have and when they are due to expire.
+This is most useful for determining if you even have tickets, and for
+various debugging purposes.
+
+@node Passwords
+@subsection Changing your password
+
+All the general rules for passwords apply to your CNS authentication
+password.  Obviously, they should not be words found in standard
+dictionaries, names of people related to you or with whom you have a
+relationship, numbers like your phone number or social security number.
+Gibberish or nonsense syllables that you can easily remember make good
+passwords.  In general, you should choose a password that is easy for
+you to remember, yet difficult for others to guess.  (For more
+information on choosing a good password, see your system administrator.)
+No matter how well constructed, passwords should be changed once in
+awhile to provide greater security.
+
+@code{kpasswd} (@pxref{kpasswd,,@code{kpasswd}---changing Kerberos
+passwords}) allows you to change your Kerberos authentication password,
+which may be different from the one you use to log in to your local
+machine.
+
+@node Principal names
+@subsection Your Kerberos principal name
+
+Every Kerberos user and application server has a Kerberos principal
+name.  Principal names are of the form @samp{principal.instance@@realm}.
+The following are all valid Kerberos principal names.
+
+@example
+harry
+tina.root
+lmb@@barryar.navy.mil
+rlogin.miles@@barryar.navy.mil
+@end example
+
+@noindent The @var{primary} name is the name of the user on the
+service.  Other names may use the same user's ID on another system, or
+trusted users on the same or other systems.  The @var{instance} is
+used to distinguish among variations on the principal name.  For
+users, the instance is usually null, but if used may indicate special
+privileges, such as ``root'' privileges.  In many environments, the
+instance is usually the name of the machine on which the server runs.
+@var{realm} is usually the business or institution at which the
+machine is located.  If no realm is given, the local realm is assumed.
+In the example above, @var{rlogin.miles,} is the @code{rlogin} server
+on the machine @samp{miles}.  In the example @var{harry}, the
+principal is the local realm where the server is running.
+
+@node Remote access
+@subsection Remote access to hosts (secured by Kerberos)
+
+CNS provides enhanced versions of the Berkeley r-programs.  If you are
+familiar with the Berkeley programs, it will be easy for you to use the
+CNS versions.  (If you are not familiar with these programs, they are
+described in @ref{Replacements}).
+
+The Berkeley @code{rlogin} program has been enhanced to use Kerberos to
+secure the connection.  Kerberos' @code{rlogin} looks the same as a
+standard or system @code{rlogin} session, except that it trusts your
+tickets rather than the host you are on.  Your @file{.rhosts} file no
+longer is used; instead, the system automatically trusts you, and
+optionally anyone whose Kerberos name you include in your @file{.klogin}
+file.
+
+For more information on the @code{klogin} file, see @ref{rlogin,.klogin
+files}.
+
+The @code{-x} option may be used with @code{rlogin} to encrypt the
+current session, so that it can not be monitored by anyone with access
+to the network.  (Though session encryption is recommended for security
+reasons, this is an option, not the default.  You must specify @code{-x}
+if you want your session to be encrypted.)
+
+@code{rsh} has been enhanced in the same way that @code{rlogin} has,
+except that the @code{-x} option is not supported.
+
+@code{rcp} has been enhanced in the same way @code{rlogin} has.  The
+@samp{-x} option may be used to encrypt the file copy.  For example,
+
+@smallexample
+rcp -x @var{datafile remotehost:remotedatafile}
+@end smallexample
+
+@noindent
+securely copies @var{datafile} to @var{remotehost}, without exposing the
+data on the network.  (If either file is not on a local disk, if, for
+example, it is on a Network File System (NFS) file system, then it could
+be exposed to the network during NFS access).
+
+@node Replacements
+@section Replacements for Familiar Network Facilities
+@menu
+* rlogin::		Kerberos remote login
+* rsh::			Kerberos remote shell
+* rcp::			Kerberos remote copy
+* pfrom::		Post Office `from'
+* tftp::		trivial file transfer program
+@end menu
+
+Many standard system facilities have CNS/Kerberos counterparts.  Once
+you have set up a Kerberized session, you should set up your path names
+to use Kerberos facilities instead of the ordinary system facilities.
+Some users create macros such as @code{krlogin} and @code{krcp} to use
+the correct Kerberos versions.  If you do not know how to set up macros
+or how to set up your pathnames so that the correct Kerberos facilities
+are used, see your system administrator.
+
+@node rlogin
+@subsection @code{rlogin}---Kerberos remote login
+
+@code{rlogin} connects your terminal on the current local host system
+@var{lhost} to the remote host system @var{rhost}.
+
+@subsubheading SYNOPSIS
+@smallexample
+rlogin @var{rhost} [-ec] [-8] [-c] [-C] [-a] [-t @var{termtype}]
+     [-n] [-7] [-d] [-k @var{realm}] [-x] [-noflow]
+     [-flow] [-L] [-l @var{username}]
+@var{rhost} [-ec] [-8] [-c] [-C] [-a] [-t @var{termtype}]
+     [-n] [-7] [-d] [-k @var{realm}] [-x] [-noflow] [-flow]
+     [-L] [-l @var{username}]
+@end smallexample
+
+@c @subsubheading DESCRIPTION
+
+The version built to use Kerberos authentication is very similar to the
+standard Berkeley @code{rlogin}(1), except that instead of the
+@file{rhosts} mechanism, it uses Kerberos authentication to determine
+whether a user is authorized to use the remote account.
+
+Each user may have a private authorization list in a file @file{.klogin}
+in his login directory.  This file functions much like the
+@file{.rhosts} file; it allows non-local users to access the Kerberos
+service on the machine where the @file{.klogin} file exists.  For
+example, user @samp{joe@@EAT.COM} would normally not be permitted to log
+in to machines in the @samp{MUSSELS.COM} realm.  However, Joe's friend
+@samp{bertha@@MUSSELS.COM} can create a @file{.klogin} file in her home
+directory, that contains the line @samp{joe@@EAT.COM}.  This allows Joe
+to log in as Bertha to Bertha's machine, even though does not have a
+ticket identifying him as Bertha.
+
+Each line in this file should contain a Kerberos principal name of the
+form @samp{principal.instance@@realm}.  The following are all valid
+Kerberos principal names.
+
+@example
+harry
+tina.root
+lmb@@barryar.navy.mil
+rlogin.miles@@barryar.navy.mil
+@end example
+
+For more information about Kerberos principal names, see @ref{Principal
+names,,Your Kerberos principal name}.
+
+If the originating user is authenticated to one of the principals named
+in @file{.klogin}, access is granted to the account.  The principal
+@samp{@var{accountname}@@@var{localrealm}} is granted access if there is
+no @file{.klogin} file.  Otherwise, a login and password is prompted for
+on the remote machine as in @code{login}(1).  To avoid security
+problems, the @file{.klogin} file must be owned by the remote user.
+
+If there is some problem in gathering the Kerberos authentication
+information, an error message is printed and the standard UCB
+@code{rlogin} is executed in place of the Kerberos @code{rlogin}.  This
+permits the use of the same @code{rlogin} command to connect to hosts
+that do not use CNS, as well as to host which do.
+
+A line of the form `@kbd{~.}' disconnects from the remote host, where
+`@kbd{~}' is the escape character.  Similarly, the line `@kbd{~^Z}'
+(where `@kbd{^Z}', `@kbd{Control-Z}', is the suspend character) suspends
+the @code{rlogin} session.  Substitution of the delayed suspend
+character (normally `@kbd{^Y})' for the suspend character suspends the
+send portion of the @code{rlogin}, but allows output from the remote
+system.
+
+The remote terminal type is the same as your local terminal type (as
+given in your environment @samp{TERM} variable), unless the @samp{-t}
+option is specified (see below).  The terminal or window size is also
+copied to the remote system if the server supports the option, and
+changes in size are reflected as well.
+
+All echoing takes place at the remote site, so that the @code{rlogin} is
+transparent (except for delays).  Flow control via `@kbd{^S}' and
+`@kbd{^Q}' and flushing of input and output on interrupts are handled
+properly.
+
+The @samp{-8} option allows an eight-bit input data path at all times;
+otherwise parity bits are stripped except when the remote site's stop
+and start characters are other than `@kbd{^S}'/`@kbd{^Q}'.  Eight-bit
+mode is the default.
+
+The @samp{-L} option allows the @code{rlogin} session to be run in
+@samp{litout} mode (see @samp{man stty}).
+
+The @samp{-e} option allows specification of an escape character other
+than @kbd{~}.  There is no space separating this option flag and the new
+escape character.  If the @samp{-e} option is used without specifying a
+character, then there is no escape character.
+
+The @samp{-c} option requires confirmation before disconnecting via
+`@kbd{~.}'.  Normally, `@kbd{~.}' causes @code{rlogin} to exit
+immediately.
+
+The @samp{-a} option forces the remote machine to ask for a password by
+sending a null local username.  This option has no effect unless the
+standard UCB @code{rlogin} is executed in place of the Kerberos
+@code{rlogin} (see above).
+
+The @samp{-t} option replaces the terminal type passed to the remote
+host with @var{termtype}.
+
+The @samp{-n} option prevents suspension of rlogin via `@kbd{~^Z}' or
+`@kbd{~^Y}'.
+
+The @samp{-7} option forces seven-bit transmissions.
+
+The @samp{-d} option turns on socket debugging (via
+@samp{setsockopt}(2)) on the TCP sockets used for communication with the
+remote host.
+
+The @samp{-noflow} option forces transmission of flow control characters
+(`@kbd{^S}'/`@kbd{^Q}') to the remote system.  This is now the default;
+@samp{-flow} enables local handling of `@kbd{^S}'/`@kbd{^Q}'.
+
+The @samp{-k} option requests @code{rlogin} to obtain tickets for the
+remote host in realm @var{realm} instead of the remote host's realm as
+determined by @code{krb_realmofhost}.
+
+The @samp{-x} option turns on DES encryption for all data passed via the
+@code{rlogin} session.  This significantly reduces response time and
+significantly increases CPU utilization.
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item rsh
+@item Kerberos
+@item krb_sendauth
+@item krb_realmofhost
+@end table
+@code{rlogin}(1) [UCB version]
+
+@subsubheading FILES
+@table @file
+@item /usr/hosts/*
+for rhost version of the command
+@end table
+
+@subsubheading BUGS
+
+More of the environment should be propagated.
+
+@end ignore
+
+
+@node rsh
+@subsection @code{rsh}---Kerberos remote shell
+
+@code{rsh} connects to the specified host, and executes the specified
+@var{command}.
+
+@c @subsubheading SYNOPSIS
+@smallexample
+rsh @var{host} [-l @var{username}] [-n] [-d] [-k @var{realm}] [-p @var{port}]
+@var{command}
+@var{host} [-l @var{username}] [-n] [-d] [-k @var{realm}] [-p @var{port}]
+@var{command}
+@end smallexample
+@c @subsubheading DESCRIPTION
+
+@code{rsh} copies its standard input to the remote command, the standard
+output of the remote command to its standard output, and the standard
+error of the remote command to its standard error.  @samp{Interrupt},
+@samp{quit} and @samp{terminate} signals are propagated to the remote
+command; @code{rsh} normally terminates when the remote command does.
+
+The remote @var{username} used is the same as your local username,
+unless you specify a different remote name with the @samp{-l} option.
+Kerberos authentication is used, and authorization is determined as in
+@ref{rlogin}.
+
+The @samp{-k} @var{realm} option causes @code{rsh} to obtain tickets for
+the remote host in @var{realm} instead of the remote host's realm as
+determined by @code{krb_realmofhost}.
+
+The @samp{-d} option turns on socket debugging (via
+@samp{setsockopt}(2)) on the TCP sockets used for communication with the
+remote host.
+
+The @samp{-n} option redirects input from the special device
+@file{/dev/null}.
+
+If you are using @code{csh}(1) and put a @code{rsh}(1) in the background
+without redirecting its input away from the terminal, it blocks even if
+no reads are posted by the remote command.  Use this option if no input
+is desired.
+
+The @samp{-p} @var{port} option sets the TCP port number to use.  This
+option is not normally used, but can be helpful when testing.
+
+If you omit @var{command}, then instead of executing a single command,
+you are logged in on the remote host using @code{rlogin}.
+
+Shell meta-characters which are not in quotes are interpreted on local
+machine, while meta-characters in quotes are interpreted on the remote
+machine.  Thus the command
+@smallexample
+rsh @var{otherhost} cat @var{remotefile} >> @var{localfile}
+@end smallexample
+@noindent
+appends the remote file @var{remotefile} to the local file @var{localfile}, 
+while
+@smallexample
+rsh @var{otherhost} cat @var{remotefile} ``>>'' @var{otherremotefile}
+@end smallexample
+
+@noindent
+appends @var{remotefile} (on the other host) to @var{otherremotefile}
+(also on the other host).
+
+On some systems, the host names for local machines are also commands in
+the directory @file{/usr/hosts}; if you put this directory in your
+search path then the @code{rsh} on the command line can be
+omitted.  While it is impractical to maintain such a collection, it may
+be useful to make yourself a directory, add it to your path, and put
+symbolic links into it that point to @file{/usr/kerberos/bin/rsh}.
+
+@ignore
+
+@subsubheading FILES
+@table @file
+@item /etc/hosts
+@item /usr/hosts/*
+@end table
+
+@subsubheading SEE ALSO
+@table @ref
+@item rlogin
+@item Kerberos
+@item krb_sendauth
+@item krb_realmofhost
+@end table
+
+@subsubheading BUGS
+
+You cannot run an interactive command (like @samp{rogue}(6) or
+@samp{vi}(1)); use @ref{rlogin}.
+
+Stop signals stop the local @code{rsh} process only; this is arguably
+wrong, but currently hard to fix for reasons too complicated to explain
+here.
+@end ignore
+
+@node rcp
+@subsection @code{rcp}---Kerberos remote file copy
+
+@var{rcp} copies files between machines.
+
+@c @subsubheading SYNOPSIS
+@smallexample
+rcp [-p] [-x] [-k @var{realm}] [-N] [-P @var{port}] @var{file1} @var{file2}
+rcp [-p] [-x] [-k @var{realm}] [-r] [-N] [-P @var{port}]
+@var{file} @dots{} @var{directory}
+@end smallexample
+
+@c @subsubheading DESCRIPTION
+Each file or directory argument is either a remote file name of the form
+@var{rhost}@samp{:}@var{path}, or a local file name (containing no
+@samp{:} characters, or a @samp{/} before any @samp{:}s).
+
+If the @samp{-r} option is specified and any of the source files are
+directories, @code{rcp} copies each subtree rooted at that name; in this
+case the destination must be a directory.
+
+By default, the mode and owner of @var{file2} are preserved if it
+already existed; otherwise the mode of the source file modified by the
+@code{umask}(2) on the destination host is used.  The @samp{-p} option
+causes @code{rcp} to attempt to preserve (duplicate) in its copies the
+modification times and modes of the source files, ignoring the umask.
+
+If path is not a full path name, it is interpreted relative to your
+login directory on @code{rhost}.  A path on a remote host may be quoted
+(using @samp{\}, @samp{"}, or @samp{'}) so that the meta-characters are
+interpreted remotely.
+
+@code{rcp} does not prompt for passwords; it uses Kerberos
+authentication when connecting to @var{rhost}.  Authorization is as
+described in @ref{rlogin}.
+
+The @samp{-x} option selects encryption of all information transferred
+between hosts.  The @samp{-k} @var{realm} option causes @code{rcp} to
+obtain tickets for the remote host in @var{realm} instead of the remote
+host's realm as determined by @code{krb_realmofhost}.
+
+@code{rcp} handles third party copies, where neither source nor target
+files are on the current machine.  Note that Kerberos is only used for
+the first connection of a third party copy; the second connection uses
+the standard Berkeley @code{rcp} protocol.  This is due to a limitation
+of the version 4 protocol.
+
+Hostnames may also take the form
+@var{rname}@@@var{rhost}' to use @var{rname} rather than the current
+user name on the remote host.
+
+There are two options to @code{rcp} which are not normally used, but
+can be helpful when testing.  The @samp{-N} option forces @code{rcp}
+to use a network connection, even when copying files which are on the
+local host.  The @samp{-P} @var{port} option sets the TCP port number
+to use.
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item rsh
+@item rlogin
+@item Kerberos
+@item krb_realmofhost,,krb_get_lrealm
+@end table
+See also @code{cp}(1), @code{ftp}(1), @code{rcp}(1) [UCB version].
+
+@subsubheading BUGS
+
+Does not detect all cases where the target of a copy might be a file in
+cases where only a directory should be legal.
+
+Is confused by any output generated by commands in a @file{.login},
+@file{.profile}, or @file{.cshrc} file on the remote host.
+
+The destination user and hostname may have to be specified as
+@var{rhost}@samp{.}@var{rname} when the destination machine is 
+running
+the 4.2BSD version of @code{rcp}.
+
+@end ignore
+
+@node pfrom
+@subsection @code{pfrom}---Who sent me mail?
+
+@c @subsubheading SYNOPSIS
+@smallexample
+pfrom [-s @var{sender}] [-h @var{host}] [-v] [-d]
+@end smallexample
+
+@c @subsubheading DESCRIPTION
+If you are using the `POP' mail system (@pxref{popper}) the @code{pfrom}
+program prints out the mail header lines in your incoming mail to show
+you who your mail is from.  It does this without retrieving the mail
+from the post office.  If the @samp{-s} option is given, then only
+headers for mail sent by sender are printed.  If the @samp{-h} option is
+given, then @var{host} is consulted instead of your default post office.
+The @samp{-v} option puts @code{pfrom} into verbose mode, and the
+@samp{-d} option puts @code{pfrom} into debug mode.
+
+@code{pfrom} is equivalent to the @code{from} command used on 
+traditional
+local mail systems.
+
+@ignore
+@subsubheading SEE ALSO
+Post Office Protocol (revised) (aka RFC-819 with revisions)
+@end ignore
+
+@node tftp
+@subsection @code{tftp}---trivial file transfer protocol
+
+@c @subsubheading SYNOPSIS
+@smallexample
+tftp -@var{action} @var{localname} @var{host} @var{foreignname} 
+[@var{mode}]
+@end smallexample
+@c @subsubheading DESCRIPTION
+If action is @samp{w}, @samp{p}, or @samp{ap}, @code{tftp} writes the
+local file, called @var{localname}, onto the foreign host's file system
+as @var{foreignname}.  If action is @samp{ap}, Kerberos authentication
+is used.  Note that @var{foreignname} must be in quotes if it contains
+shell special characters.  If action is @samp{r}, @samp{g}, or
+@samp{ag}, @code{tftp} reads foreign host's file @var{foreignname} into
+the local file, @var{localname}.  If action is @samp{ag}, Kerberos
+authentication is used.  @code{tftp} does not supersede or overwrite
+existing local files, however; to do so, use action @samp{o}.
+
+Mode may be @samp{netascii}, or @samp{image}. @samp{netascii}, the
+default mode, transfers the file as standard ASCII characters.
+@samp{image} mode transfers the file in binary, with no character
+conversion.
+
+If Kerberos authentication is not used with @code{tftp}, access is
+denied unless the remote and local host are on the same local-area
+network.
+
+@ignore
+@subsubheading SEE ALSO
+@xref{Kerberos Intro}, Internet Protocol Handbook
+@end ignore
+
+@node Ticket Management Commands
+@section Ticket Management Commands
+@menu
+* kinit::	get initial tickets
+* klist::	list tickets
+* kdestroy::	erase tickets
+* kpasswd::	change Kerberos password
+* ksu::		switch local user based on Kerberos access list
+@end menu
+
+
+@node kinit
+@subsection @code{kinit}---Kerberos login utility
+
+@c @subsubheading SYNOPSIS
+@c kinit [-irvl] [@var{user}]
+@smallexample
+kinit [-ivl]
+@end smallexample 
+@c @subsubheading DESCRIPTION
+The @code{kinit} command is used to login to the Kerberos authentication
+and authorization system.  Note that only registered Kerberos users can
+use the Kerberos system.  For information about registering as a
+Kerberos user, see the @xref{Initial Steps} of the manual, or talk to
+your system administrator.
+
+@ignore
+If you are logged in to a workstation that is running the @samp{toehold}
+service, you do not have to use @code{kinit}.  The @samp{toehold} login
+procedure logs you into Kerberos automatically.  You need to use
+@code{kinit} only in those situations in which your original tickets
+have expired.  (Tickets expire in ten hours, enough to cover a typical
+workday.)  Note as well that @samp{toehold} automatically destroys your
+tickets when you logout from the workstation. .  .. UPDATE THAT ...
+@end ignore
+
+When you use @code{kinit} without options, the utility prompts for your
+username and Kerberos password, and tries to authenticate that name
+with the local Kerberos server.
+
+If Kerberos authenticates the login attempt, @code{kinit} retrieves your
+ticket-granting ticket and puts it in the ticket file specified by your
+@samp{KRBTKFILE} environment variable.  If this variable is undefined,
+your ticket is stored in the @file{/tmp} directory, in the file
+@file{tkt@var{uid}}, where @samp{uid} specifies your user ID number from
+the password file.
+
+Make sure you use the @code{kdestroy} command to destroy any active 
+tickets before you end your login session.  You may want to put the 
+@code{kdestroy} command in your @file{.logout} file so that your 
+tickets are destroyed automatically when you logout.
+
+The options to @code{kinit} are as follows:
+
+@table @code
+@item -i
+@code{kinit} prompts you for a Kerberos instance.
+
+@item -r
+@code{kinit} prompts you for a Kerberos realm.  This option lets you
+authenticate yourself with a remote Kerberos server.
+
+@item -v
+Verbose mode.  @code{kinit} prints the name of the ticket file used, and
+a status message indicating the success or failure of your login
+attempt.
+
+@item -l
+@code{kinit} prompts you for a ticket lifetime in minutes.  Due to
+protocol restrictions in Kerberos Version 4, this value must be between
+5 and 1275 minutes.
+
+@item -s
+@code{kinit} prompts you for a username.  It then challenges you with a
+six digit number which you enter into the SNK4.  The SNK4 produces an
+eight-digit response which you enter into the system to confirm your
+identity.  (See, @ref{Appendix,,SecureNet Key Authentication Device}.)
+@end table
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos Intro
+@item kdestroy
+@item klist
+@end table
+See also toehold(1).
+
+@subsubheading BUGS
+
+The @samp{-r} option has not been fully implemented.
+
+@end ignore
+
+@node klist
+@subsection @code{klist}---list currently held tickets
+
+@c @subsubheading SYNOPSIS
+@smallexample
+klist [-s|-t] [-file @var{name}] [-srvtab]
+@end smallexample
+@c @subsubheading DESCRIPTION
+
+@code{klist} prints the name of the ticket file and the identity of the
+principal the tickets are for (as listed in the ticket file), and lists
+the principal names of all Kerberos tickets currently held by the user,
+along with the issue and expire time for each authenticator.  Principal
+names are listed in the form
+@samp{@var{name}.@var{instance}@@@var{realm}}, with the 
+@samp{.}
+omitted if the instance is null, and the @samp{@@} omitted if the realm
+is null.
+
+If given the @samp{-s} option, @code{klist} does not print the issue and
+expire times, the name of the ticket file, or the identity of the
+principal.
+
+If given the @samp{-t} option, @code{klist} checks for the existence of
+a non-expired ticket-granting ticket in the ticket file.  If one is
+present, it exits with status 0, otherwise, it exits with status 1.  No
+output is generated when this option is specified.
+
+If given the @samp{-file} option, the following argument is used as the
+ticket file.  Otherwise, if the @code{KRBTKFILE} environment variable is
+set, it is used.  If this environment variable is not set, the file
+@file{/tmp/tkt@var{uid}} is used, where @var{uid} is the current user-ID
+of the user.
+
+If given the @samp{-srvtab} option, the file is treated as a service key
+file, and the names of the keys contained therein are printed.  If no
+file is specified with a @samp{-file} option, the default is
+@file{/etc/krb-srvtab}.  See, @ref{Application server entries,,keys for
+application servers}.
+
+@ignore
+
+@subsubheading FILES
+@table @file
+@item /usr/kerberos/lib/krb.conf
+to get the name of the local realm
+@item /tmp/tkt@var{uid}
+as the default ticket file (@var{uid} is the decimal UID of the user).
+Note that on the IBM RS/6000, there is an additional file
+@file{/tmp/tkt@var{uid}.shm}, due to the shared-memory implementation of
+the Kerberos tickets.
+@item /etc/krb-srvtab
+as the default service key file
+@end table
+
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos Intro
+@item kinit
+@item kdestroy
+@end table
+
+@subsubheading BUGS
+
+When reading a file as a service key file, very little sanity or error
+checking is performed.
+
+@end ignore
+
+
+@node kdestroy
+@subsection @code{kdestroy}---destroy Kerberos tickets
+
+@c @subsubheading SYNOPSIS
+@smallexample
+kdestroy [-f] [-q]
+@end smallexample
+@c @subsubheading DESCRIPTION
+
+The @code{kdestroy} utility destroys the user's active Kerberos
+authorization tickets by writing zeros to the file that contains them.
+If the ticket file does not exist, @code{kdestroy} displays a message to
+that effect.
+
+After overwriting the file, @code{kdestroy} removes the file from the
+system.  The utility displays a message indicating the success or
+failure of the operation.  If @code{kdestroy} is unable to destroy the
+ticket file, the utility warns you by making your terminal beep.
+
+You should place the @code{kdestroy} command in your @file{.logout} file
+so that your tickets are destroyed automatically when you logout.
+
+The options to @code{kdestroy} are as follows:
+
+@table @code
+@item -f
+@code{kdestroy} runs without displaying the status message.
+
+@item -q
+@code{kdestroy} does not make your terminal beep if it fails to destroy
+the tickets.
+@end table
+
+@ignore
+@subsubheading FILES
+@itemize @bullet
+@item @code{KRBTKFILE} environment variable if set, otherwise
+@item @file{/tmp/tkt@var{uid}}
+@end itemize
+
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos Intro
+@item kinit
+@item klist
+@end table
+
+@subsubheading BUGS
+
+Note that only the tickets in the user's current ticket file are
+destroyed.  Unfortunately, separate ticket files are used to hold root
+instance and password changing tickets.
+@end ignore
+
+@node kpasswd
+@subsection @code{kpasswd}---changing Kerberos passwords
+
+@c @subsubheading SYNOPSIS
+@smallexample
+kpasswd [-h] [-n @var{name}] [-i @var{instance}] [-r @var{realm}] 
+        [-u @var{username}[.@var{instance}][@@@var{realm}]]
+@end smallexample
+@c @subsubheading DESCRIPTION
+The @code{kpasswd} command is used to change a Kerberos principal's
+password.
+
+If the @samp{-h} option is specified, a brief summary of the options is
+printed, and @code{kpasswd} then exits.
+
+If the @samp{-n} option is specified, @var{name} is used as the
+principal name rather than the username of the user running
+@code{kpasswd}.  (This is determined from the ticket file if it exists;
+otherwise, it is determined from the Unix user ID.)
+
+If the @samp{-i} option is specified, @var{instance} is used as the
+instance rather than a null instance.
+
+If the @samp{-r} option is specified, @var{realm} is used as the realm
+rather than the local realm.
+
+If the @samp{-u} option is specified, a fully qualified Kerberos
+principal can be given.
+
+The utility prompts for the current Kerberos password (printing the name
+of the principal for which it intends to change the password), which is
+verified by the Kerberos server.  If the old password is correct, the
+user is prompted twice for the new password.  A message is printed
+indicating the success or failure of the password changing operation.
+
+
+@ignore
+@subsubheading BUGS
+
+@code{kpasswd} does not handle names, instances, or realms with 
+special
+characters in them when the @samp{-n}, @samp{-i}, or @samp{-r} 
+options
+are used.  Any valid fullname is accepted, however, if the @samp{-u}
+option is used.
+
+If the principal whose password you are trying to change does not exist,
+you are not be told until after you have entered the old password.
+
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos Intro
+@item kinit
+@item kpasswd
+@item kadmin
+@end table
+@end ignore
+
+@node ksu
+@subsection @code{ksu}---Kerberized substitute user ID 
+
+@code{ksu} requests the Kerberos password for login (or for @samp{root},
+if no login is provided), and switches to that user and group ID.  A
+shell is then invoked.
+
+@c @subsubheading SYNOPSIS
+@smallexample
+ksu [-flm] [@var{login}]
+@end smallexample
+
+@c @subsubheading DESCRIPTION
+By default, your environment is
+unmodified with the exception of @samp{USER}, @samp{HOME}, and
+@samp{SHELL}.  @samp{HOME} and @samp{SHELL} are set to the target
+login's @file{/etc/passwd} values.  @samp{USER} is set to the target
+login, unless the target login has a user ID of zero, in which case it is
+unmodified.  The invoked shell is that of the target login.
+
+The @samp{-l} option simulates a full login.  The environment is
+discarded except for @samp{HOME}, @samp{SHELL}, @samp{PATH},
+@samp{TERM}, and @samp{USER}.  @samp{HOME} and @samp{SHELL} are modified
+as above.  @samp{USER} is set to the target login.  @samp{PATH} is set
+to @samp{/usr/ucb:/bin:/usr/bin}.  @samp{TERM} is imported from your
+current environment.  The invoked shell is that of the target login, and
+@code{ksu} changes directory to the target login's home directory.
+
+The @samp{-m} option causes the environment to remain unmodified, and
+the invoked shell to be your login shell.  No directory changes are
+made.  As a security precaution, if the @samp{-m} option is specified,
+the target user's shell is a nonstandard shell (as defined by
+@samp{getusershell}(3)) and the caller's real user ID is non-zero,
+@code{ksu} fails.
+
+If the invoked shell is @code{csh}, the @samp{-f} option prevents it
+from reading the @file{.cshrc} file.  Otherwise, this option is ignored.
+
+Only users with root instances listed in @file{~root/.klogin} may @code{ksu}
+to @samp{root} (The format of this file is described by @ref{rlogin}.).
+When attempting root access, @code{ksu} attempts to fetch a
+ticket-granting ticket for @samp{@var{username}.root@@@var{localrealm}},
+where @var{username} is the username of the process.  If possible, the
+tickets are used to obtain, use, and verify tickets for the service
+@samp{rcmd.@var{host}@@@var{localrealm}} where @var{host} is the
+canonical host name of the machine (as determined by
+@code{krb_get_phost}).  If this verification fails, the @code{ksu} is
+disallowed.  (If the service @samp{rcmd.@var{host}@@@var{localrealm}} is
+not registered, the @code{ksu} is allowed.)
+
+By default (unless the prompt is reset by a startup file) the super-user
+prompt is set to @samp{#} to remind one of its power.
+
+When not attempting to switch to the @samp{root} user, @code{ksu}
+behaves exactly like @code{su}(1).
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item rlogin
+@item krb_realmofhost,,krb_get_phost
+@end table
+See also @code{su}(1), @code{csh}(1), @code{login}(1), 
+@code{sh}(1),
+@code{passwd}(5), @code{group}(5), @code{environ}(7).
+@end ignore
+
+
+@node Config Decisions
+@chapter The Kerberos Administrator: Configuration Decisions
+
+@c list server configs here too.
+@menu
+* Options::			naming realms, storage locations, etc.
+* General Configuration::	other changes needed
+* CNS Configuration::   	configuring CNS
+@end menu
+
+To make administration of a Kerberos realm simpler, some important
+decisions should be made before installation.  Carefully consider the
+following options.
+
+@node Options
+@section Options for your Kerberos Service
+
+@menu
+* Site Configuration::		choice of names and storage
+* Client Installation::		what to put on a client
+* Host Installation::		what to put on a network service host
+* Server Installation::		what to put on the Key Distribution Center
+* Slave Server Installation::	adding backup Key Distribution Centers
+@end menu
+
+
+@node Site Configuration
+@subsection Choice of Names and Storage
+
+@itemize @bullet 
+@item @strong{Resources:}
+Kerberos does not require much disk space.  Any client that is already
+getting system software via Network File System (NFS) can get Kerberos
+software the same way, unless you wish to guard against someone spoofing
+the NFS server.  Any application server can do the same, though we
+expect most application servers to have system software stored locally;
+there must be a small amount of local space for the server private key
+(in the @file{krb-srvtab} file).
+
+The Kerberos master server itself needs enough disk space to hold the
+key database, and for reliability reasons should have the
+@samp{kerberos} and @samp{kadmin} servers locally.
+
+@item @strong{Naming:}
+If you are already using the Domain Name Service, which we recommend,
+and you are only setting up one Kerberos Realm (i.e., one administrative
+authority---size is not an issue) then we suggest
+
+@itemize @bullet
+@item @strong{Realm name:}
+DNS domain name.
+
+@item @strong{Kerberos server names:}
+@samp{kerberos} (for a single server) and @samp{kerberos-@var{n}}
+(kerberos-1,2... etc.) for slaves.
+@end itemize
+
+If you have multiple administrative areas that may need to work
+together, you still want to divide things in a similar manner to how you
+have already divided your namespace.  If the namespace is not divided,
+you either need to explicitly list members of one domain in the
+@file{krb.realms} file or you need to have users specify the @samp{-k}
+argument for most commands.
+@end itemize
+
+@node Client Installation
+@subsection What to put on a client
+
+Everything in this installation can be installed in a common location.
+Applications provided are:
+@table @code
+@item kinit
+@item klist
+@item kdestroy
+@item rlogin
+@item rcp
+@item rsh
+@item telnet
+@item ksu
+@item kadmin
+@item movemail
+@item pfrom
+@item ftp
+@item kpasswd
+@end table
+
+A pair of configuration files (@file{krb.conf} and @file{krb.realms})
+are needed to identify the realms within which the host needs to
+authenticate (see, respectively,
+@ref{krb.conf,,@code{krb.conf}---Kerberos configuration file}, and
+@pxref{krb.realms,,@code{krb.realms}---host to Kerberos realm
+translation file}).  These files are stored in @file{/usr/kerberos/lib}.
+
+@enumerate
+@item
+Either install the release directly in @file{/usr/kerberos}, or set up
+symbolic links or NFS mounts as your configuration warrants.
+
+@item
+Generate @file{krb.conf} and @file{krb.realms} files with your
+local configuration parameters.  See @xref{krb.realms} for details.
+
+@item
+Update the @file{/etc/services} file.
+@end enumerate
+
+@node Host Installation
+@subsection What to put on a network service host
+
+Executables should be installed reliably (they may be shared between
+machines, but this is not usually a good idea.)  Daemons provided
+are:
+@table @code
+@item klogind
+@item telnetd
+@item kshd
+@item popper
+@item ksrvutil
+@item ftpd
+@item login.krb
+@item tftpd
+@end table
+
+Along with the configuration files used in the client install, you need
+to create a @file{krb-srvtab}.  If the @file{krb-srvtab} is compromised,
+it is possible to impersonate users and obtain access to the services on
+this particular server.
+
+Kerberos-enhanced network services can be installed simply by adding
+entries for them to @file{/etc/inetd.conf} on Berkeley Standard
+Distribution (BSD) derived systems.  On some systems there is a limit on
+the number of services which @code{inetd} can support.  If this is the
+case on your system, a simple workaround is to run a second instance of
+@code{inetd}, the Internet service daemon, with a configuration file
+containing the Kerberos-enhanced services.  On BSD derived systems, this
+@code{inetd} should be started in @file{/etc/rc.local} using whatever
+idiom was used for the normal @code{inetd}.
+
+@node Server Installation
+@subsection What to put on the Key Distribution Center
+
+Executables should be installed very reliably (preferably locally.)
+Local disk space is also needed for the Key Database.  The programs are:
+@table @code
+@item Kerberos
+@item kadmind
+@item kstash
+@item kdb_util
+@item kdb_edit
+@item kdb_init
+@item kdb_destroy
+@item kprop
+@item kpropd
+@item ext_srvtab
+@end table
+
+Access to the memory or core dumps from this machine could compromise
+security for the entire realm.  If there is a human operator always
+available, the Kerberos master key can be manually entered at every
+reboot, and not otherwise recorded on disk; if so, normal backups can be
+made of the database.  For convenience, @code{kstash} can be used to
+store the master key on local disk; care should be taken not to make
+this file accessible or to make backups of it.  (@xref{kstash}.)
+
+@node Slave Server Installation
+@subsection Adding a Slave Server
+
+The use of slave servers provides continued service in case the master
+KDC server is down, unreachable, or overloaded.  Periodically, the
+master sends out copies of its entire database to all of it's slave
+servers.  When clients cannot reach the master for ticket requests, they
+try the slaves.
+
+Note that there is no continued @code{kadmin/kpasswd} service---the
+master database is the only one that gets modified, and is defined as
+the one on which @code{kadmind} is running.
+
+Follow these steps to set up slave servers.
+
+@itemize @bullet
+@item The master server and all slave servers must also be set up as
+application servers, with srvtab files containing an @samp{rcmd} key.
+@xref{Application server configuration,,Configuring an Application
+Server,install,Cygnus Network Security Installation Notes}.
+
+@item Each slave server uses the @code{kpropd} daemon to receive copies
+of the Kerberos database from the master server.  Add a line like the
+following to @file{/etc/inetd.conf} to make @code{inetd} invoke the
+@code{kpropd} daemon when it receives an incoming connection:
+
+@iftex
+@let@nonarrowing=@comment
+@end iftex
+@smallexample
+krb_prop stream tcp nowait root /usr/kerberos/etc/in.kpropd in.kpropd
+@end smallexample
+@iftex
+@let@nonarrowing=@relax
+@end iftex
+
+@code{in.kpropd} is a simple shell script which invokes @code{kpropd}
+with the correct arguments.
+
+@item The master server uses the @code{kprop} program to send copies of
+the Kerberos database to the slave servers.  This is most easily done
+using the @code{push-kprop} shell script.  Enter the hostname of each
+slave server into the file @file{/usr/kerberos/database/slavelist}.
+This should be a simple text file, with each hostname on a separate
+line.
+
+@item Run the @code{push-kprop} script on the master to send the master
+database over to all the slaves.  You should arrange for
+@code{push-kprop} to be invoked regularly on the master, using
+@code{cron}.  The frequency of the update depends upon how urgently you
+need the slave servers to know about database changes, such as changed
+passwords or new Kerberos principals.  Once an hour is usually adequate.
+
+@item Once the slaves have received their own copy of the database, you
+can start the @code{kerberos} server on the slave.  Start it with the
+@samp{-s} option.  You should arrange for each slave server to start the
+@code{kerberos} server at boot time, just as on the master server,
+except that on the slaves @code{kerberos} should be invoked with
+@samp{-s}.
+
+@item Add the slave hostnames to the @file{/usr/kerberos/lib/krb.conf}
+file on any machine which should be able to get Kerberos tickets from
+the slave servers.  The CNS client programs queries servers in the order
+they are listed in @file{krb.conf}, so you can, for example, arrange for
+client programs to contact a local slave server before trying the master
+server.
+
+@item To add a new slave server, just arrange for @code{kpropd} to be
+invoked via @code{inetd} on the slave, add the new slave hostname to
+@file{slavelist} on the master server, run @code{push-kprop} on the
+master server, and start @code{kerberos -s} on the new slave.
+@end itemize
+
+For detailed information on @code{kprop}, see @ref{kprop and
+push-kprop}.  For detailed information on @code{kpropd}, see @ref{Slave
+Servers,kpropd}.
+
+@node General Configuration
+@section General Configuration
+
+A few existing configuration files may be modified for the use of
+Kerberos.
+@table @file
+@item /etc/services
+Kerberos Enhanced services use different ports than their traditional
+counterparts.  These need to be added to @file{/etc/services} on any
+client machine.
+@item /etc/inetd.conf
+If a machine is hosting any Kerberos Enhanced services, such as
+@code{popper} (see @xref{popper}), @code{rlogind} (see @xref{klogind})
+or @code{rshd} (see @xref{kshd}), these should be added to
+@code{inetd.conf} along with the other services the machine provides.
+It is also possible to run a second @code{inetd} with only the Kerberos
+services rather than changing the existing list.
+
+Note that if you wish to allow access @strong{only} when
+Kerberos-mediated, than you must remove services like @code{rlogin} from
+@file{/etc/inetd.conf}, leaving only the versions from Cygnus.  For
+further protection, you may allow access to @code{eklogind}, the server
+only for encrypted remote logins.
+
+@item /etc/rc
+Since the Kerberos Key Distribution Center (and any slave servers)
+should be running all the time, the Kerberos server is often started out
+of the system @file{/etc/rc} file, or the equivalent on your system.
+@xref{Configuring the KDC,,Configuring the KDC,install,Cygnus Network
+Security Installation Notes}.
+
+@end table
+
+@node CNS Configuration
+@section CNS Configuration
+
+@menu
+* krb.conf::	Realm to Server mapping
+* krb.realms::	Host to Realm exceptions
+@end menu
+
+@node krb.conf
+@subsection @code{krb.conf}---Kerberos configuration file
+
+@c @subsubheading DESCRIPTION
+@file{krb.conf} contains configuration information describing the
+Kerberos realm and the Kerberos key distribution center (KDC) servers
+for known realms.
+
+@file{krb.conf} contains the name of the local realm in the first line,
+followed by lines indicating realm/host entries.  The first token is a
+realm name, and the second is the hostname of a host running a KDC for
+that realm.  The words @samp{admin server} following the hostname
+indicate that the host also provides an administrative database server,
+that is, it is the master Kerberos server for this realm, where requests
+to change passwords, add users, etc, are sent.
+
+For example:
+@smallexample
+CYGNUS.COM
+CYGNUS.COM kerberos-1.cygnus.com admin server
+CYGNUS.COM kerberos-2.cygnus.com
+ANOTHER.CYGNUS.COM kerberos.another.cygnus.com admin server
+@end smallexample
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item krb.realms
+@item krb_realmofhost,,krb_get_krbhst
+@item krb_realmofhost,,krb_get_lrealm
+@end table
+@end ignore
+
+
+
+@node krb.realms
+@subsection @code{krb.realms}---host to Kerberos realm translation file
+
+@c @subsubheading DESCRIPTION
+@file{krb.realms} provides a translation from a hostname to the Kerberos
+realm name for the services provided by that host.
+
+Each line of the translation file is in one of the following forms
+(@var{domain_name} should be of the form @samp{.XXX.YYY}, e.g.
+@samp{.CYGNUS.COM}):
+@smallexample
+          @var{host_name} @var{kerberos_realm}
+          @var{domain_name} @var{kerberos_realm}
+@end smallexample
+If a hostname exactly matches the @var{host_name} field in a line of the
+first form, the corresponding realm is the realm of the host.  If a
+hostname does not match any @var{host_name} in the file, but its domain
+exactly matches the @var{domain_name} field in a line of the second
+form, the corresponding realm is the realm of the host.
+
+If no translation entry applies, the host's realm is considered to be
+the the domain portion of the hostname converted to upper case.
+
+@ignore
+@subsubheading SEE ALSO
+@xref{krb_realmofhost}
+@end ignore
+
+@node Administration Tools
+@chapter Administration Tools
+
+@menu
+* General Administration::	How to administer a Kerberos Realm
+* Administrative Tools::	kadmin, kstash, ksrvutil, ksrvtgt
+* Raw Database Manipulation::	kdb_edit, others
+@end menu
+
+@node General Administration
+@section How to administer a Kerberos Realm
+
+@menu
+* User entries::		Keys for users
+* Application server entries::	Keys for application servers
+* Admin Tools::			kadmin and other tools
+@end menu
+
+@node User entries
+@subsection Keys for users
+
+Users are @dfn{principals} in the database.  Each principal has a secret
+key; this key is known only to the user and to the Kerberos server.  The
+user actually knows only a password which is a string that is converted
+to an encryption key; the server stores only the key, not the password.
+
+You may set and administer initial user names and passwords with
+@code{kadmin}.  You should not give users their passwords via email (too
+insecure).  You should speak to them directly.  Likewise, you can change
+a password, but should only do so when they are certain that the person
+requesting the change is really the user in question.
+
+@node Application server entries
+@subsection Keys for application servers
+
+Application servers are also principals.  Typically, an application
+server uses an application name as the principal name and the name of
+the host supporting the application server as the instance.  The key for
+this entry is stored in the Kerberos database and in the
+@file{krb-srvtab} file on the host supporting the application server.
+
+You must keep the @file{krb-srvtab} file secure, since it is the basis
+for all authentication to the application servers on that host.  This
+means that you must either generate it locally or transfer it in a
+secure manner (either on a physical medium or via an encrypted network.)
+
+One secure way of generating a @file{krb-srvtab} is for a database
+administrator to use @code{kadmin} to create the application server key
+with a known password.  Then this key must be given to the sysadmin of
+the destination system in a secure manner (in person, not via email.)
+The sysadmin can then run @code{ksrvutil} on the host (from a directly
+connected terminal, such as the system console, not over the network)
+and specify the password.  This creates an initial @file{krb-srvtab}
+with known password.  It is best to immediately perform a @code{ksrvutil
+change} which uses the current key to securely change the key to a new
+(randomly generated) value.  (Randomly chosen passwords are more secure
+than human chosen ones.)
+
+A short cut in this process (if for example the machine's system
+administrator is also a Kerberos database administrator) would be to run
+@code{kadmin} directly from the host for which the key is desired, and
+then use @code{ksrvutil} change, immediately.  This avoids the need for
+any communication of the key.
+
+An alternative approach is to have the administrator use @code{kadmin}
+to enter the keys and then use @code{ext_srvtab} to create the new
+@file{krb-srvtab} file.  Then that file would be put on a tape and
+securely transported to the host site and loaded.  This technique might
+be useful for machines which are being installed offline but need to be
+immediately accessible from the network at a later time.
+
+@node Admin Tools
+@subsection kadmin and other utilities
+
+While @code{kdb_util} and @code{kdb_edit} can be used directly on the
+server to change the database, it is more convenient to simply add
+administrators to access control lists.  An administrator needs to have
+an @samp{admin} instance.  You need to use @code{kdb_edit} to add an
+@samp{admin} instance for at least one user.  Once you have an
+@code{admin} instance, you can use the simpler @code{kadmin} program to
+handle most types of changes to the database.
+
+(For more information about @code{kdb_util}, see @ref{kdb_util}.  For
+more information about @code{kdb_edit}, see @ref{kdb_edit}.  For an
+example of using them to create an initial @samp{admin} instance, see
+@pxref{Configuring the KDC,,Configuring the KDC,install,Cygnus Network
+Security Installation Notes}).
+
+A database administrator either adds new entries or changes existing
+ones.  New users are added with the @code{ank} (add new key) command to
+@samp{kadmin}.  Ideally the users identifies themselves to the
+administrator, who then creates the entry and lets the users type their
+initial password.  (The users should still change the password at their
+earliest convenience.)  An administrator must be listed in the
+@file{admin_acl.add} file to do this.  (For information about ACL files,
+see @pxref{kadmind,ACL files}).
+
+Occasionally users forget their passwords, or accidentally type them
+over the network in cleartext thus compromising the passwords' security.
+Anything the user sends over the network after that (including a
+@code{kpasswd} command) could be read by an attacker.  The only way to
+re-establish a secure password is to have a new one set by a system
+administrator.  The @samp{kadmin} @code{cpw} request lets an
+administrator change the password of any user.  An administrator must be
+listed in the @file{admin_acl.mod} file to do this.
+
+One way to disable an account is to change the password to a value
+unknown to the user; this is useful if the password has been exposed or
+discovered.  The Kerberos administrative server does not provide any
+easy way to delete names, since any name that `expires' may remain on
+access control lists, such as @file{.klogin} files or @file{admin_acl.*}
+files, long afterwards; reusing the name would provide a new person the
+access of a previous one.  (Names can be deleted by dumping and
+reloading the database.  This should only be done after access lists are
+searched for the old names.)
+
+Database administrators may also create principal names for new
+instances of an application servers on their machines.  If a machine is
+providing a new authenticated service, it needs a key for that service
+(unless it is using an existing one---for example, @code{rlogin} and
+@code{rsh} use the same @code{rcmd} principal.)
+
+
+@node Administrative Tools
+@section Administrative Tools
+
+@menu
+* kadmin::                      Database Administration
+* kstash::                      Master Key Storage
+* ksrvutil::                    Host Key Management
+* ksrvtgt::                     Application Authentication
+* kprop and push-kprop::        Send Database to a Slave Server
+@end menu
+
+@node kadmin
+@subsection @code{kadmin}---network utility for CNS database administration
+
+@c @subsubheading SYNOPSIS
+@smallexample
+kadmin [-u @var{user}] [-r @var{default_realm}] [-m]
+@end smallexample
+@c @subsubheading DESCRIPTION
+
+This utility provides a unified administration interface to the Kerberos
+master database.  Kerberos administrators use @code{kadmin} to register
+new users and application servers to the master database, and to change
+information about existing database entries.  For instance, an
+administrator can use @code{kadmin} to change a user's Kerberos
+password.  A Kerberos administrator is a user with an @samp{admin}
+instance whose name appears on one of the Kerberos administration access
+control lists.  If the @samp{-u} option is used, @var{user} is used as
+the administrator instead of the local user.  If the @samp{-r} option is
+used, @var{default_realm} is used as the default realm for transactions.
+Otherwise, the local realm is used by default.  If the @samp{-m} option
+is used, multiple requests are permitted on only one entry of the admin
+password.  Some sites do not support this option.
+
+The @code{kadmin} program communicates over the network with the
+@code{kadmind} program, which runs on the machine housing the Kerberos
+master database.  The @code{kadmind} creates new entries and makes
+modifications to the database.
+
+When you enter the @code{kadmin} command, the program displays a message
+that welcomes you and explains how to ask for help.  Then @code{kadmin}
+waits for you to enter commands (which are described below).  It then
+asks you for your admin password before accessing the database.
+
+Use the @code{add_new_key} (or @code{ank} for short) command to register
+a new principal with the master database.  The command requires one
+argument, the principal's name.  The name given can be fully qualified
+using the standard @var{name.instance@@realm} convention (see,
+@pxref{Principal names,,Your Kerberos principal name}).  You are asked
+to enter your admin password, then prompted twice to enter the
+principal's new password.  If no realm is specified, the local realm is
+used unless another was given on the command line with the @samp{-r}
+flag.  If no instance is specified, a null instance is used.  If a realm
+other than the default realm is specified, you need to supply your admin
+password for the other realm.
+
+Use the @code{change_password} (@code{cpw}) command to change a
+principal's Kerberos password.  The command requires one argument, the
+principal's name.  You are asked to enter your admin password, then
+prompted twice to enter the principal's new password.  The name given
+can be fully qualified using the standard @var{name.instance@@realm}
+convention.
+
+Use the @code{change_admin_password} (@code{cap}) command to change your
+admin instance password.  This command requires no arguments.  It
+prompts you for your old admin password, then prompts you twice to enter
+the new admin password.  If this is your first command, the default
+realm is used.  Otherwise, the realm used in the last command is used.
+
+Use the @code{get_entry} (@code{get}) command to get information about a
+principal.  The command requires one argument, the principal's name.
+You are prompted to enter your admin password.
+
+Use the @code{delete_principal} (@code{del}) command to delete a
+principal.  This command should be used with care.  When you delete an
+entry, be sure to take it off any access control lists
+(@file{admin_acl.*} files (@pxref{kadmind, ACL files}) and
+@file{.klogin} files (@pxref{rlogin, .klogin files})).  If you do not,
+then, if the principal name is reused for somebody else, that person
+obtains unauthorized access.
+
+Use the @code{destroy_tickets} (@code{dest}) command to destroy your
+admin tickets explicitly.
+
+Use the @code{list_requests} (@code{lr}) command to get a list of
+possible commands.
+
+Use the @code{help} command to display @code{kadmin}'s various help
+messages.  If entered without an argument, help displays a general help
+message.  You can get detailed information on specific @code{kadmin}
+commands by entering @code{help command_name}.
+
+Use the @code{add_snk_key} or @code{snk} to generate and display random
+keys for use initializing or reinitializing SNK4 devices.  (See,
+@ref{Appendix,,SecureNet Key Authentication Device}.)
+
+To quit the program, type @code{quit}.
+
+
+@ignore
+@subsubheading BUGS
+
+The user interface is primitive, and the command names could be better.
+
+
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos Intro
+@item kadmind
+@item kpasswd
+@item ksrvutil
+@end table
+
+     `A Subsystem Utilities Package for UNIX' by Ken Raeburn
+@end ignore
+
+
+
+@node kstash
+@subsection @code{kstash}---stash CNS Key Database master key
+
+@code{kstash} saves the Kerberos key distribution center (KDC) database
+master key in the master key cache file, @file{/.k}.  This is normally
+done so that the @code{kerberos} daemon can read the master key from the
+file when it starts up at boot time.  If the key is not saved using
+@code{kstash}, somebody must enter the master key manually each time the
+system is rebooted.
+
+The master key cache file, @file{/.k}, should not be saved on backup
+tapes.  If it is, the backup tapes must be guarded with the same level
+of security used to protect the master Key Distribution Center machine
+itself.  If somebody is able to learn the master key, the contents of
+the entire database, including all passwords, are vulnerable.
+
+When @code{kstash} is run, it prompts the user to enter the master key,
+to verify the authenticity of the key and the authorization to store the
+key in the file.
+
+@subsubheading DIAGNOSTICS
+@table @code
+@item verify_master_key: Invalid master key, does not match database.
+The master key string entered was incorrect.
+@item kstash: Unable to open master key file
+The attempt to open the cache file for writing failed (probably due to
+a system or access permission error).
+@item kstash: Write I/O error on master key file
+The @code{write}(2) system call returned an error while @code{kstash}
+was attempting to write the key to the file.
+@end table
+@subsubheading FILES
+@table @file
+@item /usr/kerberos/database/principal.pag
+@itemx /usr/kerberos/database/principal.dir
+DBM files containing database
+@item /.k
+Master key cache file.
+@end table
+
+@node ksrvutil
+@subsection @code{ksrvutil}---host CNS srvtab manipulation utility
+
+@c @subsubheading SYNOPSIS
+@smallexample
+ksrvutil @var{operation} [-k] [-i] [-f @var{filename}]
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{ksrvutil} allows a system manager to list or change keys currently
+in his srvtab or to add new keys to the srvtab.
+
+Operation must be one of the following:
+
+@table @code
+@item list
+lists the keys in a srvtab showing version number and principal name.
+If the @samp{-k} option is given, keys are also shown.
+
+@item change
+changes all the keys in the Kerberos database and in the @samp{srvtab}
+by using the regular admin protocol.  If the @samp{-i} flag is given,
+@code{ksrvutil} prompts for `yes' or `no' before changing each key.  If
+the @samp{-k} option is used, the old and new keys are displayed.
+
+@item add
+allows the user to add a key.  @code{add} prompts for name, instance,
+realm, and key version number, asks for confirmation, and then asks for
+a password.  @code{ksrvutil} then converts the password to a key and
+appends the srvtab with the new information.  If the @samp{-k} option
+is used, the key is displayed.
+
+@item delete
+deletes particular keys in the srvtab, interactively prompting for 
+each key.
+@end table
+
+In all cases, the default file used is @file{/etc/krb-srvtab} as defined in
+@file{krb.h} unless this is overridden by the @samp{-f} option.
+
+
+@code{ksrvutil} is used to add keys to a key file.  A system manager
+asks a Kerberos administrator to create a new service key with
+@ref{kadmin} and supplies an initial password.  The manager then uses
+@code{ksrvutil} to add the key to the srvtab.  Finally, the manager
+changes the key so that it is random and, therefore, unknown to either
+the system manager or the Kerberos administrator.
+
+@code{ksrvutil} always makes a backup copy of the srvtab before making
+any changes.
+
+@c @subsubheading DIAGNOSTICS
+If @code{ksrvutil} should exit on an error condition at any time during
+a change or add, a copy of the original srvtab can be found in
+@file{@var{filename}.old} where @file{filename} is the name of the
+srvtab.  A copy of the file with all new keys, changed or added so far,
+can be found in @file{@var{filename}.work}.  The original srvtab is
+left unmodified until the program exits.  At that point, it is removed
+and replaced it with the workfile.  Appending the workfile to the backup
+copy and replacing the srvtab with the result should always give a
+usable srvtab.  The resulting srvtab, however, may have some out of
+date keys.
+
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item kadmin
+@item ksrvtgt
+@end table
+@end ignore
+
+@node ksrvtgt
+@subsection @code{ksrvtgt}---fetch and store CNS ticket-granting-ticket using a service key
+
+@c @subsubheading SYNOPSIS 
+@smallexample 
+ksrvtgt @var{name} @var{instance} [[@var{realm}] @var{srvtab}]
+@end smallexample 
+@c @subsubheading DESCRIPTION
+@code{ksrvtgt} retrieves a ticket-granting ticket with a lifetime of 5
+minutes for the principal @var{name}.@var{instance}@@@var{realm} (or
+@var{name}.@var{instance}@@@var{localrealm} if realm is not supplied on
+the command line), decrypts the response using the service key found in
+@var{srvtab} (or in @file{/etc/krb-srvtab} if @var{srvtab} is not
+specified on the command line), and stores the ticket in the standard
+ticket cache.
+
+This command is intended primarily for use in shell scripts and other
+batch-type facilities.  For example, suppose you have one machine with a
+tape drive (we'll call it @samp{tapehost}), and you want to be able to
+back up all machines on the local network on to that drive, and you want
+the backup script to run unattended.
+
+@itemize @bullet
+@item Make sure that @file{/etc/krb-srvtab} on @samp{tapehost}
+drive has an entry for the @code{rcmd} service.  This is already the
+case if @samp{tapehost} is a CNS application server.
+
+@item Add @code{rcmd.tapehost} to the @file{~root/.klogin} file on each
+client machine.  This gives anybody with an @code{rcmd.tapehost} ticket
+root access to those machines.  (If the backup process on the client
+machines need not be run as root, some other user can be used instead).
+
+@item The backup script on @samp{tapehost} can then look something like
+this:
+@smallexample
+for m in @var{clients}; do
+  ksrvtgt rcmd @samp{tapehost}
+  rsh $m dump | dd of=@var{tapedevice}
+done
+@end smallexample
+The @code{ksrvtgt} command gets a ticket for the principal
+@code{rcmd.tapehost} and store it in root's ticket file.  Since
+@code{rcmd.tapehost} is in @file{~root/.klogin} on the client machines,
+the @code{rsh} is permitted.
+
+@item @code{ksrvtgt} is invoked before each @code{rsh}
+command.  This is because the ticket obtained by @code{ksrvtgt} is
+short-lived: it is only valid for five minutes.
+
+@item The script must be run by root.  @code{ksrvtgt} must be
+able to read the @file{/etc/krb-srvtab} file, which should only be
+readable by root.
+
+@item This approach means that if somebody is able to become
+root on @samp{tapehost}, they are able to become root on any of the
+client machines.  This may introduce a weak point in security, which
+should be considered before adding @code{rcmd.tapehost} to the
+@file{~root/.klogin} files on the client machines.
+@end itemize
+
+@ignore 
+@subsubheading DIAGNOSTICS
+
+@samp{Generic Kerberos failure (kfailure)} can indicate a whole range of
+problems, the most common of which is the inability to read the service
+key file.
+
+@subsubheading FILES
+@table @file
+@item /usr/kerberos/lib/krb.conf
+to get the name of the local realm.
+@item /tmp/tkt@var{uid}
+The default ticket file.
+@item /etc/krb-srvtab
+The default service key file.
+@end table
+
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos Intro
+@item kinit
+@item kdestroy
+@end table
+@end ignore
+
+@node kprop and push-kprop
+@subsection kprop and push-kprop
+
+@smallexample
+kprop [-p] [-force] [-realm @var{realm}] [-private] [-s @var{srvtab}]
+      @var{data_file} @var{slaves_file}
+@end smallexample
+
+The @code{kprop} program is used to copy the Kerberos database from the
+Kerberos master server to a slave server.  Any slave server may serve as
+a Key Distribution Center just as the master server does, permitting
+people to use CNS client programs even if the master server is
+inaccessible.
+
+@xref{Slave Server Installation} for a description of how to use
+@code{kprop} and @code{kpropd} to set up slave servers.
+
+The @code{kprop} program communicates with the @code{kpropd} daemon,
+which runs on the slave server (@pxref{Slave Servers,kpropd}).
+
+The @var{data_file} argument is a file created by @code{kdb_util} with
+the @code{slave_dump} option (@pxref{kdb_util}).
+
+The @var{slaves_file} argument is a text file containing a list of the
+hostnames of the slave servers.  It should contain one hostname per
+line.  Each hostname may optionally be followed by the port number to
+contact, separated by a colon (e.g. host.domain:2754).  The default port
+number is found by using @code{getservbyname} to look up the
+@samp{krb_prop} service.  If that is not defined, @code{kprop} uses
+@samp{754}.
+
+The @code{kprop} program and the @code{kdb_util} program communicate
+using a semaphore file.  The name of the file is the @var{data_file}
+argument with @file{.dump_ok} appended.  The file is automatically
+created by @code{kdb_util} when the @code{slave_dump} option is used.
+
+The @code{push_kprop} shell script may be used to invoke @code{kprop}.
+It assumes that the list of slaves is in the file
+@file{/usr/kerberos/database/slavelist}.
+
+Normally the Kerberos database is propagated from the server to the
+slaves by invoking @code{push_kprop} on a regular basis using
+@code{cron}.
+
+The @code{kprop} program requires a srvtab file with an entry for
+@samp{rcmd}.@var{HOSTNAME}@@@var{REALM}.  This is the same type of
+srvtab file required to run the @code{klogind} or @code{kshd} servers.
+Srvtab files can be created using the @code{ksrvutil} program
+(@pxref{ksrvutil}).  The default srvtab file is @file{/etc/krb-srvtab}.
+This default may be overridden with the @samp{-s} option.
+
+The @samp{-p} option means to use preauthentication when retrieving
+tickets.
+
+The @samp{-force} option means to transfer the database even if the
+semaphore file generated by @code{kdb_util} indicates that the dump is
+not up to date.
+
+The @samp{-realm} @var{realm} option sets the Kerberos realm name.  The
+default realm name is obtained using @code{krb_get_lrealm}.
+
+The @samp{-private} option means to encrypt the data being sent to the
+slave server.  This is the default.
+
+The @samp{-s} @var{srvtab} sets the name of the srvtab file to use when
+retrieving tickets.  The default is @file{/etc/krb-srvtab}.
+
+@node Raw Database Manipulation
+@section Raw Database Management
+Directly manipulate key database on key distribution center.
+
+@menu
+* kdb_edit::	Edit Raw Database
+* kdb_init::	Create New Database
+* kdb_destroy::	Erase Database
+* kdb_util::	Other Manipulation
+@end menu
+
+@node kdb_edit
+@subsection @code{kdb_edit}---CNS Key Database editing utility
+
+@c @subsubheading SYNOPSIS
+@smallexample
+kdb_edit [-n] [-k mkeyfile]
+@end smallexample
+
+@c @subsubheading DESCRIPTION
+@code{kdb_edit} is used to create or change principals stored in the
+Kerberos key distribution center (KDC) database.
+
+When executed, @code{kdb_edit} prompts for the master key string and
+verifies that it matches the master key stored in the database.  If the
+@samp{-n} or @samp{-k} options are specified, the master key is instead
+fetched from a master key cache file (as created by @code{kstash}).  The
+@samp{-n} option reads the default master key cache file, @file{/.k}.
+The @samp{-k} option may be used to name a different key cache file.
+
+Once the master key has been verified, @code{kdb_edit} prompts the user
+for the principal and instance to be modified.  If the entry is not
+found the user may create it.  Once an entry is found or created, the
+user may set the password, expiration date, maximum ticket lifetime, and
+attributes.  Default expiration dates, maximum ticket lifetimes, and
+attributes are presented in brackets; if the user presses return the
+default is selected.  There is no default password.  The password
+@samp{RANDOM} is interpreted specially, and if entered the user may have
+the program select a random key for the principal.
+
+Upon successfully creating or changing the entry, @samp{Edit O.K.} is
+printed.
+
+@ignore
+@subsubheading DIAGNOSTICS
+
+@table @code
+@item verify_master_key: Invalid master key, does not match database.
+The master key string entered was incorrect.
+@end table
+
+@subsubheading FILES
+@table @file
+@item /usr/kerberos/database/principal.pag
+@itemx /usr/kerberos/database/principal.dir      
+DBM files containing database
+@item /.k
+Master key cache file.
+@end table
+@end ignore
+
+@node kdb_init
+@subsection @code{kdb_init}---Initialize Kerberos Key Database
+
+@c @subsubheading SYNOPSIS
+@smallexample
+kdb_init [@var{realm}]
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{kdb_init} initializes a Kerberos key distribution center database,
+creating the necessary principals.
+
+If the optional @var{realm} argument is not present, @code{kdb_init}
+prompts for a realm name (or default to the pre-defined value in
+@file{/usr/kerberos/include/krb.h}).  After determining the realm to be
+created, it prompts for a master key password.  The master key password
+is used to encrypt every encryption key stored in the database.  IF THE
+MASTER KEY PASSWORD IS LOST, THERE IS NO WAY TO RECOVER ENCRYPTION KEYS
+STORED IN THE DATABASE.
+
+@ignore 
+@subsubheading DIAGNOSTICS
+
+@table @code
+@item /usr/kerberos/database/principal: File exists
+An attempt was made to create a database on a machine which already 
+had
+an existing database.
+@end table
+
+@subsubheading FILES
+@table @file
+@item /usr/kerberos/database/principal.pag
+@itemx /usr/kerberos/database/principal.dir
+DBM files containing database
+@item /usr/kerberos/include/krb.h
+Include file defining default realm
+@end table
+
+@subsubheading SEE ALSO
+@xref{kdb_destroy}.
+@end ignore
+
+@node kdb_destroy
+@subsection @code{kdb_destroy}---destroy Kerberos Key Database
+
+@c @subsubheading SYNOPSIS
+@smallexample
+kdb_destroy
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{kdb_destroy} deletes a Kerberos key distribution center 
+database.
+
+The user is prompted to verify that the database should be destroyed.  A
+response beginning with @samp{y} or @samp{Y} confirms deletion.  Any
+other response aborts deletion.  Extreme caution should be exercised in
+the use of this command.
+
+@ignore
+@subsubheading DIAGNOSTICS
+
+@table @code
+@item Database cannot be deleted at /usr/kerberos/database/principal
+The attempt to delete the database failed (probably due to a system or
+access permission error).
+@item Database not deleted.
+The user aborted the deletion.
+@end table
+
+@subsubheading FILES
+@table @file
+@item /usr/kerberos/database/principal.pag
+@itemx /usr/kerberos/database/principal.dir
+DBM files containing database
+@end table
+
+@subsubheading SEE ALSO
+@xref{kdb_init}
+@end ignore
+
+@node kdb_util
+@subsection @code{kdb_util}---Kerberos Key Database utility
+
+@c @subsubheading SYNOPSIS
+@smallexample
+kdb_util @var{operation} @var{filename}
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{kdb_util} allows the Kerberos key distribution center (KDC)
+database administrator to perform utility functions on the database.
+
+@var{operation} must be one of the following:
+
+@table @code
+@item load
+Initializes the KDC database with the records described by the text
+contained in the file @var{filename}.  Any existing database is
+overwritten.
+@item dump
+dumps the KDC database into a text representation in the file
+@var{filename}.
+@item slave_dump
+performs a database dump like the dump operation, and additionally
+creates a semaphore file signaling the propagation software that an
+update is available for distribution to slave KDC databases.
+@item new_master_key
+prompts for the old and new master key strings, and then dumps the KDC
+database into a text representation in the file @var{filename}.  The
+keys in the text representation are encrypted in the new master key.
+@item convert_old_db
+prompts for the master key string, and then dumps the KDC database into
+a text representation in the file @var{filename}.  The existing database
+is encrypted using the old key string (encrypted by the key schedule of
+the master key); the dumped database is encrypted using the new key
+string (encrypted directly with master key).
+@end table
+
+@ignore 
+@subsubheading DIAGNOSTICS
+@table @code
+@item verify_master_key: Invalid master key, does not match database.
+The master key string entered was incorrect.
+@end table
+
+@subsubheading FILES
+@table @file
+@item /usr/kerberos/database/principal.pag
+@itemx /usr/kerberos/database/principal.dir
+DBM files containing database
+@item filename.ok
+semaphore file created by slave_dump.
+@end table
+@end ignore
+
+@node Daemons
+@chapter Daemons
+@menu
+* Admin Services::	kadmind
+* Interactive Command::	klogind, kshd
+* File Transfer::	tftp, tcom
+* Slave Servers::       kpropd, in.propd
+@end menu
+
+@node Admin Services
+@section Admin Services
+@menu
+* kadmind::	Admin Server
+@end menu
+
+@node kadmind
+@subsection @code{kadmind}---network daemon for Kerberos database administration
+
+@c @subsubheading SYNOPSIS
+@smallexample
+kadmind [-n] [-h] [-r @var{realm}] [-f @var{filename}] 
+    [-d @var{dbname}] [-a @var{acldir}]
+@end smallexample
+@c @subsubheading DESCRIPTION
+@samp{kadmind} is the network database server for the Kerberos
+password-changing and administration tools.
+
+Upon execution, it prompts the user to enter the master key string for
+the database.
+
+If the @samp{-n} option is specified, the master key is instead fetched
+from the master key cache file.
+
+If the @samp{-r} @var{realm} option is specified, the admin server
+pretends that its local realm is @var{realm} instead of the actual local
+realm of the host it is running on.  This makes it possible to run a
+server for a foreign Kerberos realm.
+
+If the @samp{-f} @var{filename} option is specified, that file is
+used to hold the log information instead of the default.
+
+If the @samp{-d} @var{dbname} option is specified, that file is
+used as the database name instead of the default.
+
+If the @samp{-a} @var{acldir} option is specified, the directory
+@var{acldir} is searched for access control lists.  The default is
+@file{/usr/kerberos/database}.
+
+If the @samp{-h} option is specified, @code{kadmind} prints out a short
+summary of the permissible control arguments, and then exits.
+
+When performing requests on behalf of clients, @code{kadmind} checks
+access control lists (ACLs) to determine if the client is authorized to
+perform the requested action.  The ACL files are normally kept in
+@file{/usr/kerberos/database}; this may be overridden by the @samp{-a}
+option.  Each ACL file is named with a prefix of @file{admin_acl}, and a
+suffix indicating the type.  ACL files are simple text files with lists
+of principal names, with each principal name on a separate line (i.e.,
+the same format as a @file{.klogin} file; @pxref{rlogin, .klogin
+files}).
+
+Currently three distinct access types are supported:
+
+@itemize @bullet
+@item Addition (@file{.add} ACL file).  If a principal is on this list,
+the principal may add new principals to the database.
+@item Retrieval (@file{.get} ACL file).  If a principal is on this list,
+the principal may retrieve database entries.  NOTE: A principal's
+private key is never returned by the get functions.
+@item Modification (@file{.mod} ACL file).  If a principal is on this
+list, the principal may modify entries in the database. 
+@end itemize
+
+A principal is always granted authorization to change its own password.
+
+@subsubheading FILES
+@table @file
+@item /usr/kerberos/database/admin_server.syslog
+Default log file.
+@item /usr/kerberos/database
+Default access control list directory.
+@item admin_acl.add
+@itemx admin_acl.get
+@itemx admin_acl.mod
+Access control list files (within the directory)
+@item /usr/kerberos/database/principal.pag
+@itemx /usr/kerberos/database/principal.dir
+Default DBM files containing database
+@item /.k
+Master key cache file.
+@end table
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item Kerberos Intro
+@item kpasswd
+@item kadmin
+@item acl_check
+@end table
+@end ignore
+
+@node Interactive Command
+@section Interactive Command
+@menu
+* popper::	Post Office Server
+* klogind::	Kerberized rlogin
+* kshd::	Kerberized rsh
+@end menu
+@node popper
+@subsection @code{popper}---pop 3 server
+
+@c @subsubheading SYNOPSIS
+@smallexample
+/usr/etc/popper [-d] [-t @var{trace-file}]
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{popper} is an implementation of the Post Office Protocol server
+that runs on a variety of Unix computers to manage electronic mail for
+Macintosh and MS-DOS computers.  POP allows one host to be a secure mail
+server, and allows users on other machines to reliably pick up their
+mail from the mail server, without having to log in or worry about NFS
+collisions (as could be the case were @var{/var/spool/mail} exported).
+
+The server was developed at the
+University of California at Berkeley and conforms fully to the
+specifications in RFC 1081 and RFC 1082.  The Berkeley server also has
+extensions to send electronic mail on behalf of a client.
+
+@ignore 
+@subsubheading THE POP TRANSACTION CYCLE
+The Berkeley POP server is a single program (called @code{popper}) that
+is launched by @code{inetd} when it gets a service request on the POP
+TCP port.  (The official port number specified in RFC 1081 for POP
+version 3 is port 110.  However, some POP3 clients attempt to contact
+the server at port 109, the POP version 2 port.  Unless you are running
+both POP2 and POP3 servers, you can simply define both ports for use by
+the POP3 server.  This is explained in the installation instructions
+later on.)  The @code{popper} program initializes and verifies that the
+peer IP address is registered in the local domain, logging a warning
+message when a connection is made to a client whose IP address does not
+have a canonical name. For systems using BSD 4.3 bind, it also checks to
+see if a canonical name lookup for the client returns the same peer IP
+address, logging a warning message if it does not.  The the server
+enters the authorization state, during which the client must correctly
+identify itself by providing a valid Unix userid and password on the
+server's host machine.  No other exchanges are allowed during this state
+(other than a request to quit.)  If authentication fails, a warning
+message is logged and the session ends.  Once the user is identified,
+@code{popper} changes its user and group IDs to match that of the user
+and enters the transaction state.  The server makes a temporary copy of
+the user's maildrop (ordinarily in @file{/usr/spool/mail}) which is used
+for all subsequent transactions.  These the bulk of POP commands to
+retrieve mail, delete mail, undelete mail, and so forth.  A Berkeley
+extension also allows the user to submit a mail parcel to the server who
+mails it using the @code{sendmail} program (this extension is supported
+in the HyperMail client distributed with the server).  When the client
+quits, the server enters the final update state during which the network
+connection is terminated and the user's maildrop is updated with the
+(possibly) modified temporary maildrop.
+
+@subsubheading LOGGING
+@end ignore
+
+The POP server uses @code{syslog} to keep a record of its activities.
+On systems with BSD 4.3 syslogging, the server logs (by default) to the
+@samp{local0} facility at priority @samp{notice} for all messages except
+debugging which is logged at priority @samp{debug}.  The default log
+file is @file{/usr/spool/mqueue/POPlog}.  These can be changed, if
+desired.  On systems with 4.2 syslogging all messages are logged to the
+local log file, usually @file{/usr/spool/mqueue/syslog}.
+
+@subsubheading DEBUGGING
+
+The @code{popper} program logs debugging information when the @samp{-d}
+parameter is specified after its invocation in the @file{inetd.conf}
+file.  The @samp{-d} flag sets the socket to debugging and turns on
+debugging.  All debugging information is saved using @code{syslog}(8).
+Care should be exercised in using this option since it generates
+considerable output in the syslog file.  Alternatively, the @samp{-t
+@var{file-name}} option places debugging information into file
+@var{`file-name'} using @code{fprintf} instead of @code{syslog}.
+
+You can confirm that the POP server is running on Unix by
+@code{telnet}ing to port 110 (or 109 if you set it up that way).  For
+example:
+
+@smallexample
+     %telnet @var{myhost} 110
+     Trying...
+     Connected to @var{myhost}.berkeley.edu.
+     Escape character is '^]'.
+     +OK UCB Pop server (version 1.6) at @var{myhost} starting.
+     quit
+     Connection closed by foreign host.
+@end smallexample
+
+@subsubheading FILES
+@table @file
+@item /usr/spool/mail
+mail files
+@item /etc/inetd.conf
+pop program invocation
+@item /etc/syslog.conf
+logging specifications
+@end table
+
+@ignore
+@subsubheading SEE ALSO
+@code{inetd}(8), RFC1081, RFC1082.
+@end ignore
+
+
+
+@node klogind
+@subsection @code{klogind}---Kerberos remote login server
+
+@c @subsubheading SYNOPSIS
+@smallexample
+/usr/kerberos/etc/klogind
+/usr/kerberos/etc/Klogind
+/usr/kerberos/etc/eklogind
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{klogind} is the server for the Kerberos version of the
+@ref{rlogin} program.  The server provides a remote login facility with
+authentication provided by Kerberos.
+
+@code{klogind} listens for service requests at the port indicated in the
+@code{klogin} or @code{eklogin} service specification; see
+@samp{services}(5).
+
+In the past, invocation as @code{klogind} was used for normal hosts to
+which password access was granted if Kerberos authentication failed,
+whereas invocation as @code{Klogind} required Kerberos authentication.
+However, this distinction has been removed, because @code{klogind} does
+not behave identically to the traditional @code{rlogind} server, and
+because the password fallback does not work with encryption.  Invocation
+as @code{klogind} is now identical to invocation as @code{Klogind}.  It
+is still possible to run the system provided @code{rlogind} server to
+permit access with a password.
+
+Invocation as @code{eklogind} provides an encrypted communications
+channel.
+
+When a service request is received, the server checks the client's
+source address and requests the corresponding host name (see
+@code{gethostbyaddr}(3N), @samp{hosts}(5) and @samp{named}(8)).  If the
+hostname cannot be determined, the dot-notation representation of the
+host address is used.
+
+Once the source address has been checked, @code{klogind} allocates a
+pseudo terminal (see @samp{pty}(4)), and manipulates file descriptors so
+that the slave half of the pseudo terminal becomes the @code{stdin},
+@code{stdout}, and @code{stderr} for a login process.  The login process
+is an instance of the @code{login}(1) program, invoked with the
+@samp{-k}, @samp{-K}, or @samp{-e} option, depending on whether the
+@code{klogind} was started as @code{klogind}, @code{Klogind} or
+@code{eklogind}, respectively.  The login process then proceeds with the
+authentication process as described in @ref{kshd}, but if automatic
+authentication fails, the user is re-prompted to login as one would on a
+standard terminal line.
+
+The parent of the login process manipulates the master side of the
+pseudo terminal, operating as an intermediary between the login process
+and the client instance of the @code{rlogin} program.  If @code{klogind}
+is invoked as @code{eklogind}, all data passed over the network are
+encrypted.  In normal operation, the packet protocol described in
+@samp{pty}(4) is invoked to provide @kbd{^S}/@kbd{^Q} type facilities
+and propagate interrupt signals to the remote programs.  The login
+process propagates the client terminal's baud rate and terminal type, as
+found in the environment variable, @samp{TERM}; see @samp{environ}(7).
+The screen or window size of the terminal is requested from the client,
+and window size changes from the client are propagated to the pseudo
+terminal.
+
+@code{Klogind}
+accepts three options which may be used for testing purposes.
+
+The @samp{-l} @var{login_program} option sets the login program to
+run.  The default value is normally
+@file{/usr/kerberos/etc/login.krb}.
+
+The @samp{-r} @var{realm_file} option sets the name of the
+@file{krb.realms} file to use.  The default value is normally
+@file{/usr/kerberos/lib/krb.realms}.  @xref{krb.realms}.
+
+The @samp{-s} @var{srvtab_file} option sets the name of the srvtab
+file to use.  The default value is normally @file{/etc/krb-srvtab}.
+
+@ignore 
+@subsubheading DIAGNOSTICS
+
+All diagnostic messages are returned on the connection associated with
+the stderr, after which any network connections are closed.  An error is
+indicated by a leading byte with a value of 1.
+@table @code
+@item Try again.
+A @code{fork} by the server failed.
+@item /bin/sh: @dots{}
+The user's login shell could not be started.
+@end table
+@ignore
+@subsubheading SEE ALSO
+@xref{kerberos}.
+
+@subsubheading BUGS
+
+A more extensible protocol should be used.
+@end ignore
+
+@node kshd
+@subsection @code{kshd}---Kerberos remote shell server
+
+@c @subsubheading SYNOPSIS
+@smallexample
+/usr/kerberos/etc/kshd
+@end smallexample
+
+@c @subsubheading DESCRIPTION
+@code{kshd} is the server for the @code{kcmd} routine and, 
+consequently,
+for the @ref{rsh} program.  The server provides remote execution
+facilities with authentication based on Kerberos.
+
+@code{kshd} listens for service requests at the port indicated in the
+@samp{kshell} service specification; see @samp{services}(5).  When a
+service request is received the following protocol is initiated:
+
+@enumerate
+@item
+The server reads characters from the socket up to a null (\0) byte.  
+The resultant string is interpreted as an ASCII number, base 10.
+@item
+If the number received in step 1 is non-zero, it is interpreted as the
+port number of a secondary stream to be used for the @code{stderr}.  A
+second connection is then created to the specified port on the client's
+machine.
+@item
+The server checks the client's source address and requests the
+corresponding host name (see @code{gethostbyaddr}(3N), 
+@samp{hosts}(5)
+and @samp{named}(8)).  If the hostname cannot be determined, the
+dot-notation representation of the host address is used.
+@item
+  A Kerberos ticket/authenticator pair are retrieved on the initial
+socket. 
+@item 
+ A null terminated user name of at most 16 characters is retrieved on
+the initial socket. This user name is interpreted as a user identity to
+use on the server's machine.
+@item 
+ A null terminated command to be passed to a shell is retrieved
+on the initial socket.  The length of the command is limited by the
+upper bound on the size of the system's argument list.
+@item
+@code{kshd} then validates the user according to the following steps.
+The local (server-end) user name is looked up in the password file and a
+@code{chdir} is performed to the user's home directory.  If either the
+lookup or @code{chdir} fail, the connection is terminated.  The
+@file{.klogin} file in the home directory is used to mediate access to
+the account (via @samp{kuserok}) by the Kerberos principal named in the
+ticket/authenticator.  If this authorization check fails, the connection
+is terminated.
+@item
+ A null byte is returned on the initial socket and the command line is
+passed to the normal login shell of the user.  The shell inherits the
+network connections established by @code{kshd}.
+@end enumerate
+
+@code{kshd}
+accepts three options which may be used for testing purposes.
+
+The @samp{-p} @var{directory} option sets the directory where Kerberos
+programs are found.  This directory is put at the start of @samp{PATH}
+before the command is executed.  The default value is normally
+@file{/usr/kerberos/bin}.  (For correct operation of Kerberos
+@code{rcp}, the Kerberos @code{rcp} program must be in @samp{PATH}
+before any other @code{rcp} program.  @xref{rcp}).
+
+The @samp{-r} @var{realm_file} option sets the name of the
+@file{krb.realms} file to use.  The default value is normally
+@file{/usr/kerberos/lib/krb.realms}.  @xref{krb.realms}.
+
+The @samp{-s} @var{srvtab_file} option sets the name of the srvtab
+file to use.  The default value is normally @file{/etc/krb-srvtab}.
+
+@subsubheading DIAGNOSTICS
+
+Except for the last one listed below, all diagnostic messages are
+returned on the initial socket, after which any network connections are
+closed.  An error is indicated by a leading byte with a value of `1'
+(zero is returned in step 8 above upon successful completion of all the
+steps prior to the execution of the login shell).
+@table @code
+@item remuser too long
+The name of the user on the remote machine is longer than 16
+characters.
+@item command too long
+The command line passed exceeds the size of the argument list (as
+configured into the system).
+@item Login incorrect.
+No password file entry for the user name existed.
+@item No remote directory.
+The @code{chdir} command to the home directory failed.
+@item Permission denied.
+The authorization procedure described above failed.
+@item Can not make pipe.
+The pipe needed for the @code{stderr}, was not created.
+@item Try again.
+A @code{fork} by the server failed.
+@item @var{shellname}: @dots{}
+The user's login shell could not be started.  This message is returned on
+the connection associated with the @code{stderr}, and is not preceded by
+a flag byte.
+@end table
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item rsh
+@item Kerberos
+@item kuserok
+@end table
+@end ignore
+
+@ignore
+@subsubheading BUGS
+
+A facility to allow all data exchanges to be encrypted should be
+present.
+
+A more extensible protocol should be used.
+@end ignore
+
+@node File Transfer
+@section File Transfer
+@menu
+* tftpd::	TFTP
+* tcom::	TCOM
+@end menu
+@node tftpd
+@subsection @code{tftpd}---server tftp daemon
+
+@c @subsubheading SYNOPSIS
+@smallexample
+/etc/tftpd
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{tftpd} is a daemon which runs the trivial file transfer protocol
+server.  It listens for incoming connections, and forks a child to
+perform each requested transfer.  It uses the directory @file{/tftpd};
+the file @file{lock} in that directory is used to prevent two daemons from
+becoming active simultaneously; it also contains the daemon's process
+ID, which is used by the @code{tftp} command program @ref{tcom} to
+control the daemon's operation.
+
+
+@subsubheading FILES
+@table @file
+@item /tftpd/lock
+interlock, PID storage
+@item /dev/net
+the network device
+@end table
+
+@ignore
+@subsubheading SEE ALSO
+@table @ref
+@item tftp
+@item tcom
+@item Internet Protocol Handbook
+@end table
+@end ignore
+
+@node tcom
+@subsection @code{tcom}---control operation of server tftp daemon
+
+@c @subsubheading SYNOPSIS
+@smallexample
+tcom
+@end smallexample
+@c @subsubheading DESCRIPTION
+@code{tcom} is a program to control the execution of the server trivial
+file transfer daemon.  It sends user commands to the daemon by writing
+them into a shared file and signaling the daemon; it watches the
+daemon's log to obtain the results of the commands.  The following
+commands are supported:
+@table @code
+@item help
+display a list of commands
+@item input trace on|off
+turn tracing of input packets on or off
+@item output trace on|off
+turn tracing of output packets on or off
+@item trace on|off
+turn all packet tracing on or off
+@item times
+display server parent and children  process times
+@item uptime
+display daemon up time
+@item exit
+force daemon to shut down and exit
+@end table
+@subsubheading FILES
+@table @file
+@item /tftpd/lock
+lock file containing daemon's PID
+@item /tftpd/command
+command file to daemon
+@item /tftpd/slog
+daemon's log file
+@end table
+
+Note that two @code{tcom}s running at the same time result in chaos.  Be
+aware that watching the daemon's log file uses a lot of CPU time.
+
+@node Slave Servers
+@section Slave Servers
+
+@smallexample
+kpropd [-r @var{realm}] [-s @var{srvtab}] [-d @var{database}]
+       [-u @var{port}] [-l @var{logfile}] [-i] [-c @var{command}]
+       [-C @var{arg}] @var{filename}
+@end smallexample
+
+The @code{kpropd} daemon runs on a Kerberos slave server.  A Kerberos
+slave server holds a copy of the master Kerberos database.  Any slave
+server may serve as a Key Distribution Center just as the master server
+does, permitting people to use Kerberos programs even if the master
+server is inaccessible.
+
+@xref{Slave Server Installation} for a description of how to use
+@code{kprop} and @code{kpropd} to set up slave servers.
+
+The @code{kprop} program running on the master server contacts the
+@code{kpropd} daemon running on the slave server in order to copy over
+the Kerberos database (@pxref{kprop and push-kprop}).
+
+The
+@code{kpropd}
+daemon is normally started by arranging for
+@code{inetd}
+to run the
+@code{in.kpropd}
+shell script.  Normally, a line like this would be added to the
+@file{/etc/inetd.conf}
+file:
+
+@smallexample
+krb_prop stream tcp nowait root /usr/kerberos/etc/in.kpropd in.kpropd
+@end smallexample
+
+The @code{kpropd} daemon may also be run directly as a server.
+
+The @code{kpropd} daemon has a single required argument, which is the
+name of a file in which to store the database received from @code{kprop}
+running on the master server (the @code{in.kpropd} script passes
+@file{/usr/kerberos/database/slavedb}).  After @code{kpropd} receives
+the database information, it runs @code{kdb_util} to load it into the
+local Kerberos database (@pxref{kdb_util}).
+
+The @code{kpropd} daemon only accepts data from machines which are
+listed in @file{krb.conf} as an admin server (@pxref{krb.conf}).
+
+The @samp{-r} @var{realm} option sets the Kerberos realm name.  The
+default realm is obtained using @code{krb_get_lrealm}.
+
+The @samp{-s} @var{srvtab} option sets the name of the srvtab file to
+use when authenticating the ticket received from @code{kprop}.  The
+default is @file{/etc/krb-srvtab}.
+
+The @samp{-d} @var{database} option sets the name of the Kerberos
+database.  This is a prefix used to name three files.  The default is
+@file{/usr/kerberos/database/principal}.
+
+The @samp{-u} @var{port} option sets the port to accept connections on.
+This is only meaningful if the @samp{-i} option is not used.  The
+default is to use @code{getservbyname} to look up the @samp{krb_prop}
+service.  If that is not defined, @code{kpropd} uses @samp{754}.
+
+The @samp{-l} @var{logfile} option sets the name of the log file.  The
+default is @file{/usr/kerberos/database/kpropd.log}.
+
+The @samp{-i} option causes @code{kpropd} to assume that it was run from
+@code{inetd}.  The default is for @code{kpropd} to open a socket and to
+loop accepting connections.
+
+The @samp{-c} @var{command} option sets the path of the @code{kdb_util}
+command which @code{kpropd} should run after receiving the database.
+The default is to just run @code{kdb_util}, assuming it is on
+@samp{PATH}.
+
+The @samp{-C} @var{arg} option sets the argument to pass to
+@code{kdb_util}.  The default argument is @code{load}.
+
+@node Glossary
+@chapter A Glossary of Kerberos Terms
+
+@itemize @bullet
+@item @strong{Kerberos (Cerberus):} A figure out of Greek and Roman 
+mythology, the three-headed dog who guards the entrance to the 
+underworld.  Kerberos would howl at the presence of the living among the 
+dead.
+
+@item @strong{ACL:} Access Control List.
+An access control list determines who has access to do particular
+operations.  In Kerberos V4, access control lists are only used to
+control access to administrative operations (such as adding users or
+changing passwords), and are kept as ordinary ASCII files in
+@file{/usr/kerberos/database/admin_acl.*}.  The three lists there control
+who can add, get information about, and modify information about
+principals in the Kerberos database.
+
+@item @strong{application server:} A program that provides a service,
+typically to multiple people at the same time.  For example, file
+transfers on the Internet are handled by FTP servers and NFS servers.
+You can log in to other machines by using a @code{telnet} server or an
+rlogin server.  Application servers often run as ``daemons,'' which are
+programs that run quietly in the background inside a machine, invisible
+to the person at the console.  (See, `principal'.)
+
+@item @strong{authentication:} The process of proving that you are
+who you claim to be.  It usually involves validating a user's identity
+by means of a multiple-step transaction.  Automated teller machines do
+authentication by making you provide a token (your ATM card) and then
+type in a PIN or other secret number to prove you are using the card
+legitimately.  Kerberos provides authentication across a computer
+network, without revealing the authentication information to
+wiretappers.  Once you are authenticated to a host, either Kerberos or
+some other process @emph{authorizes} you to perform certain functions.
+
+@item @strong{authorization:} A process whereby you get permission to 
+perform actions.  In the example of the bank machine above, you are
+@emph{authenticated} to the bank machine by using your card and PIN
+number; then the bank's computer @emph{authorizes} you to receive money
+if it determines you have enough in your account.  Kerberos provides
+simple authorization service via the ACL system; other authorization
+services can be built on top of Kerberos if the system administrator
+wishes.
+
+@item @strong{client:} A partner in a client-server relationship.  The
+client acts as the users' interface to the services offered by the
+application server.  (See, `principal'.)
+
+@item @strong{domain:} As in feudal days, a @emph{domain} is an area over
+which one administrator exercises control.
+
+@item @strong{Domain Name Service:} 
+A service which translates Internet host names to and from numeric
+IP addresses.  DNS (as it is usually known) also provides additional
+services (e.g., managing email delivery).
+
+@item @strong{instance:} An instance refers to a particular
+@emph{role} of a user.  For example, Kerberos administrators have two
+roles: that of an ordinary user (with an empty instance); and that of
+an administrator (with an instance of @emph{admin}).  Instances are
+normally written after the principal name, separated by a dot, as in
+@samp{person.admin}.  Some programs (@code{kinit} and @code{kdb_edit})
+prompt separately for a principal name and an instance name.
+Instances are also used with keys for programs, to indicate on which
+hostname the program runs.  For example, @samp{rcmd.host1@@your-realm}
+is the principal name for the @code{rcmd} service (the name used by
+@code{rlogin, rcp}, and @code{rsh}) for @samp{host1} in your realm.
+(See, `principal'.)
+ 
+@item @strong{key:} The encryption secret used to encrypt and decrypt
+network @code{rlogin} sessions and other transactions.  Each session has
+a temporary key associated with it for exchanging authentication
+information (and possibly encrypting other data as well), and each user
+and application server has a key of its own.  Users' keys are generated
+from their passwords.  The application server's key is generally stored
+in a file.
+
+@item @strong{principal:} A Kerberos principal can be a user,
+a host, a service, a client, or an application server.  The term
+@emph{principal} is a generic name used to describe actors in the
+Kerberos function.  The principal name is usually a user's or
+application server's name.  Sometimes the entire string
+@samp{principal.instance@@realm} is called the principal name.
+
+@item @strong{realm:} An administrative domain which operates a
+Kerberos authentication service.  Each user in the realm is identified
+in the same way to all machines in the realm.  Realm names are in
+capital letters by convention.  For one-host sites, the realm name is
+the same as the host name (in capital letters).  At larger sites, the
+realm name is usually the capitalized name of the main Internet domain
+(e.g., CYGNUS.COM or EFF.ORG).  At large sites, there may be several
+realms (e.g., ENG.SUN.COM and MKTG.SUN.COM).
+
+@item @strong{server:} See `application server'.
+
+@item @strong{ticket:} A software token used to securely pass the
+identity of a user from the one Kerberos host to another.  Tickets
+contain the name of the server, the name of the client, the Internet
+address of the client, a time-stamp, a lifetime (or expiration time)
+of the ticket, and a random session key.  The contents of the
+so-called @emph{ticket file,} where the Kerberos client looks to find
+authentication information, is sometimes incorrectly referred to as a
+ticket, as well.
+@end itemize
+
+@node Authors
+@chapter Authors and Contributors
+
+The following people helped out on various aspects of the
+system:
+
+Jeff Schiller designed and wrote the administration server and its
+user interface, kadmin.  He also wrote the DBM version of the database
+management system.
+
+Mark Colan developed the Kerberos versions of rlogin, rsh, and rcp, as
+well as contributing work on the servers.
+
+John Ostlund developed the Kerberos versions of passwd and
+userreg.
+
+Stan Zanarotti pioneered Kerberos in a foreign realm (LCS),
+and made many contributions based on that experience.
+
+Many other people contributed code and/or useful ideas, including: 
+
+@itemize @bullet
+@item Bill Bryant, MIT Project Athena
+@item Bill Sommerfeld, MIT Project Athena
+@item Bob Baldwin
+@item Bob McKie, MIT Project Athena
+@item Brian Murphy, MIT Project Athena
+@item Chris Reed, MIT Project Athena
+@item Clifford Neuman, MIT Project Athena
+@item Dan Geer, MIT Project Athena
+@item David Jedlinsky, MIT Project Athena
+@item Douglas A. Church, MIT Project Athena
+@item Emanuel Jay Berkenbilt, MIT Project Athena
+@item Jeffrey I. Schiller, MIT Project Athena
+@item Jennifer Steiner, MIT Project Athena
+@item Jim Aspnes, MIT Project Athena
+@item Jim Bloom
+@item John Barba
+@item John T. Kohl, Project Athena/Digital Equipment Corporation
+@item John Kubiatowicz, MIT Project Athena
+@item Jon Rochlis, MIT Project Athena
+@item Ken Raeburn, MIT Project Athena (Now at Cygnus Support)
+@item Mark Eichin, Cygnus Support
+@item Mike Shanzer, MIT Project Athena
+@item Richard Basch, MIT Project Athena
+@item Rob French, MIT Project Athena
+@item Steve Miller, MIT Project Athena/Digital Equipment  Corporation
+@item Ted Ts'o, MIT Project Athena
+@item Win Treese, MIT Project Athena/Digital Equipment Corporation
+@end itemize
+
+The POP Mail server was the work of:
+
+Bob Campbell, Edward Moy, Austin Shelton, Marshall T. Rose, and cast of
+thousands at Rand, UDel, UCI, and elsewhere.  Kerberos authentication
+added by Tom Coppeto---MIT Network Services.
+
+Documentation credits include:
+@itemize @bullet
+@item Massachusetts Institute of Technology, for the @strong{man} pages which
+formed the basis of some sections of this documentation.
+@item John Gilmore, Mark Eichin and Ken Raeburn of Cygnus Support.
+@item Kerberos Users' Frequently Asked Questions Guide, compiled by: 
+Barry Jaspan, <bjaspan@@security.ov.com>, OpenVision Technologies.
+@end itemize
+
+@node Appendix
+@appendix SecureNet Key Authentication Device
+
+@menu
+* Intro::			A brief introduction
+* SecureNet Key Device::	Describes the hardware device
+* Example of Use::		How it looks to the user
+* Protocol Design::		The cryptographic protocol we use
+* Cryptographic Design::	Analysis of the protocol's strength
+* Implementation::		How we implemented it in Kerberos V4
+@end menu
+
+@node Intro
+@section Kerberos SecureNet Extension
+
+We at Cygnus Support have designed a simple extension to the Kerberos IV
+protocol to support the use of a particular challenge-response
+authenticator device, the SecureNet Key.  The device uses DES to encrypt
+a randomly generated challenge, producing an 8 decimal digit response.
+
+@node SecureNet Key Device
+@section The SecureNet Key Devise
+
+The SecureNet Key device (SNK4) is a product of Digital Pathways.  The
+function of the device is simple.
+
+@table @emph
+@item Initialization
+At first application of power, it is loaded with a DES key, and then a
+PIN.  The PIN can be changed later, the DES key can only be changed by
+removing the batteries from the device.
+
+@item Use
+The device holder is then given a ``challenge,'' consisting of a
+randomly generated six digit value.  They power on the device, enter the
+PIN, and then enter the challenge.  An eight digit response is
+displayed, which the device holder enters into the system, confirming
+their identity.
+
+@item Theory
+The challenge is interpreted as six ASCII characters.  Two zero bytes
+are added to the end of this string, producing an eight character
+plaintext block.  This block is fed to the DES ECB encryption function,
+using the device key to encrypt it.  The first four bytes of the
+resulting block are displayed as the response, as eight hexadecimal
+digits.
+
+The display itself is not complete---when the digits @samp{A}, @samp{B},
+or @samp{C} appear, they are replaced by the digit @samp{2}; likewise
+@samp{D}, @samp{E}, and @samp{F} are replaced by @samp{3}.  This permits
+the response to be entered in using only a numeric keypad, and avoids
+confusing a user who might not be familiar with non-decimal number
+systems.
+
+@end table
+
+@node Example of Use
+@section Example of SecureNet Key use
+
+To use an SNK4 device for Kerberos authentication:
+
+@display
+% kinit -s username
+Challenge: 123456
+Response:12345678
+% klist
+Ticket file:	/tmp/tkt86
+Principal:	username.+SNK4@@REALM.ORG
+
+  Issued           Expires          Principal
+Dec 31 18:35:30  Dec 32 04:35:30  krbtgt.REALM.ORG@@REALM.ORG
+@end display
+
+or
+
+@display
+% kinit -s username
+Challenge #1: 123456
+Response #1:12345678
+Challenge #2: 789012
+Response #2:78901234
+% 
+@end display
+
+@node Protocol Design
+@section Protocol Design for using the SecureNet Key
+
+Because of the requirement for replicated Key Distribution Centers, it
+is impractical to add persistent state about the challenge and response.
+(It would at first seem an obvious approach---use existing
+pre-authentication support to get the response from the user---except
+that if the challenge is not generated by the server, it is vulnerable
+to replay.)
+
+Thus, we use the response directly as a shared secret, as the key for
+the TGT itself.  We have designed two modes, one which uses a single
+challenge, one which uses two independent challenges.  The single
+challenge is convenient, but is cryptographically weak enough that it
+should only be used for short-lived TGTs, and perhaps should not even be
+used there, as it can expose information about challenge-response pairs
+that can be used to attack the stronger two-challenge system.  (Note
+that the two-challenge version does not cause additional traffic---the
+TGT is returned with both challenges as part of the package.)
+
+@node Cryptographic Design
+@section Cryptographic Analysis of Protocol Design
+
+For this analysis, we assume that the attacker can perform
+known-plaintext attacks on the ticket-granting ticket at a rate of
+roughly 25K tries per second.  The first block is random (the session
+key) so the attacker needs to chain to the second block, which has the
+service principal name, which is known.  (In this case, it is the string
+@samp{krbtgt} followed by a zero byte---the eighth byte of the block is
+the first character of the realm name, also known.)
+
+The SNK4 device takes basically 20 bits of input and produces 26+ bits
+of output; the input bits are public and shared between the KDC and the
+user, the output bits are a secret and shared between the KDC and the
+user (as the original DES key itself is secret.)
+
+Simply using the response (padded with zero bits) as a key means that
+the TGT can be brute forced in roughly an hour, leaving plenty of time
+to actually use it.  Also, a lookup table (for a given user/device) that
+is indexed by challenge only needs a million 56 bit entries, and would
+probably provide enough savings over time to be worth keeping.
+
+Using additional common information (such as the challenge itself or a
+common timestamp) for the padding bits would eliminate the advantage of
+the lookup table, but would not help against the brute force attack
+itself.
+
+Requiring that the user take @emph{two} independent challenges and enter
+both responses would double the amount of shared secret material,
+squaring the expense of the brute force attack.  This would drive it up
+closer to twelve thousand years, keeping the original assumptions---54
+bits is nearly as good as a single DES key itself.  (Put another way, a
+double challenge takes only one-eighth as long a time to crack as the
+internal key itself would.)
+
+@node Implementation
+@section Implementation of SecureNet Key in Kerberos V4
+
+There are four parts to this extension:
+
+@table @samp
+@item @code{krb_get_in_tkt}
+The library function @code{krb_get_in_tkt} already has hooks for a
+callback function to do the necessary work.  Callbacks do not work in
+Mac drivers, though, so we have split the function around the callback
+into @code{krb_mk_in_tkt} and @code{krb_parse_in_tkt} to allow the
+client to do the challenge and response locally, without the callback.
+@item @code{kinit -s}
+An alternate mode of use of of @code{kinit} is provided which prompts as
+before but adds +SNK4 to the instance, allowing the KDC to identify and
+generate a different response.
+@item Kerberos (KDC)
+A modification of the normal KDC which recognizes the @samp{+SNK4}
+string at the end of an instance and uses the key in the database as the
+device key instead of the user's key, and then generates a pair of
+challenges, works out the responses, and uses them for the TGT key
+instead of the user's key.
+@item @code{kadmin snk}
+A new query to the @code{kadmin} program, @code{add_snk_key} or
+@code{snk} which generates and displays random keys for use initializing
+or reinitializing SNK4 devices.  Includes key verification check.
+@end table
+
+Since the user is authenticated as
+@var{user}@strong{.+SNK4@@}@var{realm} instead of simply
+@var{user}@strong{@@}@var{realm} access control can be done using the
+standard ACL files---@file{~root/.klogin} for example.
+
+The protocol changes are simple.
+@table @emph
+@item Request
+The request is unchanged, except for the addition of @samp{+SNK4} to the
+instance.
+@item Reply
+The reply is distinctly different, but should not matter as only
+@code{kinit -s} ever sees one.
+
+The structure is:
+@table @samp
+@item version
+The eight characters @samp{cnssnk01}
+@item challenge 1
+Also eight characters, six digits and two zero bytes.
+@item challenge 2
+Same format as challenge 1. If this is the same string, the user is only
+issued one challenge.
+@item encrypted ticket
+Same as the original protocol raw ticket.
+@end table
+@end table
+
+Challenge 1 and challenge 2 are encrypted and the first four bytes of
+each (with the conversion to digits mentioned elsewhere) are used as key
+material.  In order to mix the bits effectively, the two resulting
+strings are concatenated, producing eight bytes, which we will call key
+1.  Key 1 is used to encrypt key 1, producing key 2.  This avoids losing
+particular bits of the response when we fix up the parity.
+
+If we put this data at the end, a normal @code{kinit} could still
+decrypt the ticket if it had the right key---but it could not, so we do
+not do that.
+
+@contents
+@c end of texinfo file
+@bye
+
+
+@c (modify-syntax-entry ?_ "w" para-mode-syntax-table)
+@c (modify-syntax-entry ?- "w" para-mode-syntax-table)
+@c (modify-syntax-entry ?/ "w" para-mode-syntax-table)

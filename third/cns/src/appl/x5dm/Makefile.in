@@ -1,0 +1,135 @@
+#### include configury here
+# USE X11R5
+BUILDTOP=$(C)$(S)$(U)$(U)
+
+# --with-x11r5-lib=/3h/projects/kerberos/mit-x11/install/usr/X386/lib/
+# --with-x11r5-include=/3h/projects/kerberos/mit-x11/install/usr/X386/include
+# yield, in configure space,
+# $with_x11r5_lib /3h/projects/kerberos/mit-x11/install/usr/X386/lib/
+# $with_x11r5_include /3h/projects/kerberos/mit-x11/install/usr/X386/include
+##            XLD = /cygint/play/mwe/mit/lib
+##         LIBS3 = $(XLD)/Xaw/libXaw.a $(XLD)/Xmu/libXmu.a $(XLD)/Xau/libXau.a\
+##		  $(XLD)/Xdmcp/libXdmcp.a $(XLD)/Xt/libXt.a $(XLD)/X/libX11.a
+## INCLUDE_ARG = -I/cygint/play/mwe/mit/
+
+##            XLD = $with_x11r5_lib 
+## INCLUDE_ARG = -I$with_x11r5_include
+
+         LIBS3 = $(XLD) -lXaw -lXmu -lXau -lXdmcp -lXt -lX11
+       DEPLIBS3 = 
+
+# makefile.in, starting from Imakefile for x5dm
+all:: xdm xdmshell sessreg
+
+clean::
+	$(RM) xdm xdmshell sessreg
+	$(RM) *.o
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+#if HasXdmAuth
+#XDMAUTH_DEFINES = -DHASXDMAUTH
+#XDMAUTHOBJS = xdmauth.o
+#XDMAUTHSRCS = xdmauth.c
+#endif
+
+#if HasSecureRPC
+#RPC_DEFINES = -DSECURE_RPC
+#RPCOBJS = rpcauth.o
+#RPCSRCS = rpcauth.c
+#RPCLIB = -lrpcsvc
+#endif
+
+#if SystemV4 || HasShadowPasswd
+#PWD_DEFINES = -DUSESHADOW
+#if SystemV
+#SYS_LIBRARIES = -lsec
+#endif
+#endif
+
+   XDMCONFIGDIR = XdmConfigurationSubdirectory
+        SUBDIRS = $(XDMCONFIGDIR)
+
+LOCAL_LIBRARIES = $(XAUTHLIB) $(XDMCPLIB) $(RPCLIB)
+          SRCS1 = auth.c daemon.c server.c dpylist.c dm.c error.c file.c \
+		  greet.c netaddr.c reset.c resource.c protodpy.c policy.c \
+		  session.c socket.c streams.c util.c verify.c xdmcp.c \
+		  Login.c mitauth.c crypt.c \
+		  genauth.c access.c choose.c $(XDMAUTHSRCS) $(RPCSRCS)
+          OBJS1 = auth.o daemon.o server.o dpylist.o dm.o error.o file.o \
+		  greet.o netaddr.o reset.o resource.o protodpy.o policy.o \
+		  session.o socket.o streams.o util.o verify.o xdmcp.o \
+		  Login.o mitauth.o crypt.o \
+		  genauth.o access.o choose.o $(XDMAUTHOBJS) $(RPCOBJS)
+          SRCS2 = xdmshell.c 
+          OBJS2 = xdmshell.o 
+#if BuildChooser
+#          SRCS3 = chooser.c
+#          OBJS3 = chooser.o
+#endif
+       DEPLIBS3 = 
+       
+          SRCS4 = sessreg.c
+          OBJS4 = sessreg.o
+#if BuildChooser
+#       PROGRAMS = xdm xdmshell sessreg chooser
+#else
+       PROGRAMS = xdm xdmshell sessreg
+#endif
+
+#ifdef solaris20
+#define INCLUDE_ARG -I/usr/openwin/include
+#endif
+#ifndef INCLUDE_ARG
+#define INCLUDE_ARG -I/cygint/play/mwe/mit/
+#endif
+
+        DEFINES = -DBINDIR=\"$(BINDIR)\" -DXDMDIR=\"$(XDMDIR)\" \
+		$(SIGNAL_DEFINES) $(XDMAUTH_DEFINES) $(RPC_DEFINES) $(PWD_DEFINES) \
+		$(INCLUDE_ARG) -DXDMCP $(XTRA_RES_DEFINES) $(X5DMDEFS)
+
+#XTRA_RES_DEFINES = \
+#	'-DDEF_SESSION="/usr/bin/X11/scosession"' \
+#	'-DDEF_XDM_CONFIG="/usr/lib/X11/scologin/Xconfig"' \
+#	'-DDEF_AUTH_DIR="/usr/lib/X11/scologin"'
+XTRA_RES_DEFINES = \
+	'-DDEF_SESSION="$(prefix)/lib/X11/xdm"' \
+	'-DDEF_XDM_CONFIG="$(prefix)/lib/X11/xdm/xdm-config"' \
+	'-DDEF_AUTH_DIR="$(prefix)/lib/X11/xdm"'
+
+SRCDIR=${SRCTOP}/appl/x5dm
+DEPLIBS=${KRB_LIBDEP} ${DES_LIBDEP}
+LIBS=$(LIBS3) ${KRB_LIB} ${DES_LIB} ${BSDLIB} # -lprot  -lx
+SRCS=${SRCS1} ${SRCS2} ${SRCS3} ${SRCS4}
+CODE=${SRCS} Makefile.in
+
+# program(xdm,$(OBJS1) $(LOCAL_LIBRARIES),$(DEPLIBS),$(SYSLIBS) ${LIBS},${DAEMDIR})
+xdm: $(OBJS1) $(LOCAL_LIBRARIES) $(DEPLIBS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS1) $(LOCAL_LIBRARIES) $(SYSLIBS) $(LIBS)
+
+# program(xdmshell,$(OBJS2),,$(SYSLIBS) ${LIBS},${DAEMDIR})
+xdmshell: $(OBJS2)
+	$(CC) $(CFLAGS) -o $@ $(OBJS2) $(SYSLIBS) $(LIBS)
+
+
+# program(sessreg,$(OBJS4),,$(SYSLIBS) ${LIBS},${DAEMDIR})
+sessreg: $(OBJS4)
+	$(CC) $(CFLAGS) -o $@ $(OBJS4) $(SYSLIBS) $(LIBS)
+
+install::
+	$(INSTALLPROG) xdm ${DESTDIR}$(DAEMDIR)/xdm
+	$(INSTALLPROG) xdmshell ${DESTDIR}$(DAEMDIR)/xdmshell
+	$(INSTALLPROG) sessreg ${DESTDIR}$(DAEMDIR)/sessreg
+
+#if BuildChooser
+##program(chooser,$(OBJS3),,$(SYSLIBS) $(LIBS3),$(DAEMDIR))
+#install::
+#	$(INSTALLPROG) chooser ${DESTDIR}$(DAEMDIR)/xdm
+#endif
+
+#/*SpecialObjectRule(resource.o, $(ICONFIGFILES), $(RES_DEFINES))*/
+
+auth.o policy.o: $(ICONFIGFILES)
+

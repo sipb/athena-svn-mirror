@@ -1,0 +1,36 @@
+#### insert configury here
+BUILDTOP=$(C)$(S)$(U)
+LIBS=${KRB_LIB} ${DES_LIB}
+DEPLIBS=${KRB_LIBDEP} ${DES_LIBDEP}
+SRCS=kprop.c kprop.h kpropd.c
+CODE=${SRCS}
+
+all:: kprop kpropd
+
+#program(kprop,kprop.o,${DEPLIBS},${LIBS},${SVRDIR})
+kprop: kprop.o ${DEPLIBS}
+	$(CC) $(CFLAGS) -o $@ kprop.o ${LIBS}
+
+#program(kpropd,kpropd.o,${DEPLIBS},${LIBS},${SVRDIR})
+kpropd: kpropd.o ${DEPLIBS}
+	$(CC) $(CFLAGS) -o $@ kpropd.o ${LIBS}
+
+install::
+	$(INSTALLPROG) kprop ${DESTDIR}$(SVRDIR)/kprop
+	$(INSTALLPROG) kpropd ${DESTDIR}$(SVRDIR)/kpropd
+	$(INSTALLPROG) $(srcdir)/start-kpropd.sh ${DESTDIR}${SVRDIR}/start-kpropd
+	chmod a+x ${DESTDIR}${SVRDIR}/start-kpropd
+	$(INSTALLPROG) $(srcdir)/push-kprop.sh ${DESTDIR}${SVRDIR}/push-kprop
+	chmod a+x ${DESTDIR}${SVRDIR}/push-kprop
+	$(INSTALLPROG) $(srcdir)/run-kpropd.sh ${DESTDIR}${SVRDIR}/run-kpropd
+	chmod a+x ${DESTDIR}${SVRDIR}/run-kpropd
+	$(INSTALLPROG) $(srcdir)/in-kpropd.sh ${DESTDIR}${SVRDIR}/in.kpropd
+	chmod a+x ${DESTDIR}${SVRDIR}/in.kpropd
+
+clean::
+	$(RM) kprop kprop.o kpropd kpropd.o
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+

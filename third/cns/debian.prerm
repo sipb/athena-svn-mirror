@@ -1,0 +1,10 @@
+#!/bin/sh
+for i in \
+ 	developer-notes.info \
+	install.info \
+	kerbapi.info \
+	kerbman.info \
+	mac.info \
+	windows.info; do
+		install-info --quiet --remove /usr/info/$i
+done

@@ -1,0 +1,74 @@
+Mon Jan  8 02:57:11 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (compile_et): remove now unneeded LEXLIB.
+
+Thu Jan  4 18:54:49 1996  Mark Eichin  <eichin@cygnus.com>
+
+	* et_lex.lex.l: build in yywrap and #undef it in case it was a
+	macro, to prevent need for lex library.
+	* error_table.y: #undef yywrap to make sure the function gets
+	called.
+	
+Fri Aug 18 17:43:02 1995  Ken Raeburn  <raeburn@kr-laptop.cygnus.com>
+
+	* Makefile.in (all): Moved one rule to make this the default
+	target.
+
+	* error_table.y (yywrap): Define if not already defined.
+
+Fri Jun  2 17:08:27 1995  Mark Eichin  <eichin@cygnus.com>
+
+	* Makefile.in (install, clean): avoid use of ::.
+
+Thu Nov  3 11:30:26 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* compile_et.c (table_number): Declare as long, not int, since it
+	is a long in error_table.y.
+
+	* error_table.y: Only declare malloc and realloc if <stdlib.h> was
+	not included.
+
+Wed Nov  2 17:25:08 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* error_table.y: Include <stdlib.h> based on whether POSIX is
+	defined, not on solaris20 or _AIX.
+
+Tue Nov  1 14:48:16 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* error_table.y: Include <stdlib.h> on AIX.
+
+	* com_err.c: If using <varargs.h>, and VARARGS is not already
+	defined, then define it.
+
+	* internal.h: Don't include <errno.h>.
+	* error_table.y: Include <errno.h>.
+	* comm_err.c, error_message.c, et_name.c: Likewise.
+
+Fri Oct 28 17:00:43 1994  Ian Lance Taylor  <ian@sanguine.cygnus.com>
+
+	* com_err.h: Use extern in declarations.
+
+Fri Aug 12 17:23:33 1994  Mark Eichin  (eichin@cygnus.com)
+
+	* error_table.y: don't declare malloc/realloc on _AIX (might be
+	needed on systems without declaration but where pointers don't fit
+	in ints.)
+	* internal.h: don't declare perror at all. It doesn't help.
+
+Tue Jul  5 10:58:29 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* error_message.c: Include string.h.
+	(rcsid, copyright): Variables deleted.
+
+Fri May 20 15:17:26 1994  John Gilmore  (gnu@cygnus.com)
+
+	* Makefile.in:  Avoid .bak file, eliminates (Ingored) Errors in Make.
+
+Thu Aug 20 11:53:40 1992  Mark W. Eichin  (eichin@paycheck)
+
+	* compile_et.c (strcasecmp): ifdef NEED_STRCASECMP, not i386
+
+Fri Jun 19 13:40:45 1992  Mark Eichin  (eichin at tweedledumber.cygnus.com)
+
+	* Imakefile (install_header): add $(DESTDIR) to header installs
+

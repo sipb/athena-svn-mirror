@@ -1,0 +1,131 @@
+srcdir = :
+#
+# MPW-style lines for the MakeFile.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+#
+# This first part is long enough that NFS/Share doesn't notice the non-ASCII
+# characters in the rest of the file, so it claims that the file is type
+# TEXT, which is what we want.  The non-ASCII chars are necessary for MPW 
+# Make.
+
+all Ä "CNS Kerberos"
+
+#
+#
+# These files need to be assembled.
+#
+assembly Ä ShowINIT.a.o driverInstall.a.o
+
+ShowINIT.a.o Ä ShowINIT.a 		
+	asm  ShowINIT.a
+	
+driverInstall.a.o Ä driverInstall.a
+	asm  -case obj -sym full driverInstall.a
+	
+driverInstall.c.o Ä driverInstall.c driverInstall.h		
+	c -b -mbg full driverInstall.c
+
+'DriverShell INIT'	Ä ShowINIT.a.o	driverInstall.c.o  driverInstall.a.o 
+	link -m MAIN -sym full ¶
+		driverInstall.c.o driverInstall.a.o ShowINIT.a.o ¶
+		{Libraries}Runtime.o {Libraries}Interface.o ¶
+		-rt INIT=0  -ra 0=resSysHeap,resLocked   -o 'DriverShell'
+
+
+Driver.c.o Ä Driver.c Driver.h
+	c -sym full -mbg full Driver.c
+	
+"DriverShell Driver" ÄÄ Driver.c.o
+	link -rt DRVW=0 ¶
+	"{Libraries}"DRVRRuntime.o Driver.c.o ¶
+	-o "DriverShell Driver.DRVW"
+
+"DriverShell Driver" ÄÄ Driver.r
+	Rez Driver.r -a -o "DriverShell"
+
+
+DriverShell ÄÄ  "DriverShell Driver" "DriverShell INIT" kerberos.r "Kerberos.rsrc"
+	echo 'Rezzing...'
+	rez kerberos.r -rd -c krbL -t INIT -a -o "DriverShell"
+	SetFile -a BI "DriverShell"
+	
+
+DriverShellAll.think ÄÄ kerberos.r "DriverShell.think" "LoadDriver.think" "Kerberos.rsrc"
+	echo 'Rezzing...'
+	delete -i -y "DriverShellAll.think"
+	rez kerberos.r -rd -c krbL -t INIT -a -o "DriverShellAll.think"
+	SetFile -a BI "DriverShellAll.think"
+	echo 'Now copy DriverShellAll.think to your Extensions folder.'
+
+"CNS Kerberos" ÄÄ kerberos.r "DriverShell.think" "LoadDriver.think" "Kerberos.rsrc"
+	echo 'Rezzing...'
+	delete -i -y "DriverShellAll.think"
+	rez kerberos.r -rd -c krbL -t INIT -a -o "DriverShellAll.think"
+	SetFile -a BI "DriverShellAll.think"
+	rename "DriverShellAll.think" "CNS Kerberos"
+	echo 'Now copy CNS Kerberos to your Extensions folder.'
+

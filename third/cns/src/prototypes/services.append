@@ -1,0 +1,13 @@
+klogin		543/tcp				# Kerberos authenticated rlogin
+kerberos	750/udp 	kdc		# Kerberos authentication--udp
+kerberos	750/tcp 	kdc		# Kerberos authentication--tcp
+kerberos_master	751/udp 			# Kerberos authentication
+kerberos_master	751/tcp 			# Kerberos authentication
+passwd_server	752/udp				# Kerberos passwd server
+userreg_server	753/udp				# Kerberos userreg server
+kpop		1109/tcp			# Pop with Kerberos
+knetd		2053/tcp			# Kerberos de-multiplexor
+kshell		544/tcp		cmd		# and remote shell
+eklogin		2105/tcp			# Kerberos encrypted rlogin
+krb_prop	754/tcp				# Kerberos slave propagation
+erlogin		888/tcp				# Login and environment passing

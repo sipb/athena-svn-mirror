@@ -1,0 +1,28 @@
+Tue Jun  4 23:23:22 1996  Marc Horowitz  <marc@mit.edu>
+
+	* movemail.c (pfatal_with_name, pfatal_and_delete, get_errmsg):
+ 	conditionalize sys_errlist declaration on HAVE_SYS_ERRLIST_DECL
+
+Tue Oct  3 19:35:11 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* movemail.c (pop_command): Declare misc arguments unsigned long,
+	to avoid truncation on Alpha.
+
+Wed Jul 26 21:04:40 1995  Ken Raeburn  <raeburn@cygnus.com>
+
+	* movemail.c (pop_init): Cast sockaddr_in pointer to sockaddr
+	pointer for call to connect.
+
+Tue Jul  5 11:18:45 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* movemail.c: Don't include krb.h, des.h twice.
+
+Fri Jul  1 05:50:57 1994  John Gilmore  (gnu@cygnus.com)
+
+	* movemail.c:  krb_err_txt => krb_get_err_text.
+
+Wed Jun 22 21:21:52 1994  Ken Raeburn  (raeburn@cujo.cygnus.com)
+
+	* movemail.c: Include string.h.
+	(main): Don't cast return value of strrchr.
+

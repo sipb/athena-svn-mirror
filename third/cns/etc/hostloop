@@ -1,0 +1,22 @@
+#!/bin/sh
+# script to run all builds in serial.
+if [ $# != 2 ]; then
+	echo "usage: $0 mnthost subdir"
+	exit 1
+fi
+if [ ! -r hosts ]; then
+	echo "need hosts file in current dir"
+	exit 1
+fi
+MNT=$1; shift
+XDIR=$1; shift
+DIR=/$MNT/$XDIR
+for i in `cat hosts`; do
+	if `df $DIR | awk -e /$MNT/' { if ( $4 < 20000 ) { print "true"; } else { print "false"; } }'` ; then
+		echo "OUT OF SPACE: "
+		df $DIR
+		exit 2
+	fi
+	echo $i
+	rsh $i -n "sh $DIR/kerberos/etc/dohost $DIR" 2>&1 > $i-runlog
+done

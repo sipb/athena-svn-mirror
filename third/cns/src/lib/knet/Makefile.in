@@ -1,0 +1,38 @@
+#### include configury here
+BUILDTOP=$(C)$(S)$(U)$(U)
+
+SRCS = \
+	getkdata.c \
+	phost.c \
+	sendkdata.c 
+
+OBJS	= \
+	getkdata.o \
+	phost.o \
+	sendkdata.o
+
+CODE=$(SRCS) Makefile.in
+
+# install_library_target(ss,$(OBJS),$(SRCS),)
+all:: libknet.a
+
+libknet.a: $(OBJS)
+	$(RM) $@.bak
+	-$(MV) $@ $@.bak
+	$(ARCHIVE) $@ $(OBJS)
+	$(RANLIB) $@
+
+clean::
+	$(RM) libknet.a
+	$(RM) $(OBJS)
+
+distclean:: clean
+	$(RM) *~ core
+	$(RM) Makefile config.status 
+
+install::
+	$(INSTALLLIB) libknet.a $(DESTDIR)$(LIBDIR)/libknet.a
+	$(CHMOD) 644 $(DESTDIR)$(LIBDIR)/libknet.a
+	$(RANLIB)    $(DESTDIR)$(LIBDIR)/libknet.a
+	$(CHMOD) 444 $(DESTDIR)$(LIBDIR)/libknet.a
+## 
