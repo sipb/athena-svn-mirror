@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.21 1997-04-15 22:41:50 ghudson Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.22 1997-06-10 03:06:40 jweiss Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -23,21 +23,25 @@ esac
 
 # Define the partitions
 echo "Define the partitions"
-rootdrive=/dev/dsk/c0t3d0s0
-rrootdrive=/dev/rdsk/c0t3d0s0
 
-cachedrive=/dev/dsk/c0t3d0s3
-rcachedrive=/dev/rdsk/c0t3d0s3
+drive=c0t3d0
 
-usrdrive=/dev/dsk/c0t3d0s5
-rusrdrive=/dev/rdsk/c0t3d0s5
+rootdrive=/dev/dsk/${drive}s0
+rrootdrive=/dev/rdsk/${drive}s0
 
-vardrive=/dev/dsk/c0t3d0s6
-rvardrive=/dev/rdsk/c0t3d0s6
+cachedrive=/dev/dsk/${drive}s3
+rcachedrive=/dev/rdsk/${drive}s3
 
-export rootdrive rrootdrive cachedrive rcachedrive usrdrive rusrdrive
+usrdrive=/dev/dsk/${drive}s5
+rusrdrive=/dev/rdsk/${drive}s5
+
+vardrive=/dev/dsk/${drive}s6
+rvardrive=/dev/rdsk/${drive}s6
+
+export drive rootdrive rrootdrive cachedrive rcachedrive usrdrive rusrdrive
 export vardrive rvardrive
 
+echo "Installing on ${drive}."
 
 case $CUSTOM in
 N)
@@ -71,36 +75,36 @@ DISK=`/sbin/machtype -r`
 export DISK
 echo $DISK
 case $DISK in
-SUN0207)
-        echo "formatting SUN0270"
-        cat /util/format.input.SUN0270 | format >/dev/null 2>&1
-	;;
 SUN0424)
-         echo "formatting SUN0424"
-         cat /util/format.input.SUN0424 | /usr/sbin/format >/dev/null 2>&1
+	echo "formatting SUN0424"
+	cat /util/format.input.SUN0424 | \
+		/usr/sbin/format ${drive} >/dev/null 2>&1
 	;;
 SUN0535)
-         echo "formatting SUN0535"
-         cat /util/format.input.SUN0535 | /usr/sbin/format >/dev/null 2>&1
-	 ;;
+	echo "formatting SUN0535"
+	cat /util/format.input.SUN0535 | \
+		/usr/sbin/format ${drive} >/dev/null 2>&1
+	;;
 SUN1.05)
-         echo "formatting SUN1.05"
-         cat /util/format.input.SUN1.05 | /usr/sbin/format >/dev/null 2>&1
-	 ;;
+	echo "formatting SUN1.05"
+	cat /util/format.input.SUN1.05 | \
+		/usr/sbin/format ${drive} >/dev/null 2>&1
+	;;
 SUN2.1G)
-         echo "formatting SUN2.1G"
-         cat /util/format.input.SUN2.1G | /usr/sbin/format >/dev/null 2>&1
-	 ;;
+	echo "formatting SUN2.1G"
+	cat /util/format.input.SUN2.1G | \
+		/usr/sbin/format ${drive} >/dev/null 2>&1
+	;;
 SEAGATE*5660N)
-         echo "formatting SEAGATE-ST5660N"
-         cat /util/format.input.seagate.5660|/usr/sbin/format >/dev/null 2>&1
-        ;;
+	echo "formatting SEAGATE-ST5660N"
+	cat /util/format.input.seagate.5660 | \
+		/usr/sbin/format ${drive} >/dev/null 2>&1
+	;;
 *)
-         echo "can't format the disks - type unknown"
-         echo "Call an expert !"
-         exit 1
-         esac
-
+	echo "can't format the disks - type unknown"
+	echo "Call an expert !"
+	exit 1
+esac
 
 echo "Making the filesystems..."
 echo ""
