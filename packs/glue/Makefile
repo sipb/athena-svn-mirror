@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.43 2000-09-02 14:29:49 ghudson Exp $
+# $Id: Makefile,v 1.44 2000-09-04 15:42:33 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -6,7 +6,7 @@ ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
-ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
+ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint gs help klog \
 	listmaint mailmaint moira mrcheck namespace olh olh_ascii \
 	olh_motif pts stella usermaint vos xinfo \
 	show-application show-audio show-binhex show-excel show-image \
