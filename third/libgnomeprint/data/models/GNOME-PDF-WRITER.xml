@@ -14,7 +14,7 @@
     </Option>
     <Option Id="Output">
       <Option Id="Media">
-        <Option Id="PhysicalSize" Type="List" Default="A4">
+        <Option Id="PhysicalSize" Type="List" Default="USLetter">
           <Item Id="A4">
             <Name>A4</Name>
             <Key Id="Width" Value="595.2755906"/>
