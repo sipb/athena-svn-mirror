@@ -54,6 +54,7 @@
       gnus-default-nntp-server "news.mit.edu"
       gnus-local-organization "Massachusetts Institute of Technology"
       gnus-mode-non-string-length 27
+      gnus-use-long-file-name t
       nnmail-crosspost-link-function 'copy-file
       nnmail-spool-file rmail-primary-inbox-list)
 
