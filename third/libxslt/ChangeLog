@@ -1,3 +1,143 @@
+Fri Oct 29 17:03:26 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in NEWS doc/*: preparing release of libxslt-1.1.12
+	* libexslt/crypto.c: mini change to avoid breaking apibuild.py
+	* libxslt/templates.c: small fix, first step in adressing #153660
+
+Fri Oct 29 14:18:35 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* doc/xsltproc.1 doc/xsltproc.xml: indicate - means stdin closing
+	  #156626
+
+Wed Oct 27 17:00:54 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/transform.c: another dictionnary/string interning fix
+
+Wed Oct 27 00:00:07 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/transform.c: fix to force string interning on generated
+	  documents
+
+Sat Oct 23 09:36:12 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libexslt/crypto.c, libexslt/functions.c, libxslt/keys.c,
+	  libxslt/numbers.c, libxslt/pattern.c, libxslt/transform.c,
+	  libxslt/variables.c: changed some variable names for warning
+	  cleanup when -ansi flag is not present.
+	* libxslt/namespaces.c: fixed potential NULL pointer reference
+	  pointed out by Dennis Dams (bug 156187)
+
+Mon Oct 18 17:04:27 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt.spec.in doc/Makefile.am: fix for RedHat bug #136072
+	  to include EXSLT doc in libxslt package.
+
+Thu Oct 14 22:43:22 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* configure.in, config.h.in, libexslt/date.c: changed date.c to use
+	  gmtime_r if available (bug 129983)
+	* libexslt/functions.c: fixed a namespace problem concerning a
+	  function with a namespace-qualified name (bug 155197)
+
+Tue Oct 12 03:54:44 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/namespaces.c: fixed a bug in namespace lookup exhibited
+	  by the recent namespace tests in libxml2
+
+Thu Oct  7 16:15:15 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/transform.c: fixed a problem of tree structure raised
+	  by the new libxml2 tree checking code.
+
+Thu Sep 30 11:28:03 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libexslt/date.c: fixed problem with negative periods
+	  (bug 154021)
+	* tests/exslt/date/sum.2.out: changed expected output, now
+	  agrees with comments in sum.2.xml test data file
+	  
+Thu Sep 30 08:19:28 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/templates.c: patch from Mark Vakoc about an incorrect
+	  attribute document pointer.
+
+Thu Sep 30 08:13:57 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* doc/tutorial2/libxslt_pipes.*: updated the tutorial from Panagiotis
+	  Louridas
+
+Thu Sep 30 00:10:09 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* configure.in doc/*: release of 1.1.11, rebuilt the docs
+
+Wed Sep 29 15:42:33 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/pattern.c: try to fix #153137 but without a test case
+	  it's shooting in the dark.
+
+Tue Sep 28 16:20:48 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* doc/tutorial2/libxslt_pipes.*: New tutorial from Panagiotis Louridas
+	* libxslt.spec.in doc/Makefile.am: integrated the tutorial in the
+	  distribution
+
+Sat Sep 25 21:38:57 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* libxslt/preproc.c libxslt/variables.c: fixed 2 leaks with
+	  namespaced variable names.
+	* tests/general/bug-154.*, tests/general/Makefile.am,
+	  tests/docs/bug-154*, tests/docs/Makefile.am: added test case
+	  for above
+
+Fri Sep 24 18:13:45 CEST 2004 Daniel Veillard <daniel@veillard.com>
+
+	* Makefile.am: add missing variable
+	* libxslt/transform.c: fixed some error callback data
+	* tests/exslt/date/Makefile.am tests/exslt/date/sum*: added new
+	  date:sum testing from Derek Poon
+
+Fri Sep 24 09:17:22 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libexslt/date.c: fixed problem with empty sets, etc.
+	  (see discussion on mailing list)
+
+Sat Sep 18 17:08:31 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libexslt/date.c: fixed problem with timezone offset
+	  (bug 153000)
+	* tests/exslt/date/add.1.out: changed regression test output,
+	  which was apparently incorrect for above case
+
+Sat Sep 18 00:04:02 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libxslt/transform.c: re-arranged sequence of setting up
+	  namespaces within xsltCopyTree (see the list thread
+	  http://mail.gnome.org/archives/xml/2004-September/msg00072.html)
+	* tests/general/bug-104.out: slight change to expected output
+	  due to above fix
+
+Fri Sep 17 23:15:33 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libexslt/date.c: enhanced validation of date-time to catch
+	  bit-field overflow (bug 152836)
+	* tests/exslt/date/date.2.*, tests/exslt/time.2.*: added test
+	  cases for above
+
+Tue Sep  7 18:04:55 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libxslt/numbers.c: further refinement to UTF8 pattern
+	  separator (bug 151975)
+
+Tue Sep  7 00:14:12 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libxslt/numbers.c: fixed problem with UTF8 pattern
+	  separator (bug 151975)
+
+Mon Sep  6 14:27:38 PDT 2004 William Brack <wbrack@mmm.com.hk>
+
+	* libxslt/imports.c, libxslt/xslt.c, libxslt/xsltInternals.h:
+	  fixed 2 problems with xsl:include (bug #151795)
+
 Tue Aug 31 15:45:42 CEST 2004 Daniel Veillard <daniel@veillard.com>
 
 	* NEWS configure.in doc/*: Release of libxslt-1.1.10

@@ -119,7 +119,8 @@ struct _exsltDateVal {
 
 #if defined(HAVE_TIME_H) 					\
     && (defined(HAVE_LOCALTIME) || defined(HAVE_LOCALTIME_R))	\
-    && defined(HAVE_TIME) && defined(HAVE_GMTIME)
+    && (defined(HAVE_GMTIME) || defined(HAVE_GMTIME_R))		\
+    && defined(HAVE_TIME)
 #define WITH_TIME
 #endif
 
@@ -132,6 +133,7 @@ struct _exsltDateVal {
 #define IS_TZO_CHAR(c)						\
 	((c == 0) || (c == 'Z') || (c == '+') || (c == '-'))
 
+#define VALID_ALWAYS(num)	(num >= 0)
 #define VALID_YEAR(yr)          (yr != 0)
 #define VALID_MONTH(mon)        ((mon >= 1) && (mon <= 12))
 /* VALID_DAY should only be used when month is unknown */
@@ -277,6 +279,7 @@ _exsltDateParseGYear (exsltDateValDatePtr dt, const xmlChar **str)
  * PARSE_2_DIGITS:
  * @num:  the integer to fill in
  * @cur:  an #xmlChar *
+ * @func: validation function for the number
  * @invalid: an integer
  *
  * Parses a 2-digits integer and updates @num with the value. @cur is
@@ -284,12 +287,18 @@ _exsltDateParseGYear (exsltDateValDatePtr dt, const xmlChar **str)
  * In case of error, @invalid is set to %TRUE, values of @num and
  * @cur are undefined.
  */
-#define PARSE_2_DIGITS(num, cur, invalid)			\
+#define PARSE_2_DIGITS(num, cur, func, invalid)			\
 	if ((cur[0] < '0') || (cur[0] > '9') ||			\
 	    (cur[1] < '0') || (cur[1] > '9'))			\
 	    invalid = 1;					\
-	else							\
-	    num = (cur[0] - '0') * 10 + (cur[1] - '0');		\
+	else {							\
+	    int val;						\
+	    val = (cur[0] - '0') * 10 + (cur[1] - '0');		\
+	    if (!func(val))					\
+	        invalid = 2;					\
+	    else						\
+	        num = val;					\
+	}							\
 	cur += 2;
 
 /**
@@ -319,7 +328,7 @@ _exsltDateParseGYear (exsltDateValDatePtr dt, const xmlChar **str)
  * @cur are undefined.
  */
 #define PARSE_FLOAT(num, cur, invalid)				\
-	PARSE_2_DIGITS(num, cur, invalid);			\
+	PARSE_2_DIGITS(num, cur, VALID_ALWAYS, invalid);	\
 	if (!invalid && (*cur == '.')) {			\
 	    double mult = 1;				        \
 	    cur++;						\
@@ -372,12 +381,9 @@ _exsltDateParseGMonth (exsltDateValDatePtr dt, const xmlChar **str)
     const xmlChar *cur = *str;
     int ret = 0;
 
-    PARSE_2_DIGITS(dt->mon, cur, ret);
+    PARSE_2_DIGITS(dt->mon, cur, VALID_MONTH, ret);
     if (ret != 0)
 	return ret;
-
-    if (!VALID_MONTH(dt->mon))
-	return 2;
 
     *str = cur;
 
@@ -417,12 +423,9 @@ _exsltDateParseGDay (exsltDateValDatePtr dt, const xmlChar **str)
     const xmlChar *cur = *str;
     int ret = 0;
 
-    PARSE_2_DIGITS(dt->day, cur, ret);
+    PARSE_2_DIGITS(dt->day, cur, VALID_DAY, ret);
     if (ret != 0)
 	return ret;
-
-    if (!VALID_DAY(dt->day))
-	return 2;
 
     *str = cur;
 
@@ -481,7 +484,7 @@ _exsltDateParseTime (exsltDateValDatePtr dt, const xmlChar **str)
     unsigned int hour = 0; /* use temp var in case str is not xs:time */
     int ret = 0;
 
-    PARSE_2_DIGITS(hour, cur, ret);
+    PARSE_2_DIGITS(hour, cur, VALID_HOUR, ret);
     if (ret != 0)
 	return ret;
 
@@ -492,7 +495,7 @@ _exsltDateParseTime (exsltDateValDatePtr dt, const xmlChar **str)
     /* the ':' insures this string is xs:time */
     dt->hour = hour;
 
-    PARSE_2_DIGITS(dt->min, cur, ret);
+    PARSE_2_DIGITS(dt->min, cur, VALID_MIN, ret);
     if (ret != 0)
 	return ret;
 
@@ -574,11 +577,9 @@ _exsltDateParseTimeZone (exsltDateValDatePtr dt, const xmlChar **str)
 
 	cur++;
 
-	PARSE_2_DIGITS(tmp, cur, ret);
+	PARSE_2_DIGITS(tmp, cur, VALID_HOUR, ret);
 	if (ret != 0)
 	    return ret;
-	if (!VALID_HOUR(tmp))
-	    return 2;
 
 	if (*cur != ':')
 	    return 1;
@@ -586,11 +587,9 @@ _exsltDateParseTimeZone (exsltDateValDatePtr dt, const xmlChar **str)
 
 	dt->tzo = tmp * 60;
 
-	PARSE_2_DIGITS(tmp, cur, ret);
+	PARSE_2_DIGITS(tmp, cur, VALID_MIN, ret);
 	if (ret != 0)
 	    return ret;
-	if (!VALID_MIN(tmp))
-	    return 2;
 
 	dt->tzo += tmp;
 	if (isneg)
@@ -750,6 +749,9 @@ exsltDateCurrent (void)
 #if HAVE_LOCALTIME_R
     struct tm localTmS;
 #endif
+#if HAVE_GMTIME_R
+    struct tm gmTmS;
+#endif
     exsltDateValPtr ret;
 
     ret = exsltDateCreateDate(XS_DATETIME);
@@ -777,7 +779,12 @@ exsltDateCurrent (void)
     ret->value.date.sec  = (double) localTm->tm_sec;
 
     /* determine the time zone offset from local to gm time */
+#if HAVE_GMTIME_R
+    gmtime_r(&secs, &gmTmS);
+    gmTm = &gmTmS;
+#else
     gmTm = gmtime(&secs);
+#endif
     ret->value.date.tz_flag = 0;
     ret->value.date.tzo = (((ret->value.date.day * 1440) +
                             (ret->value.date.hour * 60) +
@@ -1451,7 +1458,7 @@ _exsltDateAdd (exsltDateValPtr dt, exsltDateValPtr dur)
         d->mon = 1;
 
     /* normalize for time zone offset */
-    u->sec += (d->tzo * 60);
+    u->sec -= (d->tzo * 60);	/* changed from + to - (bug 153000) */
     d->tzo = 0;
 
     /* normalization */
@@ -1653,26 +1660,21 @@ _exsltDateDifference (exsltDateValPtr x, exsltDateValPtr y, int flag)
 }
 
 /**
- * _exsltDateAddDuration:
- * @x: an #exsltDateValPtr of type #XS_DURATION
- * @y: an #exsltDateValPtr of type #XS_DURATION
+ * _exsltDateAddDurCalc
+ * @ret: an exsltDateValPtr for the return value:
+ * @x: an exsltDateValPtr for the first operand
+ * @y: an exsltDateValPtr for the second operand
  *
- * Compute a new duration from @x and @y.
+ * Add two durations, catering for possible negative values.
+ * The sum is placed in @ret.
  *
- * Returns date/time pointer or NULL.
+ * Returns 1 for success, 0 if error detected.
  */
-static exsltDateValPtr
-_exsltDateAddDuration (exsltDateValPtr x, exsltDateValPtr y)
+static int
+_exsltDateAddDurCalc (exsltDateValPtr ret, exsltDateValPtr x,
+		      exsltDateValPtr y)
 {
-    exsltDateValPtr ret;
     long carry;
-
-    if ((x == NULL) || (y == NULL))
-        return NULL;
-
-    ret = exsltDateCreateDate(XS_DURATION);
-    if (ret == NULL)
-        return NULL;
 
     /* months */
     ret->value.dur.mon = x->value.dur.mon + y->value.dur.mon;
@@ -1682,6 +1684,16 @@ _exsltDateAddDuration (exsltDateValPtr x, exsltDateValPtr y)
     carry = (long)FQUOTIENT(ret->value.dur.sec, SECS_PER_DAY);
     if (ret->value.dur.sec != 0.0) {
         ret->value.dur.sec = MODULO(ret->value.dur.sec, SECS_PER_DAY);
+	/*
+	 * Our function MODULO always gives us a positive value, so
+	 * if we end up with a "-ve" carry we need to adjust it
+	 * appropriately (bug 154021)
+	 */
+	if ((carry < 0) && (ret->value.dur.sec != 0)) {
+	    /* change seconds to equiv negative modulus */
+	    ret->value.dur.sec = ret->value.dur.sec - SECS_PER_DAY;
+	    carry++;
+	}
     }
 
     /* days */
@@ -1695,11 +1707,37 @@ _exsltDateAddDuration (exsltDateValPtr x, exsltDateValPtr y)
          (ret->value.dur.mon < 0)) ||
         (((ret->value.dur.day < 0) || (ret->value.dur.sec < 0)) &&
          (ret->value.dur.mon > 0))) {
-	exsltDateFreeDate(ret);
-        return NULL;
+        return 0;
     }
+    return 1;
+}
 
-    return ret;
+/**
+ * _exsltDateAddDuration:
+ * @x: an #exsltDateValPtr of type #XS_DURATION
+ * @y: an #exsltDateValPtr of type #XS_DURATION
+ *
+ * Compute a new duration from @x and @y.
+ *
+ * Returns date/time pointer or NULL.
+ */
+static exsltDateValPtr
+_exsltDateAddDuration (exsltDateValPtr x, exsltDateValPtr y)
+{
+    exsltDateValPtr ret;
+
+    if ((x == NULL) || (y == NULL))
+        return NULL;
+
+    ret = exsltDateCreateDate(XS_DURATION);
+    if (ret == NULL)
+        return NULL;
+
+    if (_exsltDateAddDurCalc(ret, x, y))
+        return ret;
+
+    exsltDateFreeDate(ret);
+    return NULL;
 }
 
 /****************************************************************
@@ -2731,7 +2769,6 @@ exsltDateSumFunction (xmlXPathParserContextPtr ctxt, int nargs)
     xmlChar *tmp;
     exsltDateValPtr x, total;
     xmlChar *ret;
-    long carry;
     int i;
 
     if (nargs != 1) {
@@ -2750,39 +2787,47 @@ exsltDateSumFunction (xmlXPathParserContextPtr ctxt, int nargs)
     if (xmlXPathCheckError (ctxt))
 	return;
 
-    if ((ns == NULL) || (ns->nodeNr == 0))
+    if ((ns == NULL) || (ns->nodeNr == 0)) {
+	xmlXPathReturnEmptyString (ctxt);
+	if (ns != NULL)
+	    xmlXPathFreeNodeSet (ns);
 	return;
+    }
 
     total = exsltDateCreateDate (XS_DURATION);
+    if (total == NULL) {
+        xmlXPathFreeNodeSet (ns);
+        return;
+    }
 
     for (i = 0; i < ns->nodeNr; i++) {
-
+    	int result;
 	tmp = xmlXPathCastNodeToString (ns->nodeTab[i]);
-	if (tmp == NULL)
+	if (tmp == NULL) {
+	    xmlXPathFreeNodeSet (ns);
+	    exsltDateFreeDate (total);
 	    return;
+	}
 
 	x = exsltDateParseDuration (tmp);
 	if (x == NULL) {
 	    xmlFree (tmp);
+	    exsltDateFreeDate (total);
+	    xmlXPathFreeNodeSet (ns);
+	    xmlXPathReturnEmptyString (ctxt);
 	    return;
 	}
 
-	/* months */
-	total->value.dur.mon += x->value.dur.mon;
-
-	/* seconds */
-	total->value.dur.sec += x->value.dur.sec;
-	carry = (long) FQUOTIENT (total->value.dur.sec, SECS_PER_DAY);
-	if (total->value.dur.sec != 0.0) {
-	    total->value.dur.sec =
-		MODULO (total->value.dur.sec, SECS_PER_DAY);
-	}
-
-	/* days */
-	total->value.dur.day += x->value.dur.day + carry;
+	result = _exsltDateAddDurCalc(total, total, x);
 
 	exsltDateFreeDate (x);
 	xmlFree (tmp);
+	if (!result) {
+	    exsltDateFreeDate (total);
+	    xmlXPathFreeNodeSet (ns);
+	    xmlXPathReturnEmptyString (ctxt);
+	    return;
+	}
     }
 
     ret = exsltDateFormatDuration (&(total->value.dur));
