@@ -87,9 +87,9 @@ Distribution sites for software under third
 
 	afsbin		See below.
 	bind		ftp.isc.org:isc/bind/src
-	emacs		ftp.gnu.org:pub/gnu
-	gcc		ftp.gnu.org:pub/gnu
-	gmake		ftp.gnu.org:pub/gnu (as make)
+	emacs		ftp.gnu.org:pub/gnu/emacs
+	gcc		ftp.gnu.org:pub/gnu/gcc
+	gmake		ftp.gnu.org:pub/gnu/make
 	inetd		From NetBSD (ftp.netbsd.org), usr.sbin/inetd
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
@@ -101,9 +101,9 @@ Distribution sites for software under third
 	mdoc		From NetBSD (ftp.netbsd.org), share/tmac
 	mh		ftp.ics.uci.edu:pub/mh
 	nmh		ftp.math.gatech.edu:pub/nmh
-	patch		ftp.gnu.org:pub/gnu
-	perl		ftp.gnu.org:pub/gnu
-	rcs		ftp.gnu.org:pub/gnu
+	patch		ftp.gnu.org:pub/gnu/patch
+	perl		ftp.gnu.org:pub/gnu/perl
+	rcs		ftp.gnu.org:pub/gnu/rcs
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
 	ssh		ftp.cs.hut.fi:pub/ssh
 	sysinfo		http://www.magnicomp.com/
