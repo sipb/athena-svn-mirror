@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.3 1990-02-06 02:37:55 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.4 1990-02-14 14:43:15 vanharen Exp $";
 #endif
 
 
@@ -119,30 +119,26 @@ do_olc_list(arguments)
 	  continue;
 	}
 
-      if(string_equiv(*arguments,"-status",max(strlen(*arguments),3)))
+      if(string_equiv(*arguments,"-status",max(strlen(*arguments),2)))
 	{
 	  ++arguments;
-	  if(*arguments == (char *) NULL)
-	    OGetStatusCode(*arguments, &stati);
-	  else
-	    {
-	      for(i=0; *arguments != (char *) NULL; arguments++)
-		{
-		  OGetStatusCode(*arguments, &mask);
-		  if(mask == 0)
-		    {
-		      printf("Invalid status label specified. Choose one of...\n");
-		      t_pp_stati();
-		      return(ERROR);
-		    }
-		  else
-		    stati |= mask;
-		  if((*(arguments+1)) && (*(arguments+1)[0] == '-'))
-		    break;
-		  if(arguments[1] == (char *) NULL)
-		    break;
-		}
-	    }
+	  if(*arguments != (char *) NULL)
+	    for(i=0; *arguments != (char *) NULL; arguments++)
+	      {
+		OGetStatusCode(*arguments, &mask);
+		if(mask == -1)
+		  {
+		    printf("Invalid status label specified. Choose one of...\n");
+		    t_pp_stati();
+		    return(ERROR);
+		  }
+		else
+		  stati |= mask;
+		if((*(arguments+1)) && (*(arguments+1)[0] == '-'))
+		  break;
+		if(arguments[1] == (char *) NULL)
+		  break;
+	      }
 	  continue;
 	}
 
@@ -240,7 +236,9 @@ do_olc_list(arguments)
 	  continue;
 	}
 
-#else
+/* #else
+   Sorry, Ken, we gotta rip sorting out of the CLI for now...
+*/
        if (!strcmp (*arguments, "-sort")) {
 	   ++arguments;
 	   if (*arguments == (char *) NULL)
@@ -261,8 +259,11 @@ do_olc_list(arguments)
 	{
 	  printf("Usage is: \tlist [-display] [-queue <queues>] ");
 	  printf("[-topic <topic>]\n\t\t[-status <statuses>] ");
-	  printf("[-comments] [<username pattern>]\n");
-	  printf("\t\t[-sort <something>] [-file <filename>]\n");
+	  printf("[-comments] [<username pattern>]\n\t\t");
+#if 0
+	  printf("[-sort <something>] ");
+#endif
+	  printf("[-file <filename>]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */
