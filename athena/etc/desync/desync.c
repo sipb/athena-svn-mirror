@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: desync.c,v 1.4 1997-12-20 21:40:57 ghudson Exp $";
+static const char rcsid[] = "$Id: desync.c,v 1.5 1999-08-13 22:27:02 danw Exp $";
 
 /*
  * desync - desynchronize cron jobs on networks
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 	timefile = optarg;
 	break;
       default:
-	fprintf(stderr, "Usage: %s [-t timefile] [interval]\n");
+	fprintf(stderr, "Usage: %s [-t timefile] [interval]\n", progname);
 	return 2;
       }
     }
