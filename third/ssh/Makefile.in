@@ -8,8 +8,15 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.13 1999-03-21 21:03:25 ghudson Exp $
+# $Id: Makefile.in,v 1.13.4.1 1999-11-09 16:24:25 tb Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.14  1999/09/02 14:47:15  ghudson
+# Do a better job of making install directories.
+#
+# Revision 1.13  1999/03/21 21:03:25  ghudson
+# Revert unstripped hack; this is handled in
+# packs/build/finish/os/solaris now.
+#
 # Revision 1.12  1999/03/11 04:10:30  danw
 # liblockerize
 #
@@ -539,6 +546,7 @@ generate-host-key:
 
 # Creates install directories
 make-dirs:
+	mkdir -p $(install_prefix)$(prefix)
 	-umask 022; if test '!' -d $(install_prefix)$(prefix); then \
 	  mkdir $(install_prefix)$(prefix); fi; \
 	if test '!' -d $(install_prefix)$(exec_prefix); then \
