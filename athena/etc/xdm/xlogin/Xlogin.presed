@@ -1,4 +1,4 @@
-! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.10 1990-12-13 12:45:09 mar Exp $
+! $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Xlogin.presed,v 1.11 1990-12-17 15:07:24 mar Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -244,7 +244,7 @@ xlogin.Geometry: 		580x325+205+75
 
 *pword_input.wcClass:		asciiTextWidgetClass
 *pword_input.wcCallback:	WcSetValueCB(this.borderColor: white)
-*pword_input*length:		20
+*pword_input*length:		128
 *pword_input*string:		
 *pword_input*font:		-adobe-new century schoolbook-bold-r-*-180-*
 *pword_input*editType:		edit
