@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.29 1997-12-06 21:25:47 ghudson Exp $
+# $Id: update_ws.sh,v 1.30 1998-03-25 20:13:31 danw Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -259,7 +259,7 @@ esac
 # Tell dm to shut down everything and sleep forever during the update.
 if [ "$method" = Auto -a "$why" = reactivate ]; then
 	if [ -f /var/athena/dm.pid ]; then
-		kill -FPE `cat /etc/athena/dm.pid`
+		kill -FPE `cat /var/athena/dm.pid`
 	fi
 	# 8.0 and prior machines still have /etc/athena/dm.pid.
 	if [ -f /etc/athena/dm.pid ]; then
