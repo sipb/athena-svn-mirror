@@ -107,7 +107,7 @@ fi
 # Take a new release, if necessary.
 echo  "Checking /srvd/auto_update... \c"		>/dev/console
 if [ -x /srvd/auto_update ]; then
-	/srvd/auto_update rc < /dev/console > /dev/console 2>&1
+	/srvd/auto_update < /dev/console > /dev/console 2>&1
 fi
 echo "done."						>/dev/console
 echo ""							>/dev/console
