@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.21 1992-04-12 15:49:55 lwvanels Exp $
+ *	$Id: c_io.c,v 1.22 1992-04-23 21:48:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.21 1992-04-12 15:49:55 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.22 1992-04-23 21:48:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -51,7 +51,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <signal.h>
 #include <sgtty.h>              /* Terminal param. definitions. */
 #include <setjmp.h>
-#include <syslog.h>
 
 #include <olc/olc.h>
 
@@ -617,8 +616,8 @@ int sread(fd, buf, nbytes)
   n_read = 0;
   do {
     if (loops > 5) {
-      syslog(LOG_ERR,"sread: too many loops: %d/%d",
-	     loops,n_read,nbytes+n_read);
+      fprintf(stderr,"sread: too many loops\n");
+      close(fd);
       return(-1);
     }
 
@@ -643,7 +642,6 @@ int sread(fd, buf, nbytes)
       }
     
     if (! FD_ISSET(fd,&read_fds)) {
-      syslog(LOG_ERR,"sread: select lied!");
       close(fd);
       return(-1);
     }
@@ -694,8 +692,8 @@ int swrite(fd, buf, nbytes)
   n_wrote = 0;
   do {
     if (loops > 5) {
-      syslog(LOG_ERR,"swrite: too many loops: %d/%d",
-	     loops,n_wrote,nbytes+n_wrote);
+      fprintf(stderr,"swrite: too many loops\n");
+      close(fd);
       return(-1);
     }
 
@@ -720,7 +718,6 @@ int swrite(fd, buf, nbytes)
       }
     
     if (! FD_ISSET(fd,&write_fds)) {
-      syslog(LOG_ERR,"swrite: select lied!");
       close(fd);
       return(-1);
     }
