@@ -25,7 +25,7 @@ update.log	. /etc/athena/rc.conf && test true = "$PUBLIC" && test -r /var/athena
 date		date
 uptime		uptime
 partitions	fdisk -l `mount | sed -n -e 's/^\([^ ]*\)[0-9] on \/ .*$/\1/p'`
-df		df -k / /boot /usr/vice/cache
+df		df -k -t ext2 -t ext3
 interfaces	netstat -in
 routes		netstat -rn
 listeners	netstat -an --inet --tcp | awk '$NF == "LISTEN"'
