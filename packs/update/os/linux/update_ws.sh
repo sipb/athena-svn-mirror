@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.1 2000-02-05 06:04:07 ghudson Exp $
+# $Id: update_ws.sh,v 1.2 2000-02-05 16:39:35 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -32,7 +32,7 @@ errorout() {
 
 # Process options.
 auto=false
-while getopts r opt; do
+while getopts a opt; do
 	case $opt in
 	a)
 		auto=true
