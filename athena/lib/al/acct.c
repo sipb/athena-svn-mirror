@@ -17,7 +17,7 @@
  * functions for creating and reverting local accounts.
  */
 
-static const char rcsid[] = "$Id: acct.c,v 1.4 1997-10-30 23:58:51 ghudson Exp $";
+static const char rcsid[] = "$Id: acct.c,v 1.5 1997-11-11 02:26:32 ghudson Exp $";
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -151,16 +151,17 @@ int al_acct_create(const char *username, const char *cryptpw,
 
       if (i == record.npids)
 	{
-	  newpids = malloc(++record.npids * sizeof(pid_t));
+	  newpids = malloc((record.npids + 1) * sizeof(pid_t));
 	  if (!newpids)
 	    {
 	      retval = AL_ENOMEM;
 	      goto cleanup;
 	    }
 	  memcpy(newpids, record.pids, record.npids * sizeof(pid_t));
+	  newpids[record.npids] = sessionpid;
 	  free(record.pids);
 	  record.pids = newpids;
-	  record.pids[record.npids - 1] = sessionpid;
+	  record.npids++;
 	}
     }
 
@@ -226,7 +227,7 @@ static int revert(const char *username, struct al_record *record)
 
 int al_acct_revert(const char *username, pid_t sessionpid)
 {
-  int retval, found = 0, i;
+  int retval, i, j;
   struct al_record record;
 
   retval = al__get_session_record(username, &record);
@@ -235,16 +236,17 @@ int al_acct_revert(const char *username, pid_t sessionpid)
 
   if (record.exists)
     {
+      /* Copy record.pids to itself, eliminating occurances of sessionpid. */
+      j = 0;
       for (i = 0; i < record.npids; i++)
 	{
-	  if (record.pids[i] == sessionpid)
-	    found = 1;
-	  if (found && i + 1 < record.npids)
-	    record.pids[i] = record.pids[i + 1];
+	  if (record.pids[i] != sessionpid)
+	    record.pids[j++] = record.pids[i];
 	}
-      if (found)
-	record.npids--;
-      if (record.npids <= 0)
+      record.npids = j;
+
+      /* Revert the account if we emptied out the pid list. */
+      if (record.npids == 0)
 	revert(username, &record);
     }
 
@@ -265,7 +267,7 @@ int al_acct_revert(const char *username, pid_t sessionpid)
 
 int al_acct_cleanup(const char *username)
 {
-  int retval, i;
+  int retval, i, j;
   struct al_record record;
 
   retval = al__get_session_record(username, &record);
@@ -274,23 +276,17 @@ int al_acct_cleanup(const char *username)
 
   if (record.exists)
     {
-      /* Remove nonexistent processes from pid list. */
-      i = 0;
-      while (i < record.npids)
+      /* Copy record.pids to itself, eliminating pids which don't exist. */
+      j = 0;
+      for (i = 0; i < record.npids; i++)
 	{
-	  if (kill(record.pids[i], 0))
-	    {
-	      record.npids--;
-	      if (i < record.npids)
-		{
-		  memmove(&record.pids[i], &record.pids[i + 1],
-			  (record.npids - i) * sizeof(pid_t));
-		}
-	    }
-	  else
-	    i++;
+	  if (kill(record.pids[i], 0) == 0)
+	    record.pids[j++] = record.pids[i];
 	}
-      if (record.npids <= 0)
+      record.npids = j;
+
+      /* Revert the account if we emptied out the pid list. */
+      if (record.npids == 0)
 	revert(username, &record);
     }
 
