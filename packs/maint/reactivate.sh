@@ -1,14 +1,14 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Header: /afs/dev.mit.edu/source/repository/packs/maint/reactivate.sh,v 1.5 1991-02-06 14:44:22 probe Exp $
+# $Id: reactivate.sh,v 1.6 1991-07-19 15:42:28 probe Exp $
 
 trap "" 1 15
 
-PATH=/bin:/usr/ucb:/usr/bin; export PATH
+PATH=/bin:/bin/athena:/usr/ucb:/usr/bin; export PATH
 
 umask 22
-. /etc/rc.conf
+. /etc/athena/rc.conf
 
 case "${SYSTEM}" in
 ULTRIX*)
@@ -40,27 +40,27 @@ if [ -f /etc/athena/zhm.pid ] ; then
 	/bin/kill -HUP `/bin/cat /etc/athena/zhm.pid`
 fi
 
+if [ "${MACHINE}" != "RSAIX" ]; then
 # Then clean temporary areas (including temporary home directories)
-/bin/mv /tmp/.X11-unix /tmp/../.X11-unix
-/bin/rm -rf /tmp/ > /dev/null 2>&1
-/bin/mv /tmp/../.X11-unix /tmp/.X11-unix
+    /bin/mv /tmp/.X11-unix /tmp/../.X11-unix
+    /bin/rm -rf /tmp/ > /dev/null 2>&1
+    /bin/mv /tmp/../.X11-unix /tmp/.X11-unix
 
 # Next, restore password, group, and AFS-cell files
-if [ -f /etc/passwd.local ] ; then
+    if [ -f /etc/passwd.local ] ; then
 	${cp} /etc/passwd.local /etc/ptmp && /bin/mv -f /etc/ptmp /etc/passwd
 	/bin/rm -f /etc/passwd.dir /etc/passwd.pag
-fi
-if [ -f /etc/group.local ] ; then
+    fi
+    if [ -f /etc/group.local ] ; then
 	${cp} /etc/group.local /etc/gtmp && /bin/mv -f /etc/gtmp /etc/group
+    fi
 fi
-if [ -f /afs/athena.mit.edu/service/CellServDB ] ; then
-	${cp} /afs/athena.mit.edu/service/CellServDB /usr/vice/etc/Ctmp && \
-	/bin/mv -f /usr/vice/etc/Ctmp /usr/vice/etc/CellServDB.public
-fi
+
 if [ -f /afs/athena.mit.edu/service/aklog ] ; then
 	${cp} /afs/athena.mit.edu/service/aklog \
 		   /bin/athena/aklog
 fi
+/etc/athena/config_afs &
 
 # punt any processes owned by users not in /etc/passwd
 /etc/athena/cleanup -passwd
@@ -81,12 +81,12 @@ else
 fi
 
 if [ "${RVDCLIENT}" = "true" ]; then
-	if [ "${USRLIB}" = "" ]; then
-		/bin/athena/attach	$quiet -h -n -o hard  $SYSLIB
-	else
-		/bin/athena/attach	$quiet -h -n -o hard  $SYSLIB \
-					$quiet -h -n -o hard  $USRLIB
-	fi
+	/bin/athena/attach	$quiet -h -n -o hard  $SYSLIB
+fi
+
+if [ "${AFSCLIENT}" = "false" ]; then
+        awk '$2=="0+NFS" && $8=="/afs" {print $4}' \
+                < /etc/attachtab > /etc/afs-nfs-host
 fi
 
 # Perform an update if appropriate
@@ -94,7 +94,7 @@ if [ -f /srvd/auto_update ] ; then
 	/srvd/auto_update reactivate
 fi
 
-if [ -f /usr/athena/access_off ]; then /usr/athena/access_off; fi
+if [ -f /usr/athena/bin/access_off ]; then /usr/athena/bin/access_off; fi
 
 if [ -f /etc/athena/reactivate.local ]; then
 	/etc/athena/reactivate.local
