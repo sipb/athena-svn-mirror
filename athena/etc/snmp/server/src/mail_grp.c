@@ -12,9 +12,13 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v $
- *    $Author: vrt $
+ *    $Author: cfields $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 2.2  94/03/07  15:16:45  vrt
+ * defining posix did not solve the problem of make depend but
+ * seting the flag to solaris did.
+ * 
  * Revision 2.1  94/03/07  15:12:36  vrt
  * added ifdefs around sys/dir.h
  * for posix.
@@ -36,7 +40,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v 2.2 1994-03-07 15:16:45 vrt Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mail_grp.c,v 2.3 1994-08-15 15:03:17 cfields Exp $";
 #endif
 
 #include "include.h"
@@ -102,7 +106,7 @@ static int
 crock_mailq()
 {
   DIR *d;
-#ifdef POSIX
+#if defined(POSIX) || defined(SOLARIS)
   struct dirent *dp;
 #else
   struct direct *dp;
