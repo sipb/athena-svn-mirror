@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.65 1997-12-17 02:36:22 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.66 1997-12-21 08:07:26 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -1784,19 +1784,6 @@ static void catch_child()
 	}
     }
 }
-
-#ifndef SYSV
-char *strdup(string)
-     char *string;
-{
-  register char *cp;
-
-  cp = malloc(strlen(string) + 1);
-  if (!cp)
-    return NULL;
-  return strcpy(cp,string);
-}
-#endif
 
 static void setFontPath()
 {
