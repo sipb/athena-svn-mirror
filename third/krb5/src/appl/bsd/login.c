@@ -2179,19 +2179,40 @@ timedout()
 	exit(0);
 }
 
-#ifndef HAVE_TTYENT_H
 int root_tty_security = 1;
-#endif
 int rootterm(tty)
 	char *tty;
 {
-#ifndef HAVE_TTYENT_H
-	return(root_tty_security);
-#else
+#ifdef __linux__
+	FILE *securetty;
+	char buf[PATH_MAX+1];
+	int ok;
+#endif
+#ifdef HAVE_TTYENT_H
 	struct ttyent *t;
+#endif
 
-	return((t = getttynam(tty)) && t->ty_status&TTY_SECURE);
-#endif /* HAVE_TTYENT_H */
+#ifdef __linux__
+	securetty = fopen("/etc/securetty", "r");
+	if (securetty) {
+		ok = 0;
+		while (!feof(securetty)) {
+			fgets(buf, sizeof(buf), securetty);
+			if (buf[strlen(buf)-1] == '\n')
+				buf[strlen(buf)-1] = '\0';
+			if (strcmp(buf, tty) == 0)
+				ok = 1;
+		}
+		fclose(securetty);
+		return ok;
+	}
+#endif
+#ifdef HAVE_TTYENT_H
+	if (access(_PATH_TTYS, R_OK) >= 0)
+		return((t = getttynam(tty)) && t->ty_status&TTY_SECURE);
+#endif
+
+	return(root_tty_security);
 }
 
 #ifndef NO_MOTD
