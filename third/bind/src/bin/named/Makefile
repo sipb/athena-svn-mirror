@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.1 1998-05-04 22:23:34 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-05-07 21:52:01 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -70,11 +70,6 @@ ${PROG}: ${OBJS} ${LIBBIND} Makefile tmp_version.${O}
 	${CC} ${CDEBUG} ${LDFLAGS} -o ${PROG} ${OBJS} tmp_version.${O} \
 		${LIBBIND} ${SYSLIBS}
 
-ns_parser.c ns_parser.h: ns_parser.y
-	${YACC} ns_parser.y
-	mv y.tab.c ns_parser.c
-	mv y.tab.h ns_parser.h
-
 
 tmp_version.${O}: tmp_version.c
 
@@ -104,7 +99,8 @@ ${DESTDIR}${DESTSBIN}:
 	mkdir -p ${DESTDIR}${DESTSBIN}
 
 install: ${DESTDIR}${DESTSBIN} ${PROG}
-	${INSTALL} ${STRIP} -c -m 755 ${PROG} ${DESTDIR}${DESTSBIN}/${PROG}
+	${INSTALL} -s -c -m 755 ${PROG} ${DESTDIR}${DESTSBIN}/${PROG}
+	${INSTALL} -c -m 755 ${PROG} ${DESTDIR}${DESTSBIN}/${PROG}.unstripped
 
 links: FRC
 	@ln -s SRC/*.[chy] SRC/test .; rm -f ns_parser.[ch]
