@@ -74,7 +74,7 @@ libpng.so.$(PNGVER): $(OBJSDLL)
 	;; \
 	esac
 	$(LD) -G -L$(ATHTOOLROOT)$(ZLIBLIB) -R$(ZLIBLIB) -h libpng.so.$(PNGMAJ) \
-	 -o libpng.so.$(PNGVER) $(OBJSDLL) -lz
+	 -o libpng.so.$(PNGVER) $(OBJSDLL) -lz -lm
 
 pngtest: pngtest.o libpng.so
 	$(CC) -o pngtest $(CFLAGS) pngtest.o $(LDFLAGS)
