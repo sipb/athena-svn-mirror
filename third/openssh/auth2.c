@@ -232,6 +232,8 @@ input_userauth_request(int type, u_int32_t seq, void *ctxt)
 		}
 		setproctitle("%s%s", authctxt->pw ? user : "unknown",
 		    use_privsep ? " [net]" : "");
+		authctxt->user = xstrdup(user);
+		authctxt->service = xstrdup(service);
 		authctxt->style = style ? xstrdup(style) : NULL;
 		if (use_privsep)
 			mm_inform_authserv(service, style);
@@ -242,9 +244,6 @@ input_userauth_request(int type, u_int32_t seq, void *ctxt)
 		    authctxt->user, authctxt->service, user, service);
 	}
 	/* reset state */
-	authctxt->user = xstrdup(user);
-	authctxt->service = xstrdup(service);
-
 	auth2_challenge_stop(authctxt);
 
 #ifdef GSSAPI
