@@ -19,19 +19,23 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v $
- *	$Id: data.c,v 1.11 1991-04-14 17:18:01 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: data.c,v 1.12 1994-08-14 15:41:37 cfields Exp $
+ *	$Author: cfields $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.11 1991-04-14 17:18:01 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.12 1994-08-14 15:41:37 cfields Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <sys/param.h>
+#ifdef SOLARIS
+#include <netdb.h>
+#endif
+
 
 PERSON User;
 char DaemonHost[MAXHOSTNAMELEN];
