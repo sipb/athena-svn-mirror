@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/mux.c,v $
- *      $Author: probe $
+ *      $Author: ghudson $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_mux_c[] = "$Id: mux.c,v 1.7 1994-06-19 10:55:31 probe Exp $";
+static char rcsid_mux_c[] = "$Id: mux.c,v 1.8 1994-11-01 16:11:37 ghudson Exp $";
 #endif
 
 /****************************************************************************/
@@ -199,7 +199,7 @@ static int check_tty()
 
     if (tty < 0) return 0;
 
-#ifdef POSIX
+#ifdef defined(POSIX) || defined(SUNOS)
     result = ( ((pgrp = tcgetpgrp(tty)) < 0)      ? 0 : 1 );
 #else
     result = ( (ioctl(tty, TIOCGPGRP, &pgrp) < 0) ? 0 : 1 );
