@@ -16,7 +16,6 @@ XSRCS = emul_re.c
 XOBJS = emul_re.o
 #endif
 
-AFSDEF=-DAFS
 AFSINC=
 AFSFIL=afs.c
 AFSOBJ=afs.o
@@ -48,7 +47,7 @@ clean::
 	rm -f *.bak *~ *.o core \#* attach
 
 attach:: $(OBJS)
-	$(CC) $(LDFLAGS) -o attach $(OBJS) $(LIBS) $(AFSDEF)
+	$(CC) $(LDFLAGS) -o attach $(OBJS) $(LIBS)
 
 depend::
 	@-rm -f Make.depend
@@ -57,7 +56,7 @@ depend::
 
 Makefile:: Imakefile
 	-mv -f Makefile Makefile.bak
-	/lib/cpp -E Imakefile Makefile $(AFSDEF)
+	/lib/cpp -E Imakefile Makefile
 
 install:: attach
 	rm -f ${DESTDIR}/bin/athena/attach
