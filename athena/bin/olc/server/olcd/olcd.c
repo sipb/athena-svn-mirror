@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.38 1991-03-26 12:07:18 lwvanels Exp $
+ *	$Id: olcd.c,v 1.39 1991-03-28 13:28:14 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.38 1991-03-26 12:07:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.39 1991-03-28 13:28:14 lwvanels Exp $";
 #endif
 #endif
 
@@ -421,8 +421,9 @@ restart:
 				   /* profiling */
     signal(SIGUSR2, start_profile); /* Start profiling */
 #endif /* PROFILE */
+#ifdef KERBEROS
     get_kerberos_ticket ();
-
+#endif
     olc_broadcast_message("syslog",
 		fmt("%s Daemon successfully started.  Waiting for requests.",
 		    DaemonInst),
@@ -437,6 +438,7 @@ restart:
     {
 	int s;		        /* Duplicated file descriptor */
 	int len = sizeof (from);  /* Length of address. */
+#ifdef KERBEROS
 	struct timeval tval;
 	int nfound;
 	fd_set readfds;
@@ -479,6 +481,7 @@ restart:
 	  continue;
 	}
 
+#endif
 	s = accept(fd, (struct sockaddr *) &from, &len);
 	if (s < 0) {
 	    if (errno == EINTR)
