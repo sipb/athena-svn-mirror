@@ -5,8 +5,11 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.10 1990-07-12 15:46:18 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.11 1991-03-01 17:29:36 epeisach Exp $
  *	$Log: not supported by cvs2svn $
+ * Revision 1.10  90/07/12  15:46:18  epeisach
+ * Ultrix fixes.
+ * 
  * Revision 1.9  89/02/09  19:30:32  epeisach
  * Fixed bug where zephyr would return not locatable if user on more than once
  * 
@@ -37,7 +40,7 @@
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.10 1990-07-12 15:46:18 epeisach Exp $";
+static char *rcsid_finger_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/finger.c,v 1.11 1991-03-01 17:29:36 epeisach Exp $";
 
 #endif lint
 
@@ -134,6 +137,9 @@ struct utmp user;
 #define NMAX sizeof(user.ut_name)
 #define LMAX sizeof(user.ut_line)
 #define HMAX sizeof(user.ut_host)
+#ifdef MIN
+#undef MIN
+#endif
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 
 struct person {			/* one for each person fingered */
@@ -284,7 +290,7 @@ doall()
 		exit(2);
 	}
 	if (unquick) {
-#ifdef ultrix
+#if defined(ultrix) || defined(AIX)
 		setpwent();
 #else
 		extern _pw_stayopen;
@@ -392,7 +398,7 @@ donames(argv)
 	if (unquick) {
 		setpwent();
 		if (!match) {
-#ifndef ultrix
+#if !defined(ultrix) && !defined(AIX)
 			extern _pw_stayopen;
 
 			_pw_stayopen = 1;
@@ -1058,8 +1064,11 @@ decode(pers)
 
 fwopen()
 {
-	if ((lf = open(LASTLOG, 0)) < 0)
+	if ((lf = open(LASTLOG, 0)) < 0) {
+#ifndef AIX
 		fprintf(stderr, "finger: %s open error\n", LASTLOG);
+#endif
+	}
 	if ((lw = open(ACCTLOG, 0)) < 0)
 		fprintf(stderr, "finger: %s open error\n", ACCTLOG);
 }
@@ -1300,7 +1309,7 @@ matchcmp(gname, login, given)
 namecmp(name1, name2)
 	register char *name1, *name2;
 {
-	register c1, c2;
+	register int c1, c2;
 
 	for (;;) {
 		c1 = *name1++;
