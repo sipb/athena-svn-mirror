@@ -1,11 +1,20 @@
 #ifdef KERBEROS
+/* This file is part of the Project Athena Zephyr Notification System.
+ * It contains functions for dealing with Kerberos functions in the server.
+ *
+ *	Created by:	John T Kohl
+ *
+ *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
+ *	For copying and distribution information, see the file
+ *	"mit-copyright.h". 
+ */
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.6 1988-06-23 16:57:13 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.7 1988-10-19 23:07:49 raeburn Exp $
  */
 
 #ifndef lint
-static char rcsid_kstuff_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.6 1988-06-23 16:57:13 jtkohl Exp $";
+static char rcsid_kstuff_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/kstuff.c,v 1.7 1988-10-19 23:07:49 raeburn Exp $";
 #endif lint
 
 #include "zserver.h"
