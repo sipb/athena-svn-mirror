@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.local *.pid :
-## $Id: os_rvd,v 1.8 1997-02-11 19:31:28 ghudson Exp $
+## $Id: os_rvd,v 1.9 1997-03-26 07:00:53 ghudson Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -234,7 +234,7 @@ GLOBAL : *.CKP *.local *.pid :
 		-> p*
 		-> r*
 		-> s*
-		-> t*
+		-> ta*
 		-> uk*
 		:
 	/usr/share/lib/zoneinfo:::
