@@ -1,6 +1,49 @@
 News
 ****
 
+0.13.4
+======
+
+   * Don't restrict symbols exported from plugin libraries, some need
+     to export symbols to work properly (this bug only seemed to appear
+     on Solaris systems)
+
+   * Added `rep_file_type' and `rep_guardian_type' to the list of
+     symbols exported from librep
+
+   * Fixed the `install-aliases' script (Peter Teichman)
+
+   * New module `rep.threads.condition-variable'
+
+   * Added `string-split' and `string-replace' to the gaol
+
+
+0.13.3
+======
+
+   * Try to only export public symbols from `librep.so' and modules
+
+   * When expanding file names translate `/..' to `/'
+
+   * Set an upper bound on the allowed recursion depth when regexp
+     matching, prevents the stack from overflowing in pathological cases
+
+   * Added optional second arg to `readline' function, a function to
+     call to generate completions. The `rl-completion-generator' method
+     of supplying this function is deprecated
+
+   * Fixed bugs when handling character-case in regexp module (Andrew
+     Rodionoff)
+
+   * Added an `premature-end-of-stream' error. This is signalled
+     instead of `end-of-stream' when reading characters in the middle
+     of a syntax form. The `end-of-stream' error is only signalled when
+     the end of the stream is reached before encountering anything other
+     than whitespace characters
+
+   * Fixed bug of expanding declarations in the `define' macro expansion
+
+
 0.13.2
 ======
 

@@ -1,3 +1,37 @@
+2001-01-04  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.13.4
+
+2000-12-27  John Harper  <jsh@eazel.com>
+
+	* rules.mk.sh: removed the `-export-symbols-regex' option, it's
+	not possible to just export `rep_dl_foo' symbols..
+
+2000-12-06  John Harper  <jsh@eazel.com>
+
+	* install-aliases (dosome): patch from Peter Teichman
+	<peter@helixcode.com> to avoid clobbering a variable that's
+	needed in the next iteration of the loop
+
+2000-12-03  John Harper  <jsh@eazel.com>
+
+	* configure.in: version 0.13.3
+
+2000-11-21  John Harper  <jsh@eazel.com>
+
+	* rules.mk.sh: rename repexecdir variable as repcommonexecdir
+	so it doesn't conflict with Makedefs.in (shouldn't affect other
+	users of this file.. I hope)
+
+2000-11-15  John Harper  <jsh@eazel.com>
+
+	* Makedefs.in: include rules.mk and redefine $(rep_DL_LIBTOOL)
+	to the uninstalled local libtool
+
+	* rules.mk.sh: in $(rep_DL_LD) macro, specify
+	-export-symbols-regex option to libtool to only retain symbols
+	whose names begin with `rep_dl_'
+
 2000-10-23  John Harper  <jsh@eazel.com>
 
 	* configure.in: version 0.13.2

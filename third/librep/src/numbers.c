@@ -1,6 +1,6 @@
 /* numbers.c -- Implement the tower of numeric types
    Copyright (C) 1993, 1994, 2000 John Harper <john@dcs.warwick.ac.uk>
-   $Id: numbers.c,v 1.1.1.1 2000-11-12 06:10:59 ghudson Exp $
+   $Id: numbers.c,v 1.1.1.2 2001-03-13 16:43:17 ghudson Exp $
 
    This file is part of librep.
 
@@ -47,6 +47,10 @@ char *alloca ();
 #include <limits.h>
 #include <errno.h>
 
+#ifdef HAVE_LOCALE_H
+# include <locale.h>
+#endif
+
 #ifdef HAVE_GMP
 #include <gmp.h>
 #endif
@@ -68,6 +72,14 @@ DEFSTRING(domain_error, "Domain error");
 #  define LONG_LONG_MIN LLONG_MIN
 #  define LONG_LONG_MAX LLONG_MAX
 # endif
+#endif
+
+/* XXX hmm.. */
+#if !defined (LONG_LONG_MAX)
+# define LONG_LONG_MAX LONG_MAX
+#endif
+#if !defined (LONG_LONG_MIN)
+# define LONG_LONG_MIN LONG_MIN
 #endif
 
 #if !defined (HAVE_STRTOLL) && defined (HAVE_STRTOQ)
@@ -847,7 +859,7 @@ rep_parse_number (char *buf, u_int len, u_int radix, int sign, u_int type)
 	rep_number_q *q;
 #endif
 	rep_number_f *f;
-	char *tem, *copy;
+	char *tem, *copy, *old_locale;
 	double d;
 	u_int bits;
 
@@ -996,7 +1008,14 @@ rep_parse_number (char *buf, u_int len, u_int radix, int sign, u_int type)
 #ifndef HAVE_GMP
     do_float:
 #endif
+#ifdef HAVE_SETLOCALE
+	old_locale = setlocale (LC_NUMERIC, "C");
+#endif
 	d = strtod (buf, &tem);
+#ifdef HAVE_SETLOCALE
+	if (old_locale != 0)
+	    setlocale (LC_NUMERIC, old_locale);
+#endif
 	if (tem - buf != len)
 	    goto error;
 	f = make_number (rep_NUMBER_FLOAT);
@@ -1017,7 +1036,7 @@ rep_print_number_to_string (repv obj, int radix, int prec)
 
     switch (rep_NUMERIC_TYPE (obj))
     {
-	char buf[128], fmt[8], *tem;
+	char buf[128], fmt[8], *tem, *old_locale;
 
     case rep_NUMBER_INT:
 	if (radix == 10)
@@ -1085,10 +1104,17 @@ rep_print_number_to_string (repv obj, int radix, int prec)
 
     case rep_NUMBER_FLOAT:		/* XXX handle radix arg */
 	sprintf (fmt, "%%.%dg", prec < 0 ? 16 : prec);
+#ifdef HAVE_SETLOCALE
+	old_locale = setlocale (LC_NUMERIC, "C");
+#endif
 #ifdef HAVE_SNPRINTF
 	snprintf(buf, sizeof(buf), fmt, rep_NUMBER(obj,f));
 #else
 	sprintf(buf, fmt, rep_NUMBER(obj,f));
+#endif
+#ifdef HAVE_SETLOCALE
+	if (old_locale != 0)
+	    setlocale (LC_NUMERIC, old_locale);
 #endif
 	/* libc doesn't always add a point */
 	if (!strchr (buf, '.') && !strchr (buf, 'e') && !strchr (buf, 'E'))

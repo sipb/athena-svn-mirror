@@ -1,7 +1,7 @@
 ;; define.jl -- Scheme define syntax
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
-;; $Id: define.jl,v 1.1.1.1 2000-11-12 06:11:52 ghudson Exp $
+;; $Id: define.jl,v 1.1.1.2 2001-03-13 16:43:25 ghudson Exp $
 
 ;; This file is part of librep.
 
@@ -198,7 +198,7 @@
        (list* 'defvar (nth 1 form) (define-scan-form (nth 2 form))
 	      (nthcdr 3 form)))
 
-      ((structure define-structure) form)
+      ((structure define-structure declare) form)
 
       (t (let ((expansion (define-macroexpand-1 form)))
 	   (if (eq expansion form)

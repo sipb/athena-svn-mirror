@@ -1,6 +1,6 @@
 #| data.jl -- data type functions
 
-   $Id: data.jl,v 1.1.1.1 2000-11-12 06:10:47 ghudson Exp $
+   $Id: data.jl,v 1.1.1.2 2001-03-13 16:43:25 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -145,11 +145,11 @@
   (define exact? (make-predicate exactp))
   (define inexact? (make-predicate inexactp))
 
-  (define = (make-predicate =))
-  (define < (make-predicate <))
-  (define > (make-predicate >))
-  (define <= (make-predicate <=))
-  (define >= (make-predicate >=))
+  (define = (make-predicate rep#=))
+  (define < (make-predicate rep#<))
+  (define > (make-predicate rep#>))
+  (define <= (make-predicate rep#<=))
+  (define >= (make-predicate rep#>=))
 
   (define zero? (make-predicate zerop))
   (define positive? (make-predicate positivep))

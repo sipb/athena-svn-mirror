@@ -1,5 +1,5 @@
 ;; gaol.jl -- iron-boxes for untrusted code
-;; $Id: gaol.jl,v 1.1.1.1 2000-11-12 06:11:17 ghudson Exp $
+;; $Id: gaol.jl,v 1.1.1.2 2001-03-13 16:43:32 ghudson Exp $
 
 ;; This file is part of librep.
 
@@ -77,7 +77,8 @@
       set-default setcar setcdr setplist setq setq-default
       signal sit-for sleep-for sort space-char-p special-form-p
       special-variable-p streamp string-equal string-head-eq
-      string-lessp string-looking-at string-match string< string=
+      string-lessp string-looking-at string-match string-split
+      string-replace string< string=
       stringp subr-name subrp substring symbol-name symbol-plist
       symbol-value symbolp system-name throw time-later-p
       translate-string unless unwind-protect call-with-unwind-protect
