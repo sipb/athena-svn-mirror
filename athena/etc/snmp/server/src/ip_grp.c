@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.1 1993-06-18 14:33:05 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.2 1994-08-15 15:05:01 cfields Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  93/06/18  14:33:05  tom
+ * first cut at solaris port
+ * 
  * Revision 2.0  92/04/22  02:03:19  tom
  * release 7.4
  * 	no change
@@ -34,7 +37,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.1 1993-06-18 14:33:05 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 2.2 1994-08-15 15:05:01 cfields Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -45,6 +48,9 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 #include "include.h"
+#ifdef SOLARIS
+#include <sys/sockio.h>
+#endif
 
 int
 find_ifnet_byaddr(ipaddr, ifnetvar, ifindex, msgflgs, retaddr)
