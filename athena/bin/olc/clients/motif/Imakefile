@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.4 1991-06-29 18:37:43 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.5 1991-06-29 19:10:23 lwvanels Exp $
 # $Author: lwvanels $
 #
 # For copying and distribution information,
@@ -26,6 +26,11 @@ SYS_LIBRARIES  =  $(HesiodLib) $(ComErrLib) $(KerberosLib) \
 		  $(MotifUtilLib) $(MotifResLib) $(MotifLib) $(XtoolLib) \
 		  $(XLib) 
 DEPLIBS= $(LOCAL_LIBRARIES)
+#ifdef InstallAltLoc
+DEFINES=-DSA_LOC=\"/usr/athena/bin/xbrowser\"
+#else
+DEFINES=-DSA_LOC=\"/usr/athena/xbrowser\"
+#endif
 INCLUDES = -I/mit/motif/include
 
 NormalProgramTarget(xolc,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
