@@ -5,6 +5,7 @@ echo "NEWTTYS=true"			>> ${CONFVARS}
 
 case ${MACH} in
 DS*)
+	echo "/etc/inetd.conf"		>> ${CONFCHG}
 	;;
 RSAIX)
 	;;
