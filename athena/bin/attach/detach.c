@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.9 1991-07-01 09:47:21 probe Exp $";
+static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.10 1992-01-06 15:53:36 probe Exp $";
 
 #include "attach.h"
 #include <string.h>
@@ -22,7 +22,7 @@ detach(name)
     int status, bymntpt;
 #ifdef ZEPHYR
     char instbfr[BUFSIZ];
-#endif /* ZEPHYR */
+#endif
 	
     lock_attachtab();
     get_attachtab();
@@ -92,11 +92,11 @@ detach(name)
 				    progname, name);
 			    error_status = ERR_ATTACHINUSE;
 			    put_attachtab();
+			    unlock_attachtab();
 			    if (atp->fs->type == TYPE_NFS && do_nfsid)
 				    ret = nfsid(atp->host, atp->hostaddr[0],
 						MOUNTPROC_KUIDUMAP, 1,
 						atp->hesiodname, 0, real_uid);
-			    unlock_attachtab();
 			    free_attachtab();
 			    end_critical_code();
 			    return(ret);
@@ -160,7 +160,7 @@ detach(name)
 		if (!host_occurs(at.host))
 			zephyr_addsub(at.host);
         }
-#endif ZEPHYR
+#endif
 	free_attachtab();
     } else {
 	lock_attachtab();
