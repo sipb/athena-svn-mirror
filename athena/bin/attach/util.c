@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.23 1997-04-01 01:01:43 ghudson Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.23.2.1 1997-06-02 07:45:27 ghudson Exp $";
 
 #include "attach.h"
 
@@ -179,65 +179,36 @@ struct _fstypes *get_fs(s)
     return (NULL);
 }
 
-/* Return the preference of a hesiod line, or -1 if the filesystem type
- * does not admit a preference field. */
-static int get_preference(hesline)
-    char *hesline;
-{
-    char *p;
-    int i;
-
-    p = strchr(hesline, ' ');
-    if (p == NULL || (p - hesline == 3 && strncasecmp(hesline, "MUL", 3) == 0))
-	return (-1);
-
-    /* FS type okay; return the value of the fifth field. */
-    while (isspace(*p))
-	p++;
-    for (i = 2; i < 5; i++) {
-	while (*p && !isspace(*p))
-	    p++;
-	while (isspace(*p))
-	    p++;
-    }
-    return ((*p) ? atoi(p) : 0);
-}
-
 /* Reorder non-MUL entries in increasing order of their preference
  * fields (fifth field), if present.  Anything with no preference field is
- * assumed to have preference 0.  This sort has to be stable, so that we
- * don't break DNS ordering if we happen to have it.  (That is, don't
+ * treated as having highest priority.  This sort has to be stable, so that
+ * we don't break DNS ordering if we happen to have it.  (That is, don't
  * replace this function with a call to qsort(), at least until you're sure
  * nobody is going to be relying on DNS ordering.)
- *
- * Note that lower preference is better, and anything with no preference
- * field will have the best preference.  Hopefully any hesiod response that
- * uses preference fields will use them everywhere. */
-static void sort_hesiod_data(hes)
-    char **hes;
+ */
+static void sort_hesiod_data(at, count)
+    struct _attachtab *at;
+    int count;
 {
-    char **p1, **p2, **slot, *p;
-    int pref, pref2;
+    struct _attachtab *p1, *p2, *slot, temp;
 
     /* This doesn't need to be fast; do an insertion sort. */
-    for (p1 = hes; *p1; p1++) {
-	p = *p1;
-	pref = get_preference(p);
-	if (pref == -1)
+    for (p1 = at; p1 < at + count; p1++) {
+	if (p1->preference == -1)
 	    continue;
+	temp = *p1;
 	slot = p1;
-	for (p2 = p1 - 1; p2 >= hes; p2--) {
-	    pref2 = get_preference(*p2);
-	    if (pref2 == -1)
+	for (p2 = p1 - 1; p2 >= at; p2--) {
+	    if (p2->preference == -1)
 		continue;
 	    /* If we have the right slot for p, stop. */
-	    if (pref2 <= pref)
+	    if (p2->preference <= temp.preference)
 		break;
 	    /* Otherwise, shift the slot down one position. */
 	    *slot = *p2;
 	    slot = p2;
 	}
-	*slot = p;
+	*slot = temp;
     }
 }
 
@@ -245,35 +216,65 @@ static void sort_hesiod_data(hes)
  * Build a Hesiod line either from a Hesiod query or internal frobbing
  * if explicit is set.
  */
-char **build_hesiod_line(name)
+struct _attachtab *build_hesiod_line(name, count)
     char *name;
+    int *count;
 {
-    char **realhes;
-    struct _fstypes	*fsp;
+    char **hes, **cpp;
+    struct _fstypes *fsp;
+    int n, i;
+    struct _attachtab *at, *atp;
     
     if (!explicit) {
-	    realhes = conf_filsys_resolve(name);
+	    hes = conf_filsys_resolve(name);
 #ifdef HESIOD
-	    if (!realhes || !*realhes)
-		    realhes = hes_resolve(name, "filsys");
+	    if (!hes || !*hes)
+		    hes = hes_resolve(name, "filsys");
 #endif
-	    if (!realhes || !*realhes)
+	    if (!hes || !*hes)
 		    fprintf(stderr, "%s: Can't resolve name\n", name);
-	    else
-		    sort_hesiod_data(realhes);
-	    return (realhes);
+    } else {
+	    fsp = get_fs(filsys_type ? filsys_type : "NFS");
+	    if (!fsp)
+		    return (NULL);
+	    if (!fsp->explicit) {
+		    fprintf(stderr,
+			    "Explicit definitions for type %s not allowed\n",
+			    filsys_type);
+		    return (NULL);
+	    }
+
+	    hes = (fsp->explicit)(name);
     }
 
-    fsp = get_fs(filsys_type ? filsys_type : "NFS");
-    if (!fsp)
-	return (NULL);
-    if (!fsp->explicit) {
-	fprintf(stderr, "Explicit definitions for type %s not allowed\n",
-		filsys_type);
-	return (NULL);
+    if (lookup || debug_flag) {
+	printf("%s resolves to:\n", name);
+	for (i=0;hes[i];i++)
+	    printf("%s\n", hes[i]);
+	putchar('\n');
     }
 
-    return ((fsp->explicit)(name));
+    /* Count the entries in hes and allocate space to parse them. */
+    n = 0;
+    for (cpp = hes; *cpp; cpp++)
+	    n++;
+    at = malloc(n * sizeof(struct _attachtab));
+    if (!at) {
+	    fprintf(stderr, "Can't malloc attachtab entries.\n");
+	    fprintf(stderr, abort_msg);
+	    exit(ERR_FATAL);
+    }
+
+    /* Parse the entries. */
+    atp = at;
+    for (cpp = hes; *cpp; cpp++) {
+	    if (parse_hes(*cpp, atp, name) == 0)
+		    atp++;
+    }
+    *count = atp - at;
+
+    sort_hesiod_data(at, *count);
+    return at;
 }
 
 /*
@@ -355,6 +356,15 @@ int parse_hes(hes, at, errorname)
 	    strcpy(at->host, hent->h_name);
     } else
 	    at->hostaddr[0].s_addr = (long) 0;
+
+    if (type & ~TYPE_MUL) {
+	    if (!(cp = strtok(NULL, TOKSEP)))
+		    at->preference = 0;
+	    else
+		    at->preference = atoi(cp);
+    } else
+	    at->preference = -1;
+
     return(0);
     
 bad_hes_line:
