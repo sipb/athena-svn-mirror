@@ -1,8 +1,10 @@
 #!/bin/sh
 
-PATH=/bin:/bin/athena:/usr/ucb:/usr/bin:/usr/athena
+PATH=/bin:/bin/athena:/usr/ucb:/usr/bin:/usr/athena/bin
 
-. /etc/rc.conf
+if [ -f . /etc/athena/rc.conf ]; then
+	. /etc/athena/rc.conf
+fi
 
 df="df -t 4.2"
 
@@ -12,6 +14,10 @@ case `/bin/athena/machtype -c` in
 	MVAX-II) type="Digital Microvax II";;
 	RT*) type="IBM PC/RT";;
 	KN01) type="Digital DECstation 3100"
+		df="/bin/df";;
+	KN02) type="Digital DECstation 5000"
+		df="/bin/df";;
+	KN210) type="Digital DECstation 5400"
 		df="/bin/df";;
 	PS2-70) type="IBM PS/2 Model 70"
 		df="/bin/df";;
@@ -26,7 +32,7 @@ case `/bin/athena/machtype -c` in
 
 echo `hostname` "is a" $type 					
 echo -n "Release: "						
-/usr/ucb/tail -1 /etc/version | awk '{print $5}'		
+/usr/ucb/tail -1 /etc/athena/version | awk '{print $5}'		
 echo "System pack attached: " `attach | awk '$2=="/srvd" {print $1}'`
 echo -n "System pack is: " 					
 cat /srvd/.rvdinfo 						
