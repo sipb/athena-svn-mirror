@@ -85,7 +85,7 @@ dnl ====================================
 dnl = Check for different mount systems
 dnl ====================================
 AC_CHECK_FUNCS(setmntent endmntent hasmntopt)
-AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h)
+AC_CHECK_HEADERS(mntent.h fstab.h sys/mnttab.h sys/vfstab.h sys/cdio.h)
 
 dnl ====================================
 dnl = Method for changing environment
