@@ -2420,7 +2420,6 @@ char *data;
 		gss_cred_id_t server_creds, deleg_creds;
 		gss_name_t client;
 		int ret_flags;
-		struct gss_channel_bindings_struct chan;
 		gss_buffer_desc name_buf;
 		gss_name_t server_name;
 		OM_uint32 acquire_maj, acquire_min, accept_maj, accept_min,
@@ -2433,15 +2432,6 @@ char *data;
 		char service_name[MAXHOSTNAMELEN+10];
 		char **service;
 		struct hostent *hp;
-
-		chan.initiator_addrtype = GSS_C_AF_INET;
-		chan.initiator_address.length = 4;
-		chan.initiator_address.value = &his_addr.sin_addr.s_addr;
-		chan.acceptor_addrtype = GSS_C_AF_INET;
-		chan.acceptor_address.length = 4;
-		chan.acceptor_address.value = &ctrl_addr.sin_addr.s_addr;
-		chan.application_data.length = 0;
-		chan.application_data.value = 0;
 
 		if (kerror = radix_encode(data, gout_buf, &length, 1)) {
 			reply(501, "Couldn't decode ADAT (%s)",
@@ -2498,7 +2488,7 @@ char *data;
 							    &gcontext, /* context_handle */
 							    server_creds, /* verifier_cred_handle */
 							    &tok, /* input_token */
-							    &chan, /* channel bindings */
+							    GSS_C_NO_CHANNEL_BINDINGS, /* channel bindings */
 							    &client, /* src_name */
 							    &mechid, /* mech_type */
 							    &out_tok, /* output_token */
