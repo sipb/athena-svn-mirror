@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.4 1998-12-18 17:23:25 danw Exp $
+# $Id: Makefile.athena,v 1.5 1999-03-18 22:30:40 danw Exp $
 
 SHELL=/bin/sh
 
@@ -7,14 +7,17 @@ prepare:
 clean:
 	cd src && ${MAKE} clean
 
-all:
-	cd src && ${MAKE} "CC=$$COMPILER" CDEBUG=-g \
+depend:
+	cd src && ${MAKE} depend "CC=$$COMPILER" CDEBUG=-g \
 		DESTBIN=/usr/athena/bin \
 		DESTSBIN=/etc/athena \
 		DESTEXEC=/etc/athena \
 		DESTMAN=/usr/athena/man \
 		DESTHELP=/usr/athena/lib \
 		DESTRUN=/var/athena
+
+all:
+	cd src && ${MAKE}
 
 check:
 
