@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.4 1990-11-28 14:37:46 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.5 1990-11-28 18:07:47 mar Exp $
  */
 
 #include <stdio.h>
@@ -576,7 +576,7 @@ struct passwd *pwd;
 	    close(2);
 	    open("/dev/null", O_RDWR, 0);
 	    dup(1);
-	    execl("/bin/cp", "cp", "-pr", "/usr/prototype_tmpuser", "/tmp", NULL);
+	    execl("/bin/cp", "cp", "-r", "/usr/athena/lib/prototype_tmpuser", "/tmp", NULL);
 	    fprintf(stderr, "Warning - could not copy user prototype files into temporary directory.\n");
 	    mkdir(buf, TEMP_DIR_PERM);
 	    _exit(-1);
