@@ -1,17 +1,29 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*
+ *  gp-gc-private.h: GnomePrint graphic context
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public License
+ *  as published by the Free Software Foundation; either version 2 of
+ *  the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *  Authors:
+ *    Lauris Kaplinski <lauris@ximian.com>
+ *
+ *  Copyright 2000-2003 Ximian, Inc.
+ */
+
 #ifndef __GP_GC_PRIVATE_H__
 #define __GP_GC_PRIVATE_H__
-
-/*
- * Gnome Print Graphic Context
- *
- * Authors:
- *   Lauris Kaplinski <lauris@ximian.com>
- *
- * Copyright (C) 2001 Ximian, Inc.
- *
- * Licensed under GNU Lesser General Public License
- *
- */
 
 #include <glib.h>
 
@@ -85,7 +97,6 @@ gint gp_gc_set_dash (GPGC * gc, int num_values, const gdouble * values, gdouble 
 const ArtVpathDash * gp_gc_get_dash (GPGC * gc);
 gint gp_gc_set_dash_flag (GPGC * gc, gint flag);
 gint gp_gc_get_dash_flag (GPGC * gc);
-
 
 /* Font */
 gint gp_gc_set_font (GPGC * gc, GnomeFont * font);

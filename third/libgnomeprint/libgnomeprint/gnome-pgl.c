@@ -22,7 +22,7 @@
  *  Copyright (C) 2000-2001 Ximian Inc. and authors
  */
 
-#define __GNOME_PGL_C__
+#include <config.h>
 
 #include <libart_lgpl/art_affine.h>
 #include <libgnomeprint/gnome-font-private.h>
@@ -54,9 +54,6 @@ gnome_pgl_from_gl (const GnomeGlyphList * gl, const gdouble * transform, guint f
 	gboolean needstring;
 	gint currentstring;
 	gint sptr;
-	ArtPoint posstack[PGL_STACK_SIZE];
-	gboolean metricstack[PGL_STACK_SIZE];
-	gint glyphstack[PGL_STACK_SIZE];
 	ArtPoint p;
 
 	g_return_val_if_fail (gl != NULL, NULL);
@@ -133,22 +130,6 @@ gnome_pgl_from_gl (const GnomeGlyphList * gl, const gdouble * transform, guint f
 				usemetrics = FALSE;
 				pen.x += pos.x * transform[0] + pos.y * transform[2];
 				pen.y += pos.x * transform[1] + pos.y * transform[3];
-				break;
-			case GGL_PUSHCP:
-				g_return_val_if_fail (sptr >= PGL_STACK_SIZE, NULL);
-				posstack[sptr].x = pen.x;
-				posstack[sptr].y = pen.y;
-				metricstack[sptr] = usemetrics;
-				glyphstack[sptr] = lastglyph;
-				sptr += 1;
-				break;
-			case GGL_POPCP:
-				g_return_val_if_fail (sptr <= 0, NULL);
-				sptr -= 1;
-				pen.x = posstack[sptr].x;
-				pen.y = posstack[sptr].y;
-				usemetrics = metricstack[sptr];
-				lastglyph = glyphstack[sptr];
 				break;
 			case GGL_ADVANCE:
 				advance = gl->rules[cr].value.bval;
@@ -348,14 +329,19 @@ gnome_pgl_render_rgb8 (const GnomePosGlyphList * pgl,
 	}
 }
 
-/*
- * Glyphlist methods
- */
 
-/*
- * Get ink dimensions of glyphlist
- */
-
+/**
+ * gnome_glyphlist_bbox:
+ * @gl: 
+ * @transform: 
+ * @flags: should be 0 for now
+ * @bbox:
+ *
+ * Get ink dimensions of transformed glyphlist
+ * Flags are to specify user preferences, should be 0 for now
+ * 
+ * Return Value: bbox, NULL on error
+ **/
 ArtDRect *
 gnome_glyphlist_bbox (const GnomeGlyphList *gl, const gdouble *transform, gint flags, ArtDRect *bbox)
 {

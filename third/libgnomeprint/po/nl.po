@@ -2,204 +2,123 @@
 # Copyright (C) 1999-2001 Free Software Foundation, Inc.
 # Dirk-Jan C. Binnema <djcb@djcbsoftware.nl>, 2001.
 # Huib Kleinhout <huib@stack.nl>, 2002.
+# Tino Meinen <a.t.meinen@chello.nl>, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print 0.26\n"
-"POT-Creation-Date: 2002-12-27 21:30-0500\n"
-"PO-Revision-Date: 2002-05-31 02:22+02:00\n"
-"Last-Translator: Huib Kleinhout <huib@stack.nl>\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"POT-Creation-Date: 2003-01-20 22:11-0500\n"
+"PO-Revision-Date: 2003-01-02 02:13+0100\n"
+"Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
+"Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: installer/gnome-font-install.c:141
-msgid "Print out debugging information"
-msgstr "Druk debug-informatie af"
-
-#: installer/gnome-font-install.c:143
-msgid "Tries to do everything automatically"
-msgstr "Probeert alles automatisch te doen"
-
-#: installer/gnome-font-install.c:145
-msgid "Search directories recursively for font files"
-msgstr "Doorzoek mappen recursief voor lettertype bestanden"
-
-#: installer/gnome-font-install.c:147
-msgid "Start from zero fontmap, instead of parsing old one"
-msgstr "Begin zonder lettertype-kaart, in plaats van een oudere te gebruiken"
-
-#: installer/gnome-font-install.c:149
-msgid "Reverifies all font files, even for fontmaps of same version"
-msgstr ""
-"Controleer de juistheid van lettertype bestanden opnieuw, zelfs voor "
-"lettertype-kaarten van dezelfde versie"
-
-#: installer/gnome-font-install.c:151
-msgid "Include font notice field (Copyright data) into fontmap"
-msgstr ""
-"Voeg opmerkingen-veld van lettertype (Copyright gegevens) toe in lettertype-"
-"kaart"
-
-#: installer/gnome-font-install.c:153
-msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-msgstr "Maak $HOME/.gnome/fonts/gnome-print.lettertypekaart aan"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "Create "
-msgstr "Maak"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "/gnome-print.fontmap"
-msgstr "/gnome-print.lettertypekaart"
-
-#: installer/gnome-font-install.c:159
-msgid "Write output fontmap to specified file (- for stdout)"
-msgstr ""
-"Sla uitvoer van lettertype-kaart op in gespecificeerde bestand (- voor "
-"standaard uitvoer)"
-
-#: installer/gnome-font-install.c:161
-msgid ""
-"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-"print installation)"
-msgstr ""
-"Geef de waarden van $FONTMAPDIR_STATIC en $FONTMAPDIR_DYNAMIC die gebruikt "
-"worden voor deze gnome-print installatie)"
-
-#: installer/gnome-font-install.c:164
-msgid "File describing known aliases"
-msgstr "Bestand dat alle bekende aliassen beschrijft"
-
-#: installer/gnome-font-install.c:164 tests/testprint.c:71
-#: tests/testprint.c:73 tests/testprint.c:75
-msgid "PATH"
-msgstr "PAD"
-
-#: installer/gnome-font-install.c:167
-msgid "Specify default font(s) for any locale"
-msgstr "Specificeer de standaard lettertype(n) voor elke taal"
-
-#: installer/gnome-font-install.c:167
-msgid "[LOCALE[,LOCALE]:fontname]"
-msgstr "[LOCALE[,LOCALE]:lettertype-naam]"
-
-#: libgnomeprint/gnome-font-face.c:446
+#: libgnomeprint/gnome-font-face.c:490
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Aap noot mies wim zus jet teun vuur gijs lam."
 
-#. fixme: fill in all papers and units
-#. fixme: load papers from file
-#. fixme: use some fancy unit program
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
 #.
 #. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
 #.
-#: libgnomeprint/gnome-print-paper.c:44
+#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
 msgid "A4"
 msgstr "A4"
 
 #. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Unit"
 msgstr "Eenheid"
 
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Units"
 msgstr "Eenheden"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Point"
 msgstr "Punt"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pt"
 msgstr "Pt"
 
-#: libgnomeprint/gnome-print-unit.c:34
+# dit moet waarschijnlijk ook gewoon: Punt zijn
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Points"
 msgstr "Punten"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pts"
 msgstr "Ptn"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace unit"
 msgstr "Gebruikerseenheid"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "User"
 msgstr "Gebruiker"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace units"
 msgstr "Gebruikerseenheden"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixel"
 msgstr "Pixel"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Px"
 msgstr "Px"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixels"
 msgstr "Pixels"
 
 #. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percent"
 msgstr "Percentage"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "%"
 msgstr "%"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percents"
 msgstr "Procenten"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeter"
 msgstr "Millimeter"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "mm"
 msgstr "mm"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeters"
 msgstr "Millimeter"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeter"
 msgstr "Centimeter"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "cm"
 msgstr "cm"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeters"
-msgstr "Centimeters"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meter"
-msgstr "Meter"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "m"
-msgstr "m"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meters"
-msgstr "Meters"
+msgstr "Centimeter"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "Inch"
-msgstr "inch"
+msgstr "Inch"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "in"
@@ -207,84 +126,244 @@ msgstr "in"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "Inches"
-msgstr "Inches"
+msgstr "Inch"
 
-#: libgnomeprint/gpa/gpa-media.c:246
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr "1/3 A4"
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr "1/3 A5"
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr "1/4 A3"
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr "1/4 A4"
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr "1/8 A4"
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr "2 pagina's naar 1"
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr "4 pagina's naar 1"
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr "A0"
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr "A1"
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr "A10"
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr "A2"
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr "A3"
+
+#: data/globals.xml.in.h:14
+msgid "A5"
+msgstr "A5"
+
+#: data/globals.xml.in.h:15
+msgid "A6"
+msgstr "A6"
+
+#: data/globals.xml.in.h:16
+msgid "A7"
+msgstr "A7"
+
+#: data/globals.xml.in.h:17
+msgid "A8"
+msgstr "A8"
+
+#: data/globals.xml.in.h:18
+msgid "A9"
+msgstr "A9"
+
+#: data/globals.xml.in.h:19
+msgid "B0"
+msgstr "B0"
+
+#: data/globals.xml.in.h:20
+msgid "B1"
+msgstr "B1"
+
+#: data/globals.xml.in.h:21
+msgid "B10"
+msgstr "B10"
+
+#: data/globals.xml.in.h:22
+msgid "B2"
+msgstr "B2"
+
+#: data/globals.xml.in.h:23
+msgid "B3"
+msgstr "B3"
+
+#: data/globals.xml.in.h:24
+msgid "B4"
+msgstr "B4"
+
+#: data/globals.xml.in.h:25
+msgid "B5"
+msgstr "B5"
+
+#: data/globals.xml.in.h:26
+msgid "B6"
+msgstr "B6"
+
+#: data/globals.xml.in.h:27
+msgid "B7"
+msgstr "B7"
+
+#: data/globals.xml.in.h:28
+msgid "B8"
+msgstr "B8"
+
+#: data/globals.xml.in.h:29
+msgid "B9"
+msgstr "B9"
+
+#: data/globals.xml.in.h:30
+msgid "C0"
+msgstr "C0"
+
+#: data/globals.xml.in.h:31
+msgid "C1"
+msgstr "C1"
+
+#: data/globals.xml.in.h:32
+msgid "C10"
+msgstr "C10"
+
+#: data/globals.xml.in.h:33
+msgid "C2"
+msgstr "C2"
+
+#: data/globals.xml.in.h:34
+msgid "C3"
+msgstr "C3"
+
+#: data/globals.xml.in.h:35
+msgid "C4"
+msgstr "C4"
+
+#: data/globals.xml.in.h:36
+msgid "C5"
+msgstr "C5"
+
+#: data/globals.xml.in.h:37
+msgid "C6"
+msgstr "C6"
+
+#: data/globals.xml.in.h:38
+msgid "C6/C5 Envelope"
+msgstr "C6/C5 Envelop"
+
+#: data/globals.xml.in.h:39
+msgid "C7"
+msgstr "C7"
+
+#: data/globals.xml.in.h:40
+msgid "C8"
+msgstr "C8"
+
+#: data/globals.xml.in.h:41
+msgid "C9"
+msgstr "C9"
+
+#: data/globals.xml.in.h:42
 msgid "Custom"
 msgstr "Aangepast"
 
-#: libgnomeprint/gpa/gpa-media.c:268
-msgid "Straight"
-msgstr "Recht"
+#: data/globals.xml.in.h:43
+msgid "DL Envelope"
+msgstr "DL-Envelop"
 
-#: libgnomeprint/gpa/gpa-media.c:275
-msgid "Rotated 90 degrees"
-msgstr "90 graden gedraaid"
+#: data/globals.xml.in.h:44
+msgid "Divided"
+msgstr "Gedeeld"
 
-#: libgnomeprint/gpa/gpa-media.c:282
-msgid "Rotated 180 degrees"
-msgstr "180 graden gedraaid"
+#: data/globals.xml.in.h:45
+msgid "Envelope 6x9"
+msgstr "Envelop 6x9"
 
-#: libgnomeprint/gpa/gpa-media.c:289
-msgid "Rotated 270 degrees"
-msgstr "270 graden gedraaid"
+#: data/globals.xml.in.h:46
+msgid "Envelope No10"
+msgstr "Envelop No10"
 
-#: libgnomeprint/gpa/gpa-media.c:308
-msgid "Portrait"
-msgstr "Portret"
+#: data/globals.xml.in.h:47
+msgid "Folded"
+msgstr "Gevouwen"
 
-#: libgnomeprint/gpa/gpa-media.c:315
+#: data/globals.xml.in.h:48
 msgid "Landscape"
 msgstr "Landschap"
 
-#: libgnomeprint/gpa/gpa-media.c:322
-msgid "Upside down portrait"
-msgstr "Portret, ondersteboven"
-
-#: libgnomeprint/gpa/gpa-media.c:329
-msgid "Upside down landscape"
-msgstr "Landschap, ondersteboven"
-
-#: libgnomeprint/gpa/gpa-media.c:348
+#: data/globals.xml.in.h:49
 msgid "Plain"
 msgstr "Standaard"
 
-#: tests/testprint.c:69
-msgid "Print Paper database"
-msgstr "Print-papier database"
+#: data/globals.xml.in.h:50
+msgid "Portrait"
+msgstr "Portret"
 
-#: tests/testprint.c:70
-msgid "Describe GPA Tree"
-msgstr "Beschrijf GPA Boom"
+#: data/globals.xml.in.h:51
+msgid "Rotated 180 degrees"
+msgstr "180 graden gedraaid"
 
-#: tests/testprint.c:71
-msgid "Print text file"
-msgstr "Print tekstbestand"
+#: data/globals.xml.in.h:52
+msgid "Rotated 270 degrees"
+msgstr "270 graden gedraaid"
 
-#: tests/testprint.c:72
-msgid "Use GnomePrintMaster for printing"
-msgstr "Gebruik GnomePrintMaster om te printen"
+#: data/globals.xml.in.h:53
+msgid "Rotated 90 degrees"
+msgstr "90 graden gedraaid"
 
-#: tests/testprint.c:73
-msgid "Dump printout to metafile ('-' for stdout)"
-msgstr "Printuitvoer opslaan in metabestand ('-' voor standaard uitvoer)"
+#: data/globals.xml.in.h:54
+msgid "Straight"
+msgstr "Recht"
 
-#: tests/testprint.c:74
-msgid "Split job between bonobo"
-msgstr "Opgesplitste taak tussen bonobo"
+#: data/globals.xml.in.h:55
+msgid "US Executive"
+msgstr "US Executive"
 
-#: tests/testprint.c:75
-msgid "Render from metafile"
-msgstr "Render vanaf metabestand"
+#: data/globals.xml.in.h:56
+msgid "US Legal"
+msgstr "US Legal"
 
-#: tests/testprint.c:156
-msgid "Gnome-print test page, rotated"
-msgstr "Gnome-print test pagina, gedraaid"
+#: data/globals.xml.in.h:57
+msgid "US Letter"
+msgstr "US Letter"
 
-#: tests/testprint.c:173
-msgid "Gnome-print test page, slanted"
-msgstr "Gnome-print test pagina, schuingedrukt"
+#: data/globals.xml.in.h:58
+msgid "Upside down landscape"
+msgstr "Landschap, ondersteboven"
 
-#: tests/testprint.c:181
-msgid "Gnome-print test page, slanted. Small"
-msgstr "Gnome-print test pagina, schuingedrukt. Klein"
+#: data/globals.xml.in.h:59
+msgid "Upside down portrait"
+msgstr "Portret, ondersteboven"
+
+#: data/printers/GENERIC.xml.in.h:1
+msgid "Generic Postscript"
+msgstr "Generiek Postscript"
+
+#: data/printers/PDF-WRITER.xml.in.h:1
+msgid "Create a PDF document"
+msgstr "Een PDF-document maken"

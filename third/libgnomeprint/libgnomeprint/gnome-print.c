@@ -23,29 +23,31 @@
  *    Chema Celorio <chema@celorio.com>
  *
  *  Copyright (C) 1999-2001 Ximian Inc. and authors
- *
  */
 
-#define __GNOME_PRINT_C__
-
+#include <config.h>
 #include <string.h>
 #include <gmodule.h>
-#include <bonobo/bonobo-types.h>
 
-#include "gnome-print-i18n.h"
-#include "gnome-print-private.h"
-#include "gp-gc-private.h"
-#include "gnome-print-transport.h"
-#include "gnome-print-ps2.h"
-#include "gnome-print-frgba.h"
-#include "libgnomeprint-marshal.h"
+#include <libgnomeprint/gnome-print-i18n.h>
+#include <libgnomeprint/gnome-print-private.h>
+#include <libgnomeprint/gp-gc-private.h>
+#include <libgnomeprint/gnome-print-transport.h>
+#include <libgnomeprint/gnome-print-ps2.h>
+#include <libgnomeprint/gnome-print-pdf.h>
+#include <libgnomeprint/gnome-print-frgba.h>
+
+/* For the buffer stuff, remove when the buffer stuff is moved out here */
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+/* Endif */
 
 static void gnome_print_context_class_init (GnomePrintContextClass *klass);
 static void gnome_print_context_init (GnomePrintContext *pc);
-
 static void gnome_print_context_finalize (GObject *object);
-
-static GnomePrintContext *gnome_print_context_create (gpointer get_type, GnomePrintConfig *config);
 
 static GObjectClass *parent_class = NULL;
 
@@ -88,6 +90,7 @@ gnome_print_context_init (GnomePrintContext *pc)
 
 	pc->gc = gp_gc_new ();
 	pc->haspage = FALSE;
+	pc->pages = 0;
 }
 
 static void
@@ -115,6 +118,8 @@ gnome_print_context_finalize (GObject *object)
 gint
 gnome_print_context_construct (GnomePrintContext *pc, GnomePrintConfig *config)
 {
+	GnomePrintReturnCode retval = GNOME_PRINT_OK;
+	
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (config != NULL, GNOME_PRINT_ERROR_UNKNOWN);
@@ -124,9 +129,9 @@ gnome_print_context_construct (GnomePrintContext *pc, GnomePrintConfig *config)
 	pc->config = gnome_print_config_ref (config);
 
 	if (GNOME_PRINT_CONTEXT_GET_CLASS (pc)->construct)
-		GNOME_PRINT_CONTEXT_GET_CLASS (pc)->construct (pc);
-
-	return GNOME_PRINT_OK;
+		retval = GNOME_PRINT_CONTEXT_GET_CLASS (pc)->construct (pc);
+	
+	return retval;
 }
 
 gint
@@ -138,7 +143,11 @@ gnome_print_context_create_transport (GnomePrintContext *pc)
 	g_return_val_if_fail (pc->transport == NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
 	pc->transport = gnome_print_transport_new (pc->config);
-	g_return_val_if_fail (pc->transport != NULL, GNOME_PRINT_ERROR_UNKNOWN);
+	
+	if (pc->transport == NULL) {
+		g_warning ("Could not create transport inside gnome_print_context_create_transport");
+		return GNOME_PRINT_ERROR_UNKNOWN;
+	}
 
 	return GNOME_PRINT_OK;
 }
@@ -148,7 +157,7 @@ gnome_print_context_create_transport (GnomePrintContext *pc)
 /**
  * gnome_print_beginpage:
  * @pc: A #GnomePrintContext
- * @name: Name of the page
+ * @name: Name of the page, NULL if you just want to use the page number of the page
  *
  * Starts new output page with @name. Naming is used for interactive
  * contexts like #GnomePrintPreview and Document Structuring Convention
@@ -164,16 +173,29 @@ gnome_print_context_create_transport (GnomePrintContext *pc)
 int
 gnome_print_beginpage (GnomePrintContext *pc, const guchar *name)
 {
+	guchar *real_name;
+	
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (!pc->haspage, GNOME_PRINT_ERROR_NOMATCH);
 
+	pc->pages++;
+	if (name == NULL) {
+		real_name = g_strdup_printf ("%d", pc->pages);
+	} else {
+		real_name = (guchar *) name;
+	}
+	
 	gp_gc_reset (pc->gc);
 	pc->haspage = TRUE;
 
 	if (GNOME_PRINT_CONTEXT_GET_CLASS (pc)->beginpage)
-		return GNOME_PRINT_CONTEXT_GET_CLASS (pc)->beginpage (pc, name);
+		return GNOME_PRINT_CONTEXT_GET_CLASS (pc)->beginpage (pc, real_name);
+
+	if (name == NULL) {
+		g_free (real_name);
+	}
 
 	return GNOME_PRINT_OK;
 }
@@ -200,15 +222,7 @@ gnome_print_showpage (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	ret = GNOME_PRINT_OK;
 
@@ -242,15 +256,7 @@ gnome_print_gsave (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	ret = GNOME_PRINT_OK;
 
@@ -280,15 +286,7 @@ gnome_print_grestore (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	ret = GNOME_PRINT_OK;
 
@@ -382,78 +380,6 @@ gnome_print_glyphlist_transform (GnomePrintContext *pc, const gdouble *affine, G
 	return GNOME_PRINT_OK;
 }
 
-gint
-gnome_print_callback_closure_invoke (GnomePrintContext *pc,
-				     gpointer           pagedata,
-				     gpointer           docdata,
-				     GClosure          *closure)
-{
-	guint  ret;
-
-	bonobo_closure_invoke (
-		closure, G_TYPE_UINT, &ret,
-		GNOME_TYPE_PRINT_CONTEXT, pc,
-		G_TYPE_POINTER, pagedata,
-		G_TYPE_POINTER, docdata, 0);
-
-	return ret;
-}
-
-gint
-gnome_print_page_callback_closure (GnomePrintContext *pc,
-				   const guchar      *name,
-				   gpointer           pagedata,
-				   gpointer           docdata,
-				   GClosure          *closure)
-{
-	guint  ret;
-	GValue ret_val = {0, };
-
-	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
-	g_return_val_if_fail (pc->gc, GNOME_PRINT_ERROR_BADCONTEXT);
-	g_return_val_if_fail (!pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-	g_return_val_if_fail (closure != NULL, GNOME_PRINT_ERROR_BADVALUE);
-
-	g_value_init (&ret_val, G_TYPE_INT);
-
-	if (GNOME_PRINT_CONTEXT_GET_CLASS (pc)->page)
-		return GNOME_PRINT_CONTEXT_GET_CLASS (pc)->page (
-			pc, name, pagedata, docdata, closure);
-
-	ret = gnome_print_beginpage (pc, name);
-	g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
-
-	ret = gnome_print_callback_closure_invoke (
-		pc, pagedata, docdata, closure);
-	g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
-
-	ret = gnome_print_showpage (pc);
-	g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
-
-	return ret;
-}
-
-
-gint
-gnome_print_page_callback (GnomePrintContext *pc, GnomePrintPageCallback callback,
-			   const guchar *name, gpointer pagedata, gpointer docdata)
-{
-	GClosure *closure;
-	gint      ret;
-
-	closure = bonobo_closure_store (
-		g_cclosure_new (G_CALLBACK (callback), NULL, NULL),
-		libgnomeprint_marshal_INT__OBJECT_POINTER_POINTER);
-
-	ret = gnome_print_page_callback_closure (
-		pc, name, pagedata, docdata, closure);
-
-	g_closure_unref (closure);
-
-	return ret;
-}
-
 /**
  * gnome_print_context_close:
  * @pc: A #GnomePrintContext
@@ -480,10 +406,13 @@ gnome_print_context_close (GnomePrintContext *pc)
 	if (GNOME_PRINT_CONTEXT_GET_CLASS (pc)->close)
 		ret = GNOME_PRINT_CONTEXT_GET_CLASS (pc)->close (pc);
 
-	g_return_val_if_fail (ret == GNOME_PRINT_OK, GNOME_PRINT_ERROR_UNKNOWN);
+	if (ret != GNOME_PRINT_OK) {
+		g_warning ("Could not close transport inside gnome_print_context_close");
+		return GNOME_PRINT_ERROR_UNKNOWN;
+	}
 
 	if (pc->transport) {
-		g_warning ("file %s: line %d: Closing Context did not clear transport", __FILE__, __LINE__);
+		g_warning ("file %s: line %d: Closing Context should clear transport", __FILE__, __LINE__);
 		return GNOME_PRINT_ERROR_UNKNOWN;
 	}
 
@@ -494,62 +423,49 @@ gnome_print_context_close (GnomePrintContext *pc)
  * gnome_print_context_new:
  * @config: GnomePrintConfig object to query print settings from
  *
- * This method gives you new #GnomePrintContext object, associated with given
- * #GnomePrinter. You should use the resulting object as 'black box', without
- * assuming anything about it's type, as depending on situation appropriate
- * wrapper context may be used instead of direct driver.
+ * Create new printing context from config. You have to have set
+ * all the options/settings beforehand, as changing the config of
+ * an existing context has undefined results.
  *
- * Returns: The new #GnomePrintContext or %NULL, if there is an error
+ * Also, if creating the context by hand, it completely ignores layout and
+ * orientation value. If you need those, use GnomePrintJob. The
+ * latter also can create output context for you, so in most cases
+ * you may want to ignore gnome_print_context_new at all.
+ *
+ * Returns: The new GnomePrintContext or NULL on error
  */
-
 GnomePrintContext *
 gnome_print_context_new (GnomePrintConfig *config)
 {
-	GnomePrintContext *pc;
+	GnomePrintContext *pc = NULL;
 	guchar *drivername;
 
 	g_return_val_if_fail (config != NULL, NULL);
 
 	drivername = gnome_print_config_get (config, "Settings.Engine.Backend.Driver");
-	g_return_val_if_fail (drivername != NULL, NULL);
+	if (drivername == NULL) {
+		drivername = g_strdup ("gnome-print-ps");
+	}
 
-	pc = NULL;
-
-	if (!strcmp (drivername, "gnome-print-ps")) {
+	if (strcmp (drivername, "gnome-print-ps") == 0) {
 		GnomePrintContext *ps;
 		ps = gnome_print_ps2_new (config);
+		if (ps == NULL)
+			return NULL;
 		pc = gnome_print_frgba_new (ps);
+		if (pc == NULL)
+			return NULL;
 		g_object_unref (G_OBJECT (ps));
-	} else {
-		guchar *modulename;
-		modulename = gnome_print_config_get (config, "Settings.Engine.Backend.Driver.Module");
-		if (modulename) {
-			static GHashTable *modules = NULL;
-			GModule *module;
-			if (!modules) modules = g_hash_table_new (g_str_hash, g_str_equal);
-			module = g_hash_table_lookup (modules, modulename);
-			if (!module) {
-				gchar *path;
-				path = g_module_build_path (GNOME_PRINT_LIBDIR "/drivers", modulename);
-				module = g_module_open (path, G_MODULE_BIND_LAZY);
-				if (module) g_hash_table_insert (modules, g_strdup (modulename), module);
-				g_free (path);
-			}
-			if (module) {
-				gpointer get_type;
-				if (g_module_symbol (module, "gnome_print__driver_get_type", &get_type)) {
-					pc = gnome_print_context_create (get_type, config);
-				} else {
-					g_warning ("Missing gnome_print__driver_get_type in %s\n", modulename);
-					g_module_close (module);
-				}
-			} else {
-				g_warning ("Cannot open module: %s\n", modulename);
-			}
-			g_free (modulename);
-		} else {
-			g_warning ("Unknown driver: %s", drivername);
-		}
+		g_free (drivername);
+		return pc;
+	}
+	
+	if (strcmp (drivername, "gnome-print-pdf") == 0) {
+		pc = gnome_print_pdf_new (config);
+		if (pc == NULL)
+			return NULL;
+		g_free (drivername);
+		return pc;
 	}
 
 	g_free (drivername);
@@ -557,21 +473,44 @@ gnome_print_context_new (GnomePrintConfig *config)
 	return pc;
 }
 
-static GnomePrintContext *
-gnome_print_context_create (gpointer get_type, GnomePrintConfig *config)
+
+void
+gnome_print_buffer_munmap (GnomePrintBuffer *b)
 {
-	GnomePrintContext *pc;
-	GType (* driver_get_type) (void);
-	GType type;
-
-	driver_get_type = get_type;
-
-	type = (* driver_get_type) ();
-	g_return_val_if_fail (g_type_is_a (type, GNOME_TYPE_PRINT_CONTEXT), NULL);
-
-	pc = g_object_new (type, NULL);
-	gnome_print_context_construct (pc, config);
-
-	return pc;
+	if (b->buf)
+		munmap (b->buf, b->buf_size);
+	b->buf = NULL;
+	b->buf_size = 0;
 }
 
+gint
+gnome_print_buffer_mmap (GnomePrintBuffer *b,
+			 const guchar *file_name)
+{
+	struct stat s;
+	gint fh;
+
+	b->buf = NULL;
+	b->buf_size = 0;
+
+	fh = open (file_name, O_RDONLY);
+	if (fh < 0) {
+		g_warning ("Can't open \"%s\"", file_name);
+		return GNOME_PRINT_ERROR_UNKNOWN;
+	}
+	if (fstat (fh, &s) != 0) {
+		g_warning ("Can't stat \"%s\"", file_name);
+		return GNOME_PRINT_ERROR_UNKNOWN;
+	}
+	
+	b->buf = mmap (NULL, s.st_size, PROT_READ, MAP_SHARED, fh, 0);
+	b->buf_size = s.st_size;
+	
+	close (fh);
+	if ((b->buf == NULL) || (b->buf == (void *) -1)) {
+		g_warning ("Can't mmap file %s", file_name);
+		return GNOME_PRINT_ERROR_UNKNOWN;
+	}
+
+	return GNOME_PRINT_OK;
+}

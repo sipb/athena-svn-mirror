@@ -5,7 +5,7 @@
 <!ENTITY gnome-glyphlist SYSTEM "sgml/gnome-glyphlist.sgml">
 <!ENTITY gnome-pgl SYSTEM "sgml/gnome-pgl.sgml">
 <!ENTITY gnome-print-config SYSTEM "sgml/gnome-print-config.sgml">
-<!ENTITY gnome-print-master SYSTEM "sgml/gnome-print-master.sgml">
+<!ENTITY gnome-print-job SYSTEM "sgml/gnome-print-job.sgml">
 <!ENTITY gnome-print-paper SYSTEM "sgml/gnome-print-paper.sgml">
 <!ENTITY gnome-print SYSTEM "sgml/gnome-print.sgml">
 <!ENTITY gnome-print-unit SYSTEM "sgml/gnome-print-unit.sgml">
@@ -14,7 +14,6 @@
 <!ENTITY libgnomeprint-Building SYSTEM "building.sgml">
 <!ENTITY libgnomeprint-Compiling SYSTEM "compiling.sgml">
 <!ENTITY libgnomeprint-Resources SYSTEM "resources.sgml">
-<!ENTITY libgnomeprint-Questions SYSTEM "question_index.sgml">
 
 ]>
 <book id="index">
@@ -50,7 +49,6 @@ for instance, the current version of GNOME Print ships with:
     &libgnomeprint-Building;
     &libgnomeprint-Compiling;
     &libgnomeprint-Resources;
-    &libgnomeprint-Questions;
 
   </part>
 
@@ -61,7 +59,7 @@ for instance, the current version of GNOME Print ships with:
     &gnome-glyphlist;
     &gnome-pgl;
     &gnome-print-config;
-    &gnome-print-master;
+    &gnome-print-job;
     &gnome-print-paper;
     &gnome-print;
     &gnome-print-unit;

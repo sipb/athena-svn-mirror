@@ -20,33 +20,28 @@
  *    Lauris Kaplinski <lauris@ximian.com>
  *    Jose M. Celorio <chema@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian, Inc. and Jose M. Celorio
+ *  Copyright (C) 2000-2003 Ximian, Inc.
  *
  */
 
-#define __GPA_NODE_C__
+#include "config.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <locale.h>
+#include "gpa-root.h"
 #include "gpa-utils.h"
 #include "gpa-config.h"
 #include "gpa-node-private.h"
 
-/* GPANode */
-
 enum {MODIFIED, LAST_SIGNAL};
+static GObjectClass *parent_class;
+static guint node_signals [LAST_SIGNAL] = {0};
 
 static void gpa_node_class_init (GPANodeClass *klass);
 static void gpa_node_init (GPANode *node);
-
 static void gpa_node_finalize (GObject *object);
-
-static gint gpa_node_modified_idle_hook (GPANode *node);
-
-static GObjectClass *parent_class;
-static guint node_signals[LAST_SIGNAL] = {0};
 
 GType
 gpa_node_get_type (void)
@@ -90,8 +85,9 @@ gpa_node_class_init (GPANodeClass *klass)
 static void
 gpa_node_init (GPANode *node)
 {
-	node->parent = NULL;
-	node->next = NULL;
+	node->parent   = NULL;
+	node->next     = NULL;
+	node->children = NULL;
 }
 
 static void
@@ -103,7 +99,7 @@ gpa_node_finalize (GObject *object)
 	node = (GPANode *) object;
 
 	g_assert (node->parent == NULL);
-	g_assert (node->next == NULL);
+	g_assert (node->next   == NULL);
 
 	id = GPOINTER_TO_INT (g_object_get_data (object, "idle_id"));
 	if (id != 0) {
@@ -113,8 +109,6 @@ gpa_node_finalize (GObject *object)
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
-
-/* Methods */
 
 GPANode *
 gpa_node_new (GType type, const guchar *id)
@@ -126,19 +120,7 @@ gpa_node_new (GType type, const guchar *id)
 	node = g_object_new (type, NULL);
 
 	if (id)
-		node->qid = gpa_quark_from_string (id);
-
-	return node;
-}
-
-GPANode *
-gpa_node_construct (GPANode *node, const guchar *id)
-{
-	g_return_val_if_fail (node != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
-	g_return_val_if_fail (!node->qid, NULL);
-
-	if (id) node->qid = gpa_quark_from_string (id);
+		node->qid = g_quark_from_string (id);
 
 	return node;
 }
@@ -151,6 +133,9 @@ gpa_node_duplicate (GPANode *node)
 
 	if (GPA_NODE_GET_CLASS (node)->duplicate)
 		return GPA_NODE_GET_CLASS (node)->duplicate (node);
+	else
+		g_warning ("Can't duplicate the \"%s\" node because the \"%s\" Class does not have a "
+			   "duplicate method.", gpa_node_id (node), G_OBJECT_TYPE_NAME (node));
 
 	return NULL;
 }
@@ -167,6 +152,9 @@ gpa_node_verify (GPANode *node)
 
 	if (GPA_NODE_GET_CLASS (node)->verify)
 		return GPA_NODE_GET_CLASS (node)->verify (node);
+	else
+		g_error ("Can't verify the \"%s\" node because the \"%s\" Class does not have a "
+			 "verify method.", gpa_node_id (node), G_OBJECT_TYPE_NAME (node));
 
 	return TRUE;
 }
@@ -179,111 +167,275 @@ gpa_node_get_value (GPANode *node)
 
 	if (GPA_NODE_GET_CLASS (node)->get_value)
 		return GPA_NODE_GET_CLASS (node)->get_value (node);
+	else
+		g_warning ("Can't get_valued from \"%s\" node because the \"%s\" Class does not have a "
+			   "get_value method.", GPA_NODE_ID (node), G_OBJECT_TYPE_NAME (node));
 
 	return NULL;
 }
-
-gboolean
-gpa_node_set_value (GPANode *node, const guchar *value)
-{
-	gboolean ret;
-
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-
-	ret = FALSE;
-
-	if (GPA_NODE_GET_CLASS (node)->set_value)
-		ret = GPA_NODE_GET_CLASS (node)->set_value (node, value);
-
-	if (ret) {
-		gpa_node_request_modified (node, GPA_NODE_MODIFIED_FLAG);
-	}
-
-	return ret;
-}
-
-/* NB! ref->parent == node is not invariant due to references */
 
 GPANode *
-gpa_node_get_child (GPANode *node, GPANode *ref)
+gpa_node_get_child (GPANode *node, GPANode *previous_child)
 {
+	GPANode *child;
+
+	/* FIXME: Handle GPAReference */
 	g_return_val_if_fail (node != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
-	g_return_val_if_fail (!ref || GPA_IS_NODE (ref), NULL);
+	g_return_val_if_fail (!previous_child || GPA_IS_NODE (previous_child), NULL);
 
-	if (GPA_NODE_GET_CLASS (node)->get_child) {
-		return GPA_NODE_GET_CLASS (node)->get_child (node, ref);
+	if (previous_child)
+		child = previous_child->next;
+	else
+		child = node->children;
+
+	if (child)
+		gpa_node_ref (child);
+
+	return child;
+}	
+
+static GPANode *
+gpa_node_lookup_real (GPANode *node, guchar *path)
+{
+	GPANode *child;
+	const guchar *next;
+	guchar *dot;
+
+	g_assert (node);
+	g_assert (path);
+	
+	dot = strchr (path, '.');
+	if (dot != NULL) {
+		next = dot + 1;
+		*dot = 0; /* allows us to compare with quarks */
+	} else {
+		next = NULL;
 	}
 
-	return NULL;
+	child = GPA_NODE (node)->children;
+	while (child) {
+		if (GPA_NODE_ID_COMPARE (child, path))
+		    break;
+		child = child->next;
+	}
+	if (next)
+		*dot = '.';
+
+	if (!child) {
+		return NULL;
+	}
+
+	if (!next) {
+		gpa_node_ref (child);
+		return child;
+	}
+
+	return gpa_node_lookup (child, next);
 }
 
 GPANode *
 gpa_node_lookup (GPANode *node, const guchar *path)
 {
+	GPANode *ret;
+	gchar *p;
+	
+	g_return_val_if_fail (path != NULL, NULL);
+	g_return_val_if_fail (*path != '\0', NULL);
+
+	if (node == NULL) {
+		node = gpa_root;
+	}
+	if (GPA_IS_REFERENCE (node)) {
+		node = GPA_REFERENCE_REFERENCE (node);
+	}
+
+	g_return_val_if_fail (node != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
+
+	p = g_strdup (path);
+	ret = gpa_node_lookup_real (node, p);
+	g_free (p);
+
+	return ret;
+}
+
+gboolean
+gpa_node_set_value (GPANode *node, const guchar *value)
+{
+	gboolean ret = FALSE;
+
+	g_return_val_if_fail (node != NULL, FALSE);
+	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	if (GPA_NODE_GET_CLASS (node)->set_value) {
+		ret = GPA_NODE_GET_CLASS (node)->set_value (node, value);
+		if (ret)
+			gpa_node_emit_modified (node);
+	} else {
+		g_warning ("Can't set_valued of \"%s\" to \"%s\" because the \"%s\" Class does not have a "
+			   "set_value method.", gpa_node_id (node), value, G_OBJECT_TYPE_NAME (node));
+	}
+
+	return ret;
+}
+
+void
+gpa_node_emit_modified (GPANode *node)
+{
+	g_signal_emit (G_OBJECT (node), node_signals [MODIFIED], 0, 0);
+}
+
+const guchar *
+gpa_node_id (GPANode *node)
+{
+	g_return_val_if_fail (node != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
+
+	if (node->qid)
+		return g_quark_to_string (node->qid);
+
+	return NULL;
+}
+
+/**
+ * gpa_node_get_child_from_path:
+ * @node: 
+ * @path: 
+ * 
+ * This is just the public version of gpa_node_lookup. It gets you a child inside a tree
+ * given by the @path
+ * 
+ * Return Value: the GPANode * below the @node leaf after having walked @path
+ **/
+GPANode *
+gpa_node_get_child_from_path (GPANode *node, const guchar *path)
+{
+	g_return_val_if_fail (path != NULL, NULL);
+	g_return_val_if_fail (!*path || isalnum (*path), NULL);
+
+	return gpa_node_lookup (node, path);
+}
+
+guchar *
+gpa_node_get_path_value (GPANode *node, const guchar *path)
+{
+	GPANode *child;
+
 	g_return_val_if_fail (node != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (!*path || isalnum (*path), NULL);
 
-	if (!*path) {
-		gpa_node_ref (node);
-		return node;
-	}
+	child = gpa_node_lookup (node, path);
 
-	if (GPA_NODE_GET_CLASS (node)->lookup)
-		return GPA_NODE_GET_CLASS (node)->lookup (node, path);
+	if (child) {
+		guchar *value;
+		value = gpa_node_get_value (child);
+		gpa_node_unref (child);
+		return value;
+	}
 
 	return NULL;
 }
 
-/* Signal stuff */
-
-void
-gpa_node_request_modified (GPANode *node, guint flags)
+/**
+ * gpa_node_set_path_value:
+ * @node: 
+ * @path: 
+ * @value: 
+ * 
+ * Set the value of the child pointed by @path starting from @parent
+ *
+ * Return Value: 
+ **/
+gboolean
+gpa_node_set_path_value (GPANode *parent, const guchar *path, const guchar *value)
 {
-	g_return_if_fail (node != NULL);
-	g_return_if_fail (GPA_IS_NODE (node));
+	GPANode *node;
+	gboolean ret;
 
-	if (!(GPA_NODE_FLAGS (node) & GPA_NODE_MODIFIED_FLAG)) {
-		GPA_NODE_SET_FLAGS (node, GPA_NODE_MODIFIED_FLAG);
-		if (node->parent) {
-			gpa_node_request_modified (node->parent, flags);
-		} else {
-			guint id;
-			id = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (node), "idle_id"));
-			if (id == 0) {
-				id = g_idle_add ((GSourceFunc) gpa_node_modified_idle_hook, node);
-				g_object_set_data (G_OBJECT (node), "idle_id", GUINT_TO_POINTER (id));
-			}
-		}
+	g_return_val_if_fail (parent != NULL, FALSE);
+	g_return_val_if_fail (GPA_IS_NODE (parent), FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
+	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
+
+	node = gpa_node_lookup (parent, path);
+	if (!node) {
+		g_warning ("could not set the value of %s, node not found", path);
+		return FALSE;
 	}
-}
-
-void
-gpa_node_emit_modified (GPANode *node, guint flags)
-{
-	gpa_node_ref (node);
-
-	GPA_NODE_UNSET_FLAGS (node, GPA_NODE_MODIFIED_FLAG);
-
-	g_signal_emit (G_OBJECT (node), node_signals[MODIFIED], 0, flags);
-
+	
+	ret = gpa_node_set_value (node, value);
 	gpa_node_unref (node);
+	return ret;
 }
 
-static gint
-gpa_node_modified_idle_hook (GPANode *node)
+/* Convenience stuff */
+gboolean
+gpa_node_get_int_path_value (GPANode *node, const guchar *path, gint *value)
 {
-	g_object_set_data (G_OBJECT (node), "idle_id", GUINT_TO_POINTER (0));
+	guchar *v;
+	
+	g_return_val_if_fail (node != NULL, FALSE);
+	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
+	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
 
-	gpa_node_emit_modified (node, 0);
+	v = gpa_node_get_path_value (node, path);
 
+	if (v != NULL) {
+		*value = atoi (v);
+		g_free (v);
+		return TRUE;
+	}
+	
 	return FALSE;
 }
 
-/* Public methods */
+#define MM2PT (72.0 / 25.4)
+#define CM2PT (72.0 / 2.54)
+#define IN2PT (72.0)
+
+gboolean
+gpa_node_get_length_path_value (GPANode *node, const guchar *path, gdouble *value)
+{
+	gchar *loc, *e;
+	guchar *v;
+	
+	g_return_val_if_fail (node != NULL, FALSE);
+	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
+	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	v = gpa_node_get_path_value (node, path);
+
+	if (v == NULL)
+		return FALSE;
+	
+	loc = g_strdup (setlocale (LC_NUMERIC, NULL));
+	setlocale (LC_NUMERIC, "C");
+	*value = strtod (v, &e);
+	if (e) {
+		if (!strcmp (e, "mm")) {
+			*value *= MM2PT;
+		} else if (!strcmp (e, "cm")) {
+			*value *= CM2PT;
+		} else if (!strcmp (e, "in")) {
+			*value *= IN2PT;
+		}
+	}
+
+	g_free (v);
+	setlocale (LC_NUMERIC, loc);
+	g_free (loc);
+	
+	return TRUE;
+}
+
 
 GPANode *
 gpa_node_ref (GPANode *node)
@@ -307,259 +459,97 @@ gpa_node_unref (GPANode *node)
 	return NULL;
 }
 
-/* fixme: remove this or make const (Lauris) */
-
-guchar *
-gpa_node_id (GPANode *node)
+GPANode *
+gpa_node_attach (GPANode *parent, GPANode *child)
 {
-	g_return_val_if_fail (node != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
+	g_return_val_if_fail (parent != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_NODE (parent), NULL);
+	g_return_val_if_fail (child != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_NODE (child), NULL);
+	g_return_val_if_fail (child->parent == NULL, NULL);
+	g_return_val_if_fail (child->next == NULL, NULL);
 
-	if (node->qid)
-		return g_strdup (gpa_quark_to_string (node->qid));
+	child->parent = parent;
+	child->next = parent->children;
+	parent->children = child;
+	
+	return child;
+}
+
+void
+gpa_node_reverse_children (GPANode *node)
+{
+	GPANode *prev = NULL;
+	GPANode *child;
+	
+	g_return_if_fail (node != NULL);
+	g_return_if_fail (GPA_IS_NODE (node));
+
+	child = node->children;
+	while (child) {
+		GPANode *next = child->next;
+		child->next = prev;
+		prev = child;
+		child = next;
+	}
+	node->children = prev;
+}
+
+void
+gpa_node_detach (GPANode *node)
+{
+	GPANode *parent;
+	GPANode *prev;
+
+	g_return_if_fail (node != NULL);
+
+	g_assert (node->parent);
+	g_assert (node->parent->children);
+
+	parent = node->parent;
+	if (parent->children == node) {
+		parent->children = node->next;
+	} else {
+		prev = parent->children;
+		while (prev) {
+			if (prev->next == node)
+				break;
+			prev = prev->next;
+		}
+		g_assert (prev);
+		prev->next = node->next;
+	}
+	
+	node->parent = NULL;
+	node->next = NULL;		
+}
+
+GPANode *
+gpa_node_detach_unref (GPANode *child)
+{
+	g_return_val_if_fail (child != NULL, child);
+	g_return_val_if_fail (GPA_IS_NODE (child), child);
+	
+	gpa_node_detach (child);
+	gpa_node_unref (child);
 
 	return NULL;
 }
 
-/* These return referenced node or NULL */
-
-GPANode *
-gpa_node_get_parent (GPANode *node)
+void
+gpa_node_detach_unref_children (GPANode *node)
 {
-	g_return_val_if_fail (node != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
+	GPANode *child;
 
-	if (node->parent)
-		gpa_node_ref (node->parent);
+	g_return_if_fail (node != NULL);
+	g_return_if_fail (GPA_IS_NODE (node));
 
-	return node->parent;
-}
-
-GPANode *
-gpa_node_get_path_node (GPANode *node, const guchar *path)
-{
-	g_return_val_if_fail (node != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-	g_return_val_if_fail (!*path || isalnum (*path), NULL);
-
-	return gpa_node_lookup (node, path);
-}
-
-/* Basic value manipulation */
-
-guchar *
-gpa_node_get_path_value (GPANode *node, const guchar *path)
-{
-	GPANode *ref;
-
-	g_return_val_if_fail (node != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
-	g_return_val_if_fail (path != NULL, NULL);
-	g_return_val_if_fail (!*path || isalnum (*path), NULL);
-
-	ref = gpa_node_lookup (node, path);
-
-	if (ref) {
-		guchar *value;
-		value = gpa_node_get_value (ref);
-		gpa_node_unref (ref);
-		return value;
+	child = node->children;
+	while (child) {
+		GPANode *next;
+		next = child->next;
+		gpa_node_detach (child);
+		g_object_unref (G_OBJECT (child));
+		child = next;
 	}
-
-	return NULL;
 }
-
-gboolean
-gpa_node_set_path_value (GPANode *node, const guchar *path, const guchar *value)
-{
-	GPANode *ref;
-
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
-
-	ref = gpa_node_lookup (node, path);
-
-	if (ref) {
-		gboolean ret;
-		ret = gpa_node_set_value (ref, value);
-		gpa_node_unref (ref);
-		return ret;
-	}
-
-	return FALSE;
-}
-
-/* Convenience stuff */
-gboolean
-gpa_node_get_bool_path_value (GPANode *node, const guchar *path, gint *value)
-{
-	guchar *v;
-	
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
-
-	v = gpa_node_get_path_value (node, path);
-
-	if (v != NULL) {
-		if (!strcasecmp (v, "true") || !strcasecmp (v, "yes") || !strcasecmp (v, "y") || (atoi (v) > 0)) {
-			*value = TRUE;
-			return TRUE;
-		}
-		*value = FALSE;
-		g_free (v);
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-gboolean
-gpa_node_get_int_path_value (GPANode *node, const guchar *path, gint *value)
-{
-	guchar *v;
-	
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
-
-	v = gpa_node_get_path_value (node, path);
-
-	if (v != NULL) {
-		*value = atoi (v);
-		g_free (v);
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-gboolean
-gpa_node_get_double_path_value (GPANode *node, const guchar *path, gdouble *value)
-{
-	guchar *v;
-	
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
-
-	v = gpa_node_get_path_value (node, path);
-
-	if (v != NULL) {
-		gchar *loc;
-		loc = setlocale (LC_NUMERIC, NULL);
-		setlocale (LC_NUMERIC, "C");
-		*value = atof (v);
-		g_free (v);
-		setlocale (LC_NUMERIC, loc);
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-#define MM2PT (72.0 / 25.4)
-#define CM2PT (72.0 / 2.54)
-#define IN2PT (72.0)
-
-gboolean
-gpa_node_get_length_path_value (GPANode *node, const guchar *path, gdouble *value)
-{
-	guchar *v;
-	
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
-	g_return_val_if_fail (value != NULL, FALSE);
-
-	v = gpa_node_get_path_value (node, path);
-
-	if (v != NULL) {
-		gchar *loc, *e;
-		loc = setlocale (LC_NUMERIC, NULL);
-		setlocale (LC_NUMERIC, "C");
-		*value = strtod (v, &e);
-		if (e) {
-			if (!strcmp (e, "mm")) {
-				*value *= MM2PT;
-			} else if (!strcmp (e, "cm")) {
-				*value *= CM2PT;
-			} else if (!strcmp (e, "in")) {
-				*value *= IN2PT;
-			}
-		}
-		g_free (v);
-		setlocale (LC_NUMERIC, loc);
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-gboolean
-gpa_node_set_bool_path_value (GPANode *node, const guchar *path, gint value)
-{
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
-
-	return gpa_node_set_path_value (node, path, (value) ? "true" : "false");
-}
-
-gboolean
-gpa_node_set_int_path_value (GPANode *node, const guchar *path, gint value)
-{
-	guchar c[64];
-	
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
-
-	g_snprintf (c, 64, "%d", value);
-
-	return gpa_node_set_path_value (node, path, c);
-}
-
-gboolean
-gpa_node_set_double_path_value (GPANode *node, const guchar *path, gdouble value)
-{
-	guchar c[64];
-	gchar *loc;
-	
-	g_return_val_if_fail (node != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_NODE (node), FALSE);
-	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (!*path || isalnum (*path), FALSE);
-
-	loc = setlocale (LC_NUMERIC, NULL);
-	setlocale (LC_NUMERIC, "C");
-	g_snprintf (c, 64, "%g", value);
-	setlocale (LC_NUMERIC, loc);
-
-	return gpa_node_set_path_value (node, path, c);
-}
-
-GPANode *
-gpa_defaults (void)
-{
-	GPANode *config;
-
-	config = gpa_config_new ();
-
-	return config;
-}
-
-
-

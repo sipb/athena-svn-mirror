@@ -20,20 +20,17 @@
  *    Chema Celorio <chema@celorio.com>
  *    Lauris Kaplinski <lauris@helixcode.com>
  *
- *  Copyright 2000-2001 Ximian, Inc. and authors
+ *  Copyright 2000-2003 Ximian, Inc.
  *
  *  References:
- *    Document Structuring Conventions, Adobe. [http://partners.adobe.com/asn/developer/pdfs/tn/5001.DSC_Spec.pdf]
+ *    [1] Postscript Language Reference, 3rd Edition. Adobe. [http://partners.adobe.com/asn/developer/pdfs/tn/PLRM.pdf]
+ *    [2] Document Structuring Conventions, Adobe. [http://partners.adobe.com/asn/developer/pdfs/tn/5001.DSC_Spec.pdf]
  */
 
-#define __GNOME_PRINT_PS2_C__
-
 #include <config.h>
-
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <stdio.h>
 #include <unistd.h>
 #include <locale.h>
 
@@ -43,20 +40,44 @@
 #include <libgnomeprint/gp-gc-private.h>
 #include <libgnomeprint/gnome-print-transport.h>
 #include <libgnomeprint/gnome-font-private.h>
-#include <libgnomeprint/gnome-print-encode-private.h>
+#include <libgnomeprint/gnome-print-encode.h>
 #include <libgnomeprint/gnome-pgl-private.h>
-
-#include "gnome-print-ps2.h"
+#include <libgnomeprint/gnome-print-ps2.h>
 
 #define EOL "\n"
 
 typedef struct _GnomePrintPs2Font GnomePrintPs2Font;
 typedef struct _GnomePrintPs2Page GnomePrintPs2Page;
 
+struct _GnomePrintPs2Class {
+	GnomePrintContextClass parent_class;
+};
+
+struct _GnomePrintPs2 {
+	GnomePrintContext pc;
+
+	/* Bounding box */
+	ArtDRect bbox;
+
+	/* lists */
+	GnomePrintPs2Font *fonts;
+	GnomePrintPs2Page *pages;
+
+	/* State */
+	GnomePrintPs2Font *selected_font;
+	gdouble r, g, b;
+	gint private_color_flag;
+	gint gsave_level;
+	
+	/* Buffer */
+	FILE *buf;
+	gchar *bufname;
+};
+
 struct _GnomePrintPs2Font {
 	GnomePrintPs2Font *next;
 	GnomeFontFace *face;
-	GFPSObject *pso;
+	GnomeFontPsObject *pso;
 	gdouble currentsize;
 };
 
@@ -66,31 +87,6 @@ struct _GnomePrintPs2Page {
 	gint number;
 	gboolean shown;
 	GSList *usedfonts;
-};
-
-struct _GnomePrintPs2 {
-	GnomePrintContext pc;
-
-	/* List of used fonts */
-	GnomePrintPs2Font *fonts;
-	/* Active font */
-	GnomePrintPs2Font *selectedfont;
-	/* Active color */
-        gdouble r, g, b;
-	gint private_color_flag;
-	/* List of pages */
-	GnomePrintPs2Page *pages;
-	/* Bookkeeping */
-	gint gsave_level;
-	/* Size of printed area */
-	ArtDRect bbox;
-	/* Buffer */
-	FILE *buf;
-	gchar *bufname;
-};
-
-struct _GnomePrintPs2Class {
-	GnomePrintContextClass parent_class;
 };
 
 static void gnome_print_ps2_class_init (GnomePrintPs2Class *klass);
@@ -113,13 +109,13 @@ static gint gnome_print_ps2_set_color (GnomePrintPs2 *ps2);
 static gint gnome_print_ps2_set_line (GnomePrintPs2 *ps2);
 static gint gnome_print_ps2_set_dash (GnomePrintPs2 *ps2);
 
-static gint gnome_print_ps2_set_color_private (GnomePrintPs2 *ps2, gdouble r, gdouble g, gdouble b);
-static gint gnome_print_ps2_set_font_private (GnomePrintPs2 *ps2, const GnomeFont *font);
+static gint gnome_print_ps2_set_color_real (GnomePrintPs2 *ps2, gdouble r, gdouble g, gdouble b);
+static gint gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *font);
 
 static gint gnome_print_ps2_print_bpath (GnomePrintPs2 *ps2, const ArtBpath *bpath);
 
 static gchar *gnome_print_ps2_get_date (void);
-static gint gnome_print_ps2_fprintf (GnomePrintPs2 *ps2, const char *format, ...);
+static gint   gnome_print_ps2_fprintf (GnomePrintPs2 *ps2, const char *format, ...);
 
 static GnomePrintContextClass *parent_class;
 
@@ -173,7 +169,7 @@ gnome_print_ps2_init (GnomePrintPs2 *ps2)
 {
 	ps2->gsave_level = 0;
 	ps2->fonts = NULL;
-	ps2->selectedfont = NULL;
+	ps2->selected_font = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 	ps2->pages = NULL;
 	ps2->buf = NULL;
@@ -195,6 +191,7 @@ gnome_print_ps2_finalize (GObject *object)
 		if (unlink (ps2->bufname)) {
 			g_warning ("Error unlinking buffer");
 		}
+		g_free (ps2->bufname);
 		ps2->bufname = NULL;
 	}
 
@@ -294,7 +291,7 @@ gnome_print_ps2_grestore (GnomePrintContext *ctx)
 	ps2 = GNOME_PRINT_PS2 (ctx);
 
 	ps2->gsave_level -= 1;
-	ps2->selectedfont = NULL;
+	ps2->selected_font = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
 	return gnome_print_ps2_fprintf (ps2, "Q" EOL);
@@ -324,7 +321,7 @@ static gint
 gnome_print_ps2_fill (GnomePrintContext *ctx, const ArtBpath *bpath, ArtWindRule rule)
 {
 	GnomePrintPs2 *ps2;
-	gint ret = GNOME_PRINT_OK;
+	gint ret = 0;
 
 	ps2 = GNOME_PRINT_PS2 (ctx);
 
@@ -339,6 +336,7 @@ gnome_print_ps2_fill (GnomePrintContext *ctx, const ArtBpath *bpath, ArtWindRule
 
 	g_return_val_if_fail (ret >= 0, ret);
 	/* Update bbox */
+
 
 	return ret;
 }
@@ -441,9 +439,9 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, const gdouble *a, GnomeGlyphLi
 
 		ps = pgl->strings + s;
 
-		ret = gnome_print_ps2_set_font_private (ps2, gnome_rfont_get_font (ps->rfont));
+		ret = gnome_print_ps2_set_font_real (ps2, gnome_rfont_get_font (ps->rfont));
 		g_return_val_if_fail (ret >= 0, ret);
-		ret = gnome_print_ps2_set_color_private (ps2,
+		ret = gnome_print_ps2_set_color_real (ps2,
 						((ps->color >> 24) & 0xff) / 255.0,
 						((ps->color >> 16) & 0xff) / 255.0,
 						((ps->color >>  8) & 0xff) / 255.0);
@@ -456,12 +454,12 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, const gdouble *a, GnomeGlyphLi
 
 		ret = gnome_print_ps2_fprintf (ps2, "(");
 
-		if (ps2->selectedfont->pso->encodedbytes == 1) {
+		if (ps2->selected_font->pso->encodedbytes == 1) {
 			/* 8-bit encoding */
 			for (i = ps->start; i < ps->start + ps->length; i++) {
 				gint glyph;
 				glyph = pgl->glyphs[i].glyph & 0xff;
-				gnome_font_face_pso_mark_glyph (ps2->selectedfont->pso, glyph);
+				gnome_font_face_pso_mark_glyph (ps2->selected_font->pso, glyph);
 				ret = gnome_print_ps2_fprintf (ps2, "\\%o", glyph);
 				g_return_val_if_fail (ret >= 0, ret);
 			}
@@ -469,7 +467,7 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, const gdouble *a, GnomeGlyphLi
 			/* 16-bit encoding */
 			for (i = ps->start; i < ps->start + ps->length; i++) {
 				gint glyph, page;
-				gnome_font_face_pso_mark_glyph (ps2->selectedfont->pso, pgl->glyphs[i].glyph);
+				gnome_font_face_pso_mark_glyph (ps2->selected_font->pso, pgl->glyphs[i].glyph);
 				glyph = pgl->glyphs[i].glyph & 0xff;
 				page = (pgl->glyphs[i].glyph >> 8) & 0xff;
 				ret = gnome_print_ps2_fprintf (ps2, "\\%o\\%o", page, glyph);
@@ -497,7 +495,7 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, const gdouble *a, GnomeGlyphLi
 	if (!identity) {
 		ret = gnome_print_ps2_fprintf (ps2, "Q" EOL);
 		g_return_val_if_fail (ret >= 0, ret);
-		ps2->selectedfont = NULL;
+		ps2->selected_font = NULL;
 		ps2->private_color_flag = GP_GC_FLAG_UNSET;
 	}
 
@@ -527,7 +525,7 @@ gnome_print_ps2_beginpage (GnomePrintContext *pc, const guchar *name)
 
 	ps2->pages = page;
 
-	ps2->selectedfont = NULL;
+	ps2->selected_font = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
 	ret += gnome_print_ps2_fprintf (ps2, "%%%%Page: %s %d" EOL, name, page->number);
@@ -560,7 +558,7 @@ gnome_print_ps2_showpage (GnomePrintContext *pc)
 	if (ps2->pages)
 		ps2->pages->shown = TRUE;
 	
-	ps2->selectedfont = NULL;
+	ps2->selected_font = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
 	ret += gnome_print_ps2_fprintf (ps2, "SP" EOL);
@@ -600,31 +598,28 @@ gnome_print_ps2_close (GnomePrintContext *pc)
 	}
 
 	/* Do header */
-	/* Comments */
 	date = gnome_print_ps2_get_date ();
-	gnome_print_transport_printf (pc->transport, "%%!PS-Adobe-3.0" EOL);
-	/* fixme: %%BoundingBox: */
+	gnome_print_transport_printf (pc->transport, "%%!PS-Adobe-3.0" EOL);	
+	/* DSC Comments */
 	gnome_print_transport_printf (pc->transport, "%%%%Creator: Gnome Print Version %s" EOL, VERSION);
 	gnome_print_transport_printf (pc->transport, "%%%%CreationDate: %s" EOL, date);
-	/* fixme: %%DocumentData: */
-	/* fixme: Should we use %%Extensions: and drop LanguageLevel? */
 	gnome_print_transport_printf (pc->transport, "%%%%LanguageLevel: 2" EOL);
 	gnome_print_transport_printf (pc->transport, "%%%%DocumentMedia: Regular %d %d 0 () ()" EOL,
 				      (gint) (ps2->bbox.x1 - ps2->bbox.x0), (gint) (ps2->bbox.y1 - ps2->bbox.y0));
 
-	/* Orientation */
+	/* Orientation ([2] Page 43) */
 	gnome_print_transport_printf (pc->transport, "%%%%Orientation: ");
 	orientation = gnome_print_config_get (pc->config, GNOME_PRINT_KEY_ORIENTATION);
-	if (strcmp ("R0", orientation) == 0) {
+	if (!orientation || strcmp ("R0", orientation) == 0) {
 		gnome_print_transport_printf (pc->transport, "Portrait");
 	} else if (strcmp ("R90", orientation) == 0) {
 		gnome_print_transport_printf (pc->transport, "Landscape");
 	} else if (strcmp ("R180", orientation) == 0) {
-		gnome_print_transport_printf (pc->transport, "Reverse Portrait");
+		gnome_print_transport_printf (pc->transport, "Portrait");
 	} else if (strcmp ("R270", orientation) == 0) {
-		gnome_print_transport_printf (pc->transport, "Reverse Landscape");
+		gnome_print_transport_printf (pc->transport, "Landscape");
 	} else {
-		g_warning ("Could not interpret Orientation from GnomePrintConfig [%s]<-\n", orientation);
+		g_warning ("Could not interpret Orientation from GnomePrintConfig [%s]\n", orientation);
 	}
 	g_free (orientation);
 	gnome_print_transport_printf (pc->transport, EOL);
@@ -679,11 +674,10 @@ gnome_print_ps2_close (GnomePrintContext *pc)
 	gnome_print_transport_printf (pc->transport, "<<" EOL);
 	gnome_print_transport_printf (pc->transport, "/PageSize [%d %d]" EOL, (gint) (ps2->bbox.x1 - ps2->bbox.x0), (gint) (ps2->bbox.y1 - ps2->bbox.y0));
 	gnome_print_transport_printf (pc->transport, "/ImagingBBox null" EOL);
-	gnome_print_transport_printf (pc->transport, "/Orientation %d" EOL, 0); /* FIXME: real orientation */
 	gnome_print_transport_printf (pc->transport, ">> setpagedevice" EOL);
 	/* Download fonts */
 	for (font = ps2->fonts; font != NULL; font = font->next) {
-		gnome_font_face_pso_ensure_buffer (font->pso);
+		gnome_font_face_ps_embed (font->pso);
 		gnome_print_transport_printf (pc->transport, "%%%%BeginResource: font %s" EOL, font->pso->encodedname);
 		gnome_print_transport_write (pc->transport, font->pso->buf, font->pso->length);
 		gnome_print_transport_printf (pc->transport, "%%%%EndResource" EOL);
@@ -704,6 +698,7 @@ gnome_print_ps2_close (GnomePrintContext *pc)
 	if (unlink (ps2->bufname)) {
 		g_warning ("Error unlinking buffer");
 	}
+	g_free (ps2->bufname);
 	ps2->bufname = NULL;
 	/* END: Write buffer */
 
@@ -711,6 +706,7 @@ gnome_print_ps2_close (GnomePrintContext *pc)
 	gnome_print_transport_printf (pc->transport, "%%%%EOF" EOL);
  
  	gnome_print_transport_close (pc->transport);
+	g_object_unref (G_OBJECT (pc->transport));
 	pc->transport = NULL;
  	
 	return GNOME_PRINT_OK;
@@ -720,10 +716,18 @@ static gint
 gnome_print_ps2_set_color (GnomePrintPs2 *ps2)
 {
 	GnomePrintContext *ctx;
+	gint ret;
 
 	ctx = GNOME_PRINT_CONTEXT (ps2);
 
-	return gnome_print_ps2_set_color_private (ps2, gp_gc_get_red (ctx->gc), gp_gc_get_green (ctx->gc), gp_gc_get_blue (ctx->gc));
+	ret = gnome_print_ps2_set_color_real (ps2,
+					      gp_gc_get_red   (ctx->gc),
+					      gp_gc_get_green (ctx->gc),
+					      gp_gc_get_blue  (ctx->gc));
+
+	g_return_val_if_fail (ret == 0, ret);
+
+	return ret;
 }
 
 static gint
@@ -772,16 +776,17 @@ gnome_print_ps2_set_dash (GnomePrintPs2 *ps2)
 }
 
 static gint
-gnome_print_ps2_set_color_private (GnomePrintPs2 *ps2, gdouble r, gdouble g, gdouble b)
+gnome_print_ps2_set_color_real (GnomePrintPs2 *ps2, gdouble r, gdouble g, gdouble b)
 {
 	GnomePrintContext *ctx;
 	gint ret;
 
 	ctx = GNOME_PRINT_CONTEXT (ps2);
 
-	if ((ps2->private_color_flag == GP_GC_FLAG_CLEAR) && (r == ps2->r) && (g == ps2->g) && (b == ps2->b))
+	if ((ps2->private_color_flag == GP_GC_FLAG_CLEAR)
+	    && (r == ps2->r) && (g == ps2->g) && (b == ps2->b))
 		return GNOME_PRINT_OK;
-
+	
 	ret = gnome_print_ps2_fprintf (ps2, "%.3g %.3g %.3g rg" EOL, r, g, b);
 
 	ps2->r = r;
@@ -795,15 +800,18 @@ gnome_print_ps2_set_color_private (GnomePrintPs2 *ps2, gdouble r, gdouble g, gdo
 }
 
 static gint
-gnome_print_ps2_set_font_private (GnomePrintPs2 *ps2, const GnomeFont *gnome_font)
+gnome_print_ps2_set_font_real (GnomePrintPs2 *ps2, const GnomeFont *gnome_font)
 {
 	const GnomeFontFace *face;
 	GnomePrintPs2Font *font;
 	gint ret = 0;
 	GSList *l;
 
-	if (ps2->selectedfont && (ps2->selectedfont->face == gnome_font->face) && (ps2->selectedfont->currentsize = gnome_font->size))
+	if ((ps2->selected_font) &&
+	    (ps2->selected_font->face == gnome_font->face) &&
+	    (ps2->selected_font->currentsize == gnome_font->size)) {
 		return 0;
+	}
 
 	face = gnome_font_get_face (gnome_font);
 
@@ -833,7 +841,7 @@ gnome_print_ps2_set_font_private (GnomePrintPs2 *ps2, const GnomeFont *gnome_fon
 	ret += gnome_print_ps2_fprintf (ps2, "/%s FF %g F" EOL, font->pso->encodedname, gnome_font_get_size (gnome_font));
 
 	font->currentsize = gnome_font->size;
-	ps2->selectedfont = font;
+	ps2->selected_font = font;
 
 	g_return_val_if_fail (ret >= 0, ret);
 	

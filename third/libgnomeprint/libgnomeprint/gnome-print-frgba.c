@@ -19,12 +19,10 @@
  *  Authors:
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian Inc. and authors
- *
+ *  Copyright (C) 2000-2003 Ximian Inc.
  */
 
-#define __GNOME_PRINT_FRGBA_C__
-
+#include <config.h>
 #include <math.h>
 #include <string.h>
 
@@ -34,11 +32,11 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 
-#include "gnome-print-private.h"
-#include "gp-gc-private.h"
-#include "gnome-print-rbuf.h"
-#include "gnome-print-meta.h"
-#include "gnome-print-frgba.h"
+#include <libgnomeprint/gnome-print-private.h>
+#include <libgnomeprint/gp-gc-private.h>
+#include <libgnomeprint/gnome-print-rbuf.h>
+#include <libgnomeprint/gnome-print-meta.h>
+#include <libgnomeprint/gnome-print-frgba.h>
 
 #define GP_RENDER_DPI 72.0
 
@@ -364,6 +362,15 @@ gpf_close (GnomePrintContext * pc)
 }
 
 
+/**
+ * gnome_print_frgba_new:
+ * @context: 
+ * 
+ * Creates a new FRGBA wrapper context around
+ * an existing one (usable mostly for PostScript)
+ * 
+ * Return Value: the new context, NULL on error
+ **/
 GnomePrintContext *
 gnome_print_frgba_new (GnomePrintContext * context)
 {
@@ -374,7 +381,7 @@ gnome_print_frgba_new (GnomePrintContext * context)
 
 	frgba = g_object_new (GNOME_TYPE_PRINT_FRGBA, NULL);
 
-	frgba->meta = (GnomePrintContext *) gnome_print_meta_new_local ();
+	frgba->meta = (GnomePrintContext *) gnome_print_meta_new ();
 
 	frgba->ctx = context;
 	g_object_ref (G_OBJECT (context));
@@ -412,8 +419,10 @@ gpf_render_buf (GnomePrintFRGBA * frgba, ArtDRect * box)
 	w = (gint) width;
 	h = (gint) height;
 
-	if (width <= 0) return;
-	if (height <= 0) return;
+	if (width <= 0)
+		return;
+	if (height <= 0)
+		return;
 
 	pixels = g_new (guchar, w * h * 3);
 
@@ -424,11 +433,11 @@ gpf_render_buf (GnomePrintFRGBA * frgba, ArtDRect * box)
 	art_affine_multiply (page2buf, page2buf, a);
 
 	gpr = gnome_print_rbuf_new (pixels,
-			w,
-			h,
-			w * 3,
-			page2buf,
-			FALSE);
+				    w,
+				    h,
+				    w * 3,
+				    page2buf,
+				    FALSE);
 
 	gnome_print_meta_render_data (gpr,
 				      gnome_print_meta_get_buffer (GNOME_PRINT_META (frgba->meta)),

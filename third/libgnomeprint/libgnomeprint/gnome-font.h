@@ -34,18 +34,15 @@
 
 G_BEGIN_DECLS
 
-#define GNOME_TYPE_FONT (gnome_font_get_type ())
-#define GNOME_FONT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), GNOME_TYPE_FONT, GnomeFont))
+#define GNOME_TYPE_FONT    (gnome_font_get_type ())
+#define GNOME_FONT(obj)    (G_TYPE_CHECK_INSTANCE_CAST ((obj), GNOME_TYPE_FONT, GnomeFont))
 #define GNOME_IS_FONT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GNOME_TYPE_FONT))
 
-typedef struct _GnomeFont GnomeFont;
-typedef struct _GnomeFontFace GnomeFontFace;
-
-#include <glib.h>
-
-
-#define gnome_font_ref(f) g_object_ref (G_OBJECT (f))
+#define gnome_font_ref(f)   g_object_ref   (G_OBJECT (f))
 #define gnome_font_unref(f) g_object_unref (G_OBJECT (f))
+
+typedef struct _GnomeFont     GnomeFont;
+typedef struct _GnomeFontFace GnomeFontFace;
 
 
 /*
@@ -84,27 +81,24 @@ typedef enum {
 
 GType gnome_font_get_type (void);
 
-/* Naming */
-const guchar *gnome_font_get_name (const GnomeFont *font);
-const guchar *gnome_font_get_family_name (const GnomeFont *font);
-const guchar *gnome_font_get_species_name (const GnomeFont *font);
-const guchar *gnome_font_get_ps_name (const GnomeFont *font);
+const guchar   *gnome_font_get_name         (const GnomeFont *font);
+const guchar   *gnome_font_get_family_name  (const GnomeFont *font);
+const guchar   *gnome_font_get_species_name (const GnomeFont *font);
+const guchar   *gnome_font_get_ps_name      (const GnomeFont *font);
 
-/* Unicode -> glyph translation */
-gint gnome_font_lookup_default (GnomeFont *font, gint unicode);
+gdouble         gnome_font_get_size         (const GnomeFont *font);
+GnomeFontFace  *gnome_font_get_face         (const GnomeFont *font);
 
-/*
- * Metrics
- *
- * Note that GnomeFont metrics are given in typographic points
- */
 ArtPoint       *gnome_font_get_glyph_stdadvance (GnomeFont *font, gint glyph, ArtPoint *advance);
-ArtDRect       *gnome_font_get_glyph_stdbbox (GnomeFont *font, gint glyph, ArtDRect *bbox);
+ArtDRect       *gnome_font_get_glyph_stdbbox    (GnomeFont *font, gint glyph, ArtDRect *bbox);
 const ArtBpath *gnome_font_get_glyph_stdoutline (GnomeFont *font, gint glyph);
 ArtPoint       *gnome_font_get_glyph_stdkerning (GnomeFont *font, gint glyph0, gint glyph1, ArtPoint *kerning);
 
-GnomeFontFace  *gnome_font_get_face (const GnomeFont *font);
-gdouble         gnome_font_get_size (const GnomeFont *font);
+gdouble         gnome_font_get_glyph_width      (GnomeFont *font, gint glyph);
+gdouble         gnome_font_get_glyph_kerning    (GnomeFont *font, gint glyph1, gint glyph2);
+
+/* Unicode -> glyph translation */
+gint gnome_font_lookup_default (GnomeFont *font, gint unicode);
 
 /*
  * Backward compatibility and convenience methods
@@ -112,53 +106,42 @@ gdouble         gnome_font_get_size (const GnomeFont *font);
  * NB! Those usually do not scale for international fonts, so use with
  * caution.
  */
-
 #define gnome_font_get_weight_code(f) gnome_font_face_get_weight_code (gnome_font_get_face (f))
-#define gnome_font_is_italic(f) gnome_font_face_is_italic (gnome_font_get_face (f))
-#define gnome_font_is_fixed_width(f) gnome_font_face_is_fixed_width (gnome_font_get_face (f))
+#define gnome_font_is_italic(f)       gnome_font_face_is_italic       (gnome_font_get_face (f))
+#define gnome_font_is_fixed_width(f)  gnome_font_face_is_fixed_width  (gnome_font_get_face (f))
 
-gdouble gnome_font_get_ascender (GnomeFont *font);
-gdouble gnome_font_get_descender (GnomeFont *font);
-gdouble gnome_font_get_underline_position (GnomeFont *font);
-gdouble gnome_font_get_underline_thickness (GnomeFont *font);
-
-gdouble gnome_font_get_glyph_width (GnomeFont *font, gint glyph);
-gdouble gnome_font_get_glyph_kerning (GnomeFont *font, gint glyph1, gint glyph2);
-
-/*
- * Font fetching
- */
+guchar   *gnome_font_get_full_name           (GnomeFont *font);
+gdouble   gnome_font_get_ascender            (GnomeFont *font);
+gdouble   gnome_font_get_descender           (GnomeFont *font);
+gdouble   gnome_font_get_underline_position  (GnomeFont *font);
+gdouble   gnome_font_get_underline_thickness (GnomeFont *font);
 
 /* Find the closest face matching the family name, weight, and italic */
 /* This is not very intelligent, so use with caution (Lauris) */
+
+/* Font fetching */
+GnomeFont *gnome_font_find                           (const guchar *name, gdouble size);
+GnomeFont *gnome_font_find_closest                   (const guchar *name, gdouble size);
+GnomeFont *gnome_font_find_from_full_name            (const guchar *string);
+GnomeFont *gnome_font_find_closest_from_full_name    (const guchar *string);
 GnomeFont *gnome_font_find_closest_from_weight_slant (const guchar *family, GnomeFontWeight weight, gboolean italic, gdouble size);
-GnomeFont *gnome_font_find (const guchar *name, gdouble size);
-GnomeFont *gnome_font_find_closest (const guchar *name, gdouble size);
-GnomeFont *gnome_font_find_from_full_name (const guchar *string);
-GnomeFont *gnome_font_find_closest_from_full_name (const guchar *string);
 
-/*
- * Font browsing
- */
-
-/* List of font faces */
+/* Lists */
 GList  *gnome_font_list (void);
 void    gnome_font_list_free (GList *fontlist);
-/* List of font families */
+
 GList  *gnome_font_family_list (void);
 void    gnome_font_family_list_free (GList *fontlist);
-/* List of styles for given family */
+
 GList  *gnome_font_style_list (const guchar *family);
 void    gnome_font_style_list_free (GList *styles);
-/* Misc */
-guchar *gnome_font_get_full_name (GnomeFont *font);
+
 
 /*
  * These are somewhat tricky, as you cannot do arbitrarily transformed
  * fonts with Pango. So be cautious and try to figure out the best
  * solution.
  */
-
 PangoFont            *gnome_font_get_closest_pango_font (const GnomeFont *font, PangoFontMap *map, gdouble dpi);
 PangoFontDescription *gnome_font_get_pango_description (const GnomeFont *font, gdouble dpi);
 
@@ -169,7 +152,7 @@ PangoFontDescription *gnome_font_get_pango_description (const GnomeFont *font, g
  */
 /* Normal utf8 functions */
 /* These are still crap, as you cannot expect ANYTHING about layouting rules */
-double gnome_font_get_width_utf8 (GnomeFont *font, const char *s);
+double gnome_font_get_width_utf8       (GnomeFont *font, const char *s);
 double gnome_font_get_width_utf8_sized (GnomeFont *font, const char *s, int n);
 #endif
 

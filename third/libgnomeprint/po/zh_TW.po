@@ -1,197 +1,121 @@
 # traditional Chinese translation of libgnomeprint.
-# Copyright (C) 2001-2002 Free Software Foundation, Inc.
-# Abel Cheung <maddog@linux.org.hk>, 2001-2002.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
+# Abel Cheung <maddog@linux.org.hk>, 2001-2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprint 1.115.0\n"
-"POT-Creation-Date: 2002-12-27 21:30-0500\n"
-"PO-Revision-Date: 2002-06-04 05:56+0800\n"
+"Project-Id-Version: libgnomeprint 2.1.9\n"
+"POT-Creation-Date: 2003-01-20 22:11-0500\n"
+"PO-Revision-Date: 2003-01-17 21:42+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: installer/gnome-font-install.c:141
-msgid "Print out debugging information"
-msgstr "列印偵錯資訊"
-
-#: installer/gnome-font-install.c:143
-msgid "Tries to do everything automatically"
-msgstr "自動進行所有安裝程序"
-
-#: installer/gnome-font-install.c:145
-msgid "Search directories recursively for font files"
-msgstr "同時在所有預設目錄的副目錄中搜尋字型檔"
-
-#: installer/gnome-font-install.c:147
-msgid "Start from zero fontmap, instead of parsing old one"
-msgstr "重新開始建立 fontmap 檔，而不讀入舊的 fontmap 檔"
-
-#: installer/gnome-font-install.c:149
-msgid "Reverifies all font files, even for fontmaps of same version"
-msgstr "即使 fontmap 檔案的版本是最新版本，仍然重新檢驗其中的所有字型檔"
-
-#: installer/gnome-font-install.c:151
-msgid "Include font notice field (Copyright data) into fontmap"
-msgstr "將有關字型說明的欄位（版權資訊）寫入至 fontmap 檔案內"
-
-#: installer/gnome-font-install.c:153
-msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-msgstr "產生 $HOME/.gnome/fonts/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "Create "
-msgstr "產生 "
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "/gnome-print.fontmap"
-msgstr "/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:159
-msgid "Write output fontmap to specified file (- for stdout)"
-msgstr "將 fontmap 寫入至指定的檔案（ - 表示標準輸出）"
-
-#: installer/gnome-font-install.c:161
-msgid ""
-"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-"print installation)"
-msgstr ""
-"回傳 gnome-print 安裝時所用的 $FONTMAPDIR_STATIC 及 $FONTMAPDIR_DYNAMIC 變數"
-
-#: installer/gnome-font-install.c:164
-msgid "File describing known aliases"
-msgstr "含有已知的字型別名的檔案"
-
-#: installer/gnome-font-install.c:164 tests/testprint.c:71
-#: tests/testprint.c:73 tests/testprint.c:75
-msgid "PATH"
-msgstr "路徑"
-
-#: installer/gnome-font-install.c:167
-msgid "Specify default font(s) for any locale"
-msgstr "指定任何語系預設使用的字型"
-
-#: installer/gnome-font-install.c:167
-msgid "[LOCALE[,LOCALE]:fontname]"
-msgstr "[語系[,語系]:字型名稱]"
-
-#: libgnomeprint/gnome-font-face.c:446
+#: libgnomeprint/gnome-font-face.c:490
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Test if multibyte characters are supported: 中文支援"
 
-#. fixme: fill in all papers and units
-#. fixme: load papers from file
-#. fixme: use some fancy unit program
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
 #.
 #. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
 #.
-#: libgnomeprint/gnome-print-paper.c:44
+#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
 msgid "A4"
 msgstr "A4"
 
 #. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Unit"
 msgstr "單位"
 
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Units"
 msgstr "單位"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Point"
 msgstr "點"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pt"
 msgstr "點"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Points"
 msgstr "點"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pts"
 msgstr "點"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace unit"
-msgstr "自訂單位"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "User"
-msgstr "自訂"
-
-#: libgnomeprint/gnome-print-unit.c:35
-msgid "Userspace units"
-msgstr "自訂單位"
+msgstr "自選單位"
 
 #: libgnomeprint/gnome-print-unit.c:36
+msgid "User"
+msgstr "自選"
+
+#: libgnomeprint/gnome-print-unit.c:36
+msgid "Userspace units"
+msgstr "自選單位"
+
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixel"
 msgstr "像素"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Px"
 msgstr "Px"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixels"
 msgstr "像素"
 
 #. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percent"
 msgstr "百分比"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "%"
 msgstr "%"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percents"
 msgstr "百分比"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeter"
 msgstr "亳米"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "mm"
 msgstr "mm"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeters"
 msgstr "亳米"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeter"
 msgstr "厘米"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "cm"
 msgstr "cm"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeters"
 msgstr "厘米"
 
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meter"
-msgstr "米"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "m"
-msgstr "m"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meters"
-msgstr "米"
-
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "Inch"
-msgstr "寸"
+msgstr "英吋"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "in"
@@ -199,87 +123,290 @@ msgstr "in"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "Inches"
-msgstr "寸"
+msgstr "英吋"
 
-#: libgnomeprint/gpa/gpa-media.c:246
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr "1/3 A4"
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr "1/3 A5"
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr "1/4 A3"
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr "1/4 A4"
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr "1/8 A4"
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr ""
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr ""
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr "A0"
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr "A1"
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr "A10"
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr "A2"
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr "A3"
+
+#: data/globals.xml.in.h:14
+msgid "A5"
+msgstr "A5"
+
+#: data/globals.xml.in.h:15
+msgid "A6"
+msgstr "A6"
+
+#: data/globals.xml.in.h:16
+msgid "A7"
+msgstr "A7"
+
+#: data/globals.xml.in.h:17
+msgid "A8"
+msgstr "A8"
+
+#: data/globals.xml.in.h:18
+msgid "A9"
+msgstr "A9"
+
+#: data/globals.xml.in.h:19
+msgid "B0"
+msgstr "B0"
+
+#: data/globals.xml.in.h:20
+msgid "B1"
+msgstr "B1"
+
+#: data/globals.xml.in.h:21
+msgid "B10"
+msgstr "B10"
+
+#: data/globals.xml.in.h:22
+msgid "B2"
+msgstr "B2"
+
+#: data/globals.xml.in.h:23
+msgid "B3"
+msgstr "B3"
+
+#: data/globals.xml.in.h:24
+msgid "B4"
+msgstr "B4"
+
+#: data/globals.xml.in.h:25
+msgid "B5"
+msgstr "B5"
+
+#: data/globals.xml.in.h:26
+msgid "B6"
+msgstr "B6"
+
+#: data/globals.xml.in.h:27
+msgid "B7"
+msgstr "B7"
+
+#: data/globals.xml.in.h:28
+msgid "B8"
+msgstr "B8"
+
+#: data/globals.xml.in.h:29
+msgid "B9"
+msgstr "B9"
+
+#: data/globals.xml.in.h:30
+msgid "C0"
+msgstr "C0"
+
+#: data/globals.xml.in.h:31
+msgid "C1"
+msgstr "C1"
+
+#: data/globals.xml.in.h:32
+msgid "C10"
+msgstr "C10"
+
+#: data/globals.xml.in.h:33
+msgid "C2"
+msgstr "C2"
+
+#: data/globals.xml.in.h:34
+msgid "C3"
+msgstr "C3"
+
+#: data/globals.xml.in.h:35
+msgid "C4"
+msgstr "C4"
+
+#: data/globals.xml.in.h:36
+msgid "C5"
+msgstr "C5"
+
+#: data/globals.xml.in.h:37
+msgid "C6"
+msgstr "C6"
+
+#: data/globals.xml.in.h:38
+msgid "C6/C5 Envelope"
+msgstr "C6/C5 信封"
+
+#: data/globals.xml.in.h:39
+msgid "C7"
+msgstr "C7"
+
+#: data/globals.xml.in.h:40
+msgid "C8"
+msgstr "C8"
+
+#: data/globals.xml.in.h:41
+msgid "C9"
+msgstr "C9"
+
+#: data/globals.xml.in.h:42
 msgid "Custom"
-msgstr "自訂"
+msgstr "自選"
 
-#: libgnomeprint/gpa/gpa-media.c:268
-msgid "Straight"
-msgstr "原來方向"
+#: data/globals.xml.in.h:43
+msgid "DL Envelope"
+msgstr "DL 信封"
 
-#: libgnomeprint/gpa/gpa-media.c:275
-msgid "Rotated 90 degrees"
-msgstr "旋轉 90 度"
+#: data/globals.xml.in.h:44
+msgid "Divided"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:282
-msgid "Rotated 180 degrees"
-msgstr "旋轉 180 度"
+#: data/globals.xml.in.h:45
+msgid "Envelope 6x9"
+msgstr "6×9 英吋信封"
 
-#: libgnomeprint/gpa/gpa-media.c:289
-msgid "Rotated 270 degrees"
-msgstr "旋轉 270 度"
+#: data/globals.xml.in.h:46
+msgid "Envelope No10"
+msgstr "10 號信封"
 
-#: libgnomeprint/gpa/gpa-media.c:308
-msgid "Portrait"
-msgstr "直向"
+#: data/globals.xml.in.h:47
+msgid "Folded"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:315
+#: data/globals.xml.in.h:48
 msgid "Landscape"
 msgstr "橫向"
 
-#: libgnomeprint/gpa/gpa-media.c:322
-msgid "Upside down portrait"
-msgstr "上下倒置、直向"
+#: data/globals.xml.in.h:49
+msgid "Plain"
+msgstr "普通"
 
-#: libgnomeprint/gpa/gpa-media.c:329
+#: data/globals.xml.in.h:50
+msgid "Portrait"
+msgstr "縱向"
+
+#: data/globals.xml.in.h:51
+msgid "Rotated 180 degrees"
+msgstr "旋轉 180 度"
+
+#: data/globals.xml.in.h:52
+msgid "Rotated 270 degrees"
+msgstr "旋轉 270 度"
+
+#: data/globals.xml.in.h:53
+msgid "Rotated 90 degrees"
+msgstr "旋轉 90 度"
+
+#: data/globals.xml.in.h:54
+msgid "Straight"
+msgstr "原來方向"
+
+#: data/globals.xml.in.h:55
+msgid "US Executive"
+msgstr "US Executive"
+
+#: data/globals.xml.in.h:56
+msgid "US Legal"
+msgstr "US Legal"
+
+#: data/globals.xml.in.h:57
+msgid "US Letter"
+msgstr "US Letter"
+
+#: data/globals.xml.in.h:58
 msgid "Upside down landscape"
 msgstr "上下倒置、橫向"
 
-#: libgnomeprint/gpa/gpa-media.c:348
-msgid "Plain"
-msgstr "普通紙張"
+#: data/globals.xml.in.h:59
+msgid "Upside down portrait"
+msgstr "上下倒置、縱向"
 
-#: tests/testprint.c:69
-msgid "Print Paper database"
-msgstr "印出有關已知的紙張大小的資料"
+#: data/printers/GENERIC.xml.in.h:1
+msgid "Generic Postscript"
+msgstr "一般 Postscript"
 
-#: tests/testprint.c:70
-msgid "Describe GPA Tree"
-msgstr "印出樹狀結構的 GPA 設定"
+#: data/printers/PDF-WRITER.xml.in.h:1
+msgid "Create a PDF document"
+msgstr "製作 PDF 文件"
 
-#: tests/testprint.c:71
-msgid "Print text file"
-msgstr "列印文字檔"
+#~ msgid "Search directories recursively for font files"
+#~ msgstr "同時在所有預設目錄的副目錄中搜尋字型檔"
 
-#: tests/testprint.c:72
-msgid "Use GnomePrintMaster for printing"
-msgstr "使用 GnomePrintMaster 方式列印"
+#~ msgid "Start from zero fontmap, instead of parsing old one"
+#~ msgstr "重新開始建立 fontmap 檔，而不讀入舊的 fontmap 檔"
 
-#: tests/testprint.c:73
-msgid "Dump printout to metafile ('-' for stdout)"
-msgstr "將準備列印的資料輸出至 metafile（‘-’表示標準輸出）"
+#~ msgid "Reverifies all font files, even for fontmaps of same version"
+#~ msgstr "即使 fontmap 檔案的版本是最新版本，仍然重新檢驗其中的所有字型檔"
 
-#: tests/testprint.c:74
-msgid "Split job between bonobo"
-msgstr "列印 bonobo 示範頁"
+#~ msgid "Include font notice field (Copyright data) into fontmap"
+#~ msgstr "將有關字型說明的欄位（版權資訊）寫入至 fontmap 檔案內"
 
-#: tests/testprint.c:75
-msgid "Render from metafile"
-msgstr "將 metafile 轉換至印表機可理解的資料"
+#~ msgid "Write output fontmap to specified file (- for stdout)"
+#~ msgstr "將 fontmap 寫入至指定的檔案（ - 表示標準輸出）"
 
-#: tests/testprint.c:156
-msgid "Gnome-print test page, rotated"
-msgstr "Gnome-print 測試頁，已旋轉"
+#~ msgid ""
+#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+#~ "print installation)"
+#~ msgstr ""
+#~ "回傳 gnome-print 安裝時所用的 $FONTMAPDIR_STATIC 及 $FONTMAPDIR_DYNAMIC 變"
+#~ "數"
 
-#: tests/testprint.c:173
-msgid "Gnome-print test page, slanted"
-msgstr "Gnome-print 測試頁，斜體字"
+#~ msgid "File describing known aliases"
+#~ msgstr "含有已知的字型別名的檔案"
 
-#: tests/testprint.c:181
-msgid "Gnome-print test page, slanted. Small"
-msgstr "Gnome-print 測試頁，小型斜體字"
+#~ msgid "PATH"
+#~ msgstr "路徑"
+
+#~ msgid "Print Paper database"
+#~ msgstr "印出有關已知的紙張大小的資料"
+
+#~ msgid "Print text file"
+#~ msgstr "列印文字檔"
+
+#~ msgid "Dump printout to metafile ('-' for stdout)"
+#~ msgstr "將準備列印的資料輸出至 metafile（‘-’表示標準輸出）"
+
+#~ msgid "Split job between bonobo"
+#~ msgstr "列印 bonobo 示範頁"
+
+#~ msgid "Render from metafile"
+#~ msgstr "將 metafile 轉換至印表機可理解的資料"
 
 #~ msgid "Do not try to read existing fontmaps"
 #~ msgstr "不要讀入已存在的 fontmap"

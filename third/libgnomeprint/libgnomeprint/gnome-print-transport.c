@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  gnome-print-transport.c: abstract base class for transport providers
+ *  gnome-print-transport.c: Abstract base class for transport providers
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
@@ -19,24 +19,22 @@
  *  Authors:
  *    Raph Levien <raph@acm.org>
  *    Miguel de Icaza <miguel@kernel.org>
- *    Lauris Kaplinski <lauris@ximian.com>
+ *    Lauris Kaplinski <lauris@helixcode.com>
  *    Chema Celorio <chema@celorio.com>
  *
- *  Copyright (C) 1999-2001 Ximian, Inc. and authors
- *
+ *  Copyright 2000-2003 Ximian, Inc. and authors
  */
 
-#define __GNOME_PRINT_TRANSPORT_C__
-
+#include <config.h>
 #include <string.h>
 #include <locale.h>
+
 #include <gmodule.h>
-#include "gnome-print.h"
-#include "gnome-print-transport.h"
+#include <libgnomeprint/gnome-print.h>
+#include <libgnomeprint/gnome-print-transport.h>
 
 static void gnome_print_transport_class_init (GnomePrintTransportClass *klass);
 static void gnome_print_transport_init (GnomePrintTransport *transport);
-
 static void gnome_print_transport_finalize (GObject *object);
 
 static GnomePrintTransport *gnome_print_transport_create (gpointer get_type, GnomePrintConfig *config);
@@ -103,18 +101,19 @@ gnome_print_transport_finalize (GObject *object)
 gint
 gnome_print_transport_construct (GnomePrintTransport *transport, GnomePrintConfig *config)
 {
+	GnomePrintReturnCode retval = GNOME_PRINT_ERROR_UNKNOWN;
+	
 	g_return_val_if_fail (transport != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (GNOME_IS_PRINT_TRANSPORT (transport), GNOME_PRINT_ERROR_UNKNOWN);
 	g_return_val_if_fail (config != NULL, GNOME_PRINT_ERROR_UNKNOWN);
-
 	g_return_val_if_fail (transport->config == NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
 	transport->config = gnome_print_config_ref (config);
 
 	if (GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->construct)
-		GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->construct (transport);
+		retval = GNOME_PRINT_TRANSPORT_GET_CLASS (transport)->construct (transport);
 
-	return TRUE;
+	return retval;
 }
 
 gint
@@ -179,7 +178,7 @@ gint
 gnome_print_transport_printf (GnomePrintTransport *transport, const char *format, ...)
 {
 	va_list arguments;
-	const char *loc;
+	char *loc;
 	gchar *buf;
 	gint ret;
 
@@ -207,56 +206,83 @@ gnome_print_transport_printf (GnomePrintTransport *transport, const char *format
 	return ret;
 }
 
-GnomePrintTransport *
-gnome_print_transport_new (GnomePrintConfig *config)
+
+static GnomePrintTransport *
+gnome_print_transport_new_from_module_name (const gchar *module_name, GnomePrintConfig *config)
 {
+	static GHashTable *modules;
 	GnomePrintTransport *transport;
-	guchar *drivername;
-	guchar *modulename;
+	gpointer get_type;
+	GModule *module;
+	gchar *path = NULL;
+	gboolean insert = FALSE;
 
-	g_return_val_if_fail (config != NULL, NULL);
+	if (!modules)
+		modules = g_hash_table_new (g_str_hash, g_str_equal);
+	module = g_hash_table_lookup (modules, module_name);
 
-	drivername = gnome_print_config_get (config, "Settings.Transport.Backend");
-	if (!drivername) {
-		g_warning ("Settings do not specify transport driver");
+	if (!module) {
+		insert = TRUE;
+		path = g_module_build_path (GNOME_PRINT_MODULES_DIR "/transports", module_name);
+		module = g_module_open (path, G_MODULE_BIND_LAZY);
+	}
+
+	if (!module) {
+		insert = TRUE;
+		g_free (path);
+		path = g_module_build_path (GNOME_PRINT_MODULES_DIR, module_name);
+		module = g_module_open (path, G_MODULE_BIND_LAZY);
+	}
+	
+	if (!module) {
+		g_warning ("Could not open %s\n", path);
+		g_free (path);
 		return NULL;
 	}
 
-	transport = NULL;
+	if (insert)
+		g_hash_table_insert (modules, g_strdup (module_name), module);
 
-	modulename = gnome_print_config_get (config, "Settings.Transport.Backend.Module");
-	if (modulename) {
-		static GHashTable *modules = NULL;
-		GModule *module;
-		if (!modules) modules = g_hash_table_new (g_str_hash, g_str_equal);
-		module = g_hash_table_lookup (modules, modulename);
-		if (!module) {
-			gchar *path;
-			path = g_module_build_path (GNOME_PRINT_LIBDIR "/transports", modulename);
-			module = g_module_open (path, G_MODULE_BIND_LAZY);
-			if (module)
-				g_hash_table_insert (modules, g_strdup (modulename), module);
-			else
-				g_warning ("Could not find %s\n", path);
+	if (!g_module_symbol (module, "gnome_print__transport_get_type", &get_type)) {
+		g_warning ("Missing gnome_print__transport_get_type in %s\n", path);
+		g_module_close (module);
+		if (path)
 			g_free (path);
-		}
-		if (module) {
-			gpointer get_type;
-			if (g_module_symbol (module, "gnome_print__transport_get_type", &get_type)) {
-				transport = gnome_print_transport_create (get_type, config);
-			} else {
-				g_warning ("Missing gnome_print__transport_get_type in %s\n", modulename);
-				g_module_close (module);
-			}
-		} else {
-			g_warning ("Cannot open module: %s\n", modulename);
-		}
-		g_free (modulename);
-	} else {
-		g_warning ("Unknown transport driver: %s", modulename);
+		return NULL;
 	}
 
-	g_free (drivername);
+	transport = gnome_print_transport_create (get_type, config);
+	if (transport == NULL) {
+		g_warning ("Could not create transport in %s\n", path);
+		g_module_close (module);
+		if (path)
+			g_free (path);
+		return NULL;
+	}
+
+	if (path)
+		g_free (path);
+	
+	return transport;
+}
+
+GnomePrintTransport *
+gnome_print_transport_new (GnomePrintConfig *config)
+{
+	GnomePrintTransport *transport = NULL;
+	guchar *module_name;
+
+	g_return_val_if_fail (config != NULL, NULL);
+
+	module_name = gnome_print_config_get (config, "Settings.Transport.Backend.Module");
+	if (!module_name) {
+		g_warning ("Could not find \"Settings.Transport.Backend.Module\" using default");
+		module_name = g_strdup ("libgnomeprint-lpr.so");
+	}
+	
+	transport = gnome_print_transport_new_from_module_name (module_name, config);
+
+	g_free (module_name);
 
 	return transport;
 }
@@ -267,6 +293,7 @@ gnome_print_transport_create (gpointer get_type, GnomePrintConfig *config)
 	GnomePrintTransport *transport;
 	GType (* transport_get_type) (void);
 	GType type;
+	GnomePrintReturnCode retval;
 
 	transport_get_type = get_type;
 
@@ -274,8 +301,13 @@ gnome_print_transport_create (gpointer get_type, GnomePrintConfig *config)
 	g_return_val_if_fail (g_type_is_a (type, GNOME_TYPE_PRINT_TRANSPORT), NULL);
 
 	transport = g_object_new (type, NULL);
-	gnome_print_transport_construct (transport, config);
+	retval = gnome_print_transport_construct (transport, config);
+
+	if (retval != GNOME_PRINT_OK) {
+		g_warning ("Error while constructing transport inside transport_create");
+		g_object_unref (G_OBJECT (transport));
+		return NULL;
+	}
 
 	return transport;
 }
-

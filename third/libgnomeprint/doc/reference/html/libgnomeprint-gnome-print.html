@@ -124,7 +124,7 @@ NAME="LIBGNOMEPRINT-GNOME-PRINT"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3788"
+NAME="AEN3757"
 ></A
 ><H2
 >Name</H2
@@ -132,7 +132,7 @@ NAME="AEN3788"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3791"
+NAME="AEN3760"
 ></A
 ><H2
 >Synopsis</H2
@@ -478,41 +478,6 @@ HREF="libgnomeprint-gnome-print.html#GNOME-PRINT-SHOWPAGE"
 HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 >GnomePrintContext</A
 > *pc);
-gint        (<A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTPAGECALLBACK"
->*GnomePrintPageCallback</A
->)       (<A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
->GnomePrintContext</A
-> *ctx,
-                                             gpointer pagedata,
-                                             gpointer docdata);
-gint        <A
-HREF="libgnomeprint-gnome-print.html#GNOME-PRINT-PAGE-CALLBACK"
->gnome_print_page_callback</A
->       (<A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
->GnomePrintContext</A
-> *ctx,
-                                             <A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTPAGECALLBACK"
->GnomePrintPageCallback</A
-> callback,
-                                             const guchar *name,
-                                             gpointer pagedata,
-                                             gpointer docdata);
-gint        <A
-HREF="libgnomeprint-gnome-print.html#GNOME-PRINT-PAGE-CALLBACK-CLOSURE"
->gnome_print_page_callback_closure</A
->
-                                            (<A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
->GnomePrintContext</A
-> *ctx,
-                                             const guchar *name,
-                                             gpointer pagedata,
-                                             gpointer docdata,
-                                             GClosure *closure);
 gint        <A
 HREF="libgnomeprint-gnome-print.html#GNOME-PRINT-LINE-STROKED"
 >gnome_print_line_stroked</A
@@ -550,7 +515,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4005"
+NAME="AEN3955"
 ></A
 ><H2
 >Description</H2
@@ -560,14 +525,14 @@ NAME="AEN4005"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN4008"
+NAME="AEN3958"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4010"
+NAME="AEN3960"
 ></A
 ><H3
 ><A
@@ -578,14 +543,14 @@ NAME="GNOMEPRINTRETURNCODE"
 CLASS="PROGRAMLISTING"
 >typedef enum {
 	GNOME_PRINT_OK = 0,
-	GNOME_PRINT_ERROR_UNKNOWN = -1,
-	GNOME_PRINT_ERROR_BADVALUE = -2,
+	GNOME_PRINT_ERROR_UNKNOWN        = -1,
+	GNOME_PRINT_ERROR_BADVALUE       = -2,
 	GNOME_PRINT_ERROR_NOCURRENTPOINT = -3,
-	GNOME_PRINT_ERROR_NOCURRENTPATH = -4,
-	GNOME_PRINT_ERROR_TEXTCORRUPT = -5,
-	GNOME_PRINT_ERROR_BADCONTEXT = -6,
-	GNOME_PRINT_ERROR_NOPAGE = -7,
-	GNOME_PRINT_ERROR_NOMATCH = -8
+	GNOME_PRINT_ERROR_NOCURRENTPATH  = -4,
+	GNOME_PRINT_ERROR_TEXTCORRUPT    = -5,
+	GNOME_PRINT_ERROR_BADCONTEXT     = -6,
+	GNOME_PRINT_ERROR_NOPAGE         = -7,
+	GNOME_PRINT_ERROR_NOMATCH        = -8
 } GnomePrintReturnCode;</PRE
 ><P
 ></P
@@ -593,7 +558,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4015"
+NAME="AEN3965"
 ></A
 ><H3
 ><A
@@ -609,7 +574,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4020"
+NAME="AEN3970"
 ></A
 ><H3
 ><A
@@ -626,13 +591,14 @@ HREF="libgnomeprint-gnome-print-config.html#GNOMEPRINTCONFIG"
 >GnomePrintConfig</A
 > *config);</PRE
 ><P
->This method gives you new <A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
->GnomePrintContext</A
-> object, associated with given
-GnomePrinter. You should use the resulting object as 'black box', without
-assuming anything about it's type, as depending on situation appropriate
-wrapper context may be used instead of direct driver.</P
+>Create new printing context from config. You have to have set
+all the options/settings beforehand, as changing the config of
+an existing context has undefined results.</P
+><P
+>Also, if creating the context by hand, it completely ignores layout and
+orientation value. If you need those, use GnomePrintJob. The
+latter also can create output context for you, so in most cases
+you may want to ignore gnome_print_context_new at all.</P
 ><P
 ></P
 ><P
@@ -648,7 +614,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4031"><SPAN
+NAME="AEN3980"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -669,7 +635,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4036"><SPAN
+NAME="AEN3985"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -683,13 +649,7 @@ CLASS="EMPHASIS"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
-> The new <A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
->GnomePrintContext</A
-> or <TT
-CLASS="LITERAL"
->NULL</TT
->, if there is an error</P
+> The new GnomePrintContext or NULL on error</P
 ></TD
 ></TR
 ></TBODY
@@ -698,7 +658,7 @@ CLASS="LITERAL"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4043"
+NAME="AEN3990"
 ></A
 ><H3
 ><A
@@ -740,7 +700,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4054"><SPAN
+NAME="AEN4001"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -764,7 +724,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4060"><SPAN
+NAME="AEN4007"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -788,7 +748,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4066"
+NAME="AEN4013"
 ></A
 ><H3
 ><A
@@ -819,7 +779,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4075"><SPAN
+NAME="AEN4022"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -843,7 +803,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4081"><SPAN
+NAME="AEN4028"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -867,7 +827,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4087"
+NAME="AEN4034"
 ></A
 ><H3
 ><A
@@ -920,7 +880,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4102"><SPAN
+NAME="AEN4049"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -944,7 +904,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4108"><SPAN
+NAME="AEN4055"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -965,7 +925,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4113"><SPAN
+NAME="AEN4060"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -986,7 +946,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4118"><SPAN
+NAME="AEN4065"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1010,7 +970,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4124"
+NAME="AEN4071"
 ></A
 ><H3
 ><A
@@ -1064,7 +1024,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4140"><SPAN
+NAME="AEN4087"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1088,7 +1048,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4146"><SPAN
+NAME="AEN4093"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1109,7 +1069,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4151"><SPAN
+NAME="AEN4098"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1130,7 +1090,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4156"><SPAN
+NAME="AEN4103"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1154,7 +1114,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4162"
+NAME="AEN4109"
 ></A
 ><H3
 ><A
@@ -1233,7 +1193,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4186"><SPAN
+NAME="AEN4133"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1257,7 +1217,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4192"><SPAN
+NAME="AEN4139"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1278,7 +1238,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4197"><SPAN
+NAME="AEN4144"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1299,7 +1259,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4202"><SPAN
+NAME="AEN4149"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1320,7 +1280,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4207"><SPAN
+NAME="AEN4154"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1341,7 +1301,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4212"><SPAN
+NAME="AEN4159"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1362,7 +1322,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4217"><SPAN
+NAME="AEN4164"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1383,7 +1343,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4222"><SPAN
+NAME="AEN4169"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1407,7 +1367,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4228"
+NAME="AEN4175"
 ></A
 ><H3
 ><A
@@ -1440,7 +1400,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4238"><SPAN
+NAME="AEN4185"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1464,7 +1424,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4244"><SPAN
+NAME="AEN4191"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1488,7 +1448,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4250"
+NAME="AEN4197"
 ></A
 ><H3
 ><A
@@ -1525,7 +1485,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4261"><SPAN
+NAME="AEN4208"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1549,7 +1509,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4267"><SPAN
+NAME="AEN4214"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1573,7 +1533,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4273"
+NAME="AEN4220"
 ></A
 ><H3
 ><A
@@ -1619,7 +1579,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4287"><SPAN
+NAME="AEN4234"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1643,7 +1603,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4293"><SPAN
+NAME="AEN4240"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1664,7 +1624,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4299"><SPAN
+NAME="AEN4246"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1685,7 +1645,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4304"><SPAN
+NAME="AEN4251"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1709,7 +1669,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4310"
+NAME="AEN4257"
 ></A
 ><H3
 ><A
@@ -1755,7 +1715,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4324"><SPAN
+NAME="AEN4271"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1779,7 +1739,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4330"><SPAN
+NAME="AEN4277"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1800,7 +1760,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4336"><SPAN
+NAME="AEN4283"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1821,7 +1781,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4341"><SPAN
+NAME="AEN4288"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1845,7 +1805,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4347"
+NAME="AEN4294"
 ></A
 ><H3
 ><A
@@ -1878,7 +1838,7 @@ CLASS="PARAMETER"
 > with a radius <TT
 CLASS="PARAMETER"
 ><I
->r</I
+>radius</I
 ></TT
 > and from
 <TT
@@ -1912,7 +1872,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4368"><SPAN
+NAME="AEN4315"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1933,7 +1893,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4374"><SPAN
+NAME="AEN4321"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1954,7 +1914,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4379"><SPAN
+NAME="AEN4326"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1975,7 +1935,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4384"><SPAN
+NAME="AEN4331"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1988,7 +1948,7 @@ CLASS="PARAMETER"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
-></P
+> the radius of the arc</P
 ></TD
 ></TR
 ><TR
@@ -1996,7 +1956,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4389"><SPAN
+NAME="AEN4336"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2017,7 +1977,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4394"><SPAN
+NAME="AEN4341"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2038,7 +1998,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4399"><SPAN
+NAME="AEN4346"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2059,7 +2019,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4404"><SPAN
+NAME="AEN4351"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -2082,7 +2042,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4409"
+NAME="AEN4356"
 ></A
 ><H3
 ><A
@@ -2117,7 +2077,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4421"><SPAN
+NAME="AEN4368"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2141,7 +2101,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4427"><SPAN
+NAME="AEN4374"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2162,7 +2122,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4432"><SPAN
+NAME="AEN4379"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2183,7 +2143,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4437"><SPAN
+NAME="AEN4384"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2204,7 +2164,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4442"><SPAN
+NAME="AEN4389"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -2228,7 +2188,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4448"
+NAME="AEN4395"
 ></A
 ><H3
 ><A
@@ -2261,7 +2221,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4458"><SPAN
+NAME="AEN4405"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2285,7 +2245,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4464"><SPAN
+NAME="AEN4411"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2306,7 +2266,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4469"><SPAN
+NAME="AEN4416"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -2330,7 +2290,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4475"
+NAME="AEN4422"
 ></A
 ><H3
 ><A
@@ -2372,7 +2332,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4487"><SPAN
+NAME="AEN4434"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2396,7 +2356,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4493"><SPAN
+NAME="AEN4440"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2417,7 +2377,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4498"><SPAN
+NAME="AEN4445"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -2441,7 +2401,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4504"
+NAME="AEN4451"
 ></A
 ><H3
 ><A
@@ -2474,7 +2434,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4514"><SPAN
+NAME="AEN4461"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2498,7 +2458,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4520"><SPAN
+NAME="AEN4467"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2519,7 +2479,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4525"><SPAN
+NAME="AEN4472"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -2543,7 +2503,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4531"
+NAME="AEN4478"
 ></A
 ><H3
 ><A
@@ -2578,7 +2538,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4541"><SPAN
+NAME="AEN4488"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2602,7 +2562,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4547"><SPAN
+NAME="AEN4494"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2623,7 +2583,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4552"><SPAN
+NAME="AEN4499"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -2647,7 +2607,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4558"
+NAME="AEN4505"
 ></A
 ><H3
 ><A
@@ -2682,7 +2642,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4568"><SPAN
+NAME="AEN4515"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2706,7 +2666,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4574"><SPAN
+NAME="AEN4521"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2727,7 +2687,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4579"><SPAN
+NAME="AEN4526"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -2751,7 +2711,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4585"
+NAME="AEN4532"
 ></A
 ><H3
 ><A
@@ -2798,7 +2758,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4599"><SPAN
+NAME="AEN4546"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2822,7 +2782,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4605"><SPAN
+NAME="AEN4552"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2843,7 +2803,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4610"><SPAN
+NAME="AEN4557"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2864,7 +2824,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4615"><SPAN
+NAME="AEN4562"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2885,7 +2845,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4620"><SPAN
+NAME="AEN4567"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -2909,7 +2869,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4626"
+NAME="AEN4573"
 ></A
 ><H3
 ><A
@@ -2945,7 +2905,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4636"><SPAN
+NAME="AEN4583"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2969,7 +2929,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4642"><SPAN
+NAME="AEN4589"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -2993,7 +2953,7 @@ HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4648"><SPAN
+NAME="AEN4595"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3017,7 +2977,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4654"
+NAME="AEN4601"
 ></A
 ><H3
 ><A
@@ -3053,7 +3013,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4664"><SPAN
+NAME="AEN4611"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3077,7 +3037,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4670"><SPAN
+NAME="AEN4617"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3101,7 +3061,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4676"
+NAME="AEN4623"
 ></A
 ><H3
 ><A
@@ -3137,7 +3097,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4686"><SPAN
+NAME="AEN4633"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3161,7 +3121,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4692"><SPAN
+NAME="AEN4639"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3185,7 +3145,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4698"
+NAME="AEN4645"
 ></A
 ><H3
 ><A
@@ -3232,7 +3192,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4710"><SPAN
+NAME="AEN4657"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3256,7 +3216,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4716"><SPAN
+NAME="AEN4663"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3277,7 +3237,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4721"><SPAN
+NAME="AEN4668"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3301,7 +3261,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4727"
+NAME="AEN4674"
 ></A
 ><H3
 ><A
@@ -3333,7 +3293,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4738"><SPAN
+NAME="AEN4685"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3357,7 +3317,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4744"><SPAN
+NAME="AEN4691"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3378,7 +3338,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4749"><SPAN
+NAME="AEN4696"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3399,7 +3359,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4754"><SPAN
+NAME="AEN4701"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3423,7 +3383,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4760"
+NAME="AEN4707"
 ></A
 ><H3
 ><A
@@ -3454,7 +3414,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4770"><SPAN
+NAME="AEN4717"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3478,7 +3438,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4776"><SPAN
+NAME="AEN4723"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3499,7 +3459,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4781"><SPAN
+NAME="AEN4728"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3523,7 +3483,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4787"
+NAME="AEN4734"
 ></A
 ><H3
 ><A
@@ -3555,7 +3515,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4798"><SPAN
+NAME="AEN4745"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3579,7 +3539,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4804"><SPAN
+NAME="AEN4751"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3600,7 +3560,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4809"><SPAN
+NAME="AEN4756"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3621,7 +3581,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4814"><SPAN
+NAME="AEN4761"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3645,7 +3605,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4820"
+NAME="AEN4767"
 ></A
 ><H3
 ><A
@@ -3692,7 +3652,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4833"><SPAN
+NAME="AEN4780"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3716,7 +3676,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4839"><SPAN
+NAME="AEN4786"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3740,7 +3700,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4845"
+NAME="AEN4792"
 ></A
 ><H3
 ><A
@@ -3771,7 +3731,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4854"><SPAN
+NAME="AEN4801"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3795,7 +3755,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4860"><SPAN
+NAME="AEN4807"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3819,7 +3779,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4866"
+NAME="AEN4813"
 ></A
 ><H3
 ><A
@@ -3855,7 +3815,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4876"><SPAN
+NAME="AEN4823"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3879,7 +3839,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4882"><SPAN
+NAME="AEN4829"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3903,7 +3863,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4888"
+NAME="AEN4835"
 ></A
 ><H3
 ><A
@@ -3939,7 +3899,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4898"><SPAN
+NAME="AEN4845"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -3963,7 +3923,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4904"><SPAN
+NAME="AEN4851"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -3987,7 +3947,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4910"
+NAME="AEN4857"
 ></A
 ><H3
 ><A
@@ -4021,7 +3981,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4920"><SPAN
+NAME="AEN4867"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4045,7 +4005,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4926"><SPAN
+NAME="AEN4873"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -4069,7 +4029,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4932"
+NAME="AEN4879"
 ></A
 ><H3
 ><A
@@ -4104,7 +4064,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4943"><SPAN
+NAME="AEN4890"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4128,7 +4088,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4949"><SPAN
+NAME="AEN4896"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4149,7 +4109,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4954"><SPAN
+NAME="AEN4901"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -4173,7 +4133,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4960"
+NAME="AEN4907"
 ></A
 ><H3
 ><A
@@ -4209,7 +4169,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4972"><SPAN
+NAME="AEN4919"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4233,7 +4193,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4978"><SPAN
+NAME="AEN4925"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4254,7 +4214,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4983"><SPAN
+NAME="AEN4930"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4275,7 +4235,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN4988"><SPAN
+NAME="AEN4935"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -4299,7 +4259,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN4994"
+NAME="AEN4941"
 ></A
 ><H3
 ><A
@@ -4339,7 +4299,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5005"><SPAN
+NAME="AEN4952"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4363,7 +4323,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5011"><SPAN
+NAME="AEN4958"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4387,7 +4347,7 @@ HREF="libgnomeprint-gnome-glyphlist.html#GNOMEGLYPHLIST"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5017"><SPAN
+NAME="AEN4964"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -4411,7 +4371,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5023"
+NAME="AEN4970"
 ></A
 ><H3
 ><A
@@ -4448,7 +4408,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5036"><SPAN
+NAME="AEN4983"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4472,7 +4432,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5042"><SPAN
+NAME="AEN4989"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4493,7 +4453,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5047"><SPAN
+NAME="AEN4994"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4514,7 +4474,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5052"><SPAN
+NAME="AEN4999"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4535,7 +4495,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5057"><SPAN
+NAME="AEN5004"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4556,7 +4516,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5062"><SPAN
+NAME="AEN5009"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -4580,7 +4540,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5068"
+NAME="AEN5015"
 ></A
 ><H3
 ><A
@@ -4617,7 +4577,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5081"><SPAN
+NAME="AEN5028"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4641,7 +4601,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5087"><SPAN
+NAME="AEN5034"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4662,7 +4622,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5092"><SPAN
+NAME="AEN5039"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4683,7 +4643,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5097"><SPAN
+NAME="AEN5044"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4704,7 +4664,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5102"><SPAN
+NAME="AEN5049"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4725,7 +4685,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5107"><SPAN
+NAME="AEN5054"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -4749,7 +4709,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5113"
+NAME="AEN5060"
 ></A
 ><H3
 ><A
@@ -4787,7 +4747,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5126"><SPAN
+NAME="AEN5073"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4811,7 +4771,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5132"><SPAN
+NAME="AEN5079"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4832,7 +4792,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5137"><SPAN
+NAME="AEN5084"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4853,7 +4813,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5142"><SPAN
+NAME="AEN5089"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4874,7 +4834,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5147"><SPAN
+NAME="AEN5094"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4895,7 +4855,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5152"><SPAN
+NAME="AEN5099"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -4919,7 +4879,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5158"
+NAME="AEN5105"
 ></A
 ><H3
 ><A
@@ -4966,7 +4926,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5171"><SPAN
+NAME="AEN5118"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -4990,7 +4950,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5177"><SPAN
+NAME="AEN5124"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5003,7 +4963,7 @@ CLASS="PARAMETER"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
-> Name of the page</P
+> Name of the page, NULL if you just want to use the page number of the page</P
 ></TD
 ></TR
 ><TR
@@ -5011,7 +4971,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5182"><SPAN
+NAME="AEN5129"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -5035,7 +4995,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5188"
+NAME="AEN5135"
 ></A
 ><H3
 ><A
@@ -5075,7 +5035,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5200"><SPAN
+NAME="AEN5147"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5099,7 +5059,7 @@ HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5206"><SPAN
+NAME="AEN5153"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -5123,447 +5083,7 @@ code on failure.</P
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5212"
-></A
-><H3
-><A
-NAME="GNOMEPRINTPAGECALLBACK"
-></A
->GnomePrintPageCallback ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gint        (*GnomePrintPageCallback)       (<A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
->GnomePrintContext</A
-> *ctx,
-                                             gpointer pagedata,
-                                             gpointer docdata);</PRE
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5222"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->ctx</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5227"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->pagedata</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5232"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->docdata</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5237"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->&#13;</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN5242"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-PAGE-CALLBACK"
-></A
->gnome_print_page_callback ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gint        gnome_print_page_callback       (<A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
->GnomePrintContext</A
-> *ctx,
-                                             <A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTPAGECALLBACK"
->GnomePrintPageCallback</A
-> callback,
-                                             const guchar *name,
-                                             gpointer pagedata,
-                                             gpointer docdata);</PRE
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5254"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->ctx</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5259"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->callback</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5264"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->name</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5269"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->pagedata</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5274"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->docdata</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5279"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->&#13;</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN5284"
-></A
-><H3
-><A
-NAME="GNOME-PRINT-PAGE-CALLBACK-CLOSURE"
-></A
->gnome_print_page_callback_closure ()</H3
-><PRE
-CLASS="PROGRAMLISTING"
->gint        gnome_print_page_callback_closure
-                                            (<A
-HREF="libgnomeprint-gnome-print.html#GNOMEPRINTCONTEXT"
->GnomePrintContext</A
-> *ctx,
-                                             const guchar *name,
-                                             gpointer pagedata,
-                                             gpointer docdata,
-                                             GClosure *closure);</PRE
-><P
-></P
-><P
-></P
-><TABLE
-CLASS="variablelist"
-BORDER="0"
-CELLSPACING="0"
-CELLPADDING="4"
-><TBODY
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5296"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->ctx</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5301"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->name</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5306"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->pagedata</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5311"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->docdata</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5316"><SPAN
-STYLE="white-space: nowrap"
-><TT
-CLASS="PARAMETER"
-><I
->closure</I
-></TT
->&nbsp;:</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
-></P
-></TD
-></TR
-><TR
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><A
-NAME="AEN5321"><SPAN
-STYLE="white-space: nowrap"
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="EMPHASIS"
->Returns</I
-></SPAN
-> :</SPAN
-></TD
-><TD
-ALIGN="LEFT"
-VALIGN="TOP"
-><P
->&#13;</P
-></TD
-></TR
-></TBODY
-></TABLE
-></DIV
-><HR><DIV
-CLASS="REFSECT2"
-><A
-NAME="AEN5326"
+NAME="AEN5159"
 ></A
 ><H3
 ><A
@@ -5595,7 +5115,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5338"><SPAN
+NAME="AEN5171"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5616,7 +5136,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5343"><SPAN
+NAME="AEN5176"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5637,7 +5157,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5348"><SPAN
+NAME="AEN5181"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5658,7 +5178,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5353"><SPAN
+NAME="AEN5186"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5679,7 +5199,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5358"><SPAN
+NAME="AEN5191"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5700,7 +5220,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5363"><SPAN
+NAME="AEN5196"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -5723,7 +5243,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5368"
+NAME="AEN5201"
 ></A
 ><H3
 ><A
@@ -5755,7 +5275,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5380"><SPAN
+NAME="AEN5213"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5776,7 +5296,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5385"><SPAN
+NAME="AEN5218"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5797,7 +5317,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5390"><SPAN
+NAME="AEN5223"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5818,7 +5338,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5395"><SPAN
+NAME="AEN5228"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5839,7 +5359,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5400"><SPAN
+NAME="AEN5233"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5860,7 +5380,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5405"><SPAN
+NAME="AEN5238"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -5883,7 +5403,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5410"
+NAME="AEN5243"
 ></A
 ><H3
 ><A
@@ -5915,7 +5435,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5422"><SPAN
+NAME="AEN5255"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5936,7 +5456,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5427"><SPAN
+NAME="AEN5260"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5957,7 +5477,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5432"><SPAN
+NAME="AEN5265"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5978,7 +5498,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5437"><SPAN
+NAME="AEN5270"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -5999,7 +5519,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5442"><SPAN
+NAME="AEN5275"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -6020,7 +5540,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5447"><SPAN
+NAME="AEN5280"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"

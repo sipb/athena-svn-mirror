@@ -20,14 +20,13 @@
  *    Lauris Kaplinski <lauris@ariman.ee>
  *
  *  Copyrithg (C) 1999-2000 authors
- *
  */
 
-#define GP_PATH_C
-
+#include <config.h>
 #include <string.h>
+
 #include <libart_lgpl/art_misc.h>
-#include "gp-path.h"
+#include <libgnomeprint/gp-path.h>
 
 #define GP_PATH_LENSTEP 32
 

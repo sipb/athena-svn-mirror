@@ -22,42 +22,30 @@
  *    Morten Welinder <terra@diku.dk>
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 1999-2001 Ximian Inc. and authors
+ *  Copyright (C) 1999-2003 Ximian Inc. and authors
  */
 
-#define __GNOME_PRINT_META_C__
-
+#include <config.h>
 #include <math.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <fcntl.h>
 
 #include <libgnomeprint/gnome-glyphlist-private.h>
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/gnome-print-meta.h>
-#include <gnome-print-private.h>
-#include "gp-gc-private.h"
-
-#define noVERBOSE
+#include <libgnomeprint/gp-gc-private.h>
 
 struct _GnomePrintMeta {
 	GnomePrintContext pc;
 
-	guint flat : 1; /* Whether to flatten callbacks */
-
 	guchar *buf;
-
 	gint b_length;
 	gint b_size;
 
-	gint page; /* Start of current page */
+	gint page;    /* Start of current page */
 	gint pagenum; /* Number of current page, or -1 */
 };
 
+typedef struct _GnomePrintMetaClass GnomePrintMetaClass;
 struct _GnomePrintMetaClass {
 	GnomePrintContextClass parent_class;
 };
@@ -87,7 +75,6 @@ typedef enum {
 	GNOME_META_COLOR,
 	GNOME_META_LINE,
 	GNOME_META_DASH,
-	GNOME_META_CALLBACK
 } GnomeMetaType;
 
 typedef enum {
@@ -112,8 +99,6 @@ static int meta_fill (GnomePrintContext *pc, const ArtBpath *bpath, ArtWindRule 
 static int meta_stroke (GnomePrintContext *pc, const ArtBpath *bpath);
 static int meta_image (GnomePrintContext *pc, const gdouble *affine, const guchar *px, gint w, gint h, gint rowstride, gint ch);
 static int meta_glyphlist (GnomePrintContext *pc, const gdouble *affine, GnomeGlyphList *gl);
-static gint gnome_print_meta_callback (GnomePrintContext *ctx, const guchar *name,
-				       gpointer pagedata, gpointer docdata, GClosure *closure);
 static int meta_close (GnomePrintContext *pc);
 
 static void meta_color (GnomePrintContext *pc);
@@ -124,9 +109,7 @@ static void gpm_encode_string (GnomePrintContext *pc, const guchar *str);
 static void gpm_encode_int (GnomePrintContext *pc, gint32 value);
 static void gpm_encode_double (GnomePrintContext *pc, double d);
 static void gpm_encode_block (GnomePrintContext *pc, const guchar *data, gint size);
-#ifdef SMOKING_LOTS_OF_CRACK
-static void gpm_encode_pointer (GnomePrintContext *ctx, gpointer ptr);
-#endif
+
 static gboolean gpm_ensure_space (GnomePrintMeta *meta, int size);
 static void gpm_encode_bpath (GnomePrintContext *pc, const ArtBpath *bpath);
 static const char *gpm_decode_bpath (const char *data, ArtBpath **bpath);
@@ -182,16 +165,12 @@ gnome_print_meta_class_init (GnomePrintMetaClass *klass)
 	pc_class->image = meta_image;
 	pc_class->glyphlist = meta_glyphlist;
 
-	pc_class->page = gnome_print_meta_callback;
-
 	pc_class->close = meta_close;
 }
 
 static void
 gnome_print_meta_init (GnomePrintMeta *meta)
 {
-	meta->flat = TRUE;
-
 	meta->buf = g_new (guchar, BLOCKSIZE);
 	meta->b_length = 0;
 	meta->b_size = BLOCKSIZE;
@@ -234,7 +213,8 @@ meta_beginpage (GnomePrintContext *ctx, const guchar *name)
 
 	/* Encode beginpage */
 	gpm_encode_int (ctx, GNOME_META_BEGINPAGE);
-	if (!name) name = "";
+	if (!name)
+		name = "";
 	gpm_encode_string (ctx, name);
 
 	return GNOME_PRINT_OK;
@@ -346,8 +326,9 @@ meta_glyphlist (GnomePrintContext *pc, const gdouble *affine, GnomeGlyphList *gl
 	gint i;
 
 	gpm_encode_int (pc, GNOME_META_GLYPHLIST);
-	for (i = 0; i < 6; i++) gpm_encode_double (pc, affine[i]);
-
+	for (i = 0; i < 6; i++) {
+		gpm_encode_double (pc, affine[i]);
+	}
 	gpm_encode_int (pc, gl->g_length);
 	for (i = 0; i < gl->g_length; i++) {
 		gpm_encode_int (pc, gl->glyphs[i]);
@@ -373,47 +354,9 @@ meta_glyphlist (GnomePrintContext *pc, const gdouble *affine, GnomeGlyphList *gl
 			gpm_encode_double (pc, gnome_font_get_size (gl->rules[i].value.font));
 			gpm_encode_string (pc, gnome_font_get_name (gl->rules[i].value.font));
 			break;
-		case GGL_PUSHCP:
-		case GGL_POPCP:
 		default:
 			break;
 		}
-	}
-
-	return GNOME_PRINT_OK;
-}
-
-static gint gnome_print_meta_callback (GnomePrintContext *ctx,
-				       const guchar *name,
-				       gpointer pagedata,
-				       gpointer docdata,
-				       GClosure *closure)
-{
-	GnomePrintMeta *meta;
-
-	meta = GNOME_PRINT_META (ctx);
-
-	if (meta->flat) {
-		gint ret;
-		ret = gnome_print_beginpage (ctx, name);
-		g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
-
-		gnome_print_callback_closure_invoke (
-			ctx, pagedata, docdata, closure);
-
-		g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
-		ret = gnome_print_showpage (ctx);
-		g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
-	} else {
-		g_error ("Impossible to marshal a callback to a meta context!");
-#ifdef SMOKING_LOTS_OF_CRACK
-		/* This is unportable */
-		gpm_encode_int (ctx, GNOME_META_CALLBACK);
-		gpm_encode_pointer (ctx, callback);
-		gpm_encode_string (ctx, name);
-		gpm_encode_pointer (ctx, pagedata);
-		gpm_encode_pointer (ctx, docdata);
-#endif
 	}
 
 	return GNOME_PRINT_OK;
@@ -488,24 +431,20 @@ meta_dash (GnomePrintContext *pc)
  * metafile priting context.
  */
 
+/**
+ * gnome_print_meta_new:
+ * @void: 
+ * 
+ * Create a new metafile context
+ * 
+ * Return Value: 
+ **/
 GnomePrintContext *
 gnome_print_meta_new (void)
 {
 	GnomePrintMeta *meta;
 
 	meta = g_object_new (GNOME_TYPE_PRINT_META, NULL);
-
-	return (GnomePrintContext *) meta;
-}
-
-GnomePrintContext *
-gnome_print_meta_new_local (void)
-{
-	GnomePrintMeta *meta;
-
-	meta = g_object_new (GNOME_TYPE_PRINT_META, NULL);
-
-	meta->flat = FALSE;
 
 	return (GnomePrintContext *) meta;
 }
@@ -603,21 +542,6 @@ gpm_decode_string (const guchar *data, guchar **dest)
 	return data + len;
 }
 
-static const guchar *
-decode_block (const char *data, void *out, int len)
-{
-	memcpy (out, data, len);
-	return data+len;
-}
-
-/* Unportable */
-
-static const guchar *
-gpm_decode_pointer (const guchar *data, gpointer *ptr)
-{
-	return decode_block (data, ptr, sizeof (*ptr));
-}
-
 static gint
 gpm_render (GnomePrintContext *dest, const guchar *data, gint pos, gint len, gboolean pageops)
 {
@@ -634,13 +558,11 @@ gpm_render (GnomePrintContext *dest, const guchar *data, gint pos, gint len, gbo
 		ArtBpath *bpath;
 
 		data = decode_int (data, &opcode);
-#ifdef VERBOSE
-		g_print ("data %p end %p opcode %d\n", data, end, opcode);
-#endif
 		switch ((GnomeMetaType) opcode) {
 		case GNOME_META_BEGINPAGE:
 			data = gpm_decode_string (data, &cval);
-			if (pageops) gnome_print_beginpage (dest, cval);
+			if (pageops)
+				gnome_print_beginpage (dest, cval);
 			g_free (cval);
 			break;
 		case GNOME_META_SHOWPAGE:
@@ -743,13 +665,12 @@ gpm_render (GnomePrintContext *dest, const guchar *data, gint pos, gint len, gbo
 						data = decode_double (data, &dval);
 						data = gpm_decode_string (data, &name);
 						font = gnome_font_find (name, dval);
-						if (font == NULL) g_print ("Cannot find font: %s\n", name);
+						if (font == NULL)
+							g_warning ("Cannot find font: %s\n", name);
 						g_free (name);
 						gl->rules[i].value.font = font;
 						break;
 					}
-					case GGL_PUSHCP:
-					case GGL_POPCP:
 					default:
 						break;
 					}
@@ -758,17 +679,6 @@ gpm_render (GnomePrintContext *dest, const guchar *data, gint pos, gint len, gbo
 			gnome_print_glyphlist_transform (dest, affine, gl);
 			gnome_glyphlist_unref (gl);
 			break;
-		}
-		case GNOME_META_CALLBACK: {
-			GnomePrintPageCallback callback;
-			gpointer pagedata, docdata;
-			guchar *name;
-			data = gpm_decode_pointer (data, (gpointer *) &callback);
-			data = gpm_decode_string (data, &name);
-			data = gpm_decode_pointer (data, &pagedata);
-			data = gpm_decode_pointer (data, &docdata);
-			gnome_print_page_callback (dest, callback, name, pagedata, docdata);
-			g_free (name);
 		}
 		break;
 		case GNOME_META_COLOR: {
@@ -814,6 +724,16 @@ gpm_render (GnomePrintContext *dest, const guchar *data, gint pos, gint len, gbo
 	return GNOME_PRINT_OK;
 }
 
+/**
+ * gnome_print_meta_render_data:
+ * @ctx: 
+ * @data: 
+ * @length: 
+ * 
+ * Render stream to specified output context
+ * 
+ * Return Value: 
+ **/
 gint
 gnome_print_meta_render_data (GnomePrintContext *ctx, const guchar *data, gint length)
 {
@@ -832,7 +752,8 @@ gnome_print_meta_render_data (GnomePrintContext *ctx, const guchar *data, gint l
 		g_return_val_if_fail (!strncmp (data + pos, PAGE_SIGNATURE, PAGE_SIGNATURE_SIZE), GNOME_PRINT_ERROR_UNKNOWN);
 		gpm_decode_int_header (data + pos + PAGE_SIGNATURE_SIZE, &len);
 		pos += PAGE_HEADER_SIZE;
-		if (len == 0) len = length - pos;
+		if (len == 0)
+			len = length - pos;
 		gpm_render (ctx, data, pos, len, TRUE);
 		pos += len;
 	}
@@ -840,6 +761,18 @@ gnome_print_meta_render_data (GnomePrintContext *ctx, const guchar *data, gint l
 	return GNOME_PRINT_OK;
 }
 
+/**
+ * gnome_print_meta_render_data_page:
+ * @ctx: 
+ * @data: 
+ * @length: 
+ * @page: 
+ * @pageops: wether you want to send begingpage/showpage to output
+ * 
+ * Render page to specified output context
+ * 
+ * Return Value: 
+ **/
 gint
 gnome_print_meta_render_data_page (GnomePrintContext *ctx, const guchar *data, gint length, gint page, gboolean pageops)
 {
@@ -859,7 +792,8 @@ gnome_print_meta_render_data_page (GnomePrintContext *ctx, const guchar *data, g
 		g_return_val_if_fail (!strncmp (data + pos, PAGE_SIGNATURE, PAGE_SIGNATURE_SIZE), GNOME_PRINT_ERROR_UNKNOWN);
 		gpm_decode_int_header (data + pos + PAGE_SIGNATURE_SIZE, &len);
 		pos += PAGE_HEADER_SIZE;
-		if (len == 0) len = length - pos;
+		if (len == 0)
+			len = length - pos;
 		if (pagenum == page) {
 			return gpm_render (ctx, data, pos, len, pageops);
 		}
@@ -870,72 +804,66 @@ gnome_print_meta_render_data_page (GnomePrintContext *ctx, const guchar *data, g
 	return GNOME_PRINT_ERROR_UNKNOWN;
 }
 
+/**
+ * gnome_print_meta_render_file:
+ * @ctx: 
+ * @filename: 
+ * 
+ * See gnome_print_meta_render_data
+ * 
+ * Return Value: 
+ **/
 gint
 gnome_print_meta_render_file (GnomePrintContext *ctx, const guchar *filename)
 {
-	struct stat s;
-	guchar *buf;
-	gint fh, ret;
+	GnomePrintReturnCode retval;
+	GnomePrintBuffer b;
 
 	g_return_val_if_fail (ctx != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (ctx), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (filename != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
-	fh = open (filename, O_RDONLY);
-	if (fh < 0) {
-		g_warning ("file %s: line %d: Cannot open file %s", __FILE__, __LINE__, filename);
-		return GNOME_PRINT_ERROR_UNKNOWN;
-	}
-	if (fstat (fh, &s) != 0) {
-		g_warning ("file %s: line %d: Cannot stat file %s", __FILE__, __LINE__, filename);
-		return GNOME_PRINT_ERROR_UNKNOWN;
-	}
-	buf = mmap (NULL, s.st_size, PROT_READ, MAP_SHARED, fh, 0);
-	close (fh);
-	if ((buf == NULL) || (buf == (void *) -1)) {
-		g_warning ("file %s: line %d: Cannot mmap file %s", __FILE__, __LINE__, filename);
-		return GNOME_PRINT_ERROR_UNKNOWN;
-	}
+	retval = gnome_print_buffer_mmap (&b, filename);
+	if (retval != GNOME_PRINT_OK)
+		return retval;
+	
+	retval = gnome_print_meta_render_data (ctx, b.buf, b.buf_size);
 
-	ret = gnome_print_meta_render_data (ctx, buf, s.st_size);
+	gnome_print_buffer_munmap (&b);
 
-	munmap (buf, s.st_size);
-
-	return ret;
+	return retval;
 }
 
+/**
+ * gnome_print_meta_render_file_page:
+ * @ctx: 
+ * @filename: 
+ * @page: 
+ * @pageops: 
+ * 
+ * See gnome_print_meta_render_data_page
+ * 
+ * Return Value: 
+ **/
 gint
 gnome_print_meta_render_file_page (GnomePrintContext *ctx, const guchar *filename, gint page, gboolean pageops)
 {
-	struct stat s;
-	guchar *buf;
-	gint fh, ret;
+	GnomePrintReturnCode retval;
+	GnomePrintBuffer b;
 
 	g_return_val_if_fail (ctx != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (ctx), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (filename != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
-	fh = open (filename, O_RDONLY);
-	if (fh < 0) {
-		g_warning ("file %s: line %d: Cannot open file %s", __FILE__, __LINE__, filename);
-		return GNOME_PRINT_ERROR_UNKNOWN;
-	}
-	if (fstat (fh, &s) != 0) {
-		g_warning ("file %s: line %d: Cannot stat file %s", __FILE__, __LINE__, filename);
-		return GNOME_PRINT_ERROR_UNKNOWN;
-	}
-	buf = mmap (NULL, s.st_size, PROT_READ, MAP_SHARED, fh, 0);
-	close (fh);
-	if ((buf == NULL) || (buf == (void *) -1)) {
-		g_warning ("file %s: line %d: Cannot mmap file %s", __FILE__, __LINE__, filename);
-		return GNOME_PRINT_ERROR_UNKNOWN;
-	}
+	retval = gnome_print_buffer_mmap (&b, filename);
+	if (retval != GNOME_PRINT_OK)
+		return retval;
+	
+	retval = gnome_print_meta_render_data_page (ctx, b.buf, b.buf_size, page, pageops);
 
-	ret = gnome_print_meta_render_data_page (ctx, buf, s.st_size, page, pageops);
+	gnome_print_buffer_munmap (&b);
 
-	munmap (buf, s.st_size);
-
-	return ret;
+	return retval;
 }
 
 static void
@@ -1042,16 +970,6 @@ gpm_encode_block (GnomePrintContext *pc, const guchar *data, gint size)
 	memcpy (meta->buf + meta->b_length, data, size);
 	meta->b_length += size;
 }
-
-#ifdef SMOKING_LOTS_OF_CRACK
-/* Unportable */
-
-static void
-gpm_encode_pointer (GnomePrintContext *ctx, gpointer ptr)
-{
-	gpm_encode_block (ctx, ptr, sizeof (ptr));
-}
-#endif
 
 static gboolean
 gpm_ensure_space (GnomePrintMeta *meta, int size)

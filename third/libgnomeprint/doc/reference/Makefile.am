@@ -9,7 +9,7 @@ DOC_MAIN_SGML_FILE=$(DOC_MODULE)-docs.sgml
 # The directory containing the source code. Relative to $(srcdir).
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting functions and macros.
-DOC_SOURCE_DIR=../../libgnomeprint
+DOC_SOURCE_DIR=$(top_builddir)/libgnomeprint
 
 # Extra options to supply to gtkdoc-scan.
 SCAN_OPTIONS=--deprecated-guards="GNOME_DISABLE_DEPRECATED"
@@ -50,7 +50,7 @@ IGNORE_HFILES=				\
 	gp-gc-private.h			\
 	\
 	gnome-print-private.h		\
-	gnome-print-master-private.h	\
+	gnome-print-job-private.h	\
 	gnome-print-rbuf-private.h	\
 	gnome-glyphlist-private.h	\
 	gnome-pgl-private.h			\
@@ -62,15 +62,18 @@ IGNORE_HFILES=				\
 HTML_IMAGES =
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
-content_files =
+content_files = \
+	building.sgml \
+	compiling.sgml \
+	resources.sgml
 
 # Other files to distribute.
 extra_files =
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.
-GTKDOC_CFLAGS = -I$(top_builddir) -I$(top_srcdir) $(LIBGNOMEUI_CFLAGS) $(CFLAGS)
-GTKDOC_LIBS = $(top_builddir)/libgnomeui/libgnomeui-2.la $(LDFLAGS)
+GTKDOC_CFLAGS = -I$(top_builddir) -I$(top_srcdir) $(LIBGNOMEPRINT_CFLAGS) $(CFLAGS)
+GTKDOC_LIBS = $(top_builddir)/libgnomeprint/libgnomeprint-2.la $(LDFLAGS)
 
 GTKDOC_CC=$(LIBTOOL) --mode=compile $(CC)
 GTKDOC_LD=$(LIBTOOL) --mode=link $(CC)

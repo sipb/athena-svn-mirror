@@ -32,8 +32,10 @@ gnome-rfont
 </para>
 
 @font: 
-@transform: 
+@t: 
 @Returns: 
+<!-- # Unused Parameters # -->
+@transform: 
 
 
 <!-- ##### MACRO gnome_rfont_ref ##### -->

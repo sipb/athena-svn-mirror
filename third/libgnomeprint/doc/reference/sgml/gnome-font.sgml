@@ -220,17 +220,17 @@ void        <link linkend="gnome-font-style-list-free">gnome_font_style_list_fre
 <programlisting><link linkend="gint">gint</link>        gnome_font_lookup_default       (<link linkend="GnomeFont">GnomeFont</link> *font,
                                              <link linkend="gint">gint</link> unicode);</programlisting>
 <para>
+Get the glyph number corresponding to a given unicode</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>unicode</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> glyph number, -1 if it is not mapped
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

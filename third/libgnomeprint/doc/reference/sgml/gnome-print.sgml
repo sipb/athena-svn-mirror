@@ -110,20 +110,6 @@ struct      <link linkend="GnomePrintContext">GnomePrintContext</link>;
 <link linkend="gint">gint</link>        <link linkend="gnome-print-beginpage">gnome_print_beginpage</link>           (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
                                              const <link linkend="guchar">guchar</link> *name);
 <link linkend="gint">gint</link>        <link linkend="gnome-print-showpage">gnome_print_showpage</link>            (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);
-<link linkend="gint">gint</link>        (<link linkend="GnomePrintPageCallback">*GnomePrintPageCallback</link>)       (<link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
-                                             <link linkend="gpointer">gpointer</link> pagedata,
-                                             <link linkend="gpointer">gpointer</link> docdata);
-<link linkend="gint">gint</link>        <link linkend="gnome-print-page-callback">gnome_print_page_callback</link>       (<link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
-                                             <link linkend="GnomePrintPageCallback">GnomePrintPageCallback</link> callback,
-                                             const <link linkend="guchar">guchar</link> *name,
-                                             <link linkend="gpointer">gpointer</link> pagedata,
-                                             <link linkend="gpointer">gpointer</link> docdata);
-<link linkend="gint">gint</link>        <link linkend="gnome-print-page-callback-closure">gnome_print_page_callback_closure</link>
-                                            (<link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
-                                             const <link linkend="guchar">guchar</link> *name,
-                                             <link linkend="gpointer">gpointer</link> pagedata,
-                                             <link linkend="gpointer">gpointer</link> docdata,
-                                             <link linkend="GClosure">GClosure</link> *closure);
 <link linkend="gint">gint</link>        <link linkend="gnome-print-line-stroked">gnome_print_line_stroked</link>        (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
                                              <link linkend="gdouble">gdouble</link> x0,
                                              <link linkend="gdouble">gdouble</link> y0,
@@ -162,14 +148,14 @@ struct      <link linkend="GnomePrintContext">GnomePrintContext</link>;
 <title><anchor id="GnomePrintReturnCode">enum GnomePrintReturnCode</title>
 <programlisting>typedef enum {
 	GNOME_PRINT_OK = 0,
-	GNOME_PRINT_ERROR_UNKNOWN = -1,
-	GNOME_PRINT_ERROR_BADVALUE = -2,
+	GNOME_PRINT_ERROR_UNKNOWN        = -1,
+	GNOME_PRINT_ERROR_BADVALUE       = -2,
 	GNOME_PRINT_ERROR_NOCURRENTPOINT = -3,
-	GNOME_PRINT_ERROR_NOCURRENTPATH = -4,
-	GNOME_PRINT_ERROR_TEXTCORRUPT = -5,
-	GNOME_PRINT_ERROR_BADCONTEXT = -6,
-	GNOME_PRINT_ERROR_NOPAGE = -7,
-	GNOME_PRINT_ERROR_NOMATCH = -8
+	GNOME_PRINT_ERROR_NOCURRENTPATH  = -4,
+	GNOME_PRINT_ERROR_TEXTCORRUPT    = -5,
+	GNOME_PRINT_ERROR_BADCONTEXT     = -6,
+	GNOME_PRINT_ERROR_NOPAGE         = -7,
+	GNOME_PRINT_ERROR_NOMATCH        = -8
 } GnomePrintReturnCode;
 </programlisting>
 <para>
@@ -185,17 +171,22 @@ struct      <link linkend="GnomePrintContext">GnomePrintContext</link>;
 <title><anchor id="gnome-print-context-new">gnome_print_context_new ()</title>
 <programlisting><link linkend="GnomePrintContext">GnomePrintContext</link>* gnome_print_context_new  (<link linkend="GnomePrintConfig">GnomePrintConfig</link> *config);</programlisting>
 <para>
-This method gives you new <link linkend="GnomePrintContext">GnomePrintContext</link> object, associated with given
-<link linkend="GnomePrinter">GnomePrinter</link>. You should use the resulting object as 'black box', without
-assuming anything about it's type, as depending on situation appropriate
-wrapper context may be used instead of direct driver.</para>
+Create new printing context from config. You have to have set
+all the options/settings beforehand, as changing the config of
+an existing context has undefined results.
+</para>
+<para>
+Also, if creating the context by hand, it completely ignores layout and
+orientation value. If you need those, use GnomePrintJob. The
+latter also can create output context for you, so in most cases
+you may want to ignore gnome_print_context_new at all.</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>config</parameter>&nbsp;:</term>
 <listitem><simpara> GnomePrintConfig object to query print settings from
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new <link linkend="GnomePrintContext">GnomePrintContext</link> or <literal>NULL</literal>, if there is an error
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new GnomePrintContext or NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -425,7 +416,7 @@ code on failure.
                                              <link linkend="gdouble">gdouble</link> angle2,
                                              <link linkend="gint">gint</link> direction);</programlisting>
 <para>
-Adds an arc with control points <parameter>x</parameter> and <parameter>y</parameter> with a radius <parameter>r</parameter> and from
+Adds an arc with control points <parameter>x</parameter> and <parameter>y</parameter> with a radius <parameter>radius</parameter> and from
 <parameter>angle1</parameter> to <parameter>andgle2</parameter> in degrees. <parameter>direction</parameter> 1 is clockwise 0 counterclockwise</para>
 <para>
 
@@ -440,7 +431,7 @@ Adds an arc with control points <parameter>x</parameter> and <parameter>y</param
 <listitem><simpara> Y position of control point in user coordinates
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>radius</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> the radius of the arc
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>angle1</parameter>&nbsp;:</term>
 <listitem><simpara> start angle in degrees
@@ -1074,7 +1065,7 @@ so one has to define these again at the beginning of each page.</para>
 <listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><simpara> Name of the page
+<listitem><simpara> Name of the page, NULL if you just want to use the page number of the page
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
@@ -1098,89 +1089,6 @@ any output produced.</para>
 </simpara></listitem></varlistentry>
 <varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="GnomePrintPageCallback">GnomePrintPageCallback ()</title>
-<programlisting><link linkend="gint">gint</link>        (*GnomePrintPageCallback)       (<link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
-                                             <link linkend="gpointer">gpointer</link> pagedata,
-                                             <link linkend="gpointer">gpointer</link> docdata);</programlisting>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>pagedata</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>docdata</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="gnome-print-page-callback">gnome_print_page_callback ()</title>
-<programlisting><link linkend="gint">gint</link>        gnome_print_page_callback       (<link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
-                                             <link linkend="GnomePrintPageCallback">GnomePrintPageCallback</link> callback,
-                                             const <link linkend="guchar">guchar</link> *name,
-                                             <link linkend="gpointer">gpointer</link> pagedata,
-                                             <link linkend="gpointer">gpointer</link> docdata);</programlisting>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>pagedata</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>docdata</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
-<refsect2>
-<title><anchor id="gnome-print-page-callback-closure">gnome_print_page_callback_closure ()</title>
-<programlisting><link linkend="gint">gint</link>        gnome_print_page_callback_closure
-                                            (<link linkend="GnomePrintContext">GnomePrintContext</link> *ctx,
-                                             const <link linkend="guchar">guchar</link> *name,
-                                             <link linkend="gpointer">gpointer</link> pagedata,
-                                             <link linkend="gpointer">gpointer</link> docdata,
-                                             <link linkend="GClosure">GClosure</link> *closure);</programlisting>
-<para>
-
-</para><variablelist role="params">
-<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>pagedata</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>docdata</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>closure</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

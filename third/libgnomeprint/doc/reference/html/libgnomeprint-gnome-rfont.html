@@ -110,7 +110,7 @@ NAME="LIBGNOMEPRINT-GNOME-RFONT"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN5695"
+NAME="AEN5532"
 ></A
 ><H2
 >Name</H2
@@ -118,7 +118,7 @@ NAME="AEN5695"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN5698"
+NAME="AEN5535"
 ></A
 ><H2
 >Synopsis</H2
@@ -144,7 +144,7 @@ HREF="libgnomeprint-gnome-rfont.html#GNOME-FONT-GET-RFONT"
 HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
 >GnomeFont</A
 > *font,
-                                             const gdouble *transform);
+                                             const gdouble *t);
 #define     <A
 HREF="libgnomeprint-gnome-rfont.html#GNOME-RFONT-REF"
 >gnome_rfont_ref</A
@@ -260,7 +260,7 @@ HREF="libgnomeprint-gnome-rfont.html#GNOMERFONT"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5753"
+NAME="AEN5590"
 ></A
 ><H2
 >Description</H2
@@ -270,14 +270,14 @@ NAME="AEN5753"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5756"
+NAME="AEN5593"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5758"
+NAME="AEN5595"
 ></A
 ><H3
 ><A
@@ -293,7 +293,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5763"
+NAME="AEN5600"
 ></A
 ><H3
 ><A
@@ -309,7 +309,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5768"
+NAME="AEN5605"
 ></A
 ><H3
 ><A
@@ -325,7 +325,17 @@ HREF="libgnomeprint-gnome-rfont.html#GNOMERFONT"
 HREF="libgnomeprint-gnome-font.html#GNOMEFONT"
 >GnomeFont</A
 > *font,
-                                             const gdouble *transform);</PRE
+                                             const gdouble *t);</PRE
+><P
+>Creates a new RFont from <TT
+CLASS="PARAMETER"
+><I
+>font</I
+></TT
+> and font-&#62;raster affine matrix
+Matrix can be 2x2, although if read, all 2x3 values are
+retrieved. RFont is referenced, so you have to unref it
+somewhere</P
 ><P
 ></P
 ><P
@@ -341,7 +351,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5777"><SPAN
+NAME="AEN5616"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -354,7 +364,7 @@ CLASS="PARAMETER"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
-></P
+> </P
 ></TD
 ></TR
 ><TR
@@ -362,12 +372,12 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5782"><SPAN
+NAME="AEN5621"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
 ><I
->transform</I
+>t</I
 ></TT
 >&nbsp;:</SPAN
 ></TD
@@ -375,7 +385,7 @@ CLASS="PARAMETER"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
-></P
+> </P
 ></TD
 ></TR
 ><TR
@@ -383,7 +393,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5787"><SPAN
+NAME="AEN5626"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -397,7 +407,7 @@ CLASS="EMPHASIS"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><P
->&#13;</P
+> the font created, NULL on error.</P
 ></TD
 ></TR
 ></TBODY
@@ -406,7 +416,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5792"
+NAME="AEN5631"
 ></A
 ><H3
 ><A
@@ -431,7 +441,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5798"><SPAN
+NAME="AEN5637"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -453,7 +463,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5803"
+NAME="AEN5642"
 ></A
 ><H3
 ><A
@@ -478,7 +488,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5809"><SPAN
+NAME="AEN5648"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -500,7 +510,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5814"
+NAME="AEN5653"
 ></A
 ><H3
 ><A
@@ -516,7 +526,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5819"
+NAME="AEN5658"
 ></A
 ><H3
 ><A
@@ -532,7 +542,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5824"
+NAME="AEN5663"
 ></A
 ><H3
 ><A
@@ -548,7 +558,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5829"
+NAME="AEN5668"
 ></A
 ><H3
 ><A
@@ -579,7 +589,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5837"><SPAN
+NAME="AEN5676"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -600,7 +610,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5842"><SPAN
+NAME="AEN5681"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -623,7 +633,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5847"
+NAME="AEN5686"
 ></A
 ><H3
 ><A
@@ -654,7 +664,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5855"><SPAN
+NAME="AEN5694"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -675,7 +685,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5860"><SPAN
+NAME="AEN5699"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -698,7 +708,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5865"
+NAME="AEN5704"
 ></A
 ><H3
 ><A
@@ -727,7 +737,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5874"><SPAN
+NAME="AEN5713"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -748,7 +758,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5879"><SPAN
+NAME="AEN5718"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -769,7 +779,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5884"><SPAN
+NAME="AEN5723"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -792,7 +802,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5889"
+NAME="AEN5728"
 ></A
 ><H3
 ><A
@@ -823,7 +833,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5899"><SPAN
+NAME="AEN5738"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -844,7 +854,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5904"><SPAN
+NAME="AEN5743"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -865,7 +875,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5909"><SPAN
+NAME="AEN5748"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -886,7 +896,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5914"><SPAN
+NAME="AEN5753"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -909,7 +919,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5919"
+NAME="AEN5758"
 ></A
 ><H3
 ><A
@@ -939,7 +949,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5929"><SPAN
+NAME="AEN5768"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -960,7 +970,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5934"><SPAN
+NAME="AEN5773"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -981,7 +991,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5939"><SPAN
+NAME="AEN5778"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1002,7 +1012,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5944"><SPAN
+NAME="AEN5783"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1025,7 +1035,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5949"
+NAME="AEN5788"
 ></A
 ><H3
 ><A
@@ -1057,7 +1067,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5960"><SPAN
+NAME="AEN5799"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1078,7 +1088,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5965"><SPAN
+NAME="AEN5804"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1099,7 +1109,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5970"><SPAN
+NAME="AEN5809"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1120,7 +1130,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5975"><SPAN
+NAME="AEN5814"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1141,7 +1151,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5980"><SPAN
+NAME="AEN5819"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1164,7 +1174,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5985"
+NAME="AEN5824"
 ></A
 ><H3
 ><A
@@ -1193,7 +1203,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5994"><SPAN
+NAME="AEN5833"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1214,7 +1224,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN5999"><SPAN
+NAME="AEN5838"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1235,7 +1245,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6004"><SPAN
+NAME="AEN5843"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1258,7 +1268,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6009"
+NAME="AEN5848"
 ></A
 ><H3
 ><A
@@ -1287,7 +1297,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6018"><SPAN
+NAME="AEN5857"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1308,7 +1318,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6023"><SPAN
+NAME="AEN5862"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1329,7 +1339,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6028"><SPAN
+NAME="AEN5867"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1352,7 +1362,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6033"
+NAME="AEN5872"
 ></A
 ><H3
 ><A
@@ -1382,7 +1392,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6042"><SPAN
+NAME="AEN5881"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1403,7 +1413,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6047"><SPAN
+NAME="AEN5886"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1424,7 +1434,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6052"><SPAN
+NAME="AEN5891"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -1447,7 +1457,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN6057"
+NAME="AEN5896"
 ></A
 ><H3
 ><A
@@ -1476,7 +1486,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6065"><SPAN
+NAME="AEN5904"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -1497,7 +1507,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN6070"><SPAN
+NAME="AEN5909"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"

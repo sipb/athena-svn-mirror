@@ -275,14 +275,14 @@ const <link linkend="guchar">guchar</link>* <link linkend="gnome-font-face-get-g
 <title><anchor id="gnome-font-face-get-name">gnome_font_face_get_name ()</title>
 <programlisting>const <link linkend="guchar">guchar</link>* gnome_font_face_get_name      (const <link linkend="GnomeFontFace">GnomeFontFace</link> *face);</programlisting>
 <para>
+Return the name of the Font</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>face</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a const pointer to the name, NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -290,14 +290,14 @@ const <link linkend="guchar">guchar</link>* <link linkend="gnome-font-face-get-g
 <programlisting>const <link linkend="guchar">guchar</link>* gnome_font_face_get_family_name
                                             (const <link linkend="GnomeFontFace">GnomeFontFace</link> *face);</programlisting>
 <para>
+Get the family name</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>face</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a const pointer to the family name, NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -305,42 +305,43 @@ const <link linkend="guchar">guchar</link>* <link linkend="gnome-font-face-get-g
 <programlisting>const <link linkend="guchar">guchar</link>* gnome_font_face_get_species_name
                                             (const <link linkend="GnomeFontFace">GnomeFontFace</link> *face);</programlisting>
 <para>
+Get the species name of the font</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>face</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a const pointer to the species name, NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-face-get-ps-name">gnome_font_face_get_ps_name ()</title>
 <programlisting>const <link linkend="guchar">guchar</link>* gnome_font_face_get_ps_name   (const <link linkend="GnomeFontFace">GnomeFontFace</link> *face);</programlisting>
 <para>
+The postscript name of the font. This is the name with which
+the font is embeded inside Postscript/PDF jobs.</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>face</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a const pointer to the name, NULL on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="gnome-font-face-get-num-glyphs">gnome_font_face_get_num_glyphs ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_font_face_get_num_glyphs  (<link linkend="GnomeFontFace">GnomeFontFace</link> *face);</programlisting>
 <para>
+Returns the number of glyphs in the font</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>face</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> number of glyphs, 0 on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

@@ -106,6 +106,7 @@
  *  
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -475,6 +476,8 @@ ttf_strncat (gchar *src, gint *bufsize, gint *length, const gchar *dst, gint dst
 {
 	gchar *retval;
 
+	g_return_val_if_fail (dst != NULL, src);
+		
 	if (dstlength <= 0)
 		dstlength = strlen (dst);
 
@@ -554,14 +557,21 @@ ttf_glyph_face_free (struct glyph_face *g)
 	g_warning ("Implement tt_glyph_face_free");
 }
 
-/*
- * So this is the main thing
+/**
+ * ttf2pfa:
+ * @ft_face: 
+ * @embeddedname: 
+ * @glyphmask: 
+ * 
+ * Convert loaded Freetype TTF face to Type1 pfa
  *
- * I'll make it one-shot, and decide later, where and how to cache, if needed (Lauris)
+ * ft_face has to be TrueType or TrueType collection
+ * embeddedname is the name for resulting PS font
+ * glyphmask is bit array of used glyphs
  *
- * I also do not like return type (guchar *), but OK (Lauris)
- */
-
+ * 
+ * Return Value: 
+ **/
 guchar *
 ttf2pfa (FT_Face ft_face, const guchar *embeddedname, guint32 *glyphmask)
 {
@@ -848,8 +858,11 @@ ttf2pfa (FT_Face ft_face, const guchar *embeddedname, guint32 *glyphmask)
 					   "} NP\n" \
 					   , subid);
 
-	/* add PS code which is output by print_glyph_subs() */
-	data = ttf_strncat (data, &dsize, &dlength, gsdata, gslength);
+	/* add PS code which is output by print_glyph_subs() (Lauris) */
+	/* gsdata can be NULL if ther aren't any glyphs to embed [#100803] (Chema) */
+	if (gsdata != NULL)
+		data = ttf_strncat (data, &dsize, &dlength, gsdata, gslength);
+	
 	g_free (gsdata);
 	data = ttf_printf (data, &dsize, &dlength,
 					   "ND\n" \

@@ -1,0 +1,314 @@
+<refentry id="libgnomeprint-building" revision="1 Jun 2002">
+<refmeta>
+<refentrytitle>Compiling the GNOME Print library</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME Print Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Compiling the GNOME Print library</refname>
+<refpurpose>
+How to compile libgnomeprint
+</refpurpose>
+</refnamediv>
+  <refsect1 id="overview">
+    <title>Building GNOME Print on UNIX-like systems</title>
+    <para>
+      This chapter covers building and installing GNOME Print on UNIX and
+      UNIX-like systems such as Linux.
+    </para>
+    <para>
+      Before we get into the details of how to compile GNOME Print, we should
+      mention that in many cases, binary packages of GNOME Print prebuilt for
+      your operating system will be available, either from your
+      operating system vendor or from independent sources. If such a
+      set of packages is available, installing it will get you
+      programming wih GNOME Print much faster than building it yourself. In
+      fact, you may well already have GNOME Print installed on your system
+      already.
+    </para>
+    <para>
+      On UNIX-like systems GNOME Print uses the standard GNU build system,
+      using <application>autoconf</application> for package
+      configuration and resolving portability issues,
+      <application>automake</application> for building makefiles that
+      comply with the GNU Coding Standards, and
+      <application>libtool</application> for building shared libraries
+      on multiple platforms.
+    </para>
+    <para>
+      If you are building GNOME Print from the distributed source packages,
+      then won't need these tools installed; the necessary pieces
+      of the tools are already included in the source packages. But
+      it's useful to know a bit about how packages that use these
+      tools work. A source package is distributed as a
+      <literal>tar.gz</literal> file which you unpack into a 
+      directory full of the source files as follows:
+    </para>
+    <programlisting>
+      tar xvfz libgnomeprint-2.0.0.tar.gz
+    </programlisting>
+    <para>
+      In the toplevel of the directory that is created, there will be
+      a shell script called <filename>configure</filename> which
+      you then run to take the template makefiles called
+      <filename>Makefile.in</filename> in the package and create
+      makefiles customized for your operating system. The <filename>configure</filename>
+      script can be passed various command line arguments to determine how
+      the package is built and installed. The most commonly useful
+      argument is the <systemitem>--prefix</systemitem> argument which
+      determines where the package is installed. To install a package
+      in <filename>/opt/libgnomeprint</filename> you would run configure as:
+    </para>
+    <programlisting>
+      ./configure --prefix=/opt/libgnomeprint
+    </programlisting>
+    <para>
+      A full list of options can be found by running
+      <filename>configure</filename> with the
+      <systemitem>--help</systemitem> argument. In general, the defaults are
+      right and should be trusted. After you've run
+      <filename>configure</filename>, you then run the
+      <command>make</command> command to build the package and install
+      it.
+    </para>
+    <programlisting>
+      make
+      make install
+    </programlisting>
+    <para>
+      If you don't have permission to write to the directory you are
+      installing in, you may have to change to root temporarily before
+      running <literal>make install</literal>. Also, if you are
+      installing in a system directory, on some systems (such as
+      Linux), you will need to run <command>ldconfig</command> after
+      <literal>make install</literal> so that the newly installed
+      libraries will be found.
+    </para>
+    <para>
+      Several environment variables are useful to pass to set before
+      running configure. <envar>CPPFLAGS</envar> contains options to
+      pass to the C compiler, and is used to tell the compiler where
+      to look for include files. The <envar>LDFLAGS</envar> variable
+      is used in a similar fashion for the linker. Finally the
+      <envar>PKG_CONFIG_PATH</envar> environment variable contains
+      a search path that <command>pkg-config</command> (see below)
+      uses when looking for for file describing how to compile
+      programs using different libraries. If you were installing GNOME Print
+      and it's dependencies into <filename>/opt/libgnomeprint</filename>, you
+      might want to set these variables as:
+    </para>
+    <programlisting>
+      CPPFLAGS="-I/opt/libgnomeprint/include"
+      LDFLAGS="-L/opt/libgnomeprint/lib"
+      PKG_CONFIG_PATH="/opt/libgnomeprint/lib/pkgconfig"
+      export CPPFLAGS LDFLAGS PKG_CONFIG_PATH
+    </programlisting>
+    <para>
+      You may also need to set the <envar>LD_LIBRARY_PATH</envar>
+      environment variable so the systems dynamic linker can find
+      the newly installed libraries, and the <envar>PATH</envar>
+      environment program so that utility binaries installed by
+      the various libraries will be found.
+    </para>
+    <programlisting>
+      LD_LIBRARY_PATH="/opt/libgnomeprint/lib"
+      PATH="/opt/libgnomeprint/bin:$PATH"
+      export LD_LIBRARY_PATH PATH
+    </programlisting>
+  </refsect1>
+  <refsect1 id="dependencies">
+    <title>Dependencies</title>
+    <para>
+      Before you can compile the GNOME Print, you need to have
+      various other tools and libraries installed on your
+      system. The two tools needed during the build process (as
+      differentiated from the tools used in when creating GNOME Print
+      mentioned above such as <application>autoconf</application>)
+      are <command>pkg-config</command> and GNU make.
+    </para>
+    <itemizedlist>
+      <listitem>
+	<para>
+	  <ulink
+	  url="http://www.freedesktop.org/software/pkgconfig/">pkg-config</ulink>
+	  is a tool for tracking the compilation flags needed for
+	  libraries that is used by the GNOME Print library. (A small
+	  <literal>.pc</literal> text file is installed in a standard
+	  location that contains the compilation flags needed for the
+	  library along with version number information.)
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  The GNOME Print makefiles will mostly work with different versions
+	  of <command>make</command>, however, there tends to be
+	  a few incompatibilities, so the GNOME Print team recommends
+	  installing <ulink url="http://www.gnu.org/software/make">GNU
+	    make</ulink> if you don't already have it on your system
+	  and using it. (It may be called <command>gmake</command>
+	  rather than <command>make</command>.)
+	</para>
+      </listitem>
+    </itemizedlist>
+    <itemizedlist>
+      <listitem>
+        <para>
+	  The libart module. It is available from the
+	  <ulink url="ftp://ftp.gnome.org/pub/GNOME/earthquake/sources/libart_lgpl/">
+	  GNOME FTP site.</ulink>
+	</para>
+      </listitem>
+      <listitem>
+        <para>
+	  The libxml2 module. It is available from the
+	  <ulink url="ftp://ftp.gnome.org/pub/GNOME/earthquake/sources/libxml2/">
+	  GNOME FTP site.</ulink>
+	</para>
+      </listitem>
+      <listitem>
+        <para>
+	  The libbonobo module. It's available from the
+	  <ulink url="ftp://ftp.gnome.org/pub/GNOME/earthquake/sources/libbonobo/">
+	  GNOME FTP site.</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  The GLib library provides core non-graphical functionality
+	  such as high level data types, Unicode manipulation, and
+	  a object and type system to C programs. It is available
+	  from the <ulink url="ftp://ftp.gtk.org/pub/gtk/v2.0/">GTK+
+	  FTP site.</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Pango is a library for internationalized text handling. It
+	  is available from the <ulink
+	  url="ftp://ftp.gtk.org/pub/gtk/v2.0/">GTK+ FTP site.</ulink>
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  The libintl library from the <ulink
+	  url="ftp://ftp.gnu.org/gnu/gettext/">GNU gettext
+	  package</ulink> is needed if your system doesn't have the
+	  <function>gettext()</function> functionality for handling
+	  message translation databases.
+	</para>
+      </listitem>
+    </itemizedlist>
+  </refsect1>
+  <refsect1 id="building">
+    <title>Building and testing GNOME Print</title>
+    <para>
+      First make sure that you have the necessary dependencies installed:
+      <command>pkg-config</command>, GNU make, libart, libxml2, libbonobo, glib,
+      and, if necessary, libintl. To get detailed information about building 
+      these packages, see the documentation provided with the
+      individual packages.
+      On a Linux system, it's quite likely you'll have all of these
+      installed already except for <command>pkg-config</command>.
+    </para>
+    <para>
+      Then build and install the GNOME Print library, follow the
+      steps of <literal>configure</literal>, <literal>make</literal>,
+      <literal>make install</literal> mentioned above. If you're
+      lucky, this will all go smoothly, and you'll be ready to
+      <link linkend="libgnomeprint-compiling">start compiling your own
+      GNOME Print applications</link>.
+    </para>
+    <para>
+      If the <filename>configure</filename> scripts fails or running
+      <command>make</command> fails, look closely at the error
+      messages printed; these will often provide useful information
+      as to what went wrong. When <filename>configure</filename>
+      fails, extra information, such as errors that a test compilation
+      ran into, is found in the file <filename>config.log</filename>.
+      Looking at the last couple of hundred lines in this file will
+      frequently make clear what went wrong. If all else fails, you
+      can ask for help on the gnome-print mailing list.
+      See <xref linkend="libgnomeprint-resources"/> for more information.
+    </para>
+  </refsect1>
+      <refsect1 id="extra-configuration-options">
+      <title>Extra Configuration Options</title>
+
+      <para>
+	In addition to the normal options, the
+	<command>configure</command> script for the GNOME Print library
+	supports a number of additional arguments.
+
+	<cmdsynopsis>
+	  <command>configure</command>
+
+	  <group>
+	    <arg>--with-omni-libdir=DIR</arg>
+	  </group>
+	  <group>
+	    <arg>--with-omni-includedir=DIR</arg>
+	  </group>
+	  <group>
+	    <arg>--enable-font-install=[yes|no]</arg>
+	  </group>
+	  <group>
+	    <arg>--with-html-dir=PATH</arg>
+	  </group>
+	  <group>
+	    <arg>--disable-gtk-doc</arg>
+	    <arg>--enable-gtk-doc</arg>
+	  </group>
+	</cmdsynopsis>
+      </para>
+
+      <formalpara>
+        <title><systemitem>--with-omni-libdir=DIR</systemitem></title>
+
+        <para>
+	  FIXME: Add information here.
+        </para>
+      </formalpara>
+
+      <formalpara>
+        <title><systemitem>--with-omni-includedir=DIR</systemitem></title>
+ 
+        <para>
+	  FIXME: Add information here.
+        </para>
+      </formalpara>
+
+      <formalpara>
+        <title><systemitem>--with-html-dir=PATH</systemitem></title>
+ 
+        <para>
+          FIXME: Add information here.
+        </para>
+      </formalpara>
+
+      <formalpara>
+	<title><systemitem>--disable-gtk-doc</systemitem> and
+	  <systemitem>--enable-gtk-doc</systemitem></title>
+
+	<para>
+	  The <application>gtk-doc</application> package is
+	  used to generate the reference documentation included
+	  with GNOME Print. By default support for
+	  <application>gtk-doc</application> is disabled because it
+	  requires various extra dependencies to be installed. If you have
+	  <application>gtk-doc</application> installed and
+	  are modifying GNOME Print, you may want to enable
+	  <application>gtk-doc</application> support by passing
+	  in <systemitem>--enable-gtk-doc</systemitem>. If not
+	  enabled, pre-generated HTML files distributed with GNOME Print
+	  will be installed.
+	</para>
+      </formalpara>
+
+    </refsect1>
+
+</refentry>
+
+<!-- Local Variables: -->
+<!-- sgml-parent-document: ("libgnomeprint-docs.sgml" "chapter" "refentry")  -->
+<!-- End: -->

@@ -1,6 +1,13 @@
-SUBDIRS = libgnomeprint fonts installer tests data po doc
+SUBDIRS = libgnomeprint tests data po doc
 
-EXTRA_DIST = message-of-doom ChangeLog ChangeLog.old ChangeLog.old.2
+EXTRA_DIST = \
+    ChangeLog \
+    ChangeLog.old \
+    ChangeLog.old.2 \
+    OChangeLog.gpa.2002-12-17 \
+    intltool-extract.in \
+    intltool-merge.in \
+    intltool-update.in
 
 # This is a version of the automake-1.4 distcheck rule modified
 # to pass --enable-gtk-doc to ./configure

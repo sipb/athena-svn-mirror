@@ -66,43 +66,67 @@ CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
+CUPS_CFLAGS = @CUPS_CFLAGS@
+CUPS_LIBS = @CUPS_LIBS@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
-FONTMAPDIR_DYNAMIC = @FONTMAPDIR_DYNAMIC@
-FONTMAPDIR_STATIC = @FONTMAPDIR_STATIC@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_PRINT_DATA_DIR = @GNOME_PRINT_DATA_DIR@
+GNOME_PRINT_MODULES_DIR = @GNOME_PRINT_MODULES_DIR@
 GTKDOC = @GTKDOC@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
+INCLTDL = @INCLTDL@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIBADD_DL = @LIBADD_DL@
 LIBGNOMEPRINT_CFLAGS = @LIBGNOMEPRINT_CFLAGS@
 LIBGNOMEPRINT_LIBS = @LIBGNOMEPRINT_LIBS@
+LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTDL_SHLIBEXT = @LTDL_SHLIBEXT@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OMNI_CFLAGS = @OMNI_CFLAGS@
-OMNI_LIBDIR = @OMNI_LIBDIR@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
+TOOLS_CFLAGS = @TOOLS_CFLAGS@
+TOOLS_LIBS = @TOOLS_LIBS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
@@ -116,7 +140,7 @@ DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 # The directory containing the source code. Relative to $(srcdir).
 # gtk-doc will search all .c & .h files beneath here for inline comments
 # documenting functions and macros.
-DOC_SOURCE_DIR = ../../libgnomeprint
+DOC_SOURCE_DIR = $(top_builddir)/libgnomeprint
 
 # Extra options to supply to gtkdoc-scan.
 SCAN_OPTIONS = --deprecated-guards="GNOME_DISABLE_DEPRECATED"
@@ -132,22 +156,23 @@ HFILE_GLOB = $(top_srcdir)/libgnomeprint/*.h $(top_srcdir)/libgnomeprint/*/*.h
 CFILE_GLOB = $(top_srcdir)/libgnomeprint/*.c $(top_srcdir)/libgnomeprint/*/*.c
 
 # Header files to ignore when scanning.
-IGNORE_HFILES =  	art_rgb_affine_private.h			art_rgba_rgba_affine.h 			art_rgba_svp.h						gp-fontmap.h					gnome-font-family.h				gp-truetype-utils.h				gnome-font-private.h				gnome-print-bonobo-client.h		gnome-print-meta.h				gnome-print-master-preview.h		gnome-print-multipage.h			gnome-print-ps2.h				gnome-print-rbuf.h				gnome-print-rgbp.h				gnome-print-transport.h			gnome-print-i18n.h				gnome-print-encode.h				gp-gc.h						gp-gc-private.h					gnome-print-private.h			gnome-print-master-private.h		gnome-print-rbuf-private.h		gnome-glyphlist-private.h		gnome-pgl-private.h				gnome-print-encode-private.h			gpa-*.h
+IGNORE_HFILES =  	art_rgb_affine_private.h			art_rgba_rgba_affine.h 			art_rgba_svp.h						gp-fontmap.h					gnome-font-family.h				gp-truetype-utils.h				gnome-font-private.h				gnome-print-bonobo-client.h		gnome-print-meta.h				gnome-print-master-preview.h		gnome-print-multipage.h			gnome-print-ps2.h				gnome-print-rbuf.h				gnome-print-rgbp.h				gnome-print-transport.h			gnome-print-i18n.h				gnome-print-encode.h				gp-gc.h						gp-gc-private.h					gnome-print-private.h			gnome-print-job-private.h		gnome-print-rbuf-private.h		gnome-glyphlist-private.h		gnome-pgl-private.h				gnome-print-encode-private.h			gpa-*.h
 
 
 # Images to copy into HTML directory.
 HTML_IMAGES = 
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
-content_files = 
+content_files =  	building.sgml 	compiling.sgml 	resources.sgml
+
 
 # Other files to distribute.
 extra_files = 
 
 # CFLAGS and LDFLAGS for compiling scan program. Only needed if your app/lib
 # contains GtkObjects/GObjects and you want to document signals and properties.
-GTKDOC_CFLAGS = -I$(top_builddir) -I$(top_srcdir) $(LIBGNOMEUI_CFLAGS) $(CFLAGS)
-GTKDOC_LIBS = $(top_builddir)/libgnomeui/libgnomeui-2.la $(LDFLAGS)
+GTKDOC_CFLAGS = -I$(top_builddir) -I$(top_srcdir) $(LIBGNOMEPRINT_CFLAGS) $(CFLAGS)
+GTKDOC_LIBS = $(top_builddir)/libgnomeprint/libgnomeprint-2.la $(LDFLAGS)
 
 GTKDOC_CC = $(LIBTOOL) --mode=compile $(CC)
 GTKDOC_LD = $(LIBTOOL) --mode=link $(CC)

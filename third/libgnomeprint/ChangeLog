@@ -1,52 +1,781 @@
-2002-12-27    <chema@celorio.com>
+2003-01-21  Chema Celorio  <chema@celorio.com>
 
-	* configure.in: 1.116.3 here we go
+	* configure.in: Check for that -lfreetype has
+	FT_Get_Postscript_Name that was added in freetype 2.0.5.
+	Too bad we have to force people to upgrade, but putting
+	all the font parsing code back is not an option at this
+	point.
 
-	* libgnomeprint/gnome-font-face.c (gff_load_outline): try again
+2003-01-19  Chema Celorio  <chema@celorio.com>
 
-	* configure.in: backport the gtk-doc checking commands
+	* configure.in: post release version bump to 2.2.1
+	
+2003-01-19  Chema Celorio  <chema@celorio.com>
 
- 	* libgnomeprint/gnome-font-face.c (gff_load_metrics): #Fix: 98846
- 	"Affines sometimes get mangled with gnome-canvas-hacktext item"
- 	by Jim Evins <evins@snaught.com> by loading glyphs with
- 	FT_LOAD_IGNORE_TRANSFORM
+	* configure.in: branched for GNOME 2.2. with branch name: "gnome-2-2"
+
+2003-01-19  Chema Celorio  <chema@celorio.com>
+	
+	* 2.2.0 Here we go.
+
+2003-01-19  Chema Celorio  <chema@celorio.com>
+	
+	remove debugging g_print calls from :
+	* libgnomeprint/gnome-print.c (gnome_print_context_new):
+	* libgnomeprint/gnome-print-job.c (gnome_print_job_print_to_file):
+	(gnome_print_config_get_transform): 
+	* libgnomeprint/gnome-print-rgbp.c (rgbp_showpage): 
+
+	* libgnomeprint/gnome-fontmap.h (GPFontEntry): add ->is_alias
+	* libgnomeprint/gnome-fontmap.c (fcpattern_to_gp_font_entry): initialize
+	->is_alias to FALSE
+	(fcpattern_to_gp_font_entry_alias): set ->is_alias to TRUE
+	* libgnomeprint/gnome-font-family.c (gnome_font_family_style_list):
+	don't add fonts that are aliases to family list. Parcially fixes
+	#103436 and fixes #103857.
+
+	* post release version bump to 2.1.10
+
+2003-01-19  Chema Celorio  <chema@celorio.com>
+
+	* 2.1.9 here we go
+
+2003-01-18  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print-pdf-t1.c (gnome_print_pdf_t1_determine_lengths_pfa):
+	g_warn rather than g_print if the font could not be parsed 
+
+	* libgnomeprint/gnome-fontmap.c (gp_fontmap_add_aliases): Don't
+	use FC_STYLE when creating aliases. We where not generating the
+	aliases for Italic correcly because of a bug in fontconfig
+	[http://fontconfig.org/cgi-bin/bugzilla/show_bug.cgi?id=11]
+
+	* libgnomeprint/gnome-print-pdf-t1.c (gnome_print_pdf_t1_embed):
+	size of Length2 needs to consider EOL (+2)
+
+	* libgnomeprint/gnome-print-encode.c (hex_2_dec): decode uppercase
+	hex streams as well.
+
+2003-01-18  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprint/gpa/gpa-config.c (gpa_config_printer_modified):
+	remove a debugging g_print
+	* libgnomeprint/gnome-print-pdf-tt.c (gnome_print_pdf_tt_embed):
+	same here
+
+	* libgnomeprint/gp-gc.c (gp_ctx_new): Initialize a new context
+	with "Sans Regular" not "Helvetica"
+
+	* tests/fonts.c (my_config_load_from_file): add a header to the
+	catalog. Load configuration from catalog.GnomePrintConfig so
+	that we can set things like the paper size. Add a --max option
+	to limit the number of fonts to include in the catalog.
+
+2003-01-17  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_close): don't
+	output Orientation in setpagedevice, should be used for roll-fed
+	media only. ([1] Section 6.2.2, Pag 426.)
+	(gnome_print_ps2_close): %%Orientation doesn't support 'Reverse'
+	orientations, only 'Portrait' & 'Landscape'.
+	(gnome_print_ps2_close): remove 3 fixme's.
+	- %%DocumentData is not needed because, we don't use BeginData & EndData
+	- a question weather to use ps %%LangugeLevel or %%Extensions, probably
+	based on a comment of [2] Section 5.1 page 41. However, it is safe to
+	assume that our documents are going to be consumed by a Level2 interpreter
+	([2] was written in 1992)
+	- %%BoundingBox had a fixme, however we are already including a
+	BoundingBox.
+
+	* libgnomeprint/gnome-rfont.c (grf_ensure_slot_bbox): plug a leak
+	reported in #103743
+
+2003-01-17  Paolo Maggi  <maggi@athena.polito.it>
+
+	* libgnomeprint/gpa/gpa-config.c (gpa_config_from_string):
+	free "child_id" in all cases
+	
+	* libgnomeprint/gpa/gpa-root.c (gpa_init): free "file"
+
+	* libgnomeprint/gpa/gpa-settings.c (gpa_settings_finalize):
+	free "settings->name"
+  
+2003-01-16  Pablo Saratxaga  <pablo@mandrakesoft.com>
+
+	* configure.in : Added Amharic (am), Arabic (ar), Greek (el),
+	 Latvian (lv) to $ALL_LINGUAS.
+
+2003-01-15  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print-pdf-private.h: fix #103046
+
+2003-01-14  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-fontmap.c (fcpattern_to_gp_font_entry):
+	fix #102400
+
+	* libgnomeprint/gnome-print-unit.c (gnome_print_unit_copy): fix
+	103371 again
+
+2003-01-14  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprint/gnome-print-job.c (gnome_print_job_get_page_size):
+	(gnome_print_job_get_page_size_from_config): 
+	* libgnomeprint/gnome-print-config.c (gnome_print_config_get_page_size):
+	Fix the second half of #103464.
+	gnome_print_job_get_page_size_from_config should not be used, it is replaced
+	by gnome_print_config_get_page_size. Additionally we have
+	gnome_print_job_get_page_size which takes a job as an argument (the previous
+	call was gnome_print_job but took a config as the first arg.)
+
+	* tests/fonts.c (generate_catalog): use the new call
+
+	* libgnomeprint/gnome-print-job.c (gnome_print_job_get_page_size_from_config):
+	Fix the first part of #103464
+
+2003-01-14  Chema Celorio  <chema@celorio.com>
+	
+	* post release version bump to 2.1.9
+
+2003-01-14  Chema Celorio  <chema@celorio.com>
+	
+	* 2.1.8 here we go
+
+2003-01-12  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* libgnomeprint/Makefile.am (SUBDIRS): Build here (.) before
+	building dynamic modules, since they now need to link to
+	libgnomeprint.
+
+	* libgnomeprint/transports/Makefile.am: link the dynamic modules
+	with libgnomeprint itself, since that is required for the Python
+	bindings.
+
+	* libgnomeprint/modules/cups/Makefile.am: idem.
+
+2003-01-13  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-rfont.h: fix a parameter name to avoid a
+	warning when building the docs
+
+	* libgnomeprint/modules/cups/gnome-print-cups.c: fix
+	#102938
+
+	* libgnomeprint/gnome-print-config.[ch]: 
+	* libgnomeprint/gnome-glyphlist.[ch]: 
+	* libgnomeprint/gnome-print-unit.[ch]: expose GType for python bindings,
+	parcially fixes #103371. Code from: Gustavo J. A. M. Carneiro
+	<gustavo@users.sourceforge.net>
+
+2003-01-13  Chema Celorio  <chema@celorio.com>
+	
+	* tests/fonts.c: implement --catalog
+
+	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_set_font_real):
+	when comparing if the size is the same as the one set use the '=='
+	operator as '=' was causing problems
+
+	* libgnomeprint/gnome-fontmap.c (gp_fontmap_get): don't reload the
+	fontmap, this was causing PS jobs with fonts embeded more than once
+	since the fontmap will refresh and GnomeFontFace will be loaded again
+
+	* libgnomeprint/gnome-font-face.c: 
+	* libgnomeprint/gnome-fontmap.h: 
+	* libgnomeprint/gnome-fontmap.c: 
+	* libgnomeprint/gnome-font-private.h: move ->psname from the entry
+	to GnomeFontFace, since we need to load the freetype face to know it
+
+2003-01-09  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print-encode.c (gnome_print_encode_hex):
+	make sure we always have a newline at the end of the out buffer
+
+	* libgnomeprint/gnome-font-face.c (gnome_font_face_ps_embed_tt):
+	conver to ascii the TTF by blocks of 1024, avoid save locale,
+	va_args_start/end, restore locale for every byte. Big speed improvement.
+	(use print_sized rather than _sprintf)
+	(gf_pso_print_sized): create from code in _sprintf
+	(gf_pso_sprintf): use print_sized
+
+2003-01-06  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release version bump
+
+2003-01-06  Chema Celorio  <chema@celorio.com>
+
+	* 2.1.7 here we go
+
+2003-01-06  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gpa/gpa-key.c (gpa_key_set_value): handle the
+	option type KEY in the same way as TYPE_STRING is handled
+
+	* libgnomeprint/gnome-print-pdf-t1.c: make the buffer part
+	of the GnomePrintPdfT1Font structure, remove ->buf & ->buf_size
+	this makes .pfa T1 font embeding work again
+
+2003-01-06  Chema Celorio  <chema@celorio.com>
+
+	because of the size of this commit, I uploaded it to:
+	http://www.gnome.org/~chema/libgnomeprint_big_clean.diff
+	** NOTE**: there are _very_ little code changes
+	
+	* libgnomeprint/gnome-print-multipage.[ch]: deprecate
+	gnome_print_multipage_new_from_sizes
+
+	* libgnomeprint/gnome-glyphlist-private.h: GGLInfoType remove
+	GGL_PUSHCP & GGL_POPCP as they where not being used.
+
+	* libgnomeprint/gnome-print-meta.[ch]: removed gnome_print_meta_new_local
+	change the rest to use the non _new_ version.
+
+	* libgnomeprint/Makefile.am (SUBDIRS): remove the drivers
+	subdirectory, since we are not using them.
+	- remove gnome-print-rbuf-private.h
+	- remove libgnomeprint-marshal-main.c
+
+	* configure.in: remove the OMNI checking code since we are
+	not using it.
+
+	* all other files:
+	- *NO* code changes
+	- removed ifdef code, code between: #if 0, #ifdef ALLOW_BROKEN_PGL,
+	  #ifdef ENABLE_MODULE_DRIVERS, #if GNOME_PRINT_ENABLE_PAGE_CALLBACKS
+	  #ifdef SMOKING_LOTS_OF_CRACK, is gone. Some of the #ifdef VERBOSEes are
+	  gone too.
+	- standarized the .h files, copyright notice, order of things
+	  #define __FOO_H__ , #inlcuding of other headers, etc
+	- Moved documentation from the .h files into the .c files in
+	  gtk-doc format
+	- Added to some sunctions documentation in gtk-doc format
+	- removed #define __FOO_C__
+	- inlcude files with <libgnomeprint/foo.h> not with "foo.h"
+	- coding style & indentation fixes
+	- typos
+	- removed casting macros of Classes that should not be subclassed
+	- Document structure members in a consistent manner
+	
+	* gnome-print-bonobo.[ch], gnome-print-bonobo-client.[ch]: remove as they
+	are not used (yet)
+
+2003-01-06  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gpa/gpa-utils.h (__PRETTY_FUNCTION__): define for
+ 	non __GNUC__ compilers. Fixes: #101414
+
+2003-01-04  Sami Pesonen  <sampeson@iki.fi>
+
+	* configure.in: Added Finnish to ALL_LINGUAS
+
+2003-01-03  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print.c (gnome_print_buffer_munmap) implement
+	(gnome_print_buffer_mmap): implement
+	Move all the mmaps into one function.
+
+	* libgnomeprint/gnome-print-pdf-tt.c: use here 
+	* libgnomeprint/gnome-print-pdf-t1.c: ditto
+	* libgnomeprint/gnome-font-face.c: ditto
+
+2003-01-03  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print-pdf-t1.c: fix so that .pfa fonts work too. don't
+	malloc the whole font, mmap it. Cleaned the code.
+
+	* libgnomeprint/gnome-print-pdf-private.h: _t1_embed and _tt_embed now return
+	the object number used, rather than get passed it. In case embeding fails, we
+	would not have asked for an object number which we didn't usedo
+
+	* libgnomeprint/gnome-print-encode.c (gnome_print_decode_hex): change in_size
+	from gint to gint* to return the size of in that we decoded.
+
+	* libgnomeprint/gnome-font-face.c (gnome_font_face_ps_embed_t1): fix a crash,
+	we where malloc'ing one byte less than what we needed
+
+	* libgnomeprint/Makefile.am: remove gnome-print-encode-private, deprecate header
+	and move contents into gnome-print-encode.h
+
+2002-12-30  Chema Celorio  <chema@celorio.com>
+
+	* tests/run-test.pl: run acroread4 and acroread5 to test pdf files
+
+	* tests/gpa-test.c: update. things have changed a lot inside gpa for the tests
+	to pass. disabled some tests.
+
+	* tests/fonts.c: update to the new fontmap structures
+
+	* tests/Makefile.am (EXTRA_DIST): we where not shipping run-test.pl & quit.txt
+
+	* tests/tools/pdfcheck.c: be more anal about pdf files.
+
+	* libgnomeprint/gpa/gpa-reference.c (gpa_reference_set_value): implement
+	(gpa_reference_new_emtpy): implement
+	(gpa_reference_new): use _emtpy here. make @id required param.
+
+	* libgnomeprint/gpa/gpa-node-private.h: update the signature of the
+	modified signal of GPANode, we don't use the flags anymore
+
+	* libgnomeprint/gpa/gpa-config.h: remove _set_printer. Use gpa_node_set_path_value to
+	set the printer now.
+
+	* libgnomeprint/gpa/gpa-config.c (gpa_config_printer_modified): implement, listen
+	to selected printer changes and update ->setttings accordingly
+	(gpa_config_verify): use _return_false_if_fail macro to verify GPAConfig
+	(gpa_config_new_full): references are created in _init now, don't create them here
+	just set the nodes in them
+	(gpa_config_set_printer): remove
+
+	* libgnomeprint/gnome-fontmap.c (fcpattern_to_gp_font_entry): check that
+	the font we are loading is an outline font as those are the only ones
+	supported.
+
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_set_font_real): no need
+	to handle TYPE1_ALIAS
+
+	* libgnomeprint/gnome-print-pdf-t[1t].c: remove the GPFEntry type specific code
+	we handle all fonts with the same struct now.
+
+	* libgnomeprint/gnome-fontmap.h: remove GPFontEntryT1Alias,
+	GPFontEntrySpecial, GPFontEntryT1, GPFontEntryTT, GP_FONT_ENTRY_TYPE1_ALIAS & _SPECIAL
+	handle all fonts with the same GPFonEntry struct
+
+	* libgnomeprint/gnome-font-face.c: remove code to handle T1_ALIAS
+	and _SPECIAL font entries. Remove defaultsdict code.
+	* libgnomeprint/gnome-fontmap.c: here too
+
+2002-12-30  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release version bump to 2.1.7
+
+2002-12-29  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gpa/gpa-root.h: no need for global_options
+	to be globaly visible. Rename 'root' to 'gpa_root' to avoid
+	variable name clashes.
+
+	* libgnomeprint/gpa/gpa-node.c (gpa_node_lookup): use gpa_root
+
+2002-12-29  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprint/modules/cups/gnome-print-cups.c: varialbe renaming
+	and added a cast to gpa_printer_new to update to it new prototype
+
+	* libgnomeprint/gpa/Makefile.am: install the .h files
+	into libgnomeprint/private, remove gpa-value.
+	Define #GPA_MODULE_DIR (rather than using GNOME_PRINT_MODULE_DIR)
+
+	* libgnomeprint/gnome-print-paper.c (gnome_print_papers_load): rename
+	the globals varialbe to config, since that is what it is
+
+	* libgnomeprint/gnome-print-job.h: cosmetic changes 
+	* libgnomeprint/gnome-print-config.h: 
+
+	* libgnomeprint/gnome-print-job.c (gnome_print_config_get_layout_data):
+	Layout is part of Document.Page update lookup call
+
+	* libgnomeprint/gnome-print-config.c (gnome_print_config_from_string) 
+	(gnome_print_config_to_string): add some argument checks
+
+	* libgnomeprint/Makefile.am: add gnome-print-config-private.h
+
+	* libgnomeprint/gpa/gpa-*.c: more cleanup 
+
+2002-12-28  Chema Celorio  <chema@celorio.com>
+
+	* data/globals.xml.in: add the paper sizes missing
+
+2002-12-28    Christian Rose  <menthos@menthos.com>
+
+	* data/globals.xml.in: String change. Fixes #102022.
+
+	* data/printers/PDF-WRITER.xml.in: String change. Fixes #102021.
+
+2002-12-27  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-font-face.c (gff_load_metrics): #Fix: 98846
+	"Affines sometimes get mangled with gnome-canvas-hacktext item"
+	by Jim Evins <evins@snaught.com> by loading glyphs with
+	FT_LOAD_IGNORE_TRANSFORM
+
+2002-12-24  Cheam Celorio  <chema@celorio.com>
+
+	* tests/gpa-test.c: udpate
+
+	* libgnomeprint/modules/cups/gnome-print-cups.c: update the "Fill"
+	nodes to the new locations of the nodes.
+	(get_model): return GPAModel * type
+
+	* libgnomeprint/gpa/Makefile.am: remove gpa-globals.c
+
+	* libgnomeprint/gnome-print-job.c (gnome_print_config_get_layout_data): read
+	Layout from Global.Layout.Plain
+	(gnome_print_config_get_layout_data): reset the prev. locale on failure
+
+	* libgnomeprint/gnome-fontmap.c (fcpattern_to_gp_font_entry):
+	remove the warning when the extension can't be recognized. We
+	should avoid knowing the fonttype until we are about to embed
+	it (i.e. FT_Face is loaded). Filed bug #101893 as a reminder.
+
+	* data/globals.xml.in: add with <_Name> nodes marked for
+	translation
+	* data/media.xml: remove from cvs, info is now in globals.xml
+	* data/models & data/printers: Mark xml files for translation
+	move to .xml extension to make Intltool happy
+	
+	* data/Makefile.am: translate globals.xml
+
+	* configure.in: call AC_PROG_INTLTOOL
+
+	* Makefile.am: add the intltool- to EXTRA_DIST
+
+	* libgnomeprint/gpa/gpa-*.[ch]: more code refactoring
+
+2002-12-22  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gpa/gpa-model.c (gpa_model_new_from_tree): pass
+	model as the parten argument of the options
+
+	* libgnomeprint/gpa/gpa-globals.[ch]: start building it up
+
+	* libgnomeprint/Makefile.am: s/gpa-media/gpa-globals
+
+	* data/globals.xml: start to shape it up
+
+	* data/Makefile.am: remove GNOME.vendor, rename media.xml to globals.xml
+
+	* tests/gpa-test.c (test_gpa_list): "Vendors" is deprecated, don't test
+	it anymore
+
+	* libgnomeprint/gnome-print-config.c (gnome_print_config_from_string):
+	return something usefull
+	(gnome_print_config_to_string): let gpa make something usefull out of
+	the string
+
+	* libgnomeprint/gpa/gpa-*.[ch]): major code cleanup
+	
+	* data/printers/PDF-WRITER.printer: use a better name for the printer
+	* data/printers/GENERIC.printer: here too
+
+	* data/models/GNOME-GENERIC-PS.model: remove the Resolutions node
+	* data/models/GNOME-PDF-WRITER.model: same here
+
+2002-12-21  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gpa/gpa-list.[ch](gpa_list_reverse): implement
+	* libngomeprint/gpa/gpa-list.c cleaunp the .DefaultChild hack
+
+	* libgnomeprint/gpa/gpa-node-private.h (GPA_NODE_ID): check if
+	n exists, if not return NULL
+
+	* libgnomeprint/gnome-print-paper.c (gnome_print_papers_load): use
+	gpa_config_new instead fo gpa_defaults (which will die soon)
+
+	* data/ remove unused files
+
+	* libgnomeprint/gnome-print-config.c (gnome_print_config_from_string):
+	template for function
+	(gnome_print_config_to_string): ditto
+	(gnome_print_config_default): use gpa_config_new rather than gpa_defaults ()
+
+2002-12-17  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/transports/gp-transport-custom.c (gp_transport_custom_construct):
+	return GNOME_PRINT_OK on success
+
+	* Removed ChangeLog from libgnomeprint/gpa/ and backed it up
+	into 0ChangeLog.gpa.2002-12-17. Gpa ChangeLog entries will go
+	here as of right now.
+
+2002-12-17  Chema Celorio  <chema@celorio.com>
+	
+	* configure.in: post release version bump to 2.1.6
+
+2002-12-17  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/modules/cups/gnome-print-cups.c (get_model): lookup
+	the model by_id before creating it since it might already exist
+
+2002-12-16  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-font-face.c (gff_load): Fix #80409
+	by williamp@multiverse.com
+
+	* libgnomeprint/gnome-print-pdf.c: fix #101208
+	(my_fix_drect): fix #88169
+
+	* configure.in: fix #101378
+
+	* libgnomeprint/gnome-print-job.c (gnome_print_job_close) warn if the
+	job is closed more than once
+	(gnome_print_job_print): warn if the job has not been closed
+
+	* libgnomeprint/Makefile.am (nox_headers): install the glyphlist-private
+	header needed by libgnomeprintui
+
+	* libgnomeprint/gnome-print.c (gnome_print_context_construct): make
+	retval start off with GNOME_PRINT_OK since the construct method is
+	not required. This makes print preview work again.
+
+2002-12-16  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprint/modules/cups/gnome-print-cups.c (append_printer): unlink
+	the ppd after use
+
+	* libgnomeprint/modules/cups/gnome-print-cups-transport.c (get_job_options):
+	set a job option (InputSlot), more to follow in a generic way.
+	(gp_transport_cups_close): get options before printing
+
+2002-12-16  Dave Camp  <dave@ximian.com>
+
+	* libgnomeprint/modules/cups/gnome-print-cups-transport.c (gp_transport_cups_close):
+	set the job title.
+	* libgnomeprint/modules/cups/gnome-print-cups-transport.c (gp_transport_cups_construct):
+	use "Printer" v.s. "Settings.Transport.Backend.Printer" to determine
+	the cups printer selected.	
+	* libgnomeprint/modules/cups/gnome-print-cups.c (get_model):
+	implement
+	(get_paper_text, get_physical_sizes): implement
+	* model_xml_template[]: add the Output, Document & Resolution nodes
+
+2002-12-15  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release version bump to 1.2.5
+
+2002-12-15  Chema Celorio  <chema@celorio.com>
+	
+	* tests/generate.c (my_draw_glyphlist): implement
+
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_set_font_real): remove mismatched
+	unref
+
+2002-12-14  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_object_new): we can't use a static
+	gint variable to give out object numbers because it would not match the second time
+	printing to PDF is used. do a g_list_lenght to determine the object number
+
+	* libgnomeprint/gnome-glyphlist.c (gnome_glyphlist_unref): plug a leak
+
+	* libgnomeprint/gnome-print-config.c: make GnomePrintConfig a GObject because app developers
+	are going to g_object_unref it and it is easy to assume that it should not be unrefed (Happened
+	to me more than once and i had made it a boxed type). Don't expose the macros and make
+	gnome_print_config_[un]ref work with a GObject. .h file is unchanged
+
+	* libgnomeprint/gnome-print-job.c: more of the s/master/job migration. Call internal GPJ
+	variables 'job' v.s. 'gpm'. Same for arguments to functions.
+	* libgnomeprint/gnome-print-job.h: 
+
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_page_fprintf): only realloc
+	when we need to grow the buffer. Don't make grow size static because it isn't reset
+	on every page, so if every page duplicates the size of grow it ends up being pretty big.
+	(gnome_print_pdf_close_write_last_objects): plug a leak, "id".
+ 	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_close): close and unref
+	transport.
+	
+	* libgnomeprint/gnome-print-meta.c: minor coding style change
+	* libgnomeprint/gnome-print-ps2.h: same here
+	* libgnomeprint/gnome-font.h:
+	* libgnomeprint/gnome-font-face.c:
+	
+	* libgnomeprint/transports/gp-transport-lpr.c (gp_transport_lpr_construct): return
+	GNOME_PRINT_OK on success
+	* libgnomeprint/transports/gp-transport-lpr.c (gp_transport_lpr_construct): ditto
+
+	* libgnomeprint/gnome-print-transport.c (gnome_print_transport_new_from_module_name):
+	plug a leak
+	(gnome_print_transport_new_from_module_name): plug a leak
+
+	* tests/generate.c: unref the objects correctly
+
+
+2002-12-12  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print.c (gnome_print_context_construct): return the
+	retval from the construct method rather than GNOME_PRINT_OK all the time
+	(gnome_print_context_new): check for NULL after _ps2_new
+
+	* libgnomeprint/gnome-print-transport.c (gnome_print_transport_construct): bubble
+	up return codes correctly
+	(gnome_print_transport_create): return NULL if _transport_construct didn't returned
+	GNOME_PRINT_OK
+
+	* libgnomeprint/gnome-fontmap.c: handle Type1 fonts too.
+
+	* libgnomeprint/gnome-fontmap.h: s/gdouble ItalicAngle/gint italic_angle
+	& add Tambet Ingo to Authors
+
+	* libgnomeprint/gnome-font-face.c: s/ItalicAngle/italic_angle
+
+	* tests/fonts.c: handle TrueType as well as Type1 fonts when
+	dumping them to the console
+
+2002-12-12  Chema Celorio  <chema@celorio.com>
+	
+	* tests/run-test.pl: implement arguments to run some specific test.
+	If there was a font embeding problem, continue testing the rest
+	of the fonts. Implented --help by displaying usage
+
+	* libgnomeprint/gp-tt-t1.c (ttf_strncat): check for NULL on input,
+	fixes the crash of #100803
+
+	* libgnomeprint/gnome-font-face.c: fix some function names:
+	gnome_font_face_pso_ensure_buffer -> gnome_font_face_ps_embed
+	gf_pso_ensure_space               -> gnome_font_face_ps_embed_ensure_size
+	gff_pso_ensure_buffer_t1          -> gnome_font_face_ps_embed_t1
+	gff_pso_ensure_buffer_tt          -> gnome_font_face_ps_embed_tt
+	gff_pso_ensure_buffer_empty       -> gnome_font_face_ps_embed_empty
+	* libgnomeprint/gnome-font-private.h: update name
+	
+	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_close): use the new
+	function name to embed a font
+
+2002-12-10  Chema Celorio  <chema@celorio.com>
+
+	* tests/fonts.c: handle crashes when running this binary
+	* tests/run-test.pl: stop testing more fonts if a crash is encountered
+
+	* configure.in: Minor cosmetic fix
+
+2002-12-09  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: remove acconfig.h & add third argument to AC_DEFINE[_UNQUOTED] to kill autoheader
+	warning about "auxiliary files is deprecated and discouraged"
+
+2002-12-09  Chema Celorio  <chema@celorio.com>
+	
+	* tests/run-test.pl: Fix the font regression tests to work again
+	* tests/fonts.c: 
+
+	* configure.in (cups_msg): Fix #100765, implement the --without-cups option
+
+2002-12-09  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release version bump to 2.1.4
+
+2002-12-09  Chema Celorio  <chema@celorio.com>
+
+	* 2.1.3 here we go
+
+2002-12-09  Chema Celorio  <chema@celorio.com>
+	
+	* libgnomeprint/gnome-fontmap.c (fcpattern_to_gp_font_entry): make sure ->psname does not
+	contain spaces, if it does it breaks the .ps & .pdf output
+	(fcpattern_to_gp_font_entry_alias): same here
+
+	* tests/run-test.pl (my_check_environment): 
+
+	* tests/fonts.c: - Implement --generate and --generate --pdf to generate
+	a page with a font embeded. Implement --number to return the number of fonts
+	known to gnome-print (used for ./run-test.pl)
+
+	* tests/run-test.pl (my_check_fonts): check all the installed fonts,
+	generate a .ps & .pdf file and run them to check that we generate valid
+	output.
+
+	* configure.in: cosmetic changes
  
-2002-11-24  Shivram U  <shivaram.upadhyayula@wipro.com>
+	* tests/tools/pdfcheck.c (is_valid_char): underscore is also a valid
+	character
 
-	* libgnomeprint/gp-fontmap.c (gp_fm_load_font_2_0_type1),
-	(gp_fm_load_font_2_0_type1alias), (gp_fm_load_font_2_0_truetype)
-	Check for the existance of the font file too, before adding to the
-	fontmap. (#99414)
+2002-12-09  Chema Celorio  <chema@ximian.com>
+
+	* tests/fonts.c (print_font_info): a first stab at --list-full
+
+2002-12-08  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/gnome-fontmap.c (gp_fe_sortspecies): speciesname might be NULL, allow
+	for sorting when it is so.
+	* libgnomeprint/gp_font_entry_from_files: remove, not being used
+	
+2002-12-07  Chema Celorio  <chema@ximian.com>
+
+	* configure.in (dnl): fix #98608
+	(freetype_version): check that the user has the correct freetype version so that
+	configure fails before make does. It will stop bug reports like: #91714.
+
+2002-12-04  Chema Celorio  <chema@celorio.com>
+
+	* configure.in: post release version bump to 2.1.3
+
+2002-12-03  Chema Celorio  <chema@celorio.com>
+
+	* libgnomeprint/gnome-print-unit.c: Fix #100258
+
+	* configure.in: fix #80577
+	
+	* configure.in: (GETTEXT_PACKAGE): should be 2.2 not 2.0 to fix: 100133
+
+	* Makefile.am (SUBDIRS): don't build fonts/ (we don't need it)
+	* configure.in: and don't create fonts/Makefile
+	
+	* acconfig.h: remove the FONTMAP constants, add GNOME_PRINT_DATA_DIR
+	* configure.in: ditto
+	              : remove installer/Makefile from AC_OUTPUT
+
+	* data/Makefile.am: use a constant for the paths
+	* data/printers/Makefile.am: ditto
+	* data/models/Makefile.am: 
+	
+2002-11-19  Chema Celorio  <chema@ximian.com>
+
+	* Makefile.am (SUBDIRS): remove the installer directory since we don't need it anymore.
 
 2002-11-15  Jon K Hellan  <hellan@acm.org>
 
 	* libgnomeprint/libgnomeprint-2.0.pc.in (Libs): Declare zlib
 	dependency. (Bug 98476).
 
+2002-11-10  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in: Added da (and de while I was at it) to ALL_LINGUAS.
+
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
+
+2002-11-01  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : post release version bump
+
+2002-11-01  Jody Goldberg <jody@gnome.org>
+
+	* Release 2.1.1
+
+2002-10-31  Tambet Ingo  <tambet@ximian.com>
+ 
+ 	* tests/Makefile.am (SUBDIRS): Added build instructions for new test called fonts.c
+ 
+ 	* libgnomeprint/drivers/Makefile.am: s/libexec/plugin/
+ 
+ 	* libgnomeprint/transports/Makefile.am: ditto.
+ 
+ 	* configure.in: Add checks for fontconfig.
+ 
+ 	* libgnomeprint/gnome-fontmap.c: Use fontconfig to get fonts.
 
 2002-10-29  Andreas J. Guelzow <aguelzow@taliesin.ca>
 
 	* libgnomeprint/gnome-print-multipage.c (gnome_print_multipage_fill) :
 	  remove duplication of filled paths. (Bug 96960)
 
-2002-09-15  Chema Celorio  <chema@ximian.com>
+2002-09-18  Chema Celorio  <chema@ximian.com>
 
-	* tests/generate.c (main): return a correct RetVal when outputing to metafile
+	* libgnomeprint/Makefile.am (libgnomeprintincdir): fix the second part of #93271
 
-	* tests/run-test.pl (my_check_output): remove pdf since we don't have a pdf driver in this
-	branch
+	* libgnomeprint/gnome-print-transport.c (gnome_print_transport_printf): loc should not be
+	const
 
-	* configure.in: bump version to 1.116.1
+	* libgnomeprint/gnome-print-config.c (gnome_print_config_get_type): implement.
+	Fixes first half of #93271
 
-	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_fill): initialize ret
+2002-09-14  Chema Celorio  <chema@ximian.com>
 
 	Use setlocale correctly in :
 	
 	* libgnomeprint/gnome-print-transport.c (gnome_print_transport_printf): 
 	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_fprintf): 
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_page_fprintf): 
+	(gnome_print_pdf_fprintf): 
 	* libgnomeprint/gnome-print-config.c (gnome_print_config_get_int): 
 	(gnome_print_config_get_double): 
 	(gnome_print_config_get_length): 
@@ -54,65 +783,340 @@
 	(gnome_print_config_set_double): 
 	(gnome_print_config_set_length): 
 	* libgnomeprint/gnome-font-face.c (gnome_font_face_find_closest): 
-	(gf_pso_sprintf):
+	(gf_pso_sprintf): 
 
-2002-09-08  Yanko Kaneti  <yaneti@declera.com>
+2002-09-05  Carlos Perello Marin <carlos@gnome-db.org>
 
-	* configure.in: Added Hebrew (he) to ALL_LINGUAS
+	* doc/reference/*: Removed question_index.sgml. We are using other
+	DTD != than gtk one and this file was stolen from gtk. The information
+	inside it is null so we can just remove it.
 
-2002-09-03  Stanislav Brabec  <sbrabec@suse.cz>
+2002-09-03  Chema Celorio  <chema@ximian.com>
 
-	* configure.in: Added cs to ALL_LINGUAS.
+	* libgnomeprint/modules/cups/gnome-print-cups.c: add missing include to avoid a warning
 
-2002-09-02  Peteris Krisjanis <peteris.krisjanis@os.lv>
+	* libgnomeprint/Makefile.am: add $_DISABLE_DEPRECATED
 
-	* configure.in: added Latvian (lv) to ALL_LINGUAS
+	* libgnomeprint/gnome-print-config.[ch]: cosmetic fixes 
+
+2002-09-02  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/libgnomeprint-2.0.pc.in (Requires): add gobject & gmodule, remove bonobo
+
+2002-08-31  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/gnome-print-master.c: Include gpa-node.h and not gpa-private.h (Changed in gpa)
+
+	* configure.in: change the order of things to match libgnomeprintui
+
+	* libgnomeprint/gnome-print-stdapi.c (gnome_print_arcto): change parameter from r to
+	radius to avoid the documentation complaning about it
 
 2002-09-01  Marius Andreiana <mandreiana@yahoo.com>
 
 	* configure.in: added 'ro' to ALL_LINGUAS
 
+2002-08-30  Chema Celorio  <chema@ximian.com>
+
+	* configure.in (FONTMAPDIR_STATIC): use {datadir} v.s. {prefix}/share and eval it's value
+	same for _DYNAMIC AND GNOME_PRINT_MODULES_DIR
+
+2002-08-29  Chema Celorio  <chema@ximian.com>
+
+	* tests/Makefile.am (gpa_test_LDADD): remove ; from it, spotted my gmorten
+
+2002-08-29  Jody Goldberg <jody@gnome.org>
+
+	* configure.in : minor tweak to add an autoconf 2.52 prereq to work
+	  around broken handling of GNOME_PRINT_MODULES_DIR_var in 2.13.
+
+2002-08-29  Chema Celorio  <chema@ximian.com>
+
+	* configure.in (modules_dir): remove _var from GNOME_PRINT_MODULES_DIR
+
+	* *.c: add #include "config.h" to all c files
+	
+	* tests/tools/xmlfix.c (my_xmldoc_copy): remove warnings
+
+	* Makefile.am: don't define variables that are changed in prefix in Makefiles, define them in
+	config.h so that when the prefix is changed, the files are rebuilt with make.
+
+	* acconfig.h: add GPA_MODULES_DIR, GNOME_PRINT_MODULES_DIR, FONTMAPDIR_STATIC, FONTMAPDIR_DYNAMIC
+	* configure.in: define them here
+
+2002-08-28  Chema Celorio  <chema@ximian.com>
+
+	* autogen.sh: an autogen.sh that works for the compiler flags and mydistcheck
+
+2002-08-28  Chema Celorio  <chema@ximian.com>
+	
+	* libgnomeprint/gnome-rfont.c (gnome_font_get_rfont): replace the #warning with /* FIXME: ... */
+
+	* libgnomeprint/gnome-print.c: wrap the callbacks stuff in #ifdef GNOME_PRINT_ENABLE_PAGE_CALLBACKS
+	and the module drivers in GNOME_PRINT_ENABLE_MODULE_DRIVERS
+	* libgnomeprint/gnome-print.h: same 
+	* libgnomeprint/gnome-print-meta.c: same
+
+	* libgnomeprint/gnome-print-i18n.h: Add the i18n macros here, self contained
+
+	* libgnomeprint/gnome-print-i18n.c: include glib.h.
+
+	* configure.in: remove bonobo from the pkg_config list, we should add a flag for the callback stuff
+	that should enable this.
+
+	* libgnomeprint/gnome-font-face.c (gnome_font_face_finalize): change the #warning
+	to /* FIXME */
+
+2002-08-27  Chema Celorio  <chema@ximian.com>
+	
+	* libgnomeprint/gnome-print-master.c (gpm_parse_config_data): if no layout can be found
+	set up one affine as the identity and num_affines as 1
+
+	* libgnomeprint/modules/cups/gnome-print-cups.c: first stab at it. Worksforme.
+	* libgnomeprint/modules/cups/gnome-print-cups-transport.c: ditto
+
+	* libgnomeprint/gnome-print-transport.c (gnome_print_transport_new): reorg a bit
+	(gnome_print_transport_new_from_module_name): load non-transport specific modules too (for cups)
+
+	* libgnomeprint/gnome-print-module.h: define GPAModuleInfo
+
+	* libgnomeprint/gnome-print-config.c (gnome_print_config_dump): pass 2 to
+	gpa_utils_dump_tree, API change.
+
+	* configure.in: cosmetic changes
+
+2002-08-27  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/gnome-print.c (gnome_print_context_new): reorg a bit, #if 0 untested code
+
+	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_close): check if orientation is NULL before strcmp
+
+	* data/media.xml: fix #90791
+
 2002-08-28  Akira TAGOH  <tagoh@redhat.com>
 
-	* libgnomeprint/gp-tt-t1.c: backported some codes to fix #77182
-	(ttf2pfa): fixed some codes the invalidfont error may be caused on
-	PostScript interpreter. (#90825)
+	* libgnomeprint/gp-tt-t1.c (ttf2pfa): fixed some codes the invalidfont
+	error may be caused on PostScript interpreter. (#90825)
+
+2002-08-26  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/gnome-print-master/rbuf/paper.c: s/gpa_node_get_path_node/gpa_node_get_child_from_path/g
 
 2002-08-25  Chema Celorio  <chema@ximian.com>
 
- 	* configure.in (LIBGNOMEPRINT_LIBS): remove the conditional to test for
- 	gcc since we don't use -Werror anymore
- 	* bump version to 1.120.0
- 
- 	* tests/Makefile.am: remove -Werror
+	* tests : add Makefile.am for the SUBDIRS so that make clean and make dist work correctly.
+
+	* libgnomeprint/drivers/Makefile.am: install to GNOME_PRINT_MODULES_DIR/drivers &
+	WE_ARE_LIBGNOMEPRINT_ s/UI/INTERNALS
+
+	* libgnomeprint/gnome-print.c (gnome_print_context_new): if drivername is NULL, default to gnoem-print-ps
+	(gnome_print_context_new): load modules from GNOME_PRINT_MODULES_DIR
+
+	* libgnomeprint/gnome-print-transport.c: change the code structure a bit, the same functionality
+
+	* libgnomeprint/gnome-print-private.h: WE_ARE_LIBGNOMEPRINT_ s/UI/INTERNALS
+
+	* libgnomeprint/gnome-print-module.h: add to cvs, not used yet on commited stuff.
+
+	* libgnomeprint/gnome-print-meta.c: we don't need the gnome-print-private.h
+
+	* libgnomeprint/gnome-print-master.c (gnome_print_config_get_layout_data): if the printer does not have
+	a layout tree, fetch it form the Globals node
+
+	* libgnomeprint/Makefile.am :  add gnome-print-module.h. Define WE_ARE_LIBGNOMEPRINT_INTERNALS rather
+	that _UI, define GNOME_PRINT_MODULES_DIR
+
+	* data/media.xml: fix indentation
+
+	* configure.in: add LTDL_SHLIBEXT to fetch the system dynamic libraries extension
+	(have_cups): add a check for CUPS library
+	(modules_dir): define GNOME_PRINT_MODULES_DIR, TOOLS_CFLAGS & TOOLS_LIBS
+
+	* acconfig.h: add GNOME_PRINT_MODULES_DIR
+
+2002-08-25  Chema Celorio  <chema@ximian.com>
+	
+	* configure.in (LIBGNOMEPRINT_LIBS): remove the conditional to test for
+	gcc since we don't use -Werror anymore
+	* bump version to 1.120.0
+
+	* tests/Makefile.am: remove -Werror
 
 2002-08-19  Gustavo Noronha Silva  <kov@debian.org>
 
-	* configure.in: (ALL_LINGUAS): Added pt_BR (Brazilian)
+	* configure.in: added pt_BR to ALL_LINGUAS (Brazilian)
 
-2002-07-28  Chema Celorio  <chema@ximian.com>
+2002-07-21    <chema@celorio.com>
 
-	* 1.116.0
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_font_print_descriptor): if
+	the font embeding fails, don't generate an invalid PDF, just don't embed the font
+	(gnome_print_pdf_close_write_last_objects): work around a bug in ghostscript when
+	our EOL is "\n" instead of v.s. "\r\n". So we can now use both variants of EOL
+
+2002-07-15  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_beginpage): we
+	don't need to clip the page since PDF pages have a CropBox
+	(defautls to MediaBox if not present)
+
+	* libgnomeprint/gnome-print.c (gnome_print_beginpage): Allow to
+	have NULL as the page name in which gnome-print will assign the
+	page number as the page name;
+
+2002-07-15  Chema Celorio  <chema@ximian.com>
+	
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_glyphlist): new
+	encoding method
+	(gnome_print_pdf_write_fonts): write the fonts at the end of the
+	job
+	(gnome_print_pdf_font_print_lastchar): new func.
+	(gnome_print_pdf_font_print_widths): write at the end of the job
+	(gnome_print_pdf_font_print_encoding): write at the end of the job
+	(gnome_print_pdf_set_font_real): don't write the font since we
+	don't know how many glyphs we are going to use.
+
+	* libgnomeprint/gnome-print-pdf-private.h: add members to the
+	GnomePrintFont structure needed for our new encoding scheme
+
+2002-07-14  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/gnome-print-pdf.c (my_fix_drect): work around
+	Freetype giving us invalid sizes for the font BBox. Filed a bug in
+	bugzilla to find the real cause of this bug.
+
+2002-07-14  Chema Celorio  <chema@ximian.com>
+	
+	* installer/gnome-font-install.c (gfi_write_fontmap): save the
+	fontmaps with indentation.
+
+	* configure.in: bump the requirements of libxml 2.4.23 so that we
+	can use the new xmlDocFormatDump and make fontmaps a bit more
+	human readable
+
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_set_font_real):
+	ref the font->face since we keep a pointer to it, we where already
+	unrefing it.
+	(gnome_print_pdf_font_print_widths): start on glyph 0, and check
+	for < num_glyphs not <=
+
+	* libgnomeprint/gnome-font-face.c
+	(gnome_font_face_get_glyph_ps_name): change the indentation.
+
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_set_font_real):
+	don't loop forver when we use more than two fonts.
+
+2002-07-14  Chema Celorio  <chema@ximian.com>
+	
+	* libgnomeprint/gnome-print-pdf-tt.c (gnome_print_pdf_tt_embed):
+	we where missing by one the stream lenght.
+
+	* libgnomeprint/gnome-print-pdf.c
+	(gnome_print_pdf_font_print_encoding): add a dummy /BaseEncoding
+	key so that ghotscript can parse our PDF files.
+
+2002-07-13  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/gnome-print-pdf.c (gnome_print_pdf_image): don't
+	add 10 to the stream lenght! duh.
+	(gnome_print_pdf_page_write_resources): add a /Font object only
+	when we actually have fonts
+
+2002-07-10  Chema Celorio  <chema@ximian.com>
+
+	s/gp-fontmap.[ch]/gnome-fontmap.[ch]
+	* libgnomeprint/gp-fontmap.[ch]:
+	* libgnomeprint/gnome-font-face.c: 
+	* libgnomeprint/gnome-font-family.c: 
+	* libgnomeprint/Makefile.am :
+	* libgnomeprint/gnome-font-private.h: 
+
+2002-07-06  Chema Celorio  <chema@ximian.com>
+
+	* libgnomeprint/gnome-print-frgba.c (gpf_render_buf): fix
+	indentation
+
+	* libgnomeprint/transports/gp-transport-file.c
+	(gp_transport_file_finalize): when finalizing check if tf->fd !=
+	-1 rather than 0.
+
+	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_close): g_free ps2->bufname
+	(gnome_print_ps2_close): unref the transport when done using it.
 
 2002-06-25  Yukihiro Nakai <nakai@gnome.gr.jp>
 
-	* configure.in (ALL_LINGUAS): Added Japanese (ja).
+	* configure.in: (ALL_LINGUAS) Added Japanese (ja).
 
-2002-06-22  Chema Celorio  <chema@ximian.com>
-
-	* configure.in (ALL_LINGUAS): remove lv as it broke the build!
-
-2002-06-21  Peteris Krisjanis <pecisk@inbox.lv>
-
-	* configure.in: (ALL_LINGUAS) Added Latvian (lv).
-
-2002-06-20  Yanko Kaneti  <yaneti@declera.com>
+2002-06-16  Yanko Kaneti  <yaneti@declera.com>
 
 	* configure.in: (ALL_LINGUAS) Added Bulgarian (bg).
 
-2002-06-13  Chema Celorio  <chema@ximian.com>
+2002-06-15  Chema Celorio  <chema@ximian.com>
 
-	* this is the gnome-2-0 branch
+	* tests/run-test.pl: do a lot more now, more tests are done as
+	well as a sanity check and run-time deps checking.
+	* tests/generate.c: more progress
+
+	* add to test/files
+	- good.ps, a known to be valid Postscript file
+	- bad.ps a knonw to be invalid Postscript file
+	- pdf_good.pdf & pdf_bad.pdf ditto
+	- quit.txt a file with "quit" to be piped into gs to make it exit 
+	  after rendering
+	- *.gnumeric. some old gnumeric files used for fonts tests, they were
+	  moved here but i think we are not going to use them.
+
+	* libgnomeprint/gnome-print.c (gnome_print_context_new): add the
+	pdf hook
+
+	* libgnomeprint/gnome-print-unit.c: Don't include
+	<gpa/gpa-node.h>, not needed
+
+	* libgnomeprint/gnome-print-ps2.h: minor cosmetic changes
+
+	* libgnomeprint/gnome-print-ps2.c (gnome_print_ps2_set_color_real): rename
+	g_p_ps2_set_color/font_private to _real
+	- Fix indentation
+	- Minor cosmetic changes.
+
+	* libgnomeprint/gnome-print-pdf.h: add
+	* libgnomeprint/gnome-print-pdf.c: add
+	* libgnomeprint/gnome-print-pdf-tt.c: add
+	* libgnomeprint/gnome-print-pdf-t1.c: add
+	* libgnomeprint/gnome-print-pdf-private.h: add
+
+	* libgnomeprint/gnome-print-meta.c: fix indentation
+
+	* libgnomeprint/gnome-print-master.c
+	(gnome_print_config_get_layout_data): add a warning if we can't
+	get a layout from GnomeConfig.
+
+	* libgnomeprint/gnome-font-private.h: s/GFPSObject/GnomeFontPsObject
+
+	* libgnomeprint/gnome-font-face.c: remove unused
+	declarations. Rename the GFPSObject to GnomeFontPsObject, is more
+	clear.
+	(gnome_font_face_finalize): if def an g_assert that the PDF driver
+	is triggering.  Added a #warning about this.
+
+	* libgnomeprint/Makefile.am: add the pdf files
+
+	* data/printers/PDF-WRITER.printer: add
+
+	* data/models/GNOME-PDF-WRITER.model: add the Document leaf
+
+	* data/GNOME.vendor: enable the PDF backend again
+
+2002-06-15  Chema Celorio  <chema@ximian.com>
+	
+	* libgnomeprint/gp-tt-t1.c: Fix:
+	http://bugzilla.gnome.org/show_bug.cgi?id=77182
+	by Akira TAGOH. Fix indentation of gp-tt-t1.c too.
+
+2002-06-14  Carlos Perello Marin <carlos@gnome-db.org>
+
+	* doc/reference/Makefile.am: Added extra files to be distributed
+	at make dist and changed some libgnomeui references to
+	libgnomeprint.
 
 2002-06-07  Chema Celorio  <chema@ximian.com>
 
@@ -136,8 +1140,8 @@
 
 2002-06-04  Chema Celorio  <chema@ximian.com>
 
-	* libgnomeprint/gp-truetype-utils.c (gp_tt_split_glyf): apply patch from
-	<williamp@multiverse.com> to fix #80413
+	* libgnomeprint/gp-truetype-utils.c (gp_tt_split_glyf): apply
+	patch from <williamp@multiverse.com> to fix #80413
 
 	* tests/generate.c (my_draw_circle): new
 
@@ -145,28 +1149,29 @@
 
 	* doc/reference/libgnomeprint-sections.txt: remove unused sections
 
-	* libgnomeprint/gnome-print-ps2.c: a little bit of cleaning. Fix indentation
-	and some variable namings
+	* libgnomeprint/gnome-print-ps2.c: a little bit of cleaning. Fix
+	indentation and some variable namings
 
 2002-06-02  Chema Celorio  <chema@ximian.com>
 
-	* libgnomeprint/gnome-print-ps2.c: remove GnomepPrintPs2->level as it was not beeing
-	used.
+	* libgnomeprint/gnome-print-ps2.c: remove GnomepPrintPs2->level as
+	it was not beeing used.
 
-	* libgnomeprint/gnome-print-stdapi.c (gnome_print_arcto): change parameter from
-	r to radius so that the documentation won't break.
+	* libgnomeprint/gnome-print-stdapi.c (gnome_print_arcto): change
+	parameter from r to radius so that the documentation won't break.
 
 	* doc/reference/libgnomeprint-sections.txt: remove unused sections
 
 	* autogen.sh: don't run configure twice
 
-	* update dumentation standarize the gpa- headers and remove #if 0 ed code in them
+	* update dumentation standarize the gpa- headers and remove
+	#if-0ed code in them
 
 2002-06-02  Carlos Perelló Marín <carlos@gnome-db.org>
 
 	* doc/reference/question_index.sgml, doc/reference/reference.sgml:
-	Added more info about gnome-print resources. Now is time to document
-	all API and fill more useful information here :-).
+	Added more info about gnome-print resources. Now is time to
+	document all API and fill more useful information here :-).
 
 2002-06-02  Carlos Perelló Marín <carlos@gnome-db.org>
 
@@ -181,8 +1186,8 @@
 
 2002-06-02  Chema Celorio  <chema@ximian.com>
 
-	* autogen.sh: run configure --enable-gtk-doc after autogen.sh to try
-	to make the tinderbox not break.
+	* autogen.sh: run configure --enable-gtk-doc after autogen.sh to
+	try to make the tinderbox not break.
 
 	* libgnomeprint/gnome-font.c (gnome_font_get_width_utf8_sized): 
 	(gnome_font_get_width_utf8): add back, it broke other apps.
@@ -560,6 +1565,10 @@
 	Removed #defines cut&pasted from gnome-i18n.h/bonobo-i18n.h,
 	included <bonobo/bonobo-i18n.h> and defined _() macro as
 	libgnomeprint_gettext() function call.
+
+2002-05-01  Morten Welinder  <terra@diku.dk>
+
+	* libgnomeprint/gp-gc.c (gp_ctx_new): Attempt a fix for 78622.
 
 2002-05-01  Morten Welinder  <terra@diku.dk>
 

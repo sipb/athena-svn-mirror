@@ -1,8 +1,10 @@
-model_DATA= \
-	GNOME-GENERIC-PS.model \
-	HP-LASERJET-4ML.model \
-	STYLUS-COLOR-740.model
 
-modeldir=$(datadir)/gnome-print-2.0/models
+modelsdir=$(GNOME_PRINT_DATA_DIR)/models
+models_in_files = \
+     GNOME-GENERIC-PS.xml.in \
+	GNOME-PDF-WRITER.xml.in
+models_DATA=$(models_in_files:.xml.in=.xml)
 
-EXTRA_DIST = $(model_DATA)
+@INTLTOOL_XML_RULE@
+
+EXTRA_DIST = $(models_DATA)

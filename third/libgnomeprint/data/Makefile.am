@@ -1,20 +1,10 @@
 SUBDIRS = models printers
 
-EXTRA_DIST = \
-	EPSON.vendor \
-	GNOME.vendor \
-	HP.vendor \
-	media.xml
+globalsdir=$(GNOME_PRINT_DATA_DIR)
+globals_in_files=globals.xml.in
+globals_DATA=$(globals_in_files:.xml.in=.xml)
 
-vendordir=$(datadir)/gnome-print-2.0/vendors
+@INTLTOOL_XML_RULE@
 
-vendor_DATA = \
-	EPSON.vendor \
-	GNOME.vendor \
-	HP.vendor
-
-mediadir=$(datadir)/gnome-print-2.0/media
-
-media_DATA = \
-	media.xml
+EXTRA_DIST = $(globals_DATA)
 

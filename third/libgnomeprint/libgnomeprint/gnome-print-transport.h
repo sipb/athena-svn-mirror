@@ -1,68 +1,72 @@
-#ifndef _GNOME_PRINT_TRANSPORT_H_
-#define _GNOME_PRINT_TRANSPORT_H_
-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Abstract base class for transport providers
+ *  gnome-print-transport.h: Abstract base class for transport providers
  *
- * Authors:
- *   Raph Levien (raph@acm.org)
- *   Miguel de Icaza (miguel@kernel.org)
- *   Lauris Kaplinski <lauris@ximian.com>
- *   Chema Celorio (chema@celorio.com)
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public License
+ *  as published by the Free Software Foundation; either version 2 of
+ *  the License, or (at your option) any later version.
  *
- * Copyright (C) 1999-2001 Ximian, Inc. and authors
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
  *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *  Authors:
+ *    Raph Levien (raph@acm.org)
+ *    Miguel de Icaza (miguel@kernel.org)
+ *    Lauris Kaplinski <lauris@helixcode.com>
+ *    Chema Celorio <chema@celorio.com>
+ *
+ *  Copyright 2000-2003 Ximian, Inc. and authors
  */
 
+#ifndef __GNOME_PRINT_TRANSPORT_H__
+#define __GNOME_PRINT_TRANSPORT_H__
+
 #include <glib.h>
+#include <libgnomeprint/gnome-print-config.h>
+#include <libgnomeprint/gnome-print-private.h>
 
 G_BEGIN_DECLS
 
-#define GNOME_TYPE_PRINT_TRANSPORT (gnome_print_transport_get_type ())
-#define GNOME_PRINT_TRANSPORT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PRINT_TRANSPORT, GnomePrintTransport))
-#define GNOME_PRINT_TRANSPORT_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), GNOME_TYPE_PRINT_TRANSPORT, GnomePrintTransportClass))
-#define GNOME_IS_PRINT_TRANSPORT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_TRANSPORT))
-#define GNOME_IS_PRINT_TRANSPORT_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), GNOME_TYPE_PRINT_TRANSPORT))
-#define GNOME_PRINT_TRANSPORT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), GNOME_TYPE_PRINT_TRANSPORT, GnomePrintTransportClass))
+#define GNOME_TYPE_PRINT_TRANSPORT         (gnome_print_transport_get_type ())
+#define GNOME_PRINT_TRANSPORT(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PRINT_TRANSPORT, GnomePrintTransport))
+#define GNOME_PRINT_TRANSPORT_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k),    GNOME_TYPE_PRINT_TRANSPORT, GnomePrintTransportClass))
+#define GNOME_IS_PRINT_TRANSPORT(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_TRANSPORT))
+#define GNOME_IS_PRINT_TRANSPORT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k),    GNOME_TYPE_PRINT_TRANSPORT))
+#define GNOME_PRINT_TRANSPORT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o),  GNOME_TYPE_PRINT_TRANSPORT, GnomePrintTransportClass))
 
-/* GnomePrintTransport is defined in gnome-print-private.h */
 typedef struct _GnomePrintTransportClass GnomePrintTransportClass;
 
-#include <libgnomeprint/gnome-print-private.h>
-
 struct _GnomePrintTransport {
-	GObject object;
-	GnomePrintConfig *config;
-	guint opened : 1;
+	   GObject object;
+	   GnomePrintConfig *config;
+	   guint opened : 1;        /* TRUE if it has not been _closed */
 };
 
 struct _GnomePrintTransportClass {
-	GObjectClass parent_class;
-
-	gint (* construct) (GnomePrintTransport *transport);
-
-	gint (* open) (GnomePrintTransport *transport);
-	gint (* close) (GnomePrintTransport *transport);
-
-	gint (* write) (GnomePrintTransport *transport, const guchar *buf, gint len);
+	   GObjectClass parent_class;
+	   
+	   gint (* construct) (GnomePrintTransport *transport);
+	   gint (* open)      (GnomePrintTransport *transport);
+	   gint (* close)     (GnomePrintTransport *transport);
+	   gint (* write)     (GnomePrintTransport *transport, const guchar *buf, gint len);
 };
 
-GType gnome_print_transport_get_type (void);
+GType                 gnome_print_transport_get_type (void);
+GnomePrintTransport * gnome_print_transport_new (GnomePrintConfig *config);
 
 gint gnome_print_transport_construct (GnomePrintTransport *transport, GnomePrintConfig *config);
-gint gnome_print_transport_open (GnomePrintTransport *transport);
-gint gnome_print_transport_close (GnomePrintTransport *transport);
-
-gint gnome_print_transport_write (GnomePrintTransport *transport, const guchar *buf, gint len);
-
-/* Convenience methods */
-
-gint gnome_print_transport_printf (GnomePrintTransport *pc, const char *fmt, ...);
-
-GnomePrintTransport *gnome_print_transport_new (GnomePrintConfig *config);
+gint gnome_print_transport_open      (GnomePrintTransport *transport);
+gint gnome_print_transport_close     (GnomePrintTransport *transport);
+gint gnome_print_transport_write     (GnomePrintTransport *transport, const guchar *buf, gint len);
+gint gnome_print_transport_printf    (GnomePrintTransport *pc, const char *fmt, ...);
 
 G_END_DECLS
 
-#endif
-
-
+#endif /*  __GNOME_PRINT_TRANSPORT_H__ */

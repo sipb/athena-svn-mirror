@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint\n"
-"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"POT-Creation-Date: 2003-01-20 22:11-0500\n"
 "PO-Revision-Date: 2002-06-04 17:25+0400\n"
 "Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
@@ -12,184 +12,105 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: installer/gnome-font-install.c:141
-msgid "Print out debugging information"
-msgstr "Вывести отладочную информацию"
-
-#: installer/gnome-font-install.c:143
-msgid "Tries to do everything automatically"
-msgstr "Попытаться сделать всё автоматически"
-
-#: installer/gnome-font-install.c:145
-msgid "Search directories recursively for font files"
-msgstr "Искать файлы шрифтов в каталогах рекурсивно"
-
-#: installer/gnome-font-install.c:147
-msgid "Start from zero fontmap, instead of parsing old one"
-msgstr "Начинать с пустого файла fontmap, вместо анализа старого"
-
-#: installer/gnome-font-install.c:149
-msgid "Reverifies all font files, even for fontmaps of same version"
-msgstr ""
-"Перепроверять все файлы шрифтов даже для файлов fontmap такой же версии"
-
-#: installer/gnome-font-install.c:151
-msgid "Include font notice field (Copyright data) into fontmap"
-msgstr ""
-"Включать примечание (данные об авторском праве) из шрифта в файл fontmap"
-
-#: installer/gnome-font-install.c:153
-msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-msgstr "Создать $HOME/.gnome/fonts/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "Create "
-msgstr "Создать"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "/gnome-print.fontmap"
-msgstr "/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:159
-msgid "Write output fontmap to specified file (- for stdout)"
-msgstr "Записать вывод fontmap в указаный файл (- для stdout)"
-
-#: installer/gnome-font-install.c:161
-msgid ""
-"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-"print installation)"
-msgstr ""
-"Вернуть $FONTMAPDIR_STATIC и $FONTMAPDIR_DYNAMIC, используемые для этой "
-"установки gnome-print"
-
-#: installer/gnome-font-install.c:164
-msgid "File describing known aliases"
-msgstr "Файл, описывающий известные псевдонимы"
-
-#: installer/gnome-font-install.c:164 tests/testprint.c:71
-#: tests/testprint.c:73 tests/testprint.c:75
-msgid "PATH"
-msgstr "ПУТЬ"
-
-#: installer/gnome-font-install.c:167
-msgid "Specify default font(s) for any locale"
-msgstr "Указать шрифт по умолчанию для любой локали"
-
-#: installer/gnome-font-install.c:167
-msgid "[LOCALE[,LOCALE]:fontname]"
-msgstr "[LOCALE[,LOCALE]:fontname]"
-
-#: libgnomeprint/gnome-font-face.c:446
+#: libgnomeprint/gnome-font-face.c:490
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "В чащах юга жил-был цитрус. Да, но фальшивый экземпляръ!"
 
-#. fixme: fill in all papers and units
-#. fixme: load papers from file
-#. fixme: use some fancy unit program
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
 #.
 #. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
 #.
-#: libgnomeprint/gnome-print-paper.c:44
+#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
 msgid "A4"
 msgstr "A4"
 
 #. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Unit"
 msgstr "Единица"
 
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Units"
 msgstr "Единицы"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Point"
 msgstr "Пункт"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pt"
 msgstr "Пт"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Points"
 msgstr "Пункты"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pts"
 msgstr "Пт"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace unit"
 msgstr "Единица пространства пользователя"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "User"
 msgstr "Пользователь"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace units"
 msgstr "Единицы пространства пользователя"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixel"
 msgstr "Точка растра"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Px"
 msgstr "Тр"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixels"
 msgstr "Точки растра"
 
 #. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percent"
 msgstr "Процент"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "%"
 msgstr "%"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percents"
 msgstr "Проценты"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeter"
 msgstr "Миллиметр"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "mm"
 msgstr "мм"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeters"
 msgstr "Миллиметры"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeter"
 msgstr "Сантиметр"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "cm"
 msgstr "см"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeters"
 msgstr "Сантиметры"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meter"
-msgstr "Метр"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "m"
-msgstr "м"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meters"
-msgstr "Метры"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "Inch"
@@ -203,85 +124,336 @@ msgstr "дюйм"
 msgid "Inches"
 msgstr "Дюймы"
 
-#: libgnomeprint/gpa/gpa-media.c:246
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr ""
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr ""
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr ""
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr ""
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr ""
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr ""
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr ""
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr ""
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr ""
+
+#: data/globals.xml.in.h:14
+msgid "A5"
+msgstr ""
+
+#: data/globals.xml.in.h:15
+msgid "A6"
+msgstr ""
+
+#: data/globals.xml.in.h:16
+msgid "A7"
+msgstr ""
+
+#: data/globals.xml.in.h:17
+msgid "A8"
+msgstr ""
+
+#: data/globals.xml.in.h:18
+msgid "A9"
+msgstr ""
+
+#: data/globals.xml.in.h:19
+msgid "B0"
+msgstr ""
+
+#: data/globals.xml.in.h:20
+msgid "B1"
+msgstr ""
+
+#: data/globals.xml.in.h:21
+msgid "B10"
+msgstr ""
+
+#: data/globals.xml.in.h:22
+msgid "B2"
+msgstr ""
+
+#: data/globals.xml.in.h:23
+msgid "B3"
+msgstr ""
+
+#: data/globals.xml.in.h:24
+msgid "B4"
+msgstr ""
+
+#: data/globals.xml.in.h:25
+msgid "B5"
+msgstr ""
+
+#: data/globals.xml.in.h:26
+msgid "B6"
+msgstr ""
+
+#: data/globals.xml.in.h:27
+msgid "B7"
+msgstr ""
+
+#: data/globals.xml.in.h:28
+msgid "B8"
+msgstr ""
+
+#: data/globals.xml.in.h:29
+msgid "B9"
+msgstr ""
+
+#: data/globals.xml.in.h:30
+msgid "C0"
+msgstr ""
+
+#: data/globals.xml.in.h:31
+msgid "C1"
+msgstr ""
+
+#: data/globals.xml.in.h:32
+msgid "C10"
+msgstr ""
+
+#: data/globals.xml.in.h:33
+msgid "C2"
+msgstr ""
+
+#: data/globals.xml.in.h:34
+msgid "C3"
+msgstr ""
+
+#: data/globals.xml.in.h:35
+msgid "C4"
+msgstr ""
+
+#: data/globals.xml.in.h:36
+msgid "C5"
+msgstr ""
+
+#: data/globals.xml.in.h:37
+msgid "C6"
+msgstr ""
+
+#: data/globals.xml.in.h:38
+msgid "C6/C5 Envelope"
+msgstr ""
+
+#: data/globals.xml.in.h:39
+msgid "C7"
+msgstr ""
+
+#: data/globals.xml.in.h:40
+msgid "C8"
+msgstr ""
+
+#: data/globals.xml.in.h:41
+msgid "C9"
+msgstr ""
+
+#: data/globals.xml.in.h:42
 msgid "Custom"
 msgstr "Другой"
 
-#: libgnomeprint/gpa/gpa-media.c:268
-msgid "Straight"
-msgstr "Прямой"
+#: data/globals.xml.in.h:43
+msgid "DL Envelope"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:275
-msgid "Rotated 90 degrees"
-msgstr "Повёрнутый на 90 градусов"
+#: data/globals.xml.in.h:44
+msgid "Divided"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:282
-msgid "Rotated 180 degrees"
-msgstr "Повёрнутый на 180 градусов"
+#: data/globals.xml.in.h:45
+msgid "Envelope 6x9"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:289
-msgid "Rotated 270 degrees"
-msgstr "Повёрнутый на 270 градусов"
+#: data/globals.xml.in.h:46
+msgid "Envelope No10"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:308
-msgid "Portrait"
-msgstr "Портрет"
+#: data/globals.xml.in.h:47
+msgid "Folded"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:315
+#: data/globals.xml.in.h:48
 msgid "Landscape"
 msgstr "Альбом"
 
-#: libgnomeprint/gpa/gpa-media.c:322
-msgid "Upside down portrait"
-msgstr "Перевёрнутый портрет"
-
-#: libgnomeprint/gpa/gpa-media.c:329
-msgid "Upside down landscape"
-msgstr "Перевёрнутый альбом"
-
-#: libgnomeprint/gpa/gpa-media.c:348
+#: data/globals.xml.in.h:49
 msgid "Plain"
 msgstr "Простая"
 
-#: tests/testprint.c:69
-msgid "Print Paper database"
-msgstr "База данных бумаги"
+#: data/globals.xml.in.h:50
+msgid "Portrait"
+msgstr "Портрет"
 
-#: tests/testprint.c:70
-msgid "Describe GPA Tree"
-msgstr "Описать дерево GPA"
+#: data/globals.xml.in.h:51
+msgid "Rotated 180 degrees"
+msgstr "Повёрнутый на 180 градусов"
 
-#: tests/testprint.c:71
-msgid "Print text file"
-msgstr "Напечатать текстовый файл"
+#: data/globals.xml.in.h:52
+msgid "Rotated 270 degrees"
+msgstr "Повёрнутый на 270 градусов"
 
-#: tests/testprint.c:72
-msgid "Use GnomePrintMaster for printing"
-msgstr "Использовать для печати GnomePrintMaster"
+#: data/globals.xml.in.h:53
+msgid "Rotated 90 degrees"
+msgstr "Повёрнутый на 90 градусов"
 
-#: tests/testprint.c:73
-msgid "Dump printout to metafile ('-' for stdout)"
-msgstr "Выдать вывод печати в метафайл (\"-\" для stdout)"
+#: data/globals.xml.in.h:54
+msgid "Straight"
+msgstr "Прямой"
 
-#: tests/testprint.c:74
-msgid "Split job between bonobo"
-msgstr "Разделить работу c bonobo"
+#: data/globals.xml.in.h:55
+msgid "US Executive"
+msgstr ""
 
-#: tests/testprint.c:75
-msgid "Render from metafile"
-msgstr "Получить из метафайла"
+#: data/globals.xml.in.h:56
+msgid "US Legal"
+msgstr ""
 
-#: tests/testprint.c:156
-msgid "Gnome-print test page, rotated"
-msgstr "Пробная страница Gnome-print, повёрнутая"
+#: data/globals.xml.in.h:57
+msgid "US Letter"
+msgstr ""
 
-#: tests/testprint.c:173
-msgid "Gnome-print test page, slanted"
-msgstr "Пробная страница Gnome-print, наклонённая"
+#: data/globals.xml.in.h:58
+msgid "Upside down landscape"
+msgstr "Перевёрнутый альбом"
 
-#: tests/testprint.c:181
-msgid "Gnome-print test page, slanted. Small"
-msgstr "Пробная страница Gnome-print, наклонённая. Маленькая"
+#: data/globals.xml.in.h:59
+msgid "Upside down portrait"
+msgstr "Перевёрнутый портрет"
+
+#: data/printers/GENERIC.xml.in.h:1
+msgid "Generic Postscript"
+msgstr ""
+
+#: data/printers/PDF-WRITER.xml.in.h:1
+msgid "Create a PDF document"
+msgstr ""
+
+#~ msgid "Print out debugging information"
+#~ msgstr "Вывести отладочную информацию"
+
+#~ msgid "Tries to do everything automatically"
+#~ msgstr "Попытаться сделать всё автоматически"
+
+#~ msgid "Search directories recursively for font files"
+#~ msgstr "Искать файлы шрифтов в каталогах рекурсивно"
+
+#~ msgid "Start from zero fontmap, instead of parsing old one"
+#~ msgstr "Начинать с пустого файла fontmap, вместо анализа старого"
+
+#~ msgid "Reverifies all font files, even for fontmaps of same version"
+#~ msgstr ""
+#~ "Перепроверять все файлы шрифтов даже для файлов fontmap такой же версии"
+
+#~ msgid "Include font notice field (Copyright data) into fontmap"
+#~ msgstr ""
+#~ "Включать примечание (данные об авторском праве) из шрифта в файл fontmap"
+
+#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+#~ msgstr "Создать $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#~ msgid "Create "
+#~ msgstr "Создать"
+
+#~ msgid "/gnome-print.fontmap"
+#~ msgstr "/gnome-print.fontmap"
+
+#~ msgid "Write output fontmap to specified file (- for stdout)"
+#~ msgstr "Записать вывод fontmap в указаный файл (- для stdout)"
+
+#~ msgid ""
+#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+#~ "print installation)"
+#~ msgstr ""
+#~ "Вернуть $FONTMAPDIR_STATIC и $FONTMAPDIR_DYNAMIC, используемые для этой "
+#~ "установки gnome-print"
+
+#~ msgid "File describing known aliases"
+#~ msgstr "Файл, описывающий известные псевдонимы"
+
+#~ msgid "PATH"
+#~ msgstr "ПУТЬ"
+
+#~ msgid "Specify default font(s) for any locale"
+#~ msgstr "Указать шрифт по умолчанию для любой локали"
+
+#~ msgid "[LOCALE[,LOCALE]:fontname]"
+#~ msgstr "[LOCALE[,LOCALE]:fontname]"
+
+#~ msgid "Print Paper database"
+#~ msgstr "База данных бумаги"
+
+#~ msgid "Describe GPA Tree"
+#~ msgstr "Описать дерево GPA"
+
+#~ msgid "Print text file"
+#~ msgstr "Напечатать текстовый файл"
+
+#, fuzzy
+#~ msgid "Use GnomePrintJob for printing"
+#~ msgstr "Использовать для печати GnomePrintMaster"
+
+#~ msgid "Dump printout to metafile ('-' for stdout)"
+#~ msgstr "Выдать вывод печати в метафайл (\"-\" для stdout)"
+
+#~ msgid "Split job between bonobo"
+#~ msgstr "Разделить работу c bonobo"
+
+#~ msgid "Render from metafile"
+#~ msgstr "Получить из метафайла"
+
+#~ msgid "Gnome-print test page, rotated"
+#~ msgstr "Пробная страница Gnome-print, повёрнутая"
+
+#~ msgid "Gnome-print test page, slanted"
+#~ msgstr "Пробная страница Gnome-print, наклонённая"
+
+#~ msgid "Gnome-print test page, slanted. Small"
+#~ msgstr "Пробная страница Gnome-print, наклонённая. Маленькая"
+
+#~ msgid "Meter"
+#~ msgstr "Метр"
+
+#~ msgid "m"
+#~ msgstr "м"
+
+#~ msgid "Meters"
+#~ msgstr "Метры"
 
 #~ msgid "meters"
 #~ msgstr "Метры"

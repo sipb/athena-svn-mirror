@@ -1,29 +1,6 @@
-IMPORTANT
-
-For normal functioning, libgnomeprint needs custom font database.
-This can be initialized/updated via libgnomeprint-2.0-font-install
-program, that will be compiled together with library.
-
-Usually:
-
-gnome-font-install --smart
-
-should do, what is needed. If it does not, you may try to
-use --debug flag, and specify explicit path(s) that should be
-searched for installable fonts.
-
-This program is also run during 'make install', but it may fail
-for several reasons.
-
-installer/README.installer has full usage and some more examples.
-
-Lauris Kaplinski <lauris@ximian.com>
-22/02/2002
-
-
-
-
-
+This file is Outdated (Chema Celorio, Dec 2002) things have chagned a lot
+since it was written. I still belive it is usefull
+-----------------------------------------------
 Gnome Printing Library
 
 This is an implementation of the Gnome Printing Architecture, as
@@ -39,9 +16,7 @@ found in :
 
 We have a mailing list setup:
 
-   gnome-print@ximian.com
-
-For information about the native drivers read NATIVE_DRIVERS
+   gnome-print@gnome.org
 
 Overview
 

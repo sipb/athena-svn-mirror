@@ -28,7 +28,9 @@
 
 #define __GP_TRANSPORT_LPR_C__
 
+#include "config.h"
 #include <libgnomeprint/gnome-print.h>
+
 #include "gp-transport-lpr.h"
 
 static void gp_transport_lpr_class_init (GPTransportLPRClass *klass);
@@ -125,7 +127,7 @@ gp_transport_lpr_construct (GnomePrintTransport *transport)
 		tlpr->printer = value;
 	}
 
-	return GNOME_PRINT_ERROR_UNKNOWN;
+	return GNOME_PRINT_OK;
 }
 
 static gint
@@ -151,6 +153,7 @@ gp_transport_lpr_open (GnomePrintTransport *transport)
 	}
 	
 	g_free (command);
+	
 	return GNOME_PRINT_OK;
 }
 

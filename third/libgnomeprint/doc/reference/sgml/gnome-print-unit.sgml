@@ -77,9 +77,9 @@ void        <link linkend="gnome-print-unit-free-list">gnome_print_unit_free_lis
 <title><anchor id="GnomePrintUnitBase">enum GnomePrintUnitBase</title>
 <programlisting>typedef enum {
 	GNOME_PRINT_UNIT_DIMENSIONLESS = (1 &lt;&lt; 0), /* For percentages and like */
-	GNOME_PRINT_UNIT_ABSOLUTE = (1 &lt;&lt; 1), /* Real world distances - i.e. mm, cm... */
-	GNOME_PRINT_UNIT_DEVICE = (1 &lt;&lt; 2), /* Semi-real device-dependent distances i.e. pixels */
-	GNOME_PRINT_UNIT_USERSPACE = (1 &lt;&lt; 3) /* Mathematical coordinates */
+	GNOME_PRINT_UNIT_ABSOLUTE = (1 &lt;&lt; 1),      /* Real world distances - i.e. mm, cm... */
+	GNOME_PRINT_UNIT_DEVICE = (1 &lt;&lt; 2),        /* Semi-real device-dependent distances i.e. pixels */
+	GNOME_PRINT_UNIT_USERSPACE = (1 &lt;&lt; 3)      /* Mathematical coordinates */
 } GnomePrintUnitBase;
 </programlisting>
 <para>
@@ -87,7 +87,7 @@ void        <link linkend="gnome-print-unit-free-list">gnome_print_unit_free_lis
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-PS-UNIT-CAPS">GNOME_PRINT_PS_UNIT</title>
-<programlisting>#define GNOME_PRINT_PS_UNIT (gnome_print_unit_get_identity (GNOME_PRINT_UNIT_ABSOLUTE))
+<programlisting>#define GNOME_PRINT_PS_UNIT   (gnome_print_unit_get_identity (GNOME_PRINT_UNIT_ABSOLUTE))
 </programlisting>
 <para>
 
@@ -188,20 +188,21 @@ get a unit based on its abbreviation like "cm" "pts" or "in".</para>
                                              const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *from,
                                              const <link linkend="GnomePrintUnit">GnomePrintUnit</link> *to);</programlisting>
 <para>
+Check wether a conversion between <parameter>from</parameter> and <parameter>to</parameter> can be made</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>distance</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>from</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>to</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE if the conversion is possible, FALSE if
+              it is not or on error
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>
@@ -213,26 +214,26 @@ get a unit based on its abbreviation like "cm" "pts" or "in".</para>
                                              <link linkend="gdouble">gdouble</link> ctmscale,
                                              <link linkend="gdouble">gdouble</link> devicescale);</programlisting>
 <para>
+ctmscale is userspace->absolute, devicescale is device->absolute</para>
+<para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>distance</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>from</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>to</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>ctmscale</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
 <varlistentry><term><parameter>devicescale</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 

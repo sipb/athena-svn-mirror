@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  gnome-pgl.c: Experimental device adjusted rich text representation system
+ *  gnome-pgl.h: device adjusted rich text representation system
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
@@ -19,7 +19,7 @@
  *  Authors:
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian Inc. and authors
+ *  Copyright (C) 2000-2003 Ximian Inc. and authors
  */
 
 #ifndef __GNOME_PGL_H__
@@ -30,17 +30,11 @@
 G_BEGIN_DECLS
 
 /*
- * Although marked as experimental, this is used extensively by
- * libgnomeprint internals. So it should be stable enough for
- * everyone.
- *
  * This is device-adjusted counterpart of GnomeGlyphList, suitable
  * for fast rendering. All glyphs have been anchored to final
- * positions, according to specified rules in GlyphList.
+ * positions, according to specified rules in the GlyphList.
  *
  */
-
-
 typedef struct _GnomePosGlyphList GnomePosGlyphList;
 
 #include <libgnomeprint/gnome-glyphlist.h>
@@ -66,26 +60,16 @@ GnomePosGlyphList *gnome_pgl_from_gl (const GnomeGlyphList *gl, const gdouble *t
 void gnome_pgl_destroy (GnomePosGlyphList *pgl);
 
 /* Find ink dimensions */
-
 ArtDRect *gnome_pgl_bbox (const GnomePosGlyphList *pgl, ArtDRect *bbox);
 
 /* Test, whether given point is covered by ink */
-
 gboolean gnome_pgl_test_point (const GnomePosGlyphList *pgl, gdouble x, gdouble y);
 
 void gnome_pgl_render_rgba8 (const GnomePosGlyphList * pgl, gdouble x, gdouble y, guchar * buf,
 			     gint width, gint height, gint rowstride, guint flags);
-void gnome_pgl_render_rgb8 (const GnomePosGlyphList * pgl, gdouble x, gdouble y, guchar * buf,
-			    gint width, gint height, gint rowstride, guint flags);
-
-
+void gnome_pgl_render_rgb8  (const GnomePosGlyphList * pgl, gdouble x, gdouble y, guchar * buf,
+			     gint width, gint height, gint rowstride, guint flags);
 
 G_END_DECLS
 
-#endif
-
-
-
-
-
-
+#endif /* __GNOME_PGL_H__ */

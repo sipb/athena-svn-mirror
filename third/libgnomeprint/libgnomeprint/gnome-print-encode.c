@@ -19,46 +19,18 @@
  *  Authors:
  *    Chema Celorio <chema@celorio.com>
  *
- *  Copyright (C) 2000-2001 Ximian Inc. and authors
- *
+ *  Copyright (C) 2000-2003 Ximian Inc.
  */
-
-#define __GNOME_PRINT_ENCODE_C__
 
 #include <config.h>
 #include <string.h>
+#include <zlib.h>
 #include <glib.h>
+
 #include <libgnomeprint/gnome-print-encode.h>
 
-#include "zlib.h"
 
-/* TODO : add a parameter to the encoding methods called "size to beat" so that
-   we stop encoding a row that we know is too large to be chosen. We only need
-   to return in_size+1 if the length of the current buffer beeing encodeed
-   is greater than the "size to beat". */
-int gnome_print_encode_blank   (const guchar *in, gint in_size);
-int gnome_print_encode_rlc     (const guchar *in, guchar *out, gint in_size);
-int gnome_print_encode_tiff    (const guchar *in, guchar *out, gint in_size);
-int gnome_print_encode_drow    (const guchar *in, guchar *out, gint in_size, guchar *seed);
-int gnome_print_encode_hex     (const guchar *in, guchar *out, gint in_size);
-int gnome_print_decode_hex     (const guchar *in, guchar *out, gint in_size);
-int gnome_print_encode_ascii85 (const guchar *in, guchar *out, gint in_size);
-int gnome_print_decode_ascii85 (const guchar *in, guchar *out, gint in_size);
-int gnome_print_encode_deflate (const guchar *in, guchar *out, gint in_size, gint out_size);
-
-/* this worst case scenario functions return the size that the app should malloc
-   for a buffer that will be encodeed with a particular algorithm */
-int gnome_print_encode_rlc_wcs     (gint size);
-int gnome_print_encode_tiff_wcs    (gint size);
-int gnome_print_encode_drow_wcs    (gint size);
-int gnome_print_encode_hex_wcs     (gint size);
-int gnome_print_decode_hex_wcs     (gint size);
-int gnome_print_encode_ascii85_wcs (gint size);
-int gnome_print_decode_ascii85_wcs (gint size);
-int gnome_print_encode_deflate_wcs (gint size);
-
-#define GPC_MAX_CHARS_PER_LINE 80 /* Needs to be a multiple of 2 ! */
-
+#define GPC_MAX_CHARS_PER_LINE 80 /* Needs to be a multiple of 2 */
 
 /**
  * gnome_print_encode_blank :
@@ -101,7 +73,8 @@ gnome_print_encode_blank (const guchar *in, gint in_size)
  *
  * Return Value: the size of a rlc buffer in a WCS 
  **/
-gint gnome_print_encode_rlc_wcs (gint size)
+gint
+gnome_print_encode_rlc_wcs (gint size)
 {
 	return (size * 2) + 1;
 }
@@ -180,8 +153,9 @@ gnome_print_encode_rlc (const guchar *in, guchar *out, gint in_size)
  * 
  * Return Value: the size of a tiff buffer in a WCS 
  **/
-/* FIXME :  Calculate the real formula. Its less than x2 !! */
-gint gnome_print_encode_tiff_wcs (gint size)
+/* FIXME :  Calculate the real formula. Its less than x2 */
+gint
+gnome_print_encode_tiff_wcs (gint size)
 {
 	return (size * 2) + 1;
 }
@@ -295,7 +269,8 @@ gnome_print_encode_tiff (const guchar *in, guchar *out, gint in_size)
  * 
  * Return Value: the size of a drow buffer in a WCS 
  **/
-gint gnome_print_encode_drow_wcs (gint size)
+gint
+gnome_print_encode_drow_wcs (gint size)
 {
 	return (size + (gint)(size/8) + 2);
 }
@@ -390,8 +365,6 @@ gnome_print_encode_drow (const guchar *in, guchar *out, gint in_size, guchar *se
 			{
 				if (out[p1]==31)
 				{
-					/* Shakira really rules, so does the -- operator
-					 that's why we use it in the next line */ 
 					changed_bytes--;
 					/* Since we used more that 1 ctrl byte we know
 					   that the 1st ctrl byte has the 5 lower bits
@@ -410,9 +383,6 @@ gnome_print_encode_drow (const guchar *in, guchar *out, gint in_size, guchar *se
 				{
 					out[p1]=(changed_bytes-2)*32+offset;
 				}
-				/* I have no idea what the fuck is this for. je je
-				   I just like commenting code when I don't wanna think
-				   This song is great... Chema */ 
 				p2++;
 				p1=p2-1;
 				out[p1]=123;
@@ -462,9 +432,10 @@ gnome_print_encode_drow (const guchar *in, guchar *out, gint in_size, guchar *se
  * returns the bytes that the apps should allocate
  * for the "out" buffer of a hex encodede stream
  * 
- * Return Value: the size of a ascii85 buffer in a WCS 
+ * Return Value: the size of a hex buffer in a WCS 
  **/
-gint gnome_print_encode_hex_wcs (gint size)
+gint
+gnome_print_encode_hex_wcs (gint size)
 {
 	int ret;
 
@@ -483,7 +454,8 @@ gint gnome_print_encode_hex_wcs (gint size)
  *
  * Return Value: size of the encoded buffer
  **/
-int gnome_print_encode_hex (const guchar *in, guchar *out, gint in_size)
+int
+gnome_print_encode_hex (const guchar *in, guchar *out, gint in_size)
 {
 	const char tohex[16] = "0123456789abcdef";
 	unsigned char b;
@@ -508,6 +480,9 @@ int gnome_print_encode_hex (const guchar *in, guchar *out, gint in_size)
 		}
 	}
 
+	if (col != 0)
+		out [p1++] = '\n';
+	
 	return p1;
 }
 
@@ -520,7 +495,8 @@ int gnome_print_encode_hex (const guchar *in, guchar *out, gint in_size)
  * 
  * Return Value: the size of a decoded buffer in a WCS 
  **/
-gint gnome_print_decode_hex_wcs (gint size)
+gint
+gnome_print_decode_hex_wcs (gint size)
 {
 	int ret;
 
@@ -530,16 +506,19 @@ gint gnome_print_decode_hex_wcs (gint size)
 }
 
 
-/* FIXME: Implement as a macro ? maybe */
 static inline gint
 hex_2_dec (guchar upper, guchar lower)
 {
-	if (upper > '9')
+	if (upper > '9') {
+		upper |= 0x20;
 		upper -= 39;
-	if (lower > '9')
+	}
+	if (lower > '9') {
+		lower |= 0x20;
 		lower -= 39;
+	}
 	       
-	return ((upper - '0')*16) + lower - '0';
+	return ((upper - '0') << 4) + lower - '0';
 }
 
 /**
@@ -552,22 +531,38 @@ hex_2_dec (guchar upper, guchar lower)
  *
  * Return Value: size of the decoded buffer
  **/
-int gnome_print_decode_hex (const guchar *in, guchar *out, gint in_size)
+int
+gnome_print_decode_hex (const guchar *in, guchar *out, gint *in_size_ret)
 {
 	gint p1; /* Points to where we are writing into the out buffer */
 	gint p2; /* Points to where we are reading from the in buffer */
+	gint in_size = *in_size_ret;
 
 	p1 = 0;
 	p2 = 0;
-	for (p2=0; p2 < in_size; p2+=2)
-	{
+
+	if (in_size < 2) {
+		g_warning ("Insize should be at least 2 for _decode_hex, is %d\n"
+			   "Conversion to binary might be inaccurate", in_size);
+		out [p1++] = hex_2_dec (in[p2] , 0);
+		*in_size_ret = 1;
+		return p1;
+	}
+
+	while ((p2 + 2) <= in_size) {
 		if ((in [p2] == ' ') ||
 		    (in [p2] == '\t') ||
-		    (in [p2] == '\n'))
+		    (in [p2] == '\n') ||
+		    (in [p2] == '\r')) {
+			p2++;
 			continue;
-
+		}
 		out [p1++] = hex_2_dec (in[p2], in [p2+1]);
+		p2++;
+		p2++;
 	}
+
+	*in_size_ret = p2;
 
 	return p1;
 }
@@ -581,7 +576,8 @@ int gnome_print_decode_hex (const guchar *in, guchar *out, gint in_size)
  * 
  * Return Value: the size of a ascii85 buffer in a WCS 
  **/
-gint gnome_print_encode_ascii85_wcs (gint size)
+gint
+gnome_print_encode_ascii85_wcs (gint size)
 {
 	return ((((size/4)+1)*5)+3+(size/GPC_MAX_CHARS_PER_LINE));
 }
@@ -602,7 +598,8 @@ gint gnome_print_encode_ascii85_wcs (gint size)
  *
  * Return Value: size of the encoded buffer
  **/
-int gnome_print_encode_ascii85 (const guchar *in, guchar *out, gint in_size)
+int
+gnome_print_encode_ascii85 (const guchar *in, guchar *out, gint in_size)
 {
 	guint p1; /* points to where we are reading from the in buffer */
 	guint p2; /* points to where we are writing to the out buffer */
@@ -694,43 +691,6 @@ int gnome_print_encode_ascii85 (const guchar *in, guchar *out, gint in_size)
 	return p2;
 }
 
-
-/* We need to find ways of mult. and dividing by 85^x */
-#define Mult_85_12(x) { \
-  x += (x<<2); \
-  x += (x<<4); }
-
-#define Mult_85_22(x) { \
-  a = (x<<3) + (x<<4) + (x<<5); \
-  x += a + (a<<7); }
-
-#define Mult_85_32(x) { \
-  a = x + (x<<3); \
-  b = (a<<2) + (a<<6); \
-  x = (x<<12) + a + (a<<16) + b + (b<<5);}
-
-#define Mult_85_2(x,y) { \
-				t = x; \
-				a = (t<<3) + (t<<4) + (t<<5); \
-				t = a + (a<<7); \
-				y -= t; \
-				}	
-#define Mult_85_3(x,y) { \
-				t = x; \
-				a = t + (t<<3); \
-				b = (a<<2) + (a<<6); \
-				t = (t<<12) + a + (a<<6) + b + (b<<5); \
-				y -= t; \
-				}	
-#define Mult_85_4(x, y) { \
-				t = x; \
-				a = t + (t<<4) + (t<<5); \
-				b = (t<<7) + (t<<10); \
-				x = (t << 19) + a + (a << 20) + b + (b<<8); \
-				y -= t; \
-			} 
-
-
 /**
  * gnome_print_encode_ascii85_wcs:
  * @size: the size of the "in" buffer
@@ -740,7 +700,8 @@ int gnome_print_encode_ascii85 (const guchar *in, guchar *out, gint in_size)
  * 
  * Return Value: the size of a ascii85 buffer in a WCS 
  **/
-gint gnome_print_decode_ascii85_wcs (gint size)
+gint
+gnome_print_decode_ascii85_wcs (gint size)
 {
 	gint length;
 	length = ((((size-2)/5)+1)*4)+1;
@@ -757,7 +718,8 @@ gint gnome_print_decode_ascii85_wcs (gint size)
  *
  * Return Value: size of the encoded buffer
  **/
-int gnome_print_decode_ascii85 (const guchar *in, guchar *out, gint in_size)
+int
+gnome_print_decode_ascii85 (const guchar *in, guchar *out, gint in_size)
 {
         gint p1 = 0;
         gint p2 = 0;
