@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.5.2.1 1999-08-21 14:50:25 ghudson Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.5.2.1.2.1 2000-02-03 15:36:36 tb Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -584,7 +584,7 @@ static int mountpoint_rmdir(locker_context context, locker_attachent *at,
   if (rmdir(path) == -1)
     {
       free(file);
-      if (errno == EEXIST)
+      if (errno == ENOTEMPTY || errno == EEXIST)
 	return LOCKER_EMOUNTPOINTBUSY;
       locker__error(context, "%s: Could not remove mountpoint component "
 		    "%s:\n%s.\n", at->name, path, strerror(errno));
