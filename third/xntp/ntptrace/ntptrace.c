@@ -28,11 +28,17 @@
 #include <signal.h>
 #include <ctype.h>
 #include <netdb.h>
-#include <sys/signal.h>
+#ifdef HAVE_SYS_SIGNAL_H
+# include <sys/signal.h>
+#else
+# include <signal.h>
+#endif
 #ifdef HAVE_SYS_IOCTL_H
 # include <sys/ioctl.h>
 #endif
-#include <sys/resource.h>
+#ifdef HAVE_SYS_RESOURCE_H
+# include <sys/resource.h>
+#endif
 
 /*
  * only 16 stratums, so this is more than enough.
@@ -618,7 +624,7 @@ sendpkt(
 {
 	int cc;
 
-	cc = sendto(fd, (char *)pkt, len, 0, (struct sockaddr *)dest,
+	cc = sendto(fd, (char *)pkt, (size_t)len, 0, (struct sockaddr *)dest,
 		    sizeof(struct sockaddr_in));
 	if (cc == -1) {
 #ifndef SYS_WINNT

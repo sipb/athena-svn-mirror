@@ -55,6 +55,7 @@
 #define CONFIG_CRYPTO		34
 #define CONFIG_KEYSDIR		35
 #endif /* PUBKEY */
+#define CONFIG_INCLUDEFILE	36
 
 /*
  * "peer", "server", "broadcast" modifier keywords
@@ -88,6 +89,8 @@
 #define CONF_RES_LPTRAP		9
 #define CONF_RES_NTPPORT	10
 #define CONF_RES_LIMITED	11
+#define CONF_RES_VERSION	12
+#define CONF_RES_DEMOBILIZE	13
 
 /*
  * "trap" modifier keywords
@@ -131,6 +134,9 @@
 #define CONF_CLOCK_PANIC	2
 #define CONF_CLOCK_PHI		3
 #define CONF_CLOCK_MINSTEP	4
+#define CONF_CLOCK_MINPOLL	5
+#define CONF_CLOCK_ALLAN	6
+#define CONF_CLOCK_HUFFPUFF	7
 
 #ifdef PUBKEY
 /*

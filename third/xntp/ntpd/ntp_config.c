@@ -5,6 +5,10 @@
 # include <config.h>
 #endif
 
+#ifdef HAVE_NETINFO
+# include <netinfo/ni.h>
+#endif
+
 #include "ntpd.h"
 #include "ntp_io.h"
 #include "ntp_unixtime.h"
@@ -20,7 +24,9 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
+#endif
 #include <signal.h>
 #ifndef SIGCHLD
 # define SIGCHLD SIGCLD
@@ -30,10 +36,6 @@
 #  include <sys/wait.h>
 # endif
 #endif /* VMS */
-
-#ifdef HAVE_NETINFO
-# include <netinfo/ni.h>
-#endif
 
 #ifdef SYS_WINNT
 # include <io.h>
@@ -79,8 +81,8 @@ extern int priority_done;
  * setvar [ ]
  * logfile logfile
  * logconfig [+|-|=][{sync|sys|peer|clock}{{,all}{info|statistics|events|status}}]...
- * enable auth|bclient|pll|kernel|monitor|stats
- * disable auth|bclient|pll|kernel|monitor|stats
+ * enable auth|bclient|pll|kernel|monitor|stats|calibrate
+ * disable auth|bclient|pll|kernel|monitor|stats|calibrate
  * phone ...
  * pps device [assert|clear] [hardpps]
  * priority high|normal
@@ -114,6 +116,7 @@ static	struct keyword keywords[] = {
 	{ "enable",		CONFIG_ENABLE },
 	{ "filegen",		CONFIG_FILEGEN },
 	{ "fudge",		CONFIG_FUDGE },
+	{ "includefile",	CONFIG_INCLUDEFILE },
 	{ "keys",		CONFIG_KEYS },
 #ifdef PUBKEY
 	{ "keysdir",		CONFIG_KEYSDIR },
@@ -134,6 +137,7 @@ static	struct keyword keywords[] = {
 	{ "setvar",		CONFIG_SETVAR },
 	{ "statistics",		CONFIG_STATISTICS },
 	{ "statsdir",		CONFIG_STATSDIR },
+	{ "tinker",		CONFIG_TINKER },
 	{ "trap",		CONFIG_TRAP },
 	{ "trustedkey",		CONFIG_TRUSTEDKEY },
 	{ "",			CONFIG_UNKNOWN }
@@ -166,6 +170,7 @@ static	struct keyword mod_keywords[] = {
 static	struct keyword res_keywords[] = {
 	{ "ignore",		CONF_RES_IGNORE },
 	{ "limited",		CONF_RES_LIMITED },
+	{ "kod",		CONF_RES_DEMOBILIZE },
 	{ "lowpriotrap",	CONF_RES_LPTRAP },
 	{ "mask",		CONF_RES_MASK },
 	{ "nomodify",		CONF_RES_NOMODIFY },
@@ -175,6 +180,7 @@ static	struct keyword res_keywords[] = {
 	{ "notrap",		CONF_RES_NOTRAP },
 	{ "notrust",		CONF_RES_NOTRUST },
 	{ "ntpport",		CONF_RES_NTPPORT },
+	{ "version",		CONF_RES_VERSION },
 	{ "",			CONFIG_UNKNOWN }
 };
 
@@ -236,12 +242,12 @@ static	struct keyword fgen_types[] = {
 static struct keyword flags_keywords[] = {
 	{ "auth",		PROTO_AUTHENTICATE },
 	{ "bclient",		PROTO_BROADCLIENT },
+	{ "calibrate",		PROTO_CAL },
 	{ "kernel",		PROTO_KERNEL },
 	{ "monitor",		PROTO_MONITOR },
 	{ "ntp",		PROTO_NTP },
-	{ "stats",		PROTO_FILEGEN },
 	{ "pps",		PROTO_PPS },
-	{ "calibrate",		PROTO_CAL },
+	{ "stats",		PROTO_FILEGEN },
 	{ "",			CONFIG_UNKNOWN }
 };
 
@@ -263,6 +269,9 @@ static struct keyword tinker_keywords[] = {
 	{ "panic",		CONF_CLOCK_PANIC },
 	{ "dispersion",		CONF_CLOCK_PHI },
 	{ "stepout",		CONF_CLOCK_MINSTEP },
+	{ "minpoll",		CONF_CLOCK_MINPOLL },
+	{ "allan",		CONF_CLOCK_ALLAN },
+	{ "huffpuff",		CONF_CLOCK_HUFFPUFF },
 	{ "",			CONFIG_UNKNOWN }
 };
 
@@ -320,6 +329,7 @@ static struct masks logcfg_item[] = {
 #define MAXLINE		1024	/* maximum length of line */
 #define MAXPHONE	5	/* maximum number of phone strings */
 #define MAXPPS		20	/* maximum length of PPS device string */
+#define MAXINCLUDELEVEL	5	/* maximum include file levels */
 
 /*
  * Miscellaneous macros
@@ -484,6 +494,7 @@ getconfig(
 	int minpoll;
 	int maxpoll;
 	int ttl;
+	long stratum;
 	unsigned long ul;
 	keyid_t peerkey;
 	u_char *peerkeystr;
@@ -492,7 +503,9 @@ getconfig(
 	int hmode;
 	struct sockaddr_in peeraddr;
 	struct sockaddr_in maskaddr;
-	FILE *fp;
+	FILE *fp[MAXINCLUDELEVEL+1];
+	FILE *includefile;
+	int includelevel = 0;
 	char line[MAXLINE];
 	char *(tokens[MAXTOKENS]);
 	int ntokens;
@@ -549,7 +562,7 @@ getconfig(
 	getCmdOpts(argc, argv);
 
 	if (
-	    (fp = fopen(FindConfig(config_file), "r")) == NULL
+	    (fp[0] = fopen(FindConfig(config_file), "r")) == NULL
 #ifdef HAVE_NETINFO
 	    /* If there is no config_file, try NetInfo. */
 	    && check_netinfo && !(config_netinfo = get_netinfo_config())
@@ -560,7 +573,7 @@ getconfig(
 #ifdef SYS_WINNT
 		/* Under WinNT try alternate_config_file name, first NTP.CONF, then NTP.INI */
 
-		if ((fp = fopen(FindConfig(alt_config_file), "r")) == NULL) {
+		if ((fp[0] = fopen(FindConfig(alt_config_file), "r")) == NULL) {
 
 			/*
 			 * Broadcast clients can sometimes run without
@@ -577,14 +590,21 @@ getconfig(
 	}
 
 	for (;;) {
-		if (fp)
-			tok = gettokens(fp, line, tokens, &ntokens);
+		if (fp[includelevel])
+			tok = gettokens(fp[includelevel], line, tokens, &ntokens);
 #ifdef HAVE_NETINFO
 		else
 			tok = gettokens_netinfo(config_netinfo, tokens, &ntokens);
 #endif /* HAVE_NETINFO */
 
-		if (tok == CONFIG_UNKNOWN) break;
+		if (tok == CONFIG_UNKNOWN) {
+		    if (includelevel > 0) {
+			fclose(fp[includelevel--]);
+			continue;
+		    } else {
+			break;
+		    }
+		}
 
 		switch(tok) {
 		    case CONFIG_PEER:
@@ -692,8 +712,12 @@ getconfig(
 					    break;
 				    }
 				    minpoll = atoi(tokens[++i]);
-				    if (minpoll < NTP_MINPOLL)
+				    if (minpoll < NTP_MINPOLL) {
+					    msyslog(LOG_INFO,
+						    "minpoll: provided value (%d) is below minimum (%d)",
+						    minpoll, NTP_MINPOLL);
 					minpoll = NTP_MINPOLL;
+				    }
 				    break;
 
 				case CONF_MOD_MAXPOLL:
@@ -705,8 +729,12 @@ getconfig(
 					    break;
 				    }
 				    maxpoll = atoi(tokens[++i]);
-				    if (maxpoll > NTP_MAXPOLL)
+				    if (maxpoll > NTP_MAXPOLL) {
+					    msyslog(LOG_INFO,
+						    "maxpoll: provided value (%d) is above maximum (%d)",
+						    maxpoll, NTP_MAXPOLL);
 					maxpoll = NTP_MAXPOLL;
+				    }
 				    break;
 
 				case CONF_MOD_PREFER:
@@ -801,6 +829,25 @@ getconfig(
 			    stats_config(STATS_PID_FILE, tokens[1]);
 			else
 			    stats_config(STATS_PID_FILE, (char *)0);
+			break;
+
+		    case CONFIG_INCLUDEFILE:
+			if (ntokens < 2) {
+			    msyslog(LOG_ERR, "includefile needs one argument");
+			    break;
+			}
+			if (includelevel >= MAXINCLUDELEVEL) {
+			    fprintf(stderr, "getconfig: Maximum include file level exceeded.\n");
+			    msyslog(LOG_INFO, "getconfig: Maximum include file level exceeded.");
+			    break;
+			}
+			includefile = fopen(FindConfig(tokens[1]), "r");
+			if (includefile == NULL) {
+			    fprintf(stderr, "getconfig: Couldn't open <%s>\n", FindConfig(tokens[1]));
+			    msyslog(LOG_INFO, "getconfig: Couldn't open <%s>", FindConfig(tokens[1]));
+			    break;
+			}
+			fp[++includelevel] = includefile;
 			break;
 
 		    case CONFIG_LOGFILE:
@@ -907,17 +954,6 @@ getconfig(
 			}
 			break;
 
-#ifdef AUTOKEY
-		    case CONFIG_REVOKE:
-			if (ntokens >= 2)
-			    sys_revoke = 1 << max(atoi(tokens[1]), 10);
-			break;
-
-		    case CONFIG_AUTOMAX:
-			if (ntokens >= 2)
-			    sys_automax = 1 << max(atoi(tokens[1]), 10);
-			break;
-
 		    case CONFIG_TINKER:
 			for (i = 1; i < ntokens; i++) {
 			    int temp;
@@ -938,7 +974,7 @@ getconfig(
 				break;
 
 			    case CONF_CLOCK_PANIC:
-				loop_config(LOOP_MAX, ftemp);
+				loop_config(LOOP_PANIC, ftemp);
 				break;
 
 			    case CONF_CLOCK_PHI:
@@ -948,8 +984,31 @@ getconfig(
 			    case CONF_CLOCK_MINSTEP:
 				loop_config(LOOP_MINSTEP, ftemp);
 				break;
+
+			    case CONF_CLOCK_MINPOLL:
+				loop_config(LOOP_MINPOLL, ftemp);
+				break;
+
+			    case CONF_CLOCK_ALLAN:
+				loop_config(LOOP_ALLAN, ftemp);
+				break;
+
+			    case CONF_CLOCK_HUFFPUFF:
+				loop_config(LOOP_HUFFPUFF, ftemp);
+				break;
 			    }
 			}
+			break;
+
+#ifdef AUTOKEY
+		    case CONFIG_REVOKE:
+			if (ntokens >= 2)
+			    sys_revoke = 1 << max(atoi(tokens[1]), 10);
+			break;
+
+		    case CONFIG_AUTOMAX:
+			if (ntokens >= 2)
+			    sys_automax = 1 << max(atoi(tokens[1]), 10);
 			break;
 
 #ifdef PUBKEY
@@ -1076,6 +1135,14 @@ getconfig(
 
 				    case CONF_RES_NTPPORT:
 					peerkey |= RESM_NTPONLY;
+					break;
+
+				    case CONF_RES_VERSION:
+					peerversion |= RES_VERSION;
+					break;
+
+				    case CONF_RES_DEMOBILIZE:
+					peerversion |= RES_DEMOBILIZE;
 					break;
 
 				    case CONF_RES_LIMITED:
@@ -1284,9 +1351,7 @@ getconfig(
 
 
 				    case CONF_FDG_STRATUM:
-					/* HMS: the (long *)_ may be trouble */
-					if (!atoint(tokens[++i],
-						    (long *)&clock_stat.fudgeval1))
+				      if (!atoint(tokens[++i], &stratum))
 					{
 						msyslog(LOG_ERR,
 							"fudge %s stratum value in error",
@@ -1294,6 +1359,7 @@ getconfig(
 						errflg = i;
 						break;
 					}
+					clock_stat.fudgeval1 = stratum;
 					clock_stat.haveflags |= CLK_HAVEVAL1;
 					break;
 
@@ -1592,8 +1658,8 @@ getconfig(
 			break;
 		}
 	}
-	if (fp)
-		(void)fclose(fp);
+	if (fp[0])
+		(void)fclose(fp[0]);
 
 #ifdef HAVE_NETINFO
 	if (config_netinfo)
@@ -2020,7 +2086,7 @@ save_resolve(
 
 			res_fp = NULL;
 			if ((fd = mkstemp(res_file)) != -1)
-				res_fp = fdopen(fd, "w");
+				res_fp = fdopen(fd, "r+");
 		}
 #else
 		(void) mktemp(res_file);
@@ -2037,11 +2103,11 @@ save_resolve(
 	}
 #endif
 
-	(void)fprintf(res_fp, "%s %d %d %d %d %d %d %d %s\n", name,
+	(void)fprintf(res_fp, "%s %d %d %d %d %d %d %u %s\n", name,
 	    mode, version, minpoll, maxpoll, flags, ttl, keyid, keystr);
 #ifdef DEBUG
 	if (debug > 1)
-		printf("config: %s %d %d %d %d %x %d %08x %s\n", name, mode,
+		printf("config: %s %d %d %d %d %x %d %u %s\n", name, mode,
 		    version, minpoll, maxpoll, flags, ttl, keyid, keystr);
 #endif
 

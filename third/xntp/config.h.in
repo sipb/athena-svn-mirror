@@ -1,10 +1,4 @@
 /* config.h.in.  Generated automatically from configure.in by autoheader.  */
-/* Package */
-#undef PACKAGE
-
-/* Version */
-#undef VERSION
-
 /* debugging code */
 #undef DEBUG
 
@@ -88,6 +82,9 @@
 
 /* Sun IRIG audio decoder */
 #undef CLOCK_IRIG
+
+/* JJY receiver */
+#undef CLOCK_JJY
 
 /* Rockwell Jupiter GPS clock */
 #undef CLOCK_JUPITER
@@ -406,6 +403,12 @@
 /* cfset[io]speed()? */
 #undef DECL_CFSETISPEED_0
 
+/* hstrerror()? */
+#undef DECL_HSTRERROR_0
+
+/* inet_ntoa()? */
+#undef DECL_INET_NTOA_0
+
 /* ioctl()? */
 #undef DECL_IOCTL_0
 
@@ -477,6 +480,9 @@
 /* toupper()? */
 #undef DECL_TOUPPER_0
 
+/* strerror()? */
+#undef DECL_STRERROR_0
+
 #undef ULONG_CONST
 
 /* Autokey? */
@@ -490,6 +496,9 @@
 
 /* Define if you have the <bstring.h> header file. */
 #undef HAVE_BSTRING_H
+
+/* Define if you have the `clock_gettime' function. */
+#undef HAVE_CLOCK_GETTIME
 
 /* Define if you have the `clock_settime' function. */
 #undef HAVE_CLOCK_SETTIME
@@ -509,14 +518,14 @@
 /* Define if you have the `getbootfile' function. */
 #undef HAVE_GETBOOTFILE
 
+/* Define if you have the `getclock' function. */
+#undef HAVE_GETCLOCK
+
 /* Define if you have the `getdtablesize' function. */
 #undef HAVE_GETDTABLESIZE
 
 /* Define if you have the `getrusage' function. */
 #undef HAVE_GETRUSAGE
-
-/* Define if you have the `gettimeofday' function. */
-#undef HAVE_GETTIMEOFDAY
 
 /* Define if you have the `getuid' function. */
 #undef HAVE_GETUID
@@ -572,6 +581,9 @@
 /* Define if you have the `socket' library (-lsocket). */
 #undef HAVE_LIBSOCKET
 
+/* Define if you have the `syslog' library (-lsyslog). */
+#undef HAVE_LIBSYSLOG
+
 /* Define if you have the <machine/inline.h> header file. */
 #undef HAVE_MACHINE_INLINE_H
 
@@ -611,8 +623,14 @@
 /* Define if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
 
+/* Define if you have the <netinet/in_system.h> header file. */
+#undef HAVE_NETINET_IN_SYSTEM_H
+
 /* Define if you have the <netinet/in_systm.h> header file. */
 #undef HAVE_NETINET_IN_SYSTM_H
+
+/* Define if you have the <netinet/ip.h> header file. */
+#undef HAVE_NETINET_IP_H
 
 /* Define if you have the <netinfo/ni.h> header file. */
 #undef HAVE_NETINFO_NI_H
@@ -701,6 +719,9 @@
 /* Define if you have the `srand48' function. */
 #undef HAVE_SRAND48
 
+/* Define if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
 /* Define if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
 
@@ -787,6 +808,9 @@
 
 /* Define if you have the <sys/select.h> header file. */
 #undef HAVE_SYS_SELECT_H
+
+/* Define if you have the <sys/signal.h> header file. */
+#undef HAVE_SYS_SIGNAL_H
 
 /* Define if you have the <sys/sio.h> header file. */
 #undef HAVE_SYS_SIO_H

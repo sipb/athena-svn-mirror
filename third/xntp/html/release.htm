@@ -15,19 +15,20 @@ Adventures in Wonderland</i>, Lewis Carroll</a>
 </p>
 
 <hr>
-<p>This document was last updated 31 December 2000</p>
+<p>This document was last updated 4 May 2001</p>
 
 <h4>NTP Version 4 Release Notes</h4>
 
-<p>This release of the NTP Version 4 (NTPv4) daemon for Unix
-incorporates new features and refinements to the NTP Version 3
-(NTPv3) algorithms. However, it continues the tradition of
-retaining backwards compatibility with older versions. The NTPv4
-version has been under development for quite a while and isn't
-finished yet. In fact, quite a number of NTPv4 features have
-already been retrofitted in the current NTPv3, although this
-version is not actively maintained by the NTPv4 developer's
-group.</p>
+<p>This release of the NTP Version 4 (NTPv4) daemon for Unix, VMS
+and Windows (NT4 and 2000) incorporates new features and
+refinements to the NTP Version 3 (NTPv3) algorithms. However, it
+continues the tradition of retaining backwards compatibility with
+older versions, except for symmetric mode in NTPv1. Client/server
+mode continues to be supported in NTPv1. The NTPv4 version has been
+under development for quite a while and isn't finished yet. In
+fact, quite a number of NTPv4 features have already been
+retrofitted in the current NTPv3, although this version is not
+actively maintained by the NTPv4 developer's group.</p>
 
 <p>The primary purpose of this release is to verify the remaining
 new code compiles and runs in the various architectures, operating
@@ -137,7 +138,7 @@ been extended to all drivers as an intrinsic function. Most of the
 drivers in NTPv3 have been converted to this interface, but some,
 including the PARSE subinterface, have yet to be overhauled. New
 drivers have been added for several GPS receivers now on the market
-for a total of 37 drivers. Drivers for the Canadian standard time
+for a total of 39 drivers. Drivers for the Canadian standard time
 and frequency station CHU, the US standard time and frequency
 stations WWV/H and for IRIG signals have been updated and
 capabilities added to allow direct connection of these signals to
@@ -170,9 +171,9 @@ functions.</p>
 
 <h4>Nasty Surprises</h4>
 
-There are a few things different about this release that have
+<p>There are a few things different about this release that have
 changed since the latest NTP Version 3 release. Following are a few
-things to worry about: 
+things to worry about:</p>
 
 <ol>
 <li>
@@ -196,14 +197,18 @@ laboratories.</p>
 <li>
 <p>The enable and disable commands have a few changes in their
 arguments see the <tt>ntpd</tt> <a href="confopt.htm">Configuration
-Options</a> page for details.</p>
+Options</a> page for details. Note that the <tt>authenticate</tt>
+command has been removed.</p>
 </li>
 
 <li>
 <p>The <tt>ppsclock</tt> line discipline/streams module is no
 longer supported. This function is now handled by the <a href=
 "driver22.htm">PPS Clock Discipline</a> driver, which uses the new
-PPSAPI application program interface proposed by the IETF.</p>
+PPSAPI application program interface proposed by the IETF. Note
+that the <tt>pps</tt> configuration file command has been obsoleted
+by the driver. See the <a href="pps.htm">Pulse-per-second (PPS)
+Signal Interfacing</a> page for further information.</p>
 </li>
 
 <li>
@@ -212,19 +217,40 @@ command line. For the inveterate knob twiddlers several of the more
 important performance variables can be changed to fit actual or
 perceived special conditions. It is possible to operate the daemon
 in a one-time mode similar to <tt>ntpdate</tt>, which program is
-headed for retirement. See the documentation page for the new
+headed for retirement. See the <a href="ntpd.htm"><tt>ntpd</tt> -
+Network Time Protocol (NTP) daemon</a> page for the new
 features.</p>
+</li>
+
+<li>
+<p>To help reduce the level of spurious network traffic due to
+obsolete configuration files, a special control message called the
+kiss-of-death packet has been implemented. If enabled and a packet
+is denied service or exceeds the client limie, a compliant server
+will send this message to the client. A compliant client will cease
+further transmission and send a message to the system log. See the
+<a href="accopt.htm">Authentication Options</a> page for further
+information.</p>
+</li>
+
+<li>
+<p>An experimental filter algorithm called huff-n'-puff has been
+implemented to reduce errors under conditions of severe assymetric
+delays characteristic of <tt>ppp</tt> connections with telephone
+modems and downloading or uploading considerable traffic. See the
+<a href="ntpd.htm">ntpd - Network Time Protocol (NTP) daemon</a>
+page for further information.</p>
 </li>
 </ol>
 
 <h4>Caveats</h4>
 
-This release has been compiled and tested on several systems,
+<p>This release has been compiled and tested on several systems,
 including SunOS 4.1.3, Solaris 2.5.1-2.8, Alpha 4.0, Ultrix 4.4,
 Linux, FreeBSD and HP-UX 10.02. It has been compiled and tested on
 Windows NT, but not yet on any other Windows version or for VMS. We
 are relying on the NTP volunteer corps to do that. Known problems
-are summarized below: 
+are summarized below:</p>
 
 <ol>
 <li>

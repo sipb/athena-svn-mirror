@@ -6,25 +6,33 @@
 # include <config.h>
 #endif
 
+#ifdef HAVE_NETINFO
+#include <netinfo/ni.h>
+#endif
+
+#include "ntp_machine.h"
 #include "ntpd.h"
 #include "ntp_stdlib.h"
 #include "ntp_string.h"
 #include "ntp_filegen.h"
 #include "ntp_unixtime.h"
 #include "ntp_config.h"
+#include "ntp_cmdargs.h"
+
+#ifndef GETTIMEOFDAY
+# define GETTIMEOFDAY gettimeofday
+#endif
 
 #include <stdio.h>
 #include <unistd.h>
 #include <limits.h>		/* PATH_MAX */
 #include <sys/stat.h>
 
-#ifdef HAVE_NETINFO
-#include <netinfo/ni.h>
-#endif
-
 #ifdef PUBKEY
 # include "ntp_crypto.h"
 #endif
+
+#include "l_stdlib.h"
 
 #ifndef PATH_MAX
 # ifdef _POSIX_PATH_MAX
@@ -116,11 +124,11 @@
  */
 
 
-char *config_file;
+extern char *config_file;
 
 #ifdef HAVE_NETINFO
-struct netinfo_config_state *config_netinfo = NULL;
-int check_netinfo = 1;
+extern struct netinfo_config_state *config_netinfo;
+extern int check_netinfo;
 #endif /* HAVE_NETINFO */
 
 #ifdef SYS_WINNT
@@ -163,7 +171,6 @@ char *f3_dhparms;
 u_long	sys_automax;		/* maximum session key lifetime */
 int	sys_bclient;		/* we set our time to broadcasts */
 int	sys_manycastserver;	/* 1 => respond to manycast client pkts */
-u_long	client_limit_period;
 char *	req_file;		/* name of the file with configuration info */
 keyid_t	ctl_auth_keyid;		/* keyid used for authenticating write requests */
 struct interface *any_interface;	/* default interface */
@@ -176,6 +183,12 @@ u_long	client_limit_period;
 l_fp	sys_revoketime;
 u_long	sys_revoke;		/* keys revoke timeout */
 volatile int debug = 0;		/* debugging flag */
+u_char	sys_minpoll;		/* min poll interval (log2 s) */
+
+void snifflink P((const char *, char **));
+int filep P((const char *));
+FILE *newfile P((const char *, const char *, mode_t, const char *));
+void cleanlinks P((const char *, const char *, const char *));
 
 struct peer *
 peer_config(
@@ -523,6 +536,7 @@ FILE *
 newfile(
 	const char *f1,		/* Visible file */
 	const char *f2,		/* New timestamped file name */
+	mode_t fmask,		/* umask for new timestamped file */
 	const char *f3		/* Previous symlink target */
 	)
 {
@@ -530,7 +544,8 @@ newfile(
 	char fb[PATH_MAX];
 	char *cp;
 
-	if (debug > 1) printf("newfile(%s,%s,%s)\n", f1, f2, f3?f3:"NULL");
+	if (debug > 1) printf("newfile(%s,%s,%0o,%s)\n", f1, f2,
+			      (unsigned)fmask, f3 ? f3 : "NULL");
 	/*
 	   If:
 	   - no symlink support, or
@@ -602,7 +617,11 @@ newfile(
 		printf("Would write file <%s>\n", fb);
 		fp = NULL;
 	} else {
+		mode_t omask;
+
+		omask = umask(fmask);
 		fp = fopen(fb, "w");
+		(void) umask(omask);
 		if (fp == NULL) {
 			perror(fb);
 			exit(1);
@@ -729,7 +748,7 @@ main(
 #endif /* PUBKEY */
 	struct timeval tv;		/* initialization vector */
 	u_long ntptime;			/* NTP timestamp */
-	u_char hostname[256];		/* DNS host name */
+	char hostname[256];		/* DNS host name */
 	u_char md5key[17];		/* generated MD5 key */ 
 	FILE *str;			/* file handle */
 	u_int temp;
@@ -739,7 +758,7 @@ main(
 	char pathbuf[PATH_MAX];
 
 	gethostname(hostname, sizeof(hostname));
-	gettimeofday(&tv, 0);
+	GETTIMEOFDAY(&tv, 0);
 	ntptime = tv.tv_sec + JAN_1970;
 
 	/* Initialize config_file */
@@ -864,21 +883,30 @@ main(
 	*/
 
 	std_mask = umask(sec_mask); /* Get the standard mask */
+	(void) umask(std_mask);
 
 	if (make_md5 && (force || !filep(f1_keys))) {
 		/*
 		 * Generate 16 random MD5 keys.
 		 */
 		printf("Generating MD5 key file...\n");
-		str = newfile(f1_keys, f2_keys, f3_keys);
+		str = newfile(f1_keys, f2_keys, sec_mask, f3_keys);
 		if (!memorex) {
-			srandom((u_int)tv.tv_usec);
+			SRANDOM((u_int)tv.tv_usec);
 			fprintf(str, "# MD5 key file %s\n# %s", f2_keys,
-				ctime(&tv.tv_sec));
+				ctime((const time_t *) &tv.tv_sec));
 			for (i = 1; i <= 16; i++) {
 				for (j = 0; j < 16; j++) {
 					while (1) {
-						temp = random() & 0xff;
+						temp = RANDOM & 0xff;
+						/*
+						** Harlan says Karnaugh maps
+						** are not his friend, and
+						** compilers can optimize
+						** this most easily.
+						*/
+						if (temp == '#')
+							continue;
 						if (temp > 0x20 && temp < 0x7f)
 							break;
 					}
@@ -907,7 +935,7 @@ main(
 			R_RandomInit(&randomstr);
 			R_GetRandomBytesNeeded(&len, &randomstr);
 			for (i = 0; i < len; i++) {
-				temp = random();
+				temp = RANDOM;
 				R_RandomUpdate(&randomstr, (u_char *)&temp, 1);
 			}
 			rval = R_GeneratePEMKeys(&rsaref_public,
@@ -923,7 +951,8 @@ main(
 		 * Generate the file "ntpkey.*" containing the RSA
 		 * private key in printable ASCII format.
 		 */
-		str = newfile(f1_privatekey, f2_privatekey, f3_privatekey);
+		str = newfile(f1_privatekey, f2_privatekey, sec_mask,
+			      f3_privatekey);
 		if (!memorex) {
 			len = sizeof(rsaref_private)
 			    - sizeof(rsaref_private.bits);
@@ -943,7 +972,8 @@ main(
 		 * Generate the file "ntpkey_host.*" containing the RSA
 		 * public key in printable ASCII format.
 		 */
-		str = newfile(f1_publickey, f2_publickey, f3_publickey);
+		str = newfile(f1_publickey, f2_publickey, std_mask,
+			      f3_publickey);
 		if (!memorex) {
 			len = sizeof(rsaref_public)
 			    - sizeof(rsaref_public.bits);
@@ -968,13 +998,13 @@ main(
 		 */
 		printf("Generating Diffie-Hellman parameters (%d bits)...\n",
 		       PRIMELEN);
-		str = newfile(f1_dhparms, f2_dhparms, f3_dhparms);
+		str = newfile(f1_dhparms, f2_dhparms, std_mask, f3_dhparms);
 
 		if (!memorex) {
 			R_RandomInit(&randomstr);
 			R_GetRandomBytesNeeded(&len, &randomstr);
 			for (i = 0; i < len; i++) {
-				temp = random();
+				temp = RANDOM;
 				R_RandomUpdate(&randomstr, (u_char *)&temp, 1);
 			}
 

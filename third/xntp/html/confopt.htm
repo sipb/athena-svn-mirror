@@ -67,7 +67,7 @@ client mode association with the specified remote server or local
 radio clock. In this mode the local clock can synchronized to the
 remote server, but the remote server can never be synchronized to
 the local clock. This command should NOT be used for type <tt>
-b</tt> or <tt>m</tt> addresses.&lt;/&lt;/dd&gt;</dd>
+b</tt> or <tt>m</tt> addresses.</dd>
 
 <dt><tt>peer</tt></dt>
 
@@ -163,10 +163,12 @@ default is to include no encryption field.</dd>
 <dt><tt>minpoll <i>minpoll</i></tt><br>
 <tt>maxpoll <i>maxpoll</i></tt></dt>
 
-<dd>These options specify the minimum and maximum polling intervals
-for NTP messages, in seconds to the power of two. The default range
-is 6 (64 s) to 10 (1,024 s). The allowable range is 4 (16 s) to 17
-(36.4 h) inclusive.</dd>
+<dd>These options specify the minimum and maximum poll intervals
+for NTP messages, in seconds to the power of two. The maximum poll
+interval defaults to 10 (1,024 s), but can be increased by the <tt>
+maxpoll</tt> option to an upper limit of 17 (36.4 h). The minimum
+poll interval defaults to 6 (64 s), but can be decreased by the
+<tt>minpoll</tt> option to a lower limit of 4 (16 s).</dd>
 
 <dt><tt>prefer</tt></dt>
 

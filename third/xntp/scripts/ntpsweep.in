@@ -1,6 +1,6 @@
 #! @PATH_PERL@ -w
 #
-# $Id: ntpsweep.in,v 1.1.1.1 2001-05-08 22:11:45 ghudson Exp $
+# $Id: ntpsweep.in,v 1.1.1.2 2002-03-01 17:35:58 zacheiss Exp $
 #
 # DISCLAIMER
 # 

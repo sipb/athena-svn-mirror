@@ -112,6 +112,7 @@ extern	void	init_loopfilter P((void));
 extern	int 	local_clock P((struct peer *, double, double));
 extern	void	adj_host_clock	P((void));
 extern	void	loop_config P((int, double));
+extern	void	huffpuff	P((void));
 
 /* ntp_monitor.c */
 extern	void	init_mon	P((void));
@@ -191,7 +192,7 @@ extern	void	init_util	P((void));
 extern	void	hourly_stats	P((void));
 extern	void	stats_config	P((int, char *));
 extern	void	record_peer_stats P((struct sockaddr_in *, int, double, double, double, double));
-extern	void	record_loop_stats P((void));
+extern	void	record_loop_stats P((double, double, double, double, int));
 extern	void	record_clock_stats P((struct sockaddr_in *, const char *));
 extern	void	record_raw_stats P((struct sockaddr_in *, struct sockaddr_in *, l_fp *, l_fp *, l_fp *, l_fp *));
 
@@ -297,7 +298,7 @@ extern int	state;			/* clock discipline state */
 extern int	tc_counter;		/* poll-adjust counter */
 extern u_long	last_time;		/* time of last clock update (s) */
 extern double	last_offset;		/* last clock offset (s) */
-extern double	allan_xpt;		/* Allan intercept (s) */
+extern u_char	allan_xpt;		/* Allan intercept (s) */
 extern double	sys_error;		/* system RMS error (s) */
 extern double	sys_jitter;		/* system RMS jitter (s) */
 

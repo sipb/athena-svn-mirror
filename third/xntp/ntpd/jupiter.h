@@ -1,4 +1,4 @@
-/* @(#) $Header: /afs/dev.mit.edu/source/repository/third/xntp/ntpd/jupiter.h,v 1.1.1.1 2001-05-08 22:10:10 ghudson Exp $ (LBL) */
+/* @(#) $Header: /afs/dev.mit.edu/source/repository/third/xntp/ntpd/jupiter.h,v 1.1.1.2 2002-03-01 17:35:56 zacheiss Exp $ (LBL) */
 
 /*
  * Rockwell Jupiter GPS receiver definitions
