@@ -60,10 +60,10 @@
 
 /* BibTeX bibliographies and styles.  */
 #ifndef DEFAULT_BIB_PATH
-#define DEFAULT_BIB_PATH ".:(texmf_prefix)/bibtex/bib"
+#define DEFAULT_BIB_PATH ".:(texpooldir)/bib"
 #endif
 #ifndef DEFAULT_BST_PATH
-#define DEFAULT_BST_PATH ".:(texmf_prefix)/bibtex/bst"
+#define DEFAULT_BST_PATH ".:(texinput_dir)/bib"
 #endif
 
 /* Dvips' configuration files.  */
