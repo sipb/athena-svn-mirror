@@ -744,8 +744,29 @@ testUnboundedSequence (test_TestFactory   factory,
   CORBA_free (inoutArg._buffer);
   CORBA_free (outArg);
   CORBA_free (retn);
+
   CORBA_Object_release (objref, ev);
   g_assert (ev->_major == CORBA_NO_EXCEPTION);
+}
+
+static void
+testAnySequence (test_TestFactory   factory, 
+                 CORBA_Environment *ev)
+{
+    test_AnySeq *any_retn, *copy;
+    test_SequenceServer objref;
+
+    d_print ("Testing sequence<any>...\n");
+    objref = test_TestFactory_getSequenceServer (factory, ev);
+    g_assert (ev->_major == CORBA_NO_EXCEPTION);
+    
+    any_retn = test_SequenceServer_opAnySeq (objref, ev);
+    g_assert (ev->_major == CORBA_NO_EXCEPTION);
+    copy = ORBit_copy_value (any_retn, TC_test_AnySeq);
+    CORBA_free (any_retn);
+
+    CORBA_Object_release (objref, ev);
+    g_assert (ev->_major == CORBA_NO_EXCEPTION);
 }
 
 static void
@@ -2251,6 +2272,7 @@ run_tests (test_TestFactory   factory,
 		testStructAny (factory, ev);
 		testUnboundedSequence (factory, ev);
 		testBoundedSequence (factory, ev);
+		testAnySequence (factory, ev);
 		testFixedLengthUnion (factory, ev);
 		testVariableLengthUnion (factory, ev);
 		testMiscUnions (factory, ev);
@@ -2365,7 +2387,7 @@ main (int argc, char *argv [])
 	test_TestFactory   factory;
 	ORBit_IInterfaces *interfaces = NULL;
 	gboolean           gen_imodule = FALSE;
-	const char        *orb_name;
+	char              *orb_name;
 	int                i;
 
 	CORBA_exception_init (ev);

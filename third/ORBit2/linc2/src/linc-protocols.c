@@ -19,6 +19,11 @@
 
 #undef LOCAL_DEBUG
 
+#ifdef G_OS_WIN32
+#  include <io.h>
+#  define mkdir(path, mode) _mkdir (path)
+#endif
+
 static char *link_tmpdir = NULL;
 
 /*
@@ -46,7 +51,7 @@ make_local_tmpdir (const char *dirname)
 			if (stat (dirname, &statbuf) != 0)
 				g_error ("Can not stat %s\n", dirname);
 
-#ifndef __CYGWIN__
+#if !defined (__CYGWIN__) && !defined(_WIN32)
 			if (statbuf.st_uid != getuid ())
 				g_error ("Owner of %s is not the current user\n", dirname);
 
@@ -63,11 +68,13 @@ make_local_tmpdir (const char *dirname)
 		}
 	}
 
+#if defined (HAVE_UTIME_H) || defined (HAVE_SYS_UTIME_H)
 	{ /* Hide some information ( apparently ) */
 		struct utimbuf utb;
 		memset (&utb, 0, sizeof (utb));
 		utime (dirname, &utb);
 	}
+#endif
 }
 
 /**
@@ -872,7 +879,7 @@ link_protocol_tcp_setup (int                   fd,
 			return;
 
 		setsockopt (fd, proto->p_proto, TCP_NODELAY, 
-		            &on, sizeof (on));
+		            (const char *) &on, sizeof (on));
 	}
 #endif
 }
@@ -885,7 +892,12 @@ static LinkProtocolInfo static_link_protocols[] = {
 	AF_INET, 			/* family */
 	sizeof (struct sockaddr_in), 	/* addr_len */
 	IPPROTO_TCP, 			/* stream_proto_num */
-	0, 				/* flags */
+					/* flags */
+#ifdef G_OS_WIN32
+	LINK_PROTOCOL_NEEDS_BIND,
+#else
+	0,
+#endif
 	link_protocol_tcp_setup, 	/* setup */
 	NULL, 				/* destroy */
 	link_protocol_get_sockaddr_ipv4,/* get_sockaddr */
@@ -935,8 +947,8 @@ link_protocol_destroy_cnx (const LinkProtocolInfo *proto,
 	if (fd >= 0) {
 		if (proto->destroy)
 			proto->destroy (fd, host, service);
-		
-		LINK_CLOSE (fd);
+		d_printf ("link_protocol_destroy_cnx: closing %d\n", fd);
+		LINK_CLOSE_SOCKET (fd);
 	}
 }
 
@@ -957,7 +969,8 @@ link_protocol_destroy_addr (const LinkProtocolInfo *proto,
 			proto->destroy (fd, NULL, addr_un->sun_path);
 		}
 #endif
-		LINK_CLOSE (fd);
+		d_printf ("link_protocol_destroy_addr: closing %d\n", fd);
+		LINK_CLOSE_SOCKET (fd);
 		g_free (saddr);
 	}
 

@@ -8,6 +8,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef G_OS_WIN32
+#  include <io.h>
+#  define mkdir(path, mode) _mkdir (path)
+#endif
+
 static FILE *out_for_pass(const char *input_filename, int pass, 
 			  OIDL_Run_Info *rinfo);
 
@@ -62,10 +67,7 @@ orbit_idl_output_c (IDL_tree       tree,
 	orbit_idl_output_c_deps(tree, rinfo, &ci);
 	break;
       }
-      if (1 << i == OUTPUT_DEPS)
-	fclose(ci.fh);
-      else 
-	pclose(ci.fh);
+      fclose(ci.fh);
     }
   }
   g_string_free(ci.ext_dcls,TRUE);
@@ -124,8 +126,15 @@ out_for_pass (const char    *input_filename,
 {
 	FILE *fp;
 	char *output_filename;
-	char *cmdline;
+	gchar *output_full_path = NULL;
 
+
+        if ((strlen(rinfo->output_directory)) && (!g_file_test (rinfo->output_directory, G_FILE_TEST_IS_DIR))) {
+		g_error ("ouput directory '%s' does not exist",
+			 rinfo->output_directory);
+		return NULL;
+	}
+	
 	if (pass == OUTPUT_DEPS) {
 		if (!g_file_test (".deps", G_FILE_TEST_IS_DIR)) {
 			if (mkdir (".deps", 0775) < 0) {
@@ -146,21 +155,14 @@ out_for_pass (const char    *input_filename,
 		
 	} else {
 		output_filename = orbit_idl_c_filename_for_pass (input_filename, pass);
-
-		cmdline = g_alloca (strlen (rinfo->output_formatter) +
-				    strlen (output_filename) +
-				    sizeof(" > "));
-		sprintf (cmdline, "%s > %s", rinfo->output_formatter, output_filename);
-
+		output_full_path = g_build_path (G_DIR_SEPARATOR_S, rinfo->output_directory, output_filename, NULL);
 		g_free (output_filename);
 
-		/* Many versions of cpp do evil translating internal
-		* strings, producing bogus output, so clobber LC_ALL */
-		putenv ("LC_ALL=C");
-		fp = popen (cmdline, "w");
-
+		fp = fopen (output_full_path, "w+");
 		if (fp == NULL)
-			g_error ("failed to popen '%s': %s\n", cmdline, strerror(errno));
+			g_error ("failed to fopen '%s': %s\n", output_full_path, strerror(errno));
+
+		g_free (output_full_path);
 	}
 
 	return fp;
