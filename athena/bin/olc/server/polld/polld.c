@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v $
- *	$Id: polld.c,v 1.3 1991-01-16 13:32:48 lwvanels Exp $
+ *	$Id: polld.c,v 1.4 1991-01-27 16:58:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.3 1991-01-16 13:32:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/polld.c,v 1.4 1991-01-27 16:58:48 lwvanels Exp $";
 #endif
 #endif
 
@@ -204,6 +204,8 @@ main(argc, argv)
   setreuid((uid_t) geteuid(), -1);
   setregid((gid_t) getegid(), -1);
   
+  init_cache();
+
   syslog(LOG_INFO,"Ready to start polling...");
   
 #ifdef ZEPHYR
