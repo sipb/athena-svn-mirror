@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.22 2002-02-19 20:07:08 jweiss Exp $
+### $Id: install1.sh,v 1.23 2002-02-28 14:42:04 ghudson Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -188,8 +188,8 @@ ls -l /os
 ls -l /tmp/os
 
 echo "formatting  "
-DISK=`format < /dev/null | \
-    awk "/$drive/"'{ print substr($3, 2, length($3) - 1); }'`
+diskline=`format < /dev/null | grep "$drive"`
+DISK=`echo "$diskline" | awk '{ print substr($3, 2, length($3) - 1); }'`
 export DISK
 echo $DISK
 
@@ -348,11 +348,37 @@ Y)
 		format ${drive} >/dev/null 2>&1
        ;;
     *)
-       echo "can't format the disks - type unknown"
-       echo "Call an expert !"
-       echo "Press ^C for a shell or Stop-A for the boot prompt."
-       trap /bin/sh 2
-       while :; do sleep 10; done
+       mem=`machtype -M`
+       fmtstring=`echo "$diskline" | awk '{
+		ncyl = $(NF - 6);
+		secpercyl = $(NF - 2) * substr($NF, 1, length($NF) - 1);
+		swapsize = int(4 * mem / secpercyl) + 1;	# Twice memory
+		cachesize = int(256 * 2048 / secpercyl) + 1;	# 256MB cache
+		rootsize = ncyl - swapsize - cachesize;
+		swapstart = rootsize;
+		cachestart = rootsize + swapsize;
+		if (rootsize * secpercyl < 8 * 1024 * 2048)	# 8GB minimum
+			exit;
+		printf "\npartition\n\n";
+		printf "0\nroot\nwm\n0\n%dc\n\n", rootsize;
+		printf "1\nswap\nwu\n%d\n%dc\n\n", swapstart, swapsize;
+		printf "3\nunassigned\nwm\n%d\n%dc\n\n", cachestart, cachesize;
+		printf "4\nunassigned\nwm\n0\n0c\n\n";
+		printf "5\nunassigned\nwm\n0\n0c\n\n";
+		printf "6\nunassigned\nwm\n0\n0c\n\n";
+		printf "7\nunassigned\nwm\n0\n0c\n\n";
+		printf "label\ny\nprint\nq\nq\n";
+       }' mem="$mem"`
+       if [ -n "$fmtstring" ]; then
+		echo "$fmtstring" | format "$drive" > /dev/null 2>&1
+		partitioning=one
+       else
+		echo "can't format the disks - type unknown"
+		echo "Call an expert !"
+		echo "Press ^C for a shell or Stop-A for the boot prompt."
+		trap /bin/sh 2
+		while :; do sleep 10; done
+       fi
        esac
 esac
 export partitioning
