@@ -91,6 +91,9 @@ GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PRINT_PREFIX = @GNOME_PRINT_PREFIX@
+GNOME_TERMINAL_CFLAGS = @GNOME_TERMINAL_CFLAGS@
+GNOME_TERMINAL_LIBS = @GNOME_TERMINAL_LIBS@
+GNOME_XML_CFLAGS = @GNOME_XML_CFLAGS@
 GNOME_XML_LIB = @GNOME_XML_LIB@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
@@ -124,6 +127,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 ORB_CFLAGS = @ORB_CFLAGS@
 ORB_LIBS = @ORB_LIBS@
 PACKAGE = @PACKAGE@
+PATH_TO_XRDB = @PATH_TO_XRDB@
 PIXBUF_CFLAGS = @PIXBUF_CFLAGS@
 PIXBUF_LIBS = @PIXBUF_LIBS@
 POFILES = @POFILES@
@@ -135,6 +139,10 @@ USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WINDOW_MANAGER = @WINDOW_MANAGER@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_TOOLS_PERL = @XML_I18N_TOOLS_PERL@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XPM_LIBS = @XPM_LIBS@
 YACC = @YACC@
 ZVT_LIBS = @ZVT_LIBS@
@@ -150,7 +158,11 @@ SUBDIRS = doc help
 INCLUDES = -I. -I$(srcdir) 	-I$(top_srcdir)/intl 	-I$(top_builddir)/intl 	-I$(top_builddir)/panel 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DGNOME_DATADIR=\""$(datadir)"\" 	$(GNOME_INCLUDEDIR) $(ORB_CFLAGS) 	@PIXBUF_CFLAGS@
 
 
-bin_PROGRAMS = panel gnome-panel-properties-capplet
+gwmh_dir = $(top_srcdir)/applets/desk-guide
+
+bin_PROGRAMS =  	panel					gnome-panel-properties-capplet		gnome-panel-add-launcher
+
+
 noinst_PROGRAMS = bad-applet
 
 libpanel_appletincludedir = $(includedir)
@@ -158,7 +170,8 @@ libpanel_statusincludedir = $(includedir)
 
 lib_LTLIBRARIES = libpanel_applet.la libpanel_status.la
 
-CORBA_SRCLIST = gnome-panel-stubs.c gnome-panel-skels.c gnome-panel-common.c gnome-panel.h
+CORBA_SRCLIST =  	gnome-panel-stubs.c		gnome-panel-skels.c		gnome-panel-common.c		gnome-panel.h
+
 
 # try to make these get cleaned properly
 CLEANFILES =  $(CORBA_SRCLIST) my_gnome_panel_idl
@@ -181,25 +194,34 @@ libpanel_statusinclude_HEADERS =  	status-docklet.h
 libpanel_status_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir)
 libpanel_status_la_LIBADD = $(ORB_LIBS) -lm $(DL_LIB)
 
-BUILT_SOURCES = $(CORBA_SRCLIST)
-
 bad_applet_SOURCES = bad-applet.c
 
-bad_applet_LDADD = libpanel_applet.la 	$(GNOME_LIBDIR) 		$(GNORBA_LIBS) $(INTLLIBS)
+bad_applet_LDADD =  	libpanel_applet.la		$(GNOME_LIBDIR) 		$(GNORBA_LIBS)			$(INTLLIBS)
 
 
-panel_SOURCES =  	panel-include.h			panel-types.h			main.c				main.h				applet.c			applet.h         		panel.c				panel.h         		session.c			session.h			panel_config.c  		panel_config.h			panel_config_global.h  		distribution.c			distribution.h			menu.c  			menu.h  			menu-fentry.c  			menu-fentry.h  			menu-rh.c  			menu-rh.h  			menu-properties.c		menu-properties.h		menu-util.c			menu-util.h			launcher.c			launcher.h			logout.c			logout.h			extern.c  			extern.h  			status.c  			status.h  			swallow.c  			swallow.h  			drawer.c  			drawer.h  			panel-widget.c  		panel-widget.h			basep-widget.c  		basep-widget.h			border-widget.c			border-widget.h			edge-widget.c			edge-widget.h			aligned-widget.c		aligned-widget.h		sliding-widget.c		sliding-widget.h		floating-widget.c		floating-widget.h		drawer-widget.c			drawer-widget.h			button-widget.c  		button-widget.h			panel-util.c			panel-util.h			tearoffitem.c			tearoffitem.h			rgb-stuff.h			rgb-stuff.c			global-keys.c			global-keys.h			gnome-run.c			gnome-run.h			xstuff.c			xstuff.h			foobar-widget.h			foobar-widget.c			title-item.h			title-item-private.h		title-item.c			scroll-menu.h			scroll-menu.c
+GWMH_SRCLIST =  	gwmh.c			gwmh.h			gstc.c			gstc.h
 
 
-panel_LDADD = libpanel_applet.la $(GNOME_LIBDIR) $(GNORBA_LIBS) $(ORB_LIBS) 	$(GNOMEUI_LIBS) $(INTLLIBS) @PIXBUF_LIBS@
+BUILT_SOURCES = $(CORBA_SRCLIST) $(GWMH_SRCLIST)
+
+panel_SOURCES =  	$(GWMH_SRCLIST)			panel-include.h			panel-types.h			main.c				main.h				applet.c			applet.h         		panel.c				panel.h         		session.c			session.h			panel_config.c  		panel_config.h			panel_config_global.h  		distribution.c			distribution.h			menu.c  			menu.h  			menu-fentry.c  			menu-fentry.h  			menu-rh.c  			menu-rh.h  			menu-properties.c		menu-properties.h		menu-util.c			menu-util.h			launcher.c			launcher.h			logout.c			logout.h			extern.c  			extern.h  			status.c  			status.h  			swallow.c  			swallow.h  			drawer.c  			drawer.h  			panel-widget.c  		panel-widget.h			basep-widget.c  		basep-widget.h			border-widget.c			border-widget.h			edge-widget.c			edge-widget.h			aligned-widget.c		aligned-widget.h		sliding-widget.c		sliding-widget.h		floating-widget.c		floating-widget.h		drawer-widget.c			drawer-widget.h			button-widget.c  		button-widget.h			panel-util.c			panel-util.h			tearoffitem.c			tearoffitem.h			rgb-stuff.h			rgb-stuff.c			global-keys.c			global-keys.h			gnome-run.c			gnome-run.h			xstuff.c			xstuff.h			foobar-widget.h			foobar-widget.c			tasklist_icon.c			tasklist_icon.h			title-item.h			title-item.c			title-item-private.h		scroll-menu.h			scroll-menu.c			icon-entry-hack.c		icon-entry-hack.h
+
+
+panel_LDADD =  	libpanel_applet.la		$(GNOME_LIBDIR)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(GNOMEUI_LIBS)			$(INTLLIBS)			@PIXBUF_LIBS@
 
 
 panel_LDFLAGS = -export-dynamic
 
-gnome_panel_properties_capplet_SOURCES =  	gnome-panel-properties.c		panel-util.c				$(CORBA_SRCLIST)
+gnome_panel_properties_capplet_SOURCES =  	gnome-panel-properties.c		panel-util.c				icon-entry-hack.c			$(CORBA_SRCLIST)
 
 
-gnome_panel_properties_capplet_LDADD =  	$(GNOME_LIBDIR)			$(GNOME_CAPPLET_LIBS)		$(INTLLIBS) @PIXBUF_LIBS@
+gnome_panel_properties_capplet_LDADD =  	$(GNOME_LIBDIR)			$(GNOME_CAPPLET_LIBS)		$(INTLLIBS)			@PIXBUF_LIBS@
+
+
+gnome_panel_add_launcher_SOURCES =  	gnome-panel-add-launcher.c		$(CORBA_SRCLIST)
+
+
+gnome_panel_add_launcher_LDADD =  	$(GNOME_LIBDIR)			$(GNOMEUI_LIBS)			$(GNORBA_LIBS)			$(ORB_LIBS)			$(INTLLIBS)			@PIXBUF_LIBS@
 
 
 MAINTAINERCLEANFILES = $(CORBA_SRCLIST)
@@ -245,19 +267,24 @@ libpanel_status_la_OBJECTS =  status-docklet.lo gnome-panel-stubs.lo \
 gnome-panel-skels.lo gnome-panel-common.lo
 PROGRAMS =  $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
-panel_OBJECTS =  main.o applet.o panel.o session.o panel_config.o \
-distribution.o menu.o menu-fentry.o menu-rh.o menu-properties.o \
-menu-util.o launcher.o logout.o extern.o status.o swallow.o drawer.o \
-panel-widget.o basep-widget.o border-widget.o edge-widget.o \
-aligned-widget.o sliding-widget.o floating-widget.o drawer-widget.o \
-button-widget.o panel-util.o tearoffitem.o rgb-stuff.o global-keys.o \
-gnome-run.o xstuff.o foobar-widget.o title-item.o scroll-menu.o
+panel_OBJECTS =  gwmh.o gstc.o main.o applet.o panel.o session.o \
+panel_config.o distribution.o menu.o menu-fentry.o menu-rh.o \
+menu-properties.o menu-util.o launcher.o logout.o extern.o status.o \
+swallow.o drawer.o panel-widget.o basep-widget.o border-widget.o \
+edge-widget.o aligned-widget.o sliding-widget.o floating-widget.o \
+drawer-widget.o button-widget.o panel-util.o tearoffitem.o rgb-stuff.o \
+global-keys.o gnome-run.o xstuff.o foobar-widget.o tasklist_icon.o \
+title-item.o scroll-menu.o icon-entry-hack.o
 panel_DEPENDENCIES =  libpanel_applet.la
 gnome_panel_properties_capplet_OBJECTS =  gnome-panel-properties.o \
-panel-util.o gnome-panel-stubs.o gnome-panel-skels.o \
+panel-util.o icon-entry-hack.o gnome-panel-stubs.o gnome-panel-skels.o \
 gnome-panel-common.o
 gnome_panel_properties_capplet_DEPENDENCIES = 
 gnome_panel_properties_capplet_LDFLAGS = 
+gnome_panel_add_launcher_OBJECTS =  gnome-panel-add-launcher.o \
+gnome-panel-stubs.o gnome-panel-skels.o gnome-panel-common.o
+gnome_panel_add_launcher_DEPENDENCIES = 
+gnome_panel_add_launcher_LDFLAGS = 
 bad_applet_OBJECTS =  bad-applet.o
 bad_applet_DEPENDENCIES =  libpanel_applet.la
 bad_applet_LDFLAGS = 
@@ -278,10 +305,10 @@ DIST_COMMON =  AUTHORS ChangeLog Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libpanel_applet_la_SOURCES) $(libpanel_status_la_SOURCES) $(panel_SOURCES) $(gnome_panel_properties_capplet_SOURCES) $(bad_applet_SOURCES)
-OBJECTS = $(libpanel_applet_la_OBJECTS) $(libpanel_status_la_OBJECTS) $(panel_OBJECTS) $(gnome_panel_properties_capplet_OBJECTS) $(bad_applet_OBJECTS)
+SOURCES = $(libpanel_applet_la_SOURCES) $(libpanel_status_la_SOURCES) $(panel_SOURCES) $(gnome_panel_properties_capplet_SOURCES) $(gnome_panel_add_launcher_SOURCES) $(bad_applet_SOURCES)
+OBJECTS = $(libpanel_applet_la_OBJECTS) $(libpanel_status_la_OBJECTS) $(panel_OBJECTS) $(gnome_panel_properties_capplet_OBJECTS) $(gnome_panel_add_launcher_OBJECTS) $(bad_applet_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -404,6 +431,10 @@ panel: $(panel_OBJECTS) $(panel_DEPENDENCIES)
 gnome-panel-properties-capplet: $(gnome_panel_properties_capplet_OBJECTS) $(gnome_panel_properties_capplet_DEPENDENCIES)
 	@rm -f gnome-panel-properties-capplet
 	$(LINK) $(gnome_panel_properties_capplet_LDFLAGS) $(gnome_panel_properties_capplet_OBJECTS) $(gnome_panel_properties_capplet_LDADD) $(LIBS)
+
+gnome-panel-add-launcher: $(gnome_panel_add_launcher_OBJECTS) $(gnome_panel_add_launcher_DEPENDENCIES)
+	@rm -f gnome-panel-add-launcher
+	$(LINK) $(gnome_panel_add_launcher_LDFLAGS) $(gnome_panel_add_launcher_OBJECTS) $(gnome_panel_add_launcher_LDADD) $(LIBS)
 
 bad-applet: $(bad_applet_OBJECTS) $(bad_applet_DEPENDENCIES)
 	@rm -f bad-applet
@@ -834,6 +865,12 @@ my_gnome_panel_idl: $(top_srcdir)/idl/gnome-panel.idl $(ORBIT_IDL)
 # of the tarballs.
 
 extern.c: gnome-panel.h
+
+$(GWMH_SRCLIST):
+	for file in $(GWMH_SRCLIST); do \
+		echo $$file ; \
+		ln -sf $(gwmh_dir)/$$file . ; \
+	done
 
 #
 # Create the appletsConf.sh file from the .sh.in file
