@@ -2888,11 +2888,13 @@ attach(pw, locker)
 		return;
 	}
 
-	if (locker_attach(context, locker, NULL, LOCKER_AUTH_DEFAULT,
-			  0, NULL, NULL) == LOCKER_SUCCESS)
-		ack("ATCH");
+	status = locker_attach(context, locker, NULL, LOCKER_AUTH_DEFAULT,
+			       LOCKER_ATTACH_OPT_REAUTH, NULL, NULL);
+
+	if (LOCKER_ATTACH_SUCCESS(status))
+	        ack("ATCH");
 	else
-		reply(550, "Attach failed.");
+	        reply(550, "Attach failed.");
 
 	locker_end(context);
 	seteuid(pw->pw_uid);
