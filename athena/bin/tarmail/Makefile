@@ -1,10 +1,10 @@
 #
 # 	$Source: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v $
-#	$Author: jtkohl $
+#	$Author: builder $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.2 1985-04-30 16:54:56 jtkohl Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/tarmail/Makefile,v 1.3 1985-06-17 13:14:21 builder Exp $
 #
-DESTDIR=/mit/j/t/jtkohl
+DESTDIR=
 INCDIR=/usr/include
 CFLAGS=-O -I${INCDIR}
 
@@ -14,8 +14,6 @@ install:	atob btoa tarmail untarmail
 	install -c -s btoa ${DESTDIR}/usr/athena
 	install -c -s atob ${DESTDIR}/usr/athena
 	cp tarmail untarmail ${DESTDIR}/usr/athena
-	cp btoa.1 ${DESTDIR}/usr/man/man1/btoa.1
-	cp btoa.1 ${DESTDIR}/usr/man/man1/tarmail.1
 
 btoa:
 	cc ${CFLAGS} btoa.c -o btoa
