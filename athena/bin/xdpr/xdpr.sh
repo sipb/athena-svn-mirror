@@ -27,12 +27,22 @@ usage="Usage: xdpr [filename] [-out filename ] \
 [-slide] [-add value] [-help]"
 
 # Guess if we are BSD or System V
+# or Ultrix. Since Ultrix doesn't have -x, and sometimes lp{,r} is not
+# readable so that a -r substitution won't work, we - HEY! What's that
+# over there???
 
-if [ -r /usr/ucb/lpr -o -r /usr/bin/lpr -o -r /bin/lpr -o -r /usr/bsd/lpr ]
+if [ -r /ultrixboot ]
 then
 	LP=lpr
 	BSD=1
-elif [ -r /usr/bin/lp -o -r /bin/lp ]
+
+# You didn't see anything? Hmmmm. Maybe I was imagining it.
+
+elif [ -x /usr/ucb/lpr -o -x /usr/bin/lpr -o -x /bin/lpr -o -x /usr/bsd/lpr ]
+then
+	LP=lpr
+	BSD=1
+elif [ -x /usr/bin/lp -o -x /bin/lp ]
 then
 	LP=lp
 	BSD=0
