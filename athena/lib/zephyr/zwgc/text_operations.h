@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/text_operations.h,v $
  *      $Author: ghudson $
- *	$Id: text_operations.h,v 1.4 1997-09-14 22:14:49 ghudson Exp $
+ *	$Id: text_operations.h,v 1.5 1997-09-23 19:37:09 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -23,6 +23,7 @@
 
 extern string protect();
 extern string verbatim();
+extern string stylestrip();
 extern string lany();
 extern string lbreak();
 extern string lspan();
