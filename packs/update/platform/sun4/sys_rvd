@@ -4,14 +4,8 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.18 1996-05-02 19:58:19 ghudson Exp $
-	.:::
-		etc
-		install
-		usr
-		update_ws
-		.rvdinfo
-		:
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.19 1996-05-09 15:56:40 ghudson Exp $
+	/core::::
 	/etc:::			# These are specific to each machine.
 		crontab.root.add
 		ftpusers
@@ -39,11 +33,10 @@ GLOBAL : *.CKP *.local *.pid :
 		-> zephyr.vars
 		-> shutdown_notify
 		:
+	/kernel::::
 	/usr::: 
 		-> athena
 		-> gcc
-		lib
-		-> new
 		-> prototype_user
-		ucb
 		:
+	/sbin::::
