@@ -1,7 +1,7 @@
 <oaf_info>
 
 <oaf_server iid="OAFIID:Bonobo_Sample_Echo_Factory" type="exe" 
-	location="/gnome/head/INSTALL/lib/bonobo-2.0/samples/bonobo-echo-2">
+	location="/opt/gnome-devel/lib/bonobo-2.0/samples/bonobo-echo-2">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:GNOME/ObjectFactory:1.0"/>
 	</oaf_attribute>

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"POT-Creation-Date: 2005-02-05 14:40+0000\n"
 "PO-Revision-Date: 2004-01-27 16:18+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -90,7 +90,7 @@ msgstr ""
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: activation-server/object-directory-corba.c:1149
+#: activation-server/object-directory-corba.c:1152
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "Problém se synchronizací aktivace serveru '%s'"

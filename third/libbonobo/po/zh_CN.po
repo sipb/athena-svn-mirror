@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 15:34+0100\n"
+"POT-Creation-Date: 2005-02-05 14:40+0000\n"
 "PO-Revision-Date: 2004-03-01 10:09+0800\n"
 "Last-Translator: chaoslawful <wangxz00@mails.tsinghua.edu.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -97,7 +97,7 @@ msgstr "Bonobo 激活配置文件未能成功读取。请在 %s 中检查它是�
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: activation-server/object-directory-corba.c:1149
+#: activation-server/object-directory-corba.c:1152
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "竞争条件激活服务器“%s”"

@@ -6,17 +6,10 @@
 #define ORBIT2_STUBS_API
 #include "Bonobo_Sample_Echo.h"
 
-void
-Bonobo_Sample_Echo_echo(Bonobo_Sample_Echo _obj, const CORBA_char * message,
-			CORBA_Environment * ev)
-{
-   gpointer _args[1];
-
-   _args[0] = (gpointer) & message;
-   ORBit_c_stub_invoke(_obj, &Bonobo_Sample_Echo__iinterface.methods, 0, NULL,
-		       _args, NULL, ev, Bonobo_Sample_Echo__classid,
-		       G_STRUCT_OFFSET(POA_Bonobo_Sample_Echo__epv, echo),
-		       (ORBitSmallSkeleton)
-		       _ORBIT_skel_small_Bonobo_Sample_Echo_echo);
+void Bonobo_Sample_Echo_echo(Bonobo_Sample_Echo _obj, const CORBA_char * message, CORBA_Environment *ev){
+gpointer _args[1];
+_args[0] = (gpointer)&message;
+ORBit_c_stub_invoke (_obj, &Bonobo_Sample_Echo__iinterface.methods, 0, NULL, _args, NULL, ev, Bonobo_Sample_Echo__classid, G_STRUCT_OFFSET (POA_Bonobo_Sample_Echo__epv, echo),
+(ORBitSmallSkeleton) _ORBIT_skel_small_Bonobo_Sample_Echo_echo);
 
 }

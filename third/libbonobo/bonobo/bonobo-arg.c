@@ -483,13 +483,19 @@ case G_TYPE_##gtype:									\
 		FROM_GVALUE_CASE (DOUBLE,  double,  TC_CORBA_double,        CORBA_double);
 #undef FROM_GVALUE_FN
 
-	case G_TYPE_STRING:
+	case G_TYPE_STRING: {
+		const char *str = g_value_get_string (value);
 		arg->_type = TC_CORBA_string;
 		arg->_value = ORBit_alloc_tcval (TC_CORBA_string, 1);
-		*((CORBA_char **)arg->_value) =
-			CORBA_string_dup (g_value_get_string (value));
-		arg->_release = CORBA_TRUE;
+		if (str) {
+			*((CORBA_char **)arg->_value) =	CORBA_string_dup (str);
+			arg->_release = CORBA_TRUE;
+		} else {
+			*((CORBA_char **)arg->_value) = "";
+			arg->_release = CORBA_FALSE;
+		}
 		return TRUE;
+	}
 	}
 	  /* default: try to lookup a converter function */
 	converter = g_hash_table_lookup (bonobo_arg_from_gvalue_mapping,

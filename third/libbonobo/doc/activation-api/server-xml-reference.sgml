@@ -252,6 +252,23 @@
               </entry>
             </row>
 
+            <row>
+              <entry>bonobo:environment</entry>
+              <entry><type>stringv</type></entry>
+              <entry>List of environment variables that must have the
+              same values in both activator (client) and component.
+              This is useful for exe type factories.  If there is
+              already a running process serving the component being
+              activated, its environment variables are compared to the
+              ones in the activator.  If they match, a new reference
+              from that process is returned.  If not, a new process is
+              started, which receives an evironment modified to match
+              the one in the activator for the environment keys
+              specified in this property.
+              </entry>
+
+            </row>
+
 	    <!-- Nautilus -->
             <!-- for nautilus:view_as_foo see
                  nautilus/libnautilus-private/nautilus-view-identifier.c -->

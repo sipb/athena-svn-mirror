@@ -1,4 +1,15 @@
 
+libbonobo is the non-GUI part of the bonobo component infrastructure,
+it is most useful for creating aggregate interfaces & doing IPC
+easily. It also contains a rather badly designed & implemented
+per-system activation system. This needs re-writing & simplifying to
+be per-display.
+
+Take a look at samples/echo/.
+
+2005-02-02 Michael Meeks.
+
+
 This is the distribution of Bonobo, the GNOME component and compound
 document system for the GNU system.
 

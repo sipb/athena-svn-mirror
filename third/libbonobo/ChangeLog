@@ -1,3 +1,70 @@
+2005-02-05  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* NEWS: Update.
+
+	* configure.in: Version 2.8.1.
+
+2005-02-03  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix problem with locale env variables getting cocked up.
+	Based on patch from Ryan Lortie <desrt@desrt.ca> in
+	bug #164303
+
+	* bonobo-activation/bonobo-activation-activate.c:
+	(bonobo_activation_init_activation_env): treat LC_* just
+	the same as all other environment variables rather than
+	trying to be clever with selocale().
+
+2005-02-02  Hans Petter Jansson  <hpj@novell.com>
+
+	* configure.in: Add checks for Apple Darwin's way of getting
+	the environment from within a shared library. The results of these
+	tests are already used in the code, but seemingly, the tests themselves
+	were never added.
+
+2005-02-02  Michael Meeks  <michael.meeks@novell.com>
+
+	* README: update a little.
+
+2005-01-30  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* bonobo-activation/bonobo-activation-register.c
+	(bonobo_activation_register_active_server_ext): Just in case, add
+	fallback code to print warning and initialize retval when a
+	unexpected exception occurs.
+
+2005-01-29  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* bonobo/bonobo-arg.c (bonobo_arg_from_gvalue_alloc): Take
+	precautions against NULL string GValue.
+
+2005-01-15  Gustavo J. A. M. Carneiro  <gjc@gnome.org>
+
+	* doc/activation-api/server-xml-reference.sgml: Document .server
+	property 'bonobo:environment'.
+
+2005-01-06  Thomas Vander Stichele  <thomas at apestaart dot org>
+
+	* configure.in:
+	  Fix autoheader warnings
+
+2004-12-13  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* activation-server/object-directory-corba.c (od_get_active_server):
+	Add break call to avoid further searcing when server if found.
+
+	Bug #150538.
+
+2004-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes problem with running epiphany immediately after
+	install it - bug #145169.
+
+	* activation-server/object-directory-corba.c:
+	(od_register_runtime_server_info): re-scan the server info
+	directories when registering a server rather than only
+	when activating a server.
+
 2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
 	* configure.in: Version 2.8.0.

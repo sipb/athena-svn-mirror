@@ -749,21 +749,13 @@ bonobo_activation_init_activation_env (void)
 		{ "AUDIODEV",        NULL }, /* Audio device on Sun systems */
 		{ "LANG",            NULL }, /* Fallback locale name */
                 { "XAUTHORITY",      NULL },
-		{ NULL,              NULL }
-	};
-
-	struct {
-		int         category;
-		const char *name;
-		const char *value;
-	} setlocale_values[] =  { /* locale information: see setlocale(3) */
-		{ LC_ALL,      "LC_ALL",          NULL },
-		{ LC_COLLATE,  "LC_COLLATE",      NULL }, 
-		{ LC_MESSAGES, "LC_MESSAGES",     NULL },
-		{ LC_MONETARY, "LC_MONETARY",     NULL },
-		{ LC_NUMERIC,  "LC_NUMERIC",      NULL },
-		{ LC_TIME,     "LC_TIME",         NULL },
-		{ 0,           NULL,              NULL }
+		{ "LC_ALL",	     NULL }, /* locale information: see setlocale(3) */
+		{ "LC_COLLATE",	     NULL }, 
+		{ "LC_MESSAGES",     NULL },
+		{ "LC_MONETARY",     NULL },
+		{ "LC_NUMERIC",	     NULL },
+		{ "LC_TIME",	     NULL },
+		{ NULL,		     NULL }
 	};
 
 	for (i = 0; getenv_values [i].name; i++) {
@@ -771,19 +763,6 @@ bonobo_activation_init_activation_env (void)
 
 		if (getenv_values [i].value)
 			num_items++;
-	}
-
-	for (i = 0; setlocale_values [i].name; i++) {
-		setlocale_values [i].value = setlocale (setlocale_values [i].category, NULL);
-
-		if (!setlocale_values [i].value)
-			setlocale_values [i].value = getenv (setlocale_values [i].name);
-
-		if (setlocale_values [i].value) {
-			num_items++;
-			if (setlocale_values [i].category == LC_ALL)
-				break; /* LC_ALL overrides all others */
-		}
 	}
 
 	if (!num_items)
@@ -803,17 +782,6 @@ bonobo_activation_init_activation_env (void)
 			&activation_environment._buffer [j++],
 			getenv_values [i].name,
 			getenv_values [i].value);
-	}
-
-
-	for (i = 0; setlocale_values [i].name; i++) {
-		if (!setlocale_values [i].value)
-			continue;
-
-		Bonobo_ActivationEnvValue_set (
-			&activation_environment._buffer [j++],
-			setlocale_values [i].name,
-			setlocale_values [i].value);
 	}
 
 	g_assert (j == num_items);

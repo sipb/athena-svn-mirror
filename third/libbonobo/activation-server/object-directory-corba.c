@@ -331,6 +331,7 @@ od_get_active_server (ObjectDirectory    *od,
 				&servers->servers [i].environment,
 				environment)) {
 			retval = servers->servers [i].server;
+			break;
 		}
         }
 	if (retval != CORBA_OBJECT_NIL &&
@@ -781,6 +782,8 @@ od_register_runtime_server_info (ObjectDirectory  *od,
         Bonobo_ServerInfo *old_serverinfo, *new_serverinfo;
         GSList *parsed_serverinfo = NULL, *l;
         int     i;
+
+        update_registry (od, FALSE);
 
         old_serverinfo = (Bonobo_ServerInfo *) g_hash_table_lookup (od->by_iid, iid);
         if (old_serverinfo)
