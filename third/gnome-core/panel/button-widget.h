@@ -32,9 +32,6 @@ struct _ButtonWidget
 	GdkWindow               *event_window;
 	
 	char			*text;
-	guint			force_label:1; /* true if the button should be
-                                		  forced to have a label for
-                                         	  some reason.*/
 	
 	guint			pressed:1; /*true if the button is pressed*/
 	guint			in_button:1;
