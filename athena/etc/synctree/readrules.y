@@ -44,11 +44,15 @@ void yysetin();
 %%
 
 rulefile:   rules |
-rules:      rules rule | rule 
+     ;
+rules:      rules rule | rule
+     ;
 rule:       mrule | arule | wrule | srule | irule | brule
+     ;
 crules:     crules crule | crule
+     ;
 crule:      mrule | arule | wrule | irule | brule
-
+     ;
 mrule: MAP srcpathge filetypes mapdests  { newrule();
                                            lstrule.type = R_MAP;
                                            lstrule.u.u_map.globexp = $2;
@@ -59,12 +63,14 @@ mrule: MAP srcpathge filetypes mapdests  { newrule();
                                            lstrule.u.u_chase.globexp = $2;
                                            /* filetypes and aopts ignored */
                                          }
+     ;
 arule: action dstpathge filetypes aopts  { newrule();
                                            lstrule.type = R_ACTION;
                                            lstrule.u.u_action.type = $1;
                                            lstrule.u.u_action.globexp = $2;
                                            lstrule.u.u_action.file_types = $3;
                                            lstrule.u.u_action.options = $4; }
+     ;
 wrule: WHEN dstpathge filetypes csh_cmds { newrule();
                                            lstrule.type = R_WHEN;
                                            lstrule.u.u_when.type = WHEN_CSH;
@@ -77,8 +83,10 @@ wrule: WHEN dstpathge filetypes csh_cmds { newrule();
                                            lstrule.u.u_when.globexp = $2;
                                            lstrule.u.u_when.file_types = $3;
                                            lstrule.u.u_when.cmds = $4; }
+     ;
 srule:  SET BOOLVAR                      { setvar($2); sfree($2); }
      |  UNSET BOOLVAR                    { unsetvar($2); sfree($2); }
+     ;
 irule:  IF ifhack boolexp crule          { newrule();
                                            lstrule.type = R_IF;
                                            lstrule.u.u_if.boolexp = $3;
@@ -86,101 +94,104 @@ irule:  IF ifhack boolexp crule          { newrule();
                                          }
      |  IF ifhack boolexp crule elsehack crule
                                          { newrule();
-					   lstrule.type = R_IF_ELSE;
-					   lstrule.u.u_if.boolexp = $3;
-					   lstrule.u.u_if.first = $5;
-					   rules[$5].u.u_skip.first = $2 + 1;
-					 }
+                                           lstrule.type = R_IF_ELSE;
+                                           lstrule.u.u_if.boolexp = $3;
+                                           lstrule.u.u_if.first = $5;
+                                           rules[$5].u.u_skip.first = $2 + 1;
+                                         }
+     ;
 elsehack: ELSE                           { newrule();
-					   lstrule.type = R_SKIP;
-					   $$ = lastrule;
-					 }
+                                           lstrule.type = R_SKIP;
+                                           $$ = lastrule;
+                                         }
+     ;
 ifhack:                                  { $$ = lastrule; }
+     ;
 brule:  BEGIN_ crules END                { /* nothing to be done here! */ }
+     ;
+filetypes:                               { $$ = TYPE_ALL; }
+     |  FILETYPES                        { char *s = $1; $$ = 0;
+                                           while (*s != '\0') switch (*(s++)) {
 
-filetypes:                        { $$ = TYPE_ALL; }
-         |  FILETYPES             { char *s = $1; $$ = 0;
-                                    while (*s != '\0') switch (*(s++)) {
 #define xxx(c1,c2,type) case c1: case c2: $$ |= type; break
-                                      xxx('d','D',TYPE_D);
-                                      xxx('c','C',TYPE_C);
-                                      xxx('b','B',TYPE_B);
-                                      xxx('l','L',TYPE_L);
-                                      xxx('s','S',TYPE_S);
-				      xxx('r','R',TYPE_R);
-                                      xxx('x','X',TYPE_X);
-#undef xxx    
-                                    default:
-                                      /* *** give some sort of error message */
-                                      break;
-                                    }
-                                    sfree($1);
-                                  }
-    
-action:    COPY                   { $$ = ACTION_COPY; }
-      |    LOCAL                  { $$ = ACTION_LOCAL; }
-      |    LINK                   { $$ = ACTION_LINK; }
-      |    DELETE		  { $$ = ACTION_DELETE; }
-      |    IGNORE                 { $$ = ACTION_IGNORE; }
-    
-aopts:                            { $$ = 0; }
-     |     aopts ACTIONOPT        { $$ = $1; set_option($$,$2); }
-    
-    
-csh_cmds:  csh_cmds CSH_CMD       { $$ = svecappend($1,$2); }
-        |  CSH_CMD                { $$ = s2svec($1); }
-    
-sh_cmds:   sh_cmds SH_CMD         { $$ = svecappend($1,$2); }
-       |   SH_CMD                 { $$ = s2svec($1); }
-    
-
-mapdests:   mapdests1             { $$ = $1; }
-        |                         { $$ = (char **) malloc(sizeof(char *));
-				    $$[0] = 0; }
-
-mapdests1:  mapdests1 MAPDEST     { $$ = svecappend($1,$2); }
-         |  MAPDEST               { $$ = s2svec($1); }
-
-srcpathge: pathge               { $$ = concat(append(scopy(srcpath),'/'),$1); }
-dstpathge: pathge               { $$ = concat(append(scopy(dstpath),'/'),$1); }
-
-pathge:    ge GE_END              { $$ = $1; }
-
-ge:       ALPHANUM ge         { $$ = concat(c2s($1),$2); }
-  |       '?' ge 	      { $$ = concat(c2s($1),$2); }
-  |       '*' ge 	      { $$ = concat(c2s($1),$2); }
-  |       '{' ge1 '}' ge      { $$ = concat(c2s($1),concat(append($2,$3),$4));}
-  |       '[' chars ']' ge    { $$ = concat(c2s($1),concat(append($2,$3),$4));}
-  |       ALPHANUM            { $$ = c2s($1); }
-  |       '?'		      { $$ = c2s($1); }
-  |       '*'		      { $$ = c2s($1); }
-  |       '{' ge1 '}'	      { $$ = append(concat(c2s($1),$2),$3); }
-  |       '[' chars ']'	      { $$ = append(concat(c2s($1),$2),$3); }
-
-ge1:       ge2 ',' ge1        { $$ = concat(append($1,$2),$3); }
-   |       ge2                { $$ = $1; }
-
-ge2:       ge                 { $$ = $1; }
-   |                          { $$ = scopy(""); }
-      
-chars:     chars ALPHANUM     { $$ = append($1,$2); }
-     |     ALPHANUM           { $$ = c2s($1); }
-      
-boolexp0:  '!' BOOLVAR           { $$ = bool_not(bool_var($2)); }
-        |  BOOLVAR               { $$ = bool_var($1); }
-	|  '!' '(' boolexp ')'   { $$ = bool_not($3); }
-        |  '(' boolexp ')'       { $$ = $2; }
-
-boolexp1:  boolexp1 '&' boolexp0 { $$ = bool_and($1,$3); }
-	|  boolexp0		 { $$ = $1; }
-
-boolexp:   boolexp  '|' boolexp1 { $$ = bool_or($1,$3); }
-       |   boolexp1		 { $$ = $1; }
-
+                                           xxx('d','D',TYPE_D);
+                                           xxx('c','C',TYPE_C);
+                                           xxx('b','B',TYPE_B);
+                                           xxx('l','L',TYPE_L);
+                                           xxx('s','S',TYPE_S);
+                                           xxx('r','R',TYPE_R);
+                                           xxx('x','X',TYPE_X);
+#undef xxx
+                                           default:
+                                             /* *** error message? */
+                                             break;
+                                           }
+                                           sfree($1);
+                                         }
+     ;
+action: COPY                             { $$ = ACTION_COPY; }
+     |  LOCAL                            { $$ = ACTION_LOCAL; }
+     |  LINK                             { $$ = ACTION_LINK; }
+     |  DELETE                           { $$ = ACTION_DELETE; }
+     |  IGNORE                           { $$ = ACTION_IGNORE; }
+     ;
+aopts:                                   { $$ = 0; }
+     |  aopts ACTIONOPT                  { $$ = $1; set_option($$,$2); }
+     ;
+csh_cmds: csh_cmds CSH_CMD               { $$ = svecappend($1,$2); }
+     |  CSH_CMD                          { $$ = s2svec($1); }
+     ;
+sh_cmds: sh_cmds SH_CMD                  { $$ = svecappend($1,$2); }
+     |  SH_CMD                           { $$ = s2svec($1); }
+     ;
+mapdests: mapdests1                      { $$ = $1; }
+     |                                   { $$ = malloc(sizeof(char *));
+                                           $$[0] = 0; }
+     ;
+mapdests1: mapdests1 MAPDEST             { $$ = svecappend($1,$2); }
+     |  MAPDEST                          { $$ = s2svec($1); }
+     ;
+srcpathge: pathge             { $$ = concat(append(scopy(srcpath),'/'),$1); }
+     ;
+dstpathge: pathge             { $$ = concat(append(scopy(dstpath),'/'),$1); }
+     ;
+pathge: ge GE_END                        { $$ = $1; }
+     ;
+ge:     ALPHANUM ge           { $$ = concat(c2s($1),$2); }
+     |  '?' ge                { $$ = concat(c2s($1),$2); }
+     |  '*' ge                { $$ = concat(c2s($1),$2); }
+     |  '{' ge1 '}' ge        { $$ = concat(c2s($1),concat(append($2,$3),$4));}
+     |  '[' chars ']' ge      { $$ = concat(c2s($1),concat(append($2,$3),$4));}
+     |  ALPHANUM              { $$ = c2s($1); }
+     |  '?'                   { $$ = c2s($1); }
+     |  '*'                   { $$ = c2s($1); }
+     |  '{' ge1 '}'           { $$ = append(concat(c2s($1),$2),$3); }
+     |  '[' chars ']'         { $$ = append(concat(c2s($1),$2),$3); }
+     ;
+ge1:    ge2 ',' ge1                      { $$ = concat(append($1,$2),$3); }
+     |  ge2                              { $$ = $1; }
+     ;
+ge2:    ge                               { $$ = $1; }
+     |                                   { $$ = scopy(""); }
+     ;
+chars:  chars ALPHANUM                   { $$ = append($1,$2); }
+     |  ALPHANUM                         { $$ = c2s($1); }
+     ;
+boolexp0: '!' BOOLVAR                    { $$ = bool_not(bool_var($2)); }
+     |  BOOLVAR                          { $$ = bool_var($1); }
+     |  '!' '(' boolexp ')'              { $$ = bool_not($3); }
+     |  '(' boolexp ')'                  { $$ = $2; }
+     ;
+boolexp1: boolexp1 '&' boolexp0          { $$ = bool_and($1,$3); }
+     |  boolexp0                         { $$ = $1; }
+     ;
+boolexp: boolexp  '|' boolexp1           { $$ = bool_or($1,$3); }
+     |  boolexp1                         { $$ = $1; }
+     ;
 %%
 
 /*
- * String manipulation routines 
+ * String manipulation routines
  */
 
 char *c2s(c)
@@ -228,7 +239,7 @@ void sfree(s)
 }
 
 /*
- * Svec manipulation routines 
+ * Svec manipulation routines
  */
 
 char **s2svec(s)
@@ -292,7 +303,7 @@ int yyerror(s)
         char *s;
 {
         printf("%s: %s near line %d\n", yyinfilename, s, lineno);
-	return 0;
+        return 0;
 }
 
 #include "lex.yy.c"
