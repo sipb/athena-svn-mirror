@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.6 1990-07-05 14:41:33 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.7 1990-07-07 10:24:03 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.6 1990-07-05 14:41:33 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.7 1990-07-07 10:24:03 epeisach Exp $";
 #endif lint
 
 /*
@@ -378,7 +378,7 @@ main(argc, argv)
 	card('P', person);
 #ifdef KERBEROS
 	if (account)
-		card('A', itoa(account));
+		card('Q', itoa(account));
 #endif KERBEROS
 	if (forms != NULL)
 	        card('F', forms);
@@ -680,7 +680,7 @@ cleanup()
 test(file)
 	char *file;
 {
-#if !defined(mips) && !(defined_AUX_SOURCE)
+#if !defined(mips) && !defined(_AUX_SOURCE)
 	struct exec execb;
 #endif
 	register int fd;
