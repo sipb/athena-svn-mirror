@@ -23,6 +23,10 @@ set add_vars=(add_vars add_usage add_verbose add_front add_warn add_env \
 
 set add_usage = "Usage: add [-v] [-f] [-p] [-w] [-e] [-a attachflags] [lockername] ..."
 
+#
+# Parse options
+#
+
 while ( $#add_opts > 0 )
   set add_arg = $add_opts[1]
 
@@ -76,17 +80,39 @@ while ( $#add_opts > 0 )
 
 end
 
-set ATHENA_SYS = `fs sysname | awk -F\' '{ print $2 }'`
+#
+# Try to make our environment sane.
+#
 
-set add_bindir = arch/$ATHENA_SYS/bin
-set add_mandir = arch/$ATHENA_SYS/man
+if ( ! $?ATHENA_SYS ) then
+  set ATHENA_SYS = `fs sysname | awk -F\' '{ print $2 }'`
+  if ( $ATHENA_SYS == "" ) unset ATHENA_SYS
+endif
+
+if ( ! $?bindir ) then
+  set bindir = `machtype`bin
+  if ( $bindir == "" ) unset bindir
+endif
+
+if ( ! $?ATHENA_SYS && ! $?bindir ) then
+  echo "add: neither ATHENA_SYS nor bindir is set; nothing will be added to bin path"
+endif
+
+if ( $?ATHENA_SYS ) then
+  set add_bindir = arch/$ATHENA_SYS/bin
+  set add_mandir = arch/$ATHENA_SYS/man
+endif
 
 #
 # Print the filtered path and exit.
 #
 
 if ( $?add_print ) then
-  echo $PATH | sed -e "s-/mit/\([^/]*\)/$add_bindir-{add \1}-g"
+  if ( $?ATHENA_SYS ) then
+    echo $PATH | sed -e "s-/mit/\([^/]*\)/$add_bindir-{add \1}-g"
+  else
+    echo $PATH
+  endif
   goto finish
 endif
 
@@ -113,9 +139,13 @@ foreach add_i ($add_dirs)
 # Find the bin directory
 #
 
-  if ( -d $add_i/$add_bindir ) then
-    set add_bin = $add_i/$add_bindir
-  else
+  if ( $?ATHENA_SYS ) then
+    if ( -d $add_i/$add_bindir ) then
+      set add_bin = $add_i/$add_bindir
+    endif
+  endif
+
+  if ( ! $?add_bin && $?bindir ) then
     if ( -d $add_i/$bindir ) then
       set add_bin = $add_i/$bindir
     endif
@@ -127,9 +157,13 @@ foreach add_i ($add_dirs)
 # dependent man pages in your locker.
 #
 
-  if ( -d $add_i/$add_mandir ) then
-    set add_man = $add_i/$add_mandir
-  else
+  if ( $?ATHENA_SYS ) then
+    if ( -d $add_i/$add_mandir ) then
+      set add_man = $add_i/$add_mandir
+    endif
+  endif
+
+  if ( ! $?add_man ) then
     if ( -d $add_i/man ) then
       set add_man = $add_i/man
     endif
