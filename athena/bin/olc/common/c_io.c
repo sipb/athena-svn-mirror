@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.9 1990-11-15 13:20:43 lwvanels Exp $
+ *	$Id: c_io.c,v 1.10 1990-11-15 15:11:05 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.9 1990-11-15 13:20:43 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.10 1990-11-15 15:11:05 lwvanels Exp $";
 #endif
 #endif
 
@@ -395,7 +395,11 @@ write_text_to_fd(fd, buf)
   printf("write_text_to_fd(%d, 0x%x)\n", fd, buf);
 #endif	/* TEST */
 	
-  nchars = strlen(buf);
+  if (buf != NULL)
+    nchars = strlen(buf);
+  else
+    nchars = 0;
+
   if (write_int_to_fd(fd, nchars) != SUCCESS) 
     {
       perror("write_text_to_fd: write_int_to_fd");
