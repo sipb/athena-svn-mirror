@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: from.pl,v 1.1 2003-04-17 15:19:35 rbasch Exp $
+# $Id: from.pl,v 1.2 2003-05-12 14:04:34 rbasch Exp $
 
 # This is an implementation of the Athena "from" utility using the
 # Perl interface to the Cyrus imclient IMAP library.
@@ -159,13 +159,14 @@ if (!$totals_only && $msgcount > 0) {
 		  "mail in IMAP folder $mbox:\n") unless $verbose || $imaponly;
     for $msg (@pomsgs) {
 	if ($report) {
-	    printf("%-30.30s %.42s\n", $msg->{from}, $msg->{subject});
+	    printf("%-30.30s %.42s\n", $msg->{from},
+		   ($msg->{subject} ? $msg->{subject} : ''));
 	} else {
 	    if ($verbose) {
 		print "\n";
-		print "To: $msg->{to}\n";
-		print "Subject: $msg->{subject}\n";
-		print "Date: $msg->{date}\n";
+		print "To: $msg->{to}\n" if $msg->{to};
+		print "Subject: $msg->{subject}\n" if $msg->{subject};
+		print "Date: $msg->{date}\n" if $msg->{date};
 	    }
 	    print "From: $msg->{from}\n";
 	}
