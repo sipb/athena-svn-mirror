@@ -409,14 +409,14 @@ can collapse the number of required machines to three:
 Here is a list of the rel-eng machines for each platform, with repeat
 machine names listed in parentheses:
 
-					Sun		SGI
+				Sun		Indy		O2
 
-	Wash				whirlpool	kenmore
-	Current release build		downy		snuggle
-	Crash and burn			sourcery	pyramids
-	New release build		(whirlpool)	(snuggle)
-	Current release developer	(downy)		(kenmore)
-	New release developer		(whirlpool)	(snuggle)
+Wash				whirlpool	kenmore		maytag
+Current release build		downy		snuggle		bounce
+Crash and burn			sourcery	pyramids	reaper-man
+New release build		(whirlpool)	(kenmore)	(maytag)
+Current release developer	(downy)		(snuggle)	(bounce)
+New release developer		(whirlpool)	(kenmore)	(maytag)
 
 For reference, here are some names that fit various laundry and
 construction naming schemes:
