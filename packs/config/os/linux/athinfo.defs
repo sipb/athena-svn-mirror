@@ -31,4 +31,4 @@ interfaces	netstat -in
 routes		netstat -rn
 listeners	netstat -an --inet --tcp | awk '$NF == "LISTEN"'
 login		test -f /etc/nologin; echo $?
-cpuspeed	grep Mhz /proc/cpuinfo
+cpuspeed	grep MHz /proc/cpuinfo
