@@ -15,6 +15,11 @@
 #include <usersec.h>
 #endif
 #include "athena_ftpd.h"
+#ifdef ultrix
+#include <sys/param.h>
+#include <sys/mount.h>
+#include <sys/fs_types.h>
+#endif
 
 #define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
 #define file_exists(f) (access((f), F_OK) == 0)
@@ -40,6 +45,7 @@
 
 #define ATTACH "/bin/athena/attach"
 #define DETACH "/bin/athena/detach"
+#define FSID "/bin/athena/fsid"
 #define UNLOG "/bin/athena/unlog"
 
 extern FILE *ftpd_popen();
@@ -332,6 +338,9 @@ char *athena_authenticate(user, passwd)
 
       switch (error) {
       case KSUCCESS:
+#ifdef SETPAG
+	setpag();
+#endif
 	break;
       case INTK_BADPW:
 	errstring =  "Incorrect Kerberos password entered.";
@@ -484,42 +493,48 @@ char *athena_attachhomedir(pw, auth)
   return athena_attach(pw, pw->pw_name, auth);
 }
 
-/* Function Name: IsRemoteDir
- * Description: Stolen form athena's version of /bin/login
- *              returns true of this is an NFS directory.
- * Arguments: dname - name of the directory.
- * Returns: true or false to the question (is remote dir).
- *
- * The following lines rely on the behavior of Sun's NFS (present in
- * 3.0 and 3.2) which causes a read on an NFS directory (actually any
- * non-reg file) to return -1, and AFS which also returns a -1 on
- * read (although with a different errno).  This is a fast, cheap
- * way to discover whether a user's homedir is a remote filesystem.
- * Naturally, if the NFS and/or AFS semantics change, this must also change.
- */
-
 IsRemoteDir(dir)
 char *dir;
 {
-  int f;
-  char c;
-  struct stat stbuf;
-  
-  if (lstat(dir, &stbuf))
-    return(FALSE);
-  if (!(stbuf.st_mode & S_IFDIR))
+#ifdef ultrix
+#define REMOTEDONE
+    struct fs_data sbuf;
+
+    if (statfs(dir, &sbuf) < 0)
+        return(TRUE);
+
+    switch(sbuf.fd_req.fstype) {
+    case GT_ULTRIX:
+    case GT_CDFS:
+        return(FALSE);
+    }
     return(TRUE);
+#endif
 
-  if ((f = open(dir, O_RDONLY, 0)) < 0)
+#if (defined(vax) || defined(ibm032) || defined(sun)) && !defined(REMOTEDONE)
+#define REMOTEDONE
+#if defined(vax) || defined(ibm032)
+#define NFS_MAJOR 0xff
+#endif
+#if defined(sun)
+#define NFS_MAJOR 130
+#endif
+    struct stat stbuf;
+
+    if (stat(dir, &stbuf))
+        return(TRUE);
+
+    if (major(stbuf.st_dev) == NFS_MAJOR)
+        return(TRUE);
+    if (stbuf.st_dev == 0x0001)                 /* AFS */
+        return(TRUE);
+
     return(FALSE);
+#endif
 
-  if (read(f, &c, 1) < 0) {
-      close(f);
-      return(TRUE);
-  }
-
-  close(f);
-  return(FALSE);
+#ifndef REMOTEDONE
+    ERROR --- ROUTINE NOT IMPLEMENTED ON THIS PLATFORM;
+#endif
 }
 
 /* Function Name: homedirOK
@@ -604,14 +619,24 @@ athena_logout(pw)
     {
       /* destroy kerberos tickets */
       if (athena_login == LOGIN_KERBEROS)
+	{
 #ifdef _IBMR2
-	fork_dest_tkt(pw);
+	  fork_dest_tkt(pw);
 #else
-        dest_tkt();
+	  dest_tkt();
 #endif
-
+#ifdef SETPAG
+	  ktc_ForgetAllTokens();
+#endif
+	  if ((pid = fork()) == 0)
+	    {
+	      execl(FSID, FSID, "-q", "-u", "-f", pw->pw_name, 0);
+	      exit(1);
+	    }
+	}
       athena_login = LOGIN_NONE;
 
+#ifdef oldcode
       if (!user_logged_in(pw->pw_name))
 	{
 	  chdir("/");
@@ -630,6 +655,7 @@ athena_logout(pw)
 		exit(1);
 	      }
 	}
+#endif
     }
 }
 
