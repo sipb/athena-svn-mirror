@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/structs.h,v $
- *	$Id: structs.h,v 1.8 1991-02-24 15:18:39 lwvanels Exp $
+ *	$Id: structs.h,v 1.9 1991-03-07 13:23:23 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -51,7 +51,6 @@ typedef struct tPERSON
 #endif  
 } PERSON;
 
-
 /* Structure describing the list */
 
 typedef struct tLIST 
@@ -70,20 +69,6 @@ typedef struct tLIST
   struct tPERSON user;
   struct tPERSON connected;
 } LIST;
-
-
-typedef struct tGOO
-{
-  int    ustatus;
-  int    cstatus;
-  int    ukstatus;
-  int    ckstatus;
-  int    nseen;
-  char   topic[TOPIC_SIZE];
-  char   note[NOTE_SIZE];
-  struct tPERSON user;
-  struct tPERSON connected;
-} OLDLIST;
 
 typedef struct tDBINFO
 {
