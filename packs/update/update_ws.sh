@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.11 1997-01-11 19:27:01 ghudson Exp $
+# $Id: update_ws.sh,v 1.12 1997-02-06 22:56:11 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -56,11 +56,9 @@ VERSION=`awk '{a=$5}; END{print a}' "$CONFDIR/version"`
 # A temporary backward compatibility hack, necessary as long as there are
 # 7.7 and 8.0 machines upgrading to the new release.
 case "$VERSION" in
-7.7*)
-	VERSION=7.7.0
-	;;
-8.0*)
-	VERSION=8.0.0
+[0-9].[0-9][A-Z])
+	VERSION=`echo $VERSION | awk '{ print substr($1, 1, 3) "." \
+		index("ABCDEFGHIJKLMNOPQRSTUVWXYZ", substr($1, 4, 1)) - 1; }'`
 	;;
 esac
 
