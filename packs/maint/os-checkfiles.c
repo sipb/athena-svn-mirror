@@ -20,7 +20,7 @@
  * a given root directory, presumably an Athena /os hierarchy.
  */
 
-static const char rcsid[] = "$Id: os-checkfiles.c,v 1.4 2001-09-11 21:26:49 rbasch Exp $";
+static const char rcsid[] = "$Id: os-checkfiles.c,v 1.5 2004-04-15 17:58:22 rbasch Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,7 +50,7 @@ int verbose = 0;
 void usage();
 
 void do_file(const char *path, const struct stat *statp, mode_t mode,
-	     off_t size, uid_t uid, gid_t gid, int flags, time_t since);
+	     off_t size, uid_t uid, gid_t gid, time_t mtime);
 
 void do_symlink(const char *from, const struct stat *statp, const char *to);
 
@@ -86,7 +86,6 @@ void usage()
   fprintf(stderr, "        -n               No-op mode\n");
   fprintf(stderr, "        -o <osroot>      OS root, default is /os\n");
   fprintf(stderr, "        -r <target>      Target root, default is /\n");
-  fprintf(stderr, "        -t <file>        Timestamp file\n");
   fprintf(stderr, "        -v               Verbose output mode\n");
   fprintf(stderr, "        -x <file>        File containing exception list\n");
   exit(1);
@@ -95,7 +94,6 @@ void usage()
 int main(int argc, char **argv)
 {
   const char *statfile = NULL;
-  const char *timefile = NULL;
   const char *exceptfile = NULL;
   const char *target = "/";
   FILE *statfp;
@@ -104,12 +102,12 @@ int main(int argc, char **argv)
   char linkpath[PATH_MAX+1];
   struct stat sb, *statp;
   unsigned long long mode, uid, gid, size;
-  int c, len, flags;
-  time_t since;
+  int c, len;
+  time_t mtime;
 
   progname = argv[0];
 
-  while ((c = getopt(argc, argv, "no:r:t:vx:")) != EOF)
+  while ((c = getopt(argc, argv, "no:r:vx:")) != EOF)
     {
       switch(c)
 	{
@@ -121,9 +119,6 @@ int main(int argc, char **argv)
 	  break;
 	case 'r':
 	  target = optarg;
-	  break;
-	case 't':
-	  timefile = optarg;
 	  break;
 	case 'v':
 	  verbose = 1;
@@ -155,22 +150,6 @@ int main(int argc, char **argv)
 	      progname, osroot);
       exit(1);
     }
-
-  /* If given a timestamp file against which to check, record its
-   * modification time, otherwise just use the current time.
-   */
-  if (timefile != NULL)
-    {
-      if (stat(timefile, &sb) != 0)
-	{
-	  fprintf(stderr, "%s: Cannot stat %s: %s\n",
-		  progname, timefile, strerror(errno));
-	  exit(1);
-	}
-      since = sb.st_mtime;
-    }
-  else
-    time(&since);
 
   if (exceptfile != NULL)
     exceptlist = make_list(exceptfile);
@@ -230,15 +209,15 @@ int main(int argc, char **argv)
 	  do_symlink(path, statp, linkpath);
 	  break;
 	case 'f':
-	  if (sscanf(&inbuf[2], "%llo %llu %llu %llu %x", &mode, &size,
-		     &uid, &gid, &flags) != 5)
+	  if (sscanf(&inbuf[2], "%llo %llu %llu %llu %lu", &mode, &size,
+		     &uid, &gid, &mtime) != 5)
 	    {
 	      fprintf(stderr,
 		      "%s: Invalid file entry '%s', aborting\n",
 		      progname, inbuf);
 	      exit(1);
 	    }
-	  do_file(path, statp, mode, size, uid, gid, flags, since);
+	  do_file(path, statp, mode & MODEMASK, size, uid, gid, mtime);
 	  break;
 	case 'h':
 	  if (sscanf(&inbuf[2], "%s", linkpath) != 1)
@@ -258,7 +237,7 @@ int main(int argc, char **argv)
 		      progname, inbuf);
 	      exit(1);
 	    }
-	  do_directory(path, statp, mode, uid, gid);
+	  do_directory(path, statp, mode & MODEMASK, uid, gid);
 	  break;
 	default:
 	  fprintf(stderr, "%s: Unrecognized type '%c', aborting.\n",
@@ -270,14 +249,14 @@ int main(int argc, char **argv)
 }
 
 void do_file(const char *path, const struct stat *statp, mode_t mode,
-	     off_t size, uid_t uid, gid_t gid, int flags, time_t since)
+	     off_t size, uid_t uid, gid_t gid, time_t mtime)
 {
   struct stat sb;
   char ospath[PATH_MAX+1];
 
   if (statp == NULL
       || !S_ISREG(statp->st_mode)
-      || statp->st_mtime > since
+      || statp->st_mtime != mtime
       || statp->st_size != size)
     {
       printf("Replace regular file %s\n", path);
@@ -307,7 +286,7 @@ void do_file(const char *path, const struct stat *statp, mode_t mode,
 	}
     }
 
-  else if (statp->st_mode != mode
+  else if ((statp->st_mode & MODEMASK) != mode
 	   || statp->st_uid != uid
 	   || statp->st_gid != gid)
     {
@@ -434,7 +413,7 @@ void do_directory(const char *path, const struct stat *statp, mode_t mode,
 	    }
 	}
     }
-  else if (statp->st_mode == mode
+  else if ((statp->st_mode & MODEMASK) == mode
 	   && statp->st_uid == uid
 	   && statp->st_gid == gid)
     return;
