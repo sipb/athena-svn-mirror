@@ -3,7 +3,7 @@
  *
  * $Author: vrt $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v 1.1 1993-04-29 15:47:02 vrt Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/protocol/fx_prot.x,v 1.2 1993-04-29 15:47:39 vrt Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -16,7 +16,6 @@
  */
 
 %#include <mit-copyright.h>
-#include <mit-copyright.h>
 %#include <krb.h>
 %#include <fxserver_err.h>
 %#include <sys/time.h>
