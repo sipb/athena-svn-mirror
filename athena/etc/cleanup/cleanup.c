@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.17 1996-12-11 21:23:22 ghudson Exp $
+/* $Id: cleanup.c,v 2.18 1997-02-22 18:55:14 ghudson Exp $
  *
  * Cleanup program for stray processes
  *
@@ -44,7 +44,7 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.17 1996-12-11 21:23:22 ghudson Exp $";
+char *version = "$Id: cleanup.c,v 2.18 1997-02-22 18:55:14 ghudson Exp $";
 
 
 
@@ -379,8 +379,9 @@ struct cl_proc *get_processes()
     struct proc p;
 #else
      int i=0;
-    proc_t  *p;
+    struct proc  *p;
     struct pid pid_buf;
+    struct cred cred_buf;
 #endif
     static struct cl_proc procs[MAXPROCS];
 #ifdef _AIX
@@ -454,12 +455,14 @@ struct cl_proc *get_processes()
       while ( (p = kvm_nextproc(kv)) != NULL ) {
               if ( p != NULL ) {
                      kvm_read(kv, (unsigned long)p ->p_pidp, 
-			      (char *)&pid_buf, sizeof(struct pid)); 
+			      (char *)&pid_buf, sizeof(struct pid));
+		     kvm_read(kv, (unsigned long)p ->p_cred,
+			      (char *)&cred_buf, sizeof(struct cred));
 		      if (pid_buf.pid_id == 0)
                               continue;
                       else {
                               procs[i].pid = pid_buf.pid_id;
-			      procs[i].uid = p->p_cred->cr_uid;
+			      procs[i].uid = cred_buf.cr_uid;
                               i++;
                       }
               }
