@@ -4,23 +4,12 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zstat/Imakefile,v $
-/**/#	$Author: jfc $
-/**/#	$Id: Imakefile,v 1.7 1991-09-02 19:07:39 jfc Exp $
+/**/#	$Author: probe $
+/**/#	$Id: Imakefile,v 1.8 1993-11-19 15:27:29 probe Exp $
 /**/#
-LIBS= ${ZEPHYR_LIB} ${KRB_LIB} ${DES_LIB} ${COMERR_LIB}
-LINTLIBS= ${ZEPHYR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB} ${COMERR_LINTLIB}
+
 SRCS = zstat.c
 OBJS = zstat.o
-HDRS = zserver.h
 
-SRCDIR= ${SRCTOP}/clients/zstat
-CODE= ${SRCS} ${HDRS} Imakefile
-
-/* dummy rule so 'make' means 'make all' */
-all::
-
-depend::
-	(cd ../../server; make src)
-normal_obj_rule()
-
-program(zstat,${OBJS},,${LIBS},${CLIENTDIR})
+zprogram(zstat,)
+install_man(zstat.8,zstat.8)

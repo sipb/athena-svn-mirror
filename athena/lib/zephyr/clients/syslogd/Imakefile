@@ -4,37 +4,27 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/syslogd/Imakefile,v $
-/**/#	$Author: lwvanels $
-/**/#	$Id: Imakefile,v 1.5 1991-12-05 15:29:19 lwvanels Exp $
+/**/#	$Author: probe $
+/**/#	$Id: Imakefile,v 1.6 1993-11-19 15:27:05 probe Exp $
 /**/#
 
 #ifdef _AIX
-LIBS= $(ZEPHYR_LIB) $(KRB_LIB) $(COMERR_LIB) -lsrc
-#else
-LIBS= $(ZEPHYR_LIB) $(KRB_LIB) $(COMERR_LIB)
+MACHLIBS= -lsrc
 #endif
-LINCLUDES=-I.
-LINTLIBS=$(ZEPHYR_LINTLIB) $(KRB_LINTLIB) $(COMERR_LINTLIB)
-SRCS = syslogd.c
-OBJS = syslogd.o
-HDRS= syslog.h
 
-TSRCS= logger.c syslog.c 
-TOBJS= logger.o syslog.o
+LIBS= $(ZLIBS) $(MACHLIBS)
 
-SRCDIR= ${SRCTOP}/clients/syslogd
-CODE= ${SRCS} ${HDRS} ${TSRCS} Imakefile
+SRCS = syslogd.c logger.c syslog.c 
+
+DOBJS = syslogd.o
+LOBJS= logger.o syslog.o
 
 #ifdef SYSLOG_COMPAT42
-DEFINES = -DCOMPAT42
+COMPAT = -DCOMPAT42
+SimpleProgram(logger,$(LOBJS),,$(ATHETCDIR))
 #endif
 
-normal_obj_rule()
+XDEFS = -I. $(COMPAT)
 
-#ifdef SYSLOG_COMPAT42
-genutil(logger, $(TOBJS),,)
-#endif
-
-program(syslogd,$(OBJS),,$(LIBS),$(ETCATHDIR))
-
-manpage(8,syslogd.8)
+SimpleProgram(syslogd,$(DOBJS),$(LIBS),$(ATHRETCDIR))
+install_man(syslogd.8,syslogd.8)

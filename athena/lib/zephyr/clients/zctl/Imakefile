@@ -4,26 +4,13 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/Imakefile,v $
-/**/#	$Author: jfc $
-/**/#	$Id: Imakefile,v 1.5 1991-09-02 18:46:31 jfc Exp $
+/**/#	$Author: probe $
+/**/#	$Id: Imakefile,v 1.6 1993-11-19 15:27:22 probe Exp $
 /**/#
 
-LIBS= ${ZEPHYR_LIB} ${SS_LIB} ${KRB_LIB} ${DES_LIB} ${COMERR_LIB}
-LINTLIBS= ${ZEPHYR_LINTLIB} ${SS_LINTLIB} ${KRB_LINTLIB} \
-	${DES_LINTLIB} ${COMERR_LINTLIB}
-SRCS = zctl.c
+SRCS = zctl.c zctl_cmds.c
 OBJS = zctl.o zctl_cmds.o
-OTHERSRCS= zctl_cmds.ct
 
-#ifdef LOCAL_LIBS
-LINCLUDES=-I$(BUILDTOP)/ss
-#endif
-
-SRCDIR= ${SRCTOP}/clients/zctl
-CODE= ${OTHERSRCS} ${SRCS} Imakefile
-
-normal_obj_rule()
-
-program(zctl,${OBJS},,${LIBS},${CLIENTDIR})
-
-command_table_noprof(zctl_cmds)
+cmd_table(zctl_cmds)
+zprogram(zctl,$(LIB_SS))
+install_man(zctl.1,zctl.1)
