@@ -1,5 +1,5 @@
 ;; configure.jl -- default configure-request handler
-;; $Id: configure.jl,v 1.1.1.1 2000-11-12 06:27:48 ghudson Exp $
+;; $Id: configure.jl,v 1.1.1.2 2001-03-09 19:34:53 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -42,6 +42,12 @@
     :user-level expert
     :group move)
 
+  (defcustom configure-ignore-stacking-requests nil
+    "Ignore requests from applications to change window stacking."
+    :type boolean
+    :group misc
+    :user-level expert)
+
   ;; Returns true if window window1 and window2 intersect, false otherwise.
   (defun windows-intersect-p (window1 window2)
     (let ((w1pos (window-position window1))
@@ -79,7 +85,9 @@
 	  (hints (window-size-hints w))
 	  tem)
 
-      (when (setq tem (cdr (assq 'stack alist)))
+      (when (and (setq tem (cdr (assq 'stack alist)))
+		 (not configure-ignore-stacking-requests)
+		 (not (window-get w 'ignore-stacking-requests)))
 	(let ((relation (car tem))
 	      (sibling (car (cdr tem))))
 	  (case relation

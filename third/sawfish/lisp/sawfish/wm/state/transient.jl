@@ -1,5 +1,5 @@
 ;; transient.jl -- support transient windows
-;; $Id: transient.jl,v 1.1.1.2 2001-01-13 14:58:59 ghudson Exp $
+;; $Id: transient.jl,v 1.1.1.3 2001-03-09 19:35:04 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -205,7 +205,12 @@ the level of any transient windows it has."
 	  ;; mode) or the window under the pointer otherwise
 	  (if (eq focus-mode 'click)
 	      (setq parent nil)
-	    (setq parent (query-pointer-window)))
+	    (setq parent (query-pointer-window))
+	    (when (and (eq focus-mode 'enter-only)
+		       parent (desktop-window-p parent))
+	      ;; in sloppy-focus mode, don't want to focus on the
+	      ;; desktop window just because the pointer is under it
+	      (setq parent nil)))
 	  (unless (or parent (eq focus-mode 'enter-exit))
 	    (setq parent (window-order-most-recent))))
 	(when (or (null parent) (window-really-wants-input-p parent))

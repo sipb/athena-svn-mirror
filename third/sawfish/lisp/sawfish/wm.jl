@@ -1,6 +1,6 @@
 #| sawfish.wm bootstrap
 
-   $Id: wm.jl,v 1.1.1.2 2001-01-13 14:57:44 ghudson Exp $
+   $Id: wm.jl,v 1.1.1.3 2001-03-09 19:34:59 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -137,7 +137,8 @@
 
 (let ((session-id (or (get-command-line-option "--sm-client-id" t)
 		      ;; may be passed through from the default GNOME session
-		      (get-command-line-option "-clientId" t))))
+		      (get-command-line-option "-clientId" t)))
+      (session-prefix (get-command-line-option "--sm-prefix" t)))
 
   ;; do user-level initialization
   (load "sawfish/wm/user")
@@ -145,4 +146,4 @@
   ;; now connect with the session manager; gsm requires that apps don't
   ;; connect until they're ready to handle the later priority levels
   (when (and (not batch-mode) (getenv "SESSION_MANAGER"))
-    (sm-init session-id)))
+    (sm-init session-id session-prefix)))

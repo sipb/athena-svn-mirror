@@ -1,5 +1,5 @@
 ;; sm-save.jl -- session manager code to save the current session
-;; $Id: save.jl,v 1.1.1.1 2000-11-12 06:27:07 ghudson Exp $
+;; $Id: save.jl,v 1.1.1.2 2001-03-09 19:34:59 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -61,10 +61,10 @@
 	      alist)
 	(write stream "\)\n\n"))))
 
-  (define (save-session id)
-    (unless (file-exists-p sm-save-directory)
-      (make-directory-recursively sm-save-directory))
-    (let ((file (open-file (sm-find-file id) 'write)))
+  (define (save-session filename)
+    (unless (file-exists-p (file-name-directory filename))
+      (make-directory-recursively (file-name-directory filename)))
+    (let ((file (open-file filename 'write)))
       (when file
 	(unwind-protect
 	    (progn

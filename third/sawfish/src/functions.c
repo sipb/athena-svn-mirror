@@ -1,5 +1,5 @@
 /* functions.c -- useful window manager Lisp functions
-   $Id: functions.c,v 1.1.1.2 2001-01-13 14:57:59 ghudson Exp $
+   $Id: functions.c,v 1.1.1.3 2001-03-09 19:35:31 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -49,6 +49,8 @@ static int server_grabs;
 
 static int xinerama_heads;
 
+static int xinerama_event_base, xinerama_error_base;
+
 #ifdef HAVE_X11_EXTENSIONS_XINERAMA_H
 # include <X11/extensions/Xinerama.h>
   static XineramaScreenInfo *xinerama_head_info;
@@ -78,57 +80,49 @@ in the list (from top to bottom). The stacking order of any unspecified
 windows isn't affected.
 ::end:: */
 {
-    int len, i, j;
-    Window *frames;
+    repv ptr;
+    Lisp_Window *pred;
+
     rep_DECLARE1(list, rep_LISTP);
-    len = rep_INT(Flength (list));
-    frames = alloca (len * sizeof (Window));
-    for (i = j = 0; i < len; i++)
+    for (ptr = list; rep_CONSP (ptr); ptr = rep_CDR (ptr))
     {
-	repv w = rep_CAR(list);
-	if (WINDOWP(w) && (VWIN(w)->frame != 0 || VWIN(w)->id != 0))
-	{
-	    frames[j++] = (VWIN(w)->reparented
-			   ? VWIN(w)->frame : VWIN(w)->id);
-	}
-	else
-	    frames[j++] = x_win_from_arg (w);
-	list = rep_CDR(list);
+	if (!WINDOWP (rep_CAR (ptr)))
+	    return rep_signal_arg_error (list, 1);
     }
-    XRestackWindows (dpy, frames, j);
+
+    if (list == Qnil)
+	return Qt;
+
+    ptr = list;
+    pred = 0;
+
+    while (rep_CONSP (ptr))
+    {
+	Lisp_Window *this = VWIN (rep_CAR (ptr));
+
+	if (!WINDOW_IS_GONE_P (this))
+	{
+	    if (pred != 0)
+	    {
+		remove_from_stacking_list (this);
+		insert_in_stacking_list_below (this, pred);
+
+		/* This works because it tries to stack relative to
+		   the window above THIS first; which we just set */
+		restack_window (this);
+	    }
+	    pred = this;
+	}
+
+	ptr = rep_CDR (ptr);
+
+	rep_TEST_INT;
+	if (rep_INTERRUPTP)
+	    return rep_NULL;
+    }
+
     Fcall_hook (Qafter_restacking_hook, Qnil, Qnil);
     return Qt;
-}
-
-static repv
-do_raise_lower (repv win, repv sib, u_int mode)
-{
-    Window win_id, sib_id;
-    XWindowChanges wc;
-    u_int wc_mask = 0;
-    if (WINDOWP(win) && VWIN(win)->reparented)
-	win_id = VWIN(win)->frame;
-    else
-	win_id = x_win_from_arg (win);
-    if (WINDOWP(sib) && VWIN(sib)->reparented)
-	sib_id = VWIN(sib)->frame;
-    else
-	sib_id = x_win_from_arg (sib);
-    if (win_id == 0)
-	return WINDOWP(win) ? Qnil : rep_signal_arg_error (win, 1);
-    if (sib_id == win_id)
-	return rep_signal_arg_error (sib, 2);
-
-    wc.stack_mode = mode;
-    wc_mask |= CWStackMode;
-    if (sib_id != 0)
-    {
-	wc.sibling = sib_id;
-	wc_mask |= CWSibling;
-    }
-    XConfigureWindow (dpy, win_id, wc_mask, &wc);
-    Fcall_hook (Qafter_restacking_hook, Qnil, Qnil);
-    return win;
 }
 
 DEFUN("x-raise-window", Fx_raise_window, Sx_raise_window,
@@ -140,7 +134,19 @@ Raise WINDOW so that it is above window ABOVE. If ABOVE is undefined,
 raise WINDOW to the top of the stacking order.
 ::end:: */
 {
-    return do_raise_lower (win, above, Above);
+    rep_DECLARE1 (win, WINDOWP);
+
+    if (!WINDOW_IS_GONE_P (VWIN (win)))
+    {
+	remove_from_stacking_list (VWIN (win));
+	if (WINDOWP (above))
+	    insert_in_stacking_list_above (VWIN (win), VWIN (above));
+	else
+	    insert_in_stacking_list_above_all (VWIN (win));
+	restack_window (VWIN (win));
+	Fcall_hook (Qafter_restacking_hook, Qnil, Qnil);
+    }
+    return win;
 }
 
 DEFUN("x-lower-window", Fx_lower_window, Sx_lower_window,
@@ -152,7 +158,19 @@ Lower WINDOW so that it is below window BELOW. If BELOW is undefined,
 lower WINDOW to the bottom of the stacking order.
 ::end:: */
 {
-    return do_raise_lower (win, below, Below);
+    rep_DECLARE1 (win, WINDOWP);
+
+    if (!WINDOW_IS_GONE_P (VWIN (win)))
+    {
+	remove_from_stacking_list (VWIN (win));
+	if (WINDOWP (below))
+	    insert_in_stacking_list_below (VWIN (win), VWIN (below));
+	else
+	    insert_in_stacking_list_below_all (VWIN (win));
+	restack_window (VWIN (win));
+	Fcall_hook (Qafter_restacking_hook, Qnil, Qnil);
+    }
+    return win;
 }
 
 DEFUN("x-kill-client", Fx_kill_client, Sx_kill_client,
@@ -1387,7 +1405,13 @@ functions_init (void)
 #ifdef HAVE_X11_EXTENSIONS_XINERAMA_H
 # ifndef TEST_XINERAMA
     if (dpy != 0)
-	xinerama_head_info = XineramaQueryScreens (dpy, &xinerama_heads);
+    {
+	if (XineramaQueryExtension (dpy, &xinerama_event_base,
+				    &xinerama_error_base))
+	{
+	    xinerama_head_info = XineramaQueryScreens (dpy, &xinerama_heads);
+	}
+    }
 # else
     xinerama_head_info = debug_heads;
     xinerama_heads = debug_nheads;

@@ -1,5 +1,5 @@
 /* windows.c -- window manipulation
-   $Id: windows.c,v 1.1.1.2 2001-01-13 14:57:54 ghudson Exp $
+   $Id: windows.c,v 1.1.1.3 2001-03-09 19:35:36 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -20,7 +20,13 @@
    the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. */
 
 #include "sawmill.h"
+#include <assert.h>
 #include <X11/extensions/shape.h>
+
+/* Work around for X11R5 and earlier */
+#ifndef XUrgencyHint
+#define XUrgencyHint (1 << 8)
+#endif
 
 Lisp_Window *window_list;
 int window_type;
@@ -112,7 +118,7 @@ window_input_hint_p (Lisp_Window *w)
 void
 focus_on_window (Lisp_Window *w)
 {
-    if (w != 0 && w->id != 0 && w->visible)
+    if (w != 0 && !WINDOW_IS_GONE_P (w) && w->visible)
     {
 	Window focus;
 	DB(("focus_on_window (%s)\n", rep_STR(w->name)));
@@ -206,7 +212,7 @@ find_window_by_id (Window id)
     w = window_list;
     while (w != 0 && w->id != id && w->frame != id)
 	w = w->next;
-    if (w != 0 && w->id == 0)
+    if (w != 0 && WINDOW_IS_GONE_P (w))
 	w = 0;
     if (w != 0)
     {
@@ -239,7 +245,7 @@ void
 install_window_frame (Lisp_Window *w)
 {
     DB(("install_window_frame (%s)\n", rep_STR(w->name)));
-    if (!w->reparented && w->frame != 0)
+    if (!w->reparented && w->frame != 0 && !WINDOW_IS_GONE_P (w))
     {
 	XSelectInput (dpy, w->frame, FRAME_EVENTS);
 
@@ -247,6 +253,7 @@ install_window_frame (Lisp_Window *w)
 	XReparentWindow (dpy, w->id, w->frame, -w->frame_x, -w->frame_y);
 	w->reparented = TRUE;
 	after_local_map (w);
+	restack_window (w);
 
 	XAddToSaveSet (dpy, w->id);
 	restack_frame_parts (w);
@@ -262,7 +269,7 @@ void
 remove_window_frame (Lisp_Window *w)
 {
     DB(("remove_window_frame (%s)\n", rep_STR(w->name)));
-    if (w->reparented)
+    if (w->reparented && !WINDOW_IS_GONE_P (w))
     {
 	/* reparent the subwindow back to the root window */
 
@@ -270,6 +277,7 @@ remove_window_frame (Lisp_Window *w)
 	XReparentWindow (dpy, w->id, root_window, w->attr.x, w->attr.y);
 	w->reparented = FALSE;
 	after_local_map (w);
+	restack_window (w);
 
 	if (!w->mapped)
 	    XRemoveFromSaveSet (dpy, w->id);
@@ -308,6 +316,10 @@ add_window (Window id)
 	w->plist = Qnil;
 	w->frame_style = Qnil;;
 	w->icon_image = rep_NULL;
+
+	/* have to put it somewhere until it finds the right place */
+	insert_in_stacking_list_above_all (w);
+	restack_window (w);
 
 	/* ..now do the X11 stuff */
 
@@ -392,7 +404,7 @@ add_window (Window id)
 	rep_POPGC;
 
 	/* In case the window disappeared during the hook call */
-	if (w->id != 0)
+	if (!WINDOW_IS_GONE_P (w))
 	{
 	    Fgrab_server ();
 
@@ -408,7 +420,7 @@ add_window (Window id)
 	else
 	    emit_pending_destroys ();
 
-	if (w->id != 0)
+	if (!WINDOW_IS_GONE_P (w))
 	{
 	    repv tem = Fwindow_get (rep_VAL(w), Qplaced);
 	    if (initialising || (tem && tem == Qnil))
@@ -421,10 +433,10 @@ add_window (Window id)
 	}
 	Fwindow_put (rep_VAL(w), Qplaced, Qt);
 
-	if (w->id != 0)
+	if (!WINDOW_IS_GONE_P (w))
 	    Fcall_window_hook (Qafter_add_window_hook, rep_VAL(w), Qnil, Qnil);
 
-	if (w->id != 0)
+	if (!WINDOW_IS_GONE_P (w))
 	{
 	    /* Tell the window where it ended up.. */
 	    send_synthetic_configure (w);
@@ -454,6 +466,8 @@ remove_window (Lisp_Window *w, repv destroyed, repv from_error)
 
 	if (from_error == Qnil)
 	    destroy_window_frame (w, FALSE);
+
+	remove_from_stacking_list (w);
 
 	w->id = 0;
 	pending_destroys++;
@@ -496,7 +510,7 @@ emit_pending_destroys (void)
     again:
 	for (w = window_list; w != 0 && !rep_INTERRUPTP; w = w->next)
 	{
-	    if (w->id == 0 && !w->destroyed)
+	    if (WINDOW_IS_GONE_P (w) && !w->destroyed)
 	    {
 		w->destroyed = 1;
 		Fcall_window_hook (Qdestroy_notify_hook,
@@ -847,7 +861,7 @@ Return a list of all known client window objects.
     Lisp_Window *w = window_list;
     while (w != 0)
     {
-	if (w->id != 0)
+	if (!WINDOW_IS_GONE_P (w))
 	    list = Fcons (rep_VAL(w), list);
 	w = w->next;
     }
@@ -876,24 +890,7 @@ Return a list of windows defining the current stacking order of all
 client windows.
 ::end:: */
 {
-    Window root, parent, *children;
-    u_int nchildren;
-    if (XQueryTree (dpy, root_window, &root, &parent, &children, &nchildren))
-    {
-	int i;
-	repv ret = Qnil;
-	for (i = 0; i < nchildren; i++)
-	{
-	    Lisp_Window *w = find_window_by_id (children[i]);
-	    if (w != 0)
-		ret = Fcons (rep_VAL(w), ret);
-	}
-	if (children != 0)
-	    XFree (children);
-	return ret;
-    }
-    else
-	return Qnil;
+    return make_stacking_list ();
 }
 
 DEFUN("window-visibility", Fwindow_visibility, Swindow_visibility,
@@ -1214,33 +1211,57 @@ WINDOW. Returns the symbol `nil' if no such image.
 
    if (VWIN (win)->icon_image == rep_NULL)
    {
-       if (VWIN (win)->wmhints == 0)
-	   VWIN (win)->icon_image = Qnil;
-       else
-       {
-	   repv id, mask_id;
-	   repv ret = Qnil;
+       Window pixmap_id = 0, mask_id = 0;
 
+       if (VWIN (win)->wmhints != 0)
+       {
 	   if (VWIN (win)->wmhints->flags & IconPixmapHint
 	       && VWIN (win)->wmhints->icon_pixmap != 0)
 	   {
-	       id = rep_MAKE_INT (VWIN (win)->wmhints->icon_pixmap);
+	       pixmap_id = VWIN (win)->wmhints->icon_pixmap;
 	   }
-	   else
-	       id = Qnil;
 
 	   if (VWIN (win)->wmhints->flags & IconMaskHint
 	       && VWIN (win)->wmhints->icon_mask != 0)
 	   {
-	       mask_id = rep_MAKE_INT (VWIN (win)->wmhints->icon_mask);
+	       mask_id = VWIN (win)->wmhints->icon_mask;
 	   }
-	   else
-	       mask_id = Qnil;
+       }
 
-	   if (id != Qnil)
-	       ret = Fmake_image_from_x_drawable (id, mask_id);
+       if (pixmap_id == 0 && !WINDOW_IS_GONE_P (VWIN (win)))
+       {
+	   Atom actual_type;
+	   int actual_format;
+	   long nitems, bytes_after;
+	   u_long *data = 0;
 
-	   VWIN (win)->icon_image = ret;
+	   static Atom kwm_win_icon = 0;
+
+	   if (kwm_win_icon == 0)
+	       kwm_win_icon = XInternAtom (dpy, "KWM_WIN_ICON", False);
+
+	   if (XGetWindowProperty (dpy, VWIN (win)->id, kwm_win_icon,
+				   0, 2, False, kwm_win_icon,
+				   &actual_type, &actual_format,
+				   &nitems, &bytes_after,
+				   (u_char **) &data) == Success
+	       && actual_type == kwm_win_icon
+	       && bytes_after == 0)
+	   {
+	       pixmap_id = data[0];
+	       mask_id = data[1];
+	   }
+	   if (data != 0)
+	       XFree (data);
+       }
+
+       VWIN (win)->icon_image = Qnil;
+
+       if (pixmap_id != 0)
+       {
+	   VWIN (win)->icon_image = (Fmake_image_from_x_drawable
+				     (rep_MAKE_INT (pixmap_id),
+				      mask_id ? rep_MAKE_INT (mask_id) : Qnil));
        }
    }
 
@@ -1262,7 +1283,7 @@ Map the single-parameter function FUN over all existing windows.
     rep_PUSHGC (gc_w, w);
     for (w = rep_VAL (window_list); w != rep_NULL; w = rep_VAL (VWIN(w)->next))
     {
-	if (VWIN (w)->id != 0)
+	if (!WINDOW_IS_GONE_P (VWIN (w)))
 	{
 	    ret = rep_call_lisp1 (fun, w);
 	    if (ret == rep_NULL)
@@ -1289,7 +1310,7 @@ Return the list of windows that match the predicate function PRED.
     rep_PUSHGC(gc_output, output);
     for (w = rep_VAL (window_list); w != rep_NULL; w = rep_VAL (VWIN(w)->next))
     {
-	if (VWIN (w)->id != 0)
+	if (!WINDOW_IS_GONE_P (VWIN (w)))
 	{
 	    repv tem = rep_call_lisp1 (pred, w);
 	    if (tem == rep_NULL)
@@ -1344,7 +1365,7 @@ window_mark_type (void)
     struct prop_handler *ph;
     for (w = window_list; w != 0; w = w->next)
     {
-	if (w->id != 0 || !w->destroyed)
+	if (!WINDOW_IS_GONE_P (w) || !w->destroyed)
 	    rep_MARKVAL(rep_VAL(w));
     }
     for (ph = prop_handlers; ph != 0; ph = ph->next)
@@ -1361,6 +1382,7 @@ window_sweep (void)
 	Lisp_Window *w = *ptr;
 	if (!rep_GC_CELL_MARKEDP(rep_VAL(w)))
 	{
+	    assert (!window_in_stacking_list_p (w));
 	    destroy_window_frame (w, FALSE);
 	    if (w->wmhints != 0)
 		XFree (w->wmhints);

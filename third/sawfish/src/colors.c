@@ -1,5 +1,5 @@
 /* colors.c -- Colour handling
-   $Id: colors.c,v 1.1.1.1 2000-11-12 06:26:56 ghudson Exp $
+   $Id: colors.c,v 1.1.1.2 2001-03-09 19:35:09 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -81,6 +81,9 @@ X11 color specifier.
 {
     XColor exact_col;
     rep_DECLARE1(name, rep_STRINGP);
+
+    if (dpy == 0)
+	return Qnil;
 
     if (XParseColor (dpy, image_cmap, rep_STR(name), &exact_col) != 0)
     {

@@ -1,5 +1,5 @@
 ;; auto-raise.jl -- auto-raise on focus
-;; $Id: auto-raise.jl,v 1.1.1.2 2001-01-13 14:58:51 ghudson Exp $
+;; $Id: auto-raise.jl,v 1.1.1.3 2001-03-09 19:34:50 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -55,7 +55,7 @@
       (setq rw-timer nil)))
 
   (define (rw-on-focus w mode)
-    (when (and (not disable-auto-raise) (eq mode 'normal))
+    (when (not disable-auto-raise)
       (if (or (window-get w 'raise-on-focus) raise-windows-on-focus)
 	  (progn
 	    (setq rw-window w)
@@ -73,7 +73,7 @@
 	(rw-disable-timer))))
 
   (define (rw-out-focus w mode)
-    (when (and rw-timer (eq rw-window w) (eq mode 'normal))
+    (when (and rw-timer (eq rw-window w))
       (rw-disable-timer)))
 
   (add-hook 'focus-in-hook rw-on-focus)

@@ -1,5 +1,5 @@
 ;; gnome.jl -- minimal GNOME compliance
-;; $Id: gnome.jl,v 1.1.1.2 2001-01-13 14:58:42 ghudson Exp $
+;; $Id: gnome.jl,v 1.1.1.3 2001-03-09 19:35:21 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -184,7 +184,7 @@
     (let ((class (get-x-text-property w 'WM_CLASS)))
       (when (and class (>= (length class) 2))
 	(cond ((and (string= (aref class 1) "Panel")
-		    (string= (aref class 0) "panel"))
+		    (string= (aref class 0) "panel_window"))
 	       ;; XXX I don't think the GNOME hints specify these things...
 	       (window-put w 'focus-click-through t)
 	       (window-put w 'no-history t)

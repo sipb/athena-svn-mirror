@@ -1,5 +1,5 @@
 ;; window-history.jl -- store state across window instances
-;; $Id: window-history.jl,v 1.1.1.2 2001-01-13 14:58:07 ghudson Exp $
+;; $Id: window-history.jl,v 1.1.1.3 2001-03-09 19:35:19 ghudson Exp $
 
 ;; Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -342,6 +342,10 @@
 
 
 ;;; init
+
+  (let ((tem (get-command-line-option "--window-history-file" t)))
+    (when tem
+      (setq window-history-file tem)))
 
   (add-hook 'before-add-window-hook window-history-match t)
   (add-hook 'after-move-hook window-history-position-snapshotter)

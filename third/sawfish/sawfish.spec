@@ -1,6 +1,6 @@
 Summary: An extensible window manager for the X Window System.
 Name: sawfish
-Version: 0.35
+Version: 0.37.3
 Release: 1
 Requires: librep >= 0.13, rep-gtk >= 0.14, rep-gtk-gnome
 Copyright: GPL
@@ -25,7 +25,7 @@ using a GTK+ interface.  Sawfish is mostly GNOME compliant
 %package themer
 Summary: A GUI for creating sawfish window manager themes.
 Group: User Interface/Desktops
-Requires: %{name} = 0.35, rep-gtk-libglade
+Requires: %{name} = 0.37.3, rep-gtk-libglade
 Obsoletes: sawmill-themer
 
 %description themer
@@ -37,6 +37,12 @@ be created and edited in a graphical environment.
 %setup -q
 
 %build
+
+LC_ALL=""
+LINGUAS=""
+LANG=""
+export LC_ALL LINGUAS LANG
+
 %configure
 make host_type=%{_target_platform}
 

@@ -1,5 +1,5 @@
 /* main.c -- Entry point for sawmill
-   $Id: main.c,v 1.1.1.2 2001-01-13 14:57:41 ghudson Exp $
+   $Id: main.c,v 1.1.1.3 2001-03-09 19:35:00 ghudson Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -44,7 +44,7 @@
 #include <X11/Xlocale.h>		/* for setlocale () */
 
 /* one of the ec_ values */
-int exit_code = ec_exit;
+int exit_code = ec_no_exit;
 
 /* Saved value of argv[0] */
 static char *prog_name;
@@ -118,6 +118,8 @@ quit
 Terminate the sawfish process.
 ::end:: */
 {
+    if (exit_code == ec_no_exit)
+	exit_code = ec_exit;
     return Fthrow (Qquit, rep_MAKE_INT(0));
 }
 
@@ -130,6 +132,28 @@ Restart the sawfish process.
 {
     exit_code = ec_restart;
     return Fquit ();
+}
+
+DEFUN ("exit-type", Fexit_type, Sexit_type, (void), rep_Subr0)
+{
+    DEFSTRING (s_user_quit, "user-quit");
+    DEFSTRING (s_user_restart, "user-restart");
+    DEFSTRING (s_session_quit, "session-quit");
+
+    switch (exit_code)
+    {
+    case ec_exit:
+	return Fintern (rep_VAL (&s_user_quit), Qnil);
+
+    case ec_restart:
+	return Fintern (rep_VAL (&s_user_restart), Qnil);
+
+    case ec_session_died:
+	return Fintern (rep_VAL (&s_session_quit), Qnil);
+
+    default:
+	return Qnil;
+    }
 }
 
 static void
@@ -214,6 +238,7 @@ sawfish_symbols (void)
     tem = rep_push_structure ("sawfish.wm.misc");
     rep_ADD_SUBR_INT(Squit);
     rep_ADD_SUBR_INT(Srestart);
+    rep_ADD_SUBR(Sexit_type);
     rep_pop_structure (tem);
 }
 

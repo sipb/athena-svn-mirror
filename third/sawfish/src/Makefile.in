@@ -1,5 +1,5 @@
 # Makefile.in -- input for the src directory's Makefile
-# $Id: Makefile.in,v 1.1.1.1 2000-11-12 06:26:52 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2001-03-09 19:35:11 ghudson Exp $
 #
 # Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 #
@@ -28,7 +28,7 @@ VPATH=@srcdir@:@top_srcdir@
 
 SRCS :=	colors.c cursors.c display.c events.c fonts.c frames.c \
 	functions.c images.c keys.c main.c pixmap-cache.c server.c \
-	session.c windows.c
+	session.c stacking-list.c windows.c
 OBJS := $(SRCS:.c=.o)
 
 DL_SRCS := gradient.c flippers.c x.c selection.c play-sample.c

@@ -1,5 +1,5 @@
 ;; groups.jl -- commands for manipulating window groups
-;; $Id: groups.jl,v 1.1.1.2 2001-01-13 14:58:41 ghudson Exp $
+;; $Id: groups.jl,v 1.1.1.3 2001-03-09 19:34:40 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -172,4 +172,17 @@
 
   (define (set-group-frame-style w style)
     (map-window-group (lambda (x)
-			(set-frame-style x style)) w)))
+			(set-frame-style x style)) w))
+
+  ;; deleting windows
+
+  (define (delete-group w)
+    "Delete all windows in the group that the current window is a member of."
+    (map-window-group (lambda (x)
+			;; Don't delete the desktop-window. It should
+			;; probably be in a separate group, but isn't..
+			(unless (desktop-window-p x)
+			  (delete-window x))) w))
+
+  ;;###autoload
+  (define-command 'delete-group delete-group #:spec "%W"))

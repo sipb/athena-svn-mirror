@@ -1,5 +1,5 @@
 ;; match-window.jl -- match windows to properties
-;; $Id: match-window.jl,v 1.1.1.2 2001-01-13 14:58:12 ghudson Exp $
+;; $Id: match-window.jl,v 1.1.1.3 2001-03-09 19:35:14 ghudson Exp $
 
 ;; Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -68,6 +68,7 @@
     '((WM_NAME . "Name")
       (WM_CLASS . "Class")
       (WM_ICON_NAME . "Icon Name")
+      (WM_WINDOW_ROLE . "Role")
       (WM_CLIENT_MACHINE . "Host")
       (WM_COMMAND . "Command")
       (WM_LOCALE_NAME . "Locale")))
@@ -108,7 +109,8 @@
        (unique-name boolean)
        (auto-gravity boolean)
        (shade-hover boolean)
-       (transients-above (choice all parents none)))))
+       (transients-above (choice all parents none))
+       (ignore-stacking-requests boolean))))
 
   ;; alist of (PROPERTY . FEATURE) mapping properties to the lisp
   ;; libraries implementing them
@@ -169,7 +171,7 @@
 		((vectorp prop)
 		 (setq prop (aref prop 0))))))
       (when (stringp prop)
-	(setq prop (quote-regexp prop)))
+	(setq prop (concat #\^ (quote-regexp prop) #\$)))
       prop))
 
   (define (define-match-window-group group name)

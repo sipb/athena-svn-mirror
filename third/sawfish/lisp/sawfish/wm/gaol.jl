@@ -1,6 +1,6 @@
 #| gaol.jl -- protected environment for themes
 
-   $Id: gaol.jl,v 1.1.1.2 2001-01-13 14:58:26 ghudson Exp $
+   $Id: gaol.jl,v 1.1.1.3 2001-03-09 19:34:47 ghudson Exp $
 
    Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -63,11 +63,15 @@
       default-font default-frame nil-frame frame-part-classes
       decorate-transients batch-mode))
 
-  (define safe-features '(gtkrc x))
+  (define safe-features '(sawfish.wm.util.gtkrc
+			  sawfish.wm.util.x
+			  ;; compatibility
+			  gtkrc x))
   (define fully-safe-features '(rep.io.timers rep.data.tables
 				rep.data.records rep.data.ring
 				rep.data.queues rep.data.symbol-table
 				sawfish.wm.util.gradient
+				sawfish.wm.util.recolor-image
 				sawfish.wm.theming.make-theme
 				;; compatibility
 				timers gradient make-theme))

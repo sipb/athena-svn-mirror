@@ -1,6 +1,6 @@
 ;; wm-spec.jl -- implement the new (GNOME/KDE) wm hints spec
 
-;; $Id: wm-spec.jl,v 1.1.1.2 2001-01-13 14:58:25 ghudson Exp $
+;; $Id: wm-spec.jl,v 1.1.1.3 2001-03-09 19:35:21 ghudson Exp $
 
 ;; Copyright (C) 1999, 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -203,7 +203,7 @@
     (let ((class (get-x-text-property w 'WM_CLASS)))
       (when (and class (>= (length class) 2))
 	(cond ((or (and (string= (aref class 1) "Panel")
-			(string= (aref class 0) "panel"))
+			(string= (aref class 0) "panel_window"))
 		   (and (string= (aref class 1) "kicker")
 			(string= (aref class 0) "Panel")))
 	       (window-put w 'focus-click-through t)
@@ -463,6 +463,16 @@
     (set-x-property wm-spec-window-id '_NET_WM_NAME "Sawfish" 'STRING 8)
 
     (set-x-property 'root '_NET_SUPPORTED supported-protocols 'ATOM 32)
+
+    (let ((current-desktop (get-x-property 'root '_NET_CURRENT_DESKTOP)))
+      (when (and current-desktop
+		 (eq (car current-desktop) 'CARDINAL)
+		 (>= (length (caddr current-desktop)) 1))
+	(add-hook 'after-initialization-hook
+		  ;; Don't do this yet, it can screw things up
+		  (lambda ()
+		    (select-workspace-from-first
+		     (aref (caddr current-desktop) 0))))))
 
     (update-client-list-hints)
     (update-workspace-hints)
