@@ -1,9 +1,9 @@
-# $Id: configure.athena,v 1.3 2002-07-19 23:49:02 zacheiss Exp $
+# $Id: configure.athena,v 1.4 2004-10-26 16:25:11 ghudson Exp $
 options="--with-cfdir=/usr/athena/share/sysinfo"
 
 case $OS in
 solaris)
-  CC=/afs/athena.mit.edu/software/sunsoft/SUNWspro/bin/cc ./configure $options
+  CC=$sprobin/cc ./configure $options
   ;;
 *)
   ./configure $options

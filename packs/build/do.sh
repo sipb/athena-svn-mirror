@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.81 2004-03-09 18:24:04 ghudson Exp $
+# $Id: do.sh,v 1.82 2004-10-26 16:25:00 ghudson Exp $
 
 source=/mit/source
 srvd=/.srvd
@@ -129,6 +129,12 @@ SunOS)
   LD_LIBRARY_PATH=/usr/openwin/lib export LD_LIBRARY_PATH
   LD_RUN_PATH=/usr/athena/lib:/usr/openwin/lib export LD_RUN_PATH
   PATH=/usr/ccs/bin:/usr/bin:/usr/ucb:/usr/openwin/bin
+  if [ -d /opt/SUNWspro/bin ]; then
+    sprobin=/opt/SUNWspro/bin
+  else
+    sprobin=/afs/athena.mit.edu/software/sunsoft/SUNWspro/bin
+  fi
+  export sprobin
   ;;
 Linux)
   OS=linux

@@ -1,9 +1,8 @@
-# $Id: Makefile.athena,v 1.4 2004-07-14 22:54:02 rbasch Exp $
+# $Id: Makefile.athena,v 1.5 2004-10-26 16:25:09 ghudson Exp $
 
 SHELL=/bin/sh
 common_options=--enable-crypto --disable-debug --disable-tests --enable-xft \
 	       --with-gssapi=/usr/athena
-forte_bindir=/afs/athena.mit.edu/software/sunsoft_v7/SUNWspro/bin
 
 dist:
 	cp "$$CONFIG_SITE" config.site.athena
@@ -18,7 +17,7 @@ prepare:
 	    ;; \
 	sun4) \
 	    CONFIG_SITE=`pwd`/config.site.athena \
-	    PATH=${forte_bindir}:${PATH} \
+	    PATH=${sprobin}:$PATH \
 	    CC=cc \
 	    CXX=CC \
 	    CFLAGS="-xlibmil" \
@@ -40,7 +39,7 @@ all:
 	    ${MAKE} \
 	    ;; \
 	sun4) \
-	    ${MAKE} PATH=${forte_bindir}:${PATH} \
+	    ${MAKE} PATH=${sprobin}:$PATH \
 	    ;; \
 	esac
 
