@@ -205,7 +205,7 @@ main (int argc, char **argv)
       (cmd == &XA_DEMO && arg == 0))
     {
       char buf [512];
-      char *new_argv[] = { "xscreensaver-demo", 0, 0, 0, 0, 0 };
+      char *new_argv[] = { "xss-demo", 0, 0, 0, 0, 0 };
       int ac = 1;
 
       if (dpyname)
