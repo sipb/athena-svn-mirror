@@ -2,15 +2,15 @@
  * 	signals.c -- deal with concerting signal names to numbers and back.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.c,v $
- * 	$Author: ghudson $
+ * 	$Author: danw $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.c,v 1.2 1996-05-07 19:55:17 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/signames.c,v 1.3 1998-11-05 14:39:26 danw Exp $";
 #endif
 
 #include <string.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include "config.h"
 #include "signames.h"
 
