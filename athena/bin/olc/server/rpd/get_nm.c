@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/get_nm.c,v 1.2 1991-01-27 20:08:30 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/get_nm.c,v 1.3 1991-04-11 09:41:27 lwvanels Exp $";
 #endif
 #endif
 
@@ -35,7 +35,7 @@ int nuke;
     if (buflen != 0)
       free(buf);
     buflen = statbuf.st_size;
-    if ((buf = malloc(buflen)) == NULL) {
+    if ((buf = (char *)malloc(buflen)) == NULL) {
       syslog(LOG_ERR,"get_nm: malloc: error alloc'ind %d bytes\n",
 	     statbuf.st_size);
       close(fd);
