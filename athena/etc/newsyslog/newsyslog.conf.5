@@ -27,7 +27,7 @@ separating each field.  The fields are as follows:
 .br
 	size of archives
 .br
-	archive interval
+	number of hours
 .br
 	flags (optional)
 .PP
@@ -56,16 +56,21 @@ itself.
 When the size of the logfile reaches 
 .I size of 
 .IR archives ,
-the logfile becomes trimmed as described above.  If this field is
-replaced by a ``*'', then the size of the logfile is not taken into
-account when determining when to trim the log file.
+the logfile becomes trimmed as described above.  The size may be any
+integer greater than zero and less than 2147483648, in kilobytes.
+It may also be ``*'', meaning that the logfile will not be trimmed
+unless the
+.I number of hours
+criterion is met (see below).
 .PP
 The
 .I number of hours
 entry specifies the time separation between the trimming of the log
-file.  If this field is replaced by a ``*'', the the number of hours
-since the last time the log was trimmed will not be taken into
-consideration.
+file.  The number may be any integer greater than zero and less than
+2147483648.  It may also be ``*'', meaning that the logfile will not
+be trimmed unless the
+.I size of archives
+criterion is met (see above).
 .PP
 The
 .I flags
