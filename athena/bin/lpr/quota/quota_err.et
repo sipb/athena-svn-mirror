@@ -2,7 +2,7 @@
 # Copyright (c) 1990 by the Massachusetts Institute of Technology.
 #  For copying and distribution information, see the file "mit-copyright.h."
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_err.et,v 1.2 1990-04-25 11:48:39 epeisach Exp $ 
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_err.et,v 1.3 1990-07-10 20:35:08 epeisach Exp $ 
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_err.et,v $ 
 # $Author: epeisach $ 
 
@@ -43,4 +43,44 @@ error_code QNOTVALIDTYPE,
 
 error_code BAD_PARAMETER,
 	"A bad parameter was send to the server"
+
+error_code QUIDERROR,
+	"Unable to generate new uid for user. Operation aborted."
+
+error_code QBADACCOUNT,
+	"Illegal group account number - no changes made"
+
+error_code QNOGROUPEXISTS,
+	"Group Account does not exist"
+
+error_code QGROUPEXISTS,
+	"Group Account already exists in database"
+
+error_code QGDBASEERROR,
+	"Unknown group account database error"
+
+error_code QGROUPDELETED,
+	"Group account is deleted"
+
+error_code QGADMINEXISTS,
+	"Group account administrator already exists"
+
+error_code QGNOADMINEXISTS,
+	"Group account administrator does not exists in database"
+
+error_code QGUSEREXISTS,
+	"User already in group account"
+
+error_code QGNOUSEREXISTS,
+	"User does not exist in group account"
+
+error_code QGMAXUSEREXCEEDED,
+	"Maximum number of users in group account has been exceeded"
+
+error_code QGMAXADMINEXCEEDED,
+	"Maximum number of administrators in group account has been exceeded"
+
+error_code QUID_DBERROR,
+	"Maximum number of administrators in group account has been exceeded"
+
 end
