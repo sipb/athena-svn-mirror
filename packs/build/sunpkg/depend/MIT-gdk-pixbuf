@@ -1,4 +1,5 @@
 P MIT-libpng    A library for manipulating PNG image format files, for Athena
 P MIT-libungif  A library for manipulating GIF format image files, for Athena
 P MIT-jpeg      A library for manipulating JPEG image format files, for Athena
+P MIT-tiff      A library for manipulating TIFF format image files, for Athena
 P MIT-gtk       The gtk user interface library, for Athena

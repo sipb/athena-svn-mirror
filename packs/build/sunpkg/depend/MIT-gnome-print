@@ -1,4 +1,7 @@
 P MIT-gnome-libs  The GNOME library package, for Athena
+P MIT-esound      The Enlightened Sound Daemon, for Athena
+P MIT-freetype    A free and portable TrueType font rendering engine, for Athena
 P MIT-libxml      An XML library used by GNOME, for Athena
 P MIT-gdk-pixbuf  The gdk-pixbuf image handling library, for Athena
+P MIT-libiconv    GNU libiconv character set conversion library, for Athena
 P MIT-perl        The Perl programming language, as configured for Athena

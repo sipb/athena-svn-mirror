@@ -1,1 +1,3 @@
-P MIT-hesiod  The Athena Hesiod name service library
+P MIT-hesiod       The Athena Hesiod name service library
+P MIT-cyrus-sasl   The Cyrus SASL library, for Athena.
+P MIT-db           The Berkeley DB database library for C
