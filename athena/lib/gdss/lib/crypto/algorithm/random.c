@@ -54,7 +54,6 @@
 #include <sys/utsname.h>
 #endif
 #ifdef SOLARIS
-#include <sys/rusage.h>
 #include <sys/times.h>
 #endif
 
