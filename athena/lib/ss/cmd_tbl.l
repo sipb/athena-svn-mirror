@@ -1,7 +1,13 @@
+%{
+#undef yywrap
+int num_lines = 0;
+%}
+
 N	[0-9]
 PC	[^\"]
 AN      [A-Z_a-z0-9]
 %%
+\n		++num_lines;
 
 command_table	return l_command_table();
 request		return l_request();
@@ -78,4 +84,9 @@ static l_string()
      yylval.dynstr = ds(yytext);
      last_token = ds(yylval.dynstr);
      return STRING;
+}
+
+int yywrap()
+{
+     return 1;
 }

@@ -1,7 +1,7 @@
 /*
  * make_commands.c
  *
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.5 1996-09-20 04:42:12 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/mk_cmds.c,v 1.6 1997-11-02 23:44:01 ghudson Exp $
  * $Locker:  $
  *
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -25,7 +25,7 @@ extern char *last_token;
 extern FILE *output_file;
 
 extern FILE *yyin, *yyout;
-extern int yylineno;
+extern int num_lines;
 
 main(argc, argv)
     int argc;
@@ -92,5 +92,5 @@ yyerror(s)
 {
     fputs(s, stderr);
     fprintf(stderr, "\nLine %d; last token was '%s'\n",
-	    yylineno, last_token);
+	    num_lines, last_token);
 }

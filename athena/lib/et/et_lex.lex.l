@@ -1,6 +1,12 @@
+%{
+#undef yywrap
+int num_lines = 0;
+%}
+
 PC	[^\"]
 AN	[A-Z_a-z0-9]
 %%
+\n		++num_lines;
 
 error_table	return ERROR_TABLE;
 et		return ERROR_TABLE;
@@ -22,5 +28,10 @@ end		return END;
 .		{ return (*yytext); }
 %%
 #ifndef lint
-static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/et_lex.lex.l,v 1.2 1995-07-12 04:30:29 cfields Exp $";
+static char rcsid_et_lex_lex_l[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/et/et_lex.lex.l,v 1.3 1997-11-02 23:43:03 ghudson Exp $";
 #endif
+
+int yywrap()
+{
+	return 1;
+}
