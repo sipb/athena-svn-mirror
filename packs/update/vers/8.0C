@@ -68,6 +68,7 @@ SUN*)
 	;;
 
 INDY)
+	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
 	;;
 esac
 
