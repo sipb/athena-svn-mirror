@@ -1,0 +1,7 @@
+DisplayManager.errorLogFile:	/etc/athena/xdm/xdm-errors
+DisplayManager.pidFile:		/etc/athena/xdm/xdm-pid
+DisplayManager.keyFile:		/etc/athena/xdm/xdm-keys
+DisplayManager.servers:		/etc/athena/xdm/Xservers
+DisplayManager.accessFile:	/etc/athena/xdm/Xaccess
+DisplayManager._0.authorize:	true
+DisplayManager*resources:	/etc/athena/xdm/Xresources
