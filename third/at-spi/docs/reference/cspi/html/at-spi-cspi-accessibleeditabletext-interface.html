@@ -1,0 +1,1365 @@
+<HTML
+><HEAD
+><TITLE
+>AccessibleEditableText Interface</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+REL="HOME"
+TITLE="AT-SPI C Bindings Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Subinterface Methods"
+HREF="spi-component.html"><LINK
+REL="PREVIOUS"
+TITLE="AccessibleComponent Interface"
+HREF="at-spi-cspi-accessiblecomponent-interface.html"><LINK
+REL="NEXT"
+TITLE="AccessibleHypertext Interface"
+HREF="at-spi-cspi-accessiblehypertext-interface.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>AT-SPI C Bindings Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-accessiblecomponent-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-component.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-accessiblehypertext-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="AT-SPI-CSPI-ACCESSIBLEEDITABLETEXT-INTERFACE"
+>AccessibleEditableText Interface</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3545"
+></A
+><H2
+>Name</H2
+>AccessibleEditableText Interface&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3548"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+void        <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-REF"
+>AccessibleEditableText_ref</A
+>      (AccessibleEditableText *obj);
+void        <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-UNREF"
+>AccessibleEditableText_unref</A
+>    (AccessibleEditableText *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-COPYTEXT"
+>AccessibleEditableText_copyText</A
+> (AccessibleText *obj,
+                                             long int startPos,
+                                             long int endPos);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-DELETETEXT"
+>AccessibleEditableText_deleteText</A
+>
+                                            (AccessibleEditableText *obj,
+                                             long int startPos,
+                                             long int endPos);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-INSERTTEXT"
+>AccessibleEditableText_insertText</A
+>
+                                            (AccessibleEditableText *obj,
+                                             long int position,
+                                             const char *text,
+                                             long int length);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-CUTTEXT"
+>AccessibleEditableText_cutText</A
+>  (AccessibleEditableText *obj,
+                                             long int startPos,
+                                             long int endPos);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-PASTETEXT"
+>AccessibleEditableText_pasteText</A
+>
+                                            (AccessibleEditableText *obj,
+                                             long int position);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-SETTEXTCONTENTS"
+>AccessibleEditableText_setTextContents</A
+>
+                                            (AccessibleEditableText *obj,
+                                             const char *newContents);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html#ACCESSIBLEEDITABLETEXT-SETATTRIBUTES"
+>AccessibleEditableText_setAttributes</A
+>
+                                            (AccessibleEditableText *obj,
+                                             const char *attributes,
+                                             long int startOffset,
+                                             long int endOffset);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3587"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3590"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3592"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-REF"
+></A
+>AccessibleEditableText_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleEditableText_ref      (AccessibleEditableText *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Increment the reference count for an AccessibleEditableText object.
+      Since AccessibleEditableText is derived from AccessibleText,
+      this is the same as <A
+HREF="at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-REF"
+>AccessibleText_ref</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3601"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3611"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-UNREF"
+></A
+>AccessibleEditableText_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleEditableText_unref    (AccessibleEditableText *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Decrement the reference count for an AccessibleEdiitableText object.
+      Since AccessibleEditableText is derived from AccessibleText,
+      this is the same as <A
+HREF="at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-UNREF"
+>AccessibleText_unref</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3620"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3630"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-COPYTEXT"
+></A
+>AccessibleEditableText_copyText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEditableText_copyText (AccessibleText *obj,
+                                             long int startPos,
+                                             long int endPos);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Copy text from an AccessibleEditableText object into the clipboard.</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>see</I
+></TT
+>: AccessibleEditableText_pasteText</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3643"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>startPos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer indicating the starting character offset
+      of the text to copy.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>endPos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer indicating the offset of the first character
+      past the end of the text section to be copied.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the operation was successful, otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3667"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-DELETETEXT"
+></A
+>AccessibleEditableText_deleteText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEditableText_deleteText
+                                            (AccessibleEditableText *obj,
+                                             long int startPos,
+                                             long int endPos);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Delete text from an AccessibleEditableText object, without copying the
+      excised portion into the clipboard.</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>see</I
+></TT
+>: AccessibleEditableText_cutText</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3680"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>startPos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer indicating the starting character offset
+      of the text to delete.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>endPos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer indicating the offset of the first character
+      past the end of the text section to be deleted.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the operation was successful, otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3704"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-INSERTTEXT"
+></A
+>AccessibleEditableText_insertText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEditableText_insertText
+                                            (AccessibleEditableText *obj,
+                                             long int position,
+                                             const char *text,
+                                             long int length);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Insert text into an AccessibleEditableText object.
+As with all character offsets, the specified <TT
+CLASS="PARAMETER"
+><I
+>position</I
+></TT
+> may not be the
+      same as the resulting byte offset, since the text is in a
+      variable-width encoding.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3716"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>position</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer indicating the character offset at which to insert
+      the new text.  </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a char* pointer to the text to insert, in UTF-8 encoding.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>length</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> (frankly I'm not sure this parameter should be here)</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the operation was successful, otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3744"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-CUTTEXT"
+></A
+>AccessibleEditableText_cutText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEditableText_cutText  (AccessibleEditableText *obj,
+                                             long int startPos,
+                                             long int endPos);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Delete text from an AccessibleEditableText object, copying the
+      excised portion into the clipboard.</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>see</I
+></TT
+>: AccessibleEditableText_pasteText</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3757"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>startPos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer indicating the starting character offset
+      of the text to cut.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>endPos</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer indicating the offset of the first character
+      past the end of the text section to be cut.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if operation was successful, <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3781"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-PASTETEXT"
+></A
+>AccessibleEditableText_pasteText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEditableText_pasteText
+                                            (AccessibleEditableText *obj,
+                                             long int position);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Insert text from the clipboard into an AccessibleEditableText object.
+As with all character offsets, the specified <TT
+CLASS="PARAMETER"
+><I
+>position</I
+></TT
+> may not be the
+      same as the resulting byte offset, since the text is in a
+      variable-width encoding.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3792"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>position</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer indicating the character offset at which to insert
+      the new text.  </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the operation was successful, otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3812"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-SETTEXTCONTENTS"
+></A
+>AccessibleEditableText_setTextContents ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEditableText_setTextContents
+                                            (AccessibleEditableText *obj,
+                                             const char *newContents);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Replace the entire text contents of an AccessibleEditableText object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3821"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>newContents</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a character string, encoded in UTF-8, which is to
+     become the new text contents of the AccessibleEditableText object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the operation was successful, otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3842"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEDITABLETEXT-SETATTRIBUTES"
+></A
+>AccessibleEditableText_setAttributes ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEditableText_setAttributes
+                                            (AccessibleEditableText *obj,
+                                             const char *attributes,
+                                             long int startOffset,
+                                             long int endOffset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the attributes applied to a range of text from an AccessibleEditableText
+         object, and the bounds of the range.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3853"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEditableText object to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>attributes</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a character string indicating the attributes to apply to the range,
+       delimited by ':'.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>startOffset</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating the start of the desired text range.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>endOffset</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating the first character past the desired range.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the operation was successful, otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-accessiblecomponent-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-component.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-accessiblehypertext-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AccessibleComponent Interface</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AccessibleHypertext Interface</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

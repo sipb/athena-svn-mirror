@@ -1,0 +1,730 @@
+<HTML
+><HEAD
+><TITLE
+>AccessibleHypertext Interface</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+REL="HOME"
+TITLE="AT-SPI C Bindings Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Subinterface Methods"
+HREF="spi-component.html"><LINK
+REL="PREVIOUS"
+TITLE="AccessibleEditableText Interface"
+HREF="at-spi-cspi-accessibleeditabletext-interface.html"><LINK
+REL="NEXT"
+TITLE="AccessibleImage Interface"
+HREF="at-spi-cspi-accessibleimage-interface.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>AT-SPI C Bindings Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-component.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-accessibleimage-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="AT-SPI-CSPI-ACCESSIBLEHYPERTEXT-INTERFACE"
+>AccessibleHypertext Interface</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3888"
+></A
+><H2
+>Name</H2
+>AccessibleHypertext Interface&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3891"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+void        <A
+HREF="at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-REF"
+>AccessibleHypertext_ref</A
+>         (AccessibleHypertext *obj);
+void        <A
+HREF="at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-UNREF"
+>AccessibleHypertext_unref</A
+>       (AccessibleHypertext *obj);
+long        <A
+HREF="at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-GETNLINKS"
+>AccessibleHypertext_getNLinks</A
+>   (AccessibleHypertext *obj);
+AccessibleHyperlink* <A
+HREF="at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-GETLINK"
+>AccessibleHypertext_getLink</A
+>
+                                            (AccessibleHypertext *obj,
+                                             long int linkIndex);
+long        <A
+HREF="at-spi-cspi-accessiblehypertext-interface.html#ACCESSIBLEHYPERTEXT-GETLINKINDEX"
+>AccessibleHypertext_getLinkIndex</A
+>
+                                            (AccessibleHypertext *obj,
+                                             long int characterOffset);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3909"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3912"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3914"
+></A
+><H3
+><A
+NAME="ACCESSIBLEHYPERTEXT-REF"
+></A
+>AccessibleHypertext_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleHypertext_ref         (AccessibleHypertext *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Increment the reference count for an AccessibleHypertext object.
+      Since AccessibleHypertext is derived from AccessibleText,
+      this is the same as <A
+HREF="at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-UNREF"
+>AccessibleText_unref</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3923"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleHypertext object on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3933"
+></A
+><H3
+><A
+NAME="ACCESSIBLEHYPERTEXT-UNREF"
+></A
+>AccessibleHypertext_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleHypertext_unref       (AccessibleHypertext *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Decrement the reference count for an AccessibleHypertext object.
+      Since AccessibleHypertext is derived from AccessibleText,
+      this is the same as <A
+HREF="at-spi-cspi-accessibletext-interface.html#ACCESSIBLETEXT-UNREF"
+>AccessibleText_unref</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3942"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleHypertext object on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3952"
+></A
+><H3
+><A
+NAME="ACCESSIBLEHYPERTEXT-GETNLINKS"
+></A
+>AccessibleHypertext_getNLinks ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>long        AccessibleHypertext_getNLinks   (AccessibleHypertext *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the total number of AccessibleHyperlinks which an
+       AccessibleHypertext implementor has.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3962"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleHypertext implementor on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating the number of AccessibleHyperlinks
+       of the AccessibleHypertext implementor, or -1 if
+       the number cannot be determined (for example, if the
+       AccessibleHypertext object is so large that it is not
+       all currently in the memory cache).</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3980"
+></A
+><H3
+><A
+NAME="ACCESSIBLEHYPERTEXT-GETLINK"
+></A
+>AccessibleHypertext_getLink ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleHyperlink* AccessibleHypertext_getLink
+                                            (AccessibleHypertext *obj,
+                                             long int linkIndex);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleHyperlink object at a specified index.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3990"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleHypertext implementor on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>linkIndex</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a (zero-index) long integer indicating which hyperlink to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the AccessibleHyperlink object specified by linkIndex.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4010"
+></A
+><H3
+><A
+NAME="ACCESSIBLEHYPERTEXT-GETLINKINDEX"
+></A
+>AccessibleHypertext_getLinkIndex ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>long        AccessibleHypertext_getLinkIndex
+                                            (AccessibleHypertext *obj,
+                                             long int characterOffset);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the index of the AccessibleHyperlink object at a specified
+       character offset.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4020"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleHypertext implementor on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>characterOffset</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an integer specifying the character offset to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the linkIndex of the AccessibleHyperlink active at
+       character offset <TT
+CLASS="PARAMETER"
+><I
+>characterOffset</I
+></TT
+>, or -1 if there is
+       no hyperlink at the specified character offset.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-accessibleeditabletext-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-component.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-accessibleimage-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AccessibleEditableText Interface</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AccessibleImage Interface</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

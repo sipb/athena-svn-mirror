@@ -1,0 +1,722 @@
+<refentry id="at-spi-cspi-Registry-queries">
+<refmeta>
+<refentrytitle>Registry queries</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>AT-SPI-CSPI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Registry queries</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+enum        <link linkend="AccessibleKeySynthType">AccessibleKeySynthType</link>;
+int         <link linkend="SPI-getDesktopCount">SPI_getDesktopCount</link>             (void);
+<link linkend="Accessible">Accessible</link>* <link linkend="SPI-getDesktop">SPI_getDesktop</link>                  (int i);
+int         <link linkend="SPI-getDesktopList">SPI_getDesktopList</link>              (<link linkend="Accessible">Accessible</link> ***desktop_list);
+void        <link linkend="SPI-freeDesktopList">SPI_freeDesktopList</link>             (<link linkend="Accessible">Accessible</link> **desktop_list);
+
+<link linkend="SPIBoolean">SPIBoolean</link>  (<link linkend="AccessibleKeystrokeListenerCB">*AccessibleKeystrokeListenerCB</link>)
+                                            (const <link linkend="AccessibleKeystroke">AccessibleKeystroke</link> *stroke,
+                                             void *user_data);
+typedef     <link linkend="AccessibleKeyEventMask">AccessibleKeyEventMask</link>;
+typedef     <link linkend="AccessibleKeyMaskType">AccessibleKeyMaskType</link>;
+enum        <link linkend="AccessibleKeyEventType">AccessibleKeyEventType</link>;
+enum        <link linkend="AccessibleKeyListenerSyncType">AccessibleKeyListenerSyncType</link>;
+typedef     <link linkend="AccessibleKeystroke">AccessibleKeystroke</link>;
+#define     <link linkend="SPI-KEYSET-ALL-KEYS-CAPS">SPI_KEYSET_ALL_KEYS</link>
+<link linkend="AccessibleKeySet">AccessibleKeySet</link>* <link linkend="SPI-createAccessibleKeySet">SPI_createAccessibleKeySet</link>
+                                            (int len,
+                                             const char *keysyms,
+                                             <link linkend="short">short</link> *keycodes,
+                                             const char **keystrings);
+void        <link linkend="SPI-freeAccessibleKeySet">SPI_freeAccessibleKeySet</link>        (<link linkend="AccessibleKeySet">AccessibleKeySet</link> *keyset);
+<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link>* <link linkend="SPI-createAccessibleKeystrokeListener">SPI_createAccessibleKeystrokeListener</link>
+                                            (<link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> callback,
+                                             void *user_data);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="SPI-registerGlobalEventListener">SPI_registerGlobalEventListener</link> (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener,
+                                             const char *eventType);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="SPI-deregisterGlobalEventListener">SPI_deregisterGlobalEventListener</link>
+                                            (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener,
+                                             const char *eventType);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="SPI-deregisterGlobalEventListenerAll">SPI_deregisterGlobalEventListenerAll</link>
+                                            (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="SPI-registerAccessibleKeystrokeListener">SPI_registerAccessibleKeystrokeListener</link>
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener,
+                                             <link linkend="AccessibleKeySet">AccessibleKeySet</link> *keys,
+                                             <link linkend="AccessibleKeyMaskType">AccessibleKeyMaskType</link> modmask,
+                                             <link linkend="AccessibleKeyEventMask">AccessibleKeyEventMask</link> eventmask,
+                                             <link linkend="AccessibleKeyListenerSyncType">AccessibleKeyListenerSyncType</link> sync_type);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="SPI-deregisterAccessibleKeystrokeListener">SPI_deregisterAccessibleKeystrokeListener</link>
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener,
+                                             <link linkend="AccessibleKeyMaskType">AccessibleKeyMaskType</link> modmask);
+void        <link linkend="AccessibleKeystrokeListener-unref">AccessibleKeystrokeListener_unref</link>
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="AccessibleKeystrokeListener-removeCallback">AccessibleKeystrokeListener_removeCallback</link>
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener,
+                                             <link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> callback);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="AccessibleKeystrokeListener-addCallback">AccessibleKeystrokeListener_addCallback</link>
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener,
+                                             <link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> callback,
+                                             void *user_data);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="SPI-generateKeyboardEvent">SPI_generateKeyboardEvent</link>       (<link linkend="long-int">long int</link> keyval,
+                                             char *keystring,
+                                             <link linkend="AccessibleKeySynthType">AccessibleKeySynthType</link> synth_type);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="SPI-generateMouseEvent">SPI_generateMouseEvent</link>          (<link linkend="long-int">long int</link> x,
+                                             <link linkend="long-int">long int</link> y,
+                                             char *name);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="AccessibleKeySynthType">enum AccessibleKeySynthType</title>
+<programlisting>typedef enum {
+  SPI_KEY_PRESS,
+  SPI_KEY_RELEASE, 
+  SPI_KEY_PRESSRELEASE,
+  SPI_KEY_SYM,
+  SPI_KEY_STRING
+} AccessibleKeySynthType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SPI-getDesktopCount">SPI_getDesktopCount ()</title>
+<programlisting>int         SPI_getDesktopCount             (void);</programlisting>
+<para>
+Get the number of virtual desktops.
+NOTE: currently multiple virtual desktops are not implemented, this
+      function always returns '1'.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> an integer indicating the number of active virtual desktops.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-getDesktop">SPI_getDesktop ()</title>
+<programlisting><link linkend="Accessible">Accessible</link>* SPI_getDesktop                  (int i);</programlisting>
+<para>
+Get the virtual desktop indicated by index <parameter>i</parameter>.
+NOTE: currently multiple virtual desktops are not implemented, this
+      function always returns '1'.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>i</parameter>&nbsp;:</entry>
+<entry> an integer indicating which of the accessible desktops is to be returned.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a pointer to the 'i-th' virtual desktop's <link linkend="Accessible">Accessible</link> representation.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-getDesktopList">SPI_getDesktopList ()</title>
+<programlisting>int         SPI_getDesktopList              (<link linkend="Accessible">Accessible</link> ***desktop_list);</programlisting>
+<para>
+Get the list of virtual desktops.  On return, <parameter>list</parameter> will point
+    to a newly-created, NULL terminated array of virtual desktop
+    pointers.
+    It is the responsibility of the caller to free this array when
+    it is no longer needed.
+</para>
+<para>
+Not Yet Implemented : this implementation always returns a single
+<link linkend="Accessible">Accessible</link> desktop.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>desktop_list</parameter>&nbsp;:</entry>
+<entry> a pointer to an array of <link linkend="Accessible">Accessible</link> references.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> an integer indicating how many virtual desktops have been
+         placed in the list pointed to by parameter <parameter>list</parameter>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-freeDesktopList">SPI_freeDesktopList ()</title>
+<programlisting>void        SPI_freeDesktopList             (<link linkend="Accessible">Accessible</link> **desktop_list);</programlisting>
+<para>
+This routine frees the memory associated with the list.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>desktop_list</parameter>&nbsp;:</entry>
+<entry> a pointer to an array of <link linkend="Accessible">Accessible</link> objects
+as returned from <parameter>SPI_getDesktopList</parameter>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  (*AccessibleKeystrokeListenerCB)
+                                            (const <link linkend="AccessibleKeystroke">AccessibleKeystroke</link> *stroke,
+                                             void *user_data);</programlisting>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>stroke</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeyEventMask">AccessibleKeyEventMask</title>
+<programlisting>typedef unsigned long AccessibleKeyEventMask;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeyMaskType">AccessibleKeyMaskType</title>
+<programlisting>typedef unsigned long AccessibleKeyMaskType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeyEventType">enum AccessibleKeyEventType</title>
+<programlisting>typedef enum {
+  SPI_KEY_PRESSED  = 1&lt;&lt;0,
+  SPI_KEY_RELEASED = 1&lt;&lt;1
+} AccessibleKeyEventType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeyListenerSyncType">enum AccessibleKeyListenerSyncType</title>
+<programlisting>typedef enum {
+  SPI_KEYLISTENER_NOSYNC = 0,
+  SPI_KEYLISTENER_SYNCHRONOUS = 1,
+  SPI_KEYLISTENER_CANCONSUME = 2,
+  SPI_KEYLISTENER_ALL_WINDOWS = 4
+} AccessibleKeyListenerSyncType;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeystroke">AccessibleKeystroke</title>
+<programlisting>typedef struct {
+  long                   keyID;
+  short                  keycode;
+  char *                 keystring;
+  long                   timestamp;
+  AccessibleKeyEventType type;
+  unsigned short         modifiers;
+  SPIBoolean             is_text;	
+} AccessibleKeystroke;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SPI-KEYSET-ALL-KEYS-CAPS">SPI_KEYSET_ALL_KEYS</title>
+<programlisting>#define SPI_KEYSET_ALL_KEYS NULL
+</programlisting>
+<para>
+</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SPI-createAccessibleKeySet">SPI_createAccessibleKeySet ()</title>
+<programlisting><link linkend="AccessibleKeySet">AccessibleKeySet</link>* SPI_createAccessibleKeySet
+                                            (int len,
+                                             const char *keysyms,
+                                             <link linkend="short">short</link> *keycodes,
+                                             const char **keystrings);</programlisting>
+<para>
+Create a new <link linkend="AccessibleKeySet">AccessibleKeySet</link> of a specified length.
+A KeySet is used typically to match key event values, and a matches are made
+using the following criteria: a match exists with a key event if all non-null
+i-th members of the keyset match the key event.
+If both keystring and keysym values are NULL, a keycode value match is
+forced, thus the match for keysym=0, keycode=0, keystring=NULL is
+keycode 0.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>len</parameter>&nbsp;:</entry>
+<entry> the number of key values in the key set.
+</entry></row>
+<row><entry align="right"><parameter>keysyms</parameter>&nbsp;:</entry>
+<entry> a UTF-8 string containing symbolic key values to be matched, or NULL if
+          matching is performed against other key values instead.
+</entry></row>
+<row><entry align="right"><parameter>keycodes</parameter>&nbsp;:</entry>
+<entry> an array of unsigned short values which are the hardware keycodes
+          to be matched, or NULL if the keyset is specified solely by keysyms
+          and/or keystrings.
+</entry></row>
+<row><entry align="right"><parameter>keystrings</parameter>&nbsp;:</entry>
+<entry> an array of null-terminated character strings which specify key
+            name values to match, or NULL if the keyset is specified solely by
+            keycodes and/or keysyms.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a pointer to a newly-created <link linkend="AccessibleKeySet">AccessibleKeySet</link>.
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-freeAccessibleKeySet">SPI_freeAccessibleKeySet ()</title>
+<programlisting>void        SPI_freeAccessibleKeySet        (<link linkend="AccessibleKeySet">AccessibleKeySet</link> *keyset);</programlisting>
+<para>
+Release the memory used by an AccessibleKeySet.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>keyset</parameter>&nbsp;:</entry>
+<entry> An AccessibleKeyset to free.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-createAccessibleKeystrokeListener">SPI_createAccessibleKeystrokeListener ()</title>
+<programlisting><link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link>* SPI_createAccessibleKeystrokeListener
+                                            (<link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> callback,
+                                             void *user_data);</programlisting>
+<para>
+Create a new <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> with a specified callback function.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
+<entry> an <link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> callback function, or NULL.
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry> a pointer to data which will be passed to the callback when invoked.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a pointer to a newly-created <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link>.
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-registerGlobalEventListener">SPI_registerGlobalEventListener ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  SPI_registerGlobalEventListener (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener,
+                                             const char *eventType);</programlisting>
+<para>
+Legal object event types:
+</para>
+<para>
+   (property change events)
+</para>
+<para>
+           object:property-change
+           object:property-change:accessible-name
+           object:property-change:accessible-description
+           object:property-change:accessible-parent
+           object:property-change:accessible-value
+           object:property-change:accessible-role
+           object:property-change:accessible-table-caption
+           object:property-change:accessible-table-column-description
+           object:property-change:accessible-table-column-header
+           object:property-change:accessible-table-row-description
+           object:property-change:accessible-table-row-header
+           object:property-change:accessible-table-summary
+</para>
+<para>
+   (other object events)
+</para>
+<para>
+           object:state-changed 
+           object:children-changed
+           object:visible-data-changed
+           object:selection-changed
+           object:text-selection-changed
+           object:text-changed
+           object:text-caret-moved
+           object:row-inserted
+           object:row-reordered
+           object:row-deleted
+           object:column-inserted
+           object:column-reordered
+           object:column-deleted
+           object:model-changed
+</para>
+<para>
+ (window events)
+</para>
+<para>
+           window:minimize
+           window:maximize
+           window:restore
+           window:close
+           window:create
+           window:reparent
+           window:desktop-create
+           window:desktop-destroy
+           window:activate
+           window:deactivate
+           window:raise
+           window:lower
+           window:move
+           window:resize
+           window:shade
+           window:unshade
+           window:restyle
+</para>
+<para>
+ (other events)
+</para>
+<para>
+           focus:
+           mouse:abs
+           mouse:rel
+           mouse:b1p
+           mouse:b1r
+           mouse:b2p
+           mouse:b2r
+           mouse:b3p
+           mouse:b3r
+</para>
+<para>
+NOTE: this string may be UTF-8, but should not contain byte value 56
+           (ascii ':'), except as a delimiter, since non-UTF-8 string
+           delimiting functions are used internally.
+           In general, listening to
+           toolkit-specific events is not recommended.
+</para>
+<para>
+Add an in-process callback function to an existing AccessibleEventListener.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
+<entry> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> to be registered against an
+           event type.
+</entry></row>
+<row><entry align="right"><parameter>eventType</parameter>&nbsp;:</entry>
+<entry> a character string indicating the type of events for which
+           notification is requested.  Format is
+           EventClass:major_type:minor_type:detail
+           where all subfields other than EventClass are optional.
+           EventClasses include "object", "window", "mouse",
+           and toolkit events (e.g. "Gtk", "AWT").
+           Examples: "focus:", "Gtk:GtkWidget:button_press_event".
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-deregisterGlobalEventListener">SPI_deregisterGlobalEventListener ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  SPI_deregisterGlobalEventListener
+                                            (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener,
+                                             const char *eventType);</programlisting>
+<para>
+deregisters an AccessibleEventListener from the registry, for a specific
+            event type.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
+<entry> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> registered against an event type.
+</entry></row>
+<row><entry align="right"><parameter>eventType</parameter>&nbsp;:</entry>
+<entry> a string specifying the event type for which this
+            listener is to be deregistered.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-deregisterGlobalEventListenerAll">SPI_deregisterGlobalEventListenerAll ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  SPI_deregisterGlobalEventListenerAll
+                                            (<link linkend="AccessibleEventListener">AccessibleEventListener</link> *listener);</programlisting>
+<para>
+deregisters an AccessibleEventListener from the registry, for all
+           event types it may be listening to. Use
+           AccessibleEventListener_unref to release the
+           listener reference.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
+<entry> the <link linkend="AccessibleEventListener">AccessibleEventListener</link> to be registered against
+           an event type.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-registerAccessibleKeystrokeListener">SPI_registerAccessibleKeystrokeListener ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  SPI_registerAccessibleKeystrokeListener
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener,
+                                             <link linkend="AccessibleKeySet">AccessibleKeySet</link> *keys,
+                                             <link linkend="AccessibleKeyMaskType">AccessibleKeyMaskType</link> modmask,
+                                             <link linkend="AccessibleKeyEventMask">AccessibleKeyEventMask</link> eventmask,
+                                             <link linkend="AccessibleKeyListenerSyncType">AccessibleKeyListenerSyncType</link> sync_type);</programlisting>
+<para>
+Register a listener for keystroke events, either pre-emptively for
+            all windows (CSPI_KEYLISTENER_ALL_WINDOWS), or
+            non-preemptively (CSPI_KEYLISTENER_NOSYNC).
+            ( Other sync_type values may be available in the future.)</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
+<entry>  a pointer to the <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> for which
+            keystroke events are requested.
+</entry></row>
+<row><entry align="right"><parameter>keys</parameter>&nbsp;:</entry>
+<entry>      a pointer to the <link linkend="AccessibleKeySet">AccessibleKeySet</link> indicating which
+            keystroke events are requested, or <link linkend="CSPI-KEYSET-ALL-KEYS-CAPS">CSPI_KEYSET_ALL_KEYS</link>.
+</entry></row>
+<row><entry align="right"><parameter>modmask</parameter>&nbsp;:</entry>
+<entry>   an <link linkend="AccessibleKeyMaskType">AccessibleKeyMaskType</link> mask indicating which
+            key event modifiers must be set in combination with <parameter>keys</parameter>,
+            events will only be reported for key events for which all
+            modifiers in <parameter>modmask</parameter> are set.  If you wish to listen for
+            events with multiple modifier combinations you must call
+            <link linkend="registerAccessibleKeystrokeListener">registerAccessibleKeystrokeListener</link>() once for each combination.
+</entry></row>
+<row><entry align="right"><parameter>eventmask</parameter>&nbsp;:</entry>
+<entry> an <link linkend="AccessibleKeyMaskType">AccessibleKeyMaskType</link> mask indicating which
+            types of key events are requested (<link linkend="SPI-KEY-PRESSED-CAPS">SPI_KEY_PRESSED</link>, etc.).
+</entry></row>
+<row><entry align="right"><parameter>sync_type</parameter>&nbsp;:</entry>
+<entry> a <link linkend="AccessibleKeyListenerSyncType">AccessibleKeyListenerSyncType</link> parameter indicating
+            the behavior of the notification/listener transaction.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-deregisterAccessibleKeystrokeListener">SPI_deregisterAccessibleKeystrokeListener ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  SPI_deregisterAccessibleKeystrokeListener
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener,
+                                             <link linkend="AccessibleKeyMaskType">AccessibleKeyMaskType</link> modmask);</programlisting>
+<para>
+Removes a keystroke event listener from the registry's listener queue,
+           ceasing notification of events with modifiers matching <parameter>modmask</parameter>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
+<entry> a pointer to the <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> for which
+           keystroke events are requested.
+</entry></row>
+<row><entry align="right"><parameter>modmask</parameter>&nbsp;:</entry>
+<entry>  the key modifier mask for which this listener is to be
+           'deregistered' (of type <link linkend="AccessibleeyMaskType">AccessibleeyMaskType</link>).
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeystrokeListener-unref">AccessibleKeystrokeListener_unref ()</title>
+<programlisting>void        AccessibleKeystrokeListener_unref
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener);</programlisting>
+<para>
+Decrements an <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link>'s reference count.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
+<entry> a pointer to the <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> being operated on.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeystrokeListener-removeCallback">AccessibleKeystrokeListener_removeCallback ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleKeystrokeListener_removeCallback
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener,
+                                             <link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> callback);</programlisting>
+<para>
+Remove an in-process callback function from an existing <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
+<entry> the <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> instance to modify.
+</entry></row>
+<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
+<entry> an <link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> function pointer.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="AccessibleKeystrokeListener-addCallback">AccessibleKeystrokeListener_addCallback ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  AccessibleKeystrokeListener_addCallback
+                                            (<link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> *listener,
+                                             <link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> callback,
+                                             void *user_data);</programlisting>
+<para>
+Add an in-process callback function to an existing <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link>.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>listener</parameter>&nbsp;:</entry>
+<entry> the <link linkend="AccessibleKeystrokeListener">AccessibleKeystrokeListener</link> instance to modify.
+</entry></row>
+<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
+<entry> an <link linkend="AccessibleKeystrokeListenerCB">AccessibleKeystrokeListenerCB</link> function pointer.
+</entry></row>
+<row><entry align="right"><parameter>user_data</parameter>&nbsp;:</entry>
+<entry> a pointer to data which will be passed to the callback when invoked.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-generateKeyboardEvent">SPI_generateKeyboardEvent ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  SPI_generateKeyboardEvent       (<link linkend="long-int">long int</link> keyval,
+                                             char *keystring,
+                                             <link linkend="AccessibleKeySynthType">AccessibleKeySynthType</link> synth_type);</programlisting>
+<para>
+Synthesize a keyboard event (as if a hardware keyboard event occurred in the
+current UI context).</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>keyval</parameter>&nbsp;:</entry>
+<entry> a long integer indicating the keycode or keysym of the key event
+          being synthesized.
+</entry></row>
+<row><entry align="right"><parameter>keystring</parameter>&nbsp;:</entry>
+<entry> an (optional) UTF-8 string which, if <parameter>keyval</parameter> is NULL,
+          indicates a 'composed' keyboard input string which is 
+          being synthesized; this type of keyboard event synthesis does
+          not emulate hardware keypresses but injects the string 
+          as though a composing input method (such as XIM) were used.
+</entry></row>
+<row><entry align="right"><parameter>synth_type</parameter>&nbsp;:</entry>
+<entry> a <link linkend="AccessibleKeySynthType">AccessibleKeySynthType</link> flag indicating whether <parameter>keyval</parameter>
+          is to be interpreted as a keysym rather than a keycode
+          (CSPI_KEYSYM), or whether to synthesize
+          SPI_KEY_PRESS, SPI_KEY_RELEASE, or both (SPI_KEY_PRESSRELEASE).
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-generateMouseEvent">SPI_generateMouseEvent ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  SPI_generateMouseEvent          (<link linkend="long-int">long int</link> x,
+                                             <link linkend="long-int">long int</link> y,
+                                             char *name);</programlisting>
+<para>
+Synthesize a mouse event at a specific screen coordinate.
+Most AT clients should use the <link linkend="AccessibleAction">AccessibleAction</link> interface when
+tempted to generate mouse events, rather than this method.
+Event names: b1p = button 1 press; b2r = button 2 release;
+             b3c = button 3 click; b2d = button 2 double-click;
+             abs = absolute motion; rel = relative motion.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry> a <link linkend="long">long</link> indicating the screen x coordinate of the mouse event.
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry> a <link linkend="long">long</link> indicating the screen y coordinate of the mouse event.
+</entry></row>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry> a string indicating which mouse event to be synthesized
+       (e.g. "b1p", "b1c", "b2r", "rel", "abs").
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if successful, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,1204 @@
+<HTML
+><HEAD
+><TITLE
+>AccessibleSelection Interface</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+REL="HOME"
+TITLE="AT-SPI C Bindings Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Subinterface Methods"
+HREF="spi-component.html"><LINK
+REL="PREVIOUS"
+TITLE="AccessibleImage Interface"
+HREF="at-spi-cspi-accessibleimage-interface.html"><LINK
+REL="NEXT"
+TITLE="AccessibleTable Interface"
+HREF="at-spi-cspi-accessibletable-interface.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>AT-SPI C Bindings Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-accessibleimage-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-component.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-accessibletable-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="AT-SPI-CSPI-ACCESSIBLESELECTION-INTERFACE"
+>AccessibleSelection Interface</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN4253"
+></A
+><H2
+>Name</H2
+>AccessibleSelection Interface&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN4256"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+void        <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-REF"
+>AccessibleSelection_ref</A
+>         (AccessibleSelection *obj);
+void        <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-UNREF"
+>AccessibleSelection_unref</A
+>       (AccessibleSelection *obj);
+long        <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-GETNSELECTEDCHILDREN"
+>AccessibleSelection_getNSelectedChildren</A
+>
+                                            (AccessibleSelection *obj);
+<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>* <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-GETSELECTEDCHILD"
+>AccessibleSelection_getSelectedChild</A
+>
+                                            (AccessibleSelection *obj,
+                                             long int selectedChildIndex);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-SELECTCHILD"
+>AccessibleSelection_selectChild</A
+> (AccessibleSelection *obj,
+                                             long int childIndex);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-ISCHILDSELECTED"
+>AccessibleSelection_isChildSelected</A
+>
+                                            (AccessibleSelection *obj,
+                                             long int childIndex);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-DESELECTSELECTEDCHILD"
+>AccessibleSelection_deselectSelectedChild</A
+>
+                                            (AccessibleSelection *obj,
+                                             long int selectedChildIndex);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-CLEARSELECTION"
+>AccessibleSelection_clearSelection</A
+>
+                                            (AccessibleSelection *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-SELECTALL"
+>AccessibleSelection_selectAll</A
+>   (AccessibleSelection *obj);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4288"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN4291"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4293"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-REF"
+></A
+>AccessibleSelection_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleSelection_ref         (AccessibleSelection *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Increment the reference count for an AccessibleSelection object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4301"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection implementor on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4311"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-UNREF"
+></A
+>AccessibleSelection_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleSelection_unref       (AccessibleSelection *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Decrement the reference count for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4319"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection implementor on which to operate. </TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4329"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-GETNSELECTEDCHILDREN"
+></A
+>AccessibleSelection_getNSelectedChildren ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>long        AccessibleSelection_getNSelectedChildren
+                                            (AccessibleSelection *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the number of children of an AccessibleSelection implementor which are
+       currently selected.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4338"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection implementor on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating the number of <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> children
+       of the AccessibleSelection implementor which are currently selected.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4355"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-GETSELECTEDCHILD"
+></A
+>AccessibleSelection_getSelectedChild ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>* AccessibleSelection_getSelectedChild
+                                            (AccessibleSelection *obj,
+                                             long int selectedChildIndex);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the i-th selected <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> child of an AccessibleSelection.
+     Note that <TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+> refers to the index in the list of 'selected'
+     children and generally differs from that used in
+     #<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETCHILDATINDEX"
+>Accessible_getChildAtIndex</A
+>() or returned by
+     #<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETINDEXINPARENT"
+>Accessible_getIndexInParent</A
+>(). <TT
+CLASS="PARAMETER"
+><I
+>selectedChildIndex</I
+></TT
+> must lie between 0
+     and #<A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-GETNSELECTEDCHILDREN"
+>AccessibleSelection_getNSelectedChildren</A
+>()-1, inclusive.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4371"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>selectedChildIndex</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating which of the selected
+     children is specified.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to a selected <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> child object,
+         specified by <TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+>.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4392"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-SELECTCHILD"
+></A
+>AccessibleSelection_selectChild ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleSelection_selectChild (AccessibleSelection *obj,
+                                             long int childIndex);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Add a child to the selected children list of an AccessibleSelection.
+        For AccessibleSelection implementors that only allow
+        single selections, this may replace the (single) current
+        selection.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4403"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating which child of the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>
+             is to be selected.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the child was successfully selected, <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4425"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-ISCHILDSELECTED"
+></A
+>AccessibleSelection_isChildSelected ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleSelection_isChildSelected
+                                            (AccessibleSelection *obj,
+                                             long int childIndex);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Determine whether a particular child of an AccessibleSelection implementor
+       is currently selected.  Note that <TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+> is the index into the
+       standard <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> container's list of children.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4437"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection implementor on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an index into the AccessibleSelection's list of children.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the specified child is currently selected,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4458"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-DESELECTSELECTEDCHILD"
+></A
+>AccessibleSelection_deselectSelectedChild ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleSelection_deselectSelectedChild
+                                            (AccessibleSelection *obj,
+                                             long int selectedChildIndex);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove a child to the selected children list of an AccessibleSelection.
+         Note that <TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+> is the index in the selected-children list,
+         not the index in the parent container.  <TT
+CLASS="PARAMETER"
+><I
+>selectedChildIndex</I
+></TT
+> in this
+         method, and <TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+> in <A
+HREF="at-spi-cspi-accessibleselection-interface.html#ACCESSIBLESELECTION-SELECTCHILD"
+>AccessibleSelection_selectChild</A
+>
+         are asymmettric.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4472"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>selectedChildIndex</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating which of the selected children
+             of the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> is to be selected.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the child was successfully deselected, <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4494"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-CLEARSELECTION"
+></A
+>AccessibleSelection_clearSelection ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleSelection_clearSelection
+                                            (AccessibleSelection *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Clear the current selection, removing all selected children from the
+      specified AccessibleSelection implementor's selection list.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4503"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection implementor on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if successful, <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN4519"
+></A
+><H3
+><A
+NAME="ACCESSIBLESELECTION-SELECTALL"
+></A
+>AccessibleSelection_selectAll ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleSelection_selectAll   (AccessibleSelection *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Attempt to select all of the children of an AccessibleSelection implementor.
+Not all AccessibleSelection implementors support this operation.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN4529"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleSelection implementor on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if successful, <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-accessibleimage-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-component.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-accessibletable-interface.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AccessibleImage Interface</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AccessibleTable Interface</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

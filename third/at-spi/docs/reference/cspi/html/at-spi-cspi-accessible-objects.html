@@ -1,0 +1,5286 @@
+<HTML
+><HEAD
+><TITLE
+>Accessible Objects</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+REL="HOME"
+TITLE="AT-SPI C Bindings Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Accessible Object Methods and Interface Query"
+HREF="spi-accessible.html"><LINK
+REL="PREVIOUS"
+TITLE="Basic Accessible Object Methods and Interface Query"
+HREF="spi-accessible.html"><LINK
+REL="NEXT"
+TITLE="AccessibleRelations and RelationSets"
+HREF="at-spi-cspi-accessiblerelations-and-relationsets.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>AT-SPI C Bindings Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="spi-accessible.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-accessible.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-accessiblerelations-and-relationsets.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="AT-SPI-CSPI-ACCESSIBLE-OBJECTS"
+>Accessible Objects</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1129"
+></A
+><H2
+>Name</H2
+>Accessible Objects&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1132"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+struct      <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>;
+void        <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-REF"
+>Accessible_ref</A
+>                  (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+void        <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-UNREF"
+>Accessible_unref</A
+>                (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+char*       <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETNAME"
+>Accessible_getName</A
+>              (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+char*       <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETDESCRIPTION"
+>Accessible_getDescription</A
+>       (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETPARENT"
+>Accessible_getParent</A
+>            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+long        <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETCHILDCOUNT"
+>Accessible_getChildCount</A
+>        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETCHILDATINDEX"
+>Accessible_getChildAtIndex</A
+>      (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj,
+                                             long int childIndex);
+long        <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETINDEXINPARENT"
+>Accessible_getIndexInParent</A
+>     (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleRelation** <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETRELATIONSET"
+>Accessible_getRelationSet</A
+>
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+> <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETROLE"
+>Accessible_getRole</A
+>           (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+char*       <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETROLENAME"
+>Accessible_getRoleName</A
+>          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleStateSet* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETSTATESET"
+>Accessible_getStateSet</A
+>  (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISACTION"
+>Accessible_isAction</A
+>             (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISAPPLICATION"
+>Accessible_isApplication</A
+>        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISCOMPONENT"
+>Accessible_isComponent</A
+>          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISEDITABLETEXT"
+>Accessible_isEditableText</A
+>       (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISHYPERTEXT"
+>Accessible_isHypertext</A
+>          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISIMAGE"
+>Accessible_isImage</A
+>              (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISSELECTION"
+>Accessible_isSelection</A
+>          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISSTREAMABLECONTENT"
+>Accessible_isStreamableContent</A
+>  (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISTABLE"
+>Accessible_isTable</A
+>              (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISTEXT"
+>Accessible_isText</A
+>               (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+SPIBoolean  <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-ISVALUE"
+>Accessible_isValue</A
+>              (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleAction* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETACTION"
+>Accessible_getAction</A
+>      (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleApplication* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETAPPLICATION"
+>Accessible_getApplication</A
+>
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleComponent* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETCOMPONENT"
+>Accessible_getComponent</A
+>
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleEditableText* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETEDITABLETEXT"
+>Accessible_getEditableText</A
+>
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleHypertext* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETHYPERTEXT"
+>Accessible_getHypertext</A
+>
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleImage* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETIMAGE"
+>Accessible_getImage</A
+>        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleSelection* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETSELECTION"
+>Accessible_getSelection</A
+>
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleStreamableContent* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETSTREAMABLECONTENT"
+>Accessible_getStreamableContent</A
+>
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleTable* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETTABLE"
+>Accessible_getTable</A
+>        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleText* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETTEXT"
+>Accessible_getText</A
+>          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleValue* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETVALUE"
+>Accessible_getValue</A
+>        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);
+AccessibleUnknown* <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-QUERYINTERFACE"
+>Accessible_queryInterface</A
+>
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj,
+                                             const char *interface_name);
+
+enum        <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+>;
+char*       <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE-GETNAME"
+>AccessibleRole_getName</A
+>          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+> role);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1240"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1243"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1245"
+></A
+><H3
+><A
+NAME="ACCESSIBLE"
+></A
+>struct Accessible</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>struct Accessible {
+	CORBA_Object objref;
+	/* And some other bits */
+	guint        on_loan : 1;
+	guint        ref_count : 30;
+};</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1250"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-REF"
+></A
+>Accessible_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        Accessible_ref                  (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Increment the reference count for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1258"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1268"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-UNREF"
+></A
+>Accessible_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        Accessible_unref                (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Decrement the reference count for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1276"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1286"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETNAME"
+></A
+>Accessible_getName ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>char*       Accessible_getName              (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the name of an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1294"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a UTF-8 string indicating the name of the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.
+or NULL on exception</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1309"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETDESCRIPTION"
+></A
+>Accessible_getDescription ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>char*       Accessible_getDescription       (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the description of an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1317"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a UTF-8 string describing the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.
+or NULL on exception</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1332"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETPARENT"
+></A
+>Accessible_getParent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>* Accessible_getParent            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object's parent container.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1341"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer tothe <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object which contains the given
+         <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance, or NULL if the <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> has no parent container.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1358"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETCHILDCOUNT"
+></A
+>Accessible_getChildCount ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>long        Accessible_getChildCount        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the number of children contained by an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1367"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating the number of <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> children
+         contained by an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object. or -1 on exception&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1384"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETCHILDATINDEX"
+></A
+>Accessible_getChildAtIndex ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>* Accessible_getChildAtIndex      (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj,
+                                             long int childIndex);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> child of an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object at a given index.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1395"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating which child is specified.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> child object at index
+         <TT
+CLASS="PARAMETER"
+><I
+>childIndex</I
+></TT
+>. or NULL on exception</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1416"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETINDEXINPARENT"
+></A
+>Accessible_getIndexInParent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>long        Accessible_getIndexInParent     (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the index of an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object in its containing <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1426"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a long indicating the index of the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object
+         in its parent (i.e. containing) <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance,
+         or -1 if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> has no containing parent or on exception.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1444"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETRELATIONSET"
+></A
+>Accessible_getRelationSet ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleRelation** Accessible_getRelationSet
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the set of AccessibleRelation objects which describe this <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object's
+      relationships with other <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> objects.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1455"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an array of AccessibleRelation pointers. or NULL on exception</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1470"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETROLE"
+></A
+>Accessible_getRole ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+> Accessible_getRole           (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the UI role of an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.
+A UTF-8 string describing this role can be obtained via <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETROLENAME"
+>Accessible_getRoleName</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1480"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+> of the object.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1495"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETROLENAME"
+></A
+>Accessible_getRoleName ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>char*       Accessible_getRoleName          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get a UTF-8 string describing the role this object plays in the UI.
+This method will return useful values for roles that fall outside the
+enumeration used in <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE-GETROLE"
+>Accessible_getRole</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1503"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a UTF-8 string specifying the role of this <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1518"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETSTATESET"
+></A
+>Accessible_getStateSet ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleStateSet* Accessible_getStateSet  (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Not Yet Implemented.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1526"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleStateSet representing the object's current state.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1541"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISACTION"
+></A
+>Accessible_isAction ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isAction             (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleAction.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1551"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleAction interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1569"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISAPPLICATION"
+></A
+>Accessible_isApplication ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isApplication        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleApplication.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1579"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleApplication interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1597"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISCOMPONENT"
+></A
+>Accessible_isComponent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isComponent          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleComponent.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1607"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleComponent interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1625"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISEDITABLETEXT"
+></A
+>Accessible_isEditableText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isEditableText       (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleEditableText.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1635"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleEditableText interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1653"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISHYPERTEXT"
+></A
+>Accessible_isHypertext ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isHypertext          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleHypertext.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1663"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleHypertext interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1681"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISIMAGE"
+></A
+>Accessible_isImage ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isImage              (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleImage.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1691"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleImage interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1709"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISSELECTION"
+></A
+>Accessible_isSelection ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isSelection          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleSelection.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1719"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleSelection interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1737"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISSTREAMABLECONTENT"
+></A
+>Accessible_isStreamableContent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isStreamableContent  (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements
+         AccessibleStreamableContent.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1747"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleStreamableContent interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1765"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISTABLE"
+></A
+>Accessible_isTable ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isTable              (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleTable.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1775"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleTable interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1793"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISTEXT"
+></A
+>Accessible_isText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isText               (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleText.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1803"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleText interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1821"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-ISVALUE"
+></A
+>Accessible_isValue ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  Accessible_isValue              (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query whether the specified <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> implements AccessibleValue.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1831"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> implements the AccessibleValue interface,
+         <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> otherwise.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1849"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETACTION"
+></A
+>Accessible_getAction ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleAction* Accessible_getAction      (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleAction interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1859"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleAction interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleAction.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1876"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETAPPLICATION"
+></A
+>Accessible_getApplication ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleApplication* Accessible_getApplication
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleApplication interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1886"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleApplication interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleApplication.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1903"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETCOMPONENT"
+></A
+>Accessible_getComponent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleComponent* Accessible_getComponent
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleComponent interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1913"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleComponent interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleComponent.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1930"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETEDITABLETEXT"
+></A
+>Accessible_getEditableText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleEditableText* Accessible_getEditableText
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleEditableText interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1940"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleEditableText interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleEditableText.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1957"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETHYPERTEXT"
+></A
+>Accessible_getHypertext ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleHypertext* Accessible_getHypertext
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleHypertext interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1967"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleHypertext interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleHypertext.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1984"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETIMAGE"
+></A
+>Accessible_getImage ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleImage* Accessible_getImage        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleImage interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1994"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleImage interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleImage.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2011"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETSELECTION"
+></A
+>Accessible_getSelection ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleSelection* Accessible_getSelection
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleSelection interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2021"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleSelection interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleSelection.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2038"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETSTREAMABLECONTENT"
+></A
+>Accessible_getStreamableContent ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleStreamableContent* Accessible_getStreamableContent
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleStreamableContent interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2048"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleStreamableContent interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleStreamableContent.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2065"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETTABLE"
+></A
+>Accessible_getTable ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleTable* Accessible_getTable        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleTable interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2075"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleTable interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleTable.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2092"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETTEXT"
+></A
+>Accessible_getText ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleText* Accessible_getText          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleText interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2102"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleText interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleText.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2119"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-GETVALUE"
+></A
+>Accessible_getValue ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleValue* Accessible_getValue        (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get the AccessibleValue interface for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2129"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to an AccessibleValue interface instance, or
+         NULL if <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+> does not implement AccessibleValue.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2146"
+></A
+><H3
+><A
+NAME="ACCESSIBLE-QUERYINTERFACE"
+></A
+>Accessible_queryInterface ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleUnknown* Accessible_queryInterface
+                                            (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> *obj,
+                                             const char *interface_name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Query an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> object to for a named interface.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2155"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLE"
+>Accessible</A
+> instance to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>interface_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a UTF-8 character string specifiying the requested interface.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an instance of the named interface object, if it is implemented
+         by <TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>, or NULL otherwise.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2174"
+></A
+><H3
+><A
+NAME="ACCESSIBLEROLE"
+></A
+>enum AccessibleRole</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum
+{
+  SPI_ROLE_INVALID,
+  SPI_ROLE_ACCEL_LABEL,
+  SPI_ROLE_ALERT,
+  SPI_ROLE_ANIMATION,
+  SPI_ROLE_ARROW,
+  SPI_ROLE_CALENDAR,
+  SPI_ROLE_CANVAS,
+  SPI_ROLE_CHECK_BOX,
+  SPI_ROLE_CHECK_MENU_ITEM,
+  SPI_ROLE_COLOR_CHOOSER,
+  SPI_ROLE_COLUMN_HEADER,
+  SPI_ROLE_COMBO_BOX,
+  SPI_ROLE_DATE_EDITOR,
+  SPI_ROLE_DESKTOP_ICON,
+  SPI_ROLE_DESKTOP_FRAME,
+  SPI_ROLE_DIAL,
+  SPI_ROLE_DIALOG,
+  SPI_ROLE_DIRECTORY_PANE,
+  SPI_ROLE_DRAWING_AREA,
+  SPI_ROLE_FILE_CHOOSER,
+  SPI_ROLE_FILLER,
+  SPI_ROLE_FONT_CHOOSER,
+  SPI_ROLE_FRAME,
+  SPI_ROLE_GLASS_PANE,
+  SPI_ROLE_HTML_CONTAINER,
+  SPI_ROLE_ICON,
+  SPI_ROLE_IMAGE,
+  SPI_ROLE_INTERNAL_FRAME,
+  SPI_ROLE_LABEL,
+  SPI_ROLE_LAYERED_PANE,
+  SPI_ROLE_LIST,
+  SPI_ROLE_LIST_ITEM,
+  SPI_ROLE_MENU,
+  SPI_ROLE_MENU_BAR,
+  SPI_ROLE_MENU_ITEM,
+  SPI_ROLE_OPTION_PANE,
+  SPI_ROLE_PAGE_TAB,
+  SPI_ROLE_PAGE_TAB_LIST,
+  SPI_ROLE_PANEL,
+  SPI_ROLE_PASSWORD_TEXT,
+  SPI_ROLE_POPUP_MENU,
+  SPI_ROLE_PROGRESS_BAR,
+  SPI_ROLE_PUSH_BUTTON,
+  SPI_ROLE_RADIO_BUTTON,
+  SPI_ROLE_RADIO_MENU_ITEM,
+  SPI_ROLE_ROOT_PANE,
+  SPI_ROLE_ROW_HEADER,
+  SPI_ROLE_SCROLL_BAR,
+  SPI_ROLE_SCROLL_PANE,
+  SPI_ROLE_SEPARATOR,
+  SPI_ROLE_SLIDER,
+  SPI_ROLE_SPIN_BUTTON,
+  SPI_ROLE_SPLIT_PANE,
+  SPI_ROLE_STATUS_BAR,
+  SPI_ROLE_TABLE,
+  SPI_ROLE_TABLE_CELL,
+  SPI_ROLE_TABLE_COLUMN_HEADER,
+  SPI_ROLE_TABLE_ROW_HEADER,
+  SPI_ROLE_TEAROFF_MENU_ITEM,
+  SPI_ROLE_TERMINAL,
+  SPI_ROLE_TEXT,
+  SPI_ROLE_TOGGLE_BUTTON,
+  SPI_ROLE_TOOL_BAR,
+  SPI_ROLE_TOOL_TIP,
+  SPI_ROLE_TREE,
+  SPI_ROLE_TREE_TABLE,
+  SPI_ROLE_UNKNOWN,
+  SPI_ROLE_VIEWPORT,
+  SPI_ROLE_WINDOW,
+  SPI_ROLE_EXTENDED,
+  SPI_ROLE_LAST_DEFINED
+} AccessibleRole;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2180"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#F0F0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_INVALID</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> role is not legal, something is wrong with this object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_ACCEL_LABEL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> object is a label indicating keyboard
+                             accelerators for the parent</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_ALERT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Object is used to alert the user about something</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_ANIMATION</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Object contains a dynamic or moving image</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_ARROW</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Object is a 2d directional indicator</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_CALENDAR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Object contains one or more dates, usually arranged into
+                    a 2d list</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_CANVAS</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Object that can be drawn into and is used to trap events</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_CHECK_BOX</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Object representd a choice that can be checked or unchecked
+                   and provides a separate indicator for the current state.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_CHECK_MENU_ITEM</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Object is a menu item that behaves like a CHECK_BOX</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_COLOR_CHOOSER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized dialog that lets the user choose a color.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_COLUMN_HEADER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The header for a column of data </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_COMBO_BOX</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A list of choices the user can select from</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_DATE_EDITOR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Allows entry of a date</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_DESKTOP_ICON</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An inconifed internal frame within a DESKTOP_PANE</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_DESKTOP_FRAME</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pane that supports internal frames and
+             iconified versions of those internal frames.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_DIAL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A rotating/rotatable valuator</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_DIALOG</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A top level window with title bar and a border</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_DIRECTORY_PANE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pane that allows the user to navigate
+             through and select the contents of a directory.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_DRAWING_AREA</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object used for drawing custom user interface elements</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_FILE_CHOOSER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized dialog that displays the files in the
+              directory and lets the user select a file, browse a different
+ 	 directory, or specify a filename.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_FILLER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A object that fills up space in a user interface</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_FONT_CHOOSER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Allows selection of a display font</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_FRAME</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A top level window with a title bar, border, menubar, etc.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_GLASS_PANE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pane that is guaranteed to be painted on top of all
+              panes beneath it</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_HTML_CONTAINER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A document container for HTML, whose children
+              represent the document content.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_ICON</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A small fixed size picture, typically used to decorate components.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_IMAGE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An image, typically static</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_INTERNAL_FRAME</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A frame-like object that is clipped by a desktop pane.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_LABEL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object used to present an icon or short string in an interface</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_LAYERED_PANE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized pane that allows its children to be drawn in layers
+                        providing a  form of stacking order.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_LIST</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that presents a list of objects to the user and allows the
+                        user to select one or more of them.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_LIST_ITEM</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that represents an element of a list.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_MENU</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object usually found inside a menu bar that contains a list of
+                actions the user can choose from.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_MENU_BAR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object usually drawn at the top of the primary dialog box of an
+                application that contains a list of menus the user can choose from.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_MENU_ITEM</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object usually contained in a menu that presents an
+           action the user can choose.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_OPTION_PANE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized pane whose primary use is inside a DIALOG </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_PAGE_TAB</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that is a child of a page tab list</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_PAGE_TAB_LIST</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that presents a series of panels (or page tabs),
+  one at a time, through some mechanism provided by the object.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_PANEL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A generic container that is often used to group objects.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_PASSWORD_TEXT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A text object uses for passwords, or other places where
+       the text content is not shown visibly to the user.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_POPUP_MENU</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A temporary window that is usually used to offer the user a
+       list of choices, and then hides when the user selects one of those choices.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_PROGRESS_BAR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object used to indicate how much of a task has been completed.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_PUSH_BUTTON</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized object which the user can interact with to tell
+       the application to do something.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_RADIO_BUTTON</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized check box that will cause other radio buttons in the
+       same group to become uncghecked when this one is checked.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_RADIO_MENU_ITEM</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized menu item that behaves like a 
+       radio button.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_ROOT_PANE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized pane that has a glass pane and a layered pane as its
+       children.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_ROW_HEADER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The header for a row of data</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_SCROLL_BAR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object usually used to allow a user to incrementally
+       view a large amount of data.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_SCROLL_PANE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that allows a user to incrementally view a large amount
+        of information.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_SEPARATOR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object usually contained in a menu to provide a visible and
+       logical separation of the contents in a menu.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_SLIDER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that allows the user to select from a bounded range.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_SPIN_BUTTON</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object which allows selection from a set of choices and
+                       displays the current choice.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_SPLIT_PANE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized panel that presents two other panels at the same time.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_STATUS_BAR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object the display qualitative status information. c.f. PROGRESS_BAR</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TABLE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object used to rpesent information in terms of rows and columns.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TABLE_CELL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object which is a descendant of a table,
+       with a row/column location.  A cell may span multiple rows and columns.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TABLE_COLUMN_HEADER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object which serves to describe a column in a table.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TABLE_ROW_HEADER</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object which serves to label or describe a row in a table.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TEAROFF_MENU_ITEM</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A menu item which allows the menu to be removed from
+                             a menubar and placed in its own window</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TERMINAL</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that emulates a teletype or terminal</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TEXT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that presents text to the user</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TOGGLE_BUTTON</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A specialized push button that can be checked or unchecked,
+  but does not provide a separate indicator for the current state.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TOOL_BAR</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A bar or palette usually composed of push buttons or toggle buttons</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TOOL_TIP</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object that provides information about another object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TREE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object used to represent hierarchical information to the user</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_TREE_TABLE</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object which represents both hierarchical and tabular information</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_UNKNOWN</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The object contains some SpiAccessible information, but its role is
+                   not known.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_VIEWPORT</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An object usually used in a scroll pane, which restricts the visual
+                   area into which its contents are presented.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_WINDOW</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A top level window with no title or border.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_EXTENDED</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> This object's role is not included in the standard role list and
+                    should be queried by name.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="LEFT"
+VALIGN="TOP"
+><TT
+CLASS="LITERAL"
+>SPI_ROLE_LAST_DEFINED</TT
+></TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Used to determine the end of the role enumeration.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2469"
+></A
+><H3
+><A
+NAME="ACCESSIBLEROLE-GETNAME"
+></A
+>AccessibleRole_getName ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>char*       AccessibleRole_getName          (<A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+> role);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Get a localizeable string that indicates the name of an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+>.
+&lt;em&gt;DEPRECATED.&lt;/em&gt;</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2477"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>role</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+> object to query.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a localizable string name for an <A
+HREF="at-spi-cspi-accessible-objects.html#ACCESSIBLEROLE"
+>AccessibleRole</A
+> enumerated type.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="spi-accessible.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-accessible.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-accessiblerelations-and-relationsets.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Basic Accessible Object Methods and Interface Query</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AccessibleRelations and RelationSets</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

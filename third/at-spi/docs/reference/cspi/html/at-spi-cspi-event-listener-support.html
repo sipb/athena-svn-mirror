@@ -1,0 +1,845 @@
+<HTML
+><HEAD
+><TITLE
+>Event Listener Support</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+REL="HOME"
+TITLE="AT-SPI C Bindings Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="SPI Main Event Loop and Registry"
+HREF="spi-main.html"><LINK
+REL="PREVIOUS"
+TITLE="SPI main loop and initialization"
+HREF="at-spi-cspi-spi-main-loop-and-initialization.html"><LINK
+REL="NEXT"
+TITLE="Registry queries"
+HREF="at-spi-cspi-registry-queries.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>AT-SPI C Bindings Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-spi-main-loop-and-initialization.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-main.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-registry-queries.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="AT-SPI-CSPI-EVENT-LISTENER-SUPPORT"
+>Event Listener Support</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN146"
+></A
+><H2
+>Name</H2
+>Event Listener Support&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN149"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+typedef     <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENT"
+>AccessibleEvent</A
+>;
+void        (<A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>*AccessibleEventListenerCB</A
+>)    (const <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENT"
+>AccessibleEvent</A
+> *event,
+                                             void *user_data);
+AccessibleEventListener* <A
+HREF="at-spi-cspi-event-listener-support.html#SPI-CREATEACCESSIBLEEVENTLISTENER"
+>SPI_createAccessibleEventListener</A
+>
+                                            (<A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> callback,
+                                             void *user_data);
+void        <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENER-UNREF"
+>AccessibleEventListener_unref</A
+>   (AccessibleEventListener *listener);
+SPIBoolean  <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENER-ADDCALLBACK"
+>AccessibleEventListener_addCallback</A
+>
+                                            (AccessibleEventListener *listener,
+                                             <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> callback,
+                                             void *user_data);
+SPIBoolean  <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENER-REMOVECALLBACK"
+>AccessibleEventListener_removeCallback</A
+>
+                                            (AccessibleEventListener *listener,
+                                             <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> callback);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN168"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN171"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN173"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEVENT"
+></A
+>AccessibleEvent</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+  const char  *type;
+  Accessible  *source;
+  long         detail1;
+  long         detail2;
+} AccessibleEvent;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN178"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEVENTLISTENERCB"
+></A
+>AccessibleEventListenerCB ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*AccessibleEventListenerCB)    (const <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENT"
+>AccessibleEvent</A
+> *event,
+                                             void *user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN184"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>event</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN197"
+></A
+><H3
+><A
+NAME="SPI-CREATEACCESSIBLEEVENTLISTENER"
+></A
+>SPI_createAccessibleEventListener ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleEventListener* SPI_createAccessibleEventListener
+                                            (<A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> callback,
+                                             void *user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a new AccessibleEventListener with a specified (in-process) callback function.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN206"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> callback function, or NULL.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to data which will be passed to the callback when invoked.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to a newly-created AccessibleEventListener.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN225"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEVENTLISTENER-UNREF"
+></A
+>AccessibleEventListener_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleEventListener_unref   (AccessibleEventListener *listener);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Decrements an AccessibleEventListener's reference count.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN233"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>listener</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleEventListener being operated on.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN243"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEVENTLISTENER-ADDCALLBACK"
+></A
+>AccessibleEventListener_addCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEventListener_addCallback
+                                            (AccessibleEventListener *listener,
+                                             <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> callback,
+                                             void *user_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Add an in-process callback function to an existing AccessibleEventListener.
+Note that the callback function must live in the same address
+space as the AccessibleEventListener implementation code, thus one should not
+use this function to attach callbacks to a 'remote' event listener
+(that is, one that was not created by a client call to
+createAccessibleEventListener();</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN253"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>listener</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the AccessibleEventListener instance to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> function pointer.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>user_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to data which will be passed to the callback when invoked.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if successful, otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN278"
+></A
+><H3
+><A
+NAME="ACCESSIBLEEVENTLISTENER-REMOVECALLBACK"
+></A
+>AccessibleEventListener_removeCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleEventListener_removeCallback
+                                            (AccessibleEventListener *listener,
+                                             <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> callback);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove an in-process callback function from an existing AccessibleEventListener.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN287"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>listener</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the AccessibleEventListener instance to modify.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an <A
+HREF="at-spi-cspi-event-listener-support.html#ACCESSIBLEEVENTLISTENERCB"
+>AccessibleEventListenerCB</A
+> function pointer.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if successful, otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-spi-main-loop-and-initialization.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-main.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="at-spi-cspi-registry-queries.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>SPI main loop and initialization</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Registry queries</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

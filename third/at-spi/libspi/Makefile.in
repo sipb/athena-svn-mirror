@@ -1,0 +1,532 @@
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+AS = @AS@
+ATK_BRIDGE_CFLAGS = @ATK_BRIDGE_CFLAGS@
+ATK_BRIDGE_LIBS = @ATK_BRIDGE_LIBS@
+AT_SPI_BINARY_AGE = @AT_SPI_BINARY_AGE@
+AT_SPI_INTERFACE_AGE = @AT_SPI_INTERFACE_AGE@
+AT_SPI_MAJOR_VERSION = @AT_SPI_MAJOR_VERSION@
+AT_SPI_MICRO_VERSION = @AT_SPI_MICRO_VERSION@
+AT_SPI_MINOR_VERSION = @AT_SPI_MINOR_VERSION@
+BONOBO_ACTIVATION_IDL_DIR = @BONOBO_ACTIVATION_IDL_DIR@
+CC = @CC@
+CPPFLAGS = @CPPFLAGS@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+GNOME_ACLOCAL_DIR = @GNOME_ACLOCAL_DIR@
+GNOME_ACLOCAL_FLAGS = @GNOME_ACLOCAL_FLAGS@
+GNOME_INTERFACE_VERSION = @GNOME_INTERFACE_VERSION@
+GTKDOC = @GTKDOC@
+HAVE_GTK_DOC = @HAVE_GTK_DOC@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIBBONOBO_IDL_DIR = @LIBBONOBO_IDL_DIR@
+LIBCSPI_CFLAGS = @LIBCSPI_CFLAGS@
+LIBCSPI_LIBS = @LIBCSPI_LIBS@
+LIBSPI_CFLAGS = @LIBSPI_CFLAGS@
+LIBSPI_LIBS = @LIBSPI_LIBS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LT_AGE = @LT_AGE@
+LT_CURRENT = @LT_CURRENT@
+LT_RELEASE = @LT_RELEASE@
+LT_REVISION = @LT_REVISION@
+LT_VERSION_INFO = @LT_VERSION_INFO@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+ORBIT_IDL = @ORBIT_IDL@
+PACKAGE = @PACKAGE@
+PKG_CONFIG = @PKG_CONFIG@
+POPT_LIBS = @POPT_LIBS@
+RANLIB = @RANLIB@
+REGISTRYD_CFLAGS = @REGISTRYD_CFLAGS@
+REGISTRYD_LIBS = @REGISTRYD_LIBS@
+STRIP = @STRIP@
+TESTS_CFLAGS = @TESTS_CFLAGS@
+TESTS_LIBS = @TESTS_LIBS@
+VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
+XTST_LIBS = @XTST_LIBS@
+X_LIBS = @X_LIBS@
+cxxflags_set = @cxxflags_set@
+
+lib_LTLIBRARIES = libspi.la
+
+INCLUDES = -I$(top_srcdir)	           -I$(top_builddir)	           $(LIBSPI_CFLAGS)
+
+
+LDFLAGS = @LDFLAGS@ $(LIBSPI_LIBS) $(XTST_LIBS) @LT_VERSION_INFO@
+
+#DEBUG_CFLAGS=-DSPI_DEBUG
+
+CFLAGS = @CFLAGS@ $(DEBUG_CFLAGS)
+
+libspiincludedir = $(includedir)/at-spi-1.0/libspi
+
+libspiinclude_HEADERS =  	Accessibility.h			accessible.h			eventlistener.h			action.h			application.h			base.h				component.h			editabletext.h			hyperlink.h			hypertext.h			image.h				keystrokelistener.h		keymasks.h			libspi.h			listener.h			relation.h			remoteobject.h			selection.h			stateset.h			table.h				text.h				value.h
+
+
+IDL_OUT = Accessibility.h Accessibility-stubs.c Accessibility-skels.c Accessibility-common.c
+
+IDL_DEPS =  	$(top_srcdir)/idl/Accessibility.idl				$(top_srcdir)/idl/Accessibility_Accessible.idl			$(top_srcdir)/idl/Accessibility_Action.idl			$(top_srcdir)/idl/Accessibility_Application.idl			$(top_srcdir)/idl/Accessibility_Component.idl			$(top_srcdir)/idl/Accessibility_Desktop.idl			$(top_srcdir)/idl/Accessibility_EditableText.idl		$(top_srcdir)/idl/Accessibility_Event.idl			$(top_srcdir)/idl/Accessibility_Hyperlink.idl			$(top_srcdir)/idl/Accessibility_Hypertext.idl			$(top_srcdir)/idl/Accessibility_Image.idl			$(top_srcdir)/idl/Accessibility_Registry.idl			$(top_srcdir)/idl/Accessibility_Relation.idl			$(top_srcdir)/idl/Accessibility_Role.idl			$(top_srcdir)/idl/Accessibility_Selection.idl			$(top_srcdir)/idl/Accessibility_State.idl			$(top_srcdir)/idl/Accessibility_StreamableContent.idl		$(top_srcdir)/idl/Accessibility_Table.idl			$(top_srcdir)/idl/Accessibility_Text.idl			$(top_srcdir)/idl/Accessibility_Value.idl
+
+
+BUILT_SOURCES = $(IDL_OUT) Accessibility-imodule.c
+CLEANFILES =  $(IDL_OUT) Accessibility-imodule.c
+
+libspi_la_SOURCES =  	accessible.c			action.c			application.c			base.c				component.c			editabletext.c			hyperlink.c			hypertext.c			image.c				keystrokelistener.c		relation.c			remoteobject.c			selection.c			spi-private.h			stateset.c			table.c				text.c				util.c				value.c				listener.c			eventlistener.c			$(IDL_OUT)
+
+
+IDLFLAGS = -I$(BONOBO_ACTIVATION_IDL_DIR) 	   -I$(LIBBONOBO_IDL_DIR)         	   -I$(top_srcdir)/idl            	   --add-imodule
+
+
+orbittypelibdir = $(libdir)/orbit-2.0
+orbittypelib_LTLIBRARIES = Accessibility_module.la
+
+Accessibility_module_la_LDFLAGS =  	-export-dynamic -module -avoid-version
+
+Accessibility_module_la_SOURCES =  	Accessibility-imodule.c
+
+
+DONT_DIST_SOURCE = $(IDL_OUT) Accessibility-imodule.c
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES) $(orbittypelib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+LIBS = @LIBS@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
+libspi_la_LDFLAGS = 
+libspi_la_LIBADD = 
+libspi_la_OBJECTS =  accessible.lo action.lo application.lo base.lo \
+component.lo editabletext.lo hyperlink.lo hypertext.lo image.lo \
+keystrokelistener.lo relation.lo remoteobject.lo selection.lo \
+stateset.lo table.lo text.lo util.lo value.lo listener.lo \
+eventlistener.lo Accessibility-stubs.lo Accessibility-skels.lo \
+Accessibility-common.lo
+Accessibility_module_la_LIBADD = 
+Accessibility_module_la_OBJECTS =  Accessibility-imodule.lo
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(libspiinclude_HEADERS)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(libspi_la_SOURCES) $(Accessibility_module_la_SOURCES)
+OBJECTS = $(libspi_la_OBJECTS) $(Accessibility_module_la_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps libspi/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+mostlyclean-orbittypelibLTLIBRARIES:
+
+clean-orbittypelibLTLIBRARIES:
+	-test -z "$(orbittypelib_LTLIBRARIES)" || rm -f $(orbittypelib_LTLIBRARIES)
+
+distclean-orbittypelibLTLIBRARIES:
+
+maintainer-clean-orbittypelibLTLIBRARIES:
+
+install-orbittypelibLTLIBRARIES: $(orbittypelib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(orbittypelibdir)
+	@list='$(orbittypelib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(orbittypelibdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(orbittypelibdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-orbittypelibLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(orbittypelib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(orbittypelibdir)/$$p; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libspi.la: $(libspi_la_OBJECTS) $(libspi_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libspi_la_LDFLAGS) $(libspi_la_OBJECTS) $(libspi_la_LIBADD) $(LIBS)
+
+Accessibility_module.la: $(Accessibility_module_la_OBJECTS) $(Accessibility_module_la_DEPENDENCIES)
+	$(LINK) -rpath $(orbittypelibdir) $(Accessibility_module_la_LDFLAGS) $(Accessibility_module_la_OBJECTS) $(Accessibility_module_la_LIBADD) $(LIBS)
+
+install-libspiincludeHEADERS: $(libspiinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libspiincludedir)
+	@list='$(libspiinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libspiincludedir)/$$p"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libspiincludedir)/$$p; \
+	done
+
+uninstall-libspiincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libspiinclude_HEADERS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libspiincludedir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = libspi
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+Accessibility-common.lo Accessibility-common.o : Accessibility-common.c \
+	Accessibility.h
+Accessibility-imodule.lo Accessibility-imodule.o : \
+	Accessibility-imodule.c Accessibility-common.c Accessibility.h
+Accessibility-skels.lo Accessibility-skels.o : Accessibility-skels.c \
+	Accessibility.h
+Accessibility-stubs.lo Accessibility-stubs.o : Accessibility-stubs.c \
+	Accessibility.h
+accessible.lo accessible.o : accessible.c ../config.h libspi.h \
+	Accessibility.h accessible.h base.h action.h application.h \
+	component.h editabletext.h text.h hyperlink.h hypertext.h \
+	image.h relation.h selection.h stateset.h table.h value.h \
+	listener.h eventlistener.h keystrokelistener.h keymasks.h \
+	remoteobject.h
+action.lo action.o : action.c ../config.h action.h base.h \
+	Accessibility.h
+application.lo application.o : application.c ../config.h application.h \
+	accessible.h base.h Accessibility.h
+base.lo base.o : base.c ../config.h libspi.h Accessibility.h \
+	accessible.h base.h action.h application.h component.h \
+	editabletext.h text.h hyperlink.h hypertext.h image.h \
+	relation.h selection.h stateset.h table.h value.h listener.h \
+	eventlistener.h keystrokelistener.h keymasks.h remoteobject.h
+component.lo component.o : component.c ../config.h accessible.h base.h \
+	Accessibility.h component.h
+editabletext.lo editabletext.o : editabletext.c ../config.h \
+	editabletext.h text.h base.h Accessibility.h
+eventlistener.lo eventlistener.o : eventlistener.c ../config.h \
+	eventlistener.h listener.h Accessibility.h
+hyperlink.lo hyperlink.o : hyperlink.c ../config.h hyperlink.h base.h \
+	Accessibility.h accessible.h
+hypertext.lo hypertext.o : hypertext.c ../config.h hyperlink.h base.h \
+	Accessibility.h hypertext.h text.h
+image.lo image.o : image.c ../config.h image.h base.h Accessibility.h
+keystrokelistener.lo keystrokelistener.o : keystrokelistener.c \
+	../config.h listener.h Accessibility.h keystrokelistener.h \
+	keymasks.h
+listener.lo listener.o : listener.c ../config.h listener.h \
+	Accessibility.h
+relation.lo relation.o : relation.c ../config.h accessible.h base.h \
+	Accessibility.h relation.h
+remoteobject.lo remoteobject.o : remoteobject.c remoteobject.h \
+	Accessibility.h
+selection.lo selection.o : selection.c ../config.h accessible.h base.h \
+	Accessibility.h selection.h
+stateset.lo stateset.o : stateset.c ../config.h stateset.h base.h \
+	Accessibility.h
+table.lo table.o : table.c ../config.h accessible.h base.h \
+	Accessibility.h table.h
+text.lo text.o : text.c ../config.h text.h base.h Accessibility.h
+util.lo util.o : util.c spi-private.h
+value.lo value.o : value.c ../config.h value.h base.h Accessibility.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libLTLIBRARIES
+install-exec: install-exec-am
+
+install-data-am: install-orbittypelibLTLIBRARIES \
+		install-libspiincludeHEADERS
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libLTLIBRARIES uninstall-orbittypelibLTLIBRARIES \
+		uninstall-libspiincludeHEADERS
+uninstall: uninstall-am
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(orbittypelibdir) \
+		$(DESTDIR)$(libspiincludedir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-libLTLIBRARIES \
+		mostlyclean-orbittypelibLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libLTLIBRARIES clean-orbittypelibLTLIBRARIES \
+		clean-compile clean-libtool clean-tags clean-generic \
+		mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libLTLIBRARIES \
+		distclean-orbittypelibLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-orbittypelibLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES \
+mostlyclean-orbittypelibLTLIBRARIES distclean-orbittypelibLTLIBRARIES \
+clean-orbittypelibLTLIBRARIES maintainer-clean-orbittypelibLTLIBRARIES \
+uninstall-orbittypelibLTLIBRARIES install-orbittypelibLTLIBRARIES \
+mostlyclean-compile distclean-compile clean-compile \
+maintainer-clean-compile mostlyclean-libtool distclean-libtool \
+clean-libtool maintainer-clean-libtool uninstall-libspiincludeHEADERS \
+install-libspiincludeHEADERS tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+accessible.c base.h keystrokelistener.h libspi.h listener.h remoteobject.h : Accessibility.h
+
+$(IDL_OUT) Accessibility-imodule.c : $(IDL_DEPS) $(ORBIT_IDL)
+	$(ORBIT_IDL) -D__ACCESSIBILITY_COMPILATION__ $(IDLFLAGS) $(top_srcdir)/idl/Accessibility.idl
+
+dist-hook:
+	for file in $(DONT_DIST_SOURCE) ; do \
+	    rm -f $(distdir)/$$file ; \
+	done
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
