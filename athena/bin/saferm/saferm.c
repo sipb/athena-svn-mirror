@@ -21,7 +21,7 @@
  * resulting in security problems.
  */
 
-static char rcsid[] = "$Id: saferm.c,v 1.4 1998-09-30 21:10:38 ghudson Exp $";
+static char rcsid[] = "$Id: saferm.c,v 1.5 1999-04-21 16:45:08 kcr Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -289,7 +289,7 @@ int safe_rm(char *path, int zero_file)
     {
       file = safe_open(name, &file_stat);
       if (file == -1)
-	status = -1;
+	return -1;
     }
 
   if (safe_to_unlink(name) && unlink(name) == -1)
