@@ -616,6 +616,9 @@ auth_wait(name)
 auth_check(name)
 	char *name;
 {
+	/*
+	 * Now check to see if the user is valid or not
+	 */
 	if (!authenticated || authenticated == &NoAuth)
 		return(AUTH_REJECT);
 

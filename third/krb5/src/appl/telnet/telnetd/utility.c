@@ -89,7 +89,6 @@ ttloop()
     }
 }  /* end of ttloop */
 
-
 /* 
  * ttsuck - This is a horrible kludge to deal with a bug in
  * HostExplorer. HostExplorer thinks it knows how to do krb5 auth, but
@@ -116,6 +115,7 @@ ttloop()
     void
 ttsuck()
 {
+    extern int auth_client_non_unix;
     int nread;
     struct timeval tv;
     fd_set fds;

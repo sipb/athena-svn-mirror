@@ -1858,7 +1858,7 @@ int main(argc, argv)
 #endif
 
     setenv("HOME", pwd->pw_dir, 1);
-    setenv("PATH", LPATH, 1);
+    setenv("PATH", LPATH, 0);
     setenv("USER", pwd->pw_name, 1);
     setenv("SHELL", pwd->pw_shell, 1);
 

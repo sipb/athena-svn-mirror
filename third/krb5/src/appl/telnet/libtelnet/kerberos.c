@@ -663,7 +663,7 @@ kerberos4_status(ap, kname, level)
 	if (krb4_accepted) {
 		/* the name buffer comes from telnetd/telnetd{-ktd}.c */
 		strncpy(kname, UserNameRequested, 255);
-		name[255] = '\0';
+		kname[255] = '\0';
 	}
 
 	if (UserNameRequested && !kuserok(&adat, UserNameRequested)) {

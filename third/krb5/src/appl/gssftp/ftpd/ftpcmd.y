@@ -96,14 +96,7 @@ extern gss_ctx_id_t gcontext;
 #endif
 
 #ifndef NBBY
-#ifdef linux
 #define NBBY 8
-#endif
-#ifdef __pyrsoft
-#ifdef MIPSEB
-#define NBBY 8
-#endif
-#endif
 #endif
 
 static struct sockaddr_in host_port;
@@ -1058,6 +1051,7 @@ getline(s, n, iop)
 
 	    /* Check to see if we have a protected command. */
 	    if (!((mic = strncmp(s, "ENC", 3)) && strncmp(s, "MIC", 3)
+		&& strncmp(s, "AUTH", 4)
 #ifndef NOCONFIDENTIAL
 	        && strncmp(s, "CONF", 4)
 #endif
