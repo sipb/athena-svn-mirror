@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.11 1996-02-02 11:01:07 cfields Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.12 1996-04-22 02:28:09 ghudson Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -190,7 +190,7 @@ echo $hostname >etc/nodename
 echo $hostname >etc/hostname.le0
 echo $gateway >etc/defaultrouter
 cp -p /srvd/etc/inet/hosts etc/inet/hosts
-echo "$netaddr	$hostname" >>etc/inet/hosts
+echo "$netaddr	${hostname}.MIT.EDU $hostname" >>etc/inet/hosts
 cd /root/etc
 #ln -s inet/hosts hosts
 cd /root
