@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr_conf.h,v $
- *	$Author: raeburn $
+ *	$Author: probe $
  *	$Zephyr: /mit/zephyr/src/include/zephyr/RCS/zephyr_conf.h,v 1.8 90/12/21 17:40:40 raeburn Exp $
  *
  *	Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
@@ -29,6 +29,21 @@
 /* Service names */
 #define	HM_SVCNAME	"zephyr-hm"
 #define	SERVER_SVCNAME	"zephyr-clt"
+
+#if defined(vax) && !defined(ultrix)
+#define _BCOPY bcopy
+#define _BZERO bzero
+#define _BCMP  bcmp
+#else
+#define _BCOPY(a,b,n) memmove(b,a,n)
+#define _BZERO(a,n)   memset(a,0,n)
+#define _BCMP(a,b,n)  memcmp(a,b,n)
+#endif
+
+#if defined(vax) || defined(ibm032)
+#define strchr index
+#define strrchr rindex
+#endif
 
 #ifdef ultrix
 /* If you are using Ultrix versions prior to 3.0, uncomment the following
