@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.89 1998-03-30 02:20:06 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.90 1998-04-08 02:25:59 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -139,6 +139,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
   /* state variables: */
   int local_passwd = FALSE;	/* user is in local passwd file */
   int local_ok = FALSE;		/* verified from local password file */
+  int local_acct;		/* user's account is supposed to be local */
   char *altext = NULL, *alerrmem;
   int status, *warnings, *warning;
   int tmp_homedir = 0;
@@ -157,7 +158,7 @@ char *dologin(user, passwd, option, script, tty, session, display)
 	   "password to try again.";
 
   /* Check that the user is allowed to log in. */
-  status = al_login_allowed(user, 0, &altext);
+  status = al_login_allowed(user, 0, &local_acct, &altext);
   if (status != AL_SUCCESS)
     {
       memset(passwd, 0, strlen(passwd));	/* zap ASAP */
@@ -209,13 +210,10 @@ char *dologin(user, passwd, option, script, tty, session, display)
   if (pwd != NULL)
     {
       local_passwd = TRUE;
-      if (strcmp(crypt(passwd, pwd->pw_passwd), pwd->pw_passwd))
-	{
-	  if (pwd->pw_uid == ROOT)
-	    return "Incorrect root password";
-	}
-      else
+      if (strcmp(crypt(passwd, pwd->pw_passwd), pwd->pw_passwd) == 0)
 	local_ok = TRUE;
+      else if (local_acct)
+	return "Incorrect password";
     }
   else
     {
@@ -224,71 +222,72 @@ char *dologin(user, passwd, option, script, tty, session, display)
 	return "Strange failure in Hesiod lookup.";
     }
 
-  /* Terminal names may be something like pts/0; we don't want any /'s
-   * in the path name; replace them with _'s.
-   */
-  if (tty != NULL)
-    {
-      strcpy(fixed_tty, tty);
-      while (p = strchr(fixed_tty, '/'))
-	*p = '_';
-    }
-  else
-    {
-      sprintf(fixed_tty, "%d", pwd->pw_uid);
-    }
-  sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
-  psetenv("KRBTKFILE", tkt_file, 1);
+  /* Only do Kerberos-related things if the account is not local. */
+  if (!local_acct)
+      {
+	/* Terminal names may be something like pts/0; we don't want any /'s
+	 * in the path name; replace them with _'s.
+	 */
+	if (tty != NULL)
+	  {
+	    strcpy(fixed_tty, tty);
+	    while (p = strchr(fixed_tty, '/'))
+	      *p = '_';
+	  }
+	else
+	  sprintf(fixed_tty, "%d", pwd->pw_uid);
+	sprintf(tkt_file, "/tmp/tkt_%s", fixed_tty);
+	psetenv("KRBTKFILE", tkt_file, 1);
 
-  /* We set the ticket file here because a previous dest_tkt() might
-   * have cached the wrong ticket file.
-   */
-  krb_set_tkt_string(tkt_file);
+	/* We set the ticket file here because a previous dest_tkt() might
+	 * have cached the wrong ticket file.
+	 */
+	krb_set_tkt_string(tkt_file);
 
 #ifdef KRB5
-  sprintf(tkt5_file, "/tmp/krb5cc_%s", fixed_tty);
-  psetenv("KRB5CCNAME", tkt5_file, 1);
+	sprintf(tkt5_file, "/tmp/krb5cc_%s", fixed_tty);
+	psetenv("KRB5CCNAME", tkt5_file, 1);
 #endif
 
-  /* Save encrypted password to put in local password file. We do
-   * this ahead of time so that we can be sure of zeroing the
-   * password below.
-   */
-  salt = 9 * getpid();
-  saltc[0] = salt & 077;
-  saltc[1] = (salt>>6) & 077;
-  for (i = 0; i < 2 ; i++)
-    {
-      c = saltc[i] + '.';
-      if (c > '9')
-	c += 7;
-      if (c > 'Z')
-	c += 6;
-      saltc[i] = c;
-    }
-  strcpy(encrypt, crypt(passwd, saltc));	
+	/* Save encrypted password to put in local password file. We do
+	 * this ahead of time so that we can be sure of zeroing the
+	 * password below.
+	 */
+	salt = 9 * getpid();
+	saltc[0] = salt & 077;
+	saltc[1] = (salt>>6) & 077;
+	for (i = 0; i < 2 ; i++)
+	  {
+	    c = saltc[i] + '.';
+	    if (c > '9')
+	      c += 7;
+	    if (c > 'Z')
+	      c += 6;
+	    saltc[i] = c;
+	  }
+	strcpy(encrypt, crypt(passwd, saltc));	
 
-  msg = get_tickets(user, passwd);
-  memset(passwd, 0, strlen(passwd));
+	msg = get_tickets(user, passwd);
+	memset(passwd, 0, strlen(passwd));
 
-  if (msg)
-    {
-      if (!local_ok)
-	return msg;
-      else
-	{
-	  if (pwd->pw_uid != ROOT)
-	    prompt_user("Unable to get full authentication, you will "
-			"have local access only during this login "
-			"session (failed to get kerberos tickets).  "
-			"Continue anyway?", abort_verify, NULL);
-	}
-    }
+	if (msg)
+	  {
+	    if (!local_ok)
+	      return msg;
+	    else
+	      {
+		prompt_user("Unable to get full authentication, you will "
+			    "have local access only during this login "
+			    "session (failed to get kerberos tickets).  "
+			    "Continue anyway?", abort_verify, NULL);
+	      }
+	  }
 
-  chown(tkt_file, pwd->pw_uid, pwd->pw_gid);
+	chown(tkt_file, pwd->pw_uid, pwd->pw_gid);
 #ifdef KRB5
-  chown(tkt5_file, pwd->pw_uid, pwd->pw_gid);
+	chown(tkt5_file, pwd->pw_uid, pwd->pw_gid);
 #endif
+      }
 
   /* Code for verifying a secure tty used to be here. */
 
@@ -331,70 +330,73 @@ char *dologin(user, passwd, option, script, tty, session, display)
   pid = getpid();
 #endif
 
-  status = al_acct_create(user, encrypt, pid, !msg, 1, &warnings);
-  if (status != AL_SUCCESS)
+  if (!local_acct)
     {
-      switch(status)
+      status = al_acct_create(user, encrypt, pid, !msg, 1, &warnings);
+      if (status != AL_SUCCESS)
 	{
-	case AL_EPASSWD:
-	  strcpy(errbuf, "An unexpected error occured while entering you in "
-		 "the local password file.");
-	  return errbuf;
-	  break;
-	case AL_WARNINGS:
-	  warning = warnings;
-	  while (*warning != AL_SUCCESS)
+	  switch(status)
 	    {
-	      switch(*warning)
+	    case AL_EPASSWD:
+	      strcpy(errbuf, "An unexpected error occured while entering you "
+		     "in the local password file.");
+	      return errbuf;
+	      break;
+	    case AL_WARNINGS:
+	      warning = warnings;
+	      while (*warning != AL_SUCCESS)
 		{
-		case AL_WGROUP:
-		  prompt_user("Unable to set your group access list.  "
-			      "You may have insufficient permission to "
-			      "access some files.  Continue with this "
-			      "login session anyway?", abort_verify, user);
-		  break;
-		case AL_WXTMPDIR:
-		  tmp_homedir = 1;
-		  prompt_user("You are currently logged in with a "
-			      "temporary home directory, so this login "
-			      "session will use that directory. Continue "
-			      "with this login session anyway?",
-			      abort_verify, user);
-		  break;
-		case AL_WTMPDIR:
-		  tmp_homedir = 1;
-		  prompt_user("Your home directory is unavailable.  A "
-			      "temporary directory will be created for "
-			      "you.  However, it will be DELETED when you "
-			      "logout.  Any mail that you incorporate "
-			      "during this session WILL BE LOST when you "
-			      "logout.  Continue with this login session "
-			      "anyway?", abort_verify, user);
-		  break;
-		case AL_WNOHOMEDIR:
-		  prompt_user("No home directory is available.  Continue "
-			      "with this login session anyway?",
-			      abort_verify, user);
-		  break;
-		case AL_WNOATTACH:
-		  prompt_user("This workstation is configured not to "
-			      "attach remote filesystems.  Continue with "
-			      "your local home directory?", abort_verify,
-			      user);
-		  break;
-		case AL_WBADSESSION:
-		default:
-		  break;
+		  switch(*warning)
+		    {
+		    case AL_WGROUP:
+		      prompt_user("Unable to set your group access list.  "
+				  "You may have insufficient permission to "
+				  "access some files.  Continue with this "
+				  "login session anyway?", abort_verify, user);
+		      break;
+		    case AL_WXTMPDIR:
+		      tmp_homedir = 1;
+		      prompt_user("You are currently logged in with a "
+				  "temporary home directory, so this login "
+				  "session will use that directory. Continue "
+				  "with this login session anyway?",
+				  abort_verify, user);
+		      break;
+		    case AL_WTMPDIR:
+		      tmp_homedir = 1;
+		      prompt_user("Your home directory is unavailable.  A "
+				  "temporary directory will be created for "
+				  "you.  However, it will be DELETED when you "
+				  "logout.  Any mail that you incorporate "
+				  "during this session WILL BE LOST when you "
+				  "logout.  Continue with this login session "
+				  "anyway?", abort_verify, user);
+		      break;
+		    case AL_WNOHOMEDIR:
+		      prompt_user("No home directory is available.  Continue "
+				  "with this login session anyway?",
+				  abort_verify, user);
+		      break;
+		    case AL_WNOATTACH:
+		      prompt_user("This workstation is configured not to "
+				  "attach remote filesystems.  Continue with "
+				  "your local home directory?", abort_verify,
+				  user);
+		      break;
+		    case AL_WBADSESSION:
+		    default:
+		      break;
+		    }
+		  warning++;
 		}
-	      warning++;
+	      free(warnings);
+	      break;
+	    default:
+	      strcpy(errbuf, al_strerror(status, &alerrmem));
+	      al_free_errmem(alerrmem);
+	      return errbuf;
+	      break;
 	    }
-	  free(warnings);
-	  break;
-	default:
-	  strcpy(errbuf, al_strerror(status, &alerrmem));
-	  al_free_errmem(alerrmem);
-	  return errbuf;
-	  break;
 	}
     }
 
@@ -480,12 +482,15 @@ char *dologin(user, passwd, option, script, tty, session, display)
   environment[i++] = strsave(errbuf);
   sprintf(errbuf, "DISPLAY=%s", display);
   environment[i++] = strsave(errbuf);
-  sprintf(errbuf, "KRBTKFILE=%s", tkt_file);
-  environment[i++] = strsave(errbuf);
+  if (!local_acct)
+    {
+      sprintf(errbuf, "KRBTKFILE=%s", tkt_file);
+      environment[i++] = strsave(errbuf);
 #ifdef KRB5
-  sprintf(errbuf, "KRB5CCNAME=%s", tkt5_file);
-  environment[i++] = strsave(errbuf);
+      sprintf(errbuf, "KRB5CCNAME=%s", tkt5_file);
+      environment[i++] = strsave(errbuf);
 #endif
+    }
 #ifdef HOSTTYPE
   sprintf(errbuf, "hosttype=%s", HOSTTYPE); /* environment.h */
   environment[i++] = strsave(errbuf);
