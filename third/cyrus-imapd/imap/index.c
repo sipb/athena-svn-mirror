@@ -1,6 +1,6 @@
 /* index.c -- Routines for dealing with the index file in the imapd
  *
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,13 +41,12 @@
  *
  */
 /*
- * $Id: index.c,v 1.1.1.2 2003-02-14 21:39:20 ghudson Exp $
+ * $Id: index.c,v 1.1.1.3 2004-02-23 22:55:01 rbasch Exp $
  */
 #include <config.h>
 
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -56,27 +55,28 @@
 #include <com_err.h>
 #include <errno.h>
 #include <ctype.h>
-#include <time.h>
 
 #include "acl.h"
-#include "util.h"
-#include "map.h"
-#include "assert.h"
-#include "exitcodes.h"
-#include "gmtoff.h"
-#include "imap_err.h"
-#include "mailbox.h"
-#include "imapd.h"
+#include "annotate.h"
 #include "append.h"
+#include "assert.h"
 #include "charset.h"
-#include "xmalloc.h"
-#include "seen.h"
+#include "exitcodes.h"
+#include "hash.h"
+#include "imap_err.h"
+#include "global.h"
+#include "imapd.h"
 #include "lsort.h"
+#include "mailbox.h"
+#include "map.h"
 #include "message.h"
 #include "parseaddr.h"
-#include "hash.h"
-#include "stristr.h"
 #include "search_engines.h"
+#include "seen.h"
+#include "strhash.h"
+#include "stristr.h"
+#include "util.h"
+#include "xmalloc.h"
 
 #include "index.h"
 
@@ -90,7 +90,7 @@ static unsigned long cache_len;
 static unsigned long cache_end;
 
 /* Attributes of memory-mapped index file */
-static long index_ino;
+static ino_t index_ino;
 static unsigned long start_offset;
 static unsigned long record_size;
 
@@ -122,14 +122,16 @@ static int index_insequence(int num, char *sequence, int usinguid);
 static void index_fetchmsg(const char *msg_base, unsigned long msg_size,
 			   int format, unsigned offset, unsigned size,
 			   unsigned start_octet, unsigned octet_count);
-static void index_fetchsection(const char *msg_base, unsigned long msg_size,
-			       int format, char *section,
-			       const char *cacheitem, unsigned size,
-			       unsigned start_octet, unsigned octet_count);
+static int index_fetchsection(const char *resp,
+			      const char *msg_base, unsigned long msg_size,
+			      int format, char *section,
+			      const char *cacheitem, unsigned size,
+			      unsigned start_octet, unsigned octet_count);
 static void index_fetchfsection(const char *msg_base,
 				unsigned long msg_size,
 				int format, struct fieldlist *fsection,
-				const char *cacheitem);
+				const char *cacheitem,
+				unsigned start_octet, unsigned octet_count);
 static char *index_readheader(const char *msg_base, unsigned long msg_size,
 			      int format, unsigned offset, unsigned size);
 static void index_pruneheader(char *buf, struct strlist *headers,
@@ -139,7 +141,7 @@ static void index_fetchheader(const char *msg_base, unsigned long msg_size,
 				 struct strlist *headers,
 				 struct strlist *headers_not);
 static void index_fetchcacheheader(unsigned msgno, struct strlist *headers,
-				      char *trail);
+				   unsigned start_octet, unsigned octet_count);
 static void index_listflags(struct mailbox *mailbox);
 static void index_fetchflags(struct mailbox *mailbox, unsigned msgno,
 				bit32 system_flags, bit32 *user_flags,
@@ -162,7 +164,7 @@ static index_sequenceproc_t index_copysetup;
 static int _index_search(unsigned **msgno_list, struct mailbox *mailbox,
 			 struct searchargs *searchargs);
 
-static void parse_cached_envelope(char *env, char *tokens[]);
+static void parse_cached_envelope(char *env, char *tokens[], int tokens_size);
 static char *find_msgid(char *str, char **rem);
 static char *get_localpart_addr(const char *header);
 static char *index_extract_subject(const char *subj, int *is_refwd);
@@ -198,9 +200,7 @@ static const struct thread_algorithm thread_algs[] = {
 /*
  * A mailbox is about to be closed.
  */
-void
-index_closemailbox(mailbox)
-struct mailbox *mailbox;
+void index_closemailbox(struct mailbox *mailbox)
 {
     if (seendb) {
 	index_checkseen(mailbox, 1, 0, imapd_exists);
@@ -218,10 +218,7 @@ struct mailbox *mailbox;
  * A new mailbox has been selected, map it into memory and do the
  * initial CHECK.
  */
-void
-index_newmailbox(mailbox, examine_mode)
-struct mailbox *mailbox;
-int examine_mode;
+void index_newmailbox(struct mailbox *mailbox, int examine_mode)
 {
     keepingseen = (mailbox->myrights & ACL_SEEN);
     examining = examine_mode;
@@ -250,8 +247,6 @@ void index_operatemailbox(struct mailbox *mailbox)
     imapd_exists = mailbox->exists;
 }
 
-#define SLOP 50
-
 /*
  * Check for and report updates
  */
@@ -270,7 +265,7 @@ void index_check(struct mailbox *mailbox, int usinguid, int checkseen)
 	if (stat(FNAME_INDEX+1, &sbuf) != 0) {
 	    if (errno == ENOENT) {
 		/* Mailbox has been deleted */
-		while (imapd_exists--) {
+		for(;imapd_exists > 0; imapd_exists--) {
 		    prot_printf(imapd_out, "* 1 EXPUNGE\r\n");
 		}
 		mailbox->exists = 0;
@@ -349,7 +344,7 @@ void index_check(struct mailbox *mailbox, int usinguid, int checkseen)
 
     /* If opening mailbox, get \Recent info */
     if (oldexists == -1 && keepingseen) {
-	r = seen_open(mailbox, imapd_userid, &seendb);
+	r = seen_open(mailbox, imapd_userid, SEEN_CREATE, &seendb);
 	if (!r) {
 	    free(seenuids);
 	    r = seen_lockread(seendb, &last_read, &recentuid,
@@ -383,7 +378,8 @@ void index_check(struct mailbox *mailbox, int usinguid, int checkseen)
     if (newexists != imapd_exists) {
 	/* Re-size flagreport and seenflag arrays if necessary */
 	if (newexists > flagalloced) {
-	    flagalloced = newexists + SLOP;
+	    /* Double what we need in hopes we won't have to realloc again */
+	    flagalloced = newexists * 2;
 	    flagreport = (time_t *)
 	      xrealloc((char *)flagreport, (flagalloced+1) * sizeof(time_t));
 	    seenflag = xrealloc(seenflag, flagalloced+1);
@@ -418,7 +414,7 @@ void index_check(struct mailbox *mailbox, int usinguid, int checkseen)
 
     for (msgno = 1; msgno <= oldexists; msgno++) {
 	if (flagreport[msgno] < LAST_UPDATED(msgno)) {
-	    for (i = 0; i < MAX_USER_FLAGS/32; i++) {
+	    for (i = 0; i < VECTOR_SIZE(user_flags); i++) {
 		user_flags[i] = USER_FLAGS(msgno, i);
 	    }
 	    index_fetchflags(mailbox, msgno, SYSTEM_FLAGS(msgno), user_flags,
@@ -531,7 +527,7 @@ int oldexists;
 	    if (seenflag[msgno] != newseen) {
 		seenflag[msgno] = newseen;
 		if (!quiet && msgno <= oldexists && oldexists != -1) {
-		    for (i = 0; i < MAX_USER_FLAGS/32; i++) {
+		    for (i = 0; i < VECTOR_SIZE(user_flags); i++) {
 			user_flags[i] = USER_FLAGS(msgno, i);
 		    }
 		    index_fetchflags(mailbox, msgno, SYSTEM_FLAGS(msgno), 
@@ -744,7 +740,7 @@ int oldexists;
  * fetched.  (A fetch command that fetches nothing is not a valid fetch
  * command.)
  */
-void
+int
 index_fetch(struct mailbox* mailbox,
 	    const char* sequence,
 	    int usinguid,
@@ -752,8 +748,8 @@ index_fetch(struct mailbox* mailbox,
 	    int* fetchedsomething)
 {
     *fetchedsomething = 0;
-    index_forsequence(mailbox, sequence, usinguid,
-		      index_fetchreply, (char *)fetchargs, fetchedsomething);
+    return index_forsequence(mailbox, sequence, usinguid, index_fetchreply,
+			     (char *)fetchargs, fetchedsomething);
 }
 
 /*
@@ -799,11 +795,11 @@ int nflags;
     }
 
     /* Check to see if we have to add new user flags */
-    for (userflag=0; userflag < MAX_USER_FLAGS; userflag++)
+    for (userflag=0; userflag < VECTOR_SIZE(newflag); userflag++)
       newflag[userflag] = 0;
     for (i=0; i < nflags; i++) {
 	emptyflag = -1;
-	for (userflag = 0; userflag < MAX_USER_FLAGS; userflag++) {
+	for (userflag = 0; userflag < VECTOR_SIZE(mailbox->flagname); userflag++) {
 	    if (mailbox->flagname[userflag]) {
 		if (!strcasecmp(flag[i], mailbox->flagname[userflag]))
 		  break;
@@ -830,11 +826,11 @@ int nflags;
 	 * New flags might have been assigned since we last looked
 	 * Do the assignment again.
 	 */
-	for (userflag=0; userflag < MAX_USER_FLAGS; userflag++)
+	for (userflag=0; userflag < VECTOR_SIZE(newflag); userflag++)
 	  newflag[userflag] = 0;
 	for (i=0; i < nflags; i++) {
 	    emptyflag = -1;
-	    for (userflag = 0; userflag < MAX_USER_FLAGS; userflag++) {
+	    for (userflag = 0; userflag < VECTOR_SIZE(newflag); userflag++) {
 		if (mailbox->flagname[userflag]) {
 		    if (!strcasecmp(flag[i], mailbox->flagname[userflag]))
 		      break;
@@ -849,7 +845,7 @@ int nflags;
 		    mailbox->myrights = myrights;
 
 		    /* Undo the new assignments */
-		    for (userflag=0; userflag < MAX_USER_FLAGS; userflag++) {
+		    for (userflag=0; userflag < VECTOR_SIZE(newflag); userflag++) {
 			if (newflag[userflag] && mailbox->flagname[userflag]) {
 			    free(mailbox->flagname[userflag]);
 			    mailbox->flagname[userflag] = 0;
@@ -878,7 +874,7 @@ int nflags;
 
     /* Now we know all user flags are in the mailbox header, find the bits */
     for (i=0; i < nflags; i++) {
-	for (userflag = 0; userflag < MAX_USER_FLAGS; userflag++) {
+	for (userflag = 0; userflag < VECTOR_SIZE(mailbox->flagname); userflag++) {
 	    if (mailbox->flagname[userflag]) {
 		if (!strcasecmp(flag[i], mailbox->flagname[userflag]))
 		  break;
@@ -1034,7 +1030,10 @@ index_sort(struct mailbox *mailbox,
     unsigned *msgno_list;
     MsgData *msgdata = NULL, *freeme = NULL;
     int nmsg;
-    clock_t start = clock();
+    clock_t start;
+
+    if(CONFIG_TIMING_VERBOSE)
+	start = clock();
 
     /* Search for messages based on the given criteria */
     nmsg = _index_search(&msgno_list, mailbox, searchargs);
@@ -1072,21 +1071,26 @@ index_sort(struct mailbox *mailbox,
 
     /* debug */
     if (CONFIG_TIMING_VERBOSE) {
+	int len;
 	char *key_names[] = { "SEQUENCE", "ARRIVAL", "CC", "DATE", "FROM",
 			      "SIZE", "SUBJECT", "TO", "ANNOTATION" };
 	char buf[1024] = "";
 
-	while (sortcrit->key) {
-	    if (sortcrit->flags & SORT_REVERSE) strcat(buf, "REVERSE ");
-	    strcat(buf, key_names[sortcrit->key]);
+	while (sortcrit->key && sortcrit->key < VECTOR_SIZE(key_names)) {
+	    if (sortcrit->flags & SORT_REVERSE)
+		strlcat(buf, "REVERSE ", sizeof(buf));
+
+	    strlcat(buf, key_names[sortcrit->key], sizeof(buf));
+
 	    switch (sortcrit->key) {
 	    case SORT_ANNOTATION:
-		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf) - 1,
+		len = strlen(buf);
+		snprintf(buf + len, sizeof(buf) - len,
 			 " \"%s\" \"%s\"",
 			 sortcrit->args.annot.entry, sortcrit->args.annot.attrib);
 		break;
 	    }
-	    if ((++sortcrit)->key) strcat(buf, " ");
+	    if ((++sortcrit)->key) strlcat(buf, " ", sizeof(buf));
 	}
 
 	syslog(LOG_DEBUG, "SORT (%s) processing time: %d msg in %f sec",
@@ -1104,7 +1108,10 @@ int index_thread(struct mailbox *mailbox, int algorithm,
 {
     unsigned *msgno_list;
     int nmsg;
-    clock_t start = clock();
+    clock_t start;
+
+    if(CONFIG_TIMING_VERBOSE)
+	start = clock();
 
     /* Search for messages based on the given criteria */
     nmsg = _index_search(&msgno_list, mailbox, searchargs);
@@ -1232,7 +1239,7 @@ int statusitems;
     if (mailbox->exists != 0 &&
 	(statusitems &
 	 (STATUS_RECENT | STATUS_UNSEEN))) {
-	r = seen_open(mailbox, imapd_userid, &status_seendb);
+	r = seen_open(mailbox, imapd_userid, SEEN_CREATE, &status_seendb);
 	if (r) return r;
 
 	r = seen_lockread(status_seendb, &last_read, &last_uid,
@@ -1446,8 +1453,8 @@ unsigned uid;
  * Expunge decision procedure to get rid of articles
  * both \Deleted and listed in the sequence under 'rock'.
  */
-int index_expungeuidlist(struct mailbox *mailbox, void *rock,
-			 char *indexbuf)
+int index_expungeuidlist(struct mailbox *mailbox __attribute__((unused)),
+			 void *rock, char *indexbuf)
 {
     char *sequence = (char *)rock;
     unsigned uid = ntohl(*((bit32 *)(indexbuf+OFFSET_UID)));
@@ -1589,7 +1596,7 @@ int usinguid;
  * Helper function to fetch data from a message file.  Writes a
  * quoted-string or literal containing data from 'msg_base', which is
  * of size 'msg_size' and format 'format', starting at 'offset' and
- * containing 'size' octets.  If 'start_octet' is nonzero, the data is
+ * containing 'size' octets.  If 'octet_count' is nonzero, the data is
  * further constrained by 'start_octet' and 'octet_count' as per the
  * IMAP command PARTIAL.
  */
@@ -1607,9 +1614,8 @@ unsigned octet_count;
 {
     int n;
 
-    /* partial fetch: adjust 'size', normalize 'start_octet' to be 0-based */
-    if (start_octet) {
-	start_octet--;
+    /* partial fetch: adjust 'size' */
+    if (octet_count) {
 	if (size <= start_octet) {
 	    size = 0;
 	}
@@ -1625,18 +1631,29 @@ unsigned octet_count;
 	return;
     }
 
-    /* Write size of literal */
-    prot_printf(imapd_out, "{%u}\r\n", size);
-
     /* Seek over PARTIAL constraint */
     offset += start_octet;
     n = size;
     if (offset + size > msg_size) {
 	n = msg_size - offset;
     }
+
+    /* Look for a NUL in the data */
+    if (memchr(msg_base + offset, 0, n)) {
+	/* Write size of literal8 */
+	prot_printf(imapd_out, "~{%u}\r\n", size);
+    } else {
+	/* Write size of literal */
+	prot_printf(imapd_out, "{%u}\r\n", size);
+    }
+
     prot_write(imapd_out, msg_base + offset, n);
     while (n++ < size) {
-	/* File too short, resynch client */
+	/* File too short, resynch client.
+	 *
+	 * This can only happen if the reported size of the part
+	 * is incorrect and would push us past EOF.
+	 */
 	prot_putc(' ', imapd_out);
     }
 }
@@ -1644,43 +1661,35 @@ unsigned octet_count;
 /*
  * Helper function to fetch a body section
  */
-static void
-index_fetchsection(msg_base, msg_size, format, section, cacheitem, size,
-		   start_octet, octet_count)
-const char *msg_base;
-unsigned long msg_size;
-int format;
-char *section;
-const char *cacheitem;
-unsigned size;
-unsigned start_octet;
-unsigned octet_count;
+static int index_fetchsection(const char *resp,
+			      const char *msg_base, unsigned long msg_size,
+			      int format, char *section,
+			      const char *cacheitem, unsigned size,
+			      unsigned start_octet, unsigned octet_count)
 {
     char *p;
     int skip = 0;
     int fetchmime = 0;
+    unsigned offset = 0;
+    char *decbuf = NULL;
 
-    cacheitem += 4;
+    cacheitem += CACHE_ITEM_SIZE_SKIP;
     p = section;
 
     /* Special-case BODY[] */
     if (*p == ']') {
-	p++;
-	if (*p == '<') {
-	    p++;
-	    start_octet = octet_count = 0;
-	    while (isdigit((int) *p)) start_octet = start_octet * 10 + *p++ - '0';
-	    p++;			/* Skip over '.' */
-	    while (isdigit((int) *p)) octet_count = octet_count * 10 + *p++ - '0';
-	    start_octet++;	/* Make 1-based */
+	if (strstr(resp, "BINARY.SIZE")) {
+	    prot_printf(imapd_out, "%s%u", resp, size);
+	} else {
+	    prot_printf(imapd_out, "%s", resp);
+	    index_fetchmsg(msg_base, msg_size, format, 0, size,
+			   start_octet, octet_count);
 	}
-
-	index_fetchmsg(msg_base, msg_size, format, 0, size,
-		       start_octet, octet_count);
-	return;
+	return 0;
     }
 
     while (*p != ']' && *p != 'M') {
+	/* Generate the actual part number */
 	skip = 0;
 	while (isdigit((int) *p)) {
             skip = skip * 10 + *p++ - '0';
@@ -1693,6 +1702,7 @@ unsigned octet_count;
 
 	/* Handle .0, .HEADER, and .TEXT */
 	if (!skip) {
+	    /* We don't have any digits, so its a string */
 	    switch (*p) {
 	    case 'H':
 		p += 6;
@@ -1710,62 +1720,92 @@ unsigned octet_count;
 	}
 	
 	if (*p != ']' && *p != 'M') {
-	    cacheitem += CACHE_ITEM_BIT32(cacheitem) * 5 * 4 + 4;
+	    /* We are NOT at the end of a part specification, so there's
+	     * a subpart being requested.  Find the subpart in the tree. */
+
+	    /* Skip the headers for this part, along with the number of
+	     * sub parts */
+	    cacheitem +=
+		CACHE_ITEM_BIT32(cacheitem) * 5 * 4 + CACHE_ITEM_SIZE_SKIP;
+
+	    /* Skip to the correct part */
 	    while (--skip) {
 		if (CACHE_ITEM_BIT32(cacheitem) > 0) {
+		    /* Skip each part at this level */
 		    skip += CACHE_ITEM_BIT32(cacheitem)-1;
 		    cacheitem += CACHE_ITEM_BIT32(cacheitem) * 5 * 4;
 		}
-		cacheitem += 4;
+		cacheitem += CACHE_ITEM_SIZE_SKIP;
 	    }
 	}
     }
 
-    if (*p == 'M') {
-	p += 4;
-	fetchmime++;
-    }
-    cacheitem += skip * 5 * 4 + 4 + (fetchmime ? 0 : 2 * 4);
+    if (*p == 'M') fetchmime++;
+
+    cacheitem += skip * 5 * 4 + CACHE_ITEM_SIZE_SKIP + (fetchmime ? 0 : 2 * 4);
     
-    if (CACHE_ITEM_BIT32(cacheitem+4) == -1) goto badpart;
-	
-    p++;
-    if (*p == '<') {
-	p++;
-	start_octet = octet_count = 0;
-	while (isdigit((int) *p)) start_octet = start_octet * 10 + *p++ - '0';
-	p++;			/* Skip over '.' */
-	while (isdigit((int) *p)) octet_count = octet_count * 10 + *p++ - '0';
-	start_octet++;		/* Make 1-based */
+    if (CACHE_ITEM_BIT32(cacheitem + CACHE_ITEM_SIZE_SKIP) == -1) goto badpart;
+
+    offset = CACHE_ITEM_BIT32(cacheitem);
+    size = CACHE_ITEM_BIT32(cacheitem + CACHE_ITEM_SIZE_SKIP);
+
+    if ((p = strstr(resp, "BINARY"))) {
+	/* BINARY or BINARY.SIZE */
+	int encoding = CACHE_ITEM_BIT32(cacheitem + 2 * 4) & 0xff;
+
+	msg_base = charset_decode_mimebody(msg_base + offset, size, encoding,
+					   &decbuf, 0, &size);
+
+	if (!msg_base) {
+	    /* failed to decode */
+	    if (decbuf) free(decbuf);
+	    return IMAP_NO_UNKNOWN_CTE;
+	}
+	else if (p[6] == '.') {
+	    /* BINARY.SIZE */
+	    prot_printf(imapd_out, "%s%u", resp, size);
+
+	    if (decbuf) free(decbuf);
+	    return 0;
+	}
+	else {
+	    /* BINARY */
+	    msg_size = size;
+	    offset = 0;
+	}
     }
 
-    index_fetchmsg(msg_base, msg_size, format, CACHE_ITEM_BIT32(cacheitem),
-		   CACHE_ITEM_BIT32(cacheitem+4),
+    /* Output body part */
+    prot_printf(imapd_out, "%s", resp);
+    index_fetchmsg(msg_base, msg_size, format, offset, size,
 		   start_octet, octet_count);
-    return;
+
+    if (decbuf) free(decbuf);
+    return 0;
 
  badpart:
-    prot_printf(imapd_out, "NIL");
+    if (strstr(resp, "BINARY.SIZE"))
+	prot_printf(imapd_out, "%s0", resp);
+    else
+	prot_printf(imapd_out, "%sNIL", resp);
+    return 0;
 }
 
 /*
  * Helper function to fetch a HEADER.FIELDS[.NOT] body section
  */
-static void
-index_fetchfsection(msg_base, msg_size, format, fsection, cacheitem)
-const char *msg_base;
-unsigned long msg_size;
-int format;
-struct fieldlist *fsection;
-const char *cacheitem;
+static void index_fetchfsection(const char *msg_base,
+				unsigned long msg_size,
+				int format,
+				struct fieldlist *fsection,
+				const char *cacheitem,
+				unsigned start_octet, unsigned octet_count)
 {
     char *p;
     int skip = 0;
     int fields_not = 0;
     unsigned crlf_start = 0;
     unsigned crlf_size = 2;
-    int start_octet = 0;
-    int octet_count = 0;
     char *buf;
     unsigned size;
 
@@ -1775,7 +1815,7 @@ const char *cacheitem;
 	return;
     }
 
-    cacheitem += 4;
+    cacheitem += CACHE_ITEM_SIZE_SKIP;
     p = fsection->section;
 
     while (*p != 'H') {
@@ -1789,13 +1829,13 @@ const char *cacheitem;
 	/* section number too large */
 	if (skip >= CACHE_ITEM_BIT32(cacheitem)) goto badpart;
 
-	cacheitem += CACHE_ITEM_BIT32(cacheitem) * 5 * 4 + 4;
+	cacheitem += CACHE_ITEM_BIT32(cacheitem) * 5 * 4 + CACHE_ITEM_SIZE_SKIP;
 	while (--skip) {
 	    if (CACHE_ITEM_BIT32(cacheitem) > 0) {
 		skip += CACHE_ITEM_BIT32(cacheitem)-1;
 		cacheitem += CACHE_ITEM_BIT32(cacheitem) * 5 * 4;
 	    }
-	    cacheitem += 4;
+	    cacheitem += CACHE_ITEM_SIZE_SKIP;
 	}
     }
 
@@ -1804,23 +1844,13 @@ const char *cacheitem;
 
     cacheitem += 4;
 
-    if (CACHE_ITEM_BIT32(cacheitem+4) == -1) goto badpart;
+    if (CACHE_ITEM_BIT32(cacheitem+CACHE_ITEM_SIZE_SKIP) == -1) goto badpart;
 	
     if (p[13]) fields_not++;	/* Check for "." after "HEADER.FIELDS" */
 
-    p = fsection->trail;
-    if (p[1] == '<') {
-	p += 2;
-	start_octet = octet_count = 0;
-	while (isdigit((int) *p)) start_octet = start_octet * 10 + *p++ - '0';
-	p++;			/* Skip over '.' */
-	while (isdigit((int) *p)) octet_count = octet_count * 10 + *p++ - '0';
-	start_octet++;		/* Make 1-based */
-    }
-
     buf = index_readheader(msg_base, msg_size, format,
 			   CACHE_ITEM_BIT32(cacheitem),
-			   CACHE_ITEM_BIT32(cacheitem+4));
+			   CACHE_ITEM_BIT32(cacheitem+CACHE_ITEM_SIZE_SKIP));
 
     if (fields_not) {
 	index_pruneheader(buf, 0, fsection->fields);
@@ -1830,9 +1860,8 @@ const char *cacheitem;
     }
     size = strlen(buf);
 
-    /* partial fetch: adjust 'size', normalize 'start_octet' to be 0-based */
-    if (start_octet) {
-	start_octet--;
+    /* partial fetch: adjust 'size' */
+    if (octet_count) {
 	if (size <= start_octet) {
 	    crlf_start = start_octet - size;
 	    size = 0;
@@ -1916,10 +1945,8 @@ unsigned size;
  * not in headers_not.
  */
 static void
-index_pruneheader(buf, headers, headers_not)
-char *buf;
-struct strlist *headers;
-struct strlist *headers_not;
+index_pruneheader(char *buf, struct strlist *headers,
+		  struct strlist *headers_not)
 {
     char *p, *colon, *nextheader;
     int goodheader;
@@ -1938,8 +1965,7 @@ struct strlist *headers_not;
 		    break;
 		}
 	    }
-	}
-	else {
+	} else {
 	    goodheader = 0;
 	}
 	if (colon) {
@@ -1961,7 +1987,9 @@ struct strlist *headers_not;
 
 	if (goodheader) {
 	    if (endlastgood != p) {
-		strcpy(endlastgood, p);
+		/* memmove and not strcpy since this is all within a
+		 * single buffer */
+		memmove(endlastgood, p, strlen(p) + 1);
 		nextheader -= p - endlastgood;
 	    }
 	    endlastgood = nextheader;
@@ -2006,10 +2034,8 @@ struct strlist *headers_not;
  * cacheheaders in cyrus.cache
  */
 static void
-index_fetchcacheheader(msgno, headers, trail)
-unsigned msgno;
-struct strlist *headers;
-char *trail;
+index_fetchcacheheader(unsigned msgno, struct strlist *headers,
+		       unsigned start_octet, unsigned octet_count)
 {
     static char *buf;
     static int bufsize;
@@ -2017,8 +2043,6 @@ char *trail;
     unsigned size;
     unsigned crlf_start = 0;
     unsigned crlf_size = 2;
-    int start_octet = 0;
-    int octet_count = 0;
 
     cacheitem = cache_base + CACHE_OFFSET(msgno);
     cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip envelope */
@@ -2032,19 +2056,14 @@ char *trail;
 	buf = xrealloc(buf, bufsize);
     }
 
-    memcpy(buf, cacheitem+4, size);
+    memcpy(buf, cacheitem + CACHE_ITEM_SIZE_SKIP, size);
     buf[size] = '\0';
 
     index_pruneheader(buf, headers, 0);
     size = strlen(buf);
 
-    if (trail[1]) {
-	/* Deal with ]<start.count> */
-	trail += 2;
-	while (isdigit((int) *trail)) start_octet = start_octet * 10 + *trail++ - '0';
-	trail++;			/* Skip over '.' */
-	while (isdigit((int) *trail)) octet_count = octet_count * 10 + *trail++ - '0';
-
+    /* partial fetch: adjust 'size' */
+    if (octet_count) {
 	if (size <= start_octet) {
 	    crlf_start = start_octet - size;
 	    size = 0;
@@ -2088,7 +2107,7 @@ static void index_listflags(struct mailbox *mailbox)
     char sepchar = '(';
 
     prot_printf(imapd_out, "* FLAGS (\\Answered \\Flagged \\Draft \\Deleted \\Seen");
-    for (i = 0; i < MAX_USER_FLAGS; i++) {
+    for (i = 0; i < VECTOR_SIZE(mailbox->flagname); i++) {
 	if (mailbox->flagname[i]) {
 	    prot_printf(imapd_out, " %s", mailbox->flagname[i]);
 	}
@@ -2109,7 +2128,7 @@ static void index_listflags(struct mailbox *mailbox)
 	    sepchar = ' ';
 	}
 	if (mailbox->myrights & ACL_WRITE) {
-	    for (i = 0; i < MAX_USER_FLAGS; i++) {
+	    for (i = 0; i < VECTOR_SIZE(mailbox->flagname); i++) {
 		if (mailbox->flagname[i]) {
 		    prot_printf(imapd_out, " %s", mailbox->flagname[i]);
 		}
@@ -2128,19 +2147,17 @@ static void index_listflags(struct mailbox *mailbox)
  * Does not send the terminating close paren or CRLF.
  * Also sends preceeding * FLAGS if necessary.
  */
-static void
-index_fetchflags(mailbox, msgno, system_flags, user_flags, last_updated)
-struct mailbox *mailbox;
-unsigned msgno;
-bit32 system_flags;
-bit32 user_flags[MAX_USER_FLAGS/32];
-time_t last_updated;
+static void index_fetchflags(struct mailbox *mailbox,
+			     unsigned msgno,
+			     bit32 system_flags,
+			     bit32 user_flags[MAX_USER_FLAGS/32],
+			     time_t last_updated)
 {
     int sepchar = '(';
     unsigned flag;
     bit32 flagmask = 0;
 
-    for (flag = 0; flag < MAX_USER_FLAGS; flag++) {
+    for (flag = 0; flag < VECTOR_SIZE(mailbox->flagname); flag++) {
 	if ((flag & 31) == 0) {
 	    flagmask = user_flags[flag/32];
 	}
@@ -2177,7 +2194,7 @@ time_t last_updated;
 	prot_printf(imapd_out, "%c\\Seen", sepchar);
 	sepchar = ' ';
     }
-    for (flag = 0; flag < MAX_USER_FLAGS; flag++) {
+    for (flag = 0; flag < VECTOR_SIZE(mailbox->flagname); flag++) {
 	if ((flag & 31) == 0) {
 	    flagmask = user_flags[flag/32];
 	}
@@ -2189,32 +2206,34 @@ time_t last_updated;
     if (sepchar == '(') prot_putc('(', imapd_out);
     prot_putc(')', imapd_out);
 
+    assert(flagalloced > 0 || msgno < flagalloced);
+
     flagreport[msgno] = last_updated;
 }
 
 /*
  * Helper function to send requested * FETCH data for a message
  */
-static int
-index_fetchreply(mailbox, msgno, rock)
-struct mailbox *mailbox;
-unsigned msgno;
-void *rock;
+static int index_fetchreply(struct mailbox *mailbox,
+			    unsigned msgno, void *rock)
 {
     struct fetchargs *fetchargs = (struct fetchargs *)rock;    
     int fetchitems = fetchargs->fetchitems;
     const char *msg_base = 0;
     unsigned long msg_size = 0;
-    int sepchar;
+    int sepchar = '(';
     int i;
     bit32 user_flags[MAX_USER_FLAGS/32];
     const char *cacheitem;
     struct strlist *section, *field;
     struct fieldlist *fsection;
-    char *partialdot;
+    char respbuf[100];
+    int r = 0;
 
     /* Open the message file if we're going to need it */
-    if ((fetchitems & (FETCH_HEADER|FETCH_TEXT|FETCH_RFC822|FETCH_UNCACHEDHEADER)) ||
+    if ((fetchitems & (FETCH_HEADER|FETCH_TEXT|FETCH_RFC822)) ||
+	fetchargs->cache_atleast > CACHE_VERSION(msgno) ||
+	fetchargs->binsections || fetchargs->sizesections ||
 	fetchargs->bodysections) {
 	if (mailbox_map_message(mailbox, 1, UID(msgno), &msg_base, &msg_size)) {
 	    prot_printf(imapd_out, "* OK ");
@@ -2232,16 +2251,17 @@ void *rock;
     }
 
     if (fetchitems & FETCH_FLAGS) {
-	for (i = 0; i < MAX_USER_FLAGS/32; i++) {
+	for (i = 0; i < VECTOR_SIZE(user_flags); i++) {
 	    user_flags[i] = USER_FLAGS(msgno, i);
 	}
 	index_fetchflags(mailbox, msgno, SYSTEM_FLAGS(msgno), user_flags,
 			 LAST_UPDATED(msgno));
 	sepchar = ' ';
     }
-    else {
+    else if ((fetchitems & ~FETCH_SETSEEN) ||  fetchargs->fsections ||
+	     fetchargs->headers || fetchargs->headers_not) {
+	/* these fetch items will always succeed, so start the response */
 	prot_printf(imapd_out, "* %u FETCH ", msgno);
-	sepchar = '(';
     }
     if (fetchitems & FETCH_UID) {
 	prot_printf(imapd_out, "%cUID %u", sepchar, UID(msgno));
@@ -2249,28 +2269,10 @@ void *rock;
     }
     if (fetchitems & FETCH_INTERNALDATE) {
 	time_t msgdate = INTERNALDATE(msgno);
-	struct tm *tm = localtime(&msgdate);
-	long gmtoff = gmtoff_of(tm, msgdate);
-	int gmtnegative = 0;
-	static const char *monthname[] = {
-	    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-	    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 	char datebuf[30];
 
-	if (msgdate == 0 || tm->tm_year < 69) {
-	    abort();
-	}
+	cyrus_ctime(msgdate, datebuf);
 
-	if (gmtoff < 0) {
-	    gmtoff = -gmtoff;
-	    gmtnegative = 1;
-	}
-	gmtoff /= 60;
-	snprintf(datebuf, sizeof(datebuf),
-		 "%2u-%s-%u %.2u:%.2u:%.2u %c%.2lu%.2lu",
-		 tm->tm_mday, monthname[tm->tm_mon], tm->tm_year+1900,
-		 tm->tm_hour, tm->tm_min, tm->tm_sec,
-		 gmtnegative ? '-' : '+', gmtoff/60, gmtoff%60);
 	prot_printf(imapd_out, "%cINTERNALDATE \"%s\"",
 		    sepchar, datebuf);
 	sepchar = ' ';
@@ -2283,14 +2285,16 @@ void *rock;
 	prot_printf(imapd_out, "%cENVELOPE ", sepchar);
 	sepchar = ' ';
 	cacheitem = cache_base + CACHE_OFFSET(msgno);
-	prot_write(imapd_out, cacheitem+4, CACHE_ITEM_LEN(cacheitem));
+	prot_write(imapd_out, cacheitem + CACHE_ITEM_SIZE_SKIP,
+		   CACHE_ITEM_LEN(cacheitem));
     }
     if (fetchitems & FETCH_BODYSTRUCTURE) {
 	prot_printf(imapd_out, "%cBODYSTRUCTURE ", sepchar);
 	sepchar = ' ';
 	cacheitem = cache_base + CACHE_OFFSET(msgno);
 	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip envelope */
-	prot_write(imapd_out, cacheitem+4, CACHE_ITEM_LEN(cacheitem));
+	prot_write(imapd_out, cacheitem + CACHE_ITEM_SIZE_SKIP,
+		   CACHE_ITEM_LEN(cacheitem));
     }
     if (fetchitems & FETCH_BODY) {
 	prot_printf(imapd_out, "%cBODY ", sepchar);
@@ -2298,7 +2302,8 @@ void *rock;
 	cacheitem = cache_base + CACHE_OFFSET(msgno);
 	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip envelope */
 	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip bodystructure */
-	prot_write(imapd_out, cacheitem+4, CACHE_ITEM_LEN(cacheitem));
+	prot_write(imapd_out, cacheitem + CACHE_ITEM_SIZE_SKIP,
+		   CACHE_ITEM_LEN(cacheitem));
     }
 
     if (fetchitems & FETCH_HEADER) {
@@ -2311,13 +2316,12 @@ void *rock;
     else if (fetchargs->headers || fetchargs->headers_not) {
 	prot_printf(imapd_out, "%cRFC822.HEADER ", sepchar);
 	sepchar = ' ';
-	if (fetchitems & FETCH_UNCACHEDHEADER) {
+	if(fetchargs->cache_atleast > CACHE_VERSION(msgno)) {
 	    index_fetchheader(msg_base, msg_size, mailbox->format,
 			      HEADER_SIZE(msgno),
 			      fetchargs->headers, fetchargs->headers_not);
-	}
-	else {
-	    index_fetchcacheheader(msgno, fetchargs->headers, "]");
+	} else {
+	    index_fetchcacheheader(msgno, fetchargs->headers, 0, 0);
 	}
     }
 
@@ -2345,67 +2349,95 @@ void *rock;
 	prot_putc(')', imapd_out);
 	sepchar = ' ';
 
-	if (fsection->trail[1] == '<') {
-	    /* Have to trim off the maximum number of octets from the reply */
-	    partialdot = strrchr(fsection->trail, '.');
-	    *partialdot = '\0';
-	    prot_printf(imapd_out, "%s> ", fsection->trail);
-	    *partialdot = '.';
-	}
-	else {
-	    prot_printf(imapd_out, "%s ", fsection->trail);
-	}
+	prot_printf(imapd_out, "%s ", fsection->trail);
 
-	if (fetchitems & FETCH_UNCACHEDHEADER) {
+	if(fetchargs->cache_atleast > CACHE_VERSION(msgno)) {
 	    cacheitem = cache_base + CACHE_OFFSET(msgno);
 	    cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip envelope */
 	    cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip bodystructure */
 	    cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip body */
-
+	    
 	    index_fetchfsection(msg_base, msg_size, mailbox->format, fsection,
-				cacheitem);
+				cacheitem,
+				fetchargs->start_octet, fetchargs->octet_count);
 	}
 	else {
-	    index_fetchcacheheader(msgno, fsection->fields, fsection->trail);
+	    index_fetchcacheheader(msgno, fsection->fields,
+				   fetchargs->start_octet, fetchargs->octet_count);
 	}
     }
     for (section = fetchargs->bodysections; section; section = section->next) {
-	if (section->s[strlen(section->s)-1] == '>') {
-	    /* Have to trim off the maximum number of octets from the reply */
-	    partialdot = strrchr(section->s, '.');
-	    *partialdot = '\0';
-	    prot_printf(imapd_out, "%cBODY[%s> ", sepchar, section->s);
-	    *partialdot = '.';
+	respbuf[0] = 0;
+	if (sepchar == '(') {
+	    /* we haven't output a fetch item yet, so start the response */
+	    snprintf(respbuf, sizeof(respbuf), "* %u FETCH ", msgno);
 	}
-	else {
-	    prot_printf(imapd_out, "%cBODY[%s ", sepchar, section->s);
-	}
-	sepchar = ' ';
+	snprintf(respbuf+strlen(respbuf), sizeof(respbuf)-strlen(respbuf),
+		 "%cBODY[%s ", sepchar, section->s);
+
 	cacheitem = cache_base + CACHE_OFFSET(msgno);
 	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip envelope */
 	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip bodystructure */
 	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip body */
 
-	index_fetchsection(msg_base, msg_size, mailbox->format, section->s,
-			   cacheitem, SIZE(msgno),
-			   fetchargs->start_octet, fetchargs->octet_count);
+	r = index_fetchsection(respbuf, msg_base, msg_size, mailbox->format,
+			       section->s, cacheitem, SIZE(msgno),
+			       fetchargs->start_octet, fetchargs->octet_count);
+	if (!r)	sepchar = ' ';
     }
-    prot_printf(imapd_out, ")\r\n");
+    for (section = fetchargs->binsections; section; section = section->next) {
+	respbuf[0] = 0;
+	if (sepchar == '(') {
+	    /* we haven't output a fetch item yet, so start the response */
+	    snprintf(respbuf, sizeof(respbuf), "* %u FETCH ", msgno);
+	}
+	snprintf(respbuf+strlen(respbuf), sizeof(respbuf)-strlen(respbuf),
+		 "%cBINARY[%s ", sepchar, section->s);
+
+	cacheitem = cache_base + CACHE_OFFSET(msgno);
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip envelope */
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip bodystructure */
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip body */
+
+	r = index_fetchsection(respbuf, msg_base, msg_size, mailbox->format,
+			       section->s, cacheitem, SIZE(msgno),
+			       fetchargs->start_octet, fetchargs->octet_count);
+	if (!r)	sepchar = ' ';
+    }
+    for (section = fetchargs->sizesections; section; section = section->next) {
+	respbuf[0] = 0;
+	if (sepchar == '(') {
+	    /* we haven't output a fetch item yet, so start the response */
+	    snprintf(respbuf, sizeof(respbuf), "* %u FETCH ", msgno);
+	}
+	snprintf(respbuf+strlen(respbuf), sizeof(respbuf)-strlen(respbuf),
+		 "%cBINARY.SIZE[%s ", sepchar, section->s);
+
+	cacheitem = cache_base + CACHE_OFFSET(msgno);
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip envelope */
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip bodystructure */
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip body */
+
+	r = index_fetchsection(respbuf, msg_base, msg_size, mailbox->format,
+			       section->s, cacheitem, SIZE(msgno),
+			       fetchargs->start_octet, fetchargs->octet_count);
+	if (!r)	sepchar = ' ';
+    }
+    if (sepchar != '(') {
+	/* finsh the response if we have one */
+	prot_printf(imapd_out, ")\r\n");
+    }
     if (msg_base) {
 	mailbox_unmap_message(mailbox, UID(msgno), &msg_base, &msg_size);
     }
-    return 0;
+    return r;
 }
 
 /*
  * Helper function to perform a STORE command which only changes the
  * \Seen flag.
  */
-static int
-index_storeseen(mailbox, msgno, rock)
-struct mailbox *mailbox;
-unsigned msgno;
-void *rock;
+static int index_storeseen(struct mailbox *mailbox, unsigned msgno, void *rock)
 {
     struct storeargs *storeargs = (struct storeargs *)rock;
     int val = (storeargs->operation == STORE_ADD) ? 1 : 0;
@@ -2417,7 +2449,7 @@ void *rock;
 
     if (storeargs->silent) return 0;
 
-    for (i=0; i < MAX_USER_FLAGS/32; i++) {
+    for (i=0; i < VECTOR_SIZE(user_flags); i++) {
 	user_flags[i] = USER_FLAGS(msgno, i);
     }
     index_fetchflags(mailbox, msgno, SYSTEM_FLAGS(msgno), user_flags,
@@ -2433,11 +2465,8 @@ void *rock;
 /*
  * Helper function to perform a generalized STORE command
  */
-static int
-index_storeflag(mailbox, msgno, rock)
-struct mailbox *mailbox;
-unsigned msgno;
-void *rock;
+static int index_storeflag(struct mailbox *mailbox,
+			   unsigned msgno, void *rock)
 {
     struct storeargs *storeargs = (struct storeargs *)rock;
     int i;
@@ -2497,12 +2526,12 @@ void *rock;
 	mid = 0;
 	storeargs->last_found = high;
 	record.system_flags = SYSTEM_FLAGS(msgno);
-	for (i = 0; i < MAX_USER_FLAGS/32; i++) {
+	for (i = 0; i < VECTOR_SIZE(record.user_flags); i++) {
 	    record.user_flags[i] = USER_FLAGS(msgno, i);
 	}
     }
 
-    /* save old for acapmbox foo */
+    /* save old */
     oldflags = record.system_flags;
 
     if (storeargs->operation == STORE_REPLACE) {
@@ -2518,7 +2547,7 @@ void *rock;
 	    else {
 		record.system_flags = storeargs->system_flags;
 	    }
-	    for (i = 0; i < MAX_USER_FLAGS/32; i++) {
+	    for (i = 0; i < VECTOR_SIZE(record.user_flags); i++) {
 		record.user_flags[i] = storeargs->user_flags[i];
 	    }
 	}
@@ -2528,7 +2557,7 @@ void *rock;
 	if (~record.system_flags & storeargs->system_flags) dirty++;
 
 	record.system_flags |= storeargs->system_flags;
-	for (i = 0; i < MAX_USER_FLAGS/32; i++) {
+	for (i = 0; i < VECTOR_SIZE(record.user_flags); i++) {
 	    if (~record.user_flags[i] & storeargs->user_flags[i]) dirty++;
 	    record.user_flags[i] |= storeargs->user_flags[i];
 	}
@@ -2538,7 +2567,7 @@ void *rock;
 
 	/* change the individual entry */
 	record.system_flags &= ~storeargs->system_flags;
-	for (i = 0; i < MAX_USER_FLAGS/32; i++) {
+	for (i = 0; i < VECTOR_SIZE(record.user_flags); i++) {
 	    if (record.user_flags[i] & storeargs->user_flags[i]) dirty++;
 	    record.user_flags[i] &= ~storeargs->user_flags[i];
 	}
@@ -2633,7 +2662,7 @@ static int index_search_evaluate(struct mailbox *mailbox,
     if (~SYSTEM_FLAGS(msgno) & searchargs->system_flags_set) return 0;
     if (SYSTEM_FLAGS(msgno) & searchargs->system_flags_unset) return 0;
 	
-    for (i = 0; i < MAX_USER_FLAGS/32; i++) {
+    for (i = 0; i < VECTOR_SIZE(searchargs->user_flags_set); i++) {
 	if (~USER_FLAGS(msgno,i) & searchargs->user_flags_set[i])
 	  return 0;
 	if (USER_FLAGS(msgno,i) & searchargs->user_flags_unset[i])
@@ -2662,8 +2691,11 @@ static int index_search_evaluate(struct mailbox *mailbox,
 	    /* get msgid out of the envelope */
 
 	    /* get a working copy; strip outer ()'s */
-	    tmpenv = xstrndup(cacheitem + 5, cachelen - 2);
-	    parse_cached_envelope(tmpenv, envtokens);
+	    /* +1 -> skip the leading paren */
+	    /* -2 -> don't include the size of the outer parens */
+	    tmpenv = xstrndup(cacheitem + CACHE_ITEM_SIZE_SKIP + 1,
+			      cachelen - 2);
+	    parse_cached_envelope(tmpenv, envtokens, VECTOR_SIZE(envtokens));
 
 	    if (!envtokens[ENV_MSGID]) {
 		/* free stuff */
@@ -2695,7 +2727,9 @@ static int index_search_evaluate(struct mailbox *mailbox,
 	    
 	for (l = searchargs->from; l; l = l->next) {
 	    if (cachelen == 0 ||
-		!charset_searchstring(l->s, l->p, cacheitem+4, cachelen))
+		!charset_searchstring(l->s, l->p,
+				      cacheitem + CACHE_ITEM_SIZE_SKIP,
+				      cachelen))
 		return 0;
 	}
 
@@ -2704,7 +2738,9 @@ static int index_search_evaluate(struct mailbox *mailbox,
 
 	for (l = searchargs->to; l; l = l->next) {
 	    if (cachelen == 0 ||
-		!charset_searchstring(l->s, l->p, cacheitem+4, cachelen)) 
+		!charset_searchstring(l->s, l->p,
+				      cacheitem + CACHE_ITEM_SIZE_SKIP,
+				      cachelen)) 
 		return 0;
 	}
 
@@ -2713,7 +2749,9 @@ static int index_search_evaluate(struct mailbox *mailbox,
 
 	for (l = searchargs->cc; l; l = l->next) {
 	    if (cachelen == 0 ||
-		!charset_searchstring(l->s, l->p, cacheitem+4, cachelen)) 
+		!charset_searchstring(l->s, l->p,
+				      cacheitem + CACHE_ITEM_SIZE_SKIP,
+				      cachelen)) 
 		return 0;
 	}
 
@@ -2722,7 +2760,9 @@ static int index_search_evaluate(struct mailbox *mailbox,
 
 	for (l = searchargs->bcc; l; l = l->next) {
 	    if (cachelen == 0 ||
-		!charset_searchstring(l->s, l->p, cacheitem+4, cachelen)) 
+		!charset_searchstring(l->s, l->p,
+				      cacheitem + CACHE_ITEM_SIZE_SKIP,
+				      cachelen)) 
 		return 0;
 	}
 
@@ -2730,8 +2770,11 @@ static int index_search_evaluate(struct mailbox *mailbox,
 	cachelen = CACHE_ITEM_LEN(cacheitem);
 
 	for (l = searchargs->subject; l; l = l->next) {
-	    if ((cachelen == 3 && !strcmp(cacheitem+4, "NIL")) ||
-		!charset_searchstring(l->s, l->p, cacheitem+4, cachelen)) 
+	    if ((cachelen == 3 &&
+		 !strcmp(cacheitem + CACHE_ITEM_SIZE_SKIP, "NIL")) ||
+		!charset_searchstring(l->s, l->p,
+				      cacheitem + CACHE_ITEM_SIZE_SKIP,
+				      cachelen)) 
 		return 0;
 	}
     }
@@ -2748,7 +2791,7 @@ static int index_search_evaluate(struct mailbox *mailbox,
     }
 
     if (searchargs->body || searchargs->text ||
-	(searchargs->flags & SEARCH_UNCACHEDHEADER)) {
+	searchargs->cache_atleast > CACHE_VERSION(msgno)) {
 	if (! msgfile->size) { /* Map the message in if we haven't before */
 	    if (mailbox_map_message(mailbox, 1, UID(msgno),
 				    &msgfile->base, &msgfile->size)) {
@@ -2806,7 +2849,7 @@ index_searchmsg(char *substr,
     /* Won't find anything in a truncated file */
     if (msgfile->size == 0) return 0;
 
-    cacheitem += 4;
+    cacheitem += CACHE_ITEM_SIZE_SKIP;
     while (partsleft--) {
 	subparts = CACHE_ITEM_BIT32(cacheitem);
 	cacheitem += 4;
@@ -2817,12 +2860,12 @@ index_searchmsg(char *substr,
 		skipheader = 0;	/* Only skip top-level message header */
 	    }
 	    else {
-		len = CACHE_ITEM_BIT32(cacheitem+4);
+		len = CACHE_ITEM_BIT32(cacheitem + CACHE_ITEM_SIZE_SKIP);
 		if (len > 0) {
 		    p = index_readheader(msgfile->base, msgfile->size,
 					 format, CACHE_ITEM_BIT32(cacheitem),
 					 len);
-		    q = charset_decode1522(p, NULL, 0);
+		    q = charset_decode_mimeheader(p, NULL, 0);
 		    if (charset_searchstring(substr, pat, q, strlen(q))) {
 			free(q);
 			return 1;
@@ -2856,14 +2899,12 @@ index_searchmsg(char *substr,
 /*
  * Search named header of a message for a substring
  */
-static int
-index_searchheader(name, substr, pat, msgfile, format, size)
-char *name;
-char *substr;
-comp_pat *pat;
-struct mapfile *msgfile;
-int format;
-int size;
+static int index_searchheader(char *name,
+			      char *substr,
+			      comp_pat *pat,
+			      struct mapfile *msgfile,
+			      int format,
+			      int size)
 {
     char *p, *q;
     int r;
@@ -2875,7 +2916,7 @@ int size;
     index_pruneheader(p, &header, 0);
     if (!*p) return 0;		/* Header not present, fail */
     if (!*substr) return 1;	/* Only checking existence, succeed */
-    q = charset_decode1522(strchr(p, ':') + 1, NULL, 0);
+    q = charset_decode_mimeheader(strchr(p, ':') + 1, NULL, 0);
     r = charset_searchstring(substr, pat, q, strlen(q));
     free(q);
     return r;
@@ -2884,12 +2925,9 @@ int size;
 /*
  * Search named cached header of a message for a substring
  */
-static int
-index_searchcacheheader(msgno, name, substr, pat)
-unsigned msgno;
-char *name;
-char *substr;
-comp_pat *pat;
+static int index_searchcacheheader(unsigned msgno,
+				   char *name, char *substr,
+				   comp_pat *pat)
 {
     char *q;
     static struct strlist header;
@@ -2907,12 +2945,15 @@ comp_pat *pat;
     
     size = CACHE_ITEM_LEN(cacheitem);
     if (!size) return 0;	/* No cached headers, fail */
+    cacheitem += sizeof(bit32);
+    
     if (bufsize < size+2) {
 	bufsize = size+100;
 	buf = xrealloc(buf, bufsize);
     }
 
-    memcpy(buf, cacheitem+4, size);
+    /* Copy this item to the buffer */
+    memcpy(buf, cacheitem, size);
     buf[size] = '\0';
 
     header.s = name;
@@ -2920,7 +2961,7 @@ comp_pat *pat;
     index_pruneheader(buf, &header, 0);
     if (!*buf) return 0;	/* Header not present, fail */
     if (!*substr) return 1;	/* Only checking existence, succeed */
-    q = charset_decode1522(strchr(buf, ':') + 1, NULL, 0);
+    q = charset_decode_mimeheader(strchr(buf, ':') + 1, NULL, 0);
     r = charset_searchstring(substr, pat, q, strlen(q));
     free(q);
     return r;
@@ -2963,7 +3004,7 @@ static void index_getsearchtextmsg(struct mailbox* mailbox,
               p = index_readheader(msgfile.base, msgfile.size,
                                    format, CACHE_ITEM_BIT32(cacheitem),
                                    len);
-              q = charset_decode1522(p, NULL, 0);
+              q = charset_decode_mimeheader(p, NULL, 0);
               if (partcount == 1) {
                 receiver(uid, SEARCHINDEX_PART_HEADERS,
                          SEARCHINDEX_CMD_STUFFPART, q, strlen(q), rock);
@@ -3071,6 +3112,8 @@ void *rock;
     copyargs->copymsg[copyargs->nummsg].sentdate = SENTDATE(msgno);
     copyargs->copymsg[copyargs->nummsg].size = SIZE(msgno);
     copyargs->copymsg[copyargs->nummsg].header_size = HEADER_SIZE(msgno);
+    copyargs->copymsg[copyargs->nummsg].content_lines = CONTENT_LINES(msgno);
+    copyargs->copymsg[copyargs->nummsg].cache_version = CACHE_VERSION(msgno);
     copyargs->copymsg[copyargs->nummsg].cache_begin = cache_base + CACHE_OFFSET(msgno);
     if (mailbox->format != MAILBOX_FORMAT_NORMAL) {
 	/* Force copy and re-parse of message */
@@ -3180,10 +3223,14 @@ static MsgData *index_msgdata_load(unsigned *msgno_list, int n,
 		!did_env) {
 
 		/* make a working copy of envelope -- strip outer ()'s */
-		tmpenv = xstrndup(env+5, strlen(env+4) - 2);
+		/* +1 -> skip the leading paren */
+		/* -2 -> don't include the size of the outer parens */
+		tmpenv = xstrndup(env + CACHE_ITEM_SIZE_SKIP + 1,
+				  strlen(env+4) - 2);
 
 		/* parse envelope into tokens */
-		parse_cached_envelope(tmpenv, envtokens);
+		parse_cached_envelope(tmpenv, envtokens,
+				      VECTOR_SIZE(envtokens));
 
 		did_env++;
 	    }
@@ -3201,7 +3248,7 @@ static MsgData *index_msgdata_load(unsigned *msgno_list, int n,
 		break;
 	    case SORT_SUBJECT:
 		cur->xsubj = index_extract_subject(subj+4, &cur->is_refwd);
-		cur->xsubj_hash = hash(cur->xsubj);
+		cur->xsubj_hash = strhash(cur->xsubj);
 		break;
 	    case SORT_TO:
 		cur->to = get_localpart_addr(to+4);
@@ -3236,7 +3283,7 @@ static MsgData *index_msgdata_load(unsigned *msgno_list, int n,
  * When inside a list (ncom > 0), we parse the individual tokens but don't
  * isolate them -- we return the entire list as a single token.
  */
-static void parse_cached_envelope(char *env, char *tokens[])
+static void parse_cached_envelope(char *env, char *tokens[], int tokens_size)
 {
     char *c;
     int i = 0, ncom = 0, len;
@@ -3250,14 +3297,24 @@ static void parse_cached_envelope(char *env, char *tokens[])
 	    break;
 	case 'N':			/* "NIL" */
 	case 'n':
-	    if (!ncom)
+	    if (!ncom) {
+		if(i>=tokens_size) break;
 		tokens[i++] = NULL;	/* empty token */
+	    }
 	    c += 3;			/* skip "NIL" */
 	    break;
 	case '"':			/* quoted string */
 	    c++;			/* skip open quote */
-	    if (!ncom) tokens[i++] = c;	/* start of string */
+	    if (!ncom) {
+		if(i>=tokens_size) break;
+		tokens[i++] = c;	/* start of string */
+	    }
 	    while (*c != '"') {		/* find close quote */
+		if (*c == '\0') {
+		    /* Oops, bad string. */
+		    fatal("Quoted string w/o end quote in parse_cached_envelope",
+			  EC_SOFTWARE);
+		}
 		if (*c == '\\') c++;	/* skip quoted-specials */
 		c++;
 	    }
@@ -3272,12 +3329,18 @@ static void parse_cached_envelope(char *env, char *tokens[])
 		c++;
 	    }
 	    c += 3;			/* skip close brace & CRLF */
-	    if (!ncom) tokens[i++] = c;	/* start of literal */
+	    if (!ncom){
+		if(i>=tokens_size) break;
+		tokens[i++] = c;	/* start of literal */
+	    }
 	    c += len;			/* skip literal */
 	    break;
 	case '(':			/* start of address */
 	    c++;			/* skip open paren */
-	    if (!ncom) tokens[i++] = c;	/* start of address list */
+	    if (!ncom) {
+		if(i>=tokens_size) break;
+		tokens[i++] = c;	/* start of address list */
+	    }
 	    ncom++;			/* new open - inc counter */
 	    break;
 	case ')':			/* end of address */
@@ -4547,4 +4610,302 @@ static void index_thread_ref(unsigned *msgno_list, int nmsg, int usinguid)
 				  { SORT_SEQUENCE, 0, {{NULL,NULL}} }};
 
     _index_thread_ref(msgno_list, nmsg, loadcrit, NULL, sortcrit, usinguid);
+}
+
+/*
+ * NNTP specific stuff.
+ */
+char *index_get_msgid(struct mailbox *mailbox __attribute__((unused)),
+		      unsigned msgno)
+{
+    const char *cacheitem;
+    int cachelen;
+    char *env;
+    char *envtokens[NUMENVTOKENS];
+    char *msgid;
+
+    cacheitem = cache_base + CACHE_OFFSET(msgno);
+    cachelen = CACHE_ITEM_LEN(cacheitem);
+
+    /* get msgid out of the envelope
+     *
+     * get a working copy; strip outer ()'s
+     * +1 -> skip the leading paren
+     * -2 -> don't include the size of the outer parens
+     */
+    env = xstrndup(cacheitem + CACHE_ITEM_SIZE_SKIP + 1, cachelen - 2);
+    parse_cached_envelope(env, envtokens, VECTOR_SIZE(envtokens));
+
+    msgid = envtokens[ENV_MSGID] ? xstrdup(envtokens[ENV_MSGID]) : NULL;
+
+    /* free stuff */
+    free(env);
+
+    return msgid;
+}
+
+static void massage_header(char *hdr)
+{
+    int n = 0;
+    char *p, c;
+
+    for (p = hdr; *p; p++) {
+	if (*p == ' ' || *p == '\t' || *p == '\r') {
+	    if (!n || *(p+1) == '\n') {
+		/* no leading or trailing whitespace */
+		continue;
+	    }
+	    /* replace with space */
+	    c = ' ';
+	}
+	else if (*p == '\n') {
+	    if (*(p+1) == ' ' || *(p+1) == '\t') {
+		/* folded header */
+		continue;
+	    }
+	    /* end of header */
+	    break;
+	}
+	else
+	    c = *p;
+
+	hdr[n++] = c;
+    }
+    hdr[n] = '\0';
+}
+
+static char *parse_nstring(char **str)
+{
+    char *cp = *str, *val;
+
+    if (*cp == '"') { /* quoted string */
+	val = ++cp; /* skip " */
+	do {
+	    cp = strchr(cp, '"');
+	} while (*(cp-1) == '\\'); /* skip escaped " */
+	*cp++ = '\0';
+    }
+    else { /* NIL */
+	val = NULL;
+	cp += 3;
+    }
+
+    *str = cp;
+    return val;
+}
+
+static void parse_env_address(char *str, struct address *addr)
+{
+    str++; /* skip ( */
+    addr->name = parse_nstring(&str);
+    str++; /* skip SP */
+    addr->route = parse_nstring(&str);
+    str++; /* skip SP */
+    addr->mailbox = parse_nstring(&str);
+    str++; /* skip SP */
+    addr->domain = parse_nstring(&str);
+}
+
+extern struct nntp_overview *index_overview(struct mailbox *mailbox,
+					    unsigned msgno)
+{
+    static struct nntp_overview over;
+    static char *env = NULL, *from = NULL, *hdr = NULL;
+    static int envsize = 0, fromsize = 0, hdrsize = 0;
+    const char *cacheitem;
+    int size;
+    char *envtokens[NUMENVTOKENS];
+    struct address addr = { NULL, NULL, NULL, NULL, NULL, NULL };
+
+    cacheitem = cache_base + CACHE_OFFSET(msgno); /* envelope */
+
+    /* make a working copy of envelope; strip outer ()'s */
+    /* -2 -> don't include the size of the outer parens */
+    /* +1 -> leave space for NUL */
+    size = CACHE_ITEM_LEN(cacheitem) - 2 + 1;
+    if (envsize < size) {
+	envsize = size;
+	env = xrealloc(env, envsize);
+    }
+    /* +1 -> skip the leading paren */
+    strlcpy(env, cacheitem + CACHE_ITEM_SIZE_SKIP + 1, size);
+
+    cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip bodystructure */
+    cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip body */
+    cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip section */
+    cacheitem = CACHE_ITEM_NEXT(cacheitem); /* cacheheaders */
+
+    /* make a working copy of headers */
+    /* +1 -> leave space for NUL */
+    size = CACHE_ITEM_LEN(cacheitem) + 1;
+    if (hdrsize < size) {
+	hdrsize = size;
+	hdr = xrealloc(hdr, hdrsize);
+    }
+    strlcpy(hdr, cacheitem + CACHE_ITEM_SIZE_SKIP, size);
+
+    parse_cached_envelope(env, envtokens, VECTOR_SIZE(envtokens));
+
+    over.uid = UID(msgno);
+    over.bytes = SIZE(msgno);
+    over.lines = index_getlines(mailbox, msgno);
+    over.date = envtokens[ENV_DATE];
+    over.msgid = envtokens[ENV_MSGID];
+
+    /* massage subject */
+    if ((over.subj = envtokens[ENV_SUBJECT]))
+	massage_header(over.subj);
+
+    /* build original From: header */
+    if (envtokens[ENV_FROM]) /* paranoia */
+	parse_env_address(envtokens[ENV_FROM], &addr);
+
+    if (addr.mailbox && addr.domain) { /* paranoia */
+	/* +3 -> add space for quotes and space */
+	/* +4 -> add space for < @ > NUL */
+	size = (addr.name ? strlen(addr.name) + 3 : 0) +
+	    strlen(addr.mailbox) + strlen(addr.domain) + 4;
+	if (fromsize < size) {
+	    fromsize = size;
+	    from = xrealloc(from, fromsize);
+	}
+	from[0] = '\0';
+	if (addr.name) sprintf(from, "\"%s\" ", addr.name);
+	snprintf(from + strlen(from), fromsize - strlen(from),
+		 "<%s@%s>", addr.mailbox, addr.domain);
+
+	over.from = from;
+    }
+    else
+	over.from = NULL;
+
+    /* massage references */
+    if ((over.ref = stristr(hdr, "references:"))) {
+	over.ref += 11; /* skip over header name */
+	massage_header(over.ref);
+    }
+
+    return &over;
+}
+
+extern char *index_getheader(struct mailbox *mailbox, unsigned msgno,
+			     char *hdr)
+{
+    static const char *msg_base = 0;
+    static unsigned long msg_size = 0;
+    struct strlist headers = { hdr, NULL, NULL };
+    static char *alloc = NULL;
+    static int allocsize = 0;
+    const char *cacheitem;
+    unsigned size;
+    char *buf;
+
+    if (msg_base) {
+	mailbox_unmap_message(NULL, 0, &msg_base, &msg_size);
+	msg_base = 0;
+	msg_size = 0;
+    }
+
+    /* see if the header is cached */
+    if (mailbox_cached_header(hdr) != BIT32_MAX) {
+	/* cached header */
+	cacheitem = cache_base + CACHE_OFFSET(msgno);
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip envelope */
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip bodystructure */
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip body */
+	cacheitem = CACHE_ITEM_NEXT(cacheitem); /* skip section */
+    
+	size = CACHE_ITEM_LEN(cacheitem);
+	if (allocsize < size+2) {
+	    allocsize = size+100;
+	    alloc = xrealloc(alloc, allocsize);
+	}
+
+	memcpy(alloc, cacheitem+CACHE_ITEM_SIZE_SKIP, size);
+	alloc[size] = '\0';
+
+	buf = alloc;
+    }
+    else {
+	/* uncached header */
+	if (mailbox_map_message(mailbox, 0, UID(msgno), &msg_base, &msg_size))
+	    return NULL;
+
+	buf = index_readheader(msg_base, msg_size, mailbox->format, 0,
+			       HEADER_SIZE(msgno));
+    }
+
+    index_pruneheader(buf, &headers, NULL);
+
+    if (*buf) {
+	buf += strlen(hdr) + 1; /* skip header: */
+	massage_header(buf);
+    }
+
+    return buf;
+}
+
+extern unsigned long index_getsize(struct mailbox *mailbox __attribute__((unused)),
+				   unsigned msgno)
+{
+    return SIZE(msgno);
+}
+
+extern unsigned long index_getlines(struct mailbox *mailbox, unsigned msgno)
+{
+    unsigned long lines = CONTENT_LINES(msgno);
+
+    if (lines == BIT32_MAX) {
+	int r;
+	char fname[MAX_MAILBOX_PATH+1];
+	FILE *msgfile;
+	char buf[4096];
+	struct index_record record;
+
+	lines = 0;
+
+	r = mailbox_lock_index(mailbox);
+	if (r) return lines;
+
+	/* get the existing record */
+	r = mailbox_read_index_record(mailbox, msgno, &record);
+	if (r) goto done;
+
+	/* Open the message file */
+	strlcpy(fname, mailbox->path, sizeof(fname));
+	strlcat(fname, "/", sizeof(fname));
+	mailbox_message_get_fname(mailbox, record.uid,
+				  fname + strlen(fname),
+				  sizeof(fname) - strlen(fname));
+
+	msgfile = fopen(fname, "r");
+	if (!msgfile) goto done;
+
+	/* Find start of body */
+	while (fgets(buf, sizeof(buf), msgfile)) {
+	    if (buf[0] == '\r' && buf[1] == '\n') {
+		/* blank line between header and body */
+		break;
+	    }
+	}
+
+	/* Count the number of lines in the message body */
+	while (fgets(buf, sizeof(buf), msgfile)) {
+	    while (buf[strlen(buf)-1] != '\n' &&
+		   fgets(buf, sizeof(buf), msgfile));
+	    lines++;
+	}
+	fclose(msgfile);
+
+	/* Update the index record */
+	record.content_lines = lines;
+	record.last_updated = time(0);
+
+	r = mailbox_write_index_record(mailbox, msgno, &record, 1);
+
+      done:
+	mailbox_unlock_index(mailbox);
+    }
+
+    return lines;
 }

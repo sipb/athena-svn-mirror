@@ -1,7 +1,7 @@
 /* auth.h -- Site authorization module
- * $Id: auth.h,v 1.1.1.1 2002-10-13 18:00:11 ghudson Exp $
+ * $Id: auth.h,v 1.1.1.2 2004-02-23 22:54:45 rbasch Exp $
  *
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -57,8 +57,7 @@ extern char *auth_canonifyid(const char *identifier, size_t len);
 
 extern int auth_memberof(struct auth_state *auth_state, 
 			 const char *identifier);
-extern struct auth_state *auth_newstate(const char *identifier,
-					const char *cacheid);
+extern struct auth_state *auth_newstate(const char *identifier);
 extern void auth_freestate(struct auth_state *auth_state);
 
 #endif /* INCLUDED_AUTH_H */

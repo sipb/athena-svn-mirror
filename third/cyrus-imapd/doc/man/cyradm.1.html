@@ -36,7 +36,7 @@
   $ perl -MCyrus::IMAP::Shell -e 'run(&quot;myscript&quot;)'</PRE>
 <P>or even (not recommended)</P>
 <PRE>
-  use IMAP::Admin::Shell;</PRE>
+  use Cyrus::IMAP::Admin::Shell;</PRE>
 <PRE>
   run('myscriptname');</PRE>
 <P>
@@ -168,6 +168,30 @@ find the quota root for a mailbox.
 <DD>
 show quota roots and quotas for mailbox
 <P></P>
+<DT><STRONG><A NAME="item_mboxconfig_mailbox_attribute_value"><CODE>mboxconfig</CODE> <EM>mailbox</EM> <EM>attribute</EM> <EM>value</EM></A></STRONG><BR>
+<DD>
+<DT><STRONG><A NAME="item_mboxcfg_mailbox_attribute_value"><CODE>mboxcfg</CODE> <EM>mailbox</EM> <EM>attribute</EM> <EM>value</EM></A></STRONG><BR>
+<DD>
+Set mailbox metadata.  A value of ``none'' will remove the attribute.
+The currently supported attributes are:
+<DL>
+<DT><STRONG><A NAME="item_comment"><CODE>comment</CODE></A></STRONG><BR>
+<DD>
+Sets a comment or description associated with the mailbox.
+<P></P>
+<DT><STRONG><A NAME="item_expire"><CODE>expire</CODE></A></STRONG><BR>
+<DD>
+Sets the number of days after which messages will be expired from the mailbox.
+<P></P>
+<DT><STRONG><A NAME="item_squat"><CODE>squat</CODE></A></STRONG><BR>
+<DD>
+Indicates that the mailbox should have a squat index created for it.
+<P></P>
+<DT><STRONG><A NAME="item_news2mail"><CODE>news2mail</CODE></A></STRONG><BR>
+<DD>
+Sets an email address to which messages injected into the server via NNTP 
+will be sent.
+<P></P></DL>
 <DT><STRONG><A NAME="item_renamemailbox_%5B%2D%2Dpartition_partition%5D_oldn"><CODE>renamemailbox</CODE> [<CODE>--partition</CODE> <EM>partition</EM>] <EM>oldname</EM> <EM>newname</EM></A></STRONG><BR>
 <DD>
 <DT><STRONG><A NAME="item_rename_%5B%2D%2Dpartition_partition%5D_oldname_new"><CODE>rename</CODE> [<CODE>--partition</CODE> <EM>partition</EM>] <EM>oldname</EM> <EM>newname</EM></A></STRONG><BR>
@@ -244,6 +268,39 @@ Delete (STORE \DELETED, EXPUNGE)
 <DD>
 Administer (SETACL)
 <P></P></DL>
+<DT><STRONG><A NAME="item_setinfo_attribute_value"><CODE>setinfo</CODE> <EM>attribute</EM> <EM>value</EM></A></STRONG><BR>
+<DD>
+Set server metadata.  A value of ``none'' will remove the attribute.
+The currently supported attributes are:
+<DL>
+<DT><STRONG><A NAME="item_motd"><CODE>motd</CODE></A></STRONG><BR>
+<DD>
+Sets a ``message of the day''.  The message gets displayed as an ALERT after
+authentication.
+<P></P>
+<DT><STRONG><CODE>comment</CODE></STRONG><BR>
+<DD>
+Sets a comment or description associated with the server.
+<P></P>
+<DT><STRONG><A NAME="item_admin"><CODE>admin</CODE></A></STRONG><BR>
+<DD>
+Sets the administrator email address for the server.
+<P></P>
+<DT><STRONG><A NAME="item_shutdown"><CODE>shutdown</CODE></A></STRONG><BR>
+<DD>
+Sets a shutdown message.  The message gets displayed as an ALERT and
+all users are disconnected from the server (subsequent logins are disallowed).
+<P></P>
+<DT><STRONG><CODE>expire</CODE></STRONG><BR>
+<DD>
+Sets the number of days after which messages will be expired from the
+server (unless overridden by a mailbox annotation).
+<P></P>
+<DT><STRONG><CODE>squat</CODE></STRONG><BR>
+<DD>
+Indicates that all mailboxes should have a squat indexes created for
+them (unless overridden by a mailbox annotation).
+<P></P></DL>
 <DT><STRONG><A NAME="item_setquota_root_resource_value_%5Bresource_value_%2E"><CODE>setquota</CODE> <EM>root</EM> <EM>resource</EM> <EM>value</EM> [<EM>resource</EM> <EM>value</EM> ...]</A></STRONG><BR>
 <DD>
 <DT><STRONG><A NAME="item_sq_root_resource_value_%5Bresource_value_%2E%2E%2E"><CODE>sq</CODE> <EM>root</EM> <EM>resource</EM> <EM>value</EM> [<EM>resource</EM> <EM>value</EM> ...]</A></STRONG><BR>
@@ -257,6 +314,18 @@ be the special string <CODE>none</CODE> which will remove the quota.
 <DT><STRONG><A NAME="item_ver"><CODE>ver</CODE></A></STRONG><BR>
 <DD>
 Display the version info of the current server.
+<P></P>
+<DT><STRONG><A NAME="item_xfermailbox_%5B%2D%2Dpartition_partition%5D_mailbo"><CODE>xfermailbox</CODE> [<CODE>--partition</CODE> <EM>partition</EM>] <EM>mailbox</EM> <EM>server</EM></A></STRONG><BR>
+<DD>
+<DT><STRONG><A NAME="item_xfer_%5B%2D%2Dpartition_partition%5D_mailbox_serve"><CODE>xfer</CODE> [<CODE>--partition</CODE> <EM>partition</EM>] <EM>mailbox</EM> <EM>server</EM></A></STRONG><BR>
+<DD>
+<DT><STRONG><A NAME="item_xfermailbox_mailbox_server_%5Bpartition%5D"><CODE>xfermailbox</CODE> <EM>mailbox</EM> <EM>server</EM> [<EM>partition</EM>]</A></STRONG><BR>
+<DD>
+<DT><STRONG><A NAME="item_xfer_mailbox_server_%5Bpartition%5D"><CODE>xfer</CODE> <EM>mailbox</EM> <EM>server</EM> [<EM>partition</EM>]</A></STRONG><BR>
+<DD>
+Transfer (relocate) the specified mailbox to a different server.
+Both old-style and getopt-style usages are accepted; combining them will
+produce an error.
 <P></P></DL>
 <P>
 <HR>

@@ -1,7 +1,7 @@
 /* config.h -- Configuration routines
- $Id: masterconf.h,v 1.1.1.1 2002-10-13 18:04:38 ghudson Exp $
+ $Id: masterconf.h,v 1.1.1.2 2004-02-23 22:54:47 rbasch Exp $
  
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -44,7 +44,7 @@
 #ifndef INCLUDED_MASTERCONF_H
 #define INCLUDED_MASTERCONF_H
 
-extern int masterconf_init(const char *ident);
+extern int masterconf_init(const char *ident, const char *alt_config);
 
 struct entry;
 

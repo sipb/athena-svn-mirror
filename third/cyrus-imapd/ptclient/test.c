@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: test.c,v 1.1.1.1 2002-10-13 18:01:27 ghudson Exp $ */
+/* $Id: test.c,v 1.1.1.2 2004-02-23 22:54:55 rbasch Exp $ */
 
 #include <stdio.h>
 #include <sys/syslog.h>
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     cacheid=cache;
   } else
     cacheid=NULL;
-  openlog("pttest", LOG_PID,LOG_LOCAL6);  
+  openlog("pttest", LOG_PID, SYSLOG_FACILITY);  
   
   if (!auth_setid(argv[1],cacheid))
     printf ("Auth_memberof(%s,%s) is %d\n", argv[1], argv[2],

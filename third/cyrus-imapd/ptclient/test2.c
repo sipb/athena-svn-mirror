@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,14 +39,14 @@
  *
  */
 
-/* $Id: test2.c,v 1.1.1.1 2002-10-13 18:01:27 ghudson Exp $ */
+/* $Id: test2.c,v 1.1.1.2 2004-02-23 22:54:55 rbasch Exp $ */
 
 #include <stdio.h>
 #include <sys/syslog.h>
 
 int main(void) {
   char cacheid[16]="4224423";
-  openlog("testr", LOG_PID,LOG_LOCAL6);
+  openlog("testr", LOG_PID, SYSLOG_FACILITY);
   
   if (!auth_setid("cg2v@club.cc.cmu.edu",cacheid))
     printf ("Auth_memberof(cg2v,cg2v:me) is %d\n",

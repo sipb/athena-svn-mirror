@@ -1,7 +1,6 @@
 /* auth_krb.c -- Kerberos authorization
- $Id: auth_krb.c,v 1.1.1.1 2002-10-13 18:00:11 ghudson Exp $
- 
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * $Id: auth_krb.c,v 1.1.1.2 2004-02-23 22:55:15 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -67,7 +66,7 @@
 const char *auth_method_desc = "krb";
 
 #ifndef KRB_MAPNAME
-#define KRB_MAPNAME "/etc/krb.equiv"
+#define KRB_MAPNAME (SYSCONFDIR "/krb.equiv")
 #endif
 
 struct auth_state {
@@ -268,16 +267,6 @@ size_t len;
     memcpy(canon_buf, identifier, len);
     canon_buf[len] = '\0';
    
-    if (strcasecmp(canon_buf, "anonymous") == 0) {
-	free(canon_buf);
-	return "anonymous";
-    }
-    if (strcasecmp(canon_buf, "anybody") == 0 ||
-	strcasecmp(canon_buf, "anyone") == 0) {
-	free(canon_buf);
-	return "anyone";
-    }
-
     aname[0] = inst[0] = realm[0] = '\0';
     if (kname_parse(aname, inst, realm, canon_buf) != 0) {
 	free(canon_buf);
@@ -326,9 +315,7 @@ size_t len;
  * with.
  */
 struct auth_state *
-auth_newstate(identifier, cacheid)
-const char *identifier;
-const char *cacheid;
+auth_newstate(const char *identifier)
 {
     struct auth_state *newstate;
 

@@ -37,14 +37,14 @@
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 # OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Admin.pm,v 1.1.1.2 2003-02-14 21:38:59 ghudson Exp $
+# $Id: Admin.pm,v 1.1.1.3 2004-02-23 22:56:34 rbasch Exp $
 
 package Cyrus::IMAP::Admin;
 use strict;
 use Cyrus::IMAP;
 use vars qw($VERSION
 	    *create *delete *deleteacl *listacl *list *rename *setacl
-	    *subscribed *quota *quotaroot *info *setinfo);
+	    *subscribed *quota *quotaroot *info *setinfo *xfer);
 
 $VERSION = '1.00';
 
@@ -76,6 +76,7 @@ sub new {
   if(defined($self)) {
     $self->{support_referrals} = 0;
     $self->{support_annotatatemore} = 0;
+    $self->{authopts} = [];
     $self->addcallback({-trigger => 'CAPABILITY',
 			-callback => sub {my %a = @_;
 					  map { $self->{support_referrals} = 1
@@ -111,6 +112,9 @@ sub AUTOLOAD {
 # send an rlist command if they support referrals 
 sub authenticate {
     my $self = shift;
+    if(@_) {
+      $self->{authopts} = \@_;
+    } 
     my $rc = $self->{cyrus}->authenticate(@_);
     if($rc && $self->{support_referrals}) {
       # Advertise our desire for referrals
@@ -123,6 +127,12 @@ sub authenticate {
       }
     }
     return $rc;
+}
+
+# Spit out a reference to the previous authentication options:
+sub _getauthopts { 
+    my $self = shift;
+    return $self->{authopts};
 }
 
 sub reconstruct {
@@ -153,7 +163,7 @@ sub reconstruct {
 	$cyradm->addcallback({-trigger => 'EOF',
 			      -callback => \&_cb_ref_eof,
 			      -rock => \$cyradm});
-	$cyradm->authenticate()
+	$cyradm->authenticate(@{$self->_getauthopts()})
 	  or die "cyradm: cannot authenticate to $refserver\n";
 	
 	my $ret = $cyradm->reconstruct($mailbox,$recurse);
@@ -190,7 +200,7 @@ sub createmailbox {
       $cyradm->addcallback({-trigger => 'EOF',
 			    -callback => \&_cb_ref_eof,
 			    -rock => \$cyradm});
-      $cyradm->authenticate()
+      $cyradm->authenticate(@{$self->_getauthopts()})
 	or die "cyradm: cannot authenticate to $refserver\n";
 
       my $ret = $cyradm->createmailbox($box);
@@ -224,10 +234,11 @@ sub deletemailbox {
       $cyradm->addcallback({-trigger => 'EOF',
 			    -callback => \&_cb_ref_eof,
 			    -rock => \$cyradm});
-      $cyradm->authenticate()
+      $cyradm->authenticate(@{$self->_getauthopts()})
 	or die "cyradm: cannot authenticate to $refserver\n";
 
       my $ret = $cyradm->deletemailbox($box);
+      $self->{error} = $cyradm->error;
       $cyradm = undef;
       return $ret;
     }
@@ -243,7 +254,7 @@ sub deleteaclmailbox {
   my $res = '';
   my ($rc, $msg);
   foreach my $acl (@acl) {
-    ($rc, $msg) = $self->send('', '', 'DELETEACL MAILBOX %s %s', $mbx, $acl);
+    ($rc, $msg) = $self->send('', '', 'DELETEACL %s %s', $mbx, $acl);
     if ($rc eq 'OK') {
       $cnt++;
     } else {
@@ -383,7 +394,7 @@ sub listquota {
 		      -callback => sub {
 			my %d = @_;
 			next unless
-			  $d{-text} =~ s/^\S+ \((\S+) (\S+) (\S+)\)//;
+			  $d{-text} =~ s/^\S+.* \((\S*) *?(\S*) *?(\S*)\)//;
 			push @{$d{-rock}}, $1, [$2, $3];
 		      },
 		      -rock => \@info});
@@ -407,7 +418,7 @@ sub listquota {
       $cyradm->addcallback({-trigger => 'EOF',
 			    -callback => \&_cb_ref_eof,
 			    -rock => \$cyradm});
-      $cyradm->authenticate()
+      $cyradm->authenticate(@{$self->_getauthopts()})
 	or die "cyradm: cannot authenticate to $refserver\n";
 
       my @ret = $cyradm->listquota($root);
@@ -461,7 +472,7 @@ sub listquotaroot {
       $cyradm->addcallback({-trigger => 'EOF',
 			    -callback => \&_cb_ref_eof,
 			    -rock => \$cyradm});
-      $cyradm->authenticate()
+      $cyradm->authenticate(@{$self->_getauthopts()})
 	or die "cyradm: cannot authenticate to $refserver\n";
       
       my @ret = $cyradm->listquotaroot($root);
@@ -515,7 +526,7 @@ sub renamemailbox {
       $cyradm->addcallback({-trigger => 'EOF',
 			    -callback => \&_cb_ref_eof,
 			    -rock => \$cyradm});
-      $cyradm->authenticate()
+      $cyradm->authenticate(@{$self->_getauthopts()})
 	or die "cyradm: cannot authenticate to $refserver\n";
 
       my $ret = $cyradm->renamemailbox($box, $box, $nbox);
@@ -527,6 +538,29 @@ sub renamemailbox {
   }
 }
 *rename = *renamemailbox;
+
+sub xfermailbox {
+  my ($self, $mbox, $server, $ptn) = @_;
+
+  $self->addcallback({-trigger => 'NO',
+		      -callback => sub {
+			print $_ . "\n";
+		      }});
+
+  my ($rc, $msg) = $self->send('', '', 'XFER %s %s%a%a', $mbox, $server,
+			       $ptn ? ' ' : $ptn, $ptn);
+
+  $self->addcallback({-trigger => 'NO'});
+		    
+  if ($rc eq 'OK') {
+    $self->{error} = undef;
+    1;
+  } else {
+    $self->{error} = $msg;
+    undef;
+  }
+}
+*xfer = *xfermailbox;
 
 # hm.  this list can't be confused with valid ACL values as of 1.6.19, except
 # for "all".  sigh.
@@ -563,7 +597,7 @@ sub setaclmailbox {
 	$cyradm->addcallback({-trigger => 'EOF',
 			      -callback => \&_cb_ref_eof,
 			      -rock => \$cyradm});
-	$cyradm->authenticate()
+	$cyradm->authenticate(@{$self->_getauthopts()})
 	  or die "cyradm: cannot authenticate to $refserver\n";
 
 	my $ret = $cyradm->setaclmailbox($mbx, %acl);
@@ -621,7 +655,7 @@ sub setquota {
       $cyradm->addcallback({-trigger => 'EOF',
 			    -callback => \&_cb_ref_eof,
 			    -rock => \$cyradm});
-      $cyradm->authenticate()
+      $cyradm->authenticate(@{$self->_getauthopts()})
 	or die "cyradm: cannot authenticate to $refserver\n";
 
       my $ret = $cyradm->setquota($mbx, %quota);
@@ -636,12 +670,9 @@ sub setquota {
 
 sub getinfo {
   my ($self,$box) = @_;
-  my $pat;
 
   if(!defined($box)) {
-    $pat = "/server/*";
-  } else {
-    $pat = "/mailbox/{$box}/*";
+    $box = "";
   }
 
   if(!$self->{support_annotatemore}) {
@@ -655,35 +686,48 @@ sub getinfo {
 			my %d = @_;
 			my $text = $d{-text};
 
-			if($text =~ /^\(.*\)$/) {
-			  # list of annotations
-			  $text =~ s/^\(//;
-			  
-			  while($text !~ /^\)/) {
-			    if($text =~
-			       /^\s*\"([^\"]*)\"\s+\(\"([^\"]*)\"\s+\"([^\"]*)\"\)/) {
-				 $d{-rock}{$1} = $3;
-				 $text =~ s/^\s*\"([^\"]*)\"\s+\(\"([^\"]*)\"\s+\"([^\"]*)\"\)//;
-			       } else {
-				 # hrm, error
-				 $self->{error} = "Could not parse";
-				 return undef;
-			       }
-			  }
-			} elsif ($text =~
-			       /^\s*\"([^\"]*)\"\s+\(\"([^\"]*)\"\s+\"([^\"]*)\"\)/) {
-			  # Single annotation, but possibly multiple values
+			# There were several draft iterations of this,
+			# but since we send only the latest form command,
+			# this is the only possible response.
+
+		        if ($text =~
+			       /^\s*\"([^\"]*)\"\s+\"([^\"]*)\"\s+\(\"([^\"]*)\"\s+\"([^\"]*)\"\)/) {
+			  # note that we require mailbox and entry to be qstrings
+			  # Single annotation, not literal,
+			  # but possibly multiple values
 			  # however, we are only asking for one value, so...
-			  $d{-rock}{$1} = $3;
-		        } else {
+			  my $key;
+			  if($1 ne "") {
+				$key = "/mailbox/{$1}$2";
+			  } else {
+				$key = "/server$2";
+			  }
+			  $d{-rock}{$key} = $4;
+		        }  elsif ($text =~
+			       /^\s*\"([^\"]*)\"\s+\"([^\"]*)\"\s+\(\"([^\"]*)\"\s+\{(.*)\}\r\n/) {
+			  my $len = $3;
+			  $text =~ s/^\s*\"([^\"]*)\"\s+\"([^\"]*)\"\s+\(\"([^\"]*)\"\s+\{(.*)\}\r\n//s;
+			  $text = substr($text, 0, $len);
+			  # note that we require mailbox and entry to be qstrings
+			  # Single annotation (literal style),
+			  # possibly multiple values
+			  # however, we are only asking for one value, so...
+			  my $key;
+			  if($1 ne "") {
+				$key = "/mailbox/{$1}$2";
+			  } else {
+				$key = "/server$2";
+			  }
+			  $d{-rock}{$1} = $text;
+			} else {
 			  next;
 			}
 		      },
 		      -rock => \%info});
 
   # send getannotation "/mailbox/name/* or /server/*"
-  my ($rc, $msg) = $self->send('', '', "GETANNOTATION %s \"value.shared\"",
-			       $pat);
+  my ($rc, $msg) = $self->send('', '', "GETANNOTATION %s \"*\" \"value.shared\"",
+			       $box);
   $self->addcallback({-trigger => 'ANNOTATION'});
   if ($rc eq 'OK') {
     $self->{error} = undef;
@@ -695,6 +739,69 @@ sub getinfo {
 }
 *info = *getinfo;
 
+sub mboxconfig {
+  my ($self, $mailbox, $entry, $value) = @_;
+
+  my %values = ( "comment" => "/comment",
+		 "news2mail" => "/vendor/cmu/cyrus-imapd/news2mail",
+		 "expire" => "/vendor/cmu/cyrus-imapd/expire",
+		 "squat" => "/vendor/cmu/cyrus-imapd/squat" );
+
+  if(!$self->{support_annotatemore}) {
+    $self->{error} = "Remote does not support ANNOTATEMORE.";
+    return undef;
+  }
+
+  if(!exists($values{$entry})) {
+    $self->{error} = "Unknown parameter $entry";
+  }
+
+  $entry = $values{$entry};
+
+  my ($rc, $msg);
+
+  $value = undef if($value eq "none");
+
+  if(defined($value)) {
+    ($rc, $msg) = $self->send('', '',
+			      "SETANNOTATION %q %q (\"value.shared\" %q)",
+		              $mailbox, $entry, $value);
+  } else {
+    ($rc, $msg) = $self->send('', '',
+                              "SETANNOTATION %q %q (\"value.shared\" NIL)",
+		              $mailbox, $entry);
+  }
+
+  if ($rc eq 'OK') {
+    $self->{error} = undef;
+    1;
+  } else {
+    if($self->{support_referrals} && $msg =~ m|^\[REFERRAL\s+([^\]\s]+)\]|) {
+      my ($refserver, $box) = $self->fromURL($1);
+      my $port = 143;
+
+      if($refserver =~ /:/) {
+	$refserver =~ /([^:]+):(\d+)/;
+	$refserver = $1; $port = $2;
+      }
+
+      my $cyradm = Cyrus::IMAP::Admin->new($refserver, $port)
+	or die "cyradm: cannot connect to $refserver\n";
+      $cyradm->addcallback({-trigger => 'EOF',
+			    -callback => \&_cb_ref_eof,
+			    -rock => \$cyradm});
+      $cyradm->authenticate(@{$self->_getauthopts()})
+	or die "cyradm: cannot authenticate to $refserver\n";
+
+      my $ret = $cyradm->mboxconfig($mailbox, $entry, $value);
+      $cyradm = undef;
+      return $ret;
+    }
+    $self->{error} = $msg;
+    undef;
+  }
+}
+
 sub setinfoserver {
   my ($self, $entry, $value) = @_;
 
@@ -703,8 +810,28 @@ sub setinfoserver {
     return undef;
   }
 
-  my ($rc, $msg) = $self->send('', '', "SETANNOTATION \"/server/%s\" (\"value.shared\" %s)",
-			       $entry, $value);
+  my %values = ( "comment" => "/comment",
+		 "motd" => "/motd",
+		 "admin" => "/admin",
+		 "shutdown" => "/vendor/cmu/cyrus-imapd/shutdown",
+		 "expire" => "/vendor/cmu/cyrus-imapd/expire",
+		 "squat" => "/vendor/cmu/cyrus-imapd/squat" );
+
+  $entry = $values{$entry} if (exists($values{$entry}));
+
+  $value = undef if($value eq "none");
+
+  my ($rc, $msg);
+
+  if(defined($value)) {
+    ($rc, $msg) = $self->send('', '',
+			      "SETANNOTATION \"\" %q (\"value.shared\" %q)",
+		              $entry, $value);
+  } else {
+    ($rc, $msg) = $self->send('', '',
+                              "SETANNOTATION \"\" %q (\"value.shared\" NIL)",
+		              $entry);
+  }
 
   if ($rc eq 'OK') {
     $self->{error} = undef;
@@ -745,6 +872,7 @@ Cyrus::IMAP::Admin - Cyrus administrative interface Perl module
   $rc = $client->rename($old, $new[, $partition]);
   $rc = $client->setacl($mailbox, $user =E<gt> $acl[, ...]);
   $rc = $client->setquota($mailbox, $resource =E<gt> $quota[, ...]);
+  $rc = $client->xfer($mailbox, $server[, $partition]);
 
 =head1 DESCRIPTION
 
@@ -894,7 +1022,14 @@ Administer (SETACL)
 =item setquota($mailbox, $resource, $quota[, ...])
 
 Set quotas on a mailbox.  Note that Cyrus currently only defines one resource,
-C<STORAGE>.
+C<STORAGE>.  As defined in RFC 2087, the units are groups of 1024 octets
+(i.e. Kilobytes)
+
+=item xfermailbox($mailbox, $server[, $partition])
+
+=item xfer($mailbox, $server[, $partition])
+
+Transfers (relocates) the specified mailbox to a different server.
 
 =back
 

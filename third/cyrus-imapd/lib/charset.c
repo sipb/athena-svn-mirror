@@ -1,6 +1,6 @@
 /* charset.c -- International character set support
  *
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,7 +38,8 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-/* $Id: charset.c,v 1.1.1.2 2003-02-14 21:39:07 ghudson Exp $
+/*
+ * $Id: charset.c,v 1.1.1.3 2004-02-23 22:54:45 rbasch Exp $
  */
 #include <config.h>
 #include <ctype.h>
@@ -263,11 +264,11 @@ char *charset_convert(const char *s, int charset, char *retval,
 }
 
 /*
- * Decode 1522-strings in 's'.  It writes the decoded string to 'retval',
- * calling realloc() as needed. (Thus retval may be NULL.) Returns retval,
- * contining 's' in canonical searching form.
+ * Decode MIME strings (per RFC 2047) in 's'.  It writes the decoded
+ * string to 'retval', calling realloc() as needed. (Thus retval may
+ * be NULL.) Returns retval, contining 's' in canonical searching form.
  */
-char *charset_decode1522(const char *s, char *retval, int alloced)
+char *charset_decode_mimeheader(const char *s, char *retval, int alloced)
 {
     int eatspace = 0;
     const char *start, *endcharset, *encoding, *end;
@@ -837,7 +838,49 @@ static int charset_readconvert(struct input_state *state, char *buf, int size)
     }
     return retval;
 }
+
+/*
+ * Decode the MIME body part (per RFC 2045) of 'len' bytes located at
+ * 'msg_base' having the content transfer 'encoding'.  Decodes into
+ * 'retval' (if necessary), which must be reallocable and currently at
+ * least size 'alloced'.  Returns the number of decoded bytes in
+ * 'outlen'. 
+ */
+char *charset_decode_mimebody(const char *msg_base, int len, int encoding,
+			      char **retval, int alloced, int *outlen)
+{
+    struct input_state state;
     
+    /* Initialize transfer-decoding */
+    state.rawbase = msg_base;
+    state.rawlen = len;
+
+    switch (encoding) {
+    case ENCODING_NONE:
+	*outlen = len;
+	return (char *) msg_base;
+
+    case ENCODING_QP:
+	if (alloced < len)
+	    *retval = xrealloc(*retval, len);
+	*outlen = charset_readqp(&state, *retval, len);
+	return (*outlen ? *retval : NULL);
+
+    case ENCODING_BASE64:
+	if (alloced < len)
+	    *retval = xrealloc(*retval, len);
+	*outlen = charset_readbase64(&state, *retval, len);
+	return (*outlen ? *retval : NULL);
+
+    default:
+	/* Don't know encoding--nothing can match */
+	return NULL;
+    }
+
+    /* should never get here */
+    return NULL;
+}
+
 /*
  * Helper function to read at most 'size' bytes of trivial
  * transfer-decoded data into 'buf'.  Returns the number of decoded

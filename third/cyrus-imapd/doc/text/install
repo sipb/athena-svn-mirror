@@ -25,6 +25,8 @@ Contents
       * Administering Mailboxes 
       * Installing SIEVE 
       * SNMP Monitoring 
+      * Cyrus and Netnews 
+      * Virtual Domains 
       * Cyrus Murder: The IMAP Aggregator 
       * Operating System Specific Notes 
       * Performance Notes 

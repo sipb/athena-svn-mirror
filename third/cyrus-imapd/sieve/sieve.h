@@ -57,22 +57,29 @@ typedef union {
 # define	VALUE	293
 # define	OVER	294
 # define	UNDER	295
-# define	ALL	296
-# define	LOCALPART	297
-# define	DOMAIN	298
-# define	USER	299
-# define	DETAIL	300
-# define	DAYS	301
-# define	ADDRESSES	302
-# define	SUBJECT	303
-# define	MIME	304
-# define	METHOD	305
-# define	ID	306
-# define	OPTIONS	307
-# define	LOW	308
-# define	NORMAL	309
-# define	HIGH	310
-# define	MESSAGE	311
+# define	GT	296
+# define	GE	297
+# define	LT	298
+# define	LE	299
+# define	EQ	300
+# define	NE	301
+# define	ALL	302
+# define	LOCALPART	303
+# define	DOMAIN	304
+# define	USER	305
+# define	DETAIL	306
+# define	DAYS	307
+# define	ADDRESSES	308
+# define	SUBJECT	309
+# define	MIME	310
+# define	METHOD	311
+# define	ID	312
+# define	OPTIONS	313
+# define	LOW	314
+# define	NORMAL	315
+# define	HIGH	316
+# define	ANY	317
+# define	MESSAGE	318
 
 
 extern YYSTYPE yylval;

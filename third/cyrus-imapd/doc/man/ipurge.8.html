@@ -1,77 +1,244 @@
 <html>
 <head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
 <meta name="Content-Style" content="text/css">
+<title>IPURGE</title>
 </head>
 <body>
+
+<h1 align=center>IPURGE</h1>
 <a href="#NAME">NAME</a><br>
 <a href="#SYNOPSIS">SYNOPSIS</a><br>
 <a href="#DESCRIPTION">DESCRIPTION</a><br>
 <a href="#OPTIONS">OPTIONS</a><br>
 <a href="#FILES">FILES</a><br>
-<a href="#/etc/imapd.conf">/etc/imapd.conf</a><br>
-<!-- Creator     : groff version 1.15  -->
-<!-- CreationDate: Mon Feb  3 16:31:15 2003
- -->
-<!-- Total number of pages: 1 -->
-<!-- Page: 1 -->
-<!-- left  margin: 100 -->
-<!-- right margin: 750 -->
-<a name="NAME"></a><h2>NAME</h2><p><font size=3>ipurge - delete mail from IMAP mailbox or partition based on age or size</p>
-<a name="SYNOPSIS"></a><h2>SYNOPSIS</h2><p><font size=3><B>ipurge</B> <font size=3>[ <font size=3><B>-f</B> <font size=3>] [ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] [ <font size=3><B>-x</B> <font size=3>] [ <font size=3><B>-s</B> <font size=3>]<br>
-<span style=" text-indent: 0.2100in;"></span>[ <font size=3><B>-d</B> <font size=3><I>days</I> <font size=3>| <font size=3><B>-b</B> <font size=3><I>bytes</I> <font size=3>| <font size=3><B>-k</B> <font size=3><I>Kbytes</I> <font size=3>| <font size=3><B>-m</B> <font size=3><I>Mbytes</I> <font size=3>]<br>
-<span style=" text-indent: 0.2100in;"></span>[ <font size=3><I>mailbox-pattern</I><font size=3>... ]</p>
-<a name="DESCRIPTION"></a><h2>DESCRIPTION</h2><p><font size=3><I>Ipurge</I> <font size=3>deletes messages from the mailbox(es) specified by <font size=3><I>mailbox-pattern</I> <font size=3>that are older or larger than specified by the <font size=3><B>-d</B><font size=3>, <font size=3><B>-b</B><font size=3>, <font size=3><B>-k</B> <font size=3>or <font size=3><B>-m</B> <font size=3>options. If no <font size=3><I>mailbox-pattern</I> <font size=3>is given, <font size=3><I>ipurge</I> <font size=3>works on all mailboxes. If the <font size=3><B>-x</B> <font size=3>option is given, the message age and size MUST match exactly those specified by <font size=3><B>-d</B><font size=3>, <font size=3><B>-b</B><font size=3>, <font size=3><B>-k</B> <font size=3>or <font size=3><B>-m</B><font size=3>. The are no default val- ues, and at least one of <font size=3><B>-d</B><font size=3>, <font size=3><B>-b</B><font size=3>, <font size=3><B>-k</B> <font size=3>or <font size=3><B>-m</B> <font size=3>MUST be specified.</p>
-<p><font size=3><I>Ipurge</I> <font size=3>by default only deletes mail below shared folders, which means that mails in mailbox(es) below INBOX.* and user.* stay untouched. Use the option <font size=3><B>-f</B> <font size=3>to also delete mail in mailbox(es) below these folders.</p>
-<p><font size=3><I>Ipurge</I> <font size=3>reads its configuration options out of the <font size=3><I>imapd.conf</I><font size=3>(5) file unless specified otherwise by <font size=3><B>-C</B><font size=3>.</p>
-<a name="OPTIONS"></a><h2>OPTIONS</h2>
-<table width="100%"  rules="none"  frame="none"  cols="4">
+
+<hr>
+<!-- Creator     : groff version 1.18 -->
+<!-- CreationDate: Thu Jan 15 09:36:53 2004 -->
+<a name="NAME"></a>
+<h2>NAME</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="12.6154%">
-<p><font size=3><B>-f</p>
-</B><p><font size=3><B>-C</B> <font size=3><I>config-file</p>
-</I><p><font size=3><B>-d</B> <font size=3><I>days</p>
-</I><p><font size=3><B>-b</B> <font size=3><I>bytes</p>
-</I><p><font size=3><B>-k</B> <font size=3><I>Kbytes</p>
-</I></td>
-<td valign="top" align="left"  width="7.3846%">
+<td width="10%"></td>
+<td width="89%">
+<p>ipurge &minus; delete mail from IMAP mailbox or partition
+based on age or size</p>
 </td>
-<td valign="top" align="left"  width="57.6923%">
-<p><font size=3>Force deletion of mail in <font size=3><I>all</I> <font size=3>mailboxes.</p>
-<p><font size=3>Read configuration options from <font size=3><I>config-file</I><font size=3>.</p>
-<p><font size=3>Age of message in <font size=3><I>days</I><font size=3>.</p>
-<p><font size=3>Size of message in <font size=3><I>bytes</I><font size=3>.</p>
-<p><font size=3>Size of message in <font size=3><I>Kbytes</I> <font size=3>(2<sup>^</sup>10 bytes).</p>
-</td>
-<td valign="top" align="left"  width="22.3077%">
-</td>
-</tr>
+</table></p>
+<a name="SYNOPSIS"></a>
+<h2>SYNOPSIS</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="12.6154%">
-<p><font size=3><B>-m</B> <font size=3><I>Mbytes</p>
-</I></td>
-<td valign="top" align="left"  width="7.3846%">
+<td width="10%"></td>
+<td width="89%">
+<p><b>ipurge</b> [ <b>&minus;f</b> ] [ <b>&minus;C</b>
+<i>config-file</i> ] [ <b>&minus;x</b> ] [ <b>&minus;X</b> ]
+[ <b>&minus;i</b> ] [ <b>&minus;s</b> ]<br>
+[ <b>&minus;d</b> <i>days</i> | <b>&minus;b</b> <i>bytes</i>
+| <b>&minus;k</b> <i>Kbytes</i> | <b>&minus;m</b>
+<i>Mbytes</i> ]<br>
+[ <i>mailbox-pattern</i>... ]</p>
 </td>
-<td valign="top" align="left"  width="57.6923%">
-<p><font size=3>Size of message in <font size=3><I>Mbytes</I> <font size=3>(2<sup>^</sup>20 bytes).</p>
-</td>
-<td valign="top" align="left"  width="22.3077%">
-</td>
-</tr>
+</table></p>
+<a name="DESCRIPTION"></a>
+<h2>DESCRIPTION</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="12.6154%">
-<p><font size=3><B>-x</p>
-</B><p><font size=3><B>-s</p>
-</B></td>
-<td valign="top" align="left"  width="7.3846%">
+<td width="10%"></td>
+<td width="89%">
+<p><i>Ipurge</i> deletes messages from the mailbox(es)
+specified by <i>mailbox-pattern</i> that are older or larger
+than specified by the <b>-d</b>, <b>-b</b>, <b>-k</b> or
+<b>-m</b> options. If no <i>mailbox-pattern</i> is given,
+<i>ipurge</i> works on all mailboxes. If the <b>-x</b>
+option is given, the message age and size MUST match exactly
+those specified by <b>-d</b>, <b>-b</b>, <b>-k</b> or
+<b>-m</b>. The are no default values, and at least one of
+<b>-d</b>, <b>-b</b>, <b>-k</b> or <b>-m</b> MUST be
+specified.</p>
+<!-- INDENTATION -->
+<p><i>Ipurge</i> by default only deletes mail below shared
+folders, which means that mails in mailbox(es) below INBOX.*
+and user.* stay untouched. Use the option <b>-f</b> to also
+delete mail in mailbox(es) below these folders.</p>
+<!-- INDENTATION -->
+<p><i>Ipurge</i> reads its configuration options out of the
+<i>imapd.conf</i>(5) file unless specified otherwise by
+<b>-C</b>.</p>
 </td>
-<td valign="top" align="left"  width="57.6923%">
-<p><font size=3>Perform an exact match on age or size (instead of older or larger).</p>
-<p><font size=3>Skip over messages that have the \Flagged flag set.</p>
+</table></p>
+<a name="OPTIONS"></a>
+<h2>OPTIONS</h2>
+<!-- TABS -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="5" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="2%">
+
+<p><b>&minus;f</b></p>
 </td>
-<td valign="top" align="left"  width="22.3077%">
+<td width="13%"></td>
+<td width="58%">
+
+<p>Force deletion of mail in <i>all</i> mailboxes.</p>
 </td>
-</tr>
+<td width="13%">
+</td>
+</table></p>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;C</b> <i>config-file</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Read configuration options from <i>config-file</i>.</p>
+</td>
 </table>
-<br>
-<a name="FILES"></a><h2>FILES</h2><a name="/etc/imapd.conf"></a><h2>/etc/imapd.conf</h2></body>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;d</b> <i>days</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Age of message in <i>days</i>.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;b</b> <i>bytes</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Size of message in <i>bytes</i>.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;k</b> <i>Kbytes</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Size of message in <i>Kbytes</i> (2^10 bytes).</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;m</b> <i>Mbytes</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Size of message in <i>Mbytes</i> (2^20 bytes).</p>
+</td>
+</table>
+<!-- TABS -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="4" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+<p><b>&minus;x</b></p>
+</td>
+<td width="5%"></td>
+<td width="77%">
+
+<p>Perform an exact match on age or size (instead of older
+or larger).</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+<p><b>&minus;X</b></p>
+</td>
+<td width="5%"></td>
+<td width="77%">
+
+<p>Use delivery time instead of Date: header for date
+matches</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+<p><b>&minus;i</b></p>
+</td>
+<td width="5%"></td>
+<td width="77%">
+
+<p>Invert match logic: -x means not equal, date is for
+newer, size is for smaller</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+<p><b>&minus;s</b></p>
+</td>
+<td width="5%"></td>
+<td width="77%">
+
+<p>Skip over messages that have the \Flagged flag set.</p>
+</td>
+</table></p>
+<a name="FILES"></a>
+<h2>FILES</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>/etc/imapd.conf</b></p></td>
+</table></p>
+<hr>
+</body>
 </html>

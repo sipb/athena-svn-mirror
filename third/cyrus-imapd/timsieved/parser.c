@@ -1,10 +1,10 @@
 /* parser.c -- parser used by timsieved
  * Tim Martin
  * 9/21/99
- * $Id: parser.c,v 1.1.1.2 2003-02-14 21:38:58 ghudson Exp $
+ * $Id: parser.c,v 1.1.1.3 2004-02-23 22:55:02 rbasch Exp $
  */
 /*
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -56,16 +56,23 @@
 #include <sasl/sasl.h>
 #include <sasl/saslutil.h>
 
+#include <com_err.h>
+
+#include "libconfig.h"
+#include "global.h"
+#include "auth.h"
+#include "mboxname.h"
+#include "mboxlist.h"
+#include "xmalloc.h"
+#include "prot.h"
+#include "tls.h"
+#include "lex.h"
 #include "actions.h"
 #include "exitcodes.h"
-#include "lex.h"
-#include "mboxlist.h"
-#include "prot.h"
 #include "telemetry.h"
-#include "tls.h"
-#include "xmalloc.h"
 
 extern char sieved_clienthost[250];
+extern int sieved_domainfromip;
 
 /* xxx these are both leaked, but we only handle one connection at a
  * time... */
@@ -75,9 +82,6 @@ const char *referral_host = NULL;
 int authenticated = 0;
 int verify_only = 0;
 int starttls_done = 0;
-
-struct namespace sieve_namespace;
-
 #ifdef HAVE_SSL
 /* our tls connection, if any */
 static SSL *tls_conn = NULL;
@@ -113,7 +117,7 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
 
   if (!authenticated && (token > 255) && (token!=AUTHENTICATE) &&
       (token!=LOGOUT) && (token!=CAPABILITY) &&
-      (!tls_enabled("sieve") || (token!=STARTTLS)))
+      (!tls_enabled() || (token!=STARTTLS)))
   {
     error_msg = "Authenticate first";
     if (token!=EOL)
@@ -198,13 +202,13 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
       if(referral_host)
 	  goto do_referral;
 
-      capabilities(sieved_out, sieved_saslconn);
+      capabilities(sieved_out, sieved_saslconn, starttls_done, authenticated);
       break;
 
   case HAVESPACE:
       if (timlex(NULL, NULL, sieved_in)!=SPACE)
       {
-	  error_msg = "SPACE must occur after PUTSCRIPT";
+	  error_msg = "SPACE must occur after HAVESPACE";
 	  goto error;
       }
       
@@ -441,11 +445,11 @@ int parser(struct protstream *sieved_out, struct protstream *sieved_in)
       char *c;
 
       /* Truncate the hostname if necessary */
-      strcpy(buf, referral_host);
+      strlcpy(buf, referral_host, sizeof(buf));
       c = strchr(buf, '!');
       if(c) *c = '\0';
       
-      prot_printf(sieved_out, "BYE (REFERRAL \"%s\") \"Try Remote.\"\r\n",
+      prot_printf(sieved_out, "BYE (REFERRAL \"sieve://%s\") \"Try Remote.\"\r\n",
 		  buf);
       ret = TRUE;
       goto done;
@@ -484,7 +488,9 @@ static int cmd_authenticate(struct protstream *sieved_out,
   const char *serverout=NULL;
   unsigned int serveroutlen;
   const char *errstr=NULL;
-  const char *username;
+  const char *canon_user;
+  char *username;
+  int ret = TRUE;
 
   clientinstr = initial_challenge;
   if (clientinstr!=NULL)
@@ -616,7 +622,7 @@ static int cmd_authenticate(struct protstream *sieved_out,
 
   /* get the userid from SASL */
   sasl_result=sasl_getprop(sieved_saslconn, SASL_USERNAME,
-			   (const void **) &username);
+			   (const void **) &canon_user);
   if (sasl_result!=SASL_OK)
   {
     *errmsg = "Internal SASL error";
@@ -629,27 +635,30 @@ static int cmd_authenticate(struct protstream *sieved_out,
 
     return FALSE;
   }
+  username = xstrdup(canon_user);
 
   verify_only = !strcmp(username, "anonymous");
 
   if (!verify_only) {
       /* Check for a remote mailbox (should we setup a redirect?) */
-      char inboxname[1024];
+      struct namespace sieved_namespace;
+      char inboxname[MAX_MAILBOX_NAME];
       char *server;
-      int r;
-      int type;
+      int type, r;
       
-      strcpy(inboxname, "user.");
-      strcat(inboxname, username);
-
       /* Set namespace */
-      if ((r = mboxname_init_namespace(&sieve_namespace, 1)) != 0) {
-          *errmsg = "mailbox unknown";
-	  return FALSE;
+      if ((r = mboxname_init_namespace(&sieved_namespace, 0)) != 0) {
+	  syslog(LOG_ERR, error_message(r));
+	  fatal(error_message(r), EC_CONFIG);
       }
 
       /* Translate any separators in userid */
-      mboxname_hiersep_tointernal(&sieve_namespace, inboxname+5);
+      mboxname_hiersep_tointernal(&sieved_namespace, username,
+				  config_virtdomains ?
+				  strcspn(username, "@") : 0);
+
+      (*sieved_namespace.mboxname_tointernal)(&sieved_namespace, "INBOX",
+					     username, inboxname);
 
       r = mboxlist_detail(inboxname, &type, &server, NULL, NULL, NULL);
       
@@ -661,7 +670,44 @@ static int cmd_authenticate(struct protstream *sieved_out,
 
       if(type & MBTYPE_REMOTE) {
 	  /* It's a remote mailbox, we want to set up a referral */
-	  referral_host = xstrdup(server);
+	  if (sieved_domainfromip) {
+	      char *authname, *p;
+
+	      /* get a new copy of the userid */
+	      free(username);
+	      username = xstrdup(canon_user);
+
+	      /* get the authid from SASL */
+	      sasl_result=sasl_getprop(sieved_saslconn, SASL_AUTHUSER,
+				       (const void **) &canon_user);
+	      if (sasl_result!=SASL_OK)
+		  {
+		      *errmsg = "Internal SASL error";
+		      syslog(LOG_ERR, "SASL: sasl_getprop SASL_AUTHUSER: %s",
+			     sasl_errstring(sasl_result, NULL, NULL));
+
+		      if(reset_saslconn(&sieved_saslconn, ssf, authid) != SASL_OK)
+			  fatal("could not reset the sasl_conn_t after failure",
+				EC_TEMPFAIL);
+
+		      ret = FALSE;
+		      goto cleanup;
+		  }
+	      authname = xstrdup(canon_user);
+
+	      if ((p = strchr(authname, '@'))) *p = '%';
+	      if ((p = strchr(username, '@'))) *p = '%';
+
+	      referral_host =
+		  (char*) xmalloc(strlen(authname)+1+strlen(username)+1+
+				  strlen(server)+1);
+	      sprintf((char*) referral_host, "%s;%s@%s",
+		      authname, username, server);
+
+	      free(authname);
+	  }
+	  else
+	      referral_host = xstrdup(server);
       } else if (actions_setuser(username) != TIMSIEVE_OK) {
 	  *errmsg = "internal error";
 	  syslog(LOG_ERR, "error in actions_setuser()");
@@ -670,7 +716,8 @@ static int cmd_authenticate(struct protstream *sieved_out,
 	      fatal("could not reset the sasl_conn_t after failure",
 		    EC_TEMPFAIL);
 
-	  return FALSE;
+	  ret = FALSE;
+	  goto cleanup;
       }
   }
 
@@ -699,9 +746,13 @@ static int cmd_authenticate(struct protstream *sieved_out,
   prot_setsasl(sieved_out, sieved_saslconn);
 
   /* Create telemetry log */
-  sieved_logfd = telemetry_log(username, sieved_in, sieved_out);
+  sieved_logfd = telemetry_log(username, sieved_in, sieved_out, 0);
+  
+  cleanup:
+  /* free memory */
+  free(username);
 
-  return TRUE;
+  return ret;
 }
 
 #ifdef HAVE_SSL

@@ -1,7 +1,7 @@
 /* lmtpengine.h: lmtp protocol engine interface
- * $Id: lmtpengine.h,v 1.1.1.1 2002-10-13 18:02:45 ghudson Exp $
+ * $Id: lmtpengine.h,v 1.1.1.2 2004-02-23 22:54:41 rbasch Exp $
  *
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -43,19 +43,11 @@
 #ifndef LMTPENGINE_H
 #define LMTPENGINE_H
 
-/* configuration parameters */
-#define DEFAULT_SENDMAIL ("/usr/lib/sendmail")
-#define DEFAULT_POSTMASTER ("postmaster")
-
-#define SENDMAIL (config_getstring("sendmail", DEFAULT_SENDMAIL))
-#define POSTMASTER (config_getstring("postmaster", DEFAULT_POSTMASTER))
-
 /***************** server-side LMTP *******************/
 
-#define HEADERCACHESIZE 4009
+#include "spool.h"
 
 typedef struct message_data message_data_t;
-typedef struct Header header_t;
 typedef struct address_data address_data_t;
 
 struct message_data {
@@ -76,7 +68,7 @@ struct message_data {
 
     void *rock;
 
-    header_t *cache[HEADERCACHESIZE];
+    hdrcache_t hdrcache;
 };
 
 /* return the corresponding header */

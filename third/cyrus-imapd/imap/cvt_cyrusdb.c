@@ -1,6 +1,6 @@
 /* dbcvt.c -- Convert between two database formats
  * 
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,7 +40,7 @@
  *
  */
 /*
- * $Id: cvt_cyrusdb.c,v 1.1.1.2 2003-02-14 21:38:18 ghudson Exp $
+ * $Id: cvt_cyrusdb.c,v 1.1.1.3 2004-02-23 22:54:41 rbasch Exp $
  */
 
 #include <config.h>
@@ -57,7 +57,6 @@
 #include <sys/uio.h>
 #include <fcntl.h>
 #include <ctype.h>
-#include <time.h>
 #include <syslog.h>
 #include <com_err.h>
 
@@ -65,43 +64,24 @@
 #include <sys/msg.h>
 
 #include "acl.h"
-#include "auth.h"
-#include "glob.h"
 #include "assert.h"
-#include "imapconf.h"
+#include "auth.h"
 #include "cyrusdb.h"
-#include "util.h"
-#include "mailbox.h"
 #include "exitcodes.h"
+#include "glob.h"
 #include "imap_err.h"
+#include "global.h"
+#include "mailbox.h"
+#include "util.h"
 #include "xmalloc.h"
+
+/* config.c stuff */
+const int config_need_data = 0;
 
 struct cyrusdb_backend *DB_OLD = NULL, *DB_NEW = NULL;
 
 struct db *odb = NULL, *ndb = NULL;
 struct txn *tid = NULL;
-
-void fatal(const char *message, int code)
-{
-    static int recurse_code = 0;
-    
-    if(recurse_code) exit(recurse_code);
-    else recurse_code = code;
-    
-    fprintf(stderr, "fatal error: %s\n", message);
-
-    if(DB_OLD && odb) DB_OLD->close(odb);
-    if(DB_NEW && ndb) {
-	if(tid) DB_NEW->abort(ndb, tid);
-	DB_NEW->close(ndb);
-    }
-	
-    if(DB_OLD) DB_OLD->done();
-    if(DB_NEW) DB_NEW->done();
-
-    exit(code);
-}
-
 
 int converter_p(void *rock __attribute__((unused)),
 		const char *key __attribute__((unused)),
@@ -123,7 +103,6 @@ int converter_cb(void *rock __attribute__((unused)),
 int main(int argc, char *argv[])
 {
     const char *old_db, *new_db;
-    char dbdir[1024];
     int i,r;
     int opt;
     char *alt_config = NULL;
@@ -156,7 +135,7 @@ int main(int argc, char *argv[])
 
     if(old_db[0] != '/' || new_db[0] != '/') {
 	printf("\nSorry, you cannot use this tool with relative path names.\n"
-	       "This is because some database backends (mainly db3) do not\n"
+	       "This is because some database backends (mainly berkeley) do not\n"
 	       "always do what you would expect with them.\n"
 	       "\nPlease use absolute pathnames instead.\n\n");
 	exit(EC_OSERR);
@@ -184,26 +163,15 @@ int main(int argc, char *argv[])
 	fatal("no conversion required", EC_TEMPFAIL);
     }
 
-    config_init(alt_config, "cvt_cyrusdb");
+    cyrus_init(alt_config, "cvt_cyrusdb");
 
     printf("Converting from %s (%s) to %s (%s)\n", old_db, DB_OLD->name,
 	   new_db, DB_NEW->name);
 
-    /* create the name of the db file */
-    strcpy(dbdir, config_dir);
-    strcat(dbdir, FNAME_DBDIR);
-
-    r = DB_OLD->init(dbdir, 0);
-    if(r != CYRUSDB_OK)
-	fatal("can't initialize old database", EC_TEMPFAIL);
-    r = DB_NEW->init(dbdir, 0);
-    if(r != CYRUSDB_OK)
-	fatal("can't initialize new database", EC_TEMPFAIL);
-
-    r = DB_OLD->open(old_db, &odb);
+    r = DB_OLD->open(old_db, 0, &odb);
     if(r != CYRUSDB_OK)
 	fatal("can't open old database", EC_TEMPFAIL);
-    r = DB_NEW->open(new_db, &ndb);
+    r = DB_NEW->open(new_db, CYRUSDB_CREATE, &ndb);
     if(r != CYRUSDB_OK)
 	fatal("can't open new database", EC_TEMPFAIL);
 
@@ -219,7 +187,7 @@ int main(int argc, char *argv[])
     DB_OLD->close(odb);
     DB_NEW->close(ndb);
     
-    DB_OLD->done();
-    DB_NEW->done();
+    cyrus_done();
+
     return 0;
 }

@@ -1,7 +1,6 @@
-/* seen_db.c -- implementation of seen database using per-user berkeley db
-   $Id: seen_bigdb.c,v 1.1.1.1 2002-10-13 18:02:25 ghudson Exp $
- 
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+/* seen_bigdb.c -- implementation of seen database using one big cyrusdb
+ * $Id: seen_bigdb.c,v 1.1.1.2 2004-02-23 22:55:38 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -59,7 +58,7 @@
 #include <sys/uio.h>
 #include "cyrusdb.h"
 
-#include "imapconf.h"
+#include "global.h"
 #include "xmalloc.h"
 #include "mailbox.h"
 #include "imap_err.h"
@@ -70,8 +69,8 @@
 
 #define FNAME_SEENDB "/seenstate.db"
 
-/* choose "flat" or "db3" here --- db3 highly recommended */
-#define DB (&cyrusdb_db3)
+/* choose "flat" or "berkeley" here --- berkeley highly recommended */
+#define DB (&cyrusdb_berkeley)
 
 enum {
     MAX_KEY = MAX_MAILBOX_PATH + MAX_MAILBOX_NAME + 30,
@@ -105,7 +104,7 @@ static void seen_init(void)
     strcpy(fname, config_dir);
     strcat(fname, FNAME_SEENDB);
 
-    r = DB->open(fname, &bigdb);
+    r = DB->open(fname, CYRUSDB_CREATE, &bigdb);
     if (r != 0) {
 	syslog(LOG_ERR, "DBERROR: opening %s: %s", fname,
 	       cyrusdb_strerror(r));
@@ -117,7 +116,8 @@ static void seen_init(void)
 
 /* get a database handle corresponding to (mailbox, user) pair */
 int seen_open(struct mailbox *mailbox, 
-	      const char *user, 
+	      const char *user,
+	      int flags __attribute__((unused)),
 	      struct seen **seendbptr)
 {
     struct seen *ret;
@@ -188,13 +188,13 @@ static int seen_readit(struct seen *seendb,
 	syslog(LOG_ERR, "DBERROR: error fetching txn", cyrusdb_strerror(r));
 	return IMAP_IOERROR;
 	break;
-    }
-    if (data == NULL) {
+    case CYRUSDB_NOTFOUND:
 	*lastreadptr = 0;
 	*lastuidptr = 0;
 	*lastchangeptr = 0;
 	*seenuidsptr = xstrdup("");
 	return 0;
+	break;
     }
 
     /* remember that 'data' may not be null terminated ! */
@@ -354,6 +354,11 @@ int seen_create_user(const char *user)
 }
 
 int seen_delete_user(const char *user)
+{
+    return 0;			/* noop */
+}
+
+int seen_rename_user(const char *olduser, const char *newuser)
 {
     return 0;			/* noop */
 }

@@ -1,12 +1,12 @@
 dnl
-dnl $Id: c-attribute.m4,v 1.1.1.1 2002-10-13 18:04:12 ghudson Exp $
+dnl $Id: c-attribute.m4,v 1.1.1.2 2004-02-23 22:53:59 rbasch Exp $
 dnl
 
 dnl
 dnl Test for __attribute__
 dnl
 
-AC_DEFUN(CMU_C___ATTRIBUTE__, [
+AC_DEFUN([CMU_C___ATTRIBUTE__], [
 AC_MSG_CHECKING(for __attribute__)
 AC_CACHE_VAL(ac_cv___attribute__, [
 AC_TRY_COMPILE([

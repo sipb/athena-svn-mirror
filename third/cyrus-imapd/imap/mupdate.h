@@ -1,7 +1,7 @@
 /* mupdate.h - private mupdate header file
  *
- * $Id: mupdate.h,v 1.1.1.1 2002-10-13 18:00:38 ghudson Exp $
- * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
+ * $Id: mupdate.h,v 1.1.1.2 2004-02-23 22:55:34 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -55,7 +55,7 @@
 #include "mailbox.h"
 #include "mupdate-client.h"
 #include "mupdate_err.h"
-#include "imapconf.h"
+#include "global.h"
 
 struct mupdate_handle_s {
     int sock;
@@ -124,7 +124,8 @@ void mupdate_signal_db_synced(void);
 enum mupdate_cmd_response {
     MUPDATE_OK = 0,
     MUPDATE_NO = -1,
-    MUPDATE_BAD = -2
+    MUPDATE_BAD = -2,
+    MUPDATE_BYE = -3
 };
 
 /* Scarf up the incoming data and perform the requested operations */

@@ -16,7 +16,7 @@ Sending Feedback on the Cyrus IMAP Server
       * the version of libsasl 
       * your system type (uname -a often provides the right information. 
 
-    You may also want to include: 
+    You should also include: 
 
       * the options you passed to ./configure 
       * the errors from make (if any) 
@@ -31,5 +31,6 @@ Sending Feedback on the Cyrus IMAP Server
 
     The info-cyrus@andrew.cmu.edu mailing list exists for the discussion of
     this server and other Cyrus software; more information is available in
-    the mailing-list document. 
+    the mailing-list document. You may get faster/more responses by posting
+    to this list instead of to cyrus-bugs, as there are more readers here. 
 

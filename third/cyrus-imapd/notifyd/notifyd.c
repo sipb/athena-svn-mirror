@@ -2,7 +2,7 @@
  * Ken Murchison
  */
 /*
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,7 +40,7 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $Id: notifyd.c,v 1.1.1.2 2003-02-14 21:38:02 ghudson Exp $
+ * $Id: notifyd.c,v 1.1.1.3 2004-02-23 22:55:06 rbasch Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -63,10 +63,15 @@
 #include <string.h>
 
 #include "notifyd.h"
-#include "imapconf.h"
-#include "xmalloc.h"
-#include "exitcodes.h"
 
+#include "exitcodes.h"
+#include "global.h"
+#include "libconfig.h"
+#include "xmalloc.h"
+
+
+/* global state */
+const int config_need_data = 0;
 
 static int soc = 0; /* master has handed us the port as stdin */
 
@@ -77,6 +82,8 @@ static notifymethod_t *default_method;	/* default method daemon is using */
 void shut_down(int code) __attribute__ ((noreturn));
 void shut_down(int code)
 {
+    cyrus_done();
+
     /* done */
     exit(code);
 }
@@ -199,6 +206,13 @@ void fatal(const char *s, int code)
     shut_down(code);
 }
 
+void printstring(const char *s __attribute__((unused)))
+{
+    /* needed to link against annotate.o */
+    fatal("printstring() executed, but its not used for notifyd!",
+	  EC_SOFTWARE);
+}
+
 void usage(void)
 {
     syslog(LOG_ERR, "usage: notifyd [-C <alt_config>]");
@@ -210,7 +224,6 @@ int service_init(int argc, char **argv, char **envp)
     int opt;
     char *method = "null";
 
-    config_changeident("notifyd");
     if (geteuid() == 0) fatal("must run as the Cyrus user", EC_USAGE);
 
     while ((opt = getopt(argc, argv, "m:")) != EOF) {
@@ -237,6 +250,7 @@ int service_init(int argc, char **argv, char **envp)
     return 0;
 }
 
+/* Called by service API to shut down the service */
 void service_abort(int error)
 {
     shut_down(error);

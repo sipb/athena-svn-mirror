@@ -6,8 +6,8 @@
  *
  * includes support for ISPN virtual host extensions
  *
- * $Id: ipurge.c,v 1.1.1.2 2003-02-14 21:38:27 ghudson Exp $
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * $Id: ipurge.c,v 1.1.1.3 2004-02-23 22:55:25 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -58,17 +58,19 @@
 #include <syslog.h>
 #include <com_err.h>
 #include <string.h>
-#include <time.h>
 #include <netinet/in.h>
 
 /* cyrus includes */
-#include "imapconf.h"
+#include "global.h"
 #include "sysexits.h"
 #include "exitcodes.h"
 #include "imap_err.h"
 #include "mailbox.h"
 #include "xmalloc.h"
 #include "mboxlist.h"
+
+/* config.c stuff */
+const int config_need_data = CONFIG_NEED_PARTITION_DATA;
 
 /* globals for getopt routines */
 extern char *optarg;
@@ -82,6 +84,8 @@ int size = -1;
 int exact = -1;
 int pattern = -1;
 int skipflagged = 0;
+int datemode = OFFSET_SENTDATE;
+int invertmatch = 0;
 
 /* for statistical purposes */
 typedef struct mbox_stats_s {
@@ -104,18 +108,15 @@ int purge_check(struct mailbox *, void *, char *);
 int usage(char *name);
 void print_stats(mbox_stats_t *stats);
 
-int
-main (int argc, char *argv[]) {
+int main (int argc, char *argv[]) {
   char option;
-  char buf[MAX_MAILBOX_PATH];
+  char buf[MAX_MAILBOX_PATH+1];
   char *alt_config = NULL;
   int r;
 
-  if (geteuid() == 0) { /* don't run as root, changes permissions */
-    usage(argv[0]);
-  }
+  if (geteuid() == 0) fatal("must run as the Cyrus user", EX_USAGE);
 
-  while ((option = getopt(argc, argv, "C:hxd:b:k:m:fs")) != EOF) {
+  while ((option = getopt(argc, argv, "C:hxd:b:k:m:fsXi")) != EOF) {
     switch (option) {
     case 'C': /* alt config file */
       alt_config = optarg;
@@ -153,6 +154,12 @@ main (int argc, char *argv[]) {
     case 's' : {
       skipflagged = 1;
     } break;
+    case 'X' : {
+      datemode = OFFSET_INTERNALDATE;
+    } break;
+    case 'i' : {
+      invertmatch = 1;
+    } break;
     case 'h':
     default: usage(argv[0]);
     }
@@ -162,9 +169,7 @@ main (int argc, char *argv[]) {
     usage(argv[0]);
   }
 
-  config_init(alt_config, "ipurge");
-
-  if (geteuid() == 0) fatal("must run as the Cyrus user", EX_USAGE);
+  cyrus_init(alt_config, "ipurge");
 
   /* Set namespace -- force standard (internal) */
   if ((r = mboxname_init_namespace(&purge_namespace, 1)) != 0) {
@@ -183,7 +188,9 @@ main (int argc, char *argv[]) {
     for (; optind < argc; optind++) {
       strncpy(buf, argv[optind], MAX_MAILBOX_NAME);
       /* Translate any separators in mailboxname */
-      mboxname_hiersep_tointernal(&purge_namespace, buf);
+      mboxname_hiersep_tointernal(&purge_namespace, buf,
+				  config_virtdomains ?
+				  strcspn(buf, "@") : 0);
       (*purge_namespace.mboxlist_findall)(&purge_namespace, buf, 1, 0, 0,
 					  purge_me, NULL);
     }
@@ -191,37 +198,47 @@ main (int argc, char *argv[]) {
   mboxlist_close();
   mboxlist_done();
 
+  cyrus_done();
+  
   return 0;
 }
 
 int
 usage(char *name) {
-  printf("usage: %s [-f] [-s] [-C <alt_config>] [-x] {-d days &| -b bytes|-k Kbytes|-m Mbytes}\n\t[mboxpattern1 ... [mboxpatternN]]\n", name);
+  printf("usage: %s [-f] [-s] [-C <alt_config>] [-x] [-X] [-i] {-d days | -b bytes|-k Kbytes|-m Mbytes}\n\t[mboxpattern1 ... [mboxpatternN]]\n", name);
   printf("\tthere are no defaults and at least one of -d, -b, -k, -m\n\tmust be specified\n");
   printf("\tif no mboxpattern is given %s works on all mailboxes\n", name);
   printf("\t -x specifies an exact match for days or size\n");
   printf("\t -f force also to delete mail below user.* and INBOX.*\n");
   printf("\t -s skip over messages that are flagged.\n");
+  printf("\t -X use delivery time instead of date header for date matches.\n");
+  printf("\t -i invert match logic: -x means not equal, date is for newer, size is for smaller.\n");
   exit(0);
 }
 
 /* we don't check what comes in on matchlen and maycreate, should we? */
-int
-purge_me(char *name, int matchlen, int maycreate) {
+int purge_me(char *name, int matchlen __attribute__((unused)),
+	     int maycreate __attribute__((unused))) {
   struct mailbox the_box;
   int            error;
   mbox_stats_t   stats;
 
   if( ! forceall ) {
-    /* DON'T purge INBOX* and user.* */
-    if ((strncasecmp(name,"INBOX",5)==0) || (strncasecmp(name,"user.",5)==0))
-      return 0;
+      /* DON'T purge INBOX* and user.* */
+      if (!strncasecmp(name,"INBOX",5) || mboxname_isusermailbox(name, 0))
+	  return 0;
   }
 
   memset(&stats, '\0', sizeof(mbox_stats_t));
 
-  if (verbose)
-      printf("Working on %s...\n",name);
+  if (verbose) {
+      char mboxname[MAX_MAILBOX_NAME+1];
+
+      /* Convert internal name to external */
+      (*purge_namespace.mboxname_toexternal)(&purge_namespace, name,
+					     "cyrus", mboxname);
+      printf("Working on %s...\n", mboxname);
+  }
 
   error = mailbox_open_header(name, 0, &the_box);
   if (error != 0) { /* did we find it? */
@@ -263,15 +280,15 @@ void deleteit(bit32 msgsize, mbox_stats_t *stats)
 
 /* thumbs up routine, checks date & size and returns yes or no for deletion */
 /* 0 = no, 1 = yes */
-int
-purge_check(struct mailbox *mailbox, void *deciderock, char *buf) {
+int purge_check(struct mailbox *mailbox __attribute__((unused)),
+		void *deciderock, char *buf) {
   time_t my_time;
   mbox_stats_t *stats = (mbox_stats_t *) deciderock;
   bit32 senttime;
   bit32 msgsize;
   bit32 flagged;
 
-  senttime = ntohl(*((bit32 *)(buf + OFFSET_SENTDATE)));
+  senttime = ntohl(*((bit32 *)(buf + datemode)));
   msgsize = ntohl(*((bit32 *)(buf + OFFSET_SIZE)));
   flagged = ntohl(*((bit32 *)(buf + OFFSET_SYSTEM_FLAGS))) & FLAG_FLAGGED;
 
@@ -286,6 +303,11 @@ purge_check(struct mailbox *mailbox, void *deciderock, char *buf) {
       my_time = time(0);
       /*    printf("comparing %ld :: %ld\n", my_time, the_record->sentdate); */
       if (((my_time - (time_t) senttime)/86400) == (days/86400)) {
+	  if (invertmatch) return 0;
+	  deleteit(msgsize, stats);
+	  return 1;
+      } else {
+	  if (!invertmatch) return 0;
 	  deleteit(msgsize, stats);
 	  return 1;
       }
@@ -293,6 +315,11 @@ purge_check(struct mailbox *mailbox, void *deciderock, char *buf) {
     if (size >= 0) {
       /* check size */
       if (msgsize == size) {
+	  if (invertmatch) return 0;
+	  deleteit(msgsize, stats);
+	  return 1;
+      } else {
+	  if (!invertmatch) return 0;
 	  deleteit(msgsize, stats);
 	  return 1;
       }
@@ -302,14 +329,22 @@ purge_check(struct mailbox *mailbox, void *deciderock, char *buf) {
     if (days >= 0) {
       my_time = time(0);
       /*    printf("comparing %ld :: %ld\n", my_time, the_record->sentdate); */
-      if ((my_time - (time_t) senttime) > days) {
+      if (!invertmatch && ((my_time - (time_t) senttime) > days)) {
+	  deleteit(msgsize, stats);
+	  return 1;
+      }
+      if (invertmatch && ((my_time - (time_t) senttime) < days)) {
 	  deleteit(msgsize, stats);
 	  return 1;
       }
     }
     if (size >= 0) {
       /* check size */
-      if (msgsize > size) {
+      if (!invertmatch && (msgsize > size)) {
+	  deleteit(msgsize, stats);
+	  return 1;
+      }
+      if (invertmatch && (msgsize < size)) {
 	  deleteit(msgsize, stats);
 	  return 1;
       }
@@ -325,12 +360,6 @@ void print_stats(mbox_stats_t *stats)
     printf("Deleted messages  \t\t %d\n",stats->deleted);
     printf("Deleted bytes     \t\t %d\n",stats->deleted_bytes);
     printf("Remaining messages\t\t %d\n",stats->total - stats->deleted);
-    printf("Remaining bytes   \t\t %d\n",stats->total_bytes - stats->deleted_bytes);
-}
-
-/* fatal needed for imap library */
-void
-fatal(const char *s, int code) {
-  fprintf(stderr, "ipurge: %s\n", s);
-  exit(code);
+    printf("Remaining bytes   \t\t %d\n",
+	   stats->total_bytes - stats->deleted_bytes);
 }

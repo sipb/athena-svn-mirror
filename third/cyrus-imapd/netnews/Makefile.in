@@ -39,7 +39,7 @@
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 # OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Makefile.in,v 1.1.1.1 2002-10-13 18:01:24 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2004-02-23 22:55:19 rbasch Exp $
 # 
 srcdir = @srcdir@
 VPATH = @srcdir@
@@ -50,8 +50,8 @@ RANLIB = @RANLIB@
 
 DEFS = @DEFS@
 CPPFLAGS = -I.. -I$(srcdir) -I$(srcdir)/../lib -I$(srcdir)/../et @CPPFLAGS@
-LIBS =  @IMAP_LIBS@
-DEPLIBS = ../lib/libcyrus.a @DEPLIBS@ 
+LIBS =  @IMAP_LIBS@ @LIB_RT@
+DEPLIBS = ../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@ 
 
 CFLAGS = @CFLAGS@
 LDFLAGS = @LDFLAGS@
@@ -62,13 +62,14 @@ MAKEDEPEND = @MAKEDEPEND@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 cyrus_prefix = @cyrus_prefix@
+service_path = @service_path@
 
-OBJS = remotepurge.o readconfig.o wildmat.o
+OBJS = remotepurge.o readconfig.o
 
 all: remotepurge
 
 install:
-	$(INSTALL) -s -m 755 remotepurge $(DESTDIR)$(cyrus_prefix)/bin
+	$(INSTALL) -s -m 755 remotepurge $(DESTDIR)$(service_path)
 
 .c.o:
 	$(CC) -c $(CPPFLAGS) $(DEFS) $(CFLAGS) $<

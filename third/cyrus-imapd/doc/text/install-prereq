@@ -2,7 +2,7 @@ Prerequisites and other notes
 
     The following programs and/or packages are required. 
 
-      * libsasl, version 2.1.0 or higher. To obtain libsasl, ftp it from
+      * libsasl, version 2.1.7 or higher. To obtain libsasl, ftp it from
         ftp.andrew.cmu.edu. Earlier versions of SASL will not work; please
         get the latest one. Configure SASL so that it supports whatever
         authentication method your site uses. Please pay careful attention
@@ -46,12 +46,8 @@ Prerequisites and other notes
         Kerberos library, it's likely that it will work well with Cyrus. 
       * We recommend using an MTA (mail transfer agent) that supports LMTP
         (local mail transfer protocol). We use Sendmail and recommend
-        version 8.10.0 or higher, available from http://www.sendmail.org.
+        version 8.12.8 or higher, available from http://www.sendmail.org.
         Others have reported success with Postfix. 
-      * If you want to export netnews newsgroups using IMAP, the IMAP
-        server must receive newsgroups with the INN news server. We are
-        also working on patches to the INN news server to allow it to
-        deliver newsgroups via LMTP. 
 
     The following programs and/or packages are recommended: 
 

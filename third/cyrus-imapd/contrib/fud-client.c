@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: fud-client.c,v 1.1.1.1 2002-10-13 18:01:18 ghudson Exp $ */
+/* $Id: fud-client.c,v 1.1.1.2 2004-02-23 22:53:14 rbasch Exp $ */
 
 /*  This is an example client for the experimental fud service. 
     For this to work, the mailbox must have the local ACL bit 0 enabled

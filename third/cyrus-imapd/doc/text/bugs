@@ -61,9 +61,6 @@ other utilities
 
 libraries
 
-      * libacap should use protection layers. 
-      * does libacap leak memory? 
-
                      Things we want to do
 
       * Implement the IMAP VIEW extension. 

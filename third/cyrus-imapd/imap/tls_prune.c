@@ -1,7 +1,7 @@
 /* 
  * tls_prune.c -- program to prune TLS session db of expired sessions
  *
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,22 +40,20 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: tls_prune.c,v 1.1.1.1 2002-10-13 18:00:02 ghudson Exp $ */
+/* $Id: tls_prune.c,v 1.1.1.2 2004-02-23 22:54:43 rbasch Exp $ */
 
 #include <config.h>
 
 #include <stdio.h>
 #include <unistd.h>
 
-#include "tls.h"
-#include "imapconf.h"
 #include "exitcodes.h"
+#include "global.h"
+#include "tls.h"
+#include "xmalloc.h"
 
-void fatal(const char *message, int code)
-{
-    fprintf(stderr, "fatal error: %s\n", message);
-    exit(code);
-}
+/* global state */
+const int config_need_data = 0;
 
 void usage(void)
 {
@@ -63,11 +61,10 @@ void usage(void)
     exit(-1);
 }
 
-
 int main(int argc, char *argv[])
 {
     extern char *optarg;
-    int opt;
+    int opt,r;
     char *alt_config = NULL;
 
     if (geteuid() == 0) fatal("must run as the Cyrus user", EC_USAGE);
@@ -84,7 +81,11 @@ int main(int argc, char *argv[])
 	}
     }
 
-    config_init(alt_config, "tls_prune");
+    cyrus_init(alt_config, "tls_prune");
 
-    return tls_prune_sessions();
+    r = tls_prune_sessions();
+
+    cyrus_done();
+
+    return r;
 }

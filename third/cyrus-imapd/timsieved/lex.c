@@ -1,10 +1,10 @@
 /* lex.c -- lexer for timsieved
  * Tim Martin
  * 9/21/99
- * $Id: lex.c,v 1.1.1.2 2003-02-14 21:38:12 ghudson Exp $
+ * $Id: lex.c,v 1.1.1.3 2004-02-23 22:54:57 rbasch Exp $
  */
 /*
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -59,10 +59,11 @@
 #include "codes.h"
 #include "mystring.h"
 #include "actions.h"
-#include "imapconf.h"
+#include "libconfig.h"
+#include "global.h"
 #include "xmalloc.h"
 
-int token_lookup (char *str, int len)
+int token_lookup (char *str, int len __attribute__((unused)))
 {
     switch (*str) {
     case 'a':
@@ -95,7 +96,7 @@ int token_lookup (char *str, int len)
 
     case 's':
 	if (strcmp(str, "setactive")==0) return SETACTIVE;
-	if (strcmp(str, "starttls")==0 && tls_enabled("sieve"))
+	if (strcmp(str, "starttls")==0 && tls_enabled())
 	    return STARTTLS;
 	break;
     }
@@ -136,7 +137,7 @@ char *buffer;
 
 int lex_init(void)
 {
-  maxscriptsize = config_getint("sieve_maxscriptsize", 32);
+  maxscriptsize = config_getint(IMAPOPT_SIEVE_MAXSCRIPTSIZE);
   maxscriptsize *= 1024;
 
   buffer = (char *) xmalloc(maxscriptsize);

@@ -1,7 +1,7 @@
 /* telemetry.c -- common server telemetry
- * $Id: telemetry.c,v 1.1.1.1 2002-10-13 18:05:12 ghudson Exp $
+ * $Id: telemetry.c,v 1.1.1.2 2004-02-23 22:54:42 rbasch Exp $
  *
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -46,25 +46,39 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <time.h>
 #include <string.h>
 
 #include "prot.h"
-#include "imapconf.h"
+#include "global.h"
 
 /* create telemetry log; return fd of log */
 int telemetry_log(const char *userid, struct protstream *pin, 
-		  struct protstream *pout)
+		  struct protstream *pout, int usetimestamp)
 {
     char buf[1024];
     int fd = -1;
     time_t now;
 
-    snprintf(buf, sizeof(buf), "%s%s%s/%lu", 
-	     config_dir, FNAME_LOGDIR, userid, (unsigned long) getpid());
+    if(usetimestamp) {
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	/* use sec.clocks */
+	snprintf(buf, sizeof(buf), "%s%s%s/%lu.%lu",
+		 config_dir, FNAME_LOGDIR, userid,
+		 (unsigned long)tv.tv_sec, (unsigned long)tv.tv_usec);
+    } else {
+	/* use pid */
+	snprintf(buf, sizeof(buf), "%s%s%s/%lu", 
+		 config_dir, FNAME_LOGDIR, userid, (unsigned long)
+		 getpid());
+    }
+
     fd = open(buf, O_CREAT | O_APPEND | O_WRONLY, 0644);
 
     if (fd != -1) {

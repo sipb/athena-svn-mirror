@@ -1,6 +1,6 @@
 /* seen.h -- abstract interface for /Recent and /Seen information
-   $Id: seen.h,v 1.1.1.1 2002-10-13 18:01:04 ghudson Exp $
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * $Id: seen.h,v 1.1.1.2 2004-02-23 22:54:42 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -46,9 +46,12 @@
 
 struct seen;
 
+#define SEEN_CREATE 0x01
+
 /* get a database handle corresponding to (mailbox, user) pair */
 int seen_open(struct mailbox *mailbox, 
-	      const char *user, 
+	      const char *user,
+	      int flags,
 	      struct seen **seendbptr);
 
 /* read an entry from 'seendb' */
@@ -81,6 +84,7 @@ int seen_copy(struct mailbox *oldmailbox,struct mailbox *newmailbox);
 /* called on user operations */
 int seen_create_user(const char *user);
 int seen_delete_user(const char *user);
+int seen_rename_user(const char *olduser, const char *newuser);
 
 int seen_reconstruct(struct mailbox *mailbox,
 		     time_t report_time,

@@ -1,8 +1,8 @@
 /* mbpath.c -- help the sysadmin to find the path matching the mailbox
  *
- * $Id: mbpath.c,v 1.1.1.2 2003-02-14 21:38:30 ghudson Exp $
+ * $Id: mbpath.c,v 1.1.1.3 2004-02-23 22:54:42 rbasch Exp $
  * 
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,7 +42,7 @@
  *
  */
 
-/* static char _rcsid[] = "$Id: mbpath.c,v 1.1.1.2 2003-02-14 21:38:30 ghudson Exp $"; */
+/* static char _rcsid[] = "$Id: mbpath.c,v 1.1.1.3 2004-02-23 22:54:42 rbasch Exp $"; */
 
 #include <config.h>
 
@@ -64,7 +64,7 @@
 #include "prot.h"
 #include "imparse.h"
 #include "lock.h"
-#include "imapconf.h"
+#include "global.h"
 #include "exitcodes.h"
 #include "imap_err.h"
 #include "mailbox.h"
@@ -74,15 +74,8 @@
 extern int optind;
 extern char *optarg;
 
-void
-fatal(const char *s, int code) 
-{
-  if (s) {
-    fprintf(stderr,"%s\n",s);
-  }
-  mboxlist_done();
-  exit(code);
-}
+/* config.c stuff */
+const int config_need_data = 0;
 
 static int 
 usage(void) {
@@ -116,7 +109,7 @@ main(int argc, char **argv)
     }
   }
 
-  config_init(alt_config, "mbpath");
+  cyrus_init(alt_config, "mbpath");
 
   mboxlist_init(0);
   mboxlist_open(NULL);
@@ -142,8 +135,10 @@ main(int argc, char **argv)
   mboxlist_close();
   mboxlist_done();
 
-  exit(0);
+  cyrus_done();
+
+  return 0;
 }
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/cyrus-imapd/imap/mbpath.c,v 1.1.1.2 2003-02-14 21:38:30 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/cyrus-imapd/imap/mbpath.c,v 1.1.1.3 2004-02-23 22:54:42 rbasch Exp $ */
 

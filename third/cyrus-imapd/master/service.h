@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: service.h,v 1.1.1.1 2002-10-13 18:01:24 ghudson Exp $ */
+/* $Id: service.h,v 1.1.1.2 2004-02-23 22:54:47 rbasch Exp $ */
 
 #ifndef SERVICE_H
 #define SERVICE_H
@@ -51,7 +51,8 @@ enum {
 enum {
     MASTER_SERVICE_AVAILABLE = 0x01,
     MASTER_SERVICE_UNAVAILABLE = 0x02,
-    MASTER_SERVICE_CONNECTION = 0x03
+    MASTER_SERVICE_CONNECTION = 0x03,
+    MASTER_SERVICE_CONNECTION_MULTI = 0x04
 };
 
 extern int service_init(int argc, char **argv, char **envp);
@@ -62,6 +63,11 @@ extern int service_abort(int error);
 enum {
     MAX_USE = 250,
     REUSE_TIMEOUT = 60
+};
+
+struct notify_message {
+    int message;
+    pid_t service_pid;
 };
 
 #endif

@@ -40,7 +40,8 @@
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 # OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 # 
-# $Id: Makefile.in,v 1.1.1.1 2002-10-13 18:01:21 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.2 2004-02-23 22:56:06 rbasch Exp $
+
 srcdir = @srcdir@
 VPATH = @srcdir@
 
@@ -48,11 +49,11 @@ CC = @CC@
 INSTALL = @INSTALL@
 RANLIB = @RANLIB@
 
-DEFS = @DEFS@
+DEFS = @DEFS@ @LOCALDEFS@
 CPPFLAGS = -I. -I.. -I$(srcdir) -I$(srcdir)/../lib -I$(srcdir)/../et @CPPFLAGS@  @SASLFLAGS@
 LIBS = @LIBS@ 
-IMAP_LIBS = @IMAP_LIBS@
-DEPLIBS = ../lib/libcyrus.a @DEPLIBS@
+IMAP_LIBS = @IMAP_LIBS@ @LIB_RT@
+DEPLIBS = ../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@
 
 CFLAGS = -g
 LDFLAGS = -g @LDFLAGS@
@@ -72,6 +73,7 @@ all: imtest
 install:
 	$(INSTALL) -s -m 755 imtest $(DESTDIR)$(exec_prefix)/bin
 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/pop3test
+	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/nntptest
 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/lmtptest
 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/smtptest
 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/mupdatetest

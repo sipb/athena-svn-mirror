@@ -22,11 +22,32 @@ Cyrus IMAP Server FAQ
         Cyrus was designed to use a local filesystem with Unix semantics
         and a working mmap()/write() combination. AFS doesn't provide these
         semantics so won't work correctly. 
-      * Virtual hosting - This will be supported starting in Cyrus 2.2. 
+      * Virtual hosting - See virtual domains configuration. 
       * dots in userids - you can have a '.' in your username IF, AND ONLY
         IF, you use the UNIX hierarchy convention. 
-      * renaming users - nope, not supported. 
-      * plus addressing 
+      * renaming users - Supported, but try to make sure that the user is
+        not, and can not login when doing the rename. Otherwise user-meta
+        may get corrupted and/or out of sync. 
+      * plus addressing - Plus addressing allows direct delivery to a
+        particular mailbox (other than an INBOX). This is done in two ways. 
+
+        The first way allows delviery to a subfolder of a specific user's
+        INBOX. This is done via an address of the form:
+        username+mailfolder@domain, which will deliver to the user's
+        INBOX.mailfolder folder (or altnamespace equivalent). This
+        submailbox must allow the posting user the 'p' right (generally,
+        this means 'anyone' must have the 'p' right), otherwise the message
+        will just be filed into the user's INBOX. 
+
+        The second way is to form an address like
+        [postuser]+mailfolder@domain. This will deliver into the mailbox
+        'mailfolder'. [postuser] is the string specified in the imapd.conf
+        option of the same name, and may be the empty string. As before,
+        the posting user will need to have the 'p' right on the mailbox. 
+
+        For both methods, if 'mailfolder' is more than one level deep, you
+        will need to conform to the hierarchy separator appropriate to your
+        site. 
       * Performance/Capacity/Scaling - See the performance guide. 
 
 Troubleshooting
@@ -76,7 +97,8 @@ Troubleshooting
             
 
             A: Remove all imap, pop, lmtp and sieve lines from
-            [x]inetd.conf and restart [x]inetd. 
+            [x]inetd.conf and restart [x]inetd. Cyrus is run out of its own
+            "master" process. 
     Q: How do I use different SSL/TLS certificates for imap and pop? 
             
 
@@ -128,4 +150,58 @@ Troubleshooting
 
             Berkeley db 4.0 has a bug where the number of lockers isn't
             decremented properly, causing this number to be unreliable. 
+    Q: All of the 8bit characters in the headers of messages that I receive
+            are being changed to 'X's. What's going on? 
+            
+
+            A: 8-bit characters are illegal in message headers. Following
+            the principal of "be liberal in what you accept, and strict in
+            what you send" cyrus converts them to Xs. (Without a character
+            set, having the 8-bit characters replaced with Xs is just as
+            good as having them be any other 8-bit character, especially
+            for sorting and searching). Alternatively, you can set
+            "reject8bit: t" in imapd.conf to reject the messages outright.
+            It might also be reasonable for cyrus to support the use of a
+            default character set, however thus far no one has done the
+            work to do so (it would also involve QP-encoding the corrupted
+            headers). 
+    Q: Why can't I delete any messages from my over-quota mailbox? I'm
+            using a client with a 'trash folder'. 
+            
+
+            A: Trash folders, as they are commonly implemented (as an
+            actual IMAP mailbox), do not fit the IMAP delete/expunge model
+            very well. In fact, naive client implementations will get stuck
+            in a situation where they cannot delete a message from a
+            mailbox because they try to COPY it to the trash folder before
+            deleting the message. This operation will fail due to the
+            mailbox being over quota. This is separate from the fact that a
+            specific mailbox name is not interoperable between clients (one
+            might call it 'trash', another 'Trash', another 'Recycle Bin',
+            etc) 
+
+            Given the lack of protocol support for a trash folder, this is
+            mostly a quality-of-implementation issue on the client side.
+            There are a few options here: 
+
+              * Contact your client vendor to have the broken client fixed
+                (one possibility is to have the client ask the user if they
+                wish to permanantly delete the message if the COPY
+                operation fails). 
+              * Stop using the 'trash mailbox' feature of your client (if
+                possible). 
+              * Set a separate quota root on the 'trash folders' of users.
+                This last option is significantly harder to do correctly,
+                since it assumes that all clients that make use of a trash
+                folder do so with the same folder name. 
+
+    Q: How do I stop Cyrus from advertising the DIGEST-MD5 and CRAM-MD5
+            shared secret SASL mechanisms? 
+            
+
+            A: Not really a Cyrus IMAPd question, this can be fixed by just
+            removing the SASL plugins from where Cyrus SASL installed them
+            (if no other applications require them), or by using the
+            sasl_mech_list imapd.conf option to list only the mechanisms
+            that you require. 
 

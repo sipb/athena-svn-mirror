@@ -1,7 +1,7 @@
 /* masterconfig.c -- Configuration routines for master process
- $Id: masterconf.c,v 1.1.1.2 2003-02-14 21:38:23 ghudson Exp $
- 
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * $Id: masterconf.c,v 1.1.1.3 2004-02-23 22:55:29 rbasch Exp $
+ * 
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -52,13 +52,15 @@
 #include <sys/stat.h>
 #include <sysexits.h>
 
+#include "libconfig.c"
+
 #if HAVE_UNISTD_H
 # include <unistd.h>
 #endif
 
 #include "masterconf.h"
 
-#define CONFIG_FILENAME "/etc/cyrus.conf"
+extern const char *MASTER_CONFIG_FILENAME;
 
 struct configlist {
     char *key;
@@ -67,9 +69,33 @@ struct configlist {
 
 extern void fatal(const char *buf, int code);
 
-int masterconf_init(const char *ident)
+int masterconf_init(const char *ident, const char *alt_config)
 {
-    openlog(ident, LOG_PID, LOG_LOCAL6);
+    char *buf;
+    const char *prefix;
+
+    /* Open the log file with the appropriate facility so we 
+     * correctly log any config errors */
+    openlog(ident, LOG_PID, SYSLOG_FACILITY);
+
+    config_ident = ident;
+    config_read(alt_config);
+
+    prefix = config_getstring(IMAPOPT_SYSLOG_PREFIX);
+    
+    if(prefix) {
+	int size = strlen(prefix) + 1 + strlen(ident) + 1;
+	buf = xmalloc(size);
+	strlcpy(buf, prefix, size);
+	strlcat(buf, "/", size);
+	strlcat(buf, ident, size);
+
+	/* Reopen the log with the new prefix */
+	closelog();
+	openlog(buf, LOG_PID, SYSLOG_FACILITY);
+
+        /* don't free the openlog() string! */
+    }
 
     return 0;
 }
@@ -101,7 +127,7 @@ const char *masterconf_getstring(struct entry *e, const char *key,
 	    }
 	    if (*p != '"') {
 		sprintf(k, "configuration file %s: missing \" on line %d",
-			CONFIG_FILENAME, e->lineno);
+			MASTER_CONFIG_FILENAME, e->lineno);
 		fatal(k, EX_CONFIG);
 	    }
 	} else {
@@ -197,10 +223,10 @@ void masterconf_getsection(const char *section, masterconf_process *f,
     int lineno = 0;
     char buf[4096];
 
-    infile = fopen(CONFIG_FILENAME, "r");
+    infile = fopen(MASTER_CONFIG_FILENAME, "r");
     if (!infile) {
 	snprintf(buf, sizeof(buf), "can't open configuration file %s: %s",
-		CONFIG_FILENAME, strerror(errno));
+		MASTER_CONFIG_FILENAME, strerror(errno));
 	fatal(buf, EX_CONFIG);
     }
 

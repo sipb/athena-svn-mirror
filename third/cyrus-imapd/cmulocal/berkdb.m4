@@ -1,6 +1,6 @@
-dnl $Id: berkdb.m4,v 1.1.1.2 2003-02-14 21:39:31 ghudson Exp $
+dnl $Id: berkdb.m4,v 1.1.1.3 2004-02-23 22:55:37 rbasch Exp $
 
-AC_DEFUN(CMU_DB_INC_WHERE1, [
+AC_DEFUN([CMU_DB_INC_WHERE1], [
 saved_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$saved_CPPFLAGS -I$1"
 AC_TRY_COMPILE([#include <db.h>],
@@ -12,7 +12,7 @@ ac_cv_found_db_inc=no)
 CPPFLAGS=$saved_CPPFLAGS
 ])
 
-AC_DEFUN(CMU_DB_INC_WHERE, [
+AC_DEFUN([CMU_DB_INC_WHERE], [
    for i in $1; do
       AC_MSG_CHECKING(for db headers in $i)
       CMU_DB_INC_WHERE1($i)
@@ -31,7 +31,7 @@ AC_DEFUN(CMU_DB_INC_WHERE, [
 # Test for lib files
 #
 
-AC_DEFUN(CMU_DB3_LIB_WHERE1, [
+AC_DEFUN([CMU_DB3_LIB_WHERE1], [
 AC_REQUIRE([CMU_AFS])
 AC_REQUIRE([CMU_KRB4])
 saved_LIBS=$LIBS
@@ -42,7 +42,7 @@ AC_TRY_LINK(,
 ac_cv_found_db_3_lib=no)
 LIBS=$saved_LIBS
 ])
-AC_DEFUN(CMU_DB4_LIB_WHERE1, [
+AC_DEFUN([CMU_DB4_LIB_WHERE1], [
 AC_REQUIRE([CMU_AFS])
 AC_REQUIRE([CMU_KRB4])
 saved_LIBS=$LIBS
@@ -54,7 +54,7 @@ ac_cv_found_db_4_lib=no)
 LIBS=$saved_LIBS
 ])
 
-AC_DEFUN(CMU_DB_LIB_WHERE, [
+AC_DEFUN([CMU_DB_LIB_WHERE], [
    for i in $1; do
       AC_MSG_CHECKING(for db libraries in $i)
 if test "$enable_db4" = "yes"; then
@@ -76,7 +76,7 @@ fi
     done
 ])
 
-AC_DEFUN(CMU_USE_DB, [
+AC_DEFUN([CMU_USE_DB], [
 AC_ARG_WITH(db,
 	[  --with-db=PREFIX      Compile with db support],
 	[if test "X$with_db" = "X"; then
@@ -200,7 +200,7 @@ dnl We will also set $dblib to "berkeley" if we are successful, "no" otherwise.
 
 dnl this is unbelievably painful due to confusion over what db-3 should be
 dnl named and where the db-3 header file is located.  arg.
-AC_DEFUN(CYRUS_BERKELEY_DB_CHK_LIB,
+AC_DEFUN([CYRUS_BERKELEY_DB_CHK_LIB],
 [
 	BDB_SAVE_LIBS=$LIBS
 
@@ -211,7 +211,7 @@ AC_DEFUN(CYRUS_BERKELEY_DB_CHK_LIB,
 	    BDB_LIBADD=""
 	fi
 
-        for dbname in db-4.1 db4.1 db-4.0 db4.0 db-4 db4 db-3.3 db3.3 db-3.2 db3.2 db-3.1 db3.1 db-3 db3 db
+        for dbname in db-4.2 db4.2 db42 db-4.1 db4.1 db41 db-4.0 db4.0 db-4 db40 db4 db-3.3 db3.3 db33 db-3.2 db3.2 db32 db-3.1 db3.1 db31 db-3 db30 db3 db
           do
             AC_CHECK_LIB($dbname, db_create, BDB_LIBADD="$BDB_LIBADD -l$dbname";
               dblib="berkeley"; break, dblib="no")
@@ -225,19 +225,19 @@ AC_DEFUN(CYRUS_BERKELEY_DB_CHK_LIB,
 	LIBS=$BDB_SAVE_LIBS
 ])
 
-AC_DEFUN(CYRUS_BERKELEY_DB_OPTS,
+AC_DEFUN([CYRUS_BERKELEY_DB_OPTS],
 [
 AC_ARG_WITH(bdb-libdir,
 	[  --with-bdb-libdir=DIR   Berkeley DB lib files are in DIR],
 	with_bdb_lib=$withval,
-	with_bdb_lib=none)
+	[ test "${with_bdb_lib+set}" = set || with_bdb_lib=none])
 AC_ARG_WITH(bdb-incdir,
 	[  --with-bdb-incdir=DIR   Berkeley DB include files are in DIR],
 	with_bdb_inc=$withval,
-	with_bdb_inc=none)
+	[ test "${with_bdb_inc+set}" = set || with_bdb_inc=none ])
 ])
 
-AC_DEFUN(CYRUS_BERKELEY_DB_CHK,
+AC_DEFUN([CYRUS_BERKELEY_DB_CHK],
 [
 	AC_REQUIRE([CYRUS_BERKELEY_DB_OPTS])
 

@@ -1,6 +1,6 @@
 /* gmtoff.h -- Get GMT offset
- $Id: gmtoff.h,v 1.1.1.1 2002-10-13 18:04:30 ghudson Exp $
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ $Id: gmtoff.h,v 1.1.1.2 2004-02-23 22:53:25 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

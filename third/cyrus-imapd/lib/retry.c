@@ -1,7 +1,7 @@
 /* retry.c -- keep trying write system calls
- $Id: retry.c,v 1.1.1.2 2003-02-14 21:38:22 ghudson Exp $
- 
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * $Id: retry.c,v 1.1.1.3 2004-02-23 22:56:03 rbasch Exp $
+ * 
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -77,7 +77,7 @@ int retry_read(int fd, char *buf, size_t nbyte)
 
 	nread += n;
 
-	if (((size_t) nread) >= nbyte) return nread;
+	if (((size_t) n) >= nbyte) return nread;
 
 	buf += n;
 	nbyte -= n;

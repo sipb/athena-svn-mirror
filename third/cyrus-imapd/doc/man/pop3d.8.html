@@ -1,78 +1,191 @@
 <html>
 <head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
 <meta name="Content-Style" content="text/css">
+<title>POP3D</title>
 </head>
 <body>
+
+<h1 align=center>POP3D</h1>
 <a href="#NAME">NAME</a><br>
 <a href="#SYNOPSIS">SYNOPSIS</a><br>
 <a href="#DESCRIPTION">DESCRIPTION</a><br>
 <a href="#OPTIONS">OPTIONS</a><br>
 <a href="#FILES">FILES</a><br>
-<a href="#/etc/imapd.conf">/etc/imapd.conf</a><br>
 <a href="#SEE ALSO">SEE ALSO</a><br>
-<!-- Creator     : groff version 1.15  -->
-<!-- CreationDate: Mon Feb  3 16:31:15 2003
- -->
-<!-- Total number of pages: 1 -->
-<!-- Page: 1 -->
-<!-- left  margin: 100 -->
-<!-- right margin: 750 -->
-<a name="NAME"></a><h2>NAME</h2><p><font size=3>pop3d - POP3 server process</p>
-<a name="SYNOPSIS"></a><h2>SYNOPSIS</h2><p><font size=3><B>pop3d</B> <font size=3>[ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] [ <font size=3><B>-U</B> <font size=3><I>uses</I> <font size=3>] [ <font size=3><B>-T</B> <font size=3><I>timeout</I> <font size=3>] [ <font size=3><B>-D</B> <font size=3>]<br>
-<span style=" text-indent: 0.1800in;"></span>[ <font size=3><B>-s</B> <font size=3>] [ <font size=3><B>-k</B> <font size=3>]</p>
-<a name="DESCRIPTION"></a><h2>DESCRIPTION</h2><p><font size=3><I>Pop3d</I> <font size=3>is a POP3 server. It accepts commands on its standard input and responds on its standard output. It MUST invoked by <font size=3><I>master</I><font size=3>(8) with those descriptors attached to a remote client connection.</p>
-<p><font size=3><I>Pop3d</I> <font size=3>reads its configuration options out of the <font size=3><I>imapd.conf</I><font size=3>(5) file unless specified otherwise by <font size=3><B>-C</B><font size=3>.</p>
-<p><font size=3>If the directory log/<font size=3><I>user</I> <font size=3>exists under the directory specified in the <font size=3><I>configdirectory</I> <font size=3>configuration option, then <font size=3><I>pop3d</I> <font size=3>will create protocol telemetry logs for sessions authenticating as <font size=3><I>user</I><font size=3>. The telemetry logs will be stored in the log/<font size=3><I>user</I> <font size=3>directory with a filename of the <font size=3><I>pop3d</I> <font size=3>process-id.</p>
-<a name="OPTIONS"></a><h2>OPTIONS</h2>
-<table width="100%"  rules="none"  frame="none"  cols="3">
+
+<hr>
+<!-- Creator     : groff version 1.18 -->
+<!-- CreationDate: Thu Jan 15 09:36:53 2004 -->
+<a name="NAME"></a>
+<h2>NAME</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="12.6154%">
-<p><font size=3><B>-C</B> <font size=3><I>config-file</p>
-</I><p><font size=3><B>-U</B> <font size=3><I>uses</p>
-</I></td>
-<td valign="top" align="left"  width="7.3846%">
+<td width="10%"></td>
+<td width="89%">
+<p>pop3d &minus; POP3 server process</p>
 </td>
-<td valign="top" align="left"  width="80.0000%">
-<p><font size=3>Read configuration options from <font size=3><I>config-file</I><font size=3>.</p>
-<p><font size=3>The maximum number of times that the process should be used for new connections before shutting down. The default is 250.</p>
-</td>
-</tr>
+</table></p>
+<a name="SYNOPSIS"></a>
+<h2>SYNOPSIS</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="12.6154%">
-<p><font size=3><B>-T</B> <font size=3><I>timeout</p>
-</I></td>
-<td valign="top" align="left"  width="7.3846%">
+<td width="10%"></td>
+<td width="89%">
+<p><b>pop3d</b> [ <b>&minus;C</b> <i>config-file</i> ] [
+<b>&minus;U</b> <i>uses</i> ] [ <b>&minus;T</b>
+<i>timeout</i> ] [ <b>&minus;D</b> ]<br>
+[ <b>&minus;s</b> ] [ <b>&minus;k</b> ]</p>
 </td>
-<td valign="top" align="left"  width="80.0000%">
-<p><font size=3>The number of seconds that the process will wait for a new connection before shutting down. Note that a value of 0 (zero) will disable the timeout. The default is 60.</p>
-</td>
-</tr>
+</table></p>
+<a name="DESCRIPTION"></a>
+<h2>DESCRIPTION</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="12.6154%">
-<p><font size=3><B>-D</p>
-</B><p><font size=3><B>-s</p>
-</B></td>
-<td valign="top" align="left"  width="7.3846%">
+<td width="10%"></td>
+<td width="89%">
+<p><i>Pop3d</i> is a POP3 server. It accepts commands on its
+standard input and responds on its standard output. It MUST
+invoked by <i>master</i>(8) with those descriptors attached
+to a remote client connection.</p>
+<!-- INDENTATION -->
+<p><i>Pop3d</i> reads its configuration options out of the
+<i>imapd.conf</i>(5) file unless specified otherwise by
+<b>-C</b>.</p>
+<!-- INDENTATION -->
+<p>If the directory log/<i>user</i> exists under the
+directory specified in the <i>configdirectory</i>
+configuration option, then <i>pop3d</i> will create protocol
+telemetry logs for sessions authenticating as <i>user</i>.
+The telemetry logs will be stored in the log/<i>user</i>
+directory with a filename of the <i>pop3d</i>
+process-id.</p>
 </td>
-<td valign="top" align="left"  width="80.0000%">
-<p><font size=3>Run external debugger specified in debug_command.</p>
-<p><font size=3>Serve POP3 over SSL (pop3s). All data to and from <font size=3><I>pop3d</I> <font size=3>is encrypted using the Secure<br>
-Sockets Layer.</p>
-</td>
-</tr>
+</table></p>
+<a name="OPTIONS"></a>
+<h2>OPTIONS</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
 <tr valign="top" align="left">
-<td valign="top" align="left"  width="12.6154%">
-<p><font size=3><B>-k</p>
-</B></td>
-<td valign="top" align="left"  width="7.3846%">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;C</b> <i>config-file</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>Read configuration options from <i>config-file</i>.</p>
 </td>
-<td valign="top" align="left"  width="80.0000%">
-<p><font size=3>Serve MIT's KPOP (Kerberized POP) protocol instead.</p>
-</td>
-</tr>
 </table>
-<br>
-<a name="FILES"></a><h2>FILES</h2><a name="/etc/imapd.conf"></a><h2>/etc/imapd.conf</h2><a name="SEE ALSO"></a><h2>SEE ALSO</h2><p><font size=3><B>imapd.conf(5)</B><font size=3>, <font size=3><B>master(8)</B><br>
-</p>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;U</b> <i>uses</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>The maximum number of times that the process should be
+used for new connections before shutting down. The default
+is 250.</p>
+</td>
+</table>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>&minus;T</b> <i>timeout</i></p></td>
+</table></p>
+<!-- INDENTATION -->
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="21%"></td>
+<td width="77%">
+<p>The number of seconds that the process will wait for a
+new connection before shutting down. Note that a value of 0
+(zero) will disable the timeout. The default is 60.</p>
+</td>
+</table>
+<!-- TABS -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="4" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="2%">
+
+<p><b>&minus;D</b></p>
+</td>
+<td width="7%"></td>
+<td width="77%">
+
+<p>Run external debugger specified in debug_command.</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="2%">
+
+<p><b>&minus;s</b></p>
+</td>
+<td width="7%"></td>
+<td width="77%">
+
+<p>Serve POP3 over SSL (pop3s). All data to and from
+<i>pop3d</i> is encrypted using the Secure Sockets
+Layer.</p>
+</td>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="2%">
+
+<p><b>&minus;k</b></p>
+</td>
+<td width="7%"></td>
+<td width="77%">
+
+<p>Serve MIT&rsquo;s KPOP (Kerberized POP) protocol
+instead.</p>
+</td>
+</table></p>
+<a name="FILES"></a>
+<h2>FILES</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>/etc/imapd.conf</b></p></td>
+</table></p>
+<a name="SEE ALSO"></a>
+<h2>SEE ALSO</h2>
+<!-- INDENTATION -->
+<p><table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="10%"></td>
+<td width="89%">
+<p><b>imapd.conf(5)</b>, <b>master(8)</b></p>
+</td>
+</table></p>
+<hr>
 </body>
 </html>

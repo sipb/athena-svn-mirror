@@ -1,6 +1,6 @@
 /* convert_code.h
  *
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,9 +38,10 @@
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
+
  */
 
-/* $Id: convert_code.h,v 1.1.1.1 2002-10-13 18:01:19 ghudson Exp $ */
+/* $Id: convert_code.h,v 1.1.1.2 2004-02-23 22:54:41 rbasch Exp $ */
 
 #ifndef CONVERT_CODE_H
 #define CONVERT_CODE_H

@@ -1,9 +1,9 @@
 dnl libloguse.m4--LOGUSE libraries and includes
 dnl Derrick Brashear
 dnl from KTH krb and Arla
-dnl $Id: libloguse.m4,v 1.1.1.2 2003-02-14 21:39:02 ghudson Exp $
+dnl $Id: libloguse.m4,v 1.1.1.3 2004-02-23 22:54:00 rbasch Exp $
 
-AC_DEFUN(CMU_LOGUSE_LIB_WHERE1, [
+AC_DEFUN([CMU_LOGUSE_LIB_WHERE1], [
 saved_LIBS=$LIBS
 LIBS="$saved_LIBS -L$1 -lloguse"
 AC_TRY_LINK(,
@@ -13,7 +13,7 @@ ac_cv_found_loguse_lib=no)
 LIBS=$saved_LIBS
 ])
 
-AC_DEFUN(CMU_LOGUSE_LIB_WHERE, [
+AC_DEFUN([CMU_LOGUSE_LIB_WHERE], [
    for i in $1; do
       AC_MSG_CHECKING(for loguse library in $i)
       CMU_LOGUSE_LIB_WHERE1($i)
@@ -28,7 +28,7 @@ AC_DEFUN(CMU_LOGUSE_LIB_WHERE, [
     done
 ])
 
-AC_DEFUN(CMU_LOGUSE, [
+AC_DEFUN([CMU_LOGUSE], [
 AC_REQUIRE([CMU_SOCKETS])
 AC_ARG_WITH(loguse,
 	[  --with-loguse=PREFIX      Compile with LOGUSE support],

@@ -211,8 +211,12 @@ Access Rights
 Identifiers
 
     The identifier part of an ACL entry specifies the user or group for
-    which the entry applies. The meaning of an identifier usually depends
-    on the authorization mechanism being used. 
+    which the entry applies. 
+
+    There are two special identifiers, "anonymous", and "anyone", which are
+    explained below. The meaning of other identifiers usually depends on
+    the authorization mechanism being used (selected by --with-auth at
+    compile time, defaulting to Unix). 
 
 "anonymous" and "anyone"
 
@@ -223,15 +227,27 @@ Identifiers
 
 Kerberos vs. Unix Authorization
 
-    The Cyrus IMAP server comes with two authorization mechanisms, one for
-    use with Unix "/etc/passwd" files, one for use with Kerberos. 
+    The Cyrus IMAP server comes with four authorization mechanisms, one is
+    compatible with Unix-style ("/etc/passwd") authorization, one for use
+    with Kerberos 4, one for use with Kerberos 5, and one for use with an
+    external authorization process (ptloader) which can interface with
+    other group databases (e.g. AFS PTS groups, LDAP Groups, etc). 
 
-    In the Unix authorization mechanism, identifiers are either a userid
-    listed in "/etc/passwd" or the string "group": followed by a group
-    listed in "/etc/group". Thus: 
+    Note that authorization is not authentication. Authentication is the
+    act of proving who you are. Authorization is the act of determining
+    what rights you have. Authentication is discussed in the Login
+    Authentication part of this document. 
+
+    In the Unix authorization mechanism, identifiers are either a valid
+    userid or the string "group": followed by a group listed in
+    "/etc/group". Thus: 
 
         root                Refers to the user root
         group:staff         Refers to the group staff
+
+    It is also possible to use unix groups with users authenticated through
+    a non-/etc/passwd backend. Note that using unix groups in this way
+    (without associated /etc/passwd entries) is not recommended. 
 
     Using the Kerberos authorization mechanism, identifiers are of the
     form: 
@@ -265,7 +281,9 @@ Kerberos vs. Unix Authorization
     the local identity "bovik". 
 
     A site may wish to write their own authorization mechanism, perhaps to
-    implement a local group mechanism. 
+    implement a local group mechanism. If it does so (by implementing an
+    auth_[whatever] module), it will dictate its own form and meaning of
+    identifiers. 
 
 Negative Rights
 
@@ -304,12 +322,16 @@ Initial ACLs for Newly Created Mailboxes
     user's INBOX starts off with a single entry granting all rights to the
     user. When a non-user mailbox is created and does not have a parent,
     its ACL is initialized to the value of the "defaultacl" option in
-    "/etc/imapd.conf" 
+    "/etc/imapd.conf"
+
+    Note that some rights are available implicitly, for example 'anonymous'
+    always has 'p' on user INBOXes, and users always have rights on
+    mailboxes within their INBOX hierarchy. 
 
 Login Authentication
 
-    This section discusses different types of logins that can be used with
-    IMAP. 
+    This section discusses different types of authentication (ways of
+    logging in) that can be used with Cyrus IMAP. 
 
     The Cyrus IMAP server uses the Cyrus SASL library for authentication.
     This section describes how to configure SASL with use with Cyrus imapd.
@@ -329,7 +351,7 @@ Plaintext Authentication
 
     The SASL library has several ways of verifying plaintext passwords
     Plaintext passwords are passed either by the IMAP LOGIN command or by
-    the SASL PLAIN mechanism. 
+    the SASL PLAIN mechanism (under a TLS layer). 
 
       * PAM 
       * Kerberos v4 Plaintext passwords are verified by obtaining a ticket
@@ -340,7 +362,18 @@ Plaintext Authentication
       * etc. 
 
     sasl_auto_transition automatically creates secrets for shared secret
-    authentication when given a password 
+    authentication when given a password. 
+
+    The method of plaintext password verification is always through the
+    SASL library, even in the case of the internal LOGIN command. This is
+    to allow the SASL library to be the only source of authentication
+    information. You'll want to look at the sasl_pwcheck_method option in
+    the SASL documentation to understand how to configure a plaintext
+    password verifier for your system. 
+
+    To disallow the use of plaintext passwords for authentication, you can
+    set allowplaintext: no in imapd.conf. This will still allow PLAIN under
+    TLS, but IMAP LOGIN commands will now fail. 
 
 Kerberos Logins
 
@@ -730,22 +763,39 @@ Configuration Directory
 
 Message Delivery
 
+    Mail transport agents such as Sendmail, Postfix, or Exim communicate
+    with the Cyrus server via LMTP (the Local Mail Transport Protocol)
+    implemented by the LMTP daemon. This can be done either directly by the
+    MTA (prefered, for performance reasons) or via the deliver LMTP client. 
+
 Local Mail Transfer Protocol
 
     LMTP, the Local Mail Transfer Protocol, is a variant of SMTP design for
-    transferring mail to the final message store. The Cyrus server
-    implements LMTP via the lmtpd daemon. LMTP can either be used over a
-    network via TCP or local via a UNIX domain socket. 
-
-    Many MTAs (such as the latest versions of Sendmail or Postfix) can
+    transferring mail to the final message store. LMTP allows MTAs to
     deliver "local" mail over a network. This is an easy optimization so
     that the IMAP server doesn't need to maintain a queue of messages or
     run an MTA. 
 
-    Authenticated final delivery is also supported in the form of LMTP
-    AUTH. If the final delivery isn't authenticated, it is treated (for the
-    purposes of checking ACLs) as if the "anonymous" user is attempting
-    delivery. 
+    The Cyrus server implements LMTP via the lmtpd daemon. LMTP can either
+    be used over a network via TCP or local via a UNIX domain socket. There
+    are security differnces between these two alternatives; read more below 
+
+    For final delivery via LMTP over a TCP socket, it is necessary to use
+    LMTP AUTH. This is accomplished using SASL to authenticate the
+    delivering user. If your mail server is performing delivery via LMTP
+    AUTH (that is, using a SASL mechanism), you will want their
+    authentication id to be an LMTP admins (either via the admins
+    imapd.conf option or via the <service>_admins option, typically
+    lmtp_admins). 
+
+    Alternatively you may deliver via LMTP to a unix domain socket, and the
+    connection will be preauthenticated as an administrative user (and
+    access control is accomplished by controlling access to the socket). 
+
+    Note that if a user has a sieve script, the sieve script runs
+    authorized as *that* user, and the rights of the posting user are
+    ignored for the purposes of determining the outcome of the sieve
+    script. 
 
 Single Instance Store
 

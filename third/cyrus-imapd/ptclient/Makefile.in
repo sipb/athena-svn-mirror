@@ -41,7 +41,7 @@
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 # OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: Makefile.in,v 1.1.1.2 2003-02-14 21:37:51 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.3 2004-02-23 22:55:21 rbasch Exp $
 # 
 srcdir = @srcdir@
 VPATH = @srcdir@
@@ -52,11 +52,19 @@ INSTALL = @INSTALL@
 RANLIB = @RANLIB@
 
 DEFS = @DEFS@
-CPPFLAGS = -I.. -I$(srcdir)/../lib @COM_ERR_CPPFLAGS@ @CPPFLAGS@
+CPPFLAGS = -I.. -I$(srcdir)/../imap -I$(srcdir)/../lib @COM_ERR_CPPFLAGS@ @CPPFLAGS@
 AFS_LDFLAGS = @AFS_LDFLAGS@ @COM_ERR_LDFLAGS@
 AFS_LIBS = @AFS_LIBS@
-LIBS = @KRB_LIBS@ @LIBS@ @COM_ERR_LIBS@
-DEPLIBS = ../lib/libcyrus.a @DEPLIBS@
+IMAP_LIBS = @IMAP_LIBS@ @LIB_RT@
+LIBS = $(IMAP_LIBS) @COM_ERR_LIBS@
+LIB_SASL = @LIB_SASL@
+LIB_WRAP = @LIB_WRAP@
+DEPLIBS = ../imap/libimap.a ../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@
+UTIL_LIBS = ../imap/mutex_fake.o ../imap/cli_fatal.o
+
+LDAP_LIBS=@LDAP_LIBS@
+LDAP_CPPFLAGS=@LDAP_CPPFLAGS@
+LDAP_LDFLAGS=@LDAP_LDFLAGS@
 
 CFLAGS = @CFLAGS@
 LDFLAGS = @LDFLAGS@
@@ -67,37 +75,46 @@ MAKEDEPEND = @MAKEDEPEND@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 cyrus_prefix = @cyrus_prefix@
+service_path = @service_path@
 
 EXTRA_PROGS = # ptextract pttest
-PROGS = ptexpire ptloader $(EXTRA_PROGS)
+PROGS = ptexpire ptloader ptdump $(EXTRA_PROGS)
+
+LIB_RT = @LIB_RT@
+
+SERVICE=../master/service.o
+SERVICETHREAD=../master/service-thread.o
 
 all: $(PROGS)
 
 install:
-	$(INSTALL) -m 755 ptloader $(DESTDIR)$(cyrus_prefix)/bin
-	$(INSTALL) -m 755 ptexpire $(DESTDIR)$(cyrus_prefix)/bin
-	$(INSTALL) -m 755 $(srcdir)/doptclient   $(DESTDIR)$(cyrus_prefix)/bin
+	$(INSTALL) -m 755 ptloader $(DESTDIR)$(service_path)
+	$(INSTALL) -m 755 ptexpire $(DESTDIR)$(service_path)
+	$(INSTALL) -m 755 ptdump $(DESTDIR)$(service_path)
 
 .c.o:
-	$(CC) -c $(CPPFLAGS) $(DEFS) $(CFLAGS) $<
+	$(CC) -c $(CPPFLAGS) $(LDAP_CPPFLAGS) $(DEFS) $(CFLAGS) $<
 
-ptloader: ptloader.o $(DEPLIBS)
-	$(CC) $(LDFLAGS) -o $@ ptloader.o ${AFS_LDFLAGS} $(AFS_LIBS) $(DEPLIBS) $(LIBS)
+ptloader: ptloader.o @WITH_PTS@.o ../imap/mutex_fake.o $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o $@ ptloader.o @WITH_PTS@.o ../imap/mutex_fake.o $(SERVICETHREAD) ${AFS_LDFLAGS} ${LDAP_LDFLAGS} $(AFS_LIBS) ${LDAP_LIBS} $(DEPLIBS) $(LIB_SASL) $(LIBS) $(LIB_WRAP) $(LIB_RT)
 
-ptloader.pure: ptloader.o $(DEPLIBS)
-	$(PURIFY) $(PUREARGS) $(CC) $(LDFLAGS) -o $@ ptloader.o ${AFS_LDFLAGS} $(AFS_LIBS) $(DEPLIBS) $(LIBS)
+ptloader.pure: ptloader.o @WITH_PTS@.o ../imap/mutex_fake.o $(DEPLIBS)
+	$(PURIFY) $(PUREARGS) $(CC) $(LDFLAGS) -o $@ ptloader.o @WITH_PTS@.o ../imap/mutex_fake.o $(SERVICETHREAD) ${AFS_LDFLAGS} ${LDAP_LDFLAGS} $(AFS_LIBS) ${LDAP_LIBS} $(DEPLIBS) $(LIB_SASL) $(LIBS) $(LIB_WRAP) $(LIB_RT)
 
-ptexpire: ptexpire.o $(DEPLIBS)
-	$(CC) $(LDFLAGS) -o $@ ptexpire.o $(DEPLIBS) $(LIBS)
+ptexpire: ptexpire.o $(DEPLIBS) $(UTIL_LIBS)
+	$(CC) $(LDFLAGS) -o $@ ptexpire.o $(UTIL_LIBS) $(DEPLIBS) $(LIB_SASL) $(LIBS) $(LIB_WRAP) $(LIB_RT)
 
-ptextract: ptextract.o $(DEPLIBS)
-	$(CC) $(LDFLAGS) -o $@ ptextract.o $(DEPLIBS) $(LIBS)
+ptexpire.pure: ptexpire.o $(DEPLIBS) $(UTIL_LIBS)
+	$(PURIFY) $(PUREARGS) $(CC) $(LDFLAGS) -o $@ ptexpire.o $(UTIL_LIBS) $(DEPLIBS) $(LIB_SASL) $(LIBS) $(LIB_WRAP) $(LIB_RT)
 
-ptexpire.pure: ptexpire.o $(DEPLIBS)
-	$(PURIFY) $(PUREARGS) $(CC) $(LDFLAGS) -o $@ ptexpire.o $(DEPLIBS) $(LIBS)
+ptdump: ptdump.o $(DEPLIBS) $(UTIL_LIBS)
+	$(CC) $(LDFLAGS) -o $@ ptdump.o $(UTIL_LIBS) $(DEPLIBS) $(LIB_SASL) $(LIBS) $(LIB_WRAP) $(LIB_RT)
 
-#pttest: pttest.o auth_krb_pts.o  $(DEPLIBS)
-#        $(CC) $(LDFLAGS) -o $@ pttest.o auth_krb_pts.o $(OBJS) $(DEPLIBS) $(LIBS)
+ptdump.pure: ptexpire.o $(DEPLIBS) $(UTIL_LIBS)
+	$(PURIFY) $(PUREARGS) $(CC) $(LDFLAGS) -o $@ ptdump.o $(UTIL_LIBS) $(DEPLIBS) $(LIB_SASL) $(LIBS) $(LIB_WRAP) $(LIB_RT)
+
+ptextract: ptextract.o $(DEPLIBS) $(UTIL_LIBS)
+	$(CC) $(LDFLAGS) -o $@ ptextract.o $(UTIL_LIBS) $(DEPLIBS) $(LIBS)
 
 clean:
 	rm -f *.o Makefile.bak $(PROGS) makedepend.log

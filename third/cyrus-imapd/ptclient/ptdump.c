@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,176 +39,89 @@
  *
  */
 #include <config.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-#include "auth_krb_pts.h"
+#include "auth_pts.h"
+#include "cyrusdb.h"
+#include "global.h"
+#include "libconfig.h"
 
-static char rcsid[] = "$Id: ptdump.c,v 1.1.1.1 2002-10-13 18:04:40 ghudson Exp $";
+static char rcsid[] = "$Id: ptdump.c,v 1.1.1.2 2004-02-23 22:55:46 rbasch Exp $";
 
-int 
-main(argc, argv)
-     int argc;
-     char *argv[];
+int config_need_data = 0;
+
+static int dump_p(void *rockp __attribute__((unused)),
+		    const char *key __attribute__((unused)),
+		    int keylen __attribute__((unused)),
+		    const char *data __attribute__((unused)),
+		    int datalen __attribute__((unused)))
 {
-  char fnamebuf[MAXPATHLEN];
-  char keyinhex[512];
-  HASHINFO info;
-  DB * ptdb;
-  char *thekey;
-  int i, j, found, fd, rc;
-  DBT key, data;
-  ptluser us;
-  size_t size;    
-  extern char *optarg;
-  int opt;
-  char *alt_file = NULL;
+    return 1;
+}
 
-  while ((opt = getopt(argc, argv, "f:")) != EOF) {
-    switch (opt) {
-    case 'f':
-      alt_file = optarg;
-      break;
-    case '?':
-      fprintf(stderr,"usage: -f"
-	      "\n\t-f <dbfile>\tAlternate location for the db file."
-	      "\n");
-      exit(-1);
-      break;
-    default:
-      break;
-      /* just pass through */
-    }
-  }
-
-  (void)memset(&info, 0, sizeof(info));
-
-  if (alt_file) {
-    printf("Using alternate file: %s\n", alt_file);
-    strcpy(fnamebuf, alt_file);
-  } else {
-    strcpy(fnamebuf, STATEDIR);
-    strcat(fnamebuf, PTS_DBFIL);
-  }
-
-  (void)memset(&key, 0, sizeof(key));
-  (void)memset(&data, 0, sizeof(data));
-
-  ptdb = dbopen(fnamebuf, O_RDONLY, 0, DB_HASH, &info);
-  if (!ptdb) {
-    fprintf(stderr, "ERROR: opening database %s: ", fnamebuf);
-    perror("");
-    exit(-1);
-  }
-
-  rc = SEQ(ptdb, &key, &data, R_FIRST);
-  if (rc < 0) {
-    fprintf(stderr, "Error reading database %s: ", fnamebuf);
-    perror("");
-    exit(-1);
-  }
-  if (rc) {
-    fprintf(stderr,"Database is empty\n");
-    exit(0);
-  }
-  thekey = key.data;
-  size = key.size;
-
-  for (i=0; i<size; i++) 
-    sprintf(keyinhex+(2*i), "%.2x", thekey[i]);
-
-  if (thekey[PTS_DB_HOFFSET] == 'H') {
-    printf( "key: %s\t", keyinhex);
-    if (data.size != sizeof(ptluser)) {
-      printf("\nERROR: data.size (%d) != sizeof(ptluser)\n", 
-	      data.size, sizeof(ptluser));
-    }
-    (void)memcpy(&us, data.data, data.size);
-    printf("user: %s\ttime: %d\tngroups: %d\n",
-	   us.user, us.cached, us.ngroups);
-    thekey[PTS_DB_HOFFSET] = 'D';
-    for (i=0; i<size; i++) 
-      sprintf(keyinhex+(2*i), "%.2x", thekey[i]);
-    printf( "matching data key: %s", keyinhex);
-    rc = GET(ptdb, &key, &data, 0);
-    if (rc < 0) {
-      fprintf(stderr,"ERROR: Database read error: ");
-      perror("");
-    } else if (rc) {
-      printf("ERROR: Unable to find matching data record\n");
-    } else {
-      printf("\tdata size: %d\n", data.size);
-    }
-  } else if (thekey[PTS_DB_HOFFSET] == 'D') {
-    for (i=0; i<size; i++) 
-      sprintf(keyinhex+(2*i), "%.2x", thekey[i]);
-    printf( "key: %s\t", keyinhex);
-
-    printf("DATA key: %s\n", keyinhex);
-  } else {
-    printf("OTHER key: %s\n", keyinhex);
-  }
-
-  found = 1;
-
-  while (found) {
-    rc = SEQ(ptdb, &key, &data, R_NEXT);
+static int dump_cb(void *rockp __attribute__((unused)),
+		     const char *key, int keylen,
+		     const char *data,
+		     int datalen __attribute__((unused))) 
+{
+    struct auth_state *authstate = (struct auth_state *)data;
+    int i;
     
-    if (rc < 0) {
-      fprintf(stderr, "Error reading database %s:", fnamebuf);
-      perror("");
-      exit(-1);
-    }
-    if (rc) {
-      found = 0;
-      continue;
-    }
-    thekey = key.data;
-    size = key.size;
+    printf("user: ");
+    fwrite(key, keylen, 1, stdout);
+    printf(" time: %d groups: %d\n",
+	   (unsigned)authstate->mark, (unsigned)authstate->ngroups);
 
-    for (i=0; i<size; i++) 
-      sprintf(keyinhex+(2*i), "%.2x", thekey[i]);
+    for (i=0; i < authstate->ngroups; i++)
+	printf("  %s\n",authstate->groups[i].id);
+    
+    return 0;
+}
 
-    if (thekey[PTS_DB_HOFFSET] == 'H') {
-      printf( "key: %s\t", keyinhex);
-      if (data.size != sizeof(ptluser)) {
-	printf("\nERROR: data.size (%d) != sizeof(ptluser)\n", 
-		data.size, sizeof(ptluser));
-      }
-      (void)memcpy(&us, data.data, data.size);
-      printf("user: %s\ttime: %d\tngroups: %d\n",
-	     us.user, us.cached, us.ngroups);
-      thekey[PTS_DB_HOFFSET] = 'D';
-      for (i=0; i<size; i++) 
-	sprintf(keyinhex+(2*i), "%.2x", thekey[i]);
-      printf( "matching data key: %s", keyinhex);
-      rc = GET(ptdb, &key, &data, 0);
-      if (rc < 0) {
-	fprintf(stderr,"ERROR: Database read error: ");
-	perror("");
-      } else if (rc) {
-	printf("ERROR: Unable to find matching data record\n");
-      } else {
-	printf("\tdata size: %d\n", data.size);
-      }
-    } else if (thekey[PTS_DB_HOFFSET] == 'D') {
-      for (i=0; i<size; i++) 
-	sprintf(keyinhex+(2*i), "%.2x", thekey[i]);
-      printf("DATA key: %s\n  Group data is:\n", keyinhex);
-      for(j=0; j < (data.size / PR_MAXNAMELEN); j++) {
-	  printf("    %s\n", ((char (*)[PR_MAXNAMELEN])(data.data))[j]);
-      }
-    } else {
-      printf("OTHER key: %s\n", keyinhex);
-    }
-  }
-
-  CLOSE(ptdb);
-  exit(0);
-}      
-
-int fatal(msg, exitcode)
-     char *msg;
-     int exitcode;
+int main(int argc, char *argv[])
 {
-  fprintf(stderr,"%s", msg);
-  exit(-1);
+    struct db *ptdb;
+    char fnamebuf[1024];
+    extern char *optarg;
+    int opt;
+    int r;
+    char *alt_config = NULL;
+
+    while ((opt = getopt(argc, argv, "C:")) != EOF) {
+	switch (opt) {
+	case 'C': /* alt config file */
+	    alt_config = optarg;
+	    break;
+	default:
+	    fprintf(stderr,"usage: [-C filename]"
+		    "\n\t-C <filename>\tAlternate Config File"
+		    "\n");
+	    exit(-1);
+	    break;
+	    /* just pass through */
+	}
+    }
+
+    cyrus_init(alt_config, "ptdump");
+
+    /* open database */
+    strcpy(fnamebuf, config_dir);
+    strcat(fnamebuf, PTS_DBFIL);
+    r = config_ptscache_db->open(fnamebuf, CYRUSDB_CREATE, &ptdb);
+    if(r != CYRUSDB_OK) {
+	fprintf(stderr,"error opening %s (%s)", fnamebuf,
+	       cyrusdb_strerror(r));
+	exit(1);
+    }
+
+    /* iterate through db, wiping expired entries */
+    config_ptscache_db->foreach(ptdb, "", 0, dump_p, dump_cb, ptdb, NULL);
+
+    config_ptscache_db->close(ptdb);
+
+    cyrus_done();
+
+    return 0;
 }

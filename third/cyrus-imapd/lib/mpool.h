@@ -1,7 +1,7 @@
 /* mpool.h memory pool management
  *
- * $Id: mpool.h,v 1.1.1.1 2002-10-13 18:01:47 ghudson Exp $
- * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
+ * $Id: mpool.h,v 1.1.1.2 2004-02-23 22:54:45 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,7 +42,6 @@
 
 #ifndef _MPOOL_H_
 
-#include <sys/time.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -51,7 +50,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <signal.h>
-#include <time.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <syslog.h>

@@ -4,7 +4,8 @@ Introduction
 
     The Cyrus IMAP Server uses the Cyrus SASL library to authenticate
     users. Please refer to the Cyrus SASL documentation for specific
-    details on SASL. This section focuses specifically on the IMAP server. 
+    details on SASL. This section focuses specifically on the server
+    processes distributed with Cyrus IMAPd. 
 
 Authentication Mechanisms
 
@@ -21,14 +22,16 @@ Authentication Mechanisms
     password over the wire unless the connection is encrypted. 
 
     The IMAP protocol also supports a way for users to authenticate without
-    using SASL. This is via the 'LOGIN' command (not to be confused by the
-    LOGIN SASL mechanism). The IMAP LOGIN command (as with PLAIN) will send
-    your password in clear-text to the server. 
+    using SASL (the specification). This is via the 'LOGIN' command (not to
+    be confused by the LOGIN SASL mechanism). The IMAP LOGIN command (as
+    with PLAIN) will send your password in clear-text to the server. In
+    this case, the password is still verified through the Cyrus SASL
+    library, though no SASL mechanism actually performs a negotiation. 
 
     The POP server is capable of APOP authentication, but this requries
-    that SASL be compiled --with-checkapop, and also that you are using an
-    auxprop backend for your password store (e.g. the sasldb auxprop
-    plugin). 
+    that Cyrus SASL be compiled --with-checkapop, and also that you are
+    using an auxprop backend for your password store (e.g. the sasldb
+    auxprop plugin). 
 
 Authentication Recommendations
 
@@ -66,6 +69,11 @@ Authentication Recommendations
 
 Configuring Authentication
 
+    Cyrus SASL has a number of options that can be configured by the
+    application. To configure these via imapd.conf, simply prefix the
+    appropriate option name with sasl_ (e.g. pwcheck_method becomes
+    sasl_pwcheck_method). 
+
 /etc/sasldb2
 
     The easiest method for authenticating users is to use the libsasl
@@ -80,10 +88,11 @@ Shadow Passwords
 
     If you want to authenticate users from "/etc/shadow", things are
     considerably more complicated, since the cyrus user cannot read the
-    shadow password file. It is suggested that you configure libsasl with
-    saslauthd support, and set "sasl_pwcheck_method: saslauthd". The SASL
-    library will then make calls to an external utility running as root to
-    authenticate users. 
+    shadow password file. Additionally, this will not allow you to use
+    shared secret mechanisms. To do this, it is necessary to configure
+    libsasl with saslauthd support, and set "sasl_pwcheck_method:
+    saslauthd". The SASL library will then make calls to an external
+    utility running as root to authenticate users. 
 
 Kerberos
 

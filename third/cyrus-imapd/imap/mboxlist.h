@@ -1,7 +1,6 @@
 /* mboxlist.h -- Mailbox list manipulation routines
  * 
- * 
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,9 +37,8 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
  * AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- *
  * 
- * $Id: mboxlist.h,v 1.1.1.1 2002-10-13 18:01:31 ghudson Exp $
+ * $Id: mboxlist.h,v 1.1.1.2 2004-02-23 22:54:42 rbasch Exp $
  */
 
 #ifndef INCLUDED_MBOXLIST_H
@@ -83,18 +81,23 @@ struct mbox_entry {
 };
 
 /* Lookup 'name' in the mailbox list. */
-int mboxlist_lookup(const char *name, char **pathp, char **aclp, void *tid);
+int mboxlist_lookup(const char *name, char **pathp, char **aclp,
+		    struct txn **tid);
 
 /* Lookup 'name' and get more detail */
 int mboxlist_detail(const char *name, int *typep, char **pathp, char **partp,
-		    char **aclp, struct txn *tid);
+		    char **aclp, struct txn **tid);
 
-/* insert a stub entry */
+/* insert/delete stub entries */
 int mboxlist_insertremote(const char *name, int mbtype, const char *host,
-			  const char *acl, void **rettid);
+			  const char *acl, struct txn **rettid);
+int mboxlist_deleteremote(const char *name, struct txn **in_tid);
+
+
 
 /* Update a mailbox's entry */
-int mboxlist_update(char *name, int flags, const char *part, const char *acl);
+int mboxlist_update(char *name, int flags, const char *part, const char *acl,
+		    int localonly);
 
 /* check user's ability to create mailbox */
 int mboxlist_createmailboxcheck(char *name, int mbtype, char *partition, 
@@ -105,10 +108,11 @@ int mboxlist_createmailboxcheck(char *name, int mbtype, char *partition,
 /* create mailbox */
 /* localonly creates the local mailbox without touching mupdate */
 /* forceuser allows the creation of user.x.<name> without a user.x */
+/* dbonly skips filesystem operations (e.g. reconstruct) */
 int mboxlist_createmailbox(char *name, int mbtype, char *partition, 
 			   int isadmin, char *userid, 
 			   struct auth_state *auth_state,
-			   int localonly, int forceuser);
+			   int localonly, int forceuser, int dbonly);
 
 /* Delete a mailbox. */
 /* setting local_only disables any communication with the mupdate server
@@ -126,8 +130,9 @@ int mboxlist_renamemailbox(char *oldname, char *newname, char *partition,
 			   struct auth_state *auth_state);
 
 /* change ACL */
-int mboxlist_setacl(char *name, char *identifier, char *rights, int isadmin, 
-		    char *userid, struct auth_state *auth_state);
+int mboxlist_setacl(const char *name, const char *identifier,
+		    const char *rights, int isadmin, 
+		    const char *userid, struct auth_state *auth_state);
 
 /* Find all mailboxes that match 'pattern'. */
 int mboxlist_findall(struct namespace *namespace,
@@ -158,7 +163,7 @@ int mboxlist_findsub_alt(struct namespace *namespace, char *pattern,
 
 /* given a mailbox 'name', where should we stage messages for it? 
    'stagedir' should be MAX_MAILBOX_PATH. */
-int mboxlist_findstage(const char *name, char *stagedir);
+int mboxlist_findstage(const char *name, char *stagedir, size_t sd_len);
 
 /* Change 'user's subscription status for mailbox 'name'. */
 int mboxlist_changesub(const char *name, const char *userid, 
@@ -182,11 +187,14 @@ void mboxlist_open(char *name);
 void mboxlist_close(void);
 
 /* initialize database structures */
-#define MBOXLIST_RECOVER 0x01
 #define MBOXLIST_SYNC 0x02
 void mboxlist_init(int flags);
 
 /* done with database stuff */
 void mboxlist_done(void);
+
+/* for transactions */
+int mboxlist_commit(struct txn *tid);
+int mboxlist_abort(struct txn *tid);
 
 #endif

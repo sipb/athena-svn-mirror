@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -38,7 +38,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: idled.c,v 1.1.1.2 2003-02-14 21:38:53 ghudson Exp $ */
+/* $Id: idled.c,v 1.1.1.3 2004-02-23 22:55:44 rbasch Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -48,11 +48,9 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <syslog.h>
-#include <sys/time.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <time.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -60,11 +58,14 @@
 #include <fcntl.h>
 
 #include "idled.h"
-#include "imapconf.h"
+#include "global.h"
 #include "mboxlist.h"
 #include "xmalloc.h"
 #include "hash.h"
 #include "exitcodes.h"
+
+/* global state */
+const int config_need_data = 0;
 
 extern int optind;
 extern char *optarg;
@@ -88,6 +89,9 @@ void fatal(const char *msg, int err)
     if (debugmode) fprintf(stderr, "dying with %s %d\n",msg,err);
     syslog(LOG_CRIT, "%s", msg);
     syslog(LOG_NOTICE, "exiting");
+
+    cyrus_done();
+    
     exit(err);
 }
 
@@ -277,26 +281,22 @@ int main(int argc, char **argv)
 	}
     }
 
-    if (debugmode) {
-	openlog("idled", LOG_PID, LOG_LOCAL6);
-    }
-
-    config_init(alt_config, "idled");
+    cyrus_init(alt_config, "idled");
 
     /* get name of shutdown file */
     snprintf(shutdownfilename, sizeof(shutdownfilename), "%s/msg/shutdown",
 	     config_dir);
 
     /* Set inactivity timer (convert from minutes to seconds) */
-    idle_timeout = config_getint("timeout", 30);
+    idle_timeout = config_getint(IMAPOPT_TIMEOUT);
     if (idle_timeout < 30) idle_timeout = 30;
     idle_timeout *= 60;
 
     /* count the number of mailboxes */
     mboxlist_init(0);
     mboxlist_open(NULL);
-    CONFIG_DB_MBOX->foreach(mbdb, "", 0, &mbox_count_p, &mbox_count_cb,
-			    &nmbox, NULL);
+    config_mboxlist_db->foreach(mbdb, "", 0, &mbox_count_p, &mbox_count_cb,
+				&nmbox, NULL);
     mboxlist_close();
     mboxlist_done();
 
@@ -307,18 +307,19 @@ int main(int argc, char **argv)
     /* create socket we are going to use for listening */
     if ((s = socket(AF_UNIX, SOCK_DGRAM, 0)) == -1) {
 	perror("socket");
+	cyrus_done();
 	exit(1);
     }
 
     /* bind it to a local file */
     local.sun_family = AF_UNIX;
-    idle_sock = config_getstring("idlesocket", NULL);
+    idle_sock = config_getstring(IMAPOPT_IDLESOCKET);
     if (idle_sock) {	
-	strcpy(local.sun_path, idle_sock);
+	strlcpy(local.sun_path, idle_sock, sizeof(local.sun_path));
     }
     else {
-	strcpy(local.sun_path, config_dir);
-	strcat(local.sun_path, FNAME_IDLE_SOCK);
+	strlcpy(local.sun_path, config_dir, sizeof(local.sun_path));
+	strlcat(local.sun_path, FNAME_IDLE_SOCK, sizeof(local.sun_path));
     }
     unlink(local.sun_path);
     len = sizeof(local.sun_family) + strlen(local.sun_path) + 1;
@@ -327,6 +328,7 @@ int main(int argc, char **argv)
 
     if (bind(s, (struct sockaddr *)&local, len) == -1) {
 	perror("bind");
+	cyrus_done();
 	exit(1);
     }
     umask(oldumask); /* for Linux */
@@ -339,10 +341,12 @@ int main(int argc, char **argv)
 	
 	if (pid == -1) {
 	    perror("fork");
+	    cyrus_done();
 	    exit(1);
 	}
 	
 	if (pid != 0) { /* parent */
+	    cyrus_done();
 	    exit(0);
 	}
     }
@@ -400,6 +404,16 @@ int main(int argc, char **argv)
 
     }
 
+    cyrus_done();
+
     /* never gets here */      
     exit(1);
 }
+
+void printstring(const char *s __attribute__((unused)))
+{ 
+    /* needed to link against annotate.o */
+    fatal("printstring() executed, but its not used for POP3!",
+          EC_SOFTWARE);
+}
+

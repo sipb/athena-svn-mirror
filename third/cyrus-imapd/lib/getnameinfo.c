@@ -1,12 +1,12 @@
 /*
  * Mar  8, 2000 by Hajimu UMEMOTO <ume@mahoroba.org>
- * $Id: getnameinfo.c,v 1.1.1.1 2002-10-13 18:02:38 ghudson Exp $
+ * $Id: getnameinfo.c,v 1.1.1.2 2004-02-23 22:54:45 rbasch Exp $
  *
  * This module is besed on ssh-1.2.27-IPv6-1.5 written by
  * KIKUCHI Takahiro <kick@kyoto.wide.ad.jp>
  */
 /* 
- * Copyright (c) 2001 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -80,6 +80,8 @@ getnameinfo(const struct sockaddr *sa, socklen_t salen __attribute__((unused)),
     }
     if (host) {
 	if (flags & NI_NUMERICHOST) {
+	    if (flags & NI_NAMEREQD)
+		return EAI_NONAME;
 	    if (strlen(inet_ntoa(sin->sin_addr)) >= hostlen)
 		return EAI_MEMORY;
 	    else {
@@ -96,8 +98,14 @@ getnameinfo(const struct sockaddr *sa, socklen_t salen __attribute__((unused)),
 		    strcpy(host, hp->h_name);
 		    return 0;
 		}
-	    else
-		return EAI_NODATA;
+	    else if (flags & NI_NAMEREQD)
+		return EAI_NONAME;
+	    else if (strlen(inet_ntoa(sin->sin_addr)) >= hostlen)
+		return EAI_MEMORY;
+	    else {
+		strcpy(host, inet_ntoa(sin->sin_addr));
+		return 0;
+	    }
 	}
     }
     

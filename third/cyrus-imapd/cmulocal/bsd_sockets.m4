@@ -1,12 +1,12 @@
 dnl bsd_sockets.m4--which socket libraries do we need? 
 dnl Derrick Brashear
 dnl from Zephyr
-dnl $Id: bsd_sockets.m4,v 1.1.1.1 2002-10-13 18:01:16 ghudson Exp $
+dnl $Id: bsd_sockets.m4,v 1.1.1.2 2004-02-23 22:53:59 rbasch Exp $
 
 dnl Hacked on by Rob Earhart to not just toss stuff in LIBS
 dnl It now puts everything required for sockets into LIB_SOCKET
 
-AC_DEFUN(CMU_SOCKETS, [
+AC_DEFUN([CMU_SOCKETS], [
 	save_LIBS="$LIBS"
 	LIB_SOCKET=""
 	AC_CHECK_FUNC(connect, :,

@@ -1,7 +1,6 @@
 /* chk_cyrus.c: cyrus mailstore consistancy checker
  * 
- * 
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,7 +39,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  * 
- * $Id: chk_cyrus.c,v 1.1.1.1 2002-10-13 18:02:28 ghudson Exp $
+ * $Id: chk_cyrus.c,v 1.1.1.2 2004-02-23 22:54:41 rbasch Exp $
  */
 
 #include <config.h>
@@ -48,7 +47,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
@@ -58,31 +56,27 @@
 #include <com_err.h>
 #include <errno.h>
 #include <ctype.h>
-#include <time.h>
 #include <limits.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
 #include "exitcodes.h"
+#include "index.h"
+#include "global.h"
 #include "mboxlist.h"
 #include "mailbox.h"
-#include "index.h"
-#include "imapconf.h"
 #include "map.h"
+#include "xmalloc.h"
+
+/* config.c stuff */
+const int config_need_data = CONFIG_NEED_PARTITION_DATA;
 
 /* need to use these names so the macros are happy */
-
 static const char *index_base;
 static unsigned long index_len;
 static unsigned long start_offset;
 static unsigned long record_size;
-
-void fatal(const char *message, int code)
-{
-    fprintf(stderr, "fatal error: %s\n", message);
-    exit(code);
-}
 
 void usage(void)
 {
@@ -218,12 +212,11 @@ int main(int argc, char **argv)
 
 	default:
 	    usage();
-	    exit(EC_USAGE);
-	    break;
+	    /* NOTREACHED */
 	}
     }
 
-    config_init(alt_config, "chk_cyrus");    
+    cyrus_init(alt_config, "chk_cyrus");    
 
     mboxlist_init(0);
     mboxlist_open(NULL);
@@ -243,5 +236,7 @@ int main(int argc, char **argv)
     mboxlist_close();
     mboxlist_done();
 
+    cyrus_done();
+    
     return 0;
 }

@@ -4,7 +4,7 @@
  *
  *  Based upon Lutz Jaenicke's TLS patches for postfix
  *
- * Copyright (c) 1999-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -43,13 +43,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/* $Id: tls.h,v 1.1.1.1 2002-10-13 18:01:33 ghudson Exp $ */
+/* $Id: tls.h,v 1.1.1.2 2004-02-23 22:54:43 rbasch Exp $ */
 
 #ifndef INCLUDED_TLS_H
 #define INCLUDED_TLS_H
 
 /* is tls enabled? */
-int tls_enabled(const char *ident);
+int tls_enabled(void);
 
 /* name of the SSL/TLS sessions database */
 #define FNAME_TLSSESSIONS "/tls_sessions.db"
@@ -64,9 +64,17 @@ int tls_init_serverengine(const char *ident,
 			  int askcert,     /* 1 = client auth */
 			  int tlsonly);
 
+int tls_init_clientengine(int verifydepth,
+			  char *var_tls_cert_file,
+			  char *var_tls_key_file);
+
 /* start tls negotiation */
 int tls_start_servertls(int readfd, int writefd, 
 			int *layerbits, char **authid, SSL **ret);
+
+int tls_start_clienttls(int readfd, int writefd,
+			int *layerbits, char **authid, SSL **ret,
+			SSL_SESSION **sess);
 
 /* reset tls */
 int tls_reset_servertls(SSL **conn);

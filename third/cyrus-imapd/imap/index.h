@@ -1,6 +1,6 @@
 /* index.c -- Routines for dealing with the index file in the imapd
  *
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -41,7 +41,7 @@
  *
  */
 /*
- * $Id: index.h,v 1.1.1.1 2002-10-13 18:01:11 ghudson Exp $
+ * $Id: index.h,v 1.1.1.2 2004-02-23 22:54:41 rbasch Exp $
  */
 
 /* Header for internal usage of index.c + programs that make raw access
@@ -54,7 +54,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -63,8 +62,8 @@
 #include <com_err.h>
 #include <errno.h>
 #include <ctype.h>
-#include <time.h>
 
+#include "annotate.h" /* for strlist functionality */
 #include "mailbox.h" /* for bit32 */
 
 /* Access macros for the memory-mapped index file data */
@@ -79,11 +78,23 @@
 #define LAST_UPDATED(msgno) ((time_t)ntohl(*((bit32 *)(INDEC_OFFSET(msgno)+OFFSET_LAST_UPDATED))))
 #define SYSTEM_FLAGS(msgno) ntohl(*((bit32 *)(INDEC_OFFSET(msgno)+OFFSET_SYSTEM_FLAGS)))
 #define USER_FLAGS(msgno,i) ntohl(*((bit32 *)(INDEC_OFFSET(msgno)+OFFSET_USER_FLAGS+((i)*4))))
+#define CONTENT_LINES(msgno) ntohl(*((bit32 *)(INDEC_OFFSET(msgno)+OFFSET_CONTENT_LINES)))
+#define CACHE_VERSION(msgno) ntohl(*((bit32 *)(INDEC_OFFSET(msgno)+OFFSET_CACHE_VERSION)))
 
 /* Access assistance macros for memory-mapped cache file data */
+/* CACHE_ITEM_BIT32: Convert to host byte order */
+/* CACHE_ITEM_LEN: Get the length out */
+/* CACHE_ITEM_NEXT: Return a pointer to the next entry.  Sizes are
+ * 4-byte aligned, so round up to the next 4 byte boundry */
 #define CACHE_ITEM_BIT32(ptr) (ntohl(*((bit32 *)(ptr))))
 #define CACHE_ITEM_LEN(ptr) CACHE_ITEM_BIT32(ptr)
 #define CACHE_ITEM_NEXT(ptr) ((ptr)+4+((3+CACHE_ITEM_LEN(ptr))&~3))
+
+/* Size of a bit32 to skip when jumping over cache item sizes */
+#define CACHE_ITEM_SIZE_SKIP sizeof(bit32)
+
+/* Calculate the number of entries in a vector */
+#define VECTOR_SIZE(vector) (sizeof(vector)/sizeof(vector[0]))
 
 /* Cached envelope token positions */
 enum {
@@ -151,5 +162,27 @@ struct thread_algorithm {
     char *alg_name;
     void (*threader)(unsigned *msgno_list, int nmsg, int usinguid);
 };
+
+struct nntp_overview {
+    unsigned long uid;
+    char *subj;
+    char *from;
+    char *date;
+    char *msgid;
+    char *ref;
+    unsigned long bytes;
+    unsigned long lines;
+};
+
+extern void index_operatemailbox(struct mailbox *mailbox);
+extern int index_finduid(unsigned uid);
+extern int index_getuid(unsigned msgno);
+extern char *index_get_msgid(struct mailbox *mailbox, unsigned msgno);
+extern struct nntp_overview *index_overview(struct mailbox *mailbox,
+					    unsigned msgno);
+extern char *index_getheader(struct mailbox *mailbox, unsigned msgno,
+			     char *hdr);
+extern unsigned long index_getsize(struct mailbox *mailbox, unsigned msgno);
+extern unsigned long index_getlines(struct mailbox *mailbox, unsigned msgno);
 
 #endif /* INDEX_H */

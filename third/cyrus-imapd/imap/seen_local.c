@@ -1,6 +1,6 @@
 /* seen_local.c -- Storage for /Recent and /Seen state on local filesystem
- $Id: seen_local.c,v 1.1.1.2 2003-02-14 21:38:21 ghudson Exp $
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * $Id: seen_local.c,v 1.1.1.3 2004-02-23 22:54:42 rbasch Exp $
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -55,7 +55,6 @@
 #include <sys/uio.h>
 #include <fcntl.h>
 #include <syslog.h>
-#include <time.h>
 
 #include "assert.h"
 #include "map.h"
@@ -74,7 +73,7 @@ struct seen {
     int fd;
     const char *base;
     unsigned long size;
-    long ino;
+    ino_t ino;
     long offset;
     long length;
     struct mailbox *mailbox;
@@ -86,18 +85,20 @@ struct seen {
  * Returns pointer to abstract database type in buffer pointed to
  * by 'seendbptr'.
  */
-int seen_open(struct mailbox *mailbox, const char *user, struct seen **seendbptr)
+int seen_open(struct mailbox *mailbox, const char *user,
+	      int flags __attribute__((unused)),
+	      struct seen **seendbptr)
 {
     struct seen *seendb;
-    char fnamebuf[MAX_MAILBOX_PATH];
+    char fnamebuf[MAX_MAILBOX_PATH+1];
     struct stat sbuf;
     
     seendb = (struct seen *)xmalloc(sizeof(struct seen));
     seendb->mailbox = mailbox;
     seendb->user = xstrdup(user);
     
-    strcpy(fnamebuf, mailbox->path);
-    strcat(fnamebuf, FNAME_SEEN);
+    strlcpy(fnamebuf, mailbox->path, sizeof(fnamebuf));
+    strlcat(fnamebuf, FNAME_SEEN, sizeof(fnamebuf));
 
     seendb->fd = open(fnamebuf, O_RDWR, 0666);
     if (seendb->fd == -1) {
@@ -137,7 +138,7 @@ int seen_lockread(struct seen *seendb, time_t *lastreadptr, unsigned int *lastui
 		  time_t *lastchangeptr, char **seenuidsptr)
 {
     int r;
-    char fnamebuf[MAX_MAILBOX_PATH];
+    char fnamebuf[MAX_MAILBOX_PATH+1];
     struct stat sbuf;
     const char *lockfailaction;
     const char *buf = 0, *p;
@@ -246,8 +247,8 @@ int seen_write(struct seen *seendb, time_t lastread, unsigned int lastuid,
     int length;
     int writefd = -1;
     int replace;
-    char fnamebuf[MAX_MAILBOX_PATH];
-    char newfnamebuf[MAX_MAILBOX_PATH];
+    char fnamebuf[MAX_MAILBOX_PATH+1];
+    char newfnamebuf[MAX_MAILBOX_PATH+1];
     int n;
     struct iovec iov[10];
     int num_iov;
@@ -386,7 +387,7 @@ int seen_close(struct seen *seendb)
  */
 int seen_create(struct mailbox *mailbox)
 {
-    char fnamebuf[MAX_MAILBOX_PATH];
+    char fnamebuf[MAX_MAILBOX_PATH+1];
     int fd;
 
     strcpy(fnamebuf, mailbox->path);
@@ -406,7 +407,7 @@ int seen_create(struct mailbox *mailbox)
  */
 int seen_delete(struct mailbox *mailbox)
 {
-    char fnamebuf[MAX_MAILBOX_PATH];
+    char fnamebuf[MAX_MAILBOX_PATH+1];
     int fd;
     int r;
     const char *lockfailaction;
@@ -437,8 +438,8 @@ int seen_delete(struct mailbox *mailbox)
  */
 int seen_copy(struct mailbox *oldmailbox,struct mailbox *newmailbox)
 {
-    char oldfname[MAX_MAILBOX_PATH];
-    char newfname[MAX_MAILBOX_PATH];
+    char oldfname[MAX_MAILBOX_PATH+1];
+    char newfname[MAX_MAILBOX_PATH+1];
 
     strcpy(oldfname, oldmailbox->path);
     strcat(oldfname, FNAME_SEEN);
@@ -543,8 +544,8 @@ int seen_reconstruct(struct mailbox *mailbox,
 		     int (*report_proc)(),
 		     void *report_rock)
 {
-    char fnamebuf[MAX_MAILBOX_PATH];
-    char newfnamebuf[MAX_MAILBOX_PATH];
+    char fnamebuf[MAX_MAILBOX_PATH+1];
+    char newfnamebuf[MAX_MAILBOX_PATH+1];
     int fd;
     struct stat sbuf;
     const char *lockfailaction;

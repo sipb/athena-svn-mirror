@@ -1,7 +1,7 @@
 %{
 /* sieve.y -- sieve parser
  * Larry Greenfield
- * $Id: sieve.y,v 1.1.1.2 2003-02-14 21:38:48 ghudson Exp $
+ * $Id: sieve.y,v 1.1.1.3 2004-02-23 22:56:19 rbasch Exp $
  */
 /***********************************************************
         Copyright 1999 by Carnegie Mellon University
@@ -42,6 +42,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "../lib/util.h"
 #include "../lib/imparse.h"
+#include "../lib/libconfig.h"
 
     /* definitions */
     extern int addrparse(void);
@@ -56,38 +57,38 @@ struct vtags {
 struct htags {
     char *comparator;
     int comptag;
-    char *relation;
+    int relation;
 };
 
 struct aetags {
     int addrtag;
     char *comparator;
     int comptag;
-    char *relation;
+    int relation;
 };
 
 struct ntags {
     char *method;
     char *id;
     stringlist_t *options;
-    const char *priority;
+    int priority;
     char *message;
 };
 
 struct dtags {
     int comptag;
-    char *relation;
+    int relation;
     void *pattern;
-    char *priority;
+    int priority;
 };
 
 static commandlist_t *ret;
 static sieve_script_t *parse_script;
 static int check_reqs(stringlist_t *sl);
 static test_t *build_address(int t, struct aetags *ae,
-			     stringlist_t *sl, patternlist_t *pl);
+			     stringlist_t *sl, stringlist_t *pl);
 static test_t *build_header(int t, struct htags *h,
-			    stringlist_t *sl, patternlist_t *pl);
+			    stringlist_t *sl, stringlist_t *pl);
 static commandlist_t *build_vacation(int t, struct vtags *h, char *s);
 static commandlist_t *build_notify(int t, struct ntags *n);
 static commandlist_t *build_denotify(int t, struct dtags *n);
@@ -104,18 +105,22 @@ static struct ntags *new_ntags(void);
 static struct ntags *canon_ntags(struct ntags *n);
 static void free_ntags(struct ntags *n);
 static struct dtags *new_dtags(void);
+static struct dtags *canon_dtags(struct dtags *d);
 static void free_dtags(struct dtags *d);
 
 static int verify_stringlist(stringlist_t *sl, int (*verify)(char *));
 static int verify_mailbox(char *s);
 static int verify_address(char *s);
 static int verify_header(char *s);
+static int verify_addrheader(char *s);
+static int verify_envelope(char *s);
 static int verify_flag(char *s);
+static int verify_relat(char *s);
 #ifdef ENABLE_REGEX
-static regex_t *verify_regex(char *s, int cflags);
-static patternlist_t *verify_regexs(stringlist_t *sl, char *comp);
+static int verify_regex(char *s, int cflags);
+static int verify_regexs(stringlist_t *sl, char *comp);
 #endif
-static int ok_header(char *s);
+static int verify_utf8(char *s);
 
 int yyerror(char *msg);
 extern int yylex(void);
@@ -145,9 +150,10 @@ extern int yylex(void);
 %token NOTIFY DENOTIFY
 %token ANYOF ALLOF EXISTS SFALSE STRUE HEADER NOT SIZE ADDRESS ENVELOPE
 %token COMPARATOR IS CONTAINS MATCHES REGEX COUNT VALUE OVER UNDER
+%token GT GE LT LE EQ NE
 %token ALL LOCALPART DOMAIN USER DETAIL
 %token DAYS ADDRESSES SUBJECT MIME
-%token METHOD ID OPTIONS LOW NORMAL HIGH MESSAGE
+%token METHOD ID OPTIONS LOW NORMAL HIGH ANY MESSAGE
 
 %type <cl> commands command action elsif block
 %type <sl> stringlist strings
@@ -159,7 +165,7 @@ extern int yylex(void);
 %type <vtag> vtags
 %type <ntag> ntags
 %type <dtag> dtags
-%type <sval> priority
+%type <nval> priority
 
 %%
 
@@ -195,7 +201,11 @@ action: REJCT STRING             { if (!parse_script->support.reject) {
 				     yyerror("reject not required");
 				     YYERROR;
 				   }
-				   $$ = new_command(REJCT); $$->u.str = $2; }
+				   if (!verify_utf8($2)) {
+				     YYERROR; /* vu should call yyerror() */
+				   }
+				   $$ = new_command(REJCT);
+				   $$->u.str = $2; }
 	| FILEINTO STRING	 { if (!parse_script->support.fileinto) {
 				     yyerror("fileinto not required");
 	                             YYERROR;
@@ -215,12 +225,13 @@ action: REJCT STRING             { if (!parse_script->support.reject) {
 	| DISCARD		 { $$ = new_command(DISCARD); }
 	| VACATION vtags STRING  { if (!parse_script->support.vacation) {
 				     yyerror("vacation not required");
-				     $$ = new_command(VACATION);
 				     YYERROR;
-				   } else {
-  				     $$ = build_vacation(VACATION,
-					    canon_vtags($2), $3);
-				   } }
+				   }
+				   if (($2->mime == -1) && !verify_utf8($3)) {
+				     YYERROR; /* vu should call yyerror() */
+				   }
+  				   $$ = build_vacation(VACATION,
+					    canon_vtags($2), $3); }
         | SETFLAG stringlist     { if (!parse_script->support.imapflags) {
                                     yyerror("imapflags not required");
                                     YYERROR;
@@ -272,7 +283,7 @@ action: REJCT STRING             { if (!parse_script->support.reject) {
 				       $$ = new_command(DENOTIFY);
 				       YYERROR;
 				    } else {
-					$$ = build_denotify(DENOTIFY, $2);
+					$$ = build_denotify(DENOTIFY, canon_dtags($2));
 					if ($$ == NULL) { 
 			yyerror("unable to find a compatible comparator");
 			YYERROR; } } }
@@ -288,45 +299,46 @@ ntags: /* empty */		 { $$ = new_ntags(); }
 	| ntags OPTIONS stringlist { if ($$->options != NULL) { 
 					yyerror("duplicate :options"); YYERROR; }
 				     else { $$->options = $3; } }
-	| ntags priority	 { if ($$->priority != NULL) { 
-					yyerror("duplicate :priority"); YYERROR; }
-				   else { $$->priority = $2; } }
+        | ntags priority	 { if ($$->priority != -1) { 
+                                 yyerror("duplicate :priority"); YYERROR; }
+                                   else { $$->priority = $2; } }
 	| ntags MESSAGE STRING	 { if ($$->message != NULL) { 
 					yyerror("duplicate :message"); YYERROR; }
 				   else { $$->message = $3; } }
 	;
 
 dtags: /* empty */		 { $$ = new_dtags(); }
-	| dtags priority	 { if ($$->priority != NULL) { 
+	| dtags priority	 { if ($$->priority != -1) { 
 				yyerror("duplicate priority level"); YYERROR; }
 				   else { $$->priority = $2; } }
-	| dtags comptag STRING 	 { if ($$->comptag != -1) { 
-			yyerror("duplicate comparator type tag"); YYERROR;
-				   } else {
-				       $$->comptag = $2;
+	| dtags comptag STRING 	 { if ($$->comptag != -1)
+	                             { 
+					 yyerror("duplicate comparator type tag"); YYERROR;
+				     }
+	                           $$->comptag = $2;
 #ifdef ENABLE_REGEX
-				       if ($$->comptag == REGEX) {
-					   int cflags = REG_EXTENDED |
-					       REG_NOSUB | REG_ICASE;
-					   $$->pattern =
-					       (void*) verify_regex($3, cflags);
-					   if (!$$->pattern) { YYERROR; }
-				       }
-				       else
+				   if ($$->comptag == REGEX)
+				   {
+				       int cflags = REG_EXTENDED |
+					   REG_NOSUB | REG_ICASE;
+				       if (!verify_regex($3, cflags)) { YYERROR; }
+				   }
 #endif
-					   $$->pattern = $3;
-				   } }
-	| dtags relcomp STRING	 { $$ = $1;
+				   $$->pattern = $3;
+	                          }
+	| dtags relcomp STRING  { $$ = $1;
 				   if ($$->comptag != -1) { 
 			yyerror("duplicate comparator type tag"); YYERROR; }
 				   else { $$->comptag = $2;
-				     $$->relation = $3;
+				   $$->relation = verify_relat($3);
+				   if ($$->relation==-1) 
+				     {YYERROR; /*vr called yyerror()*/ }
 				   } }
 	;
 
-priority: LOW    { $$ = "low"; }
-        | NORMAL { $$ = "normal"; }
-        | HIGH   { $$ = "high"; }
+priority: LOW                   { $$ = LOW; }
+        | NORMAL                { $$ = NORMAL; }
+        | HIGH                  { $$ = HIGH; }
         ;
 
 vtags: /* empty */		 { $$ = new_vtags(); }
@@ -344,8 +356,8 @@ vtags: /* empty */		 { $$ = new_vtags(); }
 	| vtags SUBJECT STRING	 { if ($$->subject != NULL) { 
 					yyerror("duplicate :subject"); 
 					YYERROR;
-				   } else if (!ok_header($3)) {
-					YYERROR;
+				   } else if (!verify_utf8($3)) {
+				        YYERROR; /* vu should call yyerror() */
 				   } else { $$->subject = $3; } }
 	| vtags MIME		 { if ($$->mime != -1) { 
 					yyerror("duplicate :mime"); 
@@ -365,51 +377,57 @@ block: '{' commands '}'		 { $$ = $2; }
 	| '{' '}'		 { $$ = NULL; }
 	;
 
-test: ANYOF testlist		 { $$ = new_test(ANYOF); $$->u.tl = $2; }
-	| ALLOF testlist	 { $$ = new_test(ALLOF); $$->u.tl = $2; }
-	| EXISTS stringlist      { $$ = new_test(EXISTS); $$->u.sl = $2; }
-	| SFALSE		 { $$ = new_test(SFALSE); }
+test:     ANYOF testlist	 { $$ = new_test(ANYOF); $$->u.tl = $2; }
+        | ALLOF testlist	 { $$ = new_test(ALLOF); $$->u.tl = $2; }
+        | EXISTS stringlist      { $$ = new_test(EXISTS); $$->u.sl = $2; }
+        | SFALSE		 { $$ = new_test(SFALSE); }
 	| STRUE			 { $$ = new_test(STRUE); }
 	| HEADER htags stringlist stringlist
-				 { patternlist_t *pl;
-                                   if (!verify_stringlist($3, verify_header)) {
-                                     YYERROR; /* vh should call yyerror() */
-                                   }
-
-				   $2 = canon_htags($2);
+				 {
+				     if (!verify_stringlist($3, verify_header)) {
+					 YYERROR; /* vh should call yyerror() */
+				     }
+				     if (!verify_stringlist($4, verify_utf8)) {
+					 YYERROR; /* vu should call yyerror() */
+				     }
+				     
+				     $2 = canon_htags($2);
 #ifdef ENABLE_REGEX
-				   if ($2->comptag == REGEX) {
-				     pl = verify_regexs($4, $2->comparator);
-				     if (!pl) { YYERROR; }
-				   }
-				   else
+				     if ($2->comptag == REGEX)
+				     {
+					 if (!(verify_regexs($4, $2->comparator)))
+					 { YYERROR; }
+				     }
 #endif
-				     pl = (patternlist_t *) $4;
-				       
-				   $$ = build_header(HEADER, $2, $3, pl);
-				   if ($$ == NULL) { 
-			yyerror("unable to find a compatible comparator");
-			YYERROR; } }
-	| addrorenv aetags stringlist stringlist
-				 { patternlist_t *pl;
-                                   if (!verify_stringlist($3, verify_header)) {
-                                     YYERROR; /* vh should call yyerror() */
-                                   }
+				     $$ = build_header(HEADER, $2, $3, $4);
+				     if ($$ == NULL) { 
+					 yyerror("unable to find a compatible comparator");
+					 YYERROR; } 
+				 }
 
-				   $2 = canon_aetags($2);
+
+        | addrorenv aetags stringlist stringlist
+				 { 
+				     if (($1 == ADDRESS) &&
+					 !verify_stringlist($3, verify_addrheader))
+					 { YYERROR; }
+				     else if (($1 == ENVELOPE) &&
+					      !verify_stringlist($3, verify_envelope))
+					 { YYERROR; }
+				     $2 = canon_aetags($2);
 #ifdef ENABLE_REGEX
-				   if ($2->comptag == REGEX) {
-				     pl = verify_regexs($4, $2->comparator);
-				     if (!pl) { YYERROR; }
-				   }
-				   else
+				     if ($2->comptag == REGEX)
+				     {
+					 if (!( verify_regexs($4, $2->comparator)))
+					 { YYERROR; }
+				     }
 #endif
-				     pl = (patternlist_t *) $4;
-				       
-				   $$ = build_address($1, $2, $3, pl);
-				   if ($$ == NULL) { 
-			yyerror("unable to find a compatible comparator");
-			YYERROR; } }
+				     $$ = build_address($1, $2, $3, $4);
+				     if ($$ == NULL) { 
+					 yyerror("unable to find a compatible comparator");
+					 YYERROR; } 
+				 }
+
 	| NOT test		 { $$ = new_test(NOT); $$->u.t = $2; }
 	| SIZE sizetag NUMBER    { $$ = new_test(SIZE); $$->u.sz.t = $2;
 		                   $$->u.sz.n = $3; }
@@ -417,7 +435,11 @@ test: ANYOF testlist		 { $$ = new_test(ANYOF); $$->u.tl = $2; }
 	;
 
 addrorenv: ADDRESS		 { $$ = ADDRESS; }
-	| ENVELOPE		 { $$ = ENVELOPE; }
+	| ENVELOPE		 {if (!parse_script->support.envelope)
+	                              {yyerror("envelope not required"); YYERROR;}
+	                          else{$$ = ENVELOPE; }
+	                         }
+
 	;
 
 aetags: /* empty */              { $$ = new_aetags(); }
@@ -430,14 +452,16 @@ aetags: /* empty */              { $$ = new_aetags(); }
 				   if ($$->comptag != -1) { 
 			yyerror("duplicate comparator type tag"); YYERROR; }
 				   else { $$->comptag = $2; } }
-	| aetags relcomp STRING	 { $$ = $1;
+	| aetags relcomp STRING{ $$ = $1;
 				   if ($$->comptag != -1) { 
 			yyerror("duplicate comparator type tag"); YYERROR; }
 				   else { $$->comptag = $2;
-				     $$->relation = $3;
+				   $$->relation = verify_relat($3);
+				   if ($$->relation==-1) 
+				     {YYERROR; /*vr called yyerror()*/ }
 				   } }
-	| aetags COMPARATOR STRING { $$ = $1;
-				   if ($$->comparator != NULL) { 
+        | aetags COMPARATOR STRING { $$ = $1;
+	if ($$->comparator != NULL) { 
 			yyerror("duplicate comparator tag"); YYERROR; }
 				   else if (!strcmp($3, "i;ascii-numeric") &&
 					    !parse_script->support.i_ascii_numeric) {
@@ -451,22 +475,24 @@ htags: /* empty */		 { $$ = new_htags(); }
 				   if ($$->comptag != -1) { 
 			yyerror("duplicate comparator type tag"); YYERROR; }
 				   else { $$->comptag = $2; } }
-	| htags relcomp STRING	 { $$ = $1;
+	| htags relcomp STRING { $$ = $1;
 				   if ($$->comptag != -1) { 
 			yyerror("duplicate comparator type tag"); YYERROR; }
 				   else { $$->comptag = $2;
-				     $$->relation = $3;
+				   $$->relation = verify_relat($3);
+				   if ($$->relation==-1) 
+				     {YYERROR; /*vr called yyerror()*/ }
 				   } }
 	| htags COMPARATOR STRING { $$ = $1;
 				   if ($$->comparator != NULL) { 
-			yyerror("duplicate comparator tag");
-					YYERROR; }
+			 yyerror("duplicate comparator tag"); YYERROR; }
 				   else if (!strcmp($3, "i;ascii-numeric") &&
 					    !parse_script->support.i_ascii_numeric) { 
-			yyerror("comparator-i;ascii-numeric not required");
-			YYERROR; }
-				   else { $$->comparator = $3; } }
-	;
+			 yyerror("comparator-i;ascii-numeric not required");  YYERROR; }
+				   else { 
+				     $$->comparator = $3; } }
+        ;
+
 
 addrparttag: ALL                 { $$ = ALL; }
 	| LOCALPART		 { $$ = LOCALPART; }
@@ -475,14 +501,13 @@ addrparttag: ALL                 { $$ = ALL; }
 				     yyerror("subaddress not required");
 				     YYERROR;
 				   }
-				   $$ = USER; }
+				   $$ = USER; }  
 	| DETAIL                { if (!parse_script->support.subaddress) {
 				     yyerror("subaddress not required");
 				     YYERROR;
 				   }
 				   $$ = DETAIL; }
 	;
-
 comptag: IS			 { $$ = IS; }
 	| CONTAINS		 { $$ = CONTAINS; }
 	| MATCHES		 { $$ = MATCHES; }
@@ -504,6 +529,7 @@ relcomp: COUNT			 { if (!parse_script->support.relational) {
 				   }
 				   $$ = VALUE; }
 	;
+
 
 sizetag: OVER			 { $$ = OVER; }
 	| UNDER			 { $$ = UNDER; }
@@ -566,7 +592,7 @@ static int check_reqs(stringlist_t *sl)
 }
 
 static test_t *build_address(int t, struct aetags *ae,
-			     stringlist_t *sl, patternlist_t *pl)
+			     stringlist_t *sl, stringlist_t *pl)
 {
     test_t *ret = new_test(t);	/* can be either ADDRESS or ENVELOPE */
 
@@ -574,22 +600,19 @@ static test_t *build_address(int t, struct aetags *ae,
 
     if (ret) {
 	ret->u.ae.comptag = ae->comptag;
-	ret->u.ae.comp = lookup_comp(ae->comparator, ae->comptag,
-				     ae->relation, &ret->u.ae.comprock);
+	ret->u.ae.relation=ae->relation;
+	ret->u.ae.comparator=strdup(ae->comparator);
 	ret->u.ae.sl = sl;
 	ret->u.ae.pl = pl;
 	ret->u.ae.addrpart = ae->addrtag;
 	free_aetags(ae);
-	if (ret->u.ae.comp == NULL) {
-	    free_test(ret);
-	    ret = NULL;
-	}
+
     }
     return ret;
 }
 
 static test_t *build_header(int t, struct htags *h,
-			    stringlist_t *sl, patternlist_t *pl)
+			    stringlist_t *sl, stringlist_t *pl)
 {
     test_t *ret = new_test(t);	/* can be HEADER */
 
@@ -597,15 +620,11 @@ static test_t *build_header(int t, struct htags *h,
 
     if (ret) {
 	ret->u.h.comptag = h->comptag;
-	ret->u.h.comp = lookup_comp(h->comparator, h->comptag,
-				    h->relation, &ret->u.h.comprock);
+	ret->u.h.relation=h->relation;
+	ret->u.h.comparator=strdup(h->comparator);
 	ret->u.h.sl = sl;
 	ret->u.h.pl = pl;
 	free_htags(h);
-	if (ret->u.h.comp == NULL) {
-	    free_test(ret);
-	    ret = NULL;
-	}
     }
     return ret;
 }
@@ -632,8 +651,7 @@ static commandlist_t *build_notify(int t, struct ntags *n)
     commandlist_t *ret = new_command(t);
 
     assert(t == NOTIFY);
-
-    if (ret) {
+       if (ret) {
 	ret->u.n.method = n->method; n->method = NULL;
 	ret->u.n.id = n->id; n->id = NULL;
 	ret->u.n.options = n->options; n->options = NULL;
@@ -652,15 +670,10 @@ static commandlist_t *build_denotify(int t, struct dtags *d)
 
     if (ret) {
 	ret->u.d.comptag = d->comptag;
-	ret->u.d.comp = lookup_comp("i;ascii-casemap", d->comptag,
-				    d->relation, &ret->u.d.comprock);
+	ret->u.d.relation=d->relation;
 	ret->u.d.pattern = d->pattern; d->pattern = NULL;
 	ret->u.d.priority = d->priority;
 	free_dtags(d);
-	if (ret->u.d.comp == NULL) {
-	    free_tree(ret);
-	    ret = NULL;
-	}
     }
     return ret;
 }
@@ -669,8 +682,8 @@ static struct aetags *new_aetags(void)
 {
     struct aetags *r = (struct aetags *) xmalloc(sizeof(struct aetags));
 
-    r->addrtag = r->comptag = -1;
-    r->comparator = r->relation = NULL;
+    r->addrtag = r->comptag = r->relation=-1;
+    r->comparator=NULL;
 
     return r;
 }
@@ -688,16 +701,16 @@ static struct aetags *canon_aetags(struct aetags *ae)
 static void free_aetags(struct aetags *ae)
 {
     free(ae->comparator);
-    if (ae->relation) free(ae->relation);
-    free(ae);
+     free(ae);
 }
 
 static struct htags *new_htags(void)
 {
     struct htags *r = (struct htags *) xmalloc(sizeof(struct htags));
 
-    r->comptag = -1;
-    r->comparator = r->relation = NULL;
+    r->comptag = r->relation= -1;
+    
+    r->comparator = NULL;
 
     return r;
 }
@@ -714,7 +727,6 @@ static struct htags *canon_htags(struct htags *h)
 static void free_htags(struct htags *h)
 {
     free(h->comparator);
-    if (h->relation) free(h->relation);
     free(h);
 }
 
@@ -758,7 +770,7 @@ static struct ntags *new_ntags(void)
     r->method = NULL;
     r->id = NULL;
     r->options = NULL;
-    r->priority = NULL;
+    r->priority = -1;
     r->message = NULL;
 
     return r;
@@ -766,10 +778,16 @@ static struct ntags *new_ntags(void)
 
 static struct ntags *canon_ntags(struct ntags *n)
 {
-    if (n->priority == NULL) { n->priority = "normal"; }
-    if (n->message == NULL) { n->message = xstrdup("$from$: $subject$"); }
-
+    if (n->priority == -1) { n->priority = NORMAL; }
+    if (n->message == NULL) { n->message = strdup("$from$: $subject$"); }
+    if (n->method == NULL) { n->method = strdup("default"); }
     return n;
+}
+static struct dtags *canon_dtags(struct dtags *d)
+{
+    if (d->priority == -1) { d->priority = ANY; }
+    if (d->comptag == -1) { d->comptag = ANY; }
+       return d;
 }
 
 static void free_ntags(struct ntags *n)
@@ -785,15 +803,14 @@ static struct dtags *new_dtags(void)
 {
     struct dtags *r = (struct dtags *) xmalloc(sizeof(struct dtags));
 
-    r->comptag = -1;
-    r->relation = r->pattern = r->priority = NULL;
+    r->comptag = r->priority= r->relation = -1;
+    r->pattern  = NULL;
 
     return r;
 }
 
 static void free_dtags(struct dtags *d)
 {
-    if (d->relation) free(d->relation);
     if (d->pattern) free(d->pattern);
     free(d);
 }
@@ -821,8 +838,10 @@ static int verify_address(char *s)
     return 1;
 }
 
-static int verify_mailbox(char *s __attribute__((unused)))
+static int verify_mailbox(char *s)
 {
+    if (!verify_utf8(s)) return 0;
+
     /* xxx if not a mailbox, call yyerror */
     return 1;
 }
@@ -849,6 +868,67 @@ static int verify_header(char *hdr)
     return 1;
 }
  
+static int verify_addrheader(char *hdr)
+{
+    const char **h, *hdrs[] = {
+	"from", "sender", "reply-to",		/* RFC2822 originator fields */
+	"to", "cc", "bcc",			/* RFC2822 destination fields */
+	"resent-from", "resent-sender",		/* RFC2822 resent fields */
+	"resent-to", "resent-cc", "resent-bcc",
+	"return-path",				/* RFC2822 trace fields */
+	"disposition-notification-to",		/* RFC2298 MDN request fields */
+	NULL
+    };
+    char errbuf[100];
+
+    if (!config_getswitch(IMAPOPT_RFC3028_STRICT))
+	return verify_header(hdr);
+
+    for (lcase(hdr), h = hdrs; *h; h++) {
+	if (!strcmp(*h, hdr)) return 1;
+    }
+
+    snprintf(errbuf, sizeof(errbuf),
+	     "header '%s': not a valid header for an address test", hdr);
+    yyerror(errbuf);
+    return 0;
+}
+ 
+static int verify_envelope(char *env)
+{
+    char errbuf[100];
+
+    lcase(env);
+    if (!config_getswitch(IMAPOPT_RFC3028_STRICT) ||
+	!strcmp(env, "from") || !strcmp(env, "to")) return 1;
+
+    snprintf(errbuf, sizeof(errbuf),
+	     "env-part '%s': not a valid part for an envelope test", env);
+    yyerror(errbuf);
+    return 0;
+}
+ 
+static int verify_relat(char *r)
+{/* this really should have been a token to begin with.*/
+    char errbuf[100];
+	lcase(r);
+	if (!strcmp(r, "gt")) {return GT;}
+	else if (!strcmp(r, "ge")) {return GE;}
+	else if (!strcmp(r, "lt")) {return LT;}
+	else if (!strcmp(r, "le")) {return LE;}
+	else if (!strcmp(r, "ne")) {return NE;}
+	else if (!strcmp(r, "eq")) {return EQ;}
+	else{
+	  sprintf(errbuf, "flag '%s': not a valid relational operation", r);
+	  yyerror(errbuf);
+	  return -1;
+	}
+	
+}
+
+
+
+
 static int verify_flag(char *f)
 {
     char errbuf[100];
@@ -874,49 +954,134 @@ static int verify_flag(char *f)
 }
  
 #ifdef ENABLE_REGEX
-static regex_t *verify_regex(char *s, int cflags)
+static int verify_regex(char *s, int cflags)
 {
     int ret;
     char errbuf[100];
     regex_t *reg = (regex_t *) xmalloc(sizeof(regex_t));
 
-    if ((ret = regcomp(reg, s, cflags)) != 0) {
+     if ((ret = regcomp(reg, s, cflags)) != 0) {
 	(void) regerror(ret, reg, errbuf, sizeof(errbuf));
 	yyerror(errbuf);
 	free(reg);
-	return NULL;
-    }
-    return reg;
+	return 0;
+	}
+    free(reg);
+    return 1;
 }
 
-static patternlist_t *verify_regexs(stringlist_t *sl, char *comp)
+static int verify_regexs(stringlist_t *sl, char *comp)
 {
     stringlist_t *sl2;
-    patternlist_t *pl = NULL;
     int cflags = REG_EXTENDED | REG_NOSUB;
-    regex_t *reg;
+ 
 
     if (!strcmp(comp, "i;ascii-casemap")) {
 	cflags |= REG_ICASE;
     }
 
     for (sl2 = sl; sl2 != NULL; sl2 = sl2->next) {
-	if ((reg = verify_regex(sl2->s, cflags)) == NULL) {
-	    free_pl(pl, REGEX);
+	if ((verify_regex(sl2->s, cflags)) == 0) {
 	    break;
 	}
-	pl = (patternlist_t *) new_pl(reg, pl);
     }
     if (sl2 == NULL) {
-	free_sl(sl);
-	return pl;
+	return 1;
     }
-    return NULL;
+    return 0;
 }
 #endif
 
-/* xxx is it ok to put this in an RFC822 header body? */
-static int ok_header(char *s __attribute__((unused)))
+/*
+ * Valid UTF-8 check (from RFC 2640 Annex B.1)
+ *
+ * The following routine checks if a byte sequence is valid UTF-8. This
+ * is done by checking for the proper tagging of the first and following
+ * bytes to make sure they conform to the UTF-8 format. It then checks
+ * to assure that the data part of the UTF-8 sequence conforms to the
+ * proper range allowed by the encoding. Note: This routine will not
+ * detect characters that have not been assigned and therefore do not
+ * exist.
+ */
+static int verify_utf8(char *s)
 {
+    const unsigned char *buf = s;
+    const unsigned char *endbuf = s + strlen(s);
+    unsigned char byte2mask = 0x00, c;
+    int trailing = 0;  /* trailing (continuation) bytes to follow */
+
+    while (buf != endbuf) {
+	c = *buf++;
+	if (trailing) {
+	    if ((c & 0xC0) == 0x80) {		/* Does trailing byte
+						   follow UTF-8 format? */
+		if (byte2mask) {		/* Need to check 2nd byte
+						   for proper range? */
+		    if (c & byte2mask)		/* Are appropriate bits set? */
+			byte2mask = 0x00;
+		    else
+			break;
+		}
+		trailing--;
+	    }
+	    else
+		break;
+	}
+	else {
+	    if ((c & 0x80) == 0x00)		/* valid 1 byte UTF-8 */
+		continue;
+	    else if ((c & 0xE0) == 0xC0)	/* valid 2 byte UTF-8 */
+		if (c & 0x1E) {			/* Is UTF-8 byte
+						   in proper range? */
+		    trailing = 1;
+		}
+		else
+		    break;
+	    else if ((c & 0xF0) == 0xE0) {	/* valid 3 byte UTF-8 */
+		if (!(c & 0x0F)) {		/* Is UTF-8 byte
+						   in proper range? */
+		    byte2mask = 0x20;		/* If not, set mask
+						   to check next byte */
+		}
+		trailing = 2;
+	    }
+	    else if ((c & 0xF8) == 0xF0) {	/* valid 4 byte UTF-8 */
+		if (!(c & 0x07)) {		/* Is UTF-8 byte
+						   in proper range? */
+		    byte2mask = 0x30;		/* If not, set mask
+						   to check next byte */
+		}
+		trailing = 3;
+	    }
+	    else if ((c & 0xFC) == 0xF8) {	/* valid 5 byte UTF-8 */
+		if (!(c & 0x03)) {		/* Is UTF-8 byte
+						   in proper range? */
+		    byte2mask = 0x38;		/* If not, set mask
+						   to check next byte */
+		}
+		trailing = 4;
+	    }
+	    else if ((c & 0xFE) == 0xFC) {	/* valid 6 byte UTF-8 */
+		if (!(c & 0x01)) {		/* Is UTF-8 byte
+						   in proper range? */
+		    byte2mask = 0x3C;		/* If not, set mask
+						   to check next byte */
+		}
+		trailing = 5;
+	    }
+	    else
+		break;
+	}
+    }
+
+    if ((buf != endbuf) || trailing) {
+	char errbuf[100];
+
+	snprintf(errbuf, sizeof(errbuf),
+		 "string '%s': not valid utf8", s);
+	yyerror(errbuf);
+	return 0;
+    }
+
     return 1;
 }

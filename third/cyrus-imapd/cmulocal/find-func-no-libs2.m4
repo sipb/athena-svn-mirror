@@ -1,11 +1,11 @@
-dnl $Id: find-func-no-libs2.m4,v 1.1.1.1 2002-10-13 18:05:13 ghudson Exp $
+dnl $Id: find-func-no-libs2.m4,v 1.1.1.2 2004-02-23 22:53:59 rbasch Exp $
 dnl
 dnl
 dnl Look for function in any of the specified libraries
 dnl
 
 dnl AC_FIND_FUNC_NO_LIBS2(func, libraries, includes, arguments, extra libs, extra args)
-AC_DEFUN(AC_FIND_FUNC_NO_LIBS2, [
+AC_DEFUN([AC_FIND_FUNC_NO_LIBS2], [
 
 AC_MSG_CHECKING([for $1])
 AC_CACHE_VAL(ac_cv_funclib_$1,

@@ -40,7 +40,7 @@ exec perl -x -S $0 ${1+"$@"} # -*-perl-*-
 # AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
 # OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
-# $Id: sieveshell.pl,v 1.1.1.2 2003-02-14 21:38:40 ghudson Exp $
+# $Id: sieveshell.pl,v 1.1.1.3 2004-02-23 22:56:15 rbasch Exp $
 #
 
 use Cyrus::SIEVE::managesieve;
@@ -159,11 +159,6 @@ sub show_help {
   print $deactivatehelp;
   print "quit             - quit\n";
 }
-#no longer used, replaced by readline module
-sub getline {
-    print "> " if ($interactive);
-    return <$filehandle>;
-}
 
 # main code
 
@@ -180,7 +175,7 @@ my $term = Term::ReadLine->new("sieveshell");
 
 $term->ornaments(0);
 
-while(defined($_  = $term->readline('> '))){
+while(defined($_  = ($interactive ? $term->readline('> ') : <$filehandle>))){
   
   $term->addhistory($_);
 
@@ -290,7 +285,7 @@ sieveshell - remotely manipulate sieve scripts
 =head1 SYNOPSIS
 
 sieveshell [B<--user>=I<user>] [B<--authname>=I<authname>] 
-[B<--realm>=I<realm>] [B<--exec>=I<script>] I<server>
+[B<--realm>=I<realm>] [B<--exec>=I<script>] I<server>[B<:>I<port>]
 
 sieveshell B<--help>
 

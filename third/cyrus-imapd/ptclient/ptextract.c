@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+ * Copyright (c) 1998-2003 Carnegie Mellon University.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,7 +39,7 @@
  *
  */
 
-/* $Id: ptextract.c,v 1.1.1.1 2002-10-13 18:01:27 ghudson Exp $ */
+/* $Id: ptextract.c,v 1.1.1.2 2004-02-23 22:53:35 rbasch Exp $ */
 
 #include <sys/types.h>
 #include <krb.h>
