@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athchanges,v 1.1 2003-04-06 21:09:14 ghudson Exp $
+# $Id: athchanges,v 1.2 2003-04-06 22:35:55 ghudson Exp $
 # athchanges - Set up configuration files required by Athena software.
 
 # Unlike oschanges, this script is run under a chroot into the update
@@ -16,7 +16,7 @@ done
 # athena-panel-config.schemas one has to be installed last, since it
 # overlaps with panel-per-panel-config.schemas right now.
 gconftool-2 --makefile-install-rule \
-  /etc/athena/gconf/schemas/athena-panel-config.schemas 2>&1 > /dev/null
+  /etc/athena/gconf/schemas/athena-panel-config.schemas > /dev/null 2>&1
 
 # Create pango module config.
 mkdir -p /etc/athena/pango

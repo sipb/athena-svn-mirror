@@ -219,7 +219,7 @@ EOF
 	export GCONF_CONFIG_SOURCE
 	for f in /etc/gconf/schemas/*.schemas \
 		 /etc/athena/gconf/schemas/*.schemas; do
-		gconftool-2 --makefile-install-rule $f 2>&1 > /dev/null
+		gconftool-2 --makefile-install-rule $f > /dev/null 2>&1
 	done
 	success gconf
 	echo
