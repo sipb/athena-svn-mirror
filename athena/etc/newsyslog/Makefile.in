@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/Makefile.in,v 1.2 1996-04-29 23:57:40 bert Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/Makefile.in,v 1.3 1996-05-07 19:55:01 ghudson Exp $
 
 ### programs used in building/installing for Athena
 
@@ -21,11 +21,10 @@ LDFLAGS=@LDFLAGS@ $(DEBUG) $(LIBS)
 
 ### release rules
 
-.DEFAULT: all
 all: newsyslog
 
 newsyslog: newsyslog.o signames.o
-	$(CC) $^ $(LDFLAGS) -o $@
+	$(CC) newsyslog.o signames.o $(LDFLAGS) -o $@
 
 install:
 	-$(MKDIRHIER) $(DESTDIR)/etc/athena
