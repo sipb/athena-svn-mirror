@@ -123,7 +123,7 @@ to it) which does the following:
 				CPPFLAGS="${CPPFLAGS} -I$motif/include"
 				LDFLAGS="$LDFLAGS -L$motif/lib"
 			fi
-			AC_CHECK_LIB(Xm, XmString, :,
+			AC_CHECK_LIB(Xm, XmStringFree, :,
 				     [AC_MSG_ERROR(Motif library not found)])
 			# Omit the next line if you must have Motif.
 			AC_DEFINE(WITH_MOTIF)
