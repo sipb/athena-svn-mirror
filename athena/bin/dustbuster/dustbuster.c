@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.8 2003-01-03 20:06:23 rbasch Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.9 2003-01-22 21:43:28 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,7 +30,7 @@ static const char rcsid[] = "$Id: dustbuster.c,v 1.8 2003-01-03 20:06:23 rbasch 
 static void xbust(char **argv);
 static void ttybust(char **argv);
 static void sessionbust(char **argv);
-static void start_child(char **argv);
+static void start_child(char **argv, int keep_fd);
 static int xhandler(Display *dpy);
 static void child_handler(int signo);
 static void sig_handler(int signo);
@@ -135,7 +135,7 @@ static void xbust(char **argv)
   XSetIOErrorHandler(xhandler);
 
   /* Start the child process. */
-  start_child(argv);
+  start_child(argv, ConnectionNumber(dpy));
 
   /* Wait until either the X connection dies (xhandler) or the child
    * process dies (child_handler).
@@ -149,7 +149,7 @@ static void ttybust(char **argv)
   int fd;
 
   /* Start the child process. */
-  start_child(argv);
+  start_child(argv, -1);
 
   /* Wait until the child process exits (child_handler) or the
    * controlling tty can no longer be opened.
@@ -182,7 +182,7 @@ static void sessionbust(char **argv)
       exit(1);
     }
 
-  start_child(argv);
+  start_child(argv, -1);
 
   /* Wait until the child process exits (child_handler) or the
    * login session pid is no longer running.
@@ -196,12 +196,16 @@ static void sessionbust(char **argv)
 }
 
 /* Set up the SIGCHLD handler and start the child process given by
- * argv.  Sets child_pid.
+ * argv.  Sets child_pid.  The parent closes open file descriptors,
+ * except that given by keep_fd, to prevent blocking by any parent
+ * reading a pipe, and redirects the standard input, output, and error
+ * files to /dev/null.
  */
-static void start_child(char **argv)
+static void start_child(char **argv, int keep_fd)
 {
   struct sigaction sa;
   sigset_t set, oset;
+  int fd;
 
   /* Set up the SIGCHLD handler. */
   sa.sa_handler = child_handler;
@@ -240,6 +244,28 @@ static void start_child(char **argv)
       fprintf(stderr, "%s: error: can't execute %s: %s\n", progname, argv[0],
 	      strerror(errno));
       _exit(1);
+    }
+
+  /* In the parent, close all open files, except the descriptor the
+   * caller passed in keep_fd, and redirect stdin, stdout, and stderr
+   * to /dev/null.
+   */
+  for (fd = sysconf(_SC_OPEN_MAX); --fd > STDERR_FILENO; )
+    {
+      if (fd != keep_fd)
+	close(fd);
+    }
+  fd = open("/dev/null", O_RDWR, 0);
+  if (fd != -1)
+    {
+      if (keep_fd != STDIN_FILENO)
+	dup2(fd, STDIN_FILENO);
+      if (keep_fd != STDOUT_FILENO)
+	dup2(fd, STDOUT_FILENO);
+      if (keep_fd != STDERR_FILENO)
+	dup2(fd, STDERR_FILENO);
+      if (fd > STDERR_FILENO)
+	close(fd);
     }
 }
 
