@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.15.2.1 1998-08-14 19:27:45 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.15.2.2 1999-03-12 19:30:12 ghudson Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v $
 #	$Author: ghudson $
 #
@@ -241,7 +241,7 @@ R$*<$*.POP>$*		$1<$2>.POP			Extract .POP
 R$*<@$j>$*		$#local$:$1
 
 # Resolve name (so our CNAMES work)
-R$*<@$+.$D>$*		$:$1<$[$2$]:@$2>$3		@something.mit.edu
+R$*<@$+.$D>$*		$:$1<$[$2$]:@$2.$D>$3		@something.mit.edu
 R$*<@$->$*		$:$1<$[$2$]:@$2>$3		@something [no .s]
 # need next because `localhost' resolves to `localhost.' w/ our /etc/hosts
 R$*<$*.:$*>$*		$1<$2:$3>$4
