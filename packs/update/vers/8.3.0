@@ -274,10 +274,10 @@ echo "/etc/athena/attach.conf"				>> "$CONFCHG"
 echo "/etc/athena/inetd.conf"				>> "$CONFCHG"
 echo "/etc/named.conf"					>> "$CONFCHG"
 
-echo "Moving aside old attachtab."
 chmod 755 /mit
 if [ -f /var/athena/attachtab ]; then
-    mv /var/athena/attachtab /var/athena/attachtab.old
+	echo "Moving aside old attachtab."
+	mv /var/athena/attachtab /var/athena/attachtab.old
 fi
 
 echo "Creating initial athinfo.access file."
