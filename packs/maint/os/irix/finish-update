@@ -52,17 +52,15 @@ start)
 		. /srvd/usr/athena/lib/update/update-environment
 		. $CONFDIR/rc.conf
 
-		sh /srvd/usr/athena/lib/update/setup-swap-boot "$method" \
-			"$newvers" 2>&1 | tee -a /var/athena/update.log
-
-		if [ $? -ne 0 ]; then
+		{ sh /srvd/usr/athena/lib/update/setup-swap-boot \
+			"$method" "$newvers" 2>&1 || {
 			echo "Please contact Athena Hotline at x3-1410."
 			echo "Thank you. -Athena Operations"
 
 			echo "Athena Workstation ($HOSTTYPE) Version Update" \
 				"`date`" >> "$CONFDIR/version"
 			exit 0
-		fi
+		}; } | tee -a /var/athena/update.log
 
 		sync
 		sleep 15
