@@ -1,0 +1,20 @@
+#!/bin/sh -
+# Version-specific update script for 7.6A
+
+echo "NEWTTYS=true"			>> ${CONFVARS}
+
+case ${MACH} in
+VS2*)	;;
+DS*)
+	echo "NEWUNIX=true"                     >> ${CONFVARS}
+	;;
+RSAIX)
+	;;
+SUN*)
+	sh remove_files
+	sh create_files
+	echo "NEWUNIX=true"                     >> ${CONFVARS}
+	echo "NEWBOOT=true"                     >> ${CONFVARS}
+	echo "NEWOS=true"                     >> ${CONFVARS}
+	echo "Done."
+esac
