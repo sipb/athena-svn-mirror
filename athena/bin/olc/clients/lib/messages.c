@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v $
- *	$Id: messages.c,v 1.10 1991-02-24 15:19:17 lwvanels Exp $
+ *	$Id: messages.c,v 1.11 1991-03-05 14:45:42 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.10 1991-02-24 15:19:17 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.11 1991-03-05 14:45:42 lwvanels Exp $";
 #endif
 #endif
 
@@ -93,30 +93,3 @@ OGetMessage(Request,file,buf,code)
   (void) close(fd);
   return(status);
 }
-
-
-
-OWaitForMessage(Request,file, sender)
-     REQUEST *Request;
-     char *file;
-     char *sender;
-{
-  char *message;
-
-  while(1)
-    {
-      message = (char *) zephyr_get_opcode("MESSAGE","PERSONAL");
-      if(message == (char *) NULL)
-	return(ERROR);
-      if(!strncmp(message,"olc",3))
-	{
-	  strncpy(sender,message+4,TITLE_SIZE);
-	  free(message);
-	  unsetenv("MORE");
-	  return(OShowMessageIntoFile(Request,file));
-	}
-      free(message);
-    }	
-}
-
-
