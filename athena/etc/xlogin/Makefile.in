@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.10 2001-06-12 18:05:39 ghudson Exp $
+# $Id: Makefile.in,v 1.11 2003-04-06 17:56:48 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -101,6 +101,7 @@ install:
 	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F6 ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F7 ${DESTDIR}${bitmapdir}
 	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F8 ${DESTDIR}${bitmapdir}
+	${INSTALL} -m 444 ${srcdir}/bitmaps/Shift-F9 ${DESTDIR}${bitmapdir}
 
 clean:
 	rm -f ${OBJS} timeout.o xlogin timeout Xlogin

@@ -1,4 +1,4 @@
-! $Id: Xlogin.sun4.presed,v 1.9 2002-02-22 14:54:53 ghudson Exp $
+! $Id: Xlogin.sun4.presed,v 1.10 2003-04-06 17:56:53 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -208,6 +208,7 @@ xlogin.Geometry: 		580x325
 	Shift<Key>F6:	callbackACT(*omenuEntry6) \n\
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
+	Shift<Key>F9:	callbackACT(*omenuEntry13) \n\
 	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
 	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
 	<Key>F1:	callbackACT(*lmenuEntry1) \n\
@@ -298,6 +299,7 @@ xlogin.Geometry: 		580x325
 	Shift<Key>F6:	callbackACT(*omenuEntry6) \n\
 	Shift<Key>F7:	callbackACT(*omenuEntry8) \n\
 	Shift<Key>F8:	callbackACT(*omenuEntry9) \n\
+	Shift<Key>F9:	callbackACT(*omenuEntry13) \n\
 	Shift<Key>F10:	callbackACT(*omenuEntry10) \n\
 	Shift<Key>F11:	callbackACT(*omenuEntry11) \n\
 	<Key>F1:	callbackACT(*lmenuEntry1) \n\
@@ -518,6 +520,7 @@ xlogin.Geometry: 		580x325
 *omenuEntry10.rightBitmap:	Page-Up
 *omenuEntry11.rightBitmap:	Page-Dn
 *omenuEntry12.rightBitmap:	Ctrl-P
+*omenuEntry13.rightBitmap:	Shift-F9
 
 *register.wcClassName:		Command
 *register.vertDistance:		10
