@@ -31,5 +31,8 @@ cp -p /os/usr/openwin/server/lib/libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/serve
 ln -s ../libfont.so.1 $UPDATE_ROOT/usr/openwin/server/lib/libfont.so
 ln -s ../libtypesclr.so.0 $UPDATE_ROOT/usr/openwin/server/lib/libtypesclr.so
 
+# Turn off sgid bit due to unfixed security hole.
+chmod g-s $UPDATE_ROOT/usr/sbin/arp
+
 # Generate windex files so apropos works
 chroot ${UPDATE_ROOT:-/} /usr/bin/catman -w -M /usr/openwin/share/man:/usr/dt/share/man:/usr/share/man
