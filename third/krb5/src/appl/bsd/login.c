@@ -2484,11 +2484,12 @@ dofork()
 #endif /* __linux__ */
 #ifdef HAVE_SETSID
       (void)setsid();
-#endif
+#else
 #ifdef SETPGRP_TWOARG
       (void)setpgrp(0, 0);
 #else
       (void)setpgrp();
+#endif
 #endif
     } 
 
