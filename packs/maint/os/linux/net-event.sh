@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: net-event.sh,v 1.4 2003-07-02 20:12:25 ghudson Exp $
+# $Id: net-event.sh,v 1.5 2003-07-02 20:21:39 ghudson Exp $
 #
 # net-event:	the network event script.  This script is called from a
 #		number of various system scripts.  The first argument is
@@ -69,8 +69,12 @@ get_ipaddr() {
 old_ipaddr() {
   dev="$1"
 
-  line=`grep "$dev=" $networkfile`
-  echo "$line" | sed -e s/"$dev"=//
+  if [ -f $networkfile ]; then
+    line=`grep "$dev=" $networkfile`
+    echo "$line" | sed -e s/"$dev"=//
+  else
+    echo ""
+  fi
   return 0
 }
 
