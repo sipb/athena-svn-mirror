@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.5 1990-04-25 16:39:07 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.6 1990-04-25 19:34:52 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -509,10 +509,12 @@ set_prompt(Request, prompt, inprompt)
      char *inprompt;
 {
   char buf[BUF_SIZE];
-  char format[BUF_SIZE] = "";
-  char variable[BUF_SIZE] = "";
+  char format[BUF_SIZE];
+  char variable[BUF_SIZE];
   char *buf2;
 
+  format[0] = '\0';
+  variable[0] = '\0';
   *prompt = '\0';
   while(*inprompt != '\0')
     {

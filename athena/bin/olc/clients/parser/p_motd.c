@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.8 1990-04-25 16:43:25 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.9 1990-04-25 19:35:40 vanharen Exp $";
 #endif
 
 
@@ -32,12 +32,15 @@ do_olc_motd(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_SIZE] = "";
+  char file[NAME_SIZE];
   int status;
   int save_file = 0;
   int type=0;
   int change_flag = 0;
-  char editor[NAME_SIZE] = "";
+  char editor[NAME_SIZE];
+
+  file[0] = '\0';
+  editor[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.7 1990-04-25 16:43:58 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.8 1990-04-25 19:35:44 vanharen Exp $";
 #endif
 
 
@@ -33,9 +33,12 @@ do_olc_send(arguments)
 {
   REQUEST Request;
   int status;
-  char file[NAME_SIZE] = "";
-  char editor[NAME_SIZE] = "";
+  char file[NAME_SIZE];
+  char editor[NAME_SIZE];
   int temp = FALSE;
+
+  file[0] = '\0';
+  editor[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -110,9 +113,12 @@ do_olc_comment(arguments)
 {
   REQUEST Request;
   int status;
-  char file[NAME_SIZE] = "";
-  char editor[NAME_SIZE] = "";
+  char file[NAME_SIZE];
+  char editor[NAME_SIZE];
   int temp = FALSE;
+
+  file[0] = '\0';
+  editor[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -176,14 +182,17 @@ do_olc_mail(arguments)
      char **arguments;
 {
   REQUEST Request;
-  char file[NAME_SIZE] = "";
-  char editor[NAME_SIZE] = "";
+  char file[NAME_SIZE];
+  char editor[NAME_SIZE];
   char smargs[NAME_SIZE][NAME_SIZE];
   char *smargsP[NAME_SIZE];
   int status;
   int temp = FALSE;
   int checkhub = 0;
   int i = 0;
+
+  file[0] = '\0';
+  editor[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);

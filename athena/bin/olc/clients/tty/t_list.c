@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.9 1990-02-19 23:59:05 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.10 1990-04-25 19:36:07 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -87,9 +87,12 @@ void output_status_header (file, status)
     FILE *file;
     const char *status;
 {
-    static char old_status[30] = "";
+    static char old_status[30];
     int active;
     static int old_active;
+
+    old_status[0] = '\0';
+
     if (status == 0) {
 	old_status[0] = '\0';
 	return;
