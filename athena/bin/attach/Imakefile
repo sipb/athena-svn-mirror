@@ -18,10 +18,10 @@ LIBS = $(BSDLIB) -lhesiod $(RPCLIB) -lzephyr -lkrb -ldes -lcom_err $(XLIBS)
 
 SRCS = main.c util.c attachtab.c attach.c detach.c mul.c nfs.c rvd.c\
 	afs.c ufs.c rpc.c mount.c unmount.c zephyr.c getrealm.c\
-	rvdutil.c pathcan.c config.c strtok.c $(XSRCS)
+	rvdutil.c pathcan.c config.c $(XSRCS)
 OBJS = 	main.o util.o attachtab.o attach.o detach.o mul.o nfs.o rvd.o\
 	afs.o ufs.o rpc.o mount.o unmount.o zephyr.o getrealm.o\
-	rvdutil.o pathcan.o config.o strtok.o $(XOBJS)
+	rvdutil.o pathcan.o config.o $(XOBJS)
 
 
 build_program(attach,$(OBJS),,$(LIBS))
