@@ -1,16 +1,17 @@
 /* 
- * $Id: linked_list.h,v 1.1 1990-06-22 18:02:50 qjb Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/linked_list.h,v $
- * $Author: qjb $
+ * $Id: linked_list.h,v 1.2 1991-07-16 06:25:28 probe Exp $
  *
  * This is the header file for a general list linked package.
+ * 
+ * Copyright 1990,1991 by the Massachusetts Institute of Technology
+ * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #ifndef __LINKED_LIST_H__
 #define __LINKED_LIST_H__
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_linked_list_h = "$Id: linked_list.h,v 1.1 1990-06-22 18:02:50 qjb Exp $";
+static char *rcsid_linked_list_h = "$Id: linked_list.h,v 1.2 1991-07-16 06:25:28 probe Exp $";
 #endif lint || SABER
 
 #define LL_SUCCESS 0

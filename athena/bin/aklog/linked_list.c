@@ -1,13 +1,14 @@
 /* 
- * $Id: linked_list.c,v 1.2 1991-01-08 20:38:03 qjb Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/linked_list.c,v $
- * $Author: qjb $
- *
- * This file contains general linked list routines. 
+ * $Id: linked_list.c,v 1.3 1991-07-16 06:25:27 probe Exp $
+ * 
+ * This file contains general linked list routines.
+ * 
+ * Copyright 1990,1991 by the Massachusetts Institute of Technology
+ * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_list_c = "$Id: linked_list.c,v 1.2 1991-01-08 20:38:03 qjb Exp $";
+static char *rcsid_list_c = "$Id: linked_list.c,v 1.3 1991-07-16 06:25:27 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>

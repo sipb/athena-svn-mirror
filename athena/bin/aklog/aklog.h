@@ -1,15 +1,15 @@
 /* 
- * $Id: aklog.h,v 1.4 1990-07-24 14:46:32 qjb Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog.h,v $
- * $Author: qjb $
+ * $Id: aklog.h,v 1.5 1991-07-16 06:25:20 probe Exp $
  *
+ * Copyright 1990,1991 by the Massachusetts Institute of Technology
+ * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #ifndef __AKLOG_H__
 #define __AKLOG_H__
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_aklog_h = "$Id: aklog.h,v 1.4 1990-07-24 14:46:32 qjb Exp $";
+static char *rcsid_aklog_h = "$Id: aklog.h,v 1.5 1991-07-16 06:25:20 probe Exp $";
 #endif /* lint || SABER */
 
 #include <krb.h>
