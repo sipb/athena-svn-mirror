@@ -438,10 +438,11 @@ concat (nargs, args, target_type, last_special)
 		       / BITS_PER_CHAR);
 		  int byte;
 		  byte = XBOOL_VECTOR (val)->data[thisindex / BITS_PER_CHAR];
-		  if (byte & (1 << thisindex))
+		  if (byte & (1 << (thisindex % BITS_PER_CHAR)))
 		    elt = Qt;
 		  else
 		    elt = Qnil;
+		  thisindex++;
 		}
 	      else
 		elt = XVECTOR (this)->contents[thisindex++];
