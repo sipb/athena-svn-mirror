@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.11 1991-11-06 15:49:26 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.12 1992-08-31 14:42:35 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.11 1991-11-06 15:49:26 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.12 1992-08-31 14:42:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -37,7 +37,7 @@ static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/o
 
 #define SERVICE_NAME "ols"
 
-char *logfile=NULL;
+char *lf;
 int log_fd;
 int tick=0;
 
@@ -138,7 +138,7 @@ handle_hup(sig)
 {
   signal(SIGHUP,handle_hup);
   close(log_fd);
-  if ((log_fd = open(logfile,O_WRONLY|O_CREAT|O_APPEND,0600)) < 0) {
+  if ((log_fd = open(lf,O_WRONLY|O_CREAT|O_APPEND,0600)) < 0) {
     syslog(LOG_ERR,"opening %s: %m");
     exit(1);
   }
@@ -194,10 +194,10 @@ main(argc, argv)
       pidfile = argv[++i];
       continue;
     }
-    logfile = argv[i];
+    lf = argv[i];
   }
 
-  if (logfile == NULL) {
+  if (lf == NULL) {
     fprintf(stderr,"usage: bbd\n");
     fprintf(stderr,"       [-nofork]\n");
     fprintf(stderr,"       [-port portno]\n");
@@ -247,8 +247,8 @@ main(argc, argv)
     }
   }
 
-  if ((log_fd = open(logfile,O_WRONLY|O_CREAT|O_APPEND,0600)) < 0) {
-    syslog(LOG_ERR,"opening %s: %m",logfile);
+  if ((log_fd = open(lf,O_WRONLY|O_CREAT|O_APPEND,0600)) < 0) {
+    syslog(LOG_ERR,"opening %s: %m",lf);
     exit(1);
   }
 
@@ -318,7 +318,7 @@ main(argc, argv)
     }
     oldmask = sigblock(alarmmask);
     if (buf[0] == 'S')
-      handle_startup(fd,&buf[1],(rlen-1),from,logfile);
+      handle_startup(fd,&buf[1],(rlen-1),from,lf);
     else {
       write(log_fd,"VIEW ",5);
       write(log_fd,&buf[1],(rlen-1));
