@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.3  90/05/26  13:40:23  tom
+ * athena release 7.0e
+ * 
  * Revision 1.2  90/04/26  17:53:39  tom
  * *** empty log message ***
  * 
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v 1.3 1990-05-26 13:40:23 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/rc_grp.c,v 1.4 1990-07-15 18:11:49 tom Exp $";
 #endif
 
 
@@ -32,8 +35,7 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #ifdef MIT
 #ifdef ATHENA
 
-#define MAX_REPLY_SIZE 32
-static void get_variable();
+static int get_variable();
 
 /*
  * Function:    lu_rcvar()
@@ -63,129 +65,101 @@ lu_rcvar(varnode, repl, instptr, reqflg)
   repl->name.ncmp++;			/* include the "0" instance */
 
   repl->val.type = STR;  /* True of all the replies */
-  repl->val.value.str.str = (char *) malloc(sizeof(char) * MAX_REPLY_SIZE);
-  repl->val.value.str.len = MAX_REPLY_SIZE;
 
   switch (varnode->offset) 
     {
     case N_RCHOST:
-      get_variable("HOST",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("HOST",      &(repl->val.value.str)));
     case N_RCADDR:
-      get_variable("ADDR",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("ADDR",      &(repl->val.value.str)));
     case N_RCMACHINE:
-      get_variable("MACHINE",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("MACHINE",   &(repl->val.value.str)));
     case N_RCSYSTEM:
-      get_variable("SYSTEM",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("SYSTEM",    &(repl->val.value.str)));
     case N_RCWS:
-      get_variable("WS",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("WS",        &(repl->val.value.str)));
     case N_RCTOEHOLD:
-      get_variable("TOEHOLD",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("TOEHOLD",   &(repl->val.value.str)));
     case N_RCPUBLIC:
-      get_variable("PUBLIC",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("PUBLIC",    &(repl->val.value.str)));
     case N_RCERRHALT:
-      get_variable("ERRHALT",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("ERRHALT",   &(repl->val.value.str)));
     case N_RCLPD:
-      get_variable("LPD",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("LPD",       &(repl->val.value.str)));
     case N_RCRVDSRV:
-      get_variable("RVDSRV",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("RVDSRV",    &(repl->val.value.str)));
     case N_RCRVDCLIENT:
-      get_variable("RVDCLIENT",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("RVDCLIENT", &(repl->val.value.str)));
     case N_RCNFSSRV:
-      get_variable("NFSSRV",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("NFSSRV",    &(repl->val.value.str)));
     case N_RCNFSCLIENT:
-      get_variable("NFSCLIENT",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("NFSCLIENT", &(repl->val.value.str)));
     case N_RCAFSSRV:
-      get_variable("AFSCLIENT",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("AFSCLIENT", &(repl->val.value.str)));
     case N_RCRPC:
-      get_variable("RPC",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("RPC",       &(repl->val.value.str)));
     case N_RCSAVECORE:
-      get_variable("SAVECORE",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("SAVECORE",  &(repl->val.value.str)));
     case N_RCPOP:
-      get_variable("POP",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("POP",       &(repl->val.value.str)));
     case N_RCSENDMAIL:
-      get_variable("SENDMAIL",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("SENDMAIL",  &(repl->val.value.str)));
     case N_RCQUOTAS:
-      get_variable("QUOTAS",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("QUOTAS",    &(repl->val.value.str)));
     case N_RCACCOUNT:
-      get_variable("ACCOUNT",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("ACCOUNT",   &(repl->val.value.str)));
     case N_RCOLC:
-      get_variable("OLC",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("OLC",       &(repl->val.value.str)));
     case N_RCTIMESRV:
-      get_variable("TIMESRV",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("TIMESRV",   &(repl->val.value.str)));
     case N_RCPCNAMED:
-      get_variable("PCNAMED",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("PCNAMED",   &(repl->val.value.str)));
     case N_RCNEWMAILCF:
-      get_variable("NEWMAILCF",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("NEWMAILCF", &(repl->val.value.str)));
     case N_RCKNETD:
-      get_variable("KNETD",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("KNETD",     &(repl->val.value.str)));
     case N_RCTIMEHUB:
-      get_variable("TIMEHUB",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("TIMEHUB",   &(repl->val.value.str)));
     case N_RCZCLIENT:
-      get_variable("ZCLIENT",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("ZCLIENT",   &(repl->val.value.str)));
     case N_RCZSERVER:
-      get_variable("ZSERVER",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("ZSERVER",   &(repl->val.value.str)));
     case N_RCSMSUPDATE:
-      get_variable("SMSUPDATE",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("SMSUPDATE", &(repl->val.value.str)));
     case N_RCINETD:
-      get_variable("INETD",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("INETD",     &(repl->val.value.str)));
     case N_RCNOCREATE:
-      get_variable("NOCREATE",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("NOCREATE",  &(repl->val.value.str)));
     case N_RCNOATTACH:
-      get_variable("NOATTACH",repl->val.value.str.str,MAX_REPLY_SIZE);
-      return(BUILD_SUCCESS);
+      return(get_variable("NOATTACH",  &(repl->val.value.str)));
+    default:
+      syslog (LOG_ERR, "lu_rc: bad rc offset: %d", varnode->offset);
+      return(BUILD_ERR);
     }
 }
 
 
 
 /*
- * Function:    get_variable()
+ * Function:    return(get_variable()
  * Description: gets var and puts size of it into string. 
  *               getenv() is a lousy copout.
  */
 
-static void
-get_variable(var, string, size)
+static int 
+return(get_variable(var, str)
   char *var;
-  char *string;
-  int  size;
+  str *str;    
 {
   char *ptr;
 
   ptr = (char *) getenv(var);
-  strncpy(string,ptr,size);
-  string[size-1] = '\0';
+  if((str.str = (char *) malloc(strlen(ptr) * sizeof(char))) == (char *) NULL)
+	return(BUILD_ERR);
+  
+  strcpy(str.str, ptr);      
+  str.len = strlen(ptr);
+  return(BUILD_SUCCESS);
 }
 
 
