@@ -26,7 +26,11 @@ the given user or group (See \fBPERMISSIONS\fP below).
 .LP
 .I Quota
 without options displays only warnings 
-about mounted file systems where usage is over quota.
+about mounted file systems where usage is over quota.  As a special case,
+the user will only be warned about AFS lockers if the user attached the
+locker, and the mode it was attached with was 'w'.  This is done to try to
+reduce the number of lockers the user is warned about that they have no
+control over.
 .SH OPTIONS
 
 .IP \fB\-v\fP
@@ -100,6 +104,9 @@ check one's home directory quota would be:
 Up to 16 `\fB\-f\fP dirname' pairs may be specified.  If the given
 filesystem name doesn't match any mounted filesystems, a suitable
 error message to that effect is printed.
+
+Note that the user will always be warned about quota problems on AFS lockers
+that are explicitly specified with -f.
 
 .IP \fB\-u\fP
 This option will only report user quota information (ie. no group quotas), 
