@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.1 1988-06-06 21:03:19 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.2 1988-06-10 12:00:07 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.1 1988-06-06 21:03:19 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 4.2 1988-06-10 12:00:07 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -34,8 +34,8 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 /* Default subscription list */
 #define DEF_LOG 	"/usr/adm/TRACKLOG"
 
-/* Default root for destination of transfer */
-#define DEF_TOROOT	"/"
+/* Default root for destination of transfer: "" == root. */
+#define DEF_TOROOT	""
 
 /* Default subscription list */
 #define DEF_SUB 	"sys_rvd"
