@@ -6,7 +6,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *	$Zephyr: /mit/zephyr/src/server/RCS/zserver.h,v 1.34 91/03/08 12:53:24 raeburn Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
@@ -367,6 +367,9 @@ extern struct in_addr my_addr;	/* my inet address */
 #define	ADMIN_LIMBO	"LIMBO"		/* Class inst: please send limbo info*/
 #define	ADMIN_YOU	"YOUR_STATE"	/* Class inst: please send your state*/
 #define	ADMIN_ME	"MY_STATE"	/* Class inst: please send my info */
+
+#define ZSRV_SERVICE	"zephyr"
+#define ZSRV_INSTANCE	"zephyr"
 
 #define	NULLZCT		((ZClass_t *) 0)
 #define	NULLZCNT	((ZClient_t *) 0)
