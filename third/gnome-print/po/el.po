@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print 0.26pre\n"
-"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"POT-Creation-Date: 2002-01-28 21:59+0200\n"
 "PO-Revision-Date: 2001-10-06 21:28+0100\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -19,46 +19,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 
 #
-#: installer/gnome-font-install.c:119
+#: installer/gnome-font-install.c:141
 msgid "Print out debugging information"
 msgstr "Εκτύπωση πληροφοριών εξσφαλμάτωσης"
 
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr ""
+
 #
-#: installer/gnome-font-install.c:121
+#: installer/gnome-font-install.c:145
 msgid "Search directories recursively for font files"
 msgstr "Αναζήτηση σε καταλόγους αναδρομικά για αρχεία γραμματοσειρών"
 
-#: installer/gnome-font-install.c:123
+#: installer/gnome-font-install.c:147
 msgid "Start from zero fontmap, instead of parsing old one"
 msgstr ""
 "Εκκίνηση από μηδενικό χάρτη γραμματοσειρών αντί της ανάλυσης του παλαιότερου"
 
-#: installer/gnome-font-install.c:125
+#: installer/gnome-font-install.c:149
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:151
 msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
 msgstr "Δημιουργία του $HOME/.gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:127
+#: installer/gnome-font-install.c:153
 msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
 msgstr "Δημιουργία του $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:129
+#: installer/gnome-font-install.c:155
 msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
 msgstr "Δημιουργία του $DATADIR/gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:131
+#: installer/gnome-font-install.c:157
 msgid "Write output fontmap to specified file (- for stdout)"
 msgstr ""
 "Εγγραφή του τελικού χάρτη γραμματοσειρών στο καθορισμένο αρχείο (- για "
 "κανονική έξοδο)"
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:159
+msgid ""
+"Return the $DATADIR and $SYSCONFDIR used for this gnome-print installation)"
+msgstr ""
+
+#: installer/gnome-font-install.c:162
 msgid "File describing known aliases"
 msgstr "Αρχείο που περιγράφει γνωστά ψευδώνυμα"
 
 #
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:162
 msgid "PATH"
 msgstr "ΜΟΝΟΠ¶ΤΙ"
+
+#: installer/gnome-font-install.c:165
+msgid "Specify default font(s) for any locale"
+msgstr ""
+
+#: installer/gnome-font-install.c:165
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr ""
 
 #. Family frame
 #: libgnomeprint/gnome-font-dialog.c:142
@@ -79,22 +100,16 @@ msgstr "Μέγεθος γραμματοσειράς:"
 msgid "Font Selection"
 msgstr "Επιλογή Γραμματοσειράς"
 
-#: libgnomeprint/gnome-font-face.c:605
+#: libgnomeprint/gnome-font-face.c:368
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Και ο νους του σαν τον αχνό του λιβανιού στης Παναγιάς την όψη."
 
 #
 #. Encode empty font
-#: libgnomeprint/gnome-font-face.c:808
+#: libgnomeprint/gnome-font-face.c:1579
 #, c-format
 msgid "Couldn't generate pfa for face %s\n"
 msgstr "Αδύνατη η δημιουργία pfa για την όψη %s\n"
-
-#
-#: libgnomeprint/gnome-font-face.c:925
-#, c-format
-msgid "status loading %s = %d\n"
-msgstr "κατάσταση φόρτωσης του %s = %d\n"
 
 #: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
@@ -285,27 +300,8 @@ msgstr "Προσαρμογή Ύψους"
 msgid "Zooms to fit the height of the page"
 msgstr "Εστίαση για προσαρμογή του ύψους της σελίδας"
 
-#: libgnomeprint/gnome-printer-dialog.c:293
-msgid ""
-"gnome-print-admin was not found.\n"
-"\n"
-"Please install gnome-print-admin to configure this printer"
-msgstr ""
-"Το gnome-print-admin δε βρέθηκε.\n"
-"\n"
-"Παρακαλώ εγκαταστήστε το gnome-print-admin για να ρυθμίσετε αυτόν τον "
-"εκτυπωτή"
-
-#: libgnomeprint/gnome-printer-dialog.c:375
-msgid "Print to file"
-msgstr "Εκτύπωση σε αρχείο"
-
-#: libgnomeprint/gnome-printer-dialog.c:392
-msgid "Properties"
-msgstr "Ιδιότητες"
-
 #
-#: libgnomeprint/gnome-printer-dialog.c:500
+#: libgnomeprint/gnome-printer-dialog.c:242
 msgid "Select printer"
 msgstr "Επιλογή εκτυπωτή"
 
@@ -313,46 +309,46 @@ msgstr "Επιλογή εκτυπωτή"
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:508
+#: libgnomeprint/gnome-printer-dialog.c:250
 msgid "State:"
 msgstr "Κατάσταση:"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:509
+#: libgnomeprint/gnome-printer-dialog.c:251
 msgid "Type:"
 msgstr "Τύπος:"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:510
+#: libgnomeprint/gnome-printer-dialog.c:252
 msgid "Location:"
 msgstr "Τοποθεσία:"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:511
+#: libgnomeprint/gnome-printer-dialog.c:253
 msgid "Comment:"
 msgstr "Σχόλιο:"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:537
+#: libgnomeprint/gnome-printer-dialog.c:269
 msgid "_Name:"
 msgstr "_Όνομα:"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:553
+#: libgnomeprint/gnome-printer-dialog.c:278
 msgid "_Printer"
 msgstr "_Εκτυπωτής"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:570
+#: libgnomeprint/gnome-printer-dialog.c:293
 msgid "_File"
 msgstr "_Αρχείο"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:907
+#: libgnomeprint/gnome-printer-dialog.c:576
 msgid "Select Printer"
 msgstr "Επιλογή εκτυπωτή"
 
-#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgnomeprint/gnome-printer-profile.c:113 libgpa/gpa-generic-ps.c:170
 #: libgpa/gpa-generic-ps.c:200
 msgid "Generic Postscript"
 msgstr "Γενικό PostScript"
@@ -428,8 +424,8 @@ msgstr "Εξ' ορισμού Ρυθμίσεις"
 #: tests/testembed.c:18
 msgid "extracts the first font from output.pdf and places it in font.dump."
 msgstr ""
-"εξάγει την πρώτη γραμματοσειρά από το output.pdf και την τοποθετεί στο font."
-"dump."
+"εξάγει την πρώτη γραμματοσειρά από το output.pdf και την τοποθετεί στο "
+"font.dump."
 
 #: tests/testembed.c:21
 msgid "extracts the font header from font.dump"
@@ -457,6 +453,26 @@ msgstr "Δοκιμαστική σελίδα του Gnome-print, γερμένη"
 #: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
 msgstr "Δοκιμαστική σελίδα του Gnome-print, γερμένη. Μικρό"
+
+#~ msgid ""
+#~ "gnome-print-admin was not found.\n"
+#~ "\n"
+#~ "Please install gnome-print-admin to configure this printer"
+#~ msgstr ""
+#~ "Το gnome-print-admin δε βρέθηκε.\n"
+#~ "\n"
+#~ "Παρακαλώ εγκαταστήστε το gnome-print-admin για να ρυθμίσετε αυτόν τον "
+#~ "εκτυπωτή"
+
+#~ msgid "Print to file"
+#~ msgstr "Εκτύπωση σε αρχείο"
+
+#~ msgid "Properties"
+#~ msgstr "Ιδιότητες"
+
+#
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "κατάσταση φόρτωσης του %s = %d\n"
 
 #~ msgid "Output file name"
 #~ msgstr "Όνομα αρχείου εξόδου"

@@ -1,5 +1,5 @@
-#ifndef _GNOME_PRINT_PREVIEW_PRIVATE_H_
-#define _GNOME_PRINT_PREVIEW_PRIVATE_H_
+#ifndef __GNOME_PRINT_PREVIEW_PRIVATE_H__
+#define __GNOME_PRINT_PREVIEW_PRIVATE_H__
 
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-canvas.h>

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print 0.20\n"
-"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"POT-Creation-Date: 2002-01-28 21:59+0200\n"
 "PO-Revision-Date: 2001-03-02 00:05+0900\n"
 "Last-Translator: GwanSun Back <backiss@kornet.net>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -15,42 +15,63 @@ msgstr ""
 "Content-Type: text/plain; charset=euc-kr\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: installer/gnome-font-install.c:119
+#: installer/gnome-font-install.c:141
 msgid "Print out debugging information"
 msgstr "디버깅 정보 출력"
 
-#: installer/gnome-font-install.c:121
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr ""
+
+#: installer/gnome-font-install.c:145
 #, fuzzy
 msgid "Search directories recursively for font files"
 msgstr ".font 파일을 위해 이 경로 찾기."
 
-#: installer/gnome-font-install.c:123
+#: installer/gnome-font-install.c:147
 msgid "Start from zero fontmap, instead of parsing old one"
 msgstr ""
 
-#: installer/gnome-font-install.c:125
+#: installer/gnome-font-install.c:149
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:151
 msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:127
+#: installer/gnome-font-install.c:153
 msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:129
+#: installer/gnome-font-install.c:155
 msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:131
+#: installer/gnome-font-install.c:157
 msgid "Write output fontmap to specified file (- for stdout)"
 msgstr ""
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:159
+msgid ""
+"Return the $DATADIR and $SYSCONFDIR used for this gnome-print installation)"
+msgstr ""
+
+#: installer/gnome-font-install.c:162
 msgid "File describing known aliases"
 msgstr ""
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:162
 msgid "PATH"
 msgstr "경로"
+
+#: installer/gnome-font-install.c:165
+msgid "Specify default font(s) for any locale"
+msgstr ""
+
+#: installer/gnome-font-install.c:165
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr ""
 
 #. Family frame
 #: libgnomeprint/gnome-font-dialog.c:142
@@ -70,20 +91,15 @@ msgstr "글꼴 크기:"
 msgid "Font Selection"
 msgstr "글꼴 선택"
 
-#: libgnomeprint/gnome-font-face.c:605
+#: libgnomeprint/gnome-font-face.c:368
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "빠른 갈색 여우가 게으른 개를 뛰어 넘습니다."
 
 #. Encode empty font
-#: libgnomeprint/gnome-font-face.c:808
+#: libgnomeprint/gnome-font-face.c:1579
 #, fuzzy, c-format
 msgid "Couldn't generate pfa for face %s\n"
 msgstr "%s 글꼴 파일을 열 수 없습니다\n"
-
-#: libgnomeprint/gnome-font-face.c:925
-#, c-format
-msgid "status loading %s = %d\n"
-msgstr "%s 불러오기 상태 = %d\n"
 
 #: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
@@ -270,64 +286,46 @@ msgstr "높이 맞춤"
 msgid "Zooms to fit the height of the page"
 msgstr "페이지의 높이를 맞추기 위해 크기를 조정합니다"
 
-#: libgnomeprint/gnome-printer-dialog.c:293
-msgid ""
-"gnome-print-admin was not found.\n"
-"\n"
-"Please install gnome-print-admin to configure this printer"
-msgstr ""
-"gnome-print-admin을 찾을 수 없습니다.\n"
-"\n"
-"이 프린터를 환경설정하려면 gnome-print-admin을 설치해 주세요"
-
-#: libgnomeprint/gnome-printer-dialog.c:375
-msgid "Print to file"
-msgstr "파일로 인쇄"
-
-#: libgnomeprint/gnome-printer-dialog.c:392
-msgid "Properties"
-msgstr "속성"
-
-#: libgnomeprint/gnome-printer-dialog.c:500
+#: libgnomeprint/gnome-printer-dialog.c:242
 msgid "Select printer"
 msgstr "프린터 선택"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:508
+#: libgnomeprint/gnome-printer-dialog.c:250
 msgid "State:"
 msgstr "상태:"
 
-#: libgnomeprint/gnome-printer-dialog.c:509
+#: libgnomeprint/gnome-printer-dialog.c:251
 msgid "Type:"
 msgstr "유형:"
 
-#: libgnomeprint/gnome-printer-dialog.c:510
+#: libgnomeprint/gnome-printer-dialog.c:252
 msgid "Location:"
 msgstr "위치:"
 
-#: libgnomeprint/gnome-printer-dialog.c:511
+#: libgnomeprint/gnome-printer-dialog.c:253
 msgid "Comment:"
 msgstr "설명:"
 
-#: libgnomeprint/gnome-printer-dialog.c:537
+#: libgnomeprint/gnome-printer-dialog.c:269
 msgid "_Name:"
 msgstr "이름(_N):"
 
-#: libgnomeprint/gnome-printer-dialog.c:553
+#: libgnomeprint/gnome-printer-dialog.c:278
 msgid "_Printer"
 msgstr "프린터(_P)"
 
-#: libgnomeprint/gnome-printer-dialog.c:570
+#: libgnomeprint/gnome-printer-dialog.c:293
 msgid "_File"
 msgstr "파일(_F)"
 
-#: libgnomeprint/gnome-printer-dialog.c:907
+#: libgnomeprint/gnome-printer-dialog.c:576
 msgid "Select Printer"
 msgstr "프린터 선택"
 
-#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgnomeprint/gnome-printer-profile.c:113 libgpa/gpa-generic-ps.c:170
 #: libgpa/gpa-generic-ps.c:200
 msgid "Generic Postscript"
 msgstr "일반 포스트스크립트"
@@ -419,6 +417,24 @@ msgstr "그놈 인쇄 테스트 페이지, 경사"
 #: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
 msgstr "그놈 인쇄 테스트 페이지, 경사. 작음"
+
+#~ msgid ""
+#~ "gnome-print-admin was not found.\n"
+#~ "\n"
+#~ "Please install gnome-print-admin to configure this printer"
+#~ msgstr ""
+#~ "gnome-print-admin을 찾을 수 없습니다.\n"
+#~ "\n"
+#~ "이 프린터를 환경설정하려면 gnome-print-admin을 설치해 주세요"
+
+#~ msgid "Print to file"
+#~ msgstr "파일로 인쇄"
+
+#~ msgid "Properties"
+#~ msgstr "속성"
+
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "%s 불러오기 상태 = %d\n"
 
 #~ msgid "Output file name"
 #~ msgstr "파일이름 출력"

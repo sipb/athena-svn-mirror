@@ -347,7 +347,9 @@ gnome_print_pdf_new_with_paper (GnomePrinter *printer, const gchar *paper_name)
 		goto failure;
 
 	paper = gnome_paper_with_name (paper_name);
-	g_return_val_if_fail (paper != NULL, NULL);
+	if (!paper) {
+		g_warning ("file %s: line %d: Cannot find paper %s", __FILE__, __LINE__, paper_name);
+	}
 
 	pdf->paper = paper;
 	
@@ -1627,9 +1629,8 @@ gnome_print_pdf_pages (GnomePrintContext *pc)
 		}
 	}
 
-	g_return_val_if_fail (pdf->paper != NULL, -1);
-	paper_width  = gnome_paper_pswidth (pdf->paper);
-	paper_height = gnome_paper_psheight (pdf->paper);
+	paper_width  = pdf->paper ? gnome_paper_pswidth (pdf->paper) : 21 * 72 / 2.54;
+	paper_height = pdf->paper ? gnome_paper_psheight (pdf->paper) : 29.7 * 72 / 2.54;
 	ret += gnome_print_pdf_write (pc,
 																"]" EOL
 																"/Count %i" EOL

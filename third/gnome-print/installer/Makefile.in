@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,6 +68,9 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+FREETYPE_CONFIG = @FREETYPE_CONFIG@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -80,7 +83,6 @@ GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
 GNOMEPRINT_AGE = @GNOMEPRINT_AGE@
 GNOMEPRINT_CURRENT = @GNOMEPRINT_CURRENT@
-GNOMEPRINT_LIBS = @GNOMEPRINT_LIBS@
 GNOMEPRINT_REVISION = @GNOMEPRINT_REVISION@
 GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
@@ -110,6 +112,8 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
+LIBGNOMEPRINT_CFLAGS = @LIBGNOMEPRINT_CFLAGS@
+LIBGNOMEPRINT_LIBS = @LIBGNOMEPRINT_LIBS@
 LIBGPA_CFLAGS = @LIBGPA_CFLAGS@
 LIBGPA_INCLUDEDIR = @LIBGPA_INCLUDEDIR@
 LIBGPA_LIBDIR = @LIBGPA_LIBDIR@
@@ -121,6 +125,7 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -136,6 +141,7 @@ PRINT_TEST_CFLAGS = @PRINT_TEST_CFLAGS@
 PRINT_TEST_LIBS = @PRINT_TEST_LIBS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -151,18 +157,18 @@ l = @l@
 @LIBGPA_TRUE@LIBGPA_TEST_LIBS = $(top_builddir)/libgpa/libgpa.la
 @LIBGPA_FALSE@LIBGPA_TEST_LIBS = 
 
-CPPFLAGS = @CPPFLAGS@ 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		-DBINDIR=\""$(bindir)"\"		-DDATADIR=\""$(datadir)"\" 	-DFONTMAPDIR_STATIC=\""$(datadir)/gnome/fonts"\" 	-DFONTMAPDIR_DYNAMIC=\""$(sysconfdir)/gnome/fonts"\"
+CPPFLAGS = @CPPFLAGS@ 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DBINDIR=\""$(bindir)"\" 	-DDATADIR=\""$(datadir)"\" 	-DSYSCONFDIR=\""$(sysconfdir)"\" 	-DLIBDIR=\""$(libdir)"\" 	-DFONTMAPDIR_STATIC=\""$(datadir)/gnome/fonts"\" 	-DFONTMAPDIR_DYNAMIC=\""$(sysconfdir)/gnome/fonts"\" 	-DVERSION=\""$(VERSION)"\"
 
 
-INCLUDES =  	$(PRINT_INCLUDEDIR) 	-I$(top_srcdir) 		-I$(top_builddir)		$(LIBGPA_TEST_CFLAGS)			
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_builddir) 	$(LIBGNOMEPRINT_CFLAGS)			
 
 
 bin_PROGRAMS = gnome-font-install
 
-gnome_font_install_SOURCES =  	gnome-font-install.c 	gf-pfb.c gf-pfb.h 	gf-fontmap.c gf-fontmap.h 	parseAFM.c parseAFM.h
+gnome_font_install_SOURCES =  	gnome-font-install.c 	gf-pfb.c gf-pfb.h 	gf-ttf.c gf-ttf.h 	gf-fontmap.c gf-fontmap.h 	parseAFM.c parseAFM.h
 
 
-gnome_font_install_LDADD =  	$(PRINT_TEST_LIBS) 	$(LIBGPA_TEST_LIBS) 	$(INTLLIBS)
+gnome_font_install_LDADD =  	$(LIBGNOMEPRINT_LIBS) 	$(INTLLIBS)
 
 
 EXTRA_DIST = README.installer README.binaries README
@@ -172,16 +178,16 @@ readme_DATA = README.installer README.binaries
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+bin_PROGRAMS =  gnome-font-install$(EXEEXT)
 PROGRAMS =  $(bin_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
-gnome_font_install_OBJECTS =  gnome-font-install.o gf-pfb.o gf-fontmap.o \
-parseAFM.o
-@LIBGPA_FALSE@gnome_font_install_DEPENDENCIES = 
-@LIBGPA_TRUE@gnome_font_install_DEPENDENCIES =  \
-@LIBGPA_TRUE@$(top_builddir)/libgpa/libgpa.la
+gnome_font_install_OBJECTS =  gnome-font-install.$(OBJEXT) \
+gf-pfb.$(OBJEXT) gf-ttf.$(OBJEXT) gf-fontmap.$(OBJEXT) \
+parseAFM.$(OBJEXT)
+gnome_font_install_DEPENDENCIES = 
 gnome_font_install_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -189,7 +195,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DATA =  $(readme_DATA)
 
-DIST_COMMON =  README Makefile.am Makefile.in
+DIST_COMMON =  README ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -201,7 +207,7 @@ OBJECTS = $(gnome_font_install_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps installer/Makefile
 
@@ -238,6 +244,11 @@ uninstall-binPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -246,6 +257,7 @@ uninstall-binPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -273,8 +285,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-gnome-font-install: $(gnome_font_install_OBJECTS) $(gnome_font_install_DEPENDENCIES)
-	@rm -f gnome-font-install
+gnome-font-install$(EXEEXT): $(gnome_font_install_OBJECTS) $(gnome_font_install_DEPENDENCIES)
+	@rm -f gnome-font-install$(EXEEXT)
 	$(LINK) $(gnome_font_install_LDFLAGS) $(gnome_font_install_OBJECTS) $(gnome_font_install_LDADD) $(LIBS)
 
 install-readmeDATA: $(readme_DATA)
@@ -341,11 +353,10 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 gf-fontmap.o: gf-fontmap.c gf-fontmap.h
-gf-pfb.o: gf-pfb.c gf-pfb.h ../libgnomeprint/parseAFM.h
-gf-ttf.o: gf-ttf.c ../libgnomeprint/gp-truetype-utils.h gf-ttf.h \
-	parseAFM.h
+gf-pfb.o: gf-pfb.c gf-pfb.h parseAFM.h
+gf-ttf.o: gf-ttf.c gf-ttf.h ../libgnomeprint/parseAFM.h
 gnome-font-install.o: gnome-font-install.c parseAFM.h gf-fontmap.h \
-	gf-pfb.h ../libgnomeprint/parseAFM.h
+	gf-pfb.h gf-ttf.h ../libgnomeprint/parseAFM.h
 parseAFM.o: parseAFM.c parseAFM.h
 
 info-am:

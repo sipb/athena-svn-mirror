@@ -8,10 +8,14 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
 #include <ctype.h>
+#include <freetype/freetype.h>
 #include "gf-pfb.h"
+
+#define noVERBOSE
 
 static guchar * gf_pfb_search_def_name (const guchar * b, gint length, const guchar * name);
 static guchar * gf_pfb_search_def_string (const guchar * b, gint length, const guchar * name);
@@ -21,6 +25,8 @@ static gboolean gf_pfb_search_def_boolean (const guchar * b, gint length, const 
 static void gf_pfb_search_def_bbox (const guchar * b, gint length, const guchar * name, BBox * bbox);
 static const guchar * gf_pfb_search_def (const guchar * b, gint length, const gchar * name);
 static const guchar * gf_pfb_next_token (const guchar * b, const guchar * end);
+
+extern FT_Library ft_library;
 
 GFPFB *
 gf_pfb_open (const gchar * name)
@@ -32,12 +38,18 @@ gf_pfb_open (const gchar * name)
 	guchar *buf;
 	guchar *f;
 	gint length;
+	gboolean ascii;
+	FT_Face ft_face;
+	FT_Error ft_result;
+#ifdef VERBOSE
+	gint i;
+#endif
 
 	g_return_val_if_fail (name != NULL, NULL);
 
 	if (stat (name, &s) != 0) return NULL;
 	/* I think no font can be < 4096 bytes */
-	if (s.st_size < 4096) return NULL;
+	if (s.st_size < 8192) return NULL;
 	/* We cannot use more than 64K anyways */
 	size = MIN (s.st_size, 65536 + 6);
 
@@ -51,23 +63,49 @@ gf_pfb_open (const gchar * name)
 	if (!buf) return NULL;
 	if (buf == (gpointer) -1) return NULL;
 
-	if ((buf[0] != 0x80) && (buf[1] != 0x01)) {
+	if ((buf[0] == 0x80) && (buf[1] == 0x01)) {
+		/* Seems to be pfb font */
+		/* Well, we probably mess with some bytes */
+		if (strncmp (buf + 6, "%!PS-AdobeFont-1.", 17)) {
+			munmap (buf, size);
+			return NULL;
+		}
+		f = buf + 6;
+		length = 0x100 * buf[3] + buf[2];
+		ascii = FALSE;
+	} else {
+		/* We do not support pfa fonts, because certain version of FT2 may crash on some */
 		munmap (buf, size);
 		return NULL;
 	}
 
-	/* Well, we probably mess with some bytes */
-
-	if (strncmp (buf + 6, "%!PS-AdobeFont-1.", 17) != 0) {
-		munmap (buf, size);
+	ft_result = FT_New_Face (ft_library, name, 0, &ft_face);
+	if (ft_result != FT_Err_Ok) return NULL;
+	if (!FT_IS_SCALABLE (ft_face) ||
+	    !ft_face->family_name) {
+		FT_Done_Face (ft_face);
 		return NULL;
 	}
+#ifdef VERBOSE
+	g_print ("--- Face information for %s ---\n", name);
+	g_print ("    Family name: %s\n", ft_face->family_name);
+	g_print ("    Style name : %s\n", ft_face->family_name);
+	g_print ("    Num glyphs : %d\n", (gint) ft_face->num_glyphs);
 
-	f = buf + 6;
-	length = 0x100 * buf[3] + buf[2];
+	ft_result = FT_Select_Charmap (ft_face, ft_encoding_unicode);
+	g_print ("ccaron %x glyph code is %d\n", (gint) 0x010D, (gint) FT_Get_Char_Index (ft_face, 0x010D));
+	for (i = 0; i < ft_face->num_glyphs; i++) {
+		gchar c[256];
+		FT_Get_Glyph_Name (ft_face, i, c, 256);
+		if (!strcmp (c, "ccaron")) {
+			g_print ("But glyph %x (%d) name is ccaron\n", i, i);
+		}
+	}
+#endif
+	FT_Done_Face (ft_face);
 
 	pfb = g_new0 (GFPFB, 1);
-
+	pfb->ascii = ascii;
 	pfb->filename = g_strdup (name);
 
 	/* Fill GlobalFontInfo */
@@ -92,7 +130,9 @@ gf_pfb_open (const gchar * name)
 
 	munmap (buf, size);
 
-	if ((!pfb->gfi.fontName) || (!pfb->gfi.fullName) || (!pfb->gfi.familyName)) {
+	if ((!pfb->gfi.fontName) ||
+	    (!pfb->gfi.fullName) ||
+	    (!pfb->gfi.familyName)) {
 		gf_pfb_close (pfb);
 		return NULL;
 	}
@@ -180,7 +220,8 @@ gf_pfb_search_def_name (const guchar * b, gint length, const guchar * name)
 static guchar *
 gf_pfb_search_def_string (const guchar * b, gint length, const guchar * name)
 {
-	const guchar * d, * n, * e, * end;
+	const guchar *d, *n, *e, *end;
+	gint level;
 	guchar * new;
 
 	end = b + length;
@@ -195,9 +236,16 @@ gf_pfb_search_def_string (const guchar * b, gint length, const guchar * name)
 	if (*n == ')') return NULL; /* fixme: maybe g_strdup ("") */
 	if (iscntrl (*n)) return NULL;
 
-	for (e = n + 1; e < end; e++) {
-		if (*e == ')') break;
-		if (iscntrl (*e)) return NULL;
+	level = 1;
+	for (e = n; e < end; e++) {
+		if (*e == '(') {
+			level += 1;
+		} else if (*e == ')') {
+			level -= 1;
+			if (level < 1) break;
+		} else if (iscntrl (*e)) {
+			return NULL;
+		}
 	}
 
 	new = g_new (guchar, e - n + 1);
@@ -210,7 +258,23 @@ gf_pfb_search_def_string (const guchar * b, gint length, const guchar * name)
 static gdouble
 gf_pfb_search_def_float (const guchar * b, gint length, const guchar * name)
 {
-	return 0.0;
+	const guchar *d, *n, *end;
+	guchar c[32];
+
+	end = b + length;
+
+	d = gf_pfb_search_def (b, length, name);
+	if (!d) return 0.0;
+
+	n = gf_pfb_next_token (d + strlen (name), end);
+	if (!n) return 0.0;
+
+	n += 1;
+
+	memcpy (c, n, MIN (end - n, 32));
+	c[31] = 0;
+
+	return atof (c);
 }
 
 static gint

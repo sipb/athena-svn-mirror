@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print 0.20\n"
-"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"POT-Creation-Date: 2002-01-28 21:59+0200\n"
 "PO-Revision-Date: Tue Jun 27 2000 12:40:02+0200\n"
 "Last-Translator: Vladimir Vuksan <vuksan@veus.hr>\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
@@ -14,42 +14,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KTranslator v 0.6.0\n"
 
-#: installer/gnome-font-install.c:119
+#: installer/gnome-font-install.c:141
 msgid "Print out debugging information"
 msgstr "Ispi¹i debugging informacije"
 
-#: installer/gnome-font-install.c:121
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr ""
+
+#: installer/gnome-font-install.c:145
 #, fuzzy
 msgid "Search directories recursively for font files"
 msgstr "Koristi ovu putanju za zapisivanje mape pisma."
 
-#: installer/gnome-font-install.c:123
+#: installer/gnome-font-install.c:147
 msgid "Start from zero fontmap, instead of parsing old one"
 msgstr ""
 
-#: installer/gnome-font-install.c:125
+#: installer/gnome-font-install.c:149
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:151
 msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:127
+#: installer/gnome-font-install.c:153
 msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:129
+#: installer/gnome-font-install.c:155
 msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
 msgstr ""
 
-#: installer/gnome-font-install.c:131
+#: installer/gnome-font-install.c:157
 msgid "Write output fontmap to specified file (- for stdout)"
 msgstr ""
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:159
+msgid ""
+"Return the $DATADIR and $SYSCONFDIR used for this gnome-print installation)"
+msgstr ""
+
+#: installer/gnome-font-install.c:162
 msgid "File describing known aliases"
 msgstr ""
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:162
 msgid "PATH"
 msgstr "PATH"
+
+#: installer/gnome-font-install.c:165
+msgid "Specify default font(s) for any locale"
+msgstr ""
+
+#: installer/gnome-font-install.c:165
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr ""
 
 #. Family frame
 #: libgnomeprint/gnome-font-dialog.c:142
@@ -69,20 +90,15 @@ msgstr ""
 msgid "Font Selection"
 msgstr "Izbor pisma"
 
-#: libgnomeprint/gnome-font-face.c:605
+#: libgnomeprint/gnome-font-face.c:368
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr ""
 
 #. Encode empty font
-#: libgnomeprint/gnome-font-face.c:808
+#: libgnomeprint/gnome-font-face.c:1579
 #, fuzzy, c-format
 msgid "Couldn't generate pfa for face %s\n"
 msgstr "Ne mogu otvoriti datoteku sa pismom %s\n"
-
-#: libgnomeprint/gnome-font-face.c:925
-#, c-format
-msgid "status loading %s = %d\n"
-msgstr "uèitavam status %s = %d\n"
 
 #: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
@@ -270,66 +286,49 @@ msgstr "Stisni da stane po duljini"
 msgid "Zooms to fit the height of the page"
 msgstr ""
 
-#: libgnomeprint/gnome-printer-dialog.c:293
-msgid ""
-"gnome-print-admin was not found.\n"
-"\n"
-"Please install gnome-print-admin to configure this printer"
-msgstr ""
-
-#: libgnomeprint/gnome-printer-dialog.c:375
-#, fuzzy
-msgid "Print to file"
-msgstr "Ispisuje trenutnu datoteku"
-
-#: libgnomeprint/gnome-printer-dialog.c:392
-#, fuzzy
-msgid "Properties"
-msgstr "Br. kopija"
-
-#: libgnomeprint/gnome-printer-dialog.c:500
+#: libgnomeprint/gnome-printer-dialog.c:242
 msgid "Select printer"
 msgstr "Izaberi pisaè"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:508
+#: libgnomeprint/gnome-printer-dialog.c:250
 msgid "State:"
 msgstr "Stanje:"
 
-#: libgnomeprint/gnome-printer-dialog.c:509
+#: libgnomeprint/gnome-printer-dialog.c:251
 msgid "Type:"
 msgstr "Vrsta:"
 
-#: libgnomeprint/gnome-printer-dialog.c:510
+#: libgnomeprint/gnome-printer-dialog.c:252
 msgid "Location:"
 msgstr "Lokacija:"
 
-#: libgnomeprint/gnome-printer-dialog.c:511
+#: libgnomeprint/gnome-printer-dialog.c:253
 msgid "Comment:"
 msgstr "Komentar:"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:537
+#: libgnomeprint/gnome-printer-dialog.c:269
 msgid "_Name:"
 msgstr "_Ime:"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:553
+#: libgnomeprint/gnome-printer-dialog.c:278
 msgid "_Printer"
 msgstr "Pi_saè"
 
 #
-#: libgnomeprint/gnome-printer-dialog.c:570
+#: libgnomeprint/gnome-printer-dialog.c:293
 msgid "_File"
 msgstr "_Datoteka"
 
-#: libgnomeprint/gnome-printer-dialog.c:907
+#: libgnomeprint/gnome-printer-dialog.c:576
 msgid "Select Printer"
 msgstr "Izaberite pisaè"
 
-#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgnomeprint/gnome-printer-profile.c:113 libgpa/gpa-generic-ps.c:170
 #: libgpa/gpa-generic-ps.c:200
 msgid "Generic Postscript"
 msgstr ""
@@ -428,6 +427,17 @@ msgstr "Gnome-print probna stranica"
 #, fuzzy
 msgid "Gnome-print test page, slanted. Small"
 msgstr "Gnome-print probna stranica"
+
+#, fuzzy
+#~ msgid "Print to file"
+#~ msgstr "Ispisuje trenutnu datoteku"
+
+#, fuzzy
+#~ msgid "Properties"
+#~ msgstr "Br. kopija"
+
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "uèitavam status %s = %d\n"
 
 #, fuzzy
 #~ msgid "Base for relative afm file names."

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-print 0.29\n"
-"POT-Creation-Date: 2001-10-11 20:16-0600\n"
+"POT-Creation-Date: 2002-01-28 21:59+0200\n"
 "PO-Revision-Date: 2001-10-03 14:01+0800\n"
 "Last-Translator: Joe Man <trmetal@yahoo.com.hk>\n"
 "Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
@@ -14,41 +14,62 @@ msgstr ""
 "Content-Type: text/plain; charset=big5\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: installer/gnome-font-install.c:119
+#: installer/gnome-font-install.c:141
 msgid "Print out debugging information"
 msgstr "印出除錯資訊"
 
-#: installer/gnome-font-install.c:121
+#: installer/gnome-font-install.c:143
+msgid "Tries to do everything automatically"
+msgstr ""
+
+#: installer/gnome-font-install.c:145
 msgid "Search directories recursively for font files"
 msgstr "在副目錄內尋找字型檔"
 
-#: installer/gnome-font-install.c:123
+#: installer/gnome-font-install.c:147
 msgid "Start from zero fontmap, instead of parsing old one"
 msgstr "不要解析舊有的 fontmap，重新開始"
 
-#: installer/gnome-font-install.c:125
+#: installer/gnome-font-install.c:149
+msgid "Include font notice field (Copyright data) into fontmap"
+msgstr ""
+
+#: installer/gnome-font-install.c:151
 msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
 msgstr "建立 $HOME/.gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:127
+#: installer/gnome-font-install.c:153
 msgid "Create $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
 msgstr "建立 $SYSCONFDIR/gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:129
+#: installer/gnome-font-install.c:155
 msgid "Create $DATADIR/gnome/fonts/gnome-print.fontmap"
 msgstr "建立 $DATADIR/gnome/fonts/gnome-print.fontmap"
 
-#: installer/gnome-font-install.c:131
+#: installer/gnome-font-install.c:157
 msgid "Write output fontmap to specified file (- for stdout)"
 msgstr "將輸出的 fontmap 寫入到指定的檔案 ( - 只在標準輸出顯示)"
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:159
+msgid ""
+"Return the $DATADIR and $SYSCONFDIR used for this gnome-print installation)"
+msgstr ""
+
+#: installer/gnome-font-install.c:162
 msgid "File describing known aliases"
 msgstr "用作描述已知的字型別名的檔案"
 
-#: installer/gnome-font-install.c:134
+#: installer/gnome-font-install.c:162
 msgid "PATH"
 msgstr "路徑"
+
+#: installer/gnome-font-install.c:165
+msgid "Specify default font(s) for any locale"
+msgstr ""
+
+#: installer/gnome-font-install.c:165
+msgid "[LOCALE[,LOCALE]:fontname]"
+msgstr ""
 
 #. Family frame
 #: libgnomeprint/gnome-font-dialog.c:142
@@ -68,20 +89,15 @@ msgstr "字型大小："
 msgid "Font Selection"
 msgstr "選擇字型"
 
-#: libgnomeprint/gnome-font-face.c:605
+#: libgnomeprint/gnome-font-face.c:368
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "字型例句： The quick brown fox jumps over the lazy dog."
 
 #. Encode empty font
-#: libgnomeprint/gnome-font-face.c:808
+#: libgnomeprint/gnome-font-face.c:1579
 #, c-format
 msgid "Couldn't generate pfa for face %s\n"
 msgstr "無法為字體型狀 %s 建立 pfa \n"
-
-#: libgnomeprint/gnome-font-face.c:925
-#, c-format
-msgid "status loading %s = %d\n"
-msgstr "載入 %s 狀態 = %d\n"
 
 #: libgnomeprint/gnome-print-copies.c:238
 msgid "Copies"
@@ -268,64 +284,46 @@ msgstr "符合高度"
 msgid "Zooms to fit the height of the page"
 msgstr "縮放成符合頁高"
 
-#: libgnomeprint/gnome-printer-dialog.c:293
-msgid ""
-"gnome-print-admin was not found.\n"
-"\n"
-"Please install gnome-print-admin to configure this printer"
-msgstr ""
-"找不到 gnome-print-admin。\n"
-"\n"
-"請安裝 gnome-print-admin 去設定這個印表機"
-
-#: libgnomeprint/gnome-printer-dialog.c:375
-msgid "Print to file"
-msgstr "列印至檔案"
-
-#: libgnomeprint/gnome-printer-dialog.c:392
-msgid "Properties"
-msgstr "內容"
-
-#: libgnomeprint/gnome-printer-dialog.c:500
+#: libgnomeprint/gnome-printer-dialog.c:242
 msgid "Select printer"
 msgstr "選擇印表機"
 
 #.
 #. * Create the profile information display
 #.
-#: libgnomeprint/gnome-printer-dialog.c:508
+#: libgnomeprint/gnome-printer-dialog.c:250
 msgid "State:"
 msgstr "狀態:"
 
-#: libgnomeprint/gnome-printer-dialog.c:509
+#: libgnomeprint/gnome-printer-dialog.c:251
 msgid "Type:"
 msgstr "種類:"
 
-#: libgnomeprint/gnome-printer-dialog.c:510
+#: libgnomeprint/gnome-printer-dialog.c:252
 msgid "Location:"
 msgstr "位置:"
 
-#: libgnomeprint/gnome-printer-dialog.c:511
+#: libgnomeprint/gnome-printer-dialog.c:253
 msgid "Comment:"
 msgstr "說明:"
 
-#: libgnomeprint/gnome-printer-dialog.c:537
+#: libgnomeprint/gnome-printer-dialog.c:269
 msgid "_Name:"
 msgstr "名稱 (_N):"
 
-#: libgnomeprint/gnome-printer-dialog.c:553
+#: libgnomeprint/gnome-printer-dialog.c:278
 msgid "_Printer"
 msgstr "印表機 (_P)"
 
-#: libgnomeprint/gnome-printer-dialog.c:570
+#: libgnomeprint/gnome-printer-dialog.c:293
 msgid "_File"
 msgstr "檔案 (_F)"
 
-#: libgnomeprint/gnome-printer-dialog.c:907
+#: libgnomeprint/gnome-printer-dialog.c:576
 msgid "Select Printer"
 msgstr "選擇印表機"
 
-#: libgnomeprint/gnome-printer-profile.c:108 libgpa/gpa-generic-ps.c:170
+#: libgnomeprint/gnome-printer-profile.c:113 libgpa/gpa-generic-ps.c:170
 #: libgpa/gpa-generic-ps.c:200
 msgid "Generic Postscript"
 msgstr "一般的 Postscript"
@@ -417,3 +415,21 @@ msgstr "Gnome-print 測試頁，傾斜的"
 #: tests/testprint.c:141
 msgid "Gnome-print test page, slanted. Small"
 msgstr "Gnome-print 測試頁，傾斜的。細小"
+
+#~ msgid ""
+#~ "gnome-print-admin was not found.\n"
+#~ "\n"
+#~ "Please install gnome-print-admin to configure this printer"
+#~ msgstr ""
+#~ "找不到 gnome-print-admin。\n"
+#~ "\n"
+#~ "請安裝 gnome-print-admin 去設定這個印表機"
+
+#~ msgid "Print to file"
+#~ msgstr "列印至檔案"
+
+#~ msgid "Properties"
+#~ msgstr "內容"
+
+#~ msgid "status loading %s = %d\n"
+#~ msgstr "載入 %s 狀態 = %d\n"

@@ -847,12 +847,17 @@ int
 gnome_print_meta_access_buffer (GnomePrintMeta *meta, void **buffer, int *buflen)
 {
 	char *p;
+	gint32 l;
 
 	g_return_val_if_fail (meta != NULL, 0);
 	g_return_val_if_fail (GNOME_IS_PRINT_META (meta), 0);
 
+	l = g_htonl (meta->current);
+
 	p = *buffer = meta->buffer;
-	*((gint *)(p + GNOME_METAFILE_SIGNATURE_SIZE)) = g_htonl (meta->current);
+	/* we cannot just map the header to memory, so poke it manually */
+	/* Note: unaligned access -- MW.  */
+	memcpy (p + GNOME_METAFILE_SIGNATURE_SIZE, &l, sizeof (l));
 	*buflen = meta->current;
 
 	return 1;
@@ -874,6 +879,7 @@ int
 gnome_print_meta_get_copy (GnomePrintMeta *meta, void **buffer, int *buflen)
 {
 	char *p;
+	gint32 l;
 
 	g_return_val_if_fail (meta != NULL, 0);
 	g_return_val_if_fail (GNOME_IS_PRINT_META (meta), 0);
@@ -882,8 +888,12 @@ gnome_print_meta_get_copy (GnomePrintMeta *meta, void **buffer, int *buflen)
 	if (*buffer == NULL)
 		return 0;
 
+	l = g_htonl (meta->current);
+
 	memcpy (p, meta->buffer, meta->buffer_size);
-	*((gint *)(p + GNOME_METAFILE_SIGNATURE_SIZE)) = g_htonl (meta->current);
+	/* we cannot just map the header to memory, so poke it manually */
+	/* Note: unaligned access -- MW.  */
+	memcpy (p + GNOME_METAFILE_SIGNATURE_SIZE, &l, sizeof (l));
 	*buflen = meta->current;
 
 	return 1;

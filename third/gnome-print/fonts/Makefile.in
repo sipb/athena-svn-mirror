@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -69,6 +69,9 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+FREETYPE_CONFIG = @FREETYPE_CONFIG@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -81,7 +84,6 @@ GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
 GNOMEPRINT_AGE = @GNOMEPRINT_AGE@
 GNOMEPRINT_CURRENT = @GNOMEPRINT_CURRENT@
-GNOMEPRINT_LIBS = @GNOMEPRINT_LIBS@
 GNOMEPRINT_REVISION = @GNOMEPRINT_REVISION@
 GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
@@ -111,6 +113,8 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
+LIBGNOMEPRINT_CFLAGS = @LIBGNOMEPRINT_CFLAGS@
+LIBGNOMEPRINT_LIBS = @LIBGNOMEPRINT_LIBS@
 LIBGPA_CFLAGS = @LIBGPA_CFLAGS@
 LIBGPA_INCLUDEDIR = @LIBGPA_INCLUDEDIR@
 LIBGPA_LIBDIR = @LIBGPA_LIBDIR@
@@ -122,6 +126,7 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -137,6 +142,7 @@ PRINT_TEST_CFLAGS = @PRINT_TEST_CFLAGS@
 PRINT_TEST_LIBS = @PRINT_TEST_LIBS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -148,10 +154,19 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 
-EXTRA_DIST = X.font adobe-urw.font debian.font groff.font urw-urw.font tex.font
+EXTRA_DIST =  	X.font adobe-urw.font debian.font groff.font urw-urw.font tex.font 	defaults.fontmap
+
+
+aliasdir = $(datadir)/gnome/fonts
+alias_DATA = adobe-urw.font 
+
+mapdir = $(datadir)/gnome/fonts
+map_DATA = defaults.fontmap
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+DATA =  $(alias_DATA) $(map_DATA)
+
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -168,6 +183,44 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+
+install-aliasDATA: $(alias_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(aliasdir)
+	@list='$(alias_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(aliasdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(aliasdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(aliasdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(aliasdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-aliasDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(alias_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(aliasdir)/$$p; \
+	done
+
+install-mapDATA: $(map_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(mapdir)
+	@list='$(map_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(mapdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(mapdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(mapdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(mapdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-mapDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(map_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(mapdir)/$$p; \
+	done
 tags: TAGS
 TAGS:
 
@@ -198,19 +251,20 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am:
+install-data-am: install-aliasDATA install-mapDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am:
+uninstall-am: uninstall-aliasDATA uninstall-mapDATA
 uninstall: uninstall-am
-all-am: Makefile
+all-am: Makefile $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(aliasdir) $(DESTDIR)$(mapdir)
 
 
 mostlyclean-generic:
@@ -241,7 +295,8 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: tags distdir info-am info dvi-am dvi check check-am \
+.PHONY: uninstall-aliasDATA install-aliasDATA uninstall-mapDATA \
+install-mapDATA tags distdir info-am info dvi-am dvi check check-am \
 installcheck-am installcheck install-exec-am install-exec \
 install-data-am install-data install-am install uninstall-am uninstall \
 all-redirect all-am all installdirs mostlyclean-generic \

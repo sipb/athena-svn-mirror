@@ -109,6 +109,10 @@ static char *ident = NULL; /* storage buffer for keywords */
  * "recognize" procedure to calculate how many possible keys there are.
  */
 
+#ifdef VERSION
+#undef VERSION
+#endif
+
 enum parseKey {
   ASCENDER, CHARBBOX, CODE, COMPCHAR, CAPHEIGHT, COMMENT, 
   DESCENDER, ENCODINGSCHEME, ENDCHARMETRICS, ENDCOMPOSITES, 

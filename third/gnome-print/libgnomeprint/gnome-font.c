@@ -52,33 +52,29 @@ gnome_font_get_type (void)
 	return font_type;
 }
 
-#define KERN_PAIR_HASH(g1, g2) ((g1) * 367 + (g2) * 31)
-
 /* Return the amount of kerning for the two glyphs. */
+
 gdouble
 gnome_font_get_glyph_kerning (const GnomeFont *font, int glyph1, int glyph2)
 {
-  int ktabsize;
-  const GnomeFontKernPair *ktab;
-  int j;
+	gdouble kern;
 
-  g_return_val_if_fail (font != NULL, 0.0);
-  g_return_val_if_fail (GNOME_IS_FONT (font), 0.0);
-    
-  ktabsize = font->private->fontmap_entry->private->num_kerns;
-  ktab = font->private->fontmap_entry->private->kerns;
-  for (j = KERN_PAIR_HASH (glyph1, glyph2) & (ktabsize - 1);
-       ktab[j].glyph1 != -1;
-       j = (j + 1) & (ktabsize - 1))
-    if (ktab[j].glyph1 == glyph1 && ktab[j].glyph2 == glyph2)
-      return ktab[j].x_amt * font->private->scale;
-  return 0;
+	g_return_val_if_fail (font != NULL, 0.0);
+	g_return_val_if_fail (GNOME_IS_FONT (font), 0.0);
+
+	kern = gnome_font_face_get_glyph_kerning (font->face, glyph1, glyph2);
+
+	return kern * 0.001 * font->size;
 }
 
 /* Return the amount of kerning for the two glyphs. */
+
 gdouble
-gnome_font_face_get_glyph_kerning (const GnomeFontUnsized *font, int glyph1, int glyph2)
+gnome_font_face_get_glyph_kerning (const GnomeFontUnsized *face, int glyph1, int glyph2)
 {
+	g_return_val_if_fail (face != NULL, 0.0);
+	g_return_val_if_fail (GNOME_IS_FONT_FACE (face), 0.0);
+#if 0
   int ktabsize;
   const GnomeFontKernPair *ktab;
   int j;
@@ -93,6 +89,10 @@ gnome_font_face_get_glyph_kerning (const GnomeFontUnsized *font, int glyph1, int
     if (ktab[j].glyph1 == glyph1 && ktab[j].glyph2 == glyph2)
       return ktab[j].x_amt;
   return 0;
+#else
+  /* fixme: (Lauris) */
+  return 0.0;
+#endif
 }
 
 static void
@@ -122,19 +122,14 @@ gnome_font_class_init (GnomeFontClass *class)
 static void
 gnome_font_init (GnomeFont *font)
 {
-	font->private = g_new0 (GnomeFontPrivate, 1);
-	font->private->size = 0;
-	font->private->outlines = g_hash_table_new (NULL, NULL);
+	font->size = 0.0;
+	font->outlines = g_hash_table_new (NULL, NULL);
 }
 
 static guint
 font_hash (gconstpointer key)
 {
-	GnomeFontPrivate * priv;
-
-	priv = (GnomeFontPrivate *) key;
-
-	return (guint) priv->fontmap_entry + (gint) priv->size;
+	return (guint) ((GnomeFont *) key)->face + (guint) ((GnomeFont *) key)->size;
 }
 
 static gboolean
@@ -145,23 +140,23 @@ font_equal (gconstpointer key1, gconstpointer key2)
 	priv1 = (GnomeFontPrivate *) key1;
 	priv2 = (GnomeFontPrivate *) key2;
 
-	if (priv1->fontmap_entry != priv2->fontmap_entry) return FALSE;
+	if (((GnomeFont *) key1)->face != ((GnomeFont *) key2)->face) return FALSE;
 
-	return (fabs (priv1->size - priv2->size) < 0.05);
+	return (fabs (((GnomeFont *) key1)->size - ((GnomeFont *) key2)->size) < 0.05);
 }
 
-static GnomeFont *
+GnomeFont *
 gnome_font_face_get_font_full (GnomeFontFace * face, gdouble size, gdouble * affine)
 {
 	GnomeFont * font;
-	GnomeFontPrivate search;
+	GnomeFont search;
 
 	g_return_val_if_fail (face != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT_FACE (face), NULL);
 
 	if (!fonts) fonts = g_hash_table_new (font_hash, font_equal);
 
-	search.fontmap_entry = face;
+	search.face = face;
 	search.size = size;
 
 	font = g_hash_table_lookup (fonts, &search);
@@ -173,13 +168,12 @@ gnome_font_face_get_font_full (GnomeFontFace * face, gdouble size, gdouble * aff
 
 	font = gtk_type_new (gnome_font_get_type ());
 
-	font->private->size = size;
-	font->private->fontmap_entry = face;
-	font->private->scale = 0.001 * size;
+	font->size = size;
+	font->face = face;
 
 	gnome_font_face_ref (face);
 
-	g_hash_table_insert (fonts, font->private, font);
+	g_hash_table_insert (fonts, font, font);
 
 	return font;
 }
@@ -187,15 +181,17 @@ gnome_font_face_get_font_full (GnomeFontFace * face, gdouble size, gdouble * aff
 GnomeFont *
 gnome_font_new (const char * name, double size)
 {
-	GnomeFontFace * face;
-	GnomeFont * font;
+	GnomeFontFace *face;
+	GnomeFont *font;
 
 	face = gnome_font_face_new (name);
-	g_return_val_if_fail (face != NULL, NULL);
 
-	font = gnome_font_face_get_font_full (face, size, NULL);
-
-	gnome_font_face_unref (face);
+	if (face) {
+		font = gnome_font_face_get_font_full (face, size, NULL);
+		gnome_font_face_unref (face);
+	} else {
+		font = NULL;
+	}
 
 	return font;
 }
@@ -238,14 +234,14 @@ gnome_font_new_closest (const char * family_name,
 	GnomeFontFace * face;
 	GnomeFont * font;
 
-	g_return_val_if_fail (family_name != NULL, NULL);
-
 	face = gnome_font_unsized_closest (family_name, weight, italic);
-	g_return_val_if_fail (face != NULL, NULL);
 
-	font = gnome_font_face_get_font_full (face, size, NULL);
-
-	gnome_font_face_unref (face);
+	if (face) {
+		font = gnome_font_face_get_font_full (face, size, NULL);
+		gnome_font_face_unref (face);
+	} else {
+		font = NULL;
+	}
 
 	return font;
 }
@@ -296,10 +292,10 @@ gnome_font_get_glyph_stdadvance (const GnomeFont * font, gint glyph, ArtPoint * 
 	g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 	g_return_val_if_fail (advance != NULL, NULL);
 
-	g_return_val_if_fail (gnome_font_face_get_glyph_stdadvance (font->private->fontmap_entry, glyph, advance), NULL);
+	g_return_val_if_fail (gnome_font_face_get_glyph_stdadvance (font->face, glyph, advance), NULL);
 
-	advance->x *= font->private->scale;
-	advance->y *= font->private->scale;
+	advance->x *= 0.001 * font->size;
+	advance->y *= 0.001 * font->size;
 
 	return advance;
 }
@@ -313,12 +309,12 @@ gnome_font_get_glyph_stdbbox (const GnomeFont * font, gint glyph, ArtDRect * bbo
 	g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 	g_return_val_if_fail (bbox != NULL, NULL);
 
-	g_return_val_if_fail (gnome_font_face_get_glyph_stdbbox (font->private->fontmap_entry, glyph, bbox), NULL);
+	g_return_val_if_fail (gnome_font_face_get_glyph_stdbbox (font->face, glyph, bbox), NULL);
 
-	bbox->x0 *= font->private->scale;
-	bbox->y0 *= font->private->scale;
-	bbox->x1 *= font->private->scale;
-	bbox->y1 *= font->private->scale;
+	bbox->x0 *= 0.001 * font->size;
+	bbox->y0 *= 0.001 * font->size;
+	bbox->x1 *= 0.001 * font->size;
+	bbox->y1 *= 0.001 * font->size;
 
 	return bbox;
 }
@@ -333,19 +329,19 @@ gnome_font_get_glyph_stdoutline (const GnomeFont * font, gint glyph)
 	g_return_val_if_fail (font != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 
-	outline = g_hash_table_lookup (font->private->outlines, GINT_TO_POINTER (glyph));
+	outline = g_hash_table_lookup (font->outlines, GINT_TO_POINTER (glyph));
 
 	if (!outline) {
 		gdouble affine[6];
 
-		faceoutline = gnome_font_face_get_glyph_stdoutline (font->private->fontmap_entry, glyph);
+		faceoutline = gnome_font_face_get_glyph_stdoutline (font->face, glyph);
 
 		if (!faceoutline) return NULL;
 
-		art_affine_scale (affine, font->private->scale, font->private->scale);
+		art_affine_scale (affine, 0.001 * font->size, 0.001 * font->size);
 		outline = art_bpath_affine_transform (faceoutline, affine);
 
-		g_hash_table_insert (font->private->outlines, GINT_TO_POINTER (glyph), (gpointer) outline);
+		g_hash_table_insert (font->outlines, GINT_TO_POINTER (glyph), (gpointer) outline);
 	}
 
 	return outline;
@@ -364,10 +360,10 @@ gnome_font_get_glyph_stdoutline (const GnomeFont * font, gint glyph)
 double
 gnome_font_get_ascender (const GnomeFont *font)
 {
-  g_return_val_if_fail (font != NULL, 0.0);
-  g_return_val_if_fail (GNOME_IS_FONT (font), 0.0); 
+	g_return_val_if_fail (font != NULL, 0.0);
+	g_return_val_if_fail (GNOME_IS_FONT (font), 0.0); 
 
-  return gnome_font_face_get_ascender (font->private->fontmap_entry) * font->private->scale;
+	return gnome_font_face_get_ascender (font->face) * 0.001 * font->size;
 }
 
 /**
@@ -383,10 +379,10 @@ gnome_font_get_ascender (const GnomeFont *font)
 double
 gnome_font_get_descender (const GnomeFont *font)
 {
-  g_return_val_if_fail (font != NULL, 0.0);
-  g_return_val_if_fail (GNOME_IS_FONT (font), 0.0); 
+	g_return_val_if_fail (font != NULL, 0.0);
+	g_return_val_if_fail (GNOME_IS_FONT (font), 0.0); 
 
-  return gnome_font_face_get_descender (font->private->fontmap_entry) * font->private->scale;
+	return gnome_font_face_get_descender (font->face) * 0.001 * font->size;
 }
 
 /**
@@ -402,10 +398,10 @@ gnome_font_get_descender (const GnomeFont *font)
 double
 gnome_font_get_underline_position (const GnomeFont *font)
 {
-  g_return_val_if_fail (font != NULL, 0.0);
-  g_return_val_if_fail (GNOME_IS_FONT (font), 0.0); 
+	g_return_val_if_fail (font != NULL, 0.0);
+	g_return_val_if_fail (GNOME_IS_FONT (font), 0.0); 
 
-  return gnome_font_face_get_underline_position (font->private->fontmap_entry) * font->private->scale;
+	return gnome_font_face_get_underline_position (font->face) * 0.001 * font->size;
 }
 
 /**
@@ -421,10 +417,10 @@ gnome_font_get_underline_position (const GnomeFont *font)
 double
 gnome_font_get_underline_thickness (const GnomeFont *font)
 {
-  g_return_val_if_fail (font != NULL, 0.0);
-  g_return_val_if_fail (GNOME_IS_FONT (font), 0.0); 
+	g_return_val_if_fail (font != NULL, 0.0);
+	g_return_val_if_fail (GNOME_IS_FONT (font), 0.0); 
 
-  return gnome_font_face_get_underline_thickness (font->private->fontmap_entry) * font->private->scale;
+	return gnome_font_face_get_underline_thickness (font->face) * 0.001 * font->size;
 }
 
 /* return a pointer to the (PostScript) name of the font */
@@ -434,7 +430,7 @@ gnome_font_get_name (const GnomeFont *font)
   g_return_val_if_fail (font != NULL, NULL);
   g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 
-  return gnome_font_face_get_name (font->private->fontmap_entry);
+  return gnome_font_face_get_name (font->face);
 }
 
 const gchar *
@@ -443,16 +439,16 @@ gnome_font_get_ps_name (const GnomeFont *font)
   g_return_val_if_fail (font != NULL, NULL);
   g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 
-  return gnome_font_face_get_ps_name (font->private->fontmap_entry);
+  return gnome_font_face_get_ps_name (font->face);
 }
 
 char *
 gnome_font_get_full_name (const GnomeFont *font)
 {
-  g_return_val_if_fail (font != NULL, NULL);
-  g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
+	g_return_val_if_fail (font != NULL, NULL);
+	g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 
-    return g_strdup_printf("%s %f", gnome_font_get_name(font), font->private->size);
+	return g_strdup_printf ("%s %f", gnome_font_get_name (font), font->size);
 }
 
 char *
@@ -460,7 +456,7 @@ gnome_font_get_pfa (const GnomeFont *font)
 {
   g_return_val_if_fail (font != NULL, NULL);
   g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
-  return gnome_font_face_get_pfa (font->private->fontmap_entry);
+  return gnome_font_face_get_pfa (font->face);
 }
 
 const gchar *
@@ -469,7 +465,7 @@ gnome_font_get_family_name (const GnomeFont * font)
 	g_return_val_if_fail (font != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 
-	return gnome_font_face_get_family_name (font->private->fontmap_entry);
+	return gnome_font_face_get_family_name (font->face);
 }
 
 /* fixme: implement */
@@ -480,34 +476,34 @@ gnome_font_get_species_name (const GnomeFont * font)
   g_return_val_if_fail (font != NULL, NULL);
   g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 
-  return gnome_font_face_get_species_name (font->private->fontmap_entry);
+  return gnome_font_face_get_species_name (font->face);
 }
 
 GnomeFontWeight
-gnome_font_get_weight_code (const GnomeFont * font)
+gnome_font_get_weight_code (const GnomeFont *font)
 {
-  g_return_val_if_fail (font != NULL, 0);
-  g_return_val_if_fail (GNOME_IS_FONT (font), 0);
+	g_return_val_if_fail (font != NULL, 0);
+	g_return_val_if_fail (GNOME_IS_FONT (font), 0);
 
-  return font->private->fontmap_entry->private->weight_code;
+	return gnome_font_face_get_weight_code (font->face);
 }
 
 gboolean
-gnome_font_is_italic (const GnomeFont * font)
+gnome_font_is_italic (const GnomeFont *font)
 {
-  g_return_val_if_fail (font != NULL, 0);
-  g_return_val_if_fail (GNOME_IS_FONT (font), 0);
+	g_return_val_if_fail (font != NULL, 0);
+	g_return_val_if_fail (GNOME_IS_FONT (font), 0);
 
-  return font->private->fontmap_entry->private->italic;
+	return gnome_font_face_is_italic (font->face);
 }
 
 gdouble
 gnome_font_get_size (const GnomeFont * font)
 {
-  g_return_val_if_fail (font != NULL, 0.0);
-  g_return_val_if_fail (GNOME_IS_FONT (font), 0.0);
+	g_return_val_if_fail (font != NULL, 0.0);
+	g_return_val_if_fail (GNOME_IS_FONT (font), 0.0);
 
-  return font->private->size;
+	return font->size;
 }
 
 const GnomeFontFace *
@@ -516,7 +512,7 @@ gnome_font_get_face (const GnomeFont * font)
   g_return_val_if_fail (font != NULL, NULL);
   g_return_val_if_fail (GNOME_IS_FONT (font), NULL);
 
-  return font->private->fontmap_entry;
+  return font->face;
 }
 
 gdouble
@@ -525,9 +521,7 @@ gnome_font_get_glyph_width (const GnomeFont *font, gint ch)
 	g_return_val_if_fail (font != NULL, 0.0);
 	g_return_val_if_fail (GNOME_IS_FONT (font), 0.0);
 
-	if (ch < 0 || ch >= 256) return 0.0;
-
-	return gnome_font_face_get_glyph_width (font->private->fontmap_entry, ch) * font->private->scale;
+	return gnome_font_face_get_glyph_width (font->face, ch) * 0.001 * font->size;
 }
 
 double
@@ -556,10 +550,10 @@ gnome_font_get_width_utf8_sized (const GnomeFont *font, const char *text, int n)
 		gint unival, glyph;
 		unival = g_utf8_get_char (p);
 		glyph = gnome_font_lookup_default (font, unival);
-		width += gnome_font_face_get_glyph_width (font->private->fontmap_entry, glyph);
+		width += gnome_font_face_get_glyph_width (font->face, glyph);
 	}
 
-	return width * font->private->scale;
+	return width * 0.001 * font->size;
 }
 
 /**
@@ -610,11 +604,11 @@ gnome_font_get_width_string_n (const GnomeFont *font, const char *s, int n)
 
 	for (i = 0; i < n; i++) {
 		gint glyph;
-		glyph = gnome_font_face_lookup_default (font->private->fontmap_entry, ((guchar *) s)[i]);
-		width += gnome_font_face_get_glyph_width (font->private->fontmap_entry, glyph);
+		glyph = gnome_font_face_lookup_default (font->face, ((guchar *) s)[i]);
+		width += gnome_font_face_get_glyph_width (font->face, glyph);
 	}
 
-	return width * font->private->scale;
+	return width * 0.001 * font->size;
 }
 
 /* Get the glyph number corresponding to a given unicode, or -1 if it
@@ -625,7 +619,7 @@ gnome_font_lookup_default (const GnomeFont *font, gint unicode)
 	g_return_val_if_fail (font != NULL, -1);
 	g_return_val_if_fail (GNOME_IS_FONT (font), -1);
 
-	return gnome_font_face_lookup_default (font->private->fontmap_entry, unicode);
+	return gnome_font_face_lookup_default (font->face, unicode);
 }
 
 static gboolean
@@ -639,25 +633,23 @@ free_outline (gpointer a, gpointer b, gpointer data)
 static void
 gnome_font_finalize (GtkObject *object)
 {
-  GnomeFont *font;
+	GnomeFont *font;
 
-  g_return_if_fail (object != NULL);
-  g_return_if_fail (GNOME_IS_FONT (object));
+	font = GNOME_FONT (object);
 
-  font = GNOME_FONT (object);
+	if (font->face) {
+		g_hash_table_remove (fonts, font);
+		gnome_font_face_unref (font->face);
+		font->face = NULL;
+	}
 
-  if (font->private) {
-	  g_hash_table_remove (fonts, font->private);
-	  gnome_font_face_unref (font->private->fontmap_entry);
-	  if (font->private->name) g_free (font->private->name);
-	  if (font->private->outlines) {
-		  g_hash_table_foreach_remove (font->private->outlines, free_outline, NULL);
-		  g_hash_table_destroy (font->private->outlines);
-	  }
-	  g_free (font->private);
-  }
+	if (font->outlines) {
+		g_hash_table_foreach_remove (font->outlines, free_outline, NULL);
+		g_hash_table_destroy (font->outlines);
+		font->outlines = NULL;
+	}
 
-  (* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
+	(* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
 

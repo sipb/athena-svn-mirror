@@ -1,4 +1,4 @@
-profilesdir=$(datadir)/gnome-print/$(VERSION)/profiles
+profilesdir=$(datadir)/gnome-print/profiles
 
 profiles_DATA = \
 	PostscriptOptimized.profile \

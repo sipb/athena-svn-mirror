@@ -1,13 +1,9 @@
 font_sources = \
-	gt1-parset1.c gt1-parset1.h \
-	gt1-dict.c gt1-dict.h \
-	gt1-namecontext.c gt1-namecontext.h \
-	gt1-region.c gt1-region.h \
-	gt1-misc.h \
-	gt1-value.h \
 	gp-ps-unicode.h gp-ps-unicode.c	\
 	gp-character-block.c gp-character-block.h \
 	gp-fontmap.c gp-fontmap.h \
+	gp-truetype-utils.c gp-truetype-utils.h \
+	parseTT.c parseTT.h \
 	gnome-font.c \
 	gnome-font-private.h \
 	gnome-font-face.c \
@@ -16,6 +12,7 @@ font_sources = \
 font_headers = \
 	gnome-font.h \
 	gnome-font-face.h \
+	gnome-font-face-private.h \
 	gnome-rfont.h
 
 lib_LTLIBRARIES = libgnomeprint.la
@@ -24,7 +21,7 @@ libgnomeprint_la_LDFLAGS = \
 	-version-info $(GNOMEPRINT_CURRENT):$(GNOMEPRINT_REVISION):$(GNOMEPRINT_AGE)
 
 libgnomeprint_la_LIBADD = \
-	$(GNOMEPRINT_LIBS)   
+	$(LIBGNOMEPRINT_LIBS)   
 
 
 CPPFLAGS = @CPPFLAGS@ \
@@ -35,15 +32,12 @@ CPPFLAGS = @CPPFLAGS@ \
 	-DFONTMAPDIR_DYNAMIC=\""$(sysconfdir)/gnome/fonts"\"
 
 INCLUDES = \
-	-I$(top_srcdir)		\
-	$(GTK_CFLAGS)		\
-	-I$(top_srcdir)/intl 	\
-	-I$(top_builddir)/intl	\
-	$(GNOME_INCLUDEDIR)	\
-	@PRINT_INCLUDEDIR@	\
-	$(GNOME_FONT_CFLAGS)	\
-	-DPROFILEDIR=\""$(datadir)/gnome-print/$(VERSION)/profiles/"\"	\
-	-DGNOMEPRINT_LIBDIR=\""$(libdir)"\"	
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/intl \
+	-I$(top_builddir)/intl \
+	$(LIBGNOMEPRINT_CFLAGS) \
+	-DPROFILEDIR=\""$(datadir)/gnome-print/profiles/"\" \
+	-DGNOMEPRINT_LIBDIR=\""$(libdir)"\"
 
 
 temp_sources =					\

@@ -150,7 +150,9 @@ gnome_print_context_new_with_paper_size (GnomePrinter *printer, const char *pape
 	
 	g_return_val_if_fail (printer != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_PRINTER (printer), NULL);
-	g_return_val_if_fail (paper_size != NULL, NULL);
+
+	/* fixme: Not too beautiful, but there were people with missing paper.conf */
+	if (!paper_size) paper_size = "A4";
 
 #ifdef ENABLE_LIBGPA
 	/* If print to file pop up a dialog */

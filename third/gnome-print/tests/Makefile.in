@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -68,6 +68,9 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 DATADIRNAME = @DATADIRNAME@
 DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+FREETYPE_CONFIG = @FREETYPE_CONFIG@
 GDK_PIXBUF_CFLAGS = @GDK_PIXBUF_CFLAGS@
 GDK_PIXBUF_CONFIG = @GDK_PIXBUF_CONFIG@
 GDK_PIXBUF_LIBS = @GDK_PIXBUF_LIBS@
@@ -80,7 +83,6 @@ GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
 GNOMEPRINT_AGE = @GNOMEPRINT_AGE@
 GNOMEPRINT_CURRENT = @GNOMEPRINT_CURRENT@
-GNOMEPRINT_LIBS = @GNOMEPRINT_LIBS@
 GNOMEPRINT_REVISION = @GNOMEPRINT_REVISION@
 GNOMEUI_LIBS = @GNOMEUI_LIBS@
 GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
@@ -110,6 +112,8 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 LDFLAGS = @LDFLAGS@
+LIBGNOMEPRINT_CFLAGS = @LIBGNOMEPRINT_CFLAGS@
+LIBGNOMEPRINT_LIBS = @LIBGNOMEPRINT_LIBS@
 LIBGPA_CFLAGS = @LIBGPA_CFLAGS@
 LIBGPA_INCLUDEDIR = @LIBGPA_INCLUDEDIR@
 LIBGPA_LIBDIR = @LIBGPA_LIBDIR@
@@ -121,6 +125,7 @@ MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
 OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -136,6 +141,7 @@ PRINT_TEST_CFLAGS = @PRINT_TEST_CFLAGS@
 PRINT_TEST_LIBS = @PRINT_TEST_LIBS@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
+STRIP = @STRIP@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -154,13 +160,13 @@ noinst_PROGRAMS = testprint  				testtext   				testprint2 				testprint3 				te
 @LIBGPA_TRUE@LIBGPA_TEST_LIBS = $(top_builddir)/libgpa/libgpa.la
 @LIBGPA_FALSE@LIBGPA_TEST_LIBS = 
 
-INCLUDES =  	$(GTK_CFLAGS)					-I$(top_srcdir)/intl 			-I$(top_builddir)/intl			-I$(top_srcdir)				-I$(top_srcdir)/libgnomeprint		$(GNOME_INCLUDEDIR)				$(PRINT_TEST_CFLAGS)			$(LIBGPA_TEST_CFLAGS)			-DPROFILEDIR=\""$(profilesdir)"\" 
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/intl 	-I$(top_builddir)/intl 	-I$(top_srcdir)/libgnomeprint 	$(LIBGNOMEPRINT_CFLAGS) 	-DPROFILEDIR=\""$(profilesdir)"\" 
 
 
-CPPFLAGS = @CPPFLAGS@ 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		-DBINDIR=\""$(bindir)"\"		-DDATADIR=\""$(datadir)"\"
+CPPFLAGS = @CPPFLAGS@ 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DBINDIR=\""$(bindir)"\" 	-DDATADIR=\""$(datadir)"\"
 
 
-print_libs =  	$(top_builddir)/libgnomeprint/libgnomeprint.la		$(PRINT_TEST_LIBS)								$(LIBGPA_TEST_LIBS)								$(INTLLIBS)
+print_libs =  	$(top_builddir)/libgnomeprint/libgnomeprint.la 	$(LIBGNOMEPRINT_LIBS) 	$(INTLLIBS)
 
 
 testprint_SOURCES = testprint.c
@@ -237,23 +243,28 @@ testtext_LDADD =  	$(print_libs)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
+noinst_PROGRAMS =  testprint$(EXEEXT) testtext$(EXEEXT) \
+testprint2$(EXEEXT) testprint3$(EXEEXT) testprint4$(EXEEXT) \
+testprint5$(EXEEXT) testprint6$(EXEEXT) testfax$(EXEEXT) \
+testpdf$(EXEEXT) testmetrics$(EXEEXT) testembed$(EXEEXT) \
+testzip$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I..
 LIBS = @LIBS@
-testprint_OBJECTS =  testprint.o
-testtext_OBJECTS =  testtext.o
-testprint2_OBJECTS =  testprint2.o
-testprint3_OBJECTS =  testprint3.o
-testprint4_OBJECTS =  testprint4.o
-testprint5_OBJECTS =  testprint5.o
-testprint6_OBJECTS =  testprint6.o
-testfax_OBJECTS =  testfax.o
-testpdf_OBJECTS =  testpdf.o
-testmetrics_OBJECTS =  testmetrics.o
-testembed_OBJECTS =  testembed.o
-testzip_OBJECTS =  testzip.o
+testprint_OBJECTS =  testprint.$(OBJEXT)
+testtext_OBJECTS =  testtext.$(OBJEXT)
+testprint2_OBJECTS =  testprint2.$(OBJEXT)
+testprint3_OBJECTS =  testprint3.$(OBJEXT)
+testprint4_OBJECTS =  testprint4.$(OBJEXT)
+testprint5_OBJECTS =  testprint5.$(OBJEXT)
+testprint6_OBJECTS =  testprint6.$(OBJEXT)
+testfax_OBJECTS =  testfax.$(OBJEXT)
+testpdf_OBJECTS =  testpdf.$(OBJEXT)
+testmetrics_OBJECTS =  testmetrics.$(OBJEXT)
+testembed_OBJECTS =  testembed.$(OBJEXT)
+testzip_OBJECTS =  testzip.$(OBJEXT)
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -270,7 +281,7 @@ OBJECTS = $(testprint_OBJECTS) $(testtext_OBJECTS) $(testprint2_OBJECTS) $(testp
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .s
+.SUFFIXES: .S .c .lo .o .obj .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps tests/Makefile
 
@@ -291,6 +302,11 @@ maintainer-clean-noinstPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
 .s.o:
 	$(COMPILE) -c $<
 
@@ -299,6 +315,7 @@ maintainer-clean-noinstPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -326,52 +343,52 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-testprint: $(testprint_OBJECTS) $(testprint_DEPENDENCIES)
-	@rm -f testprint
+testprint$(EXEEXT): $(testprint_OBJECTS) $(testprint_DEPENDENCIES)
+	@rm -f testprint$(EXEEXT)
 	$(LINK) $(testprint_LDFLAGS) $(testprint_OBJECTS) $(testprint_LDADD) $(LIBS)
 
-testtext: $(testtext_OBJECTS) $(testtext_DEPENDENCIES)
-	@rm -f testtext
+testtext$(EXEEXT): $(testtext_OBJECTS) $(testtext_DEPENDENCIES)
+	@rm -f testtext$(EXEEXT)
 	$(LINK) $(testtext_LDFLAGS) $(testtext_OBJECTS) $(testtext_LDADD) $(LIBS)
 
-testprint2: $(testprint2_OBJECTS) $(testprint2_DEPENDENCIES)
-	@rm -f testprint2
+testprint2$(EXEEXT): $(testprint2_OBJECTS) $(testprint2_DEPENDENCIES)
+	@rm -f testprint2$(EXEEXT)
 	$(LINK) $(testprint2_LDFLAGS) $(testprint2_OBJECTS) $(testprint2_LDADD) $(LIBS)
 
-testprint3: $(testprint3_OBJECTS) $(testprint3_DEPENDENCIES)
-	@rm -f testprint3
+testprint3$(EXEEXT): $(testprint3_OBJECTS) $(testprint3_DEPENDENCIES)
+	@rm -f testprint3$(EXEEXT)
 	$(LINK) $(testprint3_LDFLAGS) $(testprint3_OBJECTS) $(testprint3_LDADD) $(LIBS)
 
-testprint4: $(testprint4_OBJECTS) $(testprint4_DEPENDENCIES)
-	@rm -f testprint4
+testprint4$(EXEEXT): $(testprint4_OBJECTS) $(testprint4_DEPENDENCIES)
+	@rm -f testprint4$(EXEEXT)
 	$(LINK) $(testprint4_LDFLAGS) $(testprint4_OBJECTS) $(testprint4_LDADD) $(LIBS)
 
-testprint5: $(testprint5_OBJECTS) $(testprint5_DEPENDENCIES)
-	@rm -f testprint5
+testprint5$(EXEEXT): $(testprint5_OBJECTS) $(testprint5_DEPENDENCIES)
+	@rm -f testprint5$(EXEEXT)
 	$(LINK) $(testprint5_LDFLAGS) $(testprint5_OBJECTS) $(testprint5_LDADD) $(LIBS)
 
-testprint6: $(testprint6_OBJECTS) $(testprint6_DEPENDENCIES)
-	@rm -f testprint6
+testprint6$(EXEEXT): $(testprint6_OBJECTS) $(testprint6_DEPENDENCIES)
+	@rm -f testprint6$(EXEEXT)
 	$(LINK) $(testprint6_LDFLAGS) $(testprint6_OBJECTS) $(testprint6_LDADD) $(LIBS)
 
-testfax: $(testfax_OBJECTS) $(testfax_DEPENDENCIES)
-	@rm -f testfax
+testfax$(EXEEXT): $(testfax_OBJECTS) $(testfax_DEPENDENCIES)
+	@rm -f testfax$(EXEEXT)
 	$(LINK) $(testfax_LDFLAGS) $(testfax_OBJECTS) $(testfax_LDADD) $(LIBS)
 
-testpdf: $(testpdf_OBJECTS) $(testpdf_DEPENDENCIES)
-	@rm -f testpdf
+testpdf$(EXEEXT): $(testpdf_OBJECTS) $(testpdf_DEPENDENCIES)
+	@rm -f testpdf$(EXEEXT)
 	$(LINK) $(testpdf_LDFLAGS) $(testpdf_OBJECTS) $(testpdf_LDADD) $(LIBS)
 
-testmetrics: $(testmetrics_OBJECTS) $(testmetrics_DEPENDENCIES)
-	@rm -f testmetrics
+testmetrics$(EXEEXT): $(testmetrics_OBJECTS) $(testmetrics_DEPENDENCIES)
+	@rm -f testmetrics$(EXEEXT)
 	$(LINK) $(testmetrics_LDFLAGS) $(testmetrics_OBJECTS) $(testmetrics_LDADD) $(LIBS)
 
-testembed: $(testembed_OBJECTS) $(testembed_DEPENDENCIES)
-	@rm -f testembed
+testembed$(EXEEXT): $(testembed_OBJECTS) $(testembed_DEPENDENCIES)
+	@rm -f testembed$(EXEEXT)
 	$(LINK) $(testembed_LDFLAGS) $(testembed_OBJECTS) $(testembed_LDADD) $(LIBS)
 
-testzip: $(testzip_OBJECTS) $(testzip_DEPENDENCIES)
-	@rm -f testzip
+testzip$(EXEEXT): $(testzip_OBJECTS) $(testzip_DEPENDENCIES)
+	@rm -f testzip$(EXEEXT)
 	$(LINK) $(testzip_LDFLAGS) $(testzip_OBJECTS) $(testzip_LDADD) $(LIBS)
 
 tags: TAGS
@@ -418,13 +435,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gpa-test.o: gpa-test.c ../libgnomeprint/gnome-print.h \
-	../libgnomeprint/gnome-printer.h ../libgnomeprint/gnome-font.h \
-	../libgnomeprint/gnome-font-face.h \
-	../libgnomeprint/gnome-font-compat.h \
-	../libgnomeprint/gnome-text.h \
-	../libgnomeprint/gnome-glyphlist.h ../libgnomeprint/gpa-node.h \
-	../libgnomeprint/gnome-printer-dialog.h
 testembed.o: testembed.c ../libgnomeprint/gnome-print-pdf.h \
 	../libgnomeprint/gnome-print.h ../libgnomeprint/gnome-printer.h \
 	../libgnomeprint/gnome-font.h \

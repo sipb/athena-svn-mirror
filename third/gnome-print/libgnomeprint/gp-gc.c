@@ -150,8 +150,6 @@ gp_gc_gsave (GPGC * gc)
 gint
 gp_gc_grestore (GPGC * gc)
 {
-	GSList *tmp;
-
 	g_return_val_if_fail (gc != NULL, -1);
 	g_return_val_if_fail (gc->ctx->next != NULL, -1);
 
@@ -887,7 +885,7 @@ gp_ctx_new (void)
 	ctx->dash_flag = GP_GC_FLAG_UNSET;
 	ctx->privatedash = FALSE;
 
-	ctx->font = gnome_font_new_closest ("Helvetica", GNOME_FONT_BOOK, FALSE, 12.0);
+	ctx->font = gnome_font_new_closest ("fixme: test", GNOME_FONT_BOOK, FALSE, 12.0);
 	ctx->font_flag = GP_GC_FLAG_UNSET;
 
 	g_return_val_if_fail (ctx->font != NULL, NULL);

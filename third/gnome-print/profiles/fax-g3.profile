@@ -7,7 +7,7 @@ comment=G3 fax driver, invoking gfax as transmission frontend
 comment[pl]=Driver dla formatu faksowego G3, wykorzystuje gfax do wys³ania danych
 location=
 mime-type=
-driver=gnome-print-fax
+driver=gnome-print-ps2
 
 [Fax G3, file]
 name=Fax driver, save to file

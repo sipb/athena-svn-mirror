@@ -7,7 +7,7 @@
 
 Summary:        Gnome Print - Printing libraries for GNOME.
 Name: 		gnome-print
-Version: 	0.31
+Version: 	0.35
 Release: 	0.1
 Copyright: 	LGPL
 Group: 		System Environment/Base

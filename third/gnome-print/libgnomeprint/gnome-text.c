@@ -5,6 +5,20 @@
 #include <libgnomeprint/gnome-font-private.h>
 #include <libgnomeprint/gnome-text.h>
 
+typedef struct _GnomeFontKernPair	GnomeFontKernPair;
+typedef struct _GnomeFontLigList	GnomeFontLigList;
+
+struct _GnomeFontKernPair {
+	int glyph1;
+	int glyph2;
+	int x_amt;
+};
+
+struct _GnomeFontLigList {
+	GnomeFontLigList *next;
+	int succ, lig;
+};
+
 typedef struct _GnomeTextFontFamily GnomeTextFontFamily;
 typedef struct _GnomeTextFontList GnomeTextFontList;
 
@@ -293,6 +307,7 @@ gnome_text_layout_new (const guchar *text, GnomeTextAttrEl *attrs)
 	      if (last_glyph >= 0)
 		{
 
+#if 0
 		  for (lig = unsized->private->ligs[last_glyph];
 		       lig != NULL;
 		       lig = lig->next)
@@ -300,6 +315,9 @@ gnome_text_layout_new (const guchar *text, GnomeTextAttrEl *attrs)
 		      {
 			break;
 		      }
+#else
+		  lig = NULL;
+#endif
 
 		  if (lig == NULL)
 		    x += floor (gnome_font_face_get_glyph_kerning (unsized,

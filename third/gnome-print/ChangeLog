@@ -1,3 +1,126 @@
+2002-01-23  Tim Mooney <mooney@dogbert.cc.ndsu.NoDak.edu>
+
+	* libgnomeprint/parseTT.c: use G_GNUC_FUNCTION convenience define from
+	glib instead of __FUNCTION__ gccism.
+
+2002-01-23  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Version 0.35
+
+2002-01-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* profiles/fax-g3.profile (driver): Use gnome-print-ps2 as driver
+
+	* profiles/Makefile.am (profilesdir): De-versioning of profiles,
+	thanks to Dobey
+
+2002-01-21  Alexander Shopov  <al_shopov@web.bg>
+
+	* configure.in (ALL_LINGUAS): Added "bg".
+
+2002-01-14  Lauris Kaplinski  <lauris@ximian.com>
+
+	* run-gnome-font-install: Added --aliases to all fontmap generations
+
+2002-01-04  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+	* configure,in (ALL_LINGUAS): Added "eu".
+
+2001-12-06  israel  <israel@ximian.com>
+
+	* fonts/Makefile.am (EXTRA_DIST): make distcheck fixes.
+
+2001-12-06  Israel Escalante  <israel@ximian.com>
+
+	* configure.in: Bump version to 0.34
+
+2001-11-28  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c (gfi_font_entry_get_by_psname): New helper
+	(gfi_process_alias): Scan all existing maps for aliases as well
+
+2001-11-27  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in (PRINT_LIBS): Use LIBGNOMEPRINT_LIBS here, so
+	printConf.sh gets full library list
+
+2001-11-25  Lauris Kaplinski  <lauris@ximian.com>
+
+	* fonts/Makefile.am (mapdir): Added defaults.fontmap
+
+	* fonts/defaults.fontmap: New file, we will define some locale-specific
+	defaults here
+
+2001-11-24  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c (gfi_write_font): Set psname to
+	afm one, if exists, set alias always to pfb name
+
+2001-11-23  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c (gfi_process_alias): Register notice
+	(gfi_build_font): Ditto
+	(gfi_build_ttf_font): Ditto
+	(gfi_write_font): Write notice
+
+	* installer/gf-fontmap.c (gf_fm_load_common_data): Helper, read
+	notice also, if present
+
+	* installer/gf-pfb.c (gf_pfb_search_def_string): Dig through nested
+	parentheses - needed for 'Notice' and 'Copyright' fields
+
+2001-11-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c: Added /usr/share/abisource/fonts
+	to default font search paths
+
+	* configure.in: Use version 0.33
+
+2000-11-14  Pablo Saratxaga <pablo@mandrakesoft.com>
+
+        * configure.in (ALL_LINGUAS): added Walloon (wa) 
+
+2001-11-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gf-pfb.c (gf_pfb_open): Dont't check for SFNT, as we are not one
+
+	* run-gnome-font-install: Added '--smart' as last cycle
+
+	* installer/gnome-font-install.c (main): Added --smart argument
+
+2001-10-31  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gf-fontmap.c (gf_fm_load_fonts_2_0): Added truetype parsing
+	(gf_fm_load_font_2_0_type1): Correct appending
+	(gf_fm_load_font_2_0_truetype): New method
+
+	* installer/gf-ttf.c: New file
+
+	* installer/gf-ttf.h: New file
+
+	* installer/gnome-font-install.c (main): Verify all fonts from all
+	maps, vacuum master map later
+	(gfi_verify_fontmap): New method
+	(gfi_verify_font_entry): Verify TrueType as well
+	(gfi_verify_ttf_file): New method
+	(gfi_read_ttf_file_data): New method
+	(gfi_try_font_file): Check TrueType
+	(gfi_sort_fonts): Use gfi_sort_file_list
+	(gfi_sort_file_list): New method
+	(gfi_build_ttf_font): New method
+	(gfi_write_font): Write truetype entries
+
+	* tests/testprint4.c (print_paragraph): Expect sample to be utf8
+
+2001-10-30  Lauris Kaplinski  <lauris@ximian.com>
+
+	* installer/gnome-font-install.c: Removed #ifdef 0 code
+
+	* configure.in: Version 0.32, removed gnome-font checking
+	(FREETYPE_LIBS): Added test for freetype
+	(LIBGNOMEPRINT_LIBS): Meaningful macro here
+	(LIBGNOMEPRINT_LIBS): Meaningful macro here
+
 2001-10-12  Lauris Kaplinski  <lauris@ximian.com>
 
 	* installer/gnome-font-install.c (gfi_process_alias): Check NULL

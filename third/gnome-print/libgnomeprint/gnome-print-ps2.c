@@ -48,7 +48,7 @@
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/gnome-printer-private.h>
 #include <libgnomeprint/gnome-print-ps2.h>
-#include <libgnomeprint/gnome-font.h>
+#include <libgnomeprint/gnome-font-private.h>
 #include <libgnomeprint/gnome-print-encode.h>
 #include <libgnomeprint/gnome-print-encode-private.h>
 
@@ -67,10 +67,8 @@ typedef struct _GPPS2Page GPPS2Page;
 struct _GPPS2Font {
 	GPPS2Font *next;
 	GnomeFontFace *face;
-	const gchar *psname;
-	gchar *encodedname;
-	gboolean internal;
-	gboolean encoded;
+	GFPSObject *pso;
+	gdouble currentsize;
 };
 
 struct _GPPS2Page {
@@ -78,7 +76,7 @@ struct _GPPS2Page {
 	gchar *name;
 	gint number;
 	gboolean shown;
-	GSList *usedfontnames;
+	GSList *usedfonts;
 };
 
 struct _GnomePrintPs2 {
@@ -91,9 +89,8 @@ struct _GnomePrintPs2 {
 #endif
 
 	GPPS2Font *fonts;
+	GPPS2Font *selectedfont;
 
-	const GnomeFont *private_font;
-	gint private_font_flag;
         gdouble r, g, b;
 	gint private_color_flag;
 
@@ -136,8 +133,6 @@ static gint gp_ps2_set_dash (GnomePrintContext *pc);
 static gint gp_ps2_set_color_private (GnomePrintContext *pc, gdouble r, gdouble g, gdouble b);
 static gint gp_ps2_set_font_private (GnomePrintContext *pc, const GnomeFont *font);
 
-static gint gp_ps2_encode_font (GnomePrintContext *pc, GPPS2Font *font, const gchar *privatename);
-static GPPS2Font *gp_ps2_download_and_encode_font (GnomePrintContext *pc, const GnomeFontFace *face);
 static gint gp_ps2_print_path (GnomePrintContext *pc, const GPPath *gppath);
 static int gnome_print_ps2_image (GnomePrintContext *pc, const char *data, int width, int height, int rowstride, int bytes_per_pixel);
 
@@ -205,9 +200,8 @@ gnome_print_ps2_init (GnomePrintPs2 *ps2)
 	ps2->gsave_level = 0;
 
 	ps2->fonts = NULL;
+	ps2->selectedfont = NULL;
 
-	ps2->private_font = NULL;
-	ps2->private_font_flag = GP_GC_FLAG_UNSET;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
 	ps2->pages = NULL;
@@ -243,8 +237,8 @@ gnome_print_ps2_destroy (GtkObject *object)
 		p = ps2->pages;
 		if (!p->shown) g_warning ("page %d was not shown", p->number);
 		if (p->name) g_free (p->name);
-		while (ps2->pages->usedfontnames) {
-			ps2->pages->usedfontnames = g_slist_remove (ps2->pages->usedfontnames, ps2->pages->usedfontnames->data);
+		while (ps2->pages->usedfonts) {
+			ps2->pages->usedfonts = g_slist_remove (ps2->pages->usedfonts, ps2->pages->usedfonts->data);
 		}
 		ps2->pages = p->next;
 		g_free (p);
@@ -254,14 +248,12 @@ gnome_print_ps2_destroy (GtkObject *object)
 		GPPS2Font *f;
 		f = ps2->fonts;
 		if (f->face) gtk_object_unref (GTK_OBJECT (f->face));
-		if (f->encodedname) g_free (f->encodedname);
+		if (f->pso) gnome_font_face_pso_free (f->pso);
 		ps2->fonts = f->next;
 		g_free (f);
 	}
+	ps2->selectedfont = NULL;
 
-	if (ps2->private_font) gnome_font_unref (ps2->private_font);
-	ps2->private_font = NULL;
-	ps2->private_font_flag = GP_GC_FLAG_UNSET;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
 	if (* GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -297,7 +289,8 @@ gnome_print_ps2_grestore (GnomePrintContext *pc)
 	g_assert (ps2->pages && !ps2->pages->shown);
 
 	ps2->gsave_level -= 1;
-	ps2->private_font_flag = GP_GC_FLAG_UNSET;
+
+	ps2->selectedfont = NULL;
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
 	return gp_ps2_fprintf (ps2, "Q" EOL);
@@ -429,6 +422,7 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, GnomeGlyphList *gl)
 		ps = pgl->strings + s;
 
 		ret += gp_ps2_set_font_private (pc, gnome_rfont_get_font (ps->rfont));
+		g_return_val_if_fail (ps2->selectedfont && ps2->selectedfont->pso, GNOME_PRINT_ERROR_UNKNOWN);
 		ret += gp_ps2_set_color_private (pc,
 						 ((ps->color >> 24) & 0xff) / 255.0,
 						 ((ps->color >> 16) & 0xff) / 255.0,
@@ -437,11 +431,23 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, GnomeGlyphList *gl)
 
 		/* Build string */
 		ret += gp_ps2_fprintf (ps2, "(");
-		for (i = ps->start; i < ps->start + ps->length; i++) {
-			gint glyph, page;
-			glyph = pgl->glyphs[i].glyph & 0xff;
-			page = (pgl->glyphs[i].glyph >> 8) & 0xff;
-			ret += gp_ps2_fprintf (ps2, "\\%o\\%o", page, glyph);
+		if (ps2->selectedfont->pso->encodedbytes == 1) {
+			/* 8-bit encoding */
+			for (i = ps->start; i < ps->start + ps->length; i++) {
+				gint glyph;
+				glyph = pgl->glyphs[i].glyph & 0xff;
+				gnome_font_face_pso_mark_glyph (ps2->selectedfont->pso, glyph);
+				ret += gp_ps2_fprintf (ps2, "\\%o", glyph);
+			}
+		} else {
+			/* 16-bit encoding */
+			for (i = ps->start; i < ps->start + ps->length; i++) {
+				gint glyph, page;
+				gnome_font_face_pso_mark_glyph (ps2->selectedfont->pso, pgl->glyphs[i].glyph);
+				glyph = pgl->glyphs[i].glyph & 0xff;
+				page = (pgl->glyphs[i].glyph >> 8) & 0xff;
+				ret += gp_ps2_fprintf (ps2, "\\%o\\%o", page, glyph);
+			}
 		}
 		ret += gp_ps2_fprintf (ps2, ")" EOL);
 
@@ -460,7 +466,7 @@ gnome_print_ps2_glyphlist (GnomePrintContext *pc, GnomeGlyphList *gl)
 
 	if (!identity) {
 		ret = gp_ps2_fprintf (ps2, "Q" EOL);
-		ps2->private_font_flag = GP_GC_FLAG_UNSET;
+		ps2->selectedfont = NULL;
 		ps2->private_color_flag = GP_GC_FLAG_UNSET;
 	}
 
@@ -502,15 +508,12 @@ gnome_print_ps2_beginpage (GnomePrintContext *pc, const char *name)
 	p->name = g_strdup (name);
 	p->number = number + 1;
 	p->shown = FALSE;
-	p->usedfontnames = NULL;
+	p->usedfonts = NULL;
 
 	ps2->pages = p;
 
-	if (ps2->private_font) {
-		gnome_font_unref (ps2->private_font);
-		ps2->private_font = NULL;
-	}
-	ps2->private_font_flag = GP_GC_FLAG_UNSET;
+	ps2->selectedfont = NULL;
+
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
 	gp_ps2_fprintf (ps2, "%%%%Page: %s %d" EOL, name, p->number);
@@ -549,7 +552,9 @@ gnome_print_ps2_showpage (GnomePrintContext *pc)
 	g_return_val_if_fail (ps2->gsave_level == 0, GNOME_PRINT_ERROR_UNKNOWN);
 
 	if (ps2->pages) ps2->pages->shown = TRUE;
-	ps2->private_font_flag = GP_GC_FLAG_UNSET;
+
+	ps2->selectedfont = NULL;
+
 	ps2->private_color_flag = GP_GC_FLAG_UNSET;
 
 	gp_ps2_fprintf (ps2,"SP" EOL);
@@ -557,116 +562,13 @@ gnome_print_ps2_showpage (GnomePrintContext *pc)
 	gp_ps2_fprintf (ps2,"%%%%PageTrailer" EOL);
 	/* PageResources */
 	gp_ps2_fprintf (ps2, "%%%%PageResources: procset gnome-print-procs-%s" EOL, VERSION);
-	while (ps2->pages->usedfontnames) {
-		gp_ps2_fprintf (ps2, "%%%%+ font %s" EOL, (gchar *) ps2->pages->usedfontnames->data);
-		ps2->pages->usedfontnames = g_slist_remove (ps2->pages->usedfontnames, ps2->pages->usedfontnames->data);
+	while (ps2->pages->usedfonts) {
+		GPPS2Font *font;
+		font = (GPPS2Font *) ps2->pages->usedfonts->data;
+		gp_ps2_fprintf (ps2, "%%%%+ font %s" EOL, font->pso->encodedname);
+		ps2->pages->usedfonts = g_slist_remove (ps2->pages->usedfonts, ps2->pages->usedfonts->data);
 	}
 
-	return GNOME_PRINT_OK;
-}
-
-static gint
-gnome_print_ps2_close (GnomePrintContext *pc)
-{
-	GnomePrintPs2 *ps2;
-	GPPS2Font *f;
-	gchar *date;
-	gint len;
-	gchar b[256];
-
-	ps2 = GNOME_PRINT_PS2 (pc);
-
-	g_return_val_if_fail (ps2->buf != NULL, GNOME_PRINT_ERROR_UNKNOWN);
-
-	if (!ps2->pages || !ps2->pages->shown) {
-		g_warning ("Closing PS2 Context without final showpage");
-		gnome_print_showpage (pc);
-	}
-
-	/* Do header */
-	/* Comments */
-	date = gnome_print_ps2_get_date ();
-	gnome_print_context_fprintf (pc, "%%!PS-Adobe-3.0" EOL);
-	/* fixme: %%BoundingBox: */
-	gnome_print_context_fprintf (pc, "%%%%Creator: Gnome Print Version %s" EOL, VERSION);
-	gnome_print_context_fprintf (pc, "%%%%CreationDate: %s" EOL, date);
-	/* fixme: %%DocumentData: */
-	/* fixme: Should we use %%Extensions: and drop LanguageLevel? */
-	gnome_print_context_fprintf (pc, "%%%%LanguageLevel: 2" EOL);
-	gnome_print_context_fprintf (pc, "%%%%Pages: %d" EOL, ps2->pages->number);
-	gnome_print_context_fprintf (pc, "%%%%BoundingBox: %d %d %d %d" EOL,
-				     (gint) floor (ps2->bbox.x0),
-				     (gint) floor (ps2->bbox.y0),
-				     (gint) ceil (ps2->bbox.x1),
-				     (gint) ceil (ps2->bbox.y1));
-	/* fixme: Orientation: */
-	gnome_print_context_fprintf (pc, "%%%%PageOrder: Ascend" EOL);
-	gnome_print_context_fprintf (pc, "%%%%Title: %s" EOL, "Document Title goes here");
-	gnome_print_context_fprintf (pc, "%%%%DocumentSuppliedResources: procset gnome-print-procs-%s" EOL, VERSION);
-	if (ps2->fonts) {
-		/* %%DocumentSuppliedResources: */
-		for (f = ps2->fonts; f != NULL; f = f->next) {
-			gnome_print_context_fprintf (pc, "%%%%+ font %s" EOL, f->encodedname);
-		}
-	}
-	g_free (date);
-	gnome_print_context_fprintf (pc, "%%%%EndComments" EOL);
-	/* Prolog */
-	gnome_print_context_fprintf (pc, "%%%%BeginProlog" EOL);
-	/* Abbreviations */
-	gnome_print_context_fprintf (pc, "%%%%BeginResource: procset gnome-print-procs-%s" EOL, VERSION);
-	gnome_print_context_fprintf (pc, "/|/def load def/,/load load" EOL);
-	gnome_print_context_fprintf (pc, "|/n/newpath , |/m/moveto , |/l/lineto , |/c/curveto ," EOL);
-	gnome_print_context_fprintf (pc, "|/q/gsave , |/Q/grestore , |/rg/setrgbcolor , |/J/setlinecap ," EOL);
-	gnome_print_context_fprintf (pc, "|/j/setlinejoin , |/w/setlinewidth , |/M/setmiterlimit ," EOL);
-	gnome_print_context_fprintf (pc, "|/d/setdash , |/i/pop , |/W/clip , |/W*/eoclip , |/n/newpath ," EOL);
-	gnome_print_context_fprintf (pc, "|/S/stroke , |/f/fill , |/f*/eofill , |/Tj/show , |/Tm/moveto ," EOL);
-	gnome_print_context_fprintf (pc, "|/FF/findfont ," EOL);
-	gnome_print_context_fprintf (pc, "|/h/closepath , |/cm/concat , |/rm/rmoveto , |/sp/strokepath ," EOL);
-	gnome_print_context_fprintf (pc, "|/SP/showpage , |/p/pop , |/EX/exch , |/DF/definefont , |" EOL);
-	gnome_print_context_fprintf (pc, "/F {scalefont setfont} def" EOL);
-	gnome_print_context_fprintf (pc, "%%%%EndResource" EOL);
-	gnome_print_context_fprintf (pc, "%%%%EndProlog" EOL);
-
-	/* Prolog */
-	gnome_print_context_fprintf (pc, "%%%%BeginSetup" EOL);
-	/* Download fonts */
-	for (f = ps2->fonts; f != NULL; f = f->next) {
-		gchar *pfa;
-		pfa = gnome_font_face_get_pfa (f->face);
-		if (pfa) {
-			gchar *internalname;
-			gnome_print_context_fprintf (pc, "%%%%BeginResource: font %s" EOL, f->encodedname);
-			gnome_print_context_write_file (pc, pfa, strlen (pfa));
-			gtk_object_get (GTK_OBJECT (f->face), "pfbname", &internalname, NULL);
-			gp_ps2_encode_font (pc, f, internalname);
-			g_free (internalname);
-			g_free (pfa);
-			gnome_print_context_fprintf (pc, "%%%%EndResource" EOL);
-		}
-	}
-	gnome_print_context_fprintf (pc, "%%%%EndSetup" EOL);
-	
-	/* Write buffer */
-	rewind (ps2->buf);
-	len = 256;
-	while (len > 0) {
-		len = fread (b, 1, 256, ps2->buf);
-		if (len > 0) {
-			gnome_print_context_write_file (pc, b, len);
-		}
-	}
-	fclose (ps2->buf);
-	ps2->buf = NULL;
-	unlink (ps2->bufname);
-	g_free (ps2->bufname);
-	ps2->bufname = NULL;
-
-	gnome_print_context_fprintf (pc, "%%%%Trailer" EOL);
-	gnome_print_context_fprintf (pc, "%%%%EOF" EOL);
-
-	gnome_print_context_close_file (pc);
-	
 	return GNOME_PRINT_OK;
 }
 
@@ -687,10 +589,10 @@ gp_ps2_set_line (GnomePrintContext *pc)
 	if (gp_gc_get_line_flag (pc->gc) == GP_GC_FLAG_CLEAR) return 0;
 
 	ret = gp_ps2_fprintf (ps2, "%g w %i J %i j %g M" EOL,
-					   gp_gc_get_linewidth (pc->gc),
-					   gp_gc_get_linecap (pc->gc),
-					   gp_gc_get_linejoin (pc->gc),
-					   gp_gc_get_miterlimit (pc->gc));
+			      gp_gc_get_linewidth (pc->gc),
+			      gp_gc_get_linecap (pc->gc),
+			      gp_gc_get_linejoin (pc->gc),
+			      gp_gc_get_miterlimit (pc->gc));
 	gp_gc_set_line_flag (pc->gc, GP_GC_FLAG_CLEAR);
 
 	return ret;
@@ -742,158 +644,43 @@ gp_ps2_set_font_private (GnomePrintContext *pc, const GnomeFont *font)
 {
 	GnomePrintPs2 *ps2;
 	const GnomeFontFace *face;
-	const gchar *name;
 	GPPS2Font *f;
 	gint ret;
 	GSList *l;
 
 	ps2 = (GnomePrintPs2 *) pc;
 
-	if ((ps2->private_font_flag == GP_GC_FLAG_CLEAR) && (ps2->private_font == font)) return 0;
+	if (ps2->selectedfont && (ps2->selectedfont->face == font->face) && (ps2->selectedfont->currentsize = font->size)) return 0;
 
 	face = gnome_font_get_face (font);
-	name = gnome_font_face_get_ps_name (face);
 
 	for (f = ps2->fonts; f != NULL; f = f->next) {
-		if (!strcmp (name, f->psname)) {
-			/* We found it */
-			if (f->face == NULL) {
-				f->face = (GnomeFontFace *) face;
-				gnome_font_face_ref (face);
-			}
-#if 0
-			g_assert (f->encoded);
-			if (!f->encoded) {
-				gp_ps2_encode_font (pc, f, f->psname);
-			}
-			gp_ps2_fprintf (ps2, "%%%%IncludeResource: font %s" EOL, f->encodedname);
-#endif
-			break;
-		}
+		if (f->face == face) break;
 	}
-	if (f == NULL) {
-		f = gp_ps2_download_and_encode_font (pc, face);
-	}
-	g_return_val_if_fail (f != NULL, GNOME_PRINT_ERROR_UNKNOWN);
-
-	for (l = ps2->pages->usedfontnames; l != NULL; l = l->next) {
-		if (!strcmp (f->encodedname, (char *) l->data)) break;
-	}
-	if (l == NULL) {
-		ps2->pages->usedfontnames = g_slist_prepend (ps2->pages->usedfontnames, f->encodedname);
+	if (!f) {
+		/* No entry, so create one */
+		f = g_new (GPPS2Font, 1);
+		f->next = ps2->fonts;
+		ps2->fonts = f;
+		f->face = (GnomeFontFace *) face;
+		gnome_font_face_ref (face);
+		f->pso = gnome_font_face_pso_new ((GnomeFontFace *) face, NULL);
+		g_return_val_if_fail (f->pso != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 	}
 
-	ret = gp_ps2_fprintf (ps2, "/%s FF %g F" EOL, f->encodedname, gnome_font_get_size (font));
-	gnome_font_ref (font);
-	if (ps2->private_font) gnome_font_unref (ps2->private_font);
-	ps2->private_font = font;
-	ps2->private_font_flag = GP_GC_FLAG_CLEAR;
+	for (l = ps2->pages->usedfonts; l != NULL; l = l->next) {
+		if ((GPPS2Font *) l->data == f) break;
+	}
+	if (!l) {
+		ps2->pages->usedfonts = g_slist_prepend (ps2->pages->usedfonts, f);
+	}
+
+	ret = gp_ps2_fprintf (ps2, "/%s FF %g F" EOL, f->pso->encodedname, gnome_font_get_size (font));
+
+	f->currentsize = font->size;
+	ps2->selectedfont = f;
 
 	return ret;
-}
-
-#define gpcf gnome_print_context_fprintf
-
-static gint
-gp_ps2_encode_font (GnomePrintContext *pc, GPPS2Font *font, const gchar *privatename)
-{
-	GnomeFontFace * face;
-	gint nglyphs, nfonts;
-	gint i, j;
-
-	/* Bitch 'o' bitches (Lauris) ! */
-
-	face = font->face;
-	g_return_val_if_fail (face != NULL, -1);
-	g_return_val_if_fail (GNOME_IS_FONT_FACE (face), -1);
-
-	nglyphs = gnome_font_face_get_num_glyphs (face);
-	nfonts = (nglyphs + 255) >> 8;
-
-	gpcf (pc, "32 dict begin" EOL);
-
-	/* Common entries */
-	gpcf (pc, "/FontType 0 def" EOL);
-	gpcf (pc, "/FontMatrix [1 0 0 1 0 0] def" EOL);
-	gpcf (pc, "/FontName /%s-Glyph-Composite def" EOL, font->psname);
-	gpcf (pc, "/LanguageLevel 2 def" EOL);
-
-	/* Type 0 entries */
-	gpcf (pc, "/FMapType 2 def" EOL);
-
-	/* Bitch 'o' bitches */
-	gpcf (pc, "/FDepVector [" EOL);
-	for (i = 0; i < nfonts; i++) {
-		gpcf (pc, "/%s findfont" EOL, privatename);
-		gpcf (pc, "dup length dict begin {1 index /FID ne {def} {pop pop} ifelse} forall" EOL);
-		gpcf (pc, "/Encoding [" EOL);
-		for (j = 0; j < 256; j++) {
-			gint glyph;
-			glyph = 256 * i + j;
-			if (glyph >= nglyphs) glyph = 0;
-			gpcf (pc, ((j & 0x0f) == 0x0f) ? "/%s" EOL : "/%s ", gnome_font_face_get_glyph_ps_name (face, glyph));
-		}
-		gpcf (pc, "] def" EOL);
-		gpcf (pc, "currentdict end /%s-Glyph-Page-%d exch definefont" EOL, font->psname, i);
-	}
-	gpcf (pc, "] def" EOL);
-	gpcf (pc, "/Encoding [" EOL);
-	for (i = 0; i < 256; i++) {
-		gint fn;
-		fn = (i < nfonts) ? i : 0;
-		gpcf (pc, ((i & 0x0f) == 0x0f) ? "%d" EOL : "%d  ", fn);
-	}
-	gpcf (pc, "] def" EOL);
-	gpcf (pc, "currentdict end" EOL);
-	gpcf (pc, "/%s exch definefont pop" EOL, font->encodedname);
-
-	font->encoded = TRUE;
-
-	return 0;
-}
-
-#undef gpcf
-
-static GPPS2Font *
-gp_ps2_download_and_encode_font (GnomePrintContext *pc, const GnomeFontFace *face)
-{
-	GnomePrintPs2 *ps2;
-	GPPS2Font *font;
-#if 0
-	gchar *pfbname;
-	gchar *pfa;
-#endif
-
-	ps2 = (GnomePrintPs2 *) pc;
-
-#if 0
-	pfa = gnome_font_face_get_pfa (face);
-	g_return_val_if_fail (pfa != NULL, NULL);
-#endif
-
-	font = g_new (GPPS2Font, 1);
-	font->next = ps2->fonts;
-	ps2->fonts = font;
-	font->face = (GnomeFontFace *) face;
-	gnome_font_face_ref (face);
-	font->psname = gnome_font_face_get_ps_name (face);
-	font->encodedname = g_strdup_printf ("%s-Gnome-Uni", font->psname);
-	font->internal = FALSE;
-	font->encoded = FALSE;
-
-#if 0
-	/* fixme: remove that mess */
-	gp_ps2_fprintf (ps2, "%%%%BeginResource: font %s" EOL, font->encodedname);
-
-	gp_ps2_fprintf (ps2, "%s", pfa);
-	gtk_object_get (GTK_OBJECT (face), "pfbname", &pfbname, NULL);
-	gp_ps2_encode_font (pc, font, pfbname);
-	g_free (pfbname);
-
-	gp_ps2_fprintf (ps2, "%%%%EndResource:" EOL);
-#endif
-
-	return font;
 }
 
 GnomePrintPs2 *
@@ -940,16 +727,14 @@ gnome_print_ps2_new (GnomePrinter *printer, const char *paper_name)
 	}
 	ps2->buf = fdopen (fd, "r+");
 
-	if (!gnome_print_context_open_file (GNOME_PRINT_CONTEXT (ps2), printer->filename))
-		goto failure;
+	if (!gnome_print_context_open_file (GNOME_PRINT_CONTEXT (ps2), printer->filename)) goto failure;
 
 	paper = gnome_paper_with_name (paper_name);
-	if (!paper) goto failure;
 
 	/* Fill fake bbox */
 	ps2->bbox.x0 = ps2->bbox.y0 = 0.0;
-	ps2->bbox.x1 = gnome_paper_pswidth (paper);
-	ps2->bbox.y1 = gnome_paper_psheight (paper);
+	ps2->bbox.x1 = paper ? gnome_paper_pswidth (paper) : 21 * 72 / 2.54;
+	ps2->bbox.y1 = paper ? gnome_paper_psheight (paper) : 29.7 * 72 / 2.54;
 
 	return ps2;
 
@@ -1159,7 +944,6 @@ gnome_print_ps2_image (GnomePrintContext *pc, const char *px, int w, int h, int 
 
 /* Other stuff */
 
-
 static gchar*
 gnome_print_ps2_get_date (void)
 {
@@ -1167,30 +951,11 @@ gnome_print_ps2_get_date (void)
 	struct tm *now;
 	gchar *date;
 
-#ifdef ADD_TIMEZONE_STAMP
-  extern char * tzname[];
-	/* TODO : Add :
-		 "[+-]"
-		 "HH'" Offset from gmt in hours
-		 "OO'" Offset from gmt in minutes
-	   we need to use tz_time. but I don't
-	   know how protable this is. Chema */
-	gprint ("Timezone %s\n", tzname[0]);
-	gprint ("Timezone *%s*%s*%li*\n", tzname[1], timezone);
-#endif	
-
-	debug (FALSE, "");
-
 	clock = time (NULL);
 	now = localtime (&clock);
 
 	date = g_strdup_printf ("D:%04d%02d%02d%02d%02d%02d",
-				now->tm_year + 1900,
-				now->tm_mon + 1,
-				now->tm_mday,
-				now->tm_hour,
-				now->tm_min,
-				now->tm_sec);
+				now->tm_year + 1900, now->tm_mon + 1, now->tm_mday, now->tm_hour, now->tm_min, now->tm_sec);
 
 	return date;
 }
@@ -1216,9 +981,6 @@ gp_ps2_fprintf (GnomePrintPs2 *ps2, const char *format, ...)
 
 	return len;
 }
-
-
-
 
 #ifdef ENABLE_LIBGPA
 static gint
@@ -1250,202 +1012,100 @@ gnome_print_ps2_get_level (GnomePrintPs2 *ps2)
 }
 #endif
 
-#if 0
 static gint
-gnome_print_ps2_show_sized (GnomePrintContext *pc, const char *text, int bytes)
+gnome_print_ps2_close (GnomePrintContext *pc)
 {
 	GnomePrintPs2 *ps2;
-	GnomePrintPs2GraphicState *gs;
-	const ArtPoint *cp;
-	gint ret = 0;
-	const char *p;
-	const GnomeFontFace * face;
-
-	debug (FALSE, "");
-
-	ps2 = (GnomePrintPs2 *) pc;
-
-	g_return_val_if_fail (GNOME_IS_PRINT_PS2 (ps2), -1);
-	g_return_val_if_fail (ps2->fonts != NULL, -1);
-	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
-
-	gs = ps2->graphic_state;
-	
-	if (gs->ps2_font_number == GNOME_PRINT_PS2_FONT_UNDEFINED || gs->font_size == 0) {
-		gnome_print_ps2_error (FALSE, "show, fontname or fontsize not defined.");
-		return -1;
-	}
-	
-	cp = gp_gc_get_currentpoint (pc->gc);
-
-	ret += gnome_print_ps2_graphic_state_setfont (pc);
-
-	g_return_val_if_fail (GNOME_IS_FONT (ps2->fonts[gs->ps2_font_number].gnome_font), -1);
-
-	face = gnome_font_get_face (ps2->fonts[gs->ps2_font_number].gnome_font);
-
-	g_return_val_if_fail (GNOME_IS_FONT_FACE (face), -1);
-
-	ret += gp_ps2_fprintf (ps2, "%g %g Tm" EOL, cp->x, cp->y);
-
-	gnome_print_ps2_graphic_state_text_set (pc);
-	gnome_print_ps2_show_matrix_set (ps2);
-	
-	/* I don't like the fact that we are writing one letter at time */
-	if (gp_ps2_fprintf (ps2, "(") < 0)
-		return -1;
-
-	for (p = text; p && p < (text + bytes); p = g_utf8_next_char (p)) {
-		gunichar u;
-		gint g, glyph, page;
-
-		u = g_utf8_get_char (p);
-		g = gnome_font_face_lookup_default (face, u);
-		glyph = g & 0xff;
-		page = (g >> 8) & 0xff;
-
-		if (gp_ps2_fprintf (ps2,"\\%03o\\%03o", page, glyph) < 0)
-			return -1;
-	}
-
-	ret += gp_ps2_fprintf (ps2, ") Tj" EOL);
-	ret += gnome_print_ps2_show_matrix_restore (ps2);
-
-	return ret;
-}
-
-static int
-gnome_print_ps2_textline (GnomePrintContext *pc, GnomeTextLine *line)
-{
-	/* new */
-	GnomePrintPs2 *ps2;
-	GnomePrintPs2GraphicState *gs;
-
-	GnomeTextFontHandle font_handle, font_handle_last;
-	gint font_size, font_size_last;
-
-	gint current_x_scale;
-	gboolean open;
-
-	const ArtPoint *cp;
-	ArtPoint point;
-
-	gint ret = 0;
-	/* new */
-
-
-	int i;
-	int attr_idx;
-	double scale_factor;
-	GnomeTextGlyphAttrEl *attrs = line->attrs;
-	int x;
-	int glyph;
-
-	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
-
-	/* new */
-	debug (FALSE, "");
-
-	g_warning ("using textline\n");
+	GPPS2Font *f;
+	gchar *date;
+	guchar b[256];
+	gint len;
 
 	ps2 = GNOME_PRINT_PS2 (pc);
 
-	gs = ps2->graphic_state;
+	g_return_val_if_fail (ps2->buf != NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
-	/* Set the initial point */
-	cp = gp_gc_get_currentpoint (pc->gc);
-	art_affine_point (&point, cp, gp_gc_get_ctm (pc->gc));
-	/* CRASH CRASH CRASH CRASH 
-	   ret += gnome_print_ps2_graphic_state_setfont (pc);
-	*/
-		
-	ret += gp_ps2_fprintf (ps2,
-					    "%g %g Tm" EOL,
-					    point.x,
-					    point.y);
-	/* new */
-
-	font_handle = gs->text_font_handle;
-	font_handle_last = font_handle;
-	font_size   = gs->text_font_size;
-	font_size_last = font_size;
-
-	current_x_scale = 1000;
-	scale_factor = font_size * current_x_scale * 1e-9 * GNOME_TEXT_SCALE;
-
-	open = 0;
-	x = 0;
-	attr_idx = 0;
-	for (i = 0; i < line->n_glyphs; i++) {
-		while (attrs[attr_idx].glyph_pos == i) {
-			switch (attrs[attr_idx].attr) {
-	    case GNOME_TEXT_GLYPH_FONT:
-		    font_handle = attrs[attr_idx].attr_val;
-		    break;
-			case GNOME_TEXT_GLYPH_SIZE:
-				font_size = attrs[attr_idx].attr_val;
-				scale_factor = font_size * current_x_scale * 1e-9 * GNOME_TEXT_SCALE;
-				break;
-			default:
-				break;
-			}
-			attr_idx++;
-		}
-
-		if (font_size != font_size_last ||
-		    font_handle != font_handle_last)
-		{
-#ifdef VERBOSE
-			g_print ("cur_size = %d, expands to %g\n",
-				 cur_size, ps->current_font_size);
-#endif
-			if (open)
-				gp_ps2_fprintf (ps2, ") Tj" EOL);
-			{
-				GnomeFont *font;
-				font = gnome_font_face_get_font (gnome_text_get_font (font_handle), font_size * 0.001);
-				gnome_print_ps2_setfont_raw (pc, font);
-				gnome_font_unref (font);
-			}
-			open = 0;
-			font_size_last = font_size;
-			font_handle_last = font_handle;
-		}
-#ifdef VERBOSE
-		g_print ("x = %d, glyph x = %d\n",
-			 x, line->glyphs[i].x);
-#endif
-		if (abs (line->glyphs[i].x - x) > 1)
-		{
-			gp_ps2_fprintf (ps2, "%s%g 0 rm" EOL,
-						     open ? ") Tj " : "",
-						     ((line->glyphs[i].x - x) * 1.0 /
-						      GNOME_TEXT_SCALE));
-			open = 0;
-			x = line->glyphs[i].x;
-		}
-		glyph = line->glyphs[i].glyph_num;
-		if (!open)
-			gp_ps2_fprintf (ps2, "(");
-		if (glyph >= ' ' && glyph < 0x7f)
-			if (glyph == '(' || glyph == ')' || glyph == '\\')
-				gp_ps2_fprintf (ps2, "\\%c", glyph);
-			else
-				gp_ps2_fprintf (ps2, "%c", glyph);
-		else
-			gp_ps2_fprintf (ps2, "\\%03o", glyph);
-		open = 1;
-		x += floor (gnome_text_get_width (font_handle, glyph) * scale_factor + 0.5);
+	if (!ps2->pages || !ps2->pages->shown) {
+		g_warning ("Closing PS2 Context without final showpage");
+		gnome_print_showpage (pc);
 	}
 
-	if (open)
-		gp_ps2_fprintf (ps2, ") Tj" EOL);
+	/* Do header */
+	/* Comments */
+	date = gnome_print_ps2_get_date ();
+	gnome_print_context_fprintf (pc, "%%!PS-Adobe-3.0" EOL);
+	/* fixme: %%BoundingBox: */
+	gnome_print_context_fprintf (pc, "%%%%Creator: Gnome Print Version %s" EOL, VERSION);
+	gnome_print_context_fprintf (pc, "%%%%CreationDate: %s" EOL, date);
+	/* fixme: %%DocumentData: */
+	/* fixme: Should we use %%Extensions: and drop LanguageLevel? */
+	gnome_print_context_fprintf (pc, "%%%%LanguageLevel: 2" EOL);
+	gnome_print_context_fprintf (pc, "%%%%Pages: %d" EOL, ps2->pages ? ps2->pages->number : 0);
+	gnome_print_context_fprintf (pc, "%%%%BoundingBox: %d %d %d %d" EOL,
+				     (gint) floor (ps2->bbox.x0),
+				     (gint) floor (ps2->bbox.y0),
+				     (gint) ceil (ps2->bbox.x1),
+				     (gint) ceil (ps2->bbox.y1));
+	/* fixme: Orientation: */
+	gnome_print_context_fprintf (pc, "%%%%PageOrder: Ascend" EOL);
+	gnome_print_context_fprintf (pc, "%%%%Title: %s" EOL, "Document Title goes here");
+	gnome_print_context_fprintf (pc, "%%%%DocumentSuppliedResources: procset gnome-print-procs-%s" EOL, VERSION);
+	if (ps2->fonts) {
+		/* %%DocumentSuppliedResources: */
+		for (f = ps2->fonts; f != NULL; f = f->next) {
+			gnome_print_context_fprintf (pc, "%%%%+ font %s" EOL, f->pso->encodedname);
+		}
+	}
+	g_free (date);
+	gnome_print_context_fprintf (pc, "%%%%EndComments" EOL);
+	/* Prolog */
+	gnome_print_context_fprintf (pc, "%%%%BeginProlog" EOL);
+	/* Abbreviations */
+	gnome_print_context_fprintf (pc, "%%%%BeginResource: procset gnome-print-procs-%s" EOL, VERSION);
+	gnome_print_context_fprintf (pc, "/|/def load def/,/load load" EOL);
+	gnome_print_context_fprintf (pc, "|/n/newpath , |/m/moveto , |/l/lineto , |/c/curveto ," EOL);
+	gnome_print_context_fprintf (pc, "|/q/gsave , |/Q/grestore , |/rg/setrgbcolor , |/J/setlinecap ," EOL);
+	gnome_print_context_fprintf (pc, "|/j/setlinejoin , |/w/setlinewidth , |/M/setmiterlimit ," EOL);
+	gnome_print_context_fprintf (pc, "|/d/setdash , |/i/pop , |/W/clip , |/W*/eoclip , |/n/newpath ," EOL);
+	gnome_print_context_fprintf (pc, "|/S/stroke , |/f/fill , |/f*/eofill , |/Tj/show , |/Tm/moveto ," EOL);
+	gnome_print_context_fprintf (pc, "|/FF/findfont ," EOL);
+	gnome_print_context_fprintf (pc, "|/h/closepath , |/cm/concat , |/rm/rmoveto , |/sp/strokepath ," EOL);
+	gnome_print_context_fprintf (pc, "|/SP/showpage , |/p/pop , |/EX/exch , |/DF/definefont , |" EOL);
+	gnome_print_context_fprintf (pc, "/F {scalefont setfont} def" EOL);
+	gnome_print_context_fprintf (pc, "%%%%EndResource" EOL);
+	gnome_print_context_fprintf (pc, "%%%%EndProlog" EOL);
 
-	gs->text_font_handle = font_handle;
-	gs->text_font_size   = font_size;
+	/* Prolog */
+	gnome_print_context_fprintf (pc, "%%%%BeginSetup" EOL);
+	/* Download fonts */
+	for (f = ps2->fonts; f != NULL; f = f->next) {
+		gnome_font_face_pso_ensure_buffer (f->pso);
+		gnome_print_context_fprintf (pc, "%%%%BeginResource: font %s" EOL, f->pso->encodedname);
+		gnome_print_context_write_file (pc, f->pso->buf, f->pso->length);
+		gnome_print_context_fprintf (pc, "%%%%EndResource" EOL);
+	}
+	gnome_print_context_fprintf (pc, "%%%%EndSetup" EOL);
+	
+	/* Write buffer */
+	rewind (ps2->buf);
+	len = 256;
+	while (len > 0) {
+		len = fread (b, 1, 256, ps2->buf);
+		if (len > 0) {
+			gnome_print_context_write_file (pc, b, len);
+		}
+	}
+	fclose (ps2->buf);
+	ps2->buf = NULL;
+	unlink (ps2->bufname);
+	g_free (ps2->bufname);
+	ps2->bufname = NULL;
 
-	return 0;
+	gnome_print_context_fprintf (pc, "%%%%Trailer" EOL);
+	gnome_print_context_fprintf (pc, "%%%%EOF" EOL);
+
+	gnome_print_context_close_file (pc);
+	
+	return GNOME_PRINT_OK;
 }
-#endif
-
 

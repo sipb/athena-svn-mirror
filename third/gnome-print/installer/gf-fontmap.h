@@ -50,17 +50,20 @@ struct _GFFontEntry {
 	GFFontEntry *next;
 	GFFontEntryType type;
 	GFFileEntry files[2];
-	gchar *name;
-	gchar *version;
-	gchar *familyname;
-	gchar *speciesname;
-	gchar *weight;
+	gint face;
+	guchar *name;
+	guchar *version;
+	guchar *familyname;
+	guchar *speciesname;
+	guchar *notice;
+	guchar *weight;
 	gdouble italicangle;
 };
 
 struct _GFFontMap {
 	GFFontMap *next;
 	GFFontMapType type;
+	gint gpversion; /* Multiplied by 1000 */
 	gchar *path;
 	GFFontEntry *fonts;
 	GFFontEntry *last;
