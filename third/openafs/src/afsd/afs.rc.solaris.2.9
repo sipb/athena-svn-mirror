@@ -164,6 +164,9 @@ else
 	/bin/athena/fs setcrypt off
 fi
 
+/bin/athena/fs sysname `/bin/athena/machtype -S` \
+	`/bin/athena/machtype -C | sed -e 's/:/ /g'`
+
 #
 # Run package to update the disk
 #
