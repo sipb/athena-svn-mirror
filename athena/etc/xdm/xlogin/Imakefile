@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.5 1992-04-05 16:51:50 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/Imakefile,v 1.6 1992-04-27 18:44:38 mar Exp $
 #
 # CC can be overridden from driver makefile.  Note the -g flag
 # is on the CC macro, not the CFLAGS and LDFLAGS macros, so the
@@ -16,43 +16,64 @@ DEFINES = -I. $(MACHDEFS)
 
 LINTFLAGS = $(CFLAGS) -b -h -u -v -z
 
-  SRCS = xlogin.c AriRegAll.c verify.c
-  OBJS = xlogin.o AriRegAll.o verify.o
-  LIBS = -lXaw -lm ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
+ SRCS = xlogin.c AriRegAll.c verify.c SmeBSB.c StringToPixel.c
+ OBJS = xlogin.o AriRegAll.o verify.o SmeBSB.o StringToPixel.o
+ LIBS = -lXaw -lm ../wcl/libWc.a -lXmu -lXt -lXext -lX11 -lkrb -ldes -lhesiod \
 	 $(MACHLIBS)
 
 create_dir(/etc/athena/login)
+create_dir(/etc/athena/login/bitmaps)
 SimpleProgram(timeout,timeout.o,,$(ATHBINDIR))
 SimpleProgram(xlogin,$(OBJS),$(LIBS),/etc/athena/xlogin)
+create_depend($(SRCS))
+
+all::	Xlogin
 
 #if defined(_IBMR2)
-all::
+Xlogin:	Xlogin.rios.presed
 	. $(ATHVERS); \
 	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" Xlogin.rios.presed > Xlogin
 #else
-all::
+Xlogin:	Xlogin.presed
 	. $(ATHVERS); \
 	sed -e "s/ATHENA_VERSION/$$ATHMAJV.$$ATHMINV/" Xlogin.presed > Xlogin
 #endif
 	
-install_file(check,/etc/athena/login/check)
-install_file(question,/etc/athena/login/question)
-install_file(warning,/etc/athena/login/warning)
-install_file(white,/etc/athena/login/white)
-install_file(owl,/etc/athena/login/owl)
-install_file(owleyes0.xbm,/etc/athena/login/owleyes0.xbm)
-install_file(owleyes1.xbm,/etc/athena/login/owleyes1.xbm)
-install_file(owleyes2.xbm,/etc/athena/login/owleyes2.xbm)
-install_file(owleyes3.xbm,/etc/athena/login/owleyes3.xbm)
-install_file(owleyes4.xbm,/etc/athena/login/owleyes4.xbm)
-install_file(owleyes5.xbm,/etc/athena/login/owleyes5.xbm)
-install_file(is,/etc/athena/login/is)
-install_file(is0.xbm,/etc/athena/login/is0.xbm)
-install_file(is1.xbm,/etc/athena/login/is1.xbm)
-install_file(is2.xbm,/etc/athena/login/is2.xbm)
-install_file(is3.xbm,/etc/athena/login/is3.xbm)
-install_file(is4.xbm,/etc/athena/login/is4.xbm)
-install_file(is5.xbm,/etc/athena/login/is5.xbm)
+install_file(bitmaps/check,/etc/athena/login/bitmaps/check)
+install_file(bitmaps/question,/etc/athena/login/bitmaps/question)
+install_file(bitmaps/warning,/etc/athena/login/bitmaps/warning)
+install_file(bitmaps/white,/etc/athena/login/bitmaps/white)
+install_file(bitmaps/owl,/etc/athena/login/bitmaps/owl)
+install_file(bitmaps/owleyes0.xbm,/etc/athena/login/bitmaps/owleyes0.xbm)
+install_file(bitmaps/owleyes1.xbm,/etc/athena/login/bitmaps/owleyes1.xbm)
+install_file(bitmaps/owleyes2.xbm,/etc/athena/login/bitmaps/owleyes2.xbm)
+install_file(bitmaps/owleyes3.xbm,/etc/athena/login/bitmaps/owleyes3.xbm)
+install_file(bitmaps/owleyes4.xbm,/etc/athena/login/bitmaps/owleyes4.xbm)
+install_file(bitmaps/owleyes5.xbm,/etc/athena/login/bitmaps/owleyes5.xbm)
+install_file(bitmaps/is,/etc/athena/login/bitmaps/is)
+install_file(bitmaps/is0.xbm,/etc/athena/login/bitmaps/is0.xbm)
+install_file(bitmaps/is1.xbm,/etc/athena/login/bitmaps/is1.xbm)
+install_file(bitmaps/is2.xbm,/etc/athena/login/bitmaps/is2.xbm)
+install_file(bitmaps/is3.xbm,/etc/athena/login/bitmaps/is3.xbm)
+install_file(bitmaps/is4.xbm,/etc/athena/login/bitmaps/is4.xbm)
+install_file(bitmaps/is5.xbm,/etc/athena/login/bitmaps/is5.xbm)
+install_file(bitmaps/Ctrl-P,/etc/athena/login/bitmaps/Ctrl-P)
+install_file(bitmaps/F1,/etc/athena/login/bitmaps/F1)
+install_file(bitmaps/F2,/etc/athena/login/bitmaps/F2)
+install_file(bitmaps/F3,/etc/athena/login/bitmaps/F3)
+install_file(bitmaps/F4,/etc/athena/login/bitmaps/F4)
+install_file(bitmaps/F5,/etc/athena/login/bitmaps/F5)
+install_file(bitmaps/F6,/etc/athena/login/bitmaps/F6)
+install_file(bitmaps/Prev,/etc/athena/login/bitmaps/Prev)
+install_file(bitmaps/Shift-F1,/etc/athena/login/bitmaps/Shift-F1)
+install_file(bitmaps/Shift-F2,/etc/athena/login/bitmaps/Shift-F2)
+install_file(bitmaps/Shift-F3,/etc/athena/login/bitmaps/Shift-F3)
+install_file(bitmaps/Shift-F4,/etc/athena/login/bitmaps/Shift-F4)
+install_file(bitmaps/Shift-F5,/etc/athena/login/bitmaps/Shift-F5)
+install_file(bitmaps/Shift-F6,/etc/athena/login/bitmaps/Shift-F6)
+install_file(bitmaps/Shift-F7,/etc/athena/login/bitmaps/Shift-F7)
+install_file(bitmaps/Shift-F8,/etc/athena/login/bitmaps/Shift-F8)
+install_file(bitmaps/Shift-F9,/etc/athena/login/bitmaps/Shift-F9)
 install_file(Xlogin,/etc/athena/login/Xlogin)
 install_man(timeout.1,timeout.1)
 install_man(xlogin.8,xlogin.8)
