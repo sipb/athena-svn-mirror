@@ -111,3 +111,7 @@ typedef struct tABBREV {
 /* Function declarations. */
 
 ENTRY *get_entry();
+
+#ifdef LOG_USAGE
+#define LOGGER_HOST	"brennin.mit.edu"
+#endif

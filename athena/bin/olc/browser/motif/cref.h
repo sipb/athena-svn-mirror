@@ -23,3 +23,7 @@ typedef struct tENTRY {
 #define  B_SUBDIR	"directory"	/* String for a directory entry. */
 #define  COMMENT_CHAR	'#'		/* Comment char in contents. */
 #define  CONTENTS_DELIM	':'		/* Delimiter in contents. */
+
+#ifdef LOG_USAGE
+#define LOGGER_HOST     "brennin.mit.edu"
+#endif
