@@ -28,6 +28,7 @@
 // stdlib.h and malloc.h are needed to build with WIN32_LEAN_AND_MEAN
 #include <stdlib.h>
 #include <malloc.h>
+#include <ctype.h>
 
 #include "resource.h"
 #include "zlib.h"
@@ -47,6 +48,7 @@
 #define PP_PATH_ONLY                    2
 #define PP_ROOT_ONLY                    3
 
+#define CLASS_NAME_SETUP                "MozillaSetup"
 #define CLASS_NAME_SETUP_DLG            "MozillaSetupDlg"
 
 char      szTitle[MAX_BUF];
@@ -55,6 +57,7 @@ BOOL      gbUncompressOnly;
 DWORD     dwMode;
 HINSTANCE hInst;
 char      gszWizTempDir[20] = "ns_temp";
+char      gszFileToUncompress[MAX_BUF];
 BOOL      gbAllowMultipleInstalls = FALSE;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -197,6 +200,8 @@ LPSTR GetArgV(LPSTR lpszCommandLine, int iIndex, LPSTR lpszDest, int iDestSize)
   iArgCount    = 0;
   lpszBeginStr = GetFirstNonSpace(lpszCommandLine);
 
+  if(lpszDest)
+    *lpszDest = '\0';
   if(lpszBeginStr == NULL)
     return(NULL);
 
@@ -207,7 +212,6 @@ LPSTR GetArgV(LPSTR lpszCommandLine, int iIndex, LPSTR lpszDest, int iDestSize)
     exit(1);
   }
 
-  ZeroMemory(lpszDest, iDestSize);
   iStrLength    = lstrlen(lpszBeginStr);
   bFoundQuote   = FALSE;
   bFoundSpace   = TRUE;
@@ -452,7 +456,8 @@ void ParseCommandLine(LPSTR lpszCmdLine)
   int   i;
   int   iArgC;
 
-  ZeroMemory(szCmdLineToSetup, MAX_BUF);
+  *szCmdLineToSetup = '\0';
+  *gszFileToUncompress = '\0';
   dwMode = NORMAL;
   gbUncompressOnly = FALSE;
   iArgC  = GetArgC(lpszCmdLine);
@@ -467,6 +472,12 @@ void ParseCommandLine(LPSTR lpszCmdLine)
     else if((lstrcmpi(szArgVBuf, "-u") == 0) || (lstrcmpi(szArgVBuf, "/u") == 0))
     {
       gbUncompressOnly = TRUE;
+      GetArgV(lpszCmdLine, i + 1, szArgVBuf, sizeof(szArgVBuf));
+      if((*szArgVBuf != '\0') && (*szArgVBuf != '-'))
+      {
+        lstrcpy(gszFileToUncompress, szArgVBuf);
+        ++i; // found filename to uncompress, update 'i' for the next iteration
+      }
     }
     else if((lstrcmpi(szArgVBuf, "-mmi") == 0) || (lstrcmpi(szArgVBuf, "/mmi") == 0))
     {
@@ -650,6 +661,11 @@ ExtractFilesProc(HANDLE hModule, LPCTSTR lpszType, LPTSTR lpszName, LONG lParam)
     CreateDirectoriesAll(szTmpFile);
   }
 
+  if((*gszFileToUncompress != '\0') && (lstrcmpi(lpszName, gszFileToUncompress) != 0))
+    // We have a file to uncompress, but the one found is not the one we want,
+    // so return TRUE to continue looking for the right one.
+    return TRUE;
+
 	// Extract the file
 	hResInfo = FindResource((HINSTANCE)hModule, lpszName, lpszType);
 	hGlobal = LoadResource((HINSTANCE)hModule, hResInfo);
@@ -723,6 +739,11 @@ ExtractFilesProc(HANDLE hModule, LPCTSTR lpszType, LPTSTR lpszName, LONG lParam)
 	FreeResource(hResInfo);
   if(lptr)
     free(lptr);
+
+  if((*gszFileToUncompress != '\0') && (lstrcmpi(lpszName, gszFileToUncompress) == 0))
+    // We have a file to uncompress, and we have uncompressed it,
+    // so return FALSE to stop uncompressing any other file.
+    return FALSE;
 
 	return TRUE;  // keep enumerating
 }
@@ -872,6 +893,7 @@ RunInstaller()
   char                szText[256];
   char                szTempPath[MAX_BUF];
   char                szTmp[MAX_PATH];
+  char                xpiDir[MAX_PATH];
   char                szFilename[MAX_BUF];
   char                szBuf[MAX_BUF];
 
@@ -900,9 +922,16 @@ RunInstaller()
   else
   {
     lstrcpy(szCmdLine, szSetupFile);
-    GetModuleFileName(NULL, szBuf, sizeof(szBuf));
-    ParsePath(szBuf, szFilename, sizeof(szFilename), PP_FILENAME_ONLY);
-
+    GetModuleFileName(NULL, szFilename, sizeof(szFilename));
+    ParsePath(szFilename, xpiDir, sizeof(xpiDir), PP_PATH_ONLY);
+    AppendBackSlash(xpiDir, sizeof(xpiDir));
+    lstrcat(xpiDir, "xpi");
+    if(FileExists(xpiDir))
+    {
+      GetShortPathName(xpiDir, szBuf, sizeof(szBuf));
+      lstrcat(szCmdLine, " -a ");
+      lstrcat(szCmdLine, szBuf);
+    }
     lstrcat(szCmdLine, " -n ");
     lstrcat(szCmdLine, szFilename);
   }
@@ -945,7 +974,7 @@ RunInstaller()
 int APIENTRY
 WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	WNDCLASS	wc;
+  WNDCLASS  wc;
   HWND      hwndFW;
 
 	hInst = hInstance;
@@ -959,7 +988,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdS
       to have its own unique setup directory 
    */
   if(FindWindow("NSExtracting", "Extracting...") != NULL ||
-    (hwndFW = FindWindow(CLASS_NAME_SETUP_DLG, NULL)) != NULL)
+    (hwndFW = FindWindow(CLASS_NAME_SETUP_DLG, NULL)) != NULL ||
+    (hwndFW = FindWindow(CLASS_NAME_SETUP, NULL)) != NULL)
   {
     if (gbAllowMultipleInstalls)
     {
@@ -982,12 +1012,12 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdS
     else
     {
       if (hwndFW!=NULL)
-  {
-    ShowWindow(hwndFW, SW_RESTORE);
-    SetForegroundWindow(hwndFW);
+      {
+        ShowWindow(hwndFW, SW_RESTORE);
+        SetForegroundWindow(hwndFW);
       }
-    return(1);
-  }
+      return(1);
+    }
   }
 
 	// Figure out the total size of the resources

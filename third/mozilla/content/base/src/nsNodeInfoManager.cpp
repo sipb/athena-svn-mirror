@@ -44,6 +44,7 @@
 #include "nsIDocument.h"
 #include "nsIPrincipal.h"
 #include "nsISupportsArray.h"
+#include "nsContentUtils.h"
 
 nsNodeInfoManager* nsNodeInfoManager::gAnonymousNodeInfoManager = nsnull;
 PRUint32 nsNodeInfoManager::gNodeManagerCount = 0;
@@ -94,7 +95,6 @@ nsNodeInfoManager::NodeInfoInnerKeyCompare(const void *key1, const void *key2)
 nsNodeInfoManager::nsNodeInfoManager()
   : mDocument(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 
   if (gNodeManagerCount == 1 && gAnonymousNodeInfoManager) {
     /*
@@ -148,14 +148,11 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsNodeInfoManager, nsINodeInfoManager);
 // nsINodeInfoManager
 
 NS_IMETHODIMP
-nsNodeInfoManager::Init(nsIDocument *aDocument,
-                        nsINameSpaceManager *aNameSpaceManager)
+nsNodeInfoManager::Init(nsIDocument *aDocument)
 {
-  NS_ENSURE_ARG_POINTER(aNameSpaceManager);
   NS_ENSURE_TRUE(mNodeInfoHash, NS_ERROR_OUT_OF_MEMORY);
 
   mDocument = aDocument;
-  mNameSpaceManager = aNameSpaceManager;
   if (aDocument) {
     mPrincipal = nsnull;
   }
@@ -228,7 +225,7 @@ nsNodeInfoManager::GetNodeInfo(const nsAString& aName, nsIAtom *aPrefix,
 {
   NS_ENSURE_ARG(!aName.IsEmpty());
 
-  nsCOMPtr<nsIAtom> name(dont_AddRef(NS_NewAtom(aName)));
+  nsCOMPtr<nsIAtom> name = do_GetAtom(aName);
   NS_ENSURE_TRUE(name, NS_ERROR_OUT_OF_MEMORY);
 
   return GetNodeInfo(name, aPrefix, aNamespaceID, aNodeInfo);
@@ -242,13 +239,13 @@ nsNodeInfoManager::GetNodeInfo(const nsAString& aName,
 {
   NS_ENSURE_ARG(!aName.IsEmpty());
 
-  nsCOMPtr<nsIAtom> name(dont_AddRef(NS_NewAtom(aName)));
+  nsCOMPtr<nsIAtom> name = do_GetAtom(aName);
   NS_ENSURE_TRUE(name, NS_ERROR_OUT_OF_MEMORY);
 
   nsCOMPtr<nsIAtom> prefix;
 
   if (!aPrefix.IsEmpty()) {
-    prefix = dont_AddRef(NS_NewAtom(aPrefix));
+    prefix = do_GetAtom(aPrefix);
     NS_ENSURE_TRUE(prefix, NS_ERROR_OUT_OF_MEMORY);
   }
 
@@ -264,22 +261,18 @@ nsNodeInfoManager::GetNodeInfo(const nsAString& aName,
 {
   NS_ENSURE_ARG(!aName.IsEmpty());
 
-  nsCOMPtr<nsIAtom> name(dont_AddRef(NS_NewAtom(aName)));
+  nsCOMPtr<nsIAtom> name = do_GetAtom(aName);
   NS_ENSURE_TRUE(name, NS_ERROR_OUT_OF_MEMORY);
 
   nsCOMPtr<nsIAtom> prefix;
 
   if (!aPrefix.IsEmpty()) {
-    prefix = dont_AddRef(NS_NewAtom(aPrefix));
+    prefix = do_GetAtom(aPrefix);
     NS_ENSURE_TRUE(prefix, NS_ERROR_OUT_OF_MEMORY);
   }
 
-  if (!mNameSpaceManager) {
-    return NS_ERROR_NOT_INITIALIZED;
-  }
-
   PRInt32 nsid;
-  nsresult rv = mNameSpaceManager->RegisterNameSpace(aNamespaceURI, nsid);
+  nsresult rv = nsContentUtils::GetNSManagerWeakRef()->RegisterNameSpace(aNamespaceURI, nsid);
   NS_ENSURE_SUCCESS(rv, rv);
 
   return GetNodeInfo(name, prefix, nsid, aNodeInfo);
@@ -301,38 +294,24 @@ nsNodeInfoManager::GetNodeInfo(const nsAString& aQualifiedName,
     name.Cut(0, nsoffset+1);
   }
 
-  nsCOMPtr<nsIAtom> nameAtom(dont_AddRef(NS_NewAtom(name)));
+  nsCOMPtr<nsIAtom> nameAtom = do_GetAtom(name);
   NS_ENSURE_TRUE(nameAtom, NS_ERROR_OUT_OF_MEMORY);
 
   nsCOMPtr<nsIAtom> prefixAtom;
 
   if (!prefix.IsEmpty()) {
-    prefixAtom = dont_AddRef(NS_NewAtom(prefix));
+    prefixAtom = do_GetAtom(prefix);
     NS_ENSURE_TRUE(prefixAtom, NS_ERROR_OUT_OF_MEMORY);
   }
 
   PRInt32 nsid = kNameSpaceID_None;
 
   if (!aNamespaceURI.IsEmpty()) {
-    NS_ENSURE_TRUE(mNameSpaceManager, NS_ERROR_NOT_INITIALIZED);
-
-    nsresult rv = mNameSpaceManager->RegisterNameSpace(aNamespaceURI, nsid);
+    nsresult rv = nsContentUtils::GetNSManagerWeakRef()->RegisterNameSpace(aNamespaceURI, nsid);
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
   return GetNodeInfo(nameAtom, prefixAtom, nsid, aNodeInfo);
-}
-
-
-NS_IMETHODIMP
-nsNodeInfoManager::GetNamespaceManager(nsINameSpaceManager*& aNameSpaceManager)
-{
-  NS_ENSURE_TRUE(mNameSpaceManager, NS_ERROR_NOT_INITIALIZED);
-
-  aNameSpaceManager = mNameSpaceManager;
-  NS_ADDREF(aNameSpaceManager);
-
-  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -437,14 +416,6 @@ nsNodeInfoManager::GetAnonymousManager(nsINodeInfoManager*& aNodeInfoManager)
       return NS_ERROR_OUT_OF_MEMORY;
 
     NS_ADDREF(gAnonymousNodeInfoManager);
-
-    nsresult rv = NS_NewNameSpaceManager(getter_AddRefs(gAnonymousNodeInfoManager->mNameSpaceManager));
-
-    if (NS_FAILED(rv)) {
-      NS_RELEASE(gAnonymousNodeInfoManager);
-
-      return rv;
-    }
   }
 
   aNodeInfoManager = gAnonymousNodeInfoManager;

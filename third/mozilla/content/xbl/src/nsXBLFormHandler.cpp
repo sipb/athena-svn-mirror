@@ -38,11 +38,10 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLFormHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsIContent.h"
-#include "nsIAtom.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDocument.h"
@@ -52,124 +51,52 @@
 #include "nsXBLBinding.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
 
-PRUint32 nsXBLFormHandler::gRefCnt = 0;
-nsIAtom* nsXBLFormHandler::kSubmitAtom = nsnull;
-nsIAtom* nsXBLFormHandler::kResetAtom = nsnull;
-nsIAtom* nsXBLFormHandler::kInputAtom = nsnull;
-nsIAtom* nsXBLFormHandler::kSelectAtom = nsnull;
-nsIAtom* nsXBLFormHandler::kChangeAtom = nsnull;
-
-nsXBLFormHandler::nsXBLFormHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler)
-:nsXBLEventHandler(aReceiver,aHandler)
+nsXBLFormHandler::nsXBLFormHandler(nsIDOMEventReceiver* aReceiver,
+                                   nsXBLPrototypeHandler* aHandler)
+  : nsXBLEventHandler(aReceiver, aHandler)
 {
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kInputAtom = NS_NewAtom("input");
-    kSelectAtom = NS_NewAtom("select");
-    kChangeAtom = NS_NewAtom("change");
-    kSubmitAtom = NS_NewAtom("submit");
-    kResetAtom = NS_NewAtom("reset");
-  }
 }
 
 nsXBLFormHandler::~nsXBLFormHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kInputAtom);
-    NS_RELEASE(kSubmitAtom);
-    NS_RELEASE(kResetAtom);
-    NS_RELEASE(kSelectAtom);
-    NS_RELEASE(kChangeAtom);
-  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXBLFormHandler, nsXBLEventHandler, nsIDOMFormListener)
 
 nsresult nsXBLFormHandler::Submit(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kSubmitAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::submit, aEvent);
 }
 
 nsresult nsXBLFormHandler::Reset(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kResetAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::reset, aEvent);
 }
 
 nsresult nsXBLFormHandler::Select(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kSelectAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::select, aEvent);
 }
 
 nsresult nsXBLFormHandler::Change(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kChangeAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::change, aEvent);
 }
 
 nsresult nsXBLFormHandler::Input(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kInputAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::input, aEvent);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLFormHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler, 
+NS_NewXBLFormHandler(nsIDOMEventReceiver* aRec,
+                     nsXBLPrototypeHandler* aHandler,
                      nsXBLFormHandler** aResult)
 {
   *aResult = new nsXBLFormHandler(aRec, aHandler);

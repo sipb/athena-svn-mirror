@@ -45,19 +45,19 @@
 #include "nsIDragDropHandler.h"
 #include "nsIDOMDragListener.h"
 #include "nsIDOMEventReceiver.h"
+#include "nsITransferable.h"
 
 class nsIDOMNode;
 class nsISelection;
 class nsITransferable;
-class nsIOverrideDragSource;
-class nsIOverrideDropSite;
 class nsIImage;
 class nsIPresShell;
 class nsIPresContext;
-class nsIImageFrame;
 class nsIContent;
 class nsIDocument;
-
+class nsIURI;
+class nsILocalFile;
+class nsISimpleEnumerator;
 
 // {1f34bc80-1bc7-11d6-a384-d705dd0746fc}
 #define NS_CONTENTAREADRAGDROP_CID             \
@@ -73,11 +73,14 @@ class nsIDocument;
 // to drag and drop. Registers itself with the DOM with AddChromeListeners()
 // and removes itself with RemoveChromeListeners().
 //
-class nsContentAreaDragDrop : public nsIDOMDragListener, public nsIDragDropHandler
+class nsContentAreaDragDrop : public nsIDOMDragListener,
+                              public nsIDragDropHandler,
+                              public nsIFlavorDataProvider
 {
 public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIDRAGDROPHANDLER
+  NS_DECL_NSIFLAVORDATAPROVIDER
   
   nsContentAreaDragDrop ( ) ;
   virtual ~nsContentAreaDragDrop ( ) ;
@@ -93,8 +96,8 @@ public:
 private:
 
     // Add/remove the relevant listeners
-  NS_IMETHOD AddDragListener();
-  NS_IMETHOD RemoveDragListener();
+  nsresult AddDragListener();
+  nsresult RemoveDragListener();
 
     // utility routines
   static void FindFirstAnchor(nsIDOMNode* inNode, nsIDOMNode** outAnchor);
@@ -106,23 +109,28 @@ private:
   static void NormalizeSelection(nsIDOMNode* inBaseNode, nsISelection* inSelection);
   static void GetEventDocument(nsIDOMEvent* inEvent, nsIDOMDocument** outDocument);
   static nsresult GetImageFromDOMNode(nsIDOMNode* inNode, nsIImage** outImage);
-  static nsresult GetImageFrame(nsIContent* aContent, nsIDocument *aDocument, nsIPresContext *aPresContext,
-                                  nsIPresShell *aPresShell, nsIImageFrame** aImageFrame);
 
+  static nsresult GetDraggableSelectionData(nsISelection* inSelection,
+                        nsIDOMNode* inRealTargetNode, nsIDOMNode **outImageOrLinkNode, PRBool* outDragSelectedText);
+  // if inNode is null, use the selection from the window
+  static nsresult SerializeNodeOrSelection(const char* inMimeType, PRUint32 inFlags,
+                        nsIDOMWindow* inWindow, nsIDOMNode* inNode, nsAString& outResultString);
+
+  static nsresult SaveURIToFileInDirectory(nsAString& inSourceURIString, nsILocalFile* inDestDirectory, nsILocalFile** outFile);
+  
   PRBool BuildDragData(nsIDOMEvent* inMouseEvent, nsAString & outURLString, nsAString & outTitleString,
-                        nsAString & outHTMLString, nsIImage** outImage, PRBool* outIsAnchor);
+                        nsAString & outHTMLString, nsAString & outImageSourceString, nsIImage** outImage, PRBool* outIsAnchor);
   nsresult CreateTransferable(const nsAString & inURLString, const nsAString & inTitleString, 
-                                const nsAString & inHTMLString, nsIImage* inImage, PRBool inIsAnchor, 
-                                nsITransferable** outTrans);
+                                const nsAString & inHTMLString, const nsAString & inImageSourceString,
+                                nsIImage* inImage, PRBool inIsAnchor, nsITransferable** outTrans);
   void ExtractURLFromData(const nsACString & inFlavor, nsISupports* inDataWrapper, PRUint32 inDataLen,
                            nsAString & outURL);
+  nsresult GetHookEnumeratorFromEvent(nsIDOMEvent* inEvent, nsISimpleEnumerator** outEnumerator);
 
   PRPackedBool mListenerInstalled;
 
   nsCOMPtr<nsIDOMEventReceiver> mEventReceiver;
   nsIWebNavigation* mNavigator;                     // weak ref, this is probably my owning webshell
-  nsIOverrideDragSource* mOverrideDrag;             // weak, these could own us but probably will outlive us
-  nsIOverrideDropSite* mOverrideDrop;
 
 }; // class nsContentAreaDragDrop
 

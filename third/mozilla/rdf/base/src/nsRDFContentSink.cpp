@@ -94,6 +94,7 @@
 #include "nsIExpatSink.h"
 #include "nsCRT.h"
 #include "nsIAtom.h"
+#include "nsStaticAtom.h"
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -192,6 +193,24 @@ public:
     static nsIAtom* kLiAtom;
     static nsIAtom* kXMLNSAtom;
     static nsIAtom* kParseTypeAtom;
+
+    typedef nsresult 
+    NS_STDCALL_FUNCPROTO(nsIRDFContainerUtils::*nsContainerTestFn,
+                         (nsIRDFDataSource* aDataSource,
+                          nsIRDFResource* aResource,
+                          PRBool* aResult));
+
+    typedef nsresult 
+    NS_STDCALL_FUNCPROTO(nsIRDFContainerUtils::*nsMakeContainerFn,
+                         (nsIRDFDataSource* aDataSource,
+                          nsIRDFResource* aContainer,
+                          nsIRDFContainer** aResult));
+
+    typedef struct ContainerInfo {
+        nsIRDFResource**  mType;
+        nsContainerTestFn mTestFn;
+        nsMakeContainerFn mMakeFn;
+    } ContainerInfo;
 
 protected:
     // Text management
@@ -313,7 +332,20 @@ nsIAtom* RDFContentSinkImpl::kXMLNSAtom;
 nsIAtom* RDFContentSinkImpl::kParseTypeAtom;
 
 ////////////////////////////////////////////////////////////////////////
-
+static const nsStaticAtom rdf_atoms[] = {
+    { "about", &RDFContentSinkImpl::kAboutAtom },
+    { "ID", &RDFContentSinkImpl::kIdAtom },
+    { "aboutEach", &RDFContentSinkImpl::kAboutEachAtom },
+    { "resource", &RDFContentSinkImpl::kResourceAtom },
+    { "RDF", &RDFContentSinkImpl::kRDFAtom },
+    { "Description", &RDFContentSinkImpl::kDescriptionAtom },
+    { "Bag", &RDFContentSinkImpl::kBagAtom },
+    { "Seq", &RDFContentSinkImpl::kSeqAtom },
+    { "Alt", &RDFContentSinkImpl::kAltAtom },
+    { "li", &RDFContentSinkImpl::kLiAtom },
+    { "xmlns", &RDFContentSinkImpl::kXMLNSAtom },
+    { "parseType", &RDFContentSinkImpl::kParseTypeAtom },
+};
 
 RDFContentSinkImpl::RDFContentSinkImpl()
     : mText(nsnull),
@@ -326,8 +358,6 @@ RDFContentSinkImpl::RDFContentSinkImpl()
       mContextStack(nsnull),
       mDocumentURL(nsnull)
 {
-    NS_INIT_ISUPPORTS();
-
     if (gRefCnt++ == 0) {
         nsresult rv;
         rv = nsServiceManager::GetService(kRDFServiceCID,
@@ -336,12 +366,18 @@ RDFContentSinkImpl::RDFContentSinkImpl()
 
         NS_ASSERTION(NS_SUCCEEDED(rv), "unable to get RDF service");
         if (NS_SUCCEEDED(rv)) {
-            rv = gRDFService->GetResource(RDF_NAMESPACE_URI "type",       &kRDF_type);
-            rv = gRDFService->GetResource(RDF_NAMESPACE_URI "instanceOf", &kRDF_instanceOf);
-            rv = gRDFService->GetResource(RDF_NAMESPACE_URI "Alt",        &kRDF_Alt);
-            rv = gRDFService->GetResource(RDF_NAMESPACE_URI "Bag",        &kRDF_Bag);
-            rv = gRDFService->GetResource(RDF_NAMESPACE_URI "Seq",        &kRDF_Seq);
-            rv = gRDFService->GetResource(RDF_NAMESPACE_URI "nextVal",    &kRDF_nextVal);
+            rv = gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "type"),
+                                          &kRDF_type);
+            rv = gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "instanceOf"),
+                                          &kRDF_instanceOf);
+            rv = gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "Alt"),
+                                          &kRDF_Alt);
+            rv = gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "Bag"),
+                                          &kRDF_Bag);
+            rv = gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "Seq"),
+                                          &kRDF_Seq);
+            rv = gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "nextVal"),
+                                          &kRDF_nextVal);
         }
 
 
@@ -349,18 +385,7 @@ RDFContentSinkImpl::RDFContentSinkImpl()
                                           NS_GET_IID(nsIRDFContainerUtils),
                                           (nsISupports**) &gRDFContainerUtils);
 
-        kAboutAtom       = NS_NewAtom("about");
-        kIdAtom          = NS_NewAtom("ID");
-        kAboutEachAtom   = NS_NewAtom("aboutEach");
-        kResourceAtom    = NS_NewAtom("resource");
-        kRDFAtom         = NS_NewAtom("RDF");
-        kDescriptionAtom = NS_NewAtom("Description");
-        kBagAtom         = NS_NewAtom("Bag");
-        kSeqAtom         = NS_NewAtom("Seq");
-        kAltAtom         = NS_NewAtom("Alt");
-        kLiAtom          = NS_NewAtom("li");
-        kXMLNSAtom       = NS_NewAtom("xmlns");
-        kParseTypeAtom   = NS_NewAtom("parseType");
+        NS_RegisterStaticAtoms(rdf_atoms, NS_ARRAY_LENGTH(rdf_atoms));
     }
 
 #ifdef PR_LOGGING
@@ -438,18 +463,6 @@ RDFContentSinkImpl::~RDFContentSinkImpl()
         NS_IF_RELEASE(kRDF_Seq);
         NS_IF_RELEASE(kRDF_nextVal);
 
-        NS_IF_RELEASE(kAboutAtom);
-        NS_IF_RELEASE(kIdAtom);
-        NS_IF_RELEASE(kAboutEachAtom);
-        NS_IF_RELEASE(kResourceAtom);
-        NS_IF_RELEASE(kRDFAtom);
-        NS_IF_RELEASE(kDescriptionAtom);
-        NS_IF_RELEASE(kBagAtom);
-        NS_IF_RELEASE(kSeqAtom);
-        NS_IF_RELEASE(kAltAtom);
-        NS_IF_RELEASE(kLiAtom);
-        NS_IF_RELEASE(kXMLNSAtom);
-        NS_IF_RELEASE(kParseTypeAtom);
     }
 }
 
@@ -766,7 +779,7 @@ RDFContentSinkImpl::ParseText(nsIRDFNode **aResult)
     case eRDFContentSinkParseMode_Resource:
         {
             nsIRDFResource *result;
-            gRDFService->GetUnicodeResource(value.get(), &result);
+            gRDFService->GetUnicodeResource(value, &result);
             *aResult = result;
         }
         break;
@@ -960,7 +973,7 @@ RDFContentSinkImpl::GetIdAboutAttribute(const PRUnichar** aAttributes,
 
             rdf_MakeAbsoluteURI(NS_ConvertUTF8toUCS2(docURI), uri);
 
-            return gRDFService->GetUnicodeResource(uri.get(), aResource);
+            return gRDFService->GetUnicodeResource(uri, aResource);
         }
         else if (attr.get() == kIdAtom) {
             if (aIsAnonymous)
@@ -981,7 +994,7 @@ RDFContentSinkImpl::GetIdAboutAttribute(const PRUnichar** aAttributes,
           
             rdf_MakeAbsoluteURI(NS_ConvertUTF8toUCS2(docURI), name);
 
-            return gRDFService->GetUnicodeResource(name.get(), aResource);
+            return gRDFService->GetUnicodeResource(name, aResource);
         }
         else if (attr.get() == kAboutEachAtom) {
             // XXX we don't deal with aboutEach...
@@ -1035,7 +1048,7 @@ RDFContentSinkImpl::GetResourceAttribute(const PRUnichar** aAttributes,
           mDocumentURL->GetSpec(documentURL);
           rdf_MakeAbsoluteURI(NS_ConvertUTF8toUCS2(documentURL), uri);
 
-          return gRDFService->GetUnicodeResource(uri.get(), aResource);
+          return gRDFService->GetUnicodeResource(uri, aResource);
       }
   }
   return NS_ERROR_FAILURE;
@@ -1083,22 +1096,22 @@ RDFContentSinkImpl::AddProperties(const PRUnichar** aAttributes,
       nsAutoString v(aAttributes[1]);
       nsRDFParserUtils::StripAndConvert(v);
 
-      const PRUnichar* attrName;
-      attr->GetUnicode(&attrName);
+      const char* attrName;
+      attr->GetUTF8String(&attrName);
 
       nsCAutoString propertyStr;
     
       if (nameSpaceURI) {
         propertyStr.Assign(nsDependentCString(nameSpaceURI) + 
-                           NS_ConvertUCS2toUTF8(attrName));
+                           nsDependentCString(attrName));
       }
       else {
-        propertyStr.Assign(NS_ConvertUCS2toUTF8(attrName));
+        propertyStr.Assign(attrName);
       }
 
       // Add the assertion to RDF
       nsCOMPtr<nsIRDFResource> property;
-      gRDFService->GetResource(propertyStr.get(), getter_AddRefs(property));
+      gRDFService->GetResource(propertyStr, getter_AddRefs(property));
 
       nsCOMPtr<nsIRDFLiteral> target;
       gRDFService->GetLiteral(v.get(), getter_AddRefs(target));
@@ -1234,13 +1247,13 @@ RDFContentSinkImpl::OpenObject(const PRUnichar* aName,
         if (nameSpaceURI)
             typeStr = nameSpaceURI;
 
-        const PRUnichar *attrName;
-        tag->GetUnicode(&attrName);
+        const char* attrName;
+        tag->GetUTF8String(&attrName);
 
-        typeStr += NS_ConvertUCS2toUTF8(attrName);
+        typeStr += attrName;
 
         nsCOMPtr<nsIRDFResource> type;
-        rv = gRDFService->GetResource(typeStr.get(), getter_AddRefs(type));
+        rv = gRDFService->GetResource(typeStr, getter_AddRefs(type));
         if (NS_FAILED(rv)) return rv;
 
         rv = mDataSource->Assert(source, kRDF_type, type, PR_TRUE);
@@ -1266,20 +1279,20 @@ RDFContentSinkImpl::OpenProperty(const PRUnichar* aName, const PRUnichar** aAttr
     ParseTagString(aName, &nameSpaceURI, getter_AddRefs(tag));
 
 
-    const PRUnichar *attrName;
-    tag->GetUnicode(&attrName);
+    const char* attrName;
+    tag->GetUTF8String(&attrName);
 
     nsCAutoString propertyStr;
     if (nameSpaceURI) {
         propertyStr.Assign(nsDependentCString(nameSpaceURI) + 
-                           NS_ConvertUCS2toUTF8(attrName));
+                           nsDependentCString(attrName));
     }
     else {
-        propertyStr.Assign(NS_ConvertUCS2toUTF8(attrName));
+        propertyStr.Assign(attrName);
     }
 
     nsCOMPtr<nsIRDFResource> property;
-    rv = gRDFService->GetResource(propertyStr.get(), getter_AddRefs(property));
+    rv = gRDFService->GetResource(propertyStr, getter_AddRefs(property));
     if (NS_FAILED(rv)) return rv;
 
     // See if they've specified a 'resource' attribute, in which case
@@ -1445,17 +1458,14 @@ RDFContentSinkImpl::GetNameSpaceURI(nsIAtom* aPrefix, const char** aNameSpaceURI
 
 #ifdef PR_LOGGING
     if (PR_LOG_TEST(gLog, PR_LOG_ALWAYS)) {
-        nsAutoString prefixStr;
+        const char* prefixStr;
         if (aPrefix)
-            aPrefix->ToString(prefixStr);
-
-        char* prefixCStr = ToNewCString(prefixStr);
+            aPrefix->GetUTF8String(&prefixStr);
 
         PR_LOG(gLog, PR_LOG_ALWAYS,
                ("rdfxml: undeclared namespace prefix '%s'",
-                prefixCStr));
+                prefixStr));
 
-        nsCRT::free(prefixCStr);
     }
 #endif
 
@@ -1494,36 +1504,6 @@ RDFContentSinkImpl::ParseAttributeString(const nsAString& aAttributeName,
     return NS_OK;
 }
 
-// XXX Wish there was a better macro in nsCom.h...
-#if defined(XP_WIN)
-#define STDCALL __stdcall
-#elif defined(XP_OS2)
-#define STDCALL
-#else
-#define STDCALL
-#endif
-
-typedef nsresult (STDCALL nsIRDFContainerUtils::*nsContainerTestFn)(nsIRDFDataSource* aDataSource,
-                                                                    nsIRDFResource* aResource,
-                                                                    PRBool* aResult);
-
-typedef nsresult (STDCALL nsIRDFContainerUtils::*nsMakeContainerFn)(nsIRDFDataSource* aDataSource,
-                                                                    nsIRDFResource* aContainer,
-                                                                    nsIRDFContainer** aResult);
-
-struct ContainerInfo {
-    nsIRDFResource**  mType;
-    nsContainerTestFn mTestFn;
-    nsMakeContainerFn mMakeFn;
-};
-
-ContainerInfo gContainerInfo[] = {
-    { &RDFContentSinkImpl::kRDF_Alt, &nsIRDFContainerUtils::IsAlt, &nsIRDFContainerUtils::MakeAlt },
-    { &RDFContentSinkImpl::kRDF_Bag, &nsIRDFContainerUtils::IsBag, &nsIRDFContainerUtils::MakeBag },
-    { &RDFContentSinkImpl::kRDF_Seq, &nsIRDFContainerUtils::IsSeq, &nsIRDFContainerUtils::MakeSeq },
-    { 0, 0, 0 },
-};
-
 nsresult
 RDFContentSinkImpl::InitContainer(nsIRDFResource* aContainerType, nsIRDFResource* aContainer)
 {
@@ -1532,7 +1512,14 @@ RDFContentSinkImpl::InitContainer(nsIRDFResource* aContainerType, nsIRDFResource
     // new container vs. 'reinitialize' the container).
     nsresult rv;
 
-    for (ContainerInfo* info = gContainerInfo; info->mType != 0; ++info) {
+    static const ContainerInfo gContainerInfo[] = {
+        { &RDFContentSinkImpl::kRDF_Alt, &nsIRDFContainerUtils::IsAlt, &nsIRDFContainerUtils::MakeAlt },
+        { &RDFContentSinkImpl::kRDF_Bag, &nsIRDFContainerUtils::IsBag, &nsIRDFContainerUtils::MakeBag },
+        { &RDFContentSinkImpl::kRDF_Seq, &nsIRDFContainerUtils::IsSeq, &nsIRDFContainerUtils::MakeSeq },
+        { 0, 0, 0 },
+    };
+
+    for (const ContainerInfo* info = gContainerInfo; info->mType != 0; ++info) {
         if (*info->mType != aContainerType)
             continue;
 

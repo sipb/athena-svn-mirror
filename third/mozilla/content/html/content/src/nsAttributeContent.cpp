@@ -52,7 +52,6 @@
 #include "nsCRT.h"
 #include "nsIEventStateManager.h"
 #include "nsIPrivateDOMEvent.h"
-#include "nsISizeOfHandler.h"
 #include "nsIDOMEvent.h"
 #include "nsIDOMText.h"
 #include "nsIDOMScriptObjectFactory.h"
@@ -65,15 +64,6 @@
 #include "nsVoidArray.h"
 #include "nsINameSpaceManager.h"
 #include "nsITextContent.h"
-
-class nsIDOMAttr;
-class nsIDOMNodeList;
-class nsIFrame;
-class nsIStyleContext;
-class nsIStyleRule;
-class nsISupportsArray;
-class nsIDOMText;
-
 
 // XXX share all id's in this dir
 
@@ -166,7 +156,6 @@ public:
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const {  return NS_OK;  }
   NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const {  return NS_OK;  }
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
 #endif
   NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext,
                           nsEvent* aEvent,
@@ -242,16 +231,14 @@ public:
 nsresult
 NS_NewAttributeContent(nsIContent** aContent)
 {
-  NS_PRECONDITION(aContent, "null OUT ptr");
-  if (nsnull == aContent) {
-    return NS_ERROR_NULL_POINTER;
-  }
+  NS_ENSURE_ARG_POINTER(aContent);
+
   nsAttributeContent* it = new nsAttributeContent;
-  if (nsnull == it) {
+  if (!it) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
-  return NS_SUCCEEDED(it->QueryInterface(NS_GET_IID(nsIContent), (void **)aContent)) ?
-         NS_OK : NS_ERROR_FAILURE;
+
+  return CallQueryInterface(it, aContent);
 }
 
 //----------------------------------------------------------------------
@@ -259,7 +246,6 @@ NS_NewAttributeContent(nsIContent** aContent)
 nsAttributeContent::nsAttributeContent()
   : mText()
 {
-  NS_INIT_ISUPPORTS();
   mDocument = nsnull;
   mParent   = nsnull;
   mContent  = nsnull;
@@ -542,7 +528,7 @@ nsAttributeContent::CloneContent(PRBool aCloneText, nsITextContent** aReturn)
   if (nsnull == it) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
-  result = it->QueryInterface(NS_GET_IID(nsITextContent), (void**) aReturn);
+  result = CallQueryInterface(it, aReturn);
   if (NS_FAILED(result)) {
     return result;
   }
@@ -553,13 +539,3 @@ nsAttributeContent::CloneContent(PRBool aCloneText, nsITextContent** aReturn)
   it->mText = mText;
   return result;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsAttributeContent::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  if (!aResult) return NS_ERROR_NULL_POINTER;
-  *aResult = sizeof(*this);
-  return NS_OK;
-}
-#endif

@@ -17,7 +17,7 @@
         <children/>
       </xul:vbox>
           
-      <xul:hbox class="dialog-button-box" pack="end"
+      <xul:hbox class="dialog-button-box" pack="end" anonid="buttons"
                 xbl:inherits="pack=buttonpack,align=buttonalign,dir=buttondir,orient=buttonorient">
         <xul:button dlgtype="accept" class="dialog-button"/>
         <xul:button dlgtype="extra1" class="dialog-button" hidden="true" label=""/>
@@ -187,8 +187,13 @@
             var button = buttons[dlgtype];
             buttons[dlgtype].addEventListener("command", this._handleButtonCommand, true);
             // don't override custom labels with pre-defined labels on explicit buttons
-            if (!button.hasAttribute("label"))
+            if (!button.hasAttribute("label")) {
               button.setAttribute("label", this.mStrBundle.GetStringFromName("button-"+dlgtype));
+              var accessKey = this.mStrBundle.GetStringFromName("accesskey-"+dlgtype);
+              if (accessKey) {
+                button.setAttribute("accesskey", accessKey);
+              }
+            }
           }
           
           // ensure that hitting enter triggers ondialogaccept
@@ -286,8 +291,13 @@
       </method>
 
       <method name="_hitEnter">
+        <parameter name="evt"/>
         <body>
         <![CDATA[
+          var target = evt.originalTarget;
+          if ((target.localName == "textarea")&&(target.namespaceURI == "http://www.w3.org/1999/xhtml")) {
+            return;
+          }
           // if a button is focused, do nothing, so that activating the button 
           // doesn't cause the dialog to exit
           if (!this.enterDefaultAlways) {
@@ -307,8 +317,8 @@
     </implementation>
     
     <handlers>
-      <handler event="keypress" keycode="VK_ENTER" action="this._hitEnter();"/>
-      <handler event="keypress" keycode="VK_RETURN" action="this._hitEnter();"/>
+      <handler event="keypress" keycode="VK_ENTER" action="this._hitEnter(event);"/>
+      <handler event="keypress" keycode="VK_RETURN" action="this._hitEnter(event);"/>
       <handler event="keypress" keycode="VK_ESCAPE" action="this.cancelDialog();"/>
     </handlers>
 

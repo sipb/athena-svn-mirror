@@ -223,14 +223,12 @@ nsHistoryController.prototype =
             if (!gGlobalHistory)
                 gGlobalHistory = Components.classes["@mozilla.org/browser/global-history;1"].getService(Components.interfaces.nsIBrowserHistory);
             gGlobalHistory.removePagesFromHost(gLastHostname, false)
-            gHistoryTree.builder.rebuild();
             return true;
 
         case "cmd_deleteByDomain":
             if (!gGlobalHistory)
                 gGlobalHistory = Components.classes["@mozilla.org/browser/global-history;1"].getService(Components.interfaces.nsIBrowserHistory);
             gGlobalHistory.removePagesFromHost(gLastDomain, true)
-            gHistoryTree.builder.rebuild();
             return true;
 
         default:
@@ -278,7 +276,22 @@ function OpenURL(aInNewWindow)
     var currentIndex = gHistoryTree.currentIndex;     
     var builder = gHistoryTree.builder.QueryInterface(Components.interfaces.nsIXULTreeBuilder);
     var url = builder.getResourceAtIndex(currentIndex).Value;
-    
+    var uri = Components.classes["@mozilla.org/network/standard-url;1"].
+                createInstance(Components.interfaces.nsIURI);
+    uri.spec = url;
+    if (uri.schemeIs("javascript") || uri.schemeIs("data")) {
+      var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"]
+                                       .getService(Components.interfaces.nsIStringBundleService);
+      var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                                    .getService(Components.interfaces.nsIPromptService);
+      var historyBundle = strBundleService.createBundle("chrome://communicator/locale/history/history.properties");
+      var brandBundle = strBundleService.createBundle("chrome://global/locale/brand.properties");      
+      var brandStr = brandBundle.GetStringFromName("brandShortName");
+      var errorStr = historyBundle.GetStringFromName("load-js-data-url-error");
+      promptService.alert(window, brandStr, errorStr);
+      return false;
+    }
+
     if (aInNewWindow) {
       var count = gHistoryTree.treeBoxObject.view.selection.count;
       if (count == 1) {
@@ -417,10 +430,14 @@ function updateItems()
         bookmarkItem.setAttribute("hidden", "true");
         copyLocationItem.setAttribute("hidden", "true");
         sep1.setAttribute("hidden", "true");
-        if (isContainerOpen(gHistoryTree, currentIndex))
+        if (isContainerOpen(gHistoryTree, currentIndex)) {
           collapseExpandItem.setAttribute("label", gHistoryBundle.getString("collapseLabel"));
-        else
+          collapseExpandItem.setAttribute("accesskey", gHistoryBundle.getString("collapseAccesskey"));
+        }
+        else {
           collapseExpandItem.setAttribute("label", gHistoryBundle.getString("expandLabel"));
+          collapseExpandItem.setAttribute("accesskey", gHistoryBundle.getString("expandAccesskey"));          
+        }
         return true;
     }
     collapseExpandItem.setAttribute("hidden", "true");

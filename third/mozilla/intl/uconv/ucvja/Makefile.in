@@ -35,6 +35,7 @@ MODULE_NAME	= nsUCvJAModule
 REQUIRES	= xpcom \
 		  string \
 		  uconv \
+		  pref \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -45,9 +46,14 @@ CPPSRCS		= \
 		nsUnicodeToEUCJP.cpp \
 		nsUnicodeToISO2022JP.cpp \
 		nsUnicodeToJISx0201.cpp \
+		$(NULL)
+
+ifdef MOZ_EXTRA_X11CONVERTERS
+CPPSRCS		+= \
 		nsUnicodeToJISx0208.cpp \
 		nsUnicodeToJISx0212.cpp \
 		$(NULL)
+endif
 
 EXPORTS		= \
 		nsUCVJACID.h \

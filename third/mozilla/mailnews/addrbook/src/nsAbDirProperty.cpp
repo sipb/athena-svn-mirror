@@ -47,7 +47,8 @@
 #include "nsCOMPtr.h"
 #include "nsAbBaseCID.h"
 #include "nsIAbCard.h"
-
+#include "nsDirPrefs.h"
+#include "prmem.h"
 #include "rdf.h"
 
 #include "mdb.h"
@@ -55,8 +56,6 @@
 nsAbDirProperty::nsAbDirProperty(void)
   : m_LastModifiedDate(0)
 {
-	NS_INIT_ISUPPORTS();
-
 	m_IsMailList = PR_FALSE;
 }
 
@@ -84,6 +83,7 @@ NS_IMETHODIMP nsAbDirProperty::GetOperations(PRInt32 *aOperations)
   // Default is to support all operations.
   // Inheriting implementations may override
   // to reduce supported operations
+  NS_ENSURE_ARG_POINTER(aOperations);
 	*aOperations = nsIAbDirectory::opRead |
 		nsIAbDirectory::opWrite |
 		nsIAbDirectory::opSearch;
@@ -225,6 +225,11 @@ nsAbDirProperty::GetChildCards(nsIEnumerator **childCards)
 { return NS_ERROR_NOT_IMPLEMENTED; }
 
 NS_IMETHODIMP
+nsAbDirProperty::ModifyDirectory(nsIAbDirectory *directory, nsIAbDirectoryProperties *aProperties)
+{ return NS_ERROR_NOT_IMPLEMENTED; }
+
+
+NS_IMETHODIMP
 nsAbDirProperty::DeleteDirectory(nsIAbDirectory *dierctory)
 { return NS_ERROR_NOT_IMPLEMENTED; }
 
@@ -282,6 +287,13 @@ NS_IMETHODIMP nsAbDirProperty::GetIsRemote(PRBool *aIsRemote)
   return NS_OK;
 }
 
+NS_IMETHODIMP nsAbDirProperty::GetIsSecure(PRBool *aIsSecure)
+{
+  NS_ENSURE_ARG_POINTER(aIsSecure);
+  *aIsSecure = PR_FALSE;
+  return NS_OK;
+}
+
 NS_IMETHODIMP nsAbDirProperty::GetSearchDuringLocalAutocomplete(PRBool *aSearchDuringLocalAutocomplete)
 {
   NS_ENSURE_ARG_POINTER(aSearchDuringLocalAutocomplete);
@@ -289,11 +301,85 @@ NS_IMETHODIMP nsAbDirProperty::GetSearchDuringLocalAutocomplete(PRBool *aSearchD
   return NS_OK;
 }
 
+NS_IMETHODIMP nsAbDirProperty::GetDirPrefId(nsACString &aDirPrefId)
+{
+  aDirPrefId = m_DirPrefId;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirProperty::SetDirPrefId(const nsACString &aDirPrefId)
+{
+  m_DirPrefId.Assign(aDirPrefId);
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirProperty::GetDirectoryProperties(nsIAbDirectoryProperties **aDirectoryProperties)
+{
+  NS_ENSURE_ARG_POINTER(aDirectoryProperties);
+
+  nsresult rv;
+  DIR_Server *server = (DIR_Server *)PR_Malloc(sizeof(DIR_Server));
+  if (!server)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  DIR_InitServer(server);
+  nsCAutoString prefId;
+  rv = GetDirPrefId(prefId);
+
+  if (NS_SUCCEEDED(rv)) {
+    server->prefName = nsCRT::strdup(prefId.get());
+    DIR_GetPrefsForOneServer(server, PR_FALSE, PR_FALSE);
+
+    // Now create the obj and move info in DIR_Server to it.
+    nsCOMPtr<nsIAbDirectoryProperties> properties = do_CreateInstance(NS_ABDIRECTORYPROPERTIES_CONTRACTID, &rv);
+
+    if (NS_SUCCEEDED(rv)) {
+      NS_ConvertUTF8toUCS2 description (server->description);
+
+      rv = properties->SetDescription(description);
+
+      if (NS_SUCCEEDED(rv))
+        rv = properties->SetFileName(server->fileName);
+
+      if (NS_SUCCEEDED(rv))
+        rv = properties->SetPrefName(server->prefName);
+
+      if (NS_SUCCEEDED(rv))
+        rv = properties->SetURI(server->uri);
+
+      if (NS_SUCCEEDED(rv))
+        rv = properties->SetDirType(server->dirType);
+
+      if (NS_SUCCEEDED(rv))
+        rv = properties->SetMaxHits(server->maxHits);
+
+      if (NS_SUCCEEDED(rv))
+        rv = properties->SetAuthDn(server->authDn);
+
+      if (NS_SUCCEEDED(rv))
+        rv = properties->SetCategoryId(server->PalmCategoryId);
+
+      if (NS_SUCCEEDED(rv))
+        rv = properties->SetSyncTimeStamp(server->PalmSyncTimeStamp);
+
+      if (NS_SUCCEEDED(rv))
+        NS_ADDREF(*aDirectoryProperties = properties);
+    }
+  }
+
+  DIR_DeleteServer(server);
+  NS_ASSERTION(NS_SUCCEEDED(rv), "nsAbDirProperty::GetDirPrefId failed!");
+  return rv;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 nsAbDirectoryProperties::nsAbDirectoryProperties(void)
 {
-  NS_INIT_ISUPPORTS();
+  mDirType = LDAPDirectory;
+  mMaxHits = 0;
+  mSyncTimeStamp = 0;
+  mCategoryId = -1;
 }
 
 nsAbDirectoryProperties::~nsAbDirectoryProperties(void)
@@ -346,17 +432,80 @@ nsAbDirectoryProperties::GetFileName(char **aFileName)
   return NS_OK;
 }
 
-NS_IMETHODIMP 
-nsAbDirectoryProperties::SetPrefName(const char *aPrefName)
+NS_IMETHODIMP nsAbDirectoryProperties::SetPrefName(const char *aPrefName)
 {
   mPrefName = aPrefName;
   return NS_OK;
 }
 
-NS_IMETHODIMP 
-nsAbDirectoryProperties::GetPrefName(char **aPrefName)
+NS_IMETHODIMP nsAbDirectoryProperties::GetPrefName(char **aPrefName)
 {
   NS_ENSURE_ARG_POINTER(aPrefName);
   *aPrefName = ToNewCString(mPrefName);
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::SetDirType(PRUint32 aDirType)
+{
+  mDirType = aDirType;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::GetDirType(PRUint32 *aDirType)
+{
+  NS_ENSURE_ARG_POINTER(aDirType);
+  *aDirType = mDirType;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::SetMaxHits(PRUint32 aMaxHits)
+{
+  mMaxHits = aMaxHits;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::GetMaxHits(PRUint32 *aMaxHits)
+{
+  NS_ENSURE_ARG_POINTER(aMaxHits);
+  *aMaxHits = mMaxHits;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::SetAuthDn(const char *aAuthDn)
+{
+  mAuthDn = aAuthDn;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::GetAuthDn(char **aAuthDn)
+{
+  NS_ENSURE_ARG_POINTER(aAuthDn);
+  *aAuthDn = ToNewCString(mAuthDn);
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::SetCategoryId(PRInt32 aCategoryId)
+{
+  mCategoryId = aCategoryId;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::GetCategoryId(PRInt32 *aCategoryId)
+{
+  NS_ENSURE_ARG_POINTER(aCategoryId);
+  *aCategoryId = mCategoryId;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::SetSyncTimeStamp(PRUint32 aSyncTimeStamp)
+{
+  mSyncTimeStamp = aSyncTimeStamp;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbDirectoryProperties::GetSyncTimeStamp(PRUint32 *aSyncTimeStamp)
+{
+  NS_ENSURE_ARG_POINTER(aSyncTimeStamp);
+  *aSyncTimeStamp = mSyncTimeStamp;
   return NS_OK;
 }

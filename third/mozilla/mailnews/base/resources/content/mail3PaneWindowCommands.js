@@ -34,7 +34,7 @@ var FolderPaneController =
 		{
 			case "cmd_delete":
 			case "button_delete":
-			case "cmd_selectAll":
+			//case "cmd_selectAll": the folder pane currently only handles single selection
 			case "cmd_cut":
 			case "cmd_copy":
 			case "cmd_paste":
@@ -52,15 +52,6 @@ var FolderPaneController =
 
 		switch ( command )
 		{
-			case "cmd_selectAll":
-                                // the folder pane (currently)
-                                // only handles single selection
-                                // so we forward cmd_selectAll to the thread pane
-                                // if there is no gDBView,
-                                // don't bother sending the command to the thread pane
-                                // this can happen when we've selected a server
-                                // and account central is displayed
-                                return (gDBView != null);
 			case "cmd_cut":
 			case "cmd_copy":
 			case "cmd_paste":
@@ -93,7 +84,9 @@ var FolderPaneController =
 				catch (ex) {
 					//dump("specialFolder failure: " + ex + "\n");
 				} 
-        if (specialFolder == "Inbox" || specialFolder == "Trash" || specialFolder == "Drafts" || specialFolder == "Sent" || specialFolder == "Templates" || specialFolder == "Unsent Messages" || isServer == "true")
+        if (specialFolder == "Inbox" || specialFolder == "Trash" || specialFolder == "Drafts" ||
+            specialFolder == "Sent" || specialFolder == "Templates" || specialFolder == "Unsent Messages" ||
+            (specialFolder == "Junk" && !CanRenameDeleteJunkMail(GetSelectedFolderURI())) || isServer == "true")
           canDeleteThisFolder = false;
         else
           canDeleteThisFolder = true;
@@ -119,12 +112,6 @@ var FolderPaneController =
 			case "button_delete":
 				MsgDeleteFolder();
 				break;
-			case "cmd_selectAll":
-                                // the folder pane (currently)
-                                // only handles single selection
-                                // so we forward select all to the thread pane
-                                SendCommandToThreadPane(command);
-                                break;
 		}
 	},
 	
@@ -135,67 +122,6 @@ var FolderPaneController =
         {
 			goSetMenuValue('cmd_delete', 'valueDefault');
         }
-	}
-};
-
-
-// Controller object for thread pane
-var ThreadPaneController =
-{
-   supportsCommand: function(command)
-	{
-		switch ( command )
-		{
-			case "cmd_selectAll":
-			case "cmd_cut":
-			case "cmd_copy":
-			case "cmd_paste":
-				return true;
-				
-			default:
-				return false;
-		}
-	},
-
-	isCommandEnabled: function(command)
-	{
-		switch ( command )
-		{
-			case "cmd_selectAll":
-				return true;
-			
-			case "cmd_cut":
-			case "cmd_copy":
-			case "cmd_paste":
-				return false;
-
-			default:
-				return false;
-		}
-	},
-
-	doCommand: function(command)
-	{
-    // if the user invoked a key short cut then it is possible that we got here for a command which is
-    // really disabled. kick out if the command should be disabled.
-    if (!this.isCommandEnabled(command)) return;
-    if (!gDBView) return;
-
-		switch ( command )
-		{
-			case "cmd_selectAll":
-                // if in threaded mode, the view will expand all before selecting all
-                gDBView.doCommand(nsMsgViewCommandType.selectAll)
-                if (gDBView.numSelected != 1) {
-                    setTitleFromFolder(gDBView.msgFolder,null);
-                    ClearMessagePane();
-                }
-                break;
-		}
-	},
-	
-	onEvent: function(event)
-	{
 	}
 };
 
@@ -251,7 +177,7 @@ var DefaultController =
 			case "cmd_printSetup":
 			case "cmd_saveAsFile":
 			case "cmd_saveAsTemplate":
-            case "cmd_properties":
+      case "cmd_properties":
 			case "cmd_viewPageSource":
 			case "cmd_setFolderCharset":
 			case "cmd_reload":
@@ -268,6 +194,11 @@ var DefaultController =
 			case "cmd_markAllRead":
 			case "cmd_markThreadAsRead":
 			case "cmd_markAsFlagged":
+			case "cmd_markAsJunk":
+			case "cmd_markAsNotJunk":
+      case "cmd_applyFilters":
+      case "cmd_runJunkControls":
+      case "cmd_deleteJunk":
       case "cmd_label0":
       case "cmd_label1":
       case "cmd_label2":
@@ -281,6 +212,7 @@ var DefaultController =
 			case "cmd_sortByThread":
   	  case "cmd_settingsOffline":
       case "cmd_close":
+      case "cmd_selectAll":
       case "cmd_selectThread":
 				return true;
       case "cmd_downloadFlagged":
@@ -321,6 +253,7 @@ var DefaultController =
           gDBView.getCommandStatus(nsMsgViewCommandType.deleteNoTrash, enabled, checkStatus);
         return enabled.value;
       case "button_junk":
+        UpdateJunkToolbarButton();
         if (gDBView)
           gDBView.getCommandStatus(nsMsgViewCommandType.junk, enabled, checkStatus);
         return enabled.value;
@@ -380,6 +313,22 @@ var DefaultController =
       case "button_file":
       case "cmd_file":
         return (GetNumSelectedMessages() > 0 );
+      case "cmd_markAsJunk":
+      case "cmd_markAsNotJunk":
+        // can't do news on junk yet.
+        return (GetNumSelectedMessages() > 0 && !isNewsURI(GetFirstSelectedMessage()));
+      case "cmd_applyFilters":
+        if (gDBView)
+          gDBView.getCommandStatus(nsMsgViewCommandType.applyFilters, enabled, checkStatus);
+        return enabled.value;
+      case "cmd_runJunkControls":
+        if (gDBView)
+          gDBView.getCommandStatus(nsMsgViewCommandType.runJunkControls, enabled, checkStatus);
+        return enabled.value;
+      case "cmd_deleteJunk":
+        if (gDBView)
+          gDBView.getCommandStatus(nsMsgViewCommandType.deleteJunk, enabled, checkStatus);
+        return enabled.value;
       case "button_mark":
       case "cmd_markAsRead":
       case "cmd_markThreadAsRead":
@@ -407,6 +356,8 @@ var DefaultController =
         break;
       case "cmd_search":
         return IsCanSearchMessagesEnabled();
+      case "cmd_selectAll":
+        return gDBView != null;
       // these are enabled on when we are in threaded mode
       case "cmd_selectThread":
         if (GetNumSelectedMessages() <= 0) return false;
@@ -425,6 +376,7 @@ var DefaultController =
       case "cmd_viewThreadsWithUnread":
       case "cmd_viewWatchedThreadsWithUnread":
       case "cmd_viewIgnoredThreads":
+        return gDBView;
       case "cmd_stop":
         return true;
       case "cmd_undo":
@@ -616,11 +568,12 @@ var DefaultController =
 			case "cmd_findPrev":
 				MsgFindAgain(true);
 				return;
-            case "cmd_properties":
-                MsgFolderProperties();
-                return;
+      case "cmd_properties":
+        MsgFolderProperties();
+        return;
       case "cmd_search":
         MsgSearchMessages();
+        return;
       case "button_mark":
 			case "cmd_markAsRead":
 				MsgMarkMsgAsRead(null);
@@ -629,7 +582,7 @@ var DefaultController =
 				MsgMarkThreadAsRead();
 				return;
 			case "cmd_markAllRead":
-                gDBView.doCommand(nsMsgViewCommandType.markAllRead);
+        gDBView.doCommand(nsMsgViewCommandType.markAllRead);
 				return;
       case "button_junk":
         MsgJunk();
@@ -640,6 +593,21 @@ var DefaultController =
 			case "cmd_markAsFlagged":
 				MsgMarkAsFlagged(null);
 				return;
+			case "cmd_markAsJunk":
+        JunkSelectedMessages(true);
+				return;
+			case "cmd_markAsNotJunk":
+        JunkSelectedMessages(false);
+				return;
+      case "cmd_applyFilters":
+        MsgApplyFilters(null);
+        return;
+      case "cmd_runJunkControls":
+        analyzeFolderForJunk();
+        return;
+      case "cmd_deleteJunk":
+        deleteJunkInFolder();
+        return;
       case "cmd_label0":
         gDBView.doCommand(nsMsgViewCommandType.label0);
  				return;
@@ -675,6 +643,16 @@ var DefaultController =
                 break;
             case "cmd_settingsOffline":
                 MsgSettingsOffline();
+                break;
+            case "cmd_selectAll":
+                // move the focus so the user can delete the newly selected messages, not the folder
+                SetFocusThreadPane();
+                // if in threaded mode, the view will expand all before selecting all
+                gDBView.doCommand(nsMsgViewCommandType.selectAll)
+                if (gDBView.numSelected != 1) {
+                    setTitleFromFolder(gDBView.msgFolder,null);
+                    ClearMessagePane();
+                }
                 break;
             case "cmd_selectThread":
                 gDBView.doCommand(nsMsgViewCommandType.selectThread);
@@ -753,6 +731,9 @@ function FocusRingUpdate_Mail()
     gLastFocusedElement = currentFocusedElement;
 
     // since we just changed the pane with focus we need to update the toolbar to reflect this
+    // XXX TODO
+    // can we optimize
+    // and just update cmd_delete and button_delete?
     UpdateMailToolbar("focus");
   }
 }
@@ -790,11 +771,6 @@ function SetupCommandUpdateHandlers()
 	if ( widget )
 		widget.controllers.appendController(FolderPaneController);
 	
-	// thread pane
-	widget = GetThreadTree();
-	if ( widget )
-        widget.controllers.appendController(ThreadPaneController);
-		
 	top.controllers.insertControllerAt(0, DefaultController);
 }
 
@@ -873,32 +849,28 @@ function IsPropertiesEnabled(command)
 {
    try 
    {
-      var serverType;
       var folderTree = GetFolderTree();
       var folderResource = GetSelectedFolderResource();
-      
-      serverType = GetFolderAttribute(folderTree, folderResource, "ServerType");
-   
-      switch (serverType)
-      {
-        case "none":
-        case "imap":
-        case "pop3":
-          goSetMenuValue(command, 'valueFolder');
-          break;
-        case "nntp":
-          goSetMenuValue(command, 'valueNewsgroup');
-          break
-        default:
-          goSetMenuValue(command, 'valueGeneric');
-      }
+
+      // when servers are selected
+      // it should be "Edit | Properties..."
+      if (GetFolderAttribute(folderTree, folderResource, "IsServer") == "true")
+        goSetMenuValue(command, "valueGeneric");
+      else 
+        goSetMenuValue(command, isNewsURI(folderResource.Value) ? "valueNewsgroup" : "valueFolder");
    }
    catch (ex) 
    {
-      //properties menu failure
+      // properties menu failure
    }
-  return IsFolderSelected();
-  
+
+   // properties should be enabled for folders and servers
+   // but not fake accounts
+   if (IsFakeAccount())
+     return false;
+
+   var selection = folderTree.treeBoxObject.selection;
+   return (selection.count == 1);
 }
 
 function IsViewNavigationItemEnabled()
@@ -943,7 +915,8 @@ function MsgDeleteFolder()
             // do not allow deletion of special folders on imap accounts
             if ((specialFolder == "Sent" || 
                 specialFolder == "Drafts" || 
-                specialFolder == "Templates") &&
+                specialFolder == "Templates" ||
+                (specialFolder == "Junk" && !CanRenameDeleteJunkMail(GetSelectedFolderURI()))) &&
                 !protocolInfo.specialFoldersDeletionAllowed)
             {
                 var errorMessage = gMessengerBundle.getFormattedString("specialFolderDeletionErr",
@@ -1144,12 +1117,34 @@ function IsFakeAccount() {
   return false;
 }
 
-function SendCommandToThreadPane(command)
+//
+// This function checks if the configured junk mail can be renamed or deleted.
+//
+function CanRenameDeleteJunkMail(aFolderUri)
 {
-  ThreadPaneController.doCommand(command);
+  if (!aFolderUri)
+    return false;
 
-  // if we are sending the command so the thread pane
-  // we should focus the thread pane
-  SetFocusThreadPane();
+  // Go through junk mail settings for all servers and see if the folder is set/used by anyone.
+  try
+  {
+    var allServers = accountManager.allServers;
+
+    for (var i=0;i<allServers.Count();i++)
+    {
+      var currentServer = allServers.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgIncomingServer);
+      var settings = currentServer.spamSettings;
+      // If junk mail control or move junk mail to folder option is disabled then
+      // allow the folder to be removed/renamed since the folder is not used in this case.
+      if (!settings.level || !settings.moveOnSpam)
+        continue;
+      if (settings.spamFolderURI == aFolderUri)
+        return false;
+    }
+  }
+  catch(ex)
+  {
+      dump("Can't get all servers\n");
+  }
+  return true;
 }
-

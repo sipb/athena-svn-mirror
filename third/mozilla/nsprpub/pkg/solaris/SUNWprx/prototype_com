@@ -2,7 +2,7 @@
 # Copyright 2002 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-#ident	"$Id: prototype_com,v 1.1.1.1 2003-07-08 16:59:50 rbasch Exp $"
+#ident	"$Id: prototype_com,v 1.1.2.1 2003-07-14 19:04:06 ghudson Exp $"
 #
 # This required package information file contains a list of package contents.
 # The 'pkgmk' command uses this file to identify the contents of a package

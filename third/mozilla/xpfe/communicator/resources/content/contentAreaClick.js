@@ -111,10 +111,7 @@
     }
   }
   
-  // Called whenever the user clicks in the content area,
-  // except when left-clicking on links (special case)
-  // should always return true for click to go through
-  function contentAreaClick(event) 
+  function hrefForClickEvent(event)
   {
     var target = event.target;
     var linkNode;
@@ -124,6 +121,8 @@
     if (local_name) {
       local_name = local_name.toLowerCase();
     }
+    
+    var isKeyPress = (event.type == "keypress");
 
     switch (local_name) {
       case "a":
@@ -133,7 +132,8 @@
           linkNode = target;
         break;
       case "input":
-        if ((event.target.type.toLowerCase() == "text" || event.target.type == "") // text field
+        if ((event.target.type == "text") // text field
+            && !isKeyPress       // not a key event
             && event.detail == 2 // double click
             && event.button == 0 // left mouse button
             && event.target.value.length == 0) { // no text has been entered
@@ -148,12 +148,11 @@
           linkNode = null;
         break;
     }
+    var href;
     if (linkNode) {
-      handleLinkClick(event, linkNode.href, linkNode);
-      return true;
+      href = linkNode.href;
     } else {
       // Try simple XLink
-      var href;
       linkNode = target;
       while (linkNode) {
         if (linkNode.nodeType == Node.ELEMENT_NODE) {
@@ -164,11 +163,30 @@
       }
       if (href && href != "") {
         href = makeURLAbsolute(target.baseURI,href);
-        handleLinkClick(event, href, null);
-        return true;
       }
     }
-    if (pref && event.button == 1 &&
+    return href;
+  }
+
+  // Called whenever the user clicks in the content area,
+  // except when left-clicking on links (special case)
+  // should always return true for click to go through
+  function contentAreaClick(event) 
+  {
+    var isKeyPress = (event.type == "keypress");
+    var href = hrefForClickEvent(event);
+    if (href) {
+      if (isKeyPress) {
+        openNewTabWith(href, true, event.shiftKey);
+        event.preventBubble();
+      }
+      else {
+        handleLinkClick(event, href, null);
+      }
+      return true;
+    }
+
+    if (pref && !isKeyPress && event.button == 1 &&
         !findParentNode(event.originalTarget, "scrollbar") &&
         pref.getBoolPref("middlemouse.contentLoadURL")) {
       if (middleMousePaste(event)) {
@@ -178,24 +196,18 @@
     return true;
   }
 
-  function openNewTabOrWindow(event, href)
+  function openNewTabOrWindow(event, href, sendReferrer)
   {
     // should we open it in a new tab?
-    if (pref && pref.getBoolPref("browser.tabs.opentabfor.middleclick") &&
-        ("getBrowser" in window) && getBrowser().localName == "tabbrowser") {
-      var loadInBackground = pref.getBoolPref("browser.tabs.loadInBackground");
-      if (event.shiftKey)
-        loadInBackground = !loadInBackground;
-      var theTab = getBrowser().addTab(href, getReferrer(document));
-      if (!loadInBackground)
-        getBrowser().selectedTab = theTab;
+    if (pref && pref.getBoolPref("browser.tabs.opentabfor.middleclick")) {
+      openNewTabWith(href, sendReferrer, event.shiftKey);
       event.preventBubble();
       return true;
     }
 
     // should we open it in a new window?
     if (pref && pref.getBoolPref("middlemouse.openNewWindow")) {
-      openNewWindowWith(href);
+      openNewWindowWith(href, sendReferrer);
       event.preventBubble();
       return true;
     }
@@ -212,7 +224,7 @@
     switch (event.button) {                                   
       case 0:                                                         // if left button clicked
         if (event.metaKey || event.ctrlKey) {                         // and meta or ctrl are down
-          if (openNewTabOrWindow(event, href))
+          if (openNewTabOrWindow(event, href, true))
             return true;
         } 
         var saveModifier = true;
@@ -233,7 +245,7 @@
           return true;                                                // do nothing
         return false;
       case 1:                                                         // if middle button clicked
-        if (openNewTabOrWindow(event, href))
+        if (openNewTabOrWindow(event, href, true))
           return true;
         break;
     }
@@ -249,11 +261,14 @@
     if (!url)
       return false;
 
-    // On ctrl-middleclick, open in new window or tab.
+    // On ctrl-middleclick, open in new window or tab.  Do not send referrer.
     if (event.ctrlKey)
-      return openNewTabOrWindow(event, url);
+      return openNewTabOrWindow(event, url, false);
 
     // If ctrl wasn't down, then just load the url in the current win/tab.
+    if (url != "about:blank") {
+      gURLBar.value = url;
+    }
     loadURI(url);
     event.preventBubble();
     return true;

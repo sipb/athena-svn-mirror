@@ -22,6 +22,7 @@
  * Original Author: Eric Vaughan (evaughan@netscape.com)
  *
  * Contributor(s):
+ *           Aaron Leventhal (aaronl@netscape.com)
  *           Kyle Yuan (kyle.yuan@sun.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -40,32 +41,28 @@
 #ifndef __nsHTMLSelectAccessible_h__
 #define __nsHTMLSelectAccessible_h__
 
-#include "nsCOMPtr.h"
 #include "nsIAccessibleSelectable.h"
-#include "nsIDOMHTMLCollection.h"
+#include "nsIDOMHTMLOptionsCollection.h"
 #include "nsIDOMHTMLOptionElement.h"
 #include "nsIDOMNode.h"
-#include "nsIWeakReference.h"
-#include "nsSelectAccessible.h"
+#include "nsFormControlAccessible.h"
+#include "nsIAccessibilityService.h"
 
 /**
-  * Selects, Listboxes and Comboboxes, are made up of a number of different
-  *  widgets, some of which are shared between the two. This file contains   *  all of the widgets for both of the Selects, for HTML only. Some of them
-  *  extend classes from nsSelectAccessible.cpp, which contains base classes 
-  *  that are also extended by the XUL Select Accessibility support.
+  *  Selects, Listboxes and Comboboxes, are made up of a number of different
+  *  widgets, some of which are shared between the two. This file contains
+	*  all of the widgets for both of the Selects, for HTML only.
   *
   *  Listbox:
-  *     - nsHTMLListboxAccessible
-  *        - nsHTMLSelectListAccessible
-  *           - nsHTMLSelectOptionAccessible
+  *     - nsHTMLSelectListAccessible
+  *        - nsHTMLSelectOptionAccessible
   *
   *  Comboboxes:
   *     - nsHTMLComboboxAccessible
   *        - nsHTMLComboboxTextFieldAccessible
   *        - nsHTMLComboboxButtonAccessible
-  *        - nsHTMLComboboxWindowAccessible
-  *           - nsHTMLSelectListAccessible
-  *              - nsHTMLSelectOptionAccessible(s)
+  *        - nsHTMLComboboxListAccessible  [ inserted in accessible tree ]
+  *           - nsHTMLSelectOptionAccessible(s)
   */
 
 /** ------------------------------------------------------ */
@@ -73,9 +70,9 @@
 /** ------------------------------------------------------ */
 
 /*
- * The basic implemetation of nsIAccessibleSelectable.
+ * The HTML implementation of nsIAccessibleSelectable.
  */
-class nsHTMLSelectableAccessible : public nsAccessible,
+class nsHTMLSelectableAccessible : public nsAccessibleWrap,
                                    public nsIAccessibleSelectable
 {
 public:
@@ -96,12 +93,14 @@ protected:
     PRUint32 mLength;
     PRUint32 mIndex;
     PRInt32 mSelCount;
-    nsHTMLSelectableAccessible *mParent;
-    nsCOMPtr<nsIDOMHTMLCollection> mOptions;
+    nsCOMPtr<nsIDOMHTMLOptionsCollection> mOptions;
     nsCOMPtr<nsIDOMHTMLOptionElement> mOption;
+    nsCOMPtr<nsIWeakReference> mWeakShell;
+    nsHTMLSelectableAccessible *mParentSelect;
 
   public:
-    iterator(nsHTMLSelectableAccessible *aParent);
+    void Shutdown();
+    iterator(nsHTMLSelectableAccessible *aParent, nsIWeakReference *aWeakShell);
 
     void CalcSelectionCount(PRInt32 *aSelectionCount);
     void Select(PRBool aSelect);
@@ -117,28 +116,29 @@ protected:
 /*
  * The list that contains all the options in the select.
  */
-class nsHTMLSelectListAccessible : public nsSelectListAccessible
+class nsHTMLSelectListAccessible : public nsHTMLSelectableAccessible
 {
 public:
   
-  nsHTMLSelectListAccessible(nsIAccessible* aParent, nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
+  nsHTMLSelectListAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
   virtual ~nsHTMLSelectListAccessible() {}
 
   /* ----- nsIAccessible ----- */
+  NS_IMETHOD GetAccRole(PRUint32 *aAccRole);
   NS_IMETHOD GetAccState(PRUint32 *_retval);
-  NS_IMETHOD GetAccLastChild(nsIAccessible **_retval);
+  NS_IMETHOD GetAccFirstChild(nsIAccessible **aAccFirstChild);
+  NS_IMETHOD GetAccLastChild(nsIAccessible **aAccFirstChild);
   NS_IMETHOD GetAccChildCount(PRInt32 *aAccChildCount) ;
-
 };
 
 /*
  * Options inside the select, contained within the list
  */
-class nsHTMLSelectOptionAccessible : public nsSelectOptionAccessible
+class nsHTMLSelectOptionAccessible : public nsLeafAccessible
 {
 public:
   
-  nsHTMLSelectOptionAccessible(nsIAccessible* aParent, nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
+  nsHTMLSelectOptionAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
   virtual ~nsHTMLSelectOptionAccessible() {}
 
   /* ----- nsIAccessible ----- */
@@ -148,8 +148,10 @@ public:
   NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
   NS_IMETHOD GetAccPreviousSibling(nsIAccessible **_retval);
   NS_IMETHOD GetAccState(PRUint32 *_retval);
-  static nsresult GetFocusedOptionNode(nsIDOMNode *aListNode, nsCOMPtr<nsIDOMNode>& aFocusedOptionNode);
-
+  NS_IMETHOD GetAccRole(PRUint32 *aAccRole);
+  NS_IMETHOD GetAccParent(nsIAccessible **aParent);
+  NS_IMETHOD GetAccName(nsAString& aName);
+  static nsresult GetFocusedOptionNode(nsIDOMNode *aListNode, nsIDOMNode **aFocusedOptionNode);
 };
 
 /*
@@ -159,7 +161,7 @@ class nsHTMLSelectOptGroupAccessible : public nsHTMLSelectOptionAccessible
 {
 public:
 
-  nsHTMLSelectOptGroupAccessible(nsIAccessible* aParent, nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
+  nsHTMLSelectOptGroupAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
   virtual ~nsHTMLSelectOptGroupAccessible() {}
 
   /* ----- nsIAccessible ----- */
@@ -167,32 +169,6 @@ public:
   NS_IMETHOD AccDoAction(PRUint8 index);  
   NS_IMETHOD GetAccActionName(PRUint8 index, nsAString& _retval);
   NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
-
-};
-
-/** ------------------------------------------------------ */
-/**  Secondly, the Listbox widget                          */
-/** ------------------------------------------------------ */
-
-/*
- * A class the represents the HTML Listbox widget.
- */
-class nsHTMLListboxAccessible : public nsHTMLSelectableAccessible
-{
-public:
-
-  nsHTMLListboxAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
-  virtual ~nsHTMLListboxAccessible() {}
-
-  /* ----- nsIAccessible ----- */
-  NS_IMETHOD GetAccRole(PRUint32 *_retval);
-  NS_IMETHOD GetAccChildCount(PRInt32 *_retval);
-  NS_IMETHOD GetAccState(PRUint32 *_retval);
-
-  NS_IMETHOD GetAccLastChild(nsIAccessible **_retval);
-  NS_IMETHOD GetAccFirstChild(nsIAccessible **_retval);
-  NS_IMETHOD GetAccValue(nsAString& _retval);
-
 };
 
 /** ------------------------------------------------------ */
@@ -217,14 +193,22 @@ public:
   NS_IMETHOD GetAccLastChild(nsIAccessible **_retval);
   NS_IMETHOD GetAccFirstChild(nsIAccessible **_retval);
   NS_IMETHOD GetAccValue(nsAString& _retval);
+  NS_IMETHOD Shutdown();
+  NS_IMETHOD Init();
 
+protected:
+  // Hold references to our generated children
+  // So that we can shut them down when we need to
+  nsCOMPtr<nsIAccessible> mComboboxTextFieldAccessible;
+  nsCOMPtr<nsIAccessible> mComboboxButtonAccessible;
+  nsCOMPtr<nsIAccessible> mComboboxListAccessible;
 };
 
 /*
  * A class the represents the text field in the Select to the left
  *     of the drop down button
  */
-class nsHTMLComboboxTextFieldAccessible  : public nsComboboxTextFieldAccessible
+class nsHTMLComboboxTextFieldAccessible  : public nsLeafAccessible
 {
 public:
   
@@ -233,14 +217,21 @@ public:
 
   /* ----- nsIAccessible ----- */
   NS_IMETHOD GetAccNextSibling(nsIAccessible **_retval);
+  NS_IMETHOD GetAccPreviousSibling(nsIAccessible **_retval);
+  NS_IMETHOD GetAccParent(nsIAccessible **_retval);
+  NS_IMETHOD GetAccRole(PRUint32 *_retval);
+  NS_IMETHOD GetAccValue(nsAString& _retval);
+  NS_IMETHOD GetAccState(PRUint32 *_retval);
+  NS_IMETHOD GetUniqueID(void **aUniqueID);
 
+  virtual void GetBounds(nsRect& aBounds, nsIFrame** aBoundingFrame);
 };
 
 /**
   * A class that represents the button inside the Select to the
   *     right of the text field
   */
-class nsHTMLComboboxButtonAccessible  : public nsComboboxButtonAccessible
+class nsHTMLComboboxButtonAccessible  : public nsLeafAccessible
 {
 public:
 
@@ -248,9 +239,18 @@ public:
   virtual ~nsHTMLComboboxButtonAccessible() {}
 
   /* ----- nsIAccessible ----- */
+  NS_IMETHOD AccDoAction(PRUint8 index);
+  NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
+  NS_IMETHOD GetAccActionName(PRUint8 index, nsAString& _retval);
+  NS_IMETHOD GetAccParent(nsIAccessible **_retval);
   NS_IMETHOD GetAccNextSibling(nsIAccessible **_retval);
   NS_IMETHOD GetAccPreviousSibling(nsIAccessible **_retval);
-  NS_IMETHOD AccDoAction(PRUint8 index);
+  NS_IMETHOD GetAccName(nsAString& _retval);
+  NS_IMETHOD GetAccRole(PRUint32 *_retval);
+  NS_IMETHOD GetAccState(PRUint32 *_retval);
+  NS_IMETHOD GetUniqueID(void **aUniqueID);
+
+  virtual void GetBounds(nsRect& aBounds, nsIFrame** aBoundingFrame);
 };
 
 /*
@@ -258,19 +258,22 @@ public:
  * of the drop down button inside the Select. This is the window
  * that is made visible when the button is pressed.
  */
-class nsHTMLComboboxWindowAccessible : public nsComboboxWindowAccessible
+class nsHTMLComboboxListAccessible : public nsHTMLSelectListAccessible
 {
 public:
 
-  nsHTMLComboboxWindowAccessible(nsIAccessible* aParent, nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
-  virtual ~nsHTMLComboboxWindowAccessible() {}
+  nsHTMLComboboxListAccessible(nsIAccessible *aParent, 
+		                           nsIDOMNode* aDOMNode, 
+															 nsIWeakReference* aShell);
+  virtual ~nsHTMLComboboxListAccessible() {}
 
   /* ----- nsIAccessible ----- */
-  NS_IMETHOD GetAccPreviousSibling(nsIAccessible **_retval);
-  NS_IMETHOD GetAccLastChild(nsIAccessible **_retval);
-  NS_IMETHOD GetAccFirstChild(nsIAccessible **_retval);
+  NS_IMETHOD GetAccState(PRUint32 *aAccState);
+  NS_IMETHOD GetAccParent(nsIAccessible **aParent);
+  NS_IMETHOD GetUniqueID(void **aUniqueID);
+  NS_IMETHOD GetAccPreviousSibling(nsIAccessible **aAccPrevSibling);
 
+  virtual void GetBounds(nsRect& aBounds, nsIFrame** aBoundingFrame);
 };
-
 
 #endif

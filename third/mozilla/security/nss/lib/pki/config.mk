@@ -30,7 +30,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-CONFIG_CVS_ID = "@(#) $RCSfile: config.mk,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 18:40:52 $ $Name: not supported by cvs2svn $"
+CONFIG_CVS_ID = "@(#) $RCSfile: config.mk,v $ $Revision: 1.1.1.1.2.1 $ $Date: 2003-07-14 19:06:52 $ $Name: not supported by cvs2svn $"
 
 ifdef BUILD_IDG
 DEFINES += -DNSSDEBUG

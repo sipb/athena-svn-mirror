@@ -92,6 +92,7 @@ Contributor(s):
     <command id="cmd_paste"/>
     <command id="cmd_cut"/>
     <command id="cmd_selectAll"/>
+    <command id="cmd_swapFirstNameLastName" oncommand="AbSwapFirstNameLastName()"/>
     <commandset id="tasksCommands"/>
 </commandset>
 
@@ -111,6 +112,7 @@ Contributor(s):
 <keyset id="tasksKeys">
   <!-- File Menu -->
   <key id="key_newNavigator"/>
+  <key id="key_newBlankPage"/>
   <key id="key_printCard"  key="&printCardViewCmd.key;" command="cmd_printCard"  modifiers="accel"/>
   <key id="key_close"/>
   <key id="key_quit"/>
@@ -150,13 +152,11 @@ Contributor(s):
                 </menu>
                 <menuitem id="menu_close"/>
                 <menuseparator/>
-        <!--Page setup gets overlaid here from platformGlobalOverlay.xul / -->
         <menuitem id="printSetupMenuItem" label="&printSetupCmd.label;" accesskey="&printSetupCmd.accesskey;" command="cmd_printSetup"/>
-        <menuitem id="printMenuItem" label="&printCardViewCmd.label;" accesskey="&printCardViewCmd.accesskey;" key="key_printCard" command="cmd_printCard"/>
-        <menuitem id="printAddressBook" label="&printAddressBook.label;" accesskey="&printAddressBook.accesskey;" command="cmd_printAddressBook"/>
-                <menuseparator/>
-        <menuitem id="printPreviewMenuItem" label="&printPreviewCardViewCmd.label;" command="cmd_printPreviewCard"/>
-        <menuitem id="printPreviewAddressBook" label="&printPreviewAddressBook.label;" command="cmd_printPreviewAddressBook"/>
+        <menuitem id="printPreviewMenuItem" label="&printPreviewCardViewCmd.label;" accesskey="&printPreviewCardViewCmd.accesskey;" command="cmd_printPreviewCard"/>
+        <menuitem id="printPreviewAddressBook" label="&printPreviewAddressBook.label;" accesskey="&printPreviewAddressBook.accesskey;" command="cmd_printPreviewAddressBook"/>
+              <menuitem id="printMenuItem" label="&printCardViewCmd.label;" accesskey="&printCardViewCmd.accesskey;" key="key_printCard" command="cmd_printCard"/>
+              <menuitem id="printAddressBook" label="&printAddressBook.label;" accesskey="&printAddressBook.accesskey;" command="cmd_printAddressBook"/>
             </menupopup>
         </menu>
         
@@ -172,6 +172,11 @@ Contributor(s):
             <menuseparator/>
             <menuitem id="menu_selectAll"/>
             <menuseparator/>
+            <!-- LOCALIZATION NOTE: set "hideSwapFnLnUI" to false in .dtd to enable the UI -->
+            <menuitem label="&swapFirstNameLastNameCmd.label;"
+                      accesskey="&swapFirstNameLastNameCmd.accesskey;"
+                      hidden="&hideSwapFnLnUI;"
+                      command="cmd_swapFirstNameLastName"/>
             <menuitem label="&propertiesCmd.label;"
                       accesskey="&propertiesCmd.accesskey;"
                       key="key_properties"
@@ -240,6 +245,15 @@ Contributor(s):
                                   id="cmd_SortByCompany"
                                   accesskey="&Company.accesskey;"
                                   oncommand="SortResultPane('Company');" name="sortas" type="radio" checked="true"/>
+            <!-- LOCALIZATION NOTE:
+             Fields for phonetic are disabled as default and can be enabled by 
+             editing "mail.addr_book.show_phonetic_fields"    
+             -->
+            <menuitem label="&_PhoneticName.label;"
+                                  id="cmd_SortBy_PhoneticName"
+                                  hidden="true"
+                                  accesskey="&_PhoneticName.accesskey;"
+                                  oncommand="SortResultPane('_PhoneticName');" name="sortas" type="radio" checked="true"/>
             <menuitem label="&NickName.label;"
                                   id="cmd_SortByNickName"
                                   accesskey="&NickName.accesskey;"
@@ -348,7 +362,8 @@ Contributor(s):
                control="searchInput"/>
         <textbox id="searchInput" flex="1" 
                 oninput="onAbSearchInput(false);"
-                onkeypress="onAbSearchKeyPress(event);"/>
+                onkeypress="onAbSearchKeyPress(event);"
+                onfocus="this.select();" onclick="this.select();"/>
         <button id="clear" label="&clearButton.label;" disabled="true"
                 accesskey="&clearButton.accesskey;"
                 oncommand="onAbClearSearch();"

@@ -56,6 +56,8 @@
 #include "nsIPromptService.h"
 #include "nsNetCID.h"
 #include "nsIObserverService.h"
+#include "nsXPCOM.h"
+#include "nsPaletteOS2.h"
 
 // These are needed to load a URL in a browser window.
 #include "nsIDOMLocation.h"
@@ -64,6 +66,7 @@
 
 
 #include <sys/stat.h>
+#include <stdlib.h>
 
 #include "prprf.h"
 
@@ -338,7 +341,8 @@ private:
  * whether Mozilla is already running.
  */
 
-class nsNativeAppSupportOS2 : public nsNativeAppSupportBase {
+class nsNativeAppSupportOS2 : public nsNativeAppSupportBase
+{
 public:
     // Overrides of base implementation.
     NS_IMETHOD Start( PRBool *aResult );
@@ -589,6 +593,9 @@ MRESULT EXPENTRY DialogProc( HWND dlg, ULONG msg, MPARAM mp1, MPARAM mp2 ) {
     else if ( msg == WM_PAINT ) {
         nsSplashScreenOS2 *splashScreen = (nsSplashScreenOS2*)WinQueryWindowPtr( dlg, QWL_USER );
         HPS hps = WinBeginPaint (dlg, NULLHANDLE, NULL);
+#if 0
+        nsPaletteOS2::SelectGlobalPalette(hps, dlg);
+#endif
         GpiErase (hps);
         POINTL aptl[8] = {0, 0, splashScreen->mBitmapCX, splashScreen->mBitmapCY,
                           0, 0, 0, 0,
@@ -599,6 +606,15 @@ MRESULT EXPENTRY DialogProc( HWND dlg, ULONG msg, MPARAM mp1, MPARAM mp2 ) {
         WinEndPaint( hps );
         return (MRESULT)TRUE;
     }
+#if 0
+    else if ( msg == WM_REALIZEPALETTE ) {
+        HPS hps = WinGetPS(dlg);
+        nsPaletteOS2::SelectGlobalPalette(hps, dlg);
+        WinReleasePS(hps);
+        WinInvalidateRect( dlg, 0, TRUE);
+        return (MRESULT)TRUE;
+    }
+#endif
     return WinDefDlgProc (dlg, msg, mp1, mp2);
 }
 
@@ -655,6 +671,9 @@ nsNativeAppSupportOS2::CheckConsole() {
               strcpy(pszArgString, TURBOD);
               strcat(pszArgString, " -l -p ");
               strcat(pszArgString, __argv[0]);
+              char *pchar = strrchr(pszArgString, '\\');
+              pchar++;
+              *pchar = '\0';
               pszArgString[strlen(TURBOD)] = '\0';
        
               rc = DosExecPgm(NULL,0,EXEC_BACKGROUND,
@@ -729,23 +748,33 @@ NS_CreateNativeAppSupport( nsINativeAppSupport **aResult ) {
 // Create instance of OS/2 splash screen object.
 nsresult
 NS_CreateSplashScreen( nsISplashScreen **aResult ) {
+    /* In order to handle -splash on the command line, */
+    /* we use a variable to handle splash. Defaults to true. */
+    /* We set it to false if you have turned off the logo */
+    /* in OS/2, but then back to true if you specify -splash. */
+    BOOL doSplashScreen = TRUE;
     if ( aResult ) {
         *aResult = 0;
         CHAR pBuffer[3];
         PrfQueryProfileString( HINI_USERPROFILE, "PM_ControlPanel", "LogoDisplayTime", "1", pBuffer, 3);
         if (pBuffer[0] == '0') {
-          return NS_OK;
+          doSplashScreen = FALSE;
         } /* endif */
-#ifndef XP_OS2
         for ( int i = 1; i < __argc; i++ ) {
             if ( strcmp( "-quiet", __argv[i] ) == 0
                  ||
                  strcmp( "/quiet", __argv[i] ) == 0 ) {
-                // No splash screen, please.
-                return NS_OK;
+                 doSplashScreen = FALSE;
+            }
+            if ( strcmp( "-splash", __argv[i] ) == 0
+                 ||
+                 strcmp( "/splash", __argv[i] ) == 0 ) {
+                 doSplashScreen = TRUE;
             }
         }
-#endif
+        if (!doSplashScreen) {
+          return NS_OK;
+        }
         *aResult = new nsSplashScreenOS2;
         if ( *aResult ) {
             NS_ADDREF( *aResult );
@@ -2033,10 +2062,14 @@ nsNativeAppSupportOS2::GetCmdLineArgs( LPBYTE request, nsICmdLineService **aResu
 
     // OK, now create nsICmdLineService object from argc/argv.
     static NS_DEFINE_CID( kCmdLineServiceCID,    NS_COMMANDLINE_SERVICE_CID );
-    rv = nsComponentManager::CreateInstance( kCmdLineServiceCID,
-                                             0,
-                                             NS_GET_IID( nsICmdLineService ),
-                                             (void**)aResult );
+
+    nsCOMPtr<nsIComponentManager> compMgr;
+    NS_GetComponentManager(getter_AddRefs(compMgr));
+    rv = compMgr->CreateInstance( kCmdLineServiceCID,
+                                  0,
+                                  NS_GET_IID( nsICmdLineService ),
+                                  (void**)aResult );
+
     if ( NS_FAILED( rv ) || NS_FAILED( ( rv = (*aResult)->Initialize( argc, argv ) ) ) ) {
 #if MOZ_DEBUG_DDE
         printf( "Error creating command line service = 0x%08X (argc=%d, argv=0x%08X)\n", (int)rv, (int)argc, (void*)argv );
@@ -2267,6 +2300,16 @@ nsNativeAppSupportOS2::StartServerMode() {
         // We dont have to anything anymore. The native UI
         // will create the window
         return NS_OK;
+    } else {
+        // Sometimes a window will have been opened even though mShouldShowUI is false
+        // (e.g., mozilla -mail -turbo).  Detect that by testing whether there's a
+        // window already open.
+        nsCOMPtr<nsIDOMWindowInternal> win;
+        GetMostRecentWindow( 0, getter_AddRefs( win ) );
+        if ( win ) {
+            // Window already opened, don't need this special Nav window.
+            return NS_OK;
+        }
     }
 
     // Since native UI wont create any window, we create a hidden window
@@ -2281,8 +2324,7 @@ nsNativeAppSupportOS2::StartServerMode() {
     }
 
     // Create the array for the arguments.
-    nsCOMPtr<nsISupportsArray>   argArray;
-    NS_NewISupportsArray( getter_AddRefs( argArray ) );
+    nsCOMPtr<nsISupportsArray> argArray = do_CreateInstance(NS_SUPPORTSARRAY_CONTRACTID);
     if ( !argArray ) {
         return NS_OK;
     }

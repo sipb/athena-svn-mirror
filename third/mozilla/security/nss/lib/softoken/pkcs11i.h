@@ -297,8 +297,8 @@ typedef enum {
 
 
 #define PK11_MAX_BLOCK_SIZE 16
-/* currently SHA1 is the biggest hash length */
-#define PK11_MAX_MAC_LENGTH 20
+/* currently SHA512 is the biggest hash length */
+#define PK11_MAX_MAC_LENGTH 64
 #define PK11_INVALID_MAC_SIZE 0xffffffff
 
 struct PK11SessionContextStr {
@@ -602,9 +602,9 @@ extern void pk11_FreeContext(PK11SessionContext *context);
 extern void pk11_CleanupFreeLists(void);
 
 extern NSSLOWKEYPublicKey *pk11_GetPubKey(PK11Object *object,
-					  CK_KEY_TYPE key_type);
+					  CK_KEY_TYPE key_type, CK_RV *crvp);
 extern NSSLOWKEYPrivateKey *pk11_GetPrivKey(PK11Object *object,
-					    CK_KEY_TYPE key_type);
+					    CK_KEY_TYPE key_type, CK_RV *crvp);
 extern void pk11_FormatDESKey(unsigned char *key, int length);
 extern PRBool pk11_CheckDESKey(unsigned char *key);
 extern PRBool pk11_IsWeakKey(unsigned char *key,CK_KEY_TYPE key_type);
@@ -622,6 +622,8 @@ extern SECStatus secmod_AddPermDB(const char *domain, const char *filename,
 			const char *dbname, char *module, PRBool rw);
 extern SECStatus secmod_ReleasePermDBData(const char *domain, 
 	const char *filename, const char *dbname, char **specList, PRBool rw);
+/* mechanism allows this operation */
+extern CK_RV pk11_MechAllowsOperation(CK_MECHANISM_TYPE type, CK_ATTRIBUTE_TYPE op);
 /*
  * OK there are now lots of options here, lets go through them all:
  *
@@ -659,6 +661,8 @@ PK11TokenObject * pk11_narrowToTokenObject(PK11Object *);
  * token object utilities
  */
 void pk11_addHandle(PK11SearchResults *search, CK_OBJECT_HANDLE handle);
+PRBool pk11_poisonHandle(PK11Slot *slot, SECItem *dbkey, 
+						CK_OBJECT_HANDLE handle);
 PRBool pk11_tokenMatch(PK11Slot *slot, SECItem *dbKey, CK_OBJECT_HANDLE class,
                                         CK_ATTRIBUTE_PTR theTemplate,int count);
 CK_OBJECT_HANDLE pk11_mkHandle(PK11Slot *slot, 
@@ -666,6 +670,19 @@ CK_OBJECT_HANDLE pk11_mkHandle(PK11Slot *slot,
 PK11Object * pk11_NewTokenObject(PK11Slot *slot, SECItem *dbKey, 
 						CK_OBJECT_HANDLE handle);
 PK11TokenObject *pk11_convertSessionToToken(PK11Object *so);
+
+/****************************************
+ * implement TLS Pseudo Random Function (PRF)
+ */
+
+extern SECStatus
+pk11_PRF(const SECItem *secret, const char *label, SECItem *seed, 
+         SECItem *result, PRBool isFIPS);
+
+extern CK_RV
+pk11_TLSPRFInit(PK11SessionContext *context, 
+		  PK11Object *        key, 
+		  CK_KEY_TYPE         key_type);
 
 SEC_END_PROTOS
 

@@ -33,9 +33,8 @@
 #include "nsIPresContext.h"
 #include "nsHTMLAtoms.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
-#include "nsINameSpaceManager.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
 
@@ -64,7 +63,7 @@ NS_IMETHODIMP
 nsMathMLForeignFrameWrapper::Init(nsIPresContext*  aPresContext,
                                   nsIContent*      aContent,
                                   nsIFrame*        aParent,
-                                  nsIStyleContext* aContext,
+                                  nsStyleContext*  aContext,
                                   nsIFrame*        aPrevInFlow)
 {
   return nsBlockFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);

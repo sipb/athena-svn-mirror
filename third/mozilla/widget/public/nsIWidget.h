@@ -143,7 +143,7 @@ enum nsBorderStyle
   eBorderStyle_menu     = 1 << 4,
 
   // enables the minimize button so the user can minimize the window.
-  //   turned off for tranient windows since they can not be minimized seperate from their parent
+  //   turned off for tranient windows since they can not be minimized separate from their parent
   eBorderStyle_minimize = 1 << 5,
 
   // enables the maxmize button so the user can maximize the window
@@ -201,9 +201,18 @@ enum nsCursor {   ///(normal cursor,       usually rendered as an arrow)
                 eCursor_spinning,
                 eCursor_count_up,
                 eCursor_count_down,
-                eCursor_count_up_down
+                eCursor_count_up_down,
+                eCursor_zoom_in,
+                eCursor_zoom_out,
+                // This one better be the last one in this list.
+                eCursorCount
                 }; 
 
+enum nsContentType {
+  eContentTypeInherit = -1,
+  eContentTypeUI = 0,         // eContentTypeUI must equal 0
+  eContentTypeContent = 1     // eContentTypeUI must equal 1
+};
 
 /**
  * Basic struct for widget initialization data.
@@ -218,7 +227,8 @@ struct nsWidgetInitData {
       mListenForResizes(PR_FALSE),
       mWindowType(eWindowType_child),
       mBorderStyle(eBorderStyle_default),
-      mContentType(1)  // nsIDocShellTreeItem::typeContent
+      mContentType(eContentTypeInherit),
+      mUnicode(PR_TRUE)
   {
   }
 
@@ -227,7 +237,8 @@ struct nsWidgetInitData {
   PRPackedBool  mListenForResizes;
   nsWindowType mWindowType;
   nsBorderStyle mBorderStyle;
-  PRUint32 mContentType; // from nsIDocShellTreeItem.idl content types - typeChrome, typeContent, etc.
+  nsContentType mContentType;  // Exposed so screen readers know what's UI
+  PRPackedBool mUnicode;
 };
 
 /**
@@ -586,11 +597,55 @@ class nsIWidget : public nsISupports {
      */
     NS_IMETHOD GetWindowType(nsWindowType& aWindowType) = 0;
 
+    /**
+     * Set the translucency of the top-level window containing this widget.
+     * So, e.g., if you call this on the widget for an IFRAME, the top level
+     * browser window containing the IFRAME actually gets set. Be careful.
+     *
+     * This can fail if the platform doesn't support
+     * transparency/translucency. By default widgets are not
+     * transparent.  This will also fail if the toplevel window is not
+     * a Mozilla window, e.g., if the widget is in an embedded
+     * context.
+     *
+     * After translucency has been enabled, the initial alpha channel
+     * value for all pixels is 1, i.e., opaque.
+     * If the window is resized then the alpha channel values for
+     * all pixels are reset to 1.
+     * @param aTranslucent true if the window may have translucent
+     *   or transparent pixels
+     */
+    NS_IMETHOD SetWindowTranslucency(PRBool aTranslucent) = 0;
+
+    /**
+     * Get the translucency of the top-level window that contains this
+     * widget.
+     * @param aTranslucent true if the window may have translucent or
+     *   transparent pixels
+     */
+    NS_IMETHOD GetWindowTranslucency(PRBool& aTranslucent) = 0;
+
+    /**
+     * Update the alpha channel for some pixels of the top-level window
+     * that contains this widget.
+     * The window must have been made translucent using SetWindowTranslucency.
+     * @param aRect the rect to update
+     * @param aAlphas the alpha values, in w x h array, row-major order,
+     * in units of 1/255. nsBlender::GetAlphas is a good way to compute this array.
+     */
+    NS_IMETHOD UpdateTranslucentWindowAlpha(const nsRect& aRect, PRUint8* aAlphas) = 0;
+
     /** 
      * Hide window chrome (borders, buttons) for this widget.
      *
      */
     NS_IMETHOD HideWindowChrome(PRBool aShouldHide) = 0;
+
+    /**
+     * Put the toplevel window into or out of fullscreen mode.
+     *
+     */
+    NS_IMETHOD MakeFullScreen(PRBool aFullScreen) = 0;
 
     /**
      * Validate the widget.

@@ -39,7 +39,6 @@
 function EditorNew()
 {
   dump("In EditorNew..\n");
-  editorShell.NewWindow();
 }
 
 function EditorNewFromTemplate()

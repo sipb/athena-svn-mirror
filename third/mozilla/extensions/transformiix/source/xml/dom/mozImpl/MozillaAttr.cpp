@@ -31,6 +31,7 @@
 #include "mozilladom.h"
 #include "nsIDOMAttr.h"
 #include "nsIDOMElement.h"
+#include "nsString.h"
 
 /**
  * Construct a wrapper with the specified Mozilla object and document owner.
@@ -52,10 +53,9 @@ Attr::Attr(nsIDOMAttr* aAttr, Document* aOwner) : Node(aAttr, aOwner)
     aAttr->GetNamespaceURI(ns);
     mNamespaceID = kNameSpaceID_None;
     if (!ns.IsEmpty()) {
-        NS_ASSERTION(aOwner->nsNSManager,
-                     "owner document lacks namespace manager");
-        if (aOwner->nsNSManager) {
-            aOwner->nsNSManager->GetNameSpaceID(ns, mNamespaceID);
+        NS_ASSERTION(gTxNameSpaceManager,"No namespace manager");
+        if (gTxNameSpaceManager) {
+            gTxNameSpaceManager->GetNameSpaceID(ns, mNamespaceID);
         }
     }
     mNSId = mNamespaceID;
@@ -88,13 +88,13 @@ Node* Attr::getXPathParent()
  *
  * @return the node's localname atom
  */
-MBool Attr::getLocalName(txAtom** aLocalName)
+MBool Attr::getLocalName(nsIAtom** aLocalName)
 {
     if (!aLocalName) {
         return MB_FALSE;
     }
     *aLocalName = mLocalName;
     NS_ENSURE_TRUE(*aLocalName, MB_FALSE);
-    TX_ADDREF_ATOM(*aLocalName);
+    NS_ADDREF(*aLocalName);
     return MB_TRUE;
 }

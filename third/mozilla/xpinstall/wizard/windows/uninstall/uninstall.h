@@ -49,9 +49,12 @@ typedef int PRInt32;
 #include "resource.h"
 
 #define CLASS_NAME                      "Uninstall"
+#define CLASS_NAME_UNINSTALL_DLG        "MozillaSetupDlg"
 #define FILE_INI_UNINSTALL              "uninstall.ini"
 #define FILE_LOG_INSTALL                "install_wizard.log"
 #define WIZ_TEMP_DIR                    "ns_temp"
+
+#define MAX_KILL_PROCESS_RETRIES        10
 
 /* WTD: What To Do */
 #define WTD_ASK                         0
@@ -60,6 +63,14 @@ typedef int PRInt32;
 #define WTD_NO_TO_ALL                   3
 #define WTD_YES                         4
 #define WTD_YES_TO_ALL                  5
+
+/* WS: WinSpawn wait values */
+#define WS_DO_NOT_WAIT                  FALSE
+#define WS_WAIT                         TRUE
+
+/* CI: Check Instance */
+#define CI_FORCE_QUIT_PROCESS           TRUE
+#define CI_CLOSE_PROCESS                FALSE
 
 /* PP: Parse Path */
 #define PP_FILENAME_ONLY                1
@@ -75,9 +86,20 @@ typedef int PRInt32;
 
 /* WIZ: WIZARD defines */
 #define WIZ_OK                          0
-#define WIZ_MEMORY_ALLOC_FAILED         1
-#define WIZ_ERROR_UNDEFINED             2
-#define WIZ_FILE_NOT_FOUND              3
+#define WIZ_ERROR_UNDEFINED             1024
+#define WIZ_MEMORY_ALLOC_FAILED         1025
+#define WIZ_OUT_OF_MEMORY               WIZ_MEMORY_ALLOC_FAILED
+#define WIZ_ARCHIVES_MISSING            1026
+#define WIZ_CRC_PASS                    WIZ_OK
+#define WIZ_CRC_FAIL                    1028
+#define WIZ_SETUP_ALREADY_RUNNING       1029
+#define WIZ_TOO_MANY_NETWORK_ERRORS     1030
+#define WIZ_ERROR_PARSING_INTERNAL_STR  1031
+#define WIZ_ERROR_REGKEY                1032
+#define WIZ_ERROR_INIT                  1033
+#define WIZ_ERROR_LOADING_RESOURCE_LIB  1034
+#define WIZ_FILE_NOT_FOUND              1035
+#define WIZ_ERROR_PARSING_UNINST_STRS   1036
 
 /* CMI: Cleanup Mail Integration */
 #define CMI_OK                          0
@@ -91,6 +113,7 @@ typedef int PRInt32;
 #define FO_ERROR_CHANGE_DIR             3
 
 /* Mode of Setup to run in */
+#define NOT_SET                         -1
 #define NORMAL                          0
 #define SILENT                          1
 #define AUTO                            2
@@ -119,7 +142,7 @@ typedef struct dlgUninstall
 
 typedef struct uninstallStruct
 {
-  DWORD     dwMode;
+  int       mode;
   LPSTR     szAppPath;
   LPSTR     szLogPath;
   LPSTR     szLogFilename;
@@ -134,7 +157,8 @@ typedef struct uninstallStruct
   LPSTR     szWrKey;
   LPSTR     szUserAgent;
   LPSTR     szDefaultComponent;
-  LPSTR     szAppID;
+  LPSTR     szClientAppID;
+  LPSTR     szClientAppPath;
   BOOL      bVerbose;
   BOOL      bUninstallFiles;
   BOOL      bSharedInst;

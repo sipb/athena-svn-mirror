@@ -63,7 +63,6 @@
 // that doesn't allow you to call ::nsISupports::GetIID() inside of a class
 // that multiply inherits from nsISupports
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_CID(kUrlListenerManagerCID, NS_URLLISTENERMANAGER_CID);
 static NS_DEFINE_CID(kCMailDB, NS_MAILDB_CID);
 
 // this is totally lame and MUST be removed by M6
@@ -97,10 +96,7 @@ static char *nsMailboxGetURI(const char *nativepath)
     PRInt32 i;
     for (i=0; i<count; i++) {
 
-        nsISupports* serverSupports = serverArray->ElementAt(i);
-        nsCOMPtr<nsIMsgIncomingServer> server =
-            do_QueryInterface(serverSupports);
-        NS_RELEASE(serverSupports);
+        nsCOMPtr<nsIMsgIncomingServer> server = do_QueryElementAt(serverArray, i);
 
         if (!server) continue;
 
@@ -390,7 +386,6 @@ nsresult nsMailboxUrl::ParseSearchPart()
 		m_messageID = extractAttributeValue(searchPart.get(),"messageid=");
 		if (messageKey)
 			m_messageKey = atol(messageKey); // convert to a long...
-		if (messageKey || m_messageID)
 		
     PR_FREEIF(msgPart);
 		PR_FREEIF(messageKey);

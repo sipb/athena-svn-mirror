@@ -44,7 +44,6 @@
 #include "nsHTMLAttributes.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsRuleNode.h"
@@ -86,9 +85,6 @@ public:
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
 protected:
   // This does not return a nsresult since all we care about is if we
@@ -200,8 +196,7 @@ nsHTMLTableCellElement::GetRow(nsIDOMHTMLTableRowElement** aRow)
   GetParentNode(getter_AddRefs(rowNode));
 
   if (rowNode) {
-    rowNode->QueryInterface(NS_GET_IID(nsIDOMHTMLTableRowElement),
-                            (void**)aRow);
+    CallQueryInterface(rowNode, aRow);
   }
 }
 
@@ -320,7 +315,7 @@ nsHTMLTableCellElement::SetAlign(const nsAString& aValue)
 }
 
 
-static nsGenericHTMLElement::EnumTable kCellScopeTable[] = {
+static nsHTMLValue::EnumTable kCellScopeTable[] = {
   { "row",      NS_STYLE_CELL_SCOPE_ROW },
   { "col",      NS_STYLE_CELL_SCOPE_COL },
   { "rowgroup", NS_STYLE_CELL_SCOPE_ROWGROUP },
@@ -328,7 +323,8 @@ static nsGenericHTMLElement::EnumTable kCellScopeTable[] = {
   { 0 }
 };
 
-#define MAX_COLSPAN 1000
+#define MAX_COLSPAN 8190
+#define MAX_ROWSPAN 8190 // celldata.h can not handle more
 
 NS_IMETHODIMP
 nsHTMLTableCellElement::StringToAttribute(nsIAtom* aAttribute,
@@ -341,15 +337,15 @@ nsHTMLTableCellElement::StringToAttribute(nsIAtom* aAttribute,
   if (aAttribute == nsHTMLAtoms::charoff) {
     /* attributes that resolve to integers with a min of 0 */
 
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if ((aAttribute == nsHTMLAtoms::colspan) ||
            (aAttribute == nsHTMLAtoms::rowspan)) {
     PRBool parsed = (aAttribute == nsHTMLAtoms::colspan)
-      ? ParseValue(aValue, -1, MAX_COLSPAN, aResult, eHTMLUnit_Integer)
-      : ParseValue(aValue, -1, aResult, eHTMLUnit_Integer);
+      ? aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, -1, MAX_COLSPAN)
+      : aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, -1, MAX_ROWSPAN);
     if (parsed) {
       PRInt32 val = aResult.GetIntValue();
       // quirks mode does not honor the special html 4 value of 0
@@ -364,14 +360,14 @@ nsHTMLTableCellElement::StringToAttribute(nsIAtom* aAttribute,
   else if (aAttribute == nsHTMLAtoms::height) {
     /* attributes that resolve to integers or percents */
 
-    if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::width) {
     /* attributes that resolve to integers or percents */
 
-    if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -383,12 +379,12 @@ nsHTMLTableCellElement::StringToAttribute(nsIAtom* aAttribute,
     }
   }
   else if (aAttribute == nsHTMLAtoms::bgcolor) {
-    if (ParseColor(aValue, mDocument, aResult)) {
+    if (aResult.ParseColor(aValue, mDocument)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::scope) {
-    if (ParseEnumValue(aValue, kCellScopeTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kCellScopeTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -418,7 +414,7 @@ nsHTMLTableCellElement::AttributeToString(nsIAtom* aAttribute,
     }
   }
   else if (aAttribute == nsHTMLAtoms::scope) {
-    if (EnumValueToString(aValue, kCellScopeTable, aResult)) {
+    if (aValue.EnumValueToString(kCellScopeTable, aResult)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -513,22 +509,26 @@ NS_IMETHODIMP
 nsHTMLTableCellElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                                  nsChangeHint& aHint) const
 {
-  if ((aAttribute == nsHTMLAtoms::align) || 
-      (aAttribute == nsHTMLAtoms::valign) ||
-      (aAttribute == nsHTMLAtoms::nowrap) ||
-      (aAttribute == nsHTMLAtoms::abbr) ||
-      (aAttribute == nsHTMLAtoms::axis) ||
-      (aAttribute == nsHTMLAtoms::headers) ||
-      (aAttribute == nsHTMLAtoms::scope) ||
-      (aAttribute == nsHTMLAtoms::width) ||
-      (aAttribute == nsHTMLAtoms::height)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    if (!GetBackgroundAttributesImpact(aAttribute, aHint)) {
-      aHint = NS_STYLE_HINT_CONTENT;
-    }
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW }, 
+    { &nsHTMLAtoms::valign, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::nowrap, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::abbr, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::axis, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::headers, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::scope, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::width, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::height, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+    sBackgroundAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
@@ -539,14 +539,3 @@ nsHTMLTableCellElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& a
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLTableCellElement::SizeOf(nsISizeOfHandler* aSizer,
-                               PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

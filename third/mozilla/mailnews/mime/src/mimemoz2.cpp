@@ -274,7 +274,7 @@ ValidateRealName(nsMsgAttachmentData *aAttach, MimeHeaders *aHdrs)
     nsString  newAttachName(NS_LITERAL_STRING("attachment"));
     nsresult  rv = NS_OK;
     nsCAutoString contentType (aAttach->real_type);
-    PRInt32 pos = contentType.FindCharInSet(";");
+    PRInt32 pos = contentType.FindChar(';');
     if (pos > 0)
       contentType.Truncate(pos);
 
@@ -330,12 +330,22 @@ GenerateAttachmentData(MimeObject *object, const char *aMessageURL, MimeDisplayO
   else
   {
     isIMAPPart = PR_FALSE;
-    urlSpec = mime_set_url_part(aMessageURL, part.get(), PR_TRUE);
+    char *no_part_url = nsnull;
+    if (options->part_to_load && options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay)
+      no_part_url = mime_get_base_url(aMessageURL);
+    if (no_part_url) {
+      urlSpec = mime_set_url_part(no_part_url, part.get(), PR_TRUE);
+      PR_Free(no_part_url);
+    }
+    else
+      urlSpec = mime_set_url_part(aMessageURL, part.get(), PR_TRUE);
   }
 
   if (!urlSpec)
     return NS_ERROR_OUT_OF_MEMORY;
 
+  if ((options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay) && (nsCRT::strncasecmp(aMessageURL, urlSpec, strlen(urlSpec)) == 0))
+    return NS_OK;
   nsMsgAttachmentData *tmp = &(aAttachData[attIndex++]);
   nsresult rv = nsMimeNewURI(&(tmp->url), urlSpec, nsnull);
 
@@ -477,9 +487,7 @@ BuildAttachmentList(MimeObject *anObject, nsMsgAttachmentData *aAttachData, cons
       if (child->content_type)                          // and it's content-type is one of folowing...
         if (!nsCRT::strcasecmp (child->content_type, TEXT_PLAIN) ||
             !nsCRT::strcasecmp (child->content_type, TEXT_HTML) ||
-            !nsCRT::strcasecmp (child->content_type, TEXT_MDL) ||
-            !nsCRT::strcasecmp (child->content_type, MULTIPART_ALTERNATIVE) ||
-            !nsCRT::strcasecmp (child->content_type, MULTIPART_RELATED))
+            !nsCRT::strcasecmp (child->content_type, TEXT_MDL))
         {
           if (child->headers) // and finally, be sure it doesn't have a content-disposition: attachment 
           {
@@ -528,7 +536,6 @@ MimeGetAttachmentList(MimeObject *tobj, const char *aMessageURL, nsMsgAttachment
   MimeObject            *obj;
   MimeContainer         *cobj;
   PRInt32               n;
-  PRBool                isAlternativeOrRelated = PR_FALSE;
   PRBool                isAnInlineMessage;
 
   if (!data) 
@@ -547,9 +554,6 @@ MimeGetAttachmentList(MimeObject *tobj, const char *aMessageURL, nsMsgAttachment
       return ProcessBodyAsAttachment(obj, data);
   }
 
-  if (mime_subclass_p(obj->clazz, (MimeObjectClass*) &mimeMultipartAlternativeClass))
-    return 0;
-  
   isAnInlineMessage = mime_typep(obj, (MimeObjectClass *) &mimeMessageClass);
 
   cobj = (MimeContainer*) obj;
@@ -678,7 +682,7 @@ nsMimeNewURI(nsIURI** aInstancePtrResult, const char *aSpec, nsIURI *aBase)
 }
 
 extern "C" nsresult 
-SetMailCharacterSetToMsgWindow(MimeObject *obj, const PRUnichar *aCharacterSet)
+SetMailCharacterSetToMsgWindow(MimeObject *obj, const char *aCharacterSet)
 {
   nsresult rv = NS_OK;
 
@@ -700,7 +704,9 @@ SetMailCharacterSetToMsgWindow(MimeObject *obj, const PRUnichar *aCharacterSet)
             nsCOMPtr<nsIMsgWindow> msgWindow;
             msgurl->GetMsgWindow(getter_AddRefs(msgWindow));
             if (msgWindow)
-              rv = msgWindow->SetMailCharacterSet(aCharacterSet);
+              rv = msgWindow->SetMailCharacterSet(!nsCRT::strcasecmp(aCharacterSet, "us-ascii") ?
+                                                  NS_LITERAL_STRING("ISO-8859-1").get() :
+                                                  NS_ConvertASCIItoUCS2(aCharacterSet).get());
           }
         }
       }
@@ -708,13 +714,6 @@ SetMailCharacterSetToMsgWindow(MimeObject *obj, const PRUnichar *aCharacterSet)
   }
 
   return rv;
-}
-
-static char *
-mime_reformat_date(const char *date, void *stream_closure)
-{
-  /*  struct mime_stream_data *msd = (struct mime_stream_data *) stream_closure; */
-  return nsCRT::strdup(date);
 }
 
 static char *
@@ -844,7 +843,7 @@ mime_output_fn(char *buf, PRInt32 size, void *stream_closure)
   
   // Now, write to the WriteBody method if this is a message body and not
   // a part retrevial
-  if (!msd->options->part_to_load)
+  if (!msd->options->part_to_load || msd->options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay)
   {
     if (msd->output_emitter)
     {
@@ -933,7 +932,7 @@ mime_display_stream_complete (nsMIMESession *stream)
     // Ok, now we are going to process the attachment data by getting all
     // of the attachment info and then driving the emitter with this data.
     //
-    if (!msd->options->part_to_load)
+    if (!msd->options->part_to_load || msd->options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay)
     {
       nsMsgAttachmentData *attachments;
       nsresult rv = MimeGetAttachmentList(obj, msd->url_name, &attachments);
@@ -1132,15 +1131,12 @@ mime_image_begin(const char *image_url, const char *content_type,
             {
               mailUrl->CacheCacheEntry(entry);
               entry->MarkValid();
-              nsCOMPtr<nsITransport> transport;
-              rv = entry->GetTransport(getter_AddRefs(transport));
-              if (NS_FAILED(rv)) return nsnull;
 
               // remember the content type as meta data so we can pull it out in the imap code
               // to feed the cache entry directly to imglib w/o going through mime.
               entry->SetMetaDataElement("contentType", content_type);
-              nsCOMPtr<nsIOutputStream> out;
-              rv = transport->OpenOutputStream(0, PRUint32(-1), 0, getter_AddRefs(mid->memCacheOutputStream));
+
+              rv = entry->OpenOutputStream(0, getter_AddRefs(mid->memCacheOutputStream));
               if (NS_FAILED(rv)) return nsnull;
             }
           }
@@ -1250,14 +1246,24 @@ mime_get_main_object(MimeObject* obj)
     }
     else
     {
-      // We don't care about a signed/smime object; Go inside to the 
-      // thing that we signed or smime'ed
-      //
-      cobj = (MimeContainer*) obj;
-      if (cobj->nchildren > 0)
-        obj = cobj->children[0];
+      if (mime_subclass_p(obj->clazz, (MimeObjectClass*)&mimeContainerClass))
+      {
+        // We don't care about a signed/smime object; Go inside to the 
+        // thing that we signed or smime'ed
+        //
+        cobj = (MimeContainer*) obj;
+        if (cobj->nchildren > 0)
+          obj = cobj->children[0];
+        else
+          obj = nsnull;
+      }
       else
-        obj = nsnull;
+      {
+        // we received a message with a child object that looks like a signed
+        // object, but it is not a subclass of mimeContainer, so let's
+        // return the given child object.
+        return obj;
+      }
     }
   }
   return nsnull;
@@ -1424,7 +1430,7 @@ MimeDisplayOptions::MimeDisplayOptions()
   attachment_icon_layer_id = 0;
 
   missing_parts = PR_FALSE;
-
+  show_attachment_inline_p = PR_FALSE;
 }
 
 MimeDisplayOptions::~MimeDisplayOptions()
@@ -1517,6 +1523,7 @@ mime_bridge_create_display_stream(
   // Set the defaults, based on the context, and the output-type.
   //
   MIME_HeaderType = MimeHeadersAll;
+  msd->options->write_html_p = PR_TRUE;
   switch (format_out) 
   {
 		case nsMimeOutput::nsMimeMessageSplitDisplay:   // the wrapper HTML output to produce the split header/body display
@@ -1542,6 +1549,11 @@ mime_bridge_create_display_stream(
 		case nsMimeOutput::nsMimeMessageDraftOrTemplate:  // Loading drafts & templates
 		case nsMimeOutput::nsMimeMessageEditorTemplate:   // Loading templates into editor
     case nsMimeOutput::nsMimeMessageFilterSniffer:    // generating an output that can be scan by a message filter
+      break;
+
+    case nsMimeOutput::nsMimeMessageDecrypt:
+      msd->options->decrypt_p = PR_TRUE;
+      msd->options->write_html_p = PR_FALSE;
       break;
   }
 
@@ -1575,12 +1587,11 @@ mime_bridge_create_display_stream(
   }
  
   if (msd->options->headers == MimeHeadersMicro &&
-     (msd->url_name == NULL || (nsCRT::strncmp(msd->url_name, "news:", 5) != 0 &&
-              nsCRT::strncmp(msd->url_name, "snews:", 6) != 0)) )
+     (msd->url_name == NULL || (strncmp(msd->url_name, "news:", 5) != 0 &&
+              strncmp(msd->url_name, "snews:", 6) != 0)) )
     msd->options->headers = MimeHeadersMicroPlus;
 
   msd->options->url = msd->url_name;
-  msd->options->write_html_p          = PR_TRUE;
   msd->options->output_init_fn        = mime_output_init_fn;
   
   msd->options->output_fn             = mime_output_fn;
@@ -1614,8 +1625,11 @@ mime_bridge_create_display_stream(
 
   // If this is a part, then we should emit the HTML to render the data
   // (i.e. embedded images)
-  if (msd->options->part_to_load)
+  if (msd->options->part_to_load && msd->options->format_out != nsMimeOutput::nsMimeMessageBodyDisplay)
     msd->options->write_html_p = PR_FALSE;
+
+  if (msd->options->prefs)
+    msd->options->prefs->GetBoolPref("mail.inline_attachments", &(msd->options->show_attachment_inline_p));
 
   obj = mime_new ((MimeObjectClass *)&mimeMessageClass, (MimeHeaders *) NULL, MESSAGE_RFC822);
   if (!obj)
@@ -2058,7 +2072,6 @@ nsresult GetMailNewsFont(MimeObject *obj, PRBool styleFixed,  PRInt32 *fontPixel
     nsCOMPtr<nsICharsetConverterManager2> charSetConverterManager2;
     nsCOMPtr <nsIAtom> charsetAtom;
     nsCOMPtr<nsIAtom> langGroupAtom;
-    const PRUnichar* langGroup = nsnull;
     nsCAutoString prefStr;
 
     ToLowerCase(charset);
@@ -2074,15 +2087,13 @@ nsresult GetMailNewsFont(MimeObject *obj, PRBool styleFixed,  PRInt32 *fontPixel
     rv = charSetConverterManager2->GetCharsetLangGroup(charsetAtom,getter_AddRefs(langGroupAtom));
     if (NS_FAILED(rv))
       return rv;
-    rv = langGroupAtom->GetUnicode(&langGroup);
+    rv = langGroupAtom->ToUTF8String(fontLang);
     if (NS_FAILED(rv))
       return rv;
 
-    fontLang.AssignWithConversion(langGroup);
-
     // get a font size from pref
     prefStr.Assign(!styleFixed ? "font.size.variable." : "font.size.fixed.");
-    prefStr.AppendWithConversion(langGroup);
+    prefStr.Append(fontLang);
     rv = prefs->GetIntPref(prefStr.get(), fontPixelSize);
     if (NS_FAILED(rv))
       return rv;

@@ -6,8 +6,6 @@
 %tasksDTD;
 ]>
 
-<!-- <?xul-overlay href="chrome://communicator/content/taskbarOverlay.xul"?>  -->
-
 <overlay id="tasksOverlay"
       xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
@@ -18,7 +16,6 @@
 <keyset id="tasksKeys">
   <key id="key_navigator"    key="&navigatorCmd.commandkey;"   command="Tasks:Navigator" modifiers="accel"/>
 
-  <!-- Tools Menu -->
 </keyset>
 <commandset id="tasksCommands">
   <command id="Tasks:Navigator" oncommand="toNavigator();"/>
@@ -36,6 +33,8 @@
               <menuitem id="java" label="&javaConsoleCmd.label;" accesskey="&javaConsoleCmd.accesskey;" oncommand="toJavaConsole()"/>
             </menupopup>
           </menu>
+          <menuseparator id="sep_switchprofile"/>
+          <menuitem id="cmd_switchprofile" label="&switchProfileCmd.label;" accesskey="&switchProfileCmd.accesskey;" oncommand="toProfileManager();"/>
         </menupopup>
       </menu>
 

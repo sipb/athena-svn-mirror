@@ -1,4 +1,3 @@
-/*  */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -21,6 +20,7 @@
  *
  * Contributor(s):
  *   Joe Hewitt <hewitt@netscape.com> (original author)
+ *   Christopher A. Aillon <christopher@aillon.com>
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -45,9 +45,10 @@
 #include "nsIDOMElement.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMCharacterData.h"
+#include "nsITextContent.h"
 #include "nsEnumeratorUtils.h"
 #include "nsIXBLBinding.h" 
-#include "nsIStyleContext.h"
 #include "nsRuleNode.h"
 #include "nsIStyleRule.h"
 #include "nsICSSStyleRule.h"
@@ -60,7 +61,6 @@ static NS_DEFINE_CID(kInspectorCSSUtilsCID, NS_INSPECTORCSSUTILS_CID);
 
 inDOMUtils::inDOMUtils()
 {
-  NS_INIT_ISUPPORTS();
   mCSSUtils = do_GetService(kInspectorCSSUtilsCID);
 }
 
@@ -73,81 +73,80 @@ NS_IMPL_ISUPPORTS1(inDOMUtils, inIDOMUtils);
 ///////////////////////////////////////////////////////////////////////////////
 // inIDOMUtils
 
-// Helper to get a style context for the node, recursively resolving if needed.
-nsresult
-inDOMUtils::GetStyleContextForContent(nsIContent* aContent,
-                                      nsIPresShell* aPresShell,
-                                      nsIStyleContext** aStyleContext)
+NS_IMETHODIMP
+inDOMUtils::IsIgnorableWhitespace(nsIDOMCharacterData *aDataNode,
+                                  PRBool *aReturn)
 {
-  NS_PRECONDITION(aContent, "Gotta have a content");
-  NS_PRECONDITION(aPresShell, "Need a PresShell");
-  NS_PRECONDITION(aStyleContext, "Need somewhere to put the result");
-  
-  *aStyleContext = nsnull;
+  NS_PRECONDITION(aDataNode, "Must have a character data node");
+  NS_PRECONDITION(aReturn, "Must have an out parameter");
+
+  *aReturn = PR_FALSE;
+
+  nsCOMPtr<nsITextContent> textContent = do_QueryInterface(aDataNode);
+  NS_ASSERTION(textContent, "Does not implement nsITextContent!");
+
+  PRBool whiteSpaceOnly = PR_FALSE;
+  textContent->IsOnlyWhitespace(&whiteSpaceOnly);
+  if (!whiteSpaceOnly) {
+    return NS_OK;
+  }
+
+  // Okay.  We have only white space.  Let's check the white-space
+  // property now and make sure that this isn't preformatted text...
+
+  nsCOMPtr<nsIDOMWindowInternal> win = inLayoutUtils::GetWindowFor(aDataNode);
+  if (!win) {
+    // Hmm.  Things are screwy if we have no window...
+    NS_ERROR("No window!");
+    return NS_OK;
+  }
+
+  nsCOMPtr<nsIPresShell> presShell = inLayoutUtils::GetPresShellFor(win);
+  NS_ASSERTION(presShell, "No pres shell!");
 
   nsIFrame* frame;
-  aPresShell->GetPrimaryFrameFor(aContent, &frame);
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aDataNode);
+  presShell->GetPrimaryFrameFor(content, &frame);
   if (frame) {
-    return mCSSUtils->GetStyleContextForFrame(frame, aStyleContext);
+    const nsStyleText* text = frame->GetStyleText();
+    *aReturn = text->mWhiteSpace != NS_STYLE_WHITESPACE_PRE &&
+               text->mWhiteSpace != NS_STYLE_WHITESPACE_MOZ_PRE_WRAP;
+  }
+  else {
+    // empty inter-tag text node without frame, e.g., in between <table>\n<tr>
+    *aReturn = PR_TRUE;
   }
 
-  NS_ASSERTION(aContent->IsContentOfType(nsIContent::eELEMENT),
-               "We need to deal with non-elements too?  This code needs fixing");
-  // No frame.  Do this the hard way.
-  // Get the parent style context
-  nsCOMPtr<nsIStyleContext> parentContext;
-  nsCOMPtr<nsIContent> parent;
-  aContent->GetParent(*getter_AddRefs(parent));
-  if (parent) {
-    nsresult rv = GetStyleContextForContent(parent, aPresShell,
-                                            getter_AddRefs(parentContext));
-    if (NS_FAILED(rv))
-      return rv;
-  }
-
-  nsCOMPtr<nsIPresContext> presContext;
-  aPresShell->GetPresContext(getter_AddRefs(presContext));
-  NS_ENSURE_TRUE(presContext, NS_ERROR_UNEXPECTED);
-  
-  return presContext->ResolveStyleContextFor(aContent, parentContext, aStyleContext);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
 inDOMUtils::GetStyleRules(nsIDOMElement *aElement, nsISupportsArray **_retval)
 {
+  if (!aElement) return NS_ERROR_NULL_POINTER;
+
   *_retval = nsnull;
-  
+
   nsCOMPtr<nsISupportsArray> rules;
   NS_NewISupportsArray(getter_AddRefs(rules));
-  if (!rules) return NS_OK;
-  
-  nsCOMPtr<nsIDOMWindowInternal> win = inLayoutUtils::GetWindowFor(aElement);
-  nsCOMPtr<nsIPresShell> shell = inLayoutUtils::GetPresShellFor(win);
+  if (!rules) return NS_ERROR_OUT_OF_MEMORY;
 
-  // query to a content node
-  nsCOMPtr<nsIContent> content;
-  content = do_QueryInterface(aElement);
-  nsCOMPtr<nsIStyleContext> styleContext;
-
-  nsresult rv = GetStyleContextForContent(content, shell,
-                                          getter_AddRefs(styleContext));
-  if (NS_FAILED(rv) || !styleContext) return rv;
-
-  // create a resource for all the style rules from the 
-  // context and add them to aArcs
   nsRuleNode* ruleNode = nsnull;
-  styleContext->GetRuleNode(&ruleNode);
-  
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
+  mCSSUtils->GetRuleNodeForContent(content, &ruleNode);
+
   nsCOMPtr<nsIStyleRule> srule;
-  for (PRBool isRoot; mCSSUtils->IsRuleNodeRoot(ruleNode, &isRoot), !isRoot;
-       mCSSUtils->GetRuleNodeParent(ruleNode, &ruleNode)) {
+  for (PRBool isRoot;
+       mCSSUtils->IsRuleNodeRoot(ruleNode, &isRoot), !isRoot;
+       mCSSUtils->GetRuleNodeParent(ruleNode, &ruleNode))
+  {
     mCSSUtils->GetRuleNodeRule(ruleNode, getter_AddRefs(srule));
     rules->InsertElementAt(srule, 0);
   }
 
   *_retval = rules;
-  NS_IF_ADDREF(*_retval);
-  
+  NS_ADDREF(*_retval);
+
   return NS_OK;
 }
 
@@ -197,15 +196,11 @@ inDOMUtils::GetBindingURLs(nsIDOMElement *aElement, nsISimpleEnumerator **_retva
   
   nsCOMPtr<nsIXBLBinding> tempBinding;
   while (binding) {
-    nsCString id;
-    binding->GetID(id);
-    nsCString uri;
-    binding->GetDocURI(uri);
-    uri += "#";
-    uri += id;
-  
-    nsCOMPtr<nsIAtom> a = NS_NewAtom(uri.get());
-    urls->AppendElement(a);
+    nsCAutoString uri;
+    binding->GetBindingURI(uri);
+
+    nsCOMPtr<nsIAtom> atom = do_GetAtom(uri.get());
+    urls->AppendElement(atom);
     
     binding->GetBaseBinding(getter_AddRefs(tempBinding));
     binding = tempBinding;

@@ -54,10 +54,12 @@
 #include "nsIBaseWindow.h"
 #include "nsIChromeEventHandler.h"
 #include "nsIControllers.h"
+#include "nsIObserver.h"
 #include "nsIDocShellTreeOwner.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsIDOMViewCSS.h"
 #include "nsIDOMEventReceiver.h"
+#include "nsIDOM3EventTarget.h"
 #include "nsIDOMNavigator.h"
 #include "nsIDOMNSLocation.h"
 #include "nsIDOMWindowInternal.h"
@@ -116,6 +118,7 @@ class GlobalWindowImpl : public nsIScriptGlobalObject,
                          public nsIDOMJSWindow,
                          public nsIScriptObjectPrincipal,
                          public nsIDOMEventReceiver,
+                         public nsIDOM3EventTarget,
                          public nsPIDOMWindow,
                          public nsIDOMViewCSS,
                          public nsSupportsWeakReference,
@@ -156,13 +159,10 @@ public:
   NS_DECL_NSIDOMJSWINDOW
 
   // nsIDOMEventTarget
-  NS_IMETHOD AddEventListener(const nsAString& aType,
-                              nsIDOMEventListener* aListener,
-                              PRBool aUseCapture);
-  NS_IMETHOD RemoveEventListener(const nsAString& aType,
-                                 nsIDOMEventListener* aListener,
-                                 PRBool aUseCapture);
-  NS_IMETHOD DispatchEvent(nsIDOMEvent* aEvent, PRBool *_retval);
+  NS_DECL_NSIDOMEVENTTARGET
+
+  // nsIDOM3EventTarget
+  NS_DECL_NSIDOM3EVENTTARGET
 
   // nsIDOMEventReceiver
   NS_IMETHOD AddEventListenerByIID(nsIDOMEventListener *aListener,
@@ -170,8 +170,8 @@ public:
   NS_IMETHOD RemoveEventListenerByIID(nsIDOMEventListener *aListener,
                                       const nsIID& aIID);
   NS_IMETHOD GetListenerManager(nsIEventListenerManager** aInstancePtrResult);
-  NS_IMETHOD GetNewListenerManager(nsIEventListenerManager **aInstancePtrResult);
   NS_IMETHOD HandleEvent(nsIDOMEvent *aEvent);
+  NS_IMETHOD GetSystemEventGroup(nsIDOMEventGroup** aGroup);
 
   // nsPIDOMWindow
   NS_IMETHOD GetPrivateParent(nsPIDOMWindow** aResult);
@@ -192,6 +192,7 @@ public:
 
   NS_IMETHOD GetFrameElementInternal(nsIDOMElement** aFrameElement);
   NS_IMETHOD SetFrameElementInternal(nsIDOMElement* aFrameElement);
+  NS_IMETHOD SetOpenerScriptURL(nsIURI* aURI);
 
   // nsIDOMViewCSS
   NS_DECL_NSIDOMVIEWCSS
@@ -212,6 +213,7 @@ protected:
   // Object Management
   virtual ~GlobalWindowImpl();
   void CleanUp();
+  void ClearControllers();
 
   // Get the parent, returns null if this is a toplevel window
   void GetParentInternal(nsIDOMWindowInternal **parent);
@@ -227,8 +229,6 @@ protected:
   // Timeout Functions
   nsresult SetTimeoutOrInterval(PRBool aIsInterval, PRInt32* aReturn);
   void RunTimeout(nsTimeoutImpl *aTimeout);
-  void DropTimeout(nsTimeoutImpl *aTimeout, nsIScriptContext* aContext=nsnull);
-  void HoldTimeout(nsTimeoutImpl *aTimeout);
   nsresult ClearTimeoutOrInterval();
   void ClearAllTimeouts();
   void InsertTimeoutIntoList(nsTimeoutImpl **aInsertionPoint,
@@ -249,6 +249,7 @@ protected:
   nsresult CheckSecurityWidthAndHeight(PRInt32* width, PRInt32* height);
   nsresult CheckSecurityLeftAndTop(PRInt32* left, PRInt32* top);
   static nsresult CheckSecurityIsChromeCaller(PRBool *isChrome);
+  static PRBool CanSetProperty(const char *aPrefName);
 
   void MakeScriptDialogTitle(const nsAString &aInTitle, nsAString &aOutTitle);
 
@@ -257,6 +258,13 @@ protected:
                        PRBool backwards, PRBool wrapAround, PRBool wholeWord, 
                        PRBool searchInFrames, PRBool showDialog, 
                        PRBool *aReturn);
+
+  nsresult ConvertCharset(const nsAString& aStr, char** aDest);
+
+  PRBool   GetBlurSuppression();
+
+  nsresult GetScrollXY(PRInt32* aScrollX, PRInt32* aScrollY);
+  nsresult GetScrollMaxXY(PRInt32* aScrollMaxX, PRInt32* aScrollMaxY);
 
 protected:
   // When adding new member variables, be careful not to create cycles
@@ -288,18 +296,14 @@ protected:
   nsTimeoutImpl*                mRunningTimeout;
   PRUint32                      mTimeoutPublicIdCounter;
   PRUint32                      mTimeoutFiringDepth;
-  PRPackedBool                  mTimeoutsWereCleared;
   PRPackedBool                  mFirstDocumentLoad;
   PRPackedBool                  mIsScopeClear;
   PRPackedBool                  mIsDocumentLoaded; // true between onload and onunload events
-  PRTime                        mLastMouseButtonAction;
   PRPackedBool                  mFullScreen;
+  PRPackedBool                  mIsClosed;
+  PRTime                        mLastMouseButtonAction;
   nsString                      mStatus;
   nsString                      mDefaultStatus;
-
-  // state preservation for full screen mode
-  nsPoint*                     mOriginalPos;
-  nsSize*                      mOriginalSize;
 
   nsIScriptGlobalObjectOwner*   mGlobalObjectOwner; // Weak Reference
   nsIDocShell*                  mDocShell;  // Weak Reference
@@ -308,6 +312,7 @@ protected:
   nsCOMPtr<nsIDOMCrypto>        mCrypto;
   nsCOMPtr<nsIDOMPkcs11>        mPkcs11;
   nsCOMPtr<nsIPrincipal>        mDocumentPrincipal;
+  nsCOMPtr<nsIURI>              mOpenerScriptURL; // Used to determine whether to clear scope
 
   nsIDOMElement*                mFrameElement; // WEAK
 
@@ -341,35 +346,87 @@ protected:
  * Timeout struct that holds information about each JavaScript
  * timeout.
  */
-struct nsTimeoutImpl {
-  nsTimeoutImpl() {
+struct nsTimeoutImpl
+{
+  nsTimeoutImpl()
+  {
+#ifdef DEBUG_jst
+    {
+      extern gTimeoutCnt;
+
+      ++gTimeoutCnt;
+    }
+#endif
+
     memset(this, 0, sizeof(*this));
 
     MOZ_COUNT_CTOR(nsTimeoutImpl);
   }
 
-  ~nsTimeoutImpl() {
+  ~nsTimeoutImpl()
+  {
+#ifdef DEBUG_jst
+    {
+      extern gTimeoutCnt;
+
+      --gTimeoutCnt;
+    }
+#endif
+
     MOZ_COUNT_DTOR(nsTimeoutImpl);
   }
 
-  PRInt32             ref_count;      /* reference count to shared usage */
-  GlobalWindowImpl    *window;        /* window for which this timeout fires */
-  JSString            *expr;          /* the JS expression to evaluate */
-  JSObject            *funobj;        /* or function to call, if !expr */
-  nsCOMPtr<nsITimer>  timer;          /* The actual timer object */
-  jsval               *argv;          /* function actual arguments */
-  PRUint16            argc;           /* and argument count */
-  PRUint16            spare;          /* alignment padding */
-  PRUint32            public_id;      /* Returned as value of setTimeout() */
-  PRInt32             interval;       /* Non-zero if repetitive timeout */
-  PRInt64             when;           /* nominal time to run this timeout */
-  nsCOMPtr<nsIPrincipal> principal;   /* principals with which to execute */
-  char                *filename;      /* filename of setTimeout call */
-  PRUint32            lineno;         /* line number of setTimeout call */
-  const char          *version;       /* JS language version string constant */
-  PRUint32            firingDepth;    /* stack depth at which timeout is
-                                         firing */
-  nsTimeoutImpl       *next;
+  void Release(nsIScriptContext* aContext);
+  void AddRef();
+
+  // Window for which this timeout fires
+  GlobalWindowImpl *mWindow;
+
+  // The JS expression to evaluate or function to call, if !mExpr
+  JSString *mExpr;
+  JSObject *mFunObj;
+
+  // The actual timer object
+  nsCOMPtr<nsITimer> mTimer;
+
+  // Function actual arguments and argument count
+  jsval *mArgv;
+  PRUint16 mArgc;
+
+  // True if the timeout was cleared
+  PRPackedBool mCleared;
+
+  // Alignment padding, unused
+  PRPackedBool mSpareAndUnused;
+
+  // Returned as value of setTimeout()
+  PRUint32 mPublicId;
+
+  // Non-zero if repetitive timeout
+  PRInt32 mInterval;
+
+  // Nominal time to run this timeout
+  PRInt64 mWhen;
+
+  // Principal with which to execute
+  nsCOMPtr<nsIPrincipal> mPrincipal;
+
+  // filename, line number and JS language version string of the
+  // caller of setTimeout()
+  char *mFileName;
+  PRUint32 mLineNo;
+  const char *mVersion;
+
+  // stack depth at which timeout is firing
+  PRUint32 mFiringDepth;
+
+  // Pointer to the next timeout in the linked list of scheduled
+  // timeouts
+  nsTimeoutImpl *mNext;
+
+private:
+  // reference count for shared usage
+  PRInt32 mRefCnt;
 };
 
 //*****************************************************************************
@@ -435,38 +492,9 @@ protected:
   nsresult GetSourceDocument(JSContext* cx, nsIDocument** aDocument);
 
   nsresult CheckURL(nsIURI *url, nsIDocShellLoadInfo** aLoadInfo);
+  nsresult FindUsableBaseURI(nsIURI * aBaseURI, nsIDocShell * aParent, nsIURI ** aUsableURI);
 
   nsIDocShell *mDocShell; // Weak Reference
 };
-
-#define DOM_CONTROLLER
-#ifdef DOM_CONTROLLER
-class nsIContentViewerEdit;
-
-class nsISelectionController;
-
-class nsDOMWindowController : public nsIController
-{
-public:
-	nsDOMWindowController( nsIDOMWindowInternal* aWindow );
-  virtual ~nsDOMWindowController();
-  NS_DECL_ISUPPORTS
-  NS_DECL_NSICONTROLLER
-
-private:
-  nsresult GetEventStateManager(nsIEventStateManager **esm);
-  static int PR_CALLBACK BrowseWithCaretPrefCallback(const char* aPrefName, void* instance_data);
-  nsresult GetPresShell(nsIPresShell **aPresShell);
-	nsresult GetEditInterface( nsIContentViewerEdit** aEditInterface);
-  nsresult GetSelectionController(nsISelectionController ** aSelCon);
-
-  nsresult DoCommandWithWebNavigationInterface(const char * aCommandName);
-  nsresult DoCommandWithEditInterface(const char * aCommandName);
-  nsresult DoCommandWithSelectionController(const char * aCommandName);
-
-	nsIDOMWindowInternal *mWindow;
-  PRBool mBrowseWithCaret;
-};
-#endif // DOM_CONTROLLER
 
 #endif /* nsGlobalWindow_h___ */

@@ -20,8 +20,9 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Ryan Cassin <rcassin@supernova.org>
- *   Daniel Glazman <glazman@netscape.com>
+ *   Ryan Cassin      <rcassin@supernova.org>
+ *   Daniel Glazman   <glazman@netscape.com>
+ *   Charles Manske   <cmanske@netscape.com>
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -43,6 +44,8 @@
 
 #include "nsIControllerCommand.h"
 #include "nsString.h"
+
+class nsIEditor;
 
 // This is a virtual base class for commands registered with the composer controller.
 // Note that such commands are instantiated once per composer, so can store state.
@@ -70,7 +73,6 @@ public:
 };
 
 
-
 #define NS_DECL_COMPOSER_COMMAND(_cmd)                  \
 class _cmd : public nsBaseComposerCommand               \
 {                                                       \
@@ -93,9 +95,6 @@ public:
 protected:
 
   // get the current state (on or off) for this style or block format
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, PRBool& outStateSet) = 0;
-
-  // get the current state (on or off) for this style or block format
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams) = 0;
   
   // add/remove the style
@@ -104,9 +103,6 @@ protected:
 protected:
 
   const char* mTagName;
-  
-  PRPackedBool  mGotState;    // do we know the state yet?
-  PRPackedBool  mState;       // is this style "on" ?
 };
 
 
@@ -121,14 +117,28 @@ public:
 protected:
 
   // get the current state (on or off) for this style or block format
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, PRBool& outStateSet);
-
-  // get the current state (on or off) for this style or block format
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams);
   
   // add/remove the style
   virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
   
+};
+
+
+class nsInsertTagCommand : public nsBaseComposerCommand
+{
+public:
+
+              nsInsertTagCommand(const char* aTagName);
+  virtual     ~nsInsertTagCommand();
+    
+  NS_DECL_ISUPPORTS_INHERITED
+
+  NS_DECL_NSICONTROLLERCOMMAND
+
+protected:
+
+  const char* mTagName;
 };
 
 
@@ -139,9 +149,6 @@ public:
             nsListCommand(const char* aTagName);
 
 protected:
-  
-  // get the current state (on or off) for this style or block format
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, PRBool& outStateSet);
 
   // get the current state (on or off) for this style or block format
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams);
@@ -157,9 +164,6 @@ public:
             nsListItemCommand(const char* aTagName);
 
 protected:
-  
-  // get the current state (on or off) for this style or block format
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, PRBool& outStateSet);
 
   // get the current state (on or off) for this style or block format
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams);
@@ -181,15 +185,9 @@ public:
 
 protected:
 
-  virtual nsresult GetCurrentState(nsIEditor *aEditor, nsString& outStateString, PRBool& outMixed) = 0;
   virtual nsresult GetCurrentState(nsIEditor *aEditor, nsICommandParams* aParams) =0;
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState) = 0;
   
-protected:
-
-  PRPackedBool  mGotState;
-  nsString      mStateString;
-
 };
 
 
@@ -200,7 +198,6 @@ public:
 
 protected:
 
-  virtual nsresult GetCurrentState(nsIEditor *aEditor, nsString& outStateString, PRBool& outMixed);
   virtual nsresult GetCurrentState(nsIEditor *aEditor, nsICommandParams* aParams);
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
 };
@@ -212,8 +209,19 @@ public:
 
 protected:
 
-  virtual nsresult GetCurrentState(nsIEditor *aEditor, nsString& outStateString, PRBool& outMixed);
   virtual nsresult GetCurrentState(nsIEditor *aEditor, nsICommandParams* aParams);
+  virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
+};
+
+class nsFontSizeStateCommand : public nsMultiStateCommand
+{
+public:
+                   nsFontSizeStateCommand();
+
+protected:
+
+  virtual nsresult GetCurrentState(nsIEditor *aEditor,
+                                   nsICommandParams* aParams);
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
 };
 
@@ -224,7 +232,6 @@ public:
 
 protected:
 
-  virtual nsresult GetCurrentState(nsIEditor *aEditor, nsString& outStateString, PRBool& outMixed);
   NS_IMETHOD IsCommandEnabled(const char *aCommandName, nsISupports *aCommandRefCon, PRBool *_retval);
   virtual nsresult GetCurrentState(nsIEditor *aEditor, nsICommandParams* aParams);
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
@@ -238,7 +245,6 @@ public:
 
 protected:
 
-  virtual nsresult GetCurrentState(nsIEditor *aEditor, nsString& outStateString, PRBool& outMixed);
   virtual nsresult GetCurrentState(nsIEditor *aEditor, nsICommandParams* aParams);
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
 };
@@ -250,7 +256,6 @@ public:
 
 protected:
 
-  virtual nsresult GetCurrentState(nsIEditor *aEditor, nsString& outStateString, PRBool& outMixed);
   virtual nsresult GetCurrentState(nsIEditor *aEditor, nsICommandParams* aParams);
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
 };
@@ -262,7 +267,6 @@ public:
 
 protected:
 
-  virtual nsresult GetCurrentState(nsIEditor *aEditor, nsString& outStateString, PRBool& outMixed);
   virtual nsresult GetCurrentState(nsIEditor *aEditor, nsICommandParams* aParams);
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
 };
@@ -272,17 +276,17 @@ protected:
 // composer commands
 
 NS_DECL_COMPOSER_COMMAND(nsCloseCommand)
+NS_DECL_COMPOSER_COMMAND(nsDocumentStateCommand)
+NS_DECL_COMPOSER_COMMAND(nsSetDocumentStateCommand)
+NS_DECL_COMPOSER_COMMAND(nsSetDocumentOptionsCommand)
 //NS_DECL_COMPOSER_COMMAND(nsPrintingCommands)
 
 // Generic commands
 
-
 // File menu
 NS_DECL_COMPOSER_COMMAND(nsNewCommands)   // handles 'new' anything
 
-
 // Edit menu
-NS_DECL_COMPOSER_COMMAND(nsPasteQuotationCommand)
 NS_DECL_COMPOSER_COMMAND(nsPasteNoFormattingCommand)
 
 // Block transformations
@@ -294,5 +298,7 @@ NS_DECL_COMPOSER_COMMAND(nsRemoveStylesCommand)
 NS_DECL_COMPOSER_COMMAND(nsIncreaseFontSizeCommand)
 NS_DECL_COMPOSER_COMMAND(nsDecreaseFontSizeCommand)
 
+// Insert content commands
+NS_DECL_COMPOSER_COMMAND(nsInsertHTMLCommand)
 
 #endif // nsComposerCommands_h_

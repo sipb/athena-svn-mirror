@@ -46,7 +46,6 @@
 #include "nsITextContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
@@ -60,6 +59,7 @@
 #include "nsGenericDOMHTMLCollection.h"
 #include "nsISelectElement.h"
 #include "nsISelectControlFrame.h"
+#include "nsIDOMHTMLOptionsCollection.h"
 #include "nsIDOMNSHTMLOptionCollectn.h"
 #include "nsGUIEvent.h"
 #include "nsIBoxObject.h"
@@ -81,6 +81,7 @@
 #include "nsIFormControlFrame.h"
 #include "nsIFrame.h"
 
+#include "nsDOMError.h"
 #include "nsRuleNode.h"
 
 
@@ -90,7 +91,8 @@ class nsHTMLSelectElement;
  * The collection of options in the select (what you get back when you do
  * select.options in DOM)
  */
-class nsHTMLOptionCollection: public nsIDOMNSHTMLOptionCollection,
+class nsHTMLOptionCollection: public nsIDOMHTMLOptionsCollection,
+                              public nsIDOMNSHTMLOptionCollection,
                               public nsGenericDOMHTMLCollection
 {
 public:
@@ -99,16 +101,19 @@ public:
 
   NS_DECL_ISUPPORTS_INHERITED
 
+  // nsIDOMHTMLOptionsCollection interface
+  NS_DECL_NSIDOMHTMLOPTIONSCOLLECTION
+
   // nsIDOMNSHTMLOptionCollection interface, can't use the macro
-  // NS_DECL_NSIDOMNSHTMLOPTIONLIST here since GetLength() is defined
-  // in mode than one interface
-  NS_IMETHOD SetLength(PRUint32 aLength);
+  // NS_DECL_NSIDOMNSHTMLOPTIONCOLLECTION here since GetLength() is
+  // defined in more than one interface
   NS_IMETHOD GetSelectedIndex(PRInt32* aSelectedIndex);
   NS_IMETHOD SetSelectedIndex(PRInt32 aSelectedIndex);
   NS_IMETHOD SetOption(PRInt32 aIndex, nsIDOMHTMLOptionElement* aOption);
+  NS_IMETHOD Add(nsIDOMHTMLOptionElement* aOption);
 
-  // nsIDOMHTMLCollection interface
-  NS_DECL_NSIDOMHTMLCOLLECTION
+  // nsIDOMHTMLCollection interface, all its methods are defined in
+  // nsIDOMHTMLOptionsCollection
 
   // Helpers for nsHTMLSelectElement
   /**
@@ -155,7 +160,6 @@ class nsSelectState : public nsISupports {
 public:
   nsSelectState()
   {
-    NS_INIT_ISUPPORTS();
   }
   virtual ~nsSelectState()
   {
@@ -235,14 +239,11 @@ public:
                             PRUint32 aFlags,
                             nsEventStatus* aEventStatus);
 
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
   NS_IMETHOD SetFocus(nsIPresContext* aPresContext);
   NS_IMETHOD RemoveFocus(nsIPresContext* aPresContext);   
 
   // Overriden nsIFormControl methods
-  NS_IMETHOD GetType(PRInt32* aType);
+  NS_IMETHOD_(PRInt32) GetType() { return NS_FORM_SELECT; }
   NS_IMETHOD Reset();
   NS_IMETHOD SubmitNamesValues(nsIFormSubmission* aFormSubmission,
                                nsIContent* aSubmitElement);
@@ -276,13 +277,15 @@ protected:
   void FindSelectedIndex(PRInt32 aStartIndex);
   /**
    * Select some option if possible (generally the first non-disabled option).
+   * @return true if something was selected, false otherwise
    */
-  void SelectSomething();
+  PRBool SelectSomething();
   /**
    * Call SelectSomething(), but only if nothing is selected
    * @see SelectSomething()
+   * @return true if something was selected, false otherwise
    */
-  void CheckSelectSomething();
+  PRBool CheckSelectSomething();
   /**
    * Called to trigger notifications of frames and fixing selected index
    *
@@ -784,7 +787,8 @@ nsresult
 nsHTMLSelectElement::RemoveOptionsFromListRecurse(nsIContent* aOptions,
                                                   PRInt32 aRemoveIndex,
                                                   PRInt32* aNumRemoved,
-                                                  PRInt32 aDepth) {
+                                                  PRInt32 aDepth)
+{
   // We *assume* here that someone's brain has not gone horribly
   // wrong by putting <option> inside of <option>.  I'm sorry, I'm
   // just not going to look for an option inside of an option.
@@ -1022,8 +1026,7 @@ nsHTMLSelectElement::GetSelectFrame()
   nsISelectControlFrame *select_frame = nsnull;
 
   if (form_control_frame) {
-    form_control_frame->QueryInterface(NS_GET_IID(nsISelectControlFrame),
-                                       (void **)&select_frame);
+    CallQueryInterface(form_control_frame, &select_frame);
   }
 
   return select_frame;
@@ -1033,30 +1036,39 @@ NS_IMETHODIMP
 nsHTMLSelectElement::Add(nsIDOMHTMLElement* aElement,
                          nsIDOMHTMLElement* aBefore)
 {
-  nsresult rv;
-  nsCOMPtr<nsIDOMNode> ret;
-
-  if (nsnull == aBefore) {
-    rv = AppendChild(aElement, getter_AddRefs(ret));
+  nsCOMPtr<nsIDOMNode> added;
+  if (!aBefore) {
+    return AppendChild(aElement, getter_AddRefs(added));
   }
-  else {
-    // Just in case we're not the parent, get the parent of the reference
-    // element
-    nsCOMPtr<nsIDOMNode> parent;
-    
-    rv = aBefore->GetParentNode(getter_AddRefs(parent));
-    if (parent) {
-      rv = parent->InsertBefore(aElement, aBefore, getter_AddRefs(ret));
+
+  // Just in case we're not the parent, get the parent of the reference
+  // element
+  nsCOMPtr<nsIDOMNode> parent;    
+  aBefore->GetParentNode(getter_AddRefs(parent));
+  if (!parent) {
+    // NOT_FOUND_ERR: Raised if before is not a descendant of the SELECT
+    // element.
+    return NS_ERROR_DOM_NOT_FOUND_ERR;
+  }
+
+  nsCOMPtr<nsIDOMNode> ancestor(parent);
+  while (ancestor != NS_STATIC_CAST(nsIDOMNode*, this)) {
+    ancestor->GetParentNode(getter_AddRefs(ancestor));
+    if (!ancestor) {
+      // NOT_FOUND_ERR: Raised if before is not a descendant of the SELECT
+      // element.
+      return NS_ERROR_DOM_NOT_FOUND_ERR;
     }
   }
 
-  return rv;
+  // If the before parameter is not null, we are equivalent to the
+  // insertBefore method on the parent of before.
+  return parent->InsertBefore(aElement, aBefore, getter_AddRefs(added));
 }
 
 NS_IMETHODIMP 
 nsHTMLSelectElement::Remove(PRInt32 aIndex) 
 {
-  nsresult rv = NS_OK;
   nsCOMPtr<nsIDOMNode> option;
   Item(aIndex, getter_AddRefs(option));
 
@@ -1070,11 +1082,11 @@ nsHTMLSelectElement::Remove(PRInt32 aIndex)
     }
   }
 
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
-nsHTMLSelectElement::GetOptions(nsIDOMHTMLCollection** aValue)
+nsHTMLSelectElement::GetOptions(nsIDOMHTMLOptionsCollection** aValue)
 {
   *aValue = mOptions;
   NS_IF_ADDREF(*aValue);
@@ -1086,18 +1098,14 @@ NS_IMETHODIMP
 nsHTMLSelectElement::GetType(nsAString& aType)
 {
   PRBool isMultiple;
-  nsresult rv = NS_OK;
-
-  rv = GetMultiple(&isMultiple);
-  if (NS_OK == rv) {
-    if (isMultiple) {
-      aType.Assign(NS_LITERAL_STRING("select-multiple"));
-    }
-    else {
-      aType.Assign(NS_LITERAL_STRING("select-one"));
-    }
+  GetMultiple(&isMultiple);
+  if (isMultiple) {
+    aType.Assign(NS_LITERAL_STRING("select-multiple"));
   }
-  
+  else {
+    aType.Assign(NS_LITERAL_STRING("select-one"));
+  }
+
   return NS_OK;
 }
 
@@ -1134,7 +1142,7 @@ nsHTMLSelectElement::SetLength(PRUint32 aLength)
     rv = NS_NewHTMLOptionElement(getter_AddRefs(element), nodeInfo);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    nsCOMPtr<nsIContent> text;
+    nsCOMPtr<nsITextContent> text;
     rv = NS_NewTextNode(getter_AddRefs(text));
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1483,9 +1491,9 @@ nsHTMLSelectElement::SetOptionsSelectedByIndex(PRInt32 aStartIndex,
     }
   }
 
-  // Make sure something is selected
-  if (optionsDeselected) {
-    CheckSelectSomething();
+  // Make sure something is selected unless we were set to -1 (none)
+  if (optionsDeselected && aStartIndex != -1) {
+    optionsSelected = CheckSelectSomething() || optionsSelected;
   }
 
   // Let the caller know whether anything was changed
@@ -1753,7 +1761,7 @@ nsHTMLSelectElement::NamedItem(const nsAString& aName,
   return mOptions->NamedItem(aName, aReturn);
 }
 
-void
+PRBool
 nsHTMLSelectElement::CheckSelectSomething()
 {
   if (mIsDoneAddingChildren) {
@@ -1762,24 +1770,18 @@ nsHTMLSelectElement::CheckSelectSomething()
     PRBool isMultiple;
     GetMultiple(&isMultiple);
     if (mSelectedIndex < 0 && !isMultiple && size <= 1) {
-      SelectSomething();
+      return SelectSomething();
     }
   }
+  return PR_FALSE;
 }
 
-void
+PRBool
 nsHTMLSelectElement::SelectSomething()
 {
   // If we're not done building the select, don't play with this yet.
   if (!mIsDoneAddingChildren) {
-    return;
-  }
-
-  // Don't select anything if we're disabled
-  PRBool isDisabled = PR_FALSE;
-  GetDisabled(&isDisabled);
-  if (isDisabled) {
-    return;
+    return PR_FALSE;
   }
 
   PRUint32 count;
@@ -1789,10 +1791,13 @@ nsHTMLSelectElement::SelectSomething()
     nsresult rv = IsOptionDisabled(i, &disabled);
 
     if (NS_FAILED(rv) || !disabled) {
-      SetSelectedIndex(i);
-      break;
+      rv = SetSelectedIndex(i);
+      NS_ENSURE_SUCCESS(rv, PR_FALSE);
+      return PR_TRUE;
     }
   }
+
+  return PR_FALSE;
 }
 
 NS_IMETHODIMP
@@ -1846,12 +1851,12 @@ nsHTMLSelectElement::StringToAttribute(nsIAtom* aAttribute,
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
   else if (aAttribute == nsHTMLAtoms::size) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::tabindex) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -1875,16 +1880,19 @@ nsHTMLSelectElement::GetMappedAttributeImpact(const nsIAtom* aAttribute,
                                               PRInt32 aModType,
                                               nsChangeHint& aHint) const
 {
-  if (aAttribute == nsHTMLAtoms::multiple) {
-    aHint = NS_STYLE_HINT_FRAMECHANGE;
-  }
-  else if ((aAttribute == nsHTMLAtoms::align) ||
-           (aAttribute == nsHTMLAtoms::size)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::multiple, NS_STYLE_HINT_FRAMECHANGE },
+    { &nsHTMLAtoms::size, NS_STYLE_HINT_FRAMECHANGE },
+    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
@@ -1916,13 +1924,10 @@ nsHTMLSelectElement::HandleDOMEvent(nsIPresContext* aPresContext,
   nsIFrame* formFrame = nsnull;
 
   if (formControlFrame &&
-      NS_SUCCEEDED(formControlFrame->QueryInterface(NS_GET_IID(nsIFrame),
-                                                    (void **)&formFrame)) &&
+      NS_SUCCEEDED(CallQueryInterface(formControlFrame, &formFrame)) &&
       formFrame)
   {
-    const nsStyleUserInterface* uiStyle;
-    formFrame->GetStyleData(eStyleStruct_UserInterface,
-                            (const nsStyleStruct *&)uiStyle);
+    const nsStyleUserInterface* uiStyle = formFrame->GetStyleUserInterface();
 
     if (uiStyle->mUserInput == NS_STYLE_USER_INPUT_NONE ||
         uiStyle->mUserInput == NS_STYLE_USER_INPUT_DISABLED) {
@@ -1936,7 +1941,7 @@ nsHTMLSelectElement::HandleDOMEvent(nsIPresContext* aPresContext,
   // the focused element. So the ComboboxControlFrame tracks the focus
   // at a class level (Bug 32920)
   if ((nsEventStatus_eIgnore == *aEventStatus) && 
-      !(aFlags & NS_EVENT_FLAG_CAPTURE) &&
+      !(aFlags & NS_EVENT_FLAG_CAPTURE) && !(aFlags & NS_EVENT_FLAG_SYSTEM_EVENT) &&
       (aEvent->message == NS_BLUR_CONTENT) && formControlFrame) {
     formControlFrame->SetFocus(PR_FALSE, PR_TRUE);
   }
@@ -1948,14 +1953,6 @@ nsHTMLSelectElement::HandleDOMEvent(nsIPresContext* aPresContext,
 }
 
 // nsIFormControl
-
-NS_IMETHODIMP
-nsHTMLSelectElement::GetType(PRInt32* aType)
-{
-  NS_ASSERTION(aType, "Null pointer bad!");
-  *aType = NS_FORM_SELECT;
-  return NS_OK;
-}
 
 NS_IMETHODIMP
 nsHTMLSelectElement::SaveState()
@@ -2238,10 +2235,11 @@ nsHTMLOptionCollection::DropReference()
 
 // QueryInterface implementation for nsHTMLOptionCollection
 NS_INTERFACE_MAP_BEGIN(nsHTMLOptionCollection)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLOptionsCollection)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSHTMLOptionCollection)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLCollection)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMNSHTMLOptionCollection)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLOptionCollection)
+  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLOptionsCollection)
 NS_INTERFACE_MAP_END
 
 
@@ -2396,6 +2394,13 @@ nsHTMLOptionCollection::NamedItem(const nsAString& aName,
   return rv;
 }
 
+NS_IMETHODIMP 
+nsHTMLOptionCollection::Add(nsIDOMHTMLOptionElement *aOption)
+{
+  nsCOMPtr<nsIDOMNode> ret;
+  return mSelect->AppendChild(aOption, getter_AddRefs(ret));
+}
+
 nsresult
 nsHTMLOptionCollection::InsertElementAt(nsIDOMHTMLOptionElement* aOption,
                                         PRInt32 aIndex)
@@ -2421,13 +2426,3 @@ nsHTMLOptionCollection::IndexOf(nsIContent* aOption)
 
   return mElements->IndexOf(aOption);
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLSelectElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

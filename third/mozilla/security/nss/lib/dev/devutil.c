@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: devutil.c,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 19:38:48 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: devutil.c,v $ $Revision: 1.1.1.1.2.1 $ $Date: 2003-07-14 19:06:37 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef DEVM_H
@@ -1431,6 +1431,11 @@ nssTokenObjectCache_RemoveObject
     PZ_Unlock(cache->lock);
 }
 
+/* These two hash algorithms are presently sufficient.
+** They are used for fingerprints of certs which are stored as the 
+** CKA_CERT_SHA1_HASH and CKA_CERT_MD5_HASH attributes.
+** We don't need to add SHAxxx to these now.
+*/
 /* XXX of course this doesn't belong here */
 NSS_IMPLEMENT NSSAlgorithmAndParameters *
 NSSAlgorithmAndParameters_CreateSHA1Digest

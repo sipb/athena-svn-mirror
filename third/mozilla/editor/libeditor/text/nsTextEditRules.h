@@ -187,12 +187,10 @@ protected:
 
   nsresult CreateMozBR(nsIDOMNode *inParent, PRInt32 inOffset, nsCOMPtr<nsIDOMNode> *outBRNode);
 
-#ifdef IBMBIDI
   nsresult CheckBidiLevelForDeletion(nsIDOMNode           *aSelNode, 
                                      PRInt32               aSelOffset, 
                                      nsIEditor::EDirection aAction,
                                      PRBool               *aCancel);
-#endif // IBMBIDI
 
   // data members
   nsPlaintextEditor   *mEditor;        // note that we do not refcount the editor
@@ -203,7 +201,8 @@ protected:
   nsCOMPtr<nsIDOMNode> mBody;          // cached root node
   PRUint32             mFlags;
   PRUint32             mActionNesting;
-  PRBool               mLockRulesSniffing;
+  PRPackedBool         mLockRulesSniffing;
+  PRPackedBool         mDidExplicitlySetInterline;
   PRInt32              mTheAction;     // the top level editor action
   // friends
   friend class nsAutoLockRulesSniffing;
@@ -285,14 +284,14 @@ class nsAutoLockListener
 {
   public:
   
-  nsAutoLockListener(PRBool *enabled) : mEnabled(enabled)
+  nsAutoLockListener(PRPackedBool *enabled) : mEnabled(enabled)
                  {if (mEnabled) { mOldState=*mEnabled; *mEnabled = PR_FALSE;}}
   ~nsAutoLockListener() 
                  {if (mEnabled) *mEnabled = mOldState;}
   
   protected:
-  PRBool *mEnabled;
-  PRBool mOldState;
+  PRPackedBool *mEnabled;
+  PRPackedBool mOldState;
 };
 
 

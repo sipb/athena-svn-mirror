@@ -888,11 +888,15 @@ SECStatus SEC_QuickDERDecodeItem(PRArenaPool* arena, void* dest,
         rv = SECFailure;
     }
 
-    newsrc = *src;
-
     if (SECSuccess == rv)
     {
+        newsrc = *src;
         rv = DecodeItem(dest, templateEntry, &newsrc, arena, PR_TRUE);
+        if (SECSuccess == rv && newsrc.len)
+        {
+            rv = SECFailure;
+            PORT_SetError(SEC_ERROR_EXTRA_INPUT);
+        }
     }
 
     return rv;

@@ -14,7 +14,7 @@
  *
  * The Original Code is Mozilla Communicator client code.
  *
- * The Initial Developer of the Original Code is 
+ * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
@@ -58,11 +58,11 @@
 #include "nsICSSParser.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMEventReceiver.h"
+#include "nsIDOM3EventTarget.h"
 #include "nsIDOMXULElement.h"
 #include "nsIDOMXULMultSelectCntrlEl.h"
 #include "nsIEventListenerManager.h"
 #include "nsINameSpace.h"
-#include "nsINameSpaceManager.h"
 #include "nsIRDFCompositeDataSource.h"
 #include "nsIRDFResource.h"
 #include "nsIScriptObjectOwner.h"
@@ -82,8 +82,6 @@
 
 #include "nsGenericElement.h" // for nsCheapVoidArray
 
-class nsISizeOfHandler;
-
 class nsIDocument;
 class nsIRDFService;
 class nsISupportsArray;
@@ -93,7 +91,7 @@ class nsRDFDOMNodeList;
 class nsString;
 class nsXULAttributes;
 class nsVoidArray;
-class nsIWebShell;
+class nsIDocShell;
 
 class nsIObjectInputStream;
 class nsIObjectOutputStream;
@@ -197,7 +195,7 @@ public:
     Type                     mType;
 
     PRInt32                  mRefCnt;
-          
+
     virtual ~nsXULPrototypeNode() {}
     virtual nsresult Serialize(nsIObjectOutputStream* aStream,
                                nsIScriptContext* aContext,
@@ -208,11 +206,11 @@ public:
                                  nsISupportsArray* aNodeInfos) = 0;
 
     void AddRef() { ++mRefCnt; };
-    void Release() 
-    { 
-        --mRefCnt; 
-        if (mRefCnt == 0) 
-            delete this; 
+    void Release()
+    {
+        --mRefCnt;
+        if (mRefCnt == 0)
+            delete this;
     };
     virtual void ReleaseSubtree() { Release(); };
 
@@ -244,7 +242,7 @@ public:
         delete[] mChildren;
     }
 
-    virtual void ReleaseSubtree() 
+    virtual void ReleaseSubtree()
     {
       if (mChildren) {
         for (PRInt32 i = mNumChildren-1; i >= 0; i--) {
@@ -279,8 +277,8 @@ public:
     nsresult GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, nsAString& aValue);
 
 
-    static void ReleaseGlobals() 
-    { 
+    static void ReleaseGlobals()
+    {
         NS_IF_RELEASE(sCSSParser);
     }
 
@@ -307,12 +305,14 @@ public:
     virtual nsresult Serialize(nsIObjectOutputStream* aStream,
                                nsIScriptContext* aContext,
                                nsISupportsArray* aNodeInfos);
+    nsresult SerializeOutOfLine(nsIObjectOutputStream* aStream,
+                                nsIScriptContext* aContext);
     virtual nsresult Deserialize(nsIObjectInputStream* aStream,
                                  nsIScriptContext* aContext,
                                  nsIURI* aDocumentURI,
                                  nsISupportsArray* aNodeInfos);
-    virtual nsresult DeserializeOutOfLineScript(nsIObjectInputStream* aInput,
-                                                nsIScriptContext* aContext);
+    nsresult DeserializeOutOfLine(nsIObjectInputStream* aInput,
+                                  nsIScriptContext* aContext);
 
     nsresult Compile(const PRUnichar* aText, PRInt32 aTextLength,
                      nsIURI* aURI, PRUint16 aLineNo,
@@ -327,9 +327,9 @@ public:
     JSObject*                mJSObject;
     const char*              mLangVersion;
 
-    static void ReleaseGlobals() 
-    { 
-        NS_IF_RELEASE(sXULPrototypeCache); 
+    static void ReleaseGlobals()
+    {
+        NS_IF_RELEASE(sXULPrototypeCache);
     }
 
 protected:
@@ -378,7 +378,6 @@ public:
 
 class nsXULElement : public nsIXULContent,
                      public nsIDOMXULElement,
-                     public nsIDOMEventReceiver,
                      public nsIScriptEventHandlerOwner,
                      public nsIChromeEventHandler
 {
@@ -394,9 +393,6 @@ protected:
     static nsrefcnt             gRefCnt;
     // pseudo-constants
     static nsIRDFService*       gRDFService;
-    static nsINameSpaceManager* gNameSpaceManager;
-    static PRInt32              kNameSpaceID_RDF;
-    static PRInt32              kNameSpaceID_XUL;
 
 public:
     static nsresult
@@ -408,7 +404,7 @@ public:
 
     // nsISupports
     NS_DECL_ISUPPORTS
-       
+
     // nsIContent (from nsIStyledContent)
     NS_IMETHOD GetDocument(nsIDocument*& aResult) const;
     NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep, PRBool aCompileEventHandlers);
@@ -437,13 +433,12 @@ public:
     NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, nsIAtom*& aPrefix, nsAString& aResult) const;
     NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const;
     NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, PRBool aNotify);
-    NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32& aNameSpaceID, 
+    NS_IMETHOD GetAttrNameAt(PRInt32 aIndex, PRInt32& aNameSpaceID,
                              nsIAtom*& aName, nsIAtom*& aPrefix) const;
     NS_IMETHOD GetAttrCount(PRInt32& aResult) const;
 #ifdef DEBUG
     NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
     NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const { return NS_OK; }
-    NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
 #endif
     NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext,
                               nsEvent* aEvent,
@@ -456,7 +451,7 @@ public:
     NS_IMETHOD SetContentID(PRUint32 aID);
 
     NS_IMETHOD RangeAdd(nsIDOMRange* aRange);
-    NS_IMETHOD RangeRemove(nsIDOMRange* aRange); 
+    NS_IMETHOD RangeRemove(nsIDOMRange* aRange);
     NS_IMETHOD GetRangeList(nsVoidArray*& aResult) const;
     NS_IMETHOD SetFocus(nsIPresContext* aPresContext);
     NS_IMETHOD RemoveFocus(nsIPresContext* aPresContext);
@@ -464,15 +459,16 @@ public:
     NS_IMETHOD GetBindingParent(nsIContent** aContent);
     NS_IMETHOD SetBindingParent(nsIContent* aParent);
     NS_IMETHOD_(PRBool) IsContentOfType(PRUint32 aFlags);
+    NS_IMETHOD GetListenerManager(nsIEventListenerManager** aResult);
 
     // nsIXMLContent
-    NS_IMETHOD MaybeTriggerAutoLink(nsIWebShell *aShell);
+    NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
     NS_IMETHOD GetXMLBaseURI(nsIURI **aURI);
 
     // nsIStyledContent
     NS_IMETHOD GetID(nsIAtom*& aResult) const;
     NS_IMETHOD GetClasses(nsVoidArray& aArray) const;
-    NS_IMETHOD HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
+    NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
 
     NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
     NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule);
@@ -486,28 +482,15 @@ public:
     NS_IMETHOD ClearLazyState(LazyState aFlags);
     NS_IMETHOD GetLazyState(LazyState aFlag, PRBool& aValue);
     NS_IMETHOD AddScriptEventListener(nsIAtom* aName, const nsAString& aValue);
-    
+
     // nsIDOMNode (from nsIDOMElement)
     NS_DECL_NSIDOMNODE
-  
+
     // nsIDOMElement
     NS_DECL_NSIDOMELEMENT
 
     // nsIDOMXULElement
     NS_DECL_NSIDOMXULELEMENT
-
-    // nsIDOMEventTarget interface (from nsIDOMEventReceiver)
-    NS_IMETHOD AddEventListener(const nsAString& aType, nsIDOMEventListener* aListener, 
-                                PRBool aUseCapture);
-    NS_IMETHOD RemoveEventListener(const nsAString& aType, nsIDOMEventListener* aListener, 
-                                   PRBool aUseCapture);
-    NS_IMETHOD DispatchEvent(nsIDOMEvent* aEvent, PRBool* _retval);
-
-    // nsIDOMEventReceiver
-    NS_IMETHOD AddEventListenerByIID(nsIDOMEventListener *aListener, const nsIID& aIID);
-    NS_IMETHOD RemoveEventListenerByIID(nsIDOMEventListener *aListener, const nsIID& aIID);
-    NS_IMETHOD GetListenerManager(nsIEventListenerManager** aInstancePtrResult);
-    NS_IMETHOD HandleEvent(nsIDOMEvent *aEvent);
 
     // nsIScriptEventHandlerOwner
     NS_IMETHOD CompileEventHandler(nsIScriptContext* aContext,
@@ -517,10 +500,6 @@ public:
                                    void** aHandler);
     NS_IMETHOD GetCompiledEventHandler(nsIAtom *aName, void** aHandler);
 
-#ifdef DEBUG
-    virtual void SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize);
-#endif
-    
     // nsIChromeEventHandler
     NS_DECL_NSICHROMEEVENTHANDLER
 
@@ -540,11 +519,6 @@ protected:
     ExecuteJSCode(nsIDOMElement* anElement, nsEvent* aEvent);
 
     // Static helpers
-    static nsresult
-    GetElementsByTagName(nsIDOMNode* aNode,
-                         const nsAString& aTagName,
-                         nsRDFDOMNodeList* aElements);
-
     static nsresult
     GetElementsByAttribute(nsIDOMNode* aNode,
                            const nsAString& aAttributeName,
@@ -669,7 +643,7 @@ protected:
     nsresult AddListenerFor(nsINodeInfo *aNodeInfo,
                             PRBool aCompileEventHandlers);
 
-    
+
     nsresult HideWindowChrome(PRBool aShouldHide);
 
 protected:

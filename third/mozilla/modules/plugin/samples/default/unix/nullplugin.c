@@ -38,9 +38,11 @@
 #include <gdk/gdkkeysyms.h>
 
 /* Xlib/Xt stuff */
+#ifdef MOZ_X11
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/cursorfont.h>
+#endif
 
 #include "npapi.h"
 #include "nullplugin.h"
@@ -349,6 +351,7 @@ static GdkPixmap *nullPluginGdkPixmap = 0;
 
 static GdkWindow *getGdkWindow(PluginInstance *This)
 {
+#ifdef MOZ_X11
     GdkWindow *gdk_window;
     Window xwin = (Window) This->window;
     Widget xt_w = XtWindowToWidget(This->display, xwin);
@@ -362,6 +365,9 @@ static GdkWindow *getGdkWindow(PluginInstance *This)
     }
     gdk_window = gdk_window_lookup(xwin);
     return gdk_window;
+#else
+    return NULL;
+#endif
 }
 
 static void
@@ -376,11 +382,21 @@ createPixmap(PluginInstance *This)
        GdkWindow *gdk_window = getGdkWindow(This);
        if (gdk_window)
        {
-           style = gtk_widget_get_style((GtkWidget *)gdk_window->user_data);
+           GtkWidget *widget;
+#ifndef MOZ_WIDGET_GTK2
+           widget = (GtkWidget *)gdk_window->user_data;
+#else
+           gpointer user_data = NULL;
+           gdk_window_get_user_data( gdk_window, &user_data);
+           widget = GTK_WIDGET(user_data);
+#endif
+           style = gtk_widget_get_style(widget);
            nullPluginGdkPixmap = gdk_pixmap_create_from_xpm_d(gdk_window , &mask,
                                              &style->bg[GTK_STATE_NORMAL], npnul320_xpm);
+#ifdef MOZ_X11
 	   /* Pixmap is created on original X session but used by new session */
 	   XSync(GDK_DISPLAY(), False);
+#endif
        }
     }
 }
@@ -396,11 +412,13 @@ drawPixmap(PluginInstance *This)
         dest_y = This->height/2 - pixmap_height/2;
         if (dest_x >= 0 && dest_y >= 0)
         {
+#ifdef MOZ_X11
             GC gc;
             gc = XCreateGC(This->display, This->window, 0, NULL);
             XCopyArea(This->display, GDK_WINDOW_XWINDOW(nullPluginGdkPixmap) , This->window, gc,
                 0, 0, pixmap_with, pixmap_height, dest_x, dest_y);
             XFreeGC(This->display, gc);
+#endif
         }
     }
 }
@@ -408,6 +426,7 @@ drawPixmap(PluginInstance *This)
 static void
 setCursor (PluginInstance *This)
 {
+#ifdef MOZ_X11
     static Cursor nullPluginCursor = 0;
     if (!nullPluginCursor)
     {
@@ -417,8 +436,10 @@ setCursor (PluginInstance *This)
     {
         XDefineCursor(This->display, This->window, nullPluginCursor);
     }
+#endif
 }
 
+#ifdef MOZ_X11
 static void
 xt_event_handler(Widget xt_w, PluginInstance *This, XEvent *xevent, Boolean *b)
 {
@@ -436,10 +457,12 @@ xt_event_handler(Widget xt_w, PluginInstance *This, XEvent *xevent, Boolean *b)
             break;
     }
 }
+#endif
 
 static void
 addXtEventHandler(PluginInstance *This)
 {
+#ifdef MOZ_X11
      Display *dpy = (Display*) This->display;
      Window xwin = (Window) This->window;
      Widget xt_w = XtWindowToWidget(dpy, xwin);
@@ -449,7 +472,9 @@ addXtEventHandler(PluginInstance *This)
          XSelectInput(dpy, xwin, event_mask);
          XtAddEventHandler(xt_w, event_mask, False, (XtEventHandler)xt_event_handler, This);
      }
+#endif
 }
+
 
 void
 makePixmap(PluginInstance *This)

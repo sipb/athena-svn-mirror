@@ -125,8 +125,6 @@ xptiInterfaceInfoManager::xptiInterfaceInfoManager(nsISupportsArray* aSearchPath
         mAdditionalManagersLock(PR_NewLock()),
         mSearchPath(aSearchPath)
 {
-    NS_INIT_ISUPPORTS();
-    
     const char* statsFilename = PR_GetEnv("MOZILLA_XPTI_STATS");
     if(statsFilename)
     {
@@ -181,19 +179,18 @@ xptiInterfaceInfoManager::~xptiInterfaceInfoManager()
 #endif
 }
 
-static PRBool
+static nsresult
 GetDirectoryFromDirService(const char* codename, nsILocalFile** aDir)
 {
     NS_ASSERTION(codename,"loser!");
     NS_ASSERTION(aDir,"loser!");
     
-    nsCOMPtr<nsIProperties> dirService = 
-        do_GetService(NS_DIRECTORY_SERVICE_CONTRACTID);
-    if(!dirService)
-        return PR_FALSE;
+    nsresult rv;
+    nsCOMPtr<nsIProperties> dirService =
+        do_GetService(NS_DIRECTORY_SERVICE_CONTRACTID, &rv);
+    if (NS_FAILED(rv)) return rv;
 
-    return NS_SUCCEEDED(dirService->Get(codename, NS_GET_IID(nsILocalFile), 
-                                        (void**) aDir));
+    return dirService->Get(codename, NS_GET_IID(nsILocalFile), (void**) aDir);
 }
 
 static PRBool
@@ -237,13 +234,13 @@ PRBool xptiInterfaceInfoManager::BuildFileSearchPath(nsISupportsArray** aPath)
     if(!searchPath)
         return PR_FALSE;
     
-    nsCOMPtr<nsILocalFile> dir;
+    nsCOMPtr<nsILocalFile> compDir;
 
     // Always put components directory first
 
     if(NS_FAILED(GetDirectoryFromDirService(NS_XPCOM_COMPONENT_DIR, 
-                                            getter_AddRefs(dir))) ||
-       !searchPath->AppendElement(dir))
+                                            getter_AddRefs(compDir))) ||
+       !searchPath->AppendElement(compDir))
     {
         return PR_FALSE;
     }
@@ -262,48 +259,42 @@ PRBool xptiInterfaceInfoManager::BuildFileSearchPath(nsISupportsArray** aPath)
     nsCOMPtr<nsILocalFile> greComponentDirectory;
     nsresult rv = GetDirectoryFromDirService(NS_GRE_COMPONENT_DIR, 
                                     getter_AddRefs(greComponentDirectory));
-    if (NS_SUCCEEDED(rv))
+    if(NS_SUCCEEDED(rv) && greComponentDirectory)
     {
-        searchPath->AppendElement(greComponentDirectory);
+        // make sure we only append a directory if its a different one
+        PRBool equalsCompDir = PR_FALSE;
+        greComponentDirectory->Equals(compDir, &equalsCompDir);
+
+        if(!equalsCompDir)
+            searchPath->AppendElement(greComponentDirectory);
     }
 
-    (void) AppendFromDirServiceList(NS_APP_PLUGINS_DIR_LIST, searchPath);
+    (void)AppendFromDirServiceList(NS_APP_PLUGINS_DIR_LIST, searchPath);
 
     NS_ADDREF(*aPath = searchPath);
     return PR_TRUE;
 }
 
 PRBool 
-xptiInterfaceInfoManager::GetCloneOfManifestDir(nsILocalFile** aDir)
+xptiInterfaceInfoManager::GetCloneOfManifestLocation(nsILocalFile** aFile)
 {
-    // We cache the manifest directory to ensure that this call always returns 
-    // the same directory. Not doing so could be a problem if we try something 
-    // fancier in the future and that algorithm has different results when
-    // run at startup than when run later.
+    // We *trust* that this will not change!
+    nsCOMPtr<nsILocalFile> lf;
+    nsresult rv = GetDirectoryFromDirService(NS_XPCOM_XPTI_REGISTRY_FILE, 
+                                             getter_AddRefs(lf));
 
-    if(!mManifestDir)
-    {
-        // If we are going to do something fancy to get some other dir, then
-        // do it here...
+    if (NS_FAILED(rv)) return PR_FALSE;
 
-        if(!GetDirectoryFromDirService(NS_XPCOM_COMPONENT_DIR,
-                                       getter_AddRefs(mManifestDir)))
-            return PR_FALSE;
-    
-        // To be sure after the stuff above.
-        if(!mManifestDir)
-            return PR_FALSE;
-
-        mManifestDir->Create(nsIFile::DIRECTORY_TYPE, 0666);
-    }
-    return NS_SUCCEEDED(xptiCloneLocalFile(mManifestDir, aDir));
+    rv = xptiCloneLocalFile(lf, aFile);
+    if (NS_FAILED(rv)) return PR_FALSE;
+    return PR_TRUE;
 }
 
 PRBool 
 xptiInterfaceInfoManager::GetApplicationDir(nsILocalFile** aDir)
 {
     // We *trust* that this will not change!
-    return GetDirectoryFromDirService(NS_XPCOM_CURRENT_PROCESS_DIR, aDir);
+    return NS_SUCCEEDED(GetDirectoryFromDirService(NS_XPCOM_CURRENT_PROCESS_DIR, aDir));
 }
 
 PRBool 
@@ -346,7 +337,6 @@ xptiInterfaceInfoManager::BuildFileList(nsISupportsArray* aSearchPath,
             nsCOMPtr<nsILocalFile> file = do_QueryInterface(sup);
             if(!file)
                 return PR_FALSE;
-            file->SetFollowLinks(PR_FALSE);
 
             PRBool isFile;
             if(NS_FAILED(file->IsFile(&isFile)) || !isFile)
@@ -1986,7 +1976,6 @@ NS_IMPL_ISUPPORTS1(xptiAdditionalManagersEnumerator, nsISimpleEnumerator)
 xptiAdditionalManagersEnumerator::xptiAdditionalManagersEnumerator()
     : mIndex(0), mCount(0)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 PRBool xptiAdditionalManagersEnumerator::AppendElement(nsIInterfaceInfoManager* element)

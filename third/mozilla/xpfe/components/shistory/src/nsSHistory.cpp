@@ -29,13 +29,14 @@
 
 // Interfaces Needed
 #include "nsILayoutHistoryState.h"
+#include "nsIDocShell.h"
 #include "nsIDocShellLoadInfo.h"
 #include "nsISHContainer.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsIDocShellTreeNode.h"
 #include "nsIDocShellLoadInfo.h"
 #include "nsIServiceManager.h"
-#include "nsIPref.h"
+#include "nsIPrefService.h"
 
 #define PREF_SHISTORY_SIZE "browser.sessionhistory.max_entries"
 static PRInt32  gHistoryMaxSize = 50;
@@ -53,7 +54,6 @@ enum HistCmd{
 
 nsSHistory::nsSHistory() : mListRoot(nsnull), mIndex(-1), mLength(0), mRequestedIndex(-1)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -85,12 +85,15 @@ NS_INTERFACE_MAP_END
 NS_IMETHODIMP
 nsSHistory::Init()
 {
-  nsresult res;
-  nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &res);
-  if (NS_SUCCEEDED(res) && prefs) {
-    prefs->GetIntPref(PREF_SHISTORY_SIZE, &gHistoryMaxSize);
+  nsCOMPtr<nsIPrefService> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  if (prefs) {
+    nsCOMPtr<nsIPrefBranch> defaultBranch;
+    prefs->GetDefaultBranch(nsnull, getter_AddRefs(defaultBranch));
+    if (defaultBranch) {
+      defaultBranch->GetIntPref(PREF_SHISTORY_SIZE, &gHistoryMaxSize);
+    }
   }
-  return res;
+  return NS_OK;
 }
 
 
@@ -598,7 +601,7 @@ nsSHistory::GetCurrentURI(nsIURI** aResultURI)
 
 
 NS_IMETHODIMP
-nsSHistory::GetReferingURI(nsIURI** aURI)
+nsSHistory::GetReferringURI(nsIURI** aURI)
 {
     *aURI = nsnull;
     // Not implemented
@@ -625,7 +628,7 @@ nsSHistory::GetSessionHistory(nsISHistory** aSessionHistory)
 NS_IMETHODIMP
 nsSHistory::LoadURI(const PRUnichar* aURI,
                     PRUint32 aLoadFlags,
-                    nsIURI* aReferingURI,
+                    nsIURI* aReferringURI,
                     nsIInputStream* aPostStream,
                     nsIInputStream* aExtraHeaderStream)
 {
@@ -858,7 +861,6 @@ nsSHistory::GetSHistoryEnumerator(nsISimpleEnumerator** aEnumerator)
 
 nsSHEnumerator::nsSHEnumerator(nsSHistory * aSHistory):mIndex(-1)
 {
-  NS_INIT_ISUPPORTS();
   mSHistory = aSHistory;
 }
 

@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; c-file-style: "stroustrup" -*-
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: t; c-basic-offset: 2; c-file-style: "stroustrup" -*-
  *
  * The contents of this file are subject to the Netscape Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -79,17 +79,13 @@
 #include "nsIRDFContainerUtils.h"
 #include "nsXULAtoms.h"
 
+
 ////////////////////////////////////////////////////////////////////////
 
-static NS_DEFINE_CID(kNameSpaceManagerCID,    NS_NAMESPACEMANAGER_CID);
 static NS_DEFINE_CID(kRDFServiceCID,          NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kCollationFactoryCID,    NS_COLLATIONFACTORY_CID);
 static NS_DEFINE_CID(kRDFInMemoryDataSourceCID, NS_RDFINMEMORYDATASOURCE_CID);
 static NS_DEFINE_CID(kRDFContainerUtilsCID,   NS_RDFCONTAINERUTILS_CID);
-
-static const char kXULNameSpaceURI[]
-    = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-static const char kRDFNameSpaceURI[] = RDF_NAMESPACE_URI;
 
 DEFINE_RDF_VOCAB(NC_NAMESPACE_URI, NC, BookmarkSeparator);
 
@@ -149,21 +145,10 @@ protected:
 
 private:
   static nsrefcnt gRefCnt;
-  static nsIAtom *kStaticHintAtom;
-  static nsIAtom *kStaticsSortLastHintAtom;
-  static nsIAtom *kResourceAtom;
-  static nsIAtom *kSortResourceAtom;
-  static nsIAtom *kSortResource2Atom;
-  static nsIAtom *kSortSeparatorsAtom;
-  static nsIAtom *kRDF_type;
-
   static nsString *kTrueStr;
   static nsString *kNaturalStr;
   static nsString *kAscendingStr;
   static nsString *kDescendingStr;
-
-  static PRInt32 kNameSpaceID_XUL;
-  static PRInt32 kNameSpaceID_RDF;
 
   static nsIRDFService *gRDFService;
   static nsIRDFContainerUtils *gRDFC;
@@ -203,52 +188,28 @@ nsIRDFService *XULSortServiceImpl::gRDFService = nsnull;
 nsIRDFContainerUtils *XULSortServiceImpl::gRDFC = nsnull;
 nsrefcnt XULSortServiceImpl::gRefCnt = 0;
 
-nsIAtom* XULSortServiceImpl::kStaticHintAtom;
-nsIAtom* XULSortServiceImpl::kStaticsSortLastHintAtom;
-nsIAtom* XULSortServiceImpl::kResourceAtom;
-nsIAtom* XULSortServiceImpl::kSortResourceAtom;
-nsIAtom* XULSortServiceImpl::kSortResource2Atom;
-nsIAtom* XULSortServiceImpl::kSortSeparatorsAtom;
-nsIAtom* XULSortServiceImpl::kRDF_type;
-
 nsString* XULSortServiceImpl::kTrueStr = nsnull;
 nsString* XULSortServiceImpl::kNaturalStr = nsnull;
 nsString* XULSortServiceImpl::kAscendingStr = nsnull;
 nsString* XULSortServiceImpl::kDescendingStr = nsnull;
 
-PRInt32 XULSortServiceImpl::kNameSpaceID_XUL;
-PRInt32 XULSortServiceImpl::kNameSpaceID_RDF;
-
 ////////////////////////////////////////////////////////////////////////
 
 XULSortServiceImpl::XULSortServiceImpl(void)
 {
-  NS_INIT_ISUPPORTS();
   if (gRefCnt == 0) {
-    kStaticHintAtom = NS_NewAtom("staticHint");
-    kStaticsSortLastHintAtom   = NS_NewAtom("sortStaticsLast");
-    kResourceAtom = NS_NewAtom("resource");
-    kSortResourceAtom = NS_NewAtom("sortResource");
-    kSortResource2Atom = NS_NewAtom("sortResource2");
-    kSortSeparatorsAtom = NS_NewAtom("sortSeparators");
-    kRDF_type = NS_NewAtom("type");
- 
     kTrueStr = new nsString(NS_LITERAL_STRING("true"));
     kNaturalStr = new nsString(NS_LITERAL_STRING("natural"));
     kAscendingStr = new nsString(NS_LITERAL_STRING("ascending"));
     kDescendingStr = new nsString(NS_LITERAL_STRING("descending"));
  
-    nsresult rv = nsServiceManager::GetService(kRDFServiceCID,
-                                               NS_GET_IID(nsIRDFService),
-                                               (nsISupports**) &gRDFService);
-    if (NS_FAILED(rv))
-      NS_ERROR("couldn't create rdf service");
+    nsresult rv = CallGetService(kRDFServiceCID, &gRDFService);
 
-    rv = nsServiceManager::GetService(kRDFContainerUtilsCID,
-                                      NS_GET_IID(nsIRDFContainerUtils),
-                                      (nsISupports**) &gRDFC);
-    if (NS_FAILED(rv))
-      NS_ERROR("couldn't create rdf container utils");
+    NS_ASSERTION(NS_SUCCEEDED(rv), "couldn't create rdf service");
+
+    rv = CallGetService(kRDFContainerUtilsCID, &gRDFC);
+
+    NS_ASSERTION(NS_SUCCEEDED(rv), "couldn't create rdf container utils");
 
     // get a locale service 
     nsCOMPtr<nsILocaleService> localeService = do_GetService(NS_LOCALESERVICE_CONTRACTID, &rv);
@@ -257,25 +218,15 @@ XULSortServiceImpl::XULSortServiceImpl(void)
       if (NS_SUCCEEDED(rv = localeService->GetApplicationLocale(getter_AddRefs(locale))) && (locale)) {
         nsCOMPtr<nsICollationFactory> colFactory = do_CreateInstance(kCollationFactoryCID);
         if (colFactory) {
-          if (NS_FAILED(rv = colFactory->CreateCollation(locale, &gCollation)))
-            NS_ERROR("couldn't create collation instance");
+          rv = colFactory->CreateCollation(locale, &gCollation);
+
+          NS_ASSERTION(NS_SUCCEEDED(rv), "couldn't create collation instance");
         } else
           NS_ERROR("couldn't create instance of collation factory");
       } else
         NS_ERROR("unable to get application locale");
     } else
       NS_ERROR("couldn't get locale factory");
-
-    // Register the XUL and RDF namespaces: these'll just retrieve
-    // the IDs if they've already been registered by someone else.
-    nsCOMPtr<nsINameSpaceManager> mgr = do_CreateInstance(kNameSpaceManagerCID);
-    if (mgr) {
-      rv = mgr->RegisterNameSpace(NS_ConvertASCIItoUCS2(kXULNameSpaceURI), kNameSpaceID_XUL);
-      NS_ASSERTION(NS_SUCCEEDED(rv), "unable to register XUL namespace");
-      rv = mgr->RegisterNameSpace(NS_ConvertASCIItoUCS2(kRDFNameSpaceURI), kNameSpaceID_RDF);
-      NS_ASSERTION(NS_SUCCEEDED(rv), "unable to register RDF namespace");
-    } else
-      NS_ERROR("couldn't create namepsace manager");
   }
 
   ++gRefCnt;
@@ -298,22 +249,10 @@ XULSortServiceImpl::~XULSortServiceImpl(void) {
     delete kNaturalStr;
     kNaturalStr = nsnull;
 
-    NS_IF_RELEASE(kStaticHintAtom);
-    NS_IF_RELEASE(kStaticsSortLastHintAtom);
-    NS_IF_RELEASE(kResourceAtom);
-    NS_IF_RELEASE(kSortResourceAtom);
-    NS_IF_RELEASE(kSortResource2Atom);
-    NS_IF_RELEASE(kSortSeparatorsAtom);
-    NS_IF_RELEASE(kRDF_type);
-
     NS_IF_RELEASE(gCollation);
 
-    if (gRDFService) {
-      nsServiceManager::ReleaseService(kRDFServiceCID, gRDFService);
-      gRDFService = nsnull;
-    }
-    if (gRDFC)
-      nsServiceManager::ReleaseService(kRDFContainerUtilsCID, gRDFC);
+    NS_IF_RELEASE(gRDFService);
+    NS_IF_RELEASE(gRDFC);
   }
 }
 
@@ -390,24 +329,24 @@ XULSortServiceImpl::SetSortHints(nsIContent *tree, const nsAString &sortResource
     // set hints on tree root node
     tree->SetAttr(kNameSpaceID_None, nsXULAtoms::sortActive, *kTrueStr, PR_FALSE);
     tree->SetAttr(kNameSpaceID_None, nsXULAtoms::sortDirection, sortDirection, PR_FALSE);
-    tree->SetAttr(kNameSpaceID_None, kSortResourceAtom, sortResource, PR_FALSE);
+    tree->SetAttr(kNameSpaceID_None, nsXULAtoms::sortResource, sortResource, PR_FALSE);
 
     if (!sortResource2.IsEmpty())
-      tree->SetAttr(kNameSpaceID_None, kSortResource2Atom, sortResource2, PR_FALSE);
+      tree->SetAttr(kNameSpaceID_None, nsXULAtoms::sortResource2, sortResource2, PR_FALSE);
     else
-      tree->UnsetAttr(kNameSpaceID_None, kSortResource2Atom, PR_FALSE);
+      tree->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortResource2, PR_FALSE);
   } else {
     tree->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortActive, PR_FALSE);
     tree->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortDirection, PR_FALSE);
-    tree->UnsetAttr(kNameSpaceID_None, kSortResourceAtom, PR_FALSE);
-    tree->UnsetAttr(kNameSpaceID_None, kSortResource2Atom, PR_FALSE);
+    tree->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortResource, PR_FALSE);
+    tree->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortResource2, PR_FALSE);
   }
 
   // optional hint
   if (inbetweenSeparatorSort == PR_TRUE)
-    tree->SetAttr(kNameSpaceID_None, kSortSeparatorsAtom, *kTrueStr, PR_FALSE);
+    tree->SetAttr(kNameSpaceID_None, nsXULAtoms::sortSeparators, *kTrueStr, PR_FALSE);
   else
-    tree->UnsetAttr(kNameSpaceID_None, kSortSeparatorsAtom, PR_FALSE);
+    tree->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortSeparators, PR_FALSE);
 
   SetSortColumnHints(tree, sortResource, sortDirection);
 
@@ -437,7 +376,7 @@ XULSortServiceImpl::SetSortColumnHints(nsIContent *content, const nsAString &sor
                  tag == nsXULAtoms::listcol || tag == nsXULAtoms::listheader) {
         nsAutoString value;
 
-        if (NS_SUCCEEDED(rv = child->GetAttr(kNameSpaceID_None, kResourceAtom, value))
+        if (NS_SUCCEEDED(rv = child->GetAttr(kNameSpaceID_None, nsXULAtoms::resource, value))
             && rv == NS_CONTENT_ATTR_HAS_VALUE)
         {
           if (value == sortResource) {
@@ -470,7 +409,7 @@ XULSortServiceImpl::GetSortColumnInfo(nsIContent *tree, nsAString &sortResource,
   {
     if (value.EqualsIgnoreCase("true"))
     {
-      if (NS_SUCCEEDED(rv = tree->GetAttr(kNameSpaceID_None, kSortResourceAtom, sortResource))
+      if (NS_SUCCEEDED(rv = tree->GetAttr(kNameSpaceID_None, nsXULAtoms::sortResource, sortResource))
           && (rv == NS_CONTENT_ATTR_HAS_VALUE))
       {
         if (NS_SUCCEEDED(rv = tree->GetAttr(kNameSpaceID_None, nsXULAtoms::sortDirection, sortDirection))
@@ -479,7 +418,7 @@ XULSortServiceImpl::GetSortColumnInfo(nsIContent *tree, nsAString &sortResource,
           rv = NS_OK;
 
           // sort separator flag is optional
-          if (NS_SUCCEEDED(rv = tree->GetAttr(kNameSpaceID_None, kSortSeparatorsAtom,
+          if (NS_SUCCEEDED(rv = tree->GetAttr(kNameSpaceID_None, nsXULAtoms::sortSeparators,
             value)) && (rv == NS_CONTENT_ATTR_HAS_VALUE))
           {
             if (value.EqualsIgnoreCase("true"))
@@ -489,7 +428,7 @@ XULSortServiceImpl::GetSortColumnInfo(nsIContent *tree, nsAString &sortResource,
           }
 
           // secondary sort info is optional
-          if (NS_FAILED(rv = tree->GetAttr(kNameSpaceID_None, kSortResource2Atom, sortResource2))
+          if (NS_FAILED(rv = tree->GetAttr(kNameSpaceID_None, nsXULAtoms::sortResource2, sortResource2))
               || (rv != NS_CONTENT_ATTR_HAS_VALUE))
           {
             sortResource2.Truncate();
@@ -839,7 +778,7 @@ XULSortServiceImpl::GetNodeValue(nsIContent *node1, sortPtr sortInfo, PRBool fir
       if (NS_SUCCEEDED(rv = node1->GetAttr(kNameSpaceID_None, nsXULAtoms::id, htmlID)) 
           && (rv == NS_CONTENT_ATTR_HAS_VALUE))
       {
-        if (NS_FAILED(rv = gRDFService->GetUnicodeResource(htmlID.get(), getter_AddRefs(res1))))
+        if (NS_FAILED(rv = gRDFService->GetUnicodeResource(htmlID, getter_AddRefs(res1))))
           res1 = nsnull;
       }
     }
@@ -917,7 +856,7 @@ XULSortServiceImpl::GetNodeValue(contentSortInfo *info1, sortPtr sortInfo, PRBoo
       if (NS_SUCCEEDED(rv = node1->GetAttr(kNameSpaceID_None, nsXULAtoms::id, htmlID))
         && (rv == NS_CONTENT_ATTR_HAS_VALUE))
       {
-        if (NS_FAILED(rv = gRDFService->GetUnicodeResource(htmlID.get(), getter_AddRefs(res1))))
+        if (NS_FAILED(rv = gRDFService->GetUnicodeResource(htmlID, getter_AddRefs(res1))))
           res1 = nsnull;
         info1->resource = res1;
       }
@@ -1194,7 +1133,7 @@ XULSortServiceImpl::SortContainer(nsIContent *container, sortPtr sortInfo, PRBoo
       nsAutoString  type;
       for (loop=currentElement; loop< currentElement + numElements; ++loop) {
         if (NS_SUCCEEDED(rv = contentSortInfoArray[loop]->content->GetAttr(kNameSpaceID_RDF,
-            kRDF_type, type)) && (rv == NS_CONTENT_ATTR_HAS_VALUE))
+            nsXULAtoms::type, type)) && (rv == NS_CONTENT_ATTR_HAS_VALUE))
         {
           if (type.EqualsWithConversion(kURINC_BookmarkSeparator)) {
             if (loop > startIndex+1) {
@@ -1328,7 +1267,7 @@ XULSortServiceImpl::InsertContainerNode(nsIRDFCompositeDataSource *db, nsRDFSort
 
   // look for sorting info on root node
 
-  if (NS_SUCCEEDED(rv = root->GetAttr(kNameSpaceID_None, kSortResourceAtom, sortResource))
+  if (NS_SUCCEEDED(rv = root->GetAttr(kNameSpaceID_None, nsXULAtoms::sortResource, sortResource))
       && (rv == NS_CONTENT_ATTR_HAS_VALUE))
   {
     if (NS_SUCCEEDED(rv = root->GetAttr(kNameSpaceID_None, nsXULAtoms::sortDirection, sortDirection))
@@ -1336,7 +1275,7 @@ XULSortServiceImpl::InsertContainerNode(nsIRDFCompositeDataSource *db, nsRDFSort
     {
       sortInfoAvailable = PR_TRUE;
 
-      if (NS_FAILED(rv = root->GetAttr(kNameSpaceID_None, kSortResource2Atom, sortResource2)) 
+      if (NS_FAILED(rv = root->GetAttr(kNameSpaceID_None, nsXULAtoms::sortResource2, sortResource2)) 
           || (rv != NS_CONTENT_ATTR_HAS_VALUE))
       {
         sortResource2.Truncate();
@@ -1364,38 +1303,38 @@ XULSortServiceImpl::InsertContainerNode(nsIRDFCompositeDataSource *db, nsRDFSort
       sortState->sortPropertySort = nsnull;
       sortState->sortPropertySort2 = nsnull;
 
-      rv = gRDFService->GetUnicodeResource(sortResource.get(), getter_AddRefs(sortInfo.sortProperty));
+      rv = gRDFService->GetUnicodeResource(sortResource, getter_AddRefs(sortInfo.sortProperty));
       if (NS_FAILED(rv)) return rv;
       sortState->sortResource = sortResource;
       sortState->sortProperty = sortInfo.sortProperty;
       
       nsAutoString resourceUrl = sortResource;
       resourceUrl.Append(NS_LITERAL_STRING("?collation=true"));
-      rv = gRDFService->GetUnicodeResource(resourceUrl.get(), getter_AddRefs(sortInfo.sortPropertyColl));
+      rv = gRDFService->GetUnicodeResource(resourceUrl, getter_AddRefs(sortInfo.sortPropertyColl));
       if (NS_FAILED(rv)) return rv;
       sortState->sortPropertyColl = sortInfo.sortPropertyColl;
 
       resourceUrl = sortResource;
       resourceUrl.Append(NS_LITERAL_STRING("?sort=true"));
-      rv = gRDFService->GetUnicodeResource(resourceUrl.get(), getter_AddRefs(sortInfo.sortPropertySort));
+      rv = gRDFService->GetUnicodeResource(resourceUrl, getter_AddRefs(sortInfo.sortPropertySort));
       if (NS_FAILED(rv)) return rv;
       sortState->sortPropertySort = sortInfo.sortPropertySort;
 
       if (!sortResource2.IsEmpty()) {
-        rv = gRDFService->GetUnicodeResource(sortResource2.get(), getter_AddRefs(sortInfo.sortProperty2));
+        rv = gRDFService->GetUnicodeResource(sortResource2, getter_AddRefs(sortInfo.sortProperty2));
         if (NS_FAILED(rv)) return rv;
         sortState->sortResource2 = sortResource2;
         sortState->sortProperty2 = sortInfo.sortProperty2;
 
         resourceUrl = sortResource2;
         resourceUrl.Append(NS_LITERAL_STRING("?collation=true"));
-        rv = gRDFService->GetUnicodeResource(resourceUrl.get(), getter_AddRefs(sortInfo.sortPropertyColl2));
+        rv = gRDFService->GetUnicodeResource(resourceUrl, getter_AddRefs(sortInfo.sortPropertyColl2));
         if (NS_FAILED(rv)) return rv;
         sortState->sortPropertyColl2 = sortInfo.sortPropertyColl2;
 
         resourceUrl = sortResource2;
         resourceUrl.Append(NS_LITERAL_STRING("?sort=true"));
-        rv = gRDFService->GetUnicodeResource(resourceUrl.get(), getter_AddRefs(sortInfo.sortPropertySort2));
+        rv = gRDFService->GetUnicodeResource(resourceUrl, getter_AddRefs(sortInfo.sortPropertySort2));
         if (NS_FAILED(rv)) return rv;
         sortState->sortPropertySort2 = sortInfo.sortPropertySort2;
       }
@@ -1472,7 +1411,7 @@ XULSortServiceImpl::InsertContainerNode(nsIRDFCompositeDataSource *db, nsRDFSort
     PRInt32 staticCount = 0;
 
     nsAutoString staticValue;
-    if (NS_SUCCEEDED(rv = container->GetAttr(kNameSpaceID_None, kStaticHintAtom, staticValue))
+    if (NS_SUCCEEDED(rv = container->GetAttr(kNameSpaceID_None, nsXULAtoms::staticHint, staticValue))
         && (rv == NS_CONTENT_ATTR_HAS_VALUE))
     {
       // found "static" XUL element count hint
@@ -1494,7 +1433,7 @@ XULSortServiceImpl::InsertContainerNode(nsIRDFCompositeDataSource *db, nsRDFSort
           ++staticCount;
       }
       
-      if (NS_SUCCEEDED(rv = root->GetAttr(kNameSpaceID_None, kStaticsSortLastHintAtom, valueStr))
+      if (NS_SUCCEEDED(rv = root->GetAttr(kNameSpaceID_None, nsXULAtoms::sortStaticsLast, valueStr))
           && (rv == NS_CONTENT_ATTR_HAS_VALUE) && (valueStr.EqualsIgnoreCase("true")))
       {
         // indicate that static XUL comes after RDF-generated content by making negative
@@ -1504,7 +1443,7 @@ XULSortServiceImpl::InsertContainerNode(nsIRDFCompositeDataSource *db, nsRDFSort
       // save the "static" XUL element count hint
       valueStr.Truncate();
       valueStr.AppendInt(staticCount);
-      container->SetAttr(kNameSpaceID_None, kStaticHintAtom, valueStr, PR_FALSE);
+      container->SetAttr(kNameSpaceID_None, nsXULAtoms::staticHint, valueStr, PR_FALSE);
     }
 
     if (staticCount <= 0) {
@@ -1612,7 +1551,7 @@ XULSortServiceImpl::Sort(nsIDOMNode* node, const nsAString& sortResource, const 
       && (rv == NS_CONTENT_ATTR_HAS_VALUE) 
       && (value.EqualsIgnoreCase("true")))
   {
-    if (NS_SUCCEEDED(rv = dbNode->GetAttr(kNameSpaceID_None, kSortResourceAtom, value))
+    if (NS_SUCCEEDED(rv = dbNode->GetAttr(kNameSpaceID_None, nsXULAtoms::sortResource, value))
         && (rv == NS_CONTENT_ATTR_HAS_VALUE) 
         && (value.Equals(sortResource, nsCaseInsensitiveStringComparator())))
     {
@@ -1631,9 +1570,9 @@ XULSortServiceImpl::Sort(nsIDOMNode* node, const nsAString& sortResource, const 
   // remove any sort hints on tree root node
   dbNode->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortActive, PR_FALSE);
   dbNode->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortDirection, PR_FALSE);
-  dbNode->UnsetAttr(kNameSpaceID_None, kSortSeparatorsAtom, PR_FALSE);
-  dbNode->UnsetAttr(kNameSpaceID_None, kSortResourceAtom, PR_FALSE);
-  dbNode->UnsetAttr(kNameSpaceID_None, kSortResource2Atom, PR_FALSE);
+  dbNode->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortSeparators, PR_FALSE);
+  dbNode->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortResource, PR_FALSE);
+  dbNode->UnsetAttr(kNameSpaceID_None, nsXULAtoms::sortResource2, PR_FALSE);
 
   nsCOMPtr<nsIRDFCompositeDataSource>  cds;
   if (NS_SUCCEEDED(rv = dbXULNode->GetDatabase(getter_AddRefs(cds))))
@@ -1656,33 +1595,33 @@ XULSortServiceImpl::Sort(nsIDOMNode* node, const nsAString& sortResource, const 
   GetSortColumnInfo(contentNode, unused, unused, sortResource2, sortInfo.inbetweenSeparatorSort);
 
   // build resource url for first sort resource
-  rv = gRDFService->GetUnicodeResource(PromiseFlatString(sortResource).get(), getter_AddRefs(sortInfo.sortProperty));
+  rv = gRDFService->GetUnicodeResource(sortResource, getter_AddRefs(sortInfo.sortProperty));
   if (NS_FAILED(rv)) return rv;
 
   nsAutoString resourceUrl;
   resourceUrl.Assign(sortResource);
   resourceUrl.Append(NS_LITERAL_STRING("?collation=true"));
-  rv = gRDFService->GetUnicodeResource(resourceUrl.get(), getter_AddRefs(sortInfo.sortPropertyColl));
+  rv = gRDFService->GetUnicodeResource(resourceUrl, getter_AddRefs(sortInfo.sortPropertyColl));
   if (NS_FAILED(rv)) return rv;
 
   resourceUrl.Assign(sortResource);
   resourceUrl.Append(NS_LITERAL_STRING("?sort=true"));
-  rv = gRDFService->GetUnicodeResource(resourceUrl.get(), getter_AddRefs(sortInfo.sortPropertySort));
+  rv = gRDFService->GetUnicodeResource(resourceUrl, getter_AddRefs(sortInfo.sortPropertySort));
   if (NS_FAILED(rv)) return rv;
 
   // build resource url for second sort resource
   if (!sortResource2.IsEmpty()) {
-    rv = gRDFService->GetUnicodeResource(sortResource2.get(), getter_AddRefs(sortInfo.sortProperty2));
+    rv = gRDFService->GetUnicodeResource(sortResource2, getter_AddRefs(sortInfo.sortProperty2));
     if (NS_FAILED(rv)) return rv;
 
     resourceUrl = sortResource2;
     resourceUrl.Append(NS_LITERAL_STRING("?collation=true"));
-    rv = gRDFService->GetUnicodeResource(resourceUrl.get(), getter_AddRefs(sortInfo.sortPropertyColl2));
+    rv = gRDFService->GetUnicodeResource(resourceUrl, getter_AddRefs(sortInfo.sortPropertyColl2));
     if (NS_FAILED(rv)) return rv;
 
     resourceUrl = sortResource2;
     resourceUrl.Append(NS_LITERAL_STRING("?sort=true"));
-    rv = gRDFService->GetUnicodeResource(resourceUrl.get(), getter_AddRefs(sortInfo.sortPropertySort2));
+    rv = gRDFService->GetUnicodeResource(resourceUrl, getter_AddRefs(sortInfo.sortPropertySort2));
     if (NS_FAILED(rv)) return rv;
   }
 

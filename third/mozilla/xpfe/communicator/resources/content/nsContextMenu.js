@@ -85,10 +85,12 @@ nsContextMenu.prototype = {
         this.initMetadataItems();
     },
     initOpenItems : function () {
-        this.showItem( "context-openlink", this.onSaveableLink || ( this.inDirList && this.onLink ) );
-        this.showItem( "context-openlinkintab", this.onSaveableLink || ( this.inDirList && this.onLink ) );
+        var showOpen = this.onSaveableLink || ( this.inDirList && this.onLink );
 
-        this.showItem( "context-sep-open", this.onSaveableLink || ( this.inDirList && this.onLink ) );
+        this.showItem( "context-openlink", showOpen );
+        this.showItem( "context-openlinkintab", showOpen );
+
+        this.showItem( "context-sep-open", showOpen );
     },
     initNavigationItems : function () {
         // Back determined by canGoBack broadcaster.
@@ -96,14 +98,16 @@ nsContextMenu.prototype = {
 
         // Forward determined by canGoForward broadcaster.
         this.setItemAttrFromNode( "context-forward", "disabled", "canGoForward" );
-        
-        this.showItem( "context-back", !( this.isTextSelected || this.onLink || this.onImage || this.onTextInput ) );
-        this.showItem( "context-forward", !( this.isTextSelected || this.onLink || this.onImage || this.onTextInput ) );
 
-        this.showItem( "context-reload", !( this.isTextSelected || this.onLink || this.onImage || this.onTextInput ) );
+        var showNav = !( this.isTextSelected || this.onLink || this.onImage || this.onTextInput );
         
-        this.showItem( "context-stop", !( this.isTextSelected || this.onLink || this.onImage || this.onTextInput ) );
-        this.showItem( "context-sep-stop", !( this.isTextSelected || this.onLink || this.onImage || this.onTextInput ) );
+        this.showItem( "context-back", showNav );
+        this.showItem( "context-forward", showNav );
+
+        this.showItem( "context-reload", showNav );
+        
+        this.showItem( "context-stop", showNav );
+        this.showItem( "context-sep-stop", showNav );
 
         // XXX: Stop is determined in navigator.js; the canStop broadcaster is broken
         //this.setItemAttrFromNode( "context-stop", "disabled", "canStop" );
@@ -123,8 +127,11 @@ nsContextMenu.prototype = {
         // View source is always OK, unless in directory listing.
         this.showItem( "context-viewpartialsource-selection", this.isTextSelected && !this.onTextInput );
         this.showItem( "context-viewpartialsource-mathml", this.onMathML && !this.isTextSelected );
-        this.showItem( "context-viewsource", !( this.inDirList || this.onImage || this.isTextSelected || this.onLink || this.onTextInput ) );
-        this.showItem( "context-viewinfo", !( this.inDirList || this.onImage || this.isTextSelected || this.onLink || this.onTextInput ) );
+
+        var showView = !( this.inDirList || this.onImage || this.isTextSelected || this.onLink || this.onTextInput );
+
+        this.showItem( "context-viewsource", showView );
+        this.showItem( "context-viewinfo", showView );
 
         this.showItem( "context-sep-properties", !( this.inDirList || this.isTextSelected || this.onTextInput ) );
         // Set As Wallpaper depends on whether an image was clicked on, and only works on Windows.
@@ -137,12 +144,18 @@ nsContextMenu.prototype = {
             // Disable the Set As Wallpaper menu item if we're still trying to load the image
           this.setItemAttr( "context-setWallpaper", "disabled", (("complete" in this.target) && !this.target.complete) ? "true" : null );
 
+        this.showItem( "context-fitimage", this.onStandaloneImage && _content.document.imageResizingEnabled );
+        if ( this.onStandaloneImage && _content.document.imageResizingEnabled ) {
+          this.setItemAttr( "context-fitimage", "disabled", _content.document.imageIsOverflowing ? null : "true");
+          this.setItemAttr( "context-fitimage", "checked", _content.document.imageIsResized ? "true" : null);
+        }
+
         // View Image depends on whether an image was clicked on.
-        this.showItem( "context-viewimage", this.onImage );
+        this.showItem( "context-viewimage", this.onImage && !this.onStandaloneImage);
 
         // View background image depends on whether there is one.
-        this.showItem( "context-viewbgimage", !( this.inDirList || this.onImage || this.isTextSelected || this.onLink || this.onTextInput ) );
-        this.showItem( "context-sep-viewbgimage", !( this.inDirList || this.onImage || this.isTextSelected || this.onLink || this.onTextInput ) );
+        this.showItem( "context-viewbgimage", showView );
+        this.showItem( "context-sep-viewbgimage", showView );
         this.setItemAttr( "context-viewbgimage", "disabled", this.hasBGImage ? null : "true");
     },
     initMiscItems : function () {
@@ -179,7 +192,7 @@ nsContextMenu.prototype = {
         this.showItem( "context-redo", this.onTextInput );
         this.showItem( "context-sep-undo", this.onTextInput );
         this.showItem( "context-cut", this.onTextInput );
-        this.showItem( "context-copy", true );
+        this.showItem( "context-copy", this.isTextSelected || this.onTextInput);
         this.showItem( "context-paste", this.onTextInput );
         this.showItem( "context-delete", this.onTextInput );
         this.showItem( "context-sep-paste", this.onTextInput );
@@ -218,6 +231,7 @@ nsContextMenu.prototype = {
         }
         // Initialize contextual info.
         this.onImage    = false;
+        this.onStandaloneImage = false;
         this.onMetaDataItem = false;
         this.onTextInput = false;
         this.imageURL   = "";
@@ -235,6 +249,11 @@ nsContextMenu.prototype = {
              if ( this.target.localName.toUpperCase() == "IMG" ) {
                 this.onImage = true;
                 this.imageURL = this.target.src;
+
+                var documentType = window._content.document.contentType;
+                if ( documentType.substr(0,6) == "image/" )
+                    this.onStandaloneImage = true;
+
                 // Look for image map.
                 var mapName = this.target.getAttribute( "usemap" );
                 if ( mapName ) {
@@ -418,7 +437,6 @@ nsContextMenu.prototype = {
         }
     },
     initPopupURL: function() {
-      return; // remove this line to reenable the context menu
       // quick check: if no opener, it can't be a popup
       if (!window.content.opener)
         return;
@@ -438,10 +456,7 @@ nsContextMenu.prototype = {
           // do the pref settings allow site-by-site popup management?
           const PB = Components.classes["@mozilla.org/preferences-service;1"]
                      .getService(CI.nsIPrefBranch);
-          show = !PB.getBoolPref("dom.disable_open_during_load") &&
-                 PB.getIntPref("privacy.popups.policy") ==
-                     CI.nsIPopupWindowManager.ALLOW_POPUP &&
-                 PB.getBoolPref("privacy.popups.usecustom");
+          show = !PB.getBoolPref("dom.disable_open_during_load");
         }
         if (show) {
           // initialize popupURL
@@ -454,8 +469,6 @@ nsContextMenu.prototype = {
           // but cancel if it's an unsuitable URL
           const PM = Components.classes["@mozilla.org/PopupWindowManager;1"]
                      .getService(CI.nsIPopupWindowManager);
-          if (!PM.testSuitability(this.popupURL))
-            this.popupURL = null;
         }
       } catch(e) {
       }
@@ -524,12 +537,12 @@ nsContextMenu.prototype = {
     // Open linked-to URL in a new window.
     openLink : function () {
         // Determine linked-to URL.
-        openNewWindowWith( this.linkURL() );
+        openNewWindowWith( this.linkURL(), true );
     },
     // Open linked-to URL in a new tab.
     openLinkInTab : function () {
         // Determine linked-to URL.
-        openNewTabWith( this.linkURL() );
+        openNewTabWith( this.linkURL(), true, false );
     },
     // Open frame in a new tab.
     openFrameInTab : function () {
@@ -578,10 +591,13 @@ nsContextMenu.prototype = {
         BrowserViewSourceOfDocument(this.target.ownerDocument);
     },
     viewInfo : function () {
-      BrowserPageInfo();
+        BrowserPageInfo();
     },
     viewFrameInfo : function () {
-      BrowserPageInfo(this.target.ownerDocument);
+        BrowserPageInfo(this.target.ownerDocument);
+    },
+    toggleImageSize : function () {
+        _content.document.toggleImageSize();
     },
     // Change current window to the URL of the image.
     viewImage : function () {

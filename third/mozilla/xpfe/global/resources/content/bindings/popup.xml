@@ -22,10 +22,11 @@
       <property name="accessible">
         <getter>
           <![CDATA[
-            if (this.localName == "popup" || this.localName == "menupopup") {
-              var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
+            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
+            if (this.localName == "popup" || this.localName == "menupopup")
               return (this.parentNode.localName == "menulist")? accService.createXULSelectListAccessible(this): accService.createXULMenupopupAccessible(this);
-            }
+            else if (this.localName == "tooltip")
+              return accService.createXULTooltipAccessible(this);
             return null;
           ]]>
         </getter>
@@ -137,6 +138,25 @@
 
     <handlers>
       <handler event="contextmenu" action="event.preventDefault();"/>
+
+      <handler event="popupshowing" phase="target">
+        <![CDATA[
+          var array = [];
+          var width = 0;
+          for (var menuitem = this.firstChild; menuitem; menuitem = menuitem.nextSibling) {
+            if (menuitem.localName == "menuitem" && menuitem.hasAttribute("acceltext")) {
+              var accel = document.getAnonymousElementByAttribute(menuitem, "anonid", "accel");
+              if (accel && accel.boxObject) {
+                array.push(accel);
+                if (accel.boxObject.width > width)
+                  width = accel.boxObject.width;
+              }
+            }
+          }
+          for (var i = 0; i < array.length; i++)
+            array[i].width = width;
+        ]]>
+      </handler>
     </handlers>
   </binding>
 

@@ -57,6 +57,27 @@ sub UpdateBuildNumberFiles()
 }
 
 #//--------------------------------------------------------------------------------------------------
+#// UpdateGeneratedChromeFiles
+#//--------------------------------------------------------------------------------------------------
+sub UpdateGeneratedChromeFiles()
+{
+    UpdateBuildNumberFiles();
+    my ($file) = (":mozilla:xpfe:global:buildconfig.html");
+    my $tmp;
+    open (IN, "${file}.in") || die("${file}.in: $!\n");
+    open (OUT, ">$file") || die ("$file: $!\n");
+    while ($tmp=<IN>) {
+	$tmp =~ s/\@target\@/Mac CFM/;
+	$tmp =~ s/\@CC\@/CodeWarrior/;
+	$tmp =~ s/\@CXX\@/CodeWarrior/;
+	$tmp =~ s/\@\S+\@//;
+	print OUT "$tmp";
+    }
+    close(OUT);
+    close(IN);
+}
+
+#//--------------------------------------------------------------------------------------------------
 #// Select a default skin
 #//--------------------------------------------------------------------------------------------------
 
@@ -132,7 +153,7 @@ sub InstallDefaultsFiles()
 
     InstallResources(":mozilla:profile:defaults:chrome:MANIFEST",                             "$default_profile_chrome_dir", 1);
 
-    # make a dup in en-US
+    # make a dup in US
     my($default_profile_dir_US) = "$default_profile_dir"."US:";
     mkdir($default_profile_dir_US, 0);
 
@@ -144,6 +165,16 @@ sub InstallDefaultsFiles()
     InstallResources(":mozilla:profile:defaults:chrome:MANIFEST",                             "$default_profile_chrome_dir_US", 1);
 
     }
+    
+    # Default _messenger_ directory stuff
+    my($default_messenger_dir) = "$defaults_dir"."messenger:";
+    mkdir($default_messenger_dir, 0);
+    InstallResources(":mozilla:mailnews:extensions:mailviews:resources:content:MANIFEST", "$default_messenger_dir", 1);
+    
+    # make a dup in US dir
+    my($default_messenger_dir_US) = "$default_messenger_dir"."US:";
+    mkdir($default_messenger_dir_US, 0);
+    InstallResources(":mozilla:mailnews:extensions:mailviews:resources:content:MANIFEST", "$default_messenger_dir_US", 1);
     
     # Default _pref_ directory stuff
     {
@@ -236,7 +267,6 @@ sub InstallNonChromeResources()
     MakeAlias(":mozilla:intl:locale:src:language.properties",                          "$resource_dir");
 
     MakeAlias(":mozilla:gfx:src:mac:fontEncoding.properties",                          "$resource_dir"."fonts:");
-    InstallResources(":mozilla:gfx:src:MANIFEST_RES",                                  "$resource_dir"."gfx:");
 
     my($entitytab_dir) = "$resource_dir" . "entityTables";
     InstallResources(":mozilla:intl:unicharutil:tables:MANIFEST",                      "$entitytab_dir");
@@ -599,7 +629,6 @@ sub ProcessJarManifests()
     CreateJarFromManifest(":mozilla:extensions:wallet:jar.mn", $chrome_dir, \%jars);
     CreateJarFromManifest(":mozilla:intl:uconv:src:jar.mn", $chrome_dir, \%jars);
     CreateJarFromManifest(":mozilla:htmlparser:src:jar.mn", $chrome_dir, \%jars);
-    CreateJarFromManifest(":mozilla:layout:html:forms:resources:jar.mn", $chrome_dir, \%jars);
     CreateJarFromManifest(":mozilla:layout:html:document:src:xbl-marquee:resources:jar.mn", $chrome_dir, \%jars);
     CreateJarFromManifest(":mozilla:layout:html:forms:src:jar.mn", $chrome_dir, \%jars);
     CreateJarFromManifest(":mozilla:layout:html:base:src:jar.mn", $chrome_dir, \%jars);
@@ -611,6 +640,7 @@ sub ProcessJarManifests()
     if ($main::options{mdn}) {
     	CreateJarFromManifest(":mozilla:mailnews:extensions:mdn:jar.mn", $chrome_dir, \%jars);
     }
+    CreateJarFromManifest(":mozilla:mailnews:extensions:mailviews:jar.mn", $chrome_dir, \%jars);
     CreateJarFromManifest(":mozilla:netwerk:resources:jar.mn", $chrome_dir, \%jars);
     CreateJarFromManifest(":mozilla:profile:pref-migrator:resources:jar.mn", $chrome_dir, \%jars);
     CreateJarFromManifest(":mozilla:profile:resources:jar.mn", $chrome_dir, \%jars);
@@ -655,6 +685,12 @@ sub ProcessJarManifests()
     	CreateJarFromManifest(":mozilla:security:manager:ssl:resources:jar.mn", $chrome_dir, \%jars);
     	CreateJarFromManifest(":mozilla:security:manager:pki:resources:jar.mn", $chrome_dir, \%jars);
     }
+
+    if ($main::options{calendar})
+    {
+      CreateJarFromManifest(":mozilla:calendar:resources:jar.mn", $chrome_dir, \%jars);
+    }
+
     # bad jar.mn files
 #    CreateJarFromManifest(":mozilla:extensions:xmlterm:jar.mn", $chrome_dir, \%jars);
     
@@ -781,9 +817,6 @@ sub BuildClientDist()
     InstallFromManifest(":mozilla:lib:mac:Misc:MANIFEST",                          "$distdirectory:mac:common:");
     InstallFromManifest(":mozilla:lib:mac:Instrumentation:MANIFEST",               "$distdirectory:mac:inst:");
 
-    #INCLUDE
-    InstallFromManifest(":mozilla:include:MANIFEST",                               "$distdirectory:include:");
-
     #INTL
     #CHARDET
     InstallFromManifest(":mozilla:intl:chardet:public:MANIFEST_IDL",               "$distdirectory:idl:");
@@ -805,6 +838,7 @@ sub BuildClientDist()
 
     #LWBRK
     InstallFromManifest(":mozilla:intl:lwbrk:public:MANIFEST",                     "$distdirectory:lwbrk:");
+    InstallFromManifest(":mozilla:intl:lwbrk:idl:MANIFEST_IDL",                    "$distdirectory:idl:");
 
     #STRRES
     InstallFromManifest(":mozilla:intl:strres:public:MANIFEST_IDL",                "$distdirectory:idl:");
@@ -814,6 +848,8 @@ sub BuildClientDist()
 
     #LIBREG
     InstallFromManifest(":mozilla:modules:libreg:include:MANIFEST",                "$distdirectory:libreg:");
+    InstallFromManifest(":mozilla:modules:libreg:xpcom:MANIFEST",                  "$distdirectory:mozreg:");
+    InstallFromManifest(":mozilla:modules:libreg:xpcom:MANIFEST_IDL",              "$distdirectory:idl:");
 
     #STRING
     InstallFromManifest(":mozilla:string:public:MANIFEST",                         "$distdirectory:string:");
@@ -851,9 +887,6 @@ sub BuildClientDist()
     #LIBUTIL
     InstallFromManifest(":mozilla:modules:libutil:public:MANIFEST",                "$distdirectory:libutil:");
 
-    # MPFILELOCPROVIDER
-    InstallFromManifest(":mozilla:modules:mpfilelocprovider:public:MANIFEST",      "$distdirectory:mpfilelocprovider:");
-
     #SUN_JAVA
     InstallFromManifest(":mozilla:sun-java:stubs:include:MANIFEST",                "$distdirectory:sun-java:");
     InstallFromManifest(":mozilla:sun-java:stubs:macjri:MANIFEST",                 "$distdirectory:sun-java:");
@@ -878,6 +911,7 @@ sub BuildClientDist()
 
     #PROFILE
     InstallFromManifest(":mozilla:profile:public:MANIFEST_IDL",                    "$distdirectory:idl:");
+    InstallFromManifest(":mozilla:profile:dirserviceprovider:public:MANIFEST",     "$distdirectory:profdirserviceprovider:");
 
     #PREF_MIGRATOR
     InstallFromManifest(":mozilla:profile:pref-migrator:public:MANIFEST",          "$distdirectory:profile:");
@@ -886,11 +920,9 @@ sub BuildClientDist()
     InstallFromManifest(":mozilla:modules:libimg:png:MANIFEST",                    "$distdirectory:libimg:");
     InstallFromManifest(":mozilla:modules:libimg:mng:MANIFEST",                    "$distdirectory:libimg:");
 
-    if ($main::options{useimg2}) {
-	    #LIBIMG2
-	    InstallFromManifest(":mozilla:modules:libpr0n:public:MANIFEST_IDL",            "$distdirectory:libimg2:");
-	    InstallFromManifest(":mozilla:modules:libpr0n:decoders:icon:MANIFEST_IDL",     "$distdirectory:icondecoder:");
-    }
+    #LIBIMG2
+    InstallFromManifest(":mozilla:modules:libpr0n:public:MANIFEST_IDL",            "$distdirectory:libimg2:");
+    InstallFromManifest(":mozilla:modules:libpr0n:decoders:icon:MANIFEST_IDL",     "$distdirectory:icondecoder:");
     
     #PLUGIN
     InstallFromManifest(":mozilla:modules:plugin:base:public:MANIFEST",            "$distdirectory:plugin:");
@@ -942,7 +974,6 @@ sub BuildClientDist()
     InstallFromManifest(":mozilla:content:base:public:MANIFEST",                   "$distdirectory:content:");
     InstallFromManifest(":mozilla:content:base:public:MANIFEST_IDL",               "$distdirectory:idl:");
     InstallFromManifest(":mozilla:content:base:src:MANIFEST",                      "$distdirectory:content:");
-    InstallFromManifest(":mozilla:content:build:MANIFEST",                         "$distdirectory:content:");
     InstallFromManifest(":mozilla:content:events:public:MANIFEST",                 "$distdirectory:content:");
     InstallFromManifest(":mozilla:content:events:src:MANIFEST",                    "$distdirectory:content:");
     InstallFromManifest(":mozilla:content:html:content:public:MANIFEST",           "$distdirectory:content:");
@@ -975,10 +1006,16 @@ sub BuildClientDist()
     InstallFromManifest(":mozilla:layout:html:table:public:MANIFEST",              "$distdirectory:layout:");
     InstallFromManifest(":mozilla:layout:xul:base:public:Manifest",                "$distdirectory:layout:");
     InstallFromManifest(":mozilla:layout:xul:base:src:MANIFEST",                   "$distdirectory:layout:");
+    if ($main::options{layout_debug}) 
+    {
+      #LAYOUT-DEBUG
+      InstallFromManifest(":mozilla:extensions:layout-debug:idl:MANIFEST_IDL",     "$distdirectory:idl:");
+      InstallFromManifest(":mozilla:extensions:layout-debug:public:MANIFEST",      "$distdirectory:layout-debug:");
+      InstallFromManifest(":mozilla:extensions:layout-debug:plugin:MANIFEST_IDL",  "$distdirectory:idl:");
+    }
     
     #GFX
     InstallFromManifest(":mozilla:gfx:public:MANIFEST",                            "$distdirectory:gfx:");
-    InstallFromManifest(":mozilla:gfx:src:MANIFEST",                               "$distdirectory:gfx:");
     InstallFromManifest(":mozilla:gfx:idl:MANIFEST_IDL",                           "$distdirectory:idl:");
 
     #VIEW
@@ -1062,8 +1099,9 @@ sub BuildClientDist()
     InstallFromManifest(":mozilla:editor:idl:MANIFEST",                            "$distdirectory:idl:");
     InstallFromManifest(":mozilla:editor:txmgr:idl:MANIFEST",                      "$distdirectory:idl:");
     InstallFromManifest(":mozilla:editor:public:MANIFEST",                         "$distdirectory:editor:");
-    InstallFromManifest(":mozilla:editor:txmgr:public:MANIFEST",                   "$distdirectory:editor:txmgr");
-    InstallFromManifest(":mozilla:editor:txtsvc:public:MANIFEST",                  "$distdirectory:editor:txtsvc");
+    InstallFromManifest(":mozilla:editor:txmgr:public:MANIFEST",                   "$distdirectory:editor:txmgr:");
+    InstallFromManifest(":mozilla:editor:txtsvc:public:MANIFEST",                  "$distdirectory:editor:txtsvc:");
+    InstallFromManifest(":mozilla:editor:txtsvc:public:MANIFEST_IDL",              "$distdirectory:idl:");
     
     #SILENTDL
     #InstallFromManifest(":mozilla:silentdl:MANIFEST",                             "$distdirectory:silentdl:");
@@ -1083,8 +1121,6 @@ sub BuildClientDist()
 
     # directory
     InstallFromManifest(":mozilla:xpfe:components:directory:MANIFEST_IDL",         "$distdirectory:idl:");
-    # regviewer
-    InstallFromManifest(":mozilla:xpfe:components:regviewer:MANIFEST_IDL",     "$distdirectory:idl:");
 
     InstallFromManifest(":mozilla:xpfe:components:intl:MANIFEST",                  "$distdirectory:xpfe:");
 
@@ -1212,6 +1248,26 @@ sub BuildClientDist()
         InstallFromManifest(":mozilla:js:jsd:MANIFEST", "$distdirectory:jsdebug:");
     }
 
+    #LIBICAL
+    if ($main::options{libical})
+    {
+        InstallFromManifest(":mozilla:other-licenses:libical:src:libical:autogenex:MANIFEST", "$distdirectory:libical:");
+        InstallFromManifest(":mozilla:other-licenses:libical:src:libicalss:MANIFEST", "$distdirectory:libical:");
+    }
+
+    #CALENDAR
+    if ($main::options{calendar})
+    {
+        InstallFromManifest(":mozilla:calendar:libxpical:MANIFEST_IDL", "$distdirectory:idl:");
+    }
+
+	 #WEBSERVICES
+    if ($main::options{webservices})
+    {
+        InstallFromManifest(":mozilla:extensions:webservices:public:MANIFEST_IDL", "$distdirectory:idl:");
+        InstallFromManifest(":mozilla:extensions:webservices:public:MANIFEST",     "$distdirectory:websrvcs:");
+    }
+
     print("--- Client Dist export complete ----\n");
 }
 
@@ -1259,7 +1315,7 @@ sub BuildDist()
     mkpath([ ":mozilla:dist:viewer:Plug-ins", ":mozilla:dist:viewer_debug:Plug-ins"]);
     #mkpath([ ":mozilla:dist:client:Plugins", ":mozilla:dist:client_debug:Plugins"]);
     
-    UpdateBuildNumberFiles();
+    UpdateGeneratedChromeFiles();
 
     BuildRuntimeDist();
     
@@ -1377,14 +1433,13 @@ sub BuildIDLProjects()
     	BuildIDLProject(":mozilla:security:manager:boot:macbuild:pipbootIDL.xml",		"pipboot");
     }
     
+    BuildIDLProject(":mozilla:modules:libreg:xpcom:macbuild:mozregIDL.xml",         "mozreg");    
     BuildIDLProject(":mozilla:modules:libpref:macbuild:libprefIDL.xml",             "libpref");
     BuildIDLProject(":mozilla:modules:libutil:macbuild:libutilIDL.xml",             "libutil");
     BuildIDLProject(":mozilla:modules:libjar:macbuild:libjarIDL.xml",               "libjar");
     
-	if ($main::options{useimg2}) {
-	    BuildIDLProject(":mozilla:modules:libpr0n:macbuild:libimg2IDL.xml",         "libimg2");
-	    BuildIDLProject(":mozilla:modules:libpr0n:macbuild:icondecoderIDL.xml",         "icondecoder");
-    }
+    BuildIDLProject(":mozilla:modules:libpr0n:macbuild:libimg2IDL.xml",         "libimg2");
+    BuildIDLProject(":mozilla:modules:libpr0n:macbuild:icondecoderIDL.xml",         "icondecoder");
     
     BuildIDLProject(":mozilla:modules:plugin:base:macbuild:pluginIDL.xml",          "plugin");
     BuildIDLProject(":mozilla:modules:oji:macbuild:ojiIDL.xml",                     "oji");
@@ -1416,6 +1471,7 @@ sub BuildIDLProjects()
     BuildIDLProject(":mozilla:widget:macbuild:widgetIDL.xml",                       "widget");
     BuildIDLProject(":mozilla:editor:macbuild:EditorIDL.xml",                       "editor");
     BuildIDLProject(":mozilla:editor:txmgr:macbuild:txmgrIDL.xml",                  "txmgr");
+    BuildIDLProject(":mozilla:editor:txtsvc:macbuild:txtsvcIDL.xml",                "txtsvc");
     BuildIDLProject(":mozilla:profile:macbuild:ProfileServicesIDL.xml", "profileservices");
     BuildIDLProject(":mozilla:profile:pref-migrator:macbuild:prefmigratorIDL.xml",  "prefm");
         
@@ -1446,7 +1502,6 @@ sub BuildIDLProjects()
     BuildIDLProject(":mozilla:extensions:xml-rpc:macbuild:xml-rpcIDL.xml","xml-rpc");
     BuildIDLProject(":mozilla:xpfe:components:bookmarks:macbuild:BookmarksIDL.xml", "bookmarks");
     BuildIDLProject(":mozilla:xpfe:components:directory:DirectoryIDL.xml",          "Directory");
-    BuildIDLProject(":mozilla:xpfe:components:regviewer:RegViewerIDL.xml",          "RegViewer");
     BuildIDLProject(":mozilla:xpfe:components:history:macbuild:historyIDL.xml",     "history");
     BuildIDLProject(":mozilla:xpfe:components:shistory:macbuild:shistoryIDL.xml",   "shistory");
     BuildIDLProject(":mozilla:xpfe:components:related:macbuild:RelatedIDL.xml",     "related");
@@ -1474,7 +1529,6 @@ sub BuildIDLProjects()
     BuildIDLProject(":mozilla:mailnews:local:macbuild:msglocalIDL.xml",             "MsgLocal");
     BuildIDLProject(":mozilla:mailnews:news:macbuild:msgnewsIDL.xml",               "MsgNews");
     BuildIDLProject(":mozilla:mailnews:addrbook:macbuild:msgAddrbookIDL.xml",       "MsgAddrbook");
-    BuildIDLProject(":mozilla:mailnews:absync:macbuild:abSyncIDL.xml",              "AbSyncSvc");
     BuildIDLProject(":mozilla:mailnews:db:macbuild:msgDBIDL.xml",                   "MsgDB");
     BuildIDLProject(":mozilla:mailnews:imap:macbuild:msgimapIDL.xml",               "MsgImap");
     BuildIDLProject(":mozilla:mailnews:mime:macbuild:mimeIDL.xml",                  "Mime");
@@ -1483,6 +1537,7 @@ sub BuildIDLProjects()
     if ($main::options{smime} && $main::options{psm}) {
     	BuildIDLProject(":mozilla:mailnews:extensions:smime:macbuild:msgsmimeIDL.xml",  "msgsmime");
     }
+    BuildIDLProject(":mozilla:mailnews:extensions:mailviews:macbuild:mailviewsIDL.xml",  "mailviews");
 
     BuildIDLProject(":mozilla:caps:macbuild:CapsIDL.xml",                           "caps");
 
@@ -1491,6 +1546,7 @@ sub BuildIDLProjects()
     BuildIDLProject(":mozilla:intl:unicharutil:macbuild:unicharutilIDL.xml",        "unicharutil");
     BuildIDLProject(":mozilla:intl:uconv:macbuild:uconvIDL.xml",                    "uconv");
     BuildIDLProject(":mozilla:intl:chardet:macbuild:chardetIDL.xml",                "chardet");
+    BuildIDLProject(":mozilla:intl:lwbrk:macbuild:lwbrkIDL.xml",                    "lwbrk");
 
     if ($main::options{iiextras})
     {
@@ -1527,6 +1583,35 @@ sub BuildIDLProjects()
     if ($main::options{jsd})
     {
         BuildIDLProject(":mozilla:js:jsd:macbuild:jsdIDL.xml", "jsdservice");
+    }
+
+    if ($main::options{layout_debug}) 
+    {
+        # layout-debug component headers/xpt
+        my($layout_debug_path) = ":mozilla:extensions:layout-debug:mac:";
+        BuildIDLProject($layout_debug_path . "lytDbgCmpIDL.xml", "layoutDebugComponent");
+        
+        # layout-debug plugin headers/xpt
+        # BuildIDLProject() won't do the right thing with plugins, so we roll our own
+        if ($main::CLOBBER_IDL_PROJECTS)
+        {
+            print STDERR "Deleting IDL data folder: mozilla:extensions:layout-debug:mac:_lytDbgCmpIDL Data\n";
+            EmptyTree($layout_debug_path . "_lytDbgCmpIDL Data:");
+        }
+        my($plugin_dist) = GetBinDirectory() . "Plug-ins:";
+        BuildOneProject($layout_debug_path . "lytDbgPlgIDL.xml",  "headers", 0, 0, 0);
+        BuildOneProject($layout_debug_path . "lytDbgPlgIDL.xml",  "layoutDebugPlugin.xpt", 0, 0, 0);
+        MakeAlias($layout_debug_path . "LayoutDebugPlugin.xpt", $plugin_dist);
+    }
+
+    if ($main::options{calendar})
+    {
+        BuildIDLProject(":mozilla:calendar:macbuild:calendarIDL.xml", "calendar");
+    }
+
+    if ($main::options{webservices})
+    {
+        BuildIDLProject(":mozilla:extensions:webservices:macbuild:websrvcsIDL.xml", "websrvcs");
     }
 
     EndBuildModule("idl");
@@ -1628,6 +1713,7 @@ sub BuildCommonProjects()
 
     BuildOneProject(":mozilla:modules:libreg:macbuild:libreg.xml",              "libreg$D.shlb", 1, $main::ALIAS_SYM_FILES, 0);
     BuildOneProject(":mozilla:xpcom:macbuild:xpcomPPC.xml",                     "xpcom$D.shlb", 1, $main::ALIAS_SYM_FILES, 0);
+    BuildOneProject(":mozilla:modules:libreg:xpcom:macbuild:mozreg.xml",        "mozreg$D.shlb", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:js:macbuild:JavaScript.xml",                      "JavaScript$D.shlb", 1, $main::ALIAS_SYM_FILES, 0); 
     BuildOneProject(":mozilla:js:macbuild:LiveConnect.xml",                     "LiveConnect$D.$S", 1, $main::ALIAS_SYM_FILES, 0);
 
@@ -1649,12 +1735,9 @@ sub BuildCommonProjects()
     BuildProject(":mozilla:dbm:macbuild:DBM.xml",                               "DBM$D.o");
 	MakeAlias(":mozilla:dbm:macbuild:DBM$D.o",                                  ":mozilla:dist:dbm:");
 
-    #// Static libraries
-    # Static Libs
-    BuildProject(":mozilla:modules:mpfilelocprovider:macbuild:mpfilelocprovider.xml", "mpfilelocprovider$D.o");
-    MakeAlias(":mozilla:modules:mpfilelocprovider:macbuild:mpfilelocprovider$D.o", ":mozilla:dist:mpfilelocprovider:");
-    
     InstallFromManifest(":mozilla:xpcom:components:MANIFEST_COMPONENTS",         "${dist_dir}Components:");
+
+    BuildOneProject(":mozilla:gfx:macbuild:gfx.xml",                            "gfx$D.shlb", 1, $main::ALIAS_SYM_FILES, 0);
 
     EndBuildModule("common");
 }
@@ -1702,16 +1785,13 @@ sub BuildImglib2Projects()
 
     StartBuildModule("libimg2");    
     
-    if ($main::options{useimg2})
+    BuildOneProject(":mozilla:modules:libpr0n:macbuild:libimg2.xml",            "libimg2$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
+    BuildOneProject(":mozilla:modules:libpr0n:macbuild:icondecoder.xml",        "icondecoder$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
+    
+    # MNG
+    if ($main::options{mng})
     {
-        BuildOneProject(":mozilla:modules:libpr0n:macbuild:libimg2.xml",            "libimg2$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
-        BuildOneProject(":mozilla:modules:libpr0n:macbuild:icondecoder.xml",        "icondecoder$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
-        
-        # MNG
-        if ($main::options{mng})
-        {
-            BuildOneProject(":mozilla:modules:libpr0n:macbuild:mngdecoder.xml",     "mngdecoder$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
-        }
+        BuildOneProject(":mozilla:modules:libpr0n:macbuild:mngdecoder.xml",     "mngdecoder$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     }
     
     EndBuildModule("libimg2");
@@ -1893,6 +1973,8 @@ sub BuildBrowserUtilsProjects()
 
     BuildOneProject(":mozilla:uriloader:macbuild:uriLoader.xml",                "uriLoader$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     
+    BuildProject(":mozilla:profile:dirserviceprovider:macbuild:dirServiceProvider.xml", "profDirServiceProvider$D.o");
+    MakeAlias(":mozilla:profile:dirserviceprovider:macbuild:profDirServiceProvider$D.o", ":mozilla:dist:profdirserviceprovider:");    
     BuildOneProject(":mozilla:profile:macbuild:profile.xml",                    "profile$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:profile:pref-migrator:macbuild:prefmigrator.xml", "prefm$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
 
@@ -1946,8 +2028,6 @@ sub BuildLayoutProjects()
     BuildProject(":mozilla:expat:macbuild:expat.xml",                           "expat$D.o");
     BuildOneProject(":mozilla:htmlparser:macbuild:htmlparser.xml",              "htmlparser$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
 
-    BuildOneProject(":mozilla:gfx:macbuild:gfx.xml",                            "gfx$D.shlb", 1, $main::ALIAS_SYM_FILES, 0);
-
     my($dbg) = $main::DEBUG ? "Dbg" : "";
     BuildOneProjectWithOutput(":mozilla:gfx:macbuild:gfxComponent.xml",         "gfxComponent$C$dbg.$S", "gfxComponent$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
 
@@ -1968,7 +2048,7 @@ sub BuildLayoutProjects()
         BuildOneProject(":mozilla:content:macbuild:contentSVG.xml",             "contentSVG$D.o stub", 0, 0, 0);
     }
 
-    BuildOneProject(":mozilla:content:macbuild:content.xml",                    "content$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
+    BuildOneProject(":mozilla:content:macbuild:content.xml",                    "content$D.o", 0, 0, 0);
     if ($main::options{mathml})
     {
         BuildProject(":mozilla:layout:macbuild:layoutmathml.xml",                "layoutmathml$D.o");
@@ -2005,6 +2085,18 @@ sub BuildLayoutProjects()
     BuildOneProject(":mozilla:xpinstall:wizard:libxpnet:macbuild:xpnet.xml",    "xpnet$D.Lib", 0, 0, 0);
     if (!($main::PROFILE)) {
         BuildOneProject(":mozilla:xpinstall:wizard:mac:macbuild:MIW.xml",           "Mozilla Installer$D", 0, 0, 0);
+    }
+    
+    if ($main::options{layout_debug}) 
+    {
+        # make the component.
+        my($layout_debug_path) = ":mozilla:extensions:layout-debug:mac:";
+        BuildOneProject($layout_debug_path . "lytDbgComp.xml", "LayoutDebugComponent.shlb", 1, 0, 1);
+        
+        # make the plugin.  BuildOneProject isn't smart about plugins, so roll our own.
+        my($plugin_dist) = GetBinDirectory() . "Plug-ins:";
+        BuildProject($layout_debug_path . "lytDbgPlugin.xml", "LayoutDebugPlugin$C");
+        MakeAlias($layout_debug_path . "LayoutDebugPlugin", $plugin_dist);
     }
     
     EndBuildModule("nglayout");
@@ -2172,7 +2264,6 @@ sub BuildXPAppProjects()
 
     # Components
     BuildOneProject(":mozilla:xpfe:components:find:macbuild:FindComponent.xml", "FindComponent$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
-    BuildOneProject(":mozilla:xpfe:components:regviewer:RegViewer.xml", "RegViewer$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:xpfe:components:shistory:macbuild:shistory.xml", "shistory$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:xpfe:components:macbuild:appcomps.xml", "appcomps$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     InstallFromManifest(":mozilla:xpfe:appshell:src:MANIFEST_COMPONENTS", "${dist_dir}Components:");
@@ -2293,6 +2384,16 @@ sub BuildExtensionsProjects()
         }
     }
     
+    if ($main::options{libical})
+    {
+        BuildProject(":mozilla:other-licenses:libical:macbuild:libical.xml", "libical$D.o");
+        MakeAlias(":mozilla:other-licenses:libical:macbuild:libical$D.o", ":mozilla:dist:libical:");
+    }
+    if ($main::options{calendar})
+    {
+        BuildOneProject(":mozilla:calendar:macbuild:calendar.xml", "xpical$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
+    }
+    
     EndBuildModule("extensions");
 }
 
@@ -2368,7 +2469,6 @@ sub BuildMailNewsProjects()
     BuildOneProject(":mozilla:mailnews:imap:macbuild:msgimap.xml",                      "MsgImap$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:mailnews:news:macbuild:msgnews.xml",                      "MsgNews$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:mailnews:addrbook:macbuild:msgAddrbook.xml",              "MsgAddrbook$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
-    BuildOneProject(":mozilla:mailnews:absync:macbuild:AbSync.xml",                     "AbSyncSvc$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:mailnews:mime:macbuild:mime.xml",                         "Mime$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:mailnews:mime:emitters:macbuild:mimeEmitter.xml",         "mimeEmitter$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     BuildOneProject(":mozilla:mailnews:mime:cthandlers:vcard:macbuild:vcard.xml",       "vcard$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
@@ -2393,6 +2493,8 @@ sub BuildMailNewsProjects()
 	  if ($main::options{mdn}) {
     	BuildOneProject(":mozilla:mailnews:extensions:mdn:macbuild:msgmdn.xml",         "msgmdn$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
     }
+    BuildOneProject(":mozilla:mailnews:extensions:mailviews:macbuild:mailviews.xml",  "mailviews$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
+    BuildOneProject(":mozilla:mailnews:extensions:bayesian-spam-filter:macbuild:BayesianFilter.xml", "bayesianFilter$D.$S", 1, $main::ALIAS_SYM_FILES, 1);
 
     if ($main::options{mdn}) {
     	InstallResources(":mozilla:mailnews:extensions:mdn:src:MANIFEST",				 "${dist_dir}Components");

@@ -47,8 +47,9 @@
 class nsIPresShell;
 class nsIFrame;
 class nsVoidArray;
-class nsISizeOfHandler;
 struct nsSize;
+struct nsHTMLReflowState;
+class nsIPresContext;
 
 #define NS_SPACE_MANAGER_CACHE_SIZE 4
 
@@ -195,6 +196,14 @@ public:
   void GetTranslation(nscoord& aX, nscoord& aY) const { aX = mX; aY = mY; }
 
   /**
+   * Returns the x-most rect in the space manager, or 0 if there are no
+   * rects.
+   *
+   * @return  PR_TRUE if there are bands and PR_FALSE if there are no bands
+   */
+  PRBool XMost(nscoord& aXMost) const;
+
+  /**
    * Returns the y-most of the bottommost band or 0 if there are no bands.
    *
    * @return  PR_TRUE if there are bands and PR_FALSE if there are no bands
@@ -243,35 +252,15 @@ public:
                          const nsRect& aUnavailableSpace);
 
   /**
-   * Resize the rectangular region associated with aFrame by the specified
-   * deltas. The height change always applies to the bottom edge or the existing
-   * rect. You specify whether the width change applies to the left or right edge
-   *
-   * Returns NS_OK if successful, NS_ERROR_INVALID_ARG if there is no region
-   * tagged with aFrame
-   */
-  enum AffectedEdge {LeftEdge, RightEdge};
-  nsresult ResizeRectRegion(nsIFrame*    aFrame,
-                            nscoord      aDeltaWidth,
-                            nscoord      aDeltaHeight,
-                            AffectedEdge aEdge = RightEdge);
-
-  /**
-   * Offset the region associated with aFrame by the specified amount.
-   *
-   * Returns NS_OK if successful, NS_ERROR_INVALID_ARG if there is no region
-   * tagged with aFrame
-   */
-  nsresult OffsetRegion(nsIFrame* aFrame, nscoord dx, nscoord dy);
-
-  /**
    * Remove the region associated with aFrane.
    *
    * Returns NS_OK if successful and NS_ERROR_INVALID_ARG if there is no region
    * tagged with aFrame
    */
+protected: /* doesn't work in the general case */
   nsresult RemoveRegion(nsIFrame* aFrame);
 
+public:
   /**
    * Clears the list of regions representing the unavailable space.
    */
@@ -307,13 +296,18 @@ public:
    */
   void PopState();
 
+  /**
+   * Get the top of the last region placed into the space manager, to
+   * enforce the rule that a float can't be above an earlier float.
+   * Returns the minimum nscoord value if there are no regions.
+   */
+  nscoord GetLowestRegionTop();
+
 #ifdef DEBUG
   /**
    * Dump the state of the spacemanager out to a file
    */
   nsresult List(FILE* out);
-
-  void SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
 #endif
 
 protected:
@@ -335,6 +329,8 @@ protected:
   struct SpaceManagerState {
     nscoord mX, mY;
     nsIFrame *mLastFrame;
+    nscoord mXMost;
+    nscoord mLowestTop;
     SpaceManagerState *mNext;
 
     SpaceManagerState() : mX(0), mY(0), mLastFrame(nsnull), mNext(nsnull) {}
@@ -346,7 +342,7 @@ public:
   struct BandRect : PRCListStr {
     nscoord   mLeft, mTop;
     nscoord   mRight, mBottom;
-    PRIntn    mNumFrames;    // number of frames occupying this rect
+    PRInt32   mNumFrames;    // number of frames occupying this rect
     union {
       nsIFrame*    mFrame;   // single frame occupying the space
       nsVoidArray* mFrames;  // list of frames occupying the space
@@ -409,6 +405,8 @@ protected:
   nsIFrame* const mFrame;     // frame associated with the space manager
   nscoord         mX, mY;     // translation from local to global coordinate space
   BandList        mBandList;  // header/sentinel for circular linked list of band rects
+  nscoord         mXMost;
+  nscoord         mLowestTop;  // the lowest *top*
   FrameInfo*      mFrameInfoMap;
   nsIntervalSet   mFloatDamage;
 
@@ -440,6 +438,50 @@ private:
 
   nsSpaceManager(const nsSpaceManager&);  // no implementation
   void operator=(const nsSpaceManager&);  // no implementation
+};
+
+/**
+ * A helper class to manage maintenance of the space manager during
+ * nsBlockFrame::Reflow. It automatically restores the old space
+ * manager in the reflow state when the object goes out of scope.
+ */
+class nsAutoSpaceManager {
+public:
+  nsAutoSpaceManager(nsHTMLReflowState& aReflowState)
+    : mReflowState(aReflowState),
+#ifdef DEBUG
+      mOwns(PR_TRUE),
+#endif
+      mNew(nsnull),
+      mOld(nsnull) {}
+
+  ~nsAutoSpaceManager();
+
+  /**
+   * Create a new space manager for the specified frame. This will
+   * `remember' the old space manager, and install the new space
+   * manager in the reflow state.
+   */
+  nsresult
+  CreateSpaceManagerFor(nsIPresContext *aPresContext,
+                        nsIFrame *aFrame);
+
+#ifdef DEBUG
+  /**
+   * `Orphan' any space manager that the nsAutoSpaceManager created;
+   * i.e., make it so that we don't destroy the space manager when we
+   * go out of scope.
+   */
+  void DebugOrphanSpaceManager() { mOwns = PR_FALSE; }
+#endif
+
+protected:
+  nsHTMLReflowState &mReflowState;
+#ifdef DEBUG
+  PRBool mOwns;
+#endif
+  nsSpaceManager *mNew;
+  nsSpaceManager *mOld;
 };
 
 #endif /* nsSpaceManager_h___ */

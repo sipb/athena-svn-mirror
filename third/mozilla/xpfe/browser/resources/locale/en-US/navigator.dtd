@@ -9,7 +9,6 @@
 <!ENTITY mainWindow.titlemodifier "&brandShortName;"> 
 <!-- LOCALIZATION NOTE (mainWindow.titlemodifiermenuseparator): DONT_TRANSLATE -->
 <!ENTITY mainWindow.titlemodifiermenuseparator " - ">
-<!ENTITY viewsourcetitle.preface "Source for: ">
 
 <!ENTITY nothingAvailable.label "(Nothing Available)">
 
@@ -72,6 +71,7 @@
 <!ENTITY translateMenu.accesskey "T">
 <!ENTITY translate.commandKey "t">
 
+<!ENTITY closeOtherTabs.label "Close Other Tabs">
 <!ENTITY closeWindow.label "Close Window">
 
 <!-- I'd like all this to move to an overlay or something -->
@@ -197,4 +197,7 @@
 
 <!ENTITY historyCmd.label           "History">  
 <!ENTITY historyCmd.accesskey       "i">
-<!ENTITY history.commandKey       "h">
+<!ENTITY history.commandKey         "h">
+
+<!ENTITY popupIcon.tooltiptext      "Unblock this site's popups">
+

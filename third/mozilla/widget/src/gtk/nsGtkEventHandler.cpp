@@ -41,7 +41,6 @@
 #include "nsWindow.h"
 #include "nsAppShell.h"
 
-#include "nsScrollbar.h"
 #include "nsGUIEvent.h"
 
 #include "nsTextWidget.h"
@@ -210,14 +209,26 @@ struct nsKeyConverter nsKeycodes[] = {
   { NS_VK_EQUALS, GDK_plus }
 };
 
+#define IS_XSUN_XSERVER(dpy) \
+    (strstr(XServerVendor(dpy), "Sun Microsystems") != NULL)
+
+// map Sun Keyboard special keysyms on to NS_VK keys
+struct nsKeyConverter nsSunKeycodes[] = {
+  {NS_VK_ESCAPE, GDK_F11 }, //bug 57262, Sun Stop key generates F11 keysym
+  {NS_VK_F11, 0x1005ff10 }, //Sun F11 key generates SunF36(0x1005ff10) keysym
+  {NS_VK_F12, 0x1005ff11 }, //Sun F12 key generates SunF37(0x1005ff11) keysym
+  {NS_VK_PAGE_UP,    GDK_F29 }, //KP_Prior
+  {NS_VK_PAGE_DOWN,  GDK_F35 }, //KP_Next
+  {NS_VK_HOME,       GDK_F27 }, //KP_Home
+  {NS_VK_END,        GDK_F33 }, //KP_End
+};
+
 //==============================================================
 
 // Input keysym is in gtk format; output is in NS_VK format
 int nsPlatformToDOMKeyCode(GdkEventKey *aGEK)
 {
-  int i;
-  int length = sizeof(nsKeycodes) / sizeof(struct nsKeyConverter);
-
+  int i, length = 0;
   int keysym = aGEK->keyval;
 
   // First, try to handle alphanumeric input, not listed in nsKeycodes:
@@ -239,28 +250,22 @@ int nsPlatformToDOMKeyCode(GdkEventKey *aGEK)
   if (keysym >= GDK_KP_0 && keysym <= GDK_KP_9)
     return keysym - GDK_KP_0 + NS_VK_NUMPAD0;
 
+  // map Sun Keyboard special keysyms
+  if (IS_XSUN_XSERVER(GDK_DISPLAY())) {
+    length = sizeof(nsSunKeycodes) / sizeof(struct nsKeyConverter);
+    for (i = 0; i < length; i++) {
+      if (nsSunKeycodes[i].keysym == keysym)
+        return(nsSunKeycodes[i].vkCode);
+    }
+  }
+
   // misc other things
+  length = sizeof(nsKeycodes) / sizeof(struct nsKeyConverter);
   for (i = 0; i < length; i++) {
     if (nsKeycodes[i].keysym == keysym)
       return(nsKeycodes[i].vkCode);
   }
 
-  // function keys
-  // See bug 57262, Sun's Stop key generates F11 keysym code, in order to
-  // make Stop key stops the page loading while not sabotaging F11 key in
-  // all platforms, this code catches F11 keysym, then changes it into ESCAPE,
-  // which stops the page loading on all platforms.
-  // Now, Stop key has the same function as ESC in Solaris
-#if defined(SUNOS4) || defined(SOLARIS)
-  if (keysym == GDK_F11)
-    return NS_VK_ESCAPE;
-  //When F11 key is pressed in Sun keyboard, keysym is SunF36 not F11
-  if (keysym == 268828432)  //SunF36's value is 0x1005ff10(268828432)
-    return NS_VK_F11;       //Change it into F11
-  //When F12 key is pressed in Sun keyboard, keysym is SunF37 not F12
-  if (keysym == 268828433)  //SunF37's value is 0x1005ff11(268828433)
-    return NS_VK_F12;       //Change it into F12
-#endif
   if (keysym >= GDK_F1 && keysym <= GDK_F24)
     return keysym - GDK_F1 + NS_VK_F1;
 
@@ -277,8 +282,8 @@ int nsPlatformToDOMKeyCode(GdkEventKey *aGEK)
 PRUint32 nsConvertCharCodeToUnicode(GdkEventKey* aGEK)
 {
   // Anything above 0xf000 is considered a non-printable
-  if (aGEK->keyval > 0xf000) {
-
+  // Exception: directly encoded UCS characters
+  if (aGEK->keyval > 0xf000 && (aGEK->keyval & 0xff000000) != 0x01000000) {
     // Keypad keys are an exception: they return a value different
     // from their non-keypad equivalents, but mozilla doesn't distinguish.
     switch (aGEK->keyval)
@@ -426,12 +431,13 @@ void InitKeyPressEvent(GdkEventKey *aGEK,
          // Windows platform in widget/src/windows/nsWindow.cpp: See bug 16486
          // Note: if Shift is pressed at the same time, do not to_lower()
          // Because Ctrl+Shift has different function with Ctrl
-         if ( !anEvent.isShift &&
-              anEvent.charCode >= GDK_A &&
-              anEvent.charCode <= GDK_Z )
-           anEvent.charCode = gdk_keyval_to_lower(anEvent.charCode);
-      } else
-        anEvent.isShift = PR_FALSE;
+        if ( (anEvent.charCode >= GDK_A && anEvent.charCode <= GDK_Z) ||
+             (anEvent.charCode >= GDK_a && anEvent.charCode <= GDK_z) ) {
+          anEvent.charCode = (anEvent.isShift) ? 
+            gdk_keyval_to_upper(anEvent.charCode) : 
+            gdk_keyval_to_lower(anEvent.charCode);
+        }
+      }
     } else {
       anEvent.keyCode = nsPlatformToDOMKeyCode(aGEK);
     }
@@ -475,69 +481,6 @@ void handle_size_allocate(GtkWidget *w, GtkAllocation *alloc, gpointer p)
   NS_RELEASE(widget);
 
   delete event.windowSize;
-}
-
-//==============================================================
-void handle_scrollbar_value_changed(GtkAdjustment *adj, gpointer p)
-{
-  nsScrollbar *widget = (nsScrollbar*) p;
-  nsScrollbarEvent sevent;
-
-  sevent.message = NS_SCROLLBAR_POS;
-  sevent.widget  = (nsWidget *) p;
-  sevent.eventStructType = NS_SCROLLBAR_EVENT;
-
-  GdkWindow *win = (GdkWindow *)widget->GetNativeData(NS_NATIVE_WINDOW);
-  gdk_window_get_pointer(win, &sevent.point.x, &sevent.point.y, nsnull);
-
-  NS_ADDREF(widget);
-  widget->OnScroll(sevent, adj->value);
-  NS_RELEASE(widget);
-
-/* FIXME we need to set point.* from the event stuff. */
-#if 0
-  nsWindow * widgetWindow = (nsWindow *) p ;
-  XmScrollBarCallbackStruct * cbs = (XmScrollBarCallbackStruct*) call_data;
-  sevent.widget  = (nsWindow *) p;
-  if (cbs->event != nsnull) {
-    sevent.point.x = cbs->event->xbutton.x;
-    sevent.point.y = cbs->event->xbutton.y;
-  } else {
-    sevent.point.x = 0;
-    sevent.point.y = 0;
-  }
-  sevent.time    = 0; //XXX Implement this
-
-  switch (cbs->reason) {
-
-    case XmCR_INCREMENT:
-      sevent.message = NS_SCROLLBAR_LINE_NEXT;
-      break;
-
-    case XmCR_DECREMENT:
-      sevent.message = NS_SCROLLBAR_LINE_PREV;
-      break;
-
-    case XmCR_PAGE_INCREMENT:
-      sevent.message = NS_SCROLLBAR_PAGE_NEXT;
-      break;
-
-    case XmCR_PAGE_DECREMENT:
-      sevent.message = NS_SCROLLBAR_PAGE_PREV;
-      break;
-
-    case XmCR_DRAG:
-      sevent.message = NS_SCROLLBAR_POS;
-      break;
-
-    case XmCR_VALUE_CHANGED:
-      sevent.message = NS_SCROLLBAR_POS;
-      break;
-
-    default:
-      break;
-  }
-#endif
 }
 
 // GTK's text widget already does XIM, so we don't want to do this again

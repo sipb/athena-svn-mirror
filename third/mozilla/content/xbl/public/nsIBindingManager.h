@@ -48,16 +48,15 @@
 
 #include "nsString.h"
 #include "nsISupports.h"
-#include "nsISupportsArray.h"
 
 class nsIContent;
 class nsIXBLBinding;
-class nsIXBLBindingAttachedHandler;
 class nsIXBLDocumentInfo;
 class nsIAtom;
 class nsIStreamListener;
 class nsIXPConnectWrappedJS;
 class nsIDOMNodeList;
+class nsVoidArray;
 
 // {55D70FE0-C8E5-11d3-97FB-00400553EEF0}
 #define NS_IBINDING_MANAGER_IID \
@@ -106,8 +105,9 @@ public:
 
   /**
    * Set the insertion point children for the specified element.
+   * The binding manager assumes ownership of aList.
    */
-  NS_IMETHOD SetContentListFor(nsIContent* aContent, nsISupportsArray* aList)=0;
+  NS_IMETHOD SetContentListFor(nsIContent* aContent, nsVoidArray* aList)=0;
 
   /**
    * Determine whether or not the explicit child list has been altered
@@ -122,8 +122,9 @@ public:
 
   /**
    * Set the anonymous child content for the specified element.
+   * The binding manager assumes ownership of aList.
    */
-  NS_IMETHOD SetAnonymousNodesFor(nsIContent* aContent, nsISupportsArray* aList) = 0;
+  NS_IMETHOD SetAnonymousNodesFor(nsIContent* aContent, nsVoidArray* aList) = 0;
 
   /**
    * Retrieves the anonymous list of children if the element has one;
@@ -155,7 +156,6 @@ public:
                                  nsIDocument** aResult) = 0;
 
   NS_IMETHOD AddToAttachedQueue(nsIXBLBinding* aBinding)=0;
-  NS_IMETHOD AddHandlerToAttachedQueue(nsIXBLBindingAttachedHandler* aHandler)=0;
   NS_IMETHOD ClearAttachedQueue()=0;
   NS_IMETHOD ProcessAttachedQueue()=0;
 

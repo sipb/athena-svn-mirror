@@ -36,7 +36,6 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsBrowserStatusFilter.h"
-#include "nsIFileTransportService.h"
 #include "nsIChannel.h"
 #include "nsITimer.h"
 #include "nsIServiceManager.h"
@@ -57,7 +56,6 @@ nsBrowserStatusFilter::nsBrowserStatusFilter()
     , mDelayedStatus(PR_FALSE)
     , mDelayedProgress(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsBrowserStatusFilter::~nsBrowserStatusFilter()
@@ -124,10 +122,6 @@ nsBrowserStatusFilter::OnStateChange(nsIWebProgress *aWebProgress,
     if (!mListener)
         return NS_OK;
 
-    // ignore local/resource/chrome files
-    if (aStatus == NS_NET_STATUS_READ_FROM || aStatus == NS_NET_STATUS_WROTE_TO)
-        return NS_OK;
-
     if (aStateFlags & STATE_START) {
         if (aStateFlags & STATE_IS_NETWORK) {
             mTotalRequests = 0;
@@ -142,14 +136,8 @@ nsBrowserStatusFilter::OnStateChange(nsIWebProgress *aWebProgress,
         if (aStateFlags & STATE_IS_REQUEST) {
             ++mFinishedRequests;
             if (!mUseRealProgressFlag && mTotalRequests)
-                return OnProgressChange(nsnull, nsnull, 0, 0, mFinishedRequests, mTotalRequests);
-        }
-        if (aStateFlags & STATE_IS_NETWORK) {
-            if (mTimer) {
-                ProcessTimeout();
-                mTimer->Cancel();
-                mTimer = nsnull;
-            }
+                return OnProgressChange(nsnull, nsnull, 0, 0,
+                                        mFinishedRequests, mTotalRequests);
         }
     }
     else if (aStateFlags & STATE_TRANSFERRING) {
@@ -177,15 +165,21 @@ nsBrowserStatusFilter::OnStateChange(nsIWebProgress *aWebProgress,
     // If we're here, we have either STATE_START or STATE_STOP.  The
     // listener only cares about these in certain conditions.
     PRBool isLoadingDocument = PR_FALSE;
-    if (! (aStateFlags & nsIWebProgressListener::STATE_IS_NETWORK ||
-           (aStateFlags & nsIWebProgressListener::STATE_IS_REQUEST &&
-            mTotalRequests == mFinishedRequests &&
-            (aWebProgress->GetIsLoadingDocument(&isLoadingDocument),
-             !isLoadingDocument))))
-        return NS_OK;
+    if ((aStateFlags & nsIWebProgressListener::STATE_IS_NETWORK ||
+         (aStateFlags & nsIWebProgressListener::STATE_IS_REQUEST &&
+          mFinishedRequests == mTotalRequests &&
+          (aWebProgress->GetIsLoadingDocument(&isLoadingDocument),
+           !isLoadingDocument)))) {
+        if (mTimer && (aStateFlags & nsIWebProgressListener::STATE_STOP)) {
+            mTimer->Cancel();
+            ProcessTimeout();
+        }
 
+        return mListener->OnStateChange(aWebProgress, aRequest, aStateFlags,
+                                        aStatus);
+    }
 
-    return mListener->OnStateChange(aWebProgress, aRequest, aStateFlags, aStatus);
+    return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -242,10 +236,6 @@ nsBrowserStatusFilter::OnStatusChange(nsIWebProgress *aWebProgress,
     if (!mListener)
         return NS_OK;
 
-    // ignore local/resource/chrome files
-    if (aStatus == NS_NET_STATUS_READ_FROM || aStatus == NS_NET_STATUS_WROTE_TO)
-        return NS_OK;
-
     //
     // limit frequency of calls to OnStatusChange
     //
@@ -289,13 +279,15 @@ nsBrowserStatusFilter::StartDelayTimer()
     if (!mTimer)
       return NS_ERROR_FAILURE;
 
-    return mTimer->InitWithFuncCallback(TimeoutHandler, this, 400, 
+    return mTimer->InitWithFuncCallback(TimeoutHandler, this, 40, 
                                         nsITimer::TYPE_ONE_SHOT);
 }
 
 void
 nsBrowserStatusFilter::ProcessTimeout()
 {
+    mTimer = nsnull;
+
     if (!mListener)
         return;
 

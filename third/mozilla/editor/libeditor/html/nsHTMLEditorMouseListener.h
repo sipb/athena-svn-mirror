@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *    Charles Manske (cmanske@netscape.com)
+ *    Daniel Glazman (glazman@netscape.com)
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -47,6 +48,7 @@
 #include "nsIPlaintextEditor.h"
 #include "nsIHTMLEditor.h"
 #include "nsEditorEventListeners.h"
+#include "nsHTMLEditor.h"
 
 class nsString;
 
@@ -55,7 +57,7 @@ class nsHTMLEditorMouseListener : public nsTextEditorMouseListener
 public:
   /** default constructor
    */
-  nsHTMLEditorMouseListener();
+  nsHTMLEditorMouseListener(nsHTMLEditor *aHTMLEditor);
   /** default destructor
    */
   virtual ~nsHTMLEditorMouseListener();
@@ -67,13 +69,17 @@ public:
 
 /*BEGIN implementations of mouseevent handler interface*/
   NS_IMETHOD MouseDown(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD MouseUp(nsIDOMEvent* aMouseEvent);
 /*END implementations of mouseevent handler interface*/
 
+protected:
+
+  nsHTMLEditor *mHTMLEditor; // un-addref'd weak pointer
 };
 
 /** factory for the mouse listener
  */
-extern nsresult NS_NewHTMLEditorMouseListener(nsIDOMEventListener ** aInstancePtrResult, nsIEditor *aEditor);
+extern nsresult NS_NewHTMLEditorMouseListener(nsIDOMEventListener ** aInstancePtrResult, nsHTMLEditor *aHTMLEditor);
 
 #endif //htmlEditorMouseListener_h__
 

@@ -30,10 +30,14 @@
  * 04/20/2000   IBM Corp.       Added PR_CALLBACK for Optlink use in OS2
  */
 
+/**
+ * nsHashtable is OBSOLETE. Use nsTHashtable or a derivative instead.
+ */
+
 #ifndef nsHashtable_h__
 #define nsHashtable_h__
 
-#include "plhash.h"
+#include "pldhash.h"
 #include "prlock.h"
 #include "nscore.h"
 #include "nsCom.h"
@@ -72,8 +76,7 @@ class NS_COM nsHashKey {
         VoidKey,
         IDKey,
         CStringKey,
-        StringKey,
-        OpaqueKey
+        StringKey
     };
     nsHashKeyType GetKeyType() const { return mKeyType; }
   protected:
@@ -87,8 +90,7 @@ class NS_COM nsHashKey {
 enum {
     kHashEnumerateStop      = PR_FALSE,
     kHashEnumerateNext      = PR_TRUE,
-    kHashEnumerateRemove    = 2,
-    kHashEnumerateUnhash    = 3
+    kHashEnumerateRemove    = 2
 };
 
 typedef PRIntn
@@ -112,15 +114,15 @@ typedef nsresult
 class NS_COM nsHashtable {
   protected:
     // members  
-    PRLock*     mLock;
-    PLHashTable mHashtable;
-    PRBool      mEnumerating;
+    PRLock*         mLock;
+    PLDHashTable    mHashtable;
+    PRBool          mEnumerating;
 
   public:
     nsHashtable(PRUint32 aSize = 16, PRBool threadSafe = PR_FALSE);
     virtual ~nsHashtable();
 
-    PRInt32 Count(void) { return mHashtable.nentries; }
+    PRInt32 Count(void) { return mHashtable.entryCount; }
     PRBool Exists(nsHashKey *aKey);
     void *Put(nsHashKey *aKey, void *aData);
     void *Get(nsHashKey *aKey);
@@ -158,7 +160,9 @@ class NS_COM nsObjectHashtable : public nsHashtable {
     PRBool RemoveAndDelete(nsHashKey *aKey);
 
   protected:
-    static PRIntn PR_CALLBACK CopyElement(PLHashEntry *he, PRIntn i, void *arg);
+    static PLDHashOperator PR_CALLBACK CopyElement(PLDHashTable* table,
+                                                   PLDHashEntryHdr* hdr,
+                                                   PRUint32 i, void *arg);
     
     nsHashtableCloneElementFunc mCloneElementFun;
     void*                       mCloneElementClosure;
@@ -200,7 +204,9 @@ class NS_COM nsSupportsHashtable
 
   private:
     static PRBool PR_CALLBACK ReleaseElement(nsHashKey *, void *, void *);
-    static PRIntn PR_CALLBACK EnumerateCopy(PLHashEntry *, PRIntn, void *);
+    static PLDHashOperator PR_CALLBACK EnumerateCopy(PLDHashTable*,
+                                                     PLDHashEntryHdr* hdr,
+                                                     PRUint32 i, void *arg);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -420,38 +426,6 @@ class NS_COM nsStringKey : public nsHashKey {
   protected:
     PRUnichar*  mStr;
     PRUint32    mStrLen;
-    Ownership   mOwnership;
-};
-
-// for opaque buffers of data which may contain nulls
-class NS_COM nsOpaqueKey : public nsHashKey {
-  public:
-
-    // NB: when serializing, NEVER_OWN keys are deserialized as OWN.
-    enum Ownership {
-        NEVER_OWN,  // very long lived, even clones don't need to copy it.
-        OWN_CLONE,  // as long lived as this key. But clones make a copy.
-        OWN         // to be free'd in key dtor. Clones make their own copy.
-    };
-
-    nsOpaqueKey(const nsOpaqueKey& aKey);
-    nsOpaqueKey(const char* buf, PRUint32 bufLen, Ownership own = OWN_CLONE);
-    ~nsOpaqueKey(void);
-
-    PRUint32 HashCode(void) const;
-    PRBool Equals(const nsHashKey* aKey) const;
-    nsHashKey* Clone() const;
-    nsOpaqueKey(nsIObjectInputStream* aStream, nsresult *aResult);
-    nsresult Write(nsIObjectOutputStream* aStream) const;
-
-    // For when the owner of the hashtable wants to peek at the actual
-    // string in the key. No copy is made, so be careful.
-    const char* GetBuffer() const { return mBuf; }
-    PRUint32 GetBufferLength() const { return mBufLen; }
-
-  protected:
-    char*       mBuf;
-    PRUint32    mBufLen;
     Ownership   mOwnership;
 };
 

@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: ckhelper.c,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 19:26:50 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $RCSfile: ckhelper.c,v $ $Revision: 1.1.1.1.2.1 $ $Date: 2003-07-14 19:06:36 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSCKEPV_H
@@ -46,6 +46,8 @@ static const char CVS_ID[] = "@(#) $RCSfile: ckhelper.c,v $ $Revision: 1.1.1.1 $
 #ifndef CKHELPER_H
 #include "ckhelper.h"
 #endif /* CKHELPER_H */
+
+extern const NSSError NSS_ERROR_DEVICE_ERROR;
 
 static const CK_BBOOL s_true = CK_TRUE;
 NSS_IMPLEMENT_DATA const NSSItem
@@ -124,7 +126,7 @@ nssCKObject_GetAttributes
 	    ckrv != CKR_ATTRIBUTE_SENSITIVE) 
 	{
 	    nssSession_ExitMonitor(session);
-	    /* set an error here */
+	    nss_SetError(NSS_ERROR_DEVICE_ERROR);
 	    goto loser;
 	}
 	/* Allocate memory for each attribute. */
@@ -154,7 +156,7 @@ nssCKObject_GetAttributes
         ckrv != CKR_ATTRIBUTE_TYPE_INVALID &&
         ckrv != CKR_ATTRIBUTE_SENSITIVE) 
     {
-	/* set an error here */
+	nss_SetError(NSS_ERROR_DEVICE_ERROR);
 	goto loser;
     }
     if (alloced && arenaOpt) {
@@ -317,8 +319,7 @@ nssCryptokiCertificate_GetAttributes
   NSSDER *encodingOpt,
   NSSDER *issuerOpt,
   NSSDER *serialOpt,
-  NSSDER *subjectOpt,
-  NSSASCII7 **emailOpt
+  NSSDER *subjectOpt
 )
 {
     PRStatus status;
@@ -327,7 +328,7 @@ nssCryptokiCertificate_GetAttributes
     NSSSlot *slot;
     CK_ULONG template_size;
     CK_ATTRIBUTE_PTR attr;
-    CK_ATTRIBUTE cert_template[7];
+    CK_ATTRIBUTE cert_template[6];
     /* Set up a template of all options chosen by caller */
     NSS_CK_TEMPLATE_START(cert_template, attr, template_size);
     if (certTypeOpt) {
@@ -347,9 +348,6 @@ nssCryptokiCertificate_GetAttributes
     }
     if (subjectOpt) {
 	NSS_CK_SET_ATTRIBUTE_NULL(attr, CKA_SUBJECT);
-    }
-    if (emailOpt) {
-	NSS_CK_SET_ATTRIBUTE_NULL(attr, CKA_NETSCAPE_EMAIL);
     }
     NSS_CK_TEMPLATE_FINISH(cert_template, attr, template_size);
     if (template_size == 0) {
@@ -394,9 +392,6 @@ nssCryptokiCertificate_GetAttributes
     }
     if (subjectOpt) {
 	NSS_CK_ATTRIBUTE_TO_ITEM(&cert_template[i], subjectOpt); i++;
-    }
-    if (emailOpt) {
-	NSS_CK_ATTRIBUTE_TO_UTF8(&cert_template[i], *emailOpt); i++;
     }
     return PR_SUCCESS;
 }

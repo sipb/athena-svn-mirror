@@ -74,11 +74,12 @@ extern int SEC_ERROR_CERT_ADDR_MISMATCH;
 static int
 MimeEncryptedCMSClassInitialize(MimeEncryptedCMSClass *clazz)
 {
+#ifdef DEBUG
   MimeObjectClass    *oclass = (MimeObjectClass *)    clazz;
-  MimeEncryptedClass *eclass = (MimeEncryptedClass *) clazz;
-
   NS_ASSERTION(!oclass->class_initialized, "1.2 <mscott@netscape.com> 01 Nov 2001 17:59");
+#endif
 
+  MimeEncryptedClass *eclass = (MimeEncryptedClass *) clazz;
   eclass->crypto_init          = MimeCMS_init;
   eclass->crypto_write         = MimeCMS_write;
   eclass->crypto_eof           = MimeCMS_eof;
@@ -121,7 +122,8 @@ typedef struct MimeCMSdata
   
   ~MimeCMSdata()
   {
-    PR_FREEIF(sender_addr);
+    if(sender_addr)
+      PR_Free(sender_addr);
 
     // Do an orderly release of nsICMSDecoder and nsICMSMessage //
     if (decoder_context)
@@ -208,6 +210,7 @@ extern char *IMAP_CreateReloadAllPartsUrl(const char *url);
 PRBool
 MimeCMSHeadersAndCertsMatch(MimeObject *obj,
 							  nsICMSMessage *content_info,
+							  PRBool *signing_cert_without_email_address,
 							  char **sender_email_addr_return)
 {
   MimeHeaders *msg_headers = 0;
@@ -217,13 +220,22 @@ MimeCMSHeadersAndCertsMatch(MimeObject *obj,
   nsXPIDLCString sender_name;
   nsXPIDLCString cert_addr;
   PRBool match = PR_TRUE;
+  PRBool foundFrom = PR_FALSE;
+  PRBool foundSender = PR_FALSE;
 
   /* Find the name and address in the cert.
    */
   if (content_info)
 	{
+	  // Extract any address contained in the cert.
+	  // This will be used for testing, whether the cert contains no addresses at all.
 	  content_info->GetSignerEmailAddress (getter_Copies(cert_addr));
 	}
+
+  if (signing_cert_without_email_address)
+  {
+    *signing_cert_without_email_address = (!cert_addr);
+  }
 
   if (!cert_addr) {
     // no address, no match
@@ -260,7 +272,7 @@ MimeCMSHeadersAndCertsMatch(MimeObject *obj,
 	s = MimeHeaders_get(msg_headers, HEADER_FROM, PR_FALSE, PR_FALSE);
 	if (s)
 	  {
-		int n = ParseRFC822Addresses(s, getter_Copies(from_name), getter_Copies(from_addr));
+		ParseRFC822Addresses(s, getter_Copies(from_name), getter_Copies(from_addr));
 		PR_FREEIF(s);
 	  }
 
@@ -268,60 +280,58 @@ MimeCMSHeadersAndCertsMatch(MimeObject *obj,
 	s = MimeHeaders_get(msg_headers, HEADER_SENDER, PR_FALSE, PR_FALSE);
 	if (s)
 	  {
-		int n = ParseRFC822Addresses(s, getter_Copies(sender_name), getter_Copies(sender_addr));
+		ParseRFC822Addresses(s, getter_Copies(sender_name), getter_Copies(sender_addr));
 		PR_FREEIF(s);
 	  }
   }
 
   /* Now compare them --
 	 consider it a match if the address in the cert matches either the
-	 address in the From or Sender field; and if the name in the cert
-	 matches either the name in the From or Sender field.
-
-	 Consider it a match if the cert does not contain a name (address.)
-	 But do not consider it a match if the cert contains a name (address)
-	 but the message headers do not.
+	 address in the From or Sender field
    */
 
-  /* ======================================================================
-	 First check the addresses.
-   */
-
-  /* If there is no addr in the cert, it can not match and we fail. */
+  /* If there is no addr in the cert at all, it can not match and we fail. */
   if (!cert_addr)
-	match = PR_FALSE;
-
-  /* If there is both a from and sender address, and if neither of
-	 them match, then error. */
-  else if (from_addr && *from_addr &&
-		   sender_addr && *sender_addr)
-	{
-    if (nsCRT::strcasecmp(cert_addr, from_addr) &&
-        nsCRT::strcasecmp(cert_addr, sender_addr))
-		match = PR_FALSE;
-	}
-  /* If there is a from but no sender, and it doesn't match, then error. */
-  else if (from_addr && *from_addr)
-	{
-    if (nsCRT::strcasecmp(cert_addr, from_addr))
-		match = PR_FALSE;
-	}
-  /* If there is a sender but no from, and it doesn't match, then error. */
-  else if (sender_addr && *sender_addr)
-	{
-    if (nsCRT::strcasecmp(cert_addr, sender_addr))
-		match = PR_FALSE;
-	}
-  /* Else there are no addresses at all -- error. */
+  {
+  	match = PR_FALSE;
+  }
   else
-	{
-	  match = PR_FALSE;
-	}
+  {
+    nsCOMPtr<nsIX509Cert> signerCert;
+    content_info->GetSignerCert(getter_AddRefs(signerCert));
 
+    if (signerCert)
+    {
+      if (from_addr && *from_addr)
+      {
+        NS_ConvertASCIItoUCS2 ucs2From(from_addr);
+        if (NS_FAILED(signerCert->ContainsEmailAddress(ucs2From, &foundFrom)))
+        {
+          foundFrom = PR_FALSE;
+        }
+      }
+
+      if (sender_addr && *sender_addr)
+      {
+        NS_ConvertASCIItoUCS2 ucs2Sender(sender_addr);
+        if (NS_FAILED(signerCert->ContainsEmailAddress(ucs2Sender, &foundSender)))
+        {
+          foundSender = PR_FALSE;
+        }
+      }
+    }
+
+    if (!foundSender && !foundFrom)
+    {
+		  match = PR_FALSE;
+	  }
+  }
 
   if (sender_email_addr_return) {
-    if (match && cert_addr)
-      *sender_email_addr_return = nsCRT::strdup(cert_addr);
+    if (match && foundFrom)
+      *sender_email_addr_return = nsCRT::strdup(from_addr);
+    if (match && foundSender)
+      *sender_email_addr_return = nsCRT::strdup(sender_addr);
     else if (from_addr && *from_addr)
       *sender_email_addr_return = nsCRT::strdup(from_addr);
     else if (sender_addr && *sender_addr)
@@ -332,6 +342,72 @@ MimeCMSHeadersAndCertsMatch(MimeObject *obj,
 
  DONE:
   return match;
+}
+
+int
+MIMEGetRelativeCryptoNestLevel(MimeObject *obj)
+{
+  /*
+    the part id of any mimeobj is mime_part_address(obj)
+    our currently displayed crypto part is obj
+    the part shown as the toplevel object in the current window is
+        obj->options->part_to_load
+        possibly stored in the toplevel object only ???
+        but hopefully all nested mimeobject point to the same displayooptions
+
+    we need to find out the nesting level of our currently displayed crypto object
+    wrt the shown part in the toplevel window
+  */
+
+  // if we are showing the toplevel message, aTopMessageNestLevel == 0
+  int aTopMessageNestLevel = 0;
+  MimeObject *aTopShownObject = nsnull;
+  if (obj && obj->options->part_to_load) {
+    PRBool aAlreadyFoundTop = PR_FALSE;
+    for (MimeObject *walker = obj; walker; walker = walker->parent) {
+      if (aAlreadyFoundTop) {
+        if (!mime_typep(walker, (MimeObjectClass *) &mimeEncryptedClass)
+            && !mime_typep(walker, (MimeObjectClass *) &mimeMultipartSignedClass)) {
+          ++aTopMessageNestLevel;
+        }
+      }
+      if (!aAlreadyFoundTop && !strcmp(mime_part_address(walker), walker->options->part_to_load)) {
+        aAlreadyFoundTop = PR_TRUE;
+        aTopShownObject = walker;
+      }
+      if (!aAlreadyFoundTop && !walker->parent) {
+        aTopShownObject = walker;
+      }
+    }
+  }
+
+  PRBool CryptoObjectIsChildOfTopShownObject = PR_FALSE;
+  if (!aTopShownObject) {
+    // no sub part specified, top message is displayed, and
+    // our crypto object is definitively a child of it
+    CryptoObjectIsChildOfTopShownObject = PR_TRUE;
+  }
+
+  // if we are the child of the topmost message, aCryptoPartNestLevel == 1
+  int aCryptoPartNestLevel = 0;
+  if (obj) {
+    for (MimeObject *walker = obj; walker; walker = walker->parent) {
+      // Crypto mime objects are transparent wrt nesting.
+      if (!mime_typep(walker, (MimeObjectClass *) &mimeEncryptedClass)
+          && !mime_typep(walker, (MimeObjectClass *) &mimeMultipartSignedClass)) {
+        ++aCryptoPartNestLevel;
+      }
+      if (aTopShownObject && walker->parent == aTopShownObject) {
+        CryptoObjectIsChildOfTopShownObject = PR_TRUE;
+      }
+    }
+  }
+
+  if (!CryptoObjectIsChildOfTopShownObject) {
+    return -1;
+  }
+
+  return aCryptoPartNestLevel - aTopMessageNestLevel;
 }
 
 static void *
@@ -392,15 +468,36 @@ MimeCMS_init(MimeObject *obj,
       nsCOMPtr<nsISupports> securityInfo;
       channel->GetURI(getter_AddRefs(uri));
       if (uri)
-        msgurl = do_QueryInterface(uri);
-      if (msgurl)
-        msgurl->GetMsgWindow(getter_AddRefs(msgWindow));
-      if (msgWindow)
-        msgWindow->GetMsgHeaderSink(getter_AddRefs(headerSink));
-      if (headerSink)
-        headerSink->GetSecurityInfo(getter_AddRefs(securityInfo));
-      if (securityInfo)
-        data->smimeHeaderSink = do_QueryInterface(securityInfo);
+      {
+        nsCAutoString urlSpec;
+        rv = uri->GetSpec(urlSpec);
+
+        // We only want to update the UI if the current mime transaction
+        // is intended for display.
+        // If the current transaction is intended for background processing,
+        // we can learn that by looking at the additional header=filter
+        // string contained in the URI.
+        //
+        // If we find something, we do not set smimeHeaderSink,
+        // which will prevent us from giving UI feedback.
+        //
+        // If we do not find header=filter, we assume the result of the
+        // processing will be shown in the UI.
+
+        if (!strstr(urlSpec.get(), "?header=filter") &&
+            !strstr(urlSpec.get(), "&header=filter"))
+        {
+          msgurl = do_QueryInterface(uri);
+          if (msgurl)
+            msgurl->GetMsgWindow(getter_AddRefs(msgWindow));
+          if (msgWindow)
+            msgWindow->GetMsgHeaderSink(getter_AddRefs(headerSink));
+          if (headerSink)
+            headerSink->GetSecurityInfo(getter_AddRefs(securityInfo));
+          if (securityInfo)
+            data->smimeHeaderSink = do_QueryInterface(securityInfo);
+        }
+      }
     } // if channel
   } // if msd
 
@@ -434,20 +531,7 @@ MimeCMS_eof (void *crypto_closure, PRBool abort_p)
   	return -1;
   }
 
-  // if we are the child of the topmost message, aNestLevel == 1
-  int aNestLevel = 0;
-
-  if (data->self) {
-    MimeObject *walker = data->self;
-    while (walker) {
-      // Crypto mime objects are transparent wrt nesting.
-      if (!mime_typep(walker, (MimeObjectClass *) &mimeEncryptedClass)
-          && !mime_typep(walker, (MimeObjectClass *) &mimeMultipartSignedClass)) {
-        ++aNestLevel;
-      }
-      walker = walker->parent;
-    }
-  }
+  int aRelativeNestLevel = MIMEGetRelativeCryptoNestLevel(data->self);
 
   /* Hand an EOF to the crypto library.  It may call data->output_fn.
 	 (Today, the crypto library has no flushing to do, but maybe there
@@ -470,10 +554,14 @@ MimeCMS_eof (void *crypto_closure, PRBool abort_p)
   if (!data->smimeHeaderSink)
     return 0;
 
+  if (aRelativeNestLevel < 0) {
+    return 0;
+  }
+
   PRInt32 maxNestLevel = 0;
   data->smimeHeaderSink->MaxWantedNesting(&maxNestLevel);
 
-  if (aNestLevel > maxNestLevel)
+  if (aRelativeNestLevel > maxNestLevel)
     return 0;
 
   PRInt32 status = nsICMSMessageErrors::SUCCESS;
@@ -526,15 +614,22 @@ MimeCMS_eof (void *crypto_closure, PRBool abort_p)
         }
       }
       else {
+        PRBool signing_cert_without_email_address;
         if (MimeCMSHeadersAndCertsMatch(data->self,
 											                  data->content_info,
+											                  &signing_cert_without_email_address,
 											                  &data->sender_addr))
         {
           status = nsICMSMessageErrors::SUCCESS;
         }
         else
         {
-          status = nsICMSMessageErrors::VERIFY_HEADER_MISMATCH;
+          if (signing_cert_without_email_address) {
+            status = nsICMSMessageErrors::VERIFY_CERT_WITHOUT_ADDRESS;
+          }
+          else {
+            status = nsICMSMessageErrors::VERIFY_HEADER_MISMATCH;
+          }
         }
       }
 
@@ -545,7 +640,7 @@ MimeCMS_eof (void *crypto_closure, PRBool abort_p)
   if (data->ci_is_encrypted)
   {
     data->smimeHeaderSink->EncryptionStatus(
-      aNestLevel,
+      aRelativeNestLevel,
       status,
       certOfInterest
     );
@@ -553,7 +648,7 @@ MimeCMS_eof (void *crypto_closure, PRBool abort_p)
   else
   {
     data->smimeHeaderSink->SignedStatus(
-      aNestLevel,
+      aRelativeNestLevel,
       status,
       certOfInterest
     );
@@ -660,8 +755,10 @@ MimeCMS_generate (void *crypto_closure)
       }
 		  else
 			{
+			  PRBool signing_cert_without_email_address;
 			  good_p = MimeCMSHeadersAndCertsMatch(data->self,
 													 data->content_info,
+													 &signing_cert_without_email_address,
 													 &data->sender_addr);
 			  if (!good_p && !data->verify_error) {
           // data->verify_error = SEC_ERROR_CERT_ADDR_MISMATCH; XXX Fix later XXX //

@@ -116,6 +116,11 @@
 #if defined(XP_WIN)
 #define WM_DNS_SHUTDOWN         (WM_USER + 200)
 static char *windowClass = "Mozilla:DNSWindowClass";
+
+// Declaring helper function outside of class as we cannot get MSVC & GCC
+// to agree upon how to handle static friend functions (bug 134113)
+PR_STATIC_CALLBACK(LRESULT) NS_STDCALL
+nsDNSEventProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 #endif /* XP_WIN */
 
 
@@ -146,7 +151,6 @@ public:
         , mStartTime(PR_IntervalNow())
 #endif
     {
-        NS_INIT_ISUPPORTS(); 
         PR_INIT_CLIST(this);
     }
 
@@ -274,12 +278,6 @@ private:
 
 
 #if defined(XP_WIN)
-    friend static
-    LRESULT CALLBACK    nsDNSEventProc(HWND    hwnd,
-                                       UINT    uMsg,
-                                       WPARAM  wParam,
-                                       LPARAM  lParam);
-
     HANDLE              mLookupHandle;
     PRUint32            mMsgID;
 #endif
@@ -443,7 +441,7 @@ NS_IMETHODIMP
 nsDNSRequest::IsPending(PRBool *  result)
 {
     if (mLookup)  *result = !mLookup->IsComplete();
-    else          *result = PR_FALSE;  // XXX or error
+    else          *result = PR_FALSE;
     return NS_OK;
 }
 
@@ -538,7 +536,6 @@ nsDNSLookup::nsDNSLookup()
     , mFlags(eCacheableMask)
     , mExpires(0)
 {
-	NS_INIT_ISUPPORTS();
 	MOZ_COUNT_CTOR(nsDNSLookup);
 	PR_INIT_CLIST(this);
     PR_INIT_CLIST(&mRequestQ);
@@ -871,7 +868,7 @@ nsDNSLookup::DoSyncLookup()
     PRStatus status = DoSyncLookupInternal();
     
     if (PR_SUCCESS != status) {
-        if (nsDNSService::Reset());
+        if (nsDNSService::Reset())
             status = DoSyncLookupInternal();
     }
     MarkComplete(PR_SUCCESS == status ? NS_OK : NS_ERROR_UNKNOWN_HOST);
@@ -913,6 +910,7 @@ nsDNSService::nsDNSService()
     , mExpirationInterval(5*60)         // 300 seconds (5 minutes)
     , mMyIPAddress(0)
     , mState(DNS_NOT_INITIALIZED)
+    , mCacheNeedsClearing(PR_FALSE)
 #if defined(XP_MAC)
     , mServiceRef(nsnull)
 #endif
@@ -926,8 +924,6 @@ nsDNSService::nsDNSService()
     , mOut(nsnull)
 #endif
 {
-    NS_INIT_ISUPPORTS();
-    
     NS_ASSERTION(gService==nsnull,"multiple nsDNSServices allocated!");
     gService    = this;
     
@@ -1494,13 +1490,19 @@ nsDNSService::Lookup(const char*     hostName,
         if (mThread == nsnull)
             return NS_ERROR_OFFLINE;
 
+        if (mCacheNeedsClearing) {
+            EvictLookupsIfNecessary(0);     // clear cache
+            Reset();                        // reset resolver
+            mCacheNeedsClearing = PR_FALSE;
+        }
+
         nsDNSLookup *lookup = nsnull;
         // IDN handling
         if (mIDNConverter && !nsCRT::IsAscii(hostName)) {
-            nsXPIDLCString hostNameACE;
-            rv = mIDNConverter->ConvertUTF8toACE(hostName, getter_Copies(hostNameACE));
-            if (!hostNameACE.get()) return NS_ERROR_OUT_OF_MEMORY;
-            lookup = FindOrCreateLookup(hostNameACE);
+            nsCAutoString hostNameACE;
+            rv = mIDNConverter->ConvertUTF8toACE(nsDependentCString(hostName), hostNameACE);
+            NS_ENSURE_SUCCESS(rv, rv);
+            lookup = FindOrCreateLookup(hostNameACE.get());
         }
 
         // if it hasn't been created (no IDN converter / not an IDN hostName)
@@ -1632,25 +1634,31 @@ nsDNSService::EvictLookup(nsDNSLookup * lookup)
 
 
 void
-nsDNSService::AddToEvictionQ(nsDNSLookup * lookup)
+nsDNSService::EvictLookupsIfNecessary(PRInt32 targetCount)
 {
-    PR_APPEND_LINK(lookup, &mEvictionQ);
-    ++mEvictionQCount;
-    
-    while (mEvictionQCount > mMaxCachedLookups) {
-        // evict oldest lookup
+    while (mEvictionQCount > targetCount) {
+        // evict oldest lookups first
         PRCList * elem = PR_LIST_HEAD(&mEvictionQ);
         if (elem == &mEvictionQ) {
             NS_ASSERTION(mEvictionQCount == 0, "dns eviction count out of sync");
             mEvictionQCount = 0;
             break;
         }
-        
+
         nsDNSLookup * lookup = (nsDNSLookup *)elem;
         PR_REMOVE_AND_INIT_LINK(lookup);
         --mEvictionQCount;
         EvictLookup(lookup);
     }
+}
+
+
+void
+nsDNSService::AddToEvictionQ(nsDNSLookup * lookup)
+{
+    PR_APPEND_LINK(lookup, &mEvictionQ);
+    ++mEvictionQCount;
+    EvictLookupsIfNecessary(mMaxCachedLookups);
 }
 
 
@@ -1701,31 +1709,51 @@ nsDNSService::Resolve(const char *i_hostname, char **o_ip)
     // release lock before calling synchronous PR_GetHostByName()
     {    
         nsAutoLock    dnsLock(mDNSServiceLock);
-        PLDHashEntryHdr * hashEntry = PL_DHashTableOperate(&mHashTable, i_hostname, PL_DHASH_LOOKUP);
-        if (PL_DHASH_ENTRY_IS_BUSY(hashEntry)) {
-            nsDNSLookup * lookup = ((DNSHashTableEntry *)hashEntry)->mLookup;
-            if (lookup->IsComplete() && !lookup->IsExpired()) {
-                nsHostEnt * hep = lookup->HostEntry();
-                NS_ASSERTION(hep != nsnull, "null DNS Lookup HostEntry.\n");
-                if (hep) {
-                    index = PR_EnumerateHostEnt(0, &hep->hostEnt, 0, &netAddr);
+        if (mCacheNeedsClearing) {
+            EvictLookupsIfNecessary(0);     // clear cache
+            Reset();                        // reset resolver
+            mCacheNeedsClearing = PR_FALSE;
+        } else {
+
+            PLDHashEntryHdr * entry = PL_DHashTableOperate(&mHashTable,
+                                                           i_hostname,
+                                                           PL_DHASH_LOOKUP);
+            if (PL_DHASH_ENTRY_IS_BUSY(entry)) {
+                nsDNSLookup * lookup = ((DNSHashTableEntry *)entry)->mLookup;
+                if (lookup->IsComplete() && !lookup->IsExpired()) {
+                    nsHostEnt * hep = lookup->HostEntry();
+                    NS_ASSERTION(hep!=nsnull, "null DNS Lookup HostEntry.\n");
+                    if (hep) {
+                        index = PR_EnumerateHostEnt(0, &hep->hostEnt,
+                                                    0, &netAddr);
+                    }
                 }
             }
         }
     }
 
+    PRStatus   status = PR_SUCCESS;
+
     if (index == 0) {
         PRHostEnt   he;
-        char        netdbbuf[PR_NETDB_BUF_SIZE];
+        char        buffer[PR_NETDB_BUF_SIZE];
+        status = PR_GetHostByName(i_hostname, buffer, sizeof(buffer), &he);
 
-        if (PR_SUCCESS == PR_GetHostByName(i_hostname, netdbbuf, sizeof(netdbbuf), &he)) {
+        if (status == PR_SUCCESS) {
             index = PR_EnumerateHostEnt(0, &he, 0, &netAddr);
         }
     }
             
     if (index == 0)  return NS_ERROR_FAILURE;
     else {
-        PRStatus  status = PR_NetAddrToString(&netAddr, ipBuffer, sizeof(ipBuffer));
+        // if netAddr is IPv4 mapped IPv6 address, then convert to IPv4 before
+        // serializing (see bug 191715).
+        if (PR_IsNetAddrType(&netAddr, PR_IpAddrV4Mapped)) {
+            PRUint32 v4addr = netAddr.ipv6.ip.pr_s6_addr32[3];
+            netAddr.inet.family = PR_AF_INET;
+            netAddr.inet.ip = v4addr;
+        }
+        status = PR_NetAddrToString(&netAddr, ipBuffer, sizeof(ipBuffer));
         if (status != PR_SUCCESS)   return NS_ERROR_FAILURE;
     }
     
@@ -1819,6 +1847,7 @@ NS_IMETHODIMP
 nsDNSService::Shutdown()
 {
     mState = DNS_OFFLINE;
+    mCacheNeedsClearing = PR_TRUE;
     return NS_OK;
 }
 
@@ -1957,11 +1986,10 @@ nsDnsServiceNotifierRoutine(void * contextPtr, OTEventCode code,
  *****************************************************************************/
 #if defined(XP_WIN)
 
-static LRESULT CALLBACK
+PR_STATIC_CALLBACK(LRESULT) NS_STDCALL
 nsDNSEventProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     LRESULT result = nsnull;
-    int     error = nsnull;
 
  	if ((uMsg >= WM_USER) && (uMsg < WM_USER+128)) {
         result = nsDNSService::gService->ProcessLookup(hWnd, uMsg, wParam, lParam);

@@ -65,8 +65,6 @@ nsMsgAccount::nsMsgAccount():
   m_incomingServer(nsnull),
   m_defaultIdentity(nsnull)
 {
-
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgAccount::~nsMsgAccount()
@@ -88,9 +86,10 @@ nsMsgAccount::Init()
 }
 
 nsresult
-nsMsgAccount::getPrefService() {
-
-  if (m_prefs) return NS_OK;
+nsMsgAccount::getPrefService() 
+{
+  if (m_prefs) 
+    return NS_OK;
   
   return nsServiceManager::GetService(kPrefServiceCID,
                                       NS_GET_IID(nsIPref),
@@ -102,17 +101,14 @@ nsMsgAccount::GetIncomingServer(nsIMsgIncomingServer * *aIncomingServer)
 {
   NS_ENSURE_ARG_POINTER(aIncomingServer);
 
-  nsresult rv = NS_OK;
   // create the incoming server lazily
   if (!m_incomingServer) {
     // ignore the error (and return null), but it's still bad so assert
-    rv = createIncomingServer();
+    nsresult rv = createIncomingServer();
     NS_ASSERTION(NS_SUCCEEDED(rv), "couldn't lazily create the server\n");
   }
   
-  
-  *aIncomingServer = m_incomingServer;
-  NS_IF_ADDREF(*aIncomingServer);
+  NS_IF_ADDREF(*aIncomingServer = m_incomingServer);
 
   return NS_OK;
 }

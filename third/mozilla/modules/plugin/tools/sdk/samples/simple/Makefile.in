@@ -28,6 +28,10 @@ include $(DEPTH)/config/autoconf.mk
 
 XPIDL_MODULE = npsimple
 LIBRARY_NAME = npsimple
+REQUIRES = xpcom \
+           plugin \
+           java \
+           $(NULL)
 
 NO_DIST_INSTALL = 1
 
@@ -37,10 +41,10 @@ CPPSRCS = nsScriptablePeer.cpp \
 
 XPIDLSRCS = nsISimplePlugin.idl
 
-SHARED_LIBRARY_LIBS = ../common/plugingate_s.$(LIB_SUFFIX)
+SHARED_LIBRARY_LIBS = ../common/$(LIB_PREFIX)plugingate_s.$(LIB_SUFFIX)
 
 ifeq ($(OS_ARCH),WINNT)
-DEFFILE = npsimple.def
+DEFFILE = $(srcdir)/npsimple.def
 RESFILE = npsimple.res
 endif
 
@@ -49,10 +53,10 @@ include $(topsrcdir)/config/rules.mk
 DEFINES += -DMOZILLA_STRICT_API
 
 ifeq ($(OS_ARCH),Linux)
-EXTRA_DSO_LDOPTS +=  -L/usr/lib -L/usr/X11R6/lib  -rdynamic  -lXi -lXext -lX11 -lm -lXt
+EXTRA_DSO_LDOPTS +=  $(XLDFLAGS) -rdynamic  -lXi -lXext -lX11 -lm -lXt
 endif
 
-LOCAL_INCLUDES = -I$(srcdir)/$(XPIDL_GEN_DIR) \
+LOCAL_INCLUDES = -I./$(XPIDL_GEN_DIR) \
                  -I$(srcdir)/../include \
                  -I$(srcdir)/../../include \
                  $(NULL)

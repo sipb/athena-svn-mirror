@@ -48,7 +48,7 @@ public:
   nsLineLayout(nsIPresContext* aPresContext,
                nsSpaceManager* aSpaceManager,
                const nsHTMLReflowState* aOuterReflowState,
-               PRBool aComputeMaxElementSize);
+               PRBool aComputeMaxElementWidth);
   ~nsLineLayout();
 
   void Init(nsBlockReflowState* aState, nscoord aMinLineHeight,
@@ -87,7 +87,7 @@ public:
                      nscoord aRightEdge);
 
   void EndSpan(nsIFrame* aFrame, nsSize& aSizeResult,
-               nsSize* aMaxElementSize);
+               nscoord* aMaxElementWidth);
 
   PRInt32 GetCurrentSpanCount() const;
 
@@ -110,8 +110,7 @@ public:
   }
 
   void VerticalAlignLine(nsLineBox* aLineBox,
-                         nsSize& aMaxElementSizeResult,
-                         nscoord& aLineBoxAscent);
+                         nscoord* aMaxElementWidthResult);
 
   PRBool TrimTrailingWhiteSpace();
 
@@ -279,9 +278,11 @@ protected:
   nsBlockReflowState* mBlockRS;/* XXX hack! */
   nsCompatibility mCompatMode;
   nscoord mMinLineHeight;
-  PRPackedBool mComputeMaxElementSize;
+  PRPackedBool mComputeMaxElementWidth;
   PRUint8 mTextAlign;
 
+  PRUint8 mPlacedFloaters;
+  
   // The amount of text indent that we applied to this line, needed for
   // max-element-size calculation.
   nscoord mTextIndent;
@@ -296,7 +297,6 @@ protected:
 
   nsLineBox* mLineBox;
 
-  PRUint8 mPlacedFloaters;
   PRInt32 mTotalPlacedFrames;
   nsDeque mWordFrames;
 
@@ -333,7 +333,7 @@ protected:
     // From metrics
     nscoord mAscent, mDescent;
     nsRect mBounds;
-    nsSize mMaxElementSize;
+    nscoord mMaxElementWidth;
     nsRect mCombinedArea;
 
     // From reflow-state
@@ -341,13 +341,12 @@ protected:
     nsMargin mBorderPadding;
     nsMargin mOffsets;
 
-    // Other state we use
-    PRUint8 mVerticalAlign;
-
     // state for text justification
     PRInt32 mJustificationNumSpaces;
     PRInt32 mJustificationNumLetters;
-
+    
+    // Other state we use
+    PRUint8 mVerticalAlign;
 
 // PerFrameData flags
 #define PFD_RELATIVEPOS                 0x00000001

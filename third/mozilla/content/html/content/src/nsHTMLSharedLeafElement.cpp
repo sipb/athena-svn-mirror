@@ -42,15 +42,17 @@
 #include "nsIDOMEventReceiver.h"
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
+#include "nsImageLoadingContent.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsRuleNode.h"
 #include "nsHTMLAttributes.h"
+#include "nsStyleContext.h"
 
 
 class nsHTMLSharedLeafElement : public nsGenericHTMLLeafElement,
+                                public nsImageLoadingContent,
                                 public nsIDOMHTMLEmbedElement,
                                 public nsIDOMHTMLIsIndexElement,
                                 public nsIDOMHTMLParamElement,
@@ -103,10 +105,6 @@ public:
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute,
                                       PRInt32 aModType, nsChangeHint& aHint) const;
-
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -155,6 +153,8 @@ NS_HTML_CONTENT_INTERFACE_MAP_AMBIGOUS_BEGIN(nsHTMLSharedLeafElement,
                                              nsIDOMHTMLEmbedElement)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsIDOMHTMLElement, nsIDOMHTMLEmbedElement)
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLEmbedElement, embed)
+  NS_INTERFACE_MAP_ENTRY_IF_TAG(imgIDecoderObserver, embed)
+  NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIImageLoadingContent, embed)
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLParamElement, param)
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLIsIndexElement, isindex)
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLBaseElement, base)
@@ -217,16 +217,8 @@ NS_IMPL_STRING_ATTR(nsHTMLSharedLeafElement, Prompt, prompt)
 NS_IMETHODIMP
 nsHTMLSharedLeafElement::GetForm(nsIDOMHTMLFormElement** aForm)
 {
-#ifdef GATHER_ELEMENT_USEAGE_STATISTICS
-  extern void GEUS_DumpElementCounts();
-
-  GEUS_DumpElementCounts();
-#endif
-
-  *aForm = nsnull;/* XXX */
-  return NS_OK;
+  return FindForm(aForm);
 }
-
 
 NS_IMETHODIMP_(PRBool)
 nsHTMLSharedLeafElement::IsContentOfType(PRUint32 aFlags)
@@ -255,7 +247,7 @@ nsHTMLSharedLeafElement::StringToAttribute(nsIAtom* aAttribute,
     }
   } else if (mNodeInfo->Equals(nsHTMLAtoms::spacer)) {
     if (aAttribute == nsHTMLAtoms::size) {
-      if (ParseValue(aValue, 0, aResult, eHTMLUnit_Pixel)) {
+      if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Pixel, 0)) {
         return NS_CONTENT_ATTR_HAS_VALUE;
       }
     } else if (aAttribute == nsHTMLAtoms::align) {
@@ -264,7 +256,7 @@ nsHTMLSharedLeafElement::StringToAttribute(nsIAtom* aAttribute,
       }
     } else if ((aAttribute == nsHTMLAtoms::width) ||
                (aAttribute == nsHTMLAtoms::height)) {
-      if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+      if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
         return NS_CONTENT_ATTR_HAS_VALUE;
       }
     }
@@ -314,8 +306,7 @@ SpacerMapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
   if (aData->mPositionData) {
     nsHTMLValue value;
 
-    const nsStyleDisplay* display = (const nsStyleDisplay*)
-      aData->mStyleContext->GetStyleData(eStyleStruct_Display);
+    const nsStyleDisplay* display = aData->mStyleContext->GetStyleDisplay();
 
     PRBool typeIsBlock = (display->mDisplay == NS_STYLE_DISPLAY_BLOCK);
 
@@ -419,32 +410,35 @@ nsHTMLSharedLeafElement::GetMappedAttributeImpact(const nsIAtom* aAttribute,
                                                   nsChangeHint& aHint) const
 {
   if (mNodeInfo->Equals(nsHTMLAtoms::embed)) {
-    if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-      if (!GetImageMappedAttributesImpact(aAttribute, aHint)) {
-        if (!GetImageAlignAttributeImpact(aAttribute, aHint)) {
-          if (!GetImageBorderAttributeImpact(aAttribute, aHint)) {
-            aHint = NS_STYLE_HINT_CONTENT;
-          }
-        }
-      }
-    }
-
+    static const AttributeImpactEntry* const map[] = {
+      sCommonAttributeMap,
+      sImageAttributeMap,
+      sImageAlignAttributeMap,
+      sImageBorderAttributeMap
+    };
+    
+    FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
     return NS_OK;
   }
 
   if (mNodeInfo->Equals(nsHTMLAtoms::spacer)) {
-    if ((aAttribute == nsHTMLAtoms::usemap) ||
-        (aAttribute == nsHTMLAtoms::ismap)) {
-      aHint = NS_STYLE_HINT_FRAMECHANGE;
-    } else if (aAttribute == nsHTMLAtoms::align) {
-      aHint = NS_STYLE_HINT_REFLOW;
-    } else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-      if (!GetImageMappedAttributesImpact(aAttribute, aHint)) {
-        if (!GetImageBorderAttributeImpact(aAttribute, aHint)) {
-          aHint = NS_STYLE_HINT_CONTENT;
-        }
-      }
-    }
+    static const AttributeImpactEntry attributes[] = {
+      { &nsHTMLAtoms::usemap, NS_STYLE_HINT_FRAMECHANGE },
+      { &nsHTMLAtoms::ismap, NS_STYLE_HINT_FRAMECHANGE },
+      { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
+      { nsnull, NS_STYLE_HINT_NONE }
+    };
+
+    static const AttributeImpactEntry* const map[] = {
+      attributes,
+      sCommonAttributeMap,
+      sImageAttributeMap,
+      sImageBorderAttributeMap,
+    };
+    
+    FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
+    
+    return NS_OK;
   }
 
   return nsGenericHTMLLeafElement::GetMappedAttributeImpact(aAttribute,
@@ -464,15 +458,3 @@ nsHTMLSharedLeafElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& 
 
   return NS_OK;
 }
-
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLSharedLeafElement::SizeOf(nsISizeOfHandler* aSizer,
-                                PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

@@ -65,7 +65,6 @@ static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 nsFontMetricsBeOS::nsFontMetricsBeOS()
   :mEmulateBold(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsFontMetricsBeOS::~nsFontMetricsBeOS()
@@ -175,13 +174,11 @@ NS_IMETHODIMP nsFontMetricsBeOS::Init(const nsFont& aFont, nsIAtom* aLangGroup,
       // family is generic string like 
       // "serif" "sans-serif" "cursive" "fantasy" "monospace" "-moz-fixed"
       // so look up preferences and get real family name
-      const PRUnichar *langGroup;
-      aLangGroup->GetUnicode( &langGroup );
-      char *lang = ToNewUTF8String(nsDependentString(langGroup));
+      const char *lang;
+      aLangGroup->GetUTF8String( &lang );
       char prop[256];
       sprintf( prop, "font.name.%s.%s", family, lang );
 
-      nsMemory::Free(lang);
       nsMemory::Free(family);
 
       // look up prefs
@@ -488,7 +485,6 @@ nsFontMetricsBeOS::FamilyExists(const nsString& aName)
  
 nsFontEnumeratorBeOS::nsFontEnumeratorBeOS() 
 { 
-  NS_INIT_ISUPPORTS(); 
 } 
  
 NS_IMPL_ISUPPORTS1(nsFontEnumeratorBeOS, nsIFontEnumerator)
@@ -672,12 +668,17 @@ nsFontEnumeratorBeOS::EnumerateFonts(const char* aLangGroup,
   *aResult = nsnull; 
   NS_ENSURE_ARG_POINTER(aCount); 
   *aCount = 0; 
-  NS_ENSURE_ARG_POINTER(aGeneric); 
-  NS_ENSURE_ARG_POINTER(aLangGroup); 
-  // Dunno why this assignment is needed - sergei_d@fi.tartu.ee 
-  nsCOMPtr<nsIAtom> langGroup = getter_AddRefs(NS_NewAtom(aLangGroup)); 
 
-  return EnumFonts(aLangGroup, aGeneric, aCount, aResult); 
+  // aLangGroup=null or ""  means any (i.e., don't care)
+  // aGeneric=null or ""  means any (i.e, don't care)
+  const char* langGroup = nsnull;
+  if (aLangGroup && *aLangGroup)
+    langGroup = aLangGroup;
+  const char* generic = nsnull;
+  if (aGeneric && *aGeneric)
+    generic = aGeneric;
+
+  return EnumFonts(langGroup, generic, aCount, aResult); 
 }
 
 NS_IMETHODIMP
@@ -687,6 +688,19 @@ nsFontEnumeratorBeOS::HaveFontFor(const char* aLangGroup, PRBool* aResult)
   NS_ENSURE_ARG_POINTER(aResult); 
   *aResult = PR_TRUE; 
   // XXX stub
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsFontEnumeratorBeOS::GetDefaultFont(const char *aLangGroup, 
+  const char *aGeneric, PRUnichar **aResult)
+{
+  // aLangGroup=null or ""  means any (i.e., don't care)
+  // aGeneric=null or ""  means any (i.e, don't care)
+
+  NS_ENSURE_ARG_POINTER(aResult);
+  *aResult = nsnull;
+
   return NS_OK;
 }
 

@@ -139,10 +139,6 @@ nsAboutCache::NewChannel(nsIURI *aURI, nsIChannel **result)
     outputStream->Write(mBuffer.get(), mBuffer.Length(), &bytesWritten);
         
     nsCOMPtr<nsIInputStream> inStr;
-    PRUint32 size;
-
-    rv = storageStream->GetLength(&size);
-    if (NS_FAILED(rv)) return rv;
 
     rv = storageStream->NewInputStream(0, getter_AddRefs(inStr));
     if (NS_FAILED(rv)) return rv;
@@ -150,8 +146,7 @@ nsAboutCache::NewChannel(nsIURI *aURI, nsIChannel **result)
     nsIChannel* channel;
     rv = NS_NewInputStreamChannel(&channel, aURI, inStr,
                                   NS_LITERAL_CSTRING("text/html"),
-                                  NS_LITERAL_CSTRING(""),
-                                  size);
+                                  NS_LITERAL_CSTRING(""));
     if (NS_FAILED(rv)) return rv;
 
     *result = channel;
@@ -193,21 +188,19 @@ nsAboutCache::VisitDevice(const char *deviceID,
         value = 0;
         deviceInfo->GetMaximumSize(&value);
         mBuffer.Append("<td><tt>");
-        mBuffer.AppendInt(value);
-        mBuffer.Append(" Bytes</tt></td>\n</tr>\n");
+        mBuffer.AppendInt(value/1024);
+        mBuffer.Append(" k</tt></td>\n</tr>\n");
 
         mBuffer.Append("\n<tr>\n<td><b>Storage in use: </b></td>\n");
         mBuffer.Append("<td><tt>");
         value = 0;
         deviceInfo->GetTotalSize(&value);
-        mBuffer.AppendInt(value);
-        mBuffer.Append(" Bytes</tt></td>\n</tr>\n");
+        mBuffer.AppendInt(value/1024);
+        mBuffer.Append(" k</tt></td>\n</tr>\n");
 
-        mBuffer.Append("</table>\n");
-        
         deviceInfo->GetUsageReport(getter_Copies(str));
         mBuffer.Append(str);
-        mBuffer.Append("\n<br />");
+        mBuffer.Append("</table>\n\n<br />");
 
         if (mDeviceID.IsEmpty()) {
             mBuffer.Append("\n<a href=\"about:cache?device=");

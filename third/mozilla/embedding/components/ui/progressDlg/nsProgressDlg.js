@@ -394,7 +394,7 @@ function onLoad() {
       
       try {
         var uri = persistArgs.source.QueryInterface(Components.interfaces.nsIURI);
-        webBrowserPersist.saveURI(uri, persistArgs.postData, targetFile);
+        webBrowserPersist.saveURI(uri, null, null, persistArgs.postData, null, targetFile);
       }
       catch (e) {
         // Saving a Document, not a URI:
@@ -424,7 +424,10 @@ function onLoad() {
           encodingFlags |= nsIWBP.ENCODE_FLAGS_ABSOLUTE_LINKS;
           encodingFlags |= nsIWBP.ENCODE_FLAGS_NOFRAMES_CONTENT;        
         }
-        
+        else {
+          encodingFlags |= nsIWBP.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES;
+        }
+
         const kWrapColumn = 80;
 
         webBrowserPersist.saveDocument(persistArgs.source, targetFile, filesFolder, 

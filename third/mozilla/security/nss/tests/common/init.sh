@@ -68,7 +68,8 @@
 #    and a completely common environment
 #
 ########################################################################
-
+NSS_STRICT_SHUTDOWN=1
+export NSS_STRICT_SHUTDOWN
 
 if [ -z "${INIT_SOURCED}" -o "${INIT_SOURCED}" != "TRUE" ]; then
 
@@ -80,9 +81,6 @@ if [ -z "${INIT_SOURCED}" -o "${INIT_SOURCED}" != "TRUE" ]; then
             html_failed "<TR><TD>$*"
         fi
         echo "</TABLE><BR>" >> ${RESULTS}
-        if [ -n "${TAILPID}" ]; then
-            ${KILL} "${TAILPID}"
-        fi
         if [ -n "${SERVERPID}" -a -f "${SERVERPID}" ]; then
             ${KILL} `cat ${SERVERPID}`
         fi
@@ -154,6 +152,8 @@ if [ -z "${INIT_SOURCED}" -o "${INIT_SOURCED}" != "TRUE" ]; then
     TESTDIR=${TESTDIR-${MOZILLA_ROOT}/tests_results/security}
     OBJDIR=`(cd $COMMON; gmake objdir_name)`
     OS_ARCH=`(cd $COMMON; gmake os_arch)`
+    DLL_PREFIX=`(cd $COMMON; gmake dll_prefix)`
+    DLL_SUFFIX=`(cd $COMMON; gmake dll_suffix)`
     OS_NAME=`uname -s | sed -e "s/-[0-9]*\.[0-9]*//"`
 
 #in case of backward comp. tests the calling scripts set the
@@ -339,6 +339,7 @@ if [ -z "${INIT_SOURCED}" -o "${INIT_SOURCED}" != "TRUE" ]; then
     ALICEDIR=${HOSTDIR}/alicedir
     BOBDIR=${HOSTDIR}/bobdir
     DAVEDIR=${HOSTDIR}/dave
+    EVEDIR=${HOSTDIR}/eve
     FIPSDIR=${HOSTDIR}/fips
 
     SERVER_CADIR=${HOSTDIR}/serverCA
@@ -359,6 +360,7 @@ if [ -z "${INIT_SOURCED}" -o "${INIT_SOURCED}" != "TRUE" ]; then
     D_ALICE="Alice.$version"
     D_BOB="Bob.$version"
     D_DAVE="Dave.$version"
+    D_EVE="Eve.$version"
     D_SERVER_CA="ServerCA.$version"
     D_CLIENT_CA="ClientCA.$version"
     D_SERVER="Server.$version"
@@ -376,6 +378,7 @@ if [ -z "${INIT_SOURCED}" -o "${INIT_SOURCED}" != "TRUE" ]; then
     R_ALICEDIR=../alicedir
     R_BOBDIR=../bobdir
     R_DAVEDIR=../dave
+    R_EVEDIR=../eve
     R_EXT_SERVERDIR=../ext_server
     R_EXT_CLIENTDIR=../ext_client
 
@@ -387,6 +390,7 @@ if [ -z "${INIT_SOURCED}" -o "${INIT_SOURCED}" != "TRUE" ]; then
     P_R_ALICEDIR=${R_ALICEDIR}
     P_R_BOBDIR=${R_BOBDIR}
     P_R_DAVEDIR=${R_DAVEDIR}
+    P_R_EVEDIR=${R_EVEDIR}
     P_R_SERVERDIR=${R_SERVERDIR}
     P_R_CLIENTDIR=${R_CLIENTDIR}
     P_R_EXT_SERVERDIR=${R_EXT_SERVERDIR}
@@ -398,6 +402,7 @@ if [ -z "${INIT_SOURCED}" -o "${INIT_SOURCED}" != "TRUE" ]; then
 	P_R_ALICEDIR="multiaccess:${D_ALICE}"
 	P_R_BOBDIR="multiaccess:${D_BOB}"
 	P_R_DAVEDIR="multiaccess:${D_DAVE}"
+	P_R_EVEDIR="multiaccess:${D_EVE}"
 	P_R_SERVERDIR="multiaccess:${D_SERVER}"
 	P_R_CLIENTDIR="multiaccess:${D_CLIENT}"
 	P_R_EXT_SERVERDIR="multiaccess:${D_EXT_SERVER}"

@@ -323,6 +323,12 @@ SetPrintSettingsFromDevMode(nsIPrintSettings* aPrintSettings,
   if (aDevMode->dmFields & DM_PAPERSIZE) {
     aPrintSettings->SetPaperSizeType(nsIPrintSettings::kPaperSizeNativeData);
     aPrintSettings->SetPaperData(aDevMode->dmPaperSize);
+    for (PRInt32 i=0;i<kNumPaperSizes;i++) {
+      if (kPaperSizes[i].mPaperSize == aDevMode->dmPaperSize) {
+        aPrintSettings->SetPaperSizeUnit(kPaperSizes[i].mIsInches?nsIPrintSettings::kPaperSizeInches:nsIPrintSettings::kPaperSizeMillimeters);
+        break;
+      }
+    }
 
   } else if (aDevMode->dmFields & DM_PAPERLENGTH && aDevMode->dmFields & DM_PAPERWIDTH) {
     PRBool found = PR_FALSE;
@@ -331,7 +337,7 @@ SetPrintSettingsFromDevMode(nsIPrintSettings* aPrintSettings,
         aPrintSettings->SetPaperSizeType(nsIPrintSettings::kPaperSizeDefined);
         aPrintSettings->SetPaperWidth(kPaperSizes[i].mWidth);
         aPrintSettings->SetPaperHeight(kPaperSizes[i].mHeight);
-        aPrintSettings->SetPaperSizeUnit(kPaperSizes[i].mIsInches?nsIPrintSettings::kPaperSizeInches:nsIPrintSettings::kPaperSizeInches);
+        aPrintSettings->SetPaperSizeUnit(kPaperSizes[i].mIsInches?nsIPrintSettings::kPaperSizeInches:nsIPrintSettings::kPaperSizeMillimeters);
         found = PR_TRUE;
         break;
       }
@@ -880,7 +886,7 @@ ShowNativePrintDialog(HWND              aHWnd,
   char* dbStr = GetACPString(nsString(printerName));
   NS_ENSURE_TRUE(dbStr, NS_ERROR_FAILURE);
 
-  PRUint32 len = nsCRT::strlen(dbStr);
+  PRUint32 len = strlen(dbStr);
   hDevNames = (HGLOBAL)::GlobalAlloc(GHND, len+sizeof(DEVNAMES)+1);
   DEVNAMES* pDevNames = (DEVNAMES*)::GlobalLock(hDevNames);
   pDevNames->wDriverOffset = sizeof(DEVNAMES);

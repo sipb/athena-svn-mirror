@@ -27,13 +27,10 @@ NS_IMPL_ISUPPORTS1(nsBidiKeyboard, nsIBidiKeyboard)
 
 nsBidiKeyboard::nsBidiKeyboard() : nsIBidiKeyboard()
 {
-  NS_INIT_ISUPPORTS();
-#ifdef IBMBIDI
   mDefaultsSet = PR_FALSE;
   mLTRKeyboard[0] = '\0';
   mRTLKeyboard[0] = '\0';
   mCurrentLocaleName[0] = '\0';
-#endif
 }
 
 nsBidiKeyboard::~nsBidiKeyboard()
@@ -42,7 +39,6 @@ nsBidiKeyboard::~nsBidiKeyboard()
 
 NS_IMETHODIMP nsBidiKeyboard::SetLangFromBidiLevel(PRUint8 aLevel)
 {
-#ifdef IBMBIDI      
   if (!mDefaultsSet) {
     nsresult result = EnumerateKeyboards();
     if (NS_SUCCEEDED(result))
@@ -56,7 +52,7 @@ NS_IMETHODIMP nsBidiKeyboard::SetLangFromBidiLevel(PRUint8 aLevel)
   strncpy(currentLocaleName, (aLevel & 1) ? mRTLKeyboard : mLTRKeyboard, KL_NAMELENGTH);
   currentLocaleName[KL_NAMELENGTH-1] = '\0'; // null terminate
 
-  NS_ASSERTION((strlen(currentLocaleName) > 0), 
+  NS_ASSERTION(*currentLocaleName, 
     "currentLocaleName has string length == 0");
 
   if (strcmp(mCurrentLocaleName, currentLocaleName)) {
@@ -64,14 +60,12 @@ NS_IMETHODIMP nsBidiKeyboard::SetLangFromBidiLevel(PRUint8 aLevel)
       return NS_ERROR_FAILURE;
     }
   }
-#endif
   return NS_OK;
 }
 
 NS_IMETHODIMP nsBidiKeyboard::IsLangRTL(PRBool *aIsRTL)
 {
   *aIsRTL = PR_FALSE;
-#ifdef IBMBIDI
   HKL  currentLocale;
  
   currentLocale = ::GetKeyboardLayout(0);
@@ -80,7 +74,7 @@ NS_IMETHODIMP nsBidiKeyboard::IsLangRTL(PRBool *aIsRTL)
   if (!::GetKeyboardLayoutName(mCurrentLocaleName))
     return NS_ERROR_FAILURE;
 
-  NS_ASSERTION((strlen(mCurrentLocaleName) > 0), 
+  NS_ASSERTION(*mCurrentLocaleName, 
     "GetKeyboardLayoutName return string length == 0");
   NS_ASSERTION((strlen(mCurrentLocaleName) < KL_NAMELENGTH), 
     "GetKeyboardLayoutName return string length >= KL_NAMELENGTH");
@@ -98,11 +92,9 @@ NS_IMETHODIMP nsBidiKeyboard::IsLangRTL(PRBool *aIsRTL)
     "mLTRKeyboard has string length >= KL_NAMELENGTH");
   NS_ASSERTION((strlen(mLTRKeyboard) < KL_NAMELENGTH), 
     "mRTLKeyboard has string length >= KL_NAMELENGTH");
-#endif
   return NS_OK;
 }
 
-#ifdef IBMBIDI
 
 // Get the list of keyboard layouts available in the system
 // Set mLTRKeyboard to the first LTR keyboard in the list and mRTLKeyboard to the first RTL keyboard in the list
@@ -157,7 +149,7 @@ nsresult nsBidiKeyboard::EnumerateKeyboards()
   if (!::GetKeyboardLayoutName(localeName))
     return NS_ERROR_FAILURE;
 
-  NS_ASSERTION((strlen(localeName) > 0), 
+  NS_ASSERTION(*localeName, 
     "GetKeyboardLayoutName return string length == 0");
   NS_ASSERTION((strlen(localeName) < KL_NAMELENGTH), 
     "GetKeyboardLayout return string length >= KL_NAMELENGTH");
@@ -179,9 +171,9 @@ nsresult nsBidiKeyboard::EnumerateKeyboards()
     }
   }
 
-  NS_ASSERTION((strlen(mRTLKeyboard) > 0), 
+  NS_ASSERTION(*mRTLKeyboard, 
     "mLTRKeyboard has string length == 0");
-  NS_ASSERTION((strlen(mLTRKeyboard) > 0), 
+  NS_ASSERTION(*mLTRKeyboard, 
     "mLTRKeyboard has string length == 0");
 
   return NS_OK;
@@ -202,4 +194,3 @@ PRBool nsBidiKeyboard::IsRTLLanguage(HKL aLocale)
       return PR_FALSE;
   }
 }
-#endif // IBMBIDI

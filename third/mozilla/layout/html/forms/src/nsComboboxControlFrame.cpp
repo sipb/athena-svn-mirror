@@ -43,6 +43,7 @@
 #include "nsFormControlFrame.h"
 #include "nsIHTMLContent.h"
 #include "nsHTMLAtoms.h"
+#include "nsCSSAnonBoxes.h"
 #include "nsHTMLParts.h"
 #include "nsIFormControl.h"
 #include "nsINameSpaceManager.h"
@@ -82,11 +83,14 @@
 #include "nsIServiceManager.h"
 #include "nsIDOMNode.h"
 #include "nsGUIEvent.h"
+#include "nsAutoPtr.h"
 
 static NS_DEFINE_CID(kTextNodeCID,   NS_TEXTNODE_CID);
 static NS_DEFINE_CID(kHTMLElementFactoryCID,   NS_HTML_ELEMENT_FACTORY_CID);
 
+#ifdef MOZ_XUL
 #include "nsIXULDocument.h" // Temporary fix for Bug 36558
+#endif
 
 #ifdef DO_NEW_REFLOW
 #include "nsIFontMetrics.h"
@@ -139,7 +143,6 @@ class nsComboButtonListener: public nsIDOMMouseListener
   nsComboButtonListener(nsComboboxControlFrame* aCombobox) 
   { 
     mComboBox = aCombobox; 
-    NS_INIT_ISUPPORTS(); 
   }
 
   virtual ~nsComboButtonListener() {}
@@ -291,8 +294,8 @@ nsComboboxControlFrame::nsComboboxControlFrame()
 
   mCacheSize.width             = kSizeNotSet;
   mCacheSize.height            = kSizeNotSet;
-  mCachedMaxElementSize.width  = kSizeNotSet;
-  mCachedMaxElementSize.height = kSizeNotSet;
+  mCachedAscent                = kSizeNotSet;
+  mCachedMaxElementWidth       = kSizeNotSet;
   mCachedAvailableSize.width   = kSizeNotSet;
   mCachedAvailableSize.height  = kSizeNotSet;
   mCachedUncDropdownSize.width  = kSizeNotSet;
@@ -376,7 +379,7 @@ NS_IMETHODIMP
 nsComboboxControlFrame::Init(nsIPresContext*  aPresContext,
               nsIContent*      aContent,
               nsIFrame*        aParent,
-              nsIStyleContext* aContext,
+              nsStyleContext*  aContext,
               nsIFrame*        aPrevInFlow)
 {
    // Need to hold on the pres context because it is used later in methods
@@ -391,8 +394,12 @@ nsComboboxControlFrame::Init(nsIPresContext*  aPresContext,
   nsCOMPtr<nsIDocument> document;
   nsresult rv = aContent->GetDocument(*getter_AddRefs(document));
   if (NS_SUCCEEDED(rv) && document) {
+#ifdef MOZ_XUL
     nsCOMPtr<nsIXULDocument> xulDoc(do_QueryInterface(document));
     mGoodToGo = xulDoc?PR_FALSE:PR_TRUE;
+#else
+    mGoodToGo = PR_TRUE;
+#endif
   }
   //-------------------------------
   // Done - Temporary fix for Bug 36558
@@ -426,11 +433,10 @@ nsComboboxControlFrame::InitializeControl(nsIPresContext* aPresContext)
 }
 
 //--------------------------------------------------------------
-NS_IMETHODIMP 
-nsComboboxControlFrame::GetType(PRInt32* aType) const
+NS_IMETHODIMP_(PRInt32)
+nsComboboxControlFrame::GetType() const
 {
-  *aType = NS_FORM_SELECT;
-  return NS_OK;
+  return NS_FORM_SELECT;
 }
 
 //--------------------------------------------------------------
@@ -511,6 +517,7 @@ void
 nsComboboxControlFrame::SetFocus(PRBool aOn, PRBool aRepaint)
 {
   if (aOn) {
+    nsListControlFrame::ComboboxFocusSet();
     mFocused = this;
 
     // Store up the selected index so when we lose focus we can see if it's
@@ -755,7 +762,7 @@ nsComboboxControlFrame::PositionDropdown(nsIPresContext* aPresContext,
       // move the dropdown list up
       dropdownYOffset = - (dropdownRect.height);
     }
-  } 
+  }
  
   dropdownRect.x = 0;
   dropdownRect.y = dropdownYOffset; 
@@ -763,10 +770,6 @@ nsComboboxControlFrame::PositionDropdown(nsIPresContext* aPresContext,
   mDropdownFrame->GetRect(currentRect);
 
   mDropdownFrame->SetRect(aPresContext, dropdownRect);
-#ifdef DEBUG_rodsXXXXXX
-  printf("%d Position Dropdown at: %d %d %d %d\n", counter++, dropdownRect.x, dropdownRect.y, dropdownRect.width, dropdownRect.height);
-#endif
-
   return rv;
 }
 
@@ -836,8 +839,7 @@ nsComboboxControlFrame::ReflowItems(nsIPresContext* aPresContext,
                                     nsHTMLReflowMetrics& aDesiredSize) 
 {
   //printf("*****************\n");
-  const nsStyleFont* dspFont;
-  mDisplayFrame->GetStyleData(eStyleStruct_Font,  (const nsStyleStruct *&)dspFont);
+  const nsStyleFont* dspFont = mDisplayFrame->GetStyleFont();
   nsCOMPtr<nsIDeviceContext> deviceContext;
   aPresContext->GetDeviceContext(getter_AddRefs(deviceContext));
   NS_ASSERTION(deviceContext, "Couldn't get the device context"); 
@@ -967,6 +969,7 @@ nsComboboxControlFrame::ReflowCombobox(nsIPresContext *         aPresContext,
     SetChildFrameSize(aDropDownBtn, aBtnWidth, aDesiredSize.height);
     aDesiredSize.width = 0;
     aDesiredSize.height = dispHeight;
+    // XXX What about ascent and descent?
     return;
   }
 
@@ -1017,8 +1020,7 @@ nsComboboxControlFrame::ReflowCombobox(nsIPresContext *         aPresContext,
   kidReflowState.reason          = reason;
 
 #ifdef IBMBIDI
-  const nsStyleVisibility* vis;
-  GetStyleData(eStyleStruct_Visibility, (const nsStyleStruct*&)vis);
+  const nsStyleVisibility* vis = GetStyleVisibility();
 
   // M14 didn't calculate the RightEdge in the reflow
   // Unless we set the width to some thing other than unrestricted
@@ -1040,8 +1042,8 @@ nsComboboxControlFrame::ReflowCombobox(nsIPresContext *         aPresContext,
   /////////////////////////////////////////////////////////
   // The DisplayFrame is a Block frame containing a TextFrame
   // and it is completely anonymous, so we must manually reflow it
+  nsHTMLReflowMetrics txtKidSize(PR_TRUE);
   nsSize txtAvailSize(dispWidth - aBtnWidth, dispHeight);
-  nsHTMLReflowMetrics txtKidSize(&txtAvailSize);
   nsHTMLReflowState   txtKidReflowState(aPresContext, aReflowState, aDisplayFrame, txtAvailSize, reason);
 
   aDisplayFrame->WillReflow(aPresContext);
@@ -1124,10 +1126,14 @@ nsComboboxControlFrame::ReflowCombobox(nsIPresContext *         aPresContext,
 
   REFLOW_NOISY_MSG3("**AdjustCombobox - Reflow: WW: %d  HH: %d\n", aDesiredSize.width, aDesiredSize.height);
 
-  if (nsnull != aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width  = aDesiredSize.width;
-    aDesiredSize.maxElementSize->height = aDesiredSize.height;
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
   }
+
+  aDesiredSize.ascent =
+    txtKidSize.ascent + aReflowState.mComputedBorderPadding.top;
+  aDesiredSize.descent = aDesiredSize.height - aDesiredSize.ascent;
+  
   // Now cache the available height as our height without border and padding
   // This sets up the optimization for if a new available width comes in and we are equal or
   // less than it we can bail
@@ -1138,7 +1144,8 @@ nsComboboxControlFrame::ReflowCombobox(nsIPresContext *         aPresContext,
     if (aReflowState.availableHeight != NS_UNCONSTRAINEDSIZE) {
       mCachedAvailableSize.height = aDesiredSize.height - (aBorderPadding.top + aBorderPadding.bottom);
     }
-    nsFormControlFrame::SetupCachedSizes(mCacheSize, mCachedMaxElementSize, aDesiredSize);
+    nsFormControlFrame::SetupCachedSizes(mCacheSize, mCachedAscent,
+                                         mCachedMaxElementWidth, aDesiredSize);
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -1238,8 +1245,9 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
   //      cached AvailableSize.width == aCacheSize.width
   //
   // NOTE: this returns whether we are doing an Incremental reflow
-  nsFormControlFrame::SkipResizeReflow(mCacheSize, 
-                                       mCachedMaxElementSize, 
+  nsFormControlFrame::SkipResizeReflow(mCacheSize,
+                                       mCachedAscent,
+                                       mCachedMaxElementWidth,
                                        mCachedAvailableSize, 
                                        aDesiredSize, aReflowState, 
                                        aStatus, 
@@ -1282,12 +1290,6 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
   nsRect displayRect;
   nsRect buttonRect;
   nsRect dropdownRect;
-
-  // get our border and padding, 
-  // XXX - should be the same mComputedBorderPadding?
-  // maybe we should use that?
-  nsMargin borderPadding(0, 0, 0, 0);
-  CalcBorderPadding(borderPadding);
 
    // Get the current sizes of the combo box child frames
   mDisplayFrame->GetRect(displayRect);
@@ -1339,7 +1341,7 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
         REFLOW_DEBUG_MSG("------------Reflowing AreaFrame and bailing----\n\n");
         ReflowCombobox(aPresContext, firstPassState, aDesiredSize, aStatus, 
                            mDisplayFrame, mButtonFrame, mItemDisplayWidth, 
-                           scrollbarWidth, borderPadding);
+                           scrollbarWidth, aReflowState.mComputedBorderPadding);
         REFLOW_COUNTER();
         UNCONSTRAINED_CHECK();
         REFLOW_DEBUG_MSG3("&** Done nsCCF DW: %d  DH: %d\n\n", PX(aDesiredSize.width), PX(aDesiredSize.height));
@@ -1396,8 +1398,10 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
         REFLOW_DEBUG_MSG("---- Doing AreaFrame Reflow and then bailing out\n");
         // Do simple reflow and bail out
         ReflowCombobox(aPresContext, firstPassState, aDesiredSize, aStatus, 
-                           mDisplayFrame, mButtonFrame, 
-                           mItemDisplayWidth, scrollbarWidth, borderPadding, kSizeNotSet, PR_TRUE);
+                       mDisplayFrame, mButtonFrame, 
+                       mItemDisplayWidth, scrollbarWidth,
+                       aReflowState.mComputedBorderPadding,
+                       kSizeNotSet, PR_TRUE);
         REFLOW_DEBUG_MSG3("+** Done nsCCF DW: %d  DH: %d\n\n", PX(aDesiredSize.width), PX(aDesiredSize.height));
         REFLOW_COUNTER();
         UNCONSTRAINED_CHECK();
@@ -1421,10 +1425,11 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
 
             aDesiredSize.width  = mCacheSize.width;
             aDesiredSize.height = mCacheSize.height;
+            aDesiredSize.ascent = mCachedAscent;
+            aDesiredSize.descent = aDesiredSize.height - aDesiredSize.ascent;
 
-            if (aDesiredSize.maxElementSize != nsnull) {
-              aDesiredSize.maxElementSize->width  = mCachedMaxElementSize.width;
-              aDesiredSize.maxElementSize->height = mCachedMaxElementSize.height;
+            if (aDesiredSize.mComputeMEW) {
+              aDesiredSize.mMaxElementWidth = mCachedMaxElementWidth;
             }
             NS_ASSERTION(aDesiredSize.width != kSizeNotSet,  "aDesiredSize.width != kSizeNotSet");
             NS_ASSERTION(aDesiredSize.height != kSizeNotSet, "aDesiredSize.height != kSizeNotSet");
@@ -1517,13 +1522,12 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
         REFLOW_DEBUG_MSG3("--- Bailing because of mCachedUncDropdownSize %d,%d\n\n", PX(mCachedUncDropdownSize.width), PX(mCachedUncDropdownSize.height)); 
         aDesiredSize.width  = mCachedUncComboSize.width;
         aDesiredSize.height = mCachedUncComboSize.height;
+        aDesiredSize.ascent = mCachedAscent;
+        aDesiredSize.descent = aDesiredSize.height - aDesiredSize.ascent;
 
-        if (aDesiredSize.maxElementSize != nsnull) {
-          aDesiredSize.maxElementSize->width  = mCachedMaxElementSize.width;
-          aDesiredSize.maxElementSize->height = mCachedMaxElementSize.height;
+        if (aDesiredSize.mComputeMEW) {
+          aDesiredSize.mMaxElementWidth = mCachedMaxElementWidth;
         }
-        aDesiredSize.ascent = aDesiredSize.height;
-        aDesiredSize.descent = 0;
         UNCONSTRAINED_CHECK();
         REFLOW_DEBUG_MSG3("#** Done nsCCF DW: %d  DH: %d\n\n", PX(aDesiredSize.width), PX(aDesiredSize.height));
         NS_ASSERTION(aDesiredSize.width != kSizeNotSet,  "aDesiredSize.width != kSizeNotSet");
@@ -1555,7 +1559,7 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
   // for the display area
   mDropdownFrame->GetRect(dropdownRect);
   if (eReflowReason_Resize == aReflowState.reason) {
-    dropdownRect.Deflate(borderPadding);
+    dropdownRect.Deflate(aReflowState.mComputedBorderPadding);
   }
 
   // Get maximum size of the largest item in the dropdown
@@ -1590,8 +1594,15 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
     REFLOW_DEBUG_MSG("Unconstrained.....\n");
     REFLOW_DEBUG_MSG4("*B mItemDisplayWidth %d  dropdownRect.width:%d dropdownRect.w+h %d\n", PX(mItemDisplayWidth), PX(dropdownRect.width), PX((dropBorderPadding.left + dropBorderPadding.right)));
 
-    // Start with the dropdown rect's width
-    mItemDisplayWidth = dropdownRect.width;
+    // Start with the dropdown rect's width (at this stage, it's the
+    // natural width of the content in the list, i.e., the width of
+    // the widest content, i.e. the preferred width for the display
+    // frame) and add room for the button, which is assumed to match
+    // the width of the scrollbar (note that the scrollbarWidth is
+    // passed as aBtnWidth to ReflowCombobox).  (When the dropdown was
+    // an nsScrollFrame the scrollbar width seems to have already been
+    // added to its unconstrained width.)
+    mItemDisplayWidth = dropdownRect.width + scrollbarWidth;
 
     REFLOW_DEBUG_MSG2("*  mItemDisplayWidth %d\n", PX(mItemDisplayWidth));
 
@@ -1626,7 +1637,7 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
   // this reflows and makes and last minute adjustments
   ReflowCombobox(aPresContext, firstPassState, aDesiredSize, aStatus, 
                      mDisplayFrame, mButtonFrame, mItemDisplayWidth, scrollbarWidth, 
-                     borderPadding, size.height);
+                     aReflowState.mComputedBorderPadding, size.height);
 
   // The dropdown was reflowed UNCONSTRAINED before, now we need to check to see
   // if it needs to be resized. 
@@ -1689,9 +1700,8 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
 #endif // DO_NEW_REFLOW
 
   // Set the max element size to be the same as the desired element size.
-  if (nsnull != aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width  = aDesiredSize.width;
-	  aDesiredSize.maxElementSize->height = aDesiredSize.height;
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
   }
 
 #if 0
@@ -1699,16 +1709,20 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
 #endif
 
   // cache the availabe size to be our desired size minus the borders
-  // this is so if our cached avilable size is ever equal to or less 
-  // than the real avilable size we can bail out
+  // this is so if our cached available size is ever equal to or less 
+  // than the real available size we can bail out
   if (aReflowState.availableWidth != NS_UNCONSTRAINEDSIZE) {
-    mCachedAvailableSize.width  = aDesiredSize.width - (borderPadding.left + borderPadding.right);
+    mCachedAvailableSize.width  = aDesiredSize.width -
+      (aReflowState.mComputedBorderPadding.left +
+       aReflowState.mComputedBorderPadding.right);
   }
   if (aReflowState.availableHeight != NS_UNCONSTRAINEDSIZE) {
-    mCachedAvailableSize.height = aDesiredSize.height - (borderPadding.top + borderPadding.bottom);
+    mCachedAvailableSize.height = aDesiredSize.height -
+      (aReflowState.mComputedBorderPadding.top +
+       aReflowState.mComputedBorderPadding.bottom);
   }
 
-  nsFormControlFrame::SetupCachedSizes(mCacheSize, mCachedMaxElementSize, aDesiredSize);
+  nsFormControlFrame::SetupCachedSizes(mCacheSize, mCachedAscent, mCachedMaxElementWidth, aDesiredSize);
 
   REFLOW_DEBUG_MSG3("** Done nsCCF DW: %d  DH: %d\n\n", PX(aDesiredSize.width), PX(aDesiredSize.height));
   REFLOW_COUNTER();
@@ -1764,9 +1778,7 @@ nsComboboxControlFrame::GetFrameForPoint(nsIPresContext* aPresContext,
 
   if ( mRect.Contains(aPoint) &&
        (aWhichLayer == NS_FRAME_PAINT_LAYER_FOREGROUND) ) {
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-    if (vis->IsVisible()) {
+    if (GetStyleVisibility()->IsVisible()) {
       *aFrame = this;
       return NS_OK;
     }
@@ -1950,7 +1962,10 @@ nsComboboxControlFrame::ActuallyDisplayText(nsAString& aText, PRBool aNotify)
 {
   nsresult rv = NS_OK;
   if (aText.IsEmpty()) {
-    nsAutoString space(PRUnichar(' '));
+    // Have to use a non-breaking space for line-height calculations
+    // to be right
+    static const PRUnichar spaceArr[] = { 0xA0, 0x00 };
+    nsDependentString space(spaceArr);
     rv = mDisplayContent->SetText(space.get(), space.Length(), aNotify);
   } else {
     const nsAFlatString& flat = PromiseFlatString(aText);
@@ -2098,8 +2113,7 @@ nsComboboxControlFrame::HandleEvent(nsIPresContext* aPresContext,
 
   // If we have style that affects how we are selected, feed event down to
   // nsFrame::HandleEvent so that selection takes place when appropriate.
-  const nsStyleUserInterface* uiStyle;
-  GetStyleData(eStyleStruct_UserInterface,  (const nsStyleStruct *&)uiStyle);
+  const nsStyleUserInterface* uiStyle = GetStyleUserInterface();
   if (uiStyle->mUserInput == NS_STYLE_USER_INPUT_NONE || uiStyle->mUserInput == NS_STYLE_USER_INPUT_DISABLED)
     return nsAreaFrame::HandleEvent(aPresContext, aEvent, aEventStatus);
     
@@ -2152,23 +2166,18 @@ nsComboboxControlFrame::CreateDisplayFrame(nsIPresContext* aPresContext)
   if (!mDisplayFrame) { return NS_ERROR_NULL_POINTER; }
 
   // create the style context for the anonymous frame
-  nsCOMPtr<nsIStyleContext> styleContext;
-  rv = aPresContext->ResolvePseudoStyleContextFor(mContent, 
-                                                  nsHTMLAtoms::mozDisplayComboboxControlFrame,
-                                                  mStyleContext,
-                                                  getter_AddRefs(styleContext));
-  if (NS_FAILED(rv)) { return rv; }
+  nsRefPtr<nsStyleContext> styleContext;
+  styleContext = aPresContext->ResolvePseudoStyleContextFor(mContent, 
+                                                  nsCSSAnonBoxes::mozDisplayComboboxControlFrame,
+                                                  mStyleContext);
   if (!styleContext) { return NS_ERROR_NULL_POINTER; }
 
   // create a text frame and put it inside the block frame
   rv = NS_NewTextFrame(shell, &mTextFrame);
   if (NS_FAILED(rv)) { return rv; }
   if (!mTextFrame) { return NS_ERROR_NULL_POINTER; }
-  nsCOMPtr<nsIStyleContext> textStyleContext;
-  rv = aPresContext->ResolveStyleContextForNonElement(
-                                             styleContext,
-                                             getter_AddRefs(textStyleContext));
-  if (NS_FAILED(rv)) { return rv; }
+  nsRefPtr<nsStyleContext> textStyleContext;
+  textStyleContext = aPresContext->ResolveStyleContextForNonElement(styleContext);
   if (!textStyleContext) { return NS_ERROR_NULL_POINTER; }
   nsCOMPtr<nsIContent> content(do_QueryInterface(mDisplayContent));
   mTextFrame->Init(aPresContext, content, mDisplayFrame, textStyleContext, nsnull);
@@ -2183,7 +2192,7 @@ nsComboboxControlFrame::CreateDisplayFrame(nsIPresContext* aPresContext)
   if (!frameManager) { return NS_ERROR_NULL_POINTER; }
   frameManager->SetPrimaryFrameFor(content, mTextFrame);
 
-  rv = mDisplayFrame->Init(aPresContext, content, this, styleContext, nsnull);
+  rv = mDisplayFrame->Init(aPresContext, mContent, this, styleContext, nsnull);
   if (NS_FAILED(rv)) { return rv; }
 
   mDisplayFrame->SetInitialChildList(aPresContext, nsnull, mTextFrame);
@@ -2239,7 +2248,7 @@ nsComboboxControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
     aChildList.AppendElement(labelContent);
 
     // create button which drops the list down
-    nsCOMPtr<nsIElementFactory> ef(do_CreateInstance(kHTMLElementFactoryCID));
+    nsCOMPtr<nsIElementFactory> ef(do_GetService(kHTMLElementFactoryCID));
     if (ef) {
       nsCOMPtr<nsIContent> content;
       result = ef->CreateInstanceByTag(nodeInfo,getter_AddRefs(content));
@@ -2292,23 +2301,18 @@ nsComboboxControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
     if (!mDisplayFrame) { return NS_ERROR_NULL_POINTER; }
 
     // create the style context for the anonymous block frame
-    nsCOMPtr<nsIStyleContext> styleContext;
-    rv = aPresContext->ResolvePseudoStyleContextFor(mContent, 
-                                                    nsHTMLAtoms::mozDisplayComboboxControlFrame,
-                                                    mStyleContext,
-                                                    getter_AddRefs(styleContext));
-    if (NS_FAILED(rv)) { return rv; }
+    nsRefPtr<nsStyleContext> styleContext;
+    styleContext = aPresContext->ResolvePseudoStyleContextFor(mContent, 
+                                                    nsCSSAnonBoxes::mozDisplayComboboxControlFrame,
+                                                    mStyleContext);
     if (!styleContext) { return NS_ERROR_NULL_POINTER; }
 
     // Create a text frame and put it inside the block frame
     rv = NS_NewTextFrame(shell, &mTextFrame);
     if (NS_FAILED(rv)) { return rv; }
     if (!mTextFrame)   { return NS_ERROR_NULL_POINTER; }
-    nsCOMPtr<nsIStyleContext> textStyleContext;
-    rv = aPresContext->ResolveStyleContextForNonElement(
-                                             styleContext,
-                                             getter_AddRefs(textStyleContext));
-    if (NS_FAILED(rv))     { return rv; }
+    nsRefPtr<nsStyleContext> textStyleContext;
+    textStyleContext = aPresContext->ResolveStyleContextForNonElement(styleContext);
     if (!textStyleContext) { return NS_ERROR_NULL_POINTER; }
 
     // initialize the text frame
@@ -2323,7 +2327,7 @@ nsComboboxControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
     frameManager->SetPrimaryFrameFor(content, mTextFrame);
     */
 
-    rv = mDisplayFrame->Init(aPresContext, content, this, styleContext, nsnull);
+    rv = mDisplayFrame->Init(aPresContext, mContent, this, styleContext, nsnull);
     if (NS_FAILED(rv)) { return rv; }
 
     mDisplayFrame->SetInitialChildList(aPresContext, nsnull, mTextFrame);
@@ -2407,17 +2411,15 @@ nsComboboxControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
     InitTextStr();
 
     nsIFrame * child = aChildList;
-    while (child != nsnull) {
+    while (child) {
       nsIFormControlFrame* fcFrame = nsnull;
-      rv = child->QueryInterface(NS_GET_IID(nsIFormControlFrame), (void**)&fcFrame);
-      if (NS_FAILED(rv) && fcFrame == nsnull) {
+      CallQueryInterface(child, &fcFrame);
+      if (fcFrame) {
+        if (fcFrame->GetType() == NS_FORM_INPUT_BUTTON) {
+          mButtonFrame = child;
+        }
+      } else {
         mDisplayFrame = child;
-      } else if (fcFrame != nsnull) {
-          PRInt32 type;
-          fcFrame->GetType(&type);
-          if (type == NS_FORM_INPUT_BUTTON) {
-            mButtonFrame = child;
-          }
       }
       child->GetNextSibling(&child);
     }
@@ -2429,7 +2431,7 @@ NS_IMETHODIMP
 nsComboboxControlFrame::GetAdditionalChildListName(PRInt32   aIndex,
                                          nsIAtom** aListName) const
 {
-   // Maintain a seperate child list for the dropdown list (i.e. popup listbox)
+   // Maintain a separate child list for the dropdown list (i.e. popup listbox)
    // This is necessary because we don't want the listbox to be included in the layout
    // of the combox's children because it would take up space, when it is suppose to
    // be floating above the display.
@@ -2519,6 +2521,11 @@ nsComboboxControlFrame::Paint(nsIPresContext*     aPresContext,
     nsAreaFrame::Paint(aPresContext, aRenderingContext, aDirtyRect,
                        NS_FRAME_PAINT_LAYER_FOREGROUND);
 
+    // nsITheme should take care of drawing the focus border, but currently does so only on Mac.
+    // If all of the nsITheme implementations are fixed to draw the focus border correctly,
+    // this #ifdef should be replaced with a -moz-appearance / ThemeSupportsWidget() check.
+
+#ifndef MOZ_WIDGET_COCOA
     if (mDisplayFrame) {
       aRenderingContext.PushState();
       PRBool clipEmpty;
@@ -2533,10 +2540,8 @@ nsComboboxControlFrame::Paint(nsIPresContext*     aPresContext,
       /////////////////////
       // draw focus
       // XXX This is only temporary
-      const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
       // Only paint the focus if we're visible
-      if (vis->IsVisible()) {
+      if (GetStyleVisibility()->IsVisible()) {
         nsCOMPtr<nsIEventStateManager> stateManager;
         nsresult rv = mPresContext->GetEventStateManager(getter_AddRefs(stateManager));
         if (NS_SUCCEEDED(rv)) {
@@ -2544,9 +2549,7 @@ nsComboboxControlFrame::Paint(nsIPresContext*     aPresContext,
             aRenderingContext.SetLineStyle(nsLineStyle_kDotted);
             aRenderingContext.SetColor(0);
           } else {
-            const nsStyleBackground* myColor =
-              (const nsStyleBackground*)mStyleContext->GetStyleData(eStyleStruct_Background);
-            aRenderingContext.SetColor(myColor->mBackgroundColor);
+            aRenderingContext.SetColor(GetStyleBackground()->mBackgroundColor);
             aRenderingContext.SetLineStyle(nsLineStyle_kSolid);
           }
           //aRenderingContext.DrawRect(clipRect);
@@ -2570,6 +2573,7 @@ nsComboboxControlFrame::Paint(nsIPresContext*     aPresContext,
       /////////////////////
       aRenderingContext.PopState(clipEmpty);
     }
+#endif
   }
   
   // Call to the base class to draw selection borders when appropriate
@@ -2580,18 +2584,20 @@ nsComboboxControlFrame::Paint(nsIPresContext*     aPresContext,
   //nsIScrollableViewProvider
 //----------------------------------------------------------------------
 NS_METHOD
-nsComboboxControlFrame::GetScrollableView(nsIScrollableView** aView)
+nsComboboxControlFrame::GetScrollableView(nsIPresContext* aPresContext,
+                                          nsIScrollableView** aView)
 {
   *aView = nsnull;
-  nsIView* view = nsnull;
-  mDropdownFrame->GetView(mPresContext, &view);
-  if (view) {
-    nsIScrollableView* sv = nsnull;
-    nsresult rv = view->QueryInterface(NS_GET_IID(nsIScrollableView), (void**) &sv);
-    if (NS_SUCCEEDED(rv) && sv)
-      *aView = sv;
-  }
-  return NS_OK;
+
+  if (!mDropdownFrame)
+    return NS_ERROR_FAILURE;
+
+  nsIScrollableFrame* scrollable = nsnull;
+  nsresult rv = CallQueryInterface(mDropdownFrame, &scrollable);
+  if (NS_FAILED(rv))
+    return rv;
+
+  return scrollable->GetScrollableView(aPresContext, aView);
 }
 
 //---------------------------------------------------------
@@ -2603,17 +2609,20 @@ nsComboboxControlFrame::OnOptionSelected(nsIPresContext* aPresContext,
                                          PRInt32 aIndex,
                                          PRBool aSelected)
 {
-  if (aSelected) {
-    if (!mDroppedDown) {
+  if (mDroppedDown) {
+    nsCOMPtr<nsISelectControlFrame> selectFrame
+                                     = do_QueryInterface(mListControlFrame);
+    if (selectFrame) {
+      selectFrame->OnOptionSelected(aPresContext, aIndex, aSelected);
+    }
+  } else {
+    if (aSelected) {
       RedisplayText(aIndex);
     } else {
-      nsCOMPtr<nsISelectControlFrame> selectFrame
-                                       = do_QueryInterface(mListControlFrame);
-      if (selectFrame) {
-        selectFrame->OnOptionSelected(aPresContext, aIndex, aSelected);
-      }
+      RedisplaySelectedText();
     }
   }
+
   return NS_OK;
 }
 

@@ -11,7 +11,7 @@
                    chrome:displayName="Mac-specific dl mgr files"
                    chrome:author="mozilla.org"
                    chrome:name="dlmgr"
-                   chrome:localeVersion="1.2"
+                   chrome:localeVersion="1.4"
                    chrome:skinVersion="1.2">
   </RDF:Description>
  
@@ -21,7 +21,7 @@
   </RDF:Seq>
 
   <RDF:Seq about="chrome://communicator/content/downloadmanager/downloadmanager.xul">
-    <RDF:li>chrome://global/content/hiddenWindow.xul</RDF:li>
+    <RDF:li>chrome://communicator/content/downloadmanager/dlmanagermenuoverlay.xul</RDF:li>
   </RDF:Seq>
 
 </RDF:RDF>

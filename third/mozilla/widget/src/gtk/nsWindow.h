@@ -70,6 +70,8 @@ public:
   nsWindow();
   virtual ~nsWindow();
 
+  static void ReleaseGlobals();
+
   NS_DECL_ISUPPORTS_INHERITED
 
   NS_IMETHOD           WidgetToScreen(const nsRect &aOldRect, nsRect &aNewRect);
@@ -113,7 +115,15 @@ public:
   NS_IMETHOD           SetFocus(PRBool aRaise);
   NS_IMETHOD           GetAttention(void);
   NS_IMETHOD           Destroy();
+  void                 ResizeTransparencyBitmap(PRInt32 aNewWidth, PRInt32 aNewHeight);
+  void                 ApplyTransparencyBitmap();
+#ifdef MOZ_XUL
+  NS_IMETHOD           SetWindowTranslucency(PRBool aTransparent);
+  NS_IMETHOD           GetWindowTranslucency(PRBool& aTransparent);
+  NS_IMETHOD           UpdateTranslucentWindowAlpha(const nsRect& aRect, PRUint8* aAlphas);
   NS_IMETHOD           HideWindowChrome(PRBool aShouldHide);
+  NS_IMETHOD           MakeFullScreen(PRBool aFullScreen);
+#endif
   NS_IMETHOD           SetIcon(const nsAString& aIcon);
   GdkCursor           *GtkCreateCursor(nsCursor aCursorType);
   virtual void         LoseFocus(void);
@@ -123,8 +133,7 @@ public:
 
   void                 QueueDraw();
   void                 UnqueueDraw();
-  void                 DoPaint(PRInt32 x, PRInt32 y, PRInt32 width, PRInt32 height,
-                               nsIRegion *aClipRegion);
+  void                 DoPaint(nsIRegion *aClipRegion);
   static gboolean      UpdateIdle (gpointer data);
   // get the toplevel window for this widget
   virtual GtkWindow   *GetTopLevelWindow(void);
@@ -145,7 +154,6 @@ public:
   void                 InvalidateWindowPos(void);
 
 
-  virtual  PRBool OnScroll(nsScrollbarEvent & aEvent, PRUint32 cPos);
   // in nsWidget now
   //    virtual  PRBool OnResize(nsSizeEvent &aEvent);
   
@@ -153,6 +161,9 @@ public:
 
   // Return the GtkMozArea that is the nearest parent of this widget
   virtual GtkWidget *GetOwningWidget();
+
+  // Get the owning window for this window
+  nsWindow *GetOwningWindow();
 
   // Return the type of the window that is the toplevel mozilla window
   // for this (possibly) inner window
@@ -193,9 +204,10 @@ public:
                                  const PLDHashEntryHdr* aHdr,
                                  const void* aKey);
   static void ClearIconEntry(PLDHashTable* aTable, PLDHashEntryHdr* aHdr);
-  static void FreeIconCache(void);
 
 protected:
+  virtual void ResetInternalVisibility();
+  virtual void SetInternalVisibility(PRBool aVisible);
 
   virtual void OnRealize(GtkWidget *aWidget);
 
@@ -241,7 +253,7 @@ protected:
 
   // this is the last window that had a drag event happen on it.
   static nsWindow  *mLastDragMotionWindow;
-  static GdkCursor *gsGtkCursorCache[eCursor_count_up_down + 1];
+  static GdkCursor *gsGtkCursorCache[eCursorCount];
 
   void   InitDragEvent(nsMouseEvent &aEvent);
   void   UpdateDragStatus(nsMouseEvent &aEvent,
@@ -334,14 +346,14 @@ protected:
 
 #ifdef USE_XIM
 protected:
-  PRBool              mIMEEnable;
   static GdkFont      *gPreeditFontset;
   static GdkFont      *gStatusFontset;
   static GdkIMStyle   gInputStyle;
   static PLDHashTable gXICLookupTable;
-  PRBool	      mIMECallComposeStart;
-  PRBool	      mIMECallComposeEnd;
-  PRBool	      mIMEIsBeingActivate;
+  PRPackedBool        mIMEEnable;
+  PRPackedBool        mIMECallComposeStart;
+  PRPackedBool        mIMECallComposeEnd;
+  PRPackedBool        mIMEIsBeingActivate;
   nsWindow*           mIMEShellWindow;
   void                SetXICSpotLocation(nsIMEGtkIC* aXIC, nsPoint aPoint);
   void                SetXICBaseFontSize(nsIMEGtkIC* aXIC, int height);
@@ -353,18 +365,18 @@ protected:
   int                 mXICFontSize;
 
 public:
-  nsIMEGtkIC*	      IMEGetInputContext(PRBool aCreate);
+  nsIMEGtkIC*        IMEGetInputContext(PRBool aCreate);
 
-  void		    ime_preedit_start();
-  void 		    ime_preedit_draw(nsIMEGtkIC* aXIC);
-  void		    ime_preedit_done();
-  void		    ime_status_draw();
+  void        ime_preedit_start();
+  void        ime_preedit_draw(nsIMEGtkIC* aXIC);
+  void        ime_preedit_done();
+  void        ime_status_draw();
 
-  void 		    IMEUnsetFocusWindow();
-  void 		    IMESetFocusWindow();
-  void 		    IMEGetShellWindow();
-  void 		    IMEDestroyIC();
-  void 		    IMEBeingActivate(PRBool aActive);
+  void         IMEUnsetFocusWindow();
+  void         IMESetFocusWindow();
+  void         IMEGetShellWindow();
+  void         IMEDestroyIC();
+  void         IMEBeingActivate(PRBool aActive);
 #endif // USE_XIM 
 
 protected:
@@ -386,17 +398,24 @@ private:
                            GdkBitmap *window_mask);
   nsresult     SetIcon(GdkPixmap *window_pixmap, 
                        GdkBitmap *window_mask);
-  PRBool       mLastGrabFailed;
+
   void         NativeGrab(PRBool aGrab);
 
-  PRBool       mIsUpdating;
+  PRPackedBool mLastGrabFailed;
+  PRPackedBool mIsUpdating;
+  PRPackedBool mLeavePending;
+  PRPackedBool mRestoreFocus;
+
+  PRPackedBool mIsTranslucent;
+  // This bitmap tracks which pixels are transparent. We don't support
+  // full translucency at this time; each pixel is either fully opaque
+  // or fully transparent.
+  gchar*       mTransparencyBitmap;
 
   void DestroyNativeChildren(void);
 
   GtkWindow *mTransientParent;
 
-  PRBool       mLeavePending;
-  PRBool       mRestoreFocus;
 };
 
 //

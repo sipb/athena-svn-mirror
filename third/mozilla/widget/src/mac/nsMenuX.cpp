@@ -38,7 +38,7 @@
 #include "nsCOMPtr.h"
 #include "nsIDocument.h"
 #include "nsIContent.h"
-#include "nsIDOMXULDocument.h"
+#include "nsIDOMDocument.h"
 #include "nsIDocumentViewer.h"
 #include "nsIDocumentObserver.h"
 #include "nsIComponentManager.h"
@@ -101,7 +101,6 @@ public:
 
     nsDummyMenuItemX()
     {
-        NS_INIT_ISUPPORTS();
     }
 };
 
@@ -122,8 +121,6 @@ nsMenuX::nsMenuX()
         mIsHelpMenu(PR_FALSE), mIsEnabled(PR_TRUE), mDestroyHandlerCalled(PR_FALSE),
         mNeedsRebuild(PR_TRUE), mConstructed(PR_FALSE), mVisible(PR_TRUE), mHandler(nsnull)
 {
-  NS_INIT_ISUPPORTS();
-
 #if DEBUG
   ++gMenuCounterX;
 #endif 
@@ -884,13 +881,13 @@ void nsMenuX::LoadMenuItem( nsIMenu* inParentMenu, nsIContent* inMenuItemContent
     inMenuItemContent->GetDocument(*getter_AddRefs(document));
     if ( !document ) 
       return;
-    nsCOMPtr<nsIDOMXULDocument> xulDocument = do_QueryInterface(document);
-    if ( !xulDocument )
+    nsCOMPtr<nsIDOMDocument> domDocument = do_QueryInterface(document);
+    if ( !domDocument )
       return;
-  
+
     nsCOMPtr<nsIDOMElement> keyElement;
     if (!keyValue.IsEmpty())
-      xulDocument->GetElementById(keyValue, getter_AddRefs(keyElement));
+      domDocument->GetElementById(keyValue, getter_AddRefs(keyElement));
     if ( keyElement ) {
       nsCOMPtr<nsIContent> keyContent ( do_QueryInterface(keyElement) );
       nsAutoString keyChar(NS_LITERAL_STRING(" "));

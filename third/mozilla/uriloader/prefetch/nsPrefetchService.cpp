@@ -40,7 +40,7 @@
 #include "nsICategoryManager.h"
 #include "nsIObserverService.h"
 #include "nsIPrefService.h"
-#include "nsIPrefBranch.h"
+#include "nsIPrefBranchInternal.h"
 #include "nsIDocCharset.h"
 #include "nsIWebProgress.h"
 #include "nsCURILoader.h"
@@ -74,6 +74,8 @@ static PRLogModuleInfo *gPrefetchLog;
 static NS_DEFINE_IID(kDocLoaderServiceCID, NS_DOCUMENTLOADER_SERVICE_CID);
 static NS_DEFINE_IID(kPrefServiceCID, NS_PREFSERVICE_CID);
 
+#define PREFETCH_PREF "network.prefetch-next"
+
 //-----------------------------------------------------------------------------
 // helpers
 //-----------------------------------------------------------------------------
@@ -97,8 +99,6 @@ PRTimeToSeconds(PRTime t_usec)
 
 nsPrefetchListener::nsPrefetchListener(nsPrefetchService *aService)
 {
-    NS_INIT_ISUPPORTS();
-
     NS_ADDREF(mService = aService);
 }
 
@@ -205,9 +205,8 @@ nsPrefetchService::nsPrefetchService()
     : mQueueHead(nsnull)
     , mQueueTail(nsnull)
     , mStopCount(0)
-    , mDisabled(PR_FALSE)
+    , mDisabled(PR_TRUE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsPrefetchService::~nsPrefetchService()
@@ -227,19 +226,20 @@ nsPrefetchService::Init()
 
     nsresult rv;
 
-    // Verify that "network.prefetch-next" preference is set to true. Skip
-    // this step if we encounter any errors.
+    // read prefs and hook up pref observer
     nsCOMPtr<nsIPrefService> prefServ(do_GetService(kPrefServiceCID, &rv));
     if (NS_SUCCEEDED(rv)) {
         nsCOMPtr<nsIPrefBranch> prefs;
         rv = prefServ->GetBranch(nsnull, getter_AddRefs(prefs));
         if (NS_SUCCEEDED(rv)) {
             PRBool enabled;
-            rv = prefs->GetBoolPref("network.prefetch-next", &enabled);
-            if (NS_SUCCEEDED(rv) && !enabled) {
-                LOG(("nsPrefetchService disabled via preferences\n"));
-                return NS_ERROR_ABORT;
-            }
+            rv = prefs->GetBoolPref(PREFETCH_PREF, &enabled);
+            if (NS_SUCCEEDED(rv) && enabled)
+                mDisabled = PR_FALSE;
+
+            nsCOMPtr<nsIPrefBranchInternal> prefsInt(do_QueryInterface(prefs));
+            if (prefsInt)
+                prefsInt->AddObserver(PREFETCH_PREF, this, PR_TRUE);
         }
     }
 
@@ -250,12 +250,11 @@ nsPrefetchService::Init()
 
     rv = observerServ->AddObserver(this, NS_XPCOM_SHUTDOWN_OBSERVER_ID, PR_TRUE);
     if (NS_FAILED(rv)) return rv;
-            
-    // Register as an observer for the document loader  
-    nsCOMPtr<nsIWebProgress> progress(do_GetService(kDocLoaderServiceCID, &rv));
-    if (NS_FAILED(rv)) return rv;
 
-    return progress->AddProgressListener(this, nsIWebProgress::NOTIFY_STATE_DOCUMENT);
+    if (!mDisabled)
+        AddProgressListener();
+
+    return NS_OK;
 }
 
 void
@@ -284,8 +283,10 @@ nsPrefetchService::ProcessNextURI()
         //
         // if opening the channel fails, then just skip to the next uri
         //
-        rv = NS_NewChannel(getter_AddRefs(mCurrentChannel), uri, nsnull, nsnull,
-                           nsnull, nsIRequest::LOAD_BACKGROUND);
+        rv = NS_NewChannel(getter_AddRefs(mCurrentChannel), uri,
+                           nsnull, nsnull, nsnull,
+                           nsIRequest::LOAD_BACKGROUND |
+                           nsICachingChannel::LOAD_ONLY_IF_MODIFIED);
         if (NS_FAILED(rv)) continue;
 
         // configure HTTP specific stuff
@@ -293,7 +294,8 @@ nsPrefetchService::ProcessNextURI()
         if (httpChannel) {
             httpChannel->SetReferrer(referrer);
             httpChannel->SetRequestHeader(NS_LITERAL_CSTRING("X-Moz"),
-                                          NS_LITERAL_CSTRING("prefetch"));
+                                          NS_LITERAL_CSTRING("prefetch"),
+                                          PR_FALSE);
         }
 
         rv = mCurrentChannel->AsyncOpen(listener, nsnull);
@@ -304,6 +306,24 @@ nsPrefetchService::ProcessNextURI()
 //-----------------------------------------------------------------------------
 // nsPrefetchService <private>
 //-----------------------------------------------------------------------------
+
+void
+nsPrefetchService::AddProgressListener()
+{
+    // Register as an observer for the document loader  
+    nsCOMPtr<nsIWebProgress> progress(do_GetService(kDocLoaderServiceCID));
+    if (progress)
+        progress->AddProgressListener(this, nsIWebProgress::NOTIFY_STATE_DOCUMENT);
+}
+
+void
+nsPrefetchService::RemoveProgressListener()
+{
+    // Register as an observer for the document loader  
+    nsCOMPtr<nsIWebProgress> progress(do_GetService(kDocLoaderServiceCID));
+    if (progress)
+        progress->RemoveProgressListener(this);
+}
 
 nsresult
 nsPrefetchService::EnqueueURI(nsIURI *aURI, nsIURI *aReferrerURI)
@@ -408,7 +428,7 @@ NS_IMPL_ISUPPORTS4(nsPrefetchService,
 //-----------------------------------------------------------------------------
 
 NS_IMETHODIMP
-nsPrefetchService::PrefetchURI(nsIURI *aURI, nsIURI *aReferrerURI)
+nsPrefetchService::PrefetchURI(nsIURI *aURI, nsIURI *aReferrerURI, PRBool aExplicit)
 {
     nsresult rv;
 
@@ -455,19 +475,17 @@ nsPrefetchService::PrefetchURI(nsIURI *aURI, nsIURI *aReferrerURI)
         return NS_ERROR_ABORT;
     }
 
-    //
-    // skip URLs that contain query strings.  these URLs are likely to result
-    // in documents that have zero freshness lifetimes, which we'd stop
-    // prefetching anyways (see nsPrefetchListener::OnStartRequest).  this
-    // check avoids nearly doubling the load on bugzilla, for example ;-)
-    //
-    nsCOMPtr<nsIURL> url(do_QueryInterface(aURI, &rv));
-    if (NS_FAILED(rv)) return rv;
-    nsCAutoString query;
-    rv = url->GetQuery(query);
-    if (NS_FAILED(rv) || !query.IsEmpty()) {
-        LOG(("rejected: URL has a query string\n"));
-        return NS_ERROR_ABORT;
+    // skip URLs that contain query strings, except URLs for which prefetching
+    // has been explicitly requested.
+    if (!aExplicit) {
+        nsCOMPtr<nsIURL> url(do_QueryInterface(aURI, &rv));
+        if (NS_FAILED(rv)) return rv;
+        nsCAutoString query;
+        rv = url->GetQuery(query);
+        if (NS_FAILED(rv) || !query.IsEmpty()) {
+            LOG(("rejected: URL has a query string\n"));
+            return NS_ERROR_ABORT;
+        }
     }
 
     // 
@@ -575,6 +593,26 @@ nsPrefetchService::Observe(nsISupports     *aSubject,
     if (!strcmp(aTopic, NS_XPCOM_SHUTDOWN_OBSERVER_ID)) {
         StopPrefetching();
         mDisabled = PR_TRUE;
+    }
+    else if (!strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID)) {
+        nsCOMPtr<nsIPrefBranch> prefs(do_QueryInterface(aSubject));
+        PRBool enabled;
+        nsresult rv = prefs->GetBoolPref(PREFETCH_PREF, &enabled);
+        if (NS_SUCCEEDED(rv) && enabled) {
+            if (mDisabled) {
+                LOG(("enabling prefetching\n"));
+                mDisabled = PR_FALSE;
+                AddProgressListener();
+            }
+        } 
+        else {
+            if (!mDisabled) {
+                LOG(("disabling prefetching\n"));
+                StopPrefetching();
+                mDisabled = PR_TRUE;
+                RemoveProgressListener();
+            }
+        }
     }
 
     return NS_OK;

@@ -49,13 +49,14 @@ class nsIContent;
 class nsIDOMUIEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLMutationHandler : public nsIDOMMutationListener, 
                              public nsXBLEventHandler
 {
 public:
-  nsXBLMutationHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLMutationHandler(nsIDOMEventReceiver* aReceiver,
+                       nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLMutationHandler();
   
   // nsIDOMetc.
@@ -72,22 +73,13 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kSubtreeModifiedAtom;
-  static nsIAtom* kAttrModifiedAtom;
-  static nsIAtom* kCharacterDataModifiedAtom;
-  static nsIAtom* kNodeInsertedAtom;
-  static nsIAtom* kNodeRemovedAtom;
-  static nsIAtom* kNodeInsertedIntoDocumentAtom;
-  static nsIAtom* kNodeRemovedFromDocumentAtom;
-
-protected:
   // Members
 };
 
-extern nsresult
-NS_NewXBLMutationHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
-                     nsXBLMutationHandler** aResult);
+nsresult
+NS_NewXBLMutationHandler(nsIDOMEventReceiver* aEventReceiver,
+                         nsXBLPrototypeHandler* aHandlerElement,
+                         nsXBLMutationHandler** aResult);
 
 
 #endif

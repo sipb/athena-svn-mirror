@@ -45,10 +45,7 @@
 #include "nsILinkHandler.h"
 #include "nsString.h"
 
-class nsISizeOfHandler;
-
 class nsIStyleSheet;
-class nsIStyleContext;
 class nsIPresContext;
 class nsIContent;
 class nsIStyledContent;
@@ -148,12 +145,27 @@ struct StateRuleProcessorData : public RuleProcessorData {
                             //  Constants defined in nsIEventStateManager.h .
 };
 
+struct AttributeRuleProcessorData : public RuleProcessorData {
+  AttributeRuleProcessorData(nsIPresContext* aPresContext,
+                         nsIContent* aContent,
+                         nsIAtom* aAttribute,
+                         PRInt32 aModType)
+    : RuleProcessorData(aPresContext, aContent, nsnull),
+      mAttribute(aAttribute),
+      mModType(aModType)
+  {
+    NS_PRECONDITION(aContent, "null pointer");
+  }
+  nsIAtom* mAttribute; // |HasAttributeDependentStyle| for which attribute?
+  PRInt32 mModType;    // The type of modification (see nsIDOMMutationEvent).
+};
+
 
 // IID for the nsIStyleRuleProcessor interface {015575fe-7b6c-11d3-ba05-001083023c2b}
 #define NS_ISTYLE_RULE_PROCESSOR_IID     \
 {0x015575fe, 0x7b6c, 0x11d3, {0xba, 0x05, 0x00, 0x10, 0x83, 0x02, 0x3c, 0x2b}}
 
-/* The style rule processor interface is a mechanism to seperate the matching
+/* The style rule processor interface is a mechanism to separate the matching
  * of style rules from style sheet instances.
  * Simple style sheets can and will act as their own processor. 
  * Sheets where rule ordering interlaces between multiple sheets, will need to 
@@ -175,10 +187,10 @@ public:
   NS_IMETHOD HasStateDependentStyle(StateRuleProcessorData* aData,
                                     nsIAtom* aMedium,
                                     PRBool* aResult) = 0;
-
-#ifdef DEBUG
-  virtual void SizeOf(nsISizeOfHandler *aSizeofHandler, PRUint32 &aSize) = 0;
-#endif
+  // Test if style is dependent on attribute
+  NS_IMETHOD HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
+                                        nsIAtom* aMedium,
+                                        PRBool* aResult) = 0;
 };
 
 #endif /* nsIStyleRuleProcessor_h___ */

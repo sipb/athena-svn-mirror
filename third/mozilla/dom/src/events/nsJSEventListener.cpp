@@ -53,7 +53,6 @@
 nsJSEventListener::nsJSEventListener(nsIScriptContext *aContext, 
                                      nsISupports *aObject) 
 {
-  NS_INIT_ISUPPORTS();
 
   // mObject is a weak reference. We are guaranteed
   // because of the ownership model that this object will be
@@ -182,7 +181,7 @@ nsresult nsJSEventListener::HandleEvent(nsIDOMEvent* aEvent)
                                   &jsBoolResult, returnResult);
 
   if (argv != &arg) {
-    ::JS_PopArguments(cx, &stackPtr);
+    ::JS_PopArguments(cx, stackPtr);
   }
 
   if (NS_FAILED(rv)) {

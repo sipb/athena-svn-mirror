@@ -520,9 +520,14 @@ char *nsIMAPGenericParser::CreateLiteral()
 	int32 numberOfCharsInMessage = atoi(fNextToken + 1);
 	int32 charsReadSoFar = 0, currentLineLength = 0;
 	int32 bytesToCopy = 0;
-	
-	char *returnString = (char *) PR_Malloc(numberOfCharsInMessage + 1);
-	
+
+	uint32 numBytes = numberOfCharsInMessage + 1;
+  NS_ASSERTION(numBytes, "overflow!");
+  if (!numBytes)
+    return nsnull;
+
+	char *returnString = (char *) PR_Malloc(numBytes);
+
 	if (returnString)
 	{
 		*(returnString + numberOfCharsInMessage) = 0; // Null terminate it first
@@ -549,6 +554,8 @@ char *nsIMAPGenericParser::CreateLiteral()
 			}
 			else
 				AdvanceToNextLine();
+      if (ContinueParse())
+      {
 			currentLineLength = strlen(terminatedLine ? fCurrentLine : fCurrentTokenPlaceHolder);
 			bytesToCopy = (currentLineLength > numberOfCharsInMessage - charsReadSoFar ?
 						   numberOfCharsInMessage - charsReadSoFar : currentLineLength);
@@ -559,6 +566,7 @@ char *nsIMAPGenericParser::CreateLiteral()
 				memcpy(returnString + charsReadSoFar, terminatedLine ? fCurrentLine : fCurrentTokenPlaceHolder, bytesToCopy); 
 				charsReadSoFar += bytesToCopy;
 			}
+      }
 		}
 		
 		if (ContinueParse())

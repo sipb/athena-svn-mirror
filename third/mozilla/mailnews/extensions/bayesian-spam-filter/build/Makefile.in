@@ -26,13 +26,13 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE		= bayesfilt
-LIBRARY_NAME	= bayesfilt
+MODULE		= bayesflt
+LIBRARY_NAME	= bayesflt
 META_COMPONENT = mail
 EXPORT_LIBRARY = 1
-SHORT_LIBNAME	= bayesfilt
+SHORT_LIBNAME	= bayesflt
 IS_COMPONENT	= 1
-MODULE_NAME	= nsBayesianModule
+MODULE_NAME	= nsBayesianFilterModule
 REQUIRES	= xpcom \
 		  string \
 		  mailnews \
@@ -41,6 +41,7 @@ REQUIRES	= xpcom \
 		  msgbaseutil \
 		  msgdb \
 		  necko \
+		  lwbrk \
 		  $(NULL)
 
 ifeq ($(USE_SHORT_LIBNAME),1)
@@ -50,10 +51,9 @@ EXTRA_DSO_LIBS = msgbaseutil
 endif
 
 CPPSRCS		= nsBayesianFilterFactory.cpp
-EXPORTS		= nsBayesianFilterCID.h
 
 SHARED_LIBRARY_LIBS = \
-		$(DIST)/lib/$(LIB_PREFIX)bayesfilt_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)bayesflt_s.$(LIB_SUFFIX) \
 		$(NULL)
 
 EXTRA_DSO_LDOPTS = \
@@ -61,6 +61,8 @@ EXTRA_DSO_LDOPTS = \
 		$(EXTRA_DSO_LIBS) \
 		$(MOZ_JS_LIBS) \
 		$(MOZ_COMPONENT_LIBS) \
+		$(MOZ_XPCOM_OBSOLETE_LIBS) \
+		$(MOZ_UNICHARUTIL_LIBS) \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk

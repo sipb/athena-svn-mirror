@@ -80,15 +80,16 @@
         <label value="&author.label;"/>
         <label id="author"/>
       </hbox>
-      <label id="description" flex="1"/>
     </vbox>
     <vbox>
-      <button id="uninstallSkin" label="&uninstallSkin.label;" oncommand="uninstallSkin();"/>
+      <button id="uninstallSkin" label="&uninstallSkin.label;" oncommand="uninstallSkin();"
+              accesskey="&uninstallSkin.accesskey;"/>
     </vbox>
   </hbox>
+  <label id="description"/>
   <separator/>
   <hbox align="start">
     <html:a class="themesLink" id="themesLink" href="&getNewThemesURL;"
-            style="display: block;" target="_new">&getNewThemes.label;</html:a>
+            style="display: block;" target="_blank">&getNewThemes.label;</html:a>
   </hbox>
 </page>

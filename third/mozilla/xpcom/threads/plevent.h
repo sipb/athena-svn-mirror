@@ -173,10 +173,8 @@ and to ensure that no more events will be delivered for that owner.
 #include "prmon.h"
 
 /* For HWND */
-#if defined(_WIN32) && !defined(__MINGW32__)
+#if defined(XP_WIN32)
 #include <windef.h>
-#elif defined(WIN16) || defined(__MINGW32__)
-#include <windows.h>
 #elif defined(XP_OS2)
 #define INCL_DOSMISC
 #define INCL_DOSPROCESS
@@ -199,7 +197,7 @@ typedef struct PLEventQueue PLEventQueue;
 ** Creates a new event queue. Returns NULL on failure.
 */
 PR_EXTERN(PLEventQueue*)
-PL_CreateEventQueue(char* name, PRThread* handlerThread);
+PL_CreateEventQueue(const char* name, PRThread* handlerThread);
 
 
 /* -----------------------------------------------------------------------
@@ -232,7 +230,7 @@ PL_CreateEventQueue(char* name, PRThread* handlerThread);
 */
 PR_EXTERN(PLEventQueue *) 
     PL_CreateNativeEventQueue(
-        char *name, 
+        const char *name, 
         PRThread *handlerThread
     );
 
@@ -261,7 +259,7 @@ PR_EXTERN(PLEventQueue *)
 */
 PR_EXTERN(PLEventQueue *) 
     PL_CreateMonitoredEventQueue(
-        char *name,
+        const char *name,
         PRThread *handlerThread
     );
 
@@ -507,7 +505,7 @@ struct PLEvent {
 ** Returns the event queue associated with the main thread.
 ** 
 */
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 /* -----------------------------------------------------------------------
 ** FUNCTION: PL_GetNativeEventReceiverWindow()
 ** 
@@ -529,7 +527,7 @@ PR_EXTERN(HWND)
     PL_GetNativeEventReceiverWindow( 
         PLEventQueue *eqp 
     );
-#endif /* XP_PC */
+#endif /* XP_WIN || XP_OS2 */
 
 #ifdef XP_UNIX
 /* -----------------------------------------------------------------------

@@ -111,7 +111,6 @@ nsXPrintContext::nsXPrintContext() :
   mPrintResolution(0L),
   mContext(nsnull)
 {
-  NS_INIT_ISUPPORTS();
   PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, ("nsXPrintContext::nsXPrintContext()\n"));
 }
 
@@ -206,7 +205,7 @@ nsXPrintContext::Init(nsDeviceContextXp *dc, nsIDeviceContextSpecXp *aSpec)
 
   XlibRgbArgs xargs;
   memset(&xargs, 0, sizeof(xargs));
-  xargs.handle_name           = "xprint";
+  xargs.handle_name           = nsnull;
   xargs.disallow_image_tiling = True; /* XlibRGB's "Image tiling"-hack is 
                                        * incompatible to Xprint API */
   
@@ -536,7 +535,7 @@ nsXPrintContext::SetupPrintContext(nsIDeviceContextSpecXp *aSpec)
 
     PR_LOG(nsXPrintContextLM, PR_LOG_DEBUG, ("print to file '%s'\n", XPU_NULLXSTR(mPrintFile)));
     
-    if( (mPrintFile == nsnull) || (strlen(mPrintFile) == 0) )
+    if(!mPrintFile || !*mPrintFile)
       return NS_ERROR_GFX_PRINTER_COULD_NOT_OPEN_FILE;
   }
 

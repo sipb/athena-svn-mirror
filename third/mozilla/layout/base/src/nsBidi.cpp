@@ -853,7 +853,7 @@ void nsBidi::ResolveImplicitLevels(PRInt32 aStart, PRInt32 aLimit,
 
   /* initialize: current at aSOR, next at aStart (it is aStart<aLimit) */
   next=aStart;
-  dirProp=lastStrong=aSOR;
+  beforeNeutral=dirProp=lastStrong=aSOR;
   nextDirProp=dirProps[next];
   historyOfEN=0;
 
@@ -1707,8 +1707,7 @@ void nsBidi::ReorderLine(nsBidiLevel aMinLevel, nsBidiLevel aMaxLevel)
 {
   Run *runs;
   nsBidiLevel *levels;
-  PRInt32 firstRun, endRun, limitRun, runCount,
-  temp, trailingWSStart=mTrailingWSStart;
+  PRInt32 firstRun, endRun, limitRun, runCount, temp;
 
   /* nothing to do? */
   if(aMaxLevel<=(aMinLevel|1)) {
@@ -2256,7 +2255,7 @@ PRInt32 nsBidi::doWriteReverse(const PRUnichar *src, PRInt32 srcLength,
         j=srcLength;
         if(options&NSBIDI_DO_MIRRORING) {
           /* mirror only the base character */
-          c = SymmSwap((PRUnichar)c);
+          c = SymmSwap(c);
 
           PRInt32 k=0;
           UTF_APPEND_CHAR_UNSAFE(dest, k, c);
@@ -2335,7 +2334,7 @@ nsCharType nsBidi::GetCharType(PRUnichar aChar)
   return oResult;
 }
 
-PRUnichar nsBidi::SymmSwap(PRUnichar aChar)
+PRUint32 nsBidi::SymmSwap(PRUint32 aChar)
 {
   return Mirrored(aChar);
 }

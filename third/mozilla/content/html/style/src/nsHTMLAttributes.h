@@ -70,10 +70,6 @@ public:
   NS_IMETHOD SetUniqued(PRBool aUniqued) = 0;
   NS_IMETHOD GetUniqued(PRBool& aUniqued) = 0;
   NS_IMETHOD DropStyleSheetReference(void) = 0;
-
-#ifdef DEBUG
-  virtual void SizeOf(nsISizeOfHandler* aSizer, PRUint32 &aResult) = 0;
-#endif
 };
 
 
@@ -231,7 +227,7 @@ public:
 
   NS_METHOD GetID(nsIAtom*& aResult) const;
   NS_METHOD GetClasses(nsVoidArray& aArray) const;
-  NS_METHOD HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
+  NS_METHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
 
   NS_METHOD Clone(nsHTMLAttributes** aInstancePtrResult) const;
 
@@ -248,8 +244,6 @@ public:
 
 #ifdef DEBUG
   NS_METHOD List(FILE* out = stdout, PRInt32 aIndent = 0) const;
-
-  void SizeOf(nsISizeOfHandler* aSizer, PRUint32 &aResult);
 #endif
 
 protected:

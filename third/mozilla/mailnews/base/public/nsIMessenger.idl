@@ -60,8 +60,6 @@ interface nsIMessenger : nsISupports {
     readonly attribute nsITransactionManager transactionManager;
 
     void SetWindow(in nsIDOMWindowInternal ptr, in nsIMsgWindow msgWindow);
-    void DoPrint();
-    void DoPrintPreview();
     void DeleteMessages(in nsIRDFCompositeDataSource database,
                         in nsIRDFResource srcFolderResource,
                         in nsISupportsArray messages,
@@ -81,7 +79,13 @@ interface nsIMessenger : nsISupports {
                    in nsISupportsArray folders,
                    in boolean isMoveFolder);
     
-    void OpenURL(in string url);
+
+    void OpenURL(in string aURL);
+
+    /** load a custom message by url, e.g load a attachment as a email
+      */
+    void loadURL(in nsIDOMWindowInternal ptr, in string aURL); 
+
     void RenameFolder(in nsIRDFCompositeDataSource db, 
                       in nsIRDFResource folder, in wstring name);
     void CompactFolder(in nsIRDFCompositeDataSource db,
@@ -98,7 +102,7 @@ interface nsIMessenger : nsISupports {
     void Redo(in nsIMsgWindow msgWindow);
     void sendUnsentMessages(in nsIMsgIdentity aIdentity, in nsIMsgWindow aMsgWindow);
     void SetDocumentCharset(in wstring characterSet);
-    void saveAs(in string url, in boolean asFile, in nsIMsgIdentity identity, in nsIMsgWindow aMsgWindow);
+    void saveAs(in string aURI, in boolean aAsFile, in nsIMsgIdentity aIdentity, in nsIMsgWindow aMsgWindow);
     void openAttachment(in string contentTpe, in string url, in string displayName, in string messageUri);
     void saveAttachment(in string contentTpe, in string url, in string displayName, in string messageUri);
     void saveAllAttachments(in unsigned long count, [array, size_is(count)] in string contentTypeArray,

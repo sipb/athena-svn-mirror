@@ -21,7 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   L. David Baron <dbaron@fas.harvard.edu>
+ *   L. David Baron <dbaron@dbaron.org>
  *   Pierre Phaneuf <pp@ludusdesign.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -39,16 +39,11 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsLineBox.h"
 #include "nsSpaceManager.h"
-#include "nsIStyleContext.h"
 #include "nsLineLayout.h"
 #include "prprf.h"
 #include "nsBlockFrame.h"
 #include "nsITextContent.h"
 #include "nsLayoutAtoms.h"
-
-#ifdef DEBUG
-#include "nsISizeOfHandler.h"
-#endif
 
 #ifdef DEBUG
 static PRInt32 ctorCount;
@@ -430,26 +425,6 @@ nsLineBox::FreeFloaters(nsFloaterCacheFreeList& aFreeList)
 }
 
 void
-nsLineBox::RemoveFloatersFromSpaceManager(nsSpaceManager* aSpaceManager)
-{ 
-  if (IsInline()) {
-    if (mInlineData) {
-      nsFloaterCache* floaterCache = mInlineData->mFloaters.Head();
-
-      while (floaterCache) {
-        nsIFrame* floater = floaterCache->mPlaceholder->GetOutOfFlowFrame();
-#ifdef NOISY_SPACEMANAGER
-        nsFrame::ListTag(stdout, floater);
-        printf(": Removing from space manager\n");
-#endif
-        aSpaceManager->RemoveRegion(floater);
-        floaterCache = floaterCache->Next();        
-      }
-    }
-  }
-}
-
-void
 nsLineBox::AppendFloaters(nsFloaterCacheFreeList& aFreeList)
 { 
   NS_ABORT_IF_FALSE(IsInline(), "block line can't have floaters");
@@ -528,43 +503,6 @@ nsLineBox::GetCombinedArea(nsRect* aResult)
   }
 }
 
-#ifdef DEBUG
-nsIAtom*
-nsLineBox::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  NS_PRECONDITION(aResult, "null OUT parameter pointer");
-  *aResult = sizeof(*this);
-
-  nsIAtom* atom;
-  if (IsBlock()) {
-    atom = nsLayoutAtoms::lineBoxBlockSmall;
-    if (mBlockData) {
-      atom = nsLayoutAtoms::lineBoxBlockBig;
-      *aResult += sizeof(*mBlockData);
-    }
-  }
-  else {
-    atom = nsLayoutAtoms::lineBoxSmall;
-    if (mInlineData) {
-      atom = nsLayoutAtoms::lineBoxBig;
-      *aResult += sizeof(*mInlineData);
-
-      // Add in the size needed for floaters associated with this line
-      if (HasFloaters()) {
-        PRUint32  floatersSize;
-        mInlineData->mFloaters.SizeOf(aHandler, &floatersSize);
-
-        // Base size of embedded object was included in sizeof(*this) above
-        floatersSize -= sizeof(mInlineData->mFloaters);
-        aHandler->AddSize(nsLayoutAtoms::lineBoxFloaters, floatersSize);
-      }
-    }
-  }
-
-  return atom;
-}
-#endif
-
 //----------------------------------------------------------------------
 
 
@@ -572,7 +510,6 @@ static nsLineBox* gDummyLines[1];
 
 nsLineIterator::nsLineIterator()
 {
-  NS_INIT_ISUPPORTS();
   mLines = gDummyLines;
   mNumLines = 0;
   mIndex = 0;
@@ -856,6 +793,12 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
     return NS_OK;
   }
 
+  if (line->mBounds.width == 0)
+    return NS_ERROR_FAILURE;
+
+  nsRect r1, r2;
+  nsIFrame *stoppingFrame = nsnull;
+
   if (aX < line->mBounds.x) {
     nsIFrame* frame;
     if (mRightToLeft) {
@@ -864,10 +807,18 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
     else {
       frame = line->mFirstChild;
     }
-    *aFrameFound = frame;
-    *aXIsBeforeFirstFrame = PR_TRUE;
-    *aXIsAfterLastFrame = PR_FALSE;
-    return NS_OK;
+    frame->GetRect(r1);
+    if (r1.width > 0)
+    {
+      *aFrameFound = frame;
+      *aXIsBeforeFirstFrame = PR_TRUE;
+      *aXIsAfterLastFrame = PR_FALSE;
+      return NS_OK;
+    }
+    else if (mRightToLeft)
+      stoppingFrame = frame;
+    else
+      stoppingFrame = line->LastChild();
   }
   else if (aX >= line->mBounds.XMost()) {
     nsIFrame* frame;
@@ -877,10 +828,18 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
     else {
       frame = line->LastChild();
     }
-    *aFrameFound = frame;
-    *aXIsBeforeFirstFrame = PR_FALSE;
-    *aXIsAfterLastFrame = PR_TRUE;
-    return NS_OK;
+    frame->GetRect(r1);
+    if (r1.width > 0)
+    {
+      *aFrameFound = frame;
+      *aXIsBeforeFirstFrame = PR_FALSE;
+      *aXIsAfterLastFrame = PR_TRUE;
+      return NS_OK;
+    }
+    else if (mRightToLeft)
+      stoppingFrame = line->mFirstChild;
+    else
+      stoppingFrame = frame;
   }
 
   // Find the frame closest to the X coordinate. Gaps can occur
@@ -894,7 +853,6 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
   if (aCouldBeReordered)
     CheckLineOrder(aLineNumber, &isReordered, &firstVisual, &lastVisual);
 #endif
-  nsRect r1, r2;
   nsIFrame* frame = line->mFirstChild;
 #ifdef IBMBIDI
   if (isReordered)
@@ -936,15 +894,15 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
 #endif // IBMBIDI
         frame->GetNextSibling(&nextFrame);
       frame->GetRect(r1);
-      if (aX > r1.x) {
+      if (r1.width && aX > r1.x) {
         break;
       }
       if (nextFrame) {
         nextFrame->GetRect(r2);
-        if (aX > r2.XMost()) {
+        if (r2.width && aX > r2.XMost()) {
           nscoord rightEdge = r2.XMost();
           nscoord delta = r1.x - rightEdge;
-          if (aX < rightEdge + delta/2) {
+          if (!r1.width || aX < rightEdge + delta/2) {
             frame = nextFrame;
           }
           break;
@@ -954,6 +912,8 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
         *aXIsBeforeFirstFrame = PR_TRUE;
       }
       frame = nextFrame;
+      if (nextFrame == stoppingFrame)
+        break;
     }
   }
   else {
@@ -979,7 +939,7 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
           if (NS_SUCCEEDED(FindLineContaining(tempFrame, &testLine))
               && testLine == aLineNumber) {
             tempFrame->GetRect(tempRect);
-            if (tempRect.x < minX && tempRect.x > limX) { // we are looking for the lowest value greater than the current one
+            if (tempRect.width && tempRect.x < minX && tempRect.x > limX) { // we are looking for the lowest value greater than the current one
               minX = tempRect.x;
               nextFrame = tempFrame;
             }
@@ -991,15 +951,15 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
 #endif // IBMBIDI
       frame->GetNextSibling(&nextFrame);
       frame->GetRect(r1);
-      if (aX < r1.XMost()) {
+      if (r1.width && aX < r1.XMost()) {
         break;
       }
       if (nextFrame) {
         nextFrame->GetRect(r2);
-        if (aX < r2.x) {
+        if (r2.width && aX < r2.x) {
           nscoord rightEdge = r1.XMost();
           nscoord delta = r2.x - rightEdge;
-          if (aX >= rightEdge + delta/2) {
+          if (!r1.width || aX >= rightEdge + delta/2) {
             frame = nextFrame;
           }
           break;
@@ -1009,6 +969,8 @@ nsLineIterator::FindFrameAt(PRInt32 aLineNumber,
         *aXIsAfterLastFrame = PR_TRUE;
       }
       frame = nextFrame;
+      if (nextFrame == stoppingFrame)
+        break;
     }
   }
 
@@ -1088,20 +1050,6 @@ nsFloaterCacheList::Remove(nsFloaterCache* aElement)
     fcp = &fc->mNext;
   }
 }
-
-#ifdef DEBUG
-void
-nsFloaterCacheList::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  NS_PRECONDITION(aResult, "null OUT parameter pointer");
-  *aResult = sizeof(*this);
-
-  // Add in the space for each floater
-  for (nsFloaterCache* cache = Head(); cache; cache = cache->Next()) {
-    *aResult += sizeof(*cache);
-  }
-}
-#endif
 
 //----------------------------------------------------------------------
 

@@ -37,12 +37,10 @@
 #include "nsCOMPtr.h"
 #include "nsLeafFrame.h"
 #include "nsHTMLContainerFrame.h"
-#include "nsCSSRendering.h"
 #include "nsHTMLParts.h"
 #include "nsHTMLAtoms.h"
 #include "nsIPresShell.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
 
 nsLeafFrame::~nsLeafFrame()
 {
@@ -56,33 +54,7 @@ nsLeafFrame::Paint(nsIPresContext*      aPresContext,
                    PRUint32             aFlags)
 {
   if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
-    PRBool isVisible;
-    if (NS_SUCCEEDED(IsVisibleForPainting(aPresContext, aRenderingContext, PR_FALSE, &isVisible)) && 
-                     !isVisible) {// just checks selection painting
-      return NS_OK;               // not visibility
-    }
-
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-    
-    if (vis->IsVisibleOrCollapsed()) {
-      const nsStyleBorder* myBorder = (const nsStyleBorder*)
-        mStyleContext->GetStyleData(eStyleStruct_Border);
-      const nsStylePadding* myPadding = (const nsStylePadding*)
-        mStyleContext->GetStyleData(eStyleStruct_Padding);
-      const nsStyleOutline* myOutline = (const nsStyleOutline*)
-        mStyleContext->GetStyleData(eStyleStruct_Outline);
-      nsRect rect(0, 0, mRect.width, mRect.height);
-      nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
-                                      aDirtyRect, rect, *myBorder, *myPadding,
-                                      0, 0);
-      nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
-                                  aDirtyRect, rect, *myBorder,
-                                  mStyleContext, 0);
-      nsCSSRendering::PaintOutline(aPresContext, aRenderingContext, this,
-                                   aDirtyRect, rect, *myBorder,
-                                   *myOutline, mStyleContext, 0);
-    }
+    PaintSelf(aPresContext, aRenderingContext, aDirtyRect);
   }
   DO_GLOBAL_REFLOW_COUNT_DSP("nsLeafFrame", &aRenderingContext);
   return NS_OK;
@@ -108,10 +80,8 @@ nsLeafFrame::Reflow(nsIPresContext* aPresContext,
   GetDesiredSize(aPresContext, aReflowState, aMetrics);
   nsMargin borderPadding;
   AddBordersAndPadding(aPresContext, aReflowState, aMetrics, borderPadding);
-  if (nsnull != aMetrics.maxElementSize) {
-    aMetrics.AddBorderPaddingToMaxElementSize(borderPadding);
-    aMetrics.maxElementSize->width = aMetrics.width;
-    aMetrics.maxElementSize->height = aMetrics.height;
+  if (aMetrics.mComputeMEW) {
+    aMetrics.mMaxElementWidth = aMetrics.width;
   }
   aStatus = NS_FRAME_COMPLETE;
 
@@ -147,16 +117,3 @@ nsLeafFrame::ContentChanged(nsIPresContext* aPresContext,
     mState |= NS_FRAME_IS_DIRTY;
     return mParent->ReflowDirtyChild(shell, this);
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsLeafFrame::SizeOf(nsISizeOfHandler* aHandler,
-                    PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  *aResult = sizeof(*this);
-  return NS_OK;
-}
-#endif

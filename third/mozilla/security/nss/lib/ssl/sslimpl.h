@@ -19,8 +19,12 @@
  * Copyright (C) 1994-2000 Netscape Communications Corporation.  All
  * Rights Reserved.
  * 
- * Contributor(s): 
+ * Portions created by Sun Microsystems, Inc. are Copyright (C) 2003
+ * Sun Microsystems, Inc. All Rights Reserved.
+ *
+ * Contributor(s):
  *	Dr Stephen Henson <stephen.henson@gemplus.com>
+ *	Dr Vipul Gupta <vipul.gupta@sun.com>, Sun Microsystems Laboratories
  * 
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU General Public License Version 2 or later (the
@@ -34,7 +38,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslimpl.h,v 1.1.1.1 2003-02-14 19:15:33 rbasch Exp $
+ * $Id: sslimpl.h,v 1.1.1.1.2.1 2003-07-14 19:07:32 ghudson Exp $
  */
 
 #ifndef __sslimpl_h_
@@ -72,6 +76,7 @@ typedef SSLSignType     SSL3SignType;
 #define sign_null	ssl_sign_null
 #define sign_rsa	ssl_sign_rsa
 #define sign_dsa	ssl_sign_dsa
+#define sign_ecdsa	ssl_sign_ecdsa
 
 #define calg_null	ssl_calg_null
 #define calg_rc4	ssl_calg_rc4
@@ -254,7 +259,11 @@ typedef struct {
 #endif
 } ssl3CipherSuiteCfg;
 
+#ifdef NSS_ENABLE_ECC
+#define ssl_V3_SUITES_IMPLEMENTED 40
+#else
 #define ssl_V3_SUITES_IMPLEMENTED 26
+#endif /* NSS_ENABLE_ECC */
 
 typedef struct sslOptionsStr {
     unsigned int useSecurity		: 1;  /*  1 */
@@ -407,6 +416,7 @@ typedef enum {
     cipher_aes_128,
     cipher_aes_256,
     cipher_missing              /* reserved for no such supported cipher */
+    /* This enum must match ssl3_cipherName[] in ssl3con.c.  */
 } SSL3BulkCipher;
 
 typedef enum { type_stream, type_block } CipherType;
@@ -971,7 +981,7 @@ const unsigned char *  preferredCipher;
     sslHandshakingType handshaking;
 
     ssl3CipherSuiteCfg cipherSuites[ssl_V3_SUITES_IMPLEMENTED];
-
+    ssl3KeyPair *         ephemeralECDHKeyPair; /* for ECDHE-* handshake */
 };
 
 
@@ -1180,6 +1190,10 @@ int ssl3_GatherCompleteHandshake(sslSocket *ss, int flags);
  */
 extern SECStatus ssl3_CreateRSAStepDownKeys(sslSocket *ss);
 
+#ifdef NSS_ENABLE_ECC
+extern SECStatus ssl3_CreateECDHEphemeralKeys(sslSocket *ss);
+#endif /* NSS_ENABLE_ECC */
+
 extern SECStatus ssl3_CipherPrefSetDefault(ssl3CipherSuite which, PRBool on);
 extern SECStatus ssl3_CipherPrefGetDefault(ssl3CipherSuite which, PRBool *on);
 extern SECStatus ssl2_CipherPrefSetDefault(PRInt32 which, PRBool enabled);
@@ -1246,6 +1260,9 @@ ssl_GetWrappingKey( PRInt32                   symWrapMechIndex,
  */
 extern PRBool
 ssl_SetWrappingKey(SSLWrappedSymWrappingKey *wswk);
+
+/* get rid of the symmetric wrapping key references. */
+extern SECStatus SSL3_ShutdownServerCache(void);
 
 /********************** misc calls *********************/
 

@@ -36,7 +36,7 @@
  * Encoding Rules).  The routines are found in and used extensively by the
  * security library, but exported for other use.
  *
- * $Id: secasn1.h,v 1.1.1.1 2003-02-14 19:15:14 rbasch Exp $
+ * $Id: secasn1.h,v 1.1.1.1.2.1 2003-07-14 19:07:34 ghudson Exp $
  */
 
 #ifndef _SECASN1_H_
@@ -98,7 +98,7 @@ extern SECStatus SEC_QuickDERDecodeItem(PRArenaPool* arena, void* dest,
 ** Encoding.
 */
 
-extern SEC_ASN1EncoderContext *SEC_ASN1EncoderStart(void *src,
+extern SEC_ASN1EncoderContext *SEC_ASN1EncoderStart(const void *src,
 						    const SEC_ASN1Template *t,
 						    SEC_ASN1WriteProc fn,
 						    void *output_arg);
@@ -128,12 +128,12 @@ extern void SEC_ASN1EncoderSetTakeFromBuf(SEC_ASN1EncoderContext *cx);
 
 extern void SEC_ASN1EncoderClearTakeFromBuf(SEC_ASN1EncoderContext *cx);
 
-extern SECStatus SEC_ASN1Encode(void *src, const SEC_ASN1Template *t,
+extern SECStatus SEC_ASN1Encode(const void *src, const SEC_ASN1Template *t,
 				SEC_ASN1WriteProc output_proc,
 				void *output_arg);
 
 extern SECItem * SEC_ASN1EncodeItem(PRArenaPool *pool, SECItem *dest,
-				    void *src, const SEC_ASN1Template *t);
+				    const void *src, const SEC_ASN1Template *t);
 
 extern SECItem * SEC_ASN1EncodeInteger(PRArenaPool *pool,
 				       SECItem *dest, long value);

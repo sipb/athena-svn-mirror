@@ -44,7 +44,7 @@ pref("editor.active_link_color",            "#000088");
 pref("editor.followed_link_color",          "#FF0000");
 pref("editor.background_color",             "#FFFFFF");
 pref("editor.use_background_image",         false);
-pref("editor.background_image",             "");
+pref("editor.default_background_image",     "");
 pref("editor.use_custom_default_colors", 1);
 
 pref("editor.hrule.height",                 2);
@@ -60,6 +60,32 @@ pref("editor.prettyprint", true);
 pref("editor.htmlWrapColumn", 72);
 
 pref("editor.throbber.url","chrome://editor-region/locale/region.properties");
+
+pref("editor.toolbars.showbutton.new", true);
+pref("editor.toolbars.showbutton.open", true);
+pref("editor.toolbars.showbutton.save", true);
+pref("editor.toolbars.showbutton.publish", true);
+pref("editor.toolbars.showbutton.preview", true);
+pref("editor.toolbars.showbutton.cut", false);
+pref("editor.toolbars.showbutton.copy", false);
+pref("editor.toolbars.showbutton.paste", false);
+pref("editor.toolbars.showbutton.print", true);
+pref("editor.toolbars.showbutton.find", false);
+pref("editor.toolbars.showbutton.image", true);
+pref("editor.toolbars.showbutton.hline", false);
+pref("editor.toolbars.showbutton.table", true);
+pref("editor.toolbars.showbutton.link", true);
+pref("editor.toolbars.showbutton.namedAnchor", false);
+
+pref("editor.toolbars.showbutton.bold", true);
+pref("editor.toolbars.showbutton.italic", true);
+pref("editor.toolbars.showbutton.underline", true);
+pref("editor.toolbars.showbutton.DecreaseFontSize", true);
+pref("editor.toolbars.showbutton.IncreaseFontSize", true);
+pref("editor.toolbars.showbutton.ul", true);
+pref("editor.toolbars.showbutton.ol", true);
+pref("editor.toolbars.showbutton.outdent", true);
+pref("editor.toolbars.showbutton.indent", true);
 
 pref("editor.auto_save",                    false);
 pref("editor.auto_save_delay",              10);    // minutes
@@ -81,3 +107,19 @@ pref("editor.use_css",                       true);
 pref("editor.css.default_length_unit",       "px");
 pref("editor.save_associated_files",         true);
 pref("editor.always_show_publish_dialog",    false);
+
+/*
+ * What are the entities that you want Mozilla to save using mnemonic
+ * names rather than numeric codes? E.g. If set, we'll output &nbsp;
+ * otherwise, we may output 0xa0 depending on the charset.
+ *
+ * "none"   : don't use any entity names; only use numeric codes.
+ * "basic"  : use entity names just for &nbsp; &amp; &lt; &gt; &quot; for 
+ *            interoperability/exchange with products that don't support more
+ *            than that.
+ * "latin1" : use entity names for 8bit accented letters and other special
+ *            symbols between 128 and 255.
+ * "html"   : use entity names for 8bit accented letters, greek letters, and
+ *            other special markup symbols as defined in HTML4.
+ */
+//pref("editor.encode_entity",                 "html");

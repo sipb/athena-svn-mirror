@@ -27,11 +27,19 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= msgbaseutil
+
+ifndef MOZ_STATIC_MAIL_BUILD
 LIBRARY_NAME	= msgbaseutil
-META_COMPONENT = mail
 EXPORT_LIBRARY = 1
 SHORT_LIBNAME	= msgbsutl
+else
+LIBRARY_NAME	= msgbsutl_s
+endif
+
+META_COMPONENT = mail
+
 REQUIRES	= xpcom \
+		  xpcom_obsolete \
 		  string \
 		  msgbase \
 		  rdf \
@@ -44,8 +52,9 @@ REQUIRES	= xpcom \
 		  pref \
 		  rdfutil \
 		  mime \
+		  caps \
 		  msgcompose \
-      addrbook \
+          addrbook \
 		  docshell \
 		  webshell \
 		  uriloader \
@@ -80,6 +89,7 @@ CPPSRCS		= \
 		nsMsgTxn.cpp \
 		nsMsgI18N.cpp \
 		nsMsgUtf7Utils.cpp \
+		nsAdapterEnumerator.cpp \
 		$(NULL)
 
 EXPORTS		= \
@@ -101,14 +111,26 @@ EXPORTS		= \
 		nsMsgTxn.h \
 		nsMsgI18N.h \
 		nsMsgUtf7Utils.h \
+		nsAdapterEnumerator.h \
 		$(NULL)
+
+ifndef MOZ_STATIC_MAIL_BUILD
 
 EXTRA_DSO_LDOPTS = \
 	$(LIBS_DIR) \
 	$(DIST)/lib/$(LIB_PREFIX)rdfutil_s.$(LIB_SUFFIX) \
 	$(MOZ_UNICHARUTIL_LIBS) \
 	$(MOZ_COMPONENT_LIBS) \
+	$(MOZ_XPCOM_OBSOLETE_LIBS) \
 	$(NULL)
+
+else
+
+# we don't want the shared lib, but we want to force the creation of a static lib.
+FORCE_STATIC_LIB = 1
+
+endif
+
 
 DEFINES		+= -D_IMPL_NS_MSG_BASE
 

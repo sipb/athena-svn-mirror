@@ -40,32 +40,39 @@
 #include "txAtoms.h"
 #include "primitives.h"
 #include <math.h>
-#include "Names.h"
+#include "Expr.h"
+#include "ExprResult.h"
+#include "txXSLTPatterns.h"
+#include "txIXPathContext.h"
 
-nsresult txXSLTNumber::createNumber(Element* aNumberElement,
-                                    ProcessorState* aPs,
-                                    String& aResult)
+nsresult txXSLTNumber::createNumber(Expr* aValueExpr, txPattern* aCountPattern,
+                                    txPattern* aFromPattern, LevelType aLevel,
+                                    Expr* aGroupSize, Expr* aGroupSeparator,
+                                    Expr* aFormat, txIEvalContext* aContext,
+                                    nsAString& aResult)
 {
-    aResult.clear();
+    aResult.Truncate();
     nsresult rv = NS_OK;
 
     // Parse format
     txList counters;
-    String head, tail;
-    rv = getCounters(aNumberElement, aPs, counters, head, tail);
+    nsAutoString head, tail;
+    rv = getCounters(aGroupSize, aGroupSeparator, aFormat, aContext, counters,
+                     head, tail);
     NS_ENSURE_SUCCESS(rv, rv);
     
     // Create list of values to format
     txList values;
-    String valueString;
-    rv = getValueList(aNumberElement, aPs, values, valueString);
+    nsAutoString valueString;
+    rv = getValueList(aValueExpr, aCountPattern, aFromPattern, aLevel,
+                      aContext, values, valueString);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    if (valueString.length()) {
+    if (!valueString.IsEmpty()) {
         // XXX Xalan and XSLT2 says this, but XSLT1 says otherwise
         aResult = head;
-        aResult.append(valueString);
-        aResult.append(tail);
+        aResult.Append(valueString);
+        aResult.Append(tail);
         return NS_OK;
     }
 
@@ -83,14 +90,14 @@ nsresult txXSLTNumber::createNumber(Element* aNumberElement,
         }
 
         if (!first) {
-            aResult.append(counter->mSeparator);
+            aResult.Append(counter->mSeparator);
         }
 
         counter->appendNumber(value, aResult);
         first = MB_FALSE;
     }
     
-    aResult.append(tail);
+    aResult.Append(tail);
     
     txListIterator iter(&counters);
     while (iter.hasNext()) {
@@ -100,23 +107,18 @@ nsresult txXSLTNumber::createNumber(Element* aNumberElement,
     return NS_OK;
 }
 
-nsresult txXSLTNumber::getValueList(Element* aNumberElement,
-                                    ProcessorState* aPs, txList& aValues,
-                                    String& aValueString)
+nsresult
+txXSLTNumber::getValueList(Expr* aValueExpr, txPattern* aCountPattern,
+                           txPattern* aFromPattern, LevelType aLevel,
+                           txIEvalContext* aContext, txList& aValues,
+                           nsAString& aValueString)
 {
-    aValueString.clear();
+    aValueString.Truncate();
     
     // If the value attribute exists then use that
-    if (aNumberElement->hasAttr(txXSLTAtoms::value, kNameSpaceID_None)) {
-        Expr* expr = aPs->getExpr(aNumberElement, ProcessorState::ValueAttr);
-        NS_ENSURE_TRUE(expr, NS_ERROR_FAILURE);
-
-        ExprResult* result = expr->evaluate(aPs->getEvalContext());
-        if (!result) {
-            // XXX error reporting, evaluate failed
-            delete expr;
-            return NS_ERROR_FAILURE;
-        }
+    if (aValueExpr) {
+        ExprResult* result = aValueExpr->evaluate(aContext);
+        NS_ENSURE_TRUE(result, NS_ERROR_FAILURE);
 
         double value = result->numberValue();
         delete result;
@@ -134,29 +136,23 @@ nsresult txXSLTNumber::getValueList(Element* aNumberElement,
 
     // Otherwise use count/from/level
 
-    txPattern *countPattern = 0, *fromPattern = 0;
+    txPattern* countPattern = aCountPattern;
     MBool ownsCountPattern = MB_FALSE;
-    Node* currNode = aPs->getEvalContext()->getContextNode();
+    Node* currNode = aContext->getContextNode();
 
     // Parse count- and from-attributes
 
-    if (aNumberElement->hasAttr(txXSLTAtoms::count, kNameSpaceID_None)) {
-        countPattern = aPs->getPattern(aNumberElement,
-                                       ProcessorState::CountAttr);
-        NS_ENSURE_TRUE(countPattern, NS_ERROR_FAILURE);
-    }
-    else {
+    if (!aCountPattern) {
         ownsCountPattern = MB_TRUE;
         txNodeTest* nodeTest = 0;
         switch (currNode->getNodeType()) {
             case Node::ELEMENT_NODE:
             {
-                txAtom* localName = 0;
-                currNode->getLocalName(&localName);
+                nsCOMPtr<nsIAtom> localName;
+                currNode->getLocalName(getter_AddRefs(localName));
                 nodeTest = new txNameTest(0, localName,
                                           currNode->getNamespaceID(),
                                           Node::ELEMENT_NODE);
-                TX_IF_RELEASE_ATOM(localName);
                 break;
             }
             case Node::TEXT_NODE:
@@ -169,8 +165,11 @@ nsresult txXSLTNumber::getValueList(Element* aNumberElement,
             {
                 txNodeTypeTest* typeTest;
                 typeTest = new txNodeTypeTest(txNodeTypeTest::PI_TYPE);
-                if (typeTest)
-                    typeTest->setNodeName(currNode->getNodeName());
+                if (typeTest) {
+                    nsAutoString nodeName;
+                    currNode->getNodeName(nodeName);
+                    typeTest->setNodeName(nodeName);
+                }
                 nodeTest = typeTest;
                 break;
             }
@@ -200,39 +199,21 @@ nsresult txXSLTNumber::getValueList(Element* aNumberElement,
         }
     }
 
-    if (aNumberElement->hasAttr(txXSLTAtoms::from, kNameSpaceID_None)) {
-        fromPattern = aPs->getPattern(aNumberElement,
-                                      ProcessorState::FromAttr);
-        if (!fromPattern) {
-            // XXX error reporting, parse failed
-            if (ownsCountPattern) {
-                delete countPattern;
-            }
-            return NS_ERROR_FAILURE;
-        }
-    }
-
 
     // Generate list of values depending on the value of the level-attribute
 
-    String levelStr;
-    txAtom* level = 0;
-    if (aNumberElement->getAttr(txXSLTAtoms::level, kNameSpaceID_None, levelStr)) {
-        level = TX_GET_ATOM(levelStr);
-    }
-
     // level = "single"
-    if (!level || level == txXSLTAtoms::single) {
+    if (aLevel == eLevelSingle) {
         Node* node = currNode;
         while (node) {
-            if (fromPattern && node != currNode &&
-                fromPattern->matches(node, aPs)) {
+            if (aFromPattern && node != currNode &&
+                aFromPattern->matches(node, aContext)) {
                 break;
             }
 
-            if (countPattern->matches(node, aPs)) {
+            if (countPattern->matches(node, aContext)) {
                 aValues.add(NS_INT32_TO_PTR(getSiblingCount(node, countPattern,
-                                                            aPs)));
+                                                            aContext)));
                 break;
             }
 
@@ -242,10 +223,10 @@ nsresult txXSLTNumber::getValueList(Element* aNumberElement,
         // Spec says to only match ancestors that are decendants of the
         // ancestor that matches the from-pattern, so keep going to make
         // sure that there is an ancestor that does.
-        if (fromPattern && aValues.getLength()) {
+        if (aFromPattern && aValues.getLength()) {
             node = node->getXPathParent();
             while (node) {
-                if (fromPattern->matches(node, aPs)) {
+                if (aFromPattern->matches(node, aContext)) {
                     break;
                 }
 
@@ -258,21 +239,21 @@ nsresult txXSLTNumber::getValueList(Element* aNumberElement,
         }
     }
     // level = "multiple"
-    else if (level == txXSLTAtoms::multiple) {
+    else if (aLevel == eLevelMultiple) {
         // find all ancestor-or-selfs that matches count until...
         Node* node = currNode;
         MBool matchedFrom = MB_FALSE;
         while (node) {
-            if (fromPattern && node != currNode &&
-                fromPattern->matches(node, aPs)) {
+            if (aFromPattern && node != currNode &&
+                aFromPattern->matches(node, aContext)) {
                 //... we find one that matches from
                 matchedFrom = MB_TRUE;
                 break;
             }
 
-            if (countPattern->matches(node, aPs)) {
+            if (countPattern->matches(node, aContext)) {
                 aValues.add(NS_INT32_TO_PTR(getSiblingCount(node, countPattern,
-                                                            aPs)));
+                                                            aContext)));
             }
 
             node = node->getXPathParent();
@@ -281,23 +262,23 @@ nsresult txXSLTNumber::getValueList(Element* aNumberElement,
         // Spec says to only match ancestors that are decendants of the
         // ancestor that matches the from-pattern, so if none did then
         // we shouldn't search anything
-        if (fromPattern && !matchedFrom) {
+        if (aFromPattern && !matchedFrom) {
             aValues.clear();
         }
     }
     // level = "any"
-    else if (level == txXSLTAtoms::any) {
+    else if (aLevel == eLevelAny) {
         Node* node = currNode;
         PRInt32 value = 0;
         MBool matchedFrom = MB_FALSE;
         while (node) {
-            if (fromPattern && node != currNode &&
-                fromPattern->matches(node, aPs)) {
+            if (aFromPattern && node != currNode &&
+                aFromPattern->matches(node, aContext)) {
                 matchedFrom = MB_TRUE;
                 break;
             }
 
-            if (countPattern->matches(node, aPs)) {
+            if (countPattern->matches(node, aContext)) {
                 ++value;
             }
 
@@ -307,7 +288,7 @@ nsresult txXSLTNumber::getValueList(Element* aNumberElement,
         // Spec says to only count nodes that follows the first node that
         // matches the from pattern. So so if none did then we shouldn't
         // count any
-        if (fromPattern && !matchedFrom) {
+        if (aFromPattern && !matchedFrom) {
             value = 0;
         }
 
@@ -315,70 +296,76 @@ nsresult txXSLTNumber::getValueList(Element* aNumberElement,
             aValues.add(NS_INT32_TO_PTR(value));
         }
     }
-    else {
-        aPs->receiveError(String("unknown value for format attribute"),
-                          NS_ERROR_FAILURE);
-    }
 
     if (ownsCountPattern) {
         delete countPattern;
     }
-    TX_IF_RELEASE_ATOM(level);
     
     return NS_OK;
 }
 
 
 nsresult
-txXSLTNumber::getCounters(Element* aNumberElement, ProcessorState* aPs,
-                          txList& aCounters, String& aHead, String& aTail)
+txXSLTNumber::getCounters(Expr* aGroupSize, Expr* aGroupSeparator,
+                          Expr* aFormat, txIEvalContext* aContext,
+                          txList& aCounters, nsAString& aHead,
+                          nsAString& aTail)
 {
-    aHead.clear();
-    aTail.clear();
+    aHead.Truncate();
+    aTail.Truncate();
     
     nsresult rv = NS_OK;
 
-    String groupSizeStrAVT, groupSeparatorAVT, groupSizeStr, groupSeparator;
+    nsAutoString groupSeparator;
     PRInt32 groupSize = 0;
-    if (aNumberElement->getAttr(txXSLTAtoms::groupingSeparator,
-                                kNameSpaceID_None, groupSeparatorAVT) &&
-        aNumberElement->getAttr(txXSLTAtoms::groupingSize,
-                                kNameSpaceID_None, groupSizeStrAVT)) {
-        aPs->processAttrValueTemplate(groupSeparatorAVT, aNumberElement,
-                                      groupSeparator);
-        aPs->processAttrValueTemplate(groupSizeStrAVT, aNumberElement,
-                                      groupSizeStr);
-        double size = Double::toDouble(groupSizeStr);
+    if (aGroupSize && aGroupSeparator) {
+        ExprResult* sizeRes = aGroupSize->evaluate(aContext);
+        NS_ENSURE_TRUE(sizeRes, NS_ERROR_FAILURE);
+        
+        nsAutoString sizeStr;
+        sizeRes->stringValue(sizeStr);
+        delete sizeRes;
+
+        double size = Double::toDouble(sizeStr);
         groupSize = (PRInt32)size;
         if ((double)groupSize != size) {
             groupSize = 0;
         }
+        
+        ExprResult* sepRes = aGroupSeparator->evaluate(aContext);
+        NS_ENSURE_TRUE(sepRes, NS_ERROR_FAILURE);
+        
+        sepRes->stringValue(groupSeparator);
+        delete sepRes;
     }
 
-    String formatAVT, format;
-    if (aNumberElement->getAttr(txXSLTAtoms::format, kNameSpaceID_None,
-                                formatAVT)) {
-        aPs->processAttrValueTemplate(formatAVT, aNumberElement, format);
+    nsAutoString format;
+    if (aFormat) {
+        ExprResult* formatRes = aFormat->evaluate(aContext);
+        NS_ENSURE_TRUE(formatRes, NS_ERROR_FAILURE);
+        
+        formatRes->stringValue(format);
+        delete formatRes;
     }
-    PRUint32 formatLen = format.length();
+    PRUint32 formatLen = format.Length();
     PRUint32 formatPos = 0;
-    UNICODE_CHAR ch = 0;
+    PRUnichar ch = 0;
     
     // start with header
     while (formatPos < formatLen &&
-           !isAlphaNumeric(ch = format.charAt(formatPos))) {
-        aHead.append(ch);
+           !isAlphaNumeric(ch = format.CharAt(formatPos))) {
+        aHead.Append(ch);
         ++formatPos;
     }
     
     // If there are no formatting tokens we need to create a default one.
     if (formatPos == formatLen) {
         txFormattedCounter* defaultCounter;
-        rv = txFormattedCounter::getCounterFor(String("1"), groupSize,
+        rv = txFormattedCounter::getCounterFor(NS_LITERAL_STRING("1"), groupSize,
                                                groupSeparator, defaultCounter);
         NS_ENSURE_SUCCESS(rv, rv);
         
-        defaultCounter->mSeparator = String(".");
+        defaultCounter->mSeparator = NS_LITERAL_STRING(".");
         rv = aCounters.add(defaultCounter);
         if (NS_FAILED(rv)) {
             // XXX ErrorReport: out of memory
@@ -390,19 +377,19 @@ txXSLTNumber::getCounters(Element* aNumberElement, ProcessorState* aPs,
     }
 
     while (formatPos < formatLen) {
-        String sepToken;
+        nsAutoString sepToken;
         // parse separator token
         if (!aCounters.getLength()) {
             // Set the first counters separator to default value so that if
             // there is only one formatting token and we're formatting a
             // value-list longer then one we use the default separator. This
             // won't be used when formatting the first value anyway.
-            sepToken = String(".");
+            sepToken = NS_LITERAL_STRING(".");
         }
         else {
             while (formatPos < formatLen &&
-                   !isAlphaNumeric(ch = format.charAt(formatPos))) {
-                sepToken.append(ch);
+                   !isAlphaNumeric(ch = format.CharAt(formatPos))) {
+                sepToken.Append(ch);
                 ++formatPos;
             }
         }
@@ -414,10 +401,10 @@ txXSLTNumber::getCounters(Element* aNumberElement, ProcessorState* aPs,
         }
 
         // parse formatting token
-        String numToken;
+        nsAutoString numToken;
         while (formatPos < formatLen &&
-               isAlphaNumeric(ch = format.charAt(formatPos))) {
-            numToken.append(ch);
+               isAlphaNumeric(ch = format.CharAt(formatPos))) {
+            numToken.Append(ch);
             ++formatPos;
         }
         
@@ -488,7 +475,7 @@ txXSLTNumber::getPrevInDocumentOrder(Node* aNode)
 #define TX_MATCH_CHAR(ch, a) if (ch < a) return MB_FALSE; \
     if (ch == a) return MB_TRUE
 
-MBool txXSLTNumber::isAlphaNumeric(UNICODE_CHAR ch)
+MBool txXSLTNumber::isAlphaNumeric(PRUnichar ch)
 {
     TX_CHAR_RANGE(ch, 0x0030, 0x0039);
     TX_CHAR_RANGE(ch, 0x0041, 0x005A);

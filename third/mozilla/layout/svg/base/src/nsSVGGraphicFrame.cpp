@@ -92,10 +92,9 @@ NS_IMETHODIMP
 nsSVGGraphicFrame::Init(nsIPresContext*  aPresContext,
                      nsIContent*      aContent,
                      nsIFrame*        aParent,
-                     nsIStyleContext* aContext,
+                     nsStyleContext*  aContext,
                      nsIFrame*        aPrevInFlow)
 {
-  nsresult rv;
 //  rv = nsSVGGraphicFrameBase::Init(aPresContext, aContent, aParent,
 //                                aContext, aPrevInFlow);
 
@@ -105,9 +104,9 @@ nsSVGGraphicFrame::Init(nsIPresContext*  aPresContext,
 
   Init();
   
-  rv = SetStyleContext(aPresContext, aContext);
+  SetStyleContext(aPresContext, aContext);
     
-  return rv;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -271,7 +270,7 @@ void nsSVGGraphicFrame::GetCTM(nsIDOMSVGMatrix** ctm)
 
 const nsStyleSVG* nsSVGGraphicFrame::GetStyle()
 {
-  return (const nsStyleSVG*) mStyleContext->GetStyleData(eStyleStruct_SVG);
+  return GetStyleSVG();
 }
 
 

@@ -52,13 +52,14 @@
 #
 # For branches, uncomment the MOZ_CO_TAG line with the proper tag,
 # and commit this file on that tag.
-MOZ_CO_TAG = MOZILLA_1_2_1_RELEASE
-NSPR_CO_TAG = MOZILLA_1_2_1_RELEASE
-PSM_CO_TAG = MOZILLA_1_2_1_RELEASE
-NSS_CO_TAG = MOZILLA_1_2_1_RELEASE
-LDAPCSDK_CO_TAG = MOZILLA_1_2_1_RELEASE
-ACCESSIBLE_CO_TAG = MOZILLA_1_2_1_RELEASE
-IMGLIB2_CO_TAG = MOZILLA_1_2_1_RELEASE
+MOZ_CO_TAG = MOZILLA_1_4_RELEASE
+NSPR_CO_TAG = MOZILLA_1_4_RELEASE
+PSM_CO_TAG = MOZILLA_1_4_RELEASE
+NSS_CO_TAG = MOZILLA_1_4_RELEASE
+LDAPCSDK_CO_TAG = MOZILLA_1_4_RELEASE
+ACCESSIBLE_CO_TAG = MOZILLA_1_4_RELEASE
+IMGLIB2_CO_TAG = MOZILLA_1_4_RELEASE
+IPC_CO_TAG = MOZILLA_1_4_RELEASE
 BUILD_MODULES = all
 
 #######################################################################
@@ -281,19 +282,52 @@ endif
 CVSCO_IMGLIB2 = $(CVS) $(CVS_FLAGS) co $(IMGLIB2_CO_FLAGS) $(CVS_CO_DATE_FLAGS) $(IMGLIB2_CO_MODULE)
 
 ####################################
+# CVS defines for ipc module
+#
+IPC_CO_MODULE = mozilla/ipc/ipcd
+IPC_CO_FLAGS := -P
+ifdef MOZ_CO_FLAGS
+  IPC_CO_FLAGS := $(MOZ_CO_FLAGS)
+endif
+ifdef IPC_CO_TAG
+  IPC_CO_FLAGS := $(IPC_CO_FLAGS) -r $(IPC_CO_TAG)
+endif
+CVSCO_IPC = $(CVS) $(CVS_FLAGS) co $(IPC_CO_FLAGS) $(CVS_CO_DATE_FLAGS) $(IPC_CO_MODULE)
+
+####################################
+# CVS defines for Calendar 
+#
+CVSCO_CALENDAR := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/calendar mozilla/other-licenses/libical
+
+####################################
+# CVS defines for SeaMonkey
+#
+ifeq ($(MOZ_CO_MODULE),)
+  MOZ_CO_MODULE := SeaMonkeyAll
+endif
+CVSCO_SEAMONKEY := $(CVSCO) $(CVS_CO_DATE_FLAGS) $(MOZ_CO_MODULE)
+
+####################################
 # CVS defines for standalone modules
 #
-ifneq ($(BUILD_MODULES),all)
-  MOZ_CO_MODULE := $(filter-out $(NSPRPUB_DIR) security directory/c-sdk, $(BUILD_MODULE_CVS))
-  MOZ_CO_MODULE += allmakefiles.sh client.mk aclocal.m4 configure configure.in
-  MOZ_CO_MODULE += Makefile.in
-  MOZ_CO_MODULE := $(addprefix mozilla/, $(MOZ_CO_MODULE))
+ifeq ($(BUILD_MODULES),all)
+  CHECKOUT_STANDALONE := true
+  CHECKOUT_STANDALONE_NOSUBDIRS := true
+else
+  STANDALONE_CO_MODULE := $(filter-out $(NSPRPUB_DIR) security directory/c-sdk, $(BUILD_MODULE_CVS))
+  STANDALONE_CO_MODULE += allmakefiles.sh client.mk aclocal.m4 configure configure.in
+  STANDALONE_CO_MODULE += Makefile.in
+  STANDALONE_CO_MODULE := $(addprefix mozilla/, $(STANDALONE_CO_MODULE))
+  CHECKOUT_STANDALONE := cvs_co $(CVSCO) $(CVS_CO_DATE_FLAGS) $(STANDALONE_CO_MODULE)
 
   NOSUBDIRS_MODULE := $(addprefix mozilla/, $(BUILD_MODULE_CVS_NS))
 ifneq ($(NOSUBDIRS_MODULE),)
-  CVSCO_NOSUBDIRS := $(CVSCO) -l $(CVS_CO_DATE_FLAGS) $(NOSUBDIRS_MODULE)
+  CHECKOUT_STANDALONE_NOSUBDIRS := cvs_co $(CVSCO) -l $(CVS_CO_DATE_FLAGS) $(NOSUBDIRS_MODULE)
+else
+  CHECKOUT_STANDALONE_NOSUBDIRS := true
 endif
 
+CVSCO_SEAMONKEY :=
 ifeq (,$(filter $(NSPRPUB_DIR), $(BUILD_MODULE_CVS)))
   CVSCO_NSPR :=
 endif
@@ -310,15 +344,13 @@ endif
 ifeq (,$(filter modules/libpr0n, $(BUILD_MODULE_CVS)))
   CVSCO_IMGLIB2 :=
 endif
+ifeq (,$(filter ipc, $(BUILD_MODULE_CVS)))
+  CVSCO_IPC :=
 endif
-
-####################################
-# CVS defines for SeaMonkey
-#
-ifeq ($(MOZ_CO_MODULE),)
-  MOZ_CO_MODULE := SeaMonkeyAll
+ifeq (,$(filter calendar other-licenses/libical, $(BUILD_MODULE_CVS)))
+  CVSCO_CALENDAR :=
 endif
-CVSCO_SEAMONKEY := $(CVSCO) $(CVS_CO_DATE_FLAGS) $(MOZ_CO_MODULE)
+endif
 
 ####################################
 # CVS defined for libart (pulled and built if MOZ_INTERNAL_LIBART_LGPL is set)
@@ -334,29 +366,44 @@ FASTUPDATE_LIBART := true
 endif
 
 ####################################
-# CVS defines for Calendar (pulled and built if MOZ_CALENDAR is set)
-#
-CVSCO_CALENDAR := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/calendar
-
-ifdef MOZ_CALENDAR
-FASTUPDATE_CALENDAR := fast_update $(CVSCO_CALENDAR)
-CHECKOUT_CALENDAR := cvs_co $(CVSCO_CALENDAR)
-else
-CHECKOUT_CALENDAR := true
-FASTUPDATE_CALENDAR := true
-endif
-
-####################################
 # CVS defines for Phoenix (pulled and built if MOZ_PHOENIX is set)
 #
-CVSCO_PHOENIX := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/toolkit mozilla/browser
+CVSCO_PHOENIX := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/browser
 
 ifdef MOZ_PHOENIX
 FASTUPDATE_PHOENIX := fast_update $(CVSCO_PHOENIX)
 CHECKOUT_PHOENIX := cvs_co $(CVSCO_PHOENIX)
+MOZ_XUL_APP = 1
 else
 CHECKOUT_PHOENIX := true
 FASTUPDATE_PHOENIX := true
+endif
+
+####################################
+# CVS defines for Thunderbird (pulled and built if MOZ_THUNDERBIRD is set)
+#
+
+CVSCO_THUNDERBIRD := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/mail
+ifdef MOZ_THUNDERBIRD
+FASTUPDATE_THUNDERBIRD := fast_update $(CVSCO_THUNDERBIRD)
+CHECKOUT_THUNDERBIRD := cvs_co $(CVSCO_THUNDERBIRD)
+MOZ_XUL_APP = 1
+else
+FASTUPDATE_THUNDERBIRD := true
+CHECKOUT_THUNDERBIRD := true
+endif
+
+####################################
+# CVS defines for mozilla/toolkit (pulled and built if MOZ_XUL_APP is set)
+#
+
+CVSCO_MOZTOOLKIT := $(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/toolkit
+ifdef MOZ_XUL_APP
+FASTUPDATE_MOZTOOLKIT := fast_update $(CVSCO_MOZTOOLKIT)
+CHECKOUT_MOZTOOLKIT := cvs_co $(CVSCO_MOZTOOLKIT)
+else
+FASTUPDATE_MOZTOOLKIT := true
+CHECKOUT_MOZTOOLKIT := true
 endif
 
 ####################################
@@ -429,19 +476,27 @@ real_checkout:
 	cvs_co() { echo "$$@" ; \
 	  ("$$@" || touch $$failed) 2>&1 | tee -a $(CVSCO_LOGFILE) && \
 	  if test -f $$failed; then false; else true; fi; }; \
+	$(CHECKOUT_STANDALONE) && \
+	$(CHECKOUT_STANDALONE_NOSUBDIRS) && \
 	cvs_co $(CVSCO_NSPR) && \
 	cvs_co $(CVSCO_NSS) && \
 	cvs_co $(CVSCO_PSM) && \
-        cvs_co $(CVSCO_LDAPCSDK) && \
-        cvs_co $(CVSCO_ACCESSIBLE) && \
-        cvs_co $(CVSCO_IMGLIB2) && \
-	$(CHECKOUT_CALENDAR) && \
+	cvs_co $(CVSCO_LDAPCSDK) && \
+	cvs_co $(CVSCO_ACCESSIBLE) && \
+	cvs_co $(CVSCO_IMGLIB2) && \
+	cvs_co $(CVSCO_IPC) && \
+	cvs_co $(CVSCO_CALENDAR) && \
 	$(CHECKOUT_LIBART) && \
+	$(CHECKOUT_MOZTOOLKIT) && \
 	$(CHECKOUT_PHOENIX) && \
+	$(CHECKOUT_THUNDERBIRD) && \
 	$(CHECKOUT_CODESIGHS) && \
-	cvs_co $(CVSCO_SEAMONKEY) && \
-	cvs_co $(CVSCO_NOSUBDIRS)
+	cvs_co $(CVSCO_SEAMONKEY)
 	@echo "checkout finish: "`date` | tee -a $(CVSCO_LOGFILE)
+# update the NSS checkout timestamp
+	@if test `egrep -c '^(U|C) mozilla/security/(nss|coreconf)' $(CVSCO_LOGFILE) 2>/dev/null` != 0; then \
+		touch $(TOPSRCDIR)/security/manager/.nss.checkout; \
+	fi
 #	@: Check the log for conflicts. ;
 	@conflicts=`egrep "^C " $(CVSCO_LOGFILE)` ;\
 	if test "$$conflicts" ; then \
@@ -496,13 +551,18 @@ real_fast-update:
 	fast_update $(CVSCO_LDAPCSDK) && \
 	fast_update $(CVSCO_ACCESSIBLE) && \
 	fast_update $(CVSCO_IMGLIB2) && \
-	$(FASTUPDATE_CALENDAR) && \
+	fast_update $(CVSCO_CALENDAR) && \
 	$(FASTUPDATE_LIBART) && \
+	$(FASTUPDATE_MOZTOOLKIT) && \
 	$(FASTUPDATE_PHOENIX) && \
+	$(FASTUPDATE_THUNDERBIRD) && \
 	$(FASTUPDATE_CODESIGHS) && \
-	fast_update $(CVSCO_SEAMONKEY) && \
-	fast_update $(CVSCO_NOSUBDIRS)
+	fast_update $(CVSCO_SEAMONKEY)
 	@echo "fast_update finish: "`date` | tee -a $(CVSCO_LOGFILE)
+# update the NSS checkout timestamp
+	@if test `egrep -c '^(U|C) mozilla/security/(nss|coreconf)' $(CVSCO_LOGFILE) 2>/dev/null` != 0; then \
+		touch $(TOPSRCDIR)/security/manager/.nss.checkout; \
+	fi
 #	@: Check the log for conflicts. ;
 	@conflicts=`egrep "^C " $(CVSCO_LOGFILE)` ;\
 	if test "$$conflicts" ; then \

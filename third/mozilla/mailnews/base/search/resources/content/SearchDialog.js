@@ -37,8 +37,7 @@ var nsMsgSearchScope = Components.interfaces.nsMsgSearchScope;
 var gFolderDatasource;
 var gFolderPicker;
 var gStatusBar = null;
-var gStatusFeedback = new nsMsgStatusFeedback;
-var gNumOfSearchHits = 0;
+var gStatusFeedback = new nsMsgStatusFeedback();
 var RDF;
 var gSearchBundle;
 var gNextMessageViewIndexAfterDelete = -2;
@@ -58,6 +57,8 @@ var nsSearchResultsController =
     supportsCommand: function(command)
     {
         switch(command) {
+        case "cmd_delete":
+        case "cmd_shiftDelete":
         case "button_delete":
         case "cmd_open":
         case "file_message_button":
@@ -80,6 +81,13 @@ var nsSearchResultsController =
             if (GetNumSelectedMessages() != 1)
               enabled = false;
             break;
+          case "cmd_delete":
+          case "cmd_shiftDelete":
+          case "button_delete":
+            // this assumes that advanced searches don't cross accounts
+            if (GetNumSelectedMessages() <= 0 || isNewsURI(gSearchView.getURIForViewIndex(0)))
+              enabled = false;
+            break;
           default:
             if (GetNumSelectedMessages() <= 0)
               enabled = false;
@@ -96,8 +104,12 @@ var nsSearchResultsController =
             MsgOpenSelectedMessages();
             return true;
 
+        case "cmd_delete":
         case "button_delete":
-            MsgDeleteSelectedMessages();
+            MsgDeleteSelectedMessages(nsMsgViewCommandType.deleteMsg);
+            return true;
+        case "cmd_shiftDelete":
+            MsgDeleteSelectedMessages(nsMsgViewCommandType.deleteNoTrash);
             return true;
 
         case "goto_folder_button":
@@ -115,42 +127,52 @@ var nsSearchResultsController =
     }
 }
 
+function UpdateMailSearch(caller)
+{
+  //dump("XXX update mail-search " + caller + "\n");
+  document.commandDispatcher.updateCommands('mail-search');
+}
+
+function SetAdvancedSearchStatusText(aNumHits)
+{
+  var statusMsg;
+  // if there are no hits, it means no matches were found in the search.
+  if (aNumHits == 0)
+    statusMsg = gSearchBundle.getString("searchFailureMessage");
+  else 
+  {
+    if (aNumHits == 1) 
+      statusMsg = gSearchBundle.getString("searchSuccessMessage");
+    else
+      statusMsg = gSearchBundle.getFormattedString("searchSuccessMessages", [aNumHits]);
+  }
+
+  gStatusFeedback.showStatusString(statusMsg);
+}
+
 // nsIMsgSearchNotify object
 var gSearchNotificationListener =
 {
     onSearchHit: function(header, folder)
     {
-        gNumOfSearchHits++;
+        // XXX TODO
+        // update status text?
     },
 
     onSearchDone: function(status)
     {
         gSearchStopButton.setAttribute("label", gSearchBundle.getString("labelForSearchButton"));
-
-        var statusMsg;
-        // if there are no hits, it means no matches were found in the search.
-        if (gNumOfSearchHits == 0) {
-            statusMsg = gSearchBundle.getString("searchFailureMessage");
-        }
-        else 
-        {
-            if (gNumOfSearchHits == 1) 
-                statusMsg = gSearchBundle.getString("searchSuccessMessage");
-            else
-                statusMsg = gSearchBundle.getFormattedString("searchSuccessMessages", [gNumOfSearchHits]);
-
-            gNumOfSearchHits = 0;
-        }
-
+        gSearchStopButton.setAttribute("accesskey", gSearchBundle.getString("accesskeyForSearchButton"));
+        SetAdvancedSearchStatusText(gSearchView.QueryInterface(Components.interfaces.nsITreeView).rowCount);
         gStatusFeedback.showProgress(0);
-        gStatusFeedback.showStatusString(statusMsg);
         gStatusBar.setAttribute("mode","normal");
     },
 
     onNewSearch: function()
     {
       gSearchStopButton.setAttribute("label", gSearchBundle.getString("labelForStopButton"));
-      document.commandDispatcher.updateCommands('mail-search');
+      gSearchStopButton.setAttribute("accesskey", gSearchBundle.getString("accesskeyForStopButton"));
+      UpdateMailSearch("new-search");	
       gStatusFeedback.showProgress(0);
       gStatusFeedback.showStatusString(gSearchBundle.getString("searchingMessage"));
       gStatusBar.setAttribute("mode","undetermined");
@@ -173,15 +195,14 @@ var gFolderListener = {
     OnItemPropertyFlagChanged: function(item, property, oldFlag, newFlag) {},
 
     OnItemEvent: function(folder, event) {
-        var eventType = event.GetUnicode();
-
+        var eventType = event.toString();
+        
         if (eventType == "DeleteOrMoveMsgCompleted") {
             HandleDeleteOrMoveMessageCompleted(folder);
         }     
         else if (eventType == "DeleteOrMoveMsgFailed") {
             HandleDeleteOrMoveMessageFailed(folder);
         }
-
     }
 }
 
@@ -217,8 +238,8 @@ function searchOnLoad()
       selectFolder(window.arguments[0].folder);
 
   onMore(null);
-  document.commandDispatcher.updateCommands('mail-search');
-
+  UpdateMailSearch("onload");
+  
   // hide and remove these columns from the column picker.  you can't thread search results
   HideSearchColumn("threadCol"); // since you can't thread search results
   HideSearchColumn("totalCol"); // since you can't thread search results
@@ -227,6 +248,7 @@ function searchOnLoad()
   HideSearchColumn("statusCol");
   HideSearchColumn("sizeCol");
   HideSearchColumn("flaggedCol");
+  HideSearchColumn("idCol");
   
   // we want to show the location column for search
   ShowSearchColumn("locationCol");
@@ -298,7 +320,9 @@ function getFirstItemByTag(root, tag)
 function selectFolder(folder) 
 {
     var folderURI;
-    if (!folder) {
+
+    // if we can't search messages on this folder, just select the first one
+    if (!folder || !folder.server.canSearchMessages) {
         // walk folders to find first item
         var firstItem = getFirstItemByTag(gFolderPicker, "menu");
         folderURI = firstItem.id;
@@ -450,6 +474,11 @@ nsMsgSearchCommandUpdater.prototype =
   {
   },
 
+  updateNextMessageAfterDelete : function()
+  {
+    SetNextMessageAfterDelete();
+  },
+
   QueryInterface : function(iid)
   {
     if (iid.equals(Components.interfaces.nsIMsgDBViewCommandUpdater) ||
@@ -533,7 +562,7 @@ function GetDBView()
     return gSearchView;
 }
 
-function MsgDeleteSelectedMessages()
+function MsgDeleteSelectedMessages(aCommandType)
 {
     // we don't delete news messages, we just return in that case
     if (isNewsURI(gSearchView.getURIForViewIndex(0))) 
@@ -541,54 +570,114 @@ function MsgDeleteSelectedMessages()
 
     // if mail messages delete
     SetNextMessageAfterDelete();
-    gSearchView.doCommand(nsMsgViewCommandType.deleteMsg);
+    gSearchView.doCommand(aCommandType);
 }
 
 function SetNextMessageAfterDelete()
 {
-    gNextMessageViewIndexAfterDelete = gSearchView.msgToSelectAfterDelete;
+  gNextMessageViewIndexAfterDelete = gSearchView.msgToSelectAfterDelete;
 }
 
 function HandleDeleteOrMoveMessageFailed(folder)
 {
-    gNextMessageViewIndexAfterDelete = nsMsgViewIndex_None;
+  gNextMessageViewIndexAfterDelete = -2;
 }
-
 
 function HandleDeleteOrMoveMessageCompleted(folder)
 {
-        var treeView = gSearchView.QueryInterface(Components.interfaces.nsITreeView);
-        var treeSelection = treeView.selection;
-        viewSize = treeView.rowCount;
+  var treeView = gSearchView.QueryInterface(Components.interfaces.nsITreeView);
+  var treeSelection = treeView.selection;
+  var viewSize = treeView.rowCount;
 
-        if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None && gNextMessageViewIndexAfterDelete >= viewSize)
-        {
-            if (viewSize > 0)
-                gNextMessageViewIndexAfterDelete = viewSize - 1;
-            else
-            {
-                gNextMessageViewIndexAfterDelete = nsMsgViewIndex_None;
-                //clear the selection
-                treeSelection.clearSelection();
-            }
-        }
+  if (gNextMessageViewIndexAfterDelete == -2) {
+    // a move or delete can cause our selection can change underneath us.
+    // this can happen when the user
+    // deletes message from the stand alone msg window
+    // or the three pane
+    if (!treeSelection) {
+      // this can happen if you open the search window
+      // and before you do any searches
+      // and you do delete from another mail window
+      return;
+    }
+    else if (treeSelection.count == 0) {
+      // this can happen if you double clicked a message
+      // in the thread pane, and deleted it from the stand alone msg window
+      // see bug #185147
+      treeSelection.clearSelection();
 
-        // if we are about to set the selection with a new element then DON'T clear
-        // the selection then add the next message to select. This just generates
-        // an extra round of command updating notifications that we are trying to
-        // optimize away.
-        if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None) {
-            treeSelection.select(gNextMessageViewIndexAfterDelete);
-            // since gNextMessageViewIndexAfterDelete probably has the same value
-            // as the last index we had selected, the tree isn't generating a new
-            // selectionChanged notification for the tree view. So we aren't loading the 
-            // next message. to fix this, force the selection changed update.
-            if (treeView)
-                treeView.selectionChanged();
+      UpdateMailSearch("delete from another view, 0 rows now selected");
+    }
+    else if (treeSelection.count == 1) {
+      // this can happen if you had two messages selected
+      // in the search results pane, and you deleted one of them from another view
+      // (like the view in the stand alone msg window or the three pane)
+      // since one item is selected, we should load it.
+      var startIndex = {};
+      var endIndex = {};
+      treeSelection.getRangeAt(0, startIndex, endIndex);
+        
+      // select the selected item, so we'll load it
+      treeSelection.select(startIndex.value); 
+      treeView.selectionChanged();
 
-            EnsureRowInThreadTreeIsVisible(gNextMessageViewIndexAfterDelete); 
-        }
+      EnsureRowInThreadTreeIsVisible(startIndex.value); 
+      UpdateMailSearch("delete from another view, 1 row now selected");
+    }
+    else {
+      // this can happen if you have more than 2 messages selected
+      // in the search results pane, and you deleted one of them from another view
+      // (like the view in the stand alone msg window or the three pane)
+      // since multiple messages are still selected, do nothing.
+    }
+  }
+  else {
+    if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None && gNextMessageViewIndexAfterDelete >= viewSize) 
+    {
+      if (viewSize > 0)
+        gNextMessageViewIndexAfterDelete = viewSize - 1;
+      else
+      {           
+        gNextMessageViewIndexAfterDelete = nsMsgViewIndex_None;
 
+        // there is nothing to select since viewSize is 0
+        treeSelection.clearSelection();
+
+        UpdateMailSearch("delete from current view, 0 rows left");
+      }
+    }
+
+    // if we are about to set the selection with a new element then DON'T clear
+    // the selection then add the next message to select. This just generates
+    // an extra round of command updating notifications that we are trying to
+    // optimize away.
+    if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None) 
+    {
+      treeSelection.select(gNextMessageViewIndexAfterDelete);
+      // since gNextMessageViewIndexAfterDelete probably has the same value
+      // as the last index we had selected, the tree isn't generating a new
+      // selectionChanged notification for the tree view. So we aren't loading the 
+      // next message. to fix this, force the selection changed update.
+      if (treeView)
+        treeView.selectionChanged();
+
+      EnsureRowInThreadTreeIsVisible(gNextMessageViewIndexAfterDelete); 
+
+      // XXX TODO
+      // I think there is a bug in the suppression code above.
+      // what if I have two rows selected, and I hit delete, 
+      // and so we load the next row.
+      // what if I have commands that only enable where 
+      // exactly one row is selected?
+      UpdateMailSearch("delete from current view, at least one row selected");
+    }
+  }
+
+  // default value after delete/move/copy is over
+  gNextMessageViewIndexAfterDelete = -2;
+
+  // something might have been deleted, so update the status text
+  SetAdvancedSearchStatusText(viewSize);
 }
 
 function MoveMessageInSearch(destFolder)

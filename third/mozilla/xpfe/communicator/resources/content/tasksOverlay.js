@@ -84,6 +84,11 @@ function toJavaConsole()
     jvmMgr.showJavaConsole();
 }
 
+function toOpenWindow( aWindow )
+{
+  aWindow.document.commandDispatcher.focusedWindow.focus();
+}
+
 function toOpenWindowByType( inType, uri )
 {
 	var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
@@ -93,7 +98,7 @@ function toOpenWindowByType( inType, uri )
 	var topWindow = windowManagerInterface.getMostRecentWindow( inType );
 	
 	if ( topWindow )
-		topWindow.focus();
+		toOpenWindow(topWindow);
 	else
 		window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
 }
@@ -105,9 +110,14 @@ function OpenBrowserWindow()
   var handler = Components.classes['@mozilla.org/commandlinehandler/general-startup;1?type=browser'];
   handler = handler.getService();
   handler = handler.QueryInterface(Components.interfaces.nsICmdLineHandler);
-  var startpage = handler.defaultArgs;
   var url = handler.chromeUrlForTask;
-  var wintype = document.firstChild.getAttribute('windowtype');
+  var wintype = document.documentElement.getAttribute('windowtype');
+  var windowMediator = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+  var browserWin = windowMediator.getMostRecentWindow("navigator:browser");
+ 
+  // if a browser window already exists then set startpage to null so
+  // navigator.js can check pref for how new window should be opened
+  var startpage = browserWin ? null : handler.defaultArgs;
 
   // if and only if the current window is a browser window and it has a document with a character
   // set, then extract the current charset menu setting from the current document and use it to
@@ -138,7 +148,7 @@ function CycleWindow( aType )
     return null;
 
   if ( topWindowOfType != topWindow ) {
-    topWindowOfType.focus();
+    toOpenWindow(topWindowOfType);
     return topWindowOfType;
   }
 
@@ -150,14 +160,14 @@ function CycleWindow( aType )
 
   if (enumerator.hasMoreElements()) {
     iWindow = enumerator.getNext().QueryInterface(nsIDOMWindowInternal);
-    iWindow.focus();
+    toOpenWindow(iWindow);
     return iWindow;
   }
 
   if (firstWindow == topWindow) // Only one window
     return null;
 
-  firstWindow.focus();
+  toOpenWindow(firstWindow);
   return firstWindow;
 }
 
@@ -170,7 +180,7 @@ function ShowWindowFromResource( node )
 	desiredWindow = windowManagerDS.getWindowForResource( url );
 	if ( desiredWindow )
 	{
-		desiredWindow.focus();
+		toOpenWindow(desiredWindow);
 	}
 }
 
@@ -204,4 +214,22 @@ function checkFocusedWindow()
   }
 }
 
+function toProfileManager()
+{
+  var ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+             .getService(Components.interfaces.nsIWindowWatcher);
+  var params = Components.classes["@mozilla.org/embedcomp/dialogparam;1"]
+                 .createInstance(Components.interfaces.nsIDialogParamBlock);
+  
+  params.SetNumberStrings(1);
+  params.SetString(0, "menu");
+  ww.openWindow(null, // no parent
+                "chrome://communicator/content/profile/profileSelection.xul",
+                null,
+                "centerscreen,chrome,modal,titlebar",
+                params);
+  
+  // Here, we don't care about the result code
+  // that was returned in the param block.
+}
 

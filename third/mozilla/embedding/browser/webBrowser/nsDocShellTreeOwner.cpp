@@ -68,7 +68,6 @@
 #include "nsIPrompt.h"
 #include "nsRect.h"
 #include "nsIWebBrowserChromeFocus.h"
-#include "nsIDragDropOverride.h"
 #include "nsIContent.h"
 #include "imgIContainer.h"
 #include "nsContextMenuInfo.h"
@@ -119,7 +118,6 @@ nsDocShellTreeOwner::nsDocShellTreeOwner() :
    mChromeTooltipListener(nsnull),
    mChromeContextMenuListener(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsDocShellTreeOwner::~nsDocShellTreeOwner()
@@ -633,6 +631,20 @@ NS_IMETHODIMP nsDocShellTreeOwner::SetEnabled(PRBool aEnabled)
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
+NS_IMETHODIMP
+nsDocShellTreeOwner::GetBlurSuppression(PRBool *aBlurSuppression)
+{
+  NS_ENSURE_ARG_POINTER(aBlurSuppression);
+  *aBlurSuppression = PR_FALSE;
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsDocShellTreeOwner::SetBlurSuppression(PRBool aBlurSuppression)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 NS_IMETHODIMP nsDocShellTreeOwner::GetMainWidget(nsIWidget** aMainWidget)
 {
     return NS_ERROR_NULL_POINTER;
@@ -830,11 +842,8 @@ nsDocShellTreeOwner :: AddChromeListeners ( )
     if ( mChromeDragHandler ) {
       nsCOMPtr<nsIDOMEventReceiver> rcvr;
       GetEventReceiver(mWebBrowser, getter_AddRefs(rcvr));
-      nsCOMPtr<nsIOverrideDragSource> srcOverride ( do_QueryInterface(mWebBrowserChrome) );
-      nsCOMPtr<nsIOverrideDropSite> siteOverride ( do_QueryInterface(mWebBrowserChrome) );
       nsCOMPtr<nsIDOMEventTarget> rcvrTarget(do_QueryInterface(rcvr));
-      mChromeDragHandler->HookupTo(rcvrTarget, NS_STATIC_CAST(nsIWebNavigation*, mWebBrowser),
-                                    srcOverride, siteOverride);
+      mChromeDragHandler->HookupTo(rcvrTarget, NS_STATIC_CAST(nsIWebNavigation*, mWebBrowser));
     }
   }
 
@@ -886,8 +895,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(DefaultTooltipTextProvider, nsITooltipTextProvider
 
 DefaultTooltipTextProvider::DefaultTooltipTextProvider()
 {
-    NS_INIT_ISUPPORTS();
-    
     // There are certain element types which we don't want to use
     // as tool tip text. 
     mTag_dialog       = getter_AddRefs(NS_NewAtom("dialog"));
@@ -966,8 +973,6 @@ ChromeTooltipListener :: ChromeTooltipListener ( nsWebBrowser* inBrowser, nsIWeb
      mMouseClientX(0), mMouseClientY(0),
      mShowingTooltip(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
-
   mTooltipTextProvider = do_GetService(NS_TOOLTIPTEXTPROVIDER_CONTRACTID);
   if (!mTooltipTextProvider) {
     nsISupports *pProvider = (nsISupports *) new DefaultTooltipTextProvider;
@@ -1387,7 +1392,6 @@ ChromeContextMenuListener :: ChromeContextMenuListener ( nsWebBrowser* inBrowser
     mWebBrowser(inBrowser),
     mWebBrowserChrome(inChrome)
 {
-  NS_INIT_ISUPPORTS();
 } // ctor
 
 
@@ -1572,18 +1576,18 @@ ChromeContextMenuListener :: ContextMenu ( nsIDOMEvent* aMouseEvent )
       }
       else if (tag.Equals(NS_LITERAL_STRING("html"), nsCaseInsensitiveStringComparator()))
       {
-        // first check if this is a background image that the user was trying to click on
-        // and if the listener is ready for that (only nsIContextMenuListener2 and up)
-        if (menuInfoImpl && menuInfoImpl->HasBackgroundImage(node)) {
-          flags2 |= nsIContextMenuListener2::CONTEXT_BACKGROUND_IMAGE;
-          targetDOMnode = node;
-        }
-
         if (!flags && !flags2) { 
         // only care about this if no other context was found.
             flags |= nsIContextMenuListener::CONTEXT_DOCUMENT;
             flags2 |= nsIContextMenuListener2::CONTEXT_DOCUMENT;
             targetDOMnode = node;
+        }
+        if (!(flags & nsIContextMenuListener::CONTEXT_IMAGE)) {
+          // first check if this is a background image that the user was trying to click on
+          // and if the listener is ready for that (only nsIContextMenuListener2 and up)
+          if (menuInfoImpl && menuInfoImpl->HasBackgroundImage(node)) {
+            flags2 |= nsIContextMenuListener2::CONTEXT_BACKGROUND_IMAGE;
+          }
         }
         break; // exit do-while
       }

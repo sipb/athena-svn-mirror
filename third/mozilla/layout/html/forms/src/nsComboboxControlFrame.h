@@ -110,7 +110,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
               nsIContent*      aContent,
               nsIFrame*        aParent,
-              nsIStyleContext* aContext,
+              nsStyleContext*  aContext,
               nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD Reflow(nsIPresContext*          aCX,
@@ -145,7 +145,7 @@ public:
      // nsIFormControlFrame
   NS_IMETHOD SetSuggestedSize(nscoord aWidth, nscoord aHeight);
   NS_IMETHOD GetName(nsAString* aName);
-  NS_IMETHOD GetType(PRInt32* aType) const;
+  NS_IMETHOD_(PRInt32) GetType() const;
   NS_IMETHOD SetProperty(nsIPresContext* aPresContext, nsIAtom* aName, const nsAString& aValue);
   NS_IMETHOD GetProperty(nsIAtom* aName, nsAString& aValue); 
   void       SetFocus(PRBool aOn, PRBool aRepaint);
@@ -212,7 +212,7 @@ public:
     { mFrameConstructor = aConstructor; return NS_OK;} // not owner - do not addref!
 
   // nsIScrollableViewProvider
-  NS_IMETHOD GetScrollableView(nsIScrollableView** aView);
+  NS_IMETHOD GetScrollableView(nsIPresContext* aPresContext, nsIScrollableView** aView);
 
   //nsIStatefulFrame
   NS_IMETHOD SaveState(nsIPresContext* aPresContext, nsIPresState** aState);
@@ -279,8 +279,9 @@ protected:
 
   // Resize Reflow Optimization
   nsSize                mCacheSize;
-  nsSize                mCachedMaxElementSize;
   nsSize                mCachedAvailableSize;
+  nscoord               mCachedMaxElementWidth;
+  nscoord               mCachedAscent;
 
   nsSize                mCachedUncDropdownSize;
   nsSize                mCachedUncComboSize;

@@ -50,11 +50,11 @@
 #include "nsClipboard.h"
 #include "nsHTMLFormatConverter.h"
 #include "nsDragService.h"
-#include "nsScrollbar.h"
 #include "nsSound.h"
 #ifdef IBMBIDI
 #include "nsBidiKeyboard.h"
 #endif
+#include "nsFilePicker.h"
 
 #include <prlog.h>
 struct PRLogModuleInfo  *PhWidLog =  nsnull;
@@ -70,67 +70,10 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsClipboard)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLFormatConverter)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragService)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSound)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsFilePicker)
 #ifdef IBMBIDI
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBidiKeyboard)
 #endif
-
-static nsresult nsHorizScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-  
-  inst = (nsISupports *)(nsBaseWidget *)(nsWidget *)new nsScrollbar(PR_FALSE);
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
-
-static nsresult nsVertScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-  
-  inst = (nsISupports *)(nsBaseWidget *)(nsWidget *)new nsScrollbar(PR_TRUE);
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
 
 static nsModuleComponentInfo components[] =
 {
@@ -142,14 +85,6 @@ static nsModuleComponentInfo components[] =
     NS_CHILD_CID,
     "@mozilla.org/widgets/child_window/ph;1",
     ChildWindowConstructor },
-  { "Ph Horiz Scrollbar",
-    NS_HORZSCROLLBAR_CID,
-    "@mozilla.org/widgets/horizscroll/ph;1",
-    nsHorizScrollbarConstructor },
-  { "Ph Vert Scrollbar",
-    NS_VERTSCROLLBAR_CID,
-    "@mozilla.org/widgets/vertscroll/ph;1",
-    nsVertScrollbarConstructor },
   { "Ph AppShell",
     NS_APPSHELL_CID,
     "@mozilla.org/widget/appshell/ph;1",
@@ -188,6 +123,10 @@ static nsModuleComponentInfo components[] =
     "@mozilla.org/widget/bidikeyboard;1",
     nsBidiKeyboardConstructor },
 #endif // IBMBIDI
+  { "Photon File Picker",
+    NS_FILEPICKER_CID,
+    "@mozilla.org/filepicker;1",
+    nsFilePickerConstructor },
 };
 
 PR_STATIC_CALLBACK(void)

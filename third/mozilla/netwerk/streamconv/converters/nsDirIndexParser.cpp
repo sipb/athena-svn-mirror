@@ -59,7 +59,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS3(nsDirIndexParser,
                               nsIDirIndexParser)
 
 nsDirIndexParser::nsDirIndexParser() {
-  NS_INIT_ISUPPORTS();
 }
 
 nsresult
@@ -291,7 +290,7 @@ nsDirIndexParser::ParseData(nsIDirIndex *aIdx, char* aDataStr) {
         PRUnichar   *result = nsnull;
         if (NS_SUCCEEDED(rv = gTextToSubURI->UnEscapeAndConvert(mEncoding.get(), filename.get(),
                                                                 &result)) && (result)) {
-          if (nsCRT::strlen(result) > 0) {
+          if (*result) {
             aIdx->SetLocation(filename.get());
             if (!mHasDescription)
               aIdx->SetDescription(result);

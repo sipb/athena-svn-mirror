@@ -55,8 +55,21 @@
         <xul:hbox class="tabbrowser-strip chromeclass-toolbar" collapsed="true" tooltip="_child" context="_child">
           <xul:tooltip onpopupshowing="event.preventBubble(); if (document.tooltipNode.hasAttribute('label')) { this.setAttribute('label', document.tooltipNode.getAttribute('label')); return true; } return false;"/>
           <xul:menupopup onpopupshowing="this.parentNode.parentNode.parentNode.updatePopupMenu(this);">
+            <xul:menuitem label="&closeTab.label;" accesskey="&closeTab.accesskey;"
+                          tbattr="tabbrowser-multiple"
+                          oncommand="var tabbrowser = this.parentNode.parentNode.parentNode.parentNode;
+                                     tabbrowser.removeTab(tabbrowser.mContextTab);"/>
+            <xul:menuitem label="&closeOtherTabs.label;" accesskey="&closeOtherTabs.accesskey;"
+                          tbattr="tabbrowser-multiple"
+                          oncommand="var tabbrowser = this.parentNode.parentNode.parentNode.parentNode;
+                                     tabbrowser.removeAllTabsBut(tabbrowser.mContextTab);"/>
+            <xul:menuseparator/>
             <xul:menuitem label="&newTab.label;" accesskey="&newTab.accesskey;"
                           xbl:inherits="oncommand=onnewtab"/>
+            <xul:menuseparator/>
+            <xul:menuitem label="&bookmarkGroup.label;" accesskey="&bookmarkGroup.accesskey;"
+                          tbattr="tabbrowser-multiple"
+                          xbl:inherits="oncommand=onbookmarkgroup"/>
             <xul:menuseparator/>
             <xul:menuitem label="&reloadTab.label;" accesskey="&reloadTab.accesskey;"
                           oncommand="var tabbrowser = this.parentNode.parentNode.parentNode.parentNode;
@@ -65,21 +78,12 @@
                           tbattr="tabbrowser-multiple"
                           oncommand="var tabbrowser = this.parentNode.parentNode.parentNode.parentNode;
                                      tabbrowser.reloadAllTabs(tabbrowser.mContextTab);"/>
-            <xul:menuseparator/>
-            <xul:menuitem label="&closeTab.label;" accesskey="&closeTab.accesskey;"
-                          tbattr="tabbrowser-multiple"
-                          oncommand="var tabbrowser = this.parentNode.parentNode.parentNode.parentNode;
-                                     tabbrowser.removeTab(tabbrowser.mContextTab);"/>
-            <xul:menuseparator/>
-            <xul:menuitem label="&closeOtherTabs.label;" accesskey="&closeOtherTabs.accesskey;"
-                          tbattr="tabbrowser-multiple"
-                          oncommand="var tabbrowser = this.parentNode.parentNode.parentNode.parentNode;
-                                     tabbrowser.removeAllTabsBut(tabbrowser.mContextTab);"/>
           </xul:menupopup>
 
           <xul:tabs class="tabbrowser-tabs" closebutton="true" flex="1"
                     tooltiptextnew="&newTabButton.tooltip;"
                     onclick="this.parentNode.parentNode.parentNode.onTabClick(event);"
+                    onmousedown="this.parentNode.parentNode.parentNode.updateContextTab(event);"
                     ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode);
                                 event.stopPropagation();"
                     ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode);
@@ -157,14 +161,15 @@
 
       <!-- A web progress listener object definition for a given tab. --> 
       <method name="mTabProgressListener">
-        <parameter name="aTabBrowser"/>
         <parameter name="aTab"/>
+        <parameter name="aBrowser"/>
         <parameter name="aStartsBlank"/>
         <body>
         <![CDATA[
           return ({
-            mTabBrowser: aTabBrowser,
+            mTabBrowser: this,
             mTab: aTab,
+            mBrowser: aBrowser,
             mBlank: aStartsBlank,
             mIcon: "", 
 
@@ -187,14 +192,21 @@
               if (!aRequest)
                 return;
       
-              //ignore local/resource:/chrome: files
-              if (aStatus == NS_NET_STATUS_READ_FROM || aStatus == NS_NET_STATUS_WROTE_TO)
-                return;
-
               var oldBlank = this.mBlank;
 
               const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
               const nsIChannel = Components.interfaces.nsIChannel;
+
+              // It's okay to clear what the user typed when we start
+              // loading a document. If the user types, this flag gets
+              // set to false, if the document load ends without an
+              // onLocationChange, this flag also gets set to false
+              // (so we keep it while switching tabs after failed load
+              if (aStateFlags & nsIWebProgressListener.STATE_START && 
+                  aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK &&
+                  aWebProgress.DOMWindow == this.mBrowser.contentWindow)
+                this.mBrowser.userTypedClear = true;
+
               if (!this.mBlank && aStateFlags & nsIWebProgressListener.STATE_START && 
                   aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
                 this.mTab.setAttribute("busy", "true"); 
@@ -207,6 +219,11 @@
               }
               else if (aStateFlags & nsIWebProgressListener.STATE_STOP &&
                        aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
+                // The document is done loading, it's okay to clear
+                // the value again.
+                if (aWebProgress.DOMWindow == this.mBrowser.contentWindow)
+                  this.mBrowser.userTypedClear = false;
+
                 if (this.mBlank)
                   this.mBlank = false;
                 
@@ -238,6 +255,10 @@
             ,
 
             onLocationChange : function(aWebProgress, aRequest, aLocation) {
+              // The document loaded correctly, clear the value if we should
+              if (this.mBrowser.userTypedClear)
+                this.mBrowser.userTypedValue = null;
+
               if (!this.mBlank && this.mTabBrowser.mCurrentTab == this.mTab) {
                 for (var i = 0; i < this.mTabBrowser.mProgressListeners.length; i++) {
                   var p = this.mTabBrowser.mProgressListeners[i];
@@ -248,8 +269,7 @@
             },
 
             onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage) {
-              //ignore local/resource:/chrome: files
-              if (this.mBlank || aStatus == NS_NET_STATUS_READ_FROM || aStatus == NS_NET_STATUS_WROTE_TO)
+              if (this.mBlank)
                 return;
               
               if (this.mTabBrowser.mCurrentTab == this.mTab) {
@@ -367,11 +387,22 @@
         </body>
       </method>
 
+     <method name="updateContextTab">
+       <parameter name="aEvent"/>
+       <body>
+         <![CDATA[
+            if (aEvent.originalTarget.localName == "tab")
+              this.mContextTab = aEvent.originalTarget;
+            else
+              this.mContextTab = document.popupNode;         
+         ]]>
+       </body>
+     </method>
+
       <method name="updatePopupMenu">
         <parameter name="aPopupMenu"/>
         <body>
           <![CDATA[
-            this.mContextTab = document.popupNode;
             var disabled = this.mPanelContainer.childNodes.length == 1;
             var menuItems = aPopupMenu.getElementsByAttribute("tbattr", "tabbrowser-multiple");
             for (var i = 0; i < menuItems.length; i++)
@@ -395,6 +426,11 @@
             var loc = this.mCurrentBrowser.currentURI;
             var webProgress = this.mCurrentBrowser.webProgress;
             var securityUI = this.mCurrentBrowser.securityUI;
+            // Remember the current clear state, then set it to false
+            // so we don't clear the userTypedValue when just switching
+            // tabs. Set it back to its old state after we're done.
+            var userTypedClear = this.mCurrentBrowser.userTypedClear;
+            this.mCurrentBrowser.userTypedClear = false;
             var i, p;
             for (i = 0; i < this.mProgressListeners.length; i++) {
               p = this.mProgressListeners[i];
@@ -407,6 +443,7 @@
                   p.onLinkIconAvailable(listener.mIcon);
               }
             }
+            this.mCurrentBrowser.userTypedClear = userTypedClear;
 
             // Update the window title.
             this.updateTitlebar();
@@ -590,16 +627,8 @@
         <![CDATA[
           this.mStrip.collapsed = !aShow;
           if (aShow) {
-            // XXXdwh temporary unclean dependency on specific menu items in navigator.xul
-            document.getElementById("menu_closeWindow").hidden = false;
-            document.getElementById("menu_close").setAttribute("label", this.mStringBundle.getString("tabs.closeTab"));
             if (!this.mTabbedMode)
               this.enterTabbedMode();
-          }
-          else {
-            // XXXdwh temporary unclean dependency on specific menu items in navigator.xul
-            document.getElementById("menu_closeWindow").hidden = true;
-            document.getElementById("menu_close").setAttribute("label", this.mStringBundle.getString("tabs.close"));
           }
         ]]>
         </body>
@@ -648,7 +677,9 @@
             }
 
             // Wire up a progress listener to our filter.
-            const listener = (this.mTabProgressListener)(this, this.mCurrentTab, false);
+            const listener = this.mTabProgressListener(this.mCurrentTab,
+                                                       this.mCurrentBrowser,
+                                                       false);
             filter.addProgressListener(listener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
             this.mTabListeners[0] = listener;
           ]]>
@@ -699,7 +730,7 @@
             
             // wire up a progress listener for the new browser object.
             var position = this.mTabContainer.childNodes.length-1;
-            var tabListener = (this.mTabProgressListener)(this, t, blank);
+            var tabListener = this.mTabProgressListener(t, b, blank);
             const filter = Components.classes["@mozilla.org/appshell/component/browser-status-filter;1"]
                                      .createInstance(Components.interfaces.nsIWebProgress);
             filter.addProgressListener(tabListener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
@@ -707,34 +738,33 @@
             this.mTabListeners[position] = tabListener;
             this.mTabFilters[position] = filter;
 
-            if (!blank)
-              b.loadURIWithFlags(aURI, nsIWebNavigation.LOAD_FLAGS_NONE,
-                                 aReferrerURI, null, null);
+            if (!blank) {
+              // pretend the user typed this so it'll be available till
+              // the document successfully loads
+              b.userTypedValue = aURI;
+
+              b.loadURI(aURI, aReferrerURI);
+            }
 
             return t;
           ]]>
         </body>
       </method>
-      
+
       <method name="removeAllTabsBut">
         <parameter name="aTab"/>
         <body>
           <![CDATA[
             if (aTab.localName != "tab")
               aTab = this.mCurrentTab;
-            
-            var l = this.mTabContainer.childNodes.length;
-            if (l == 1)
-              return;
+            else
+              this.mTabContainer.selectedItem = aTab;
 
-            for (var i = 0; i < l; i++) {
-              var tab = this.mTabContainer.childNodes[i];
-              if (tab != aTab) {
-                this.removeTab(tab);
-                i--;
-                l--;
-              }
-            }
+            while (this.mTabContainer.lastChild != aTab)
+              this.removeTab(this.mTabContainer.lastChild);
+
+            while (aTab.previousSibling)
+              this.removeTab(aTab.previousSibling);
           ]]>
         </body>
       </method>
@@ -970,18 +1000,18 @@
             
             var bgLoad = this.mPrefs.getBoolPref("browser.tabs.loadInBackground");
 
-            if (aEvent.target.localName == "tabs") {
+            var tab = null;
+            if (aEvent.originalTarget.localName != "tab") {
               // We're adding a new tab.
-              var tab = this.addTab(getShortcutOrURI(url));
-              if (!bgLoad)
-                this.selectedTab = tab;
+              tab = this.addTab(getShortcutOrURI(url));
             }
-            else if (aEvent.target.localName == "tab") {
+            else {
               // Load in an existing tab.
-              this.getBrowserForTab(aEvent.target).loadURI(getShortcutOrURI(url));
-              if (this.mCurrentTab != aEvent.target && !bgLoad)
-                this.selectedTab = aEvent.target;
+              tab = aEvent.originalTarget;
+              this.getBrowserForTab(tab).loadURI(getShortcutOrURI(url));
             }
+            if (this.mCurrentTab != tab  && !bgLoad)
+              this.selectedTab = tab;
           ]]>
         </body>
       </method>
@@ -1159,10 +1189,19 @@
                 onget="return this.mCurrentBrowser.securityUI;"
                 readonly="true"/>
 
+      <property name="userTypedClear"
+                onget="return this.mCurrentBrowser.userTypedClear;"
+                onset="return this.mCurrentBrowser.userTypedClear = val;"/>
+
+      <property name="userTypedValue"
+                onget="return this.mCurrentBrowser.userTypedValue;"
+                onset="return this.mCurrentBrowser.userTypedValue = val;"/>
+
       <constructor>
         <![CDATA[
         this.mCurrentBrowser = this.mPanelContainer.firstChild;
         this.mCurrentTab = this.mTabContainer.firstChild;
+        this.mTabBox.handleCtrlTab = !/Mac/.test(navigator.platform);
         ]]>
       </constructor>
 

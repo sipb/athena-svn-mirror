@@ -42,8 +42,8 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsILink.h"
+#include "nsIPresShell.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIEventStateManager.h"
@@ -104,9 +104,6 @@ public:
                      PRBool aNotify);
   NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                        PRBool aNotify);
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
 protected:
   // The cached visited state
@@ -213,7 +210,7 @@ nsHTMLAreaElement::StringToAttribute(nsIAtom* aAttribute,
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
   else if (aAttribute == nsHTMLAtoms::tabindex) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -357,16 +354,6 @@ nsHTMLAreaElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
 
   return nsGenericHTMLElement::UnsetAttr(aNameSpaceID, aAttribute, aNotify);
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLAreaElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
 
 NS_IMETHODIMP    
 nsHTMLAreaElement::GetProtocol(nsAString& aProtocol)

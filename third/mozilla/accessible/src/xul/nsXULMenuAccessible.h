@@ -40,21 +40,21 @@
 #ifndef _nsXULMenuAccessible_H_
 #define _nsXULMenuAccessible_H_
 
-#include "nsAccessible.h"
+#include "nsAccessibleWrap.h"
+#include "nsAccessibleTreeWalker.h"
 
 /* Accessible for supporting XUL menus
  */
 
-class nsXULMenuitemAccessible : public nsAccessible
+class nsXULMenuitemAccessible : public nsAccessibleWrap
 {
 public:
   nsXULMenuitemAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
   NS_IMETHOD GetAccName(nsAString& _retval); 
   NS_IMETHOD GetAccKeyboardShortcut(nsAString& _retval);
+  NS_IMETHOD GetAccKeybinding(nsAString& _retval);
   NS_IMETHOD GetAccState(PRUint32 *_retval); 
   NS_IMETHOD GetAccRole(PRUint32 *_retval); 
-  NS_IMETHOD GetAccFirstChild(nsIAccessible **aAccFirstChild);
-  NS_IMETHOD GetAccLastChild(nsIAccessible **aAccLastChild);
   NS_IMETHOD GetAccChildCount(PRInt32 *aAccChildCount);
   NS_IMETHOD AccDoAction(PRUint8 index);
   NS_IMETHOD GetAccActionName(PRUint8 index, nsAString& _retval);
@@ -73,7 +73,7 @@ public:
   NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
 };
 
-class nsXULMenupopupAccessible : public nsAccessible
+class nsXULMenupopupAccessible : public nsAccessibleWrap
 {
 public:
   nsXULMenupopupAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
@@ -82,7 +82,7 @@ public:
   NS_IMETHOD GetAccRole(PRUint32 *_retval); 
 };
 
-class nsXULMenubarAccessible : public nsAccessible
+class nsXULMenubarAccessible : public nsAccessibleWrap
 {
 public:
   nsXULMenubarAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);

@@ -40,10 +40,10 @@ interface nsIAccessible : nsISupports
   readonly attribute long accChildCount;
   attribute AString accName;
   readonly attribute AString accValue;
-  readonly attribute long accId;
 
   readonly attribute AString accDescription;
   readonly attribute AString accKeyboardShortcut;
+  readonly attribute AString accKeybinding;
 
   readonly attribute unsigned long accRole;
   readonly attribute unsigned long accState;
@@ -53,6 +53,7 @@ interface nsIAccessible : nsISupports
   readonly attribute nsIAccessible accFocused;
 
   nsIAccessible accGetAt(in long x, in long y);
+  nsIAccessible getChildAt(in long aChildIndex); // zero-based index
 
   nsIAccessible accNavigateRight();
   nsIAccessible accNavigateLeft();
@@ -76,8 +77,12 @@ interface nsIAccessible : nsISupports
 
   nsIDOMNode accGetDOMNode();
 
-  // Used by Accessible implementation to save data and speed up accessibility tree walking
-  [noscript] void CacheOptimizations(in nsIAccessible aParent, in PRInt32 aSiblingIndex, in nsIDOMNodeList aSiblingList);
+  [noscript] void setAccParent(in nsIAccessible aAccParent);
+  [noscript] void setAccFirstChild(in nsIAccessible aAccFirstChild);
+  [noscript] void setAccNextSibling(in nsIAccessible aAccNextSibling);
+  [noscript] void invalidateChildren();
+  [noscript] void fireToolkitEvent(in unsigned long aEvent, in nsIAccessible aTarget, in voidPtr aData);
+  [noscript] void getNativeInterface(out voidPtr aOutAccessible);
 
  // MSAA State flags - used for bitfield. More than 1 allowed.
   const unsigned long  STATE_UNAVAILABLE        = 0x00000001;  // Disabled, maps to opposite of Java ENABLED, Gnome/ATK SENSITIVE?
@@ -196,7 +201,7 @@ Important:
   enum { ROLE_MENUITEM = 34U };    // ATK_ROLE_MENU_ITEM
   enum { ROLE_TOOLTIP = 63U };     // ATK_ROLE_TOOL_TIP
   // The object represents a main window for a application
-  enum { ROLE_APPLICATION = 22U }; // ATK_ROLE_FRAME
+  enum { ROLE_APPLICATION = 73U }; // ATK_ROLE_APPLICATION
   // The object represents a document window, only for MDI windows
   enum { ROLE_DOCUMENT = 68U };    // ATK_ROLE_WINDOW
   enum { ROLE_PANE = 38U };        // ATK_ROLE_PANEL

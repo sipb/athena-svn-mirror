@@ -14,7 +14,7 @@
  *
  * The Original Code is Mozilla Communicator client code.
  *
- * The Initial Developer of the Original Code is 
+ * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
@@ -39,7 +39,6 @@
 #include "nsTextTransformer.h"
 #include "nsIContent.h"
 #include "nsIFrame.h"
-#include "nsIStyleContext.h"
 #include "nsITextContent.h"
 #include "nsStyleConsts.h"
 #include "nsILineBreaker.h"
@@ -49,7 +48,8 @@
 #include "nsUnicharUtils.h"
 #include "nsICaseConversion.h"
 #include "prenv.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #ifdef IBMBIDI
 #include "nsLayoutAtoms.h"
 #endif
@@ -110,20 +110,19 @@ static nsICaseConversion* gCaseConv =  nsnull;
 nsresult
 nsTextTransformer::Initialize()
 {
-  nsresult res = NS_OK;
-  
   // read in our global word selection prefs
   if ( !sWordSelectPrefInited ) {
-    nsCOMPtr<nsIPref> prefService ( do_GetService(NS_PREF_CONTRACTID) );
-    if ( prefService ) {
+    nsCOMPtr<nsIPrefBranch> prefBranch =
+        do_GetService( NS_PREFSERVICE_CONTRACTID );
+    if ( prefBranch ) {
       PRBool temp = PR_FALSE;
-      prefService->GetBoolPref("layout.word_select.stop_at_punctuation", &temp);
+      prefBranch->GetBoolPref("layout.word_select.stop_at_punctuation", &temp);
       sWordSelectStopAtPunctuation = temp;
     }
     sWordSelectPrefInited = PR_TRUE;
   }
-  
-  return res;
+
+  return NS_OK;
 }
 static nsresult EnsureCaseConv()
 {
@@ -204,23 +203,42 @@ nsresult
 nsTextTransformer::Init(nsIFrame* aFrame,
                         nsIContent* aContent,
                         PRInt32 aStartingOffset,
+                        PRBool aForceArabicShaping,
                         PRBool aLeaveAsAscii)
 {
-#ifdef IBMBIDI
+  /*
+   * If the document has Bidi content, check whether we need to do
+   * Arabic shaping.
+   *
+   *  Does the frame contains Arabic characters
+   *   (mCharType == eCharType_RightToLeftArabic)?
+   *  Are we rendering character by character (aForceArabicShaping ==
+   *   PR_TRUE)? If so, we always do our own Arabic shaping, even if
+   *   the platform has native shaping support. Otherwise, we only do
+   *   shaping if the platform has no shaping support.
+   *
+   *  We do numeric shaping in all Bidi documents.
+   */
   PRBool bidiEnabled;
 
   mPresContext->GetBidiEnabled(&bidiEnabled);
   if (bidiEnabled) {
-    PRBool isBidiSystem;
     aFrame->GetBidiProperty(mPresContext, nsLayoutAtoms::charType,
                             (void**)&mCharType, sizeof(mCharType));
-    mPresContext->GetIsBidiSystem(isBidiSystem);
-    if (mCharType == eCharType_RightToLeftArabic && !isBidiSystem) {
-      SetNeedsArabicShaping(PR_TRUE);
+    if (mCharType == eCharType_RightToLeftArabic) {
+      if (aForceArabicShaping) {
+        SetNeedsArabicShaping(PR_TRUE);
+      }
+      else {
+        PRBool isBidiSystem;
+        mPresContext->GetIsBidiSystem(isBidiSystem);
+        if (!isBidiSystem) {
+          SetNeedsArabicShaping(PR_TRUE);
+        }
+      }
     }
     SetNeedsNumericShaping(PR_TRUE);
   }
-#endif
 
   // Get the contents text content
   nsresult rv;
@@ -240,8 +258,7 @@ nsTextTransformer::Init(nsIFrame* aFrame,
     mOffset = aStartingOffset;
 
     // Get the frames text style information
-    const nsStyleText* styleText;
-    aFrame->GetStyleData(eStyleStruct_Text, (const nsStyleStruct*&) styleText);
+    const nsStyleText* styleText = aFrame->GetStyleText();
     if (NS_STYLE_WHITESPACE_PRE == styleText->mWhiteSpace) {
       mMode = ePreformatted;
     }
@@ -393,7 +410,8 @@ nsTextTransformer::ScanNormalAsciiText_F(PRInt32* aWordLen,
 
 PRInt32
 nsTextTransformer::ScanNormalAsciiText_F_ForWordBreak(PRInt32* aWordLen,
-                                         PRBool*  aWasTransformed)
+                                         PRBool*  aWasTransformed,
+                                         PRBool aIsKeyboardSelect)
 {
   const nsTextFragment* frag = mFrag;
   PRInt32 fragLen = frag->GetLength();
@@ -413,9 +431,13 @@ nsTextTransformer::ScanNormalAsciiText_F_ForWordBreak(PRInt32* aWordLen,
   }
   PRBool readingAlphaNumeric = PR_TRUE; //only used in sWordSelectStopAtPunctuation
 
-  //we must know if we are starting in alpha numerics.
+  // We must know if we are starting in alpha numerics.
+  // Treat high bit chars as alphanumeric, otherwise we get stuck on accented letters
+  // We can't trust isalnum() results for isalnum()
+  // Therefore we don't stop at non-ascii (high bit) punctuation,
+  // which is just fine. The punctuation we care about is low bit.
   if (sWordSelectStopAtPunctuation && offset < fragLen)
-    readingAlphaNumeric = isalnum((unsigned char)*cp);
+    readingAlphaNumeric = isalnum((unsigned char)*cp) || !IS_ASCII_CHAR(*cp);
   
   for (; offset < fragLen && !breakAfterThis; offset++) {
     unsigned char ch = *cp++;
@@ -430,8 +452,17 @@ nsTextTransformer::ScanNormalAsciiText_F_ForWordBreak(PRInt32* aWordLen,
     else if (XP_IS_SPACE(ch)) {
       break;
     }
-    else if (sWordSelectStopAtPunctuation && ((readingAlphaNumeric && !isalnum(ch)) || (!readingAlphaNumeric && isalnum(ch)) )) {
-      // on some platforms, punctuation breaks words too.
+    else if (sWordSelectStopAtPunctuation && 
+             readingAlphaNumeric && !isalnum(ch) && IS_ASCII_CHAR(ch)) {
+      if (!aIsKeyboardSelect)
+        break;
+      // For keyboard move-by-word, need to pass by at least
+      // one alphanumeric char before stopping at punct
+      readingAlphaNumeric = PR_FALSE;
+    }
+    else if (sWordSelectStopAtPunctuation && 
+            !readingAlphaNumeric && (isalnum(ch) || !IS_ASCII_CHAR(ch))) {
+      // On some platforms, punctuation breaks for word selection
       break;
     }
     else if (IS_DISCARDED(ch)) {
@@ -816,7 +847,8 @@ nsTextTransformer::GetNextWord(PRBool aInWord,
                                PRBool* aIsWhiteSpaceResult,
                                PRBool* aWasTransformed,
                                PRBool aResetTransformBuf,
-                               PRBool aForLineBreak)
+                               PRBool aForLineBreak,
+                               PRBool aIsKeyboardSelect)
 {
   const nsTextFragment* frag = mFrag;
   PRInt32 fragLen = frag->GetLength();
@@ -909,7 +941,9 @@ nsTextTransformer::GetNextWord(PRBool aInWord,
         }
         else {
           if (!aForLineBreak)
-            offset = ScanNormalAsciiText_F_ForWordBreak(&wordLen, aWasTransformed);
+            offset = ScanNormalAsciiText_F_ForWordBreak(&wordLen, 
+                                                        aWasTransformed, 
+                                                        aIsKeyboardSelect);
           else
             offset = ScanNormalAsciiText_F(&wordLen, aWasTransformed);
         }
@@ -950,7 +984,8 @@ nsTextTransformer::GetNextWord(PRBool aInWord,
         }
         else {
           if (!aForLineBreak)
-            offset = ScanNormalAsciiText_F_ForWordBreak(&wordLen, aWasTransformed);
+            offset = ScanNormalAsciiText_F_ForWordBreak(&wordLen, aWasTransformed, 
+                                                        aIsKeyboardSelect);
           else
             offset = ScanNormalAsciiText_F(&wordLen, aWasTransformed);
         }
@@ -1032,14 +1067,12 @@ nsTextTransformer::GetNextWord(PRBool aInWord,
             eLanguageSpecificTransformType_None) {
           LanguageSpecificTransform(result, wordLen, aWasTransformed);
         }
-#ifdef IBMBIDI
         if (NeedsArabicShaping()) {
           DoArabicShaping(result, wordLen, aWasTransformed);
         }
         if (NeedsNumericShaping()) {
           DoNumericShaping(result, wordLen, aWasTransformed);
         }
-#endif
       }
     }
 
@@ -1058,9 +1091,12 @@ nsTextTransformer::GetNextWord(PRBool aInWord,
   if ((mTextTransform != NS_STYLE_TEXT_TRANSFORM_NONE) ||
       (*aWordLenResult != *aContentLenResult)) {
     *aWasTransformed = PR_TRUE;
+    mBufferPos = prevBufferPos + *aWordLenResult;
   }
 
   mOffset = offset;
+
+  NS_ASSERTION(mBufferPos == prevBufferPos + *aWordLenResult, "internal error");
   return result;
 }
 
@@ -1090,12 +1126,19 @@ nsTextTransformer::ScanNormalWhiteSpace_B()
 
 // wordlen==*aWordLen, contentlen=newOffset-currentOffset, isWhitespace=f
 PRInt32
-nsTextTransformer::ScanNormalAsciiText_B(PRInt32* aWordLen)
+nsTextTransformer::ScanNormalAsciiText_B(PRInt32* aWordLen, PRBool aIsKeyboardSelect)
 {
   const nsTextFragment* frag = mFrag;
   PRInt32 offset = mOffset;
   PRUnichar* bp = mTransformBuf.GetBufferEnd();
   PRUnichar* startbp = mTransformBuf.GetBuffer();
+
+  PRUnichar ch = frag->CharAt(offset - 1);
+  // Treat high bit chars as alphanumeric, otherwise we get stuck on accented letters
+  // We can't trust isalnum() results for isalnum()
+  // Therefore we don't stop at non-ascii (high bit) punctuation,
+  // which is just fine. The punctuation we care about is low bit.
+  PRBool readingAlphaNumeric = isalnum(ch) || !IS_ASCII_CHAR(ch);
 
   while (--offset >= 0) {
     PRUnichar ch = frag->CharAt(offset);
@@ -1108,6 +1151,18 @@ nsTextTransformer::ScanNormalAsciiText_B(PRInt32* aWordLen)
     else if (IS_DISCARDED(ch)) {
       continue;
     } 
+    else if (sWordSelectStopAtPunctuation && readingAlphaNumeric && 
+             !isalnum(ch) && IS_ASCII_CHAR(ch)) {
+      // Break on ascii punctuation
+      break;
+    }
+    else if (sWordSelectStopAtPunctuation && !readingAlphaNumeric &&
+             (isalnum(ch) || !IS_ASCII_CHAR(ch))) {
+      if (!aIsKeyboardSelect)
+        break;
+      readingAlphaNumeric = PR_TRUE;
+    }
+    
     if (ch > MAX_UNIBYTE) SetHasMultibyte(PR_TRUE);
     if (bp == startbp) {
       PRInt32 oldLength = mTransformBuf.mBufferLen;
@@ -1296,7 +1351,8 @@ nsTextTransformer::GetPrevWord(PRBool aInWord,
                                PRInt32* aWordLenResult,
                                PRInt32* aContentLenResult,
                                PRBool* aIsWhiteSpaceResult,
-                               PRBool aForLineBreak)
+                               PRBool aForLineBreak,
+                               PRBool aIsKeyboardSelect)
 {
   const nsTextFragment* frag = mFrag;
   PRInt32 offset = mOffset;
@@ -1342,7 +1398,7 @@ nsTextTransformer::GetPrevWord(PRBool aInWord,
           offset = ScanNormalUnicodeText_B(aForLineBreak, &wordLen);
         }
         else {
-          offset = ScanNormalAsciiText_B(&wordLen);
+          offset = ScanNormalAsciiText_B(&wordLen, aIsKeyboardSelect);
         }
         break;
 
@@ -1377,7 +1433,7 @@ nsTextTransformer::GetPrevWord(PRBool aInWord,
           offset = ScanNormalUnicodeText_B(aForLineBreak, &wordLen);
         }
         else {
-          offset = ScanNormalAsciiText_B(&wordLen);
+          offset = ScanNormalAsciiText_B(&wordLen, aIsKeyboardSelect);
         }
         break;
     }
@@ -1415,7 +1471,6 @@ nsTextTransformer::GetPrevWord(PRBool aInWord,
   return result;
 }
 
-#ifdef IBMBIDI
 void
 nsTextTransformer::DoArabicShaping(PRUnichar* aText, 
                                    PRInt32& aTextLength, 
@@ -1434,19 +1489,10 @@ nsTextTransformer::DoArabicShaping(PRUnichar* aText,
   
   ArabicShaping(aText, buf.Length(), buffer, (PRUint32 *)&newLen, !isVisual, !isVisual);
 
-  PRUnichar *source = buffer;
-  PRUnichar *target = aText;
-  for (PRInt32 i = 0; i < newLen; i++) {
-    if (*source == CH_ZWNJ || *source == CH_ZWJ) {
-      source++;
-    }
-    else {
-      *target++ = *source++;
-    }
-  }
-
-  aTextLength = target - aText;
+  aTextLength = newLen;
   *aWasTransformed = PR_TRUE;
+
+  StripZeroWidthJoinControls(buffer, aText, aTextLength, aWasTransformed);
 }
 
 void
@@ -1496,11 +1542,34 @@ nsTextTransformer::DoNumericShaping(PRUnichar* aText,
         HandleNumbers(aText, aTextLength, IBMBIDI_NUMERAL_ARABIC);
       break;
 
+    case IBMBIDI_NUMERAL_NOMINAL:
     default:
       break;
   }
 }
-#endif
+
+void
+nsTextTransformer::StripZeroWidthJoinControls(PRUnichar* aSource,
+                                              PRUnichar* aTarget,
+                                              PRInt32& aTextLength, 
+                                              PRBool* aWasTransformed)
+{
+  PRUnichar *src, *dest;
+  PRInt32 stripped = 0;
+
+  src = aSource;
+  dest = aTarget;
+
+  for (PRInt32 i = 0; i < aTextLength; ++i) {
+    while (*src == CH_ZWNJ || *src == CH_ZWJ) {
+      ++stripped;
+      ++src;
+      *aWasTransformed = PR_TRUE;
+    }
+    *dest++ = *src++;
+  }
+  aTextLength -= stripped;
+}
 
 //----------------------------------------------------------------------
 // Self test logic for this class. This will (hopefully) make sure
@@ -1656,7 +1725,7 @@ nsTextTransformer::SelfTest(nsILineBreaker* aLineBreaker,
       if (gNoisy) {
         nsAutoString uc2(st->text);
         printf("%s forwards test: '", isAsciiTest ? "ascii" : "unicode");
-        fputs(NS_LossyConvertUCS2toASCII(uc2).get(), stdout);
+        fputs(NS_ConvertUCS2toUTF8(uc2).get(), stdout);
         printf("'\n");
       }
       tx.Init2(&frag, 0, preModeValue[preMode], NS_STYLE_TEXT_TRANSFORM_NONE);
@@ -1671,7 +1740,7 @@ nsTextTransformer::SelfTest(nsILineBreaker* aLineBreaker,
         if (gNoisy) {
           nsAutoString tmp(bp, wordLen);
           printf("  '");
-          fputs(NS_LossyConvertUCS2toASCII(tmp).get(), stdout);
+          fputs(NS_ConvertUCS2toUTF8(tmp).get(), stdout);
           printf("': ws=%s wordLen=%d (%d) contentLen=%d (offset=%d)\n",
                  ws ? "yes" : "no",
                  wordLen, *expectedResults, contentLen, tx.mOffset);
@@ -1695,7 +1764,7 @@ nsTextTransformer::SelfTest(nsILineBreaker* aLineBreaker,
       if (gNoisy) {
         nsAutoString uc2(st->text);
         printf("%s backwards test: '", isAsciiTest ? "ascii" : "unicode");
-        fputs(NS_LossyConvertUCS2toASCII(uc2).get(), stdout);
+        fputs(NS_ConvertUCS2toUTF8(uc2).get(), stdout);
         printf("'\n");
       }
       tx.Init2(&frag, frag.GetLength(), NS_STYLE_WHITESPACE_NORMAL,
@@ -1709,7 +1778,7 @@ nsTextTransformer::SelfTest(nsILineBreaker* aLineBreaker,
         if (gNoisy) {
           nsAutoString tmp(bp, wordLen);
           printf("  '");
-          fputs(NS_LossyConvertUCS2toASCII(tmp).get(), stdout);
+          fputs(NS_ConvertUCS2toUTF8(tmp).get(), stdout);
           printf("': ws=%s wordLen=%d contentLen=%d (offset=%d)\n",
                  ws ? "yes" : "no",
                  wordLen, contentLen, tx.mOffset);
@@ -1731,6 +1800,10 @@ nsTextTransformer::SelfTest(nsILineBreaker* aLineBreaker,
       if (error) {
         fprintf(stderr, "nsTextTransformer: self test %d failed\n", testNum);
       }
+      else if (gNoisy) {
+        fprintf(stdout, "nsTextTransformer: self test %d succeeded\n", testNum);
+      }
+
       testNum++;
     }
   }

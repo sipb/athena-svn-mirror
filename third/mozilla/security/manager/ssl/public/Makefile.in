@@ -34,14 +34,15 @@
 # GPL.
 # 
 
-MODULE = pipnss
-
 DEPTH           = ../../../..
 topsrcdir       = @top_srcdir@
 srcdir          = @srcdir@
 VPATH           = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
+
+MODULE = pipnss
+GRE_MODULE	= 1
 
 XPIDLSRCS = \
     nsIBadCertListener.idl \
@@ -58,7 +59,6 @@ XPIDLSRCS = \
     nsITokenDialogs.idl \
     nsITokenPasswordDialogs.idl \
     nsISSLStatus.idl \
-    nsICertTree.idl \
     nsIKeygenThread.idl \
     nsICMSSecureMessage.idl \
     nsIUserCertPicker.idl \
@@ -79,6 +79,11 @@ XPIDLSRCS = \
     nsIX509CertValidity.idl \
     nsICRLManager.idl \
     nsISMimeCert.idl \
+    nsICipherInfo.idl \
     $(NULL)
+
+ifdef MOZ_XUL
+XPIDLSRCS += nsICertTree.idl
+endif
 
 include $(topsrcdir)/config/rules.mk

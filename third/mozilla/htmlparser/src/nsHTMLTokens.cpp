@@ -236,21 +236,6 @@ nsresult CStartToken::Consume(PRUnichar aChar, nsScanner& aScanner,PRInt32 aFlag
 }
 
 
-#ifdef DEBUG
-/*
- *  Dump contents of this token to givne output stream
- *  
- *  @update  gess 3/25/98
- *  @param   out -- ostream to output content
- *  @return  
- */
-void CStartToken::DebugDumpSource(nsOutputStream& out) {
-  out << "<" << NS_LossyConvertUCS2toASCII(mTextValue).get();
-  if(!mAttributed)
-    out << ">";
-}
-#endif
-
 const nsAString& CStartToken::GetStringValue()
 {
   if((eHTMLTag_unknown<mTypeID) && (mTypeID<eHTMLTag_text)) {
@@ -408,19 +393,6 @@ const char*  CEndToken::GetClassName(void) {
 PRInt32 CEndToken::GetTokenType(void) {
   return eToken_end;
 }
-
-#ifdef DEBUG
-/*
- *  Dump contents of this token to givne output stream
- *  
- *  @update  gess 3/25/98
- *  @param   out -- ostream to output content
- *  @return  
- */
-void CEndToken::DebugDumpSource(nsOutputStream& out) {
-  out << "</" << NS_LossyConvertUCS2toASCII(mTextValue).get() << ">";
-}
-#endif
 
 const nsAString& CEndToken::GetStringValue()
 {
@@ -735,7 +707,7 @@ void CTextToken::Bind(const nsAString& aStr)
  *  @param   aName -- string to init token name with
  *  @return  
  */
-CCDATASectionToken::CCDATASectionToken() : CHTMLToken(eHTMLTag_unknown) {
+CCDATASectionToken::CCDATASectionToken(eHTMLTags aTag) : CHTMLToken(aTag) {
 }
 
 
@@ -1496,22 +1468,6 @@ void CAttributeToken::SanitizeKey() {
   return;
 }
 
-#ifdef DEBUG
-/*
- *  Dump contents of this token to given output stream
- *  
- *  @update  gess 3/25/98
- *  @param   out -- ostream to output content
- *  @return  
- */
-void CAttributeToken::DebugDumpToken(nsOutputStream& out) {
-  out << "[" << GetClassName() << "] "
-      << NS_LossyConvertUCS2toASCII(mTextKey).get() << "="
-      << NS_LossyConvertUCS2toASCII(mTextValue).get() << ": " << mTypeID
-      << nsEndl;
-}
-#endif
-
 const nsAString& CAttributeToken::GetStringValue(void)
 {
   return mTextValue;
@@ -1734,8 +1690,8 @@ nsresult CAttributeToken::Consume(PRUnichar aChar, nsScanner& aScanner,PRInt32 a
     { PRUnichar(' '), PRUnichar('"'), 
       PRUnichar('='), PRUnichar('\n'), 
       PRUnichar('\r'), PRUnichar('\t'), 
-      PRUnichar('>'), PRUnichar('\b'),
-      PRUnichar(0) };
+      PRUnichar('>'), PRUnichar('<'),
+      PRUnichar('\b'), PRUnichar(0) };
     static const nsReadEndCondition theEndCondition(theTerminalsChars);
 
     nsReadingIterator<PRUnichar> start, end;
@@ -1836,24 +1792,6 @@ nsresult CAttributeToken::Consume(PRUnichar aChar, nsScanner& aScanner,PRInt32 a
   }//if
   return result;
 }
-
-#ifdef DEBUG
-/*
- *  Dump contents of this token to givne output stream
- *  
- *  @update  gess 3/25/98
- *  @param   out -- ostream to output content
- *  @return  
- */
-void CAttributeToken::DebugDumpSource(nsOutputStream& out) {
-  out << " " << NS_LossyConvertUCS2toASCII(mTextKey).get();
-  if (!mTextValue.IsEmpty()) {
-    out << "=" << NS_LossyConvertUCS2toASCII(mTextValue).get();
-  }
-  if(mLastAttribute)
-    out << ">";
-}
-#endif
 
 void CAttributeToken::SetKey(const nsAString& aKey)
 {
@@ -2039,6 +1977,12 @@ CEntityToken::ConsumeEntity(PRUnichar aChar,
       result = aScanner.Peek(theChar,2);
        
       if (NS_FAILED(result)) {
+        if (kEOF == result && !aScanner.IsIncremental()) {
+          // If this is the last buffer then we are certainly
+          // not dealing with an entity. That's, there are
+          // no more characters after &#. Bug 188278.
+          return NS_HTMLTOKENS_NOT_AN_ENTITY;
+        }
         return result;
       }
 
@@ -2107,7 +2051,7 @@ CEntityToken::ConsumeEntity(PRUnichar aChar,
  */
 #define NOT_USED 0xfffd
 
-static PRUint16 PA_HackTable[] = {
+static const PRUint16 PA_HackTable[] = {
 	0x20ac,  /* EURO SIGN */
 	NOT_USED,
 	0x201a,  /* SINGLE LOW-9 QUOTATION MARK */
@@ -2142,10 +2086,6 @@ static PRUint16 PA_HackTable[] = {
 	0x0178   /* LATIN CAPITAL LETTER Y WITH DIAERESIS */
 };
 #endif /* PA_REMAP_128_TO_160_ILLEGAL_NCR */
-
-#define H_SURROGATE(s)  ((PRUnichar)(((PRUint32)s - (PRUint32)0x10000) >> 10) + (PRUnichar)0xd800)
-#define L_SURROGATE(s)  ((PRUnichar)(((PRUint32)s - (PRUint32)0x10000) & 0x3ff) + (PRUnichar)0xdc00)
-#define IS_IN_BMP(ucs4)   ((ucs4) < 0x10000)
 
 static void AppendNCR(nsString& aString, PRInt32 aNCRValue)
 {
@@ -2199,20 +2139,6 @@ PRInt32 CEntityToken::TranslateToUnicodeStr(nsString& aString) {
   return value;
 }
 
-#ifdef DEBUG
-/*
- *  Dump contents of this token to givne output stream
- *  
- *  @update  gess 3/25/98
- *  @param   out -- ostream to output content
- *  @return  
- */
-void CEntityToken::DebugDumpSource(nsOutputStream& out) {
-  char* cp = ToNewCString(mTextValue);
-  out << "&" << *cp;
-  delete[] cp;
-}
-#endif
 
 const nsAString& CEntityToken::GetStringValue(void)
 {

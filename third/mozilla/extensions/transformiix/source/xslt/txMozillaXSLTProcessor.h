@@ -47,19 +47,27 @@
 #include "nsVoidArray.h"
 #include "nsWeakPtr.h"
 #include "txExpandedNameMap.h"
-#include "XSLTProcessor.h"
 #include "nsIDOMNode.h"
 #include "txXMLEventHandler.h"
 #include "nsIDOMDocument.h"
-#include "nsIDOMDocumentFragment.h"
 #include "nsIXSLTProcessorObsolete.h"
+#include "txXSLTProcessor.h"
+#include "nsVoidArray.h"
+#include "txStylesheet.h"
+#include "nsAutoPtr.h"
+#include "nsIDocumentObserver.h"
+
+class nsIURI;
+class nsIXMLContentSink;
 
 /* bacd8ad0-552f-11d3-a9f7-000064657374 */
 #define TRANSFORMIIX_XSLT_PROCESSOR_CID   \
 { 0xbacd8ad0, 0x552f, 0x11d3, {0xa9, 0xf7, 0x00, 0x00, 0x64, 0x65, 0x73, 0x74} }
 
 #define TRANSFORMIIX_XSLT_PROCESSOR_CONTRACTID \
-"@mozilla.org/document-transformer;1?type=text/xsl"
+"@mozilla.org/document-transformer;1?type=xslt"
+
+#define XSLT_MSGS_URL  "chrome://communicator/locale/layout/xslt.properties"
 
 class txVariable : public txIGlobalParameter
 {
@@ -111,7 +119,8 @@ private:
  */
 class txMozillaXSLTProcessor : public nsIXSLTProcessor,
                                public nsIXSLTProcessorObsolete,
-                               public nsIDocumentTransformer
+                               public nsIDocumentTransformer,
+                               public nsIDocumentObserver
 {
 public:
     /**
@@ -134,14 +143,40 @@ public:
     NS_DECL_NSIXSLTPROCESSOROBSOLETE
 
     // nsIDocumentTransformer interface
-    NS_IMETHOD TransformDocument(nsIDOMNode *aSourceDOM,
-                                 nsIDOMNode *aStyleDOM,
-                                 nsITransformObserver *aObserver,
-                                 nsIDOMDocument **_retval);
+    NS_IMETHOD SetTransformObserver(nsITransformObserver* aObserver);
+    NS_IMETHOD LoadStyleSheet(nsIURI* aUri, nsILoadGroup* aLoadGroup,
+                              nsIURI* aReferrerUri);
+    NS_IMETHOD SetSourceContentModel(nsIDOMNode* aSource);
+    NS_IMETHOD CancelLoads() {return NS_OK;};
 
-protected:
-    nsCOMPtr<nsIDOMNode> mStylesheet;
+    // nsIDocumentObserver interface
+    NS_DECL_NSIDOCUMENTOBSERVER
+
+    nsresult setStylesheet(txStylesheet* aStylesheet);
+    void reportError(nsresult aResult, const PRUnichar *aErrorText,
+                     const PRUnichar *aSourceText);
+
+private:
+    nsresult DoTransform();
+    void notifyError();
+    nsresult ensureStylesheet();
+
+    nsRefPtr<txStylesheet> mStylesheet;
+    nsIDocument* mStylesheetDocument; // weak
+    nsCOMPtr<nsIContent> mEmbeddedStylesheetRoot;
+
+    nsCOMPtr<nsIDOMNode> mSource;
+    nsresult mTransformResult;
+    nsresult mCompileResult;
+    nsString mErrorText, mSourceText;
+    nsCOMPtr<nsITransformObserver> mObserver;
     txExpandedNameMap mVariables;
 };
+
+extern nsresult TX_LoadSheet(nsIURI* aUri, txMozillaXSLTProcessor* aProcessor,
+                             nsILoadGroup* aLoadGroup, nsIURI* aReferrerUri);
+
+extern nsresult TX_CompileStylesheet(nsIDOMNode* aNode,
+                                     txStylesheet** aStylesheet);
 
 #endif

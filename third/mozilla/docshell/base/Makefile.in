@@ -30,6 +30,8 @@ ifeq ($(OS_ARCH),WINNT)
 XPIDL_MODULE	= docshell_base
 endif
 LIBRARY_NAME	= basedocshell_s
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  caps \
@@ -95,6 +97,7 @@ CPPSRCS		= \
 		nsWebShell.cpp		\
 		nsDocShellLoadInfo.cpp		\
 		nsDocShellEditorData.cpp	\
+		nsDocShellTransferableHooks.cpp \
 		nsDocShellEnumerator.cpp  \
 		nsDSURIContentListener.cpp		\
 		nsDefaultURIFixup.cpp		\

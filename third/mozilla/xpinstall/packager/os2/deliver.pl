@@ -51,7 +51,7 @@ ParseArgv(@ARGV);
 if($inXpiURL eq "")
 {
   # archive url not supplied, set it to default values
-  $inXpiURL      = "ftp://not.supplied.com";
+  $inXpiURL      = "ftp://not.supplied.invalid";
 }
 if($inRedirIniURL eq "")
 {
@@ -60,19 +60,18 @@ if($inRedirIniURL eq "")
 }
 
 $DEPTH         = "$ENV{MOZ_SRC}/mozilla";
+$DEPTH         =~ s/\\/\//g;
 $cwdBuilder    = "$DEPTH/xpinstall/wizard/os2/builder";
 $cwdDist       = GetCwd("dist",     $DEPTH, $ENV{MOZ_OBJDIR}, $cwdBuilder);
 $cwdInstall    = GetCwd("install",  $DEPTH, $ENV{MOZ_OBJDIR}, $cwdBuilder);
 $cwdPackager   = GetCwd("packager", $DEPTH, $ENV{MOZ_OBJDIR}, $cwdBuilder);
 $cwdConfig     = GetCwd("config", $DEPTH, $ENV{MOZ_OBJDIR}, $cwdBuilder);
 
-#get version from configure.in
-open(FILENEW, "<$DEPTH/configure.in");
-do {
-$line = <FILENEW>;
-} while ($line !~ /MOZILLA_VERSION/);
-close(FILENEW);
-($therest, $version) =  split(/'/,$line);
+push(@INC,"$DEPTH/config");
+
+require "Moz/Milestone.pm";
+ 
+$version = Moz::Milestone::getOfficialMilestone("$DEPTH/config/milestone.txt");
 
 #get date from build_number file
 open(FILENEW, "<$cwdConfig/build_number");

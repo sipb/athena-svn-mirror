@@ -53,7 +53,7 @@ public:
     ~txSingleNodeContext()
     {}
 
-    nsresult getVariable(PRInt32 aNamespace, txAtom* aLName,
+    nsresult getVariable(PRInt32 aNamespace, nsIAtom* aLName,
                          ExprResult*& aResult)
     {
         NS_ASSERTION(mInner, "mInner is null!!!");
@@ -66,12 +66,18 @@ public:
         return mInner->isStripSpaceAllowed(aNode);
     }
 
-    void receiveError(const String& aMsg, nsresult aRes)
+    void* getPrivateContext()
+    {
+        NS_ASSERTION(mInner, "mInner is null!!!");
+        return mInner->getPrivateContext();
+    }
+
+    void receiveError(const nsAString& aMsg, nsresult aRes)
     {
         NS_ASSERTION(mInner, "mInner is null!!!");
 #ifdef DEBUG
-        String error("forwarded error: ");
-        error.append(aMsg);
+        nsAutoString error(NS_LITERAL_STRING("forwarded error: "));
+        error.Append(aMsg);
         mInner->receiveError(error, aRes);
 #else
         mInner->receiveError(aMsg, aRes);

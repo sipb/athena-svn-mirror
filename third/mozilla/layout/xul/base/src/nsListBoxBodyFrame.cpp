@@ -61,11 +61,12 @@
 #include "nsIScrollableFrame.h"
 #include "nsIScrollbarFrame.h"
 #include "nsIScrollableView.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIRenderingContext.h"
 #include "nsIDeviceContext.h"
 #include "nsIFontMetrics.h"
 #include "nsITimer.h"
+#include "nsAutoPtr.h"
 
 /////////////// nsListScrollSmoother //////////////////
 
@@ -115,7 +116,6 @@ public:
 
 nsListScrollSmoother::nsListScrollSmoother(nsListBoxBodyFrame* aOuter)
 {
-  NS_INIT_ISUPPORTS();
   mDelta = 0;
   mOuter = aOuter;
 }
@@ -226,7 +226,7 @@ NS_INTERFACE_MAP_END_INHERITING(nsBoxFrame)
 
 NS_IMETHODIMP
 nsListBoxBodyFrame::Init(nsIPresContext* aPresContext, nsIContent* aContent,
-                         nsIFrame* aParent, nsIStyleContext* aContext, nsIFrame* aPrevInFlow)
+                         nsIFrame* aParent, nsStyleContext* aContext, nsIFrame* aPrevInFlow)
 {
   nsresult rv = nsBoxFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
 
@@ -259,11 +259,10 @@ nsListBoxBodyFrame::Init(nsIPresContext* aPresContext, nsIContent* aContent,
 
   nsBoxLayoutState boxLayoutState(aPresContext);
 
-  const nsStyleFont* font = (const nsStyleFont*)aContext->GetStyleData(eStyleStruct_Font);
   nsCOMPtr<nsIDeviceContext> dc;
   aPresContext->GetDeviceContext(getter_AddRefs(dc));
   nsCOMPtr<nsIFontMetrics> fm;
-  dc->GetMetricsFor(font->mFont, *getter_AddRefs(fm));
+  dc->GetMetricsFor(aContext->GetStyleFont()->mFont, *getter_AddRefs(fm));
   fm->GetHeight(mRowHeight);
 
   return rv;
@@ -340,7 +339,7 @@ nsListBoxBodyFrame::DoLayout(nsBoxLayoutState& aBoxLayoutState)
 
   // if we are scrolled and the row height changed
   // make sure we are scrolled to a correct index.
-  if (mAdjustScroll) 
+  if (mAdjustScroll)
      PostReflowCallback();
 
   return rv;
@@ -748,9 +747,9 @@ nsListBoxBodyFrame::ComputeIntrinsicWidth(nsBoxLayoutState& aBoxLayoutState)
   nsCOMPtr<nsIContent> firstRowContent(do_QueryInterface(firstRowEl));
 
   if (firstRowContent) {
-    nsCOMPtr<nsIStyleContext> styleContext;
-    aBoxLayoutState.GetPresContext()->ResolveStyleContextFor(firstRowContent, nsnull,
-                                                             getter_AddRefs(styleContext));
+    nsRefPtr<nsStyleContext> styleContext;
+    styleContext = aBoxLayoutState.GetPresContext()->ResolveStyleContextFor(firstRowContent,
+                                                                            nsnull);
 
     nscoord width = 0;
     nsMargin margin(0,0,0,0);
@@ -761,8 +760,7 @@ nsListBoxBodyFrame::ComputeIntrinsicWidth(nsBoxLayoutState& aBoxLayoutState)
 
     width += (margin.left + margin.right);
 
-    const nsStyleMargin* styleMargin = (const nsStyleMargin*)styleContext->GetStyleData(eStyleStruct_Margin);
-    styleMargin->GetMargin(margin);
+    styleContext->GetStyleMargin()->GetMargin(margin);
     width += (margin.left + margin.right);
 
     nsCOMPtr<nsIContent> listbox;
@@ -794,11 +792,10 @@ nsListBoxBodyFrame::ComputeIntrinsicWidth(nsBoxLayoutState& aBoxLayoutState)
               value += data;
             }
           }
-          const nsStyleFont* font = (const nsStyleFont*)styleContext->GetStyleData(eStyleStruct_Font);
           nsCOMPtr<nsIDeviceContext> dc;
           presContext->GetDeviceContext(getter_AddRefs(dc));
           nsCOMPtr<nsIFontMetrics> fm;
-          dc->GetMetricsFor(font->mFont, *getter_AddRefs(fm));
+          dc->GetMetricsFor(styleContext->GetStyleFont()->mFont, *getter_AddRefs(fm));
           rendContext->SetFont(fm);
 
           nscoord textWidth;
@@ -1383,7 +1380,8 @@ nsListBoxBodyFrame::OnContentRemoved(nsIPresContext* aPresContext, nsIFrame* aCh
   
     // if the row being removed is off-screen and above the top frame, we need to
     // adjust our top index and tell the scrollbar to shift up one row.
-    if (siblingIndex >= 0 && siblingIndex-1 <= mCurrentIndex) {
+    if (siblingIndex >= 0 && siblingIndex-1 < mCurrentIndex) {
+      NS_PRECONDITION(mCurrentIndex > 0, "mCurrentIndex > 0");
       --mCurrentIndex;
       mYPosition = mCurrentIndex*mRowHeight;
       VerticalScroll(mYPosition);

@@ -20,9 +20,9 @@
 
 /*
  *  nsXmlRpcClient XPCOM component
- *  Version: $Revision: 1.1.1.1 $
+ *  Version: $Revision: 1.1.1.1.2.1 $
  *
- *  $Id: nsXmlRpcClient.js,v 1.1.1.1 2003-02-14 19:12:23 rbasch Exp $
+ *  $Id: nsXmlRpcClient.js,v 1.1.1.1.2.1 2003-07-14 18:55:44 ghudson Exp $
  */
 
 /*
@@ -82,15 +82,15 @@ nsXmlRpcClient.prototype = {
     _passwordTried: false,
 
     init: function(serverURL) {
-        var oURL = createInstance('@mozilla.org/network/standard-url;1',
-            'nsIURL');
-        oURL.spec = serverURL;
+        var ios = Components.classes["@mozilla.org/network/io-service;1"].
+            getService(Components.interfaces.nsIIOService);
+        var oURL = ios.newURI(serverURL, null, null);
 
         // Make sure it is a complete spec
         // Note that we don't care what the scheme is otherwise.
         // Should we care? POST works only on http and https..
         if (!oURL.scheme) oURL.scheme = 'http';
-        if (oURL.scheme != 'http')
+        if ((oURL.scheme != 'http') && (oURL.scheme != 'https'))
             throw Components.Exception('Only HTTP is supported');
 
         this._serverUrl = oURL;
@@ -188,7 +188,7 @@ nsXmlRpcClient.prototype = {
     }, // Do exactly nada.
 
     // End of the request
-    onStopRequest: function(channel, ctxt, status, errorMsg) {
+    onStopRequest: function(channel, ctxt, status) {
         debug('Stop Request');
         if (!this._inProgress) return; // No longer interested.
 
@@ -196,11 +196,13 @@ nsXmlRpcClient.prototype = {
         this._parser = null;
         
         if (status) {
-            debug('Non-zero status: (' + status.toString(16) + ') ' + errorMsg);
+            debug('Non-zero status: (' + status.toString(16) + ') ');
             this._status = status;
             this._errorMsg = errorMsg;
-            try { this._listener.onError(this, ctxt, status, errorMsg); }
-            catch (ex) {
+            try {
+                this._listener.onError(this, ctxt, status,
+                                       status.toString(16));
+            } catch (ex) {
                 debug('Exception in listener.onError: ' + ex);
             }
             return;
@@ -361,7 +363,7 @@ nsXmlRpcClient.prototype = {
 
             case this.STRING:
                 uuid.value = Components.interfaces.nsISupportsCString
-                return createInstance(SUPPORTSID + 'string;1',
+                return createInstance(SUPPORTSID + 'cstring;1',
                     'nsISupportsCString');
 
             case this.DOUBLE:
@@ -405,7 +407,8 @@ nsXmlRpcClient.prototype = {
         if (iid.equals(Components.interfaces.nsIAuthPrompt)){
             return this;
         }
-        return Components.results.NS_ERROR_NO_INTERFACE;
+        Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
+        return null;
     },
 
     // nsIAuthPrompt interface
@@ -476,7 +479,7 @@ nsXmlRpcClient.prototype = {
                 break;
 
             case 'Char':
-            case 'String':
+            case 'CString':
                 obj=obj.QueryInterface(Components.interfaces['nsISupports' +
                     sType]);
                 writer.startElement('string');
@@ -586,7 +589,7 @@ nsXmlRpcClient.prototype = {
         
         try {
             obj.QueryInterface(Components.interfaces.nsISupportsCString);
-            return 'String';
+            return 'CString';
         } catch(e) {}
         
         try {

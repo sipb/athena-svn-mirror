@@ -28,6 +28,11 @@
 #include "ifuncns.h"
 #include "parser.h"
 #include "rdi.h"
+#include "shlobj.h"
+
+#define MOZ_HWND_BROADCAST_MSG_TIMEOUT 5000
+#define MOZ_CLIENT_BROWSER_KEY         "Software\\Clients\\StartMenuInternet"
+#define MOZ_CLIENT_MAIL_KEY            "Software\\Clients\\Mail"
 
 void SetDefault()
 {
@@ -77,7 +82,7 @@ void ParseDefaultsInfo()
     strcpy(szShortcutPath, "COMMON_DESKTOP");
     DecryptVariable(szShortcutPath, MAX_BUF);
 
-    if((ugUninstall.dwMode == SHOWICONS) && (szStorageDir[0] != '\0'))
+    if((ugUninstall.mode == SHOWICONS) && (szStorageDir[0] != '\0'))
     {
       wsprintf(szStoredShortcutPath, "%s%s", szStorageDir, szBuf);
       FileCopy(szStoredShortcutPath, szShortcutPath, 0);
@@ -89,7 +94,7 @@ void ParseDefaultsInfo()
       }
     }
 
-    if (ugUninstall.dwMode == HIDEICONS)
+    if (ugUninstall.mode == HIDEICONS)
     {
       AppendBackSlash(szShortcutPath, MAX_BUF);
       lstrcat(szShortcutPath, szBuf);
@@ -118,7 +123,7 @@ void ParseDefaultsInfo()
     strcpy(szShortcutPath, "COMMON_STARTMENU");
     DecryptVariable(szShortcutPath, MAX_BUF);
 
-    if((ugUninstall.dwMode == SHOWICONS) && (szStorageDir[0] != '\0'))
+    if((ugUninstall.mode == SHOWICONS) && (szStorageDir[0] != '\0'))
     {
       lstrcpy(szStoredShortcutPath, szStorageDir);
       lstrcat(szStoredShortcutPath, szBuf);
@@ -131,7 +136,7 @@ void ParseDefaultsInfo()
       }
     }
 
-    if (ugUninstall.dwMode == HIDEICONS)
+    if (ugUninstall.mode == HIDEICONS)
     {
       AppendBackSlash(szShortcutPath, MAX_BUF);
       lstrcat(szShortcutPath, szBuf);
@@ -160,7 +165,7 @@ void ParseDefaultsInfo()
     GetWinReg(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", "AppData", szShortcutPath, MAX_BUF);
     lstrcat(szShortcutPath, "\\Microsoft\\Internet Explorer\\Quick Launch");
 
-    if((ugUninstall.dwMode == SHOWICONS) && (szStorageDir[0] != '\0'))
+    if((ugUninstall.mode == SHOWICONS) && (szStorageDir[0] != '\0'))
     {
       wsprintf(szStoredShortcutPath, "%s%s", szStorageDir, szBuf);
       FileCopy(szStoredShortcutPath, szShortcutPath, 0);
@@ -171,7 +176,7 @@ void ParseDefaultsInfo()
       }
     }
 
-    if (ugUninstall.dwMode == HIDEICONS)
+    if (ugUninstall.mode == HIDEICONS)
     {
       AppendBackSlash(szShortcutPath, MAX_BUF);
       lstrcat(szShortcutPath, szBuf);
@@ -194,7 +199,7 @@ void ParseDefaultsInfo()
   GetPrivateProfileString(ugUninstall.szDefaultComponent, "ClientProductKey", "", szClientProductKey, MAX_BUF, szFileIniDefaultsInfo);
   wsprintf(szRegKey, "SOFTWARE\\Clients\\%s\\%s\\InstallInfo", szClientTypeName, szClientProductKey);
 
-  if (ugUninstall.dwMode == SHOWICONS)
+  if (ugUninstall.mode == SHOWICONS)
     dwIconsVisible = 1;
   else
     dwIconsVisible = 0;
@@ -249,18 +254,37 @@ void ParseAllUninstallLogs()
 
     /* update Wininit.ini to remove itself at reboot */
     RemoveUninstaller(ugUninstall.szUninstallFilename);
+
+    // Calling SHChangeNotify() will update the file association icons
+    // in case they had been reset.
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
   }
 
-  /* Broadcast message only under NT51 (WinXP) regarding the following
-   * registry keys in case they were changed during uninstallation.  If they
+  /* Broadcast message only if the windows registry keys exist
+   * in case they were changed during uninstallation.  If they
    * were, then the broadcast will alert the OS to update the appropriate UIs.
    * This needs to be done regardless if the user canceled the uninstall
    * process or not.
    */
-  if(ulOSType & OS_NT51)
+  if(WinRegKeyExists(HKEY_LOCAL_MACHINE, MOZ_CLIENT_BROWSER_KEY))
   {
-    SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Software\\Clients\\StartMenuInternet");
-    SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Software\\Clients\\Mail");
+    SendMessageTimeout(HWND_BROADCAST,
+                       WM_SETTINGCHANGE,
+                       0,
+                       (LPARAM)MOZ_CLIENT_BROWSER_KEY,
+                       SMTO_NORMAL|SMTO_ABORTIFHUNG,
+                       MOZ_HWND_BROADCAST_MSG_TIMEOUT,
+                       NULL);
+  }
+  if(WinRegKeyExists(HKEY_LOCAL_MACHINE, MOZ_CLIENT_MAIL_KEY))
+  {
+    SendMessageTimeout(HWND_BROADCAST,
+                       WM_SETTINGCHANGE,
+                       0,
+                       (LPARAM)MOZ_CLIENT_MAIL_KEY,
+                       SMTO_NORMAL|SMTO_ABORTIFHUNG,
+                       MOZ_HWND_BROADCAST_MSG_TIMEOUT,
+                       NULL);
   }
 }
 
@@ -462,7 +486,7 @@ void ShowMessage(LPSTR szMessage, BOOL bShow)
 {
   char szBuf[MAX_BUF];
 
-  if(ugUninstall.dwMode != SILENT)
+  if(ugUninstall.mode != SILENT)
   {
     if((bShow) && (hDlgMessage == NULL))
     {

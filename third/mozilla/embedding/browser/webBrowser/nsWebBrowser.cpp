@@ -32,6 +32,7 @@
 #include "nsIComponentManager.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMXULDocument.h"
 #include "nsIDOMWindow.h"
 #include "nsIDOMElement.h"
 #include "nsIInterfaceRequestor.h"
@@ -93,7 +94,6 @@ nsWebBrowser::nsWebBrowser() : mDocShellTreeOwner(nsnull),
    mParent(nsnull),
    mListenerArray(nsnull)
 {
-    NS_INIT_ISUPPORTS();
     mInitInfo = new nsWebBrowserInitInfo();
     mWWatch = do_GetService(NS_WINDOWWATCHER_CONTRACTID);
     NS_ASSERTION(mWWatch, "failed to get WindowWatcher");
@@ -605,7 +605,7 @@ NS_IMETHODIMP nsWebBrowser::GoForward()
 
 NS_IMETHODIMP nsWebBrowser::LoadURI(const PRUnichar* aURI,
                                     PRUint32 aLoadFlags,
-                                    nsIURI* aReferingURI,
+                                    nsIURI* aReferringURI,
                                     nsIInputStream* aPostDataStream,
                                     nsIInputStream* aExtraHeaderStream)
 {
@@ -613,7 +613,7 @@ NS_IMETHODIMP nsWebBrowser::LoadURI(const PRUnichar* aURI,
 
    return mDocShellAsNav->LoadURI(aURI,
                                   aLoadFlags,
-                                  aReferingURI,
+                                  aReferringURI,
                                   aPostDataStream,
                                   aExtraHeaderStream);
 }
@@ -646,11 +646,11 @@ NS_IMETHODIMP nsWebBrowser::GetCurrentURI(nsIURI** aURI)
    return mDocShellAsNav->GetCurrentURI(aURI);
 }
 
-NS_IMETHODIMP nsWebBrowser::GetReferingURI(nsIURI** aURI)
+NS_IMETHODIMP nsWebBrowser::GetReferringURI(nsIURI** aURI)
 {
     NS_ENSURE_STATE(mDocShell);
 
-    return mDocShellAsNav->GetReferingURI(aURI);
+    return mDocShellAsNav->GetReferringURI(aURI);
 }
 
 NS_IMETHODIMP nsWebBrowser::SetSessionHistory(nsISHistory* aSessionHistory)
@@ -891,8 +891,12 @@ NS_IMETHODIMP nsWebBrowser::SetProgressListener(nsIWebProgressListener * aProgre
     return NS_OK;
 }
 
-/* void saveURI (in nsIURI aURI, in nsISupports aFile); */
-NS_IMETHODIMP nsWebBrowser::SaveURI(nsIURI *aURI, nsIInputStream *aPostData, nsISupports *aFile)
+/* void saveURI (in nsIURI aURI, in nsIURI aReferrer,
+   in nsISupports aCacheKey, in nsIInputStream aPostData, in wstring aExtraHeaders,
+   in nsISupports aFile); */
+NS_IMETHODIMP nsWebBrowser::SaveURI(
+    nsIURI *aURI, nsISupports *aCacheKey, nsIURI *aReferrer, nsIInputStream *aPostData,
+    const char *aExtraHeaders, nsISupports *aFile)
 {
     if (mPersist)
     {
@@ -930,7 +934,7 @@ NS_IMETHODIMP nsWebBrowser::SaveURI(nsIURI *aURI, nsIInputStream *aPostData, nsI
     mPersist->SetProgressListener(this);
     mPersist->SetPersistFlags(mPersistFlags);
     mPersist->GetCurrentState(&mPersistCurrentState);
-    rv = mPersist->SaveURI(uri, aPostData, aFile);
+    rv = mPersist->SaveURI(uri, aCacheKey, aReferrer, aPostData, aExtraHeaders, aFile);
     if (NS_FAILED(rv))
     {
         mPersist = nsnull;
@@ -1039,7 +1043,9 @@ NS_IMETHODIMP nsWebBrowser::Create()
       nsWidgetInitData  widgetInit;
 
       widgetInit.clipChildren = PR_TRUE;
-      widgetInit.mContentType = mContentType;
+      widgetInit.mContentType = (mContentType == typeChrome || 
+        mContentType == typeChromeWrapper)? eContentTypeUI: eContentTypeContent;
+
       widgetInit.mWindowType = eWindowType_child;
       nsRect bounds(mInitInfo->x, mInitInfo->y, mInitInfo->cx, mInitInfo->cy);
       
@@ -1330,6 +1336,20 @@ NS_IMETHODIMP nsWebBrowser::SetEnabled(PRBool aEnabled)
   if (mInternalWidget)
     return mInternalWidget->Enable(aEnabled);
   return NS_ERROR_FAILURE;
+}
+
+NS_IMETHODIMP
+nsWebBrowser::GetBlurSuppression(PRBool *aBlurSuppression)
+{
+  NS_ENSURE_ARG_POINTER(aBlurSuppression);
+  *aBlurSuppression = PR_FALSE;
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsWebBrowser::SetBlurSuppression(PRBool aBlurSuppression)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 NS_IMETHODIMP nsWebBrowser::GetMainWidget(nsIWidget** mainWidget)

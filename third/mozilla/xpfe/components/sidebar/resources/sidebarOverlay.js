@@ -43,6 +43,7 @@ var gCurFrame;
 var gTimeoutID = null;
 var gMustInit = true;
 var gAboutToUncollapse = false;
+var gCheckMissingPanels = true;
 
 function setBlank()
 {
@@ -690,11 +691,11 @@ var panel_observer = {
   onMove : function(ds,old_src,new_src,prop,target) {
     //debug ("observer: move");
   },
-  beginUpdateBatch : function(ds) {
-    //debug ("observer: beginUpdateBatch");
+  onBeginUpdateBatch : function(ds) {
+    //debug ("observer: onBeginUpdateBatch");
   },
-  endUpdateBatch : function(ds) {
-    //debug ("observer: endUpdateBatch");
+  onEndUpdateBatch : function(ds) {
+    //debug ("observer: onEndUpdateBatch");
   }
 };
 
@@ -740,9 +741,14 @@ function sidebar_overlay_init() {
       sidebar_menuitem.setAttribute('checked', 'true');
     }
 
+    // for old profiles that don't persist the hidden attribute when splitter is not hidden.
+    var sidebar_splitter = document.getElementById('sidebar-splitter')
+    if (sidebar_splitter)
+      sidebar_splitter.setAttribute('hidden', 'false');
+    
     if (sidebarObj.never_built) {
       sidebarObj.never_built = false;
-
+      
       debug("sidebar = " + sidebarObj);
       debug("sidebarObj.resource = " + sidebarObj.resource);
       debug("sidebarObj.datasource_uri = " + sidebarObj.datasource_uri);
@@ -766,18 +772,6 @@ function sidebar_overlay_init() {
         debug("Showing the panels splitter");
         sidebar_panels_splitter.removeAttribute('hidden');
       }
-
-      // Add the user's current panel choices to the template builder,
-      // which will aggregate it with the other datasources that describe
-      // the individual panel's title, customize URL, and content URL.
-      var panels = document.getElementById('sidebar-panels');
-      panels.database.AddDataSource(RDF.GetDataSource(sidebarObj.datasource_uri));
-
-      debug("Adding observer to database.");
-      panels.database.AddObserver(panel_observer);
-
-      // XXX This is a hack to force re-display
-      panels.setAttribute('ref', sidebarObj.resource);
     }
     if (sidebar_is_collapsed()) {
       sidebarObj.collapsed = true;
@@ -795,22 +789,85 @@ function sidebar_overlay_destruct() {
     panels.database.RemoveObserver(panel_observer);
 }
 
+var gBusyOpeningDefault = false;
+
 function sidebar_open_default_panel(wait, tries) {
-  var panels = document.getElementById('sidebar-panels');
+  // check for making function reentrant
+  if (gBusyOpeningDefault)
+    return;
+  gBusyOpeningDefault = true;
 
-  debug("sidebar_open_default_panel("+wait+","+tries+")");
+  var ds = RDF.GetDataSource(sidebarObj.datasource_uri);
+  var currentListRes = RDF.GetResource("urn:sidebar:current-panel-list");
+  var panelListRes = RDF.GetResource("http://home.netscape.com/NC-rdf#panel-list");
+  var container = ds.GetTarget(currentListRes, panelListRes, true);
+  if (container) {
+    // Add the user's current panel choices to the template builder,
+    // which will aggregate it with the other datasources that describe
+    // the individual panel's title, customize URL, and content URL.
+    var panels = document.getElementById('sidebar-panels');
+    panels.database.AddDataSource(ds);
+    
+    debug("Adding observer to database.");
+    panels.database.AddObserver(panel_observer);
 
-  // Make sure the sidebar exists before trying to refresh it.
-  if (panels.childNodes.length <= 2) {
+    // XXX This is a hack to force re-display
+    panels.builder.rebuild();
+  } else {
     if (tries < 3) {
       // No children yet, try again later
-      setTimeout('sidebar_open_default_panel('+(wait*2)+','+(tries+1)+')',wait);
+      setTimeout('sidebar_open_default_panel(' + (wait*2) + ',' + (tries+1) + ')',wait);
+      gBusyOpeningDefault = false;
       return;
     } else {
       sidebar_fixup_datasource();
     }
   }
+
   sidebarObj.panels.refresh();
+  gBusyOpeningDefault = false;
+  if (gCheckMissingPanels)
+    check_for_missing_panels();
+}
+
+function SidebarRebuild() {
+  sidebarObj.panels.initialized = false; // reset so panels are brought in view
+  var panels = document.getElementById("sidebar-panels");
+  panels.builder.rebuild();
+  sidebar_open_default_panel(100, 0);
+}
+
+const NS_ERROR_FILE_NOT_FOUND = 0x80520012;
+
+function check_for_missing_panels() {
+  var tabs = sidebarObj.panels.node.childNodes;
+  var currHeader;
+  var currTab;
+  for (var i = 2; i < tabs.length; i += 2) {
+    currHeader = tabs[i];
+    currTab = new sbPanel(currHeader.getAttribute("id"), currHeader, i);
+    if (!currTab.is_excluded()) {
+      if (currHeader.hasAttribute("prereq") && currHeader.getAttribute("prereq") != "") {
+        var prereq_file = currHeader.getAttribute("prereq");
+        var ioService = Components.classes["@mozilla.org/network/io-service;1"]
+                                  .getService(Components.interfaces.nsIIOService);      
+        var uri = ioService.newURI(prereq_file, null, null);
+        var channel = ioService.newChannelFromURI(uri);
+        try {
+          channel.open();
+        }
+        catch(ex if (ex.result == NS_ERROR_FILE_NOT_FOUND)) {
+          sidebarObj.datasource = RDF.GetDataSource(sidebarObj.datasource_uri);
+          sidebarObj.datasource.Assert(RDF.GetResource(currHeader.getAttribute("id")),
+                                       RDF.GetResource(NC + "exclude"),
+                                       RDF.GetLiteral(sidebarObj.component),
+                                       true);
+          currTab.exclude();
+        }        
+      }
+    }
+  }
+  gCheckMissingPanels = false;
 }
 
 //////////////////////////////////////////////////////////////
@@ -847,8 +904,7 @@ function sidebar_revert_to_default_panels() {
   try {
     var sidebar_file = sidebar_get_panels_file();
 
-    // Calling delete() with array notation (workaround for bug 37406).
-    sidebar_file["delete"](false);
+    sidebar_file.remove(false);
 
     // Since we just removed the panels file,
     // this should copy the defaults over.
@@ -1034,13 +1090,6 @@ function SidebarReload() {
   sidebarObj.panels.refresh();
 }
  
-function SidebarRebuild() {
-  sidebarObj.panels.initialized = false; // reset so panels are brought in view
-  var panels = document.getElementById("sidebar-panels");
-  panels.builder.rebuild();
-  sidebar_open_default_panel(100, 0);
-}
-
 // Set up a lame hack to avoid opening two customize
 // windows on a double click.
 var gDisableCustomize = false;
@@ -1081,8 +1130,6 @@ function SidebarCustomize() {
   }
 }
 
-
-
 function BrowseMorePanels()
 {
   var url = '';
@@ -1117,10 +1164,12 @@ function SidebarExpandCollapse() {
     debug("Expanding the sidebar");
     sidebar_splitter.removeAttribute('state');
     sidebar_box.removeAttribute('collapsed');
+    SidebarSetButtonOpen(true);
   } else {
     debug("Collapsing the sidebar");
     sidebar_splitter.setAttribute('state', 'collapsed');
     sidebar_box.setAttribute('collapsed', 'true');
+    SidebarSetButtonOpen(false);
   }
 }
 
@@ -1155,7 +1204,7 @@ function SidebarShowHide() {
       sidebar_splitter.removeAttribute('state');
     title_box.removeAttribute('hidden');
     sidebar_panels_splitter_box.removeAttribute('collapsed');
-    sidebar_splitter.removeAttribute('hidden');
+    sidebar_splitter.setAttribute('hidden', 'false');
     if (sidebar_box.firstChild != sidebar_panels_splitter) {
       debug("Showing the panels splitter");
       sidebar_panels_splitter.removeAttribute('hidden');
@@ -1165,6 +1214,7 @@ function SidebarShowHide() {
     sidebar_overlay_init();
     sidebar_menu_item.setAttribute('checked', 'true');
     tabs_menu.removeAttribute('hidden');
+    SidebarSetButtonOpen(true);
   } else {
     debug("Hiding the sidebar");
     var hide_everything = sidebar_panels_splitter.getAttribute('hidden') == 'true';
@@ -1179,6 +1229,7 @@ function SidebarShowHide() {
     sidebar_panels_splitter_box.setAttribute('collapsed', 'true');
     sidebar_menu_item.setAttribute('checked', 'false');
     tabs_menu.setAttribute('hidden', 'true');
+    SidebarSetButtonOpen(false);
   }
   // Immediately save persistent values
   document.persist('sidebar-title-box', 'hidden');
@@ -1460,6 +1511,10 @@ function persist_width() {
   // XXX Mini hack. Persist isn't working too well. Force the persist,
   // but wait until the width change has commited.
   setTimeout("document.persist('sidebar-box', 'width');",100);
+
+  var is_collapsed = document.getElementById('sidebar-box').
+                       getAttribute('collapsed') == 'true';
+  SidebarSetButtonOpen(!is_collapsed);
 }
 
 function SidebarFinishClick() {
@@ -1470,12 +1525,26 @@ function SidebarFinishClick() {
   // the sidebar-box gets the newly dragged width.
   setTimeout("persist_width()",100);
 
-  var is_collapsed = document.getElementById('sidebar-box').getAttribute('collapsed') == 'true' ? true : false;
+  var is_collapsed = document.getElementById('sidebar-box').getAttribute('collapsed') == 'true';
   debug("collapsed: " + is_collapsed);
   if (is_collapsed != sidebarObj.collapsed) {
     if (gMustInit)
       sidebar_overlay_init();
-    sidebarObj.panels.refresh();
+  }
+}
+
+function SidebarSetButtonOpen(aSidebarNowOpen)
+{
+  // change state so toolbar icon can be updated
+  var pt = document.getElementById("PersonalToolbar");
+  if (pt) {
+    pt.setAttribute("prefixopen", aSidebarNowOpen);
+
+    // set tooltip for toolbar icon
+    var header = document.getElementById("sidebar-title-box");
+    var tooltip = header.getAttribute(aSidebarNowOpen ? 
+                  "tooltipclose" : "tooltipopen");
+    pt.setAttribute("prefixtooltip", tooltip);
   }
 }
 

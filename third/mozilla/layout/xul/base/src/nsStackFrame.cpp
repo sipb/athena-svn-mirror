@@ -43,12 +43,11 @@
 //
 
 #include "nsStackFrame.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsIContent.h"
 #include "nsCOMPtr.h"
 #include "nsUnitConversion.h"
-#include "nsINameSpaceManager.h"
 #include "nsXULAtoms.h"
 #include "nsHTMLAtoms.h"
 #include "nsHTMLParts.h"
@@ -108,7 +107,9 @@ nsStackFrame::GetFrameForPoint(nsIPresContext* aPresContext,
   GetInset(im);
   nsMargin border(0,0,0,0);
   nsStyleBorderPadding  bPad;
-  aFrame->GetStyle(eStyleStruct_BorderPaddingShortcut, (nsStyleStruct&)bPad);
+  nsStyleContext* styleContext;
+  aFrame->GetStyleContext(&styleContext);
+  styleContext->GetBorderPaddingFor(bPad);
   bPad.GetBorderPadding(borderPadding);
   r.Deflate(im);
   r.Deflate(border);    
@@ -135,8 +136,7 @@ nsStackFrame::GetFrameForPoint(nsIPresContext* aPresContext,
       rv = NS_ERROR_FAILURE;
 
   if (NS_FAILED(rv)) {
-        const nsStyleColor* color =
-    (const nsStyleColor*)mStyleContext->GetStyleData(eStyleStruct_Color);
+      const nsStyleBackground* color = GetStyleBackground();
 
       PRBool        transparentBG = NS_STYLE_BG_COLOR_TRANSPARENT ==
                                     (color->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT);

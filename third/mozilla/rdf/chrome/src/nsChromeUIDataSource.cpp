@@ -64,7 +64,6 @@ static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 
 nsChromeUIDataSource::nsChromeUIDataSource(nsIRDFDataSource* aComposite)
 {
-  NS_INIT_ISUPPORTS();
   mComposite = aComposite;
   mComposite->AddObserver(this);
 
@@ -216,15 +215,9 @@ nsChromeUIDataSource::AddObserver(nsIRDFObserver* aObserver)
   if (! aObserver)
       return NS_ERROR_NULL_POINTER;
 
-  if (!mObservers) {
-      nsresult rv;
-      rv = NS_NewISupportsArray(getter_AddRefs(mObservers));
-      if (NS_FAILED(rv)) return rv;
-  }
-
   // XXX ensure uniqueness?
 
-  mObservers->AppendElement(aObserver);
+  mObservers.AppendObject(aObserver);
   return NS_OK;
 }
 
@@ -235,10 +228,7 @@ nsChromeUIDataSource::RemoveObserver(nsIRDFObserver* aObserver)
   if (! aObserver)
       return NS_ERROR_NULL_POINTER;
 
-  if (!mObservers)
-      return NS_OK;
-
-  mObservers->RemoveElement(aObserver);
+  mObservers.RemoveObject(aObserver);
   return NS_OK;
 }
 
@@ -274,13 +264,6 @@ nsChromeUIDataSource::GetAllResources(nsISimpleEnumerator** aResult)
 }
 
 NS_IMETHODIMP
-nsChromeUIDataSource::GetAllCommands(nsIRDFResource* source,
-                                     nsIEnumerator/*<nsIRDFResource>*/** result)
-{
-  return mComposite->GetAllCommands(source, result);
-}
-
-NS_IMETHODIMP
 nsChromeUIDataSource::GetAllCmds(nsIRDFResource* source,
                                         nsISimpleEnumerator/*<nsIRDFResource>*/** result)
 {
@@ -304,6 +287,16 @@ nsChromeUIDataSource::DoCommand(nsISupportsArray/*<nsIRDFResource>*/* aSources,
   return mComposite->DoCommand(aSources, aCommand, aArguments);
 }
 
+NS_IMETHODIMP
+nsChromeUIDataSource::BeginUpdateBatch() {
+  return mComposite->BeginUpdateBatch();
+}
+
+NS_IMETHODIMP
+nsChromeUIDataSource::EndUpdateBatch() {
+  return mComposite->EndUpdateBatch();
+}
+                                                                               
 //////////////////////////////////////////////////////////////////////
 
 NS_IMETHODIMP
@@ -312,18 +305,10 @@ nsChromeUIDataSource::OnAssert(nsIRDFDataSource* aDataSource,
                                nsIRDFResource* aProperty,
                                nsIRDFNode* aTarget)
 {
-  if (mObservers) {
-    PRUint32 count;
-    nsresult rv;
-    rv = mObservers->Count(&count);
-    if (NS_FAILED(rv)) return rv;
+  PRInt32 count = mObservers.Count();
 
-    for (PRInt32 i = PRInt32(count) - 1; i >= 0; --i) {
-      nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
-      obs->OnAssert(this, aSource, aProperty, aTarget);
-      NS_RELEASE(obs);
-      // XXX ignore return value?
-    }
+  for (PRInt32 i = count - 1; i >= 0; --i) {
+    mObservers[i]->OnAssert(this, aSource, aProperty, aTarget);
   }
   return NS_OK;
 }
@@ -334,18 +319,9 @@ nsChromeUIDataSource::OnUnassert(nsIRDFDataSource* aDataSource,
                                  nsIRDFResource* aProperty,
                                  nsIRDFNode* aTarget)
 {
-  if (mObservers) {
-    PRUint32 count;
-    nsresult rv;
-    rv = mObservers->Count(&count);
-    if (NS_FAILED(rv)) return rv;
-
-    for (PRInt32 i = PRInt32(count) - 1; i >= 0; --i) {
-      nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
-      obs->OnUnassert(aDataSource, aSource, aProperty, aTarget);
-      NS_RELEASE(obs);
-      // XXX ignore return value?
-    }
+  PRInt32 count = mObservers.Count();
+  for (PRInt32 i = count - 1; i >= 0; --i) {
+    mObservers[i]->OnUnassert(aDataSource, aSource, aProperty, aTarget);
   }
   return NS_OK;
 }
@@ -358,17 +334,10 @@ nsChromeUIDataSource::OnChange(nsIRDFDataSource* aDataSource,
                                nsIRDFNode* aOldTarget,
                                nsIRDFNode* aNewTarget)
 {
-  if (mObservers) {
-    PRUint32 count;
-    nsresult rv = mObservers->Count(&count);
-    if (NS_FAILED(rv)) return rv;
+  PRInt32 count = mObservers.Count();
 
-    for (PRInt32 i = PRInt32(count) - 1; i >= 0; --i) {
-      nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
-      obs->OnChange(aDataSource, aSource, aProperty, aOldTarget, aNewTarget);
-      NS_RELEASE(obs);
-      // XXX ignore return value?
-    }
+  for (PRInt32 i = count - 1; i >= 0; --i) {
+    mObservers[i]->OnChange(aDataSource, aSource, aProperty, aOldTarget, aNewTarget);
   }
   return NS_OK;
 }
@@ -381,30 +350,33 @@ nsChromeUIDataSource::OnMove(nsIRDFDataSource* aDataSource,
                              nsIRDFResource* aProperty,
                              nsIRDFNode* aTarget)
 {
-  if (mObservers) {
-    PRUint32 count;
-    nsresult rv = mObservers->Count(&count);
-    if (NS_FAILED(rv)) return rv;
+  PRInt32 count = mObservers.Count();
 
-    for (PRInt32 i = PRInt32(count) - 1; i >= 0; --i) {
-      nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
-      obs->OnMove(aDataSource, aOldSource, aNewSource, aProperty, aTarget);
-      NS_RELEASE(obs);
-      // XXX ignore return value?
-    }
+  for (PRInt32 i = count - 1; i >= 0; --i) {
+    mObservers[i]->OnMove(aDataSource, aOldSource, aNewSource, aProperty, aTarget);
   }
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsChromeUIDataSource::BeginUpdateBatch(nsIRDFDataSource* aDataSource)
+nsChromeUIDataSource::OnBeginUpdateBatch(nsIRDFDataSource* aDataSource)
 {
+  PRInt32 count = mObservers.Count();
+
+  for (PRInt32 i = count - 1; i >= 0; --i) {
+    mObservers[i]->OnBeginUpdateBatch(aDataSource);
+  }
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsChromeUIDataSource::EndUpdateBatch(nsIRDFDataSource* aDataSource)
+nsChromeUIDataSource::OnEndUpdateBatch(nsIRDFDataSource* aDataSource)
 {
+  PRInt32 count = mObservers.Count();
+
+  for (PRInt32 i = count - 1; i >= 0; --i) {
+    mObservers[i]->OnEndUpdateBatch(aDataSource);
+  }
   return NS_OK;
 }
 

@@ -36,9 +36,6 @@
 
 #include "nscore.h"
 #include "nsIX509Cert.h"
-#include "nsIASN1Tree.h"
-#include "nsITreeView.h"
-#include "nsITreeSelection.h"
 #include "nsCOMPtr.h"
 #include "nsString.h"
 #include "nsIASN1Sequence.h"
@@ -66,8 +63,8 @@ private:
   nsString mDisplayValue;
   PRUint32 mType;
   PRUint32 mTag;
-  PRBool   mProcessObjects;
-  PRBool   mShowObjects;
+  PRBool   mIsValidContainer;
+  PRBool   mIsExpanded;
 };
 
 class nsNSSASN1PrintableItem : public nsIASN1PrintableItem

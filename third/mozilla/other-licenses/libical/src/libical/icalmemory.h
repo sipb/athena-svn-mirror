@@ -4,7 +4,7 @@
  CREATOR: eric 30 June 1999
 
 
- $Id: icalmemory.h,v 1.1.1.1 2003-02-14 18:03:36 rbasch Exp $
+ $Id: icalmemory.h,v 1.1.1.1.2.1 2003-07-14 19:05:13 ghudson Exp $
  $Locker:  $
 
  This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,11 @@
 #define ICALMEMORY_H
 
 #ifndef WIN32
+#ifdef XP_MAC
+#include <size_t.h> /* for size_t */
+#else
 #include <sys/types.h> /* for size_t */
+#endif
 #else
 #include <stddef.h>
 #endif

@@ -36,6 +36,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include <windows.h>
+#include <assert.h>
 
 #include "resource.h"
 
@@ -103,7 +104,8 @@ NPError NP_LOADDS NPP_New(NPMIMEType pluginType,
   if(buf != NULL)
   {
     buf = strrchr(buf, '.');
-    szFileExtension = ++buf;
+    if(buf)
+      szFileExtension = ++buf;
   }
 
   CPlugin * pPlugin = new CPlugin(hInst, 
@@ -320,7 +322,9 @@ void NP_LOADDS NPP_URLNotify(NPP pInstance, const char* url, NPReason reason, vo
   pPlugin->URLNotify(url);
 }
 
+#ifdef OJI
 jref NP_LOADDS NPP_GetJavaClass(void)
 {
   return NULL;
 }
+#endif

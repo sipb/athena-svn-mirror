@@ -39,7 +39,7 @@
 
 #include "nsBoxFrame.h"
 #include "nsCSSRendering.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 
 class nsGroupBoxFrame : public nsBoxFrame {
 public:
@@ -122,15 +122,11 @@ nsGroupBoxFrame::Paint(nsIPresContext*      aPresContext,
 {
   if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
     // Paint our background and border
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
 
-    if (vis->IsVisible() && mRect.width && mRect.height) {
-      PRIntn skipSides = GetSkipSides();
-      const nsStyleBorder* borderStyleData =
-        (const nsStyleBorder*)mStyleContext->GetStyleData(eStyleStruct_Border);
-      const nsStylePadding* paddingStyleData =
-        (const nsStylePadding*)mStyleContext->GetStyleData(eStyleStruct_Padding);
+    if (GetStyleVisibility()->IsVisible() && mRect.width && mRect.height) {
+      PRIntn skipSides = 0;
+      const nsStyleBorder* borderStyleData = GetStyleBorder();
+      const nsStylePadding* paddingStyleData = GetStylePadding();
        
         nsMargin border;
         if (!borderStyleData->GetBorder(border)) {
@@ -148,12 +144,9 @@ nsGroupBoxFrame::Paint(nsIPresContext*      aPresContext,
 
             // if the border is smaller than the legend. Move the border down
             // to be centered on the legend. 
-            const nsStyleMargin* groupMarginData;
-            groupFrame->GetStyleData(eStyleStruct_Margin,
-                                     (const nsStyleStruct*&) groupMarginData);
 
             nsMargin groupMargin;
-            groupMarginData->GetMargin(groupMargin);
+            groupFrame->GetStyleMargin()->GetMargin(groupMargin);
             groupRect.Inflate(groupMargin);
          
             if (border.top < groupRect.height)
@@ -164,7 +157,7 @@ nsGroupBoxFrame::Paint(nsIPresContext*      aPresContext,
 
         nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
                                         aDirtyRect, rect, *borderStyleData,
-                                        *paddingStyleData, 0, 0);
+                                        *paddingStyleData, PR_FALSE);
 
         if (groupBox) {
 

@@ -436,7 +436,8 @@ int main(int argc, char **argv)
     certHandle = CERT_GetDefaultCertDB();
     if (certHandle == NULL) {
 	SECU_PrintError(progName, "unable to open the cert db");	    	
-	NSS_Shutdown();
+	/*ignoring return value of NSS_Shutdown() as code returns -1*/
+	(void) NSS_Shutdown();
 	return (-1);
     }
 
@@ -469,6 +470,9 @@ int main(int argc, char **argv)
 	}
 #endif    
     }
-    NSS_Shutdown();
+    if (NSS_Shutdown() != SECSuccess) {
+        exit(1);
+    }
+
     return (rv);
 }

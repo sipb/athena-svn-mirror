@@ -37,6 +37,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsCOMPtr.h"
+#include "nsAutoPtr.h"
 #include "jsapi.h"
 #include "nsCRT.h"
 #include "nsDOMError.h"
@@ -57,7 +58,7 @@
 #include "nsICodebasePrincipal.h"
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
-#include "nsIByteArrayInputStream.h"
+#include "nsIStringStream.h"
 #include "nsIWindowMediator.h"
 #include "nsIDOMWindowInternal.h"
 #include "nsIDOMDocument.h"
@@ -66,19 +67,21 @@
 #include "nsXPIDLString.h"
 #include "prprf.h"
 #include "nsEscape.h"
+#include "nsIJSContextStack.h"
+#include "nsIWebNavigation.h"
 
 static NS_DEFINE_CID(kSimpleURICID, NS_SIMPLEURI_CID);
 static NS_DEFINE_CID(kWindowMediatorCID, NS_WINDOWMEDIATOR_CID);
 
 
 
-class nsJSThunk : public nsIStreamIO
+class nsJSThunk : public nsIInputStream
 {
 public:
     nsJSThunk();
 
     NS_DECL_ISUPPORTS
-    NS_DECL_NSISTREAMIO
+    NS_FORWARD_SAFE_NSIINPUTSTREAM(mInnerStream)
 
     nsresult Init(nsIURI* uri);
     nsresult EvaluateScript(nsIChannel *aChannel);
@@ -88,25 +91,21 @@ protected:
     virtual ~nsJSThunk();
 
     nsCOMPtr<nsIURI>            mURI;
-    char*                       mResult;
-    PRUint32                    mLength;
+    nsCOMPtr<nsIInputStream>    mInnerStream;
 };
 
 //
 // nsISupports implementation...
 //
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsJSThunk, nsIStreamIO);
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsJSThunk, nsIInputStream);
 
 
 nsJSThunk::nsJSThunk()
-         : mResult(nsnull), mLength(0)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsJSThunk::~nsJSThunk()
 {
-    (void)Close(NS_BASE_STREAM_CLOSED);
 }
 
 nsresult nsJSThunk::Init(nsIURI* uri)
@@ -161,6 +160,8 @@ nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
         return NS_ERROR_FAILURE;
     }
 
+    JSObject *globalJSObject = global->GetGlobalJSObject();
+
     nsCOMPtr<nsIDOMWindow> domWindow(do_QueryInterface(global, &rv));
     if (NS_FAILED(rv)) {
         return NS_ERROR_FAILURE;
@@ -178,7 +179,6 @@ nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
     // if necessary.  So, basically, this call ensures that a document gets
     // created -- if necessary.
     nsCOMPtr<nsIDOMDocument> doc;
-
     rv = domWindow->GetDocument(getter_AddRefs(doc));
     NS_ASSERTION(doc, "No DOMDocument!");
     if (NS_FAILED(rv)) {
@@ -225,7 +225,7 @@ nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
         nsCOMPtr<nsIPrincipal> objectPrincipal;
         rv = securityManager->GetObjectPrincipal(
                                 (JSContext*)scriptContext->GetNativeContext(),
-                                global->GetGlobalJSObject(),
+                                globalJSObject,
                                 getter_AddRefs(objectPrincipal));
         if (NS_FAILED(rv))
             return rv;
@@ -271,17 +271,15 @@ nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
     // Finally, we have everything needed to evaluate the expression.
     nsString result;
     PRBool bIsUndefined;
-    {
-        NS_ConvertUTF8toUCS2 scriptString(script);
-        rv = scriptContext->EvaluateString(scriptString,
-                                           nsnull,      // obj
-                                           principal,
-                                           url.get(),   // url
-                                           1,           // line no
-                                           nsnull,
-                                           result,
-                                           &bIsUndefined);
-    }
+
+    rv = scriptContext->EvaluateString(NS_ConvertUTF8toUCS2(script),
+                                       globalJSObject, // obj
+                                       principal,
+                                       url.get(),      // url
+                                       1,              // line no
+                                       nsnull,
+                                       result,
+                                       &bIsUndefined);
 
     if (NS_FAILED(rv)) {
         rv = NS_ERROR_MALFORMED_URI;
@@ -290,9 +288,9 @@ nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
         rv = NS_ERROR_DOM_RETVAL_UNDEFINED;
     }
     else {
+        // NS_NewStringInputStream calls ToNewCString
         // XXXbe this should not decimate! pass back UCS-2 to necko
-        mResult = ToNewCString(result);
-        mLength = result.Length();
+        rv = NS_NewStringInputStream(getter_AddRefs(mInnerStream), result);
     }
     return rv;
 }
@@ -326,87 +324,6 @@ nsresult nsJSThunk::BringUpConsole(nsIDOMWindow *aDomWindow)
     return rv;
 }
 
-//
-// nsIStreamIO implementation...
-//
-NS_IMETHODIMP
-nsJSThunk::Open()
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP 
-nsJSThunk::GetContentType(nsACString &aContentType)
-{
-    //
-    // At this point the script has already been evaluated...
-    // The resulting string (if any) is stored in mResult.
-    //
-    // If the resultant script evaluation actually does return a value, we
-    // treat it as html.
-    //
-    aContentType = NS_LITERAL_CSTRING("text/html");
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsJSThunk::GetContentCharset(nsACString &aContentCharset)
-{
-    aContentCharset.Truncate();
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsJSThunk::GetContentLength(PRInt32 *result)
-{
-    *result = mLength;
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsJSThunk::Close(nsresult status)
-{
-    if (mResult) {
-        nsCRT::free(mResult);
-        mResult = nsnull;
-    }
-    mLength = 0;
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsJSThunk::GetInputStream(nsIInputStream* *aInputStream)
-{
-    nsresult rv;
-    nsIByteArrayInputStream* str;
-
-    rv = NS_NewByteArrayInputStream(&str, mResult, mLength);
-    if (NS_SUCCEEDED(rv)) {
-        mResult = nsnull; // XXX Whackiness. The input stream takes ownership
-        *aInputStream = str;
-    }
-    else {
-        *aInputStream = nsnull;
-    }
-    return rv;
-}
-
-NS_IMETHODIMP
-nsJSThunk::GetOutputStream(nsIOutputStream* *aOutputStream)
-{
-    // should never be called
-    NS_NOTREACHED("nsJSThunk::GetOutputStream");
-    return NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP
-nsJSThunk::GetName(nsACString &aName)
-{
-    return mURI->GetSpec(aName);
-}
-
-
-
 ////////////////////////////////////////////////////////////////////////////////
 
 class nsJSChannel : public nsIChannel
@@ -423,50 +340,72 @@ public:
 protected:
     virtual ~nsJSChannel();
 
+    nsresult StopAll();
+
+    nsresult InternalOpen(PRBool aIsAsync, nsIStreamListener *aListener,
+                          nsISupports *aContext, nsIInputStream **aResult);
+
 protected:
     nsCOMPtr<nsIChannel>    mStreamChannel;
 
     nsLoadFlags             mLoadFlags;
 
-    nsJSThunk *             mIOThunk;
-    PRBool                  mIsActive;
+    nsRefPtr<nsJSThunk>     mIOThunk;
+    PRPackedBool            mIsActive;
+    PRPackedBool            mWasCanceled;
 };
 
 nsJSChannel::nsJSChannel() :
-    mLoadFlags(LOAD_NORMAL),
-    mIOThunk(nsnull),
-    mIsActive(PR_FALSE)
+    mIsActive(PR_FALSE),
+    mWasCanceled(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsJSChannel::~nsJSChannel()
 {
-    NS_IF_RELEASE(mIOThunk);
 }
 
+nsresult nsJSChannel::StopAll()
+{
+    nsCOMPtr<nsIInterfaceRequestor> callbacks;
+    mStreamChannel->GetNotificationCallbacks(getter_AddRefs(callbacks));
+
+    nsresult rv = NS_ERROR_UNEXPECTED;
+    nsCOMPtr<nsIWebNavigation> webNav(do_GetInterface(callbacks));
+
+    NS_ASSERTION(webNav, "Can't get nsIWebNavigation from callbacks!");
+
+    if (webNav) {
+        rv = webNav->Stop(nsIWebNavigation::STOP_ALL);
+    }
+
+    return rv;
+}
 
 nsresult nsJSChannel::Init(nsIURI *aURI)
 {
     nsresult rv;
-    
-    // Create the nsIStreamIO layer used by the nsIStreamIOChannel.
-    mIOThunk= new nsJSThunk();
-    if (mIOThunk == nsnull)
-        return NS_ERROR_OUT_OF_MEMORY;
-    NS_ADDREF(mIOThunk);
 
-    // Create a stock nsIStreamIOChannel...
+    // Create the nsIStreamIO layer used by the nsIStreamIOChannel.
+    mIOThunk = new nsJSThunk();
+    if (!mIOThunk)
+        return NS_ERROR_OUT_OF_MEMORY;
+
+    // Create a stock input stream channel...
     // Remember, until AsyncOpen is called, the script will not be evaluated
     // and the underlying Input Stream will not be created...
-    nsCOMPtr<nsIStreamIOChannel> channel;
+    nsCOMPtr<nsIChannel> channel;
 
-    rv = NS_NewStreamIOChannel(getter_AddRefs(channel), aURI, mIOThunk);
+    // If the resultant script evaluation actually does return a value, we
+    // treat it as html.
+    rv = NS_NewInputStreamChannel(getter_AddRefs(channel), aURI, mIOThunk,
+                                  NS_LITERAL_CSTRING("text/html"),
+                                  NS_LITERAL_CSTRING(""));
     if (NS_FAILED(rv)) return rv;
 
     rv = mIOThunk->Init(aURI);
     if (NS_SUCCEEDED(rv)) {
-        mStreamChannel = do_QueryInterface(channel);
+        mStreamChannel = channel;
     }
 
     return rv;
@@ -498,35 +437,42 @@ nsJSChannel::GetName(nsACString &aResult)
 NS_IMETHODIMP
 nsJSChannel::IsPending(PRBool *aResult)
 {
-    if (mIsActive) {
-        *aResult = mIsActive;
-        return NS_OK;
-    }
-    return mStreamChannel->IsPending(aResult);
+    *aResult = mIsActive;
+    return NS_OK;
 }
 
 NS_IMETHODIMP
 nsJSChannel::GetStatus(nsresult *aResult)
 {
-    return mStreamChannel->GetStatus(aResult);
+    // We're always ok. Our status is independent of our underlying
+    // stream's status.
+    *aResult = NS_OK;
+    return NS_OK;
 }
 
 NS_IMETHODIMP
 nsJSChannel::Cancel(nsresult aStatus)
 {
-    return mStreamChannel->Cancel(aStatus);
+    // If we're canceled just record the fact that we were canceled,
+    // the underlying stream will be canceled later, if needed. And we
+    // don't care about the reason for the canceling, i.e. ignore
+    // aStatus.
+
+    mWasCanceled = PR_TRUE;
+
+    return NS_OK;
 }
 
 NS_IMETHODIMP
-nsJSChannel::Suspend(void)
+nsJSChannel::Suspend()
 {
-    return mStreamChannel->Suspend();
+    return NS_OK;
 }
 
 NS_IMETHODIMP
-nsJSChannel::Resume(void)
+nsJSChannel::Resume()
 {
-    return mStreamChannel->Resume();
+    return NS_OK;
 }
 
 //
@@ -554,37 +500,26 @@ nsJSChannel::GetURI(nsIURI * *aURI)
 NS_IMETHODIMP
 nsJSChannel::Open(nsIInputStream **aResult)
 {
-    nsresult rv;
-
-    // Synchronously execute the script...
-    // mIsActive is used to indicate the the request is 'busy' during the
-    // the script evaluation phase.  This means that IsPending() will 
-    // indicate the the request is busy while the script is executing...
-    mIsActive = PR_TRUE;
-    rv = mIOThunk->EvaluateScript(mStreamChannel);
-
-    if (NS_SUCCEEDED(rv)) {
-        rv = mStreamChannel->Open(aResult);
-    } else {
-        // Propagate the failure down to the underlying channel...
-        (void) mStreamChannel->Cancel(rv);
-    }
-    mIsActive = PR_FALSE;
-    return rv;
-
+    return InternalOpen(PR_FALSE, nsnull, nsnull, aResult);
 }
 
 NS_IMETHODIMP
 nsJSChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports *aContext)
 {
-    nsresult rv;
+    return InternalOpen(PR_TRUE, aListener, aContext, nsnull);
+}
 
+nsresult
+nsJSChannel::InternalOpen(PRBool aIsAsync, nsIStreamListener *aListener,
+                          nsISupports *aContext, nsIInputStream **aResult)
+{
     nsCOMPtr<nsILoadGroup> loadGroup;
 
-    // Add the javascript channel to its loadgroup...
+    // Add the javascript channel to its loadgroup so that we know if
+    // network loads were canceled or not...
     mStreamChannel->GetLoadGroup(getter_AddRefs(loadGroup));
     if (loadGroup) {
-        (void) loadGroup->AddRequest(this, aContext);
+        loadGroup->AddRequest(this, aContext);
     }
 
     // Synchronously execute the script...
@@ -592,20 +527,47 @@ nsJSChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports *aContext)
     // the script evaluation phase.  This means that IsPending() will 
     // indicate the the request is busy while the script is executing...
     mIsActive = PR_TRUE;
-    rv = mIOThunk->EvaluateScript(mStreamChannel);
-
-    if (NS_SUCCEEDED(rv)) {
-        rv = mStreamChannel->AsyncOpen(aListener, aContext);
-    } else {
-        // Propagate the failure down to the underlying channel...
-        (void) mStreamChannel->Cancel(rv);
-    }
+    nsresult rv = mIOThunk->EvaluateScript(mStreamChannel);
 
     // Remove the javascript channel from its loadgroup...
     if (loadGroup) {
-        (void) loadGroup->RemoveRequest(this, aContext, rv);
+        loadGroup->RemoveRequest(this, aContext, rv);
     }
+
+    // We're no longer active, it's now up to the stream channel to do
+    // the loading, if needed.
     mIsActive = PR_FALSE;
+
+    if (NS_SUCCEEDED(rv) && !mWasCanceled) {
+        // EvaluateScript() succeeded, and we were not canceled, that
+        // means there's data to parse as a result of evaluating the
+        // script.
+
+        // Get the stream channels load flags (!= mLoadFlags).
+        nsLoadFlags loadFlags;
+        mStreamChannel->GetLoadFlags(&loadFlags);
+
+        if (loadFlags & LOAD_DOCUMENT_URI) {
+            // We're loaded as the document channel. Stop all pending
+            // network loads.
+
+            rv = StopAll();
+        }
+
+        if (NS_SUCCEEDED(rv)) {
+            // This will add mStreamChannel to the load group.
+
+            if (aIsAsync) {
+                rv = mStreamChannel->AsyncOpen(aListener, aContext);
+            } else {
+                rv = mStreamChannel->Open(aResult);
+            }
+        }
+    } else {
+        // Propagate the failure down to the underlying channel...
+        mStreamChannel->Cancel(rv);
+    }
+
     return rv;
 }
 
@@ -613,19 +575,26 @@ NS_IMETHODIMP
 nsJSChannel::GetLoadFlags(nsLoadFlags *aLoadFlags)
 {
     *aLoadFlags = mLoadFlags;
+
     return NS_OK;
 }
 
 NS_IMETHODIMP
 nsJSChannel::SetLoadFlags(nsLoadFlags aLoadFlags)
 {
-    mLoadFlags = aLoadFlags;
-    //
-    // Since the javascript channel is considered the 'document channel'
-    // clear this bit before passing it down...  Otherwise, there will be
-    // two document channels!!
-    //
-    return mStreamChannel->SetLoadFlags(aLoadFlags & ~(LOAD_DOCUMENT_URI));
+    // Since the javascript channel is never the actual channel that
+    // any data is loaded through, don't ever set the
+    // LOAD_DOCUMENT_URI flag on it, since that could lead to two
+    // 'document channels' in the loadgroup if a javascript: URL is
+    // loaded while a document is being loaded in the same window.
+
+    mLoadFlags = aLoadFlags & ~LOAD_DOCUMENT_URI;
+
+    // ... but the underlying stream channel should get this bit, if
+    // set, since that'll be the real document channel if the
+    // javascript: URL generated data.
+
+    return mStreamChannel->SetLoadFlags(aLoadFlags);
 }
 
 NS_IMETHODIMP
@@ -711,7 +680,6 @@ nsJSChannel::SetContentLength(PRInt32 aContentLength)
 
 nsJSProtocolHandler::nsJSProtocolHandler()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsresult
@@ -863,16 +831,3 @@ nsJSProtocolHandler::AllowPort(PRInt32 port, const char *scheme, PRBool *_retval
     return NS_OK;
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-
-static const nsModuleComponentInfo gJSModuleInfo[] = {
-    { "JavaScript Protocol Handler",
-      NS_JSPROTOCOLHANDLER_CID,
-      NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX "javascript",
-      nsJSProtocolHandler::Create }
-};
-
-NS_IMPL_NSGETMODULE(javascript__protocol, gJSModuleInfo)
-
-////////////////////////////////////////////////////////////////////////////////

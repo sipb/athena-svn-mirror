@@ -34,10 +34,13 @@
 
 #include "FunctionLib.h"
 #include "NodeSet.h"
-#include "Tokenizer.h"
 #include "txAtoms.h"
 #include "txIXPathContext.h"
+#include "txTokenizer.h"
 #include "XMLDOMUtils.h"
+#ifndef TX_EXE
+#include "nsIDOMNode.h"
+#endif
 
 /*
  * Creates a NodeSetFunctionCall of the given type
@@ -60,12 +63,12 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
         case COUNT:
         {
             if (!requireParams(1, 1, aContext))
-                return new StringResult("error");
+                return new StringResult(NS_LITERAL_STRING("error"));
 
             NodeSet* nodes;
             nodes = evaluateToNodeSet((Expr*)iter.next(), aContext);
             if (!nodes)
-                return new StringResult("error");
+                return new StringResult(NS_LITERAL_STRING("error"));
 
             double count = nodes->size();
             delete nodes;
@@ -74,12 +77,12 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
         case ID:
         {
             if (!requireParams(1, 1, aContext))
-                return new StringResult("error");
+                return new StringResult(NS_LITERAL_STRING("error"));
 
             ExprResult* exprResult;
             exprResult = ((Expr*)iter.next())->evaluate(aContext);
             if (!exprResult)
-                return new StringResult("error");
+                return new StringResult(NS_LITERAL_STRING("error"));
 
             NodeSet* resultSet = new NodeSet();
             if (!resultSet) {
@@ -98,24 +101,24 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
                 NodeSet* nodes = (NodeSet*)exprResult;
                 int i;
                 for (i = 0; i < nodes->size(); i++) {
-                    String idList, id;
+                    nsAutoString idList;
                     XMLDOMUtils::getNodeValue(nodes->get(i), idList);
                     txTokenizer tokenizer(idList);
                     while (tokenizer.hasMoreTokens()) {
-                        tokenizer.nextToken(id);
-                        Node* idNode = contextDoc->getElementById(id);
+                        Node* idNode =
+                            contextDoc->getElementById(tokenizer.nextToken());
                         if (idNode)
                             resultSet->add(idNode);
                     }
                 }
             }
             else {
-                String idList, id;
+                nsAutoString idList;
                 exprResult->stringValue(idList);
                 txTokenizer tokenizer(idList);
                 while (tokenizer.hasMoreTokens()) {
-                    tokenizer.nextToken(id);
-                    Node* idNode = contextDoc->getElementById(id);
+                    Node* idNode =
+                        contextDoc->getElementById(tokenizer.nextToken());
                     if (idNode)
                         resultSet->add(idNode);
                 }
@@ -127,7 +130,7 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
         case LAST:
         {
             if (!requireParams(0, 0, aContext))
-                return new StringResult("error");
+                return new StringResult(NS_LITERAL_STRING("error"));
 
             return new NumberResult(aContext->size());
         }
@@ -136,7 +139,7 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
         case NAMESPACE_URI:
         {
             if (!requireParams(0, 1, aContext))
-                return new StringResult("error");
+                return new StringResult(NS_LITERAL_STRING("error"));
 
             Node* node = 0;
             // Check for optional arg
@@ -144,7 +147,7 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
                 NodeSet* nodes;
                 nodes = evaluateToNodeSet((Expr*)iter.next(), aContext);
                 if (!nodes)
-                    return new StringResult("error");
+                    return new StringResult(NS_LITERAL_STRING("error"));
 
                 if (nodes->isEmpty()) {
                     delete nodes;
@@ -160,20 +163,34 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
             switch (mType) {
                 case LOCAL_NAME:
                 {
-                    String localName;
-                    txAtom* localNameAtom;
-                    node->getLocalName(&localNameAtom);
+                    nsAutoString localName;
+#ifdef TX_EXE
+                    nsCOMPtr<nsIAtom> localNameAtom;
+                    node->getLocalName(getter_AddRefs(localNameAtom));
                     if (localNameAtom) {
                         // Node has a localName
-                        TX_GET_ATOM_STRING(localNameAtom, localName);
-                        TX_RELEASE_ATOM(localNameAtom);
+                        localNameAtom->ToString(localName);
                     }
+#else
+                    // The mozilla HTML-elements returns different casing for
+                    // the localName-atom and .localName. Once we have a
+                    // treeWalker it should have a getLocalName(nsAString&)
+                    // function.
+                    nsCOMPtr<nsIDOMNode> mozNode =
+                        do_QueryInterface(node->getNSObj());
+                    NS_ASSERTION(mozNode, "wrapper doesn't wrap a nsIDOMNode");
+                    mozNode->GetLocalName(localName);
+#endif
                     
                     return new StringResult(localName);
                 }
                 case NAMESPACE_URI:
                 {
-                    return new StringResult(node->getNamespaceURI());
+                    StringResult* result = new StringResult();
+                    if (result) {
+                        node->getNamespaceURI(result->mValue);
+                    }
+                    return result;
                 }
                 case NAME:
                 {
@@ -181,10 +198,18 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
                         case Node::ATTRIBUTE_NODE:
                         case Node::ELEMENT_NODE:
                         case Node::PROCESSING_INSTRUCTION_NODE:
+                        {
                         // XXX Namespace: namespaces have a name
-                            return new StringResult(node->getNodeName());
+                            StringResult* result = new StringResult();
+                            if (result) {
+                                node->getNodeName(result->mValue);
+                            }
+                            return result;
+                        }
                         default:
+                        {
                             break;
+                        }
                     }
                     return new StringResult();
                 }
@@ -197,18 +222,18 @@ ExprResult* NodeSetFunctionCall::evaluate(txIEvalContext* aContext) {
         case POSITION:
         {
             if (!requireParams(0, 0, aContext))
-                return new StringResult("error");
+                return new StringResult(NS_LITERAL_STRING("error"));
 
             return new NumberResult(aContext->position());
         }
     }
 
-    String err("Internal error");
-    aContext->receiveError(err, NS_ERROR_UNEXPECTED);
-    return new StringResult("error");
+    aContext->receiveError(NS_LITERAL_STRING("Internal error"),
+                           NS_ERROR_UNEXPECTED);
+    return new StringResult(NS_LITERAL_STRING("error"));
 }
 
-nsresult NodeSetFunctionCall::getNameAtom(txAtom** aAtom)
+nsresult NodeSetFunctionCall::getNameAtom(nsIAtom** aAtom)
 {
     switch (mType) {
         case COUNT:
@@ -252,6 +277,6 @@ nsresult NodeSetFunctionCall::getNameAtom(txAtom** aAtom)
             return NS_ERROR_FAILURE;
         }
     }
-    TX_ADDREF_ATOM(*aAtom);
+    NS_ADDREF(*aAtom);
     return NS_OK;
 }

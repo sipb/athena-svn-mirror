@@ -71,9 +71,8 @@ NS_NewTreeWalker(nsIDOMNode *aRoot,
                                             aFilter,
                                             aEntityReferenceExpansion);
     NS_ENSURE_TRUE(walker, NS_ERROR_OUT_OF_MEMORY);
-    
-    return walker->QueryInterface(NS_GET_IID(nsIDOMTreeWalker),
-                                  (void**) aInstancePtrResult);
+
+    return CallQueryInterface(walker, aInstancePtrResult);
 }
 
 nsTreeWalker::nsTreeWalker(nsIDOMNode *aRoot,
@@ -87,7 +86,6 @@ nsTreeWalker::nsTreeWalker(nsIDOMNode *aRoot,
     mCurrentNode(aRoot),
     mPossibleIndexesPos(-1)
 {
-    NS_INIT_ISUPPORTS();
 
     NS_ASSERTION(aRoot, "invalid root in call to nsTreeWalker constructor");
 }

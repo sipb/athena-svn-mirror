@@ -26,17 +26,18 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE		= msgmailviews
-LIBRARY_NAME	= msgmailviews_s
+MODULE		= mailview
+LIBRARY_NAME	= mailview_s
 META_COMPONENT = mail
 REQUIRES	= xpcom \
+		  xpcom_obsolete \
 		  string \
 		  msgbase \
 		  mailnews \
 		  necko \
 		  msgbaseutil \
-          msgdb \
-          mime \
+          	  msgdb \
+          	  mime \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -44,6 +45,7 @@ CPPSRCS		= \
 		$(NULL)
 
 EXPORTS		= \
+		nsMsgMailViewsCID.h \
 		nsMsgMailViewList.h \
 		$(NULL)
 

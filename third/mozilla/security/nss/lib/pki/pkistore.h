@@ -35,7 +35,7 @@
 #define PKISTORE_H
 
 #ifdef DEBUG
-static const char PKISTORE_CVS_ID[] = "@(#) $RCSfile: pkistore.h,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 19:51:59 $ $Name: not supported by cvs2svn $";
+static const char PKISTORE_CVS_ID[] = "@(#) $RCSfile: pkistore.h,v $ $Revision: 1.1.1.1.2.1 $ $Date: 2003-07-14 19:06:53 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSPKIT_H
@@ -72,7 +72,7 @@ nssCertificateStore_Create
   NSSArena *arenaOpt
 );
 
-NSS_EXTERN void
+NSS_EXTERN PRStatus
 nssCertificateStore_Destroy
 (
   nssCertificateStore *store
@@ -86,11 +86,20 @@ nssCertificateStore_Add
 );
 
 NSS_EXTERN void
-nssCertificateStore_Remove
+nssCertificateStore_RemoveCertLOCKED
 (
   nssCertificateStore *store,
-  NSSCertificate *cert,
-  PRBool force /* described in bug 171198 */
+  NSSCertificate *cert
+);
+
+NSS_EXTERN void
+nssCertificateStore_Lock (
+  nssCertificateStore *store
+);
+
+NSS_EXTERN void
+nssCertificateStore_Unlock (
+  nssCertificateStore *store
 );
 
 NSS_EXTERN NSSCertificate **

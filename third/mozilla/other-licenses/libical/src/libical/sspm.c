@@ -3,7 +3,7 @@
   FILE: sspm.c Parse Mime
   CREATOR: eric 25 June 2000
   
-  $Id: sspm.c,v 1.1.1.1 2003-02-14 18:26:47 rbasch Exp $
+  $Id: sspm.c,v 1.1.1.1.2.1 2003-07-14 19:05:14 ghudson Exp $
   $Locker:  $
     
  The contents of this file are subject to the Mozilla Public License
@@ -40,6 +40,9 @@
 #include <ctype.h> /* for tolower */
 #include <stdlib.h>   /* for malloc, free */
 #include <string.h> /* for strcasecmp */
+#ifdef XP_MAC
+#include <extras.h> /* for strdup */
+#endif
 
 #ifdef DMALLOC
 #include "dmalloc.h"

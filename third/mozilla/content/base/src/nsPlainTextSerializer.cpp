@@ -41,7 +41,8 @@
 #include "nsPlainTextSerializer.h"
 #include "nsILineBreakerFactory.h"
 #include "nsLWBrkCIID.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsIServiceManager.h"
 #include "nsHTMLAtoms.h"
 #include "nsIDOMText.h"
@@ -50,14 +51,13 @@
 #include "nsIHTMLContent.h"
 #include "nsITextContent.h"
 #include "nsTextFragment.h"
-#include "nsParserCIID.h"
 #include "nsContentUtils.h"
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsCRT.h"
+#include "nsIParserService.h"
 
 static NS_DEFINE_CID(kLWBrkCID, NS_LWBRK_CID);
-static NS_DEFINE_CID(kParserServiceCID, NS_PARSERSERVICE_CID);
 
 #define PREF_STRUCTS "converter.html2txt.structs"
 #define PREF_HEADER_STRATEGY "converter.html2txt.header_strategy"
@@ -91,14 +91,12 @@ nsresult NS_NewPlainTextSerializer(nsIContentSerializer** aSerializer)
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-  return it->QueryInterface(NS_GET_IID(nsIContentSerializer),
-                            (void**)aSerializer);
+  return CallQueryInterface(it, aSerializer);
 }
 
 nsPlainTextSerializer::nsPlainTextSerializer()
   : kSpace(NS_LITERAL_STRING(" ")) // Init of "constant"
 {
-  NS_INIT_ISUPPORTS();
 
   mOutputString = nsnull;
   mInHead = PR_FALSE;
@@ -173,7 +171,7 @@ nsPlainTextSerializer::Init(PRUint32 aFlags, PRUint32 aWrapColumn,
   mWrapColumn = aWrapColumn;
 
   // Only create a linebreaker if we will handle wrapping.
-  if(MayWrap()) {
+  if (MayWrap()) {
     nsCOMPtr<nsILineBreakerFactory> lf(do_GetService(kLWBrkCID, &rv));
     if (NS_SUCCEEDED(rv)) {
       nsAutoString lbarg;
@@ -184,49 +182,100 @@ nsPlainTextSerializer::Init(PRUint32 aFlags, PRUint32 aWrapColumn,
 
   // Set the line break character:
   if ((mFlags & nsIDocumentEncoder::OutputCRLineBreak)
-      && (mFlags & nsIDocumentEncoder::OutputLFLineBreak)) // Windows
+      && (mFlags & nsIDocumentEncoder::OutputLFLineBreak)) {
+    // Windows
     mLineBreak.Assign(NS_LITERAL_STRING("\r\n"));
-  else if (mFlags & nsIDocumentEncoder::OutputCRLineBreak) // Mac
-    mLineBreak.Assign(PRUnichar('\r'));
-  else if (mFlags & nsIDocumentEncoder::OutputLFLineBreak) // Unix/DOM
-    mLineBreak.Assign(PRUnichar('\n'));
-  else
-    mLineBreak.AssignWithConversion(NS_LINEBREAK);         // Platform/default
-
-  
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-  if (NS_SUCCEEDED(rv) && prefs) {
-    if(mFlags & nsIDocumentEncoder::OutputFormatted) {
-      PRBool tempBool;
-      // Get some prefs that controls how we do formatted output
-      prefs->GetBoolPref(PREF_STRUCTS, &tempBool);
-      mStructs = tempBool;
-      prefs->GetIntPref(PREF_HEADER_STRATEGY, &mHeaderStrategy);
-      // The quotesPreformatted pref is a temporary measure. See bug 69638.
-      prefs->GetBoolPref("editor.quotesPreformatted", &tempBool);
-      mQuotesPreformatted = tempBool;
-      // DontWrapAnyQuotes is set according to whether plaintext mail
-      // is wrapping to window width -- see bug 134439.
-      // We'll only want this if we're wrapping and formatted.
-      if (mFlags & nsIDocumentEncoder::OutputWrap || mWrapColumn > 0)
-      {
-        prefs->GetBoolPref("mail.compose.wrap_to_window_width", &tempBool);
-        mDontWrapAnyQuotes = tempBool;
-      }
-    }
-
-    // XXX We should let the caller pass this in.
-    PRBool allowFrames;
-    prefs->GetBoolPref("browser.frames.enabled", &allowFrames);
-    if (allowFrames)
-      mFlags &= ~nsIDocumentEncoder::OutputNoFramesContent;
-    else
-      mFlags |= nsIDocumentEncoder::OutputNoFramesContent;
   }
+  else if (mFlags & nsIDocumentEncoder::OutputCRLineBreak) {
+    // Mac
+    mLineBreak.Assign(PRUnichar('\r'));
+  }
+  else if (mFlags & nsIDocumentEncoder::OutputLFLineBreak) {
+    // Unix/DOM
+    mLineBreak.Assign(PRUnichar('\n'));
+  }
+  else {
+    // Platform/default
+    mLineBreak.AssignWithConversion(NS_LINEBREAK);
+  }
+
   mLineBreakDue = PR_FALSE;
   mFloatingLines = -1;
 
+  nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  if (!prefBranch) {
+    NS_WARNING("Could not get a pref branch!");
+    return NS_OK;
+  }
+
+  PRBool tempBool = PR_FALSE;
+  if (mFlags & nsIDocumentEncoder::OutputFormatted) {
+    // Get some prefs that controls how we do formatted output
+    prefBranch->GetBoolPref(PREF_STRUCTS, &tempBool);
+    mStructs = tempBool;
+    prefBranch->GetIntPref(PREF_HEADER_STRATEGY, &mHeaderStrategy);
+    // The quotesPreformatted pref is a temporary measure. See bug 69638.
+    prefBranch->GetBoolPref("editor.quotesPreformatted", &tempBool);
+    mQuotesPreformatted = tempBool;
+    // DontWrapAnyQuotes is set according to whether plaintext mail
+    // is wrapping to window width -- see bug 134439.
+    // We'll only want this if we're wrapping and formatted.
+    if (mFlags & nsIDocumentEncoder::OutputWrap || mWrapColumn > 0) {
+      prefBranch->GetBoolPref("mail.compose.wrap_to_window_width", &tempBool);
+      mDontWrapAnyQuotes = tempBool;
+    }
+  }
+
+  // XXX We should let the caller pass this in.
+  prefBranch->GetBoolPref("browser.frames.enabled", &tempBool);
+  if (tempBool) {
+    mFlags &= ~nsIDocumentEncoder::OutputNoFramesContent;
+  }
+  else {
+    mFlags |= nsIDocumentEncoder::OutputNoFramesContent;
+  }
+
   return NS_OK;
+}
+
+PRBool
+nsPlainTextSerializer::GetLastBool(const nsVoidArray& aStack)
+{
+  PRUint32 size = aStack.Count();
+  if (size == 0) {
+    return PR_FALSE;
+  }
+  return (aStack.ElementAt(size-1) != NS_REINTERPRET_CAST(void*, PR_FALSE));
+}
+
+void
+nsPlainTextSerializer::SetLastBool(nsVoidArray& aStack, PRBool aValue)
+{
+  PRUint32 size = aStack.Count();
+  if (size > 0) {
+    aStack.ReplaceElementAt(NS_REINTERPRET_CAST(void*, aValue), size-1);
+  }
+  else {
+    NS_ERROR("There is no \"Last\" value");
+  }
+}
+
+void
+nsPlainTextSerializer::PushBool(nsVoidArray& aStack, PRBool aValue)
+{
+    aStack.AppendElement(NS_REINTERPRET_CAST(void*, aValue));
+}
+
+PRBool
+nsPlainTextSerializer::PopBool(nsVoidArray& aStack)
+{
+  PRBool returnValue = PR_FALSE;
+  PRUint32 size = aStack.Count();
+  if (size > 0) {
+    returnValue = (aStack.ElementAt(size-1) != NS_REINTERPRET_CAST(void*, PR_FALSE));
+    aStack.RemoveElementAt(size-1);
+  }
+  return returnValue;
 }
 
 NS_IMETHODIMP
@@ -297,12 +346,14 @@ nsPlainTextSerializer::AppendText(nsIDOMText* aText,
 
     if(offset>start) {
       // Pass in the line
-      rv = DoAddLeaf(eHTMLTag_text, Substring(textstr, start, offset-start));
+      rv = DoAddLeaf(nsnull,
+                     eHTMLTag_text,
+                     Substring(textstr, start, offset-start));
       if (NS_FAILED(rv)) break;
     }
 
     // Pass in a newline
-    rv = DoAddLeaf(eHTMLTag_newline, mLineBreak);
+    rv = DoAddLeaf(nsnull, eHTMLTag_newline, mLineBreak);
     if (NS_FAILED(rv)) break;
     
     start = offset+1;
@@ -312,10 +363,12 @@ nsPlainTextSerializer::AppendText(nsIDOMText* aText,
   // Consume the last bit of the string if there's any left
   if (NS_SUCCEEDED(rv) & (start < length)) {
     if (start) {
-      rv = DoAddLeaf(eHTMLTag_text, Substring(textstr, start, length-start));
+      rv = DoAddLeaf(nsnull,
+                     eHTMLTag_text,
+                     Substring(textstr, start, length-start));
     }
     else {
-      rv = DoAddLeaf(eHTMLTag_text, textstr);
+      rv = DoAddLeaf(nsnull, eHTMLTag_text, textstr);
     }
   }
   
@@ -344,11 +397,11 @@ nsPlainTextSerializer::AppendElementStart(nsIDOMElement *aElement,
   mOutputString = &aStr;
 
   if (isContainer) {
-    rv = DoOpenContainer(id);
+    rv = DoOpenContainer(nsnull, id);
   }
   else {
     nsAutoString empty;
-    rv = DoAddLeaf(id, empty);
+    rv = DoAddLeaf(nsnull, id, empty);
   }
 
   mContent = 0;
@@ -413,21 +466,24 @@ nsPlainTextSerializer::OpenContainer(const nsIParserNode& aNode)
 {
   PRInt32 type = aNode.GetNodeType();
 
-  mParserNode = NS_CONST_CAST(nsIParserNode *, &aNode);
-  return DoOpenContainer(type);
+  return DoOpenContainer(&aNode, type);
 }
 
 NS_IMETHODIMP 
-nsPlainTextSerializer::CloseContainer(const nsIParserNode& aNode)
+nsPlainTextSerializer::CloseContainer(const nsHTMLTag aTag)
 {
-  PRInt32 type = aNode.GetNodeType();
-  const nsAString&   namestr = aNode.GetText();
-  nsCOMPtr<nsIAtom> name = dont_AddRef(NS_NewAtom(namestr));
-  
-  mParserNode = NS_CONST_CAST(nsIParserNode *, &aNode);
-  return DoCloseContainer(type);
+  return DoCloseContainer(aTag);
 }
- 
+
+NS_IMETHODIMP 
+nsPlainTextSerializer::AddHeadContent(const nsIParserNode& aNode)
+{
+  OpenHead(aNode);
+  nsresult rv = AddLeaf(aNode);
+  CloseHead();
+  return rv;
+}
+
 NS_IMETHODIMP 
 nsPlainTextSerializer::AddLeaf(const nsIParserNode& aNode)
 {
@@ -438,7 +494,6 @@ nsPlainTextSerializer::AddLeaf(const nsIParserNode& aNode)
   eHTMLTags type = (eHTMLTags)aNode.GetNodeType();
   const nsAString& text = aNode.GetText();
 
-  mParserNode = NS_CONST_CAST(nsIParserNode *, &aNode);
   if ((type == eHTMLTag_text) ||
       (type == eHTMLTag_whitespace) ||
       (type == eHTMLTag_newline)) {
@@ -449,10 +504,10 @@ nsPlainTextSerializer::AddLeaf(const nsIParserNode& aNode)
     nsReadingIterator<PRUnichar> srcStart, srcEnd;
     length = nsContentUtils::CopyNewlineNormalizedUnicodeTo(text.BeginReading(srcStart), text.EndReading(srcEnd), str);
     str.SetLength(length);
-    return DoAddLeaf(type, str);
+    return DoAddLeaf(&aNode, type, str);
   }
   else {
-    return DoAddLeaf(type, text);
+    return DoAddLeaf(&aNode, type, text);
   }
 }
 
@@ -463,9 +518,9 @@ nsPlainTextSerializer::OpenHTML(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-nsPlainTextSerializer::CloseHTML(const nsIParserNode& aNode)
+nsPlainTextSerializer::CloseHTML()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_html);
 }
 
 NS_IMETHODIMP 
@@ -476,7 +531,7 @@ nsPlainTextSerializer::OpenHead(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-nsPlainTextSerializer::CloseHead(const nsIParserNode& aNode)
+nsPlainTextSerializer::CloseHead()
 {
   mInHead = PR_FALSE;
   return NS_OK;
@@ -489,9 +544,9 @@ nsPlainTextSerializer::OpenBody(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-nsPlainTextSerializer::CloseBody(const nsIParserNode& aNode)
+nsPlainTextSerializer::CloseBody()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_body);
 }
 
 NS_IMETHODIMP 
@@ -501,9 +556,9 @@ nsPlainTextSerializer::OpenForm(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-nsPlainTextSerializer::CloseForm(const nsIParserNode& aNode)
+nsPlainTextSerializer::CloseForm()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_form);
 }
 
 NS_IMETHODIMP 
@@ -513,9 +568,9 @@ nsPlainTextSerializer::OpenMap(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-nsPlainTextSerializer::CloseMap(const nsIParserNode& aNode)
+nsPlainTextSerializer::CloseMap()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_map);
 }
 
 NS_IMETHODIMP 
@@ -525,37 +580,35 @@ nsPlainTextSerializer::OpenFrameset(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-nsPlainTextSerializer::CloseFrameset(const nsIParserNode& aNode)
+nsPlainTextSerializer::CloseFrameset()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_frameset);
 }
 
 NS_IMETHODIMP
-nsPlainTextSerializer::GetPref(PRInt32 aTag, PRBool& aPref)
+nsPlainTextSerializer::IsEnabled(PRInt32 aTag, PRBool* aReturn)
 {
   nsHTMLTag theHTMLTag = nsHTMLTag(aTag);
 
   if (theHTMLTag == eHTMLTag_script) {
-    aPref = mFlags & nsIDocumentEncoder::OutputNoScriptContent;
+    *aReturn = !(mFlags & nsIDocumentEncoder::OutputNoScriptContent);
   }
   else if (theHTMLTag == eHTMLTag_frameset) {
-    aPref = !(mFlags & nsIDocumentEncoder::OutputNoFramesContent);
+    *aReturn = !(mFlags & nsIDocumentEncoder::OutputNoFramesContent);
   }
   else {
-    aPref = PR_FALSE;
+    *aReturn = PR_FALSE;
   }
 
   return NS_OK;
 }
 
-NS_IMETHODIMP 
-nsPlainTextSerializer::DoFragment(PRBool aFlag)
-{
-  return NS_OK;
-}
-
+/**
+ * aNode may be null when we're working with the DOM, but then mContent is
+ * useable instead.
+ */
 nsresult
-nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
+nsPlainTextSerializer::DoOpenContainer(const nsIParserNode* aNode, PRInt32 aTag)
 {
   eHTMLTags type = (eHTMLTags)aTag;
 
@@ -575,7 +628,9 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
        !(mFlags & nsIDocumentEncoder::OutputNoScriptContent)) ||
       ((type == eHTMLTag_iframe || type == eHTMLTag_noframes) &&
        !(mFlags & nsIDocumentEncoder::OutputNoFramesContent))) {
-    mIgnoreAboveIndex = mTagStackIndex;
+    // Ignore everything that follows the current tag in 
+    // question until a matching end tag is encountered.
+    mIgnoreAboveIndex = mTagStackIndex - 1;
     return NS_OK;
   }
 
@@ -590,7 +645,7 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
     // (which arguably we should only do if told to do so).
     nsAutoString style;
     PRInt32 whitespace;
-    if(NS_SUCCEEDED(GetAttributeValue(nsHTMLAtoms::style, style)) &&
+    if(NS_SUCCEEDED(GetAttributeValue(aNode, nsHTMLAtoms::style, style)) &&
        (kNotFound != (whitespace = style.Find("white-space:")))) {
 
       if (kNotFound != style.Find("-moz-pre-wrap", PR_TRUE, whitespace)) {
@@ -643,17 +698,27 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
   if (type == eHTMLTag_p || type == eHTMLTag_pre) {
     EnsureVerticalSpace(1); // Should this be 0 in unformatted case?
   }
+  else if (type == eHTMLTag_tr) {
+    PushBool(mHasWrittenCellsForRow, PR_FALSE);
+  }
   else if (type == eHTMLTag_td || type == eHTMLTag_th) {
     // We must make sure that the content of two table cells get a
     // space between them.
-    
-    // Fow now, I will only add a SPACE. Could be a TAB or something
-    // else but I'm not sure everything can handle the TAB so SPACE
-    // seems like a better solution.
-    if(!mInWhitespace) {
-      // Maybe add something else? Several spaces? A TAB? SPACE+TAB?
-      AddToLine(kSpace.get(), 1);
+
+    // To make the separation between cells most obvious and
+    // importable, we use a TAB.
+    if (GetLastBool(mHasWrittenCellsForRow)) {
+      // Bypass |Write| so that the TAB isn't compressed away.
+      AddToLine(NS_LITERAL_STRING("\t").get(), 1);
       mInWhitespace = PR_TRUE;
+    }
+    else if (mHasWrittenCellsForRow.Count() == 0) {
+      // We don't always see a <tr> (nor a <table>) before the <td> if we're
+      // copying part of a table
+      PushBool(mHasWrittenCellsForRow, PR_TRUE); // will never be popped
+    }
+    else {
+      SetLastBool(mHasWrittenCellsForRow, PR_TRUE);
     }
   }
   else if (type == eHTMLTag_ul) {
@@ -669,7 +734,7 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
     if (mOLStackIndex < OLStackSize) {
       nsAutoString startAttr;
       PRInt32 startVal = 1;
-      if(NS_SUCCEEDED(GetAttributeValue(nsHTMLAtoms::start, startAttr))){
+      if(NS_SUCCEEDED(GetAttributeValue(aNode, nsHTMLAtoms::start, startAttr))){
         PRInt32 rv = 0;
         startVal = startAttr.ToInteger(&rv);
         if (NS_FAILED(rv))
@@ -683,7 +748,7 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
     if (mTagStackIndex > 1 && IsInOL()) {
       if (mOLStackIndex > 0) {
         nsAutoString valueAttr;
-        if(NS_SUCCEEDED(GetAttributeValue(nsHTMLAtoms::value, valueAttr))){
+        if(NS_SUCCEEDED(GetAttributeValue(aNode, nsHTMLAtoms::value, valueAttr))){
           PRInt32 rv = 0;
           PRInt32 valueAttrVal = valueAttr.ToInteger(&rv);
           if (NS_SUCCEEDED(rv))
@@ -725,9 +790,13 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
     EnsureVerticalSpace(1);
 
     nsAutoString value;
-    nsresult rv = GetAttributeValue(nsHTMLAtoms::type, value);
+    nsresult rv = GetAttributeValue(aNode, nsHTMLAtoms::type, value);
 
-    if (NS_SUCCEEDED(rv) && value.EqualsIgnoreCase("cite")) {
+    PRBool isInCiteBlockquote =
+      NS_SUCCEEDED(rv) && value.EqualsIgnoreCase("cite");
+    // Push
+    PushBool(mIsInCiteBlockquote, isInCiteBlockquote);
+    if (isInCiteBlockquote) {
       mCiteQuoteLevel++;
     }
     else {
@@ -749,6 +818,10 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
   // The rest of this routine is formatted output stuff,
   // which we should skip if we're not formatted:
   //////////////////////////////////////////////////////////////
+
+  // Push on stack
+  PRBool currentNodeIsConverted = IsCurrentNodeConverted(aNode);
+  PushBool(mCurrentNodeIsConverted, currentNodeIsConverted);
 
   if (type == eHTMLTag_h1 || type == eHTMLTag_h2 ||
       type == eHTMLTag_h3 || type == eHTMLTag_h4 ||
@@ -785,9 +858,9 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
       }
     }
   }
-  else if (type == eHTMLTag_a && !IsCurrentNodeConverted()) {
+  else if (type == eHTMLTag_a && !currentNodeIsConverted) {
     nsAutoString url;
-    if (NS_SUCCEEDED(GetAttributeValue(nsHTMLAtoms::href, url))
+    if (NS_SUCCEEDED(GetAttributeValue(aNode, nsHTMLAtoms::href, url))
         && !url.IsEmpty()) {
       mURL = url;
     }
@@ -795,25 +868,48 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
   else if (type == eHTMLTag_q) {
     Write(NS_LITERAL_STRING("\""));
   }
-  else if (type == eHTMLTag_sup && mStructs && !IsCurrentNodeConverted()) {
+  else if (type == eHTMLTag_sup && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("^"));
   }
-  else if (type == eHTMLTag_sub && mStructs && !IsCurrentNodeConverted()) { 
+  else if (type == eHTMLTag_sub && mStructs && !currentNodeIsConverted) { 
     Write(NS_LITERAL_STRING("_"));
   }
-  else if (type == eHTMLTag_code && mStructs && !IsCurrentNodeConverted()) {
+  else if (type == eHTMLTag_code && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("|"));
   }
   else if ((type == eHTMLTag_strong || type == eHTMLTag_b)
-           && mStructs && !IsCurrentNodeConverted()) {
+           && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("*"));
   }
   else if ((type == eHTMLTag_em || type == eHTMLTag_i)
-           && mStructs && !IsCurrentNodeConverted()) {
+           && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("/"));
   }
-  else if (type == eHTMLTag_u && mStructs && !IsCurrentNodeConverted()) {
+  else if (type == eHTMLTag_u && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("_"));
+  }
+  else if (type == eHTMLTag_img) {
+    /* Output (in decreasing order of preference)
+       alt, title or nothing */
+    // See <http://www.w3.org/TR/REC-html40/struct/objects.html#edef-IMG>
+    nsAutoString imageDescription;
+    if (NS_SUCCEEDED(GetAttributeValue(aNode,
+                                       nsHTMLAtoms::alt,
+                                       imageDescription))) {
+      // If the alt attribute has an empty value (|alt=""|), output nothing
+    }
+    else if (NS_SUCCEEDED(GetAttributeValue(aNode,
+                                            nsHTMLAtoms::title,
+                                            imageDescription))
+             && !imageDescription.IsEmpty()) {
+      imageDescription = NS_LITERAL_STRING(" [") +
+                         imageDescription +
+                         NS_LITERAL_STRING("] ");
+    }
+    
+    if (!imageDescription.IsEmpty()) {
+      Write(imageDescription);
+    }
   }
 
   return NS_OK;
@@ -823,18 +919,21 @@ nsPlainTextSerializer::DoOpenContainer(PRInt32 aTag)
 nsresult
 nsPlainTextSerializer::DoCloseContainer(PRInt32 aTag)
 {
-  eHTMLTags type = (eHTMLTags)aTag;
-
   if (mTagStackIndex > 0) {
     --mTagStackIndex;
   }
 
   if (mTagStackIndex >= mIgnoreAboveIndex) {
+    if (mTagStackIndex == mIgnoreAboveIndex) {
+      // We're dealing with the close tag whose matching
+      // open tag had set the mIgnoreAboveIndex value.
+      // Reset mIgnoreAboveIndex before discarding this tag.
+      mIgnoreAboveIndex = (PRUint32)kNotFound;
+    }
     return NS_OK;
   }
 
-  mIgnoreAboveIndex = (PRUint32)kNotFound;
-
+  eHTMLTags type = (eHTMLTags)aTag;
   // End current line if we're ending a block level tag
   if((type == eHTMLTag_body) || (type == eHTMLTag_html)) {
     // We want the output to end with a new line,
@@ -850,9 +949,15 @@ nsPlainTextSerializer::DoCloseContainer(PRInt32 aTag)
     // We won't want to do anything with these in formatted mode either,
     // so just return now:
     return NS_OK;
+  }
+  else if (type == eHTMLTag_tr) {
+    PopBool(mHasWrittenCellsForRow);
+    // Should always end a line, but get no more whitespace
+    if (mFloatingLines < 0)
+      mFloatingLines = 0;
+    mLineBreakDue = PR_TRUE;
   } 
-  else if ((type == eHTMLTag_tr) ||
-           (type == eHTMLTag_li) ||
+  else if ((type == eHTMLTag_li) ||
            (type == eHTMLTag_dt)) {
     // Items that should always end a line, but get no more whitespace
     if (mFloatingLines < 0)
@@ -899,10 +1004,10 @@ nsPlainTextSerializer::DoCloseContainer(PRInt32 aTag)
   else if (type == eHTMLTag_blockquote) {
     FlushLine();    // Is this needed?
 
-    nsAutoString value;
-    nsresult rv = GetAttributeValue(nsHTMLAtoms::type, value);
+    // Pop
+    PRBool isInCiteBlockquote = PopBool(mIsInCiteBlockquote);
 
-    if (NS_SUCCEEDED(rv) && value.EqualsIgnoreCase("cite")) {
+    if (isInCiteBlockquote) {
       mCiteQuoteLevel--;
     }
     else {
@@ -938,6 +1043,9 @@ nsPlainTextSerializer::DoCloseContainer(PRInt32 aTag)
   // which we should skip if we're not formatted:
   //////////////////////////////////////////////////////////////
 
+  // Pop the currentConverted stack
+  PRBool currentNodeIsConverted = PopBool(mCurrentNodeIsConverted);
+  
   if (type == eHTMLTag_h1 || type == eHTMLTag_h2 ||
       type == eHTMLTag_h3 || type == eHTMLTag_h4 ||
       type == eHTMLTag_h5 || type == eHTMLTag_h6) {
@@ -953,7 +1061,7 @@ nsPlainTextSerializer::DoCloseContainer(PRInt32 aTag)
     }
     EnsureVerticalSpace(1);
   }
-  else if (type == eHTMLTag_a && !IsCurrentNodeConverted() && !mURL.IsEmpty()) {
+  else if (type == eHTMLTag_a && !currentNodeIsConverted && !mURL.IsEmpty()) {
     nsAutoString temp; 
     temp.Assign(NS_LITERAL_STRING(" <"));
     temp += mURL;
@@ -965,29 +1073,33 @@ nsPlainTextSerializer::DoCloseContainer(PRInt32 aTag)
     Write(NS_LITERAL_STRING("\""));
   }
   else if ((type == eHTMLTag_sup || type == eHTMLTag_sub) 
-           && mStructs && !IsCurrentNodeConverted()) {
+           && mStructs && !currentNodeIsConverted) {
     Write(kSpace);
   }
-  else if (type == eHTMLTag_code && mStructs && !IsCurrentNodeConverted()) {
+  else if (type == eHTMLTag_code && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("|"));
   }
   else if ((type == eHTMLTag_strong || type == eHTMLTag_b)
-           && mStructs && !IsCurrentNodeConverted()) {
+           && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("*"));
   }
   else if ((type == eHTMLTag_em || type == eHTMLTag_i)
-           && mStructs && !IsCurrentNodeConverted()) {
+           && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("/"));
   }
-  else if (type == eHTMLTag_u && mStructs && !IsCurrentNodeConverted()) {
+  else if (type == eHTMLTag_u && mStructs && !currentNodeIsConverted) {
     Write(NS_LITERAL_STRING("_"));
   }
 
   return NS_OK;
 }
 
+/**
+ * aNode may be null when we're working with the DOM, but then mContent is
+ * useable instead.
+ */
 nsresult
-nsPlainTextSerializer::DoAddLeaf(PRInt32 aTag, 
+nsPlainTextSerializer::DoAddLeaf(const nsIParserNode *aNode, PRInt32 aTag, 
                                  const nsAString& aText)
 {
   // If we don't want any output, just return
@@ -1023,8 +1135,8 @@ nsPlainTextSerializer::DoAddLeaf(PRInt32 aTag,
     Write(aText);
   }
   else if (type == eHTMLTag_entity) {
-    nsCOMPtr<nsIParserService> parserService;
-    GetParserService(getter_AddRefs(parserService));
+    nsIParserService* parserService =
+      nsContentUtils::GetParserServiceWeakRef();
     if (parserService) {
       nsAutoString str(aText);
       PRInt32 entity;
@@ -1035,7 +1147,8 @@ nsPlainTextSerializer::DoAddLeaf(PRInt32 aTag,
         PRInt32 err = 0;
         entity = str.ToInteger(&err, kAutoDetect);  // NCR
       }
-      nsAutoString temp(entity);
+      nsAutoString temp;
+      temp.Append(PRUnichar(entity));
       Write(temp);
     }
   }
@@ -1043,7 +1156,7 @@ nsPlainTextSerializer::DoAddLeaf(PRInt32 aTag,
     // Another egregious editor workaround, see bug 38194:
     // ignore the bogus br tags that the editor sticks here and there.
     nsAutoString typeAttr;
-    if (NS_FAILED(GetAttributeValue(nsHTMLAtoms::type, typeAttr))
+    if (NS_FAILED(GetAttributeValue(aNode, nsHTMLAtoms::type, typeAttr))
         || !typeAttr.Equals(NS_LITERAL_STRING("_moz"))) {
       EnsureVerticalSpace(mEmptyLines+1);
     }
@@ -1094,29 +1207,6 @@ nsPlainTextSerializer::DoAddLeaf(PRInt32 aTag,
     Write(line);
 
     EnsureVerticalSpace(0);
-  }
-  else if (type == eHTMLTag_img) {
-    /* Output (in decreasing order of preference)
-       alt, title or nothing */
-    // See <http://www.w3.org/TR/REC-html40/struct/objects.html#edef-IMG>
-    nsAutoString desc, temp;
-    if (NS_SUCCEEDED(GetAttributeValue(nsHTMLAtoms::alt, desc))) {
-      if (!desc.IsEmpty()) {
-        desc.StripChars("\"");
-        temp += desc;
-      }
-      // If the alt attribute has an empty value (|alt=""|), output nothing
-    }
-    else if (NS_SUCCEEDED(GetAttributeValue(nsHTMLAtoms::title, desc))
-             && !desc.IsEmpty()) {
-      temp.Append(NS_LITERAL_STRING(" ["));
-      desc.StripChars("\"");
-      temp += desc;
-      temp.Append(NS_LITERAL_STRING("] "));
-    }
-    if (!temp.IsEmpty()) {
-      Write(temp);
-    }
   }
 
   return NS_OK;
@@ -1700,7 +1790,8 @@ nsPlainTextSerializer::Write(const nsAString& aString)
  * NS_ERROR_NOT_AVAILABLE, there was none such attribute specified.
  */
 nsresult
-nsPlainTextSerializer::GetAttributeValue(nsIAtom* aName,
+nsPlainTextSerializer::GetAttributeValue(const nsIParserNode* aNode,
+                                         nsIAtom* aName,
                                          nsString& aValueRet)
 {
   if (mContent) {
@@ -1709,16 +1800,15 @@ nsPlainTextSerializer::GetAttributeValue(nsIAtom* aName,
       return NS_OK;
     }
   }
-  else if (mParserNode) {
-    const PRUnichar *name; 
-    aName->GetUnicode(&name);
+  else if (aNode) {
+    nsAutoString name; 
+    aName->ToString(name);
 
-    PRInt32 count = mParserNode->GetAttributeCount();
+    PRInt32 count = aNode->GetAttributeCount();
     for (PRInt32 i=0;i<count;i++) {
-      const nsAString& key = mParserNode->GetKeyAt(i);
+      const nsAString& key = aNode->GetKeyAt(i);
       if (key.Equals(name, nsCaseInsensitiveStringComparator())) {
-        aValueRet = mParserNode->GetValueAt(i);
-        aValueRet.StripChars("\"");
+        aValueRet = aNode->GetValueAt(i);
         return NS_OK;
       }
     }
@@ -1732,10 +1822,10 @@ nsPlainTextSerializer::GetAttributeValue(nsIAtom* aName,
  * In this case, we should ignore it.
  */
 PRBool 
-nsPlainTextSerializer::IsCurrentNodeConverted()
+nsPlainTextSerializer::IsCurrentNodeConverted(const nsIParserNode* aNode)
 {
   nsAutoString value;
-  nsresult rv = GetAttributeValue(nsHTMLAtoms::kClass, value);
+  nsresult rv = GetAttributeValue(aNode, nsHTMLAtoms::kClass, value);
   return (NS_SUCCEEDED(rv) &&
           (value.EqualsIgnoreCase("moz-txt", 7) ||
            value.EqualsIgnoreCase("\"moz-txt", 8)));
@@ -1759,27 +1849,15 @@ nsPlainTextSerializer::GetIdForContent(nsIContent* aContent,
   nsAutoString namestr;
   tagname->ToString(namestr);
   
-  nsresult rv;
-  nsCOMPtr<nsIParserService> parserService;
-  rv = GetParserService(getter_AddRefs(parserService));
-  if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
+  nsIParserService* parserService =
+    nsContentUtils::GetParserServiceWeakRef();
+  if (!parserService)
+    return NS_ERROR_FAILURE;
 
+  nsresult rv;
   rv = parserService->HTMLStringTagToId(namestr, aID);
   if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
 
-  return NS_OK;
-}
-
-nsresult
-nsPlainTextSerializer::GetParserService(nsIParserService** aParserService)
-{
-  if (!mParserService) {
-    nsresult rv;
-    mParserService = do_GetService(kParserServiceCID, &rv);
-    if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-  }
-
-  CallQueryInterface(mParserService.get(), aParserService);
   return NS_OK;
 }
 
@@ -1792,8 +1870,7 @@ nsPlainTextSerializer::IsBlockLevel(PRInt32 aId)
 {
   PRBool isBlock = PR_FALSE;
 
-  nsCOMPtr<nsIParserService> parserService;
-  GetParserService(getter_AddRefs(parserService));
+  nsIParserService* parserService = nsContentUtils::GetParserServiceWeakRef();
   if (parserService) {
     parserService->IsBlock(aId, isBlock);
   }
@@ -1809,8 +1886,7 @@ nsPlainTextSerializer::IsContainer(PRInt32 aId)
 {
   PRBool isContainer = PR_FALSE;
 
-  nsCOMPtr<nsIParserService> parserService;
-  GetParserService(getter_AddRefs(parserService));
+  nsIParserService* parserService = nsContentUtils::GetParserServiceWeakRef();
   if (parserService) {
     parserService->IsContainer(aId, isContainer);
   }

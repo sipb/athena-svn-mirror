@@ -36,7 +36,7 @@
    -
    -->
 
-<!DOCTYPE window SYSTEM "chrome://venkman/locale/venkman.dtd" >
+<!DOCTYPE overlay SYSTEM "chrome://venkman/locale/venkman.dtd" >
 
 <overlay id="venkman-views-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -49,7 +49,7 @@
     <floatingview id="breaks" title="&Break.label;" flex="1">
       <vbox id="break-view-content" flex="1">
         <tree flex="1" id="break-tree" persist="height" hidecolumnpicker="true"
-          ondblclick="console.views.breaks.onDblClick(event);"
+          class="focusring"
           context="context:breaks">
 
           <treecols>
@@ -72,12 +72,12 @@
     <floatingview id="locals" title="&Locals.label;" flex="1">
       <vbox id="locals-view-content" flex="1">
         <tree flex="1" id="locals-tree" persist="height"
-          ondblclick="console.views.locals.onDblClick(event);"
+          class="focusring"
           context="context:locals">
 
           <treecols>
-            <treecol id="locals:col-0" label="&LocalsCol0.header;" primary="true"
-              flex="1" persist="hidden width"/>
+            <treecol id="locals:col-0" label="&LocalsCol0.header;"
+              primary="true" flex="1" persist="hidden width"/>
             <splitter class="tree-splitter"/>
             <treecol id="locals:col-1" flex="1" label="&LocalsCol1.header;"
               persist="hidden width" hidden="true"/>
@@ -111,8 +111,15 @@
 
     <floatingview id="scripts" title="&Scripts.label;" flex="1">
       <vbox id="scripts-view-content" flex="1">
+        <hbox id="scripts-search-box" align="center" persist="hidden">
+          <label id="scripts-search-label" value="&ScriptsSearch.label;"
+           onclick="console.views.scripts.onSearchClear(event);"
+           tooltiptext="&ScriptsSearch.tooltip;"/>
+          <textbox id="scripts-search" flex="1"
+            oninput="console.views.scripts.onSearchInput(event);"/>
+        </hbox>
         <tree flex="1" id="scripts-tree" persist="height"
-          ondblclick="console.views.scripts.onDblClick(event);"
+          class="focusring"
           context="context:scripts">
 
           <treecols>
@@ -135,11 +142,7 @@
     <!-- source2 view -->
 
     <floatingview id="source2" title="&Source.label;" flex="1">
-      <stack flex="1">
-        <vbox flex="1" pack="center" align="center">
-          <label id="source2-version-label" value="Venkman!" crop="center"/>
-          <label id="source2-help-label" value="I feel so funky" crop="center"/>
-        </vbox>
+      <vbox flex="1">
         <tabbox id="source2-tabbox" flex="1">
           <tabs id="source2-tabs">
             <!-- 
@@ -150,7 +153,8 @@
           </tabs>
           <tabpanels id="source2-deck" flex="1"/>
         </tabbox>
-      </stack>
+        <textbox class="plain" id="source2-heading" readonly="true"/>
+      </vbox>
     </floatingview>
 
     <!-- source view -->
@@ -163,6 +167,7 @@
           </toolbar>
         </toolbox>
         <tree id="source-tree" flex="1" persist="width"
+          class="focusring"
           onclick="console.views.source.onClick(event);"
           onselect="console.views.source.onSelect(event);"
           context="context:source">
@@ -189,8 +194,9 @@
     <floatingview id="stack" title="&Stack.label;" flex="1"
       grippytooltiptext="&Stack.label;">
       <vbox id="stack-view-content" flex="1">
-        <tree flex="2" id="stack-tree" persist="width" context="context:stack"
-          ondblclick="console.views.stack.onDblClick(event);">
+        <tree flex="2" id="stack-tree" persist="width"
+          class="focusring"
+          context="context:stack">
 
           <treecols>
             <treecol id="stack:col-0" flex="1" persist="hidden width"
@@ -212,7 +218,7 @@
     <floatingview id="watches" title="&Watch.label;" flex="1">
       <vbox id="watch-view-content" flex="1">
         <tree flex="1" id="watch-tree" persist="height"
-          ondblclick="console.views.watches.onDblClick(event);"
+          class="focusring"
           context="context:watches">
 
           <treecols>
@@ -240,8 +246,8 @@
     <floatingview id="windows" title="&Windows.label;" flex="1">
       <vbox id="windows-view-content" flex="1">
         <tree flex="1" id="windows-tree" persist="height"
+          class="focusring"
           context="context:windows"
-          ondblclick="console.views.windows.onDblClick(event);"
           hidecolumnpicker="true">
 
           <treecols>

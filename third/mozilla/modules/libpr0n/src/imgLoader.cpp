@@ -39,6 +39,7 @@
 #include "imgRequest.h"
 #include "imgRequestProxy.h"
 
+#include "ImageErrors.h"
 #include "ImageLogging.h"
 
 #include "nsIComponentRegistrar.h"
@@ -48,8 +49,8 @@
 // until this point, we have an evil hack:
 #include "nsIHttpChannelInternal.h"  
 
-#ifdef DEBUG_pavlov
-#include "nsIEnumerator.h"
+#if defined(DEBUG_pavlov) || defined(DEBUG_timeless)
+#include "nsISimpleEnumerator.h"
 #include "nsXPCOM.h"
 #include "nsISupportsPrimitives.h"
 #include "nsXPIDLString.h"
@@ -57,13 +58,18 @@
 
 static void PrintImageDecoders()
 {
-  nsCOMPtr<nsIEnumerator> enumer;
-  nsComponentManager::EnumerateContractIDs(getter_AddRefs(enumer));
-
+  nsCOMPtr<nsIComponentRegistrar> compMgr;
+  if (NS_FAILED(NS_GetComponentRegistrar(getter_AddRefs(compMgr))) || !compMgr)
+    return;
+  nsCOMPtr<nsISimpleEnumerator> enumer;
+  if (NS_FAILED(compMgr->EnumerateContractIDs(getter_AddRefs(enumer))) || !enumer)
+    return;
+  
   nsCString str;
   nsCOMPtr<nsISupports> s;
-  do {
-    enumer->CurrentItem(getter_AddRefs(s));
+  PRBool more = PR_FALSE;
+  while (NS_SUCCEEDED(enumer->HasMoreElements(&more)) && more) {
+    enumer->GetNext(getter_AddRefs(s));
     if (s) {
       nsCOMPtr<nsISupportsCString> ss(do_QueryInterface(s));
 
@@ -76,7 +82,7 @@ static void PrintImageDecoders()
         printf("Have decoder for mime type: %s\n", xcs.get()+decoderContract.Length());
       }
     }
-  } while(NS_SUCCEEDED(enumer->Next()));
+  }
 }
 #endif
 
@@ -84,7 +90,6 @@ NS_IMPL_ISUPPORTS1(imgLoader, imgILoader)
 
 imgLoader::imgLoader()
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
 #ifdef DEBUG_pavlov
   PrintImageDecoders();
@@ -179,16 +184,12 @@ static nsresult NewImageChannel(nsIChannel **aResult,
   // If all of the proxy requests are canceled then this request should be
   // canceled too.
   //
-  // Always pass in LOAD_BACKGROUND to avoid sending progress/status
-  // notifications.  Since this request is not part of a loadgroup its
-  // progress info would be ignored (anyways)...
-  //
   rv = NS_NewChannel(aResult,
                      aURI,        // URI 
                      nsnull,      // Cached IOService
                      nsnull,      // LoadGroup
                      callbacks,   // Notification Callbacks
-                     aLoadFlags | nsIRequest::LOAD_BACKGROUND);
+                     aLoadFlags);
   if (NS_FAILED(rv))
     return rv;
 
@@ -196,9 +197,8 @@ static nsresult NewImageChannel(nsIChannel **aResult,
   newHttpChannel = do_QueryInterface(*aResult);
   if (newHttpChannel) {
     newHttpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Accept"),
-                                     NS_LITERAL_CSTRING(""));
-    newHttpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Accept"),
-                                     NS_LITERAL_CSTRING("video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1"));
+                                     NS_LITERAL_CSTRING("video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1"),
+                                     PR_FALSE);
 
     nsCOMPtr<nsIHttpChannelInternal> httpChannelInternal = do_QueryInterface(newHttpChannel);
     NS_ENSURE_TRUE(httpChannelInternal, NS_ERROR_UNEXPECTED);
@@ -270,6 +270,8 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
   PRBool bHasExpired      = PR_FALSE;
   PRBool bValidateRequest = PR_FALSE;
 
+  PRBool addToLoadGroup   = PR_TRUE;
+
   // XXX For now ignore the cache key. We will need it in the future
   // for correctly dealing with image load requests that are a result
   // of post data.
@@ -296,10 +298,13 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
 
       // LOAD_BYPASS_CACHE - Always re-fetch
       if (requestFlags & nsIRequest::LOAD_BYPASS_CACHE) {
-        entry->Doom(); // doom this thing.
+        // doom cache entry; be sure to break the reference cycle between the
+        // request and cache entry.  NOTE: the request might not own the cache
+        // entry at this point, so we explicitly Doom |entry| just in case.
+        entry->Doom();
         entry = nsnull;
+        request->RemoveFromCache();
         NS_RELEASE(request);
-        request = nsnull;
       } else {
         // Determine whether the cache entry must be revalidated...
         bValidateRequest = RevalidateEntry(entry, requestFlags, bHasExpired);
@@ -377,7 +382,7 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
     // gets a 304 or figures out that this needs to be a new request
 
     if (request->mValidator) {
-      rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver, aCX,
+      rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver,
                                     requestFlags, aRequest, _retval);
 
       if (*_retval)
@@ -408,33 +413,29 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
         if (NS_SUCCEEDED(newChannel->GetLoadFlags(&loadFlags)))
             newChannel->SetLoadFlags(loadFlags | nsICachingChannel::LOAD_ONLY_IF_MODIFIED);
 
-        rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver, aCX,
-                                      requestFlags, aRequest, _retval);
-
-        httpValidateChecker *hvc = new httpValidateChecker(request, aCX);
-        if (!hvc) {
-          NS_RELEASE(request);
-          return NS_ERROR_OUT_OF_MEMORY;
-        }
-
-        NS_ADDREF(hvc);
-        request->mValidator = hvc;
-
-        hvc->AddProxy(NS_STATIC_CAST(imgRequestProxy*, *_retval));
-
-        nsresult openRes;
-        openRes = newChannel->AsyncOpen(NS_STATIC_CAST(nsIStreamListener *, hvc), nsnull);
-
-        NS_RELEASE(hvc);
-
-        NS_RELEASE(request);
-
-        return openRes;
-
       }
-      // If it isn't caching channel, use the cached version.
-      // XXX we should probably do something more intelligent for local files.
-      bValidateRequest = PR_FALSE;
+      rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver,
+                                    requestFlags, aRequest, _retval);
+
+      imgCacheValidator *hvc = new imgCacheValidator(request, aCX);
+      if (!hvc) {
+        NS_RELEASE(request);
+        return NS_ERROR_OUT_OF_MEMORY;
+      }
+
+      NS_ADDREF(hvc);
+      request->mValidator = hvc;
+
+      hvc->AddProxy(NS_STATIC_CAST(imgRequestProxy*, *_retval));
+
+      nsresult openRes;
+      openRes = newChannel->AsyncOpen(NS_STATIC_CAST(nsIStreamListener *, hvc), nsnull);
+
+      NS_RELEASE(hvc);
+
+      NS_RELEASE(request);
+
+      return openRes;
     }
   } else if (!request) {
     /* Case #1: no request from the cache.  do a new load */
@@ -489,7 +490,7 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
       LOG_MSG(gImgLog, "imgLoader::LoadImage", "async open failed.");
 
       rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver,
-                                    aCX, requestFlags, aRequest, _retval);
+                                    requestFlags, aRequest, _retval);
       request->NotifyProxyListener(NS_STATIC_CAST(imgRequestProxy*, *_retval));
 
       if (NS_SUCCEEDED(rv)) {
@@ -510,15 +511,28 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
 
     // Update the request's LoadId
     request->SetLoadId(aCX);
+
+    // request is already loaded, no need to add anything to the
+    // loadgroup.
+    addToLoadGroup = PR_FALSE;
   }
 
   LOG_MSG(gImgLog, "imgLoader::LoadImage", "creating proxy request.");
 
-  rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver, aCX,
+  rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver,
                                 requestFlags, aRequest, _retval);
 
-  if (!bValidateRequest) // if we have to validate the request, then we will send the notifications later.
-    request->NotifyProxyListener(NS_STATIC_CAST(imgRequestProxy*, *_retval));
+  imgRequestProxy *proxy = (imgRequestProxy *)*_retval;
+
+  if (addToLoadGroup) {
+    proxy->AddToLoadGroup();
+  }
+
+  // if we have to validate the request, then we will send the
+  // notifications later.
+  if (!bValidateRequest) {
+    request->NotifyProxyListener(proxy);
+  }
 
   NS_RELEASE(request);
 
@@ -534,7 +548,7 @@ NS_IMETHODIMP imgLoader::LoadImageWithChannel(nsIChannel *channel, imgIDecoderOb
   imgRequest *request = nsnull;
 
   nsCOMPtr<nsIURI> uri;
-  channel->GetOriginalURI(getter_AddRefs(uri));
+  channel->GetURI(getter_AddRefs(uri));
 
   nsCOMPtr<nsICacheEntryDescriptor> entry;
   PRBool bHasExpired;
@@ -554,16 +568,20 @@ NS_IMETHODIMP imgLoader::LoadImageWithChannel(nsIChannel *channel, imgIDecoderOb
     }
     else if (RevalidateEntry(entry, requestFlags, bHasExpired)) {
       nsCOMPtr<nsICachingChannel> cacheChan(do_QueryInterface(channel));
-
-      NS_ASSERTION(cacheChan, "Cache entry without a caching channel!");
       if (cacheChan) {
         cacheChan->IsFromCache(&bUseCacheCopy);
+      } else {
+        bUseCacheCopy = PR_FALSE;
       }
     }
 
     if (!bUseCacheCopy) {
-      entry->Doom(); // doom this thing.
+      // doom cache entry; be sure to break the reference cycle between the
+      // request and cache entry.  NOTE: the request might not own the cache
+      // entry at this point, so we explicitly Doom |entry| just in case.
+      entry->Doom();
       entry = nsnull;
+      request->RemoveFromCache();
       NS_RELEASE(request);
     }
   }
@@ -577,7 +595,7 @@ NS_IMETHODIMP imgLoader::LoadImageWithChannel(nsIChannel *channel, imgIDecoderOb
     /* XXX If |*listener| is null when we return here, the caller should 
        probably cancel the channel instead of us doing it here.
     */
-    channel->Cancel(NS_BINDING_ABORTED); // this should fire an OnStopRequest
+    channel->Cancel(NS_IMAGELIB_ERROR_LOAD_ABORTED); // this should fire an OnStopRequest
 
     *listener = nsnull; // give them back a null nsIStreamListener
   } else {
@@ -623,7 +641,7 @@ NS_IMETHODIMP imgLoader::LoadImageWithChannel(nsIChannel *channel, imgIDecoderOb
   requestFlags &= 0xFFFF;
 
   rv = CreateNewProxyForRequest(request, loadGroup, aObserver,
-                                aCX, requestFlags, nsnull, _retval);
+                                requestFlags, nsnull, _retval);
   request->NotifyProxyListener(NS_STATIC_CAST(imgRequestProxy*, *_retval));
 
   NS_RELEASE(request);
@@ -634,13 +652,13 @@ NS_IMETHODIMP imgLoader::LoadImageWithChannel(nsIChannel *channel, imgIDecoderOb
 
 nsresult
 imgLoader::CreateNewProxyForRequest(imgRequest *aRequest, nsILoadGroup *aLoadGroup,
-                                    imgIDecoderObserver *aObserver, nsISupports *cx,
+                                    imgIDecoderObserver *aObserver,
                                     nsLoadFlags aLoadFlags, imgIRequest *aProxyRequest,
                                     imgIRequest **_retval)
 {
   LOG_SCOPE_WITH_PARAM(gImgLog, "imgLoader::CreateNewProxyForRequest", "imgRequest", aRequest);
 
-  /* XXX If we move decoding onto seperate threads, we should save off the
+  /* XXX If we move decoding onto separate threads, we should save off the
      calling thread here and pass it off to |proxyRequest| so that it call
      proxy calls to |aObserver|.
    */
@@ -660,7 +678,7 @@ imgLoader::CreateNewProxyForRequest(imgRequest *aRequest, nsILoadGroup *aLoadGro
   proxyRequest->SetLoadFlags(aLoadFlags);
 
   // init adds itself to imgRequest's list of observers
-  nsresult rv = proxyRequest->Init(aRequest, aLoadGroup, aObserver, cx);
+  nsresult rv = proxyRequest->Init(aRequest, aLoadGroup, aObserver);
   if (NS_FAILED(rv)) {
     NS_RELEASE(proxyRequest);
     return rv;
@@ -807,7 +825,6 @@ NS_IMPL_ISUPPORTS2(ProxyListener, nsIStreamListener, nsIRequestObserver)
 ProxyListener::ProxyListener(nsIStreamListener *dest) :
   mDestListener(dest)
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
 }
 
@@ -885,33 +902,39 @@ NS_IMETHODIMP ProxyListener::OnDataAvailable(nsIRequest *aRequest, nsISupports *
  * http validate class.  check a channel for a 304
  */
 
-NS_IMPL_ISUPPORTS2(httpValidateChecker, nsIStreamListener, nsIRequestObserver)
+NS_IMPL_ISUPPORTS2(imgCacheValidator, nsIStreamListener, nsIRequestObserver)
 
-httpValidateChecker::httpValidateChecker(imgRequest *request, void *aContext) :
+imgCacheValidator::imgCacheValidator(imgRequest *request, void *aContext) :
   mContext(aContext)
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
 
   mRequest = request;
   NS_ADDREF(mRequest);
 }
 
-httpValidateChecker::~httpValidateChecker()
+imgCacheValidator::~imgCacheValidator()
 {
   /* destructor code */
-  NS_IF_RELEASE(mRequest);
+  if (mRequest) {
+    mRequest->mValidator = nsnull;
+    NS_RELEASE(mRequest);
+  }
 }
 
-void httpValidateChecker::AddProxy(imgRequestProxy *aProxy)
+void imgCacheValidator::AddProxy(imgRequestProxy *aProxy)
 {
+  // aProxy needs to be in the loadgroup since we're validating from
+  // the network.
+  aProxy->AddToLoadGroup();
+
   mProxies.AppendElement(aProxy);
 }
 
 /** nsIRequestObserver methods **/
 
 /* void onStartRequest (in nsIRequest request, in nsISupports ctxt); */
-NS_IMETHODIMP httpValidateChecker::OnStartRequest(nsIRequest *aRequest, nsISupports *ctxt)
+NS_IMETHODIMP imgCacheValidator::OnStartRequest(nsIRequest *aRequest, nsISupports *ctxt)
 {
   nsCOMPtr<nsICachingChannel> cacheChan(do_QueryInterface(aRequest));
   if (cacheChan) {
@@ -930,65 +953,60 @@ NS_IMETHODIMP httpValidateChecker::OnStartRequest(nsIRequest *aRequest, nsISuppo
       mRequest->SetLoadId(mContext);
       mRequest->mValidator = nsnull;
 
-      NS_RELEASE(mRequest);
-      mRequest = nsnull;
+      NS_RELEASE(mRequest); // assigns null
 
       return NS_OK;
-      // we're set.  do nothing.
-    } else {
-      // fun stuff.
-      nsCOMPtr<nsIChannel> channel(do_QueryInterface(aRequest));
-      nsCOMPtr<nsICacheEntryDescriptor> entry;
-      nsCOMPtr<nsIURI> uri;
-
-      // Doom the old request's cache entry
-      if (mRequest->mCacheEntry)
-        mRequest->mCacheEntry->Doom();
-
-      mRequest->GetURI(getter_AddRefs(uri));
-
-      mRequest->mValidator = nsnull;
-      NS_RELEASE(mRequest);
-      mRequest = nsnull;
-
-      nsresult rv;
-      nsCOMPtr<nsIEventQueueService> eventQService = do_GetService(NS_EVENTQUEUESERVICE_CONTRACTID, &rv);
-      if (NS_FAILED(rv)) return rv;
-
-      nsCOMPtr<nsIEventQueue> activeQ;
-      rv = eventQService->ResolveEventQueue(NS_CURRENT_EVENTQ, getter_AddRefs(activeQ));
-      if (NS_FAILED(rv)) return rv;
-
-      imgRequest *request;
-      NS_NEWXPCOM(request, imgRequest);
-      if (!request) return NS_ERROR_OUT_OF_MEMORY;
-      NS_ADDREF(request);
-
-      imgCache::Put(uri, request, getter_AddRefs(entry));
-
-      request->Init(channel, entry, activeQ.get(), mContext);
-
-      ProxyListener *pl = new ProxyListener(NS_STATIC_CAST(nsIStreamListener *, request));
-      if (!pl) {
-        NS_RELEASE(request);
-        return NS_ERROR_OUT_OF_MEMORY;
-      }
-
-      mDestListener = NS_STATIC_CAST(nsIStreamListener*, pl);
-
-      PRUint32 count;
-      mProxies.Count(&count);
-      for (PRInt32 i = count-1; i>=0; i--) {
-        imgRequestProxy *proxy;
-        mProxies.GetElementAt(i, (nsISupports**)&proxy);
-        proxy->ChangeOwner(request);
-        request->NotifyProxyListener(proxy);
-        NS_RELEASE(proxy);
-      }
-
-      NS_RELEASE(request);
     }
   }
+  // fun stuff.
+  nsCOMPtr<nsIChannel> channel(do_QueryInterface(aRequest));
+  nsCOMPtr<nsICacheEntryDescriptor> entry;
+  nsCOMPtr<nsIURI> uri;
+
+  // Doom the old request's cache entry
+  mRequest->RemoveFromCache();
+
+  mRequest->GetURI(getter_AddRefs(uri));
+
+  mRequest->mValidator = nsnull;
+  NS_RELEASE(mRequest); // assigns null
+
+  nsresult rv;
+  nsCOMPtr<nsIEventQueueService> eventQService = do_GetService(NS_EVENTQUEUESERVICE_CONTRACTID, &rv);
+  if (NS_FAILED(rv)) return rv;
+
+  nsCOMPtr<nsIEventQueue> activeQ;
+  rv = eventQService->ResolveEventQueue(NS_CURRENT_EVENTQ, getter_AddRefs(activeQ));
+  if (NS_FAILED(rv)) return rv;
+
+  imgRequest *request;
+  NS_NEWXPCOM(request, imgRequest);
+  if (!request) return NS_ERROR_OUT_OF_MEMORY;
+  NS_ADDREF(request);
+
+  imgCache::Put(uri, request, getter_AddRefs(entry));
+
+  request->Init(channel, entry, activeQ.get(), mContext);
+
+  ProxyListener *pl = new ProxyListener(NS_STATIC_CAST(nsIStreamListener *, request));
+  if (!pl) {
+    NS_RELEASE(request);
+    return NS_ERROR_OUT_OF_MEMORY;
+  }
+
+  mDestListener = NS_STATIC_CAST(nsIStreamListener*, pl);
+
+  PRUint32 count;
+  mProxies.Count(&count);
+  for (PRInt32 i = count-1; i>=0; i--) {
+    imgRequestProxy *proxy;
+    mProxies.GetElementAt(i, (nsISupports**)&proxy);
+    proxy->ChangeOwner(request);
+    request->NotifyProxyListener(proxy);
+    NS_RELEASE(proxy);
+  }
+
+  NS_RELEASE(request);
 
   if (!mDestListener)
     return NS_OK;
@@ -997,7 +1015,7 @@ NS_IMETHODIMP httpValidateChecker::OnStartRequest(nsIRequest *aRequest, nsISuppo
 }
 
 /* void onStopRequest (in nsIRequest request, in nsISupports ctxt, in nsresult status); */
-NS_IMETHODIMP httpValidateChecker::OnStopRequest(nsIRequest *aRequest, nsISupports *ctxt, nsresult status)
+NS_IMETHODIMP imgCacheValidator::OnStopRequest(nsIRequest *aRequest, nsISupports *ctxt, nsresult status)
 {
   if (!mDestListener)
     return NS_OK;
@@ -1018,7 +1036,7 @@ static NS_METHOD dispose_of_data(nsIInputStream* in, void* closure,
 }
 
 /* void onDataAvailable (in nsIRequest request, in nsISupports ctxt, in nsIInputStream inStr, in unsigned long sourceOffset, in unsigned long count); */
-NS_IMETHODIMP httpValidateChecker::OnDataAvailable(nsIRequest *aRequest, nsISupports *ctxt, nsIInputStream *inStr, PRUint32 sourceOffset, PRUint32 count)
+NS_IMETHODIMP imgCacheValidator::OnDataAvailable(nsIRequest *aRequest, nsISupports *ctxt, nsIInputStream *inStr, PRUint32 sourceOffset, PRUint32 count)
 {
 #ifdef DEBUG
   nsCOMPtr<nsICachingChannel> cacheChan(do_QueryInterface(aRequest));

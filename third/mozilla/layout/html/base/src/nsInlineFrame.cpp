@@ -39,14 +39,16 @@
 #include "nsBlockFrame.h"
 #include "nsHTMLAtoms.h"
 #include "nsHTMLParts.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIPresShell.h"
 #include "nsIPresContext.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
 #include "nsAbsoluteContainingBlock.h"
 #include "nsLayoutAtoms.h"
+#include "nsCSSAnonBoxes.h"
 #include "nsReflowPath.h"
+#include "nsAutoPtr.h"
 #ifdef ACCESSIBILITY
 #include "nsIServiceManager.h"
 #include "nsIAccessibilityService.h"
@@ -56,10 +58,8 @@
 #undef NOISY_PUSHING
 #endif
 
-nsIID nsInlineFrame::kInlineFrameCID = NS_INLINE_FRAME_CID;
 
-
-
+NS_DEFINE_IID(kInlineFrameCID, NS_INLINE_FRAME_CID);
 
 
 //////////////////////////////////////////////////////////////////////
@@ -143,43 +143,33 @@ NS_IMETHODIMP
 nsInlineFrame::IsEmpty(nsCompatibility aCompatMode, PRBool aIsPre,
                        PRBool* aResult)
 {
+#if 0
+  // I used to think inline frames worked this way, but it seems they
+  // don't.  At least not in our codebase.
   if (aCompatMode == eCompatibility_FullStandards) {
     *aResult = PR_FALSE;
     return NS_OK;
   }
-  const nsStyleMargin* margin = NS_STATIC_CAST(const nsStyleMargin*,
-                             mStyleContext->GetStyleData(eStyleStruct_Margin));
-  const nsStyleBorder* border = NS_STATIC_CAST(const nsStyleBorder*,
-                             mStyleContext->GetStyleData(eStyleStruct_Border));
-  const nsStylePadding* padding = NS_STATIC_CAST(const nsStylePadding*,
-                            mStyleContext->GetStyleData(eStyleStruct_Padding));
+#endif
+  const nsStyleMargin* margin = GetStyleMargin();
+  const nsStyleBorder* border = GetStyleBorder();
+  const nsStylePadding* padding = GetStylePadding();
   nsStyleCoord coord;
-  if ((border->IsBorderSideVisible(NS_SIDE_TOP) &&
-       !IsBorderZero(border->mBorder.GetTopUnit(),
-                     border->mBorder.GetTop(coord))) ||
-      (border->IsBorderSideVisible(NS_SIDE_RIGHT) &&
-       !IsBorderZero(border->mBorder.GetTopUnit(),
-                     border->mBorder.GetTop(coord))) ||
-      (border->IsBorderSideVisible(NS_SIDE_BOTTOM) &&
-       !IsBorderZero(border->mBorder.GetTopUnit(),
-                     border->mBorder.GetTop(coord))) ||
+  // XXX Top and bottom removed, since they shouldn't affect things, but this
+  // doesn't really match with nsLineLayout.cpp's setting of
+  // ZeroEffectiveSpanBox, anymore, so what should this really be?
+  if ((border->IsBorderSideVisible(NS_SIDE_RIGHT) &&
+       !IsBorderZero(border->mBorder.GetRightUnit(),
+                     border->mBorder.GetRight(coord))) ||
       (border->IsBorderSideVisible(NS_SIDE_LEFT) &&
-       !IsBorderZero(border->mBorder.GetTopUnit(),
-                     border->mBorder.GetTop(coord))) ||
-      !IsPaddingZero(padding->mPadding.GetTopUnit(),
-                    padding->mPadding.GetTop(coord)) ||
+       !IsBorderZero(border->mBorder.GetLeftUnit(),
+                     border->mBorder.GetLeft(coord))) ||
       !IsPaddingZero(padding->mPadding.GetRightUnit(),
                     padding->mPadding.GetRight(coord)) ||
-      !IsPaddingZero(padding->mPadding.GetBottomUnit(),
-                    padding->mPadding.GetBottom(coord)) ||
       !IsPaddingZero(padding->mPadding.GetLeftUnit(),
                     padding->mPadding.GetLeft(coord)) ||
-      !IsMarginZero(margin->mMargin.GetTopUnit(),
-                    margin->mMargin.GetTop(coord)) ||
       !IsMarginZero(margin->mMargin.GetRightUnit(),
                     margin->mMargin.GetRight(coord)) ||
-      !IsMarginZero(margin->mMargin.GetBottomUnit(),
-                    margin->mMargin.GetBottom(coord)) ||
       !IsMarginZero(margin->mMargin.GetLeftUnit(),
                     margin->mMargin.GetLeft(coord))) {
     *aResult = PR_FALSE;
@@ -256,13 +246,12 @@ nsInlineFrame::RemoveFrame(nsIPresContext* aPresContext,
     // Loop and destroy the frame and all of its continuations.
     PRBool generateReflowCommand = PR_FALSE;
 
-    // If the frame we are removing is a brFrame and we have a
-    // nextInFlow, we need a reflow so we can attempt to pull up
-    // any frames in the nextInFlow that can fit on the line
-    // the brFrame was on.
+    // If the frame we are removing is a brFrame, we need a reflow so
+    // the line the brFrame was on can attempt to pull up any frames
+    // that can fit from lines below it.
     nsCOMPtr<nsIAtom> frameType;
     aOldFrame->GetFrameType(getter_AddRefs(frameType));
-    if (frameType == nsLayoutAtoms::brFrame && mNextInFlow)
+    if (frameType == nsLayoutAtoms::brFrame)
       generateReflowCommand = PR_TRUE;
 
     nsIFrame* oldFrameParent;
@@ -311,23 +300,55 @@ nsInlineFrame::ReplaceFrame(nsIPresContext* aPresContext,
                             nsIFrame* aOldFrame,
                             nsIFrame* aNewFrame)
 {
-  if (nsnull != aListName) {
+  if (aListName) {
+    NS_ERROR("Don't have any special lists on inline frames!");
     return NS_ERROR_INVALID_ARG;
   }
   if (!aOldFrame || !aNewFrame) {
+    NS_ERROR("Missing aOldFrame or aNewFrame");
     return NS_ERROR_INVALID_ARG;
   }
 
-  // Replace the old frame with the new frame in the list, then remove the old frame
-  mFrames.ReplaceFrame(this, aOldFrame, aNewFrame);
-  aOldFrame->Destroy(aPresContext);
-
+  PRBool retval =
+    mFrames.ReplaceFrame(aPresContext, this, aOldFrame, aNewFrame, PR_TRUE);
+  
   // Ask the parent frame to reflow me.
   ReflowDirtyChild(&aPresShell, nsnull);
 
-  return NS_OK;
+  return retval ? NS_OK : NS_ERROR_FAILURE;
 }
 
+
+NS_IMETHODIMP
+nsInlineFrame::Paint(nsIPresContext*      aPresContext,
+                     nsIRenderingContext& aRenderingContext,
+                     const nsRect&        aDirtyRect,
+                     nsFramePaintLayer    aWhichLayer,
+                     PRUint32             aFlags)
+{
+  if (NS_FRAME_IS_UNFLOWABLE & mState) {
+    return NS_OK;
+  }
+
+  // Paint inline element backgrounds in the foreground layer (bug 36710).
+  if (aWhichLayer == NS_FRAME_PAINT_LAYER_FOREGROUND) {
+    PaintSelf(aPresContext, aRenderingContext, aDirtyRect);
+  }
+    
+  // The sole purpose of this is to trigger display of the selection
+  // window for Named Anchors, which don't have any children and
+  // normally don't have any size, but in Editor we use CSS to display
+  // an image to represent this "hidden" element.
+  if (!mFrames.FirstChild()) {
+    nsFrame::Paint(aPresContext, aRenderingContext, aDirtyRect,
+                   aWhichLayer, aFlags);
+  }
+
+  PaintDecorationsAndChildren(aPresContext, aRenderingContext,
+                              aDirtyRect, aWhichLayer, PR_FALSE,
+                              aFlags);
+  return NS_OK;
+}
 
 //////////////////////////////////////////////////////////////////////
 // Reflow methods
@@ -579,7 +600,8 @@ nsInlineFrame::ReflowFrames(nsIPresContext* aPresContext,
   // that are empty we force to empty so that things like collapsed
   // whitespace in an inline element don't affect the line-height.
   nsSize size;
-  lineLayout->EndSpan(this, size, aMetrics.maxElementSize);
+  lineLayout->EndSpan(this, size,
+                    aMetrics.mComputeMEW ? &aMetrics.mMaxElementWidth : nsnull);
   if ((0 == size.height) && (0 == size.width) &&
       ((nsnull != mPrevInFlow) || (nsnull != mNextInFlow))) {
     // This is a continuation of a previous inline. Therefore make
@@ -588,9 +610,8 @@ nsInlineFrame::ReflowFrames(nsIPresContext* aPresContext,
     aMetrics.height = 0;
     aMetrics.ascent = 0;
     aMetrics.descent = 0;
-    if (nsnull != aMetrics.maxElementSize) {
-      aMetrics.maxElementSize->width = 0;
-      aMetrics.maxElementSize->height = 0;
+    if (aMetrics.mComputeMEW) {
+      aMetrics.mMaxElementWidth = 0;
     }
   }
   else {
@@ -636,8 +657,7 @@ nsInlineFrame::ReflowFrames(nsIPresContext* aPresContext,
     // little hack lets us override that behavior to allow for more
     // precise layout in the face of imprecise fonts.
     if (nsHTMLReflowState::UseComputedHeight()) {
-      const nsStyleFont* font;
-      GetStyleData(eStyleStruct_Font, (const nsStyleStruct*&)font);
+      const nsStyleFont* font = GetStyleFont();
       aMetrics.height = font->mFont.size +
         aReflowState.mComputedBorderPadding.top +
         aReflowState.mComputedBorderPadding.bottom;
@@ -655,9 +675,8 @@ nsInlineFrame::ReflowFrames(nsIPresContext* aPresContext,
   ListTag(stdout);
   printf(": metrics=%d,%d ascent=%d descent=%d\n",
          aMetrics.width, aMetrics.height, aMetrics.ascent, aMetrics.descent);
-  if (nsnull != aMetrics.maxElementSize) {
-    printf(" maxElementSize %d,%d\n", 
-      aMetrics.maxElementSize->width, aMetrics.maxElementSize->height);
+  if (aMetrics.mComputeMEW) {
+    printf(" maxElementWidth %d\n", aMetrics.mMaxElementWidth);
   }
 #endif
 
@@ -784,7 +803,7 @@ nsInlineFrame::ReflowInlineFrame(nsIPresContext* aPresContext,
     aFrame->GetFrameType(getter_AddRefs(frameType));
     if (nsLayoutAtoms::placeholderFrame == frameType) {
       nsBlockReflowState* blockRS = lineLayout->mBlockRS;
-      blockRS->mBlock->SplitPlaceholder(*blockRS, *aFrame);
+      blockRS->mBlock->SplitPlaceholder(*aPresContext, *aFrame);
     }
     else {
       nsIFrame* newFrame;
@@ -868,7 +887,7 @@ nsInlineFrame::GetSkipSides() const
       skip |= 1 << NS_SIDE_LEFT;
     }
     else {
-      // If the prev-in-flow is empty, then go ahead and let our right
+      // If the prev-in-flow is empty, then go ahead and let our left
       // edge border render.
     }
   }
@@ -895,15 +914,20 @@ NS_IMETHODIMP nsInlineFrame::GetAccessible(nsIAccessible** aAccessible)
   *aAccessible = nsnull;
   nsCOMPtr<nsIAtom> tagAtom;
   mContent->GetTag(*getter_AddRefs(tagAtom));
-  if (tagAtom == nsHTMLAtoms::img || tagAtom == nsHTMLAtoms::input) {
+  if (tagAtom == nsHTMLAtoms::img || tagAtom == nsHTMLAtoms::input || 
+     tagAtom == nsHTMLAtoms::label || tagAtom == nsHTMLAtoms::hr) {
     // Only get accessibility service if we're going to use it
     nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
     if (!accService)
       return NS_ERROR_FAILURE;
     if (tagAtom == nsHTMLAtoms::input)  // Broken <input type=image ... />
       return accService->CreateHTML4ButtonAccessible(NS_STATIC_CAST(nsIFrame*, this), aAccessible);
-    // Create accessible for broken <img>
-    return accService->CreateHTMLImageAccessible(NS_STATIC_CAST(nsIFrame*, this), aAccessible);
+    else if (tagAtom == nsHTMLAtoms::img)  // Create accessible for broken <img>
+      return accService->CreateHTMLImageAccessible(NS_STATIC_CAST(nsIFrame*, this), aAccessible);
+    else if (tagAtom == nsHTMLAtoms::label)  // Creat accessible for <label>
+      return accService->CreateHTMLLabelAccessible(NS_STATIC_CAST(nsIFrame*, this), aAccessible);
+    // Create accessible for <hr>
+    return accService->CreateHTMLHRAccessible(NS_STATIC_CAST(nsIFrame*, this), aAccessible);
   }
 
   return NS_ERROR_FAILURE;
@@ -916,7 +940,7 @@ NS_IMETHODIMP nsInlineFrame::GetAccessible(nsIAccessible** aAccessible)
 
 static void
 ReParentChildListStyle(nsIPresContext* aPresContext,
-                       nsIStyleContext* aParentStyleContext,
+                       nsStyleContext* aParentStyleContext,
                        nsFrameList& aFrameList)
 {
   nsIFrame* kid = aFrameList.FirstChild();
@@ -1063,28 +1087,22 @@ nsFirstLineFrame::Reflow(nsIPresContext* aPresContext,
       // proper parent context.
       nsIFrame* parentFrame;
       first->GetParent(&parentFrame);
-      nsIStyleContext* parentContext;
-      parentFrame->GetStyleContext(&parentContext);
+      nsStyleContext* parentContext = parentFrame->GetStyleContext();
       if (parentContext) {
         // Create a new style context that is a child of the parent
         // style context thus removing the :first-line style. This way
         // we behave as if an anonymous (unstyled) span was the child
         // of the parent frame.
-        nsIStyleContext* newSC;
-        aPresContext->ResolvePseudoStyleContextFor(mContent,
-                                                   nsHTMLAtoms::mozLineFrame,
-                                                   parentContext,
-                                                   &newSC);
+        nsRefPtr<nsStyleContext> newSC = aPresContext->ResolvePseudoStyleContextFor(nsnull,
+                                                                                    nsCSSAnonBoxes::mozLineFrame,
+                                                                                    parentContext);
         if (newSC) {
           // Switch to the new style context.
           SetStyleContext(aPresContext, newSC);
 
           // Re-resolve all children
           ReParentChildListStyle(aPresContext, mStyleContext, mFrames);
-
-          NS_RELEASE(newSC);
         }
-        NS_RELEASE(parentContext);
       }
     }
   }
@@ -1106,7 +1124,7 @@ NS_NewPositionedInlineFrame(nsIPresShell* aPresShell, nsIFrame** aNewFrame)
   if (nsnull == aNewFrame) {
     return NS_ERROR_NULL_POINTER;
   }
-  nsPositionedInlineFrame* it = new (aPresShell) nsPositionedInlineFrame;
+  nsPositionedInlineFrame* it = new (aPresShell) nsPositionedInlineFrame();
   if (nsnull == it) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
@@ -1128,7 +1146,7 @@ nsPositionedInlineFrame::SetInitialChildList(nsIPresContext* aPresContext,
 {
   nsresult  rv;
 
-  if (nsLayoutAtoms::absoluteList == aListName) {
+  if (mAbsoluteContainer.GetChildListName() == aListName) {
     rv = mAbsoluteContainer.SetInitialChildList(this, aPresContext, aListName, aChildList);
   } else {
     rv = nsInlineFrame::SetInitialChildList(aPresContext, aListName, aChildList);
@@ -1145,7 +1163,7 @@ nsPositionedInlineFrame::AppendFrames(nsIPresContext* aPresContext,
 {
   nsresult  rv;
   
-  if (nsLayoutAtoms::absoluteList == aListName) {
+  if (mAbsoluteContainer.GetChildListName() == aListName) {
     rv = mAbsoluteContainer.AppendFrames(this, aPresContext, aPresShell, aListName,
                                          aFrameList);
   } else {
@@ -1165,7 +1183,7 @@ nsPositionedInlineFrame::InsertFrames(nsIPresContext* aPresContext,
 {
   nsresult  rv;
 
-  if (nsLayoutAtoms::absoluteList == aListName) {
+  if (mAbsoluteContainer.GetChildListName() == aListName) {
     rv = mAbsoluteContainer.InsertFrames(this, aPresContext, aPresShell, aListName,
                                          aPrevFrame, aFrameList);
   } else {
@@ -1184,7 +1202,7 @@ nsPositionedInlineFrame::RemoveFrame(nsIPresContext* aPresContext,
 {
   nsresult  rv;
 
-  if (nsLayoutAtoms::absoluteList == aListName) {
+  if (mAbsoluteContainer.GetChildListName() == aListName) {
     rv = mAbsoluteContainer.RemoveFrame(this, aPresContext, aPresShell, aListName, aOldFrame);
   } else {
     rv = nsInlineFrame::RemoveFrame(aPresContext, aPresShell, aListName, aOldFrame);
@@ -1194,13 +1212,29 @@ nsPositionedInlineFrame::RemoveFrame(nsIPresContext* aPresContext,
 }
 
 NS_IMETHODIMP
+nsPositionedInlineFrame::ReplaceFrame(nsIPresContext* aPresContext,
+                                      nsIPresShell&   aPresShell,
+                                      nsIAtom*        aListName,
+                                      nsIFrame*       aOldFrame,
+                                      nsIFrame*       aNewFrame)
+{
+  if (mAbsoluteContainer.GetChildListName() == aListName) {
+    return mAbsoluteContainer.ReplaceFrame(this, aPresContext, aPresShell,
+                                           aListName, aOldFrame, aNewFrame);
+  } else {
+    return nsInlineFrame::ReplaceFrame(aPresContext, aPresShell, aListName,
+                                       aOldFrame, aNewFrame);
+  }
+}
+
+NS_IMETHODIMP
 nsPositionedInlineFrame::GetAdditionalChildListName(PRInt32   aIndex,
                                                     nsIAtom** aListName) const
 {
   NS_PRECONDITION(nsnull != aListName, "null OUT parameter pointer");
   *aListName = nsnull;
   if (0 == aIndex) {
-    *aListName = nsLayoutAtoms::absoluteList;
+    *aListName = mAbsoluteContainer.GetChildListName();
     NS_ADDREF(*aListName);
   }
   return NS_OK;
@@ -1212,7 +1246,7 @@ nsPositionedInlineFrame::FirstChild(nsIPresContext* aPresContext,
                                     nsIFrame**      aFirstChild) const
 {
   NS_PRECONDITION(nsnull != aFirstChild, "null OUT parameter pointer");
-  if (aListName == nsLayoutAtoms::absoluteList) {
+  if (mAbsoluteContainer.GetChildListName() == aListName) {
     return mAbsoluteContainer.FirstChild(this, aListName, aFirstChild);
   }
 
@@ -1306,7 +1340,7 @@ nsPositionedInlineFrame::Reflow(nsIPresContext*          aPresContext,
 
     rv = mAbsoluteContainer.Reflow(this, aPresContext, aReflowState,
                                    containingBlockWidth, containingBlockHeight,
-                                   childBounds);
+                                   &childBounds);
     
     // XXX Although this seems like the correct thing to do the line layout
     // code seems to reset the NS_FRAME_OUTSIDE_CHILDREN and so it is ignored
@@ -1328,15 +1362,3 @@ nsPositionedInlineFrame::Reflow(nsIPresContext*          aPresContext,
 
   return rv;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsPositionedInlineFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  *aResult = sizeof(*this);
-  return NS_OK;
-}
-#endif

@@ -112,11 +112,11 @@ class NS_NO_VTABLE nsINSSComponent : public nsISupports {
 
   // This method will just disable OCSP in NSS, it will not
   // alter the respective pref values.
-  NS_IMETHOD DisableOCSP() = 0;
+  NS_IMETHOD SkipOcsp() = 0;
 
   // This method will set the OCSP value according to the 
   // values in the preferences.
-  NS_IMETHOD EnableOCSP() = 0;
+  NS_IMETHOD SkipOcspOff() = 0;
 
   NS_IMETHOD RememberCert(CERTCertificate *cert) = 0;
 
@@ -126,9 +126,12 @@ class NS_NO_VTABLE nsINSSComponent : public nsISupports {
 
   NS_IMETHOD DownloadCRLDirectly(nsAutoString, nsAutoString) = 0;
   
+  NS_IMETHOD LogoutAuthenticatedPK11() = 0;
+  
 };
 
 struct PRLock;
+class nsNSSShutDownList;
 
 // Implementation of the PSM component interface.
 class nsNSSComponent : public nsISignatureVerifier,
@@ -160,19 +163,34 @@ public:
                                            const PRUnichar **params,
                                            PRUint32 numParams,
                                            PRUnichar **outString);
-  NS_IMETHOD DisableOCSP();
-  NS_IMETHOD EnableOCSP();
+  NS_IMETHOD SkipOcsp();
+  NS_IMETHOD SkipOcspOff();
   nsresult InitializeCRLUpdateTimer();
   nsresult StopCRLUpdateTimer();
   NS_IMETHOD RemoveCrlFromList(nsAutoString);
   NS_IMETHOD DefineNextTimer();
+  NS_IMETHOD LogoutAuthenticatedPK11();
   NS_IMETHOD DownloadCRLDirectly(nsAutoString, nsAutoString);
   NS_IMETHOD RememberCert(CERTCertificate *cert);
+  static nsresult GetNSSCipherIDFromPrefString(const nsACString &aPrefString, PRUint16 &aCipherId);
 
 private:
 
-  nsresult InitializeNSS();
+  nsresult InitializeNSS(PRBool showWarningBox);
   nsresult ShutdownNSS();
+
+#ifdef XP_MACOSX
+  void TryCFM2MachOMigration(nsIFile *cfmPath, nsIFile *machoPath);
+#endif
+  
+  enum AlertIdentifier {
+    ai_nss_init_problem, 
+    ai_sockets_still_active, 
+    ai_crypto_ui_active,
+    ai_incomplete_logout
+  };
+  
+  void ShowAlert(AlertIdentifier ai);
   void InstallLoadableRoots();
   nsresult InitializePIPNSSBundle();
   nsresult ConfigureInternalPKCS11Token();
@@ -200,6 +218,7 @@ private:
   PRBool crlDownloadTimerOn;
   PRBool mUpdateTimerInitialized;
   static int mInstanceCount;
+  nsNSSShutDownList *mShutdownObjectList;
 };
 
 class PSMContentListener : public nsIURIContentListener,

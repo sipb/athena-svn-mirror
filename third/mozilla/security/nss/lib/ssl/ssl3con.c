@@ -18,8 +18,12 @@
  * Copyright (C) 1994-2000 Netscape Communications Corporation.  All
  * Rights Reserved.
  * 
- * Contributor(s): 
+ * Portions created by Sun Microsystems, Inc. are Copyright (C) 2003
+ * Sun Microsystems, Inc. All Rights Reserved.
+ *
+ * Contributor(s):
  *	Dr Stephen Henson <stephen.henson@gemplus.com>
+ *	Dr Vipul Gupta <vipul.gupta@sun.com>, Sun Microsystems Laboratories
  * 
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU General Public License Version 2 or later (the
@@ -33,7 +37,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: ssl3con.c,v 1.1.1.1 2003-02-14 19:53:15 rbasch Exp $
+ * $Id: ssl3con.c,v 1.1.1.1.2.1 2003-07-14 19:07:30 ghudson Exp $
  */
 
 #include "nssrenam.h"
@@ -56,6 +60,7 @@
 #include "pk11func.h"
 #include "secmod.h"
 #include "nsslocks.h"
+#include "ec.h"
 
 #include <stdio.h>
 
@@ -90,24 +95,43 @@ static SECStatus Null_Cipher(void *ctx, unsigned char *output, int *outputLen,
 
 /* This list of SSL3 cipher suites is sorted in descending order of
  * precedence (desirability).  It only includes cipher suites we implement.
- * This table is modified by SSL3_SetPolicy().
+ * This table is modified by SSL3_SetPolicy(). The ordering of cipher suites
+ * in this table must match the ordering in SSL_ImplementedCiphers (sslenum.c)
  */
 static ssl3CipherSuiteCfg cipherSuites[ssl_V3_SUITES_IMPLEMENTED] = {
    /*      cipher_suite                         policy      enabled is_present*/
  { TLS_DHE_RSA_WITH_AES_256_CBC_SHA, 	   SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
  { TLS_DHE_DSS_WITH_AES_256_CBC_SHA, 	   SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#ifdef NSS_ENABLE_ECC
+ { TLS_ECDH_RSA_WITH_AES_256_CBC_SHA,      SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+ { TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA,    SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#endif /* NSS_ENABLE_ECC */
  { TLS_RSA_WITH_AES_256_CBC_SHA,     	   SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
 
  { SSL_FORTEZZA_DMS_WITH_RC4_128_SHA,      SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
+#ifdef NSS_ENABLE_ECC
+ { TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,   SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+ { TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,     SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#endif /* NSS_ENABLE_ECC */
  { TLS_DHE_DSS_WITH_RC4_128_SHA,           SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
  { TLS_DHE_RSA_WITH_AES_128_CBC_SHA,       SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
  { TLS_DHE_DSS_WITH_AES_128_CBC_SHA, 	   SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#ifdef NSS_ENABLE_ECC
+ { TLS_ECDH_RSA_WITH_RC4_128_SHA,          SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+ { TLS_ECDH_RSA_WITH_AES_128_CBC_SHA,      SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+ { TLS_ECDH_ECDSA_WITH_RC4_128_SHA,        SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+ { TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA,    SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#endif /* NSS_ENABLE_ECC */
  { SSL_RSA_WITH_RC4_128_MD5,               SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
  { SSL_RSA_WITH_RC4_128_SHA,               SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
  { TLS_RSA_WITH_AES_128_CBC_SHA,     	   SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
 
  { SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA,      SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
  { SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA,      SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#ifdef NSS_ENABLE_ECC
+ { TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA,     SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+ { TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA,   SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#endif /* NSS_ENABLE_ECC */
  { SSL_RSA_FIPS_WITH_3DES_EDE_CBC_SHA,     SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
  { SSL_RSA_WITH_3DES_EDE_CBC_SHA,          SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
 
@@ -115,16 +139,26 @@ static ssl3CipherSuiteCfg cipherSuites[ssl_V3_SUITES_IMPLEMENTED] = {
 
  { SSL_DHE_RSA_WITH_DES_CBC_SHA,           SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
  { SSL_DHE_DSS_WITH_DES_CBC_SHA,           SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#ifdef NSS_ENABLE_ECC
+ { TLS_ECDH_RSA_WITH_DES_CBC_SHA,          SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+ { TLS_ECDH_ECDSA_WITH_DES_CBC_SHA,        SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+#endif /* NSS_ENABLE_ECC */
  { SSL_RSA_FIPS_WITH_DES_CBC_SHA,          SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
  { SSL_RSA_WITH_DES_CBC_SHA,               SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
-
  { TLS_RSA_EXPORT1024_WITH_RC4_56_SHA,     SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
  { TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA,    SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
+
  { SSL_RSA_EXPORT_WITH_RC4_40_MD5,         SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
  { SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5,     SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
+
  { SSL_FORTEZZA_DMS_WITH_NULL_SHA,         SSL_NOT_ALLOWED, PR_TRUE, PR_FALSE},
+#ifdef NSS_ENABLE_ECC
+ { TLS_ECDH_RSA_WITH_NULL_SHA,             SSL_NOT_ALLOWED, PR_FALSE, PR_FALSE},
+ { TLS_ECDH_ECDSA_WITH_NULL_SHA,           SSL_NOT_ALLOWED, PR_FALSE, PR_FALSE},
+#endif /* NSS_ENABLE_ECC */
  { SSL_RSA_WITH_NULL_SHA,                  SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
- { SSL_RSA_WITH_NULL_MD5,                  SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE}
+ { SSL_RSA_WITH_NULL_MD5,                  SSL_NOT_ALLOWED, PR_FALSE,PR_FALSE},
+
 };
 
 static const /*SSL3CompressionMethod*/ uint8 compressions [] = {
@@ -203,6 +237,12 @@ static const ssl3KEADef kea_defs[] = { /* indexed by SSL3KeyExchangeAlgorithm */
     {kea_dh_anon_export, kt_dh,       sign_null, PR_TRUE,  512, PR_FALSE},
     {kea_fortezza,       kt_fortezza, sign_dsa,  PR_FALSE,   0, PR_FALSE},
     {kea_rsa_fips,       kt_rsa,      sign_rsa,  PR_FALSE,   0, PR_TRUE },
+#ifdef NSS_ENABLE_ECC
+    {kea_ecdh_ecdsa,     kt_ecdh,     sign_ecdsa,  PR_FALSE, 0, PR_FALSE},
+    {kea_ecdhe_ecdsa,    kt_ecdh,     sign_ecdsa,  PR_FALSE,   0, PR_FALSE},
+    {kea_ecdh_rsa,       kt_ecdh,     sign_rsa,  PR_FALSE,   0, PR_FALSE},
+    {kea_ecdhe_rsa,      kt_ecdh,     sign_rsa,  PR_FALSE,   0, PR_FALSE},
+#endif /* NSS_ENABLE_ECC */
 };
 
 /* must use ssl_LookupCipherSuiteDef to access */
@@ -283,13 +323,34 @@ static const ssl3CipherSuiteDef cipher_suite_defs[] = {
     {SSL_RSA_FIPS_WITH_3DES_EDE_CBC_SHA, cipher_3des, mac_sha, kea_rsa_fips},
     {SSL_RSA_FIPS_WITH_DES_CBC_SHA, cipher_des,    mac_sha, kea_rsa_fips},
 
+#ifdef NSS_ENABLE_ECC
+    /* Experimental TLS cipher suites using Elliptic Curves */
+    {TLS_ECDH_ECDSA_WITH_NULL_SHA,        cipher_null, mac_sha, kea_ecdh_ecdsa},
+    {TLS_ECDH_ECDSA_WITH_RC4_128_SHA,      cipher_rc4, mac_sha, kea_ecdh_ecdsa},
+    {TLS_ECDH_ECDSA_WITH_DES_CBC_SHA,      cipher_des, mac_sha, kea_ecdh_ecdsa},
+    {TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA, cipher_3des, mac_sha, kea_ecdh_ecdsa},
+    {TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA, cipher_aes_128, mac_sha, kea_ecdh_ecdsa},
+    {TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA, cipher_aes_256, mac_sha, kea_ecdh_ecdsa},
+
+    {TLS_ECDH_RSA_WITH_NULL_SHA,         cipher_null,    mac_sha, kea_ecdh_rsa},
+    {TLS_ECDH_RSA_WITH_RC4_128_SHA,      cipher_rc4,     mac_sha, kea_ecdh_rsa},
+    {TLS_ECDH_RSA_WITH_DES_CBC_SHA,      cipher_des,     mac_sha, kea_ecdh_rsa},
+    {TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA, cipher_3des,    mac_sha, kea_ecdh_rsa},
+    {TLS_ECDH_RSA_WITH_AES_128_CBC_SHA,  cipher_aes_128, mac_sha, kea_ecdh_rsa},
+    {TLS_ECDH_RSA_WITH_AES_256_CBC_SHA,  cipher_aes_256, mac_sha, kea_ecdh_rsa},
+
+    {TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA, cipher_aes_128, mac_sha, kea_ecdhe_ecdsa},
+
+    {TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, cipher_aes_128, mac_sha, kea_ecdhe_rsa},
+#endif /* NSS_ENABLE_ECC */
 };
 
 static const CK_MECHANISM_TYPE kea_alg_defs[] = {
     0x80000000L,
     CKM_RSA_PKCS,
     CKM_DH_PKCS_DERIVE,
-    CKM_KEA_KEY_DERIVE
+    CKM_KEA_KEY_DERIVE,
+    CKM_ECDH1_DERIVE
 };
 
 typedef struct SSLCipher2MechStr {
@@ -337,8 +398,113 @@ const char * const ssl3_cipherName[] = {
     "DES-CBC-40",
     "IDEA-CBC",
     "FORTEZZA",
+    "AES-128",
+    "AES-256",
     "missing"
 };
+
+#ifdef NSS_ENABLE_ECC
+/* Types and names of elliptic curves used in TLS */
+typedef enum { ec_type_explicitPrime = 1,
+	       ec_type_explicitChar2Curve,
+	       ec_type_named
+} ECType;
+
+typedef enum { ec_noName = 0,
+	       ec_sect163k1, ec_sect163r1, ec_sect163r2,
+	       ec_sect193r1, ec_sect193r2, ec_sect233k1,
+	       ec_sect233r1, ec_sect239k1, ec_sect283k1,
+	       ec_sect283r1, ec_sect409k1, ec_sect409r1,
+	       ec_sect571k1, ec_sect571r1, ec_secp160k1,
+	       ec_secp160r1, ec_secp160r2, ec_secp192k1,
+	       ec_secp192r1, ec_secp224k1, ec_secp224r1,
+	       ec_secp256k1, ec_secp256r1, ec_secp384r1,
+	       ec_secp521r1,
+	       ec_pastLastName
+} ECName;
+
+#define supportedCurve(x) (((x) > ec_noName) && ((x) < ec_pastLastName))
+
+/* Table containing OID tags for elliptic curves named in the
+ * ECC-TLS IETF draft.
+ */
+static const SECOidTag ecName2OIDTag[] = {
+	0,  
+	SEC_OID_SECG_EC_SECT163K1,  /*  1 */
+	SEC_OID_SECG_EC_SECT163R1,  /*  2 */
+	SEC_OID_SECG_EC_SECT163R2,  /*  3 */
+	SEC_OID_SECG_EC_SECT193R1,  /*  4 */
+	SEC_OID_SECG_EC_SECT193R2,  /*  5 */
+	SEC_OID_SECG_EC_SECT233K1,  /*  6 */
+	SEC_OID_SECG_EC_SECT233R1,  /*  7 */
+	SEC_OID_SECG_EC_SECT239K1,  /*  8 */
+	SEC_OID_SECG_EC_SECT283K1,  /*  9 */
+	SEC_OID_SECG_EC_SECT283R1,  /* 10 */
+	SEC_OID_SECG_EC_SECT409K1,  /* 11 */
+	SEC_OID_SECG_EC_SECT409R1,  /* 12 */
+	SEC_OID_SECG_EC_SECT571K1,  /* 13 */
+	SEC_OID_SECG_EC_SECT571R1,  /* 14 */
+	SEC_OID_SECG_EC_SECP160K1,  /* 15 */
+	SEC_OID_SECG_EC_SECP160R1,  /* 16 */
+	SEC_OID_SECG_EC_SECP160R2,  /* 17 */
+	SEC_OID_SECG_EC_SECP192K1,  /* 18 */
+	SEC_OID_SECG_EC_SECP192R1,  /* 19 */
+	SEC_OID_SECG_EC_SECP224K1,  /* 20 */
+	SEC_OID_SECG_EC_SECP224R1,  /* 21 */
+	SEC_OID_SECG_EC_SECP256K1,  /* 22 */
+	SEC_OID_SECG_EC_SECP256R1,  /* 23 */
+	SEC_OID_SECG_EC_SECP384R1,  /* 24 */
+	SEC_OID_SECG_EC_SECP521R1,  /* 25 */
+};
+
+static SECStatus 
+ecName2params(PRArenaPool * arena, ECName curve, SECKEYECParams * params)
+{
+    SECOidData *oidData = NULL;
+
+    if ((curve <= ec_noName) || (curve >= ec_pastLastName) ||
+	((oidData = SECOID_FindOIDByTag(ecName2OIDTag[curve])) == NULL)) {
+        PORT_SetError(SEC_ERROR_UNSUPPORTED_ELLIPTIC_CURVE);
+	return SECFailure;
+    }
+
+    SECITEM_AllocItem(arena, params, (2 + oidData->oid.len));
+    /* 
+     * params->data needs to contain the ASN encoding of an object ID (OID)
+     * representing the named curve. The actual OID is in 
+     * oidData->oid.data so we simply prepend 0x06 and OID length
+     */
+    params->data[0] = SEC_ASN1_OBJECT_ID;
+    params->data[1] = oidData->oid.len;
+    memcpy(params->data + 2, oidData->oid.data, oidData->oid.len);
+
+    return SECSuccess;
+}
+
+static ECName 
+params2ecName(SECKEYECParams * params)
+{
+    SECItem oid = { siBuffer, NULL, 0};
+    SECOidData *oidData = NULL;
+    ECName i;
+
+    /* 
+     * params->data needs to contain the ASN encoding of an object ID (OID)
+     * representing a named curve. Here, we strip away everything
+     * before the actual OID and use the OID to look up a named curve.
+     */
+    if (params->data[0] != SEC_ASN1_OBJECT_ID) return ec_noName;
+    oid.len = params->len - 2;
+    oid.data = params->data + 2;
+    if ((oidData = SECOID_FindOID(&oid)) == NULL) return ec_noName;
+    for (i = ec_noName + 1; i < ec_pastLastName; i++) {
+	if (ecName2OIDTag[i] == oidData->offset)
+	    return i;
+    }
+
+    return ec_noName;
+}
+#endif /* NSS_ENABLE_ECC */
 
 #if defined(TRACE)
 
@@ -470,7 +636,24 @@ ssl3_config_match_init(sslSocket *ss)
 	    cipher_mech = alg2Mech[cipher_alg].cmech;
 	    exchKeyType =
 	    	    kea_defs[cipher_def->key_exchange_alg].exchKeyType;
+#ifndef NSS_ENABLE_ECC
 	    svrAuth = ss->serverCerts + exchKeyType;
+#else
+	    /* XXX SSLKEAType isn't really a good choice for 
+	     * indexing certificates. It doesn't work for
+	     * (EC)DHE-* ciphers. Here we use a hack to ensure
+	     * that the server uses an RSA cert for (EC)DHE-RSA.
+	     */
+	    switch (cipher_def->key_exchange_alg) {
+	    case kea_ecdhe_rsa:
+	    case kea_dhe_rsa:
+		svrAuth = ss->serverCerts + kt_rsa;
+		break;
+	    default:
+		svrAuth = ss->serverCerts + exchKeyType;
+		break;
+	    }
+#endif /* NSS_ENABLE_ECC */
 
 	    /* Mark the suites that are backed by real tokens, certs and keys */
 	    suite->isPresent = (PRBool)
@@ -686,6 +869,9 @@ ssl3_VerifySignedHashes(SSL3Hashes *hash, CERTCertificate *cert,
     SECItem *         signature	= NULL;
     SECStatus         rv;
     SECItem           hashItem;
+#ifdef NSS_ENABLE_ECC
+    int               len;
+#endif /* NSS_ENABLE_ECC */
 
 
     PRINT_BUF(60, (NULL, "check signed hashes",
@@ -716,6 +902,44 @@ ssl3_VerifySignedHashes(SSL3Hashes *hash, CERTCertificate *cert,
 	    buf = signature;
 	}
 	break;
+
+#ifdef NSS_ENABLE_ECC
+    case ecKey:
+	hashItem.data = hash->sha;
+	hashItem.len = sizeof(hash->sha);
+	/*
+	 * ECDSA signatures always encode the integers r and s 
+	 * using ASN (unlike DSA where ASN encoding is used
+	 * with TLS but not with SSL3)
+	 */
+	len = SECKEY_PublicKeyStrength(key) * 2;
+	if (len == 0) {
+	    SECKEY_DestroyPublicKey(key);
+	    PORT_SetError(SEC_ERROR_UNSUPPORTED_ELLIPTIC_CURVE);
+	    return SECFailure;
+	}
+	signature = SECITEM_AllocItem(NULL, NULL, len);
+	/* XXX Use a better decoder */
+	if ((buf->len < len + 6) || 
+	    (buf->data[0] != 0x30) || /* must start with a SEQUENCE */
+	    (buf->data[1] != buf->len - 2) ||
+	    (buf->data[2] != 0x02) || /* 1st INTEGER, r */
+	    (buf->data[3] < len/2) ||
+	    (buf->data[4 + buf->data[3]] != 0x02) || /* 2nd INTEGER, s */
+	    (buf->data[5 + buf->data[3]] < len/2)) {	
+	    	PORT_SetError(SSL_ERROR_BAD_HANDSHAKE_HASH_VALUE);
+		SECITEM_FreeItem(signature, PR_TRUE);
+    		return SECFailure;
+	}
+	    
+	PORT_Memcpy(signature->data, 
+	    buf->data + 4 + (buf->data[3]-len/2), len/2);
+	PORT_Memcpy(signature->data + len/2, 
+	    buf->data + buf->len - len/2, len/2);
+	buf = signature;
+	break;
+#endif /* NSS_ENABLE_ECC */
+
     default:
     	SECKEY_DestroyPublicKey(key);
 	PORT_SetError(SEC_ERROR_UNSUPPORTED_KEYALG);
@@ -913,6 +1137,73 @@ done:
     	PORT_Free(hashBuf);
     return rv;
 }
+
+#ifdef NSS_ENABLE_ECC
+/* Caller must set hiLevel error code. */
+static SECStatus
+ssl3_ComputeECDHKeyHash(SECItem ec_params, SECItem server_ecpoint,
+			     SSL3Random *client_rand, SSL3Random *server_rand,
+			     SSL3Hashes *hashes)
+{
+    PRUint8     * hashBuf;
+    PRUint8     * pBuf;
+    SECStatus     rv 		= SECSuccess;
+    unsigned int  bufLen;
+    /*
+     * XXX For now, we only support named curves (the appropriate
+     * checks are made before this method is called) so ec_params
+     * takes up only two bytes. ECPoint needs to fit in 256 bytes
+     * (because the spec says the length must fit in one byte)
+     */
+    PRUint8       buf[2*SSL3_RANDOM_LENGTH + 2 + 1 + 256];
+
+    bufLen = 2*SSL3_RANDOM_LENGTH + ec_params.len + 1 + server_ecpoint.len;
+    if (bufLen <= sizeof buf) {
+    	hashBuf = buf;
+    } else {
+    	hashBuf = PORT_Alloc(bufLen);
+	if (!hashBuf) {
+	    return SECFailure;
+	}
+    }
+
+    memcpy(hashBuf, client_rand, SSL3_RANDOM_LENGTH); 
+    	pBuf = hashBuf + SSL3_RANDOM_LENGTH;
+    memcpy(pBuf, server_rand, SSL3_RANDOM_LENGTH);
+    	pBuf += SSL3_RANDOM_LENGTH;
+    memcpy(pBuf, ec_params.data, ec_params.len);
+    	pBuf += ec_params.len;
+    pBuf[0] = (PRUint8)(server_ecpoint.len);
+    pBuf += 1;
+    memcpy(pBuf, server_ecpoint.data, server_ecpoint.len);
+    	pBuf += server_ecpoint.len;
+    PORT_Assert((unsigned int)(pBuf - hashBuf) == bufLen);
+
+    rv = PK11_HashBuf(SEC_OID_MD5, hashes->md5, hashBuf, bufLen);
+    if (rv != SECSuccess) {
+	ssl_MapLowLevelError(SSL_ERROR_MD5_DIGEST_FAILURE);
+    	rv = SECFailure;
+	goto done;
+    }
+
+    rv = PK11_HashBuf(SEC_OID_SHA1, hashes->sha, hashBuf, bufLen);
+    if (rv != SECSuccess) {
+	ssl_MapLowLevelError(SSL_ERROR_SHA_DIGEST_FAILURE);
+    	rv = SECFailure;
+	goto done;
+    }
+
+    PRINT_BUF(95, (NULL, "ECDHkey hash: ", hashBuf, bufLen));
+    PRINT_BUF(95, (NULL, "ECDHkey hash: MD5 result", hashes->md5, MD5_LENGTH));
+    PRINT_BUF(95, (NULL, "ECDHkey hash: SHA1 result", hashes->sha, SHA1_LENGTH));
+
+done:
+    if (hashBuf != buf && hashBuf != NULL)
+    	PORT_Free(hashBuf);
+    return rv;
+}
+#endif /* NSS_ENABLE_ECC */
+
 /* Caller must set hiLevel error code. */
 static SECStatus
 ssl3_ComputeFortezzaPublicKeyHash(SECItem publicValue, unsigned char * hash)
@@ -1321,6 +1612,33 @@ ssl3_ComputeRecordMAC(
     return rv;
 }
 
+static PRBool
+ssl3_ClientAuthTokenPresent(sslSessionID *sid) {
+    PK11SlotInfo *slot = NULL;
+    PRBool isPresent = PR_TRUE;
+
+    /* we only care if we are doing client auth */
+    if (!sid || !sid->u.ssl3.clAuthValid) {
+	return PR_TRUE;
+    }
+
+    /* get the slot */
+    slot = SECMOD_LookupSlot(sid->u.ssl3.clAuthModuleID,
+	                     sid->u.ssl3.clAuthSlotID);
+    if (slot == NULL ||
+	!PK11_IsPresent(slot) ||
+	sid->u.ssl3.clAuthSeries     != PK11_GetSlotSeries(slot) ||
+	sid->u.ssl3.clAuthSlotID     != PK11_GetSlotID(slot)     ||
+	sid->u.ssl3.clAuthModuleID   != PK11_GetModuleID(slot)   ||
+	(PK11_NeedLogin(slot) && !PK11_IsLoggedIn(slot, NULL))) {
+	isPresent = PR_FALSE;
+    } 
+    if (slot) {
+	PK11_FreeSlot(slot);
+    }
+    return isPresent;
+}
+
 /* Process the plain text before sending it.
  * Returns the number of bytes of plaintext that were succesfully sent
  * 	plus the number of bytes of plaintext that were copied into the
@@ -1363,6 +1681,12 @@ ssl3_SendRecord(   sslSocket *        ss,
 	if (rv != SECSuccess) {
 	    return SECFailure;	/* ssl3_InitState has set the error code. */
     	}
+    }
+
+    /* check for Token Presence */
+    if (!ssl3_ClientAuthTokenPresent(ss->sec.ci.sid)) {
+	PORT_SetError(SSL_ERROR_TOKEN_INSERTION_REMOVAL);
+	return SECFailure;
     }
 
     while (bytes > 0) {
@@ -1978,7 +2302,13 @@ ssl3_GenerateSessionKeys(sslSocket *ss, const PK11SymKey *pms)
     PRBool            skipKeysAndIVs = (PRBool)
     					((cipher_def->calg == calg_fortezza) ||
 					 (cipher_def->calg == calg_null));
-    PRBool            isDH = (PRBool) (ss->ssl3->hs.kea_def->exchKeyType == kt_dh);
+    /* 
+     * Whenever isDH is true, we need to use CKM_TLS_MASTER_KEY_DERIVE_DH
+     * which, unlike CKM_TLS_MASTER_KEY_DERIVE, converts arbitrary size
+     * data into a 48-byte value. 
+     */
+    PRBool            isDH = (PRBool) ((ss->ssl3->hs.kea_def->exchKeyType == kt_dh) ||
+	                               (ss->ssl3->hs.kea_def->exchKeyType == kt_ecdh));
     CK_MECHANISM_TYPE master_derive;
     CK_MECHANISM_TYPE key_derive;
     CK_MECHANISM_TYPE bulk_mechanism;
@@ -2689,21 +3019,8 @@ ssl3_SendClientHello(sslSocket *ss)
 	** holds the private key still exists, is logged in, hasn't been
 	** removed, etc.
 	*/
-	if (sidOK && sid->u.ssl3.clAuthValid) {
-	    slot = SECMOD_LookupSlot(sid->u.ssl3.clAuthModuleID,
-	                             sid->u.ssl3.clAuthSlotID);
-	    if (slot == NULL ||
-	        !PK11_IsPresent(slot) ||
-		sid->u.ssl3.clAuthSeries     != PK11_GetSlotSeries(slot) ||
-		sid->u.ssl3.clAuthSlotID     != PK11_GetSlotID(slot)     ||
-		sid->u.ssl3.clAuthModuleID   != PK11_GetModuleID(slot)   ||
-                !PK11_IsLoggedIn(slot, NULL)) {
-	        sidOK = PR_FALSE;
-	    }
-	    if (slot) {
-		PK11_FreeSlot(slot);
-		slot = NULL;
-	    }
+	if (sidOK && !ssl3_ClientAuthTokenPresent(sid)) {
+	    sidOK = PR_FALSE;
 	}
 
 	if (!sidOK) {
@@ -3002,6 +3319,33 @@ typedef struct {
     PK11SymKey *      symWrapKey[kt_kea_size];
 } ssl3SymWrapKey;
 
+static PZLock *          symWrapKeysLock;
+static ssl3SymWrapKey    symWrapKeys[SSL_NUM_WRAP_MECHS];
+
+SECStatus
+SSL3_ShutdownServerCache(void)
+{
+    int             i, j;
+
+    if (!symWrapKeysLock)
+    	return SECSuccess;	/* was never initialized */
+    PZ_Lock(symWrapKeysLock);
+    /* get rid of all symWrapKeys */
+    for (i = 0; i < SSL_NUM_WRAP_MECHS; ++i) {
+    	for (j = 0; j < kt_kea_size; ++j) {
+	    PK11SymKey **   pSymWrapKey;
+	    pSymWrapKey = &symWrapKeys[i].symWrapKey[j];
+	    if (*pSymWrapKey) {
+		PK11_FreeSymKey(*pSymWrapKey);
+	    	*pSymWrapKey = NULL;
+	    }
+	}
+    }
+
+    PZ_Unlock(symWrapKeysLock);
+    return SECSuccess;
+}
+
 /* Try to get wrapping key for mechanism from in-memory array.
  * If that fails, look for one on disk.
  * If that fails, generate a new one, put the new one on disk,
@@ -3025,9 +3369,6 @@ getWrappingKey( sslSocket *       ss,
     SECStatus                rv;
     SECItem                  wrappedKey;
     SSLWrappedSymWrappingKey wswk;
-
-    static PZLock *          symWrapKeysLock;
-    static ssl3SymWrapKey    symWrapKeys[SSL_NUM_WRAP_MECHS];
 
     svrPrivKey  = ss->serverCerts[exchKeyType].serverKey;
     PORT_Assert(svrPrivKey != NULL);
@@ -3364,6 +3705,84 @@ loser:
     if(pubKey) SECKEY_DestroyPublicKey(pubKey);
     return rv;
 }
+
+#ifdef NSS_ENABLE_ECC
+/* Called from ssl3_SendClientKeyExchange(). */
+static SECStatus
+sendECDHClientKeyExchange(sslSocket * ss, SECKEYPublicKey * svrPubKey)
+{
+    PK11SymKey *	pms 		= NULL;
+    SECStatus           rv    		= SECFailure;
+    PRBool              isTLS;
+    CK_MECHANISM_TYPE	target;
+    SECKEYPublicKey	*pubKey = NULL;		/* Ephemeral ECDH key */
+    SECKEYPrivateKey	*privKey = NULL;	/* Ephemeral ECDH key */
+
+    PORT_Assert( ssl_HaveSSL3HandshakeLock(ss) );
+    PORT_Assert( ssl_HaveXmitBufLock(ss));
+
+    isTLS = (PRBool)(ss->ssl3->pwSpec->version > SSL_LIBRARY_VERSION_3_0);
+
+    /* Generate ephemeral EC keypair */
+    privKey = SECKEY_CreateECPrivateKey(&svrPubKey->u.ec.DEREncodedParams, 
+	                                &pubKey, NULL);
+    if (!privKey || !pubKey) {
+	    ssl_MapLowLevelError(SEC_ERROR_KEYGEN_FAIL);
+	    rv = SECFailure;
+	    goto loser;
+    }
+    PRINT_BUF(50, (ss, "ECDH public value:",
+					pubKey->u.ec.publicValue.data,
+					pubKey->u.ec.publicValue.len));
+
+    if (isTLS) target = CKM_TLS_MASTER_KEY_DERIVE_DH;
+    else target = CKM_SSL3_MASTER_KEY_DERIVE_DH;
+
+    /*  Determine the PMS */
+    pms = PK11_PubDerive(privKey, svrPubKey, PR_FALSE, NULL, NULL,
+			    CKM_ECDH1_DERIVE, target, CKA_DERIVE, 0, NULL);
+
+    if (pms == NULL) {
+	ssl_MapLowLevelError(SSL_ERROR_CLIENT_KEY_EXCHANGE_FAILURE);
+	goto loser;
+    }
+
+    SECKEY_DestroyPrivateKey(privKey);
+    privKey = NULL;
+
+    rv = ssl3_InitPendingCipherSpec(ss,  pms);
+    PK11_FreeSymKey(pms); pms = NULL;
+
+    if (rv != SECSuccess) {
+	ssl_MapLowLevelError(SSL_ERROR_CLIENT_KEY_EXCHANGE_FAILURE);
+	goto loser;
+    }
+
+    rv = ssl3_AppendHandshakeHeader(ss, client_key_exchange, 
+					pubKey->u.ec.publicValue.len + 1);
+    if (rv != SECSuccess) {
+        goto loser;	/* err set by ssl3_AppendHandshake* */
+    }
+
+    rv = ssl3_AppendHandshakeVariable(ss, 
+					pubKey->u.ec.publicValue.data,
+					pubKey->u.ec.publicValue.len, 1);
+    SECKEY_DestroyPublicKey(pubKey);
+    pubKey = NULL;
+
+    if (rv != SECSuccess) {
+        goto loser;	/* err set by ssl3_AppendHandshake* */
+    }
+
+    rv = SECSuccess;
+
+loser:
+    if(pms) PK11_FreeSymKey(pms);
+    if(privKey) SECKEY_DestroyPrivateKey(privKey);
+    if(pubKey) SECKEY_DestroyPublicKey(pubKey);
+    return rv;
+}
+#endif /* NSS_ENABLE_ECC */
 
 /* fortezza client-auth portion of ClientKeyExchange message
  * This function appends the KEA public key from the client's  V3 cert
@@ -3834,7 +4253,7 @@ ssl3_SendClientKeyExchange(sslSocket *ss)
     }
 
     ss->sec.keaType    = ss->ssl3->hs.kea_def->exchKeyType;
-    ss->sec.keaKeyBits = SECKEY_PublicKeyStrength(serverKey) * BPB;
+    ss->sec.keaKeyBits = SECKEY_PublicKeyStrengthInBits(serverKey);
 
     switch (ss->ssl3->hs.kea_def->exchKeyType) {
     case kt_rsa:
@@ -3848,6 +4267,12 @@ ssl3_SendClientKeyExchange(sslSocket *ss)
     case kt_dh:
 	rv = sendDHClientKeyExchange(ss, serverKey);
 	break;
+
+#ifdef NSS_ENABLE_ECC
+    case kt_ecdh:
+	rv = sendECDHClientKeyExchange(ss, serverKey);
+	break;
+#endif /* NSS_ENABLE_ECC */
 
     default:
 	/* got an unknown or unsupported Key Exchange Algorithm.  */
@@ -4224,6 +4649,10 @@ ssl3_HandleServerKeyExchange(sslSocket *ss, SSL3Opaque *b, PRUint32 length)
     SECItem          dh_g      = {siBuffer, NULL, 0};
     SECItem          dh_Ys     = {siBuffer, NULL, 0};
     SSL3Hashes       hashes;
+#ifdef NSS_ENABLE_ECC
+    SECItem          ec_params = {siBuffer, NULL, 0};
+    SECItem          ec_point  = {siBuffer, NULL, 0};
+#endif /* NSS_ENABLE_ECC */
 
     SSL_TRC(3, ("%d: SSL3[%d]: handle server_key_exchange handshake",
 		SSL_GETPID(), ss->fd));
@@ -4405,6 +4834,116 @@ ssl3_HandleServerKeyExchange(sslSocket *ss, SSL3Opaque *b, PRUint32 length)
     	ss->ssl3->hs.ws = wait_cert_request;
     	return SECSuccess;
 
+#ifdef NSS_ENABLE_ECC
+    case kt_ecdh:
+	/* XXX This works only for named curves, revisit this when
+	 * we support generic curves.
+	 */
+	ec_params.len = 2;
+	ec_params.data = (unsigned char*)PORT_Alloc(ec_params.len);
+    	rv = ssl3_ConsumeHandshake(ss, ec_params.data, ec_params.len, &b, &length);
+    	if (rv != SECSuccess) {
+	    goto loser;		/* malformed. */
+	}
+
+	/* Fail if the curve is not a named curve */
+	if ((ec_params.data[0] != ec_type_named) || 
+	    !supportedCurve(ec_params.data[1])) {
+		errCode = SEC_ERROR_UNSUPPORTED_ELLIPTIC_CURVE;
+		desc = handshake_failure;
+		goto alert_loser;
+	}
+
+    	rv = ssl3_ConsumeHandshakeVariable(ss, &ec_point, 1, &b, &length);
+    	if (rv != SECSuccess) {
+	    goto loser;		/* malformed. */
+	}
+	/* Fail if the ec point uses compressed representation */
+	if (ec_point.data[0] != EC_POINT_FORM_UNCOMPRESSED) {
+		errCode = SEC_ERROR_UNSUPPORTED_EC_POINT_FORM;
+		desc = handshake_failure;
+		goto alert_loser;
+	}
+
+    	rv = ssl3_ConsumeHandshakeVariable(ss, &signature, 2, &b, &length);
+    	if (rv != SECSuccess) {
+	    goto loser;		/* malformed. */
+	}
+
+    	if (length != 0) {
+	    if (isTLS)
+		desc = decode_error;
+	    goto alert_loser;		/* malformed. */
+	}
+
+	PRINT_BUF(60, (NULL, "Server EC params", ec_params.data, 
+	    ec_params.len));
+	PRINT_BUF(60, (NULL, "Server EC point", ec_point.data, ec_point.len));
+
+	/* failures after this point are not malformed handshakes. */
+	/* TLS: send decrypt_error if signature failed. */
+    	desc = isTLS ? decrypt_error : handshake_failure;
+
+    	/*
+     	 *  check to make sure the hash is signed by right guy
+     	 */
+    	rv = ssl3_ComputeECDHKeyHash(ec_params, ec_point,
+					  &ss->ssl3->hs.client_random,
+					  &ss->ssl3->hs.server_random, &hashes);
+
+        if (rv != SECSuccess) {
+	    errCode =
+	    	ssl_MapLowLevelError(SSL_ERROR_SERVER_KEY_EXCHANGE_FAILURE);
+	    goto alert_loser;
+	}
+        rv = ssl3_VerifySignedHashes(&hashes, ss->sec.peerCert, &signature,
+				    isTLS, ss->pkcs11PinArg);
+	if (rv != SECSuccess)  {
+	    errCode =
+	    	ssl_MapLowLevelError(SSL_ERROR_SERVER_KEY_EXCHANGE_FAILURE);
+	    goto alert_loser;
+	}
+
+    	arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+	if (arena == NULL) {
+	    goto no_memory;
+	}
+
+    	ss->sec.peerKey = peerKey = PORT_ArenaZNew(arena, SECKEYPublicKey);
+    	if (peerKey == NULL) {
+	    goto no_memory;
+	}
+
+	peerKey->arena                 = arena;
+	peerKey->keyType               = ecKey;
+
+	/* set up EC parameters in peerKey */
+	if (ecName2params(arena, ec_params.data[1], 
+	        &peerKey->u.ec.DEREncodedParams) != SECSuccess) {
+	    /* we should never get here since we already 
+	     * checked that we are dealing with a supported curve
+	     */
+	    errCode = SEC_ERROR_UNSUPPORTED_ELLIPTIC_CURVE;
+	    goto alert_loser;
+	}
+
+	/* copy publicValue in peerKey */
+	if (SECITEM_CopyItem(arena, &peerKey->u.ec.publicValue,  &ec_point))
+	{
+            PORT_FreeArena(arena, PR_FALSE);
+	    goto no_memory;
+        }
+	peerKey->pkcs11Slot         = NULL;
+	peerKey->pkcs11ID           = CK_INVALID_HANDLE;
+
+    	ss->sec.peerKey = peerKey;
+	SECITEM_FreeItem(&ec_params, PR_FALSE);
+	SECITEM_FreeItem(&ec_point, PR_FALSE);
+    	ss->ssl3->hs.ws = wait_cert_request;
+
+	return SECSuccess;
+#endif /* NSS_ENABLE_ECC */
+
     case kt_fortezza:
 
 	/* Fortezza needs *BOTH* a server cert message
@@ -4440,6 +4979,10 @@ loser:
     if (dh_p.data != NULL) SECITEM_FreeItem(&dh_p, PR_FALSE);
     if (dh_g.data != NULL) SECITEM_FreeItem(&dh_g, PR_FALSE);
     if (dh_Ys.data != NULL) SECITEM_FreeItem(&dh_Ys, PR_FALSE);
+#ifdef NSS_ENABLE_ECC
+    if (ec_params.data != NULL) SECITEM_FreeItem(&ec_params, PR_FALSE);
+    if (ec_point.data != NULL) SECITEM_FreeItem(&ec_point, PR_FALSE);
+#endif /* NSS_ENABLE_ECC */
     PORT_SetError( errCode );
     return SECFailure;
 
@@ -4447,6 +4990,13 @@ no_memory:	/* no-memory error has already been set. */
     if (modulus.data   != NULL) SECITEM_FreeItem(&modulus,   PR_FALSE);
     if (exponent.data  != NULL) SECITEM_FreeItem(&exponent,  PR_FALSE);
     if (signature.data != NULL) SECITEM_FreeItem(&signature, PR_FALSE);
+    if (dh_p.data != NULL) SECITEM_FreeItem(&dh_p, PR_FALSE);
+    if (dh_g.data != NULL) SECITEM_FreeItem(&dh_g, PR_FALSE);
+    if (dh_Ys.data != NULL) SECITEM_FreeItem(&dh_Ys, PR_FALSE);
+#ifdef NSS_ENABLE_ECC
+    if (ec_params.data != NULL) SECITEM_FreeItem(&ec_params, PR_FALSE);
+    if (ec_point.data != NULL) SECITEM_FreeItem(&ec_point, PR_FALSE);
+#endif /* NSS_ENABLE_ECC */
     ssl_MapLowLevelError(SSL_ERROR_SERVER_KEY_EXCHANGE_FAILURE);
     return SECFailure;
 }
@@ -4547,7 +5097,7 @@ ssl3_HandleCertificateRequest(sslSocket *ss, SSL3Opaque *b, PRUint32 length)
 
     ca_list.nnames = nnames;
     ca_list.names  = (SECItem*)PORT_ArenaAlloc(arena, nnames * sizeof(SECItem));
-    if (ca_list.names == NULL)
+    if (nnames > 0 && ca_list.names == NULL)
         goto no_mem;
 
     for(i = 0, node = (dnameNode*)ca_list.head;
@@ -4577,6 +5127,21 @@ ssl3_HandleCertificateRequest(sslSocket *ss, SSL3Opaque *b, PRUint32 length)
 	break;	/* not an error */
 
     case SECSuccess:
+        /* check what the callback function returned */
+        if ((!ssl3->clientCertificate) || (!ssl3->clientPrivateKey)) {
+            /* we are missing either the key or cert */
+            if (ssl3->clientCertificate) {
+                /* got a cert, but no key - free it */
+                CERT_DestroyCertificate(ssl3->clientCertificate);
+                ssl3->clientCertificate = NULL;
+            }
+            if (ssl3->clientPrivateKey) {
+                /* got a key, but no cert - free it */
+                SECKEY_DestroyPrivateKey(ssl3->clientPrivateKey);
+                ssl3->clientPrivateKey = NULL;
+            }
+            goto send_no_certificate;
+        }
 	/* Setting ssl3->clientCertChain non-NULL will cause
 	 * ssl3_HandleServerHelloDone to call SendCertificate.
 	 */
@@ -4891,6 +5456,14 @@ ssl3_SendServerHelloSequence(sslSocket *ss)
 	    return rv;
 #endif
 	}
+#ifdef NSS_ENABLE_ECC
+    } else if ((kea_def->kea == kea_ecdhe_rsa) ||
+	       (kea_def->kea == kea_ecdhe_ecdsa)) {
+	rv = ssl3_SendServerKeyExchange(ss);
+	if (rv != SECSuccess) {
+	    return rv;	/* err code was set. */
+	}
+#endif /* NSS_ENABLE_ECC */
     }
 
     if (ss->requestCertificate) {
@@ -5597,6 +6170,11 @@ const ssl3KEADef *     kea_def     = ss->ssl3->hs.kea_def;
     SECItem            signed_hash = {siBuffer, NULL, 0};
     SSL3Hashes         hashes;
     SECKEYPublicKey *  sdPub;	/* public key for step-down */
+#ifdef NSS_ENABLE_ECC
+    SECKEYPublicKey *  ecdhePub;
+    SECItem            ec_params = {siBuffer, NULL, 0};
+    ECName             curve;
+#endif /* NSS_ENABLE_ECC */
 
     SSL_TRC(3, ("%d: SSL3[%d]: send server_key_exchange handshake",
 		SSL_GETPID(), ss->fd));
@@ -5685,6 +6263,90 @@ const ssl3KEADef *     kea_def     = ss->ssl3->hs.kea_def;
 	}
 	return SECSuccess;
 
+#ifdef NSS_ENABLE_ECC
+    case kt_ecdh:
+	/* Generate ephemeral ECDH key pair and send the public key */
+	rv = ssl3_CreateECDHEphemeralKeys(ss);
+	if (rv != SECSuccess) {
+	    goto loser; 	/* err set by AppendHandshake. */
+	}	    
+	ecdhePub = ss->ephemeralECDHKeyPair->pubKey;
+	PORT_Assert(ecdhePub != NULL);
+	if (!ecdhePub) {
+	    PORT_SetError(SSL_ERROR_SERVER_KEY_EXCHANGE_FAILURE);
+	    return SECFailure;
+	}	
+	
+	ec_params.len = 2;
+	ec_params.data = (unsigned char*)PORT_Alloc(ec_params.len);
+	curve = params2ecName(&ecdhePub->u.ec.DEREncodedParams);
+	if (curve != ec_noName) {
+	    ec_params.data[0] = ec_type_named;
+	    ec_params.data[1] = curve;
+	} else {
+	    PORT_SetError(SEC_ERROR_UNSUPPORTED_ELLIPTIC_CURVE);
+	    goto loser;
+	}		
+
+	rv = ssl3_ComputeECDHKeyHash(ec_params, ecdhePub->u.ec.publicValue,
+					  &ss->ssl3->hs.client_random,
+					  &ss->ssl3->hs.server_random,
+	                                  &hashes);
+        if (rv != SECSuccess) {
+	    ssl_MapLowLevelError(SSL_ERROR_SERVER_KEY_EXCHANGE_FAILURE);
+	    goto loser;
+	}
+
+	isTLS = (PRBool)(ss->ssl3->pwSpec->version > SSL_LIBRARY_VERSION_3_0);
+
+	/* XXX SSLKEAType isn't really a good choice for 
+	 * indexing certificates. The following line of
+	 * code will need to change when we support 
+	 * (EC)DHE-xxx ciphers on the server side where xxx
+	 * is something other than RSA.
+	 */
+	rv = ssl3_SignHashes(&hashes, ss->serverCerts[kt_rsa].serverKey, 
+	                     &signed_hash, isTLS);
+        if (rv != SECSuccess) {
+	    goto loser;		/* ssl3_SignHashes has set err. */
+	}
+	if (signed_hash.data == NULL) {
+	    /* how can this happen and rv == SECSuccess ?? */
+	    PORT_SetError(SSL_ERROR_SERVER_KEY_EXCHANGE_FAILURE);
+	    goto loser;
+	}
+
+	length = ec_params.len + 
+	         1 + ecdhePub->u.ec.publicValue.len + 
+	         2 + signed_hash.len;
+
+	rv = ssl3_AppendHandshakeHeader(ss, server_key_exchange, length);
+	if (rv != SECSuccess) {
+	    goto loser; 	/* err set by AppendHandshake. */
+	}
+
+	rv = ssl3_AppendHandshake(ss, ec_params.data, ec_params.len);
+	if (rv != SECSuccess) {
+	    goto loser; 	/* err set by AppendHandshake. */
+	}
+
+	rv = ssl3_AppendHandshakeVariable(ss, ecdhePub->u.ec.publicValue.data,
+	                                  ecdhePub->u.ec.publicValue.len, 1);
+	if (rv != SECSuccess) {
+	    goto loser; 	/* err set by AppendHandshake. */
+	}
+
+	rv = ssl3_AppendHandshakeVariable(ss, signed_hash.data,
+	                                  signed_hash.len, 2);
+	if (rv != SECSuccess) {
+	    goto loser; 	/* err set by AppendHandshake. */
+	}
+
+	PORT_Free(ec_params.data);
+	PORT_Free(signed_hash.data);
+	return SECSuccess;
+#endif /* NSS_ENABLE_ECC */
+
     case kt_dh:
     case kt_null:
     default:
@@ -5692,6 +6354,10 @@ const ssl3KEADef *     kea_def     = ss->ssl3->hs.kea_def;
 	break;
     }
 loser:
+#ifdef NSS_ENABLE_ECC
+    if (ec_params.data != NULL) 
+	PORT_Free(ec_params.data);
+#endif /* NSS_ENABLE_ECC */
     if (signed_hash.data != NULL) 
     	PORT_Free(signed_hash.data);
     return SECFailure;
@@ -6246,6 +6912,65 @@ ssl3_HandleRSAClientKeyExchange(sslSocket *ss,
     return SECSuccess;
 }
 
+#ifdef NSS_ENABLE_ECC
+/*
+** Called from ssl3_HandleClientKeyExchange()
+*/
+static SECStatus
+ssl3_HandleECDHClientKeyExchange(sslSocket *ss, SSL3Opaque *b,
+				     PRUint32 length,
+                                     SECKEYPublicKey *srvrPubKey,
+                                     SECKEYPrivateKey *srvrPrivKey)
+{
+    PK11SymKey *      pms;
+    SECStatus         rv;
+    SECKEYPublicKey   clntPubKey;
+    CK_MECHANISM_TYPE	target;
+    PRBool isTLS;
+
+    PORT_Assert( ssl_HaveRecvBufLock(ss) );
+    PORT_Assert( ssl_HaveSSL3HandshakeLock(ss) );
+
+    clntPubKey.keyType = ecKey;
+    clntPubKey.u.ec.DEREncodedParams.len = 
+	srvrPubKey->u.ec.DEREncodedParams.len;
+    clntPubKey.u.ec.DEREncodedParams.data = 
+	srvrPubKey->u.ec.DEREncodedParams.data;
+
+    rv = ssl3_ConsumeHandshakeVariable(ss, &clntPubKey.u.ec.publicValue, 
+	                               1, &b, &length);
+    if (rv != SECSuccess) {
+	SEND_ALERT
+	return SECFailure;	/* XXX Who sets the error code?? */
+    }
+
+    isTLS = (PRBool)(ss->ssl3->prSpec->version > SSL_LIBRARY_VERSION_3_0);
+
+    if (isTLS) target = CKM_TLS_MASTER_KEY_DERIVE_DH;
+    else target = CKM_SSL3_MASTER_KEY_DERIVE_DH;
+
+    /*  Determine the PMS */
+    pms = PK11_PubDerive(srvrPrivKey, &clntPubKey, PR_FALSE, NULL, NULL,
+			    CKM_ECDH1_DERIVE, target, CKA_DERIVE, 0, NULL);
+
+    PORT_Free(clntPubKey.u.ec.publicValue.data);
+
+    if (pms == NULL) {
+	/* last gasp.  */
+	ssl_MapLowLevelError(SSL_ERROR_CLIENT_KEY_EXCHANGE_FAILURE);
+	return SECFailure;
+    }
+
+    rv = ssl3_InitPendingCipherSpec(ss,  pms);
+    PK11_FreeSymKey(pms);
+    if (rv != SECSuccess) {
+	SEND_ALERT
+	return SECFailure;	/* error code set by ssl3_InitPendingCipherSpec */
+    }
+    return SECSuccess;
+}
+#endif /* NSS_ENABLE_ECC */
+
 /* Called from ssl3_HandleHandshakeMessage() when it has deciphered a complete
  * ssl3 ClientKeyExchange message from the remote client
  * Caller must hold Handshake and RecvBuf locks.
@@ -6271,6 +6996,23 @@ const ssl3KEADef *    kea_def;
 
     kea_def   = ss->ssl3->hs.kea_def;
 
+#ifdef NSS_ENABLE_ECC
+    /* XXX We'll need additional code here to compute serverKey and
+     * ss->sec.keaKeyBits appropriately when we add server side
+     * support for (EC)DHE-xxx cipher suites where xxx is something
+     * other than rsa. Using SSLKEAType to index server certifiates
+     * does not work for (EC)DHE ciphers.
+     */
+    if ((kea_def->kea == kea_ecdhe_rsa) ||
+	(kea_def->kea == kea_ecdhe_ecdsa)) {
+	    if (ss->ephemeralECDHKeyPair != NULL) {
+		    serverKey = ss->ephemeralECDHKeyPair->privKey;
+		    ss->sec.keaKeyBits = 
+			SECKEY_PublicKeyStrengthInBits(ss->ephemeralECDHKeyPair->pubKey);
+	    }
+    } else {
+#endif /* NSS_ENABLE_ECC */
+
     serverKey =  (ss->ssl3->hs.usedStepDownKey
 #ifdef DEBUG
 		 && kea_def->is_limited /* XXX OR cert is signing only */
@@ -6295,6 +7037,10 @@ const ssl3KEADef *    kea_def;
 	ss->sec.keaKeyBits = sc->serverKeyBits;
     }
 
+#ifdef NSS_ENABLE_ECC
+    }
+#endif /* NSS_ENABLE_ECC */
+
     if (serverKey == NULL) {
     	SEND_ALERT
 	PORT_SetError(SSL_ERROR_NO_SERVER_KEY_FOR_ALG);
@@ -6318,6 +7064,17 @@ const ssl3KEADef *    kea_def;
 	    return SECFailure;	/* error code set */
 	}
 	break;
+
+#ifdef NSS_ENABLE_ECC
+    case kt_ecdh:
+	rv = ssl3_HandleECDHClientKeyExchange(ss, b, length, 
+	    ss->ephemeralECDHKeyPair->pubKey,
+	    serverKey);
+	if (rv != SECSuccess) {
+	    return SECFailure;	/* error code set */
+	}
+	break;
+#endif /* NSS_ENABLE_ECC */
 
     default:
 	(void) ssl3_HandshakeFailure(ss);
@@ -6353,6 +7110,7 @@ ssl3_SendCertificate(sslSocket *ss)
     CERTCertificateList *certChain;
     int                  len 		= 0;
     int                  i;
+    SSL3KEAType          certIndex;
 
     SSL_TRC(3, ("%d: SSL3[%d]: send certificate handshake",
 		SSL_GETPID(), ss->fd));
@@ -6363,9 +7121,24 @@ ssl3_SendCertificate(sslSocket *ss)
     if (ss->sec.localCert)
     	CERT_DestroyCertificate(ss->sec.localCert);
     if (ss->sec.isServer) {
-	sslServerCerts * sc = 
-			ss->serverCerts + ss->ssl3->hs.kea_def->exchKeyType;
-	certChain              = sc->serverCertChain;
+	sslServerCerts * sc = NULL;
+
+	/* XXX SSLKEAType isn't really a good choice for 
+	 * indexing certificates (it breaks when we deal
+	 * with (EC)DHE-* cipher suites. This hack ensures
+	 * the RSA cert is picked for (EC)DHE-RSA.
+	 * Revisit this when we add server side support
+	 * for ECDHE-ECDSA or client-side authentication
+	 * using EC certificates.
+	 */
+	if ((ss->ssl3->hs.kea_def->kea == kea_ecdhe_rsa) ||
+	    (ss->ssl3->hs.kea_def->kea == kea_dhe_rsa)) {
+	    certIndex = kt_rsa;
+	} else {
+	    certIndex = ss->ssl3->hs.kea_def->exchKeyType;
+	}
+	sc                    = ss->serverCerts + certIndex;
+	certChain             = sc->serverCertChain;
 	ss->sec.authKeyBits   = sc->serverKeyBits;
 	ss->sec.authAlgorithm = ss->ssl3->hs.kea_def->signKeyType;
 	ss->sec.localCert     = CERT_DupCertificate(sc->serverCert);
@@ -6633,7 +7406,34 @@ ssl3_HandleCertificate(sslSocket *ss, SSL3Opaque *b, PRUint32 length)
 	ss->sec.keaType       = ssl3->hs.kea_def->exchKeyType;
 	if (pubKey) {
 	    ss->sec.keaKeyBits = ss->sec.authKeyBits =
-			      SECKEY_PublicKeyStrength(pubKey) * BPB;
+		SECKEY_PublicKeyStrengthInBits(pubKey);
+#ifdef NSS_ENABLE_ECC
+	    if (ss->sec.keaType == kt_ecdh) {
+		/* Get authKeyBits from signing key.
+		 * XXX The code below uses a quick approximation of
+		 * key size based on cert->signatureWrap.signature.data
+		 * (which contains the DER encoded signature). The field
+		 * cert->signatureWrap.signature.len contains the
+		 * length of the encoded signature in bits.
+		 */
+		if (ss->ssl3->hs.kea_def->kea == kea_ecdh_ecdsa) {
+		    ss->sec.authKeyBits = 
+			cert->signatureWrap.signature.data[3]*8;
+		    if (cert->signatureWrap.signature.data[4] == 0x00)
+			    ss->sec.authKeyBits -= 8;
+		    /* 
+		     * XXX: if cert is not signed by ecdsa we should
+		     * destroy pubKey and goto bad_cert
+		     */
+		} else if (ss->ssl3->hs.kea_def->kea == kea_ecdh_rsa) {
+		    ss->sec.authKeyBits = cert->signatureWrap.signature.len;
+		    /* 
+		     * XXX: if cert is not signed by rsa we should
+		     * destroy pubKey and goto bad_cert
+		     */
+		}
+	    }
+#endif /* NSS_ENABLE_ECC */
 	    SECKEY_DestroyPublicKey(pubKey); 
 	    pubKey = NULL;
     	}
@@ -6649,6 +7449,10 @@ cert_block:
 	if (ssl3->hs.kea_def->is_limited ||
 	    /* XXX OR server cert is signing only. */
 	    ssl3->hs.kea_def->kea == kea_fortezza ||
+#ifdef NSS_ENABLE_ECC
+	    ssl3->hs.kea_def->kea == kea_ecdhe_ecdsa ||
+	    ssl3->hs.kea_def->kea == kea_ecdhe_rsa ||
+#endif /* NSS_ENABLE_ECC */
 	    ssl3->hs.kea_def->exchKeyType == kt_dh) {
 	    ssl3->hs.ws = wait_server_key; /* allow server_key_exchange */
 	}
@@ -6884,6 +7688,7 @@ ssl3_HandleFinished(sslSocket *ss, SSL3Opaque *b, PRUint32 length,
     PRBool            isTLS;
     PRBool            doStepUp;
     CK_MECHANISM_TYPE mechanism;
+    SSL3KEAType       effectiveExchKeyType;
 
     PORT_Assert( ssl_HaveRecvBufLock(ss) );
     PORT_Assert( ssl_HaveSSL3HandshakeLock(ss) );
@@ -6974,13 +7779,19 @@ xmit_loser:
     ss->gs.writeOffset = 0;
     ss->gs.readOffset  = 0;
 
+    if (ssl3->hs.kea_def->kea == kea_ecdhe_rsa) {
+	effectiveExchKeyType = kt_rsa;
+    } else {
+	effectiveExchKeyType = ssl3->hs.kea_def->exchKeyType;
+    }
+
   if (sid->cached == never_cached) {
 
     /* fill in the sid */
     sid->u.ssl3.cipherSuite = ssl3->hs.cipher_suite;
     sid->u.ssl3.compression = ssl3->hs.compression;
     sid->u.ssl3.policy      = ssl3->policy;
-    sid->u.ssl3.exchKeyType = ssl3->hs.kea_def->exchKeyType;
+    sid->u.ssl3.exchKeyType = effectiveExchKeyType;
     sid->version            = ss->version;
     sid->authAlgorithm      = ss->sec.authAlgorithm;
     sid->authKeyBits        = ss->sec.authKeyBits;
@@ -7037,7 +7848,7 @@ xmit_loser:
 	mechanism = PK11_GetBestWrapMechanism(symKeySlot);
 	if (mechanism != CKM_INVALID_MECHANISM) {
 	    wrappingKey =
-	    	getWrappingKey(ss, symKeySlot, ssl3->hs.kea_def->exchKeyType,
+	    	getWrappingKey(ss, symKeySlot, effectiveExchKeyType,
 			       mechanism, pwArg);
 	    if (wrappingKey) {
 		mechanism = PK11_GetMechanism(wrappingKey); /* can't fail. */
@@ -7391,9 +8202,10 @@ const ssl3BulkCipherDef *cipher_def;
     ssl3State *          ssl3 			= ss->ssl3;
     ssl3CipherSpec *     crSpec;
     SECStatus            rv;
-    unsigned int         hashBytes;
+    unsigned int         hashBytes		= MAX_MAC_LENGTH + 1;
     unsigned int         padding_length;
     PRBool               isTLS;
+    PRBool               padIsBad               = PR_FALSE;
     SSL3ContentType      rType;
     SSL3Opaque           hash[MAX_MAC_LENGTH];
 
@@ -7409,6 +8221,12 @@ const ssl3BulkCipherDef *cipher_def;
     }
 
     ssl3 = ss->ssl3;
+
+    /* check for Token Presence */
+    if (!ssl3_ClientAuthTokenPresent(ss->sec.ci.sid)) {
+	PORT_SetError(SSL_ERROR_TOKEN_INSERTION_REMOVAL);
+	return SECFailure;
+    }
 
     /* cText is NULL when we're called from ssl3_RestartHandshakeAfterXXX().
      * This implies that databuf holds a previously deciphered SSL Handshake
@@ -7428,6 +8246,7 @@ const ssl3BulkCipherDef *cipher_def;
 	    SSL_DBG(("%d: SSL3[%d]: HandleRecord, tried to get %d bytes",
 		     SSL_GETPID(), ss->fd, MAX_FRAGMENT_LENGTH + 2048));
 	    /* sslBuffer_Grow has set a memory error code. */
+	    /* Perhaps we should send an alert. (but we have no memory!) */
 	    return SECFailure;
 	}
     }
@@ -7453,11 +8272,11 @@ const ssl3BulkCipherDef *cipher_def;
 
     PRINT_BUF(80, (ss, "cleartext:", databuf->buf, databuf->len));
     if (rv != SECSuccess) {
+	int err = ssl_MapLowLevelError(SSL_ERROR_DECRYPTION_FAILURE);
 	ssl_ReleaseSpecReadLock(ss);
-	ssl_MapLowLevelError(SSL_ERROR_DECRYPTION_FAILURE);
-	SSL3_SendAlert(ss, alert_fatal, 
-		       isTLS ? decryption_failed : bad_record_mac);
-	ssl_MapLowLevelError(SSL_ERROR_DECRYPTION_FAILURE);
+	SSL3_SendAlert(ss, alert_fatal,
+	               isTLS ? decryption_failed : bad_record_mac);
+	PORT_SetError(err);
 	return SECFailure;
     }
 
@@ -7465,48 +8284,45 @@ const ssl3BulkCipherDef *cipher_def;
     if (cipher_def->type == type_block) {
 	padding_length = *(databuf->buf + databuf->len - 1);
 	/* TLS permits padding to exceed the block size, up to 255 bytes. */
-	if (padding_length + crSpec->mac_size >= databuf->len)
-	    goto bad_pad;
+	if (padding_length + 1 + crSpec->mac_size > databuf->len)
+	    padIsBad = PR_TRUE;
 	/* if TLS, check value of first padding byte. */
-	if (padding_length && isTLS && padding_length != 
-		*(databuf->buf + databuf->len - 1 - padding_length))
-	    goto bad_pad;
-	databuf->len -= padding_length + 1;
-	if (databuf->len <= 0) {
-bad_pad:
-	    /* must not hold spec lock when calling SSL3_SendAlert. */
-	    ssl_ReleaseSpecReadLock(ss);
-	    /* SSL3 & TLS must send bad_record_mac if padding check fails. */
-	    SSL3_SendAlert(ss, alert_fatal, bad_record_mac);
-	    PORT_SetError(SSL_ERROR_BAD_BLOCK_PADDING);
-	    return SECFailure;
-	}
+	else if (padding_length && isTLS && 
+	         padding_length != 
+	                 *(databuf->buf + databuf->len - (padding_length + 1)))
+	    padIsBad = PR_TRUE;
+	else
+	    databuf->len -= padding_length + 1;
     }
 
-    /* Check the MAC. */
-    if (databuf->len < crSpec->mac_size) {
-    	/* record is too short to have a valid mac. */
-	goto bad_mac;
-    }
-    databuf->len -= crSpec->mac_size;
+    /* Remove the MAC. */
+    if (databuf->len >= crSpec->mac_size)
+	databuf->len -= crSpec->mac_size;
+    else
+    	padIsBad = PR_TRUE;	/* really macIsBad */
+
+    /* compute the MAC */
     rType = cText->type;
     rv = ssl3_ComputeRecordMAC(
-    	crSpec, (ss->sec.isServer) ? crSpec->client.write_mac_context
+	crSpec, (ss->sec.isServer) ? crSpec->client.write_mac_context
 				    : crSpec->server.write_mac_context,
 	rType, cText->version, crSpec->read_seq_num, 
 	databuf->buf, databuf->len, hash, &hashBytes);
     if (rv != SECSuccess) {
+	int err = ssl_MapLowLevelError(SSL_ERROR_MAC_COMPUTATION_FAILURE);
 	ssl_ReleaseSpecReadLock(ss);
-	ssl_MapLowLevelError(SSL_ERROR_MAC_COMPUTATION_FAILURE);
+	SSL3_SendAlert(ss, alert_fatal, bad_record_mac);
+	PORT_SetError(err);
 	return rv;
     }
 
-    if (hashBytes != (unsigned)crSpec->mac_size ||
+    /* Check the MAC */
+    if (hashBytes != (unsigned)crSpec->mac_size || padIsBad || 
 	PORT_Memcmp(databuf->buf + databuf->len, hash, crSpec->mac_size) != 0) {
-bad_mac:
 	/* must not hold spec lock when calling SSL3_SendAlert. */
 	ssl_ReleaseSpecReadLock(ss);
 	SSL3_SendAlert(ss, alert_fatal, bad_record_mac);
+	/* always log mac error, in case attacker can read server logs. */
 	PORT_SetError(SSL_ERROR_BAD_MAC_READ);
 
 	SSL_DBG(("%d: SSL3[%d]: mac check failed", SSL_GETPID(), ss->fd));
@@ -7773,6 +8589,40 @@ ssl3_CreateRSAStepDownKeys(sslSocket *ss)
     return rv;
 }
 
+#ifdef NSS_ENABLE_ECC
+/*
+ * Creates the ephemeral public and private ECDH keys used by
+ * server in ECDHE_RSA and ECDHE_ECDSA handshakes.
+ * XXX For now, the elliptic curve is hardcoded to NIST P-224.
+ * We need an API to specify the curve. This won't be a real
+ * issue until we further develop server-side support for ECC
+ * cipher suites.
+ */
+SECStatus
+ssl3_CreateECDHEphemeralKeys(sslSocket *ss)
+{
+    SECStatus             rv  	 = SECSuccess;
+    SECKEYPrivateKey *    privKey;
+    SECKEYPublicKey *     pubKey;
+    SECKEYECParams	  ecParams = { siBuffer, NULL, 0 };
+
+    if (ss->ephemeralECDHKeyPair)
+	ssl3_FreeKeyPair(ss->ephemeralECDHKeyPair);
+    ss->ephemeralECDHKeyPair = NULL;
+
+    if (ecName2params(NULL, ec_secp224r1, &ecParams) == SECFailure)
+	return SECFailure;
+    privKey = SECKEY_CreateECPrivateKey(&ecParams, &pubKey, NULL);    
+    if (!privKey || !pubKey ||
+	!(ss->ephemeralECDHKeyPair = ssl3_NewKeyPair(privKey, pubKey))) {
+	    ssl_MapLowLevelError(SEC_ERROR_KEYGEN_FAIL);
+	    rv = SECFailure;
+    }
+
+    PORT_Free(ecParams.data);
+    return rv;
+}
+#endif /* NSS_ENABLE_ECC */
 
 /* record the export policy for this cipher suite */
 SECStatus

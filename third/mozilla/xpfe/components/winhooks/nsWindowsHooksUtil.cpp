@@ -36,17 +36,24 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include <windows.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "nsString.h"
 #include "nsINativeAppSupportWin.h"
 #include "nsIStringBundle.h"
+#include "nsDirectoryService.h"
+#include "nsAppDirectoryServiceDefs.h"
+
+#define MOZ_HWND_BROADCAST_MSG_TIMEOUT 5000
+#define MOZ_CLIENT_BROWSER_KEY "Software\\Clients\\StartMenuInternet"
 
 // Where Mozilla stores its own registry values.
 const char * const mozillaKeyName = "Software\\Mozilla\\Desktop";
 
 static const char shortcutSuffix[] = " -url \"%1\"";
 static const char chromeSuffix[] = " -chrome \"%1\"";
+static const char iconSuffix[] = ",0";
 
 // Returns the (fully-qualified) name of this executable.
 static nsCString thisApplication() {
@@ -171,6 +178,24 @@ struct ProtocolRegistryEntry : public SavedRegistryEntry {
     nsresult reset();
 };
 
+// ProtocolIconRegistryEntry
+//
+// For setting icon entries for a given Internet Shortcut protocol.
+// The key name is calculated as
+// HKEY_LOCAL_MACHINE\Software\Classes\protocol\DefaultIcon.
+// The setting is this executable (with appropriate suffix).
+struct ProtocolIconRegistryEntry : public SavedRegistryEntry {
+    nsCString protocol;
+    ProtocolIconRegistryEntry( const char* aprotocol )
+        : SavedRegistryEntry( HKEY_LOCAL_MACHINE, "", "", thisApplication().get() ),
+          protocol( aprotocol ) {
+        keyName = NS_LITERAL_CSTRING("Software\\Classes\\") + protocol + NS_LITERAL_CSTRING("\\DefaultIcon");
+
+        // Append appropriate suffix to setting.
+        setting += iconSuffix;
+    }
+};
+
 // DDERegistryEntry
 //
 // Like a protocol registry entry, but for the shell\open\ddeexec subkey.
@@ -180,7 +205,7 @@ struct ProtocolRegistryEntry : public SavedRegistryEntry {
 //
 // We don't try to save everything, though.  We do save the known useful info
 // under the ddeexec subkey:
-//     ddexec\@
+//     ddeexec\@
 //     ddeexec\NoActivateHandler
 //     ddeexec\Application\@
 //     ddeexec\Topic\@
@@ -220,13 +245,15 @@ struct FileTypeRegistryEntry : public ProtocolRegistryEntry {
     const char **ext;
     nsCString desc;
     nsCString defDescKey;
+    nsCString iconFile;
     FileTypeRegistryEntry ( const char **ext, const char *fileType, 
-        const char *desc, const char *defDescKey )
+        const char *desc, const char *defDescKey, const char *iconFile )
         : ProtocolRegistryEntry( fileType ),
           fileType( fileType ),
           ext( ext ),
           desc( desc ),
-          defDescKey(defDescKey) {
+          defDescKey(defDescKey),
+          iconFile(iconFile) {
     }
     nsresult set();
     nsresult reset();
@@ -237,8 +264,8 @@ struct FileTypeRegistryEntry : public ProtocolRegistryEntry {
 // Extends FileTypeRegistryEntry by setting an additional handler for an "edit" command.
 struct EditableFileTypeRegistryEntry : public FileTypeRegistryEntry {
     EditableFileTypeRegistryEntry( const char **ext, const char *fileType, 
-        const char *desc, const char *defDescKey )
-        : FileTypeRegistryEntry( ext, fileType, desc, defDescKey ) {
+        const char *desc, const char *defDescKey, const char *iconFile )
+        : FileTypeRegistryEntry( ext, fileType, desc, defDescKey, iconFile ) {
     }
     nsresult set();
 };
@@ -302,7 +329,7 @@ else printf( "Setting %s=%s\n", fullName().get(), setting.get() );
             DWORD len = sizeof buffer;
             rc = ::RegQueryValueEx( key, valueNameArg(), NULL, NULL, (LPBYTE)buffer, &len );
             if ( rc != ERROR_SUCCESS || strcmp( setting.get(), buffer ) != 0 ) {
-                rc = ::RegSetValueEx( key, valueNameArg(), NULL, REG_SZ, (LPBYTE)setting.get(), setting.Length() );
+                rc = ::RegSetValueEx( key, valueNameArg(), 0, REG_SZ, (LPBYTE)setting.get(), setting.Length() );
 #ifdef DEBUG_law
 NS_WARN_IF_FALSE( rc == ERROR_SUCCESS, fullName().get() );
 #endif
@@ -336,7 +363,8 @@ nsresult SavedRegistryEntry::set() {
         rv = RegistryEntry::set();
         if ( NS_SUCCEEDED( rv ) ) {
             // Save old.
-            RegistryEntry( HKEY_LOCAL_MACHINE, "Software\\Mozilla\\Desktop", fullName().get(), prev.get() ).set();
+            RegistryEntry tmp( HKEY_LOCAL_MACHINE, "Software\\Mozilla\\Desktop", fullName().get(), prev.get() );
+            tmp.set();
         }
     }
     return rv;
@@ -370,20 +398,23 @@ static void setWindowsXP() {
             // comes from nsINativeAppSupportWin.h.
             char buffer[ _MAX_PATH + 8 ]; // Path, plus '@', comma, minus, and digits (5)
             _snprintf( buffer, sizeof buffer, "@%s,-%d", thisApplication().get(), IDS_STARTMENU_APPNAME );
-            RegistryEntry( HKEY_LOCAL_MACHINE, 
+            RegistryEntry tmp_entry1( HKEY_LOCAL_MACHINE, 
                            subkey.get(),
                            "LocalizedString", 
-                           buffer ).set();
+                           buffer );
+            tmp_entry1.set();
             // Default icon (from .exe resource).
-            RegistryEntry( HKEY_LOCAL_MACHINE, 
+            RegistryEntry tmp_entry2( HKEY_LOCAL_MACHINE, 
                            nsCAutoString( subkey + NS_LITERAL_CSTRING( "\\DefaultIcon" ) ).get(),
                            "", 
-                           nsCAutoString( thisApplication() + NS_LITERAL_CSTRING( ",0" ) ).get() ).set();
+                           nsCAutoString( thisApplication() + NS_LITERAL_CSTRING( ",0" ) ).get() );
+            tmp_entry2.set();
             // Command to open.
-            RegistryEntry( HKEY_LOCAL_MACHINE,
+            RegistryEntry tmp_entry3( HKEY_LOCAL_MACHINE,
                            nsCAutoString( subkey + NS_LITERAL_CSTRING( "\\shell\\open\\command" ) ).get(),
                            "", 
-                           thisApplication().get() ).set();
+                           thisApplication().get() );
+            tmp_entry3.set();
             // "Properties" verb.  The default value is the text that will appear in the menu.
             // The default value under the command subkey is the name of this application, with
             // arguments to cause the Preferences window to appear.
@@ -395,15 +426,17 @@ static void setWindowsXP() {
                                                        getter_AddRefs( bundle ) ) ) &&
                  NS_SUCCEEDED( bundle->GetStringFromName( NS_LITERAL_STRING( "prefsLabel" ).get(), getter_Copies( label ) ) ) ) {
                 // Set the label that will appear in the start menu context menu.
-                RegistryEntry( HKEY_LOCAL_MACHINE,
+                RegistryEntry tmp_entry4( HKEY_LOCAL_MACHINE,
                                nsCAutoString( subkey + NS_LITERAL_CSTRING( "\\shell\\properties" ) ).get(),
                                "", 
-                               NS_ConvertUCS2toUTF8( label ).get() ).set();
+                               NS_ConvertUCS2toUTF8( label ).get() );
+                tmp_entry4.set();
             }
-            RegistryEntry( HKEY_LOCAL_MACHINE,
+            RegistryEntry tmp_entry5( HKEY_LOCAL_MACHINE,
                            nsCAutoString( subkey + NS_LITERAL_CSTRING( "\\shell\\properties\\command" ) ).get(),
                            "", 
-                           nsCAutoString( thisApplication() + NS_LITERAL_CSTRING( "-chrome \"chrome://communicator/content/pref/pref.xul\"" ) ).get() ).set();
+                           nsCAutoString( thisApplication() + NS_LITERAL_CSTRING( " -chrome \"chrome://communicator/content/pref/pref.xul\"" ) ).get() );
+            tmp_entry5.set();
 
             // Now we need to select our application as the default start menu internet application.
             // This is accomplished by first trying to store our subkey name in 
@@ -414,13 +447,20 @@ static void setWindowsXP() {
             // That may or may not have worked (depending on whether we have sufficient access).
             if ( hklmAppEntry.currentSetting() == hklmAppEntry.setting ) {
                 // We've set the hklm entry, so we can delete the one under hkcu.
-                SavedRegistryEntry( HKEY_CURRENT_USER, baseKey.get(), "", 0 ).set();
+                SavedRegistryEntry tmp_entry6( HKEY_CURRENT_USER, baseKey.get(), "", 0 );
+                tmp_entry6.set();
             } else {
                 // All we can do is set the default start menu internet app for this user.
-                SavedRegistryEntry( HKEY_CURRENT_USER, baseKey.get(), "", shortAppName().get() );
+                SavedRegistryEntry tmp_entry7( HKEY_CURRENT_USER, baseKey.get(), "", shortAppName().get() );
             }
             // Notify the system of the changes.
-            ::SendMessage( HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Software\\Clients\\StartMenuInternet" );
+            ::SendMessageTimeout( HWND_BROADCAST,
+                                  WM_SETTINGCHANGE,
+                                  0,
+                                  (LPARAM)MOZ_CLIENT_BROWSER_KEY,
+                                  SMTO_NORMAL|SMTO_ABORTIFHUNG,
+                                  MOZ_HWND_BROADCAST_MSG_TIMEOUT,
+                                  NULL);
         }
     }
 }
@@ -441,6 +481,8 @@ nsresult ProtocolRegistryEntry::set() {
 
     // Save and set corresponding DDE entry(ies).
     DDERegistryEntry( protocol.get() ).set();
+    // Set icon.
+    ProtocolIconRegistryEntry( protocol.get() ).set();
 
     return rv;
 }
@@ -506,18 +548,27 @@ static void resetWindowsXP() {
     NS_NAMED_LITERAL_CSTRING( baseKey, "Software\\Clients\\StartMenuInternet" );
     // First, try to restore the HKLM setting.  This will fail if either we didn't
     // set that, or, if we don't have access).
-    SavedRegistryEntry( HKEY_LOCAL_MACHINE, baseKey.get(), "", shortAppName().get() ).reset();
+    SavedRegistryEntry tmp_entry8( HKEY_LOCAL_MACHINE, baseKey.get(), "", shortAppName().get() );
+    tmp_entry8.reset();
 
     // The HKCU setting is trickier.  We may have set it, but we may also have
     // removed it (see setWindowsXP(), above).  We first try to reverse the
     // setting.  If we had removed it, then this will fail.
-    SavedRegistryEntry( HKEY_CURRENT_USER, baseKey.get(), "", shortAppName().get() ).reset();
+    SavedRegistryEntry tmp_entry9( HKEY_CURRENT_USER, baseKey.get(), "", shortAppName().get() );
+    tmp_entry9.reset();
     // Now, try to reverse the removal of this key.  This will fail if there is a  current
     // setting, and will only work if this key is unset, and, we have a saved value.
-    SavedRegistryEntry( HKEY_CURRENT_USER, baseKey.get(), "", 0 ).reset();
+    SavedRegistryEntry tmp_entry10( HKEY_CURRENT_USER, baseKey.get(), "", 0 );
+    tmp_entry10.reset();
 
     // Notify the system of the changes.
-    ::SendMessage( HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Software\\Clients\\StartMenuInternet" );
+    ::SendMessageTimeout( HWND_BROADCAST,
+                          WM_SETTINGCHANGE,
+                          0,
+                          (LPARAM)MOZ_CLIENT_BROWSER_KEY,
+                          SMTO_NORMAL|SMTO_ABORTIFHUNG,
+                          MOZ_HWND_BROADCAST_MSG_TIMEOUT,
+                          NULL);
 }
 
 // Restore this entry and corresponding DDE entry.
@@ -527,6 +578,8 @@ nsresult ProtocolRegistryEntry::reset() {
 
     // Do same for corresponding DDE entry.
     DDERegistryEntry( protocol.get() ).reset();
+    // Reset icon.
+    ProtocolIconRegistryEntry( protocol.get() ).reset();
 
     // For http:, on WindowsXP, we need to do some extra cleanup.
     if ( protocol == NS_LITERAL_CSTRING( "http" ) ) {
@@ -658,6 +711,7 @@ nsresult FileTypeRegistryEntry::set() {
 
         // If we just created this file type entry, set description and default icon.
         if ( NS_SUCCEEDED( rv ) ) {
+            nsCAutoString iconFileToUse;
             nsCAutoString descKey( "Software\\Classes\\" );
             descKey += protocol;
             RegistryEntry descEntry( HKEY_LOCAL_MACHINE, descKey.get(), NULL, "" );
@@ -675,12 +729,48 @@ nsresult FileTypeRegistryEntry::set() {
             iconKey += protocol;
             iconKey += "\\DefaultIcon";
 
-            RegistryEntry iconEntry( HKEY_LOCAL_MACHINE, iconKey.get(), NULL,
-                                     nsCAutoString( thisApplication() + NS_LITERAL_CSTRING(",0") ).get() );
+            iconFileToUse = thisApplication() + NS_LITERAL_CSTRING( ",0" );
 
-            if ( iconEntry.currentSetting().IsEmpty() ) {
-                iconEntry.set();
+            // Check to see if there's an icon file name associated with this extension.
+            // If there is, then we need to use this icon file.  If not, then we default
+            // to the main app's icon.
+            if ( !iconFile.IsEmpty() ) {
+                nsCOMPtr<nsIFile> iconFileSpec;
+                PRBool            flagExists;
+
+                // Use the directory service to get the path to the chrome folder.  The
+                // icons will be located in [chrome dir]\icons\default.
+                // The abs path to the icon has to be in the short filename
+                // format, else it won't work under win9x systems.
+                rv = NS_GetSpecialDirectory( NS_APP_CHROME_DIR, getter_AddRefs( iconFileSpec ) );
+                if ( NS_SUCCEEDED( rv ) ) {
+                    iconFileSpec->AppendNative( NS_LITERAL_CSTRING( "icons" ) );
+                    iconFileSpec->AppendNative( NS_LITERAL_CSTRING( "default" ) );
+                    iconFileSpec->AppendNative( iconFile );
+
+                    // Check to make sure that the icon file exists on disk.
+                    iconFileSpec->Exists( &flagExists );
+                    if ( flagExists ) {
+                        rv = iconFileSpec->GetNativePath( iconFileToUse );
+                        if ( NS_SUCCEEDED( rv ) ) {
+                            TCHAR buffer[MAX_PATH];
+                            DWORD len;
+
+                            // Get the short path name (8.3) format for iconFileToUse
+                            // else it won't work under win9x.
+                            len = ::GetShortPathName( iconFileToUse.get(), buffer, sizeof buffer );
+                            NS_ASSERTION ( (len > 0) && ( len < sizeof buffer ), "GetShortPathName failed!" );
+                            iconFileToUse.Assign( buffer );
+                            iconFileToUse.Append( NS_LITERAL_CSTRING( ",0" ) );
+                        }
+
+                    }
+                }
             }
+
+            RegistryEntry iconEntry( HKEY_LOCAL_MACHINE, iconKey.get(), NULL, iconFileToUse.get() );
+            if( !iconEntry.currentSetting().Equals( iconFileToUse ) )
+                iconEntry.set();
         }
     }
 

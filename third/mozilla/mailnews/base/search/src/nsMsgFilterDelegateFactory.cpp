@@ -64,7 +64,6 @@ NS_IMPL_ISUPPORTS1(nsMsgFilterDelegateFactory, nsIRDFDelegateFactory)
 
 nsMsgFilterDelegateFactory::nsMsgFilterDelegateFactory()
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
 }
 
@@ -211,7 +210,7 @@ nsMsgFilterDelegateFactory::getFilterList(const char *aUri,
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIRDFResource> filterListResource;
-    rdf->GetResource(folderUri.get(), getter_AddRefs(filterListResource));
+    rdf->GetResource(folderUri, getter_AddRefs(filterListResource));
     NS_ENSURE_SUCCESS(rv, rv);
 
     return filterListResource->GetDelegate("filter",

@@ -70,7 +70,6 @@
 // XXX Remove
 #include "nsIWebShell.h"
 
-
 static NS_DEFINE_CID(kTransactionManagerCID, NS_TRANSACTIONMANAGER_CID);
 static NS_DEFINE_CID(kComponentManagerCID,  NS_COMPONENTMANAGER_CID);
 
@@ -83,7 +82,6 @@ nsMsgWindow::nsMsgWindow()
 {
   mCharsetOverride = PR_FALSE;
   m_stopped = PR_FALSE;
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgWindow::~nsMsgWindow()
@@ -248,11 +246,8 @@ NS_IMETHODIMP nsMsgWindow::SetMsgHeaderSink(nsIMsgHeaderSink * aMsgHdrSink)
 
 NS_IMETHODIMP nsMsgWindow::GetTransactionManager(nsITransactionManager * *aTransactionManager)
 {
-	if(!aTransactionManager)
-		return NS_ERROR_NULL_POINTER;
-
-	*aTransactionManager = mTransactionManager;
-	NS_IF_ADDREF(*aTransactionManager);
+	NS_ENSURE_ARG_POINTER(aTransactionManager);
+	NS_IF_ADDREF(*aTransactionManager = mTransactionManager);
 	return NS_OK;
 }
 
@@ -264,13 +259,9 @@ NS_IMETHODIMP nsMsgWindow::SetTransactionManager(nsITransactionManager * aTransa
 
 NS_IMETHODIMP nsMsgWindow::GetOpenFolder(nsIMsgFolder * *aOpenFolder)
 {
-	if(!aOpenFolder)
-		return NS_ERROR_NULL_POINTER;
-
-	*aOpenFolder = mOpenFolder;
-	NS_IF_ADDREF(*aOpenFolder);
+	NS_ENSURE_ARG_POINTER(aOpenFolder);
+	NS_IF_ADDREF(*aOpenFolder = mOpenFolder);
 	return NS_OK;
-
 }
 
 NS_IMETHODIMP nsMsgWindow::SetOpenFolder(nsIMsgFolder * aOpenFolder)
@@ -427,7 +418,7 @@ NS_IMETHODIMP nsMsgWindow::StopUrls()
 // nsIURIContentListener support
 NS_IMETHODIMP nsMsgWindow::OnStartURIOpen(nsIURI* aURI, PRBool* aAbortOpen)
 {
-   return NS_OK;
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsMsgWindow::DoContent(const char *aContentType, PRBool aIsContentPreferred,

@@ -60,7 +60,6 @@ NS_IMPL_ISUPPORTS1(nsAbMDBDirFactory, nsIAbDirFactory);
 
 nsAbMDBDirFactory::nsAbMDBDirFactory()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsAbMDBDirFactory::~nsAbMDBDirFactory()
@@ -109,6 +108,7 @@ NS_IMETHODIMP nsAbMDBDirFactory::CreateDirectory(nsIAbDirectoryProperties *aProp
 
     nsXPIDLCString uri;
     nsAutoString description;
+    nsXPIDLCString prefName;
 
     rv = aProperties->GetDescription(description);
     NS_ENSURE_SUCCESS(rv, rv);
@@ -116,17 +116,23 @@ NS_IMETHODIMP nsAbMDBDirFactory::CreateDirectory(nsIAbDirectoryProperties *aProp
     rv = aProperties->GetURI(getter_Copies(uri));
     NS_ENSURE_SUCCESS(rv, rv);
     
+    rv = aProperties->GetPrefName(getter_Copies(prefName));
+    NS_ENSURE_SUCCESS(rv, rv);
+    
 	nsCOMPtr<nsIRDFService> rdf = do_GetService (NS_RDF_CONTRACTID "/rdf-service;1", &rv);
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIRDFResource> resource;
-    rv = rdf->GetResource(uri.get(), getter_AddRefs(resource));
+    rv = rdf->GetResource(uri, getter_AddRefs(resource));
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIAbDirectory> directory(do_QueryInterface(resource, &rv));
     NS_ENSURE_SUCCESS(rv, rv);
 
     rv = directory->SetDirName(description.get());
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    rv = directory->SetDirPrefId(prefName);
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIAddrBookSession> abSession = do_GetService(NS_ADDRBOOKSESSION_CONTRACTID, &rv);
@@ -146,7 +152,7 @@ NS_IMETHODIMP nsAbMDBDirFactory::CreateDirectory(nsIAbDirectoryProperties *aProp
 
       (*dbPath) += fileName.get();
 
-      nsCOMPtr<nsIAddrDatabase>  addrDBFactory = do_GetService(NS_ADDRDATABASE_CONTRACTID, &rv);
+      nsCOMPtr<nsIAddrDatabase> addrDBFactory = do_GetService(NS_ADDRDATABASE_CONTRACTID, &rv);
       NS_ENSURE_SUCCESS(rv, rv);
 
       rv = addrDBFactory->Open(dbPath, PR_TRUE, getter_AddRefs(listDatabase), PR_TRUE);

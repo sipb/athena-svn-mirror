@@ -46,6 +46,7 @@
 #include "nsIFileSpec.h"
 #include "nsParseMailbox.h"
 #include "nsIFolder.h"
+#include "nsIMsgLocalMailFolder.h"
 #include "nsIMsgIncomingServer.h"
 #include "nsLocalUtils.h"
 #include "nsMsgLocalFolderHdrs.h"
@@ -56,7 +57,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsPop3Sink, nsIPop3Sink)
 
 nsPop3Sink::nsPop3Sink()
 {
-    NS_INIT_ISUPPORTS();
     m_authed = PR_FALSE;
     m_accountUrl = nsnull;
     m_biffState = 0;
@@ -75,11 +75,11 @@ nsPop3Sink::nsPop3Sink()
 
 nsPop3Sink::~nsPop3Sink()
 {
-    PR_FREEIF(m_accountUrl);
-    PR_FREEIF(m_outputBuffer);
+    PR_Free(m_accountUrl);
+    PR_Free(m_outputBuffer);
     NS_IF_RELEASE(m_popServer);
     ReleaseFolderLock();
-	NS_IF_RELEASE(m_folder);
+    NS_IF_RELEASE(m_folder);
     NS_IF_RELEASE(m_newMailParser);
 }
 
@@ -112,7 +112,7 @@ nsPop3Sink::SetMailAccountURL(const char* urlString)
 {
   if (urlString)
   {
-    PR_FREEIF(m_accountUrl);
+    PR_Free(m_accountUrl);
     m_accountUrl = PL_strdup(urlString);
   }
 
@@ -239,12 +239,13 @@ nsPop3Sink::EndMailDelivery()
 
   nsresult rv = ReleaseFolderLock();
   NS_ASSERTION(NS_SUCCEEDED(rv),"folder lock not released successfully");
-#ifdef DEBUG_bienvenu
-#define DO_FILTER_PLUGIN
-#endif
-#ifdef DO_FILTER_PLUGIN
-  m_folder->CallFilterPlugins();
-#endif
+
+  m_folder->CallFilterPlugins(nsnull); // ??? do we need msgWindow?
+
+  // note that size on disk has possibly changed.
+  nsCOMPtr<nsIMsgLocalMailFolder> localFolder = do_QueryInterface(m_folder);
+  if (localFolder)
+    (void) localFolder->RefreshSizeOnDisk();
   nsCOMPtr<nsIMsgIncomingServer> server = do_QueryInterface(m_popServer);
   if (server) {
     nsCOMPtr <nsIMsgFilterList> filterList;
@@ -255,10 +256,41 @@ nsPop3Sink::EndMailDelivery()
       (void) filterList->FlushLogIfNecessary();
   }
 
+  // fix for bug #161999
+  // we should update the summary totals for the folder (inbox)
+  // in case it's not the open folder
+  m_folder->UpdateSummaryTotals(PR_TRUE);
+ 
+  // check if the folder open in this window is not the current folder, and if it has new
+  // message, in which case we need to try to run the
+  // filter plugin.
+  if (m_newMailParser)
+  {
+    nsCOMPtr <nsIMsgWindow> msgWindow;
+    m_newMailParser->GetMsgWindow(getter_AddRefs(msgWindow));
+    if (msgWindow)
+    {
+      nsCOMPtr <nsIMsgFolder> openFolder;
+      (void) msgWindow->GetOpenFolder(getter_AddRefs(openFolder));
+      if (openFolder && openFolder != m_folder)
+      {
+        // only call filter plugins if folder is a local folder, because only
+        // local folders get messages filtered into them synchronously by pop3.
+        nsCOMPtr<nsIMsgLocalMailFolder> localFolder = do_QueryInterface(openFolder);
+        if (localFolder)
+        {
+        PRBool hasNew;
+        (void) openFolder->GetHasNewMessages(&hasNew);
+        if (hasNew)
+          openFolder->CallFilterPlugins(nsnull);
+        }
+      }
+    }
+  }
 #ifdef DEBUG
-    printf("End mail message delivery.\n");
+  printf("End mail message delivery.\n");
 #endif 
-    return NS_OK;
+  return NS_OK;
 }
 
 nsresult 
@@ -360,10 +392,9 @@ nsPop3Sink::GetPopServer(nsIPop3IncomingServer* *server)
 
 nsresult nsPop3Sink::GetFolder(nsIMsgFolder * *folder)
 {
-	if(!folder) return NS_ERROR_NULL_POINTER;
-	*folder = m_folder;
-	NS_IF_ADDREF(*folder);
-	return NS_OK;
+  NS_ENSURE_ARG_POINTER(folder);
+  NS_IF_ADDREF(*folder = m_folder);
+  return NS_OK;
 }
 
 nsresult nsPop3Sink::SetFolder(nsIMsgFolder * folder)
@@ -373,7 +404,6 @@ nsresult nsPop3Sink::SetFolder(nsIMsgFolder * folder)
   NS_IF_ADDREF(m_folder);
   
   return NS_OK;
-
 }
 
 nsresult
@@ -476,7 +506,7 @@ nsPop3Sink::IncorporateComplete(nsIMsgWindow *msgWindow)
 {
   if (m_buildMessageUri && m_baseMessageUri)
   {
-      PRUint32 msgKey = -1;
+      PRUint32 msgKey;
       m_newMailParser->GetEnvelopePos(&msgKey);
       m_messageUri.SetLength(0);
       nsBuildLocalMessageURI(m_baseMessageUri, msgKey, m_messageUri);

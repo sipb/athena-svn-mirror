@@ -69,8 +69,14 @@ public:
 
     enum ContainerState {
         eContainerState_Unknown     =  0,
-        eContainerState_Empty       =  1,
-        eContainerState_Nonempty    = -2
+        eContainerState_Open        =  1,
+        eContainerState_Closed      = -2
+    };
+
+    enum ContainerFill {
+        eContainerFill_Unknown      =  0,
+        eContainerFill_Empty        =  1,
+        eContainerFill_Nonempty     = -2
     };
 
     class Subtree;
@@ -84,6 +90,8 @@ public:
         nsTemplateMatch* mMatch;
         ContainerType    mContainerType  : 2;
         ContainerState   mContainerState : 2;
+        ContainerFill    mContainerFill  : 2;
+        
         Subtree*         mSubtree; // XXX eventually move to hashtable
     };
 
@@ -286,6 +294,11 @@ public:
          * Return the current row index of the iterator
          */
         PRInt32 GetRowIndex() const { return mRowIndex; }
+
+        /**
+         * Pop the iterator up a level.
+         */
+        iterator& Pop() { --mTop; return *this; }
     };
 
     /**

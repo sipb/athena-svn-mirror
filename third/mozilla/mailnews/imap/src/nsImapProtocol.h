@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Lorenzo Colitti <lorenzo@colitti.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -51,7 +52,8 @@
 #include "nsIProgressEventSink.h"
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
-#include "nsITransport.h"
+#include "nsISocketTransport.h"
+#include "nsIInputStreamPump.h"
 
 // imap event sinks
 #include "nsIImapMailFolderSink.h"
@@ -142,7 +144,6 @@ public:
 // of creating PRBools for everything....
 
 #define IMAP_RECEIVED_GREETING		      0x00000001  /* should we pause for the next read */
-#define IMAP_FIRST_PASS_IN_THREAD       0x00000002  /* entering thread for the first time? */
 #define	IMAP_CONNECTION_IS_OPEN		      0x00000004  /* is the connection currently open? */
 #define IMAP_WAITING_FOR_DATA		        0x00000008
 #define IMAP_CLEAN_UP_URL_STATE         0x00000010 // processing clean up url state
@@ -190,7 +191,7 @@ public:
 	NS_IMETHOD NotifyHdrsToDownload(PRUint32 *keys, PRUint32 keyCount);
 	NS_IMETHOD NotifyBodysToDownload(PRUint32 *keys, PRUint32 keyCount);
 
-	NS_IMETHOD GetFlagsForUID(PRUint32 uid, PRBool *foundIt, imapMessageFlagsType *flags);
+	NS_IMETHOD GetFlagsForUID(PRUint32 uid, PRBool *foundIt, imapMessageFlagsType *flags, char **customFlags);
 	NS_IMETHOD GetSupportedUserFlags(PRUint16 *flags);
 
   NS_IMETHOD GetRunningUrl(nsIURI **aUrl);
@@ -202,8 +203,8 @@ public:
   // Get last active time stamp
   NS_IMETHOD GetLastActiveTimeStamp(PRTime *aTimeStamp);
 
-	NS_IMETHOD PseudoInterruptMsgLoad(nsIMsgFolder *aImapFolder, PRBool
-                                      *interrupted);
+	NS_IMETHOD PseudoInterruptMsgLoad(nsIMsgFolder *aImapFolder, nsIMsgWindow *aMsgWindow, 
+                                          PRBool *interrupted);
   NS_IMETHOD GetSelectedMailboxName(char ** folderName);
   NS_IMETHOD ResetToAuthenticatedState();
   NS_IMETHOD OverrideConnectionInfo(const PRUnichar *pHost, PRUint16 pPort, const char *pCookieData);
@@ -269,7 +270,9 @@ public:
 	void	SetActive(PRBool active);
 	PRBool	GetActive();
 
-	// Sets whether or not the content referenced by the current ActiveEntry has been modified.
+  PRBool GetShowAttachmentsInline();
+
+  // Sets whether or not the content referenced by the current ActiveEntry has been modified.
 	// Used for MIME parts on demand.
 	void	SetContentModified(IMAP_ContentModifiedType modified);
 	PRBool	GetShouldFetchAllParts();
@@ -367,6 +370,9 @@ public:
   void SetCopyResponseUid(nsMsgKeyArray* aKeyArray,
                           const char* msgIdString);
 
+  // Quota support
+  void UpdateFolderQuotaData(nsCString& aQuotaRoot, PRUint32 aUsed, PRUint32 aMax);
+
 private:
 	// the following flag is used to determine when a url is currently being run. It is cleared when we 
 	// finish processng a url and it is set whenever we call Load on a url
@@ -385,18 +391,21 @@ private:
   PRUint32		m_allocatedSize; // allocated size
   PRUint32        m_totalDataSize; // total data size
   PRUint32        m_curReadIndex;  // current read index
+  nsCAutoString  m_trashFolderName;
 
 	// Ouput stream for writing commands to the socket
-	nsCOMPtr<nsITransport>		m_channel; 
-	nsCOMPtr<nsIOutputStream>	m_outputStream;   // this will be obtained from the transport interface
-	nsCOMPtr<nsIInputStream>    m_inputStream;
+	nsCOMPtr<nsISocketTransport> m_transport; 
+	nsCOMPtr<nsIOutputStream>	   m_outputStream;   // this will be obtained from the transport interface
+	nsCOMPtr<nsIInputStream>     m_inputStream;
+  nsCOMPtr<nsIInputStreamPump> m_pump;
+  PRBool                       m_pumpSuspended;
 
   nsCOMPtr<nsIInputStream>  m_channelInputStream;
 	nsCOMPtr<nsIOutputStream> m_channelOutputStream;
 	nsCOMPtr<nsIStreamListener>	    m_channelListener; // if we are displaying an article this is the rfc-822 display sink...
   nsCOMPtr<nsISupports>           m_channelContext;
   nsCOMPtr<nsIImapMockChannel>    m_mockChannel;   // this is the channel we should forward to people
-  nsCOMPtr<nsIRequest> mAsyncReadRequest; // we're going to cancel this when we're done with the conn.
+  //nsCOMPtr<nsIRequest> mAsyncReadRequest; // we're going to cancel this when we're done with the conn.
 
 
 	// this is a method designed to buffer data coming from the input stream and efficiently extract out 
@@ -566,6 +575,7 @@ private:
     
 	PRBool	MailboxIsNoSelectMailbox(const char *mailboxName);
 	char * CreatePossibleTrashName(const char *prefix);
+	const char * GetTrashFolderName();
 	PRBool FolderNeedsACLInitialized(const char *folderName);
 	void DiscoverMailboxList();
 	void DiscoverAllAndSubscribedBoxes();
@@ -589,6 +599,9 @@ private:
   nsresult GetMsgWindow(nsIMsgWindow ** aMsgWindow);
 	// End Process AuthenticatedState Url helper methods
 
+  // Quota support
+  void GetQuotaDataIfSupported(const char *aBoxName);
+  
   PRBool		m_trackingTime;
   PRTime		m_startTime;
   PRTime		m_endTime;
@@ -600,6 +613,7 @@ private:
   PRInt32		m_maxChunkSize;
   PRBool		m_fetchByChunks;
   PRBool                m_ignoreExpunges;
+  PRBool    m_useSecAuth;
   PRInt32		m_chunkSize;
   PRInt32		m_chunkThreshold;
   nsMsgImapLineDownloadCache m_downloadLineCache;
@@ -631,11 +645,9 @@ private:
 	PRInt64 m_lastProgressTime;				
 
 	PRBool m_notifySearchHit;
-	PRBool m_mailToFetch;
 	PRBool m_checkForNewMailDownloadsHeaders;
 	PRBool m_needNoop;
 	PRInt32 m_noopCount;
-	PRInt32 m_promoteNoopToCheckCount;
   PRBool  m_autoSubscribe, m_autoUnsubscribe, m_autoSubscribeOnOpen;
   PRBool m_closeNeededBeforeSelect;
     enum EMailboxHierarchyNameState {
@@ -649,10 +661,13 @@ private:
         kListingForCreate
     };
     EMailboxHierarchyNameState m_hierarchyNameState;
-  PRBool m_onlineBaseFolderExists;
   EMailboxDiscoverStatus m_discoveryStatus;
   nsVoidArray m_listedMailboxList;
   nsVoidArray* m_deletableChildren;
+  PRUint32 m_flagChangeCount;
+  PRTime m_lastCheckTime;
+
+  PRBool CheckNeeded();
 };
 
 // This small class is a "mock" channel because it is a mockery of the imap channel's implementation...
@@ -664,7 +679,9 @@ private:
 
 class nsICacheEntryDescriptor;
 
-class nsImapMockChannel : public nsIImapMockChannel, public nsICacheListener
+class nsImapMockChannel : public nsIImapMockChannel
+                        , public nsICacheListener
+                        , public nsITransportEventSink
 {
 public:
 
@@ -673,6 +690,7 @@ public:
   NS_DECL_NSICHANNEL
   NS_DECL_NSIREQUEST
   NS_DECL_NSICACHELISTENER
+  NS_DECL_NSITRANSPORTEVENTSINK
 	
   nsImapMockChannel();
   virtual ~nsImapMockChannel();

@@ -39,10 +39,9 @@
 #include "nsIHTMLContent.h"
 #include "nsLeafFrame.h"
 #include "nsIRenderingContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsCSSColorUtils.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
 #include "nsHTMLAtoms.h"
 #include "nsIFontMetrics.h"
 #include "nsStyleConsts.h"
@@ -52,6 +51,8 @@
 #include "nsCSSRendering.h"
 #include "nsLayoutAtoms.h"
 #include "nsILookAndFeel.h"
+#include "nsIEventStateManager.h"
+#include "nsIView.h"
 
 // default hr thickness in pixels
 #define DEFAULT_THICKNESS 3
@@ -70,9 +71,16 @@ public:
                    nsFramePaintLayer    aWhichLayer,
                    PRUint32             aFlags);
   NS_IMETHOD GetFrameType(nsIAtom** aType) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
-#endif
+
+  NS_IMETHOD
+  GetContentAndOffsetsFromPoint(nsIPresContext* aPresContenxt,
+                                const nsPoint&  aPoint,
+                                nsIContent **   aNewContent,
+                                PRInt32&        aContentOffset,
+                                PRInt32&        aContentOffsetEnd,
+                                PRBool&         aBeginFrameContent);
+
+  virtual PRBool CanPaintBackground() { return PR_FALSE; }
 
 protected:
   PRBool GetNoShade();
@@ -111,9 +119,7 @@ HRuleFrame::Paint(nsIPresContext*      aPresContext,
     return NS_OK;
   }
 
-  const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)((nsIStyleContext*)mStyleContext)->GetStyleData(eStyleStruct_Visibility);
-  if (!vis->IsVisible()) {
+  if (!GetStyleVisibility()->IsVisible()) {
     return NS_OK;
   }
 
@@ -193,12 +199,12 @@ HRuleFrame::Paint(nsIPresContext*      aPresContext,
   if (!noShadeAttribute) {
     nsRect rect(x0, y0, width, height);
 
-    const nsStyleBorder* border = (const nsStyleBorder*) mStyleContext->GetStyleData(eStyleStruct_Border);
-    const nsStylePadding* padding = (const nsStylePadding*) mStyleContext->GetStyleData(eStyleStruct_Padding);
+    const nsStyleBorder* border = GetStyleBorder();
+    const nsStylePadding* padding = GetStylePadding();
     
     nsCSSRendering::PaintBackground(aPresContext, aRenderingContext,
                                     this,aDirtyRect, rect,
-                                    *border, *padding, 0, 0);
+                                    *border, *padding, PR_FALSE);
     nsCSSRendering::PaintBorder(aPresContext, aRenderingContext,
                                 this,aDirtyRect, rect, *border,
                                 mStyleContext, 0);
@@ -294,8 +300,7 @@ HRuleFrame::Reflow(nsIPresContext*          aPresContext,
   // Compute height of "line" that hrule will layout within. Use the
   // font-size to do this.
   nscoord minLineHeight = thickness + twoPixels;
-  const nsStyleFont* font;
-  GetStyleData(eStyleStruct_Font, (const nsStyleStruct*&) font);
+  const nsStyleFont* font = GetStyleFont();
   const nsFont& f = font->mFont;
   nsCOMPtr<nsIFontMetrics> fm;
   aPresContext->GetMetricsFor(f, getter_AddRefs(fm));
@@ -309,29 +314,29 @@ HRuleFrame::Reflow(nsIPresContext*          aPresContext,
   aDesiredSize.ascent = aDesiredSize.height;
   aDesiredSize.descent = 0;
 
-  // HR's do not impact the max-element-size, unless a width is
+  // HR's do not impact the max-element-width, unless a width is
   // specified otherwise tables behave badly. This makes sense -- they
   // are springy.
-  if (nsnull != aDesiredSize.maxElementSize) {
+  if (aDesiredSize.mComputeMEW) {
     if (NS_UNCONSTRAINEDSIZE != aReflowState.mComputedWidth) {
       nsStyleUnit widthUnit = aReflowState.mStylePosition->mWidth.GetUnit();
       if ((eStyleUnit_Percent == widthUnit) || 
           (eStyleUnit_Auto == widthUnit)) {
         // When the HR is using an 'auto' or percentage width, make sure it
         // remains springy.
-        aDesiredSize.maxElementSize->width = onePixel;
+        aDesiredSize.mMaxElementWidth = onePixel;
         aDesiredSize.width = PR_MAX(aDesiredSize.width, onePixel);
       }
       else {
-        aDesiredSize.maxElementSize->width = aReflowState.mComputedWidth;
+        aDesiredSize.mMaxElementWidth = aReflowState.mComputedWidth;
       }
     }
     else {
-      aDesiredSize.maxElementSize->width = onePixel;
+      aDesiredSize.mMaxElementWidth = onePixel;
       aDesiredSize.width = PR_MAX(aDesiredSize.width, onePixel);
     }
-    NS_ASSERTION(aDesiredSize.maxElementSize->width <= aDesiredSize.width, "bad max-element-size width");
-    aDesiredSize.maxElementSize->height = aDesiredSize.height;
+    NS_ASSERTION(aDesiredSize.mMaxElementWidth <= aDesiredSize.width,
+                 "bad max-element-width");
   }
 
   aStatus = NS_FRAME_COMPLETE;
@@ -361,14 +366,50 @@ HRuleFrame::GetFrameType(nsIAtom** aType) const
   return NS_OK;
 }
 
-#ifdef DEBUG
 NS_IMETHODIMP
-HRuleFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
+HRuleFrame::GetContentAndOffsetsFromPoint(nsIPresContext* aPresContext,
+                                          const nsPoint&  aPoint,
+                                          nsIContent **   aNewContent,
+                                          PRInt32&        aContentOffset,
+                                          PRInt32&        aContentOffsetEnd,
+                                          PRBool&         aBeginFrameContent)
 {
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
+  nsresult rv = NS_ERROR_FAILURE;
+
+  if (!aNewContent) return NS_ERROR_NULL_POINTER;
+  if (!mContent) return NS_ERROR_NULL_POINTER;
+
+  nsIView  *view         = nsnull;
+  rv = GetClosestViewForFrame(aPresContext, this, &view);
+  if (NS_FAILED(rv)) return rv;
+
+  nsRect thisRect;
+  rv = GetRect(thisRect);
+  if (NS_FAILED(rv)) return rv;
+  nsPoint offsetPoint;
+  GetOffsetFromView(aPresContext, offsetPoint, &view);
+  thisRect.x = offsetPoint.x;
+  thisRect.y = offsetPoint.y;
+
+  rv = mContent->GetParent(*aNewContent);
+  if (!*aNewContent) return rv;
+  
+  rv = (*aNewContent)->IndexOf(mContent, aContentOffset);
+  if (NS_FAILED(rv)) return rv;
+  if (aContentOffset < 0) return NS_ERROR_FAILURE;
+
+  aBeginFrameContent = PR_TRUE;
+  aContentOffsetEnd = aContentOffset;
+  if (thisRect.Contains(aPoint))
+  {
+    nsCOMPtr<nsIPresShell> shell;
+    aPresContext->GetShell(getter_AddRefs(shell));
+    if (!shell) return NS_ERROR_FAILURE;
+
+    PRInt16 isEditor = 0;
+    shell->GetSelectionFlags(&isEditor);
+    isEditor = isEditor == nsISelectionDisplay::DISPLAY_ALL;
+    if (isEditor) aContentOffsetEnd++;  // this allows a single click to select the HR but only in Editor mode
   }
-  *aResult = sizeof(*this);
   return NS_OK;
 }
-#endif

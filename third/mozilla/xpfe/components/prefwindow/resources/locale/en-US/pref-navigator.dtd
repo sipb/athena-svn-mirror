@@ -1,8 +1,12 @@
 <!ENTITY  lHeader                   "Navigator">
 
-<!ENTITY  navRadio                  "When Navigator starts up, display">
+<!ENTITY  navRadio                  "Display on">
+<!ENTITY  navStartPageMenu.label    "Navigator Startup">
+<!ENTITY  newWinPageMenu.label      "New Window">
+<!ENTITY  newTabPageMenu.label      "New Tab">
+
 <!ENTITY  blankPageRadio.label      "Blank page">
-<!ENTITY  blankPageRadio.accesskey  "n">
+<!ENTITY  blankPageRadio.accesskey  "B">
 <!ENTITY  homePageRadio.label       "Home page">
 <!ENTITY  homePageRadio.accesskey   "H">
 <!ENTITY  lastPageRadio.label       "Last page visited">

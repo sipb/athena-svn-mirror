@@ -21,7 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   L. David Baron <dbaron@fas.harvard.edu> (original author)
+ *   L. David Baron <dbaron@dbaron.org> (original author)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -41,6 +41,10 @@
 #define nsInspectorCSSUtils_h___
 
 #include "nsIInspectorCSSUtils.h"
+#include "nsStyleContext.h"
+#include "nsAutoPtr.h"
+
+class nsIPresShell;
 
 class nsInspectorCSSUtils : public nsIInspectorCSSUtils {
 
@@ -57,8 +61,14 @@ public:
     NS_IMETHOD GetRuleNodeRule(nsRuleNode *aNode, nsIStyleRule **aRule);
     NS_IMETHOD IsRuleNodeRoot(nsRuleNode *aNode, PRBool *aIsRoot);
     NS_IMETHOD AdjustRectForMargins(nsIFrame* aFrame, nsRect& aRect);
-    NS_IMETHOD GetStyleContextForFrame(nsIFrame* aFrame,
-                                       nsIStyleContext** aStyleContext);
+    NS_IMETHOD GetRuleNodeForContent(nsIContent* aContent,
+                                     nsRuleNode** aRuleNode);
+
+private:
+    already_AddRefed<nsStyleContext>
+    GetStyleContextForContent(nsIContent* aContent, nsIPresShell* aPresShell);
+
+    nsStyleContext* GetStyleContextForFrame(nsIFrame* aFrame);
 };
 
 #endif /* nsInspectorCSSUtils_h___ */

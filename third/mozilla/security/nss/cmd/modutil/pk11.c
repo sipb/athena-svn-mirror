@@ -32,13 +32,11 @@
  */
 
 #include "modutil.h"
-#include "secmodti.h"
+/* #include "secmodti.h"  */
 #include "pk11func.h"
 
-extern PK11DefaultArrayEntry PK11_DefaultArray[];
-extern int num_pk11_default_mechanisms;
-extern SECStatus PK11_UpdateSlotAttribute(PK11SlotInfo*, PK11DefaultArrayEntry*,
-	PRBool);
+static PK11DefaultArrayEntry *pk11_DefaultArray = NULL;
+static int pk11_DefaultArraySize = 0;
 
 /*************************************************************************
  *
@@ -49,7 +47,6 @@ extern SECStatus PK11_UpdateSlotAttribute(PK11SlotInfo*, PK11DefaultArrayEntry*,
 Error
 FipsMode(char *arg)
 {
-
 	char *internal_name;
 
 	if(!PORT_Strcasecmp(arg, "true")) {
@@ -57,11 +54,16 @@ FipsMode(char *arg)
 			internal_name = PR_smprintf("%s",
 				SECMOD_GetInternalModule()->commonName);
 			if(SECMOD_DeleteInternalModule(internal_name) != SECSuccess) {
+				PR_fprintf(PR_STDERR, "%s\n", SECU_Strerror(PORT_GetError()));
 				PR_smprintf_free(internal_name);
 				PR_fprintf(PR_STDERR, errStrings[FIPS_SWITCH_FAILED_ERR]);
 				return FIPS_SWITCH_FAILED_ERR;
 			}
 			PR_smprintf_free(internal_name);
+			if (!PK11_IsFIPS()) {
+				PR_fprintf(PR_STDERR, errStrings[FIPS_SWITCH_FAILED_ERR]);
+				return FIPS_SWITCH_FAILED_ERR;
+			}
 			PR_fprintf(PR_STDOUT, msgStrings[FIPS_ENABLED_MSG]);
 		} else {
 			PR_fprintf(PR_STDERR, errStrings[FIPS_ALREADY_ON_ERR]);
@@ -72,15 +74,52 @@ FipsMode(char *arg)
 			internal_name = PR_smprintf("%s",
 				SECMOD_GetInternalModule()->commonName);
 			if(SECMOD_DeleteInternalModule(internal_name) != SECSuccess) {
+				PR_fprintf(PR_STDERR, "%s\n", SECU_Strerror(PORT_GetError()));
 				PR_smprintf_free(internal_name);
 				PR_fprintf(PR_STDERR, errStrings[FIPS_SWITCH_FAILED_ERR]);
 				return FIPS_SWITCH_FAILED_ERR;
 			}
 			PR_smprintf_free(internal_name);
+			if (PK11_IsFIPS()) {
+				PR_fprintf(PR_STDERR, errStrings[FIPS_SWITCH_FAILED_ERR]);
+				return FIPS_SWITCH_FAILED_ERR;
+			}
 			PR_fprintf(PR_STDOUT, msgStrings[FIPS_DISABLED_MSG]);
 		} else {
 			PR_fprintf(PR_STDERR, errStrings[FIPS_ALREADY_OFF_ERR]);
 			return FIPS_ALREADY_OFF_ERR;
+		}
+	} else {
+		PR_fprintf(PR_STDERR, errStrings[INVALID_FIPS_ARG]);
+		return INVALID_FIPS_ARG;
+	}
+
+	return SUCCESS;
+}
+
+/*************************************************************************
+ *
+ * C h k F i p s M o d e
+ * If arg=="true", verify FIPS mode is enabled on the internal module.  
+ * If arg=="false", verify FIPS mode is disabled on the internal module.
+ */
+Error
+ChkFipsMode(char *arg)
+{
+	if(!PORT_Strcasecmp(arg, "true")) {
+		if (PK11_IsFIPS()) {
+			PR_fprintf(PR_STDOUT, msgStrings[FIPS_ENABLED_MSG]);
+		} else {
+			PR_fprintf(PR_STDOUT, msgStrings[FIPS_DISABLED_MSG]);
+			return FIPS_SWITCH_FAILED_ERR;
+		}
+
+	} else if(!PORT_Strcasecmp(arg, "false")) {
+		if(!PK11_IsFIPS()) {
+			PR_fprintf(PR_STDOUT, msgStrings[FIPS_DISABLED_MSG]);
+		} else {
+			PR_fprintf(PR_STDOUT, msgStrings[FIPS_ENABLED_MSG]);
+			return FIPS_SWITCH_FAILED_ERR;
 		}
 	} else {
 		PR_fprintf(PR_STDERR, errStrings[INVALID_FIPS_ARG]);
@@ -299,7 +338,6 @@ RawListModule(char *modulespec)
 {
 	SECMODModule *module;
 	char **moduleSpecList;
-	SECStatus rv;
 
 	module = SECMOD_LoadModule(modulespec,NULL,PR_FALSE);
 	if (module == NULL) {
@@ -494,7 +532,8 @@ ListModule(char *moduleName)
 	PR_fprintf(PR_STDOUT, "Cipher Enable Flags: %s\n", ciphers);
 	mechanisms = NULL;
 	if(module->slotCount > 0) {
-		mechanisms = getStringFromFlags(module->slots[0]->defaultFlags,
+		mechanisms = getStringFromFlags(
+			PK11_GetDefaultFlags(module->slots[0]),
 			mechanismStrings, numMechanismStrings);
 	}
 	if(mechanisms[0] =='\0') {
@@ -516,7 +555,7 @@ ListModule(char *moduleName)
 
 		/* Slot Info */
 		PR_fprintf(PR_STDOUT, "\n"PAD"Slot: %s\n", PK11_GetSlotName(slot));
-		mechanisms = getStringFromFlags(slot->defaultFlags,
+		mechanisms = getStringFromFlags(PK11_GetDefaultFlags(slot),
 			mechanismStrings, numMechanismStrings);
 		if(mechanisms[0] =='\0') {
 		     mechanisms = "None";
@@ -524,7 +563,7 @@ ListModule(char *moduleName)
 		PR_fprintf(PR_STDOUT, PAD"Slot Mechanism Flags: %s\n", mechanisms);
 		PR_fprintf(PR_STDOUT, PAD"Manufacturer: %.32s\n",
 			slotinfo.manufacturerID);
-		if(slot->isHW) {
+		if (PK11_IsHW(slot)) {
 			PR_fprintf(PR_STDOUT, PAD"Type: Hardware\n");
 		} else {
 			PR_fprintf(PR_STDOUT, PAD"Type: Software\n");
@@ -533,7 +572,7 @@ ListModule(char *moduleName)
 			slotinfo.hardwareVersion.major, slotinfo.hardwareVersion.minor);
 		PR_fprintf(PR_STDOUT, PAD"Firmware Version: %d.%d\n",
 			slotinfo.firmwareVersion.major, slotinfo.firmwareVersion.minor);
-		if(slot->disabled) {
+		if (PK11_IsDisabled(slot)) {
 			reason  = PK11_GetDisabledReason(slot);
 			if(reason < numDisableReasonStr) {
 				PR_fprintf(PR_STDOUT, PAD"Status: DISABLED (%s)\n",
@@ -547,7 +586,7 @@ ListModule(char *moduleName)
 
 		if(PK11_GetTokenInfo(slot, &tokeninfo) != SECSuccess) {
 			PR_fprintf(PR_STDERR, errStrings[TOKEN_INFO_ERR],
-			  slot->token_name);
+			  PK11_GetTokenName(slot));
 			rv = TOKEN_INFO_ERR;
 			continue;
 		}
@@ -758,6 +797,14 @@ SetDefaultModule(char *moduleName, char *slotName, char *mechanisms)
 	PRBool found = PR_FALSE;
 	Error errcode = UNSPECIFIED_ERR;
 
+	if (pk11_DefaultArray == NULL) {
+	    pk11_DefaultArray = PK11_GetDefaultArray(&pk11_DefaultArraySize);
+	    if (pk11_DefaultArray == NULL) {
+		/* should assert. This shouldn't happen */
+		goto loser;
+	    }
+	}
+
 	mechFlags =  SECMOD_PubMechFlagstoInternal(mechFlags);
 
 	module = SECMOD_FindModule(moduleName);
@@ -781,10 +828,10 @@ SetDefaultModule(char *moduleName, char *slotName, char *mechanisms)
 		found = PR_TRUE;
 
 		/* Go through each mechanism */
-		for(i=0; i < num_pk11_default_mechanisms; i++) {
-			if(PK11_DefaultArray[i].flag & mechFlags) {
+		for(i=0; i < pk11_DefaultArraySize; i++) {
+			if(pk11_DefaultArray[i].flag & mechFlags) {
 				/* Enable this default mechanism */
-				PK11_UpdateSlotAttribute(slot, &(PK11_DefaultArray[i]),
+				PK11_UpdateSlotAttribute(slot, &(pk11_DefaultArray[i]),
 					PR_TRUE);
 			}
 		}
@@ -824,6 +871,14 @@ UnsetDefaultModule(char *moduleName, char *slotName, char *mechanisms)
 		mechanismStrings, numMechanismStrings);
 	PRBool found = PR_FALSE;
 
+	if (pk11_DefaultArray == NULL) {
+	    pk11_DefaultArray = PK11_GetDefaultArray(&pk11_DefaultArraySize);
+	    if (pk11_DefaultArray == NULL) {
+		/* should assert. This shouldn't happen */
+		return UNSPECIFIED_ERR;
+	    }
+	}
+
 	mechFlags =  SECMOD_PubMechFlagstoInternal(mechFlags);
 
 	module = SECMOD_FindModule(moduleName);
@@ -840,9 +895,9 @@ UnsetDefaultModule(char *moduleName, char *slotName, char *mechanisms)
 		    /* we are only interested in changing the one slot */
 		    continue;
 		}
-		for(i=0; i <num_pk11_default_mechanisms; i++) {
-			if(PK11_DefaultArray[i].flag & mechFlags) {
-				PK11_UpdateSlotAttribute(slot, &(PK11_DefaultArray[i]),
+		for(i=0; i < pk11_DefaultArraySize ; i++) {
+			if(pk11_DefaultArray[i].flag & mechFlags) {
+				PK11_UpdateSlotAttribute(slot, &(pk11_DefaultArray[i]),
 					PR_FALSE);
 			}
 		}

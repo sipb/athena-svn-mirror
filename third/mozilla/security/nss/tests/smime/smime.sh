@@ -88,25 +88,63 @@ smime_init()
 smime_main()
 {
 
-  echo "$SCRIPTNAME: Signing Attached Message ------------------------------"
+  echo "$SCRIPTNAME: Signing Attached Message (SHA1) ------------------"
   echo "cmsutil -S -N Alice -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.sig"
   cmsutil -S -N Alice -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.sig
-  html_msg $? 0 "Create Signature Alice" "."
+  html_msg $? 0 "Create Signature Alice (SHA1)" "."
 
   echo "cmsutil -D -i alice.sig -d ${P_R_BOBDIR} -o alice.data1"
   cmsutil -D -i alice.sig -d ${P_R_BOBDIR} -o alice.data1
-  html_msg $? 0 "Decode Alice's Signature" "."
+  html_msg $? 0 "Decode Alice's Signature (SHA1)" "."
 
   echo "diff alice.txt alice.data1"
   diff alice.txt alice.data1
-  html_msg $? 0 "Compare Decoded Signature and Original" "."
+  html_msg $? 0 "Compare Decoded Signature and Original (SHA1)" "."
+
+  echo "$SCRIPTNAME: Signing Attached Message (SHA256) ------------------"
+  echo "cmsutil -S -N Alice -H SHA256 -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.sig"
+  cmsutil -S -N Alice -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.sig
+  html_msg $? 0 "Create Signature Alice (SHA256)" "."
+
+  echo "cmsutil -D -i alice.sig -d ${P_R_BOBDIR} -o alice.data1"
+  cmsutil -D -i alice.sig -d ${P_R_BOBDIR} -o alice.data1
+  html_msg $? 0 "Decode Alice's Signature (SHA256)" "."
+
+  echo "diff alice.txt alice.data1"
+  diff alice.txt alice.data1
+  html_msg $? 0 "Compare Decoded Signature and Original (SHA256)" "."
+
+  echo "$SCRIPTNAME: Signing Attached Message (SHA384) ------------------"
+  echo "cmsutil -S -N Alice -H SHA384 -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.sig"
+  cmsutil -S -N Alice -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.sig
+  html_msg $? 0 "Create Signature Alice (SHA384)" "."
+
+  echo "cmsutil -D -i alice.sig -d ${P_R_BOBDIR} -o alice.data1"
+  cmsutil -D -i alice.sig -d ${P_R_BOBDIR} -o alice.data1
+  html_msg $? 0 "Decode Alice's Signature (SHA384)" "."
+
+  echo "diff alice.txt alice.data1"
+  diff alice.txt alice.data1
+  html_msg $? 0 "Compare Decoded Signature and Original (SHA384)" "."
+
+  echo "$SCRIPTNAME: Signing Attached Message (SHA512) ------------------"
+  echo "cmsutil -S -N Alice -H SHA512 -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.sig"
+  cmsutil -S -N Alice -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.sig
+  html_msg $? 0 "Create Signature Alice (SHA512)" "."
+
+  echo "cmsutil -D -i alice.sig -d ${P_R_BOBDIR} -o alice.data1"
+  cmsutil -D -i alice.sig -d ${P_R_BOBDIR} -o alice.data1
+  html_msg $? 0 "Decode Alice's Signature (SHA512)" "."
+
+  echo "diff alice.txt alice.data1"
+  diff alice.txt alice.data1
+  html_msg $? 0 "Compare Decoded Signature and Original (SHA512)" "."
 
   echo "$SCRIPTNAME: Enveloped Data Tests ------------------------------"
   echo "cmsutil -E -r bob@bogus.com -i alice.txt -d ${P_R_ALICEDIR} -p nss \\"
   echo "        -o alice.env"
   cmsutil -E -r bob@bogus.com -i alice.txt -d ${P_R_ALICEDIR} -p nss -o alice.env
   html_msg $? 0 "Create Enveloped Data Alice" "."
-
 
   echo "cmsutil -D -i alice.env -d ${P_R_BOBDIR} -p nss -o alice.data1"
   cmsutil -D -i alice.env -d ${P_R_BOBDIR} -p nss -o alice.data1
@@ -139,19 +177,34 @@ smime_main()
         done
   fi
 
+  echo "$SCRIPTNAME: Testing multiple email addrs ------------------------------"
+  echo "cmsutil -E -i alicecc.txt -d ${P_R_ALICEDIR} -o aliceve.env \\"
+  echo "        -r eve@bogus.net"
+  cmsutil -E -i alice.txt -d ${P_R_ALICEDIR} -o aliceve.env \
+          -r eve@bogus.net
+  ret=$?
+  html_msg $ret 0 "Encrypt to a Multiple Email cert" "."
+
   echo "cmsutil -D -i alicecc.env -d ${P_R_BOBDIR} -p nss -o alice.data2"
   cmsutil -D -i alicecc.env -d ${P_R_BOBDIR} -p nss -o alice.data2
   html_msg $? 0 "Decode Multiple Recipients Enveloped Data Alice by Bob" "."
 
-  echo "cmsutil -D -i alicecc.env -d ${P_R_DAVEDIR} -p nss -o alice.data2"
+  echo "cmsutil -D -i alicecc.env -d ${P_R_DAVEDIR} -p nss -o alice.data3"
   cmsutil -D -i alicecc.env -d ${P_R_DAVEDIR} -p nss -o alice.data3
   html_msg $? 0 "Decode Multiple Recipients Enveloped Data Alice by Dave" "."
+
+  echo "cmsutil -D -i aliceve.env -d ${P_R_EVEDIR} -p nss -o alice.data4"
+  cmsutil -D -i aliceve.env -d ${P_R_EVEDIR} -p nss -o alice.data4
+  html_msg $? 0 "Decrypt with a Multiple Email cert" "."
 
   diff alice.txt alice.data2
   html_msg $? 0 "Compare Decoded Mult. Recipients Enveloped Data Alice/Bob" "."
 
   diff alice.txt alice.data3
   html_msg $? 0 "Compare Decoded Mult. Recipients Enveloped Data Alice/Dave" "."
+
+  diff alice.txt alice.data4
+  html_msg $? 0 "Compare Decoded with Multiple Email cert" "."
   
   echo "$SCRIPTNAME: Sending CERTS-ONLY Message ------------------------------"
   echo "cmsutil -O -r \"Alice,bob@bogus.com,dave@bogus.com\" \\"

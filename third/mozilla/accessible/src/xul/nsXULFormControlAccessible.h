@@ -19,9 +19,10 @@
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
  *
+ * Original Author: John Gaunt (jgaunt@netscape.com)
  * Contributor(s):
- * Author: John Gaunt (jgaunt@netscape.com)
- *
+ *   Aaron Leventhal (aaronl@netscape.com)
+ *   Kyle Yuan (kyle.yuan@sun.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -41,12 +42,9 @@
 #define _nsXULFormControlAccessible_H_
 
 // NOTE: alphabetically ordered
-#include "nsBaseWidgetAccessible.h"
 #include "nsFormControlAccessible.h"
-#include "nsHTMLFormControlAccessible.h"
-#include "nsIAccessibleValue.h"
 
-class nsXULButtonAccessible : public nsAccessible
+class nsXULButtonAccessible : public nsAccessibleWrap
 // Don't inherit from nsFormControlAccessible - it doesn't allow children and a button can have a dropmarker child
 {
 public:
@@ -87,7 +85,7 @@ private:
   PRBool DropmarkerOpen(PRBool aToggleOpen);
 };
 
-class nsXULGroupboxAccessible : public nsAccessible
+class nsXULGroupboxAccessible : public nsAccessibleWrap
 {
 public:
   nsXULGroupboxAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
@@ -96,11 +94,9 @@ public:
   NS_IMETHOD GetAccName(nsAString& _retval);
 };
 
-class nsXULProgressMeterAccessible : public nsFormControlAccessible,
-                                     public nsIAccessibleValue
+class nsXULProgressMeterAccessible : public nsFormControlAccessible
 {
   NS_DECL_ISUPPORTS_INHERITED
-  NS_DECL_NSIACCESSIBLEVALUE
 
 public:
   nsXULProgressMeterAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
@@ -119,7 +115,7 @@ public:
   NS_IMETHOD GetAccState(PRUint32 *_retval);
 };
 
-class nsXULRadioGroupAccessible : public nsAccessible
+class nsXULRadioGroupAccessible : public nsAccessibleWrap
 {
 public:
   nsXULRadioGroupAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
@@ -127,10 +123,26 @@ public:
   NS_IMETHOD GetAccState(PRUint32 *_retval); 
 };
 
-class nsXULStatusBarAccessible : public nsAccessible
+class nsXULStatusBarAccessible : public nsAccessibleWrap
 {
 public:
   nsXULStatusBarAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
+  NS_IMETHOD GetAccRole(PRUint32 *_retval); 
+  NS_IMETHOD GetAccState(PRUint32 *_retval); 
+};
+
+class nsXULToolbarAccessible : public nsAccessibleWrap
+{
+public:
+  nsXULToolbarAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
+  NS_IMETHOD GetAccRole(PRUint32 *_retval); 
+  NS_IMETHOD GetAccState(PRUint32 *_retval); 
+};
+
+class nsXULToolbarSeparatorAccessible : public nsLeafAccessible
+{
+public:
+  nsXULToolbarSeparatorAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
   NS_IMETHOD GetAccRole(PRUint32 *_retval); 
   NS_IMETHOD GetAccState(PRUint32 *_retval); 
 };

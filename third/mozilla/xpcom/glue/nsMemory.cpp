@@ -39,8 +39,6 @@
 #include "nsMemory.h"
 #include "nsXPCOMPrivate.h"
 
-
-
 static nsIMemory* gMemory = nsnull;
 
 static NS_METHOD FreeGlobalMemory(void)
@@ -50,7 +48,7 @@ static NS_METHOD FreeGlobalMemory(void)
 }
 
 #define ENSURE_ALLOCATOR \
-  (gMemory ? PR_TRUE : (PRBool) SetupGlobalMemory())
+  (gMemory ? PR_TRUE : (PRBool)(SetupGlobalMemory() != nsnull))
 
 static nsIMemory*
 SetupGlobalMemory()
@@ -62,6 +60,20 @@ SetupGlobalMemory()
     return gMemory;
 }
 
+#ifdef XPCOM_GLUE
+nsresult GlueStartupMemory() 
+{
+    NS_ASSERTION(!gMemory, "bad call");
+    NS_GetMemoryManager(&gMemory);
+    NS_ASSERTION(gMemory, "can't get memory manager!");
+    return NS_OK;
+}
+
+void GlueShutdownMemory()
+{
+    NS_IF_RELEASE(gMemory);
+}
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // nsMemory static helper routines

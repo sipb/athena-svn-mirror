@@ -23,6 +23,7 @@
  *     Douglas Turner <dougt@netscape.com>
  *     Pierre Phaneuf <pp@ludusdesign.com>
  *     Sean Su <ssu@netscape.com>
+ *     Samir Gehani <sgehani@netscape.com>
  */
 
 
@@ -30,23 +31,23 @@
 #include "nscore.h"
 #include "nsIFactory.h"
 #include "nsISupports.h"
-#include "nsReadableUtils.h"
+#include "nsNativeCharsetUtils.h"
 
 #include "nsIComponentManager.h"
 #include "nsIServiceManager.h"
 
 #include "nsHashtable.h"
-#include "nsFileStream.h"
 #include "nsIFileChannel.h"
-#include "nsSpecialSystemDirectory.h"
 #include "nsDirectoryService.h"
 #include "nsDirectoryServiceDefs.h"
 
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 
 #include "prmem.h"
 #include "plstr.h"
 #include "prprf.h"
+#include "nsCRT.h"
 
 #include "VerReg.h"
 
@@ -75,8 +76,8 @@
 #include "nsInstallFileOpEnums.h"
 #include "nsInstallFileOpItem.h"
 
-#ifdef XP_MAC
-#include "Gestalt.h"
+#if defined(XP_MAC) || defined(XP_MACOSX)
+#include <Gestalt.h>
 #include "nsAppleSingleDecoder.h"
 #include "nsILocalFileMac.h"
 #endif
@@ -88,7 +89,7 @@
 #include <sys/utsname.h>
 #endif /* XP_UNIX */
 
-#if defined(XP_PC) && !defined(XP_OS2)
+#if defined(XP_WIN)
 #include <windows.h>
 #endif
 
@@ -102,10 +103,10 @@ static NS_DEFINE_IID(kIStringBundleServiceIID, NS_ISTRINGBUNDLESERVICE_IID);
 #define kInstallLocaleProperties "chrome://global/locale/commonDialogs.properties"
 
 /**
- * Request that an autoreg be performed at next startup. (Used
- * internally by XPI.)  This basically drops a files next to the
- * application.  Next time XPCOM sees this file, it will cause
- * an autoreg, then delete this file.
+ * Request that XPCOM perform an autoreg at startup. (Used
+ * internally by XPI.)  This basically drops a file next to the
+ * application.  The next time the application launches, XPCOM
+ * sees the file, deletes it and autoregisters components.
  */
 static void
 NS_SoftwareUpdateRequestAutoReg()
@@ -143,10 +144,12 @@ nsInstallInfo::nsInstallInfo(PRUint32           aInstallType,
                              nsIFile*           aFile,
                              const PRUnichar*   aURL,
                              const PRUnichar*   aArgs,
+                             nsIPrincipal*      aPrincipal,
                              PRUint32           flags,
                              nsIXPIListener*    aListener,
                              nsIXULChromeRegistry* aChromeRegistry)
-: mError(0),
+: mPrincipal(aPrincipal),
+  mError(0),
   mType(aInstallType),
   mFlags(flags),
   mURL(aURL),
@@ -275,9 +278,7 @@ nsInstall::GetInstallPlatform(nsCString& aPlatform)
     // which is not yet available in a wizard install
 
     // Gather platform.
-#if defined(XP_OS2)
-    mInstallPlatform = "OS/2";
-#elif defined(XP_PC)
+#if defined(XP_WIN)
     mInstallPlatform = "Windows";
 #elif defined(XP_MAC) || defined(XP_MACOSX)
     mInstallPlatform = "Macintosh";
@@ -285,28 +286,15 @@ nsInstall::GetInstallPlatform(nsCString& aPlatform)
     mInstallPlatform = "X11";
 #elif defined(XP_BEOS)
     mInstallPlatform = "BeOS";
+#elif defined(XP_OS2)
+    mInstallPlatform = "OS/2";
 #endif
 
     mInstallPlatform += "; ";
 
     // Gather OS/CPU.
-#if defined(XP_OS2)
-    ULONG os2ver = 0;
-    DosQuerySysInfo(QSV_VERSION_MINOR, QSV_VERSION_MINOR,
-                    &os2ver, sizeof(os2ver));
-    if (os2ver == 11)
-        mInstallPlatform += "2.11";
-    else if (os2ver == 30)
-        mInstallPlatform += "Warp 3";
-    else if (os2ver == 40)
-        mInstallPlatform += "Warp 4";
-    else if (os2ver == 45)
-        mInstallPlatform += "Warp 4.5";
-    else
-        mInstallPlatform += "Warp ???";
-
-#elif defined(XP_PC)
-    OSVERSIONINFO info = { sizeof OSVERSIONINFO };
+#if defined(XP_WIN)
+    OSVERSIONINFO info = { sizeof(OSVERSIONINFO) };
     if (GetVersionEx(&info)) {
         if ( info.dwPlatformId == VER_PLATFORM_WIN32_NT ) {
             if (info.dwMajorVersion      == 3) {
@@ -341,8 +329,22 @@ nsInstall::GetInstallPlatform(nsCString& aPlatform)
        mInstallPlatform += ' ';
        mInstallPlatform += (char*)name.machine;
     }
-#elif defined (XP_MAC)
+#elif defined (XP_MAC) || defined (XP_MACOSX)
     mInstallPlatform += "PPC";
+#elif defined(XP_OS2)
+    ULONG os2ver = 0;
+    DosQuerySysInfo(QSV_VERSION_MINOR, QSV_VERSION_MINOR,
+                    &os2ver, sizeof(os2ver));
+    if (os2ver == 11)
+        mInstallPlatform += "2.11";
+    else if (os2ver == 30)
+        mInstallPlatform += "Warp 3";
+    else if (os2ver == 40)
+        mInstallPlatform += "Warp 4";
+    else if (os2ver == 45)
+        mInstallPlatform += "Warp 4.5";
+    else
+        mInstallPlatform += "Warp ???";
 #endif
   }
 
@@ -359,6 +361,8 @@ nsInstall::InternalAbort(PRInt32 errcode)
     nsInstallObject* ie;
     if (mInstalledFiles != nsnull)
     {
+        // abort must work backwards through the list so cleanup can
+        // happen in the correct order
         for (PRInt32 i = mInstalledFiles->Count()-1; i >= 0; i--)
         {
             ie = (nsInstallObject *)mInstalledFiles->ElementAt(i);
@@ -899,12 +903,12 @@ nsInstall::FinalizeInstall(PRInt32* aReturn)
     return NS_OK;
 }
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 #define GESTALT_CHAR_CODE(x)          (((unsigned long) ((x[0]) & 0x000000FF)) << 24) \
                                     | (((unsigned long) ((x[1]) & 0x000000FF)) << 16) \
                                     | (((unsigned long) ((x[2]) & 0x000000FF)) << 8)  \
                                     | (((unsigned long) ((x[3]) & 0x000000FF)))
-#endif /* XP_MAC */
+#endif /* XP_MACOS || XP_MACOSX */
 
 PRInt32
 nsInstall::Gestalt(const nsString& aSelector, PRInt32* aReturn)
@@ -918,7 +922,7 @@ nsInstall::Gestalt(const nsString& aSelector, PRInt32* aReturn)
         *aReturn = SaveError( result );
         return NS_OK;
     }
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 
     long    response = 0;
     char    selectorChars[4];
@@ -942,7 +946,7 @@ nsInstall::Gestalt(const nsString& aSelector, PRInt32* aReturn)
     else
         *aReturn = response;
 
-#endif
+#endif /* XP_MAC || XP_MACOSX */
     return NS_OK;
 }
 
@@ -951,11 +955,10 @@ nsInstall::GetComponentFolder(const nsString& aComponentName, const nsString& aS
 {
     long        err;
     char        dir[MAXREGPATHLEN];
-    nsFileSpec  nsfsDir;
     nsresult    res = NS_OK;
 
     if(!aNewFolder)
-      return INVALID_ARGUMENTS;
+        return INVALID_ARGUMENTS;
 
     *aNewFolder = nsnull;
 
@@ -971,44 +974,43 @@ nsInstall::GetComponentFolder(const nsString& aComponentName, const nsString& aS
 
     if((err = VR_GetDefaultDirectory( NS_CONST_CAST(char *, componentCString.get()), sizeof(dir), dir )) != REGERR_OK)
     {
-        if((err = VR_GetPath( NS_CONST_CAST(char *, componentCString.get()), sizeof(dir), dir )) == REGERR_OK)
+        // if there's not a default directory, try to see if the component
+        // // is registered as a file and then strip the filename off the path
+        if((err = VR_GetPath( NS_CONST_CAST(char *, componentCString.get()), sizeof(dir), dir )) != REGERR_OK)
         {
-            int i;
+          // no path, either
+          *dir = '\0';
+        }
+    }
 
-            nsString dirStr; dirStr.AssignWithConversion(dir);
-            if (  (i = dirStr.RFindChar(FILESEP)) > 0 )
-            {
-                // i is the index in the string, not the total number of
-                // characters in the string.  ToCString() requires the
-                // total number of characters in the string to copy,
-                // therefore add 1 to it.
-                dirStr.Truncate(i + 1);
-                dirStr.ToCString(dir, MAXREGPATHLEN);
-            }
+    nsCOMPtr<nsILocalFile> componentDir;
+    nsCOMPtr<nsIFile> componentIFile;
+    if(*dir != '\0')
+        NS_NewNativeLocalFile( nsDependentCString(dir), PR_FALSE, getter_AddRefs(componentDir) );
+
+    if ( componentDir )
+    {
+        PRBool isFile;
+
+        res = componentDir->IsFile(&isFile);
+        if (NS_SUCCEEDED(res) && isFile)
+            componentDir->GetParent(getter_AddRefs(componentIFile));
+        else
+            componentIFile = do_QueryInterface(componentDir);
+
+        nsInstallFolder * folder = new nsInstallFolder();
+        if (!folder)
+            return NS_ERROR_OUT_OF_MEMORY;
+
+        res = folder->Init(componentIFile, aSubdirectory);
+        if (NS_FAILED(res))
+        {
+            delete folder;
         }
         else
         {
-            *dir = '\0';
+            *aNewFolder = folder;
         }
-    }
-    else
-    {
-        *dir = '\0';
-    }
-
-    if(*dir != '\0')
-    {
-      nsInstallFolder * folder = new nsInstallFolder();
-      if (!folder) return NS_ERROR_OUT_OF_MEMORY;
-      res = folder->Init(NS_ConvertASCIItoUCS2(dir), aSubdirectory);
-      if (NS_FAILED(res))
-      {
-        delete folder;
-      }
-      else
-      {
-        *aNewFolder = folder;
-      }
     }
 
     return res;
@@ -1251,11 +1253,12 @@ nsInstall::LoadResources(JSContext* cx, const nsString& aBaseName, jsval* aRetur
         if (NS_FAILED(ret))
             goto cleanup;
 
-        if (!pKey.IsEmpty() && !pKey.IsEmpty())
+        if (!pKey.IsEmpty() && !pVal.IsEmpty())
         {
             JSString* propValJSStr = JS_NewUCStringCopyZ(cx, NS_REINTERPRET_CAST(const jschar*, pVal.get()));
             jsval propValJSVal = STRING_TO_JSVAL(propValJSStr);
-            JS_SetProperty(cx, res, pKey.get(), &propValJSVal);
+            nsString UCKey = NS_ConvertUTF8toUCS2(pKey);
+            JS_SetUCProperty(cx, res, UCKey.get(), UCKey.Length(), &propValJSVal);
         }
     }
 
@@ -1472,11 +1475,14 @@ nsInstall::StartInstall(const nsString& aUserPackageName, const nsString& aRegis
     {
         // found one saved in the registry
         mPackageFolder = new nsInstallFolder();
-        if (mPackageFolder)
+        nsCOMPtr<nsILocalFile> packageDir;
+        NS_NewNativeLocalFile(
+                            nsDependentCString(szRegPackagePath), // native path
+                            PR_FALSE, getter_AddRefs(packageDir) );
+
+        if (mPackageFolder && packageDir)
         {
-            if (NS_FAILED( mPackageFolder->Init(
-                                NS_ConvertASCIItoUCS2(szRegPackagePath),
-                                nsAutoString() ) ))
+            if (NS_FAILED( mPackageFolder->Init(packageDir, nsString()) ))
             {
                 delete mPackageFolder;
                 mPackageFolder = nsnull;
@@ -1491,7 +1497,7 @@ nsInstall::StartInstall(const nsString& aUserPackageName, const nsString& aRegis
     mStartInstallCompleted = PR_TRUE;
     mFinalStatus = MALFORMED_INSTALL;
     if (mListener)
-        mListener->OnPackageNameSet(mInstallURL.get(), mUIName.get());
+        mListener->OnPackageNameSet(mInstallURL.get(), mUIName.get(), aVersion.get());
 
     return NS_OK;
 }
@@ -1616,7 +1622,7 @@ nsInstall::FileOpDirGetParent(nsInstallFolder& aTarget, nsInstallFolder** thePar
     {
         return NS_ERROR_OUT_OF_MEMORY;
     }
-      folder->Init(parent);
+      folder->Init(parent,nsString());
       *theParentFolder = folder;
   }
   else
@@ -2066,6 +2072,7 @@ nsInstall::FileOpFileWindowsGetShortName(nsInstallFolder& aTarget, nsString& aSh
   PRBool              flagExists;
   nsString            tmpNsString;
   nsCAutoString       nativeTargetPath;
+  nsAutoString        unicodePath;
   char                nativeShortPathName[MAX_PATH];
   nsCOMPtr<nsIFile>   localTarget(aTarget.GetFileSpec());
 
@@ -2089,20 +2096,29 @@ nsInstall::FileOpFileWindowsGetShortName(nsInstallFolder& aTarget, nsString& aSh
         return NS_OK;
 
       err = GetShortPathName(nativeTargetPath.get(), nativeShortPathNameTmp, err + 1);
-      // Is it safe to assume that the second time around the buffer is big enough
-      // and not to worry about it unless it's a different problem?
-
-      // if err is 0, it's not a buffer size problem.  It's something else unexpected.
+      // It is safe to assume that the second time around the buffer is big
+      // enough and not to worry about it unless it's a different problem.  If
+      // it failed the first time because of buffer size being too small, err
+      // will be the buffer size required.  If it's any other error, err will
+      // be 0 and GetLastError() will have the actual error.
       if(err != 0)
-        aShortPathName.AssignWithConversion(nativeShortPathNameTmp);
+      {
+        // if err is 0, it's not a buffer size problem.  It's something else unexpected.
+        NS_CopyNativeToUnicode(nsDependentCString(nativeShortPathNameTmp), unicodePath);
+      }
 
       if(nativeShortPathNameTmp)
         delete [] nativeShortPathNameTmp;
     }
     else if(err != 0)
+    {
       // if err is 0, it's not a buffer size problem.  It's something else unexpected.
-      aShortPathName.AssignWithConversion(nativeShortPathName);
+      NS_CopyNativeToUnicode(nsDependentCString(nativeShortPathName), unicodePath);
+    }
   }
+
+  if (!unicodePath.IsEmpty())
+    aShortPathName = unicodePath;
 
 #endif
 
@@ -2144,7 +2160,8 @@ nsInstall::FileOpFileMacAlias(nsIFile *aSourceFile, nsIFile *aAliasFile, PRInt32
 
   *aReturn = nsInstall::SUCCESS;
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
+
   nsInstallFileOpItem* ifop = new nsInstallFileOpItem(this, NS_FOP_MAC_ALIAS, aSourceFile, aAliasFile, aReturn);
   if (!ifop)
   {
@@ -2171,7 +2188,8 @@ nsInstall::FileOpFileMacAlias(nsIFile *aSourceFile, nsIFile *aAliasFile, PRInt32
   }
 
   SaveError(*aReturn);
-#endif
+
+#endif /* XP_MAC || XP_MACOSX */
 
   return NS_OK;
 }
@@ -2401,43 +2419,22 @@ nsInstall::GetQualifiedRegName(const nsString& name, nsString& qualifiedRegName 
 }
 
 
-static NS_DEFINE_IID(kPrefsIID, NS_IPREF_IID);
-static NS_DEFINE_IID(kPrefsCID,  NS_PREF_CID);
-
 void
 nsInstall::CurrentUserNode(nsString& userRegNode)
 {
-    char *profname;
-    nsIPref * prefs;
+    nsXPIDLCString profname;
+    nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
 
-    nsresult rv = nsServiceManager::GetService(kPrefsCID,
-                                               kPrefsIID,
-                                               (nsISupports**) &prefs);
-
-
-    if ( NS_SUCCEEDED(rv) )
+    if ( prefBranch )
     {
-        rv = prefs->CopyCharPref("profile.name", &profname);
-
-        if ( NS_FAILED(rv) )
-        {
-            PR_FREEIF(profname); // Allocated by PREF_CopyCharPref
-            profname = NULL;
-        }
-
-        NS_RELEASE(prefs);
-    }
-    else
-    {
-        profname = NULL;
+        prefBranch->GetCharPref("profile.name", getter_Copies(profname));
     }
 
     userRegNode.Assign(NS_LITERAL_STRING("/Netscape/Users/"));
-    if (profname != nsnull)
+    if ( !profname.IsEmpty() )
     {
         userRegNode.AppendWithConversion(profname);
         userRegNode.Append(NS_LITERAL_STRING("/"));
-        PR_FREEIF(profname);
     }
 }
 
@@ -2459,9 +2456,6 @@ nsInstall::BadRegName(const nsString& regName)
         return PR_TRUE;
 
     if ( regName.Find("/ ") != -1  )
-        return PR_TRUE;
-
-    if ( regName.Find("=") != -1 )
         return PR_TRUE;
 
     return PR_FALSE;
@@ -2620,10 +2614,7 @@ nsInstall::ExtractFileFromJar(const nsString& aJarfile, nsIFile* aSuggestedName,
             tempFileName += extension;
         }
         tempFile->Append(tempFileName);
-
-        // Create a temporary file to extract to
-        MakeUnique(tempFile);
-
+        tempFile->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0664);
         tempFile->Clone(getter_AddRefs(extractHereSpec));
 
         if (extractHereSpec == nsnull)
@@ -2661,8 +2652,7 @@ nsInstall::ExtractFileFromJar(const nsString& aJarfile, nsIFile* aSuggestedName,
 
             //Now reset the leafname
             tempFile->SetLeafName(newLeafName);
-
-            MakeUnique(tempFile);
+            tempFile->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0644);
             extractHereSpec = tempFile;
         }
         extractHereSpec = temp;
@@ -2680,16 +2670,17 @@ nsInstall::ExtractFileFromJar(const nsString& aJarfile, nsIFile* aSuggestedName,
         }
     }
 
-#ifdef XP_MAC
-    FSSpec finalSpec, extractedSpec;
+#if defined(XP_MAC) || defined(XP_MACOSX)
+    FSRef finalRef, extractedRef;
 
     nsCOMPtr<nsILocalFileMac> tempExtractHereSpec;
     tempExtractHereSpec = do_QueryInterface(extractHereSpec, &rv);
-    tempExtractHereSpec->GetFSSpec(&extractedSpec);
+    tempExtractHereSpec->GetFSRef(&extractedRef);
 
-    if ( nsAppleSingleDecoder::IsAppleSingleFile(&extractedSpec) )
+    if ( nsAppleSingleDecoder::IsAppleSingleFile(&extractedRef) )
     {
-        nsAppleSingleDecoder *asd = new nsAppleSingleDecoder(&extractedSpec, &finalSpec);
+        nsAppleSingleDecoder *asd = 
+          new nsAppleSingleDecoder(&extractedRef, &finalRef);
         OSErr decodeErr = fnfErr;
 
         if (asd)
@@ -2702,22 +2693,20 @@ nsInstall::ExtractFileFromJar(const nsString& aJarfile, nsIFile* aSuggestedName,
             return EXTRACTION_FAILED;
         }
 
-        if ( !(extractedSpec.vRefNum == finalSpec.vRefNum) ||
-             !(extractedSpec.parID   == finalSpec.parID)   ||
-             !(nsAppleSingleDecoder::PLstrcmp(extractedSpec.name, finalSpec.name)) )
+        if (noErr != FSCompareFSRefs(&extractedRef, &finalRef))
         {
             // delete the unique extracted file that got renamed in AS decoding
-            FSpDelete(&extractedSpec);
+            FSDeleteObject(&extractedRef);
 
             // "real name" in AppleSingle entry may cause file rename
-            tempExtractHereSpec->InitWithFSSpec(&finalSpec);
+            tempExtractHereSpec->InitWithFSRef(&finalRef);
             extractHereSpec = do_QueryInterface(tempExtractHereSpec, &rv);
         }
     }
-#endif
+#endif /* XP_MAC || XP_MACOSX */
 
     extractHereSpec->Clone(aRealName);
-
+    
     return nsInstall::SUCCESS;
 }
 
@@ -2827,50 +2816,3 @@ nsInstall::DeleteVector(nsVoidArray* vector)
         vector = nsnull;
     }
 }
-
-// XXX what's wrong with nsIFile::createUnique?
-nsresult MakeUnique(nsILocalFile* file)
-{
-    PRBool flagExists;
-
-    nsresult rv = file->Exists(&flagExists);
-
-    if (NS_FAILED(rv)) return rv;
-    if (!flagExists) return NS_ERROR_FAILURE;
-
-    nsCAutoString leafNameBuf;
-
-    rv = file->GetNativeLeafName(leafNameBuf);
-    if (NS_FAILED(rv)) return rv;
-
-    // XXX this code should use iterators
-    char *leafName = (char *) leafNameBuf.get();
-
-    char* lastDot = strrchr(leafName, '.');
-    char* suffix = "";
-    if (lastDot)
-    {
-        suffix = nsCRT::strdup(lastDot); // include '.'
-        *lastDot = '\0'; // strip suffix and dot.
-    }
-
-    // 27 should work on Macintosh, Unix, and Win32.
-    const int maxRootLength = 27 - strlen(suffix) - 1;
-
-    if ((int)strlen(leafName) > (int)maxRootLength)
-        leafName[maxRootLength] = '\0';
-
-    for (short indx = 1; indx < 1000 && flagExists; indx++)
-    {
-        // start with "Picture-1.jpg" after "Picture.jpg" exists
-        char newName[32];
-        sprintf(newName, "%s-%d%s", leafName, indx, suffix);
-        file->SetNativeLeafName(nsDependentCString(newName));
-
-        rv = file->Exists(&flagExists);
-        if (NS_FAILED(rv)) return rv;
-    }
-    return NS_OK;
-}
-
-

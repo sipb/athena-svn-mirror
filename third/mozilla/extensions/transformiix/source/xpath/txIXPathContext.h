@@ -40,13 +40,12 @@
 #define __TX_I_XPATH_CONTEXT
 
 #include "baseutils.h"
-#include "txAtom.h"
+#include "nsIAtom.h"
 #include "txError.h"
 
 class ExprResult;
 class FunctionCall;
 class Node;
-class String;
 
 /*
  * txIParseContext
@@ -67,19 +66,24 @@ public:
     /*
      * Return a namespaceID for a given prefix.
      */
-    virtual nsresult resolveNamespacePrefix(txAtom* aPrefix, PRInt32& aID) = 0;
+    virtual nsresult resolveNamespacePrefix(nsIAtom* aPrefix, PRInt32& aID) = 0;
 
     /*
      * Create a FunctionCall, needed for extension function calls and
      * XSLT. XPath function calls are resolved by the Parser.
      */
-    virtual nsresult resolveFunctionCall(txAtom* aName, PRInt32 aID,
+    virtual nsresult resolveFunctionCall(nsIAtom* aName, PRInt32 aID,
                                          FunctionCall*& aFunction) = 0;
+
+    /**
+     * Should nametests parsed in this context be case-sensitive
+     */
+    virtual PRBool caseInsensitiveNameTests() = 0;
 
     /*
      * Callback to be used by the Parser if errors are detected.
      */
-    virtual void receiveError(const String& aMsg, nsresult aRes) = 0;
+    virtual void receiveError(const nsAString& aMsg, nsresult aRes) = 0;
 };
 
 /*
@@ -102,7 +106,7 @@ public:
      * Return the ExprResult associated with the variable with the 
      * given namespace and local name.
      */
-    virtual nsresult getVariable(PRInt32 aNamespace, txAtom* aLName,
+    virtual nsresult getVariable(PRInt32 aNamespace, nsIAtom* aLName,
                                  ExprResult*& aResult) = 0;
 
     /*
@@ -111,17 +115,23 @@ public:
      */
     virtual MBool isStripSpaceAllowed(Node* aNode) = 0;
 
+    /**
+     * Returns a pointer to the private context
+     */
+    virtual void* getPrivateContext() = 0;
+
     /*
      * Callback to be used by the expression/pattern if errors are detected.
      */
-    virtual void receiveError(const String& aMsg, nsresult aRes) = 0;
+    virtual void receiveError(const nsAString& aMsg, nsresult aRes) = 0;
 };
 
 #define TX_DECL_MATCH_CONTEXT \
-    nsresult getVariable(PRInt32 aNamespace, txAtom* aLName, \
+    nsresult getVariable(PRInt32 aNamespace, nsIAtom* aLName, \
                          ExprResult*& aResult); \
     MBool isStripSpaceAllowed(Node* aNode); \
-    void receiveError(const String& aMsg, nsresult aRes)
+    void* getPrivateContext(); \
+    void receiveError(const nsAString& aMsg, nsresult aRes)
 
 class txIEvalContext : public txIMatchContext
 {

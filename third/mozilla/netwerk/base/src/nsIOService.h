@@ -38,11 +38,13 @@
 #ifndef nsIOService_h__
 #define nsIOService_h__
 
+#include "necko-config.h"
+
 #include "nsString.h"
 #include "nsIIOService.h"
 #include "nsVoidArray.h"
 #include "nsISocketTransportService.h" 
-#include "nsIFileTransportService.h" 
+#include "nsIStreamTransportService.h" 
 #include "nsIDNSService.h" 
 #include "nsIProtocolProxyService.h"
 #include "nsCOMPtr.h"
@@ -55,7 +57,12 @@
 #include "nsWeakReference.h"
 
 #define NS_N(x) (sizeof(x)/sizeof(*x))
+
+#ifdef NECKO_SMALL_BUFFERS
+#define NS_NECKO_BUFFER_CACHE_COUNT (10)  // Max holdings: 10 * 2k = 20k
+#else
 #define NS_NECKO_BUFFER_CACHE_COUNT (24)  // Max holdings: 24 * 4k = 96k
+#endif
 #define NS_NECKO_15_MINS (15 * 60)
 
 static const char *gScheme[] = {"chrome", "file", "http", "jar", "resource"};
@@ -103,7 +110,7 @@ protected:
     PRPackedBool                        mOffline;
     PRPackedBool                        mOfflineForProfileChange;
     nsCOMPtr<nsISocketTransportService> mSocketTransportService;
-    nsCOMPtr<nsIFileTransportService>   mFileTransportService;
+    nsCOMPtr<nsIStreamTransportService> mStreamTransportService;
     nsCOMPtr<nsIDNSService>             mDNSService;
     nsCOMPtr<nsIProtocolProxyService>   mProxyService;
     nsCOMPtr<nsIEventQueueService>      mEventQueueService;

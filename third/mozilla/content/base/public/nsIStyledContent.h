@@ -43,7 +43,6 @@
 
 class nsString;
 class nsIStyleRule;
-class nsIStyleContext;
 class nsISupportsArray;
 class nsRuleWalker;
 
@@ -57,9 +56,13 @@ class nsIStyledContent : public nsIContent {
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_ISTYLEDCONTENT_IID)
 
+  // XXX Currently callers (e.g., CSSStyleSheetImpl) assume that the ID
+  // corresponds to the attribute nsHTMLAtoms::id and that the Class
+  // corresponds to the attribute nsHTMLAtoms::kClass.  If this becomes
+  // incorrect, then new methods need to be added here.
   NS_IMETHOD GetID(nsIAtom*& aResult) const = 0;
   NS_IMETHOD GetClasses(nsVoidArray& aArray) const = 0;
-  NS_IMETHOD HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const = 0;
+  NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const = 0;
 
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker) = 0;
   NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule) = 0;

@@ -985,6 +985,13 @@
                     <FILEKIND>Library</FILEKIND>
                     <FILEFLAGS>Debug</FILEFLAGS>
                 </FILE>
+                <FILE>
+                    <PATHTYPE>Name</PATHTYPE>
+                    <PATH>profDirServiceProviderDebug.o</PATH>
+                    <PATHFORMAT>MacOS</PATHFORMAT>
+                    <FILEKIND>Library</FILEKIND>
+                    <FILEFLAGS>Debug</FILEFLAGS>
+                </FILE>
             </FILELIST>
             <LINKORDER>
                 <FILEREF>
@@ -1035,6 +1042,11 @@
                 <FILEREF>
                     <PATHTYPE>Name</PATHTYPE>
                     <PATH>JavaScriptDebug.shlb</PATH>
+                    <PATHFORMAT>MacOS</PATHFORMAT>
+                </FILEREF>
+                <FILEREF>
+                    <PATHTYPE>Name</PATHTYPE>
+                    <PATH>profDirServiceProviderDebug.o</PATH>
                     <PATHFORMAT>MacOS</PATHFORMAT>
                 </FILEREF>
             </LINKORDER>
@@ -1976,6 +1988,13 @@
                     <FILEKIND>Library</FILEKIND>
                     <FILEFLAGS>Debug</FILEFLAGS>
                 </FILE>
+                <FILE>
+                    <PATHTYPE>Name</PATHTYPE>
+                    <PATH>profDirServiceProvider.o</PATH>
+                    <PATHFORMAT>MacOS</PATHFORMAT>
+                    <FILEKIND>Library</FILEKIND>
+                    <FILEFLAGS>Debug</FILEFLAGS>
+                </FILE>
             </FILELIST>
             <LINKORDER>
                 <FILEREF>
@@ -2028,6 +2047,11 @@
                     <PATH>JavaScript.shlb</PATH>
                     <PATHFORMAT>MacOS</PATHFORMAT>
                 </FILEREF>
+                <FILEREF>
+                    <PATHTYPE>Name</PATHTYPE>
+                    <PATH>profDirServiceProvider.o</PATH>
+                    <PATHFORMAT>MacOS</PATHFORMAT>
+                </FILEREF>
             </LINKORDER>
         </TARGET>
     </TARGETLIST>
@@ -2063,6 +2087,12 @@
                 <FILEREF>
                     <TARGETNAME>profile.shlb</TARGETNAME>
                     <PATHTYPE>Name</PATHTYPE>
+                    <PATH>profDirServiceProvider.o</PATH>
+                    <PATHFORMAT>MacOS</PATHFORMAT>
+                </FILEREF>
+                <FILEREF>
+                    <TARGETNAME>profile.shlb</TARGETNAME>
+                    <PATHTYPE>Name</PATHTYPE>
                     <PATH>NSPR20.shlb</PATH>
                     <PATHFORMAT>MacOS</PATHFORMAT>
                 </FILEREF>
@@ -2092,6 +2122,12 @@
                 </FILEREF>
             </GROUP>
             <GROUP><NAME>Debug</NAME>
+                <FILEREF>
+                    <TARGETNAME>profileDebug.shlb</TARGETNAME>
+                    <PATHTYPE>Name</PATHTYPE>
+                    <PATH>profDirServiceProviderDebug.o</PATH>
+                    <PATHFORMAT>MacOS</PATHFORMAT>
+                </FILEREF>
                 <FILEREF>
                     <TARGETNAME>profileDebug.shlb</TARGETNAME>
                     <PATHTYPE>Name</PATHTYPE>

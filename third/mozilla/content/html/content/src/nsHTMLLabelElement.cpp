@@ -42,7 +42,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIFormControl.h"
@@ -50,7 +49,6 @@
 #include "nsIDOMHTMLDocument.h"
 #include "nsIDOMXULDocument.h"
 #include "nsIDocument.h"
-#include "nsISizeOfHandler.h"
 #include "nsIFormControlFrame.h"
 #include "nsIPresShell.h"
 #include "nsGUIEvent.h"
@@ -170,7 +168,7 @@ public:
   NS_DECL_NSIDOMHTMLLABELELEMENT
 
   // nsIFormControl
-  NS_IMETHOD GetType(PRInt32* aType);
+  NS_IMETHOD_(PRInt32) GetType() { return NS_FORM_LABEL; }
   NS_IMETHOD Reset();
   NS_IMETHOD SubmitNamesValues(nsIFormSubmission* aFormSubmission,
                                nsIContent* aSubmitElement);
@@ -188,12 +186,10 @@ public:
                      PRBool aNotify);
   NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                        PRBool aNotify);
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
 protected:
   already_AddRefed<nsIContent> GetForContent();
+  already_AddRefed<nsIContent> GetFirstFormControl(nsIContent *current);
 
   // XXX It would be nice if we could use an event flag instead.
   PRBool mHandlingEvent;
@@ -285,17 +281,6 @@ NS_IMETHODIMP
 nsHTMLLabelElement::GetForm(nsIDOMHTMLFormElement** aForm)
 {
   return nsGenericHTMLContainerFormElement::GetForm(aForm);
-}
-
-
-// nsIFormControl
-
-NS_IMETHODIMP
-nsHTMLLabelElement::GetType(PRInt32* aType)
-{
-  *aType = NS_FORM_LABEL;
-
-  return NS_OK;
 }
 
 
@@ -436,16 +421,6 @@ nsHTMLLabelElement::SetFocus(nsIPresContext* aContext)
   return NS_OK;
 }
 
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLLabelElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
-
 nsresult
 nsHTMLLabelElement::Reset()
 {
@@ -522,20 +497,36 @@ nsHTMLLabelElement::GetForContent()
       return result;
     }
   } else {
-    // No FOR attribute, we are a label for our first child element.
-    PRInt32 numNodes;
-    rv = ChildCount(numNodes);
-    if (NS_SUCCEEDED(rv)) {
-      for (PRInt32 i = 0; i < numNodes; i++) {
-        nsIContent *result;
-        ChildAt(i, result);
-        if (result) {
-          if (result->IsContentOfType(nsIContent::eHTML_FORM_CONTROL))
-            return result;
-          NS_RELEASE(result);
+    // No FOR attribute, we are a label for our first form control element.
+    // do a depth-first traversal to look for the first form control element
+    return GetFirstFormControl(this);
+  }
+  return nsnull;
+}
+
+already_AddRefed<nsIContent>
+nsHTMLLabelElement::GetFirstFormControl(nsIContent *current)
+{
+  PRInt32 numNodes;
+  nsresult rv = current->ChildCount(numNodes);
+  if (NS_SUCCEEDED(rv)) {
+    for (PRInt32 i = 0; i < numNodes; i++) {
+      nsIContent *child;
+      current->ChildAt(i, child);
+      if (child) {
+        if (child->IsContentOfType(nsIContent::eHTML_FORM_CONTROL)) {
+          return child;
+        }
+        else {
+          nsIContent* content = GetFirstFormControl(child).get();
+          NS_RELEASE(child);
+          if (content) {
+            return content;
+          }
         }
       }
     }
   }
+
   return nsnull;
 }

@@ -29,6 +29,7 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= xpcom
 XPIDL_MODULE	= xpcom_io
 LIBRARY_NAME	= xpcomio_s
+GRE_MODULE	= 1
 REQUIRES	= string \
 		  $(NULL)
 
@@ -44,20 +45,17 @@ CPPSRCS		= \
 		nsEscape.cpp \
 		nsFastLoadFile.cpp \
 		nsFastLoadService.cpp \
-		nsFileSpec.cpp \
-		nsFileSpecImpl.cpp \
-		nsFileStream.cpp \
-		nsIFileStream.cpp \
-		nsStringStream.cpp \
 		nsInputStreamTee.cpp \
 		nsLinebreakConverter.cpp \
 		nsLocalFileCommon.cpp \
 		nsMultiplexInputStream.cpp \
-		nsPipe2.cpp \
+		nsPipe3.cpp \
+		nsStreamUtils.cpp \
 		nsScriptableInputStream.cpp \
 		nsSegmentedBuffer.cpp \
-		nsSpecialSystemDirectory.cpp \
+		SpecialSystemDirectory.cpp \
 		nsStorageStream.cpp \
+		nsStringStream.cpp \
 		nsUnicharInputStream.cpp \
 		nsNativeCharsetUtils.cpp \
 		$(NULL)
@@ -83,16 +81,16 @@ EXPORTS		= \
 		nsEscape.h \
 		nsFastLoadPtr.h \
 		nsFastLoadService.h \
-		nsFileSpec.h \
-		nsFileStream.h \
-		nsIFileStream.h \
 		nsIUnicharInputStream.h \
 		nsLinebreakConverter.h \
 		nsLocalFile.h \
+		nsMultiplexInputStream.h \
 		nsScriptableInputStream.h \
-		nsSpecialSystemDirectory.h \
 		nsStorageStream.h \
 		nsStringIO.h \
+		nsStringStream.h \
+		nsStreamUtils.h \
+		nsNativeCharsetUtils.h \
 		$(NULL)			
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
@@ -115,7 +113,6 @@ XPIDLSRCS	= \
 		nsIByteArrayInputStream.idl \
 		nsIFastLoadFileControl.idl \
 		nsIFastLoadService.idl \
-		nsIFileSpec.idl \
 		nsIInputStreamTee.idl \
 		nsILineInputStream.idl \
 		nsIMultiplexInputStream.idl \
@@ -124,14 +121,14 @@ XPIDLSRCS	= \
 		nsIPipe.idl \
 		nsISeekableStream.idl \
 		nsIStorageStream.idl \
-		nsIStreamBufferAccess.idl \
 		nsIStringStream.idl \
-		nsIObservableInputStream.idl \
-		nsIObservableOutputStream.idl \
+		nsIStreamBufferAccess.idl \
+		nsIAsyncInputStream.idl \
+		nsIAsyncOutputStream.idl \
 		$(NULL)
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
-XPIDLSRCS		+= nsILocalFileMac.idl
+XPIDLSRCS	+= nsILocalFileMac.idl
 endif
 
 SDK_XPIDLSRCS   = \
@@ -158,8 +155,4 @@ FORCE_USE_PIC	= 1
 include $(topsrcdir)/config/rules.mk
 
 DEFINES		+= -D_IMPL_NS_COM
-
-ifeq ($(OS_ARCH), Linux)
-DEFINES		+= -D_BSD_SOURCE
-endif
 

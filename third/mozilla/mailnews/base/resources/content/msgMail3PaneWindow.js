@@ -21,13 +21,15 @@
  *   Jan Varga (varga@utcru.sk)
  *   Håkan Waara (hwaara@chello.se)
  *   Neil Rashbrook (neil@parkwaycc.co.uk)
+ *   Seth Spitzer <sspitzer@netscape.com>
  */
 
 /* This is where functions related to the 3 pane window are kept */
 
 // from MailNewsTypes.h
+const nsMsgKey_None = 0xFFFFFFFF;
 const nsMsgViewIndex_None = 0xFFFFFFFF;
-
+const kMailCheckOncePrefName = "mail.startup.enabledMailCheckOnce";
 
 var gFolderTree; 
 var gMessagePane;
@@ -51,13 +53,15 @@ var gNextMessageAfterLoad = null;
 var gNextMessageViewIndexAfterDelete = -2;
 var gCurrentlyDisplayedMessage=nsMsgViewIndex_None;
 var gStartFolderUri = null;
-var gStartMsgKey = -1;
+var gStartMsgKey = nsMsgKey_None;
 var gSearchEmailAddress = null;
 var gRightMouseButtonDown = false;
 // Global var to keep track of which row in the thread pane has been selected
 // This is used to make sure that the row with the currentIndex has the selection
 // after a Delete or Move of a message that has a row index less than currentIndex.
 var gThreadPaneCurrentSelectedIndex = -1;
+var gLoadStartFolder = true;
+var gNewAccountToLoad = null;
 
 // Global var to keep track of if the 'Delete Message' or 'Move To' thread pane
 // context menu item was triggered.  This helps prevent the tree view from
@@ -70,6 +74,23 @@ var gHaveLoadedMessage;
 var gDisplayStartupPage = false;
 
 var gNotifyDefaultInboxLoadedOnStartup = false;
+
+function SelectAndScrollToKey(aMsgKey)
+{
+  // select the desired message
+  // if the key isn't found, we won't select anything
+  gDBView.selectMsgByKey(aMsgKey);
+  
+  // is there a selection?
+  // if not, bail out.
+  var indicies = GetSelectedIndices(gDBView);
+  if (!indicies || !indicies.length)
+    return false;
+
+  // now scroll to it
+  EnsureRowInThreadTreeIsVisible(indicies[0]);
+  return true;
+}
 
 // the folderListener object
 var folderListener = {
@@ -86,7 +107,7 @@ var folderListener = {
 
       //if we don't have a folder loaded, don't bother.
       if(currentURI) {
-        if(property.GetUnicode() == "TotalMessages" || property.GetUnicode() == "TotalUnreadMessages") {
+        if(property.toString() == "TotalMessages" || property.toString() == "TotalUnreadMessages") {
           var folder = item.QueryInterface(Components.interfaces.nsIMsgFolder);
           if(folder) {
             var folderResource = folder.QueryInterface(Components.interfaces.nsIRDFResource); 
@@ -107,118 +128,136 @@ var folderListener = {
     OnItemPropertyFlagChanged: function(item, property, oldFlag, newFlag) { },
 
     OnItemEvent: function(folder, event) {
-       var eventType = event.GetUnicode();
+       var eventType = event.toString();
        if (eventType == "FolderLoaded") {
          if (folder) {
-           var resource = folder.QueryInterface(Components.interfaces.nsIRDFResource);
-           if(resource) {
-             var uri = resource.Value;
-             if(uri == gCurrentFolderToReroot) {
-               gQSViewIsDirty = true;
-               gCurrentFolderToReroot="";
-               var msgFolder = folder.QueryInterface(Components.interfaces.nsIMsgFolder);
-               if(msgFolder) {
-                 msgFolder.endFolderLoading();
-                 // suppress command updating when rerooting the folder
-                 // when rerooting, we'll be clearing the selection
-                 // which will cause us to update commands.
-                 if (gDBView) {
-                   gDBView.suppressCommandUpdating = true;
-                   // if the db's view isn't set, something went wrong and we should reroot
-                   // the folder, which will re-open the view.
-                   if (!gDBView.db)
-                    gRerootOnFolderLoad = true;
-                 }
-                 if (gRerootOnFolderLoad)
-                   RerootFolder(uri, msgFolder, gCurrentLoadingFolderViewType, gCurrentLoadingFolderViewFlags, gCurrentLoadingFolderSortType, gCurrentLoadingFolderSortOrder);
+           var uri = folder.URI;
+           if (uri == gCurrentFolderToReroot) {
+             gQSViewIsDirty = true;
+             gCurrentFolderToReroot = null;
+             var msgFolder = folder.QueryInterface(Components.interfaces.nsIMsgFolder);
+             if(msgFolder) {
+               msgFolder.endFolderLoading();
+               // suppress command updating when rerooting the folder
+               // when rerooting, we'll be clearing the selection
+               // which will cause us to update commands.
+               if (gDBView) {
+                 gDBView.suppressCommandUpdating = true;
+                 // if the db's view isn't set, something went wrong and we should reroot
+                 // the folder, which will re-open the view.
+                 if (!gDBView.db)
+                   gRerootOnFolderLoad = true;
+               }
+               if (gRerootOnFolderLoad)
+                 RerootFolder(uri, msgFolder, gCurrentLoadingFolderViewType, gCurrentLoadingFolderViewFlags, gCurrentLoadingFolderSortType, gCurrentLoadingFolderSortOrder);
 
-                 var db = msgFolder.getMsgDatabase(msgWindow);
-                 if (db) 
-                   db.resetHdrCacheSize(100);
+               var db = msgFolder.getMsgDatabase(msgWindow);
+               if (db) 
+                 db.resetHdrCacheSize(100);
                  
-                 if (gDBView) {
-                   gDBView.suppressCommandUpdating = false;
-                 }
+               if (gDBView) {
+                 gDBView.suppressCommandUpdating = false;
+               }
 
-                 gIsEditableMsgFolder = IsSpecialFolder(msgFolder, MSG_FOLDER_FLAG_DRAFTS);
+               gIsEditableMsgFolder = IsSpecialFolder(msgFolder, MSG_FOLDER_FLAG_DRAFTS);
 
-                 gCurrentLoadingFolderSortType = 0;
-                 gCurrentLoadingFolderSortOrder = 0;
-                 gCurrentLoadingFolderViewType = 0;
-                 gCurrentLoadingFolderViewFlags = 0;
+               gCurrentLoadingFolderSortType = 0;
+               gCurrentLoadingFolderSortOrder = 0;
+               gCurrentLoadingFolderViewType = 0;
+               gCurrentLoadingFolderViewFlags = 0;
 
-                 var scrolled = false;
+               var scrolled = false;
 
-                 LoadCurrentlyDisplayedMessage();  //used for rename folder msg loading after folder is loaded.
+               LoadCurrentlyDisplayedMessage();  //used for rename folder msg loading after folder is loaded.
 
-                 if (gStartMsgKey != -1) { 
-                   // select the desired message
-                   gDBView.selectMsgByKey(gStartMsgKey);
-                   gStartMsgKey = -1;
+               if (gStartMsgKey != nsMsgKey_None) {
+                 scrolled = SelectAndScrollToKey(gStartMsgKey);
+                 gStartMsgKey = nsMsgKey_None;
+               }
 
-                   // now scroll to it
-	           var indicies = GetSelectedIndices(gDBView);
-                   EnsureRowInThreadTreeIsVisible(indicies[0]);
-                   scrolled = true;
-                 }
-                 if (gNextMessageAfterLoad) {
-                   var type = gNextMessageAfterLoad;
-                   gNextMessageAfterLoad = null;
+               if (gNextMessageAfterLoad) {
+                 var type = gNextMessageAfterLoad;
+                 gNextMessageAfterLoad = null;
 
-                   // scroll to and select the proper message
-                   scrolled = ScrollToMessage(type, true, true /* selectMessage */);
-                 }
+                 // scroll to and select the proper message
+                 scrolled = ScrollToMessage(type, true, true /* selectMessage */);
                }
              }
-             if(uri == gCurrentLoadingFolderURI) {
-               gCurrentLoadingFolderURI = "";
-               //Now let's select the first new message if there is one
-               if (!scrolled) {
-                 // if we didn't just scroll, scroll to the first new message
-                 // don't select it though
-                 scrolled = ScrollToMessage(nsMsgNavigationType.firstNew, true, false /* selectMessage */);
-                    
-                 // if we failed to find a new message, 
-                 // scroll to the newest, which might be the top or the bottom
-                 // depending on our sort order and sort type
-                 if (!scrolled) {
-                   if (gDBView.sortOrder == nsMsgViewSortOrder.ascending) {
-                     switch (gDBView.sortType) {
-                       case nsMsgViewSortType.byDate: 
-                       case nsMsgViewSortType.byId: 
-                       case nsMsgViewSortType.byThread: 
-                         scrolled = ScrollToMessage(nsMsgNavigationType.lastMessage, true, false /* selectMessage */);
-                         break;
-                     }
-                   }
-                 }
+           }
+           if (uri == gCurrentLoadingFolderURI) {
+             // NOTE,
+             // if you change the scrolling code below,
+             // double check the scrolling logic in
+             // searchBar.js, restorePreSearchView()
 
-                 if (!scrolled)
-                   EnsureRowInThreadTreeIsVisible(0);
+             gCurrentLoadingFolderURI = "";
+
+             // if we didn't just scroll, 
+             // scroll to the first new message
+             // but don't select it
+             if (!scrolled)
+               scrolled = ScrollToMessage(nsMsgNavigationType.firstNew, true, false /* selectMessage */);
+
+             if (!scrolled && pref.getBoolPref("mailnews.remember_selected_message")) {
+               // if we failed to scroll to a new message,
+               // reselect the last selected message
+               var lastMessageLoaded = msgFolder.lastMessageLoaded;
+                 
+               if (lastMessageLoaded != nsMsgKey_None) {
+                 scrolled = SelectAndScrollToKey(lastMessageLoaded);
                }
-               SetBusyCursor(window, false);
              }
-             if (gNotifyDefaultInboxLoadedOnStartup && (folder.flags & 0x1000))
-             {
-                var defaultAccount = accountManager.defaultAccount;
-                defaultServer = defaultAccount.incomingServer;
-                var inboxFolder = GetInboxFolder(defaultServer);
-                if (inboxFolder && inboxFolder.URI == folder.URI)
-                {
-                  NotifyObservers(null,"defaultInboxLoadedOnStartup",null);
-                  gNotifyDefaultInboxLoadedOnStartup = false;
-                }
-             }
-             //folder loading is over, now issue quick search if there is an email address
-             if (gSearchEmailAddress)
-             {
-               Search(gSearchEmailAddress);
-               gSearchEmailAddress = null;
-             } 
-             else if (gDefaultSearchViewTerms)
-             {
-               Search("");
-             }
+
+             if (!scrolled) {
+               // if we still haven't scrolled,
+               // scroll to the newest, which might be the top or the bottom
+               // depending on our sort order and sort type
+               if (gDBView.sortOrder == nsMsgViewSortOrder.ascending) {
+                 switch (gDBView.sortType) {
+                   case nsMsgViewSortType.byDate: 
+                   case nsMsgViewSortType.byId: 
+                   case nsMsgViewSortType.byThread: 
+                     scrolled = ScrollToMessage(nsMsgNavigationType.lastMessage, true, false /* selectMessage */);
+                     break;
+                 }
+               }
+
+               // if still we haven't scrolled,
+               // scroll to the top.
+               if (!scrolled)
+                 EnsureRowInThreadTreeIsVisible(0);
+             }            
+
+             // NOTE,
+             // if you change the scrolling code above,
+             // double check the scrolling logic in
+             // searchBar.js, restorePreSearchView()
+
+             SetBusyCursor(window, false);
+           }
+           if (gNotifyDefaultInboxLoadedOnStartup && (folder.flags & 0x1000))
+           {
+              var defaultAccount = accountManager.defaultAccount;
+              defaultServer = defaultAccount.incomingServer;
+              var inboxFolder = GetInboxFolder(defaultServer);
+              if (inboxFolder && inboxFolder.URI == folder.URI)
+              {
+                NotifyObservers(null,"defaultInboxLoadedOnStartup",null);
+                gNotifyDefaultInboxLoadedOnStartup = false;
+              }
+           }
+           //folder loading is over, now issue quick search if there is an email address
+           if (gSearchEmailAddress)
+           {
+             Search(gSearchEmailAddress);
+             gSearchEmailAddress = null;
+           } 
+           else if (gDefaultSearchViewTerms)
+           {
+             Search("");
+           }
+           else {
+             ViewChangeByValue(pref.getIntPref("mailnews.view.last"));
            }
          }
        } 
@@ -252,11 +291,11 @@ var folderListener = {
        else if (eventType == "CompactCompleted") {
          HandleCompactCompleted(folder);
        }
-       else if(eventType == "RenameCompleted") {
+       else if (eventType == "RenameCompleted") {
          SelectFolder(folder.URI);
        }
-       else if (eventType == "msgLoaded") {
-        OnMsgLoaded(folder, gDBView.URIForFirstSelectedMessage);
+       else if (eventType == "JunkStatusChanged") {
+         HandleJunkStatusChanged(folder);
        }
     }
 }
@@ -278,10 +317,6 @@ var folderObserver = {
     },
 
     onToggleOpenState: function()
-    {
-    },
-
-    getImageSource: function(aItemIndex, aColumnID) 
     {
     },
 
@@ -333,6 +368,12 @@ function HandleDeleteOrMoveMsgFailed(folder)
   // ThreadPaneSelectionChange(true);
 }
 
+// WARNING
+// this is a fragile and complicated function.
+// be careful when hacking on it.
+// don't forget about things like different imap 
+// delete models, multiple views (from multiple thread panes, 
+// search windows, stand alone message windows)
 function HandleDeleteOrMoveMsgCompleted(folder)
 {
   // you might not have a db view.  this can happen if
@@ -341,78 +382,128 @@ function HandleDeleteOrMoveMsgCompleted(folder)
     return;
 
   gDBView.onDeleteCompleted(true);
-  if (gNextMessageViewIndexAfterDelete != -2) 
-  {
-    if (IsCurrentLoadedFolder(folder)) 
+
+  if (!IsCurrentLoadedFolder(folder)) {
+    // default value after delete/move/copy is over
+    gNextMessageViewIndexAfterDelete = -2;
+    return;
+  }
+
+  var treeView = gDBView.QueryInterface(Components.interfaces.nsITreeView);
+  var treeSelection = treeView.selection;
+          
+  if (gNextMessageViewIndexAfterDelete == -2) {
+    // a move or delete can cause our selection can change underneath us.
+    // this can happen when the user
+    // deletes message from the stand alone msg window
+    // or the search view, or another 3 pane
+    if (treeSelection.count == 0) {
+      // this can happen if you double clicked a message
+      // in the thread pane, and deleted it from the stand alone msg window
+      // see bug #172392
+      treeSelection.clearSelection();
+      setTitleFromFolder(folder, null);
+      ClearMessagePane();
+      UpdateMailToolbar("delete from another view, 0 rows now selected");
+    }
+    else if (treeSelection.count == 1) {
+      // this can happen if you had two messages selected
+      // in the thread pane, and you deleted one of them from another view
+      // (like the view in the stand alone msg window)
+      // since one item is selected, we should load it.
+      var startIndex = {};
+      var endIndex = {};
+      treeSelection.getRangeAt(0, startIndex, endIndex);
+        
+      // select the selected item, so we'll load it
+      treeSelection.select(startIndex.value); 
+      treeView.selectionChanged();
+
+      EnsureRowInThreadTreeIsVisible(startIndex.value); 
+
+      UpdateMailToolbar("delete from another view, 1 row now selected");
+    }
+    else {
+      // this can happen if you have more than 2 messages selected
+      // in the thread pane, and you deleted one of them from another view
+      // (like the view in the stand alone msg window)
+      // since multiple messages are still selected, do nothing.
+    }
+  }
+  else {
+    if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None) 
     {
-      var treeView = gDBView.QueryInterface(Components.interfaces.nsITreeView);
-      var treeSelection = treeView.selection;
-      if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None) 
+      var viewSize = treeView.rowCount;
+      if (gNextMessageViewIndexAfterDelete >= viewSize) 
       {
-        viewSize = treeView.rowCount;
-        if (gNextMessageViewIndexAfterDelete >= viewSize) 
-        {
-          if (viewSize > 0)
-            gNextMessageViewIndexAfterDelete = viewSize - 1;
-          else
-          {           
-            gNextMessageViewIndexAfterDelete = nsMsgViewIndex_None;
+        if (viewSize > 0)
+          gNextMessageViewIndexAfterDelete = viewSize - 1;
+        else
+        {           
+          gNextMessageViewIndexAfterDelete = nsMsgViewIndex_None;
 
-            //there is nothing to select viewSize is 0
-
-            treeSelection.clearSelection();
-            setTitleFromFolder(folder,null);
-            ClearMessagePane();
-          }
+          // there is nothing to select since viewSize is 0
+          treeSelection.clearSelection();
+          setTitleFromFolder(folder, null);
+          ClearMessagePane();
+          UpdateMailToolbar("delete from current view, 0 rows left");
         }
       }
-
-      // if we are about to set the selection with a new element then DON'T clear
-      // the selection then add the next message to select. This just generates
-      // an extra round of command updating notifications that we are trying to
-      // optimize away.
-      if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None) 
-      {
-        // when deleting a message we don't update the commands when the selection goes to 0
-        // (we have a hack in nsMsgDBView which prevents that update) so there is no need to
-        // update commands when we select the next message after the delete; the commands already
-        // have the right update state...
-        gDBView.suppressCommandUpdating = true;
-
-        // This check makes sure that the tree does not perform a
-        // selection on a non selected row (row < 0), else assertions will
-        // be thrown.
-        if (gNextMessageViewIndexAfterDelete >= 0)
-          treeSelection.select(gNextMessageViewIndexAfterDelete);
-        
-        // if gNextMessageViewIndexAfterDelete has the same value 
-        // as the last index we had selected, the tree won't generate a
-        // selectionChanged notification for the tree view. So force a manual
-        // selection changed call. (don't worry it's cheap if we end up calling it twice).
-        if (treeView)
-          treeView.selectionChanged();
-
-        EnsureRowInThreadTreeIsVisible(gNextMessageViewIndexAfterDelete); 
-        gDBView.suppressCommandUpdating = false;
-
-        // hook for extra toolbar items
-        // XXX I think there is a bug in the suppression code above.
-        // what if I have two rows selected, and I hit delete, and so we load the next row.
-        // what if I have commands that only enable where exactly one row is selected?
-        NotifyObservers(window, "mail:updateToolbarItems", null);
-      }
     }
-      gNextMessageViewIndexAfterDelete = -2;  
-     //default value after delete/move/copy is over
+
+    // if we are about to set the selection with a new element then DON'T clear
+    // the selection then add the next message to select. This just generates
+    // an extra round of command updating notifications that we are trying to
+    // optimize away.
+    if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None) 
+    {
+      // when deleting a message we don't update the commands 
+      // when the selection goes to 0
+      // (we have a hack in nsMsgDBView which prevents that update) 
+      // so there is no need to
+      // update commands when we select the next message after the delete; 
+      // the commands already
+      // have the right update state...
+      gDBView.suppressCommandUpdating = true;
+
+      // This check makes sure that the tree does not perform a
+      // selection on a non selected row (row < 0), else assertions will
+      // be thrown.
+      if (gNextMessageViewIndexAfterDelete >= 0)
+        treeSelection.select(gNextMessageViewIndexAfterDelete);
+        
+      // if gNextMessageViewIndexAfterDelete has the same value 
+      // as the last index we had selected, the tree won't generate a
+      // selectionChanged notification for the tree view. So force a manual
+      // selection changed call. 
+      // (don't worry it's cheap if we end up calling it twice).
+      if (treeView)
+        treeView.selectionChanged();
+
+      EnsureRowInThreadTreeIsVisible(gNextMessageViewIndexAfterDelete); 
+      gDBView.suppressCommandUpdating = false;
+
+      // hook for extra toolbar items
+      // XXX TODO
+      // I think there is a bug in the suppression code above.
+      // what if I have two rows selected, and I hit delete, 
+      // and so we load the next row.
+      // what if I have commands that only enable where 
+      // exactly one row is selected?
+      UpdateMailToolbar("delete from current view, at least one row selected");
+    }
   }
+
+  // default value after delete/move/copy is over
+  gNextMessageViewIndexAfterDelete = -2;
 }
 
-function HandleCompactCompleted (folder)
+function HandleCompactCompleted(folder)
 {
-  if(folder)
+  if (folder)
   {
     var resource = folder.QueryInterface(Components.interfaces.nsIRDFResource);
-    if(resource)
+    if (resource)
     {
       var uri = resource.Value;
       var msgFolder = msgWindow.openFolder;
@@ -545,7 +636,7 @@ function OnLoadMessenger()
   InitializeDataSources();
   InitPanes();
 
-  accountManager.SetSpecialFoldersForIdentities();
+  accountManager.setSpecialFolders();
   accountManager.addIncomingServerListener(gThreePaneIncomingServerListener);
 
   AddToSession();
@@ -564,7 +655,7 @@ function OnLoadMessenger()
   else
   {
     gStartFolderUri = null;
-    gStartMsgKey = -1;
+    gStartMsgKey = nsMsgKey_None;
     gSearchEmailAddress = null;
   }
 
@@ -644,8 +735,6 @@ function loadStartFolder(initialUri)
     var defaultServer = null;
     var startFolderResource = null;
     var isLoginAtStartUpEnabled = false;
-    var enabledNewMailCheckOnce = false;
-    var mailCheckOncePref = "mail.startup.enabledMailCheckOnce";
 
     //First get default account
     try
@@ -661,14 +750,12 @@ function loadStartFolder(initialUri)
 
             startFolderResource = rootMsgFolder.QueryInterface(Components.interfaces.nsIRDFResource);
 
-            enabledNewMailCheckOnce = pref.getBoolPref(mailCheckOncePref);
-
             // Enable checknew mail once by turning checkmail pref 'on' to bring 
             // all users to one plane. This allows all users to go to Inbox. User can 
             // always go to server settings panel and turn off "Check for new mail at startup"
-            if (!enabledNewMailCheckOnce)
+            if (!pref.getBoolPref(kMailCheckOncePrefName))
             {
-                pref.setBoolPref(mailCheckOncePref, true);
+                pref.setBoolPref(kMailCheckOncePrefName, true);
                 defaultServer.loginAtStartUp = true;
             }
 
@@ -695,14 +782,15 @@ function loadStartFolder(initialUri)
 
         var startFolder = startFolderResource.QueryInterface(Components.interfaces.nsIFolder);
         SelectFolder(startFolder.URI);
-                
+
         // only do this on startup, when we pass in null
-        if (!initialUri && isLoginAtStartUpEnabled)
+        if (!initialUri && isLoginAtStartUpEnabled && gLoadStartFolder)
         {
             // Perform biff on the server to check for new mail, except for imap
             if (defaultServer.type != "imap")
-              defaultServer.PerformBiff();         
-        } 
+              defaultServer.PerformBiff(msgWindow);        
+        }
+
 
         // because the "open" state persists, we'll call
         // PerformExpand() for all servers that are open at startup.
@@ -718,10 +806,7 @@ function loadStartFolder(initialUri)
         dump('Exception in LoadStartFolder caused by no default account.  We know about this\n');
     }
 
-    if (!initialUri) 
-    {
-        MsgGetMessagesForAllServers(null);
-    }
+    MsgGetMessagesForAllServers(defaultServer);
 }
 
 function TriggerGetMessages(server)
@@ -790,6 +875,11 @@ function UpgradeFolderPaneUI()
     var folderTotalCol = document.getElementById("folderTotalCol");
     folderTotalCol.setAttribute("hidden", "true");
     pref.setIntPref("mail.ui.folderpane.version", 2);
+  } // we fall through to the == 2 case so we'll upgrade v 1 profiles correctly
+  if (folderPaneUIVersion <= 2) {
+    var folderSizeCol = document.getElementById("folderSizeCol");
+    folderSizeCol.setAttribute("hidden", "true");
+    pref.setIntPref("mail.ui.folderpane.version", 3);
   }
 }
 
@@ -835,11 +925,24 @@ function UpgradeThreadPaneUI()
 
   try {
     threadPaneUIVersion = pref.getIntPref("mailnews.ui.threadpane.version");
-    if (threadPaneUIVersion == 1) {
-      labelCol = document.getElementById("labelCol");
-      labelCol.setAttribute("hidden", "true");
-      pref.setIntPref("mailnews.ui.threadpane.version", 2);
-    }
+    if (threadPaneUIVersion < 3) {
+      var subjectCol = document.getElementById("subjectCol");
+      var junkCol = document.getElementById("junkStatusCol");
+      var threadTree = document.getElementById("threadTree");
+      
+      var beforeCol = subjectCol.boxObject.nextSibling.boxObject.nextSibling;
+      if (beforeCol)
+        threadTree._reorderColumn(junkCol, beforeCol, true);
+      else // subjectCol was the last column, put it after
+        threadTree._reorderColumn(junkCol, subjectCol, false);
+
+      if (threadPaneUIVersion == 1) {
+        labelCol = document.getElementById("labelCol");
+        labelCol.setAttribute("hidden", "true");
+      }
+
+      pref.setIntPref("mailnews.ui.threadpane.version", 3);
+    }    
 	}
   catch (ex) {
     dump("UpgradeThreadPane: ex = " + ex + "\n");
@@ -928,9 +1031,9 @@ function IsThreadAndMessagePaneSplitterCollapsed()
   var messagePane = GetMessagePane();
   try {
     return (messagePane.getAttribute("collapsed") == "true");
-	}
+  }
   catch (ex) {
-		return false;
+    return false;
   }
 }
 
@@ -963,17 +1066,19 @@ function ClearThreadPaneSelection()
 
 function ClearMessagePane()
 {
-	if(gHaveLoadedMessage)
-	{	
+  if(gHaveLoadedMessage)
+  {
     gHaveLoadedMessage = false;
-		gCurrentDisplayedMessage = null;
+    gCurrentDisplayedMessage = null;
     if (GetMessagePaneFrame().location != "about:blank")
         GetMessagePaneFrame().location = "about:blank";
     // hide the message header view AND the message pane...
-		HideMessageHeaderPane();
-	}
-}
+    HideMessageHeaderPane();
 
+    // hide the junk bar
+    SetUpJunkBar(null);
+  }
+}
 
 function GetSelectedFolderIndex()
 {
@@ -1039,8 +1144,12 @@ function FolderPaneOnClick(event)
     var col = {};
     var elt = {};
     folderTree.treeBoxObject.getCellAt(event.clientX, event.clientY, row, col, elt);
-    if (row.value == -1)
+    if (row.value == -1) {
+      if (event.originalTarget.localName == "treecol")
+        // clicking on the name column in the folder pane should not sort
+        event.preventBubble();
       return;
+    }
 
     if (elt.value == "twisty")
     {
@@ -1066,10 +1175,8 @@ function FolderPaneOnClick(event)
             }
         }
     }
-    else if ((event.originalTarget.localName == "treecol") ||
-             (event.originalTarget.localName == "slider") ||
+    else if ((event.originalTarget.localName == "slider") ||
              (event.originalTarget.localName == "scrollbarbutton")) {
-      // clicking on the name column in the folder pane should not sort
       event.preventBubble();
     }
     else if (event.detail == 2) {
@@ -1171,19 +1278,7 @@ function GetSelectedMsgFolders()
 function GetFirstSelectedMessage()
 {
     try {
-        // Use this instead of gDBView.URIForFirstSelectedMessage, else it
-        // will return the currentIndex message instead of the highlighted
-        // message.
-        //
-        // note, there may not be any selected messages
-        //
-        // XXX todo
-        // is this inefficient when we've got a lot of message selected?
-        var selectedMessages = GetSelectedMessages();
-        if (selectedMessages)
-          return selectedMessages[0];
-        else
-          return null;
+        return gDBView.URIForFirstSelectedMessage;
     }
     catch (ex) {
         return null;
@@ -1241,7 +1336,7 @@ function GetLoadedMessage()
 //Clear everything related to the current message. called after load start page.
 function ClearMessageSelection()
 {
-	ClearThreadPaneSelection();
+  ClearThreadPaneSelection();
 }
 
 function GetCompositeDataSource(command)
@@ -1252,22 +1347,44 @@ function GetCompositeDataSource(command)
 	return null;
 }
 
+// Figures out how many messages are selected (hilighted - does not necessarily
+// have the dotted outline) above a given index row value in the thread pane.
+function NumberOfSelectedMessagesAboveCurrentIndex(index)
+{
+  var numberOfMessages = 0;
+  var indicies = GetSelectedIndices(gDBView);
+
+  if (indicies && indicies.length)
+  {
+    for (var i = 0; i < indicies.length; i++)
+    {
+      if (indicies[i] < index)
+        ++numberOfMessages;
+      else
+        break;
+    }
+  }
+  return numberOfMessages;
+}
+
 function SetNextMessageAfterDelete()
 {
   var treeSelection = GetThreadTree().treeBoxObject.selection;
 
-  gThreadPaneDeleteOrMoveOccurred = true;
   if (treeSelection.isSelected(treeSelection.currentIndex))
     gNextMessageViewIndexAfterDelete = gDBView.msgToSelectAfterDelete;
-  else if (treeSelection.currentIndex > gThreadPaneCurrentSelectedIndex)
-    // Since the currentIndex (the row with the outline/dotted line) is greater
-    // than the currently selected row (the row that is highlighted), we need to
-    // make sure that upon a Delete or Move of the selected row, the highlight
-    // returns to the currentIndex'ed row.  It is necessary to subtract 1
-    // because the row being deleted is above the row with the currentIndex.
-    // If the subtraction is not done, then the highlight will end up on the
-    // row listed after the currentIndex'ed row.
-    gNextMessageViewIndexAfterDelete = treeSelection.currentIndex - 1;
+  else if(gDBView.removeRowOnMoveOrDelete)
+  {
+    // Only set gThreadPaneDeleteOrMoveOccurred to true if the message was
+    // truly moved to the trash or deleted, as opposed to an IMAP delete
+    // (where it is only "marked as deleted".  This will prevent bug 142065.
+    //
+    // If it's an IMAP delete, then just set gNextMessageViewIndexAfterDelete
+    // to treeSelection.currentIndex (where the outline is at) because nothing
+    // was moved or deleted from the folder.
+    gThreadPaneDeleteOrMoveOccurred = true;
+    gNextMessageViewIndexAfterDelete = treeSelection.currentIndex - NumberOfSelectedMessagesAboveCurrentIndex(treeSelection.currentIndex);
+  }
   else
     gNextMessageViewIndexAfterDelete = treeSelection.currentIndex;
 }

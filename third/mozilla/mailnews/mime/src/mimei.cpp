@@ -383,7 +383,8 @@ mime_find_class (const char *content_type, MimeHeaders *hdrs,
            This mode will limit the features available (e.g. uncommon
            attachment types and inline images) and is for paranoid users.
        */
-  if (opts && opts->format_out != nsMimeOutput::nsMimeMessageFilterSniffer)
+  if (opts && opts->format_out != nsMimeOutput::nsMimeMessageFilterSniffer &&
+               opts->format_out != nsMimeOutput::nsMimeMessageDecrypt)
     if (pref)
     {
       pref->GetIntPref("mailnews.display.html_as", &html_as);
@@ -633,6 +634,14 @@ mime_find_class (const char *content_type, MimeHeaders *hdrs,
         clazz = 0;
     }
   }
+ 
+#ifdef ENABLE_SMIME
+  // see bug #189988
+  if (opts && opts->format_out == nsMimeOutput::nsMimeMessageDecrypt && 
+       (clazz != (MimeObjectClass *)&mimeEncryptedCMSClass)) {
+    clazz = (MimeObjectClass *)&mimeExternalObjectClass;
+  }
+#endif
 
   if (!exact_match_p)
     NS_ASSERTION(clazz, "1.1 <rhp@netscape.com> 19 Mar 1999 12:00");
@@ -784,6 +793,52 @@ mime_create (const char *content_type, MimeHeaders *hdrs,
           (clazz != (MimeObjectClass *)&mimeMessageClass) &&
           (clazz != (MimeObjectClass *)&mimeInlineImageClass) )
       clazz = (MimeObjectClass *)&mimeExternalObjectClass;
+  }
+
+  /* If the option `Show Attachments Inline' is off, now would be the time to change our mind... */
+  if (opts && !opts->show_attachment_inline_p)
+  {
+    if (mime_subclass_p(clazz, (MimeObjectClass *)&mimeInlineTextClass))
+    {
+      /* It's a text type.  Write it only if it's the *first* part
+         that we're writing, and then only if it has no "filename"
+         specified (the assumption here being, if it has a filename,
+         it wasn't simply typed into the text field -- it was actually
+         an attached document.) */
+      if (opts->state && opts->state->first_part_written_p)
+        clazz = (MimeObjectClass *)&mimeExternalObjectClass;
+      else
+      {
+        /* If there's a name, then write this as an attachment. */
+        char *name = (hdrs ? MimeHeaders_get_name(hdrs, opts) : nsnull);
+        if (name)
+        {
+          clazz = (MimeObjectClass *)&mimeExternalObjectClass;
+          PR_Free(name);
+        }
+      }
+    }
+    else
+      if (mime_subclass_p(clazz,(MimeObjectClass *)&mimeContainerClass) &&
+           !mime_subclass_p(clazz,(MimeObjectClass *)&mimeMessageClass))
+        /* Multipart subtypes are ok, except for messages; descend into
+           multiparts, and defer judgement.
+ 
+           Encrypted blobs are just like other containers (make the crypto
+           layer invisible, and treat them as simple containers.  So there's
+           no easy way to save encrypted data directly to disk; it will tend
+           to always be wrapped inside a message/rfc822.  That's ok.) */
+          ;
+        else if (opts && opts->part_to_load &&
+                  mime_subclass_p(clazz,(MimeObjectClass *)&mimeMessageClass))
+          /* Descend into messages only if we're looking for a specific sub-part. */
+            ;
+          else
+          {
+            /* Anything else, and display it as a link (and cause subsequent
+               text parts to also be displayed as links.) */
+            clazz = (MimeObjectClass *)&mimeExternalObjectClass;
+          }
   }
 
   PR_FREEIF(content_disposition);
@@ -1302,7 +1357,7 @@ mime_set_url_imap_part(const char *url, const char *imappart, const char *libmim
   PL_strcpy(result, url);
   PL_strcat(result, "/;section=");
   PL_strcat(result, imappart);
-  PL_strcat(result, "&part=");
+  PL_strcat(result, "?part=");
   PL_strcat(result, libmimepart);
   result[strlen(result)] = 0;
 
@@ -1781,3 +1836,19 @@ MimeObject_output_init(MimeObject *obj, const char *content_type)
   return 0;
 }
 
+char *
+mime_get_base_url(const char *url)
+{
+  if (!url)
+    return nsnull;
+
+  const char *s = strrchr(url, '?');
+  char *result = (char *) PR_MALLOC(strlen(url) + 1);
+  NS_ASSERTION(result, "out of memory");
+  if (!result)
+    return nsnull;
+
+  memcpy(result, url, s - url);
+  result[s - url] = 0;
+  return result;
+}

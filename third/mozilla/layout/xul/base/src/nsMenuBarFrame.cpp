@@ -46,7 +46,7 @@
 #include "prtypes.h"
 #include "nsIAtom.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsCSSRendering.h"
 #include "nsINameSpaceManager.h"
 #include "nsIDocument.h"
@@ -137,7 +137,7 @@ NS_IMETHODIMP
 nsMenuBarFrame::Init(nsIPresContext*  aPresContext,
                      nsIContent*      aContent,
                      nsIFrame*        aParent,
-                     nsIStyleContext* aContext,
+                     nsStyleContext*  aContext,
                      nsIFrame*        aPrevInFlow)
 {
   nsresult  rv = nsBoxFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
@@ -189,6 +189,10 @@ nsMenuBarFrame::IsOpen()
 NS_IMETHODIMP
 nsMenuBarFrame::SetActive(PRBool aActiveFlag)
 {
+  // If the activity is not changed, there is nothing to do.
+  if (mIsActive == aActiveFlag)
+    return NS_OK;
+
   mIsActive = aActiveFlag;
   if (mIsActive) {
     InstallKeyboardNavigator();
@@ -234,17 +238,20 @@ nsMenuBarFrame::SetActive(PRBool aActiveFlag)
       break;
 
     document->GetShellAt(0, getter_AddRefs(presShell));
-    if (!presShell)
-      break;
-    nsCOMPtr<nsICaret> caret;
-    presShell->GetCaret(getter_AddRefs(caret));
-    if (!caret)
+    nsCOMPtr<nsISelectionController> selCon(do_QueryInterface(presShell));
+    // there is no selection controller for full page plugins
+    if (!selCon)
       break;
 
-    if (mIsActive) // store whether caret was visible so that we can restore that state when menu is closed
-      caret->GetCaretVisible(&mCaretWasVisible);
-    if (mCaretWasVisible)
-      caret->SetCaretVisible(!mIsActive);
+    if (mIsActive) {// store whether caret was visible so that we can restore that state when menu is closed
+      PRBool isCaretVisible;
+      selCon->GetCaretEnabled(&isCaretVisible);
+      mCaretWasVisible |= isCaretVisible;
+    }
+    selCon->SetCaretEnabled(!mIsActive && mCaretWasVisible);
+    if (!mIsActive) {
+      mCaretWasVisible = PR_FALSE;
+    }
   } while (0);
 
   NS_NAMED_LITERAL_STRING(active, "DOMMenuBarActive");
@@ -376,7 +383,7 @@ nsMenuBarFrame::ShortcutNavigation(nsIDOMKeyEvent* aKeyEvent, PRBool& aHandledFl
   if (result) {
     // We got one!
     aHandledFlag = PR_TRUE;
-    mIsActive = PR_TRUE;
+    SetActive(PR_TRUE);
     SetCurrentMenuItem(result);
     result->OpenMenu(PR_TRUE);
     result->SelectFirstItem();
@@ -593,6 +600,7 @@ NS_IMETHODIMP nsMenuBarFrame::SetCurrentMenuItem(nsIMenuFrame* aMenuItem)
     aMenuItem->MenuIsDisabled(isDisabled);
     if (wasOpen&&!isDisabled)
       aMenuItem->OpenMenu(PR_TRUE);
+    ClearRecentlyRolledUp();
   }
 
   mCurrentMenu = aMenuItem;
@@ -624,14 +632,10 @@ nsMenuBarFrame::Escape(PRBool& aHandledFlag)
     return NS_OK;
   }
 
-  // It's us. Just set our active flag to false.
-  mIsActive = PR_FALSE;
-
   // Clear our current menu item if we've got one.
   SetCurrentMenuItem(nsnull);
 
-  // Remove our keyboard navigator
-  RemoveKeyboardNavigator();
+  SetActive(PR_FALSE);
 
   // Clear out our dismissal listener
   if (nsMenuFrame::sDismissalListener)
@@ -645,6 +649,8 @@ nsMenuBarFrame::Enter()
 {
   if (!mCurrentMenu)
     return NS_OK;
+
+  ClearRecentlyRolledUp();
 
   // See if our menu is open.
   PRBool isOpen = PR_FALSE;
@@ -663,6 +669,27 @@ nsMenuBarFrame::Enter()
 }
 
 NS_IMETHODIMP
+nsMenuBarFrame::ClearRecentlyRolledUp()
+{
+  // We're no longer in danger of popping down a menu from the same 
+  // click on the menubar, which was supposed to toggle the menu closed
+  mRecentRollupMenu = nsnull;
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsMenuBarFrame::RecentlyRolledUp(nsIMenuFrame *aMenuFrame, PRBool *aJustRolledUp)
+{
+  // Don't let a click reopen a menu that was just rolled up
+  // from the same click. Otherwise, the user can't click on
+  // a menubar item to toggle its submenu closed.
+  *aJustRolledUp = (mRecentRollupMenu == aMenuFrame);
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsMenuBarFrame::HideChain()
 {
   // Stop capturing rollups
@@ -671,10 +698,13 @@ nsMenuBarFrame::HideChain()
   if (nsMenuFrame::sDismissalListener)
     nsMenuFrame::sDismissalListener->Unregister();
 
+  ClearRecentlyRolledUp();
   if (mCurrentMenu) {
     mCurrentMenu->ActivateMenu(PR_FALSE);
     mCurrentMenu->SelectMenu(PR_FALSE);
+    mRecentRollupMenu = mCurrentMenu;
   }
+
   return NS_OK;
 }
 

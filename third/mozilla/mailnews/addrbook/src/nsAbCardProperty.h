@@ -72,6 +72,8 @@ protected:
 	nsresult GetAttributeName(PRUnichar **aName, nsString& value);
 	nsresult SetAttributeName(const PRUnichar *aName, nsString& arrtibute);
 
+	nsString m_PhoneticFirstName;
+	nsString m_PhoneticLastName;
 	nsString m_FirstName;
 	nsString m_LastName;
 	nsString m_DisplayName;
@@ -127,11 +129,12 @@ protected:
 	PRUint32 m_PreferMailFormat;
 
 	PRBool   m_IsMailList;
-	char*    m_MailListURI;
+	nsCString m_MailListURI;
 
 private:
   nsresult AppendData(const char *aAttrName, mozITXTToHTMLConv *aConv, nsString &aResult);
   nsresult AppendSection(AppendItem *aArray, PRInt16 aCount, const PRUnichar *aHeading, mozITXTToHTMLConv *aConv, nsString &aResult);
+  nsresult GetCardTypeFromString(const char *aCardTypeStr, PRBool aEmptyIsTrue, PRBool *aValue);
 };
 
 #endif

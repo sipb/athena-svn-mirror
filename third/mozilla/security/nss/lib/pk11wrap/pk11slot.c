@@ -16,8 +16,12 @@
  * Copyright (C) 1994-2000 Netscape Communications Corporation.  All
  * Rights Reserved.
  * 
- * Contributor(s): 
+ * Portions created by Sun Microsystems, Inc. are Copyright (C) 2003
+ * Sun Microsystems, Inc. All Rights Reserved.
+ *
+ * Contributor(s):
  *	Dr Stephen Henson <stephen.henson@gemplus.com>
+ *	Dr Vipul Gupta <vipul.gupta@sun.com>, Sun Microsystems Laboratories
  * 
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU General Public License Version 2 or later (the
@@ -76,6 +80,9 @@ PK11DefaultArrayEntry PK11_DefaultArray[] = {
 	{ "AES", SECMOD_AES_FLAG, CKM_AES_CBC },
 	{ "RC5", SECMOD_RC5_FLAG, CKM_RC5_CBC },
 	{ "SHA-1", SECMOD_SHA1_FLAG, CKM_SHA_1 },
+	{ "SHA256", SECMOD_SHA256_FLAG, CKM_SHA256 },
+/*	{ "SHA384", SECMOD_SHA512_FLAG, CKM_SHA384 }, */
+	{ "SHA512", SECMOD_SHA512_FLAG, CKM_SHA512 },
 	{ "MD5", SECMOD_MD5_FLAG, CKM_MD5 },
 	{ "MD2", SECMOD_MD2_FLAG, CKM_MD2 },
 	{ "SSL", SECMOD_SSL_FLAG, CKM_SSL3_PRE_MASTER_KEY_GEN },
@@ -84,7 +91,17 @@ PK11DefaultArrayEntry PK11_DefaultArray[] = {
 	{ "Publicly-readable certs", SECMOD_FRIENDLY_FLAG, CKM_INVALID_MECHANISM },
 	{ "Random Num Generator", SECMOD_RANDOM_FLAG, CKM_FAKE_RANDOM },
 };
-int num_pk11_default_mechanisms = sizeof(PK11_DefaultArray) / sizeof(PK11_DefaultArray[0]);
+const int num_pk11_default_mechanisms = 
+                sizeof(PK11_DefaultArray) / sizeof(PK11_DefaultArray[0]);
+
+PK11DefaultArrayEntry *
+PK11_GetDefaultArray(int *size)
+{
+    if (size) {
+	*size = num_pk11_default_mechanisms;
+    }
+    return PK11_DefaultArray;
+}
 
 /*
  * These  slotlists are lists of modules which provide default support for
@@ -101,10 +118,13 @@ static PK11SlotList pk11_aesSlotList,
     pk11_rsaSlotList,
     pk11_dsaSlotList,
     pk11_dhSlotList,
+    pk11_ecSlotList,
     pk11_ideaSlotList,
     pk11_sslSlotList,
     pk11_tlsSlotList,
-    pk11_randomSlotList;
+    pk11_randomSlotList,
+    pk11_sha256SlotList,
+    pk11_sha512SlotList;	/* slots do SHA512 and SHA384 */
 
 /*
  * Tables used for Extended mechanism mapping (currently not used)
@@ -378,7 +398,7 @@ PK11_FindSlotElement(PK11SlotList *list,PK11SlotInfo *slot)
  * Create a new slot structure
  */
 PK11SlotInfo *
-PK11_NewSlotInfo(void)
+PK11_NewSlotInfo(SECMODModule *mod)
 {
     PK11SlotInfo *slot;
 
@@ -391,7 +411,8 @@ PK11_NewSlotInfo(void)
 	PORT_Free(slot);
 	return slot;
     }
-    slot->sessionLock = PZ_NewLock(nssILockSession);
+    slot->sessionLock = mod->isThreadSafe ?
+	PZ_NewLock(nssILockSession) : (PZLock *)mod->refLock;
     if (slot->sessionLock == NULL) {
 	PZ_DestroyLock(slot->refLock);
 	PORT_Free(slot);
@@ -399,7 +420,9 @@ PK11_NewSlotInfo(void)
     }
     slot->freeListLock = PZ_NewLock(nssILockFreelist);
     if (slot->freeListLock == NULL) {
-	PZ_DestroyLock(slot->sessionLock);
+	if (mod->isThreadSafe) {
+	    PZ_DestroyLock(slot->sessionLock);
+	}
 	PZ_DestroyLock(slot->refLock);
 	PORT_Free(slot);
 	return slot;
@@ -419,7 +442,7 @@ PK11_NewSlotInfo(void)
     slot->isInternal = PR_FALSE;
     slot->isThreadSafe = PR_FALSE;
     slot->disabled = PR_FALSE;
-    slot->series = 0;
+    slot->series = 1;
     slot->wrapKey = 0;
     slot->wrapMechanism = CKM_INVALID_MECHANISM;
     slot->refKeys[0] = CK_INVALID_HANDLE;
@@ -478,25 +501,25 @@ PK11_DestroySlot(PK11SlotInfo *slot)
    if (slot->mechanismList) {
 	PORT_Free(slot->mechanismList);
    }
-
-   /* finally Tell our parent module that we've gone away so it can unload */
-   if (slot->module) {
-	SECMOD_SlotDestroyModule(slot->module,PR_TRUE);
-   }
 #ifdef PKCS11_USE_THREADS
    if (slot->refLock) {
 	PZ_DestroyLock(slot->refLock);
 	slot->refLock = NULL;
    }
-   if (slot->sessionLock) {
+   if (slot->isThreadSafe && slot->sessionLock) {
 	PZ_DestroyLock(slot->sessionLock);
-	slot->sessionLock = NULL;
    }
+   slot->sessionLock = NULL;
    if (slot->freeListLock) {
 	PZ_DestroyLock(slot->freeListLock);
 	slot->freeListLock = NULL;
    }
 #endif
+
+   /* finally Tell our parent module that we've gone away so it can unload */
+   if (slot->module) {
+	SECMOD_SlotDestroyModule(slot->module,PR_TRUE);
+   }
 
    /* ok, well not quit finally... now we free the memory */
    PORT_Free(slot);
@@ -1235,10 +1258,13 @@ PK11_InitSlotLists(void)
     pk11_initSlotList(&pk11_rsaSlotList);
     pk11_initSlotList(&pk11_dsaSlotList);
     pk11_initSlotList(&pk11_dhSlotList);
+    pk11_initSlotList(&pk11_ecSlotList);
     pk11_initSlotList(&pk11_ideaSlotList);
     pk11_initSlotList(&pk11_sslSlotList);
     pk11_initSlotList(&pk11_tlsSlotList);
     pk11_initSlotList(&pk11_randomSlotList);
+    pk11_initSlotList(&pk11_sha256SlotList);
+    pk11_initSlotList(&pk11_sha512SlotList);
     return SECSuccess;
 }
 
@@ -1256,10 +1282,13 @@ PK11_DestroySlotLists(void)
     pk11_freeSlotList(&pk11_rsaSlotList);
     pk11_freeSlotList(&pk11_dsaSlotList);
     pk11_freeSlotList(&pk11_dhSlotList);
+    pk11_freeSlotList(&pk11_ecSlotList);
     pk11_freeSlotList(&pk11_ideaSlotList);
     pk11_freeSlotList(&pk11_sslSlotList);
     pk11_freeSlotList(&pk11_tlsSlotList);
     pk11_freeSlotList(&pk11_randomSlotList);
+    pk11_freeSlotList(&pk11_sha256SlotList);
+    pk11_freeSlotList(&pk11_sha512SlotList);
     return;
 }
 
@@ -1287,6 +1316,11 @@ PK11_GetSlotList(CK_MECHANISM_TYPE type)
 	return &pk11_rc5SlotList;
     case CKM_SHA_1:
 	return &pk11_sha1SlotList;
+    case CKM_SHA256:
+	return &pk11_sha256SlotList;
+    case CKM_SHA384:
+    case CKM_SHA512:
+	return &pk11_sha512SlotList;
     case CKM_MD5:
 	return &pk11_md5SlotList;
     case CKM_MD2:
@@ -1303,6 +1337,11 @@ PK11_GetSlotList(CK_MECHANISM_TYPE type)
     case CKM_DH_PKCS_KEY_PAIR_GEN:
     case CKM_DH_PKCS_DERIVE:
 	return &pk11_dhSlotList;
+    case CKM_ECDSA:
+    case CKM_ECDSA_SHA1:
+    case CKM_EC_KEY_PAIR_GEN: /* aka CKM_ECDSA_KEY_PAIR_GEN */
+    case CKM_ECDH1_DERIVE:
+	return &pk11_ecSlotList;
     case CKM_SSL3_PRE_MASTER_KEY_GEN:
     case CKM_SSL3_MASTER_KEY_DERIVE:
     case CKM_SSL3_SHA1_MAC:
@@ -1355,8 +1394,7 @@ PK11_LoadSlotList(PK11SlotInfo *slot, PK11PreSlotInfo *psi, int count)
 	return;
     }
 
-    for (i=0; i < sizeof(PK11_DefaultArray)/sizeof(PK11_DefaultArray[0]);
-								i++) {
+    for (i=0; i < num_pk11_default_mechanisms; i++) {
 	if (slot->defaultFlags & PK11_DefaultArray[i].flag) {
 	    CK_MECHANISM_TYPE mechanism = PK11_DefaultArray[i].mechanism;
 	    PK11SlotList *slotList = PK11_GetSlotList(mechanism);
@@ -1418,8 +1456,7 @@ PK11_ClearSlotList(PK11SlotInfo *slot)
     if (slot->disabled) return;
     if (slot->defaultFlags == 0) return;
 
-    for (i=0; i < sizeof(PK11_DefaultArray)/sizeof(PK11_DefaultArray[0]);
-								i++) {
+    for (i=0; i < num_pk11_default_mechanisms; i++) {
 	if (slot->defaultFlags & PK11_DefaultArray[i].flag) {
 	    CK_MECHANISM_TYPE mechanism = PK11_DefaultArray[i].mechanism;
 	    PK11SlotList *slotList = PK11_GetSlotList(mechanism);
@@ -1657,6 +1694,7 @@ PK11_ReadMechanismList(PK11SlotInfo *slot)
 {
     CK_ULONG count;
     CK_RV crv;
+    int i;
 
     if (slot->mechanismList) {
 	PORT_Free(slot->mechanismList);
@@ -1688,6 +1726,14 @@ PK11_ReadMechanismList(PK11SlotInfo *slot)
 	return SECSuccess;
     }
     slot->mechanismCount = count;
+    PORT_Memset(slot->mechanismBits, 0, sizeof(slot->mechanismBits));
+
+    for (i=0; i < count; i++) {
+	CK_MECHANISM_TYPE mech = slot->mechanismList[i];
+	if (mech < 0x7ff) {
+	    slot->mechanismBits[mech & 0xff] |= 1 << (mech >> 8);
+	}
+    }
     return SECSuccess;
 }
 
@@ -1849,6 +1895,45 @@ PK11_InitToken(PK11SlotInfo *slot, PRBool loadCerts)
     return SECSuccess;
 }
 
+/*
+ * initialize a new token
+ * unlike initialize slot, this can be called multiple times in the lifetime
+ * of NSS. It reads the information associated with a card or token,
+ * that is not going to change unless the card or token changes.
+ */
+SECStatus
+PK11_TokenRefresh(PK11SlotInfo *slot)
+{
+    CK_TOKEN_INFO tokenInfo;
+    CK_RV crv;
+    SECStatus rv;
+
+    /* set the slot flags to the current token values */
+    if (!slot->isThreadSafe) PK11_EnterSlotMonitor(slot);
+    crv = PK11_GETTAB(slot)->C_GetTokenInfo(slot->slotID,&tokenInfo);
+    if (!slot->isThreadSafe) PK11_ExitSlotMonitor(slot);
+    if (crv != CKR_OK) {
+	PORT_SetError(PK11_MapError(crv));
+	return SECFailure;
+    }
+
+    slot->flags = tokenInfo.flags;
+    slot->needLogin = ((tokenInfo.flags & CKF_LOGIN_REQUIRED) ? 
+							PR_TRUE : PR_FALSE);
+    slot->readOnly = ((tokenInfo.flags & CKF_WRITE_PROTECTED) ? 
+							PR_TRUE : PR_FALSE);
+    slot->hasRandom = ((tokenInfo.flags & CKF_RNG) ? PR_TRUE : PR_FALSE);
+    slot->protectedAuthPath =
+    		((tokenInfo.flags & CKF_PROTECTED_AUTHENTICATION_PATH) 
+	 						? PR_TRUE : PR_FALSE);
+    /* on some platforms Active Card incorrectly sets the 
+     * CKF_PROTECTED_AUTHENTICATION_PATH bit when it doesn't mean to. */
+    if (slot->isActiveCard) {
+	slot->protectedAuthPath = PR_FALSE;
+    }
+    return SECSuccess;
+}
+
 static PRBool
 pk11_isRootSlot(PK11SlotInfo *slot) 
 {
@@ -1990,11 +2075,13 @@ pk11_IsPresentCertLoad(PK11SlotInfo *slot, PRBool loadCerts)
     /* use the session Info to determine if the card has been removed and then
      * re-inserted */
     if (slot->session != CK_INVALID_SESSION) {
+	if (slot->isThreadSafe) PK11_EnterSlotMonitor(slot);
 	crv = PK11_GETTAB(slot)->C_GetSessionInfo(slot->session, &sessionInfo);
 	if (crv != CKR_OK) {
 	    PK11_GETTAB(slot)->C_CloseSession(slot->session);
 	    slot->session = CK_INVALID_SESSION;
 	}
+        if (slot->isThreadSafe) PK11_ExitSlotMonitor(slot);
     }
     if (!slot->isThreadSafe) PK11_ExitSlotMonitor(slot);
 
@@ -2298,8 +2385,7 @@ pk11_InDelayPeriod(PRIntervalTime lastTime, PRIntervalTime delayTime,
     PRIntervalTime time;
 
     *retTime = time = PR_IntervalNow();
-    return (PRBool) (lastTime) && (time > lastTime) && 
-				((time-lastTime) < delayTime);
+    return (PRBool) (lastTime) && ((time-lastTime) < delayTime);
 }
 
 /*
@@ -2403,6 +2489,12 @@ PK11_DoesMechanism(PK11SlotInfo *slot, CK_MECHANISM_TYPE type)
 	return slot->hasRandom;
     }
 
+    /* for most mechanism, bypass the linear lookup */
+    if (type < 0x7ff) {
+	return (slot->mechanismBits[type & 0xff] & (1 << (type >> 8)))  ?
+		PR_TRUE : PR_FALSE;
+    }
+	   
     for (i=0; i < (int) slot->mechanismCount; i++) {
 	if (slot->mechanismList[i] == type) return PR_TRUE;
     }
@@ -2584,8 +2676,13 @@ PK11_GetBestSlotMultiple(CK_MECHANISM_TYPE *type, int mech_count, void *wincx)
 
     listNeedLogin = PR_FALSE;
     for (i=0; i < mech_count; i++) {
-	if ((type[i] != CKM_FAKE_RANDOM) && (type[i] != CKM_SHA_1) &&
-			(type[i] != CKM_MD5) && (type[i] != CKM_MD2)) {
+	if ((type[i] != CKM_FAKE_RANDOM) && 
+	    (type[i] != CKM_SHA_1) &&
+	    (type[i] != CKM_SHA256) &&
+	    (type[i] != CKM_SHA384) &&
+	    (type[i] != CKM_SHA512) &&
+	    (type[i] != CKM_MD5) && 
+	    (type[i] != CKM_MD2)) {
 	    listNeedLogin = PR_TRUE;
 	    break;
 	}
@@ -2847,6 +2944,9 @@ PK11_GetKeyType(CK_MECHANISM_TYPE type,unsigned long len)
     case CKM_MD2_RSA_PKCS:
     case CKM_MD5_RSA_PKCS:
     case CKM_SHA1_RSA_PKCS:
+    case CKM_SHA256_RSA_PKCS:
+    case CKM_SHA384_RSA_PKCS:
+    case CKM_SHA512_RSA_PKCS:
     case CKM_KEY_WRAP_SET_OAEP:
     case CKM_RSA_PKCS_KEY_PAIR_GEN:
 	return CKK_RSA;
@@ -2860,10 +2960,11 @@ PK11_GetKeyType(CK_MECHANISM_TYPE type,unsigned long len)
     case CKM_KEA_KEY_DERIVE:
     case CKM_KEA_KEY_PAIR_GEN:
 	return CKK_KEA;
-    case CKM_ECDSA_KEY_PAIR_GEN:
     case CKM_ECDSA:
     case CKM_ECDSA_SHA1:
-	return CKK_ECDSA;
+    case CKM_EC_KEY_PAIR_GEN: /* aka CKM_ECDSA_KEY_PAIR_GEN */
+    case CKM_ECDH1_DERIVE:
+	return CKK_EC;  /* CKK_ECDSA is deprecated */
     case CKM_SSL3_PRE_MASTER_KEY_GEN:
     case CKM_GENERIC_SECRET_KEY_GEN:
     case CKM_SSL3_MASTER_KEY_DERIVE:
@@ -2876,6 +2977,12 @@ PK11_GetKeyType(CK_MECHANISM_TYPE type,unsigned long len)
     case CKM_TLS_KEY_AND_MAC_DERIVE:
     case CKM_SHA_1_HMAC:
     case CKM_SHA_1_HMAC_GENERAL:
+    case CKM_SHA256_HMAC:
+    case CKM_SHA256_HMAC_GENERAL:
+    case CKM_SHA384_HMAC:
+    case CKM_SHA384_HMAC_GENERAL:
+    case CKM_SHA512_HMAC:
+    case CKM_SHA512_HMAC_GENERAL:
     case CKM_MD2_HMAC:
     case CKM_MD2_HMAC_GENERAL:
     case CKM_MD5_HMAC:
@@ -3000,6 +3107,9 @@ PK11_GetKeyGen(CK_MECHANISM_TYPE type)
     case CKM_MD2_RSA_PKCS:
     case CKM_MD5_RSA_PKCS:
     case CKM_SHA1_RSA_PKCS:
+    case CKM_SHA256_RSA_PKCS:
+    case CKM_SHA384_RSA_PKCS:
+    case CKM_SHA512_RSA_PKCS:
     case CKM_KEY_WRAP_SET_OAEP:
     case CKM_RSA_PKCS_KEY_PAIR_GEN:
 	return CKM_RSA_PKCS_KEY_PAIR_GEN;
@@ -3014,8 +3124,10 @@ PK11_GetKeyGen(CK_MECHANISM_TYPE type)
     case CKM_KEA_KEY_PAIR_GEN:
 	return CKM_KEA_KEY_PAIR_GEN;
     case CKM_ECDSA:
-    case CKM_ECDSA_KEY_PAIR_GEN:
-	return CKM_ECDSA_KEY_PAIR_GEN;
+    case CKM_ECDSA_SHA1:
+    case CKM_EC_KEY_PAIR_GEN: /* aka CKM_ECDSA_KEY_PAIR_GEN */
+    case CKM_ECDH1_DERIVE:
+        return CKM_EC_KEY_PAIR_GEN; 
     case CKM_SSL3_PRE_MASTER_KEY_GEN:
     case CKM_SSL3_MASTER_KEY_DERIVE:
     case CKM_SSL3_KEY_AND_MAC_DERIVE:
@@ -3026,6 +3138,12 @@ PK11_GetKeyGen(CK_MECHANISM_TYPE type)
 	return CKM_SSL3_PRE_MASTER_KEY_GEN;
     case CKM_SHA_1_HMAC:
     case CKM_SHA_1_HMAC_GENERAL:
+    case CKM_SHA256_HMAC:
+    case CKM_SHA256_HMAC_GENERAL:
+    case CKM_SHA384_HMAC:
+    case CKM_SHA384_HMAC_GENERAL:
+    case CKM_SHA512_HMAC:
+    case CKM_SHA512_HMAC_GENERAL:
     case CKM_MD2_HMAC:
     case CKM_MD2_HMAC_GENERAL:
     case CKM_MD5_HMAC:
@@ -4262,7 +4380,10 @@ PK11_ReadAttribute(PK11SlotInfo *slot, CK_OBJECT_HANDLE id,
     } else {
     	attr.pValue = PORT_Alloc(attr.ulValueLen);
     }
-    if (attr.pValue == NULL) return SECFailure;
+    if (attr.pValue == NULL) {
+	PK11_ExitSlotMonitor(slot);
+	return SECFailure;
+    }
     crv = PK11_GETTAB(slot)->C_GetAttributeValue(slot->session,id,&attr,1);
     PK11_ExitSlotMonitor(slot);
     if (crv != CKR_OK) {
@@ -4444,6 +4565,8 @@ PK11_ResetToken(PK11SlotInfo *slot, char *sso_pwd)
 	PORT_SetError(PK11_MapError(crv));
 	return SECFailure;
     }
+    nssTrustDomain_UpdateCachedTokenCerts(slot->nssToken->trustDomain,
+	                                      slot->nssToken);
     return SECSuccess;
 }
 
@@ -4606,3 +4729,51 @@ PK11_SetObjectNickname(PK11SlotInfo *slot, CK_OBJECT_HANDLE id,
     }
     return SECSuccess;
 }
+
+/*
+ * wait for a token to change it's state. The application passes in the expected
+ * new state in event. 
+ */
+PK11TokenStatus
+PK11_WaitForTokenEvent(PK11SlotInfo *slot, PK11TokenEvent event, 
+	PRIntervalTime timeout, PRIntervalTime latency, int series)
+{
+   PRIntervalTime first_time = 0;
+   PRBool first_time_set = PR_FALSE;
+   PRBool waitForRemoval;
+
+   if (slot->isPerm) {
+	return PK11TokenNotRemovable;
+   }
+   if (latency == 0) {
+	latency = PR_SecondsToInterval(5);
+   }
+   waitForRemoval = (PRBool) (event == PK11TokenRemovedOrChangedEvent);
+
+   if (series == 0) {
+	series = PK11_GetSlotSeries(slot);
+   }
+   while (PK11_IsPresent(slot) == waitForRemoval ) {
+	PRIntervalTime interval;
+
+	if (waitForRemoval && series != PK11_GetSlotSeries(slot)) {
+	    return PK11TokenChanged;
+	}
+	if (timeout == PR_INTERVAL_NO_WAIT) {
+	    return waitForRemoval ? PK11TokenPresent : PK11TokenRemoved;
+	}
+	if (timeout != PR_INTERVAL_NO_TIMEOUT ) {
+	    interval = PR_IntervalNow();
+	    if (!first_time_set) {
+		first_time = interval;
+		first_time_set = PR_TRUE;
+	    }
+	    if ((interval-first_time) > timeout) {
+		return waitForRemoval ? PK11TokenPresent : PK11TokenRemoved;
+	    }
+	}
+	PR_Sleep(latency);
+   }
+   return waitForRemoval ? PK11TokenRemoved : PK11TokenPresent;
+}
+	

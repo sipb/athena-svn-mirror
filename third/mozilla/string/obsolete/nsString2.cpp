@@ -44,6 +44,7 @@
 #include "nsString.h"
 #include "nsReadableUtils.h"
 #include "nsDebug.h"
+#include "nsUTF8Utils.h"
 
 #ifndef nsCharTraits_h___
 #include "nsCharTraits.h"
@@ -51,11 +52,12 @@
 
 #ifndef RICKG_TESTBED
 #include "prdtoa.h"
-#include "nsISizeOfHandler.h"
 #endif
 
+#ifdef DEBUG
 static const char* kPossibleNull = "Error: possible unintended null in string";
 static const char* kNullPointerError = "Error: unexpected null ptr";
+#endif
 static const char* kWhitespace="\b\t\r\n ";
 
 const nsBufferHandle<PRUnichar>*
@@ -155,14 +157,6 @@ nsString::nsString( const nsAString& aReadable ) {
   Assign(aReadable);
 }
 
-#ifdef DEBUG
-void nsString::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const {
-  if (aResult) {
-    *aResult = sizeof(*this) + GetCapacity() * GetCharSize();
-  }
-}
-#endif
-
 /**
  * This method truncates this string to given length.
  *
@@ -205,19 +199,6 @@ nsString::SetCapacity( PRUint32 aNewCapacity )
   Accessor methods...
  *********************************************************************/
 
-
-/**
- * This method returns the internal unicode buffer. 
- * Now that we've factored the string class, this should never
- * be able to return a 1 byte string.
- *
- * @update  gess1/4/99
- * @return  ptr to internal (2-byte) buffer;
- */
-const PRUnichar* nsString::get() const {
-  const PRUnichar* result=(eOneByte==GetCharSize()) ? 0 : mUStr;
-  return result;
-}
 
 /**
  * set a char inside this string at given index
@@ -536,18 +517,26 @@ char* nsString::ToCString(char* aBuf, PRUint32 aBufLength,PRUint32 anOffset) con
  * @return  float rep of string value
  */
 float nsString::ToFloat(PRInt32* aErrorCode) const {
+  float res = 0.0f;
   char buf[100];
-  if (mLength > PRInt32(sizeof(buf)-1)) {
-    *aErrorCode = (PRInt32) NS_ERROR_ILLEGAL_VALUE;
-    return 0.0f;
+  if (mLength > 0 && mLength < sizeof(buf)) {
+    char *conv_stopped;
+    const char *str = ToCString(buf, sizeof(buf));
+    // Use PR_strtod, not strtod, since we don't want locale involved.
+    res = (float)PR_strtod(str, &conv_stopped);
+    if (*conv_stopped == '\0') {
+      *aErrorCode = (PRInt32) NS_OK;
+    }
+    else {
+      /* Not all the string was scanned */
+      *aErrorCode = (PRInt32) NS_ERROR_ILLEGAL_VALUE;
+    }
   }
-  char* cp = ToCString(buf, sizeof(buf));
-  float f = (float) PR_strtod(cp, &cp);
-  if (*cp != 0) {
+  else {
+    /* The string was too short (0 characters) or too long (sizeof(buf)) */
     *aErrorCode = (PRInt32) NS_ERROR_ILLEGAL_VALUE;
   }
-  *aErrorCode = (PRInt32) NS_OK;
-  return f;
+  return res;
 }
 
 
@@ -1362,61 +1351,6 @@ NS_ConvertASCIItoUCS2::NS_ConvertASCIItoUCS2( const nsACString& aCString )
       }
   }
 
-class CalculateUTF8Length
-  {
-    public:
-      typedef nsACString::char_type value_type;
-
-    CalculateUTF8Length() : mLength(0), mErrorEncountered(PR_FALSE) { }
-
-    size_t Length() const { return mLength; }
-
-    PRUint32 write( const value_type* start, PRUint32 N )
-      {
-          // ignore any further requests
-        if ( mErrorEncountered )
-            return N;
-
-        // algorithm assumes utf8 units won't
-        // be spread across fragments
-        const value_type* p = start;
-        const value_type* end = start + N;
-        for ( ; p < end /* && *p */; ++mLength )
-          {
-            if ( UTF8traits::isASCII(*p) )
-                p += 1;
-            else if ( UTF8traits::is2byte(*p) )
-                p += 2;
-            else if ( UTF8traits::is3byte(*p) )
-                p += 3;
-            else if ( UTF8traits::is4byte(*p) ) {
-                p += 4;
-                ++mLength;
-            }
-            else if ( UTF8traits::is5byte(*p) )
-                p += 5;
-            else if ( UTF8traits::is6byte(*p) )
-                p += 6;
-            else
-              {
-                break;
-              }
-          }
-        if ( p != end )
-          {
-            NS_ERROR("Not a UTF-8 string. This code should only be used for converting from known UTF-8 strings.");
-            mErrorEncountered = PR_TRUE;
-            mLength = 0;
-            return N;
-          }
-        return p - start;
-      }
-
-    private:
-      size_t mLength;
-      PRBool mErrorEncountered;
-  };
-
 void
 NS_ConvertUTF8toUCS2::Init( const nsACString& aCString )
 {
@@ -1465,12 +1399,3 @@ nsAutoString::nsAutoString(PRUnichar aChar) : nsString(){
   AddNullTerminator(*this);
   Append(aChar);
 }
-
-#ifdef DEBUG
-void nsAutoString::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const {
-  if (aResult) {
-    *aResult = sizeof(*this) + GetCapacity() * GetCharSize();
-  }
-}
-#endif
-

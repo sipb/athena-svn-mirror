@@ -113,7 +113,7 @@ public:
   NS_IMETHOD Scale(float aSx, float aSy);
   NS_IMETHOD GetCurrentTransform(nsTransform2D *&aTransform);
 
-  NS_IMETHOD CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
+  NS_IMETHOD CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
   NS_IMETHOD DestroyDrawingSurface(nsDrawingSurface aDS);
 
   NS_IMETHOD DrawLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1);
@@ -165,6 +165,14 @@ public:
   NS_IMETHOD DrawString(const nsString& aString, nscoord aX, nscoord aY,
                         PRInt32 aFontID,
                         const nscoord* aSpacing);
+protected:
+  PRInt32 DrawString(const PRUnichar *aString, PRUint32 aLength,
+                        nscoord aX, nscoord aY, nsFontPS* aFontPS,
+                        const nscoord* aSpacing);
+  PRInt32 DrawString(const char *aString, PRUint32 aLength,
+                        nscoord &aX, nscoord &aY, nsFontPS* aFontPS,
+                        const nscoord* aSpacing);
+public:
 
   NS_IMETHOD GetTextDimensions(const char* aString, PRUint32 aLength,
                                nsTextDimensions& aDimensions);
@@ -188,14 +196,6 @@ public:
                                PRInt32&          aNumCharsFit,
                                nsTextDimensions& aLastWordDimensions,
                                PRInt32*          aFontID = nsnull);
-
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY);
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY,
-                       nscoord aWidth, nscoord aHeight); 
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aRect);
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect);
-  NS_IMETHOD DrawTile(nsIImage *aImage,nscoord aX0,nscoord aY0,nscoord aX1,nscoord aY1,
-                        nscoord aWidth,nscoord aHeight);
 
   NS_IMETHOD DrawImage(imgIContainer *aImage, const nsRect * aSrcRect, const nsPoint * aDestPoint);
   NS_IMETHOD DrawScaledImage(imgIContainer *aImage, const nsRect * aSrcRect, const nsRect * aDestRect);
@@ -269,7 +269,6 @@ public:
 
 private:
   nsresult CommonInit(void);
-  void SetupFontAndColor(void);
   void PushClipState(void);
 
 protected:

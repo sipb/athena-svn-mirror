@@ -37,6 +37,7 @@ ifeq ($(OS_ARCH),WINNT)
 XPIDL_MODULE	= msgcompo
 endif
 REQUIRES	= xpcom \
+                  xpcom_obsolete \
 		  string \
 		  msgbase \
 		  msgbaseutil \
@@ -63,7 +64,6 @@ EXTRA_DSO_LIBS = msgbaseutil
 endif
 
 CPPSRCS		= nsMsgCompFactory.cpp
-EXPORTS		= nsMsgCompCID.h
 
 SHARED_LIBRARY_LIBS = \
 		$(DIST)/lib/$(LIB_PREFIX)msgcompose_s.$(LIB_SUFFIX) \
@@ -75,7 +75,12 @@ EXTRA_DSO_LDOPTS = \
 		$(MOZ_JS_LIBS) \
 		$(MOZ_UNICHARUTIL_LIBS) \
 		$(MOZ_COMPONENT_LIBS) \
+		$(MOZ_XPCOM_OBSOLETE_LIBS) \
 		$(NULL)
+
+ifneq (,$(filter cocoa mac, $(MOZ_WIDGET_TOOLKIT)))
+EXTRA_DSO_LDOPTS += $(TK_LIBS)
+endif
 
 include $(topsrcdir)/config/rules.mk
 

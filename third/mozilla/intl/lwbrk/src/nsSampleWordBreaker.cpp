@@ -43,7 +43,6 @@
 #include "nsLWBRKDll.h"
 nsSampleWordBreaker::nsSampleWordBreaker()
 {
-  NS_INIT_ISUPPORTS();
 }
 nsSampleWordBreaker::~nsSampleWordBreaker()
 {
@@ -73,18 +72,6 @@ nsresult nsSampleWordBreaker::BreakInBetween(
   return NS_OK;
 }
 
-
-// hack
-typedef enum {
-  kWbClassSpace = 0,
-  kWbClassAlphaLetter,
-  kWbClassPunct,
-  kWbClassHanLetter,
-  kWbClassKatakanaLetter,
-  kWbClassHiraganaLetter,
-  kWbClassHWKatakanaLetter,
-  kWbClassThaiLetter
-} wb_class;
 
 #define IS_ASCII(c)            (0 == ( 0xFF80 & (c)))
 #define ASCII_IS_ALPHA(c)         ((( 'a' <= (c)) && ((c) <= 'z')) || (( 'A' <= (c)) && ((c) <= 'Z')))

@@ -21,7 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   L. David Baron <dbaron@fas.harvard.edu>
+ *   L. David Baron <dbaron@dbaron.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -42,7 +42,6 @@
 #include "nsVoidArray.h"
 #include "nsPlaceholderFrame.h"
 #include "nsILineIterator.h"
-#include "nsISizeOfHandler.h"
 
 class nsSpaceManager;
 class nsLineBox;
@@ -84,6 +83,9 @@ public:
   // the containing block frame.
   nsRect mCombinedArea;
 
+  // The floater's max-element-width.
+  nscoord mMaxElementWidth;
+
 protected:
   nsFloaterCache* mNext;
 
@@ -117,10 +119,6 @@ public:
   void Remove(nsFloaterCache* aElement);
 
   void Append(nsFloaterCacheFreeList& aList);
-
-#ifdef DEBUG
-  void SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
-#endif
 
 protected:
   nsFloaterCache* mHead;
@@ -334,9 +332,11 @@ public:
   void FreeFloaters(nsFloaterCacheFreeList& aFreeList);
   void AppendFloaters(nsFloaterCacheFreeList& aFreeList);
   PRBool RemoveFloater(nsIFrame* aFrame);
-  void RemoveFloatersFromSpaceManager(nsSpaceManager* aSpaceManager);
 
-  // Combined area
+  // Combined area is the area of the line that should influence the
+  // overflow area of its parent block.  The combined area should be
+  // used for painting-related things, but should never be used for
+  // layout (except for handling of 'overflow').
   void SetCombinedArea(const nsRect& aCombinedArea);
   void GetCombinedArea(nsRect* aResult);
   PRBool CombinedAreaIntersects(const nsRect& aDamageRect) {
@@ -352,7 +352,16 @@ public:
     }
   }
 
-  //----------------------------------------
+  /**
+   * The ascent (distance from top to baseline) of the linebox is the
+   * ascent of the anonymous inline box (for which we don't actually
+   * create a frame) that wraps all the consecutive inline children of a
+   * block.
+   *
+   * This is currently unused for block lines.
+   */
+  nscoord GetAscent() const { return mAscent; }
+  void SetAscent(nscoord aAscent) { mAscent = aAscent; }
 
   nscoord GetHeight() const {
     return mBounds.height;
@@ -394,7 +403,6 @@ public:
                    PRBool *aResult) const;
 
 #ifdef DEBUG
-  nsIAtom* SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
   static PRInt32 GetCtorCount();
 #endif
 
@@ -440,6 +448,7 @@ public:
   };
 
 protected:
+  nscoord mAscent;           // see |SetAscent| / |GetAscent|
   union {
     PRUint32 mAllFlags;
     FlagBits mFlags;

@@ -65,25 +65,31 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Macros to help detect thread-safety:
 
-#if defined(NS_DEBUG) && defined(NS_MT_SUPPORTED) && !defined(XPCOM_GLUE)
+#if defined(NS_DEBUG) && !defined(XPCOM_GLUE)
 
 extern "C" NS_COM void* NS_CurrentThread(void);
 extern "C" NS_COM void NS_CheckThreadSafe(void* owningThread,
                                              const char* msg);
 
-#define NS_DECL_OWNINGTHREAD            void* _mOwningThread;
-#define NS_IMPL_OWNINGTHREAD()          (_mOwningThread = NS_CurrentThread())
-#define NS_ASSERT_OWNINGTHREAD(_class)  NS_CheckThreadSafe(_mOwningThread,    \
-                                                           #_class            \
-                                                           " not thread-safe")
+class nsAutoOwningThread {
+public:
+    nsAutoOwningThread() { mThread = NS_CurrentThread(); }
+    void *GetThread() const { return mThread; }
 
-#else // !(defined(NS_DEBUG) && defined(NS_MT_SUPPORTED))
+private:
+    void *mThread;
+};
+
+#define NS_DECL_OWNINGTHREAD            nsAutoOwningThread _mOwningThread;
+#define NS_ASSERT_OWNINGTHREAD(_class) \
+  NS_CheckThreadSafe(_mOwningThread.GetThread(), #_class " not thread-safe")
+
+#else // !(defined(NS_DEBUG))
 
 #define NS_DECL_OWNINGTHREAD            /* nothing */
-#define NS_IMPL_OWNINGTHREAD()          ((void)0)
 #define NS_ASSERT_OWNINGTHREAD(_class)  ((void)0)
 
-#endif // !(defined(NS_DEBUG) && defined(NS_MT_SUPPORTED))
+#endif // !(defined(NS_DEBUG))
 
 class nsAutoRefCnt {
 
@@ -127,10 +133,11 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Initialize the reference count variable. Add this to each and every
- * constructor you implement.
+ * Previously used to initialize the reference count, but no longer needed.
+ *
+ * DEPRECATED.
  */
-#define NS_INIT_ISUPPORTS() (NS_IMPL_OWNINGTHREAD())
+#define NS_INIT_ISUPPORTS() ((void)0)
 
 /**
  * Use this macro to implement the AddRef method for a given <i>_class</i>
@@ -689,8 +696,6 @@ NS_IMETHODIMP_(nsrefcnt) Class::Release(void)                                 \
  *
  */
 
-#if defined(NS_MT_SUPPORTED)
-
 /**
  * Use this macro to implement the AddRef method for a given <i>_class</i>
  * @param _class The name of the class implementing the method
@@ -727,22 +732,6 @@ NS_IMETHODIMP_(nsrefcnt) _class::Release(void)                                \
   }                                                                           \
   return count;                                                               \
 }
-
-#else  // defined(NS_MT_SUPPORTED)
-
-/**
- * Convenience macro for implementing all nsISupports methods for
- * a simple class.
- * @param _class The name of the class implementing the method
- * @param _classiiddef The name of the #define symbol that defines the IID
- * for the class (e.g. NS_ISUPPORTS_IID)
- */
-
-#define NS_IMPL_THREADSAFE_ADDREF(_class)  NS_IMPL_ADDREF(_class)
-
-#define NS_IMPL_THREADSAFE_RELEASE(_class) NS_IMPL_RELEASE(_class)
-
-#endif /* !NS_MT_SUPPORTED */
 
 #define NS_IMPL_THREADSAFE_ISUPPORTS0(_class)                                 \
   NS_IMPL_THREADSAFE_ADDREF(_class)                                           \

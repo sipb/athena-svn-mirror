@@ -51,7 +51,7 @@ mng             1
 ldap            1      MOZ_LDAP_XPCOM
 ldap_experimental 0    MOZ_LDAP_XPCOM_EXPERIMENTAL
 xmlextras       1
-wsp             0      MOZ_WSP
+webservices	1
 iiextras        0
 inspector       1
 mailextras      1
@@ -62,7 +62,6 @@ embedding_chrome 0
 embedding_xulprefs 0
 embedding_xulsecurity 0
 carbon          0      TARGET_CARBON
-useimg2         1      USE_IMG2
 lowmem          0      MOZ_MAC_LOWMEM
 accessible      1      ACCESSIBILITY
 bidi            1      IBMBIDI
@@ -85,6 +84,11 @@ mdn             1
 print_preview   1      NS_PRINT_PREVIEW
 printing        1      NS_PRINTING
 moz_xul         1      MOZ_XUL
+layout_debug    0
+# You need to pull calendar and libical explicitly.
+calendar        0
+# calendar requires libical.
+libical         0
 
 filepath_flags
 idepath             ":CodeWarrior IDE Path.txt"

@@ -75,7 +75,6 @@ nsMsgPrintEngine::nsMsgPrintEngine() :
   mMsgInx(nsIMsgPrintEngine::MNAB_START)
 {
   mCurrentlyPrintingURI = -1;
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -529,12 +528,19 @@ nsMsgPrintEngine::FireThatLoadOperation(nsString *uri)
   // and we know it is not a message.
   //
   // if this an about:blank url, skip it, because
+  // ...
   //
   // if this is an addbook: url, skip it, because
   // we know that isn't a message.
-  if (PL_strncmp(tString, DATA_URL_PREFIX, DATA_URL_PREFIX_LEN) && 
-      PL_strncmp(tString, ADDBOOK_URL_PREFIX, ADDBOOK_URL_PREFIX_LEN) && 
-      PL_strcmp(tString, "about:blank")) {
+  //
+  // if this is a message part (or .eml file on disk)
+  // skip it, because we don't want to print the parent message
+  // we want to print the part.
+  // example:  imap://sspitzer@nsmail-1:143/fetch%3EUID%3E/INBOX%3E180958?part=1.1.2&type=x-message-display&filename=test"
+  if (strncmp(tString, DATA_URL_PREFIX, DATA_URL_PREFIX_LEN) && 
+      strncmp(tString, ADDBOOK_URL_PREFIX, ADDBOOK_URL_PREFIX_LEN) && 
+      strcmp(tString, "about:blank") &&
+      !strstr(tString, "type=x-message-display")) {
     rv = GetMessageServiceFromURI(tString, getter_AddRefs(messageService));
   }
 
@@ -659,6 +665,14 @@ nsMsgPrintEngine::PrintMsgWindow()
       {
         mWebBrowserPrint->GetGlobalPrintSettings(getter_AddRefs(mPrintSettings));
       }
+      
+      // fix for bug #118887 and bug #176016
+      // don't show the actual url when printing mail messages or addressbook cards.
+      // for mail, it can review the salt.  for addrbook, it's a data:// url, which
+      // means nothing to the end user.
+      // needs to be " " and not "" or nsnull, otherwise, we'll still print the url
+      mPrintSettings->SetDocURL(NS_LITERAL_STRING(" ").get());
+
       nsresult rv = NS_ERROR_FAILURE;
       if (mIsDoingPrintPreview) 
       {

@@ -34,7 +34,7 @@
 /*
  * CMS signerInfo methods.
  *
- * $Id: cmssiginfo.c,v 1.1.1.1 2003-02-14 19:46:43 rbasch Exp $
+ * $Id: cmssiginfo.c,v 1.1.1.1.2.1 2003-07-14 19:07:25 ghudson Exp $
  */
 
 #include "cmslocal.h"
@@ -162,7 +162,7 @@ NSS_CMSSignerInfo_Sign(NSSCMSSignerInfo *signerinfo, SECItem *digest, SECItem *c
     CERTCertificate *cert;
     SECKEYPrivateKey *privkey = NULL;
     SECOidTag digestalgtag;
-    SECOidTag signalgtag;
+    SECOidTag pubkAlgTag;
     SECItem signature = { 0 };
     SECStatus rv;
     PLArenaPool *poolp, *tmppoolp;
@@ -199,25 +199,30 @@ NSS_CMSSignerInfo_Sign(NSSCMSSignerInfo *signerinfo, SECItem *digest, SECItem *c
      * XXX I think there should be a cert-level interface for this,
      * so that I do not have to know about subjectPublicKeyInfo...
      */
-    signalgtag = SECOID_GetAlgorithmTag(algID);
+    pubkAlgTag = SECOID_GetAlgorithmTag(algID);
     if (signerinfo->signerIdentifier.identifierType == NSSCMSSignerID_SubjectKeyID) {
       SECOID_DestroyAlgorithmID(&freeAlgID, PR_FALSE);
     }
 
-    /* Fortezza MISSI have weird signature formats.  Map them to standard DSA formats */
-    signalgtag = PK11_FortezzaMapSig(signalgtag);
+    /* Fortezza MISSI have weird signature formats.  
+     * Map them to standard DSA formats 
+     */
+    pubkAlgTag = PK11_FortezzaMapSig(pubkAlgTag);
 
     if (signerinfo->authAttr != NULL) {
+	SECOidTag signAlgTag;
 	SECItem encoded_attrs;
 
 	/* find and fill in the message digest attribute. */
-	rv = NSS_CMSAttributeArray_SetAttr(poolp, &(signerinfo->authAttr), SEC_OID_PKCS9_MESSAGE_DIGEST, digest, PR_FALSE);
+	rv = NSS_CMSAttributeArray_SetAttr(poolp, &(signerinfo->authAttr), 
+	                       SEC_OID_PKCS9_MESSAGE_DIGEST, digest, PR_FALSE);
 	if (rv != SECSuccess)
 	    goto loser;
 
 	if (contentType != NULL) {
 	    /* if the caller wants us to, find and fill in the content type attribute. */
-	    rv = NSS_CMSAttributeArray_SetAttr(poolp, &(signerinfo->authAttr), SEC_OID_PKCS9_CONTENT_TYPE, contentType, PR_FALSE);
+	    rv = NSS_CMSAttributeArray_SetAttr(poolp, &(signerinfo->authAttr), 
+	                    SEC_OID_PKCS9_CONTENT_TYPE, contentType, PR_FALSE);
 	    if (rv != SECSuccess)
 		goto loser;
 	}
@@ -244,12 +249,14 @@ NSS_CMSSignerInfo_Sign(NSSCMSSignerInfo *signerinfo, SECItem *digest, SECItem *c
 
 	encoded_attrs.data = NULL;
 	encoded_attrs.len = 0;
-	if (NSS_CMSAttributeArray_Encode(tmppoolp, &(signerinfo->authAttr), &encoded_attrs) == NULL)
+	if (NSS_CMSAttributeArray_Encode(tmppoolp, &(signerinfo->authAttr), 
+	                &encoded_attrs) == NULL)
 	    goto loser;
 
-	rv = SEC_SignData(&signature, encoded_attrs.data, encoded_attrs.len, privkey,
-			   NSS_CMSUtil_MakeSignatureAlgorithm(digestalgtag, signalgtag));
-	PORT_FreeArena(tmppoolp, PR_FALSE);	/* awkward memory management :-( */
+	signAlgTag = NSS_CMSUtil_MakeSignatureAlgorithm(digestalgtag, pubkAlgTag);
+	rv = SEC_SignData(&signature, encoded_attrs.data, encoded_attrs.len, 
+	                  privkey, signAlgTag);
+	PORT_FreeArena(tmppoolp, PR_FALSE); /* awkward memory management :-( */
     } else {
 	rv = SGN_Digest(privkey, digestalgtag, &signature, digest);
     }
@@ -259,12 +266,14 @@ NSS_CMSSignerInfo_Sign(NSSCMSSignerInfo *signerinfo, SECItem *digest, SECItem *c
     if (rv != SECSuccess)
 	goto loser;
 
-    if (SECITEM_CopyItem(poolp, &(signerinfo->encDigest), &signature) != SECSuccess)
+    if (SECITEM_CopyItem(poolp, &(signerinfo->encDigest), &signature) 
+          != SECSuccess)
 	goto loser;
 
     SECITEM_FreeItem(&signature, PR_FALSE);
 
-    if (SECOID_SetAlgorithmID(poolp, &(signerinfo->digestEncAlg), signalgtag, NULL) != SECSuccess)
+    if (SECOID_SetAlgorithmID(poolp, &(signerinfo->digestEncAlg), pubkAlgTag, 
+                              NULL) != SECSuccess)
 	goto loser;
 
     return SECSuccess;
@@ -566,6 +575,7 @@ CERTCertificate *
 NSS_CMSSignerInfo_GetSigningCertificate(NSSCMSSignerInfo *signerinfo, CERTCertDBHandle *certdb)
 {
     CERTCertificate *cert;
+    NSSCMSSignerIdentifier *sid;
 
     if (signerinfo->cert != NULL)
 	return signerinfo->cert;
@@ -580,16 +590,13 @@ NSS_CMSSignerInfo_GetSigningCertificate(NSSCMSSignerInfo *signerinfo, CERTCertDB
      * we leave this function -- we let the clean-up of the entire
      * cinfo structure later do the destroy of this cert.
      */
-    switch (signerinfo->signerIdentifier.identifierType) {
+    sid = &signerinfo->signerIdentifier;
+    switch (sid->identifierType) {
     case NSSCMSSignerID_IssuerSN:
-	cert = CERT_FindCertByIssuerAndSN(certdb, signerinfo->signerIdentifier.id.issuerAndSN);
+	cert = CERT_FindCertByIssuerAndSN(certdb, sid->id.issuerAndSN);
 	break;
     case NSSCMSSignerID_SubjectKeyID:
-#if 0 /* not yet implemented */
-	cert = CERT_FindCertBySubjectKeyID(certdb, signerinfo->signerIdentifier.id.subjectKeyID);
-#else
-	cert = NULL;
-#endif
+	cert = CERT_FindCertBySubjectKeyID(certdb, sid->id.subjectKeyID);
 	break;
     default:
 	cert = NULL;
@@ -879,6 +886,7 @@ NSS_SMIMESignerInfo_SaveSMIMEProfile(NSSCMSSignerInfo *signerinfo)
     CERTCertDBHandle *certdb;
     int save_error;
     SECStatus rv;
+    PRBool must_free_cert = PR_FALSE;
 
     certdb = CERT_GetDefaultCertDB();
 
@@ -900,6 +908,7 @@ NSS_SMIMESignerInfo_SaveSMIMEProfile(NSSCMSSignerInfo *signerinfo)
 	cert = NSS_SMIMEUtil_GetCertFromEncryptionKeyPreference(certdb, ekp);
 	if (cert == NULL)
 	    return SECFailure;
+	must_free_cert = PR_TRUE;
     }
 
     if (cert == NULL) {
@@ -915,6 +924,8 @@ NSS_SMIMESignerInfo_SaveSMIMEProfile(NSSCMSSignerInfo *signerinfo)
      * should have already been saved */
 #ifdef notdef
     if (CERT_VerifyCert(certdb, cert, PR_TRUE, certUsageEmailRecipient, PR_Now(), signerinfo->cmsg->pwfn_arg, NULL) != SECSuccess) {
+	if (must_free_cert)
+	    CERT_DestroyCertificate(cert);
 	return SECFailure;
     }
 #endif
@@ -939,6 +950,8 @@ NSS_SMIMESignerInfo_SaveSMIMEProfile(NSSCMSSignerInfo *signerinfo)
     }
 
     rv = CERT_SaveSMimeProfile (cert, profile, utc_stime);
+    if (must_free_cert)
+	CERT_DestroyCertificate(cert);
 
     /*
      * Restore the saved error in case the calls above set a new

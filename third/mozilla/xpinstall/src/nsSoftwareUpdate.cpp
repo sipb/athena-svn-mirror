@@ -56,13 +56,11 @@
 #include "nsLoggingProgressNotifier.h"
 
 #include "nsBuildID.h"
-#include "nsSpecialSystemDirectory.h"
 #include "nsProcess.h"
 
 /* For Javascript Namespace Access */
 #include "nsDOMCID.h"
 #include "nsIServiceManager.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptNameSpaceManager.h"
 #include "nsIScriptExternalNameSet.h"
 
@@ -110,8 +108,6 @@ nsSoftwareUpdate::nsSoftwareUpdate()
   mMasterListener(0),
   mReg(0)
 {
-    NS_INIT_ISUPPORTS();
-
     mLock = PR_NewLock();
 
     /***************************************/
@@ -300,6 +296,7 @@ NS_IMETHODIMP
 nsSoftwareUpdate::InstallJar(  nsIFile* aLocalFile,
                                const PRUnichar* aURL,
                                const PRUnichar* aArguments,
+                               nsIPrincipal* aPrincipal,
                                PRUint32 flags,
                                nsIXPIListener* aListener)
 {
@@ -317,7 +314,7 @@ nsSoftwareUpdate::InstallJar(  nsIFile* aLocalFile,
         chromeRegistry = tmpReg;
 
     // we want to call this with or without a chrome registry
-    nsInstallInfo *info = new nsInstallInfo( 0, aLocalFile, aURL, aArguments,
+    nsInstallInfo *info = new nsInstallInfo( 0, aLocalFile, aURL, aArguments, aPrincipal,
                                              flags, aListener, chromeRegistry );
 
     if (!info)
@@ -352,6 +349,7 @@ nsSoftwareUpdate::InstallChrome( PRUint32 aType,
                                              aFile,
                                              URL,
                                              aName,
+                                             nsnull,
                                              (PRUint32)aSelect,
                                              aListener,
                                              chromeRegistry);
@@ -468,7 +466,6 @@ nsSoftwareUpdate::StubInitialize(nsIFile *aDir, const char* logName)
 
 nsSoftwareUpdateNameSet::nsSoftwareUpdateNameSet()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsSoftwareUpdateNameSet::~nsSoftwareUpdateNameSet()

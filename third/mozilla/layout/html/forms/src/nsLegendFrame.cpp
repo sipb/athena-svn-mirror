@@ -48,7 +48,7 @@
 #include "nsIHTMLContent.h"
 #include "nsHTMLParts.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
+#include "nsLayoutAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsFont.h"
 #include "nsFormControlFrame.h"
@@ -78,6 +78,15 @@ nsLegendFrame::nsLegendFrame()
 
 nsLegendFrame::~nsLegendFrame()
 {
+}
+
+NS_IMETHODIMP
+nsLegendFrame::GetFrameType(nsIAtom** aType) const
+{
+  NS_PRECONDITION(nsnull != aType, "null OUT parameter pointer");
+  *aType = nsLayoutAtoms::legendFrame; 
+  NS_ADDREF(*aType);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -136,9 +145,7 @@ PRInt32 nsLegendFrame::GetAlign()
 {
   PRInt32 intValue = NS_STYLE_TEXT_ALIGN_LEFT;
 #ifdef IBMBIDI
-  const nsStyleVisibility* vis;
-  GetStyleData(eStyleStruct_Visibility, (const nsStyleStruct*&)vis);
-  if (NS_STYLE_DIRECTION_RTL == vis->mDirection) {
+  if (NS_STYLE_DIRECTION_RTL == GetStyleVisibility()->mDirection) {
     intValue = NS_STYLE_TEXT_ALIGN_RIGHT;
   }
 #endif // IBMBIDI

@@ -102,13 +102,16 @@ JS_BEGIN_EXTERN_C
  * TOK_CONTINUE name        pn_atom: label or null
  * TOK_WITH     binary      pn_left: head expr, pn_right: body
  * TOK_VAR      list        pn_head: list of pn_count TOK_NAME nodes
- *                          each name node has pn_atom: variable name and
- *                          pn_expr: initializer or null
+ *                                   each name node has
+ *                                     pn_atom: variable name
+ *                                     pn_expr: initializer or null
  * TOK_RETURN   unary       pn_kid: return expr or null
  * TOK_SEMI     unary       pn_kid: expr or null statement
  * TOK_COLON    name        pn_atom: label, pn_expr: labeled statement
  *
  * <Expressions>
+ * All left-associated binary trees of the same type are optimized into lists
+ * to avoid recursion when processing expression chains.
  * TOK_COMMA    list        pn_head: list of pn_count comma-separated exprs
  * TOK_ASSIGN   binary      pn_left: lvalue, pn_right: rvalue
  *                          pn_op: JSOP_ADD for +=, etc.
@@ -125,6 +128,14 @@ JS_BEGIN_EXTERN_C
  * TOK_SHOP     binary      pn_left: left-assoc SH expr, pn_right: ADD expr
  *                          pn_op: JSOP_LSH, JSOP_RSH, JSOP_URSH
  * TOK_PLUS,    binary      pn_left: left-assoc ADD expr, pn_right: MUL expr
+ *                          pn_extra: if a left-associated binary TOK_PLUS
+ *                            tree has been flattened into a list (see above
+ *                            under <Expressions>), pn_extra will contain
+ *                            PNX_STRCAT if at least one list element is a
+ *                            string literal (TOK_STRING); if such a list has
+ *                            any non-string, non-number term, pn_extra will
+ *                            contain PNX_CANTFOLD.
+ *                          pn_
  * TOK_MINUS                pn_op: JSOP_ADD, JSOP_SUB
  * TOK_STAR,    binary      pn_left: left-assoc MUL expr, pn_right: UNARY expr
  * TOK_DIVOP                pn_op: JSOP_MUL, JSOP_DIV, JSOP_MOD
@@ -190,7 +201,7 @@ struct JSParseNode {
 	    JSParseNode *head;          /* first node in list */
 	    JSParseNode **tail;         /* ptr to ptr to last node in list */
 	    uint32      count;          /* number of nodes in list */
-	    JSBool      extra;          /* extra comma flag for [1,2,,] */
+	    uint32      extra;          /* extra comma flag for [1,2,,] */
 	} list;
 	struct {                        /* ternary: if, for(;;), ?: */
 	    JSParseNode *kid1;          /* condition, discriminant, etc. */
@@ -238,6 +249,10 @@ struct JSParseNode {
 #define pn_slot         pn_u.name.slot
 #define pn_attrs        pn_u.name.attrs
 #define pn_dval         pn_u.dval
+
+/* PN_LIST pn_extra flags. */
+#define PNX_STRCAT      0x1             /* TOK_PLUS list has string term */
+#define PNX_CANTFOLD    0x2             /* TOK_PLUS list has unfoldable term */
 
 /*
  * Move pn2 into pn, preserving pn->pn_pos and pn->pn_offset and handing off

@@ -78,8 +78,6 @@ static NS_DEFINE_CID(kICServiceCID, NS_INTERNETCONFIGSERVICE_CID);
 
 nsInternetConfigService::nsInternetConfigService()
 {
-  NS_INIT_ISUPPORTS();
-
   long  version;
   OSErr err;
   mRunningOSX = ((err = ::Gestalt(gestaltSystemVersion, &version)) == noErr && version >= 0x00001000);
@@ -387,7 +385,7 @@ nsresult nsInternetConfigService::FillMIMEInfoForICEntry(ICMapEntry& entry, nsIM
     info->SetDescription(NS_ConvertASCIItoUCS2(temp.get()).get());
     
     temp.Assign((char *) &entry.postAppName[1], entry.postAppName[0]);
-    info->SetApplicationDescription(NS_ConvertASCIItoUCS2(temp.get()).get());
+    info->SetDefaultDescription(NS_ConvertASCIItoUCS2(temp.get()).get());
     
     if (entry.flags & kICMapPostMask)
     {
@@ -399,10 +397,9 @@ nsresult nsInternetConfigService::FillMIMEInfoForICEntry(ICMapEntry& entry, nsIM
         rv = file->InitToAppWithCreatorCode(entry.postCreator);
         if (rv == NS_OK)
         {
-          //info->SetAlwaysAskBeforeHandling(PR_FALSE);
           nsCOMPtr<nsIFile> nsfile = do_QueryInterface(file, &rv);
           if (rv == NS_OK)
-            info->SetPreferredApplicationHandler(nsfile);
+            info->SetDefaultApplicationHandler(nsfile);
         }
       }
     }
@@ -604,7 +601,7 @@ nsresult nsInternetConfigService::GetICKeyPascalString(PRUint32 inIndex, const u
     case eICString_FTPProxyUser:       outICKey = kICFTPProxyUser;       break;
     case eICString_FTPProxyAccount:    outICKey = kICFTPProxyAccount;    break;
     case eICString_FTPProxyHost:       outICKey = kICFTPProxyHost;       break;
-    case eICString_FTPProxyPassword:   outICKey = kICWWWHomePage;        break;
+    case eICString_FTPProxyPassword:   outICKey = kICFTPProxyPassword;   break;
     case eICString_HTTPProxyHost:      outICKey = kICHTTPProxyHost;      break;
     case eICString_LDAPSearchbase:     outICKey = kICLDAPSearchbase;     break;
     case eICString_LDAPServer:         outICKey = kICLDAPServer;         break;

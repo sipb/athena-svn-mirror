@@ -26,14 +26,16 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+MODULE		= necko
+
 DIRS		= \
 		base \
 		cookie \
-		cache \
 		dns \
 		socket \
 		mime \
 		streamconv \
+		cache \
 		protocol \
 		build \
 		build2 \
@@ -44,5 +46,6 @@ ifdef ENABLE_TESTS
 DIRS		+= test
 endif
 
-include $(topsrcdir)/config/rules.mk
+EXPORTS     = necko-config.h
 
+include $(topsrcdir)/config/rules.mk

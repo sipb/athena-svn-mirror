@@ -48,6 +48,7 @@ LPSTR           szEStringLoad;
 LPSTR           szEDllLoad;
 LPSTR           szEStringNull;
 LPSTR           szTempSetupPath;
+LPSTR           szEOutOfMemory;
 
 LPSTR           szSetupDir;
 LPSTR           szTempDir;
@@ -59,8 +60,6 @@ LPSTR           szSiteSelectorDescription;
 
 DWORD           dwWizardState;
 DWORD           dwSetupType;
-DWORD           dwScreenX;
-DWORD           dwScreenY;
 
 DWORD           dwTempSetupType;
 DWORD           gdwUpgradeValue;
@@ -78,6 +77,9 @@ BOOL            gbIgnoreProgramFolderX;
 BOOL            gbRestrictedAccess;
 BOOL            gbDownloadTriggered;
 BOOL            gbAllowMultipleInstalls = FALSE;
+BOOL            gbForceInstall = FALSE;
+BOOL            gbForceInstallGre = FALSE;
+BOOL            gShowBannerImage = TRUE;
 
 setupGen        sgProduct;
 diS             diSetup;
@@ -102,6 +104,7 @@ installGui      sgInstallGui;
 sems            gErrorMessageStream;
 sysinfo         gSystemInfo;
 dsN             *gdsnComponentDSRequirement = NULL;
+
 
 /* do not add setup.exe to the list because we figure out the filename
  * by calling GetModuleFileName() */
@@ -128,9 +131,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
   if(!hPrevInstance)
   {
-    ParseCommandLine(lpszCmdLine);
-    
-    if((hwndFW = FindWindow(CLASS_NAME_SETUP_DLG, NULL)) != NULL && !gbAllowMultipleInstalls)
+    if(InitSetupGeneral())
+      PostQuitMessage(1);
+    else if(ParseForStartupOptions(lpszCmdLine))
+      PostQuitMessage(1);
+    else if(((hwndFW = FindWindow(CLASS_NAME_SETUP_DLG, NULL)) != NULL ||
+            ((hwndFW = FindWindow(CLASS_NAME_SETUP, NULL)) != NULL)) &&
+              !gbAllowMultipleInstalls)
     {
     /* Allow only one instance of setup to run.
      * Detect a previous instance of setup, bring it to the 
@@ -199,6 +206,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
   if(iRv != WIZ_SETUP_ALREADY_RUNNING)
     /* Do clean up before exiting from the application */
     DeInitialize();
+
+  /* garbage collection */
+  DeInitSetupGeneral();
 
   return(msg.wParam);
 } /*  End of WinMain */

@@ -84,7 +84,7 @@ enum nsDOMClassInfoID {
   // HTML classes
   eDOMClassInfo_HTMLDocument_id,
   eDOMClassInfo_HTMLCollection_id,
-  eDOMClassInfo_HTMLOptionCollection_id,
+  eDOMClassInfo_HTMLOptionsCollection_id,
   eDOMClassInfo_HTMLFormControlCollection_id,
   eDOMClassInfo_HTMLGenericCollection_id,
 
@@ -170,16 +170,20 @@ enum nsDOMClassInfoID {
   eDOMClassInfo_Selection_id,
 
   // XUL classes
+#ifdef MOZ_XUL
   eDOMClassInfo_XULDocument_id,
   eDOMClassInfo_XULElement_id,
   eDOMClassInfo_XULCommandDispatcher_id,
   eDOMClassInfo_XULNodeList_id,
   eDOMClassInfo_XULNamedNodeMap_id,
   eDOMClassInfo_XULAttr_id,
+#endif
   eDOMClassInfo_XULControllers_id,
+#ifdef MOZ_XUL
   eDOMClassInfo_BoxObject_id,
   eDOMClassInfo_TreeSelection_id,
   eDOMClassInfo_TreeContentView_id,
+#endif
 
   // Crypto classes
   eDOMClassInfo_Crypto_id,
@@ -264,6 +268,8 @@ enum nsDOMClassInfoID {
   // Processing-instruction with target "xml-stylesheet"
   eDOMClassInfo_XMLStylesheetProcessingInstruction_id,
   
+  eDOMClassInfo_ImageDocument_id,
+
   // This one better be the last one in this list
   eDOMClassInfoIDCount
 };
@@ -278,6 +284,7 @@ enum nsDOMClassInfoID {
    nsIXPCScriptable::ALLOW_PROP_MODS_TO_PROTOTYPE |                        \
    nsIXPCScriptable::DONT_ASK_INSTANCE_FOR_SCRIPTABLE |                    \
    nsIXPCScriptable::DONT_REFLECT_INTERFACE_NAMES |                        \
+   nsIXPCScriptable::WANT_NEWRESOLVE |                                     \
    nsIXPCScriptable::WANT_CHECKACCESS |                                    \
    nsIXPCScriptable::WANT_POSTCREATE)
 
@@ -402,7 +409,6 @@ NS_DOMCI_EXTENSION_CONSTRUCTOR_IMP(NS_DOMCI_EXTENSION_NAME(_module))      \
                                                                           \
 NS_DOMCI_EXTENSION_NAME(_module)::NS_DOMCI_EXTENSION_NAME(_module)()      \
 {                                                                         \
-  NS_INIT_ISUPPORTS();                                                    \
 };                                                                        \
                                                                           \
 NS_DOMCI_EXTENSION_NAME(_module)::~NS_DOMCI_EXTENSION_NAME(_module)()     \

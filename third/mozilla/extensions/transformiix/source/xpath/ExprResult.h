@@ -30,7 +30,7 @@
 
 #include "primitives.h"
 #include "TxObject.h"
-#include "TxString.h"
+#include "nsString.h"
 
 /*
  * ExprResult
@@ -47,11 +47,11 @@ public:
 
     //-- ResultTypes
     enum ResultType {
-        TREE_FRAGMENT = 0,
+        NODESET,
+        BOOLEAN,
         NUMBER,
         STRING,
-        BOOLEAN,
-        NODESET
+        RESULT_TREE_FRAGMENT
     };
 
     virtual ~ExprResult() {};
@@ -72,7 +72,13 @@ public:
      * Creates a String representation of this ExprResult
      * @param str the destination string to append the String representation to.
     **/
-    virtual void stringValue(String& str) = 0;
+    virtual void stringValue(nsAString& str) = 0;
+
+    /**
+     * Returns a pointer to the stringvalue if possible. Otherwise null is
+     * returned.
+     */
+    virtual nsAString* stringValuePointer() = 0;
 
     /**
      * Converts this ExprResult to a Boolean (MBool) value
@@ -88,6 +94,15 @@ public:
 
 };
 
+#define TX_DECL_EXPRRESULT                                        \
+    virtual ExprResult* clone();                                  \
+    virtual short getResultType();                                \
+    virtual void stringValue(nsAString& str);                     \
+    virtual nsAString* stringValuePointer();                      \
+    virtual PRBool booleanValue();                                \
+    virtual double numberValue();                                 \
+
+
 class BooleanResult : public ExprResult {
 
 public:
@@ -95,11 +110,7 @@ public:
     BooleanResult();
     BooleanResult(MBool boolean);
 
-    virtual ExprResult* clone();
-    virtual short  getResultType();
-    virtual void   stringValue(String& str);
-    virtual MBool  booleanValue();
-    virtual double numberValue();
+    TX_DECL_EXPRRESULT
 
 private:
     MBool value;
@@ -112,11 +123,7 @@ public:
     NumberResult();
     NumberResult(double dbl);
 
-    virtual ExprResult* clone();
-    virtual short  getResultType();
-    virtual void   stringValue(String& str);
-    virtual MBool  booleanValue();
-    virtual double numberValue();
+    TX_DECL_EXPRRESULT
 
 private:
     double value;
@@ -125,22 +132,13 @@ private:
 
 
 class StringResult : public ExprResult {
-
 public:
-
     StringResult();
-    StringResult(const String& str);
-    StringResult(const char* str);
+    StringResult(const nsAString& str);
 
-    virtual ExprResult* clone();
-    virtual short  getResultType();
-    virtual void   stringValue(String& str);
-    virtual MBool  booleanValue();
-    virtual double numberValue();
+    TX_DECL_EXPRRESULT
 
-
-private:
-    String value;
+    nsString mValue;
 };
 
 #endif

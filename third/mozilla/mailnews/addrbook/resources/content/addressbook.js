@@ -56,6 +56,8 @@ var gCardViewBoxEmail1;
 const kDisplayName = 0;
 const kLastNameFirst = 1;
 const kFirstNameFirst = 2;
+const kLDAPDirectory = 0; // defined in nsDirPrefs.h
+const kPABDirectory  = 2; // defined in nsDirPrefs.h
 
 var gAddressBookAbListener = {
   onItemAdded: function(parentDir, item) {
@@ -152,7 +154,7 @@ function OnLoadAddressBook()
   SetupAbCommandUpdateHandlers();
 
   //workaround - add setTimeout to make sure dynamic overlays get loaded first
-  setTimeout('SelectFirstAddressBook()',0);
+  setTimeout('OnLoadDirTree()', 0);
 
   // if the pref is locked disable the menuitem New->LDAP directory
   if (gPrefs.prefIsLocked("ldap_2.disable_button_add"))
@@ -163,6 +165,13 @@ function OnLoadAddressBook()
   var addrbookSession = Components.classes["@mozilla.org/addressbook/services/session;1"].getService().QueryInterface(Components.interfaces.nsIAddrBookSession);
   // this listener only cares when a directory is removed
   addrbookSession.addAddressBookListener(gAddressBookAbListener, Components.interfaces.nsIAbListener.directoryRemoved);
+}
+
+function OnLoadDirTree() {
+  var treeBuilder = dirTree.builder.QueryInterface(Components.interfaces.nsIXULTreeBuilder);
+  treeBuilder.addObserver(abDirTreeObserver);
+
+  SelectFirstAddressBook();
 }
 
 function GetCurrentPrefs()
@@ -192,6 +201,16 @@ function GetCurrentPrefs()
 	var menuitem = top.document.getElementById(menuitemID);
 	if ( menuitem )
 		menuitem.setAttribute('checked', 'true');
+
+  // initialize phonetic 
+  var showPhoneticFields =
+        gPrefs.getComplexValue("mail.addr_book.show_phonetic_fields", 
+                               Components.interfaces.nsIPrefLocalizedString).data;
+  // show phonetic fields if indicated by the pref
+  if (showPhoneticFields == "true")
+    document.getElementById("cmd_SortBy_PhoneticName")
+            .setAttribute("hidden", "false");
+
 }
 
 
@@ -260,16 +279,80 @@ function AbNewLDAPDirectory()
 
 function AbNewAddressBook()
 {
+  var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].
+      getService(Components.interfaces.nsIStringBundleService);
+  var bundle = strBundleService.createBundle("chrome://messenger/locale/addressbook/addressBook.properties");
+  var dialogTitle = bundle.GetStringFromName('newAddressBookTitle');
+
   var dialog = window.openDialog(
     "chrome://messenger/content/addressbook/abAddressBookNameDialog.xul", 
-     "", "chrome,titlebar", {okCallback:AbCreateNewAddressBook});
+     "", "chrome,modal=yes,resizable=no,centerscreen", {title: dialogTitle, okCallback:AbOnCreateNewAddressBook});
 }
 
-function AbCreateNewAddressBook(name)
+function AbRenameAddressBook()
+{
+  var selectedABURI = GetSelectedDirectory();
+ 
+  // the rdf service
+  var RDF = Components.classes["@mozilla.org/rdf/rdf-service;1"].getService(Components.interfaces.nsIRDFService);
+
+  // the RDF resource URI for LDAPDirectory will be like: "moz-abmdbdirectory://abook-3.mab"
+  var selectedABDirectory = RDF.GetResource(selectedABURI).QueryInterface(Components.interfaces.nsIAbDirectory);
+
+  var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].
+      getService(Components.interfaces.nsIStringBundleService);
+  var bundle = strBundleService.createBundle("chrome://messenger/locale/addressbook/addressBook.properties");
+  var dialogTitle = bundle.GetStringFromName('renameAddressBookTitle');
+
+  // you can't rename the PAB or the CAB
+  var canRename = (selectedABURI != kCollectedAddressbookURI && selectedABURI != kPersonalAddressbookURI);
+
+  var dialog = window.openDialog(
+    "chrome://messenger/content/addressbook/abAddressBookNameDialog.xul", 
+     "", "chrome,modal=yes,resizable=no,centerscreen", {title: dialogTitle, canRename: canRename, name: selectedABDirectory.directoryProperties.description,
+      okCallback:AbOnRenameAddressBook});
+}
+
+function AbOnCreateNewAddressBook(aName)
 {
   var properties = Components.classes["@mozilla.org/addressbook/properties;1"].createInstance(Components.interfaces.nsIAbDirectoryProperties);
-  properties.description = name;
+  properties.description = aName;
+  properties.dirType = kPABDirectory;
   top.addressbook.newAddressBook(properties);
+}
+
+function AbOnRenameAddressBook(aName)
+{
+  // When the UI code for renaming addrbooks (bug #17230) is ready, just 
+  // change 'properties.description' setting below and it should just work.
+  // get select ab
+  var selectedABURI = GetSelectedDirectory();
+  //dump("In AbRenameAddressBook() selectedABURI=" + selectedABURI + "\n");
+
+  // the rdf service
+  var RDF = Components.classes["@mozilla.org/rdf/rdf-service;1"].getService(Components.interfaces.nsIRDFService);
+  // get the datasource for the addressdirectory
+  var addressbookDS = RDF.GetDataSource("rdf:addressdirectory");
+
+  // moz-abdirectory:// is the RDF root to get all types of addressbooks.
+  var parentDir = RDF.GetResource("moz-abdirectory://").QueryInterface(Components.interfaces.nsIAbDirectory);
+
+  // the RDF resource URI for LDAPDirectory will be like: "moz-abmdbdirectory://abook-3.mab"
+  var selectedABDirectory = RDF.GetResource(selectedABURI).QueryInterface(Components.interfaces.nsIAbDirectory);
+
+  // Copy existing dir type category id and mod time so they won't get reset.
+  var oldProperties = selectedABDirectory.directoryProperties;
+
+  // Create and fill in properties info
+  var properties = Components.classes["@mozilla.org/addressbook/properties;1"].createInstance(Components.interfaces.nsIAbDirectoryProperties);
+  properties.URI = selectedABURI;
+  properties.dirType = oldProperties.dirType;
+  properties.categoryId = oldProperties.categoryId;
+  properties.syncTimeStamp = oldProperties.syncTimeStamp;
+  properties.description = aName;
+
+  // Now do the modification.
+  addressbook.modifyAddressBook(addressbookDS, parentDir, selectedABDirectory, properties);
 }
 
 function GetPrintSettings()
@@ -311,7 +394,7 @@ function AbPrintCardInternal(doPrintPreview, msgType)
     return;
 
   var addressbook = Components.classes["@mozilla.org/addressbook;1"].createInstance(Components.interfaces.nsIAddressBook);
-  var uri = GetAbViewURI();
+  var uri = GetSelectedDirectory();
   if (!uri)
     return;
 
@@ -365,7 +448,7 @@ function CreatePrintCardUrl(card)
 function AbPrintAddressBookInternal(doPrintPreview, msgType)
 {
   var addressbook = Components.classes["@mozilla.org/addressbook;1"].createInstance(Components.interfaces.nsIAddressBook);
-  var uri = GetAbViewURI();
+  var uri = GetSelectedDirectory();
   if (!uri)
     return;
 
@@ -457,7 +540,7 @@ function AbDeleteDirectory()
       if (parentRow == -1)
         parentId = "moz-abdirectory://";
       else	
-        parentId = dirTree.contentView.getItemAtIndex(parentRow).id;
+        parentId = dirTree.builderView.getResourceAtIndex(parentRow).Value;
 
       var parentDir = GetDirectoryFromURI(parentId);
       parentArray.AppendElement(parentDir);
@@ -525,17 +608,17 @@ function onAdvancedAbSearch()
 
 function onEnterInSearchBar()
 {
-  ClearCardViewPane();
+  ClearCardViewPane();  
 
   if (!gQueryURIFormat)
-    gQueryURIFormat = gPrefs.getCharPref("mail.addr_book.quicksearchquery.format");
+    gQueryURIFormat = gPrefs.getComplexValue("mail.addr_book.quicksearchquery.format", 
+                                              Components.interfaces.nsIPrefLocalizedString).data;
 
   var searchURI = GetSelectedDirectory();
   if (!searchURI) return;
 
-  var dataNode = document.getElementById(searchURI);
-  var sortColumn = dataNode.getAttribute("sortColumn");
-  var sortDirection = dataNode.getAttribute("sortDirection");
+  var sortColumn = gAbView.sortColumn;
+  var sortDirection = gAbView.sortDirection;
 
   /*
    XXX todo, handle the case where the LDAP url
@@ -687,7 +770,7 @@ function IsCardViewAndAbResultsPaneSplitterCollapsed()
 function LaunchUrl(url)
 {
   var messenger = Components.classes["@mozilla.org/messenger;1"].createInstance(Components.interfaces.nsIMessenger);
-  messenger.SetWindow(window,null);
+  messenger.SetWindow(window, null);
   messenger.OpenURL(url);
 }
 

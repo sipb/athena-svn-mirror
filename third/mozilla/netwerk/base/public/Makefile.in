@@ -27,29 +27,32 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= necko
+GRE_MODULE	= 1
 
 SDK_XPIDLSRCS   = \
 		nsIChannel.idl \
-		nsIIOService.idl \
 		nsILoadGroup.idl \
 		nsIProtocolHandler.idl \
 		nsIRequest.idl \
 		nsIRequestObserver.idl \
 		nsIStreamListener.idl \
+		nsIIOService.idl \
 		nsIURI.idl \
 		nsIURL.idl \
 		nsIFileURL.idl \
+		nsIUploadChannel.idl \
 		$(NULL)
 
 XPIDLSRCS	= \
-		nsIAuthenticator.idl \
 		nsIAuthPrompt.idl \
+		nsIAsyncStreamCopier.idl \
+		nsIBufferedStreams.idl \
 		nsIDirectoryListing.idl \
 		nsIDownloader.idl \
 		nsIEncodedChannel.idl \
-		nsIFileChannel.idl \
 		nsIFileStreams.idl \
-		nsIFileTransportService.idl \
+		nsIInputStreamPump.idl \
+		nsIInputStreamChannel.idl \
 		nsIMIMEInputStream.idl \
 		nsINetModRegEntry.idl \
 		nsINetModuleMgr.idl \
@@ -62,39 +65,35 @@ XPIDLSRCS	= \
 		nsIProxiedProtocolHandler.idl \
 		nsIProxy.idl \
 		nsIProxyAutoConfig.idl \
-		nsIProxyAutoConfigUtils.idl \
 		nsIProxyInfo.idl \
 		nsITransport.idl \
 		nsISocketTransport.idl \
 		nsISocketTransportService.idl \
-		nsIStreamIO.idl \
-		nsIStreamIOChannel.idl \
 		nsIResumableChannel.idl \
 		nsIResumableEntityID.idl \
 		nsIRequestObserverProxy.idl \
 		nsIStreamListenerProxy.idl \
 		nsIStreamListenerTee.idl \
-		nsIStreamProvider.idl \
-		nsIStreamProviderProxy.idl \
 		nsISimpleStreamListener.idl \
-		nsISimpleStreamProvider.idl \
+		nsIStreamTransportService.idl \
 		nsIStreamLoader.idl \
 		nsIUnicharStreamLoader.idl \
-		nsIUploadChannel.idl \
 		nsIStandardURL.idl \
 		nsIURLParser.idl \
 		nsIURIChecker.idl \
-		nsIWebFilters.idl \
 		nsISecurityEventSink.idl \
 		nsISecretDecoderRing.idl \
 		nsISecureBrowserUI.idl \
+		nsICryptoFIPSInfo.idl \
 		nsICachingChannel.idl \
 		nsIByteRangeRequest.idl \
 		nsIMultiPartChannel.idl \
+		nsIExternalProtocolHandler.idl \
 		$(NULL)
 
 EXPORTS		= \
 		netCore.h \
+		nsNetError.h \
 		nsNetUtil.h \
 		nsUnixColorPrintf.h \
 		nsReadLine.h \

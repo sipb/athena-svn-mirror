@@ -47,7 +47,6 @@
 #include "nsHTMLTokenizer.h"
 #include "nsScanner.h"
 #include "nsElementTable.h"
-#include "nsHTMLEntities.h"
 #include "CParserContext.h"
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
@@ -135,8 +134,6 @@ NS_IMPL_RELEASE(nsHTMLTokenizer)
                                   eParserCommands aCommand) :
   nsITokenizer(), mTokenDeque(0)
 {
-  NS_INIT_ISUPPORTS();
-  
   if (aParseMode==eDTDMode_full_standards ||
       aParseMode==eDTDMode_almost_standards) {
     mFlags = NS_IPARSER_FLAG_STRICT_MODE;
@@ -1062,4 +1059,3 @@ void nsHTMLTokenizer::RecordTrailingContent(CStartToken* aStartToken, nsScanner&
     copy_string( aOrigin, theCurrentPosition, beginWriting );
   }
 }
-

@@ -40,11 +40,10 @@
 #ifndef _nsBaseWidgetAccessible_H_
 #define _nsBaseWidgetAccessible_H_
 
-#include "nsAccessible.h"
-#include "nsCOMPtr.h"
+#include "nsAccessibleWrap.h"
 #include "nsIContent.h"
-#include "nsIDOMNode.h"
-#include "nsIDOMXULListener.h"
+
+class nsIDOMNode;
 
 /**
   * This file contains a number of classes that are used as base
@@ -55,10 +54,11 @@
 /**
   * Special Accessible that knows how to handle hit detection for flowing text
   */
-class nsBlockAccessible : public nsAccessible
+class nsBlockAccessible : public nsAccessibleWrap
 {
 public:
   nsBlockAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
+  NS_DECL_ISUPPORTS_INHERITED
   NS_IMETHOD AccGetAt(PRInt32 x, PRInt32 y, nsIAccessible **_retval);
 };
 
@@ -66,10 +66,11 @@ public:
   * Special Accessible that just contains other accessible objects
   *   no actions, no name, no state, no value
   */
-class nsContainerAccessible : public nsAccessible
+class nsContainerAccessible : public nsAccessibleWrap
 {
 public:
   nsContainerAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
+  NS_DECL_ISUPPORTS_INHERITED
   NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
   NS_IMETHOD GetAccActionName(PRUint8 index, nsAString& _retval);
   NS_IMETHOD AccDoAction(PRUint8 index);
@@ -81,10 +82,11 @@ public:
 /** 
   * Leaf version of DOM Accessible -- has no children
   */
-class nsLeafAccessible : public nsAccessible
+class nsLeafAccessible : public nsAccessibleWrap
 {
 public:
   nsLeafAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
+  NS_DECL_ISUPPORTS_INHERITED
   NS_IMETHOD GetAccFirstChild(nsIAccessible **_retval);
   NS_IMETHOD GetAccLastChild(nsIAccessible **_retval);
   NS_IMETHOD GetAccChildCount(PRInt32 *_retval);
@@ -95,10 +97,11 @@ public:
   *  It knows how to report the state of the link ( traveled or not )
   *  and can activate ( click ) the link programmatically.
   */
-class nsLinkableAccessible : public nsAccessible
+class nsLinkableAccessible : public nsAccessibleWrap
 {
 public:
   nsLinkableAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
+  NS_DECL_ISUPPORTS_INHERITED
   NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
   NS_IMETHOD GetAccActionName(PRUint8 index, nsAString& _retval);
   NS_IMETHOD AccDoAction(PRUint8 index);
@@ -106,44 +109,13 @@ public:
   NS_IMETHOD GetAccValue(nsAString& _retval);
   NS_IMETHOD AccTakeFocus();
   NS_IMETHOD GetAccKeyboardShortcut(nsAString& _retval);
+  NS_IMETHOD Shutdown();
 
 protected:
   PRBool IsALink();
-  PRBool mIsALinkCached;  // -1 = unknown, 0 = not a link, 1 = is a link
   nsCOMPtr<nsIContent> mLinkContent;
-  PRBool mIsLinkVisited;
-};
-
-/*
- * A base class that can listen to menu events. Its used by selects so the 
- * button and the window accessibles can change their name and role
- * depending on whether the drop down list is dropped down on not
- */
-class nsMenuListenerAccessible  : public nsAccessible, public nsIDOMXULListener
-{
-public:
-  
-  NS_DECL_ISUPPORTS_INHERITED
-
-  nsMenuListenerAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
-  virtual ~nsMenuListenerAccessible();
-
-  // popup listener
-  NS_IMETHOD PopupShowing(nsIDOMEvent* aEvent);
-  NS_IMETHOD PopupShown(nsIDOMEvent* aEvent) { return NS_OK; }
-  NS_IMETHOD PopupHiding(nsIDOMEvent* aEvent);
-  NS_IMETHOD PopupHidden(nsIDOMEvent* aEvent) { return NS_OK; }
-  
-  NS_IMETHOD Close(nsIDOMEvent* aEvent);
-  NS_IMETHOD Command(nsIDOMEvent* aEvent) { return NS_OK; }
-  NS_IMETHOD Broadcast(nsIDOMEvent* aEvent) { return NS_OK; }
-  NS_IMETHOD CommandUpdate(nsIDOMEvent* aEvent) { return NS_OK; }
-  NS_IMETHOD HandleEvent(nsIDOMEvent* aEvent) { return NS_OK; }
-
-  virtual void SetupMenuListener();
-
-  PRBool mRegistered;
-  PRBool mOpen;
+  PRPackedBool mIsALinkCached;  // -1 = unknown, 0 = not a link, 1 = is a link
+  PRPackedBool mIsLinkVisited;
 };
 
 #endif  

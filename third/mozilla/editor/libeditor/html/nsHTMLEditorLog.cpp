@@ -47,8 +47,10 @@
 #include "nsISelection.h"
 #include "nsIDOMRange.h"
 #include "nsHTMLEditorLog.h"
+#include "nsNetUtil.h"
 #include "nsCOMPtr.h"
 #include "nsCRT.h"
+#include "prprf.h"
 
 #include "nsEditorTxnLog.h"
 
@@ -59,8 +61,6 @@ nsHTMLEditorLog::nsHTMLEditorLog()
 {
   mLocked   = -1;
   mEditorTxnLog = 0;
-  
-  NS_INIT_ISUPPORTS();
 }
 
 nsHTMLEditorLog::~nsHTMLEditorLog()
@@ -154,7 +154,7 @@ nsHTMLEditorLog::DeleteSelection(nsIEditor::EDirection aAction)
   {
     PrintSelection();
     Write("GetCurrentEditor().deleteSelection(");
-    WriteInt("%d", aAction);
+    WriteInt(aAction);
     Write(");\n");
 
     Flush();
@@ -206,7 +206,7 @@ nsHTMLEditorLog::Undo(PRUint32 aCount)
   if (!mLocked && mFileStream)
   {
     Write("GetCurrentEditor().undo(");
-    WriteInt("%d", aCount);
+    WriteInt(aCount);
     Write(");\n");
     Flush();
   }
@@ -222,7 +222,7 @@ nsHTMLEditorLog::Redo(PRUint32 aCount)
   if (!mLocked && mFileStream)
   {
     Write("GetCurrentEditor().redo(");
-    WriteInt("%d", aCount);
+    WriteInt(aCount);
     Write(");\n");
     Flush();
   }
@@ -339,7 +339,7 @@ nsHTMLEditorLog::Paste(PRInt32 aClipboardType)
   {
     PrintSelection();
     Write("GetCurrentEditor().paste(");
-    WriteInt("%d", aClipboardType);
+    WriteInt(aClipboardType);
     Write(");\n");
     Flush();
   }
@@ -356,7 +356,7 @@ nsHTMLEditorLog::PasteAsQuotation(PRInt32 aClipboardType)
   {
     PrintSelection();
     Write("GetCurrentEditor().pasteAsQuotation(");
-    WriteInt("%d", aClipboardType);
+    WriteInt(aClipboardType);
     Write(");\n");
     Flush();
   }
@@ -373,7 +373,7 @@ nsHTMLEditorLog::PasteAsPlaintextQuotation(PRInt32 aClipboardType)
   {
     PrintSelection();
     Write("GetCurrentEditor().pasteAsQuotation(");
-    WriteInt("%d", aClipboardType);
+    WriteInt(aClipboardType);
     Write(");\n");
     Flush();
   }
@@ -393,7 +393,7 @@ nsHTMLEditorLog::PasteAsCitedQuotation(const nsAString& aCitation,
     Write("GetCurrentEditor().pasteAsCitedQuotation(\"");
     PrintUnicode(aCitation);
     Write("\", ");
-    WriteInt("%d", aClipboardType);
+    WriteInt(aClipboardType);
     Write(");\n");
     Flush();
   }
@@ -510,7 +510,7 @@ nsHTMLEditorLog:: InsertTableCell(PRInt32 aNumber, PRBool aAfter)
   if (!mLocked && mFileStream)
   {
     Write("GetCurrentEditor().insertTableCell(");
-    WriteInt("%d", aNumber);
+    WriteInt(aNumber);
     Write(", ");
     Write(aAfter ? "true" : "false");
     Write(");\n");
@@ -529,7 +529,7 @@ nsHTMLEditorLog:: InsertTableColumn(PRInt32 aNumber, PRBool aAfter)
   if (!mLocked && mFileStream)
   {
     Write("GetCurrentEditor().insertTableColumn(");
-    WriteInt("%d", aNumber);
+    WriteInt(aNumber);
     Write(", ");
     Write(aAfter ? "true" : "false");
     Write(");\n");
@@ -548,7 +548,7 @@ nsHTMLEditorLog:: InsertTableRow(PRInt32 aNumber, PRBool aAfter)
   if (!mLocked && mFileStream)
   {
     Write("GetCurrentEditor().insertTableRow(");
-    WriteInt("%d", aNumber);
+    WriteInt(aNumber);
     Write(", ");
     Write(aAfter ? "true" : "false");
     Write(");\n");
@@ -580,7 +580,7 @@ nsHTMLEditorLog:: DeleteTableCell(PRInt32 aNumber)
   if (!mLocked && mFileStream)
   {
     Write("GetCurrentEditor().deleteTableCell(");
-    WriteInt("%d", aNumber);
+    WriteInt(aNumber);
     Write(");\n");
     Flush();
   }
@@ -611,7 +611,7 @@ nsHTMLEditorLog:: DeleteTableColumn(PRInt32 aNumber)
   if (!mLocked && mFileStream)
   {
     Write("GetCurrentEditor().deleteTableColumn(");
-    WriteInt("%d", aNumber);
+    WriteInt(aNumber);
     Write(");\n");
     Flush();
   }
@@ -628,7 +628,7 @@ nsHTMLEditorLog:: DeleteTableRow(PRInt32 aNumber)
   if (!mLocked && mFileStream)
   {
     Write("GetCurrentEditor().deleteTableRow(");
-    WriteInt("%d", aNumber);
+    WriteInt(aNumber);
     Write(");\n");
     Flush();
   }
@@ -848,15 +848,8 @@ nsHTMLEditorLog::StartLogging(nsIFile *aLogFile)
       return result;
   }
 
-  mFileStream = do_CreateInstance(NS_LOCALFILEOUTPUTSTREAM_CONTRACTID, &result);
+  result = NS_NewLocalFileOutputStream(getter_AddRefs(mFileStream), aLogFile);
   if (NS_FAILED(result)) return result;
-
-  result = mFileStream->Init(aLogFile, -1, -1, 0);
-  if (NS_FAILED(result))
-  {
-    mFileStream = nsnull;
-    return result;
-  }
 
   if (mTxnMgr)
   {
@@ -931,14 +924,11 @@ nsHTMLEditorLog::Write(const char *aBuffer)
 }
 
 nsresult
-nsHTMLEditorLog::WriteInt(const char *aFormat, PRInt32 aInt)
+nsHTMLEditorLog::WriteInt(PRInt32 aInt)
 {
-  if (!aFormat)
-    return NS_ERROR_NULL_POINTER;
-
   char buf[256];
 
-  sprintf(buf, aFormat, aInt);
+  PR_snprintf(buf, sizeof(buf), "%d", aInt);
 
   return Write(buf);
 }
@@ -967,9 +957,9 @@ nsHTMLEditorLog::PrintUnicode(const nsAString &aString)
   while(beginIter != endIter)
   {
     if (nsCRT::IsAsciiAlpha(*beginIter) || nsCRT::IsAsciiDigit(*beginIter) || *beginIter == ' ')
-      sprintf(buf, "%c", *beginIter);
+      PR_snprintf(buf, sizeof(buf), "%c", *beginIter);
     else
-      sprintf(buf, "\\u%.4x", *beginIter);
+      PR_snprintf(buf, sizeof(buf), "\\u%.4x", *beginIter);
 
     nsresult result = Write(buf);
 
@@ -1056,11 +1046,11 @@ nsHTMLEditorLog::PrintSelection()
     {
       if (j != 0)
         Write(", ");
-      WriteInt("%d", offsetArray[j]);
+      WriteInt(offsetArray[j]);
     }
 
     Write("], ");
-    WriteInt("%3d", startOffset);
+    WriteInt(startOffset);
     Write("], ");
 
     if (startNode != endNode)
@@ -1081,13 +1071,13 @@ nsHTMLEditorLog::PrintSelection()
     {
       if (j != 0)
         Write(", ");
-      WriteInt("%d", offsetArray[j]);
+      WriteInt(offsetArray[j]);
     }
 
     delete []offsetArray;
 
     Write("], ");
-    WriteInt("%3d", endOffset);
+    WriteInt(endOffset);
     Write("] ]");
   }
 
@@ -1115,7 +1105,7 @@ nsHTMLEditorLog::PrintElementNode(nsIDOMNode *aNode, PRInt32 aDepth)
     return result;
 
   Write("n");
-  WriteInt("%d", aDepth);
+  WriteInt(aDepth);
   Write(" = GetCurrentEditor().editorDocument.createElement(\"");
   PrintUnicode(tag);
   Write("\");\n");
@@ -1174,7 +1164,7 @@ nsHTMLEditorLog::PrintAttributeNode(nsIDOMNode *aNode, PRInt32 aDepth)
     return result;
 
   Write("a");
-  WriteInt("%d", aDepth);
+  WriteInt(aDepth);
   Write(" = GetCurrentEditor().editorDocument.createAttribute(\"");
   PrintUnicode(str);
   Write("\");\n");
@@ -1185,15 +1175,15 @@ nsHTMLEditorLog::PrintAttributeNode(nsIDOMNode *aNode, PRInt32 aDepth)
     return result;
 
   Write("a");
-  WriteInt("%d", aDepth);
+  WriteInt(aDepth);
   Write(".value = \"");
   PrintUnicode(str);
   Write("\";\n");
   
   Write("n");
-  WriteInt("%d", aDepth);
+  WriteInt(aDepth);
   Write(".setAttributeNode(a");
-  WriteInt("%d", aDepth);
+  WriteInt(aDepth);
   Write(");\n");
 
   return NS_OK;
@@ -1241,9 +1231,9 @@ nsHTMLEditorLog::PrintNodeChildren(nsIDOMNode *aNode, PRInt32 aDepth)
       return result;
 
     Write("n");
-    WriteInt("%d", aDepth);
+    WriteInt(aDepth);
     Write(".appendChild(n");
-    WriteInt("%d", aDepth+1);
+    WriteInt(aDepth+1);
     Write(");\n");
   }
 
@@ -1268,7 +1258,7 @@ nsHTMLEditorLog::PrintTextNode(nsIDOMNode *aNode, PRInt32 aDepth)
     return result;
 
   Write("n");
-  WriteInt("%d", aDepth);
+  WriteInt(aDepth);
   Write(" = GetCurrentEditor().editorDocument.createTextNode(\"");
   PrintUnicode(str);
   Write("\");\n");

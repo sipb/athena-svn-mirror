@@ -210,23 +210,6 @@ void DeleteWinRegKey(HKEY hkRootKey, LPSTR szKey, BOOL bAbsoluteDelete)
   }
 }
 
-void DeleteWinRegValue(HKEY hkRootKey, LPSTR szKey, LPSTR szName)
-{
-  HKEY    hkResult;
-  DWORD   dwErr;
-
-  dwErr = RegOpenKeyEx(hkRootKey, szKey, 0, KEY_WRITE, &hkResult);
-  if(dwErr == ERROR_SUCCESS)
-  {
-    if(*szName == '\0')
-      dwErr = RegDeleteValue(hkResult, NULL);
-    else
-      dwErr = RegDeleteValue(hkResult, szName);
-
-    RegCloseKey(hkResult);
-  }
-}
-
 void ParseForUninstallCommand(LPSTR szString, LPSTR szKeyStr, LPSTR szFile, DWORD dwFileBufSize, LPSTR szParam, DWORD dwParamBufSize)
 {
   LPSTR   szFirstNonSpace;
@@ -249,7 +232,7 @@ void ParseForUninstallCommand(LPSTR szString, LPSTR szKeyStr, LPSTR szFile, DWOR
   {
     if(*szFirstNonSpace == '\"')
     {
-      szFirstNonSpace = ++szFirstNonSpace;
+      ++szFirstNonSpace;
       // found a beginning quote, look for the ending quote now
       if((szEndQuote = MozStrChar(szFirstNonSpace, '\"')) != NULL)
       {
@@ -347,7 +330,7 @@ void ParseForCopyFile(LPSTR szString, LPSTR szKeyStr, LPSTR szFile, DWORD dwShor
   }
 }
 
-void ParseForWinRegInfo(LPSTR szString, LPSTR szKeyStr, LPSTR szRootKey, DWORD dwRootKeyBufSize, LPSTR szKey, DWORD dwKeyBufSize, LPSTR szName, DWORD dwNameBufSize)
+HRESULT ParseForWinRegInfo(LPSTR szString, LPSTR szKeyStr, LPSTR szRootKey, DWORD dwRootKeyBufSize, LPSTR szKey, DWORD dwKeyBufSize, LPSTR szName, DWORD dwNameBufSize)
 {
   int     i;
   int     iLen;
@@ -357,6 +340,10 @@ void ParseForWinRegInfo(LPSTR szString, LPSTR szKeyStr, LPSTR szRootKey, DWORD d
   LPSTR   szFirstBackSlash;
   BOOL    bFoundOpenBracket;
   BOOL    bFoundName;
+
+  *szRootKey = '\0';
+  *szKey = '\0';
+  *szName = '\0';
 
   lstrcpy(szStrCopy, szString);
   if((szFirstNonSpace = GetFirstNonSpace(&(szStrCopy[lstrlen(szKeyStr)]))) != NULL)
@@ -368,6 +355,9 @@ void ParseForWinRegInfo(LPSTR szString, LPSTR szKeyStr, LPSTR szRootKey, DWORD d
     }
 
     szFirstBackSlash = strstr(szFirstNonSpace, "\\");
+    if(!szFirstBackSlash)
+      return(WIZ_ERROR_PARSING_UNINST_STRS);
+
     szFirstBackSlash[0] = '\0';
     lstrcpy(szRootKey, szFirstNonSpace);
     szFirstNonSpace = &(szFirstBackSlash[1]);
@@ -416,6 +406,7 @@ void ParseForWinRegInfo(LPSTR szString, LPSTR szKeyStr, LPSTR szRootKey, DWORD d
       }
     }
   }
+  return(WIZ_OK);
 }
 
 DWORD DecrementSharedFileCounter(char *file)
@@ -507,13 +498,13 @@ BOOL DetermineUnRegisterServer(sil *silInstallLogHead, LPSTR szFile)
     silInstallLogTemp = silInstallLogHead;
     iSharedFileCount  = GetSharedFileCount(szFile);
     lstrcpy(szLCFile, szFile);
-    _strlwr(szLCFile);
+    CharLowerBuff(szLCFile, sizeof(szLCLine));
 
     do
     {
       silInstallLogTemp = silInstallLogTemp->Prev;
       lstrcpy(szLCLine, silInstallLogTemp->szLine);
-      _strlwr(szLCLine);
+      CharLowerBuff(szLCLine, sizeof(szLCLine));
 
       if((strstr(szLCLine, szLCFile) != NULL) &&
          (strstr(szLCLine, KEY_INSTALLING_SHARED_FILE) != NULL) &&
@@ -570,6 +561,7 @@ DWORD Uninstall(sil* silInstallLogHead)
   char  szFile[MAX_BUF];
   char  szParams[MAX_BUF];
   HKEY  hkRootKey;
+  int   rv;
 
   if(silInstallLogHead != NULL)
   {
@@ -578,7 +570,7 @@ DWORD Uninstall(sil* silInstallLogHead)
     {
       silInstallLogTemp = silInstallLogTemp->Prev;
       lstrcpy(szLCLine, silInstallLogTemp->szLine);
-      _strlwr(szLCLine);
+      CharLowerBuff(szLCLine, sizeof(szLCLine));
 
       if(((szSubStr = strstr(szLCLine, KEY_WINDOWS_REGISTER_SERVER)) != NULL) &&
           (strstr(szLCLine, KEY_DO_NOT_UNINSTALL) == NULL))
@@ -646,24 +638,33 @@ DWORD Uninstall(sil* silInstallLogHead)
                (strstr(szLCLine, KEY_DO_NOT_UNINSTALL) == NULL))
       {
         /* check for "Store Registry Value String: " string and remove the key */
-        ParseForWinRegInfo(szSubStr, KEY_STORE_REG_STRING, szRootKey, sizeof(szRootKey), szKey, sizeof(szKey), szName, sizeof(szName));
-        hkRootKey = ParseRootKey(szRootKey);
-        DeleteWinRegValue(hkRootKey, szKey, szName);
+        rv = ParseForWinRegInfo(szSubStr, KEY_STORE_REG_STRING, szRootKey, sizeof(szRootKey), szKey, sizeof(szKey), szName, sizeof(szName));
+        if(WIZ_OK == rv)
+        {
+          hkRootKey = ParseRootKey(szRootKey);
+          DeleteWinRegValue(hkRootKey, szKey, szName);
+        }
       }
       else if(((szSubStr = strstr(szLCLine, KEY_STORE_REG_NUMBER)) != NULL) &&
                (strstr(szLCLine, KEY_DO_NOT_UNINSTALL) == NULL))
       {
         /* check for "Store Registry Value Number: " string and remove the key */
-        ParseForWinRegInfo(szSubStr, KEY_STORE_REG_NUMBER, szRootKey, sizeof(szRootKey), szKey, sizeof(szKey), szName, sizeof(szName));
-        hkRootKey = ParseRootKey(szRootKey);
-        DeleteWinRegValue(hkRootKey, szKey, szName);
+        rv = ParseForWinRegInfo(szSubStr, KEY_STORE_REG_NUMBER, szRootKey, sizeof(szRootKey), szKey, sizeof(szKey), szName, sizeof(szName));
+        if(WIZ_OK == rv)
+        {
+          hkRootKey = ParseRootKey(szRootKey);
+          DeleteWinRegValue(hkRootKey, szKey, szName);
+        }
       }
       else if(((szSubStr = strstr(szLCLine, KEY_CREATE_REG_KEY)) != NULL) &&
                (strstr(szLCLine, KEY_DO_NOT_UNINSTALL) == NULL))
       {
-        ParseForWinRegInfo(szSubStr, KEY_CREATE_REG_KEY, szRootKey, sizeof(szRootKey), szKey, sizeof(szKey), szName, sizeof(szName));
-        hkRootKey = ParseRootKey(szRootKey);
-        DeleteWinRegKey(hkRootKey, szKey, FALSE);
+        rv = ParseForWinRegInfo(szSubStr, KEY_CREATE_REG_KEY, szRootKey, sizeof(szRootKey), szKey, sizeof(szKey), szName, sizeof(szName));
+        if(WIZ_OK == rv)
+        {
+          hkRootKey = ParseRootKey(szRootKey);
+          DeleteWinRegKey(hkRootKey, szKey, FALSE);
+        }
       }
       else if(((szSubStr = strstr(szLCLine, KEY_CREATE_FOLDER)) != NULL) &&
                (strstr(szLCLine, KEY_DO_NOT_UNINSTALL) == NULL))

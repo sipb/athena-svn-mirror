@@ -43,6 +43,7 @@
 
 #include "plugin.h"
 #include "helpers.h"
+#include "guihlp.h"
 #include "logger.h"
 #include "guiprefs.h"
 #include "os2utils.h"
@@ -85,7 +86,7 @@ void CPlugin::restorePreferences()
 
   char sz[256];
   XP_GetPrivateProfileString(szSection, KEY_AUTO_MODE, ENTRY_NO, sz, sizeof(sz), szFileName);
-  m_Pref_ShowGUI = (strcmpi(sz, ENTRY_YES) == 0) ? sg_auto : sg_manual;
+  m_Pref_ShowGUI = (stricmp(sz, ENTRY_YES) == 0) ? sg_auto : sg_manual;
 
   XP_GetPrivateProfileString(szSection, KEY_LOG_FILE, "Test.log", sz, sizeof(sz), szFileName);
   strcpy(m_Pref_szLogFile, sz);
@@ -94,16 +95,19 @@ void CPlugin::restorePreferences()
   strcpy(m_Pref_szScriptFile, sz);
 
   XP_GetPrivateProfileString(szSection, KEY_TO_FILE, ENTRY_NO, sz, sizeof(sz), szFileName);
-  m_Pref_bToFile = (strcmpi(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
+  m_Pref_bToFile = (stricmp(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
 
   XP_GetPrivateProfileString(szSection, KEY_TO_FRAME, ENTRY_YES, sz, sizeof(sz), szFileName);
-  m_Pref_bToFrame = (strcmpi(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
+  m_Pref_bToFrame = (stricmp(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
 
   XP_GetPrivateProfileString(szSection, KEY_FLUSH_NOW, ENTRY_YES, sz, sizeof(sz), szFileName);
-  m_Pref_bFlushNow = (strcmpi(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
+  m_Pref_bFlushNow = (stricmp(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
 
   XP_GetPrivateProfileString(szSection, KEY_REMEMBER_LAST_API_CALL, ENTRY_YES, sz, sizeof(sz), szFileName);
-  m_Pref_bRememberLastCall = (strcmpi(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
+  m_Pref_bRememberLastCall = (stricmp(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
+
+  XP_GetPrivateProfileString(szSection, KEY_STAND_ALONE, ENTRY_NO, sz, sizeof(sz), szFileName);
+  m_Pref_bStandAlone = (stricmp(sz, ENTRY_YES) == 0) ? TRUE : FALSE;
 }
 
 void CPlugin::savePreferences()
@@ -118,6 +122,7 @@ void CPlugin::savePreferences()
   XP_WritePrivateProfileString(szSection, KEY_TO_FRAME, m_Pref_bToFrame ? szYes : szNo, szFileName);
   XP_WritePrivateProfileString(szSection, KEY_FLUSH_NOW, m_Pref_bFlushNow ? szYes : szNo, szFileName);
   XP_WritePrivateProfileString(szSection, KEY_REMEMBER_LAST_API_CALL, m_Pref_bRememberLastCall ? szYes : szNo, szFileName);
+  XP_WritePrivateProfileString(szSection, KEY_STAND_ALONE, m_Pref_bStandAlone ? szYes : szNo, szFileName);
 }
 
 void CPlugin::updatePrefs(GUIPrefs prefs, int iValue, char * szValue)
@@ -146,6 +151,9 @@ void CPlugin::updatePrefs(GUIPrefs prefs, int iValue, char * szValue)
       break;
     case gp_rememberlast:
       m_Pref_bRememberLastCall = (BOOL)iValue;
+      break;
+    case gp_standalone:
+      m_Pref_bStandAlone = (BOOL)iValue;
       break;
     default:
       break;
@@ -238,6 +246,24 @@ int CPlugin::messageBox(LPSTR szMessage, LPSTR szTitle, UINT uStyle)
   return WinMessageBox(HWND_DESKTOP, m_hWnd, szMessage, szTitle, 0, uStyle);
 }
 
+BOOL CPlugin::isStandAlone()
+{
+  return FALSE;
+}
+
+BOOL CPlugin::initStandAlone()
+{
+  return FALSE;
+}
+
+void CPlugin::shutStandAlone()
+{
+}
+
+void CPlugin::outputToNativeWindow(LPSTR szString)
+{
+}
+
 void CPlugin::onDestroy()
 {
   m_hWnd = NULL;
@@ -317,5 +343,5 @@ CPluginBase * CreatePlugin(NPP instance, uint16 mode)
 void DestroyPlugin(CPluginBase * pPlugin)
 {
   if(pPlugin != NULL)
-    delete (CPluginBase *)pPlugin;
+    delete (CPlugin *)pPlugin;
 }

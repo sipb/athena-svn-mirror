@@ -65,6 +65,7 @@
 #include "nsICharsetConverterManager.h"
 #include "nsCRT.h"
 #include "nsStylClipboardUtils.h"
+#include "nsLinebreakConverter.h"
 
 #include <Scrap.h>
 #include <Script.h>
@@ -152,11 +153,21 @@ nsClipboard :: SetNativeClipboardData ( PRInt32 aWhichClipboard )
         nsCOMPtr<nsISupports> genericDataWrapper;
         errCode = mTransferable->GetTransferData ( flavorStr, getter_AddRefs(genericDataWrapper), &dataSize );
         nsPrimitiveHelpers::CreateDataFromPrimitive ( flavorStr, genericDataWrapper, &data, dataSize );
+
+        // Convert unix to mac linebreaks, since mac linebreaks are required for clipboard compatibility.
+        // I'm making the assumption here that the substitution will be entirely in-place, since both
+        // types of line breaks are 1-byte.
+
+        PRUnichar* castedUnicode = NS_REINTERPRET_CAST(PRUnichar*, data);
+        nsLinebreakConverter::ConvertUnicharLineBreaksInSitu(&castedUnicode,
+                                                             nsLinebreakConverter::eLinebreakUnix,
+                                                             nsLinebreakConverter::eLinebreakMac,
+                                                             dataSize / sizeof(PRUnichar), nsnull);
+          
         errCode = PutOnClipboard ( macOSFlavor, data, dataSize );
         if ( NS_SUCCEEDED(errCode) ) {
           // we also need to put it on as 'TEXT' after doing the conversion to the platform charset.
           char* plainTextData = nsnull;
-          PRUnichar* castedUnicode = NS_REINTERPRET_CAST(PRUnichar*, data);
           PRInt32 plainTextLen = 0;
           errCode = nsPrimitiveHelpers::ConvertUnicodeToPlatformPlainText ( castedUnicode, dataSize / 2, &plainTextData, &plainTextLen );
           
@@ -211,13 +222,19 @@ nsClipboard :: SetNativeClipboardData ( PRInt32 aWhichClipboard )
         }
       } // if unicode
       else if ( strcmp(flavorStr, kPNGImageMime) == 0 || strcmp(flavorStr, kJPEGImageMime) == 0 ||
-                  strcmp(flavorStr, kGIFImageMime) == 0 ) {
+                strcmp(flavorStr, kGIFImageMime) == 0 || strcmp(flavorStr, kNativeImageMime) == 0 ) {
         // we have an image, which is in the transferable as an nsIImage. Convert it
         // to PICT (PicHandle) and put those bits on the clipboard. The actual size
         // of the picture is the size of the handle, not sizeof(Picture).
-        nsCOMPtr<nsISupports> imageSupports;
-        errCode = mTransferable->GetTransferData ( flavorStr, getter_AddRefs(imageSupports), &dataSize );
-        nsCOMPtr<nsIImageMac> image ( do_QueryInterface(imageSupports) );
+        nsCOMPtr<nsISupports> transferSupports;
+        errCode = mTransferable->GetTransferData ( flavorStr, getter_AddRefs(transferSupports), &dataSize );
+        nsCOMPtr<nsISupportsInterfacePointer> ptrPrimitive(do_QueryInterface(transferSupports));
+        nsCOMPtr<nsIImageMac> image;
+        if (ptrPrimitive) {
+          nsCOMPtr<nsISupports> primitiveData;
+          ptrPrimitive->GetData(getter_AddRefs(primitiveData));
+          image = do_QueryInterface(primitiveData);
+        }
         if ( image ) {
           PicHandle picture = nsnull;
           image->ConvertToPICT ( &picture );
@@ -425,7 +442,7 @@ nsClipboard :: GetNativeClipboardData ( nsITransferable * aTransferable, PRInt32
 
           // put it into the transferable
           nsCOMPtr<nsISupports> genericDataWrapper;
-          nsPrimitiveHelpers::CreatePrimitiveForData ( flavorStr, (void *) clipboardDataPtr, dataSize, getter_AddRefs(genericDataWrapper) );        
+          nsPrimitiveHelpers::CreatePrimitiveForData ( flavorStr, clipboardDataPtr, dataSize, getter_AddRefs(genericDataWrapper) );        
           errCode = aTransferable->SetTransferData ( flavorStr, genericDataWrapper, dataSize );
         }
         

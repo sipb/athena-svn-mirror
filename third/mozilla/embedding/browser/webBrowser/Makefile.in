@@ -26,6 +26,8 @@ VPATH		= @srcdir@
 MODULE		= webbrwsr
 XPIDL_MODULE	= webBrowser_core
 LIBRARY_NAME	= nsWebBrowser_s
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  docshell \
@@ -62,17 +64,17 @@ SDK_XPIDLSRCS   = \
 		nsITooltipTextProvider.idl  \
 		nsIWebBrowser.idl	    \
 		nsIWebBrowserChrome.idl	    \
-		nsIWebBrowserSetup.idl	    \
+		nsIWebBrowserChromeFocus.idl \
+		nsIWebBrowserFocus.idl	    \
 		nsIWebBrowserPrint.idl      \
+		nsIWebBrowserSetup.idl	    \
                 $(NULL)
 
 XPIDLSRCS	= \
 		nsCWebBrowser.idl			\
-		nsIWebBrowserChromeFocus.idl		\
 		nsICommandHandler.idl			\
 		nsIEmbeddingSiteWindow2.idl \
 		nsIContextMenuListener2.idl \
-		nsIWebBrowserFocus.idl		\
 		nsIPrintingPrompt.idl       \
 		nsIPrintingPromptService.idl       \
 		$(NULL)

@@ -2,6 +2,9 @@
 ********************************************************************************
 
     $Log: not supported by cvs2svn $
+    Revision 1.1.1.1  2003/07/08 17:45:29  rbasch
+    Import mozilla 1.4.
+
     Revision 1.2  2003/04/03 19:20:04  ccarlen%netscape.com
     Bug 188508 - Upgrade print dialog PDE. r=pinkerton/sr=sfraser
 

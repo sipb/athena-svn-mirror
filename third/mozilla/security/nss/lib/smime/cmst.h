@@ -34,7 +34,7 @@
 /*
  * Header for CMS types.
  *
- * $Id: cmst.h,v 1.1.1.1 2003-02-14 19:46:43 rbasch Exp $
+ * $Id: cmst.h,v 1.1.1.1.2.1 2003-07-14 19:07:25 ghudson Exp $
  */
 
 #ifndef _CMST_H_
@@ -283,7 +283,8 @@ struct NSSCMSOriginatorInfoStr {
  */
 typedef enum {
     NSSCMSRecipientID_IssuerSN = 0,
-    NSSCMSRecipientID_SubjectKeyID = 1
+    NSSCMSRecipientID_SubjectKeyID = 1,
+    NSSCMSRecipientID_BrandNew = 2
 } NSSCMSRecipientIDSelector;
 
 struct NSSCMSRecipientIdentifierStr {
@@ -302,6 +303,18 @@ struct NSSCMSKeyTransRecipientInfoStr {
     SECItem			encKey;
 };
 typedef struct NSSCMSKeyTransRecipientInfoStr NSSCMSKeyTransRecipientInfo;
+
+/*
+ * View comments before NSSCMSRecipientInfoStr for purpose of this
+ * structure.
+ */
+struct NSSCMSKeyTransRecipientInfoExStr {
+    NSSCMSKeyTransRecipientInfo recipientInfo;
+    int version;  /* version of this structure (0) */
+    SECKEYPublicKey *pubKey;
+};
+
+typedef struct NSSCMSKeyTransRecipientInfoExStr NSSCMSKeyTransRecipientInfoEx;
 
 #define NSS_CMS_KEYTRANS_RECIPIENT_INFO_VERSION_ISSUERSN	0	/* what we *create* */
 #define NSS_CMS_KEYTRANS_RECIPIENT_INFO_VERSION_SUBJKEY		2	/* what we *create* */
@@ -399,12 +412,35 @@ typedef enum {
     NSSCMSRecipientInfoID_KEK = 2
 } NSSCMSRecipientInfoIDSelector;
 
+/*
+ * In order to preserve backwards binary compatibility when implementing
+ * creation of Recipient Info's that uses subjectKeyID in the 
+ * keyTransRecipientInfo we need to stash a public key pointer in this
+ * structure somewhere.  We figured out that NSSCMSKeyTransRecipientInfo
+ * is the smallest member of the ri union.  We're in luck since that's
+ * the very structure that would need to use the public key. So we created
+ * a new structure NSSCMSKeyTransRecipientInfoEx which has a member 
+ * NSSCMSKeyTransRecipientInfo as the first member followed by a version
+ * and a public key pointer.  This way we can keep backwards compatibility
+ * without changing the size of this structure.
+ *
+ * BTW, size of structure:
+ * NSSCMSKeyTransRecipientInfo:  9 ints, 4 pointers
+ * NSSCMSKeyAgreeRecipientInfo: 12 ints, 8 pointers
+ * NSSCMSKEKRecipientInfo:      10 ints, 7 pointers
+ *
+ * The new structure:
+ * NSSCMSKeyTransRecipientInfoEx: sizeof(NSSCMSKeyTransRecipientInfo) +
+ *                                1 int, 1 pointer
+ */
+
 struct NSSCMSRecipientInfoStr {
     NSSCMSRecipientInfoIDSelector recipientInfoType;
     union {
 	NSSCMSKeyTransRecipientInfo keyTransRecipientInfo;
 	NSSCMSKeyAgreeRecipientInfo keyAgreeRecipientInfo;
 	NSSCMSKEKRecipientInfo kekRecipientInfo;
+	NSSCMSKeyTransRecipientInfoEx keyTransRecipientInfoEx;
     } ri;
     /* --------- local; not part of encoding --------- */
     NSSCMSMessage *		cmsg;			/* back pointer to message */

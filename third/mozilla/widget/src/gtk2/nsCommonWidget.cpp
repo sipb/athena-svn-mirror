@@ -48,6 +48,7 @@ nsCommonWidget::nsCommonWidget()
     mIsShown          = PR_FALSE;
     mNeedsShow        = PR_FALSE;
     mEnabled          = PR_TRUE;
+    mCreated          = PR_FALSE;
 
     mPreferredWidth   = 0;
     mPreferredHeight  = 0;
@@ -67,11 +68,11 @@ nsCommonWidget::GetParent(void)
 }
 
 void
-nsCommonWidget::CommonCreate(nsIWidget *aParent, nsNativeWidget aNativeParent)
+nsCommonWidget::CommonCreate(nsIWidget *aParent, PRBool aListenForResizes)
 {
     mParent = aParent;
-    if (aNativeParent)
-        mListenForResizes = PR_TRUE;
+    mListenForResizes = aListenForResizes;
+    mCreated = PR_TRUE;
 }
 
 void
@@ -81,6 +82,7 @@ nsCommonWidget::InitPaintEvent(nsPaintEvent &aEvent)
     aEvent.eventStructType = NS_PAINT_EVENT;
     aEvent.message = NS_PAINT;
     aEvent.widget = NS_STATIC_CAST(nsIWidget *, this);
+    aEvent.region = nsnull;
 }
 
 void
@@ -201,18 +203,7 @@ nsCommonWidget::InitKeyEvent(nsKeyEvent &aEvent, GdkEventKey *aGdkEvent,
         ? PR_TRUE : PR_FALSE;
     aEvent.isMeta    = (aGdkEvent->state & GDK_MOD4_MASK)
         ? PR_TRUE : PR_FALSE;
-    
-}
-
-void
-nsCommonWidget::InitScrollbarEvent(nsScrollbarEvent &aEvent, PRUint32 aMsg)
-{
-    memset(&aEvent, 0, sizeof(nsScrollbarEvent));
-    aEvent.eventStructType = NS_SCROLLBAR_EVENT;
-    aEvent.message = NS_SCROLLBAR_POS;
-    aEvent.widget  = NS_STATIC_CAST(nsIWidget *, this);
-    // XXX do we need to get the pointer position relative to the widget
-    // or not?
+    aEvent.time      = aGdkEvent->time;
 }
 
 #ifdef ACCESSIBILITY
@@ -307,7 +298,7 @@ nsCommonWidget::DispatchEvent(nsGUIEvent *aEvent,
     if ((aStatus != nsEventStatus_eIgnore) && mEventListener)
         aStatus = mEventListener->ProcessEvent(*aEvent);
 
-    NS_RELEASE(aEvent->widget);
+    NS_IF_RELEASE(aEvent->widget);
 
     return NS_OK;
 }
@@ -322,8 +313,8 @@ nsCommonWidget::Show(PRBool aState)
     // Ok, someone called show on a window that isn't sized to a sane
     // value.  Mark this window as needing to have Show() called on it
     // and return.
-    if (aState && !AreBoundsSane()) {
-        LOG(("\tbounds are insane\n"));
+    if ((aState && !AreBoundsSane()) || !mCreated) {
+        LOG(("\tbounds are insane or window hasn't been created yet\n"));
         mNeedsShow = PR_TRUE;
         return NS_OK;
     }
@@ -350,6 +341,9 @@ nsCommonWidget::Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint)
 {
     mBounds.width = aWidth;
     mBounds.height = aHeight;
+
+    if (!mCreated)
+        return NS_OK;
 
     // There are several cases here that we need to handle, based on a
     // matrix of the visibility of the widget, the sanity of this resize
@@ -387,13 +381,15 @@ nsCommonWidget::Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint)
     // If the widget hasn't been shown, mark the widget as needing to be
     // resized before it is shown.
     else {
-        // For widgets that we listen for resizes for (widgets created
-        // with native parents) we apparently _always_ have to resize.  I
-        // dunno why, but apparently we're lame like that.
-        if (mListenForResizes)
+        if (AreBoundsSane() && mListenForResizes) {
+            // For widgets that we listen for resizes for (widgets created
+            // with native parents) we apparently _always_ have to resize.  I
+            // dunno why, but apparently we're lame like that.
             NativeResize(aWidth, aHeight, aRepaint);
-        else
+        }
+        else {
             mNeedsResize = PR_TRUE;
+        }
     }
 
     // synthesize a resize event if this isn't a toplevel
@@ -414,6 +410,9 @@ nsCommonWidget::Resize(PRInt32 aX, PRInt32 aY, PRInt32 aWidth, PRInt32 aHeight,
     mBounds.y = aY;
     mBounds.width = aWidth;
     mBounds.height = aHeight;
+
+    if (!mCreated)
+        return NS_OK;
 
     // There are several cases here that we need to handle, based on a
     // matrix of the visibility of the widget, the sanity of this resize
@@ -445,13 +444,15 @@ nsCommonWidget::Resize(PRInt32 aX, PRInt32 aY, PRInt32 aWidth, PRInt32 aHeight,
     // If the widget hasn't been shown, mark the widget as needing to be
     // resized before it is shown
     else {
-        // For widgets that we listen for resizes for (widgets created
-        // with native parents) we apparently _always_ have to resize.  I
-        // dunno why, but apparently we're lame like that.
-        if (mListenForResizes)
+        if (AreBoundsSane() && mListenForResizes){
+            // For widgets that we listen for resizes for (widgets created
+            // with native parents) we apparently _always_ have to resize.  I
+            // dunno why, but apparently we're lame like that.
             NativeResize(aX, aY, aWidth, aHeight, aRepaint);
-        else
+        }
+        else {
             mNeedsResize = PR_TRUE;
+        }
     }
 
     if (mIsTopLevel || mListenForResizes) {
@@ -525,7 +526,7 @@ nsCommonWidget::OnDestroy(void)
 PRBool
 nsCommonWidget::AreBoundsSane(void)
 {
-    if (mBounds.width > 1 && mBounds.height > 1)
+    if (mBounds.width > 0 && mBounds.height > 0)
         return PR_TRUE;
 
     return PR_FALSE;

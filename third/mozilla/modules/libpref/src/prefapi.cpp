@@ -41,6 +41,9 @@
 #include "jsapi.h"
 #include "nsCRT.h"
 
+#define PL_ARENA_CONST_ALIGN_MASK 3
+#include "plarena.h"
+
 #if defined(XP_MAC)
   #include <stat.h>
 #else
@@ -63,7 +66,12 @@
 #include "prprf.h"
 #include "nsQuickSort.h"
 #include "nsString.h"
+#include "nsPrintfCString.h"
 #include "prlink.h"
+
+#ifdef MOZ_PROFILESHARING
+#include "nsSharedPrefHandler.h"
+#endif
 
 #ifdef XP_OS2
 #define INCL_DOS
@@ -85,7 +93,7 @@ clearPrefEntry(PLDHashTable *table, PLDHashEntryHdr *entry)
         PR_FREEIF(pref->userPref.stringVal);
     }
     // don't need to free this as it's allocated in memory owned by
-    // the global PrefNameBuffer
+    // gPrefNameArena
     pref->key = nsnull;
     memset(entry, 0, table->entrySize);
 }
@@ -126,6 +134,8 @@ global_resolve(JSContext *cx, JSObject *obj, jsval id)
 JSContext *       gMochaContext = NULL;
 PRBool              gErrorOpeningUserPrefs = PR_FALSE;
 PLDHashTable        gHashTable = { nsnull };
+static PLArenaPool  gPrefNameArena;
+PRBool              gDirty = PR_FALSE;
 
 static JSRuntime *       gMochaTaskState = NULL;
 static JSObject *        gMochaPrefObject = NULL;
@@ -169,16 +179,14 @@ static PLDHashTableOps     pref_HashTableOps = {
     nsnull,
 };
     
-class PrefNameBuffer;
-
 // PR_ALIGN_OF_WORD is only defined on some platforms.  ALIGN_OF_WORD has
 // already been defined to PR_ALIGN_OF_WORD everywhere
 #ifndef PR_ALIGN_OF_WORD
 #define PR_ALIGN_OF_WORD PR_ALIGN_OF_POINTER
 #endif
 
-// making PrefNameBuffer exactly 8k for nice allocation
-#define PREFNAME_BUFFER_LEN (8192 - (sizeof(PrefNameBuffer*) + sizeof(char*)))
+// making PrefName arena 8k for nice allocation
+#define PREFNAME_ARENA_SIZE 8192
 
 #define WORD_ALIGN_MASK (PR_ALIGN_OF_WORD - 1)
 
@@ -187,84 +195,16 @@ class PrefNameBuffer;
 #error "PR_ALIGN_OF_WORD must be a power of 2!"
 #endif
 
-class PrefNameBuffer {
- public:
-    PrefNameBuffer(PrefNameBuffer* aNext) : mNext(aNext), mNextFree(0)
-        {}
-    static const char *StrDup(const char*);
-    static void FreeAllBuffers();
-
- private:
-    char *Alloc(PRInt32 len);
-
-    static PrefNameBuffer *gRoot;
-
-    // member variables
-    class PrefNameBuffer* mNext;
-    PRUint32 mNextFree;
-    char mBuf[PREFNAME_BUFFER_LEN];
-};
-
-PrefNameBuffer *PrefNameBuffer::gRoot = nsnull;
-
-char*
-PrefNameBuffer::Alloc(PRInt32 len)
-{
-    NS_ASSERTION(this == gRoot, "Can only allocate on the root!\n");
-    NS_ASSERTION(len < PREFNAME_BUFFER_LEN, "Can only allocate short strings\n");
-
-    // check for space in the current buffer
-    if ((mNextFree + len) > PREFNAME_BUFFER_LEN) {
-        // allocate and update the root
-        gRoot = new PrefNameBuffer(this);
-        return gRoot->Alloc(len);
-    }
-
-    // ok, we have space.
-    char *result = &mBuf[mNextFree];
-    
-    mNextFree += len;
-
-    // now align the next free allocation
-    mNextFree = (mNextFree + WORD_ALIGN_MASK) & ~WORD_ALIGN_MASK;
-
-    return result;
-}
-
 // equivalent to strdup() - does no error checking,
 // we're assuming we're only called with a valid pointer
-const char *
-PrefNameBuffer::StrDup(const char *str)
+static char *ArenaStrDup(const char* str, PLArenaPool* aArena)
 {
-    if (!gRoot) {
-        gRoot = new PrefNameBuffer(nsnull);
-        
-        // ack, no memory
-        if (!gRoot)
-            return nsnull;
-    }
-
-    // extra byte for null-termination
-    PRInt32 len = strlen(str) + 1;
-    
-    char *buf = gRoot->Alloc(len);
-
-    memcpy(buf, str, len);
-    
-    return buf;
-}
-
-void
-PrefNameBuffer::FreeAllBuffers()
-{
-    PrefNameBuffer *curr = gRoot;
-    PrefNameBuffer *next;
-    while (curr) {
-        next = curr->mNext;
-        delete curr;
-        curr = next;
-    }
-    gRoot = nsnull;
+    void* mem;
+    PRUint32 len = strlen(str);
+    PL_ARENA_ALLOCATE(mem, aArena, len+1);
+    if (mem)
+        memcpy(mem, str, len+1);
+    return NS_STATIC_CAST(char*, mem);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -304,6 +244,9 @@ PRBool PREF_Init(const char *filename)
         if (!PL_DHashTableInit(&gHashTable, &pref_HashTableOps, nsnull,
                                sizeof(PrefHashEntry), 1024))
             gHashTable.ops = nsnull;
+        
+        PL_INIT_ARENA_POOL(&gPrefNameArena, "PrefNameArena",
+                           PREFNAME_ARENA_SIZE);
     }
         
     if (!gMochaTaskState)
@@ -417,10 +360,10 @@ void PREF_CleanupPrefs()
     if (gHashTable.ops) {
         PL_DHashTableFinish(&gHashTable);
         gHashTable.ops = nsnull;
+        PL_FinishArenaPool(&gPrefNameArena);
     }
 
-    PrefNameBuffer::FreeAllBuffers();
-    
+
     if (gSavedLine)
         free(gSavedLine);
     gSavedLine = NULL;
@@ -603,7 +546,7 @@ PREF_SetDefaultBoolPref(const char *pref_name,PRBool value)
 PLDHashOperator
 pref_savePref(PLDHashTable *table, PLDHashEntryHdr *heh, PRUint32 i, void *arg)
 {
-    char **prefArray = (char**) arg;
+    pref_saveArgs *argData = NS_STATIC_CAST(pref_saveArgs *, arg);
     PrefHashEntry *pref = NS_STATIC_CAST(PrefHashEntry *, heh);
 
     PR_ASSERT(pref);
@@ -626,6 +569,14 @@ pref_savePref(PLDHashTable *table, PLDHashEntryHdr *heh, PRUint32 i, void *arg)
         // do not save default prefs that haven't changed
         return PL_DHASH_NEXT;
 
+#if MOZ_PROFILESHARING
+  if ((argData->saveTypes == SAVE_SHARED &&
+      !gSharedPrefHandler->IsPrefShared(pref->key)) ||
+      (argData->saveTypes == SAVE_NONSHARED &&
+      gSharedPrefHandler->IsPrefShared(pref->key)))
+    return PL_DHASH_NEXT;
+#endif
+
     // strings are in quotes!
     if (pref->flags & PREF_STRING) {
         prefValue = '\"';
@@ -642,7 +593,7 @@ pref_savePref(PLDHashTable *table, PLDHashEntryHdr *heh, PRUint32 i, void *arg)
     nsCAutoString prefName;
     str_escape(pref->key, prefName);
 
-    prefArray[i] = ToNewCString(NS_LITERAL_CSTRING("user_pref(\"") +
+    argData->prefArray[i] = ToNewCString(NS_LITERAL_CSTRING("user_pref(\"") +
                                 prefName +
                                 NS_LITERAL_CSTRING("\", ") +
                                 prefValue +
@@ -840,7 +791,7 @@ PREF_DeleteBranch(const char *branch_name)
 
     PL_DHashTableEnumerate(&gHashTable, pref_DeleteItem,
                            (void*) branch_dot.get());
-    
+    gDirty = PR_TRUE;
     return PREF_NOERROR;
 }
 
@@ -861,6 +812,7 @@ PREF_ClearUserPref(const char *pref_name)
         if (gCallbacksEnabled)
             pref_DoCallback(pref_name);
         success = PREF_OK;
+        gDirty = PR_TRUE;
     }
     return success;
 }
@@ -894,7 +846,8 @@ PREF_ClearAllUserPrefs()
         return PREF_NOT_INITIALIZED;
     
     PL_DHashTableEnumerate(&gHashTable, pref_ClearUserPref, nsnull);
-    
+
+    gDirty = PR_TRUE;
     return PREF_OK;
 }
 
@@ -962,6 +915,7 @@ static void pref_SetValue(PrefValue* oldValue, PrefValue newValue, PrefType type
         default:
             *oldValue = newValue;
     }
+    gDirty = PR_TRUE;
 }
 
 static inline PrefHashEntry* pref_HashTableLookup(const void *key)
@@ -993,7 +947,7 @@ PrefResult pref_HashPref(const char *key, PrefValue value, PrefType type, PrefAc
         
         // initialize the pref entry
         pref->flags = type;
-        pref->key = PrefNameBuffer::StrDup(key);
+        pref->key = ArenaStrDup(key, &gPrefNameArena);
         pref->defaultPref.intVal = 0;
         pref->userPref.intVal = 0;
         
@@ -1009,8 +963,7 @@ PrefResult pref_HashPref(const char *key, PrefValue value, PrefType type, PrefAc
     else if ((((PrefType)(pref->flags)) & PREF_VALUETYPE_MASK) !=
                  (type & PREF_VALUETYPE_MASK))
     {
-      /*PR_ASSERT(0);*/         /* this shouldn't happen */
-      /* NS_ASSERTION(0, "Trying to set pref to with the wrong type!"); */
+        NS_WARNING(nsPrintfCString(192, "Trying to set pref %s to with the wrong type!", key).get());
         return PREF_TYPE_CHANGE_ERR;
     }
 
@@ -1068,11 +1021,18 @@ PrefResult pref_HashPref(const char *key, PrefValue value, PrefType type, PrefAc
             break;
     }
 
-    if (result == PREF_VALUECHANGED && gCallbacksEnabled)
-    {
-        PrefResult result2 = pref_DoCallback(key);
-        if (result2 < 0)
-            result = result2;
+    if (result == PREF_VALUECHANGED) {
+        gDirty = PR_TRUE;
+        
+        if (gCallbacksEnabled) {
+            PrefResult result2 = pref_DoCallback(key);
+            if (result2 < 0)
+                result = result2;
+        }
+#ifdef MOZ_PROFILESHARING
+        if (gSharedPrefHandler)
+            gSharedPrefHandler->OnPrefChanged(action, pref, value);
+#endif
     }
     return result;
 }

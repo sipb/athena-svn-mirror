@@ -118,7 +118,6 @@ nsImapFlagAndUidState::nsImapFlagAndUidState(PRInt32 numberOfMessages, PRUint16 
   fSupportedUserFlags = flags;
   fNumberDeleted = 0;
   m_customFlagsHash = nsnull;
-  NS_INIT_ISUPPORTS();
 }
 
 nsImapFlagAndUidState::nsImapFlagAndUidState(const nsImapFlagAndUidState& state, 
@@ -134,7 +133,6 @@ nsImapFlagAndUidState::nsImapFlagAndUidState(const nsImapFlagAndUidState& state,
   fSupportedUserFlags = flags;
   fNumberDeleted = 0;
   m_customFlagsHash = nsnull;
-  NS_INIT_ISUPPORTS();
 }
 
 /* static */PRBool PR_CALLBACK nsImapFlagAndUidState::FreeCustomFlags(nsHashKey *aKey, void *aData,
@@ -170,6 +168,8 @@ NS_IMETHODIMP nsImapFlagAndUidState::Reset(PRUint32 howManyLeft)
     PR_CEnterMonitor(this);
 	if (!howManyLeft)
 		fNumberOfMessagesAdded = fNumberDeleted = 0;		// used space is still here
+  if (m_customFlagsHash)
+    m_customFlagsHash->Reset(FreeCustomFlags, nsnull);
     PR_CExitMonitor(this);
 	return NS_OK;
 }
@@ -354,7 +354,7 @@ imapMessageFlagsType nsImapFlagAndUidState::GetMessageFlagsFromUID(PRUint32 uid,
 
 NS_IMETHODIMP nsImapFlagAndUidState::AddUidCustomFlagPair(PRUint32 uid, const char *customFlag)
 {
-  nsAutoCMonitor(this);
+  nsAutoCMonitor mon(this);
   if (!m_customFlagsHash)
     m_customFlagsHash = new nsHashtable(10);
   if (!m_customFlagsHash)
@@ -395,27 +395,29 @@ NS_IMETHODIMP nsImapFlagAndUidState::AddUidCustomFlagPair(PRUint32 uid, const ch
 
 NS_IMETHODIMP nsImapFlagAndUidState::GetCustomFlags(PRUint32 uid, char **customFlags)
 {
-  nsAutoCMonitor(this);
+  nsAutoCMonitor mon(this);
   if (m_customFlagsHash)
   {
-  nsPRUint32Key hashKey(uid);
-  char *value = (char *) m_customFlagsHash->Get(&hashKey);
+    nsPRUint32Key hashKey(uid);
+    char *value = (char *) m_customFlagsHash->Get(&hashKey);
     if (value)
     {
-  PRUint32 valueLen = 0, curStringLen = 0;
-  do 
-  {
-    curStringLen = strlen(value + valueLen) + 1;
-    valueLen += curStringLen;
-  }
-  while (curStringLen > 1);
-
-  *customFlags = (char *) PR_Malloc(valueLen);
-  memcpy(*customFlags, value, valueLen);
-      return NS_OK;
+      *customFlags = nsCRT::strdup(value);
+      return (*customFlags) ? NS_OK : NS_ERROR_FAILURE;
     }
   }
   *customFlags = nsnull;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsImapFlagAndUidState::ClearCustomFlags(PRUint32 uid)
+{
+  nsAutoCMonitor mon(this);
+  if (m_customFlagsHash)
+  {
+    nsPRUint32Key hashKey(uid);
+    m_customFlagsHash->Remove(&hashKey);
+  }
   return NS_OK;
 }
 

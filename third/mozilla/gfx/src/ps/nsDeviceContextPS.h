@@ -47,6 +47,7 @@
 #include "nsIRenderingContext.h"
 #include "nsVoidArray.h"
 #include "nsIDeviceContextPS.h"
+#include "nsFontMetricsPS.h"
 
 class nsPostScriptObj;
 class nsDeviceContextWin;       // need to be a friend of the class using us.
@@ -77,10 +78,6 @@ public:
 
   NS_IMETHOD  GetScrollBarDimensions(float &aWidth, float &aHeight) const;
 
-  void        SetDrawingSurface(nsDrawingSurface  aSurface) { mSurface = aSurface; }
-  NS_IMETHOD  GetDrawingSurface(nsIRenderingContext &aContext, nsDrawingSurface &aSurface);
-
-
   NS_IMETHOD  CheckFontExistence(const nsString& aFontName);
   NS_IMETHOD  GetDepth(PRUint32& aDepth);
   NS_IMETHOD  ConvertPixel(nscolor aColor, PRUint32 & aPixel);
@@ -101,6 +98,8 @@ public:
   NS_IMETHOD  SetSpec(nsIDeviceContextSpec *aSpec);
 
   nsPostScriptObj*    GetPrintContext() { return mPSObj; }
+  nsHashtable*        GetPSFontGeneratorList() { return mPSFontGeneratorList; }
+  PRBool               mFTPEnable;
 
 protected:
   virtual     ~nsDeviceContextPS();
@@ -110,6 +109,7 @@ protected:
   nsCOMPtr<nsIDeviceContextSpec>  mSpec;
   nsCOMPtr<nsIDeviceContext>      mParentDeviceContext;
   nsPostScriptObj       *mPSObj;
+  nsHashtable           *mPSFontGeneratorList;
 };
 
 #endif /* nsDeviceContextPS_h___ */

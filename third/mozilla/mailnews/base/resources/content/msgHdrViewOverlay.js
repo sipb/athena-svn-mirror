@@ -34,12 +34,9 @@
 var msgHeaderParserContractID		   = "@mozilla.org/messenger/headerparser;1";
 var abAddressCollectorContractID	 = "@mozilla.org/addressbook/services/addressCollecter;1";
 
-// get the "msgLoad" atom
-var atomService = Components.classes["@mozilla.org/atom-service;1"].getService().QueryInterface(Components.interfaces.nsIAtomService);
-var gMsgLoadedAtom = atomService.getAtom("msgLoaded").QueryInterface(Components.interfaces.nsISupports);
-
 var gViewAllHeaders = false;
 var gNumAddressesToShow = 3;
+var gShowOrganization = false;
 var gShowUserAgent = false;
 var gCollectIncoming = false;
 var gCollectOutgoing = false;
@@ -186,6 +183,12 @@ function initializeHeaderViewTables()
       gExpandedHeaderView[headerName] = new createHeaderEntry('expanded', gExpandedHeaderList[index]);
     }
     
+    if (gShowOrganization)
+    {
+      var organizationEntry = {name:"organization", outputFunction:updateHeaderValue};
+      gExpandedHeaderView[organizationEntry.name] = new createHeaderEntry('expanded', organizationEntry);
+    }
+    
     if (gShowUserAgent)
     {
       var userAgentEntry = {name:"user-agent", outputFunction:updateHeaderValue};
@@ -208,6 +211,7 @@ function OnLoadMsgHeaderPane()
   gCollectNewsgroup = pref.getBoolPref("mail.collect_email_address_newsgroup");
   gCollectOutgoing = pref.getBoolPref("mail.collect_email_address_outgoing");
   gShowUserAgent = pref.getBoolPref("mailnews.headers.showUserAgent");
+  gShowOrganization = pref.getBoolPref("mailnews.headers.showOrganization");
   initializeHeaderViewTables();
 
   var toggleHeaderView = document.getElementById("msgHeaderView");
@@ -297,7 +301,7 @@ var messageHeaderSink = {
     {
       this.onStartHeaders(); 
 
-      var index = 0; 
+      var index = 0;
       // process each header
       while (index < numHeaders)
       {
@@ -309,11 +313,19 @@ var messageHeaderSink = {
         foo.headerValue = headerValues[index];
         foo.headerName = headerNames[index];
 
-        // some times, you can have multiple To or cc lines....in this case, we want to APPEND 
-        // these headers into one. 
-        if ( (lowerCaseHeaderName == 'to' || lowerCaseHeaderName == 'cc') && ( lowerCaseHeaderName in currentHeaderData))
+        // according to RFC 2822, certain headers
+        // can occur "unlimited" times
+        if (lowerCaseHeaderName in currentHeaderData)
         {
-          currentHeaderData[lowerCaseHeaderName].headerValue = currentHeaderData[lowerCaseHeaderName].headerValue + ',' + foo.headerValue;
+          // sometimes, you can have multiple To or Cc lines....
+          // in this case, we want to append these headers into one.
+          if (lowerCaseHeaderName == 'to' || lowerCaseHeaderName == 'cc')
+            currentHeaderData[lowerCaseHeaderName].headerValue = currentHeaderData[lowerCaseHeaderName].headerValue + ',' + foo.headerValue;
+          else {  
+            // use the index to create a unique header name like:
+            // received5, received6, etc
+            currentHeaderData[lowerCaseHeaderName + index] = foo;
+          }
         }
         else
          currentHeaderData[lowerCaseHeaderName] = foo;
@@ -374,13 +386,7 @@ var messageHeaderSink = {
 
     onEndMsgDownload: function(url)
     {
-      var msgFolder;
-      if (url)
-      {
-        msgFolder = url.folder;
-        if (msgFolder)
-          msgFolder.NotifyFolderEvent(gMsgLoadedAtom);
-      }
+      OnMsgLoaded(url);
     },
 
     mSecurityInfo  : null,
@@ -553,6 +559,19 @@ function UpdateMessageHeaders()
     var headerField = currentHeaderData[headerName];
     var headerEntry;
 
+    if (headerName == "subject")
+    {
+      try {
+        if (gDBView.keyForFirstSelectedMessage == nsMsgKey_None)
+        {
+          var folder = null;
+          if (gCurrentFolderUri)
+            folder = RDF.GetResource(gCurrentFolderUri).QueryInterface(Components.interfaces.nsIMsgFolder);
+          setTitleFromFolder(folder, headerField.headerValue);
+        }
+      } catch (ex) {}
+    }
+    
     if (gCollapsedHeaderViewMode && !gBuiltCollapsedView)
     { 
       headerEntry = gCollapsedHeaderView[headerName];
@@ -699,8 +718,6 @@ function OutputEmailAddresses(headerEntry, emailAddresses)
 
 function setFromBuddyIcon(email)
 {
-   //dump("XXX email = " + email + "\n");
-
    var fromBuddyIcon = document.getElementById("fromBuddyIcon");
 
    try {
@@ -773,11 +790,16 @@ function AddNodeToAddressBook (emailAddressNode)
 // with that address
 function SendMailToNode(emailAddressNode)
 {
-  if (emailAddressNode)
+  var fields = Components.classes["@mozilla.org/messengercompose/composefields;1"].createInstance(Components.interfaces.nsIMsgCompFields);
+  var params = Components.classes["@mozilla.org/messengercompose/composeparams;1"].createInstance(Components.interfaces.nsIMsgComposeParams);
+  if (emailAddressNode && fields && params)
   {
-     var emailAddress = emailAddressNode.getAttribute("emailAddress");
-     if (emailAddress)
-        messenger.OpenURL("mailto:" + emailAddress );
+    fields.to = emailAddressNode.getAttribute("fullAddress");
+    params.type = Components.interfaces.nsIMsgCompType.New;
+    params.format = Components.interfaces.nsIMsgCompFormat.Default;
+    params.identity = accountManager.getFirstIdentityForServer(GetLoadedMsgFolder().server);
+    params.composeFields = fields;
+    msgComposeService.OpenComposeWindowWithParams(null, params);
   }
 }
 
@@ -821,20 +843,40 @@ function createNewAttachmentInfo(contentType, url, displayName, uri, notDownload
   this.notDownloaded = notDownloaded;
 }
 
-function saveAttachment(contentType, url, displayName, messageUri)
+function dofunc(aFunctionName, aFunctionArg)
 {
-  messenger.saveAttachment(contentType, url, displayName, messageUri);
+  if (aFunctionName == "saveAttachment") 
+    saveAttachment(aFunctionArg); 
+  else if (aFunctionName == "openAttachment") 
+    openAttachment(aFunctionArg); 
+  else if (aFunctionName == "printAttachment") 
+    printAttachment(aFunctionArg);
 }
 
-function openAttachment(contentType, url, displayName, messageUri)
+function saveAttachment(aAttachment)
 {
-  messenger.openAttachment(contentType, url, displayName, messageUri);
+  messenger.saveAttachment(aAttachment.contentType, 
+                           aAttachment.url, 
+                           escape(aAttachment.displayName), 
+                           aAttachment.messageUri);
 }
 
-function printAttachmentAttachment(contentType, url, displayName, messageUri)
+function openAttachment(aAttachment)
 {
-  // we haven't implemented the ability to print attachments yet...
-  // messenger.printAttachment(contentType, url, displayName, messageUri);
+  messenger.openAttachment(aAttachment.contentType, 
+                           aAttachment.url, 
+                           escape(aAttachment.displayName), 
+                           aAttachment.messageUri);
+}
+
+function printAttachment(aAttachment)
+{
+  /* we haven't implemented the ability to print attachments yet...
+  messenger.printAttachment(aAttachment.contentType, 
+                            aAttachment.url, 
+                            escape(aAttachment.displayName), 
+                            aAttachment.messageUri);
+  */
 }
 
 function onShowAttachmentContextMenu()
@@ -868,32 +910,31 @@ function attachmentListClick(event)
       var target = event.target;
       if (target.localName == "listitem")
       {
-	    var commandStringSuffix = target.getAttribute("commandSuffix");
-        var openString = 'openAttachment' + commandStringSuffix;
-        eval(openString);
+	dofunc("openAttachment", target.attachment);
       }
     }
 }
 
 // on command handlers for the attachment list context menu...
-// commandPrefix matches one of our existing functions (openAttachment, saveAttachment, etc.) which we'll add to the command suffix
-// found on the listitem....
+// commandPrefix matches one of our existing functions 
+// (openAttachment, saveAttachment, etc.)
 function handleAttachmentSelection(commandPrefix)
 {
-  // get the selected attachment...and call openAttachment on it...
   var attachmentList = document.getElementById('attachmentList');
   var selectedAttachments = attachmentList.selectedItems;
   var listItem = selectedAttachments[0];
-  var commandStringSuffix = listItem.getAttribute("commandSuffix");
-  var openString = commandPrefix + commandStringSuffix;
-  eval(openString);
+
+  dofunc(commandPrefix, listItem.attachment);
 }
 
-function generateCommandSuffixForAttachment(attachment)
+function cloneAttachment(aAttachment)
 {
-  // replace ' in url with \' so we can eval() correctly
-  var attachmentUrl = attachment.url.replace(/'/g,"\\\'");
-  return "('" + attachment.contentType + "', '" + attachmentUrl + "', '" + escape(attachment.displayName) + "', '" + attachment.uri + "')";
+  var obj = new Object();
+  obj.contentType = aAttachment.contentType;
+  obj.url = aAttachment.url;
+  obj.displayName = aAttachment.displayName;
+  obj.messageUri = aAttachment.uri;
+  return obj;
 }
 
 function displayAttachmentsForExpandedView()
@@ -905,20 +946,21 @@ function displayAttachmentsForExpandedView()
     for (index in currentAttachments)
     {
       var attachment = currentAttachments[index];
+
       // we need to create a listitem to insert the attachment
       // into the attachment list..
-
-	    var item = document.createElement("listitem");
-
+      var item = document.createElement("listitem");
       item.setAttribute("class", "listitem-iconic"); 
       item.setAttribute("label", attachment.displayName);
       item.setAttribute("tooltip", "attachmentListTooltip");
-      item.setAttribute("commandSuffix", generateCommandSuffixForAttachment(attachment)); // set the command suffix on the listitem...
+
+      item.attachment = cloneAttachment(attachment);
+
       item.setAttribute("attachmentUrl", attachment.url);
       item.setAttribute("attachmentContentType", attachment.contentType);
       item.setAttribute("attachmentUri", attachment.uri);
       setApplicationIconForAttachment(attachment, item);
-  	  attachmentList.appendChild(item);
+      attachmentList.appendChild(item);
     } // for each attachment
     gBuildAttachmentsForCurrentMsg = true;
   }
@@ -1014,13 +1056,13 @@ function addAttachmentToPopup(popup, attachment, attachmentIndex)
       item.setAttribute('label', formattedDisplayNameString); 
       item.setAttribute('accesskey', attachmentIndex); 
 
-      var oncommandPrefix = generateCommandSuffixForAttachment(attachment);
-
       var openpopup = document.createElement('menupopup');
       openpopup = item.appendChild(openpopup);
 
       var menuitementry = document.createElement('menuitem');     
-      menuitementry.setAttribute('oncommand', 'openAttachment' + oncommandPrefix); 
+
+      menuitementry.attachment = cloneAttachment(attachment);
+      menuitementry.setAttribute('oncommand', 'openAttachment(this.attachment)'); 
 
       if (!gSaveLabel)
         gSaveLabel = gMessengerBundle.getString("saveLabel");
@@ -1039,7 +1081,8 @@ function addAttachmentToPopup(popup, attachment, attachmentIndex)
       openpopup.appendChild(menuseparator);
       
       menuitementry = document.createElement('menuitem');
-      menuitementry.setAttribute('oncommand', 'saveAttachment' + oncommandPrefix); 
+      menuitementry.attachment = cloneAttachment(attachment);
+      menuitementry.setAttribute('oncommand', 'saveAttachment(this.attachment)'); 
       menuitementry.setAttribute('label', gSaveLabel); 
       menuitementry.setAttribute('accesskey', gSaveLabelAccesskey); 
       menuitementry = openpopup.appendChild(menuitementry);
@@ -1121,3 +1164,5 @@ var attachmentAreaDNDObserver = {
     }
   }
 };
+
+

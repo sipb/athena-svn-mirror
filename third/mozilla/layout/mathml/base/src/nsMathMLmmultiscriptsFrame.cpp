@@ -26,7 +26,7 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
@@ -160,9 +160,7 @@ nsMathMLmmultiscriptsFrame::Place(nsIPresContext*      aPresContext,
   ProcessAttributes(aPresContext);
 
   // get x-height (an ex)
-  const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-    mStyleContext->GetStyleData(eStyleStruct_Font));
-  aRenderingContext.SetFont(font->mFont, nsnull);
+  aRenderingContext.SetFont(GetStyleFont()->mFont, nsnull);
   nsCOMPtr<nsIFontMetrics> fm;
   aRenderingContext.GetFontMetrics(*getter_AddRefs(fm));
 

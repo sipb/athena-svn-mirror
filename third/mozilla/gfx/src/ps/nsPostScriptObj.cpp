@@ -28,6 +28,8 @@
  * 04/20/2000       IBM Corp.      OS/2 VisualAge build.
  * 10/09/2000       IPLabs Linux Team      True Unicode glyps support added.
  */
+
+#include "gfx-config.h"
  
 #define FORCE_PR_LOG /* Allow logging in the release build */
 #define PR_LOGGING 1
@@ -52,6 +54,7 @@
 #include "nsNetUtil.h"
 #include "nsIPersistentProperties2.h"
 #include "nsCRT.h"
+#include "nsFontMetricsPS.h"
 
 #ifndef NS_BUILD_ID
 #include "nsBuildID.h"
@@ -66,6 +69,10 @@
 
 #ifdef VMS
 #include <stdlib.h>
+#endif /* VMS */
+
+#ifdef MOZ_ENABLE_FREETYPE2
+#include "nsType8.h"
 #endif
 
 #ifdef PR_LOGGING
@@ -201,12 +208,10 @@ nsPostScriptObj::~nsPostScriptObj()
     if (mPrintSetup->out) {
       fclose(mPrintSetup->out);
       mPrintSetup->out = nsnull;
-#ifdef VMS
-      // if the file was still open and we have a print command, then it was
-      // a print preview operation and so we need to delete the temp file.
-      if (mPrintSetup->print_cmd)
-        remove(mPrintSetup->filename);
-#endif
+    }
+    if (mPrintSetup->tmpBody) {
+      fclose(mPrintSetup->tmpBody);
+      mPrintSetup->tmpBody = nsnull;
     }  
   
     finalize_translation();
@@ -364,16 +369,8 @@ nsPostScriptObj::Init( nsIDeviceContextSpecPS *aSpec )
         PR_SetEnv(envvar);
         
         aSpec->GetCommand(&mPrintSetup->print_cmd);
-#ifndef VMS
         mPrintSetup->out = tmpfile();
         mPrintSetup->filename = nsnull;  
-#else
-        // We can not open a pipe and print the contents of it. Instead
-        // we have to print to a file and then print that.
-        
-        mPrintSetup->filename = tempnam("SYS$SCRATCH:","MOZ_P");
-        mPrintSetup->out = fopen(mPrintSetup->filename, "w");
-#endif
       } else {
         const char *path;
         aSpec->GetPath(&path);
@@ -382,6 +379,9 @@ nsPostScriptObj::Init( nsIDeviceContextSpecPS *aSpec )
         if (!mPrintSetup->out)
           return NS_ERROR_GFX_PRINTER_COULD_NOT_OPEN_FILE;
       }
+      mPrintSetup->tmpBody = tmpfile();
+      NS_ENSURE_TRUE(mPrintSetup->tmpBody, NS_ERROR_FAILURE);
+      mPrintSetup->tmpBody_filename = nsnull;
     } else 
         return NS_ERROR_FAILURE;
 
@@ -1979,6 +1979,18 @@ FILE *f;
 
 /** ---------------------------------------------------
  *  See documentation in nsPostScriptObj.h
+ *	@update 20/01/03 louie
+ */
+void
+nsPostScriptObj::add_cid_check()
+{
+#ifdef MOZ_ENABLE_FREETYPE2
+  AddCIDCheckCode(mPrintContext->prSetup->out);
+#endif
+}
+
+/** ---------------------------------------------------
+ *  See documentation in nsPostScriptObj.h
  *	@update 2/1/99 dwc
  */
 void 
@@ -1986,7 +1998,7 @@ nsPostScriptObj::begin_page()
 {
 FILE *f;
 
-  f = mPrintContext->prSetup->out;
+  f = mPrintContext->prSetup->tmpBody;
   fprintf(f, "%%%%Page: %d %d\n", mPageNumber, mPageNumber);
   fprintf(f, "%%%%BeginPageSetup\n");
   if(mPrintSetup->num_copies != 1) {
@@ -2028,12 +2040,12 @@ nsPostScriptObj::end_page()
   fprintf(mPrintContext->prSetup->out, "pagelevel restore\nshowpage\n");
 #endif
 
-  fprintf(mPrintContext->prSetup->out, "pagelevel restore\n");
+  fprintf(mPrintContext->prSetup->tmpBody, "pagelevel restore\n");
   annotate_page(mPrintContext->prSetup->header, mPrintContext->prSetup->top/2, -1, mPageNumber);
   annotate_page( mPrintContext->prSetup->footer,
 				   mPrintContext->prSetup->height - mPrintContext->prSetup->bottom/2,
 				   1, mPageNumber);
-  fprintf(mPrintContext->prSetup->out, "showpage\n");
+  fprintf(mPrintContext->prSetup->tmpBody, "showpage\n");
   mPageNumber++;
 }
 
@@ -2051,26 +2063,33 @@ nsPostScriptObj::end_document()
     return NS_ERROR_GFX_PRINTER_CMD_FAILURE;
 
   FILE *f = mPrintContext->prSetup->out;
+  
+  // output "tmpBody"
+  char   buffer[256];
+  size_t length;
+        
+  if (!mPrintContext->prSetup->tmpBody)
+    return NS_ERROR_GFX_PRINTER_CMD_FAILURE;
+    
+  /* Reset file pointer to the beginning of the temp tmpBody file... */
+  fseek(mPrintContext->prSetup->tmpBody, 0, SEEK_SET);
+
+  while ((length = fread(buffer, 1, sizeof(buffer),
+          mPrintContext->prSetup->tmpBody)) > 0)  {
+    fwrite(buffer, 1, length, f);
+  }
+
+  if (mPrintSetup->tmpBody) {
+    fclose(mPrintSetup->tmpBody);
+    mPrintSetup->tmpBody = nsnull;
+  }
+  if (mPrintSetup->tmpBody_filename)
+    free((void *)mPrintSetup->tmpBody_filename);
+  
   // n_pages is zero so use mPageNumber
   fprintf(f, "%%%%Trailer\n");
   fprintf(f, "%%%%Pages: %d\n", (int) mPageNumber - 1);
   fprintf(f, "%%%%EOF\n");
-
-#ifdef VMS
-  if ( mPrintSetup->print_cmd != nsnull ) {
-    char VMSPrintCommand[1024];
-    if (mPrintSetup->out) {
-      fclose(mPrintSetup->out);
-      mPrintSetup->out = nsnull;
-    }  
-    PR_snprintf(VMSPrintCommand, sizeof(VMSPrintCommand), "%s %s.",
-      mPrintSetup->print_cmd, mPrintSetup->filename);
-    PR_LOG(nsPostScriptObjLM, PR_LOG_DEBUG, ("VMS print command '%s'\n", VMSPrintCommand));
-    // FixMe: Check for error and return one of NS_ERROR_GFX_PRINTER_* on demand  
-    system(VMSPrintCommand);
-    free((void *)mPrintSetup->filename);
-  }
-#endif
 
   if (mPrintSetup->filename) {
     PR_LOG(nsPostScriptObjLM, PR_LOG_DEBUG, ("print to file completed.\n"));
@@ -2082,7 +2101,15 @@ nsPostScriptObj::end_document()
     char   buf[256];
     size_t len;
         
+#ifdef VMS
+    /* We can't print from a pipe, so we need to create a temporary file */
+    int VMSstatus;
+    char VMSPrintCommand[1024];
+    mPrintSetup->filename = tempnam("SYS$SCRATCH:","MOZ_P");
+    pipe = fopen(mPrintSetup->filename, "w");
+#else
     pipe = popen(mPrintSetup->print_cmd, "w");
+#endif /* VMS */
     /* XXX: We should look at |errno| in this case and return something
      * more specific here... */
     if (!pipe)
@@ -2100,7 +2127,23 @@ nsPostScriptObj::end_document()
       job_size += len;
     } while(len == sizeof(buf));
 
+#ifdef VMS
+    fclose(pipe);
+    /* Now we can print the temporary file */
+    PR_snprintf(VMSPrintCommand, sizeof(VMSPrintCommand), "%s %s.",
+      mPrintSetup->print_cmd, mPrintSetup->filename);
+    PR_LOG(nsPostScriptObjLM, PR_LOG_DEBUG, ("VMS print command '%s'\n", 
+      VMSPrintCommand));
+    VMSstatus = system(VMSPrintCommand);
+    free((void *)mPrintSetup->filename);
+    mPrintSetup->filename = NULL;
+    PR_LOG(nsPostScriptObjLM, PR_LOG_DEBUG, ("VMS print status = %d\n",
+      VMSstatus));
+    if (!WIFEXITED(VMSstatus))
+      return NS_ERROR_GFX_PRINTER_CMD_FAILURE;
+#else
     pclose(pipe);
+#endif /* VMS */
     PR_LOG(nsPostScriptObjLM, PR_LOG_DEBUG, ("piping done, copied %ld bytes.\n", job_size));
     if (errno != 0) {
       return NS_ERROR_GFX_PRINTER_CMD_FAILURE;
@@ -2130,7 +2173,7 @@ nsPostScriptObj::show(const char* txt, int len, const char *align)
 {
 FILE *f;
 
-  f = mPrintContext->prSetup->out;
+  f = mPrintContext->prSetup->tmpBody;
   fprintf(f, "(");
 
   while (len-- > 0) {
@@ -2156,7 +2199,7 @@ FILE *f;
 void 
 nsPostScriptObj::preshow(const PRUnichar* txt, int len)
 {
-  FILE *f = mPrintContext->prSetup->out;
+  FILE *f = mPrintContext->prSetup->tmpBody;
   unsigned char highbyte;
   PRUnichar uch;
 
@@ -2209,12 +2252,26 @@ nsPostScriptObj::preshow(const PRUnichar* txt, int len)
  *	@update 3/22/2000 to deal with only unicode chars. yueheng.xu@intel.com
  */
 void 
-nsPostScriptObj::show(const PRUnichar* txt, int len, const char *align)
+nsPostScriptObj::show(const PRUnichar* txt, int len,
+                      const char *align, int aType)
 {
- FILE *f = mPrintContext->prSetup->out;
- unsigned char highbyte, lowbyte;
- PRUnichar uch;
-
+  FILE *f = mPrintContext->prSetup->tmpBody;
+  unsigned char highbyte, lowbyte;
+  PRUnichar uch;
+ 
+  if (aType == 1) {
+    int i;
+    fprintf(f, "<");
+    for (i=0; i < len; i++) {
+      if (i == 0)
+        fprintf(f, "%04x", txt[i]);
+      else
+        fprintf(f, " %04x", txt[i]);
+    }
+    fprintf(f, "> show\n");
+    return;
+  }
+ 
   fprintf(f, "(");
 
   while (len-- > 0) {
@@ -2274,7 +2331,7 @@ nsPostScriptObj::moveto(int x, int y)
 
   y = (mPrintContext->prInfo->page_height - y - 1);
   
-  fprintf(mPrintContext->prSetup->out, "%g %g moveto\n",
+  fprintf(mPrintContext->prSetup->tmpBody, "%g %g moveto\n",
 		PAGE_TO_POINT_F(x), PAGE_TO_POINT_F(y));
   XL_RESTORE_NUMERIC_LOCALE();
 }
@@ -2293,7 +2350,7 @@ nsPostScriptObj::moveto_loc(int x, int y)
   // invert y
   y = (mPrintContext->prSetup->height - y - 1);
 
-  fprintf(mPrintContext->prSetup->out, "%g %g moveto\n",
+  fprintf(mPrintContext->prSetup->tmpBody, "%g %g moveto\n",
 		PAGE_TO_POINT_F(x), PAGE_TO_POINT_F(y));
   XL_RESTORE_NUMERIC_LOCALE();
 }
@@ -2312,7 +2369,7 @@ nsPostScriptObj::lineto( int aX1, int aY1)
   //aY1 = (mPrintContext->prInfo->page_height - aY1 - 1) + mPrintContext->prSetup->bottom;
   aY1 = (mPrintContext->prInfo->page_height - aY1 - 1)  ;
 
-  fprintf(mPrintContext->prSetup->out, "%g %g lineto\n",
+  fprintf(mPrintContext->prSetup->tmpBody, "%g %g lineto\n",
 		PAGE_TO_POINT_F(aX1), PAGE_TO_POINT_F(aY1));
 
   XL_RESTORE_NUMERIC_LOCALE();
@@ -2328,10 +2385,11 @@ nsPostScriptObj::ellipse( int aWidth, int aHeight)
   XL_SET_NUMERIC_LOCALE();
 
   // Ellipse definition
-  fprintf(mPrintContext->prSetup->out,"%g %g ",PAGE_TO_POINT_F(aWidth)/2, PAGE_TO_POINT_F(aHeight)/2);
-  fprintf(mPrintContext->prSetup->out, 
+  fprintf(mPrintContext->prSetup->tmpBody,"%g %g ",
+                PAGE_TO_POINT_F(aWidth)/2, PAGE_TO_POINT_F(aHeight)/2);
+  fprintf(mPrintContext->prSetup->tmpBody,
                 " matrix currentmatrix currentpoint translate\n");
-  fprintf(mPrintContext->prSetup->out, 
+  fprintf(mPrintContext->prSetup->tmpBody,
           "     3 1 roll scale newpath 0 0 1 0 360 arc setmatrix  \n");
   XL_RESTORE_NUMERIC_LOCALE();
 }
@@ -2346,10 +2404,11 @@ nsPostScriptObj::arc( int aWidth, int aHeight,float aStartAngle,float aEndAngle)
 
   XL_SET_NUMERIC_LOCALE();
   // Arc definition
-  fprintf(mPrintContext->prSetup->out,"%g %g ",PAGE_TO_POINT_F(aWidth)/2, PAGE_TO_POINT_F(aHeight)/2);
-  fprintf(mPrintContext->prSetup->out, 
+  fprintf(mPrintContext->prSetup->tmpBody,"%g %g ",
+                PAGE_TO_POINT_F(aWidth)/2, PAGE_TO_POINT_F(aHeight)/2);
+  fprintf(mPrintContext->prSetup->tmpBody,
                 " matrix currentmatrix currentpoint translate\n");
-  fprintf(mPrintContext->prSetup->out, 
+  fprintf(mPrintContext->prSetup->tmpBody,
           "     3 1 roll scale newpath 0 0 1 %g %g arc setmatrix  \n",aStartAngle,aEndAngle);
 
   XL_RESTORE_NUMERIC_LOCALE();
@@ -2366,7 +2425,8 @@ void
 nsPostScriptObj::box( int aW, int aH)
 {
   XL_SET_NUMERIC_LOCALE();
-  fprintf(mPrintContext->prSetup->out, "%g 0 rlineto 0 %g rlineto %g 0 rlineto ",
+  fprintf(mPrintContext->prSetup->tmpBody,
+          "%g 0 rlineto 0 %g rlineto %g 0 rlineto ",
           PAGE_TO_POINT_F(aW), -PAGE_TO_POINT_F(aH), -PAGE_TO_POINT_F(aW));
   XL_RESTORE_NUMERIC_LOCALE();
 }
@@ -2379,7 +2439,8 @@ void
 nsPostScriptObj::box_subtract( int aW, int aH)
 {
   XL_SET_NUMERIC_LOCALE();
-  fprintf(mPrintContext->prSetup->out,"0 %g rlineto %g 0 rlineto 0 %g rlineto  ",
+  fprintf(mPrintContext->prSetup->tmpBody,
+          "0 %g rlineto %g 0 rlineto 0 %g rlineto  ",
           PAGE_TO_POINT_F(-aH), PAGE_TO_POINT_F(aW), PAGE_TO_POINT_F(aH));
   XL_RESTORE_NUMERIC_LOCALE();
 }
@@ -2391,7 +2452,7 @@ nsPostScriptObj::box_subtract( int aW, int aH)
 void 
 nsPostScriptObj::clip()
 {
-  fprintf(mPrintContext->prSetup->out, " clip \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " clip \n");
 }
 
 /** ---------------------------------------------------
@@ -2401,7 +2462,7 @@ nsPostScriptObj::clip()
 void 
 nsPostScriptObj::eoclip()
 {
-  fprintf(mPrintContext->prSetup->out, " eoclip \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " eoclip \n");
 }
 
 /** ---------------------------------------------------
@@ -2411,7 +2472,7 @@ nsPostScriptObj::eoclip()
 void 
 nsPostScriptObj::clippath()
 {
-  fprintf(mPrintContext->prSetup->out, " clippath \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " clippath \n");
 }
 
 /** ---------------------------------------------------
@@ -2421,7 +2482,7 @@ nsPostScriptObj::clippath()
 void 
 nsPostScriptObj::newpath()
 {
-  fprintf(mPrintContext->prSetup->out, " newpath \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " newpath \n");
 }
 
 /** ---------------------------------------------------
@@ -2431,7 +2492,7 @@ nsPostScriptObj::newpath()
 void 
 nsPostScriptObj::closepath()
 {
-  fprintf(mPrintContext->prSetup->out, " closepath \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " closepath \n");
 }
 
 /** ---------------------------------------------------
@@ -2441,7 +2502,7 @@ nsPostScriptObj::closepath()
 void 
 nsPostScriptObj::initclip()
 {
-  fprintf(mPrintContext->prSetup->out, " initclip \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " initclip \n");
 }
 
 /** ---------------------------------------------------
@@ -2452,7 +2513,8 @@ void
 nsPostScriptObj::line( int aX1, int aY1, int aX2, int aY2, int aThick)
 {
   XL_SET_NUMERIC_LOCALE();
-  fprintf(mPrintContext->prSetup->out, "gsave %g setlinewidth\n ",PAGE_TO_POINT_F(aThick));
+  fprintf(mPrintContext->prSetup->tmpBody,
+          "gsave %g setlinewidth\n ",PAGE_TO_POINT_F(aThick));
 
   aY1 -= mPrintContext->prInfo->page_topy;
  // aY1 = (mPrintContext->prInfo->page_height - aY1 - 1) + mPrintContext->prSetup->bottom;
@@ -2461,12 +2523,12 @@ nsPostScriptObj::line( int aX1, int aY1, int aX2, int aY2, int aThick)
  // aY2 = (mPrintContext->prInfo->page_height - aY2 - 1) + mPrintContext->prSetup->bottom;
   aY2 = (mPrintContext->prInfo->page_height - aY2 - 1) ;
 
-  fprintf(mPrintContext->prSetup->out, "%g %g moveto %g %g lineto\n",
+  fprintf(mPrintContext->prSetup->tmpBody, "%g %g moveto %g %g lineto\n",
 		    PAGE_TO_POINT_F(aX1), PAGE_TO_POINT_F(aY1),
 		    PAGE_TO_POINT_F(aX2), PAGE_TO_POINT_F(aY2));
   stroke();
 
-  fprintf(mPrintContext->prSetup->out, "grestore\n");
+  fprintf(mPrintContext->prSetup->tmpBody, "grestore\n");
   XL_RESTORE_NUMERIC_LOCALE();
 }
 
@@ -2477,7 +2539,7 @@ nsPostScriptObj::line( int aX1, int aY1, int aX2, int aY2, int aThick)
 void
 nsPostScriptObj::stroke()
 {
-  fprintf(mPrintContext->prSetup->out, " stroke \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " stroke \n");
 }
 
 /** ---------------------------------------------------
@@ -2487,7 +2549,7 @@ nsPostScriptObj::stroke()
 void
 nsPostScriptObj::fill()
 {
-  fprintf(mPrintContext->prSetup->out, " fill \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " fill \n");
 }
 
 /** ---------------------------------------------------
@@ -2497,7 +2559,7 @@ nsPostScriptObj::fill()
 void
 nsPostScriptObj::graphics_save()
 {
-  fprintf(mPrintContext->prSetup->out, " gsave \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " gsave \n");
 }
 
 /** ---------------------------------------------------
@@ -2507,7 +2569,7 @@ nsPostScriptObj::graphics_save()
 void
 nsPostScriptObj::graphics_restore()
 {
-  fprintf(mPrintContext->prSetup->out, " grestore \n");
+  fprintf(mPrintContext->prSetup->tmpBody, " grestore \n");
 }
 
 /** ---------------------------------------------------
@@ -2523,7 +2585,7 @@ nsPostScriptObj::translate(int x, int y)
     //y = (mPrintContext->prInfo->page_height - y - 1) + mPrintContext->prSetup->bottom;
     y = (mPrintContext->prInfo->page_height - y - 1) ;
 
-    fprintf(mPrintContext->prSetup->out, "%g %g translate\n", PAGE_TO_POINT_F(x), PAGE_TO_POINT_F(y));
+    fprintf(mPrintContext->prSetup->tmpBody, "%g %g translate\n", PAGE_TO_POINT_F(x), PAGE_TO_POINT_F(y));
     XL_RESTORE_NUMERIC_LOCALE();
 }
 
@@ -2554,16 +2616,17 @@ PRInt32 sRow, eRow, rStep;
   bytewidth = 3*width;
   cbits = 8;
 
-  fprintf(mPrintContext->prSetup->out, "gsave\n");
-  fprintf(mPrintContext->prSetup->out, "/rowdata %d string def\n",bytewidth/3);
+  FILE *f = mPrintContext->prSetup->tmpBody;
+  fprintf(f, "gsave\n");
+  fprintf(f, "/rowdata %d string def\n",bytewidth/3);
   translate(aX, aY + aHeight);
-  fprintf(mPrintContext->prSetup->out, "%g %g scale\n", PAGE_TO_POINT_F(aWidth), PAGE_TO_POINT_F(aHeight));
-  fprintf(mPrintContext->prSetup->out, "%d %d ", width, height);
-  fprintf(mPrintContext->prSetup->out, "%d ", cbits);
-  //fprintf(mPrintContext->prSetup->out, "[%d 0 0 %d 0 %d]\n", width,-height, height);
-  fprintf(mPrintContext->prSetup->out, "[%d 0 0 %d 0 0]\n", width,height);
-  fprintf(mPrintContext->prSetup->out, " { currentfile rowdata readhexstring pop }\n");
-  fprintf(mPrintContext->prSetup->out, " image\n");
+  fprintf(f, "%g %g scale\n",
+          PAGE_TO_POINT_F(aWidth), PAGE_TO_POINT_F(aHeight));
+  fprintf(f, "%d %d ", width, height);
+  fprintf(f, "%d ", cbits);
+  fprintf(f, "[%d 0 0 %d 0 0]\n", width,height);
+  fprintf(f, " { currentfile rowdata readhexstring pop }\n");
+  fprintf(f, " image\n");
 
   aImage->LockImagePixels(PR_FALSE);
   theBits = aImage->GetBits();
@@ -2583,10 +2646,10 @@ PRInt32 sRow, eRow, rStep;
     curline = theBits + (y*rowData);
     for(x=0;x<bytewidth;x+=3){
       if (n > 71) {
-          fprintf(mPrintContext->prSetup->out,"\n");
+          fprintf(mPrintContext->prSetup->tmpBody,"\n");
           n = 0;
       }
-      fprintf(mPrintContext->prSetup->out, "%02x", (int) (0xff & *curline));
+      fprintf(mPrintContext->prSetup->tmpBody, "%02x", (int) (0xff & *curline));
       curline+=3; 
       n += 2;
     }
@@ -2596,7 +2659,7 @@ PRInt32 sRow, eRow, rStep;
   }
   aImage->UnlockImagePixels(PR_FALSE);
 
-  fprintf(mPrintContext->prSetup->out, "\ngrestore\n");
+  fprintf(mPrintContext->prSetup->tmpBody, "\ngrestore\n");
   XL_RESTORE_NUMERIC_LOCALE();
 
 }
@@ -2614,6 +2677,11 @@ PRInt32 width,height,bytewidth,cbits,n;
 PRUint8 *theBits,*curline;
 PRBool isTopToBottom;
 PRInt32 sRow, eRow, rStep; 
+
+  // No point in scaling images to 0--some printers choke on it (bug 191684)
+  if (aWidth == 0 || aHeight == 0) {
+    return;
+  }
 
   XL_SET_NUMERIC_LOCALE();
 
@@ -2633,16 +2701,17 @@ PRInt32 sRow, eRow, rStep;
   bytewidth = 3*width;
   cbits = 8;
 
-  fprintf(mPrintContext->prSetup->out, "gsave\n");
-  fprintf(mPrintContext->prSetup->out, "/rowdata %d string def\n",bytewidth);
+  FILE *f = mPrintContext->prSetup->tmpBody;
+  fprintf(f, "gsave\n");
+  fprintf(f, "/rowdata %d string def\n",bytewidth);
   translate(aX, aY + aHeight);
-  fprintf(mPrintContext->prSetup->out, "%g %g scale\n", PAGE_TO_POINT_F(aWidth), PAGE_TO_POINT_F(aHeight));
-  fprintf(mPrintContext->prSetup->out, "%d %d ", width, height);
-  fprintf(mPrintContext->prSetup->out, "%d ", cbits);
-  //fprintf(mPrintContext->prSetup->out, "[%d 0 0 %d 0 %d]\n", width,-height, height);
-  fprintf(mPrintContext->prSetup->out, "[%d 0 0 %d 0 0]\n", width,height);
-  fprintf(mPrintContext->prSetup->out, " { currentfile rowdata readhexstring pop }\n");
-  fprintf(mPrintContext->prSetup->out, " false 3 colorimage\n");
+  fprintf(f, "%g %g scale\n",
+          PAGE_TO_POINT_F(aWidth), PAGE_TO_POINT_F(aHeight));
+  fprintf(f, "%d %d ", width, height);
+  fprintf(f, "%d ", cbits);
+  fprintf(f, "[%d 0 0 %d 0 0]\n", width,height);
+  fprintf(f, " { currentfile rowdata readhexstring pop }\n");
+  fprintf(f, " false 3 colorimage\n");
 
   aImage->LockImagePixels(PR_FALSE);
   theBits = aImage->GetBits();
@@ -2662,10 +2731,10 @@ PRInt32 sRow, eRow, rStep;
     curline = theBits + (y*rowData);
     for(x=0;x<bytewidth;x++){
       if (n > 71) {
-          fprintf(mPrintContext->prSetup->out,"\n");
+          fprintf(f,"\n");
           n = 0;
       }
-      fprintf(mPrintContext->prSetup->out, "%02x", (int) (0xff & *curline++));
+      fprintf(f, "%02x", (int) (0xff & *curline++));
       n += 2;
     }
     y += rStep;
@@ -2674,7 +2743,7 @@ PRInt32 sRow, eRow, rStep;
   }
   aImage->UnlockImagePixels(PR_FALSE);
 
-  fprintf(mPrintContext->prSetup->out, "\ngrestore\n");
+  fprintf(f, "\ngrestore\n");
   XL_RESTORE_NUMERIC_LOCALE();
 
 }
@@ -2697,16 +2766,24 @@ float greyBrightness;
 
   if(mPrintSetup->color == PR_FALSE ) {
     greyBrightness=(NS_PS_RED(aColor)+NS_PS_GREEN(aColor)+NS_PS_BLUE(aColor))/3;
-    fprintf(mPrintContext->prSetup->out,"%3.2f %3.2f %3.2f setrgbcolor\n",
+    fprintf(mPrintContext->prSetup->tmpBody,"%3.2f %3.2f %3.2f setrgbcolor\n",
     greyBrightness,greyBrightness,greyBrightness);
   } else {
-    fprintf(mPrintContext->prSetup->out,"%3.2f %3.2f %3.2f setrgbcolor\n",
+    fprintf(mPrintContext->prSetup->tmpBody,"%3.2f %3.2f %3.2f setrgbcolor\n",
     NS_PS_RED(aColor), NS_PS_GREEN(aColor), NS_PS_BLUE(aColor));
   }
 
   XL_RESTORE_NUMERIC_LOCALE();
 }
 
+
+void nsPostScriptObj::setfont(const nsCString aFontName, PRUint32 aHeight)
+{
+  fprintf(mPrintContext->prSetup->tmpBody,
+          "/%s findfont %d scalefont setfont\n",
+          aFontName.get(),
+          NS_TWIPS_TO_POINTS(aHeight));
+}
 
 /** ---------------------------------------------------
  *  See documentation in nsPostScriptObj.h
@@ -2721,7 +2798,7 @@ int postscriptFont = 0;
 
 //    fprintf(mPrintContext->prSetup->out, "%% aFontIndex = %d, Family = %s, aStyle = %d, 
 //        aWeight=%d, postscriptfont = %d\n", aFontIndex, &aFamily, aStyle, aWeight, postscriptFont);
-  fprintf(mPrintContext->prSetup->out,"%d",NS_TWIPS_TO_POINTS(aHeight));
+  fprintf(mPrintContext->prSetup->tmpBody,"%d",NS_TWIPS_TO_POINTS(aHeight));
 	
   
   if( aFontIndex >= 0) {
@@ -2758,7 +2835,7 @@ int postscriptFont = 0;
 	}
     //#endif
    }
-	 fprintf(mPrintContext->prSetup->out, " f%d\n", postscriptFont);
+   fprintf(mPrintContext->prSetup->tmpBody, " f%d\n", postscriptFont);
 
 
 #if 0
@@ -2788,9 +2865,7 @@ int postscriptFont = 0;
 void 
 nsPostScriptObj::comment(const char *aTheComment)
 {
-
-  fprintf(mPrintContext->prSetup->out,"%%%s\n", aTheComment);
-
+  fprintf(mPrintContext->prSetup->tmpBody,"%%%s\n", aTheComment);
 }
 
 /** ---------------------------------------------------
@@ -2800,7 +2875,7 @@ nsPostScriptObj::comment(const char *aTheComment)
 void
 nsPostScriptObj::setlanggroup(nsIAtom * aLangGroup)
 {
-  FILE *f = mPrintContext->prSetup->out;
+  FILE *f = mPrintContext->prSetup->tmpBody;
 
   gEncoder = nsnull;
   gU2Ntable = nsnull;

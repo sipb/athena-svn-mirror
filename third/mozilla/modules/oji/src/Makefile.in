@@ -29,6 +29,8 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= oji
 IS_COMPONENT	= 1
 MODULE_NAME	= nsCJVMManagerModule
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  liveconnect \
@@ -50,7 +52,6 @@ REQUIRES	= xpcom \
 		  intl \
 		  $(NULL)
 
-ifdef MOZ_OJI
 LIBRARY_NAME	= oji
 EXPORT_LIBRARY = 1
 ifeq ($(OS_ARCH),WINNT)
@@ -70,6 +71,7 @@ CPPSRCS		= \
 		nsCSecurityContext.cpp \
 		nsCJVMManagerFactory.cpp \
 		lcglue.cpp \
+		nsJVMAuthTools.cpp \
 		$(NULL)
 
 EXPORTS		= \
@@ -78,7 +80,6 @@ EXPORTS		= \
 		nsJVMPluginTagInfo.h \
 		$(NULL)
 
-endif
 
 EXTRA_DSO_LDOPTS = \
 		$(LIBS_DIR) \
@@ -88,5 +89,3 @@ EXTRA_DSO_LDOPTS = \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk
-
-DEFINES		+= -DJSJDLL=\"$(JSJDLL)\"

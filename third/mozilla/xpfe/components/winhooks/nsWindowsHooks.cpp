@@ -54,8 +54,7 @@
 #include "nsXPIDLString.h"
 #include "nsString.h"
 #include "nsMemory.h"
-#include "nsNetCID.h"
-#include "nsIFileStreams.h"
+#include "nsNetUtil.h"
 // The order of these headers is important on Win2K because CreateDirectory
 // is |#undef|-ed in nsFileSpec.h, so we need to pull in windows.h for the
 // first time after nsFileSpec.h.
@@ -72,12 +71,11 @@
 #include "nsIDOMDocument.h"
 #include "nsIFrame.h"
 #include "nsIPresShell.h"
-#include "nsIImageFrame.h"
+#include "nsIImageLoadingContent.h"
 #include "imgIRequest.h"
 #include "imgIContainer.h"
 #include "gfxIImageFrame.h"
 #include "nsIFileStream.h"
-#include "nsFileSpec.h"
 
 #define RUNKEY "Software\\Microsoft\\Windows\\CurrentVersion\\Run"
 
@@ -101,26 +99,25 @@ const char *xulExts[]  = { ".xul", 0 };
 const char *htmExts[]  = { ".htm", ".html", ".shtml", 0 };
 
 static FileTypeRegistryEntry
-    jpg(   jpgExts,  "MozillaJPEG",  "JPEG Image",          "jpegfile" ),
-    gif(   gifExts,  "MozillaGIF",   "GIF Image",           "giffile" ),
-    png(   pngExts,  "MozillaPNG",   "PNG Image",           "pngfile" ),
-    mng(   mngExts,  "MozillaMNG",   "MNG Image",           "" ),
-    xbm(   xbmExts,  "MozillaXBM",   "XBM Image",           "xbmfile" ),
-    bmp(   bmpExts,  "MozillaBMP",   "BMP Image",           "" ),
-    ico(   icoExts,  "MozillaICO",   "Icon",                "icofile" ),
-    xml(   xmlExts,  "MozillaXML",   "XML Document",        "xmlfile" ),
-    xhtml( xhtmExts, "MozillaXHTML", "XHTML Document",      "" ),
-    xul(   xulExts,  "MozillaXUL",   "Mozilla XUL Document", "" );
+    jpg(   jpgExts,  "MozillaJPEG",  "JPEG Image",           "jpegfile", "image-file.ico"),
+    gif(   gifExts,  "MozillaGIF",   "GIF Image",            "giffile",  "image-file.ico"),
+    png(   pngExts,  "MozillaPNG",   "PNG Image",            "pngfile",  "image-file.ico"),
+    mng(   mngExts,  "MozillaMNG",   "MNG Image",            "",         "image-file.ico"),
+    xbm(   xbmExts,  "MozillaXBM",   "XBM Image",            "xbmfile",  "image-file.ico"),
+    bmp(   bmpExts,  "MozillaBMP",   "BMP Image",            "",         "image-file.ico"),
+    ico(   icoExts,  "MozillaICO",   "Icon",                 "icofile",  "image-file.ico"),
+    xml(   xmlExts,  "MozillaXML",   "XML Document",         "xmlfile",  "doc-file.ico"),
+    xhtml( xhtmExts, "MozillaXHTML", "XHTML Document",       "",         "doc-file.ico"),
+    xul(   xulExts,  "MozillaXUL",   "Mozilla XUL Document", "",         "doc-file.ico");
 
 static EditableFileTypeRegistryEntry
-    mozillaMarkup( htmExts, "MozillaHTML", "HTML Document", "htmlfile" );
+    mozillaMarkup( htmExts, "MozillaHTML", "HTML Document", "htmlfile",  "doc-file.ico");
 
 // Implementation of the nsIWindowsHooksSettings interface.
 // Use standard implementation of nsISupports stuff.
 NS_IMPL_ISUPPORTS1( nsWindowsHooksSettings, nsIWindowsHooksSettings );
 
 nsWindowsHooksSettings::nsWindowsHooksSettings() {
-    NS_INIT_ISUPPORTS();
 }
 
 nsWindowsHooksSettings::~nsWindowsHooksSettings() {
@@ -180,7 +177,6 @@ DEFINE_GETTER_AND_SETTER( HaveBeenSet,      mHaveBeenSet  )
 NS_IMPL_ISUPPORTS2( nsWindowsHooks, nsIWindowsHooks, nsIWindowsRegistry );
 
 nsWindowsHooks::nsWindowsHooks() {
-  NS_INIT_ISUPPORTS();
 }
 
 nsWindowsHooks::~nsWindowsHooks() {
@@ -675,6 +671,10 @@ nsWindowsHooks::SetRegistry() {
         (void) gopher.reset();
     }
 
+    // Call SHChangeNotify() to notify the windows shell that file
+    // associations changed, and that an update of the icons need to occur.
+    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+
     return NS_OK;
 }
 
@@ -748,7 +748,7 @@ NS_IMETHODIMP nsWindowsHooks::IsOptionEnabled(const char* option, PRBool *_retva
   *                   passed to the executable in the (appname) Quick Launch registry key
   *
   * Description:
-  *     This function seperates out the arguments from the optinline string
+  *     This function separates out the arguments from the optinline string
   *     Returning a pointer into the first arguments buffer.
   *     This function is used only locally, and is meant to reduce code size and readability.
   *
@@ -940,36 +940,17 @@ nsWindowsHooks::SetImageAsWallpaper(nsIDOMElement* aElement, PRBool aUseBackgrou
 {
   nsresult rv;
   
-  // get the document so we can get the presShell from it
-  nsCOMPtr<nsIDOMDocument> domDoc;
-  rv = aElement->GetOwnerDocument(getter_AddRefs(domDoc));
-  nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
-  if (!doc) return rv;
-
-  // get the presShell so we can get the frame from it
-  nsCOMPtr<nsIPresShell> presShell;
-  rv = doc->GetShellAt(0, getter_AddRefs(presShell));
-  if (!presShell) return rv;
-
   nsCOMPtr<gfxIImageFrame> gfxFrame;
   if (aUseBackground) {
     // XXX write background loading stuff!
   } else {
-    // get the frame for the image element
-    nsIFrame* frame = nsnull;
-    nsCOMPtr<nsIContent> imageContent = do_QueryInterface(aElement);
-    rv = presShell->GetPrimaryFrameFor(imageContent, &frame);
-    if (!frame) return rv;
-    
-    // if it was an html:img element, it will QI to nsIImageFrame
-    void* voidFrame;
-    frame->QueryInterface(NS_GET_IID(nsIImageFrame), &voidFrame);
-    nsIImageFrame* imageFrame = NS_STATIC_CAST(nsIImageFrame*, voidFrame);
-    if (!imageFrame) return NS_ERROR_FAILURE;
+    nsCOMPtr<nsIImageLoadingContent> imageContent = do_QueryInterface(aElement, &rv);
+    if (!imageContent) return rv;
     
     // get the image container
     nsCOMPtr<imgIRequest> request;
-    rv = imageFrame->GetImageRequest(getter_AddRefs(request));
+    rv = imageContent->GetRequest(nsIImageLoadingContent::CURRENT_REQUEST,
+                                  getter_AddRefs(request));
     if (!request) return rv;
     nsCOMPtr<imgIContainer> container;
     rv = request->GetImage(getter_AddRefs(container));

@@ -105,7 +105,7 @@ public:
 
   NS_IMETHOD GetSupportsOffline(PRBool *aSupportsOffline);
   NS_IMETHOD ShouldStoreMsgOffline(nsMsgKey msgKey, PRBool *result);
-  NS_IMETHOD GetOfflineFileTransport(nsMsgKey msgKey, PRUint32 *offset, PRUint32 *size, nsITransport **_retval);
+  NS_IMETHOD GetOfflineFileStream(nsMsgKey msgKey, PRUint32 *offset, PRUint32 *size, nsIInputStream **_retval);
   NS_IMETHOD HasMsgOffline(nsMsgKey msgKey, PRBool *result);
   NS_IMETHOD DownloadMessagesForOffline(nsISupportsArray *messages, nsIMsgWindow *msgWindow);
   NS_IMETHOD DownloadAllForOffline(nsIUrlListener *listener, nsIMsgWindow *msgWindow);
@@ -122,8 +122,9 @@ public:
   NS_IMETHOD SetDBTransferInfo(nsIDBFolderInfo *aTransferInfo);
   NS_IMETHOD GetStringProperty(const char *propertyName, char **propertyValue);
   NS_IMETHOD SetStringProperty(const char *propertyName, const char *propertyValue);
-  NS_IMETHOD CallFilterPlugins();
-
+  NS_IMETHOD CallFilterPlugins(nsIMsgWindow *aMsgWindow);
+  NS_IMETHOD GetLastMessageLoaded(nsMsgKey *aMsgKey);
+  NS_IMETHOD SetLastMessageLoaded(nsMsgKey aMsgKey);
 
 protected:
   virtual nsresult ReadDBFolderInfo(PRBool force);
@@ -150,7 +151,8 @@ protected:
   nsresult GetPromptPurgeThreshold(PRBool *aPrompt);
   nsresult GetPurgeThreshold(PRInt32 *aThreshold);
 
-  virtual nsresult SpamFilterClassifyMessage(const char *aURI, nsIJunkMailPlugin *aJunkMailPlugin);
+  virtual nsresult SpamFilterClassifyMessage(const char *aURI, nsIMsgWindow *aMsgWindow, nsIJunkMailPlugin *aJunkMailPlugin);
+  virtual nsresult SpamFilterClassifyMessages(const char **aURIArray, PRUint32 aURICount, nsIMsgWindow *aMsgWindow, nsIJunkMailPlugin *aJunkMailPlugin);
 
 protected:
   nsCOMPtr<nsIMsgDatabase> mDatabase;
@@ -159,6 +161,7 @@ protected:
   PRBool mAddListener;
   PRBool mNewMessages;
   PRBool mGettingNewMessages;
+  nsMsgKey mLastMessageLoaded;
 
   nsCOMPtr <nsIMsgDBHdr> m_offlineHeader;
   PRInt32 m_numOfflineMsgLines;
@@ -170,6 +173,7 @@ protected:
   static nsIAtom* mFolderLoadedAtom;
   static nsIAtom* mDeleteOrMoveMsgCompletedAtom;
   static nsIAtom* mDeleteOrMoveMsgFailedAtom;
+  static nsIAtom* mJunkStatusChangedAtom;
   static nsrefcnt mInstanceCount;
 };
 

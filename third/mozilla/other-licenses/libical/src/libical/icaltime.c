@@ -3,7 +3,7 @@
   FILE: icaltime.c
   CREATOR: eric 02 June 2000
   
-  $Id: icaltime.c,v 1.1.1.1 2003-02-14 18:39:27 rbasch Exp $
+  $Id: icaltime.c,v 1.1.1.1.2.1 2003-07-14 19:05:13 ghudson Exp $
   $Locker:  $
     
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -61,6 +61,11 @@
 #define strcasecmp    stricmp
 #endif
 
+#ifdef XP_MAC
+#include "prenv.h"
+#define getenv PR_GetEnv
+#define putenv PR_SetEnv
+#endif
 
 /**********************************************************************
  * Deprecated TIme functions

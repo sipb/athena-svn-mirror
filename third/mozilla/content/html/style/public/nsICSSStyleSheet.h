@@ -75,7 +75,7 @@ public:
   NS_IMETHOD  GetStyleSheetAt(PRInt32 aIndex, nsICSSStyleSheet*& aSheet) const = 0;
 
   NS_IMETHOD  Init(nsIURI* aURL) = 0;
-  NS_IMETHOD  SetTitle(const nsString& aTitle) = 0;
+  NS_IMETHOD  SetTitle(const nsAString& aTitle) = 0;
   NS_IMETHOD  AppendMedium(nsIAtom* aMedium) = 0;
   NS_IMETHOD  ClearMedia(void) = 0;
   NS_IMETHOD  SetOwningNode(nsIDOMNode* aOwningNode) = 0;
@@ -87,7 +87,11 @@ public:
   // set default namespace for sheet (may be overridden by @namespace)
   NS_IMETHOD  SetDefaultNameSpaceID(PRInt32 aDefaultNameSpaceID) = 0;
 
-  NS_IMETHOD  Clone(nsICSSStyleSheet*& aClone) const = 0;
+  NS_IMETHOD  Clone(nsICSSStyleSheet* aCloneParent,
+                    nsICSSImportRule* aCloneOwnerRule,
+                    nsIDocument* aCloneDocument,
+                    nsIDOMNode* aCloneOwningNode,
+                    nsICSSStyleSheet** aClone) const = 0;
 
   NS_IMETHOD  IsModified(PRBool* aModified) const = 0; // returns the mDirty status of the sheet
   NS_IMETHOD  SetModified(PRBool aModified) = 0;
@@ -96,10 +100,10 @@ public:
 };
 
 // XXX for backwards compatibility and convenience
-extern NS_EXPORT nsresult
-  NS_NewCSSStyleSheet(nsICSSStyleSheet** aInstancePtrResult, nsIURI* aURL);
+nsresult
+NS_NewCSSStyleSheet(nsICSSStyleSheet** aInstancePtrResult, nsIURI* aURL);
 
-extern NS_EXPORT nsresult
-  NS_NewCSSStyleSheet(nsICSSStyleSheet** aInstancePtrResult);
+nsresult
+NS_NewCSSStyleSheet(nsICSSStyleSheet** aInstancePtrResult);
 
 #endif /* nsICSSStyleSheet_h___ */

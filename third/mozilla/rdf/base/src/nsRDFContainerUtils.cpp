@@ -157,18 +157,11 @@ RDFContainerUtilsImpl::IndexToOrdinalResource(PRInt32 aIndex, nsIRDFResource **a
     if (aIndex <= 0)
         return NS_ERROR_ILLEGAL_VALUE;
 
-    // 16 digits should be plenty to hold a decimal version of a
-    // PRInt32.
-    char buf[sizeof(kRDFNameSpaceURI) + 16 + 1];
-
-    PL_strcpy(buf, kRDFNameSpaceURI);
-    buf[sizeof(kRDFNameSpaceURI) - 1] = '_';
+    nsCAutoString uri(kRDFNameSpaceURI);
+    uri.Append('_');
+    uri.AppendInt(aIndex);
     
-    PR_snprintf(buf + sizeof(kRDFNameSpaceURI), 16, "%ld", aIndex);
-    
-    nsresult rv;
-
-    rv = gRDFService->GetResource(buf, aOrdinal);
+    nsresult rv = gRDFService->GetResource(uri, aOrdinal);
     NS_ASSERTION(NS_SUCCEEDED(rv), "unable to get ordinal resource");
     if (NS_FAILED(rv)) return rv;
     
@@ -362,8 +355,6 @@ RDFContainerUtilsImpl::MakeAlt(nsIRDFDataSource *aDataSource, nsIRDFResource *aR
 
 RDFContainerUtilsImpl::RDFContainerUtilsImpl()
 {
-    NS_INIT_ISUPPORTS();
-
     if (gRefCnt++ == 0) {
         nsresult rv;
 
@@ -373,11 +364,16 @@ RDFContainerUtilsImpl::RDFContainerUtilsImpl()
 
         NS_ASSERTION(NS_SUCCEEDED(rv), "unable to get RDF service");
         if (NS_SUCCEEDED(rv)) {
-            gRDFService->GetResource(RDF_NAMESPACE_URI "instanceOf", &kRDF_instanceOf);
-            gRDFService->GetResource(RDF_NAMESPACE_URI "nextVal",    &kRDF_nextVal);
-            gRDFService->GetResource(RDF_NAMESPACE_URI "Bag",        &kRDF_Bag);
-            gRDFService->GetResource(RDF_NAMESPACE_URI "Seq",        &kRDF_Seq);
-            gRDFService->GetResource(RDF_NAMESPACE_URI "Alt",        &kRDF_Alt);
+            gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "instanceOf"),
+                                     &kRDF_instanceOf);
+            gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "nextVal"),
+                                     &kRDF_nextVal);
+            gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "Bag"),
+                                     &kRDF_Bag);
+            gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "Seq"),
+                                     &kRDF_Seq);
+            gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "Alt"),
+                                     &kRDF_Alt);
             gRDFService->GetLiteral(NS_LITERAL_STRING("1").get(), &kOne);
         }
     }
@@ -454,11 +450,7 @@ RDFContainerUtilsImpl::MakeContainer(nsIRDFDataSource* aDataSource, nsIRDFResour
 	rv = aDataSource->Assert(aResource, kRDF_instanceOf, aType, PR_TRUE);
 	if (NS_FAILED(rv)) return rv;
 
-	nsCOMPtr<nsIRDFLiteral> nextVal;
-	rv = gRDFService->GetLiteral(NS_LITERAL_STRING("1").get(), getter_AddRefs(nextVal));
-	if (NS_FAILED(rv)) return rv;
-
-	rv = aDataSource->Assert(aResource, kRDF_nextVal, nextVal, PR_TRUE);
+	rv = aDataSource->Assert(aResource, kRDF_nextVal, kOne, PR_TRUE);
 	if (NS_FAILED(rv)) return rv;
     }
 

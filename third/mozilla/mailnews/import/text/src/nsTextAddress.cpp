@@ -319,16 +319,15 @@ PRBool nsTextAddress::GetField( const char *pLine, PRInt32 maxLen, PRInt32 index
         if (len >= maxLen)
             break;
         if (*pChar == '"') {
-            pChar++;
-            len++;
-            while ((len < maxLen) && (*pChar != '"')) {
+            len = -1;
+            do {
                 len++;
                 pChar++;
                 if (((len + 1) < maxLen) && (*pChar == '"') && (*(pChar + 1) == '"')) {
                     len += 2;
                     pChar += 2;
                 }
-            }
+            } while ((len < maxLen) && (*pChar != '"'));
             if (len < maxLen) {
                 pChar++;
                 len++;
@@ -365,20 +364,19 @@ PRBool nsTextAddress::GetField( const char *pLine, PRInt32 maxLen, PRInt32 index
     PRInt32        fLen = 0;
     PRBool        quoted = PR_FALSE;
     if (*pChar == '"') {
-        quoted = PR_TRUE;
         pStart++;
-        pChar++;
-        len++;
-        while ((len < maxLen) && (*pChar != '"')) {
+        fLen = -1;
+        do {
             pChar++;
             len++;
             fLen++;
             if (((len + 1) < maxLen) && (*pChar == '"') && (*(pChar + 1) == '"')) {
+                quoted = PR_TRUE;
                 len += 2;
                 pChar += 2;
                 fLen += 2;
             }
-        }
+        } while ((len < maxLen) && (*pChar != '"'));
     }
     else {
         while ((len < maxLen) && (*pChar != delim)) {
@@ -549,6 +547,8 @@ static const char *const sLDIFFields[] = {
 };
 #define kMaxLDIFLen        14
 
+// Count total number of legal ldif fields and records in the first 100 lines of the 
+// file and if the average legal ldif field is 3 or higher than it's a valid ldif file.
 nsresult nsTextAddress::IsLDIFFile( nsIFileSpec *pSrc, PRBool *pIsLDIF)
 {
     *pIsLDIF = PR_FALSE;
@@ -571,15 +571,13 @@ nsresult nsTextAddress::IsLDIFFile( nsIFileSpec *pSrc, PRBool *pIsLDIF)
     PRBool    wasTruncated = PR_FALSE;
     PRInt32    lineLen = 0;
     PRInt32    lineCount = 0;
-    PRInt32    ldifFields = 0;
+    PRInt32    ldifFields = 0;  // total number of legal ldif fields.
     char    field[kMaxLDIFLen];
     PRInt32    fLen = 0;
     char *    pChar;
-    PRInt32    rCount = 1;
+    PRInt32    recCount = 0;  // total number of records.
     PRInt32    i;
     PRBool    gotLDIF = PR_FALSE;
-    PRInt32    commaCount = 0;
-    PRInt32    tabCount = 0;
 
     while (!eof && NS_SUCCEEDED( rv) && (lineCount < 100)) {
         wasTruncated = PR_FALSE;
@@ -588,24 +586,12 @@ nsresult nsTextAddress::IsLDIFFile( nsIFileSpec *pSrc, PRBool *pIsLDIF)
             pLine[kTextAddressBufferSz - 1] = 0;
         if (NS_SUCCEEDED( rv)) {
             lineLen = strlen( pLine);            
-            tabCount += CountFields( pLine, lineLen, 9);
-            commaCount += CountFields( pLine, lineLen, ',');
             pChar = pLine;
             if (!lineLen && gotLDIF) {
-                rCount++;
+                recCount++;
                 gotLDIF = PR_FALSE;
             }
-            
-            /* 
-                There should be no leading whitespace in front
-                of an ldif field!
-            *//*
-            while (lineLen && ((*pChar == ' ') || (*pChar == 9))) {
-                lineLen--;
-                pChar++;
-            }
-            */
-            
+                    
             if (lineLen && (*pChar != ' ') && (*pChar != 9)) {
                 fLen = 0;
                 while (lineLen && (fLen < (kMaxLDIFLen - 1)) && (*pChar != ':')) {
@@ -617,10 +603,10 @@ nsresult nsTextAddress::IsLDIFFile( nsIFileSpec *pSrc, PRBool *pIsLDIF)
                 
                 field[fLen] = 0;
                 if (lineLen && (*pChar == ':') && (fLen < (kMaxLDIFLen - 1))) {
-                    // see if this is an ldif field?
+                    // see if this is an ldif field (case insensitive)?
                     i = 0;
                     while (sLDIFFields[i]) {
-                        if (!nsCRT::strcmp( sLDIFFields[i], field)) {
+                        if (!nsCRT::strcasecmp( sLDIFFields[i], field)) {
                             ldifFields++;
                             gotLDIF = PR_TRUE;
                             break;
@@ -635,28 +621,21 @@ nsresult nsTextAddress::IsLDIFFile( nsIFileSpec *pSrc, PRBool *pIsLDIF)
         }
         lineCount++;
     }
+
+    // If we just saw ldif address, increment recCount.
+    if (gotLDIF)
+      recCount++;
     
     rv = pSrc->CloseStream();
     
     delete [] pLine;
     
-    ldifFields /= rCount;
-    tabCount /= lineCount;
-    commaCount /= lineCount;
+    if (recCount > 1)
+      ldifFields /= recCount;
 
-    /*
-    if ((tabCount <= ldifFields) && (commaCount <= ldifFields) && (ldifFields > 1)) {
-        *pIsLDIF = PR_TRUE;
-    }
-    */
-    if (rCount == 1) {
-        if ((ldifFields >= 3) && (lineCount < 500))
-            *pIsLDIF = PR_TRUE;
-    }
-    else {
-        if (ldifFields >= 3)
-            *pIsLDIF = PR_TRUE;
-    }
+    // If the average field number >= 3 then it's a good ldif file.
+    if (ldifFields >= 3)
+      *pIsLDIF = PR_TRUE;
 
     return( NS_OK);
 }

@@ -28,11 +28,15 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= dom
 XPIDL_MODULE	= dom_range
+GRE_MODULE	= 1
+
+SDK_XPIDLSRCS = 				\
+	nsIDOMRange.idl				\
+	nsIDOMDocumentRange.idl			\
+	$(NULL)
 
 XPIDLSRCS =					\
-	nsIDOMDocumentRange.idl			\
 	nsIDOMNSRange.idl			\
-	nsIDOMRange.idl				\
 	nsIDOMRangeException.idl	\
 	$(NULL)
 

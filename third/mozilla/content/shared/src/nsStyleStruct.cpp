@@ -42,6 +42,7 @@
 #include "nsString.h"
 #include "nsUnitConversion.h"
 #include "nsIPresContext.h"
+#include "nsIDeviceContext.h"
 #include "nsIStyleRule.h"
 #include "nsISupportsArray.h"
 #include "nsCRT.h"
@@ -53,9 +54,7 @@
 #include "nsLayoutAtoms.h"
 #include "prenv.h"
 
-#ifdef IBMBIDI
 #include "nsBidiUtils.h"
-#endif
 
 inline PRBool IsFixedUnit(nsStyleUnit aUnit, PRBool aEnumOK)
 {
@@ -80,28 +79,27 @@ inline nscoord CalcSideFor(const nsIFrame* aFrame, const nsStyleCoord& aCoord,
       nsIFrame* parentFrame;
       aFrame->GetParent(&parentFrame);  // XXX may not be direct parent...
       if (nsnull != parentFrame) {
-        nsIStyleContext* parentContext;
-        parentFrame->GetStyleContext(&parentContext);
+        nsStyleContext* parentContext = parentFrame->GetStyleContext();
         if (nsnull != parentContext) {
           nsMargin  parentSpacing;
           switch (aSpacing) {
             case NS_SPACING_MARGIN:
               {
-                const nsStyleMargin* parentMargin = (const nsStyleMargin*)parentContext->GetStyleData(eStyleStruct_Margin);
+                const nsStyleMargin* parentMargin = parentContext->GetStyleMargin();
                 parentMargin->CalcMarginFor(parentFrame, parentSpacing);  
               }
 
               break;
             case NS_SPACING_PADDING:
               {
-                const nsStylePadding* parentPadding = (const nsStylePadding*)parentContext->GetStyleData(eStyleStruct_Padding);
+                const nsStylePadding* parentPadding = parentContext->GetStylePadding();
                 parentPadding->CalcPaddingFor(parentFrame, parentSpacing);  
               }
 
               break;
             case NS_SPACING_BORDER:
               {
-                const nsStyleBorder* parentBorder = (const nsStyleBorder*)parentContext->GetStyleData(eStyleStruct_Border);
+                const nsStyleBorder* parentBorder = parentContext->GetStyleBorder();
                 parentBorder->CalcBorderFor(parentFrame, parentSpacing);  
               }
 
@@ -113,7 +111,6 @@ inline nscoord CalcSideFor(const nsIFrame* aFrame, const nsStyleCoord& aCoord,
             case NS_SIDE_RIGHT:   result = parentSpacing.right;  break;
             case NS_SIDE_BOTTOM:  result = parentSpacing.bottom; break;
           }
-          NS_RELEASE(parentContext);
         }
       }
       break;
@@ -131,30 +128,17 @@ inline nscoord CalcSideFor(const nsIFrame* aFrame, const nsStyleCoord& aCoord,
             frame->GetSize(size);
             baseWidth = size.width;
             // subtract border of containing block
-            const nsStyleBorder* borderData = nsnull;
-            frame->GetStyleData(eStyleStruct_Border,
-                                (const nsStyleStruct*&)borderData);
-            if (borderData) {
-              nsMargin border;
-              borderData->CalcBorderFor(frame, border);
-              baseWidth -= (border.left + border.right);
-            }
+            nsMargin border;
+            frame->GetStyleBorder()->CalcBorderFor(frame, border);
+            baseWidth -= (border.left + border.right);
             // if aFrame is not absolutely positioned, subtract
             // padding of containing block
-            const nsStyleDisplay* displayData = nsnull;
-            aFrame->GetStyleData(eStyleStruct_Display,
-                                 (const nsStyleStruct*&)displayData);
-            if (displayData &&
-                displayData->mPosition != NS_STYLE_POSITION_ABSOLUTE &&
+            const nsStyleDisplay* displayData = aFrame->GetStyleDisplay();
+            if (displayData->mPosition != NS_STYLE_POSITION_ABSOLUTE &&
                 displayData->mPosition != NS_STYLE_POSITION_FIXED) {
-              const nsStylePadding* paddingData = nsnull;
-              frame->GetStyleData(eStyleStruct_Padding,
-                                  (const nsStyleStruct*&)paddingData);
-              if (paddingData) {
-                nsMargin padding;
-                paddingData->CalcPaddingFor(frame, padding);
-                baseWidth -= (padding.left + padding.right);
-              }
+              nsMargin padding;
+              frame->GetStylePadding()->CalcPaddingFor(frame, padding);
+              baseWidth -= (padding.left + padding.right);
             }
             break;
           }
@@ -234,6 +218,17 @@ nsStyleFont::nsStyleFont(const nsStyleFont& aSrc)
 {
 }
 
+
+nsStyleFont::nsStyleFont(nsIPresContext* aPresContext)
+  : mFlags(NS_STYLE_FONT_DEFAULT)
+{
+  const nsFont* defaultFont;
+  aPresContext->GetDefaultFont(kPresContext_DefaultVariableFont_ID,
+                               &defaultFont);
+  mFont = *defaultFont;
+  mSize = mFont.size = nsStyleFont::ZoomText(aPresContext, mFont.size);
+}
+
 void* 
 nsStyleFont::operator new(size_t sz, nsIPresContext* aContext) CPP_THROW_NEW {
   void* result = nsnull;
@@ -257,12 +252,35 @@ nsChangeHint nsStyleFont::CalcDifference(const nsStyleFont& aOther) const
   return NS_STYLE_HINT_REFLOW;
 }
 
+inline float
+TextZoomFor(nsIPresContext* aPresContext)
+{
+  nsCOMPtr<nsIDeviceContext> dc;
+  aPresContext->GetDeviceContext(getter_AddRefs(dc));
+  float textZoom;
+  dc->GetTextZoom(textZoom);
+  return textZoom;
+}
+
+/* static */ nscoord
+nsStyleFont::ZoomText(nsIPresContext *aPresContext, nscoord aSize)
+{
+  return nscoord(float(aSize) * TextZoomFor(aPresContext));
+}
+
+/* static */ nscoord
+nsStyleFont::UnZoomText(nsIPresContext *aPresContext, nscoord aSize)
+{
+  return nscoord(float(aSize) / TextZoomFor(aPresContext));
+}
+
 nsChangeHint nsStyleFont::CalcFontDifference(const nsFont& aFont1, const nsFont& aFont2)
 {
   if ((aFont1.size == aFont2.size) && 
       (aFont1.sizeAdjust == aFont2.sizeAdjust) && 
       (aFont1.style == aFont2.style) &&
       (aFont1.variant == aFont2.variant) &&
+      (aFont1.familyNameQuirks == aFont2.familyNameQuirks) &&
       (aFont1.weight == aFont2.weight) &&
       (aFont1.name == aFont2.name)) {
     if ((aFont1.decorations == aFont2.decorations)) {
@@ -702,22 +720,18 @@ nsStyleList::nsStyleList(const nsStyleList& aSource)
 
 nsChangeHint nsStyleList::CalcDifference(const nsStyleList& aOther) const
 {
-  if (mListStylePosition == aOther.mListStylePosition)
-    if (mListStyleImage == aOther.mListStyleImage)
-      if (mListStyleType == aOther.mListStyleType) {
-        if (mImageRegion == aOther.mImageRegion)
-          return NS_STYLE_HINT_NONE;
-        if (mImageRegion.width == aOther.mImageRegion.width &&
-            mImageRegion.height == aOther.mImageRegion.height)
-          return NS_STYLE_HINT_VISUAL;
-        return NS_STYLE_HINT_REFLOW;
-      }
-      return NS_STYLE_HINT_REFLOW;
-    return NS_STYLE_HINT_REFLOW;
+  if (mListStylePosition == aOther.mListStylePosition &&
+      mListStyleImage == aOther.mListStyleImage &&
+      mListStyleType == aOther.mListStyleType) {
+    if (mImageRegion == aOther.mImageRegion)
+      return NS_STYLE_HINT_NONE;
+    if (mImageRegion.width == aOther.mImageRegion.width &&
+        mImageRegion.height == aOther.mImageRegion.height)
+      return NS_STYLE_HINT_VISUAL;
+  }
   return NS_STYLE_HINT_REFLOW;
 }
 
-#ifdef INCLUDE_XUL
 // --------------------
 // nsStyleXUL
 //
@@ -753,8 +767,6 @@ nsChangeHint nsStyleXUL::CalcDifference(const nsStyleXUL& aOther) const
     return NS_STYLE_HINT_FRAMECHANGE;
   return NS_STYLE_HINT_REFLOW;
 }
-
-#endif // INCLUDE_XUL
 
 #ifdef MOZ_SVG
 // --------------------
@@ -935,8 +947,15 @@ nsStyleTableBorder::nsStyleTableBorder(const nsStyleTableBorder& aSource)
 
 nsChangeHint nsStyleTableBorder::CalcDifference(const nsStyleTableBorder& aOther) const
 {
-  if ((mBorderCollapse == aOther.mBorderCollapse) &&
-      (mCaptionSide == aOther.mCaptionSide) &&
+  // Border-collapse changes need a reframe, because we use a different frame
+  // class for table cells in the collapsed border model.  This is used to
+  // conserve memory when using the separated border model (collapsed borders
+  // require extra state to be stored).
+  if (mBorderCollapse != aOther.mBorderCollapse) {
+    return NS_STYLE_HINT_FRAMECHANGE;
+  }
+  
+  if ((mCaptionSide == aOther.mCaptionSide) &&
       (mBorderSpacingX == aOther.mBorderSpacingX) &&
       (mBorderSpacingY == aOther.mBorderSpacingY)) {
     if (mEmptyCells == aOther.mEmptyCells)
@@ -973,27 +992,28 @@ nsChangeHint nsStyleColor::CalcDifference(const nsStyleColor& aOther) const
 //
 
 nsStyleBackground::nsStyleBackground(nsIPresContext* aPresContext)
+  : mBackgroundFlags(NS_STYLE_BG_COLOR_TRANSPARENT | NS_STYLE_BG_IMAGE_NONE),
+    mBackgroundAttachment(NS_STYLE_BG_ATTACHMENT_SCROLL),
+    mBackgroundClip(NS_STYLE_BG_CLIP_BORDER),
+    mBackgroundInlinePolicy(NS_STYLE_BG_INLINE_POLICY_CONTINUOUS),
+    mBackgroundOrigin(NS_STYLE_BG_ORIGIN_PADDING),
+    mBackgroundRepeat(NS_STYLE_BG_REPEAT_XY)
 {
-  mBackgroundFlags = NS_STYLE_BG_COLOR_TRANSPARENT | NS_STYLE_BG_IMAGE_NONE;
   aPresContext->GetDefaultBackgroundColor(&mBackgroundColor);
-  mBackgroundAttachment = NS_STYLE_BG_ATTACHMENT_SCROLL;
-  mBackgroundClip = NS_STYLE_BG_CLIP_BORDER;
-  mBackgroundOrigin = NS_STYLE_BG_ORIGIN_PADDING;
-  mBackgroundRepeat = NS_STYLE_BG_REPEAT_XY;
-  mBackgroundXPosition = mBackgroundYPosition = 0;
 }
 
 nsStyleBackground::nsStyleBackground(const nsStyleBackground& aSource)
+  : mBackgroundFlags(aSource.mBackgroundFlags),
+    mBackgroundAttachment(aSource.mBackgroundAttachment),
+    mBackgroundClip(aSource.mBackgroundClip),
+    mBackgroundInlinePolicy(aSource.mBackgroundInlinePolicy),
+    mBackgroundOrigin(aSource.mBackgroundOrigin),
+    mBackgroundRepeat(aSource.mBackgroundRepeat),
+    mBackgroundXPosition(aSource.mBackgroundXPosition),
+    mBackgroundYPosition(aSource.mBackgroundYPosition),
+    mBackgroundColor(aSource.mBackgroundColor),
+    mBackgroundImage(aSource.mBackgroundImage)
 {
-  mBackgroundAttachment = aSource.mBackgroundAttachment;
-  mBackgroundFlags = aSource.mBackgroundFlags;
-  mBackgroundRepeat = aSource.mBackgroundRepeat;
-  mBackgroundClip = aSource.mBackgroundClip;
-  mBackgroundOrigin = aSource.mBackgroundOrigin;
-  mBackgroundColor = aSource.mBackgroundColor;
-  mBackgroundXPosition = aSource.mBackgroundXPosition;
-  mBackgroundYPosition = aSource.mBackgroundYPosition;
-  mBackgroundImage = aSource.mBackgroundImage;
 }
 
 nsChangeHint nsStyleBackground::CalcDifference(const nsStyleBackground& aOther) const
@@ -1002,17 +1022,26 @@ nsChangeHint nsStyleBackground::CalcDifference(const nsStyleBackground& aOther) 
     && ((NS_STYLE_BG_ATTACHMENT_FIXED == mBackgroundAttachment) ||
         (NS_STYLE_BG_ATTACHMENT_FIXED == aOther.mBackgroundAttachment)))
     // this might require creation of a view
+    // XXX This probably doesn't call ApplyRenderingChangeToTree, which
+    // means we might not invalidate the canvas if this is the body.
     return NS_STYLE_HINT_FRAMECHANGE;
 
   if ((mBackgroundAttachment == aOther.mBackgroundAttachment) &&
       (mBackgroundFlags == aOther.mBackgroundFlags) &&
       (mBackgroundRepeat == aOther.mBackgroundRepeat) &&
       (mBackgroundColor == aOther.mBackgroundColor) &&
-      (mBackgroundXPosition == aOther.mBackgroundXPosition) &&
-      (mBackgroundYPosition == aOther.mBackgroundYPosition) &&
       (mBackgroundClip == aOther.mBackgroundClip) &&
+      (mBackgroundInlinePolicy == aOther.mBackgroundInlinePolicy) &&
       (mBackgroundOrigin == aOther.mBackgroundOrigin) &&
-      (mBackgroundImage == aOther.mBackgroundImage))
+      (mBackgroundImage == aOther.mBackgroundImage) &&
+      ((!(mBackgroundFlags & NS_STYLE_BG_X_POSITION_PERCENT) ||
+       (mBackgroundXPosition.mFloat == aOther.mBackgroundXPosition.mFloat)) &&
+       (!(mBackgroundFlags & NS_STYLE_BG_X_POSITION_LENGTH) ||
+        (mBackgroundXPosition.mCoord == aOther.mBackgroundXPosition.mCoord))) &&
+      ((!(mBackgroundFlags & NS_STYLE_BG_Y_POSITION_PERCENT) ||
+       (mBackgroundYPosition.mFloat == aOther.mBackgroundYPosition.mFloat)) &&
+       (!(mBackgroundFlags & NS_STYLE_BG_Y_POSITION_LENGTH) ||
+        (mBackgroundYPosition.mCoord == aOther.mBackgroundYPosition.mCoord))))
     return NS_STYLE_HINT_NONE;
   return NS_STYLE_HINT_VISUAL;
 }
@@ -1084,16 +1113,12 @@ nsChangeHint nsStyleDisplay::CalcDifference(const nsStyleDisplay& aOther) const
 
 nsStyleVisibility::nsStyleVisibility(nsIPresContext* aPresContext)
 {
-#ifdef IBMBIDI
   PRUint32 bidiOptions;
   aPresContext->GetBidi(&bidiOptions);
   if (GET_BIDI_OPTION_DIRECTION(bidiOptions) == IBMBIDI_TEXTDIRECTION_RTL)
     mDirection = NS_STYLE_DIRECTION_RTL;
   else
     mDirection = NS_STYLE_DIRECTION_LTR;
-#else
-  mDirection = NS_STYLE_DIRECTION_LTR;
-#endif // IBMBIDI
 
   aPresContext->GetLanguage(getter_AddRefs(mLanguage));
   mVisible = NS_STYLE_VISIBILITY_VISIBLE;
@@ -1278,9 +1303,7 @@ nsStyleTextReset::nsStyleTextReset(void)
 { 
   mVerticalAlign.SetIntValue(NS_STYLE_VERTICAL_ALIGN_BASELINE, eStyleUnit_Enumerated);
   mTextDecoration = NS_STYLE_TEXT_DECORATION_NONE;
-#ifdef IBMBIDI
   mUnicodeBidi = NS_STYLE_UNICODE_BIDI_NORMAL;
-#endif // IBMBIDI
 }
 
 nsStyleTextReset::nsStyleTextReset(const nsStyleTextReset& aSource) 
@@ -1293,10 +1316,7 @@ nsStyleTextReset::~nsStyleTextReset(void) { }
 nsChangeHint nsStyleTextReset::CalcDifference(const nsStyleTextReset& aOther) const
 {
   if (mVerticalAlign == aOther.mVerticalAlign
-#ifdef IBMBIDI
-      && mUnicodeBidi == aOther.mUnicodeBidi
-#endif // IBMBIDI
-      ) {
+      && mUnicodeBidi == aOther.mUnicodeBidi) {
     if (mTextDecoration != aOther.mTextDecoration)
       return NS_STYLE_HINT_VISUAL;
     return NS_STYLE_HINT_NONE;

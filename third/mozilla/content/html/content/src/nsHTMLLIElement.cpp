@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
@@ -77,9 +76,6 @@ public:
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -163,7 +159,7 @@ NS_IMPL_STRING_ATTR(nsHTMLLIElement, Type, type)
 NS_IMPL_INT_ATTR(nsHTMLLIElement, Value, value)
 
 
-static nsGenericHTMLElement::EnumTable kUnorderedListItemTypeTable[] = {
+static nsHTMLValue::EnumTable kUnorderedListItemTypeTable[] = {
   { "disc", NS_STYLE_LIST_STYLE_DISC },
   { "circle", NS_STYLE_LIST_STYLE_CIRCLE },
   { "round", NS_STYLE_LIST_STYLE_CIRCLE },
@@ -171,7 +167,7 @@ static nsGenericHTMLElement::EnumTable kUnorderedListItemTypeTable[] = {
   { 0 }
 };
 
-static nsGenericHTMLElement::EnumTable kOrderedListItemTypeTable[] = {
+static nsHTMLValue::EnumTable kOrderedListItemTypeTable[] = {
   { "A", NS_STYLE_LIST_STYLE_OLD_UPPER_ALPHA },
   { "a", NS_STYLE_LIST_STYLE_OLD_LOWER_ALPHA },
   { "I", NS_STYLE_LIST_STYLE_OLD_UPPER_ROMAN },
@@ -186,15 +182,15 @@ nsHTMLLIElement::StringToAttribute(nsIAtom* aAttribute,
                                    nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::type) {
-    if (ParseCaseSensitiveEnumValue(aValue, kOrderedListItemTypeTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kOrderedListItemTypeTable, PR_TRUE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
-    if (ParseEnumValue(aValue, kUnorderedListItemTypeTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kUnorderedListItemTypeTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::value) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -208,8 +204,8 @@ nsHTMLLIElement::AttributeToString(nsIAtom* aAttribute,
                                    nsAString& aResult) const
 {
   if (aAttribute == nsHTMLAtoms::type) {
-    if (!EnumValueToString(aValue, kOrderedListItemTypeTable, aResult)) {
-      EnumValueToString(aValue, kUnorderedListItemTypeTable, aResult);
+    if (!aValue.EnumValueToString(kOrderedListItemTypeTable, aResult)) {
+      aValue.EnumValueToString(kUnorderedListItemTypeTable, aResult);
     }
     
     return NS_CONTENT_ATTR_HAS_VALUE;
@@ -244,12 +240,17 @@ NS_IMETHODIMP
 nsHTMLLIElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                           nsChangeHint& aHint) const
 {
-  if (aAttribute == nsHTMLAtoms::type) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::type, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE },
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
@@ -262,13 +263,3 @@ nsHTMLLIElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRule
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLLIElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

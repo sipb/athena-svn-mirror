@@ -37,9 +37,10 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsContainerFrame.h"
 #include "nsIContent.h"
+#include "nsIDocument.h"
 #include "nsIPresContext.h"
 #include "nsIRenderingContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsRect.h"
 #include "nsPoint.h"
 #include "nsGUIEvent.h"
@@ -47,13 +48,13 @@
 #include "nsIView.h"
 #include "nsIScrollableView.h"
 #include "nsVoidArray.h"
-#include "nsISizeOfHandler.h"
 #include "nsHTMLReflowCommand.h"
 #include "nsHTMLContainerFrame.h"
 #include "nsIFrameManager.h"
 #include "nsIPresShell.h"
 #include "nsCOMPtr.h"
 #include "nsLayoutAtoms.h"
+#include "nsCSSAnonBoxes.h"
 #include "nsIViewManager.h"
 #include "nsIWidget.h"
 #include "nsGfxCIID.h"
@@ -61,6 +62,7 @@
 #include "nsCSSRendering.h"
 #include "nsTransform2D.h"
 #include "nsRegion.h"
+#include "nsLayoutErrors.h"
 
 static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
 
@@ -82,7 +84,7 @@ NS_IMETHODIMP
 nsContainerFrame::Init(nsIPresContext*  aPresContext,
                        nsIContent*      aContent,
                        nsIFrame*        aParent,
-                       nsIStyleContext* aContext,
+                       nsStyleContext*  aContext,
                        nsIFrame*        aPrevInFlow)
 {
   nsresult rv;
@@ -108,9 +110,7 @@ nsContainerFrame::SetInitialChildList(nsIPresContext* aPresContext,
   if (!mFrames.IsEmpty()) {
     // We already have child frames which means we've already been
     // initialized
-#ifdef DEBUG_dbaron // XXX Fix asserts and remove this ifdef.
     NS_NOTREACHED("unexpected second call to SetInitialChildList");
-#endif
     result = NS_ERROR_UNEXPECTED;
   } else if (aListName) {
     // All we know about is the unnamed principal child list
@@ -138,6 +138,10 @@ nsContainerFrame::Destroy(nsIPresContext* aPresContext)
 
   // Delete the primary child list
   mFrames.DestroyFrames(aPresContext);
+  
+  // Destroy overflow frames now
+  nsFrameList overflowFrames(GetOverflowFrames(aPresContext, PR_TRUE));
+  overflowFrames.DestroyFrames(aPresContext);
 
   // Destroy the frame and remove the flow pointers
   return nsSplittableFrame::Destroy(aPresContext);
@@ -164,6 +168,23 @@ nsContainerFrame::FirstChild(nsIPresContext* aPresContext,
     *aFirstChild = nsnull;
     return NS_ERROR_INVALID_ARG;
   }
+}
+
+NS_IMETHODIMP
+nsContainerFrame::GetAdditionalChildListName(PRInt32   aIndex,
+                                             nsIAtom** aListName) const
+{
+  NS_PRECONDITION(nsnull != aListName, "null OUT parameter pointer");
+  if (aIndex < 0) {
+    return NS_ERROR_INVALID_ARG;
+  }
+  if (aIndex == 0) {
+    *aListName = nsLayoutAtoms::overflowList;
+    NS_ADDREF(*aListName);
+  } else {
+    *aListName = nsnull;
+  }
+  return NS_OK;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -342,9 +363,7 @@ nsContainerFrame::GetFrameForPointUsing(nsIPresContext* aPresContext,
   }
 
   if ( inThisFrame && aConsiderSelf ) {
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-    if (vis->IsVisible()) {
+    if (GetStyleVisibility()->IsVisible()) {
       *aFrame = this;
       return NS_OK;
     }
@@ -442,6 +461,10 @@ nsContainerFrame::PositionFrameView(nsIPresContext* aPresContext,
     // the frame tree of some enclosing document. We do nothing in that case,
     // but we have to check that containingView is nonnull or we will crash.
     if (nsnull != containingView && containingView != parentView) {
+      NS_ERROR("This hack should not be needed now!!! See bug 126263.");
+
+      // XXX roc this is no longer needed; remove it!!
+
       // it is possible for parent view not to have a frame attached to it
       // kind of an anonymous view. This happens with native scrollbars and
       // the clip view. To fix this we need to go up and parentView chain
@@ -497,10 +520,41 @@ nsContainerFrame::PositionFrameView(nsIPresContext* aPresContext,
   }
 }
 
+static PRBool
+NonZeroStyleCoord(const nsStyleCoord& aCoord) {
+  switch (aCoord.GetUnit()) {
+  case eStyleUnit_Percent:
+    return aCoord.GetPercentValue() > 0;
+  case eStyleUnit_Coord:
+    return aCoord.GetCoordValue() > 0;
+  case eStyleUnit_Null:
+    return PR_FALSE;
+  default:
+    return PR_TRUE;
+  }
+}
+
+static PRBool
+HasNonZeroBorderRadius(nsStyleContext* aStyleContext) {
+  const nsStyleBorder* border = aStyleContext->GetStyleBorder();
+
+  nsStyleCoord coord;
+  border->mBorderRadius.GetTop(coord);
+  if (NonZeroStyleCoord(coord)) return PR_TRUE;    
+  border->mBorderRadius.GetRight(coord);
+  if (NonZeroStyleCoord(coord)) return PR_TRUE;    
+  border->mBorderRadius.GetBottom(coord);
+  if (NonZeroStyleCoord(coord)) return PR_TRUE;    
+  border->mBorderRadius.GetLeft(coord);
+  if (NonZeroStyleCoord(coord)) return PR_TRUE;    
+
+  return PR_FALSE;
+}
+
 static void
 SyncFrameViewGeometryDependentProperties(nsIPresContext*  aPresContext,
                                          nsIFrame*        aFrame,
-                                         nsIStyleContext* aStyleContext,
+                                         nsStyleContext*  aStyleContext,
                                          nsIView*         aView,
                                          PRUint32         aFlags)
 {
@@ -523,19 +577,46 @@ SyncFrameViewGeometryDependentProperties(nsIPresContext*  aPresContext,
   PRBool  viewHasTransparentContent =
     !hasBG ||
     (bg->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT) ||
-    !aFrame->CanPaintBackground();
-  if (isCanvas && viewHasTransparentContent) {
+    !aFrame->CanPaintBackground() ||
+    HasNonZeroBorderRadius(aStyleContext);
+
+  if (isCanvas) {
     nsIView* rootView;
     vm->GetRootView(rootView);
     nsIView* rootParent;
     rootView->GetParent(rootParent);
-    if (nsnull == rootParent) {
+    if (!rootParent) {
+      // We're the root of a view manager hierarchy. We will have to
+      // paint something. NOTE: this can be overridden below.
       viewHasTransparentContent = PR_FALSE;
     }
-  }
 
-  const nsStyleDisplay* display;
-  ::GetStyleData(aStyleContext, &display);
+    nsCOMPtr<nsIPresShell> shell;
+    aPresContext->GetShell(getter_AddRefs(shell));
+    nsCOMPtr<nsIDocument> doc;
+    shell->GetDocument(getter_AddRefs(doc));
+    if (doc) {
+      nsCOMPtr<nsIDocument> parentDoc;
+      doc->GetParentDocument(getter_AddRefs(parentDoc));
+      nsCOMPtr<nsIContent> rootElem;
+      doc->GetRootContent(getter_AddRefs(rootElem));
+      if (!parentDoc && rootElem && rootElem->IsContentOfType(nsIContent::eXUL)) {
+        // we're XUL at the root of the document hierarchy. Try to make our
+        // window translucent.
+        nsCOMPtr<nsIWidget> widget;
+        aView->GetWidget(*getter_AddRefs(widget));
+        // don't proceed unless this is the root view
+        // (sometimes the non-root-view is a canvas)
+        if (widget && aView == rootView) {
+          viewHasTransparentContent = hasBG && (bg->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT);
+          widget->SetWindowTranslucency(viewHasTransparentContent);
+        }
+      }
+    }
+  }
+  // XXX we should also set widget transparency for XUL popups
+
+  const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
   nsFrameState kidState;
   aFrame->GetFrameState(&kidState);
   
@@ -543,8 +624,7 @@ SyncFrameViewGeometryDependentProperties(nsIPresContext*  aPresContext,
     // If we're showing the view but the frame is hidden, then the view is transparent
     nsViewVisibility visibility;
     aView->GetVisibility(visibility);
-    const nsStyleVisibility* vis;
-    ::GetStyleData(aStyleContext, &vis);
+    const nsStyleVisibility* vis = aStyleContext->GetStyleVisibility();
     if ((nsViewVisibility_kShow == visibility
          && NS_STYLE_VISIBILITY_HIDDEN == vis->mVisible)
         || (NS_STYLE_OVERFLOW_VISIBLE == display->mOverflow
@@ -595,10 +675,8 @@ SyncFrameViewGeometryDependentProperties(nsIPresContext*  aPresContext,
     }
 
     if (hasOverflowClip) {
-      const nsStyleBorder* borderStyle;
-      ::GetStyleData(aStyleContext, &borderStyle);
-      const nsStylePadding* paddingStyle;
-      ::GetStyleData(aStyleContext, &paddingStyle);
+      const nsStyleBorder* borderStyle = aStyleContext->GetStyleBorder();
+      const nsStylePadding* paddingStyle = aStyleContext->GetStylePadding();
 
       nsMargin border, padding;
       // XXX We don't support the 'overflow-clip' property yet so just use the
@@ -700,8 +778,7 @@ nsContainerFrame::SyncFrameViewAfterReflow(nsIPresContext* aPresContext,
     // detect whether it has or not. Likewise, whether the view size
     // has changed or not, we may need to change the transparency
     // state even if there is no clip.
-    nsCOMPtr<nsIStyleContext> savedStyleContext;
-    aFrame->GetStyleContext(getter_AddRefs(savedStyleContext));
+    nsStyleContext* savedStyleContext = aFrame->GetStyleContext();
     SyncFrameViewGeometryDependentProperties(aPresContext, aFrame, savedStyleContext, aView, aFlags);
   }
 }
@@ -709,7 +786,7 @@ nsContainerFrame::SyncFrameViewAfterReflow(nsIPresContext* aPresContext,
 void
 nsContainerFrame::SyncFrameViewAfterSizeChange(nsIPresContext*  aPresContext,
                                                nsIFrame*        aFrame,
-                                               nsIStyleContext* aStyleContext,
+                                               nsStyleContext*  aStyleContext,
                                                nsIView*         aView,
                                                PRUint32         aFlags)
 {
@@ -717,10 +794,8 @@ nsContainerFrame::SyncFrameViewAfterSizeChange(nsIPresContext*  aPresContext,
     return;
   }
   
-  nsCOMPtr<nsIStyleContext> savedStyleContext;
   if (nsnull == aStyleContext) {
-    aFrame->GetStyleContext(getter_AddRefs(savedStyleContext));
-    aStyleContext = savedStyleContext;
+    aStyleContext = aFrame->GetStyleContext();
   }
 
   SyncFrameViewGeometryDependentProperties(aPresContext, aFrame, aStyleContext, aView, aFlags);
@@ -729,7 +804,7 @@ nsContainerFrame::SyncFrameViewAfterSizeChange(nsIPresContext*  aPresContext,
 void
 nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
                                           nsIFrame*        aFrame,
-                                          nsIStyleContext* aStyleContext,
+                                          nsStyleContext*  aStyleContext,
                                           nsIView*         aView,
                                           PRUint32         aFlags)
 {
@@ -740,14 +815,11 @@ nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
   nsCOMPtr<nsIViewManager> vm;
   aView->GetViewManager(*getter_AddRefs(vm));
 
-  nsCOMPtr<nsIStyleContext> savedStyleContext;
   if (nsnull == aStyleContext) {
-    aFrame->GetStyleContext(getter_AddRefs(savedStyleContext));
-    aStyleContext = savedStyleContext;
+    aStyleContext = aFrame->GetStyleContext();
   }
     
-  const nsStyleVisibility* vis;
-  ::GetStyleData(aStyleContext, &vis);
+  const nsStyleVisibility* vis = aStyleContext->GetStyleVisibility();
 
   // Set the view's opacity
   vm->SetViewOpacity(aView, vis->mOpacity);
@@ -760,26 +832,13 @@ nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
     if (NS_STYLE_VISIBILITY_COLLAPSE == vis->mVisible) {
       viewIsVisible = PR_FALSE;
     }
-    else if (NS_STYLE_VISIBILITY_HIDDEN == vis->mVisible) {
-      // If it has a widget, hide the view because the widget can't deal with it
-      nsCOMPtr<nsIWidget> widget;
-      aView->GetWidget(*getter_AddRefs(widget));
-      if (widget) {
-        viewIsVisible = PR_FALSE;
-      }
-      else {
-        // If it's a scroll frame or a list control frame which is derived from the scrollframe, 
-        // then hide the view. This means that
-        // child elements can't override their parent's visibility, but
-        // it's not practical to leave it visible in all cases because
-        // the scrollbars will be showing
-        nsCOMPtr<nsIAtom> frameType;
-        aFrame->GetFrameType(getter_AddRefs(frameType));
-
-        if (frameType == nsLayoutAtoms::scrollFrame || frameType == nsLayoutAtoms::listControlFrame) {
-          viewIsVisible = PR_FALSE;
-        }
-      }
+    else if (NS_STYLE_VISIBILITY_HIDDEN == vis->mVisible &&
+             !aFrame->SupportsVisibilityHidden()) {
+      // If it's a scrollable frame that can't hide its scrollbars,
+      // hide the view. This means that child elements can't override
+      // their parent's visibility, but it's not practical to leave it
+      // visible in all cases because the scrollbars will be showing
+      viewIsVisible = PR_FALSE;
     } else {
       // if the view is for a popup, don't show the view if the popup is closed
       nsCOMPtr<nsIWidget> widget;
@@ -797,15 +856,13 @@ nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
                           nsViewVisibility_kHide);
   }
 
-  const nsStyleDisplay* display;
-  ::GetStyleData(aStyleContext, &display);
+  const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
   // See if the frame is being relatively positioned or absolutely
   // positioned
   PRBool isTopMostView = display->IsPositioned();
 
   // Make sure z-index is correct
-  const nsStylePosition* position;
-  ::GetStyleData(aStyleContext, &position);
+  const nsStylePosition* position = aStyleContext->GetStylePosition();
 
   PRInt32 zIndex = 0;
   PRBool  autoZIndex = PR_FALSE;
@@ -824,10 +881,9 @@ nsContainerFrame::SyncFrameViewProperties(nsIPresContext*  aPresContext,
 PRBool
 nsContainerFrame::FrameNeedsView(nsIPresContext* aPresContext,
                                  nsIFrame* aFrame,
-                                 nsIStyleContext* aStyleContext)
+                                 nsStyleContext* aStyleContext)
 {
-  const nsStyleVisibility* vis;
-  ::GetStyleData(aStyleContext, &vis);
+  const nsStyleVisibility* vis = aStyleContext->GetStyleVisibility();
     
   if (vis->mOpacity != 1.0f) {
     return PR_TRUE;
@@ -843,8 +899,7 @@ nsContainerFrame::FrameNeedsView(nsIPresContext* aPresContext,
     return PR_TRUE;
   }
     
-  const nsStyleDisplay* display;
-  ::GetStyleData(aStyleContext, &display);
+  const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
 
   if (NS_STYLE_POSITION_RELATIVE == display->mPosition) {
     return PR_TRUE;
@@ -852,9 +907,8 @@ nsContainerFrame::FrameNeedsView(nsIPresContext* aPresContext,
     return PR_TRUE;
   } 
 
-  nsCOMPtr<nsIAtom>  pseudoTag;
-  aStyleContext->GetPseudoType(*getter_AddRefs(pseudoTag));
-  if (pseudoTag == nsLayoutAtoms::scrolledContentPseudo) {
+  nsCOMPtr<nsIAtom>  pseudoTag = aStyleContext->GetPseudoType();
+  if (pseudoTag == nsCSSAnonBoxes::scrolledContent) {
     return PR_TRUE;
   }
 
@@ -900,11 +954,9 @@ nsContainerFrame::ReflowChild(nsIFrame*                aKidFrame,
   nsresult  result;
 
 #ifdef DEBUG
-  nsSize* saveMaxElementSize = aDesiredSize.maxElementSize;
 #ifdef REALLY_NOISY_MAX_ELEMENT_SIZE
-  if (nsnull != aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width = nscoord(0xdeadbeef);
-    aDesiredSize.maxElementSize->height = nscoord(0xdeadbeef);
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = nscoord(0xdeadbeef);
   }
 #endif
 #endif
@@ -926,20 +978,12 @@ nsContainerFrame::ReflowChild(nsIFrame*                aKidFrame,
                              aStatus);
 
 #ifdef DEBUG
-  if (saveMaxElementSize != aDesiredSize.maxElementSize) {
-    printf("nsContainerFrame: ");
-    nsFrame::ListTag(stdout, aKidFrame);
-    printf(" changed the maxElementSize *pointer* (baaaad boy!)\n");
-  }
 #ifdef REALLY_NOISY_MAX_ELEMENT_SIZE
-  if ((nsnull != aDesiredSize.maxElementSize) &&
-      ((nscoord(0xdeadbeef) == aDesiredSize.maxElementSize->width) ||
-       (nscoord(0xdeadbeef) == aDesiredSize.maxElementSize->height))) {
+  if (aDesiredSize.mComputeMEW &&
+      (nscoord(0xdeadbeef) == aDesiredSize.mMaxElementWidth)) {
     printf("nsContainerFrame: ");
     nsFrame::ListTag(stdout, aKidFrame);
-    printf(" didn't set max-element-size!\n");
-    aDesiredSize.maxElementSize->width = 0;
-    aDesiredSize.maxElementSize->height = 0;
+    printf(" didn't set max-element-width!\n");
   }
 #endif
 #endif
@@ -1226,7 +1270,7 @@ nsContainerFrame::PushChildren(nsIPresContext* aPresContext,
 }
 
 /**
- * Moves any frames on the overflwo lists (the prev-in-flow's overflow list and
+ * Moves any frames on the overflow lists (the prev-in-flow's overflow list and
  * the receiver's overflow list) to the child list.
  *
  * Updates this frame's child count and content mapping.
@@ -1340,16 +1384,6 @@ nsContainerFrame::List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent)
     fputs("<>\n", out);
   }
 
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsContainerFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  *aResult = sizeof(*this);
   return NS_OK;
 }
 #endif

@@ -20,7 +20,8 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *
+ *   Aaron Leventhal (aaronl@netscape.com)
+ *   Kyle Yuan (kyle.yuan@sun.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -39,16 +40,39 @@
 #ifndef _nsHTMLTextAccessible_H_
 #define _nsHTMLTextAccessible_H_
 
-#include "nsTextAccessible.h"
+#include "nsTextAccessibleWrap.h"
 
 class nsIWeakReference;
 
-class nsHTMLTextAccessible : public nsTextAccessible
+class nsHTMLTextAccessible : public nsTextAccessibleWrap
 {
 
 public:
   nsHTMLTextAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
   NS_IMETHOD GetAccName(nsAString& _retval);
+  NS_IMETHOD GetAccState(PRUint32 *aState);
+};
+
+class nsHTMLHRAccessible : public nsLeafAccessible
+{
+
+public:
+  nsHTMLHRAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
+  NS_IMETHOD GetAccRole(PRUint32 *aRole); 
+  NS_IMETHOD GetAccState(PRUint32 *aState); 
+};
+
+class nsHTMLLabelAccessible : public nsTextAccessible 
+{
+
+public:
+  nsHTMLLabelAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
+  NS_IMETHOD GetAccName(nsAString& _retval);
+  NS_IMETHOD GetAccRole(PRUint32 *_retval); 
+  NS_IMETHOD GetAccState(PRUint32 *_retval); 
+  NS_IMETHOD GetAccFirstChild(nsIAccessible **aAccFirstChild);
+  NS_IMETHOD GetAccLastChild(nsIAccessible **aAccLastChild);
+  NS_IMETHOD GetAccChildCount(PRInt32 *aAccChildCount);
 };
 
 #endif  

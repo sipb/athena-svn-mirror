@@ -30,7 +30,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-MANIFEST_CVS_ID = "@(#) $RCSfile: manifest.mn,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 19:31:37 $ $Name: not supported by cvs2svn $"
+MANIFEST_CVS_ID = "@(#) $RCSfile: manifest.mn,v $ $Revision: 1.1.1.1.2.1 $ $Date: 2003-07-14 19:06:55 $ $Name: not supported by cvs2svn $"
 
 CORE_DEPTH = ../../..
 
@@ -48,7 +48,8 @@ EXPORTS =	   \
 
 MODULE = nss
 
-CSRCS =		  \
+CSRCS = $(NULL)
+xCSRCS =	  \
 	atav.c	  \
 	genname.c \
 	gnseq.c	  \
@@ -61,4 +62,4 @@ CSRCS =		  \
 
 REQUIRES = nspr
 
-LIBRARY_NAME = pki1
+#LIBRARY_NAME = pki1

@@ -219,7 +219,7 @@ AddXPCOMUCStringFinalizer()
     sXPCOMUCStringFinalizerIndex =
         JS_AddExternalStringFinalizer(FinalizeXPCOMUCString);
 
-    if (sXPCOMUCStringFinalizerIndex == -1)
+    if(sXPCOMUCStringFinalizerIndex == -1)
     {        
         return JS_FALSE;
     }
@@ -1111,8 +1111,7 @@ XPCConvert::JSObject2NativeInterface(XPCCallContext& ccx,
                 *dest = iface;
                 return JS_TRUE;
             }
-            else
-                return NS_SUCCEEDED(iface->QueryInterface(*iid, dest));
+            return NS_SUCCEEDED(iface->QueryInterface(*iid, dest));
         }
         // else...
         
@@ -1123,8 +1122,8 @@ XPCConvert::JSObject2NativeInterface(XPCCallContext& ccx,
         {
             if(iface)
                 return NS_SUCCEEDED(iface->QueryInterface(*iid, dest));
+
             return JS_FALSE;
-        
         }
     }
 
@@ -1432,7 +1431,9 @@ XPCConvert::JSErrorToXPCException(XPCCallContext& ccx,
 ** Note: on some platforms va_list is defined as an array,
 ** and requires array notation.
 */
-#ifdef HAVE_VA_LIST_AS_ARRAY
+#ifdef HAVE_VA_COPY
+#define VARARGS_ASSIGN(foo, bar)	VA_COPY(foo,bar)
+#elif defined(HAVE_VA_LIST_AS_ARRAY)
 #define VARARGS_ASSIGN(foo, bar)	foo[0] = bar[0]
 #else
 #define VARARGS_ASSIGN(foo, bar)	(foo) = (bar)

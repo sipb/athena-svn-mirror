@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 
@@ -66,10 +65,6 @@ public:
 
   // nsIDOMHTMLHeadElement
   NS_DECL_NSIDOMHTMLHEADELEMENT
-
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -150,14 +145,3 @@ nsHTMLHeadElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 
 
 NS_IMPL_STRING_ATTR(nsHTMLHeadElement, Profile, profile)
-
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLHeadElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

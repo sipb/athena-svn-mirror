@@ -1,4 +1,4 @@
-/*
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
@@ -32,45 +32,52 @@
 
 #include "baseutils.h"
 #include "dom.h"
-#include "txAtom.h"
+#include "nsDependentSubstring.h"
+#include "nsIAtom.h"
 #include "txError.h"
 
-class String;
+class txNamespaceMap;
 
 class txExpandedName {
 public:
-    txExpandedName() : mNamespaceID(kNameSpaceID_None),
-                       mLocalName(0)
+    txExpandedName() : mNamespaceID(kNameSpaceID_None)
     {
     }
 
     txExpandedName(PRInt32 aNsID,
-                   txAtom* aLocalName) : mNamespaceID(aNsID),
-                                         mLocalName(aLocalName)
+                   nsIAtom* aLocalName) : mNamespaceID(aNsID),
+                                          mLocalName(aLocalName)
     {
-        TX_IF_ADDREF_ATOM(mLocalName);
     }
 
     txExpandedName(const txExpandedName& aOther) :
         mNamespaceID(aOther.mNamespaceID),
         mLocalName(aOther.mLocalName)
     {
-        TX_IF_ADDREF_ATOM(mLocalName);
     }
 
     ~txExpandedName()
     {
-        TX_IF_RELEASE_ATOM(mLocalName);
     }
     
-    nsresult init(const String& aQName, Node* aResolver, MBool aUseDefault);
+    nsresult init(const nsAString& aQName, txNamespaceMap* aResolver,
+                  MBool aUseDefault);
+
+    void reset()
+    {
+        mNamespaceID = kNameSpaceID_None;
+        mLocalName = nsnull;
+    }
+
+    PRBool isNull()
+    {
+        return mNamespaceID == kNameSpaceID_None && !mLocalName;
+    }
 
     txExpandedName& operator = (const txExpandedName& rhs)
     {
         mNamespaceID = rhs.mNamespaceID;
-        TX_IF_RELEASE_ATOM(mLocalName);
         mLocalName = rhs.mLocalName;
-        TX_IF_ADDREF_ATOM(mLocalName);
         return *this;
     }
 
@@ -87,26 +94,27 @@ public:
     }
 
     PRInt32 mNamespaceID;
-    txAtom* mLocalName;
+    nsCOMPtr<nsIAtom> mLocalName;
 };
 
 class XMLUtils {
 
 public:
-
-    static void getPrefix(const String& src, String& dest);
-    static void getLocalPart(const String& src, String& dest);
-
+    static nsresult splitXMLName(const nsAString& aName, nsIAtom** aPrefix,
+                                 nsIAtom** aLocalName);
+    static void getPrefix(const nsAString& src, nsIAtom** dest);
+    static const nsDependentSubstring getLocalPart(const nsAString& src);
+    static void getLocalPart(const nsAString& src, nsIAtom** dest);
 
     /**
-     * Returns true if the given String is a valid XML QName
+     * Returns true if the given string is a valid XML QName
      */
-    static MBool isValidQName(const String& aName);
+    static MBool isValidQName(const nsAString& aName);
 
     /*
      * Returns true if the given character is whitespace.
      */
-    static MBool isWhitespace(const UNICODE_CHAR& aChar)
+    static MBool isWhitespace(const PRUnichar& aChar)
     {
         return (aChar <= ' ' &&
                 (aChar == ' ' || aChar == '\r' ||
@@ -115,28 +123,34 @@ public:
 
     /**
      * Returns true if the given string has only whitespace characters
-    **/
-    static MBool isWhitespace(const String& aText);
+     */
+    static PRBool isWhitespace(const nsAFlatString& aText);
+
+    /**
+     * Returns true if the given node's DOM nodevalue has only whitespace
+     * characters
+     */
+    static PRBool isWhitespace(Node* aNode);
 
     /**
      * Normalizes the value of a XML processingInstruction
     **/
-    static void normalizePIValue(String& attValue);
+    static void normalizePIValue(nsAString& attValue);
 
     /*
      * Returns true if the given character represents a numeric letter (digit).
      */
-    static MBool isDigit(UNICODE_CHAR ch);
+    static MBool isDigit(PRUnichar ch);
 
     /*
      * Returns true if the given character represents an Alpha letter
      */
-    static MBool isLetter(UNICODE_CHAR ch);
+    static MBool isLetter(PRUnichar ch);
 
     /*
      * Returns true if the given character is an allowable NCName character
      */
-    static MBool isNCNameChar(UNICODE_CHAR ch);
+    static MBool isNCNameChar(PRUnichar ch);
 
     /*
      * Walks up the document tree and returns true if the closest xml:space

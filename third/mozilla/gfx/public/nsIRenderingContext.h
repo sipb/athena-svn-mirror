@@ -47,7 +47,6 @@
 
 class nsIWidget;
 class nsIFontMetrics;
-class nsIImage;
 class nsTransform2D;
 class nsString;
 class nsIDeviceContext;
@@ -64,10 +63,8 @@ struct nsBoundingMetrics;
 #endif
 
 
-#ifdef USE_IMG2
 /* gfx2 */
 class imgIContainer;
-#endif
 
 //cliprect/region combination methods
 
@@ -201,7 +198,8 @@ public:
   NS_IMETHOD IsVisibleRect(const nsRect& aRect, PRBool &aIsVisible) = 0;
 
   /**
-   * Sets the clipping for the RenderingContext to the passed in rectangle
+   * Sets the clipping for the RenderingContext to the passed in rectangle.
+   * The rectangle is in app units!
    * @param aRect The rectangle to set the clipping rectangle to
    * @param aCombine how to combine this rect with the current clip region.
    *        see the bottom of nsIRenderingContext.h
@@ -210,7 +208,8 @@ public:
   NS_IMETHOD SetClipRect(const nsRect& aRect, nsClipCombine aCombine, PRBool &aClipEmpty) = 0;
 
   /**
-   * Gets the bounds of the clip region of the RenderingContext
+   * Gets the bounds of the clip region of the RenderingContext. The bounds are returned
+   * in device units!
    * @param aRect out parameter to contain the clip region bounds
    *        for the RenderingContext
    * @return PR_TRUE if the rendering context has a local cliprect set
@@ -248,7 +247,8 @@ public:
 
 
   /**
-   * Sets the clipping for the RenderingContext to the passed in region
+   * Sets the clipping for the RenderingContext to the passed in region.
+   * The region is in device coordinates!
    * @param aRegion The region to set the clipping area to, IN DEVICE COORDINATES
    * @param aCombine how to combine this region with the current clip region.
    *        see the bottom of nsIRenderingContext.h
@@ -258,6 +258,7 @@ public:
 
   /**
    * Gets a copy of the current clipping region for the RenderingContext
+   * The region is in device coordinates!
    * @param aRegion inout parameter representing the clip region.
    *        if SetClipRegion() is called, do not assume that GetClipRegion()
    *        will return the same object.
@@ -266,6 +267,7 @@ public:
 
   /**
    * Gets the current clipping region for the RenderingContext
+   * The region is in device coordinates!
    * @param aRegion out parameter representing the clip region.
    *        if SetClipRegion() is called, do not assume that GetClipRegion()
    *        will return the same object.
@@ -333,7 +335,7 @@ public:
    * @param aSurfFlags see bottom of nsIRenderingContext.h
    * @return A nsDrawingSurface
    */
-  NS_IMETHOD CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface) = 0;
+  NS_IMETHOD CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface) = 0;
 
   /**
    * Destroy a drawing surface created by CreateDrawingSurface()
@@ -608,7 +610,7 @@ public:
   NS_IMETHOD GetTextDimensions(const PRUnichar* aString, PRUint32 aLength,
                                nsTextDimensions& aDimensions, PRInt32* aFontID = nsnull) = 0;
 
-#if defined(_WIN32) || defined(XP_OS2) || defined(MOZ_X11)
+#if defined(_WIN32) || defined(XP_OS2) || defined(MOZ_X11) || defined(XP_BEOS)
   /**
    * Given an available width and an array of break points,
    * returns the dimensions (in app units) of the text that fit and
@@ -696,37 +698,6 @@ public:
   NS_IMETHOD DrawString(const nsString& aString, nscoord aX, nscoord aY,
                         PRInt32 aFontID = -1,
                         const nscoord* aSpacing = nsnull) = 0;
-
-  /**
-   * Copy an image to the RenderingContext
-   * @param aX Horzontal left destination coordinate
-   * @param aY Vertical top of destinatio coordinate
-   */
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY) = 0;
-
-  /**
-   * Copy an image to the RenderingContext, scaling can occur if width/hieght does not match source
-   * @param aX Horzontal left destination coordinate
-   * @param aY Vertical top of destinatio coordinate
-   * @param aWidth Width of destination, 
-   * @param aHeight Height of destination
-   */
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY,
-                       nscoord aWidth, nscoord aHeight) = 0; 
-
-  /**
-   * Copy an image to the RenderingContext, scaling can occur if source/dest rects differ
-   * @param aRect Destination rectangle to copy the image to
-   */
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aRect) = 0;
-
-  /**
-   * Copy an image to the RenderingContext, scaling/clipping can occur if source/dest rects differ
-   * @param aSRect Source rectangle to copy from
-   * @param aDRect Destination rectangle to copy the image to
-   */
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect)=0;
-
   /**
    * Draw a path.. given a point array.  The Path currently supported is a Quadratic
    * Bezier curve
@@ -829,16 +800,12 @@ public:
 #endif
 
 
-#ifdef IBMBIDI
   /**
    * Let the device context know whether we want text reordered with
    * right-to-left base direction
    */
   NS_IMETHOD SetRightToLeftText(PRBool aIsRTL) = 0;
-#endif // IBMBIDI
 
-
-#ifdef USE_IMG2
   /* [noscript] void drawImage (in imgIContainer aImage, [const] in nsRect aSrcRect, [const] in nsPoint aDestPoint); */
   NS_IMETHOD DrawImage(imgIContainer *aImage, const nsRect * aSrcRect, const nsPoint * aDestPoint) = 0;
 
@@ -848,9 +815,6 @@ public:
   /* [noscript] void drawTile (in imgIContainer aImage, in nscoord aXOffset, in nscoord aYOffset, [const] in nsRect aTargetRect); */
   NS_IMETHOD DrawTile(imgIContainer *aImage, nscoord aXOffset, nscoord aYOffset, const nsRect * aTargetRect) = 0;
 
-  /* [noscript] void drawScaledTile (in imgIContainer aImage, in nscoord aXOffset, in nscoord aYOffset, in nscoord aTileWidth, in nscoord aTileHeight, [const] in nsRect aTargetRect); */
-  NS_IMETHOD DrawScaledTile(imgIContainer *aImage, nscoord aXOffset, nscoord aYOffset, nscoord aTileWidth, nscoord aTileHeight, const nsRect * aTargetRect) = 0;
-#endif
 };
 
 //modifiers for text rendering

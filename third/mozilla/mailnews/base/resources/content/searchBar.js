@@ -19,16 +19,14 @@
  *
  * Original Author:
  *   Navin Gupta <naving@netscape.com>
- *
  * Contributor(s):
- * 
+ *   Seth Spitzer <sspitzer@netscape.com>
  */
 
 var gSearchSession = null;
 var gPreQuickSearchView = null;
 var gSearchTimer = null;
 var gViewSearchListener;
-var gNumOfSearchHits = 0;
 var gSearchBundle;
 var gStatusBar = null;
 var gSearchInProgress = false;
@@ -37,34 +35,36 @@ var gClearButton = null;
 var gDefaultSearchViewTerms = null;
 var gQSViewIsDirty = false;
 
+function SetQSStatusText(aNumHits)
+{
+  var statusMsg;
+  // if there are no hits, it means no matches were found in the search.
+  if (aNumHits == 0)
+    statusMsg = gSearchBundle.getString("searchFailureMessage");
+  else 
+  {
+    if (aNumHits == 1) 
+      statusMsg = gSearchBundle.getString("searchSuccessMessage");
+    else
+      statusMsg = gSearchBundle.getFormattedString("searchSuccessMessages", [aNumHits]);
+  }
+
+  statusFeedback.showStatusString(statusMsg);
+}
+
 // nsIMsgSearchNotify object
 var gSearchNotificationListener =
 {
     onSearchHit: function(header, folder)
     {
-        gNumOfSearchHits++;
+        // XXX todo
+        // update status text?
     },
 
     onSearchDone: function(status)
     {
-
-        var statusMsg;
-        // if there are no hits, it means no matches were found in the search.
-        if (gNumOfSearchHits == 0) {
-            statusMsg = gSearchBundle.getString("searchFailureMessage");
-        }
-        else 
-        {
-            if (gNumOfSearchHits == 1) 
-                statusMsg = gSearchBundle.getString("searchSuccessMessage");
-            else
-                statusMsg = gSearchBundle.getFormattedString("searchSuccessMessages", [gNumOfSearchHits]);
-
-            gNumOfSearchHits = 0;
-        }
-
+        SetQSStatusText(gDBView.QueryInterface(Components.interfaces.nsITreeView).rowCount)
         statusFeedback.showProgress(0);
-        statusFeedback.showStatusString(statusMsg);
         gStatusBar.setAttribute("mode","normal");
         gSearchInProgress = false;
     },
@@ -109,12 +109,11 @@ function initializeGlobalListeners()
   gSearchSession.addFolderListener(folderListener);
   // Setup the javascript object as a listener on the search results
   gSearchSession.registerListener(gSearchNotificationListener);
-    
 }
 
 function createQuickSearchView()
 {
-  if(gDBView.viewType != nsMsgViewType.eShowQuickSearchResults)  //otherwise we are already in quick search view
+  if (gDBView.viewType != nsMsgViewType.eShowQuickSearchResults)  //otherwise we are already in quick search view
   {
     var treeView = gDBView.QueryInterface(Components.interfaces.nsITreeView);  //clear selection
     treeView.selection.clearSelection();
@@ -208,8 +207,8 @@ function restorePreSearchView()
     if (sortType != gDBView.sortType || sortOrder != gDBView.sortOrder)
     {
       gDBView.sort(sortType, sortOrder);
-      UpdateSortIndicators(sortType, sortOrder);
     }
+    UpdateSortIndicators(sortType, sortOrder);
 
     gPreQuickSearchView = null;    
   }
@@ -218,19 +217,60 @@ function restorePreSearchView()
 
   RerootThreadPane();
    
-  //now restore selection
+  var scrolled = false;
+  
+  // now restore selection
   if (selectedHdr)
   {
     gDBView.selectMsgByKey(selectedHdr.messageKey);
     var treeView = gDBView.QueryInterface(Components.interfaces.nsITreeView);
     var selectedIndex = treeView.selection.currentIndex;
-    if (selectedIndex >= 0)  //scroll
+    if (selectedIndex >= 0) 
+    {
+      // scroll
       EnsureRowInThreadTreeIsVisible(selectedIndex);
+      scrolled = true;
+    }
     else
       ClearMessagePane();
   }
-  else
-    ScrollToMessage(nsMsgNavigationType.firstNew, true, false /* selectMessage */);
+
+  // NOTE,
+  // if you change the scrolling code below,
+  // double check the scrolling logic in
+  // msgMail3PaneWindow.js, "FolderLoaded" event code
+  if (!scrolled)
+  {
+    // if we didn't just scroll, 
+    // scroll to the first new message
+    // but don't select it
+    scrolled = ScrollToMessage(nsMsgNavigationType.firstNew, true, false /* selectMessage */);
+    if (!scrolled) 
+    {
+      // if we still haven't scrolled,
+      // scroll to the newest, which might be the top or the bottom
+      // depending on our sort order and sort type
+      if (sortOrder == nsMsgViewSortOrder.ascending) 
+      {
+        switch (sortType) 
+        {
+          case nsMsgViewSortType.byDate: 
+          case nsMsgViewSortType.byId: 
+          case nsMsgViewSortType.byThread: 
+            scrolled = ScrollToMessage(nsMsgNavigationType.lastMessage, true, false /* selectMessage */);
+            break;
+        }
+      }
+      // if still we haven't scrolled,
+      // scroll to the top.
+      if (!scrolled)
+        EnsureRowInThreadTreeIsVisible(0);
+    }
+  }
+  // NOTE,
+  // if you change the scrolling code above,
+  // double check the scrolling logic in
+  // msgMail3PaneWindow.js, "FolderLoaded" event code
 }
 
 function onSearch(aSearchTerms)
@@ -284,31 +324,38 @@ function createSearchTerms()
   var searchTermsArray = Components.classes["@mozilla.org/supports-array;1"].createInstance(Components.interfaces.nsISupportsArray);
   var selectedFolder = GetThreadPaneFolder();
 
-  var term = gSearchSession.createTerm();
-  var value = term.value;
+  var searchAttrib = (IsSpecialFolder(selectedFolder, MSG_FOLDER_FLAG_SENTMAIL | MSG_FOLDER_FLAG_DRAFTS | MSG_FOLDER_FLAG_QUEUE)) ? nsMsgSearchAttrib.ToOrCC : nsMsgSearchAttrib.Sender;
+  // implement | for QS
+  // does this break if the user types "foo|bar" expecting to see subjects with that string?
+  // I claim no, since "foo|bar" will be a hit for "foo" || "bar"
+  // they just might get more false positives
+  var termList = gSearchInput.value.split("|");
+  for (var i = 0; i < termList.length; i ++)
+  {
+    // if the term is empty, skip it
+    if (termList[i] == "")
+      continue;
 
-  value.str = gSearchInput.value;
-  term.value = value;
-  term.attrib = nsMsgSearchAttrib.Subject;
-  term.op = nsMsgSearchOp.Contains;
-  term.booleanAnd = false;
+    // create, fill, and append the subject term
+    var term = gSearchSession.createTerm();
+    var value = term.value;
+    value.str = termList[i];
+    term.value = value;
+    term.attrib = nsMsgSearchAttrib.Subject;
+    term.op = nsMsgSearchOp.Contains;
+    term.booleanAnd = false;
+    searchTermsArray.AppendElement(term);
 
-  searchTermsArray.AppendElement(term);
-
-  // fill in the 2nd term
-  term = gSearchSession.createTerm();
-
-  if (IsSpecialFolder(selectedFolder, MSG_FOLDER_FLAG_SENTMAIL | MSG_FOLDER_FLAG_DRAFTS | MSG_FOLDER_FLAG_QUEUE))
-    term.attrib = nsMsgSearchAttrib.ToOrCC;
-  else
-    term.attrib = nsMsgSearchAttrib.Sender;
-
-  value = term.value;
-  value.str = gSearchInput.value;
-  term.value = value;
-  term.op = nsMsgSearchOp.Contains; 
-  term.booleanAnd = false;
-  searchTermsArray.AppendElement(term);
+    // create, fill, and append the sender (or recipient) term
+    term = gSearchSession.createTerm();
+    value = term.value;
+    value.str = termList[i];
+    term.value = value;
+    term.attrib = searchAttrib;
+    term.op = nsMsgSearchOp.Contains; 
+    term.booleanAnd = false;
+    searchTermsArray.AppendElement(term);
+  }
 
   // now append the default view criteria to the quick search so we don't lose any default
   // view information
@@ -317,7 +364,7 @@ function createSearchTerms()
     var isupports = null;
     var searchTerm; 
     var termsArray = gDefaultSearchViewTerms.QueryInterface(Components.interfaces.nsISupportsArray);
-    for (var i = 0; i < termsArray.Count(); i++)
+    for (i = 0; i < termsArray.Count(); i++)
     {
       isupports = termsArray.GetElementAt(i);
       searchTerm = isupports.QueryInterface(Components.interfaces.nsIMsgSearchTerm);
@@ -377,6 +424,16 @@ function disableQuickSearchClearButton()
 {
  if (gClearButton)
    gClearButton.setAttribute("disabled", true); //going out of search disable clear button
+}
+
+function ClearQSIfNecessary()
+{
+  GetSearchInput();
+
+  if (gSearchInput.value == "")
+    return;
+
+  Search("");
 }
 
 function Search(str)

@@ -45,6 +45,7 @@
 #include "nsIMsgStatusFeedback.h"
 #include "nsIMsgLogonRedirector.h"
 #include "nsIMsgStringService.h"
+#include "nsMsgLineBuffer.h"
 
 #include "nsCOMPtr.h"
 
@@ -72,7 +73,8 @@ SMTP_SEND_AUTH_LOGIN_PASSWORD,                      // 17
 SMTP_AUTH_LOGIN_RESPONSE,                           // 18
 SMTP_TLS_RESPONSE,                                  // 19
 SMTP_AUTH_EXTERNAL_RESPONSE,                        // 20
-SMTP_AUTH_PROCESS_STATE                             // 21
+SMTP_AUTH_PROCESS_STATE,                            // 21
+SMTP_AUTH_CRAM_MD5_CHALLENGE_RESPONSE               // 22
 } SmtpState;
 
 // State Flags (Note, I use the word state in terms of storing 
@@ -100,6 +102,9 @@ SMTP_AUTH_PROCESS_STATE                             // 21
 // for login redirection information.
 #define SMTP_USE_LOGIN_REDIRECTION  0x00000100
 #define SMTP_ESMTP_SERVER           0x00000200
+#define SMTP_AUTH_CRAM_MD5_ENABLED  0x00000400
+#define SMTP_AUTH_DIGEST_MD5_ENABLED  0x00000800
+#define SMTP_AUTH_ANY_ENABLED  0x00000C1C
 
 typedef enum _PrefAuthMethod {
     PREF_AUTH_NONE = 0,
@@ -161,6 +166,7 @@ private:
 	PRInt32 	m_previousResponseCode; 
 	PRInt32		m_continuationResponse;
   nsCString m_responseText;   /* text returned from Smtp server */
+  nsMsgLineStreamBuffer   *m_lineStreamBuffer; // used to efficiently extract lines from the incoming data stream
 
 	char	   *m_addressCopy;
 	char	   *m_addresses;
@@ -177,9 +183,12 @@ private:
   
   PRBool m_tlsInitiated;
 
+  PRInt32 m_totalAmountRead;
+#ifdef UNREADY_CODE 
 	// message specific information
 	PRInt32		m_totalAmountWritten;
 	PRUint32	m_totalMessageSize;
+#endif /* UNREADY_CODE */
     
 	char		*m_dataBuf;
   PRUint32 m_dataBufSize;
@@ -195,8 +204,6 @@ private:
 	// Communication methods --> Reading and writing protocol
 	////////////////////////////////////////////////////////////////////////////////////////
 
-	PRInt32 ReadLine(nsIInputStream * inputStream, PRUint32 length, char ** line);
-  
   nsCOMPtr<nsIMsgStringService> mSmtpBundle;
   void UpdateStatus(PRInt32 aStatusID);
   void UpdateStatusWithString(const PRUnichar * aStatusString);
@@ -217,14 +224,14 @@ private:
 	PRInt32 AuthLoginPassword();
 	PRInt32 AuthLoginResponse(nsIInputStream * stream, PRUint32 length);
 
-    PRInt32 SendTLSResponse();
+  PRInt32 SendTLSResponse();
 	PRInt32 SendVerifyResponse(); // mscott: this one is apparently unimplemented...
 	PRInt32 SendMailResponse();
 	PRInt32 SendRecipientResponse();
 	PRInt32 SendDataResponse();
 	PRInt32 SendPostData();
 	PRInt32 SendMessageResponse();
-
+	PRInt32 CramMD5LoginResponse();
 	PRInt32 ProcessAuth();
 
 
@@ -239,6 +246,10 @@ private:
   nsresult GetPassword(char **aPassword);
   nsresult GetUsernamePassword(char **aUsername, char **aPassword);
   nsresult PromptForPassword(nsISmtpServer *aSmtpServer, nsISmtpUrl *aSmtpUrl, const PRUnichar *aPromptValue, char **aPassword);
+
+    void BackupAuthFlags();
+    void RestoreAuthFlags();
+    PRInt32 m_origAuthFlags;
 };
 
 #endif  // nsSmtpProtocol_h___

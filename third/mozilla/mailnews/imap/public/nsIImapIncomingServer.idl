@@ -81,6 +81,8 @@ interface nsIImapIncomingServer : nsISupports {
   attribute boolean aOLMailboxView;
   attribute boolean storeReadMailInPFC;
   attribute boolean storeSentMailInPFC;
+  attribute wstring trashFolderName;
+
   boolean getIsPFC(in string folderName);
   nsIMsgFolder getPFC(in boolean createIfMissing);
   attribute boolean downloadBodiesOnGetNewMail;
@@ -90,7 +92,7 @@ interface nsIImapIncomingServer : nsISupports {
 
   void RemoveConnection(in nsIImapProtocol aImapConnection);
   void ResetNamespaceReferences();
-  void PseudoInterruptMsgLoad(in nsIMsgFolder aImapFolder, out boolean interrupted);
+  void pseudoInterruptMsgLoad(in nsIMsgFolder aImapFolder, in nsIMsgWindow aMsgWindow, out boolean interrupted);
   void ResetConnection(in string folderName);
   void CloseConnectionForFolder(in nsIMsgFolder aMsgFolder);
   void CreatePRUnicharStringFromUTF7(in string aSourceString, out wstring aUnicodeStr);

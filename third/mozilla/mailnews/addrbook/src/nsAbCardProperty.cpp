@@ -119,23 +119,48 @@ static AppendItem CUSTOM_ATTRS_ARRAY[] = {
 
 nsAbCardProperty::nsAbCardProperty(void)
 {
-	NS_INIT_ISUPPORTS();
-
 	m_LastModDate = 0;
 
 	m_PreferMailFormat = nsIAbPreferMailFormat::unknown;
 	m_IsMailList = PR_FALSE;
-	m_MailListURI = nsnull;
 }
 
 nsAbCardProperty::~nsAbCardProperty(void)
 {
-  CRTFREEIF(m_MailListURI);
 }
 
 NS_IMPL_ISUPPORTS1(nsAbCardProperty, nsIAbCard)
 
 ////////////////////////////////////////////////////////////////////////////////
+
+nsresult nsAbCardProperty::GetCardTypeFromString(const char *aCardTypeStr, PRBool aEmptyIsTrue, PRBool *aValue)
+{
+  NS_ENSURE_ARG_POINTER(aCardTypeStr);
+  NS_ENSURE_ARG_POINTER(aValue);
+
+  *aValue = PR_FALSE;
+  nsXPIDLString cardType;
+  nsresult rv = GetCardType(getter_Copies(cardType));
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  *aValue = ((aEmptyIsTrue && cardType.IsEmpty()) || cardType.Equals(NS_ConvertASCIItoUCS2(aCardTypeStr)));
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAbCardProperty::GetIsANormalCard(PRBool *aIsNormal)
+{
+  return GetCardTypeFromString(AB_CARD_IS_NORMAL_CARD, PR_TRUE, aIsNormal);
+}
+
+NS_IMETHODIMP nsAbCardProperty::GetIsASpecialGroup(PRBool *aIsSpecailGroup)
+{
+  return GetCardTypeFromString(AB_CARD_IS_AOL_GROUPS, PR_FALSE, aIsSpecailGroup);
+}
+
+NS_IMETHODIMP nsAbCardProperty::GetIsAnEmailAddress(PRBool *aIsEmailAddress)
+{
+  return GetCardTypeFromString(AB_CARD_IS_AOL_ADDITIONAL_EMAIL, PR_FALSE, aIsEmailAddress);
+}
 
 nsresult nsAbCardProperty::GetAttributeName(PRUnichar **aName, nsString& value)
 {
@@ -187,12 +212,10 @@ NS_IMETHODIMP nsAbCardProperty::GetMailListURI(char **aMailListURI)
 {
 	if (aMailListURI)
 	{
-		if (m_MailListURI)
-			*aMailListURI = nsCRT::strdup(m_MailListURI);
-		else
-			*aMailListURI = nsCRT::strdup("");
-
-		return NS_OK;
+    *aMailListURI = ToNewCString(m_MailListURI);
+    if (*aMailListURI)
+      return NS_OK;
+    return NS_ERROR_OUT_OF_MEMORY;
 	}
 	else
 		return NS_ERROR_NULL_POINTER;
@@ -202,8 +225,7 @@ NS_IMETHODIMP nsAbCardProperty::SetMailListURI(const char *aMailListURI)
 {
 	if (aMailListURI)
 	{
-		nsCRT::free (m_MailListURI);
-		m_MailListURI = nsCRT::strdup(aMailListURI);
+		m_MailListURI = aMailListURI;
 		return NS_OK;
 	}
 	else
@@ -412,6 +434,12 @@ NS_IMETHODIMP nsAbCardProperty::GetCardValue(const char *attrname, PRUnichar **v
           break;
         case 'i':
           rv = GetPrimaryEmail(value);
+          break;
+        case 'o':
+          if (attrname[8] == 'L')
+            rv = GetPhoneticLastName(value);
+          else if (attrname[8] == 'F')
+            rv = GetPhoneticFirstName(value);
           break;
         default:
           rv = NS_ERROR_UNEXPECTED;
@@ -671,6 +699,12 @@ NS_IMETHODIMP nsAbCardProperty::SetCardValue(const char *attrname, const PRUnich
         case 'i':
           rv = SetPrimaryEmail(value);
           break;
+        case 'o':
+          if (attrname[8] == 'L')
+            rv = SetPhoneticLastName(value);
+          else if (attrname[8] == 'F')
+            rv = SetPhoneticFirstName(value);
+          break;
         default:
           rv = NS_ERROR_UNEXPECTED;
           break;
@@ -737,6 +771,14 @@ nsAbCardProperty::GetFirstName(PRUnichar * *aFirstName)
 NS_IMETHODIMP
 nsAbCardProperty::GetLastName(PRUnichar * *aLastName)
 { return GetAttributeName(aLastName, m_LastName); }
+
+NS_IMETHODIMP
+nsAbCardProperty::GetPhoneticFirstName(PRUnichar * *aPhoneticFirstName)
+{ return GetAttributeName(aPhoneticFirstName, m_PhoneticFirstName); }
+
+NS_IMETHODIMP
+nsAbCardProperty::GetPhoneticLastName(PRUnichar * *aPhoneticLastName)
+{ return GetAttributeName(aPhoneticLastName, m_PhoneticLastName); }
 
 NS_IMETHODIMP
 nsAbCardProperty::GetDisplayName(PRUnichar * *aDisplayName)
@@ -947,6 +989,14 @@ nsAbCardProperty::SetLastName(const PRUnichar * aLastName)
 { return SetAttributeName(aLastName, m_LastName); }
 
 NS_IMETHODIMP
+nsAbCardProperty::SetPhoneticLastName(const PRUnichar * aPhoneticLastName)
+{ return SetAttributeName(aPhoneticLastName, m_PhoneticLastName); }
+
+NS_IMETHODIMP
+nsAbCardProperty::SetPhoneticFirstName(const PRUnichar * aPhoneticFirstName)
+{ return SetAttributeName(aPhoneticFirstName, m_PhoneticFirstName); }
+
+NS_IMETHODIMP
 nsAbCardProperty::SetDisplayName(const PRUnichar * aDisplayName)
 { return SetAttributeName(aDisplayName, m_DisplayName); }
 
@@ -1154,6 +1204,10 @@ NS_IMETHODIMP nsAbCardProperty::Copy(nsIAbCard* srcCard)
 
 	srcCard->GetLastName(getter_Copies(str));
 	SetLastName(str);
+	srcCard->GetPhoneticFirstName(getter_Copies(str));
+	SetPhoneticFirstName(str);
+	srcCard->GetPhoneticLastName(getter_Copies(str));
+	SetPhoneticLastName(str);
 	srcCard->GetDisplayName(getter_Copies(str));
 	SetDisplayName(str);
 	srcCard->GetNickName(getter_Copies(str));
@@ -1427,9 +1481,7 @@ NS_IMETHODIMP nsAbCardProperty::ConvertToXMLPrintData(PRUnichar **aXMLSubstr)
         nsXPIDLString displayName;
         nsXPIDLString primaryEmail;
         for (i = 0; i < total; i++) {
-          nsCOMPtr <nsISupports> item = getter_AddRefs(addresses->ElementAt(i));
-				  
-          nsCOMPtr <nsIAbCard> listCard = do_QueryInterface(item, &rv);
+          nsCOMPtr <nsIAbCard> listCard = do_QueryElementAt(addresses, i, &rv);
           NS_ENSURE_SUCCESS(rv,rv);
 
           xmlStr.Append(NS_LITERAL_STRING("<PrimaryEmail>\n").get());

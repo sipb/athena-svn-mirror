@@ -63,11 +63,6 @@ NS_COM char * nsUnescape(char * str);
 	 * modifies the parameter, returns the same buffer
 	 */
 
-NS_COM char * nsEscapeCount(const char * str, PRInt32 len, nsEscapeMask mask, PRInt32* out_len);
-	/* Like nsEscape, but if out_len is non-null, return result string length
-	 * in *out_len, and uses len instead of NUL termination.
-	 * Caller must use nsCRT::free() on the result.
-	 */
 NS_COM PRInt32 nsUnescapeCount (char * str);
 	/* decode % escaped hex codes into character values,
 	 * modifies the parameter buffer, returns the length of the result
@@ -84,12 +79,6 @@ nsEscapeHTML2(const PRUnichar *aSourceBuffer,
   * Escape problem char's for HTML display 
   */
 
-
-/**
- * DEPRECATED API: use NS_EscapeURL/NS_UnescapeURL instead
- */
-NS_COM nsresult nsStdEscape(const char* str, PRInt16 mask, nsCString &result);
-NS_COM nsresult nsStdUnescape(char* str, char **result);
 
 #ifdef __cplusplus
 }
@@ -113,10 +102,12 @@ enum EscapeMask {
   esc_Query          = PR_BIT(8),
   esc_Ref            = PR_BIT(9),
   /** special flags **/
+  esc_Minimal        = esc_Scheme | esc_Username | esc_Password | esc_Host | esc_FilePath | esc_Param | esc_Query | esc_Ref, 
   esc_Forced         = PR_BIT(10), /* forces escaping of existing escape sequences */
   esc_OnlyASCII      = PR_BIT(11), /* causes non-ascii octets to be skipped */
   esc_OnlyNonASCII   = PR_BIT(12), /* causes ascii octets to be skipped */
-  esc_AlwaysCopy     = PR_BIT(13)  /* copy input to result buf even if escaping is unnecessary */
+  esc_AlwaysCopy     = PR_BIT(13), /* copy input to result buf even if escaping is unnecessary */
+  esc_Colon          = PR_BIT(14)  /* force escape of colon */
 };
 
 /**

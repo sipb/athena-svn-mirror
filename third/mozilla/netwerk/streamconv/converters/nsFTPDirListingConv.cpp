@@ -109,12 +109,12 @@ nsFTPDirListingConv::AsyncConvertData(const PRUnichar *aFromType, const PRUnicha
     rv = aCtxt->QueryInterface(NS_GET_IID(nsIURI), (void**)&uri);
     if (NS_FAILED(rv)) return rv;
 
+    // XXX this seems really wrong!!
     rv = NS_NewInputStreamChannel(&mPartChannel,
                                   uri,
                                   nsnull,
                                   NS_LITERAL_CSTRING(APPLICATION_HTTP_INDEX_FORMAT),
-                                  NS_LITERAL_CSTRING(""),
-                                  -1);          // XXX fix contentLength
+                                  NS_LITERAL_CSTRING(""));
     NS_RELEASE(uri);
     if (NS_FAILED(rv)) return rv;
 
@@ -245,7 +245,6 @@ nsFTPDirListingConv::OnStopRequest(nsIRequest* request, nsISupports *ctxt,
 
 // nsFTPDirListingConv methods
 nsFTPDirListingConv::nsFTPDirListingConv() {
-    NS_INIT_ISUPPORTS();
     mFinalListener      = nsnull;
     mPartChannel        = nsnull;
     mSentHeading        = PR_FALSE;
@@ -352,10 +351,14 @@ nsFTPDirListingConv::DigestBufferLines(char *aBuffer, nsCString &aString) {
         if (offset) {
             result.fe_fnlen = offset - result.fe_fname;
         }
-        aString.Append(NS_LITERAL_CSTRING("\"") +
-                       Substring(result.fe_fname, result.fe_fname+result.fe_fnlen) +
-                       NS_LITERAL_CSTRING("\" "));
 
+        nsCAutoString buf;
+        aString.Append(NS_LITERAL_CSTRING("\"") + 
+                       NS_EscapeURL(Substring(result.fe_fname, 
+                                              result.fe_fname+result.fe_fnlen),
+                                    esc_Minimal|esc_OnlyASCII|esc_Forced,buf)
+                       + NS_LITERAL_CSTRING("\" "));
+ 
         // CONTENT LENGTH
         
         if (type != 'd') 

@@ -41,7 +41,7 @@
 #include "nsXULAtoms.h"
 #include "nsHTMLAtoms.h"
 #include "nsIContent.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsINameSpaceManager.h" 
 #include "nsIDOMNSDocument.h"
 #include "nsIDocument.h"
@@ -87,7 +87,6 @@ nsTreeColFrame::Release(void)
 // QueryInterface
 //
 NS_INTERFACE_MAP_BEGIN(nsTreeColFrame)
-  NS_INTERFACE_MAP_ENTRY(nsITreeColFrame)
 NS_INTERFACE_MAP_END_INHERITING(nsBoxFrame)
 // Constructor
 nsTreeColFrame::nsTreeColFrame(nsIPresShell* aPresShell, PRBool aIsRoot, nsIBoxLayout* aLayoutManager)
@@ -103,7 +102,7 @@ NS_IMETHODIMP
 nsTreeColFrame::Init(nsIPresContext*  aPresContext,
                          nsIContent*      aContent,
                          nsIFrame*        aParent,
-                         nsIStyleContext* aContext,
+                         nsStyleContext*  aContext,
                          nsIFrame*        aPrevInFlow)
 {
   nsresult rv = nsBoxFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
@@ -166,9 +165,7 @@ nsTreeColFrame::GetFrameForPoint(nsIPresContext* aPresContext,
     }
   }
   if (mRect.Contains(aPoint)) {
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-    if (vis->IsVisible()) {
+    if (GetStyleVisibility()->IsVisible()) {
       *aFrame = this; // Capture all events.
       return NS_OK;
     }
@@ -192,7 +189,7 @@ nsTreeColFrame::AttributeChanged(nsIPresContext* aPresContext,
     EnsureTree();
     if (mTree)
       mTree->Invalidate();
-  } else if (aAttribute == nsXULAtoms::ordinal) {
+  } else if (aAttribute == nsXULAtoms::ordinal || aAttribute == nsXULAtoms::primary) {
     InvalidateColumnCache(aPresContext);
   }
 

@@ -39,26 +39,19 @@
 #ifndef __nsXULTreeAccessible_h__
 #define __nsXULTreeAccessible_h__
 
-#include "nsAccessible.h"
 #include "nsBaseWidgetAccessible.h"
-#include "nsCOMPtr.h"
-#include "nsIDOMNode.h"
-#include "nsIWeakReference.h"
 #include "nsITreeBoxObject.h"
 #include "nsITreeView.h"
 #include "nsXULSelectAccessible.h"
-#include "nsIAccessibleTable.h"
 
 /*
  * A class the represents the XUL Tree widget.
  */
-class nsXULTreeAccessible : public nsXULSelectableAccessible,
-                            public nsIAccessibleTable
+class nsXULTreeAccessible : public nsXULSelectableAccessible
 {
 public:
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIACCESSIBLESELECTABLE
-  NS_DECL_NSIACCESSIBLETABLE
 
   nsXULTreeAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
   virtual ~nsXULTreeAccessible() {}
@@ -74,11 +67,9 @@ public:
 
   static void GetTreeBoxObject(nsIDOMNode* aDOMNode, nsITreeBoxObject** aBoxObject);
 
-private:
+protected:
   nsCOMPtr<nsITreeBoxObject> mTree;
   nsCOMPtr<nsITreeView> mTreeView;
-  nsCOMPtr<nsIAccessible> mCaption;
-  nsString mSummary;
 
   NS_IMETHOD ChangeSelection(PRInt32 aIndex, PRUint8 aMethod, PRBool *aSelState);
 };
@@ -97,7 +88,6 @@ public:
   /* ----- nsIAccessible ----- */
   NS_IMETHOD GetAccName(nsAString& _retval);
   NS_IMETHOD GetAccValue(nsAString& _retval);
-  NS_IMETHOD GetAccId(PRInt32 *_retval);
   NS_IMETHOD GetAccRole(PRUint32 *_retval);
   NS_IMETHOD GetAccState(PRUint32 *_retval);
   NS_IMETHOD GetAccNumActions(PRUint8 *_retval);
@@ -113,6 +103,9 @@ public:
   NS_IMETHOD AccTakeSelection(void); 
   NS_IMETHOD AccTakeFocus(void); 
 
+  /* ------ nsIAccessNode ----- */
+  NS_IMETHOD GetUniqueID(void **aUniqueID);
+
 private:
   nsCOMPtr<nsITreeBoxObject> mTree;
   nsCOMPtr<nsITreeView> mTreeView;
@@ -120,12 +113,10 @@ private:
   nsString mColumn;
 };
 
-class nsXULTreeColumnsAccessible : public nsAccessible,
-                                   public nsIAccessibleTable
+class nsXULTreeColumnsAccessible : public nsAccessibleWrap
 {
 public:
   NS_DECL_ISUPPORTS_INHERITED
-  NS_DECL_NSIACCESSIBLETABLE
 
   nsXULTreeColumnsAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell);
   virtual ~nsXULTreeColumnsAccessible() {}
@@ -140,10 +131,6 @@ public:
   NS_IMETHOD GetAccPreviousSibling(nsIAccessible **_retval); 
 
   NS_IMETHOD AccDoAction(PRUint8 index);
-
-private:
-  nsCOMPtr<nsIAccessible> mCaption;
-  nsString mSummary;
 };
 
 class nsXULTreeColumnitemAccessible : public nsLeafAccessible

@@ -104,17 +104,13 @@ Essential Files:gfx.shlb
 Components:gfxComponent.shlb
 
 ; javascript
-Components:JSUrl.shlb
 Components:jsurl.xpt
 
 ; layout
-Components:content.shlb
-; res:dtd:*
 res:dtd:xhtml11.dtd
 Components:layout.shlb
 Components:htmlparser.shlb
 Components:htmlparser.xpt
-Components:view.shlb
 Components:content.xpt     
 Components:layout.xpt   
 
@@ -122,7 +118,6 @@ Components:layout.xpt
 
 Components:Necko.shlb     
 Components:necko.xpt     
-Components:Necko2.shlb    
 Components:cache.xpt     
 
 ; imagelib
@@ -149,6 +144,8 @@ Components:oji.xpt
 ; profile
 Components:profile.shlb
 Components:profileservices.xpt
+Components:mozreg.shlb
+Components:mozreg.xpt
 
 ; wallet
 ; Optional - only if you need password persistence
@@ -188,7 +185,6 @@ Components:RDFLibrary.shlb
 Components:rdf.xpt
 
 ; session history
-Components:shistory.shlb
 Components:shistory.xpt
 
 ; optional typeaheadfind 
@@ -225,7 +221,6 @@ defaults:Profile:mimeTypes.rdf
 defaults:Profile:US:mimeTypes.rdf
 
 ; uriloader
-Components:uriLoader.shlb
 Components:uriLoader.xpt
 
 ; widget
@@ -264,13 +259,27 @@ res:loading-image.gif
 res:broken-image.gif
 res:builtin:htmlBindings.xml
 res:builtin:platformHTMLBindings.xml
-res:entityTables:*
+res:entityTables:html40Special.properties
+res:entityTables:htmlEntityVersion.properties
+res:entityTables:html40Latin1.properties
+res:entityTables:html40Symbols.properties
+res:entityTables:transliterate.properties
+res:fonts:fontEncoding.properties
 
 ;
-; MathML
+; Optional for MathML
 ;
-res:fonts:*
-res:mathml.css
-res:dtd:mathml.dtd
-Components:ucvmath.shlb
+;res:mathml.css
+;res:dtd:mathml.dtd
+;res:entityTables:mathml20.properties
+;res:fonts:mathfont.properties
+;res:fonts:mathfontCMEX10.properties
+;res:fonts:mathfontCMSY10.properties
+;res:fonts:mathfontMath1.properties
+;res:fonts:mathfontMath2.properties
+;res:fonts:mathfontMath4.properties
+;res:fonts:mathfontMTExtra.properties
+;res:fonts:mathfontPUA.properties
+;res:fonts:mathfontSymbol.properties
+;Components:ucvmath.shlb
 

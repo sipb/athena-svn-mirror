@@ -15,10 +15,15 @@
 # Contributor(s): Mark Hammond <MarkH@ActiveState.com> (original author)
 #
 
-import sys, os
+import sys, os, time
 import xpcom.components
 import xpcom._xpcom
 import xpcom.nsError
+
+try:
+    import gc
+except ImportError:
+    gc = None
 
 num_errors = 0
 
@@ -29,6 +34,7 @@ contractid = "Python.TestComponent"
 
 really_big_string = "This is really repetitive!" * 10000
 really_big_wstring = u"This is really repetitive!" * 10000
+extended_unicode_string = u"The Euro Symbol is '\u20ac'"
 
 # Exception raised when a -ve integer is converted to an unsigned C integer
 # (via an extension module).  This changed in Python 2.2
@@ -61,6 +67,28 @@ def test_attribute(ob, attr_name, expected_init, new_value, new_value_really = N
     # And set it back to the expected init.
     setattr(ob, attr_name, expected_init)
     _test_value( "getting back initial attribute value after change (%s)" % (attr_name,), getattr(ob, attr_name), expected_init)
+
+def test_string_attribute(ob, attr_name, expected_init, is_dumb_sz = False, ascii_only = False):
+    test_attribute(ob, attr_name, expected_init, "normal value")
+    val = "a null >\0<"
+    if is_dumb_sz:
+        expected = "a null >" # dumb strings are \0 terminated.
+    else:
+        expected = val
+    test_attribute(ob, attr_name, expected_init, val, expected)
+    test_attribute(ob, attr_name, expected_init, "")
+    test_attribute(ob, attr_name, expected_init, really_big_string)
+    test_attribute(ob, attr_name, expected_init, u"normal unicode value")
+    val = u"a null >\0<"
+    if is_dumb_sz:
+        expected = "a null >" # dumb strings are \0 terminated.
+    else:
+        expected = val
+    test_attribute(ob, attr_name, expected_init, val, expected)
+    test_attribute(ob, attr_name, expected_init, u"")
+    test_attribute(ob, attr_name, expected_init, really_big_wstring)
+    if not ascii_only:
+        test_attribute(ob, attr_name, expected_init, extended_unicode_string)
 
 def test_attribute_failure(ob, attr_name, new_value, expected_exception):
     try:
@@ -184,21 +212,15 @@ def test_base_interface(c):
     test_attribute(c, "wchar_value", "b", u"\0")
     test_attribute_failure(c, "wchar_value", u"hi", ValueError)
     
-    test_attribute(c, "string_value", "cee", "dee")
-    test_attribute(c, "string_value", "cee", "a null >\0<", "a null >") # strings are NULL terminated!!
-    test_attribute(c, "string_value", "cee", "")
-    test_attribute(c, "string_value", "cee", u"dee")
-    test_attribute(c, "string_value", "cee", u"a null >\0<", "a null >") # strings are NULL terminated!!
-    test_attribute(c, "string_value", "cee", u"")
+    test_string_attribute(c, "string_value", "cee", is_dumb_sz = True, ascii_only = True)
+    test_string_attribute(c, "wstring_value", "dee", is_dumb_sz = True)
+    test_string_attribute(c, "astring_value", "astring")
+    test_string_attribute(c, "acstring_value", "acstring", ascii_only = True)
 
-    test_attribute(c, "wstring_value", "dee", "cee")
-    test_attribute(c, "wstring_value", "dee", "a null >\0<", "a null >") # strings are NULL terminated!!
-    test_attribute(c, "wstring_value", "dee", "")
-    test_attribute(c, "wstring_value", "dee", really_big_string)
-    test_attribute(c, "wstring_value", "dee", u"cee")
-    test_attribute(c, "wstring_value", "dee", u"a null >\0<", "a null >") # strings are NULL terminated!!
-    test_attribute(c, "wstring_value", "dee", u"")
-    test_attribute(c, "wstring_value", "dee", really_big_wstring)
+    test_string_attribute(c, "utf8string_value", "utf8string")
+    # Test a string already encoded gets through correctly.
+    test_attribute(c, "utf8string_value", "utf8string", extended_unicode_string.encode("utf8"), extended_unicode_string)
+
     # This will fail internal string representation :(  Test we don't crash
     try:
         c.wstring_value = "a big char >" + chr(129) + "<"
@@ -292,7 +314,7 @@ def test_derived_interface(c, test_flat = 0):
     test_method(c.UpWideString, (val,), val.upper())
     test_method(c.UpWideString2, (val,), val.upper())
     test_method(c.GetFixedWideString, (20,), u"A"*20)
-    val = u"The Euro Symbol is '\u20ac'"
+    val = extended_unicode_string
     test_method(c.CopyUTF8String, ("foo",), "foo")
     test_method(c.CopyUTF8String, (u"foo",), "foo")
     test_method(c.CopyUTF8String, (val,), val)
@@ -382,7 +404,7 @@ def test_derived_interface(c, test_flat = 0):
     test_method(c.ConcatDOMStrings, (val,val), val+val)
     test_attribute(c, "domstring_value", "dom", "new dom")
     if c.domstring_value_ro != "dom":
-        print "Read-only DOMString not currect - got", c.domstring_ro
+        print "Read-only DOMString not correct - got", c.domstring_ro
     try:
         c.dom_string_ro = "new dom"
         print "Managed to set a readonly attribute - eek!"
@@ -436,6 +458,8 @@ except ImportError:
     def gettotalrefcount():
         return 0
 
+from pyxpcom_test_tools import getmemusage
+
 def test_from_js():
     # Ensure we can find the js test script - same dir as this!
     # Assume the path of sys.argv[0] is where we can find the js test code.
@@ -475,10 +499,16 @@ def doit(num_loops = -1):
         if i==0:
             # First loop is likely to "leak" as we cache things.
             # Leaking after that is a problem.
+            if gc is not None:
+                gc.collect()
             num_refs = gettotalrefcount()
+            mem_usage = getmemusage()
 
         if num_errors:
             break
+
+    if gc is not None:
+        gc.collect()
 
     lost = gettotalrefcount() - num_refs
     # Sometimes we get spurious counts off by 1 or 2.
@@ -486,6 +516,17 @@ def doit(num_loops = -1):
     # more than twice!
     if abs(lost)>2:
         print "*** Lost %d references" % (lost,)
+
+    # sleep to allow the OS to recover
+    time.sleep(1)
+    mem_lost = getmemusage() - mem_usage
+    # working set size is fickle, and when we were leaking strings, this test
+    # would report a leak of 100MB.  So we allow a 2MB buffer - but even this
+    # may still occasionally report spurious warnings.  If you are really
+    # worried, bump the counter to a huge value, and if there is a leak it will
+    # show.
+    if mem_lost > 2000000:
+        print "*** Lost %.6f MB of memory" % (mem_lost/1000000.0,)
 
     if num_errors:
         print "There were", num_errors, "errors testing the Python component :-("

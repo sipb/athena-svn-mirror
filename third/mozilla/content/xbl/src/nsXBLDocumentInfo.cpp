@@ -39,7 +39,7 @@
 #include "nsXBLDocumentInfo.h"
 #include "nsHashtable.h"
 #include "nsIDocument.h"
-#include "nsIXBLPrototypeBinding.h"
+#include "nsXBLPrototypeBinding.h"
 #include "nsIScriptObjectPrincipal.h"
 #include "nsIScriptContext.h"
 #include "nsIDOMScriptObjectFactory.h"
@@ -133,7 +133,6 @@ nsXBLDocGlobalObject::nsXBLDocGlobalObject()
     : mJSObject(nsnull),
       mGlobalObjectOwner(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -357,7 +356,6 @@ NS_IMPL_ISUPPORTS3(nsXBLDocumentInfo, nsIXBLDocumentInfo, nsIScriptGlobalObjectO
 
 nsXBLDocumentInfo::nsXBLDocumentInfo(const char* aDocURI, nsIDocument* aDocument)
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
   mDocURI = aDocURI;
   mDocument = aDocument;
@@ -388,7 +386,7 @@ nsXBLDocumentInfo::~nsXBLDocumentInfo()
 }
 
 NS_IMETHODIMP
-nsXBLDocumentInfo::GetPrototypeBinding(const nsACString& aRef, nsIXBLPrototypeBinding** aResult)
+nsXBLDocumentInfo::GetPrototypeBinding(const nsACString& aRef, nsXBLPrototypeBinding** aResult)
 {
   *aResult = nsnull;
   if (!mBindingTable)
@@ -396,19 +394,28 @@ nsXBLDocumentInfo::GetPrototypeBinding(const nsACString& aRef, nsIXBLPrototypeBi
 
   const nsPromiseFlatCString& flat = PromiseFlatCString(aRef);
   nsCStringKey key(flat.get());
-  *aResult = NS_STATIC_CAST(nsIXBLPrototypeBinding*, mBindingTable->Get(&key)); // Addref happens here.
+  *aResult = NS_STATIC_CAST(nsXBLPrototypeBinding*, mBindingTable->Get(&key));
 
   return NS_OK;
 }
 
+static PRBool PR_CALLBACK
+ReleasePrototypeBinding(nsHashKey* aKey, void* aData, void* aClosure)
+{
+  nsXBLPrototypeBinding* binding = NS_STATIC_CAST(nsXBLPrototypeBinding*, aData);
+  binding->Release();
+  return PR_TRUE;
+}
+
 NS_IMETHODIMP
-nsXBLDocumentInfo::SetPrototypeBinding(const nsACString& aRef, nsIXBLPrototypeBinding* aBinding)
+nsXBLDocumentInfo::SetPrototypeBinding(const nsACString& aRef, nsXBLPrototypeBinding* aBinding)
 {
   if (!mBindingTable)
-    mBindingTable = new nsSupportsHashtable();
+    mBindingTable = new nsObjectHashtable(nsnull, nsnull, ReleasePrototypeBinding, nsnull);
 
   const nsPromiseFlatCString& flat = PromiseFlatCString(aRef);
   nsCStringKey key(flat.get());
+  aBinding->AddRef();
   mBindingTable->Put(&key, aBinding);
 
   return NS_OK;
@@ -416,7 +423,7 @@ nsXBLDocumentInfo::SetPrototypeBinding(const nsACString& aRef, nsIXBLPrototypeBi
 
 PRBool PR_CALLBACK FlushScopedSkinSheets(nsHashKey* aKey, void* aData, void* aClosure)
 {
-  nsIXBLPrototypeBinding* proto = (nsIXBLPrototypeBinding*)aData;
+  nsXBLPrototypeBinding* proto = (nsXBLPrototypeBinding*)aData;
   proto->FlushSkinSheets();
   return PR_TRUE;
 }

@@ -30,11 +30,15 @@ LIBRARY_NAME = npwinless
 
 NO_DIST_INSTALL = 1
 
+REQUIRES = plugin \
+           java \
+           $(NULL)
+
 CPPSRCS = plugin.cpp
 
-SHARED_LIBRARY_LIBS = ../../common/plugingate_s.$(LIB_SUFFIX)
+SHARED_LIBRARY_LIBS = ../../common/$(LIB_PREFIX)plugingate_s.$(LIB_SUFFIX)
 
-DEFFILE = npwinless.def
+DEFFILE = $(srcdir)/npwinless.def
 RESFILE = npwinless.res
 
 include $(topsrcdir)/config/rules.mk

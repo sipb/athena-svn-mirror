@@ -64,8 +64,9 @@ extern PRLogModuleInfo *gHttpLog;
 #define LOG_ENABLED() LOG4_ENABLED()
 
 // http default buffer geometry
-#define NS_HTTP_SEGMENT_SIZE 4096
-#define NS_HTTP_BUFFER_SIZE  4096*4 // 16k maximum
+#define NS_HTTP_SEGMENT_SIZE  4096
+#define NS_HTTP_SEGMENT_COUNT 16   // 64k maximum
+#define NS_HTTP_MAX_ODA_SIZE  (NS_HTTP_SEGMENT_SIZE * 4) // 16k
 
 // http version codes
 #define NS_HTTP_VERSION_UNKNOWN  0
@@ -75,13 +76,28 @@ extern PRLogModuleInfo *gHttpLog;
 
 typedef PRUint8 nsHttpVersion;
 
+//-----------------------------------------------------------------------------
 // http connection capabilities
-#define NS_HTTP_ALLOW_KEEPALIVE  (1<<0)
-#define NS_HTTP_ALLOW_PIPELINING (1<<1)
-#define NS_HTTP_DONT_REPORT_PROGRESS (1<<2)
+//-----------------------------------------------------------------------------
+
+#define NS_HTTP_ALLOW_KEEPALIVE      (1<<0)
+#define NS_HTTP_ALLOW_PIPELINING     (1<<1)
+
+// a transaction with this caps flag will continue to own the connection,
+// preventing it from being reclaimed, even after the transaction completes.
+#define NS_HTTP_STICKY_CONNECTION    (1<<2)
+
+//-----------------------------------------------------------------------------
+// some default values
+//-----------------------------------------------------------------------------
 
 // hard upper limit on the number of requests that can be pipelined
-#define NS_HTTP_MAX_PIPELINED_REQUESTS 10 
+#define NS_HTTP_MAX_PIPELINED_REQUESTS 8 
+
+#define NS_HTTP_DEFAULT_PORT  80
+#define NS_HTTPS_DEFAULT_PORT 443
+
+#define NS_HTTP_HEADER_SEPS ", \t"
 
 //-----------------------------------------------------------------------------
 // http atoms...
@@ -142,5 +158,8 @@ PRTimeToSeconds(PRTime t_usec)
 
 // nsCRT::strdup likes to convert nsnull to "" 
 #define strdup_if(s) (s ? nsCRT::strdup(s) : nsnull)
+
+// round q-value to one decimal place; return most significant digit as uint.
+#define QVAL_TO_UINT(q) ((unsigned int) ((q + 0.05) * 10.0))
 
 #endif // nsHttp_h__

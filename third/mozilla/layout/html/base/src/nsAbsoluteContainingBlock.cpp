@@ -38,7 +38,6 @@
 #include "nsAbsoluteContainingBlock.h"
 #include "nsContainerFrame.h"
 #include "nsReflowPath.h"
-#include "nsIStyleContext.h"
 #include "nsIViewManager.h"
 #include "nsLayoutAtoms.h"
 #include "nsIPresShell.h"
@@ -46,12 +45,17 @@
 #include "nsIPresContext.h"
 #include "nsIFrameManager.h"
 
+#ifdef DEBUG
+#include "nsBlockFrame.h"
+#endif
+
+
 nsresult
 nsAbsoluteContainingBlock::FirstChild(const nsIFrame* aDelegatingFrame,
                                       nsIAtom*        aListName,
                                       nsIFrame**      aFirstChild) const
 {
-  NS_PRECONDITION(nsLayoutAtoms::absoluteList == aListName, "unexpected child list name");
+  NS_PRECONDITION(GetChildListName() == aListName, "unexpected child list name");
   *aFirstChild = mAbsoluteFrames.FirstChild();
   return NS_OK;
 }
@@ -62,7 +66,7 @@ nsAbsoluteContainingBlock::SetInitialChildList(nsIFrame*       aDelegatingFrame,
                                                nsIAtom*        aListName,
                                                nsIFrame*       aChildList)
 {
-  NS_PRECONDITION(nsLayoutAtoms::absoluteList == aListName, "unexpected child list name");
+  NS_PRECONDITION(GetChildListName() == aListName, "unexpected child list name");
 #ifdef NS_DEBUG
   nsFrame::VerifyDirtyBitSet(aChildList);
 #endif
@@ -89,7 +93,7 @@ nsAbsoluteContainingBlock::AppendFrames(nsIFrame*       aDelegatingFrame,
   nsHTMLReflowCommand* reflowCmd;
   rv = NS_NewHTMLReflowCommand(&reflowCmd, aDelegatingFrame, eReflowType_ReflowDirty);
   if (NS_SUCCEEDED(rv)) {
-    reflowCmd->SetChildListName(nsLayoutAtoms::absoluteList);
+    reflowCmd->SetChildListName(GetChildListName());
     aPresShell.AppendReflowCommand(reflowCmd);
   }
 
@@ -116,7 +120,7 @@ nsAbsoluteContainingBlock::InsertFrames(nsIFrame*       aDelegatingFrame,
   nsHTMLReflowCommand* reflowCmd;
   rv = NS_NewHTMLReflowCommand(&reflowCmd, aDelegatingFrame, eReflowType_ReflowDirty);
   if (NS_SUCCEEDED(rv)) {
-    reflowCmd->SetChildListName(nsLayoutAtoms::absoluteList);
+    reflowCmd->SetChildListName(GetChildListName());
     aPresShell.AppendReflowCommand(reflowCmd);
   }
 
@@ -138,49 +142,18 @@ nsAbsoluteContainingBlock::RemoveFrame(nsIFrame*       aDelegatingFrame,
   return result ? NS_OK : NS_ERROR_FAILURE;
 }
 
-// Destructor function for the collapse offset frame property
-static void
-DestroyRectFunc(nsIPresContext* aPresContext,
-                nsIFrame*       aFrame,
-                nsIAtom*        aPropertyName,
-                void*           aPropertyValue)
+nsresult
+nsAbsoluteContainingBlock::ReplaceFrame(nsIFrame*       aDelegatingFrame,
+                                        nsIPresContext* aPresContext,
+                                        nsIPresShell&   aPresShell,
+                                        nsIAtom*        aListName,
+                                        nsIFrame*       aOldFrame,
+                                        nsIFrame*       aNewFrame)
 {
-  delete (nsRect*)aPropertyValue;
-}
-
-static nsRect*
-GetOverflowAreaProperty(nsIPresContext* aPresContext,
-                        nsIFrame*       aFrame,
-                        PRBool          aCreateIfNecessary = PR_FALSE)
-{
-  nsCOMPtr<nsIPresShell>     presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-
-  if (presShell) {
-    nsCOMPtr<nsIFrameManager>  frameManager;
-    presShell->GetFrameManager(getter_AddRefs(frameManager));
-  
-    if (frameManager) {
-      void* value;
-  
-      frameManager->GetFrameProperty(aFrame, nsLayoutAtoms::overflowAreaProperty,
-                                     0, &value);
-      if (value) {
-        return (nsRect*)value;  // the property already exists
-
-      } else if (aCreateIfNecessary) {
-        // The property isn't set yet, so allocate a new rect, set the property,
-        // and return the newly allocated rect
-        nsRect*  overflow = new nsRect(0, 0, 0, 0);
-
-        frameManager->SetFrameProperty(aFrame, nsLayoutAtoms::overflowAreaProperty,
-                                       overflow, DestroyRectFunc);
-        return overflow;
-      }
-    }
-  }
-
-  return nsnull;
+  PRBool result = mAbsoluteFrames.ReplaceFrame(aPresContext, aDelegatingFrame,
+                                               aOldFrame, aNewFrame, PR_TRUE);
+  NS_ASSERTION(result, "Problems replacing a frame");
+  return result ? NS_OK : NS_ERROR_FAILURE;
 }
 
 nsresult
@@ -189,10 +162,11 @@ nsAbsoluteContainingBlock::Reflow(nsIFrame*                aDelegatingFrame,
                                   const nsHTMLReflowState& aReflowState,
                                   nscoord                  aContainingBlockWidth,
                                   nscoord                  aContainingBlockHeight,
-                                  nsRect&                  aChildBounds)
+                                  nsRect*                  aChildBounds)
 {
   // Initialize OUT parameter
-  aChildBounds.SetRect(0, 0, 0, 0);
+  if (aChildBounds)
+    aChildBounds->SetRect(0, 0, 0, 0);
 
   // Make a copy of the reflow state.  If the reason is
   // eReflowReason_Incremental (which should mean either that the target
@@ -226,25 +200,27 @@ nsAbsoluteContainingBlock::Reflow(nsIFrame*                aDelegatingFrame,
     ReflowAbsoluteFrame(aDelegatingFrame, aPresContext, reflowState, aContainingBlockWidth,
                         aContainingBlockHeight, kidFrame, reason, kidStatus);
 
-    // Add in the child's bounds
-    nsRect  kidBounds;
-    kidFrame->GetRect(kidBounds);
-    aChildBounds.UnionRect(aChildBounds, kidBounds);
+    if (aChildBounds) {
+      // Add in the child's bounds
+      nsRect  kidBounds;
+      kidFrame->GetRect(kidBounds);
+      aChildBounds->UnionRect(*aChildBounds, kidBounds);
 
-    // If the frame has visible overflow, then take it into account, too.
-    nsFrameState  kidFrameState;
-    kidFrame->GetFrameState(&kidFrameState);
-    if (kidFrameState & NS_FRAME_OUTSIDE_CHILDREN) {
-      // Get the property
-      nsRect* overflowArea = ::GetOverflowAreaProperty(aPresContext, kidFrame);
+      // If the frame has visible overflow, then take it into account, too.
+      nsFrameState  kidFrameState;
+      kidFrame->GetFrameState(&kidFrameState);
+      if (kidFrameState & NS_FRAME_OUTSIDE_CHILDREN) {
+        // Get the property
+        nsRect* overflowArea =  kidFrame->GetOverflowAreaProperty(aPresContext);
 
-      if (overflowArea) {
-        // The overflow area is in the child's coordinate space, so translate
-        // it into the parent's coordinate space
-        nsRect  rect(*overflowArea);
+        if (overflowArea) {
+          // The overflow area is in the child's coordinate space, so translate
+          // it into the parent's coordinate space
+          nsRect  rect(*overflowArea);
 
-        rect.MoveBy(kidBounds.x, kidBounds.y);
-        aChildBounds.UnionRect(aChildBounds, rect);
+          rect.MoveBy(kidBounds.x, kidBounds.y);
+          aChildBounds->UnionRect(*aChildBounds, rect);
+        }
       }
     }
   }
@@ -269,7 +245,7 @@ nsAbsoluteContainingBlock::CalculateChildBounds(nsIPresContext* aPresContext,
     f->GetFrameState(&frameState);
     if (frameState & NS_FRAME_OUTSIDE_CHILDREN) {
       // Get the property
-      nsRect* overflowArea = ::GetOverflowAreaProperty(aPresContext, f);
+      nsRect* overflowArea = f->GetOverflowAreaProperty(aPresContext);
   
       if (overflowArea) {
         // The overflow area is in the child's coordinate space, so translate
@@ -305,7 +281,7 @@ nsAbsoluteContainingBlock::IncrementalReflow(nsIFrame*                aDelegatin
     nsCOMPtr<nsIAtom> listName;
     command->GetChildListName(*getter_AddRefs(listName));
 
-    if (nsLayoutAtoms::absoluteList == listName) {
+    if (GetChildListName() == listName) {
       nsReflowType  type;
 
       // Get the type of reflow command
@@ -382,13 +358,14 @@ nsAbsoluteContainingBlock::DestroyFrames(nsIFrame*       aDelegatingFrame,
   mAbsoluteFrames.DestroyFrames(aPresContext);
 }
 
-/**
- * NOTE: nsViewportFrame::ReflowFixedFrame is rather similar to this
- * function, so changes made here may also need to be made there.
- */
 // XXX Optimize the case where it's a resize reflow and the absolutely
 // positioned child has the exact same size and position and skip the
 // reflow...
+
+// When bug 154892 is checked in, make sure that when 
+// GetChildListName() == nsLayoutAtoms::fixedList, the height is unconstrained.
+// since we don't allow replicated frames to split.
+
 nsresult
 nsAbsoluteContainingBlock::ReflowAbsoluteFrame(nsIFrame*                aDelegatingFrame,
                                                nsIPresContext*          aPresContext,
@@ -399,9 +376,47 @@ nsAbsoluteContainingBlock::ReflowAbsoluteFrame(nsIFrame*                aDelegat
                                                nsReflowReason           aReason,
                                                nsReflowStatus&          aStatus)
 {
+#ifdef DEBUG
+  if (nsBlockFrame::gNoisyReflow) {
+    nsFrame::IndentBy(stdout,nsBlockFrame::gNoiseIndent);
+    printf("abs pos ");
+    if (nsnull != aKidFrame) {
+      nsIFrameDebug*  frameDebug;
+      if (NS_SUCCEEDED(CallQueryInterface(aKidFrame, &frameDebug))) {
+        nsAutoString name;
+        frameDebug->GetFrameName(name);
+        printf("%s ", NS_LossyConvertUCS2toASCII(name).get());
+      }
+    }
+    printf("r=%d",aReflowState.reason);
+
+    if (aReflowState.reason == eReflowReason_Incremental) {
+      nsHTMLReflowCommand *command = aReflowState.path->mReflowCommand;
+
+      if (command) {
+        // We're the target.
+        nsReflowType type;
+        command->GetType(type);
+        printf("(%d)", type);      
+      }
+    }
+    char width[16];
+    char height[16];
+    PrettyUC(aReflowState.availableWidth, width);
+    PrettyUC(aReflowState.availableHeight, height);
+    printf(" a=%s,%s ", width, height);
+    PrettyUC(aReflowState.mComputedWidth, width);
+    PrettyUC(aReflowState.mComputedHeight, height);
+    printf("c=%s,%s \n", width, height);
+  }
+  if (nsBlockFrame::gNoisy) {
+    nsBlockFrame::gNoiseIndent++;
+  }
+#endif // DEBUG
+
+
   nsresult  rv;
   nsMargin  border;
-
   // Get the border values
   if (!aReflowState.mStyleBorder->GetBorder(border)) {
     NS_NOTYETIMPLEMENTED("percentage border");
@@ -489,13 +504,50 @@ nsAbsoluteContainingBlock::ReflowAbsoluteFrame(nsIFrame*                aDelegat
   aKidFrame->GetFrameState(&kidFrameState);
   if (kidFrameState & NS_FRAME_OUTSIDE_CHILDREN) {
     // Get the property (creating a rect struct if necessary)
-    nsRect* overflowArea = ::GetOverflowAreaProperty(aPresContext, aKidFrame, PR_TRUE);
+    nsRect* overflowArea = aKidFrame->GetOverflowAreaProperty(aPresContext, PR_TRUE);
 
     NS_ASSERTION(overflowArea, "should have created rect");
     if (overflowArea) {
       *overflowArea = kidDesiredSize.mOverflowArea;
     }
   }
-
+#ifdef DEBUG
+  if (nsBlockFrame::gNoisy) {
+    nsBlockFrame::gNoiseIndent--;
+  }
+  if (nsBlockFrame::gNoisyReflow) {
+    nsFrame::IndentBy(stdout,nsBlockFrame::gNoiseIndent);
+    printf("abs pos ");
+    if (nsnull != aKidFrame) {
+      nsIFrameDebug*  frameDebug;
+      if (NS_SUCCEEDED(CallQueryInterface(aKidFrame, &frameDebug))) {
+        nsAutoString name;
+        frameDebug->GetFrameName(name);
+        printf("%s ", NS_LossyConvertUCS2toASCII(name).get());
+      }
+    }
+    printf("%p rect=%d,%d,%d,%d", aKidFrame, rect.x, rect.y, rect.width, rect.height);
+    printf("\n");
+  }
+#endif
   return rv;
 }
+
+#ifdef DEBUG
+ void nsAbsoluteContainingBlock::PrettyUC(nscoord aSize,
+                        char*   aBuf)
+{
+  if (NS_UNCONSTRAINEDSIZE == aSize) {
+    strcpy(aBuf, "UC");
+  }
+  else {
+    if(0xdeadbeef == aSize)
+    {
+      strcpy(aBuf, "deadbeef");
+    }
+    else {
+      sprintf(aBuf, "%d", aSize);
+    }
+  }
+}
+#endif

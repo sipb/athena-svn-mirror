@@ -49,6 +49,7 @@
 #include "nsVoidArray.h"
 #include "nsEditor.h"
 #include "nsIContentIterator.h"
+#include "nsCOMArray.h"
 
 class nsPlaintextEditor;
 
@@ -210,10 +211,8 @@ class nsDOMIterator
     nsresult Init(nsIDOMRange* aRange);
     nsresult Init(nsIDOMNode* aNode);
     void ForEach(nsDomIterFunctor& functor) const;
-    nsresult MakeList(nsBoolDomIterFunctor& functor,
-                      nsCOMPtr<nsISupportsArray> *outArrayOfNodes) const;
     nsresult AppendList(nsBoolDomIterFunctor& functor,
-                      nsCOMPtr<nsISupportsArray> arrayOfNodes) const;
+                        nsCOMArray<nsIDOMNode>& arrayOfNodes) const;
   protected:
     nsCOMPtr<nsIContentIterator> mIter;
 };
@@ -259,5 +258,33 @@ struct DOMPoint
   }
 };
 
+
+class nsEditorUtils
+{
+  public:
+    static PRBool IsDescendantOf(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 *aOffset = 0);
+    static PRBool IsLeafNode(nsIDOMNode *aNode);
+};
+
+
+class nsIDragSession;
+class nsITransferable;
+class nsIDOMEvent;
+class nsISimpleEnumerator;
+
+class nsEditorHookUtils
+{
+  public:
+    static PRBool   DoAllowDragHook(nsIDOMDocument *aDoc, nsIDOMEvent *aEvent);
+    static PRBool   DoDragHook(nsIDOMDocument *aDoc, nsIDOMEvent *aEvent,
+                                    nsITransferable *aTrans);
+    static PRBool   DoAllowDropHook(nsIDOMDocument *aDoc, nsIDOMEvent *aEvent,
+                                    nsIDragSession *aSession);
+    static PRBool   DoInsertionHook(nsIDOMDocument *aDoc, nsIDOMEvent *aEvent,
+                                    nsITransferable *aTrans);
+  private:
+    static nsresult GetHookEnumeratorFromDocument(nsIDOMDocument *aDoc,
+                                                  nsISimpleEnumerator **aEnumerator);
+};
 
 #endif // nsEditorUtils_h__

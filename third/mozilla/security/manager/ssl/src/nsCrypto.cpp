@@ -63,7 +63,6 @@
 #include "seccomon.h"
 extern "C" {
 #include "crmf.h"
-#include "crmfi.h"
 #include "pk11pqg.h"
 }
 #include "cmmf.h"
@@ -75,6 +74,8 @@ extern "C" {
 #include "nsNSSCleaner.h"
 NSSCleanupAutoPtrClass(SECKEYPrivateKey, SECKEY_DestroyPrivateKey)
 NSSCleanupAutoPtrClass(PK11SlotInfo, PK11_FreeSlot)
+
+#include "nsNSSShutDown.h"
 
 /*
  * These are the most common error strings that are returned
@@ -240,7 +241,6 @@ static NS_DEFINE_CID(kNSSComponentCID, NS_NSSCOMPONENT_CID);
 
 nsCrypto::nsCrypto()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsCrypto::~nsCrypto()
@@ -373,9 +373,13 @@ nsCrypto::GetScriptPrincipal(JSContext *cx)
     }
   }
 
-  if (!principal) {
-    nsCOMPtr<nsIScriptContext> scriptContext = 
-             NS_REINTERPRET_CAST(nsIScriptContext*,JS_GetContextPrivate(cx));
+  if (principal)
+    return principal;
+
+  if (JS_GetOptions(cx) & JSOPTION_PRIVATE_IS_NSISUPPORTS) {
+    nsISupports* scriptContextSupports =
+      NS_STATIC_CAST(nsISupports*, JS_GetContextPrivate(cx));
+    nsCOMPtr<nsIScriptContext> scriptContext(do_QueryInterface(scriptContextSupports));
     if (scriptContext)
     {
       nsCOMPtr<nsIScriptGlobalObject> global;
@@ -554,6 +558,7 @@ nsConvertToActualKeyGenParams(PRUint32 keyGenMech, char *params,
 static PK11SlotInfo*
 nsGetSlotForKeyGen(nsKeyGenType keyGenType, nsIInterfaceRequestor *ctx)
 {
+  nsNSSShutDownPreventionLock locker;
   PRUint32 mechanism = cryptojs_convert_to_mechanism(keyGenType);
   PK11SlotInfo *slot = nsnull;
   nsresult rv = GetSlotWithMechanism(mechanism,ctx, &slot);
@@ -660,11 +665,18 @@ cryptojs_generateOneKeyPair(JSContext *cx, nsKeyPairInfo *keyPairInfo,
     runnable = do_QueryInterface(KeygenRunnable);
 
     if (runnable) {
-      rv = dialogs->DisplayGeneratingKeypairInfo(uiCxt, runnable);
-
-      // We call join on the thread, 
-      // so we can be sure that no simultaneous access to the passed parameters will happen.
-      KeygenRunnable->Join();
+      {
+        nsPSMUITracker tracker;
+        if (tracker.isUIForbidden()) {
+          rv = NS_ERROR_NOT_AVAILABLE;
+        }
+        else {
+          rv = dialogs->DisplayGeneratingKeypairInfo(uiCxt, runnable);
+          // We call join on the thread, 
+          // so we can be sure that no simultaneous access to the passed parameters will happen.
+          KeygenRunnable->Join();
+        }
+      }
 
       NS_RELEASE(dialogs);
       if (NS_SUCCEEDED(rv)) {
@@ -872,8 +884,7 @@ nsSetEscrowAuthority(CRMFCertRequest *certReq, nsKeyPairInfo *keyInfo,
     return NS_ERROR_FAILURE;
 
   CRMFPKIArchiveOptions *archOpt = 
-      CRMF_CreatePKIArchiveOptions(crmfEncryptedPrivateKey, 
-                                   NS_STATIC_CAST(void*,encrKey)); 
+      CRMF_CreatePKIArchiveOptions(crmfEncryptedPrivateKey, encrKey);
   if (!archOpt) {
     CRMF_DestroyEncryptedKey(encrKey);
     return NS_ERROR_FAILURE;
@@ -1302,6 +1313,49 @@ nsSetProofOfPossession(CRMFCertReqMsg *certReqMsg,
 
 }
 
+static void PR_CALLBACK
+nsCRMFEncoderItemCount(void *arg, const char *buf, unsigned long len)
+{
+  unsigned long *count = (unsigned long *)arg;
+  *count += len;
+}
+
+static void PR_CALLBACK
+nsCRMFEncoderItemStore(void *arg, const char *buf, unsigned long len)
+{
+  SECItem *dest = (SECItem *)arg;
+  memcpy(dest->data + dest->len, buf, len);
+  dest->len += len;
+}
+
+static SECItem*
+nsEncodeCertReqMessages(CRMFCertReqMsg **certReqMsgs)
+{
+  unsigned long len = 0;
+  if (CRMF_EncodeCertReqMessages(certReqMsgs, nsCRMFEncoderItemCount, &len)
+      != SECSuccess) {
+    return nsnull;
+  }
+  SECItem *dest = (SECItem *)PORT_Alloc(sizeof(SECItem));
+  if (dest == nsnull) {
+    return nsnull;
+  }
+  dest->type = siBuffer;
+  dest->data = (unsigned char *)PORT_Alloc(len);
+  if (dest->data == nsnull) {
+    PORT_Free(dest);
+    return nsnull;
+  }
+  dest->len = 0;
+
+  if (CRMF_EncodeCertReqMessages(certReqMsgs, nsCRMFEncoderItemStore, dest)
+      != SECSuccess) {
+    SECITEM_FreeItem(dest, PR_TRUE);
+    return nsnull;
+  }
+  return dest;
+}
+
 //Create a Base64 encoded CRMFCertReqMsg that can be sent to a CA
 //requesting one or more certificates to be issued.  This function
 //creates a single cert request per key pair and then appends it to
@@ -1323,9 +1377,6 @@ nsCreateReqFromKeyPairs(nsKeyPairInfo *keyids, PRInt32 numRequests,
   memset(certReqMsgs, 0, sizeof(CRMFCertReqMsg*)*(1+numRequests));
   SECStatus srv;
   nsresult rv;
-  CRMFCertReqMessages messages;
-  memset(&messages, 0, sizeof(messages));
-  messages.messages = certReqMsgs;
   SECItem *encodedReq;
   char *retString;
   for (i=0; i<numRequests; i++) {
@@ -1346,8 +1397,7 @@ nsCreateReqFromKeyPairs(nsKeyPairInfo *keyids, PRInt32 numRequests,
       goto loser;
     CRMF_DestroyCertRequest(certReq);
   }
-  encodedReq = SEC_ASN1EncodeItem(nsnull, nsnull, &messages,
-                                  CRMFCertReqMessagesTemplate);
+  encodedReq = nsEncodeCertReqMessages(certReqMsgs);
   nsFreeCertReqMessages(certReqMsgs, numRequests);
 
   retString = NSSBase64_EncodeItem (nsnull, nsnull, 0, encodedReq);
@@ -1363,6 +1413,7 @@ loser:
 NS_IMETHODIMP
 nsCrypto::GenerateCRMFRequest(nsIDOMCRMFObject** aReturn)
 {
+  nsNSSShutDownPreventionLock locker;
   *aReturn = nsnull;
   nsresult nrv;
   nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID(), &nrv));
@@ -1480,7 +1531,15 @@ nsCrypto::GenerateCRMFRequest(nsIDOMCRMFObject** aReturn)
       return rv;
 
     PRBool okay=PR_FALSE;
-    dialogs->ConfirmKeyEscrow(nssCert, &okay);
+    {
+      nsPSMUITracker tracker;
+      if (tracker.isUIForbidden()) {
+        okay = PR_FALSE;
+      }
+      else {
+        dialogs->ConfirmKeyEscrow(nssCert, &okay);
+      }
+    }
     if (!okay)
       return NS_OK;
     willEscrow = PR_TRUE;
@@ -1606,7 +1665,6 @@ CryptoRunnableEvent::~CryptoRunnableEvent()
 nsP12Runnable::nsP12Runnable(nsIX509Cert **certArr, PRInt32 numCerts,
                              nsIPK11Token *token)
 {
-  NS_INIT_ISUPPORTS();
   mCertArr  = certArr;
   mNumCerts = numCerts;
   mToken = token;
@@ -1632,7 +1690,10 @@ alertUser(const PRUnichar *message)
   wwatch->GetNewPrompter(0, getter_AddRefs(prompter));
 
   if (prompter) {
-    prompter->Alert(0, message);
+    nsPSMUITracker tracker;
+    if (!tracker.isUIForbidden()) {
+      prompter->Alert(0, message);
+    }
   }
 }
 
@@ -1640,16 +1701,12 @@ alertUser(const PRUnichar *message)
 NS_IMETHODIMP
 nsP12Runnable::Run()
 {
+  nsNSSShutDownPreventionLock locker;
   NS_ASSERTION(mCertArr, "certArr is NULL while trying to back up");
-  nsCOMPtr<nsIDOMCryptoDialogs> dialogs;
-  nsresult rv = getNSSDialogs(getter_AddRefs(dialogs),
-                              NS_GET_IID(nsIDOMCryptoDialogs),
-                              NS_DOMCRYPTODIALOGS_CONTRACTID);
-  if (NS_FAILED(rv))
-    return rv;
 
   nsString final;
   nsString temp;
+  nsresult rv;
 
   nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
   if (NS_FAILED(rv))
@@ -1706,14 +1763,13 @@ nsP12Runnable::Run()
 
 nsCryptoRunArgs::nsCryptoRunArgs() 
 {
-  NS_INIT_ISUPPORTS();
 }
 nsCryptoRunArgs::~nsCryptoRunArgs() {}
 
 
 nsCryptoRunnable::nsCryptoRunnable(nsCryptoRunArgs *args)
 {
-  NS_INIT_ISUPPORTS();
+  nsNSSShutDownPreventionLock locker;
   NS_ASSERTION(args,"Passed nsnull to nsCryptoRunnable constructor.");
   m_args = args;
   NS_IF_ADDREF(m_args);
@@ -1722,6 +1778,7 @@ nsCryptoRunnable::nsCryptoRunnable(nsCryptoRunArgs *args)
 
 nsCryptoRunnable::~nsCryptoRunnable()
 {
+  nsNSSShutDownPreventionLock locker;
   JS_RemoveRoot(m_args->m_cx, &m_args->m_scope);
   NS_IF_RELEASE(m_args);
 }
@@ -1731,6 +1788,7 @@ nsCryptoRunnable::~nsCryptoRunnable()
 NS_IMETHODIMP
 nsCryptoRunnable::Run()
 {
+  nsNSSShutDownPreventionLock locker;
   JSPrincipals *principals;
 
   nsresult rv = m_args->m_principals->GetJSPrincipals(&principals);
@@ -1800,6 +1858,7 @@ nsCrypto::ImportUserCertificates(const nsAString& aNickname,
                                  PRBool aDoForcedBackup, 
                                  nsAString& aReturn)
 {
+  nsNSSShutDownPreventionLock locker;
   char *nickname=nsnull, *cmmfResponse=nsnull;
   char *retString=nsnull;
   char *freeString=nsnull;
@@ -1950,6 +2009,8 @@ nsCrypto::ImportUserCertificates(const nsAString& aNickname,
       CERT_ImportCAChain(derCerts, numCAs, certUsageUserCertImport);
       nsMemory::Free(derCerts);
     }
+    
+    CERT_DestroyCertList(caPubs);
   }
 
   if (aDoForcedBackup) {
@@ -2035,8 +2096,17 @@ nsCrypto::Alert(const nsAString& aMessage)
 NS_IMETHODIMP
 nsCrypto::Logout()
 {
-  PK11_LogoutAll();
-  return NS_OK;
+  nsresult rv;
+  nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
+  if (NS_FAILED(rv))
+    return rv;
+
+  {
+    nsNSSShutDownPreventionLock locker;
+    PK11_LogoutAll();
+  }
+
+  return nssComponent->LogoutAuthenticatedPK11();
 }
 
 NS_IMETHODIMP
@@ -2047,7 +2117,6 @@ nsCrypto::DisableRightClick()
 
 nsCRMFObject::nsCRMFObject()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsCRMFObject::~nsCRMFObject()
@@ -2076,7 +2145,6 @@ nsCRMFObject::SetCRMFRequest(char *inRequest)
 
 nsPkcs11::nsPkcs11()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsPkcs11::~nsPkcs11()
@@ -2094,7 +2162,10 @@ confirm_user(const PRUnichar *message)
     wwatch->GetNewPrompter(0, getter_AddRefs(prompter));
 
   if (prompter) {
-    prompter->Confirm(0, message, &confirmation);
+    nsPSMUITracker tracker;
+    if (!tracker.isUIForbidden()) {
+      prompter->Confirm(0, message, &confirmation);
+    }
   }
 
   return confirmation;
@@ -2104,6 +2175,7 @@ confirm_user(const PRUnichar *message)
 NS_IMETHODIMP
 nsPkcs11::Deletemodule(const nsAString& aModuleName, PRInt32* aReturn)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv;
   nsString errorMessage;
 
@@ -2162,6 +2234,7 @@ nsPkcs11::Addmodule(const nsAString& aModuleName,
                     PRInt32 aCryptoMechanismFlags, 
                     PRInt32 aCipherFlags, PRInt32* aReturn)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv;
   nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
   nsString final;

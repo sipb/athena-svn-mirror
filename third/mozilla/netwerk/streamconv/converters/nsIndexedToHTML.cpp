@@ -46,6 +46,7 @@
 #include "nsDateTimeFormatCID.h"
 #include "nsURLHelper.h"
 #include "nsCRT.h"
+#include "nsIPlatformCharset.h"
 
 NS_IMPL_THREADSAFE_ISUPPORTS4(nsIndexedToHTML,
                               nsIDirIndexListener,
@@ -106,6 +107,7 @@ nsIndexedToHTML::Init(nsIStreamListener* aListener) {
                            getter_AddRefs(mBundle));
 
     mRowCount = 0;
+    mExpectAbsLoc = PR_FALSE;
 
     return rv;
 }
@@ -209,6 +211,9 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
         nsCOMPtr<nsIFile> file;
         rv = fileUrl->GetFile(getter_AddRefs(file));
         if (NS_FAILED(rv)) return rv;
+        nsCOMPtr<nsILocalFile> lfile = do_QueryInterface(file, &rv);
+        if (NS_FAILED(rv)) return rv;
+        lfile->SetFollowLinks(PR_TRUE);
         
         nsCAutoString url;
         rv = net_GetURLSpecFromFile(file, url);
@@ -223,6 +228,18 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
             if (NS_FAILED(rv)) return rv;
             parentStr.Assign(url);
         }
+
+        // reset parser's charset to platform's default if this is file url
+        nsCOMPtr<nsIPlatformCharset> platformCharset(do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &rv));
+        NS_ENSURE_SUCCESS(rv, rv);
+        nsAutoString charset;
+        rv = platformCharset->GetCharset(kPlatformCharsetSel_FileName, charset);
+        NS_ENSURE_SUCCESS(rv, rv);
+        rv = mParser->SetEncoding(NS_LossyConvertUCS2toASCII(charset).get());
+        NS_ENSURE_SUCCESS(rv, rv);
+
+    } else if (NS_SUCCEEDED(uri->SchemeIs("gopher", &isScheme)) && isScheme) {
+        mExpectAbsLoc = PR_TRUE;
     }
 
     nsString buffer;
@@ -289,7 +306,7 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
 
     buffer.Append(NS_LITERAL_STRING("<style type=\"text/css\">\n") +
                   NS_LITERAL_STRING("img { border: 0; padding: 0 2px; vertical-align: text-bottom; }\n") +
-                  NS_LITERAL_STRING("td  { font-family: monospace; padding: 2px 3px; text-align: right; vertical-align: bottom; }\n") +
+                  NS_LITERAL_STRING("td  { font-family: monospace; padding: 2px 3px; text-align: right; vertical-align: bottom; white-space: pre; }\n") +
                   NS_LITERAL_STRING("td:first-child { text-align: left; padding: 2px 10px 2px 3px; }\n") +
                   NS_LITERAL_STRING("table { border: 0; }\n") +
                   NS_LITERAL_STRING("a.symlink { font-style: italic; }\n") +
@@ -463,7 +480,7 @@ nsIndexedToHTML::OnIndexAvailable(nsIRequest *aRequest,
 
     nsXPIDLCString loc;
     aIndex->GetLocation(getter_Copies(loc));
-    
+
     if (!mTextToSubURI) {
         mTextToSubURI = do_GetService(NS_ITEXTTOSUBURI_CONTRACTID, &rv);
         if (NS_FAILED(rv)) return rv;
@@ -477,19 +494,40 @@ nsIndexedToHTML::OnIndexAvailable(nsIRequest *aRequest,
     rv = mTextToSubURI->UnEscapeAndConvert(encoding, loc,
                                            getter_Copies(unEscapeSpec));
     if (NS_FAILED(rv)) return rv;
-    
-    pushBuffer.Append(unEscapeSpec);
+  
+    // need to escape links
+    nsCAutoString escapeBuf;
 
+    NS_ConvertUCS2toUTF8 utf8UnEscapeSpec(unEscapeSpec);
+
+    // now minimally re-escape the location...
+    PRUint32 escFlags;
+    // for some protocols, like gopher, we expect the location to be absolute.
+    // if so, and if the location indeed appears to be a valid URI, then go
+    // ahead and treat it like one.
+    if (mExpectAbsLoc &&
+        NS_SUCCEEDED(net_ExtractURLScheme(utf8UnEscapeSpec, nsnull, nsnull, nsnull))) {
+        // escape as absolute 
+        escFlags = esc_Forced | esc_OnlyASCII | esc_AlwaysCopy | esc_Minimal;
+    }
+    else {
+        // escape as relative
+        escFlags = esc_Forced | esc_OnlyASCII | esc_AlwaysCopy | esc_FileBaseName | esc_Colon;
+    }
+    NS_EscapeURL(utf8UnEscapeSpec.get(), utf8UnEscapeSpec.Length(), escFlags, escapeBuf);
+  
+    pushBuffer.Append(NS_ConvertUTF8toUCS2(escapeBuf));
+    
     pushBuffer.Append(NS_LITERAL_STRING("\"><img src=\""));
 
     switch (type) {
     case nsIDirIndex::TYPE_DIRECTORY:
     case nsIDirIndex::TYPE_SYMLINK:
-        pushBuffer.Append(NS_LITERAL_STRING("internal-gopher-menu\" alt=\"Directory: "));
+        pushBuffer.Append(NS_LITERAL_STRING("resource:/res/html/gopher-menu.gif\" alt=\"Directory: "));
         break;
     case nsIDirIndex::TYPE_FILE:
     case nsIDirIndex::TYPE_UNKNOWN:
-        pushBuffer.Append(NS_LITERAL_STRING("internal-gopher-unknown\" alt=\"File: "));
+        pushBuffer.Append(NS_LITERAL_STRING("resource:/res/html/gopher-unknown.gif\" alt=\"File: "));
         break;
     }
     pushBuffer.Append(NS_LITERAL_STRING("\"/>"));
@@ -564,7 +602,6 @@ void nsIndexedToHTML::FormatSizeString(PRUint32 inSize, nsString& outSizeString)
 }
 
 nsIndexedToHTML::nsIndexedToHTML() {
-    NS_INIT_ISUPPORTS();
 }
 
 nsIndexedToHTML::~nsIndexedToHTML() {

@@ -62,6 +62,8 @@
 #include "nsUsageArrayHelper.h"
 #include "nsICertificateDialogs.h"
 #include "nsNSSCertHelper.h"
+#include "nsISupportsPrimitives.h"
+#include "nsUnicharUtils.h"
 
 #include "nspr.h"
 extern "C" {
@@ -94,6 +96,8 @@ NS_IMPL_THREADSAFE_ISUPPORTS2(nsNSSCertificate, nsIX509Cert,
 nsNSSCertificate*
 nsNSSCertificate::ConstructFromDER(char *certDER, int derLen)
 {
+  nsNSSShutDownPreventionLock locker;
+
   if (!certDER || !derLen)
     return nsnull;
 
@@ -107,49 +111,59 @@ nsNSSCertificate::ConstructFromDER(char *certDER, int derLen)
     aCert->dbhandle = CERT_GetDefaultCertDB();
   }
 
-  // We don't want the new NSS cert to be dupped, therefore we create our instance
-  // with a NULL pointer first, and set the contained cert later.
-
-  nsNSSCertificate *newObject = new nsNSSCertificate(nsnull);
-  
-  if (!newObject)
-  {
-    CERT_DestroyCertificate(aCert);
-    return nsnull;
-  }
-  
-  newObject->mCert = aCert;
+  nsNSSCertificate *newObject = new nsNSSCertificate(aCert);
+  CERT_DestroyCertificate(aCert);
   return newObject;
 }
 
 nsNSSCertificate::nsNSSCertificate(CERTCertificate *cert) : 
+                                           mCert(nsnull),
                                            mPermDelete(PR_FALSE),
                                            mCertType(nsIX509Cert::UNKNOWN_CERT)
 {
-  NS_INIT_ISUPPORTS();
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return;
 
   if (cert) 
     mCert = CERT_DupCertificate(cert);
-  else
-    mCert = nsnull;
 }
 
 nsNSSCertificate::~nsNSSCertificate()
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return;
+
+  destructorSafeDestroyNSSReference();
+  shutdown(calledFromObject);
+}
+
+void nsNSSCertificate::virtualDestroyNSSReference()
+{
+  destructorSafeDestroyNSSReference();
+}
+
+void nsNSSCertificate::destructorSafeDestroyNSSReference()
+{
+  if (isAlreadyShutDown())
+    return;
+
   if (mPermDelete) {
     if (mCertType == nsNSSCertificate::USER_CERT) {
       nsCOMPtr<nsIInterfaceRequestor> cxt = new PipUIContext();
       PK11_DeleteTokenCertAndKey(mCert, cxt);
-      CERT_DestroyCertificate(mCert);
     } else if (!PK11_IsReadOnly(mCert->slot)) {
-      // If the cert isn't a user cert and it is on an external token, 
-      // then we'll just leave it as untrusted, but won't delete it 
-      // from the cert db.
+      // If the list of built-ins does contain a non-removable
+      // copy of this certificate, our call will not remove
+      // the certificate permanently, but rather remove all trust.
       SEC_DeletePermCertificate(mCert);
     }
-  } else {
-    if (mCert)
-      CERT_DestroyCertificate(mCert);
+  }
+
+  if (mCert) {
+    CERT_DestroyCertificate(mCert);
+    mCert = nsnull;
   }
 }
 
@@ -170,6 +184,10 @@ nsNSSCertificate::GetCertType(PRUint32 *aCertType)
 nsresult
 nsNSSCertificate::MarkForPermDeletion()
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   // make sure user is logged in to the token
   nsCOMPtr<nsIInterfaceRequestor> ctx = new PipUIContext();
 
@@ -295,7 +313,7 @@ nsNSSCertificate::FormatUIStrings(const nsAutoString &nickname, nsAutoString &ni
     }
 
     PRUint32 tempInt = 0;
-    if (NS_SUCCEEDED(x509Proxy->GetPurposes(&tempInt, temp1)) && !temp1.IsEmpty()) {
+    if (NS_SUCCEEDED(x509Proxy->GetUsagesString(PR_FALSE, &tempInt, temp1)) && !temp1.IsEmpty()) {
       details.Append(NS_LITERAL_STRING("  "));
       if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertInfoPurposes").get(), info))) {
         details.Append(info);
@@ -341,6 +359,10 @@ nsNSSCertificate::FormatUIStrings(const nsAutoString &nickname, nsAutoString &ni
 NS_IMETHODIMP 
 nsNSSCertificate::GetDbKey(char * *aDbKey)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   SECItem key;
 
   NS_ENSURE_ARG(aDbKey);
@@ -365,6 +387,10 @@ nsNSSCertificate::GetDbKey(char * *aDbKey)
 NS_IMETHODIMP 
 nsNSSCertificate::GetWindowTitle(char * *aWindowTitle)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   NS_ENSURE_ARG(aWindowTitle);
   if (mCert) {
     if (mCert->nickname) {
@@ -385,6 +411,11 @@ nsNSSCertificate::GetWindowTitle(char * *aWindowTitle)
 NS_IMETHODIMP
 nsNSSCertificate::GetNickname(nsAString &_nickname)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
+// XXX kaie: this is bad. We return a non localizable hardcoded string.
   const char *nickname = (mCert->nickname) ? mCert->nickname : "(no nickname)";
   _nickname = NS_ConvertUTF8toUCS2(nickname);
   return NS_OK;
@@ -393,14 +424,97 @@ nsNSSCertificate::GetNickname(nsAString &_nickname)
 NS_IMETHODIMP
 nsNSSCertificate::GetEmailAddress(nsAString &_emailAddress)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
+// XXX kaie: this is bad. We return a non localizable hardcoded string.
+//           And agents could be confused, assuming the email address == "(no nickname)"
   const char *email = (mCert->emailAddr) ? mCert->emailAddr : "(no email address)";
   _emailAddress = NS_ConvertUTF8toUCS2(email);
   return NS_OK;
 }
 
 NS_IMETHODIMP
+nsNSSCertificate::GetEmailAddresses(PRUint32 *aLength, PRUnichar*** aAddresses)
+{
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
+  NS_ENSURE_ARG(aLength);
+  NS_ENSURE_ARG(aAddresses);
+
+  *aLength = 0;
+
+  const char *aAddr;
+  for (aAddr = CERT_GetFirstEmailAddress(mCert)
+       ;
+       aAddr
+       ;
+       aAddr = CERT_GetNextEmailAddress(mCert, aAddr))
+  {
+    ++(*aLength);
+  }
+
+  *aAddresses = (PRUnichar **)nsMemory::Alloc(sizeof(PRUnichar *) * (*aLength));
+  if (!aAddresses)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  PRUint32 iAddr;
+  for (aAddr = CERT_GetFirstEmailAddress(mCert), iAddr = 0
+       ;
+       aAddr
+       ;
+       aAddr = CERT_GetNextEmailAddress(mCert, aAddr), ++iAddr)
+  {
+    (*aAddresses)[iAddr] = ToNewUnicode(NS_ConvertUTF8toUCS2(aAddr));
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsNSSCertificate::ContainsEmailAddress(const nsAString &aEmailAddress, PRBool *result)
+{
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
+  NS_ENSURE_ARG(result);
+  *result = PR_FALSE;
+
+  const char *aAddr = nsnull;
+  for (aAddr = CERT_GetFirstEmailAddress(mCert)
+       ;
+       aAddr
+       ;
+       aAddr = CERT_GetNextEmailAddress(mCert, aAddr))
+  {
+    NS_ConvertUTF8toUCS2 certAddr(aAddr);
+    ToLowerCase(certAddr);
+
+    nsAutoString testAddr(aEmailAddress);
+    ToLowerCase(testAddr);
+    
+    if (certAddr == testAddr)
+    {
+      *result = PR_TRUE;
+      break;
+    }
+
+  }
+  
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsNSSCertificate::GetCommonName(nsAString &aCommonName)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   aCommonName.Truncate();
   if (mCert) {
     char *commonName = CERT_GetCommonName(&mCert->subject);
@@ -417,6 +531,10 @@ nsNSSCertificate::GetCommonName(nsAString &aCommonName)
 NS_IMETHODIMP
 nsNSSCertificate::GetOrganization(nsAString &aOrganization)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   aOrganization.Truncate();
   if (mCert) {
     char *organization = CERT_GetOrgName(&mCert->subject);
@@ -433,6 +551,10 @@ nsNSSCertificate::GetOrganization(nsAString &aOrganization)
 NS_IMETHODIMP
 nsNSSCertificate::GetIssuerCommonName(nsAString &aCommonName)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   aCommonName.Truncate();
   if (mCert) {
     char *commonName = CERT_GetCommonName(&mCert->issuer);
@@ -447,6 +569,10 @@ nsNSSCertificate::GetIssuerCommonName(nsAString &aCommonName)
 NS_IMETHODIMP
 nsNSSCertificate::GetIssuerOrganization(nsAString &aOrganization)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   aOrganization.Truncate();
   if (mCert) {
     char *organization = CERT_GetOrgName(&mCert->issuer);
@@ -461,6 +587,10 @@ nsNSSCertificate::GetIssuerOrganization(nsAString &aOrganization)
 NS_IMETHODIMP
 nsNSSCertificate::GetIssuerOrganizationUnit(nsAString &aOrganizationUnit)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   aOrganizationUnit.Truncate();
   if (mCert) {
     char *organizationUnit = CERT_GetOrgUnitName(&mCert->issuer);
@@ -476,6 +606,10 @@ nsNSSCertificate::GetIssuerOrganizationUnit(nsAString &aOrganizationUnit)
 NS_IMETHODIMP 
 nsNSSCertificate::GetIssuer(nsIX509Cert * *aIssuer)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   NS_ENSURE_ARG(aIssuer);
   *aIssuer = nsnull;
   CERTCertificate *issuer;
@@ -492,6 +626,10 @@ nsNSSCertificate::GetIssuer(nsIX509Cert * *aIssuer)
 NS_IMETHODIMP
 nsNSSCertificate::GetOrganizationalUnit(nsAString &aOrganizationalUnit)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   aOrganizationalUnit.Truncate();
   if (mCert) {
     char *orgunit = CERT_GetOrgUnitName(&mCert->subject);
@@ -511,6 +649,10 @@ nsNSSCertificate::GetOrganizationalUnit(nsAString &aOrganizationalUnit)
 NS_IMETHODIMP
 nsNSSCertificate::GetChain(nsIArray **_rvChain)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   NS_ENSURE_ARG(_rvChain);
   nsresult rv;
   /* Get the cert chain from NSS */
@@ -576,6 +718,10 @@ done:
 NS_IMETHODIMP
 nsNSSCertificate::GetSubjectName(nsAString &_subjectName)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   _subjectName.Truncate();
   if (mCert->subjectName) {
     _subjectName = NS_ConvertUTF8toUCS2(mCert->subjectName);
@@ -587,6 +733,10 @@ nsNSSCertificate::GetSubjectName(nsAString &_subjectName)
 NS_IMETHODIMP
 nsNSSCertificate::GetIssuerName(nsAString &_issuerName)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   _issuerName.Truncate();
   if (mCert->issuerName) {
     _issuerName = NS_ConvertUTF8toUCS2(mCert->issuerName);
@@ -598,6 +748,10 @@ nsNSSCertificate::GetIssuerName(nsAString &_issuerName)
 NS_IMETHODIMP
 nsNSSCertificate::GetSerialNumber(nsAString &_serialNumber)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   _serialNumber.Truncate();
   nsXPIDLCString tmpstr; tmpstr.Adopt(CERT_Hexify(&mCert->serialNumber, 1));
   if (tmpstr.get()) {
@@ -610,6 +764,10 @@ nsNSSCertificate::GetSerialNumber(nsAString &_serialNumber)
 NS_IMETHODIMP
 nsNSSCertificate::GetSha1Fingerprint(nsAString &_sha1Fingerprint)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   _sha1Fingerprint.Truncate();
   unsigned char fingerprint[20];
   SECItem fpItem;
@@ -629,6 +787,10 @@ nsNSSCertificate::GetSha1Fingerprint(nsAString &_sha1Fingerprint)
 NS_IMETHODIMP
 nsNSSCertificate::GetMd5Fingerprint(nsAString &_md5Fingerprint)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   _md5Fingerprint.Truncate();
   unsigned char fingerprint[20];
   SECItem fpItem;
@@ -646,92 +808,12 @@ nsNSSCertificate::GetMd5Fingerprint(nsAString &_md5Fingerprint)
 }
 
 NS_IMETHODIMP
-nsNSSCertificate::GetIssuedDate(nsAString &_issuedDate)
-{
-  _issuedDate.Truncate();
-  nsresult rv;
-  PRTime beforeTime;
-  nsCOMPtr<nsIX509CertValidity> validity;
-  rv = this->GetValidity(getter_AddRefs(validity));
-  if (NS_FAILED(rv)) return rv;
-  rv = validity->GetNotBefore(&beforeTime);
-  if (NS_FAILED(rv)) return rv;
-  nsCOMPtr<nsIDateTimeFormat> dateFormatter =
-     do_CreateInstance(kDateTimeFormatCID, &rv);
-  if (NS_FAILED(rv)) return rv;
-  nsAutoString date;
-  dateFormatter->FormatPRTime(nsnull, kDateFormatShort, kTimeFormatNone,
-                              beforeTime, date);
-  _issuedDate = date;
-  return NS_OK;
-}
-
-nsresult
-nsNSSCertificate::GetSortableDate(PRTime aTime, nsAString &_aSortableDate)
-{
-  PRExplodedTime explodedTime;
-  PR_ExplodeTime(aTime, PR_GMTParameters, &explodedTime);
-  char datebuf[20]; // 4 + 2 + 2 + 2 + 2 + 2 + 1 = 15
-  if (0 != PR_FormatTime(datebuf, sizeof(datebuf), "%Y%m%d%H%M%S", &explodedTime)) {
-    _aSortableDate = NS_ConvertASCIItoUCS2(nsDependentCString(datebuf));
-    return NS_OK;
-  }
-  else
-    return NS_ERROR_OUT_OF_MEMORY;
-}
-
-NS_IMETHODIMP
-nsNSSCertificate::GetIssuedDateSortable(nsAString &_issuedDate)
-{
-  _issuedDate.Truncate();
-  nsresult rv;
-  PRTime beforeTime;
-  nsCOMPtr<nsIX509CertValidity> validity;
-  rv = this->GetValidity(getter_AddRefs(validity));
-  if (NS_FAILED(rv)) return rv;
-  rv = validity->GetNotBefore(&beforeTime);
-  if (NS_FAILED(rv)) return rv;
-  return GetSortableDate(beforeTime, _issuedDate);
-}
-
-NS_IMETHODIMP
-nsNSSCertificate::GetExpiresDate(nsAString &_expiresDate)
-{
-  _expiresDate.Truncate();
-  nsresult rv;
-  PRTime afterTime;
-  nsCOMPtr<nsIX509CertValidity> validity;
-  rv = this->GetValidity(getter_AddRefs(validity));
-  if (NS_FAILED(rv)) return rv;
-  rv = validity->GetNotAfter(&afterTime);
-  if (NS_FAILED(rv)) return rv;
-  nsCOMPtr<nsIDateTimeFormat> dateFormatter =
-     do_CreateInstance(kDateTimeFormatCID, &rv);
-  if (NS_FAILED(rv)) return rv;
-  nsAutoString date;
-  dateFormatter->FormatPRTime(nsnull, kDateFormatShort, kTimeFormatNone,
-                              afterTime, date);
-  _expiresDate = date;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsNSSCertificate::GetExpiresDateSortable(nsAString &_expiresDate)
-{
-  _expiresDate.Truncate();
-  nsresult rv;
-  PRTime afterTime;
-  nsCOMPtr<nsIX509CertValidity> validity;
-  rv = this->GetValidity(getter_AddRefs(validity));
-  if (NS_FAILED(rv)) return rv;
-  rv = validity->GetNotAfter(&afterTime);
-  if (NS_FAILED(rv)) return rv;
-  return GetSortableDate(afterTime, _expiresDate);
-}
-
-NS_IMETHODIMP
 nsNSSCertificate::GetTokenName(nsAString &aTokenName)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   aTokenName.Truncate();
   if (mCert) {
     // HACK alert
@@ -762,27 +844,12 @@ nsNSSCertificate::GetTokenName(nsAString &aTokenName)
 }
 
 NS_IMETHODIMP
-nsNSSCertificate::GetUsesOCSP(PRBool *aUsesOCSP)
-{
-  nsCOMPtr<nsIPref> prefService = do_GetService(NS_PREF_CONTRACTID);
- 
-  PRInt32 ocspEnabled; 
-  prefService->GetIntPref("security.OCSP.enabled", &ocspEnabled);
-  if (ocspEnabled == 2) {
-    *aUsesOCSP = PR_TRUE;
-  } else if (ocspEnabled == 1) {
-    nsXPIDLCString ocspLocation;
-    ocspLocation.Adopt(CERT_GetOCSPAuthorityInfoAccessLocation(mCert));
-    *aUsesOCSP = (ocspLocation) ? PR_TRUE : PR_FALSE;
-  } else {
-    *aUsesOCSP = PR_FALSE;
-  }
-  return NS_OK;
-}
-
-NS_IMETHODIMP
 nsNSSCertificate::GetRawDER(PRUint32 *aLength, PRUint8 **aArray)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   if (mCert) {
     *aArray = (PRUint8 *)mCert->derCert.data;
     *aLength = mCert->derCert.len;
@@ -795,12 +862,20 @@ nsNSSCertificate::GetRawDER(PRUint32 *aLength, PRUint8 **aArray)
 CERTCertificate *
 nsNSSCertificate::GetCert()
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return nsnull;
+
   return (mCert) ? CERT_DupCertificate(mCert) : nsnull;
 }
 
 NS_IMETHODIMP
 nsNSSCertificate::GetValidity(nsIX509CertValidity **aValidity)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   NS_ENSURE_ARG(aValidity);
   nsX509CertValidity *validity = new nsX509CertValidity(mCert);
   if (nsnull == validity)
@@ -814,6 +889,10 @@ nsNSSCertificate::GetValidity(nsIX509CertValidity **aValidity)
 NS_IMETHODIMP
 nsNSSCertificate::VerifyForUsage(PRUint32 usage, PRUint32 *verificationResult)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   NS_ENSURE_ARG(verificationResult);
 
   SECCertUsage nss_usage;
@@ -927,22 +1006,23 @@ nsNSSCertificate::VerifyForUsage(PRUint32 usage, PRUint32 *verificationResult)
 }
 
 
-/*
- * void getUsages(out PRUint32 verified,
- *                out PRUint32 count, 
- *                [retval, array, size_is(count)] out wstring usages);
- */
 NS_IMETHODIMP
-nsNSSCertificate::GetUsages(PRUint32 *_verified,
-                            PRUint32 *_count,
-                            PRUnichar ***_usages)
+nsNSSCertificate::GetUsagesArray(PRBool ignoreOcsp,
+                                 PRUint32 *_verified,
+                                 PRUint32 *_count,
+                                 PRUnichar ***_usages)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   nsresult rv;
-  PRUnichar *tmpUsages[13];
+  const int max_usages = 13;
+  PRUnichar *tmpUsages[max_usages];
   char *suffix = "";
   PRUint32 tmpCount;
   nsUsageArrayHelper uah(mCert);
-  rv = uah.GetUsageArray(suffix, 13, _verified, &tmpCount, tmpUsages);
+  rv = uah.GetUsagesArray(suffix, ignoreOcsp, max_usages, _verified, &tmpCount, tmpUsages);
   if (tmpCount > 0) {
     *_usages = (PRUnichar **)nsMemory::Alloc(sizeof(PRUnichar *) * tmpCount);
     for (PRUint32 i=0; i<tmpCount; i++) {
@@ -957,19 +1037,25 @@ nsNSSCertificate::GetUsages(PRUint32 *_verified,
 }
 
 NS_IMETHODIMP
-nsNSSCertificate::GetPurposes(PRUint32   *_verified,
-                              nsAString &_purposes)
+nsNSSCertificate::GetUsagesString(PRBool ignoreOcsp,
+                                  PRUint32   *_verified,
+                                  nsAString &_usages)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   nsresult rv;
-  PRUnichar *tmpUsages[13];
+  const int max_usages = 13;
+  PRUnichar *tmpUsages[max_usages];
   char *suffix = "_p";
   PRUint32 tmpCount;
   nsUsageArrayHelper uah(mCert);
-  rv = uah.GetUsageArray(suffix, 13, _verified, &tmpCount, tmpUsages);
-  _purposes.Truncate();
+  rv = uah.GetUsagesArray(suffix, ignoreOcsp, max_usages, _verified, &tmpCount, tmpUsages);
+  _usages.Truncate();
   for (PRUint32 i=0; i<tmpCount; i++) {
-    if (i>0) _purposes.Append(NS_LITERAL_STRING(","));
-    _purposes.Append(tmpUsages[i]);
+    if (i>0) _usages.Append(NS_LITERAL_STRING(","));
+    _usages.Append(tmpUsages[i]);
     nsMemory::Free(tmpUsages[i]);
   }
   return NS_OK;
@@ -989,7 +1075,7 @@ ProcessSECAlgorithmID(SECAlgorithmID *algID,
   GetOIDText(&algID->algorithm, nssComponent, text);
   if (!algID->parameters.len || algID->parameters.data[0] == nsIASN1Object::ASN1_NULL) {
     sequence->SetDisplayValue(text);
-    sequence->SetProcessObjects(PR_FALSE);
+    sequence->SetIsValidContainer(PR_FALSE);
   } else {
     nsCOMPtr<nsIASN1PrintableItem> printableItem = new nsNSSASN1PrintableItem();
     printableItem->SetDisplayValue(text);
@@ -1207,6 +1293,10 @@ nsresult
 nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
                                                  nsINSSComponent *nssComponent)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   //
   //   TBSCertificate  ::=  SEQUENCE  {
   //        version         [0]  EXPLICIT Version DEFAULT v1,
@@ -1415,6 +1505,10 @@ DumpASN1Object(nsIASN1Object *object, unsigned int level)
 nsresult
 nsNSSCertificate::CreateASN1Struct()
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   nsCOMPtr<nsIASN1Sequence> sequence = new nsNSSASN1Sequence();
 
   mASN1Structure = sequence; 
@@ -1474,6 +1568,7 @@ nsNSSCertificate::CreateASN1Struct()
 NS_IMETHODIMP 
 nsNSSCertificate::GetASN1Structure(nsIASN1Object * *aASN1Structure)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv = NS_OK;
   NS_ENSURE_ARG_POINTER(aASN1Structure);
   if (mASN1Structure == nsnull) {
@@ -1493,8 +1588,12 @@ nsNSSCertificate::GetASN1Structure(nsIASN1Object * *aASN1Structure)
 }
 
 NS_IMETHODIMP
-nsNSSCertificate::IsSameCert(nsIX509Cert *other, PRBool *result)
+nsNSSCertificate::Equals(nsIX509Cert *other, PRBool *result)
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   NS_ENSURE_ARG(other);
   NS_ENSURE_ARG(result);
 
@@ -1509,6 +1608,10 @@ nsNSSCertificate::IsSameCert(nsIX509Cert *other, PRBool *result)
 NS_IMETHODIMP
 nsNSSCertificate::SaveSMimeProfile()
 {
+  nsNSSShutDownPreventionLock locker;
+  if (isAlreadyShutDown())
+    return NS_ERROR_NOT_AVAILABLE;
+
   if (SECSuccess != CERT_SaveSMimeProfile(mCert, nsnull, nsnull))
     return NS_ERROR_FAILURE;
   else
@@ -1518,6 +1621,7 @@ nsNSSCertificate::SaveSMimeProfile()
 
 char* nsNSSCertificate::defaultServerNickname(CERTCertificate* cert)
 {
+  nsNSSShutDownPreventionLock locker;
   char* nickname = nsnull;
   int count;
   PRBool conflict;

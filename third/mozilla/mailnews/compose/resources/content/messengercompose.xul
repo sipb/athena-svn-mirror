@@ -37,7 +37,7 @@
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/editorOverlay.xul"?>
-<?xul-overlay href="chrome://messenger/content/messengercompose/insertMenuSmileyOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/editorSmileyOverlay.xul"?>
 <?xul-overlay href="chrome://messenger/content/messengercompose/mailComposeExtrasOverlay.xul"?>
 
 <!DOCTYPE window [
@@ -72,7 +72,6 @@
 <script type="application/x-javascript" src="chrome://messenger/content/widgetglue.js"/>
 <script type="application/x-javascript" src="chrome://messenger/content/mail-offline.js"/>
 <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
-<!--script type="application/x-javascript" src="chrome://editor/content/EditorCommandsDebug.js"/-->
 <script type="application/x-javascript" src="chrome://messenger/content/messengercompose/MsgComposeCommands.js"/>
 
 <!-- drag and drop -->
@@ -120,6 +119,7 @@
   <!--command id="cmd_pasteQuote"/  DO NOT INCLUDE THOSE PBROCASTER ESLE THE EDIT MENU WILL BE BROKEN! -->
   <!--command id="cmd_find"/-->
   <!--command id="cmd_findNext"/-->
+  <command id="cmd_rewrap"  oncommand="goDoCommand('cmd_rewrap')"/>
   <command id="cmd_delete"/>
   <command id="cmd_selectAll"/>
   <command id="cmd_account" oncommand="goDoCommand('cmd_account')"/>
@@ -132,8 +132,6 @@
   <command id="cmd_selectAddress" oncommand="goDoCommand('cmd_selectAddress')"/>
   <command id="cmd_outputFormat" oncommand="OutputFormatMenuSelect(event.target)"/>
   <command id="cmd_quoteMessage" oncommand="goDoCommand('cmd_quoteMessage')"/>
-  <command id="cmd_rewrap" oncommand="goDoCommand('cmd_rewrap')"/>
-  <command id="cmd_insert"/>
 </commandset>
 
 <broadcasterset id="composeBroadcasters">
@@ -231,7 +229,7 @@
           <menuitem label="&sendNowCmd.label;" accesskey="&sendNowCmd.accesskey;" key="key_send" command="cmd_sendNow" id="menu-item-send-now"/>
           <menuitem label="&sendLaterCmd.label;" accesskey="&sendLaterCmd.accesskey;" key="key_sendLater" command="cmd_sendLater"/>
           <menuseparator/>
-          <menuitem id="printSetupMenuItem" label="&printSetupCmd.label;" accesskey="&printSetupCmd.accesskey;" command="Browser:PrintSetup"/>
+          <menuitem id="printSetupMenuItem" label="&printSetupCmd.label;" accesskey="&printSetupCmd.accesskey;" command="cmd_printSetup"/>
           <menuitem id="printMenuItem" label="&printCmd.label;" accesskey="&printCmd.accesskey;" key="key_print" command="cmd_print"/>
         </menupopup>
       </menu>
@@ -244,6 +242,7 @@
           <menuitem id="menu_copy"/>
           <menuitem id="menu_paste"/>
           <menuitem id="menu_pasteQuote"/>
+          <menuitem label="&editRewrapCmd.label;" accesskey="&editRewrapCmd.accesskey;" command="cmd_rewrap"/>
           <menuitem id="menu_delete"/>
           <menuseparator/>
           <menuitem id="menu_selectAll"/>
@@ -281,9 +280,9 @@
         </menupopup>
       </menu>
   
-      <menu id="insertMenu" command="cmd_insert"/>
+      <menu id="insertMenu" command="cmd_renderedHTMLEnabler"/>
 
-      <menu id="formatMenu" label="&formatMenu.label;" accesskey="&formatMenu.accesskey;" command="cmd_insert">
+      <menu id="formatMenu" label="&formatMenu.label;" accesskey="&formatMenu.accesskey;" command="cmd_renderedHTMLEnabler">
         <menupopup id="formatMenuPopup">
           <menu id="tableMenu"/>
           <menuseparator/>
@@ -293,11 +292,10 @@
       </menu>
   
       <menu id="optionsMenu" label="&optionsMenu.label;" accesskey="&optionsMenu.accesskey;">
-        <menupopup id="optionsMenuPopup"> 
+        <menupopup id="optionsMenuPopup" onpopupshowing="updateOptionItems();"> 
           <menuitem label="&selectAddressCmd.label;" accesskey="&selectAddressCmd.accesskey;" command="cmd_selectAddress"/>
           <menuitem label="&checkSpellingCmd.label;" id="menu_checkspelling" accesskey="&checkSpellingCmd.accesskey;" key="key_checkspelling" command="cmd_spelling"/>
           <menuitem label="&quoteCmd.label;" accesskey="&quoteCmd.accesskey;" command="cmd_quoteMessage"/>
-          <menuitem label="&editRewrapCmd.label;" accesskey="&editRewrapCmd.accesskey;" command="cmd_rewrap" oncommand="editorShell.Rewrap(false)"/>
           <menuseparator/>
           <menuitem id="returnReceiptMenu" type="checkbox" label="&returnReceiptMenu.label;" accesskey="&returnReceiptMenu.accesskey;" checked="false" oncommand="ToggleReturnReceipt(event.target)"/>
           <menu id="outputFormatMenu" label="&outputFormatMenu.label;" accesskey="&outputFormatMenu.accesskey;" command="cmd_outputFormat">
@@ -398,18 +396,30 @@
                id="button-address" label="&addressButton.label;" 
                tooltiptext="&addressButton.tooltip;" 
                command="cmd_selectAddress"/>
-       <toolbarbutton class="toolbarbutton-1"
+       <toolbarbutton class="toolbarbutton-1" type="menu-button"
                id="button-attach" label="&attachButton.label;" 
                tooltiptext="&attachButton.tooltip;" 
-               command="cmd_attachFile"/>
+               command="cmd_attachFile">
+         <menupopup>
+           <menuitem label="&attachFileCmd.label;" accesskey="&attachFileCmd.accesskey;" command="cmd_attachFile"/>
+           <menuitem label="&attachPageCmd.label;" accesskey="&attachPageCmd.accesskey;" command="cmd_attachPage"/>
+         </menupopup>
+       </toolbarbutton>
        <toolbarbutton class="toolbarbutton-1"
                id="spellingButton" label="&spellingButton.label;" 
                command="cmd_spelling"/>
        <toolbarseparator id="saveSeparator" class="toolbarseparator-primary"/>
-       <toolbarbutton class="toolbarbutton-1"
+       <toolbarbutton class="toolbarbutton-1" type="menu-button"
                id="button-save" label="&saveButton.label;" 
                tooltiptext="&saveButton.tooltip;" 
-               command="cmd_saveDefault"/>
+               command="cmd_saveDefault">
+         <menupopup>
+           <menuitem label="&saveAsFileCmd.label;" accesskey="&saveAsFileCmd.accesskey;" command="cmd_saveAsFile"/>
+           <menuseparator/>
+           <menuitem label="&saveAsDraftCmd.label;" accesskey="&saveAsDraftCmd.accesskey;" command="cmd_saveAsDraft"/>
+           <menuitem label="&saveAsTemplateCmd.label;" accesskey="&saveAsTemplateCmd.accesskey;" command="cmd_saveAsTemplate"/>
+         </menupopup>
+       </toolbarbutton>
        <spacer flex="1"/>
        <hbox id="throbber-box" align="center">
          <button id="navigator-throbber" 

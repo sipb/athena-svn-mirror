@@ -37,6 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsString.h"
+#include "nsReadableUtils.h"
 #include "nsCOMPtr.h"
 #include "nsIDocument.h"
 #include "nsIHTMLDocument.h"
@@ -55,38 +56,49 @@ nsresult nsImageMapUtils::FindImageMap(nsIDocument *aDocument,
   NS_ENSURE_ARG_POINTER(aMap);
   *aMap = nsnull;
 
-  nsresult rv = NS_OK;
+  // We used to strip the whitespace from the usemap value as a Quirk,
+  // but it was too quirky and didn't really work correctly - see bug
+  // 87050
 
-  nsAutoString usemap(aUsemap);
+  if (aUsemap.IsEmpty())
+    return NS_OK;
 
-  /* we used to strip the whitespace from the usemap value as a Quirk, but it was too quirky and
-     didn't really work correctly - see bug 87050 
-   */
+  nsAString::const_iterator start, end;
+  aUsemap.BeginReading(start);
+  aUsemap.EndReading(end);
 
-  if (!usemap.IsEmpty() && usemap.First() == '#') {
-    usemap.Cut(0, 1);
+  PRInt32 hash = aUsemap.FindChar('#');
+  if (hash > -1) {
+    // aUsemap contains a '#', set start to point right after the '#'
+    start.advance(hash + 1);
+
+    if (start == end) {
+      return NS_OK; // aUsemap == "#"
+    }
   }
 
-  if (usemap.IsEmpty())
-    return rv;
+  const nsAString& usemap = Substring(start, end);
 
   nsCOMPtr<nsIHTMLDocument> htmlDoc(do_QueryInterface(aDocument));
   if (htmlDoc) {
-    htmlDoc->GetImageMap(usemap,aMap);
+    htmlDoc->GetImageMap(usemap, aMap);
   } else {
-    // XHTML requires that where a name attribute was used in HTML 4.01,
-    // the ID attribute must be used in XHTML. name is officially deprecated.
-    // This simplifies our life becase we can simply get the map with
+    // For XHTML elements embedded in non-XHTML documents we get the
+    // map by id since XHTML requires that where a "name" attribute
+    // was used in HTML 4.01, the "id" attribute must be used in
+    // XHTML. The attribute "name" is officially deprecated.  This
+    // simplifies our life becase we can simply get the map with
     // getElementById().
     nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(aDocument));
     if (domDoc) {
       nsCOMPtr<nsIDOMElement> element;
-      domDoc->GetElementById(usemap,getter_AddRefs(element));
+      domDoc->GetElementById(usemap, getter_AddRefs(element));
+
       if (element) {
-        element->QueryInterface(NS_GET_IID(nsIDOMHTMLMapElement),(void**)aMap);
+        CallQueryInterface(element, aMap);
       }
     }
   }
   
-  return rv;
+  return NS_OK;
 }

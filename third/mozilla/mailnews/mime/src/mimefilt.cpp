@@ -129,17 +129,17 @@ static char *
 test_type_icon(const char *type, void *stream_closure)
 {
   if (!nsCRT::strncasecmp(type, "text/", 5))
-	return nsCRT::strdup("internal-gopher-text");
+	return nsCRT::strdup("resource:/res/html/gopher-text.gif");
   else if (!nsCRT::strncasecmp(type, "image/", 6))
-	return nsCRT::strdup("internal-gopher-image");
+	return nsCRT::strdup("resource:/res/html/gopher-image.gif");
   else if (!nsCRT::strncasecmp(type, "audio/", 6))
-	return nsCRT::strdup("internal-gopher-sound");
+	return nsCRT::strdup("resource:/res/html/gopher-sound.gif");
   else if (!nsCRT::strncasecmp(type, "video/", 6))
-	return nsCRT::strdup("internal-gopher-movie");
+	return nsCRT::strdup("resource:/res/html/gopher-movie.gif");
   else if (!nsCRT::strncasecmp(type, "application/", 12))
-	return nsCRT::strdup("internal-gopher-binary");
+	return nsCRT::strdup("resource:/res/html/gopher-binary.gif");
   else
-	return nsCRT::strdup("internal-gopher-unknown");
+	return nsCRT::strdup("resource:/res/html/gopher-unknown.gif");
 }
 
 static int
@@ -374,8 +374,7 @@ main (int argc, char **argv)
 
   PR_Init("mimefilt", 24, 1, 0);
 
-  cdb_handle = (CERTCertDBHandle *)  malloc(sizeof(*cdb_handle));
-  memset(cdb_handle, 0, sizeof(*cdb_handle));
+  cdb_handle = (CERTCertDBHandle *)  calloc(1, sizeof(*cdb_handle));
 
   if (SECSuccess != CERT_OpenCertDB(cdb_handle, PR_FALSE, test_cdb_name_cb, NULL))
 	CERT_OpenVolatileCertDB(cdb_handle);

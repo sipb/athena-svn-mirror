@@ -37,6 +37,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLOptionElement.h"
+#include "nsIDOMNSHTMLOptionElement.h"
 #include "nsIOptionElement.h"
 #include "nsIDOMHTMLOptGroupElement.h"
 #include "nsIDOMHTMLFormElement.h"
@@ -44,7 +45,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIFormControl.h"
@@ -76,6 +76,7 @@
  */
 class nsHTMLOptionElement : public nsGenericHTMLContainerElement,
                             public nsIDOMHTMLOptionElement,
+                            public nsIDOMNSHTMLOptionElement,
                             public nsIJSNativeInitializer,
                             public nsIOptionElement
 {
@@ -98,6 +99,9 @@ public:
   // nsIDOMHTMLOptionElement
   NS_DECL_NSIDOMHTMLOPTIONELEMENT
 
+  // nsIDOMNSHTMLOptionElement
+  NS_IMETHOD SetText(const nsAString & aText); 
+
   // nsIJSNativeInitializer
   NS_IMETHOD Initialize(JSContext* aContext, JSObject *aObj, 
                         PRUint32 argc, jsval *argv);
@@ -105,11 +109,9 @@ public:
   NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
                                const nsAString& aValue,
                                nsHTMLValue& aResult);
-  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
+  NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute,
+                                      PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
   // nsIOptionElement
   NS_IMETHOD SetSelectedInternal(PRBool aValue, PRBool aNotify);
@@ -219,6 +221,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLOptionElement, nsGenericElement);
 NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLOptionElement,
                                     nsGenericHTMLContainerElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLOptionElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMNSHTMLOptionElement)
   NS_INTERFACE_MAP_ENTRY(nsIJSNativeInitializer)
   NS_INTERFACE_MAP_ENTRY(nsIOptionElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLOptionElement)
@@ -445,14 +448,12 @@ nsHTMLOptionElement::GetIndex(PRInt32* aIndex)
 
   if (selectElement) {
     // Get the options from the select object.
-    nsCOMPtr<nsIDOMHTMLCollection> options;
-
+    nsCOMPtr<nsIDOMHTMLOptionsCollection> options;
     selectElement->GetOptions(getter_AddRefs(options));
 
     if (options) {
       // Walk the options to find out where we are in the list (ick, O(n))
       PRUint32 length = 0;
-
       options->GetLength(&length);
 
       nsCOMPtr<nsIDOMNode> thisOption;
@@ -496,14 +497,21 @@ nsHTMLOptionElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32
   nsIFormControlFrame* fcFrame = GetSelectFrame();
   
   if (fcFrame) {    
-    if (aAttribute == nsHTMLAtoms::label) {
-      aHint = NS_STYLE_HINT_REFLOW; 
-    } else if (aAttribute == nsHTMLAtoms::text) {
-      aHint = NS_STYLE_HINT_REFLOW; 
-    } else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-      aHint = NS_STYLE_HINT_CONTENT;
-    }
+    static const AttributeImpactEntry attributes[] = {
+      { &nsHTMLAtoms::label, NS_STYLE_HINT_REFLOW },
+      { &nsHTMLAtoms::text, NS_STYLE_HINT_REFLOW },
+      { nsnull, NS_STYLE_HINT_NONE }
+    };
+
+    static const AttributeImpactEntry* const map[] = {
+      attributes,
+      sCommonAttributeMap,
+    };
+
+    FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
+    
   } else {
+    // XXX don't we want to try common attributes here?
     if (aAttribute == nsXULAtoms::menuactive) {
       aHint = NS_STYLE_HINT_CONTENT;
     } else {
@@ -561,10 +569,10 @@ nsHTMLOptionElement::SetText(const nsAString& aText)
   PRInt32 numNodes, i;
   PRBool usedExistingTextNode = PR_FALSE;  // Do we need to create a text node?
 
-  nsresult result = ChildCount(numNodes);
+  nsresult rv = ChildCount(numNodes);
 
-  if (NS_FAILED(result)) {
-    return result;
+  if (NS_FAILED(rv)) {
+    return rv;
   }
 
   for (i = 0; i < numNodes; i++) {
@@ -572,51 +580,43 @@ nsHTMLOptionElement::SetText(const nsAString& aText)
 
     ChildAt(i, *getter_AddRefs(node));
 
-    if (node) {
-      nsCOMPtr<nsIDOMText> domText(do_QueryInterface(node));
+    nsCOMPtr<nsIDOMText> domText(do_QueryInterface(node));
 
-      if (domText) {
-        result = domText->SetData(aText);
+    if (domText) {
+      rv = domText->SetData(aText);
 
-        if (NS_SUCCEEDED(result)) {
-          // If we used an existing node, the notification will not happen (the
-          // notification typically happens in AppendChildTo).
-          NotifyTextChanged();
-          usedExistingTextNode = PR_TRUE;
-        }
-
-        break;
+      if (NS_SUCCEEDED(rv)) {
+        // If we used an existing node, the notification will not happen (the
+        // notification typically happens in AppendChildTo).
+        NotifyTextChanged();
+        usedExistingTextNode = PR_TRUE;
       }
+
+      break;
     }
   }
 
   if (!usedExistingTextNode) {
-    nsCOMPtr<nsIContent> text;
-    result = NS_NewTextNode(getter_AddRefs(text));
-    if (NS_OK == result) {
-      nsCOMPtr<nsIDOMText> domtext(do_QueryInterface(text));
+    nsCOMPtr<nsITextContent> text;
+    rv = NS_NewTextNode(getter_AddRefs(text));
+    NS_ENSURE_SUCCESS(rv, rv);
 
-      if (domtext) {
-        result = domtext->SetData(aText);
+    rv = text->SetText(aText, PR_TRUE);
+    NS_ENSURE_SUCCESS(rv, rv);
 
-	    if (NS_SUCCEEDED(result)) {
-          result = AppendChildTo(text, PR_TRUE, PR_FALSE);
+    rv = AppendChildTo(text, PR_TRUE, PR_FALSE);
+    NS_ENSURE_SUCCESS(rv, rv);
 
-          if (NS_SUCCEEDED(result)) {
-            nsCOMPtr<nsIDocument> doc;
+    nsCOMPtr<nsIDocument> doc;
 
-            result = GetDocument(*getter_AddRefs(doc));
+    GetDocument(*getter_AddRefs(doc));
 
-            if (NS_SUCCEEDED(result)) {
-              text->SetDocument(doc, PR_FALSE, PR_TRUE);
-            }
-          }
-        }
-      }
+    if (doc) {
+      rv = text->SetDocument(doc, PR_FALSE, PR_TRUE);
     }
   }
 
-  return NS_OK;
+  return rv;
 }
 
 void
@@ -739,29 +739,24 @@ nsHTMLOptionElement::Initialize(JSContext* aContext,
     JSString* jsstr = JS_ValueToString(aContext, argv[0]);
     if (jsstr) {
       // Create a new text node and append it to the option
-      nsCOMPtr<nsIContent> content;
+      nsCOMPtr<nsITextContent> textContent;
 
-      result = NS_NewTextNode(getter_AddRefs(content));
+      result = NS_NewTextNode(getter_AddRefs(textContent));
       if (NS_FAILED(result)) {
         return result;
       }
 
-      nsCOMPtr<nsITextContent> textContent(do_QueryInterface(content));
-
-      if (!textContent) {
-        return NS_ERROR_FAILURE;
-      }
-
-      result = textContent->SetText(NS_REINTERPRET_CAST(const PRUnichar*, JS_GetStringChars(jsstr)),
-                                JS_GetStringLength(jsstr),
-                                PR_FALSE);
+      result =
+        textContent->SetText(NS_REINTERPRET_CAST(const PRUnichar*,
+                                                 JS_GetStringChars(jsstr)),
+                             JS_GetStringLength(jsstr),
+                             PR_FALSE);
 
       if (NS_FAILED(result)) {
         return result;
       }
       
-      // this addrefs textNode:
-      result = AppendChildTo(content, PR_FALSE, PR_FALSE);
+      result = AppendChildTo(textContent, PR_FALSE, PR_FALSE);
       if (NS_FAILED(result)) {
         return result;
       }
@@ -814,13 +809,3 @@ nsHTMLOptionElement::Initialize(JSContext* aContext,
 
   return result;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLOptionElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

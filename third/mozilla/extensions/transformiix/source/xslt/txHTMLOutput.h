@@ -40,8 +40,6 @@
 #define TRANSFRMX_HTML_OUTPUT_H
 
 #include "txXMLOutput.h"
-#include "Map.h"
-#include "Stack.h"
 
 class txHTMLOutput : public txXMLOutput
 {
@@ -49,64 +47,28 @@ public:
     txHTMLOutput(txOutputFormat* aFormat, ostream* aOut);
     ~txHTMLOutput();
 
-    /*
-     * Signals to receive the start of an attribute.
-     *
-     * @param aName the name of the attribute
-     * @param aNsID the namespace ID of the attribute
-     * @param aValue the value of the attribute
+    /**
+     * Init/release table with shorthands.
      */
-    void attribute(const String& aName,
-                   const PRInt32 aNsID,
-                   const String& aValue);
+    static nsresult init();
+    static void shutdown();
 
-    /*
-     * Signals to receive characters.
-     *
-     * @param aData the characters to receive
-     */
-    void characters(const String& aData);
-
-    /*
-     * Signals to receive the end of an element.
-     *
-     * @param aName the name of the element
-     * @param aNsID the namespace ID of the element
-     */
-    void endElement(const String& aName,
-                    const PRInt32 aNsID);
-
-    /*
-     * Signals to receive a processing instruction.
-     *
-     * @param aTarget the target of the processing instruction
-     * @param aData the data of the processing instruction
-     */
-    void processingInstruction(const String& aTarget,
-                               const String& aData);
-
-    /*
-     * Signals the start of a document.
-     */
+    void attribute(const nsAString& aName, const PRInt32 aNsID,
+                   const nsAString& aValue);
+    void characters(const nsAString& aData, PRBool aDOE);
+    void endElement(const nsAString& aName, const PRInt32 aNsID);
+    void processingInstruction(const nsAString& aTarget,
+                               const nsAString& aData);
     void startDocument();
-
-    /*
-     * Signals to receive the start of an element.
-     *
-     * @param aName the name of the element
-     * @param aNsID the namespace ID of the element
-     */
-    void startElement(const String& aName,
-                      const PRInt32 aNsID);
+    void startElement(const nsAString& aName, const PRInt32 aNsID);
+    TX_DECL_TXAOUTPUTXMLEVENTHANDLER
 
 private:
     void closeStartTag(MBool aUseEmptyElementShorthand);
-    MBool isShorthandElement(const String& aName);
-    MBool isShorthandAttribute(const String& aLocalName);
+    MBool isShorthandElement(const nsAString& aName);
+    MBool isShorthandAttribute(const nsAString& aLocalName);
 
-    Map mHTMLEmptyTags;
-    Map mHTMLEmptyAttributes;
-    Stack mCurrentElements;
+    txStack mCurrentElements;
 };
 
 #endif

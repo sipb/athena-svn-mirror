@@ -43,16 +43,16 @@
 #include "nsIExpatSink.h"
 #include "nsIContentSink.h"
 #include "nsParserMsgUtils.h"
-#include "nsSpecialSystemDirectory.h"
 #include "nsIURL.h"
 #include "nsIUnicharInputStream.h"
 #include "nsNetUtil.h"
 #include "prprf.h"
 #include "prmem.h"
 #include "nsTextFormatter.h"
+#include "nsDirectoryServiceDefs.h"
+#include "nsCRT.h"
 
-static const char* kWhitespace = " \r\n\t"; // Optimized for typical cases
-static const char* kDTDDirectory = "res/dtd/";
+static const char kWhitespace[] = " \r\n\t"; // Optimized for typical cases
 
 /***************************** EXPAT CALL BACKS *******************************/
 
@@ -206,6 +206,7 @@ static const nsCatalogData kCatalogTable[] = {
  {"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN", "mathml.dtd",  "resource:/res/mathml.css" },
  {"-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN", "mathml.dtd", "resource:/res/mathml.css" },
  {"-//W3C//DTD SVG 20001102//EN",              "svg.dtd",     nsnull },
+ {"-//WAPFORUM//DTD XHTML Mobile 1.0//EN",     "xhtml11.dtd", nsnull },
  {nsnull, nsnull, nsnull}
 };
 
@@ -266,14 +267,32 @@ IsLoadableDTD(const nsCatalogData* aCatalogData, nsCOMPtr<nsIURI>* aDTD)
       return PR_FALSE;
     }
   }
-  nsSpecialSystemDirectory dtdPath(nsSpecialSystemDirectory::OS_CurrentProcessDirectory);
-  dtdPath += PromiseFlatCString(nsDependentCString(kDTDDirectory) + fileName).get();
-  if (dtdPath.Exists()) {
+  
+  nsCOMPtr<nsIFile> dtdPath;
+  NS_GetSpecialDirectory(NS_OS_CURRENT_PROCESS_DIR, 
+                         getter_AddRefs(dtdPath));
+
+  if (!dtdPath)
+    return PR_FALSE;
+
+  nsCOMPtr<nsILocalFile> lfile = do_QueryInterface(dtdPath);
+
+  // append res/dtd/<fileName>
+  // can't do AppendRelativeNativePath("res/dtd/" + fileName)
+  // as that won't work on all platforms.
+  lfile->AppendNative(NS_LITERAL_CSTRING("res"));
+  lfile->AppendNative(NS_LITERAL_CSTRING("dtd"));
+  lfile->AppendNative(fileName);
+
+  PRBool exists;
+  dtdPath->Exists(&exists);
+
+  if (exists) {
     // The DTD was found in the local DTD directory.
-    // Set aDTD to a file: url pointing to the local DTD
-    nsFileURL dtdFile(dtdPath);
+    // Set aDTD to a file: url pointing to the local DT
     nsCOMPtr<nsIURI> dtdURI;
-    NS_NewURI(getter_AddRefs(dtdURI), dtdFile.GetURLString());
+    NS_NewFileURI(getter_AddRefs(dtdURI), dtdPath); 
+
     if (dtdURI) {
       *aDTD = dtdURI;
       isLoadable = PR_TRUE;
@@ -302,6 +321,7 @@ nsExpatDriver::nsExpatDriver()
   :mExpatParser(0), 
    mInCData(PR_FALSE),
    mInDoctype(PR_FALSE),
+   mInExternalDTD(PR_FALSE),
    mHandledXMLDeclaration(PR_FALSE),
    mBytePosition(0),
    mInternalState(NS_OK),
@@ -309,7 +329,6 @@ nsExpatDriver::nsExpatDriver()
    mSink(0), 
    mCatalogData(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsExpatDriver::~nsExpatDriver() 
@@ -374,7 +393,9 @@ nsExpatDriver::HandleComment(const PRUnichar *aValue)
   NS_ASSERTION(mSink, "content sink not found!");
 
   if (mInDoctype) {
-    mDoctypeText.Append(aValue);
+    if (!mInExternalDTD) {
+      mDoctypeText.Append(aValue);
+    }
   }
   else if (mSink){
     mInternalState = mSink->HandleComment(aValue);
@@ -431,7 +452,9 @@ nsExpatDriver::HandleDefault(const PRUnichar *aValue,
   NS_ASSERTION(mSink, "content sink not found!");
 
   if (mInDoctype) {
-    mDoctypeText.Append(aValue, aLength);
+    if (!mInExternalDTD) {
+      mDoctypeText.Append(aValue, aLength);
+    }
   }
   else if (mSink) {
     if (!mHandledXMLDeclaration && !mBytesParsed) {
@@ -481,6 +504,8 @@ nsExpatDriver::HandleEndCdataSection()
  * detected errors. The only slightly problematic case is whitespace
  * between the tokens. There MUST be whitespace between the tokens
  * EXCEPT right before > and [.
+ *
+ * We assume the string will not contain the ending '>'.
  */
 static void
 GetDocTypeToken(nsString& aStr,
@@ -493,9 +518,12 @@ GetDocTypeToken(nsString& aStr,
     PRInt32 endQuote = aStr.FindChar(aStr[0],1);
     aStr.Mid(aToken,1,endQuote-1);
     aStr.Cut(0,endQuote+1);
-  } else {    
-    static const char* kDelimiter = " >[\r\n\t"; // Optimized for typical cases
+  } else {
+    static const char* kDelimiter = " [\r\n\t"; // Optimized for typical cases
     PRInt32 tokenEnd = aStr.FindCharInSet(kDelimiter);
+    if (tokenEnd < 0) {
+      tokenEnd = aStr.Length();
+    }
     if (tokenEnd > 0) {
       aStr.Left(aToken, tokenEnd);
       aStr.Cut(0, tokenEnd);
@@ -509,8 +537,8 @@ nsExpatDriver::HandleStartDoctypeDecl()
   mInDoctype = PR_TRUE;
   // Consuming a huge DOCTYPE translates to numerous
   // allocations. In an effort to avoid too many allocations
-  // setting mDoctypeText's capacity to be 20K ( just a guesstimate! ).
-  mDoctypeText.SetCapacity(20480);
+  // setting mDoctypeText's capacity to be 1K ( just a guesstimate! ).
+  mDoctypeText.SetCapacity(1024);
   return NS_OK;
 }
 
@@ -525,9 +553,9 @@ nsExpatDriver::HandleEndDoctypeDecl()
     // let the sink know any additional knowledge that we have about the document
     // (currently, from bug 124570, we only expect to pass additional agent sheets
     // needed to layout the XML vocabulary of the document)
-    nsIURI* data = nsnull;
+    nsCOMPtr<nsIURI> data;
     if (mCatalogData && mCatalogData->mAgentSheet) {
-      NS_NewURI(&data, mCatalogData->mAgentSheet);
+      NS_NewURI(getter_AddRefs(data), mCatalogData->mAgentSheet);
     }
   
     nsAutoString name;
@@ -543,15 +571,26 @@ nsExpatDriver::HandleEndDoctypeDecl()
       GetDocTypeToken(mDoctypeText, systemId, PR_TRUE);
     }
 
-    // The rest is the internal subset (minus whitespace)
+    // The rest is the internal subset with [] (minus whitespace)
     mDoctypeText.Trim(kWhitespace);
+    // Take out the brackets too, if any
+    if (mDoctypeText.Length() > 2) {
+      const nsAString& internalSubset = Substring(mDoctypeText, 1,
+			                                	          mDoctypeText.Length() - 2);
+      mInternalState = mSink->HandleDoctypeDecl(internalSubset, 
+                                                name, 
+                                                systemId, 
+                                                publicId, 
+                                                data);
+    } else {
+      // There's nothing but brackets, don't include them
+      mInternalState = mSink->HandleDoctypeDecl(nsString(),// !internalSubset
+                                                name, 
+                                                systemId, 
+                                                publicId, 
+                                                data);
+    }
 
-    mInternalState = mSink->HandleDoctypeDecl(mDoctypeText, 
-                                              name, 
-                                              systemId, 
-                                              publicId, 
-                                              data);
-    NS_IF_RELEASE(data);
   }
 
   mDoctypeText.SetCapacity(0);
@@ -565,13 +604,23 @@ nsExpatDriver::HandleExternalEntityRef(const PRUnichar *openEntityNames,
                                        const PRUnichar *systemId,
                                        const PRUnichar *publicId)
 {
+  if (mInDoctype && !mInExternalDTD && openEntityNames) {
+    mDoctypeText.Append(PRUnichar('%'));
+    mDoctypeText.Append(nsDependentString(openEntityNames));
+    mDoctypeText.Append(PRUnichar(';'));
+  }
+  
   int result = 1;
 
   // Load the external entity into a buffer
   nsCOMPtr<nsIInputStream> in;
   nsAutoString absURL;
 
-  nsresult rv = OpenInputStream(publicId, systemId, base, getter_AddRefs(in), absURL);
+  nsresult rv = OpenInputStreamFromExternalDTD(publicId, 
+                                               systemId, 
+                                               base, 
+                                               getter_AddRefs(in), 
+                                               absURL);
 
   if (NS_FAILED(rv)) {
     return result;
@@ -579,23 +628,31 @@ nsExpatDriver::HandleExternalEntityRef(const PRUnichar *openEntityNames,
 
   nsCOMPtr<nsIUnicharInputStream> uniIn;
 
-  NS_NewUTF8ConverterStream(getter_AddRefs(uniIn), in, 1024);
+  rv = NS_NewUTF8ConverterStream(getter_AddRefs(uniIn), in, 1024);
+
+  if (NS_FAILED(rv)) {
+    return result;
+  }
   
   if (uniIn) {
     XML_Parser entParser = 
-      XML_ExternalEntityParserCreate(mExpatParser, 0, (const XML_Char*) NS_LITERAL_STRING("UTF-16").get());
+      XML_ExternalEntityParserCreate(
+        mExpatParser, 
+        0, 
+        (const XML_Char*) NS_LITERAL_STRING("UTF-16").get());
 
     if (entParser) {
       PRUint32 readCount = 0;
-      PRUnichar tmpBuff[1024] = {0};
-      PRUnichar *uniBuf = tmpBuff;
+      PRUnichar uniBuff[1024] = {0};
 
       XML_SetBase(entParser, (const XML_Char*) absURL.get());
 
-      while (NS_SUCCEEDED(uniIn->Read(uniBuf, 0, 1024, &readCount)) && result) {
+      mInExternalDTD = PR_TRUE;
+
+      while (NS_SUCCEEDED(uniIn->Read(uniBuff, 1024, &readCount)) && result) {
         if (readCount) {
           // Pass the buffer to expat for parsing
-          result = XML_Parse(entParser, (char *)uniBuf,  readCount * sizeof(PRUnichar), 0);
+          result = XML_Parse(entParser, (char *)uniBuff,  readCount * sizeof(PRUnichar), 0);
         }
         else {
           // done reading
@@ -603,6 +660,9 @@ nsExpatDriver::HandleExternalEntityRef(const PRUnichar *openEntityNames,
           break;
         }
       }
+
+      mInExternalDTD = PR_FALSE;
+
       XML_ParserFree(entParser);
     }
   }
@@ -611,11 +671,11 @@ nsExpatDriver::HandleExternalEntityRef(const PRUnichar *openEntityNames,
 }
 
 nsresult
-nsExpatDriver::OpenInputStream(const PRUnichar* aFPIStr,
-                               const PRUnichar* aURLStr, 
-                               const PRUnichar* aBaseURL, 
-                               nsIInputStream** in, 
-                               nsAString& aAbsURL) 
+nsExpatDriver::OpenInputStreamFromExternalDTD(const PRUnichar* aFPIStr,
+                                              const PRUnichar* aURLStr, 
+                                              const PRUnichar* aBaseURL, 
+                                              nsIInputStream** in, 
+                                              nsAString& aAbsURL) 
 {
   nsresult rv;
   nsCOMPtr<nsIURI> baseURI;  
@@ -1116,9 +1176,4 @@ nsExpatDriver::IntTagToStringTag(PRInt32 aIntTag) const
   return 0;
 }
 
-NS_IMETHODIMP 
-nsExpatDriver::ConvertEntityToUnicode(const nsAString& aEntity, PRInt32* aUnicode) const
-{
-  return NS_OK;
-}
 /******************************************************************************/

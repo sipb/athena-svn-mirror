@@ -89,7 +89,6 @@ DIRS	+= $(tier_99_dirs)
 tier_0_dirs = \
 	config \
 	build \
-	include \
 	$(NULL)
 
 #
@@ -128,7 +127,12 @@ tier_2_dirs	+= \
 		modules/libreg \
 		string \
 		xpcom \
+		xpcom/obsolete \
 		$(NULL)
+
+ifdef NS_TRACE_MALLOC
+tier_2_dirs	+= tools/trace-malloc/lib tools/trace-malloc
+endif
 
 #
 # tier 9 - core components (necko,gecko)
@@ -141,7 +145,10 @@ tier_9_dirs += \
 		$(NULL)
 
 ifdef MOZ_OJI
-tier_9_dirs	+= js/src/liveconnect
+tier_9_dirs	+= \
+		js/src/liveconnect \
+		modules/oji \
+		$(NULL)
 endif
 
 ifdef MOZ_JSDEBUGGER
@@ -160,20 +167,23 @@ ifdef MOZ_ENABLE_GTK2
 tier_9_dirs     += widget/src/gtkxtbin
 endif
 
+ifdef MOZ_IPCD
+tier_9_dirs += ipc/ipcd
+endif
+
 tier_9_dirs	+= \
 		modules/libutil \
 		netwerk \
-		modules/mpfilelocprovider \
 		uriloader \
 		modules/libpref \
 		modules/libimg \
-		modules/oji \
 		caps \
 		rdf \
 		expat \
 		htmlparser \
 		gfx \
 		modules/libpr0n \
+		sun-java \
 		modules/plugin \
 		dom \
 		view \
@@ -181,12 +191,12 @@ tier_9_dirs	+= \
 		content \
 		layout \
 		db \
+		xpfe/components/shistory \
 		docshell \
 		webshell \
+		profile \
 		embedding \
 		editor \
-		sun-java \
-		profile \
 		themes \
 		$(NULL)
 
@@ -203,24 +213,28 @@ ifdef MOZ_JPROF
 tier_9_dirs        += tools/jprof
 endif
 
-tier_9_dirs	+= xpfe xpinstall
+tier_9_dirs	+= xpfe
+
+ifdef MOZ_XPINSTALL
+tier_9_dirs     +=  xpinstall
+endif
 
 ifdef MOZ_LEAKY
 tier_9_dirs        += tools/leaky
-endif
-
-ifdef NS_TRACE_MALLOC
-tier_9_dirs	+= tools/trace-malloc
 endif
 
 ifdef MOZ_MAPINFO
 tier_9_dirs	+= tools/codesighs
 endif
 
+ifneq (,$(MOZ_L10N_LANG)$(MOZ_L10N_TOOLS))
 tier_9_dirs	+= l10n
+endif
 
 ifdef MOZ_PHOENIX
 tier_9_dirs	+= toolkit
+# remove this when bug 201821 is fixed
+tier_9_dirs	+= browser/components/bookmarks/public
 endif
 
 #
@@ -240,7 +254,7 @@ tier_97_dirs	+= mailnews
 endif
 
 ifdef MOZ_CALENDAR
-tier_98_dirs	+= calendar
+tier_98_dirs	+= other-licenses/libical calendar
 endif
 
 #
@@ -253,12 +267,40 @@ endif
 
 ifdef MOZ_PHOENIX
 tier_99_dirs	+= browser
-else
-tier_99_dirs	+= xpfe/bootstrap
 endif
 
-ifdef MOZ_ENABLE_GTK
-tier_99_dirs	+= embedding/browser/gtk/tests
+ifdef MOZ_THUNDERBIRD
+tier_99_dirs	+= toolkit/xre mail
+endif
+
+ifdef MOZ_XUL_APP
+else
+ifneq (,$(MOZ_XPFE_COMPONENTS)$(MOZ_XUL))
+tier_99_dirs	+= xpfe/bootstrap
+endif
+endif
+
+ifneq (,$(MOZ_ENABLE_GTK)$(MOZ_ENABLE_GTK2))
+tier_99_dirs	+= embedding/browser/gtk
+endif
+
+# viewer
+ifneq (,$(ENABLE_TESTS))
+tier_99_dirs += webshell/tests
+endif
+
+# winembed, mfcembed
+ifeq ($(OS_ARCH),WINNT)
+ifneq (,$(ENABLE_TESTS)$(MOZILLA_OFFICIAL))
+tier_99_dirs += embedding/tests
+endif
+endif
+
+# os2embed
+ifeq ($(OS_ARCH),OS2)
+ifneq (,$(ENABLE_TESTS)$(MOZILLA_OFFICIAL))
+tier_99_dirs += embedding/tests
+endif
 endif
 
 else
@@ -374,7 +416,13 @@ ifdef MOZILLA_OFFICIAL
 	/bin/find $(DIST) -name "*.EXE" -exec splitsym {} \;
 endif # MOZILLA_OFFICIAL
 
-deliver: splitsymbols rebase
+signnss:
+ifdef MOZILLA_OFFICIAL
+	echo signing NSS libs
+	cd $(DIST)/bin; ./shlibsign.exe -v -i softokn3.dll
+endif # MOZILLA_OFFICIAL
+
+deliver: splitsymbols rebase signnss
 
 endif # WINNT
 

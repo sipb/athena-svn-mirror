@@ -48,7 +48,6 @@
 #include "nsIDocumentViewer.h"
 #include "nsIDocument.h"
 #include "nsIDOMElement.h"
-#include "nsIDOMXULDocument.h"
 #include "nsIDocShell.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsIChannel.h"
@@ -60,7 +59,6 @@
 nsMsgStatusFeedback::nsMsgStatusFeedback() :
   m_lastPercent(0)
 {
-	NS_INIT_ISUPPORTS();
 	LL_I2L(m_lastProgressTime, 0);
 
     nsresult rv;

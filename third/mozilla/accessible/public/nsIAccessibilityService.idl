@@ -31,28 +31,33 @@
 
 interface nsIWeakReference;
 interface nsIAccessibleEventListener;
+interface nsIDocument;
+interface nsIPresShell;
+interface nsIDOMWindow;
+interface nsIAccessNode;
+interface nsObjectFrame;
 
 [scriptable, uuid(68D9720A-0984-42b6-A3F5-8237ED925727)]
 interface nsIAccessibilityService : nsISupports
 {
-  nsIAccessible createAccessible(in nsIDOMNode aNode, in nsISupports aDocument);
-  nsIAccessible createIFrameAccessible(in nsIDOMNode aNode);
-  nsIAccessible createRootAccessible(in nsISupports aPresContext, in nsISupports aFrame);
-  nsIAccessibleCaret createCaretAccessible(in nsIDOMNode aNode, in nsIAccessibleEventListener aListener);
+  nsIAccessible createOuterDocAccessible(in nsIDOMNode aNode);
+  nsIAccessible createRootAccessible(in nsIPresShell aShell, in nsIDocument aDocument);
+  nsIAccessibleCaret createCaretAccessible(in nsIDOMNode aNode, in nsIAccessible aRootAccessible);
 
   nsIAccessible createHTML4ButtonAccessible(in nsISupports aFrame);
   nsIAccessible createHTMLAreaAccessible(in nsIWeakReference aPresShell, in nsIDOMNode aDOMNode, in nsIAccessible aAccParent);
-  nsIAccessible createHTMLBlockAccessible(in nsIDOMNode aNode, in nsISupports aDocument);
+  nsIAccessible createHTMLBlockAccessible(in nsISupports aFrame);
   nsIAccessible createHTMLButtonAccessible(in nsISupports aFrame);
   nsIAccessible createHTMLButtonAccessibleXBL(in nsIDOMNode aNode);
   nsIAccessible createHTMLCheckboxAccessible(in nsISupports aFrame);
   nsIAccessible createHTMLCheckboxAccessibleXBL(in nsIDOMNode aNode);
   nsIAccessible createHTMLComboboxAccessible(in nsIDOMNode aNode, in nsISupports aPresShell);
   nsIAccessible createHTMLGroupboxAccessible(in nsISupports aFrame);
+  nsIAccessible createHTMLHRAccessible(in nsISupports aFrame);
   nsIAccessible createHTMLImageAccessible(in nsISupports aFrame);
+  nsIAccessible createHTMLLabelAccessible(in nsISupports aFrame);
   nsIAccessible createHTMLListboxAccessible(in nsIDOMNode aNode, in nsISupports aPresShell);
-  nsIAccessible createHTMLNativeWindowAccessible(in nsIDOMNode aDOMNode, in nsIWeakReference aShell, in PRInt32 aHWnd);
-  nsIAccessible createHTMLPluginAccessible(in nsIDOMNode aDOMNode, in nsIWeakReference aShell);
+  nsIAccessible createHTMLObjectFrameAccessible(in nsObjectFrame aFrame);
   nsIAccessible createHTMLRadioButtonAccessible(in nsISupports aFrame);
   nsIAccessible createHTMLRadioButtonAccessibleXBL(in nsIDOMNode aNode);
   nsIAccessible createHTMLSelectOptionAccessible(in nsIDOMNode aNode, in nsIAccessible aAccParent, in nsISupports aPresShell);
@@ -91,8 +96,16 @@ interface nsIAccessibilityService : nsISupports
   nsIAccessible createXULTreeAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULTreeColumnsAccessible(in nsIDOMNode aNode);
   nsIAccessible createXULTreeColumnitemAccessible(in nsIDOMNode aNode);
+  nsIAccessible createXULToolbarAccessible(in nsIDOMNode aNode);
+  nsIAccessible createXULToolbarSeparatorAccessible(in nsIDOMNode aNode);
+  nsIAccessible createXULTooltipAccessible(in nsIDOMNode aNode);
 
   nsIAccessible getAccessibleFor(in nsIDOMNode aNode);
+  nsIAccessible getAccessibleInWindow(in nsIDOMNode aNode, in nsIDOMWindow aDOMWin);
+  nsIAccessible getAccessibleInWeakShell(in nsIDOMNode aNode, in nsIWeakReference aPresShell);
+  nsIAccessible getAccessibleInShell(in nsIDOMNode aNode, in nsIPresShell aPresShell);
+  [noscript] nsIAccessNode getCachedAccessNode(in nsIDOMNode aNode, in nsIWeakReference aShell);
+  [noscript] nsIAccessible getCachedAccessible(in nsIDOMNode aNode, in nsIWeakReference aShell);
 };
 
 

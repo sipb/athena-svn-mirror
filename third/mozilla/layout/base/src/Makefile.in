@@ -58,6 +58,7 @@ CPPSRCS		= \
 		nsIntervalSet.cpp \
 		nsLayoutDebugger.cpp \
 		nsLayoutHistoryState.cpp \
+		nsLayoutUtils.cpp \
 		nsPresContext.cpp \
 		nsPresState.cpp \
 		nsPrintContext.cpp \
@@ -85,3 +86,5 @@ LOCAL_INCLUDES	= \
 		-I$(srcdir)/../../xul/base/src \
 		-I$(srcdir)/../../xul/content/src \
 		$(NULL)
+
+DEFINES += -D_IMPL_NS_LAYOUT

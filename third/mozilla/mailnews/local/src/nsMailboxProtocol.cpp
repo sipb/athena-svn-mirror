@@ -61,11 +61,10 @@
 
 #include "nsFileStream.h"
 PRLogModuleInfo *MAILBOX;
-#include "nsIFileChannel.h"
 #include "nsIFileStreams.h"
+#include "nsIStreamTransportService.h"
 #include "nsIStreamConverterService.h"
 #include "nsIIOService.h"
-#include "nsIFileTransportService.h"
 #include "nsXPIDLString.h"
 #include "nsNetUtil.h"
 #include "nsIMsgWindow.h"
@@ -73,7 +72,6 @@ PRLogModuleInfo *MAILBOX;
 
 #include "nsIMsgMdnGenerator.h"
 
-static NS_DEFINE_CID(kIStreamConverterServiceCID, NS_STREAMCONVERTERSERVICE_CID);
 static NS_DEFINE_CID(kCMailDB, NS_MAILDB_CID);
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
@@ -129,44 +127,42 @@ NS_IMETHODIMP nsMailboxProtocol::GetContentLength(PRInt32 * aContentLength)
   return NS_OK;
 }
 
+nsresult nsMailboxProtocol::OpenMultipleMsgTransport(PRUint32 offset, PRInt32 size)
+{
+  nsresult rv;
+
+  NS_DEFINE_CID(kStreamTransportServiceCID, NS_STREAMTRANSPORTSERVICE_CID);
+  nsCOMPtr<nsIStreamTransportService> serv =
+      do_GetService(kStreamTransportServiceCID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = serv->CreateInputTransport(m_multipleMsgMoveCopyStream, offset, size, PR_FALSE, getter_AddRefs(m_transport));
+
+  return rv;
+}
+
 nsresult nsMailboxProtocol::OpenFileSocketForReuse(nsIURI * aURL, PRUint32 aStartPosition, PRInt32 aReadCount)
 {
   NS_ENSURE_ARG_POINTER(aURL);
 
 	nsresult rv = NS_OK;
-	m_startPosition = aStartPosition;
 	m_readCount = aReadCount;
 
   nsCOMPtr <nsIFile> file;
 
   rv = GetFileFromURL(aURL, getter_AddRefs(file));
   NS_ENSURE_SUCCESS(rv, rv);
-
-  NS_DEFINE_CID(kFileTransportServiceCID, NS_FILETRANSPORTSERVICE_CID);
-
-  nsCOMPtr<nsIFileTransportService> fts = 
-           do_GetService(kFileTransportServiceCID, &rv);    
-  NS_ENSURE_SUCCESS(rv, rv);
     
-  nsCOMPtr<nsIFileInputStream>     fileStream = do_CreateInstance(NS_LOCALFILEINPUTSTREAM_CONTRACTID, &rv);
+  nsCOMPtr<nsIFileInputStream> fileStream = do_CreateInstance(NS_LOCALFILEINPUTSTREAM_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
 
   m_multipleMsgMoveCopyStream = do_QueryInterface(fileStream, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   fileStream->Init(file,  PR_RDONLY, 0664, PR_FALSE);  //just have to read the messages
-  PRUint32 length;
-  PRInt64 fileSize; 
-  rv = file->GetFileSize( &fileSize);
-  LL_L2UI( length, fileSize );  
 
-  // probably should pass in the file size instead of aReadCount
-  rv = fts->CreateTransportFromStream(NS_LITERAL_CSTRING("mailbox"),
-                            m_multipleMsgMoveCopyStream,
-                            NS_LITERAL_CSTRING(""),
-                            NS_LITERAL_CSTRING(""),
-                            length, PR_FALSE, getter_AddRefs(m_transport));
+  rv = OpenMultipleMsgTransport(aStartPosition, aReadCount);
+
   m_socketIsOpen = PR_FALSE;
-
 	return rv;
 }
 
@@ -330,8 +326,32 @@ NS_IMETHODIMP nsMailboxProtocol::OnStopRequest(nsIRequest *request, nsISupports 
                 // basically re-initialize the transport with the correct message size.
                 // then, we have to make sure the url keeps running somehow.
 			          nsCOMPtr<nsISupports> urlSupports = do_QueryInterface(m_runningUrl);
+                //
                 // put us in a state where we are always notified of incoming data
-                rv = m_transport->AsyncRead(this, urlSupports, msgKey, msgSize, 0, getter_AddRefs(m_request));
+                //
+
+                m_transport = 0; // open new stream transport
+                m_inputStream = 0;
+                m_outputStream = 0;
+
+                rv = OpenMultipleMsgTransport(msgKey, msgSize);
+                if (NS_SUCCEEDED(rv))
+                {
+                  if (!m_inputStream)
+                    rv = m_transport->OpenInputStream(0, 0, 0, getter_AddRefs(m_inputStream));
+
+                  if (NS_SUCCEEDED(rv))
+                  {
+                    nsCOMPtr<nsIInputStreamPump> pump;
+                    rv = NS_NewInputStreamPump(getter_AddRefs(pump), m_inputStream);
+                    if (NS_SUCCEEDED(rv)) {
+                      rv = pump->AsyncRead(this, urlSupports);
+                      if (NS_SUCCEEDED(rv))
+                        m_request = pump;
+                    }
+                  }
+                }
+
                 NS_ASSERTION(NS_SUCCEEDED(rv), "AsyncRead failed");
                 if (m_loadGroup)
                   m_loadGroup->RemoveRequest(NS_STATIC_CAST(nsIRequest *, this), nsnull, aStatus);
@@ -381,75 +401,40 @@ NS_IMETHODIMP nsMailboxProtocol::OnStopRequest(nsIRequest *request, nsISupports 
 
 PRInt32 nsMailboxProtocol::DoneReadingMessage()
 {
-	nsresult rv = NS_OK;
-	// and close the article file if it was open....
+  nsresult rv = NS_OK;
+  // and close the article file if it was open....
+  
+  if (m_mailboxAction == nsIMailboxUrl::ActionSaveMessageToDisk && m_tempMessageFile)
+    rv = m_tempMessageFile->CloseStream();
+  
+  nsCOMPtr<nsIMsgMailNewsUrl> msgUrl = do_QueryInterface(m_runningUrl, &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
 
-	if (m_mailboxAction == nsIMailboxUrl::ActionSaveMessageToDisk && m_tempMessageFile)
-		rv = m_tempMessageFile->CloseStream();
+  nsCAutoString queryStr;
+  rv = msgUrl->GetQuery(queryStr);
+  NS_ENSURE_SUCCESS(rv,rv);
 
-	if (m_mailboxAction == nsIMailboxUrl::ActionFetchMessage)
-	{
-		// now mark the message as read
-		nsCOMPtr<nsIMsgDBHdr> msgHdr;
-        nsMsgKey msgKey;
+  // check if this is a filter plugin requesting the message.
+  // in that case, don't mark it as read, 
+  // since the user didn't actually read it.
+  // the spec for msgUrl is of the form:
+  // mailbox:///<path to mbox file on disk>/Inbox?number=3287862&header=filter"
+  if ((queryStr.Find("header=filter") == kNotFound) && m_mailboxAction == nsIMailboxUrl::ActionFetchMessage)
+  {
+    // now mark the message as read
+    nsCOMPtr<nsIMsgDBHdr> msgHdr;
+    nsMsgKey msgKey;
     if (m_runningUrl)
-		  rv = m_runningUrl->GetMessageHeader(getter_AddRefs(msgHdr));
+      rv = m_runningUrl->GetMessageHeader(getter_AddRefs(msgHdr));
     NS_ASSERTION(msgHdr, "no msg hdr!");
     if (!msgHdr) return NS_ERROR_UNEXPECTED;
     PRBool isRead;
     msgHdr->GetIsRead(&isRead);
     if (NS_SUCCEEDED(rv) && !isRead)
-        {
-            PRUint32 msgFlags, newFlags;
-            msgHdr->GetFlags(&msgFlags);
-            if (msgFlags & MSG_FLAG_MDN_REPORT_NEEDED)
-            {
-                nsCOMPtr<nsIMsgMdnGenerator> mdnGenerator;
-                nsCOMPtr<nsIMimeHeaders> mimeHeaders;
-
-                mdnGenerator =
-                    do_CreateInstance(NS_MSGMDNGENERATOR_CONTRACTID, &rv);
-
-                // To ensure code works w/o MDN enabled
-                if (NS_SUCCEEDED(rv) && mdnGenerator)
-                {
-                    mimeHeaders =
-                        do_CreateInstance(NS_IMIMEHEADERS_CONTRACTID, &rv);
-                    if (NS_SUCCEEDED(rv) && mimeHeaders)
-                    {
-                        nsCOMPtr<nsIMsgFolder> msgFolder;
-                        msgHdr->GetFolder(getter_AddRefs(msgFolder));
-                        nsCOMPtr<nsIMsgMailNewsUrl> msgUrl =
-                            do_QueryInterface(m_runningUrl);
-                        if (msgUrl) 
-                        {
-                            nsCOMPtr<nsIMsgWindow> msgWindow;
-                            msgUrl->GetMsgWindow(getter_AddRefs(msgWindow));
-                            msgHdr->GetMessageKey(&msgKey);
-                            nsCOMPtr<nsIMimeHeaders> mimeHeaders;
-                            msgUrl->GetMimeHeaders(getter_AddRefs(mimeHeaders));
-                            mdnGenerator->Process(nsIMsgMdnGenerator::eDisplayed,
-                                                  msgWindow, msgFolder, msgKey,
-                                                  mimeHeaders, PR_FALSE);
-                            msgUrl->SetMimeHeaders(nsnull); 
-                            // no longer needed
-                        }
-                    }
-                }
-                // unsetting MDN_REPORT_NEEDED flag and mark the message as
-                // MDN_REPORT_SENT
-                // There are cases that: a) user wishes not to send MDN, b)
-                // mdn module is not installed, c) the message can be marked
-                // as unread and force it back to the original mdn
-                // needed state. 
-                msgHdr->SetFlags(msgFlags & ~MSG_FLAG_MDN_REPORT_NEEDED);
-                msgHdr->OrFlags(MSG_FLAG_MDN_REPORT_SENT, &newFlags);
-            }
-			msgHdr->MarkRead(PR_TRUE);
-        }
-	}
-
-	return rv;
+      msgHdr->MarkRead(PR_TRUE);
+  }
+  
+  return rv;
 }
 
 PRInt32 nsMailboxProtocol::SetupMessageExtraction()
@@ -481,45 +466,80 @@ PRInt32 nsMailboxProtocol::SetupMessageExtraction()
 
 nsresult nsMailboxProtocol::LoadUrl(nsIURI * aURL, nsISupports * aConsumer)
 {
-	nsresult rv = NS_OK;
+  nsresult rv = NS_OK;
   // if we were already initialized with a consumer, use it...
   nsCOMPtr<nsIStreamListener> consumer = do_QueryInterface(aConsumer);
   if (consumer)
     m_channelListener = consumer;
+  
+  if (aURL)
+  {
+    m_runningUrl = do_QueryInterface(aURL);
+    if (m_runningUrl)
+    {
+      // find out from the url what action we are supposed to perform...
+      rv = m_runningUrl->GetMailboxAction(&m_mailboxAction);
+      
+      PRBool convertData = PR_FALSE;
 
-	if (aURL)
-	{
-		m_runningUrl = do_QueryInterface(aURL);
-		if (m_runningUrl)
-		{
+      if (m_mailboxAction == nsIMailboxUrl::ActionFetchMessage)
+      {
+        nsCOMPtr<nsIMsgMailNewsUrl> msgUrl = do_QueryInterface(m_runningUrl, &rv);
+        NS_ENSURE_SUCCESS(rv,rv);
 
-			// find out from the url what action we are supposed to perform...
-			rv = m_runningUrl->GetMailboxAction(&m_mailboxAction);
+        nsCAutoString queryStr;
+        rv = msgUrl->GetQuery(queryStr);
+        NS_ENSURE_SUCCESS(rv,rv);
 
-			if (NS_SUCCEEDED(rv))
-			{
-				switch (m_mailboxAction)
-				{
-				case nsIMailboxUrl::ActionParseMailbox:
-					// extract the mailbox parser..
-					rv = m_runningUrl->GetMailboxParser(getter_AddRefs(m_mailboxParser));
-					m_nextState = MAILBOX_READ_FOLDER;
-					break;
-				case nsIMailboxUrl::ActionSaveMessageToDisk:
-					// ohhh, display message already writes a msg to disk (as part of a hack)
-					// so we can piggy back off of that!! We just need to change m_tempMessageFile
-					// to be the name of our save message to disk file. Since save message to disk
-					// urls are run without a docshell to display the msg into, we won't be trying
-					// to display the message after we write it to disk...
+        // check if this is a filter plugin requesting the message.
+        // in that case, set up a text converter
+        convertData = (queryStr.Find("header=filter") != kNotFound);
+      }
+      else if (m_mailboxAction == nsIMailboxUrl::ActionFetchPart)
+      {
+        // when fetching a part, we need to insert a converter into the listener chain order to
+        // force just the part out of the message. Our channel listener is the consumer we'll
+        // pass in to AsyncConvertData.
+        convertData = PR_TRUE;
+        consumer = m_channelListener;
+      }
+      if (convertData)
+      {
+          nsCOMPtr<nsIStreamConverterService> streamConverter = do_GetService("@mozilla.org/streamConverters;1", &rv);
+          NS_ENSURE_SUCCESS(rv, rv);
+          nsCOMPtr <nsIStreamListener> conversionListener;
+          nsCOMPtr<nsIChannel> channel;
+          QueryInterface(NS_GET_IID(nsIChannel), getter_AddRefs(channel));
+
+          rv = streamConverter->AsyncConvertData(NS_LITERAL_STRING("message/rfc822").get(),
+                                                 NS_LITERAL_STRING("*/*").get(),
+                                                 consumer, channel, getter_AddRefs(m_channelListener));
+      }
+      
+      if (NS_SUCCEEDED(rv))
+      {
+        switch (m_mailboxAction)
+        {
+        case nsIMailboxUrl::ActionParseMailbox:
+          // extract the mailbox parser..
+          rv = m_runningUrl->GetMailboxParser(getter_AddRefs(m_mailboxParser));
+          m_nextState = MAILBOX_READ_FOLDER;
+          break;
+        case nsIMailboxUrl::ActionSaveMessageToDisk:
+          // ohhh, display message already writes a msg to disk (as part of a hack)
+          // so we can piggy back off of that!! We just need to change m_tempMessageFile
+          // to be the name of our save message to disk file. Since save message to disk
+          // urls are run without a docshell to display the msg into, we won't be trying
+          // to display the message after we write it to disk...
           {
             nsCOMPtr<nsIMsgMessageUrl> msgUri = do_QueryInterface(m_runningUrl);
-					  msgUri->GetMessageFile(getter_AddRefs(m_tempMessageFile));
-					  m_tempMessageFile->OpenStreamForWriting();
+            msgUri->GetMessageFile(getter_AddRefs(m_tempMessageFile));
+            m_tempMessageFile->OpenStreamForWriting();
           }
         case nsIMailboxUrl::ActionCopyMessage:
-				case nsIMailboxUrl::ActionMoveMessage:
-				case nsIMailboxUrl::ActionFetchMessage:
-					if (m_mailboxAction == nsIMailboxUrl::ActionSaveMessageToDisk) 
+        case nsIMailboxUrl::ActionMoveMessage:
+        case nsIMailboxUrl::ActionFetchMessage:
+          if (m_mailboxAction == nsIMailboxUrl::ActionSaveMessageToDisk) 
           {
             nsCOMPtr<nsIMsgMessageUrl> messageUrl = do_QueryInterface(aURL, &rv);
             if (NS_SUCCEEDED(rv))
@@ -529,49 +549,32 @@ nsresult nsMailboxProtocol::LoadUrl(nsIURI * aURL, nsISupports * aConsumer)
               if (addDummyEnvelope)
                 SetFlag(MAILBOX_MSG_PARSE_FIRST_LINE);
               else
-               ClearFlag(MAILBOX_MSG_PARSE_FIRST_LINE);
-             }
-           }
-           else
-           {
-              ClearFlag(MAILBOX_MSG_PARSE_FIRST_LINE);
-           }
-
-					m_nextState = MAILBOX_READ_MESSAGE;
-					break;
-        case nsIMailboxUrl::ActionFetchPart:
-          {
-            // when fetching a part, we need to insert a converter into the listener chain order to
-            // force just the part out of the message.
-            nsCOMPtr<nsIStreamConverterService> converter = do_GetService(kIStreamConverterServiceCID);
-            nsIChannel * channel;
-            QueryInterface(NS_GET_IID(nsIChannel), (void **) &channel);
-            if (converter && channel)
-            {
-              nsCOMPtr<nsIStreamListener> newConsumer;
-              converter->AsyncConvertData(NS_LITERAL_STRING("message/rfc822").get(), NS_LITERAL_STRING("*/*").get(),
-                                          m_channelListener, channel, getter_AddRefs(newConsumer));
-
-              if (newConsumer)
-                m_channelListener = newConsumer;
+                ClearFlag(MAILBOX_MSG_PARSE_FIRST_LINE);
             }
-					
-            m_nextState = MAILBOX_READ_MESSAGE;
-					  break;
           }
-				default:
-					break;
-				}
-			}
-
-			rv = nsMsgProtocol::LoadUrl(aURL, m_channelListener);
-
-		} // if we received an MAILBOX url...
-	} // if we received a url!
-
-	return rv;
+          else
+          {
+            ClearFlag(MAILBOX_MSG_PARSE_FIRST_LINE);
+          }
+          
+          m_nextState = MAILBOX_READ_MESSAGE;
+          break;
+        case nsIMailboxUrl::ActionFetchPart:
+            m_nextState = MAILBOX_READ_MESSAGE;
+            break;
+        default:
+          break;
+        }
+      }
+      
+      rv = nsMsgProtocol::LoadUrl(aURL, m_channelListener);
+      
+    } // if we received an MAILBOX url...
+  } // if we received a url!
+  
+  return rv;
 }
-	
+
 PRInt32 nsMailboxProtocol::ReadFolderResponse(nsIInputStream * inputStream, PRUint32 sourceOffset, PRUint32 length)
 {
 	// okay we are doing a folder read in 8K chunks of a mail folder....
@@ -581,18 +584,11 @@ PRInt32 nsMailboxProtocol::ReadFolderResponse(nsIInputStream * inputStream, PRUi
 	nsresult rv = NS_OK;
   mCurrentProgress += length;
 
-	if (m_mailboxParser)
+  if (m_mailboxParser)
 	{
 		nsCOMPtr <nsIURI> url = do_QueryInterface(m_runningUrl);
 		rv = m_mailboxParser->OnDataAvailable(nsnull, url, inputStream, sourceOffset, length); // let the parser deal with it...
-    if (mProgressEventSink)
-    {
-      PRInt32 contentLength = 0;
-      GetContentLength(&contentLength);
-      mProgressEventSink->OnProgress(this, url, mCurrentProgress, contentLength);
-    }
 	}
-
 	if (NS_FAILED(rv))
 	{
 		m_nextState = MAILBOX_ERROR_DONE; // drop out of the loop....
@@ -766,3 +762,4 @@ nsresult nsMailboxProtocol::CloseSocket()
 	return 0;
 }
 
+// vim: ts=2 sw=2

@@ -65,6 +65,9 @@ Contributor(s):
 	            ref="moz-abdirectory://" 
                 datasources="rdf:addressdirectory"
                 containment="http://home.netscape.com/NC-rdf#child"
+                sortActive="true"
+                sortDirection="ascending"
+                sortResource="http://home.netscape.com/NC-rdf#DirTreeNameSort"
 				oncommand="DirPaneSelectionChangeMenulist(); document.commandDispatcher.updateCommands('addrbook-select');">
         <template>
           <rule nc:IsMailList="false">
@@ -107,7 +110,7 @@ Contributor(s):
         
       <vbox id="bucketBox" flex="1">
         <label value="&addressMessageTo.label;"/>
-        <tree id="addressBucket" flex="1" seltype="multiple" hidecolumnpicker="true"
+        <tree id="addressBucket" flex="1" hidecolumnpicker="true"
             ondragover="DragOverBucketPane(event);"
             ondragdrop="DropOnBucketPane(event);"
             onselect="DialogBucketPaneSelectionChanged();">

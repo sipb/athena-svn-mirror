@@ -440,3 +440,37 @@ ER3(SEC_ERROR_OCSP_FUTURE_RESPONSE,		(SEC_ERROR_BASE + 131),
 
 ER3(SEC_ERROR_OCSP_OLD_RESPONSE,		(SEC_ERROR_BASE + 132),
 "The OCSP response contains out-of-date information.")
+
+ER3(SEC_ERROR_DIGEST_NOT_FOUND,			(SEC_ERROR_BASE + 133),
+"The CMS or PKCS #7 Digest was not found in signed message.")
+
+ER3(SEC_ERROR_UNSUPPORTED_MESSAGE_TYPE,		(SEC_ERROR_BASE + 134),
+"The CMS or PKCS #7 Message type is unsupported.")
+
+ER3(SEC_ERROR_MODULE_STUCK,			(SEC_ERROR_BASE + 135),
+"PKCS #11 module could not be removed because it is still in use.")
+
+ER3(SEC_ERROR_BAD_TEMPLATE,			(SEC_ERROR_BASE + 136),
+"Could not decode ASN.1 data. Specified template was invalid.")
+
+ER3(SEC_ERROR_CRL_NOT_FOUND,			(SEC_ERROR_BASE + 137),
+"No matching CRL was found.")
+
+ER3(SEC_ERROR_REUSED_ISSUER_AND_SERIAL,        (SEC_ERROR_BASE + 138),
+"You are attempting to import a cert with the same issuer/serial as \
+an existing cert, but that is not the same cert.")
+
+ER3(SEC_ERROR_BUSY,				(SEC_ERROR_BASE + 139),
+"NSS could not shutdown. Objects are still in use.")
+
+ER3(SEC_ERROR_EXTRA_INPUT,			(SEC_ERROR_BASE + 140),
+"DER-encoded message contained extra usused data.")
+
+ER3(SEC_ERROR_UNSUPPORTED_ELLIPTIC_CURVE,	(SEC_ERROR_BASE + 141),
+"Unsupported elliptic curve.")
+
+ER3(SEC_ERROR_UNSUPPORTED_EC_POINT_FORM,	(SEC_ERROR_BASE + 142),
+"Unsupported elliptic curve point form.")
+
+ER3(SEC_ERROR_UNRECOGNIZED_OID,			(SEC_ERROR_BASE + 143),
+"Unrecognized Object IDentifier.")

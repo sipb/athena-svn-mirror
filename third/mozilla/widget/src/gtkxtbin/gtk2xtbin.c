@@ -46,7 +46,7 @@
 
 /* uncomment this if you want debugging information about widget
    creation and destruction */
-#define DEBUG_XTBIN
+#undef DEBUG_XTBIN
 
 #define XTBIN_MAX_EVENTS 30
 
@@ -274,6 +274,9 @@ gtk_xtbin_realize (GtkWidget *widget)
   xtbin->xtwindow = XtWindow(xtbin->xtclient.child_widget);
 
   gdk_flush();
+
+  /* now that we have created the xt client, add it to the socket. */
+  gtk_socket_add_id(GTK_SOCKET(widget), xtbin->xtwindow);
 }
 
 
@@ -355,7 +358,8 @@ gtk_xtbin_new (GdkWindow *parent_window, String * f)
   xtbin->xtdisplay = xtbin->xtclient.xtdisplay;
   gtk_widget_set_parent_window(GTK_WIDGET(xtbin), parent_window);
   gdk_window_get_user_data(xtbin->parent_window, &user_data);
-  gtk_container_add( GTK_CONTAINER(user_data), GTK_WIDGET(xtbin));
+  if (user_data)
+    gtk_container_add(GTK_CONTAINER(user_data), GTK_WIDGET(xtbin));
 
   return GTK_WIDGET (xtbin);
 }
@@ -657,11 +661,15 @@ xt_client_handle_xembed_message(Widget w, XtPointer client_data, XEvent *event)
       memset(&xevent, 0, sizeof(xevent));
 
       if(event->xclient.data.l[1] == XEMBED_FOCUS_IN) {
+#ifdef DEBUG_XTBIN
         printf("XTEMBED got focus in\n");
+#endif
         xevent.xfocus.type = FocusIn;
       }
       else {
+#ifdef DEBUG_XTBIN
         printf("XTEMBED got focus out\n");
+#endif
         xevent.xfocus.type = FocusOut;
       }
 
@@ -709,7 +717,9 @@ xt_client_event_handler( Widget w, XtPointer client_data, XEvent *event)
     case FocusOut:
       break;
     case KeyPress:
+#ifdef DEBUG_XTBIN
       printf("Key Press Got!\n");
+#endif
       break;
     default:
       break;
@@ -745,7 +755,9 @@ send_xembed_message (XtClient  *xtclient,
   XSync (dpy,False);
 
   if((errorcode = untrap_error())) {
+#ifdef DEBUG_XTBIN
     printf("send_xembed_message error(%d)!!!\n",errorcode);
+#endif
   }
 }
 
@@ -768,7 +780,9 @@ untrap_error(void)
 {
   XSetErrorHandler(old_error_handler);
   if(trapped_error_code) {
+#ifdef DEBUG_XTBIN
     printf("Get X Window Error = %d\n", trapped_error_code);
+#endif
   }
   return trapped_error_code;
 }
@@ -785,7 +799,8 @@ xt_client_focus_listener( Widget w, XtPointer user_data, XEvent *event)
     case CreateNotify:
       if(event->xcreatewindow.parent == win) {
         Widget child=XtWindowToWidget( dpy, event->xcreatewindow.window);
-        xt_add_focus_listener_tree(child, user_data);
+        if (child)
+          xt_add_focus_listener_tree(child, user_data);
       }
       break;
     case DestroyNotify:
@@ -794,8 +809,9 @@ xt_client_focus_listener( Widget w, XtPointer user_data, XEvent *event)
     case ReparentNotify:
       if(event->xreparent.parent == win) {
         /* I am the new parent */
-        xt_add_focus_listener_tree(XtWindowToWidget(dpy, event->xreparent.window),
-                                   user_data);
+        Widget child=XtWindowToWidget(dpy, event->xreparent.window);
+        if (child)
+          xt_add_focus_listener_tree( child, user_data);
       }
       else if(event->xreparent.window == win) {
         /* I am the new child */
@@ -873,8 +889,9 @@ xt_add_focus_listener_tree ( Widget treeroot, XtPointer user_data)
     return;
 
   for(i=0; i<nchildren; ++i) {
-    xt_add_focus_listener_tree(XtWindowToWidget(dpy, children[i]), 
-                               user_data);
+    Widget child = XtWindowToWidget(dpy, children[i]);
+    if (child) 
+      xt_add_focus_listener_tree( child, user_data);
   }
   XFree((void*)children);
 

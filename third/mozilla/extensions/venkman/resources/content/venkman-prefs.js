@@ -33,141 +33,39 @@
  *
  */
 
-console.prefs = new Object();
-
-const PREF_CTRID = "@mozilla.org/preferences-service;1";
-const nsIPrefService = Components.interfaces.nsIPrefService;
-const nsIPrefBranch = Components.interfaces.nsIPrefBranch;
-
 function initPrefs()
 {
+    var dir = getSpecialDirectory("ProfD");
+    dir.append("venkman-settings.js");
+    var defaultSettingsFile = dir.path;
 
-    console.prefs = new Object();
-    console.prefs.prefService =
-        Components.classes[PREF_CTRID].getService(nsIPrefService);
-    console.prefs.prefBranch = 
-        console.prefs.prefService.getBranch("extensions.venkman.");
-    console.prefs.prefNames = new Array();
-    console.prefs.prefNameMap = new Object();
+    console.prefManager = new PrefManager("extensions.venkman.");
+    console.prefs = console.prefManager.prefs;
     
-    //    console.addPref ("input.commandchar", "/");
-    console.addPref ("maxStringLength", 100);
-    console.addPref ("startupCount", 0);
-    console.addPref ("enableChromeFilter", true);
-    console.addPref ("tabWidth", 4);
-    console.addPref ("initialScripts", "");
-    console.addPref ("prettyprint", false);
-    console.addPref ("guessContext", 5);
-    console.addPref ("guessPattern", "(\\w+)\\s*[:=]\\s*$");
-    console.addPref ("permitStartupHit", true);
-    console.addPref ("statusDuration", 5 * 1000);
-    console.addPref ("menubarInFloaters",
-                     navigator.platform.indexOf ("Mac") != -1);
-    console.addPref ("lastErrorMode", "ignore");
-    console.addPref ("lastThrowMode", "ignore");
-    
-    var list = console.prefs.prefBranch.getChildList("", {});
-    for (var p in list)
-    {
-        if (!(list[p] in console.prefs))
-        {
-            console.addPref(list[p]);
-        }
-    }                                                 
+    var prefs =
+        [
+         ["enableChromeFilter", true],
+         ["guessContext", 5],
+         ["guessPattern", "(\\w+)\\s*[:=]\\s*$"],
+         ["initialScripts", ""],
+         ["lastErrorMode", "ignore"],
+         ["lastThrowMode", "ignore"],
+         ["maxStringLength", 4000],
+         ["menubarInFloaters", navigator.platform.indexOf ("Mac") != -1],
+         ["permitStartupHit", true],
+         ["prettyprint", false],
+         ["rememberPrettyprint", false],
+         ["saveSettingsOnExit", false],
+         ["settingsFile", defaultSettingsFile],
+         ["startupCount", 0],
+         ["statusDuration", 5 * 1000],
+         ["tabWidth", 4]
+        ];
+
+    console.prefManager.addPrefs(prefs);
 }
 
-console.listPrefs =
-function con_listprefs (prefix)
+function destroyPrefs()
 {
-    var list = new Array();
-    var names = console.prefs.prefNames;
-    for (var i = 0; i < names.length; ++i)
-    {
-        if (!prefix || names[i].indexOf(prefix) == 0)
-            list.push (names[i]);
-    }
-
-    return list;
-}
-
-console.addPref =
-function con_addpref (prefName, defaultValue)
-{
-    var realValue;
-    
-    function prefGetter ()
-    {
-        if (typeof realValue == "undefined")
-        {
-            var type = this.prefBranch.getPrefType (prefName);
-            try
-            {
-                switch (type)
-                {
-                    case nsIPrefBranch.PREF_STRING:
-                        realValue = this.prefBranch.getCharPref (prefName);
-                        break;
-                        
-                    case nsIPrefBranch.PREF_INT:
-                        realValue = this.prefBranch.getIntPref (prefName);
-                        break;
-                        
-                    case nsIPrefBranch.PREF_BOOL:
-                        realValue = this.prefBranch.getBoolPref (prefName);
-                        break;
-                        
-                    default:
-                        realValue = defaultValue;
-                }
-            }
-            catch (ex)
-            {
-                //dd ("caught exception reading pref ``" + prefName + "'' " +
-                //    type + "\n" + ex);
-                realValue = defaultValue;
-            }
-        }
-        return realValue;
-    }
-    
-    function prefSetter (value)
-    {
-        try
-        {    
-            switch (typeof value)
-            {
-                case "int":
-                    realValue = value;
-                    this.prefBranch.setIntPref (prefName, value);
-                    break;
-                    
-                case "boolean":
-                    realValue = value;
-                    this.prefBranch.setBoolPref (prefName, value);
-                    break;
-                    
-                default:
-                    realValue = value;
-                    this.prefBranch.setCharPref (prefName, value);
-                    break;       
-            }
-
-            this.prefService.savePrefFile(null);
-        }
-        catch (ex)
-        {
-            dd ("caught exception writing pref ``" + prefName + "''\n" + ex);
-        }
-
-        return value;
-
-    }
-
-    if (prefName in console.prefs)
-        return;
-
-    console.prefs.prefNames.push(prefName);
-    console.prefs.prefNames.sort();
-    console.prefs.__defineGetter__(prefName, prefGetter);
-    console.prefs.__defineSetter__(prefName, prefSetter);
+    console.prefManager.destroy();
 }

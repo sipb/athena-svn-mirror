@@ -43,7 +43,6 @@
 #include "nsIDOMElement.h"
 #include "nsIDOMWindowInternal.h"
 #include "nsIDOMScreen.h"
-#include "nsIDOMXULDocument.h"
 #include "nsIEmbeddingSiteWindow.h"
 #include "nsIEmbeddingSiteWindow2.h"
 #include "nsIInterfaceRequestor.h"
@@ -103,10 +102,9 @@ nsXULWindow::nsXULWindow() : mChromeTreeOwner(nsnull),
    mDebuting(PR_FALSE), mChromeLoaded(PR_FALSE), 
    mShowAfterLoad(PR_FALSE), mIntrinsicallySized(PR_FALSE),
    mCenterAfterLoad(PR_FALSE), mIsHiddenWindow(PR_FALSE),
-   mHadChildWindow(PR_FALSE),
-   mZlevel(nsIXULWindow::normalZ), mContextFlags(0)
+   mZlevel(nsIXULWindow::normalZ), mContextFlags(0),
+   mBlurSuppressionLevel(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsXULWindow::~nsXULWindow()
@@ -253,9 +251,8 @@ NS_IMETHODIMP nsXULWindow::GetContentShellById(const PRUnichar* aID,
 
 NS_IMETHODIMP nsXULWindow::AddChildWindow(nsIXULWindow *aChild)
 {
-  // we don't keep a list; we just need to know if there ever was one
-  mHadChildWindow = PR_TRUE;
-  return NS_OK;
+   // we're not really keeping track of this right now
+   return NS_OK;
 }
 
 NS_IMETHODIMP nsXULWindow::RemoveChildWindow(nsIXULWindow *aChild)
@@ -350,12 +347,6 @@ NS_IMETHODIMP nsXULWindow::Destroy()
    if(!mWindow)
       return NS_OK;
 
-#ifdef XP_PC
-   /* must activate parent before unregistering, since unregistering
-      affects the topmost window status, which activateparent uses. */
-   ActivateParent();
-#endif
-
    nsCOMPtr<nsIAppShellService> appShell(do_GetService(kAppShellServiceCID));
    if(appShell)
      appShell->UnregisterTopLevelWindow(NS_STATIC_CAST(nsIXULWindow*, this));
@@ -401,6 +392,17 @@ NS_IMETHODIMP nsXULWindow::Destroy()
    if (mWindow)
      mWindow->Show(PR_FALSE);
 
+#if defined(XP_WIN) || defined(XP_OS2)
+  // We need to explicitly set the focus on Windows
+  nsCOMPtr<nsIBaseWindow> parent(do_QueryReferent(mParentWindow));
+  if (parent) {
+    nsCOMPtr<nsIWidget> parentWidget;
+    parent->GetMainWidget(getter_AddRefs(parentWidget));
+    if (parentWidget)
+      parentWidget->PlaceBehind(0, PR_TRUE);
+  }
+#endif
+   
    mDOMWindow = nsnull;
    if(mDocShell) {
       nsCOMPtr<nsIBaseWindow> shellAsWin(do_QueryInterface(mDocShell));
@@ -690,6 +692,30 @@ NS_IMETHODIMP nsXULWindow::SetEnabled(PRBool aEnable)
   return NS_ERROR_FAILURE;
 }
 
+NS_IMETHODIMP nsXULWindow::GetBlurSuppression(PRBool *aBlurSuppression)
+{
+  NS_ENSURE_ARG_POINTER(aBlurSuppression);
+  *aBlurSuppression = mBlurSuppressionLevel > 0;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsXULWindow::SetBlurSuppression(PRBool aBlurSuppression)
+{
+  if (aBlurSuppression)
+    ++mBlurSuppressionLevel;
+  else {
+    NS_ASSERTION(mBlurSuppressionLevel > 0, "blur over-allowed");
+    if (mBlurSuppressionLevel > 0)
+      --mBlurSuppressionLevel;
+  }
+  return NS_OK;
+
+  /* XXX propagate this information to the widget? It has its own
+     independent concept of blur suppression. Each is used on
+     a different platform, so at time of writing it's not necessary
+     to keep them in sync. (And there's no interface for doing so.) */
+}
+
 NS_IMETHODIMP nsXULWindow::GetMainWidget(nsIWidget** aMainWidget)
 {
    NS_ENSURE_ARG_POINTER(aMainWidget);
@@ -812,44 +838,68 @@ NS_IMETHODIMP nsXULWindow::EnsureAuthPrompter()
  
 void nsXULWindow::OnChromeLoaded()
 {
-  mChromeLoaded = PR_TRUE;
+  nsresult rv = EnsureContentTreeOwner();
 
-  if(mContentTreeOwner)
-    mContentTreeOwner->ApplyChromeFlags();
+  if (NS_SUCCEEDED(rv)) {
+    mChromeLoaded = PR_TRUE;
 
-  LoadTitleFromXUL();
-  LoadWindowClassFromXUL();
-  LoadIconFromXUL();
-  LoadSizeFromXUL();
-  if(mIntrinsicallySized) {
-    // (if LoadSizeFromXUL set the size, mIntrinsicallySized will be false)
-    nsCOMPtr<nsIContentViewer> cv;
-    mDocShell->GetContentViewer(getter_AddRefs(cv));
-    nsCOMPtr<nsIMarkupDocumentViewer> markupViewer(do_QueryInterface(cv));
-    if(markupViewer)
-      markupViewer->SizeToContent();
+    if(mContentTreeOwner)
+      mContentTreeOwner->ApplyChromeFlags();
+
+    LoadTitleFromXUL();
+    LoadWindowClassFromXUL();
+    LoadIconFromXUL();
+    LoadSizeFromXUL();
+    if(mIntrinsicallySized) {
+      // (if LoadSizeFromXUL set the size, mIntrinsicallySized will be false)
+      nsCOMPtr<nsIContentViewer> cv;
+      mDocShell->GetContentViewer(getter_AddRefs(cv));
+      nsCOMPtr<nsIMarkupDocumentViewer> markupViewer(do_QueryInterface(cv));
+      if(markupViewer)
+        markupViewer->SizeToContent();
+    }
+
+    PRBool positionSet = PR_TRUE;
+    nsCOMPtr<nsIXULWindow> parentWindow(do_QueryReferent(mParentWindow));
+#if defined(XP_UNIX) && !defined(XP_MACOSX)
+    // don't override WM placement on unix for independent, top-level windows
+    // (however, we think the benefits of intelligent dependent window placement
+    // trump that override.)
+    if (!parentWindow)
+      positionSet = PR_FALSE;
+#endif
+    if (positionSet)
+      positionSet = LoadPositionFromXUL();
+    LoadSizeStateFromXUL();
+
+    //LoadContentAreas();
+    LoadChromeHidingFromXUL();
+
+    if (mCenterAfterLoad && !positionSet)
+      Center(parentWindow, parentWindow ? PR_FALSE : PR_TRUE, PR_FALSE);
+
+    if(mShowAfterLoad)
+      SetVisibility(PR_TRUE);
+  }
+}
+
+nsresult nsXULWindow::LoadChromeHidingFromXUL()
+{
+  NS_ENSURE_STATE(mWindow);
+
+  // Get <window> element.
+  nsCOMPtr<nsIDOMElement> windowElement;
+  GetWindowDOMElement(getter_AddRefs(windowElement));
+  NS_ENSURE_TRUE(windowElement, NS_ERROR_FAILURE);
+
+  nsAutoString attr;
+  nsresult rv = windowElement->GetAttribute(NS_LITERAL_STRING("hidechrome"), attr);
+
+  if (NS_SUCCEEDED(rv) && attr.EqualsIgnoreCase("true")) {
+    mWindow->HideWindowChrome(PR_TRUE);
   }
 
-  PRBool positionSet = PR_TRUE;
-  nsCOMPtr<nsIXULWindow> parentWindow(do_QueryReferent(mParentWindow));
-#ifdef XP_UNIX
-  // don't override WM placement on unix for independent, top-level windows
-  // (however, we think the benefits of intelligent dependent window placement
-  // trump that override.)
-  if (!parentWindow)
-    positionSet = PR_FALSE;
-#endif
-  if (positionSet)
-    positionSet = LoadPositionFromXUL();
-  LoadSizeStateFromXUL();
-
-  //LoadContentAreas();
-
-  if (mCenterAfterLoad && !positionSet)
-    Center(parentWindow, parentWindow ? PR_FALSE : PR_TRUE, PR_FALSE);
-
-  if(mShowAfterLoad)
-    SetVisibility(PR_TRUE);
+  return NS_OK;
 }
 
 PRBool nsXULWindow::LoadPositionFromXUL()
@@ -908,14 +958,12 @@ PRBool nsXULWindow::LoadPositionFromXUL()
         specX += parentX;
         specY += parentY;
       }
-      mWindow->ConstrainPosition(PR_FALSE, &specX, &specY);
-    } else {
+    } else
       StaggerPosition(specX, specY, currWidth, currHeight);
-      mWindow->ConstrainPosition(PR_TRUE, &specX, &specY);
-    }
-    if (specX != currX || specY != currY)
-      SetPosition(specX, specY);
   }
+  mWindow->ConstrainPosition(PR_FALSE, &specX, &specY);
+  if (specX != currX || specY != currY)
+    SetPosition(specX, specY);
 
   return gotPosition;
 }
@@ -966,6 +1014,24 @@ PRBool nsXULWindow::LoadSizeFromXUL()
   }
 
   if (gotSize) {
+    // constrain to screen size
+    nsCOMPtr<nsIDOMWindowInternal> domWindow;
+    GetWindowDOMWindow(getter_AddRefs(domWindow));
+    if (domWindow) {
+      nsCOMPtr<nsIDOMScreen> screen;
+      domWindow->GetScreen(getter_AddRefs(screen));
+      if (screen) {
+        PRInt32 screenWidth;
+        PRInt32 screenHeight;
+        screen->GetAvailWidth(&screenWidth);
+        screen->GetAvailHeight(&screenHeight);
+        if (specWidth > screenWidth)
+          specWidth = screenWidth;
+        if (specHeight > screenHeight)
+          specHeight = screenHeight;
+      }
+    }
+
     mIntrinsicallySized = PR_FALSE;
     if (specWidth != currWidth || specHeight != currHeight)
       SetSize(specWidth, specHeight, PR_FALSE);
@@ -1367,7 +1433,7 @@ NS_IMETHODIMP nsXULWindow::GetDOMElementById(char* aID, nsIDOMElement** aDOMElem
 
    nsCOMPtr<nsIDocument> doc;
    docv->GetDocument(*getter_AddRefs(doc));
-   nsCOMPtr<nsIDOMXULDocument> domdoc(do_QueryInterface(doc));
+   nsCOMPtr<nsIDOMDocument> domdoc(do_QueryInterface(doc));
    if(!domdoc) 
       return NS_ERROR_FAILURE;
    
@@ -1649,59 +1715,6 @@ void nsXULWindow::EnableParent(PRBool aEnable)
     parentWindow->GetMainWidget(getter_AddRefs(parentWidget));
   if (parentWidget)
     parentWidget->Enable(aEnable);
-}
-
-/* Bring our parent window to the top, if we are the topmost window.
-   This stupid-sounding method is used to hack around a bug in the Windows OS
-   which causes it to seemingly activate a random window instead of the
-   expected one after closing at least two owned windows. (Mozilla bug
-   22658). This method is expected to be called during window teardown.
-*/
-void nsXULWindow::ActivateParent() {
-
-  // this is only a problem for stacks of at least three windows, and
-  // the unexpected focus we cause to happen in this method is screwing up
-  // focus. so limit the circumstances in which we do this by only activating
-  // the parent if we were part of a stack.
-  if (!mHadChildWindow)
-    return;
-
-  // do we have an owner/parent window?
-  nsCOMPtr<nsIBaseWindow> parent(do_QueryReferent(mParentWindow));
-  if (!parent)
-    return;
-
-  // are we the topmost window?
-  nsCOMPtr<nsIWindowMediator> windowMediator(do_GetService(kWindowMediatorCID));
-  if (!windowMediator)
-    return;
-
-  nsCOMPtr<nsIDOMWindowInternal> topDOMWindow;
-  windowMediator->GetMostRecentWindow(nsnull, getter_AddRefs(topDOMWindow));
-  nsCOMPtr<nsIDOMWindowInternal> ourDOMWindow(do_GetInterface(mDocShell));
-
-  if (ourDOMWindow != topDOMWindow)
-    return;
-
-  // yes, we're topmost. is our parent HiddenWindow?
-  nsCOMPtr<nsIAppShellService> appshell(do_GetService(kAppShellServiceCID));
-  if (appshell) {
-    nsCOMPtr<nsIXULWindow> hiddenWindow;
-    appshell->GetHiddenWindow(getter_AddRefs(hiddenWindow));
-    if (hiddenWindow) {
-      nsCOMPtr<nsIBaseWindow> baseHiddenWindow(do_GetInterface(hiddenWindow));
-      // somebody screwed up somewhere. hiddenwindow shouldn't be anybody's
-      // parent. still, when it happens, skip activating it.
-      if (baseHiddenWindow == parent)
-        return;
-    }
-  }
-
-  // alright already. bring our parent to the top.
-  nsCOMPtr<nsIWidget> parentWidget;
-  parent->GetMainWidget(getter_AddRefs(parentWidget));
-  if (parentWidget)
-    parentWidget->PlaceBehind(0, PR_TRUE);
 }
 
 // Constrain the window to its proper z-level

@@ -77,7 +77,6 @@ TypeInState::TypeInState() :
 ,mRelativeFontSize(0)
 ,mLastSelectionOffset(0)
 {
-  NS_INIT_ISUPPORTS();
   Reset();
 }
 
@@ -89,7 +88,24 @@ TypeInState::~TypeInState()
   Reset();
 }
 
-NS_IMETHODIMP TypeInState::NotifySelectionChanged(nsIDOMDocument *, nsISelection *aSelection,short)
+nsresult TypeInState::UpdateSelState(nsISelection *aSelection)
+{
+  if (!aSelection) return NS_ERROR_NULL_POINTER;
+  
+  PRBool isCollapsed = PR_FALSE;
+  nsresult result = aSelection->GetIsCollapsed(&isCollapsed);
+
+  if (NS_FAILED(result)) return result;
+
+  if (isCollapsed)
+  {
+    result = nsEditor::GetStartNodeAndOffset(aSelection, address_of(mLastSelectionContainer), &mLastSelectionOffset);
+  }
+  return result;
+}
+
+
+NS_IMETHODIMP TypeInState::NotifySelectionChanged(nsIDOMDocument *, nsISelection *aSelection, short)
 {
   // XXX: Selection currently generates bogus selection changed notifications
   // XXX: (bug 140303). It can notify us when the selection hasn't actually
@@ -174,30 +190,40 @@ nsresult TypeInState::SetProp(nsIAtom *aProp, const nsString &aAttr)
 nsresult TypeInState::SetProp(nsIAtom *aProp, const nsString &aAttr, const nsString &aValue)
 {
   // special case for big/small, these nest
-  if (nsIEditProperty::big == aProp)
+  if (nsEditProperty::big == aProp)
   {
     mRelativeFontSize++;
     return NS_OK;
   }
-  if (nsIEditProperty::small == aProp)
+  if (nsEditProperty::small == aProp)
   {
     mRelativeFontSize--;
     return NS_OK;
   }
   
-  // if it's already set we are done
-  if (IsPropSet(aProp,aAttr,nsnull)) return NS_OK;
+  nsAutoString value;
+  PRInt32 index;
+  PropItem *item = nsnull;
   
-  // make a new propitem
-  PropItem *item = new PropItem(aProp,aAttr,aValue);
-  if (!item) return NS_ERROR_OUT_OF_MEMORY;
-  
-  // remove it from the list of cleared properties, if we have a match
-  RemovePropFromClearedList(aProp,aAttr);
-  
-  // add it to the list of set properties
-  mSetArray.AppendElement((void*)item);
-  
+  if (IsPropSet(aProp,aAttr,nsnull,index))
+  {
+    // if it's already set, update the value
+    item = (PropItem*)mSetArray[index];
+    item->value = aValue;
+  }
+  else 
+  {
+    // make a new propitem
+    item = new PropItem(aProp,aAttr,aValue);
+    if (!item) return NS_ERROR_OUT_OF_MEMORY;
+    
+    // add it to the list of set properties
+    mSetArray.AppendElement((void*)item);
+    
+    // remove it from the list of cleared properties, if we have a match
+    RemovePropFromClearedList(aProp,aAttr);  
+  }
+    
   return NS_OK;
 }
 
@@ -419,8 +445,8 @@ PRBool TypeInState::IsPropCleared(nsIAtom *aProp,
 }
 
 PRBool TypeInState::FindPropInList(nsIAtom *aProp, 
-                                   const nsString &aAttr,
-                                   nsString *outValue,
+                                   const nsAString &aAttr,
+                                   nsAString *outValue,
                                    nsVoidArray &aList,
                                    PRInt32 &outIndex)
 {
@@ -446,7 +472,7 @@ PRBool TypeInState::FindPropInList(nsIAtom *aProp,
  *    PropItem: helper struct for TypeInState
  *******************************************************************/
 
-PropItem::PropItem(nsIAtom *aTag, const nsString &aAttr, const nsString &aValue) :
+PropItem::PropItem(nsIAtom *aTag, const nsAString &aAttr, const nsAString &aValue) :
  tag(aTag)
 ,attr(aAttr)
 ,value(aValue)

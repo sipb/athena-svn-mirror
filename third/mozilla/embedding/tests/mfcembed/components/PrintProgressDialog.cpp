@@ -46,7 +46,6 @@ NS_INTERFACE_MAP_END
 CDlgPrintListener::CDlgPrintListener(CPrintProgressDialog* aDlg) :
   m_PrintDlg(aDlg)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 /* void onStateChange (in nsIWebProgress aWebProgress, in nsIRequest aRequest, in unsigned long aStateFlags, in nsresult aStatus); */
@@ -156,7 +155,7 @@ BOOL CPrintProgressDialog::OnInitDialog()
       cancelBtn->EnableWindow(FALSE);
     } else {
       cancelBtn->ShowWindow(SW_HIDE);
-      SetWindowText("Print Preview");
+      SetWindowText(_T("Print Preview"));
     }
   }
 	

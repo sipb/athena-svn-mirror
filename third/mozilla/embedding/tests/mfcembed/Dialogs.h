@@ -44,26 +44,45 @@
 
 class CBrowserView;
 
-class CFindDialog : public CFindReplaceDialog	
+class CFindDialog : public CFindReplaceDialog    
 {
 public:
-	CFindDialog(CString& csSearchStr, PRBool bMatchCase,
-				PRBool bMatchWholeWord, PRBool bWrapAround,
-				PRBool bSearchBackwards, CBrowserView* pOwner);
-	BOOL WrapAround();
-	BOOL SearchBackwards();
+    CFindDialog(CString& csSearchStr, PRBool bMatchCase,
+                PRBool bMatchWholeWord, PRBool bWrapAround,
+                PRBool bSearchBackwards, CBrowserView* pOwner);
+    BOOL WrapAround();
+    BOOL SearchBackwards();
 
 private:
-	CString m_csSearchStr;
-	PRBool m_bMatchCase;
-	PRBool m_bMatchWholeWord;
-	PRBool m_bWrapAround;
-	PRBool m_bSearchBackwards;
-	CBrowserView* m_pOwner;
+    CString m_csSearchStr;
+    PRBool m_bMatchCase;
+    PRBool m_bMatchWholeWord;
+    PRBool m_bWrapAround;
+    PRBool m_bSearchBackwards;
+    CBrowserView* m_pOwner;
 
 protected:
-	virtual BOOL OnInitDialog();
-	virtual void PostNcDestroy();
+    virtual BOOL OnInitDialog();
+    virtual void PostNcDestroy();
+};
+
+/////////////////////////////////////////////////////////////////////////////
+// CLinkPropertiesDlg dialog
+
+class CLinkPropertiesDlg : public CDialog
+{
+public:
+	CLinkPropertiesDlg(CWnd* pParent = NULL);
+
+	enum { IDD = IDD_DIALOG_LINK_PROPERTIES };
+	CString	m_LinkText;
+	CString	m_LinkLocation;
+
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);
+	virtual void OnOK();
+
+	DECLARE_MESSAGE_MAP()
 };
 
 #endif //_DIALOG_H_

@@ -99,6 +99,7 @@ protected:
 
   void ResetStateTracking();
   PRUint32 mNewToplevelSecurityState;
+  PRBool mNewToplevelSecurityStateKnown;
   nsXPIDLString mInfoTooltip;
   PRInt32 mDocumentRequestsInProgress;
   PRInt32 mSubRequestsInProgress;
@@ -117,11 +118,10 @@ protected:
   nsresult CheckPost(nsIURI *formURI, nsIURI *actionURL, PRBool *okayToPost);
   nsresult IsURLHTTPS(nsIURI* aURL, PRBool *value);
 
-  // Alerts for security transitions
-  void AlertEnteringSecure();
-  void AlertEnteringWeak();
-  void AlertLeavingSecure();
-  void AlertMixedMode();
+  PRBool ConfirmEnteringSecure();
+  PRBool ConfirmEnteringWeak();
+  PRBool ConfirmLeavingSecure();
+  PRBool ConfirmMixedMode();
   PRBool ConfirmPostToInsecure();
   PRBool ConfirmPostToInsecureFromSecure();
 

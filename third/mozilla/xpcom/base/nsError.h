@@ -89,6 +89,9 @@
 #define NS_ERROR_MODULE_DOM_XPATH  22
 #define NS_ERROR_MODULE_DOM_RANGE  23
 #define NS_ERROR_MODULE_URILOADER  24
+#define NS_ERROR_MODULE_CONTENT    25
+#define NS_ERROR_MODULE_PYXPCOM    26
+#define NS_ERROR_MODULE_XSLT       27
 
 /* NS_ERROR_MODULE_GENERAL should be used by modules that do not
  * care if return code values overlap. Callers of methods that
@@ -149,9 +152,6 @@
 
 /* Standard "it worked" return value */
 #define NS_OK                              0
-
-/* The backwards COM false. This is deprecated, please do not use */
-#define NS_COMFALSE                        1
 
 #define NS_ERROR_BASE                      ((nsresult) 0xC1F30000)
 
@@ -298,7 +298,7 @@ extern NS_COM nsresult
 NS_ErrorAccordingToNSPR();
 
 
-#if defined(XP_WIN)
+#ifdef _MSC_VER
 #pragma warning(disable: 4251) /* 'nsCOMPtr<class nsIInputStream>' needs to have dll-interface to be used by clients of class 'nsInputStream' */
 #pragma warning(disable: 4275) /* non dll-interface class 'nsISupports' used as base for dll-interface class 'nsIRDFNode' */
 #endif

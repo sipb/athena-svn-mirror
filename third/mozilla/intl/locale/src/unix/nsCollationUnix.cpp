@@ -47,7 +47,9 @@
 #include "nsIPlatformCharset.h"
 #include "nsIPosixLocale.h"
 #include "nsCOMPtr.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
+#include "nsIPrefLocalizedString.h"
 #include "nsUnicharUtils.h"
 #include "nsCRT.h"
 //#define DEBUG_UNIX_COLLATION
@@ -70,7 +72,6 @@ inline void nsCollationUnix::DoRestoreLocale()
 
 nsCollationUnix::nsCollationUnix() 
 {
-  NS_INIT_ISUPPORTS(); 
   mCollation = NULL;
   mUseCodePointOrder = PR_FALSE;
 }
@@ -90,15 +91,18 @@ nsresult nsCollationUnix::Initialize(nsILocale* locale)
 
   nsresult res;
 
-  nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID);
-  if (prefs) {
-    PRUnichar *prefValue;
-    res = prefs->GetLocalizedUnicharPref("intl.collationOption", &prefValue);
-    if (NS_SUCCEEDED(res)) {
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  if (prefBranch) {
+    nsCOMPtr<nsIPrefLocalizedString> prefLocalString;
+    res = prefBranch->GetComplexValue("intl.collationOption",
+                                      NS_GET_IID(nsIPrefLocalizedString),
+                                      getter_AddRefs(prefLocalString));
+    if (NS_SUCCEEDED(res) && prefLocalString) {
+      nsXPIDLString prefValue;
+      prefLocalString->GetData(getter_Copies(prefValue));
       mUseCodePointOrder =
-        nsDependentString(prefValue).Equals(NS_LITERAL_STRING("useCodePointOrder"),
-                                            nsCaseInsensitiveStringComparator());
-      nsMemory::Free(prefValue);
+        prefValue.Equals(NS_LITERAL_STRING("useCodePointOrder"),
+                         nsCaseInsensitiveStringComparator());
     }
   }
 
@@ -107,9 +111,6 @@ nsresult nsCollationUnix::Initialize(nsILocale* locale)
     NS_ASSERTION(0, "mCollation creation failed");
     return NS_ERROR_OUT_OF_MEMORY;
   }
-
-  // default local charset name
-  mCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
 
   // default platform locale
   mLocale.Assign('C');
@@ -164,18 +165,11 @@ nsresult nsCollationUnix::Initialize(nsILocale* locale)
       PRUnichar* mappedCharset = NULL;
       res = platformCharset->GetDefaultCharsetForLocale(aLocale.get(), &mappedCharset);
       if (NS_SUCCEEDED(res) && mappedCharset) {
-        mCharset = mappedCharset;
+        mCollation->SetCharset(mappedCharset);
         nsMemory::Free(mappedCharset);
       }
     }
   }
-
-#if defined(DEBUG_UNIX_COLLATION)
-  printf("nsCollationUnix::Initialize mLocale = %s\n" 
-         "nsCollationUnix::Initialize mCharset = %s\n",
-         mLocale.get(),
-         NS_LossyConvertUCS2toASCII(mCharset).get());
-#endif
 
   return NS_OK;
 };
@@ -199,10 +193,10 @@ nsresult nsCollationUnix::GetSortKeyLen(const nsCollationStrength strength,
   // convert unicode to charset
   char *str;
 
-  res = mCollation->UnicodeToChar(stringNormalized, &str, mCharset);
+  res = mCollation->UnicodeToChar(stringNormalized, &str);
   if (NS_SUCCEEDED(res) && str != NULL) {
     if (mUseCodePointOrder) {
-      *outLen = nsCRT::strlen(str);
+      *outLen = strlen(str);
     }
     else {
       DoSetLocale();
@@ -232,10 +226,10 @@ nsresult nsCollationUnix::CreateRawSortKey(const nsCollationStrength strength,
   // convert unicode to charset
   char *str;
 
-  res = mCollation->UnicodeToChar(stringNormalized, &str, mCharset);
+  res = mCollation->UnicodeToChar(stringNormalized, &str);
   if (NS_SUCCEEDED(res) && str != NULL) {
     if (mUseCodePointOrder) {
-      *outLen = nsCRT::strlen(str);
+      *outLen = strlen(str);
       memcpy(key, str, *outLen);
     }
     else {

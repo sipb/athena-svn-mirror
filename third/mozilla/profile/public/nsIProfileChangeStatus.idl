@@ -56,7 +56,17 @@
     *
     * "profile-change-teardown"
     *   All async activity must be stopped in this phase. Typically,
-    *   the application level observer will close all open windows. 
+    *   the application level observer will close all open windows.
+    *   This is the last phase in which the subject's vetoChange()
+    *   method may still be called. 
+    *   The next notification will be either 
+    *   profile-change-teardown-veto or profile-before-change.
+    *
+    * "profile-change-teardown-veto"
+    *   This notification will only be sent, if the profile change 
+    *   was vetoed during the profile-change-teardown phase.
+    *   This allows components to bring back required resources,
+    *   that were tore down on profile-change-teardown.
     *
     * "profile-before-change"
     *   Called before the profile has changed. Use this notification
@@ -75,6 +85,9 @@
     *   did during its profile-do-change. For example, to respond to
     *   new preferences. 
     *
+    * "profile-initial-state"
+    *   Called after all phases of a change have completed. Typically
+    *   in this phase, an application level observer will open a new window.
     *
     * Contexts for profile changes. These are passed as the someData param to the
     * observer's Observe() method.
@@ -114,6 +127,17 @@
 interface nsIProfileChangeStatus : nsISupports {
         
     void vetoChange();
+    
+   /**
+    * Called by a profile change observer when a fatal error
+    * occurred during the attempt to switch the profile.
+    *
+    * The profile should be considered in an unsafe condition,
+    * and the profile manager should inform the user and
+    * exit immediately.
+    *
+    */
+    void changeFailed();
 
 };
 

@@ -110,7 +110,6 @@ MemoryFlusher::MemoryFlusher(nsMemoryImpl* aMemoryImpl)
       mLock(nsnull),
       mCVar(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 MemoryFlusher::~MemoryFlusher()
@@ -213,6 +212,8 @@ MemoryFlusher::Stop()
 
 //----------------------------------------------------------------------
 
+nsMemoryImpl* gMemory = nsnull;
+
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsMemoryImpl, nsIMemory)
 
 NS_METHOD
@@ -220,6 +221,8 @@ nsMemoryImpl::Create(nsISupports* outer, const nsIID& aIID, void* *aInstancePtr)
 {
     NS_ENSURE_ARG_POINTER(aInstancePtr);
     NS_ENSURE_PROPER_AGGREGATION(outer, aIID);
+    if (gMemory && NS_SUCCEEDED(gMemory->QueryInterface(aIID, aInstancePtr)))
+        return NS_OK;
 
     nsMemoryImpl* mm = new nsMemoryImpl();
     if (mm == NULL)
@@ -253,7 +256,6 @@ nsMemoryImpl::nsMemoryImpl()
       mFlushLock(nsnull),
       mIsFlushing(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsMemoryImpl::~nsMemoryImpl()
@@ -317,6 +319,7 @@ reallocator(void* ptr, PRSize size, PRUint32& counter, PRUint32 max)
 NS_IMETHODIMP_(void *) 
 nsMemoryImpl::Alloc(PRSize size)
 {
+    NS_ASSERTION(size, "nsMemoryImpl::Alloc of 0");
     void* result = MALLOC1(size);
     if (! result) {
         // Request an asynchronous flush
@@ -484,8 +487,6 @@ nsMemoryImpl::DestroyFlushEvent(PLEvent* aEvent)
 {
     // no-op, since mEvent is a member of nsMemoryImpl
 }
-
-nsMemoryImpl* gMemory = nsnull;
 
 static void
 EnsureGlobalMemoryService()

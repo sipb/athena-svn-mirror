@@ -47,8 +47,10 @@ IS_COMPONENT	= 1
 MODULE_NAME	= NSS
 EXPORT_LIBRARY	= 1
 META_COMPONENT	= crypto
+GRE_MODULE	= 1
 
 CPPSRCS = 				\
+	nsCipherInfo.cpp \
 	nsNSSCallbacks.cpp		\
 	nsNSSComponent.cpp		\
 	nsNSSIOLayer.cpp		\
@@ -60,7 +62,6 @@ CPPSRCS = 				\
 	nsNSSCertificate.cpp		\
 	nsPKCS12Blob.cpp                \
 	nsNSSASN1Object.cpp		\
-	nsCertTree.cpp              \
 	nsKeygenHandler.cpp		\
 	nsCrypto.cpp			\
   nsPKCS11Slot.cpp                \
@@ -77,7 +78,12 @@ CPPSRCS = 				\
   nsOCSPResponder.cpp \
   nsUsageArrayHelper.cpp \
   nsCRLManager.cpp \
+  nsNSSShutDown.cpp \
 	$(NULL)
+
+ifdef MOZ_XUL
+CPPSRCS += nsCertTree.cpp
+endif
 
 REQUIRES	= nspr \
 		  xpcom \
@@ -104,12 +110,9 @@ REQUIRES	= nspr \
 
 EXTRA_DEPS = $(NSS_DEP_LIBS)
 
-include $(topsrcdir)/config/rules.mk
-
 # Use local includes because they are inserted before INCLUDES
 # so that Mozilla's nss.h is used, not glibc's
 LOCAL_INCLUDES += -I$(DIST)/public/nss \
-                  -I$(DIST)/private/nss \
                   $(NULL)
 
 EXTRA_DSO_LDOPTS += \
@@ -118,3 +121,6 @@ EXTRA_DSO_LDOPTS += \
 		$(MOZ_JS_LIBS) \
 		$(NSS_LIBS) \
 		$(NULL)
+
+include $(topsrcdir)/config/rules.mk
+

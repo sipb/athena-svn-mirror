@@ -32,6 +32,8 @@ LIBRARY_NAME	= gkplugin
 EXPORT_LIBRARY = 1
 IS_COMPONENT    = 1
 MODULE_NAME	= nsPluginModule
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  xpconnect \
 		  string \
@@ -56,6 +58,7 @@ REQUIRES	= xpcom \
 		  windowwatcher \
 		  imglib2 \
 		  layout \
+		  js \
 		  $(NULL)
 # for xlib port
 REQUIRES	+= xlibxtbin xlibrgb
@@ -63,11 +66,9 @@ REQUIRES	+= xlibxtbin xlibrgb
 CPPSRCS		= \
 		ns4xPlugin.cpp \
 		ns4xPluginInstance.cpp \
-		nsPluginDocLoaderFactory.cpp \
 		nsPluginHostImpl.cpp \
 		nsPluginModule.cpp \
 		nsPluginInstancePeer.cpp \
-		nsPluginViewer.cpp \
 		nsPluginDirServiceProvider.cpp \
 		$(NULL)
 
@@ -81,6 +82,10 @@ ifeq ($(OS_ARCH),WINNT)
 else
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
 	CPPSRCS += nsPluginsDirOS2.cpp
+	CPPSRCS += nsPluginNativeWindowOS2.cpp
+else
+ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+	CPPSRCS += nsPluginsDirDarwin.cpp
 	CPPSRCS += nsPluginNativeWindow.cpp
 else
 	CPPSRCS += nsPluginsDirUnix.cpp
@@ -88,20 +93,18 @@ else
 endif
 endif
 endif
+endif
 
-EXPORTS		= \
-    nsPluginViewer.h \
-		$(NULL)
-
-ifeq ($(OS_ARCH),WINNT)
+ifneq (,$(filter WINNT Darwin,$(OS_ARCH)))
 EXTRA_DSO_LIBS	+= gkgfx
 endif
 
 EXTRA_DSO_LDOPTS = \
+		$(LIBS_DIR) \
 		$(EXTRA_DSO_LIBS) \
 		$(MOZ_NECKO_UTIL_LIBS) \
-		$(MOZ_COMPONENT_LIBS) \
 		$(MOZ_UNICHARUTIL_LIBS) \
+		$(MOZ_COMPONENT_LIBS) \
 		$(NULL)
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
@@ -111,8 +114,21 @@ endif
 include $(topsrcdir)/config/rules.mk
 
 ifeq ($(OS_ARCH),WINNT)
+ifdef GNU_CC
+CXXFLAGS	+= -fexceptions
+else
 CXXFLAGS	+= -GX
-OS_LIBS		+= version.lib
+endif
+OS_LIBS		+= $(call EXPAND_LIBNAME,version)
+endif
+
+ifeq ($(OS_ARCH), OpenVMS)
+DEFINES		+= -DGENERIC_MOTIF_REDEFINES
+OS_CXXFLAGS	+= -Wc,warn=disa=NOSIMPINT
+endif
+
+ifeq ($(OS_ARCH),OS2)
+ADD_TO_DEF_FILE = cat < $(srcdir)/extradefs.os2 >> $(DEF_FILE)
 endif
 
 ifdef MOZ_ENABLE_GTK
@@ -124,23 +140,12 @@ endif		#MOZ_ENABLE_GTK
 ifdef MOZ_ENABLE_GTK2
 CXXFLAGS        += $(MOZ_GTK2_CFLAGS)
 CFLAGS          += $(MOZ_GTK2_CFLAGS)
-EXTRA_DSO_LDOPTS += -lgtkxtbin $(XLDFLAGS) $(XT_LIBS) $(MOZ_GTK2_LIBS)
+EXTRA_DSO_LDOPTS += -lgtkxtbin $(XLDFLAGS) $(XT_LIBS) $(MOZ_GTK2_LIBS) $(XLIBS)
 endif           #MOZ_ENABLE_GTK2
 
 ifdef MOZ_ENABLE_XLIB
-EXTRA_DSO_LDOPTS += -lxlibxtbin -lxlibrgb -L/usr/X11R6/lib $(XT_LIBS)
-ifndef MOZ_MONOLITHIC_TOOLKIT
+EXTRA_DSO_LDOPTS += -lxlibxtbin -lxlibrgb $(XLDFLAGS) $(XT_LIBS) $(XLIBS)
 CXXFLAGS        += $(MOZ_XLIB_CFLAGS)
 CFLAGS          += $(MOZ_XLIB_CFLAGS)
-else
-CXXFLAGS        += $(TK_CFLAGS)
-CFLAGS          += $(TK_CFLAGS)
-endif		#MOZ_MONOLITHIC_TOOLKIT
 endif		#MOZ_ENABLE_XLIB
-
-ifdef MOZ_ENABLE_QT
-EXTRA_DSO_LDOPTS += $(MOZ_QT_LDFLAGS)
-CXXFLAGS        += $(MOZ_QT_CFLAGS)
-CFLAGS          += $(MOZ_QT_CFLAGS)
-endif		#MOZ_ENABLE_QT
 

@@ -66,11 +66,13 @@ nsAboutCacheEntry::NewChannel(nsIURI *aURI, nsIChannel **result)
 {
     nsresult rv;
 
-    nsCOMPtr<nsIStreamIOChannel> chan;
-    rv = NS_NewStreamIOChannel(getter_AddRefs(chan), aURI, nsnull);
+    nsCOMPtr<nsIChannel> chan;
+    rv = NS_NewInputStreamChannel(getter_AddRefs(chan), aURI, nsnull,
+                                  NS_LITERAL_CSTRING("application/xhtml+xml"));
     if (NS_FAILED(rv)) return rv;
 
-    mStreamChannel = do_QueryInterface(chan);
+    mStreamChannel = do_QueryInterface(chan, &rv);
+    if (NS_FAILED(rv)) return rv;
 
     return CallQueryInterface((nsIAboutModule *) this, result);
 }
@@ -125,24 +127,7 @@ nsAboutCacheEntry::OnCacheEntryAvailable(nsICacheEntryDescriptor *descriptor,
     rv = storageStream->NewInputStream(0, getter_AddRefs(inStr));
     if (NS_FAILED(rv)) return rv;
 
-    nsCOMPtr<nsIURI> uri;
-    rv = mStreamChannel->GetURI(getter_AddRefs(uri));
-    if (NS_FAILED(rv)) return rv;
-
-    nsCAutoString spec;
-    rv = uri->GetSpec(spec);
-    if (NS_FAILED(rv)) return rv;
-
-    nsCOMPtr<nsIInputStreamIO> io;
-    rv = NS_NewInputStreamIO(getter_AddRefs(io), spec, inStr,
-                             NS_LITERAL_CSTRING("application/xhtml+xml"),
-                             NS_LITERAL_CSTRING(""),
-                             size);
-
-    nsCOMPtr<nsIStreamIOChannel> chan = do_QueryInterface(mStreamChannel, &rv);
-    if (NS_FAILED(rv)) return rv;
-
-    rv = chan->Init(uri, io);
+    rv = mStreamChannel->SetContentStream(inStr);
     if (NS_FAILED(rv)) return rv;
 
     return mStreamChannel->AsyncOpen(mListener, mListenerContext);
@@ -409,9 +394,18 @@ nsAboutCacheEntry::WriteCacheEntryDescription(nsIOutputStream *outputStream,
 
     // Test if the key is actually a URI
     nsCOMPtr<nsIURI> uri;
+    PRBool isJS = PR_FALSE;
+    PRBool isData = PR_FALSE;
+
     rv = NS_NewURI(getter_AddRefs(uri), str);
-    char* escapedStr = nsEscapeHTML(str);
+    // javascript: and data: URLs should not be linkified
+    // since clicking them can cause scripts to run - bug 162584
     if (NS_SUCCEEDED(rv)) {
+        uri->SchemeIs("javascript", &isJS);
+        uri->SchemeIs("data", &isData);
+    }
+    char* escapedStr = nsEscapeHTML(str);
+    if (NS_SUCCEEDED(rv) && !(isJS || isData)) {
         buffer.Append("<a href=\"");
         buffer.Append(escapedStr);
         buffer.Append("\">");
@@ -476,6 +470,15 @@ nsAboutCacheEntry::WriteCacheEntryDescription(nsIOutputStream *outputStream,
 
     // XXX Cache Device
     // File on disk
+    nsCOMPtr<nsIFile> cacheFile;
+    rv = descriptor->GetFile(getter_AddRefs(cacheFile));
+    if (NS_SUCCEEDED(rv)) {
+        nsAutoString filePath;
+        cacheFile->GetPath(filePath);
+        APPEND_ROW("file on disk", NS_ConvertUCS2toUTF8(filePath));
+    }
+    else
+        APPEND_ROW("file on disk", "none");
 
     // Security Info
     str.Adopt(0);

@@ -71,6 +71,7 @@
 #include "nsIDOMEventReceiver.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsILocalFile.h"
+#include "nsITextControlElement.h"
 
 #include "nsContentCID.h"
 static NS_DEFINE_CID(kHTMLElementFactoryCID,   NS_HTML_ELEMENT_FACTORY_CID);
@@ -116,6 +117,23 @@ nsFileControlFrame::~nsFileControlFrame()
   }
 }
 
+NS_IMETHODIMP 
+nsFileControlFrame::Destroy(nsIPresContext* aPresContext)
+{
+  // Toss the value into the control from the anonymous content, which is about
+  // to get lost.
+  if (mTextContent) {
+    nsCOMPtr<nsIDOMHTMLInputElement> input = do_QueryInterface(mTextContent);
+    nsAutoString value;
+    input->GetValue(value);
+
+    // Have it take the value, just like when input type=text goes away
+    nsCOMPtr<nsITextControlElement> fileInput = do_QueryInterface(mContent);
+    fileInput->TakeTextFrameValue(value);
+  }
+  return nsAreaFrame::Destroy(aPresContext);
+}
+
 NS_IMETHODIMP
 nsFileControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
                                            nsISupportsArray& aChildList)
@@ -131,7 +149,7 @@ nsFileControlFrame::CreateAnonymousContent(nsIPresContext* aPresContext,
   nimgr->GetNodeInfo(nsHTMLAtoms::input, nsnull, kNameSpaceID_None,
                      *getter_AddRefs(nodeInfo));
 
-  nsCOMPtr<nsIElementFactory> ef(do_CreateInstance(kHTMLElementFactoryCID,&rv));
+  nsCOMPtr<nsIElementFactory> ef(do_GetService(kHTMLElementFactoryCID,&rv));
   NS_ENSURE_SUCCESS(rv, rv);
 
   // Create the text content
@@ -194,11 +212,10 @@ nsFileControlFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
   return nsHTMLContainerFrame::QueryInterface(aIID, aInstancePtr);
 }
 
-NS_IMETHODIMP 
-nsFileControlFrame::GetType(PRInt32* aType) const
+NS_IMETHODIMP_(PRInt32)
+nsFileControlFrame::GetType() const
 {
-  *aType = NS_FORM_INPUT_FILE;
-  return NS_OK;
+  return NS_FORM_INPUT_FILE;
 }
 
 
@@ -357,8 +374,7 @@ NS_IMETHODIMP nsFileControlFrame::Reflow(nsIPresContext*          aPresContext,
   // except for when style is used to change its size.
   nsresult rv = nsAreaFrame::Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
   if (NS_SUCCEEDED(rv) && mTextFrame != nsnull) {
-    const nsStyleVisibility* vis;
-    GetStyleData(eStyleStruct_Visibility, (const nsStyleStruct*&)vis);
+    const nsStyleVisibility* vis = GetStyleVisibility();
 
     nsIFrame * child;
     FirstChild(aPresContext, nsnull, &child);
@@ -377,8 +393,8 @@ NS_IMETHODIMP nsFileControlFrame::Reflow(nsIPresContext*          aPresContext,
       // messes up the button's rect
       if (txtRect.width + buttonRect.width != aDesiredSize.width ||
           txtRect.height != aDesiredSize.height) {
+        nsHTMLReflowMetrics txtKidSize(PR_TRUE);
         nsSize txtAvailSize(aReflowState.availableWidth, aDesiredSize.height);
-        nsHTMLReflowMetrics txtKidSize(&txtAvailSize);
         nsHTMLReflowState   txtKidReflowState(aPresContext, aReflowState, this, txtAvailSize,
                                               eReflowReason_Resize);
         txtKidReflowState.mComputedHeight = aDesiredSize.height;
@@ -541,10 +557,7 @@ nsFileControlFrame::GetFrameForPoint(nsIPresContext* aPresContext,
 {
 #ifndef DEBUG_NEWFRAME
   if ( nsFormControlHelper::GetDisabled(mContent) && mRect.Contains(aPoint) ) {
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-      
-    if (vis->IsVisible()) {
+    if (GetStyleVisibility()->IsVisible()) {
       *aFrame = this;
       return NS_OK;
     }

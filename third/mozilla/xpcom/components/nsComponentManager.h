@@ -73,8 +73,10 @@ class nsIServiceManager;
 // to service mapping and has no cid mapping.
 #define NS_COMPONENT_TYPE_SERVICE_ONLY -2
 
-extern const char XPCOM_LIB_PREFIX[];
 
+#ifdef DEBUG
+#define XPCOM_CHECK_PENDING_CIDS
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 
 // Array of Loaders and their type strings
@@ -96,7 +98,6 @@ class nsComponentManagerImpl
 public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSIINTERFACEREQUESTOR
-
     // Since the nsIComponentManagerObsolete and nsIComponentManager share some of the 
     // same interface function names, we have to manually define the functions here.
     // The only function that is in nsIComponentManagerObsolete and is in nsIComponentManager
@@ -154,28 +155,33 @@ public:
     NS_GetService(const char *aContractID, const nsIID& aIID, PRBool aDontCreate, nsISupports** result);
 
 protected:
-    nsresult RegistryNameForLib(const char *aLibName, char **aRegistryName);
     nsresult RegisterComponentCommon(const nsCID &aClass,
                                      const char *aClassName,
                                      const char *aContractID,
+                                     PRUint32 aContractIDLen,
                                      const char *aRegistryName,
+                                     PRUint32 aRegistryNameLen,
                                      PRBool aReplace, PRBool aPersist,
                                      const char *aType);
     nsresult GetLoaderForType(int aType, 
                               nsIComponentLoader **aLoader);
-    nsresult FindFactory(const char *contractID, nsIFactory **aFactory) ;
+    nsresult FindFactory(const char *contractID, PRUint32 aContractIDLen, nsIFactory **aFactory) ;
     nsresult LoadFactory(nsFactoryEntry *aEntry, nsIFactory **aFactory);
 
-    nsFactoryEntry *GetFactoryEntry(const char *aContractID);
+    nsFactoryEntry *GetFactoryEntry(const char *aContractID,
+                                    PRUint32 aContractIDLen);
     nsFactoryEntry *GetFactoryEntry(const nsCID &aClass);
     nsFactoryEntry *GetFactoryEntry(const nsCID &aClass, nsIDKey &cidKey);
 
     nsresult SyncComponentsInDir(PRInt32 when, nsIFile *dirSpec);
     nsresult SelfRegisterDll(nsDll *dll);
     nsresult SelfUnregisterDll(nsDll *dll);
-    nsresult HashContractID(const char *acontractID, nsFactoryEntry *fe_ptr);
-    nsresult HashContractID(const char *acontractID, const nsCID &aClass, nsFactoryEntry **fe_ptr = NULL);
-    nsresult HashContractID(const char *acontractID, const nsCID &aClass, nsIDKey &cidKey, nsFactoryEntry **fe_ptr = NULL);
+    nsresult HashContractID(const char *acontractID, PRUint32 aContractIDLen,
+                            nsFactoryEntry *fe_ptr);
+    nsresult HashContractID(const char *acontractID, PRUint32 aContractIDLen,
+                            const nsCID &aClass, nsFactoryEntry **fe_ptr = NULL);
+    nsresult HashContractID(const char *acontractID, PRUint32 aContractIDLen,
+                            const nsCID &aClass, nsIDKey &cidKey, nsFactoryEntry **fe_ptr = NULL);
 
     void DeleteContractIDEntriesByCID(const nsCID* aClass, const char*registryName);
     void DeleteContractIDEntriesByCID(const nsCID* aClass, nsIFactory* factory);
@@ -192,6 +198,14 @@ protected:
     // there was an error
     int AddLoaderType(const char *typeStr);
 
+public:
+    int GetLoaderCount() { return mNLoaderData + 1; }
+
+    // registers only the files in spec's location by loaders other than the
+    // native loader.  This is an optimization method only.
+    nsresult AutoRegisterNonNativeComponents(nsIFile* spec);
+
+
 private:
     nsresult AutoRegisterImpl(PRInt32 when, nsIFile *inDirSpec, PRBool fileIsCompDir=PR_TRUE);
 
@@ -201,9 +215,16 @@ protected:
     PRMonitor*          mMon;
 
     nsNativeComponentLoader *mNativeComponentLoader;
+#ifdef ENABLE_STATIC_COMPONENT_LOADER
     nsIComponentLoader  *mStaticComponentLoader;
+#endif
     nsCOMPtr<nsIFile>   mComponentsDir;
     PRInt32             mComponentsOffset;
+
+    nsCOMPtr<nsIFile>   mGREComponentsDir;
+    PRInt32             mGREComponentsOffset;
+
+    nsCOMPtr<nsIFile>   mRegistryFile;
 
     // Shutdown
     #define NS_SHUTDOWN_NEVERHAPPENED 0
@@ -216,10 +237,18 @@ protected:
     int mMaxNLoaderData;
 
     PRBool              mRegistryDirty;
-    nsVoidArray         mAutoRegEntries;
+    nsHashtable         mAutoRegEntries;
     nsCOMPtr<nsICategoryManager>  mCategoryManager;
 
     PLArenaPool   mArena;
+
+#ifdef XPCOM_CHECK_PENDING_CIDS
+    nsresult AddPendingCID(const nsCID &aClass);
+    void RemovePendingCID(const nsCID &aClass);
+
+    nsVoidArray         mPendingCIDs;
+#endif
+
 };
 
 
@@ -253,24 +282,6 @@ protected:
 #define NS_MOZILLA_DIR_PERMISSION	00700
 #endif /* XP_BEOS */
 
-/**
- * When using the registry we put a version number in it.
- * If the version number that is in the registry doesn't match
- * the following, we ignore the registry. This lets news versions
- * of the software deal with old formats of registry and not
- *
- * alpha0.20 : First time we did versioning
- * alpha0.30 : Changing autoreg to begin registration from ./components on unix
- * alpha0.40 : repository -> component manager
- * alpha0.50 : using nsIRegistry
- * alpha0.60 : xpcom 2.0 landing
- * alpha0.70 : using nsIFileSpec. PRTime -> PRUint32
- * alpha0.90 : using nsIComponentLoader, abs:/rel:/lib:, shaver-cleanup
- * alpha0.92 : restructured registry keys
- * alpha0.93 : changed component names to native strings instead of UTF8
- */
-#define NS_XPCOM_COMPONENT_MANAGER_VERSION_STRING "alpha0.93"
-
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Class: nsFactoryEntry()
@@ -288,42 +299,43 @@ protected:
 
 class nsFactoryEntry {
 public:
-    nsFactoryEntry(const nsCID &aClass, const char *location, int aType);
-    nsFactoryEntry(const nsCID &aClass, nsIFactory *aFactory);
+    nsFactoryEntry(const nsCID &aClass,
+                   const char *location, PRUint32 locationlen, int aType, class nsFactoryEntry* parent = nsnull);
+    nsFactoryEntry(const nsCID &aClass, nsIFactory *aFactory, class nsFactoryEntry* parent = nsnull);
     ~nsFactoryEntry();
 
     nsresult ReInit(const nsCID &aClass, const char *location, int aType);
-    nsresult ReInit(const nsCID &aClass, nsIFactory *aFactory);
 
     nsresult GetFactory(nsIFactory **aFactory, 
                         nsComponentManagerImpl * mgr) {
-        if (factory) {
-            *aFactory = factory.get();
+        if (mFactory) {
+            *aFactory = mFactory.get();
             NS_ADDREF(*aFactory);
             return NS_OK;
         }
 
-        if (typeIndex < 0)
+        if (mTypeIndex < 0)
             return NS_ERROR_FAILURE;
 
         nsresult rv;
         nsCOMPtr<nsIComponentLoader> loader;
-        rv = mgr->GetLoaderForType(typeIndex, getter_AddRefs(loader));
+        rv = mgr->GetLoaderForType(mTypeIndex, getter_AddRefs(loader));
         if(NS_FAILED(rv))
             return rv;
 
-        rv = loader->GetFactory(cid, location, mgr->mLoaderData[typeIndex].type, aFactory);
+        rv = loader->GetFactory(mCid, mLocation, mgr->mLoaderData[mTypeIndex].type, aFactory);
         if (NS_SUCCEEDED(rv))
-            factory = do_QueryInterface(*aFactory);
+            mFactory = do_QueryInterface(*aFactory);
         return rv;
     }
 
-    nsCID cid;
-    char *location;
-    nsCOMPtr<nsIFactory> factory;
+    nsCID mCid;
+    nsCOMPtr<nsIFactory> mFactory;
     // This is an index into the mLoaderData array that holds the type string and the loader 
-    int typeIndex;
+    int mTypeIndex;
     nsCOMPtr<nsISupports> mServiceObject;
+    char* mLocation;
+    class nsFactoryEntry* mParent;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -334,22 +346,32 @@ struct nsFactoryTableEntry : public PLDHashEntryHdr {
 
 struct nsContractIDTableEntry : public PLDHashEntryHdr {
     char           *mContractID;
+    PRUint32        mContractIDLen;
     nsFactoryEntry *mFactoryEntry;    
 };
+
+
 class AutoRegEntry
 {
 public:
-    AutoRegEntry(){};
-    AutoRegEntry(const char* name, PRInt64* modDate);
+    AutoRegEntry(const nsACString& name, PRInt64* modDate);
     virtual ~AutoRegEntry();
 
-    char*   GetName() {return mName;}
+    const nsDependentCString GetName()
+      { return nsDependentCString(mName, mNameLen); }
     PRInt64 GetDate() {return mModDate;}
     void    SetDate(PRInt64 *date) { mModDate = *date;}
     PRBool  Modified(PRInt64 *date);
 
+    // this is the optional field line in the compreg.dat.
+    // it must not contain any comma's and it must be null terminated.
+    char*   GetOptionalData() {return mData;};
+    void    SetOptionalData(const char* data);
+
 private:
     char*   mName;
+    PRUint32 mNameLen;
+    char*   mData;
     PRInt64 mModDate;
 };
 #endif // nsComponentManager_h__

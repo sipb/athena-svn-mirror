@@ -2,7 +2,7 @@
   FILE: icalcomponent.c
   CREATOR: eric 28 April 1999
   
-  $Id: icalcomponent.c,v 1.1.1.1 2003-02-14 19:20:37 rbasch Exp $
+  $Id: icalcomponent.c,v 1.1.1.1.2.1 2003-07-14 19:05:12 ghudson Exp $
 
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -46,6 +46,10 @@
 #include <assert.h>
 #include <stdio.h> /* for fprintf */
 #include <string.h> /* for strdup */
+#ifdef XP_MAC
+#include <extras.h> /* for strdup */
+#include <ctime>
+#endif
 
 #define MAX_TMP 1024
 
@@ -799,12 +803,27 @@ time_t icalcomponent_convert_time(icalproperty *p)
 		tzset();
 		offset = daylight ? altzone : timezone;
 #else
+#ifdef XP_MAC
+		time_t now = time(NULL);
 
+		struct tm *utctm = gmtime(&now);
+		time_t utc = mktime(utctm);
+
+		struct tm localtm = *localtime(&now);
+		time_t local = mktime(&localtm);
+
+		offset = difftime(local, utc);
+#else
 		struct tm *tmp_tm;
 		time_t t;
 
 		t = time(NULL);
+#ifdef __USE_BSD
 	 	offset = localtime(&t)->tm_gmtoff;
+#else
+	 	offset = localtime(&t)->__tm_gmtoff;
+#endif
+#endif
 #endif
 	}
 

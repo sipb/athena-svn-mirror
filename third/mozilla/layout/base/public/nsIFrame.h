@@ -47,7 +47,7 @@
 #include "nsISupports.h"
 #include "nsEvent.h"
 #include "nsStyleStruct.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIContent.h"
 
 /**
@@ -75,7 +75,6 @@ class nsIAtom;
 class nsIPresContext;
 class nsIPresShell;
 class nsIRenderingContext;
-class nsISizeOfHandler;
 class nsIView;
 class nsIWidget;
 class nsIDOMRange;
@@ -89,6 +88,13 @@ struct nsPoint;
 struct nsRect;
 struct nsSize;
 struct nsMargin;
+
+// Calback function used to destroy the value associated with a property.
+typedef void 
+(*NSFramePropertyDtorFunc)(nsIPresContext* aPresContext,
+                           nsIFrame*       aFrame,
+                           nsIAtom*        aPropertyName,
+                           void*           aPropertyValue);
 
 // IID for the nsIFrame interface 
 // a6cf9050-15b3-11d2-932e-00805f8add32
@@ -411,7 +417,7 @@ public:
   NS_IMETHOD  Init(nsIPresContext*  aPresContext,
                    nsIContent*      aContent,
                    nsIFrame*        aParent,
-                   nsIStyleContext* aContext,
+                   nsStyleContext*  aContext,
                    nsIFrame*        aPrevInFlow) = 0;
 
   /**
@@ -546,45 +552,66 @@ public:
   NS_IMETHOD GetOffsets(PRInt32 &start, PRInt32 &end) const = 0;
 
   /**
-   * Get the style context associated with this frame. Note that GetStyleContext()
-   * adds a reference to the style context so the caller must do a release.
+   * Reset the offsets when splitting frames during Bidi reordering
    *
-   * @see nsISupports#Release()
    */
-  nsresult GetStyleContext(nsIStyleContext** aStyleContext) const { 
-    *aStyleContext = mStyleContext; NS_IF_ADDREF(*aStyleContext); return NS_OK;
-  }
-  nsresult SetStyleContext(nsIPresContext*  aPresContext, nsIStyleContext* aContext) { 
+  virtual void AdjustOffsetsForBidi(PRInt32 aStart, PRInt32 aEnd) {}
+
+  /**
+   * Get the style context associated with this frame.
+   *
+   */
+  nsStyleContext* GetStyleContext() const { return mStyleContext; }
+  void SetStyleContext(nsIPresContext* aPresContext, nsStyleContext* aContext)
+  { 
     if (aContext != mStyleContext) {
-      NS_IF_RELEASE(mStyleContext);
-      if (nsnull != aContext) {
-        mStyleContext = aContext;
-        NS_ADDREF(aContext);
+      if (mStyleContext)
+        mStyleContext->Release();
+      mStyleContext = aContext;
+      if (aContext) {
+        aContext->AddRef();
         DidSetStyleContext(aPresContext);
       }
     }
-    return NS_OK;
   }
 
   // Style post processing hook
   NS_IMETHOD DidSetStyleContext(nsIPresContext* aPresContext) = 0;
 
   /**
-   * Get the style data associated with this frame.
+   * Get the style data associated with this frame.  This returns a
+   * const style struct pointer that should never be modified.  See
+   * |nsIStyleContext::GetStyleData| for more information.
+   *
+   * The use of the typesafe functions below is preferred to direct use
+   * of this function.
    */
-  nsresult GetStyleData(nsStyleStructID       aSID,
-                        const nsStyleStruct*& aStyleStruct) const {
+  virtual const nsStyleStruct* GetStyleDataExternal(nsStyleStructID aSID) const = 0;
+
+  const nsStyleStruct* GetStyleData(nsStyleStructID aSID) const {
+#ifdef _IMPL_NS_LAYOUT
     NS_ASSERTION(mStyleContext, "No style context found!");
-    aStyleStruct = mStyleContext->GetStyleData(aSID);
-    return NS_OK;
+    return mStyleContext->GetStyleData(aSID);
+#else
+    return GetStyleDataExternal(aSID);
+#endif
   }
 
-  // Fill a style struct with data
-  nsresult GetStyle(nsStyleStructID aSID, const nsStyleStruct** aStruct) const {
-    NS_ASSERTION(mStyleContext, "No style context found!");
-    mStyleContext->GetStyle(aSID, aStruct);
-    return NS_OK;
-  }
+  /**
+   * Define typesafe getter functions for each style struct by
+   * preprocessing the list of style structs.  These functions are the
+   * preferred way to get style data.  The macro creates functions like:
+   *   const nsStyleBorder* GetStyleBorder();
+   *   const nsStyleColor* GetStyleColor();
+   */
+
+  #define STYLE_STRUCT(name_, checkdata_cb_, ctor_args_)                      \
+    const nsStyle##name_ * GetStyle##name_() const {                          \
+      return NS_STATIC_CAST(const nsStyle##name_*,                            \
+                            GetStyleData(eStyleStruct_##name_));              \
+    }
+  #include "nsStyleStructList.h"
+  #undef STYLE_STRUCT
 
   // Utility function: more convenient than 2 calls to GetStyleData to get border and padding
   NS_IMETHOD  CalcBorderPadding(nsMargin& aBorderPadding) const = 0;
@@ -599,10 +626,10 @@ public:
    * The indicies must be consecutive and implementations MUST return an 
    * NS_ERROR_INVALID_ARG if asked for an index that is out of range.
    */
-  NS_IMETHOD  GetAdditionalStyleContext(PRInt32 aIndex, 
-                                        nsIStyleContext** aStyleContext) const = 0;
-  NS_IMETHOD  SetAdditionalStyleContext(PRInt32 aIndex, 
-                                        nsIStyleContext* aStyleContext) = 0;
+  virtual nsStyleContext* GetAdditionalStyleContext(PRInt32 aIndex) const = 0;
+
+  virtual void SetAdditionalStyleContext(PRInt32 aIndex,
+                                         nsStyleContext* aStyleContext) = 0;
 
   /**
    * Accessor functions for geometric parent
@@ -859,6 +886,20 @@ public:
   NS_IMETHOD  SetPrevInFlow(nsIFrame*) = 0;
   NS_IMETHOD  GetNextInFlow(nsIFrame** aNextInFlow) const = 0;
   NS_IMETHOD  SetNextInFlow(nsIFrame*) = 0;
+
+  /**
+   * Return the first frame in our current flow. 
+   */
+  virtual nsIFrame* GetFirstInFlow() const {
+    return NS_CONST_CAST(nsIFrame*, this);
+  }
+
+  /**
+   * Return the last frame in our current flow.
+   */
+  virtual nsIFrame* GetLastInFlow() const {
+    return NS_CONST_CAST(nsIFrame*, this);
+  }
 
   /**
    * Pre-reflow hook. Before a frame is reflowed this method will be called.
@@ -1158,6 +1199,38 @@ public:
                      PRBool aIsPre,
                      PRBool* aResult) = 0;
 
+  /**
+   * IsGeneratedContentFrame returns whether a frame corresponds to
+   * generated content
+   *
+   * @return whether the frame correspods to generated content
+   */
+  PRBool IsGeneratedContentFrame() {
+    return (mState & NS_FRAME_GENERATED_CONTENT) != 0;
+  }
+
+  /**
+   * IsPseudoFrame returns whether a frame is a pseudo frame (eg an
+   * anonymous table-row frame created for a CSS table-cell without an
+   * enclosing table-row.
+   *
+   * @param aParentContent the content node corresponding to the parent frame
+   * @return whether the frame is a pseudo frame
+   */   
+  PRBool IsPseudoFrame(nsIContent* aParentContent) {
+    return mContent == aParentContent;
+  }
+
+
+  
+  virtual void* GetProperty(nsIPresContext* aPresContext,
+                            nsIAtom*        aPropertyName,
+                            PRBool          aRemoveProperty) const = 0;
+
+  virtual nsresult SetProperty(nsIPresContext*         aPresContext,
+                               nsIAtom*                aPropertyName,
+                               void*                   aPropertyValue,
+                               NSFramePropertyDtorFunc aPropDtorFunc) = 0;
 #ifdef IBMBIDI
   /**
    *  retrieve and set Bidi property of this frame
@@ -1172,11 +1245,27 @@ public:
                              void*           aPropertyValue) = 0;
 #endif // IBMBIDI
 
+  /** Create or retrieve the previously stored overflow area, if the frame does 
+    * not overflow and no creation is required return nsnull.
+    * @param aPresContext PresContext
+    * @param aCreateIfNecessary  create a new nsRect for the overflow area
+    * @return pointer to the overflow area rectangle 
+    */
+  virtual nsRect* GetOverflowAreaProperty(nsIPresContext* aPresContext,
+                                          PRBool          aCreateIfNecessary = PR_FALSE) = 0;
+
+  /**
+   * Return PR_TRUE if and only if this frame obeys visibility:hidden.
+   * if it does not, then nsContainerFrame will hide its view even though
+   * this means children can't be made visible again.
+   */
+  virtual PRBool SupportsVisibilityHidden() { return PR_TRUE; }
+
 protected:
   // Members
   nsRect           mRect;
   nsIContent*      mContent;
-  nsIStyleContext* mStyleContext;
+  nsStyleContext*  mStyleContext;
   nsIFrame*        mParent;
   nsIFrame*        mNextSibling;  // singly-linked list of frames
   nsFrameState     mState;
@@ -1185,15 +1274,5 @@ private:
   NS_IMETHOD_(nsrefcnt) AddRef(void) = 0;
   NS_IMETHOD_(nsrefcnt) Release(void) = 0;
 };
-
-// typesafe way to access style data.  See comment in nsStyleStruct.h
-// and also overloaded function in nsIStyleContext.h
-template <class T>
-inline void
-GetStyleData(nsIFrame* aFrame, const T** aStyleStruct)
-{
-    aFrame->GetStyleData(NS_GET_STYLESTRUCTID(T),
-                    *NS_REINTERPRET_CAST(const nsStyleStruct**, aStyleStruct));
-}
 
 #endif /* nsIFrame_h___ */

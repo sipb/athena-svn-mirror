@@ -60,7 +60,6 @@ NS_IMPL_ISUPPORTS1(nsAbLDAPDirFactory, nsIAbDirFactory);
 
 nsAbLDAPDirFactory::nsAbLDAPDirFactory()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsAbLDAPDirFactory::~nsAbLDAPDirFactory()
@@ -77,11 +76,15 @@ NS_IMETHODIMP nsAbLDAPDirFactory::CreateDirectory(nsIAbDirectoryProperties *aPro
 
     nsXPIDLCString uri;
     nsAutoString description;
+    nsXPIDLCString prefName;
     
     rv = aProperties->GetDescription(description);
     NS_ENSURE_SUCCESS(rv, rv);
 
     rv = aProperties->GetURI(getter_Copies(uri));
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    rv = aProperties->GetPrefName(getter_Copies(prefName));
     NS_ENSURE_SUCCESS(rv, rv);
     
     nsCOMPtr<nsIRDFService> rdf = do_GetService (NS_RDF_CONTRACTID "/rdf-service;1", &rv);
@@ -113,10 +116,10 @@ NS_IMETHODIMP nsAbLDAPDirFactory::CreateDirectory(nsIAbDirectoryProperties *aPro
        */
       nsCAutoString bridgeURI;
       bridgeURI = NS_LITERAL_CSTRING(kLDAPDirectoryRoot) + prefName;
-      rv = rdf->GetResource(bridgeURI.get(), getter_AddRefs(resource));
+      rv = rdf->GetResource(bridgeURI, getter_AddRefs(resource));
     }
     else {
-      rv = rdf->GetResource(uri.get(), getter_AddRefs(resource));
+      rv = rdf->GetResource(uri, getter_AddRefs(resource));
     }
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -125,6 +128,9 @@ NS_IMETHODIMP nsAbLDAPDirFactory::CreateDirectory(nsIAbDirectoryProperties *aPro
 
     rv = directory->SetDirName(description.get());
     NS_ENSURE_SUCCESS(rv,rv);
+
+    rv = directory->SetDirPrefId(prefName);
+    NS_ENSURE_SUCCESS(rv, rv);
 
     NS_IF_ADDREF(*aDirectories = new nsSingletonEnumerator(directory));
     return *aDirectories ? NS_OK : NS_ERROR_OUT_OF_MEMORY;

@@ -47,7 +47,7 @@
 #include "prtypes.h"
 #include "nsIAtom.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsCSSRendering.h"
 #include "nsINameSpaceManager.h"
 #include "nsIViewManager.h"
@@ -71,6 +71,7 @@
 #include "nsIRootBox.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsITimerInternal.h"
+#include "nsUnicharUtils.h"
 #ifdef XP_WIN
 #include "nsISound.h"
 #endif
@@ -168,7 +169,7 @@ NS_IMETHODIMP
 nsMenuPopupFrame::Init(nsIPresContext*  aPresContext,
                        nsIContent*      aContent,
                        nsIFrame*        aParent,
-                       nsIStyleContext* aContext,
+                       nsStyleContext*  aContext,
                        nsIFrame*        aPrevInFlow)
 {
   nsresult rv = nsBoxFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
@@ -176,8 +177,7 @@ nsMenuPopupFrame::Init(nsIPresContext*  aPresContext,
   // lookup if we're allowed to overlap the OS bar (menubar/taskbar) from the
   // look&feel object
   nsCOMPtr<nsILookAndFeel> lookAndFeel;
-  nsComponentManager::CreateInstance(kLookAndFeelCID, nsnull, NS_GET_IID(nsILookAndFeel), 
-                                      getter_AddRefs(lookAndFeel));
+  aPresContext->GetLookAndFeel(getter_AddRefs(lookAndFeel));
   if ( lookAndFeel ) {
     PRBool tempBool;
     lookAndFeel->GetMetric(nsILookAndFeel::eMetric_MenusCanOverlapOSBar, tempBool);
@@ -220,7 +220,6 @@ nsMenuPopupFrame::Init(nsIPresContext*  aPresContext,
   // Create a widget for ourselves.
   nsWidgetInitData widgetData;
   widgetData.mWindowType = eWindowType_popup;
-  widgetData.mContentType = nsIDocShellTreeItem::typeChrome;
   widgetData.mBorderStyle = eBorderStyle_default;
   widgetData.clipSiblings = PR_TRUE;
 
@@ -238,10 +237,12 @@ nsMenuPopupFrame::Init(nsIPresContext*  aPresContext,
   printf("XP Popups: This is a nag to indicate that an inconsistent hack is being done on the Mac for popups.\n");
 #endif  
   static NS_DEFINE_IID(kCPopupCID,  NS_POPUP_CID);
-  ourView->CreateWidget(kCPopupCID, &widgetData, nsnull);
+  ourView->CreateWidget(kCPopupCID, &widgetData, nsnull, PR_TRUE, PR_TRUE, 
+                        eContentTypeUI);
 #else
   static NS_DEFINE_IID(kCChildCID,  NS_CHILD_CID);
-  ourView->CreateWidget(kCChildCID, &widgetData, nsnull);
+  ourView->CreateWidget(kCChildCID, &widgetData, nsnull, PR_TRUE, PR_TRUE, 
+                        eContentTypeUI);
 #endif   
 
   MoveToAttributePosition();
@@ -499,10 +500,15 @@ nsMenuPopupFrame::GetViewOffset(nsIView* aView, nsPoint& aPoint)
 ///////////////////////////////////////////////////////////////////////////////
 // GetRootViewForPopup
 //   Retrieves the view for the popup widget that contains the given frame. 
-//   If the given frame is not contained by a popup widget, return the root view.
+//   If the given frame is not contained by a popup widget, return the
+//   root view.  This is the root view of the pres context's
+//   viewmanager if aStopAtViewManagerRoot is true; otherwise it's the
+//   root view of the root viewmanager.
 void
 nsMenuPopupFrame::GetRootViewForPopup(nsIPresContext* aPresContext, 
-                                      nsIFrame* aStartFrame, nsIView** aResult)
+                                      nsIFrame* aStartFrame,
+                                      PRBool aStopAtViewManagerRoot,
+                                      nsIView** aResult)
 {
   *aResult = nsnull;
 
@@ -525,6 +531,15 @@ nsMenuPopupFrame::GetRootViewForPopup(nsIPresContext* aPresContext,
     nsIView* view = nsnull;
     nsIView* temp = nsnull;
     parentWithView->GetView(aPresContext, &view);
+    NS_ASSERTION(view, "GetParentWithView returned frame with no view!");
+    nsIView* rootView = nsnull;
+    if (aStopAtViewManagerRoot) {
+      nsCOMPtr<nsIViewManager> viewManager;
+      view->GetViewManager(*getter_AddRefs(viewManager));
+      NS_ASSERTION(viewManager, "View must have a viewmanager");
+      viewManager->GetRootView(rootView);
+    }
+    
     while (view) {
       // Walk up the view hierachy looking for a view whose widget has a 
       // window type of eWindowType_popup - in other words a popup window
@@ -538,6 +553,11 @@ nsMenuPopupFrame::GetRootViewForPopup(nsIPresContext* aPresContext,
           *aResult = view;
           return;
         }
+      }
+
+      if (aStopAtViewManagerRoot && view == rootView) {
+        *aResult = view;
+        return;
       }
 
       view->GetParent(temp);
@@ -626,8 +646,12 @@ nsMenuPopupFrame::AdjustClientXYForNestedDocuments ( nsIDOMXULDocument* inPopupD
         shell->GetPrimaryFrameFor(targetAsContent, &targetFrame);
         nsIView* parentView = nsnull;
         if (targetFrame) {
-          GetRootViewForPopup(mPresContext, targetFrame, &parentView);
-          GetWidgetForView(parentView, *getter_AddRefs(targetDocumentWidget));
+          nsCOMPtr<nsIPresContext> targetContext;
+          shell->GetPresContext(getter_AddRefs(targetContext));
+          if (targetContext) {
+            GetRootViewForPopup(targetContext, targetFrame, PR_TRUE, &parentView);
+            GetWidgetForView(parentView, *getter_AddRefs(targetDocumentWidget));
+          }
         }
         if (!targetDocumentWidget) {
           // We aren't inside a popup. This means we should use the root view's
@@ -683,8 +707,7 @@ nsMenuPopupFrame::AdjustPositionForAnchorAlign ( PRInt32* ioXPos, PRInt32* ioYPo
   nsAutoString popupAnchor(aPopupAnchor);
   nsAutoString popupAlign(aPopupAlign);
 
-  const nsStyleVisibility* vis = (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-  if (vis->mDirection == NS_STYLE_DIRECTION_RTL) {
+  if (GetStyleVisibility()->mDirection == NS_STYLE_DIRECTION_RTL) {
     if (popupAnchor == NS_LITERAL_STRING("topright"))
       popupAnchor.Assign(NS_LITERAL_STRING("topleft"));
     else if (popupAnchor == NS_LITERAL_STRING("topleft"))
@@ -705,10 +728,8 @@ nsMenuPopupFrame::AdjustPositionForAnchorAlign ( PRInt32* ioXPos, PRInt32* ioYPo
   }
 
   // Adjust position for margins at the aligned corner
-  const nsStyleMargin* smargin = 
-    (const nsStyleMargin*)mStyleContext->GetStyleData(eStyleStruct_Margin);
   nsMargin margin;
-  smargin->GetMargin(margin);
+  GetStyleMargin()->GetMargin(margin);
   if (popupAlign == NS_LITERAL_STRING("topleft")) {
     *ioXPos += margin.left;
     *ioYPos += margin.top;
@@ -995,9 +1016,7 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
     ypos = NSIntPixelsToTwips(newYPos, p2t);
 
     // Add in the top and left margins
-    const nsStyleMargin* smargin = 
-      (const nsStyleMargin*)mStyleContext->GetStyleData(eStyleStruct_Margin);
-    smargin->GetMargin(margin);
+    GetStyleMargin()->GetMargin(margin);
     
     xpos += margin.left;
     ypos += margin.top;
@@ -1067,7 +1086,7 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
   //   frames inside a toplevel window, this is the root view of the toplevel
   //   window.
   nsIView* parentView = nsnull;
-  GetRootViewForPopup(aPresContext, aFrame, &parentView);
+  GetRootViewForPopup(aPresContext, aFrame, PR_FALSE, &parentView);
   if (!parentView)
     return NS_OK;
 
@@ -1215,11 +1234,6 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
     // means necessary
     //
 
-    // add back in the parentPos offset. Not sure why, but we need this for mail/news
-    // context menus and we can't do this in the case where there popup is anchored.
-    screenViewLocX += parentPos.x;
-    screenViewLocY += parentPos.y;    
-    
     // shrink to fit onto the screen, vertically and horizontally
     if(mRect.width > screenWidthTwips) 
         mRect.width = screenWidthTwips;    
@@ -1423,6 +1437,54 @@ NS_IMETHODIMP nsMenuPopupFrame::GetCurrentMenuItem(nsIMenuFrame** aResult)
   return NS_OK;
 }
 
+NS_IMETHODIMP nsMenuPopupFrame::ConsumeOutsideClicks(PRBool& aConsumeOutsideClicks)
+{
+  /*
+   * When this popup is open, should clicks outside of it be consumed?
+   * Return PR_TRUE if the popup hould rollup on an outside click, 
+   * but consume that click so it can't be used for anything else.
+   * Return PR_FALSE to allow clicks outside the popup to activate content 
+   * even when the popup is open.
+   * ---------------------------------------------------------------------
+   * 
+   * Should clicks outside of a popup be eaten?
+   *
+   *       Menus     Autocomplete     Comboboxes
+   * Mac     Eat           No              Eat
+   * Win     No            No              Eat     
+   * Unix    Eat           No              Eat
+   *
+   */
+
+  aConsumeOutsideClicks = PR_TRUE;
+
+  nsCOMPtr<nsIContent> parentContent;
+  mContent->GetParent(*getter_AddRefs(parentContent));
+
+  if (parentContent) {
+    nsCOMPtr<nsIAtom> parentTag;
+    parentContent->GetTag(*getter_AddRefs(parentTag));
+    if (parentTag == nsXULAtoms::menulist)
+      return NS_OK;  // Consume outside clicks for combo boxes on all platforms
+    if (parentTag == nsXULAtoms::menu || parentTag == nsXULAtoms::popupset) {
+#ifdef XP_WIN
+      // Don't consume outside clicks for menus in Windows
+      aConsumeOutsideClicks = PR_FALSE;
+#endif
+      return NS_OK;
+    }
+    if (parentTag == nsXULAtoms::textbox) {
+      // Don't consume outside clicks for autocomplete widget
+      nsAutoString typeString;
+      parentContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::type, typeString);
+      if (typeString.EqualsIgnoreCase("autocomplete"))
+        aConsumeOutsideClicks = PR_FALSE;
+    }
+  }
+
+  return NS_OK;
+}
+
 nsIScrollableView* nsMenuPopupFrame::GetScrollableView(nsIFrame* aStart)
 {
   if ( ! aStart )
@@ -1543,7 +1605,7 @@ NS_IMETHODIMP nsMenuPopupFrame::SetCurrentMenuItem(nsIMenuFrame* aMenuItem)
 NS_IMETHODIMP
 nsMenuPopupFrame::Escape(PRBool& aHandledFlag)
 {
-  mIncrementalString = NS_LITERAL_STRING("");
+  mIncrementalString.Truncate();
 
   // See if we have a context menu open.
   nsCOMPtr<nsIMenuParent> contextMenu;
@@ -1582,7 +1644,7 @@ nsMenuPopupFrame::Escape(PRBool& aHandledFlag)
 NS_IMETHODIMP
 nsMenuPopupFrame::Enter()
 {
-  mIncrementalString = NS_LITERAL_STRING("");
+  mIncrementalString.Truncate();
 
   // See if we have a context menu open.
   nsCOMPtr<nsIMenuParent> contextMenu;
@@ -1672,18 +1734,24 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
     return nsnull;
   }
   else {
-    nsAutoString pressKey(NS_STATIC_CAST(PRUnichar, charCode));
-    // UpperCase to compare-no-case
-    ToUpperCase(pressKey);
+    PRUnichar uniChar = ToLowerCase(NS_STATIC_CAST(PRUnichar, charCode));
     if (isMenu || // Menu supports only first-letter navigation
         keyTime - lastKeyTime > INC_TYP_INTERVAL) // Interval too long, treat as new typing
-      mIncrementalString = pressKey;
+      mIncrementalString = uniChar;
     else {
-      if (mIncrementalString.Length() != 1 ||
-          mIncrementalString.First() != pressKey.First())
-          // If user typed the same key more than once, we should do a cycled one-key navigation
-      mIncrementalString.do_AppendFromElement(pressKey.First());
+      mIncrementalString.Append(uniChar);
     }
+  }
+
+  // See bug 188199 & 192346, if all letters in incremental string are same, just try to match the first one
+  nsAutoString incrementalString(mIncrementalString);
+  PRUint32 charIndex = 1, stringLength = incrementalString.Length();
+  while (charIndex < stringLength && incrementalString[charIndex] == incrementalString[charIndex - 1]) {
+    charIndex++;
+  }
+  if (charIndex == stringLength) {
+    incrementalString.Truncate(1);
+    stringLength = 1;
   }
 
   lastKeyTime = keyTime;
@@ -1716,8 +1784,7 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
       else
         isShortcut = PR_TRUE;
 
-      ToUpperCase(textKey);
-      if (Substring(textKey, 0, mIncrementalString.Length()) == mIncrementalString) {
+      if (Substring(textKey, 0, stringLength).Equals(incrementalString, nsCaseInsensitiveStringComparator())) {
         // mIncrementalString is a prefix of textKey
         nsCOMPtr<nsIMenuFrame> menuFrame = do_QueryInterface(currFrame);
         if (menuFrame) {
@@ -1748,7 +1815,7 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
       current->GetAttr(kNameSpaceID_None, nsXULAtoms::menuactive, activeKey);
       if (activeKey == NS_LITERAL_STRING("true")) {
         foundActive = PR_TRUE;
-        if (mIncrementalString.Length() > 1) {
+        if (stringLength > 1) {
           // If there is more than one char typed, the current item has highest priority,
           //   otherwise the item next to current has highest priority
           nsCOMPtr<nsIMenuFrame> menuFrame = do_QueryInterface(currFrame);
@@ -1826,7 +1893,7 @@ nsMenuPopupFrame::KeyboardNavigation(PRUint32 aKeyCode, PRBool& aHandledFlag)
   nsNavigationDirection theDirection;
   NS_DIRECTION_FROM_KEY_CODE(theDirection, aKeyCode);
 
-  mIncrementalString = NS_LITERAL_STRING("");
+  mIncrementalString.Truncate();
 
   // This method only gets called if we're open.
   if (!mCurrentMenu && NS_DIRECTION_IS_INLINE(theDirection)) {
@@ -1999,7 +2066,8 @@ nsMenuPopupFrame::GetWidget(nsIWidget **aWidget)
 {
   // Get parent view
   nsIView * view = nsnull;
-  nsMenuPopupFrame::GetRootViewForPopup(mPresContext, this, &view);
+  // XXX should this be passing PR_FALSE or PR_TRUE for aStopAtViewManagerRoot?
+  nsMenuPopupFrame::GetRootViewForPopup(mPresContext, this, PR_FALSE, &view);
   if (!view)
     return NS_OK;
 
@@ -2093,7 +2161,7 @@ nsMenuPopupFrame::AttributeChanged(nsIPresContext* aPresContext,
   if (aAttribute == nsXULAtoms::left || aAttribute == nsXULAtoms::top)
     MoveToAttributePosition();
   
-  return NS_OK;
+  return rv;
 }
 
 void 
@@ -2229,7 +2297,9 @@ nsMenuPopupFrame::Notify(nsITimer* aTimer)
       } // if not the menu with an open submenu
     } // if menu open
     
-    mCloseTimer->Cancel();
+    if (mCloseTimer) {
+      mCloseTimer->Cancel();
+    }
   }
   
   mCloseTimer = nsnull;

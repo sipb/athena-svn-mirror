@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sha512.c,v 1.1.1.1 2003-07-08 17:36:35 rbasch Exp $
+ * $Id: sha512.c,v 1.1.2.1 2003-07-14 19:06:42 ghudson Exp $
  */
 #include "prcpucfg.h"
 #if defined(_X86_) || defined(SHA_NO_LONG_LONG)

@@ -38,12 +38,11 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLDragHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsIContent.h"
-#include "nsIAtom.h"
 #include "nsIDOMMouseEvent.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDocument.h"
@@ -60,90 +59,52 @@
 #include "nsXBLBinding.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
 
-PRUint32 nsXBLDragHandler::gRefCnt = 0;
-nsIAtom* nsXBLDragHandler::kDragEnterAtom = nsnull;
-nsIAtom* nsXBLDragHandler::kDragOverAtom = nsnull;
-nsIAtom* nsXBLDragHandler::kDragExitAtom = nsnull;
-nsIAtom* nsXBLDragHandler::kDragDropAtom = nsnull;
-nsIAtom* nsXBLDragHandler::kDragGestureAtom = nsnull;
-
-nsXBLDragHandler::nsXBLDragHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler)
-:nsXBLEventHandler(aReceiver,aHandler)
+nsXBLDragHandler::nsXBLDragHandler(nsIDOMEventReceiver* aReceiver,
+                                   nsXBLPrototypeHandler* aHandler)
+  : nsXBLEventHandler(aReceiver, aHandler)
 {
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kDragEnterAtom = NS_NewAtom("dragenter");
-    kDragOverAtom = NS_NewAtom("dragover");
-    kDragExitAtom = NS_NewAtom("dragexit");
-    kDragDropAtom = NS_NewAtom("dragdrop");
-    kDragGestureAtom = NS_NewAtom("draggesture");
-  }
 }
 
 nsXBLDragHandler::~nsXBLDragHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kDragEnterAtom);
-    NS_RELEASE(kDragOverAtom);
-    NS_RELEASE(kDragExitAtom);
-    NS_RELEASE(kDragDropAtom);
-    NS_RELEASE(kDragGestureAtom);
-  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXBLDragHandler, nsXBLEventHandler, nsIDOMDragListener)
 
-static inline nsresult DoMouse(nsIAtom* aEventType, nsIXBLPrototypeHandler* aHandler, nsIDOMEvent* aMouseEvent,
-                               nsIDOMEventReceiver* aReceiver)
-{
-  if (!aHandler)
-    return NS_OK;
-
-  PRBool matched = PR_FALSE;
-  nsCOMPtr<nsIDOMMouseEvent> mouse(do_QueryInterface(aMouseEvent));
-  aHandler->MouseEventMatched(aEventType, mouse, &matched);
-
-  if (matched)
-    aHandler->ExecuteHandler(aReceiver, aMouseEvent);
-  
-  return NS_OK;
-}
-
 nsresult nsXBLDragHandler::DragEnter(nsIDOMEvent* aMouseEvent)
 {
-  return DoMouse(kDragEnterAtom, mProtoHandler, aMouseEvent, mEventReceiver);
+  return DoMouse(nsXBLAtoms::dragenter, aMouseEvent);
 }
 
 nsresult nsXBLDragHandler::DragOver(nsIDOMEvent* aMouseEvent)
 {
-  return DoMouse(kDragOverAtom, mProtoHandler, aMouseEvent, mEventReceiver);
+  return DoMouse(nsXBLAtoms::dragover, aMouseEvent);
 }
 
 nsresult nsXBLDragHandler::DragDrop(nsIDOMEvent* aMouseEvent)
 {
-  return DoMouse(kDragDropAtom, mProtoHandler, aMouseEvent, mEventReceiver);
+  return DoMouse(nsXBLAtoms::dragdrop, aMouseEvent);
 }
 
 nsresult nsXBLDragHandler::DragExit(nsIDOMEvent* aMouseEvent)
 {
-  return DoMouse(kDragExitAtom, mProtoHandler, aMouseEvent, mEventReceiver);
+  return DoMouse(nsXBLAtoms::dragexit, aMouseEvent);
 }
 
 nsresult nsXBLDragHandler::DragGesture(nsIDOMEvent* aMouseEvent)
 {
-  return DoMouse(kDragGestureAtom, mProtoHandler, aMouseEvent, mEventReceiver);
+  return DoMouse(nsXBLAtoms::draggesture, aMouseEvent);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLDragHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler, 
+NS_NewXBLDragHandler(nsIDOMEventReceiver* aRec,
+                     nsXBLPrototypeHandler* aHandler,
                      nsXBLDragHandler** aResult)
 {
   *aResult = new nsXBLDragHandler(aRec, aHandler);

@@ -86,24 +86,6 @@ public:
     return mRightFloaters;
   }
 
-  // Return the impact on the max-element-size for this band by
-  // computing the maximum width and maximum height of all the
-  // floaters.
-  void GetMaxElementSize(nsIPresContext* aPresContext,
-                         nscoord* aWidthResult, nscoord* aHeightResult) const;
-
-  // Utility method to save away the max-element-size associated with
-  // a floating frame.
-  static void StoreMaxElementSize(nsIPresContext* aPresContext,
-                                  nsIFrame* aFrame,
-                                  const nsSize& aMaxElementSize);
-
-  // Utility method to recover a stored max-element-size value
-  // associated with a floating frame.
-  static void RecoverMaxElementSize(nsIPresContext* aPresContext,
-                                    nsIFrame* aFrame,
-                                    nsSize* aResult);
-
 #ifdef DEBUG
   void List();
 #endif

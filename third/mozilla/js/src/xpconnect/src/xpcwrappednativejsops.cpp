@@ -376,7 +376,6 @@ DefinePropertyIfFound(XPCCallContext& ccx,
 #ifdef XPC_IDISPATCH_SUPPORT
         // Check to see if there's an IDispatch tearoff     
         if(wrapperToReflectInterfaceNames &&
-            nsXPConnect::IsIDispatchEnabled() &&
             XPCIDispatchExtension::DefineProperty(ccx, obj, 
                 idval, wrapperToReflectInterfaceNames, propFlags, resolved))
             return JS_TRUE;
@@ -431,13 +430,24 @@ DefinePropertyIfFound(XPCCallContext& ccx,
        idval == rt->GetStringJSVal(XPCJSRuntime::IDX_QUERY_INTERFACE))
         propFlags &= ~JSPROP_ENUMERATE;
 
-    jsval funval;
-    if(!member->GetValue(ccx, iface, &funval))
-        return JS_FALSE;
+    JSObject* funobj;
+    
+    {
+        // scoped gc protection of funval
+        jsval funval;
 
-    JSObject* funobj = JS_CloneFunctionObject(ccx, JSVAL_TO_OBJECT(funval), obj);
-    if(!funobj)
-        return JS_FALSE;
+        if(!member->GetValue(ccx, iface, &funval))
+            return JS_FALSE;
+    
+        AUTO_MARK_JSVAL(ccx, funval);
+
+        funobj = JS_CloneFunctionObject(ccx, JSVAL_TO_OBJECT(funval), obj);
+        if(!funobj)
+            return JS_FALSE;
+    }
+
+    // protect funobj until it is actually attached
+    AUTO_MARK_JSVAL(ccx, OBJECT_TO_JSVAL(funobj));
 
 #ifdef off_DEBUG_jband
     {
@@ -490,7 +500,7 @@ XPC_WN_OnlyIWrite_PropertyStub(JSContext *cx, JSObject *obj, jsval idval, jsval 
     XPCWrappedNative* wrapper = ccx.GetWrapper();
     THROW_AND_RETURN_IF_BAD_WRAPPER(cx, wrapper);
 
-    // Avoid infinite recursion on getter/setter re-lookup.
+    // Allow only XPConnect to add the property
     if(ccx.GetResolveName() == idval)
         return JS_TRUE;
 
@@ -593,11 +603,18 @@ XPC_WN_Shared_Enumerate(JSContext *cx, JSObject *obj)
     XPCNativeInterface** interfaceArray = set->GetInterfaceArray();
     for(PRUint16 i = 0; i < interface_count; i++)
     {
-        XPCNativeInterface* interface = interfaceArray[i];
-        PRUint16 member_count = interface->GetMemberCount();
+        XPCNativeInterface* iface = interfaceArray[i];
+#ifdef XPC_IDISPATCH_SUPPORT
+        if(iface->GetIID()->Equals(NSID_IDISPATCH))
+        {
+            XPCIDispatchExtension::Enumerate(ccx, obj, wrapper);
+            continue;
+        }
+#endif
+        PRUint16 member_count = iface->GetMemberCount();
         for(PRUint16 k = 0; k < member_count; k++)
         {
-            XPCNativeMember* member = interface->GetMemberAt(k);
+            XPCNativeMember* member = iface->GetMemberAt(k);
             jsval name = member->GetName();
 
             // Skip if this member is going to come from the proto.
@@ -609,12 +626,6 @@ XPC_WN_Shared_Enumerate(JSContext *cx, JSObject *obj)
                 return JS_FALSE;
         }
     }
-#ifdef XPC_IDISPATCH_SUPPORT
-    if(nsXPConnect::GetXPConnect()->IsIDispatchEnabled())
-    {
-        return XPCIDispatchExtension::Enumerate(ccx, obj, wrapper);
-    }
-#endif
     return JS_TRUE;
 }
 
@@ -647,8 +658,8 @@ MarkScopeJSObjects(JSContext *cx, XPCWrappedNativeScope* scope, void *arg)
     }
 }
 
-static void
-MarkForValidWrapper(JSContext *cx, XPCWrappedNative* wrapper, void *arg)
+void
+xpc_MarkForValidWrapper(JSContext *cx, XPCWrappedNative* wrapper, void *arg)
 {
     // NOTE: It might be nice to also do the wrapper->Mark() call here too.
     // That call marks the wrapper's and wrapper's proto's interface sets.
@@ -687,7 +698,7 @@ XPC_WN_Shared_Mark(JSContext *cx, JSObject *obj, void *arg)
         XPCWrappedNative::GetWrappedNativeOfJSObject(cx, obj);
 
     if(wrapper && wrapper->IsValid())
-        MarkForValidWrapper(cx, wrapper, arg);
+        xpc_MarkForValidWrapper(cx, wrapper, arg);
     return 1;
 }
 
@@ -706,10 +717,6 @@ XPC_WN_NoHelper_Resolve(JSContext *cx, JSObject *obj, jsval idval)
 
     // Don't resolve properties that are on our prototype.
     if(ccx.GetInterface() && !ccx.GetStaticMemberIsLocal())
-        return JS_TRUE;
-
-    // Avoid infinite recursion on getter/setter re-lookup.
-    if(ccx.GetResolveName() == idval)
         return JS_TRUE;
 
     return DefinePropertyIfFound(ccx, obj, idval,
@@ -881,7 +888,7 @@ XPC_WN_Helper_Mark(JSContext *cx, JSObject *obj, void *arg)
     if(wrapper && wrapper->IsValid())
     {
         wrapper->GetScriptableCallback()->Mark(wrapper, cx, obj, arg, &ignored);
-        MarkForValidWrapper(cx, wrapper, arg);
+        xpc_MarkForValidWrapper(cx, wrapper, arg);
     }
     return (uint32) ignored;
 }
@@ -895,10 +902,6 @@ XPC_WN_Helper_NewResolve(JSContext *cx, JSObject *obj, jsval idval, uintN flags,
     XPCCallContext ccx(JS_CALLER, cx, obj);
     XPCWrappedNative* wrapper = ccx.GetWrapper();
     THROW_AND_RETURN_IF_BAD_WRAPPER(cx, wrapper);
-
-    // Avoid infinite recursion on getter/setter re-lookup.
-    if(ccx.GetResolveName() == idval)
-        return JS_TRUE;
 
     jsval old = ccx.SetResolveName(idval);
 
@@ -1400,10 +1403,6 @@ XPC_WN_ModsAllowed_Proto_Resolve(JSContext *cx, JSObject *obj, jsval idval)
     if(!ccx.IsValid())
         return JS_FALSE;
 
-    // Avoid infinite recursion on getter/setter re-lookup.
-    if(ccx.GetResolveName() == idval)
-        return JS_TRUE;
-
     XPCNativeScriptableInfo* si = self->GetScriptableInfo();
     uintN enumFlag = (si && si->GetFlags().DontEnumStaticProps()) ?
                                                 0 : JSPROP_ENUMERATE;
@@ -1460,6 +1459,7 @@ XPC_WN_OnlyIWrite_Proto_PropertyStub(JSContext *cx, JSObject *obj, jsval idval, 
     if(!ccx.IsValid())
         return JS_FALSE;
 
+    // Allow XPConnect to add the property only
     if(ccx.GetResolveName() == idval)
         return JS_TRUE;
 
@@ -1482,10 +1482,6 @@ XPC_WN_NoMods_Proto_Resolve(JSContext *cx, JSObject *obj, jsval idval)
     XPCCallContext ccx(JS_CALLER, cx);
     if(!ccx.IsValid())
         return JS_FALSE;
-
-    // Avoid infinite recursion on getter/setter re-lookup.
-    if(ccx.GetResolveName() == idval)
-        return JS_TRUE;
 
     XPCNativeScriptableInfo* si = self->GetScriptableInfo();
     uintN enumFlag = (si && si->GetFlags().DontEnumStaticProps()) ?
@@ -1564,10 +1560,6 @@ XPC_WN_TearOff_Resolve(JSContext *cx, JSObject *obj, jsval idval)
 
     if(!to || nsnull == (iface = to->GetInterface()))
         return Throw(NS_ERROR_XPC_BAD_OP_ON_WN_PROTO, cx);
-
-    // Avoid infinite recursion on getter/setter re-lookup.
-    if(ccx.GetResolveName() == idval)
-        return JS_TRUE;
 
     return DefinePropertyIfFound(ccx, obj, idval, nsnull, iface, nsnull,
                                  wrapper->GetScope(),

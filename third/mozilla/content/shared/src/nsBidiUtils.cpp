@@ -23,12 +23,11 @@
  *   Simon Montagu <smontagu@netscape.com>
  *   Roozbeh Pournader <roozbeh@sharif.edu>
  */
-#ifdef IBMBIDI
 #include "nsBidiUtils.h"
 
 #define FE_TO_06_OFFSET 0xfe70
 
-static PRUnichar FE_TO_06 [][2] = {
+static const PRUnichar FE_TO_06 [][2] = {
     {0x064b,0x0000},{0x064b,0x0640},{0x064c,0x0000},
     {0x0000,0x0000},{0x064d,0x0000},{0x0000,0x0000},
     {0x064e,0x0000},{0x064e,0x0640},{0x064f,0x0000},
@@ -78,7 +77,7 @@ static PRUnichar FE_TO_06 [][2] = {
     {0x0644,0x0625},{0x0644,0x0627},{0x0644,0x0627}
 };
 
-static PRUnichar FB_TO_06 [] = {
+static const PRUnichar FB_TO_06 [] = {
     0x0671,0x0671,0x067B,0x067B,0x067B,0x067B,0x067E,0x067E, //FB50-FB57
     0x067E,0x067E,0x0680,0x0680,0x0680,0x0680,0x067A,0x067A, //FB58-FB5F
     0x067A,0x067A,0x067F,0x067F,0x067F,0x067F,0x0679,0x0679, //FB60-FB67
@@ -111,19 +110,19 @@ static PRUnichar FB_TO_06 [] = {
 
 //============ Begin Arabic Basic to Presentation Form B Code ============
 // Note: the following code are moved from gfx/src/windows/nsRenderingContextWin.cpp
-static PRUint8 gArabicMap1[] = {
+static const PRUint8 gArabicMap1[] = {
             0x81, 0x83, 0x85, 0x87, 0x89, 0x8D, // 0622-0627
 0x8F, 0x93, 0x95, 0x99, 0x9D, 0xA1, 0xA5, 0xA9, // 0628-062F
 0xAB, 0xAD, 0xAF, 0xB1, 0xB5, 0xB9, 0xBD, 0xC1, // 0630-0637
 0xC5, 0xC9, 0xCD                                // 0638-063A
 };
 
-static PRUint8 gArabicMap2[] = {
+static const PRUint8 gArabicMap2[] = {
       0xD1, 0xD5, 0xD9, 0xDD, 0xE1, 0xE5, 0xE9, // 0641-0647
 0xED, 0xEF, 0xF1                                // 0648-064A
 };
 
-static PRUint8 gArabicMapEx[] = {
+static const PRUint8 gArabicMapEx[] = {
       0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0671-0677
 0x00, 0x66, 0x5E, 0x52, 0x00, 0x00, 0x56, 0x62, // 0678-067F
 0x5A, 0x00, 0x00, 0x76, 0x72, 0x00, 0x7A, 0x7E, // 0680-0687
@@ -146,13 +145,15 @@ static PRUint8 gArabicMapEx[] = {
         (0xFE00|(gArabicMap2[(c)-0x0641] + (form))) :                    \
          (((0x0671<=(c)) && ((c))<=0x06D3) && gArabicMapEx[(c)-0x0671]) ? \
           (0xFB00|(gArabicMapEx[(c)-0x0671] + (form))) : (c)))
-enum {
+
+typedef enum {
    eIsolated,  // or Char N
    eFinal,     // or Char R
    eInitial,   // or Char L
    eMedial     // or Char M
 } eArabicForm;
-enum {
+
+typedef enum {
    eTr = 0, // Transparent
    eRJ = 1, // Right-Joining
    eLJ = 2, // Left-Joining
@@ -180,7 +181,7 @@ enum {
 
 // All letters without an equivalen in the FB50 block are 'eNJ' here. This
 // should be fixed after finding some better mechanism for handling Arabic.
-static PRInt8 gJoiningClass[] = {
+static const PRInt8 gJoiningClass[] = {
           eNJ, eRJ, eRJ, eRJ, eRJ, eDJ, eRJ, // 0621-0627
 eDJ, eRJ, eDJ, eDJ, eDJ, eDJ, eDJ, eRJ, // 0628-062F
 eRJ, eRJ, eRJ, eDJ, eDJ, eDJ, eDJ, eDJ, // 0630-0637
@@ -216,7 +217,7 @@ eNJ, eNJ, eNJ, eNJ, eNJ, eNJ, eNJ, eNJ  // 06F8-06FF
        (gJoiningClass[(c) - 0x0621]) :       \
       ((0x200D == (c)) ? eJC : eTr))
 
-static PRUint16 gArabicLigatureMap[] = 
+static const PRUint16 gArabicLigatureMap[] = 
 {
 0x82DF, // 0xFE82 0xFEDF -> 0xFEF5
 0x82E0, // 0xFE82 0xFEE0 -> 0xFEF6
@@ -239,7 +240,7 @@ static PRUint16 gArabicLigatureMap[] =
    (c))
 
 // helper function to reverse a PRUnichar buffer
-void ReverseString(PRUnichar* aBuffer, PRUint32 aLen)
+static void ReverseString(PRUnichar* aBuffer, PRUint32 aLen)
 {
   PRUnichar *start, *end;
   PRUnichar swapChar;
@@ -266,7 +267,7 @@ nsresult ArabicShaping(const PRUnichar* aString, PRUint32 aLen,
   PRUnichar formB;
   PRInt8 leftJ, thisJ, rightJ;
   PRInt8 leftNoTrJ, rightNoTrJ;
-  thisJ = eNJ;
+  thisJ = leftNoTrJ = eNJ;
   rightJ = GetJoiningClass(*(src));
   while(src<tempBuf+aLen-1) {
     leftJ = thisJ;
@@ -372,7 +373,9 @@ nsresult Conv_FE_06_WithReverse(const nsString& aSrc, nsString& aDst)
 {
   PRUnichar *aSrcUnichars = (PRUnichar *)aSrc.get();
   PRBool foundArabic = PR_FALSE;
-  PRUint32 i,endArabic, beginArabic, size = aSrc.Length();
+  PRUint32 i, endArabic, beginArabic, size;
+  beginArabic = 0;
+  size = aSrc.Length();
   aDst.Truncate();
   for (endArabic=0;endArabic<size;endArabic++) {
     if (aSrcUnichars[endArabic] == 0x0000) 
@@ -420,7 +423,9 @@ nsresult Conv_06_FE_WithReverse(const nsString& aSrc,
                                 PRUint32 aDir)
 {
   PRUnichar *aSrcUnichars = (PRUnichar *)aSrc.get();
-  PRUint32 i,beginArabic, endArabic, size = aSrc.Length();
+  PRUint32 i, beginArabic, endArabic, size;
+  beginArabic = 0;
+  size = aSrc.Length();
   aDst.Truncate();
   PRBool foundArabic = PR_FALSE;
   for (endArabic=0;endArabic<size;endArabic++) {
@@ -447,7 +452,7 @@ nsresult Conv_06_FE_WithReverse(const nsString& aSrc,
                     buf, &len, 
                     PR_TRUE, PR_FALSE);
       // to reverse the numerals
-      PRUint32 endNumeral, beginNumeral;
+      PRUint32 endNumeral, beginNumeral = 0;
       for (endNumeral=0;endNumeral<=len-1;endNumeral++){
         PRBool foundNumeral = PR_FALSE;
         while((endNumeral < len) && (IS_ARABIC_DIGIT(buf[endNumeral]))  ) {
@@ -490,7 +495,8 @@ nsresult Conv_06_FE_WithReverse(const nsString& aSrc,
 nsresult HandleNumbers(PRUnichar* aBuffer, PRUint32 aSize, PRUint32 aNumFlag)
 {
   PRUint32 i;
-  // IBMBIDI_NUMERAL_REGULAR *
+  // IBMBIDI_NUMERAL_NOMINAL *
+  // IBMBIDI_NUMERAL_REGULAR
   // IBMBIDI_NUMERAL_HINDICONTEXT
   // IBMBIDI_NUMERAL_ARABIC
   // IBMBIDI_NUMERAL_HINDI
@@ -504,13 +510,18 @@ nsresult HandleNumbers(PRUnichar* aBuffer, PRUint32 aSize, PRUint32 aNumFlag)
       for (i=0;i<aSize;i++)
         aBuffer[i] = NUM_TO_ARABIC(aBuffer[i]);
       break;
-    default : // IBMBIDI_NUMERAL_REGULAR, IBMBIDI_NUMERAL_HINDICONTEXT for HandleNum() which is called for clipboard handling
+    case IBMBIDI_NUMERAL_REGULAR:
+    case IBMBIDI_NUMERAL_HINDICONTEXT:
+        // for clipboard handling
+        //XXX do we really want to convert numerals when copying text?
       for (i=1;i<aSize;i++) {
         if (IS_ARABIC_CHAR(aBuffer[i-1])) 
           aBuffer[i] = NUM_TO_HINDI(aBuffer[i]);
         else 
           aBuffer[i] = NUM_TO_ARABIC(aBuffer[i]);
       }
+    case IBMBIDI_NUMERAL_NOMINAL:
+    default:
       break;
   }
   return NS_OK;
@@ -522,4 +533,3 @@ nsresult HandleNumbers(const nsString& aSrc, nsString& aDst)
   return HandleNumbers((PRUnichar *)aDst.get(),aDst.Length(), IBMBIDI_NUMERAL_REGULAR);
 }
 
-#endif //IBMBIDI

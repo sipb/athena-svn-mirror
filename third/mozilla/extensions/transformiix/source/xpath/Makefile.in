@@ -26,16 +26,19 @@ VPATH           = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-ifndef TX_EXE
 MODULE = transformiix
 REQUIRES	= string \
 		  xpcom \
-		  dom \
+		  $(NULL)
+
+ifndef TX_EXE
+REQUIRES +=	  dom \
 		  content \
 		  widget \
 		  xpconnect \
 		  js \
 		  unicharutil \
+		  layout \
 		  $(NULL)
 endif
 
@@ -74,7 +77,8 @@ CPPSRCS += nsXPathEvaluator.cpp \
            nsXPathException.cpp \
            nsXPathExpression.cpp \
            nsXPathNSResolver.cpp \
-           nsXPathResult.cpp
+           nsXPathResult.cpp \
+           nsXPath1Scheme.cpp
 endif
 
 include $(topsrcdir)/config/rules.mk

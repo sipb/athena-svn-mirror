@@ -37,34 +37,40 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsCOMPtr.h"
+#include "nsCRT.h"
 #include "nsIModule.h"
 #include "nsIGenericFactory.h"
 #include "nsIComponentManager.h"
 #include "nsICategoryManager.h"
 #include "nsICharsetConverterManager.h"
 #include "nsICharsetConverterManager2.h"
-#include "nsIUnicodeDecodeHelper.h"
-#include "nsIUnicodeEncodeHelper.h"
 #include "nsIUnicodeDecoder.h"
 #include "nsIUnicodeEncoder.h"
-#include "nsICharsetConverterManager.h"
-#include "nsIPlatformCharset.h"
 #include "nsICharsetAlias.h"
-#include "nsITextToSubURI.h"
 #include "nsIServiceManager.h"
-#include "nsUConvDll.h"
-#include "nsFileSpec.h"
-#include "nsIFile.h"
-#include "nsIScriptableUConv.h"
-#include "nsConverterInputStream.h"
 
-#include "nsUCSupport.h"
+
 #include "nsCharsetConverterManager.h"
-#include "nsUnicodeDecodeHelper.h"
-#include "nsUnicodeEncodeHelper.h"
-#include "nsPlatformCharset.h"
 #include "nsCharsetAlias.h"
 #include "nsTextToSubURI.h"
+#include "nsConverterInputStream.h"
+#include "nsPlatformCharset.h"
+
+#ifndef MOZ_USE_NATIVE_UCONV
+#include "nsIUnicodeDecodeHelper.h"
+#include "nsIUnicodeEncodeHelper.h"
+#include "nsIPlatformCharset.h"
+#include "nsITextToSubURI.h"
+
+#include "nsUConvDll.h"
+#include "nsIFile.h"
+#include "nsIScriptableUConv.h"
+
+#include "nsCRT.h"
+
+#include "nsUCSupport.h"
+#include "nsUnicodeDecodeHelper.h"
+#include "nsUnicodeEncodeHelper.h"
 #include "nsISO88591ToUnicode.h"
 #include "nsCP1252ToUnicode.h"
 #include "nsMacRomanToUnicode.h"
@@ -126,8 +132,7 @@
 #include "nsVPSToUnicode.h"
 #include "nsUTF7ToUnicode.h"
 #include "nsMUTF7ToUnicode.h"
-#include "nsUCS4BEToUnicode.h"
-#include "nsUCS4LEToUnicode.h"
+#include "nsUTF32ToUnicode.h"
 #include "nsUCS2BEToUnicode.h"
 #include "nsUCS2LEToUnicode.h"
 #include "nsT61ToUnicode.h"
@@ -180,8 +185,7 @@
 #include "nsUnicodeToMUTF7.h"
 #include "nsUnicodeToUCS2BE.h"
 #include "nsUnicodeToUCS2LE.h"
-#include "nsUnicodeToUCS4BE.h"
-#include "nsUnicodeToUCS4LE.h"
+#include "nsUnicodeToUTF32.h"
 #include "nsUnicodeToT61.h"
 #include "nsUnicodeToUserDefined.h"
 #include "nsUnicodeToSymbol.h"
@@ -199,7 +203,11 @@
 #include "nsUnicodeToMacGujarati.h"
 #include "nsUnicodeToMacGurmukhi.h"
 #include "nsUnicodeToMacHebrew.h"
+#include "nsUnicodeToTSCII.h"
+#ifdef MOZ_EXTRA_X11CONVERTERS
 #include "nsUnicodeToLangBoxArabic8.h"
+#include "nsUnicodeToLangBoxArabic16.h"
+#endif // MOZ_EXTRA_X11CONVERTERS
 
 // ucvibm
 #include "nsUCvIBMCID.h"
@@ -228,8 +236,10 @@
 #include "nsUnicodeToEUCJP.h"
 #include "nsUnicodeToISO2022JP.h"
 #include "nsUnicodeToJISx0201.h"
+#ifdef MOZ_EXTRA_X11CONVERTERS
 #include "nsUnicodeToJISx0208.h"
 #include "nsUnicodeToJISx0212.h"
+#endif
 
 // ucvtw2
 #include "nsUCvTW2CID.h"
@@ -249,7 +259,9 @@
 #include "nsUCvTWDll.h"
 #include "nsBIG5ToUnicode.h"
 #include "nsUnicodeToBIG5.h"
+#ifdef MOZ_EXTRA_X11CONVERTERS
 #include "nsUnicodeToBIG5NoAscii.h"
+#endif
 #include "nsBIG5HKSCSToUnicode.h"
 #include "nsUnicodeToBIG5HKSCS.h"
 #include "nsUnicodeToHKSCS.h"
@@ -259,14 +271,17 @@
 #include "nsUCvKODll.h"
 #include "nsEUCKRToUnicode.h"
 #include "nsUnicodeToEUCKR.h"
-#include "nsUnicodeToKSC5601.h"
-#include "nsUnicodeToX11Johab.h"
 #include "nsJohabToUnicode.h"
 #include "nsUnicodeToJohab.h"
+#ifdef MOZ_EXTRA_X11CONVERTERS
+#include "nsUnicodeToKSC5601.h"
+#include "nsUnicodeToX11Johab.h"
 #include "nsUnicodeToJohabNoAscii.h"
+#endif
 #include "nsCP949ToUnicode.h"
 #include "nsUnicodeToCP949.h"
 #include "nsISO2022KRToUnicode.h"
+#include "nsUnicodeToJamoTTF.h"
 
 // ucvcn
 #include "nsUCvCnCID.h"
@@ -275,7 +290,9 @@
 #include "nsUnicodeToHZ.h"
 #include "nsGBKToUnicode.h"
 #include "nsUnicodeToGBK.h"
+#ifdef MOZ_EXTRA_X11CONVERTERS
 #include "nsUnicodeToGBKNoAscii.h"
+#endif
 #include "nsCP936ToUnicode.h"
 #include "nsUnicodeToCP936.h"
 #include "nsGB2312ToUnicodeV2.h"
@@ -358,7 +375,12 @@ NS_UCONV_REG_UNREG("x-mac-hebrew" , NS_MACHEBREWTOUNICODE_CID, NS_UNICODETOMACHE
 NS_UCONV_REG_UNREG_ENCODER("UTF-16" , NS_UNICODETOUTF16_CID)
 NS_UCONV_REG_UNREG_ENCODER("Adobe-Symbol-Encoding" , NS_UNICODETOSYMBOL_CID)
 NS_UCONV_REG_UNREG_ENCODER("x-zapf-dingbats" , NS_UNICODETOZAPFDINGBATS_CID)
+NS_UCONV_REG_UNREG_ENCODER("x-tscii",  NS_UNICODETOTSCII_CID)
+NS_UCONV_REG_UNREG_ENCODER("x-tamilttf-0",  NS_UNICODETOTAMILTTF_CID)
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_UCONV_REG_UNREG_ENCODER("x-iso-8859-6-8-x" , NS_UNICODETOLANGBOXARABIC_CID)
+NS_UCONV_REG_UNREG_ENCODER("x-iso-8859-6-16" , NS_UNICODETOLANGBOXARABIC16_CID)
+#endif // MOZ_EXTRA_X11CONVERTERS
 
   // ucvibm
 NS_UCONV_REG_UNREG("IBM850", NS_CP850TOUNICODE_CID, NS_UNICODETOCP850_CID)
@@ -375,8 +397,10 @@ NS_UCONV_REG_UNREG("ISO-2022-JP", NS_ISO2022JPTOUNICODE_CID, NS_UNICODETOISO2022
 NS_UCONV_REG_UNREG("EUC-JP", NS_EUCJPTOUNICODE_CID, NS_UNICODETOEUCJP_CID)
   
 NS_UCONV_REG_UNREG_ENCODER("jis_0201" , NS_UNICODETOJISX0201_CID)
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_UCONV_REG_UNREG_ENCODER("jis_0208-1983" , NS_UNICODETOJISX0208_CID)
 NS_UCONV_REG_UNREG_ENCODER("jis_0212-1990" , NS_UNICODETOJISX0212_CID)
+#endif
 
     // ucvtw2
 NS_UCONV_REG_UNREG("x-euc-tw", NS_EUCTWTOUNICODE_CID, NS_UNICODETOEUCTW_CID)
@@ -393,23 +417,30 @@ NS_UCONV_REG_UNREG("Big5", NS_BIG5TOUNICODE_CID, NS_UNICODETOBIG5_CID)
 NS_UCONV_REG_UNREG("Big5-HKSCS", NS_BIG5HKSCSTOUNICODE_CID, NS_UNICODETOBIG5HKSCS_CID)
   
 NS_UCONV_REG_UNREG_ENCODER("hkscs-1" , NS_UNICODETOHKSCS_CID)
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_UCONV_REG_UNREG_ENCODER("x-x-big5",  NS_UNICODETOBIG5NOASCII_CID)
+#endif
 
     // ucvko
 NS_UCONV_REG_UNREG("EUC-KR", NS_EUCKRTOUNICODE_CID, NS_UNICODETOEUCKR_CID)
 NS_UCONV_REG_UNREG("x-johab", NS_JOHABTOUNICODE_CID, NS_UNICODETOJOHAB_CID)
 NS_UCONV_REG_UNREG("x-windows-949", NS_CP949TOUNICODE_CID, NS_UNICODETOCP949_CID)
 NS_UCONV_REG_UNREG_DECODER("ISO-2022-KR", NS_ISO2022KRTOUNICODE_CID)
+NS_UCONV_REG_UNREG_ENCODER("x-koreanjamo-0",  NS_UNICODETOJAMOTTF_CID)
 
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_UCONV_REG_UNREG_ENCODER("ks_c_5601-1987",  NS_UNICODETOKSC5601_CID)
 NS_UCONV_REG_UNREG_ENCODER("x-x11johab",  NS_UNICODETOX11JOHAB_CID)
 NS_UCONV_REG_UNREG_ENCODER("x-johab-noascii",  NS_UNICODETOJOHABNOASCII_CID)
+#endif
 
 // ucvcn
 NS_UCONV_REG_UNREG("GB2312", NS_GB2312TOUNICODE_CID, NS_UNICODETOGB2312_CID)
 NS_UCONV_REG_UNREG("windows-936", NS_CP936TOUNICODE_CID, NS_UNICODETOCP936_CID)
 NS_UCONV_REG_UNREG("x-gbk", NS_GBKTOUNICODE_CID, NS_UNICODETOGBK_CID)
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_UCONV_REG_UNREG_ENCODER("x-gbk-noascii",  NS_UNICODETOGBKNOASCII_CID)
+#endif
 NS_UCONV_REG_UNREG("HZ-GB-2312", NS_HZTOUNICODE_CID, NS_UNICODETOHZ_CID)
 NS_UCONV_REG_UNREG_ENCODER("gb_2312-80",  NS_UNICODETOGB2312GL_CID)
 NS_UCONV_REG_UNREG("gb18030", NS_GB18030TOUNICODE_CID, NS_UNICODETOGB18030_CID)
@@ -421,14 +452,9 @@ NS_CONVERTER_REGISTRY_END
 
 NS_IMPL_NSUCONVERTERREGSELF
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsCharsetConverterManager)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeDecodeHelper)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeEncodeHelper)
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPlatformCharset, Init)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsCharsetAlias2)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsTextToSubURI)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsScriptableUnicodeConverter)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsConverterInputStream)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUTF8)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUTF8ToUnicode)
 
@@ -437,8 +463,8 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsUTF7ToUnicode);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMUTF7ToUnicode);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUTF16BEToUnicode);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUTF16LEToUnicode);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUCS4BEToUnicode);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUCS4LEToUnicode);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUTF32BEToUnicode);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUTF32LEToUnicode);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUEscape);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUEscapeToUnicode);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUTF7);
@@ -446,9 +472,14 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToMUTF7);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUTF16BE);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUTF16LE);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUTF16);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUCS4BE);
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUCS4LE);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUTF32BE);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToUTF32LE);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTSCII);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToTamilTTF);
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToLangBoxArabic8);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToLangBoxArabic16);
+#endif // MOZ_EXTRA_X11CONVERTERS
 
 // ucvibm
 
@@ -461,11 +492,16 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToISO2022JP);
 // ucvtw2
 
 // ucvtw
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToBIG5NoAscii);
+#endif
 
 // ucvko
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToX11Johab);
+#endif
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsISO2022KRToUnicode);
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToJamoTTF);
 
 // ucvcn
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsGB2312ToUnicodeV2);
@@ -474,7 +510,9 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsCP936ToUnicode);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToCP936);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsGBKToUnicode);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToGBK);
+#ifdef MOZ_EXTRA_X11CONVERTERS
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToGBKNoAscii);
+#endif
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsHZToUnicode);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToHZ);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUnicodeToGB2312GL);
@@ -494,125 +532,138 @@ static NS_DEFINE_CID(kComponentManagerCID, NS_COMPONENTMANAGER_CID);
 #define ENCODER_NAME_BASE "Unicode Encoder-"
 
 // ucvja
-PRUint16 g_uf0201Mapping[] = {
+const PRUint16 g_uf0201Mapping[] = {
 #include "jis0201.uf"
 };
-PRUint16 g_uf0201GLMapping[] = {
+
+const PRUint16 g_uf0201GLMapping[] = {
 #include "jis0201gl.uf"
 };
 
-PRUint16 g_uf0208Mapping[] = {
+const PRUint16 g_uf0208Mapping[] = {
 #include "jis0208.uf"
 };
 
-PRUint16 g_uf0208extMapping[] = {
+const PRUint16 g_uf0208extMapping[] = {
 #include "jis0208ext.uf"
 };
 
-PRUint16 g_uf0212Mapping[] = {
+const PRUint16 g_uf0212Mapping[] = {
 #include "jis0212.uf"
 };
 
 // ucvtw2
-PRUint16 g_ufCNS1MappingTable[] = {
+const PRUint16 g_ufCNS1MappingTable[] = {
 #include "cns_1.uf"
 };
 
-PRUint16 g_ufCNS2MappingTable[] = {
+const PRUint16 g_ufCNS2MappingTable[] = {
 #include "cns_2.uf"
 };
 
-PRUint16 g_ufCNS3MappingTable[] = {
+const PRUint16 g_ufCNS3MappingTable[] = {
 #include "cns3.uf"
 };
 
-PRUint16 g_ufCNS4MappingTable[] = {
+const PRUint16 g_ufCNS4MappingTable[] = {
 #include "cns4.uf"
 };
 
-PRUint16 g_ufCNS5MappingTable[] = {
+const PRUint16 g_ufCNS5MappingTable[] = {
 #include "cns5.uf"
 };
 
-PRUint16 g_ufCNS6MappingTable[] = {
+const PRUint16 g_ufCNS6MappingTable[] = {
 #include "cns6.uf"
 };
 
-PRUint16 g_ufCNS7MappingTable[] = {
+const PRUint16 g_ufCNS7MappingTable[] = {
 #include "cns7.uf"
 };
 
-PRUint16 g_utCNS1MappingTable[] = {
+const PRUint16 g_utCNS1MappingTable[] = {
 #include "cns_1.ut"
 };
 
-PRUint16 g_utCNS2MappingTable[] = {
+const PRUint16 g_utCNS2MappingTable[] = {
 #include "cns_2.ut"
 };
 
-PRUint16 g_utCNS3MappingTable[] = {
+const PRUint16 g_utCNS3MappingTable[] = {
 #include "cns3.ut"
 };
 
-PRUint16 g_utCNS4MappingTable[] = {
+const PRUint16 g_utCNS4MappingTable[] = {
 #include "cns4.ut"
 };
 
-PRUint16 g_utCNS5MappingTable[] = {
+const PRUint16 g_utCNS5MappingTable[] = {
 #include "cns5.ut"
 };
 
-PRUint16 g_utCNS6MappingTable[] = {
+const PRUint16 g_utCNS6MappingTable[] = {
 #include "cns6.ut"
 };
 
-PRUint16 g_utCNS7MappingTable[] = {
+const PRUint16 g_utCNS7MappingTable[] = {
 #include "cns7.ut"
 };
 
-PRUint16 g_ASCIIMappingTable[] = {
+const PRUint16 g_ASCIIMappingTable[] = {
   0x0001, 0x0004, 0x0005, 0x0008, 0x0000, 0x0000, 0x007F, 0x0000
 };
 
 // ucvtw
-PRUint16 g_ufBig5Mapping[] = {
+const PRUint16 g_ufBig5Mapping[] = {
 #include "big5.uf"
 };
 
-PRUint16 g_utBIG5Mapping[] = {
+const PRUint16 g_utBIG5Mapping[] = {
 #include "big5.ut"
 };
 
-PRUint16 g_ufBig5HKSCSMapping[] = {
+const PRUint16 g_ufBig5HKSCSMapping[] = {
 #include "hkscs.uf"
 };
 
-PRUint16 g_ASCIIMapping[] = {
+const PRUint16 g_ASCIIMapping[] = {
   0x0001, 0x0004, 0x0005, 0x0008, 0x0000, 0x0000, 0x007F, 0x0000
 };
 
-PRUint16 g_utBig5HKSCSMapping[] = {
+const PRUint16 g_utBig5HKSCSMapping[] = {
 #include "hkscs.ut"
 };
 
 // ucvko
-PRUint16 g_utKSC5601Mapping[] = {
+const PRUint16 g_utKSC5601Mapping[] = {
 #include "u20kscgl.ut"
 };
 
-PRUint16 g_ufKSC5601Mapping[] = {
+const PRUint16 g_ufKSC5601Mapping[] = {
 #include "u20kscgl.uf"
 };
 
-PRUint16 g_ucvko_AsciiMapping[] = {
+const PRUint16 g_ucvko_AsciiMapping[] = {
   0x0001, 0x0004, 0x0005, 0x0008, 0x0000, 0x0000, 0x007F, 0x0000
 };
-PRUint16 g_HangulNullMapping[] ={
+
+const PRUint16 g_HangulNullMapping[] ={
   0x0001, 0x0004, 0x0005, 0x0008, 0x0000, 0xAC00, 0xD7A3, 0xAC00
 };
-PRUint16 g_ufJohabJamoMapping[] ={   
+
+const PRUint16 g_ufJohabJamoMapping[] ={   
 #include "johabjamo.uf"
 };
+
+#else // MOZ_USE_NATIVE_UCONV
+
+#include "nsINativeUConvService.h"
+#include "nsNativeUConvService.h"
+
+NS_GENERIC_FACTORY_CONSTRUCTOR(NativeUConvService)
+
+#endif // #ifndef MOZ_USE_NATIVE_UCONV
+
 
 NS_IMETHODIMP
 nsConverterManagerDataRegister(nsIComponentManager* aCompMgr,
@@ -624,6 +675,12 @@ nsConverterManagerDataRegister(nsIComponentManager* aCompMgr,
   return nsCharsetConverterManager::RegisterConverterManagerData();
 }
 
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsCharsetConverterManager)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsTextToSubURI)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsCharsetAlias2)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsConverterInputStream)
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPlatformCharset, Init)
+
 static const nsModuleComponentInfo components[] = 
 {
   { 
@@ -631,21 +688,6 @@ static const nsModuleComponentInfo components[] =
     NS_CHARSETCONVERTERMANAGER_CONTRACTID, 
     nsCharsetConverterManagerConstructor,
     nsConverterManagerDataRegister,
-  },
-  { 
-    "Unicode Decode Helper", NS_UNICODEDECODEHELPER_CID,
-    NS_UNICODEDECODEHELPER_CONTRACTID, 
-    nsUnicodeDecodeHelperConstructor 
-  },
-  { 
-    "Unicode Encode Helper", NS_UNICODEENCODEHELPER_CID,
-    NS_UNICODEENCODEHELPER_CONTRACTID, 
-    nsUnicodeEncodeHelperConstructor 
-  },
-  { 
-    "Platform Charset Information", NS_PLATFORMCHARSET_CID,
-    NS_PLATFORMCHARSET_CONTRACTID, 
-    nsPlatformCharsetConstructor
   },
   { 
     "Charset Alias Information",  NS_CHARSETALIAS_CID,
@@ -658,14 +700,37 @@ static const nsModuleComponentInfo components[] =
     nsTextToSubURIConstructor
   },
   { 
-    "Unicode Encoder / Decoder for Script", NS_ISCRIPTABLEUNICODECONVERTER_CID,
-    NS_ISCRIPTABLEUNICODECONVERTER_CONTRACTID, 
-    nsScriptableUnicodeConverterConstructor
+    "Platform Charset Information", NS_PLATFORMCHARSET_CID,
+    NS_PLATFORMCHARSET_CONTRACTID, 
+    nsPlatformCharsetConstructor
   },
   { "Unicode converter input stream", NS_CONVERTERINPUTSTREAM_CID,              
     NS_CONVERTERINPUTSTREAM_CONTRACTID, 
     nsConverterInputStreamConstructor 
-  },    
+  },   
+#ifdef MOZ_USE_NATIVE_UCONV
+  { 
+    "Native UConv Service", 
+    NS_NATIVE_UCONV_SERVICE_CID,
+    NS_NATIVE_UCONV_SERVICE_CONTRACT_ID, 
+    NativeUConvServiceConstructor,
+  },
+#else
+  { 
+    "Unicode Decode Helper", NS_UNICODEDECODEHELPER_CID,
+    NS_UNICODEDECODEHELPER_CONTRACTID, 
+    nsUnicodeDecodeHelperConstructor 
+  },
+  { 
+    "Unicode Encode Helper", NS_UNICODEENCODEHELPER_CID,
+    NS_UNICODEENCODEHELPER_CONTRACTID, 
+    nsUnicodeEncodeHelperConstructor 
+  },
+  { 
+    "Unicode Encoder / Decoder for Script", NS_ISCRIPTABLEUNICODECONVERTER_CID,
+    NS_ISCRIPTABLEUNICODECONVERTER_CONTRACTID, 
+    nsScriptableUnicodeConverterConstructor
+  },
   { 
     "ISO-8859-1 To Unicode Converter", NS_ISO88591TOUNICODE_CID, 
     NS_ISO88591TOUNICODE_CONTRACTID,
@@ -958,12 +1023,12 @@ static const nsModuleComponentInfo components[] =
   { 
     DECODER_NAME_BASE "UTF-32BE" , NS_UTF32BETOUNICODE_CID, 
     NS_UNICODEDECODER_CONTRACTID_BASE "UTF-32BE",
-    nsUCS4BEToUnicodeConstructor ,
+    nsUTF32BEToUnicodeConstructor ,
   },
   { 
     DECODER_NAME_BASE "UTF-32LE" , NS_UTF32LETOUNICODE_CID, 
     NS_UNICODEDECODER_CONTRACTID_BASE "UTF-32LE",
-    nsUCS4LEToUnicodeConstructor ,
+    nsUTF32LEToUnicodeConstructor ,
   },
   { 
     DECODER_NAME_BASE "T.61-8bit" , NS_T61TOUNICODE_CID, 
@@ -1258,12 +1323,12 @@ static const nsModuleComponentInfo components[] =
   { 
     ENCODER_NAME_BASE "UTF-32BE" , NS_UNICODETOUTF32BE_CID, 
     NS_UNICODEENCODER_CONTRACTID_BASE "UTF-32BE",
-    nsUnicodeToUCS4BEConstructor, 
+    nsUnicodeToUTF32BEConstructor, 
   },
   { 
     ENCODER_NAME_BASE "UTF-32LE" , NS_UNICODETOUTF32LE_CID, 
     NS_UNICODEENCODER_CONTRACTID_BASE "UTF-32LE",
-    nsUnicodeToUCS4LEConstructor, 
+    nsUnicodeToUTF32LEConstructor, 
   },
     { 
     ENCODER_NAME_BASE "T.61-8bit" , NS_UNICODETOT61_CID, 
@@ -1321,10 +1386,27 @@ static const nsModuleComponentInfo components[] =
     nsUnicodeToMacHebrewConstructor, 
   },
   { 
+    ENCODER_NAME_BASE "x-tscii" , NS_UNICODETOTSCII_CID,
+    NS_UNICODEENCODER_CONTRACTID_BASE "x-tscii",
+    nsUnicodeToTSCIIConstructor, 
+  },
+  { 
+    ENCODER_NAME_BASE "x-tamilttf-0" , NS_UNICODETOTAMILTTF_CID,
+    NS_UNICODEENCODER_CONTRACTID_BASE "x-tamilttf-0",
+    nsUnicodeToTamilTTFConstructor, 
+  },
+#ifdef MOZ_EXTRA_X11CONVERTERS
+  { 
     ENCODER_NAME_BASE "x-iso-8859-6-8-x" , NS_UNICODETOLANGBOXARABIC_CID, 
     NS_UNICODEENCODER_CONTRACTID_BASE "x-iso-8859-6-8-x",
     nsUnicodeToLangBoxArabic8Constructor, 
   },
+  { 
+    ENCODER_NAME_BASE "x-iso-8859-6-16" , NS_UNICODETOLANGBOXARABIC16_CID, 
+    NS_UNICODEENCODER_CONTRACTID_BASE "x-iso-8859-6-16",
+    nsUnicodeToLangBoxArabic16Constructor, 
+  },
+#endif // MOZ_EXTRA_X11CONVERTERS
   // ucvibm
   { 
     DECODER_NAME_BASE "IBM850" , NS_CP850TOUNICODE_CID, 
@@ -1432,6 +1514,7 @@ static const nsModuleComponentInfo components[] =
     NS_UNICODEENCODER_CONTRACTID_BASE "jis_0201",
     nsUnicodeToJISx0201Constructor, 
   },
+#ifdef MOZ_EXTRA_X11CONVERTERS
   { 
     ENCODER_NAME_BASE "jis_0208-1983" , NS_UNICODETOJISX0208_CID, 
     NS_UNICODEENCODER_CONTRACTID_BASE "jis_0208-1983",
@@ -1442,6 +1525,7 @@ static const nsModuleComponentInfo components[] =
     NS_UNICODEENCODER_CONTRACTID_BASE "jis_0212-1990",
     nsUnicodeToJISx0212Constructor, 
   },
+#endif
 
   // ucvtw2
   { 
@@ -1496,11 +1580,13 @@ static const nsModuleComponentInfo components[] =
     NS_UNICODEENCODER_CONTRACTID_BASE "Big5",
     nsUnicodeToBIG5Constructor,
   },
+#ifdef MOZ_EXTRA_X11CONVERTERS
   { 
     ENCODER_NAME_BASE "x-x-big5" , NS_UNICODETOBIG5NOASCII_CID, 
     NS_UNICODEENCODER_CONTRACTID_BASE "x-x-big5",
     nsUnicodeToBIG5NoAsciiConstructor,
   },
+#endif
   { 
     DECODER_NAME_BASE "Big5" , NS_BIG5TOUNICODE_CID, 
     NS_UNICODEDECODER_CONTRACTID_BASE "Big5",
@@ -1534,6 +1620,17 @@ static const nsModuleComponentInfo components[] =
     nsUnicodeToEUCKRConstructor, 
   },
   { 
+    DECODER_NAME_BASE "x-johab" , NS_JOHABTOUNICODE_CID, 
+    NS_UNICODEDECODER_CONTRACTID_BASE "x-johab",
+    nsJohabToUnicodeConstructor ,
+  },
+  { 
+    ENCODER_NAME_BASE "x-johab" , NS_UNICODETOJOHAB_CID, 
+    NS_UNICODEENCODER_CONTRACTID_BASE "x-johab",
+    nsUnicodeToJohabConstructor,
+  },
+#ifdef MOZ_EXTRA_X11CONVERTERS
+  { 
     ENCODER_NAME_BASE "ks_c_5601-1987" , NS_UNICODETOKSC5601_CID, 
     NS_UNICODEENCODER_CONTRACTID_BASE "ks_c_5601-1987",
     nsUnicodeToKSC5601Constructor,
@@ -1544,20 +1641,11 @@ static const nsModuleComponentInfo components[] =
     nsUnicodeToX11JohabConstructor,
   },
   { 
-    DECODER_NAME_BASE "x-johab" , NS_JOHABTOUNICODE_CID, 
-    NS_UNICODEDECODER_CONTRACTID_BASE "x-johab",
-    nsJohabToUnicodeConstructor ,
-  },
-  { 
-    ENCODER_NAME_BASE "x-johab" , NS_UNICODETOJOHAB_CID, 
-    NS_UNICODEENCODER_CONTRACTID_BASE "x-johab",
-    nsUnicodeToJohabConstructor,
-  },
-  { 
     ENCODER_NAME_BASE "x-johab-noascii", NS_UNICODETOJOHABNOASCII_CID, 
     NS_UNICODEENCODER_CONTRACTID_BASE "x-johab-noascii",
     nsUnicodeToJohabNoAsciiConstructor,
   },
+#endif
   { 
     DECODER_NAME_BASE "x-windows-949" , NS_CP949TOUNICODE_CID, 
     NS_UNICODEDECODER_CONTRACTID_BASE "x-windows-949",
@@ -1572,6 +1660,11 @@ static const nsModuleComponentInfo components[] =
     DECODER_NAME_BASE "ISO-2022-KR" , NS_ISO2022KRTOUNICODE_CID, 
     NS_UNICODEDECODER_CONTRACTID_BASE "ISO-2022-KR",
     nsISO2022KRToUnicodeConstructor ,
+  },
+  { 
+    ENCODER_NAME_BASE "x-koreanjamo-0" , NS_UNICODETOJAMOTTF_CID, 
+    NS_UNICODEENCODER_CONTRACTID_BASE "x-koreanjamo-0",
+    nsUnicodeToJamoTTFConstructor,
   },
   // ucvcn
   { 
@@ -1604,11 +1697,13 @@ static const nsModuleComponentInfo components[] =
     NS_UNICODEENCODER_CONTRACTID_BASE "x-gbk",
     nsUnicodeToGBKConstructor, 
   },  
+#ifdef MOZ_EXTRA_X11CONVERTERS
   { 
     ENCODER_NAME_BASE "x-gbk-noascii" , NS_UNICODETOGBKNOASCII_CID, 
     NS_UNICODEENCODER_CONTRACTID_BASE "x-gbk-noascii",
     nsUnicodeToGBKNoAsciiConstructor, 
   },  
+#endif
   { 
     DECODER_NAME_BASE "HZ-GB-2312" , NS_HZTOUNICODE_CID, 
     NS_UNICODEDECODER_CONTRACTID_BASE "HZ-GB-2312",
@@ -1649,6 +1744,7 @@ static const nsModuleComponentInfo components[] =
     NS_UNICODEDECODER_CONTRACTID_BASE "ISO-2022-CN",
     nsISO2022CNToUnicodeConstructor,
   },
+#endif // MOZ_USE_NATIVE_UCONV
 };
 
 NS_IMPL_NSGETMODULE(nsUConvModule, components);

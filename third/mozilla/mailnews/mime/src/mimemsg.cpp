@@ -53,6 +53,7 @@
 #include "nsString.h"
 #include "mimetext.h"
 #include "mimecryp.h"
+#include "mimetpfl.h"
 
 #define MIME_SUPERCLASS mimeContainerClass
 MimeDefClass(MimeMessage, MimeMessageClass, mimeMessageClass,
@@ -144,8 +145,11 @@ MimeMessage_parse_begin (MimeObject *obj)
 
 
 static int
-MimeMessage_parse_line (char *line, PRInt32 length, MimeObject *obj)
+MimeMessage_parse_line (char *aLine, PRInt32 aLength, MimeObject *obj)
 {
+  char * line = aLine;
+  PRInt32 length = aLength;
+
   MimeMessage *msg = (MimeMessage *) obj;
   int status = 0;
 
@@ -207,6 +211,12 @@ MimeMessage_parse_line (char *line, PRInt32 length, MimeObject *obj)
 		   obj->options->decompose_file_output_fn )
 		{
 		  if (!obj->options->decrypt_p) {
+        //if we are processing a flowed plain text line, we need to remove any stuffed space
+        if (length > 0 && ' ' == *line && mime_typep(kid, (MimeObjectClass *)&mimeInlineTextPlainFlowedClass))
+        {
+          line ++;
+          length --;
+        }
 			  status = obj->options->decompose_file_output_fn (line,
 															   length,
 													 obj->options->stream_closure);
@@ -387,15 +397,17 @@ MimeMessage_close_headers (MimeObject *obj)
 		PR_FREEIF(mv);  /* done with this now. */
 	  }
 
-#ifdef ENABLE_SMIME
     /* If this message has a body which is encrypted and we're going to
        decrypt it (whithout converting it to HTML, since decrypt_p and
        write_html_p are never true at the same time)
     */
     if (obj->output_p &&
         obj->options &&
-        obj->options->decrypt_p &&
-        !mime_crypto_object_p (msg->hdrs, PR_FALSE))
+        obj->options->decrypt_p
+#ifdef ENABLE_SMIME
+        && !mime_crypto_object_p (msg->hdrs, PR_FALSE)
+#endif /* ENABLE_SMIME */
+        )
     {
       /* The body of this message is not an encrypted object, so we need
          to turn off the decrypt_p flag (to prevent us from s#$%ing the
@@ -404,7 +416,6 @@ MimeMessage_close_headers (MimeObject *obj)
       */
       obj->options->decrypt_p = PR_FALSE;
     }
-#endif /* ENABLE_SMIME */
 
 	  /* Emit the HTML for this message's headers.  Do this before
 		 creating the object representing the body.
@@ -480,16 +491,16 @@ MimeMessage_close_headers (MimeObject *obj)
   //
   PRBool outer_p = !obj->headers;	/* is this the outermost message? */
 
-  if (
-      (outer_p) &&
-      ( obj->options->part_to_load == NULL )
-     )
+  if ( outer_p &&
+       (!obj->options->part_to_load || obj->options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay))
   {
-    char  *charset = NULL;
-    char  *lct = MimeHeaders_get (msg->hdrs, HEADER_CONTENT_TYPE,
-									                PR_FALSE, PR_FALSE);
-		if (lct)
-      charset = MimeHeaders_get_parameter (lct, "charset", NULL, NULL);
+    // call SetMailCharacterSetToMsgWindow() to set a menu charset
+    if (mime_typep(body, (MimeObjectClass *) &mimeInlineTextClass))
+    {
+      MimeInlineText  *text = (MimeInlineText *) body;
+      if (text && text->charset && *text->charset)
+        SetMailCharacterSetToMsgWindow(body, text->charset);
+    }
 
     char  *msgID = MimeHeaders_get (msg->hdrs, HEADER_MESSAGE_ID,
 									                  PR_FALSE, PR_FALSE);
@@ -500,8 +511,6 @@ MimeMessage_close_headers (MimeObject *obj)
 
     mimeEmitterStartBody(obj->options, (obj->options->headers == MimeHeadersNone), msgID, outCharset);
     PR_FREEIF(msgID);
-    PR_FREEIF(lct);
-    PR_FREEIF(charset);
 
 	// setting up truncated message html fotter function
 	char *xmoz = MimeHeaders_get(msg->hdrs, HEADER_X_MOZILLA_STATUS, PR_FALSE,
@@ -562,7 +571,7 @@ MimeMessage_parse_eof (MimeObject *obj, PRBool abort_p)
 			  }
 		  }
 	  }
-	  if (obj->options->part_to_load == nsnull && 
+	  if ((!obj->options->part_to_load  || obj->options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay) && 
 		  obj->options->headers != MimeHeadersOnly)
 		  mimeEmitterEndBody(obj->options);
   }
@@ -703,6 +712,17 @@ MimeMessage_write_headers_html (MimeObject *obj)
   char *msgID = MimeHeaders_get (msg->hdrs, HEADER_MESSAGE_ID,
 									                  PR_FALSE, PR_FALSE);
   PRBool outer_p = !obj->headers; /* is this the outermost message? */
+  if (!outer_p && obj->options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay &&
+      obj->options->part_to_load)
+  {
+    //Maybe we are displaying a embedded message as outer part!
+    char *id = mime_part_address(obj);
+    if (id)
+    {
+      outer_p = !strcmp(id, obj->options->part_to_load);
+      PR_Free(id);
+    }
+  }
 
   // Ok, we should really find out the charset of this part. We always
   // output UTF-8 for display, but the original charset is necessary for

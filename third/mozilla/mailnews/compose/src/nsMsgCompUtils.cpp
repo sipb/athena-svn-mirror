@@ -71,7 +71,6 @@ NS_IMPL_ISUPPORTS1(nsMsgCompUtils, nsIMsgCompUtils)
 
 nsMsgCompUtils::nsMsgCompUtils()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgCompUtils::~nsMsgCompUtils()
@@ -308,6 +307,8 @@ mime_generate_headers (nsMsgCompFields *fields,
   const char* pOtherHdr;
   char *convbuf;
 
+  PRBool hasDisclosedRecipient = PR_FALSE;
+
   nsCAutoString headerBuf;    // accumulate header strings to get length
   headerBuf.Truncate(0);
 
@@ -483,7 +484,7 @@ RRT_HEADER:
   }
 
   /* for Netscape Server, Accept-Language data sent in Mail header */
-  char *acceptlang = nsMsgI18NGetAcceptLanguage();
+  const char *acceptlang = nsMsgI18NGetAcceptLanguage();
   if( (acceptlang != NULL) && ( *acceptlang != '\0') ){
     PUSH_STRING( "X-Accept-Language: " );
     PUSH_STRING( acceptlang );
@@ -565,6 +566,7 @@ RRT_HEADER:
     }
 
     PR_FREEIF(duppedNewsGrp);
+    hasDisclosedRecipient = PR_TRUE;
   }
 
   /* #### shamelessly duplicated from above */
@@ -606,10 +608,43 @@ RRT_HEADER:
 
   if (pTo && *pTo) {
     ENCODE_AND_PUSH("To: ", PR_TRUE, pTo, charset, usemime);
+    hasDisclosedRecipient = PR_TRUE;
   }
  
   if (pCc && *pCc) {
     ENCODE_AND_PUSH("CC: ", PR_TRUE, pCc, charset, usemime);
+    hasDisclosedRecipient = PR_TRUE;
+  }
+
+  // If we don't have disclosed recipient (only Bcc), address the message to
+  // undisclosed-recipients to prevent problem with some servers
+  if (!hasDisclosedRecipient) {
+    PRBool bAddUndisclosedRecipients = PR_TRUE;
+    prefs->GetBoolPref("mail.compose.add_undisclosed_recipients", &bAddUndisclosedRecipients);
+    if (bAddUndisclosedRecipients) {
+      const char* pBcc = fields->GetBcc(); //Do not free me!
+      if (pBcc && *pBcc) {
+        nsCOMPtr<nsIStringBundleService> stringService = do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
+        if (NS_SUCCEEDED(rv)) {
+          nsCOMPtr<nsIStringBundle> composeStringBundle;
+          rv = stringService->CreateBundle("chrome://messenger/locale/messengercompose/composeMsgs.properties", getter_AddRefs(composeStringBundle));
+          if (NS_SUCCEEDED(rv)) {
+            nsXPIDLString undisclosedRecipients;
+            rv = composeStringBundle->GetStringFromID(NS_MSG_UNDISCLOSED_RECIPIENTS, getter_Copies(undisclosedRecipients));
+            if (NS_SUCCEEDED(rv) && !undisclosedRecipients.IsEmpty()){
+              char * cstr = ToNewCString(undisclosedRecipients);
+              if (cstr) {
+                PUSH_STRING("To: ");
+                PUSH_STRING(cstr);
+                PUSH_STRING(":;");
+                PUSH_NEWLINE ();
+              }
+              PR_Free(cstr);
+            }
+          }
+        }
+      }
+    }
   }
 
   if (pSubject && *pSubject) {
@@ -675,7 +710,7 @@ RRT_HEADER:
 
   if (pOtherHdr && *pOtherHdr) {
     /* Assume they already have the right newlines and continuations
-     and so on. */
+     and so on.  for these headers, the PUSH_NEWLINE() happens in addressingWidgetOverlay.js */
     PUSH_STRING (pOtherHdr);
   }
 
@@ -743,7 +778,11 @@ mime_generate_attachment_headers (const char *type,
   nsresult rv;
   nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv)); 
 
-  PRInt32 buffer_size = 2048 + (base_url ? 2*PL_strlen(base_url) : 0);
+  PRInt32 buffer_size = 2048 + (real_name ? 2*PL_strlen(real_name) : 0) + (base_url ? 2*PL_strlen(base_url) : 0) +
+                        (type_param ? PL_strlen(type_param) : 0) + (encoding ? PL_strlen(encoding) : 0) +
+                        (description ? PL_strlen(description) : 0) + (x_mac_type ? PL_strlen(x_mac_type) : 0) +
+                        (x_mac_creator ? PL_strlen(x_mac_creator) : 0) + (attachmentCharset ? PL_strlen(attachmentCharset) : 0) +
+                        (bodyCharset ? PL_strlen(bodyCharset) : 0) + (content_id ? PL_strlen(content_id) : 0);
   char *buffer = (char *) PR_Malloc (buffer_size);
   char *buffer_tail = buffer;
 
@@ -1054,6 +1093,24 @@ GIVE_UP_ON_CONTENT_BASE:
   return buffer;
 }
 
+static PRBool isValidHost( const char* host )
+{
+  if ( host )
+    for (const char *s = host; *s; ++s)
+      if  (  !nsCRT::IsAsciiAlpha(*s)
+         && !nsCRT::IsAsciiDigit(*s)
+         && *s != '-'
+         && *s != '_'
+         && *s != '.'
+         )
+      {
+       host = nsnull;
+       break;
+      }
+
+  return nsnull != host;
+}
+
 char *
 msg_generate_message_id (nsIMsgIdentity *identity)
 {
@@ -1068,29 +1125,33 @@ msg_generate_message_id (nsIMsgIdentity *identity)
   PRUint32 salt = 0;
   const char *host = 0;
   
+  nsXPIDLCString forcedFQDN;
   nsXPIDLCString from;
-  nsresult rv = identity->GetEmail(getter_Copies(from));
-  if (NS_FAILED(rv)) return nsnull;
+  nsresult rv = NS_OK;
 
-  GenerateGlobalRandomBytes((unsigned char *) &salt, sizeof(salt));
-  if (from) {
-    host = PL_strchr (from, '@');
-    if (host) {
-      const char *s;
-      for (s = ++host; *s; s++)
-        if (!nsCRT::IsAsciiAlpha(*s) && !nsCRT::IsAsciiDigit(*s) &&
-            *s != '-' && *s != '_' && *s != '.') {
-          host = 0;
-          break;
-        }
-    }
+  rv = identity->GetCharAttribute("FQDN", getter_Copies(forcedFQDN));
+
+  if (NS_SUCCEEDED(rv) && forcedFQDN)
+    host = forcedFQDN.get();
+
+  if (!isValidHost(host))
+  {
+    nsresult rv = identity->GetEmail(getter_Copies(from));
+    if (NS_SUCCEEDED(rv) && from)
+      host = strchr(from,'@');
+
+    // No '@'? Munged address, anti-spam?
+    // see bug #197203
+    if (host)
+      ++host;
   }
 
-  if (! host)
+  if (!isValidHost(host))
   /* If we couldn't find a valid host name to use, we can't generate a
      valid message ID, so bail, and let NNTP and SMTP generate them. */
     return 0;
 
+  GenerateGlobalRandomBytes((unsigned char *) &salt, sizeof(salt));
   return PR_smprintf("<%lX.%lX@%s>",
            (unsigned long) now, (unsigned long) salt, host);
 }
@@ -1849,24 +1910,20 @@ mime_gen_content_id(PRUint32 aPartNum, const char *aEmailAddress)
 }
 
 char *
-GetFolderURIFromUserPrefs(nsMsgDeliverMode   aMode,
-                          nsIMsgIdentity* identity)
+GetFolderURIFromUserPrefs(nsMsgDeliverMode aMode, nsIMsgIdentity* identity)
 {
-  nsresult      rv = NS_OK;
-  char          *uri = nsnull;
-
-  if (!identity) return nsnull;
-
+  nsresult rv;
+  char *uri = nsnull;
+  
   if (aMode == nsIMsgSend::nsMsgQueueForLater)       // QueueForLater (Outbox)
   {
     nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv)); 
     if (NS_FAILED(rv) || !prefs) 
       return nsnull;
-    rv = prefs->CopyCharPref("mail.default_sendlater_uri", &uri);
-   
-    if (NS_FAILED(rv) || !uri) {
-  uri = PR_smprintf("%s", ANY_SERVER);
-  rv = NS_OK;
+    rv = prefs->CopyCharPref("mail.default_sendlater_uri", &uri);   
+    if (NS_FAILED(rv) || !uri) 
+    {
+      uri = PR_smprintf("%s", ANY_SERVER);
     }
     else
     {
@@ -1880,8 +1937,13 @@ GetFolderURIFromUserPrefs(nsMsgDeliverMode   aMode,
         prefs->SetCharPref("mail.default_sendlater_uri", uriStr.get());
       }
     }
+    return uri;
   }
-  else if (aMode == nsIMsgSend::nsMsgSaveAsDraft)    // SaveAsDraft (Drafts)
+
+  if (!identity)
+    return nsnull;
+
+  if (aMode == nsIMsgSend::nsMsgSaveAsDraft)    // SaveAsDraft (Drafts)
   {
     rv = identity->GetDraftFolder(&uri);
   }
@@ -1898,7 +1960,6 @@ GetFolderURIFromUserPrefs(nsMsgDeliverMode   aMode,
     else
       uri = PL_strdup("");
   }
-
   return uri;
 }
 

@@ -100,6 +100,7 @@
 #include "nsMsgSendReport.h"
 #include "nsMsgSimulateError.h"
 #include "nsNetCID.h"
+#include "nsNetError.h"
 #include "nsMsgUtils.h"
 #include "nsIRDFService.h"
 #include "nsIMsgMdnGenerator.h"
@@ -108,11 +109,6 @@
 #include "nsIRDFService.h"
 #include "nsRDFCID.h"
 
-// use these macros to define a class IID for our component. Our object currently 
-// supports two interfaces (nsISupports and nsIMsgCompose) so we want to define constants 
-// for these two interfaces 
-//
-static NS_DEFINE_CID(kSmtpServiceCID, NS_SMTPSERVICE_CID);
 static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 
@@ -161,6 +157,96 @@ UseQuotedPrintable(void)
   return mime_use_quoted_printable_p;
 }
 
+/* This function will parse a list of email addresses and groups and just
+ * return a list of email addresses (recipient)
+ *
+ * The input could be:
+ *    [recipient | group] *[,recipient | group]
+ *
+ * The group syntax is:
+ *    group-name:[recipient *[,recipient]];
+ *
+ * the output will be:
+ *    recipient *[, recipient]
+ *
+ * As the result will always be equal or smaller than the input string,
+ * the extraction will be made in place. Don't need to create a new buffer.
+ */
+static nsresult StripOutGroupNames(char * addresses)
+{
+  char aChar;
+  char * readPtr = addresses;           // current read position
+  char * writePtr = addresses;          // current write position
+  char * previousSeparator = addresses; // remember last time we wrote a recipient separator
+  char * endPtr = addresses + PL_strlen(addresses);
+
+  PRBool quoted = PR_FALSE;   // indicate if we are between double quote
+  PRBool group = PR_FALSE;   // indicate if we found a group prefix
+  PRBool atFound = PR_FALSE;  // indicate if we found an @ in the current recipient. group name should not have an @
+
+  while (readPtr < endPtr)
+  {
+    aChar = *readPtr;
+    readPtr ++;
+    switch(aChar)
+    {
+      case '\\':
+        if (*readPtr == '"') //ignore escaped quote
+          readPtr ++;
+        continue;
+
+      case '"':
+        quoted = !quoted;
+        break;
+
+      case '@':
+        if (!quoted)
+          atFound = PR_TRUE;
+        break;
+
+      case ':':
+        if (!quoted && !atFound)
+        {
+          // ok, we found a group name
+          // let's backup the write cursor to remove the group name
+          writePtr = previousSeparator + 1;
+          group = PR_TRUE;
+          continue;
+        }
+        break;
+
+      case ';':
+        if (quoted || !group)
+          break;
+        else
+          group = PR_FALSE;
+          //end of the group, act like a recipient separator now...
+        /* NO BREAK */
+
+      case ',':
+        if (!quoted)
+        {
+          atFound = PR_FALSE;
+          //let check if we already have a comma separator in the output string
+          if (writePtr > addresses && *(writePtr - 1) == ',')
+            writePtr --;
+          *writePtr = ',';
+          previousSeparator = writePtr;
+          writePtr ++;
+          continue;
+        }
+        break;
+    }
+    *writePtr = aChar;
+    writePtr ++;
+  }
+
+  if (writePtr > addresses && *(writePtr - 1) == ',')
+    writePtr --;
+  *writePtr = '\0';
+
+  return NS_OK;
+}
 
 /* the following macro actually implement addref, release and query interface for our component. */
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsMsgComposeAndSend, nsIMsgSend)
@@ -219,8 +305,6 @@ nsMsgComposeAndSend::nsMsgComposeAndSend() :
   mMessageWarningSize = 0;
   
   NS_NEWXPCOM(mSendReport, nsMsgSendReport);
-
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgComposeAndSend::~nsMsgComposeAndSend()
@@ -258,8 +342,8 @@ NS_IMETHODIMP nsMsgComposeAndSend::GetDefaultPrompt(nsIPrompt ** aPrompt)
   nsCOMPtr <nsIMsgMailSession> mailSession (do_GetService(NS_MSGMAILSESSION_CONTRACTID));
   if (mailSession)
   {
-  mailSession->GetTopmostMsgWindow(getter_AddRefs(msgWindow));
-  if (msgWindow)
+    mailSession->GetTopmostMsgWindow(getter_AddRefs(msgWindow));
+    if (msgWindow)
       rv = msgWindow->GetPromptDialog(aPrompt);
   }
   
@@ -399,7 +483,7 @@ nsMsgComposeAndSend::Clear()
         m_attachments[i].mFileSpec = nsnull;
       }
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
       //
       // remove the appledoubled intermediate file after we done all.
       //
@@ -532,6 +616,7 @@ nsMsgComposeAndSend::GatherMimeAttachments()
 
   char *hdrs = 0;
   PRBool maincontainerISrelatedpart = PR_FALSE;
+  const char * toppart_type = nsnull;
 
   // If we have any attachments, we generate multipart.
   multipart_p = (m_attachment_count > 0);
@@ -877,7 +962,7 @@ nsMsgComposeAndSend::GatherMimeAttachments()
     {
       delete maincontainer; 
       if (maincontainerISrelatedpart)
-        m_related_part = nsnull;
+        m_related_part = nsnull; // in that case, m_related_part == maincontainer which we have just deleted!
       maincontainer = plainpart;
       mainbody = maincontainer;
       PR_FREEIF(m_attachment1_type);
@@ -911,7 +996,11 @@ nsMsgComposeAndSend::GatherMimeAttachments()
   else
     toppart = maincontainer;
 
-  if (!m_crypto_closure && m_attachment_count > 0)
+  // Is the top part a multipart container?
+  // can't use m_attachment_count because it's not reliable for that
+  // instead use type of main part. See bug #174396
+  toppart_type = toppart->GetType(); // GetType return directly the member variable, don't free it!
+  if (!m_crypto_closure && toppart_type && !PL_strncasecmp(toppart_type, "multipart/", 10))
   {
     status = toppart->SetBuffer(MIME_MULTIPART_BLURB);
     if (status < 0)
@@ -2237,7 +2326,7 @@ nsMsgComposeAndSend::AddCompFieldLocalAttachments()
         else
           element->GetContentTypeParam(&m_attachments[newLoc].m_type_param);
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
         //We always need to snarf the file to figure out how to send it, maybe we need to use apple double...
         m_attachments[newLoc].m_done = PR_FALSE;
         m_attachments[newLoc].SetMimeDeliveryState(this);
@@ -2320,12 +2409,16 @@ nsMsgComposeAndSend::AddCompFieldRemoteAttachments(PRUint32   aStartLocation,
 #if defined(DEBUG_ducarroz)
           printf("Adding REMOTE attachment %d: %s\n", newLoc, url.get());
 #endif
+          PRBool isAMessageAttachment = !PL_strncasecmp(url.get(), "mailbox-message://", 18) ||
+              !PL_strncasecmp(url.get(), "imap-message://", 15) ||
+              !PL_strncasecmp(url.get(), "news-message://", 15);
 
           m_attachments[newLoc].mDeleteFile = PR_TRUE;
           m_attachments[newLoc].m_done = PR_FALSE;
           m_attachments[newLoc].SetMimeDeliveryState(this);
 
-          nsMsgNewURL(getter_AddRefs(m_attachments[newLoc].mURL), url.get());
+          if (!isAMessageAttachment)
+            nsMsgNewURL(getter_AddRefs(m_attachments[newLoc].mURL), url.get());
 
           PR_FREEIF(m_attachments[newLoc].m_encoding);
           m_attachments[newLoc].m_encoding = PL_strdup ("7bit");
@@ -2337,24 +2430,21 @@ nsMsgComposeAndSend::AddCompFieldRemoteAttachments(PRUint32   aStartLocation,
 
           /* Count up attachments which are going to come from mail folders
              and from NNTP servers. */
-          nsCAutoString strUrl;
-          strUrl.Assign(url.get());
           PRBool do_add_attachment = PR_FALSE;
-          if (m_attachments[newLoc].mURL)
+          if (isAMessageAttachment)
           {
             do_add_attachment = PR_TRUE;
-          }
-          else if (strUrl.Find("-message:") != -1)
-          {
-            do_add_attachment = PR_TRUE;
-            if (strUrl.Find("mailbox-message:") != -1 ||
-                strUrl.Find("imap-message:") != -1)
-              (*aMailboxCount)++;
-            else if (strUrl.Find("news-message:") != -1)
+            if (!PL_strncasecmp(url.get(), "news-message://", 15))
               (*aNewsCount)++;
+            else
+              (*aMailboxCount)++;              
 
-            m_attachments[newLoc].m_uri = ToNewCString(strUrl);
+            m_attachments[newLoc].m_uri = PL_strdup(url.get());
+            m_attachments[newLoc].mURL = nsnull;
           }
+          else
+            do_add_attachment = (nsnull != m_attachments[newLoc].mURL);
+
           if (do_add_attachment)
           {
             nsXPIDLString proposedName;
@@ -3070,6 +3160,7 @@ SendDeliveryCallback(nsIURI *aUrl, nsresult aExitCode, nsMsgDeliveryType deliver
         switch (aExitCode)
         {
           case NS_ERROR_UNKNOWN_HOST:
+          case NS_ERROR_UNKNOWN_PROXY_HOST:
             aExitCode = NS_ERROR_COULD_NOT_LOGIN_TO_SMTP_SERVER;
             break;
           default:
@@ -3270,6 +3361,10 @@ nsMsgComposeAndSend::DeliverFileAsMail()
       addressCollecter->CollectAddress(mCompFields->GetBcc(), PR_TRUE);
   }
 
+  // We need undo groups to keep only the addresses
+  rv = StripOutGroupNames(buf);
+  NS_ENSURE_SUCCESS(rv, rv);
+
   // Ok, now MIME II encode this to prevent 8bit problems...
   char *convbuf = nsMsgI18NEncodeMimePartIIStr(buf, PR_TRUE, 
             mCompFields->GetCharacterSet(), 0, nsMsgMIMEGetConformToStandard());
@@ -3289,7 +3384,7 @@ nsMsgComposeAndSend::DeliverFileAsMail()
       buf = convbuf;
   }
   
-  nsCOMPtr<nsISmtpService> smtpService(do_GetService(kSmtpServiceCID, &rv));
+  nsCOMPtr<nsISmtpService> smtpService(do_GetService(NS_SMTPSERVICE_CONTRACTID, &rv));
   if (NS_SUCCEEDED(rv) && smtpService)
   {
     nsMsgDeliveryListener * aListener = new nsMsgDeliveryListener(SendDeliveryCallback, nsMailDelivery, this);
@@ -3340,49 +3435,50 @@ nsMsgComposeAndSend::DeliverFileAsNews()
   
   if (mSendReport)
     mSendReport->SetCurrentProcess(nsIMsgSendReport::process_NNTP);
-
+  
   nsCOMPtr<nsIPrompt> promptObject;
   GetDefaultPrompt(getter_AddRefs(promptObject));
-
+  
   nsCOMPtr<nsINntpService> nntpService(do_GetService(NS_NNTPSERVICE_CONTRACTID, &rv));
-
+  
   if (NS_SUCCEEDED(rv) && nntpService) 
   {
     nsMsgDeliveryListener * aListener = new nsMsgDeliveryListener(SendDeliveryCallback, nsNewsDelivery, this);
     nsCOMPtr<nsIUrlListener> uriListener = do_QueryInterface(aListener);
     if (!uriListener)
       return NS_ERROR_OUT_OF_MEMORY;
-
-  // Note: Don't do a SetMsgComposeAndSendObject since we are in the same thread, and
-  // using callbacks for notification
-
-  nsCOMPtr<nsIFileSpec>fileToPost;
-  
-  rv = NS_NewFileSpecWithSpec(*mTempFileSpec, getter_AddRefs(fileToPost));
-  if (NS_FAILED(rv)) return rv;
-
-  // Tell the user we are posting the message!
-  nsXPIDLString msg; 
-  mComposeBundle->GetStringByID(NS_MSG_POSTING_MESSAGE, getter_Copies(msg));
-  SetStatusMessage( msg );
-
-  nsCOMPtr <nsIMsgMailSession> mailSession = do_GetService(NS_MSGMAILSESSION_CONTRACTID, &rv);
-  if (NS_FAILED(rv)) return rv;
-
-  if (!mailSession) return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIMsgWindow>    msgWindow;
-
-//JFD TODO: we should use GetDefaultPrompt instead
-  rv = mailSession->GetTopmostMsgWindow(getter_AddRefs(msgWindow));
-  if(NS_FAILED(rv))
-    return rv;
-
+    
+    // Note: Don't do a SetMsgComposeAndSendObject since we are in the same thread, and
+    // using callbacks for notification
+    
+    nsCOMPtr<nsIFileSpec>fileToPost;
+    
+    rv = NS_NewFileSpecWithSpec(*mTempFileSpec, getter_AddRefs(fileToPost));
+    if (NS_FAILED(rv)) return rv;
+    
+    // Tell the user we are posting the message!
+    nsXPIDLString msg; 
+    mComposeBundle->GetStringByID(NS_MSG_POSTING_MESSAGE, getter_Copies(msg));
+    SetStatusMessage( msg );
+    
+    nsCOMPtr <nsIMsgMailSession> mailSession = do_GetService(NS_MSGMAILSESSION_CONTRACTID, &rv);
+    if (NS_FAILED(rv)) return rv;
+    
+    if (!mailSession) return NS_ERROR_FAILURE;
+    
+    // JFD TODO: we should use GetDefaultPrompt instead
+    nsCOMPtr<nsIMsgWindow> msgWindow;
+    rv = mailSession->GetTopmostMsgWindow(getter_AddRefs(msgWindow));
+    // see bug #163139
+    // we might not have a msg window if only the compose window is open.
+    if(NS_FAILED(rv))
+      msgWindow = nsnull;
+    
     rv = nntpService->PostMessage(fileToPost, mCompFields->GetNewsgroups(), mCompFields->GetNewspostUrl(),
-                                  uriListener, msgWindow, nsnull);
-  if (NS_FAILED(rv)) return rv;
+      uriListener, msgWindow, nsnull);
+    if (NS_FAILED(rv)) return rv;
   }
-
+  
   return rv;
 }
 
@@ -3433,7 +3529,7 @@ nsMsgComposeAndSend::FormatStringWithSMTPHostNameByID(PRInt32 aMsgId, PRUnichar 
   NS_ENSURE_ARG(aString);
 
   nsresult rv;
-  nsCOMPtr<nsISmtpService> smtpService(do_GetService(kSmtpServiceCID, &rv));
+  nsCOMPtr<nsISmtpService> smtpService(do_GetService(NS_SMTPSERVICE_CONTRACTID, &rv));
   NS_ENSURE_SUCCESS(rv,rv);
 
   // Get the smtp hostname and format the string.
@@ -3547,7 +3643,7 @@ PRBool nsMsgComposeAndSend::CanSaveMessagesToFolder(const char *folderURL)
     return PR_FALSE;
 
   nsCOMPtr<nsIRDFResource> resource;
-  rv = rdf->GetResource(folderURL, getter_AddRefs(resource));
+  rv = rdf->GetResource(nsDependentCString(folderURL), getter_AddRefs(resource));
   if (NS_FAILED(rv))
     return PR_FALSE;
 
@@ -3814,7 +3910,7 @@ nsMsgComposeAndSend::NotifyListenerOnStopCopy(nsresult aStatus)
    negative, then `error_message' contains the file name (this is kind of
    a kludge...)
  */
-nsresult 
+NS_IMETHODIMP 
 nsMsgComposeAndSend::CreateAndSendMessage(
               nsIEditor                         *aEditor,
               nsIMsgIdentity                    *aUserIdentity,
@@ -4188,7 +4284,7 @@ nsMsgComposeAndSend::MimeDoFCC(nsFileSpec       *input_file,
     if (rdfService)
     {
       nsCOMPtr<nsIRDFResource> res;
-      rdfService->GetResource(turi, getter_AddRefs(res));
+      rdfService->GetResource(nsDependentCString(turi), getter_AddRefs(res));
       nsCOMPtr<nsIMsgFolder> folder = do_QueryInterface(res);
       if (folder)
         folder->GetName(getter_Copies(folderName));
@@ -4326,7 +4422,12 @@ nsMsgComposeAndSend::MimeDoFCC(nsFileSpec       *input_file,
   // Ok, now I want to get the identity key and write it out if this is for a
   // nsMsgQueueForLater operation!
   //
-  if ( (mode == nsMsgQueueForLater) && (mUserIdentity) )
+  if (  (  ( nsMsgQueueForLater == mode )
+        || ( nsMsgSaveAsDraft == mode )
+        || ( nsMsgSaveAsTemplate == mode )
+        )
+     && ( mUserIdentity )
+     )
   {
     char    *key = nsnull;
 

@@ -141,10 +141,13 @@ public:
     NS_IMETHOD RenameSubFolders (nsIMsgWindow *msgWindow, nsIMsgFolder *oldFolder);
 
 	NS_IMETHOD GetPrettyName(PRUnichar** prettyName);	// Override of the base, for top-level mail folder
+  NS_IMETHOD SetPrettyName(const PRUnichar *aName);
 
 	NS_IMETHOD GetFolderURL(char **url);
 
 	NS_IMETHOD UpdateSummaryTotals(PRBool force) ;
+
+  NS_IMETHOD  GetManyHeadersToDownload(PRBool *retval);
 
 	NS_IMETHOD GetDeletable (PRBool *deletable); 
   NS_IMETHOD GetRequiresCleanup(PRBool *requiresCleanup);
@@ -173,6 +176,11 @@ public:
     NS_IMETHOD NotifyCompactCompleted();
   NS_IMETHOD Shutdown(PRBool shutdownChildren);
 
+  NS_IMETHOD WriteToFolderCacheElem(nsIMsgFolderCacheElement *element);
+  NS_IMETHOD ReadFromFolderCacheElem(nsIMsgFolderCacheElement *element);
+
+  NS_IMETHOD GetName(PRUnichar **aName);
+
 protected:
 	nsresult CopyFolderAcrossServer(nsIMsgFolder *srcFolder, nsIMsgWindow *msgWindow,nsIMsgCopyServiceListener* listener);
 
@@ -185,7 +193,7 @@ protected:
   nsresult RecursiveSetDeleteIsMoveTrash(PRBool bVal);
   nsresult ConfirmFolderDeletion(nsIMsgWindow *aMsgWindow, PRBool *aResult);
 
-  nsresult CheckIfFolderExists(const PRUnichar *folderName, nsFileSpec &path, nsIMsgWindow *msgWindow);
+  nsresult CheckIfFolderExists(const PRUnichar *newFolderName, nsIMsgFolder *parentFolder, nsIMsgWindow *msgWindow);
 
 	/* Finds the directory associated with this folder.  That is if the path is
 	c:\Inbox, it will return c:\Inbox.sbd if it succeeds.  If that path doesn't
@@ -210,9 +218,11 @@ protected:
 	virtual const char* GetIncomingServerType();
   nsresult InitCopyState(nsISupports* aSupport, nsISupportsArray* messages,
                          PRBool isMove, nsIMsgCopyServiceListener* listener, nsIMsgWindow *msgWindow, PRBool isMoveFolder, PRBool allowUndo);
+	void CopyPropertiesToMsgHdr(nsIMsgDBHdr *destHdr, nsIMsgDBHdr *srcHdr);
   nsresult OnCopyCompleted(nsISupports *srcSupport, PRBool moveCopySucceeded);
 	virtual nsresult CreateBaseMessageURI(const char *aURI);
-  nsresult SpamFilterClassifyMessage(const char *aURI, nsIJunkMailPlugin *aJunkMailPlugin);
+  virtual nsresult SpamFilterClassifyMessage(const char *aURI, nsIMsgWindow *aMsgWindow, nsIJunkMailPlugin *aJunkMailPlugin);
+  virtual nsresult SpamFilterClassifyMessages(const char **aURIArray, PRUint32 aURICount, nsIMsgWindow *aMsgWindow, nsIJunkMailPlugin *aJunkMailPlugin);
 protected:
 	PRBool		mHaveReadNameFromDB;
 	PRBool		mGettingMail;
@@ -224,7 +234,8 @@ protected:
   nsCOMPtr<nsIMsgStringService> mMsgStringService;
   PRInt32 mNumFilterClassifyRequests;
   nsMsgKeyArray mSpamKeysToMove;
-  nsresult setSubfolderFlag(const char *aFolderName, PRUint32 flags);
+  nsCString mSpamFolderURI;
+  nsresult setSubfolderFlag(const PRUnichar *aFolderName, PRUint32 flags);
 };
 
 #endif // nsMsgLocalMailFolder_h__

@@ -47,7 +47,6 @@
 #include "nsIPresState.h"
 #include "nsIPresShell.h"
 #include "nsIDocument.h"
-#include "nsINameSpaceManager.h"
 #ifdef ACCESSIBILITY
 #include "nsIAccessibilityService.h"
 #endif
@@ -78,7 +77,8 @@ nsGfxRadioControlFrame::nsGfxRadioControlFrame()
 
 nsGfxRadioControlFrame::~nsGfxRadioControlFrame()
 {
-  NS_IF_RELEASE(mRadioButtonFaceStyle);
+  if (mRadioButtonFaceStyle)
+    mRadioButtonFaceStyle->Release();
 }
 
 // Frames are not refcounted, no need to AddRef
@@ -111,50 +111,40 @@ NS_IMETHODIMP nsGfxRadioControlFrame::GetAccessible(nsIAccessible** aAccessible)
 #endif
 
 //--------------------------------------------------------------
-NS_IMETHODIMP
-nsGfxRadioControlFrame::GetAdditionalStyleContext(PRInt32 aIndex, 
-                                                  nsIStyleContext** aStyleContext) const
+nsStyleContext*
+nsGfxRadioControlFrame::GetAdditionalStyleContext(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(nsnull != aStyleContext, "null OUT parameter pointer");
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
-  *aStyleContext = nsnull;
   switch (aIndex) {
   case NS_GFX_RADIO_CONTROL_FRAME_FACE_CONTEXT_INDEX:
-    *aStyleContext = mRadioButtonFaceStyle;
-    NS_IF_ADDREF(*aStyleContext);
+    return mRadioButtonFaceStyle;
     break;
   default:
-    return NS_ERROR_INVALID_ARG;
+    return nsnull;
   }
-  return NS_OK;
 }
 
 //--------------------------------------------------------------
-NS_IMETHODIMP
+void
 nsGfxRadioControlFrame::SetAdditionalStyleContext(PRInt32 aIndex, 
-                                                  nsIStyleContext* aStyleContext)
+                                                  nsStyleContext* aStyleContext)
 {
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
   switch (aIndex) {
   case NS_GFX_RADIO_CONTROL_FRAME_FACE_CONTEXT_INDEX:
-    NS_IF_RELEASE(mRadioButtonFaceStyle);
+    if (mRadioButtonFaceStyle)
+      mRadioButtonFaceStyle->Release();
     mRadioButtonFaceStyle = aStyleContext;
-    NS_IF_ADDREF(aStyleContext);
+    if (aStyleContext)
+      aStyleContext->AddRef();
     break;
   }
-  return NS_OK;
 }
 
 //--------------------------------------------------------------
 NS_IMETHODIMP
-nsGfxRadioControlFrame::SetRadioButtonFaceStyleContext(nsIStyleContext *aRadioButtonFaceStyleContext)
+nsGfxRadioControlFrame::SetRadioButtonFaceStyleContext(nsStyleContext *aRadioButtonFaceStyleContext)
 {
   mRadioButtonFaceStyle = aRadioButtonFaceStyleContext;
-  NS_ADDREF(mRadioButtonFaceStyle);
+  mRadioButtonFaceStyle->AddRef();
   return NS_OK;
 }
 
@@ -165,8 +155,7 @@ nsGfxRadioControlFrame::HandleEvent(nsIPresContext* aPresContext,
                                           nsEventStatus* aEventStatus)
 {
   // Check for user-input:none style
-  const nsStyleUserInterface* uiStyle;
-  GetStyleData(eStyleStruct_UserInterface,  (const nsStyleStruct *&)uiStyle);
+  const nsStyleUserInterface* uiStyle = GetStyleUserInterface();
   if (uiStyle->mUserInput == NS_STYLE_USER_INPUT_NONE || uiStyle->mUserInput == NS_STYLE_USER_INPUT_DISABLED)
     return nsFrame::HandleEvent(aPresContext, aEvent, aEventStatus);
 
@@ -180,7 +169,7 @@ nsGfxRadioControlFrame::PaintRadioButton(nsIPresContext* aPresContext,
                                       nsIRenderingContext& aRenderingContext,
                                       const nsRect& aDirtyRect)
 {
-  const nsStyleDisplay* disp = (const nsStyleDisplay*)mStyleContext->GetStyleData(eStyleStruct_Display);
+  const nsStyleDisplay* disp = GetStyleDisplay();
   if (disp->mAppearance) {
     nsCOMPtr<nsITheme> theme;
     aPresContext->GetTheme(getter_AddRefs(theme));
@@ -193,18 +182,11 @@ nsGfxRadioControlFrame::PaintRadioButton(nsIPresContext* aPresContext,
   if (checked) {
    // Paint the button for the radio button using CSS background rendering code
    if (nsnull != mRadioButtonFaceStyle) {
-     const nsStyleBackground* myColor = (const nsStyleBackground*)
-          mRadioButtonFaceStyle->GetStyleData(eStyleStruct_Background);
-
-     const nsStyleColor* color = (const nsStyleColor*)
-          mRadioButtonFaceStyle->GetStyleData(eStyleStruct_Color);
-
-     const nsStyleBorder* myBorder = (const nsStyleBorder*)
-          mRadioButtonFaceStyle->GetStyleData(eStyleStruct_Border);
-     const nsStylePadding* myPadding = (const nsStylePadding*)
-          mRadioButtonFaceStyle->GetStyleData(eStyleStruct_Padding);
-     const nsStylePosition* myPosition = (const nsStylePosition*)
-          mRadioButtonFaceStyle->GetStyleData(eStyleStruct_Position);
+     const nsStyleBackground* myColor = mRadioButtonFaceStyle->GetStyleBackground();
+     const nsStyleColor* color = mRadioButtonFaceStyle->GetStyleColor();
+     const nsStyleBorder* myBorder = mRadioButtonFaceStyle->GetStyleBorder();
+     const nsStylePadding* myPadding = mRadioButtonFaceStyle->GetStylePadding();
+     const nsStylePosition* myPosition = mRadioButtonFaceStyle->GetStylePosition();
 
      nscoord width = myPosition->mWidth.GetCoordValue();
      nscoord height = myPosition->mHeight.GetCoordValue();
@@ -223,8 +205,7 @@ nsGfxRadioControlFrame::PaintRadioButton(nsIPresContext* aPresContext,
      tmpColor.mBackgroundColor = color->mColor;
      nsCSSRendering::PaintBackgroundWithSC(aPresContext, aRenderingContext,
                                            this, aDirtyRect, rect,
-                                           tmpColor, *myBorder, *myPadding,
-                                           0, 0);
+                                           tmpColor, *myBorder, *myPadding, PR_FALSE);
      nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
                                   aDirtyRect, rect, *myBorder, mRadioButtonFaceStyle, 0);
    }

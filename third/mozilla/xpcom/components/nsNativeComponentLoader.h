@@ -25,37 +25,36 @@
 #include "nsHashtable.h"
 #include "nsVoidArray.h"
 #include "xcDll.h"
+#include "nsINativeComponentLoader.h"
 
 #ifndef nsNativeComponentLoader_h__
 #define nsNativeComponentLoader_h__
 
-class nsNativeComponentLoader : public nsIComponentLoader {
+class nsNativeComponentLoader : public nsIComponentLoader, public nsINativeComponentLoader {
 
  public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSICOMPONENTLOADER
+    NS_DECL_NSINATIVECOMPONENTLOADER
 
     nsNativeComponentLoader();
     virtual ~nsNativeComponentLoader();
- protected:
+ 
     nsIComponentManager* mCompMgr;      // weak reference -- backpointer
+    nsHashtable*         mLoadedDependentLibs;
+
+ private:
     nsObjectHashtable*  mDllStore;
     nsVoidArray mDeferredComponents;
 
     NS_IMETHOD RegisterComponentsInDir(PRInt32 when, nsIFile *dir);
 
- private:
     nsresult CreateDll(nsIFile *aSpec, const char *aLocation, nsDll **aDll);
     nsresult SelfRegisterDll(nsDll *dll, const char *registryLocation,
                              PRBool deferred);
     nsresult SelfUnregisterDll(nsDll *dll);
     nsresult GetFactoryFromModule(nsDll *aDll, const nsCID &aCID,
                                   nsIFactory **aFactory);
-    /* obsolete! already! */
-    nsresult GetFactoryFromNSGetFactory(nsDll *aDlll, const nsCID &aCID,
-                                        nsIServiceManager *aServMgr,
-                                        nsIFactory **aFactory);
-
 
     nsresult DumpLoadError(nsDll *dll, 
                            const char *aCallerName,

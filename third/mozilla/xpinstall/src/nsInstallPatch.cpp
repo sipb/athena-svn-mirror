@@ -36,7 +36,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "zlib.h"
-#include "nsFileSpec.h"
+#include "nsCRT.h"
 #include "prmem.h"
 #include "nsXPIDLString.h"
 #include "nsInstall.h"
@@ -44,6 +44,7 @@
 #include "nsInstallResources.h"
 #include "nsIDOMInstallVersion.h"
 #include "nsILocalFile.h"
+#include "nsNativeCharsetUtils.h"
 
 #include "gdiff.h"
 
@@ -105,7 +106,6 @@ nsInstallPatch::nsInstallPatch( nsInstall* inInstall,
         *error = nsInstall::NO_SUCH_COMPONENT;
         return;
     }
-    nsString folderSpec; folderSpec.AssignWithConversion(tempTargetFile);
 	
     nsCOMPtr<nsILocalFile> tmp;
     NS_NewNativeLocalFile(nsDependentCString(tempTargetFile), PR_TRUE, getter_AddRefs(tmp));
@@ -323,7 +323,7 @@ PRInt32 nsInstallPatch::Complete()
             nsCAutoString tempPath;
             mTargetFile->GetNativePath(tempPath);
 
-            // DO NOT propagate version registry errors, it will abort 
+            // DO NOT propogate version registry errors, it will abort 
             // FinalizeInstall() leaving things hosed. These piddly errors
             // aren't worth that.
             VR_Install( NS_CONST_CAST(char *, NS_ConvertUCS2toUTF8(*mRegistryName).get()),
@@ -450,32 +450,38 @@ nsInstallPatch::NativePatch(nsIFile *sourceFile, nsIFile *patchFile, nsIFile **n
     if (( dd->bWin32BoundImage || dd->bMacAppleSingle) && (status == GDIFF_OK ))
     {
         // make an unique tmp file  (FILENAME-src.EXT)
-        nsAutoString tmpFileName;
-        rv = sourceFile->GetLeafName(tmpFileName);
+        nsAutoString leafName;
+        rv = sourceFile->GetLeafName(leafName);
 
         NS_NAMED_LITERAL_STRING(tmpName, "-src");
 
         PRInt32 i;
-        if ((i = tmpFileName.RFindChar('.')) > 0)
+        if ((i = leafName.RFindChar('.')) > 0)
         {
+            // build the temp filename for which to unbind the file to.
+            // eg: if the filename is bind.dll, the temp src filename would
+            //     be bind-src.dll
             nsAutoString ext;
             nsAutoString fName;
-            tmpFileName.Right(ext, (tmpFileName.Length() - i) );        
-            tmpFileName.Left(fName, (tmpFileName.Length() - (tmpFileName.Length() - i)));
-            tmpFileName.Assign(fName + tmpName + ext);
-
+            // get the extension
+            leafName.Right(ext, (leafName.Length() - i) );
+            // get the filename - extension
+            leafName.Left(fName, (leafName.Length() - (leafName.Length() - i)));
+            // build the temp filename with '-src' at the end of filename,
+            // but before extension
+            leafName.Assign(fName);
+            leafName.Append(tmpName);
+            leafName.Append(ext);
         } else {
-               tmpFileName += tmpName;
+            // no extension found, just append '-src' to the end of filename
+            leafName.Append(tmpName);
         }
         
     
         rv = sourceFile->Clone(getter_AddRefs(tempSrcFile));  //Clone the sourceFile
-        tempSrcFile->SetLeafName(tmpFileName); //Append the new leafname
-        uniqueSrcFile = do_QueryInterface(tempSrcFile, &rv);  //Create an nsILocalFile version to pass to MakeUnique
-        MakeUnique(uniqueSrcFile); 
-
-       nsCAutoString realfile;
-       sourceFile->GetNativePath(realfile);
+        tempSrcFile->SetLeafName(leafName); //Append the new leafname
+        uniqueSrcFile = do_QueryInterface(tempSrcFile, &rv);
+        uniqueSrcFile->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0644);
 
 #ifdef WIN32
         // unbind Win32 images
@@ -485,7 +491,8 @@ nsInstallPatch::NativePatch(nsIFile *sourceFile, nsIFile *patchFile, nsIFile **n
 
         if (su_unbind((char*)realfile.get(), (char*)unboundFile.get()))  //
         {
-            realfile = unboundFile;
+            // un-binding worked, save the tmp name for later
+            uniqueSrcFile->GetNativePath(realfile);
         }
         else
         {
@@ -535,9 +542,8 @@ nsInstallPatch::NativePatch(nsIFile *sourceFile, nsIFile *patchFile, nsIFile **n
 
 
     outFileSpec->SetLeafName(newFileName);  //Set new leafname
-    nsCOMPtr<nsILocalFile> outFileLocal = do_QueryInterface(outFileSpec, &rv); //Create an nsILocalFile version 
-                                                                               //to send to MakeUnique()
-    MakeUnique(outFileLocal);
+    nsCOMPtr<nsILocalFile> outFileLocal = do_QueryInterface(outFileSpec, &rv); 
+    outFileLocal->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0644);
 
     // apply patch to the source file
     //dd->fSrc = PR_Open ( realfile, PR_RDONLY, 0666);
@@ -585,12 +591,11 @@ nsInstallPatch::NativePatch(nsIFile *sourceFile, nsIFile *patchFile, nsIFile **n
         
         outFileSpec->Clone(getter_AddRefs(bsTemp));   //Clone because we'll be changing the name
         anotherName = do_QueryInterface(bsTemp, &rv); //Set the old name
-        MakeUnique(anotherName);  //Now give it the new name
-        
+        anotherName->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0644);
+
 		// Close the out file so that we can read it 		
 		PR_Close( dd->fOut );
 		dd->fOut = NULL;
-		
 		
 		FSSpec outSpec;
 		FSSpec anotherSpec;
@@ -620,15 +625,12 @@ nsInstallPatch::NativePatch(nsIFile *sourceFile, nsIFile *patchFile, nsIFile **n
         nsCOMPtr<nsIFile> parent;
         
         outFileSpec->GetParent(getter_AddRefs(parent));
-        
         outFileSpec->Remove(PR_FALSE);
-        
+
         nsAutoString leaf;
         anotherName->GetLeafName(leaf);
         anotherName->CopyTo(parent, leaf);
-        
         anotherName->Clone(newFile);
-        
 	}
 	
 #endif 

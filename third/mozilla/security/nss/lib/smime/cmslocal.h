@@ -39,7 +39,7 @@
  * you.  If that has a problem, then just move out what you need, changing
  * its name as appropriate!
  *
- * $Id: cmslocal.h,v 1.1.1.1 2003-02-14 21:01:21 rbasch Exp $
+ * $Id: cmslocal.h,v 1.1.1.1.2.1 2003-07-14 19:07:24 ghudson Exp $
  */
 
 #ifndef _CMSLOCAL_H_
@@ -161,8 +161,14 @@ NSS_CMSCipherContext_Encrypt(NSSCMSCipherContext *cc, unsigned char *output,
  * according to PKCS#1 and RFC2633 (S/MIME)
  */
 extern SECStatus
-NSS_CMSUtil_EncryptSymKey_RSA(PLArenaPool *poolp, CERTCertificate *cert, PK11SymKey *key,
-			SECItem *encKey);
+NSS_CMSUtil_EncryptSymKey_RSA(PLArenaPool *poolp, CERTCertificate *cert,
+                              PK11SymKey *key,
+                              SECItem *encKey);
+
+extern SECStatus
+NSS_CMSUtil_EncryptSymKey_RSAPubKey(PLArenaPool *poolp,
+                                    SECKEYPublicKey *publickey,
+                                    PK11SymKey *bulkkey, SECItem *encKey);
 
 /*
  * NSS_CMSUtil_DecryptSymKey_RSA - unwrap a RSA-wrapped symmetric key

@@ -73,7 +73,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
@@ -148,7 +148,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
 #endif
 
   /** returns the number of columns represented by this group.

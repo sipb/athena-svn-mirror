@@ -105,8 +105,7 @@ protected:
     PLDHashTable mDates;
     PLDHashTable mBlobs;
 
-    char mLastURIPrefix[16];
-    PRInt32 mLastPrefixlen;
+    nsCAutoString mLastURIPrefix;
     nsCOMPtr<nsIFactory> mLastFactory;
     nsCOMPtr<nsIFactory> mDefaultResourceFactory;
 
@@ -393,7 +392,6 @@ public:
 
     BlobImpl(const PRUint8 *aBytes, PRInt32 aLength)
     {
-        NS_INIT_ISUPPORTS();
         mData.mLength = aLength;
         mData.mBytes = new PRUint8[aLength];
         memcpy(mData.mBytes, aBytes, aLength);
@@ -569,7 +567,6 @@ LiteralImpl::Create(const PRUnichar* aValue, nsIRDFLiteral** aResult)
 
 LiteralImpl::LiteralImpl(const PRUnichar* s)
 {
-    NS_INIT_ISUPPORTS();
     gRDFService->RegisterLiteral(this);
     NS_ADDREF(gRDFService);
 }
@@ -672,7 +669,6 @@ private:
 DateImpl::DateImpl(const PRTime s)
     : mValue(s)
 {
-    NS_INIT_ISUPPORTS();
     gRDFService->RegisterDate(this);
     NS_ADDREF(gRDFService);
 }
@@ -779,7 +775,6 @@ private:
 IntImpl::IntImpl(PRInt32 s)
     : mValue(s)
 {
-    NS_INIT_ISUPPORTS();
     gRDFService->RegisterInt(this);
     NS_ADDREF(gRDFService);
 }
@@ -863,10 +858,8 @@ IntImpl::EqualsInt(nsIRDFInt* intValue, PRBool* result)
 // RDFServiceImpl
 
 RDFServiceImpl::RDFServiceImpl()
-    :  mNamedDataSources(nsnull),
-       mLastPrefixlen(0)
+    :  mNamedDataSources(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsresult
@@ -988,23 +981,23 @@ IsLegalSchemeCharacter(const char aChar)
 
 
 NS_IMETHODIMP
-RDFServiceImpl::GetResource(const char* aURI, nsIRDFResource** aResource)
+RDFServiceImpl::GetResource(const nsACString& aURI, nsIRDFResource** aResource)
 {
     // Sanity checks
-    NS_PRECONDITION(aURI != nsnull, "null ptr");
-    if (! aURI)
-        return NS_ERROR_NULL_POINTER;
-
     NS_PRECONDITION(aResource != nsnull, "null ptr");
+    NS_PRECONDITION(!aURI.IsEmpty(), "URI is empty");
     if (! aResource)
         return NS_ERROR_NULL_POINTER;
+    if (aURI.IsEmpty())
+        return NS_ERROR_INVALID_ARG;
 
-    PR_LOG(gLog, PR_LOG_DEBUG, ("rdfserv get-resource %s", aURI));
+    const nsAFlatCString& flatURI = PromiseFlatCString(aURI);
+    PR_LOG(gLog, PR_LOG_DEBUG, ("rdfserv get-resource %s", flatURI.get()));
 
     // First, check the cache to see if we've already created and
     // registered this thing.
     PLDHashEntryHdr *hdr =
-        PL_DHashTableOperate(&mResources, aURI, PL_DHASH_LOOKUP);
+        PL_DHashTableOperate(&mResources, flatURI.get(), PL_DHASH_LOOKUP);
 
     if (PL_DHASH_ENTRY_IS_BUSY(hdr)) {
         ResourceHashEntry *entry = NS_STATIC_CAST(ResourceHashEntry *, hdr);
@@ -1025,50 +1018,32 @@ RDFServiceImpl::GetResource(const char* aURI, nsIRDFResource** aResource)
     //
     // XXX Although it's really not correct, we'll allow underscore
     // characters ('_'), too.
-    const char* p = aURI;
-    while (IsLegalSchemeCharacter(*p))
+    nsACString::const_iterator p, end;
+    aURI.BeginReading(p);
+    aURI.EndReading(end);
+    while (p != end && IsLegalSchemeCharacter(*p))
         ++p;
 
     nsresult rv;
     nsCOMPtr<nsIFactory> factory;
-    PRUint32 prefixlen = 0;
 
+    nsACString::const_iterator begin;
+    aURI.BeginReading(begin);
     if (*p == ':') {
         // There _was_ a scheme. First see if it's the same scheme
         // that we just tried to use...
-        prefixlen = (p - aURI);
-
-        if ((mLastFactory) && ((PRInt32)prefixlen == mLastPrefixlen) &&
-            (aURI[0] == mLastURIPrefix[0]) &&
-            (0 == PL_strncmp(aURI, mLastURIPrefix, prefixlen))) {
+        if (mLastFactory && mLastURIPrefix.Equals(Substring(begin, p)))
             factory = mLastFactory;
-        }
         else {
             // Try to find a factory using the component manager.
-            static const char kRDFResourceFactoryContractIDPrefix[]
-                = NS_RDF_RESOURCE_FACTORY_CONTRACTID_PREFIX;
-
-            PRInt32 pos = p - aURI;
-            PRInt32 len = pos + sizeof(kRDFResourceFactoryContractIDPrefix) - 1;
-
-            // Safely convert to a C-string for the XPCOM APIs
-            char buf[128];
-            char* contractID = buf;
-            if (len >= PRInt32(sizeof buf))
-                contractID = (char *)nsMemory::Alloc(len + 1);
-
-            if (contractID == nsnull)
-                return NS_ERROR_OUT_OF_MEMORY;
-
-            PL_strcpy(contractID, kRDFResourceFactoryContractIDPrefix);
-            PL_strncpy(contractID + sizeof(kRDFResourceFactoryContractIDPrefix) - 1, aURI, pos);
-            contractID[len] = '\0';
+            nsACString::const_iterator begin;
+            aURI.BeginReading(begin);
+            nsCAutoString contractID;
+            contractID = NS_LITERAL_CSTRING(NS_RDF_RESOURCE_FACTORY_CONTRACTID_PREFIX) +
+                         Substring(begin, p);
 
             nsCID cid;
-            rv = nsComponentManager::ContractIDToClassID(contractID, &cid);
-
-            if (contractID != buf)
-                nsCRT::free(contractID);
+            rv = nsComponentManager::ContractIDToClassID(contractID.get(), &cid);
 
             if (NS_SUCCEEDED(rv)) {
                 rv = nsComponentManager::FindFactory(cid, getter_AddRefs(factory));
@@ -1076,10 +1051,9 @@ RDFServiceImpl::GetResource(const char* aURI, nsIRDFResource** aResource)
                 if (NS_FAILED(rv)) return rv;
 
                 // Store the factory in our one-element cache.
-                if ((prefixlen > 0) && (prefixlen < sizeof(mLastURIPrefix))) {
+                if (p != begin) {
                     mLastFactory = factory;
-                    PL_strncpyz(mLastURIPrefix, aURI, prefixlen + 1);
-                    mLastPrefixlen = prefixlen;
+                    mLastURIPrefix = Substring(begin, p);
                 }
             }
         }
@@ -1093,10 +1067,9 @@ RDFServiceImpl::GetResource(const char* aURI, nsIRDFResource** aResource)
         factory = mDefaultResourceFactory;
 
         // Store the factory in our one-element cache.
-        if ((prefixlen > 0) && (prefixlen < sizeof(mLastURIPrefix))) {
+        if (p != begin) {
             mLastFactory = factory;
-            PL_strncpyz(mLastURIPrefix, aURI, prefixlen + 1);
-            mLastPrefixlen = prefixlen;
+            mLastURIPrefix = Substring(begin, p);
         }
     }
 
@@ -1106,7 +1079,7 @@ RDFServiceImpl::GetResource(const char* aURI, nsIRDFResource** aResource)
 
     // Now initialize it with it's URI. At this point, the resource
     // implementation should register itself with the RDF service.
-    rv = result->Init(aURI);
+    rv = result->Init(flatURI.get());
     if (NS_FAILED(rv)) {
         NS_ERROR("unable to initialize resource");
         NS_RELEASE(result);
@@ -1118,13 +1091,9 @@ RDFServiceImpl::GetResource(const char* aURI, nsIRDFResource** aResource)
 }
 
 NS_IMETHODIMP
-RDFServiceImpl::GetUnicodeResource(const PRUnichar* aURI, nsIRDFResource** aResource)
+RDFServiceImpl::GetUnicodeResource(const nsAString& aURI, nsIRDFResource** aResource)
 {
-    NS_PRECONDITION(aURI != nsnull, "null ptr");
-    if (! aURI)
-        return NS_ERROR_NULL_POINTER;
-
-    return GetResource(NS_ConvertUCS2toUTF8(aURI).get(), aResource);
+    return GetResource(NS_ConvertUCS2toUTF8(aURI), aResource);
 }
 
 
@@ -1171,7 +1140,7 @@ static PRInt32 kShift = 6;
         }
 
         nsIRDFResource* resource;
-        rv = GetResource(s.get(), &resource);
+        rv = GetResource(s, &resource);
         if (NS_FAILED(rv)) return rv;
 
         // XXX an ugly but effective way to make sure that this

@@ -47,48 +47,28 @@
 #include "nsIContent.h"
 #include "nsINameSpaceManager.h"
 #include "pldhash.h"
-#include "txAtom.h"
+#include "nsIAtom.h"
 #include "TxObject.h"
-#include "TxString.h"
-
-#ifndef NULL
-typedef 0 NULL;
-#endif
-
-typedef UNICODE_CHAR DOM_CHAR;
 
 #define kTxNsNodeIndexOffset 0x00000000;
 #define kTxAttrIndexOffset 0x40000000;
 #define kTxChildIndexOffset 0x80000000;
 
+extern nsINameSpaceManager* gTxNameSpaceManager;
+
 class nsIDOMAttr;
 class nsIDOMDocument;
-class nsIDOMDocumentType;
 class nsIDOMElement;
-class nsIDOMEntity;
 class nsIDOMNamedNodeMap;
 class nsIDOMNode;
-class nsIDOMNodeList;
-class nsIDOMNotation;
 class nsIDOMProcessingInstruction;
 
 class Attr;
 class Document;
-class DocumentType;
 class Element;
-class Entity;
 class NamedNodeMap;
 class Node;
-class NodeList;
-class Notation;
 class ProcessingInstruction;
-
-// These don't have specific implementation classes.
-typedef Node CDataSection;
-typedef Node Comment;
-typedef Node DocumentFragment;
-typedef Node EntityReference;
-typedef Node Text;
 
 /**
  * This macro creates a nsCOMPtr to a specific interface for the
@@ -184,11 +164,10 @@ public:
     virtual ~Node();
 
     // Read functions
-    virtual const String& getNodeName();
-    virtual const String& getNodeValue();
+    virtual nsresult getNodeName(nsAString& aName);
+    virtual nsresult getNodeValue(nsAString& aValue);
     virtual unsigned short getNodeType() const;
     virtual Node* getParentNode();
-    virtual NodeList* getChildNodes();
     virtual Node* getFirstChild();
     virtual Node* getLastChild();
     virtual Node* getPreviousSibling();
@@ -201,22 +180,20 @@ public:
 
     virtual MBool hasChildNodes() const;
 
-    //Introduced in DOM2
-    virtual String getNamespaceURI();
+    // Introduced in DOM2
+    virtual nsresult getNamespaceURI(nsAString& aNSURI);
 
-    //From DOM3 26-Jan-2001 WD
-    virtual String getBaseURI();
+    // From DOM3 26-Jan-2001 WD
+    virtual nsresult getBaseURI(nsAString& aURI);
 
     // txXPathNode functions
-    virtual MBool getLocalName(txAtom** aLocalName);
+    virtual MBool getLocalName(nsIAtom** aLocalName);
     virtual PRInt32 getNamespaceID();
-    virtual PRInt32 lookupNamespaceID(txAtom* aPrefix);
+    virtual PRInt32 lookupNamespaceID(nsIAtom* aPrefix);
     virtual Node* getXPathParent();
     virtual PRInt32 compareDocumentPosition(Node* aOther);
 
 protected:
-    String mNodeName;
-    String mNodeValue;
     PRInt32 mNamespaceID;
     
 private:
@@ -235,20 +212,6 @@ private:
 };
 
 /**
- * Wrapper class for nsIDOMNodeList.
- */
-class NodeList : public MozillaObjectWrapper
-{
-public:
-    NodeList(nsIDOMNodeList* aNodeList, Document* aOwner);
-    ~NodeList();
-
-    Node* item(PRUint32 aIndex);
-    PRUint32 getLength();
-};
-
-
-/**
  * Wrapper class for nsIDOMNamedNodeMap.
  */
 class NamedNodeMap : public MozillaObjectWrapper
@@ -257,7 +220,7 @@ public:
     NamedNodeMap(nsIDOMNamedNodeMap* aNamedNodeMap, Document* aOwner);
     ~NamedNodeMap();
 
-    Node* getNamedItem(const String& aName);
+    Node* getNamedItem(const nsAString& aName);
     Node* item(PRUint32 aIndex);
     PRUint32 getLength();
 };
@@ -272,7 +235,6 @@ public:
     ~Document();
 
     Element* getDocumentElement();
-    DocumentType* getDoctype();
 
     // Determine what kind of node this is, and create the appropriate
     // wrapper for it.
@@ -284,39 +246,20 @@ public:
     // Note the addition of the factory functions to "wrap"
     // nsIDOM* objects.
     Attr* createAttribute(nsIDOMAttr* aAttr);
-    DocumentType* createDocumentType(nsIDOMDocumentType* aDoctype);
     Element* createElement(nsIDOMElement* aElement);
-    Entity* createEntity(nsIDOMEntity* aEntity);
     NamedNodeMap* createNamedNodeMap(nsIDOMNamedNodeMap* aMap);
     Node* createNode(nsIDOMNode* aNode);
-    NodeList* createNodeList(nsIDOMNodeList* aList);
-    Notation* createNotation(nsIDOMNotation* aNotation);
     ProcessingInstruction* createProcessingInstruction(
                 nsIDOMProcessingInstruction* aPi);
 
-    Comment* createComment(const String& aData);
-    DocumentFragment* createDocumentFragment();
-    ProcessingInstruction* createProcessingInstruction(
-                const String& aTarget, const String& aData);
-    Text* createTextNode(const String& aData);
+    Element* getElementById(const nsAString& aID);
 
-    // Introduced in DOM Level 2
-    Element* createElementNS(const String& aNamespaceURI,
-                             const String& aTagName);
-
-    Element* getElementById(const String aID);
-
-    PRInt32 namespaceURIToID(const String& aNamespaceURI);
-    void namespaceIDToURI(PRInt32 aNamespaceID, String& aNamespaceURI);
+    PRInt32 namespaceURIToID(const nsAString& aNamespaceURI);
+    void namespaceIDToURI(PRInt32 aNamespaceID, nsAString& aNamespaceURI);
 
 private:
-    friend class Attr; // Attrs and Nodes need to get to the cached nsNSManager
-    friend class Node; 
-
     PLDHashTable mWrapperHashTable;
     PLDHashTable mAttributeNodes;
-
-    nsCOMPtr<nsINameSpaceManager> nsNSManager;
 
 #ifdef DEBUG
     friend class MozillaObjectWrapper;
@@ -334,14 +277,14 @@ public:
     Element(nsIDOMElement* aElement, Document* aOwner);
     ~Element();
 
-    void setAttributeNS(const String& aNamespaceURI,
-                        const String& aName,
-                        const String& aValue);
+    void setAttributeNS(const nsAString& aNamespaceURI,
+                        const nsAString& aName,
+                        const nsAString& aValue);
 
     // txXPathNode functions
-    MBool getLocalName(txAtom** aLocalName);
-    MBool getAttr(txAtom* aLocalName, PRInt32 aNSID, String& aValue);
-    MBool hasAttr(txAtom* aLocalName, PRInt32 aNSID);
+    MBool getLocalName(nsIAtom** aLocalName);
+    MBool getAttr(nsIAtom* aLocalName, PRInt32 aNSID, nsAString& aValue);
+    MBool hasAttr(nsIAtom* aLocalName, PRInt32 aNSID);
 };
 
 class txAttributeNodeKey
@@ -390,7 +333,7 @@ public:
     ~Attr();
 
     // txXPathNode functions override
-    MBool getLocalName(txAtom** aLocalName);
+    MBool getLocalName(nsIAtom** aLocalName);
     Node* getXPathParent();
 
     txAttributeNodeKey* GetKey() {
@@ -408,64 +351,8 @@ public:
                           Document* aOwner);
     ~ProcessingInstruction();
 
-    const String& getTarget();
-    const String& getData();
-
     // txXPathNode functions
-    MBool getLocalName(txAtom** aLocalName);
-
-private:
-    String mTarget;
-    String mData;
-};
-
-/**
- * Wrapper class for nsIDOMNotation.
- */
-class Notation : public Node
-{
-public:
-    Notation(nsIDOMNotation* aNotation, Document* aOwner);
-    ~Notation();
-
-    const String& getPublicId();
-    const String& getSystemId();
-
-private:
-    String publicId;
-    String systemId;
-};
-
-/**
- * Wrapper class for nsIDOMEntity.
- */
-class Entity : public Node
-{
-public:
-    Entity(nsIDOMEntity* aEntity, Document* aOwner);
-    ~Entity();
-
-    const String& getPublicId();
-    const String& getSystemId();
-    const String& getNotationName();
-
-private:
-    String publicId;
-    String systemId;
-    String notationName;
-};
-
-/**
- * Wrapper class for nsIDOMDocumentType.
- */
-class DocumentType : public Node
-{
-public:
-    DocumentType(nsIDOMDocumentType* aDocumentType, Document* aOwner);
-    ~DocumentType();
-
-    NamedNodeMap* getEntities();
-    NamedNodeMap* getNotations();
+    MBool getLocalName(nsIAtom** aLocalName);
 };
 
 #endif

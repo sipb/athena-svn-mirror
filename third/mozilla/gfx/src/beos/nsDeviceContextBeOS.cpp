@@ -247,8 +247,6 @@ NS_IMETHODIMP nsDeviceContextBeOS::GetSystemFont(nsSystemFontID aID, nsFont *aFo
       break;
     case eSystemFont_List:   
     case eSystemFont_Field:
-      status = GetSystemFontInfo(be_fixed_font, aID, aFont);     
-      break;
     case eSystemFont_Icon : 
     case eSystemFont_MessageBox : 
     case eSystemFont_SmallCaption : 
@@ -267,13 +265,6 @@ NS_IMETHODIMP nsDeviceContextBeOS::GetSystemFont(nsSystemFontID aID, nsFont *aFo
   }
 
   return status;
-}
-
-NS_IMETHODIMP nsDeviceContextBeOS::GetDrawingSurface(nsIRenderingContext &aContext, 
-                                                    nsDrawingSurface &aSurface)
-{
-  aContext.CreateDrawingSurface(nsnull, 0, aSurface);
-  return nsnull == aSurface ? NS_ERROR_OUT_OF_MEMORY : NS_OK;  
 }
 
 NS_IMETHODIMP nsDeviceContextBeOS::ConvertPixel(nscolor aColor, 
@@ -467,7 +458,7 @@ nsDeviceContextBeOS::GetSystemFontInfo(const BFont *theFont, nsSystemFontID anID
         break;
       case eSystemFont_List:
       case eSystemFont_Field:
-        theFont = be_fixed_font;
+        theFont = be_plain_font;
         break;
       case eSystemFont_Caption:
         theFont = be_bold_font;

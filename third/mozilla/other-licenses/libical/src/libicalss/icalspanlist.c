@@ -3,7 +3,7 @@
     FILE: icalspanlist.c
     CREATOR: ebusboom 23 aug 2000
   
-    $Id: icalspanlist.c,v 1.1.1.1 2003-02-14 18:26:50 rbasch Exp $
+    $Id: icalspanlist.c,v 1.1.1.1.2.1 2003-07-14 19:05:17 ghudson Exp $
     $Locker:  $
     
     (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -30,6 +30,9 @@
 #include "icalspanlist.h"
 #include "pvl.h" 
 #include <stdlib.h> /* for free and malloc */
+#ifdef XP_MAC
+#include <string.h> /* for memcpy */
+#endif
 
 struct icalspanlist_impl {
 	pvl_list spans;

@@ -115,6 +115,10 @@ SHARED_LIBRARY	= $(OBJDIR)/lib$(LIBRARY_NAME)$(LIBRARY_VERSION).$(DLL_SUFFIX)
 IMPORT_LIBRARY	= $(OBJDIR)/lib$(LIBRARY_NAME)$(LIBRARY_VERSION).$(LIB_SUFFIX)
 endif
 
+ifeq ($(OS_ARCH),OS2)
+DEF_FILE		   := $(SHARED_LIBRARY:.dll=.def)
+endif
+
 else
 
 LIBRARY		= $(OBJDIR)/lib$(LIBRARY_NAME)$(LIBRARY_VERSION).$(LIB_SUFFIX)
@@ -145,7 +149,7 @@ endif
 
 ifndef OBJS
 OBJS		= $(addprefix $(OBJDIR)/,$(CSRCS:.c=.$(OBJ_SUFFIX))) \
-		  $(addprefix $(OBJDIR)/,$(ASFILES:.s=.$(OBJ_SUFFIX)))
+		  $(addprefix $(OBJDIR)/,$(ASFILES:.$(ASM_SUFFIX)=.$(OBJ_SUFFIX)))
 endif
 
 ifeq ($(OS_TARGET), WIN16)
@@ -169,7 +173,7 @@ endif
 endif
 
 ALL_TRASH		= $(TARGETS) $(OBJS) $(filter-out . .., $(OBJDIR)) LOGS TAGS $(GARBAGE) \
-			  $(NOSUCHFILE) \
+			  $(NOSUCHFILE) $(DEF_FILE)\
 			  so_locations
 
 ifdef DIRS
@@ -286,7 +290,7 @@ $(NFSPWD):
 
 $(PROGRAM): $(OBJS)
 	@$(MAKE_OBJDIR)
-ifeq ($(OS_ARCH),WINNT)
+ifeq ($(OS_ARCH)_$(NS_USE_GCC),WINNT_)
 	$(CC) $(OBJS) -Fe$@ -link $(LDFLAGS) $(OS_LIBS) $(EXTRA_LIBS)
 else
 ifeq ($(MOZ_OS2_TOOLS),VACPP)
@@ -316,15 +320,25 @@ $(IMPORT_LIBRARY): $(SHARED_LIBRARY)
 endif
 
 ifeq ($(OS_TARGET), OS2)
-$(IMPORT_LIBRARY): $(SHARED_LIBRARY)
-	$(IMPLIB) $@ $(SHARED_LIBRARY).def
+$(DEF_FILE): $(LIBRARY)
+	rm -f $@
+	echo LIBRARY $(notdir $(basename $(SHARED_LIBRARY))) INITINSTANCE TERMINSTANCE > $@
+	echo PROTMODE >> $@
+	echo CODE    LOADONCALL MOVEABLE DISCARDABLE >> $@
+	echo DATA    PRELOAD MOVEABLE MULTIPLE NONSHARED >> $@
+	echo EXPORTS >> $@
+	$(FILTER) $(LIBRARY) >> $@
+
+$(IMPORT_LIBRARY): $(DEF_FILE)
+	rm -f $@
+	$(IMPLIB) $@ $(DEF_FILE)
 endif
     
-$(SHARED_LIBRARY): $(OBJS)
+$(SHARED_LIBRARY): $(OBJS) $(DEF_FILE)
 	@$(MAKE_OBJDIR)
 	rm -f $@
 ifdef USE_AUTOCONF
-	$(MKSHLIB) $(OBJS) $(EXTRA_LIBS) $(OS_LIBS)
+	$(MKSHLIB) $(OBJS) $(EXTRA_LIBS) $(OS_LIBS) $(DEF_FILE)
 else
 ifeq ($(OS_ARCH)$(OS_RELEASE), AIX4.1)
 	echo "#!" > $(OBJDIR)/lib$(LIBRARY_NAME)_syms
@@ -356,28 +370,11 @@ else	# WIN16
 	$(LINK_DLL) -MAP $(DLLBASE) $(OS_LIBS) $(EXTRA_LIBS) $(OBJS)
 endif # WINNT
 else
-ifeq ($(OS_ARCH),OS2)
-# append ( >> ) doesn't seem to be working under OS/2 gmake. Run through OS/2 shell instead.	
-	@cmd /C "echo LIBRARY $(notdir $(basename $(SHARED_LIBRARY))) INITINSTANCE TERMINSTANCE >$@.def"
-	@cmd /C "echo PROTMODE >>$@.def"
-	@cmd /C "echo CODE    LOADONCALL MOVEABLE DISCARDABLE >>$@.def"
-	@cmd /C "echo DATA    PRELOAD MOVEABLE MULTIPLE NONSHARED >>$@.def"	
-	@cmd /C "echo EXPORTS >>$@.def"
-	@cmd /C "$(FILTER) $(LIBRARY) | grep -v _DLL_InitTerm >>$@.def"
-	$(LINK_DLL) $(DLLBASE) $(OBJS) $(OS_LIBS) $(EXTRA_LIBS) $@.def
-else	# OS2
-ifeq ($(OS_TARGET), OpenVMS)
-	@if test ! -f $(OBJDIR)/VMSuni.opt; then \
-	    echo "Creating universal symbol option file $(OBJDIR)/VMSuni.opt";\
-	    create_opt_uni $(OBJS); \
-	    mv VMSuni.opt $(OBJDIR); \
-	fi
-	$(MKSHLIB) -o $@ $(OBJS) $(EXTRA_LIBS) $(OS_LIBS) $(OBJDIR)/VMSuni.opt
-	@echo "`translate $@`" > $(@:.$(DLL_SUFFIX)=.vms)
-else	# OpenVMS
-	$(MKSHLIB) -o $@ $(OBJS) $(EXTRA_LIBS) $(OS_LIBS)
-endif	# OpenVMS
-endif   # OS2
+ifeq ($(MOZ_OS2_TOOLS),VACPP)
+	$(LINK_DLL) $(DLLBASE) $(OBJS) $(OS_LIBS) $(EXTRA_LIBS) $(DEF_FILE)
+else	# !os2 vacpp
+	$(MKSHLIB) -o $@ $(OBJS) $(EXTRA_LIBS) $(OS_LIBS) $(DEF_FILE)
+endif   # OS2 vacpp
 endif	# WINNT
 endif	# AIX 4.1
 endif   # USE_AUTOCONF
@@ -390,14 +387,18 @@ ifeq ($(OS_TARGET),OS2)
 	$(RC) -DOS2 -r $(RESNAME) $(RES)
 else
 # The resource compiler does not understand the -U option.
+ifdef NS_USE_GCC
+	$(RC) $(filter-out -U%,$(DEFINES)) $(INCLUDES:-I%=--include-dir %) -o $@ $<
+else
 	$(RC) $(filter-out -U%,$(DEFINES)) $(INCLUDES) -Fo$(RES) $(RESNAME)
+endif
 endif
 	@echo $(RES) finished
 endif
 
 $(OBJDIR)/%.$(OBJ_SUFFIX): %.cpp
 	@$(MAKE_OBJDIR)
-ifeq ($(OS_ARCH), WINNT)
+ifeq ($(OS_ARCH)_$(NS_USE_GCC), WINNT_)
 	$(CCC) -Fo$@ -c $(CCCFLAGS) $<
 else
 ifeq ($(MOZ_OS2_TOOLS),VACPP)
@@ -412,7 +413,7 @@ WCCFLAGS2 = $(subst -I,-i=,$(WCCFLAGS1))
 WCCFLAGS3 = $(subst -D,-d,$(WCCFLAGS2))
 $(OBJDIR)/%.$(OBJ_SUFFIX): %.c
 	@$(MAKE_OBJDIR)
-ifeq ($(OS_ARCH), WINNT)
+ifeq ($(OS_ARCH)_$(NS_USE_GCC), WINNT_)
 ifeq ($(OS_TARGET), WIN16)
 #	$(MOD_DEPTH)/config/w16opt $(WCCFLAGS3)
 	echo $(WCCFLAGS3) >w16wccf

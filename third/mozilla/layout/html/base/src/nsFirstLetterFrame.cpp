@@ -37,11 +37,12 @@
 #include "nsCOMPtr.h"
 #include "nsHTMLContainerFrame.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIContent.h"
 #include "nsLineLayout.h"
 #include "nsHTMLAtoms.h"
 #include "nsLayoutAtoms.h"
+#include "nsAutoPtr.h"
 
 #define nsFirstLetterFrameSuper nsHTMLContainerFrame
 
@@ -52,7 +53,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
   NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
                                  nsIAtom*        aListName,
@@ -128,23 +129,18 @@ NS_IMETHODIMP
 nsFirstLetterFrame::Init(nsIPresContext*  aPresContext,
                          nsIContent*      aContent,
                          nsIFrame*        aParent,
-                         nsIStyleContext* aContext,
+                         nsStyleContext*  aContext,
                          nsIFrame*        aPrevInFlow)
 {
   nsresult rv;
-  nsCOMPtr<nsIStyleContext> newSC;
+  nsRefPtr<nsStyleContext> newSC;
   if (aPrevInFlow) {
     // Get proper style context for ourselves.  We're creating the frame
     // that represents everything *except* the first letter, so just create
     // a style context like we would for a text node.
-    nsCOMPtr<nsIStyleContext> parentStyleContext = aContext->GetParent();
+    nsStyleContext* parentStyleContext = aContext->GetParent();
     if (parentStyleContext) {
-      rv = aPresContext->ResolveStyleContextForNonElement(
-                                                   parentStyleContext,
-                                                   getter_AddRefs(newSC));
-      if (NS_FAILED(rv))
-        return rv;
-
+      newSC = aPresContext->ResolveStyleContextForNonElement(parentStyleContext);
       if (newSC)
         aContext = newSC;
     }
@@ -232,7 +228,7 @@ nsFirstLetterFrame::Reflow(nsIPresContext*          aPresContext,
     // line context is when its floating.
     nsHTMLReflowState rs(aPresContext, aReflowState, kid, availSize);
     nsLineLayout ll(aPresContext, nsnull, &aReflowState,
-                    nsnull != aMetrics.maxElementSize);
+                    aMetrics.mComputeMEW);
     ll.BeginLineReflow(0, 0, NS_UNCONSTRAINEDSIZE, NS_UNCONSTRAINEDSIZE,
                        PR_FALSE, PR_TRUE);
     rs.mLineLayout = &ll;
@@ -251,7 +247,8 @@ nsFirstLetterFrame::Reflow(nsIPresContext*          aPresContext,
     ll->BeginSpan(this, &aReflowState, bp.left, availSize.width);
     ll->ReflowFrame(kid, aReflowStatus, &aMetrics, pushedFrame);
     nsSize size;
-    ll->EndSpan(this, size, aMetrics.maxElementSize);
+    ll->EndSpan(this, size,
+                aMetrics.mComputeMEW ? &aMetrics.mMaxElementWidth : nsnull);
   }
 
   // Place and size the child and update the output metrics
@@ -262,9 +259,8 @@ nsFirstLetterFrame::Reflow(nsIPresContext*          aPresContext,
   aMetrics.height += tb;
   aMetrics.ascent += bp.top;
   aMetrics.descent += bp.bottom;
-  if (aMetrics.maxElementSize) {
-    aMetrics.maxElementSize->width += lr;
-    aMetrics.maxElementSize->height += tb;
+  if (aMetrics.mComputeMEW) {
+    aMetrics.mMaxElementWidth += lr;
   }
 
   // Create a continuation or remove existing continuations based on
@@ -350,14 +346,13 @@ nsFirstLetterFrame::DrainOverflowFrames(nsIPresContext* aPresContext)
   // are reflowed)
   nsIFrame* kid = mFrames.FirstChild();
   if (kid) {
-    nsCOMPtr<nsIStyleContext> sc;
+    nsRefPtr<nsStyleContext> sc;
     nsCOMPtr<nsIContent> kidContent;
     kid->GetContent(getter_AddRefs(kidContent));
     if (kidContent) {
       NS_ASSERTION(kidContent->IsContentOfType(nsIContent::eTEXT),
                    "should contain only text nodes");
-      aPresContext->ResolveStyleContextForNonElement(mStyleContext,
-                                                     getter_AddRefs(sc));
+      sc = aPresContext->ResolveStyleContextForNonElement(mStyleContext);
       if (sc) {
         kid->SetStyleContext(aPresContext, sc);
       }

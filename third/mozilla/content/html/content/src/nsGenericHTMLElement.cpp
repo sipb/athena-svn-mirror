@@ -64,7 +64,6 @@
 #include "nsILink.h"
 #include "nsILinkHandler.h"
 #include "nsPIDOMWindow.h"
-#include "nsISizeOfHandler.h"
 #include "nsIStyleRule.h"
 #include "nsISupportsArray.h"
 #include "nsIURL.h"
@@ -74,9 +73,11 @@
 #include "nsIFrame.h"
 #include "nsIScrollableFrame.h"
 #include "nsIScrollableView.h"
+#include "nsIScrollableViewProvider.h"
 #include "nsRange.h"
 #include "nsIPresShell.h"
 #include "nsIPresContext.h"
+#include "nsIDocShell.h"
 #include "nsIView.h"
 #include "nsIViewManager.h"
 #include "nsINameSpaceManager.h"
@@ -90,6 +91,7 @@
 
 #include "nsIHTMLContentContainer.h"
 #include "nsHTMLParts.h"
+#include "nsContentUtils.h"
 #include "nsString.h"
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
@@ -138,8 +140,6 @@
 static NS_DEFINE_CID(kPresStateCID,  NS_PRESSTATE_CID);
 // XXX todo: add in missing out-of-memory checks
 
-#include "nsIPref.h" // Used by the temp pref, should be removed!
- 
 //----------------------------------------------------------------------
 
 #ifdef GATHER_ELEMENT_USEAGE_STATISTICS
@@ -201,7 +201,6 @@ class nsGenericHTMLElementTearoff : public nsIDOMNSHTMLElement,
   nsGenericHTMLElementTearoff(nsGenericHTMLElement *aElement)
     : mElement(aElement)
   {
-    NS_INIT_ISUPPORTS();
     NS_ADDREF(mElement);
   }
 
@@ -460,7 +459,7 @@ nsGenericHTMLElement::SetLang(const nsAString& aLang)
   return NS_OK;
 }
 
-static nsGenericHTMLElement::EnumTable kDirTable[] = {
+static nsHTMLValue::EnumTable kDirTable[] = {
   { "ltr", NS_STYLE_DIRECTION_LTR },
   { "rtl", NS_STYLE_DIRECTION_RTL },
   { 0 }
@@ -473,7 +472,7 @@ nsGenericHTMLElement::GetDir(nsAString& aDir)
   nsresult result = GetHTMLAttribute(nsHTMLAtoms::dir, value);
 
   if (NS_CONTENT_ATTR_HAS_VALUE == result) {
-    EnumValueToString(value, kDirTable, aDir);
+    value.EnumValueToString(kDirTable, aDir);
   }
 
   return NS_OK;
@@ -615,7 +614,6 @@ nsGenericHTMLElement::GetOffsetRect(nsRect& aRect,
     }
   }
 
-  const nsStyleDisplay* display = nsnull;
   nsPoint origin(0, 0);
 
   if (!done) {
@@ -624,9 +622,9 @@ nsGenericHTMLElement::GetOffsetRect(nsRect& aRect,
 
     frame->GetOrigin(origin);
 
-    frame->GetStyleData(eStyleStruct_Display, (const nsStyleStruct*&)display);
+    const nsStyleDisplay* display = frame->GetStyleDisplay();
 
-    if (display && display->IsPositioned()) {
+    if (display->IsPositioned()) {
       if (display->IsAbsolutelyPositioned()) {
         // If the primary frame or a parent is absolutely positioned
         // (fixed or absolute) we stop walking up the frame parent
@@ -642,18 +640,15 @@ nsGenericHTMLElement::GetOffsetRect(nsRect& aRect,
     frame->GetParent(&parent);
 
     while (parent) {
-      parent->GetStyleData(eStyleStruct_Display,
-                           (const nsStyleStruct*&)display);
+      display = parent->GetStyleDisplay();
 
-      if (display) {
-        if (display->IsPositioned()) {
-          // Stop at the first *parent* that is positioned (fixed,
-          // absolute, or relatiive)
+      if (display->IsPositioned()) {
+        // Stop at the first *parent* that is positioned (fixed,
+        // absolute, or relatiive)
 
-          parent->GetContent(aOffsetParent);
+        parent->GetContent(aOffsetParent);
 
-          break;
-        }
+        break;
       }
 
       // Add the parent's origin to our own to get to the
@@ -713,7 +708,6 @@ nsGenericHTMLElement::GetOffsetRect(nsRect& aRect,
   }
 
   // For the origin, add in the border for the frame
-  const nsStyleBorder* border = nsnull;
   nsStyleCoord coord;
 
 #if 0
@@ -721,38 +715,31 @@ nsGenericHTMLElement::GetOffsetRect(nsRect& aRect,
   // calculations, but I think that's wrong. My tests show that we
   // work more like IE if we don't do this, so lets try this and see
   // if people agree.
-  frame->GetStyleData(eStyleStruct_Border, (const nsStyleStruct*&)border);
+  const nsStyleBorder* border = frame->GetStyleBorder();
 
-  if (border) {
-    if (eStyleUnit_Coord == border->mBorder.GetLeftUnit()) {
-      origin.x += border->mBorder.GetLeft(coord).GetCoordValue();
-    }
-    if (eStyleUnit_Coord == border->mBorder.GetTopUnit()) {
-      origin.y += border->mBorder.GetTop(coord).GetCoordValue();
-    }
+  if (eStyleUnit_Coord == border->mBorder.GetLeftUnit()) {
+    origin.x += border->mBorder.GetLeft(coord).GetCoordValue();
+  }
+  if (eStyleUnit_Coord == border->mBorder.GetTopUnit()) {
+    origin.y += border->mBorder.GetTop(coord).GetCoordValue();
   }
 #endif
 
   // And subtract out the border for the parent
   if (parent) {
     PRBool includeBorder = PR_TRUE;  // set to false if border-box sizing is used
-    const nsStylePosition* position = nsnull;
-    parent->GetStyleData(eStyleStruct_Position, (const nsStyleStruct*&)position);
-    if (position && position->mBoxSizing == NS_STYLE_BOX_SIZING_BORDER) {
+    const nsStylePosition* position = parent->GetStylePosition();
+    if (position->mBoxSizing == NS_STYLE_BOX_SIZING_BORDER) {
       includeBorder = PR_FALSE;
     }
     
     if (includeBorder) {
-      border = nsnull;
-
-      parent->GetStyleData(eStyleStruct_Border, (const nsStyleStruct*&)border);
-      if (border) {
-        if (eStyleUnit_Coord == border->mBorder.GetLeftUnit()) {
-          origin.x -= border->mBorder.GetLeft(coord).GetCoordValue();
-        }
-        if (eStyleUnit_Coord == border->mBorder.GetTopUnit()) {
-          origin.y -= border->mBorder.GetTop(coord).GetCoordValue();
-        }
+      const nsStyleBorder* border = parent->GetStyleBorder();
+      if (eStyleUnit_Coord == border->mBorder.GetLeftUnit()) {
+        origin.x -= border->mBorder.GetLeft(coord).GetCoordValue();
+      }
+      if (eStyleUnit_Coord == border->mBorder.GetTopUnit()) {
+        origin.y -= border->mBorder.GetTop(coord).GetCoordValue();
       }
     }
   }
@@ -851,8 +838,7 @@ nsGenericHTMLElement::GetOffsetParent(nsIDOMElement** aOffsetParent)
   nsresult res = GetOffsetRect(rcFrame, getter_AddRefs(parent));
   if (NS_SUCCEEDED(res)) {
     if (parent) {
-      res = parent->QueryInterface(NS_GET_IID(nsIDOMElement),
-                                   (void**)aOffsetParent);
+      res = CallQueryInterface(parent, aOffsetParent);
     } else {
       *aOffsetParent = nsnull;
     }
@@ -880,7 +866,8 @@ nsGenericHTMLElement::GetInnerHTML(nsAString& aInnerHTML)
 
   NS_ENSURE_TRUE(docEncoder, NS_ERROR_FAILURE);
 
-  docEncoder->Init(doc, NS_LITERAL_STRING("text/html"), 0);
+  docEncoder->Init(doc, NS_LITERAL_STRING("text/html"),
+                   nsIDocumentEncoder::OutputEncodeBasicEntities);
 
   nsCOMPtr<nsIDOMRange> range(new nsRange);
   NS_ENSURE_TRUE(range, NS_ERROR_OUT_OF_MEMORY);
@@ -961,7 +948,8 @@ nsGenericHTMLElement::SetInnerHTML(const nsAString& aInnerHTML)
 
 nsresult
 nsGenericHTMLElement::GetScrollInfo(nsIScrollableView **aScrollableView,
-                                    float *aP2T, float *aT2P)
+                                    float *aP2T, float *aT2P,
+                                    nsIFrame **aFrame)
 {
   *aScrollableView = nsnull;
   *aP2T = 0.0f;
@@ -983,6 +971,13 @@ nsGenericHTMLElement::GetScrollInfo(nsIScrollableView **aScrollableView,
     return NS_OK;
   }
 
+  // Get the presentation context
+  nsCOMPtr<nsIPresContext> presContext;
+  presShell->GetPresContext(getter_AddRefs(presContext));
+  if (!presContext) {
+    return NS_OK;
+  }
+
   // Get the primary frame for this element
   nsIFrame *frame = nsnull;
   presShell->GetPrimaryFrameFor(this, &frame);
@@ -990,11 +985,8 @@ nsGenericHTMLElement::GetScrollInfo(nsIScrollableView **aScrollableView,
     return NS_OK;
   }
 
-  // Get the presentation context
-  nsCOMPtr<nsIPresContext> presContext;
-  presShell->GetPresContext(getter_AddRefs(presContext));
-  if (!presContext) {
-    return NS_OK;
+  if (aFrame) {
+    *aFrame = frame;
   }
 
   presContext->GetPixelsToTwips(aP2T);
@@ -1005,6 +997,15 @@ nsGenericHTMLElement::GetScrollInfo(nsIScrollableView **aScrollableView,
   CallQueryInterface(frame, &scrollFrame);
 
   if (!scrollFrame) {
+    nsIScrollableViewProvider *scrollProvider = nsnull;
+    CallQueryInterface(frame, &scrollProvider);
+    if (scrollProvider) {
+      scrollProvider->GetScrollableView(presContext, aScrollableView);
+      if (*aScrollableView) {
+        return NS_OK;
+      }
+    }
+
     if (mNodeInfo->Equals(nsHTMLAtoms::body)) {
       // The scroll info for the body element should map to the scroll
       // info for the nearest scrollable frame above the body element
@@ -1171,6 +1172,23 @@ nsGenericHTMLElement::GetScrollWidth(PRInt32* aScrollWidth)
   return rv;
 }
 
+// static
+const nsSize
+nsGenericHTMLElement::GetClientAreaSize(nsIFrame *aFrame)
+{
+  nsRect rect;
+  aFrame->GetRect(rect);
+
+  const nsStyleBorder* border = aFrame->GetStyleBorder();
+
+  nsMargin border_size;
+  border->CalcBorderFor(aFrame, border_size);
+
+  rect.Deflate(border_size);
+
+  return nsSize(rect.width, rect.height);
+}
+
 nsresult
 nsGenericHTMLElement::GetClientHeight(PRInt32* aClientHeight)
 {
@@ -1178,10 +1196,10 @@ nsGenericHTMLElement::GetClientHeight(PRInt32* aClientHeight)
   *aClientHeight = 0;
 
   nsIScrollableView *scrollView = nsnull;
-  nsresult rv = NS_OK;
   float p2t, t2p;
+  nsIFrame *frame = nsnull;
 
-  GetScrollInfo(&scrollView, &p2t, &t2p);
+  GetScrollInfo(&scrollView, &p2t, &t2p, &frame);
 
   if (scrollView) {
     const nsIView *view = nsnull;
@@ -1191,9 +1209,16 @@ nsGenericHTMLElement::GetClientHeight(PRInt32* aClientHeight)
     view->GetBounds(r);
 
     *aClientHeight = NSTwipsToIntPixels(r.height, t2p);
+  } else if (mNodeInfo->Equals(nsHTMLAtoms::body) && frame) {
+    // Special case code to make document.body.clientHeight work even
+    // if the body element's overflow is hidden.
+    //
+    // http://bugzilla.mozilla.org/show_bug.cgi?id=180552
+
+    *aClientHeight = NSTwipsToIntPixels(GetClientAreaSize(frame).height, t2p);
   }
 
-  return rv;
+  return NS_OK;
 }
 
 nsresult
@@ -1203,10 +1228,10 @@ nsGenericHTMLElement::GetClientWidth(PRInt32* aClientWidth)
   *aClientWidth = 0;
 
   nsIScrollableView *scrollView = nsnull;
-  nsresult rv = NS_OK;
   float p2t, t2p;
+  nsIFrame *frame = nsnull;
 
-  GetScrollInfo(&scrollView, &p2t, &t2p);
+  GetScrollInfo(&scrollView, &p2t, &t2p, &frame);
 
   if (scrollView) {
     const nsIView *view = nsnull;
@@ -1216,9 +1241,16 @@ nsGenericHTMLElement::GetClientWidth(PRInt32* aClientWidth)
     view->GetBounds(r);
 
     *aClientWidth = NSTwipsToIntPixels(r.width, t2p);
+  } else if (mNodeInfo->Equals(nsHTMLAtoms::body) && frame) {
+    // Special case code to make document.body.clientWidth work even
+    // if the body element's overflow is hidden.
+    //
+    // http://bugzilla.mozilla.org/show_bug.cgi?id=180552
+
+    *aClientWidth = NSTwipsToIntPixels(GetClientAreaSize(frame).width, t2p);
   }
 
-  return rv;
+  return NS_OK;
 }
 
 nsresult
@@ -1238,6 +1270,9 @@ nsGenericHTMLElement::ScrollIntoView(PRBool aTop)
     return NS_OK;
   }
 
+  // Now flush to make sure things are up to date
+  presShell->FlushPendingNotifications(PR_FALSE);
+  
   // Get the primary frame for this element
   nsIFrame *frame = nsnull;
   presShell->GetPrimaryFrameFor(this, &frame);
@@ -1419,7 +1454,7 @@ nsGenericHTMLElement::HandleDOMEventForAnchors(nsIContent* aOuter,
        (*aEventStatus != nsEventStatus_eConsumeNoDefault &&
         (aEvent->message == NS_MOUSE_ENTER_SYNTH ||
          aEvent->message == NS_MOUSE_EXIT_SYNTH))) &&
-      !(aFlags & NS_EVENT_FLAG_CAPTURE)) {
+      !(aFlags & NS_EVENT_FLAG_CAPTURE) && !(aFlags & NS_EVENT_FLAG_SYSTEM_EVENT)) {
 
     // If we're here, then aOuter should be an nsILink. We'll use the
     // nsILink interface to get a canonified URL that has been
@@ -1547,10 +1582,7 @@ nsGenericHTMLElement::HandleDOMEventForAnchors(nsIContent* aOuter,
       case NS_MOUSE_EXIT_SYNTH:
       {
         *aEventStatus = nsEventStatus_eConsumeNoDefault;
-
-        nsAutoString empty;
-        ret = TriggerLink(aPresContext, eLinkVerb_Replace, nsnull, empty,
-                          empty, PR_FALSE);
+        ret = LeaveLink(aPresContext);
       }
       break;
 
@@ -1703,9 +1735,9 @@ nsGenericHTMLElement::SetAttr(PRInt32 aNameSpaceID,
 
       mutation.mAttrName = aAttribute;
       if (!strValue.IsEmpty())
-        mutation.mPrevAttrValue = getter_AddRefs(NS_NewAtom(strValue));
+        mutation.mPrevAttrValue = do_GetAtom(strValue);
       if (!aValue.IsEmpty())
-        mutation.mNewAttrValue = getter_AddRefs(NS_NewAtom(aValue));
+        mutation.mNewAttrValue = do_GetAtom(aValue);
       if (modification)
         mutation.mAttrChange = nsIDOMMutationEvent::MODIFICATION;
       else
@@ -1803,9 +1835,9 @@ nsGenericHTMLElement::SetAttr(nsINodeInfo* aNodeInfo,
 
       mutation.mAttrName = localName;
       if (!strValue.IsEmpty())
-        mutation.mPrevAttrValue = getter_AddRefs(NS_NewAtom(strValue));
+        mutation.mPrevAttrValue = do_GetAtom(strValue);
       if (!aValue.IsEmpty())
-        mutation.mNewAttrValue = getter_AddRefs(NS_NewAtom(aValue));
+        mutation.mNewAttrValue = do_GetAtom(aValue);
       if (modification)
         mutation.mAttrChange = nsIDOMMutationEvent::MODIFICATION;
       else
@@ -1830,10 +1862,8 @@ nsGenericHTMLElement::SetAttr(nsINodeInfo* aNodeInfo,
 
 PRBool nsGenericHTMLElement::IsEventName(nsIAtom* aName)
 {
-  const PRUnichar *name = nsnull;
-
-  aName->GetUnicode(&name);
-  NS_ASSERTION(name, "Null string in atom!");
+  const char* name;
+  aName->GetUTF8String(&name);
 
   if (name[0] != 'o' || name[1] != 'n') {
     return PR_FALSE;
@@ -1921,21 +1951,6 @@ nsGenericHTMLElement::SetHTMLAttribute(nsIAtom* aAttribute,
       mDocument->BeginUpdate();
 
       mDocument->AttributeWillChange(this, kNameSpaceID_None, aAttribute);
-
-      if (nsHTMLAtoms::style == aAttribute) {
-        nsHTMLValue oldValue;
-        nsChangeHint oldImpact = NS_STYLE_HINT_NONE;
-        // Either we have no listeners or it's a real modification. To
-        // cover the former case we need to check the return value of
-        // GetHTMLAttribute
-        if (modification &&
-            NS_CONTENT_ATTR_NOT_THERE != GetHTMLAttribute(aAttribute,
-                                                          oldValue)) {
-          oldImpact = GetStyleImpactFrom(oldValue);
-        }
-        impact = GetStyleImpactFrom(aValue);
-        NS_UpdateHint(impact, oldImpact);
-      }
     }
     sheet = dont_AddRef(GetAttrStyleSheet(mDocument));
     if (sheet) {
@@ -1979,9 +1994,9 @@ nsGenericHTMLElement::SetHTMLAttribute(nsIAtom* aAttribute,
       nsAutoString newValueStr;
       GetAttr(kNameSpaceID_None, aAttribute, newValueStr);
       if (!newValueStr.IsEmpty())
-        mutation.mNewAttrValue = getter_AddRefs(NS_NewAtom(newValueStr));
+        mutation.mNewAttrValue = do_GetAtom(newValueStr);
       if (!oldValueStr.IsEmpty())
-        mutation.mPrevAttrValue = getter_AddRefs(NS_NewAtom(oldValueStr));
+        mutation.mPrevAttrValue = do_GetAtom(oldValueStr);
       if (modification)
         mutation.mAttrChange = nsIDOMMutationEvent::MODIFICATION;
       else
@@ -2070,7 +2085,7 @@ nsGenericHTMLElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
       nsAutoString attr;
       GetAttr(aNameSpaceID, aAttribute, attr);
       if (!attr.IsEmpty())
-        mutation.mPrevAttrValue = getter_AddRefs(NS_NewAtom(attr));
+        mutation.mPrevAttrValue = do_GetAtom(attr);
       mutation.mAttrChange = nsIDOMMutationEvent::REMOVAL;
 
       nsEventStatus status = nsEventStatus_eIgnore;
@@ -2135,7 +2150,6 @@ nsGenericHTMLElement::GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute,
                        NS_CONTENT_ATTR_NOT_THERE;
   }
 
-  aResult.Truncate();
   if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
     // Try subclass conversion routine first
     if (aNameSpaceID == kNameSpaceID_None && 
@@ -2149,7 +2163,6 @@ nsGenericHTMLElement::GetAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute,
     switch (value->GetUnit()) {
     case eHTMLUnit_Null:
     case eHTMLUnit_Empty:
-      aResult.Truncate();
       break;
 
     case eHTMLUnit_String:
@@ -2267,13 +2280,13 @@ nsGenericHTMLElement::GetClasses(nsVoidArray& aArray) const
   return NS_OK;
 }
 
-nsresult
+NS_IMETHODIMP_(PRBool)
 nsGenericHTMLElement::HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const
 {
-  if (nsnull != mAttributes) {
+  if (mAttributes) {
     return mAttributes->HasClass(aClass, aCaseSensitive);
   }
-  return NS_COMFALSE;
+  return PR_FALSE;
 }
 
 nsresult
@@ -2424,13 +2437,12 @@ nsGenericHTMLElement::List(FILE* out, PRInt32 aIndent) const
   PRInt32 index;
   for (index = aIndent; --index >= 0; ) fputs("  ", out);
 
-  nsIAtom* tag;
-  GetTag(tag);
-  if (tag != nsnull) {
+  nsCOMPtr<nsIAtom> tag;
+  GetTag(*getter_AddRefs(tag));
+  if (tag) {
     nsAutoString buf;
     tag->ToString(buf);
     fputs(NS_LossyConvertUCS2toASCII(buf).get(), out);
-    NS_RELEASE(tag);
   }
   fprintf(out, "@%p", (void*)this);
 
@@ -2464,10 +2476,10 @@ nsGenericHTMLElement::DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) co
   PRInt32 index;
   for (index = aIndent; --index >= 0; ) fputs("  ", out);
 
-  nsIAtom* tag;
   nsAutoString buf;
-  GetTag(tag);
-  if (tag != nsnull) {
+  nsCOMPtr<nsIAtom> tag;
+  GetTag(*getter_AddRefs(tag));
+  if (tag) {
     tag->ToString(buf);
     fputs("<",out);
     fputs(NS_LossyConvertUCS2toASCII(buf).get(), out);
@@ -2475,7 +2487,6 @@ nsGenericHTMLElement::DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) co
     if(aDumpAll) ListAttributes(out);
 
     fputs(">",out);
-    NS_RELEASE(tag);
   }
 
   PRBool canHaveKids;
@@ -2510,21 +2521,6 @@ nsGenericHTMLElement::IsContentOfType(PRUint32 aFlags)
   return !(aFlags & ~(eELEMENT | eHTML));
 }
 
-#ifdef DEBUG
-PRUint32
-nsGenericHTMLElement::BaseSizeOf(nsISizeOfHandler* aSizer) const
-{
-  PRUint32 sum = 0;
-  if (mAttributes) {
-    PRUint32 attrs = 0;
-    mAttributes->SizeOf(aSizer, attrs);
-    sum += attrs;
-  }
-  return sum;
-}
-#endif
-
-
 //----------------------------------------------------------------------
 
 
@@ -2555,7 +2551,7 @@ nsGenericHTMLElement::AttributeToString(nsIAtom* aAttribute,
     nsresult result = GetHTMLAttribute(nsHTMLAtoms::dir, value);
 
     if (NS_CONTENT_ATTR_HAS_VALUE == result) {
-      EnumValueToString(value, kDirTable, aResult);
+      value.EnumValueToString(kDirTable, aResult);
 
       return NS_OK;
     }
@@ -2569,14 +2565,15 @@ nsGenericHTMLElement::GetMappedAttributeImpact(const nsIAtom* aAttribute,
                                                PRInt32 aModType,
                                                nsChangeHint& aHint) const
 {
-  if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
-
+  static const AttributeImpactEntry* const map[] = {
+    sCommonAttributeMap
+  };
+  
+  FindAttributeImpact(aAttribute, aHint,
+                map, NS_ARRAY_LENGTH(map));
   return NS_OK;
 }
 
-#ifdef IBMBIDI
 /**
  * Handle attributes on the BDO element
  */
@@ -2590,341 +2587,15 @@ MapBdoAttributesInto(const nsIHTMLMappedAttributes* aAttributes,
   }
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }
-#endif // IBMBIDI
 
 NS_IMETHODIMP
 nsGenericHTMLElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const
 {
-#ifdef IBMBIDI
   if (mNodeInfo->Equals(nsHTMLAtoms::bdo))
     aMapRuleFunc = &MapBdoAttributesInto;
   else
-#endif // IBMBIDI
-  aMapRuleFunc = &MapCommonAttributesInto;
+    aMapRuleFunc = &MapCommonAttributesInto;
   return NS_OK;
-}
-
-PRBool
-nsGenericHTMLElement::ParseEnumValue(const nsAString& aValue,
-                                     EnumTable* aTable,
-                                     nsHTMLValue& aResult)
-{
-  nsAutoString val(aValue);
-  while (nsnull != aTable->tag) {
-    if (val.EqualsIgnoreCase(aTable->tag)) {
-      aResult.SetIntValue(aTable->value, eHTMLUnit_Enumerated);
-      return PR_TRUE;
-    }
-    aTable++;
-  }
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::ParseCaseSensitiveEnumValue(const nsAString& aValue,
-                                                  EnumTable* aTable,
-                                                  nsHTMLValue& aResult)
-{
-  nsAutoString val(aValue);
-  while (nsnull != aTable->tag) {
-    if (val.EqualsWithConversion(aTable->tag)) {
-      aResult.SetIntValue(aTable->value, eHTMLUnit_Enumerated);
-      return PR_TRUE;
-    }
-    aTable++;
-  }
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::EnumValueToString(const nsHTMLValue& aValue,
-                                        EnumTable* aTable,
-                                        nsAString& aResult)
-{
-  if (aValue.GetUnit() == eHTMLUnit_Enumerated) {
-    PRInt32 v = aValue.GetIntValue();
-    while (nsnull != aTable->tag) {
-      if (aTable->value == v) {
-        CopyASCIItoUCS2(nsDependentCString(aTable->tag), aResult);
-
-        return PR_TRUE;
-      }
-      aTable++;
-    }
-  }
-  aResult.Truncate();
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::ParseValueOrPercent(const nsAString& aString,
-                                          nsHTMLValue& aResult,
-                                          nsHTMLUnit aValueUnit)
-{
-  nsAutoString tmp(aString);
-  PRInt32 ec, val = tmp.ToInteger(&ec);
-  if (NS_OK == ec) {
-    if (val < 0) {
-      val = 0;
-    }
-    if (tmp.RFindChar('%') != kNotFound) {
-      if (val > 100) {
-        val = 100;
-      }
-      aResult.SetPercentValue(float(val)/100.0f);
-    } else {
-      if (eHTMLUnit_Pixel == aValueUnit) {
-        aResult.SetPixelValue(val);
-      }
-      else {
-        aResult.SetIntValue(val, aValueUnit);
-      }
-    }
-    return PR_TRUE;
-  }
-
-  return PR_FALSE;
-}
-
-/* used to parse attribute values that could be either:
- *   integer  (n),
- *   percent  (n%),
- *   or proportional (n*)
- */
-PRBool
-nsGenericHTMLElement::ParseValueOrPercentOrProportional(const nsAString& aString,
-                                                        nsHTMLValue& aResult,
-                                                        nsHTMLUnit aValueUnit)
-{
-  nsAutoString tmp(aString);
-  tmp.CompressWhitespace(PR_TRUE, PR_TRUE);
-  PRInt32 ec, val = tmp.ToInteger(&ec);
-
-  if (NS_OK == ec) {
-    if (val < 0) val = 0;
-    if (!tmp.IsEmpty() && tmp.RFindChar('%') >= 0) {/* XXX not 100% compatible with ebina's code */
-      if (val > 100) val = 100;
-      aResult.SetPercentValue(float(val)/100.0f);
-    } else if (!tmp.IsEmpty() && tmp.Last() == '*') {
-      if (tmp.Length() == 1) {
-        // special case: HTML spec says a value '*' == '1*'
-        // see http://www.w3.org/TR/html4/types.html#type-multi-length
-        // b=29061
-        val = 1;
-      }
-      aResult.SetIntValue(val, eHTMLUnit_Proportional); // proportional values are integers
-    } else if (eHTMLUnit_Pixel == aValueUnit) {
-        aResult.SetPixelValue(val);
-    }
-    else {
-      aResult.SetIntValue(val, aValueUnit);
-    } 
-    return PR_TRUE;
-  } else if (tmp.Length()==1 && tmp.Last()== '*') {
-    aResult.SetIntValue(1, eHTMLUnit_Proportional);
-    return PR_TRUE;
-  }  
-  
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::ValueOrPercentToString(const nsHTMLValue& aValue,
-                                             nsAString& aResult)
-{
-  nsAutoString intStr;
-  aResult.Truncate(0);
-  switch (aValue.GetUnit()) {
-    case eHTMLUnit_Integer:
-      intStr.AppendInt(aValue.GetIntValue());
-      aResult.Append(intStr);
-      return PR_TRUE;
-    case eHTMLUnit_Pixel:
-      intStr.AppendInt(aValue.GetPixelValue());
-      aResult.Append(intStr);
-      return PR_TRUE;
-    case eHTMLUnit_Percent:
-      {
-      float percentVal = aValue.GetPercentValue() * 100.0f;
-      intStr.AppendInt(NSToCoordRoundExclusive(percentVal));
-      aResult.Append(intStr);
-      aResult.Append(PRUnichar('%'));
-      return PR_TRUE;
-      }
-    default:
-      break;
-  }
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::ValueOrPercentOrProportionalToString(const nsHTMLValue& aValue,
-                                                           nsAString& aResult)
-{
-  nsAutoString intStr;
-  aResult.Truncate(0);
-  switch (aValue.GetUnit()) {
-  case eHTMLUnit_Integer:
-    intStr.AppendInt(aValue.GetIntValue());
-    aResult.Append(intStr);
-    return PR_TRUE;
-  case eHTMLUnit_Pixel:
-    intStr.AppendInt(aValue.GetPixelValue());
-    aResult.Append(intStr);
-    return PR_TRUE;
-  case eHTMLUnit_Percent:
-    {
-    float percentVal = aValue.GetPercentValue() * 100.0f;
-    intStr.AppendInt(NSToCoordRoundExclusive(percentVal));
-    aResult.Append(intStr);
-    aResult.Append(NS_LITERAL_STRING("%"));
-    return PR_TRUE;
-    }
-  case eHTMLUnit_Proportional:
-    intStr.AppendInt(aValue.GetIntValue());
-    aResult.Append(intStr);
-    aResult.Append(NS_LITERAL_STRING("*"));
-    return PR_TRUE;
-  default:
-    break;
-  }
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::ParseValue(const nsAString& aString, PRInt32 aMin,
-                                 nsHTMLValue& aResult, nsHTMLUnit aValueUnit)
-{
-  nsAutoString str(aString);
-  PRInt32 ec, val = str.ToInteger(&ec);
-  if (NS_OK == ec) {
-    if (val < aMin) val = aMin;
-    if (eHTMLUnit_Pixel == aValueUnit) {
-      aResult.SetPixelValue(val);
-    }
-    else {
-      aResult.SetIntValue(val, aValueUnit);
-    }
-    return PR_TRUE;
-  }
-
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::ParseValue(const nsAString& aString, PRInt32 aMin,
-                                 PRInt32 aMax,
-                                 nsHTMLValue& aResult, nsHTMLUnit aValueUnit)
-{
-  nsAutoString str(aString);
-  PRInt32 ec, val = str.ToInteger(&ec);
-  if (NS_OK == ec) {
-    if (val < aMin) val = aMin;
-    if (val > aMax) val = aMax;
-    if (eHTMLUnit_Pixel == aValueUnit) {
-      aResult.SetPixelValue(val);
-    }
-    else {
-      aResult.SetIntValue(val, aValueUnit);
-    }
-    return PR_TRUE;
-  }
-
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::ParseColor(const nsAString& aString,
-                                 nsIDocument* aDocument,
-                                 nsHTMLValue& aResult)
-{
-  if (aString.IsEmpty()) {
-    return PR_FALSE;
-  }
-
-  // All color strings are one single word so we just strip
-  // leading and trailing whitespace before checking.
-
-  // We need a string to remove cruft from
-  nsAString::const_iterator iter, end_iter;
-  aString.BeginReading(iter);
-  aString.EndReading(end_iter);
-  PRUnichar the_char;
-  // Skip whitespace in the beginning
-  while ((iter != end_iter) &&
-         (((the_char = *iter) == ' ') ||
-          (the_char == '\r') ||
-          (the_char == '\t') ||
-          (the_char == '\n') ||
-          (the_char == '\b')))
-    ++iter;
-  
-  if (iter == end_iter) {
-    // Nothing left
-    return PR_FALSE;
-  }
-
-  --end_iter; // So that it points on a character
-
-  // This will stop at a charater. At very least the same character
-  // that stopped the forward iterator.
-  while (((the_char = *end_iter)== ' ') ||
-         (the_char == '\r') ||
-         (the_char == '\t') ||
-         (the_char == '\n') ||
-         (the_char == '\b'))
-    --end_iter;
-
-  nsAutoString colorStr;
-  colorStr = Substring(iter, ++end_iter);
-
-  nscolor color;
-
-  // No color names begin with a '#', but numerical colors do so
-  // it is a very common first char
-  if ((colorStr.CharAt(0) != '#') &&
-      NS_ColorNameToRGB(colorStr, &color)) {
-    aResult.SetStringValue(colorStr, eHTMLUnit_ColorName);
-    return PR_TRUE;
-  }
-
-  if (!InNavQuirksMode(aDocument)) {
-    if (colorStr.CharAt(0) == '#') {
-      colorStr.Cut(0, 1);
-      if (NS_HexToRGB(colorStr, &color)) {
-        aResult.SetColorValue(color);
-        return PR_TRUE;
-      }
-    }
-  }
-  else {
-    if (NS_LooseHexToRGB(colorStr, &color)) { 
-      aResult.SetColorValue(color);
-      return PR_TRUE;
-    }
-  }
-
-  return PR_FALSE;
-}
-
-PRBool
-nsGenericHTMLElement::ColorToString(const nsHTMLValue& aValue,
-                                    nsAString& aResult)
-{
-  if (aValue.GetUnit() == eHTMLUnit_Color) {
-    nscolor v = aValue.GetColorValue();
-    char buf[10];
-    PR_snprintf(buf, sizeof(buf), "#%02x%02x%02x",
-                NS_GET_R(v), NS_GET_G(v), NS_GET_B(v));
-    aResult.Assign(NS_ConvertASCIItoUCS2(buf));
-    return PR_TRUE;
-  }
-  if ((aValue.GetUnit() == eHTMLUnit_ColorName) ||
-      (aValue.GetUnit() == eHTMLUnit_String)) {
-    aValue.GetStringValue(aResult);
-    return PR_TRUE;
-  }
-  return PR_FALSE;
 }
 
 // static
@@ -2985,9 +2656,7 @@ nsGenericHTMLElement::GetPrimaryPresState(nsIHTMLContent* aContent,
     // Get the pres state for this key, if it doesn't exist, create one
     result = history->GetState(key, aPresState);
     if (!*aPresState) {
-      result = nsComponentManager::CreateInstance(kPresStateCID, nsnull,
-                                                  NS_GET_IID(nsIPresState),
-                                                  (void**)aPresState);
+      result = CallCreateInstance(kPresStateCID, aPresState);
       if (NS_SUCCEEDED(result)) {
         result = history->AddState(key, *aPresState);
       }
@@ -3012,27 +2681,24 @@ nsGenericHTMLElement::GetLayoutHistoryAndKey(nsIHTMLContent* aContent,
     return rv;
   }
 
-  nsCOMPtr<nsIPresShell> presShell;
-  doc->GetShellAt(0, getter_AddRefs(presShell));
-  NS_ENSURE_TRUE(presShell, NS_ERROR_FAILURE);
-
   //
   // Get the history (don't bother with the key if the history is not there)
   //
-  rv = presShell->GetHistoryState(aHistory);
-  NS_ENSURE_SUCCESS(rv, rv);
-  if (!*aHistory) {
-    return NS_OK;
+  nsCOMPtr<nsISupports> container;
+  doc->GetContainer(getter_AddRefs(container));
+  nsCOMPtr<nsIDocShell> docShell(do_QueryInterface(container));
+  if (docShell) {
+    rv = docShell->GetLayoutHistoryState(aHistory);
+    NS_ENSURE_SUCCESS(rv, rv);
+    if (!*aHistory) {
+      return NS_OK;
+    }
   }
 
   //
   // Get the state key
   //
-  nsCOMPtr<nsIFrameManager> frameManager;
-  presShell->GetFrameManager(getter_AddRefs(frameManager));
-  NS_ENSURE_TRUE(frameManager, NS_ERROR_FAILURE);
-
-  rv = frameManager->GenerateStateKey(aContent, nsIStatefulFrame::eNoID, aKey);
+  rv = nsContentUtils::GenerateStateKey(aContent, nsIStatefulFrame::eNoID, aKey);
   NS_ENSURE_SUCCESS(rv, rv);
 
   // If the state key is blank, this is anonymous content or for
@@ -3095,7 +2761,7 @@ nsGenericHTMLElement::GetPresContext(nsIHTMLContent* aContent,
 }
 
 // XXX check all mappings against ebina's usage
-static nsGenericHTMLElement::EnumTable kAlignTable[] = {
+static nsHTMLValue::EnumTable kAlignTable[] = {
   { "left", NS_STYLE_TEXT_ALIGN_LEFT },
   { "right", NS_STYLE_TEXT_ALIGN_RIGHT },
 
@@ -3113,7 +2779,7 @@ static nsGenericHTMLElement::EnumTable kAlignTable[] = {
 
 // Elements that should return vertical align values "middle", "bottom", and "top" 
 //  instead of "center", "baseline", and "texttop" from GetAttribute() should use this
-static nsGenericHTMLElement::EnumTable kVAlignTable[] = {
+static nsHTMLValue::EnumTable kVAlignTable[] = {
   { "left", NS_STYLE_TEXT_ALIGN_LEFT },
   { "right", NS_STYLE_TEXT_ALIGN_RIGHT },
   { "top", NS_STYLE_VERTICAL_ALIGN_TOP },//verified
@@ -3128,7 +2794,7 @@ static nsGenericHTMLElement::EnumTable kVAlignTable[] = {
   { 0 }
 };
 
-static nsGenericHTMLElement::EnumTable kDivAlignTable[] = {
+static nsHTMLValue::EnumTable kDivAlignTable[] = {
   { "left", NS_STYLE_TEXT_ALIGN_LEFT },
   { "right", NS_STYLE_TEXT_ALIGN_MOZ_RIGHT },
   { "center", NS_STYLE_TEXT_ALIGN_MOZ_CENTER },
@@ -3137,7 +2803,7 @@ static nsGenericHTMLElement::EnumTable kDivAlignTable[] = {
   { 0 }
 };
 
-static nsGenericHTMLElement::EnumTable kFrameborderTable[] = {
+static nsHTMLValue::EnumTable kFrameborderTable[] = {
   { "yes", NS_STYLE_FRAME_YES },
   { "no", NS_STYLE_FRAME_NO },
   { "1", NS_STYLE_FRAME_1 },
@@ -3145,7 +2811,7 @@ static nsGenericHTMLElement::EnumTable kFrameborderTable[] = {
   { 0 }
 };
 
-static nsGenericHTMLElement::EnumTable kScrollingTable[] = {
+static nsHTMLValue::EnumTable kScrollingTable[] = {
   { "yes", NS_STYLE_FRAME_YES },
   { "no", NS_STYLE_FRAME_NO },
   { "on", NS_STYLE_FRAME_ON },
@@ -3156,7 +2822,7 @@ static nsGenericHTMLElement::EnumTable kScrollingTable[] = {
   { 0 }
 };
 
-static nsGenericHTMLElement::EnumTable kTableVAlignTable[] = {
+static nsHTMLValue::EnumTable kTableVAlignTable[] = {
   { "top",     NS_STYLE_VERTICAL_ALIGN_TOP },
   { "middle",  NS_STYLE_VERTICAL_ALIGN_MIDDLE },
   { "bottom",  NS_STYLE_VERTICAL_ALIGN_BOTTOM },
@@ -3170,7 +2836,7 @@ nsGenericHTMLElement::ParseCommonAttribute(nsIAtom* aAttribute,
                                            nsHTMLValue& aResult)
 {
   if (nsHTMLAtoms::dir == aAttribute) {
-    return ParseEnumValue(aValue, kDirTable, aResult);
+    return aResult.ParseEnumValue(aValue, kDirTable);
   }
   else if (nsHTMLAtoms::lang == aAttribute) {
     aResult.SetStringValue(aValue);
@@ -3183,13 +2849,13 @@ PRBool
 nsGenericHTMLElement::ParseAlignValue(const nsAString& aString,
                                       nsHTMLValue& aResult)
 {
-  return ParseEnumValue(aString, kAlignTable, aResult);
+  return aResult.ParseEnumValue(aString, kAlignTable);
 }
 
 //----------------------------------------
 
 // Vanilla table as defined by the html4 spec...
-static nsGenericHTMLElement::EnumTable kTableHAlignTable[] = {
+static nsHTMLValue::EnumTable kTableHAlignTable[] = {
   { "left",   NS_STYLE_TEXT_ALIGN_LEFT },
   { "right",  NS_STYLE_TEXT_ALIGN_RIGHT },
   { "center", NS_STYLE_TEXT_ALIGN_CENTER },
@@ -3199,7 +2865,7 @@ static nsGenericHTMLElement::EnumTable kTableHAlignTable[] = {
 };
 
 // This table is used for TABLE when in compatability mode
-static nsGenericHTMLElement::EnumTable kCompatTableHAlignTable[] = {
+static nsHTMLValue::EnumTable kCompatTableHAlignTable[] = {
   { "left",   NS_STYLE_TEXT_ALIGN_LEFT },
   { "right",  NS_STYLE_TEXT_ALIGN_RIGHT },
   { "center", NS_STYLE_TEXT_ALIGN_CENTER },
@@ -3216,9 +2882,9 @@ nsGenericHTMLElement::ParseTableHAlignValue(const nsAString& aString,
                                             nsHTMLValue& aResult) const
 {
   if (InNavQuirksMode(mDocument)) {
-    return ParseEnumValue(aString, kCompatTableHAlignTable, aResult);
+    return aResult.ParseEnumValue(aString, kCompatTableHAlignTable);
   }
-  return ParseEnumValue(aString, kTableHAlignTable, aResult);
+  return aResult.ParseEnumValue(aString, kTableHAlignTable);
 }
 
 PRBool
@@ -3226,15 +2892,15 @@ nsGenericHTMLElement::TableHAlignValueToString(const nsHTMLValue& aValue,
                                                nsAString& aResult) const
 {
   if (InNavQuirksMode(mDocument)) {
-    return EnumValueToString(aValue, kCompatTableHAlignTable, aResult);
+    return aValue.EnumValueToString(kCompatTableHAlignTable, aResult);
   }
-  return EnumValueToString(aValue, kTableHAlignTable, aResult);
+  return aValue.EnumValueToString(kTableHAlignTable, aResult);
 }
 
 //----------------------------------------
 
 // These tables are used for TD,TH,TR, etc (but not TABLE)
-static nsGenericHTMLElement::EnumTable kTableCellHAlignTable[] = {
+static nsHTMLValue::EnumTable kTableCellHAlignTable[] = {
   { "left",   NS_STYLE_TEXT_ALIGN_LEFT },
   { "right",  NS_STYLE_TEXT_ALIGN_MOZ_RIGHT },
   { "center", NS_STYLE_TEXT_ALIGN_MOZ_CENTER },
@@ -3243,7 +2909,7 @@ static nsGenericHTMLElement::EnumTable kTableCellHAlignTable[] = {
   { 0 }
 };
 
-static nsGenericHTMLElement::EnumTable kCompatTableCellHAlignTable[] = {
+static nsHTMLValue::EnumTable kCompatTableCellHAlignTable[] = {
   { "left",   NS_STYLE_TEXT_ALIGN_LEFT },
   { "right",  NS_STYLE_TEXT_ALIGN_MOZ_RIGHT },
   { "center", NS_STYLE_TEXT_ALIGN_MOZ_CENTER },
@@ -3265,9 +2931,9 @@ nsGenericHTMLElement::ParseTableCellHAlignValue(const nsAString& aString,
                                                 nsHTMLValue& aResult) const
 {
   if (InNavQuirksMode(mDocument)) {
-    return ParseEnumValue(aString, kCompatTableCellHAlignTable, aResult);
+    return aResult.ParseEnumValue(aString, kCompatTableCellHAlignTable);
   }
-  return ParseEnumValue(aString, kTableCellHAlignTable, aResult);
+  return aResult.ParseEnumValue(aString, kTableCellHAlignTable);
 }
 
 PRBool
@@ -3275,9 +2941,9 @@ nsGenericHTMLElement::TableCellHAlignValueToString(const nsHTMLValue& aValue,
                                                    nsAString& aResult) const
 {
   if (InNavQuirksMode(mDocument)) {
-    return EnumValueToString(aValue, kCompatTableCellHAlignTable, aResult);
+    return aValue.EnumValueToString(kCompatTableCellHAlignTable, aResult);
   }
-  return EnumValueToString(aValue, kTableCellHAlignTable, aResult);
+  return aValue.EnumValueToString(kTableCellHAlignTable, aResult);
 }
 
 //----------------------------------------
@@ -3286,42 +2952,42 @@ PRBool
 nsGenericHTMLElement::ParseTableVAlignValue(const nsAString& aString,
                                             nsHTMLValue& aResult)
 {
-  return ParseEnumValue(aString, kTableVAlignTable, aResult);
+  return aResult.ParseEnumValue(aString, kTableVAlignTable);
 }
 
 PRBool
 nsGenericHTMLElement::AlignValueToString(const nsHTMLValue& aValue,
                                          nsAString& aResult)
 {
-  return EnumValueToString(aValue, kAlignTable, aResult);
+  return aValue.EnumValueToString(kAlignTable, aResult);
 }
 
 PRBool
 nsGenericHTMLElement::VAlignValueToString(const nsHTMLValue& aValue,
                                          nsAString& aResult)
 {
-  return EnumValueToString(aValue, kVAlignTable, aResult);
+  return aValue.EnumValueToString(kVAlignTable, aResult);
 }
 
 PRBool
 nsGenericHTMLElement::TableVAlignValueToString(const nsHTMLValue& aValue,
                                                nsAString& aResult)
 {
-  return EnumValueToString(aValue, kTableVAlignTable, aResult);
+  return aValue.EnumValueToString(kTableVAlignTable, aResult);
 }
 
 PRBool
 nsGenericHTMLElement::ParseDivAlignValue(const nsAString& aString,
                                          nsHTMLValue& aResult) const
 {
-  return ParseEnumValue(aString, kDivAlignTable, aResult);
+  return aResult.ParseEnumValue(aString, kDivAlignTable);
 }
 
 PRBool
 nsGenericHTMLElement::DivAlignValueToString(const nsHTMLValue& aValue,
                                             nsAString& aResult) const
 {
-  return EnumValueToString(aValue, kDivAlignTable, aResult);
+  return aValue.EnumValueToString(kDivAlignTable, aResult);
 }
 
 PRBool
@@ -3331,12 +2997,12 @@ nsGenericHTMLElement::ParseImageAttribute(nsIAtom* aAttribute,
 {
   if ((aAttribute == nsHTMLAtoms::width) ||
       (aAttribute == nsHTMLAtoms::height)) {
-    return ParseValueOrPercent(aString, aResult, eHTMLUnit_Pixel);
+    return aResult.ParseSpecialIntValue(aString, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE);
   }
   else if ((aAttribute == nsHTMLAtoms::hspace) ||
            (aAttribute == nsHTMLAtoms::vspace) ||
            (aAttribute == nsHTMLAtoms::border)) {
-    return ParseValue(aString, 0, aResult, eHTMLUnit_Pixel);
+    return aResult.ParseIntWithBounds(aString, eHTMLUnit_Pixel, 0);
   }
   return PR_FALSE;
 }
@@ -3351,7 +3017,7 @@ nsGenericHTMLElement::ImageAttributeToString(nsIAtom* aAttribute,
       (aAttribute == nsHTMLAtoms::border) ||
       (aAttribute == nsHTMLAtoms::hspace) ||
       (aAttribute == nsHTMLAtoms::vspace)) {
-    return ValueOrPercentToString(aValue, aResult);
+    return aValue.ToString(aResult);
   }
   return PR_FALSE;
 }
@@ -3360,28 +3026,28 @@ PRBool
 nsGenericHTMLElement::ParseFrameborderValue(const nsAString& aString,
                                             nsHTMLValue& aResult)
 {
-  return ParseEnumValue(aString, kFrameborderTable, aResult);
+  return aResult.ParseEnumValue(aString, kFrameborderTable);
 }
 
 PRBool
 nsGenericHTMLElement::FrameborderValueToString(const nsHTMLValue& aValue,
                                                nsAString& aResult)
 {
-  return EnumValueToString(aValue, kFrameborderTable, aResult);
+  return aValue.EnumValueToString(kFrameborderTable, aResult);
 }
 
 PRBool
 nsGenericHTMLElement::ParseScrollingValue(const nsAString& aString,
                                           nsHTMLValue& aResult)
 {
-  return ParseEnumValue(aString, kScrollingTable, aResult);
+  return aResult.ParseEnumValue(aString, kScrollingTable);
 }
 
 PRBool
 nsGenericHTMLElement::ScrollingValueToString(const nsHTMLValue& aValue,
                                              nsAString& aResult)
 {
-  return EnumValueToString(aValue, kScrollingTable, aResult);
+  return aValue.EnumValueToString(kScrollingTable, aResult);
 }
 
 nsresult
@@ -3498,50 +3164,67 @@ nsGenericHTMLElement::MapCommonAttributesInto(const nsIHTMLMappedAttributes* aAt
   }
 }
 
-PRBool
-nsGenericHTMLElement::GetCommonMappedAttributesImpact(const nsIAtom* aAttribute,
-                                                      nsChangeHint& aHint)
-{
-  if (nsHTMLAtoms::dir == aAttribute) {
-    aHint = NS_STYLE_HINT_REFLOW;  // XXX really? possibly FRAMECHANGE?
-    return PR_TRUE;
-  }
-  else if (nsHTMLAtoms::lang == aAttribute) {
-    aHint = NS_STYLE_HINT_REFLOW; // LANG attribute affects font selection
-    return PR_TRUE;
-  }
-  /*
-     We should not REFRAME for a class change;
-     let the resulting style decide the impact
-     (bug 21225, mja)
-  */
-#if 0
-  else if (nsHTMLAtoms::kClass == aAttribute) {		// bug 8862
-    aHint = NS_STYLE_HINT_FRAMECHANGE;
-    return PR_TRUE;
-  }
-#endif
 
-  else if (nsHTMLAtoms::_baseHref == aAttribute) {
-    aHint = NS_STYLE_HINT_VISUAL; // at a minimum, elements may need to override
-    return PR_TRUE;
+
+const nsGenericHTMLElement::AttributeImpactEntry
+nsGenericHTMLElement::sCommonAttributeMap[] = {
+  { &nsHTMLAtoms::dir, NS_STYLE_HINT_REFLOW },
+  { &nsHTMLAtoms::lang, NS_STYLE_HINT_REFLOW },
+  { &nsHTMLAtoms::_baseHref, NS_STYLE_HINT_VISUAL },
+  { nsnull, NS_STYLE_HINT_NONE }
+};
+
+const
+nsGenericHTMLElement::AttributeImpactEntry
+nsGenericHTMLElement::sImageAttributeMap[] = {
+  { &nsHTMLAtoms::width, NS_STYLE_HINT_REFLOW },
+  { &nsHTMLAtoms::height, NS_STYLE_HINT_REFLOW },
+  { &nsHTMLAtoms::hspace, NS_STYLE_HINT_REFLOW },
+  { &nsHTMLAtoms::vspace, NS_STYLE_HINT_REFLOW },
+  { nsnull, NS_STYLE_HINT_NONE }
+};
+
+const nsGenericHTMLElement::AttributeImpactEntry
+nsGenericHTMLElement::sImageAlignAttributeMap[] = {
+  { &nsHTMLAtoms::align, NS_STYLE_HINT_FRAMECHANGE },
+  { nsnull, NS_STYLE_HINT_NONE }
+};
+
+const nsGenericHTMLElement::AttributeImpactEntry
+nsGenericHTMLElement::sImageBorderAttributeMap[] = {
+  { &nsHTMLAtoms::border, NS_STYLE_HINT_REFLOW },
+  { nsnull, NS_STYLE_HINT_NONE }
+};
+
+
+const nsGenericHTMLElement::AttributeImpactEntry
+nsGenericHTMLElement::sBackgroundAttributeMap[] = {
+  { &nsHTMLAtoms::background, NS_STYLE_HINT_VISUAL },
+  { &nsHTMLAtoms::bgcolor, NS_STYLE_HINT_VISUAL },
+  { nsnull, NS_STYLE_HINT_NONE }
+};
+
+void
+nsGenericHTMLElement::FindAttributeImpact(const nsIAtom* aAttribute,
+                                          nsChangeHint& aHint,
+                                          const AttributeImpactEntry* const aMaps[],
+                                          PRUint32 aMapCount)
+{
+  for (PRUint32 mapindex = 0; mapindex < aMapCount; ++mapindex) {
+    const AttributeImpactEntry* map = aMaps[mapindex];
+    while (map->attribute) {
+      if (aAttribute == *map->attribute) {
+        aHint = map->hint;
+        return;
+      }
+      map++;
+    }
   }
-  return PR_FALSE;
+
+  // fall-through
+  aHint = NS_STYLE_HINT_CONTENT;
 }
 
-PRBool
-nsGenericHTMLElement::GetImageMappedAttributesImpact(const nsIAtom* aAttribute,
-                                                     nsChangeHint& aHint)
-{
-  if ((nsHTMLAtoms::width == aAttribute) ||
-      (nsHTMLAtoms::height == aAttribute) ||
-      (nsHTMLAtoms::hspace == aAttribute) ||
-      (nsHTMLAtoms::vspace == aAttribute)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-    return PR_TRUE;
-  }
-  return PR_FALSE;
-}
 
 void
 nsGenericHTMLElement::MapAlignAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
@@ -3587,16 +3270,6 @@ nsGenericHTMLElement::MapDivAlignAttributeInto(const nsIHTMLMappedAttributes* aA
   }
 }
 
-PRBool
-nsGenericHTMLElement::GetImageAlignAttributeImpact(const nsIAtom* aAttribute,
-                                                   nsChangeHint& aHint)
-{
-  if ((nsHTMLAtoms::align == aAttribute)) {
-    aHint = NS_STYLE_HINT_FRAMECHANGE;
-    return PR_TRUE;
-  }
-  return PR_FALSE;
-}
 
 void
 nsGenericHTMLElement::MapImageMarginAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
@@ -3718,18 +3391,6 @@ nsGenericHTMLElement::MapImageBorderAttributeInto(const nsIHTMLMappedAttributes*
     borderColor->mBottom.SetIntValue(NS_STYLE_COLOR_MOZ_USE_TEXT_COLOR, eCSSUnit_Enumerated);
 }
 
-PRBool
-nsGenericHTMLElement::GetImageBorderAttributeImpact(const nsIAtom* aAttribute,
-                                                    nsChangeHint& aHint)
-{
-  if ((nsHTMLAtoms::border == aAttribute)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-    return PR_TRUE;
-  }
-  return PR_FALSE;
-}
-
-
 void
 nsGenericHTMLElement::MapBackgroundAttributesInto(const nsIHTMLMappedAttributes* aAttributes,
                                                   nsRuleData* aData)
@@ -3788,19 +3449,6 @@ nsGenericHTMLElement::MapBackgroundAttributesInto(const nsIHTMLMappedAttributes*
       aData->mColorData->mBackColor.SetColorValue(value.GetColorValue());
   }
 }
-
-PRBool
-nsGenericHTMLElement::GetBackgroundAttributesImpact(const nsIAtom* aAttribute,
-                                                    nsChangeHint& aHint)
-{
-  if ((nsHTMLAtoms::background == aAttribute) ||
-      (nsHTMLAtoms::bgcolor == aAttribute)) {
-    aHint = NS_STYLE_HINT_VISUAL;
-    return PR_TRUE;
-  }
-  return PR_FALSE;
-}
-
 
 //----------------------------------------------------------------------
 
@@ -3901,12 +3549,13 @@ nsGenericHTMLContainerElement::GetChildNodes(nsIDOMNodeList** aChildNodes)
 {
   nsDOMSlots *slots = GetDOMSlots();
 
-  if (nsnull == slots->mChildNodes) {
+  if (!slots->mChildNodes) {
     slots->mChildNodes = new nsChildContentList(this);
+    // XXX Need to check for out-of-memory
     NS_ADDREF(slots->mChildNodes);
   }
 
-  return slots->mChildNodes->QueryInterface(NS_GET_IID(nsIDOMNodeList), (void **)aChildNodes);
+  return CallQueryInterface(slots->mChildNodes, aChildNodes);
 }
 
 NS_IMETHODIMP
@@ -3926,10 +3575,9 @@ nsGenericHTMLContainerElement::GetFirstChild(nsIDOMNode** aNode)
 {
   nsIContent *child = (nsIContent *)mChildren.SafeElementAt(0);
   if (child) {
-    nsresult res = child->QueryInterface(NS_GET_IID(nsIDOMNode),
-                                         (void**)aNode);
+    nsresult res = CallQueryInterface(child, aNode);
+    NS_ASSERTION(NS_SUCCEEDED(res), "Must be a DOM Node"); // must be a DOM Node
 
-    NS_ASSERTION(NS_OK == res, "Must be a DOM Node"); // must be a DOM Node
     return res;
   }
   *aNode = nsnull;
@@ -3942,10 +3590,9 @@ nsGenericHTMLContainerElement::GetLastChild(nsIDOMNode** aNode)
   if (0 != mChildren.Count()) {
     nsIContent *child = (nsIContent *)mChildren.ElementAt(mChildren.Count()-1);
     if (child) {
-      nsresult res = child->QueryInterface(NS_GET_IID(nsIDOMNode),
-                                           (void**)aNode);
-      
-      NS_ASSERTION(NS_OK == res, "Must be a DOM Node"); // must be a DOM Node
+      nsresult res = CallQueryInterface(child, aNode);
+      NS_ASSERTION(NS_SUCCEEDED(res), "Must be a DOM Node"); // must be a DOM Node
+
       return res;
     }
   }
@@ -4063,6 +3710,18 @@ nsGenericHTMLContainerElement::ReplaceChildAt(nsIContent* aKid,
         doc->ContentReplaced(this, oldKid, aKid, aIndex);
       }
     }
+    if (nsGenericElement::HasMutationListeners(this, NS_EVENT_BITS_MUTATION_SUBTREEMODIFIED)) {
+      nsMutationEvent mutation;
+      mutation.eventStructType = NS_MUTATION_EVENT;
+      mutation.message = NS_MUTATION_SUBTREEMODIFIED;
+      mutation.mTarget = do_QueryInterface(this);
+      mutation.mRelatedNode = do_QueryInterface(oldKid);
+    
+      nsEventStatus status = nsEventStatus_eIgnore;
+      HandleDOMEvent(nsnull, &mutation, nsnull,
+                     NS_EVENT_FLAG_INIT, &status);
+    }
+
     if (oldKid) {
       oldKid->SetDocument(nsnull, PR_TRUE, PR_TRUE);
       oldKid->SetParent(nsnull);
@@ -4182,14 +3841,13 @@ nsGenericHTMLContainerElement::ReplaceContentsWithText(const nsAString& aText,
   for (i = children - 1; i >= lastChild; --i) {
     RemoveChildAt(i, aNotify);
   }
-    
+
   if (!textChild) {
-    nsCOMPtr<nsIContent> text;
+    nsCOMPtr<nsITextContent> text;
     rv = NS_NewTextNode(getter_AddRefs(text));
     NS_ENSURE_SUCCESS(rv, rv);
-    textChild = do_QueryInterface(text);
-    NS_ASSERTION(textChild, "NS_NewTextNode returned something not implementing nsIDOMText!");
-    rv = textChild->SetData(aText);
+
+    rv = text->SetText(aText, PR_TRUE);
     NS_ENSURE_SUCCESS(rv, rv);
     rv = InsertChildAt(text, 0, aNotify, PR_FALSE);
   } else {

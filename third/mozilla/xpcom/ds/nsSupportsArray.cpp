@@ -40,6 +40,7 @@
 #include <string.h>
 #include "nsSupportsArray.h"
 #include "nsSupportsArrayEnumerator.h"
+#include "nsAString.h"
 #include "nsIObjectInputStream.h"
 #include "nsIObjectOutputStream.h"
 #include <string.h>
@@ -129,7 +130,6 @@ static const PRInt32 kLinearThreshold = 16 * sizeof(nsISupports *);
 
 nsSupportsArray::nsSupportsArray()
 {
-  NS_INIT_ISUPPORTS();
   mArray = mAutoArray;
   mArraySize = kAutoArraySize;
   mCount = 0;

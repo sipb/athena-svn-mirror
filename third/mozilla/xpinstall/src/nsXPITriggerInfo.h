@@ -29,7 +29,6 @@
 #include "nsVoidArray.h"
 #include "nsCOMPtr.h"
 #include "nsISupportsUtils.h"
-//#include "nsIXPINotifier.h"
 #include "nsIFileSpec.h"
 #include "nsILocalFile.h"
 #include "nsIOutputStream.h"
@@ -38,7 +37,7 @@
 #include "plevent.h"
 #include "nsIXPConnect.h"
 
-
+#include "nsIPrincipal.h"
 
 typedef struct XPITriggerEvent {
     PLEvent     e;
@@ -61,14 +60,18 @@ class nsXPITriggerItem
     nsString    mName;
     nsString    mURL;
     nsString    mArguments;
+    nsString    mCertName;
     PRInt32     mFlags;
 
     nsCOMPtr<nsILocalFile>      mFile;
     nsCOMPtr<nsIOutputStream>   mOutStream;
+    nsCOMPtr<nsIPrincipal>      mPrincipal;
+  
 
     PRBool  IsFileURL() { return Substring(mURL, 0, 6).Equals(NS_LITERAL_STRING("file:/")); }
     PRBool  IsRelativeURL();
 
+    void    SetPrincipal(nsIPrincipal* aPrincipal);
   private:
     //-- prevent inadvertent copies and assignments
     nsXPITriggerItem& operator=(const nsXPITriggerItem& rhs);

@@ -78,7 +78,6 @@
 
 #include "nsGtkUtils.h" // for nsGtkUtils::gdk_window_flash()
 
-#include "nsSpecialSystemDirectory.h"
 #include "nsGtkMozRemoteHelper.h"
 
 #include "nsIDragService.h"
@@ -122,7 +121,9 @@ static NS_DEFINE_IID(kCDragServiceCID,  NS_DRAGSERVICE_CID);
 static PRBool gGlobalsInitialized   = PR_FALSE;
 static PRBool gRaiseWindows         = PR_TRUE;
 /* cursors cache */
-GdkCursor *nsWindow::gsGtkCursorCache[eCursor_count_up_down + 1];
+GdkCursor *nsWindow::gsGtkCursorCache[eCursorCount];
+
+#define ARRAY_LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 /* window icon cache */
 struct IconEntry : public PLDHashEntryHdr {
@@ -265,6 +266,9 @@ nsWindow::nsWindow()
   mIMECompositionUniString = nsnull;
   mIMECompositionUniStringSize = 0;
 
+  mIsTranslucent = PR_FALSE;
+  mTransparencyBitmap = nsnull;
+
 #ifdef USE_XIM
   mIMEEnable = PR_TRUE; //currently will not be used
   mIMEShellWindow = 0;
@@ -353,8 +357,42 @@ nsWindow::~nsWindow()
 
   Destroy();
 
+  delete[] mTransparencyBitmap;
+  mTransparencyBitmap = nsnull;
+
   if (mIsUpdating)
     UnqueueDraw();
+}
+
+/* static */ void
+nsWindow::ReleaseGlobals()
+{
+  if (mWindowLookupTable) {
+    g_hash_table_destroy(mWindowLookupTable);
+    mWindowLookupTable = nsnull;
+  }
+  if (gXICLookupTable.ops) {
+    PL_DHashTableFinish(&gXICLookupTable);
+    gXICLookupTable.ops = nsnull;
+  }
+  if (sIconCache) {
+    PL_DHashTableDestroy(sIconCache);
+    sIconCache = nsnull;
+  }
+  if (gPreeditFontset) {
+    gdk_font_unref(gPreeditFontset);
+    gPreeditFontset = nsnull;
+  }
+  if (gStatusFontset) {
+    gdk_font_unref(gStatusFontset);
+    gStatusFontset = nsnull;
+  }
+  for (int i = 0; i < ARRAY_LENGTH(gsGtkCursorCache); ++i) {
+    if (gsGtkCursorCache[i]) {
+      gdk_cursor_destroy(gsGtkCursorCache[i]);
+      gsGtkCursorCache[i] = nsnull;
+    }
+  }
 }
 
 NS_IMETHODIMP nsWindow::Destroy(void)
@@ -760,70 +798,66 @@ nsWindow::UnqueueDraw ()
 }
 
 void 
-nsWindow::DoPaint (PRInt32 aX, PRInt32 aY, PRInt32 aWidth, PRInt32 aHeight,
-                   nsIRegion *aClipRegion)
+nsWindow::DoPaint (nsIRegion *aClipRegion)
 {
- //Don't dispatch paint event if widget's height or width is 0
- if ((mBounds.width == 0) || (mBounds.height == 0)) {
-   return;
- }
+  if (!mEventCallback)
+    return;
 
-  if (mEventCallback) {
-
-    nsPaintEvent event;
-    nsRect rect(aX, aY, aWidth, aHeight);
+  nsPaintEvent event;
  
-    event.message = NS_PAINT;
-    event.widget = (nsWidget *)this;
-    event.eventStructType = NS_PAINT_EVENT;
-    event.point.x = aX;
-    event.point.y = aY; 
-    event.time = GDK_CURRENT_TIME; // No time in EXPOSE events
-    
-    event.rect = &rect;
-    event.region = nsnull;
-    
-    event.renderingContext = GetRenderingContext();
-    if (event.renderingContext) {
+  event.message = NS_PAINT;
+  event.widget = (nsWidget *)this;
+  event.eventStructType = NS_PAINT_EVENT;
+  event.point.x = 0;
+  event.point.y = 0; 
+  event.time = GDK_CURRENT_TIME; // No time in EXPOSE events
+
+  nsRect boundsRect;
+  aClipRegion->GetBoundingBox(&boundsRect.x, &boundsRect.y, &boundsRect.width, &boundsRect.height);
+  event.rect = &boundsRect;
+  event.region = nsnull; // aClipRegion;
+  
+  // Don't paint anything if our window isn't visible.
+  if (!mSuperWin)
+    return;
+
+  if (mSuperWin->visibility == GDK_VISIBILITY_FULLY_OBSCURED) {
+    // if our window has translucent pixels, then we can't trust the obscured
+    // check; it's possible that no pixels of the window are *currently* showing,
+    // but maybe after the paint new non-transparent pixels will appear in visible
+    // positions.
+    PRBool isTranslucent;
+    GetWindowTranslucency(isTranslucent);
+    if (!isTranslucent)
+      return;
+  }
+
+  event.renderingContext = GetRenderingContext();
+  if (!event.renderingContext)
+    return;
 
 #ifdef DEBUG
-      if (WANT_PAINT_FLASHING)
-      {
-        GdkWindow *gw = GetRenderWindow(GTK_OBJECT(mSuperWin));
-        if (gw)
-        {
-          GdkRectangle   ar;
-          GdkRectangle * area = (GdkRectangle*) NULL;
-        
-          if (event.rect)
-          {
-            ar.x = event.rect->x;
-            ar.y = event.rect->y;
-          
-            ar.width = event.rect->width;
-            ar.height = event.rect->height;
-          
-            area = &ar;
-          }
-        
-          nsGtkUtils::gdk_window_flash(gw,1,100000,area);
-        }
-      }
-
-      // Check the pref _before_ checking caps lock, because checking
-      // caps lock requires a server round-trip.
-      if (debug_GetCachedBoolPref("nglayout.debug.paint_dumping") && CAPS_LOCK_IS_ON)
-        debug_DumpPaintEvent(stdout, this, &event, 
-                             debug_GetName(GTK_OBJECT(mSuperWin)),
-                             (PRInt32) debug_GetRenderXID(GTK_OBJECT(mSuperWin)));
-#endif // DEBUG
-      
-      DispatchWindowEvent(&event);
-      NS_RELEASE(event.renderingContext);
+  GdkWindow *gw = GetRenderWindow(GTK_OBJECT(mSuperWin));
+  if (WANT_PAINT_FLASHING && gw)
+    {
+      GdkRegion *region;
+      aClipRegion->GetNativeRegion(*(void**)&region);
+      nsGtkUtils::gdk_window_flash(gw,1,100000,region);
     }
 
-  }
+  // Check the pref _before_ checking caps lock, because checking
+  // caps lock requires a server round-trip.
+  if (debug_GetCachedBoolPref("nglayout.debug.paint_dumping") && CAPS_LOCK_IS_ON)
+    debug_DumpPaintEvent(stdout, this, &event, 
+                         debug_GetName(GTK_OBJECT(mSuperWin)),
+                         (PRInt32) debug_GetRenderXID(GTK_OBJECT(mSuperWin)));
+#endif // DEBUG
+      
+  DispatchWindowEvent(&event);
+  NS_RELEASE(event.renderingContext);
 }
+
+static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
 
 NS_IMETHODIMP nsWindow::Update(void)
 {
@@ -834,40 +868,16 @@ NS_IMETHODIMP nsWindow::Update(void)
     UnqueueDraw();
 
   if (!mUpdateArea->IsEmpty()) {
-
-    PRUint32 numRects;
-    mUpdateArea->GetNumRects(&numRects);
-
-    // if we have 1 or more than 10 rects, just paint the bounding box otherwise
-    // lets paint each rect by itself
-
-    if (numRects != 1 && numRects < 10) {
-      nsRegionRectSet *regionRectSet = nsnull;
-
-      if (NS_FAILED(mUpdateArea->GetRects(&regionRectSet)))
-        return NS_ERROR_FAILURE;
-
-      PRUint32 len;
-      PRUint32 i;
-      
-      len = regionRectSet->mRectsLen;
-      
-      for (i=0;i<len;++i) {
-        nsRegionRect *r = &(regionRectSet->mRects[i]);
-        DoPaint (r->x, r->y, r->width, r->height, mUpdateArea);
-      }
-      
-      mUpdateArea->FreeRects(regionRectSet);
-      
-      mUpdateArea->SetTo(0, 0, 0, 0);
-      return NS_OK;
-    } else {
-      PRInt32 x, y, w, h;
-      mUpdateArea->GetBoundingBox(&x, &y, &w, &h);
-      DoPaint (x, y, w, h, mUpdateArea);
+    // Watch out for updates occuring during DoPaint. We must clear
+    // mUpdateArea before we go into DoPaint.
+    nsCOMPtr<nsIRegion> updateArea = mUpdateArea;
+    mUpdateArea = do_CreateInstance(kRegionCID);
+    if (mUpdateArea) {
+      mUpdateArea->Init();
       mUpdateArea->SetTo(0, 0, 0, 0);
     }
-
+    
+    DoPaint(updateArea);
   } else {
     //  g_print("nsWidget::Update(this=%p): avoided update of empty area\n", this);
   }
@@ -1083,13 +1093,8 @@ NS_IMETHODIMP nsWindow::SetCursor(nsCursor aCursor)
 
   // if we're not the toplevel window pass up the cursor request to
   // the toplevel window to handle it.
-  if (!mMozArea) {
-    // find the toplevel mozarea for this widget
-    GtkWidget *top_mozarea = GetOwningWidget();
-    void *data = gtk_object_get_data(GTK_OBJECT(top_mozarea), "nsWindow");
-    nsWindow *mozAreaWindow = NS_STATIC_CAST(nsWindow *, data);
-    return mozAreaWindow->SetCursor(aCursor);
-  }
+  if (!mMozArea)
+    return GetOwningWindow()->SetCursor(aCursor);
 
   // Only change cursor if it's changing
   if (aCursor != mCursor) {
@@ -1205,6 +1210,12 @@ GdkCursor *nsWindow::GtkCreateCursor(nsCursor aCursorType)
      case eCursor_count_up_down:
        // XXX: these CSS3 cursors need to be implemented
        gdkcursor = gdk_cursor_new(GDK_LEFT_PTR);
+       break;
+     case eCursor_zoom_in:
+       newType = MOZ_CURSOR_ZOOM_IN;
+       break;
+     case eCursor_zoom_out:
+       newType = MOZ_CURSOR_ZOOM_OUT;
        break;
     default:
       NS_ASSERTION(aCursorType, "Invalid cursor type");
@@ -2223,7 +2234,7 @@ void * nsWindow::GetNativeData(PRUint32 aDataType)
       }
 
       // we have to flush the X queue here so that any plugins that
-      // might be running on seperate X connections will be able to use
+      // might be running on separate X connections will be able to use
       // this window in case it was just created
       XSync(GDK_DISPLAY(), False);
       return (void *)GDK_WINDOW_XWINDOW(mSuperWin->bin_window);
@@ -2264,7 +2275,9 @@ NS_IMETHODIMP nsWindow::Scroll(PRInt32 aDx, PRInt32 aDy, nsRect *aClipRect)
         child->GetBounds(bounds);
         bounds.x += aDx;
         bounds.y += aDy;
-        NS_STATIC_CAST(nsBaseWidget*, (nsIWidget*)child)->SetBounds(bounds);
+        nsWidget* childWidget = NS_STATIC_CAST(nsWidget*, NS_STATIC_CAST(nsIWidget*, child.get()));
+        childWidget->SetBounds(bounds);
+        childWidget->ResetInternalVisibility();
       }
 
       if (NS_FAILED(children->Next()))
@@ -2304,13 +2317,20 @@ NS_IMETHODIMP nsWindow::SetTitle(const nsString& aTitle)
 
 
   nsresult rv;
-  char *platformText;
+  char *platformText = nsnull;
   PRInt32 platformLen;
 
   // Set UTF8_STRING title for NET_WM-supporting window managers
   NS_ConvertUCS2toUTF8 utf8_title(aTitle);
   XChangeProperty(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(mShell->window),
                 XInternAtom(GDK_DISPLAY(), "_NET_WM_NAME", False),
+                XInternAtom(GDK_DISPLAY(), "UTF8_STRING", False),
+                8, PropModeReplace, (unsigned char *) utf8_title.get(),
+                utf8_title.Length());
+
+  // Set UTF8_STRING title for _NET_WM_ICON_NAME as well
+  XChangeProperty(GDK_DISPLAY(), GDK_WINDOW_XWINDOW(mShell->window),
+                XInternAtom(GDK_DISPLAY(), "_NET_WM_ICON_NAME", False),
                 XInternAtom(GDK_DISPLAY(), "UTF8_STRING", False),
                 8, PropModeReplace, (unsigned char *) utf8_title.get(),
                 utf8_title.Length());
@@ -2347,11 +2367,13 @@ NS_IMETHODIMP nsWindow::SetTitle(const nsString& aTitle)
 
   if (platformLen > 0 && platformText) {
     gtk_window_set_title(GTK_WINDOW(mShell), platformText);
-    nsMemory::Free(platformText);
   }
   else {
     gtk_window_set_title(GTK_WINDOW(mShell), "");
   }
+
+  if (platformText)
+    nsMemory::Free(platformText);
 
   return NS_OK;
 }
@@ -2510,11 +2532,6 @@ NS_IMETHODIMP nsWindow::GetScreenBounds(nsRect &aRect)
 }
 
 
-PRBool nsWindow::OnScroll(nsScrollbarEvent &aEvent, PRUint32 cPos)
-{
-  return PR_FALSE;
-}
-
 //-------------------------------------------------------------------------
 //
 // Hide or show this component
@@ -2528,14 +2545,45 @@ NS_IMETHODIMP nsWindow::Show(PRBool bState)
 
   mShown = bState;
 
+  // show
+  ResetInternalVisibility();
 
+  return NS_OK;
+}
+
+void nsWindow::ResetInternalVisibility()
+{
+  if (mShell)
+  { // top level, always set the visibility regardless of parent geometry
+    SetInternalVisibility(mShown);
+  }
+  else
+  {
+    nsWidget::ResetInternalVisibility();
+  }
+}
+
+void nsWindow::SetInternalVisibility(PRBool aVisible)
+{
   // don't show if we are too small
   if (mIsTooSmall)
-    return NS_OK;
+    return;
 
-  // show
-  if (bState)
+  mInternalShown = aVisible;
+
+  if (aVisible)
   {
+    // GTK wants us to set the window mask before we show the window
+    // for the first time, or setting the mask later won't work.
+    // GTK also wants us to NOT set the window mask if we're not really
+    // going to need it, because GTK won't let us unset the mask properly
+    // later.
+    // So, we delay setting the mask until the last moment: when the window
+    // is shown.
+    if (mTransparencyBitmap) {
+      ApplyTransparencyBitmap();
+    }
+
     // show mSuperWin
     gdk_window_show(mSuperWin->bin_window);
     gdk_window_show(mSuperWin->shell_window);
@@ -2568,8 +2616,6 @@ NS_IMETHODIMP nsWindow::Show(PRBool bState)
     } 
 
   }
-
-  return NS_OK;
 }
 
 //-------------------------------------------------------------------------
@@ -2655,6 +2701,8 @@ NS_IMETHODIMP nsWindow::Move(PRInt32 aX, PRInt32 aY)
   mBounds.x = aX;
   mBounds.y = aY;
 
+  ResetInternalVisibility();
+
   if (mIsToplevel && mShell)
   {
 #ifdef DEBUG
@@ -2700,8 +2748,21 @@ NS_IMETHODIMP nsWindow::Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint)
          aWidth, aHeight);
 #endif
   
+  ResizeTransparencyBitmap(aWidth, aHeight);
+
   mBounds.width  = aWidth;
   mBounds.height = aHeight;
+
+  ResetInternalVisibility();
+  PRUint32 childCount, index;
+  if (NS_SUCCEEDED(mChildren->Count(&childCount))) {
+    for (index = 0; index < childCount; index++) {
+      nsCOMPtr<nsIWidget> childWidget;
+      if (NS_SUCCEEDED(mChildren->QueryElementAt(index, NS_GET_IID(nsIWidget), (void**)getter_AddRefs(childWidget)))) {
+        NS_STATIC_CAST(nsWidget*, NS_STATIC_CAST(nsIWidget*, childWidget.get()))->ResetInternalVisibility();
+      }
+    }
+  }
 
   // code to keep the window from showing before it has been moved or resized
 
@@ -2740,6 +2801,7 @@ NS_IMETHODIMP nsWindow::Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint)
       gdk_window_hide(mSuperWin->bin_window);
       gdk_window_hide(mSuperWin->shell_window);
     }
+    mInternalShown = PR_FALSE;
   }
   else
   {
@@ -2790,8 +2852,9 @@ NS_IMETHODIMP nsWindow::Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint)
     //g_print("not sending resize event\n");
   }
 
-  if (nNeedToShow)
+  if (nNeedToShow) {
     Show(PR_TRUE);
+  }
 
   if (aRepaint)
     Invalidate(PR_FALSE);
@@ -3015,14 +3078,20 @@ nsWindow::GetOwningWidget()
   return (GtkWidget *)mMozAreaClosestParent;
 }
 
-nsWindowType
-nsWindow::GetOwningWindowType(void)
+nsWindow *
+nsWindow::GetOwningWindow(void) 
 {
   GtkWidget *widget = GetOwningWidget();
 
+  return NS_STATIC_CAST(nsWindow *, gtk_object_get_data(GTK_OBJECT(widget),
+                                                        "nsWindow"));
+}
+
+nsWindowType
+nsWindow::GetOwningWindowType(void)
+{
   nsWindow *owningWindow;
-  owningWindow = (nsWindow *)gtk_object_get_data(GTK_OBJECT(widget),
-                                                 "nsWindow");
+  owningWindow = GetOwningWindow();
 
   nsWindowType retval;
   owningWindow->GetWindowType(retval);
@@ -4179,15 +4248,200 @@ NS_IMETHODIMP nsWindow::ResetInputState()
   return NS_OK;
 }
 
+static void
+gdk_wmspec_change_state (gboolean   add,
+                         GdkWindow *window,
+                         GdkAtom    state1,
+                         GdkAtom    state2)
+{
+  XEvent xev;
+
+#define _NET_WM_STATE_REMOVE        0    /* remove/unset property */
+#define _NET_WM_STATE_ADD           1    /* add/set property */
+#define _NET_WM_STATE_TOGGLE        2    /* toggle property  */
+
+  xev.xclient.type = ClientMessage;
+  xev.xclient.serial = 0;
+  xev.xclient.send_event = True;
+  xev.xclient.window = GDK_WINDOW_XWINDOW(window);
+  xev.xclient.message_type = gdk_atom_intern("_NET_WM_STATE", FALSE);
+  xev.xclient.format = 32;
+  xev.xclient.data.l[0] = add ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
+  xev.xclient.data.l[1] = state1;
+  xev.xclient.data.l[2] = state2;
+
+  XSendEvent(gdk_display, GDK_ROOT_WINDOW(), False,
+             SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+}
+
+#ifndef MOZ_XUL
+void nsWindow::ResizeTransparencyBitmap(PRInt32 aNewWidth, PRInt32 aNewHeight) {
+}
+#else
+NS_IMETHODIMP nsWindow::SetWindowTranslucency(PRBool aTranslucent) {
+  if (!mMozArea)
+    return GetOwningWindow()->SetWindowTranslucency(aTranslucent);
+
+  if (!mShell) {
+    // we must be embedded
+    NS_WARNING("Trying to use transparent chrome in an embedded context");
+    return NS_ERROR_FAILURE;
+  }
+
+  if (mIsTranslucent == aTranslucent)
+    return NS_OK;
+
+  if (!aTranslucent) {
+    if (mTransparencyBitmap) {
+      delete[] mTransparencyBitmap;
+      mTransparencyBitmap = nsnull;
+      gtk_widget_reset_shapes(mShell);
+    }
+  } // else the new default alpha values are "all 1", so we don't
+    // need to change anything yet
+
+  mIsTranslucent = aTranslucent;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsWindow::GetWindowTranslucency(PRBool& aTranslucent) {
+  if (!mMozArea)
+    return GetOwningWindow()->GetWindowTranslucency(aTranslucent);
+
+  aTranslucent = mIsTranslucent;
+  return NS_OK;
+}
+
+void nsWindow::ResizeTransparencyBitmap(PRInt32 aNewWidth, PRInt32 aNewHeight) {
+  if (!mTransparencyBitmap)
+    return;
+
+  PRInt32 newSize = ((aNewWidth+7)/8)*aNewHeight;
+  gchar* newBits = new gchar[newSize];
+  if (!newBits) {
+    delete[] mTransparencyBitmap;
+    mTransparencyBitmap = nsnull;
+    return;
+  }
+  // fill new mask with "opaque", first
+  memset(newBits, 255, newSize);
+
+  // Now copy the intersection of the old and new areas into the new mask
+  PRInt32 copyWidth = PR_MIN(aNewWidth, mBounds.width);
+  PRInt32 copyHeight = PR_MIN(aNewHeight, mBounds.height);
+  PRInt32 oldRowBytes = (mBounds.width+7)/8;
+  PRInt32 newRowBytes = (aNewWidth+7)/8;
+  PRInt32 copyBytes = (copyWidth+7)/8;
+  
+  PRInt32 i;
+  gchar* fromPtr = mTransparencyBitmap;
+  gchar* toPtr = newBits;
+  for (i = 0; i < copyHeight; i++) {
+    memcpy(toPtr, fromPtr, copyBytes);
+    fromPtr += oldRowBytes;
+    toPtr += newRowBytes;
+  }
+
+  delete[] mTransparencyBitmap;
+  mTransparencyBitmap = newBits;
+}
+
+static PRBool ChangedMaskBits(gchar* aMaskBits, PRInt32 aMaskWidth, PRInt32 aMaskHeight,
+                              const nsRect& aRect, PRUint8* aAlphas) {
+  PRInt32 x, y, xMax = aRect.XMost(), yMax = aRect.YMost();
+  PRInt32 maskBytesPerRow = (aMaskWidth + 7)/8;
+  for (y = aRect.y; y < yMax; y++) {
+    gchar* maskBytes = aMaskBits + y*maskBytesPerRow;
+    for (x = aRect.x; x < xMax; x++) {
+      PRBool newBit = *aAlphas > 0;
+      aAlphas++;
+
+      gchar maskByte = maskBytes[x >> 3];
+      PRBool maskBit = (maskByte & (1 << (x & 7))) != 0;
+
+      if (maskBit != newBit) {
+        return PR_TRUE;
+      }
+    }
+  }
+
+  return PR_FALSE;
+}
+
+static void UpdateMaskBits(gchar* aMaskBits, PRInt32 aMaskWidth, PRInt32 aMaskHeight,
+                           const nsRect& aRect, PRUint8* aAlphas) {
+  PRInt32 x, y, xMax = aRect.XMost(), yMax = aRect.YMost();
+  PRInt32 maskBytesPerRow = (aMaskWidth + 7)/8;
+  for (y = aRect.y; y < yMax; y++) {
+    gchar* maskBytes = aMaskBits + y*maskBytesPerRow;
+    for (x = aRect.x; x < xMax; x++) {
+      PRBool newBit = *aAlphas > 0;
+      aAlphas++;
+
+      gchar mask = 1 << (x & 7);
+      gchar maskByte = maskBytes[x >> 3];
+      // Note: '-newBit' turns 0 into 00...00 and 1 into 11...11
+      maskBytes[x >> 3] = (maskByte & ~mask) | (-newBit & mask);
+    }
+  }
+}
+
+void nsWindow::ApplyTransparencyBitmap() {
+  gtk_widget_reset_shapes(mShell);
+  GdkBitmap* maskBitmap = gdk_bitmap_create_from_data(mShell->window,
+                                                      mTransparencyBitmap,
+                                                      mBounds.width, mBounds.height);
+  if (!maskBitmap)
+    return;
+
+  gtk_widget_shape_combine_mask(mShell, maskBitmap, 0, 0);
+  gdk_bitmap_unref(maskBitmap);
+}
+
+NS_IMETHODIMP nsWindow::UpdateTranslucentWindowAlpha(const nsRect& aRect,
+                                                     PRUint8* aAlphas)
+{
+  if (!mMozArea)
+    return GetOwningWindow()->UpdateTranslucentWindowAlpha(aRect, aAlphas);
+
+  NS_ASSERTION(mIsTranslucent, "Window is not transparent");
+
+  if (mTransparencyBitmap == nsnull) {
+    PRInt32 size = ((mBounds.width+7)/8)*mBounds.height;
+    mTransparencyBitmap = new gchar[size];
+    if (mTransparencyBitmap == nsnull)
+      return NS_ERROR_FAILURE;
+    memset(mTransparencyBitmap, 255, size);
+  }
+
+  NS_ASSERTION(aRect.x >= 0 && aRect.y >= 0
+               && aRect.XMost() <= mBounds.width && aRect.YMost() <= mBounds.height,
+               "Rect is out of window bounds");
+
+  if (!ChangedMaskBits(mTransparencyBitmap, mBounds.width, mBounds.height, aRect, aAlphas))
+    // skip the expensive stuff if the mask bits haven't changed; hopefully
+    // this is the common case
+    return NS_OK;
+
+  UpdateMaskBits(mTransparencyBitmap, mBounds.width, mBounds.height, aRect, aAlphas);
+
+  if (mShown) {
+    ApplyTransparencyBitmap();
+  }
+
+  return NS_OK;
+}
+
 NS_IMETHODIMP
 nsWindow::HideWindowChrome(PRBool aShouldHide)
 {
+  if (!mMozArea)
+    return GetOwningWindow()->HideWindowChrome(aShouldHide);
+
   if (!mShell) {
-    // Pass the request to the toplevel window.
-    GtkWidget *top_mozarea = GetOwningWidget();
-    void *data = gtk_object_get_data(GTK_OBJECT(top_mozarea), "nsWindow");
-    nsWindow *mozAreaWindow = NS_STATIC_CAST(nsWindow *, data);
-    return mozAreaWindow->HideWindowChrome(aShouldHide);
+    // we must be embedded
+    NS_WARNING("Trying to hide window decorations in an embedded context");
+    return NS_ERROR_FAILURE;
   }
 
   // Sawfish, metacity, and presumably other window managers get
@@ -4218,6 +4472,25 @@ nsWindow::HideWindowChrome(PRBool aShouldHide)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsWindow::MakeFullScreen(PRBool aFullScreen)
+{
+  if (!mMozArea)
+    return GetOwningWindow()->MakeFullScreen(aFullScreen);
+
+  if (!mShell) {
+    // we must be embedded
+    NS_WARNING("Trying to go fullscreen in an embedded context");
+    return NS_ERROR_FAILURE;
+  }
+
+  gdk_wmspec_change_state(aFullScreen, mShell->window,
+                          gdk_atom_intern("_NET_WM_STATE_FULLSCREEN", False),
+                          GDK_NONE);
+  return NS_OK;
+}
+#endif
+
 PRBool PR_CALLBACK
 nsWindow::IconEntryMatches(PLDHashTable* aTable,
                            const PLDHashEntryHdr* aHdr,
@@ -4244,11 +4517,4 @@ nsWindow::ClearIconEntry(PLDHashTable* aTable, PLDHashEntryHdr* aHdr)
   if (entry->string)
     free((void*) entry->string);
   PL_DHashClearEntryStub(aTable, aHdr);
-}
-
-void
-nsWindow::FreeIconCache()
-{
-  if (sIconCache)
-    PL_DHashTableDestroy(sIconCache);
 }

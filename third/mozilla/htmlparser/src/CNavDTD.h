@@ -113,14 +113,14 @@ class nsTokenAllocator;
   an nsParser.
  ***************************************************************/
 
-#if defined(XP_PC)
+#ifdef _MSC_VER
 #pragma warning( disable : 4275 )
 #endif
 
 class CNavDTD : public nsIDTD
 {
 
-#if defined(XP_PC)
+#ifdef _MSC_VER
 #pragma warning( default : 4275 )
 #endif
 
@@ -176,8 +176,8 @@ public:
      * @return  True if closure was achieved -- other false
      */
     virtual PRBool ForwardPropagate(nsString& aSequence,
-                                    eHTMLTags aParentTag,
-                                    eHTMLTags aChildTag);
+                                    eHTMLTags aParent,
+                                    eHTMLTags aChild);
 
     /**
      * This method tries to design a context map (without actually
@@ -189,17 +189,17 @@ public:
      * @return  True if closure was achieved -- other false
      */
     virtual PRBool BackwardPropagate(nsString& aSequence,
-                                     eHTMLTags aParentTag,
-                                     eHTMLTags aChildTag) const;
+                                     eHTMLTags aParent,
+                                     eHTMLTags aChild) const;
 
     /**
      * Attempt forward and/or backward propagation for the given
      * child within the current context vector stack.
      * @update	gess5/11/98
-     * @param   type of child to be propagated.
+     * @param   aChild -- type of child to be propagated.
      * @return  TRUE if succeeds, otherwise FALSE
      */
-    nsresult CreateContextStackFor(eHTMLTags aChildTag);
+    nsresult CreateContextStackFor(eHTMLTags aChild);
 
     /**
      * Ask parser if a given container is open ANYWHERE on stack
@@ -259,7 +259,8 @@ public:
     nsresult    HandleScriptToken(const nsIParserNode *aNode);
     nsresult    HandleProcessingInstructionToken(CToken* aToken);
     nsresult    HandleDocTypeDeclToken(CToken* aToken);
-
+    nsresult    BuildNeglectedTarget(eHTMLTags aTarget, eHTMLTokenTypes aType,
+                                     nsIParser* aParser, nsIContentSink* aSink);
 
     //*************************************************
     //these cover methods mimic the sink, and are used
@@ -280,7 +281,10 @@ public:
     nsresult OpenForm(const nsIParserNode *aNode);
     nsresult OpenMap(const nsCParserNode *aNode);
     nsresult OpenFrameset(const nsCParserNode *aNode);
-    nsresult OpenContainer(const nsCParserNode *aNode,eHTMLTags aTag,PRBool aClosedByStartTag,nsEntryStack* aStyleStack=0);
+    nsresult OpenContainer(const nsCParserNode *aNode,
+                           eHTMLTags aTag,
+                           PRBool aClosedByStartTag,
+                           nsEntryStack* aStyleStack=0);
 
     /**
      * The next set of methods close the given HTML element.
@@ -289,12 +293,12 @@ public:
      * @param   HTML (node) to be opened in content sink.
      * @return  error code - 0 if all went well.
      */
-    nsresult CloseHTML(const nsIParserNode *aNode);
-    nsresult CloseHead(const nsIParserNode *aNode);
-    nsresult CloseBody(const nsIParserNode *aNode);
-    nsresult CloseForm(const nsIParserNode *aNode);
-    nsresult CloseMap(const nsIParserNode *aNode);
-    nsresult CloseFrameset(const nsIParserNode *aNode);
+    nsresult CloseHTML();
+    nsresult CloseHead();
+    nsresult CloseBody();
+    nsresult CloseForm();
+    nsresult CloseMap();
+    nsresult CloseFrameset();
     
     /**
      * The special purpose methods automatically close
@@ -302,9 +306,14 @@ public:
      * @update	gess5/11/98
      * @return  error code - 0 if all went well.
      */
-    nsresult CloseContainer(const nsCParserNode *aNode,eHTMLTags aTarget,PRBool aClosedByStartTag);
-    nsresult CloseContainersTo(eHTMLTags aTag,PRBool aClosedByStartTag);
-    nsresult CloseContainersTo(PRInt32 anIndex,eHTMLTags aTag,PRBool aClosedByStartTag);
+    nsresult CloseContainer(const eHTMLTags aTag,
+                            eHTMLTags aTarget,
+                            PRBool aClosedByStartTag);
+    nsresult CloseContainersTo(eHTMLTags aTag,
+                               PRBool aClosedByStartTag);
+    nsresult CloseContainersTo(PRInt32 anIndex,
+                               eHTMLTags aTag,
+                               PRBool aClosedByStartTag);
 
     /**
      * Causes leaf to be added to sink at current vector pos.
@@ -327,8 +336,6 @@ public:
     nsresult  OpenTransientStyles(eHTMLTags aChildTag);
     nsresult  CloseTransientStyles(eHTMLTags aChildTag);
     nsresult  PopStyle(eHTMLTags aTag);
-
-    nsresult  DoFragment(PRBool aFlag);
 
     nsresult  PushIntoMisplacedStack(CToken* aToken)
     {
@@ -370,7 +377,6 @@ protected:
 
     eHTMLTags           mSkipTarget;
     PRInt32             mLineNumber;
-    PRInt32             mOpenHeadCount;
     PRInt32             mOpenMapCount;
 
     PRUint16            mFlags;

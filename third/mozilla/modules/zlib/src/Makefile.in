@@ -29,17 +29,23 @@ include $(srcdir)/objs.mk
 
 MODULE		= zlib
 LIBRARY_NAME	= mozz
+GRE_MODULE	= 1
 
 ifeq ($(OS_ARCH),WINNT)
+ifndef GNU_CC
 MAPFILE	= $(LIBRARY_NAME).map
 DEFFILE	= $(srcdir)/zlib.def
+endif
 DEFINES	+= -DZLIB_DLL=1
-LIBRARY_NAME = zlib
 endif
 
 CSRCS		= $(MODULES_ZLIB_SRC_LCSRCS)
 
 EXPORTS		= $(MODULES_ZLIB_SRC_LEXPORTS)
 
+# This library is used by other shared libs in a static build
+FORCE_USE_PIC = 1
+
 include $(topsrcdir)/config/rules.mk
+
 

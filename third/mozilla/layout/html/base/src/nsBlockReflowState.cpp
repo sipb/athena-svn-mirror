@@ -23,7 +23,7 @@
  * Contributor(s):
  *   Steve Clark <buster@netscape.com>
  *   Robert O'Callahan <roc+moz@cs.cmu.edu>
- *   L. David Baron <dbaron@fas.harvard.edu>
+ *   L. David Baron <dbaron@dbaron.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -46,6 +46,7 @@
 #include "nsIPresContext.h"
 #include "nsLayoutAtoms.h"
 #include "nsIFrame.h"
+#include "nsIFrameManager.h"
 
 #include "nsINameSpaceManager.h"
 #include "nsHTMLAtoms.h"
@@ -63,7 +64,6 @@ nsBlockReflowState::nsBlockReflowState(const nsHTMLReflowState& aReflowState,
   : mBlock(aFrame),
     mPresContext(aPresContext),
     mReflowState(aReflowState),
-    mLastFloaterY(0),
     mPrevBottomMargin(),
     mLineNumber(0),
     mFlags(0),
@@ -123,8 +123,6 @@ nsBlockReflowState::nsBlockReflowState(const nsHTMLReflowState& aReflowState,
       mContentArea.width = PR_MAX(0, aReflowState.availableWidth - lr);
     }
   }
-  mHaveRightFloaters = PR_FALSE;
-  mOverflowFloaters.SetFrames(nsnull);
 
   // Compute content area height. Unlike the width, if we have a
   // specified style height we ignore it since extra content is
@@ -152,9 +150,7 @@ nsBlockReflowState::nsBlockReflowState(const nsHTMLReflowState& aReflowState,
   mPrevChild = nsnull;
   mCurrentLine = aFrame->end_lines();
 
-  const nsStyleText* styleText;
-  mBlock->GetStyleData(eStyleStruct_Text,
-                       (const nsStyleStruct*&) styleText);
+  const nsStyleText* styleText = mBlock->GetStyleText();
   switch (styleText->mWhiteSpace) {
   case NS_STYLE_WHITESPACE_PRE:
   case NS_STYLE_WHITESPACE_NOWRAP:
@@ -165,14 +161,14 @@ nsBlockReflowState::nsBlockReflowState(const nsHTMLReflowState& aReflowState,
     break;
   }
 
-  SetFlag(BRS_COMPUTEMAXELEMENTSIZE, (nsnull != aMetrics.maxElementSize));
+  SetFlag(BRS_COMPUTEMAXELEMENTWIDTH, aMetrics.mComputeMEW);
 #ifdef DEBUG
-  if (nsBlockFrame::gNoisyMaxElementSize) {
+  if (nsBlockFrame::gNoisyMaxElementWidth) {
     nsFrame::IndentBy(stdout, nsBlockFrame::gNoiseIndent);
-    printf("BRS: setting compute-MES to %d\n", (nsnull != aMetrics.maxElementSize));
+    printf("BRS: setting compute-MEW to %d\n", aMetrics.mComputeMEW);
   }
 #endif
-  mMaxElementSize.SizeTo(0, 0);
+  mMaxElementWidth = 0;
   SetFlag(BRS_COMPUTEMAXWIDTH, 
           (NS_REFLOW_CALC_MAX_WIDTH == (aMetrics.mFlags & NS_REFLOW_CALC_MAX_WIDTH)));
   mMaximumWidth = 0;
@@ -253,9 +249,7 @@ nsBlockReflowState::ComputeBlockAvailSpace(nsIFrame* aFrame,
     if (mBand.GetFloaterCount()) {
       // Use the float-edge property to determine how the child block
       // will interact with the floater.
-      const nsStyleBorder* borderStyle;
-      aFrame->GetStyleData(eStyleStruct_Border,
-                           (const nsStyleStruct*&) borderStyle);
+      const nsStyleBorder* borderStyle = aFrame->GetStyleBorder();
       switch (borderStyle->mFloatEdge) {
         default:
         case NS_STYLE_FLOAT_EDGE_CONTENT:  // content and only content does runaround of floaters
@@ -272,9 +266,7 @@ nsBlockReflowState::ComputeBlockAvailSpace(nsIFrame* aFrame,
             // The child block's border should be placed adjacent to,
             // but not overlap the floater(s).
             nsMargin m(0, 0, 0, 0);
-            const nsStyleMargin* styleMargin;
-            aFrame->GetStyleData(eStyleStruct_Margin,
-                                 (const nsStyleStruct*&) styleMargin);
+            const nsStyleMargin* styleMargin = aFrame->GetStyleMargin();
             styleMargin->GetMargin(m); // XXX percentage margins
             if (NS_STYLE_FLOAT_EDGE_PADDING == borderStyle->mFloatEdge) {
               // Add in border too
@@ -338,6 +330,7 @@ nsBlockReflowState::ComputeBlockAvailSpace(nsIFrame* aFrame,
     aResult.x = mAvailSpaceRect.x + borderPadding.left;
     aResult.width = mAvailSpaceRect.width;
   }
+
 #ifdef REALLY_NOISY_REFLOW
   printf("  CBAS: result %d %d %d %d\n", aResult.x, aResult.y, aResult.width, aResult.height);
 #endif
@@ -448,8 +441,7 @@ nsBlockReflowState::ReconstructMarginAbove(nsLineList::iterator aLine)
   mPrevBottomMargin.Zero();
   nsBlockFrame *block = mBlock;
 
-  const nsStyleText* styleText;
-  ::GetStyleData(block, &styleText);
+  const nsStyleText* styleText = block->GetStyleText();
   PRBool isPre = NS_STYLE_WHITESPACE_PRE == styleText->mWhiteSpace ||
                  NS_STYLE_WHITESPACE_MOZ_PRE_WRAP == styleText->mWhiteSpace;
 
@@ -519,7 +511,6 @@ nsBlockReflowState::RecoverFloaters(nsLineList::iterator aLine,
       }
 #endif
       mSpaceManager->AddRectRegion(floater, fc->mRegion);
-      mLastFloaterY = fc->mRegion.y;
       fc = fc->Next();
     }
   } else if (aLine->IsBlock()) {
@@ -560,7 +551,7 @@ nsBlockReflowState::RecoverStateFrom(nsLineList::iterator aLine,
   // Make the line being recovered the current line
   mCurrentLine = aLine;
 
-  // Recover mKidXMost and mMaxElementSize
+  // Recover mKidXMost and mMaxElementWidth
   nscoord xmost = aLine->mBounds.XMost();
   if (xmost > mKidXMost) {
 #ifdef DEBUG
@@ -574,14 +565,22 @@ nsBlockReflowState::RecoverStateFrom(nsLineList::iterator aLine,
 #endif
     mKidXMost = xmost;
   }
-  if (GetFlag(BRS_COMPUTEMAXELEMENTSIZE)) {
+  if (GetFlag(BRS_COMPUTEMAXELEMENTWIDTH)) {
 #ifdef DEBUG
-    if (nsBlockFrame::gNoisyMaxElementSize) {
+    if (nsBlockFrame::gNoisyMaxElementWidth) {
       nsFrame::IndentBy(stdout, nsBlockFrame::gNoiseIndent);
       printf("nsBlockReflowState::RecoverStateFrom block %p caching max width %d\n", mBlock, aLine->mMaxElementWidth);
     }
 #endif
-    UpdateMaxElementSize(nsSize(aLine->mMaxElementWidth, aLine->mBounds.height));
+    UpdateMaxElementWidth(aLine->mMaxElementWidth);
+
+    // Recover the floater MEWs for floaters in this line (but not in
+    // blocks within it, since their MEWs are already part of the block's
+    // MEW).
+    if (aLine->HasFloaters()) {
+      for (nsFloaterCache* fc = aLine->GetFirstFloater(); fc; fc = fc->Next())
+        UpdateMaxElementWidth(fc->mMaxElementWidth);
+    }
   }
 
   // If computing the maximum width, then update mMaximumWidth
@@ -660,6 +659,7 @@ nsBlockReflowState::AddFloater(nsLineLayout&       aLineLayout,
   nsFloaterCache* fc = mFloaterCacheFreeList.Alloc();
   fc->mPlaceholder = aPlaceholder;
   fc->mIsCurrentLineFloater = aLineLayout.CanPlaceFloaterNow();
+  fc->mMaxElementWidth = 0;
 
   // Now place the floater immediately if possible. Otherwise stash it
   // away in mPendingFloaters and place it later.
@@ -701,29 +701,24 @@ nsBlockReflowState::AddFloater(nsLineLayout&       aLineLayout,
 }
 
 void
-nsBlockReflowState::UpdateMaxElementSize(const nsSize& aMaxElementSize)
+nsBlockReflowState::UpdateMaxElementWidth(nscoord aMaxElementWidth)
 {
 #ifdef DEBUG
-  nsSize oldSize = mMaxElementSize;
+  nscoord oldWidth = mMaxElementWidth;
 #endif
-  if (aMaxElementSize.width > mMaxElementSize.width) {
-    mMaxElementSize.width = aMaxElementSize.width;
-  }
-  if (aMaxElementSize.height > mMaxElementSize.height) {
-    mMaxElementSize.height = aMaxElementSize.height;
+  if (aMaxElementWidth > mMaxElementWidth) {
+    mMaxElementWidth = aMaxElementWidth;
   }
 #ifdef DEBUG
-  if (nsBlockFrame::gNoisyMaxElementSize) {
-    if ((mMaxElementSize.width != oldSize.width) ||
-        (mMaxElementSize.height != oldSize.height)) {
+  if (nsBlockFrame::gNoisyMaxElementWidth) {
+    if (mMaxElementWidth != oldWidth) {
       nsFrame::IndentBy(stdout, nsBlockFrame::gNoiseIndent);
       if (NS_UNCONSTRAINEDSIZE == mReflowState.availableWidth) {
         printf("PASS1 ");
       }
       nsFrame::ListTag(stdout, mBlock);
-      printf(": old max-element-size=%d,%d new=%d,%d\n",
-             oldSize.width, oldSize.height,
-             mMaxElementSize.width, mMaxElementSize.height);
+      printf(": old max-element-width=%d new=%d\n",
+             oldWidth, mMaxElementWidth);
     }
   }
 #endif
@@ -775,6 +770,8 @@ nsBlockReflowState::CanPlaceFloater(const nsRect& aFloaterRect,
           xa = mAvailSpaceRect.XMost() - aFloaterRect.width;
 
           // In case the floater is too big, don't go past the left edge
+          // XXXldb This seems wrong, but we might want to fix bug 6976
+          // first.
           if (xa < mAvailSpaceRect.x) {
             xa = mAvailSpaceRect.x;
           }
@@ -847,12 +844,11 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
   // content.
   nscoord saveY = mY;
 
-  nsIFrame* floater = aFloaterCache->mPlaceholder->GetOutOfFlowFrame();
+  nsPlaceholderFrame* placeholder = aFloaterCache->mPlaceholder;
+  nsIFrame*           floater = placeholder->GetOutOfFlowFrame();
 
   // Grab the floater's display information
-  const nsStyleDisplay* floaterDisplay;
-  floater->GetStyleData(eStyleStruct_Display,
-                        (const nsStyleStruct*&)floaterDisplay);
+  const nsStyleDisplay* floaterDisplay = floater->GetStyleDisplay();
 
   // This will hold the floater's geometry when we've found a place
   // for it to live.
@@ -863,10 +859,9 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
   floater->GetRect(oldRegion);
   oldRegion.Inflate(aFloaterCache->mMargins);
 
-  // Advance mY to mLastFloaterY (if it's not past it already) to
-  // enforce 9.5.1 rule [2]; i.e., make sure that a float isn't
+  // Enforce CSS2 9.5.1 rule [2], i.e., make sure that a float isn't
   // ``above'' another float that preceded it in the flow.
-  mY = NS_MAX(mLastFloaterY, mY);
+  mY = NS_MAX(mSpaceManager->GetLowestRegionTop() + BorderPadding().top, mY);
 
   // See if the floater should clear any preceeding floaters...
   if (NS_STYLE_CLEAR_NONE != floaterDisplay->mBreakType) {
@@ -879,8 +874,7 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
   }
 
   // Reflow the floater
-  mBlock->ReflowFloater(*this, aFloaterCache->mPlaceholder, aFloaterCache->mCombinedArea,
-			                  aFloaterCache->mMargins, aFloaterCache->mOffsets, aReflowStatus);
+  mBlock->ReflowFloater(*this, placeholder, aFloaterCache, aReflowStatus);
 
   // Get the floaters bounding box and margin information
   floater->GetRect(region);
@@ -963,8 +957,7 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
       mY += mAvailSpaceRect.height;
       GetAvailableSpace();
       // reflow the floater again now since we have more space
-      mBlock->ReflowFloater(*this, aFloaterCache->mPlaceholder, aFloaterCache->mCombinedArea,
-                            aFloaterCache->mMargins, aFloaterCache->mOffsets, aReflowStatus);
+      mBlock->ReflowFloater(*this, placeholder, aFloaterCache, aReflowStatus);
       // Get the floaters bounding box and margin information
       floater->GetRect(region);
       // Adjust the floater size by its margin. That's the area that will
@@ -974,22 +967,42 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
 
     }
   }
-  // If the floater is continued, it will get the same x value as its prev-in-flow
-  nsRect prevInFlowRect(0,0,0,0);
+  // If the floater is continued, it will get the same absolute x value as its prev-in-flow
+  nsRect prevRect(0,0,0,0);
   nsIFrame* prevInFlow;
   floater->GetPrevInFlow(&prevInFlow);
   if (prevInFlow) {
-    prevInFlow->GetRect(prevInFlowRect);
+    prevInFlow->GetRect(prevRect);
+
+    nsCOMPtr<nsIPresShell> presShell;
+    mPresContext->GetShell(getter_AddRefs(presShell));
+    nsCOMPtr<nsIFrameManager> frameManager;
+    presShell->GetFrameManager(getter_AddRefs(frameManager));
+
+    nsIFrame *placeParent, *placeParentPrev, *prevPlace, *prevPlaceParent;
+    // If prevInFlow's placeholder is in a block that wasn't continued, we need to adjust 
+    // prevRect.x to account for the missing frame offsets.
+    placeholder->GetParent(&placeParent);
+    placeParent->GetPrevInFlow(&placeParentPrev);
+    frameManager->GetPlaceholderFrameFor(prevInFlow, &prevPlace);
+    prevPlace->GetParent(&prevPlaceParent);
+
+    for (nsIFrame* ancestor = prevPlaceParent; 
+         ancestor && (ancestor != placeParentPrev); 
+         ancestor->GetParent(&ancestor)) {
+      nsRect rect;
+      ancestor->GetRect(rect);
+      prevRect.x += rect.x;
+    }        
   }
   // Assign an x and y coordinate to the floater. Note that the x,y
   // coordinates are computed <b>relative to the translation in the
   // spacemanager</b> which means that the impacted region will be
   // <b>inside</b> the border/padding area.
-  PRBool okToAddRectRegion = PR_TRUE;
   PRBool isLeftFloater;
   if (NS_STYLE_FLOAT_LEFT == floaterDisplay->mFloats) {
     isLeftFloater = PR_TRUE;
-    region.x = (prevInFlow) ? prevInFlowRect.x : mAvailSpaceRect.x;
+    region.x = (prevInFlow) ? prevRect.x : mAvailSpaceRect.x;
   }
   else {
     isLeftFloater = PR_FALSE;
@@ -997,7 +1010,7 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
       nsIFrame* prevInFlow;
       floater->GetPrevInFlow(&prevInFlow);
       if (prevInFlow) {
-        region.x = prevInFlowRect.x;
+        region.x = prevRect.x;
       }
       else if (!keepFloaterOnSameLine) {
         region.x = mAvailSpaceRect.XMost() - region.width;
@@ -1009,8 +1022,10 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
       }
     }
     else {
-      okToAddRectRegion = PR_FALSE;
-      region.x = NS_UNCONSTRAINEDSIZE - region.width;
+      // For unconstrained reflows, pretend that a right floater is
+      // instead a left floater.  This will make us end up with the
+      // correct unconstrained width, and we'll place it later.
+      region.x = mAvailSpaceRect.x;
     }
   }
   *aIsLeftFloater = isLeftFloater;
@@ -1026,18 +1041,16 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
   }
 
   // Place the floater in the space manager
-  if (okToAddRectRegion) {
-    // if the floater split, then take up all of the vertical height 
-    if (NS_FRAME_IS_NOT_COMPLETE(aReflowStatus) && 
-        (NS_UNCONSTRAINEDSIZE != mContentArea.height)) {
-      region.height += PR_MAX(region.height, mContentArea.height);
-    }
-#ifdef DEBUG
-    nsresult rv =
-#endif
-    mSpaceManager->AddRectRegion(floater, region);
-    NS_ABORT_IF_FALSE(NS_SUCCEEDED(rv), "bad floater placement");
+  // if the floater split, then take up all of the vertical height 
+  if (NS_FRAME_IS_NOT_COMPLETE(aReflowStatus) && 
+      (NS_UNCONSTRAINEDSIZE != mContentArea.height)) {
+    region.height = PR_MAX(region.height, mContentArea.height);
   }
+#ifdef DEBUG
+  nsresult rv =
+#endif
+  mSpaceManager->AddRectRegion(floater, region);
+  NS_ABORT_IF_FALSE(NS_SUCCEEDED(rv), "bad floater placement");
 
   // If the floater's dimensions have changed, note the damage in the
   // space manager.
@@ -1094,27 +1107,22 @@ nsBlockReflowState::FlowAndPlaceFloater(nsFloaterCache* aFloaterCache,
   nsRect combinedArea = aFloaterCache->mCombinedArea;
   combinedArea.x += x;
   combinedArea.y += y;
-  if (!isLeftFloater && 
-      (GetFlag(BRS_UNCONSTRAINEDWIDTH) || GetFlag(BRS_SHRINKWRAPWIDTH))) {
-    // When we are placing a right floater in an unconstrained situation or
-    // when shrink wrapping, we don't apply it to the floater combined area
-    // immediately. Otherwise we end up with an infinitely wide combined
-    // area. Instead, we save it away in mRightFloaterCombinedArea so that
-    // later on when we know the width of a line we can compute a better value.
-    if (!mHaveRightFloaters) {
-      mRightFloaterCombinedArea = combinedArea;
-      mHaveRightFloaters = PR_TRUE;
-    }
-    else {
-      nsBlockFrame::CombineRects(combinedArea, mRightFloaterCombinedArea);
-    }
-  }
-  else {
+  // When we are placing a right floater in an unconstrained situation or
+  // when shrink wrapping, we don't apply it to the floater combined area
+  // immediately, since there's no need to since we're guaranteed another
+  // reflow, and since there's no need to change the code that was
+  // necessary back when the floater was positioned relative to
+  // NS_UNCONSTRAINEDSIZE.
+  if (isLeftFloater ||
+      !GetFlag(BRS_UNCONSTRAINEDWIDTH) ||
+      !GetFlag(BRS_SHRINKWRAPWIDTH)) {
     nsBlockFrame::CombineRects(combinedArea, mFloaterCombinedArea);
+  } else if (GetFlag(BRS_SHRINKWRAPWIDTH)) {
+    // Mark the line dirty so we come back and re-place the floater once
+    // the shrink wrap width is determined
+    mCurrentLine->MarkDirty();
+    SetFlag(BRS_NEEDRESIZEREFLOW, PR_TRUE);
   }
-
-  // Remember the y-coordinate of the floater we've just placed
-  mLastFloaterY = mY;
 
   // Now restore mY
   mY = saveY;
@@ -1139,6 +1147,8 @@ nsBlockReflowState::PlaceBelowCurrentLineFloaters(nsFloaterCacheList& aList)
 {
   nsFloaterCache* fc = aList.Head();
   while (fc) {
+    NS_ASSERTION(!fc->mIsCurrentLineFloater,
+                 "A cl floater crept into the bcl floater list.");
     if (!fc->mIsCurrentLineFloater) {
 #ifdef DEBUG
       if (nsBlockFrame::gNoisyReflow) {
@@ -1160,7 +1170,7 @@ nsBlockReflowState::PlaceBelowCurrentLineFloaters(nsFloaterCacheList& aList)
       }
       else if (NS_FRAME_IS_NOT_COMPLETE(reflowStatus)) {
         // Create a continuation for the incomplete floater and its placeholder.
-        nsresult rv = mBlock->SplitPlaceholder(*this, *fc->mPlaceholder);
+        nsresult rv = mBlock->SplitPlaceholder(*mPresContext, *fc->mPlaceholder);
         if (NS_FAILED(rv)) 
           return PR_FALSE;
       }

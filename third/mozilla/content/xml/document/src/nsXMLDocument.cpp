@@ -48,7 +48,6 @@
 #include "nsIContent.h"
 #include "nsIContentViewerContainer.h"
 #include "nsIContentViewer.h"
-#include "nsIWebShell.h"
 #include "nsIDocShell.h"
 #include "nsIMarkupDocumentViewer.h"
 #include "nsIDocumentLoader.h"
@@ -62,6 +61,7 @@
 #include "nsIDOMElement.h"
 #include "nsIDOMText.h"
 #include "nsIBaseWindow.h"
+#include "nsIDOMWindow.h"
 #include "nsIDOMCDATASection.h"
 #include "nsIDOMProcessingInstruction.h"
 #include "nsIDOMDocumentType.h"
@@ -73,25 +73,17 @@
 #include "nsIURI.h"
 #include "nsIServiceManager.h"
 #include "nsICharsetAlias.h"
-#include "nsIPref.h"
-#include "nsICharsetDetector.h"
-#include "prmem.h"
-#include "prtime.h"
-#include "nsIWebShellServices.h"
-#include "nsICharsetDetectionAdaptor.h"
-#include "nsCharsetDetectionAdaptorCID.h"
 #include "nsICharsetAlias.h"
-#include "nsIParserFilter.h"
 #include "nsNetUtil.h"
 #include "nsDOMError.h"
 #include "nsScriptSecurityManager.h"
 #include "nsIPrincipal.h"
 #include "nsIAggregatePrincipal.h"
 #include "nsLayoutCID.h"
-#include "nsContentCID.h"
 #include "nsDOMAttribute.h"
 #include "nsGUIEvent.h"
-#include "nsFIXptr.h"
+#include "nsIFIXptr.h"
+#include "nsIXPointer.h"
 #include "nsCExternalHandlerService.h"
 #include "nsIMIMEService.h"
 #include "nsNetUtil.h"
@@ -103,49 +95,22 @@
 #include "nsIWindowWatcher.h"
 #include "nsIAuthPrompt.h"
 #include "nsIScriptGlobalObjectOwner.h"
-
-static NS_DEFINE_CID(kHTMLStyleSheetCID,NS_HTMLSTYLESHEET_CID);
+static NS_DEFINE_IID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 
 // XXX The XML world depends on the html atoms
 #include "nsHTMLAtoms.h"
 
-#define DETECTOR_CONTRACTID_MAX 127
-static char g_detector_contractid[DETECTOR_CONTRACTID_MAX + 1];
-static PRBool gInitDetector = PR_FALSE;
-static PRBool gPlugDetector = PR_FALSE;
+static const char kLoadAsData[] = "loadAsData";
 
-static const char* kLoadAsData = "loadAsData";
+static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
+
 
 // ==================================================================
 // =
 // ==================================================================
 
 
-static int PR_CALLBACK
-MyPrefChangedCallback(const char*aPrefName, void* instance_data)
-{
-        nsresult rv;
-        nsCOMPtr<nsIPref> prefs = 
-                 do_GetService(NS_PREF_CONTRACTID, &rv);
-        PRUnichar* detector_name = nsnull;
-        if(NS_SUCCEEDED(rv) && NS_SUCCEEDED(
-             rv = prefs->GetLocalizedUnicharPref("intl.charset.detector",
-                                     &detector_name)))
-        {
-			if(nsCRT::strlen(detector_name) > 0) {
-				PL_strncpy(g_detector_contractid, NS_CHARSET_DETECTOR_CONTRACTID_BASE,DETECTOR_CONTRACTID_MAX);
-				PL_strncat(g_detector_contractid, NS_ConvertUCS2toUTF8(detector_name).get(),DETECTOR_CONTRACTID_MAX);
-				gPlugDetector = PR_TRUE;
-			} else {
-				g_detector_contractid[0]=0;
-				gPlugDetector = PR_FALSE;
-			}
-            PR_FREEIF(detector_name);
-        }
-	return 0;
-}
-
-NS_EXPORT nsresult
+nsresult
 NS_NewDOMDocument(nsIDOMDocument** aInstancePtrResult,
                   const nsAString& aNamespaceURI, 
                   const nsAString& aQualifiedName, 
@@ -198,7 +163,7 @@ NS_NewDOMDocument(nsIDOMDocument** aInstancePtrResult,
 }
 
 
-NS_EXPORT nsresult
+nsresult
 NS_NewXMLDocument(nsIDocument** aInstancePtrResult)
 {
   nsXMLDocument* doc = new nsXMLDocument();
@@ -218,33 +183,36 @@ NS_NewXMLDocument(nsIDocument** aInstancePtrResult)
   return NS_OK;
 }
 
+  // NOTE! nsDocument::operator new() zeroes out all members, so don't
+  // bother initializing members to 0.
+
 nsXMLDocument::nsXMLDocument() 
-  : mAttrStyleSheet(nsnull), mInlineStyleSheet(nsnull), 
-    mCountCatalogSheets(0), mParser(nsnull),
-    mCrossSiteAccessEnabled(PR_FALSE), mXMLDeclarationBits(0)
+  : mAsync(PR_TRUE)
 {
+
+  // NOTE! nsDocument::operator new() zeroes out all members, so don't
+  // bother initializing members to 0.
 }
 
 nsXMLDocument::~nsXMLDocument()
 {
-  NS_IF_RELEASE(mParser);  
   if (mAttrStyleSheet) {
     mAttrStyleSheet->SetOwningDocument(nsnull);
-    NS_RELEASE(mAttrStyleSheet);
   }
   if (mInlineStyleSheet) {
     mInlineStyleSheet->SetOwningDocument(nsnull);
-    NS_RELEASE(mInlineStyleSheet);
   }
   if (mCSSLoader) {
     mCSSLoader->DropDocumentReference();
   }
+
+  // XXX We rather crash than hang
+  mLoopingForSyncLoad = PR_FALSE;
 }
 
 
-// QueryInterface implementation for nsHTMLAnchorElement
+// QueryInterface implementation for nsXMLDocument
 NS_INTERFACE_MAP_BEGIN(nsXMLDocument)
-  NS_INTERFACE_MAP_ENTRY(nsIXMLDocument)
   NS_INTERFACE_MAP_ENTRY(nsIHTMLContentContainer)
   NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
   NS_INTERFACE_MAP_ENTRY(nsIHttpEventSink)
@@ -257,24 +225,35 @@ NS_IMPL_ADDREF_INHERITED(nsXMLDocument, nsDocument)
 NS_IMPL_RELEASE_INHERITED(nsXMLDocument, nsDocument)
 
 
+nsresult
+nsXMLDocument::Init()
+{
+  nsresult rv = nsDocument::Init();
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  mEventQService = do_GetService(kEventQueueServiceCID, &rv);
+
+  return rv;
+}
+
 NS_IMETHODIMP 
 nsXMLDocument::Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup)
 {
   nsresult result = nsDocument::Reset(aChannel, aLoadGroup);
-  if (NS_FAILED(result)) return result;
+  if (NS_FAILED(result))
+    return result;
   nsCOMPtr<nsIURI> url;
   if (aChannel) {
     result = aChannel->GetURI(getter_AddRefs(url));
-    if (NS_FAILED(result)) return result;
+    if (NS_FAILED(result))
+      return result;
   }
 
-  if (nsnull != mAttrStyleSheet) {
+  if (mAttrStyleSheet) {
     mAttrStyleSheet->SetOwningDocument(nsnull);
-    NS_RELEASE(mAttrStyleSheet);
   }
-  if (nsnull != mInlineStyleSheet) {
+  if (mInlineStyleSheet) {
     mInlineStyleSheet->SetOwningDocument(nsnull);
-    NS_RELEASE(mInlineStyleSheet);
   }
 
   result = SetDefaultStylesheets(url);
@@ -371,12 +350,71 @@ nsXMLDocument::OnRedirect(nsIHttpChannel *aHttpChannel, nsIChannel *aNewChannel)
 NS_IMETHODIMP
 nsXMLDocument::EvaluateFIXptr(const nsAString& aExpression, nsIDOMRange **aRange)
 {
-  return nsFIXptr::Evaluate(this, aExpression, aRange);
+  nsresult rv;
+  nsCOMPtr<nsIFIXptrEvaluator> e =
+    do_CreateInstance("@mozilla.org/xmlextras/fixptrevaluator;1", &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  return e->Evaluate(this, aExpression, aRange);
 }
 
 NS_IMETHODIMP
-nsXMLDocument::Load(const nsAString& aUrl)
+nsXMLDocument::EvaluateXPointer(const nsAString& aExpression,
+                                nsIXPointerResult **aResult)
 {
+  nsresult rv;
+  nsCOMPtr<nsIXPointerEvaluator> e =
+    do_CreateInstance("@mozilla.org/xmlextras/xpointerevaluator;1", &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  return e->Evaluate(this, aExpression, aResult);
+}
+
+NS_IMETHODIMP
+nsXMLDocument::GetAsync(PRBool *aAsync)
+{
+  NS_ENSURE_ARG_POINTER(aAsync);
+  *aAsync = mAsync;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXMLDocument::SetAsync(PRBool aAsync)
+{
+  mAsync = aAsync;
+  return NS_OK;
+}
+
+nsresult 
+nsXMLDocument::GetLoadGroup(nsILoadGroup **aLoadGroup)
+{
+  NS_ENSURE_ARG_POINTER(aLoadGroup);
+  *aLoadGroup = nsnull;
+
+  if (mScriptContext) {
+    nsCOMPtr<nsIScriptGlobalObject> global;
+    mScriptContext->GetGlobalObject(getter_AddRefs(global));
+    nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(global);
+    if (window) {
+      nsCOMPtr<nsIDOMDocument> domdoc;
+      window->GetDocument(getter_AddRefs(domdoc));
+      nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
+      if (doc) {
+        doc->GetDocumentLoadGroup(aLoadGroup);
+      }
+    }
+  }
+
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP
+nsXMLDocument::Load(const nsAString& aUrl, PRBool *aReturn)
+{
+  NS_ENSURE_ARG_POINTER(aReturn);
+  *aReturn = PR_FALSE;
+
   nsCOMPtr<nsIChannel> channel;
   nsCOMPtr<nsIURI> uri;
   nsresult rv;
@@ -389,24 +427,30 @@ nsXMLDocument::Load(const nsAString& aUrl)
   nsCOMPtr<nsIScriptSecurityManager> secMan = 
            do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
   if (NS_FAILED(rv)) return rv;
-  if (NS_FAILED(secMan->CheckConnect(nsnull, uri, "XMLDocument", "load")))
-    return NS_ERROR_FAILURE;
+  rv = secMan->CheckConnect(nsnull, uri, "XMLDocument", "load");
+  if (NS_FAILED(rv)) {
+    // We need to return success here so that JS will get a proper exception
+    // thrown later. Native calls should always result in CheckConnect() succeeding,
+    // but in case JS calls C++ which calls this code the exception might be lost.
+    return NS_OK;
+  }
 
   // Partial Reset, need to restore principal for security reasons and
   // event listener manager so that load listeners etc. will remain.
-  nsCOMPtr<nsIPrincipal> principal = mPrincipal;
-  nsCOMPtr<nsIEventListenerManager> elm = mListenerManager;
+
+  nsCOMPtr<nsIPrincipal> principal(mPrincipal);
+  nsCOMPtr<nsIEventListenerManager> elm(mListenerManager);
 
   Reset(nsnull, nsnull);
   
   mPrincipal = principal;
   mListenerManager = elm;
-  NS_IF_ADDREF(mListenerManager);
   
   SetDocumentURL(uri);
   SetBaseURL(uri);
 
-  // Store script context, if any, in case we encounter redirect (because we need it there)
+  // Store script context, if any, in case we encounter redirect
+  // (because we need it there)
   nsCOMPtr<nsIJSContextStack> stack =
     do_GetService("@mozilla.org/js/xpc/ContextStack;1");
   if (stack) {
@@ -414,50 +458,107 @@ nsXMLDocument::Load(const nsAString& aUrl)
     if (NS_SUCCEEDED(stack->Peek(&cx)) && cx) {
       nsISupports *priv = (nsISupports *)::JS_GetContextPrivate(cx);
       if (priv) {
-        priv->QueryInterface(NS_GET_IID(nsIScriptContext), getter_AddRefs(mScriptContext));        
+        mScriptContext = do_QueryInterface(priv);
       }
     }
   }
 
-  // Find out if UniversalBrowserRead privileges are enabled - we will need this
-  // in case of a redirect
+  // Find out if UniversalBrowserRead privileges are enabled - we will
+  // need this in case of a redirect
   PRBool crossSiteAccessEnabled;
-  rv = secMan->IsCapabilityEnabled("UniversalBrowserRead", &crossSiteAccessEnabled);
+  rv = secMan->IsCapabilityEnabled("UniversalBrowserRead",
+                                   &crossSiteAccessEnabled);
   if (NS_FAILED(rv)) return rv;
 
   mCrossSiteAccessEnabled = crossSiteAccessEnabled;
 
   // Create a channel
-  rv = NS_NewChannel(getter_AddRefs(channel), uri, nsnull, nsnull, this);
+  // When we are called from JS we can find the load group for the page,
+  // and add ourselves to it. This way any pending requests
+  // will be automatically aborted if the user leaves the page.
+  nsCOMPtr<nsILoadGroup> loadGroup;
+  GetLoadGroup(getter_AddRefs(loadGroup));
+
+  // nsIRequest::LOAD_BACKGROUND prevents throbber from becoming active,
+  // which in turn keeps STOP button from becoming active  
+  rv = NS_NewChannel(getter_AddRefs(channel), uri, nsnull, loadGroup, this, 
+                     nsIRequest::LOAD_BACKGROUND);
   if (NS_FAILED(rv)) return rv;
 
   // Set a principal for this document
-  mPrincipal = nsnull;
   nsCOMPtr<nsISupports> channelOwner;
   rv = channel->GetOwner(getter_AddRefs(channelOwner));
-  if (NS_SUCCEEDED(rv) && channelOwner)
-      mPrincipal = do_QueryInterface(channelOwner, &rv);
 
-  if (NS_FAILED(rv) || !channelOwner)
-  {
+  // We don't care if GetOwner() succeeded here, if it failed,
+  // channelOwner will be null, which is what we want in that case.
+
+  mPrincipal = do_QueryInterface(channelOwner);
+
+  if (NS_FAILED(rv) || !mPrincipal) {
     rv = secMan->GetCodebasePrincipal(uri, getter_AddRefs(mPrincipal));
-    if (!mPrincipal) return rv;
+    NS_ENSURE_TRUE(mPrincipal, rv);
+  }
+
+  nsCOMPtr<nsIEventQueue> modalEventQueue;
+
+  if(!mAsync) {
+    NS_ENSURE_TRUE(mEventQService, NS_ERROR_FAILURE);
+
+    rv = mEventQService->PushThreadEventQueue(getter_AddRefs(modalEventQueue));
+    if (NS_FAILED(rv)) {
+      return rv;
+    }
   }
 
   // Prepare for loading the XML document "into oneself"
   nsCOMPtr<nsIStreamListener> listener;
   if (NS_FAILED(rv = StartDocumentLoad(kLoadAsData, channel, 
-                                       nsnull, nsnull, 
+                                       loadGroup, nsnull, 
                                        getter_AddRefs(listener),
                                        PR_FALSE))) {
     NS_ERROR("nsXMLDocument::Load: Failed to start the document load.");
+    if (modalEventQueue) {
+      mEventQService->PopThreadEventQueue(modalEventQueue);
+    }
     return rv;
   }
 
   // Start an asynchronous read of the XML document
   rv = channel->AsyncOpen(listener, nsnull);
+  if (NS_FAILED(rv)) {
+    if (modalEventQueue) {
+      mEventQService->PopThreadEventQueue(modalEventQueue);
+    }
+    return rv;
+  }
 
-  return rv;
+  if (!mAsync) {
+    mLoopingForSyncLoad = PR_TRUE;
+
+    while (mLoopingForSyncLoad) {
+      modalEventQueue->ProcessPendingEvents();
+    }
+
+    mEventQService->PopThreadEventQueue(modalEventQueue);
+
+    // We set return to true unless there was a parsing error
+    nsCOMPtr<nsIDOMNode> node = do_QueryInterface(mRootContent);
+    if (node) {
+      nsAutoString name, ns;      
+      if (NS_SUCCEEDED(node->GetLocalName(name)) &&
+          name.Equals(NS_LITERAL_STRING("parsererror")) &&
+          NS_SUCCEEDED(node->GetNamespaceURI(ns)) &&
+          ns.Equals(NS_LITERAL_STRING("http://www.mozilla.org/newlayout/xml/parsererror.xml"))) {
+        //return is already false
+      } else {
+        *aReturn = PR_TRUE;
+      }
+    }
+  } else {
+    *aReturn = PR_TRUE;
+  }
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP 
@@ -494,6 +595,10 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
   } else if (nsCRT::strcmp("loadAsInteractiveData", aCommand) == 0) {
     aCommand = kLoadAsData; // XBL, for example, needs scripts and styles
   }
+  
+  if (nsCRT::strcmp(aCommand, kLoadAsData) == 0) {
+    mLoadedAsData = PR_TRUE;
+  }
 
   nsresult rv = nsDocument::StartDocumentLoad(aCommand,
                                               aChannel, aLoadGroup,
@@ -502,25 +607,11 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
   if (NS_FAILED(rv)) return rv;
 
   nsAutoString charset(NS_LITERAL_STRING("UTF-8"));
-  PRBool bIsHTML = PR_FALSE; 
-  char* aContentType;
   PRInt32 charsetSource = kCharsetFromDocTypeDefault;
 
   nsCOMPtr<nsIURI> aUrl;
   rv = aChannel->GetURI(getter_AddRefs(aUrl));
   if (NS_FAILED(rv)) return rv;
-
-  nsCOMPtr<nsIMIMEService> MIMEService (do_GetService(NS_MIMESERVICE_CONTRACTID, &rv));
-  if (NS_FAILED(rv)) return rv;
-  rv = MIMEService->GetTypeFromURI(aUrl, &aContentType);
-    
-  if (NS_SUCCEEDED(rv)) { 
-    if ( 0 == PL_strcmp(aContentType, "text/html")) {
-      bIsHTML = PR_TRUE;
-    }
-    Recycle(aContentType);
-    aContentType = nsnull;
-  }
 
   { // check channel's charset...
     nsCAutoString charsetVal;
@@ -541,208 +632,44 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
 
   static NS_DEFINE_CID(kCParserCID, NS_PARSER_CID);
 
-  rv = nsComponentManager::CreateInstance(kCParserCID, nsnull, 
-                                          NS_GET_IID(nsIParser), 
-                                          (void **)&mParser);
-  if (NS_FAILED(rv))  return rv;
+  nsCOMPtr<nsIParser> parser = do_CreateInstance(kCParserCID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIXMLContentSink> sink;
     
-  nsCOMPtr<nsIDocShell> docShell;
-  if(aContainer)
-  {
-    docShell = do_QueryInterface(aContainer, &rv);
-    if(NS_FAILED(rv) || !(docShell))  return rv; 
-
-    nsCOMPtr<nsIContentViewer> cv;
-    docShell->GetContentViewer(getter_AddRefs(cv));
-    if (cv) {
-      nsCOMPtr<nsIMarkupDocumentViewer> muCV = do_QueryInterface(cv);            
-      if (muCV) {
-        if(bIsHTML &&(0 == nsCRT::strcmp("view-source", aCommand))) { 
-          // only do this for view-source
-          //view source is now an XML document and we need to make provisions
-          //for the usual charset use when displaying those documents, this 
-          //code mirrors nsHTMLDocument.cpp
-          PRUnichar* requestCharset = nsnull;
-          nsIParserFilter *cdetflt = nsnull;
-          PRInt32 requestCharsetSource = kCharsetUninitialized;
-
-          //need to be able to override doc charset default on user request
-          if( kCharsetFromDocTypeDefault == charsetSource ) // it is not from HTTP header
-            charsetSource = kCharsetFromWeakDocTypeDefault;
-
-          //check hint Charset (is this needed here?)
-          PRUnichar* hintCharset = nsnull;
-          PRInt32  hintSource = kCharsetUninitialized;
-
-          rv = muCV->GetHintCharacterSet(&hintCharset); 
-          if(NS_SUCCEEDED(rv)) {
-            rv = muCV->GetHintCharacterSetSource((PRInt32 *)(&hintSource));
-            if(NS_SUCCEEDED(rv)) {
-              if(hintSource > charsetSource) {
-                charset = hintCharset;
-                Recycle(hintCharset);
-                charsetSource = hintSource;
-              }
-              if(kCharsetUninitialized != hintSource) {
-                muCV->SetHintCharacterSetSource((PRInt32)(kCharsetUninitialized));
-              }
-            }
-          }//hint Charset
-
-          // get user default charset
-          if(kCharsetFromUserDefault > charsetSource) 
-          {
-            PRUnichar* defaultCharsetFromDocShell = NULL;
-            if (muCV) {
-              rv = muCV->GetDefaultCharacterSet(&defaultCharsetFromDocShell);
-              if(NS_SUCCEEDED(rv)) {
-                charset = defaultCharsetFromDocShell;
-                Recycle(defaultCharsetFromDocShell);
-                charsetSource = kCharsetFromUserDefault;
-              }
-            }
-          }//user default
-
-          //user requested charset
-          if(NS_SUCCEEDED(rv)) 
-          {
-            if(requestCharsetSource > charsetSource) 
-            {
-              charsetSource = requestCharsetSource;
-              charset = requestCharset;
-              Recycle(requestCharset);
-            }
-          }
-
-          //charset from previous loading
-          if(kCharsetFromUserForced > charsetSource)
-          {
-            PRUnichar* forceCharsetFromDocShell = NULL;
-            if (muCV) {
-              rv = muCV->GetForceCharacterSet(&forceCharsetFromDocShell);
-            }
-            if(NS_SUCCEEDED(rv) && (nsnull != forceCharsetFromDocShell)) 
-            {
-              charset = forceCharsetFromDocShell;
-              Recycle(forceCharsetFromDocShell);
-              //TODO: we should define appropriate constant for force charset
-              charsetSource = kCharsetFromUserForced;  
-            }
-          } //previous loading
-
-          //auto-detector charset (needed here?)
-          nsresult rv_detect = NS_OK;
-          if(! gInitDetector)
-          {
-            nsCOMPtr<nsIPref> pref(do_GetService(NS_PREF_CONTRACTID));
-            if(pref)
-            {
-              PRUnichar* detector_name = nsnull;
-              if(NS_SUCCEEDED(
-                  rv_detect = pref->GetLocalizedUnicharPref("intl.charset.detector",
-		                 &detector_name)))
-              {
-                PL_strncpy(g_detector_contractid, NS_CHARSET_DETECTOR_CONTRACTID_BASE,DETECTOR_CONTRACTID_MAX);
-                PL_strncat(g_detector_contractid, NS_ConvertUCS2toUTF8(detector_name).get(),DETECTOR_CONTRACTID_MAX);
-                gPlugDetector = PR_TRUE;
-                PR_FREEIF(detector_name);
-              }
-              pref->RegisterCallback("intl.charset.detector", MyPrefChangedCallback, nsnull);
-            }
-            gInitDetector = PR_TRUE;
-          }  
-	      
-          //auto-detector charset (needed here?)
-          if((kCharsetFromAutoDetection > charsetSource )  && gPlugDetector)
-          {
-            // we could do charset detection
-            nsICharsetDetector *cdet = nsnull;
-            nsCOMPtr<nsIWebShellServices> wss;
-            nsICharsetDetectionAdaptor *adp = nsnull;
-
-            if(NS_SUCCEEDED( rv_detect = 
-       	    nsComponentManager::CreateInstance(g_detector_contractid, nsnull,
-				    NS_GET_IID(nsICharsetDetector), (void**)&cdet)))
-            {
-              if(NS_SUCCEEDED( rv_detect = 
-                  nsComponentManager::CreateInstance(
-                  NS_CHARSET_DETECTION_ADAPTOR_CONTRACTID, nsnull,
-                  NS_GET_IID(nsIParserFilter), (void**)&cdetflt)))
-              {
-                if(cdetflt && 
-                    NS_SUCCEEDED( rv_detect=
-                    cdetflt->QueryInterface(
-                    NS_GET_IID(nsICharsetDetectionAdaptor),(void**) &adp)))
-                {
-                  wss = do_QueryInterface(docShell, &rv_detect);
-
-                  if( NS_SUCCEEDED(rv_detect))
-                  {
-                    rv_detect = adp->Init(wss, cdet, (nsIDocument*)this, 
-                                     mParser, charset.get(),aCommand);													
-                    nsIParserFilter *oldFilter = nsnull;
-                    if(cdetflt)
-                      oldFilter = mParser->SetParserFilter(cdetflt);
-                    NS_IF_RELEASE(oldFilter);
-                    NS_IF_RELEASE(cdetflt);
-                  }
-                }
-              }
-            }       
-            else 
-            {
-              // IF we cannot create the detector, don't bother to 
-              // create one next time.
-              gPlugDetector = PR_FALSE;
-            }
-
-            NS_IF_RELEASE(cdet);
-            NS_IF_RELEASE(adp);
-            // NO NS_IF_RELEASE(cdetflt); here, do it after mParser->SetParserFilter
-          } //end of autodetection
-
-        } //charset selection for view source only
-      } //got document viewer
-    } //got content view
-
-    nsCOMPtr<nsIWebShell> webShell(do_QueryInterface(docShell));
-    if (aSink)
-      sink = do_QueryInterface(aSink);
-    else
-      rv = NS_NewXMLContentSink(getter_AddRefs(sink), this, aUrl, webShell, aChannel);
+  if (aSink) {
+    sink = do_QueryInterface(aSink);
   }
   else {
-    if (aSink)
-      sink = do_QueryInterface(aSink);
-    else
-      rv = NS_NewXMLContentSink(getter_AddRefs(sink), this, aUrl, nsnull, aChannel);
-  }
-
-  if (NS_OK == rv) {      
-    // Set the parser as the stream listener for the document loader...
-    rv = mParser->QueryInterface(NS_GET_IID(nsIStreamListener), (void**)aDocListener);
-
-    if (NS_OK == rv) {
-      SetDocumentCharacterSet(charset);
-      mParser->SetDocumentCharset(charset, charsetSource);
-      mParser->SetCommand(aCommand);
-      mParser->SetContentSink(sink);
-      mParser->Parse(aUrl, nsnull, PR_FALSE, (void *)this);
+    nsCOMPtr<nsIDocShell> docShell;
+    if (aContainer) {
+      docShell = do_QueryInterface(aContainer);
+      NS_ENSURE_TRUE(docShell, NS_ERROR_FAILURE);
     }
+    rv = NS_NewXMLContentSink(getter_AddRefs(sink), this, aUrl, docShell,
+                              aChannel);
+    NS_ENSURE_SUCCESS(rv, rv);
   }
 
-  return rv;
+  // Set the parser as the stream listener for the document loader...
+  rv = CallQueryInterface(parser, aDocListener);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  SetDocumentCharacterSet(charset);
+  parser->SetDocumentCharset(charset, charsetSource);
+  parser->SetCommand(aCommand);
+  parser->SetContentSink(sink);
+  parser->Parse(aUrl, nsnull, PR_FALSE, (void *)this);
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP 
 nsXMLDocument::EndLoad()
 {
-  nsAutoString cmd;
-  if (mParser) mParser->GetCommand(cmd);
-  NS_IF_RELEASE(mParser);
-  if (cmd.EqualsWithConversion(kLoadAsData)) {
+  mLoopingForSyncLoad = PR_FALSE;
+
+  if (mLoadedAsData) {
     // Generate a document load event for the case when an XML document was loaded
     // as pure data without any presentation attached to it.
     nsEventStatus status = nsEventStatus_eIgnore;
@@ -767,59 +694,59 @@ nsXMLDocument::EndLoad()
 NS_IMETHODIMP 
 nsXMLDocument::GetAttributeStyleSheet(nsIHTMLStyleSheet** aResult)
 {
-  NS_PRECONDITION(nsnull != aResult, "null ptr");
-  if (nsnull == aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
+  NS_ENSURE_ARG_POINTER(aResult);
+
   *aResult = mAttrStyleSheet;
-  if (nsnull == mAttrStyleSheet) {
-    return NS_ERROR_NOT_AVAILABLE;  // probably not the right error...
-  }
-  else {
-    NS_ADDREF(mAttrStyleSheet);
-  }
+  NS_ENSURE_TRUE(mAttrStyleSheet, NS_ERROR_NOT_AVAILABLE); // probably not the right error...
+
+  NS_ADDREF(*aResult);
+
   return NS_OK;
 }
 
 NS_IMETHODIMP 
 nsXMLDocument::GetInlineStyleSheet(nsIHTMLCSSStyleSheet** aResult)
 {
-  NS_PRECONDITION(nsnull != aResult, "null ptr");
-  if (nsnull == aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
+  NS_ENSURE_ARG_POINTER(aResult);
+
   *aResult = mInlineStyleSheet;
-  if (nsnull == mInlineStyleSheet) {
-    return NS_ERROR_NOT_AVAILABLE;  // probably not the right error...
-  }
-  else {
-    NS_ADDREF(mInlineStyleSheet);
-  }
+  NS_ENSURE_TRUE(mInlineStyleSheet, NS_ERROR_NOT_AVAILABLE); // probably not the right error...
+
+  NS_ADDREF(*aResult);
+
   return NS_OK;
 }
 
 // subclass hook for sheet ordering
-void nsXMLDocument::InternalAddStyleSheet(nsIStyleSheet* aSheet, PRUint32 aFlags)
+void
+nsXMLDocument::InternalAddStyleSheet(nsIStyleSheet* aSheet, PRUint32 aFlags)
 {
+  // XXXbz this catalog stuff should be in the UA level in the cascade!
   if (aFlags & NS_STYLESHEET_FROM_CATALOG) {
     // always after other catalog sheets
-    mStyleSheets.InsertElementAt(aSheet, mCountCatalogSheets);
-    ++mCountCatalogSheets;
+    mStyleSheets.InsertObjectAt(aSheet, mCatalogSheetCount);
+    ++mCatalogSheetCount;
   }
   else if (aSheet == mAttrStyleSheet) {  // always after catalog sheets
-    mStyleSheets.InsertElementAt(aSheet, mCountCatalogSheets);
+    NS_ASSERTION(mStyleSheets.Count() == 0 ||
+                 mAttrStyleSheet != mStyleSheets[0],
+                 "Adding attr sheet twice!");
+    mStyleSheets.InsertObjectAt(aSheet, mCatalogSheetCount);
   }
   else if (aSheet == mInlineStyleSheet) {  // always last
-    mStyleSheets.AppendElement(aSheet);
+    NS_ASSERTION(mStyleSheets.Count() == 0 ||
+                 mStyleSheets[mStyleSheets.Count() - 1] != mInlineStyleSheet,
+                 "Adding style attr sheet twice!");
+    mStyleSheets.AppendObject(aSheet);
   }
   else {
     PRInt32 count = mStyleSheets.Count();
-    if (count != 0 && mInlineStyleSheet == mStyleSheets.ElementAt(count - 1)) {
+    if (count != 0 && mInlineStyleSheet == mStyleSheets[count - 1]) {
       // keep attr sheet last
-      mStyleSheets.InsertElementAt(aSheet, count - 1);
+      mStyleSheets.InsertObjectAt(aSheet, count - 1);
     }
     else {
-      mStyleSheets.AppendElement(aSheet);
+      mStyleSheets.AppendObject(aSheet);
     }
   }
 }
@@ -827,8 +754,56 @@ void nsXMLDocument::InternalAddStyleSheet(nsIStyleSheet* aSheet, PRUint32 aFlags
 void
 nsXMLDocument::InternalInsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex)
 {
+  NS_ASSERTION(0 <= aIndex &&
+               aIndex <= (
+                          mStyleSheets.Count()
+                          /* Don't count Attribute stylesheet */
+                          - 1
+                          /* Don't count catalog sheets */
+                          - mCatalogSheetCount
+                          /* No insertion allowed after StyleAttr stylesheet */
+                          - (mInlineStyleSheet ? 1: 0)
+                          ),
+               "index out of bounds");
   // offset w.r.t. catalog style sheets and the attr style sheet
-  mStyleSheets.InsertElementAt(aSheet, aIndex + mCountCatalogSheets + 1);
+  mStyleSheets.InsertObjectAt(aSheet, aIndex + mCatalogSheetCount + 1);
+}
+
+already_AddRefed<nsIStyleSheet>
+nsXMLDocument::InternalGetStyleSheetAt(PRInt32 aIndex)
+{
+  PRInt32 count = InternalGetNumberOfStyleSheets();
+
+  if (aIndex >= 0 && aIndex < count) {
+    nsIStyleSheet* sheet = mStyleSheets[aIndex + mCatalogSheetCount + 1];
+    NS_ADDREF(sheet);
+    return sheet;
+  } else {
+    NS_ERROR("Index out of range");
+    return nsnull;
+  }
+}
+
+PRInt32
+nsXMLDocument::InternalGetNumberOfStyleSheets()
+{
+  PRInt32 count = mStyleSheets.Count();
+
+  if (count != 0 && mInlineStyleSheet == mStyleSheets[count - 1]) {
+    // subtract the inline style sheet
+    --count;
+  }
+
+  if (count != 0 && mAttrStyleSheet == mStyleSheets[mCatalogSheetCount]) {
+    // subtract the attr sheet
+    --count;
+  }
+
+  count -= mCatalogSheetCount;
+
+  NS_ASSERTION(count >= 0, "How did we get a negative count?");
+
+  return count;
 }
 
 // nsIDOMDocument interface
@@ -839,7 +814,8 @@ nsXMLDocument::GetDoctype(nsIDOMDocumentType** aDocumentType)
 }
  
 NS_IMETHODIMP    
-nsXMLDocument::CreateCDATASection(const nsAString& aData, nsIDOMCDATASection** aReturn)
+nsXMLDocument::CreateCDATASection(const nsAString& aData,
+                                  nsIDOMCDATASection** aReturn)
 {
   NS_ENSURE_ARG_POINTER(aReturn);
   *aReturn = nsnull;
@@ -851,20 +827,20 @@ nsXMLDocument::CreateCDATASection(const nsAString& aData, nsIDOMCDATASection** a
   if (FindInReadable(NS_LITERAL_STRING("]]>"),begin,end))
     return NS_ERROR_DOM_INVALID_CHARACTER_ERR;
 
-  nsIContent* content;
-  nsresult rv = NS_NewXMLCDATASection(&content);
+  nsCOMPtr<nsIContent> content;
+  nsresult rv = NS_NewXMLCDATASection(getter_AddRefs(content));
 
-  if (NS_OK == rv) {
-    rv = content->QueryInterface(NS_GET_IID(nsIDOMCDATASection), (void**)aReturn);
+  if (NS_SUCCEEDED(rv)) {
+    rv = CallQueryInterface(content, aReturn);
     (*aReturn)->AppendData(aData);
-    NS_RELEASE(content);
   }
 
   return rv;
 }
  
 NS_IMETHODIMP    
-nsXMLDocument::CreateEntityReference(const nsAString& aName, nsIDOMEntityReference** aReturn)
+nsXMLDocument::CreateEntityReference(const nsAString& aName,
+                                     nsIDOMEntityReference** aReturn)
 {
   NS_ENSURE_ARG_POINTER(aReturn);
 
@@ -880,17 +856,14 @@ nsXMLDocument::CreateProcessingInstruction(const nsAString& aTarget,
   NS_ENSURE_ARG_POINTER(aReturn);
   *aReturn = nsnull;
 
-  nsIContent* content;
-  nsresult rv = NS_NewXMLProcessingInstruction(&content, aTarget, aData);
-
-  if (NS_OK != rv) {
+  nsCOMPtr<nsIContent> content;
+  nsresult rv = NS_NewXMLProcessingInstruction(getter_AddRefs(content),
+                                               aTarget, aData);
+  if (NS_FAILED(rv)) {
     return rv;
   }
 
-  rv = content->QueryInterface(NS_GET_IID(nsIDOMProcessingInstruction), (void**)aReturn);
-  NS_RELEASE(content);
-  
-  return rv;
+  return CallQueryInterface(content, aReturn);
 }
  
 NS_IMETHODIMP    
@@ -977,7 +950,7 @@ nsXMLDocument::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
     }
   }
 
-  return newDoc->QueryInterface(NS_GET_IID(nsIDOMNode), (void**)aReturn);
+  return CallQueryInterface(newDoc, aReturn);
 }
  
 NS_IMETHODIMP
@@ -1002,12 +975,10 @@ nsXMLDocument::CreateAttributeNS(const nsAString& aNamespaceURI,
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsAutoString value;
-  nsDOMAttribute* attribute;
-
-  attribute = new nsDOMAttribute(nsnull, nodeInfo, value);
+  nsDOMAttribute* attribute = new nsDOMAttribute(nsnull, nodeInfo, value);
   NS_ENSURE_TRUE(attribute, NS_ERROR_OUT_OF_MEMORY); 
 
-  return attribute->QueryInterface(NS_GET_IID(nsIDOMAttr), (void**)aReturn);
+  return CallQueryInterface(attribute, aReturn);
 }
 
 NS_IMETHODIMP
@@ -1028,38 +999,41 @@ nsXMLDocument::CreateElementNS(const nsAString& aNamespaceURI,
   return CreateElement(nodeInfo, aReturn);
 }
 
-static nsIContent *
-MatchId(nsIContent *aContent, const nsAString& aName)
+// Id attribute matching function used by nsXMLDocument and
+// nsHTMLDocument.
+nsIContent *
+MatchElementId(nsIContent *aContent, const nsAString& aId)
 {
-  nsAutoString value;
-  nsIContent *result = nsnull;
-  PRInt32 ns;
+  if (aContent->IsContentOfType(nsIContent::eHTML)) {
+    if (aContent->HasAttr(kNameSpaceID_None, nsHTMLAtoms::id)) {
+      nsAutoString value;
+      aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::id, value);
 
-  aContent->GetNameSpaceID(ns);
-  if (kNameSpaceID_XHTML == ns) {
-    if ((NS_CONTENT_ATTR_HAS_VALUE == aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::id, value)) &&
-        aName.Equals(value)) {
-      return aContent;
+      if (aId.Equals(value)) {
+        return aContent;
+      }
     }
   }
-  else {
+  else if (aContent->IsContentOfType(nsIContent::eELEMENT)) {
     nsCOMPtr<nsIXMLContent> xmlContent = do_QueryInterface(aContent);    
-    nsCOMPtr<nsIAtom> IDValue;
-    if (xmlContent && NS_SUCCEEDED(xmlContent->GetID(*getter_AddRefs(IDValue))) && IDValue) {
-      const PRUnichar* IDValStr = nsnull;
-      IDValue->GetUnicode(&IDValStr);       
-      if (aName.Equals(IDValStr)) {
+
+    if (xmlContent) {
+      nsCOMPtr<nsIAtom> value;
+      if (NS_SUCCEEDED(xmlContent->GetID(*getter_AddRefs(value))) &&
+          value && value->Equals(aId)) {
         return aContent;
       }
     }
   }
   
+  nsIContent *result = nsnull;
   PRInt32 i, count;
+
   aContent->ChildCount(count);
   for (i = 0; i < count && result == nsnull; i++) {
     nsIContent *child;
     aContent->ChildAt(i, child);
-    result = MatchId(child, aName);
+    result = MatchElementId(child, aId);
     NS_RELEASE(child);
   }  
 
@@ -1068,12 +1042,12 @@ MatchId(nsIContent *aContent, const nsAString& aName)
 
 NS_IMETHODIMP
 nsXMLDocument::GetElementById(const nsAString& aElementId,
-                             nsIDOMElement** aReturn)
+                              nsIDOMElement** aReturn)
 {
   NS_ENSURE_ARG_POINTER(aReturn);
   *aReturn = nsnull;
 
-  NS_WARN_IF_FALSE(!aElementId.IsEmpty(),"getElementById(\"\"), fix caller?");
+  NS_WARN_IF_FALSE(!aElementId.IsEmpty(), "getElementById(\"\"), fix caller?");
   if (aElementId.IsEmpty())
     return NS_OK;
 
@@ -1085,99 +1059,37 @@ nsXMLDocument::GetElementById(const nsAString& aElementId,
 
   // XXX For now, we do a brute force search of the content tree.
   // We should come up with a more efficient solution.
-  nsCOMPtr<nsIContent> content(do_QueryInterface(MatchId(mRootContent,aElementId)));
+  // Note that content is *not* refcounted here, so do *not* release it!
+  nsIContent *content = MatchElementId(mRootContent, aElementId);
 
-  nsresult rv = NS_OK;
-  if (content) {
-    rv = content->QueryInterface(NS_GET_IID(nsIDOMElement),(void**)aReturn);
+  if (!content) {
+    return NS_OK;
   }
+
+  return CallQueryInterface(content, aReturn);
+}
+
+nsresult
+nsXMLDocument::SetDefaultStylesheets(nsIURI* aUrl)
+{
+  if (!aUrl) {
+    return NS_OK;
+  }
+
+  nsresult rv = NS_NewHTMLStyleSheet(getter_AddRefs(mAttrStyleSheet), aUrl,
+                                     this);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = NS_NewHTMLCSSStyleSheet(getter_AddRefs(mInlineStyleSheet), aUrl,
+                               this);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // tell the world about our new style sheets
+  AddStyleSheet(mAttrStyleSheet, 0);
+  AddStyleSheet(mInlineStyleSheet, 0);
 
   return rv;
 }
-
-// nsIXMLDocument
-NS_IMETHODIMP 
-nsXMLDocument::SetDefaultStylesheets(nsIURI* aUrl)
-{
-  nsresult result = NS_OK;
-  if (aUrl) {
-    //result = NS_NewHTMLStyleSheet(&mAttrStyleSheet, aUrl, this);
-    result = nsComponentManager::CreateInstance(kHTMLStyleSheetCID,nsnull,NS_GET_IID(nsIHTMLStyleSheet),(void**)&mAttrStyleSheet);
-    if (NS_SUCCEEDED(result)) {
-      result = mAttrStyleSheet->Init(aUrl,this);
-      if (NS_FAILED(result)) {
-        NS_RELEASE(mAttrStyleSheet);
-      }
-    }
-    if (NS_OK == result) {
-      AddStyleSheet(mAttrStyleSheet, 0); // tell the world about our new style sheet
-      
-      result = NS_NewHTMLCSSStyleSheet(&mInlineStyleSheet, aUrl, this);
-      if (NS_OK == result) {
-        AddStyleSheet(mInlineStyleSheet, 0); // tell the world about our new style sheet
-      }
-    }
-  }
-
-  return result;
-}
-
-NS_IMETHODIMP 
-nsXMLDocument::SetXMLDeclaration(const nsAString& aVersion,
-                                 const nsAString& aEncoding,
-                                 const nsAString& aStandalone)
-{
-  if (aVersion.IsEmpty()) {
-    mXMLDeclarationBits = 0;
-    return NS_OK;
-  }
-
-  mXMLDeclarationBits = XML_DECLARATION_BITS_DECLARATION_EXISTS;
-
-  if (!aEncoding.IsEmpty()) {
-    mXMLDeclarationBits |= XML_DECLARATION_BITS_ENCODING_EXISTS;
-  }
-
-  if (aStandalone.Equals(NS_LITERAL_STRING("yes"))) {
-    mXMLDeclarationBits |= XML_DECLARATION_BITS_STANDALONE_EXISTS |
-                           XML_DECLARATION_BITS_STANDALONE_YES;
-  } else if (aStandalone.Equals(NS_LITERAL_STRING("no"))) {
-    mXMLDeclarationBits |= XML_DECLARATION_BITS_STANDALONE_EXISTS;
-  }
-
-  return NS_OK;
-}                               
-
-NS_IMETHODIMP 
-nsXMLDocument::GetXMLDeclaration(nsAString& aVersion,
-                                 nsAString& aEncoding,
-                                 nsAString& aStandalone)
-{
-  aVersion.Truncate();
-  aEncoding.Truncate();
-  aStandalone.Truncate();
-
-  if (!(mXMLDeclarationBits & XML_DECLARATION_BITS_DECLARATION_EXISTS)) {
-    return NS_OK;
-  }
-
-  aVersion.Assign(NS_LITERAL_STRING("1.0")); // always until we start supporting 1.1 etc.
-
-  if (mXMLDeclarationBits & XML_DECLARATION_BITS_ENCODING_EXISTS) {
-    GetDocumentCharacterSet(aEncoding); // This is what we have stored, not necessarily what was written in the original
-  }
-
-  if (mXMLDeclarationBits & XML_DECLARATION_BITS_STANDALONE_EXISTS) {
-    if (mXMLDeclarationBits & XML_DECLARATION_BITS_STANDALONE_YES) {
-      aStandalone.Assign(NS_LITERAL_STRING("yes"));
-    } else {
-      aStandalone.Assign(NS_LITERAL_STRING("no"));
-    }
-  }
-
-  return NS_OK;
-}
-
 
 NS_IMETHODIMP 
 nsXMLDocument::SetBaseTarget(const nsAString &aBaseTarget)
@@ -1196,18 +1108,19 @@ nsXMLDocument::GetBaseTarget(nsAString &aBaseTarget)
 NS_IMETHODIMP
 nsXMLDocument::GetCSSLoader(nsICSSLoader*& aLoader)
 {
-  nsresult result = NS_OK;
-  if (! mCSSLoader) {
-    result = NS_NewCSSLoader(this, getter_AddRefs(mCSSLoader));
-    if (mCSSLoader) {
-      mCSSLoader->SetCaseSensitive(PR_TRUE);
-      // No quirks in XML
-      mCSSLoader->SetCompatibilityMode(eCompatibility_FullStandards);
-    }
+  if (!mCSSLoader) {
+    nsresult rv = NS_NewCSSLoader(this, getter_AddRefs(mCSSLoader));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    mCSSLoader->SetCaseSensitive(PR_TRUE);
+    // no quirks in XML
+    mCSSLoader->SetCompatibilityMode(eCompatibility_FullStandards);
   }
+
   aLoader = mCSSLoader;
   NS_IF_ADDREF(aLoader);
-  return result;
+
+  return NS_OK;
 }
 
 nsresult
@@ -1223,8 +1136,8 @@ nsXMLDocument::CreateElement(nsINodeInfo *aNodeInfo, nsIDOMElement** aResult)
   aNodeInfo->GetNamespaceID(namespaceID);
 
   nsCOMPtr<nsIElementFactory> elementFactory;
-  mNameSpaceManager->GetElementFactory(namespaceID,
-                                       getter_AddRefs(elementFactory));
+  nsContentUtils::GetNSManagerWeakRef()->GetElementFactory(namespaceID,
+                                                           getter_AddRefs(elementFactory));
 
   if (elementFactory) {
     rv = elementFactory->CreateInstanceByTag(aNodeInfo,

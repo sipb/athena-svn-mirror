@@ -141,7 +141,7 @@ typedef PRUint32 NSFastLoadOID;         // nsFastLoadFooter::mObjectMap index
 
 #define MFL_FILE_VERSION_0      0
 #define MFL_FILE_VERSION_1      1000
-#define MFL_FILE_VERSION        3       // fix to store dependency mtimes
+#define MFL_FILE_VERSION        4       // fix to note singletons in object map
 
 /**
  * Compute Fletcher's 16-bit checksum over aLength bytes starting at aBuffer,
@@ -212,8 +212,22 @@ struct nsFastLoadFooterPrefix {
 struct nsFastLoadSharpObjectInfo {
     PRUint32    mCIDOffset;     // offset of object's NSFastLoadID and data
     PRUint16    mStrongRefCnt;
-    PRUint16    mWeakRefCnt;
+    PRUint16    mWeakRefCnt;    // high bit is singleton flag, see below
 };
+
+#define MFL_SINGLETON_FLAG          0x8000
+#define MFL_WEAK_REFCNT_MASK        0x7fff
+
+#define MFL_GET_SINGLETON_FLAG(ip)  ((ip)->mWeakRefCnt & MFL_SINGLETON_FLAG)
+#define MFL_GET_WEAK_REFCNT(ip)     ((ip)->mWeakRefCnt & MFL_WEAK_REFCNT_MASK)
+
+#define MFL_SET_SINGLETON_FLAG(ip)                                            \
+    ((ip)->mWeakRefCnt |= MFL_SINGLETON_FLAG)
+#define MFL_SET_WEAK_REFCNT(ip,rc)                                            \
+    ((ip)->mWeakRefCnt = (((ip)->mWeakRefCnt & MFL_SINGLETON_FLAG) | (rc)))
+
+#define MFL_BUMP_WEAK_REFCNT(ip)    (++(ip)->mWeakRefCnt)
+#define MFL_DROP_WEAK_REFCNT(ip)    (--(ip)->mWeakRefCnt)
 
 struct nsFastLoadMuxedDocumentInfo {
     const char* mURISpec;
@@ -247,8 +261,8 @@ class nsFastLoadFileReader
 {
   public:
     nsFastLoadFileReader(nsIInputStream *aStream)
-      : nsBinaryInputStream(aStream),
-        mCurrentDocumentMapEntry(nsnull) {
+      : mCurrentDocumentMapEntry(nsnull) {
+        SetInputStream(aStream);
         MOZ_COUNT_CTOR(nsFastLoadFileReader);
     }
 
@@ -275,6 +289,12 @@ class nsFastLoadFileReader
 
     // Override Read so we can demultiplex a document interleaved with others.
     NS_IMETHOD Read(char* aBuffer, PRUint32 aCount, PRUint32 *aBytesRead);
+
+    // Override ReadSegments too, as nsBinaryInputStream::ReadSegments does
+    // not call through our overridden Read method -- it calls directly into
+    // the underlying input stream.
+    NS_IMETHODIMP ReadSegments(nsWriteSegmentFun aWriter, void* aClosure,
+                               PRUint32 aCount, PRUint32 *aResult);
 
     nsresult ReadHeader(nsFastLoadHeader *aHeader);
 
@@ -389,10 +409,10 @@ class nsFastLoadFileWriter
 {
   public:
     nsFastLoadFileWriter(nsIOutputStream *aStream, nsIFastLoadFileIO* aFileIO)
-      : nsBinaryOutputStream(aStream),
-        mCurrentDocumentMapEntry(nsnull),
+      : mCurrentDocumentMapEntry(nsnull),
         mFileIO(aFileIO)
     {
+        SetOutputStream(aStream);
         mHeader.mChecksum = 0;
         mIDMap.ops = mObjectMap.ops = mDocumentMap.ops = mURIMap.ops = nsnull;
         mDependencyMap.ops = nsnull;

@@ -43,7 +43,7 @@
 #include "nsICharsetDetectionObserver.h"
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 #include <io.h>
 #endif
 #if defined(XP_UNIX) || defined(XP_BEOS)
@@ -63,7 +63,7 @@ class nsReporter : public nsICharsetDetectionObserver
 {
    NS_DECL_ISUPPORTS
  public:
-   nsReporter() { NS_INIT_ISUPPORTS(); };
+   nsReporter() { };
    virtual ~nsReporter() { };
 
    NS_IMETHOD Notify(const char* aCharset, nsDetectionConfident aConf)

@@ -25,8 +25,6 @@
  */
 
 // Each editor window must include this file
-// Variables  shared by all dialogs:
-var editorShell;
 
 // Object to attach commonly-used widgets (all dialogs should use this)
 var gDialog = {};
@@ -53,30 +51,6 @@ var gLocation;
 
 // The element being edited - so AdvancedEdit can have access to it
 var globalElement;
-
-//XXX THIS METHOD IS GOING AWAY SOON! 
-// We are removing all editorShell calls
-// Use GetCurrentEditor() to get the nsIEditor/nsIHTMLEditor interface
-// Do not modify it or rely on it in any way!
-function InitEditorShell()
-{
-    // get the editor shell from the parent window
-
-  editorShell = window.opener.editorShell;
-  if (editorShell) {
-    editorShell = editorShell.QueryInterface(Components.interfaces.nsIEditorShell);
-  }
-  if (!editorShell) {
-    dump("EditorShell not found!!!\n");
-    window.close();
-    return false;
-  }
-
-  // Save as a property of the window so it can be used by child dialogs
-
-  window.editorShell = editorShell;
-  return true;
-}
 
 /* Validate contents of an input field 
  *
@@ -222,18 +196,9 @@ function SetTextboxFocus(textbox)
 {
   if (textbox)
   {
-    // Until .select works for editable menulist, lets just set focus
     //XXX Using the setTimeout is hacky workaround for bug 103197
     // Must create a new function to keep "textbox" in scope
-    setTimeout( function(textbox) { textbox.focus(); }, 0, textbox );
-/*
-    // Select entire contents
-    if (textbox.value.length > 0)
-      // This doesn't work for editable menulists yet
-      textbox.select();
-    else
-      textbox.focus();
-*/
+    setTimeout( function(textbox) { textbox.focus(); textbox.select(); }, 0, textbox );
   }
 }
 
@@ -262,49 +227,6 @@ function GetAppropriatePercentString(elementForAtt, elementInDoc)
     else
       return GetString("PercentOfWindow");
   } catch (e) { return "";}
-}
-
-function AppendStringToMenulistById(menulist, stringID)
-{
-  return AppendStringToMenulist(menulist, GetString(stringID));
-}
-
-function AppendStringToMenulist(menulist, string)
-{
-  if (menulist)
-  {
-    var menupopup = menulist.firstChild;
-    // May not have any popup yet -- so create one
-    if (!menupopup)
-    {
-      menupopup = document.createElementNS(XUL_NS, "menupopup");
-      if (menupopup)
-        menulist.appendChild(menupopup);
-      else
-        return null;
-    }
-    var menuItem = document.createElementNS(XUL_NS, "menuitem");
-    if (menuItem)
-    {
-      menuItem.setAttribute("label", string);
-      menupopup.appendChild(menuItem);
-      return menuItem;
-    }
-  }
-  return null;
-}
-
-function ClearMenulist(menulist)
-{
-  // Always use "AppendStringToMenulist" so we know there's 
-  //  just one <menupopup> as 1st child of <menulist>
-  if (menulist) {
-    menulist.selectedItem = null;
-    var popup = menulist.firstChild;
-    if (popup)
-      while (popup.firstChild)
-        popup.removeChild(popup.firstChild);
-  }
 }
 
 function ClearListbox(listbox)
@@ -363,12 +285,12 @@ function InitPixelOrPercentMenulist(elementForAtt, elementInDoc, attribute, menu
     return size;
   }
 
-  ClearMenulist(menulist);
-  pixelItem = AppendStringToMenulist(menulist, GetString("Pixels"));
+  menulist.removeAllItems();
+  pixelItem = menulist.appendItem(GetString("Pixels"));
 
   if (!pixelItem) return 0;
 
-  percentItem = AppendStringToMenulist(menulist, GetAppropriatePercentString(elementForAtt, elementInDoc));
+  percentItem = menulist.appendItem(GetAppropriatePercentString(elementForAtt, elementInDoc));
   if (size && size.length > 0)
   {
     // Search for a "%" or "px"
@@ -474,14 +396,14 @@ function onMoreFewer()
 {
   if (SeeMore)
   {
-    gDialog.MoreSection.setAttribute("collapsed","true");
+    gDialog.MoreSection.collapsed = true;
     gDialog.MoreFewerButton.setAttribute("more","0");
     gDialog.MoreFewerButton.setAttribute("label",GetString("MoreProperties"));
     SeeMore = false;
   }
   else
   {
-    gDialog.MoreSection.removeAttribute("collapsed");
+    gDialog.MoreSection.collapsed = false;
     gDialog.MoreFewerButton.setAttribute("more","1");
     gDialog.MoreFewerButton.setAttribute("label",GetString("FewerProperties"));
     SeeMore = true;
@@ -747,7 +669,7 @@ function SetRelativeCheckbox(checkbox)
   // Mail never allows relative URLs, so hide the checkbox
   if (editor && (editor.flags & Components.interfaces.nsIPlaintextEditor.eEditorMailMask))
   {
-    checkbox.setAttribute("collapsed", "true");
+    checkbox.collapsed = true;
     return;
   }
 

@@ -63,12 +63,14 @@ DIRS = lib  \
  selfserv  \
  signtool \
  signver \
+ shlibsign \
  smimetools  \
  SSLsample \
  ssltap  \
  strsclnt \
  swfort  \
  tstclnt  \
+ vfyserv \
  modutil \
  $(NULL)
 

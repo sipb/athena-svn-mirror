@@ -37,24 +37,17 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsCOMPtr.h"
 #include "nsXULSelectAccessible.h"
-#include "nsIAccessibilityService.h"
-#include "nsIDOMEventReceiver.h"
-#include "nsIDOMNodeList.h"
 #include "nsIDOMXULMenuListElement.h"
 #include "nsIDOMXULMultSelectCntrlEl.h"
 #include "nsIDOMXULSelectCntrlItemEl.h"
 #include "nsIDOMXULSelectCntrlEl.h"
 #include "nsIServiceManager.h"
-#include "nsLayoutAtoms.h"
 
 /**
   * Selects, Listboxes and Comboboxes, are made up of a number of different
   *  widgets, some of which are shared between the two. This file contains 
-  *  all of the widgets for both of the Selects, for XUL only. Some of them
-  *  extend classes from nsSelectAccessible.cpp, which contains base classes 
-  *  that are also extended by the XUL Select Accessibility support.
+  *  all of the widgets for both of the Selects, for XUL only.
   *
   *  Listbox:
   *     - nsXULListboxAccessible
@@ -76,8 +69,13 @@
 // Helper methos
 nsXULSelectableAccessible::nsXULSelectableAccessible(nsIDOMNode* aDOMNode, 
                                                      nsIWeakReference* aShell):
-nsAccessible(aDOMNode, aShell)
+nsAccessibleWrap(aDOMNode, aShell)
 {
+}
+
+NS_IMETHODIMP nsXULSelectableAccessible::GetAccName(nsAString& _retval)
+{
+  return GetXULAccName(_retval);
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXULSelectableAccessible, nsAccessible, nsIAccessibleSelectable)
@@ -144,7 +142,7 @@ NS_IMETHODIMP nsXULSelectableAccessible::GetSelectedChildren(nsISupportsArray **
       nsCOMPtr<nsIDOMXULSelectControlItemElement> tempNode;
       xulMultiSelect->GetSelectedItem(index, getter_AddRefs(tempNode));
       nsCOMPtr<nsIDOMNode> tempDOMNode (do_QueryInterface(tempNode));
-      accService->CreateXULListitemAccessible(tempDOMNode, getter_AddRefs(tempAccessible));
+      accService->GetAccessibleInWeakShell(tempDOMNode, mWeakShell, getter_AddRefs(tempAccessible));
       if (tempAccessible)
         selectedAccessibles->AppendElement(tempAccessible);
     }
@@ -180,7 +178,7 @@ NS_IMETHODIMP nsXULSelectableAccessible::RefSelection(PRInt32 aIndex, nsIAccessi
 
   if (tempDOMNode) {
     nsCOMPtr<nsIAccessible> tempAccess;
-    accService->CreateXULListitemAccessible(tempDOMNode, getter_AddRefs(tempAccess));
+    accService->GetAccessibleInWeakShell(tempDOMNode, mWeakShell, getter_AddRefs(tempAccess));
     *_retval = tempAccess;
     NS_ADDREF(*_retval);
     return NS_OK;
@@ -264,7 +262,7 @@ NS_IMETHODIMP nsXULSelectableAccessible::SelectAllSelection(PRBool *_retval)
 /** Default Constructor */
 nsXULSelectListAccessible::nsXULSelectListAccessible(nsIDOMNode* aDOMNode, 
                                                      nsIWeakReference* aShell)
-:nsAccessible(aDOMNode, aShell)
+:nsAccessibleWrap(aDOMNode, aShell)
 {
 }
 
@@ -405,7 +403,7 @@ nsXULMenuitemAccessible(aDOMNode, aShell)
 }
 
 /** Inherit the ISupports impl from nsAccessible, we handle nsIAccessibleSelectable */
-NS_IMPL_ISUPPORTS_INHERITED0(nsXULListitemAccessible, nsXULMenuitemAccessible)
+NS_IMPL_ISUPPORTS_INHERITED0(nsXULListitemAccessible, nsAccessible)
 
 /**
   * If there is a Listcell as a child ( not anonymous ) use it, otherwise
@@ -485,15 +483,6 @@ nsXULSelectableAccessible(aDOMNode, aShell)
 NS_IMETHODIMP nsXULComboboxAccessible::GetAccRole(PRUint32 *_retval)
 {
   *_retval = ROLE_COMBOBOX;
-  return NS_OK;
-}
-
-/**
-  * We always have 3 children: TextField, Button, Window. In that order
-  */
-NS_IMETHODIMP nsXULComboboxAccessible::GetAccChildCount(PRInt32 *_retval)
-{
-  *_retval = 3;
   return NS_OK;
 }
 

@@ -76,6 +76,8 @@ class nsWindow : public nsBaseWidget,
    nsWindow();
    virtual ~nsWindow();
 
+  static void ReleaseGlobals();
+
    // nsIWidget
 
    // Creation from native (eh?) or widget parent, destroy
@@ -134,6 +136,8 @@ class nsWindow : public nsBaseWidget,
    NS_IMETHOD ScreenToWidget( const nsRect &aOldRect, nsRect &aNewRect);
    NS_IMETHOD DispatchEvent( struct nsGUIEvent *event, nsEventStatus &aStatus);
    NS_IMETHOD CaptureRollupEvents(nsIRollupListener * aListener, PRBool aDoCapture, PRBool aConsumeRollupEvent);
+
+   NS_IMETHOD              GetLastInputEventTime(PRUint32& aTime);
 
    // Widget appearance
    virtual nsIFontMetrics *GetFont();
@@ -238,16 +242,16 @@ protected:
    PSWP      mSWPs;           // SWPs for deferred window positioning
    ULONG     mlHave, mlUsed;  // description of mSWPs array
    HPOINTER  mFrameIcon;      // current frame icon
-   HPS       mPS;             // cache PS for window
-   ULONG     mPSRefs;         // number of refs to cache ps
-   BOOL      mDragInside;     // track draginside state
+   BOOL      mNativeDrag;     // is the drag from outside Mozilla
    VDKEY     mDeadKey;        // dead key from previous keyevent
    BOOL      mHaveDeadKey;    // is mDeadKey valid [0 may be a valid dead key, for all I know]
    HWND      mHackDestroyWnd; // access GetMainWindow() window from destructor
    QMSG      mQmsg;
    PRBool    mIsTopWidgetWindow;
-   BOOL    mIsScrollBar;
-   BOOL    mInSetFocus;
+   BOOL      mIsScrollBar;
+   BOOL      mInSetFocus;
+   BOOL      mChromeHidden;
+   nsContentType mContentType;
 
    HWND      GetParentHWND() const;
    HWND      GetHWND() const   { return mWnd; }
@@ -274,6 +278,9 @@ protected:
                               nsIAppShell *aAppShell,
                               nsWidgetInitData *aInitData,
                               HWND hwndOwner = 0);
+
+   // hook so dialog can be created looking like a dialog
+   virtual ULONG GetFCFlags();
 
    virtual void SubclassWindow(BOOL bState);
 

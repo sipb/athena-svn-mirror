@@ -43,17 +43,22 @@
 #include "nsTextServicesCID.h"
 #include "nsITextServicesDocument.h"
 #include "nsISpellChecker.h"
+#include "nsISelection.h"
+#include "nsIDOMRange.h"
+#include "nsIEditor.h"
 
 #include "nsIComponentManager.h"
 #include "nsXPIDLString.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
+#include "nsISupportsPrimitives.h"
 #include "nsIServiceManagerUtils.h"
 #include "nsIChromeRegistry.h"
 #include "nsString.h"
 #include "nsReadableUtils.h"
+#include "nsComposeTxtSrvFilter.h"
 
 static NS_DEFINE_CID(kCTextServicesDocumentCID, NS_TEXTSERVICESDOCUMENT_CID);
-static NS_DEFINE_CID(kPrefServiceCID,           NS_PREF_CID);
 
 NS_IMPL_ISUPPORTS1(nsEditorSpellCheck, nsIEditorSpellCheck);
 
@@ -61,7 +66,6 @@ nsEditorSpellCheck::nsEditorSpellCheck()
   : mSuggestedWordIndex(0)
   , mDictionaryIndex(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsEditorSpellCheck::~nsEditorSpellCheck()
@@ -72,7 +76,7 @@ nsEditorSpellCheck::~nsEditorSpellCheck()
 }
 
 NS_IMETHODIMP    
-nsEditorSpellCheck::InitSpellChecker(nsIEditor* editor)
+nsEditorSpellCheck::InitSpellChecker(nsIEditor* aEditor, PRBool aEnableSelectionChecking)
 {
   nsresult rv;
 
@@ -87,9 +91,59 @@ nsEditorSpellCheck::InitSpellChecker(nsIEditor* editor)
   if (!tsDoc)
     return NS_ERROR_NULL_POINTER;
 
+  tsDoc->SetFilter(mTxtSrvFilter);
+
   // Pass the editor to the text services document
-  rv = tsDoc->InitWithEditor(editor);
+  rv = tsDoc->InitWithEditor(aEditor);
   NS_ENSURE_SUCCESS(rv, rv);
+
+  if (aEnableSelectionChecking) {
+    // Find out if the section is collapsed or not.
+    // If it isn't, we want to spellcheck just the selection.
+
+    nsCOMPtr<nsISelection> selection;
+
+    rv = aEditor->GetSelection(getter_AddRefs(selection));
+    NS_ENSURE_SUCCESS(rv, rv);
+    NS_ENSURE_TRUE(selection, NS_ERROR_FAILURE);
+
+    PRInt32 count = 0;
+
+    rv = selection->GetRangeCount(&count);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (count > 0) {
+      nsCOMPtr<nsIDOMRange> range;
+
+      rv = selection->GetRangeAt(0, getter_AddRefs(range));
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      PRBool collapsed = PR_FALSE;
+      rv = range->GetCollapsed(&collapsed);
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      if (!collapsed) {
+        // We don't want to touch the range in the selection,
+        // so create a new copy of it.
+
+        nsCOMPtr<nsIDOMRange> rangeBounds;
+        rv =  range->CloneRange(getter_AddRefs(rangeBounds));
+        NS_ENSURE_SUCCESS(rv, rv);
+        NS_ENSURE_TRUE(rangeBounds, NS_ERROR_FAILURE);
+
+        // Make sure the new range spans complete words.
+
+        rv = tsDoc->ExpandRangeToWordBoundaries(rangeBounds);
+        NS_ENSURE_SUCCESS(rv, rv);
+
+        // Now tell the text services that you only want
+        // to iterate over the text in this range.
+
+        rv = tsDoc->SetExtent(rangeBounds);
+        NS_ENSURE_SUCCESS(rv, rv);
+      }
+    }
+  }
 
   rv = nsComponentManager::CreateInstance(NS_SPELLCHECKER_CONTRACTID,
                                           nsnull,
@@ -107,11 +161,18 @@ nsEditorSpellCheck::InitSpellChecker(nsIEditor* editor)
 
   nsXPIDLString dictName;
 
-  nsCOMPtr<nsIPref> prefs(do_GetService(kPrefServiceCID, &rv));
+  nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
 
-  if (NS_SUCCEEDED(rv) && prefs)
-    rv = prefs->CopyUnicharPref("spellchecker.dictionary",
-                                getter_Copies(dictName));
+  if (NS_SUCCEEDED(rv) && prefBranch) {
+    nsCOMPtr<nsISupportsString> prefString;
+    rv = prefBranch->GetComplexValue("spellchecker.dictionary",
+                                     NS_GET_IID(nsISupportsString),
+                                     getter_AddRefs(prefString));
+    if (prefString) {
+      prefString->ToString(getter_Copies(dictName));
+    }
+  }
 
   if (NS_FAILED(rv) || dictName.IsEmpty())
   {
@@ -360,16 +421,26 @@ nsEditorSpellCheck::UninitSpellChecker()
 
   // Save the last used dictionary to the user's preferences.
   nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(kPrefServiceCID, &rv));
+  nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
 
-  if (NS_SUCCEEDED(rv) && prefs)
+  if (NS_SUCCEEDED(rv) && prefBranch)
   {
     PRUnichar *dictName = nsnull;
 
     rv = GetCurrentDictionary(&dictName);
 
-    if (NS_SUCCEEDED(rv) && dictName && *dictName)
-      rv = prefs->SetUnicharPref("spellchecker.dictionary", dictName);
+    if (NS_SUCCEEDED(rv) && dictName && *dictName) {
+      nsCOMPtr<nsISupportsString> prefString =
+        do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID, &rv);
+
+      if (NS_SUCCEEDED(rv) && prefString) {
+        prefString->SetData(nsDependentString(dictName));
+        rv = prefBranch->SetComplexValue("spellchecker.dictionary",
+                                         NS_GET_IID(nsISupportsString),
+                                         prefString);
+      }
+    }
 
     if (dictName)
       nsMemory::Free(dictName);
@@ -383,6 +454,14 @@ nsEditorSpellCheck::UninitSpellChecker()
   return NS_OK;
 }
 
+/* void setFilter (in nsITextServicesFilter filter); */
+NS_IMETHODIMP 
+nsEditorSpellCheck::SetFilter(nsITextServicesFilter *filter)
+{
+  mTxtSrvFilter = filter;
+  return NS_OK;
+}
+
 nsresult    
 nsEditorSpellCheck::DeleteSuggestedWordList()
 {
@@ -390,7 +469,3 @@ nsEditorSpellCheck::DeleteSuggestedWordList()
   mSuggestedWordIndex = 0;
   return NS_OK;
 }
-
-
-  
-

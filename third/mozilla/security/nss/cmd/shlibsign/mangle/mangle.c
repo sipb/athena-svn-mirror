@@ -34,7 +34,7 @@
 /*
  * Test program to mangle 1 bit in a binary
  *
- * $Id: mangle.c,v 1.1.1.1 2003-07-08 17:17:15 rbasch Exp $
+ * $Id: mangle.c,v 1.1.2.1 2003-07-14 19:06:13 ghudson Exp $
  */
 
 #include "nspr.h"

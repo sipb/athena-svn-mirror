@@ -8,6 +8,8 @@
 <!ENTITY mainWindow.titlemodifierseparator " - ">
 <!ENTITY mainWindow.preface "Source of: ">
 
+<!ENTITY viewPartialSourceWindow.title "DOM Source">
+
 <!ENTITY menu_wrapLongLines.title "Wrap Long Lines"> 
 <!ENTITY menu_wrapLongLines.accesskey "W">
 
@@ -16,6 +18,10 @@
 
 <!ENTITY findNextCmd.label "Find Next">
 <!ENTITY findNextCmd.accesskey "n">
+
+<!ENTITY goToLineCmd.label "Go to line...">
+<!ENTITY goToLineCmd.accesskey "G">
+<!ENTITY goToLineCmd.commandkey "l">
 
 <!ENTITY printSetupCmd.label "Page Setup...">
 <!ENTITY printSetupCmd.accesskey "u">

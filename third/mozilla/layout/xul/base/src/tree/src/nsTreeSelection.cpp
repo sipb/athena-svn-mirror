@@ -254,7 +254,6 @@ struct nsTreeRange
 
 nsTreeSelection::nsTreeSelection(nsITreeBoxObject* aTree)
 {
-  NS_INIT_ISUPPORTS();
   mTree = aTree;
   mSuppressed = PR_FALSE;
   mFirstRange = nsnull;
@@ -287,6 +286,18 @@ NS_IMETHODIMP nsTreeSelection::GetTree(nsITreeBoxObject * *aTree)
 NS_IMETHODIMP nsTreeSelection::SetTree(nsITreeBoxObject * aTree)
 {
   mTree = aTree; // WEAK
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsTreeSelection::GetSingle(PRBool* aSingle)
+{
+  nsCOMPtr<nsIBoxObject> boxObject = do_QueryInterface(mTree);
+  nsCOMPtr<nsIDOMElement> element;
+  boxObject->GetElement(getter_AddRefs(element));
+  nsCOMPtr<nsIContent> content = do_QueryInterface(element);
+  nsAutoString seltype;
+  content->GetAttr(kNameSpaceID_None, nsXULAtoms::seltype, seltype);
+  *aSingle = seltype.Equals(NS_LITERAL_STRING("single"));
   return NS_OK;
 }
 
@@ -387,7 +398,9 @@ NS_IMETHODIMP nsTreeSelection::ToggleSelect(PRInt32 aIndex)
     Select(aIndex);
   else {
     if (!mFirstRange->Contains(aIndex)) {
-      if (! SingleSelection())
+      PRBool single;
+      GetSingle(&single);
+      if (!single)
         mFirstRange->Add(aIndex);
     }
     else
@@ -403,7 +416,9 @@ NS_IMETHODIMP nsTreeSelection::ToggleSelect(PRInt32 aIndex)
 
 NS_IMETHODIMP nsTreeSelection::RangedSelect(PRInt32 aStartIndex, PRInt32 aEndIndex, PRBool aAugment)
 {
-  if ((mFirstRange || (aStartIndex != aEndIndex)) && SingleSelection())
+  PRBool single;
+  GetSingle(&single);
+  if ((mFirstRange || (aStartIndex != aEndIndex)) && single)
     return NS_OK;
 
   if (!aAugment) {
@@ -489,7 +504,9 @@ NS_IMETHODIMP nsTreeSelection::SelectAll()
 
   PRInt32 rowCount;
   view->GetRowCount(&rowCount);
-  if (rowCount == 0 || (rowCount > 1 && SingleSelection()))
+  PRBool single;
+  GetSingle(&single);
+  if (rowCount == 0 || (rowCount > 1 && single))
     return NS_OK;
 
   mShiftSelectPivot = -1;
@@ -712,6 +729,9 @@ nsTreeSelection::FireOnSelectHandler()
     return NS_OK;
 
   nsCOMPtr<nsIBoxObject> boxObject = do_QueryInterface(mTree);
+  NS_ASSERTION(boxObject, "no box object!");
+  if (!boxObject)
+     return NS_ERROR_UNEXPECTED;
   nsCOMPtr<nsIDOMElement> elt;
   boxObject->GetElement(getter_AddRefs(elt));
 
@@ -744,19 +764,6 @@ nsTreeSelection::FireOnSelectHandler()
   }
 
   return NS_OK;
-}
-
-PRBool nsTreeSelection::SingleSelection()
-{
-  nsCOMPtr<nsIBoxObject> boxObject = do_QueryInterface(mTree);
-  nsCOMPtr<nsIDOMElement> element;
-  boxObject->GetElement(getter_AddRefs(element));
-  nsCOMPtr<nsIContent> content = do_QueryInterface(element);
-  nsAutoString seltype;
-  content->GetAttr(kNameSpaceID_None, nsXULAtoms::seltype, seltype);
-  if (seltype.Equals(NS_LITERAL_STRING("single")))
-    return PR_TRUE;
-  return PR_FALSE;
 }
 
 

@@ -173,14 +173,6 @@ static int MimeInlineText_initializeCharset(MimeObject *obj)
     }
   }
 
-  //update MsgWindow charset if we are instructed to do so
-  if (text->needUpdateMsgWinCharset && *text->charset) {
-    if (!nsCRT::strcasecmp(text->charset, "us-ascii"))
-      SetMailCharacterSetToMsgWindow(obj, NS_LITERAL_STRING("ISO-8859-1").get());
-    else
-      SetMailCharacterSetToMsgWindow(obj, NS_ConvertASCIItoUCS2(text->charset).get());
-  }
-
   text->initializeCharset = PR_TRUE;
 
   return 0;
@@ -222,32 +214,36 @@ MimeInlineText_parse_eof (MimeObject *obj, PRBool abort_p)
 
   MimeInlineText *text = (MimeInlineText *) obj;
 
+  /* If there is still data in the ibuffer, that means that the last line of
+   this part didn't end in a newline; so push it out anyway (this means that
+   the parse_line method will be called with a string with no trailing
+   newline, which isn't the usual case.)  We do this here, rather than in 
+   MimeObject_parse_eof, because MimeObject likes to shove things through
+   parse_line, and we have to shove it through the magic rotating-and-converting
+   code.  So, we do that and digest the buffer before MimeObject has a chance
+   to do the wrong thing.  See bug #26276 for more painful details.
+  */
+  if (!abort_p && obj->ibuffer_fp > 0)
+  {
+    status = MimeInlineText_rotate_convert_and_parse_line (obj->ibuffer,
+                                                           obj->ibuffer_fp,
+                                                           obj);
+    obj->ibuffer_fp = 0;
+    if (status < 0)
+    {
+      //we haven't find charset yet? Do it before return
+      if (text->inputAutodetect)
+        status = MimeInlineText_open_dam(nsnull, 0, obj);
+
+      obj->closed_p = PR_TRUE;
+      return status;
+    }
+  }
+
   //we haven't find charset yet? now its the time
   if (text->inputAutodetect)
      status = MimeInlineText_open_dam(nsnull, 0, obj);
-   
-  /* If there is still data in the ibuffer, that means that the last line of
-	 this part didn't end in a newline; so push it out anyway (this means that
-	 the parse_line method will be called with a string with no trailing
-	 newline, which isn't the usual case.)  We do this here, rather than in 
-	 MimeObject_parse_eof, because MimeObject likes to shove things through
-	 parse_line, and we have to shove it through the magic rotating-and-converting
-	 code.  So, we do that and digest the buffer before MimeObject has a chance
-	 to do the wrong thing.  See bug #26276 for more painful details.
-   */
-  if (!abort_p &&
-	  obj->ibuffer_fp > 0)
-	{
-	  status = MimeInlineText_rotate_convert_and_parse_line (obj->ibuffer,
-	  															 obj->ibuffer_fp,
-	  															 obj);
-	  obj->ibuffer_fp = 0;
-	  if (status < 0)
-		{
-		  obj->closed_p = PR_TRUE;
-		  return status;
-		}
-	}
+ 
   return ((MimeObjectClass*)&MIME_SUPERCLASS)->parse_eof (obj, abort_p);
 }
 
@@ -368,12 +364,8 @@ MimeInlineText_convert_and_parse_line(char *line, PRInt32 length, MimeObject *ob
         text->charset = nsCRT::strdup(textHTML->charset);
 
         //update MsgWindow charset if we are instructed to do so
-        if (text->needUpdateMsgWinCharset && *text->charset) {
-          if (!nsCRT::strcasecmp(text->charset, "us-ascii"))
-            SetMailCharacterSetToMsgWindow(obj, NS_LITERAL_STRING("ISO-8859-1").get());
-          else
-            SetMailCharacterSetToMsgWindow(obj, NS_ConvertASCIItoUCS2(text->charset).get());
-        }
+        if (text->needUpdateMsgWinCharset && *text->charset)
+          SetMailCharacterSetToMsgWindow(obj, text->charset);
       }
     }
   }
@@ -450,12 +442,8 @@ MimeInlineText_open_dam(char *line, PRInt32 length, MimeObject *obj)
     text->charset = nsCRT::strdup(detectedCharset);
 
     //update MsgWindow charset if we are instructed to do so
-    if (text->needUpdateMsgWinCharset && *text->charset) {
-      if (!nsCRT::strcasecmp(text->charset, "us-ascii"))
-        SetMailCharacterSetToMsgWindow(obj, NS_LITERAL_STRING("ISO-8859-1").get());
-      else
-        SetMailCharacterSetToMsgWindow(obj, NS_ConvertASCIItoUCS2(text->charset).get());
-    }
+    if (text->needUpdateMsgWinCharset && *text->charset)
+      SetMailCharacterSetToMsgWindow(obj, text->charset);
   }
 
   //process dam and line using the charset
@@ -521,7 +509,12 @@ MimeInlineText_rotate_convert_and_parse_line(char *line, PRInt32 length,
     MimeInlineText  *text = (MimeInlineText *) obj;
 
     if (!text->initializeCharset)
+    {
       MimeInlineText_initializeCharset(obj);
+      //update MsgWindow charset if we are instructed to do so
+      if (text->needUpdateMsgWinCharset && *text->charset)
+        SetMailCharacterSetToMsgWindow(obj, text->charset);
+    }
 
     //if autodetect is on, push line to dam
     if (text->inputAutodetect)

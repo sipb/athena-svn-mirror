@@ -153,14 +153,6 @@ function BrowserExitPrintPreview()
   var browser = getBrowser();
   browser.setAttribute("handleCtrlPageUpDown", "true");
 
-  // exit print preview galley mode in content area
-  var ifreq = _content.QueryInterface(
-    Components.interfaces.nsIInterfaceRequestor);
-  var webBrowserPrint = ifreq.getInterface(
-    Components.interfaces.nsIWebBrowserPrint);     
-  webBrowserPrint.exitPrintPreview(); 
-  _content.focus();
-
   // remove the print preview toolbar
   var navToolbox = document.getElementById("navigator-toolbox");
   var printPreviewTB = document.getElementById("print-preview-toolbar");
@@ -172,6 +164,14 @@ function BrowserExitPrintPreview()
   // restore old onclose handler if we found one before previewing
   var mainWin = document.getElementById("main-window");
   mainWin.setAttribute("onclose", gOldCloseHandler);
+
+  // exit print preview galley mode in content area
+  var ifreq = _content.QueryInterface(
+    Components.interfaces.nsIInterfaceRequestor);
+  var webBrowserPrint = ifreq.getInterface(
+    Components.interfaces.nsIWebBrowserPrint);     
+  webBrowserPrint.exitPrintPreview(); 
+  _content.focus();
 }
 
 // This observer is called once the progress dialog has been "opened"
@@ -299,22 +299,25 @@ function BrowserSetForcedDetector(doReload)
     BrowserReloadWithFlags(nsIWebNavigation.LOAD_FLAGS_CHARSET_CHANGE);
 }
 
+var gFindInstData;
+function getFindInstData()
+{
+  if (!gFindInstData) {
+    gFindInstData = new nsFindInstData();
+    gFindInstData.browser = getBrowser();
+    // defaults for rootSearchWindow and currentSearchWindow are fine here
+  }
+  return gFindInstData;
+}
+
 function BrowserFind()
 {
-  var focusedWindow = document.commandDispatcher.focusedWindow;
-  if (!focusedWindow || focusedWindow == window)
-    focusedWindow = window._content;
-
-  findInPage(getBrowser(), window._content, focusedWindow)
+  findInPage(getFindInstData());
 }
 
 function BrowserFindAgain(reverse)
 {
-    var focusedWindow = document.commandDispatcher.focusedWindow;
-    if (!focusedWindow || focusedWindow == window)
-      focusedWindow = window._content;
-
-  findAgainInPage(getBrowser(), window._content, focusedWindow, reverse)
+  findAgainInPage(getFindInstData(), reverse);
 }
 
 function BrowserCanFindAgain()

@@ -50,6 +50,9 @@ var gBooleanOrText;
 var gBooleanAndText;
 var gBooleanInitialText;
 
+var gSearchDateFormat = 0;
+var gSearchDateSeparator;
+
 //
 function searchTermContainer() {}
 
@@ -192,8 +195,7 @@ function initializeBooleanWidgets()
         booleanAnd = firstTerm.booleanAnd;
 
     // target radio items have value="and" or value="or"
-    var targetValue = "or";
-    if (booleanAnd) targetValue = "and";
+    var targetValue = booleanAnd ? "and" : "or";
 
     var targetElement = gSearchBooleanRadiogroup.getElementsByAttribute("value", targetValue)[0];
 
@@ -201,10 +203,7 @@ function initializeBooleanWidgets()
 
     for (var i=1; i<gSearchTerms.length; i++) 
     {
-      if (booleanAnd)
-        document.getElementById('boolOp' + i).setAttribute('value', gBooleanAndText);
-      else
-        document.getElementById('boolOp' + i).setAttribute('value', gBooleanOrText);
+      document.getElementById('boolOp' + i).setAttribute('value', booleanAnd ? gBooleanAndText : gBooleanOrText);
     }
 }
 
@@ -245,11 +244,14 @@ function onLess(event)
 }
 
 // set scope on all visible searchattribute tags
-function setSearchScope(scope) {
+function setSearchScope(scope) 
+{
     gSearchScope = scope;
     for (var i=0; i<gSearchTerms.length; i++) {
         gSearchTerms[i].obj.searchattribute.searchScope = scope;
         gSearchTerms[i].scope = scope;
+        // act like the user "selected" this, see bug #202848
+        gSearchTerms[i].obj.searchattribute.onSelect(null /* no event */);  
     }
 }
 
@@ -261,10 +263,12 @@ function updateSearchAttributes()
 }
 
 function booleanChanged(event) {
-    // when boolean changes, we have to update all the attributes on the
-    // search terms
-
+    // when boolean changes, we have to update all the attributes on the search terms
     var newBoolValue = (event.target.getAttribute("value") == "and") ? true : false;
+    if (document.getElementById("abPopup")) {
+      var selectedAB = document.getElementById("abPopup").selectedItem.id;
+      setSearchScope(GetScopeForDirectoryURI(selectedAB));
+    }
     for (var i=0; i<gSearchTerms.length; i++) {
         var searchTerm = gSearchTerms[i].obj;
         searchTerm.booleanAnd = newBoolValue;
@@ -277,7 +281,6 @@ function booleanChanged(event) {
         }
     }
 }
-
 
 function createSearchRow(index, scope, searchTerm)
 {
@@ -303,6 +306,7 @@ function createSearchRow(index, scope, searchTerm)
     enclosingBox.appendChild(boolOp);
 
     searchAttr.setAttribute("for", searchOp.id + "," + searchVal.id);
+    searchOp.setAttribute("opfor", searchVal.id);
 
     var rowdata = new Array(enclosingBox, searchAttr,
                             null, searchOp,
@@ -332,7 +336,10 @@ function createSearchRow(index, scope, searchTerm)
     var listcells = searchrow.childNodes;
     var j=0;
     for (var i=0; i<listcells.length; i+=2) {
-        stringNodes[j++] = listcells[i];
+      stringNodes[j++] = listcells[i];
+
+      // see bug #183994 for why these cells are hidden
+      listcells[i].hidden = true;
     }
     searchTermObj.booleanNodes = stringNodes;
 
@@ -490,6 +497,108 @@ function onReset(event)
     onMore(event);
 }
 
+// Get the short date format option of the current locale.
+// This supports the common case which the date separator is
+// either '/', '-', '.' and using Christian year.
+function getLocaleShortDateFormat()
+{
+  // default to mm/dd/yyyy
+  gSearchDateFormat = 3;
+  gSearchDateSeparator = "/";
+
+  try {
+    var dateFormatService = Components.classes["@mozilla.org/intl/scriptabledateformat;1"]
+                                    .getService(Components.interfaces.nsIScriptableDateFormat);
+    var dateString = dateFormatService.FormatDate("", 
+                                                  dateFormatService.dateFormatShort, 
+                                                  1999, 
+                                                  12, 
+                                                  31);
+    // find out the separator
+    var arrayOfStrings = dateString.split("/");
+    if (arrayOfStrings.length == 3)
+      gSearchDateSeparator = "/";
+    else
+    {
+      arrayOfStrings = dateString.split("-");
+      if (arrayOfStrings.length == 3)
+        gSearchDateSeparator = "-";
+      else
+      {
+        arrayOfStrings = dateString.split(".");
+        if (arrayOfStrings.length == 3)
+          gSearchDateSeparator = ".";
+      }
+    }
+
+    // check the format option
+    if (arrayOfStrings.length == 3)
+    {
+      switch (arrayOfStrings[0])
+      {
+        case "1999":
+          if (arrayOfStrings[1] == "12" &&
+              arrayOfStrings[2] == "31")
+            gSearchDateFormat = 1;
+          else if (arrayOfStrings[1] == "31" &&
+              arrayOfStrings[2] == "12")
+            gSearchDateFormat = 2;
+          break;
+        case "12":
+          if (arrayOfStrings[1] == "31" &&
+              arrayOfStrings[2] == "1999")
+            gSearchDateFormat = 3;
+          else if (arrayOfStrings[1] == "1999" &&
+              arrayOfStrings[2] == "31")
+            gSearchDateFormat = 4;
+          break;
+        case "31":
+          if (arrayOfStrings[1] == "12" &&
+              arrayOfStrings[2] == "1999")
+            gSearchDateFormat = 5;
+          else if (arrayOfStrings[1] == "1999" &&
+              arrayOfStrings[2] == "12")
+            gSearchDateFormat = 6;
+          break;
+      }
+    }
+  }
+  catch (e) {}
+}
+
+function initializeSearchDateFormat()
+{
+  if (gSearchDateFormat)
+    return;
+
+  // get a search date format option and a seprator
+  try {
+    var pref = Components.classes["@mozilla.org/preferences-service;1"]
+                                 .getService(Components.interfaces.nsIPrefBranch);
+    gSearchDateFormat =
+               pref.getComplexValue("mailnews.search_date_format", 
+                                    Components.interfaces.nsIPrefLocalizedString);
+    gSearchDateFormat = parseInt(gSearchDateFormat);
+
+    // if the option is 0 then try to use the format of the current locale
+    if (gSearchDateFormat == 0)
+      getLocaleShortDateFormat();
+    else
+    {
+      if (gSearchDateFormat < 1 || gSearchDateFormat > 6)
+        gSearchDateFormat = 3;
+
+      gSearchDateSeparator =
+                 pref.getComplexValue("mailnews.search_date_separator", 
+                                      Components.interfaces.nsIPrefLocalizedString);
+    }
+  } catch (ex) {
+    // set to mm/dd/yyyy in case of error
+    gSearchDateFormat = 3;
+    gSearchDateSeparator = "/";
+  }
+}
+
 function convertPRTimeToString(tm)
 {
   var time = new Date();
@@ -502,18 +611,97 @@ function convertPRTimeToString(tm)
 
 function convertDateToString(time)
 {
-  var dateStr = time.getMonth() + 1;
-  dateStr += "/";
-  dateStr += time.getDate();
-  dateStr += "/";
-  dateStr += 1900 + time.getYear();
+  var year, month, date;
+  initializeSearchDateFormat();
+
+  year = 1900 + time.getYear();
+  month = time.getMonth() + 1;  // since js month is 0-11
+  date = time.getDate();
+
+  var dateStr;
+  var sep = gSearchDateSeparator;
+
+  switch (gSearchDateFormat)
+  {
+    case 1:
+      dateStr = year + sep + month + sep + date;
+      break;
+    case 2:
+      dateStr = year + sep + date + sep + month;
+      break;
+    case 3:
+     dateStr = month + sep + date + sep + year;
+      break;
+    case 4:
+      dateStr = month + sep + year + sep + date;
+      break;
+    case 5:
+      dateStr = date + sep + month + sep + year;
+      break;
+    case 6:
+      dateStr = date + sep + year + sep + month;
+      break;
+    default:
+      dump("valid search date format option is 1-6\n");
+  }
+
   return dateStr;
 }
 
 function convertStringToPRTime(str)
 {
+  initializeSearchDateFormat();
+
+  var arrayOfStrings = str.split(gSearchDateSeparator);
+  var year, month, date;
+
+  // set year, month, date based on the format option
+  switch (gSearchDateFormat)
+  {
+    case 1:
+      year = arrayOfStrings[0];
+      month = arrayOfStrings[1];
+      date = arrayOfStrings[2];
+      break;
+    case 2:
+      year = arrayOfStrings[0];
+      month = arrayOfStrings[2];
+      date = arrayOfStrings[1];
+      break;
+    case 3:
+      year = arrayOfStrings[2];
+      month = arrayOfStrings[0];
+      date = arrayOfStrings[1];
+      break;
+    case 4:
+      year = arrayOfStrings[1];
+      month = arrayOfStrings[0];
+      date = arrayOfStrings[2];
+      break;
+    case 5:
+      year = arrayOfStrings[2];
+      month = arrayOfStrings[1];
+      date = arrayOfStrings[0];
+      break;
+    case 6:
+      year = arrayOfStrings[1];
+      month = arrayOfStrings[2];
+      date = arrayOfStrings[0];
+      break;
+    default:
+      dump("valid search date format option is 1-6\n");
+  }
+
+  month -= 1; // since js month is 0-11
+
   var time = new Date();
-  time.setTime(Date.parse(str));
+  time.setSeconds(0);
+  time.setMinutes(0);
+  time.setHours(0);
+  time.setDate(date);
+  time.setMonth(month);
+  time.setYear(year);
+
   // Javascript time is in seconds, PRTime is in microseconds
   // so multiply by 1000 when converting
   return (time.getTime() * 1000);

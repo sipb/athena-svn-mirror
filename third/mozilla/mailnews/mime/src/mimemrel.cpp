@@ -454,14 +454,6 @@ MimeMultipartRelated_output_child_p(MimeObject *obj, MimeObject* child)
     /* This is a child part.  Just remember the mapping between the URL
        it represents and the part-URL to get it back. */
 
-    /* but first before acceptig it as a valid related part, make sure we
-       are able to display it inline as an embedded object. Else just ignore
-       it, that will prevent any bad surprise. */
-    MimeObjectClass *clazz = mime_find_class (child->content_type, child->headers, child->options, PR_FALSE);
-    PRBool canDisplay = (clazz
-          ? clazz->displayable_inline_p(clazz, child->headers)
-          : PR_FALSE);
-    if (canDisplay) {
     char* location = MimeHeaders_get(child->headers, HEADER_CONTENT_LOCATION,
                      PR_FALSE, PR_FALSE);
     if (!location) {
@@ -492,8 +484,16 @@ MimeMultipartRelated_output_child_p(MimeObject *obj, MimeObject* child)
       PR_Free(location);
       if (absolute) {
         nsCAutoString partnum;
+        nsCAutoString imappartnum;
         partnum.Adopt(mime_part_address(child));
         if (!partnum.IsEmpty()) {
+          if (obj->options->missing_parts)
+          {
+            char * imappart = mime_imap_part_address(child);
+            if (imappart)
+              imappartnum.Adopt(imappart);
+          }
+
           /*
             AppleDouble part need special care: we need to output only the data fork part of it.
             The problem at this point is that we haven't yet decoded the children of the AppleDouble
@@ -503,9 +503,23 @@ MimeMultipartRelated_output_child_p(MimeObject *obj, MimeObject* child)
             partnum.Append(".2");
 
           char* part;
-          part = mime_set_url_part(obj->options->url, partnum.get(),
-                       PR_FALSE);
-          if (part) {
+          if (!imappartnum.IsEmpty()) 
+            part = mime_set_url_imap_part(obj->options->url, imappartnum.get(), partnum.get());
+          else
+          {
+            char *no_part_url = nsnull;
+            if (obj->options->part_to_load && obj->options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay)
+              no_part_url = mime_get_base_url(obj->options->url);
+            if (no_part_url)
+            {
+              part = mime_set_url_part(no_part_url, partnum.get(), PR_FALSE);
+              PR_Free(no_part_url);
+            }
+            else
+              part = mime_set_url_part(obj->options->url, partnum.get(), PR_FALSE);
+          }
+          if (part)
+          {
             char *name = MimeHeaders_get_name(child->headers, child->options);
             // let's stick the filename in the part so save as will work.
             if (name)
@@ -563,7 +577,6 @@ MimeMultipartRelated_output_child_p(MimeObject *obj, MimeObject* child)
           }
         }
       }
-    }
   } else {
     /* Ah-hah!  We're the head object.  */
     char* base_url;
@@ -766,6 +779,23 @@ push_tag(MimeMultipartRelated* relobj, const char* buf, PRInt32 size)
   return 0;
 }
 
+static PRBool accept_related_part(MimeMultipartRelated* relobj, MimeObject* part_obj)
+{
+  if (!relobj || !part_obj)
+    return PR_FALSE;
+    
+  /* before accepting it as a valid related part, make sure we
+     are able to display it inline as an embedded object. Else just ignore
+     it, that will prevent any bad surprise... */
+  MimeObjectClass *clazz = mime_find_class (part_obj->content_type, part_obj->headers, part_obj->options, PR_FALSE);
+  if (clazz ? clazz->displayable_inline_p(clazz, part_obj->headers) : PR_FALSE)
+    return PR_TRUE;
+
+  /* ...but we always accept it if it's referenced by an anchor */
+  return (relobj->curtag && relobj->curtag_length >= 3 &&
+    (relobj->curtag[1] == 'A' || relobj->curtag[1] == 'a') && nsCRT::IsAsciiSpace(relobj->curtag[2]));
+}
+
 static int
 flush_tag(MimeMultipartRelated* relobj)
 {
@@ -822,8 +852,14 @@ flush_tag(MimeMultipartRelated* relobj)
         ptr2++;
       /* Compare the beginning of the word with "cid:". Yuck. */
       if (((ptr2 - buf) > 4) && 
-        (buf[0]=='c' && buf[1]=='i' && buf[2]=='d' && buf[3]==':'))
+        ((buf[0]=='c' || buf[0]=='C') && 
+         (buf[1]=='i' || buf[1]=='I') && 
+         (buf[2]=='d' || buf[2]=='D') && 
+          buf[3]==':'))
       {
+        // Make sure it's lowercase, otherwise it won't be found in the hash table
+        buf[0] = 'c'; buf[1] = 'i'; buf[2] = 'd';
+
         /* Null terminate the word so we can... */
         c = *ptr2;
         *ptr2 = '\0';
@@ -843,7 +879,7 @@ flush_tag(MimeMultipartRelated* relobj)
         }
         
         /*If we found a mailbox part URL, write that out instead.*/
-        if (part_url)
+        if (part_url && accept_related_part(relobj, value->m_obj))
         {
           status = real_write(relobj, part_url, strlen(part_url));
           if (status < 0) return status;
@@ -880,7 +916,7 @@ flush_tag(MimeMultipartRelated* relobj)
         *ptr2 = holder;
         PR_FREEIF(absolute);
 
-        if (realout)
+        if (realout && accept_related_part(relobj, value->m_obj))
         {
           status = real_write(relobj, realout, strlen(realout));
           if (status < 0) return status;

@@ -41,72 +41,10 @@
 #include "ExprParser.h"
 #include "ExprLexer.h"
 #include "FunctionLib.h"
-#include "Names.h"
-#include "Stack.h"
+#include "txStack.h"
 #include "txAtoms.h"
 #include "txIXPathContext.h"
-
-// XXX This is ugly, but this is the last file to use them,
-//     once we convert the parser to directly compare with
-//     atoms we should remove these.
-class XPathNames {
-public:
-    static const String BOOLEAN_FN;
-    static const String CONCAT_FN;
-    static const String CONTAINS_FN;
-    static const String COUNT_FN ;
-    static const String FALSE_FN;
-    static const String ID_FN;
-    static const String LANG_FN;
-    static const String LAST_FN;
-    static const String LOCAL_NAME_FN;
-    static const String NAME_FN;
-    static const String NAMESPACE_URI_FN;
-    static const String NORMALIZE_SPACE_FN;
-    static const String NOT_FN;
-    static const String POSITION_FN;
-    static const String STARTS_WITH_FN;
-    static const String STRING_FN;
-    static const String STRING_LENGTH_FN;
-    static const String SUBSTRING_FN;
-    static const String SUBSTRING_AFTER_FN;
-    static const String SUBSTRING_BEFORE_FN;
-    static const String SUM_FN;
-    static const String TRANSLATE_FN;
-    static const String TRUE_FN;
-    static const String NUMBER_FN;
-    static const String ROUND_FN;
-    static const String CEILING_FN;
-    static const String FLOOR_FN;
-};
-
-const String XPathNames::BOOLEAN_FN("boolean");
-const String XPathNames::CONCAT_FN("concat");
-const String XPathNames::CONTAINS_FN("contains");
-const String XPathNames::COUNT_FN("count");
-const String XPathNames::FALSE_FN("false");
-const String XPathNames::ID_FN("id");
-const String XPathNames::LAST_FN("last");
-const String XPathNames::LOCAL_NAME_FN("local-name");
-const String XPathNames::NAME_FN("name");
-const String XPathNames::NAMESPACE_URI_FN("namespace-uri");
-const String XPathNames::NORMALIZE_SPACE_FN("normalize-space");
-const String XPathNames::NOT_FN("not");
-const String XPathNames::POSITION_FN("position");
-const String XPathNames::STARTS_WITH_FN("starts-with");
-const String XPathNames::STRING_FN("string");
-const String XPathNames::STRING_LENGTH_FN("string-length");
-const String XPathNames::SUBSTRING_FN("substring");
-const String XPathNames::SUBSTRING_AFTER_FN("substring-after");
-const String XPathNames::SUBSTRING_BEFORE_FN("substring-before");
-const String XPathNames::SUM_FN("sum");
-const String XPathNames::TRANSLATE_FN("translate");
-const String XPathNames::TRUE_FN("true");
-const String XPathNames::NUMBER_FN("number");
-const String XPathNames::ROUND_FN("round");
-const String XPathNames::CEILING_FN("ceiling");
-const String XPathNames::FLOOR_FN("floor");
-const String XPathNames::LANG_FN("lang");
+#include "txStringUtils.h"
 
 
 /**
@@ -114,36 +52,40 @@ const String XPathNames::LANG_FN("lang");
  * This should move to XSLProcessor class
 **/
 AttributeValueTemplate* ExprParser::createAttributeValueTemplate
-    (const String& attValue, txIParseContext* aContext)
+    (const nsAFlatString& attValue, txIParseContext* aContext)
 {
     AttributeValueTemplate* avt = new AttributeValueTemplate();
+    if (!avt) {
+        // XXX ErrorReport: out of memory
+        return 0;
+    }
 
-    if (attValue.isEmpty())
-        return avt; //XXX should return 0, but that causes crash in lre12
+    if (attValue.IsEmpty())
+        return avt;
 
-    PRUint32 size = attValue.length();
+    PRUint32 size = attValue.Length();
     PRUint32 cc = 0;
-    UNICODE_CHAR nextCh;
-    UNICODE_CHAR ch;
-    String buffer;
+    PRUnichar nextCh;
+    PRUnichar ch;
+    nsAutoString buffer;
     MBool inExpr    = MB_FALSE;
     MBool inLiteral = MB_FALSE;
-    UNICODE_CHAR endLiteral = 0;
+    PRUnichar endLiteral = 0;
 
-    nextCh = attValue.charAt(cc);
+    nextCh = attValue.CharAt(cc);
     while (cc++ < size) {
         ch = nextCh;
-        nextCh = cc != size ? attValue.charAt(cc) : 0;
+        nextCh = cc != size ? attValue.CharAt(cc) : 0;
         
         // if in literal just add ch to buffer
         if (inLiteral && (ch != endLiteral)) {
-                buffer.append(ch);
+                buffer.Append(ch);
                 continue;
         }
         switch ( ch ) {
             case '\'' :
             case '"' :
-                buffer.append(ch);
+                buffer.Append(ch);
                 if (inLiteral)
                     inLiteral = MB_FALSE;
                 else if (inExpr) {
@@ -155,19 +97,26 @@ AttributeValueTemplate* ExprParser::createAttributeValueTemplate
                 if (!inExpr) {
                     // Ignore case where we find two {
                     if (nextCh == ch) {
-                        buffer.append(ch); //-- append '{'
+                        buffer.Append(ch); //-- append '{'
                         cc++;
-                        nextCh = cc != size ? attValue.charAt(cc) : 0;
+                        nextCh = cc != size ? attValue.CharAt(cc) : 0;
                     }
                     else {
-                        if (!buffer.isEmpty())
-                            avt->addExpr(new StringExpr(buffer));
-                        buffer.clear();
+                        if (!buffer.IsEmpty()) {
+                            Expr* strExpr = new StringExpr(buffer);
+                            if (!strExpr) {
+                                // XXX ErrorReport: out of memory
+                                delete avt;
+                                return 0;
+                            }
+                            avt->addExpr(strExpr);
+                        }
+                        buffer.Truncate();
                         inExpr = MB_TRUE;
                     }
                 }
                 else
-                    buffer.append(ch); //-- simply append '{'
+                    buffer.Append(ch); //-- simply append '{'
                 break;
             case '}':
                 if (inExpr) {
@@ -179,12 +128,12 @@ AttributeValueTemplate* ExprParser::createAttributeValueTemplate
                         return 0;
                     }
                     avt->addExpr(expr);
-                    buffer.clear();
+                    buffer.Truncate();
                 }
                 else if (nextCh == ch) {
-                    buffer.append(ch);
+                    buffer.Append(ch);
                     cc++;
-                    nextCh = cc != size ? attValue.charAt(cc) : 0;
+                    nextCh = cc != size ? attValue.CharAt(cc) : 0;
                 }
                 else {
                     //XXX ErrorReport: unmatched '}' found
@@ -193,7 +142,7 @@ AttributeValueTemplate* ExprParser::createAttributeValueTemplate
                 }
                 break;
             default:
-                buffer.append(ch);
+                buffer.Append(ch);
                 break;
         }
     }
@@ -204,14 +153,21 @@ AttributeValueTemplate* ExprParser::createAttributeValueTemplate
         return 0;
     }
 
-    if (!buffer.isEmpty())
-        avt->addExpr(new StringExpr(buffer));
+    if (!buffer.IsEmpty()) {
+        Expr* strExpr = new StringExpr(buffer);
+        if (!strExpr) {
+            // XXX ErrorReport: out of memory
+            delete avt;
+            return 0;
+        }
+        avt->addExpr(strExpr);
+    }
 
     return avt;
 
 } //-- createAttributeValueTemplate
 
-Expr* ExprParser::createExpr(const String& aExpression,
+Expr* ExprParser::createExpr(const nsAFlatString& aExpression,
                              txIParseContext* aContext)
 {
     ExprLexer lexer(aExpression);
@@ -270,7 +226,6 @@ Expr* ExprParser::createBinaryExpr   (Expr* left, Expr* right, Token* op) {
 
     }
     return 0;
-    //return new ErrorExpr();
 } //-- createBinaryExpr
 
 
@@ -280,8 +235,8 @@ Expr* ExprParser::createExpr(ExprLexer& lexer, txIParseContext* aContext)
 
     Expr* expr = 0;
 
-    Stack exprs;
-    Stack ops;
+    txStack exprs;
+    txStack ops;
     
     while (!done) {
 
@@ -295,8 +250,15 @@ Expr* ExprParser::createExpr(ExprLexer& lexer, txIParseContext* aContext)
         if (!expr)
             break;
 
-        if (unary)
-            expr = new UnaryExpr(expr);
+        if (unary) {
+            Expr* uExpr = new UnaryExpr(expr);
+            if (!uExpr) {
+                // XXX ErrorReport: out of memory
+                delete expr;
+                return 0;
+            }
+            expr = uExpr;
+        }
 
         Token* tok = lexer.nextToken();
         switch (tok->type) {
@@ -318,7 +280,7 @@ Expr* ExprParser::createExpr(ExprLexer& lexer, txIParseContext* aContext)
             case Token::MULTIPLY_OP:
             case Token::SUBTRACTION_OP:
             {
-                while (!exprs.empty() &&
+                while (!exprs.isEmpty() &&
                         precedenceLevel(tok->type) 
                        <= precedenceLevel(((Token*)ops.peek())->type)) {
                     expr = createBinaryExpr((Expr*)exprs.pop(),
@@ -338,13 +300,13 @@ Expr* ExprParser::createExpr(ExprLexer& lexer, txIParseContext* aContext)
 
     // make sure expr != 0
     if (!expr) {
-        while (!exprs.empty()) {
+        while (!exprs.isEmpty()) {
             delete (Expr*)exprs.pop();
         }
         return 0;
     }
 
-    while (!exprs.empty()) {
+    while (!exprs.isEmpty()) {
         expr = createBinaryExpr((Expr*)exprs.pop(), expr, (Token*)ops.pop());
     }
 
@@ -364,17 +326,16 @@ Expr* ExprParser::createFilterExpr(ExprLexer& lexer, txIParseContext* aContext)
             break;
         case Token::VAR_REFERENCE :
             {
-                txAtom *prefix, *lName;
+                nsCOMPtr<nsIAtom> prefix, lName;
                 PRInt32 nspace;
-                nsresult rv = resolveQName(tok->value, prefix, aContext,
-                                           lName, nspace);
+                nsresult rv = resolveQName(tok->value, getter_AddRefs(prefix),
+                                           aContext, getter_AddRefs(lName),
+                                           nspace);
                 if (NS_FAILED(rv)) {
                     // XXX error report namespace resolve failed
                     return 0;
                 }
                 expr = new VariableRefExpr(prefix, lName, nspace);
-                TX_IF_RELEASE_ATOM(prefix);
-                TX_IF_RELEASE_ATOM(lName);
             }
             break;
         case Token::L_PAREN:
@@ -404,12 +365,19 @@ Expr* ExprParser::createFilterExpr(ExprLexer& lexer, txIParseContext* aContext)
             return 0;
             break;
     }
-    if (!expr)
+    if (!expr) {
+        // XXX ErrorReport: out of memory
         return 0;
+    }
 
     if (lexer.peek()->type == Token::L_BRACKET) {
 
         FilterExpr* filterExpr = new FilterExpr(expr);
+        if (!filterExpr) {
+            // XXX ErrorReport: out of memory
+            delete expr;
+            return 0;
+        }
 
         //-- handle predicates
         if (!parsePredicates(filterExpr, lexer, aContext)) {
@@ -439,115 +407,125 @@ Expr* ExprParser::createFunctionCall(ExprLexer& lexer,
 
     nsresult rv = NS_OK;
 
-    if (XPathNames::BOOLEAN_FN.isEqual(tok->value)) {
+    if (TX_StringEqualsAtom(tok->value, txXPathAtoms::boolean)) {
         fnCall = new BooleanFunctionCall(BooleanFunctionCall::TX_BOOLEAN);
     }
-    else if (XPathNames::CONCAT_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::concat)) {
         fnCall = new StringFunctionCall(StringFunctionCall::CONCAT);
     }
-    else if (XPathNames::CONTAINS_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::contains)) {
         fnCall = new StringFunctionCall(StringFunctionCall::CONTAINS);
     }
-    else if (XPathNames::COUNT_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::count)) {
         fnCall = new NodeSetFunctionCall(NodeSetFunctionCall::COUNT);
     }
-    else if (XPathNames::FALSE_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::_false)) {
         fnCall = new BooleanFunctionCall(BooleanFunctionCall::TX_FALSE);
     }
-    else if (XPathNames::ID_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::id)) {
         fnCall = new NodeSetFunctionCall(NodeSetFunctionCall::ID);
     }
-    else if (XPathNames::LANG_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::lang)) {
         fnCall = new BooleanFunctionCall(BooleanFunctionCall::TX_LANG);
     }
-    else if (XPathNames::LAST_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::last)) {
         fnCall = new NodeSetFunctionCall(NodeSetFunctionCall::LAST);
     }
-    else if (XPathNames::LOCAL_NAME_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::localName)) {
         fnCall = new NodeSetFunctionCall(NodeSetFunctionCall::LOCAL_NAME);
     }
-    else if (XPathNames::NAME_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::name)) {
         fnCall = new NodeSetFunctionCall(NodeSetFunctionCall::NAME);
     }
-    else if (XPathNames::NAMESPACE_URI_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::namespaceUri)) {
         fnCall = new NodeSetFunctionCall(NodeSetFunctionCall::NAMESPACE_URI);
     }
-    else if (XPathNames::NORMALIZE_SPACE_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::normalizeSpace)) {
         fnCall = new StringFunctionCall(StringFunctionCall::NORMALIZE_SPACE);
     }
-    else if (XPathNames::NOT_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::_not)) {
         fnCall = new BooleanFunctionCall(BooleanFunctionCall::TX_NOT);
     }
-    else if (XPathNames::POSITION_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::position)) {
         fnCall = new NodeSetFunctionCall(NodeSetFunctionCall::POSITION);
     }
-    else if (XPathNames::STARTS_WITH_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::startsWith)) {
         fnCall = new StringFunctionCall(StringFunctionCall::STARTS_WITH);
     }
-    else if (XPathNames::STRING_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::string)) {
         fnCall = new StringFunctionCall(StringFunctionCall::STRING);
     }
-    else if (XPathNames::STRING_LENGTH_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::stringLength)) {
         fnCall = new StringFunctionCall(StringFunctionCall::STRING_LENGTH);
     }
-    else if (XPathNames::SUBSTRING_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::substring)) {
         fnCall = new StringFunctionCall(StringFunctionCall::SUBSTRING);
     }
-    else if (XPathNames::SUBSTRING_AFTER_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::substringAfter)) {
         fnCall = new StringFunctionCall(StringFunctionCall::SUBSTRING_AFTER);
     }
-    else if (XPathNames::SUBSTRING_BEFORE_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::substringBefore)) {
         fnCall = new StringFunctionCall(StringFunctionCall::SUBSTRING_BEFORE);
     }
-    else if (XPathNames::SUM_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::sum)) {
         fnCall = new NumberFunctionCall(NumberFunctionCall::SUM);
     }
-    else if (XPathNames::TRANSLATE_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::translate)) {
         fnCall = new StringFunctionCall(StringFunctionCall::TRANSLATE);
     }
-    else if (XPathNames::TRUE_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::_true)) {
         fnCall = new BooleanFunctionCall(BooleanFunctionCall::TX_TRUE);
     }
-    else if (XPathNames::NUMBER_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::number)) {
         fnCall = new NumberFunctionCall(NumberFunctionCall::NUMBER);
     }
-    else if (XPathNames::ROUND_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::round)) {
         fnCall = new NumberFunctionCall(NumberFunctionCall::ROUND);
     }
-    else if (XPathNames::CEILING_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::ceiling)) {
         fnCall = new NumberFunctionCall(NumberFunctionCall::CEILING);
     }
-    else if (XPathNames::FLOOR_FN.isEqual(tok->value)) {
+    else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::floor)) {
         fnCall = new NumberFunctionCall(NumberFunctionCall::FLOOR);
     }
     else {
-        txAtom *prefix, *lName;
+        nsCOMPtr<nsIAtom> prefix, lName;
         PRInt32 namespaceID;
-        rv = resolveQName(tok->value, prefix, aContext, lName, namespaceID);
+        rv = resolveQName(tok->value, getter_AddRefs(prefix), aContext,
+                          getter_AddRefs(lName), namespaceID);
         if (NS_FAILED(rv)) {
             // XXX error report namespace resolve failed
             return 0;
         }
         rv = aContext->resolveFunctionCall(lName, namespaceID, fnCall);
-        TX_IF_RELEASE_ATOM(prefix);
-        TX_IF_RELEASE_ATOM(lName);
-        if (NS_FAILED(rv) && rv != NS_ERROR_NOT_IMPLEMENTED) {
-            // XXX report error unknown function call
+
+        // XXX We should have an errorfunction that always fails
+        // and use that here
+        if (rv == NS_ERROR_NOT_IMPLEMENTED ||
+            rv == NS_ERROR_XPATH_UNKNOWN_FUNCTION) {
+            NS_ASSERTION(!fnCall, "Now is it implemented or not?");
+            if (!parseParameters(0, lexer, aContext)) {
+                return 0;
+            }
+            return new StringExpr(tok->value +
+                                  NS_LITERAL_STRING(" not implemented."));
+        }
+
+        if (NS_FAILED(rv)) {
             return 0;
         }
+    }
+
+    // check that internal functions got created properly
+    if (!fnCall) {
+        // XXX ErrorReport: out of memory
+        return 0;
     }
     
     //-- handle parametes
     if (!parseParameters(fnCall, lexer, aContext)) {
         delete fnCall;
         return 0;
-    }
-
-    if (rv == NS_ERROR_NOT_IMPLEMENTED) {
-        NS_ASSERTION(!fnCall, "Now is it implemented or not?");
-        String err(tok->value);
-        err.append(" not implemented.");
-        return new StringExpr(err);
     }
 
     return fnCall;
@@ -558,7 +536,7 @@ LocationStep* ExprParser::createLocationStep(ExprLexer& lexer,
 {
     //-- child axis is default
     LocationStep::LocationStepType axisIdentifier = LocationStep::CHILD_AXIS;
-    txNodeTest* nodeTest = 0;
+    nsAutoPtr<txNodeTest> nodeTest;
 
     //-- get Axis Identifier or AbbreviatedStep, if present
     Token* tok = lexer.peek();
@@ -568,43 +546,52 @@ LocationStep* ExprParser::createLocationStep(ExprLexer& lexer,
             //-- eat token
             lexer.nextToken();
             //-- should switch to a hash here for speed if necessary
-            if (ANCESTOR_AXIS.isEqual(tok->value)) {
+            if (TX_StringEqualsAtom(tok->value, txXPathAtoms::ancestor)) {
                 axisIdentifier = LocationStep::ANCESTOR_AXIS;
             }
-            else if (ANCESTOR_OR_SELF_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::ancestorOrSelf)) {
                 axisIdentifier = LocationStep::ANCESTOR_OR_SELF_AXIS;
             }
-            else if (ATTRIBUTE_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::attribute)) {
                 axisIdentifier = LocationStep::ATTRIBUTE_AXIS;
             }
-            else if (CHILD_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::child)) {
                 axisIdentifier = LocationStep::CHILD_AXIS;
             }
-            else if (DESCENDANT_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::descendant)) {
                 axisIdentifier = LocationStep::DESCENDANT_AXIS;
             }
-            else if (DESCENDANT_OR_SELF_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::descendantOrSelf)) {
                 axisIdentifier = LocationStep::DESCENDANT_OR_SELF_AXIS;
             }
-            else if (FOLLOWING_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::following)) {
                 axisIdentifier = LocationStep::FOLLOWING_AXIS;
             }
-            else if (FOLLOWING_SIBLING_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::followingSibling)) {
                 axisIdentifier = LocationStep::FOLLOWING_SIBLING_AXIS;
             }
-            else if (NAMESPACE_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::_namespace)) {
                 axisIdentifier = LocationStep::NAMESPACE_AXIS;
             }
-            else if (PARENT_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::parent)) {
                 axisIdentifier = LocationStep::PARENT_AXIS;
             }
-            else if (PRECEDING_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::preceding)) {
                 axisIdentifier = LocationStep::PRECEDING_AXIS;
             }
-            else if (PRECEDING_SIBLING_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value,
+                                         txXPathAtoms::precedingSibling)) {
                 axisIdentifier = LocationStep::PRECEDING_SIBLING_AXIS;
             }
-            else if (SELF_AXIS.isEqual(tok->value)) {
+            else if (TX_StringEqualsAtom(tok->value, txXPathAtoms::self)) {
                 axisIdentifier = LocationStep::SELF_AXIS;
             }
             else {
@@ -650,10 +637,13 @@ LocationStep* ExprParser::createLocationStep(ExprLexer& lexer,
             case Token::CNAME :
                 {
                     // resolve QName
-                    txAtom *prefix, *lName;
+                    nsCOMPtr<nsIAtom> prefix, lName;
                     PRInt32 nspace;
-                    nsresult rv = resolveQName(tok->value, prefix, aContext,
-                                               lName, nspace);
+                    nsresult rv = resolveQName(tok->value,
+                                               getter_AddRefs(prefix),
+                                               aContext,
+                                               getter_AddRefs(lName), nspace,
+                                               PR_TRUE);
                     if (NS_FAILED(rv)) {
                         // XXX error report namespace resolve failed
                         return 0;
@@ -668,8 +658,6 @@ LocationStep* ExprParser::createLocationStep(ExprLexer& lexer,
                                                       Node::ELEMENT_NODE);
                             break;
                     }
-                    TX_IF_RELEASE_ATOM(prefix);
-                    TX_IF_RELEASE_ATOM(lName);
                 }
                 if (!nodeTest) {
                     //XXX ErrorReport: out of memory
@@ -688,7 +676,6 @@ LocationStep* ExprParser::createLocationStep(ExprLexer& lexer,
     LocationStep* lstep = new LocationStep(nodeTest, axisIdentifier);
     if (!lstep) {
         //XXX out of memory
-        delete nodeTest;
         return 0;
     }
 
@@ -852,6 +839,11 @@ Expr* ExprParser::createUnionExpr(ExprLexer& lexer, txIParseContext* aContext)
         return expr;
 
     UnionExpr* unionExpr = new UnionExpr();
+    if (!unionExpr) {
+        // XXX ErrorReport: out of memory
+        delete expr;
+        return 0;
+    }
     unionExpr->addExpr(expr);
 
     while (lexer.peek()->type == Token::UNION_OP) {
@@ -967,6 +959,8 @@ MBool ExprParser::parseParameters(FunctionCall* fnCall, ExprLexer& lexer,
 
         if (fnCall)
             fnCall->addParam(expr);
+        else
+            delete expr;
             
         switch (lexer.nextToken()->type) {
             case Token::R_PAREN :
@@ -1015,32 +1009,37 @@ short ExprParser::precedenceLevel(short tokenType) {
     return 0;
 }
 
-nsresult ExprParser::resolveQName(const String& aQName,
-                                  txAtom*& aPrefix, txIParseContext* aContext,
-                                  txAtom*& aLocalName, PRInt32& aNamespace)
+nsresult ExprParser::resolveQName(const nsAString& aQName,
+                                  nsIAtom** aPrefix, txIParseContext* aContext,
+                                  nsIAtom** aLocalName, PRInt32& aNamespace,
+                                  PRBool aIsNameTest)
 {
     aNamespace = kNameSpaceID_None;
-    String prefix, lName;
-    PRInt32 idx = aQName.indexOf(':');
+    PRInt32 idx = aQName.FindChar(':');
     if (idx > 0) {
-        aQName.subString(0, (PRUint32)idx, prefix);
-        aPrefix = TX_GET_ATOM(prefix);
-        if (!aPrefix) {
+        *aPrefix = NS_NewAtom(Substring(aQName, 0, (PRUint32)idx));
+        if (!*aPrefix) {
             return NS_ERROR_OUT_OF_MEMORY;
         }
-        aQName.subString((PRUint32)idx + 1, lName);
-        aLocalName = TX_GET_ATOM(lName);
-        if (!aLocalName) {
-            TX_RELEASE_ATOM(aPrefix);
-            aPrefix = 0;
+        *aLocalName = NS_NewAtom(Substring(aQName, (PRUint32)idx + 1,
+                                           aQName.Length() - (idx + 1)));
+        if (!*aLocalName) {
+            NS_RELEASE(*aPrefix);
             return NS_ERROR_OUT_OF_MEMORY;
         }
-        return aContext->resolveNamespacePrefix(aPrefix, aNamespace);
+        return aContext->resolveNamespacePrefix(*aPrefix, aNamespace);
     }
     // the lexer dealt with idx == 0
-    aPrefix = 0;
-    aLocalName = TX_GET_ATOM(aQName);
-    if (!aLocalName) {
+    *aPrefix = 0;
+    if (aIsNameTest && aContext->caseInsensitiveNameTests()) {
+        nsAutoString lcname;
+        TX_ToLowerCase(aQName, lcname);
+        *aLocalName = NS_NewAtom(lcname);
+    }
+    else {
+        *aLocalName = NS_NewAtom(aQName);
+    }
+    if (!*aLocalName) {
         return NS_ERROR_OUT_OF_MEMORY;
     }
     return NS_OK;

@@ -44,7 +44,6 @@
 #include "nsIAutoConfig.h"
 #include "nsIComponentManager.h"
 #include "nsIFile.h"
-#include "nsIFileStreams.h"
 #include "nsIObserverService.h"
 #include "nsIPrefBranch.h"
 #include "nsIPrefService.h"
@@ -52,6 +51,7 @@
 #include "nsIServiceManager.h"
 #include "nsIStringBundle.h"
 #include "nsXPIDLString.h"
+#include "nsNetUtil.h"
 #include "prmem.h"
 #include "nsString.h"
 #include "nsCRT.h"
@@ -105,7 +105,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS2(nsReadConfig, nsIReadConfig, nsIObserver)
 nsReadConfig::nsReadConfig() :
     mRead(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsresult nsReadConfig::Init()

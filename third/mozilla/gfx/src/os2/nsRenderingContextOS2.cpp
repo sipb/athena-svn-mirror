@@ -52,6 +52,7 @@
 #include "nsFont.h"
 #include "prprf.h"
 #include "nsIRenderingContextOS2.h"
+#include "nsPaletteOS2.h"
 
 
 // helper clip region functions - defined at the bottom of this file.
@@ -121,8 +122,6 @@ GraphicsState :: ~GraphicsState()
 
 nsRenderingContextOS2::nsRenderingContextOS2()
 {
-  NS_INIT_ISUPPORTS();
-
   mContext = nsnull;
   mSurface = nsnull;
   mPS = 0;
@@ -133,17 +132,10 @@ nsRenderingContextOS2::nsRenderingContextOS2()
   mPreservedInitialClipRegion = PR_FALSE;
   mPaletteMode = PR_FALSE;
 
-  // Need to enforce setting color values for first time. Make cached values different from current ones.
-  mCurrFontMetrics = mFontMetrics + 1;
-  mCurrTextColor   = mColor + 1;
-  mCurrLineColor   = mColor + 1;
-  mCurrLineStyle   = (nsLineStyle)((int)mLineStyle + 1);
-  mCurrFillColor   = mColor + 1;
+  mCurrFontMetrics = 0;
 
   mStateCache = new nsVoidArray();
-#ifdef IBMBIDI
   mRightToLeftText = PR_FALSE;
-#endif
 
   //create an initial GraphicsState
 
@@ -267,28 +259,15 @@ nsresult nsRenderingContextOS2::SetupPS (void)
 {
    LONG BlackColor, WhiteColor;
 
-#ifdef COLOR_256
-   // If this is a palette device, then select and realize the palette
-   nsPaletteInfo palInfo;
-   mContext->GetPaletteInfo(palInfo);
-
-   if (palInfo.isPaletteDevice && palInfo.palette)
+   // If this is a palette device, then set transparent colors
+   if (((nsDeviceContextOS2*)mContext)->IsPaletteDevice())
    {
-      ULONG cclr;
- 
-      // Select the palette in the background
-      GFX (::GpiSelectPalette (mPS, (HPAL)palInfo.palette), PAL_ERROR);
-
-      if (mDCOwner)
-         GFX (::WinRealizePalette((HWND)mDCOwner->GetNativeData(NS_NATIVE_WINDOW), mPS, &cclr), PAL_ERROR);
-
       BlackColor = GFX (::GpiQueryColorIndex (mPS, 0, MK_RGB (0x00, 0x00, 0x00)), GPI_ALTERROR);    // CLR_BLACK;
       WhiteColor = GFX (::GpiQueryColorIndex (mPS, 0, MK_RGB (0xFF, 0xFF, 0xFF)), GPI_ALTERROR);    // CLR_WHITE;
 
       mPaletteMode = PR_TRUE;
    }
    else
-#endif
    {
       GFX (::GpiCreateLogColorTable (mPS, 0, LCOLF_RGB, 0, 0, 0), FALSE);
 
@@ -308,11 +287,7 @@ nsresult nsRenderingContextOS2::SetupPS (void)
    GFX (::GpiSetAttrs (mPS, PRIM_IMAGE, IBB_COLOR | IBB_BACK_COLOR | IBB_MIX_MODE | IBB_BACK_MIX_MODE, 0, (PBUNDLE)&ib), FALSE);
 
    // Need to enforce setting color values for first time. Make cached values different from current ones.
-   mCurrFontMetrics = mFontMetrics + 1;
-   mCurrTextColor   = mColor + 1;
-   mCurrLineColor   = mColor + 1;
-   mCurrLineStyle   = (nsLineStyle)((int)mLineStyle + 1);
-   mCurrFillColor   = mColor + 1;
+   mCurrFontMetrics = 0;
 
    return NS_OK;
 }
@@ -825,7 +800,7 @@ NS_IMETHODIMP nsRenderingContextOS2::GetCurrentTransform( nsTransform2D *&aTrans
 // I'm reliably told that 'aBounds' is in device units, and that the
 // position oughtn't to be ignored, but for all intents & purposes can be.
 //
-NS_IMETHODIMP nsRenderingContextOS2::CreateDrawingSurface( nsRect *aBounds,
+NS_IMETHODIMP nsRenderingContextOS2::CreateDrawingSurface(const nsRect& aBounds,
                              PRUint32 aSurfFlags, nsDrawingSurface &aSurface)
 {
    nsresult rc = NS_ERROR_FAILURE;
@@ -835,7 +810,7 @@ NS_IMETHODIMP nsRenderingContextOS2::CreateDrawingSurface( nsRect *aBounds,
    if (!surf)
      return NS_ERROR_OUT_OF_MEMORY;
 
-   rc = surf->Init( mMainSurface->GetPS (), aBounds->width, aBounds->height, aSurfFlags);
+   rc = surf->Init( mMainSurface->GetPS (), aBounds.width, aBounds.height, aSurfFlags);
 
    if(NS_SUCCEEDED(rc))
    {
@@ -901,45 +876,35 @@ LONG nsRenderingContextOS2::GetGPIColor (void)
 
 void nsRenderingContextOS2::SetupLineColorAndStyle (void)
 {
-   if (mColor != mCurrLineColor)
+   
+   LINEBUNDLE lineBundle;
+   lineBundle.lColor = GetGPIColor ();
+
+   GFX (::GpiSetAttrs (mPS, PRIM_LINE, LBB_COLOR, 0, (PBUNDLE)&lineBundle), FALSE);
+   
+   long ltype = 0;
+   switch( mLineStyle)
    {
-      LINEBUNDLE lineBundle;
-      lineBundle.lColor = GetGPIColor ();
-
-      GFX (::GpiSetAttrs (mPS, PRIM_LINE, LBB_COLOR, 0, (PBUNDLE)&lineBundle), FALSE);
-
-      mCurrLineColor = mColor;
+      case nsLineStyle_kNone:   ltype = LINETYPE_INVISIBLE; break;
+      case nsLineStyle_kSolid:  ltype = LINETYPE_SOLID; break;
+      case nsLineStyle_kDashed: ltype = LINETYPE_SHORTDASH; break;
+      case nsLineStyle_kDotted: ltype = LINETYPE_DOT; break;
+      default:
+         NS_ASSERTION(0, "Unexpected line style");
+         break;
    }
-
-   if (mLineStyle != mCurrLineStyle)
-   {
-      long ltype = 0;
-      switch( mLineStyle)
-      {
-         case nsLineStyle_kNone:   ltype = LINETYPE_INVISIBLE; break;
-         case nsLineStyle_kSolid:  ltype = LINETYPE_SOLID; break;
-         case nsLineStyle_kDashed: ltype = LINETYPE_SHORTDASH; break;
-         case nsLineStyle_kDotted: ltype = LINETYPE_DOT; break;
-         default:
-            NS_ASSERTION(0, "Unexpected line style");
-            break;
-      }
-      GFX (::GpiSetLineType (mPS, ltype), FALSE);
-      mCurrLineStyle = mLineStyle;
-   }
+   GFX (::GpiSetLineType (mPS, ltype), FALSE);
+   
 }
 
 void nsRenderingContextOS2::SetupFillColor (void)
 {
-   if (mColor != mCurrFillColor)
-   {
-      AREABUNDLE areaBundle;
-      areaBundle.lColor = GetGPIColor ();
+   
+   AREABUNDLE areaBundle;
+   areaBundle.lColor = GetGPIColor ();
 
-      GFX (::GpiSetAttrs (mPS, PRIM_AREA, ABB_COLOR, 0, (PBUNDLE)&areaBundle), FALSE);
+   GFX (::GpiSetAttrs (mPS, PRIM_AREA, ABB_COLOR, 0, (PBUNDLE)&areaBundle), FALSE);
 
-      mCurrFillColor = mColor;
-   }
 }
 
 NS_IMETHODIMP nsRenderingContextOS2::DrawLine( nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1)
@@ -1682,7 +1647,8 @@ do_BreakGetTextDimensions(const nsFontSwitch* aFontSwitch,
       // Find the nearest place to break that is less than or equal to
       // the estimated break offset
       breakIndex = data->mPrevBreakState_BreakIndex;
-      while (data->mBreaks[breakIndex + 1] <= estimatedBreakOffset) {
+      while (breakIndex + 1 < data->mNumBreaks &&
+             data->mBreaks[breakIndex + 1] <= estimatedBreakOffset) {
         ++breakIndex;
       }
 
@@ -2297,12 +2263,10 @@ NS_IMETHODIMP nsRenderingContextOS2 :: DrawString(const PRUnichar *aString, PRUi
     mTranMatrix->TransformCoord(&data.mX, &data.mY);
   }
 
-#ifdef IBMBIDI
   if (mRightToLeftText) {
     metrics->ResolveBackwards(mPS, aString, aLength, do_DrawString, &data);
   }
   else
-#endif // IBMBIDI
   {
     metrics->ResolveForwards(mPS, aString, aLength, do_DrawString, &data);
   }
@@ -2480,54 +2444,6 @@ nsRenderingContextOS2::GetBoundingMetrics(const PRUnichar*   aString,
 }
 #endif // MOZ_MATHML
 
-// Image drawing: just proxy on to the image object, so no worries yet.
-NS_IMETHODIMP nsRenderingContextOS2::DrawImage( nsIImage *aImage, nscoord aX, nscoord aY)
-{
-   nscoord width, height;
-
-   width = NSToCoordRound( mP2T * aImage->GetWidth());
-   height = NSToCoordRound( mP2T * aImage->GetHeight());
-
-   return this->DrawImage( aImage, aX, aY, width, height);
-}
-
-NS_IMETHODIMP nsRenderingContextOS2::DrawImage( nsIImage *aImage, nscoord aX, nscoord aY,
-                                           nscoord aWidth, nscoord aHeight)
-{
-   nsRect  tr;
-
-   tr.x = aX;
-   tr.y = aY;
-   tr.width = aWidth;
-   tr.height = aHeight;
-
-   return this->DrawImage( aImage, tr);
-}
-                                             
-NS_IMETHODIMP nsRenderingContextOS2::DrawImage( nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect)
-{
-   nsRect sr,dr;
-
-   sr = aSRect;
-   mTranMatrix->TransformCoord( &sr.x, &sr.y, &sr.width, &sr.height);
-   sr.x = aSRect.x;
-   sr.y = aSRect.y;
-   mTranMatrix->TransformNoXLateCoord(&sr.x, &sr.y);
-
-   dr = aDRect;
-   mTranMatrix->TransformCoord( &dr.x, &dr.y, &dr.width, &dr.height);
-
-   return aImage->Draw( *this, mSurface, sr.x, sr.y, sr.width, sr.height, dr.x, dr.y, dr.width, dr.height);
-}
-
-NS_IMETHODIMP nsRenderingContextOS2::DrawImage( nsIImage *aImage, const nsRect& aRect)
-{
-   nsRect tr( aRect);
-   mTranMatrix->TransformCoord( &tr.x, &tr.y, &tr.width, &tr.height);
-
-   return aImage->Draw( *this, mSurface, tr.x, tr.y, tr.width, tr.height);
-}
-
 NS_IMETHODIMP nsRenderingContextOS2::CopyOffScreenBits(
                      nsDrawingSurface aSrcSurf, PRInt32 aSrcX, PRInt32 aSrcY,
                      const nsRect &aDestBounds, PRUint32 aCopyFlags)
@@ -2615,20 +2531,17 @@ void nsRenderingContextOS2::SetupFontAndColor (void)
       }
    }
 
-   if (mColor != mCurrTextColor)
-   {
-      CHARBUNDLE cBundle;
-      cBundle.lColor = GetGPIColor ();
-      cBundle.usMixMode = FM_OVERPAINT;
-      cBundle.usBackMixMode = BM_LEAVEALONE;
+   
+   CHARBUNDLE cBundle;
+   cBundle.lColor = GetGPIColor ();
+   cBundle.usMixMode = FM_OVERPAINT;
+   cBundle.usBackMixMode = BM_LEAVEALONE;
 
-      GFX (::GpiSetAttrs (mPS, PRIM_CHAR,
-                          CBB_COLOR | CBB_MIX_MODE | CBB_BACK_MIX_MODE,
-                          0, &cBundle),
-           FALSE);
-
-      mCurrTextColor = mColor;
-   }
+   GFX (::GpiSetAttrs (mPS, PRIM_CHAR,
+                       CBB_COLOR | CBB_MIX_MODE | CBB_BACK_MIX_MODE,
+                       0, &cBundle),
+        FALSE);
+   
 }
 
 void nsRenderingContextOS2::PushClipState(void)

@@ -41,6 +41,7 @@
 
 #include "nsCOMPtr.h"
 #include "nsIMsgFilterPlugin.h"
+#include "nsISemanticUnitScanner.h"
 #include "pldhash.h"
 
 // XXX can't simply byte align arenas, must at least 2-byte align.
@@ -50,6 +51,7 @@
 class Token;
 class TokenEnumeration;
 class TokenAnalyzer;
+class nsIMsgWindow;
 
 /**
  * Helper class to enumerate Token objects in a PLDHashTable
@@ -60,7 +62,7 @@ class TokenAnalyzer;
 class TokenEnumeration {
 public:
     TokenEnumeration(PLDHashTable* table);
-    bool hasMoreTokens();
+    PRBool hasMoreTokens();
     Token* nextToken();
     
 private:
@@ -72,7 +74,7 @@ class Tokenizer {
 public:
     Tokenizer();
     ~Tokenizer();
-    
+
     operator int() { return mTokenTable.entryStore != NULL; }
     
     Token* get(const char* word);
@@ -82,6 +84,11 @@ public:
     PRUint32 countTokens();
     Token* copyTokens();
     TokenEnumeration getTokens();
+
+    /**
+     * Clears out the previous message tokens.
+     */
+    nsresult clearTokens();
 
     /**
      * Assumes that text is mutable and
@@ -97,7 +104,7 @@ public:
     /**
      * Calls passed-in function for each token in the table.
      */
-    void visit(bool (*f) (Token*, void*), void* data);
+    void visit(PRBool (*f) (Token*, void*), void* data);
 
 private:
     char* copyWord(const char* word, PRUint32 len);
@@ -105,6 +112,7 @@ private:
 private:
     PLDHashTable mTokenTable;
     PLArenaPool mWordPool;
+    nsCOMPtr<nsISemanticUnitScanner> mScanner;
 };
 
 class nsBayesianFilter : public nsIJunkMailPlugin {
@@ -116,9 +124,10 @@ public:
     nsBayesianFilter();
     virtual ~nsBayesianFilter();
     
-    nsresult tokenizeMessage(const char* messageURI, TokenAnalyzer* analyzer);
+    nsresult tokenizeMessage(const char* messageURI, nsIMsgWindow *aMsgWindow, TokenAnalyzer* analyzer);
     void classifyMessage(Tokenizer& tokens, const char* messageURI, nsIJunkMailClassificationListener* listener);
-    void observeMessage(Tokenizer& tokens, const char* messageURI, nsMsgJunkStatus oldClassification, nsMsgJunkStatus newClassification, nsIJunkMailClassificationListener* listener);
+    void observeMessage(Tokenizer& tokens, const char* messageURI, nsMsgJunkStatus oldClassification, nsMsgJunkStatus newClassification, 
+                        nsIJunkMailClassificationListener* listener);
 
     void writeTrainingData();
     void readTrainingData();

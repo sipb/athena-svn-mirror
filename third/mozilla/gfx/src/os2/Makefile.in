@@ -32,6 +32,8 @@ LIBRARY_NAME	= gfx_os2
 EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsGfxOS2Module
+GRE_MODULE	= 1
+
 REQUIRES = xpcom \
 		  string \
 		  widget \
@@ -76,13 +78,13 @@ EXTRA_DSO_LDOPTS = \
 ifeq ($(MOZ_OS2_TOOLS),VACPP)
 OS_LIBS += libconv.lib
 else
-OS_LIBS += -luconv
+OS_LIBS += -luconv -los2386
 endif
 
 include $(topsrcdir)/config/rules.mk
 
 INCLUDES	+= -I$(topsrcdir)/gfx/src -I$(topsrcdir)/gfx/src/shared
 
-OS_LIBS		+= $(NSPR_LIBS)
-
-$(SHARED_LIBRARY): $(OBJS)
+ifeq ($(MOZ_OS2_TOOLS),EMX)
+DEFINES += -DUSE_OS2_TOOLKIT_HEADERS
+endif

@@ -62,11 +62,11 @@
 
 //Interfaces Needed
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 #define IMAP_MAIL_FILTER_FILE_NAME_FORMAT_IN_4x "%s Rules" 
 #endif
 
-#ifdef XP_UNIX
+#if defined(XP_UNIX) && !defined(XP_MACOSX)
 #define NEED_TO_COPY_AND_RENAME_NEWSRC_FILES
 #endif
 
@@ -149,6 +149,10 @@ class nsPrefMigration: public nsIPrefMigration
                               PRBool aReadSubdirs,
                               const char *aOldName,
                               const char *aNewName);
+      nsresult CopyFilesByPattern(nsIFileSpec * oldPathSpec,
+                              nsIFileSpec * newPathSpec,
+                              const char *pattern);
+
 
 #ifdef NEED_TO_COPY_AND_RENAME_NEWSRC_FILES
       nsresult CopyAndRenameNewsrcFiles(nsIFileSpec *newPath);

@@ -53,7 +53,6 @@
 #include "StdAfx.h"
 #include "UrlDialog.h"
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CTESTS class
 
@@ -68,7 +67,6 @@ public:
 			   nsIWebNavigation* mWebNav,
 			   CBrowserImpl *mpBrowserImpl);
 	virtual ~CTests();
-
 
 	// Some helper methods
 
@@ -110,6 +108,7 @@ protected:
 	afx_msg void OnTestsGlobalHistory();
 	afx_msg void OnTestsCreateFile();
 	afx_msg void OnTestsCreateprofile();
+	afx_msg void OnTestsAddTooltipListener();
 	afx_msg void OnTestsAddWebProgListener();
 	afx_msg void OnTestsAddHistoryListener();
 	afx_msg void OnTestsRemovehistorylistener();
@@ -153,6 +152,8 @@ protected:
 	afx_msg void OnInterfacesNsicommandmgr();
 	afx_msg void OnInterfacesNsicmdparams();
 	afx_msg void OnInterfacesRunalltestcases();
+	afx_msg void OnInterfacesNsichannel();
+	afx_msg void OnInterfacesNsihttpchannel();
 
 	//}}AFX_MSG
 
@@ -168,3 +169,4 @@ protected:
 };
 
 #endif //_TESTS_H
+

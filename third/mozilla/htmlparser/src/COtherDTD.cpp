@@ -38,8 +38,6 @@
  * ***** END LICENSE BLOCK ***** */
        
 //#define ENABLE_CRC              
-//#define RICKG_DEBUG           
-     
           
 #include "nsDebug.h"      
 #include "nsIAtom.h"
@@ -55,7 +53,6 @@
 #include "prio.h"
 #include "plstr.h"  
 #include "nsDTDUtils.h"
-#include "nsTagHandler.h" 
 #include "nsHTMLTokenizer.h"
 #include "nsTime.h"
 #include "nsViewSourceHTML.h" 
@@ -146,7 +143,6 @@ NS_IMPL_RELEASE(COtherDTD)
  *  @return   
  */ 
 COtherDTD::COtherDTD() : nsIDTD() {
-  NS_INIT_ISUPPORTS();
   mSink = 0; 
   mParser=0;        
   mLineNumber=1;  
@@ -177,14 +173,6 @@ COtherDTD::COtherDTD() : nsIDTD() {
   if(!gElementTable) {
     gElementTable = new CElementTable();
   }
-
-#ifdef  RICKG_DEBUG
-  //DebugDumpContainmentRules2(*this,"c:/temp/DTDRules.new","New COtherDTD Containment Rules");
-  nsHTMLElement::DebugDumpContainment("c:/temp/contain.new","ElementTable Rules");
-  nsHTMLElement::DebugDumpMembership("c:/temp/membership.out");
-  nsHTMLElement::DebugDumpContainType("c:/temp/ctnrules.out");
-#endif
-
 }
 
 /**
@@ -443,37 +431,40 @@ nsresult COtherDTD::DidBuildModel(nsresult anErrorCode,PRBool aNotifySink,nsIPar
 
           PRInt32 theIndex=mBodyContext->GetCount()-1;
           eHTMLTags theChild = mBodyContext->TagAt(theIndex); 
-          while(theIndex>0) {             
-            eHTMLTags theParent= mBodyContext->TagAt(--theIndex);
-            CElement *theElement=gElementTable->mElements[theParent];
-            nsCParserNode *theNode=mBodyContext->PeekNode();
+          while (theIndex>0) {             
+            eHTMLTags theParent = mBodyContext->TagAt(--theIndex);
+            CElement *theElement = gElementTable->mElements[theParent];
+            nsCParserNode *theNode = mBodyContext->PeekNode();
             theElement->HandleEndToken(theNode,theChild,mBodyContext,mSink);
-            theChild=theParent;
+            theChild = theParent;
           }
 
-          nsEntryStack *theChildStyles=0;
-          nsCParserNode* theNode=(nsCParserNode*)mBodyContext->Pop(theChildStyles);   
-          if(theNode) {
-            mSink->CloseHTML(*theNode);
+          nsEntryStack*  theChildStyles = 0;
+          nsCParserNode* theNode = (nsCParserNode*)mBodyContext->Pop(theChildStyles);   
+          if (theNode) {
+            mSink->CloseHTML();
           }
-
+          NS_ASSERTION(!theChildStyles, "there should no residual style information in this dtd");
+          IF_DELETE(theChildStyles, mNodeAllocator);
         }       
         else {
           //If you're here, then an error occured, but we still have nodes on the stack.
           //At a minimum, we should grab the nodes and recycle them.
           //Just to be correct, we'll also recycle the nodes. 
   
-          while(mBodyContext->GetCount() > 0) {  
+          while (mBodyContext->GetCount() > 0) {  
  
-            nsEntryStack *theChildStyles=0;
-            nsCParserNode* theNode=(nsCParserNode*)mBodyContext->Pop(theChildStyles);
-            if(theNode) {
-              theNode->mUseCount=0;
-              if(theChildStyles) {
+            nsEntryStack *theChildStyles = 0;
+            nsCParserNode* theNode = (nsCParserNode*)mBodyContext->Pop(theChildStyles);
+            if (theNode) {
+              theNode->mUseCount = 0;
+              if (theChildStyles) {
                 delete theChildStyles;
               } 
               IF_FREE(theNode, mNodeAllocator);
             }
+            NS_ASSERTION(!theChildStyles, "there should no residual style information in this dtd");
+            IF_DELETE(theChildStyles, mNodeAllocator);
           }    
         }    
   
@@ -481,7 +472,7 @@ nsresult COtherDTD::DidBuildModel(nsresult anErrorCode,PRBool aNotifySink,nsIPar
     } //if aparser  
 
       //No matter what, you need to call did build model.
-    result=aSink->DidBuildModel(0); 
+    result = aSink->DidBuildModel(0); 
 
   } //if asink
   return result; 
@@ -562,7 +553,7 @@ nsresult COtherDTD::HandleToken(CToken* aToken,nsIParser* aParser){
  * This gets called after we've handled a given start tag.
  * It's a generic hook to let us to post processing.
  * @param   aToken contains the tag in question
- * @param   aChildTag is the tag itself.
+ * @param   aTag is the tag itself.
  * @return  status
  */
 nsresult COtherDTD::DidHandleStartTag(nsIParserNode& aNode,eHTMLTags aChildTag){
@@ -626,16 +617,6 @@ nsresult COtherDTD::DidHandleStartTag(nsIParserNode& aNode,eHTMLTags aChildTag){
   return result;
 } 
  
-
-#ifdef  RICKG_DEBUG
-void WriteTokenToLog(CToken* aToken) {
-
-  static nsFileSpec fileSpec("c:\\temp\\tokenlog.html");
-  static nsOutputFileStream outputStream(fileSpec);
-  aToken->DebugDumpSource(outputStream); //write token without close bracket...
-}
-#endif
- 
 /**
  * This gets called before we've handled a given start tag.
  * It's a generic hook to let us do pre processing.
@@ -692,9 +673,6 @@ nsresult COtherDTD::WillHandleStartTag(CToken* aToken,eHTMLTags aTag,nsIParserNo
  *  @return  PR_TRUE if all went well; PR_FALSE if error occured
  */      
 nsresult COtherDTD::HandleStartToken(CToken* aToken) {  
-  #ifdef  RICKG_DEBUG
-    WriteTokenToLog(aToken);
-  #endif
 
   //Begin by gathering up attributes...  
  
@@ -721,7 +699,7 @@ nsresult COtherDTD::HandleStartToken(CToken* aToken) {
           case eHTMLTag_html:  
             if(!mBodyContext->HasOpenContainer(theChildTag)){
               mSink->OpenHTML(*theNode);
-              mBodyContext->Push(theNode,0);
+              mBodyContext->Push(theNode, 0, PR_FALSE);
             } 
             theTagWasHandled=PR_TRUE;   
             break;         
@@ -765,10 +743,6 @@ nsresult COtherDTD::HandleEndToken(CToken* aToken) {
   nsresult    result=NS_OK;
   eHTMLTags   theChildTag=(eHTMLTags)aToken->GetTypeID();
  
-  #ifdef  RICKG_DEBUG    
-    WriteTokenToLog(aToken); 
-  #endif  
-  
   switch(theChildTag) {    
  
     case eHTMLTag_body: //we intentionally don't let the user close HTML or BODY
@@ -823,10 +797,6 @@ nsresult COtherDTD::CollectAttributes(nsIParserNode& aNode,eHTMLTags aTag,PRInt3
         // "SELECTED/", and ">". In this case the "SELECTED/" key will be sanitized to
         // a legitimate "SELECTED" key.
         ((CAttributeToken*)theToken)->SanitizeKey();
- 
-  #ifdef  RICKG_DEBUG
-    WriteTokenToLog(theToken);
-  #endif
  
         aNode.AddAttribute(theToken); 
       }
@@ -939,15 +909,6 @@ COtherDTD::IntTagToStringTag(PRInt32 aIntTag) const
   return str_ptr;
 }  
 
-NS_IMETHODIMP
-COtherDTD::ConvertEntityToUnicode(const nsAString& aEntity,
-                                  PRInt32* aUnicode) const
-{
-  *aUnicode = nsHTMLEntities::EntityToUnicode(aEntity);
-
-  return NS_OK;
-}
- 
 /**
  *  This method is called to determine whether or not
  *  the given childtag is a block element.

@@ -78,7 +78,7 @@ public:
 
 	NS_IMETHOD GetDbPath(nsFileSpec * *aDbPath);
 	NS_IMETHOD SetDbPath(nsFileSpec * aDbPath);
-	NS_IMETHOD Open(nsFileSpec * folderName, PRBool create, nsIAddrDatabase **pCardDB, PRBool upgrading);
+	NS_IMETHOD Open(nsFileSpec *aMabFile, PRBool aCreate, nsIAddrDatabase **pCardDB, PRBool upgrading);
 	NS_IMETHOD Close(PRBool forceCommit);
 	NS_IMETHOD OpenMDB(nsFileSpec *dbName, PRBool create);
 	NS_IMETHOD CloseMDB(PRBool commit);
@@ -106,15 +106,21 @@ public:
 	NS_IMETHOD AddCardRowToDB(nsIMdbRow *newRow);
 	NS_IMETHOD AddLdifListMember(nsIMdbRow* row, const char * value);
 
-   	NS_IMETHOD GetDeletedCardList(PRUint32 *aCount, nsISupportsArray **aDeletedList);
-	NS_IMETHOD GetDeletedCardCount(PRUint32 *count);
-    NS_IMETHOD PurgeDeletedCardTable();
+  NS_IMETHOD GetDeletedCardList(PRUint32 *aCount, nsISupportsArray **aDeletedList);
+  NS_IMETHOD GetDeletedCardCount(PRUint32 *count);
+  NS_IMETHOD PurgeDeletedCardTable();
 
 	NS_IMETHOD AddFirstName(nsIMdbRow * row, const char * value)
 	{ return AddCharStringColumn(row, m_FirstNameColumnToken, value); }
 
 	NS_IMETHOD AddLastName(nsIMdbRow * row, const char * value)
 	{ return AddCharStringColumn(row, m_LastNameColumnToken, value); }
+
+	NS_IMETHOD AddPhoneticFirstName(nsIMdbRow * row, const char * value)
+	{ return AddCharStringColumn(row, m_PhoneticFirstNameColumnToken, value); }
+
+	NS_IMETHOD AddPhoneticLastName(nsIMdbRow * row, const char * value)
+	{ return AddCharStringColumn(row, m_PhoneticLastNameColumnToken, value); }
 
 	NS_IMETHOD AddDisplayName(nsIMdbRow * row, const char * value)
 	{ return AddCharStringColumn(row, m_DisplayNameColumnToken, value); }
@@ -280,7 +286,6 @@ public:
 	NS_IMETHOD FindMailListbyUnicodeName(const PRUnichar *listName, PRBool *exist);
 
 	NS_IMETHOD GetCardCount(PRUint32 *count);
-	NS_IMETHOD RemoveExtraCardsInCab(PRUint32 cardTotal, PRUint32 nCabMax);
 
   NS_IMETHOD SetCardValue(nsIAbCard *card, const char *name, const PRUnichar *value, PRBool notify);
   NS_IMETHOD GetCardValue(nsIAbCard *card, const char *name, PRUnichar **value);
@@ -315,17 +320,16 @@ public:
 	PRUint32 GetListAddressTotal(nsIMdbRow* listRow);
 	nsresult GetAddressRowByPos(nsIMdbRow* listRow, PRUint16 pos, nsIMdbRow** cardRow);
 
-        static void PRTime2Seconds(PRTime prTime, PRUint32 *seconds);
-
+  static void PRTime2Seconds(PRTime prTime, PRUint32 *seconds);
+  
 protected:
-
-    static void		AddToCache(nsAddrDatabase* pAddrDB) 
-						{GetDBCache()->AppendElement(pAddrDB);}
+  
+  static void		AddToCache(nsAddrDatabase* pAddrDB) {GetDBCache()->AppendElement(pAddrDB);}
 	static void		RemoveFromCache(nsAddrDatabase* pAddrDB);
 	static PRInt32	FindInCache(nsAddrDatabase* pAddrDB);
 	PRBool			MatchDbName(nsFileSpec *dbName);	// returns TRUE if they match
 
-#if defined(XP_PC) || defined(XP_MAC)	// this should go away when we can provide our own file stream to MDB/Mork
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_MAC)	// this should go away when we can provide our own file stream to MDB/Mork
 	static void		UnixToNative(char*& ioPath);
 #endif
 
@@ -347,9 +351,8 @@ protected:
 	nsresult GetListFromDB(nsIAbDirectory *newCard, nsIMdbRow* listRow);
 	nsresult AddRecordKeyColumnToRow(nsIMdbRow *pRow);
 	nsresult AddAttributeColumnsToRow(nsIAbCard *card, nsIMdbRow *cardRow);
-	nsresult AddListCardColumnsToRow(nsIAbCard *pCard, nsIMdbRow *pListRow, PRUint32 pos, nsIAbCard** pNewCard);
+	nsresult AddListCardColumnsToRow(nsIAbCard *pCard, nsIMdbRow *pListRow, PRUint32 pos, nsIAbCard** pNewCard, PRBool aInMailingList);
 	nsresult AddListAttributeColumnsToRow(nsIAbDirectory *list, nsIMdbRow *listRow);
-	nsresult FindAttributeRow(nsIMdbTable* pTable, mdb_token columnToken, nsIMdbRow** row);
 	nsresult CreateCard(nsIMdbRow* cardRow, mdb_id listRowID, nsIAbCard **result);
 	nsresult CreateCardFromDeletedCardsTable(nsIMdbRow* cardRow, mdb_id listRowID, nsIAbCard **result);
 	nsresult SetListAddressTotal(nsIMdbRow* listRow, PRUint32 total);
@@ -360,7 +363,6 @@ protected:
 	nsresult AddLowercaseColumn(nsIMdbRow * row, mdb_token columnToken, const char* utf8String);
   nsresult GetRowFromAttribute(const char *aName, const char *aUTF8Value, PRBool aCaseInsensitive, nsIMdbRow	**aCardRow);
 
-
 	static nsVoidArray/*<nsAddrDatabase>*/ * GetDBCache();
 	static nsVoidArray/*<nsAddrDatabase>*/ * m_dbCache;
 
@@ -369,9 +371,9 @@ protected:
 	nsresult			InitNewDB();
 	nsresult			InitMDBInfo();
 	nsresult			InitPabTable();
-    	nsresult            		InitDeletedCardsTable(PRBool bCreate=PR_FALSE);
-	nsresult			AddRowToDeletedCardsTable(nsIAbCard *card, nsIMdbRow **pCardRow);
-       nsresult			DeleteRowFromDeletedCardsTable(nsIMdbRow *pCardRow);
+  nsresult      InitDeletedCardsTable(PRBool aCreate);
+  nsresult			AddRowToDeletedCardsTable(nsIAbCard *card, nsIMdbRow **pCardRow);
+  nsresult			DeleteRowFromDeletedCardsTable(nsIMdbRow *pCardRow);
 
 	nsresult			InitLastRecorKey();
 	nsresult			GetDataRow(nsIMdbRow **pDataRow);
@@ -380,11 +382,7 @@ protected:
 	nsresult			CheckAndUpdateRecordKey();
 	nsresult			UpdateLowercaseEmailListName();
 	nsresult			ConvertAndAddLowercaseColumn(nsIMdbRow * row, mdb_token fromCol, mdb_token toCol);
-	nsresult			AddUnicodeToColumn(nsIMdbRow * row, mdb_token colToken, const PRUnichar* pUnicodeStr);
-	nsresult			GetRowForCharColumn(const char *lowerUTF8String, mdb_column findColumn, 
-											PRBool bIsCard, nsIMdbRow **findRow);
-	nsresult			GetRowForCharColumn(const PRUnichar *unicodeStr, mdb_column findColumn, 
-											PRBool bIsCard, nsIMdbRow **findRow);
+	nsresult			AddUnicodeToColumn(nsIMdbRow * row, mdb_token colToken, mdb_token lowerCaseColToken, const PRUnichar* pUnicodeStr);
 	nsresult			CreateCardsForMailList(nsIMdbRow *pListRow, nsIEnumerator **result);
 
 	nsresult			DeleteRow(nsIMdbTable* dbTable, nsIMdbRow* dbRow);
@@ -407,6 +405,8 @@ protected:
 
 	mdb_token			m_FirstNameColumnToken;
 	mdb_token			m_LastNameColumnToken;
+	mdb_token			m_PhoneticFirstNameColumnToken;
+	mdb_token			m_PhoneticLastNameColumnToken;
 	mdb_token			m_DisplayNameColumnToken;
 	mdb_token			m_NickNameColumnToken;
 	mdb_token			m_PriEmailColumnToken;
@@ -474,6 +474,11 @@ protected:
 	PRUint32			m_LastRecordKey;
 	nsIAbDirectory*		m_dbDirectory;
 
+private:
+  nsresult GetRowForCharColumn(const PRUnichar *unicodeStr, mdb_column findColumn, PRBool bIsCard, nsIMdbRow **findRow);
+  PRBool HasRowButDeletedForCharColumn(const PRUnichar *unicodeStr, mdb_column findColumn, PRBool aIsCard, nsIMdbRow **aFindRow);
+  nsresult OpenInternal(nsFileSpec *aMabFile, PRBool aCreate, nsIAddrDatabase **pCardDB);
+  nsresult AlertAboutCorruptMabFile(const PRUnichar *aOldFileName, const PRUnichar *aNewFileName);
 };
 
 #endif

@@ -65,13 +65,13 @@
 #include "nsHTMLAtoms.h"
 #include "nsIScrollableView.h"
 #include "nsStyleCoord.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIDocumentLoader.h"
-#include "nsIPref.h"
 #include "nsFrameSetFrame.h"
 #include "nsIDOMHTMLFrameElement.h"
 #include "nsIDOMHTMLIFrameElement.h"
+#include "nsIDOMXULElement.h"
 #include "nsIFrameLoader.h"
 #include "nsLayoutAtoms.h"
 #include "nsIChromeEventHandler.h"
@@ -94,6 +94,7 @@
 #include "nsPIDOMWindow.h"
 #include "nsIRenderingContext.h"
 #include "nsIFrameFrame.h"
+#include "nsAutoPtr.h"
 
 // For Accessibility
 #ifdef ACCESSIBILITY
@@ -156,7 +157,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD Reflow(nsIPresContext*          aPresContext,
@@ -170,6 +171,12 @@ public:
                               nsIAtom* aAttribute,
                               PRInt32 aModType,
                               PRInt32 aHint);
+
+  // if the content is "visibility:hidden", then just hide the view
+  // and all our contents. We don't extend "visibility:hidden" to
+  // the child content ourselves, since it belongs to a different
+  // document and CSS doesn't inherit in there.
+  virtual PRBool SupportsVisibilityHidden() { return PR_FALSE; }
 
 #ifdef ACCESSIBILITY
   NS_IMETHOD GetAccessible(nsIAccessible** aAccessible);
@@ -240,7 +247,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   void GetParentContent(nsIContent** aContent);
@@ -294,7 +301,7 @@ NS_IMETHODIMP nsHTMLFrameOuterFrame::GetAccessible(nsIAccessible** aAccessible)
 
   if (accService) {
     nsCOMPtr<nsIDOMNode> node = do_QueryInterface(mContent);
-    return accService->CreateIFrameAccessible(node, aAccessible);
+    return accService->CreateOuterDocAccessible(node, aAccessible);
   }
 
   return NS_ERROR_FAILURE;
@@ -338,7 +345,7 @@ NS_IMETHODIMP
 nsHTMLFrameOuterFrame::Init(nsIPresContext*  aPresContext,
                             nsIContent*      aContent,
                             nsIFrame*        aParent,
-                            nsIStyleContext* aContext,
+                            nsStyleContext*  aContext,
                             nsIFrame*        aPrevInFlow)
 {
   mPresContext = aPresContext;
@@ -395,9 +402,7 @@ nsHTMLFrameOuterFrame::Init(nsIPresContext*  aPresContext,
     GetView(aPresContext, &view);
   }
 
-  const nsStyleDisplay* disp;
-  aParent->GetStyleData(eStyleStruct_Display, ((const nsStyleStruct *&)disp));
-  if (disp->mDisplay == NS_STYLE_DISPLAY_DECK) {
+  if (aParent->GetStyleDisplay()->mDisplay == NS_STYLE_DISPLAY_DECK) {
     nsCOMPtr<nsIWidget> widget;
     view->GetWidget(*getter_AddRefs(widget));
 
@@ -412,16 +417,10 @@ nsHTMLFrameOuterFrame::Init(nsIPresContext*  aPresContext,
     mFrames.SetFrames(firstChild);
     // Resolve the style context for the inner frame
     nsresult rv = NS_OK;
-    nsIStyleContext *innerStyleContext = nsnull;
-    rv = aPresContext->ResolveStyleContextFor(mContent, mStyleContext,
-                                              &innerStyleContext);
-    if (NS_SUCCEEDED(rv)) {
-      rv = firstChild->Init(aPresContext, mContent, this, innerStyleContext, nsnull);
-      // have to release the context: Init does its own AddRef...
-      NS_RELEASE(innerStyleContext);
-    } else {
-      NS_WARNING( "Error resolving style for InnerFrame in nsHTMLFrameOuterFrame");
-    }
+    nsRefPtr<nsStyleContext> innerStyleContext;
+    innerStyleContext = aPresContext->ResolveStyleContextFor(mContent,
+                                                             mStyleContext);
+    rv = firstChild->Init(aPresContext, mContent, this, innerStyleContext, nsnull);
     if (NS_FAILED(rv)){
       NS_WARNING( "Error initializing InnerFrame in nsHTMLFrameOuterFrame");
       return rv;
@@ -455,22 +454,26 @@ nsHTMLFrameOuterFrame::GetDesiredSize(nsIPresContext* aPresContext,
     aDesiredSize.width = aReflowState.mComputedWidth;
   }
   else {
-    aDesiredSize.width = NSIntPixelsToTwips(300, p2t);
+    aDesiredSize.width = PR_MIN(PR_MAX(NSIntPixelsToTwips(300, p2t),
+                                       aReflowState.mComputedMinWidth),
+                                aReflowState.mComputedMaxWidth);
   }
   if (NS_UNCONSTRAINEDSIZE != aReflowState.mComputedHeight) {
     aDesiredSize.height = aReflowState.mComputedHeight;
   }
   else {
-    aDesiredSize.height = NSIntPixelsToTwips(150, p2t);
+    aDesiredSize.height = PR_MIN(PR_MAX(NSIntPixelsToTwips(150, p2t),
+                                        aReflowState.mComputedMinHeight),
+                                 aReflowState.mComputedMaxHeight);
   }
   aDesiredSize.ascent = aDesiredSize.height;
   aDesiredSize.descent = 0;
 
-  // For unknown reasons, the maxElementSize for the InnerFrame is used, but the
-  // maxElementSize for the OuterFrame is ignored, the following is not used!
-  if (aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width = aDesiredSize.width;
-    aDesiredSize.maxElementSize->height = aDesiredSize.height;
+  // For unknown reasons, the max-element-width for the InnerFrame is
+  // used, but the max-element-width for the OuterFrame is ignored, the
+  // following is not used!
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
   }
 }
 
@@ -530,9 +533,8 @@ nsHTMLFrameOuterFrame::Reflow(nsIPresContext*          aPresContext,
   } else {
     aDesiredSize.width  = aReflowState.availableWidth; // FRAME
     aDesiredSize.height = aReflowState.availableHeight;
-    if (aDesiredSize.maxElementSize) { // Probably not used...
-      aDesiredSize.maxElementSize->width = aDesiredSize.width;
-      aDesiredSize.maxElementSize->height = aDesiredSize.height;
+    if (aDesiredSize.mComputeMEW) { // Probably not used...
+      aDesiredSize.mMaxElementWidth = aDesiredSize.width;
     }
   }
 
@@ -556,7 +558,7 @@ nsHTMLFrameOuterFrame::Reflow(nsIPresContext*          aPresContext,
   // an incremental reflow to a dirty reflow unless our child is along
   // the path.
   nsIFrame* firstChild = mFrames.FirstChild();
-  nsHTMLReflowMetrics kidMetrics(aDesiredSize.maxElementSize);
+  nsHTMLReflowMetrics kidMetrics(aDesiredSize.mComputeMEW);
   nsHTMLReflowState   kidReflowState(aPresContext, aReflowState, firstChild,
                                      innerSize);
   ReflowChild(firstChild, aPresContext, kidMetrics, kidReflowState,
@@ -567,18 +569,20 @@ nsHTMLFrameOuterFrame::Reflow(nsIPresContext*          aPresContext,
   // maxElementSize for the OuterFrame is ignored, add in border here to prevent
   // a table from shrinking inside the iframe's border when resized.
   if (IsInline()) {
-    if (kidMetrics.maxElementSize) {
-      kidMetrics.maxElementSize->width += border.left + border.right;
-      kidMetrics.maxElementSize->height += border.top + border.bottom;
+    if (kidMetrics.mComputeMEW) {
+      kidMetrics.mMaxElementWidth += border.left + border.right;
     }
   }
 
   // Place and size the child
   FinishReflowChild(firstChild, aPresContext, nsnull,
                     kidMetrics, offset.x, offset.y, 0);
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = kidMetrics.mMaxElementWidth;
+  }
 
-  // Determine if we need to repaint our border
-  CheckInvalidateBorder(aPresContext, aDesiredSize, aReflowState);
+  // Determine if we need to repaint our border, background or outline
+  CheckInvalidateSizeChange(aPresContext, aDesiredSize, aReflowState);
 
   {
     // Invalidate the frame
@@ -724,6 +728,7 @@ nsHTMLFrameInnerFrame::nsHTMLFrameInnerFrame()
 NS_IMETHODIMP
 nsHTMLFrameInnerFrame::Destroy(nsIPresContext* aPresContext)
 {
+  
   if (mFrameLoader) {
     // Get the content viewer through the docshell, but don't call
     // GetDocShell() since we don't want to create one if we don't
@@ -798,6 +803,9 @@ PRInt32 nsHTMLFrameInnerFrame::GetScrolling(nsIContent* aContent)
 
   if (NS_SUCCEEDED(rv) && content) {
     nsHTMLValue value;
+    // XXXldb This code belongs in the attribute mapping code for the
+    // content node -- otherwise it doesn't follow the CSS cascading
+    // rules correctly.
     if (NS_CONTENT_ATTR_HAS_VALUE == content->GetHTMLAttribute(nsHTMLAtoms::scrolling, value)) {
       if (eHTMLUnit_Enumerated == value.GetUnit()) {
         switch (value.GetIntValue()) {
@@ -822,8 +830,7 @@ PRInt32 nsHTMLFrameInnerFrame::GetScrolling(nsIContent* aContent)
     }
 
     // Check style for overflow
-    const nsStyleDisplay* display;
-    GetStyleData(eStyleStruct_Display, ((const nsStyleStruct *&)display));
+    const nsStyleDisplay* display = GetStyleDisplay();
     if (display->mOverflow)
       returnValue = display->mOverflow;
   }
@@ -939,9 +946,7 @@ nsHTMLFrameInnerFrame::Paint(nsIPresContext*      aPresContext,
     GetDocShell(getter_AddRefs(docShell));
 
     if (!docShell) {
-      const nsStyleBackground* color =
-        (const nsStyleBackground*)mStyleContext->
-        GetStyleData(eStyleStruct_Background);
+      const nsStyleBackground* color = GetStyleBackground();
 
       aRenderingContext.SetColor(color->mBackgroundColor);
       aRenderingContext.FillRect(mRect);
@@ -1025,9 +1030,9 @@ nsHTMLFrameInnerFrame::DidReflow(nsIPresContext*           aPresContext,
     nsIView* view = nsnull;
     GetView(aPresContext, &view);
     if (view) {
-      const nsStyleVisibility* vis;
-      GetStyleData(eStyleStruct_Visibility, ((const nsStyleStruct *&)vis));
-      nsViewVisibility newVis = vis->IsVisible() ? nsViewVisibility_kShow : nsViewVisibility_kHide;
+      nsViewVisibility newVis = GetStyleVisibility()->IsVisible()
+                                  ? nsViewVisibility_kShow
+                                  : nsViewVisibility_kHide;
       nsViewVisibility oldVis;
       // only change if different.
       view->GetVisibility(oldVis);
@@ -1145,17 +1150,17 @@ nsHTMLFrameInnerFrame::CreateViewAndWidget(nsIPresContext* aPresContext,
   nsWidgetInitData initData;
   initData.clipChildren = PR_TRUE;
   initData.clipSiblings = PR_TRUE;
+  nsCOMPtr<nsIDOMXULElement> xulElement(do_QueryInterface(mContent));
 
-  rv = view->CreateWidget(kCChildCID, &initData);
+  rv = view->CreateWidget(kCChildCID, nsnull, nsnull, PR_TRUE, PR_TRUE,
+                          xulElement? eContentTypeUI: eContentTypeContent);
   SetView(aPresContext, view);
 
   nsContainerFrame::SyncFrameViewProperties(aPresContext, this, nsnull, view);
 
   // XXX the following should be unnecessary, given the above Sync call
   // if the visibility is hidden, reflect that in the view
-  const nsStyleVisibility* vis;
-  GetStyleData(eStyleStruct_Visibility, ((const nsStyleStruct *&)vis));
-  if (!vis->IsVisible()) {
+  if (!GetStyleVisibility()->IsVisible()) {
     viewMan->SetViewVisibility(view, nsViewVisibility_kHide);
   }
   view->GetWidget(*aWidget);
@@ -1166,7 +1171,7 @@ NS_IMETHODIMP
 nsHTMLFrameInnerFrame::Init(nsIPresContext*  aPresContext,
                             nsIContent*      aContent,
                             nsIFrame*        aParent,
-                            nsIStyleContext* aContext,
+                            nsStyleContext*  aContext,
                             nsIFrame*        aPrevInFlow)
 {
   nsresult rv = nsLeafFrame::Init(aPresContext, aContent, aParent, aContext,
@@ -1201,7 +1206,8 @@ nsHTMLFrameInnerFrame::Init(nsIPresContext*  aPresContext,
   }
 
   if (shouldCreateDoc) {
-    ShowDocShell(aPresContext);
+    rv = ShowDocShell(aPresContext);
+    NS_ENSURE_SUCCESS(rv,rv);
   }
 
   return NS_OK;
@@ -1288,31 +1294,20 @@ nsHTMLFrameInnerFrame::GetDesiredSize(nsIPresContext* aPresContext,
   aDesiredSize.ascent = aDesiredSize.height;
   aDesiredSize.descent = 0;
 
-  // For unknown reasons, the maxElementSize for the InnerFrame is
-  // used, but the maxElementSize for the OuterFrame is ignored, make
+  // For unknown reasons, the maxElementWidth for the InnerFrame is
+  // used, but the maxElementWidth for the OuterFrame is ignored, make
   // sure to get it right here!
 
-  if (aDesiredSize.maxElementSize) {
+  if (aDesiredSize.mComputeMEW) {
     if ((NS_UNCONSTRAINEDSIZE == aReflowState.availableWidth) ||
         (eStyleUnit_Percent ==
          aReflowState.mStylePosition->mWidth.GetUnit())) {
       // percent width springy down to 0 px
 
-      aDesiredSize.maxElementSize->width = 0;
+      aDesiredSize.mMaxElementWidth = 0;
     }
     else {
-      aDesiredSize.maxElementSize->width = aDesiredSize.width;
-    }
-
-    if ((NS_UNCONSTRAINEDSIZE == aReflowState.availableHeight) ||
-        (eStyleUnit_Percent ==
-         aReflowState.mStylePosition->mHeight.GetUnit())) {
-      // percent height springy down to 0px
-
-      aDesiredSize.maxElementSize->height = 0;
-    }
-    else {
-      aDesiredSize.maxElementSize->height = aDesiredSize.height;
+      aDesiredSize.mMaxElementWidth = aDesiredSize.width;
     }
   }
 }
@@ -1322,8 +1317,6 @@ nsHTMLFrameInnerFrame::GetDesiredSize(nsIPresContext* aPresContext,
  *****************************************************************************/
 FrameLoadingInfo::FrameLoadingInfo(const nsSize& aSize)
 {
-  NS_INIT_ISUPPORTS();
-
   mFrameSize = aSize;
 }
 

@@ -33,6 +33,7 @@
 #include "nsReadableUtils.h"
 #include "nsCRT.h"
 
+#include "ImageErrors.h"
 #include "ImageLogging.h"
 
 #include "nspr.h"
@@ -42,12 +43,12 @@ NS_IMPL_THREADSAFE_ISUPPORTS2(imgRequestProxy, imgIRequest, nsIRequest)
 
 imgRequestProxy::imgRequestProxy() :
   mOwner(nsnull),
+  mListener(nsnull),
   mLoadFlags(nsIRequest::LOAD_NORMAL),
   mCanceled(PR_FALSE),
   mIsInLoadGroup(PR_FALSE),
   mLock(nsnull)
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
 
   mLock = PR_NewLock();
@@ -56,6 +57,7 @@ imgRequestProxy::imgRequestProxy() :
 imgRequestProxy::~imgRequestProxy()
 {
   /* destructor code */
+  NS_PRECONDITION(!mListener, "Someone forgot to properly cancel this request!");
 
   if (mOwner) {
     if (!mCanceled) {
@@ -86,7 +88,7 @@ imgRequestProxy::~imgRequestProxy()
 
 
 
-nsresult imgRequestProxy::Init(imgRequest *request, nsILoadGroup *aLoadGroup, imgIDecoderObserver *aObserver, nsISupports *cx)
+nsresult imgRequestProxy::Init(imgRequest *request, nsILoadGroup *aLoadGroup, imgIDecoderObserver *aObserver)
 {
   NS_PRECONDITION(request, "no request");
   if (!request)
@@ -100,22 +102,8 @@ nsresult imgRequestProxy::Init(imgRequest *request, nsILoadGroup *aLoadGroup, im
   NS_ADDREF(mOwner);
 
   mListener = aObserver;
-  mContext = cx;
 
-  if (aLoadGroup) {
-    //
-    // XXX: This does not deal with the situation where cached content
-    //      is being revalidated.  In this case, the request needs to
-    //      be added in case the cache entry is doomed.
-    //
-    PRUint32 imageStatus = mOwner->GetImageStatus();
-    if (!(imageStatus & imgIRequest::STATUS_LOAD_COMPLETE) &&
-        !(imageStatus & imgIRequest::STATUS_ERROR)) {
-      aLoadGroup->AddRequest(this, cx);
-      mLoadGroup = aLoadGroup;
-      mIsInLoadGroup = PR_TRUE;
-    }
-  }
+  mLoadGroup = aLoadGroup;
 
   PR_Unlock(mLock);
 
@@ -131,7 +119,7 @@ nsresult imgRequestProxy::ChangeOwner(imgRequest *aNewOwner)
 
   PR_Lock(mLock);
 
-  mOwner->RemoveProxy(this, NS_OK, PR_FALSE);
+  mOwner->RemoveProxy(this, NS_IMAGELIB_CHANGING_OWNER, PR_FALSE);
   NS_RELEASE(mOwner);
 
   mOwner = aNewOwner;
@@ -142,6 +130,35 @@ nsresult imgRequestProxy::ChangeOwner(imgRequest *aNewOwner)
   PR_Unlock(mLock);
 
   return NS_OK;
+}
+
+void imgRequestProxy::AddToLoadGroup()
+{
+  NS_ASSERTION(!mIsInLoadGroup, "Whaa, we're already in the loadgroup!");
+
+  if (!mIsInLoadGroup && mLoadGroup) {
+    mLoadGroup->AddRequest(this, nsnull);
+    mIsInLoadGroup = PR_TRUE;
+  }
+}
+
+void imgRequestProxy::RemoveFromLoadGroup()
+{
+  if (!mIsInLoadGroup)
+    return;
+
+  /* calling RemoveFromLoadGroup may cause the document to finish
+     loading, which could result in our death.  We need to make sure
+     that we stay alive long enough to fight another battle... at
+     least until we exit this function.
+  */
+  nsCOMPtr<imgIRequest> kungFuDeathGrip(this);
+
+  mLoadGroup->RemoveRequest(this, NS_OK, nsnull);
+  mIsInLoadGroup = PR_FALSE;
+
+  // We're done with the loadgroup, release it.
+  mLoadGroup = nsnull;
 }
 
 
@@ -296,8 +313,11 @@ void imgRequestProxy::FrameChanged(imgIContainer *container, gfxIImageFrame *new
 {
   LOG_FUNC(gImgLog, "imgRequestProxy::FrameChanged");
 
-  if (mListener)
-    mListener->FrameChanged(container, mContext, newframe, dirtyRect);
+  if (mListener) {
+    // Hold a ref to the listener while we call it, just in case.
+    nsCOMPtr<imgIDecoderObserver> kungFuDeathGrip(mListener);
+    mListener->FrameChanged(container, newframe, dirtyRect);
+  }
 }
 
 /** imgIDecoderObserver methods **/
@@ -306,56 +326,77 @@ void imgRequestProxy::OnStartDecode()
 {
   LOG_FUNC(gImgLog, "imgRequestProxy::OnStartDecode");
 
-  if (mListener)
-    mListener->OnStartDecode(this, mContext);
+  if (mListener) {
+    // Hold a ref to the listener while we call it, just in case.
+    nsCOMPtr<imgIDecoderObserver> kungFuDeathGrip(mListener);
+    mListener->OnStartDecode(this);
+  }
 }
 
 void imgRequestProxy::OnStartContainer(imgIContainer *image)
 {
   LOG_FUNC(gImgLog, "imgRequestProxy::OnStartContainer");
 
-  if (mListener)
-    mListener->OnStartContainer(this, mContext, image);
+  if (mListener) {
+    // Hold a ref to the listener while we call it, just in case.
+    nsCOMPtr<imgIDecoderObserver> kungFuDeathGrip(mListener);
+    mListener->OnStartContainer(this, image);
+  }
 }
 
 void imgRequestProxy::OnStartFrame(gfxIImageFrame *frame)
 {
   LOG_FUNC(gImgLog, "imgRequestProxy::OnStartFrame");
 
-  if (mListener)
-    mListener->OnStartFrame(this, mContext, frame);
+  if (mListener) {
+    // Hold a ref to the listener while we call it, just in case.
+    nsCOMPtr<imgIDecoderObserver> kungFuDeathGrip(mListener);
+    mListener->OnStartFrame(this, frame);
+  }
 }
 
 void imgRequestProxy::OnDataAvailable(gfxIImageFrame *frame, const nsRect * rect)
 {
   LOG_FUNC(gImgLog, "imgRequestProxy::OnDataAvailable");
 
-  if (mListener)
-    mListener->OnDataAvailable(this, mContext, frame, rect);
+  if (mListener) {
+    // Hold a ref to the listener while we call it, just in case.
+    nsCOMPtr<imgIDecoderObserver> kungFuDeathGrip(mListener);
+    mListener->OnDataAvailable(this, frame, rect);
+  }
 }
 
 void imgRequestProxy::OnStopFrame(gfxIImageFrame *frame)
 {
   LOG_FUNC(gImgLog, "imgRequestProxy::OnStopFrame");
 
-  if (mListener)
-    mListener->OnStopFrame(this, mContext, frame);
+  if (mListener) {
+    // Hold a ref to the listener while we call it, just in case.
+    nsCOMPtr<imgIDecoderObserver> kungFuDeathGrip(mListener);
+    mListener->OnStopFrame(this, frame);
+  }
 }
 
 void imgRequestProxy::OnStopContainer(imgIContainer *image)
 {
   LOG_FUNC(gImgLog, "imgRequestProxy::OnStopContainer");
 
-  if (mListener)
-    mListener->OnStopContainer(this, mContext, image);
+  if (mListener) {
+    // Hold a ref to the listener while we call it, just in case.
+    nsCOMPtr<imgIDecoderObserver> kungFuDeathGrip(mListener);
+    mListener->OnStopContainer(this, image);
+  }
 }
 
 void imgRequestProxy::OnStopDecode(nsresult status, const PRUnichar *statusArg)
 {
   LOG_FUNC(gImgLog, "imgRequestProxy::OnStopDecode");
 
-  if (mListener)
-    mListener->OnStopDecode(this, mContext, status, statusArg);
+  if (mListener) {
+    // Hold a ref to the listener while we call it, just in case.
+    nsCOMPtr<imgIDecoderObserver> kungFuDeathGrip(mListener);
+    mListener->OnStopDecode(this, status, statusArg);
+  }
 }
 
 
@@ -367,34 +408,16 @@ void imgRequestProxy::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
   GetName(name);
   LOG_FUNC_WITH_PARAM(gImgLog, "imgRequestProxy::OnStartRequest", "name", name.get());
 #endif
-
-  if (!mIsInLoadGroup && mLoadGroup) {
-    mLoadGroup->AddRequest(this, mContext);
-    mIsInLoadGroup = PR_TRUE;
-  }
-
 }
 
 void imgRequestProxy::OnStopRequest(nsIRequest *request, nsISupports *ctxt, nsresult statusCode)
 {
-  /* it is ok to get multiple OnStopRequest messages */
-  if (!mLoadGroup)
-    return;
-
 #ifdef PR_LOGGING
   nsCAutoString name;
   GetName(name);
   LOG_FUNC_WITH_PARAM(gImgLog, "imgRequestProxy::OnStopRequest", "name", name.get());
 #endif
 
-  /* calling RemoveRequest may cause the document to finish loading,
-     which could result in our death.  We need to make sure that we stay
-     alive long enough to fight another battle... at least until we exit
-     this function.
-   */
-  nsCOMPtr<imgIRequest> kungFuDeathGrip(this);
-
-  mLoadGroup->RemoveRequest(this, mContext, statusCode);
-  mIsInLoadGroup = PR_FALSE;
+  RemoveFromLoadGroup();
 }
 

@@ -65,7 +65,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow) {
     mPresContext = aPresContext;
     return nsAreaFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
@@ -89,6 +89,7 @@ public:
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
+  NS_IMETHOD Destroy(nsIPresContext *aPresContext);
 
 #ifdef NS_DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
@@ -103,7 +104,7 @@ public:
                               PRInt32         aHint);
 
   NS_IMETHOD     GetName(nsAString* aName);
-  NS_IMETHOD     GetType(PRInt32* aType) const;
+  NS_IMETHOD_(PRInt32) GetType() const;
   void           SetFocus(PRBool aOn, PRBool aRepaint);
   void           ScrollIntoView(nsIPresContext* aPresContext);
 

@@ -40,15 +40,11 @@
 #ifndef _nsHTMLLinkAccessible_H_
 #define _nsHTMLLinkAccessible_H_
 
-#include "nsAccessible.h"
 #include "nsBaseWidgetAccessible.h"
-#include "nsIAccessibleHyperLink.h"
 
-class nsHTMLLinkAccessible : public nsLinkableAccessible,
-                             public nsIAccessibleHyperLink
+class nsHTMLLinkAccessible : public nsLinkableAccessible
 {
   NS_DECL_ISUPPORTS_INHERITED
-  NS_DECL_NSIACCESSIBLEHYPERLINK
 
 public:
   nsHTMLLinkAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);

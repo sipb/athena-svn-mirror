@@ -193,7 +193,6 @@ NS_IMPL_ISUPPORTS1(nsMsgSMIMEComposeFields, nsIMsgSMIMECompFields)
 nsMsgSMIMEComposeFields::nsMsgSMIMEComposeFields()
 :mSignMessage(PR_FALSE), mAlwaysEncryptMessage(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgSMIMEComposeFields::~nsMsgSMIMEComposeFields()
@@ -232,7 +231,6 @@ NS_IMPL_ISUPPORTS1(nsMsgComposeSecure, nsIMsgComposeSecure)
 
 nsMsgComposeSecure::nsMsgComposeSecure()
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
   mStream = 0;
   mDataHash = 0;
@@ -483,7 +481,7 @@ NS_IMETHODIMP nsMsgComposeSecure::BeginCryptoEncapsulation(nsOutputFileStream * 
     break;
 	case mime_crypto_opaque_signed:
     PR_ASSERT(0);    /* #### no api for this yet */
-    rv = -1;
+    rv = NS_ERROR_NOT_IMPLEMENTED;
 	  break;
 	case mime_crypto_signed_encrypted:
     rv = MimeInitEncryption(PR_TRUE, sendReport);
@@ -508,7 +506,7 @@ FAIL:
 /* void finishCryptoEncapsulation (in boolean aAbort); */
 NS_IMETHODIMP nsMsgComposeSecure::FinishCryptoEncapsulation(PRBool aAbort, nsIMsgSendReport *sendReport)
 {
-  nsresult rv;
+  nsresult rv = NS_OK;
 
   if (!aAbort) {
 	  switch (mCryptoState) {
@@ -666,7 +664,6 @@ nsresult nsMsgComposeSecure::MimeFinishMultipartSigned (PRBool aOuter, nsIMsgSen
   unsigned char * sec_item_data;
   nsCOMPtr<nsICMSMessage> cinfo = do_CreateInstance(NS_CMSMESSAGE_CONTRACTID, &rv);
   nsCOMPtr<nsICMSEncoder> encoder = do_CreateInstance(NS_CMSENCODER_CONTRACTID, &rv);
-  PRStatus ds_status = PR_FAILURE;
   char * header = nsnull;
 
   /* Compute the hash...
@@ -856,7 +853,6 @@ nsresult nsMsgComposeSecure::MimeCryptoHackCerts(const char *aRecipients,
                                                  PRBool aEncrypt,
                                                  PRBool aSign)
 {
-  int status = 0;
   char *all_mailboxes = 0, *mailboxes = 0, *mailbox_list = 0;
   const char *mailbox = 0;
   PRUint32 count = 0;
@@ -870,11 +866,9 @@ nsresult nsMsgComposeSecure::MimeCryptoHackCerts(const char *aRecipients,
     return res;
   }
 
-  PRBool no_clearsigning_p = PR_FALSE;
-
   PR_ASSERT(aEncrypt || aSign);
-  certdb->GetEmailEncryptionCert(mEncryptionCertName, getter_AddRefs(mSelfEncryptionCert));
-  certdb->GetEmailSigningCert(mSigningCertName, getter_AddRefs(mSelfSigningCert));
+  certdb->FindEmailEncryptionCert(mEncryptionCertName, getter_AddRefs(mSelfEncryptionCert));
+  certdb->FindEmailSigningCert(mSigningCertName, getter_AddRefs(mSelfSigningCert));
 
   // must have both the signing and encryption certs to sign
 	if ((mSelfSigningCert == nsnull) && aSign) {
@@ -882,12 +876,6 @@ nsresult nsMsgComposeSecure::MimeCryptoHackCerts(const char *aRecipients,
     res = NS_ERROR_FAILURE;
 		goto FAIL;
 	}
-
-	if ((mSelfEncryptionCert == nsnull) && aSign) {
-    SetError(sendReport, NS_LITERAL_STRING("SignNoSenderEncryptionCert").get());
-    res = NS_ERROR_FAILURE;
-    goto FAIL;
-  }
 
 	if ((mSelfEncryptionCert == nsnull) && aEncrypt) {
     SetError(sendReport, NS_LITERAL_STRING("NoSenderEncryptionCert").get());
@@ -929,7 +917,7 @@ nsresult nsMsgComposeSecure::MimeCryptoHackCerts(const char *aRecipients,
 	    nsCString mailbox_lowercase;
 	    ToLowerCase(nsDependentCString(mailbox), mailbox_lowercase);
       nsCOMPtr<nsIX509Cert> cert;
-      certdb->GetCertByEmailAddress(nsnull, mailbox_lowercase.get(), getter_AddRefs(cert));
+      certdb->FindCertByEmailAddress(nsnull, mailbox_lowercase.get(), getter_AddRefs(cert));
       PRBool foundValidCert = PR_FALSE;
 
 		  if (cert) {
@@ -960,7 +948,7 @@ nsresult nsMsgComposeSecure::MimeCryptoHackCerts(const char *aRecipients,
 	   */
 
       PRBool isSame;
-      if (NS_SUCCEEDED(cert->IsSameCert(mSelfEncryptionCert, &isSame))
+      if (NS_SUCCEEDED(cert->Equals(mSelfEncryptionCert, &isSame))
           && isSame) {
         already_added_self_cert = PR_TRUE;
       }

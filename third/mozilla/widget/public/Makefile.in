@@ -28,6 +28,7 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= widget
 XPIDL_MODULE	= widget
+GRE_MODULE	= 1
 
 EXPORTS		= \
 		nsIMenuBar.h \
@@ -40,7 +41,6 @@ EXPORTS		= \
 		nsIButton.h \
 		nsICheckButton.h \
 		nsITextWidget.h \
-		nsIScrollbar.h \
 		nsGUIEvent.h \
 		nsEvent.h \
 		nsIMouseListener.h \
@@ -53,6 +53,7 @@ EXPORTS		= \
 		nsIDragSessionXlib.h \
 		nsIDragSessionMac.h \
 		nsIXRemoteWidgetHelper.h \
+		nsIPluginWidget.h \
 		$(NULL)
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
@@ -65,6 +66,8 @@ XPIDLSRCS	= \
 		nsIToolkit.idl \
 		nsISound.idl \
 		nsITransferable.idl \
+		nsIClipboardDragDropHooks.idl \
+		nsIClipboardDragDropHookList.idl \
 		nsIDragSession.idl \
 		nsIDragService.idl \
 		nsIDragTracker.idl \

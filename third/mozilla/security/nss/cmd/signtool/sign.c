@@ -267,6 +267,7 @@ create_pk7 (char *dir, char *keyName, int *keyType)
 
   status = SignFile (out, in, cert);
 
+  CERT_DestroyCertificate (cert);
   fclose (in);
   fclose (out);
 
@@ -293,6 +294,7 @@ jar_find_key_type (CERTCertificate *cert)
 {
   PK11SlotInfo *slot = NULL;
   SECKEYPrivateKey *privk = NULL;
+  KeyType keyType;
 
   /* determine its type */
   PK11_FindObjectForCert (cert, /*wincx*/ NULL, &slot);
@@ -305,6 +307,7 @@ jar_find_key_type (CERTCertificate *cert)
     }
 
   privk = PK11_FindPrivateKeyFromCert (slot, cert, /*wincx*/ NULL);
+  PK11_FreeSlot (slot);
 
   if (privk == NULL)
     {
@@ -313,7 +316,9 @@ jar_find_key_type (CERTCertificate *cert)
     return 0;
     }
 
-  return privk->keyType;
+  keyType = privk->keyType;
+  SECKEY_DestroyPrivateKey (privk);
+  return keyType;
   }
 
 
@@ -675,7 +680,7 @@ static int generate_SF_file (char *manifile, char *who)
   long r1, r2, r3;
 
   char whofile [FNSIZE];
-  char *buf, *name;
+  char *buf, *name = NULL;
 
   JAR_Digest dig;
 

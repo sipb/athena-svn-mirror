@@ -47,7 +47,7 @@ pref("keyword.URL", "http://keyword.netscape.com/keyword/");
 pref("keyword.enabled", false);
 pref("general.useragent.locale", "chrome://navigator/locale/navigator.properties");
 pref("general.useragent.contentlocale", "chrome://navigator-region/locale/region.properties");
-pref("general.useragent.misc", "rv:1.2.1");
+pref("general.useragent.misc", "rv:1.4");
 
 pref("general.startup.browser",             true);
 pref("general.startup.mail",                false);
@@ -71,9 +71,10 @@ pref("browser.startup.autoload_homepage",   true);
 
 pref("browser.cache.enable",                true); // see also network.http.use-cache
 pref("browser.cache.disk.enable",           true);
-pref("browser.cache.disk.capacity",         50000);
+pref("browser.cache.disk.capacity",         51200);
 pref("browser.cache.memory.enable",         true);
-pref("browser.cache.memory.capacity",       4096);
+//pref("browser.cache.memory.capacity",     -1);
+// -1 = determine dynamically, 0 = none, n = memory capacity in kilobytes
 pref("browser.cache.disk_cache_ssl",        false);
 // 0 = once-per-session, 1 = each-time, 2 = never, 3 = when-appropriate/automatically
 pref("browser.cache.check_doc_frequency",   3);
@@ -93,6 +94,7 @@ pref("browser.anchor_color",                "#0000EE");
 pref("browser.visited_color",               "#551A8B");
 pref("browser.underline_anchors",           true);
 pref("browser.blink_allowed",               true);
+pref("browser.enable_automatic_image_resizing", false);
 
 pref("browser.display.use_focus_colors",    false);
 pref("browser.display.focus_background_color", "#117722");
@@ -136,9 +138,13 @@ pref("accessibility.accesskeycausesactivation", true);
 
 // Type Ahead Find
 pref("accessibility.typeaheadfind", true);
+pref("accessibility.typeaheadfind.autostart", true);
 pref("accessibility.typeaheadfind.linksonly", true);
 pref("accessibility.typeaheadfind.startlinksonly", false);
-pref("accessibility.typeaheadfind.timeout", 5000);
+pref("accessibility.typeaheadfind.timeout", 4000);
+pref("accessibility.typeaheadfind.enabletimeout", true);
+pref("accessibility.typeaheadfind.soundURL", "default");
+pref("accessibility.typeaheadfind.enablesound", true);
 
 // Dialog modality issues
 pref("browser.prefWindowModal", true);
@@ -146,6 +152,7 @@ pref("browser.show_about_as_stupid_modal_window", false);
 
 pref("browser.download.progressDnldDialog.keepAlive", true); // keep the dnload progress dialog up after dnload is complete
 pref("browser.download.progressDnldDialog.enable_launch_reveal_buttons", true);
+pref("browser.download.progressDnlgDialog.dontAskForLaunch", false);
 
 // various default search settings
 pref("browser.search.defaulturl", "chrome://navigator-region/locale/region.properties");
@@ -158,6 +165,8 @@ pref("browser.search.powermode", 0);
 pref("browser.search.basic.min_ver", "0.0");
 pref("browser.urlbar.autocomplete.enabled", true);
 pref("browser.urlbar.clickSelectsAll", true);
+// when clickSelectsAll=true, does it also apply when the click is past end of text?
+pref("browser.urlbar.clickAtEndSelects", true);
 
 pref("browser.history_expire_days", 9);
 pref("browser.history.grouping", "day");
@@ -190,16 +199,17 @@ pref("browser.tabs.opentabfor.urlbar", false);
 pref("browser.tabs.opentabfor.windowopen", false);
 pref("browser.tabs.opentabfor.bookmarks", false);
 
+// lets new tab/window load something different than first window
+// -1 - use navigator startup preference
+//  0 - loads blank page
+//  1 - loads home page
+//  2 - loads last page visited
+pref("browser.tabs.loadOnNewTab", 0);
+pref("browser.windows.loadOnNewWindow", 1);
+
 // view source
 pref("view_source.syntax_highlight", true);
 pref("view_source.wrap_long_lines", false);
-
-// gfx widgets
-pref("nglayout.widget.mode", 2);
-pref("nglayout.widget.gfxscrollbars", true);
-
-// css2 hover pref
-pref("nglayout.events.showHierarchicalHover", false);
 
 // dispatch left clicks only to content in browser (still allows clicks to chrome/xul)
 pref("nglayout.events.dispatchLeftClickOnly", true);
@@ -224,6 +234,9 @@ pref("browser.goBrowsing.enabled", false);
 pref("browser.fixup.alternate.enabled", true);
 pref("browser.fixup.alternate.prefix", "www.");
 pref("browser.fixup.alternate.suffix", ".com");
+
+// Bookmarks prefs
+pref("browser.bookmarks.confirm_sorting", true);
 
 //Internet Search
 pref("browser.search.defaultenginename", "chrome://communicator-region/locale/region.properties");
@@ -272,7 +285,6 @@ pref("print.print_edge_bottom", 0); // 1/100 of an inch
 //pref("capability.policy.default.barprop.visible.set", "UniversalBrowserWrite");
 
 pref("capability.policy.default_policynames", "mailnews");
-pref("capability.policy.policynames", "");
 
 pref("capability.policy.default.DOMException.code", "allAccess");
 pref("capability.policy.default.DOMException.message", "allAccess");
@@ -308,7 +320,6 @@ pref("capability.policy.default.Window.Components", "allAccess");
 pref("capability.policy.default.Window.document", "allAccess");
 pref("capability.policy.default.Window.focus", "allAccess");
 pref("capability.policy.default.Window.frames", "allAccess");
-pref("capability.policy.default.Window.fullScreen", "noAccess");
 pref("capability.policy.default.Window.history", "allAccess");
 pref("capability.policy.default.Window.length", "allAccess");
 pref("capability.policy.default.Window.location", "allAccess");
@@ -325,7 +336,9 @@ pref("capability.policy.mailnews.*.attributes.get", "noAccess");
 pref("capability.policy.mailnews.*.baseURI.get", "noAccess");
 pref("capability.policy.mailnews.*.data.get", "noAccess");
 pref("capability.policy.mailnews.*.getAttribute", "noAccess");
+pref("capability.policy.mailnews.*.getAttributeNS", "noAccess");
 pref("capability.policy.mailnews.*.getNamedItem", "noAccess");
+pref("capability.policy.mailnews.*.getNamedItemNS", "noAccess");
 pref("capability.policy.mailnews.*.host.get", "noAccess");
 pref("capability.policy.mailnews.*.hostname.get", "noAccess");
 pref("capability.policy.mailnews.*.href.get", "noAccess");
@@ -416,18 +429,28 @@ pref("capability.policy.mailnews.SchemaLoader.loadAsync", "noAccess");
 pref("capability.policy.mailnews.SchemaLoader.processSchemaElement", "noAccess");
 pref("capability.policy.mailnews.SchemaLoader.onLoad", "noAccess");
 pref("capability.policy.mailnews.SchemaLoader.onError", "noAccess");
+pref("capability.policy.mailnews.WSDLLoader.load", "noAccess");
+pref("capability.policy.mailnews.WSDLLoader.loadAsync", "noAccess");
+pref("capability.policy.mailnews.WSDLLoader.onLoad", "noAccess");
+pref("capability.policy.mailnews.WSDLLoader.onError", "noAccess");
+pref("capability.policy.mailnews.WebServiceProxyFactory.createProxy", "noAccess");
+pref("capability.policy.mailnews.WebServiceProxyFactory.createProxyAsync", "noAccess");
+pref("capability.policy.mailnews.WebServiceProxyFactory.onLoad", "noAccess");
+pref("capability.policy.mailnews.WebServiceProxyFactory.onError", "noAccess");
 
 // XMLExtras
 pref("capability.policy.default.XMLHttpRequest.channel", "noAccess");
 pref("capability.policy.default.DOMParser.parseFromStream", "noAccess");
 
+// Clipboard
+pref("capability.policy.default.Clipboard.cutcopy", "noAccess");
+pref("capability.policy.default.Clipboard.paste", "noAccess");
 
 // Scripts & Windows prefs
 pref("browser.block.target_new_window",     false);
 pref("dom.disable_cookie_get",              false);
 pref("dom.disable_cookie_set",              false);
 pref("dom.disable_image_src_set",           false);
-pref("dom.disable_open_during_load",        false);
 pref("dom.disable_window_flip",             false);
 pref("dom.disable_window_move_resize",      false);
 pref("dom.disable_window_status_change",    false);
@@ -444,14 +467,12 @@ pref("dom.disable_window_open_feature.resizable",   false);
 pref("dom.disable_window_open_feature.minimizable", false);
 pref("dom.disable_window_open_feature.status",      false);
 
+pref("dom.allow_scripts_to_close_windows",          false);
+
 pref("javascript.enabled",                  true);
 pref("javascript.allow.mailnews",           false);
 pref("javascript.options.strict",           false);
 pref("javascript.options.showInConsole",    true);
-
-// popups.policy 1=allow,2=reject
-pref("privacy.popups.policy",               1);
-pref("privacy.popups.usecustom",            false);
 
 // advanced prefs
 pref("advanced.always_load_images",         true);
@@ -463,7 +484,6 @@ pref("offline.startup_state",            0);
 pref("offline.send.unsent_messages",            0);
 pref("offline.download.download_messages",  0);
 pref("offline.prompt_synch_on_exit",            true);
-pref("offline.news.download.use_days",          0);
 
 // If there is ever a security firedrill that requires
 // us to block certian ports global, this is the pref 
@@ -535,7 +555,7 @@ pref("network.http.connect.timeout",  30);	// in seconds
 pref("network.http.request.timeout", 120);	// in seconds
 
 // Headers
-pref("network.http.accept.default", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,text/css,*/*;q=0.1");
+pref("network.http.accept.default", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1");
 
 pref("network.http.sendRefererHeader",      2); // 0=don't send any, 1=send only on clicks, 2=send on image requests as well
 
@@ -547,7 +567,8 @@ pref("network.http.sendSecureXSiteReferrer", true);
 pref("network.http.redirection-limit", 20);
 
 // Enable http compression: comment this out in case of problems with 1.1
-pref("network.http.accept-encoding" ,"gzip, deflate, compress;q=0.9");
+// NOTE: support for "compress" has been disabled per bug 196406.
+pref("network.http.accept-encoding" ,"gzip,deflate");
 
 pref("network.http.pipelining"      , false);
 pref("network.http.proxy.pipelining", false);
@@ -731,6 +752,8 @@ pref("profile.confirm_automigration",true);
 // if -1, we never think your profile is defunct
 // and users will never see the remigrate UI.
 pref("profile.seconds_until_defunct", -1);
+// We can show it anytime from menus
+pref("profile.manage_only_at_launch", false);
 
 // Customizable toolbar stuff
 pref("custtoolbar.personal_toolbar_folder", "");
@@ -775,11 +798,12 @@ pref("bidi.clipboardtextmode", 3);
 // ------------------
 //  Numeral Style
 // ------------------
-// 1 = regularcontextnumeralBidi *
+// 0 = nominalnumeralBidi *
+// 1 = regularcontextnumeralBidi
 // 2 = hindicontextnumeralBidi
 // 3 = arabicnumeralBidi
 // 4 = hindinumeralBidi
-pref("bidi.numeral", 1);
+pref("bidi.numeral", 0);
 // ------------------
 //  Support Mode
 // ------------------
@@ -835,4 +859,10 @@ pref("browser.popups.showPopupBlocker", true);
 // See http://bugzilla.mozilla.org/show_bug.cgi?id=169483 for further details...
 pref("viewmanager.do_doublebuffering", true);
 
-
+pref("dom.disable_open_during_load",              false);
+pref("privacy.popups.first_popup",                true);
+pref("privacy.popups.sound_enabled",              false);
+pref("privacy.popups.sound_url",                  "");
+pref("privacy.popups.statusbar_icon_enabled",     true);
+pref("privacy.popups.prefill_whitelist",          false);
+pref("privacy.popups.remove_blacklist",           true);

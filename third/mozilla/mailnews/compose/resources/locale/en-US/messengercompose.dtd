@@ -6,7 +6,7 @@
 <!ENTITY subject.label  "Subject:">
 <!ENTITY subject.accesskey "S">
 <!ENTITY attachments.label "Attachments:">
-<!ENTITY attachments.accesskey "A">
+<!ENTITY attachments.accesskey "c">
 
 <!-- menu items:  the . means that the menu item isn't implemented yet -->
 
@@ -24,7 +24,7 @@
 <!ENTITY saveAsDraftCmd.accesskey "D">
 <!ENTITY saveAsTemplateCmd.label "Template">
 <!ENTITY saveAsTemplateCmd.accesskey "T">
-<!ENTITY attachFileCmd.label "Attach File...">
+<!ENTITY attachFileCmd.label "Attach File(s)...">
 <!ENTITY attachFileCmd.key "">
 <!ENTITY attachFileCmd.accesskey "F">
 <!ENTITY attachPageCmd.label "Attach Web Page...">
@@ -45,6 +45,8 @@
 <!ENTITY closeCmd.label "Close">
 
 <!-- Edit menu items -->
+<!ENTITY editRewrapCmd.label "Rewrap">
+<!ENTITY editRewrapCmd.accesskey  "w">
 <!ENTITY findCmd.label "Find and Replace...">
 <!ENTITY findCmd.key "F">
 <!ENTITY findCmd.accesskey "F">
@@ -91,28 +93,6 @@
 <!ENTITY dcharArmCmd.label "Armenian (ARMSCII-8)">
 <!ENTITY dcharDEFAULT.label "Set Default Mail Send Character Set">
 
-<!-- Insert menu items -->
-<!ENTITY insertSmiley.label "Smiley">
-<!ENTITY insertSmiley.accesskey "S">
-
-<!-- Insert Smiley Menu items -->
-<!ENTITY smiley1Cmd.label "Smile">
-<!ENTITY smiley1Cmd.accesskey "S">
-<!ENTITY smiley2Cmd.label "Frown">
-<!ENTITY smiley2Cmd.accesskey "F">
-<!ENTITY smiley3Cmd.label "Wink">
-<!ENTITY smiley3Cmd.accesskey "W">
-<!ENTITY smiley4Cmd.label "Tongue-out">
-<!ENTITY smiley4Cmd.accesskey "T">
-<!ENTITY smiley5Cmd.label "Laughing">
-<!ENTITY smiley5Cmd.accesskey "L">
-<!ENTITY smiley6Cmd.label "Embarrassed">
-<!ENTITY smiley6Cmd.accesskey "E">
-<!ENTITY smiley7Cmd.label "Undecided">
-<!ENTITY smiley7Cmd.accesskey "U">
-<!ENTITY SmileButton.tooltip "Insert a smiley face">
-
-
 <!-- Format menu items -->
 <!ENTITY formatMenu.label "Format">
 <!ENTITY formatMenu.accesskey "o">
@@ -131,8 +111,6 @@
 
 <!ENTITY quoteCmd.label "Quote Message">
 <!ENTITY quoteCmd.accesskey "Q">
-<!ENTITY editRewrapCmd.label "Rewrap">
-<!ENTITY editRewrapCmd.accesskey  "R">
 <!ENTITY selectAddressCmd.label "Select Addresses...">
 <!ENTITY selectAddressCmd.key "">
 <!ENTITY selectAddressCmd.accesskey "c">
@@ -179,7 +157,6 @@
 <!ENTITY debugMenu.label "Debug">
 <!ENTITY outputTextCmd.label "Output Text">
 <!ENTITY outputHTMLCmd.label "Output HTML">
-<!ENTITY outputXIFCmd.label "Output XIF">
 <!ENTITY insertTextCmd.label "Insert Text">
 <!ENTITY testSelectionCmd.label "Test Selection">
 <!ENTITY testTableLayoutCmd.label "Test Table Layout">

@@ -43,8 +43,6 @@
 #include "nsIDOMXULDocument.h"
 #include "nsIDOMNodeList.h"
 #include "nsHTMLAtoms.h"
-#include "nsINameSpaceManager.h"
-
 #include "nsIWidget.h"
 #include "nsIPresContext.h"
 #include "nsIDOMWindowInternal.h"
@@ -85,7 +83,7 @@ nsTitleBarFrame::nsTitleBarFrame(nsIPresShell* aPresShell)
 NS_IMETHODIMP  nsTitleBarFrame::Init(nsIPresContext*  aPresContext,
                 nsIContent*      aContent,
                 nsIFrame*        aParent,
-                nsIStyleContext* aContext,
+                nsStyleContext*  aContext,
                 nsIFrame*        asPrevInFlow)
 {
 	nsresult rv = nsBoxFrame::Init(aPresContext, aContent, aParent, aContext, asPrevInFlow);

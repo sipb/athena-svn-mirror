@@ -39,6 +39,10 @@ function OnLoadPrintEngine()
 
 function OnUnloadPrintEngine()
 {
+  if (printEngine.doPrintPreview) {
+    var webBrowserPrint = printEngine.webBrowserPrint;
+    webBrowserPrint.exitPrintPreview(); 
+  }
 }
 
 function PrintEngineCreateGlobals()
@@ -124,7 +128,7 @@ function setPPTitle(aTitle)
     var msgBundle = this.getBundle(kMsgBundle);
     if (msgBundle) {
         var brandStr = gBrandBundle.getString("brandShortName")
-        var array = [brandStr, title];
+        var array = [title, brandStr];
         title = msgBundle.formatStringFromName("PreviewTitle", array, array.length);
       }
     }

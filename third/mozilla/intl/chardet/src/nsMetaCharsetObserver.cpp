@@ -56,10 +56,10 @@
 #include "nsMetaCharsetCID.h"
 #include "nsUnicharUtils.h"
 
-static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
-static NS_DEFINE_IID(kParserServiceCID, NS_PARSERSERVICE_CID);
+static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
+static NS_DEFINE_CID(kParserServiceCID, NS_PARSERSERVICE_CID);
  
-static eHTMLTags gWatchTags[] = 
+static const eHTMLTags gWatchTags[] = 
 { eHTMLTag_meta,
   eHTMLTag_unknown
 };
@@ -67,7 +67,6 @@ static eHTMLTags gWatchTags[] =
 //-------------------------------------------------------------------------
 nsMetaCharsetObserver::nsMetaCharsetObserver()
 {
-  NS_INIT_ISUPPORTS();
   bMetaCharsetObserverStarted = PR_FALSE;
   nsresult res;
   mAlias = nsnull;
@@ -79,11 +78,6 @@ nsMetaCharsetObserver::nsMetaCharsetObserver()
 //-------------------------------------------------------------------------
 nsMetaCharsetObserver::~nsMetaCharsetObserver()
 {
-  // should we release mAlias
-  if (bMetaCharsetObserverStarted == PR_TRUE)  {
-    // call to end the ObserverService
-    End();
-  }
 }
 
 //-------------------------------------------------------------------------
@@ -401,41 +395,38 @@ NS_IMETHODIMP nsMetaCharsetObserver::Observe(nsISupports *aSubject,
 //-------------------------------------------------------------------------
 NS_IMETHODIMP nsMetaCharsetObserver::Start() 
 {
-    nsresult res = NS_OK;
+  nsresult rv = NS_OK;
 
   if (bMetaCharsetObserverStarted == PR_FALSE)  {
     bMetaCharsetObserverStarted = PR_TRUE;
 
-    nsCOMPtr<nsIParserService> parserService(do_GetService(kParserServiceCID));
-    
-    if (!parserService) {
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
+    nsCOMPtr<nsIParserService> parserService(do_GetService(kParserServiceCID, &rv));
 
-    res = parserService->RegisterObserver(this,
-                                          NS_LITERAL_STRING("text/html"),
-                                          gWatchTags);
+    if (NS_FAILED(rv))
+      return rv;
+
+    rv = parserService->RegisterObserver(this,
+                                         NS_LITERAL_STRING("text/html"),
+                                         gWatchTags);
   }
 
-  return res;
+  return rv;
 }
 //-------------------------------------------------------------------------
 NS_IMETHODIMP nsMetaCharsetObserver::End() 
 {
-    nsresult res = NS_OK;
+  nsresult rv = NS_OK;
   if (bMetaCharsetObserverStarted == PR_TRUE)  {
     bMetaCharsetObserverStarted = PR_FALSE;
 
-    nsCOMPtr<nsIParserService> parserService(do_GetService(kParserServiceCID));
+    nsCOMPtr<nsIParserService> parserService(do_GetService(kParserServiceCID, &rv));
 
-    if (!parserService) {
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
+    if (NS_FAILED(rv))
+      return rv;
     
-    res = parserService->UnregisterObserver(this,
-                                            NS_LITERAL_STRING("text/html"));
+    rv = parserService->UnregisterObserver(this, NS_LITERAL_STRING("text/html"));
   }
-  return res;
+  return rv;
 }
 //========================================================================== 
 

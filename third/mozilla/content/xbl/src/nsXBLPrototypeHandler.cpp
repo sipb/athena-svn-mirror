@@ -65,7 +65,8 @@
 #include "nsPIDOMWindow.h"
 #include "nsPIWindowRoot.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsIServiceManager.h"
 #include "nsXPIDLString.h"
 #include "nsReadableUtils.h"
@@ -92,29 +93,34 @@ const PRInt32 nsXBLPrototypeHandler::cShift = (1<<1);
 const PRInt32 nsXBLPrototypeHandler::cAlt = (1<<2);
 const PRInt32 nsXBLPrototypeHandler::cControl = (1<<3);
 const PRInt32 nsXBLPrototypeHandler::cMeta = (1<<4);
+const PRInt32 nsXBLPrototypeHandler::cAllModifiers = cShift | cAlt | cControl | cMeta;
 
-nsXBLPrototypeHandler::nsXBLPrototypeHandler(const PRUnichar* aEvent, const PRUnichar* aPhase,
-                                             const PRUnichar* aAction, const PRUnichar* aCommand,
-                                             const PRUnichar* aKeyCode, const PRUnichar* aCharCode,
-                                             const PRUnichar* aModifiers, const PRUnichar* aButton,
-                                             const PRUnichar* aClickCount, const PRUnichar* aPreventDefault)
+nsXBLPrototypeHandler::nsXBLPrototypeHandler(const PRUnichar* aEvent,
+                                             const PRUnichar* aPhase,
+                                             const PRUnichar* aAction,
+                                             const PRUnichar* aCommand,
+                                             const PRUnichar* aKeyCode,
+                                             const PRUnichar* aCharCode,
+                                             const PRUnichar* aModifiers,
+                                             const PRUnichar* aButton,
+                                             const PRUnichar* aClickCount,
+                                             const PRUnichar* aPreventDefault)
+  : mHandlerText(nsnull),
+    mNextHandler(nsnull)
 {
-  NS_INIT_ISUPPORTS();
   ++gRefCnt;
   if (gRefCnt == 1)
     // Get the primary accelerator key.
     InitAccessKeys();
 
-  mHandlerText = nsnull;
-
-  ConstructPrototype(nsnull, aEvent, aPhase, aAction, aCommand, aKeyCode, aCharCode, aModifiers,
-                     aButton, aClickCount, aPreventDefault);
+  ConstructPrototype(nsnull, aEvent, aPhase, aAction, aCommand, aKeyCode,
+                     aCharCode, aModifiers, aButton, aClickCount,
+                     aPreventDefault);
 }
 
 nsXBLPrototypeHandler::nsXBLPrototypeHandler(nsIContent* aHandlerElement)
+  : mNextHandler(nsnull)
 {
-  NS_INIT_ISUPPORTS();
-  
   ++gRefCnt;
   if (gRefCnt == 1)
     // Get the primary accelerator key.
@@ -129,23 +135,26 @@ nsXBLPrototypeHandler::~nsXBLPrototypeHandler()
   --gRefCnt;
   if (!(mType & NS_HANDLER_TYPE_XUL) && mHandlerText)
     nsMemory::Free(mHandlerText);
+
+  // We own the next handler in the chain, so delete it now.
+  delete mNextHandler;
 }
 
-NS_IMPL_ISUPPORTS1(nsXBLPrototypeHandler, nsIXBLPrototypeHandler)
-
-NS_IMETHODIMP
-nsXBLPrototypeHandler::GetHandlerElement(nsIContent** aResult)
+already_AddRefed<nsIContent>
+nsXBLPrototypeHandler::GetHandlerElement()
 {
+  nsIContent* result;
   if (mType & NS_HANDLER_TYPE_XUL) {
-    *aResult = mHandlerElement;
-    NS_IF_ADDREF(*aResult);
+    result = mHandlerElement;
+    NS_IF_ADDREF(result);
   }
   else
-    *aResult = nsnull;
-  return NS_OK;
+    result = nsnull;
+
+  return result;
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeHandler::AppendHandlerText(const nsAString& aText) 
 {
   if (mHandlerText) {
@@ -156,22 +165,6 @@ nsXBLPrototypeHandler::AppendHandlerText(const nsAString& aText)
   }
   else
     mHandlerText = ToNewUnicode(aText);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXBLPrototypeHandler::GetNextHandler(nsIXBLPrototypeHandler** aResult)
-{
-  *aResult = mNextHandler;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
-}
-  
-NS_IMETHODIMP
-nsXBLPrototypeHandler::SetNextHandler(nsIXBLPrototypeHandler* aHandler)
-{
-  mNextHandler = aHandler;
-  return NS_OK;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -194,16 +187,14 @@ nsXBLPrototypeHandler::InitAccessKeys()
 #endif
 
   // Get the menu access key value from prefs, overriding the default:
-  nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-  if (NS_SUCCEEDED(rv) && prefs)
-  {
-    prefs->GetIntPref("ui.key.menuAccessKey", &kMenuAccessKey);
-    prefs->GetIntPref("ui.key.accelKey", &kAccelKey);
+  nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  if (prefBranch) {
+    prefBranch->GetIntPref("ui.key.menuAccessKey", &kMenuAccessKey);
+    prefBranch->GetIntPref("ui.key.accelKey", &kAccelKey);
   }
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
                                       nsIDOMEvent* aEvent)
 {
@@ -294,7 +285,8 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
     command.AssignWithConversion(mHandlerText);
     if (focusController)
       focusController->GetControllerForCommand(command.get(), getter_AddRefs(controller));
-    else GetController(aReceiver, getter_AddRefs(controller)); // We're attached to the receiver possibly.
+    else
+      controller = GetController(aReceiver); // We're attached to the receiver possibly.
 
     nsAutoString type;
     mEventName->ToString(type);
@@ -334,7 +326,7 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
   nsAutoString str;
   mEventName->ToString(str);
   onEvent += str;
-  nsCOMPtr<nsIAtom> onEventAtom = getter_AddRefs(NS_NewAtom(onEvent));
+  nsCOMPtr<nsIAtom> onEventAtom = do_GetAtom(onEvent);
 
   void* handler = nsnull;
   
@@ -457,15 +449,15 @@ nsXBLPrototypeHandler::ExecuteHandler(nsIDOMEventReceiver* aReceiver,
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeHandler::GetEventName(nsIAtom** aResult)
+already_AddRefed<nsIAtom>
+nsXBLPrototypeHandler::GetEventName()
 {
-  *aResult = mEventName;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
+  nsIAtom* eventName = mEventName;
+  NS_IF_ADDREF(eventName);
+  return eventName;
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeHandler::BindingAttached(nsIDOMEventReceiver* aReceiver)
 {
   nsresult ret;
@@ -505,7 +497,7 @@ nsXBLPrototypeHandler::BindingAttached(nsIDOMEventReceiver* aReceiver)
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeHandler::BindingDetached(nsIDOMEventReceiver* aReceiver)
 {
   nsresult ret;
@@ -545,8 +537,8 @@ nsXBLPrototypeHandler::BindingDetached(nsIDOMEventReceiver* aReceiver)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeHandler::GetController(nsIDOMEventReceiver* aReceiver, nsIController** aResult)
+already_AddRefed<nsIController>
+nsXBLPrototypeHandler::GetController(nsIDOMEventReceiver* aReceiver)
 {
   // XXX Fix this so there's a generic interface that describes controllers, 
   // This code should have no special knowledge of what objects might have controllers.
@@ -577,27 +569,24 @@ nsXBLPrototypeHandler::GetController(nsIDOMEventReceiver* aReceiver, nsIControll
   // Return the first controller.
   // XXX This code should be checking the command name and using supportscommand and
   // iscommandenabled.
+  nsIController* controller;
   if (controllers) {
-    controllers->GetControllerAt(0, aResult);
+    controllers->GetControllerAt(0, &controller);  // return reference
   }
-  else *aResult = nsnull;
+  else controller = nsnull;
 
-  return NS_OK;
+  return controller;
 }
 
 
-NS_IMETHODIMP
-nsXBLPrototypeHandler::KeyEventMatched(nsIAtom* aEventType, nsIDOMKeyEvent* aKeyEvent, PRBool* aResult)
+PRBool
+nsXBLPrototypeHandler::KeyEventMatched(nsIAtom* aEventType, nsIDOMKeyEvent* aKeyEvent)
 {
-  *aResult = PR_TRUE;
-
-  if (aEventType != mEventName.get()) {
-    *aResult = PR_FALSE;
-    return NS_OK;
-  }
+  if (aEventType != mEventName.get())
+    return PR_FALSE;
 
   if (mDetail == -1 && mMisc == 0 && mKeyMask == 0)
-    return NS_OK; // No filters set up. It's generic.
+    return PR_TRUE; // No filters set up. It's generic.
 
   // Get the keycode and charcode of the key event.
   PRUint32 keyCode, charCode;
@@ -606,47 +595,39 @@ nsXBLPrototypeHandler::KeyEventMatched(nsIAtom* aEventType, nsIDOMKeyEvent* aKey
 
   PRBool keyMatched = (mDetail == PRInt32(mMisc ? charCode : keyCode));
 
-  if (!keyMatched) {
-    *aResult = PR_FALSE;
-    return NS_OK;
-  }
+  if (!keyMatched)
+    return PR_FALSE;
 
   // Now check modifier keys
-  PRBool result = ModifiersMatchMask(aKeyEvent);
-  *aResult = result;
-  return NS_OK;
+  PRInt32 modKeys = cAllModifiers;
+  // Don't check shift if we matched the char code and shift isn't specified
+  // in the handler.
+  if (mMisc && !(mKeyMask & cShift))
+    modKeys &= ~cShift;
+
+  return ModifiersMatchMask(aKeyEvent, modKeys);
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeHandler::MouseEventMatched(nsIAtom* aEventType, nsIDOMMouseEvent* aMouseEvent, PRBool* aResult)
+PRBool
+nsXBLPrototypeHandler::MouseEventMatched(nsIAtom* aEventType, nsIDOMMouseEvent* aMouseEvent)
 {
-  *aResult = PR_TRUE;
-
-  if (aEventType != mEventName.get()) {
-    *aResult = PR_FALSE;
-    return NS_OK;
-  }
+  if (aEventType != mEventName.get())
+    return PR_FALSE;
 
   if (mDetail == -1 && mMisc == 0 && mKeyMask == 0)
-    return NS_OK; // No filters set up. It's generic.
+    return PR_TRUE; // No filters set up. It's generic.
 
   unsigned short button;
   aMouseEvent->GetButton(&button);
-  if (mDetail != -1 && (button != mDetail)) {
-    *aResult = PR_FALSE;
-    return NS_OK;
-  }
+  if (mDetail != -1 && (button != mDetail))
+    return PR_FALSE;
 
   PRInt32 clickcount;
   aMouseEvent->GetDetail(&clickcount);
-  if (mMisc != 0 && (clickcount != mMisc)) {
-    *aResult = PR_FALSE;
-    return NS_OK;
-  }
+  if (mMisc != 0 && (clickcount != mMisc))
+    return PR_FALSE;
   
-  PRBool result = ModifiersMatchMask(aMouseEvent);
-  *aResult = result;
-  return NS_OK;
+  return ModifiersMatchMask(aMouseEvent, cAllModifiers);
 }
 
 struct keyCodeData {
@@ -829,11 +810,16 @@ nsXBLPrototypeHandler::GetEventType(nsAString& aEvent)
 
 void
 nsXBLPrototypeHandler::ConstructPrototype(nsIContent* aKeyElement, 
-                                          const PRUnichar* aEvent, const PRUnichar* aPhase,
-                                          const PRUnichar* aAction, const PRUnichar* aCommand,
-                                          const PRUnichar* aKeyCode, const PRUnichar* aCharCode,
-                                          const PRUnichar* aModifiers, const PRUnichar* aButton,
-                                          const PRUnichar* aClickCount, const PRUnichar* aPreventDefault)
+                                          const PRUnichar* aEvent,
+                                          const PRUnichar* aPhase,
+                                          const PRUnichar* aAction,
+                                          const PRUnichar* aCommand,
+                                          const PRUnichar* aKeyCode,
+                                          const PRUnichar* aCharCode,
+                                          const PRUnichar* aModifiers,
+                                          const PRUnichar* aButton,
+                                          const PRUnichar* aClickCount,
+                                          const PRUnichar* aPreventDefault)
 {
   mType = 0;
 
@@ -864,7 +850,7 @@ nsXBLPrototypeHandler::ConstructPrototype(nsIContent* aKeyElement,
       return;
   }
 
-  mEventName = getter_AddRefs(NS_NewAtom(event));
+  mEventName = do_GetAtom(event);
 
   if (aPhase) {
     const nsDependentString phase(aPhase);
@@ -945,27 +931,36 @@ nsXBLPrototypeHandler::ConstructPrototype(nsIContent* aKeyElement,
 }
 
 PRBool
-nsXBLPrototypeHandler::ModifiersMatchMask(nsIDOMUIEvent* aEvent)
+nsXBLPrototypeHandler::ModifiersMatchMask(nsIDOMUIEvent* aEvent,
+                                          PRInt32 aModifiersMask)
 {
   nsCOMPtr<nsIDOMKeyEvent> key(do_QueryInterface(aEvent));
   nsCOMPtr<nsIDOMMouseEvent> mouse(do_QueryInterface(aEvent));
 
   PRBool keyPresent;
-  key ? key->GetMetaKey(&keyPresent) : mouse->GetMetaKey(&keyPresent);
-  if (keyPresent != ((mKeyMask & cMeta) != 0))
-    return PR_FALSE;
+  if (aModifiersMask & cMeta) {
+    key ? key->GetMetaKey(&keyPresent) : mouse->GetMetaKey(&keyPresent);
+    if (keyPresent != ((mKeyMask & cMeta) != 0))
+      return PR_FALSE;
+  }
 
-  key ? key->GetShiftKey(&keyPresent) : mouse->GetShiftKey(&keyPresent);
-  if (keyPresent != ((mKeyMask & cShift) != 0))
-    return PR_FALSE;
-  
-  key ? key->GetAltKey(&keyPresent) : mouse->GetAltKey(&keyPresent);
-  if (keyPresent != ((mKeyMask & cAlt) != 0))
-    return PR_FALSE;
+  if (aModifiersMask & cShift) {
+    key ? key->GetShiftKey(&keyPresent) : mouse->GetShiftKey(&keyPresent);
+    if (keyPresent != ((mKeyMask & cShift) != 0))
+      return PR_FALSE;
+  }
 
-  key ? key->GetCtrlKey(&keyPresent) : mouse->GetCtrlKey(&keyPresent);
-  if (keyPresent != ((mKeyMask & cControl) != 0))
-    return PR_FALSE;
+  if (aModifiersMask & cAlt) {
+    key ? key->GetAltKey(&keyPresent) : mouse->GetAltKey(&keyPresent);
+    if (keyPresent != ((mKeyMask & cAlt) != 0))
+      return PR_FALSE;
+  }
+
+  if (aModifiersMask & cControl) {
+    key ? key->GetCtrlKey(&keyPresent) : mouse->GetCtrlKey(&keyPresent);
+    if (keyPresent != ((mKeyMask & cControl) != 0))
+      return PR_FALSE;
+  }
 
   return PR_TRUE;
 }
@@ -992,33 +987,3 @@ nsXBLPrototypeHandler::GetTextData(nsIContent *aParent, nsString& aResult)
   }
   return NS_OK;
 }
-
-///////////////////////////////////////////////////////////////////////////////////
-
-nsresult
-NS_NewXBLPrototypeHandler(const PRUnichar* aEvent, const PRUnichar* aPhase,
-                          const PRUnichar* aAction, const PRUnichar* aCommand,
-                          const PRUnichar* aKeyCode, const PRUnichar* aCharCode,
-                          const PRUnichar* aModifiers, const PRUnichar* aButton,
-                          const PRUnichar* aClickCount, const PRUnichar* aPreventDefault,
-                          nsIXBLPrototypeHandler** aResult)
-{
-  *aResult = new nsXBLPrototypeHandler(aEvent, aPhase, aAction, aCommand, aKeyCode,
-                                       aCharCode, aModifiers, aButton, aClickCount,
-                                       aPreventDefault);
-  if (!*aResult)
-    return NS_ERROR_OUT_OF_MEMORY;
-  NS_ADDREF(*aResult);
-  return NS_OK;
-}
-
-nsresult
-NS_NewXULKeyHandler(nsIContent* aHandlerElement, nsIXBLPrototypeHandler** aResult)
-{
-  *aResult = new nsXBLPrototypeHandler(aHandlerElement);
-  if (!*aResult)
-    return NS_ERROR_OUT_OF_MEMORY;
-  NS_ADDREF(*aResult);
-  return NS_OK;
-}
-

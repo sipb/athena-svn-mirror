@@ -75,12 +75,12 @@ static PRLogModuleInfo *gStreamListenerProxyLog;
 //----------------------------------------------------------------------------
 
 nsStreamListenerProxy::nsStreamListenerProxy()
-    : mLock(nsnull)
+    : mObserverProxy(nsnull)
+    , mLock(nsnull)
     , mPendingCount(0)
     , mPipeEmptied(PR_FALSE)
     , mListenerStatus(NS_OK)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsStreamListenerProxy::~nsStreamListenerProxy()

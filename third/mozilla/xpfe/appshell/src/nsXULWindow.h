@@ -80,6 +80,7 @@ protected:
    PRBool     LoadPositionFromXUL();
    PRBool     LoadSizeFromXUL();
    PRBool     LoadSizeStateFromXUL();
+   nsresult   LoadChromeHidingFromXUL();
    NS_IMETHOD LoadTitleFromXUL();
    NS_IMETHOD LoadWindowClassFromXUL();
    NS_IMETHOD LoadIconFromXUL();
@@ -100,7 +101,6 @@ protected:
    NS_IMETHOD NotifyObservers(const PRUnichar* aTopic, const PRUnichar* aData);
 
    void EnableParent(PRBool aEnable);
-   void ActivateParent();
    PRBool ConstrainToZLevel(PRBool aImmediate, nsWindowZ *aPlacement,
             nsIWidget *aReqBelow, nsIWidget **aActualBelow);
    void                    SetContentScrollbarVisibility(PRBool aVisible);
@@ -124,9 +124,9 @@ protected:
    PRPackedBool            mIntrinsicallySized; 
    PRPackedBool            mCenterAfterLoad;
    PRPackedBool            mIsHiddenWindow;
-   PRPackedBool            mHadChildWindow;
    PRUint32                mZlevel;
    PRUint32                mContextFlags;
+   PRUint32                mBlurSuppressionLevel;
 };
 
 // nsContentShellInfo

@@ -55,12 +55,12 @@
 #   include <MacWindows.h>
 #endif
 
-#if defined(XP_UNIX) && !defined(NO_X11)
+#if defined(XP_UNIX) && defined(MOZ_X11)
 #   include <X11/Xlib.h>
 #   include <X11/Xutil.h>
 #endif
 
-#if defined(XP_PC) && !defined(XP_OS2)
+#if defined(XP_WIN)
 #   include <windef.h>
 #endif
 
@@ -68,7 +68,7 @@
 
 /* The OS/2 version of Netscape uses RC_DATA to define the
    mime types, file extentions, etc that are required.
-   Use a vertical bar to seperate types, end types with \0.
+   Use a vertical bar to separate types, end types with \0.
    FileVersion and ProductVersion are 32bit ints, all other
    entries are strings the MUST be terminated wwith a \0.
 
@@ -156,7 +156,7 @@ struct nsPluginAnyCallbackStruct {
     PRInt32     type;
 };
 
-#ifndef NO_X11
+#ifdef MOZ_X11
 struct nsPluginSetWindowCallbackStruct {
     PRInt32     type;
     Display*    display;
@@ -240,13 +240,13 @@ struct nsPluginPort {
 typedef RgnHandle       nsPluginRegion;
 typedef WindowRef       nsPluginPlatformWindowRef;
 
-#elif defined(XP_PC)
+#elif defined(XP_WIN) || defined(XP_OS2)
 
 struct nsPluginPort;
 typedef HRGN            nsPluginRegion;
 typedef HWND            nsPluginPlatformWindowRef;
 
-#elif defined(XP_UNIX) && !defined(NO_X11)
+#elif defined(XP_UNIX) && defined(MOZ_X11)
 
 struct nsPluginPort;
 typedef Region          nsPluginRegion;
@@ -270,7 +270,7 @@ struct nsPluginWindow {
     PRUint32      height;
     nsPluginRect  clipRect;     /* Clipping rectangle in port coordinates */
                                 /* Used by MAC only.			  */
-#ifdef XP_UNIX
+#if defined(XP_UNIX) && !defined(XP_MACOSX)
     void*         ws_info;      /* Platform-dependent additonal data */
 #endif /* XP_UNIX */
     nsPluginWindowType type;    /* Is this a window or a drawable? */
@@ -309,12 +309,12 @@ struct nsPluginEvent {
     uint32      wParam;
     uint32      lParam;
 
-#elif defined(XP_PC)
+#elif defined(XP_WIN)
     uint16      event;
     uint32      wParam;
     uint32      lParam;
 
-#elif defined(XP_UNIX) && !defined(NO_X11)
+#elif defined(XP_UNIX) && defined(MOZ_X11)
     XEvent      event;
 #else
     void        *event;

@@ -39,7 +39,6 @@
 #include "nsCOMPtr.h"
 #include "nsIDOMHTMLOptionElement.h"
 #include "nsIContent.h"
-#include "nsIStyleContext.h"
 #include "nsListControlFrame.h"
 
 nsresult
@@ -53,7 +52,9 @@ NS_NewSelectsAreaFrame(nsIPresShell* aShell, nsIFrame** aNewFrame, PRUint32 aFla
   if (nsnull == it) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
-  it->SetFlags(aFlags);
+  // We need NS_BLOCK_SPACE_MGR to ensure that the options inside the select
+  // aren't expanded by right floats outside the select.
+  it->SetFlags(aFlags | NS_BLOCK_SPACE_MGR);
   *aNewFrame = it;
   return NS_OK;
 }
@@ -141,9 +142,18 @@ nsSelectsAreaFrame::Paint(nsIPresContext*      aPresContext,
                           PRUint32             aFlags)
 {
   nsresult rv = nsAreaFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer, aFlags);
-  // This assumes that that the ListControlFrame is the Parent
-  nsListControlFrame* listFrame = NS_STATIC_CAST(nsListControlFrame*, mParent);
-  listFrame->PaintFocus(aRenderingContext, aWhichLayer);
 
-  return rv;
+  nsIFrame* frame = this;
+  while (frame) {
+    frame->GetParent(&frame);
+    nsCOMPtr<nsIAtom> type;
+    frame->GetFrameType(getter_AddRefs(type));
+    if (type == nsLayoutAtoms::listControlFrame) {
+      nsListControlFrame* listFrame = NS_STATIC_CAST(nsListControlFrame*, frame);
+      listFrame->PaintFocus(aRenderingContext, aWhichLayer);
+      return NS_OK;
+    }
+  }
+
+  return NS_OK;
 }

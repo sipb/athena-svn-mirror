@@ -51,6 +51,52 @@ var gFolderPropsSink = {
       if (permissionsLabel)
         permissionsLabel.setAttribute("hidden", "true");
 
+    },
+
+    setQuotaStatus : function(folderQuotaStatus)
+    {
+      var quotaStatusLabel = document.getElementById("folderQuotaStatus");
+      if(quotaStatusLabel)
+        quotaStatusLabel.setAttribute("value", folderQuotaStatus);
+    },
+
+    showQuotaData : function(showData)
+    {
+      var quotaStatusLabel = document.getElementById("folderQuotaStatus");
+      var folderQuotaData = document.getElementById("folderQuotaData");
+
+      if(quotaStatusLabel && folderQuotaData)
+      {
+        quotaStatusLabel.hidden = showData;
+        folderQuotaData.hidden = ! showData;
+      }
+    },
+
+    setQuotaData : function(root, usedKB, maxKB)
+    {
+      var quotaRoot = document.getElementById("quotaRoot");
+      if (quotaRoot)
+        quotaRoot.setAttribute("value", '"' + root + '"');
+
+      var percentage = (maxKB != 0) ? Math.round(usedKB / maxKB * 100) : 0;
+
+      var quotaPercentageBar = document.getElementById("quotaPercentageBar");
+      if (quotaPercentageBar)
+        quotaPercentageBar.setAttribute("value", percentage);
+
+      var bundle = document.getElementById("bundle_messenger");
+      if(bundle)
+      {
+        var usedFreeCaption = bundle.getFormattedString("quotaUsedFree", [usedKB, maxKB], 2);
+        quotaCaption = document.getElementById("quotaUsedFree");
+        if(quotaCaption)
+          quotaCaption.setAttribute("value", usedFreeCaption);
+
+        var percentUsedCaption = bundle.getFormattedString("quotaPercentUsed", [percentage], 1);
+        var percentUsed = document.getElementById("quotaPercentUsed");
+        if(percentUsed)
+          percentUsed.setAttribute("value", percentUsedCaption);
+      }
     }
 
 };
@@ -84,7 +130,6 @@ function folderPropsOnLoad()
 {
   dump("folder props loaded"+'\n');
   doSetOKCancel(folderPropsOKButtonCallback);
-  moveToAlertPosition();
 
   RDF = Components.classes["@mozilla.org/rdf/rdf-service;1"].getService(Components.interfaces.nsIRDFService);
 
@@ -133,7 +178,7 @@ function folderPropsOnLoad()
   // this hex value come from nsMsgFolderFlags.h
   var folderResource = RDF.GetResource(gPreselectedFolderURI);
     
-  if(folderResource)
+  if (folderResource)
     gMsgFolder = folderResource.QueryInterface(Components.interfaces.nsIMsgFolder);
   if (!gMsgFolder)
     dump("no gMsgFolder preselectfolder uri = "+gPreselectedFolderURI+'\n');
@@ -189,6 +234,8 @@ function folderPropsOnLoad()
     catch (ex) {}
   }
   hideShowControls(gServerTypeFolder);
+  
+  moveToAlertPosition();
 }
 
 function hideShowControls(serverType)
@@ -226,16 +273,19 @@ function hideShowControls(serverType)
   }
   // hide the priviliges button if the imap folder doesn't have an admin url
   // mabye should leave this hidden by default and only show it in this case instead
-  var imapFolder = gMsgFolder.QueryInterface(Components.interfaces.nsIMsgImapMailFolder);
-  if (imapFolder)
-  {
-    var privilegesButton = document.getElementById("imap.FolderPrivileges");
-    if (privilegesButton)
+  try {
+    var imapFolder = gMsgFolder.QueryInterface(Components.interfaces.nsIMsgImapMailFolder);
+    if (imapFolder)
     {
-      if (!imapFolder.hasAdminUrl)
-        privilegesButton.setAttribute("hidden", "true");
+      var privilegesButton = document.getElementById("imap.FolderPrivileges");
+      if (privilegesButton)
+      {
+        if (!imapFolder.hasAdminUrl)
+          privilegesButton.setAttribute("hidden", "true");
+      }
     }
   }
+  catch (ex) {}
 
   // hide "check for new mail" checkbox if this is inbox
   if (gMsgFolder)

@@ -199,8 +199,7 @@ NS_IMETHODIMP nsImapUrl::GetFolder(nsIMsgFolder **aMsgFolder)
   NS_ENSURE_ARG_POINTER(m_imapFolder);
 
   nsCOMPtr<nsIMsgFolder> folder = do_QueryReferent(m_imapFolder);
-  *aMsgFolder = folder;
-  NS_IF_ADDREF(*aMsgFolder);
+  NS_IF_ADDREF(*aMsgFolder = folder);
   return NS_OK;
 }
 
@@ -425,6 +424,20 @@ NS_IMETHODIMP nsImapUrl::SetCustomCommandResult(const char *result)
   return NS_OK;
 }
 
+NS_IMETHODIMP nsImapUrl::GetCustomAddFlags(char **aResult)
+{
+  NS_ENSURE_ARG_POINTER(aResult);
+  *aResult = ToNewCString(m_customAddFlags);
+  return (*aResult) ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
+}
+
+NS_IMETHODIMP nsImapUrl::GetCustomSubtractFlags(char **aResult)
+{
+  NS_ENSURE_ARG_POINTER(aResult);
+  *aResult = ToNewCString(m_customSubtractFlags);
+  return (*aResult) ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
+}
+
 
 NS_IMETHODIMP nsImapUrl::GetImapPartToFetch(char **result) 
 {
@@ -441,6 +454,8 @@ NS_IMETHODIMP nsImapUrl::GetImapPartToFetch(char **result)
 		{
       wherepart += 9;  // nsCRT::strlen("/;section=")
 			char *wherelibmimepart = PL_strstr(wherepart, "&part=");
+			if (!wherelibmimepart)
+        wherelibmimepart = PL_strstr(wherepart, "?part=");
       int numCharsToCopy = (wherelibmimepart) ? wherelibmimepart - wherepart :
                    PL_strlen(m_listOfMessageIds) - (wherepart - m_listOfMessageIds);
 			if (numCharsToCopy)
@@ -779,11 +794,21 @@ void nsImapUrl::ParseImapPart(char *imapPartOfUrl)
       ParseFolderPath(&m_sourceCanonicalFolderPathSubString);
       ParseListOfMessageIds();
     }
+    else if (m_imapAction == nsIImapUrl::nsImapMsgStoreCustomKeywords)
+    {
+      ParseUidChoice();
+      ParseFolderPath(&m_sourceCanonicalFolderPathSubString);
+      ParseListOfMessageIds();
+    	char *flagsPtr = m_tokenPlaceHolder ? nsIMAPGenericParser::Imapstrtok_r(nsnull, IMAP_URL_TOKEN_SEPARATOR, &m_tokenPlaceHolder) : (char *)nsnull;
+      m_customAddFlags.Assign(flagsPtr);
+      flagsPtr = m_tokenPlaceHolder ? nsIMAPGenericParser::Imapstrtok_r(nsnull, IMAP_URL_TOKEN_SEPARATOR, &m_tokenPlaceHolder) : (char *)nsnull;
+      m_customSubtractFlags.Assign(flagsPtr);
+    }
     else
     {
       m_validUrl = PR_FALSE;	
     }
-        }
+  }
 }
 
 
@@ -829,6 +854,9 @@ NS_IMETHODIMP nsImapUrl::AddOnlineDirectoryIfNecessary(const char *onlineMailbox
                             // make sure the last character is the delimiter
                             if ( onlineDirWithDelimiter.Last() != delimiter )
 		  	        onlineDirWithDelimiter += delimiter;
+                            if ( !*onlineMailboxName )
+                                onlineDirWithDelimiter.SetLength(
+                                           onlineDirWithDelimiter.Length()-1);
                         }
 
 			// The namespace for this mailbox is the root ("").
@@ -1067,17 +1095,13 @@ NS_IMETHODIMP nsImapUrl::CreateCanonicalSourceFolderPathString(char **result)
 // this method is called from the imap thread AND the UI thread...
 NS_IMETHODIMP nsImapUrl::CreateServerDestinationFolderPathString(char **result)
 {
-	nsresult rv = NS_OK;
   NS_ENSURE_ARG_POINTER(result);
-	nsAutoCMonitor(this);
-	// its possible for the destination folder path to be the root
-	if (!m_destinationCanonicalFolderPathSubString)
-    *result = nsCRT::strdup("");
-	else
-		rv = AllocateServerPath(m_destinationCanonicalFolderPathSubString, kOnlineHierarchySeparatorUnknown, result);
-	return (*result) ? rv : NS_ERROR_OUT_OF_MEMORY;
+  nsAutoCMonitor(this);
+  nsresult rv = AllocateServerPath(m_destinationCanonicalFolderPathSubString,
+                                   kOnlineHierarchySeparatorUnknown,
+                                   result);
+  return (*result) ? rv : NS_ERROR_OUT_OF_MEMORY;
 }
-
 
 // for enabling or disabling mime parts on demand. Setting this to PR_TRUE says we
 // can use mime parts on demand, if we chose.
@@ -1104,7 +1128,7 @@ NS_IMETHODIMP nsImapUrl::SetContentModified(nsImapContentModifiedType contentMod
       contentModifiedAnnotation = "Modified View Inline";
       break;
     case IMAP_CONTENT_MODIFIED_VIEW_AS_LINKS:
-      NS_ASSERTION(PR_FALSE, "we're not using this anymore!");
+      contentModifiedAnnotation = "Modified View As Link";
       break;
     case IMAP_CONTENT_FORCE_CONTENT_NOT_MODIFIED:
       contentModifiedAnnotation = "Force Content Not Modified";
@@ -1274,8 +1298,8 @@ NS_IMETHODIMP nsImapUrl::GetUri(char** aURI)
 	{
     *aURI = nsnull;
     PRUint32 key = m_listOfMessageIds ? atoi(m_listOfMessageIds) : 0;
-		nsXPIDLCString theFile;
-    CreateCanonicalSourceFolderPathString(getter_Copies(theFile));
+    nsXPIDLCString canonicalPath;
+    AllocateCanonicalPath(m_sourceCanonicalFolderPathSubString, m_onlineSubDirSeparator, (getter_Copies(canonicalPath)));
     nsCString fullFolderPath("/");
     fullFolderPath += (const char *) m_userName;
     nsCAutoString hostName;
@@ -1283,7 +1307,7 @@ NS_IMETHODIMP nsImapUrl::GetUri(char** aURI)
     fullFolderPath += '@';
     fullFolderPath += hostName;
     fullFolderPath += '/';
-    fullFolderPath.Append(theFile);
+    fullFolderPath.Append(canonicalPath);
 
     char * baseMessageURI;
     nsCreateImapBaseMessageURI(fullFolderPath.get(), &baseMessageURI);

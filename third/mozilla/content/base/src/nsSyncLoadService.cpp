@@ -64,6 +64,7 @@
 #include "nsIScriptLoaderObserver.h"
 #include "nsIXMLContentSink.h"
 #include "nsIContent.h"
+#include "nsAutoPtr.h"
 
 static const char* kLoadAsData = "loadAsData";
 
@@ -72,12 +73,11 @@ static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_CID(kXMLDocumentCID, NS_XMLDOCUMENT_CID);
 
 // This is ugly, but nsXBLContentSink.h isn't exported
-extern
 nsresult
 NS_NewXBLContentSink(nsIXMLContentSink** aResult,
                      nsIDocument* aDoc,
                      nsIURI* aURL,
-                     nsIWebShell* aWebShell);
+                     nsISupports* aContainer);
 
 class nsSyncLoadService : public nsISyncLoadDOMService
 {
@@ -109,9 +109,9 @@ public:
 
     NS_DECL_ISUPPORTS
 
-    NS_IMETHOD LoadDocument(nsIChannel* aChannel, nsIURI *aLoaderURI,
-                            PRBool aChannelIsSync,
-                            nsIDOMDocument** _retval);
+    nsresult LoadDocument(nsIChannel* aChannel, nsIURI *aLoaderURI,
+                          PRBool aChannelIsSync, PRBool aForceToXML,
+                          nsIDOMDocument** aResult);
 
     // nsIDOMEventListener
     NS_IMETHOD HandleEvent(nsIDOMEvent* aEvent);
@@ -168,7 +168,6 @@ protected:
 
 txLoadListenerProxy::txLoadListenerProxy(nsWeakPtr aParent)
 {
-    NS_INIT_ISUPPORTS();
     mParent = aParent;
 }
 
@@ -238,9 +237,55 @@ txLoadListenerProxy::Error(nsIDOMEvent* aEvent)
     return NS_OK;
 }
 
+class nsForceXMLListener : public nsIStreamListener
+{
+public:
+    nsForceXMLListener(nsIStreamListener* aListener);
+    virtual ~nsForceXMLListener();
+
+    NS_DECL_ISUPPORTS
+    NS_FORWARD_NSISTREAMLISTENER(mListener->)
+    NS_DECL_NSIREQUESTOBSERVER
+
+private:
+    nsCOMPtr<nsIStreamListener> mListener;
+};
+
+nsForceXMLListener::nsForceXMLListener(nsIStreamListener* aListener)
+    : mListener(aListener)
+{
+}
+
+nsForceXMLListener::~nsForceXMLListener()
+{
+}
+
+NS_IMPL_ISUPPORTS2(nsForceXMLListener,
+                   nsIStreamListener,
+                   nsIRequestObserver)
+
+NS_IMETHODIMP
+nsForceXMLListener::OnStartRequest(nsIRequest *aRequest, nsISupports *aContext)
+{
+    nsresult status;
+    aRequest->GetStatus(&status);
+    nsCOMPtr<nsIChannel> channel = do_QueryInterface(aRequest);
+    if (channel && NS_SUCCEEDED(status)) {
+      channel->SetContentType(NS_LITERAL_CSTRING("text/xml"));
+    }
+
+    return mListener->OnStartRequest(aRequest, aContext);
+}
+
+NS_IMETHODIMP
+nsForceXMLListener::OnStopRequest(nsIRequest *aRequest, nsISupports *aContext,
+                                  nsresult aStatusCode)
+{
+    return mListener->OnStopRequest(aRequest, aContext, aStatusCode);
+}
+
 nsSyncLoader::nsSyncLoader()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsSyncLoader::~nsSyncLoader()
@@ -256,10 +301,11 @@ NS_IMPL_ISUPPORTS4(nsSyncLoader,
                    nsIInterfaceRequestor,
                    nsISupportsWeakReference)
 
-NS_IMETHODIMP
+nsresult
 nsSyncLoader::LoadDocument(nsIChannel* aChannel,
                            nsIURI *aLoaderURI,
                            PRBool aChannelIsSync,
+                           PRBool aForceToXML,
                            nsIDOMDocument **aResult)
 {
     NS_ENSURE_ARG_POINTER(aResult);
@@ -294,11 +340,26 @@ nsSyncLoader::LoadDocument(nsIChannel* aChannel,
     nsCOMPtr<nsIDocument> document = do_CreateInstance(kXMLDocumentCID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
 
+    // Start the document load. Do this before we attach the load listener
+    // since we reset the document which drops all observers.
+    nsCOMPtr<nsIStreamListener> listener;
+    rv = document->StartDocumentLoad(kLoadAsData, mChannel, 
+                                     loadGroup, nsnull, 
+                                     getter_AddRefs(listener),
+                                     PR_TRUE);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (aForceToXML) {
+        nsCOMPtr<nsIStreamListener> forceListener =
+            new nsForceXMLListener(listener);
+        listener.swap(forceListener);
+    }
+
     // Register as a load listener on the document
     nsCOMPtr<nsIDOMEventReceiver> target = do_QueryInterface(document);
     NS_ENSURE_TRUE(target, NS_ERROR_FAILURE);
 
-    nsWeakPtr requestWeak = getter_AddRefs(NS_GetWeakReference(NS_STATIC_CAST(nsIDOMLoadListener*, this)));
+    nsWeakPtr requestWeak = do_GetWeakReference(NS_STATIC_CAST(nsIDOMLoadListener*, this));
     txLoadListenerProxy* proxy = new txLoadListenerProxy(requestWeak);
     NS_ENSURE_TRUE(proxy, NS_ERROR_OUT_OF_MEMORY);
 
@@ -309,19 +370,6 @@ nsSyncLoader::LoadDocument(nsIChannel* aChannel,
     NS_ENSURE_SUCCESS(rv, rv);
     
     mLoadSuccess = PR_FALSE;
-
-    nsCOMPtr<nsIStreamListener> listener;
-    rv = document->StartDocumentLoad(kLoadAsData, mChannel, 
-                                     loadGroup, nsnull, 
-                                     getter_AddRefs(listener),
-                                     PR_FALSE);
-    if (NS_FAILED(rv)) {
-        target->RemoveEventListenerByIID(NS_STATIC_CAST(nsIDOMEventListener*, 
-                                                        proxy), 
-                                         NS_GET_IID(nsIDOMLoadListener));
-        return rv;
-    }
-
     if (aChannelIsSync) {
         rv = PushSyncStream(listener);
     }
@@ -396,6 +444,7 @@ nsSyncLoader::PushSyncStream(nsIStreamListener* aListener)
     nsresult rv = mChannel->Open(getter_AddRefs(in));
     NS_ENSURE_SUCCESS(rv, rv);
 
+    mLoading = PR_TRUE;
     rv = nsSyncLoadService::PushSyncStreamToListener(in, aListener, mChannel);
 
     return rv;
@@ -484,7 +533,6 @@ nsSyncLoader::GetInterface(const nsIID & aIID,
 
 nsSyncLoadService::nsSyncLoadService()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsSyncLoadService::~nsSyncLoadService()
@@ -496,15 +544,24 @@ NS_IMPL_ISUPPORTS1(nsSyncLoadService,
 
 NS_IMETHODIMP
 nsSyncLoadService::LoadDocument(nsIChannel* aChannel, nsIURI* aLoaderURI,
-                                nsIDOMDocument** _retval)
+                                nsIDOMDocument** aResult)
 {
-    nsSyncLoader* loader = new nsSyncLoader();
+    nsRefPtr<nsSyncLoader> loader = new nsSyncLoader();
     NS_ENSURE_TRUE(loader, NS_ERROR_OUT_OF_MEMORY);
-    NS_ADDREF(loader);
-    nsresult rv = loader->LoadDocument(aChannel, aLoaderURI, PR_FALSE,
-                                       _retval);
-    NS_RELEASE(loader);
-    return rv;
+
+    return loader->LoadDocument(aChannel, aLoaderURI, PR_FALSE, PR_FALSE,
+                                aResult);
+}
+
+NS_IMETHODIMP
+nsSyncLoadService::LoadDocumentAsXML(nsIChannel* aChannel, nsIURI* aLoaderURI,
+                                     nsIDOMDocument** aResult)
+{
+    nsRefPtr<nsSyncLoader> loader = new nsSyncLoader();
+    NS_ENSURE_TRUE(loader, NS_ERROR_OUT_OF_MEMORY);
+
+    return loader->LoadDocument(aChannel, aLoaderURI, PR_FALSE, PR_TRUE,
+                                aResult);
 }
 
 nsresult
@@ -514,7 +571,8 @@ nsSyncLoadService::LoadLocalDocument(nsIChannel* aChannel, nsIURI* aLoaderURI,
     nsSyncLoader* loader = new nsSyncLoader();
     NS_ENSURE_TRUE(loader, NS_ERROR_OUT_OF_MEMORY);
     NS_ADDREF(loader);
-    nsresult rv = loader->LoadDocument(aChannel, aLoaderURI, PR_TRUE, _retval);
+    nsresult rv = loader->LoadDocument(aChannel, aLoaderURI, PR_TRUE, PR_FALSE,
+                                       _retval);
     NS_RELEASE(loader);
     return rv;
 }
@@ -544,10 +602,6 @@ nsSyncLoadService::LoadLocalXBLDocument(nsIChannel* aChannel,
     nsCOMPtr<nsIDocument> doc = do_CreateInstance(kXMLDocumentCID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    // Do this after making sure the |channel->Open| succeeded (which it
-    // won't if the file doesn't exist) so that we don't have to go
-    // through the work of breaking the circular references between
-    // content sink, script loader, and document.
     nsCOMPtr<nsIXMLContentSink> xblSink;
     rv = NS_NewXBLContentSink(getter_AddRefs(xblSink), doc, docURI, nsnull);
     NS_ENSURE_SUCCESS(rv, rv);

@@ -58,7 +58,7 @@ NS_IMPL_ISUPPORTS1(nsToolkit,nsIToolkit);
 //-------------------------------------------------------------------------
 nsToolkit::nsToolkit()  
 {
-  NS_INIT_ISUPPORTS();
+	NS_INIT_ISUPPORTS();
 }
 
 
@@ -106,13 +106,6 @@ PhDrawContext_t *nsToolkit::GetDefaultPhotonDrawContext()
 
   return nsToolkit::mDefaultPhotonDrawContext;
 }
-
-PhPoint_t nsToolkit::GetConsoleOffset( ) {
-  PhRect_t  console;
-	if( PhWindowQueryVisible( Ph_QUERY_GRAPHICS, 0, 1, &console ) == 0 )
-		return(PhPoint_t)  {console.ul.x, console.ul.y};
-   return(PhPoint_t)  {0,0};
-	}
 
 //-------------------------------------------------------------------------
 //
@@ -162,5 +155,3 @@ NS_METHOD NS_GetCurrentToolkit(nsIToolkit* *aResult)
 
   return rv;
 }
-
-

@@ -36,7 +36,7 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsAreaFrame.h"
 #include "nsBlockBandData.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIViewManager.h"
@@ -45,9 +45,8 @@
 #include "nsHTMLValue.h"
 #include "nsHTMLParts.h"
 #include "nsLayoutAtoms.h"
-#include "nsISizeOfHandler.h"
 
-#ifdef INCLUDE_XUL
+#ifdef MOZ_XUL
 #include "nsINameSpaceManager.h"
 #include "nsXULAtoms.h"
 #include "nsIEventStateManager.h"
@@ -76,7 +75,7 @@ nsAreaFrame::nsAreaFrame()
 {
 }
 
-#ifdef INCLUDE_XUL
+#ifdef MOZ_XUL
 
 // If you make changes to this function, check its counterparts 
 // in nsBoxFrame and nsTextBoxFrame
@@ -138,12 +137,12 @@ nsAreaFrame::RegUnregAccessKey(nsIPresContext* aPresContext,
 /////////////////////////////////////////////////////////////////////////////
 // nsIFrame
 
-#ifdef INCLUDE_XUL
+#ifdef MOZ_XUL
 NS_IMETHODIMP
 nsAreaFrame::Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow)
 {
   nsresult rv = nsBlockFrame::Init(aPresContext,
@@ -205,17 +204,5 @@ NS_IMETHODIMP
 nsAreaFrame::GetFrameName(nsAString& aResult) const
 {
   return MakeFrameName(NS_LITERAL_STRING("Area"), aResult);
-}
-
-NS_IMETHODIMP
-nsAreaFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  nsBlockFrame::SizeOf(aHandler, aResult);
-  *aResult += sizeof(*this) - sizeof(nsBlockFrame);
-
-  return NS_OK;
 }
 #endif

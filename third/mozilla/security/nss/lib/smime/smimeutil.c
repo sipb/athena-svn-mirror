@@ -34,7 +34,7 @@
 /*
  * Stuff specific to S/MIME policy and interoperability.
  *
- * $Id: smimeutil.c,v 1.1.1.1 2003-02-14 19:24:53 rbasch Exp $
+ * $Id: smimeutil.c,v 1.1.1.1.2.1 2003-07-14 19:07:25 ghudson Exp $
  */
 
 #include "secmime.h"
@@ -237,7 +237,6 @@ nss_smime_get_cipher_for_alg_and_key(SECAlgorithmID *algid, PK11SymKey *key, uns
 {
     SECOidTag algtag;
     unsigned int keylen_bits;
-    SECStatus rv = SECSuccess;
     unsigned long c;
 
     algtag = SECOID_GetAlgorithmTag(algid);
@@ -255,8 +254,7 @@ nss_smime_get_cipher_for_alg_and_key(SECAlgorithmID *algid, PK11SymKey *key, uns
 	    c = SMIME_RC2_CBC_128;
 	    break;
 	default:
-	    rv = SECFailure;
-	    break;
+	    return SECFailure;
 	}
 	break;
     case SEC_OID_DES_CBC:
@@ -269,11 +267,10 @@ nss_smime_get_cipher_for_alg_and_key(SECAlgorithmID *algid, PK11SymKey *key, uns
 	c = SMIME_FORTEZZA;
 	break;
     default:
-	rv = SECFailure;
+	return SECFailure;
     }
-    if (rv == SECSuccess)
-	*cipher = c;
-    return rv;
+    *cipher = c;
+    return SECSuccess;
 }
 
 static PRBool

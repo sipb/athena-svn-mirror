@@ -39,7 +39,7 @@
 
 #include "nsFont.h"
 
-// XXX fold this into nsIStyleContext and group by nsStyleXXX struct
+// XXX fold this into nsStyleContext and group by nsStyleXXX struct
 
 // Indicies into border/padding/margin arrays
 #define NS_SIDE_TOP     0
@@ -214,6 +214,11 @@
 #define NS_STYLE_BG_CLIP_PADDING          1
 
 // See nsStyleBackground
+#define NS_STYLE_BG_INLINE_POLICY_EACH_BOX      0
+#define NS_STYLE_BG_INLINE_POLICY_CONTINUOUS    1
+#define NS_STYLE_BG_INLINE_POLICY_BOUNDING_BOX  2
+
+// See nsStyleBackground
 #define NS_STYLE_BG_ORIGIN_BORDER         0
 #define NS_STYLE_BG_ORIGIN_PADDING        1
 #define NS_STYLE_BG_ORIGIN_CONTENT        2
@@ -296,6 +301,8 @@
 #define NS_STYLE_CURSOR_COUNT_UP                24
 #define NS_STYLE_CURSOR_COUNT_DOWN              25
 #define NS_STYLE_CURSOR_COUNT_UP_DOWN           26
+#define NS_STYLE_CURSOR_MOZ_ZOOM_IN             27
+#define NS_STYLE_CURSOR_MOZ_ZOOM_OUT            28
 
 
 // See nsStyleDisplay

@@ -88,7 +88,7 @@ nsProgressDialog.prototype = {
 
     // getters/setters
     get saving()            { return this.MIMEInfo == null ||
-			      this.MIMEInfo.preferredAction == Components.interfaces.nsIMIMEInfo.saveToDisk; },
+                              this.MIMEInfo.preferredAction == Components.interfaces.nsIMIMEInfo.saveToDisk; },
     get parent()            { return this.mParent; },
     set parent(newval)      { return this.mParent = newval; },
     get operation()         { return this.mOperation; },
@@ -225,7 +225,7 @@ nsProgressDialog.prototype = {
         if ( aMaxTotalProgress != "-1" ) {
             status = this.replaceInsert( status, 2, parseInt( aMaxTotalProgress/1024 + .5 ) );
         } else {
-            status = replaceInsert( status, 2, "??" );
+            status = this.replaceInsert( status, 2, "??" );
         }
     
         // Insert 3 is the download rate.
@@ -370,7 +370,7 @@ nsProgressDialog.prototype = {
             this.setValue( "sourceLabel", this.getString( "openingSource" ) );
 
             // Target is the "preferred" application.  Hide if empty.
-	    if ( this.MIMEInfo && this.MIMEInfo.preferredApplicationHandler ) {
+            if ( this.MIMEInfo && this.MIMEInfo.preferredApplicationHandler ) {
                 var appName = this.MIMEInfo.preferredApplicationHandler.leafName;
                 if ( appName == null || appName.length == 0 ) {
                     this.hide( "targetRow" );
@@ -468,8 +468,43 @@ nsProgressDialog.prototype = {
     // Invoke the launch method of the target file.
     onLaunch: function() {
          try {
-             this.target.launch();
-             this.dialog.close();
+           const kDontAskAgainPref  = "browser.download.progressDnlgDialog.dontAskForLaunch";
+           try {
+             var pref = Components.classes["@mozilla.org/preferences-service;1"]
+                              .getService(Components.interfaces.nsIPrefBranch);
+             var dontAskAgain = pref.getBoolPref(kDontAskAgainPref);
+           } catch (e) {
+             // we need to ask if we're unsure
+             dontAskAgain = false;
+           }
+           if ( !dontAskAgain && this.target.isExecutable() ) {
+             try {
+               var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                                               .getService( Components.interfaces.nsIPromptService );
+             } catch (ex) {
+               // getService doesn't return null, it throws
+               return;
+             }
+             var title = this.getProperty( "openingAlertTitle",
+                                           [ this.fileName() ],
+                                           1 );
+             var msg = this.getProperty( "securityAlertMsg",
+                                         [ this.fileName() ],
+                                         1 );
+             var dontaskmsg = this.getProperty( "dontAskAgain",
+                                                [ ], 0 );
+             var checkbox = {value:0};
+             var okToProceed = promptService.confirmCheck(this.dialog, title, msg, dontaskmsg, checkbox);
+             try {
+               if (checkbox.value != dontAskAgain)
+                 pref.setBoolPref(kDontAskAgainPref, checkbox.value);
+             } catch (ex) {}
+
+             if ( !okToProceed )
+               return;
+           }
+           this.target.launch();
+           this.dialog.close();
          } catch ( exception ) {
              // XXX Need code here to tell user the launch failed!
              dump( "nsProgressDialog::onLaunch failed: " + exception + "\n" );
@@ -609,7 +644,7 @@ nsProgressDialog.prototype = {
                 if ( enableButtons ) {
                     this.enable( "reveal" );
                     try {
-                        if ( this.target && !this.target.isExecutable() ) {
+                        if ( this.target ) {
                             this.enable( "launch" );
                         }
                     } catch(e) {
@@ -684,9 +719,7 @@ nsProgressDialog.prototype = {
 
     // Convert raw rate (bytes/sec) to Kbytes/sec (to nearest tenth).
     rateToKRate: function( rate ) {
-         var kRate = rate / 1024; // KBytes/sec
-         var fraction = parseInt( ( kRate - ( kRate = parseInt( kRate ) ) ) * 10 + 0.5 );
-         return kRate + "." + fraction;
+        return ( rate / 1024 ).toFixed(1);
     },
 
     // Format number of seconds in hh:mm:ss form.

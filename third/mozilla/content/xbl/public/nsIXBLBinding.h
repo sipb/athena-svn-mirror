@@ -54,7 +54,8 @@ class nsIContent;
 class nsIDocument;
 class nsIDOMNodeList;
 class nsIScriptContext;
-class nsIXBLPrototypeBinding;
+class nsXBLPrototypeBinding;
+class nsVoidArray;
 
 // {DDDBAD20-C8DF-11d3-97FB-00400553EEF0}
 #define NS_IXBLBINDING_IID \
@@ -65,8 +66,8 @@ class nsIXBLBinding : public nsISupports
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_IXBLBINDING_IID)
 
-  NS_IMETHOD GetPrototypeBinding(nsIXBLPrototypeBinding** aResult)=0;
-  NS_IMETHOD SetPrototypeBinding(nsIXBLPrototypeBinding* aProtoBinding)=0;
+  NS_IMETHOD GetPrototypeBinding(nsXBLPrototypeBinding** aResult)=0;
+  NS_IMETHOD SetPrototypeBinding(nsXBLPrototypeBinding* aProtoBinding)=0;
 
   NS_IMETHOD GetBaseBinding(nsIXBLBinding** aResult) = 0;
   NS_IMETHOD SetBaseBinding(nsIXBLBinding* aBinding) = 0;
@@ -103,7 +104,9 @@ public:
   NS_IMETHOD GetDocURI(nsCString& aResult) = 0;
   NS_IMETHOD GetID(nsCString& aResult) = 0;
 
-  NS_IMETHOD GetInsertionPointsFor(nsIContent* aParent, nsISupportsArray** aResult)=0;
+  // Get the list of insertion points for aParent.  The nsVoidArray is owned
+  // by the binding, you should not delete it.
+  NS_IMETHOD GetInsertionPointsFor(nsIContent* aParent, nsVoidArray** aResult)=0;
 
   NS_IMETHOD GetInsertionPoint(nsIContent* aChild, nsIContent** aResult, PRUint32* aIndex,
                                nsIContent** aDefaultContent) = 0;
@@ -118,7 +121,6 @@ public:
 
   NS_IMETHOD InheritsStyle(PRBool* aResult)=0;
   NS_IMETHOD WalkRules(nsISupportsArrayEnumFunc aFunc, void* aData)=0;
-  NS_IMETHOD AttributeAffectsStyle(nsISupportsArrayEnumFunc aFunc, void* aData, PRBool* aAffects)=0;
 
   NS_IMETHOD MarkForDeath()=0;
   NS_IMETHOD MarkedForDeath(PRBool* aResult)=0;
@@ -130,7 +132,8 @@ public:
   NS_IMETHOD ShouldBuildChildFrames(PRBool* aResult)=0;
 };
 
-extern nsresult
-NS_NewXBLBinding(nsIXBLPrototypeBinding* aProtoBinding, nsIXBLBinding** aResult);
+nsresult
+NS_NewXBLBinding(nsXBLPrototypeBinding* aProtoBinding,
+                 nsIXBLBinding** aResult);
 
 #endif // nsIXBLBinding_h__

@@ -43,7 +43,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS2(nsNSSASN1Tree, nsIASN1Tree,
 nsNSSASN1Tree::nsNSSASN1Tree() 
 :mTopNode(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsNSSASN1Tree::~nsNSSASN1Tree()
@@ -90,7 +89,7 @@ void nsNSSASN1Tree::InitChildsRecursively(myNode *n)
   // That way, n->seq and n->child will be either both set or both null.
 
   PRBool isContainer;
-  n->seq->GetProcessObjects(&isContainer);
+  n->seq->GetIsValidContainer(&isContainer);
   if (!isContainer) {
     n->seq = nsnull;
     return;
@@ -250,7 +249,7 @@ nsNSSASN1Tree::IsContainerOpen(PRInt32 index, PRBool *_retval)
   if (!n || !n->seq)
     return NS_ERROR_FAILURE;
 
-  n->seq->GetShowObjects(_retval);
+  n->seq->GetIsExpanded(_retval);
   return NS_OK;
 }
 
@@ -360,14 +359,14 @@ nsNSSASN1Tree::ToggleOpenState(PRInt32 index)
   if (!n->seq)
     return NS_ERROR_FAILURE;
 
-  PRBool showObjects;
-  n->seq->GetShowObjects(&showObjects);
+  PRBool IsExpanded;
+  n->seq->GetIsExpanded(&IsExpanded);
   PRInt32 rowCountChange;
-  if (showObjects) {
+  if (IsExpanded) {
     rowCountChange = 1-CountVisibleNodes(n);
-    n->seq->SetShowObjects(PR_FALSE);
+    n->seq->SetIsExpanded(PR_FALSE);
   } else {
-    n->seq->SetShowObjects(PR_TRUE);
+    n->seq->SetIsExpanded(PR_TRUE);
     rowCountChange = CountVisibleNodes(n)-1;
   }
   if (mTree)
@@ -533,9 +532,9 @@ PRInt32 nsNSSASN1Tree::CountVisibleNodes(myNode *n)
     ++count;
 
     if (walk->seq) {
-      PRBool showObjects;
-      walk->seq->GetShowObjects(&showObjects);
-      if (showObjects) {
+      PRBool IsExpanded;
+      walk->seq->GetIsExpanded(&IsExpanded);
+      if (IsExpanded) {
         count += CountVisibleNodes(walk->child);
       }
     }
@@ -592,9 +591,9 @@ nsNSSASN1Tree::FindNodeFromIndex(myNode *n, PRInt32 wantedIndex,
     }
 
     if (walk->seq) {
-      PRBool showObjects;
-      walk->seq->GetShowObjects(&showObjects);
-      if (showObjects) {
+      PRBool IsExpanded;
+      walk->seq->GetIsExpanded(&IsExpanded);
+      if (IsExpanded) {
         ++index_counter; // set to walk->child
 
         ++level_counter;

@@ -59,9 +59,10 @@ public:
                             nsAString& aReturn);
 
   virtual void DropReference();
+  // If GetCSSDeclaration returns non-null, then the decl it returns
+  // is owned by our current style rule.
   virtual nsresult GetCSSDeclaration(nsCSSDeclaration **aDecl,
                                      PRBool aAllocate);
-  virtual nsresult SetCSSDeclaration(nsCSSDeclaration *aDecl);
   virtual nsresult GetCSSParsingEnvironment(nsIContent* aContent,
                                             nsIURI** aBaseURI,
                                             nsICSSLoader** aCSSLoader,
@@ -74,6 +75,9 @@ public:
   virtual nsresult GetParent(nsISupports **aParent);
 
 protected:
+  nsresult SetCSSDeclaration(nsCSSDeclaration* aDecl, PRBool aNotify,
+                             PRBool aDeclOwnedByRule);
+  
   nsIHTMLContent *mContent;
 };
 

@@ -58,11 +58,11 @@ public:
   
   // nsIFrame
 
-#ifdef INCLUDE_XUL
+#ifdef MOZ_XUL
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
@@ -84,13 +84,12 @@ public:
   
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
 #endif
 
 protected:
   nsAreaFrame();
 
-#ifdef INCLUDE_XUL
+#ifdef MOZ_XUL
   nsresult RegUnregAccessKey(nsIPresContext* aPresContext,
                              PRBool aDoReg);
 #endif

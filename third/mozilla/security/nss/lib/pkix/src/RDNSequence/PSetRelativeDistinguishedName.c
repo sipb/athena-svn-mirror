@@ -32,7 +32,7 @@
  */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $Source: /afs/dev.mit.edu/source/repository/third/mozilla/security/nss/lib/pkix/src/RDNSequence/PSetRelativeDistinguishedName.c,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 20:49:30 $ $Name: not supported by cvs2svn $";
+static const char CVS_ID[] = "@(#) $Source: /afs/dev.mit.edu/source/repository/third/mozilla/security/nss/lib/pkix/src/RDNSequence/PSetRelativeDistinguishedName.c,v $ $Revision: 1.1.1.1.2.1 $ $Date: 2003-07-14 19:07:16 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef PKIX_H

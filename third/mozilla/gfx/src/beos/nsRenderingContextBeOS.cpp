@@ -43,6 +43,8 @@
 #include "nsImageBeOS.h"
 #include "nsGraphicsStateBeOS.h"
 #include "nsICharRepresentable.h"
+#include "prenv.h"
+#include <Polygon.h>
 #include <math.h>
 
 static NS_DEFINE_IID(kRenderingContextIID, NS_IRENDERING_CONTEXT_IID);
@@ -52,8 +54,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsRenderingContextBeOS, nsIRenderingContext)
 static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
 
 nsRenderingContextBeOS::nsRenderingContextBeOS() {
-	NS_INIT_ISUPPORTS();
-	
 	mOffscreenSurface = nsnull;
 	mSurface = nsnull;
 	mContext = nsnull;
@@ -124,6 +124,9 @@ NS_IMETHODIMP nsRenderingContextBeOS::CommonInit() {
 // We like PRUnichar rendering, hopefully it's not slowing us too much
 NS_IMETHODIMP nsRenderingContextBeOS::GetHints(PRUint32 &aResult) {
 	aResult = 0;
+	if (!PR_GetEnv("MOZILLA_GFX_DISABLE_FAST_MEASURE")) {
+		aResult = NS_RENDERING_HINT_FAST_MEASURE;	
+	}
 	return NS_OK;
 }
 
@@ -282,7 +285,7 @@ NS_IMETHODIMP nsRenderingContextBeOS::SetClipRect(const nsRect& aRect, nsClipCom
 	
 	aClipEmpty = mClipRegion->IsEmpty();
 	return NS_OK;
-}
+} 
 
 // To reduce locking overhead, the caller must unlock the looper itself.
 // TO DO: Locking and unlocking around each graphics primitive is still very lame
@@ -444,7 +447,7 @@ NS_IMETHODIMP nsRenderingContextBeOS::GetCurrentTransform(nsTransform2D *&aTrans
 	return NS_OK;
 }
 
-NS_IMETHODIMP nsRenderingContextBeOS::CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags,
+NS_IMETHODIMP nsRenderingContextBeOS::CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags,
 	nsDrawingSurface &aSurface) {
 	
 	if (nsnull == mSurface) {
@@ -452,8 +455,7 @@ NS_IMETHODIMP nsRenderingContextBeOS::CreateDrawingSurface(nsRect *aBounds, PRUi
 		return NS_ERROR_FAILURE;
 	}
 	
-	if (aBounds == nsnull) return NS_ERROR_FAILURE;
-	if ((aBounds->width <= 0) || (aBounds->height <= 0)) {
+	if ((aBounds.width <= 0) || (aBounds.height <= 0)) {
 		return NS_ERROR_FAILURE;
 	}
 	
@@ -466,7 +468,7 @@ NS_IMETHODIMP nsRenderingContextBeOS::CreateDrawingSurface(nsRect *aBounds, PRUi
 		    if (mView) 
 		        mView->UnlockLooper();
 		}
-		surf->Init(mView, aBounds->width, aBounds->height, aSurfFlags);
+		surf->Init(mView, aBounds.width, aBounds.height, aSurfFlags);
 	}
 	aSurface = (nsDrawingSurface)surf;
 	return NS_OK;
@@ -525,28 +527,49 @@ NS_IMETHODIMP nsRenderingContextBeOS::DrawStdLine(nscoord aX0, nscoord aY0, nsco
 	return NS_OK;
 }
 
-// TO DO: Allocating BPoints on the heap here is not great.
 NS_IMETHODIMP nsRenderingContextBeOS::DrawPolyline(const nsPoint aPoints[], PRInt32 aNumPoints) {
 	if (mTranMatrix == nsnull) return NS_ERROR_FAILURE;
 	if (mSurface == nsnull) return NS_ERROR_FAILURE;
-	
-	BPoint *pts = new BPoint[aNumPoints];
-	for (int i = 0; i < aNumPoints; i++) {
+	BPoint *pts;
+	BPolygon poly;
+	BRect r;
+	PRInt32 w, h;
+	//allocating from stack if amount isn't big
+	BPoint bpointbuf[64];
+	pts = bpointbuf;
+	if(aNumPoints>64)
+		pts = new BPoint[aNumPoints];
+	for (int i = 0; i < aNumPoints; ++i) {
 		nsPoint p = aPoints[i];
 		mTranMatrix->TransformCoord(&p.x, &p.y);
 		pts[i].x = p.x;
 		pts[i].y = p.y;
 #ifdef DEBUG
-		printf("(%i,%i)\n", p.x, p.y);
+		printf("polyline(%i,%i)\n", p.x, p.y);
 #endif
 	}
-	
-	UpdateView();
-	if (mView) {
-		mView->StrokePolygon(pts, aNumPoints, false);
-		mView->UnlockLooper();
-	}
-	delete [] pts;
+	poly.AddPoints(pts, aNumPoints);
+	r = poly.Frame();	
+	w = r.IntegerWidth();
+	h = r.IntegerHeight();
+//	Don't draw empty polygon
+	if(w && h)
+	{
+		UpdateView();
+		if (mView) {
+			if (1 == h) {
+				mView->StrokeLine(BPoint(r.left, r.top), BPoint(r.left + w - 1, r.top));
+			} else if (1 == w) {
+				mView->StrokeLine(BPoint(r.left, r.top), BPoint(r.left, r.top + h -1));
+			} else {
+				poly.MapTo(r,BRect(r.left, r.top, r.left + w -1, r.top + h - 1));
+				mView->StrokePolygon(&poly, false);
+			}
+			mView->UnlockLooper();
+		}		
+	}	
+	if(pts!=bpointbuf)
+		delete [] pts;
 	return NS_OK;
 }
 
@@ -642,41 +665,85 @@ NS_IMETHODIMP nsRenderingContextBeOS::InvertRect(nscoord aX, nscoord aY, nscoord
 
 NS_IMETHODIMP nsRenderingContextBeOS::DrawPolygon(const nsPoint aPoints[], PRInt32 aNumPoints) {
 	if (nsnull == mTranMatrix || nsnull == mSurface) return NS_ERROR_FAILURE;
-	
-	BPoint *pts = new BPoint[aNumPoints];
-	for (int i = 0; i < aNumPoints; i++) {
+	BPoint *pts;
+	BPolygon poly;
+	BRect r;
+	PRInt32 w, h;
+	//allocating from stack if amount isn't big
+	BPoint bpointbuf[64];
+	pts = bpointbuf;
+	if(aNumPoints>64)
+		pts = new BPoint[aNumPoints];
+	for (int i = 0; i < aNumPoints; ++i) {
 		nsPoint p = aPoints[i];
 		mTranMatrix->TransformCoord(&p.x, &p.y);
 		pts[i].x = p.x;
 		pts[i].y = p.y;
 	}
-	
-	UpdateView();
-	if (mView) {
-		mView->StrokePolygon(pts, aNumPoints, true, B_SOLID_HIGH);
-		mView->UnlockLooper();
-	}
-	delete [] pts;
+	poly.AddPoints(pts, aNumPoints);
+	r = poly.Frame();	
+	w = r.IntegerWidth();
+	h = r.IntegerHeight();
+//	Don't draw empty polygon
+	if(w && h)
+	{
+		UpdateView();
+		if (mView) {
+			if (1 == h) {
+				mView->StrokeLine(BPoint(r.left, r.top), BPoint(r.left + w - 1, r.top));
+			} else if (1 == w) {
+				mView->StrokeLine(BPoint(r.left, r.top), BPoint(r.left, r.top + h -1));
+			} else {
+				poly.MapTo(r,BRect(r.left, r.top, r.left + w -1, r.top + h - 1));
+				mView->StrokePolygon(&poly, true, B_SOLID_HIGH);
+			}
+			mView->UnlockLooper();
+		}		
+	}		
+	if(pts!=bpointbuf)
+		delete [] pts;
 	return NS_OK;
 }
 
 NS_IMETHODIMP nsRenderingContextBeOS::FillPolygon(const nsPoint aPoints[], PRInt32 aNumPoints) {
 	if (nsnull == mTranMatrix || nsnull == mSurface) return NS_ERROR_FAILURE;
 	
-	BPoint *pts = new BPoint[aNumPoints];
-	for (int i = 0; i < aNumPoints; i++) {
+	BPoint *pts;
+	BPolygon poly;
+	BRect r;
+	PRInt32 w, h;
+	BPoint bpointbuf[64];
+	pts = bpointbuf;
+	if(aNumPoints>64)
+		pts = new BPoint[aNumPoints];
+	for (int i = 0; i < aNumPoints; ++i) {
 		nsPoint p = aPoints[i];
 		mTranMatrix->TransformCoord(&p.x, &p.y);
 		pts[i].x = p.x;
 		pts[i].y = p.y;
 	}
-	
-	UpdateView();
-	if (mView) {
-		mView->FillPolygon(pts, aNumPoints, B_SOLID_HIGH);
-		mView->UnlockLooper();
+	poly.AddPoints(pts, aNumPoints);
+	r = poly.Frame();
+	w = r.IntegerWidth();
+	h = r.IntegerHeight();
+//	Don't draw empty polygon
+	if(w && h)
+	{
+		UpdateView();
+		if (mView) {
+			if (1 == h) {
+				mView->StrokeLine(BPoint(r.left, r.top), BPoint(r.left + w - 1, r.top));
+			} else if (1 == w) {
+				mView->StrokeLine(BPoint(r.left, r.top), BPoint(r.left, r.top + h -1));
+			} else {
+				poly.MapTo(r,BRect(r.left, r.top, r.left + w -1, r.top + h - 1));
+				mView->FillPolygon(&poly, B_SOLID_HIGH);
+			}
+			mView->UnlockLooper();
+		}		
 	}
-	delete [] pts;
+	if(pts!=bpointbuf)
+		delete [] pts;
 	return NS_OK;
 }
 
@@ -765,6 +832,62 @@ NS_IMETHODIMP nsRenderingContextBeOS::FillArc(nscoord aX, nscoord aY, nscoord aW
 	return NS_OK;
 }
 
+// Block of UTF-8 helpers
+// Whole block of utf-8 helpers must  be placed before any gfx text method
+// in order to allow text handling directly from PRUnichar* methods in future
+
+// From BeNewsLetter #82:
+// Get the number of character bytes for a given utf8 byte character
+inline uint32 utf8_char_len(uchar byte) 
+{
+	return (((0xE5000000 >> ((byte >> 3) & 0x1E)) & 3) + 1);
+}
+
+// useful UTF-8 utilities 
+
+#define BEGINS_CHAR(byte) ((byte & 0xc0) != 0x80)
+
+inline uint32 utf8_str_len(const char* ustring) 
+{
+	uint32 cnt = 0;
+	while ( *ustring != '\0')
+	{
+		if ( BEGINS_CHAR( *ustring ) )
+			++cnt;
+			++ustring;
+	}
+	return cnt;       
+}
+
+// Macro to convert a ushort* uni_string into a char* or uchar* utf8_string,
+// one character at a time. Move the pointer. You can check terminaison on
+// the uni_string by testing : if (uni_string[0] == 0)
+// WARNING : you need to use EXPLICIT POINTERS for both str and unistr.
+#define convert_to_utf8(str, uni_str) {\
+	if ((uni_str[0]&0xff80) == 0)\
+		*str++ = *uni_str++;\
+	else if ((uni_str[0]&0xf800) == 0) {\
+		str[0] = 0xc0|(uni_str[0]>>6);\
+		str[1] = 0x80|((*uni_str++)&0x3f);\
+		str += 2;\
+	} else if ((uni_str[0]&0xfc00) != 0xd800) {\
+		str[0] = 0xe0|(uni_str[0]>>12);\
+		str[1] = 0x80|((uni_str[0]>>6)&0x3f);\
+		str[2] = 0x80|((*uni_str++)&0x3f);\
+		str += 3;\
+	} else {\
+		int val;\
+		val = ((uni_str[0]-0xd7c0)<<10) | (uni_str[1]&0x3ff);\
+		str[0] = 0xf0 | (val>>18);\
+		str[1] = 0x80 | ((val>>12)&0x3f);\
+		str[2] = 0x80 | ((val>>6)&0x3f);\
+		str[3] = 0x80 | (val&0x3f);\
+		uni_str += 2; str += 4;\
+	}\
+}
+
+// End of block of UTF-8 helpers
+
 NS_IMETHODIMP nsRenderingContextBeOS::GetWidth(char aC, nscoord &aWidth) {
 	// Check for the very common case of trying to get the width of a single space
 	if ((aC == ' ') && (nsnull != mFontMetrics)) {
@@ -801,32 +924,6 @@ NS_IMETHODIMP nsRenderingContextBeOS::GetWidth(const char *aString, PRUint32 aLe
 	return NS_OK;
 }
 
-// Macro to convert a ushort* uni_string into a char* or uchar* utf8_string,
-// one character at a time. Move the pointer. You can check terminaison on
-// the uni_string by testing : if (uni_string[0] == 0)
-// WARNING : you need to use EXPLICIT POINTERS for both str and unistr.
-#define convert_to_utf8(str, uni_str) {\
-	if ((uni_str[0]&0xff80) == 0)\
-		*str++ = *uni_str++;\
-	else if ((uni_str[0]&0xf800) == 0) {\
-		str[0] = 0xc0|(uni_str[0]>>6);\
-		str[1] = 0x80|((*uni_str++)&0x3f);\
-		str += 2;\
-	} else if ((uni_str[0]&0xfc00) != 0xd800) {\
-		str[0] = 0xe0|(uni_str[0]>>12);\
-		str[1] = 0x80|((uni_str[0]>>6)&0x3f);\
-		str[2] = 0x80|((*uni_str++)&0x3f);\
-		str += 3;\
-	} else {\
-		int val;\
-		val = ((uni_str[0]-0xd7c0)<<10) | (uni_str[1]&0x3ff);\
-		str[0] = 0xf0 | (val>>18);\
-		str[1] = 0x80 | ((val>>12)&0x3f);\
-		str[2] = 0x80 | ((val>>6)&0x3f);\
-		str[3] = 0x80 | (val&0x3f);\
-		uni_str += 2; str += 4;\
-	}\
-}
 
 NS_IMETHODIMP nsRenderingContextBeOS::GetWidth(const PRUnichar *aString, PRUint32 aLength,
 	nscoord &aWidth, PRInt32 *aFontID) {
@@ -867,17 +964,236 @@ NS_IMETHODIMP nsRenderingContextBeOS::GetTextDimensions(const PRUnichar *aString
 	return GetWidth(aString, aLength, aDimensions.width, aFontID);
 }
 
+// FAST TEXT MEASURE methods
+// Implementation is simplicistic in comparison with other platforms - we follow in this method
+// generic BeOS-port approach for string methods in GFX - convert from PRUnichar* to (UTF-8) char*
+// and call (UTF-8) char* version of the method.
+// It works well with current nsFontMetricsBeOS which is, again, simpler in comparison with
+// other platforms, partly due to UTF-8 nature of BeOS, partly due unimplemented font fallbacks
+// and other tricks.
+
+NS_IMETHODIMP nsRenderingContextBeOS::GetTextDimensions(const PRUnichar*  aString,
+														PRInt32           aLength,
+														PRInt32           aAvailWidth,
+														PRInt32*          aBreaks,
+														PRInt32           aNumBreaks,
+														nsTextDimensions& aDimensions,
+														PRInt32&          aNumCharsFit,
+														nsTextDimensions& aLastWordDimensions,
+														PRInt32*          aFontID = nsnull)
+{
+	nsresult ret_code = NS_ERROR_FAILURE;	
+	uint8 utf8buf[1024];
+	uint8* utf8str = nsnull;
+	// max UTF-8 string length
+	PRUint32 slength = aLength * 4 + 1;
+	// Allocating char* array rather from stack than from heap for speed.
+	//  1024 char array forms  e.g.  256 == 32*8 frame for CJK glyphs, which may be
+	// insufficient for purpose of this method, but until we implement storage
+	//in nsSurface, i think it is good compromise.
+	if (slength < 1024) 
+		utf8str = utf8buf;
+	else 
+		utf8str = new uint8[slength];
+
+	uint8 *utf8ptr = utf8str;
+	const PRUnichar *uniptr = aString;
+	
+	for (PRUint32 i = 0; i < aLength; ++i) 
+		convert_to_utf8(utf8ptr, uniptr);
+	
+	*utf8ptr = '\0';
+	ret_code = GetTextDimensions((char *)utf8str, utf8ptr-utf8str, aAvailWidth, aBreaks, aNumBreaks,
+                               aDimensions, aNumCharsFit, aLastWordDimensions, aFontID);
+	// deallocating if got from heap
+	if (utf8str != utf8buf)
+			delete [] utf8str;
+	return ret_code;
+}
+
+NS_IMETHODIMP nsRenderingContextBeOS::GetTextDimensions(const char*       aString,
+														PRInt32           aLength,
+														PRInt32           aAvailWidth,
+														PRInt32*          aBreaks,
+														PRInt32           aNumBreaks,
+														nsTextDimensions& aDimensions,
+														PRInt32&          aNumCharsFit,
+														nsTextDimensions& aLastWordDimensions,
+														PRInt32*          aFontID = nsnull)
+{
+	// Code is borrowed from win32 implementation including comments.
+	// Minor changes are introduced due multibyte/utf-8 nature of char* strings handling in BeOS.
+
+	NS_PRECONDITION(aBreaks[aNumBreaks - 1] == aLength, "invalid break array");
+	// If we need to back up this state represents the last place we could
+	// break. We can use this to avoid remeasuring text
+	PRInt32 prevBreakState_BreakIndex = -1; // not known (hasn't been computed)
+	nscoord prevBreakState_Width = 0; // accumulated width to this point
+	mFontMetrics->GetMaxAscent(aLastWordDimensions.ascent);
+	mFontMetrics->GetMaxDescent(aLastWordDimensions.descent);
+	aLastWordDimensions.width = -1;
+	aNumCharsFit = 0;
+	// Iterate each character in the string and determine which font to use
+	nscoord width = 0;
+	PRInt32 start = 0;
+	nscoord aveCharWidth;
+	PRInt32 numBytes = 0;
+	PRInt32 num_of_glyphs = 0; // Number of glyphs isn't equal to number of bytes in case of UTF-8
+	PRInt32 *utf8pos =0;
+	// allocating  array for positions of first bytes of utf-8 chars in utf-8 string
+	// from stack if possible
+	PRInt32 utf8posbuf[1025];
+	if (aLength < 1025) 
+		utf8pos = utf8posbuf;
+	else 
+		utf8pos = new PRInt32[aLength + 1];
+	
+	char * utf8ptr = (char *)aString;
+	// counting number of glyphs (not bytes) in utf-8 string 
+	//and recording positions of first byte for each utf-8 char
+	PRInt32 i = 0;
+	while (i < aLength)
+	{
+		if ( BEGINS_CHAR( utf8ptr[i] ) )
+		{
+			utf8pos[num_of_glyphs] = i;
+			++num_of_glyphs;
+		}
+		++i;
+	}
+
+	mFontMetrics->GetAveCharWidth(aveCharWidth);
+	utf8pos[num_of_glyphs] = i; // IMPORTANT for non-ascii strings for proper last-string-in-block.
+
+	while (start < num_of_glyphs) 
+	{
+		// Estimate how many characters will fit. Do that by diving the available
+		// space by the average character width. Make sure the estimated number
+		// of characters is at least 1
+		PRInt32 estimatedNumChars = 0;
+		if (aveCharWidth > 0) 
+			estimatedNumChars = (aAvailWidth - width) / aveCharWidth;
+
+		if (estimatedNumChars < 1) 
+			estimatedNumChars = 1;
+
+		// Find the nearest break offset
+		PRInt32 estimatedBreakOffset = start + estimatedNumChars;
+		PRInt32 breakIndex;
+		nscoord numChars;
+		if (num_of_glyphs <= estimatedBreakOffset) 
+		{
+			// All the characters should fit
+			numChars = num_of_glyphs - start;
+			// BeOS specifics - getting number of bytes from position array. Same for all remaining numBytes occurencies.
+			numBytes = aLength - utf8pos[start];
+			breakIndex = aNumBreaks - 1;
+		}
+		else 
+		{
+			breakIndex = prevBreakState_BreakIndex;
+			while (((breakIndex + 1) < aNumBreaks) 
+					&& (aBreaks[breakIndex + 1] <= estimatedBreakOffset)) 
+			{
+				++breakIndex;
+			}
+			
+			if (breakIndex == prevBreakState_BreakIndex) 
+				++breakIndex; // make sure we advanced past the previous break index
+
+			numChars = aBreaks[breakIndex] - start;
+			numBytes = utf8pos[aBreaks[breakIndex]] - utf8pos[start];
+		}
+		nscoord twWidth = 0;
+		if ((1 == numChars) && (aString[utf8pos[start]] == ' ')) 
+		{
+			mFontMetrics->GetSpaceWidth(twWidth);
+		} 
+		else if (numChars > 0) 
+		{
+			float  size = mCurrentFont->StringWidth(&aString[utf8pos[start]], numBytes);
+			twWidth = NSToCoordRound(size * mP2T);
+		} 
+
+		// See if the text fits
+		PRBool  textFits = (twWidth + width) <= aAvailWidth;
+		// If the text fits then update the width and the number of
+		// characters that fit
+		if (textFits) 
+		{
+			aNumCharsFit += numChars;
+			width += twWidth;
+			start += numChars;
+
+			// This is a good spot to back up to if we need to so remember
+			// this state
+			prevBreakState_BreakIndex = breakIndex;
+			prevBreakState_Width = width;
+		}
+		else 
+		{
+			// See if we can just back up to the previous saved state and not
+			// have to measure any text
+			if (prevBreakState_BreakIndex > 0) 
+			{
+				// If the previous break index is just before the current break index
+				// then we can use it
+				if (prevBreakState_BreakIndex == (breakIndex - 1)) 
+				{
+					aNumCharsFit = aBreaks[prevBreakState_BreakIndex];
+					width = prevBreakState_Width;
+					break;
+				}
+			}
+			// We can't just revert to the previous break state
+			if (0 == breakIndex)
+			{
+				// There's no place to back up to, so even though the text doesn't fit
+				// return it anyway
+				aNumCharsFit += numChars;
+				width += twWidth;
+				break;
+			}       
+			// Repeatedly back up until we get to where the text fits or we're all
+			// the way back to the first word
+			width += twWidth;
+			while ((breakIndex >= 1) && (width > aAvailWidth)) 
+			{
+				twWidth = 0;
+				start = aBreaks[breakIndex - 1];
+				numChars = aBreaks[breakIndex] - start;
+				numBytes = utf8pos[aBreaks[breakIndex]] - utf8pos[start];
+				if ((1 == numChars) && (aString[utf8pos[start]] == ' ')) 
+				{
+					mFontMetrics->GetSpaceWidth(twWidth);
+				}
+				else if (numChars > 0) 
+				{
+					float size = mCurrentFont->StringWidth(&aString[utf8pos[start]], numBytes);
+					twWidth = NSToCoordRound(size * mP2T);
+				}
+				width -= twWidth;
+				aNumCharsFit = start;
+				--breakIndex;
+			}
+		break;   
+		}	       
+	}
+	aDimensions.width = width;
+	mFontMetrics->GetMaxAscent(aDimensions.ascent);
+	mFontMetrics->GetMaxDescent(aDimensions.descent);
+	// deallocating if got from heap
+	if(utf8pos != utf8posbuf) 
+		delete utf8pos;
+	return NS_OK;
+}
+
 NS_IMETHODIMP nsRenderingContextBeOS::DrawString(const nsString &aString,
 	nscoord aX, nscoord aY, PRInt32 aFontID, const nscoord *aSpacing) {
 	
 	return DrawString(aString.get(), aString.Length(), aX, aY, aFontID, aSpacing);
 }
 
-// From BeNewsLetter #82:
-// Get the number of character bytes for a given utf8 byte character
-inline uint32 utf8_char_len(uchar byte) {
-	return (((0xE5000000 >> ((byte >> 3) & 0x1E)) & 3) + 1);
-}
 
 // TO DO: A better solution is needed for both antialiasing as noted below and
 // character spacing - these are both suboptimal.
@@ -910,38 +1226,20 @@ NS_IMETHODIMP nsRenderingContextBeOS::DrawString(const char *aString, PRUint32 a
 					mView->DrawString(aString, aLength, BPoint(xx+1.0, yy));
 				}
 			} else {
-					int32 wlen=0, wpos=aX;
 					char *wpoint =0;
-					for(int32 i =0, onword=0, unichnum=0,  position=aX, ch_len=0;i<=aLength; )
+					int32 unichnum=0,  position=aX, ch_len=0;
+					for (PRUint32 i =0; i <= aLength; i += ch_len)
 					{
 						ch_len = utf8_char_len((uchar)aString[i]);
-						wlen  += ch_len;
-						if((aString[i]==' ' && onword==1) || aString[i]=='\0')
-						{
-							onword=0;
-							xx = wpos; 
-							yy = y;
-							mTranMatrix->TransformCoord(&xx, &yy);
-							// yy++; DrawString quirk!
-							if('\0' == aString[i]) 
-								wlen--;
-							mView->DrawString((char *)(wpoint), wlen, BPoint(xx, yy)); 
-							if (doEmulateBold) 	
-								mView->DrawString((char *)(wpoint), wlen, BPoint(xx+1.0, yy));
-							wlen=0;
-						}
-						else
-						{
-							if (onword ==0)
-							{
-								onword= 1; 
-								wpoint = (char *)&(aString[i]); 
-								wpos = position;
-								
-							}
-						}
+						wpoint = (char *)(aString + i);
+						xx = position; 
+						yy = y;
+						mTranMatrix->TransformCoord(&xx, &yy);
+						// yy++; DrawString quirk!
+						mView->DrawString((char *)(wpoint), ch_len, BPoint(xx, yy)); 
+						if (doEmulateBold) 	
+							mView->DrawString((char *)(wpoint), ch_len, BPoint(xx+1.0, yy));
 						position += aSpacing[unichnum++];
-						i += ch_len;
 					}
 			}
 			mView->SetDrawingMode(B_OP_COPY);
@@ -969,80 +1267,6 @@ NS_IMETHODIMP nsRenderingContextBeOS::DrawString(const PRUnichar *aString, PRUin
 	delete [] utf8str;
 	return NS_OK;
 }
-
-NS_IMETHODIMP nsRenderingContextBeOS::DrawImage(nsIImage *aImage, nscoord aX, nscoord aY) {
-	// We have to do this here because we are doing a transform below
-	nscoord width = NSToCoordRound(mP2T * aImage->GetWidth());
-	nscoord height = NSToCoordRound(mP2T * aImage->GetHeight());
-	return DrawImage(aImage, aX, aY, width, height);
-}
-
-NS_IMETHODIMP nsRenderingContextBeOS::DrawImage(nsIImage *aImage, const nsRect &aRect) {
-	return DrawImage(aImage, aRect.x, aRect.y, aRect.width, aRect.height);
-}
-
-NS_IMETHODIMP nsRenderingContextBeOS::DrawImage(nsIImage *aImage, nscoord aX, nscoord aY,
-	nscoord aWidth, nscoord aHeight) {
-	
-	nscoord x = aX, y = aY, w = aWidth, h = aHeight;
-	mTranMatrix->TransformCoord(&x, &y, &w, &h);
-	
-	UpdateView();
-	NS_IMETHODIMP result = aImage->Draw(*this, mSurface, x, y, w, h);
-	if (mView) mView->UnlockLooper();
-	return result;
-}
-
-NS_IMETHODIMP nsRenderingContextBeOS::DrawImage(nsIImage *aImage, const nsRect &aSRect,
-	const nsRect &aDRect) {
-	
-	nsRect sr = aSRect;
-	mTranMatrix->TransformCoord(&sr.x, &sr.y, &sr.width, &sr.height);
-	sr.x = aSRect.x;
-	sr.y = aSRect.y;
-	mTranMatrix->TransformNoXLateCoord(&sr.x, &sr.y);
-	
-	nsRect dr = aDRect;
-	mTranMatrix->TransformCoord(&dr.x, &dr.y, &dr.width, &dr.height);
-	
-	UpdateView();
-	NS_IMETHODIMP result = aImage->Draw(*this, mSurface, sr.x, sr.y, sr.width, sr.height,
-		dr.x, dr.y, dr.width, dr.height);
-	if (mView) mView->UnlockLooper();
-	return result;
-}
-
-#ifdef USE_NATIVE_TILING 
-/** ---------------------------------------------------
- *  See documentation in nsIRenderingContext.h
- * @update 3/16/00 dwc
- */
-NS_IMETHODIMP nsRenderingContextBeOS::DrawTile(nsIImage *aImage, nscoord aX0, nscoord aY0,
-	nscoord aX1, nscoord aY1, nscoord aWidth, nscoord aHeight) {
-	
-	mTranMatrix->TransformCoord(&aX0, &aY0, &aWidth, &aHeight);
-	mTranMatrix->TransformCoord(&aX1, &aY1);
-	nsRect srcRect(0, 0, aWidth, aHeight);
-	nsRect tileRect(aX0, aY0, aX1 - aX0, aY1 - aY0);
-	((nsImageBeOS *) aImage)->DrawTile(*this, mSurface, srcRect, tileRect);
-	return NS_OK;
-}
-
-NS_IMETHODIMP nsRenderingContextBeOS::DrawTile(nsIImage *aImage, nscoord aSrcXOffset,
-	nscoord aSrcYOffset, const nsRect &aTileRect) {
-	
-	nsImageBeOS *image = (nsImageBeOS *)aImage;
-	nsRect tileRect(aTileRect);
-	nsRect srcRect(0, 0, aSrcXOffset, aSrcYOffset);
-	mTranMatrix->TransformCoord(&srcRect.x, &srcRect.y, &srcRect.width, &srcRect.height);
-	mTranMatrix->TransformCoord(&tileRect.x, &tileRect.y, &tileRect.width, &tileRect.height);
-	
-	if ((tileRect.width > 0) && (tileRect.height > 0)) {
-		image->DrawTile(*this, mSurface, srcRect.width, srcRect.height, tileRect);
-	}
-	return NS_OK;
-}
-#endif
 
 NS_IMETHODIMP nsRenderingContextBeOS::CopyOffScreenBits(nsDrawingSurface aSrcSurf,
 	PRInt32 aSrcX, PRInt32 aSrcY, const nsRect &aDestBounds, PRUint32 aCopyFlags) {

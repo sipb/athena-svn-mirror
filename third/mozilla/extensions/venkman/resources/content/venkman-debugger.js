@@ -111,10 +111,6 @@ function initDebugger()
     console.errorHook     = { onError: jsdErrorHook };
     console.callHook      = { onCall: jsdCallHook };
     
-    console.jsds.breakpointHook = console.executionHook;
-    console.jsds.debuggerHook   = console.executionHook;
-    console.jsds.debugHook      = console.executionHook;
-    console.jsds.errorHook      = console.errorHook;
     console.jsds.flags          = jsdIDebuggerService.ENABLE_NATIVE_FRAMES;
 
     console.jsdConsole = console.jsds.wrapValue(console);    
@@ -125,6 +121,11 @@ function initDebugger()
     var enumer = { enumerateScript: console.scriptHook.onScriptCreated };
     console.jsds.scriptHook = console.scriptHook;
     console.jsds.enumerateScripts(enumer);
+
+    console.jsds.breakpointHook = console.executionHook;
+    console.jsds.debuggerHook   = console.executionHook;
+    console.jsds.debugHook      = console.executionHook;
+    console.jsds.errorHook      = console.errorHook;
 
     dd ("} initDebugger");
 }
@@ -220,9 +221,16 @@ function jsdScriptDestroyed (jsdScript)
 
 function jsdExecutionHook (frame, type, rv)
 {
+    //dd ("execution hook: " + formatFrame(frame));
+    
     var hookReturn = jsdIExecutionHook.RETURN_CONTINUE;
 
-    if (!ASSERT(!("frames" in console), "Execution hook called while stopped") ||
+    if (!console.initialized)
+        return hookReturn;
+    
+
+    if (!ASSERT(!("frames" in console),
+                "Execution hook called while stopped") ||
         frame.isNative ||
         !ASSERT(frame.script, "Execution hook called with no script") ||
         frame.script.fileName == MSG_VAL_CONSOLE ||
@@ -233,6 +241,16 @@ function jsdExecutionHook (frame, type, rv)
                 "stopped in a filtered URL"))
     {
         return hookReturn;
+    }
+
+    var frames = new Array();
+    var prevFrame = frame;
+    var hasDisabledFrame = false;
+    
+    while (prevFrame)
+    {
+        frames.push(prevFrame);
+        prevFrame = prevFrame.callingFrame;
     }
 
     var targetWindow = null;
@@ -271,7 +289,7 @@ function jsdExecutionHook (frame, type, rv)
     try
     {
         //dd ("debug trap " + formatFrame(frame));
-        hookReturn = debugTrap(frame, type, rv);
+        hookReturn = debugTrap(frames, type, rv);
         //dd ("debug trap returned " + hookReturn);
     }
     catch (ex)
@@ -299,26 +317,45 @@ function jsdExecutionHook (frame, type, rv)
 
 function jsdCallHook (frame, type)
 {
+    if (!console.initialized)
+        return;
+    
     if (type == jsdICallHook.TYPE_FUNCTION_CALL)
     {
         setStopState(false);
-        ++console._stepOverLevel;
+        //dd ("Calling: " + frame.functionName);
     }
     else if (type == jsdICallHook.TYPE_FUNCTION_RETURN)
     {
-        if (--console._stepOverLevel <= 0)
+        // we're called *before* the returning frame is popped from the
+        // stack, so we want our depth calculation to be off by one.
+        var depth = -1;
+        var prevFrame = frame;
+        
+        while (prevFrame)
         {
+            depth++;
+            prevFrame = prevFrame.callingFrame;
+        }
+
+        
+        //dd ("Returning: " + frame.functionName +
+        //    ", target depth: " + console._stepOverDepth +
+        //    ", current depth: " + depth);
+        
+        if (depth <= console._stepOverDepth)
+        {
+            //dd ("step over at target depth of " + depth);
             setStopState(true);
             console.jsds.functionHook = null;
+            delete console._stepOverDepth;
         }
     }
-    //dd ("Call Hook: " + frame.functionName + ", type " +
-    //    type + " callCount: " + console._stepOverLevel);
 }
 
 function jsdErrorHook (message, fileName, line, pos, flags, exception)
 {
-    if (isURLFiltered (fileName))
+    if (!console.initialized || isURLFiltered (fileName))
         return true;
     
     try
@@ -493,12 +530,12 @@ function smgr_hasbp (line)
 }
 
 ScriptManager.prototype.setBreakpoint =
-function smgr_break (line, parentBP)
+function smgr_break (line, parentBP, props)
 {
     var found = false;
     
     for (var i in this.instances)
-        found |= this.instances[i].setBreakpoint(line, parentBP);
+        found |= this.instances[i].setBreakpoint(line, parentBP, props);
 
     return found;
 }
@@ -554,9 +591,11 @@ function ScriptInstance (manager)
     this.creationDate = new Date();
     this.topLevel = null;
     this.functions = new Object();
+    this.nestLevel = 0;
     this.isSealed = false;
     this.scriptCount = 0;
     this.breakpointCount = 0;
+    this.disabledScripts = 0;
     this._lineMap = new Array();
     this._lineMapInited = false;
 }
@@ -618,12 +657,17 @@ function si_seal ()
 
     if (isURLFiltered(this.url))
     {
+        this.disabledScripts = 1;
         var nada = SCRIPT_NODEBUG | SCRIPT_NOPROFILE;
-        if (this.topLevel)
+        if (this.topLevel && this.topLevel.isValid)
             this.topLevel.jsdScript.flags |= nada;
 
         for (var f in this.functions)
-            this.functions[f].jsdScript.flags |= nada;
+        {
+            if (this.functions[f].jsdScript.isValid)
+                this.functions[f].jsdScript.flags |= nada;
+            ++this.disabledScripts;
+        }
     }
 
     dispatch ("hook-script-instance-sealed", { scriptInstance: this });
@@ -672,6 +716,9 @@ function si_linemap()
 {
     if (!this._lineMapInited)
     {
+        if (this.topLevel && this.topLevel.jsdScript.isValid)
+            this.topLevel.addToLineMap(this._lineMap);
+        
         for (var i in this.functions)
         {
             if (this.functions[i].jsdScript.isValid)
@@ -743,21 +790,22 @@ function si_getbp (line)
 }
 
 ScriptInstance.prototype.setBreakpoint =
-function si_setbp (line, parentBP)
+function si_setbp (line, parentBP, props)
 {
     function setBP (scriptWrapper)
     {
-        var jsdScript = scriptWrapper.jsdScript;
-        if (!jsdScript.isValid)
+        if (!scriptWrapper.jsdScript.isValid)
             return false;
+
+        var jsdScript = scriptWrapper.jsdScript;
 
         if (line >= jsdScript.baseLineNumber &&
             line <= jsdScript.baseLineNumber + jsdScript.lineExtent &&
-            jsdScript.isLineExecutable (line, PCMAP_SOURCETEXT))
+            (jsdScript.isLineExecutable (line, PCMAP_SOURCETEXT) ||
+             jsdScript.baseLineNumber == line))
         {
-            scriptWrapper.setBreakpoint(jsdScript.lineToPc(line,
-                                                           PCMAP_SOURCETEXT),
-                                        parentBP);
+            var pc = jsdScript.lineToPc(line, PCMAP_SOURCETEXT);
+            scriptWrapper.setBreakpoint(pc, parentBP, props);
             return true;
         }
         return false;
@@ -896,12 +944,18 @@ function si_guessnames ()
                 ary[1] = toUnicode(ary[1], this._sourceText.charset);
             
             scriptWrapper.functionName = getMsg(MSN_FMT_GUESSEDNAME, ary[1]);
-            this.isGuessedName = true;
         }
         else
         {
-            dd ("unable to guess function name based on text ``" + 
-                scanText + "''");
+            if ("guessFallback" in console)
+            {
+                var name = console.guessFallback(scriptWrapper, scanText);
+                if (name)
+                {
+                    scriptWrapper.functionName = getMsg(MSN_FMT_GUESSEDNAME,
+                                                        name);
+                }
+            }
         }
     }
 
@@ -958,7 +1012,7 @@ function sw_hasbp (pc)
 }
 
 ScriptWrapper.prototype.setBreakpoint =
-function sw_setbp (pc, parentBP)
+function sw_setbp (pc, parentBP, props)
 {
     var key = this.jsdScript.tag + ":" + pc;
     
@@ -968,6 +1022,9 @@ function sw_setbp (pc, parentBP)
         return null;
 
     var brk = new BreakInstance (parentBP, this, pc);
+    if (props)
+        brk.setProperties(props);
+    
     console.breaks[key] = brk;
     this.breaks[key] = brk;
     
@@ -1122,6 +1179,39 @@ function bi_getURL ()
             "&enabled=" + this.enabled);
 }
 
+BreakInstance.prototype.getProperties =
+function bi_getprops()
+{
+    var rv = new Object();
+
+    rv.enabled = this._enabled;
+    if ("_conditionEnabled" in this)
+        rv.conditionEnabled = this._conditionEnabled;
+    if ("_condition" in this)
+        rv.condition = this._condition;
+    if ("_passExceptions" in this)
+        rv.passExceptions = this._passExceptions;
+    if ("_logResult" in this)
+        rv.logResult = this._logResult;
+    if ("_resultAction" in this)
+        rv.resultAction = this._resultAction;
+
+    return rv;
+}
+
+BreakInstance.prototype.setProperties =
+function bi_setprops(obj)
+{
+    for (var p in obj)
+    {
+        if (p.search(/pc|url|lineNumber/) == -1)
+            this[p] = obj[p];
+    }
+    
+    if ("propsWindow" in this)
+        this.propsWindow.populateFromBreakpoint();
+}
+
 BreakInstance.prototype.clearBreakpoint =
 function bi_clear()
 {
@@ -1141,9 +1231,9 @@ function bi_setEnabled (state)
     {
         this._enabled = state;
         if (state)
-            this.jsdScript.setBreakpoint(pc);
+            this.scriptWrapper.jsdScript.setBreakpoint(this.pc);
         else
-            this.jsdScript.clearBreakpoint(pc);
+            this.scriptWrapper.jsdScript.clearBreakpoint(this.pc);
     }
     
     return state;
@@ -1164,6 +1254,9 @@ function bi_getCondEnabled ()
 BreakInstance.prototype.__defineSetter__ ("conditionEnabled", bi_setCondEnabled);
 function bi_setCondEnabled (state)
 {
+    if (this.parentBP)
+        return this.parentBP.conditionEnabled = state;
+    
     return this._conditionEnabled = state;
 }
 
@@ -1182,6 +1275,9 @@ function bi_getCondition ()
 BreakInstance.prototype.__defineSetter__ ("condition", bi_setCondition);
 function bi_setCondition (value)
 {
+    if (this.parentBP)
+        return this.parentBP.condition = value;
+    
     return this._condition = value;
 }
 
@@ -1201,6 +1297,9 @@ function bi_getException ()
 BreakInstance.prototype.__defineSetter__ ("passExceptions", bi_setException);
 function bi_setException (state)
 {
+    if (this.parentBP)
+        return this.parentBP.passExceptions = state;
+    
     return this._passExceptions = state;
 }
 
@@ -1220,6 +1319,9 @@ function bi_getLogResult ()
 BreakInstance.prototype.__defineSetter__ ("logResult", bi_setLogResult);
 function bi_setLogResult (state)
 {
+    if (this.parentBP)
+        return this.parentBP.logResult = state;
+    
     return this._logResult = state;
 }
 
@@ -1239,6 +1341,9 @@ function bi_getResultAction ()
 BreakInstance.prototype.__defineSetter__ ("resultAction", bi_setResultAction);
 function bi_setResultAction (state)
 {
+    if (this.parentBP)
+        return this.parentBP.resultAction = state;
+    
     return this._resultAction = state;
 }
 
@@ -1247,7 +1352,7 @@ function FutureBreakpoint (url, lineNumber)
     this.url = url;
     this.lineNumber = lineNumber;
     this.enabled = true;
-    this.childrenBP = new Object;
+    this.childrenBP = new Object();
     this.conditionEnabled = false;
     this.condition = "";
     this.passExceptions = false;
@@ -1268,6 +1373,34 @@ function fb_getURL ()
             "&enabled=" + this.enabled);
 }
 
+
+FutureBreakpoint.prototype.getProperties =
+function fb_getprops()
+{
+    var rv = new Object();
+    
+    rv.conditionEnabled = this.conditionEnabled;
+    rv.condition = this.condition;
+    rv.passExceptions = this.passExceptions;
+    rv.logResult = this.logResult;
+    rv.resultAction = this.resultAction;
+
+    return rv;
+}
+
+FutureBreakpoint.prototype.setProperties =
+function fb_setprops(obj)
+{
+    for (var p in obj)
+    {
+        if (p.search(/url|lineNumber|childrenBP/) == -1)
+            this[p] = obj[p];
+    }
+    
+    if ("propsWindow" in this)
+        this.propsWindow.populateFromBreakpoint();
+}
+
 FutureBreakpoint.prototype.clearFutureBreakpoint =
 function fb_clear ()
 {
@@ -1279,7 +1412,7 @@ function fb_reseti ()
 {
     for (var url in console.scriptManagers)
     {
-        if (url.search(this.url) != -1)
+        if (url.indexOf(this.url) != -1)
             console.scriptManagers[url].setBreakpoint(this.lineNumber);
     }
 }
@@ -1289,7 +1422,7 @@ function fb_cleari ()
 {
     for (var url in console.scriptManagers)
     {
-        if (url.search(this.url) != -1)
+        if (url.indexOf(this.url) != -1)
             console.scriptManagers[url].clearBreakpoint(this.lineNumber);
     }
 }
@@ -1307,6 +1440,9 @@ function testBreakpoint(currentFrame, rv)
     {
         return -1;
     }
+
+    if (!ASSERT(breakpoint.enabled, "stopped at a disabled breakpoint?"))
+        return RETURN_CONTINUE;
 
     ++breakpoint.triggerCount;
     if ("propsWindow" in breakpoint)
@@ -1369,11 +1505,15 @@ const TMODE_IGNORE = 0;
 const TMODE_TRACE  = 1;
 const TMODE_BREAK  = 2;
 
-function debugTrap (frame, type, rv)
+function debugTrap (frames, type, rv)
 {
     var tn = "";
     var retcode = jsdIExecutionHook.RETURN_CONTINUE;
 
+    //dd ("debugTrap");
+
+    var frame = frames[0];
+    
     $ = new Array();
     
     switch (type)
@@ -1396,7 +1536,8 @@ function debugTrap (frame, type, rv)
                             [rv.value.stringValue, formatFrame(frame)]),
                      MT_ETRACE);
             if (rv.value.jsClassName == "Error")
-                display (formatProperty(rv.value.getProperty("message")));
+                display (formatProperty(rv.value.getProperty("message")),
+                         MT_EVAL_OUT);
 
             if (console.throwMode != TMODE_BREAK)
                 return jsdIExecutionHook.RETURN_CONTINUE_THROW;
@@ -1407,21 +1548,27 @@ function debugTrap (frame, type, rv)
             tn = MSG_VAL_THROW;
             break;
         case jsdIExecutionHook.TYPE_INTERRUPTED:
+            
             if (!frame.script.functionName && 
                 isURLFiltered(frame.script.fileName))
             {
-                dd ("filtered url: " + frame.script.fileName);
+                //dd ("filtered url: " + frame.script.fileName);
                 frame.script.flags |= SCRIPT_NOPROFILE | SCRIPT_NODEBUG;
                 return retcode;
             }
-            
+
             var line;
             if (console.prefs["prettyprint"])
                 line = frame.script.pcToLine (frame.pc, PCMAP_PRETTYPRINT);
             else
                 line = frame.line;
-            if (console._stepPast == frame.script.fileName + line)
+            if (console._stepPast == 
+                frames.length + frame.script.fileName + line)
+            {
+                //dd("stepPast: " + console._stepPast);
                 return retcode;
+            }
+            
             delete console._stepPast;
             setStopState(false);
             break;
@@ -1438,10 +1585,7 @@ function debugTrap (frame, type, rv)
         display (getMsg(MSN_STOP, tn), MT_STOP);
     
     /* build an array of frames */
-    console.frames = new Array(frame);
-    
-    while ((frame = frame.callingFrame))
-        console.frames.push(frame);
+    console.frames = frames;
     
     console.trapType = type;
     
@@ -1719,7 +1863,7 @@ function displayProperties (v)
 
     var p = new Object();
     v.getProperties (p, {});
-    for (var i in p.value) display(formatProperty (p.value[i]));
+    for (var i in p.value) display(formatProperty (p.value[i]), MT_EVAL_OUT);
 }
 
 function displaySourceContext (sourceText, line, contextLines)
@@ -1776,7 +1920,7 @@ function displayFrame (jsdFrame, idx, showHeader, sourceContext)
     if (typeof sourceContext == "undefined")
         sourceContext = null;
 
-    display(getMsg(MSN_FMT_FRAME_LINE, [idx, formatFrame(jsdFrame)]));
+    display(getMsg(MSN_FMT_FRAME_LINE, [idx, formatFrame(jsdFrame)]), MT_OUTPUT);
 
     if (!jsdFrame.isNative && sourceContext != null)
     {
@@ -1809,20 +1953,30 @@ function getFutureBreakpoint (urlPattern, lineNumber)
     return null;
 }
 
-function setFutureBreakpoint (urlPattern, lineNumber)
+function setFutureBreakpoint (urlPattern, lineNumber, props)
 {
     var key = urlPattern + "#" + lineNumber;
 
     if (key in console.fbreaks)
         return false;
     
-    for (var url in console.scriptManagers)
+    var url;
+    
+    for (url in console.scriptManagers)
     {
         if (url == urlPattern)
             console.scriptManagers[url].noteFutureBreakpoint(lineNumber, true);
     }    
 
+    for (url in console.files)
+    {
+        if (url == urlPattern)
+            console.files[url].noteFutureBreakpoint(lineNumber, true);
+    }    
+
     var fbreak = new FutureBreakpoint (urlPattern, lineNumber);
+    if (props)
+        fbreak.setProperties(props);
     console.fbreaks[key] = fbreak;
 
     dispatch ("hook-fbreak-set", { fbreak: fbreak });
@@ -1846,10 +2000,18 @@ function clearFutureBreakpoint (urlPattern, lineNumber)
     for (i in fbreak.childrenBP)
         fbreak.childrenBP[i].parentBP = null;
 
-    for (var url in console.scriptManagers)
+    var url;
+    
+    for (url in console.scriptManagers)
     {
-        if (url.search(urlPattern) != -1)
+        if (url.indexOf(urlPattern) != -1)
             console.scriptManagers[url].noteFutureBreakpoint(lineNumber, false);
+    }
+
+    for (url in console.files)
+    {
+        if (url == urlPattern)
+            console.files[url].noteFutureBreakpoint(lineNumber, false);
     }    
 
     dispatch ("hook-fbreak-clear", { fbreak: fbreak });

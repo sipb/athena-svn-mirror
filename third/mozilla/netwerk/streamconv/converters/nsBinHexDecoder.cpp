@@ -50,7 +50,6 @@
 
 #include "nsIMIMEService.h"
 #include "nsMimeTypes.h"
-#include "nsCExternalHandlerService.h"
 
 static NS_DEFINE_CID(kStreamConverterServiceCID, NS_STREAMCONVERTERSERVICE_CID);
 
@@ -68,7 +67,6 @@ nsBinHexDecoder::nsBinHexDecoder() :
   mDonePos(3), mInCRC(0), mCount(0), mMarker(0), mPosInbuff(0), 
   mPosOutputBuff(0)
 {
-  NS_INIT_ISUPPORTS();
   mDataBuffer = nsnull;
   mOutgoingBuffer = nsnull;
 
@@ -417,7 +415,7 @@ nsresult nsBinHexDecoder::ProcessNextChunk(nsIRequest * aRequest, nsISupports * 
 			
 		/* handle decoded characters -- run length encoding (rle) detection */
 
-#ifndef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 		mOctetBuf.val = PR_ntohl(mOctetBuf.val);
 #endif
 
@@ -516,7 +514,7 @@ nsresult nsBinHexDecoder::SetContentType(nsIRequest * aRequest, const char * fil
     return NS_ERROR_FAILURE; 
   }
 
-  nsCOMPtr<nsIMIMEService> mimeService (do_GetService(NS_MIMESERVICE_CONTRACTID, &rv));
+  nsCOMPtr<nsIMIMEService> mimeService (do_GetService("@mozilla.org/mime;1", &rv));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsXPIDLCString contentType;

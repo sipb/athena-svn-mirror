@@ -128,10 +128,6 @@ public:
   NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                        PRBool aNotify);
 
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
-
 protected:
   // The cached visited state
   nsLinkState mLinkState;
@@ -332,7 +328,7 @@ nsHTMLAnchorElement::StringToAttribute(nsIAtom* aAttribute,
                                        nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::tabindex) {
-    if (ParseValue(aValue, 0, 32767, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0, 32767)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -397,17 +393,6 @@ nsHTMLAnchorElement::SetTarget(const nsAString& aValue)
 {
   return SetAttr(kNameSpaceID_None, nsHTMLAtoms::target, aValue, PR_TRUE);
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLAnchorElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
-
 
 NS_IMETHODIMP    
 nsHTMLAnchorElement::GetProtocol(nsAString& aProtocol)

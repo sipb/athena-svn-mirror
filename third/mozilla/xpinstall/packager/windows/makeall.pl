@@ -27,84 +27,111 @@
 #
 
 use Cwd;
+use File::Copy;
+use File::Path;
+use File::Basename;
 
-# Make sure MOZ_SRC is set.
-if($ENV{MOZ_SRC} eq "")
-{
-  print "Error: MOZ_SRC not set!";
-  exit(1);
-}
+$DEPTH = "../../..";
+$topsrcdir = GetTopSrcDir();
+# ensure that Packager.pm is in @INC, since we might not be called from
+# mozilla/xpinstall/packager
+push(@INC, "$topsrcdir/xpinstall/packager");
+require StageUtils;
+require "$topsrcdir/config/zipcfunc.pl";
 
-# Make sure there are at least three arguments
-if($#ARGV < 2)
-{
-  PrintUsage();
-}
+$inDefaultProductVersion  = StageUtils::GetProductY2KVersion($topsrcdir, $topsrcdir);
+# The mozilla's milestone is the same as the GRE's milestone version.
+# initEmptyValues indicates to GetProductMilestoneVersion() whether or not to
+# prefill the missing version values with '0's:
+#  ie: if milestone version is 1.4a
+#      initEmptyValues dictate whether is should be 1.4a.0.0 or not.
+$initEmptyValues          = 1;
+$inDefaultGreVersion      = StageUtils::GetProductMilestoneVersion($topsrcdir, $topsrcdir, $initEmptyValues);
+$inStagePath              = "$topsrcdir/stage";
+$inDistPath               = "$topsrcdir/dist";
+$inXpiURL                 = "ftp://not.supplied.invalid";
+$inRedirIniURL            = $inXpiURL;
+$seiFileNameGeneric       = "nsinstall.exe";
+$seiFileNameSpecific      = "mozilla-win32-installer.exe";
+$seiStubRootName          = "mozilla-win32-stub-installer";
+$seiFileNameSpecificStub  = "$seiStubRootName.exe";
+$seuFileNameSpecific      = "MozillaUninstall.exe";
+$seuzFileNameSpecific     = "mozillauninstall.zip";
+$seiGreFileNameSpecific   = "gre-win32-installer.exe";
+$seizGreFileNameSpecific  = "gre-win32-installer.zip";
 
-require "$ENV{MOZ_SRC}\\mozilla\\config\\zipcfunc.pl";
+ParseArgv(@ARGV);
 
-$inDefaultVersion     = $ARGV[0];
-# $ARGV[0] has the form maj.min.release.bld where maj, min, release
+print "\n";
+print " Building Mozilla\n";
+print "  Raw version id   : $inDefaultProductVersion\n";
+
+# $inDefaultProductVersion has the form maj.min.release.bld where maj, min, release
 #   and bld are numerics representing version information.
 # Other variables need to use parts of the version info also so we'll
-#   split out the dot seperated values into the array @versionParts
+#   split out the dot separated values into the array @versionParts
 #   such that:
 #
 #   $versionParts[0] = maj
 #   $versionParts[1] = min
 #   $versionParts[2] = release
 #   $versionParts[3] = bld
-@versionParts = split /\./, $inDefaultVersion;
+@versionParts = split /\./, $inDefaultProductVersion;
 
 # We allow non-numeric characters to be included as the last 
-#   characters in fields of $ARG[0] for display purposes (mostly to
+#   characters in fields of $inDefaultProductVersion for display purposes (mostly to
 #   show that we have moved past a certain version by adding a '+'
-#   character).  Non-numerics must be stripped out of $inDefaultVersion,
+#   character).  Non-numerics must be stripped out of $inDefaultProductVersion,
 #   however, since this variable is used to identify the the product 
 #   for comparison with other installations, so the values in each field 
 #   must be numeric only:
-$inDefaultVersion =~ s/[^0-9.][^.]*//g;
-print "The raw version id is:  $inDefaultVersion\n";
-
-$inStagePath          = $ARGV[1];
-$inDistPath           = $ARGV[2];
-
-$inXpiURL = "";
-$inRedirIniURL = "";
-
-ParseArgv(@ARGV);
-if($inXpiURL eq "")
-{
-  # archive url not supplied, set it to default values
-  $inXpiURL      = "ftp://not.supplied.com";
-}
-if($inRedirIniURL eq "")
-{
-  # redirect url not supplied, set it to default value.
-  $inRedirIniURL = $inXpiURL;
-}
-
-$seiFileNameGeneric   = "nsinstall.exe";
-$seiFileNameSpecific  = "mozilla-win32-installer.exe";
-$seiStubRootName = "mozilla-win32-stub-installer";
-$seiFileNameSpecificStub  = "$seiStubRootName.exe";
-$seuFileNameSpecific  = "MozillaUninstall.exe";
-$seuzFileNameSpecific = "mozillauninstall.zip";
+$inDefaultProductVersion =~ s/[^0-9.][^.]*//g;
 
 # set environment vars for use by other .pl scripts called from this script.
 if($versionParts[2] eq "0")
 {
-   $versionMain = "$versionParts[0]\.$versionParts[1]";
+  $versionMain = "$versionParts[0].$versionParts[1]";
 }
 else
 {
-   $versionMain = "$versionParts[0]\.$versionParts[1]\.$versionParts[2]";
+  $versionMain = "$versionParts[0].$versionParts[1].$versionParts[2]";
 }
-print "The display version is: $versionMain\n";
+
+print "  Display version  : $versionMain\n";
+print "  Xpinstall version: $inDefaultProductVersion\n";
+print "\n";
+
+$gDirPackager         = "$topsrcdir/xpinstall/packager";
+$gDirStageProduct     = "$inStagePath/mozilla";
+$gDirDistInstall      = "$inDistPath/install";
+$gDirDistInstGre      = "$inDistPath/inst_gre";
+
+# Build GRE installer package first before building Mozilla!  GRE installer is required by the mozilla installer.
+if(system("perl \"$gDirPackager/win_gre/makeall.pl\" -productVer $inDefaultGreVersion -stagePath \"$inStagePath\" -distPath \"$inDistPath\" -aurl $inXpiURL -rurl $inRedirIniURL"))
+{
+  die "\n Error: perl \"$gDirPackager/win_gre/makeall.pl\" -productVer $inDefaultGreVersion -stagePath \"$inStagePath\" -distPath \"$inDistPath\" -aurl $inXpiURL -rurl $inRedirIniURL\n";
+}
+
+# Create the stage area here.
+# If -sd is not used, the default stage dir will be: $topsrcdir/stage
+if(system("perl \"$gDirPackager/make_stage.pl\" -pn mozilla -os win -sd \"$inStagePath\" -dd \"$inDistPath\""))
+{
+  die "\n Error: perl \"$gDirPackager/make_stage.pl\" -pn mozilla -os win -sd \"$inStagePath\" -dd \"$inDistPath\"\n";
+}
+
+# Copy the GRE installer to the Ns' stage area
+if(!(-e "$gDirDistInstGre/$seiGreFileNameSpecific"))
+{
+  die "\"$gDirDistInstGre/$seiGreFileNameSpecific\": file missing\n";
+}
+mkdir "$gDirStageProduct/gre";
+copy("$gDirDistInstGre/$seiGreFileNameSpecific", "$gDirStageProduct/gre") ||
+  die "copy(\"$gDirDistInstGre/$seiGreFileNameSpecific\", \"$gDirStageProduct/gre\"): $!\n";
+
 $versionLanguage               = "en";
 $ENV{WIZ_nameCompany}          = "mozilla.org";
 $ENV{WIZ_nameProduct}          = "Mozilla";
-$ENV{WIZ_nameProductNoVersion} = "Mozilla";
+$ENV{WIZ_nameProductInternal}  = "Mozilla"; # product name without the version string
 $ENV{WIZ_fileMainExe}          = "Mozilla.exe";
 $ENV{WIZ_fileUninstall}        = $seuFileNameSpecific;
 $ENV{WIZ_fileUninstallZip}     = $seuzFileNameSpecific;
@@ -112,22 +139,46 @@ $ENV{WIZ_fileUninstallZip}     = $seuzFileNameSpecific;
 # the installer.
 $ENV{WIZ_userAgent}            = "$versionMain ($versionLanguage)";
 $ENV{WIZ_userAgentShort}       = "$versionMain";
-$ENV{WIZ_xpinstallVersion}     = "$versionMain";
+$ENV{WIZ_xpinstallVersion}     = "$inDefaultProductVersion";
+$ENV{WIZ_distInstallPath}      = "$gDirDistInstall";
 
-# Set the location of the local tmp stage directory
-$gLocalTmpStage = $inStagePath;
+# GetProductBuildID() will return the build id for GRE located here:
+#      NS_BUILD_ID in nsBuildID.h: 2003030610
+$ENV{WIZ_greBuildID}       = StageUtils::GetProductBuildID("$topsrcdir/config/nsBuildID.h", "NS_BUILD_ID");
+
+# GetGreFileVersion() will return the actual version of xpcom.dll used by GRE.
+#  ie:
+#      given milestone.txt : 1.4a
+#      given nsBuildID.h   : 2003030610
+#      gre version would be: 1.4.20030.30610
+$ENV{WIZ_greFileVersion}       = StageUtils::GetGreFileVersion($topsrcdir);
+
+# GetGreSpecialID() will return the GRE ID to be used in the windows registry.
+# This ID is also the same one being querried for by the mozilla glue code.
+#  ie:
+#      given milestone.txt    : 1.4a
+#      given nsBuildID.h      : 2003030610
+#      gre special ID would be: 1.4a_2003030610
+$ENV{WIZ_greUniqueID}          = StageUtils::GetGreSpecialID($topsrcdir);
+
+print "\n";
+print " GRE build id       : $ENV{WIZ_greBuildID}\n";
+print " GRE file version   : $ENV{WIZ_greFileVersion}\n";
+print " GRE special version: $ENV{WIZ_greUniqueID}\n";
+print "\n";
+print " Building $ENV{WIZ_nameProduct} $ENV{WIZ_userAgent}...\n";
+print "\n";
 
 # Check for existence of staging path
-if(!(-d "$inStagePath"))
+if(!(-d "$gDirStageProduct"))
 {
-  die "\n Invalid path: $inStagePath\n";
+  die "\n Invalid path: $gDirStageProduct\n";
 }
 
 # List of components for to create xpi files from
 @gComponentList = ("xpcom",
                    "browser",
                    "mail",
-                   "psm",
                    "talkback",
                    "chatzilla",
                    "deflenus",
@@ -141,38 +192,44 @@ if(VerifyComponents()) # return value of 0 means no errors encountered
   exit(1);
 }
 
-# Make sure inDistPath exists
-if(!(-d "$inDistPath"))
+# Make sure gDirDistInstall exists
+if(!(-d "$gDirDistInstall"))
 {
-  mkdir ("$inDistPath",0775);
+  mkdir ("$gDirDistInstall",0775);
 }
 
-if(-d "$inDistPath\\xpi")
+if(-d "$gDirDistInstall/xpi")
 {
-  unlink <$inDistPath\\xpi\\*>;
+  unlink <$gDirDistInstall/xpi/*>;
 }
 else
 {
-  mkdir ("$inDistPath\\xpi",0775);
+  mkdir ("$gDirDistInstall/xpi",0775);
 }
 
-if(-d "$inDistPath\\uninstall")
+if(-d "$gDirDistInstall/uninstall")
 {
-  unlink <$inDistPath\\uninstall\\*>;
+  unlink <$gDirDistInstall/uninstall/*>;
 }
 else
 {
-  mkdir ("$inDistPath\\uninstall",0775);
+  mkdir ("$gDirDistInstall/uninstall",0775);
 }
 
-if(-d "$inDistPath\\setup")
+if(-d "$gDirDistInstall/setup")
 {
-  unlink <$inDistPath\\setup\\*>;
+  unlink <$gDirDistInstall/setup/*>;
 }
 else
 {
-  mkdir ("$inDistPath\\setup",0775);
+  mkdir ("$gDirDistInstall/setup",0775);
 }
+
+if(!(-e "$inDistPath/inst_gre/$seiGreFileNameSpecific"))
+{
+  die "\"$inDistPath/inst_gre/$seiGreFileNameSpecific\": file missing\n";
+}
+MakeExeZip("$inDistPath/inst_gre", $seiGreFileNameSpecific, $seizGreFileNameSpecific);
 
 if(MakeXpiFile())
 {
@@ -188,51 +245,25 @@ if(MakeConfigFile())
 }
 
 # Copy the setup files to the dist setup directory.
-if(system("copy install.ini $inDistPath"))
-{
-  die "\n Error: copy install.ini $inDistPath\n";
-}
-if(system("copy install.ini $inDistPath\\setup"))
-{
-  die "\n Error: copy install.ini $inDistPath\\setup\n";
-}
-if(system("copy config.ini $inDistPath"))
-{
-  die "\n Error: copy config.ini $inDistPath\n";
-}
-if(system("copy config.ini $inDistPath\\setup"))
-{
-  die "\n Error: copy config.ini $inDistPath\\setup\n";
-}
-if(system("copy $inDistPath\\setup.exe $inDistPath\\setup"))
-{
-  die "\n Error: copy $inDistPath\\setup.exe $inDistPath\\setup\n";
-}
-if(system("copy $inDistPath\\setuprsc.dll $inDistPath\\setup"))
-{
-  die "\n Error: copy $inDistPath\\setuprsc.dll $inDistPath\\setup\n";
-}
+copy("install.ini", "$gDirDistInstall") || 
+  die "copy install.ini $gDirDistInstall: $!\n";
+copy("install.ini", "$gDirDistInstall/setup") ||
+  die "copy install.ini $gDirDistInstall/setup: $!\n";
+copy("config.ini", "$gDirDistInstall") ||
+  die "copy config.ini $gDirDistInstall: $!\n";
+copy("config.ini", "$gDirDistInstall/setup") ||
+  die "copy config.ini $gDirDistInstall/setup: $!\n";
+copy("$gDirDistInstall/setup.exe", "$gDirDistInstall/setup") ||
+  die "copy $gDirDistInstall/setup.exe $gDirDistInstall/setup: $!\n";
+copy("$gDirDistInstall/setuprsc.dll", "$gDirDistInstall/setup") ||
+  die "copy $gDirDistInstall/setuprsc.dll $gDirDistInstall/setup: $!\n";
 
 # copy license file for the installer
-if(system("copy $ENV{MOZ_SRC}\\mozilla\\LICENSE $inDistPath\\license.txt"))
-{
-  die "\n Error: copy $ENV{MOZ_SRC}\\mozilla\\LICENSE $inDistPath\\license.txt\n";
-}
-if(system("copy $ENV{MOZ_SRC}\\mozilla\\LICENSE $inDistPath\\setup\\license.txt"))
-{
-  die "\n Error: copy $ENV{MOZ_SRC}\\mozilla\\LICENSE $inDistPath\\setup\\license.txt\n";
-}
+copy("$topsrcdir/LICENSE", "$gDirDistInstall/license.txt") ||
+  die "copy $topsrcdir/LICENSE $gDirDistInstall/license.txt: $!\n";
+copy("$topsrcdir/LICENSE", "$gDirDistInstall/setup/license.txt") ||
+  die "copy $topsrcdir/LICENSE $gDirDistInstall/setup/license.txt: $!\n";
 
-# build the self-extracting .exe (installer) file.
-print "\nbuilding self-extracting stub installer ($seiFileNameSpecificStub)...\n";
-if(system("copy $inDistPath\\$seiFileNameGeneric $inDistPath\\$seiFileNameSpecificStub"))
-{
-  die "\n Error: copy $inDistPath\\$seiFileNameGeneric $inDistPath\\$seiFileNameSpecificStub\n";
-}
-if(system("$inDistPath\\nsztool.exe $inDistPath\\$seiFileNameSpecificStub $inDistPath\\setup\\*.*"))
-{
-  die "\n Error: inDistPath\\nsztool.exe $inDistPath\\$seiFileNameSpecificStub $inDistPath\\setup\\*.*\n";
-}
 
 # copy the lean installer to stub\ dir
 print "\n****************************\n";
@@ -240,37 +271,46 @@ print "*                          *\n";
 print "*  creating Stub files...  *\n";
 print "*                          *\n";
 print "****************************\n";
-if(-d "$inDistPath\\stub")
+print "\n $gDirDistInstall/stub/$seiFileNameSpecificStub\n";
+
+# build the self-extracting .exe (installer) file.
+copy("$gDirDistInstall/$seiFileNameGeneric", "$gDirDistInstall/$seiFileNameSpecificStub") ||
+  die "copy $gDirDistInstall/$seiFileNameGeneric $gDirDistInstall/$seiFileNameSpecificStub: $!\n";
+
+if (system("$gDirDistInstall/nsztool.exe $gDirDistInstall/$seiFileNameSpecificStub $gDirDistInstall/setup/*.*"))
 {
-  unlink <$inDistPath\\stub\\*>;
+  die "\n Error: $gDirDistInstall/nsztool.exe $gDirDistInstall/$seiFileNameSpecificStub $gDirDistInstall/setup/*.*\n";
+}
+
+if(-d "$gDirDistInstall/stub")
+{
+  unlink <$gDirDistInstall/stub/*>;
 }
 else
 {
-  mkdir ("$inDistPath\\stub",0775);
+  mkdir ("$gDirDistInstall/stub",0775);
 }
-if(system("copy $inDistPath\\$seiFileNameSpecificStub $inDistPath\\stub"))
-{
-  die "\n Error: copy $inDistPath\\$seiFileNameSpecificStub $inDistPath\\stub\n";
-}
+copy("$gDirDistInstall/$seiFileNameSpecificStub", "$gDirDistInstall/stub") ||
+  die "copy $gDirDistInstall/$seiFileNameSpecificStub $gDirDistInstall/stub: $!\n";
 
 # create the xpi for launching the stub installer
-print "\n**********************************\n";
+print "\n************************************\n";
 print "*                                  *\n";
 print "*  creating stub installer xpi...  *\n";
 print "*                                  *\n";
 print "************************************\n";
-if(-d "$inStagePath\\$seiStubRootName")
+print "\n $gDirDistInstall/$seiStubRootName.xpi\n\n";
+
+if(-d "$gDirStageProduct/$seiStubRootName")
 {
-  unlink <$inStagePath\\$seiStubRootName\\*>;
+  unlink <$gDirStageProduct/$seiStubRootName/*>;
 }
 else
 {
-  mkdir ("$inStagePath\\$seiStubRootName",0775);
+  mkdir ("$gDirStageProduct/$seiStubRootName",0775);
 }
-if(system("copy $inDistPath\\stub\\$seiFileNameSpecificStub $gLocalTmpStage\\$seiStubRootName"))
-{
-  die "\n Error: copy $inDistPath\\stub\\$seiFileNameSpecificStub $gLocalTmpStage\\$seiStubRootName\n";
-}
+copy("$gDirDistInstall/stub/$seiFileNameSpecificStub", "$gDirStageProduct/$seiStubRootName") ||
+  die "copy $gDirDistInstall/stub/$seiFileNameSpecificStub $gDirStageProduct/$seiStubRootName: $!\n";
 
 # Make .js files
 if(MakeJsFile($seiStubRootName))
@@ -279,9 +319,9 @@ if(MakeJsFile($seiStubRootName))
 }
 
 # Make .xpi file
-if(system("perl makexpi.pl $seiStubRootName $gLocalTmpStage $inDistPath"))
+if(system("perl makexpi.pl $seiStubRootName $gDirStageProduct $gDirDistInstall"))
 {
-  print "\n Error: perl makexpi.pl $seiStubRootName $gLocalTmpStage $inDistPath\n";
+  print "\n Error: perl makexpi.pl $seiStubRootName $gDirStageProduct $gDirDistInstall\n";
   return(1);
 }
 
@@ -291,22 +331,21 @@ print "*                                  *\n";
 print "*  creating Compact Disk files...  *\n";
 print "*                                  *\n";
 print "************************************\n";
-if(-d "$inDistPath\\cd")
+print "\n $gDirDistInstall/cd\n";
+
+if(-d "$gDirDistInstall/cd")
 {
-  unlink <$inDistPath\\cd\\*>;
+  unlink <$gDirDistInstall/cd/*>;
 }
 else
 {
-  mkdir ("$inDistPath\\cd",0775);
+  mkdir ("$gDirDistInstall/cd",0775);
 }
-if(system("copy $inDistPath\\$seiFileNameSpecificStub $inDistPath\\cd"))
-{
-  die "\n Error: copy $inDistPath\\$seiFileNameSpecificStub $inDistPath\\cd\n";
-}
-if(system("copy $inDistPath\\xpi $inDistPath\\cd"))
-{
-  die "\n Error: copy $inDistPath\\xpi $inDistPath\\cd\n";
-}
+
+copy("$gDirDistInstall/$seiFileNameSpecificStub", "$gDirDistInstall/cd") ||
+  die "copy $gDirDistInstall/$seiFileNameSpecificStub $gDirDistInstall/cd: $!\n";
+
+StageUtils::CopyFiles("$gDirDistInstall/xpi", "$gDirDistInstall/cd");
 
 # create the big self extracting .exe installer
 print "\n**************************************************************\n";
@@ -314,43 +353,43 @@ print "*                                                            *\n";
 print "*  creating Self Extracting Executable Full Install file...  *\n";
 print "*                                                            *\n";
 print "**************************************************************\n";
-if(-d "$inDistPath\\sea")
+print "\n $gDirDistInstall/$seiFileNameSpecific\n";
+
+if(-d "$gDirDistInstall/sea")
 {
-  unlink <$inDistPath\\sea\\*>;
+  unlink <$gDirDistInstall/sea/*>;
 }
 else
 {
-  mkdir ("$inDistPath\\sea",0775);
+  mkdir ("$gDirDistInstall/sea",0775);
 }
-if(system("copy $inDistPath\\$seiFileNameGeneric $inDistPath\\$seiFileNameSpecific"))
+copy("$gDirDistInstall/$seiFileNameGeneric", "$gDirDistInstall/$seiFileNameSpecific") ||
+  die "copy $gDirDistInstall/$seiFileNameGeneric $gDirDistInstall/$seiFileNameSpecific: $!\n";
+
+if(system("$gDirDistInstall/nsztool.exe $gDirDistInstall/$seiFileNameSpecific $gDirDistInstall/setup/*.* $gDirDistInstall/xpi/*.*"))
 {
-  die "\n Error: copy $inDistPath\\$seiFileNameGeneric $inDistPath\\$seiFileNameSpecific\n";
+  die "\n Error: $gDirDistInstall/nsztool.exe $gDirDistInstall/$seiFileNameSpecific $gDirDistInstall/setup/*.* $gDirDistInstall/xpi/*.*\n";
 }
-if(system("$inDistPath\\nsztool.exe $inDistPath\\$seiFileNameSpecific $inDistPath\\setup\\*.* $inDistPath\\xpi\\*.*"))
-{
-  die "\n Error: $inDistPath\\nsztool.exe $inDistPath\\$seiFileNameSpecific $inDistPath\\setup\\*.* $inDistPath\\xpi\\*.*\n";
-}
-if(system("copy $inDistPath\\$seiFileNameSpecific $inDistPath\\sea"))
-{
-  die "\n Error: copy $inDistPath\\$seiFileNameSpecific $inDistPath\\sea\n";
-}
-unlink <$inDistPath\\$seiFileNameSpecificStub>;
+copy("$gDirDistInstall/$seiFileNameSpecific", "$gDirDistInstall/sea") ||
+  die "copy $gDirDistInstall/$seiFileNameSpecific $gDirDistInstall/sea: $!\n";
+
+unlink <$gDirDistInstall/$seiFileNameSpecificStub>;
 
 print " done!\n\n";
 
-if((!(-e "$ENV{MOZ_SRC}\\redist\\microsoft\\system\\msvcrt.dll")) ||
-   (!(-e "$ENV{MOZ_SRC}\\redist\\microsoft\\system\\msvcirt.dll")))
+if((!(-e "$topsrcdir/../redist/microsoft/system/msvcrt.dll")) ||
+   (!(-e "$topsrcdir/../redist/microsoft/system/msvcirt.dll")))
 {
   print "***\n";
   print "**\n";
   print "**  The following required Microsoft redistributable system files were not found\n";
-  print "**  in $ENV{MOZ_SRC}\\redist\\microsoft\\system:\n";
+  print "**  in $topsrcdir/../redist/microsoft/system:\n";
   print "**\n";
-  if(!(-e "$ENV{MOZ_SRC}\\redist\\microsoft\\system\\msvcrt.dll"))
+  if(!(-e "$topsrcdir/../redist/microsoft/system/msvcrt.dll"))
   {
     print "**    msvcrt.dll\n";
   }
-  if(!(-e "$ENV{MOZ_SRC}\\redist\\microsoft\\system\\msvcirt.dll"))
+  if(!(-e "$topsrcdir/../redist/microsoft/system/msvcirt.dll"))
   {
     print "**    msvcirt.dll\n";
   }
@@ -373,34 +412,44 @@ sub MakeExeZip
 
   $saveCwdir = cwd();
   chdir($aSrcDir);
-  if(system("zip $inDistPath\\xpi\\$aZipFile $aExeFile"))
+  if(system("zip $gDirDistInstall/xpi/$aZipFile $aExeFile"))
   {
     chdir($saveCwdir);
-    die "\n Error: zip $inDistPath\\xpi\\$aZipFile $aExeFile";
+    die "\n Error: zip $gDirDistInstall/xpi/$aZipFile $aExeFile";
   }
   chdir($saveCwdir);
 }
 
 sub PrintUsage
 {
-  die "usage: $0 <default version> <staging path> <dist install path> [options]
-
-       default version   : y2k compliant based date version.
-                           ie: 5.0.0.2000040413
-
-       staging path      : full path to where the components are staged at
-
-       dist install path : full path to where the dist install dir is at.
-                           ie: d:\\builds\\mozilla\\dist\\win32_o.obj\\install
+  die "usage: $0 [options]
 
        options include:
-           -aurl <archive url>      : either ftp:// or http:// url to where the
-                                      archives (.xpi, .exe, .zip, etc...) reside
 
-           -rurl <redirect.ini url> : either ftp:// or http:// url to where the
-                                      redirec.ini resides.  If not supplied, it
-                                      will be assumed to be the same as archive
-                                      url.
+           -productVer <ver string>  : Version of the product.  By default it will acquire the
+                                       version listed in mozilla/config/milestone.txt and
+                                       mozilla/config/nsBuildID.h files.
+                                         ie: 1.4a.0.2003030410
+
+           -greVer <ver string>      : Version of GRE.  By default it will acquire the
+                                       version listed in mozilla/config/milestone.txt file.
+                                         ie: 1.4a.0.0
+
+           -stagePath <staging path> : full path to where the mozilla components are staged at
+                                       Default stage path, if this is not set, is:
+                                         [mozilla]/stage
+
+           -distPath <dist path>     : full path to where the mozilla dist dir is at.
+                                       Default stage path, if this is not set, is:
+                                         [mozilla]/dist
+
+           -aurl <archive url>       : either ftp:// or http:// url to where the
+                                       archives (.xpi, .exe, .zip, etc...) reside
+
+           -rurl <redirect.ini url>  : either ftp:// or http:// url to where the
+                                       redirec.ini resides.  If not supplied, it
+                                       will be assumed to be the same as archive
+                                       url.
        \n";
 }
 
@@ -409,12 +458,45 @@ sub ParseArgv
   my(@myArgv) = @_;
   my($counter);
 
-  # The first 3 arguments are required, so start on the 4th.
-  for($counter = 3; $counter <= $#myArgv; $counter++)
+  for($counter = 0; $counter <= $#myArgv; $counter++)
   {
     if($myArgv[$counter] =~ /^[-,\/]h$/i)
     {
       PrintUsage();
+    }
+    elsif($myArgv[$counter] =~ /^[-,\/]productVer$/i)
+    {
+      if($#myArgv >= ($counter + 1))
+      {
+        ++$counter;
+        $inDefaultProductVersion = $myArgv[$counter];
+      }
+    }
+    elsif($myArgv[$counter] =~ /^[-,\/]greVer$/i)
+    {
+      if($#myArgv >= ($counter + 1))
+      {
+        ++$counter;
+        $inDefaultGreVersion = $myArgv[$counter];
+      }
+    }
+    elsif($myArgv[$counter] =~ /^[-,\/]stagePath$/i)
+    {
+      if($#myArgv >= ($counter + 1))
+      {
+        ++$counter;
+        $inStagePath = $myArgv[$counter];
+        $inStagePath =~ s/\\/\//g;
+      }
+    }
+    elsif($myArgv[$counter] =~ /^[-,\/]distPath$/i)
+    {
+      if($#myArgv >= ($counter + 1))
+      {
+        ++$counter;
+        $inDistPath = $myArgv[$counter];
+        $inDistPath =~ s/\\/\//g;
+      }
     }
     elsif($myArgv[$counter] =~ /^[-,\/]aurl$/i)
     {
@@ -438,17 +520,18 @@ sub ParseArgv
 
 sub MakeConfigFile
 {
+  chdir("$gDirPackager/windows");
   # Make config.ini file
-  if(system("perl makecfgini.pl config.it $inDefaultVersion $gLocalTmpStage $inDistPath\\xpi $inRedirIniURL $inXpiURL"))
+  if(system("perl makecfgini.pl config.it $inDefaultProductVersion $gDirStageProduct $gDirDistInstall/xpi $inRedirIniURL $inXpiURL"))
   {
-    print "\n Error: perl makecfgini.pl config.it $inDefaultVersion $gLocalTmpStage $inDistPath\\xpi $inRedirIniURL $inXpiURL\n";
+    print "\n Error: perl makecfgini.pl config.it $inDefaultProductVersion $gDirStageProduct $gDirDistInstall/xpi $inRedirIniURL $inXpiURL\n";
     return(1);
   }
 
   # Make install.ini file
-  if(system("perl makecfgini.pl install.it $inDefaultVersion $gLocalTmpStage $inDistPath\\xpi $inRedirIniURL $inXpiURL"))
+  if(system("perl makecfgini.pl install.it $inDefaultProductVersion $gDirStageProduct $gDirDistInstall/xpi $inRedirIniURL $inXpiURL"))
   {
-    print "\n Error: perl makecfgini.pl install.it $inDefaultVersion $gLocalTmpStage $inDistPath\\xpi $inRedirIniURL $inXpiURL\n";
+    print "\n Error: perl makecfgini.pl install.it $inDefaultProductVersion $gDirStageProduct $gDirDistInstall/xpi $inRedirIniURL $inXpiURL\n";
     return(1);
   }
   return(0);
@@ -456,62 +539,45 @@ sub MakeConfigFile
 
 sub MakeUninstall
 {
+  chdir("$gDirPackager/windows");
   if(MakeUninstallIniFile())
   {
     return(1);
   }
 
   # Copy the uninstall files to the dist uninstall directory.
-  if(system("copy uninstall.ini $inDistPath"))
-  {
-    print "\n Error: copy uninstall.ini $inDistPath\n";
-    return(1);
-  }
-  if(system("copy uninstall.ini $inDistPath\\uninstall"))
-  {
-    print "\n Error: copy uninstall.ini $inDistPath\\uninstall\n";
-    return(1);
-  }
-  if(system("copy defaults_info.ini $inDistPath"))
-  {
-    print "\n Error: copy defaults_info.ini $inDistPath\n";
-    return(1);
-  }
-  if(system("copy defaults_info.ini $inDistPath\\uninstall"))
-  {
-    print "\n Error: copy defaults_info.ini $inDistPath\\uninstall\n";
-    return(1);
-  }
-  if(system("copy $inDistPath\\uninstall.exe $inDistPath\\uninstall"))
-  {
-    print "\n Error: copy $inDistPath\\uninstall.exe $inDistPath\\uninstall\n";
-    return(1);
-  }
+  copy("uninstall.ini", "$gDirDistInstall") ||
+    die "copy uninstall.ini $gDirDistInstall: $!\n";
+  copy("uninstall.ini", "$gDirDistInstall/uninstall") ||
+    die "copy uninstall.ini $gDirDistInstall/uninstall: $!\n";
+  copy("defaults_info.ini", "$gDirDistInstall") ||
+    die "copy defaults_info.ini $gDirDistInstall: $!\n";
+  copy("defaults_info.ini", "$gDirDistInstall/uninstall") ||
+    die "copy defaults_info.ini $gDirDistInstall/uninstall: $!\n";
+  copy("$gDirDistInstall/uninstall.exe", "$gDirDistInstall/uninstall") ||
+    die "copy $gDirDistInstall/uninstall.exe $gDirDistInstall/uninstall: $!\n";
 
   # build the self-extracting .exe (uninstaller) file.
   print "\nbuilding self-extracting uninstaller ($seuFileNameSpecific)...\n";
-  if(system("copy $inDistPath\\$seiFileNameGeneric $inDistPath\\$seuFileNameSpecific"))
+  copy("$gDirDistInstall/$seiFileNameGeneric", "$gDirDistInstall/$seuFileNameSpecific") ||
+    die "copy $gDirDistInstall/$seiFileNameGeneric $gDirDistInstall/$seuFileNameSpecific: $!\n";
+  if(system("$gDirDistInstall/nsztool.exe $gDirDistInstall/$seuFileNameSpecific $gDirDistInstall/uninstall/*.*"))
   {
-    print "\n Error: copy $inDistPath\\$seiFileNameGeneric $inDistPath\\$seuFileNameSpecific\n";
-    return(1);
-  }
-  if(system("$inDistPath\\nsztool.exe $inDistPath\\$seuFileNameSpecific $inDistPath\\uninstall\\*.*"))
-  {
-    print "\n Error: $inDistPath\\nsztool.exe $inDistPath\\$seuFileNameSpecific $inDistPath\\uninstall\\*.*\n";
+    print "\n Error: $gDirDistInstall/nsztool.exe $gDirDistInstall/$seuFileNameSpecific $gDirDistInstall/uninstall/*.*\n";
     return(1);
   }
 
-  MakeExeZip($inDistPath, $seuFileNameSpecific, $seuzFileNameSpecific);
-  unlink <$inDistPath\\$seuFileNameSpecific>;
+  MakeExeZip($gDirDistInstall, $seuFileNameSpecific, $seuzFileNameSpecific);
+  unlink <$gDirDistInstall/$seuFileNameSpecific>;
   return(0);
 }
 
 sub MakeUninstallIniFile
 {
   # Make config.ini file
-  if(system("perl makeuninstallini.pl uninstall.it $inDefaultVersion"))
+  if(system("perl makeuninstallini.pl uninstall.it $inDefaultProductVersion"))
   {
-    print "\n Error: perl makeuninstallini.pl uninstall.it $inDefaultVersion\n";
+    print "\n Error: perl makeuninstallini.pl uninstall.it $inDefaultProductVersion\n";
     return(1);
   }
   return(0);
@@ -522,9 +588,10 @@ sub MakeJsFile
   my($mComponent) = @_;
 
   # Make .js file
-  if(system("perl makejs.pl $mComponent.jst $inDefaultVersion $gLocalTmpStage\\$mComponent"))
+  chdir("$gDirPackager/windows");
+  if(system("perl makejs.pl $mComponent.jst $inDefaultProductVersion $gDirStageProduct/$mComponent"))
   {
-    print "\n Error: perl makejs.pl $mComponent.jst $inDefaultVersion $gLocalTmpStage\\$mComponent\n";
+    print "\n Error: perl makejs.pl $mComponent.jst $inDefaultProductVersion $gDirStageProduct/$mComponent\n";
     return(1);
   }
   return(0);
@@ -534,6 +601,7 @@ sub MakeXpiFile
 {
   my($mComponent);
 
+  chdir("$gDirPackager/windows");
   foreach $mComponent (@gComponentList)
   {
     # Make .js files
@@ -543,79 +611,10 @@ sub MakeXpiFile
     }
 
     # Make .xpi file
-    if(system("perl makexpi.pl $mComponent $gLocalTmpStage $inDistPath\\xpi"))
+    if(system("perl makexpi.pl $mComponent $gDirStageProduct $gDirDistInstall/xpi"))
     {
-      print "\n Error: perl makexpi.pl $mComponent $gLocalTmpStage $inDistPath\\xpi\n";
+      print "\n Error: perl makexpi.pl $mComponent $gDirStageProduct $gDirDistInstall/xpi\n";
       return(1);
-    }
-  }
-  return(0);
-}
-
-sub RemoveLocalTmpStage()
-{
-  # Remove tmpstage area
-  if(-d "$gLocalTmpStage")
-  {
-    system("perl rdir.pl $gLocalTmpStage");
-  }
-  return(0);
-}
-
-sub CreateTmpStage()
-{
-  my($mComponent);
-
-  # Remove previous tmpstage area if one was left around
-  if(-d "$gLocalTmpStage")
-  {
-    system("perl rdir.pl $gLocalTmpStage");
-  }
-
-  print "\n Creating the local TmpStage directory:\n";
-  print "   $gLocalTmpStage\n";
-
-  # Copy the component's staging dir locally so that the chrome packages, locales, and skins dirs can be
-  # removed prior to creating the .xpi file.
-  mkdir("$gLocalTmpStage", 775);
-
-  foreach $mComponent (@gComponentList)
-  {
-    print "\n Copying $mComponent:\n";
-    print " From: $inStagePath\\$mComponent\n";
-    print "   To: $gLocalTmpStage\\$mComponent\n\n";
-    mkdir("$gLocalTmpStage\\$mComponent", 775);
-
-    # If it's not talkback then copy the component over to the local tmp stage.
-    # If it is, then skip the copy because there will be nothing at the source.
-    # Talkback is a dummy place holder .xpi right now.  Mozilla release team 
-    # replaces this place holder .xpi with a real talkback when delivering the
-    # build to mozilla.org.
-    if(!($mComponent =~ /talkback/i))
-    {
-      if(system("xcopy /s/e $inStagePath\\$mComponent $gLocalTmpStage\\$mComponent\\"))
-      {
-        print "\n Error: xcopy /s/e $inStagePath\\$mComponent $gLocalTmpStage\\$mComponent\\\n";
-        return(1);
-      }
-    }
-
-    if(-d "$gLocalTmpStage\\$mComponent\\bin\\chrome")
-    {
-      # Make chrome archive files
-      if(&ZipChrome("win32", "noupdate", "$gLocalTmpStage\\$mComponent\\bin\\chrome", "$gLocalTmpStage\\$mComponent\\bin\\chrome"))
-      {
-        return(1);
-      }
-
-      # Remove the locales, packages, and skins dirs if they exist.
-      my @dirs = <$gLocalTmpStage\\$mComponent\\bin\\chrome\\*>;
-      foreach $d (@dirs) {
-          if(-d "$d")
-          {
-              system("perl rdir.pl $d");
-          }
-      }
     }
   }
   return(0);
@@ -631,19 +630,31 @@ sub VerifyComponents()
   {
     if($mComponent =~ /talkback/i)
     {
-      print " place holder: $inStagePath\\$mComponent\n";
-      mkdir("$inStagePath\\$mComponent", 775);
+      print " place holder: $gDirStageProduct/$mComponent\n";
+      mkdir("$gDirStageProduct/$mComponent", 775);
     }
-    elsif(-d "$inStagePath\\$mComponent")
+    elsif(-d "$gDirStageProduct/$mComponent")
     {
-      print "           ok: $inStagePath\\$mComponent\n";
+      print "           ok: $gDirStageProduct/$mComponent\n";
     }
     else
     {
-      print "        Error: $inStagePath\\$mComponent does not exist!\n";
+      print "        Error: $gDirStageProduct/$mComponent does not exist!\n";
       $mError = 1;
     }
   }
+  print "\n";
   return($mError);
+}
+
+sub GetTopSrcDir
+{
+  my($rootDir) = dirname($0) . "/$DEPTH";
+  my($savedCwdDir) = cwd();
+
+  chdir($rootDir);
+  $rootDir = cwd();
+  chdir($savedCwdDir);
+  return($rootDir);
 }
 

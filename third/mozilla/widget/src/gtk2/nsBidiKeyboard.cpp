@@ -42,7 +42,6 @@ NS_IMPL_ISUPPORTS1(nsBidiKeyboard, nsIBidiKeyboard)
 
 nsBidiKeyboard::nsBidiKeyboard() : nsIBidiKeyboard()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsBidiKeyboard::~nsBidiKeyboard()
@@ -52,16 +51,12 @@ nsBidiKeyboard::~nsBidiKeyboard()
 NS_IMETHODIMP nsBidiKeyboard::IsLangRTL(PRBool *aIsRTL)
 {
     *aIsRTL = PR_FALSE;
-#ifdef IBMBIDI
     // XXX Insert platform specific code to determine keyboard direction
-#endif
     return NS_OK;
 }
 
 NS_IMETHODIMP nsBidiKeyboard::SetLangFromBidiLevel(PRUint8 aLevel)
 {
-#ifdef IBMBIDI
     // XXX Insert platform specific code to set keyboard language
-#endif
     return NS_OK;
 }

@@ -78,12 +78,29 @@ ifeq ($(OS_TARGET),OSF1)
 endif
 
 ifeq (,$(filter-out WINNT WIN95,$(OS_TARGET)))  #omits WIN16 and WINCE
+ifdef NS_USE_GCC
+# Ideally, we want to use assembler
+#     ASFILES  = mpi_x86.s
+#     DEFINES += -DMP_ASSEMBLY_MULTIPLY -DMP_ASSEMBLY_SQUARE \
+#                -DMP_ASSEMBLY_DIV_2DX1D
+# but we haven't figured out how to make it work, so we are not
+# using assembler right now.
+    ASFILES  =
+    DEFINES += -DMP_NO_MP_WORD -DMP_USE_UINT_DIGIT
+else
     ASFILES  = mpi_x86.asm
     DEFINES += -DMP_ASSEMBLY_MULTIPLY -DMP_ASSEMBLY_SQUARE -DMP_ASSEMBLY_DIV_2DX1D
+endif
+ifdef BUILD_OPT
+ifndef NS_USE_GCC
+    OPTIMIZER += -Ox  # maximum optimization for freebl
+endif
+endif
 endif
 
 ifeq ($(OS_TARGET),WINCE)
     DEFINES += -DMP_ARGCHK=0	# no assert in WinCE
+    DEFINES += -DSHA_NO_LONG_LONG # avoid 64-bit arithmetic in SHA512
 endif
 
 ifdef XP_OS2_VACPP
@@ -126,6 +143,7 @@ ifndef FREEBL_EXTENDED_BUILD
 ifdef USE_PURE_32
 # build for DA1.1 (HP PA 1.1) pure 32 bit model
     DEFINES  += -DMP_USE_UINT_DIGIT -DMP_NO_MP_WORD
+    DEFINES += -DSHA_NO_LONG_LONG # avoid 64-bit arithmetic in SHA512
 else
 ifdef USE_64
 # this builds for DA2.0W (HP PA 2.0 Wide), the LP64 ABI, using 32-bit digits 
@@ -160,14 +178,18 @@ endif
 ifeq ($(SYSV_SPARC),1)
 SOLARIS_AS = /usr/ccs/bin/as
 ifdef NS_USE_GCC
-LD = gcc
-DSO_LDOPTS = -B/usr/ccs/bin/ -shared -h,$(notdir $@) -Wl,-B,symbolic,-z,defs,-z,now,-z,text,-M,mapfile.Solaris
+ifdef GCC_USE_GNU_LD
+MKSHLIB += -Wl,-Bsymbolic,-z,defs,-z,now,-z,text,--version-script,mapfile.Solaris
+else
+MKSHLIB += -Wl,-B,symbolic,-z,defs,-z,now,-z,text,-M,mapfile.Solaris
+endif
 else
 MKSHLIB += -B symbolic -z defs -z now -z text -M mapfile.Solaris
 endif
 ifdef USE_PURE_32
 # this builds for Sparc v8 pure 32-bit architecture
     DEFINES += -DMP_USE_LONG_LONG_MULTIPLY -DMP_USE_UINT_DIGIT -DMP_NO_MP_WORD
+    DEFINES += -DSHA_NO_LONG_LONG # avoid 64-bit arithmetic in SHA512
 else
 ifdef USE_64
 # this builds for Sparc v9a pure 64-bit architecture
@@ -192,6 +214,7 @@ endif
 endif
 else
 # Solaris x86
+    DEFINES += -D_X86_
     DEFINES += -DMP_USE_UINT_DIGIT
     DEFINES += -DMP_ASSEMBLY_MULTIPLY -DMP_ASSEMBLY_SQUARE -DMP_ASSEMBLY_DIV_2DX1D
     ASFILES  = mpi_i86pc.s
@@ -257,7 +280,7 @@ endif
 
 DEFINES += -DMP_API_COMPATIBLE
 
-MPI_USERS = dh.c pqg.c dsa.c rsa.c 
+MPI_USERS = dh.c pqg.c dsa.c rsa.c ec.c GFp_ecl.c
 
 MPI_OBJS = $(addprefix $(OBJDIR)/$(PROG_PREFIX), $(MPI_SRCS:.c=$(OBJ_SUFFIX)))
 MPI_OBJS += $(addprefix $(OBJDIR)/$(PROG_PREFIX), $(MPI_USERS:.c=$(OBJ_SUFFIX)))

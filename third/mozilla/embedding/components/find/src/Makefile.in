@@ -32,12 +32,16 @@ REQUIRES	= string \
 		  docshell \
 		  gfx \
 		  layout \
+		  locale \
 		  content \
 		  widget \
 		  htmlparser \
 		  necko \
 		  unicharutil \
 		  lwbrk \
+		  js \
+		  xpconnect \
+		  caps \
 		  $(NULL)
 
 CPPSRCS		= nsWebBrowserFind.cpp \

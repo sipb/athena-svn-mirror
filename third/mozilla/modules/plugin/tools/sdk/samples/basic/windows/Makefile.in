@@ -30,12 +30,20 @@ LIBRARY_NAME = npbasic
 
 NO_DIST_INSTALL = 1
 
+REQUIRES = plugin \
+           java \
+           $(NULL)
+
 CPPSRCS = plugin.cpp
 
-SHARED_LIBRARY_LIBS = ../../common/plugingate_s.$(LIB_SUFFIX)
+SHARED_LIBRARY_LIBS = ../../common/$(LIB_PREFIX)plugingate_s.$(LIB_SUFFIX)
 
-DEFFILE = basic.def
+DEFFILE = $(srcdir)/basic.def
 RESFILE = basic.res
+
+ifdef GNU_CC
+OS_LIBS	+= -lgdi32
+endif
 
 include $(topsrcdir)/config/rules.mk
 

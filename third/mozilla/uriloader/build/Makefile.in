@@ -32,6 +32,8 @@ EXPORT_LIBRARY = 1
 SHORT_LIBNAME	= urildr
 IS_COMPONENT	= 1
 MODULE_NAME	= nsURILoaderModule
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  necko \
@@ -63,8 +65,8 @@ endif
 
 EXTRA_DSO_LDOPTS = \
 		$(LIBS_DIR) \
-		$(MOZ_COMPONENT_LIBS) \
 		$(MOZ_UNICHARUTIL_LIBS) \
+		$(MOZ_COMPONENT_LIBS) \
 		$(MOZ_JS_LIBS) \
 		$(NULL)
 
@@ -75,7 +77,7 @@ EXTRA_DSO_LDOPTS += \
 endif
 
 ifeq ($(OS_ARCH),WINNT)
-OS_LIBS		+= shell32.lib
+OS_LIBS		+= $(call EXPAND_LIBNAME,shell32)
 endif
 
 include $(topsrcdir)/config/rules.mk

@@ -56,6 +56,8 @@
 #define USERAGENT_VERSION_PREF "general.useragent.misc"
 #define USERAGENT_VERSION_NS_PREF "general.useragent.vendorSub"
 #define USERAGENT_PREF_PREFIX "rv:"
+#define MOZ_HWND_BROADCAST_MSG_TIMEOUT 5000
+#define MOZ_CLIENT_MAIL_KEY "Software\\Clients\\Mail"
 
 nsMapiRegistryUtils::nsMapiRegistryUtils()
 {
@@ -491,10 +493,10 @@ nsresult nsMapiRegistryUtils::setDefaultMailClient()
         nsXPIDLString defaultMailTitle;
         // Use vendorName instead of brandname since brandName is product name
         // and has more than just the name of the application
-        const PRUnichar *keyValuePrefixStr[] = { vendorName(), versionNo() };
+        const PRUnichar *keyValuePrefixStr[] = { vendorName() };
         NS_NAMED_LITERAL_STRING(defaultMailTitleTag, "defaultMailDisplayTitle");
         rv = bundle->FormatStringFromName(defaultMailTitleTag.get(),
-                                      keyValuePrefixStr, 2,
+                                      keyValuePrefixStr, 1,
                                       getter_Copies(defaultMailTitle));
         if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
 
@@ -566,8 +568,13 @@ nsresult nsMapiRegistryUtils::setDefaultMailClient()
                                            "Software\\Mozilla\\Desktop", 
                                            "defaultMailHasBeenSet", "1");
         }
-        ::SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 
-                     (LPARAM)"Software\\Clients\\Mail");
+        ::SendMessageTimeout( HWND_BROADCAST,
+                              WM_SETTINGCHANGE,
+                              0,
+                              (LPARAM)MOZ_CLIENT_MAIL_KEY,
+                              SMTO_NORMAL|SMTO_ABORTIFHUNG,
+                              MOZ_HWND_BROADCAST_MSG_TIMEOUT,
+                              NULL);
         RegisterServer(CLSID_CMapiImp, "Mozilla MAPI", "MozillaMapi", "MozillaMapi.1");
         return desktopKeySet;
     }
@@ -649,8 +656,13 @@ nsresult nsMapiRegistryUtils::unsetDefaultMailClient() {
                                            "Software\\Mozilla\\Desktop", 
                                            "defaultMailHasBeenSet", "0");
         }
-        ::SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, 
-                     (LPARAM)"Software\\Clients\\Mail");
+        ::SendMessageTimeout( HWND_BROADCAST,
+                              WM_SETTINGCHANGE,
+                              0,
+                              (LPARAM)MOZ_CLIENT_MAIL_KEY,
+                              SMTO_NORMAL|SMTO_ABORTIFHUNG,
+                              MOZ_HWND_BROADCAST_MSG_TIMEOUT,
+                              NULL);
         UnregisterServer(CLSID_CMapiImp, "MozillaMapi", "MozillaMapi.1");
         return desktopKeySet;
     }

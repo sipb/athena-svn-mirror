@@ -39,27 +39,23 @@
 #ifndef nsXMLDocument_h___
 #define nsXMLDocument_h___
 
-#include "nsMarkupDocument.h"
-#include "nsIXMLDocument.h"
+#include "nsDocument.h"
 #include "nsIHTMLContentContainer.h"
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsIHttpEventSink.h"
 #include "nsIDOMXMLDocument.h"
 #include "nsIScriptContext.h"
+#include "nsIHTMLStyleSheet.h"
+#include "nsIHTMLCSSStyleSheet.h"
+#include "nsIEventQueueService.h"
 
 class nsIParser;
 class nsIDOMNode;
 class nsICSSLoader;
 class nsIURI;
 
-#define XML_DECLARATION_BITS_DECLARATION_EXISTS   1
-#define XML_DECLARATION_BITS_ENCODING_EXISTS      2
-#define XML_DECLARATION_BITS_STANDALONE_EXISTS    4
-#define XML_DECLARATION_BITS_STANDALONE_YES       8
-
-class nsXMLDocument : public nsMarkupDocument,
-                      public nsIXMLDocument,
+class nsXMLDocument : public nsDocument,
                       public nsIHTMLContentContainer,
                       public nsIInterfaceRequestor,
                       public nsIHttpEventSink
@@ -75,8 +71,7 @@ public:
 
   NS_IMETHOD Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup);
 
-  NS_IMETHOD StartDocumentLoad(const char* aCommand,
-                               nsIChannel* channel,
+  NS_IMETHOD StartDocumentLoad(const char* aCommand, nsIChannel* channel,
                                nsILoadGroup* aLoadGroup,
                                nsISupports* aContainer,
                                nsIStreamListener **aDocListener,
@@ -92,32 +87,25 @@ public:
   NS_IMETHOD CloneNode(PRBool aDeep, nsIDOMNode** aReturn);
 
   // nsIDOMDocument interface
-  NS_IMETHOD    GetDoctype(nsIDOMDocumentType** aDocumentType);
-  NS_IMETHOD    CreateCDATASection(const nsAString& aData, nsIDOMCDATASection** aReturn);
-  NS_IMETHOD    CreateEntityReference(const nsAString& aName, nsIDOMEntityReference** aReturn);
-  NS_IMETHOD    CreateProcessingInstruction(const nsAString& aTarget, const nsAString& aData, nsIDOMProcessingInstruction** aReturn);
-  NS_IMETHOD    CreateElement(const nsAString& aTagName, 
-                              nsIDOMElement** aReturn);
-  NS_IMETHOD    ImportNode(nsIDOMNode* aImportedNode,
-                           PRBool aDeep,
-                           nsIDOMNode** aReturn);
-  NS_IMETHOD    CreateElementNS(const nsAString& aNamespaceURI,
+  NS_IMETHOD GetDoctype(nsIDOMDocumentType** aDocumentType);
+  NS_IMETHOD CreateCDATASection(const nsAString& aData,
+                                nsIDOMCDATASection** aReturn);
+  NS_IMETHOD CreateEntityReference(const nsAString& aName,
+                                   nsIDOMEntityReference** aReturn);
+  NS_IMETHOD CreateProcessingInstruction(const nsAString& aTarget,
+                                         const nsAString& aData,
+                                         nsIDOMProcessingInstruction** aReturn);
+  NS_IMETHOD CreateElement(const nsAString& aTagName, nsIDOMElement** aReturn);
+  NS_IMETHOD ImportNode(nsIDOMNode* aImportedNode, PRBool aDeep,
+                        nsIDOMNode** aReturn);
+  NS_IMETHOD CreateElementNS(const nsAString& aNamespaceURI,
+                             const nsAString& aQualifiedName,
+                             nsIDOMElement** aReturn);
+  NS_IMETHOD CreateAttributeNS(const nsAString& aNamespaceURI,
                                const nsAString& aQualifiedName,
-                               nsIDOMElement** aReturn);
-  NS_IMETHOD    CreateAttributeNS(const nsAString& aNamespaceURI,
-                                  const nsAString& aQualifiedName,
-                                  nsIDOMAttr** aReturn);
-  NS_IMETHOD    GetElementById(const nsAString& aElementId,
-                               nsIDOMElement** aReturn);
-
-  // nsIXMLDocument interface
-  NS_IMETHOD SetDefaultStylesheets(nsIURI* aUrl);
-  NS_IMETHOD SetXMLDeclaration(const nsAString& aVersion,
-                               const nsAString& aEncoding,
-                               const nsAString& Standalone);
-  NS_IMETHOD GetXMLDeclaration(nsAString& aVersion,
-                               nsAString& aEncoding,
-                               nsAString& Standalone);
+                               nsIDOMAttr** aReturn);
+  NS_IMETHOD GetElementById(const nsAString& aElementId,
+                            nsIDOMElement** aReturn);
 
   // nsIHTMLContentContainer
   NS_IMETHOD GetAttributeStyleSheet(nsIHTMLStyleSheet** aResult);
@@ -125,7 +113,7 @@ public:
   NS_IMETHOD GetCSSLoader(nsICSSLoader*& aLoader);
 
   // nsIInterfaceRequestor
-  NS_IMETHOD GetInterface(const nsIID& aIID, void** aSink);
+  NS_DECL_NSIINTERFACEREQUESTOR
 
   // nsIHTTPEventSink
   NS_DECL_NSIHTTPEVENTSINK
@@ -133,29 +121,38 @@ public:
   // nsIDOMXMLDocument
   NS_DECL_NSIDOMXMLDOCUMENT
 
+  virtual nsresult Init();
+
 protected:
   // subclass hooks for sheet ordering
   virtual void InternalAddStyleSheet(nsIStyleSheet* aSheet, PRUint32 aFlags);
   virtual void InternalInsertStyleSheetAt(nsIStyleSheet* aSheet, PRInt32 aIndex);
+  virtual already_AddRefed<nsIStyleSheet> InternalGetStyleSheetAt(PRInt32 aIndex);
+  virtual PRInt32 InternalGetNumberOfStyleSheets();
 
   nsresult CreateElement(nsINodeInfo *aNodeInfo, nsIDOMElement** aResult);
   
+  virtual nsresult GetLoadGroup(nsILoadGroup **aLoadGroup);
+
+  nsresult SetDefaultStylesheets(nsIURI* aUrl);
+
   // For HTML elements in our content model
   // XXX This is not clean, but is there a better way? 
-  nsIHTMLStyleSheet*    mAttrStyleSheet;
-  nsIHTMLCSSStyleSheet* mInlineStyleSheet;
+  nsCOMPtr<nsIHTMLStyleSheet> mAttrStyleSheet;
+  nsCOMPtr<nsIHTMLCSSStyleSheet> mInlineStyleSheet;
   // For additional catalog sheets (if any) needed to layout the XML vocabulary
   // of the document. Catalog sheets are kept at the beginning of our array of
   // style sheets and this counter is used as an offset to distinguish them
-  PRInt32 mCountCatalogSheets;
+  PRInt32 mCatalogSheetCount;
   nsString mBaseTarget;
 
-  nsIParser *mParser;
+  nsCOMPtr<nsIEventQueueService> mEventQService;
 
   nsCOMPtr<nsIScriptContext> mScriptContext;
   PRPackedBool mCrossSiteAccessEnabled;
-
-  PRUint8 mXMLDeclarationBits;
+  PRPackedBool mLoadedAsData;
+  PRPackedBool mAsync;
+  PRPackedBool mLoopingForSyncLoad;
 };
 
 

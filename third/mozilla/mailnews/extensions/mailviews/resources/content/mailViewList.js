@@ -24,7 +24,7 @@
 
 var gMailListView; 
 var gListBox; 
-var gOkCallback = null; 
+var gCloseCallback = null; 
 var gEditButton;
 var gDeleteButton;
 
@@ -36,8 +36,8 @@ function mailViewListOnLoad()
   if ("arguments" in window && window.arguments[0]) 
   {
     var args = window.arguments[0];
-    if ("onOkCallback" in args)
-      gOkCallback =  window.arguments[0].onOkCallback;
+    if ("onCloseCallback" in args)
+      gCloseCallback =  window.arguments[0].onCloseCallback;
   }
 
   // Construct list view based on current mail view list data
@@ -46,21 +46,12 @@ function mailViewListOnLoad()
   gDeleteButton = document.getElementById('deleteButton');
 
   updateButtons();
-
-  doSetOKCancel(onOK, onCancel);
 }
 
-function onOK()
+function mailViewListOnUnload()
 {
-  if (gOkCallback)
-    gOkCallback(gListBox.selectedIndex);
-  return true;
-}
-
-function onCancel()
-{
-  // close the window
-  return true;
+  if (gCloseCallback)
+    gCloseCallback(gListBox.selectedIndex);
 }
 
 function refreshListView(aSelectedMailView)
@@ -88,7 +79,15 @@ function onNewMailView()
 }
 
 function onDeleteMailView()
-{
+{  
+  var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].
+      getService(Components.interfaces.nsIStringBundleService);
+  var bundle = strBundleService.createBundle("chrome://messenger/locale/messenger.properties");
+
+  var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+  if (!promptService.confirm(window, bundle.GetStringFromName("confirmViewDeleteTitle"), bundle.GetStringFromName("confirmViewDeleteMessage")))
+    return;
+
   // get the selected index
   var selectedIndex = gListBox.selectedIndex;
   if (selectedIndex >= 0)
@@ -138,3 +137,5 @@ function updateButtons()
   gEditButton.disabled = selectedIndex < 0;
   gDeleteButton.disabled = selectedIndex < 0;
 }
+
+

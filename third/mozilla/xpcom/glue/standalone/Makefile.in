@@ -46,33 +46,21 @@ MODULE		= xpcom
 LIBRARY_NAME	= xpcomglue
 
 REQUIRES	= string \
+		  embedstring \
 		  $(NULL)
 
 LOCAL_INCLUDES	= \
 		-I$(srcdir)/../../build \
 		$(NULL)
 
-STRING_LCSRCS   = \
-		nsAString.cpp		     \
-		nsDependentSubstring.cpp     \
-		nsASingleFragmentString.cpp  \
-		$(NULL)
-
-STRING_CSRCS    := $(addprefix $(topsrcdir)/string/src/, $(STRING_LCSRCS))
-
 CPPSRCS		= \
 		$(XPCOM_GLUE_SRC_LCSRCS)     \
-		$(STRING_LCSRCS)             \
 		nsXPCOMGlue.cpp              \
-		nsEmbedString.cpp	     \
-		$(NULL)
-
-EXPORTS		= \
-		nsXPCOMGlue.h \
+		nsGREDirServiceProvider.cpp  \
 		$(NULL)
 
 SDK_HEADERS     = \
-		nsEmbedString.h \
+		nsXPCOMGlue.h \
 		$(NULL)
 
 SDK_BINARY     	= \
@@ -86,28 +74,17 @@ FORCE_STATIC_LIB = 1
 FORCE_USE_PIC	= 1
 
 GARBAGE         += $(XPCOM_GLUE_SRC_LCSRCS) $(wildcard *.$(OBJ_SUFFIX))
-GARBAGE         += $(STRING_LCSRCS) $(wildcard *.$(OBJ_SUFFIX))
 
 ifeq ($(OS_ARCH),WINNT)
 GARBAGE		+= $(addprefix $(srcdir)/,$(XPCOM_GLUE_SRC_LCSRCS))
-GARBAGE		+= $(addprefix $(srcdir)/,$(STRING_LCSRCS))
 endif
+
+SRCS_IN_OBJDIR	= 1
 
 include $(topsrcdir)/config/rules.mk
 
-export:: $(XPCOM_GLUE_SRC_CSRCS)
-ifeq ($(OS_ARCH),WINNT)
-	$(INSTALL) $^ $(srcdir)
-else
+export:: $(XPCOM_GLUE_SRC_CSRCS) 
 	$(INSTALL) $^ .
-endif
-
-export:: $(STRING_CSRCS)
-ifeq ($(OS_ARCH),WINNT)
-	$(INSTALL) $^ $(srcdir)
-else
-	$(INSTALL) $^ .
-endif
 
 DEFINES		+= -DXPCOM_GLUE
 

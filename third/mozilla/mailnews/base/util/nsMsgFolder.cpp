@@ -61,7 +61,8 @@
 #include "nsMsgUtils.h" // for NS_MsgHashIfNecessary()
 #include "nsMsgI18N.h"
 
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 
 #include "nsIRDFService.h"
 #include "nsRDFCID.h"
@@ -81,9 +82,8 @@
 
 #define PREF_MAIL_WARN_FILTER_CHANGED "mail.warn_filter_changed"
 
-static NS_DEFINE_CID(kStandardUrlCID, NS_STANDARDURL_CID);
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
-static NS_DEFINE_CID(kIOServiceCID,              NS_IOSERVICE_CID);
+static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 static NS_DEFINE_CID(kCollationFactoryCID, NS_COLLATIONFACTORY_CID);
 
 nsrefcnt nsMsgFolder::gInstanceCount  = 0;
@@ -97,6 +97,7 @@ PRUnichar *nsMsgFolder::kLocalizedUnsentName;
 PRUnichar *nsMsgFolder::kLocalizedJunkName;
 
 nsIAtom * nsMsgFolder::kTotalMessagesAtom = nsnull;
+nsIAtom * nsMsgFolder::kFolderSizeAtom = nsnull;
 nsIAtom * nsMsgFolder::kBiffStateAtom = nsnull;
 nsIAtom * nsMsgFolder::kNewMessagesAtom = nsnull;
 nsIAtom * nsMsgFolder::kNumNewBiffMessagesAtom  = nsnull;
@@ -125,15 +126,13 @@ nsMsgFolder::nsMsgFolder(void)
     mHaveParsedURI(PR_FALSE),
     mIsServerIsValid(PR_FALSE),
     mIsServer(PR_FALSE),
-    mDeleteIsMoveToTrash(PR_TRUE),
     mBaseMessageURI(nsnull)
 {
-//  NS_INIT_ISUPPORTS(); done by superclass
-
   mSemaphoreHolder = NULL;
 
   mNumPendingUnreadMessages = 0;
   mNumPendingTotalMessages  = 0;
+  mFolderSize = 0;
   NS_NewISupportsArray(getter_AddRefs(mSubFolders));
 
   mIsCachable = PR_TRUE;
@@ -147,6 +146,7 @@ nsMsgFolder::nsMsgFolder(void)
     kNameAtom          = NS_NewAtom("Name");
     kTotalUnreadMessagesAtom = NS_NewAtom("TotalUnreadMessages");
     kTotalMessagesAtom       = NS_NewAtom("TotalMessages");
+    kFolderSizeAtom          = NS_NewAtom("FolderSize");
     kStatusAtom              = NS_NewAtom("Status");
     kFlaggedAtom             = NS_NewAtom("Flagged");
     kSynchronizeAtom         = NS_NewAtom("Synchronize");
@@ -155,7 +155,7 @@ nsMsgFolder::nsMsgFolder(void)
     initializeStrings();
     createCollationKeyGenerator();
 #ifdef MSG_FASTER_URI_PARSING
-    mParsingURL = do_CreateInstance(kStandardUrlCID);
+    mParsingURL = do_CreateInstance(NS_STANDARDURL_CONTRACTID);
 #endif
   }
 
@@ -183,14 +183,15 @@ nsMsgFolder::~nsMsgFolder(void)
 
   gInstanceCount--;
   if (gInstanceCount <= 0) {
-    NS_IF_RELEASE(kTotalMessagesAtom);
     NS_IF_RELEASE(kBiffStateAtom);
     NS_IF_RELEASE(kNewMessagesAtom);
     NS_IF_RELEASE(kNumNewBiffMessagesAtom);
-    NS_IF_RELEASE(kTotalUnreadMessagesAtom);
-    NS_IF_RELEASE(kFlaggedAtom);
-    NS_IF_RELEASE(kStatusAtom);
     NS_IF_RELEASE(kNameAtom);
+    NS_IF_RELEASE(kTotalUnreadMessagesAtom);
+    NS_IF_RELEASE(kTotalMessagesAtom);
+    NS_IF_RELEASE(kFolderSizeAtom);
+    NS_IF_RELEASE(kStatusAtom);
+    NS_IF_RELEASE(kFlaggedAtom);
     NS_IF_RELEASE(kSynchronizeAtom);
     NS_IF_RELEASE(kOpenAtom);
     NS_IF_RELEASE(kCollationKeyGenerator);
@@ -410,7 +411,7 @@ nsMsgFolder::GetSubFolders(nsIEnumerator* *result)
 }
 
 NS_IMETHODIMP
-nsMsgFolder::FindSubFolder(const char *subFolderName, nsIFolder **aFolder)
+nsMsgFolder::FindSubFolder(const char *aEscapedSubFolderName, nsIFolder **aFolder)
 {
   nsresult rv = NS_OK;
   nsCOMPtr<nsIRDFService> rdf(do_GetService(kRDFServiceCID, &rv));
@@ -418,15 +419,14 @@ nsMsgFolder::FindSubFolder(const char *subFolderName, nsIFolder **aFolder)
   if (NS_FAILED(rv))
     return rv;
 
-// XXX use necko here
+  // XXX use necko here
   nsCAutoString uri;
   uri.Append(mURI);
   uri.Append('/');
-
-  uri.Append(subFolderName);
+  uri.Append(aEscapedSubFolderName);
 
   nsCOMPtr<nsIRDFResource> res;
-  rv = rdf->GetResource(uri.get(), getter_AddRefs(res));
+  rv = rdf->GetResource(uri, getter_AddRefs(res));
   if (NS_FAILED(rv))
     return rv;
 
@@ -563,7 +563,7 @@ NS_IMETHODIMP nsMsgFolder::GetServer(nsIMsgIncomingServer ** aServer)
   *aServer = server;
   NS_IF_ADDREF(*aServer);
 
-  return NS_OK;
+  return (server) ? NS_OK : NS_ERROR_NULL_POINTER;
 }
 
 #ifdef MSG_FASTER_URI_PARSING
@@ -586,7 +586,7 @@ nsMsgFolder::parseURI(PRBool needServer)
 #ifdef MSG_FASTER_URI_PARSING
   nsMsgAutoBool parsingUrlState;
   if (mParsingURLInUse) {
-    url = do_CreateInstance(kStandardUrlCID, &rv);
+    url = do_CreateInstance(NS_STANDARDURL_CONTRACTID, &rv);
   }
 
   else {
@@ -596,9 +596,7 @@ nsMsgFolder::parseURI(PRBool needServer)
   }
 
 #else
-  rv = nsComponentManager::CreateInstance(kStandardUrlCID, nsnull,
-                                          NS_GET_IID(nsIURL),
-                                          (void **)getter_AddRefs(url));
+  url = do_CreateInstance(NS_STANDARDURL_CONTRACTID, &rv);
   if (NS_FAILED(rv)) return rv;
 #endif
 
@@ -831,7 +829,7 @@ nsMsgFolder::GetCanRename(PRBool *aResult)
   }
   //
   // check if the folder is a special folder
-  // (Trash, Drafts, Unsent Messages, Inbox, Sent, Templates)
+  // (Trash, Drafts, Unsent Messages, Inbox, Sent, Templates, Junk)
   // if it is, don't allow the user to rename it
   // (which includes dnd moving it with in the same server)
   //
@@ -847,7 +845,8 @@ nsMsgFolder::GetCanRename(PRBool *aResult)
            mFlags & MSG_FOLDER_FLAG_QUEUE ||
            mFlags & MSG_FOLDER_FLAG_INBOX ||
            mFlags & MSG_FOLDER_FLAG_SENTMAIL ||
-           mFlags & MSG_FOLDER_FLAG_TEMPLATES) {
+           mFlags & MSG_FOLDER_FLAG_TEMPLATES ||
+           mFlags & MSG_FOLDER_FLAG_JUNK) {
     *aResult = PR_FALSE;
   }
   else {
@@ -1084,15 +1083,6 @@ NS_IMETHODIMP nsMsgFolder::HaveAdminUrl(MSG_AdminURLType type, PRBool *haveAdmin
 }
 #endif
 
-NS_IMETHODIMP nsMsgFolder::GetDeleteIsMoveToTrash(PRBool *deleteIsMoveToTrash)
-{
-  if (!deleteIsMoveToTrash)
-    return NS_ERROR_NULL_POINTER;
-
-  *deleteIsMoveToTrash = mDeleteIsMoveToTrash;
-  return NS_OK;
-}
-
 NS_IMETHODIMP nsMsgFolder::GetShowDeletedMessages(PRBool *showDeletedMessages)
 {
   if (!showDeletedMessages)
@@ -1133,9 +1123,7 @@ NS_IMETHODIMP nsMsgFolder::DeleteSubFolders(nsISupportsArray *folders,
 NS_IMETHODIMP nsMsgFolder::CreateStorageIfMissing(nsIUrlListener* /* urlListener */)
 {
   NS_ASSERTION(PR_FALSE, "needs to be overridden");
-  nsresult status = NS_OK;
-
-  return status;
+  return NS_OK;
 }
 
 
@@ -1499,9 +1487,7 @@ void nsMsgFolder::ChangeNumPendingTotalMessages(PRInt32 delta)
       folderInfo->SetImapTotalPendingMessages(mNumPendingTotalMessages);
     NotifyIntPropertyChanged(kTotalMessagesAtom, oldTotalMessages, newTotalMessages);
   }
-
 }
-
 
 NS_IMETHODIMP nsMsgFolder::SetPrefFlag()
 {
@@ -1509,9 +1495,9 @@ NS_IMETHODIMP nsMsgFolder::SetPrefFlag()
   // discovery. GetResource() may return a node which is not in the folder
   // tree hierarchy but in the rdf cache in case of the non-existing default
   // Sent, Drafts, and Templates folders. The resouce will be eventually
-  // released when rdf service shutting downs. When we create the defaul
-  // folders later on on the imap server, the subsequent GetResouce() of the
-  // same uri will get us the cached rdf resouce which should have the folder
+  // released when the rdf service shuts down. When we create the default
+  // folders later on in the imap server, the subsequent GetResource() of the
+  // same uri will get us the cached rdf resource which should have the folder
   // flag set appropriately.
   nsresult rv;
   nsCOMPtr<nsIRDFService> rdf(do_GetService(kRDFServiceCID, &rv));
@@ -1553,6 +1539,10 @@ NS_IMETHODIMP nsMsgFolder::SetPrefFlag()
         rv = folder->SetFlag(MSG_FOLDER_FLAG_TEMPLATES);
     }
   }
+
+  // XXX TODO
+  // JUNK RELATED
+  // should we be using the spam settings to set the JUNK flag?
   return rv;
 }
 
@@ -1903,6 +1893,13 @@ NS_IMETHODIMP nsMsgFolder::GetSizeOnDisk(PRUint32 *size)
     return NS_ERROR_NULL_POINTER;
 
   *size = 0;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsMsgFolder::SetSizeOnDisk(PRUint32 aSizeOnDisk)
+{
+  NotifyIntPropertyChanged(kFolderSizeAtom, mFolderSize, aSizeOnDisk);
+  mFolderSize = aSizeOnDisk;
   return NS_OK;
 }
 
@@ -2297,13 +2294,6 @@ NS_IMETHODIMP nsMsgFolder::MatchName(nsString *name, PRBool *matches)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsMsgFolder::SetDeleteIsMoveToTrash(PRBool bVal)
-{
-  mDeleteIsMoveToTrash = bVal;
-  return NS_OK;
-}
-
 nsresult
 nsMsgFolder::NotifyPropertyChanged(nsIAtom *property,
                                    const char *oldValue, const char* newValue)
@@ -2513,31 +2503,6 @@ nsGetMailFolderSeparator(nsString& result)
 {
   result.Assign(NS_LITERAL_STRING(".sbd"));
   return NS_OK;
-}
-
-
-NS_IMETHODIMP
-nsMsgFolder::RecursiveSetDeleteIsMoveToTrash(PRBool bVal)
-{
-  nsresult rv = NS_OK;
-  if (mSubFolders)
-  {
-    PRUint32 cnt = 0, i;
-    rv = mSubFolders->Count(&cnt);
-    for (i=0; i < cnt; i++)
-    {
-      nsCOMPtr<nsISupports> aSupport;
-      rv = GetElementAt(i, getter_AddRefs(aSupport));
-      if (NS_SUCCEEDED(rv))
-      {
-        nsCOMPtr<nsIMsgFolder> folder;
-        folder = do_QueryInterface(aSupport);
-        if (folder)
-          folder->RecursiveSetDeleteIsMoveToTrash(bVal);
-      }
-    }
-  }
-  return SetDeleteIsMoveToTrash(bVal);
 }
 
 NS_IMETHODIMP
@@ -2808,10 +2773,10 @@ nsMsgFolder::GetWarnFilterChanged(PRBool *aVal)
 {
   NS_ENSURE_ARG(aVal);
   nsresult rv;
-  nsCOMPtr<nsIPref> prefService = do_GetService(NS_PREF_CONTRACTID, &rv);
-  if (NS_SUCCEEDED(rv) && prefService)
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+  if (NS_SUCCEEDED(rv) && prefBranch)
   {
-    rv = prefService->GetBoolPref(PREF_MAIL_WARN_FILTER_CHANGED, aVal);
+    rv = prefBranch->GetBoolPref(PREF_MAIL_WARN_FILTER_CHANGED, aVal);
     if (NS_FAILED(rv))
     {
       *aVal = PR_FALSE;
@@ -2825,9 +2790,9 @@ nsresult
 nsMsgFolder::SetWarnFilterChanged(PRBool aVal)
 {
   nsresult rv=NS_OK;
-  nsCOMPtr<nsIPref> prefService = do_GetService(NS_PREF_CONTRACTID, &rv);
-  if (NS_SUCCEEDED(rv) && prefService)
-    rv = prefService->SetBoolPref(PREF_MAIL_WARN_FILTER_CHANGED, aVal);
+  nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+  if (NS_SUCCEEDED(rv) && prefBranch)
+    rv = prefBranch->SetBoolPref(PREF_MAIL_WARN_FILTER_CHANGED, aVal);
   return rv;
 }
 
@@ -2861,10 +2826,12 @@ NS_IMETHODIMP nsMsgFolder::GetSortOrder(PRInt32 *order)
     *order = 3;
   else if (flags & MSG_FOLDER_FLAG_SENTMAIL)
     *order = 4;
-  else if (flags & MSG_FOLDER_FLAG_TRASH)
+  else if (flags & MSG_FOLDER_FLAG_JUNK)
     *order = 5;
-  else
+  else if (flags & MSG_FOLDER_FLAG_TRASH)
     *order = 6;
+  else
+    *order = 7;
 
   return NS_OK;
 }

@@ -148,7 +148,7 @@ js_compare_atom_keys(const void *k1, const void *k2)
         double d2 = *JSVAL_TO_DOUBLE(v2);
         if (JSDOUBLE_IS_NaN(d1))
             return JSDOUBLE_IS_NaN(d2);
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
         /* XXX MSVC miscompiles such that (NaN == 0) */
         if (JSDOUBLE_IS_NaN(d2))
             return JS_FALSE;
@@ -459,6 +459,7 @@ js_AtomizeHashedKey(JSContext *cx, jsval key, JSHashNumber keyHash, uintN flags)
 
     atom = (JSAtom *)he;
     atom->flags |= flags;
+    cx->lastAtom = atom;
 out:
     JS_UNLOCK(&state->lock,cx);
     return atom;
@@ -549,6 +550,7 @@ js_AtomizeDouble(JSContext *cx, jsdouble d, uintN flags)
 
     atom = (JSAtom *)he;
     atom->flags |= flags;
+    cx->lastAtom = atom;
 out:
     JS_UNLOCK(&state->lock,cx);
     return atom;
@@ -611,6 +613,7 @@ js_AtomizeString(JSContext *cx, JSString *str, uintN flags)
 
     atom = (JSAtom *)he;
     atom->flags |= flags & (ATOM_PINNED | ATOM_INTERNED);
+    cx->lastAtom = atom;
 out:
     JS_UNLOCK(&state->lock,cx);
     return atom;

@@ -34,7 +34,7 @@
 /*
  * Test program for SDR (Secret Decoder Ring) functions.
  *
- * $Id: shlibsign.c,v 1.1.1.1 2003-07-08 17:43:25 rbasch Exp $
+ * $Id: shlibsign.c,v 1.1.2.1 2003-07-14 19:06:13 ghudson Exp $
  */
 
 #ifdef XP_UNIX

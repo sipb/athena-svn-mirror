@@ -64,7 +64,7 @@ public:
 
   nsSliderFrame* mSlider;
 
-  nsSliderMediator(nsSliderFrame* aSlider) {  mSlider = aSlider; NS_INIT_ISUPPORTS(); }
+  nsSliderMediator(nsSliderFrame* aSlider) {  mSlider = aSlider; }
   virtual ~nsSliderMediator() {}
 
   virtual void SetSlider(nsSliderFrame* aSlider) { mSlider = aSlider; }
@@ -177,7 +177,7 @@ public:
      NS_IMETHOD  Init(nsIPresContext*  aPresContext,
                    nsIContent*      aContent,
                    nsIFrame*        aParent,
-                   nsIStyleContext* aContext,
+                   nsStyleContext*  aContext,
                    nsIFrame*        asPrevInFlow);
 
 
@@ -228,10 +228,6 @@ public:
   NS_IMETHOD_(void) Notify(nsITimer *timer);
   //friend nsSliderMediator;
 
-protected:
-
-  virtual PRIntn GetSkipSides() const { return 0; }
-
  
 private:
 
@@ -239,7 +235,7 @@ private:
   void GetContentOf(nsIBox* aBox, nsIContent** aContent);
 
   void PageUpDown(nsIFrame* aThumbFrame, nscoord change);
-  void SetCurrentPosition(nsIContent* scrollbar, nsIFrame* aThumbFrame, nscoord pos);
+  void SetCurrentPosition(nsIContent* scrollbar, nsIFrame* aThumbFrame, nscoord pos, PRBool aIsSmooth);
   NS_IMETHOD DragThumb(nsIPresContext* aPresContext, PRBool aGrabMouseEvents);
   void AddListener();
   void RemoveListener();

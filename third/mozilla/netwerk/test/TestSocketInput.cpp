@@ -85,7 +85,6 @@ public:
 
 InputTestConsumer::InputTestConsumer()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 InputTestConsumer::~InputTestConsumer()
@@ -93,7 +92,7 @@ InputTestConsumer::~InputTestConsumer()
 }
 
 
-NS_IMPL_ISUPPORTS1(InputTestConsumer, nsIStreamListener)
+NS_IMPL_ISUPPORTS2(InputTestConsumer, nsIRequestObserver, nsIStreamListener)
 
 
 NS_IMETHODIMP
@@ -177,41 +176,18 @@ main(int argc, char* argv[])
     rv = sts->CreateTransport(hostName, port, nsnull, 0, 0, &transport);
     if (NS_SUCCEEDED(rv)) {
       nsCOMPtr<nsIRequest> request;
-      transport->AsyncRead(nsnull, new InputTestConsumer, 0, -1, 0, getter_AddRefs(request));
+      transport->AsyncRead(new InputTestConsumer, nsnull, 0, -1, 0, getter_AddRefs(request));
 
       NS_RELEASE(transport);
     }
 
     // Enter the message pump to allow the URL load to proceed.
     while ( gKeepRunning ) {
-#ifdef WIN32
-      MSG msg;
-
-      if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-      }
-#else
-#ifdef XP_MAC
-      /* Mac stuff is missing here! */
-#else
-#ifdef XP_OS2
-      QMSG qmsg;
-
-      if (WinGetMsg(0, &qmsg, 0, 0, 0))
-        WinDispatchMsg(0, &qmsg);
-      else
-        gKeepRunning = FALSE;
-#else
       PLEvent *gEvent;
-      rv = eventQ->GetEvent(&gEvent);
-      rv = eventQ->HandleEvent(gEvent);
-#endif
-#endif
-#endif
+      eventQ->WaitForEvent(&gEvent);
+      eventQ->HandleEvent(gEvent);
     }
 
-    sts->Shutdown();
   } // this scopes the nsCOMPtrs
   // no nsCOMPtrs are allowed to be alive when you call NS_ShutdownXPCOM
   rv = NS_ShutdownXPCOM(nsnull);

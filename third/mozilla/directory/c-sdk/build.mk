@@ -225,7 +225,11 @@ endif
 ifeq ($(OS_ARCH), WINNT)
 EXE_SUFFIX=.exe
 RSC=rc
+ifdef NS_USE_GCC
+OFFLAG=-o #
+else
 OFFLAG=/Fo
+endif
 else
 OFFLAG=-o
 endif
@@ -235,7 +239,13 @@ DEFS            += -DLINUX2_0 -DLINUX1_2 -DLINUX2_1
 endif
 
 ifeq ($(OS_ARCH), WINNT)
+ifndef NS_USE_GCC
 DLLEXPORTS_PREFIX=/DEF:
+USE_DLL_EXPORTS_FILE	= 1
+endif
+endif
+
+ifeq ($(OS_ARCH), OS2)
 USE_DLL_EXPORTS_FILE	= 1
 endif
 
@@ -354,6 +364,11 @@ endif # Linux
 
 ifeq ($(OS_ARCH), WINNT)
 
+ifdef NS_USE_GCC
+LINK_EXE	= $(CC) -o $@ $(LDFLAGS) $(LCFLAGS) $(DEPLIBS) $(OBJS) $(EXTRA_LIBS) $(PLATFORMLIBS)
+LINK_LIB	= $(AR) cr $@ $(OBJS)
+LINK_DLL	= $(CC) -shared -Wl,--export-all-symbols -Wl,--out-implib -Wl,$(@:.$(DLL_SUFFIX)=.$(LIB_SUFFIX)) $(LLFLAGS) $(DLL_LDFLAGS) -o $@ $(OBJS) $(EXTRA_LIBS) $(EXTRA_DLL_LIBS)
+else
 DEBUG_LINK_OPT=/DEBUG:FULL
 ifeq ($(BUILD_OPT), 1)
   DEBUG_LINK_OPT=
@@ -368,13 +383,20 @@ LINK_LIB        = $(CYGWIN_WRAPPER) lib -OUT:"$@"  $(OBJS)
 LINK_DLL        = $(CYGWIN_WRAPPER) link $(DEBUG_LINK_OPT) /nologo /MAP /DLL /PDB:NONE /DEBUGTYPE:BOTH \
         $(ML_DEBUG) /SUBSYSTEM:$(SUBSYSTEM) $(LLFLAGS) $(DLL_LDFLAGS) \
         $(EXTRA_LIBS) /out:"$@" $(OBJS)
+endif # NS_USE_GCC
 else # WINNT
 #
 # UNIX link commands
 #
 ifeq ($(OS_ARCH),OS2)
-LINK_LIB        = $(AR) $(AR_FLAGS) $(OBJS) && $(RANLIB) $@
+LINK_LIB        = -$(RM) $@ && $(AR) $(AR_FLAGS) $(OBJS) && $(RANLIB) $@
+LINK_LIB2       = -$(RM) $@ && $(AR) $@ $(OBJS2) && $(RANLIB) $@
+ifeq ($(MOZ_OS2_TOOLS),VACPP)
 LINK_DLL        = $(LD) $(OS_DLLFLAGS) $(DLLFLAGS) $(OBJS)
+else
+LINK_DLL        = $(LD) $(DSO_LDOPTS) $(ALDFLAGS) $(DLL_LDFLAGS) $(DLL_EXPORT_FLAGS) \
+                        -o $@ $(OBJS)
+endif
 
 else
 
@@ -398,14 +420,6 @@ endif
 
 ifneq (,$(filter BeOS Darwin NetBSD,$(OS_ARCH)))
 LINK_DLL	= $(MKSHLIB) $(OBJS)
-endif
-
-ifeq ($(OS_ARCH),OpenVMS)
-AR_EXTRACT = ar x
-AR_LIST = ar t
-SUB_LOBJS = $(shell for lib in $(SHARED_LIBRARY_LIBS); do $(AR_LIST) $${lib}; done;)
-LINK_DLL        = $(MKSHLIB) $(DSO_LDOPTS) $(ALDFLAGS) $(DLL_LDFLAGS) \
-		  $(DLL_EXPORT_FLAGS) -o $@ $(OBJS) VMSuni.opt
 endif
 
 ifeq ($(OS_ARCH), HP-UX)

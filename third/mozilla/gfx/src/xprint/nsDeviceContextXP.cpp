@@ -42,14 +42,6 @@
 #define PR_LOGGING 1
 #include "prlog.h"
  
-/* PostScript/Xprint print modules do not support more than one object
- * instance because they use global vars which cannot be shared between
- * multiple instances...
- * bug 119491 ("Cleanup global vars in PostScript and Xprint modules) will fix
- * that...
- */
-#define WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS 1 
- 
 #include "nsDeviceContextXP.h"
 #include "nsRenderingContextXp.h"
 #include "nsFontMetricsXlib.h"
@@ -62,24 +54,17 @@
 static PRLogModuleInfo *nsDeviceContextXpLM = PR_NewLogModule("nsDeviceContextXp");
 #endif /* PR_LOGGING */
 
-#ifdef WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS
-static int instance_counter = 0;
-#endif /* WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS */
-
 /** ---------------------------------------------------
  *  See documentation in nsIDeviceContext.h
  */
 nsDeviceContextXp :: nsDeviceContextXp()
- : nsDeviceContextX()
-{ 
-  mPrintContext        = nsnull;
-  mSpec                = nsnull; 
-  mParentDeviceContext = nsnull;
-  
-#ifdef WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS
-  instance_counter++;
-  NS_ASSERTION(instance_counter < 2, "Cannot have more than one print device context.");
-#endif /* WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS */
+  : nsDeviceContextX(),
+    mPrintContext(nsnull),
+    mSpec(nsnull),
+    mParentDeviceContext(nsnull),
+    mFontMetricsContext(nsnull),
+    mRCContext(nsnull)
+{
 }
 
 /** ---------------------------------------------------
@@ -89,11 +74,6 @@ nsDeviceContextXp :: nsDeviceContextXp()
 nsDeviceContextXp :: ~nsDeviceContextXp() 
 { 
   DestroyXPContext();
-
-#ifdef WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS
-  instance_counter--;
-  NS_ASSERTION(instance_counter >= 0, "We cannot have less than zero instances.");
-#endif /* WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS */
 }
 
 
@@ -102,13 +82,6 @@ nsDeviceContextXp::SetSpec(nsIDeviceContextSpec* aSpec)
 {
   nsresult  rv = NS_ERROR_FAILURE;
   PR_LOG(nsDeviceContextXpLM, PR_LOG_DEBUG, ("nsDeviceContextXp::SetSpec()\n"));
-
-#ifdef WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS
-  NS_ASSERTION(instance_counter < 2, "Cannot have more than one print device context.");
-  if (instance_counter > 1) {
-    return NS_ERROR_GFX_PRINTER_PRINT_WHILE_PREVIEW;
-  }
-#endif /* WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS */
 
   nsCOMPtr<nsIDeviceContextSpecXp> xpSpec;
 
@@ -145,17 +118,12 @@ NS_IMPL_ISUPPORTS_INHERITED1(nsDeviceContextXp,
 NS_IMETHODIMP
 nsDeviceContextXp::InitDeviceContextXP(nsIDeviceContext *aCreatingDeviceContext,nsIDeviceContext *aParentContext)
 {
+  nsresult rv;
+
   // Initialization moved to SetSpec to be done after creating the Print Context
   float origscale, newscale;
   float t2d, a2d;
   int   print_resolution;
-
-#ifdef WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS
-  NS_ASSERTION(instance_counter < 2, "Cannot have more than one print device context.");
-  if (instance_counter > 1) {
-    return NS_ERROR_GFX_PRINTER_PRINT_WHILE_PREVIEW;
-  }
-#endif /* WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS */
 
   mPrintContext->GetPrintResolution(print_resolution);
 
@@ -177,9 +145,19 @@ nsDeviceContextXp::InitDeviceContextXP(nsIDeviceContext *aCreatingDeviceContext,
   mParentDeviceContext = aParentContext;
 
   /* be sure we've cleaned-up old rubbish - new values will re-populate nsFontMetricsXlib soon... */
-  nsFontMetricsXlib::FreeGlobals();
-  nsFontMetricsXlib::EnablePrinterMode(PR_TRUE);
-    
+  DeleteRenderingContextXlibContext(mRCContext);
+  DeleteFontMetricsXlibContext(mFontMetricsContext);
+  mRCContext          = nsnull;
+  mFontMetricsContext = nsnull;
+ 
+  rv = CreateFontMetricsXlibContext(this, PR_TRUE, &mFontMetricsContext);
+  if (NS_FAILED(rv))
+    return rv;
+
+  rv = CreateRenderingContextXlibContext(this, &mRCContext);
+  if (NS_FAILED(rv))
+    return rv;
+   
   return NS_OK;
 }
 
@@ -243,26 +221,13 @@ NS_IMETHODIMP nsDeviceContextXp :: GetScrollBarDimensions(float &aWidth,
   return NS_OK;
 }
 
-void  nsDeviceContextXp :: SetDrawingSurface(nsDrawingSurface  aSurface) 
-{ 
-}
-
-/** ---------------------------------------------------
- *  See documentation in nsIDeviceContext.h
- */
-NS_IMETHODIMP nsDeviceContextXp :: GetDrawingSurface(nsIRenderingContext &aContext, nsDrawingSurface &aSurface)
-{
-  aSurface = nsnull;
-  return NS_OK;
-}
-
 /** ---------------------------------------------------
  *  See documentation in nsIDeviceContext.h
  *        @update 12/21/98 dwc
  */
 NS_IMETHODIMP nsDeviceContextXp :: CheckFontExistence(const nsString& aFontName)
 {
-  return nsFontMetricsXlib::FamilyExists(this, aFontName);
+  return nsFontMetricsXlib::FamilyExists(mFontMetricsContext, aFontName);
 }
 
 NS_IMETHODIMP nsDeviceContextXp :: GetSystemFont(nsSystemFontID aID, 
@@ -349,8 +314,10 @@ void nsDeviceContextXp::DestroyXPContext()
    * properties (build-in fonts for example ) than the printer
    * previously used. */
   FlushFontCache();
-  nsRenderingContextXlib::Shutdown();
-  nsFontMetricsXlib::FreeGlobals();
+  DeleteRenderingContextXlibContext(mRCContext);
+  DeleteFontMetricsXlibContext(mFontMetricsContext);
+  mRCContext          = nsnull;
+  mFontMetricsContext = nsnull;
 
   mPrintContext = nsnull; // nsCOMPtr will call |delete mPrintContext;|
 }

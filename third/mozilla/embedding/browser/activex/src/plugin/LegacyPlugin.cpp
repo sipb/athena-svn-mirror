@@ -43,7 +43,6 @@
 #include "npapi.h"
 
 #include "nsISupports.h"
-#include "nsString.h"
 
 #ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
 #include "XPConnect.h"
@@ -54,6 +53,177 @@
 #endif
 
 #include "LegacyPlugin.h"
+
+#ifdef XPC_IDISPATCH_SUPPORT
+#include "nsCOMPtr.h"
+#include "nsString.h"
+#include "nsIDocument.h"
+#include "nsIDOMElement.h"
+#include "nsIDOMDocument.h"
+#include "nsIDOMWindow.h"
+#include "nsIScriptGlobalObject.h"
+#include "nsIScriptContext.h"
+#include "nsIURI.h"
+#include "nsIJSContextStack.h"
+#include "jsapi.h"
+#include "jscntxt.h"
+#include "nsIScriptSecurityManager.h"
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+// These are constants to control certain default behaviours
+
+#ifndef MOZ_ACTIVEX_PLUGIN_XPCONNECT
+// Flag determines if controls should be created if they are not marked
+// safe for scripting.
+const BOOL kHostSafeControlsOnly = FALSE;
+// Flag determines if controls should be downloaded and installed if there is a
+// codebase specified
+const BOOL kDownloadControlsIfMissing = FALSE;
+#endif
+
+// Flag determines whether the plugin will complain to the user if a page
+// contains a control it cannot load
+const BOOL kDisplayErrorMessages = FALSE;
+
+///////////////////////////////////////////////////////////////////////////////
+// CInstallControlProgress
+
+class CInstallControlProgress :
+    public CComObjectRootEx<CComSingleThreadModel>,
+    public IBindStatusCallback,
+    public IWindowForBindingUI
+{
+public:
+    CInstallControlProgress()
+    {
+    }
+
+    BOOL mBindingInProgress;
+    HRESULT mResult;
+    NPP mNPP;
+
+protected:
+    virtual ~CInstallControlProgress()
+    {
+    }
+public:
+BEGIN_COM_MAP(CInstallControlProgress)
+    COM_INTERFACE_ENTRY(IBindStatusCallback)
+    COM_INTERFACE_ENTRY(IWindowForBindingUI)
+END_COM_MAP()
+
+// IBindStatusCallback
+    HRESULT STDMETHODCALLTYPE OnStartBinding(DWORD dwReserved, 
+                                            IBinding __RPC_FAR *pib)
+    {
+        return S_OK;
+    }
+
+    HRESULT STDMETHODCALLTYPE GetPriority(LONG __RPC_FAR *pnPriority)
+    {
+        return S_OK;
+    }
+        
+    HRESULT STDMETHODCALLTYPE OnLowResource(DWORD reserved)
+    {
+        return S_OK;
+    }
+        
+    HRESULT STDMETHODCALLTYPE OnProgress(ULONG ulProgress, 
+                                         ULONG ulProgressMax, 
+                                         ULONG ulStatusCode, 
+                                         LPCWSTR szStatusText)
+    {
+        switch (ulStatusCode)
+        {
+        case BINDSTATUS_BEGINDOWNLOADDATA:
+        case BINDSTATUS_DOWNLOADINGDATA:
+        case BINDSTATUS_ENDDOWNLOADDATA:
+            {
+                char szMsg[100];
+                _snprintf(szMsg, sizeof(szMsg) - 1, "Downloading control (%lu of %lu)", ulProgress, ulProgressMax);
+                szMsg[sizeof(szMsg) - 1] = '\0';
+                NPN_Status(mNPP, szMsg);
+            }
+            break;
+        case BINDSTATUS_FINDINGRESOURCE:
+        case BINDSTATUS_CONNECTING:
+        case BINDSTATUS_REDIRECTING:
+        case BINDSTATUS_BEGINDOWNLOADCOMPONENTS:
+        case BINDSTATUS_INSTALLINGCOMPONENTS:
+        case BINDSTATUS_ENDDOWNLOADCOMPONENTS:
+        case BINDSTATUS_USINGCACHEDCOPY:
+        case BINDSTATUS_SENDINGREQUEST:
+        case BINDSTATUS_CLASSIDAVAILABLE:
+        case BINDSTATUS_MIMETYPEAVAILABLE:
+        case BINDSTATUS_CACHEFILENAMEAVAILABLE:
+        case BINDSTATUS_BEGINSYNCOPERATION:
+        case BINDSTATUS_ENDSYNCOPERATION:
+        case BINDSTATUS_BEGINUPLOADDATA:
+        case BINDSTATUS_UPLOADINGDATA:
+        case BINDSTATUS_ENDUPLOADDATA:
+        case BINDSTATUS_PROTOCOLCLASSID:
+        case BINDSTATUS_ENCODING:
+        case BINDSTATUS_CLASSINSTALLLOCATION:
+        case BINDSTATUS_DECODING:
+        case BINDSTATUS_LOADINGMIMEHANDLER:
+        default:
+            /* do nothing */
+            break;
+        }
+        return S_OK;
+    }
+
+    HRESULT STDMETHODCALLTYPE OnStopBinding(HRESULT hresult, LPCWSTR szError)
+    {
+        mBindingInProgress = FALSE;
+        mResult = hresult;
+        NPN_Status(mNPP, "");
+        return S_OK;
+    }
+        
+    HRESULT STDMETHODCALLTYPE GetBindInfo(DWORD __RPC_FAR *pgrfBINDF, 
+                                                        BINDINFO __RPC_FAR *pbindInfo)
+    {
+        *pgrfBINDF = BINDF_ASYNCHRONOUS | BINDF_ASYNCSTORAGE |
+                    BINDF_GETNEWESTVERSION | BINDF_NOWRITECACHE;
+        pbindInfo->cbSize = sizeof(BINDINFO);
+        pbindInfo->szExtraInfo = NULL;
+        memset(&pbindInfo->stgmedData, 0, sizeof(STGMEDIUM));
+        pbindInfo->grfBindInfoF = 0;
+        pbindInfo->dwBindVerb = 0;
+        pbindInfo->szCustomVerb = NULL;
+        return S_OK;
+    }
+        
+    HRESULT STDMETHODCALLTYPE OnDataAvailable(DWORD grfBSCF, 
+                                              DWORD dwSize, 
+                                              FORMATETC __RPC_FAR *pformatetc, 
+                                              STGMEDIUM __RPC_FAR *pstgmed)
+    {
+        return E_NOTIMPL;
+    }
+      
+    HRESULT STDMETHODCALLTYPE OnObjectAvailable(REFIID riid, 
+                                                IUnknown __RPC_FAR *punk)
+    {
+        return S_OK;
+    }
+
+// IWindowForBindingUI
+    virtual HRESULT STDMETHODCALLTYPE GetWindow(
+        /* [in] */ REFGUID rguidReason,
+        /* [out] */ HWND *phwnd)
+    {
+        HWND hwnd = NULL;
+        NPN_GetValue(mNPP, NPNVnetscapeWindow, &hwnd);
+        *phwnd = hwnd;
+        return S_OK;
+    }
+};
+
+///////////////////////////////////////////////////////////////////////////////
 
 
 // NPP_Initialize
@@ -98,71 +268,525 @@ jref NPP_GetJavaClass(void)
 
 #define MIME_OLEOBJECT1   "application/x-oleobject"
 #define MIME_OLEOBJECT2   "application/oleobject"
-#define MIME_ACTIVESCRIPT "text/x-activescript"
 
-NPError NewScript(const char *pluginType,
-                    PluginInstanceData *pData,
-                    uint16 mode,
-                    int16 argc,
-                    char *argn[],
-                    char *argv[])
+enum MozAxPluginErrors
 {
-    CActiveScriptSiteInstance *pScriptSite = NULL;
-    CActiveScriptSiteInstance::CreateInstance(&pScriptSite);
+    MozAxErrorControlIsNotSafeForScripting,
+    MozAxErrorCouldNotCreateControl,
+};
 
-    // TODO support ActiveScript
-    MessageBox(NULL, _T("ActiveScript not supported yet!"), NULL, MB_OK);
-    return NPERR_GENERIC_ERROR;
+static void
+ShowError(MozAxPluginErrors errorCode, const CLSID &clsid)
+{
+    if (!kDisplayErrorMessages)
+        return;
+
+    const TCHAR *szMsg = NULL;
+    const unsigned long kBufSize = 256;
+    TCHAR szBuffer[kBufSize];
+
+    // TODO errors are hardcoded for now
+    switch (errorCode)
+    {
+    case MozAxErrorControlIsNotSafeForScripting:
+        {
+            USES_CONVERSION;
+            LPOLESTR szClsid;
+            StringFromCLSID(clsid, &szClsid);
+            _sntprintf(szBuffer, kBufSize - 1,
+                _T("Could not create the control %s because it is not marked safe for scripting."), OLE2T(szClsid));
+            CoTaskMemFree(szClsid);
+            szMsg = szBuffer;
+        }
+        break;
+    case MozAxErrorCouldNotCreateControl:
+        {
+            USES_CONVERSION;
+            LPOLESTR szClsid;
+            StringFromCLSID(clsid, &szClsid);
+            _sntprintf(szBuffer, kBufSize - 1,
+                _T("Could not create the control %s. Check that it has been installed on your computer "
+                   "and that this page correctly references it."), OLE2T(szClsid));
+            CoTaskMemFree(szClsid);
+            szMsg = szBuffer;
+        }
+        break;
+    }
+    szBuffer[kBufSize - 1] = TCHAR('\0');
+    if (szMsg)
+        MessageBox(NULL, szMsg, _T("ActiveX Error"), MB_OK | MB_ICONWARNING);
 }
 
-static BOOL WillHandleCLSID(const CLSID &clsid)
+#if defined(MOZ_ACTIVEX_PLUGIN_XPCONNECT) && defined(XPC_IDISPATCH_SUPPORT)
+
+static nsresult
+CreatePrincipal(nsIURI * origin,
+                nsIPrincipal ** outPrincipal)
 {
+    nsresult rv;
+    nsCOMPtr<nsIScriptSecurityManager> secMan(
+        do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv));
+    if (NS_FAILED(rv)) return rv;
+
+    return secMan->GetCodebasePrincipal(origin, outPrincipal);
+}
+
+/***************************************************************************/
+// A class to put on the stack to manage JS contexts when we are entering JS.
+// This pushes and pops the given context
+// with the nsThreadJSContextStack service as this object goes into and out
+// of scope. It is optimized to not push/pop the cx if it is already on top
+// of the stack. We need to push the JSContext when we enter JS because the
+// JS security manager looks on the context stack for permissions information.
+
+class MozAxAutoPushJSContext
+{
+public:
+    MozAxAutoPushJSContext(JSContext *cx, nsIURI * aURI);
+
+    ~MozAxAutoPushJSContext();
+
+    nsresult ResultOfPush() { return mPushResult; };
+
+private:
+    nsCOMPtr<nsIJSContextStack> mContextStack;
+    JSContext*                  mContext;
+    JSStackFrame                mFrame;
+    nsresult                    mPushResult;
+};
+
+
+MozAxAutoPushJSContext::MozAxAutoPushJSContext(JSContext *cx,
+                                               nsIURI * aURI)
+                                     : mContext(cx), mPushResult(NS_OK)
+{
+    mContextStack = do_GetService("@mozilla.org/js/xpc/ContextStack;1");
+
+    if(mContextStack)
+    {
+        JSContext* currentCX;
+        if(NS_SUCCEEDED(mContextStack->Peek(&currentCX)))
+        {
+            // Is the current context already on the stack?
+            if(cx == currentCX)
+                mContextStack = nsnull;
+            else
+            {
+                mContextStack->Push(cx);
+                // Leave the reference to the mContextStack to
+                // indicate that we need to pop it in our dtor.                                               
+            }
+
+        }
+    }
+
+    memset(&mFrame, 0, sizeof(mFrame));
+
+    // See if there are any scripts on the stack.
+    // If not, we need to add a dummy frame with a principal.
+    PRBool hasScript = PR_FALSE;
+    JSStackFrame* tempFP = cx->fp;
+    while (tempFP)
+    {
+        if (tempFP->script)
+        {
+            hasScript = PR_TRUE;
+            break;
+        }
+        tempFP = tempFP->down;
+    };
+
+    if (!hasScript)
+    {
+        nsCOMPtr<nsIPrincipal> principal;
+        mPushResult = CreatePrincipal(aURI, getter_AddRefs(principal));
+
+        if (NS_SUCCEEDED(mPushResult))
+        {
+            JSPrincipals* jsprinc;
+            principal->GetJSPrincipals(&jsprinc);
+
+            mFrame.script = JS_CompileScriptForPrincipals(cx, JS_GetGlobalObject(cx),
+                                                          jsprinc, "", 0, "", 1);
+            JSPRINCIPALS_DROP(cx, jsprinc);
+
+            if (mFrame.script)
+            {
+                mFrame.down = cx->fp;
+                cx->fp = &mFrame;
+            }
+            else
+                mPushResult = NS_ERROR_OUT_OF_MEMORY;
+        }
+    }
+}
+
+MozAxAutoPushJSContext::~MozAxAutoPushJSContext()
+{
+    if (mContextStack)
+        mContextStack->Pop(nsnull);
+
+    if (mFrame.script)
+        mContext->fp = mFrame.down;
+
+}
+
+
+static JSContext*
+GetPluginsContext(PluginInstanceData *pData)
+{
+    nsCOMPtr<nsIDOMWindow> window;
+    NPN_GetValue(pData->pPluginInstance, NPNVDOMWindow, 
+                 NS_STATIC_CAST(nsIDOMWindow **, getter_AddRefs(window)));
+    if (!window)
+        return nsnull;
+
+    nsCOMPtr<nsIScriptGlobalObject> globalObject(do_QueryInterface(window));
+    if (!globalObject)
+        return nsnull;
+
+    nsCOMPtr<nsIScriptContext> scriptContext;
+    if (NS_FAILED(globalObject->GetContext(getter_AddRefs(scriptContext))) ||
+        !scriptContext)
+        return nsnull;
+
+    return NS_REINTERPRET_CAST(JSContext*, scriptContext->GetNativeContext());
+}
+
+#endif
+
+static BOOL
+WillHandleCLSID(const CLSID &clsid, PluginInstanceData *pData)
+{
+#if defined(MOZ_ACTIVEX_PLUGIN_XPCONNECT) && defined(XPC_IDISPATCH_SUPPORT)
+    // Ensure the control is safe for scripting
+    nsCOMPtr<nsIDispatchSupport> dispSupport = do_GetService(NS_IDISPATCH_SUPPORT_CONTRACTID);
+    if (!dispSupport)
+        return FALSE;
+    nsCID cid;
+    memcpy(&cid, &clsid, sizeof(nsCID));
+    PRBool isSafe = PR_FALSE;
+    PRBool classExists = PR_FALSE;
+    JSContext * cx = GetPluginsContext(pData);
+    if (cx)
+    {
+        nsCOMPtr<nsIURI> uri;
+        MozAxPlugin::GetCurrentLocation(pData->pPluginInstance, getter_AddRefs(uri));
+        MozAxAutoPushJSContext autoContext(cx, uri);
+        dispSupport->IsClassSafeToHost(cx, cid, PR_TRUE, &classExists, &isSafe);
+    }
+    if (classExists && !isSafe)
+        return FALSE;
+    return TRUE;
+#else
     if (::IsEqualCLSID(clsid, CLSID_NULL))
     {
         return FALSE;
     }
 
-    const BOOL kRestrictControls = FALSE;
-    if (!kRestrictControls)
+    // Check the Internet Explorer list of vulnerable controls
+    CRegKey keyExplorer;
+    if (keyExplorer.Open(HKEY_LOCAL_MACHINE,
+        _T("SOFTWARE\\Microsoft\\Internet Explorer\\ActiveX Compatibility"), KEY_READ) == ERROR_SUCCESS)
     {
-        return TRUE;
+        LPOLESTR szCLSID = NULL;
+        ::StringFromCLSID(clsid, &szCLSID);
+        if (szCLSID)
+        {
+            CRegKey keyCLSID;
+            USES_CONVERSION;
+            if (keyCLSID.Open(keyExplorer, W2T(szCLSID), KEY_READ) == ERROR_SUCCESS)
+            {
+                DWORD dwType = REG_DWORD;
+                DWORD dwFlags = 0;
+                DWORD dwBufSize = sizeof(dwFlags);
+                if (::RegQueryValueEx(keyCLSID, _T("Compatibility Flags"),
+                    NULL, &dwType, (LPBYTE) &dwFlags, &dwBufSize) == ERROR_SUCCESS)
+                {
+                    // Flags for this reg key
+                    const DWORD kKillBit = 0x00000400;
+                    if (dwFlags & kKillBit)
+                    {
+                        ::CoTaskMemFree(szCLSID);
+                        return FALSE;
+                    }
+                }
+            }
+            ::CoTaskMemFree(szCLSID);
+        }
     }
 
-    // Check if the CLSID belongs to a limited number the plugin is prepared to support
-    CRegKey key;
-    if (key.Open(HKEY_LOCAL_MACHINE, _T("Software\\Mozilla\\ActiveX\\CLSID"), KEY_READ) != ERROR_SUCCESS)
+    // Check if the CLSID belongs to a list that the plugin does not support
+    CRegKey keyDeny;
+    if (keyDeny.Open(HKEY_LOCAL_MACHINE, kControlsToDenyKey, KEY_READ) == ERROR_SUCCESS)
     {
-        return FALSE;
+        // Enumerate CLSIDs looking for this one
+        int i = 0;
+        do {
+            USES_CONVERSION;
+            TCHAR szCLSID[64];
+            const DWORD nLength = sizeof(szCLSID) / sizeof(szCLSID[0]);
+            if (::RegEnumKey(keyDeny, i++, szCLSID, nLength) != ERROR_SUCCESS)
+            {
+                break;
+            }
+            szCLSID[nLength - 1] = TCHAR('\0');
+            CLSID clsidToCompare = GUID_NULL;
+            if (SUCCEEDED(::CLSIDFromString(T2OLE(szCLSID), &clsidToCompare)) &&
+                ::IsEqualCLSID(clsid, clsidToCompare))
+            {
+                return FALSE;
+            }
+        } while (1);
+        keyDeny.Close();
     }
 
-    // Enumerate CLSIDs looking for this one
-    int i = 0;
-    do {
-        USES_CONVERSION;
-        TCHAR szCLSID[64];
-        const DWORD nLength = sizeof(szCLSID) / sizeof(szCLSID[0]);
-        if (::RegEnumKey(key, i++, szCLSID, nLength) != ERROR_SUCCESS)
-        {
-            break;
-        }
-        szCLSID[nLength - 1] = TCHAR('\0');
-        CLSID clsidToCompare = GUID_NULL;
-        if (SUCCEEDED(::CLSIDFromString(T2OLE(szCLSID), &clsidToCompare)) &&
-            ::IsEqualCLSID(clsid, clsidToCompare))
-        {
-            return TRUE;
-        }
-    } while (1);
+    // Check if the CLSID belongs to a list that the plugin only supports
+    CRegKey keyAllow;
+    if (keyAllow.Open(HKEY_LOCAL_MACHINE, kControlsToAllowKey, KEY_READ) == ERROR_SUCCESS)
+    {
+        // Enumerate CLSIDs looking for this one
+        int i = 0;
+        do {
+            USES_CONVERSION;
+            TCHAR szCLSID[64];
+            const DWORD nLength = sizeof(szCLSID) / sizeof(szCLSID[0]);
+            if (::RegEnumKey(keyAllow, i, szCLSID, nLength) != ERROR_SUCCESS)
+            {
+                // An empty list means all controls are allowed.
+                return (i == 0) ? TRUE : FALSE;
+            }
+            ++i;
+            szCLSID[nLength - 1] = TCHAR('\0');
+            CLSID clsidToCompare = GUID_NULL;
+            if (SUCCEEDED(::CLSIDFromString(T2OLE(szCLSID), &clsidToCompare)) &&
+                ::IsEqualCLSID(clsid, clsidToCompare))
+            {
+                return TRUE;
+            }
+        } while (1);
+    }
 
-    return FALSE;
+    return TRUE;
+#endif
 }
 
-NPError NewControl(const char *pluginType,
-                    PluginInstanceData *pData,
-                    uint16 mode,
-                    int16 argc,
-                    char *argn[],
-                    char *argv[])
+static NPError
+CreateControl(const CLSID &clsid, PluginInstanceData *pData, PropertyList &pl, LPCOLESTR szCodebase)
+{
+    // Make sure we got a CLSID we can handle
+    if (!WillHandleCLSID(clsid, pData))
+    {
+        return NPERR_GENERIC_ERROR;
+    }
+
+    pData->clsid = clsid;
+
+    // Set flags to specify if it is allowed to host safe or unsafe controls
+    // and download them.
+    PRBool hostSafeControlsOnly;
+    PRBool downloadControlsIfMissing;
+#if defined(MOZ_ACTIVEX_PLUGIN_XPCONNECT) && defined(XPC_IDISPATCH_SUPPORT)
+    PRUint32 hostingFlags = MozAxPlugin::PrefGetHostingFlags();
+    if (hostingFlags & nsIActiveXSecurityPolicy::HOSTING_FLAGS_HOST_SAFE_OBJECTS &&
+        !(hostingFlags & nsIActiveXSecurityPolicy::HOSTING_FLAGS_HOST_ALL_OBJECTS))
+    {
+        hostSafeControlsOnly = TRUE;
+    }
+    else if (hostingFlags & nsIActiveXSecurityPolicy::HOSTING_FLAGS_HOST_ALL_OBJECTS)
+    {
+        hostSafeControlsOnly = FALSE;
+    }
+    else
+    {
+        // Plugin can host neither safe nor unsafe controls, so just return
+        // without creating anything.
+        return NPERR_GENERIC_ERROR;
+    }
+    if (hostingFlags & nsIActiveXSecurityPolicy::HOSTING_FLAGS_DOWNLOAD_CONTROLS)
+    {
+        downloadControlsIfMissing = PR_TRUE;
+    }
+    else
+    {
+        downloadControlsIfMissing = PR_FALSE;
+    }
+    // Ensure we can obtain the nsIDispatchSupport service
+    nsCOMPtr<nsIDispatchSupport> dispSupport = do_GetService(NS_IDISPATCH_SUPPORT_CONTRACTID);
+    if (!dispSupport)
+    {
+        return NPERR_GENERIC_ERROR;
+    }
+    // Now test if the CLSID is safe for scripting
+    PRBool classIsMarkedSafeForScripting = PR_FALSE;
+    if (hostSafeControlsOnly)
+    {
+        PRBool classExists = PR_FALSE;
+        PRBool isClassSafeForScripting = PR_FALSE;
+        nsCID cid;
+        memcpy(&cid, &clsid, sizeof(cid));
+        if (NS_SUCCEEDED(dispSupport->IsClassMarkedSafeForScripting(cid, &classExists, &isClassSafeForScripting)) &&
+            classExists && isClassSafeForScripting)
+        {
+            classIsMarkedSafeForScripting = PR_TRUE;
+        }
+    }
+#else
+    hostSafeControlsOnly = kHostSafeControlsOnly;
+    downloadControlsIfMissing = kDownloadControlsIfMissing;
+#endif
+
+    // Create the control site
+    CControlSiteInstance *pSite = NULL;
+    CControlSiteInstance::CreateInstance(&pSite);
+    if (pSite == NULL)
+    {
+        return NPERR_GENERIC_ERROR;
+    }
+
+    pSite->m_bSupportWindowlessActivation = FALSE;
+#if defined(MOZ_ACTIVEX_PLUGIN_XPCONNECT) && defined(XPC_IDISPATCH_SUPPORT)
+    // We handle our own security further down
+    pSite->SetSecurityPolicy(NULL);
+    pSite->m_bSafeForScriptingObjectsOnly = FALSE;
+#else
+    pSite->m_bSafeForScriptingObjectsOnly = hostSafeControlsOnly;
+#endif
+
+    pSite->AddRef();
+
+#ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
+    // Set up the service provider and container so the control can get hold
+    // of the IE DOM and other interfaces
+    CComPtr<IServiceProvider> sp;
+    MozAxPlugin::GetServiceProvider(pData, &sp);
+    if (sp)
+        pSite->SetServiceProvider(sp);
+    CComQIPtr<IOleContainer> container  = sp;
+    if (container)
+        pSite->SetContainer(container);
+#endif
+
+    // TODO check the object is installed and at least as recent as
+    //      that specified in szCodebase
+
+    // Create the object
+    HRESULT hr;
+    if (!downloadControlsIfMissing || !szCodebase)
+    {
+        hr = pSite->Create(clsid, pl);
+    }
+    else if (szCodebase)
+    {
+        CComObject<CInstallControlProgress> *pProgress = NULL;
+        CComPtr<IBindCtx> spBindCtx;
+        CComPtr<IBindStatusCallback> spOldBSC;
+        CComObject<CInstallControlProgress>::CreateInstance(&pProgress);
+        pProgress->AddRef();
+        CreateBindCtx(0, &spBindCtx);
+        RegisterBindStatusCallback(spBindCtx, dynamic_cast<IBindStatusCallback *>(pProgress), &spOldBSC, 0);
+
+        hr = pSite->Create(clsid, pl, szCodebase, spBindCtx);
+        if (hr == MK_S_ASYNCHRONOUS)
+        {
+            pProgress->mNPP = pData->pPluginInstance;
+            pProgress->mBindingInProgress = TRUE;
+            pProgress->mResult = E_FAIL;
+
+            // Spin around waiting for binding to complete
+            HANDLE hFakeEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+            while (pProgress->mBindingInProgress)
+            {
+                MSG msg;
+                // Process pending messages
+                while (::PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+                {
+                    if (!::GetMessage(&msg, NULL, 0, 0))
+                    {
+                        pProgress->mBindingInProgress = FALSE;
+                        break;
+                    }
+                    ::TranslateMessage(&msg);
+                    ::DispatchMessage(&msg);
+                }
+                if (!pProgress->mBindingInProgress)
+                    break;
+                // Sleep for a bit or the next msg to appear
+                ::MsgWaitForMultipleObjects(1, &hFakeEvent, FALSE, 500, QS_ALLEVENTS);
+            }
+            ::CloseHandle(hFakeEvent);
+
+            hr = pProgress->mResult;
+            if (SUCCEEDED(hr))
+            {
+                hr = pSite->Create(clsid, pl);
+            }
+        }
+        if (pProgress)
+        {
+            RevokeBindStatusCallback(spBindCtx, dynamic_cast<IBindStatusCallback *>(pProgress));
+            pProgress->Release();
+        }
+    }
+    if (FAILED(hr))
+    {
+        ShowError(MozAxErrorCouldNotCreateControl, clsid);
+    }
+#if defined(MOZ_ACTIVEX_PLUGIN_XPCONNECT) && defined(XPC_IDISPATCH_SUPPORT)
+    if (SUCCEEDED(hr) && hostSafeControlsOnly && !classIsMarkedSafeForScripting)
+    {
+        CComPtr<IUnknown> cpUnk;
+        pSite->GetControlUnknown(&cpUnk);
+        nsIID iidDispatch;
+        memcpy(&iidDispatch, &__uuidof(IDispatch), sizeof(nsIID));
+        PRBool isObjectSafe = PR_FALSE;
+        if (!cpUnk ||
+            NS_FAILED(dispSupport->IsObjectSafeForScripting(
+                reinterpret_cast<void *>(cpUnk.p), iidDispatch, &isObjectSafe)) ||
+            !isObjectSafe)
+        {
+            pSite->Detach();
+            hr = E_FAIL;
+            ShowError(MozAxErrorControlIsNotSafeForScripting, clsid);
+            // DROP THROUGH
+        }
+    }
+#endif
+
+    // Clean up if the control could not be created
+    if (FAILED(hr))
+    {
+        pSite->Release();
+        return NPERR_GENERIC_ERROR;
+    }
+    
+#if defined(MOZ_ACTIVEX_PLUGIN_XPCONNECT) && defined(XPC_IDISPATCH_SUPPORT)
+    // Hook up the event sink
+    nsEventSinkInstance *pSink = NULL;
+    nsEventSinkInstance::CreateInstance(&pSink);
+    if (pSink)
+    {
+        pSink->AddRef();
+        pSink->mPlugin = pData;
+        CComPtr<IUnknown> control;
+        pSite->GetControlUnknown(&control);
+        pSink->SubscribeToEvents(control);
+    }
+    pData->pControlEventSink = pSink;
+#endif
+    pData->nType = itControl;
+    pData->pControlSite = pSite;
+
+    return NPERR_NO_ERROR;
+}
+
+static NPError
+NewControl(const char *pluginType,
+           PluginInstanceData *pData,
+           uint16 mode,
+           int16 argc,
+           char *argn[],
+           char *argv[])
 {
     // Read the parameters
     CLSID clsid = CLSID_NULL;
@@ -172,7 +796,7 @@ NPError NewControl(const char *pluginType,
     if (strcmp(pluginType, MIME_OLEOBJECT1) != 0 &&
         strcmp(pluginType, MIME_OLEOBJECT2) != 0)
     {
-        clsid = xpc_GetCLSIDForType(pluginType);
+        clsid = MozAxPlugin::GetCLSIDForType(pluginType);
     }
 
     for (int16 i = 0; i < argc; i++)
@@ -212,6 +836,41 @@ NPError NewControl(const char *pluginType,
         else if (stricmp(argn[i], "CODEBASE") == 0)
         {
             codebase = argv[i];
+
+#ifdef XPC_IDISPATCH_SUPPORT
+            // resolve relative URLs on CODEBASE
+            if (argv[i])
+            {
+                nsCOMPtr<nsIDOMElement> element;
+                NPN_GetValue(pData->pPluginInstance, NPNVDOMElement, 
+                             NS_STATIC_CAST(nsIDOMElement **, getter_AddRefs(element)));
+                if (element)
+                {
+                    nsCOMPtr<nsIDOMNode> tagAsNode (do_QueryInterface(element));
+                    if (tagAsNode)
+                    {
+                        nsCOMPtr<nsIDOMDocument> DOMdocument;
+                        tagAsNode->GetOwnerDocument(getter_AddRefs(DOMdocument));
+                        // XXX nsIDocument is not frozen!!!
+                        nsCOMPtr<nsIDocument> doc(do_QueryInterface(DOMdocument));
+                        if (doc)
+                        {
+                            nsCOMPtr<nsIURI> baseURI;
+                            doc->GetBaseURL(*getter_AddRefs(baseURI));
+                            if (baseURI)
+                            {
+                                nsCAutoString newURL;
+                                if (NS_SUCCEEDED(baseURI->Resolve(nsDependentCString(argv[i]), newURL)))
+                                {
+                                    codebase = newURL.get();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+#endif
+
         }
         else 
         {
@@ -237,13 +896,14 @@ NPError NewControl(const char *pluginType,
                 continue;
             }
 
-            nsAutoString paramValue; paramValue.AssignWithConversion(argv[i]);
+            USES_CONVERSION;
+            CComBSTR paramValue(A2W(argv[i]));
 
             // Check for existing params with the same name
             BOOL bFound = FALSE;
-            for (PropertyList::const_iterator it = pl.begin(); it != pl.end(); it++)
+            for (unsigned long j = 0; j < pl.GetSize(); j++)
             {
-                if (wcscmp((BSTR) (*it).szName, (BSTR) paramName) == 0)
+                if (wcscmp(pl.GetNameOf(j), (BSTR) paramName) == 0)
                 {
                     bFound = TRUE;
                     break;
@@ -256,94 +916,13 @@ NPError NewControl(const char *pluginType,
                 continue;
             }
 
-            CComVariant vsValue(paramValue.get());
-            CComVariant vIValue; // Value converted to int
-            CComVariant vRValue; // Value converted to real
-            CComVariant vBValue; // Value converted to bool
-            CComVariant &vValue = vsValue;
-
-            // See if the variant can be converted to a number or boolean
-            if (VariantChangeType(&vIValue, &vsValue, 0, VT_I4) == S_OK)
-            {
-                vValue = vIValue;
-            }
-            else if (VariantChangeType(&vRValue, &vsValue, 0, VT_R8) == S_OK)
-            {
-                vValue = vRValue;
-            }
-            else if (VariantChangeType(&vBValue, &vsValue, 0, VT_BOOL) == S_OK)
-            {
-                vValue = vBValue;
-            }
-
-
             // Add named parameter to list
-            Property p;
-            p.szName = paramName;
-            p.vValue = vValue;
-            pl.push_back(p);
+            CComVariant v(paramValue);
+            pl.AddNamedProperty(paramName, v);
         }
     }
 
-    // Make sure we got a CLSID we can handle
-    if (!WillHandleCLSID(clsid))
-    {
-        return NPERR_GENERIC_ERROR;
-    }
-
-    pData->clsid = clsid;
-
-    // Create the control site
-    CControlSiteInstance *pSite = NULL;
-    CControlSiteInstance::CreateInstance(&pSite);
-    if (pSite == NULL)
-    {
-        return NPERR_GENERIC_ERROR;
-    }
-    pSite->m_bSupportWindowlessActivation = FALSE;
-    pSite->AddRef();
-
-#ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
-    CComPtr<IServiceProvider> sp;
-    xpc_GetServiceProvider(pData, &sp);
-    if (sp)
-        pSite->SetServiceProvider(sp);
-#endif
-
-    // TODO check the object is installed and at least as recent as
-    //      that specified in szCodebase
-
-    // Create the object
-    if (FAILED(pSite->Create(clsid, pl)))
-    {
-        USES_CONVERSION;
-        LPOLESTR szClsid;
-        StringFromCLSID(clsid, &szClsid);
-        TCHAR szBuffer[256];
-        _stprintf(szBuffer, _T("Could not create the control %s. Check that it has been installed on your computer and that this page correctly references it."), OLE2T(szClsid));
-        MessageBox(NULL, szBuffer, _T("ActiveX Error"), MB_OK | MB_ICONWARNING);
-        CoTaskMemFree(szClsid);
-
-        pSite->Release();
-        return NPERR_GENERIC_ERROR;
-    }
-
-    nsEventSinkInstance *pSink = NULL;
-    nsEventSinkInstance::CreateInstance(&pSink);
-    if (pSink)
-    {
-        pSink->AddRef();
-        pSink->mPlugin = pData;
-        CComPtr<IUnknown> control;
-        pSite->GetControlUnknown(&control);
-        pSink->SubscribeToEvents(control);
-    }
-
-    pData->nType = itControl;
-    pData->pControlSite = pSite;
-    pData->pControlEventSink = pSink;
-
-    return NPERR_NO_ERROR;
+    return CreateControl(clsid, pData, pl, codebase.m_str);
 }
 
 
@@ -382,16 +961,12 @@ NPError NP_LOADDS NPP_New(NPMIMEType pluginType,
 
     // Create a plugin according to the mime type
 #ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
-    xpc_AddRef();
+    MozAxPlugin::AddRef();
 #endif
 
     NPError rv = NPERR_GENERIC_ERROR;
-    if (strcmp(pluginType, MIME_ACTIVESCRIPT) == 0)
-    {
-        rv = NewScript(pluginType, pData, mode, argc, argn, argv);
-    }
-    else /* if (strcmp(pluginType, MIME_OLEOBJECT1) == 0 ||
-             strcmp(pluginType, MIME_OLEOBJECT2) == 0) */
+    /* if (strcmp(pluginType, MIME_OLEOBJECT1) == 0 ||
+           strcmp(pluginType, MIME_OLEOBJECT2) == 0) */
     {
         rv = NewControl(pluginType, pData, mode, argc, argn, argv);
     }
@@ -405,7 +980,7 @@ NPError NP_LOADDS NPP_New(NPMIMEType pluginType,
             free(pData->szUrl);
         delete pData;
 #ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
-        xpc_Release();
+        MozAxPlugin::Release();
 #endif
         return rv;
     }
@@ -440,11 +1015,13 @@ NPP_Destroy(NPP instance, NPSavedData** save)
             pSite->Detach();
             pSite->Release();
         }
+#if defined(MOZ_ACTIVEX_PLUGIN_XPCONNECT) && defined(XPC_IDISPATCH_SUPPORT)
         if (pData->pControlEventSink)
         {
             pData->pControlEventSink->UnsubscribeFromEvents();
             pData->pControlEventSink->Release();
         }
+#endif
 #ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
         if (pData->pScriptingPeer)
         {
@@ -463,7 +1040,7 @@ NPP_Destroy(NPP instance, NPSavedData** save)
         free(pData->szContentType);
     delete pData;
 #ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
-    xpc_Release();
+    MozAxPlugin::Release();
 #endif
 
     instance->pdata = 0;
@@ -528,6 +1105,10 @@ NPP_SetWindow(NPP instance, NPWindow* window)
             {
                 pSite->SetPosition(rcPos);
             }
+
+            // Ensure clipping on parent to keep child controls happy
+            ::SetWindowLong(hwndParent, GWL_STYLE,
+                ::GetWindowLong(hwndParent, GWL_STYLE) | WS_CLIPCHILDREN);
         }
     }
 
@@ -700,7 +1281,7 @@ NPP_GetValue(NPP instance, NPPVariable variable, void *value)
 {
     NPError rv = NPERR_GENERIC_ERROR;
 #ifdef MOZ_ACTIVEX_PLUGIN_XPCONNECT
-    rv = xpc_GetValue(instance, variable, value);
+    rv = MozAxPlugin::GetValue(instance, variable, value);
 #endif
     return rv;
 }

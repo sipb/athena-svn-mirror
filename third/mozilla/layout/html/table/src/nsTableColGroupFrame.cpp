@@ -40,7 +40,7 @@
 #include "nsIHTMLTableColElement.h"
 #include "nsIDOMHTMLTableColElement.h"
 #include "nsReflowPath.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIHTMLContent.h"
@@ -473,10 +473,9 @@ NS_METHOD nsTableColGroupFrame::Reflow(nsIPresContext*          aPresContext,
   aDesiredSize.height=0;
   aDesiredSize.ascent=aDesiredSize.height;
   aDesiredSize.descent=0;
-  if (nsnull!=aDesiredSize.maxElementSize)
+  if (aDesiredSize.mComputeMEW)
   {
-    aDesiredSize.maxElementSize->width=0;
-    aDesiredSize.maxElementSize->height=0;
+    aDesiredSize.mMaxElementWidth=0;
   }
   aStatus = NS_FRAME_COMPLETE;
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
@@ -488,7 +487,6 @@ NS_METHOD nsTableColGroupFrame::IncrementalReflow(nsIPresContext*          aPres
                                                   const nsHTMLReflowState& aReflowState,
                                                   nsReflowStatus&          aStatus)
 {
-  nsresult  rv = NS_OK;
 
   // the col group is a target if its path has a reflow command
   nsHTMLReflowCommand* command = aReflowState.path->mReflowCommand;
@@ -515,9 +513,6 @@ NS_METHOD nsTableColGroupFrame::IR_TargetIsMe(nsIPresContext*          aPresCont
   aReflowState.path->mReflowCommand->GetType(type);
   nsIFrame *objectFrame;
   aReflowState.path->mReflowCommand->GetChildFrame(objectFrame); 
-  const nsStyleDisplay *childDisplay=nsnull;
-  if (nsnull!=objectFrame)
-    objectFrame->GetStyleData(eStyleStruct_Display, ((const nsStyleStruct *&)childDisplay));
   switch (type)
   {
   case eReflowType_StyleChanged :
@@ -597,9 +592,8 @@ nsTableColFrame * nsTableColGroupFrame::GetNextColumn(nsIFrame *aChildFrame)
     childFrame = mFrames.FirstChild();
   while (nsnull!=childFrame)
   {
-    const nsStyleDisplay *childDisplay;
-    childFrame->GetStyleData(eStyleStruct_Display, ((const nsStyleStruct *&)childDisplay));
-    if (NS_STYLE_DISPLAY_TABLE_COLUMN == childDisplay->mDisplay)
+    if (NS_STYLE_DISPLAY_TABLE_COLUMN ==
+        childFrame->GetStyleDisplay()->mDisplay)
     {
       result = (nsTableColFrame *)childFrame;
       break;
@@ -617,9 +611,8 @@ nsTableColFrame * nsTableColGroupFrame::GetColumnAt (PRInt32 aColIndex)
   nsIFrame *childFrame = mFrames.FirstChild();
 
   while (nsnull!=childFrame) {
-    const nsStyleDisplay *childDisplay;
-    childFrame->GetStyleData(eStyleStruct_Display, ((const nsStyleStruct *&)childDisplay));
-    if (NS_STYLE_DISPLAY_TABLE_COLUMN == childDisplay->mDisplay) {
+    if (NS_STYLE_DISPLAY_TABLE_COLUMN ==
+        childFrame->GetStyleDisplay()->mDisplay) {
       nsTableColFrame *col = (nsTableColFrame *)childFrame;
       count++;
       if (aColIndex<=count) {
@@ -723,7 +716,7 @@ NS_IMETHODIMP
 nsTableColGroupFrame::Init(nsIPresContext*  aPresContext,
                            nsIContent*      aContent,
                            nsIFrame*        aParent,
-                           nsIStyleContext* aContext,
+                           nsStyleContext*  aContext,
                            nsIFrame*        aPrevInFlow)
 {
   nsresult  rv;
@@ -752,16 +745,5 @@ NS_IMETHODIMP
 nsTableColGroupFrame::GetFrameName(nsAString& aResult) const
 {
   return MakeFrameName(NS_LITERAL_STRING("TableColGroup"), aResult);
-}
-
-NS_IMETHODIMP
-nsTableColGroupFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  PRUint32 sum = sizeof(*this);
-  *aResult = sum;
-  return NS_OK;
 }
 #endif

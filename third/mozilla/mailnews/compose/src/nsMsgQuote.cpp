@@ -61,13 +61,6 @@
 #include "nsMsgMailNewsUrl.h"
 #include "nsXPIDLString.h"
 
-static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
-static NS_DEFINE_CID(kIStreamConverterServiceCID, NS_STREAMCONVERTERSERVICE_CID);
-static NS_DEFINE_CID(kStreamConverterCID,    NS_MAILNEWS_MIME_STREAM_CONVERTER_CID);
-static NS_DEFINE_CID(kMsgQuoteListenerCID, NS_MSGQUOTELISTENER_CID);
-static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
-
-
 NS_IMPL_THREADSAFE_ADDREF(nsMsgQuoteListener)
 NS_IMPL_THREADSAFE_RELEASE(nsMsgQuoteListener)
 
@@ -79,8 +72,6 @@ NS_INTERFACE_MAP_END
 
 nsMsgQuoteListener::nsMsgQuoteListener()
 {
-  /* the following macro is used to initialize the ref counting data */
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgQuoteListener::~nsMsgQuoteListener()
@@ -141,7 +132,6 @@ nsresult nsMsgQuoteListener::OnHeadersReady(nsIMimeHeaders * headers)
 //
 nsMsgQuote::nsMsgQuote()
 {
-	NS_INIT_ISUPPORTS();
   mQuoteHeaders = PR_FALSE;
   mQuoteListener = nsnull;
 }
@@ -221,7 +211,7 @@ nsMsgQuote::QuoteMessage(const char *msgURI, PRBool quoteHeaders, nsIStreamListe
       i18nUrl->SetCharsetOverRide(tempStr.get());
   }
 
-  rv = nsComponentManager::CreateInstance(kMsgQuoteListenerCID, nsnull, NS_GET_IID(nsIMsgQuoteListener), getter_AddRefs(mQuoteListener));
+  mQuoteListener = do_CreateInstance(NS_MSGQUOTELISTENER_CONTRACTID, &rv);
   if (NS_FAILED(rv)) return rv;
   mQuoteListener->SetMsgQuote(this);
 
@@ -233,15 +223,15 @@ nsMsgQuote::QuoteMessage(const char *msgURI, PRBool quoteHeaders, nsIStreamListe
 
   // now we want to create a necko channel for this url and we want to open it
   mQuoteChannel = nsnull;
-  nsCOMPtr<nsIIOService> netService(do_GetService(kIOServiceCID, &rv));
+  nsCOMPtr<nsIIOService> netService(do_GetService(NS_IOSERVICE_CONTRACTID, &rv));
   if (NS_FAILED(rv)) return rv;
   rv = netService->NewChannelFromURI(aURL, getter_AddRefs(mQuoteChannel));
   if (NS_FAILED(rv)) return rv;
   nsCOMPtr<nsISupports> ctxt = do_QueryInterface(aURL);
 
   nsCOMPtr<nsIStreamConverterService> streamConverterService = 
-           do_GetService(kIStreamConverterServiceCID, &rv);
-  if (NS_FAILED(rv)) return rv;
+           do_GetService("@mozilla.org/streamConverters;1", &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
 
   nsCOMPtr<nsIStreamListener> convertedListener;
   rv = streamConverterService->AsyncConvertData(NS_LITERAL_STRING("message/rfc822").get(),

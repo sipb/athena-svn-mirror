@@ -81,6 +81,19 @@ nsresult nsAbRDFDataSource::createNode(const PRUnichar *str, nsIRDFNode **node)
 	return rv;
 }
 
+nsresult nsAbRDFDataSource::createBlobNode(PRUint8 *value, PRUint32 &length, nsIRDFNode **node, nsIRDFService *rdfService)
+{
+  NS_ENSURE_ARG_POINTER(node);
+  NS_ENSURE_ARG_POINTER(rdfService);
+
+  *node = nsnull;
+  nsCOMPtr<nsIRDFBlob> blob;
+  nsresult rv = rdfService->GetBlobLiteral(value, length, getter_AddRefs(blob));
+  NS_ENSURE_SUCCESS(rv,rv);
+  NS_IF_ADDREF(*node = blob);
+  return rv;
+}
+
 PRBool nsAbRDFDataSource::changeEnumFunc(nsISupports *aElement, void *aData)
 {
   nsAbRDFNotification* note = (nsAbRDFNotification *)aData;
@@ -291,7 +304,6 @@ nsAbRDFDataSource::nsAbRDFDataSource():
   mProxyObservers(nsnull),
   mLock(nsnull)
 {
-  NS_INIT_ISUPPORTS();
 	mLock = PR_NewLock ();
 }
 
@@ -490,13 +502,6 @@ NS_IMETHODIMP nsAbRDFDataSource::GetAllResources(nsISimpleEnumerator** aCursor)
 }
 
 NS_IMETHODIMP
-nsAbRDFDataSource::GetAllCommands(nsIRDFResource* source,
-                                     nsIEnumerator/*<nsIRDFResource>*/** commands)
-{
-    return NS_RDF_NO_VALUE;
-}
-
-NS_IMETHODIMP
 nsAbRDFDataSource::GetAllCmds(nsIRDFResource* source,
                                       nsISimpleEnumerator/*<nsIRDFResource>*/** commands)
 {
@@ -518,3 +523,14 @@ NS_IMETHODIMP nsAbRDFDataSource::DoCommand
     return NS_RDF_NO_VALUE;
 }
 
+NS_IMETHODIMP
+nsAbRDFDataSource::BeginUpdateBatch()
+{
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsAbRDFDataSource::EndUpdateBatch()
+{
+    return NS_OK;
+}

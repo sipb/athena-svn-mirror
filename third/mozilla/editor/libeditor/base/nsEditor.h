@@ -45,6 +45,7 @@
 
 #include "nsIEditor.h"
 #include "nsIEditorIMESupport.h"
+#include "nsIPhonetic.h"
 
 #include "nsIDOMDocument.h"
 #include "nsISelection.h"
@@ -92,7 +93,8 @@ class nsISelectionController;
  */
 class nsEditor : public nsIEditor,
                  public nsIEditorIMESupport,
-                 public nsSupportsWeakReference
+                 public nsSupportsWeakReference,
+                 public nsIPhonetic
 {
 public:
 
@@ -148,6 +150,10 @@ public:
   NS_IMETHOD EndComposition(void);
   NS_IMETHOD ForceCompositionEnd(void);
   NS_IMETHOD GetReconversionString(nsReconversionEventReply *aReply);
+  
+  // nsIPhonetic
+  NS_DECL_NSIPHONETIC
+
 
 public:
 
@@ -483,6 +489,9 @@ public:
   nsresult GetLastEditableNode(nsIDOMNode *aRoot, nsCOMPtr<nsIDOMNode> *outLastNode);
 #endif
 
+  nsresult GetIMEBufferLength(PRInt32* length);
+  PRBool   IsIMEComposing();    /* test if IME is in composition state */
+  void     SetIsIMEComposing(); /* call this before |IsIMEComposing()| */
 
   /** from html rules code - migration in progress */
   static nsresult GetTagString(nsIDOMNode *aNode, nsAString& outString);
@@ -496,6 +505,9 @@ public:
   
   static nsresult GetStartNodeAndOffset(nsISelection *aSelection, nsCOMPtr<nsIDOMNode> *outStartNode, PRInt32 *outStartOffset);
   static nsresult GetEndNodeAndOffset(nsISelection *aSelection, nsCOMPtr<nsIDOMNode> *outEndNode, PRInt32 *outEndOffset);
+#if DEBUG_JOE
+  static void DumpNode(nsIDOMNode *aNode, PRInt32 indent=0);
+#endif
 
   // Helpers to add a node to the selection. 
   // Used by table cell selection methods
@@ -522,7 +534,7 @@ public:
   nsresult GetString(const nsAString& name, nsAString& value);
 
   nsresult BeginUpdateViewBatch(void);
-  nsresult EndUpdateViewBatch(void);
+  virtual nsresult EndUpdateViewBatch(void);
 
   PRBool GetShouldTxnSetSelection();
 
@@ -555,11 +567,13 @@ protected:
   EDirection        mDirection;          // the current direction of editor action
   
   // data necessary to build IME transactions
-  PRBool						mInIMEMode;          // are we inside an IME composition?
-  nsIPrivateTextRangeList*      mIMETextRangeList;   // IME special selection ranges
-  nsCOMPtr<nsIDOMCharacterData> mIMETextNode;        // current IME text node
-  PRUint32						mIMETextOffset;      // offset in text node where IME comp string begins
-  PRUint32						mIMEBufferLength;    // current length of IME comp string
+  PRBool                        mInIMEMode;        // are we inside an IME composition?
+  nsIPrivateTextRangeList*      mIMETextRangeList; // IME special selection ranges
+  nsCOMPtr<nsIDOMCharacterData> mIMETextNode;      // current IME text node
+  PRUint32                      mIMETextOffset;    // offset in text node where IME comp string begins
+  PRUint32                      mIMEBufferLength;  // current length of IME comp string
+  PRBool                        mIsIMEComposing;   // is IME in composition state?
+                                                   // This is different from mInIMEMode. see Bug 98434.
 
   // various listeners
   nsVoidArray*                  mActionListeners;  // listens to all low level actions on the doc
@@ -570,12 +584,15 @@ protected:
   nsWeakPtr        mDocWeak;  // weak reference to the nsIDOMDocument
   nsCOMPtr<nsIDTD> mDTD;
 
+  nsString* mPhonetic;
+
   static PRInt32 gInstanceCount;
 
   friend PRBool NSCanUnload(nsISupports* serviceMgr);
   friend class nsAutoTxnsConserveSelection;
   friend class nsAutoSelectionReset;
   friend class nsAutoRules;
+  friend class nsRangeUpdater;
 };
 
 

@@ -40,11 +40,7 @@
 #ifndef _nsHTMLImageAccessible_H_
 #define _nsHTMLImageAccessible_H_
 
-#include "nsAccessible.h"
 #include "nsBaseWidgetAccessible.h"
-#include "nsIAccessibleHyperLink.h"
-#include "nsIFrame.h"
-#include "nsIImageFrame.h"
 #include "nsIDOMHTMLMapElement.h"
 
 /* Accessible for supporting images
@@ -62,26 +58,10 @@ public:
   NS_IMETHOD GetAccRole(PRUint32 *_retval); 
   NS_IMETHOD GetAccFirstChild(nsIAccessible **_retval);
   NS_IMETHOD GetAccLastChild(nsIAccessible **_retval);
-  NS_IMETHOD GetAccChildCount(PRInt32 *_retval);
 
 protected:
-  nsIAccessible *CreateAreaAccessible(PRUint32 areaNum);
+  nsIAccessible *CreateAreaAccessible(PRInt32 areaNum);
   nsCOMPtr<nsIDOMHTMLMapElement> mMapElement;
 };
 
-/* Accessible for support images with "use=#map".
- * only this kind of images will support nsIAccessibleHyperLink
- */
-class nsHTMLImageMapAccessible : public nsHTMLImageAccessible,
-                                 public nsIAccessibleHyperLink
-{
-  NS_DECL_ISUPPORTS_INHERITED
-  NS_DECL_NSIACCESSIBLEHYPERLINK
-
-public:
-  nsHTMLImageMapAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell)
-    : nsHTMLImageAccessible(aDomNode, aShell)
-  {
-  }//constructor end
-};
 #endif  

@@ -54,6 +54,7 @@ class nsIDocument;
 #include "nsWeakReference.h"
 #include "nsString.h"
 #include "nsIZipReader.h"
+#include "nsICSSLoader.h"
      
 // for component registration
 // {D8C7D8A2-E84C-11d2-BF87-00105A1B0627}
@@ -92,7 +93,7 @@ protected:
   nsresult GetDynamicDataSource(nsIURI *aChromeURL, PRBool aIsOverlay, PRBool aUseProfile, PRBool aCreateDS, nsIRDFDataSource **aResult);
   nsresult GetDynamicInfo(nsIURI *aChromeURL, PRBool aIsOverlay, nsISimpleEnumerator **aResult);
 
-  nsresult GetResource(const nsCString& aChromeType, nsIRDFResource** aResult);
+  nsresult GetResource(const nsACString& aChromeType, nsIRDFResource** aResult);
   
   nsresult UpdateDynamicDataSource(nsIRDFDataSource *aDataSource,
                                    nsIRDFResource *aResource,
@@ -246,8 +247,13 @@ protected:
   nsCOMPtr<nsICSSStyleSheet> mUserContentSheet;
   nsCOMPtr<nsICSSStyleSheet> mFormSheet;
 
+  nsCOMPtr<nsICSSLoader> mCSSLoader;
+  
   nsCOMPtr<nsIZipReader> mOverrideJAR;
   nsCString              mOverrideJARURL;
+  
+  // useful atoms - these are static atoms, so don't use nsCOMPtr
+  static nsIAtom* sCPrefix;            // "c"
   
   PRBool mUseXBLForms;
   

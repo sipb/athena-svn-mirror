@@ -28,20 +28,24 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= uconv
 LIBRARY_NAME	= uconv
-EXPORT_LIBRARY = 1
+EXPORT_LIBRARY  = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsUConvModule
+GRE_MODULE	= 1
 
 ifneq ($(OS_ARCH),WINNT)
 # To avoid conflict with OS/2 system uconv.dll
 SHORT_LIBNAME  = mozuconv
 endif
 REQUIRES	= xpcom \
+                  mozreg \
+                  xpcom_obsolete \
 		  string \
 		  intl \
 		  locale \
 		  unicharutil \
 		  chardet \
+		  ucnative \
 		  $(NULL)
 
 CSRCS		= \
@@ -52,12 +56,18 @@ CSRCS		= \
 
 CPPSRCS		= \
 		nsUConvModule.cpp \
-		nsCharsetConverterManager.cpp \
+		nsCharsetAliasImp.cpp \
+		nsConverterInputStream.cpp \
 		nsTextToSubURI.cpp \
+		nsURLProperties.cpp \
+		nsCharsetConverterManager.cpp \
+		$(NULL)
+
+ifndef MOZ_USE_NATIVE_UCONV
+CPPSRCS         += \
+		nsScriptableUConv.cpp \
 		nsUnicodeDecodeHelper.cpp \
 		nsUnicodeEncodeHelper.cpp \
-		nsCharsetAliasImp.cpp \
-		nsURLProperties.cpp \
 		nsMappingCache.cpp \
 		nsISO88591ToUnicode.cpp \
 		nsCP1252ToUnicode.cpp \
@@ -67,9 +77,8 @@ CPPSRCS		= \
 		nsUnicodeToCP1252.cpp \
 		nsUnicodeToMacRoman.cpp \
 		nsUnicodeToUTF8.cpp \
-		nsScriptableUConv.cpp \
-		nsConverterInputStream.cpp \
 		$(NULL)
+endif
 
 EXPORT_RESOURCE	= \
 		charsetalias.properties \
@@ -102,9 +111,11 @@ endif
 endif
 endif
 
-EXTRA_DSO_LDOPTS = $(MOZ_NECKO_UTIL_LIBS) \
-		$(MOZ_COMPONENT_LIBS) \
+EXTRA_DSO_LDOPTS = \
+		$(DIST)/lib/$(LIB_PREFIX)ucvutil_s.$(LIB_SUFFIX) \
 		$(MOZ_UNICHARUTIL_LIBS) \
+		$(MOZ_NECKO_UTIL_LIBS) \
+		$(MOZ_COMPONENT_LIBS) \
 		$(NULL)
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
@@ -122,17 +133,18 @@ EXTRA_DSO_LDOPTS += $(TK_LIBS)
 endif
 
 LOCAL_INCLUDES	= -I$(srcdir)/../util \
-				-I$(srcdir)/../ucvlatin \
-				-I$(srcdir)/../ucvibm \
-				-I$(srcdir)/../ucvja \
-				-I$(srcdir)/../ucvtw2 \
-				-I$(srcdir)/../ucvtw \
-				-I$(srcdir)/../ucvko \
-				-I$(srcdir)/../ucvcn \
-				$(NULL)
+		  -I$(srcdir)/../ucvlatin \
+		  -I$(srcdir)/../ucvibm \
+		  -I$(srcdir)/../ucvja \
+		  -I$(srcdir)/../ucvtw2 \
+		  -I$(srcdir)/../ucvtw \
+		  -I$(srcdir)/../ucvko \
+		  -I$(srcdir)/../ucvcn \
+		  -I$(srcdir)/../native \
+		  $(NULL)
 
-SHARED_LIBRARY_LIBS = \
-	$(DIST)/lib/$(LIB_PREFIX)ucvutil_s.$(LIB_SUFFIX) \
+ifndef MOZ_USE_NATIVE_UCONV
+SHARED_LIBRARY_LIBS += \
 	$(DIST)/lib/$(LIB_PREFIX)ucvlatin_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)ucvibm_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)ucvja_s.$(LIB_SUFFIX) \
@@ -141,14 +153,13 @@ SHARED_LIBRARY_LIBS = \
 	$(DIST)/lib/$(LIB_PREFIX)ucvko_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)ucvcn_s.$(LIB_SUFFIX) \
 	$(NULL)
+else
+SHARED_LIBRARY_LIBS += \
+	$(DIST)/lib/$(LIB_PREFIX)ucnative_s.$(LIB_SUFFIX) \
+	$(NULL)
+endif
 
 include $(topsrcdir)/config/rules.mk
-
-# Reserved name __STDC__ cannot be defined as a macro name on AIX or OpenVMS.
-# QNX simply objects to the way it's being redefined.
-ifeq (,$(filter AIX OpenVMS QNX HP-UX,$(OS_ARCH)))
-CFLAGS		+= -D__STDC__
-endif
 
 # CODESET is not automatically defined on some older versions of Redhat.
 # Define _XOPEN_SOURCE so CODESET will get defined and thus allow 

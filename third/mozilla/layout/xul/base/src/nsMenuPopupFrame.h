@@ -91,6 +91,9 @@ public:
   NS_IMETHOD SetActive(PRBool aActiveFlag) { return NS_OK; }; // We don't care.
   NS_IMETHOD GetIsActive(PRBool& isActive) { isActive = PR_FALSE; return NS_OK; };
   NS_IMETHOD IsMenuBar(PRBool& isMenuBar) { isMenuBar = PR_FALSE; return NS_OK; };
+  NS_IMETHOD ConsumeOutsideClicks(PRBool& aConsumeOutsideClicks);
+  NS_IMETHOD ClearRecentlyRolledUp() {return NS_OK;}
+  NS_IMETHOD RecentlyRolledUp(nsIMenuFrame *aMenuFrame, PRBool *aJustRolledUp) {*aJustRolledUp = PR_FALSE; return NS_OK;}
   NS_IMETHOD SetIsContextMenu(PRBool aIsContextMenu) { mIsContextMenu = aIsContextMenu; return NS_OK; };
   NS_IMETHOD GetIsContextMenu(PRBool& aIsContextMenu) { aIsContextMenu = mIsContextMenu; return NS_OK; };
   
@@ -116,7 +119,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD AttributeChanged(nsIPresContext* aPresContext,
@@ -142,7 +145,10 @@ public:
   NS_IMETHOD RelayoutDirtyChild(nsBoxLayoutState& aState, nsIBox* aChild);
 
   void GetViewOffset(nsIView* aView, nsPoint& aPoint);
-  static void GetRootViewForPopup(nsIPresContext* aPresContext, nsIFrame* aStartFrame, nsIView** aResult);
+  static void GetRootViewForPopup(nsIPresContext* aPresContext,
+                                  nsIFrame* aStartFrame,
+                                  PRBool aStopAtViewManagerRoot,
+                                  nsIView** aResult);
 
   nsresult SyncViewWithFrame(nsIPresContext* aPresContext, const nsString& aPopupAnchor,
                              const nsString& aPopupAlign,

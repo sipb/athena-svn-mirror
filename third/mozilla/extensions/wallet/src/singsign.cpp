@@ -67,6 +67,14 @@
 #include "nsXPIDLString.h"
 #include "nsReadableUtils.h"
 #include "nsIObserverService.h"
+#include "nsIObserver.h"
+
+//#define SINGSIGN_LOGGING
+#ifdef SINGSIGN_LOGGING
+#define LOG(args) printf args
+#else
+#define LOG(args)
+#endif
 
 // Currently the default is on, so we don't need the code to prompt the
 // user if the default is off.
@@ -779,6 +787,8 @@ si_GetURL(const char * passwordRealm) {
     if (LIST_COUNT(si_signon_list)==0) {
       return NULL;
     }
+    /* XXX how can this be right -- seems wrong to give back a random password */
+    LOG(("  returning first element in the signon list\n"));
     return (si_SignonURLStruct *) (si_signon_list->ElementAt(0));
   }
 
@@ -797,6 +807,157 @@ si_GetURL(const char * passwordRealm) {
     }
   }
   return (NULL);
+}
+
+/**
+ * composite URL struct for handling the migration of legacy password entries.
+ */
+
+class si_SignonCompositeURLStruct : public si_SignonURLStruct {
+public:
+  si_SignonURLStruct *primaryUrl;
+  si_SignonURLStruct *legacyUrl;
+};
+
+PRIVATE si_SignonCompositeURLStruct * si_composite_url=0;
+
+#if defined(SINGSIGN_LOGGING)
+PRIVATE void
+si_DumpUserList(nsVoidArray &list)
+{
+  LOG(("dumping user list:\n"));
+  PRInt32 i, j, user_count = list.Count(), data_count;
+  for (i=0; i<user_count; ++i) {
+    si_SignonUserStruct *user = (si_SignonUserStruct *) list[i];
+    LOG((" user[%d]\n", i));
+    data_count = user->signonData_list.Count();
+    for (j=0; j<data_count; ++j) {
+      si_SignonDataStruct *data = (si_SignonDataStruct *) user->signonData_list[j];
+      LOG(("  (%s,%s)\n",
+          NS_ConvertUCS2toUTF8(data->name).get(),
+          NS_ConvertUCS2toUTF8(data->value).get()));
+    }
+  }
+}
+#endif
+
+PRIVATE si_SignonURLStruct *
+si_GetCompositeURL(const char *primaryRealm, const char *legacyRealm)
+{
+  si_SignonURLStruct *primaryUrl, *legacyUrl;
+
+  primaryUrl = si_GetURL(primaryRealm);
+
+  if (legacyRealm)
+    legacyUrl = si_GetURL(legacyRealm);
+  else
+    legacyUrl = nsnull;
+
+  if (primaryUrl && legacyUrl) {
+    LOG((">>> building composite URL struct\n"));
+    if (si_composite_url) {
+      NS_ERROR("si_composite_url already in use");
+      return NULL;
+    }
+    si_composite_url = new si_SignonCompositeURLStruct;
+    if (!si_composite_url)
+      return NULL;
+
+    si_composite_url->primaryUrl = primaryUrl;
+    si_composite_url->legacyUrl = legacyUrl;
+
+    si_composite_url->signonUser_list.AppendElements(primaryUrl->signonUser_list);
+    si_composite_url->signonUser_list.AppendElements(legacyUrl->signonUser_list);
+
+#if defined(SINGSIGN_LOGGING)
+    si_DumpUserList(si_composite_url->signonUser_list);
+#endif
+
+    /* need to transfer the chosen_user state variable */
+    if (primaryUrl->chosen_user)
+      si_composite_url->chosen_user = primaryUrl->chosen_user;
+    else if (legacyUrl->chosen_user) {
+      si_SignonUserStruct *chosen_user = legacyUrl->chosen_user;
+      PRInt32 index;
+      /* XXX fixup chosen_user -- THIS SHOULD NOT BE NECESSARY */
+      index = legacyUrl->signonUser_list.IndexOf(chosen_user);
+      if (index < 0) {
+        index = primaryUrl->signonUser_list.IndexOf(chosen_user);
+        if (index >= 0)
+          primaryUrl->chosen_user = chosen_user;
+        legacyUrl->chosen_user = NULL;
+      }
+      /* move first element of legacy user list to front */
+      index = si_composite_url->signonUser_list.IndexOf(chosen_user);
+      if (index > 0)
+        si_composite_url->signonUser_list.MoveElement(index, 0);
+      si_composite_url->chosen_user = chosen_user;
+    }
+    else
+      si_composite_url->chosen_user = NULL;
+
+#if defined(SINGSIGN_LOGGING)
+    LOG(("after chosen_user fixup [chosen_user=%x]:\n", si_composite_url->chosen_user));
+    si_DumpUserList(si_composite_url->signonUser_list);
+#endif
+
+    return si_composite_url;
+  }
+
+  if (primaryUrl)
+    return primaryUrl;
+
+  return legacyUrl;
+}
+
+PRIVATE PRInt32
+si_SetChosenUser(si_SignonURLStruct *url, si_SignonUserStruct *chosen_user)
+{
+  PRInt32 index;
+  si_SignonUserStruct *user;
+
+  index = url->signonUser_list.IndexOf(chosen_user);
+  if (index < 0) {
+      url->chosen_user = NULL;
+      return -1;
+  }
+
+  url->chosen_user = chosen_user;
+  return index; 
+}
+
+PRIVATE void
+si_ReleaseCompositeURL(si_SignonURLStruct *url)
+{
+  if (url == si_composite_url) {
+    si_SignonUserStruct *chosen_user = url->chosen_user;
+    /* need to transfer the chosen_user state variable */
+    if (chosen_user) {
+      PRInt32 index;
+
+      /* store chosen_user */
+      index = si_SetChosenUser(url = si_composite_url->primaryUrl, chosen_user);
+      if (index >= 0)
+        si_composite_url->legacyUrl->chosen_user = NULL;
+      else
+        index = si_SetChosenUser(url = si_composite_url->legacyUrl, chosen_user);
+      NS_ASSERTION(index >= 0, "chosen_user not found");
+
+      /* need to move chosen_user to front of list */
+      url->signonUser_list.MoveElement(index, 0);
+    }
+    else {
+      si_composite_url->primaryUrl->chosen_user = NULL;
+      si_composite_url->legacyUrl->chosen_user = NULL;
+    }
+    si_composite_url->primaryUrl = NULL;
+    si_composite_url->legacyUrl = NULL;
+    si_composite_url->chosen_user = NULL;
+    si_composite_url->signonUser_list.Clear();
+
+    delete si_composite_url;
+    si_composite_url = NULL;
+  }
 }
 
 /* Remove a user node from a given URL node */
@@ -977,13 +1138,15 @@ si_GetFirstNonPasswordData(si_SignonUserStruct* user) {
  * This routine is called only if signon pref is enabled!!!
  */
 PRIVATE si_SignonUserStruct*
-si_GetUser(nsIPrompt* dialog, const char* passwordRealm, PRBool pickFirstUser, const nsString& userText, PRUint32 formNumber) {
+si_GetUser(nsIPrompt* dialog, const char* passwordRealm, const char *legacyRealm,
+           PRBool pickFirstUser, const nsString& userText, PRUint32 formNumber) {
   si_SignonURLStruct* url;
   si_SignonUserStruct* user = nsnull;
   si_SignonDataStruct* data;
 
   /* get to node for this URL */
-  url = si_GetURL(passwordRealm);
+  url = si_GetCompositeURL(passwordRealm, legacyRealm);
+
   if (url != NULL) {
 
     /* node for this URL was found */
@@ -1092,6 +1255,7 @@ si_GetUser(nsIPrompt* dialog, const char* passwordRealm, PRBool pickFirstUser, c
 #endif
 
     }
+    si_ReleaseCompositeURL(url);
   } else {
     user = NULL;
   }
@@ -1667,6 +1831,56 @@ si_PutData(const char *passwordRealm, nsVoidArray *signonData, PRBool save) {
 /*****************************
  * Managing the Signon Files *
  *****************************/
+ 
+////////////////////////////////////////////////////////////////////////////////
+// nsSingleSignOnProfileObserver
+// This observer is a global object and is registered the first time any consumer
+// touches signon profile data. That is, when SI_LoadSignonData() is called.
+
+class nsSingleSignOnProfileObserver : public nsIObserver
+{
+public:
+    nsSingleSignOnProfileObserver() { }
+    virtual ~nsSingleSignOnProfileObserver() {}
+    
+    NS_DECL_ISUPPORTS
+    
+    NS_IMETHODIMP Observe(nsISupports*, const char *aTopic, const PRUnichar *someData) 
+    {
+        if (!nsCRT::strcmp(aTopic, "profile-before-change")) {
+            SI_ClearUserData();
+        if (!nsCRT::strcmp(someData, NS_LITERAL_STRING("shutdown-cleanse").get()))
+            SI_DeletePersistentUserData();
+        }
+        return NS_OK;
+    }
+};
+NS_IMPL_THREADSAFE_ISUPPORTS1(nsSingleSignOnProfileObserver, nsIObserver)
+
+static nsresult EnsureSingleSignOnProfileObserver()
+{
+  static nsSingleSignOnProfileObserver *gSignOnProfileObserver;
+  
+  if (!gSignOnProfileObserver) {      
+    nsCOMPtr<nsIObserverService> observerService(do_GetService("@mozilla.org/observer-service;1"));
+    if (!observerService)
+      return NS_ERROR_FAILURE;
+      
+    gSignOnProfileObserver = new nsSingleSignOnProfileObserver;
+    if (!gSignOnProfileObserver)
+      return NS_ERROR_OUT_OF_MEMORY;
+
+    // The observer service holds the only ref to the observer
+    // It thus has the lifespan of the observer service
+    nsresult rv = observerService->AddObserver(gSignOnProfileObserver, "profile-before-change", PR_FALSE);
+    if (NS_FAILED(rv)) {
+      delete gSignOnProfileObserver;
+      gSignOnProfileObserver = nsnull; 
+      return rv;
+    }
+  }
+  return NS_OK;
+}
 
 #define BUFFER_SIZE 4096
 
@@ -1733,13 +1947,16 @@ SI_LoadSignonData() {
     return si_LoadSignonDataFromKeychain();
   }
 #endif
-
+  
   /* open the signon file */
   nsFileSpec dirSpec;
   nsresult rv = Wallet_ProfileDirectory(dirSpec);
   if (NS_FAILED(rv)) {
     return -1;
   }
+
+  rv = EnsureSingleSignOnProfileObserver();
+  NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to register profile change observer");
 
   SI_InitSignonFileName();
   nsInputFileStream strm(dirSpec+signonFileName);
@@ -2190,7 +2407,10 @@ SINGSIGN_RememberSignonData
 }
 
 PRIVATE void
-si_RestoreSignonData(nsIPrompt* dialog, const char* passwordRealm, const PRUnichar* name, PRUnichar** value, PRUint32 formNumber, PRUint32 elementNumber) {
+si_RestoreSignonData(nsIPrompt* dialog,
+                     const char* passwordRealm, const char* legacyRealm,
+                     const PRUnichar* name, PRUnichar** value,
+                     PRUint32 formNumber, PRUint32 elementNumber) {
   si_SignonUserStruct* user;
   si_SignonDataStruct* data;
   nsAutoString correctedName;
@@ -2222,11 +2442,14 @@ si_RestoreSignonData(nsIPrompt* dialog, const char* passwordRealm, const PRUnich
 
   /* determine if name has been saved (avoids unlocking the database if not) */
   PRBool nameFound = PR_FALSE;
-  user = si_GetUser(dialog, passwordRealm, PR_FALSE, correctedName, formNumber);
+  user = si_GetUser(dialog, passwordRealm, legacyRealm, PR_FALSE, correctedName, formNumber);
   if (user) {
     PRInt32 dataCount = user->signonData_list.Count();
     for (PRInt32 i=0; i<dataCount; i++) {
       data = NS_STATIC_CAST(si_SignonDataStruct*, user->signonData_list.ElementAt(i));
+      LOG(("  got [name=%s value=%s]\n",
+              NS_LossyConvertUCS2toASCII(data->name).get(),
+              NS_LossyConvertUCS2toASCII(data->value).get()));
       if(correctedName.Length() && (data->name == correctedName)) {
         nameFound = PR_TRUE;
       }
@@ -2274,11 +2497,14 @@ si_RestoreSignonData(nsIPrompt* dialog, const char* passwordRealm, const PRUnich
 
   /* restore the data from previous time this URL was visited */
 
-  user = si_GetUser(dialog, passwordRealm, PR_FALSE, correctedName, formNumber);
+  user = si_GetUser(dialog, passwordRealm, legacyRealm, PR_FALSE, correctedName, formNumber);
   if (user) {
     PRInt32 dataCount = user->signonData_list.Count();
     for (PRInt32 i=0; i<dataCount; i++) {
       data = NS_STATIC_CAST(si_SignonDataStruct*, user->signonData_list.ElementAt(i));
+      LOG(("  got [name=%s value=%s]\n",
+              NS_LossyConvertUCS2toASCII(data->name).get(),
+              NS_LossyConvertUCS2toASCII(data->value).get()));
       if(correctedName.Length() && (data->name == correctedName)) {
         nsAutoString password;
         if (NS_SUCCEEDED(si_Decrypt(data->value, password))) {
@@ -2294,6 +2520,8 @@ si_RestoreSignonData(nsIPrompt* dialog, const char* passwordRealm, const PRUnich
 
 PUBLIC void
 SINGSIGN_RestoreSignonData(nsIPrompt* dialog, nsIURI* passwordRealm, const PRUnichar* name, PRUnichar** value, PRUint32 formNumber, PRUint32 elementNumber) {
+  LOG(("enter SINGSIGN_RestoreSignonData\n"));
+
   if (!passwordRealm)
     return;  
 
@@ -2301,13 +2529,14 @@ SINGSIGN_RestoreSignonData(nsIPrompt* dialog, nsIURI* passwordRealm, const PRUni
   if (!si_ExtractRealm(passwordRealm, realm))
     return;
 
-  si_RestoreSignonData(dialog, realm.get(), name, value, formNumber, elementNumber);
-  if (*value == nsnull) {
-    // try the old style host-only key format
-    nsresult rv = passwordRealm->GetHost(realm);
-    if (NS_SUCCEEDED(rv))
-      si_RestoreSignonData(dialog, realm.get(), name, value, formNumber, elementNumber);
-  }
+  nsCAutoString legacyRealm;
+  if (NS_FAILED(passwordRealm->GetHost(legacyRealm)))
+    return;
+
+  si_RestoreSignonData(dialog, realm.get(), legacyRealm.get(), name, value, formNumber, elementNumber);
+
+  LOG(("exit SINGSIGN_RestoreSignonData [value=%s]\n",
+      *value ? NS_LossyConvertUCS2toASCII(*value).get() : "(null)"));
 }
 
 /*
@@ -2356,7 +2585,7 @@ si_RestoreOldSignonDataFromBrowser
     user = si_GetSpecificUser(passwordRealm, username, NS_ConvertASCIItoUCS2(USERNAMEFIELD));
   } else {
     si_LastFormForWhichUserHasBeenSelected = -1;
-    user = si_GetUser(dialog, passwordRealm, pickFirstUser, NS_ConvertASCIItoUCS2(USERNAMEFIELD), 0);
+    user = si_GetUser(dialog, passwordRealm, nsnull, pickFirstUser, NS_ConvertASCIItoUCS2(USERNAMEFIELD), 0);
   }
   if (!user) {
     /* leave original username and password from caller unchanged */

@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
@@ -77,9 +76,6 @@ public:
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -160,7 +156,7 @@ nsHTMLBRElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 
 NS_IMPL_STRING_ATTR(nsHTMLBRElement, Clear, clear)
 
-static nsGenericHTMLElement::EnumTable kClearTable[] = {
+static nsHTMLValue::EnumTable kClearTable[] = {
   { "left", NS_STYLE_CLEAR_LEFT },
   { "right", NS_STYLE_CLEAR_RIGHT },
   { "all", NS_STYLE_CLEAR_LEFT_AND_RIGHT },
@@ -174,7 +170,7 @@ nsHTMLBRElement::StringToAttribute(nsIAtom* aAttribute,
                                    nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::clear) {
-    if (ParseEnumValue(aValue, kClearTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kClearTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -188,7 +184,7 @@ nsHTMLBRElement::AttributeToString(nsIAtom* aAttribute,
 {
   if (aAttribute == nsHTMLAtoms::clear) {
     if (eHTMLUnit_Enumerated == aValue.GetUnit()) {
-      EnumValueToString(aValue, kClearTable, aResult);
+      aValue.EnumValueToString(kClearTable, aResult);
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -219,14 +215,17 @@ NS_IMETHODIMP
 nsHTMLBRElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                           nsChangeHint& aHint) const
 {
-  if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    if (nsHTMLAtoms::clear == aAttribute) {
-      aHint = NS_STYLE_HINT_REFLOW;
-    }
-    else {
-      aHint = NS_STYLE_HINT_CONTENT;
-    }
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::clear, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
   return NS_OK;
 }
 
@@ -236,13 +235,3 @@ nsHTMLBRElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRule
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLBRElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

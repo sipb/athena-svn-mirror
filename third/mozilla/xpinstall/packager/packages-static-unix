@@ -22,6 +22,7 @@ bin/chrome/en-win.jar
 ; US
 bin/chrome/US.jar
 bin/defaults/profile/US/*
+bin/defaults/messenger/US/*
 bin/searchplugins/*
 
 [deflenus]
@@ -32,16 +33,20 @@ bin/defaults/profile/panels.rdf
 bin/defaults/profile/localstore.rdf
 bin/defaults/profile/search.rdf
 bin/defaults/profile/mimeTypes.rdf
+bin/defaults/messenger/mailViews.dat
 
 [xpcom]
 bin/libmozjs.so
 bin/libnspr4.so
 bin/libplc4.so
 bin/libplds4.so
+bin/cpu/sparcv8plus/libnspr_flt4.so
 bin/libxpcom.so
 bin/libxpistub.so
 bin/components/libxpinstall.so
 bin/components/libjar50.so
+bin/libxpcom_compat.so
+bin/components/libxpcom_compat_c.so
 
 [browser]
 bin/mozilla
@@ -60,6 +65,7 @@ bin/libprldap50.so
 bin/liblber50.so
 
 bin/components/accessibility.xpt
+bin/components/accessibility-atk.xpt
 bin/components/bookmarks.xpt
 bin/components/directory.xpt
 bin/components/downloadmanager.xpt
@@ -98,7 +104,10 @@ bin/components/jar.xpt
 bin/components/jsconsole-clhandler.js
 bin/components/content_base.xpt
 bin/components/content_html.xpt
+bin/components/content_htmldoc.xpt
+bin/components/content_xmldoc.xpt
 bin/components/content_xslt.xpt
+bin/components/txmgr.xpt
 bin/components/webBrowser_core.xpt
 bin/components/locale.xpt
 bin/components/mozbrwsr.xpt
@@ -129,6 +138,7 @@ bin/components/rdf.xpt
 bin/components/shistory.xpt
 bin/components/sidebar.xpt
 bin/components/signonviewer.xpt
+bin/components/txtsvc.xpt
 bin/components/unicharutil.xpt
 bin/components/uriloader.xpt
 bin/components/exthandler.xpt
@@ -151,11 +161,11 @@ bin/components/xuldoc.xpt
 bin/components/xultmpl.xpt
 bin/components/prefmigr.xpt
 bin/components/profile.xpt
-bin/components/regviewer.xpt
 bin/components/uconv.xpt
 bin/components/util.xpt
 bin/components/xpcom_components.xpt
 bin/components/xpcom_threads.xpt
+bin/components/xpcom_obsolete.xpt
 bin/components/xml-rpc.xpt
 bin/components/nsDictionary.js
 bin/components/nsProxyAutoConfig.js
@@ -165,8 +175,6 @@ bin/components/commandhandler.xpt
 bin/components/webbrowserpersist.xpt
 bin/components/windowwatcher.xpt
 bin/components/xmlextras.xpt
-bin/components/xmlsoap.xpt
-bin/components/xmlschema.xpt
 bin/components/nsHelperAppDlg.js
 bin/components/helperAppDlg.xpt
 bin/components/nsProgressDialog.js
@@ -175,16 +183,20 @@ bin/components/nsDownloadProgressListener.js
 bin/components/filepicker.xpt
 bin/components/mozldap.xpt
 bin/components/typeaheadfind.xpt
-
+bin/components/nsCloseAllWindows.js
 bin/chrome/help.jar
 bin/chrome/toolkit.jar
 bin/chrome/comm.jar
 bin/chrome/content-packs.jar
-bin/chrome/forms.jar
 bin/chrome/modern.jar
 bin/chrome/classic.jar
 bin/chrome/installed-chrome.txt
 bin/chrome/chromelist.txt
+
+; webservices
+bin/components/libwebsrvcs.so
+bin/components/websrvcs.xpt
+
 ;-bin/chrome/comm/content/editor/EditorInitPage.html
 ;-bin/chrome/comm/content/editor/content/EditorInitPagePlain.html
 ;Include this for "debug" testing - remove for actual beta release:
@@ -216,6 +228,8 @@ bin/res/ua.css
 bin/res/html.css
 bin/res/quirk.css
 bin/res/forms.css
+bin/res/platform-forms.css
+bin/res/EditorOverride.css
 bin/res/viewsource.css
 bin/res/mathml.css
 bin/res/rdf/article.gif
@@ -231,6 +245,9 @@ bin/res/samples/*
 bin/res/builtin/htmlBindings.xml
 bin/res/builtin/platformHTMLBindings.xml
 
+; p3p
+bin/components/p3p.xpt
+bin/components/libp3p.so
 
 [mail]
 bin/components/libmeta_mail.so
@@ -245,14 +262,13 @@ bin/components/msglocal.xpt
 bin/components/msgnews.xpt
 bin/components/msgsearch.xpt
 bin/components/nsLDAPPrefsService.js
-bin/components/txmgr.xpt
 bin/components/import.xpt
-bin/components/absync.xpt
 bin/chrome/messenger.jar
 bin/components/msgsmime.xpt
 bin/components/smime-service.js
 bin/components/msgmdn.xpt
 bin/components/mdn-service.js
+bin/components/mailview.xpt
 
 [chatzilla]
 bin/components/chatzilla-service.js
@@ -280,15 +296,19 @@ bin/components/pippki.xpt
 bin/components/libmeta_crypto.so
 bin/libnss3.so
 bin/libsmime3.so
+bin/libsoftokn3.chk
 bin/libsoftokn3.so
 bin/libssl3.so
 bin/chrome/pipnss.jar
 bin/chrome/pippki.jar
 ; These are required for solaris 32-bit builds
+bin/libfreebl_pure32_3.chk
 bin/libfreebl_pure32_3.so
+bin/libfreebl_hybrid_3.chk
 bin/libfreebl_hybrid_3.so
 
 [inspector]
+bin/components/inspector-cmdline.js
 bin/components/inspector.so
 bin/components/inspector.xpt
 bin/chrome/inspector.jar

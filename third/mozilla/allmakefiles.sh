@@ -51,7 +51,6 @@ config/Makefile
 config/autoconf.mk
 config/mkdepend/Makefile
 config/doxygen.cfg
-include/Makefile
 "
 
 if [ "$MOZ_COMPOSER" ]; then
@@ -140,7 +139,6 @@ gfx/src/gtk/Makefile
 gfx/src/ps/Makefile
 gfx/src/photon/Makefile
 gfx/src/mac/Makefile
-gfx/src/qt/Makefile
 gfx/src/xlib/Makefile
 gfx/src/os2/Makefile
 gfx/src/xlibrgb/Makefile
@@ -178,6 +176,7 @@ intl/uconv/ucvtw/Makefile
 intl/uconv/ucvtw2/Makefile
 intl/uconv/ucvko/Makefile
 intl/uconv/ucvibm/Makefile
+intl/uconv/native/Makefile
 intl/locale/Makefile
 intl/locale/public/Makefile
 intl/locale/idl/Makefile
@@ -251,7 +250,6 @@ content/Makefile
 content/base/Makefile
 content/base/public/Makefile
 content/base/src/Makefile
-content/build/Makefile
 content/events/Makefile
 content/events/public/Makefile
 content/events/src/Makefile
@@ -288,8 +286,7 @@ content/xbl/builtin/Makefile
 content/xbl/builtin/unix/Makefile
 content/xbl/builtin/win/Makefile
 content/xsl/Makefile
-content/xsl/document/Makefile
-content/xsl/document/src/Makefile
+content/xsl/public/Makefile
 content/shared/Makefile
 content/shared/public/Makefile
 content/shared/src/Makefile
@@ -326,12 +323,6 @@ layout/xul/base/src/tree/src/Makefile
 layout/xul/base/src/tree/public/Makefile
 "
 
-MAKEFILES_mpfilelocprovider="
-modules/mpfilelocprovider/Makefile
-modules/mpfilelocprovider/public/Makefile
-modules/mpfilelocprovider/src/Makefile
-"
-
 MAKEFILES_libimg="
 modules/libimg/Makefile
 "
@@ -345,6 +336,7 @@ MAKEFILES_libreg="
 modules/libreg/Makefile
 modules/libreg/include/Makefile
 modules/libreg/src/Makefile
+modules/libreg/standalone/Makefile
 "
 
 MAKEFILES_libpref="
@@ -463,6 +455,9 @@ profile/pref-migrator/public/Makefile
 profile/pref-migrator/src/Makefile
 profile/pref-migrator/resources/Makefile
 profile/defaults/Makefile
+profile/dirserviceprovider/Makefile
+profile/dirserviceprovider/public/Makefile
+profile/dirserviceprovider/src/Makefile
 "
 
 MAKEFILES_rdf="
@@ -526,7 +521,6 @@ webshell/tests/viewer/Makefile
 webshell/tests/viewer/public/Makefile
 webshell/tests/viewer/unix/Makefile
 webshell/tests/viewer/unix/gtk/Makefile
-webshell/tests/viewer/unix/qt/Makefile
 webshell/tests/viewer/unix/xlib/Makefile
 "
 
@@ -537,7 +531,6 @@ widget/src/Makefile
 widget/src/beos/Makefile
 widget/src/build/Makefile
 widget/src/gtk/Makefile
-widget/src/gtk2/mai/Makefile
 widget/src/gtksuperwin/Makefile
 widget/src/gtkxtbin/Makefile
 widget/src/photon/Makefile
@@ -545,12 +538,7 @@ widget/src/mac/Makefile
 widget/src/cocoa/Makefile
 widget/src/xlib/Makefile
 widget/src/os2/Makefile
-widget/src/os2/tests/Makefile
-widget/src/qt/Makefile
 widget/src/windows/Makefile
-widget/src/windows/expose/Makefile
-widget/src/windows/expose/ISimpleDOMNode/Makefile
-widget/src/windows/expose/ISimpleDOMDocument/Makefile
 widget/src/xlibxtbin/Makefile
 widget/src/xpwidgets/Makefile
 widget/src/support/Makefile
@@ -561,6 +549,8 @@ string/Makefile
 string/obsolete/Makefile
 string/public/Makefile
 string/src/Makefile
+string/embed/Makefile
+string/embed/standalone/Makefile
 xpcom/Makefile
 xpcom/base/Makefile
 xpcom/build/Makefile
@@ -590,6 +580,8 @@ xpcom/reflect/xptinfo/Makefile
 xpcom/reflect/xptinfo/public/Makefile
 xpcom/reflect/xptinfo/src/Makefile
 xpcom/reflect/xptinfo/tests/Makefile
+xpcom/obsolete/Makefile
+xpcom/obsolete/component/Makefile
 xpcom/proxy/Makefile
 xpcom/proxy/public/Makefile
 xpcom/proxy/src/Makefile
@@ -659,7 +651,6 @@ xpfe/components/download-manager/src/Makefile
 xpfe/components/download-manager/public/Makefile
 xpfe/components/timebomb/Makefile
 xpfe/components/timebomb/tools/Makefile
-xpfe/components/regviewer/Makefile
 xpfe/components/find/Makefile
 xpfe/components/find/public/Makefile
 xpfe/components/find/src/Makefile
@@ -717,6 +708,7 @@ xpfe/browser/resources/locale/Makefile
 xpfe/browser/resources/locale/en-US/Makefile
 xpfe/browser/resources/locale/en-US/unix/Makefile
 xpfe/global/Makefile
+xpfe/global/buildconfig.html
 xpfe/global/resources/Makefile
 xpfe/global/resources/content/Makefile
 xpfe/global/resources/content/os2/Makefile
@@ -752,6 +744,7 @@ embedding/browser/gtk/tests/Makefile
 embedding/browser/photon/Makefile
 embedding/browser/photon/src/Makefile
 embedding/browser/photon/tests/Makefile
+embedding/browser/cocoa/Makefile
 embedding/components/Makefile
 embedding/components/build/Makefile
 embedding/components/windowwatcher/Makefile
@@ -762,6 +755,7 @@ embedding/components/ui/helperAppDlg/Makefile
 embedding/components/ui/progressDlg/Makefile
 embedding/config/Makefile
 embedding/tests/Makefile
+embedding/tests/cocoaEmbed/Makefile
 embedding/tests/winEmbed/Makefile
 embedding/tests/mfcembed/Makefile
 embedding/tests/mfcembed/components/Makefile
@@ -828,6 +822,14 @@ extensions/transformiix/source/xslt/util/Makefile
 extensions/transformiix/source/xslt/Makefile
 extensions/transformiix/source/Makefile
 extensions/transformiix/Makefile
+extensions/transformiix/resources/Makefile
+"
+
+MAKEFILES_tridentprofile="
+extensions/tridentprofile/Makefile
+extensions/tridentprofile/public/Makefile
+extensions/tridentprofile/resources/Makefile
+extensions/tridentprofile/src/Makefile
 "
 
 MAKEFILES_typeaheadfind="
@@ -843,8 +845,9 @@ browser/app/Makefile
 browser/base/Makefile
 browser/components/Makefile
 browser/components/bookmarks/Makefile
+browser/components/bookmarks/public/Makefile
+browser/components/bookmarks/src/Makefile
 browser/components/build/Makefile
-browser/components/console/Makefile
 browser/components/downloads/Makefile
 browser/components/downloads/public/Makefile
 browser/components/downloads/src/Makefile
@@ -853,6 +856,9 @@ browser/components/prefwindow/content/Makefile
 browser/components/prefwindow/locale/Makefile
 browser/components/search/Makefile
 browser/components/search/resources/Makefile
+"
+
+MAKEFILES_xulapp="
 toolkit/Makefile
 toolkit/components/autocomplete/Makefile
 toolkit/components/autocomplete/public/Makefile
@@ -861,16 +867,41 @@ toolkit/components/build/Makefile
 toolkit/components/satchel/Makefile
 toolkit/components/satchel/public/Makefile
 toolkit/components/satchel/src/Makefile
+toolkit/content/mac/Makefile
+toolkit/skin/mac/Makefile
 toolkit/skin/unix/Makefile
 toolkit/skin/win/Makefile
 toolkit/xre/Makefile
 "
 
-MAKEFILES_minotaur="
+MAKEFILES_thunderbird="
 mail/Makefile
+mail/app/Makefile
+mail/app/profile/Makefile
 mail/base/Makefile
 mail/components/Makefile
 mail/components/compose/Makefile
+mail/components/addrbook/Makefile
+mail/components/prefwindow/Makefile
+mail/extensions/Makefile
+mail/extensions/smime/Makefile
+mail/extensions/offline/Makefile
+mail/config/Makefile
+xpfe/components/build2/Makefile
+"
+
+MAKEFILES_sql="
+extensions/sql/Makefile
+extensions/sql/base/Makefile
+extensions/sql/base/public/Makefile
+extensions/sql/base/src/Makefile
+extensions/sql/base/resources/Makefile
+extensions/sql/pgsql/public/Makefile
+extensions/sql/pgsql/src/Makefile
+extensions/sql/build/Makefile
+extensions/sql/build/src/Makefile
+extensions/sql/packager/Makefile
+extensions/sql/tests/Makefile
 "
 
 
@@ -886,6 +917,40 @@ if [ "$MOZ_MAIL_NEWS" ]; then
     fi
 fi
 
+MAKEFILES_ipcd="
+ipc/ipcd/Makefile
+ipc/ipcd/daemon/public/Makefile
+ipc/ipcd/daemon/src/Makefile
+ipc/ipcd/client/public/Makefile
+ipc/ipcd/client/src/Makefile
+ipc/ipcd/shared/src/Makefile
+ipc/ipcd/test/Makefile
+ipc/ipcd/test/module/Makefile
+ipc/ipcd/extensions/Makefile
+ipc/ipcd/extensions/lock/Makefile
+ipc/ipcd/extensions/lock/public/Makefile
+ipc/ipcd/extensions/lock/src/Makefile
+ipc/ipcd/extensions/lock/src/module/Makefile
+ipc/ipcd/util/Makefile
+ipc/ipcd/util/public/Makefile
+ipc/ipcd/util/src/Makefile
+"
+
+MAKEFILES_transmngr="
+ipc/ipcd/extensions/transmngr/Makefile
+ipc/ipcd/extensions/transmngr/public/Makefile
+ipc/ipcd/extensions/transmngr/src/Makefile
+ipc/ipcd/extensions/transmngr/build/Makefile
+ipc/ipcd/extensions/transmngr/test/Makefile
+ipc/ipcd/extensions/transmngr/common/Makefile
+ipc/ipcd/extensions/transmngr/module/Makefile
+"
+
+MAKEFILES_profilesharingsetup="
+embedding/components/profilesharingsetup/Makefile
+embedding/components/profilesharingsetup/public/Makefile
+embedding/components/profilesharingsetup/src/Makefile
+"
 
     MAKEFILES_libpr0n="
         modules/libpr0n/Makefile
@@ -906,12 +971,17 @@ fi
     MAKEFILES_accessible="
        accessible/Makefile
        accessible/public/Makefile
+       accessible/public/msaa/Makefile
        accessible/src/Makefile
        accessible/src/base/Makefile
        accessible/src/html/Makefile
        accessible/src/xul/Makefile
+       accessible/src/msaa/Makefile
+       accessible/src/atk/Makefile
+       accessible/src/mac/Makefile
        accessible/build/Makefile
 "
+
 if [ ! "$SYSTEM_JPEG" ]; then
     MAKEFILES_jpeg="jpeg/Makefile"
 fi
@@ -935,13 +1005,6 @@ fi
 
 if [ ! "$SYSTEM_MNG" ]; then
     MAKEFILES_libimg="$MAKEFILES_libimg modules/libimg/mng/Makefile"
-fi
-
-#
-#  java/
-#
-if [ "$MOZ_JAVA_SUPPLEMENT" ]; then
-    MAKEFILES_java_supplement=`cat ${srcdir}/java/makefiles`
 fi
 
 #
@@ -998,7 +1061,7 @@ fi
 
 # tools/trace-malloc
 if [ "$NS_TRACE_MALLOC" ]; then
-    MAKEFILES_tracemalloc="tools/trace-malloc/Makefile"
+    MAKEFILES_tracemalloc="tools/trace-malloc/Makefile tools/trace-malloc/lib/Makefile"
 fi
 
 # tools/codesighs
@@ -1120,13 +1183,17 @@ for extension in $MOZ_EXTENSIONS; do
         transformiix ) MAKEFILES_extensions="$MAKEFILES_extensions
             $MAKEFILES_transformiix"
             ;;
+        tridentprofile ) MAKEFILES_extensions="$MAKEFILES_extensions
+            $MAKEFILES_tridentprofile"
+            ;;
         universalchardet ) MAKEFILES_extensions="$MAKEFILES_extensions
             extensions/universalchardet/Makefile
             extensions/universalchardet/src/Makefile
             extensions/universalchardet/tests/Makefile
             " ;;
         venkman ) MAKEFILES_extensions="$MAKEFILES_extensions
-            extensions/venkman/Makefile"
+            extensions/venkman/Makefile
+            extensions/venkman/resources/Makefile"
             ;;
         wallet ) MAKEFILES_extensions="$MAKEFILES_extensions
             extensions/wallet/Makefile
@@ -1138,26 +1205,33 @@ for extension in $MOZ_EXTENSIONS; do
             extensions/wallet/walletpreview/Makefile
             extensions/wallet/build/Makefile
             " ;;
+        webservices ) MAKEFILES_extensions="$MAKEFILES_extensions
+            extensions/webservices/Makefile
+            extensions/webservices/build/Makefile
+            extensions/webservices/build/src/Makefile
+            extensions/webservices/interfaceinfo/Makefile
+            extensions/webservices/interfaceinfo/src/Makefile
+            extensions/webservices/proxy/Makefile
+            extensions/webservices/proxy/src/Makefile
+            extensions/webservices/public/Makefile
+            extensions/webservices/security/Makefile
+            extensions/webservices/security/src/Makefile
+            extensions/webservices/schema/Makefile
+            extensions/webservices/schema/src/Makefile
+            extensions/webservices/soap/Makefile
+            extensions/webservices/soap/src/Makefile
+            extensions/webservices/wsdl/Makefile
+            extensions/webservices/wsdl/src/Makefile
+            " ;;
         xmlextras ) MAKEFILES_extensions="$MAKEFILES_extensions
             extensions/xmlextras/Makefile
             extensions/xmlextras/base/Makefile
             extensions/xmlextras/base/src/Makefile
             extensions/xmlextras/base/public/Makefile
+            extensions/xmlextras/pointers/Makefile
+            extensions/xmlextras/pointers/src/Makefile
             extensions/xmlextras/build/Makefile
             extensions/xmlextras/build/src/Makefile
-            extensions/xmlextras/proxy/Makefile
-            extensions/xmlextras/proxy/public/Makefile
-            extensions/xmlextras/proxy/src/Makefile
-            extensions/xmlextras/schema/Makefile
-            extensions/xmlextras/schema/public/Makefile
-            extensions/xmlextras/schema/src/Makefile
-            extensions/xmlextras/soap/Makefile
-            extensions/xmlextras/soap/public/Makefile
-            extensions/xmlextras/soap/src/Makefile
-            extensions/xmlextras/tests/Makefile
-            extensions/xmlextras/wsdl/Makefile
-            extensions/xmlextras/wsdl/public/Makefile
-            extensions/xmlextras/wsdl/src/Makefile
             " ;;
         xml-rpc ) MAKEFILES_extensions="$MAKEFILES_extensions
             extensions/xml-rpc/Makefile
@@ -1173,11 +1247,9 @@ for extension in $MOZ_EXTENSIONS; do
             extensions/xmlterm/tests/Makefile
             extensions/xmlterm/ui/Makefile
             " ;;
-        interfaceinfo ) MAKEFILES_extensions="$MAKEFILES_extensions
-            extensions/interfaceinfo/Makefile
-            extensions/interfaceinfo/public/Makefile
-            extensions/interfaceinfo/src/Makefile
-            " ;;
+        sql ) MAKEFILES_extensions="$MAKEFILES_extensions
+            $MAKEFILES_sql"
+            ;;
     esac
 done
 
@@ -1193,6 +1265,10 @@ MAKEFILES_calendar="
         calendar/Makefile
         calendar/libxpical/Makefile
         calendar/resources/Makefile
+	other-licenses/libical/Makefile
+	other-licenses/libical/src/Makefile
+	other-licenses/libical/src/libical/Makefile
+	other-licenses/libical/src/libicalss/Makefile
        "
 
 add_makefiles "
@@ -1234,7 +1310,6 @@ $MAKEFILES_libutil
 $MAKEFILES_liveconnect
 $MAKEFILES_macmorefiles
 $MAKEFILES_mailnews
-$MAKEFILES_mpfilelocprovider
 $MAKEFILES_oji
 $MAKEFILES_plugin
 $MAKEFILES_netwerk
@@ -1269,8 +1344,21 @@ if test -n "$MOZ_PHOENIX"; then
     add_makefiles "$MAKEFILES_phoenix"
 fi
 
-if test -n "$MOZ_MINOTAUR"; then
-    add_makefiles "$MAKEFILES_minotaur"
+if test -n "$MOZ_XUL_APP"; then
+    add_makefiles "$MAKEFILES_xulapp"
+fi
+
+if test -n "$MOZ_THUNDERBIRD"; then
+    add_makefiles "$MAKEFILES_thunderbird"
+fi
+
+if test -n "$MOZ_IPCD"; then
+    add_makefiles "$MAKEFILES_ipcd"
+fi
+
+if test -n "$MOZ_PROFILESHARING"; then
+    add_makefiles "$MAKEFILES_transmngr"
+    add_makefiles "$MAKEFILES_profilesharingsetup"
 fi
 
 else
@@ -1282,8 +1370,6 @@ MAKEFILES_TestStreamConv="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/
 MAKEFILES_TestXPC="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile intl/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/cache/Makefile webshell/Makefile embedding/components/windowwatcher/Makefile expat/Makefile intl/lwbrk/Makefile modules/zlib/Makefile modules/libimg/png/Makefile jpeg/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/libjar/Makefile xpfe/components/shistory/Makefile editor/composer/Makefile editor/txtsvc/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile rdf/util/Makefile rdf/Makefile content/xul/content/Makefile content/xul/templates/Makefile rdf/chrome/Makefile content/xul/document/Makefile editor/txmgr/Makefile embedding/components/commandhandler/Makefile editor/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile embedding/components/jsconsole/Makefile embedding/base/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile intl/chardet/Makefile docshell/Makefile modules/oji/Makefile accessible/Makefile modules/libutil/Makefile layout/Makefile view/Makefile content/Makefile embedding/components/webbrowserpersist/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile xpfe/browser/Makefile profile/pref-migrator/Makefile profile/Makefile xpfe/appshell/Makefile xpfe/components/xremote/Makefile widget/Makefile gfx/Makefile intl/locale/Makefile intl/uconv/Makefile intl/unicharutil/Makefile htmlparser/Makefile embedding/components/ui/helperAppDlg/Makefile uriloader/Makefile uriloader/exthandler/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile xpfe/components/sidebar/Makefile dom/Makefile caps/Makefile js/src/xpconnect/Makefile js/src/xpconnect/tests/Makefile"
 
 MAKEFILES_TestXPTC="modules/libreg/Makefile string/Makefile xpcom/Makefile"
-
-MAKEFILES_absyncsvc="mailnews/Makefile js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile embedding/components/windowwatcher/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/zlib/Makefile modules/libjar/Makefile modules/libimg/png/Makefile jpeg/Makefile netwerk/cache/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile intl/Makefile webshell/Makefile embedding/components/ui/helperAppDlg/Makefile rdf/util/Makefile rdf/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile view/Makefile editor/composer/Makefile editor/txtsvc/Makefile content/xul/content/Makefile content/xul/templates/Makefile profile/pref-migrator/Makefile profile/Makefile embedding/components/jsconsole/Makefile embedding/components/commandhandler/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile rdf/chrome/Makefile content/xul/document/Makefile editor/txmgr/Makefile editor/Makefile intl/chardet/Makefile modules/libutil/Makefile content/Makefile embedding/components/webbrowserpersist/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile modules/oji/Makefile accessible/Makefile layout/Makefile xpfe/components/shistory/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile xpfe/components/xremote/Makefile widget/Makefile gfx/Makefile intl/locale/Makefile intl/uconv/Makefile intl/unicharutil/Makefile intl/lwbrk/Makefile xpfe/components/sidebar/Makefile dom/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile expat/Makefile htmlparser/Makefile security/manager/ssl/Makefile mailnews/local/Makefile mailnews/imap/Makefile mailnews/db/msgdb/Makefile mailnews/import/Makefile mailnews/addrbook/Makefile mailnews/compose/Makefile mailnews/extensions/smime/Makefile mailnews/mime/Makefile mailnews/news/Makefile mailnews/base/Makefile mailnews/base/util/Makefile mailnews/absync/Makefile"
 
 MAKEFILES_accessibility="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile netwerk/cache/Makefile intl/lwbrk/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/zlib/Makefile modules/libjar/Makefile embedding/components/windowwatcher/Makefile modules/libimg/png/Makefile jpeg/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile xpfe/components/shistory/Makefile webshell/Makefile embedding/components/ui/helperAppDlg/Makefile rdf/util/Makefile rdf/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile embedding/components/webbrowserpersist/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile profile/pref-migrator/Makefile view/Makefile content/xul/content/Makefile content/xul/templates/Makefile content/xul/document/Makefile rdf/chrome/Makefile profile/Makefile editor/composer/Makefile editor/txmgr/Makefile embedding/components/commandhandler/Makefile editor/Makefile editor/txtsvc/Makefile embedding/components/jsconsole/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile modules/libutil/Makefile content/Makefile gfx/Makefile modules/oji/Makefile layout/Makefile htmlparser/Makefile intl/chardet/Makefile intl/uconv/Makefile intl/unicharutil/Makefile intl/locale/Makefile xpfe/components/xremote/Makefile widget/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile xpfe/components/sidebar/Makefile dom/Makefile accessible/Makefile"
 
@@ -1349,7 +1435,7 @@ MAKEFILES_htmlparser="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Make
 
 MAKEFILES_i18n="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile embedding/components/windowwatcher/Makefile intl/lwbrk/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/zlib/Makefile modules/libjar/Makefile modules/libimg/png/Makefile jpeg/Makefile netwerk/cache/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile webshell/Makefile embedding/components/ui/helperAppDlg/Makefile rdf/util/Makefile rdf/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile view/Makefile editor/composer/Makefile editor/txtsvc/Makefile content/xul/content/Makefile content/xul/templates/Makefile profile/pref-migrator/Makefile profile/Makefile embedding/components/jsconsole/Makefile embedding/components/commandhandler/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile rdf/chrome/Makefile content/xul/document/Makefile editor/txmgr/Makefile editor/Makefile intl/chardet/Makefile modules/libutil/Makefile content/Makefile embedding/components/webbrowserpersist/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile modules/oji/Makefile accessible/Makefile layout/Makefile xpfe/components/shistory/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile xpfe/components/xremote/Makefile widget/Makefile gfx/Makefile intl/locale/Makefile intl/uconv/Makefile intl/unicharutil/Makefile htmlparser/Makefile xpfe/components/sidebar/Makefile dom/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile"
 
-MAKEFILES_iiextras="modules/libreg/Makefile string/Makefile xpcom/Makefile extensions/interfaceinfo/Makefile"
+MAKEFILES_iiextras="modules/libreg/Makefile string/Makefile xpcom/Makefile"
 
 MAKEFILES_imgbmp="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile netwerk/cache/Makefile intl/lwbrk/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/zlib/Makefile modules/libjar/Makefile xpfe/components/shistory/Makefile embedding/components/windowwatcher/Makefile webshell/Makefile embedding/components/ui/helperAppDlg/Makefile rdf/util/Makefile modules/libimg/png/Makefile jpeg/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile view/Makefile editor/composer/Makefile editor/txtsvc/Makefile embedding/components/webbrowserpersist/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile content/xul/content/Makefile content/xul/templates/Makefile profile/pref-migrator/Makefile profile/Makefile embedding/components/jsconsole/Makefile embedding/components/commandhandler/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile rdf/chrome/Makefile content/xul/document/Makefile editor/txmgr/Makefile editor/Makefile modules/libutil/Makefile content/Makefile rdf/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile uriloader/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile modules/oji/Makefile accessible/Makefile layout/Makefile htmlparser/Makefile intl/chardet/Makefile intl/uconv/Makefile intl/unicharutil/Makefile intl/locale/Makefile xpfe/components/xremote/Makefile widget/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile xpfe/components/sidebar/Makefile dom/Makefile gfx/Makefile modules/libpr0n/decoders/bmp/Makefile"
 
@@ -1473,8 +1559,6 @@ MAKEFILES_rdf="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile st
 
 MAKEFILES_rdfutil="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile embedding/components/windowwatcher/Makefile intl/lwbrk/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/zlib/Makefile modules/libjar/Makefile modules/libimg/png/Makefile jpeg/Makefile netwerk/cache/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile webshell/Makefile embedding/components/ui/helperAppDlg/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile view/Makefile editor/composer/Makefile editor/txtsvc/Makefile content/xul/content/Makefile content/xul/templates/Makefile profile/pref-migrator/Makefile profile/Makefile embedding/components/jsconsole/Makefile embedding/components/commandhandler/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile rdf/chrome/Makefile content/xul/document/Makefile editor/txmgr/Makefile editor/Makefile intl/chardet/Makefile modules/libutil/Makefile content/Makefile embedding/components/webbrowserpersist/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile modules/oji/Makefile accessible/Makefile layout/Makefile xpfe/components/shistory/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile xpfe/components/xremote/Makefile widget/Makefile gfx/Makefile intl/locale/Makefile intl/uconv/Makefile intl/unicharutil/Makefile htmlparser/Makefile xpfe/components/sidebar/Makefile dom/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile rdf/Makefile rdf/util/Makefile"
 
-MAKEFILES_regviewer="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile embedding/components/windowwatcher/Makefile intl/lwbrk/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/zlib/Makefile modules/libjar/Makefile modules/libimg/png/Makefile jpeg/Makefile netwerk/cache/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile webshell/Makefile embedding/components/ui/helperAppDlg/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile view/Makefile editor/composer/Makefile editor/txtsvc/Makefile content/xul/content/Makefile content/xul/templates/Makefile profile/pref-migrator/Makefile profile/Makefile embedding/components/jsconsole/Makefile embedding/components/commandhandler/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile rdf/chrome/Makefile content/xul/document/Makefile editor/txmgr/Makefile editor/Makefile intl/chardet/Makefile modules/libutil/Makefile content/Makefile embedding/components/webbrowserpersist/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile modules/oji/Makefile accessible/Makefile layout/Makefile xpfe/components/shistory/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile xpfe/components/xremote/Makefile widget/Makefile gfx/Makefile intl/locale/Makefile intl/uconv/Makefile intl/unicharutil/Makefile htmlparser/Makefile xpfe/components/sidebar/Makefile dom/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile rdf/util/Makefile rdf/Makefile xpfe/components/regviewer/Makefile"
-
 MAKEFILES_shistory="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile embedding/components/windowwatcher/Makefile modules/zlib/Makefile modules/libimg/png/Makefile jpeg/Makefile netwerk/cache/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile intl/lwbrk/Makefile webshell/Makefile embedding/components/ui/helperAppDlg/Makefile rdf/util/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/libjar/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile modules/oji/Makefile editor/composer/Makefile editor/txtsvc/Makefile view/Makefile content/xul/content/Makefile content/xul/templates/Makefile profile/pref-migrator/Makefile profile/Makefile embedding/components/jsconsole/Makefile embedding/components/commandhandler/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile rdf/chrome/Makefile content/xul/document/Makefile editor/txmgr/Makefile editor/Makefile accessible/Makefile modules/libutil/Makefile layout/Makefile rdf/Makefile uriloader/exthandler/Makefile intl/chardet/Makefile content/Makefile embedding/components/webbrowserpersist/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile xpfe/components/xremote/Makefile widget/Makefile gfx/Makefile intl/locale/Makefile intl/uconv/Makefile intl/unicharutil/Makefile htmlparser/Makefile xpfe/components/sidebar/Makefile dom/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile xpfe/components/shistory/Makefile"
 
 MAKEFILES_sidebar="xpfe/components/sidebar/Makefile"
@@ -1487,7 +1571,7 @@ MAKEFILES_test_necko="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Make
 
 MAKEFILES_timebombgen="xpfe/components/timebomb/tools/Makefile"
 
-MAKEFILES_transformiix="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile netwerk/cache/Makefile intl/lwbrk/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile embedding/components/windowwatcher/Makefile modules/zlib/Makefile modules/libimg/png/Makefile jpeg/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile xpfe/components/shistory/Makefile webshell/Makefile embedding/components/ui/helperAppDlg/Makefile rdf/util/Makefile rdf/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile embedding/components/webbrowserpersist/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile profile/pref-migrator/Makefile view/Makefile content/xul/content/Makefile content/xul/templates/Makefile content/xul/document/Makefile modules/libjar/Makefile rdf/chrome/Makefile profile/Makefile editor/composer/Makefile editor/txmgr/Makefile embedding/components/commandhandler/Makefile editor/Makefile editor/txtsvc/Makefile embedding/components/jsconsole/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile modules/libutil/Makefile content/Makefile gfx/Makefile xpfe/components/xremote/Makefile widget/Makefile modules/oji/Makefile accessible/Makefile layout/Makefile htmlparser/Makefile xpfe/components/sidebar/Makefile dom/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile intl/chardet/Makefile intl/uconv/Makefile intl/unicharutil/Makefile intl/locale/Makefile extensions/transformiix/Makefile"
+MAKEFILES_transformiix="extensions/transformiix/source/base/Makefile extensions/transformiix/source/lib/Makefile extensions/transformiix/source/main/Makefile extensions/transformiix/source/xml/dom/standalone/Makefile extensions/transformiix/source/xml/dom/Makefile extensions/transformiix/source/xml/dom/mozImpl/Makefile extensions/transformiix/source/xml/parser/Makefile extensions/transformiix/source/xml/Makefile extensions/transformiix/source/xpath/Makefile extensions/transformiix/source/xslt/functions/Makefile extensions/transformiix/source/xslt/util/Makefile extensions/transformiix/source/xslt/Makefile extensions/transformiix/source/Makefile extensions/transformiix/Makefile"
 
 MAKEFILES_txmgr="modules/libreg/Makefile string/Makefile xpcom/Makefile editor/txmgr/Makefile"
 
@@ -1532,6 +1616,9 @@ MAKEFILES_walletviewers="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/M
 MAKEFILES_webbrowserpersist="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile netwerk/cache/Makefile intl/lwbrk/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/zlib/Makefile modules/libjar/Makefile embedding/components/windowwatcher/Makefile modules/libimg/png/Makefile jpeg/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile xpfe/components/shistory/Makefile webshell/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile profile/pref-migrator/Makefile embedding/components/ui/helperAppDlg/Makefile rdf/util/Makefile rdf/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile view/Makefile content/xul/content/Makefile content/xul/templates/Makefile content/xul/document/Makefile rdf/chrome/Makefile profile/Makefile editor/composer/Makefile editor/txmgr/Makefile embedding/components/commandhandler/Makefile editor/Makefile editor/txtsvc/Makefile embedding/components/jsconsole/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile modules/libutil/Makefile content/Makefile gfx/Makefile modules/oji/Makefile accessible/Makefile layout/Makefile htmlparser/Makefile intl/chardet/Makefile intl/uconv/Makefile intl/unicharutil/Makefile intl/locale/Makefile xpfe/components/xremote/Makefile widget/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile xpfe/components/sidebar/Makefile dom/Makefile embedding/components/webbrowserpersist/Makefile"
 
 MAKEFILES_webbrwsr="js/src/fdlibm/Makefile js/src/Makefile modules/libreg/Makefile string/Makefile xpcom/Makefile expat/Makefile intl/Makefile netwerk/cache/Makefile intl/lwbrk/Makefile sun-java/stubs/Makefile js/jsd/classes/Makefile js/src/liveconnect/Makefile modules/zlib/Makefile modules/libjar/Makefile embedding/components/windowwatcher/Makefile modules/libimg/png/Makefile jpeg/Makefile modules/libpr0n/public/Makefile modules/libpr0n/src/Makefile xpfe/components/shistory/Makefile webshell/Makefile profile/pref-migrator/Makefile embedding/components/ui/helperAppDlg/Makefile rdf/util/Makefile rdf/Makefile gfx/src/xlibrgb/Makefile widget/src/gtkxtbin/Makefile modules/plugin/Makefile uriloader/exthandler/Makefile view/Makefile content/xul/content/Makefile content/xul/templates/Makefile content/xul/document/Makefile rdf/chrome/Makefile profile/Makefile embedding/components/webbrowserpersist/Makefile editor/composer/Makefile editor/txmgr/Makefile embedding/components/commandhandler/Makefile editor/Makefile editor/txtsvc/Makefile embedding/components/jsconsole/Makefile xpfe/components/find/Makefile embedding/components/find/Makefile embedding/components/appstartup/Makefile embedding/components/windowwatcher/Makefile embedding/components/printingui/Makefile embedding/components/build/Makefile embedding/base/Makefile xpfe/appshell/Makefile xpfe/browser/Makefile embedding/components/ui/progressDlg/Makefile xpfe/components/download-manager/Makefile db/mork/Makefile db/mdb/Makefile directory/xpcom/base/Makefile xpfe/components/Makefile docshell/Makefile uriloader/Makefile modules/libutil/Makefile content/Makefile gfx/Makefile modules/oji/Makefile accessible/Makefile layout/Makefile htmlparser/Makefile intl/chardet/Makefile intl/uconv/Makefile intl/unicharutil/Makefile intl/locale/Makefile xpfe/components/xremote/Makefile widget/Makefile caps/Makefile js/src/xpconnect/Makefile modules/libpref/Makefile netwerk/mime/Makefile netwerk/protocol/ftp/Makefile netwerk/protocol/gopher/Makefile netwerk/protocol/viewsource/Makefile netwerk/build2/Makefile netwerk/base/Makefile netwerk/protocol/about/Makefile netwerk/protocol/data/Makefile netwerk/protocol/file/Makefile netwerk/protocol/http/Makefile netwerk/protocol/jar/Makefile netwerk/protocol/keyword/Makefile netwerk/protocol/res/Makefile netwerk/dns/Makefile netwerk/socket/Makefile netwerk/streamconv/Makefile netwerk/cookie/Makefile netwerk/build/Makefile xpfe/components/sidebar/Makefile dom/Makefile embedding/browser/webBrowser/Makefile embedding/browser/build/Makefile"
+
+MAKEFILES_webservices="extensions/webservices/build/Makefile extensions/webservices/interfaceinfo/Makefile extensions/webservices/proxy/Makefile extensions/webservices/schema/Makefile extensions/webservices/security/Makefile extensions/webservices/soap/Makefile extensions/webservices/wsdl/Makefile extensions/webservices/Makefile"
+
 
 MAKEFILES_webshell="webshell/Makefile"
 
@@ -1582,7 +1669,6 @@ MAKEFILES_zlib="modules/zlib/Makefile"
         TestStreamConv) add_makefiles "$MAKEFILES_TestStreamConv" ;;
         TestXPC) add_makefiles "$MAKEFILES_TestXPC" ;;
         TestXPTC) add_makefiles "$MAKEFILES_TestXPTC" ;;
-        absyncsvc) add_makefiles "$MAKEFILES_absyncsvc" ;;
         accessibility) add_makefiles "$MAKEFILES_accessibility" ;;
         accessproxy) add_makefiles "$MAKEFILES_accessproxy" ;;
         addrbook) add_makefiles "$MAKEFILES_addrbook" ;;
@@ -1677,7 +1763,6 @@ MAKEFILES_zlib="modules/zlib/Makefile"
         progressDlg) add_makefiles "$MAKEFILES_progressDlg" ;;
         rdf) add_makefiles "$MAKEFILES_rdf" ;;
         rdfutil) add_makefiles "$MAKEFILES_rdfutil" ;;
-        regviewer) add_makefiles "$MAKEFILES_regviewer" ;;
         shistory) add_makefiles "$MAKEFILES_shistory" ;;
         sidebar) add_makefiles "$MAKEFILES_sidebar" ;;
         string) add_makefiles "$MAKEFILES_string" ;;
@@ -1707,6 +1792,7 @@ MAKEFILES_zlib="modules/zlib/Makefile"
         walletviewers) add_makefiles "$MAKEFILES_walletviewers" ;;
         webbrowserpersist) add_makefiles "$MAKEFILES_webbrowserpersist" ;;
         webbrwsr) add_makefiles "$MAKEFILES_webbrwsr" ;;
+        webservices) add_makefiles "$MAKEFILES_webservices" ;;
         webshell) add_makefiles "$MAKEFILES_webshell" ;;
         webshell_tests) add_makefiles "$MAKEFILES_webshell_tests" ;;
         widget) add_makefiles "$MAKEFILES_widget" ;;

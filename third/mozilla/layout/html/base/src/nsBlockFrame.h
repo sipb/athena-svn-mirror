@@ -43,6 +43,7 @@
 #include "nsAbsoluteContainingBlock.h"
 #include "nsLineBox.h"
 #include "nsReflowPath.h"
+#include "nsCSSPseudoElements.h"
 
 class nsBlockReflowState;
 class nsBulletFrame;
@@ -56,7 +57,8 @@ class nsIntervalSet;
  */
 #define NS_BLOCK_FRAME_FLOATER_LIST_INDEX   0
 #define NS_BLOCK_FRAME_BULLET_LIST_INDEX    1
-#define NS_BLOCK_FRAME_ABSOLUTE_LIST_INDEX  2
+#define NS_BLOCK_FRAME_OVERFLOW_LIST_INDEX  2
+#define NS_BLOCK_FRAME_ABSOLUTE_LIST_INDEX  3
 #define NS_BLOCK_FRAME_LAST_LIST_INDEX      NS_BLOCK_FRAME_ABSOLUTE_LIST_INDEX
 
 #define nsBlockFrameSuper nsHTMLContainerFrame
@@ -99,7 +101,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
   NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
                                  nsIAtom*        aListName,
@@ -134,7 +136,6 @@ public:
 #ifdef DEBUG
   NS_IMETHOD List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
   NS_IMETHOD VerifyTree() const;
 #endif
   NS_IMETHOD GetFrameForPoint(nsIPresContext* aPresContext, const nsPoint& aPoint, nsFramePaintLayer aWhichLayer, nsIFrame** aFrame);
@@ -187,7 +188,7 @@ public:
     * almost always the first or second line, if there is one.
     * accounts for lines that hold only compressed white space, etc.
     */
-  nsIFrame* GetTopBlockChild();
+  nsIFrame* GetTopBlockChild(nsIPresContext *aPresContext);
 
   // Returns the line containing aFrame, or end_lines() if the frame
   // isn't in the block.
@@ -201,14 +202,34 @@ public:
 
   // Create a contination for aPlaceholder and its out of flow frame and
   // add it to the list of overflow floaters
-  nsresult SplitPlaceholder(nsBlockReflowState& aState,
-                            nsIFrame&           aPlaceholder);
+  nsresult SplitPlaceholder(nsIPresContext& aPresContext, nsIFrame& aPlaceholder);
 
+  void UndoSplitPlaceholders(nsBlockReflowState& aState,
+                             nsIFrame*           aLastPlaceholder);
+  
+#ifdef MOZ_ACCESSIBILITY_ATK
+  NS_IMETHOD GetAccessible(nsIAccessible** aAccessible);
+#endif
 protected:
   nsBlockFrame();
   virtual ~nsBlockFrame();
 
-  nsIStyleContext* GetFirstLetterStyle(nsIPresContext* aPresContext);
+  already_AddRefed<nsStyleContext> GetFirstLetterStyle(nsIPresContext* aPresContext)
+  {
+    return aPresContext->ProbePseudoStyleContextFor(mContent,
+                                                    nsCSSPseudoElements::firstLetter,
+                                                    mStyleContext);
+  }
+
+  /*
+   * Overides member function of nsHTMLContainerFrame. Needed to handle the 
+   * lines in a nsBlockFrame properly.
+   */
+  virtual void PaintTextDecorationLines(nsIRenderingContext& aRenderingContext,
+                                        nscolor aColor,
+                                        nscoord aOffset,
+                                        nscoord aAscent,
+                                        nscoord aSize);
 
   /**
    * GetClosestLine will return the line that VERTICALLY owns the point closest to aPoint.y
@@ -255,6 +276,10 @@ protected:
 
   void ComputeCombinedArea(const nsHTMLReflowState& aReflowState,
                            nsHTMLReflowMetrics& aMetrics);
+
+  // Calls |nsLineBox::IsEmpty| with the correct arguments.
+  PRBool IsLineEmpty(nsIPresContext* aPresContext,
+                     const nsLineBox* aLine) const;
 
   /** add the frames in aFrameList to this block after aPrevSibling
     * this block thinks in terms of lines, but the frame construction code
@@ -351,11 +376,7 @@ protected:
   // XXX blech
   void PostPlaceLine(nsBlockReflowState& aState,
                      nsLineBox* aLine,
-                     const nsSize& aMaxElementSize);
-
-  void ComputeLineMaxElementSize(nsBlockReflowState& aState,
-                                 nsLineBox* aLine,
-                                 nsSize* aMaxElementSize);
+                     nscoord aMaxElementWidth);
 
   // XXX where to go
   PRBool ShouldJustifyLine(nsBlockReflowState& aState,
@@ -413,9 +434,7 @@ protected:
   // but only if the available height is constrained.
   nsresult ReflowFloater(nsBlockReflowState& aState,
                          nsPlaceholderFrame* aPlaceholder,
-                         nsRect&             aCombinedRectResult,
-                         nsMargin&           aMarginResult,
-                         nsMargin&           aComputedOffsetsResult,
+                         nsFloaterCache*     aFloaterCache,
                          nsReflowStatus&     aReflowStatus);
 
   //----------------------------------------
@@ -499,6 +518,12 @@ protected:
   nsresult SetOverflowLines(nsIPresContext* aPresContext,
                             nsLineList*     aOverflowLines);
 
+  nsFrameList* GetOverflowPlaceholders(nsIPresContext* aPresContext,
+                                       PRBool          aRemoveProperty) const;
+
+  nsresult SetOverflowPlaceholders(nsIPresContext* aPresContext,
+                                   nsFrameList*    aOverflowPlaceholders);
+
   nsIFrame* LastChild();
 
 #ifdef NS_DEBUG
@@ -532,7 +557,7 @@ public:
   static PRBool gLameReflowMetrics;
   static PRBool gNoisy;
   static PRBool gNoisyDamageRepair;
-  static PRBool gNoisyMaxElementSize;
+  static PRBool gNoisyMaxElementWidth;
   static PRBool gNoisyReflow;
   static PRBool gReallyNoisyReflow;
   static PRBool gNoisySpaceManager;

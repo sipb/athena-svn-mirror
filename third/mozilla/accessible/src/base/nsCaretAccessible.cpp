@@ -35,27 +35,42 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+// NOTE: alphabetically ordered
 #include "nsAccessibilityService.h"
 #include "nsCaretAccessible.h"
-#include "nsIDocument.h"
+#include "nsIAccessibleEventReceiver.h"
+#include "nsICaret.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMHTMLBodyElement.h"
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIDOMHTMLTextAreaElement.h"
-#include "nsICaret.h"
-#include "nsISelectionController.h"
 #include "nsIFrame.h"
+#include "nsIPresShell.h"
+#include "nsISelectionController.h"
 #include "nsISelectionPrivate.h"
-#include "nsIAccessibleEventListener.h"
+#include "nsIServiceManagerUtils.h"
 #include "nsIViewManager.h"
 #include "nsIWidget.h"
-#include "nsIPresShell.h"
+#include "nsRootAccessible.h"
 #include "nsTextAccessible.h"
+
+#ifdef MOZ_ACCESSIBILITY_ATK
+#include "nsAccessibleText.h"
+#endif
 
 NS_IMPL_ISUPPORTS_INHERITED2(nsCaretAccessible, nsLeafAccessible, nsIAccessibleCaret, nsISelectionListener)
 
-nsCaretAccessible::nsCaretAccessible(nsIDOMNode* aDocumentNode, nsIWeakReference* aShell, nsIAccessibleEventListener *aListener):
-nsLeafAccessible(aDocumentNode, aShell), mVisible(PR_TRUE), mCurrentDOMNode(nsnull), mListener(aListener)
+nsCaretAccessible::nsCaretAccessible(nsIDOMNode* aDocumentNode, nsIWeakReference* aShell, nsIAccessible *aRootAccessible):
+nsLeafAccessible(aDocumentNode, aShell), mVisible(PR_TRUE), mCurrentDOMNode(nsnull), mRootAccessible(aRootAccessible)
 {
+}
+
+NS_IMETHODIMP nsCaretAccessible::Shutdown()
+{
+  mDomSelectionWeak = nsnull;
+  mCurrentDOMNode = nsnull;
+  RemoveSelectionListener();
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsCaretAccessible::RemoveSelectionListener()
@@ -75,21 +90,17 @@ NS_IMETHODIMP nsCaretAccessible::AttachNewSelectionListener(nsIDOMNode *aCurrent
 
   // When focus moves such that the caret is part of a new frame selection
   // this removes the old selection listener and attaches a new one for the current focus
-  nsCOMPtr<nsIDOMDocument> domDoc;
-  aCurrentNode->GetOwnerDocument(getter_AddRefs(domDoc));
-  nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
-  if (!doc)  // we also should try to QI to document instead (necessary to do when node is a document)
-    doc = do_QueryInterface(aCurrentNode);
-  if (!doc)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIPresShell> presShell;
-  doc->GetShellAt(0, getter_AddRefs(presShell));
+  nsCOMPtr<nsIPresShell> presShell(GetPresShell());
   nsCOMPtr<nsIContent> content(do_QueryInterface(aCurrentNode));
-  if (!content)
-    doc->GetRootContent(getter_AddRefs(content));  // If node is not content, use root content
   if (!presShell || !content)
     return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIDocument> doc;
+  presShell->GetDocument(getter_AddRefs(doc));
+  if (!doc)  // we also should try to QI to document instead (necessary to do when node is a document)
+    doc = do_QueryInterface(aCurrentNode);
+  if (!content)
+    doc->GetRootContent(getter_AddRefs(content));  // If node is not content, use root content
 
   nsIFrame *frame = nsnull;
   presShell->GetPrimaryFrameFor(content, &frame);
@@ -119,12 +130,15 @@ NS_IMETHODIMP nsCaretAccessible::AttachNewSelectionListener(nsIDOMNode *aCurrent
 
 NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, nsISelection *aSel, short aReason)
 {
-  nsCOMPtr<nsIDocument> doc(do_QueryInterface(aDoc));
-  if (!doc)
+#ifdef MOZ_ACCESSIBILITY_ATK
+  if (nsAccessibleText::gSuppressedNotifySelectionChanged)
     return NS_OK;
-  
-  nsCOMPtr<nsIPresShell> presShell;
-  doc->GetShellAt(0, getter_AddRefs(presShell));
+#endif    
+
+  nsCOMPtr<nsIPresShell> presShell(GetPresShell());
+  if (!presShell)
+    return NS_ERROR_FAILURE;
+
   nsCOMPtr<nsISelection> domSel(do_QueryReferent(mDomSelectionWeak));
   if (!presShell || domSel != aSel)
     return NS_OK;  // Only listening to selection changes in currently focused frame
@@ -137,12 +151,14 @@ NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, ns
   nsRect caretRect;
   PRBool isCollapsed;
   caret->GetCaretCoordinates(nsICaret::eTopLevelWindowCoordinates, domSel, &caretRect, &isCollapsed, nsnull);
+#ifndef MOZ_ACCESSIBILITY_ATK
   PRBool visible = (caretRect.x >= 0 && caretRect.y >= 0 && caretRect.width >= 0 && caretRect.height >= 0);
   if (visible)  // Make sure it's visible both by looking at coordinates and visible flag
     caret->GetCaretVisible(&visible);
   if (visible != mVisible) {
     mVisible = visible;
-    mListener->HandleEvent(mVisible? nsIAccessibleEventListener::EVENT_SHOW: nsIAccessibleEventListener::EVENT_HIDE, this, nsnull);
+    mRootAccessible->FireToolkitEvent(mVisible? nsIAccessibleEventReceiver::EVENT_SHOW: 
+                                      nsIAccessibleEventReceiver::EVENT_HIDE, this, nsnull);
   }
 
   nsCOMPtr<nsIPresContext> presContext;
@@ -171,32 +187,55 @@ NS_IMETHODIMP nsCaretAccessible::NotifySelectionChanged(nsIDOMDocument *aDoc, ns
 
   nsRect caretScreenRect;
   widget->WidgetToScreen(caretRect, mCaretRect);
+#endif
 
 #ifndef MOZ_ACCESSIBILITY_ATK
-  if (visible)
-    mListener->HandleEvent(nsIAccessibleEventListener::EVENT_LOCATION_CHANGE, this, nsnull);
+  if (visible) {
+    mRootAccessible->FireToolkitEvent(nsIAccessibleEventReceiver::EVENT_LOCATION_CHANGE, this, nsnull);
+  }
 #else
   nsCOMPtr<nsIDOMNode> focusNode;
   nsCOMPtr<nsIDOMHTMLInputElement> inputElement(do_QueryInterface(mCurrentDOMNode));
   nsCOMPtr<nsIDOMHTMLTextAreaElement> textArea(do_QueryInterface(mCurrentDOMNode));
-  if (inputElement || textArea)
+  if (inputElement || textArea) {
     focusNode = mCurrentDOMNode;
-  else
+  }
+  else {
     domSel->GetFocusNode(getter_AddRefs(focusNode));
+    nsCOMPtr<nsIDOMNode> blockNode;
+    nsAccessible::GetParentBlockNode(focusNode, getter_AddRefs(blockNode));
+    nsCOMPtr<nsIDOMHTMLBodyElement> body(do_QueryInterface(blockNode));
+    if (body) {
+      nsCOMPtr<nsIDocument> doc;
+      presShell->GetDocument(getter_AddRefs(doc));
+      nsCOMPtr<nsIDocument> parentDoc;
+      doc->GetParentDocument(getter_AddRefs(parentDoc));
+      nsCOMPtr<nsIDOMDocument> xulDoc(do_QueryInterface(parentDoc));
+      nsCOMPtr<nsIDOMElement> domElement;
+      xulDoc->GetElementById(NS_LITERAL_STRING("content-frame"), getter_AddRefs(domElement));
+      focusNode = do_QueryInterface(domElement);
+    }
+    else {
+      focusNode = blockNode;
+    }
+  }
+
   if (!focusNode)
     return NS_OK;
   
   nsCOMPtr<nsIAccessible> accessible;
   nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
-  accService->GetAccessibleFor(focusNode, getter_AddRefs(accessible));
+  accService->GetAccessibleInWeakShell(focusNode, mWeakShell, getter_AddRefs(accessible));
   if (accessible) {
     if (isCollapsed) {
       PRInt32 caretOffset;
       domSel->GetFocusOffset(&caretOffset);
-      mListener->HandleEvent(nsIAccessibleEventListener::EVENT_ATK_TEXT_CARET_MOVE, accessible, (AccessibleEventData*)&caretOffset);
+      mRootAccessible->FireToolkitEvent(nsIAccessibleEventReceiver::EVENT_ATK_TEXT_CARET_MOVE, accessible, &caretOffset);
     }
-    else
-      mListener->HandleEvent(nsIAccessibleEventListener::EVENT_ATK_TEXT_SELECTION_CHANGE, accessible, nsnull);
+    else {
+      //Current text interface doesn't support this event yet
+      //mListener->FireToolkitEvent(nsIAccessibleEventReceiver::EVENT_ATK_TEXT_SELECTION_CHANGE, accessible, nsnull);
+    }
   }
 #endif
 
@@ -232,7 +271,6 @@ NS_IMETHODIMP nsCaretAccessible::GetAccParent(nsIAccessible **_retval)
   *_retval = nsnull;
   return NS_OK;
 }
-
 NS_IMETHODIMP nsCaretAccessible::GetAccPreviousSibling(nsIAccessible **_retval)
 { 
   *_retval = nsnull;

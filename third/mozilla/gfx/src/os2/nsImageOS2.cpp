@@ -36,6 +36,28 @@
 #define MAX_BUFFER_WIDTH        128
 #define MAX_BUFFER_HEIGHT       128
 
+#ifdef XP_OS2_VACPP
+// Needed to zero the stack since there is an uninitialized var in the engine
+// If you find that printing bitmaps with transparency results in black images then
+// take off the # define and use for all OS2 compilers
+// This was discovered when the temp bitmap bit depth used in images2::Draw was changed
+// from 8 to 24.  It worked in debug but failed in retail.  Investigation revealed GpiErase
+// was failing due to a function receiving an uninitialized variable and the stack had invalid
+// values (for retail). This function will zero the stack and return leaving a clean stack.
+// A parameter is used to ensure the optimizer will compile the code.  Make sure the parameter
+// is not larger than the buff size
+// The OS2 defect 272592 will fix this in future releases of the engine
+extern "C" int zeroStack(int index)
+{
+  #define CLEAR_BUF_SIZE 1024
+  BYTE buf[CLEAR_BUF_SIZE];
+  memset(buf, 0, CLEAR_BUF_SIZE * sizeof(BYTE));
+  return buf[index];
+}
+#else
+#define zeroStack(x)
+#endif
+
 struct MONOBITMAPINFO
 {
    BITMAPINFOHEADER2 bmpInfo;
@@ -70,27 +92,17 @@ NS_IMPL_ISUPPORTS1(nsImageOS2, nsIImage)
 
 //------------------------------------------------------------
 nsImageOS2::nsImageOS2()
+: mInfo(0)
+, mRowBytes(0)
+, mImageBits(0)
+, mARowBytes(0)
+, mAlphaBits(0)
+, mAlphaDepth(0)
+, mColorMap(0)
+, mDeviceDepth(0)
+, mIsOptimized(PR_FALSE)
+, mDecodedRect()
 {
-   NS_INIT_ISUPPORTS();
-    
-   mInfo      = 0;
-   mRowBytes  = 0;
-   mImageBits = 0;
-
-   mARowBytes  = 0;
-   mAlphaBits  = 0;
-   mAlphaDepth = 0;
-   mAlphaLevel = 0;
-
-   mColorMap = 0;
-
-   mIsOptimized = PR_FALSE;
-   mIsTopToBottom = PR_FALSE;   
-
-   mDeviceDepth = 0;
-   mNaturalWidth = 0;
-   mNaturalHeight = 0;
-
    if (gBlenderReady != PR_TRUE)
      BuildBlenderLookup ();
 }
@@ -103,18 +115,13 @@ nsImageOS2::~nsImageOS2()
 nsresult nsImageOS2::Init( PRInt32 aWidth, PRInt32 aHeight, PRInt32 aDepth,
                            nsMaskRequirements aMaskRequirements)
 {
-   // Guard against memory leak in multiple init
-   CleanUp(PR_TRUE);
+   // gfxIImageFrame only allows one init of nsImageOS2
 
    // (copying windows code - what about monochrome?  Oh well.)
    NS_ASSERTION( aDepth == 24 || aDepth == 8, "Bad image depth");
 
    // Work out size of bitmap to allocate
    mRowBytes = RASWIDTH(aWidth,aDepth);
-
-   SetDecodedRect(0,0,0,0);  //init
-   SetNaturalWidth(0);
-   SetNaturalHeight(0);
 
    mImageBits = new PRUint8 [ aHeight * mRowBytes ];
 
@@ -194,6 +201,8 @@ void nsImageOS2::CleanUp(PRBool aCleanUpAll)
 void nsImageOS2::ImageUpdated( nsIDeviceContext *aContext,
                                PRUint8 aFlags, nsRect *aUpdateRect)
 {
+   mDecodedRect.UnionRect(mDecodedRect, *aUpdateRect);
+
    if (!aContext) {
       return;
    } /* endif */
@@ -302,6 +311,13 @@ nsImageOS2 :: Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
                        { rcl.xRight, rcl.yTop },                // TUR
                        { aSX, mInfo->cy - (aSY + aSHeight) },   // SLL
                        { aSX + aSWidth, mInfo->cy - aSY } };    // SUR
+                       
+   PRBool fPrinting = PR_FALSE;
+   nsIDeviceContext*  context;
+   aContext.GetDeviceContext(context);
+   if (((nsDeviceContextOS2 *)context)->mPrintDC) {
+      fPrinting = PR_TRUE;
+   }
 
    if( mAlphaDepth == 0)
    {
@@ -310,12 +326,6 @@ nsImageOS2 :: Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
    }
    else if( mAlphaDepth == 1)
    {
-      PRBool fPrinting = PR_FALSE;
-      nsIDeviceContext*  context;
-      aContext.GetDeviceContext(context);
-      if (((nsDeviceContextOS2 *)context)->mPrintDC) {
-         fPrinting = PR_TRUE;
-      }
       if (!fPrinting) {
          // > The transparent areas of the mask are coloured black (0).
          // > the transparent areas of the pixmap are coloured black (0).
@@ -370,14 +380,15 @@ nsImageOS2 :: Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
              bihMem.cPlanes = 1;
              LONG lBitCount = 0;
              GFX (::DevQueryCaps( hdcCompat, CAPS_COLOR_BITCOUNT, 1, &lBitCount), FALSE);
-             bihMem.cBitCount = (USHORT) lBitCount;
-   
+             lBitCount = 24; // For printing
+             bihMem.cBitCount = lBitCount;
+             
              hMemBmp = GFX (::GpiCreateBitmap (MemPS, &bihMem, 0, 0, 0), GPI_ERROR);
    
              if( hMemBmp != GPI_ERROR )
              {
                GFX (::GpiSetBitmap (MemPS, hMemBmp), HBM_ERROR);
-
+               zeroStack(10);
                GpiErase(MemPS);
    
                // Now combine image with target
@@ -448,7 +459,15 @@ nsImageOS2 :: Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
           bihMem.cPlanes = 1;
           LONG lBitCount = 0;
           GFX (::DevQueryCaps( hdcCompat, CAPS_COLOR_BITCOUNT, 1, &lBitCount), FALSE);
-          bihMem.cBitCount = (USHORT) lBitCount;
+          if (!fPrinting)
+          {
+            bihMem.cBitCount = (USHORT) lBitCount;
+          }
+          else  // Printing
+          {
+            // bihMem.cBitCount = (USHORT) lBitCount;
+            bihMem.cBitCount = 24;
+          }
 
           hMemBmp = GFX (::GpiCreateBitmap (MemPS, &bihMem, 0, 0, 0), GPI_ERROR);
 
@@ -580,16 +599,6 @@ nsImageOS2::UnlockImagePixels(PRBool aMaskPixels)
   return NS_OK;
 } 
 
-// ---------------------------------------------------
-//	Set the decoded dimens of the image
-//
-NS_IMETHODIMP
-nsImageOS2::SetDecodedRect(PRInt32 x1, PRInt32 y1, PRInt32 x2, PRInt32 y2 )
-{
-  mDecodedRect.SetRect (x1, y1, x2 - x1, y2 - y1); 
-  return NS_OK;
-}
-
 void
 nsImageOS2::BuildTile (HPS hpsTile, PRUint8* pImageBits, PBITMAPINFO2 pBitmapInfo,
                        nscoord aTileWidth, nscoord aTileHeight)
@@ -659,6 +668,13 @@ NS_IMETHODIMP nsImageOS2::DrawTile(nsIRenderingContext &aContext,
    PRBool didTile = PR_FALSE;
    PRInt32 ImageWidth = mInfo->cx;
    PRInt32 ImageHeight = mInfo->cy;
+   
+   // Get the scale - if greater than 1 then do slow tile which
+   nsIDeviceContext *theDeviceContext;
+   float scale;
+   PRBool doSlowTile = PR_FALSE;
+   aContext.GetDeviceContext(theDeviceContext);
+   theDeviceContext->GetCanonicalPixelScale(scale);
 
    nsRect ValidRect (0, 0, ImageWidth, ImageHeight);
    ValidRect.IntersectRect (ValidRect, mDecodedRect);
@@ -669,7 +685,8 @@ NS_IMETHODIMP nsImageOS2::DrawTile(nsIRenderingContext &aContext,
 
    // Don't bother tiling if we only have to draw the bitmap a couple of times
    // Can't tile with 8bit alpha masks because need access destination bitmap values
-   if ((ImageWidth > DrawRect.width / 2 && ImageHeight > DrawRect.height / 2) ||
+   if ((scale > 1.0) ||
+       (ImageWidth > DrawRect.width / 2 && ImageHeight > DrawRect.height / 2) ||
        (ImageWidth > MAX_BUFFER_WIDTH) || (ImageHeight > MAX_BUFFER_HEIGHT) ||
         mAlphaDepth > 1)
       return SlowTile (aContext, aSurface, aSXOffset, aSYOffset, aTileRect);   
@@ -784,21 +801,62 @@ NS_IMETHODIMP nsImageOS2::DrawTile(nsIRenderingContext &aContext,
 nsresult nsImageOS2::SlowTile (nsIRenderingContext& aContext, nsDrawingSurface aSurface, 
                                PRInt32 aSXOffset, PRInt32 aSYOffset, const nsRect &aTileRect)
 {
-  nsRect ImageRect (0, 0, PR_MIN (mInfo->cx, mDecodedRect.width), PR_MIN (mInfo->cy, mDecodedRect.height));
+  PRInt32 x0, y0, x1, y1;
+  nscoord ScaledTileWidth, ScaledTileHeight;
+  PRInt32 ImageWidth = mInfo->cx;
+  PRInt32 ImageHeight = mInfo->cy;
+  nsIDeviceContext *theDeviceContext;
+  float scale;
+  aContext.GetDeviceContext(theDeviceContext);
+  theDeviceContext->GetCanonicalPixelScale(scale);
+  PRInt32 DestScaledWidth = ImageWidth * scale;
+  PRInt32 DestScaledHeight = ImageHeight * scale;
+  
+  nsRect ValidRect (0, 0, ImageWidth, ImageHeight);
+  if (mDecodedRect.height < ImageHeight)
+  {
+    ValidRect.height = mDecodedRect.height - mDecodedRect.y;
+    DestScaledHeight = PR_MAX(PRInt32(ValidRect.height * scale), 1);
+  }
+  if (mDecodedRect.width < ImageWidth)
+  {
+    ValidRect.width = mDecodedRect.width - mDecodedRect.x;
+    DestScaledWidth = PR_MAX(PRInt32(ValidRect.width * scale), 1);
+  }
+  if (mDecodedRect.y > 0)
+  {
+    ValidRect.height -= mDecodedRect.height;
+    DestScaledHeight = PR_MAX(PRInt32(ValidRect.height * scale), 1);
+    ValidRect.y = mDecodedRect.height;
+  }  
+  if (mDecodedRect.x > 0)
+  {
+    ValidRect.width -= mDecodedRect.x;
+    DestScaledWidth = PR_MAX(PRInt32(ValidRect.width * scale), 1);
+    ValidRect.x = mDecodedRect.width;
+  }
+  
+  // put the DestRect into absolute coordintes of the device
+  y0 = aTileRect.y - aSYOffset;
+  x0 = aTileRect.x - aSXOffset;
+  y1 = aTileRect.y + aTileRect.height;
+  x1 = aTileRect.x + aTileRect.width;  
 
-  for (PRInt32 y = aTileRect.y - aSYOffset + mDecodedRect.y ; y < aTileRect.YMost () ; y += mInfo->cy)
-    for (PRInt32 x = aTileRect.x - aSXOffset + mDecodedRect.x ; x < aTileRect.XMost () ; x += mInfo->cx)
+  // this is the width and height of the image in pixels
+  // we need to map this to the pixel height of the device
+  ScaledTileWidth = PR_MAX(PRInt32(ImageWidth*scale), 1);
+  ScaledTileHeight = PR_MAX(PRInt32(ImageHeight*scale), 1);
+  
+  for (PRInt32 y = y0; y < y1; y += ScaledTileHeight)
+  {
+    for (PRInt32 x = x0; x < x1;  x += ScaledTileWidth)
     {
-      nsRect CroppedImage;
-
-      ImageRect.MoveTo (x, y);
-      CroppedImage.IntersectRect (ImageRect, aTileRect);
-
-      Draw (aContext, aSurface,
-            CroppedImage.x - x, CroppedImage.y - y, CroppedImage.width, CroppedImage.height,
-            CroppedImage.x, CroppedImage.y, CroppedImage.width, CroppedImage.height);
+      Draw(aContext, aSurface,
+           0, 0, PR_MIN(ValidRect.width, x1 - x), PR_MIN(ValidRect.height, y1 - y),
+           x, y, PR_MIN(DestScaledWidth, x1-x), PR_MIN(DestScaledHeight, y1 - y));
     }
-
+  }
+  
   return NS_OK;
 }
 
@@ -875,8 +933,8 @@ NS_IMETHODIMP nsImageOS2::DrawToImage(nsIImage* aDstImage,
   // Set up blit coord array
   POINTL aptl [4] = { rcl.xLeft, rcl.yBottom,              // TLL - in
                       rcl.xRight, rcl.yTop,                // TUR - in
-                      0, mInfo->cy - mNaturalHeight,       // SLL - in
-                      mNaturalWidth, mInfo->cy };          // SUR - ex
+                      0, 0,                                // SLL - in
+                      mInfo->cx, mInfo->cy };              // SUR - ex
 
   if( 1==mAlphaDepth && mAlphaBits)
   {

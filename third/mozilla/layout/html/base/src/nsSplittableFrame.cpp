@@ -37,14 +37,13 @@
 #include "nsSplittableFrame.h"
 #include "nsIContent.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
-#include "nsISizeOfHandler.h"
+#include "nsStyleContext.h"
 
 NS_IMETHODIMP
 nsSplittableFrame::Init(nsIPresContext*  aPresContext,
                         nsIContent*      aContent,
                         nsIFrame*        aParent,
-                        nsIStyleContext* aContext,
+                        nsStyleContext*  aContext,
                         nsIFrame*        aPrevInFlow)
 {
   nsresult  rv;
@@ -105,25 +104,21 @@ NS_METHOD nsSplittableFrame::SetNextInFlow(nsIFrame* aFrame)
 
 nsIFrame* nsSplittableFrame::GetFirstInFlow() const
 {
-  nsSplittableFrame* firstInFlow;
-  nsSplittableFrame* prevInFlow = (nsSplittableFrame*)this;
-  while (nsnull!=prevInFlow)  {
-    firstInFlow = prevInFlow;
-    prevInFlow = (nsSplittableFrame*)firstInFlow->mPrevInFlow;
+  nsSplittableFrame* firstInFlow = (nsSplittableFrame*)this;
+  while (firstInFlow->mPrevInFlow)  {
+    firstInFlow = (nsSplittableFrame*)firstInFlow->mPrevInFlow;
   }
-  NS_POSTCONDITION(nsnull!=firstInFlow, "illegal state in flow chain.");
+  NS_POSTCONDITION(firstInFlow, "illegal state in flow chain.");
   return firstInFlow;
 }
 
 nsIFrame* nsSplittableFrame::GetLastInFlow() const
 {
-  nsSplittableFrame* lastInFlow;
-  nsSplittableFrame* nextInFlow = (nsSplittableFrame*)this;
-  while (nsnull!=nextInFlow)  {
-    lastInFlow = nextInFlow;
-    nextInFlow = (nsSplittableFrame*)lastInFlow->mNextInFlow;
+  nsSplittableFrame* lastInFlow = (nsSplittableFrame*)this;
+  while (lastInFlow->mNextInFlow)  {
+    lastInFlow = (nsSplittableFrame*)lastInFlow->mNextInFlow;
   }
-  NS_POSTCONDITION(nsnull!=lastInFlow, "illegal state in flow chain.");
+  NS_POSTCONDITION(lastInFlow, "illegal state in flow chain.");
   return lastInFlow;
 }
 
@@ -186,15 +181,5 @@ nsSplittableFrame::DumpBaseRegressionData(nsIPresContext* aPresContext, FILE* ou
     fprintf(out, "<prev-in-flow va=\"%ld\"/>\n", PRUptrdiff(mPrevInFlow));
   }
 
-}
-
-NS_IMETHODIMP
-nsSplittableFrame::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  *aResult = sizeof(*this);
-  return NS_OK;
 }
 #endif

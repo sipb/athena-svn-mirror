@@ -78,7 +78,6 @@ NS_IMPL_RELEASE(nsCheckButton)
 nsCheckButton::nsCheckButton() : nsWindow() , nsICheckButton(),
   mState(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -200,7 +199,6 @@ PRBool nsCheckButton::OnResize(nsRect &aWindowRect)
     return PR_FALSE;
 }
 
-#ifdef MOZ_UNICODE
 //-------------------------------------------------------------------------
 //
 // return the window class name and initialize the class if needed
@@ -210,7 +208,6 @@ LPCWSTR nsCheckButton::WindowClassW()
 {
     return L"BUTTON";
 }
-#endif /* MOZ_UNICODE */
 
 //-------------------------------------------------------------------------
 //

@@ -40,6 +40,7 @@
 #include "nsHTMLContainerFrame.h"
 #include "nsAbsoluteContainingBlock.h"
 #include "nsLineLayout.h"
+#include "nsLayoutAtoms.h"
 
 class nsAnonymousBlockFrame;
 
@@ -91,6 +92,11 @@ public:
                           nsIAtom* aListName,
                           nsIFrame* aOldFrame,
                           nsIFrame* aNewFrame);
+  NS_IMETHOD Paint(nsIPresContext*      aPresContext,
+                   nsIRenderingContext& aRenderingContext,
+                   const nsRect&        aDirtyRect,
+                   nsFramePaintLayer    aWhichLayer,
+                   PRUint32             aFlags = 0);
   NS_IMETHOD ReflowDirtyChild(nsIPresShell* aPresShell, nsIFrame* aChild);
 
 #ifdef ACCESSIBILITY
@@ -113,8 +119,6 @@ public:
                     nsReflowStatus& aStatus);
 
   NS_IMETHOD CanContinueTextRun(PRBool& aContinueTextRun) const;
-
-  static nsIID kInlineFrameCID;
 
   // Take all of the frames away from this frame. The caller is
   // presumed to keep them alive.
@@ -203,10 +207,11 @@ protected:
 class nsPositionedInlineFrame : public nsInlineFrame
 {
 public:
+  nsPositionedInlineFrame() { }          // useful for debugging
+
+  virtual ~nsPositionedInlineFrame() { } // useful for debugging
+
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
-#endif
 
   NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
                                  nsIAtom*        aListName,
@@ -224,6 +229,11 @@ public:
                          nsIPresShell& aPresShell,
                          nsIAtom* aListName,
                          nsIFrame* aOldFrame);
+  NS_IMETHOD ReplaceFrame(nsIPresContext* aPresContext,
+                          nsIPresShell& aPresShell,
+                          nsIAtom* aListName,
+                          nsIFrame* aOldFrame,
+                          nsIFrame* aNewFrame);
 
   NS_IMETHOD GetAdditionalChildListName(PRInt32   aIndex,
                                         nsIAtom** aListName) const;

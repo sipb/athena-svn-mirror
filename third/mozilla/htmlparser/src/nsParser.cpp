@@ -44,12 +44,10 @@
 
 #include "nsIAtom.h"
 #include "nsParser.h"
-#include "nsIContentSink.h"
 #include "nsString.h"
 #include "nsCRT.h" 
 #include "nsScanner.h"
 #include "plstr.h"
-#include "nsIParserFilter.h"
 #include "nsViewSourceHTML.h" 
 #include "nsIStringStream.h"
 #include "nsIChannel.h"
@@ -66,6 +64,7 @@
 #include "nsIEventQueue.h"
 #include "nsIEventQueueService.h"
 #include "nsExpatDriver.h"
+#include "nsIServiceManager.h"
 //#define rickgdebug 
 
 #define NS_PARSER_FLAG_DTD_VERIFICATION       0x00000001
@@ -123,22 +122,9 @@ public:
   CSharedParserObjects()
   :mDTDDeque(0), 
    mHasViewSourceDTD(PR_FALSE),
-   mHasXMLDTD(PR_FALSE)
+   mHasXMLDTD(PR_FALSE) 
   {
-
-    //Note: To cut down on startup time/overhead, we defer the construction of non-html DTD's. 
-
-    nsIDTD* theDTD;
-
-    NS_NewNavHTMLDTD(&theDTD);    //do this as a default HTML DTD...
-    
-    // please handle allocation failure
-    NS_ASSERTION(theDTD, "Failed to create DTD");
-    
-    mDTDDeque.Push(theDTD);
-     
-    mHasViewSourceDTD=PR_FALSE;
-    mHasXMLDTD=PR_FALSE;
+    // do nothing.
   }
 
   ~CSharedParserObjects() {
@@ -146,17 +132,31 @@ public:
     mDTDDeque.ForEach(theDeallocator);  //release all the DTD's
   }
 
-  void RegisterDTD(nsIDTD* aDTD){
-    if(aDTD) {
-      NS_ADDREF(aDTD);
-      CDTDFinder theFinder(aDTD);
-      if(!mDTDDeque.FirstThat(theFinder)) {
-        nsIDTD* theDTD;
-        aDTD->CreateNewInstance(&theDTD);
-        mDTDDeque.Push(theDTD);
-      }
-      NS_RELEASE(aDTD);
+  nsresult Init() {
+    //Note: To cut down on startup time/overhead, we defer the construction of non-html DTD's. 
+    nsIDTD* theDTD = 0;
+    nsresult rv = NS_NewNavHTMLDTD(&theDTD);    //do this as a default HTML DTD...
+    
+    NS_ASSERTION(theDTD, "Failed to create DTD");
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    mDTDDeque.Push(theDTD);
+    mHasViewSourceDTD = PR_FALSE;
+    mHasXMLDTD = PR_FALSE;
+    return NS_OK;
+  }
+
+  nsresult RegisterDTD(nsIDTD* aDTD) {
+    NS_ENSURE_ARG_POINTER(aDTD);
+    nsCOMPtr<nsIDTD> dtd(aDTD);
+    CDTDFinder theFinder(dtd);
+    if (!mDTDDeque.FirstThat(theFinder)) {
+      nsIDTD* theDTD;
+      nsresult rv = dtd->CreateNewInstance(&theDTD);
+      NS_ENSURE_SUCCESS(rv, rv);
+      mDTDDeque.Push(theDTD);
     }
+    return NS_OK;
   }
   
   nsDeque mDTDDeque;
@@ -262,11 +262,16 @@ static CSharedParserObjects* gSharedParserObjects=0;
 
 //-------------------------------------------------------------------------
 
-CSharedParserObjects& GetSharedObjects() {
+nsresult
+GetSharedObjects(CSharedParserObjects** aSharedParserObjects) {
   if (!gSharedParserObjects) {
     gSharedParserObjects = new CSharedParserObjects();
+    NS_ENSURE_TRUE(gSharedParserObjects, NS_ERROR_OUT_OF_MEMORY);
+    nsresult rv = gSharedParserObjects->Init();
+    NS_ENSURE_SUCCESS(rv, rv);
   }
-  return *gSharedParserObjects;
+  *aSharedParserObjects = gSharedParserObjects;
+  return NS_OK;
 }
 
 /** 
@@ -293,9 +298,7 @@ static PRBool gDumpContent=PR_FALSE;
  *  @param   
  *  @return   
  */
-nsParser::nsParser(nsITokenObserver* anObserver) {
-  NS_INIT_ISUPPORTS();
-
+nsParser::nsParser() {
 #ifdef NS_DEBUG
   if(!gDumpContent) {
     gDumpContent=(PR_GetEnv("PARSER_DUMP_CONTENT"))? PR_TRUE:PR_FALSE;
@@ -303,11 +306,7 @@ nsParser::nsParser(nsITokenObserver* anObserver) {
 #endif
 
   mCharset.Assign(NS_LITERAL_STRING("ISO-8859-1"));
-  mParserFilter = 0;
-  mObserver = 0;
-  mSink=0;
   mParserContext=0;
-  mTokenObserver=anObserver;
   mStreamStatus=0;
   mCharsetSource=kCharsetUninitialized;
   mInternalState=NS_OK;;
@@ -354,10 +353,6 @@ nsParser::~nsParser() {
     }
   }
 #endif
-
-  NS_IF_RELEASE(mObserver);
-  NS_IF_RELEASE(mSink);
-  NS_IF_RELEASE(mParserFilter);
 
   //don't forget to add code here to delete 
   //what may be several contexts...
@@ -438,20 +433,13 @@ nsParser::PostContinueEvent()
  * @param 
  * @return
  */
-nsIParserFilter * nsParser::SetParserFilter(nsIParserFilter * aFilter)
+NS_IMETHODIMP_(void) nsParser::SetParserFilter(nsIParserFilter * aFilter)
 {
-  nsIParserFilter* old=mParserFilter;
-  if(old)
-    NS_RELEASE(old);
-  if(aFilter) {
-    mParserFilter=aFilter;
-    NS_ADDREF(aFilter);
-  }
-  return old;
+  mParserFilter = aFilter;
 }
 
 
-void nsParser::GetCommand(nsString& aCommand)
+NS_IMETHODIMP_(void) nsParser::GetCommand(nsString& aCommand)
 {
   aCommand = mCommandStr;  
 }
@@ -462,10 +450,10 @@ void nsParser::GetCommand(nsString& aCommand)
  *  this allows us to select a DTD which can do, say, view-source.
  *  
  *  @update  gess 01/04/99
- *  @param   aContentSink -- ptr to content sink that will receive output
- *  @return	 ptr to previously set contentsink (usually null)  
+ *  @param   aCommand the command string to set
  */
-void nsParser::SetCommand(const char* aCommand){
+NS_IMETHODIMP_(void) nsParser::SetCommand(const char* aCommand)
+{
   nsCAutoString theCommand(aCommand);
   if(theCommand.Equals(kViewSourceCommand))
     mCommand=eViewSource;
@@ -481,11 +469,11 @@ void nsParser::SetCommand(const char* aCommand){
  *  this allows us to select a DTD which can do, say, view-source.
  *  
  *  @update  gess 01/04/99
- *  @param   aContentSink -- ptr to content sink that will receive output
- *  @return	 ptr to previously set contentsink (usually null)  
+ *  @param   aParserCommand the command to set
  */
-void nsParser::SetCommand(eParserCommands aParserCommand){
-  mCommand=aParserCommand;
+NS_IMETHODIMP_(void) nsParser::SetCommand(eParserCommands aParserCommand)
+{
+  mCommand = aParserCommand;
 }
 
 
@@ -494,11 +482,13 @@ void nsParser::SetCommand(eParserCommands aParserCommand){
  *  about what charset to load
  *  
  *  @update  ftang 4/23/99
- *  @param   aCharset- the charest of a document
- *  @param   aCharsetSource- the soure of the chares
+ *  @param   aCharset- the charset of a document
+ *  @param   aCharsetSource- the source of the charset
  *  @return	 nada
  */
-void nsParser::SetDocumentCharset(const nsAString& aCharset, PRInt32 aCharsetSource){
+NS_IMETHODIMP_(void)
+nsParser::SetDocumentCharset(const nsAString& aCharset, PRInt32 aCharsetSource)
+{
   mCharset = aCharset;
   mCharsetSource = aCharsetSource; 
   if(mParserContext && mParserContext->mScanner)
@@ -520,26 +510,23 @@ void nsParser::SetSinkCharset(nsAString& aCharset)
  *  @param   nsIContentSink interface for node receiver
  *  @return  
  */
-nsIContentSink* nsParser::SetContentSink(nsIContentSink* aSink) {
-  NS_PRECONDITION(0!=aSink,"sink cannot be null!");
-  nsIContentSink* old=mSink;
-
-  NS_IF_RELEASE(old);
-  if(aSink) {
-    mSink=aSink;
-    NS_ADDREF(aSink);
+NS_IMETHODIMP_(void) nsParser::SetContentSink(nsIContentSink* aSink)
+{
+  NS_PRECONDITION(aSink,"sink cannot be null!");
+  mSink = aSink;
+  
+  if (mSink) {
     mSink->SetParser(this);
   }
-  return old;
 }
 
 /**
  * retrive the sink set into the parser 
  * @update	gess5/11/98
- * @param   aSink is the new sink to be used by parser
- * @return  old sink, or NULL
+ * @return  current sink 
  */
-nsIContentSink* nsParser::GetContentSink(void){
+NS_IMETHODIMP_(nsIContentSink*) nsParser::GetContentSink(void)
+{
   return mSink;
 }
 
@@ -551,23 +538,14 @@ nsIContentSink* nsParser::GetContentSink(void){
  *  @param   aDTD  is the object to be registered.
  *  @return  nothing.
  */
-void nsParser::RegisterDTD(nsIDTD* aDTD){
-  CSharedParserObjects& theShare=GetSharedObjects();
-  theShare.RegisterDTD(aDTD);
+NS_IMETHODIMP
+nsParser::RegisterDTD(nsIDTD* aDTD)
+{
+  CSharedParserObjects* sharedObjects;
+  nsresult rv = GetSharedObjects(&sharedObjects);
+  NS_ENSURE_SUCCESS(rv, rv);
+  return sharedObjects->RegisterDTD(aDTD);
 }
-
-/**
- *  Retrieve scanner from topmost parsecontext
- *  
- *  @update  gess 01/04/99
- *  @return  ptr to internal scanner
- */
-nsScanner* nsParser::GetScanner(void){
-  if(mParserContext)
-    return mParserContext->mScanner;
-  return 0;
-}
-
 
 /**
  *  Retrieve parsemode from topmost parser context
@@ -575,9 +553,11 @@ nsScanner* nsParser::GetScanner(void){
  *  @update  gess 01/04/99
  *  @return  parsemode
  */
-nsDTDMode nsParser::GetParseMode(void){
+NS_IMETHODIMP_(nsDTDMode) nsParser::GetParseMode(void)
+{
   if(mParserContext)
     return mParserContext->mDTDMode;
+  NS_NOTREACHED("no parser context");
   return eDTDMode_unknown;
 }
 
@@ -971,6 +951,7 @@ static const PubIDInfo kPublicIDs[] = {
   {"-//w3o//dtd w3 html strict 3.0//en//" /* "-//W3O//DTD W3 HTML Strict 3.0//EN//" */, PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
   {"-//webtechs//dtd mozilla html 2.0//en" /* "-//WebTechs//DTD Mozilla HTML 2.0//EN" */, PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
   {"-//webtechs//dtd mozilla html//en" /* "-//WebTechs//DTD Mozilla HTML//EN" */, PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
+  {"-/w3c/dtd html 4.0 transitional/en" /* "-/W3C/DTD HTML 4.0 Transitional/EN" */, PubIDInfo::eQuirks, PubIDInfo::eQuirks},
   {"html" /* "HTML" */, PubIDInfo::eQuirks3, PubIDInfo::eQuirks3},
 };
 
@@ -1128,62 +1109,77 @@ void DetermineParseMode(const nsString& aBuffer,
  *  @return  
  */
 static
-PRBool FindSuitableDTD( CParserContext& aParserContext,nsString& aBuffer) {
-  
+nsresult
+FindSuitableDTD(CParserContext& aParserContext,
+                const nsString& aBuffer,
+                PRBool* aReturn)
+{
+  *aReturn = PR_FALSE;
   //Let's start by trying the defaultDTD, if one exists...
   if(aParserContext.mDTD)
     if(aParserContext.mDTD->CanParse(aParserContext,aBuffer,0))
       return PR_TRUE;
 
-  CSharedParserObjects& gSharedObjects=GetSharedObjects();
+  CSharedParserObjects* sharedObjects;
+  nsresult rv = GetSharedObjects(&sharedObjects);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  aParserContext.mAutoDetectStatus=eUnknownDetect;
-  PRInt32 theDTDIndex=0;
-  nsIDTD* theBestDTD=0;
-  nsIDTD* theDTD=0;
-  PRBool  thePrimaryFound=PR_FALSE;
+  aParserContext.mAutoDetectStatus = eUnknownDetect;
+  PRInt32 theDTDIndex = 0;
+  nsIDTD* theBestDTD  = 0;
+  nsIDTD* theDTD      = 0;
+  PRBool  thePrimaryFound = PR_FALSE;
 
-  while((theDTDIndex<=gSharedObjects.mDTDDeque.GetSize()) && (aParserContext.mAutoDetectStatus!=ePrimaryDetect)){
-    theDTD=(nsIDTD*)gSharedObjects.mDTDDeque.ObjectAt(theDTDIndex++);
-    if(theDTD) {
+  while ((theDTDIndex <= sharedObjects->mDTDDeque.GetSize()) && 
+         (aParserContext.mAutoDetectStatus != ePrimaryDetect)){
+    theDTD = NS_STATIC_CAST(nsIDTD*, sharedObjects->mDTDDeque.ObjectAt(theDTDIndex++));
+    if (theDTD) {
       // Store detect status in temp ( theResult ) to avoid bugs such as
       // 36233, 36754, 36491, 36323. Basically, we should avoid calling DTD's
       // WillBuildModel() multiple times, i.e., we shouldn't leave auto-detect-status
       // unknown.
-      eAutoDetectResult theResult=theDTD->CanParse(aParserContext,aBuffer,0);
-      if(eValidDetect==theResult){
-        aParserContext.mAutoDetectStatus=eValidDetect;
-        theBestDTD=theDTD;
+      eAutoDetectResult theResult = theDTD->CanParse(aParserContext,aBuffer,0);
+      if (eValidDetect == theResult){
+        aParserContext.mAutoDetectStatus = eValidDetect;
+        theBestDTD = theDTD;
       }
-      else if(ePrimaryDetect==theResult) {  
-        theBestDTD=theDTD;
-        thePrimaryFound=PR_TRUE;
-        aParserContext.mAutoDetectStatus=ePrimaryDetect;
+      else if (ePrimaryDetect == theResult) {  
+        theBestDTD = theDTD;
+        thePrimaryFound = PR_TRUE;
+        aParserContext.mAutoDetectStatus = ePrimaryDetect;
       }
     }
-    if((theDTDIndex==gSharedObjects.mDTDDeque.GetSize()) && (!thePrimaryFound)) {
-      if(!gSharedObjects.mHasXMLDTD) {
-        NS_NewExpatDriver(&theDTD); //do this to view XML files...
-        gSharedObjects.mDTDDeque.Push(theDTD);
-        gSharedObjects.mHasXMLDTD=PR_TRUE;
+    if (theDTDIndex == sharedObjects->mDTDDeque.GetSize() && !thePrimaryFound) {
+      if (!sharedObjects->mHasXMLDTD) {
+        rv = NS_NewExpatDriver(&theDTD); //do this to view XML files...
+        NS_ENSURE_SUCCESS(rv, rv);
+
+        sharedObjects->mDTDDeque.Push(theDTD);
+        sharedObjects->mHasXMLDTD = PR_TRUE;
       }
-      else if(!gSharedObjects.mHasViewSourceDTD) {
-        NS_NewViewSourceHTML(&theDTD);  //do this so all non-html files can be viewed...
-        gSharedObjects.mDTDDeque.Push(theDTD);
-        gSharedObjects.mHasViewSourceDTD=PR_TRUE;
+      else if (!sharedObjects->mHasViewSourceDTD) {
+        rv = NS_NewViewSourceHTML(&theDTD);  //do this so all non-html files can be viewed...
+        NS_ENSURE_SUCCESS(rv, rv);
+        
+        sharedObjects->mDTDDeque.Push(theDTD);
+        sharedObjects->mHasViewSourceDTD = PR_TRUE;
       }
     }
   }
 
   if(theBestDTD) {
-    theBestDTD->CreateNewInstance(&aParserContext.mDTD);
-    return PR_TRUE;
+    rv = theBestDTD->CreateNewInstance(&aParserContext.mDTD);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    *aReturn = PR_TRUE;
   }
-  return PR_FALSE;
+
+  return rv;
 }
 
 NS_IMETHODIMP 
-nsParser::CancelParsingEvents() {
+nsParser::CancelParsingEvents()
+{
   if (mFlags & NS_PARSER_FLAG_PENDING_CONTINUE_EVENT) {
     NS_ASSERTION(mEventQueue,"Event queue is null");
     // Revoke all pending continue parsing events 
@@ -1210,38 +1206,34 @@ nsParser::CancelParsingEvents() {
  * last thing that happens right before parsing, so we
  * can delay until the last moment the resolution of
  * which DTD to use (unless of course we're assigned one).
- *
- * @update	gess5/18/98
- * @param 
- * @return  error code -- 0 if ok, non-zero if error.
  */
-nsresult nsParser::WillBuildModel(nsString& aFilename){
+nsresult 
+nsParser::WillBuildModel(nsString& aFilename)
+{
+  if (!mParserContext)
+    return kInvalidParserContext;
 
-  nsresult       result=NS_OK;
+  if (eUnknownDetect != mParserContext->mAutoDetectStatus)
+    return NS_OK;
 
-  if(mParserContext){
-    if(eUnknownDetect==mParserContext->mAutoDetectStatus) {  
-      mMajorIteration=-1; 
-      mMinorIteration=-1; 
-      
-      nsAutoString theBuffer;
-      // XXXVidur Make a copy and only check in the first 1k
-      mParserContext->mScanner->Peek(theBuffer, 1024);
+  nsAutoString theBuffer;
+  // XXXVidur Make a copy and only check in the first 1k
+  mParserContext->mScanner->Peek(theBuffer, 1024);
 
-      if (eDTDMode_unknown == mParserContext->mDTDMode ||
-          eDTDMode_autodetect == mParserContext->mDTDMode) {
-        DetermineParseMode(theBuffer,mParserContext->mDTDMode,mParserContext->mDocType,mParserContext->mMimeType);
-      }
+  if (eDTDMode_unknown == mParserContext->mDTDMode ||
+      eDTDMode_autodetect == mParserContext->mDTDMode)
+    DetermineParseMode(theBuffer, mParserContext->mDTDMode,
+                       mParserContext->mDocType, mParserContext->mMimeType);
+  PRBool found;
+  nsresult rv = FindSuitableDTD(*mParserContext,theBuffer, &found);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-      if(PR_TRUE==FindSuitableDTD(*mParserContext,theBuffer)) {
-        nsITokenizer* tokenizer;
-        mParserContext->GetTokenizer(mParserContext->mDTD->GetType(), tokenizer);
-        result = mParserContext->mDTD->WillBuildModel(*mParserContext, tokenizer, mSink);
-      }//if        
-    }//if
-  } 
-  else result=kInvalidParserContext;    
-  return result;
+  if (!found)
+    return rv;
+
+  nsITokenizer* tokenizer;
+  mParserContext->GetTokenizer(mParserContext->mDTD->GetType(), tokenizer);
+  return mParserContext->mDTD->WillBuildModel(*mParserContext, tokenizer, mSink);
 }
 
 /**
@@ -1314,7 +1306,8 @@ CParserContext* nsParser::PopContext() {
  *  @param   aState determines whether we parse/tokenize or just cache.
  *  @return  current state
  */
-void nsParser::SetUnusedInput(nsString& aBuffer) {
+void nsParser::SetUnusedInput(nsString& aBuffer)
+{
   mUnusedInput=aBuffer;
 }
 
@@ -1326,7 +1319,8 @@ void nsParser::SetUnusedInput(nsString& aBuffer) {
  *  @update  gess 7/4/99
  *  @return  should return NS_OK once implemented
  */
-nsresult nsParser::Terminate(void){
+NS_IMETHODIMP nsParser::Terminate(void)
+{
   nsresult result = NS_OK;
   if (mParserContext && mParserContext->mDTD) {
     mParserContext->mDTD->Terminate();
@@ -1353,8 +1347,8 @@ nsresult nsParser::Terminate(void){
  *  @param   aState determines whether we parse/tokenize or just cache.
  *  @return  current state
  */
-nsresult nsParser::ContinueParsing(){
-    
+NS_IMETHODIMP nsParser::ContinueParsing()
+{    
   // If the stream has already finished, there's a good chance
   // that we might start closing things down when the parser
   // is reenabled. To make sure that we're not deleted across
@@ -1381,7 +1375,8 @@ nsresult nsParser::ContinueParsing(){
  *  @update  
  *  @return  
  */
-void nsParser::BlockParser() {
+NS_IMETHODIMP_(void) nsParser::BlockParser()
+{
   mFlags &= ~NS_PARSER_FLAG_PARSER_ENABLED;
   MOZ_TIMER_DEBUGLOG(("Stop: Parse Time: nsParser::BlockParser(), this=%p\n", this));
   MOZ_TIMER_STOP(mParseTime);
@@ -1396,7 +1391,8 @@ void nsParser::BlockParser() {
  *  @update  
  *  @return  
  */
-void nsParser::UnblockParser() {
+NS_IMETHODIMP_(void) nsParser::UnblockParser()
+{
   mFlags |= NS_PARSER_FLAG_PARSER_ENABLED;
   MOZ_TIMER_DEBUGLOG(("Start: Parse Time: nsParser::UnblockParser(), this=%p\n", this));
   MOZ_TIMER_START(mParseTime);
@@ -1408,7 +1404,8 @@ void nsParser::UnblockParser() {
  *  @update  vidur 4/12/99
  *  @return  current state
  */
-PRBool nsParser::IsParserEnabled() {
+NS_IMETHODIMP_(PRBool) nsParser::IsParserEnabled()
+{
   return mFlags & NS_PARSER_FLAG_PARSER_ENABLED;
 }
 
@@ -1418,7 +1415,8 @@ PRBool nsParser::IsParserEnabled() {
  *  @update  rickg 5/12/01
  *  @return  complete state
  */
-PRBool nsParser::IsComplete() {
+NS_IMETHODIMP_(PRBool) nsParser::IsComplete()
+{
   return !(mFlags & NS_PARSER_FLAG_PENDING_CONTINUE_EVENT);
 }
 
@@ -1452,13 +1450,18 @@ void nsParser::SetCanInterrupt(PRBool aCanInterrupt) {
  *  @param   aFilename -- const char* containing file to be parsed.
  *  @return  error code -- 0 if ok, non-zero if error.
  */
-nsresult nsParser::Parse(nsIURI* aURL,nsIRequestObserver* aListener,PRBool aVerifyEnabled, void* aKey,nsDTDMode aMode) {  
+NS_IMETHODIMP
+nsParser::Parse(nsIURI* aURL,
+                nsIRequestObserver* aListener,
+                PRBool aVerifyEnabled,
+                void* aKey,
+                nsDTDMode aMode)
+{  
 
   NS_PRECONDITION(aURL, "Error: Null URL given");
 
   nsresult result=kBadURL;
   mObserver = aListener;
-  NS_IF_ADDREF(mObserver);
  
   if (aVerifyEnabled) {
     mFlags |= NS_PARSER_FLAG_DTD_VERIFICATION;
@@ -1498,8 +1501,13 @@ nsresult nsParser::Parse(nsIURI* aURL,nsIRequestObserver* aListener,PRBool aVeri
  * @param   aStream is the i/o source
  * @return  error code -- 0 if ok, non-zero if error.
  */
-nsresult nsParser::Parse(nsIInputStream& aStream,const nsACString& aMimeType,PRBool aVerifyEnabled, void* aKey,nsDTDMode aMode){
-
+NS_IMETHODIMP
+nsParser::Parse(nsIInputStream* aStream,
+                const nsACString& aMimeType,
+                PRBool aVerifyEnabled,
+                void* aKey,
+                nsDTDMode aMode)
+{
   if (aVerifyEnabled) {
     mFlags |= NS_PARSER_FLAG_DTD_VERIFICATION;
   }
@@ -1512,9 +1520,9 @@ nsresult nsParser::Parse(nsIInputStream& aStream,const nsACString& aMimeType,PRB
   //ok, time to create our tokenizer and begin the process
   nsAutoString theUnknownFilename(NS_LITERAL_STRING("unknown"));
 
-  nsInputStream input(&aStream);
+  // references 
+  nsScanner* theScanner=new nsScanner(theUnknownFilename,aStream,mCharset,mCharsetSource);
 
-  nsScanner* theScanner=new nsScanner(theUnknownFilename,input,mCharset,mCharsetSource);
   CParserContext* pc=new CParserContext(theScanner,aKey,mCommand,0);
   if(pc && theScanner) {
     PushContext(*pc);
@@ -1545,10 +1553,14 @@ nsresult nsParser::Parse(nsIInputStream& aStream,const nsACString& aMimeType,PRB
  * @param   aMimeType tells us what type of content to expect in the given string
  * @return  error code -- 0 if ok, non-zero if error.
  */
-nsresult nsParser::Parse(const nsAString& aSourceBuffer, void* aKey,
-                         const nsACString& aMimeType,
-                         PRBool aVerifyEnabled, PRBool aLastCall,
-                         nsDTDMode aMode){ 
+NS_IMETHODIMP
+nsParser::Parse(const nsAString& aSourceBuffer,
+                void* aKey,
+                const nsACString& aMimeType,
+                PRBool aVerifyEnabled,
+                PRBool aLastCall,
+                nsDTDMode aMode)
+{ 
 
   //NOTE: Make sure that updates to this method don't cause 
   //      bug #2361 to break again! 
@@ -1657,13 +1669,14 @@ nsresult nsParser::Parse(const nsAString& aSourceBuffer, void* aKey,
  *  @param   
  *  @return  
  */
-nsresult nsParser::ParseFragment(const nsAString& aSourceBuffer,
-                                 void* aKey,
-                                 nsVoidArray& aTagStack,
-                                 PRUint32 anInsertPos,
-                                 const nsACString& aMimeType,
-                                 nsDTDMode aMode){
-
+NS_IMETHODIMP
+nsParser::ParseFragment(const nsAString& aSourceBuffer,
+                        void* aKey,
+                        nsVoidArray& aTagStack,
+                        PRUint32 anInsertPos,
+                        const nsACString& aMimeType,
+                        nsDTDMode aMode)
+{
   nsresult result = NS_OK;
   nsAutoString  theContext;
   PRUint32 theCount = aTagStack.Count();
@@ -1720,7 +1733,7 @@ nsresult nsParser::ResumeParse(PRBool allowIteration, PRBool aIsFinalChunk, PRBo
     MOZ_TIMER_DEBUGLOG(("Start: Parse Time: nsParser::ResumeParse(), this=%p\n", this));
     MOZ_TIMER_START(mParseTime);
 
-    result=WillBuildModel(mParserContext->mScanner->GetFilename());
+    result = WillBuildModel(mParserContext->mScanner->GetFilename());
     if (NS_FAILED(result)) {
       mFlags &= ~NS_PARSER_FLAG_CAN_TOKENIZE;
       return result;
@@ -1882,7 +1895,7 @@ nsresult nsParser::BuildModel() {
     if (theRootDTD) {      
       MOZ_TIMER_START(mDTDTime);
       
-      result = theRootDTD->BuildModel(this, theTokenizer, mTokenObserver, mSink);  
+      result = theRootDTD->BuildModel(this, theTokenizer, nsnull, mSink);  
       
       MOZ_TIMER_STOP(mDTDTime);
     }
@@ -1932,7 +1945,7 @@ nsresult nsParser::OnStartRequest(nsIRequest *request, nsISupports* aContext) {
                   "Parser's nsIStreamListener API was not setup "
                   "correctly in constructor.");
 
-  if (nsnull != mObserver) {
+  if (mObserver) {
     mObserver->OnStartRequest(request, aContext);
   }
   mParserContext->mStreamListenerState = eOnStart;
@@ -1950,8 +1963,6 @@ nsresult nsParser::OnStartRequest(nsIRequest *request, nsISupports* aContext) {
   {
     mParserContext->SetMimeType(contentType);
   }
-  else
-    NS_NOTREACHED("parser needs a content type to find a dtd");
 
 #ifdef rickgdebug
   gOutFile= new fstream("c:/temp/out.file",ios::trunc);
@@ -1961,13 +1972,26 @@ nsresult nsParser::OnStartRequest(nsIRequest *request, nsISupports* aContext) {
 }
 
 
-#define UCS2_BE "UTF-16BE"
-#define UCS2_LE "UTF-16LE"
+#define UTF16_BE "UTF-16BE"
+#define UTF16_LE "UTF-16LE"
 #define UCS4_BE "UTF-32BE"
 #define UCS4_LE "UTF-32LE"
 #define UCS4_2143 "X-ISO-10646-UCS-4-2143"
 #define UCS4_3412 "X-ISO-10646-UCS-4-3412"
 #define UTF8 "UTF-8"
+
+static inline PRBool IsSecondMarker(unsigned char aChar)
+{
+  switch (aChar) {
+    case '!':
+    case '?':
+    case 'h':
+    case 'H':
+      return PR_TRUE;
+    default:
+      return PR_FALSE;
+  }
+}
 
 static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsString& oCharset, PRInt32& oCharsetSource) {
  oCharsetSource= kCharsetFromAutoDetection;
@@ -1982,34 +2006,45 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
    case 0x00:
      if(0x00==aBytes[1]) {
         // 00 00
-        if((0x00==aBytes[2]) && (0x3C==aBytes[3])) {
+        if((0xFE==aBytes[2]) && (0xFF==aBytes[3])) {
+           // 00 00 FE FF UCS-4, big-endian machine (1234 order)
+           oCharset.AssignWithConversion(UCS4_BE);
+        } else if((0x00==aBytes[2]) && (0x3C==aBytes[3])) {
            // 00 00 00 3C UCS-4, big-endian machine (1234 order)
            oCharset.AssignWithConversion(UCS4_BE);
+        } else if((0xFF==aBytes[2]) && (0xFE==aBytes[3])) {
+           // 00 00 FF FE UCS-4, unusual octet order (2143)
+           oCharset.AssignWithConversion(UCS4_2143);
         } else if((0x3C==aBytes[2]) && (0x00==aBytes[3])) {
            // 00 00 3C 00 UCS-4, unusual octet order (2143)
            oCharset.AssignWithConversion(UCS4_2143);
         } 
-     } else if(0x3C==aBytes[1]) {
-        // 00 3C
-        if((0x00==aBytes[2]) && (0x00==aBytes[3])) {
+        oCharsetSource = kCharsetFromByteOrderMark;
+     } else if((0x3C==aBytes[1]) && (0x00==aBytes[2])) {
+        // 00 3C 00
+        if(IsSecondMarker(aBytes[3])) {
+           // 00 3C 00 SM UTF-16,  big-endian, no Byte Order Mark 
+           oCharset.AssignWithConversion(UTF16_BE); 
+        } else if((0x00==aBytes[3])) {
            // 00 3C 00 00 UCS-4, unusual octet order (3412)
            oCharset.AssignWithConversion(UCS4_3412);
-        } else if((0x3C==aBytes[2]) && (0x3F==aBytes[3])) {
-           // 00 3C 00 3F UTF-16, big-endian, no Byte Order Mark
-           oCharset.AssignWithConversion(UCS2_BE); // should change to UTF-16BE
         } 
+        oCharsetSource = kCharsetFromByteOrderMark;
      }
    break;
    case 0x3C:
-     if(0x00==aBytes[1]) {
-        // 3C 00
-        if((0x00==aBytes[2]) && (0x00==aBytes[3])) {
+     if(0x00==aBytes[1] && (0x00==aBytes[3])) {
+        // 3C 00 XX 00
+        if(IsSecondMarker(aBytes[2])) {
+           // 3C 00 SM 00 UTF-16,  little-endian, no Byte Order Mark 
+           oCharset.AssignWithConversion(UTF16_LE); 
+        } else if((0x00==aBytes[2])) {
            // 3C 00 00 00 UCS-4, little-endian machine (4321 order)
-           oCharset.AssignWithConversion(UCS4_LE);
-        } else if((0x3F==aBytes[2]) && (0x00==aBytes[3])) {
-           // 3C 00 3F 00 UTF-16, little-endian, no Byte Order Mark
-           oCharset.AssignWithConversion(UCS2_LE); // should change to UTF-16LE
+           oCharset.AssignWithConversion(UCS4_LE); 
         } 
+        oCharsetSource = kCharsetFromByteOrderMark;
+     // For html, meta tag detector is invoked before this so that we have 
+     // to deal only with XML here.
      } else if(                     (0x3F==aBytes[1]) &&
                (0x78==aBytes[2]) && (0x6D==aBytes[3]) &&
                (0 == PL_strncmp("<?xml", (char*)aBytes, 5 ))) {
@@ -2101,17 +2136,25 @@ static PRBool DetectByteOrderMark(const unsigned char* aBytes, PRInt32 aLen, nsS
    break;
    case 0xFE:
      if(0xFF==aBytes[1]) {
-        // FE FF
-        // UTF-16, big-endian 
-        oCharset.AssignWithConversion(UCS2_BE); // should change to UTF-16BE
+        if(0x00==aBytes[2] && 0x00==aBytes[3]) {
+          // FE FF 00 00  UCS-4, unusual octet order (3412)
+          oCharset.AssignWithConversion(UCS4_3412);
+        } else {
+          // FE FF UTF-16, big-endian 
+          oCharset.AssignWithConversion(UTF16_BE); 
+        }
         oCharsetSource= kCharsetFromByteOrderMark;
      }
    break;
    case 0xFF:
      if(0xFE==aBytes[1]) {
+        if(0x00==aBytes[2] && 0x00==aBytes[3]) 
+         // FF FE 00 00  UTF-32, little-endian
+           oCharset.AssignWithConversion(UCS4_LE); 
+        else
         // FF FE
         // UTF-16, little-endian 
-        oCharset.AssignWithConversion(UCS2_LE); // should change to UTF-16LE
+           oCharset.AssignWithConversion(UTF16_LE); 
         oCharsetSource= kCharsetFromByteOrderMark;
      }
    break;
@@ -2437,7 +2480,7 @@ nsresult nsParser::OnStopRequest(nsIRequest *request, nsISupports* aContext,
 
   // XXX Should we wait to notify our observers as well if the
   // parser isn't yet enabled?
-  if (nsnull != mObserver) {
+  if (mObserver) {
     mObserver->OnStopRequest(request, aContext, status);
   }
 
@@ -2514,8 +2557,6 @@ nsresult nsParser::Tokenize(PRBool aIsFinalChunk){
       }
     }
     else {
-      ++mMajorIteration; 
-   
       PRBool flushTokens=PR_FALSE;
 
       MOZ_TIMER_START(mTokenizeTime);
@@ -2523,7 +2564,6 @@ nsresult nsParser::Tokenize(PRBool aIsFinalChunk){
       WillTokenize(aIsFinalChunk);
       while (NS_SUCCEEDED(result)) {
         mParserContext->mScanner->Mark();
-        ++mMinorIteration;
         result=theTokenizer->ConsumeToken(*mParserContext->mScanner, flushTokens);
         if (NS_FAILED(result)) {
           mParserContext->mScanner->RewindToMark();
@@ -2577,35 +2617,9 @@ PRBool nsParser::DidTokenize(PRBool aIsFinalChunk){
 
   if (NS_SUCCEEDED(rv) && theTokenizer) {
     result = theTokenizer->DidTokenize(aIsFinalChunk);
-    if(mTokenObserver) {
-      PRInt32 theCount=theTokenizer->GetCount();
-      PRInt32 theIndex;
-      for(theIndex=0;theIndex<theCount;++theIndex){
-        if((*mTokenObserver)(theTokenizer->GetTokenAt(theIndex))){
-          //add code here to pull unwanted tokens out of the stack...
-        }
-      }//for      
-    }//if
   }
   return result;
 }
-
-#ifdef DEBUG
-void nsParser::DebugDumpSource(nsOutputStream& aStream) {
-  PRInt32 theIndex=-1;
-
-  nsITokenizer* theTokenizer=0;
-  PRInt32 type = mParserContext && mParserContext->mDTD ? 
-    mParserContext->mDTD->GetType() : NS_IPARSER_FLAG_HTML;
-  if(NS_SUCCEEDED(mParserContext->GetTokenizer(type, theTokenizer))){
-    CToken* theToken;
-    while(nsnull != (theToken=theTokenizer->GetTokenAt(++theIndex))) {
-      // theToken->DebugDumpToken(out);
-      theToken->DebugDumpSource(aStream);
-    }
-  }
-}
-#endif
 
 /** 
  * Get the channel associated with this parser

@@ -33,7 +33,20 @@ endif
 
 include $(topsrcdir)/config/rules.mk
 
-# Install bloaturls.txt file for tinderbox Bloaty test.
+# Need to copy over weaksyms.omf file from GCC directory
+ifeq ($(MOZ_OS2_TOOLS),EMX)
+weaksyms.omf:
+	$(INSTALL) $(EMX2)/lib/gcc-lib/i386-pc-os2-emx/3.2.1/weaksyms.omf .
+
+export:: weaksyms.omf
+endif
+
+# Install bloaturls.txt file for tinderbox bloat test.
 libs:: bloaturls.txt
 	$(INSTALL) $< $(DIST)/bin
 
+# Install bloatcycle.html into dist/bin/res, for auto-cycling
+# of bloaturls.txt.  This is for browsers that can't do -f
+# autocycling of URLs.
+libs:: bloatcycle.html
+	$(INSTALL) $< $(DIST)/bin/res

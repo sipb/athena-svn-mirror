@@ -25,6 +25,7 @@ bin/chrome/en-win.jar
 ; If you add a new directory you must explicitly call addDirectory in regus.jst
 bin/chrome/US.jar
 bin/defaults/profile/US/*
+bin/defaults/messenger/US/*
 bin/searchplugins/*
 
 [deflenus]
@@ -35,6 +36,7 @@ bin/defaults/profile/panels.rdf
 bin/defaults/profile/localstore.rdf
 bin/defaults/profile/search.rdf
 bin/defaults/profile/mimeTypes.rdf
+bin/defaults/messenger/mailViews.dat
 
 [xpcom]
 ; files required to initialize xpinstall for Install Wizard
@@ -48,6 +50,9 @@ bin/xpcom.dll
 bin/xpistub.dll
 ;bin/zlib.dll
 bin/mozz.dll
+bin/components/xpcom_obsolete.xpt
+bin/xpcomct.dll
+bin/components/xpcomctc.dll
 bin/components/jar50.dll
 bin/components/xpinstal.dll
 
@@ -64,12 +69,12 @@ bin/components/wdgtos2.dll
 ;bin/jsj3250.dll
 bin/jsj.dll
 bin/mozilla.exe
+bin/mozturbo.exe
 ;bin/mozctl.dll
 ;bin/mozctlx.dll
 bin/regxpcom.exe
 bin/xpicleanup.exe
 bin/res/cmessage.txt
-;bin/components/accessibility.dll
 bin/components/access.dll
 bin/components/accessibility.xpt
 ;bin/components/AcctIdl.dll
@@ -102,6 +107,7 @@ bin/components/chrome.xpt
 bin/components/cookie.dll
 bin/components/cookie.xpt
 bin/components/composer.dll
+bin/components/composer.xpt
 bin/components/docshell.dll
 ;bin/components/docshell_base.xpt
 bin/components/docshell.xpt
@@ -127,18 +133,16 @@ bin/components/editor.dll
 ;bin/components/evntloop.dll
 bin/components/find.xpt
 bin/components/gfx.xpt
-;bin/components/gkcontent.dll
-bin/components/gkcontnt.dll
 bin/components/content_base.xpt
 bin/components/content_html.xpt
+bin/components/content_htmldoc.xpt
+bin/components/content_xmldoc.xpt
 bin/components/content_xslt.xpt
 bin/components/xuldoc.xpt
 bin/components/xultmpl.xpt
-;bin/components/gklayout.dll
-bin/components/gkhtml.dll
+bin/components/gklayout.dll
 bin/components/gkparser.dll
 bin/components/gkplugin.dll
-bin/components/gkview.dll
 bin/components/imgmng.dll
 bin/components/imglib2.dll
 bin/components/imglib2.xpt
@@ -148,7 +152,6 @@ bin/components/intl.xpt
 bin/components/chardet.xpt
 bin/components/jar.xpt
 bin/components/jsconsole-clhandler.js
-bin/components/jsurl.dll
 bin/components/jsurl.xpt
 bin/components/layout_base.xpt
 bin/components/layout_xul.xpt
@@ -192,12 +195,11 @@ bin/components/profile.xpt
 bin/components/proxyObjInst.xpt
 bin/components/rdf.dll
 bin/components/rdf.xpt
-bin/components/regviewer.xpt
-bin/components/regviewr.dll
 bin/components/shistory.dll
 bin/components/shistory.xpt
 bin/components/sidebar.xpt
 bin/components/signonviewer.xpt
+bin/components/txtsvc.xpt
 bin/components/txmgr.dll
 bin/components/txmgr.xpt
 ;bin/components/uconv.dll
@@ -205,7 +207,6 @@ bin/components/mozuconv.dll
 bin/components/uconv.xpt
 bin/components/ucvmath.dll
 bin/components/unicharutil.xpt
-bin/components/urildr.dll
 bin/components/uriloader.xpt
 bin/components/exthandler.xpt
 bin/components/util.xpt
@@ -250,8 +251,6 @@ bin/plugins/npnulos2.dll
 bin/components/xmlextras.xpt
 ;bin/components/xmlextras.dll
 bin/components/xmlextra.dll
-bin/components/xmlsoap.xpt
-bin/components/xmlschema.xpt
 bin/components/nsHelperAppDlg.js
 bin/components/helperAppDlg.xpt
 bin/components/nsKillAll.js
@@ -260,11 +259,14 @@ bin/components/progressDlg.xpt
 bin/components/nsDownloadProgressListener.js
 ;bin/components/transformiix.dll
 bin/components/t8iix.dll
-;bin/ISimpleDOMNodeMarshal.dll
-;bin/ISimpleDOMDocumentMarshal.dll
+;bin/AccessibleMarshal.dll
 ;bin/components/nsSetDefaultBrowser.js
 bin/components/typeaheadfind.xpt
 bin/components/typahead.dll
+bin/components/nsCloseAllWindows.js
+
+bin/components/websrvcs.dll
+bin/components/websrvcs.xpt
 
 ; LDAP components need to be in the browser for AutoConfig
 bin/components/mozldap.dll
@@ -274,12 +276,15 @@ bin/ldap50.dll
 ;bin/nsldappr32v50.dll
 bin/prldap50.dll
 
+; p3p
+bin/components/p3p.xpt
+bin/components/p3p.dll
+
 ; chrome stuff
 bin/chrome/help.jar
 bin/chrome/comm.jar
 bin/chrome/content-packs.jar
 bin/chrome/toolkit.jar
-bin/chrome/forms.jar
 bin/chrome/modern.jar
 bin/chrome/classic.jar
 bin/chrome/chromelist.txt
@@ -309,6 +314,7 @@ bin/res/html.css
 bin/res/quirk.css
 bin/res/forms.css
 bin/res/platform-forms.css
+bin/res/EditorOverride.css
 bin/res/viewsource.css
 bin/res/mathml.css
 bin/res/arrow.gif
@@ -378,8 +384,6 @@ bin/components/impText.dll
 ;bin/components/impComm4xMail.dll
 bin/components/imp4Mail.dll
 bin/components/impComm4xMail.xpt
-bin/components/absyncsv.dll
-bin/components/absync.xpt
 bin/components/nsLDAPPrefsService.js
 bin/chrome/messenger.jar
 bin/chrome/icons/default/abcardWindow.ico
@@ -398,6 +402,9 @@ bin/components/msgmdn.dll
 bin/components/mdn-service.js
 ;bin/components/nsSetDefaultMail.js
 ;bin/components/nsUnsetDefaultMail.js
+bin/components/bayesflt.dll
+bin/components/mailview.xpt
+bin/components/mailview.dll
 
 [chatzilla]
 bin/components/chatzilla-service.js
@@ -419,12 +426,14 @@ bin/components/pippki.dll
 bin/components/pippki.xpt
 bin/nss3.dll
 bin/smime3.dll
+bin/softokn3.chk
 bin/softokn3.dll
 bin/ssl3.dll
 bin/chrome/pipnss.jar
 bin/chrome/pippki.jar
 
 [inspector]
+bin/components/inspector-cmdline.js
 ;bin/components/inspector.dll
 bin/components/inspectr.dll
 bin/components/inspector.xpt
@@ -437,8 +446,6 @@ bin/res/inspector/search-registry.rdf
 ;Things that aren't packaged and why (or not why)
 ;accproxy.dll - I don't know
 ;accessproxy.xpt - I don't know
-;composer.xpt - I don't know
-;content.xpt - I don't know
 ;htmlparser.xpt - I don't know
 ;iiextras.dll - I don't know
 ;iiextras.xpt - I don't know
@@ -453,3 +460,4 @@ bin/res/inspector/search-registry.rdf
 ;xpcomsample.xpt - Sample
 ;xpctest.dll  -Test
 ;xpconnect_tests.xpt - Test
+

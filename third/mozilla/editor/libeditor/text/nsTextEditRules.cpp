@@ -58,7 +58,8 @@
 #include "nsLayoutCID.h"
 #include "nsEditorUtils.h"
 #include "EditTxn.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsISupportsArray.h"
 #include "nsUnicharUtils.h"
 
@@ -101,9 +102,9 @@ nsTextEditRules::nsTextEditRules()
 , mFlags(0) // initialized to 0 ("no flags set").  Real initial value is given in Init()
 , mActionNesting(0)
 , mLockRulesSniffing(PR_FALSE)
+, mDidExplicitlySetInterline(PR_FALSE)
 , mTheAction(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsTextEditRules::~nsTextEditRules()
@@ -202,6 +203,7 @@ nsTextEditRules::BeforeEdit(PRInt32 action, nsIEditor::EDirection aDirection)
   if (mLockRulesSniffing) return NS_OK;
   
   nsAutoLockRulesSniffing lockIt(this);
+  mDidExplicitlySetInterline = PR_FALSE;
   
   if (!mActionNesting)
   {
@@ -236,7 +238,6 @@ nsTextEditRules::AfterEdit(PRInt32 action, nsIEditor::EDirection aDirection)
     res = CreateTrailingBRIfNeeded();
     if (NS_FAILED(res)) return res;
     
-#ifdef IBMBIDI
     /* After inserting text the cursor Bidi level must be set to the level of the inserted text.
      * This is difficult, because we cannot know what the level is until after the Bidi algorithm
      * is applied to the whole paragraph.
@@ -250,7 +251,6 @@ nsTextEditRules::AfterEdit(PRInt32 action, nsIEditor::EDirection aDirection)
         shell->UndefineCaretBidiLevel();
       }
     }
-#endif
   }
   return res;
 }
@@ -556,10 +556,11 @@ nsTextEditRules::WillInsertText(PRInt32          aAction,
   };
   PRInt32 singleLineNewlineBehavior = 1;
   nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-  if (NS_SUCCEEDED(rv) && prefs)
-    rv = prefs->GetIntPref("editor.singleLine.pasteNewlines",
-                           &singleLineNewlineBehavior);
+  nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
+  if (NS_SUCCEEDED(rv) && prefBranch)
+    rv = prefBranch->GetIntPref("editor.singleLine.pasteNewlines",
+                                &singleLineNewlineBehavior);
 
   if (nsIPlaintextEditor::eEditorSingleLineMask & mFlags)
   {
@@ -631,7 +632,7 @@ nsTextEditRules::WillInsertText(PRInt32          aAction,
     nsCOMPtr<nsIDOMNode> unused;
     PRInt32 pos = 0;
         
-    // for efficiency, break out the pre case seperately.  This is because
+    // for efficiency, break out the pre case separately.  This is because
     // its a lot cheaper to search the input string for only newlines than
     // it is to search for both tabs and newlines.
     if (isPRE)
@@ -861,12 +862,10 @@ nsTextEditRules::WillDeleteSelection(nsISelection *aSelection,
     
     if (bCollapsed)
     {
-#ifdef IBMBIDI
       // Test for distance between caret and text that will be deleted
       res = CheckBidiLevelForDeletion(startNode, startOffset, aCollapsedAction, aCancel);
       if (NS_FAILED(res)) return res;
       if (*aCancel) return NS_OK;
-#endif // IBMBIDI
 
       nsCOMPtr<nsIDOMText> textNode;
       PRUint32 strLength;
@@ -935,7 +934,7 @@ nsTextEditRules::WillDeleteSelection(nsISelection *aSelection,
       }
       // fix for bugzilla #125161: if we are about to forward delete a <BR>,
       // make sure it is not last node in editfield.  If it is, cancel deletion.
-      if ((aCollapsedAction == nsIEditor::eNext) && nsTextEditUtils::IsBreak(nextNode))
+      if (nextNode && (aCollapsedAction == nsIEditor::eNext) && nsTextEditUtils::IsBreak(nextNode))
       {
         nsCOMPtr<nsIDOMNode> lastChild;
         if (!mBody) return NS_ERROR_NULL_POINTER;
@@ -980,11 +979,13 @@ nsTextEditRules::DidDeleteSelection(nsISelection *aSelection,
       if (NS_FAILED(res)) return res;
     }
   }
-  // We prevent the caret from sticking on the left of prior BR
-  // (i.e. the end of previous line) after this deletion.  Bug 92124
-  nsCOMPtr<nsISelectionPrivate> selPriv = do_QueryInterface(aSelection);
-  if (selPriv) res = selPriv->SetInterlinePosition(PR_TRUE);
-
+  if (!mDidExplicitlySetInterline)
+  {
+    // We prevent the caret from sticking on the left of prior BR
+    // (i.e. the end of previous line) after this deletion.  Bug 92124
+    nsCOMPtr<nsISelectionPrivate> selPriv = do_QueryInterface(aSelection);
+    if (selPriv) res = selPriv->SetInterlinePosition(PR_TRUE);
+  }
   return res;
 }
 
@@ -1129,18 +1130,14 @@ nsTextEditRules::ReplaceNewlines(nsIDOMRange *aRange)
 
   nsCOMPtr<nsIContentIterator> iter;
   nsCOMPtr<nsISupports> isupports;
-  PRUint32 nodeCount,j;
-  nsCOMPtr<nsISupportsArray> arrayOfNodes;
+  PRInt32 nodeCount,j;
+  nsCOMArray<nsIDOMCharacterData> arrayOfNodes;
   
-  // make an isupportsArray to hold a list of nodes
-  nsresult res = NS_NewISupportsArray(getter_AddRefs(arrayOfNodes));
-  if (NS_FAILED(res)) return res;
-
   // need an iterator
-  res = nsComponentManager::CreateInstance(kContentIteratorCID,
-                                        nsnull,
-                                        NS_GET_IID(nsIContentIterator), 
-                                        getter_AddRefs(iter));
+  nsresult res = nsComponentManager::CreateInstance(kContentIteratorCID,
+                                                    nsnull,
+                                                    NS_GET_IID(nsIContentIterator), 
+                                                    getter_AddRefs(iter));
   if (NS_FAILED(res)) return res;
   res = iter->Init(aRange);
   if (NS_FAILED(res)) return res;
@@ -1162,8 +1159,8 @@ nsTextEditRules::ReplaceNewlines(nsIDOMRange *aRange)
       if (NS_FAILED(res)) return res;
       if (isPRE)
       {
-        isupports = do_QueryInterface(node);
-        arrayOfNodes->AppendElement(isupports);
+        nsCOMPtr<nsIDOMCharacterData> data = do_QueryInterface(node);
+        arrayOfNodes.AppendObject(data);
       }
     }
     res = iter->Next();
@@ -1173,14 +1170,12 @@ nsTextEditRules::ReplaceNewlines(nsIDOMRange *aRange)
   // replace newlines with breaks.  have to do this left to right,
   // since inserting the break can split the text node, and the
   // original node becomes the righthand node.
-  res = arrayOfNodes->Count(&nodeCount);
-  if (NS_FAILED(res)) return res;
+  nodeCount = arrayOfNodes.Count();
   for (j = 0; j < nodeCount; j++)
   {
-    isupports = dont_AddRef(arrayOfNodes->ElementAt(0));
-    nsCOMPtr<nsIDOMNode> brNode, theNode( do_QueryInterface(isupports) );
-    nsCOMPtr<nsIDOMCharacterData> textNode( do_QueryInterface(theNode) );
-    arrayOfNodes->RemoveElementAt(0);
+    nsCOMPtr<nsIDOMNode> brNode;
+    nsCOMPtr<nsIDOMCharacterData> textNode = arrayOfNodes[0];
+    arrayOfNodes.RemoveObjectAt(0);
     // find the newline
     PRInt32 offset;
     nsAutoString tempString;
@@ -1198,7 +1193,7 @@ nsTextEditRules::ReplaceNewlines(nsIDOMRange *aRange)
       res = mEditor->CreateTxnForDeleteText(textNode, offset, 1, (DeleteTextTxn**)&txn);
       if (NS_FAILED(res))  return res; 
       if (!txn)  return NS_ERROR_OUT_OF_MEMORY;
-      res = mEditor->Do(txn); 
+      res = mEditor->DoTransaction(txn); 
       if (NS_FAILED(res))  return res; 
       // The transaction system (if any) has taken ownwership of txn
       NS_IF_RELEASE(txn);
@@ -1308,7 +1303,8 @@ nsTextEditRules::TruncateInsertionIfNeeded(nsISelection *aSelection,
   nsresult res = NS_OK;
   *aOutString = *aInString;
   
-  if ((-1 != aMaxLength) && (mFlags & nsIPlaintextEditor::eEditorPlaintextMask))
+  if ((-1 != aMaxLength) && (mFlags & nsIPlaintextEditor::eEditorPlaintextMask)
+      && !mEditor->IsIMEComposing() )
   {
     // Get the current text length.
     // Get the length of inString.
@@ -1317,6 +1313,8 @@ nsTextEditRules::TruncateInsertionIfNeeded(nsISelection *aSelection,
     //   Subtract the length of the selection from the len(doc) 
     //   since we'll delete the selection on insert.
     //   This is resultingDocLength.
+    // Get old length of IME composing string
+    //   which will be replaced by new one.
     // If (resultingDocLength) is at or over max, cancel the insert
     // If (resultingDocLength) + (length of input) > max, 
     //    set aOutString to subset of inString so length = max
@@ -1328,7 +1326,10 @@ nsTextEditRules::TruncateInsertionIfNeeded(nsISelection *aSelection,
     if (NS_FAILED(res)) { return res; }
     PRInt32 selectionLength = end-start;
     if (selectionLength<0) { selectionLength *= (-1); }
-    PRInt32 resultingDocLength = docLength - selectionLength;
+    PRInt32 oldCompStrLength;
+    res = mEditor->GetIMEBufferLength(&oldCompStrLength);
+    if (NS_FAILED(res)) { return res; }
+    PRInt32 resultingDocLength = docLength - selectionLength - oldCompStrLength;
     if (resultingDocLength >= aMaxLength) 
     {
       aOutString->SetLength(0);

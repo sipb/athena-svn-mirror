@@ -202,9 +202,6 @@ public:
         return mInner->GetAllResources(aResult);
     }
 
-    NS_IMETHOD GetAllCommands(nsIRDFResource* aSource,
-                              nsIEnumerator/*<nsIRDFResource>*/** aCommands);
-
     NS_IMETHOD GetAllCmds(nsIRDFResource* aSource,
                               nsISimpleEnumerator/*<nsIRDFResource>*/** aCommands);
 
@@ -217,9 +214,18 @@ public:
                          nsIRDFResource*   aCommand,
                          nsISupportsArray/*<nsIRDFResource>*/* aArguments);
 
+    NS_IMETHOD BeginUpdateBatch() {
+        return mInner->BeginUpdateBatch();
+    }
+                                                                                
+    NS_IMETHOD EndUpdateBatch() {
+        return mInner->EndUpdateBatch();
+    }
+
     NS_IMETHOD GetLoaded(PRBool* _result);
 	NS_IMETHOD Init(const char *uri);
 	NS_IMETHOD Flush();
+	NS_IMETHOD FlushTo(const char *aURI);
 	NS_IMETHOD Refresh(PRBool sync);
 	
 	// nsIObserver
@@ -234,7 +240,6 @@ nsWeakPtr LocalStoreImpl::gRDF;
 
 LocalStoreImpl::LocalStoreImpl(void)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 LocalStoreImpl::~LocalStoreImpl(void)
@@ -347,6 +352,13 @@ LocalStoreImpl::Flush()
         return NS_ERROR_UNEXPECTED;
 
     return remote->Flush();
+}
+
+NS_IMETHODIMP
+LocalStoreImpl::FlushTo(const char *aURI)
+{
+  // Do not ever implement this (security)
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 NS_IMETHODIMP
@@ -473,16 +485,6 @@ LocalStoreImpl::GetURI(char* *aURI)
     return NS_OK;
 }
 
-
-
-NS_IMETHODIMP
-LocalStoreImpl::GetAllCommands(nsIRDFResource* aSource,
-                               nsIEnumerator/*<nsIRDFResource>*/** aCommands)
-{
-    // XXX Although this is the wrong thing to do, it works. I'll file a
-    // bug to fix it.
-    return NS_ERROR_FAILURE;
-}
 
 NS_IMETHODIMP
 LocalStoreImpl::GetAllCmds(nsIRDFResource* aSource,

@@ -40,6 +40,12 @@
 #include "nsString.h"
 #include "nsXPIDLString.h"
 #include "nsReadableUtils.h"
+#include "nsIWebBrowserPersist.h"
+#include "nsILocalFile.h"
+#include "nsIURI.h"
+#include "nsIURL.h"
+#include "nsNetUtil.h"
+#include "nsOS2Uni.h"
 
 
 void WriteTypeEA(const char* filename, const char* type);
@@ -62,20 +68,49 @@ MRESULT EXPENTRY nsDragWindowProc(HWND hWnd, ULONG msg, MPARAM mp1,
    ULONG ulLength;
    PSZ pszURL;
    CHAR chPath[CCHMAXPATH];
+   CHAR chOrigPath[CCHMAXPATH];
+   nsDragService* dragservice;
    switch (msg) {
+   case DM_RENDERPREPARE:
+      pdragtransfer = (PDRAGTRANSFER)mp1;
+      if (pdragtransfer->usOperation == DO_COPY) {
+        ulLength = DrgQueryStrNameLen(pdragtransfer->pditem->hstrSourceName);
+        pszURL = (PSZ)nsMemory::Alloc(ulLength+1);
+        DrgQueryStrName(pdragtransfer->pditem->hstrSourceName, ulLength+1, pszURL);
+        nsCOMPtr<nsIURI> linkURI;
+        NS_NewURI(getter_AddRefs(linkURI), pszURL);
+        nsCOMPtr<nsIURL> linkURL(do_QueryInterface(linkURI));
+        /* use URI for filename */
+        nsCAutoString filename;
+        linkURL->GetFileName(filename);
+        if (filename.IsEmpty()) {
+           filename = pszURL;
+        }
+        DrgDeleteStrHandle(pdragtransfer->pditem->hstrTargetName);
+        pdragtransfer->pditem->hstrTargetName = DrgAddStrHandle(ToNewCString(filename));
+        return (MRESULT)TRUE;
+      }
+      break;
    case DM_RENDER:
       pdragtransfer = (PDRAGTRANSFER)mp1;
+      dragservice = (nsDragService*)pdragtransfer->pditem->ulItemID;
       DrgQueryStrName(pdragtransfer->hstrRenderToName, CCHMAXPATH, chPath);
+      strcpy(chOrigPath, chPath);
       ulLength = DrgQueryStrNameLen(pdragtransfer->pditem->hstrSourceName);
       pszURL = (PSZ)nsMemory::Alloc(ulLength+1);
       DrgQueryStrName(pdragtransfer->pditem->hstrSourceName, ulLength+1, pszURL);
-      fp = fopen(chPath, "wb+");
-      fwrite(pszURL, ulLength, 1, fp);
-      fclose(fp);
-      WriteTypeEA(chPath, "UniformResourceLocator");
+      if (pdragtransfer->usOperation == DO_COPY) {
+        dragservice->WriteData(chPath, pszURL);
+      } else {
+        fp = fopen(chPath, "wb+");
+        fwrite(pszURL, ulLength, 1, fp);
+        fclose(fp);
+        WriteTypeEA(chPath, "UniformResourceLocator");
+      }
       nsMemory::Free(pszURL);
       DrgPostTransferMsg(pdragtransfer->hwndClient, DM_RENDERCOMPLETE, pdragtransfer, DMFL_RENDEROK,0,TRUE);
       DrgFreeDragtransfer(pdragtransfer);
+      DosMove(chOrigPath, chPath);
       return (MRESULT)TRUE;
       break;
    default:
@@ -92,6 +127,11 @@ nsDragService::~nsDragService()
 
 NS_IMETHODIMP nsDragService::InvokeDragSession(nsIDOMNode *aDOMNode, nsISupportsArray *aTransferables, nsIScriptableRegion *aRegion, PRUint32 aActionType)
 {
+  if (!aDOMNode && !aRegion && !aActionType) {
+    /* Utter hack for drag drop - provide a way for nsWindow to set mSourceDataItems */
+    mSourceDataItems = aTransferables;
+    return NS_OK;
+  }
   nsBaseDragService::InvokeDragSession ( aDOMNode, aTransferables, aRegion, aActionType );
 
   // set our reference to the transferables.  this will also addref
@@ -109,7 +149,7 @@ NS_IMETHODIMP nsDragService::InvokeDragSession(nsIDOMNode *aDOMNode, nsISupports
     pDragInfo->usOperation = DO_DEFAULT;
     DRAGITEM dragitem;
     dragitem.hwndItem            = mDragWnd;
-    dragitem.ulItemID            = (ULONG)0;
+    dragitem.ulItemID            = (ULONG)this;
     dragitem.hstrType            = DrgAddStrHandle("UniformResourceLocator");
     dragitem.hstrRMF             = DrgAddStrHandle("<DRM_OS2FILE,DRF_UNKNOWN>");
     dragitem.hstrContainerName   = DrgAddStrHandle("");
@@ -134,8 +174,20 @@ NS_IMETHODIMP nsDragService::InvokeDragSession(nsIDOMNode *aDOMNode, nsISupports
         {
           holder.Left(url, lineIndex);
           holder.Mid ( linkName, lineIndex + 1, (len/2) - (lineIndex + 1) );
-          if (linkName.Length() > 0)
-            dragitem.hstrTargetName = DrgAddStrHandle(ToNewCString(linkName));
+          if (linkName.Length() > 0) {
+            int length = linkName.Length() * 2 + 1;
+            char * newlinkname = new char[length];
+            if (newlinkname) {
+              int outlen = ::WideCharToMultiByte( 0, 
+                             linkName.get(), linkName.Length(),
+                             newlinkname, length);
+              if ( outlen >= 0)
+                newlinkname[outlen] = '\0';
+              dragitem.hstrTargetName = DrgAddStrHandle(newlinkname);
+              delete [] newlinkname;
+            } else
+              dragitem.hstrTargetName = DrgAddStrHandle(ToNewCString(url));
+          }
           else
             dragitem.hstrTargetName = DrgAddStrHandle(ToNewCString(url));
           dragitem.hstrSourceName = DrgAddStrHandle(ToNewCString(url)); 
@@ -147,7 +199,12 @@ NS_IMETHODIMP nsDragService::InvokeDragSession(nsIDOMNode *aDOMNode, nsISupports
     } else {
        dragitem.hstrRMF             = DrgAddStrHandle("<DRM_UNKNOWN,DRF_UNKNOWN>"); /* Moz only drag */
     }
-    dragitem.fsControl           = DC_OPEN;
+
+#ifndef DC_PREPAREITEM
+#define DC_PREPAREITEM 0x0040;
+#endif
+
+    dragitem.fsControl           = DC_OPEN | DC_PREPAREITEM;
     dragitem.cxOffset            = 2;
     dragitem.cyOffset            = 2;
     dragitem.fsSupportedOps      = DO_COPYABLE|DO_MOVEABLE|DO_LINKABLE;
@@ -165,7 +222,7 @@ NS_IMETHODIMP nsDragService::InvokeDragSession(nsIDOMNode *aDOMNode, nsISupports
 #ifdef DEBUG
     if (!hwndDest) {
       ERRORID eid = WinGetLastError((HAB)0);
-      printf("Drag did not finish - error = %x error=%x\n", eid);
+      printf("Drag did not finish - error=%x\n", eid);
     }
 #endif
 
@@ -173,6 +230,8 @@ NS_IMETHODIMP nsDragService::InvokeDragSession(nsIDOMNode *aDOMNode, nsISupports
     DrgDeleteDraginfoStrHandles(pDragInfo);
     DrgFreeDraginfo(pDragInfo);
   }
+
+  mSourceDataItems = 0;
 
   return NS_OK;
 }
@@ -270,6 +329,33 @@ NS_IMETHODIMP nsDragService::IsDataFlavorSupported(const char *aDataFlavor, PRBo
     }
   }
   return NS_OK;
+}
+
+BOOL nsDragService::WriteData(PSZ szDest, PSZ szURL)
+{
+  FILE *fp;
+  nsresult rv;
+  nsCOMPtr<nsIWebBrowserPersist> webPersist(do_CreateInstance("@mozilla.org/embedding/browser/nsWebBrowserPersist;1", &rv));
+  nsCOMPtr<nsIURI> linkURI;
+  rv = NS_NewURI(getter_AddRefs(linkURI), szURL);
+  nsCOMPtr<nsILocalFile> file;
+  NS_NewNativeLocalFile(nsDependentCString(szDest), TRUE, getter_AddRefs(file));
+
+  nsCAutoString temp;
+  file->GetNativePath(temp);
+  fp = fopen(temp.get(), "wb+");
+  fwrite(szURL, strlen(szURL), 1, fp);
+  fclose(fp);
+  nsCAutoString filename;
+  nsCOMPtr<nsIURL> linkURL(do_QueryInterface(linkURI));
+  linkURL->GetFileName(filename);
+  if (filename.IsEmpty()) {
+    /* If we don't have a filename, just mark it text/html */
+    /* This can only be fixed if we write mime type on putting */
+    /* any file to disk */
+    WriteTypeEA(temp.get(), "text/html");
+  }
+  webPersist->SaveURI(linkURI, nsnull, nsnull, nsnull, nsnull, file);
 }
 
 /* Helper functions */

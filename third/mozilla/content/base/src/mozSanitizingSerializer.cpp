@@ -54,16 +54,17 @@
 #include "nsHTMLAtoms.h"
 #include "nsIDOMText.h"
 #include "nsIDOMElement.h"
-#include "nsINameSpaceManager.h"
 #include "nsIHTMLContent.h"
 #include "nsITextContent.h"
 #include "nsTextFragment.h"
-#include "nsParserCIID.h"
 #include "nsContentUtils.h"
 #include "nsReadableUtils.h"
 #include "plstr.h"
 //#include "nsDependentString.h"
 #include "nsIProperties.h"
+#include "nsUnicharUtils.h"
+#include "nsIURI.h"
+#include "nsNetUtil.h"
 
 //#define DEBUG_BenB
 
@@ -72,8 +73,6 @@
    Not sure, if popping up dialog boxes is the right thing for such code
    (and if so, how to do it).
  */
-
-static NS_DEFINE_CID(kParserServiceCID, NS_PARSERSERVICE_CID);
 
 #define TEXT_REMOVED "&lt;Text removed&gt;"
 #define TEXT_BREAKER "|"
@@ -92,7 +91,6 @@ nsresult NS_NewSanitizingHTMLSerializer(nsIContentSerializer** aSerializer)
 mozSanitizingHTMLSerializer::mozSanitizingHTMLSerializer()
   : mAllowedTags(30) // Just some initial buffer size
 {
-  NS_INIT_ISUPPORTS();
 
   mOutputString = nsnull;
 }
@@ -173,26 +171,9 @@ mozSanitizingHTMLSerializer::Write(const nsAString& aString)
 
 
 NS_IMETHODIMP
-mozSanitizingHTMLSerializer::GetPref(PRInt32 aTag, PRBool& aPref)
+mozSanitizingHTMLSerializer::IsEnabled(PRInt32 aTag, PRBool* aReturn)
 {
-  aPref = PR_FALSE;
-
-  return NS_OK;
-}
-
-nsresult
-mozSanitizingHTMLSerializer::GetParserService(
-                                          nsIParserService** aParserService)
-{
-  if (!mParserService) {
-    nsresult rv;
-    mParserService = do_GetService(kParserServiceCID, &rv);
-    if (NS_FAILED(rv))
-      return rv;
-  }
-
-  *aParserService = mParserService;
-  NS_ADDREF(*aParserService);
+  *aReturn = PR_FALSE;
   return NS_OK;
 }
 
@@ -205,8 +186,7 @@ mozSanitizingHTMLSerializer::IsContainer(PRInt32 aId)
 {
   PRBool isContainer = PR_FALSE;
 
-  nsCOMPtr<nsIParserService> parserService;
-  GetParserService(getter_AddRefs(parserService));
+  nsIParserService* parserService = nsContentUtils::GetParserServiceWeakRef();
   if (parserService) {
     parserService->IsContainer(aId, isContainer);
   }
@@ -237,12 +217,11 @@ mozSanitizingHTMLSerializer::GetIdForContent(nsIContent* aContent,
   if (!tagname)
     return NS_ERROR_FAILURE;
   
-  nsresult rv;
-  nsCOMPtr<nsIParserService> parserService;
-  rv = GetParserService(getter_AddRefs(parserService));
-  if (NS_FAILED(rv))
-    return rv;
+  nsIParserService* parserService = nsContentUtils::GetParserServiceWeakRef();
+  if (!parserService)
+    return NS_ERROR_OUT_OF_MEMORY;
 
+  nsresult rv;
   rv = parserService->HTMLAtomTagToId(tagname, aID);
   if (NS_FAILED(rv))
     return rv;
@@ -327,8 +306,6 @@ mozSanitizingHTMLSerializer::AppendElementEnd(nsIDOMElement *aElement,
   return rv;
 }
 
-
-
 NS_IMETHODIMP
 mozSanitizingHTMLSerializer::OpenContainer(const nsIParserNode& aNode)
 {
@@ -339,14 +316,30 @@ mozSanitizingHTMLSerializer::OpenContainer(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-mozSanitizingHTMLSerializer::CloseContainer(const nsIParserNode& aNode)
+mozSanitizingHTMLSerializer::CloseContainer(const nsHTMLTag aTag)
 {
-  PRInt32 type = aNode.GetNodeType();
-  const nsAString& namestr = aNode.GetText();
-  nsCOMPtr<nsIAtom> name = dont_AddRef(NS_NewAtom(namestr));
-  
-  mParserNode = NS_CONST_CAST(nsIParserNode*, &aNode);
-  return DoCloseContainer(type);
+  // XXX Why do we need this?
+  // mParserNode = NS_CONST_CAST(nsIParserNode*, &aNode);
+  return DoCloseContainer(aTag);
+}
+
+NS_IMETHODIMP 
+mozSanitizingHTMLSerializer::AddHeadContent(const nsIParserNode& aNode)
+{
+  nsresult rv = NS_OK;
+  eHTMLTags type = (eHTMLTags)aNode.GetNodeType();
+  if (eHTMLTag_whitespace == type || 
+      eHTMLTag_newline == type    ||
+      eHTMLTag_text == type       ||
+      eHTMLTag_entity == type) {
+    rv = AddLeaf(aNode);
+  }
+  else {
+    rv = OpenContainer(aNode);
+    NS_ENSURE_SUCCESS(rv, rv);
+    rv = CloseContainer(type);
+  }
+  return rv;
 }
 
 NS_IMETHODIMP 
@@ -366,9 +359,9 @@ mozSanitizingHTMLSerializer::OpenHTML(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-mozSanitizingHTMLSerializer::CloseHTML(const nsIParserNode& aNode)
+mozSanitizingHTMLSerializer::CloseHTML()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_html);
 }
 
 NS_IMETHODIMP
@@ -376,9 +369,13 @@ mozSanitizingHTMLSerializer::SetTitle(const nsString& aValue)
 {
   if (IsAllowedTag(eHTMLTag_title))
   {
-    //Write(NS_LITERAL_STRING("<title>"));  -- aValue already contains that
+    // See bug 195020 for a good reason to output the tags.
+    // It will make sure we have a closing tag, and a
+    // missing </title> tag won't result in everything
+    // being eaten up as the title.
+    Write(NS_LITERAL_STRING("<title>"));
     Write(aValue);
-    //Write(NS_LITERAL_STRING("</title>"));
+    Write(NS_LITERAL_STRING("</title>"));
   }
   return NS_OK;
 }
@@ -407,9 +404,9 @@ mozSanitizingHTMLSerializer::OpenHead(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-mozSanitizingHTMLSerializer::CloseHead(const nsIParserNode& aNode)
+mozSanitizingHTMLSerializer::CloseHead()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_head);
 }
 
 NS_IMETHODIMP 
@@ -419,9 +416,9 @@ mozSanitizingHTMLSerializer::OpenBody(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-mozSanitizingHTMLSerializer::CloseBody(const nsIParserNode& aNode)
+mozSanitizingHTMLSerializer::CloseBody()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_body);
 }
 
 NS_IMETHODIMP 
@@ -431,9 +428,9 @@ mozSanitizingHTMLSerializer::OpenForm(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-mozSanitizingHTMLSerializer::CloseForm(const nsIParserNode& aNode)
+mozSanitizingHTMLSerializer::CloseForm()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_form);
 }
 
 NS_IMETHODIMP 
@@ -443,9 +440,9 @@ mozSanitizingHTMLSerializer::OpenMap(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-mozSanitizingHTMLSerializer::CloseMap(const nsIParserNode& aNode)
+mozSanitizingHTMLSerializer::CloseMap()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_map);
 }
 
 NS_IMETHODIMP 
@@ -455,17 +452,10 @@ mozSanitizingHTMLSerializer::OpenFrameset(const nsIParserNode& aNode)
 }
 
 NS_IMETHODIMP 
-mozSanitizingHTMLSerializer::CloseFrameset(const nsIParserNode& aNode)
+mozSanitizingHTMLSerializer::CloseFrameset()
 {
-  return CloseContainer(aNode);
+  return CloseContainer(eHTMLTag_frameset);
 }
-
-NS_IMETHODIMP 
-mozSanitizingHTMLSerializer::DoFragment(PRBool aFlag)
-{
-  return NS_OK;
-}
-
 
 
 // Here comes the actual code...
@@ -477,10 +467,10 @@ mozSanitizingHTMLSerializer::DoOpenContainer(PRInt32 aTag)
 
   if (IsAllowedTag(type))
   {
-    nsCOMPtr<nsIParserService> parserService;
-    nsresult rv = GetParserService(getter_AddRefs(parserService));
-    if (NS_FAILED(rv))
-      return rv;
+    nsIParserService* parserService =
+      nsContentUtils::GetParserServiceWeakRef();
+    if (!parserService)
+      return NS_ERROR_OUT_OF_MEMORY;
     const PRUnichar* tag_name;
     parserService->HTMLIdToStringTag(aTag, &tag_name);
     NS_ENSURE_TRUE(tag_name, NS_ERROR_INVALID_POINTER);
@@ -525,10 +515,10 @@ mozSanitizingHTMLSerializer::DoCloseContainer(PRInt32 aTag)
   eHTMLTags type = (eHTMLTags)aTag;
 
   if (IsAllowedTag(type)) {
-    nsCOMPtr<nsIParserService> parserService;
-    nsresult rv = GetParserService(getter_AddRefs(parserService));
-    if (NS_FAILED(rv))
-      return rv;
+    nsIParserService* parserService =
+      nsContentUtils::GetParserServiceWeakRef();
+    if (!parserService)
+      return NS_ERROR_OUT_OF_MEMORY;
     const PRUnichar* tag_name;
     parserService->HTMLIdToStringTag(aTag, &tag_name);
     NS_ENSURE_TRUE(tag_name, NS_ERROR_INVALID_POINTER);
@@ -643,6 +633,22 @@ mozSanitizingHTMLSerializer::SanitizeAttrValue(nsHTMLTag aTag,
       value.Find("base64") != kNotFound)
     return NS_ERROR_ILLEGAL_VALUE;
 
+  // Check img src scheme
+  if (aTag == eHTMLTag_img && 
+      attr_name.Equals(NS_LITERAL_STRING("src"), nsCaseInsensitiveStringComparator()))
+  {
+    nsresult rv;
+    nsCOMPtr<nsIIOService> ioService;
+    ioService = do_GetIOService(&rv);
+    if (NS_FAILED(rv)) return rv;
+    nsCAutoString scheme;
+    rv = ioService->ExtractScheme(NS_LossyConvertUCS2toASCII(value), scheme);
+    if (NS_FAILED(rv)) return rv;
+
+    if (!scheme.Equals("cid", nsCaseInsensitiveCStringComparator()))
+      return NS_ERROR_ILLEGAL_VALUE;
+  }
+
   return NS_OK;
 }
 
@@ -706,7 +712,7 @@ mozSanitizingHTMLSerializer::IsAllowedAttribute(nsHTMLTag aTag,
    - the attributes are separated by commas.
 
    There is no way to express further restrictions, like "no text inside the
-   <head> element. This is so to considerably reduce the complexity of the
+   <head> element". This is so to considerably reduce the complexity of the
    pref and this implementation.
 
    Update: Akk told me that I might be able to use DTD classes. Later(TM)...
@@ -714,11 +720,6 @@ mozSanitizingHTMLSerializer::IsAllowedAttribute(nsHTMLTag aTag,
 nsresult
 mozSanitizingHTMLSerializer::ParsePrefs(const nsAString& aPref)
 {
-  nsCOMPtr<nsIParserService> parserService;
-  nsresult rv = GetParserService(getter_AddRefs(parserService));
-  if (NS_FAILED(rv))
-    return rv;
-
   char* pref = ToNewCString(aPref);
 #ifdef DEBUG_BenB
   printf("pref: -%s-\n", pref);
@@ -742,10 +743,9 @@ mozSanitizingHTMLSerializer::ParsePrefs(const nsAString& aPref)
 nsresult
 mozSanitizingHTMLSerializer::ParseTagPref(const nsCAutoString& tagpref)
 {
-  nsCOMPtr<nsIParserService> parserService;
-  nsresult rv = GetParserService(getter_AddRefs(parserService));
-  if (NS_FAILED(rv))
-    return rv;
+  nsIParserService* parserService = nsContentUtils::GetParserServiceWeakRef();
+  if (!parserService)
+    return NS_ERROR_OUT_OF_MEMORY;
 
   // Parsing tag
 #ifdef DEBUG_BenB

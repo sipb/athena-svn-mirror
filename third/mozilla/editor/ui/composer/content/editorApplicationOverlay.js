@@ -83,9 +83,8 @@ function editPageOrFrame()
 //   and we need a delay to let dialog close)
 function editPage(url, launchWindow, delay)
 {
-  // Always strip off "view-source:"
-  if (url.slice(0,12) == "view-source:")
-    url = url.slice(13);
+  // Always strip off "view-source:" and #anchors
+  url = url.replace(/^view-source:/, "").replace(/#.*/, "");
 
   // User may not have supplied a window
   if (!launchWindow)
@@ -140,7 +139,7 @@ function editPage(url, launchWindow, delay)
       // we have an empty window we can use
       if (emptyWindow.IsInHTMLSourceMode())
         emptyWindow.SetEditMode(emptyWindow.PreviousNonSourceDisplayMode);
-      emptyWindow.editorShell.LoadUrl(url);
+      emptyWindow.EditorLoadUrl(url);
       emptyWindow.focus();
       emptyWindow.SetSaveAndPublishUI(url);
       return;

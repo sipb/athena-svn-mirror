@@ -1,3 +1,5 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* vim:expandtab:shiftwidth=4:tabstop=4: */
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -17,76 +19,79 @@
  * 
  * Contributor(s):
  *   Christopher Blizzard <blizzard@mozilla.org>
+ *   Brian Ryner <bryner@netscape.com>
  */
 
-#include <nsCOMPtr.h>
 #include <nsString.h>
 #include <gtk/gtk.h>
 
+#define EMBED_MAX_BUTTONS 3
+
 class EmbedPrompter {
 
- public:
+public:
 
-  EmbedPrompter();
-  ~EmbedPrompter();
+    EmbedPrompter();
+    ~EmbedPrompter();
 
-  enum PromptType {
-    TYPE_ALERT,
-    TYPE_ALERT_CHECK,
-    TYPE_CONFIRM,
-    TYPE_CONFIRM_CHECK,
-    TYPE_PROMPT,
-    TYPE_PROMPT_USER_PASS,
-    TYPE_PROMPT_PASS,
-    TYPE_SELECT,
-    TYPE_UNIVERSAL };
+    enum PromptType {
+        TYPE_ALERT,
+        TYPE_ALERT_CHECK,
+        TYPE_CONFIRM,
+        TYPE_CONFIRM_CHECK,
+        TYPE_PROMPT,
+        TYPE_PROMPT_USER_PASS,
+        TYPE_PROMPT_PASS,
+        TYPE_SELECT,
+        TYPE_UNIVERSAL
+    };
 
-  nsresult Create(PromptType aType);
-  void     SetTitle(const PRUnichar *aTitle);
-  void     SetTextValue (const PRUnichar *aTextValue);
-  void     SetCheckMessage(const PRUnichar *aCheckMessage);
-  void     SetCheckValue(const PRBool aValue);
-  void     SetMessageText(const PRUnichar *aMessageText);
-  void     SetUser(const PRUnichar *aUser);
-  void     SetPassword(const PRUnichar *aPass);
+    nsresult Create(PromptType aType, GtkWindow* aParentWindow);
+    void     SetTitle(const PRUnichar *aTitle);
+    void     SetTextValue (const PRUnichar *aTextValue);
+    void     SetCheckMessage(const PRUnichar *aCheckMessage);
+    void     SetCheckValue(const PRBool aValue);
+    void     SetMessageText(const PRUnichar *aMessageText);
+    void     SetUser(const PRUnichar *aUser);
+    void     SetPassword(const PRUnichar *aPass);
+    void     SetButtons(const PRUnichar* aButton0Label,
+                        const PRUnichar* aButton1Label,
+                        const PRUnichar* aButton2Label);
+    void     SetItems(const PRUnichar **aItemArray, PRUint32 aCount);
 
-  void     GetCheckValue(PRBool *aValue);
-  void     GetConfirmValue(PRBool *aConfirmValue);
-  void     GetTextValue(PRUnichar **aTextValue);
-  void     GetUser(PRUnichar **aUser);
-  void     GetPassword(PRUnichar **aPass);
+    void     GetCheckValue(PRBool *aValue);
+    void     GetConfirmValue(PRBool *aConfirmValue);
+    void     GetTextValue(PRUnichar **aTextValue);
+    void     GetUser(PRUnichar **aUser);
+    void     GetPassword(PRUnichar **aPass);
+    void     GetButtonPressed(PRInt32 *aButton);
+    void     GetSelectedItem(PRInt32 *aIndex);
 
-  void     Run(void);
+    void     Run(void);
 
-  void     UserCancel(void);
-  void     UserOK(void);
+private:
 
- private:
+    void     SaveDialogValues();
 
-  enum {
-    INCLUDE_USERNAME    = 1U,
-    INCLUDE_CHECKBOX    = 2U,
-    INCLUDE_TEXTFIELD   = 4U,
-    INCLUDE_CANCEL      = 8U
-  };
-  
-  void     CreatePasswordPrompter(int aFlags);
-  void     CreateAlertPrompter(int aFlags);
+    nsCString    mTitle;
+    nsCString    mMessageText;
+    nsCString    mTextValue;
+    nsCString    mCheckMessage;
+    PRBool       mCheckValue;
+    nsCString    mUser;
+    nsCString    mPass;
+    nsCString    mButtonLabels[EMBED_MAX_BUTTONS];
+    nsCString   *mItemList;
+    PRUint32     mItemCount;
 
-  nsCString  mTitle;
-  nsCString  mMessageText;
-  nsCString  mTextValue;
-  nsCString  mCheckMessage;
-  PRBool     mCheckValue;
+    PRInt32      mButtonPressed;
+    PRBool       mConfirmResult;
+    PRInt32      mSelectedItem;
 
-  PRBool     mConfirmResult;
-  nsCString  mUser;
-  nsCString  mPass;
-
-  GtkWidget *mWindow;
-  GtkWidget *mUserField;
-  GtkWidget *mPassField;
-  GtkWidget *mTextField;
-  GtkWidget *mCheckBox;
-
+    GtkWidget   *mWindow;
+    GtkWidget   *mUserField;
+    GtkWidget   *mPassField;
+    GtkWidget   *mTextField;
+    GtkWidget   *mOptionMenu;
+    GtkWidget   *mCheckBox;
 };

@@ -105,17 +105,9 @@ NS_IMPL_ISUPPORTS1(nsAppShell, nsIAppShell)
 // nsAppShell constructor
 nsAppShell::nsAppShell()
 { 
-   NS_INIT_ISUPPORTS();
-   mDispatchListener = 0;
    mHab = 0; mHmq = 0;
    mQuitNow = FALSE;
    memset( &mQmsg, 0, sizeof mQmsg);
-}
-
-nsresult nsAppShell::SetDispatchListener( nsDispatchListener *aDispatchListener) 
-{
-   mDispatchListener = aDispatchListener;
-   return NS_OK;
 }
 
 // Create the application shell
@@ -161,8 +153,6 @@ nsresult nsAppShell::Run()
 
          if (mQmsg.msg != WM_QUIT) {
             WinDispatchMsg((HAB)0, &mQmsg);
-            if (mDispatchListener)
-               mDispatchListener->AfterDispatch();
          } else {
             if ((mQmsg.hwnd) && (mQmsg.mp1 || mQmsg.mp2)) {
                // send WM_SYSCOMMAND, SC_CLOSE to window (tasklist close)
@@ -267,13 +257,6 @@ extern "C" nsresult NS_CreateAppshell( nsIAppShell **aAppShell)
    }
 
    *aAppShell = pManager->GetAppshell();
-
-   // only do this the very first time
-   if (gWidgetModuleData == nsnull)
-   {
-      gWidgetModuleData = new nsWidgetModuleData();
-      gWidgetModuleData->Init(*aAppShell);
-   }
 
    return NS_OK;
 }

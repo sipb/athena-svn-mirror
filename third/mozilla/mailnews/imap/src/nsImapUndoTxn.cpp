@@ -45,9 +45,7 @@
 #include "nsIMsgIncomingServer.h"
 #include "nsIDBFolderInfo.h"
 
-static NS_DEFINE_CID(kCImapService, NS_IMAPSERVICE_CID);
 static NS_DEFINE_CID(kCImapHostSessionList, NS_IIMAPHOSTSESSIONLIST_CID);
-
 
 nsImapMoveCopyMsgTxn::nsImapMoveCopyMsgTxn() :
     m_idsAreUids(PR_FALSE), m_isMove(PR_FALSE), m_srcIsPop3(PR_FALSE)
@@ -161,9 +159,10 @@ nsImapMoveCopyMsgTxn::QueryInterface(REFNSIID aIID, void** aInstancePtr)
 NS_IMETHODIMP
 nsImapMoveCopyMsgTxn::UndoTransaction(void)
 {
-  nsresult rv = NS_OK;
-  nsCOMPtr<nsIImapService> imapService(do_GetService(kCImapService, &rv));
-  if (NS_FAILED(rv)) return rv;
+  nsresult rv;
+  nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
+
   if (m_isMove || !m_dstFolder)
   {
     if (m_srcIsPop3)
@@ -189,7 +188,12 @@ nsImapMoveCopyMsgTxn::UndoTransaction(void)
       PRBool deletedMsgs = PR_TRUE; //default is true unless imapDelete model
       nsMsgImapDeleteModel deleteModel;
       rv = GetImapDeleteModel(srcFolder, &deleteModel);
-      PRBool deleteIsMoveToTrash = NS_FAILED(rv) || deleteModel == nsMsgImapDeleteModels::MoveToTrash;
+
+      // protect against a bogus undo txn without any source keys
+      // see bug #179856 for details
+      NS_ASSERTION(m_srcKeyArray.GetSize(), "no source keys");
+      if (!m_srcKeyArray.GetSize())
+        return NS_ERROR_UNEXPECTED;
 
       if (NS_SUCCEEDED(rv) && deleteModel == nsMsgImapDeleteModels::IMAPDelete)
         CheckForToggleDelete(srcFolder, m_srcKeyArray.GetAt(0), &deletedMsgs);
@@ -224,8 +228,8 @@ nsImapMoveCopyMsgTxn::UndoTransaction(void)
     
     dstListener = do_QueryInterface(dstFolder, &rv);
     if (NS_FAILED(rv)) return rv;
-    // ** make sire we are in the selected state; use lite select folder
-    // so we won't hit preformace hard
+    // ** make sure we are in the selected state; use lite select folder
+    // so we won't potentially download a bunch of headers.
     rv = imapService->LiteSelectFolder(m_eventQueue, dstFolder,
       dstListener, nsnull);
     if (NS_FAILED(rv)) return rv;
@@ -241,10 +245,11 @@ nsImapMoveCopyMsgTxn::UndoTransaction(void)
 NS_IMETHODIMP
 nsImapMoveCopyMsgTxn::RedoTransaction(void)
 {
-	nsresult rv = NS_OK;
-	nsCOMPtr<nsIImapService> imapService(do_GetService(kCImapService, &rv));
-	if (NS_FAILED(rv)) return rv;
-	if (m_isMove || !m_dstFolder)
+	nsresult rv;
+	nsCOMPtr<nsIImapService> imapService = do_GetService(NS_IMAPSERVICE_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv,rv);
+
+  if (m_isMove || !m_dstFolder)
     {
         if (m_srcIsPop3)
         {
@@ -264,6 +269,13 @@ nsImapMoveCopyMsgTxn::RedoTransaction(void)
             PRBool deletedMsgs = PR_FALSE;  //default will be false unless imapDeleteModel;
             nsMsgImapDeleteModel deleteModel;
             rv = GetImapDeleteModel(srcFolder, &deleteModel);
+            
+            // protect against a bogus undo txn without any source keys
+            // see bug #179856 for details
+            NS_ASSERTION(m_srcKeyArray.GetSize(), "no source keys");
+            if (!m_srcKeyArray.GetSize())
+              return NS_ERROR_UNEXPECTED;
+
             if (NS_SUCCEEDED(rv) && deleteModel == nsMsgImapDeleteModels::IMAPDelete)
               rv = CheckForToggleDelete(srcFolder, m_srcKeyArray.GetAt(0), &deletedMsgs);
 
@@ -296,7 +308,7 @@ nsImapMoveCopyMsgTxn::RedoTransaction(void)
         dstListener = do_QueryInterface(dstFolder, &rv); 
         if (NS_FAILED(rv)) 
           return rv;
-        // ** make sire we are in the selected state; use lite select
+        // ** make sure we are in the selected state; use lite select
         // folder so we won't hit preformace hard
         rv = imapService->LiteSelectFolder(m_eventQueue, dstFolder,
                                            dstListener, nsnull);
@@ -383,11 +395,9 @@ nsImapMoveCopyMsgTxn::UndoMailboxDelete()
         PRUint32 i;
         nsCOMPtr<nsIMsgDBHdr> oldHdr;
         nsCOMPtr<nsIMsgDBHdr> newHdr;
-		    nsCOMPtr<nsISupports> aSupport;
         for (i=0; i<count; i++)
         {
-           aSupport = getter_AddRefs(m_srcHdrs->ElementAt(i));
-           oldHdr = do_QueryInterface(aSupport);
+           oldHdr = do_QueryElementAt(m_srcHdrs, i);
            NS_ASSERTION(oldHdr, "fatal ... cannot get old msg header\n");
            rv = srcDB->CopyHdrFromExistingHdr(m_srcKeyArray.GetAt(i),
                                               oldHdr,PR_TRUE,

@@ -84,6 +84,10 @@ nsIWidget         * gRollupWidget   = nsnull;
 static NMRec	gNMRec;
 static Boolean	gNotificationInstalled = false;
 
+//used to animate the Arrow + Beachball cursor
+static CursorSpinner *gCursorSpinner = nsnull;
+static const int kSpinCursorFirstFrame = 200;
+
 // Routines for iterating over the rects of a region. Carbon and pre-Carbon
 // do this differently so provide a way to do both.
 #if TARGET_CARBON
@@ -105,13 +109,14 @@ static void blinkRect(const Rect* r, PRBool isPaint);
 static void blinkRgn(RgnHandle rgn, PRBool isPaint);
 #endif
 
-
+#if defined(INVALIDATE_DEBUGGING) || defined(PAINT_DEBUGGING) || defined (PINK_PROFILING)
 static Boolean KeyDown(const UInt8 theKey)
 {
 	KeyMap map;
 	GetKeys(map);
 	return ((*((UInt8 *)map + (theKey >> 3)) >> (theKey & 7)) & 1) != 0;
 }
+#endif
 
 #if defined(INVALIDATE_DEBUGGING) || defined(PAINT_DEBUGGING)
 
@@ -337,7 +342,7 @@ nsWindow::~nsWindow()
 	}
 }
 
-NS_IMPL_ISUPPORTS_INHERITED1(nsWindow, nsBaseWidget, nsIKBStateControl);
+NS_IMPL_ISUPPORTS_INHERITED2(nsWindow, nsBaseWidget, nsIKBStateControl, nsIPluginWidget);
 
 //-------------------------------------------------------------------------
 //
@@ -449,6 +454,7 @@ NS_IMETHODIMP nsWindow::Destroy()
 }
 
 #pragma mark -
+
 //-------------------------------------------------------------------------
 //
 // Get this nsWindow parent
@@ -697,124 +703,141 @@ NS_METHOD nsWindow::SetCursor(nsCursor aCursor)
 {
   nsBaseWidget::SetCursor(aCursor);
 	
-	// allow the cursor to be set internally if we're in the bg, but
-	// don't actually set it.
+  // allow the cursor to be set internally if we're in the bg, but
+  // don't actually set it.
   if ( !nsToolkit::IsAppInForeground() )
+  {
     return NS_OK;
+  }
 
+  if ( gCursorSpinner == nsnull)
+  {
+      gCursorSpinner = new CursorSpinner();
+  }
+  
   // mac specific cursor manipulation
-	if (nsToolkit::HasAppearanceManager())
-	{
-		short cursor = -1;
-	  switch (aCursor)
-	  {
-	    case eCursor_standard:				cursor = kThemeArrowCursor;						break;
-	    case eCursor_wait:						cursor = kThemeWatchCursor;						break;
-	    case eCursor_select:					cursor = kThemeIBeamCursor;						break;
-	    case eCursor_hyperlink:				cursor = kThemePointingHandCursor;		break;
-			case eCursor_sizeWE:					cursor = kThemeResizeLeftRightCursor;	break;
-			case eCursor_sizeNS:					cursor = 129; 	break;
-			case eCursor_sizeNW:					cursor = 130; 	break;
-			case eCursor_sizeSE:					cursor = 131; 	break;
-			case eCursor_sizeNE:					cursor = 132; 	break;
-			case eCursor_sizeSW:					cursor = 133; 	break;
-			case eCursor_arrow_north:			cursor = 134; 	break;
-			case eCursor_arrow_north_plus:cursor = 135; 	break;
-			case eCursor_arrow_south:			cursor = 136; 	break;
-			case eCursor_arrow_south_plus:cursor = 137; 	break;
-			case eCursor_arrow_west:			cursor = 138; 	break;
-			case eCursor_arrow_west_plus:	cursor = 139; 	break;
-			case eCursor_arrow_east:			cursor = 140; 	break;
-			case eCursor_arrow_east_plus:	cursor = 141; 	break;
-			case eCursor_crosshair:				cursor = kThemeCrossCursor; 					break;
-			case eCursor_move:						cursor = kThemeOpenHandCursor; 				break;
-			case eCursor_help:						cursor = 143; 	break;
-			case eCursor_copy:						cursor = 144; 	break; // CSS3
-			case eCursor_alias:						cursor = 145; 	break;
-			case eCursor_context_menu:		cursor = 146; 	break;
-			case eCursor_cell:						cursor = kThemePlusCursor; 			 			break;
-			case eCursor_grab:						cursor = kThemeOpenHandCursor; 				break;
-			case eCursor_grabbing:				cursor = kThemeClosedHandCursor; 			break;
-			case eCursor_spinning:				cursor = 149; break;  // better than kThemeSpinningCursor
-			case eCursor_count_up:				cursor = kThemeCountingUpHandCursor; 					break;
-			case eCursor_count_down:			cursor = kThemeCountingDownHandCursor;				break;
-			case eCursor_count_up_down:		cursor = kThemeCountingUpAndDownHandCursor; 	break;
+  short cursor = -1;
+  switch (aCursor)
+  {
+    case eCursor_standard:            cursor = kThemeArrowCursor; break;
+    case eCursor_wait:                cursor = kThemeWatchCursor; break;
+    case eCursor_select:              cursor = kThemeIBeamCursor; break;
+    case eCursor_hyperlink:           cursor = kThemePointingHandCursor; break;
+    case eCursor_sizeWE:              cursor = kThemeResizeLeftRightCursor; break;
+    case eCursor_sizeNS:              cursor = 129; break;
+    case eCursor_sizeNW:              cursor = 130; break;
+    case eCursor_sizeSE:              cursor = 131; break;
+    case eCursor_sizeNE:              cursor = 132; break;
+    case eCursor_sizeSW:              cursor = 133; break;
+    case eCursor_arrow_north:         cursor = 134; break;
+    case eCursor_arrow_north_plus:    cursor = 135; break;
+    case eCursor_arrow_south:         cursor = 136; break;
+    case eCursor_arrow_south_plus:    cursor = 137; break;
+    case eCursor_arrow_west:          cursor = 138; break;
+    case eCursor_arrow_west_plus:     cursor = 139; break;
+    case eCursor_arrow_east:          cursor = 140; break;
+    case eCursor_arrow_east_plus:     cursor = 141; break;
+    case eCursor_crosshair:           cursor = kThemeCrossCursor; break;
+    case eCursor_move:                cursor = kThemeOpenHandCursor; break;
+    case eCursor_help:                cursor = 143; break;
+    case eCursor_copy:                cursor = 144; break; // CSS3
+    case eCursor_alias:               cursor = 145; break;
+    case eCursor_context_menu:        cursor = 146; break;
+    case eCursor_cell:                cursor = kThemePlusCursor; break;
+    case eCursor_grab:                cursor = kThemeOpenHandCursor; break;
+    case eCursor_grabbing:            cursor = kThemeClosedHandCursor; break;
+    case eCursor_spinning:            cursor = kSpinCursorFirstFrame; break; // better than kThemeSpinningCursor
+    case eCursor_count_up:            cursor = kThemeCountingUpHandCursor; break;
+    case eCursor_count_down:          cursor = kThemeCountingDownHandCursor; break;
+    case eCursor_count_up_down:       cursor = kThemeCountingUpAndDownHandCursor; break;
+    case eCursor_zoom_in:             cursor = 149; break;
+    case eCursor_zoom_out:            cursor = 150; break;        
+  }
 
-	  }
-	  if (cursor >= 0)
-	  {
-	  	if (cursor >= 128)
-	  	{
-        nsMacResources::OpenLocalResourceFile();
-        CursHandle cursHandle = ::GetCursor(cursor);
-        NS_ASSERTION ( cursHandle, "Can't load cursor, is the resource file installed correctly?" );
-        if ( cursHandle )
-          ::SetCursor(*cursHandle);
-        nsMacResources::CloseLocalResourceFile();
-			}
-			else
-	  		::SetThemeCursor(cursor);
-	  }
+  if (aCursor == eCursor_spinning)
+  {
+      gCursorSpinner->StartSpinCursor();
   }
   else
   {
-		short cursor = -1;
-	  switch (aCursor)
-	  {
-	    case eCursor_standard:				::InitCursor();					break;
-	    case eCursor_wait:						cursor = watchCursor;		break;
-	    case eCursor_select:					cursor = iBeamCursor;		break;
-	    case eCursor_hyperlink:				cursor = plusCursor;		break;
-			case eCursor_sizeWE:					cursor = 128; 					break;
-			case eCursor_sizeNS:					cursor = 129; 	break;
-			case eCursor_sizeNW:					cursor = 130; 	break;
-			case eCursor_sizeSE:					cursor = 131; 	break;
-			case eCursor_sizeNE:					cursor = 132; 	break;
-			case eCursor_sizeSW:					cursor = 133; 	break;
-			case eCursor_arrow_north:			cursor = 134; 	break;
-			case eCursor_arrow_north_plus:cursor = 135; 	break;
-			case eCursor_arrow_south:			cursor = 136; 	break;
-			case eCursor_arrow_south_plus:cursor = 137; 	break;
-			case eCursor_arrow_west:			cursor = 138; 	break;
-			case eCursor_arrow_west_plus:	cursor = 139; 	break;
-			case eCursor_arrow_east:			cursor = 140; 	break;
-			case eCursor_arrow_east_plus:	cursor = 141; 	break;
-			case eCursor_crosshair:				cursor = crossCursor; 	break;
-			case eCursor_move:						cursor = 142; 	break;
-			case eCursor_help:						cursor = 143; 	break;
-			case eCursor_copy:						cursor = 144; 	break; // CSS3
-			case eCursor_alias:						cursor = 145; 	break;
-			case eCursor_context_menu:		cursor = 146; 	break;
-			case eCursor_cell:						cursor = plusCursor; 	 break;
-			case eCursor_grab:						cursor = 147; 	break;
-			case eCursor_grabbing:				cursor = 148; 	break;
-			case eCursor_spinning:				cursor = 149; 	break;
-			case eCursor_count_up:				cursor = watchCursor; 	break;
-			case eCursor_count_down:			cursor = watchCursor; 	break;
-			case eCursor_count_up_down:		cursor = watchCursor; 	break;
-	  }
-	  if (cursor > 0)
-	  {
-      if (cursor >= 128) {
-        nsMacResources::OpenLocalResourceFile();
-        CursHandle cursHandle = ::GetCursor(cursor);
-        NS_ASSERTION ( cursHandle, "Can't load cursor, is the resource file installed correctly?" );
-        if ( cursHandle )
-          ::SetCursor(*cursHandle);
-        nsMacResources::CloseLocalResourceFile();
-      }
-      else {
-        CursHandle cursHandle = ::GetCursor(cursor);
-        NS_ASSERTION ( cursHandle, "Can't load cursor, is the resource file installed correctly?" );
-        if ( cursHandle )
-          ::SetCursor(*cursHandle);
-      }
-	  }
+      gCursorSpinner->StopSpinCursor();
+      nsWindow::SetCursorResource(cursor);
   }
  
   return NS_OK;
   
 } // nsWindow::SetCursor
+
+void nsWindow::SetCursorResource(short aCursorResourceNum)
+{
+    if (aCursorResourceNum >= 0)
+    {
+        if (aCursorResourceNum >= 128)
+        {
+            nsMacResources::OpenLocalResourceFile();
+            CursHandle cursHandle = ::GetCursor(aCursorResourceNum);
+            NS_ASSERTION (cursHandle, "Can't load cursor, is the resource file installed correctly?");
+            if (cursHandle)
+            {
+                ::SetCursor(*cursHandle);
+            }
+            nsMacResources::CloseLocalResourceFile();            
+        }
+        else
+        {
+            ::SetThemeCursor(aCursorResourceNum);
+        }
+    }    
+}
+
+CursorSpinner::CursorSpinner() :
+    mSpinCursorFrame(0), mTimerUPP(nsnull), mTimerRef(nsnull)
+{
+   mTimerUPP = NewEventLoopTimerUPP(SpinCursor);
+}
+
+CursorSpinner::~CursorSpinner()
+{
+    if (mTimerRef) ::RemoveEventLoopTimer(mTimerRef);
+    if (mTimerUPP) ::DisposeEventLoopTimerUPP(mTimerUPP);
+}
+
+short CursorSpinner::GetNextCursorFrame()
+{
+    int result = kSpinCursorFirstFrame + mSpinCursorFrame;
+    mSpinCursorFrame = (mSpinCursorFrame + 1) % 4;
+    return (short) result;
+}
+
+void CursorSpinner::StartSpinCursor()
+{
+    OSStatus result = noErr;
+    if (mTimerRef == nsnull)
+    {
+        result = ::InstallEventLoopTimer(::GetMainEventLoop(), 0, 0.25 * kEventDurationSecond,
+                                         mTimerUPP, this, &mTimerRef);
+        if (result != noErr)
+        {
+            mTimerRef = nsnull;
+            nsWindow::SetCursorResource(kSpinCursorFirstFrame);
+        }
+    }
+}
+
+void CursorSpinner::StopSpinCursor()
+{
+    if (mTimerRef)
+    {
+        ::RemoveEventLoopTimer(mTimerRef);
+        mTimerRef = nsnull;
+    }
+}
+
+pascal void CursorSpinner::SpinCursor(EventLoopTimerRef inTimer, void *inUserData)
+{
+    CursorSpinner* cs = reinterpret_cast<CursorSpinner*>(inUserData);
+    nsWindow::SetCursorResource(cs->GetNextCursorFrame());
+}
 
 #pragma mark -
 //-------------------------------------------------------------------------
@@ -1676,12 +1699,13 @@ void nsWindow::UpdateWidget(nsRect& aRect, nsIRenderingContext* aContext)
 
 	// initialize the paint event
 	nsPaintEvent paintEvent;
-	paintEvent.eventStructType			= NS_PAINT_EVENT;		// nsEvent
-	paintEvent.message					= NS_PAINT;
-	paintEvent.widget					= this;					// nsGUIEvent
-	paintEvent.nativeMsg				= NULL;
-	paintEvent.renderingContext			= aContext;				// nsPaintEvent
-	paintEvent.rect						= &aRect;
+	paintEvent.eventStructType  = NS_PAINT_EVENT;   // nsEvent
+	paintEvent.message          = NS_PAINT;
+	paintEvent.widget           = this;             // nsGUIEvent
+	paintEvent.nativeMsg        = NULL;
+	paintEvent.renderingContext = aContext;         // nsPaintEvent
+	paintEvent.rect             = &aRect;
+  paintEvent.region           = nsnull;
 
 	// draw the widget
 	StartDraw(aContext);
@@ -2408,7 +2432,7 @@ NS_IMETHODIMP nsWindow::WidgetToScreen(const nsRect& aLocalRect, nsRect& aGlobal
 NS_IMETHODIMP nsWindow::ScreenToWidget(const nsRect& aGlobalRect, nsRect& aLocalRect)
 {
 	aLocalRect = aGlobalRect;
-	nsIWidget* theParent = this->GetParent();
+	nsIWidget* theParent = GetParent();
 	if ( theParent ) {
 		// Recursive case
 		//
@@ -2446,7 +2470,7 @@ NS_IMETHODIMP nsWindow::ScreenToWidget(const nsRect& aGlobalRect, nsRect& aLocal
  *  @param   aRect -- The nsRect that is the source
  *  @param   aMacRect -- The Mac Rect destination
  */
-void nsWindow::nsRectToMacRect(const nsRect& aRect, Rect& aMacRect) const
+void nsWindow::nsRectToMacRect(const nsRect& aRect, Rect& aMacRect)
 {
 		aMacRect.left = aRect.x;
 		aMacRect.top = aRect.y;
@@ -2500,7 +2524,7 @@ NS_IMETHODIMP nsWindow::SetTitle(const nsString& title)
 
 NS_IMETHODIMP nsWindow::GetAttention()
 {
-	// Since the Mac doesn't consider each window a seperate process this call functions
+        // Since the Mac doesn't consider each window a separate process this call functions
 	// slightly different than on other platforms.  We first check to see if we're the
 	// foreground process and, if so, ignore the call.  We also check to see if a notification
 	// is already pending and, if so, remove it since we only have one notification per process.
@@ -2534,6 +2558,99 @@ NS_IMETHODIMP nsWindow::GetAttention()
 
 	return NS_OK;
 }
+
+#pragma mark -
+
+
+NS_IMETHODIMP nsWindow::GetPluginClipRect(nsRect& outClipRect, nsPoint& outOrigin, PRBool& outWidgetVisible)
+{
+  PRBool isVisible = mVisible;
+
+  nsRect widgetClipRect = mBounds;
+  // absX and absY are top-level window-relative coordinates
+  nscoord absX = widgetClipRect.x;
+  nscoord absY = widgetClipRect.y;
+
+  nscoord ancestorX = -widgetClipRect.x;
+  nscoord ancestorY = -widgetClipRect.y;
+
+  // Calculate clipping relative to this widget
+  widgetClipRect.x = 0;
+  widgetClipRect.y = 0;
+
+  // Gather up the absolute position of the widget, clip window, and visibilty
+  nsCOMPtr<nsIWidget> widget = getter_AddRefs(GetParent());
+  while (widget)
+  {
+    if (isVisible)
+      widget->IsVisible(isVisible);
+
+    nsRect widgetRect;
+    widget->GetClientBounds(widgetRect);
+    nscoord wx = widgetRect.x;
+    nscoord wy = widgetRect.y;
+
+    widgetRect.x = ancestorX;
+    widgetRect.y = ancestorY;
+
+    widgetClipRect.IntersectRect(widgetClipRect, widgetRect);
+    absX += wx;
+    absY += wy;
+    widget = getter_AddRefs(widget->GetParent());
+    if (!widget)
+    {
+      // Don't include the top-level windows offset
+      // printf("Top level window offset %d %d\n", wx, wy);
+      absX -= wx;
+      absY -= wy;
+    }
+    ancestorX -= wx;
+    ancestorY -= wy;
+  }
+
+  widgetClipRect.x += absX;
+  widgetClipRect.y += absY;
+
+  outClipRect = widgetClipRect;
+  outOrigin.x = absX;
+  outOrigin.y = absY;
+  
+  outWidgetVisible = isVisible;
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP nsWindow::StartDrawPlugin(void)
+{
+  // setup the port background color for the plugin
+  GrafPtr savePort;
+  ::GetPort(&savePort);  // save our current port
+  ::SetPortWindowPort(mWindowPtr);
+  
+  RGBColor macColor;
+  macColor.red   = COLOR8TOCOLOR16(NS_GET_R(mBackground));  // convert to Mac color
+  macColor.green = COLOR8TOCOLOR16(NS_GET_G(mBackground));
+  macColor.blue  = COLOR8TOCOLOR16(NS_GET_B(mBackground));
+  ::RGBBackColor(&macColor);
+
+  ::SetPort(savePort);  // restore port
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsWindow::EndDrawPlugin(void)
+{
+  GrafPtr savePort;
+  ::GetPort(&savePort);  // save our current port
+  ::SetPortWindowPort(mWindowPtr);
+
+  RGBColor rgbWhite = { 0xFFFF, 0xFFFF, 0xFFFF };
+  ::RGBBackColor(&rgbWhite);
+
+  ::SetPort(savePort);  // restore port
+  return NS_OK;
+}
+
 
 #pragma mark -
 

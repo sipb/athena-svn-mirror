@@ -113,7 +113,6 @@ static JSParser PrimaryExpr;
  * Insist that the next token be of type tt, or report errno and return null.
  * NB: this macro uses cx and ts from its lexical environment.
  */
-
 #define MUST_MATCH_TOKEN(tt, errno)                                           \
     JS_BEGIN_MACRO                                                            \
         if (js_GetToken(cx, ts) != tt) {                                      \
@@ -128,6 +127,69 @@ static uint32 maxparsenodes = 0;
 static uint32 recyclednodes = 0;
 #endif
 
+static void
+RecycleTree(JSParseNode *pn, JSTreeContext *tc)
+{
+    if (!pn)
+        return;
+    JS_ASSERT(pn != tc->nodeList);      /* catch back-to-back dup recycles */
+    pn->pn_next = tc->nodeList;
+    tc->nodeList = pn;
+#ifdef METER_PARSENODES
+    recyclednodes++;
+#endif
+}
+
+static JSParseNode *
+NewOrRecycledNode(JSContext *cx, JSTreeContext *tc)
+{
+    JSParseNode *pn;
+
+    pn = tc->nodeList;
+    if (!pn) {
+        JS_ARENA_ALLOCATE_TYPE(pn, JSParseNode, &cx->tempPool);
+        if (!pn)
+            JS_ReportOutOfMemory(cx);
+    } else {
+        tc->nodeList = pn->pn_next;
+
+        /* Recycle immediate descendents only, to save work and working set. */
+        switch (pn->pn_arity) {
+          case PN_FUNC:
+            RecycleTree(pn->pn_body, tc);
+            break;
+          case PN_LIST:
+            if (pn->pn_head) {
+                /* XXX check for dup recycles in the list */
+                *pn->pn_tail = tc->nodeList;
+                tc->nodeList = pn->pn_head;
+#ifdef METER_PARSENODES
+                recyclednodes += pn->pn_count;
+#endif
+            }
+            break;
+          case PN_TERNARY:
+            RecycleTree(pn->pn_kid1, tc);
+            RecycleTree(pn->pn_kid2, tc);
+            RecycleTree(pn->pn_kid3, tc);
+            break;
+          case PN_BINARY:
+            RecycleTree(pn->pn_left, tc);
+            RecycleTree(pn->pn_right, tc);
+            break;
+          case PN_UNARY:
+            RecycleTree(pn->pn_kid, tc);
+            break;
+          case PN_NAME:
+            RecycleTree(pn->pn_expr, tc);
+            break;
+          case PN_NULLARY:
+            break;
+        }
+    }
+    return pn;
+}
+
 /*
  * Allocate a JSParseNode from cx's temporary arena.
  */
@@ -137,16 +199,9 @@ NewParseNode(JSContext *cx, JSToken *tok, JSParseNodeArity arity,
 {
     JSParseNode *pn;
 
-    pn = tc->nodeList;
-    if (pn) {
-        tc->nodeList = pn->pn_next;
-    } else {
-        JS_ARENA_ALLOCATE_TYPE(pn, JSParseNode, &cx->tempPool);
-        if (!pn) {
-            JS_ReportOutOfMemory(cx);
-            return NULL;
-        }
-    }
+    pn = NewOrRecycledNode(cx, tc);
+    if (!pn)
+        return NULL;
     pn->pn_type = tok->type;
     pn->pn_pos = tok->pos;
     pn->pn_op = JSOP_NOP;
@@ -165,20 +220,64 @@ NewBinary(JSContext *cx, JSTokenType tt,
           JSOp op, JSParseNode *left, JSParseNode *right,
           JSTreeContext *tc)
 {
-    JSParseNode *pn;
+    JSParseNode *pn, *pn1, *pn2;
 
     if (!left || !right)
         return NULL;
-    pn = tc->nodeList;
-    if (pn) {
-        tc->nodeList = pn->pn_next;
-    } else {
-        JS_ARENA_ALLOCATE_TYPE(pn, JSParseNode, &cx->tempPool);
-        if (!pn) {
-            JS_ReportOutOfMemory(cx);
-            return NULL;
+
+    /*
+     * Flatten a left-associative (left-heavy) tree of a given operator into
+     * a list, to reduce js_FoldConstants and js_EmitTree recursion.
+     */
+    if (left->pn_type == tt &&
+        left->pn_op == op &&
+        (js_CodeSpec[op].format & JOF_LEFTASSOC)) {
+        if (left->pn_arity != PN_LIST) {
+            pn1 = left->pn_left, pn2 = left->pn_right;
+            left->pn_arity = PN_LIST;
+            PN_INIT_LIST_1(left, pn1);
+            PN_APPEND(left, pn2);
+            left->pn_extra = 0;
+            if (tt == TOK_PLUS) {
+                if (pn1->pn_type == TOK_STRING)
+                    left->pn_extra |= PNX_STRCAT;
+                else if (pn1->pn_type != TOK_NUMBER)
+                    left->pn_extra |= PNX_CANTFOLD;
+                if (pn2->pn_type == TOK_STRING)
+                    left->pn_extra |= PNX_STRCAT;
+                else if (pn2->pn_type != TOK_NUMBER)
+                    left->pn_extra |= PNX_CANTFOLD;
+            }
         }
+        PN_APPEND(left, right);
+        left->pn_pos.end = right->pn_pos.end;
+        if (tt == TOK_PLUS) {
+            if (right->pn_type == TOK_STRING)
+                left->pn_extra |= PNX_STRCAT;
+            else if (right->pn_type != TOK_NUMBER)
+                left->pn_extra |= PNX_CANTFOLD;
+        }
+        return left;
     }
+
+    /*
+     * Fold constant addition immediately, to conserve node space and, what's
+     * more, so js_FoldConstants never sees mixed addition and concatenation
+     * operations with more than one leading non-string operand in a PN_LIST
+     * generated for expressions such as 1 + 2 + "pt" (which should evaluate
+     * to "3pt", not "12pt").
+     */
+    if (tt == TOK_PLUS &&
+        left->pn_type == TOK_NUMBER &&
+        right->pn_type == TOK_NUMBER) {
+        left->pn_dval += right->pn_dval;
+        RecycleTree(right, tc);
+        return left;
+    }
+
+    pn = NewOrRecycledNode(cx, tc);
+    if (!pn)
+        return NULL;
     pn->pn_type = tt;
     pn->pn_pos.begin = left->pn_pos.begin;
     pn->pn_pos.end = right->pn_pos.end;
@@ -193,49 +292,6 @@ NewBinary(JSContext *cx, JSTokenType tt,
         maxparsenodes = parsenodes - recyclednodes;
 #endif
     return pn;
-}
-
-static void
-RecycleTree(JSParseNode *pn, JSTreeContext *tc)
-{
-    JSParseNode *pn2;
-
-    if (!pn)
-        return;
-    JS_ASSERT(pn != tc->nodeList);      /* catch back-to-back dup recycles */
-    switch (pn->pn_arity) {
-      case PN_FUNC:
-        RecycleTree(pn->pn_body, tc);
-        break;
-      case PN_LIST:
-        while ((pn2 = pn->pn_head) != NULL) {
-            pn->pn_head = pn2->pn_next;
-            RecycleTree(pn2, tc);
-        }
-        break;
-      case PN_TERNARY:
-        RecycleTree(pn->pn_kid1, tc);
-        RecycleTree(pn->pn_kid2, tc);
-        RecycleTree(pn->pn_kid3, tc);
-        break;
-      case PN_BINARY:
-        RecycleTree(pn->pn_left, tc);
-        RecycleTree(pn->pn_right, tc);
-        break;
-      case PN_UNARY:
-        RecycleTree(pn->pn_kid, tc);
-        break;
-      case PN_NAME:
-        RecycleTree(pn->pn_expr, tc);
-        break;
-      case PN_NULLARY:
-        break;
-    }
-    pn->pn_next = tc->nodeList;
-    tc->nodeList = pn;
-#ifdef METER_PARSENODES
-    recyclednodes++;
-#endif
 }
 
 static JSBool
@@ -417,6 +473,7 @@ js_CompileTokenStream(JSContext *cx, JSObject *chain, JSTokenStream *ts,
          * that the tc can be downcast to a cg and used to emit code during
          * parsing, rather than at the end of the parse phase.
          */
+        JS_ASSERT(cg->treeContext.flags & TCF_COMPILING);
         ok = JS_TRUE;
     }
 
@@ -1291,6 +1348,10 @@ Statement(JSContext *cx, JSTokenStream *ts, JSTreeContext *tc)
                 pn4->pn_pos.end = pn5->pn_pos.end;
                 PN_APPEND(pn4, pn5);
             }
+
+            /* Fix the PN_LIST so it doesn't begin at the TOK_COLON. */
+            if (pn4->pn_head)
+                pn4->pn_pos.begin = pn4->pn_head->pn_pos.begin;
             pn3->pn_pos.end = pn4->pn_pos.end;
             pn3->pn_right = pn4;
         }
@@ -3034,6 +3095,139 @@ ContainsVarStmt(JSParseNode *pn)
     return JS_FALSE;
 }
 
+/*
+ * Fold from one constant type to another.
+ * XXX handles only strings and numbers for now
+ */
+static JSBool
+FoldType(JSContext *cx, JSParseNode *pn, JSTokenType type)
+{
+    if (pn->pn_type != type) {
+        switch (type) {
+          case TOK_NUMBER:
+            if (pn->pn_type == TOK_STRING) {
+                jsdouble d;
+                if (!js_ValueToNumber(cx, ATOM_KEY(pn->pn_atom), &d))
+                    return JS_FALSE;
+                pn->pn_dval = d;
+                pn->pn_type = TOK_NUMBER;
+                pn->pn_op = JSOP_NUMBER;
+            }
+            break;
+
+          case TOK_STRING:
+            if (pn->pn_type == TOK_NUMBER) {
+                JSString *str = js_NumberToString(cx, pn->pn_dval);
+                if (!str)
+                    return JS_FALSE;
+                pn->pn_atom = js_AtomizeString(cx, str, 0);
+                if (!pn->pn_atom)
+                    return JS_FALSE;
+                pn->pn_type = TOK_STRING;
+                pn->pn_op = JSOP_STRING;
+            }
+            break;
+
+          default:;
+        }
+    }
+    return JS_TRUE;
+}
+
+/*
+ * Fold two numeric constants.  Beware that pn1 and pn2 are recycled, unless
+ * one of them aliases pn, so you can't safely fetch pn2->pn_next, e.g., after
+ * a successful call to this function.
+ */
+static JSBool
+FoldBinaryNumeric(JSContext *cx, JSOp op, JSParseNode *pn1, JSParseNode *pn2,
+                  JSParseNode *pn, JSTreeContext *tc)
+{
+    jsdouble d, d2;
+    int32 i, j;
+    uint32 u;
+
+    JS_ASSERT(pn1->pn_type == TOK_NUMBER && pn2->pn_type == TOK_NUMBER);
+    d = pn1->pn_dval;
+    d2 = pn2->pn_dval;
+    switch (op) {
+      case JSOP_LSH:
+      case JSOP_RSH:
+        if (!js_DoubleToECMAInt32(cx, d, &i))
+            return JS_FALSE;
+        if (!js_DoubleToECMAInt32(cx, d2, &j))
+            return JS_FALSE;
+        j &= 31;
+        d = (op == JSOP_LSH) ? i << j : i >> j;
+        break;
+
+      case JSOP_URSH:
+        if (!js_DoubleToECMAUint32(cx, d, &u))
+            return JS_FALSE;
+        if (!js_DoubleToECMAInt32(cx, d2, &j))
+            return JS_FALSE;
+        j &= 31;
+        d = u >> j;
+        break;
+
+      case JSOP_ADD:
+        d += d2;
+        break;
+
+      case JSOP_SUB:
+        d -= d2;
+        break;
+
+      case JSOP_MUL:
+        d *= d2;
+        break;
+
+      case JSOP_DIV:
+        if (d2 == 0) {
+#if defined(XP_WIN) || defined(XP_OS2)
+            /* XXX MSVC miscompiles such that (NaN == 0) */
+            if (JSDOUBLE_IS_NaN(d2))
+                d = *cx->runtime->jsNaN;
+            else
+#endif
+            if (d == 0 || JSDOUBLE_IS_NaN(d))
+                d = *cx->runtime->jsNaN;
+            else if ((JSDOUBLE_HI32(d) ^ JSDOUBLE_HI32(d2)) >> 31)
+                d = *cx->runtime->jsNegativeInfinity;
+            else
+                d = *cx->runtime->jsPositiveInfinity;
+        } else {
+            d /= d2;
+        }
+        break;
+
+      case JSOP_MOD:
+        if (d2 == 0) {
+            d = *cx->runtime->jsNaN;
+        } else {
+#if defined(XP_WIN) || defined(XP_OS2)
+          /* Workaround MS fmod bug where 42 % (1/0) => NaN, not 42. */
+          if (!(JSDOUBLE_IS_FINITE(d) && JSDOUBLE_IS_INFINITE(d2)))
+#endif
+            d = fmod(d, d2);
+        }
+        break;
+
+      default:;
+    }
+
+    /* Take care to allow pn1 or pn2 to alias pn. */
+    if (pn1 != pn)
+        RecycleTree(pn1, tc);
+    if (pn2 != pn)
+        RecycleTree(pn2, tc);
+    pn->pn_type = TOK_NUMBER;
+    pn->pn_op = JSOP_NUMBER;
+    pn->pn_arity = PN_NULLARY;
+    pn->pn_dval = d;
+    return JS_TRUE;
+}
+
 JSBool
 js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc)
 {
@@ -3046,7 +3240,8 @@ js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc)
         break;
 
       case PN_LIST:
-        for (pn2 = pn->pn_head; pn2; pn2 = pn2->pn_next) {
+        /* Save the list head in pn1 for later use. */
+        for (pn1 = pn2 = pn->pn_head; pn2; pn2 = pn2->pn_next) {
             if (!js_FoldConstants(cx, pn2, tc))
                 return JS_FALSE;
         }
@@ -3145,9 +3340,75 @@ js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc)
         break;
 
       case TOK_PLUS:
-        if (pn1->pn_type == TOK_STRING && pn2->pn_type == TOK_STRING) {
+        if (pn->pn_arity == PN_LIST) {
+            size_t length, length2;
+            jschar *chars;
+            JSString *str, *str2;
+
+            /*
+             * Any string literal term with all others number or string means
+             * this is a concatenation.  If any term is not a string or number
+             * literal, we can't fold.
+             */
+            JS_ASSERT(pn->pn_count > 2);
+            if (pn->pn_extra & PNX_CANTFOLD)
+                return JS_TRUE;
+            if (pn->pn_extra != PNX_STRCAT)
+                goto do_binary_op;
+
+            /* Ok, we're concatenating: convert non-string constant operands. */
+            length = 0;
+            for (pn2 = pn1; pn2; pn2 = pn2->pn_next) {
+                if (!FoldType(cx, pn2, TOK_STRING))
+                    return JS_FALSE;
+                /* XXX fold only if all operands convert to string */
+                if (pn2->pn_type != TOK_STRING)
+                    return JS_TRUE;
+                length += ATOM_TO_STRING(pn2->pn_atom)->length;
+            }
+
+            /* Allocate a new buffer and string descriptor for the result. */
+            chars = (jschar *) JS_malloc(cx, (length + 1) * sizeof(jschar));
+            if (!chars)
+                return JS_FALSE;
+            str = js_NewString(cx, chars, length, 0);
+            if (!str) {
+                JS_free(cx, chars);
+                return JS_FALSE;
+            }
+
+            /* Fill the buffer, advancing chars and recycling kids as we go. */
+            for (pn2 = pn1; pn2; pn2 = pn3) {
+                str2 = ATOM_TO_STRING(pn2->pn_atom);
+                length2 = str2->length;
+                js_strncpy(chars, str2->chars, length2);
+                chars += length2;
+                pn3 = pn2->pn_next;
+                RecycleTree(pn2, tc);
+            }
+            *chars = 0;
+
+            /* Atomize the result string and mutate pn to refer to it. */
+            pn->pn_atom = js_AtomizeString(cx, str, 0);
+            if (!pn->pn_atom)
+                return JS_FALSE;
+            pn->pn_type = TOK_STRING;
+            pn->pn_op = JSOP_STRING;
+            pn->pn_arity = PN_NULLARY;
+            break;
+        }
+
+        /* Handle a binary string concatenation. */
+        JS_ASSERT(pn->pn_arity == PN_BINARY);
+        if (pn1->pn_type == TOK_STRING || pn2->pn_type == TOK_STRING) {
             JSString *left, *right, *str;
 
+            if (!FoldType(cx, (pn1->pn_type != TOK_STRING) ? pn1 : pn2,
+                          TOK_STRING)) {
+                return JS_FALSE;
+            }
+            if (pn1->pn_type != TOK_STRING || pn2->pn_type != TOK_STRING)
+                return JS_TRUE;
             left = ATOM_TO_STRING(pn1->pn_atom);
             right = ATOM_TO_STRING(pn2->pn_atom);
             str = js_ConcatStrings(cx, left, right);
@@ -3163,7 +3424,9 @@ js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc)
             RecycleTree(pn2, tc);
             break;
         }
-        goto do_binary;
+
+        /* Can't concatenate string literals, let's try numbers. */
+        goto do_binary_op;
 
       case TOK_STAR:
         /* The * in 'import *;' parses as a nullary star node. */
@@ -3174,86 +3437,39 @@ js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc)
       case TOK_SHOP:
       case TOK_MINUS:
       case TOK_DIVOP:
-      do_binary:
-        if (pn1->pn_type == TOK_NUMBER && pn2->pn_type == TOK_NUMBER) {
-            jsdouble d, d2;
-            int32 i, j;
-            uint32 u;
-
-            /* Fold two numeric constants. */
-            d = pn1->pn_dval;
-            d2 = pn2->pn_dval;
-            switch (pn->pn_op) {
-              case JSOP_LSH:
-              case JSOP_RSH:
-                if (!js_DoubleToECMAInt32(cx, d, &i))
+      do_binary_op:
+        if (pn->pn_arity == PN_LIST) {
+            JS_ASSERT(pn->pn_count > 2);
+            for (pn2 = pn1; pn2; pn2 = pn2->pn_next) {
+                if (!FoldType(cx, pn2, TOK_NUMBER))
                     return JS_FALSE;
-                if (!js_DoubleToECMAInt32(cx, d2, &j))
-                    return JS_FALSE;
-                j &= 31;
-                d = (pn->pn_op == JSOP_LSH) ? i << j : i >> j;
-                break;
-
-              case JSOP_URSH:
-                if (!js_DoubleToECMAUint32(cx, d, &u))
-                    return JS_FALSE;
-                if (!js_DoubleToECMAInt32(cx, d2, &j))
-                    return JS_FALSE;
-                j &= 31;
-                d = u >> j;
-                break;
-
-              case JSOP_ADD:
-                d += d2;
-                break;
-
-              case JSOP_SUB:
-                d -= d2;
-                break;
-
-              case JSOP_MUL:
-                d *= d2;
-                break;
-
-              case JSOP_DIV:
-                if (d2 == 0) {
-#ifdef XP_PC
-                    /* XXX MSVC miscompiles such that (NaN == 0) */
-                    if (JSDOUBLE_IS_NaN(d2))
-                        d = *cx->runtime->jsNaN;
-                    else
-#endif
-                    if (d == 0 || JSDOUBLE_IS_NaN(d))
-                        d = *cx->runtime->jsNaN;
-                    else if ((JSDOUBLE_HI32(d) ^ JSDOUBLE_HI32(d2)) >> 31)
-                        d = *cx->runtime->jsNegativeInfinity;
-                    else
-                        d = *cx->runtime->jsPositiveInfinity;
-                } else {
-                    d /= d2;
-                }
-                break;
-
-              case JSOP_MOD:
-                if (d2 == 0) {
-                    d = *cx->runtime->jsNaN;
-                } else {
-#ifdef XP_PC
-                  /* Workaround MS fmod bug where 42 % (1/0) => NaN, not 42. */
-                  if (!(JSDOUBLE_IS_FINITE(d) && JSDOUBLE_IS_INFINITE(d2)))
-#endif
-                    d = fmod(d, d2);
-                }
-                break;
-
-              default:;
+                /* XXX fold only if all operands convert to number */
+                if (pn2->pn_type != TOK_NUMBER)
+                    break;
             }
-            pn->pn_type = TOK_NUMBER;
-            pn->pn_op = JSOP_NUMBER;
-            pn->pn_arity = PN_NULLARY;
-            pn->pn_dval = d;
-            RecycleTree(pn1, tc);
-            RecycleTree(pn2, tc);
+            if (!pn2) {
+                JSOp op = pn->pn_op;
+
+                pn2 = pn1->pn_next;
+                pn3 = pn2->pn_next;
+                if (!FoldBinaryNumeric(cx, op, pn1, pn2, pn, tc))
+                    return JS_FALSE;
+                while ((pn2 = pn3) != NULL) {
+                    pn3 = pn2->pn_next;
+                    if (!FoldBinaryNumeric(cx, op, pn, pn2, pn, tc))
+                        return JS_FALSE;
+                }
+            }
+        } else {
+            JS_ASSERT(pn->pn_arity == PN_BINARY);
+            if (!FoldType(cx, pn1, TOK_NUMBER) ||
+                !FoldType(cx, pn2, TOK_NUMBER)) {
+                return JS_FALSE;
+            }
+            if (pn1->pn_type == TOK_NUMBER && pn2->pn_type == TOK_NUMBER) {
+                if (!FoldBinaryNumeric(cx, pn->pn_op, pn1, pn2, pn, tc))
+                    return JS_FALSE;
+            }
         }
         break;
 
@@ -3262,7 +3478,7 @@ js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc)
             jsdouble d;
             int32 i;
 
-            /* Operate on one numeric constants. */
+            /* Operate on one numeric constant. */
             d = pn1->pn_dval;
             switch (pn->pn_op) {
               case JSOP_BITNOT:
@@ -3306,32 +3522,6 @@ js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc)
         break;
 
       default:;
-    }
-
-    /*
-     * Flatten a left-associative (left-heavy) tree of a given operator into
-     * a list, to reduce js_EmitTree recursion.
-     */
-    if (pn->pn_arity == PN_BINARY &&
-        pn1 &&
-        pn1->pn_type == pn->pn_type &&
-        pn1->pn_op == pn->pn_op &&
-        (js_CodeSpec[pn->pn_op].format & JOF_LEFTASSOC)) {
-        if (pn1->pn_arity == PN_LIST) {
-            /* We already flattened pn1, so move it to pn and append pn2. */
-            PN_MOVE_NODE(pn, pn1);
-            PN_APPEND(pn, pn2);
-        } else {
-            /* Convert pn into a list containing pn1's kids followed by pn2. */
-            pn->pn_arity = PN_LIST;
-            PN_INIT_LIST_1(pn, pn1->pn_left);
-            PN_APPEND(pn, pn1->pn_right);
-            PN_APPEND(pn, pn2);
-
-            /* Clear pn1 so it can be recycled by itself, without its kids. */
-            PN_CLEAR_NODE(pn1);
-        }
-        RecycleTree(pn1, tc);
     }
 
     return JS_TRUE;

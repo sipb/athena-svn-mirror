@@ -47,7 +47,6 @@
 #include "nsICSSLoader.h"
 #include "nsIHTMLContentContainer.h"
 #include "nsIURL.h"
-#include "nsIStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsIDocument.h"
 #include "nsIDeviceContext.h"
@@ -71,9 +70,9 @@
 #include "nsUnicharUtils.h"
 
 #include "nsIStyleSet.h"
-#include "nsISizeOfHandler.h"
 
 #include "nsContentUtils.h"
+#include "nsContentErrors.h"
 
 // #define DEBUG_REFS
  
@@ -89,9 +88,7 @@ static NS_DEFINE_IID(kCSSDisplaySID, NS_CSS_DISPLAY_SID);
 static NS_DEFINE_IID(kCSSTableSID, NS_CSS_TABLE_SID);
 static NS_DEFINE_IID(kCSSContentSID, NS_CSS_CONTENT_SID);
 static NS_DEFINE_IID(kCSSUserInterfaceSID, NS_CSS_USER_INTERFACE_SID);
-#ifdef INCLUDE_XUL
 static NS_DEFINE_IID(kCSSXULSID, NS_CSS_XUL_SID);
-#endif
 #ifdef MOZ_SVG
 static NS_DEFINE_IID(kCSSSVGSID, NS_CSS_SVG_SID);
 #endif
@@ -308,52 +305,6 @@ PRBool nsAttrSelector::Equals(const nsAttrSelector* aOther) const
   }
   return PR_FALSE;
 }
-
-#ifdef DEBUG
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as nsAttrSelector's size): 
-*    1) sizeof(*this) + the size of mAttr atom (if it exists and is unique)
-*
-*  Contained / Aggregated data (not reported as nsAttrSelector's size):
-*    none
-*
-*  Children / siblings / parents:
-*    1) Recurses to the mMext instance which is reported as a seperate instance
-*    
-******************************************************************************/
-void nsAttrSelector::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-  if(! uniqueItems->AddItem((void*)this)){
-    return;
-  }
-
-  PRUint32 localSize=0;
-
-  // create a tag for this instance
-  nsCOMPtr<nsIAtom> tag;
-  tag = getter_AddRefs(NS_NewAtom("nsAttrSelector"));
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(*this);
-
-  // add in the mAttr atom
-  if (mAttr && uniqueItems->AddItem(mAttr)){
-    mAttr->SizeOf(aSizeOfHandler, &localSize);
-    aSize += localSize;
-  }
-  aSizeOfHandler->AddSize(tag,aSize);
-
-  // recurse to the next one...
-  if(mNext){
-    mNext->SizeOf(aSizeOfHandler, localSize);
-  }
-}
-#endif
 
 MOZ_DECL_CTOR_COUNTER(nsCSSSelector)
 
@@ -626,121 +577,13 @@ PRInt32 nsCSSSelector::CalcWeight(void) const
   return weight;
 }
 
-#ifdef DEBUG
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as nsCSSSelector's size): 
-*    1) sizeof(*this) + the size of the mTag 
-*       + the size of the mIDList unique items 
-*       + the size of the mClassList and mPseudoClassList unique items
-*
-*  Contained / Aggregated data (not reported as nsCSSSelector's size):
-*    1) AttributeList is called out to seperately if it exists
-*
-*  Children / siblings / parents:
-*    1) Recurses to mNext which is counted as it's own instance
-*    
-******************************************************************************/
-void nsCSSSelector::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-  if(! uniqueItems->AddItem((void*)this)){
-    return;
-  }
-
-  PRUint32 localSize=0;
-
-  // create a tag for this instance
-  nsCOMPtr<nsIAtom> tag;
-  tag = getter_AddRefs(NS_NewAtom("nsCSSSelector"));
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(*this);
-  
-  // now get the member-atoms and add them in
-  if(mTag && uniqueItems->AddItem(mTag)){
-    localSize = 0;
-    mTag->SizeOf(aSizeOfHandler, &localSize);
-    aSize += localSize;
-  }
-
-
-  // XXX ????
-
-
-
-  // a couple of simple atom lists
-  if(mIDList && uniqueItems->AddItem(mIDList)){
-    aSize += sizeof(*mIDList);
-    nsAtomList *pNext = nsnull;
-    pNext = mIDList;    
-    while(pNext){
-      if(pNext->mAtom && uniqueItems->AddItem(pNext->mAtom)){
-        localSize = 0;
-        pNext->mAtom->SizeOf(aSizeOfHandler, &localSize);
-        aSize += localSize;
-      }
-      pNext = pNext->mNext;
-    }
-  }
-  if(mClassList && uniqueItems->AddItem(mClassList)){
-    aSize += sizeof(*mClassList);
-    nsAtomList *pNext = nsnull;
-    pNext = mClassList;    
-    while(pNext){
-      if(pNext->mAtom && uniqueItems->AddItem(pNext->mAtom)){
-        localSize = 0;
-        pNext->mAtom->SizeOf(aSizeOfHandler, &localSize);
-        aSize += localSize;
-      }
-      pNext = pNext->mNext;
-    }
-  }
-  if(mPseudoClassList && uniqueItems->AddItem(mPseudoClassList)){
-    nsAtomStringList *pNext = nsnull;
-    pNext = mPseudoClassList;    
-    while(pNext){
-      if(pNext->mAtom && uniqueItems->AddItem(pNext->mAtom)){
-        localSize = 0;
-        pNext->mAtom->SizeOf(aSizeOfHandler, &localSize);
-        aSize += localSize;
-      }
-      pNext = pNext->mNext;
-    }
-  }
-  // done with undelegated sizes 
-  aSizeOfHandler->AddSize(tag, aSize);
-
-  // the AttributeList gets its own delegation-call
-  if(mAttrList){
-    localSize = 0;
-    mAttrList->SizeOf(aSizeOfHandler, localSize);
-  }
-
-  // don't forget the negated selectors
-  if(mNegations) {
-    localSize = 0;
-    mNegations->SizeOf(aSizeOfHandler, localSize);
-  }
-  
-  // finally chain to the next...
-  if(mNext){
-    localSize = 0;
-    mNext->SizeOf(aSizeOfHandler, localSize);
-  }
-}
-#endif
-
 // pseudo-elements are stored in the selectors' chain using fictional elements;
 // these fictional elements have mTag starting with a colon
 static PRBool IsPseudoElement(nsIAtom* aAtom)
 {
   if (aAtom) {
-    const PRUnichar *str;
-    aAtom->GetUnicode(&str);
+    const char* str;
+    aAtom->GetUTF8String(&str);
     return str && (*str == ':');
   }
 
@@ -759,7 +602,7 @@ void nsCSSSelector::AppendNegationToString(nsAString& aString)
 nsresult nsCSSSelector::ToString( nsAString& aString, nsICSSStyleSheet* aSheet, PRBool aIsPseudoElem,
                                   PRInt8 aNegatedIndex) const
 {
-  const PRUnichar* temp;
+  nsAutoString temp;
   PRBool aIsNegated = PRBool(0 < aNegatedIndex);
 
   // selectors are linked from right-to-left, so the next selector in the linked list
@@ -786,8 +629,8 @@ nsresult nsCSSSelector::ToString( nsAString& aString, nsICSSStyleSheet* aSheet, 
     // will return null if namespace was the default
     sheetNS->FindNameSpacePrefix(mNameSpace, *getter_AddRefs(prefixAtom));
     if (prefixAtom) {
-      const PRUnichar* prefix;
-      prefixAtom->GetUnicode(&prefix);
+      nsAutoString prefix;
+      prefixAtom->ToString(prefix);
       aString.Append(prefix);
       aString.Append(PRUnichar('|'));
     }
@@ -803,15 +646,16 @@ nsresult nsCSSSelector::ToString( nsAString& aString, nsICSSStyleSheet* aSheet, 
   } else {
     // Append the tag name, if there is one
     if (mTag) {
-      mTag->GetUnicode(&temp);
-      aString.Append(temp);
+      nsAutoString prefix;
+      mTag->ToString(prefix);
+      aString.Append(prefix);
       NS_IF_NEGATED_END(aIsNegated, aString)
     }
     // Append the id, if there is one
     if (mIDList) {
       nsAtomList* list = mIDList;
       while (list != nsnull) {
-        list->mAtom->GetUnicode(&temp);
+        list->mAtom->ToString(temp);
         NS_IF_NEGATED_START(aIsNegated, aString)
         aString.Append(PRUnichar('#'));
         aString.Append(temp);
@@ -823,7 +667,7 @@ nsresult nsCSSSelector::ToString( nsAString& aString, nsICSSStyleSheet* aSheet, 
     if (mClassList) {
       nsAtomList* list = mClassList;
       while (list != nsnull) {
-        list->mAtom->GetUnicode(&temp);
+        list->mAtom->ToString(temp);
         NS_IF_NEGATED_START(aIsNegated, aString)
         aString.Append(PRUnichar('.'));
         aString.Append(temp);
@@ -847,14 +691,14 @@ nsresult nsCSSSelector::ToString( nsAString& aString, nsICSSStyleSheet* aSheet, 
         // will return null if namespace was the default
         sheetNS->FindNameSpacePrefix(list->mNameSpace, *getter_AddRefs(prefixAtom));
         if (prefixAtom) { 
-          const PRUnichar* prefix;
-          prefixAtom->GetUnicode(&prefix);
+          nsAutoString prefix;
+          prefixAtom->ToString(prefix);
           aString.Append(prefix);
           aString.Append(PRUnichar('|'));
         }
       }
       // Append the attribute name
-      list->mAttr->GetUnicode(&temp);
+      list->mAttr->ToString(temp);
       aString.Append(temp);
       // Append the function
       if (list->mFunction == NS_ATTR_FUNC_EQUALS) {
@@ -887,7 +731,7 @@ nsresult nsCSSSelector::ToString( nsAString& aString, nsICSSStyleSheet* aSheet, 
   if (mPseudoClassList) {
     nsAtomStringList* list = mPseudoClassList;
     while (list != nsnull) {
-      list->mAtom->GetUnicode(&temp);
+      list->mAtom->ToString(temp);
       NS_IF_NEGATED_START(aIsNegated, aString)
       aString.Append(temp);
       if (nsnull != list->mString) {
@@ -918,23 +762,21 @@ nsresult nsCSSSelector::ToString( nsAString& aString, nsICSSStyleSheet* aSheet, 
 // -- CSSImportantRule -------------------------------
 
 // New map helpers shared by both important and regular rules.
-static nsresult MapFontForDeclaration(nsCSSDeclaration* aDecl, nsCSSFont& aFont);
-static nsresult MapDisplayForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSDisplay& aDisplay);
-static nsresult MapColorForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSColor& aColor);
-static nsresult MapMarginForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSMargin& aMargin); 
-static nsresult MapListForDeclaration(nsCSSDeclaration* aDecl, nsCSSList& aList);
-static nsresult MapPositionForDeclaration(nsCSSDeclaration* aDecl, nsCSSPosition& aPosition);
-static nsresult MapTableForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSTable& aTable);
-static nsresult MapContentForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSContent& aContent);
-static nsresult MapTextForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSText& aContent);
-static nsresult MapUIForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSUserInterface& aContent);
+static nsresult MapFontForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataFont& aFont);
+static nsresult MapDisplayForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataDisplay& aDisplay);
+static nsresult MapColorForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataColor& aColor);
+static nsresult MapMarginForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataMargin& aMargin); 
+static nsresult MapListForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataList& aList);
+static nsresult MapPositionForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataPosition& aPosition);
+static nsresult MapTableForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataTable& aTable);
+static nsresult MapContentForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataContent& aContent);
+static nsresult MapTextForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataText& aContent);
+static nsresult MapUIForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataUserInterface& aContent);
 
-#ifdef INCLUDE_XUL
-static nsresult MapXULForDeclaration(nsCSSDeclaration* aDecl, nsCSSXUL& aXUL);
-#endif
+static nsresult MapXULForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataXUL& aXUL);
 
 #ifdef MOZ_SVG
-static nsresult MapSVGForDeclaration(nsCSSDeclaration* aDecl, nsCSSSVG& aSVG);
+static nsresult MapSVGForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataSVG& aSVG);
 #endif
 
 class CSSStyleRuleImpl;
@@ -952,8 +794,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out = stdout, PRInt32 aIndent = 0) const;
-
-  virtual void SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize);
 #endif
 
 protected:
@@ -969,7 +809,6 @@ CSSImportantRule::CSSImportantRule(nsICSSStyleSheet* aSheet, nsCSSDeclaration* a
   : mDeclaration(aDeclaration),
     mSheet(aSheet)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 CSSImportantRule::~CSSImportantRule(void)
@@ -1013,10 +852,8 @@ CSSImportantRule::MapRuleInfoInto(nsRuleData* aRuleData)
     return MapTextForDeclaration(mDeclaration, aRuleData->mSID, *aRuleData->mTextData);
   else if (aRuleData->mUIData)
     return MapUIForDeclaration(mDeclaration, aRuleData->mSID, *aRuleData->mUIData);
-#ifdef INCLUDE_XUL
   else if (aRuleData->mXULData)
     return MapXULForDeclaration(mDeclaration, *aRuleData->mXULData);
-#endif
 #ifdef MOZ_SVG
   else if (aRuleData->mSVGData)
     return MapSVGForDeclaration(mDeclaration, *aRuleData->mSVGData);
@@ -1043,48 +880,6 @@ CSSImportantRule::List(FILE* out, PRInt32 aIndent) const
 
   return NS_OK;
 }
-
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as CSSImportantRule's size): 
-*    1) sizeof(*this) 
-*
-*  Contained / Aggregated data (not reported as CSSImportantRule's size):
-*    1) mDeclaration is sized seperately
-*    2) mSheet is sized seperately
-*
-*  Children / siblings / parents:
-*    none
-*    
-******************************************************************************/
-void CSSImportantRule::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-  if(! uniqueItems->AddItem((void*)this)){
-    return;
-  }
-
-  PRUint32 localSize=0;
-
-  // create a tag for this instance
-  nsCOMPtr<nsIAtom> tag;
-  tag = getter_AddRefs(NS_NewAtom("CSSImportantRule"));
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(CSSImportantRule);
-  aSizeOfHandler->AddSize(tag,aSize);
-
-  // now dump the mDeclaration and mSheet
-  if(mDeclaration){
-    mDeclaration->SizeOf(aSizeOfHandler, localSize);
-  }
-  if(mSheet){
-    mSheet->SizeOf(aSizeOfHandler, localSize);
-  }
-}
 #endif
 
 // -- nsDOMStyleRuleDeclaration -------------------------------
@@ -1101,7 +896,6 @@ public:
   virtual void DropReference(void);
   virtual nsresult GetCSSDeclaration(nsCSSDeclaration **aDecl,
                                      PRBool aAllocate);
-  virtual nsresult SetCSSDeclaration(nsCSSDeclaration *aDecl);
   virtual nsresult GetCSSParsingEnvironment(nsICSSStyleRule* aRule,
                                             nsICSSStyleSheet** aSheet,
                                             nsIDocument** aDocument,
@@ -1201,16 +995,6 @@ DOMCSSDeclarationImpl::GetCSSDeclaration(nsCSSDeclaration **aDecl,
   }
   else {
     *aDecl = nsnull;
-  }
-
-  return NS_OK;
-}
-
-nsresult
-DOMCSSDeclarationImpl::SetCSSDeclaration(nsCSSDeclaration *aDecl)
-{
-  if (mRule) {
-    mRule->SetDeclaration(aDecl);
   }
 
   return NS_OK;
@@ -1328,9 +1112,6 @@ DOMCSSDeclarationImpl::ParseDeclaration(const nsAString& aDecl,
                                       getter_AddRefs(cssParser));
 
     if (NS_SUCCEEDED(result)) {
-      nsCSSDeclaration* declClone = decl->Clone();
-      NS_ENSURE_TRUE(declClone, NS_ERROR_OUT_OF_MEMORY);
-
       if (aClearOldDecl) {
         // This should be done with decl->Clear() once such a method exists.
         nsAutoString propName;
@@ -1352,10 +1133,7 @@ DOMCSSDeclarationImpl::ParseDeclaration(const nsAString& aDecl,
       result = cssParser->ParseAndAppendDeclaration(aDecl, baseURI, decl,
                                                     aParseOnlyOneDecl, &hint);
 
-      if (result == NS_CSS_PARSER_DROP_DECLARATION) {
-        SetCSSDeclaration(declClone);
-        result = NS_OK;
-      } else if (NS_SUCCEEDED(result)) {
+      if (NS_SUCCEEDED(result)) {
         if (cssSheet) {
           cssSheet->SetModified(PR_TRUE);
         }
@@ -1377,12 +1155,13 @@ DOMCSSDeclarationImpl::ParseDeclaration(const nsAString& aDecl,
 nsresult 
 DOMCSSDeclarationImpl::GetParent(nsISupports **aParent)
 {
-  if (nsnull != mRule) {
-    return mRule->QueryInterface(kISupportsIID, (void **)aParent);
-  } else {
-    NS_ENSURE_ARG_POINTER(aParent);
-    *aParent = nsnull;
+  NS_ENSURE_ARG_POINTER(aParent);
+
+  if (mRule) {
+    return CallQueryInterface(mRule, aParent);
   }
+
+  *aParent = nsnull;
 
   return NS_OK;
 }
@@ -1432,8 +1211,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out = stdout, PRInt32 aIndent = 0) const;
-
-  virtual void SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize);
 #endif
 
   // nsIDOMCSSRule interface
@@ -1698,7 +1475,7 @@ CSSStyleRuleImpl::Clone(nsICSSRule*& aClone) const
 {
   CSSStyleRuleImpl* clone = new CSSStyleRuleImpl(*this);
   if (clone) {
-    return clone->QueryInterface(NS_GET_IID(nsICSSRule), (void **)&aClone);
+    return CallQueryInterface(clone, &aClone);
   }
   aClone = nsnull;
   return NS_ERROR_OUT_OF_MEMORY;
@@ -1730,10 +1507,8 @@ CSSStyleRuleImpl::MapRuleInfoInto(nsRuleData* aRuleData)
     return MapTextForDeclaration(mDeclaration, aRuleData->mSID, *aRuleData->mTextData);
   else if (aRuleData->mUIData)
     return MapUIForDeclaration(mDeclaration, aRuleData->mSID, *aRuleData->mUIData);
-#ifdef INCLUDE_XUL
   else if (aRuleData->mXULData)
     return MapXULForDeclaration(mDeclaration, *aRuleData->mXULData);
-#endif
 #ifdef MOZ_SVG
   else if (aRuleData->mSVGData)
     return MapSVGForDeclaration(mDeclaration, *aRuleData->mSVGData);
@@ -1743,7 +1518,7 @@ CSSStyleRuleImpl::MapRuleInfoInto(nsRuleData* aRuleData)
 }
 
 static nsresult 
-MapFontForDeclaration(nsCSSDeclaration* aDecl, nsCSSFont& aFont)
+MapFontForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataFont& aFont)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -1752,8 +1527,10 @@ MapFontForDeclaration(nsCSSDeclaration* aDecl, nsCSSFont& aFont)
   if (!ourFont)
     return NS_OK; // We don't have any rules for fonts.
 
-  if (eCSSUnit_Null == aFont.mFamily.GetUnit() && eCSSUnit_Null != ourFont->mFamily.GetUnit())
+  if (eCSSUnit_Null == aFont.mFamily.GetUnit() && eCSSUnit_Null != ourFont->mFamily.GetUnit()) {
     aFont.mFamily = ourFont->mFamily;
+    aFont.mFamilyFromHTML = PR_FALSE;
+  }
 
   if (eCSSUnit_Null == aFont.mStyle.GetUnit() && eCSSUnit_Null != ourFont->mStyle.GetUnit())
     aFont.mStyle = ourFont->mStyle;
@@ -1773,9 +1550,8 @@ MapFontForDeclaration(nsCSSDeclaration* aDecl, nsCSSFont& aFont)
   return NS_OK;
 }
 
-#ifdef INCLUDE_XUL
 static nsresult 
-MapXULForDeclaration(nsCSSDeclaration* aDecl, nsCSSXUL& aXUL)
+MapXULForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataXUL& aXUL)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -1810,11 +1586,10 @@ MapXULForDeclaration(nsCSSDeclaration* aDecl, nsCSSXUL& aXUL)
 
   return NS_OK;
 }
-#endif
 
 #ifdef MOZ_SVG
 static nsresult 
-MapSVGForDeclaration(nsCSSDeclaration* aDecl, nsCSSSVG& aSVG)
+MapSVGForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataSVG& aSVG)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -1863,7 +1638,7 @@ MapSVGForDeclaration(nsCSSDeclaration* aDecl, nsCSSSVG& aSVG)
 
 
 static nsresult 
-MapPositionForDeclaration(nsCSSDeclaration* aDecl, nsCSSPosition& aPosition)
+MapPositionForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataPosition& aPosition)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -1915,7 +1690,7 @@ MapPositionForDeclaration(nsCSSDeclaration* aDecl, nsCSSPosition& aPosition)
 }
 
 static nsresult 
-MapListForDeclaration(nsCSSDeclaration* aDecl, nsCSSList& aList)
+MapListForDeclaration(nsCSSDeclaration* aDecl, nsRuleDataList& aList)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -1959,7 +1734,7 @@ MapListForDeclaration(nsCSSDeclaration* aDecl, nsCSSList& aList)
 }
     
 static nsresult
-MapMarginForDeclaration(nsCSSDeclaration* aDeclaration, const nsStyleStructID& aSID, nsCSSMargin& aMargin)
+MapMarginForDeclaration(nsCSSDeclaration* aDeclaration, const nsStyleStructID& aSID, nsRuleDataMargin& aMargin)
 {
   nsCSSMargin*  ourMargin = (nsCSSMargin*)aDeclaration->GetData(kCSSMarginSID);
   if (!ourMargin)
@@ -2103,7 +1878,7 @@ MapMarginForDeclaration(nsCSSDeclaration* aDeclaration, const nsStyleStructID& a
 }
 
 static nsresult
-MapColorForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSColor& aColor)
+MapColorForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataColor& aColor)
 {
   if (!aDecl)
     return NS_OK;
@@ -2144,6 +1919,10 @@ MapColorForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCS
     if (aColor.mBackClip.GetUnit() == eCSSUnit_Null && ourColor->mBackClip.GetUnit() != eCSSUnit_Null)
       aColor.mBackClip = ourColor->mBackClip;
 
+    // background-inline-policy: enum, inherit
+    if (aColor.mBackInlinePolicy.GetUnit() == eCSSUnit_Null && ourColor->mBackInlinePolicy.GetUnit() != eCSSUnit_Null)
+      aColor.mBackInlinePolicy = ourColor->mBackInlinePolicy;
+
     // background-origin: enum, inherit
     if (aColor.mBackOrigin.GetUnit() == eCSSUnit_Null && ourColor->mBackOrigin.GetUnit() != eCSSUnit_Null)
       aColor.mBackOrigin = ourColor->mBackOrigin;
@@ -2153,7 +1932,7 @@ MapColorForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCS
 }
 
 static nsresult 
-MapTableForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSTable& aTable)
+MapTableForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataTable& aTable)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -2193,7 +1972,7 @@ MapTableForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCS
 }
 
 static nsresult 
-MapContentForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSContent& aContent)
+MapContentForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataContent& aContent)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -2224,7 +2003,7 @@ MapContentForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, ns
 }
 
 static nsresult
-MapTextForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSText& aText)
+MapTextForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataText& aText)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -2262,10 +2041,8 @@ MapTextForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSS
     if (aText.mDecoration.GetUnit() == eCSSUnit_Null && ourText->mDecoration.GetUnit() != eCSSUnit_Null)
       aText.mDecoration = ourText->mDecoration;
 
-#ifdef IBMBIDI
     if (aText.mUnicodeBidi.GetUnit() == eCSSUnit_Null && ourText->mUnicodeBidi.GetUnit() != eCSSUnit_Null)
       aText.mUnicodeBidi = ourText->mUnicodeBidi;
-#endif
   }
 
   return NS_OK;
@@ -2273,7 +2050,7 @@ MapTextForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSS
 }
 
 static nsresult 
-MapDisplayForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSDisplay& aDisplay)
+MapDisplayForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataDisplay& aDisplay)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -2332,7 +2109,7 @@ MapDisplayForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, ns
     }
   }
   else if (aID == eStyleStruct_Visibility) {
-    // opacity: factor, percent, inherit
+    // opacity: factor, inherit
     if (aDisplay.mOpacity.GetUnit() == eCSSUnit_Null && ourDisplay->mOpacity.GetUnit() != eCSSUnit_Null)
       aDisplay.mOpacity = ourDisplay->mOpacity;
 
@@ -2349,7 +2126,7 @@ MapDisplayForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, ns
 }
 
 static nsresult
-MapUIForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsCSSUserInterface& aUI)
+MapUIForDeclaration(nsCSSDeclaration* aDecl, const nsStyleStructID& aID, nsRuleDataUserInterface& aUI)
 {
   if (!aDecl)
     return NS_OK; // The rule must have a declaration.
@@ -2415,59 +2192,6 @@ CSSStyleRuleImpl::List(FILE* out, PRInt32 aIndent) const
 
   return NS_OK;
 }
-
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as CSSStyleRuleImpl's size): 
-*    1) sizeof(*this) 
-*       + sizeof the DOMDeclaration if it exists and is unique
-*
-*  Contained / Aggregated data (not reported as CSSStyleRuleImpl's size):
-*    1) mDeclaration if it exists
-*    2) mImportantRule if it exists
-*
-*  Children / siblings / parents:
-*    none
-*    
-******************************************************************************/
-void CSSStyleRuleImpl::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-  if(! uniqueItems->AddItem((void*)this)){
-    return;
-  }
-
-  PRUint32 localSize=0;
-
-  // create a tag for this instance
-  nsCOMPtr<nsIAtom> tag;
-  tag = getter_AddRefs(NS_NewAtom("CSSStyleRuleImpl"));
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(*this);
-  // remove the sizeof the mSelector's class since we count it seperately below
-  aSize -= sizeof(mSelector);
-
-  // and add the size of the DOMDeclaration
-  // XXX - investigate the size and quantity of these
-  if(mDOMDeclaration && uniqueItems->AddItem(mDOMDeclaration)){
-    aSize += sizeof(DOMCSSDeclarationImpl);
-  }
-  aSizeOfHandler->AddSize(tag,aSize);
-  
-  // now delegate to the Selector, Declaration, and ImportantRule
-  mSelector.SizeOf(aSizeOfHandler, localSize);
-
-  if(mDeclaration){
-    mDeclaration->SizeOf(aSizeOfHandler, localSize);
-  }
-  if(mImportantRule){
-    mImportantRule->SizeOf(aSizeOfHandler, localSize);
-  }
-}
 #endif
 
 NS_IMETHODIMP    
@@ -2507,8 +2231,8 @@ CSSStyleRuleImpl::SetCssText(const nsAString& aCssText)
 NS_IMETHODIMP    
 CSSStyleRuleImpl::GetParentStyleSheet(nsIDOMCSSStyleSheet** aSheet)
 {
-  if (nsnull != mSheet) {
-    return mSheet->QueryInterface(NS_GET_IID(nsIDOMCSSStyleSheet), (void**)aSheet);
+  if (mSheet) {
+    return CallQueryInterface(mSheet, aSheet);
   }
   *aSheet = nsnull;
   return NS_OK;
@@ -2557,17 +2281,18 @@ CSSStyleRuleImpl::GetStyle(nsIDOMCSSStyleDeclaration** aStyle)
   return NS_OK;
 }
 
-NS_EXPORT nsresult
-  NS_NewCSSStyleRule(nsICSSStyleRule** aInstancePtrResult, const nsCSSSelector& aSelector)
+nsresult
+NS_NewCSSStyleRule(nsICSSStyleRule** aInstancePtrResult,
+                   const nsCSSSelector& aSelector)
 {
   if (aInstancePtrResult == nsnull) {
     return NS_ERROR_NULL_POINTER;
   }
 
-  CSSStyleRuleImpl  *it = new CSSStyleRuleImpl(aSelector);
-
-  if (nsnull == it) {
+  CSSStyleRuleImpl *it = new CSSStyleRuleImpl(aSelector);
+  if (!it) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
-  return it->QueryInterface(NS_GET_IID(nsICSSStyleRule), (void **) aInstancePtrResult);
+
+  return CallQueryInterface(it, aInstancePtrResult);
 }

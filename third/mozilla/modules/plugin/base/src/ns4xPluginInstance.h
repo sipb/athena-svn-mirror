@@ -56,7 +56,9 @@
 #include "nsIScriptablePlugin.h"
 
 #include "npupp.h"
+#ifdef OJI
 #include "jri.h"
+#endif
 #include "prlink.h"  // for PRLibrary
 
 #if defined (MOZ_WIDGET_GTK) || defined (MOZ_WIDGET_GTK2)
@@ -161,6 +163,11 @@ public:
 protected:
 
     nsresult InitializePlugin(nsIPluginInstancePeer* peer);
+
+    /**
+     * Calls NPP_GetValue
+     */
+    nsresult GetValueInternal(NPPVariable variable, void* value);
     
     /**
      * The plugin instance peer for this instance.

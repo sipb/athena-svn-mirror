@@ -57,10 +57,19 @@ short BooleanResult::getResultType() {
     return ExprResult::BOOLEAN;
 } //-- getResultType
 
-void BooleanResult::stringValue(String& str)  {
-    if ( value ) str.append("true");
-    else str.append("false");
+void BooleanResult::stringValue(nsAString& str)  {
+    if ( value ) str.Append(NS_LITERAL_STRING("true"));
+    else str.Append(NS_LITERAL_STRING("false"));
 } //-- toString
+
+nsAString*
+BooleanResult::stringValuePointer()
+{
+    // In theory we could set strings containing "true" and "false" somewhere,
+    // but most stylesheets never get the stringvalue of a bool so that won't
+    // really buy us anything.
+    return nsnull;
+}
 
 MBool BooleanResult::booleanValue() {
    return this->value;

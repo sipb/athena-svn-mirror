@@ -25,14 +25,11 @@
 
 #include "nscore.h"
 #include "nsXPIDLString.h"
-#include "nsFileSpec.h"
-#include "nsFileStream.h"
 #include "nsInstall.h" // for error codes
 #include "prmem.h"
 #include "ScheduledTasks.h"
 #include "InstallCleanupDefines.h"
 
-#include "nsSpecialSystemDirectory.h"
 #include "nsDirectoryService.h"
 #include "nsDirectoryServiceDefs.h"
 #include "nsAppDirectoryServiceDefs.h"
@@ -223,10 +220,14 @@ PRInt32 ScheduleFileForDeletion(nsIFile *filename)
 
 
 
-PRInt32 ReplaceFileNow(nsIFile* replacementFile, nsIFile* doomedFile )
+PRInt32 ReplaceFileNow(nsIFile* aReplacementFile, nsIFile* aDoomedFile )
 {
     PRBool flagExists, flagIsEqual;
+    nsCOMPtr<nsIFile> replacementFile;
     nsresult rv;
+
+    // make a clone of aReplacement file so we touch affect callers
+    aReplacementFile->Clone(getter_AddRefs(replacementFile));
 
     // replacement file must exist, doomed file doesn't have to
     replacementFile->Exists(&flagExists);
@@ -234,7 +235,7 @@ PRInt32 ReplaceFileNow(nsIFile* replacementFile, nsIFile* doomedFile )
         return nsInstall::DOES_NOT_EXIST;
 
     // don't have to do anything if the files are the same
-    replacementFile->Equals(doomedFile, &flagIsEqual);
+    replacementFile->Equals(aDoomedFile, &flagIsEqual);
     if ( flagIsEqual )
         return nsInstall::SUCCESS;
 
@@ -244,90 +245,126 @@ PRInt32 ReplaceFileNow(nsIFile* replacementFile, nsIFile* doomedFile )
     // first try to rename the doomed file out of the way (if it exists)
     nsCOMPtr<nsIFile>      renamedDoomedFile;
     nsCOMPtr<nsILocalFile> tmpLocalFile;
-    nsCOMPtr<nsIFile> parent;
-    nsCAutoString leafname;
     
-    doomedFile->Clone(getter_AddRefs(renamedDoomedFile));
+    aDoomedFile->Clone(getter_AddRefs(renamedDoomedFile));
     renamedDoomedFile->Exists(&flagExists);
     if ( flagExists )
     {
+#ifdef XP_MACOSX
+        // If we clone an nsIFile, and move the clone, the FSRef of the *original*
+        // file is not what you would expect - it points to the moved file. This
+        // is despite the fact that the two FSRefs are independent objects. Until
+        // the OS X file impl is changed to not use FSRefs, need to do this (see
+        // bug 200024).
+        nsCOMPtr<nsILocalFile> doomedFileLocal = do_QueryInterface(aDoomedFile);
+        nsCAutoString doomedFilePath;
+        rv = doomedFileLocal->GetNativePath(doomedFilePath);
+        if (NS_FAILED(rv))
+            return nsInstall::UNEXPECTED_ERROR;
+#endif
+
         tmpLocalFile = do_QueryInterface(renamedDoomedFile, &rv); // Convert to an nsILocalFile
 
-        //get the leafname so we can convert its extension to .old
+        //get the doomedLeafname so we can convert its extension to .old
+        nsAutoString doomedLeafname;
         nsCAutoString uniqueLeafName;
-        tmpLocalFile->GetNativeLeafName(leafname);
+        tmpLocalFile->GetLeafName(doomedLeafname);
 
-        PRInt32 extpos = leafname.RFindChar('.');
+        // do not RFind on the native charset! UTF8 or Unicode are OK
+        PRInt32 extpos = doomedLeafname.RFindChar('.');
         if (extpos != -1)
         {
             // We found the extension; 
-            leafname.Truncate(extpos + 1); //strip off the old extension
+            doomedLeafname.Truncate(extpos + 1); //strip off the old extension
         }
-        leafname.Append("old");
+        doomedLeafname.Append(NS_LITERAL_STRING("old"));
         
-        //Now reset the leafname
-        tmpLocalFile->SetNativeLeafName(leafname);
-        
-        MakeUnique(tmpLocalFile);                                 //  for the call to MakeUnique
-        
-        tmpLocalFile->GetParent(getter_AddRefs(parent)); //get the parent for later use in MoveTo
-        tmpLocalFile->GetNativeLeafName(uniqueLeafName);//this is the new "unique" leafname
+        //Now reset the doomedLeafname
+        tmpLocalFile->SetLeafName(doomedLeafname);
+        tmpLocalFile->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0644);
+        tmpLocalFile->GetNativeLeafName(uniqueLeafName);//this is the new "unique" doomedLeafname
 
-        rv = doomedFile->Clone(getter_AddRefs(renamedDoomedFile));// Reset renamedDoomed file so doomedfile isn't 
-                                                                  //   changed during the MoveTo call
-        if (NS_FAILED(rv)) result = nsInstall::UNEXPECTED_ERROR;
-        rv = renamedDoomedFile->MoveToNative(parent, uniqueLeafName);        
-
-        if (NS_SUCCEEDED(rv))
+        rv = aDoomedFile->Clone(getter_AddRefs(renamedDoomedFile));// Reset renamedDoomed file so aDoomedfile
+                                                                   // isn't changed during the MoveTo call
+        if (NS_FAILED(rv))
+            result = nsInstall::UNEXPECTED_ERROR;
+        else
         {
-            renamedDoomedFile = parent;                      //MoveTo on Mac doesn't reset the tmpFile object to 
-            renamedDoomedFile->AppendNative(uniqueLeafName); //the new name or location. That's why there's this 
-                                                             //explict assignment and Append call.
+            rv = renamedDoomedFile->MoveToNative(nsnull, uniqueLeafName);        
+            if (NS_FAILED(rv))
+            {
+                // MoveToNative() failing is OK.  It simply means that the file
+                // was locked in memory and needs to be replaced on browser
+                // shutdown or system reboot.
+                //
+                // Since renamedDoomedFile->MoveToNative() failed, it created a
+                // 0 byte '-old' file that needs to be cleaned up.
+                tmpLocalFile->Remove(PR_FALSE);
+            }
+            else
+            {
+                // The implementation of MoveToNative() on some platforms (osx and win32) resets
+                // the object to the 'moved to' filename.  This is incorrect behavior.  This
+                // implementation will be fixed in the future.  We need to take into account that
+                // fix by setting renamedDoomedFile to the filename that it was moved to above.
+                // See bug 200024.
+                //
+                // renamedDoomedFile needs to be reset because it's used later on in this
+                // function.
+                rv = renamedDoomedFile->SetNativeLeafName(uniqueLeafName);        
+                if (NS_FAILED(rv))
+                    result = nsInstall::UNEXPECTED_ERROR;
+            }
         }
+
+#ifdef XP_MACOSX
+        rv = doomedFileLocal->InitWithNativePath(doomedFilePath);
+        if (NS_FAILED(rv))
+            result = nsInstall::UNEXPECTED_ERROR;
+#endif
 
         if (result == nsInstall::UNEXPECTED_ERROR)
             return result;
     }
 
 
-    // if doomedFile is gone move new file into place
-    doomedFile->Exists(&flagExists);
-    if ( !flagExists )
+    // if aDoomedFile is still in the way, give up and return result.
+    aDoomedFile->Exists(&flagExists);
+    if ( flagExists )
+        return result;
+
+    nsCOMPtr<nsIFile> parentofDoomedFile;
+    nsCAutoString doomedLeafname;
+
+    rv = aDoomedFile->GetParent(getter_AddRefs(parentofDoomedFile));
+    if ( NS_SUCCEEDED(rv) )
+        rv = aDoomedFile->GetNativeLeafName(doomedLeafname);
+    if ( NS_SUCCEEDED(rv) )
     {
-        nsCOMPtr<nsIFile> parentofFinalFile;
-        nsCOMPtr<nsIFile> parentofReplacementFile;
+        rv = replacementFile->MoveToNative(parentofDoomedFile, doomedLeafname);
+        // The implementation of MoveToNative() on some platforms (osx and win32) resets
+        // the object to the 'moved to' filename.  This is incorrect behavior.  This
+        // implementation will be fixed in the future.  We need to take into account that
+        // fix by setting replacementFile to the filename that it was moved to above.
+        // See bug 200024.
+        //
+        // However, since replacementFile is a clone of aReplacementFile and is also
+        // not used beyond here, there's no need to set the path+leafname to what
+        // it was MoveToNative()'ed to.
+    }
 
-        doomedFile->GetParent(getter_AddRefs(parentofFinalFile));
-        replacementFile->GetParent(getter_AddRefs(parentofReplacementFile));
-
-        // XXX looks dangerous, the replacement file name may NOT be unique in the
-        // target directory if we have to move it! Either we should never move the
-        // files like this (i.e. error if not in the same dir) or we need to take
-        // a little more care in the move.
-        parentofReplacementFile->Equals(parentofFinalFile, &flagIsEqual);
-        if(!flagIsEqual)
-        {
-            NS_WARNING("File unpacked into a non-dest dir" );
-            replacementFile->GetNativeLeafName(leafname);
-            rv = replacementFile->MoveToNative(parentofFinalFile, leafname);
-        }
-        	
-        rv = doomedFile->GetNativeLeafName(leafname);
-        if ( NS_SUCCEEDED(rv))
-            rv = replacementFile->MoveToNative(parentofReplacementFile, leafname );
-
-        if ( NS_SUCCEEDED(rv) ) 
-        {
-            // we replaced the old file OK, now we have to
-            // get rid of it if it was renamed out of the way
-            result = DeleteFileNowOrSchedule( renamedDoomedFile );
-        }
-        else
-        {
-            // couldn't rename file, try to put old file back
-            renamedDoomedFile->GetParent(getter_AddRefs(parent));
-            renamedDoomedFile->MoveToNative(parent, leafname);
-        }
+    if (NS_SUCCEEDED(rv))
+    {
+        // we replaced the old file OK, now we have to
+        // get rid of it if it was renamed out of the way
+        result = DeleteFileNowOrSchedule( renamedDoomedFile );
+    }
+    else
+    {
+        // couldn't rename file, try to put old file back
+        renamedDoomedFile->MoveToNative(nsnull, doomedLeafname);
+        // No need to reset remanedDoomedFile after a MoveToNative() call
+        // because renamedDoomedFile is not used beyond here.
     }
 
     return result;
@@ -337,16 +374,16 @@ PRInt32 ReplaceFileNow(nsIFile* replacementFile, nsIFile* doomedFile )
 
 
 
-PRInt32 ReplaceFileNowOrSchedule(nsIFile* replacementFile, nsIFile* doomedFile, PRInt32 aMode)
+PRInt32 ReplaceFileNowOrSchedule(nsIFile* aReplacementFile, nsIFile* aDoomedFile, PRInt32 aMode)
 {
-    PRInt32 result = ReplaceFileNow( replacementFile, doomedFile );
+    PRInt32 result = ReplaceFileNow( aReplacementFile, aDoomedFile );
 
     if ( result == nsInstall::ACCESS_DENIED )
     {
         // if we couldn't replace the file schedule it for later
 #ifdef _WINDOWS
         if ( (aMode & WIN_SYSTEM_FILE) && 
-             (ReplaceWindowsSystemFile(replacementFile, doomedFile) == 0) )
+             (ReplaceWindowsSystemFile(aReplacementFile, aDoomedFile) == 0) )
                 return nsInstall::REBOOT_NEEDED;
 #endif
 
@@ -373,8 +410,8 @@ PRInt32 ReplaceFileNowOrSchedule(nsIFile* replacementFile, nsIFile* doomedFile, 
                     {
                         nsCAutoString srcowner;
                         nsCAutoString destowner;
-                        nsresult rv = GetPersistentStringFromSpec(replacementFile, srcowner);
-                        nsresult rv2 = GetPersistentStringFromSpec(doomedFile, destowner);
+                        nsresult rv = GetPersistentStringFromSpec(aReplacementFile, srcowner);
+                        nsresult rv2 = GetPersistentStringFromSpec(aDoomedFile, destowner);
                         if ( NS_SUCCEEDED(rv) && NS_SUCCEEDED(rv2) )
                         {
                             const char *fsrc  = srcowner.get();
@@ -459,7 +496,8 @@ void DeleteScheduledFiles( HREG reg )
                 {
                     // no need to check return value of 
                     // SetPersistentDescriptorString, it's always NS_OK
-                    //spec->SetPersistentDescriptorString(valbuf); //nsIFileXXX: Do we still need this instead of InitWithPath?
+                    //spec->SetPersistentDescriptorString(valbuf);
+                    //nsIFileXXX: Do we still need this instead of InitWithPath?
                     NS_NewNativeLocalFile(nsDependentCString(valbuf), PR_TRUE, getter_AddRefs(spec));
                     spec->Clone(getter_AddRefs(doomedFile));
                     if (NS_SUCCEEDED(rv)) 

@@ -168,11 +168,7 @@ public:
     /*
      * Virtual methods from ExprResult
      */
-    ExprResult* clone();
-    short getResultType();
-    MBool booleanValue();
-    double numberValue();
-    void stringValue(String& aStr);
+    TX_DECL_EXPRRESULT
 
 private:
 
@@ -207,7 +203,5 @@ private:
     int mElementCount;
 
 };
-
-typedef NodeSet txResultTreeFragment;
 
 #endif

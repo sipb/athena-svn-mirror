@@ -39,45 +39,33 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsGUIEvent.h"
 #include "nsHTMLSelectAccessible.h"
 #include "nsIAccessibilityService.h"
 #include "nsIFrame.h"
 #include "nsIComboboxControlFrame.h"
 #include "nsIDocument.h"
-#include "nsIDOMDocumentEvent.h"
-#include "nsIDOMEventReceiver.h"
-#include "nsIDOMHTMLCollection.h"
 #include "nsIDOMHTMLInputElement.h"
-#include "nsIDOMHTMLOptionElement.h"
 #include "nsIDOMHTMLOptGroupElement.h"
 #include "nsIDOMHTMLSelectElement.h"
 #include "nsIListControlFrame.h"
-#include "nsIOptionElement.h"
-#include "nsISelectControlFrame.h"
 #include "nsIServiceManager.h"
-#include "nsIWidget.h"
-#include "nsLayoutAtoms.h"
+#include "nsITextContent.h"
 
 /**
   * Selects, Listboxes and Comboboxes, are made up of a number of different
   *  widgets, some of which are shared between the two. This file contains 
-  *  all of the widgets for both of the Selects, for HTML only. Some of them
-  *  extend classes from nsSelectAccessible.cpp, which contains base classes 
-  *  that are also extended by the XUL Select Accessibility support.
+  *  all of the widgets for both of the Selects, for HTML only.
   *
   *  Listbox:
-  *     - nsHTMLListboxAccessible
-  *        - nsHTMLSelectListAccessible
-  *           - nsHTMLSelectOptionAccessible
+  *     - nsHTMLSelectListAccessible
+  *       - nsHTMLSelectOptionAccessible
   *
   *  Comboboxes:
-  *     - nsHTMLComboboxAccessilbe
+  *     - nsHTMLComboboxAccessible
   *        - nsHTMLComboboxTextFieldAccessible
   *        - nsHTMLComboboxButtonAccessible
-  *        - nsHTMLComboboxWindowAccessilbe
-  *           - nsHTMLSelectListAccessible
-  *              - nsHTMLSelectOptionAccessible
+  *        - nsHTMLComboboxListAccessible  [ inserted in accessible tree ]
+  *           - nsHTMLSelectOptionAccessible(s)
   */
 
 /** ------------------------------------------------------ */
@@ -85,12 +73,13 @@
 /** ------------------------------------------------------ */
 
 // Helper class
-nsHTMLSelectableAccessible::iterator::iterator(nsHTMLSelectableAccessible *aParent) : mParent(aParent)
+nsHTMLSelectableAccessible::iterator::iterator(nsHTMLSelectableAccessible *aParent, nsIWeakReference *aWeakShell): 
+  mWeakShell(aWeakShell), mParentSelect(aParent)
 {
   mLength = mIndex = 0;
   mSelCount = 0;
 
-  nsCOMPtr<nsIDOMHTMLSelectElement> htmlSelect(do_QueryInterface(mParent->mDOMNode));
+  nsCOMPtr<nsIDOMHTMLSelectElement> htmlSelect(do_QueryInterface(mParentSelect->mDOMNode));
   if (htmlSelect) {
     htmlSelect->GetOptions(getter_AddRefs(mOptions));
     if (mOptions)
@@ -132,8 +121,10 @@ void nsHTMLSelectableAccessible::iterator::AddAccessibleIfSelected(nsIAccessibil
 
   if (mOption) {
     mOption->GetSelected(&isSelected);
-    if (isSelected)
-      aAccService->CreateHTMLSelectOptionAccessible(mOption, mParent, aContext, getter_AddRefs(tempAccess));
+    if (isSelected) {
+      nsCOMPtr<nsIDOMNode> optionNode(do_QueryInterface(mOption));
+      aAccService->GetAccessibleInWeakShell(optionNode, mWeakShell, getter_AddRefs(tempAccess));
+    }
   }
 
   if (tempAccess)
@@ -143,20 +134,18 @@ void nsHTMLSelectableAccessible::iterator::AddAccessibleIfSelected(nsIAccessibil
 PRBool nsHTMLSelectableAccessible::iterator::GetAccessibleIfSelected(PRInt32 aIndex, 
                                                                      nsIAccessibilityService *aAccService, 
                                                                      nsIPresContext *aContext, 
-                                                                     nsIAccessible **_retval)
+                                                                     nsIAccessible **aAccessible)
 {
   PRBool isSelected = PR_FALSE;
-  nsCOMPtr<nsIAccessible> tempAccess;
 
-  *_retval = nsnull;
+  *aAccessible = nsnull;
 
   if (mOption) {
     mOption->GetSelected(&isSelected);
     if (isSelected) {
       if (mSelCount == aIndex) {
-        aAccService->CreateHTMLSelectOptionAccessible(mOption, mParent, aContext, getter_AddRefs(tempAccess));
-        *_retval = tempAccess;
-        NS_IF_ADDREF(*_retval);
+        nsCOMPtr<nsIDOMNode> optionNode(do_QueryInterface(mOption));
+        aAccService->GetAccessibleInWeakShell(optionNode, mWeakShell, aAccessible);
         return PR_TRUE;
       }
       mSelCount++;
@@ -174,7 +163,7 @@ void nsHTMLSelectableAccessible::iterator::Select(PRBool aSelect)
 
 nsHTMLSelectableAccessible::nsHTMLSelectableAccessible(nsIDOMNode* aDOMNode, 
                                                        nsIWeakReference* aShell):
-nsAccessible(aDOMNode, aShell)
+nsAccessibleWrap(aDOMNode, aShell)
 {
 }
 
@@ -189,7 +178,7 @@ NS_IMETHODIMP nsHTMLSelectableAccessible::ChangeSelection(PRInt32 aIndex, PRUint
   if (!htmlSelect)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIDOMHTMLCollection> options;
+  nsCOMPtr<nsIDOMHTMLOptionsCollection> options;
   htmlSelect->GetOptions(getter_AddRefs(options));
   if (!options)
     return NS_ERROR_FAILURE;
@@ -222,12 +211,11 @@ NS_IMETHODIMP nsHTMLSelectableAccessible::GetSelectedChildren(nsISupportsArray *
   if (!selectedAccessibles)
     return NS_ERROR_OUT_OF_MEMORY;
   
-  nsCOMPtr<nsIPresContext> context;
-  GetPresContext(context);
+  nsCOMPtr<nsIPresContext> context(GetPresContext());
   if (!context)
     return NS_ERROR_FAILURE;
 
-  nsHTMLSelectableAccessible::iterator iter(this);
+  nsHTMLSelectableAccessible::iterator iter(this, mWeakShell);
   while (iter.Advance())
     iter.AddAccessibleIfSelected(accService, selectedAccessibles, context);
 
@@ -249,12 +237,11 @@ NS_IMETHODIMP nsHTMLSelectableAccessible::RefSelection(PRInt32 aIndex, nsIAccess
   if (!accService)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIPresContext> context;
-  GetPresContext(context);
+  nsCOMPtr<nsIPresContext> context(GetPresContext());
   if (!context)
     return NS_ERROR_FAILURE;
 
-  nsHTMLSelectableAccessible::iterator iter(this);
+  nsHTMLSelectableAccessible::iterator iter(this, mWeakShell);
   while (iter.Advance())
     if (iter.GetAccessibleIfSelected(aIndex, accService, context, _retval))
       return NS_OK;
@@ -267,7 +254,7 @@ NS_IMETHODIMP nsHTMLSelectableAccessible::GetSelectionCount(PRInt32 *aSelectionC
 {
   *aSelectionCount = 0;
 
-  nsHTMLSelectableAccessible::iterator iter(this);
+  nsHTMLSelectableAccessible::iterator iter(this, mWeakShell);
   while (iter.Advance())
     iter.CalcSelectionCount(aSelectionCount);
   return NS_OK;
@@ -293,7 +280,7 @@ NS_IMETHODIMP nsHTMLSelectableAccessible::IsChildSelected(PRInt32 aIndex, PRBool
 
 NS_IMETHODIMP nsHTMLSelectableAccessible::ClearSelection()
 {
-  nsHTMLSelectableAccessible::iterator iter(this);
+  nsHTMLSelectableAccessible::iterator iter(this, mWeakShell);
   while (iter.Advance())
     iter.Select(PR_FALSE);
   return NS_OK;
@@ -309,7 +296,7 @@ NS_IMETHODIMP nsHTMLSelectableAccessible::SelectAllSelection(PRBool *_retval)
 
   htmlSelect->GetMultiple(_retval);
   if (*_retval) {
-    nsHTMLSelectableAccessible::iterator iter(this);
+    nsHTMLSelectableAccessible::iterator iter(this, mWeakShell);
     while (iter.Advance())
       iter.Select(PR_TRUE);
   }
@@ -323,10 +310,9 @@ NS_IMETHODIMP nsHTMLSelectableAccessible::SelectAllSelection(PRBool *_retval)
 /** ----- nsHTMLSelectListAccessible ----- */
 
 /** Default Constructor */
-nsHTMLSelectListAccessible::nsHTMLSelectListAccessible(nsIAccessible* aParent, 
-                                                       nsIDOMNode* aDOMNode, 
+nsHTMLSelectListAccessible::nsHTMLSelectListAccessible(nsIDOMNode* aDOMNode, 
                                                        nsIWeakReference* aShell)
-:nsSelectListAccessible(aParent, aDOMNode, aShell)
+:nsHTMLSelectableAccessible(aDOMNode, aShell)
 {
 }
 
@@ -337,6 +323,7 @@ nsHTMLSelectListAccessible::nsHTMLSelectListAccessible(nsIAccessible* aParent,
   */
 NS_IMETHODIMP nsHTMLSelectListAccessible::GetAccState(PRUint32 *_retval)
 {
+  nsHTMLSelectableAccessible::GetAccState(_retval);
   nsCOMPtr<nsIDOMHTMLSelectElement> select (do_QueryInterface(mDOMNode));
   if ( select ) {
     PRBool multiple;
@@ -348,20 +335,39 @@ NS_IMETHODIMP nsHTMLSelectListAccessible::GetAccState(PRUint32 *_retval)
   return NS_OK;
 }
 
+NS_IMETHODIMP nsHTMLSelectListAccessible::GetAccRole(PRUint32 *_retval)
+{
+  *_retval = ROLE_LIST;
+  return NS_OK;
+}
+
+
+/**
+  * Gets the first child of the DOM node and creates and returns
+  *  a nsHTMLSelectOptionAccessible.
+  */
+NS_IMETHODIMP nsHTMLSelectListAccessible::GetAccFirstChild(nsIAccessible **aAccFirstChild)
+{
+  nsCOMPtr<nsIDOMNode> first;
+  mDOMNode->GetFirstChild(getter_AddRefs(first));
+
+  nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
+  nsresult rv = accService->GetAccessibleInWeakShell(first, mWeakShell, aAccFirstChild);
+  mFirstChild = *aAccFirstChild;
+  return rv;
+}
+
 /**
   * Gets the last child of the DOM node and creates and returns
   *  a nsHTMLSelectOptionAccessible.
   */
-NS_IMETHODIMP nsHTMLSelectListAccessible::GetAccLastChild(nsIAccessible **_retval)
+NS_IMETHODIMP nsHTMLSelectListAccessible::GetAccLastChild(nsIAccessible **aAccLastChild)
 {
   nsCOMPtr<nsIDOMNode> last;
   mDOMNode->GetLastChild(getter_AddRefs(last));
 
-  *_retval = new nsHTMLSelectOptionAccessible(this, last, mPresShell);
-  if ( ! *_retval )
-    return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
-  return NS_OK;
+  nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
+  return accService->GetAccessibleInWeakShell(last, mWeakShell, aAccLastChild);
 }
 
 /**
@@ -402,31 +408,65 @@ NS_IMETHODIMP nsHTMLSelectListAccessible::GetAccChildCount(PRInt32 *aAccChildCou
   }  // endWhile next
   *aAccChildCount = countChild;
   return NS_OK;
-
 }
 
 /** ----- nsHTMLSelectOptionAccessible ----- */
 
 /** Default Constructor */
-nsHTMLSelectOptionAccessible::nsHTMLSelectOptionAccessible(nsIAccessible* aParent, nsIDOMNode* aDOMNode, nsIWeakReference* aShell):
-nsSelectOptionAccessible(aParent, aDOMNode, aShell)
+nsHTMLSelectOptionAccessible::nsHTMLSelectOptionAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell):
+nsLeafAccessible(aDOMNode, aShell)
 {
+  nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
+  nsCOMPtr<nsIDOMNode> parentNode;
+  aDOMNode->GetParentNode(getter_AddRefs(parentNode));
+  nsCOMPtr<nsIAccessible> parentAccessible;
+  if (parentNode) {
+    // If the parent node is a Combobox, then the option's accessible parent
+    // is nsHTMLComboboxListAccessible, not the nsHTMLComboboxAccessible that
+    // GetAccParent would normally return. This is because the 
+    // nsHTMLComboboxListAccessible is inserted into the accessible hierarchy
+    // where there is no DOM node for it.
+    accService->GetAccessibleInWeakShell(parentNode, mWeakShell, getter_AddRefs(parentAccessible));
+    if (parentAccessible) {
+      PRUint32 role;
+      parentAccessible->GetAccRole(&role);
+      if (role == ROLE_COMBOBOX) {
+        nsCOMPtr<nsIAccessible> comboAccessible(parentAccessible);
+        comboAccessible->GetAccLastChild(getter_AddRefs(parentAccessible));
+      }
+    }
+  }
+  SetAccParent(parentAccessible);
+}
+
+/** We are a ListItem */
+NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccRole(PRUint32 *aRole)
+{
+  *aRole = ROLE_LISTITEM;
+  return NS_OK;
+}
+
+/** Return our cached parent */
+NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccParent(nsIAccessible **aParent)
+{   
+  NS_IF_ADDREF(*aParent = mParent);
+  return NS_OK;
 }
 
 /**
   * Gets the next accessible sibling of the mDOMNode and creates and returns
   *  a nsHTMLSelectOptionAccessible or nsHTMLSelectOptGroupAccessible.
   */
-NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccNextSibling(nsIAccessible **_retval)
+NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccNextSibling(nsIAccessible **aAccNextSibling)
 { 
   // Get next sibling and if found create and return an accessible for it
   // When getting the next sibling of an SelectOption we could be working with
   // either an optgroup or an option. We process this tree as flat.
-  *_retval = nsnull;
+  *aAccNextSibling = nsnull;
   nsCOMPtr<nsIDOMNode> next = mDOMNode, currentNode;
   nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
 
-  while (!*_retval && next) {
+  while (!*aAccNextSibling && next) {
     currentNode = next;
     next = nsnull;
   
@@ -439,7 +479,7 @@ NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccNextSibling(nsIAccessible **_r
       currentNode->GetNextSibling(getter_AddRefs(next));  // See if there is another <optgroup>
   
     if (next) {
-      accService->GetAccessibleFor(next, _retval);  
+      accService->GetAccessibleInWeakShell(next, mWeakShell, aAccNextSibling);  
       continue;
     }
     // else No child then or child is not a <option> nor an <optgroup>
@@ -447,24 +487,58 @@ NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccNextSibling(nsIAccessible **_r
     nsCOMPtr<nsIDOMNode> parent, parentNextSib;
     currentNode->GetParentNode(getter_AddRefs(parent));
  
-    if (!parent)
-      return NS_OK;
-
+    next = nsnull;
     nsCOMPtr<nsIDOMNode> selectNode;
     mParent->AccGetDOMNode(getter_AddRefs(selectNode));
-    if (parent == selectNode)
-      return NS_OK;  // End search for options at subtree's start
-
-    parent->GetNextSibling(getter_AddRefs(next));
-    if (!next) 
-      return NS_OK; // done
-  
-    // We have a parent that is an option or option group
-    // get accessible for either one and return it 
-    accService->GetAccessibleFor(next, _retval);
+    if (parent && parent != selectNode) { // End search for options at subtree's start
+      parent->GetNextSibling(getter_AddRefs(next));
+      if (next) {
+        // We have a parent that is an option or option group
+        // get accessible for either one and return it 
+        accService->GetAccessibleInWeakShell(next, mWeakShell, aAccNextSibling);
+      }
+    }
   }
+  SetAccNextSibling(*aAccNextSibling);
   return NS_OK;
 } 
+
+/**
+  * Get our Name from our Content's subtree
+  */
+NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccName(nsAString& aName)
+{
+  // CASE #1 -- great majority of the cases
+  // find the label attribute - this is what the W3C says we should use
+  nsCOMPtr<nsIDOMElement> domElement(do_QueryInterface(mDOMNode));
+  NS_ASSERTION(domElement, "No domElement for accessible DOM node!");
+  nsresult rv = domElement->GetAttribute(NS_LITERAL_STRING("label"), aName) ;
+
+  if (NS_SUCCEEDED(rv) && !aName.IsEmpty() ) {
+    return NS_OK;
+  }
+  
+  // CASE #2 -- no label parameter, get the first child, 
+  // use it if it is a text node
+  nsCOMPtr<nsIDOMNode> child;
+  mDOMNode->GetFirstChild(getter_AddRefs(child));
+
+  if (child) {
+    nsCOMPtr<nsITextContent> text(do_QueryInterface(child));
+    if (text) {
+      nsAutoString txtValue;
+      rv = AppendFlatStringFromContentNode(text, &txtValue);
+      if (NS_SUCCEEDED(rv)) {
+        // Temp var (txtValue) needed until CompressWhitespace built for nsAString
+        txtValue.CompressWhitespace();
+        aName.Assign(txtValue);
+        return NS_OK;
+      }
+    }
+  }
+  
+  return NS_ERROR_FAILURE;
+}
 
 /**
   * Gets the previous accessible sibling of the mDOMNode and creates and returns
@@ -477,9 +551,10 @@ NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccPreviousSibling(nsIAccessible 
   nsCOMPtr<nsIAccessibilityService> accService(do_GetService("@mozilla.org/accessibilityService;1"));
   nsCOMPtr<nsIAccessible> thisAcc, selectListAcc, nextSiblingAcc;  
 
-  accService->GetAccessibleFor(mDOMNode, getter_AddRefs(thisAcc));
+  accService->GetAccessibleInWeakShell(mDOMNode, mWeakShell, getter_AddRefs(thisAcc));
 
-  // The accessible parent of an <option> or <optgroup> is always the SelectListAcc - see GetAccessibleFor()
+  // The accessible parent of an <option> or <optgroup> 
+  // is always the SelectListAcc - see GetAccessibleInShell()
   thisAcc->GetAccParent(getter_AddRefs(selectListAcc));
 
   if (!selectListAcc) {
@@ -535,7 +610,7 @@ NS_IMETHODIMP nsHTMLSelectOptionAccessible::GetAccState(PRUint32 *_retval)
   }
   
   // find out if we are the focused node
-  GetFocusedOptionNode(parentNode, focusedOptionNode);
+  GetFocusedOptionNode(parentNode, getter_AddRefs(focusedOptionNode));
   if (focusedOptionNode == mDOMNode)
     *_retval |= STATE_FOCUSED;
 
@@ -578,7 +653,7 @@ NS_IMETHODIMP nsHTMLSelectOptionAccessible::AccDoAction(PRUint8 index)
     // Clear old selection
     nsCOMPtr<nsIDOMNode> oldHTMLOptionNode, selectNode;
     mParent->AccGetDOMNode(getter_AddRefs(selectNode));
-    nsHTMLSelectOptionAccessible::GetFocusedOptionNode(selectNode, oldHTMLOptionNode);
+    GetFocusedOptionNode(selectNode, getter_AddRefs(oldHTMLOptionNode));
     nsCOMPtr<nsIDOMHTMLOptionElement> oldHTMLOption(do_QueryInterface(oldHTMLOptionNode));
     if (oldHTMLOption)
       oldHTMLOption->SetSelected(PR_FALSE);
@@ -597,7 +672,7 @@ NS_IMETHODIMP nsHTMLSelectOptionAccessible::AccDoAction(PRUint8 index)
       thisNode = testSelectNode;
     } while (testSelectNode);
 
-    nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mPresShell));
+    nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mWeakShell));
     nsCOMPtr<nsIContent> selectContent(do_QueryInterface(testSelectNode));
     nsCOMPtr<nsIDOMHTMLOptionElement> option(do_QueryInterface(mDOMNode));
 
@@ -636,8 +711,9 @@ NS_IMETHODIMP nsHTMLSelectOptionAccessible::AccDoAction(PRUint8 index)
   *  weren't getting the proper notification when the focus changed using the DOM
   */
 nsresult nsHTMLSelectOptionAccessible::GetFocusedOptionNode(nsIDOMNode *aListNode, 
-                                                            nsCOMPtr<nsIDOMNode>& aFocusedOptionNode)
+                                                            nsIDOMNode **aFocusedOptionNode)
 {
+  *aFocusedOptionNode = nsnull;
   NS_ASSERTION(aListNode, "Called GetFocusedOptionNode without a valid list node");
 
   nsCOMPtr<nsIContent> content(do_QueryInterface(aListNode));
@@ -660,7 +736,7 @@ nsresult nsHTMLSelectOptionAccessible::GetFocusedOptionNode(nsIDOMNode *aListNod
   nsCOMPtr<nsIDOMHTMLSelectElement> selectElement(do_QueryInterface(aListNode));
   NS_ASSERTION(selectElement, "No select element where it should be");
 
-  nsCOMPtr<nsIDOMHTMLCollection> options;
+  nsCOMPtr<nsIDOMHTMLOptionsCollection> options;
   nsresult rv = selectElement->GetOptions(getter_AddRefs(options));
   
   if (NS_SUCCEEDED(rv)) {
@@ -679,9 +755,9 @@ nsresult nsHTMLSelectOptionAccessible::GetFocusedOptionNode(nsIDOMNode *aListNod
 
   // Either use options and focused index, or default to list node itself
   if (NS_SUCCEEDED(rv) && options && focusedOptionIndex >= 0)   // Something is focused
-    rv = options->Item(focusedOptionIndex, getter_AddRefs(aFocusedOptionNode));
+    rv = options->Item(focusedOptionIndex, aFocusedOptionNode);
   else {  // If no options in list or focusedOptionIndex <0, then we are not focused on an item
-    aFocusedOptionNode = aListNode;  // return normal target content
+    NS_ADDREF(*aFocusedOptionNode = aListNode);  // return normal target content
     rv = NS_OK;
   }
 
@@ -691,8 +767,8 @@ nsresult nsHTMLSelectOptionAccessible::GetFocusedOptionNode(nsIDOMNode *aListNod
 /** ----- nsHTMLSelectOptGroupAccessible ----- */
 
 /** Default Constructor */
-nsHTMLSelectOptGroupAccessible::nsHTMLSelectOptGroupAccessible(nsIAccessible* aParent, nsIDOMNode* aDOMNode, nsIWeakReference* aShell):
-nsHTMLSelectOptionAccessible(aParent, aDOMNode, aShell)
+nsHTMLSelectOptGroupAccessible::nsHTMLSelectOptGroupAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell):
+nsHTMLSelectOptionAccessible(aDOMNode, aShell)
 {
 }
 
@@ -725,88 +801,6 @@ NS_IMETHODIMP nsHTMLSelectOptGroupAccessible::GetAccNumActions(PRUint8 *_retval)
 }
 
 /** ------------------------------------------------------ */
-/**  Secondly, the Listbox widget                          */
-/** ------------------------------------------------------ */
-
-/** ----- nsHTMLListboxAccessible ----- */
-
-/** Constructor */
-nsHTMLListboxAccessible::nsHTMLListboxAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell):
-nsHTMLSelectableAccessible(aDOMNode, aShell)
-{
-}
-
-/** We are a window, as far as MSAA is concerned */
-NS_IMETHODIMP nsHTMLListboxAccessible::GetAccRole(PRUint32 *_retval)
-{
-  *_retval = ROLE_WINDOW;
-  return NS_OK;
-}
-
-/**
-  * We always have 1 child: a subclass of nsSelectListAccessible.
-  */
-NS_IMETHODIMP nsHTMLListboxAccessible::GetAccChildCount(PRInt32 *_retval)
-{
-  *_retval = 1;
-  return NS_OK;
-}
-
-/**
-  * As a nsHTMLListboxAccessible we can have the following states:
-  *     STATE_FOCUSED
-  *     STATE_READONLY
-  *     STATE_FOCUSABLE
-  */
-NS_IMETHODIMP nsHTMLListboxAccessible::GetAccState(PRUint32 *_retval)
-{
-  // Get focus status from base class
-  nsAccessible::GetAccState(_retval);
-
-  *_retval |= STATE_READONLY | STATE_FOCUSABLE;
-
-  return NS_OK;
-}
-
-/** 
-  * Our last (and only) child is an nsHTMLSelectListAccessible object 
-  */
-NS_IMETHODIMP nsHTMLListboxAccessible::GetAccLastChild(nsIAccessible **_retval)
-{
-  *_retval = new nsHTMLSelectListAccessible(this, mDOMNode, mPresShell);
-  if ( ! *_retval )
-    return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
-  return NS_OK;
-}
-
-/** 
-  * Our first (and only) child is an nsHTMLSelectListAccessible object
-  */
-NS_IMETHODIMP nsHTMLListboxAccessible::GetAccFirstChild(nsIAccessible **_retval)
-{
-  *_retval = new nsHTMLSelectListAccessible(this, mDOMNode, mPresShell);
-  if ( ! *_retval )
-    return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
-  return NS_OK;
-}
-
-/**
-  * Our value is the value of our ( first ) selected child. nsIDOMHTMLSelectElement
-  *     returns this by default with GetValue().
-  */
-NS_IMETHODIMP nsHTMLListboxAccessible::GetAccValue(nsAString& _retval)
-{
-  nsCOMPtr<nsIDOMHTMLSelectElement> select (do_QueryInterface(mDOMNode));
-  if ( select ) {
-    select->GetValue(_retval);  
-    return NS_OK;
-  }
-  return NS_ERROR_FAILURE;
-}
-
-/** ------------------------------------------------------ */
 /**  Finally, the Combobox widgets                         */
 /** ------------------------------------------------------ */
 
@@ -824,6 +818,33 @@ NS_IMETHODIMP nsHTMLComboboxAccessible::GetAccRole(PRUint32 *_retval)
   return NS_OK;
 }
 
+NS_IMETHODIMP nsHTMLComboboxAccessible::Shutdown()
+{
+  nsHTMLSelectableAccessible::Shutdown();
+
+  mComboboxTextFieldAccessible = nsnull;
+  mComboboxButtonAccessible = nsnull;
+  mComboboxListAccessible = nsnull;
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLComboboxAccessible::Init()
+{
+  // Hold references
+  GetAccFirstChild(getter_AddRefs(mComboboxTextFieldAccessible));
+  if (mComboboxTextFieldAccessible) {
+    mComboboxTextFieldAccessible->GetAccNextSibling(getter_AddRefs(mComboboxButtonAccessible));
+  }
+  if (mComboboxButtonAccessible) {
+    mComboboxButtonAccessible->GetAccNextSibling(getter_AddRefs(mComboboxListAccessible));
+  }
+
+  nsHTMLSelectableAccessible::Init();
+
+  return NS_OK;
+}
+
 /**
   * We always have 3 children: TextField, Button, Window. In that order
   */
@@ -834,7 +855,7 @@ NS_IMETHODIMP nsHTMLComboboxAccessible::GetAccChildCount(PRInt32 *_retval)
 }
 
 /**
-  * As a nsComboboxAccessible we can have the following states:
+  * As a nsHTMLComboboxAccessible we can have the following states:
   *     STATE_FOCUSED
   *     STATE_READONLY
   *     STATE_FOCUSABLE
@@ -855,33 +876,44 @@ NS_IMETHODIMP nsHTMLComboboxAccessible::GetAccState(PRUint32 *_retval)
   if (comboFrame)
     comboFrame->IsDroppedDown(&isOpen);
 
-  *_retval |= isOpen ? STATE_EXPANDED : STATE_COLLAPSED;
+  if (isOpen)
+    *_retval |= STATE_EXPANDED;
+  else
+    *_retval |= STATE_COLLAPSED;
+
   *_retval |= STATE_HASPOPUP | STATE_READONLY | STATE_FOCUSABLE;
 
   return NS_OK;
 }
 
 /** 
-  * Our last child is an nsHTMLComboboxWindowAccessible object 
+  * Our last child is an nsHTMLComboboxListAccessible object, is also the third child
   */
-NS_IMETHODIMP nsHTMLComboboxAccessible::GetAccLastChild(nsIAccessible **_retval)
+NS_IMETHODIMP nsHTMLComboboxAccessible::GetAccLastChild(nsIAccessible **aAccLastChild)
 {
-  *_retval = new nsHTMLComboboxWindowAccessible(this, mDOMNode, mPresShell);
-  if (! *_retval)
-    return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
-  return NS_OK;
+  // It goes: textfield, button, list. We're returning the list.
+
+  return GetChildAt(2, aAccLastChild);
 }
 
 /** 
-  * Our last child is an nsHTMLComboboxTextFieldAccessible object 
+  * Our first child is an nsHTMLComboboxTextFieldAccessible object 
   */
-NS_IMETHODIMP nsHTMLComboboxAccessible::GetAccFirstChild(nsIAccessible **_retval)
+NS_IMETHODIMP nsHTMLComboboxAccessible::GetAccFirstChild(nsIAccessible **aAccFirstChild)
 {
-  *_retval = new nsHTMLComboboxTextFieldAccessible(this, mDOMNode, mPresShell);
-  if (! *_retval)
-    return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
+  if (mFirstChild) {
+    *aAccFirstChild = mFirstChild;
+  }
+  else {
+    nsHTMLComboboxTextFieldAccessible* accessible = 
+      new nsHTMLComboboxTextFieldAccessible(this, mDOMNode, mWeakShell);
+    *aAccFirstChild = accessible;
+    if (! *aAccFirstChild)
+      return NS_ERROR_FAILURE;
+    accessible->Init();
+    SetAccFirstChild(*aAccFirstChild);
+  }
+  NS_ADDREF(*aAccFirstChild);
   return NS_OK;
 }
 
@@ -903,26 +935,129 @@ NS_IMETHODIMP nsHTMLComboboxAccessible::GetAccValue(nsAString& _retval)
 
 /** Constructor */
 nsHTMLComboboxTextFieldAccessible::nsHTMLComboboxTextFieldAccessible(nsIAccessible* aParent, 
-                                                                 nsIDOMNode* aDOMNode, 
-                                                                 nsIWeakReference* aShell):
-nsComboboxTextFieldAccessible(aParent, aDOMNode, aShell)
+                                                                     nsIDOMNode* aDOMNode, 
+                                                                     nsIWeakReference* aShell):
+nsLeafAccessible(aDOMNode, aShell)
 {
+  // There is no cache entry for this item. 
+  // It's generated and ref'd by  nsHTMLComboboxAccessible
+  SetAccParent(aParent);
 }
 
 /**
   * Our next sibling is an nsHTMLComboboxButtonAccessible object
   */
-NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetAccNextSibling(nsIAccessible **_retval)
+NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetAccNextSibling(nsIAccessible **aAccNextSibling)
 { 
-  nsCOMPtr<nsIAccessible> parent;
-  GetAccParent(getter_AddRefs(parent));
-
-  *_retval = new nsHTMLComboboxButtonAccessible(parent, mDOMNode, mPresShell);
-  if (! *_retval)
-    return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
+  if (mNextSibling) {
+    *aAccNextSibling = mNextSibling;
+  }
+  else {
+    nsHTMLComboboxButtonAccessible* accessible =
+      new nsHTMLComboboxButtonAccessible(mParent, mDOMNode, mWeakShell);
+    *aAccNextSibling = accessible;
+    if (!*aAccNextSibling)
+      return NS_ERROR_FAILURE;
+    accessible->Init();
+  }
+  NS_ADDREF(*aAccNextSibling);
   return NS_OK;
 } 
+
+/**
+  * Currently gets the text from the first option, needs to check for selection
+  *     and then return that text.
+  *     Walks the Frame tree and checks for proper frames.
+  */
+NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetAccValue(nsAString& _retval)
+{
+  nsIFrame* frame = nsAccessible::GetBoundsFrame();
+  nsCOMPtr<nsIPresContext> context(GetPresContext());
+  if (!frame || !context)
+    return NS_ERROR_FAILURE;
+
+  frame->FirstChild(context, nsnull, &frame);
+  frame->FirstChild(context, nsnull, &frame);
+
+  nsCOMPtr<nsIContent> content;
+  frame->GetContent(getter_AddRefs(content));
+
+  if (!content) 
+    return NS_ERROR_FAILURE;
+
+  AppendFlatStringFromSubtree(content, &_retval);
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetUniqueID(void **aUniqueID)
+{
+  // Since mDOMNode is same for all tree item, use |this| pointer as the unique Id
+  *aUniqueID = NS_STATIC_CAST(void*, this);
+  return NS_OK;
+}
+
+/**
+  * Gets the bounds for the BlockFrame.
+  *     Walks the Frame tree and checks for proper frames.
+  */
+void nsHTMLComboboxTextFieldAccessible::GetBounds(nsRect& aBounds, nsIFrame** aBoundingFrame)
+{
+  // get our first child's frame
+  nsIFrame* frame = nsAccessible::GetBoundsFrame();
+  nsCOMPtr<nsIPresContext> context(GetPresContext());
+  if (!frame || !context)
+    return;
+
+  frame->FirstChild(context, nsnull, aBoundingFrame);
+  frame->FirstChild(context, nsnull, &frame);
+
+  frame->GetRect(aBounds);
+}
+
+/** Return our cached parent */
+NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetAccParent(nsIAccessible **_retval)
+{   
+    *_retval = mParent;
+    NS_IF_ADDREF(*_retval);
+    return NS_OK;
+}
+
+/**
+  * We are the first child of our parent, no previous sibling
+  */
+NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetAccPreviousSibling(nsIAccessible **_retval)
+{ 
+  *_retval = nsnull;
+  return NS_OK;
+} 
+
+/**
+  * Our role is currently only static text, but we should be able to have
+  *     editable text here and we need to check that case.
+  */
+NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetAccRole(PRUint32 *_retval)
+{
+  *_retval = ROLE_STATICTEXT;
+  return NS_OK;
+}
+
+/**
+  * As a nsHTMLComboboxTextFieldAccessible we can have the following states:
+  *     STATE_READONLY
+  *     STATE_FOCUSED
+  *     STATE_FOCUSABLE
+  */
+NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetAccState(PRUint32 *_retval)
+{
+  // Get focus status from base class
+  nsAccessible::GetAccState(_retval);
+
+  *_retval |= STATE_READONLY | STATE_FOCUSABLE;
+
+  return NS_OK;
+}
+
 
 /** -----ComboboxButtonAccessible ----- */
 
@@ -930,8 +1065,18 @@ NS_IMETHODIMP nsHTMLComboboxTextFieldAccessible::GetAccNextSibling(nsIAccessible
 nsHTMLComboboxButtonAccessible::nsHTMLComboboxButtonAccessible(nsIAccessible* aParent, 
                                                            nsIDOMNode* aDOMNode, 
                                                            nsIWeakReference* aShell):
-nsComboboxButtonAccessible(aParent, aDOMNode, aShell)
+nsLeafAccessible(aDOMNode, aShell)
 {
+  // There is no cache entry for this item. 
+  // It's generated and ref'd by  nsHTMLComboboxAccessible
+  SetAccParent(aParent);
+}
+
+/** Just one action ( click ). */
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccNumActions(PRUint8 *aNumActions)
+{
+  *aNumActions = eSingle_Action;
+  return NS_OK;
 }
 
 /**
@@ -939,31 +1084,21 @@ nsComboboxButtonAccessible(aParent, aDOMNode, aShell)
   *     the hiding of the drop down box ( window ).
   *     Walks the Frame tree and checks for proper frames.
   */
-NS_IMETHODIMP nsHTMLComboboxButtonAccessible::AccDoAction(PRUint8 index)
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::AccDoAction(PRUint8 aIndex)
 {
   nsIFrame* frame = nsAccessible::GetBoundsFrame();
-  nsCOMPtr<nsIPresContext> context;
-  GetPresContext(context);
-  if (!context)
+  nsCOMPtr<nsIPresContext> context(GetPresContext());
+  if (!frame || !context)
     return NS_ERROR_FAILURE;
 
   frame->FirstChild(context, nsnull, &frame);
-#ifdef DEBUG
-  if (! nsAccessible::IsCorrectFrameType(frame, nsLayoutAtoms::blockFrame))
-    return NS_ERROR_FAILURE;
-#endif
-
   frame->GetNextSibling(&frame);
-#ifdef DEBUG
-  if (! nsAccessible::IsCorrectFrameType(frame, nsLayoutAtoms::gfxButtonControlFrame))
-    return NS_ERROR_FAILURE;
-#endif
 
   nsCOMPtr<nsIContent> content;
   frame->GetContent(getter_AddRefs(content));
 
   // We only have one action, click. Any other index is meaningless(wrong)
-  if (index == eAction_Click) {
+  if (aIndex == eAction_Click) {
     nsCOMPtr<nsIDOMHTMLInputElement> element(do_QueryInterface(content));
     if (element)
     {
@@ -976,83 +1111,221 @@ NS_IMETHODIMP nsHTMLComboboxButtonAccessible::AccDoAction(PRUint8 index)
 }
 
 /**
-  * Our next sibling is an nsHTMLComboboxWindowAccessible object
+  * Our action name is the reverse of our state: 
+  *     if we are closed -> open is our name.
+  *     if we are open -> closed is our name.
+  * Uses the frame to get the state, updated on every click
   */
-NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccNextSibling(nsIAccessible **_retval)
-{ 
-  nsCOMPtr<nsIAccessible> parent;
-  GetAccParent(getter_AddRefs(parent));
-
-  *_retval = new nsHTMLComboboxWindowAccessible(parent, mDOMNode, mPresShell);
-  if (! *_retval)
-    return NS_ERROR_OUT_OF_MEMORY;
-  NS_ADDREF(*_retval);
-  return NS_OK;
-} 
-
-/**
-  * Our next sibling is an nsHTMLComboboxTextFieldAccessible object
-  */
-NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccPreviousSibling(nsIAccessible **_retval)
-{ 
-  nsCOMPtr<nsIAccessible> parent;
-  GetAccParent(getter_AddRefs(parent));
-
-  *_retval = new nsHTMLComboboxTextFieldAccessible(parent, mDOMNode, mPresShell);
-  if (! *_retval)
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccActionName(PRUint8 aIndex, nsAString& _retval)
+{
+  PRBool isOpen = PR_FALSE;
+  nsIFrame *boundsFrame = GetBoundsFrame();
+  nsIComboboxControlFrame* comboFrame;
+  boundsFrame->QueryInterface(NS_GET_IID(nsIComboboxControlFrame), (void**)&comboFrame);
+  if (!comboFrame)
     return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
+  comboFrame->IsDroppedDown(&isOpen);
+  if (isOpen)
+    nsAccessible::GetTranslatedString(NS_LITERAL_STRING("close"), _retval); 
+  else
+    nsAccessible::GetTranslatedString(NS_LITERAL_STRING("open"), _retval); 
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetUniqueID(void **aUniqueID)
+{
+  // Since mDOMNode is same for all tree item, use |this| pointer as the unique Id
+  *aUniqueID = NS_STATIC_CAST(void*, this);
+  return NS_OK;
+}
+
+/**
+  * Gets the bounds for the gfxButtonControlFrame.
+  *     Walks the Frame tree and checks for proper frames.
+  */
+void nsHTMLComboboxButtonAccessible::GetBounds(nsRect& aBounds, nsIFrame** aBoundingFrame)
+{
+  // get our second child's frame
+  // bounding frame is the ComboboxControlFrame
+  nsIFrame *frame = nsAccessible::GetBoundsFrame();
+  *aBoundingFrame = frame;
+  nsCOMPtr<nsIPresContext> context(GetPresContext());
+  if (!frame || !context)
+    return;
+
+  frame->FirstChild(context, nsnull, &frame); // first frame is for the textfield
+
+  frame->GetNextSibling(&frame);  // sibling frame is for the button
+
+  frame->GetRect(aBounds);
+}
+
+/** We are a button. */
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccRole(PRUint32 *_retval)
+{
+  *_retval = ROLE_PUSHBUTTON;
+  return NS_OK;
+}
+
+/** Return our cached parent */
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccParent(nsIAccessible **aParent)
+{   
+  NS_IF_ADDREF(*aParent = mParent);
+  return NS_OK;
+}
+
+/** 
+  * Gets the name from GetAccActionName()
+  */
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccName(nsAString& _retval)
+{
+  return GetAccActionName(eAction_Click, _retval);
+}
+
+/**
+  * As a nsHTMLComboboxButtonAccessible we can have the following states:
+  *     STATE_PRESSED
+  *     STATE_FOCUSED
+  *     STATE_FOCUSABLE
+  */
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccState(PRUint32 *_retval)
+{
+  // Get focus status from base class
+  nsAccessible::GetAccState(_retval);
+
+  // we are open or closed --> pressed or not
+  PRBool isOpen = PR_FALSE;
+  nsIFrame *boundsFrame = GetBoundsFrame();
+  nsIComboboxControlFrame* comboFrame;
+  boundsFrame->QueryInterface(NS_GET_IID(nsIComboboxControlFrame), (void**)&comboFrame);
+  if (!comboFrame)
+    return NS_ERROR_FAILURE;
+  comboFrame->IsDroppedDown(&isOpen);
+  if (isOpen)
+  *_retval |= STATE_PRESSED;
+
+  *_retval |= STATE_FOCUSABLE;
+
+  return NS_OK;
+}
+
+/**
+  * Our next sibling is an nsHTMLComboboxListAccessible object
+  */
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccNextSibling(nsIAccessible **aAccNextSibling)
+{ 
+  if (mNextSibling) {
+    *aAccNextSibling = mNextSibling;
+  }
+  else {
+    nsHTMLComboboxListAccessible* accessible = 
+      new nsHTMLComboboxListAccessible(mParent, mDOMNode, mWeakShell);
+    *aAccNextSibling = accessible;
+    if (!*aAccNextSibling)
+      return NS_ERROR_OUT_OF_MEMORY;
+    accessible->Init();
+  }
+  NS_ADDREF(*aAccNextSibling);
   return NS_OK;
 } 
 
-/** ----- nsHTMLComboboxWindowAccessible ----- */
-
 /**
-  * Constructor -- cache our parent
+  * Our prev sibling is an nsHTMLComboboxTextFieldAccessible object
   */
-nsHTMLComboboxWindowAccessible::nsHTMLComboboxWindowAccessible(nsIAccessible* aParent, 
+NS_IMETHODIMP nsHTMLComboboxButtonAccessible::GetAccPreviousSibling(nsIAccessible **aAccPrevSibling)
+{ 
+  return mParent->GetAccFirstChild(aAccPrevSibling);
+} 
+
+
+/** ----- nsHTMLComboboxListAccessible ----- */
+
+nsHTMLComboboxListAccessible::nsHTMLComboboxListAccessible(nsIAccessible *aParent,
                                                            nsIDOMNode* aDOMNode, 
                                                            nsIWeakReference* aShell):
-nsComboboxWindowAccessible(aParent, aDOMNode, aShell)
+nsHTMLSelectListAccessible(aDOMNode, aShell)
 {
+  // There is no cache entry for this item. 
+  // It's generated and ref'd by  nsHTMLComboboxAccessible
+  SetAccParent(aParent);
 }
- 
-/**
-  * Our previous sibling is a nsHTMLComboboxButtonAccessible object
-  */
-NS_IMETHODIMP nsHTMLComboboxWindowAccessible::GetAccPreviousSibling(nsIAccessible **_retval)
-{ 
-  nsCOMPtr<nsIAccessible> parent;
-  GetAccParent(getter_AddRefs(parent));
 
-  *_retval = new nsHTMLComboboxButtonAccessible(parent, mDOMNode, mPresShell);
-  if (! *_retval)
+/**
+  * As a nsHTMLComboboxListAccessible we can have the following states:
+  *     STATE_FOCUSED
+  *     STATE_FOCUSABLE
+  *     STATE_INVISIBLE
+  *     STATE_FLOATING
+  */
+NS_IMETHODIMP nsHTMLComboboxListAccessible::GetAccState(PRUint32 *aAccState)
+{
+  // Get focus status from base class
+  nsAccessible::GetAccState(aAccState);
+
+  // we are open or closed
+  PRBool isOpen = PR_FALSE;
+  nsIFrame *boundsFrame = GetBoundsFrame();
+  nsIComboboxControlFrame* comboFrame = nsnull;
+  boundsFrame->QueryInterface(NS_GET_IID(nsIComboboxControlFrame), (void**)&comboFrame);
+  if (!comboFrame)
     return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
+  comboFrame->IsDroppedDown(&isOpen);
+  if (isOpen)
+    *aAccState |= STATE_FLOATING | STATE_FOCUSABLE;
+  else
+    *aAccState |= STATE_INVISIBLE | STATE_FOCUSABLE;
+  
   return NS_OK;
+}
+
+/** Return our cached parent */
+NS_IMETHODIMP nsHTMLComboboxListAccessible::GetAccParent(nsIAccessible **aParent)
+{
+  NS_IF_ADDREF(*aParent = mParent);
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLComboboxListAccessible::GetAccPreviousSibling(nsIAccessible **aAccPrevSibling)
+{ 
+  return mParent->GetChildAt(1, aAccPrevSibling);
 } 
 
-/**
-  * We only have one child, a list
-  */
-NS_IMETHODIMP nsHTMLComboboxWindowAccessible::GetAccLastChild(nsIAccessible **_retval)
+NS_IMETHODIMP nsHTMLComboboxListAccessible::GetUniqueID(void **aUniqueID)
 {
-  *_retval = new nsHTMLSelectListAccessible(this, mDOMNode, mPresShell);
-  if (! *_retval)
-    return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
+  // Since mDOMNode is same for all tree item, use |this| pointer as the unique Id
+  *aUniqueID = NS_STATIC_CAST(void*, this);
   return NS_OK;
 }
 
 /**
-  * We only have one child, a list
+  * Gets the bounds for the areaFrame.
+  *     Walks the Frame tree and checks for proper frames.
   */
-NS_IMETHODIMP nsHTMLComboboxWindowAccessible::GetAccFirstChild(nsIAccessible **_retval)
+void nsHTMLComboboxListAccessible::GetBounds(nsRect& aBounds, nsIFrame** aBoundingFrame)
 {
-  *_retval = new nsHTMLSelectListAccessible(this, mDOMNode, mPresShell);
-  if (! *_retval)
-    return NS_ERROR_FAILURE;
-  NS_ADDREF(*_retval);
-  return NS_OK;
+   // get our first option
+  nsCOMPtr<nsIDOMNode> child;
+  mDOMNode->GetFirstChild(getter_AddRefs(child));
+
+  // now get its frame
+  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mWeakShell));
+  if (!shell) {
+    *aBoundingFrame = nsnull;
+    return;
+  }
+
+  nsIFrame* frame = nsnull;
+  nsCOMPtr<nsIContent> content(do_QueryInterface(child));
+  shell->GetPrimaryFrameFor(content, &frame);
+  if (!frame) {
+    *aBoundingFrame = nsnull;
+    return;
+  }
+
+  frame->GetParent(aBoundingFrame);
+  frame->GetParent(&frame);
+
+  frame->GetRect(aBounds);
 }
 

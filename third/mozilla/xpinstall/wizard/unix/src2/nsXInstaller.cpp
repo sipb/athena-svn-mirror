@@ -46,10 +46,21 @@ nsXInstaller::ParseArgs(int aArgc, char **aArgv)
 
     for (int argNum = 1; argNum < aArgc; ++argNum)
     {
+        /* Print usage
+         */
+        if (strcmp(aArgv[argNum], "-h") == 0 ||
+            strcmp(aArgv[argNum], "--help") == 0)
+        {
+           if (gCtx->Res("USAGE_MSG"))
+                fprintf (stderr, gCtx->Res("USAGE_MSG"), aArgv[0], "\n", 
+                      "\n", "\n", "\n", "\n", "\n", "\n", "\n");
+            return E_USAGE_SHOWN;
+        }
+
         /* mode: auto  (show progress UI but assume defaults
          *              without user intervention)
          */
-        if (strcmp(aArgv[argNum], "-ma") == 0)
+        else if (strcmp(aArgv[argNum], "-ma") == 0)
         {
             gCtx->opt->mMode = nsXIOptions::MODE_AUTO;
         }
@@ -60,6 +71,13 @@ nsXInstaller::ParseArgs(int aArgc, char **aArgv)
         else if (strcmp(aArgv[argNum], "-ms") == 0)
         {
             gCtx->opt->mMode = nsXIOptions::MODE_SILENT;
+        }
+
+        /* ignore [RunAppX] sections
+         */
+        else if (strcmp(aArgv[argNum], "-ira") == 0)
+        {
+            gCtx->opt->mShouldRunApps = FALSE;
         }
     }
 
@@ -150,46 +168,42 @@ nsXInstaller::RunWizard(int argc, char **argv)
     XI_VERIFY(gCtx);
 
     // create the dialog window
-    gtk_set_locale();
-    gtk_init(&argc, &argv);
-    gdk_rgb_init();
+    if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT) {
+        gtk_set_locale();
+        gtk_init(&argc, &argv);
+        gdk_rgb_init();
 
-    gCtx->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    XI_VERIFY(gCtx->window);
+        gCtx->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+        XI_VERIFY(gCtx->window);
 
-    gtk_window_set_position(GTK_WINDOW(gCtx->window), GTK_WIN_POS_CENTER);
-    gtk_signal_connect(GTK_OBJECT(gCtx->window), "delete_event",
-                       GTK_SIGNAL_FUNC(Kill), NULL);
+        gtk_window_set_position(GTK_WINDOW(gCtx->window), GTK_WIN_POS_CENTER);
+        gtk_signal_connect(GTK_OBJECT(gCtx->window), "delete_event",
+                           GTK_SIGNAL_FUNC(Kill), NULL);
 
-    gtk_widget_set_usize(gCtx->window, XI_WIN_WIDTH, XI_WIN_HEIGHT);
-    gtk_container_set_border_width(GTK_CONTAINER(gCtx->window), 5);
-    gtk_window_set_title(GTK_WINDOW(gCtx->window), gCtx->opt->mTitle);
-    gtk_widget_show(gCtx->window);
+        gtk_widget_set_usize(gCtx->window, XI_WIN_WIDTH, XI_WIN_HEIGHT);
+        gtk_container_set_border_width(GTK_CONTAINER(gCtx->window), 5);
+        gtk_window_set_title(GTK_WINDOW(gCtx->window), gCtx->opt->mTitle);
+        gtk_widget_show(gCtx->window);
 
-    // create and display the logo and cancel button
-    logovbox = DrawLogo();
-    if (logovbox)
-        DrawCancelButton(logovbox);
+        // create and display the logo and cancel button
+        logovbox = DrawLogo();
+        if (logovbox)
+            DrawCancelButton(logovbox);
 
-    // create and display the nav buttons
-    XI_ERR_BAIL(DrawNavButtons());
+        // create and display the nav buttons
+        XI_ERR_BAIL(DrawNavButtons());
 
-    // create the notebook whose pages are dlgs
-    gCtx->notebook = gtk_notebook_new();
-    XI_VERIFY(gCtx->notebook);
-    gtk_notebook_set_show_tabs(GTK_NOTEBOOK(gCtx->notebook), FALSE);
-    gtk_notebook_set_show_border(GTK_NOTEBOOK(gCtx->notebook), FALSE);
-    gtk_notebook_set_scrollable(GTK_NOTEBOOK(gCtx->notebook), FALSE);
-    gtk_widget_show(gCtx->notebook);
-    gtk_container_add(GTK_CONTAINER(gCtx->canvas), gCtx->notebook);
-
-    if (gCtx->opt->mMode == nsXIOptions::MODE_AUTO)
-    {
-        // show install dlg
-        gCtx->idlg->Show(nsXInstallerDlg::FORWARD_MOVE);
-        gCtx->idlg->Next((GtkWidget *)NULL, (gpointer) gCtx->idlg);
+        // create the notebook whose pages are dlgs
+        gCtx->notebook = gtk_notebook_new();
+        XI_VERIFY(gCtx->notebook);
+        gtk_notebook_set_show_tabs(GTK_NOTEBOOK(gCtx->notebook), FALSE);
+        gtk_notebook_set_show_border(GTK_NOTEBOOK(gCtx->notebook), FALSE);
+        gtk_notebook_set_scrollable(GTK_NOTEBOOK(gCtx->notebook), FALSE);
+        gtk_widget_show(gCtx->notebook);
+        gtk_container_add(GTK_CONTAINER(gCtx->canvas), gCtx->notebook);
     }
-    else
+
+    if (gCtx->opt->mMode == nsXIOptions::MODE_DEFAULT)
     {
         // show welcome dlg
         gCtx->wdlg->Show(nsXInstallerDlg::FORWARD_MOVE); 
@@ -197,6 +211,13 @@ nsXInstaller::RunWizard(int argc, char **argv)
         // pop over to main event loop
         gtk_main();
 
+    }
+    else
+    {
+        // show install dlg
+        if (gCtx->opt->mMode == nsXIOptions::MODE_AUTO)
+            gCtx->idlg->Show(nsXInstallerDlg::FORWARD_MOVE);
+        gCtx->idlg->Next((GtkWidget *)NULL, (gpointer) gCtx->idlg);
     }
 
     return OK;
@@ -291,6 +312,8 @@ nsXInstaller::DrawNavButtons()
     gtk_container_add(GTK_CONTAINER(gCtx->back), gCtx->backLabel);
     gtk_widget_show(gCtx->nextLabel);
     gtk_widget_show(gCtx->backLabel);
+    GTK_WIDGET_SET_FLAGS(gCtx->next, GTK_CAN_DEFAULT);
+    gtk_widget_grab_default(gCtx->next);
     
     navbtnhbox = gtk_hbox_new(TRUE, 10);
     canvasvbox = gtk_vbox_new(TRUE, 10);
@@ -303,11 +326,11 @@ nsXInstaller::DrawNavButtons()
 
     gtk_table_attach(GTK_TABLE(navbtntable), gCtx->back, 2, 3, 0, 1, 
         static_cast<GtkAttachOptions>(GTK_FILL | GTK_EXPAND),
-               static_cast<GtkAttachOptions>(GTK_FILL | GTK_EXPAND),
+               static_cast<GtkAttachOptions>(GTK_SHRINK),
                5, 5);
     gtk_table_attach(GTK_TABLE(navbtntable), gCtx->next, 3, 4, 0, 1,
         static_cast<GtkAttachOptions>(GTK_FILL | GTK_EXPAND),
-               static_cast<GtkAttachOptions>(GTK_FILL | GTK_EXPAND),
+               static_cast<GtkAttachOptions>(GTK_SHRINK),
                5, 5);
 
     gtk_widget_show(navbtntable); 
@@ -351,7 +374,7 @@ nsXInstaller::ParseGeneral(nsINIParser *aParser)
     else
     {
         err = OK; /* optional so no error if we didn't find it */
-        strcpy(gCtx->opt->mTitle, gCtx->Res("DEFAULT_TITLE"));
+        gCtx->opt->mTitle = strdup(gCtx->Res("DEFAULT_TITLE"));
     }
 
     return err;
@@ -367,8 +390,8 @@ main(int argc, char **argv)
     {
         if ( (err = installer->ParseConfig()) == OK)
         {
-            installer->ParseArgs(argc, argv);
-            err = installer->RunWizard(argc, argv);
+            if (installer->ParseArgs(argc, argv) == OK)
+                err = installer->RunWizard(argc, argv);
         }
     }
     else
@@ -407,6 +430,11 @@ ErrorHandler(int aErr, const char* aErrMsg)
     else
         sprintf(msg, gCtx->Res("FATAL_ERROR"), aErr, gCtx->Res(errStr));
     
+    if (gCtx->opt->mMode == nsXIOptions::MODE_SILENT)
+    {
+        fprintf (stderr, "%s\n", msg);
+        return aErr;
+    }
     sErrDlg = gtk_dialog_new();
     gtk_window_set_title(GTK_WINDOW(sErrDlg), gCtx->Res("ERROR_TITLE"));
     okButton = gtk_button_new_with_label(gCtx->Res("OK_LABEL"));
@@ -420,6 +448,8 @@ ErrorHandler(int aErr, const char* aErrMsg)
 
     gtk_container_add(GTK_CONTAINER(GTK_DIALOG(sErrDlg)->vbox), label);
     
+    GTK_WIDGET_SET_FLAGS(okButton, GTK_CAN_DEFAULT);
+    gtk_widget_grab_default(okButton);
     gtk_widget_show_all(sErrDlg);
 
     return aErr;

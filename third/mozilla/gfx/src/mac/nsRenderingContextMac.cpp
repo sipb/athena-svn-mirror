@@ -41,7 +41,6 @@
 #include "nsRenderingContextMac.h"
 #include "nsDeviceContextMac.h"
 #include "nsFontMetricsMac.h"
-#include "nsIImage.h"
 #include "nsIRegion.h"
 #include "nsIEnumerator.h"
 #include "nsRegionMac.h"
@@ -77,12 +76,8 @@ nsRenderingContextMac::nsRenderingContextMac()
 , mPort(nsnull)
 , mGS(nsnull)
 , mChanges(kEverythingChanged)
-#ifdef IBMBIDI
 , mRightToLeftText(PR_FALSE)
-#endif
 {
-	NS_INIT_ISUPPORTS();
-
 	mFrontSurface				= new nsDrawingSurfaceMac();
 	NS_IF_ADDREF(mFrontSurface);
 }
@@ -503,7 +498,7 @@ NS_IMETHODIMP nsRenderingContextMac::CopyOffScreenBits(nsDrawingSurface aSrcSurf
 
 //------------------------------------------------------------------------
 
-NS_IMETHODIMP nsRenderingContextMac::CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface)
+NS_IMETHODIMP nsRenderingContextMac::CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface)
 {
 	aSurface = nsnull;
 
@@ -513,13 +508,8 @@ NS_IMETHODIMP nsRenderingContextMac::CreateDrawingSurface(nsRect *aBounds, PRUin
 
 	// get rect
 	Rect macRect;
-	if (aBounds != nsnull) {
-  		// fyi, aBounds->x and aBounds->y are always 0 here
-  		::SetRect(&macRect, aBounds->x, aBounds->y, aBounds->XMost(), aBounds->YMost());
-	} else {
-	  NS_ASSERTION(0, "Creating empty surface");
-		::SetRect(&macRect, 0, 0, 2, 2);
-  }
+  // fyi, aBounds->x and aBounds->y are always 0 here
+  ::SetRect(&macRect, aBounds.x, aBounds.y, aBounds.XMost(), aBounds.YMost());
   
 	nsDrawingSurfaceMac* surface = new nsDrawingSurfaceMac();
 	if (!surface)
@@ -1267,11 +1257,7 @@ NS_IMETHODIMP nsRenderingContextMac::GetWidth(const PRUnichar *aString, PRUint32
  	if (NS_FAILED(rv))
  		return rv;
 
-#ifdef IBMBIDI
   PRBool rtlText = mRightToLeftText;
-#else
-  PRBool rtlText = PR_FALSE;
-#endif
 
 	rv = mUnicodeRenderingToolkit.PrepareToDraw(mP2T, mContext, mGS, mPort, rtlText);
 	if (NS_SUCCEEDED(rv))
@@ -1305,11 +1291,7 @@ nsRenderingContextMac::GetTextDimensions(const PRUnichar* aString, PRUint32 aLen
   if (NS_FAILED(rv))
     return rv;
 
-#ifdef IBMBIDI
   PRBool rtlText = mRightToLeftText;
-#else
-  PRBool rtlText = PR_FALSE;
-#endif
 
   rv = mUnicodeRenderingToolkit.PrepareToDraw(mP2T, mContext, mGS, mPort, rtlText);
 	if (NS_SUCCEEDED(rv))
@@ -1383,11 +1365,7 @@ NS_IMETHODIMP nsRenderingContextMac::DrawString(const PRUnichar *aString, PRUint
 	if (nsnull == mGS->mFontMetrics)
 		return NS_ERROR_NULL_POINTER;
 
-#ifdef IBMBIDI
   PRBool rtlText = mRightToLeftText;
-#else
-  PRBool rtlText = PR_FALSE;
-#endif
 
 	rv = mUnicodeRenderingToolkit.PrepareToDraw(mP2T, mContext, mGS, mPort, rtlText);
 	if (NS_SUCCEEDED(rv))
@@ -1408,75 +1386,6 @@ NS_IMETHODIMP nsRenderingContextMac::DrawString(const nsString& aString,
 
 #pragma mark -
 //------------------------------------------------------------------------
-
-NS_IMETHODIMP nsRenderingContextMac::DrawImage(nsIImage *aImage, nscoord aX, nscoord aY)
-{
-	nscoord width,height;
-
-	width = NSToCoordRound(mP2T * aImage->GetWidth());
-	height = NSToCoordRound(mP2T * aImage->GetHeight());
-
-	return DrawImage(aImage,aX,aY,width,height);
-}
-
-//------------------------------------------------------------------------
-
-NS_IMETHODIMP nsRenderingContextMac::DrawImage(nsIImage *aImage, nscoord aX, nscoord aY,
-                                        nscoord aWidth, nscoord aHeight) 
-{
-	nsRect	tr;
-
-	tr.x = aX;
-	tr.y = aY;
-	tr.width = aWidth;
-	tr.height = aHeight;
-
-	return DrawImage(aImage,tr);
-}
-
-//------------------------------------------------------------------------
-
-NS_IMETHODIMP nsRenderingContextMac::DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect)
-{
-	SetupPortState();
-
-	nsRect sr = aSRect;
-	nsRect dr = aDRect;
-	mGS->mTMatrix.TransformCoord(&sr.x,&sr.y,&sr.width,&sr.height);
-	sr.x -= mTranMatrix->GetXTranslationCoord();
-	sr.y -= mTranMatrix->GetYTranslationCoord();
-	mGS->mTMatrix.TransformCoord(&dr.x,&dr.y,&dr.width,&dr.height);
-
-	return aImage->Draw(*this, mCurrentSurface, sr.x, sr.y, sr.width, sr.height,
-						dr.x, dr.y, dr.width, dr.height);
-}
-
-//------------------------------------------------------------------------
-
-NS_IMETHODIMP nsRenderingContextMac::DrawImage(nsIImage *aImage, const nsRect& aRect)
-{
-	SetupPortState();
-
-	nsRect tr = aRect;
-	mGS->mTMatrix.TransformCoord(&tr.x,&tr.y,&tr.width,&tr.height);
-  
-	return aImage->Draw(*this, mCurrentSurface, tr.x, tr.y, tr.width, tr.height);
-}
-
-#if 0
-/** ---------------------------------------------------
- *  See documentation in nsIRenderingContext.h
- *	@update 3/16/00 dwc
- */
-NS_IMETHODIMP 
-nsRenderingContextMac::DrawTile(nsIImage *aImage,nscoord aX0,nscoord aY0,nscoord aX1,nscoord aY1,
-                                                    nscoord aWidth,nscoord aHeight)
-{
-
-  return NS_OK;
-}
-#endif
-
 
 NS_IMETHODIMP nsRenderingContextMac::RetrieveCurrentNativeGraphicData(PRUint32 * ngd)
 {
@@ -1570,11 +1479,7 @@ nsRenderingContextMac::GetBoundingMetrics(const PRUnichar*   aString,
   if(NS_FAILED(rv))
     return rv;
   
-#ifdef IBMBIDI
   PRBool rtlText = mRightToLeftText;
-#else
-  PRBool rtlText = PR_FALSE;
-#endif
 
   rv = mUnicodeRenderingToolkit.PrepareToDraw(mP2T, mContext, mGS, mPort, rtlText);
   if(NS_SUCCEEDED(rv))
@@ -1587,14 +1492,12 @@ nsRenderingContextMac::GetBoundingMetrics(const PRUnichar*   aString,
 #endif /* MOZ_MATHML */
 
 
-#ifdef IBMBIDI
 NS_IMETHODIMP
 nsRenderingContextMac::SetRightToLeftText(PRBool aIsRTL)
 {
   mRightToLeftText = aIsRTL;
 	return NS_OK;
 }
-#endif
 
 #pragma mark -
 
@@ -1631,4 +1534,18 @@ nsRenderingContextMac::OnMacOSX()
     gInitVer = PR_TRUE;
   }
   return gOnMacOSX;
+}
+
+PRBool
+nsRenderingContextMac::OnJaguar()
+{
+  static PRBool sInitVer = PR_FALSE;
+  static PRBool sOnJaguar = PR_FALSE;
+  if (!sInitVer) {
+    long version;
+    OSErr err = ::Gestalt(gestaltSystemVersion, &version);
+    sOnJaguar = (err == noErr && version >= 0x00001020);
+    sInitVer = PR_TRUE;
+  }
+  return sOnJaguar;
 }

@@ -49,13 +49,14 @@ class nsIContent;
 class nsIDOMUIEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLScrollHandler : public nsIDOMScrollListener, 
                            public nsXBLEventHandler
 {
 public:
-  nsXBLScrollHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLScrollHandler(nsIDOMEventReceiver* aReceiver,
+                     nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLScrollHandler();
   
   // nsIDOMetc.
@@ -68,17 +69,12 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kOverflowAtom;
-  static nsIAtom* kUnderflowAtom;
-  static nsIAtom* kOverflowChangedAtom;
-
-protected:
   // Members
 };
 
-extern nsresult
-NS_NewXBLScrollHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
+nsresult
+NS_NewXBLScrollHandler(nsIDOMEventReceiver* aEventReceiver,
+                       nsXBLPrototypeHandler* aHandlerElement,
                        nsXBLScrollHandler** aResult);
 
 

@@ -65,8 +65,6 @@ public:
   NS_IMETHOD  GetScrollBarDimensions(float &aWidth, float &aHeight) const;
   NS_IMETHOD  GetSystemFont(nsSystemFontID anID, nsFont *aFont) const;
 
-  NS_IMETHOD GetDrawingSurface(nsIRenderingContext &aContext, nsDrawingSurface &aSurface);
-
   NS_IMETHOD ConvertPixel(nscolor aColor, PRUint32 & aPixel);
   NS_IMETHOD CheckFontExistence(const nsString& aFontName);
 
@@ -90,12 +88,14 @@ public:
              { aHandle =  mXlibRgbHandle; return NS_OK; }
   XlibRgbHandle *GetXlibRgbHandle() { return mXlibRgbHandle; }
   NS_IMETHOD GetDepth( PRUint32 &depth ) { depth = (PRUint32)mDepth; return NS_OK; }
+  virtual void GetFontMetricsContext(nsFontMetricsXlibContext *&aContext) { aContext = mFontMetricsContext; };
+  virtual void GetRCContext(nsRenderingContextXlibContext *&aContext) { aContext = mRCContext; };
 
 protected:
   virtual ~nsDeviceContextXlib();
 
 private:
-  void                 CommonInit(void);
+  nsresult             CommonInit(void);
   PRBool               mWriteable;
   PRUint32             mNumCells;
   nsDrawingSurface     mSurface;
@@ -104,6 +104,9 @@ private:
   Screen *             mScreen;
   Visual *             mVisual;
   int                  mDepth;
+  static nsFontMetricsXlibContext      *mFontMetricsContext;
+  static nsRenderingContextXlibContext *mRCContext;
+  static int                            mContextCounter;
 
   float                mWidthFloat;
   float                mHeightFloat;

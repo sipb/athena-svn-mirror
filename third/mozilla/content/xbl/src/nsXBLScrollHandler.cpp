@@ -38,11 +38,10 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLScrollHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsIContent.h"
-#include "nsIAtom.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIDocument.h"
@@ -53,88 +52,42 @@
 #include "nsXBLBinding.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
 
-PRUint32 nsXBLScrollHandler::gRefCnt = 0;
-nsIAtom* nsXBLScrollHandler::kOverflowAtom = nsnull;
-nsIAtom* nsXBLScrollHandler::kUnderflowAtom = nsnull;
-nsIAtom* nsXBLScrollHandler::kOverflowChangedAtom = nsnull;
-
-nsXBLScrollHandler::nsXBLScrollHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler)
-:nsXBLEventHandler(aReceiver,aHandler)
+nsXBLScrollHandler::nsXBLScrollHandler(nsIDOMEventReceiver* aReceiver,
+                                       nsXBLPrototypeHandler* aHandler)
+  : nsXBLEventHandler(aReceiver, aHandler)
 {
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kOverflowAtom = NS_NewAtom("overflow");
-    kUnderflowAtom = NS_NewAtom("underflow");
-    kOverflowChangedAtom = NS_NewAtom("overflowchanged");
-  }
 }
 
 nsXBLScrollHandler::~nsXBLScrollHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kOverflowAtom);
-    NS_RELEASE(kUnderflowAtom);
-    NS_RELEASE(kOverflowChangedAtom);
-  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXBLScrollHandler, nsXBLEventHandler, nsIDOMScrollListener)
 
 nsresult nsXBLScrollHandler::Overflow(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kOverflowAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::overflow, aEvent);
 }
 
 nsresult nsXBLScrollHandler::Underflow(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kUnderflowAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::underflow, aEvent);
 }
 
 nsresult nsXBLScrollHandler::OverflowChanged(nsIDOMEvent* aEvent)
 {
-  if (!mProtoHandler)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIAtom> eventName;
-  mProtoHandler->GetEventName(getter_AddRefs(eventName));
-
-  if (eventName.get() != kOverflowChangedAtom)
-    return NS_OK;
-
-  mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
-  return NS_OK;
+  return DoGeneric(nsXBLAtoms::overflowchanged, aEvent);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLScrollHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler, 
+NS_NewXBLScrollHandler(nsIDOMEventReceiver* aRec,
+                       nsXBLPrototypeHandler* aHandler,
                        nsXBLScrollHandler** aResult)
 {
   *aResult = new nsXBLScrollHandler(aRec, aHandler);

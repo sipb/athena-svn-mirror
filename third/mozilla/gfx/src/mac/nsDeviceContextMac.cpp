@@ -283,10 +283,7 @@ NS_IMETHODIMP nsDeviceContextMac :: GetSystemFont(nsSystemFontID aID, nsFont *aF
 
       if (aID == eSystemFont_Window ||
           aID == eSystemFont_Document ||
-          aID == eSystemFont_Button ||
-          aID == eSystemFont_PullDownMenu ||
-          aID == eSystemFont_List ||
-          aID == eSystemFont_Field) {
+          aID == eSystemFont_PullDownMenu) {
             aFont->name.Assign(NS_LITERAL_STRING("sans-serif"));
             aFont->size = NSToCoordRound(aFont->size * 0.875f); // quick hack
       }
@@ -309,10 +306,10 @@ NS_IMETHODIMP nsDeviceContextMac :: GetSystemFont(nsSystemFontID aID, nsFont *aF
           case eSystemFont_Desktop:       fontID = kThemeViewsFont;          break;
           case eSystemFont_Info:          fontID = kThemeViewsFont;          break;
           case eSystemFont_Dialog:        fontID = kThemeSystemFont;         break;
-          //case eSystemFont_Button:      = 'sans-serif'  ("fontID = kThemeSystemFont" in MacIE5)
+        case eSystemFont_Button:      fontID = kThemePushButtonFont; break;
           //case eSystemFont_PullDownMenu:= 'sans-serif'  ("fontID = kThemeSystemFont" in MacIE5)
-          //case eSystemFont_List:        = 'sans-serif'
-          //case eSystemFont_Field:       = 'sans-serif'
+        case eSystemFont_List:        fontID = kThemeSystemFont; break;
+        case eSystemFont_Field:         fontID = kThemeApplicationFont; break;
               // moz
           case eSystemFont_Tooltips:      fontID = kThemeSmallSystemFont;    break;
           case eSystemFont_Widget:        fontID = kThemeSmallSystemFont;    break;
@@ -399,16 +396,6 @@ NS_IMETHODIMP nsDeviceContextMac :: GetSystemFont(nsSystemFontID aID, nsFont *aF
   }
 
   return status;
-}
-
-/** ---------------------------------------------------
- *  See documentation in nsIDeviceContext.h
- *	@update 12/9/98 dwc
- */
-NS_IMETHODIMP nsDeviceContextMac :: GetDrawingSurface(nsIRenderingContext &aContext, nsDrawingSurface &aSurface)
-{
-  aContext.CreateDrawingSurface(nsnull, 0, aSurface);
-  return nsnull == aSurface ? NS_ERROR_OUT_OF_MEMORY : NS_OK;
 }
 
 /** ---------------------------------------------------
@@ -1064,7 +1051,6 @@ PRBool nsDeviceContextMac::HaveFontManager90()
 //------------------------------------------------------------------------
 nsFontEnumeratorMac::nsFontEnumeratorMac()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 NS_IMPL_ISUPPORTS1(nsFontEnumeratorMac, nsIFontEnumerator)
@@ -1273,6 +1259,19 @@ nsFontEnumeratorMac::HaveFontFor(const char* aLangGroup,PRBool* aResult)
   for(i = 0 ; i < count; i++)
   	nsMemory::Free(ptr[i]);
   nsMemory::Free(ptr);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsFontEnumeratorMac::GetDefaultFont(const char *aLangGroup, 
+  const char *aGeneric, PRUnichar **aResult)
+{
+  // aLangGroup=null or ""  means any (i.e., don't care)
+  // aGeneric=null or ""  means any (i.e, don't care)
+
+  NS_ENSURE_ARG_POINTER(aResult);
+  *aResult = nsnull;
+
   return NS_OK;
 }
 

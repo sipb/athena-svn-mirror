@@ -42,9 +42,8 @@
 class nsASingleFragmentCString;
 class nsCString;
 
-NS_COM size_t Distance( const nsAString::const_iterator&, const nsAString::const_iterator& );
-NS_COM size_t Distance( const nsACString::const_iterator&, const nsACString::const_iterator& );
-
+NS_COM size_t Distance( const nsReadingIterator<PRUnichar>&, const nsReadingIterator<PRUnichar>& );
+NS_COM size_t Distance( const nsReadingIterator<char>&, const nsReadingIterator<char>& );
 
 NS_COM void CopyUCS2toASCII( const nsAString& aSource, nsACString& aDest );
 NS_COM void CopyASCIItoUCS2( const nsACString& aSource, nsAString& aDest );
@@ -91,7 +90,7 @@ NS_COM char* ToNewUTF8String( const nsAString& aSource );
   /**
    * Returns a new |PRUnichar| buffer containing a zero-terminated copy of |aSource|.
    *
-   * Allocates and returns a new |char| buffer which you must free with |nsMemory::Free|.
+   * Allocates and returns a new |PRUnichar| buffer which you must free with |nsMemory::Free|.
    * The new buffer is zero-terminated, but that may not help you if |aSource| contains embedded nulls.
    *
    * @param aSource a 16-bit wide string
@@ -103,15 +102,32 @@ NS_COM PRUnichar* ToNewUnicode( const nsAString& aSource );
   /**
    * Returns a new |PRUnichar| buffer containing a zero-terminated copy of |aSource|.
    *
-   * Allocates and returns a new |char| buffer which you must free with |nsMemory::Free|.
+   * Allocates and returns a new |PRUnichar| buffer which you must free with |nsMemory::Free|.
    * Performs an encoding conversion by 0-padding 8-bit wide characters up to 16-bits wide while copying |aSource| to your new buffer.
    * This conversion is not well defined; but it reproduces legacy string behavior.
    * The new buffer is zero-terminated, but that may not help you if |aSource| contains embedded nulls.
    *
-   * @param aSource an 8-bit wide string
+   * @param aSource an 8-bit wide string (a C-string, NOT UTF-8)
    * @return a new |PRUnichar| buffer you must free with |nsMemory::Free|.
    */
 NS_COM PRUnichar* ToNewUnicode( const nsACString& aSource );
+
+  /**
+   * Returns a new |PRUnichar| buffer containing a zero-terminated copy
+   * of |aSource|.
+   *
+   * Allocates and returns a new |char| buffer which you must free with
+   * |nsMemory::Free|.  Performs an encoding conversion by 0-padding
+   * 8-bit wide characters up to 16-bits wide while copying |aSource| to
+   * your new buffer.  This conversion is not well defined; but it
+   * reproduces legacy string behavior.  The new buffer is
+   * zero-terminated, but that may not help you if |aSource| contains
+   * embedded nulls.
+   *
+   * @param aSource an 8-bit wide string, UTF-8 encoded
+   * @return a new |PRUnichar| buffer you must free with |nsMemory::Free|.
+   */
+NS_COM PRUnichar* UTF8ToNewUnicode( const nsACString& aSource );
 
   /**
    * Copies |aLength| 16-bit characters from the start of |aSource| to the
@@ -175,6 +191,26 @@ NS_COM PRBool IsASCII( const nsAString& aString );
 NS_COM PRBool IsASCII( const nsACString& aString );
 
 
+  /**
+   * Returns |PR_TRUE| if |aString| is a valid UTF-8 string.
+   * XXX This is not bullet-proof and nor an all-purpose UTF-8 validator. 
+   * It is mainly written to replace and roughly equivalent to
+   *
+   *    str.Equals(NS_ConvertUCS2toUTF8(NS_ConvertUTF8toUCS2(str)))
+   *
+   * (see bug 191541)
+   * As such,  it does not check for non-UTF-8 7bit encodings such as 
+   * ISO-2022-JP and HZ. However, it filters out  UTF-8 representation
+   * of surrogate codepoints and non-characters ( 0xFFFE and 0xFFFF
+   * in planes 0 through 16.) as well as overlong UTF-8 sequences. 
+   * Also note that it regards UTF-8 sequences corresponding to 
+   * codepoints above 0x10FFFF as invalid in accordance with 
+   * http://www.ietf.org/internet-drafts/draft-yergeau-rfc2279bis-04.txt
+   *
+   * @param aString an 8-bit wide string to scan
+   */
+NS_COM PRBool IsUTF8( const nsACString& aString );
+
 
   /**
    * Converts case in place in the argument string.
@@ -213,7 +249,7 @@ NS_COM PRBool FindInReadable( const nsACString& aPattern, nsACString::const_iter
 
 /* sometimes we don't care about where the string was, just that we
  * found it or not */
-inline PRBool FindInReadable( const nsAString& aPattern, nsAString& aSource, const nsStringComparator& compare = nsDefaultStringComparator() )
+inline PRBool FindInReadable( const nsAString& aPattern, const nsAString& aSource, const nsStringComparator& compare = nsDefaultStringComparator() )
 {
   nsAString::const_iterator start, end;
   aSource.BeginReading(start);
@@ -221,7 +257,7 @@ inline PRBool FindInReadable( const nsAString& aPattern, nsAString& aSource, con
   return FindInReadable(aPattern, start, end, compare);
 }
 
-inline PRBool FindInReadable( const nsACString& aPattern, nsACString& aSource, const nsCStringComparator& compare = nsDefaultCStringComparator() )
+inline PRBool FindInReadable( const nsACString& aPattern, const nsACString& aSource, const nsCStringComparator& compare = nsDefaultCStringComparator() )
 {
   nsACString::const_iterator start, end;
   aSource.BeginReading(start);
@@ -261,6 +297,15 @@ NS_COM PRUint32 CountCharInReadable( const nsAString& aStr,
                                      PRUnichar aChar );
 NS_COM PRUint32 CountCharInReadable( const nsACString& aStr,
                                      char aChar );
+
+NS_COM PRBool StringBeginsWith( const nsAString& aSource,
+                                const nsAString& aSubstring);
+NS_COM PRBool StringBeginsWith( const nsACString& aSource,
+                                const nsACString& aSubstring);
+NS_COM PRBool StringEndsWith( const nsAString& aSource,
+                              const nsAString& aSubstring);
+NS_COM PRBool StringEndsWith( const nsACString& aSource,
+                              const nsACString& aSubstring);
 
 NS_COM PRUint32 HashString( const nsAString& aStr );
 NS_COM PRUint32 HashString( const nsACString& aStr );

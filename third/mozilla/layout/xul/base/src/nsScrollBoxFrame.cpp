@@ -101,7 +101,7 @@ NS_IMETHODIMP
 nsScrollBoxFrame::Init(nsIPresContext*  aPresContext,
                     nsIContent*      aContent,
                     nsIFrame*        aParent,
-                    nsIStyleContext* aStyleContext,
+                    nsStyleContext*  aStyleContext,
                     nsIFrame*        aPrevInFlow)
 {
   nsresult  rv = nsBoxFrame::Init(aPresContext, aContent,
@@ -138,8 +138,7 @@ nsScrollBoxFrame::SetUpScrolledFrame(nsIPresContext* aPresContext)
      return;
 
   // create a view if we don't already have one.
-  nsCOMPtr<nsIStyleContext> context;
-  frame->GetStyleContext(getter_AddRefs(context));
+  nsStyleContext* context = frame->GetStyleContext();
   nsHTMLContainerFrame::CreateViewForFrame(aPresContext, frame,
                                            context, nsnull, PR_TRUE);
 
@@ -258,10 +257,8 @@ nsScrollBoxFrame::CreateScrollingView(nsIPresContext* aPresContext)
     // XXX Put view last in document order until we know how to do better
     viewManager->InsertChild(parentView, view, nsnull, PR_TRUE);
 
-    const nsStyleDisplay* display;
-    ::GetStyleData(mStyleContext, &display);
     // If it's fixed positioned, then create a widget too
-    CreateScrollingViewWidget(view, display);
+    CreateScrollingViewWidget(view, GetStyleDisplay());
 
     // Get the nsIScrollableView interface
     nsIScrollableView* scrollingView;
@@ -274,11 +271,9 @@ nsScrollBoxFrame::CreateScrollingView(nsIPresContext* aPresContext)
       scrollingView->CreateScrollControls(); 
     }
 
-    const nsStyleBorder* borderStyle;
-    ::GetStyleData(mStyleContext, &borderStyle);
     // Set the scrolling view's insets to whatever our border is
     nsMargin border;
-    if (!borderStyle->GetBorder(border)) {
+    if (!GetStyleBorder()->GetBorder(border)) {
       NS_NOTYETIMPLEMENTED("percentage border");
       border.SizeTo(0, 0, 0, 0);
     }
@@ -392,14 +387,10 @@ nsScrollBoxFrame::DoLayout(nsBoxLayoutState& aState)
      nsIFrame* frame;
      kid->GetFrame(&frame);
      frame->GetView(presContext, &view);
-     nsCOMPtr<nsIViewManager> vm;
-     view->GetViewManager(*getter_AddRefs(vm));
+
      nsRect r(0, 0, childRect.width, childRect.height);
-     nsRect bnds;
-     view->GetBounds(bnds);
-     if (bnds != r) {
-       vm->ResizeView(view, r);
-     }
+     nsContainerFrame::SyncFrameViewAfterReflow(presContext, frame, view, &r,
+                                                NS_FRAME_NO_MOVE_VIEW);
   }
 
   nsIScrollableView* scrollingView;
@@ -613,13 +604,10 @@ nsScrollBoxFrame::Paint(nsIPresContext*      aPresContext,
 {
   if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
     // Only paint the border and background if we're visible
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
 
-    if (vis->IsVisibleOrCollapsed()) {
+    if (GetStyleVisibility()->IsVisibleOrCollapsed()) {
       // Paint our border only (no background)
-      const nsStyleBorder* border = (const nsStyleBorder*)
-        mStyleContext->GetStyleData(eStyleStruct_Border);
+      const nsStyleBorder* border = GetStyleBorder();
 
       nsRect  rect(0, 0, mRect.width, mRect.height);
       nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
@@ -628,17 +616,10 @@ nsScrollBoxFrame::Paint(nsIPresContext*      aPresContext,
   }
 
   // Paint our children
-  nsresult rv = nsBoxFrame::Paint(aPresContext, aRenderingContext, aDirtyRect,
-                                 aWhichLayer);
+  nsBoxFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer);
 
   // Call nsFrame::Paint to draw selection border when appropriate
   return nsFrame::Paint(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer);
-}
-
-PRIntn
-nsScrollBoxFrame::GetSkipSides() const
-{
-  return 0;
 }
 
 nsresult 
@@ -838,7 +819,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
               nsIContent*      aContent,
               nsIFrame*        aParent,
-              nsIStyleContext* aContext,
+              nsStyleContext*  aContext,
               nsIFrame*        aPrevInFlow);
 
   NS_DECL_NSITIMERCALLBACK
@@ -872,7 +853,7 @@ NS_IMETHODIMP
 nsAutoRepeatBoxFrame::Init(nsIPresContext*  aPresContext,
               nsIContent*      aContent,
               nsIFrame*        aParent,
-              nsIStyleContext* aContext,
+              nsStyleContext*  aContext,
               nsIFrame*        aPrevInFlow)
 {
   mPresContext = aPresContext;

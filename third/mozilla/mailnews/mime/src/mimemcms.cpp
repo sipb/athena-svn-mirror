@@ -177,9 +177,11 @@ MimeMultCMS_get_content_info(MimeObject *obj,
 extern PRBool MimeEncryptedCMS_encrypted_p (MimeObject *obj);
 extern PRBool MimeCMSHeadersAndCertsMatch(MimeObject *obj,
 											 nsICMSMessage *,
+											 PRBool *signing_cert_without_email_address,
 											 char **);
 extern char *MimeCMS_MakeSAURL(MimeObject *obj);
 extern char *IMAP_CreateReloadAllPartsUrl(const char *url);
+extern int MIMEGetRelativeCryptoNestLevel(MimeObject *obj);
 
 static void *
 MimeMultCMS_init (MimeObject *obj)
@@ -270,15 +272,36 @@ MimeMultCMS_init (MimeObject *obj)
       nsCOMPtr<nsISupports> securityInfo;
       channel->GetURI(getter_AddRefs(uri));
       if (uri)
-        msgurl = do_QueryInterface(uri);
-      if (msgurl)
-        msgurl->GetMsgWindow(getter_AddRefs(msgWindow));
-      if (msgWindow)
-        msgWindow->GetMsgHeaderSink(getter_AddRefs(headerSink));
-      if (headerSink)
-        headerSink->GetSecurityInfo(getter_AddRefs(securityInfo));
-      if (securityInfo)
-        data->smimeHeaderSink = do_QueryInterface(securityInfo);
+      {
+        nsCAutoString urlSpec;
+        rv = uri->GetSpec(urlSpec);
+
+        // We only want to update the UI if the current mime transaction
+        // is intended for display.
+        // If the current transaction is intended for background processing,
+        // we can learn that by looking at the additional header=filter
+        // string contained in the URI.
+        //
+        // If we find something, we do not set smimeHeaderSink,
+        // which will prevent us from giving UI feedback.
+        //
+        // If we do not find header=filter, we assume the result of the
+        // processing will be shown in the UI.
+        
+        if (!strstr(urlSpec.get(), "?header=filter") &&
+            !strstr(urlSpec.get(), "&header=filter"))
+        {
+          msgurl = do_QueryInterface(uri);
+          if (msgurl)
+            msgurl->GetMsgWindow(getter_AddRefs(msgWindow));
+          if (msgWindow)
+            msgWindow->GetMsgHeaderSink(getter_AddRefs(headerSink));
+          if (headerSink)
+            headerSink->GetSecurityInfo(getter_AddRefs(securityInfo));
+          if (securityInfo)
+            data->smimeHeaderSink = do_QueryInterface(securityInfo);
+         }
+       }
     } // if channel
   } // if msd
 
@@ -337,7 +360,6 @@ MimeMultCMS_sig_init (void *crypto_closure,
 						MimeHeaders *signature_hdrs)
 {
   MimeMultCMSdata *data = (MimeMultCMSdata *) crypto_closure;
-  MimeDisplayOptions *opts = multipart_object->options;
   char *ct;
   int status = 0;
   nsresult rv;
@@ -442,20 +464,7 @@ MimeMultCMS_generate (void *crypto_closure)
   PRInt32 signature_status = nsICMSMessageErrors::GENERAL_ERROR;
   nsCOMPtr<nsIX509Cert> signerCert;
 
-  // if we are the child of the topmost message, aNestLeve == 1
-  int aNestLevel = 0;
-
-  if (data->self) {
-    MimeObject *walker = data->self;
-    while (walker) {
-      // Crypto mime objects are transparent wrt nesting.
-      if (!mime_typep(walker, (MimeObjectClass *) &mimeEncryptedClass)
-          && !mime_typep(walker, (MimeObjectClass *) &mimeMultipartSignedClass)) {
-        ++aNestLevel;
-      }
-      walker = walker->parent;
-    }
-  }
+  int aRelativeNestLevel = MIMEGetRelativeCryptoNestLevel(data->self);
 
   unverified_p = data->self->options->missing_parts; 
 
@@ -483,11 +492,19 @@ MimeMultCMS_generate (void *crypto_closure)
         data->verify_error = -1;
       }
     } else {
+		  PRBool signing_cert_without_email_address;
+
 		  good_p = MimeCMSHeadersAndCertsMatch(data->self,
 												 data->content_info,
+												 &signing_cert_without_email_address,
 												 &data->sender_addr);
       if (!good_p) {
-        signature_status = nsICMSMessageErrors::VERIFY_HEADER_MISMATCH;
+        if (signing_cert_without_email_address) {
+          signature_status = nsICMSMessageErrors::VERIFY_CERT_WITHOUT_ADDRESS;
+        }
+        else {
+          signature_status = nsICMSMessageErrors::VERIFY_HEADER_MISMATCH;
+        }
         if (!data->verify_error) {
           data->verify_error = -1;
           // XXX Fix this		data->verify_error = SEC_ERROR_CERT_ADDR_MISMATCH; XXX //
@@ -525,11 +542,13 @@ MimeMultCMS_generate (void *crypto_closure)
 
   PRInt32 maxNestLevel = 0;
   if (data->smimeHeaderSink) {
-    data->smimeHeaderSink->MaxWantedNesting(&maxNestLevel);
+    if (aRelativeNestLevel >= 0) {
+      data->smimeHeaderSink->MaxWantedNesting(&maxNestLevel);
 
-    if (aNestLevel <= maxNestLevel)
-    {
-      data->smimeHeaderSink->SignedStatus(aNestLevel, signature_status, signerCert);
+      if (aRelativeNestLevel <= maxNestLevel)
+      {
+        data->smimeHeaderSink->SignedStatus(aRelativeNestLevel, signature_status, signerCert);
+      }
     }
   }
 

@@ -46,9 +46,6 @@ public:
   NS_IMETHOD IsDone();
   NS_IMETHOD PositionAt(nsIContent* aCurNode);
 
-  NS_IMETHOD MakePre();
-  NS_IMETHOD MakePost();
-
 private:
   nsCOMPtr<nsIPresContext>  mPresContext;
   nsIFrame*                 mParentFrame;
@@ -60,7 +57,6 @@ nsFrameContentIterator::nsFrameContentIterator(nsIPresContext* aPresContext,
                                                    nsIFrame*       aFrame)
   : mPresContext(aPresContext), mParentFrame(aFrame), mIsDone(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
   First();
 }
 
@@ -101,15 +97,7 @@ GetNextChildFrame(nsIPresContext* aPresContext, nsIFrame* aFrame)
   NS_PRECONDITION(aFrame, "null pointer");
 
   // Get the last-in-flow
-  while (PR_TRUE) {
-    nsIFrame* nextInFlow;
-    aFrame->GetNextInFlow(&nextInFlow);
-    if (nextInFlow) {
-      aFrame = nextInFlow;
-    } else {
-      break;
-    }
-  }
+  aFrame = aFrame->GetLastInFlow();
 
   // Get its next sibling
   nsIFrame* nextSibling;
@@ -273,18 +261,6 @@ nsFrameContentIterator::PositionAt(nsIContent* aCurNode)
   }
 
   return NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP
-nsFrameContentIterator::MakePre()
-{
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsFrameContentIterator::MakePost()
-{
-  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 nsresult

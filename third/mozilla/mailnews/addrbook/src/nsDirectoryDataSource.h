@@ -48,7 +48,7 @@
 #include "nsISupportsArray.h"
 #include "nsIObserver.h"
 #include "nsWeakReference.h"
-
+#include "nsICollation.h"
 
 /**
  * The addressbook data source.
@@ -98,8 +98,6 @@ public:
 	NS_IMETHOD ArcLabelsOut(nsIRDFResource* source,
 						  nsISimpleEnumerator** labels); 
 
-	NS_IMETHOD GetAllCommands(nsIRDFResource* source,
-							nsIEnumerator/*<nsIRDFResource>*/** commands);
 	NS_IMETHOD IsCommandEnabled(nsISupportsArray/*<nsIRDFResource>*/* aSources,
 							  nsIRDFResource*   aCommand,
 							  nsISupportsArray/*<nsIRDFResource>*/* aArguments,
@@ -123,11 +121,17 @@ protected:
                                       nsIRDFNode **target);
   nsresult createDirectoryIsRemoteNode(nsIAbDirectory *directory,
     nsIRDFNode **target);
+  nsresult createDirectoryIsSecureNode(nsIAbDirectory *directory,
+    nsIRDFNode **target);
 	nsresult createDirectoryIsWriteableNode(nsIAbDirectory *directory,
+                                            nsIRDFNode **target);
+  nsresult createDirectoryTreeNameSortNode(nsIAbDirectory *directory,
                                             nsIRDFNode **target);
 	nsresult getDirectoryArcLabelsOut(nsIAbDirectory *directory,
 										   nsISupportsArray **arcs);
 
+  nsresult DoModifyDirectory(nsISupportsArray *parentDir,
+                              nsISupportsArray *arguments);
 	nsresult DoDeleteFromDirectory(nsISupportsArray *parentDirs,
 							  nsISupportsArray *delDirs);
 	nsresult DoDeleteCardsFromDirectory(nsIAbDirectory *directory,
@@ -141,6 +145,7 @@ protected:
 
 	nsresult GetTargetHasAssertion(nsIRDFDataSource *dataSource, nsIRDFResource* dirResource,
 							   nsIRDFResource *property,PRBool tv, nsIRDFNode *target,PRBool* hasAssertion);
+  nsresult CreateCollationKey(const nsString &aSource,  PRUint8 **aKey, PRUint32 *aLength);
 
   nsCOMPtr<nsIRDFResource> kNC_Child;
   nsCOMPtr<nsIRDFResource> kNC_DirName;
@@ -148,9 +153,13 @@ protected:
   nsCOMPtr<nsIRDFResource> kNC_DirUri;
   nsCOMPtr<nsIRDFResource> kNC_IsMailList;
   nsCOMPtr<nsIRDFResource> kNC_IsRemote;
+  nsCOMPtr<nsIRDFResource> kNC_IsSecure;
   nsCOMPtr<nsIRDFResource> kNC_IsWriteable;
+  nsCOMPtr<nsIRDFResource> kNC_DirTreeNameSort;
+  nsCOMPtr<nsICollation> mCollationKeyGenerator;
   
   // commands
+  nsCOMPtr<nsIRDFResource> kNC_Modify;
   nsCOMPtr<nsIRDFResource> kNC_Delete;
   nsCOMPtr<nsIRDFResource> kNC_DeleteCards;
   

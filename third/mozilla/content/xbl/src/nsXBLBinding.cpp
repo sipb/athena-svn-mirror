@@ -60,8 +60,10 @@
 #include "nsIContent.h"
 #include "nsIDocument.h"
 #include "nsIXMLContent.h"
+#ifdef MOZ_XUL
 #include "nsIXULContent.h"
 #include "nsIXULDocument.h"
+#endif
 #include "nsIXMLContentSink.h"
 #include "nsContentCID.h"
 #include "nsXMLDocument.h"
@@ -71,7 +73,7 @@
 #include "nsINameSpace.h"
 #include "jsapi.h"
 #include "nsXBLService.h"
-#include "nsIXBLInsertionPoint.h"
+#include "nsXBLInsertionPoint.h"
 #include "nsIXPConnect.h"
 #include "nsIScriptGlobalObjectOwner.h"
 #include "nsIScriptContext.h"
@@ -90,6 +92,7 @@
 #include "nsIDOMDragListener.h"
 #include "nsIDOMMutationListener.h"
 #include "nsIDOMContextMenuListener.h"
+#include "nsIDOMEventGroup.h"
 
 #include "nsXBLAtoms.h"
 #include "nsXULAtoms.h"
@@ -111,7 +114,7 @@
 #include "nsXBLLoadHandler.h"
 #include "nsXBLContextMenuHandler.h"
 #include "nsXBLCustomHandler.h"
-
+#include "nsXBLPrototypeBinding.h"
 #include "nsXBLBinding.h"
 
 // Helper classes
@@ -237,13 +240,12 @@ nsXBLBinding::kEventHandlerMap[] = {
 NS_IMPL_ISUPPORTS1(nsXBLBinding, nsIXBLBinding)
 
 // Constructors/Destructors
-nsXBLBinding::nsXBLBinding(nsIXBLPrototypeBinding* aBinding)
+nsXBLBinding::nsXBLBinding(nsXBLPrototypeBinding* aBinding)
 : mFirstHandler(nsnull),
   mInsertionPointTable(nsnull),
   mIsStyleBinding(PR_TRUE),
   mMarkedForDeath(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
   mPrototypeBinding = aBinding;
   gRefCnt++;
   //  printf("REF COUNT UP: %d %s\n", gRefCnt, (const char*)mID);
@@ -315,8 +317,6 @@ nsXBLBinding::InstallAnonymousContent(nsIContent* aAnonParent, nsIContent* aElem
 
   aAnonParent->SetDocument(doc, PR_TRUE, AllowScripts());
 
-  nsCOMPtr<nsIXULDocument> xuldoc(do_QueryInterface(doc));
-
   // (2) The children's parent back pointer should not be to this synthetic root
   // but should instead point to the enclosing parent element.
   PRInt32 childCount;
@@ -327,11 +327,14 @@ nsXBLBinding::InstallAnonymousContent(nsIContent* aAnonParent, nsIContent* aElem
     child->SetParent(aElement);
     child->SetBindingParent(mBoundElement);
 
+#ifdef MOZ_XUL
     // To make XUL templates work (and other goodies that happen when
     // an element is added to a XUL document), we need to notify the
     // XUL document using its special API.
+    nsCOMPtr<nsIXULDocument> xuldoc(do_QueryInterface(doc));
     if (xuldoc)
       xuldoc->AddSubtreeToDocument(child);
+#endif
   }
 }
 
@@ -346,15 +349,14 @@ nsXBLBinding::SetAnonymousContent(nsIContent* aParent)
 }
 
 NS_IMETHODIMP
-nsXBLBinding::GetPrototypeBinding(nsIXBLPrototypeBinding** aResult)
+nsXBLBinding::GetPrototypeBinding(nsXBLPrototypeBinding** aResult)
 {
   *aResult = mPrototypeBinding;
-  NS_IF_ADDREF(*aResult);
   return NS_OK;
 }
   
 NS_IMETHODIMP
-nsXBLBinding::SetPrototypeBinding(nsIXBLPrototypeBinding* aProtoBinding)
+nsXBLBinding::SetPrototypeBinding(nsXBLPrototypeBinding* aProtoBinding)
 {
   mPrototypeBinding = aProtoBinding;
   return NS_OK;
@@ -363,13 +365,15 @@ nsXBLBinding::SetPrototypeBinding(nsIXBLPrototypeBinding* aProtoBinding)
 NS_IMETHODIMP
 nsXBLBinding::GetBindingElement(nsIContent** aResult)
 {
-  return mPrototypeBinding->GetBindingElement(aResult);
+  *aResult = mPrototypeBinding->GetBindingElement().get();
+  return NS_OK;
 }
 
 NS_IMETHODIMP
 nsXBLBinding::SetBindingElement(nsIContent* aElement)
 {
-  return mPrototypeBinding->SetBindingElement(aElement);
+  mPrototypeBinding->SetBindingElement(aElement);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -394,8 +398,7 @@ nsXBLBinding::GetFirstBindingWithConstructor(nsIXBLBinding** aResult)
 {
   *aResult = nsnull;
 
-  nsCOMPtr<nsIXBLPrototypeHandler> constructor;
-  mPrototypeBinding->GetConstructor(getter_AddRefs(constructor));
+  nsXBLPrototypeHandler* constructor = mPrototypeBinding->GetConstructor();
   if (constructor) {
     *aResult = this;
     NS_ADDREF(*aResult);
@@ -411,9 +414,7 @@ nsXBLBinding::HasStyleSheets(PRBool* aResolveStyle)
 {
   // Find out if we need to re-resolve style.  We'll need to do this
   // if we have additional stylesheets in our binding document.
-  PRBool hasSheets;
-  mPrototypeBinding->HasStyleSheets(&hasSheets);
-  if (hasSheets) {
+  if (mPrototypeBinding->HasStyleSheets()) {
     *aResolveStyle = PR_TRUE;
     return NS_OK;
   }
@@ -450,25 +451,20 @@ PRBool PR_CALLBACK BuildContentLists(nsHashKey* aKey, void* aData, void* aClosur
   nsCOMPtr<nsIContent> boundElement;
   binding->GetBoundElement(getter_AddRefs(boundElement));
 
-  nsISupportsArray* arr = (nsISupportsArray*)aData;
-  PRUint32 count;
-  arr->Count(&count);
+  nsVoidArray* arr = NS_STATIC_CAST(nsVoidArray*, aData);
+  PRInt32 count = arr->Count();
   
   if (count == 0)
     return NS_OK;
 
   // XXX Could this array just be altered in place and passed directly to
   // SetContentListFor?  We'd save space if we could pull this off.
-  nsCOMPtr<nsISupportsArray> contentList;
-  NS_NewISupportsArray(getter_AddRefs(contentList));
+  nsVoidArray* contentList = new nsVoidArray();
 
   // Figure out the relevant content node.
-  PRUint32 j = 0;
-  nsCOMPtr<nsIXBLInsertionPoint> currPoint = getter_AddRefs((nsIXBLInsertionPoint*)arr->ElementAt(j));
-  nsCOMPtr<nsIContent> parent;
-  PRInt32 currIndex;
-  currPoint->GetInsertionParent(getter_AddRefs(parent));
-  currPoint->GetInsertionIndex(&currIndex);
+  nsXBLInsertionPoint* currPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, arr->ElementAt(0));
+  nsCOMPtr<nsIContent> parent = currPoint->GetInsertionParent();
+  PRInt32 currIndex = currPoint->GetInsertionIndex();
 
   nsCOMPtr<nsIDOMNodeList> nodeList;
   if (parent == boundElement) {
@@ -481,9 +477,11 @@ PRBool PR_CALLBACK BuildContentLists(nsHashKey* aKey, void* aData, void* aClosur
     node->GetChildNodes(getter_AddRefs(nodeList));
   }
 
-  nsCOMPtr<nsIXBLInsertionPoint> pseudoPoint;
+  nsXBLInsertionPoint* pseudoPoint = nsnull;
   PRUint32 childCount;
   nodeList->GetLength(&childCount);
+  PRInt32 j = 0;
+
   for (PRUint32 i = 0; i < childCount; i++) {
     nsCOMPtr<nsIDOMNode> node;
     nodeList->Item(i, getter_AddRefs(node));
@@ -495,8 +493,8 @@ PRBool PR_CALLBACK BuildContentLists(nsHashKey* aKey, void* aData, void* aClosur
       // Get the next real insertion point and update our currIndex.
       j++;
       if (j < count) {
-        currPoint = getter_AddRefs((nsIXBLInsertionPoint*)arr->ElementAt(j));
-        currPoint->GetInsertionIndex(&currIndex);
+        currPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, arr->ElementAt(j));
+        currIndex = currPoint->GetInsertionIndex();
       }
 
       // Null out our current pseudo-point.
@@ -504,7 +502,7 @@ PRBool PR_CALLBACK BuildContentLists(nsHashKey* aKey, void* aData, void* aClosur
     }
     
     if (!pseudoPoint) {
-      NS_NewXBLInsertionPoint(parent.get(), (PRUint32)-1, nsnull, getter_AddRefs(pseudoPoint));
+      pseudoPoint = new nsXBLInsertionPoint(parent, (PRUint32) -1, nsnull);
       contentList->AppendElement(pseudoPoint);
     }
 
@@ -513,8 +511,8 @@ PRBool PR_CALLBACK BuildContentLists(nsHashKey* aKey, void* aData, void* aClosur
 
   // Add in all the remaining insertion points.
   for ( ; j < count; j++) {
-      currPoint = getter_AddRefs((nsIXBLInsertionPoint*)arr->ElementAt(j));
-      contentList->AppendElement(currPoint);
+    currPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, arr->ElementAt(j));
+    contentList->AppendElement(currPoint);
   }
   
   // Now set the content list using the binding manager,
@@ -537,18 +535,15 @@ PRBool PR_CALLBACK RealizeDefaultContent(nsHashKey* aKey, void* aData, void* aCl
   nsCOMPtr<nsIContent> boundElement;
   binding->GetBoundElement(getter_AddRefs(boundElement));
 
-  nsISupportsArray* arr = (nsISupportsArray*)aData;
-  PRUint32 count;
-  arr->Count(&count);
+  nsVoidArray* arr = (nsVoidArray*)aData;
+  PRInt32 count = arr->Count();
  
-  for (PRUint32 i = 0; i < count; i++) {
-    nsCOMPtr<nsIXBLInsertionPoint> currPoint = getter_AddRefs((nsIXBLInsertionPoint*)arr->ElementAt(i));
-    PRUint32 insCount;
-    currPoint->ChildCount(&insCount);
+  for (PRInt32 i = 0; i < count; i++) {
+    nsXBLInsertionPoint* currPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, arr->ElementAt(i));
+    PRInt32 insCount = currPoint->ChildCount();
     
     if (insCount == 0) {
-      nsCOMPtr<nsIContent> defContent;
-      currPoint->GetDefaultContentTemplate(getter_AddRefs(defContent));
+      nsCOMPtr<nsIContent> defContent = currPoint->GetDefaultContentTemplate();
       if (defContent) {
         // We need to take this template and use it to realize the
         // actual default content (through cloning).
@@ -557,8 +552,7 @@ PRBool PR_CALLBACK RealizeDefaultContent(nsHashKey* aKey, void* aData, void* aCl
         nsCOMPtr<nsIDOMNode> clonedNode;
         elt->CloneNode(PR_TRUE, getter_AddRefs(clonedNode));
 
-        nsCOMPtr<nsIContent> insParent;
-        currPoint->GetInsertionParent(getter_AddRefs(insParent));
+        nsCOMPtr<nsIContent> insParent = currPoint->GetInsertionParent();
 
         // Now that we have the cloned content, install the default content as
         // if it were additional anonymous content.
@@ -588,14 +582,12 @@ PRBool PR_CALLBACK RealizeDefaultContent(nsHashKey* aKey, void* aData, void* aCl
 
 PRBool PR_CALLBACK ChangeDocumentForDefaultContent(nsHashKey* aKey, void* aData, void* aClosure)
 {
-  nsISupportsArray* arr = (nsISupportsArray*)aData;
-  PRUint32 count;
-  arr->Count(&count);
+  nsVoidArray* arr = NS_STATIC_CAST(nsVoidArray*, aData);
+  PRInt32 count = arr->Count();
   
-  for (PRUint32 i = 0; i < count; i++) {
-    nsCOMPtr<nsIXBLInsertionPoint> currPoint = getter_AddRefs((nsIXBLInsertionPoint*)arr->ElementAt(i));
-    nsCOMPtr<nsIContent> defContent;
-    currPoint->GetDefaultContent(getter_AddRefs(defContent));
+  for (PRInt32 i = 0; i < count; i++) {
+    nsXBLInsertionPoint* currPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, arr->ElementAt(i));
+    nsCOMPtr<nsIContent> defContent = currPoint->GetDefaultContent();
     
     if (defContent)
       defContent->SetDocument(nsnull, PR_TRUE, PR_TRUE);
@@ -625,8 +617,7 @@ nsXBLBinding::GenerateAnonymousContent()
 
   // Plan to build the content by default.
   PRBool hasContent = (contentCount > 0);
-  PRBool hasInsertionPoints;
-  mPrototypeBinding->HasInsertionPoints(&hasInsertionPoints);
+  PRBool hasInsertionPoints = mPrototypeBinding->HasInsertionPoints();
 
 #ifdef DEBUG
   // See if there's an includes attribute.
@@ -734,16 +725,13 @@ nsXBLBinding::GenerateAnonymousContent()
               bindingManager->SetInsertionParent(childContent, point);
 
               // Find the correct nsIXBLInsertion point in our table.
-              nsCOMPtr<nsIXBLInsertionPoint> insertionPoint;
-              nsCOMPtr<nsISupportsArray> arr;
-              GetInsertionPointsFor(point, getter_AddRefs(arr));
-              PRUint32 arrCount;
-              arr->Count(&arrCount);
-              for (PRUint32 j = 0; j < arrCount; j++) {
-                insertionPoint = getter_AddRefs((nsIXBLInsertionPoint*)arr->ElementAt(j));
-                PRBool matches;
-                insertionPoint->Matches(point, index, &matches);
-                if (matches)
+              nsVoidArray* arr;
+              GetInsertionPointsFor(point, &arr);
+              nsXBLInsertionPoint* insertionPoint = nsnull;
+              PRInt32 arrCount = arr->Count();
+              for (PRInt32 j = 0; j < arrCount; j++) {
+                insertionPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, arr->ElementAt(j));
+                if (insertionPoint->Matches(point, index))
                   break;
                 insertionPoint = nsnull;
               }
@@ -767,11 +755,9 @@ nsXBLBinding::GenerateAnonymousContent()
           }
           else {
             // All of our children are shunted to this single insertion point.
-            nsCOMPtr<nsISupportsArray> arr;
-            GetInsertionPointsFor(singlePoint, getter_AddRefs(arr));
-            PRUint32 arrCount;
-            arr->Count(&arrCount);
-            nsCOMPtr<nsIXBLInsertionPoint> insertionPoint = getter_AddRefs((nsIXBLInsertionPoint*)arr->ElementAt(0));
+            nsVoidArray* arr;
+            GetInsertionPointsFor(singlePoint, &arr);
+            nsXBLInsertionPoint* insertionPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, arr->ElementAt(0));
         
             nsCOMPtr<nsIDOMNode> node;
             nsCOMPtr<nsIContent> content;
@@ -835,153 +821,189 @@ nsXBLBinding::InstallEventHandlers()
   if (AllowScripts()) {
     // Fetch the handlers prototypes for this binding.
     nsCOMPtr<nsIXBLDocumentInfo> info;
-    mPrototypeBinding->GetXBLDocumentInfo(mBoundElement, getter_AddRefs(info));
+    info = mPrototypeBinding->GetXBLDocumentInfo(mBoundElement);
     if (!info)
       return NS_ERROR_FAILURE;
 
-    nsCOMPtr<nsIXBLPrototypeHandler> handlerChain;
-    mPrototypeBinding->GetPrototypeHandlers(getter_AddRefs(handlerChain));
-  
+    nsXBLPrototypeHandler* handlerChain = mPrototypeBinding->GetPrototypeHandlers();
     nsXBLEventHandler* currHandler = nsnull;
 
-    for (nsCOMPtr<nsIXBLPrototypeHandler> next, curr = handlerChain; curr; 
-         curr->GetNextHandler(getter_AddRefs(next)), curr = next) {
-      // Fetch the event type.
-      nsCOMPtr<nsIAtom> eventAtom;
-      curr->GetEventName(getter_AddRefs(eventAtom));
-      if (!eventAtom) 
-        continue;
-
+    if (handlerChain) {
       nsCOMPtr<nsIDOMEventReceiver> receiver = do_QueryInterface(mBoundElement);
-      // Figure out if we're using capturing or not.
-      PRUint8 phase;
-      curr->GetPhase(&phase);
-      PRBool useCapture = (phase == NS_PHASE_CAPTURING);
-        
-      // Create a new nsXBLEventHandler.
-      nsXBLEventHandler* handler = nsnull;
-      
-      nsAutoString type;
-      eventAtom->ToString(type);
-      
-      nsIID iid;
-      PRBool found = PR_FALSE;
-      GetEventHandlerIID(eventAtom, &iid, &found);
+      nsCOMPtr<nsIDOM3EventTarget> target = do_QueryInterface(receiver);
+      nsCOMPtr<nsIDOMEventGroup> systemEventGroup;
 
-      if (found) { 
-        /*
-        // Disable ATTACHTO capability for Mozilla 1.0
-        nsAutoString attachType;
-        child->GetAttr(kNameSpaceID_None, kAttachToAtom, attachType);
-        if (attachType == NS_LITERAL_STRING("_document") || 
-            attachType == NS_LITERAL_STRING("_window"))
-        {
-          nsCOMPtr<nsIDocument> boundDoc;
-          mBoundElement->GetDocument(*getter_AddRefs(boundDoc));
-          if (attachType == NS_LITERAL_STRING("_window")) {
-            nsCOMPtr<nsIScriptGlobalObject> global;
-            boundDoc->GetScriptGlobalObject(getter_AddRefs(global));
-            receiver = do_QueryInterface(global);
+      for (nsXBLPrototypeHandler* curr = handlerChain; curr;
+           curr = curr->GetNextHandler()) {
+        // Fetch the event type.
+        nsCOMPtr<nsIAtom> eventAtom = curr->GetEventName();
+        if (!eventAtom) 
+          continue;
+        
+        // Figure out if we're using capturing or not.
+        PRUint8 phase = curr->GetPhase();
+        PRBool useCapture = (phase == NS_PHASE_CAPTURING);
+        
+        // Create a new nsXBLEventHandler.
+        nsXBLEventHandler* handler = nsnull;
+      
+        nsAutoString type;
+        eventAtom->ToString(type);
+      
+        nsIID iid;
+        PRBool found = PR_FALSE;
+        GetEventHandlerIID(eventAtom, &iid, &found);
+
+        // If this is a command, add it in the system event group, otherwise 
+        // add it to the standard event group.
+
+        // This is a weak ref. systemEventGroup above is already a
+        // strong ref, so we are guaranteed it will not go away.
+        nsIDOMEventGroup* eventGroup = nsnull;
+        if (curr->GetType() & NS_HANDLER_TYPE_XBL_COMMAND) {
+          if (!systemEventGroup)
+            receiver->GetSystemEventGroup(getter_AddRefs(systemEventGroup));
+          eventGroup = systemEventGroup;
+        }
+
+        if (found) { 
+          /*
+          // Disable ATTACHTO capability for Mozilla 1.0
+          nsAutoString attachType;
+          child->GetAttr(kNameSpaceID_None, kAttachToAtom, attachType);
+          if (attachType == NS_LITERAL_STRING("_document") || 
+              attachType == NS_LITERAL_STRING("_window"))
+            {
+              nsCOMPtr<nsIDocument> boundDoc;
+              mBoundElement->GetDocument(*getter_AddRefs(boundDoc));
+              if (attachType == NS_LITERAL_STRING("_window")) {
+                nsCOMPtr<nsIScriptGlobalObject> global;
+                boundDoc->GetScriptGlobalObject(getter_AddRefs(global));
+                receiver = do_QueryInterface(global);
+              }
+              else receiver = do_QueryInterface(boundDoc);
+            }
+          else if (!attachType.IsEmpty() && !attachType.Equals(NS_LITERAL_STRING("_element"))) {
+            nsCOMPtr<nsIDocument> boundDoc;
+            mBoundElement->GetDocument(*getter_AddRefs(boundDoc));
+            nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(boundDoc));
+            nsCOMPtr<nsIDOMElement> otherElement;
+            domDoc->GetElementById(attachType, getter_AddRefs(otherElement));
+            receiver = do_QueryInterface(otherElement);
           }
-          else receiver = do_QueryInterface(boundDoc);
-        }
-        else if (!attachType.IsEmpty() && !attachType.Equals(NS_LITERAL_STRING("_element"))) {
-          nsCOMPtr<nsIDocument> boundDoc;
-          mBoundElement->GetDocument(*getter_AddRefs(boundDoc));
-          nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(boundDoc));
-          nsCOMPtr<nsIDOMElement> otherElement;
-          domDoc->GetElementById(attachType, getter_AddRefs(otherElement));
-          receiver = do_QueryInterface(otherElement);
-        }
-        */
+          */
 
-        // Add the event listener.
-        if (iid.Equals(NS_GET_IID(nsIDOMMouseListener))) {
-          nsXBLMouseHandler* mouseHandler;
-          NS_NewXBLMouseHandler(receiver, curr, &mouseHandler);
-          receiver->AddEventListener(type, (nsIDOMMouseListener*)mouseHandler, useCapture);
-          handler = mouseHandler;
+          if (iid.Equals(NS_GET_IID(nsIDOMMouseListener))) {
+            nsXBLMouseHandler* mouseHandler;
+            NS_NewXBLMouseHandler(receiver, curr, &mouseHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMMouseListener*)mouseHandler,
+                                            useCapture, eventGroup);
+            handler = mouseHandler;
+          }
+          else if(iid.Equals(NS_GET_IID(nsIDOMKeyListener))) {
+            nsXBLKeyHandler* keyHandler;
+            NS_NewXBLKeyHandler(receiver, curr, &keyHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMKeyListener*)keyHandler,
+                                            useCapture, eventGroup);
+            handler = keyHandler;
+          }
+          else if (iid.Equals(NS_GET_IID(nsIDOMMouseMotionListener))) {
+            nsXBLMouseMotionHandler* mouseHandler;
+            NS_NewXBLMouseMotionHandler(receiver, curr, &mouseHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMMouseListener*)mouseHandler,
+                                            useCapture, eventGroup);
+            handler = mouseHandler;
+          }
+          else if(iid.Equals(NS_GET_IID(nsIDOMFocusListener))) {
+            nsXBLFocusHandler* focusHandler;
+            NS_NewXBLFocusHandler(receiver, curr, &focusHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMFocusListener*)focusHandler,
+                                            useCapture, eventGroup);
+            handler = focusHandler;
+          }
+          else if (iid.Equals(NS_GET_IID(nsIDOMXULListener))) {
+            nsXBLXULHandler* xulHandler;
+            NS_NewXBLXULHandler(receiver, curr, &xulHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMXULListener*)xulHandler,
+                                            useCapture, eventGroup);
+            handler = xulHandler;
+          }
+          else if (iid.Equals(NS_GET_IID(nsIDOMScrollListener))) {
+            nsXBLScrollHandler* scrollHandler;
+            NS_NewXBLScrollHandler(receiver, curr, &scrollHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMScrollListener*)scrollHandler,
+                                            useCapture, eventGroup);
+            handler = scrollHandler;
+          }
+          else if (iid.Equals(NS_GET_IID(nsIDOMFormListener))) {
+            nsXBLFormHandler* formHandler;
+            NS_NewXBLFormHandler(receiver, curr, &formHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMFormListener*)formHandler,
+                                            useCapture, eventGroup);
+            handler = formHandler;
+          }
+          else if(iid.Equals(NS_GET_IID(nsIDOMDragListener))) {
+            nsXBLDragHandler* dragHandler;
+            NS_NewXBLDragHandler(receiver, curr, &dragHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMDragListener*)dragHandler,
+                                            useCapture, eventGroup);
+            handler = dragHandler;
+          }
+          else if(iid.Equals(NS_GET_IID(nsIDOMLoadListener))) {
+            nsXBLLoadHandler* loadHandler;
+            NS_NewXBLLoadHandler(receiver, curr, &loadHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMLoadListener*)loadHandler,
+                                            useCapture, eventGroup);
+            handler = loadHandler;
+          }
+          else if(iid.Equals(NS_GET_IID(nsIDOMMutationListener))) {
+            nsXBLMutationHandler* mutationHandler;
+            NS_NewXBLMutationHandler(receiver, curr, &mutationHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMMutationListener*)mutationHandler,
+                                            useCapture, eventGroup);
+            handler = mutationHandler;
+          }
+          else if(iid.Equals(NS_GET_IID(nsIDOMContextMenuListener))) {
+            nsXBLContextMenuHandler* menuHandler;
+            NS_NewXBLContextMenuHandler(receiver, curr, &menuHandler);
+            target->AddGroupedEventListener(type,
+                                            (nsIDOMContextMenuListener*)menuHandler,
+                                            useCapture, eventGroup);
+            handler = menuHandler;
+          }
         }
-        else if(iid.Equals(NS_GET_IID(nsIDOMKeyListener))) {
-          nsXBLKeyHandler* keyHandler;
-          NS_NewXBLKeyHandler(receiver, curr, &keyHandler);
-          receiver->AddEventListener(type, (nsIDOMKeyListener*)keyHandler, useCapture);
-          handler = keyHandler;
+        else {
+          nsXBLCustomHandler* customHandler;
+          NS_NewXBLCustomHandler(receiver, curr, &customHandler);
+          target->AddGroupedEventListener(type,
+                                          (nsIDOMEventListener*)customHandler,
+                                          useCapture, eventGroup);
+          handler = customHandler;
         }
-        else if (iid.Equals(NS_GET_IID(nsIDOMMouseMotionListener))) {
-          nsXBLMouseMotionHandler* mouseHandler;
-          NS_NewXBLMouseMotionHandler(receiver, curr, &mouseHandler);
-          receiver->AddEventListener(type, (nsIDOMMouseListener*)mouseHandler, useCapture);
-          handler = mouseHandler;
-        }
-        else if(iid.Equals(NS_GET_IID(nsIDOMFocusListener))) {
-          nsXBLFocusHandler* focusHandler;
-          NS_NewXBLFocusHandler(receiver, curr, &focusHandler);
-          receiver->AddEventListener(type, (nsIDOMFocusListener*)focusHandler, useCapture);
-          handler = focusHandler;
-        }
-        else if (iid.Equals(NS_GET_IID(nsIDOMXULListener))) {
-          nsXBLXULHandler* xulHandler;
-          NS_NewXBLXULHandler(receiver, curr, &xulHandler);
-          receiver->AddEventListener(type, (nsIDOMXULListener*)xulHandler, useCapture);
-          handler = xulHandler;
-        }
-        else if (iid.Equals(NS_GET_IID(nsIDOMScrollListener))) {
-          nsXBLScrollHandler* scrollHandler;
-          NS_NewXBLScrollHandler(receiver, curr, &scrollHandler);
-          receiver->AddEventListener(type, (nsIDOMScrollListener*)scrollHandler, useCapture);
-          handler = scrollHandler;
-        }
-        else if (iid.Equals(NS_GET_IID(nsIDOMFormListener))) {
-          nsXBLFormHandler* formHandler;
-          NS_NewXBLFormHandler(receiver, curr, &formHandler);
-          receiver->AddEventListener(type, (nsIDOMFormListener*)formHandler, useCapture);
-          handler = formHandler;
-        }
-        else if(iid.Equals(NS_GET_IID(nsIDOMDragListener))) {
-          nsXBLDragHandler* dragHandler;
-          NS_NewXBLDragHandler(receiver, curr, &dragHandler);
-          receiver->AddEventListener(type, (nsIDOMDragListener*)dragHandler, useCapture);
-          handler = dragHandler;
-        }
-        else if(iid.Equals(NS_GET_IID(nsIDOMLoadListener))) {
-          nsXBLLoadHandler* loadHandler;
-          NS_NewXBLLoadHandler(receiver, curr, &loadHandler);
-          receiver->AddEventListener(type, (nsIDOMLoadListener*)loadHandler, useCapture);
-          handler = loadHandler;
-        }
-        else if(iid.Equals(NS_GET_IID(nsIDOMMutationListener))) {
-          nsXBLMutationHandler* mutationHandler;
-          NS_NewXBLMutationHandler(receiver, curr, &mutationHandler);
-          receiver->AddEventListener(type, (nsIDOMMutationListener*)mutationHandler, useCapture);
-          handler = mutationHandler;
-        }
-        else if(iid.Equals(NS_GET_IID(nsIDOMContextMenuListener))) {
-          nsXBLContextMenuHandler* menuHandler;
-          NS_NewXBLContextMenuHandler(receiver, curr, &menuHandler);
-          receiver->AddEventListener(type, (nsIDOMContextMenuListener*)menuHandler, useCapture);
-          handler = menuHandler;
-        }
-      }
-      else {
-        nsXBLCustomHandler* customHandler;
-        NS_NewXBLCustomHandler(receiver, curr, &customHandler);
-        receiver->AddEventListener(type, (nsIDOMEventListener*)customHandler, useCapture);
-        handler = customHandler;
-      }
 
-      // We chain all our event handlers together for easy
-      // removal later (if/when the binding dies).
-      if (handler) {
-        if (!currHandler)
-          mFirstHandler = handler;
-        else 
-          currHandler->SetNextHandler(handler);
+        // We chain all our event handlers together for easy
+        // removal later (if/when the binding dies).
+        if (handler) {
+          if (!currHandler)
+            mFirstHandler = handler;
+          else 
+            currHandler->SetNextHandler(handler);
         
-        currHandler = handler;
+          currHandler = handler;
 
-        // Let the listener manager hold on to the handler.
-        NS_RELEASE(handler);
+          // Let the listener manager hold on to the handler.
+          NS_RELEASE(handler);
+        }
       }
     }
   }
@@ -1029,9 +1051,9 @@ nsXBLBinding::AttributeChanged(nsIAtom* aAttribute, PRInt32 aNameSpaceID,
     return NS_OK;
   }
 
-  return mPrototypeBinding->AttributeChanged(aAttribute, aNameSpaceID,
-                                             aRemoveFlag, mBoundElement,
-                                             mContent, aNotify);
+  mPrototypeBinding->AttributeChanged(aAttribute, aNameSpaceID, aRemoveFlag,
+                                      mBoundElement, mContent, aNotify);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -1142,14 +1164,19 @@ nsXBLBinding::ChangeDocument(nsIDocument* aOldDocument, nsIDocument* aNewDocumen
         mInsertionPointTable->Enumerate(ChangeDocumentForDefaultContent,
                                         nsnull);
 
+#ifdef MOZ_XUL
+      nsCOMPtr<nsIXULDocument> xuldoc(do_QueryInterface(aOldDocument));
+#endif
+
+      anonymous->SetDocument(nsnull, PR_TRUE, PR_TRUE); // Kill it.
+
+#ifdef MOZ_XUL
       // To make XUL templates work (and other XUL-specific stuff),
       // we'll need to notify it using its add & remove APIs. Grab the
       // interface now...
-      nsCOMPtr<nsIXULDocument> xuldoc(do_QueryInterface(aOldDocument));
-
-      anonymous->SetDocument(nsnull, PR_TRUE, PR_TRUE); // Kill it.
       if (xuldoc)
         xuldoc->RemoveSubtreeFromDocument(anonymous);
+#endif
     }
   }
 
@@ -1181,8 +1208,10 @@ nsXBLBinding::InheritsStyle(PRBool* aResult)
   // Most derived binding with anonymous content determines style inheritance for now.
 
   // XXX What about bindings with <content> but no kids, e.g., my treecell-text binding?
-  if (mContent)
-    return mPrototypeBinding->InheritsStyle(aResult);
+  if (mContent) {
+    *aResult = mPrototypeBinding->InheritsStyle();
+    return NS_OK;
+  }
   
   if (mNextBinding)
     return mNextBinding->InheritsStyle(aResult);
@@ -1200,35 +1229,9 @@ nsXBLBinding::WalkRules(nsISupportsArrayEnumFunc aFunc, void* aData)
       return rv;
   }
 
-  nsCOMPtr<nsISupportsArray> rules;
-  mPrototypeBinding->GetRuleProcessors(getter_AddRefs(rules));
+  nsCOMPtr<nsISupportsArray> rules = mPrototypeBinding->GetRuleProcessors();
   if (rules)
     rules->EnumerateForwards(aFunc, aData);
-  
-  return rv;
-}
-
-NS_IMETHODIMP
-nsXBLBinding::AttributeAffectsStyle(nsISupportsArrayEnumFunc aFunc, void* aData, PRBool* aAffects)
-{
-  nsresult rv = NS_OK;
-  if (mNextBinding) {
-    rv = mNextBinding->AttributeAffectsStyle(aFunc, aData, aAffects);
-    if (NS_FAILED(rv))
-      return rv;
-
-    if (*aAffects)
-      return NS_OK;
-  }
-
-  nsCOMPtr<nsISupportsArray> sheets;
-  mPrototypeBinding->GetStyleSheets(getter_AddRefs(sheets));
-  if (sheets) {
-    if (!sheets->EnumerateForwards(aFunc, aData))
-      *aAffects = PR_TRUE;
-    else
-      *aAffects = PR_FALSE;
-  }
   
   return rv;
 }
@@ -1388,8 +1391,7 @@ nsXBLBinding::InitClass(const nsCString& aClassName,
 void
 nsXBLBinding::GetImmediateChild(nsIAtom* aTag, nsIContent** aResult) 
 {
-  nsCOMPtr<nsIContent> binding;
-  mPrototypeBinding->GetBindingElement(getter_AddRefs(binding));
+  nsCOMPtr<nsIContent> binding = mPrototypeBinding->GetBindingElement();
 
   *aResult = nsnull;
   PRInt32 childCount;
@@ -1465,7 +1467,7 @@ nsXBLBinding::AddScriptEventListener(nsIContent* aElement, nsIAtom* aName,
   nsAutoString eventStr(NS_LITERAL_STRING("on"));
   eventStr += val;
 
-  nsCOMPtr<nsIAtom> eventName = getter_AddRefs(NS_NewAtom(eventStr));
+  nsCOMPtr<nsIAtom> eventName = do_GetAtom(eventStr);
 
   nsresult rv;
   nsCOMPtr<nsIDocument> document;
@@ -1530,17 +1532,29 @@ nsXBLBinding::AllowScripts()
   return result;
 }
 
-NS_IMETHODIMP
-nsXBLBinding::GetInsertionPointsFor(nsIContent* aParent, nsISupportsArray** aResult)
+static PRBool PR_CALLBACK
+DeleteVoidArray(nsHashKey* aKey, void* aData, void* aClosure)
 {
-  if (!mInsertionPointTable)
-    mInsertionPointTable = new nsSupportsHashtable(4);
+  delete NS_STATIC_CAST(nsVoidArray*, aData);
+  return PR_TRUE;
+}
+
+NS_IMETHODIMP
+nsXBLBinding::GetInsertionPointsFor(nsIContent* aParent, nsVoidArray** aResult)
+{
+  if (!mInsertionPointTable) {
+    mInsertionPointTable = new nsObjectHashtable(nsnull, nsnull,
+                                                 DeleteVoidArray, nsnull, 4);
+
+    NS_ENSURE_TRUE(mInsertionPointTable, NS_ERROR_OUT_OF_MEMORY);
+  }
 
   nsISupportsKey key(aParent);
-  *aResult = NS_STATIC_CAST(nsISupportsArray*, mInsertionPointTable->Get(&key));
+  *aResult = NS_STATIC_CAST(nsVoidArray*, mInsertionPointTable->Get(&key));
 
   if (!*aResult) {
-    NS_NewISupportsArray(aResult);
+    *aResult = new nsVoidArray();
+    NS_ENSURE_TRUE(*aResult, NS_ERROR_OUT_OF_MEMORY);
     mInsertionPointTable->Put(&key, *aResult);
   }
 
@@ -1554,7 +1568,7 @@ nsXBLBinding::GetInsertionPoint(nsIContent* aChild, nsIContent** aResult, PRUint
   *aResult = nsnull;
   *aDefaultContent = nsnull;
   if (mContent)
-    return mPrototypeBinding->GetInsertionPoint(mBoundElement, mContent, aChild, aResult, aIndex, aDefaultContent);
+    mPrototypeBinding->GetInsertionPoint(mBoundElement, mContent, aChild, aResult, aIndex, aDefaultContent);
   else if (mNextBinding)
     return mNextBinding->GetInsertionPoint(aChild, aResult, aIndex, aDefaultContent);
   return NS_OK;
@@ -1568,8 +1582,8 @@ nsXBLBinding::GetSingleInsertionPoint(nsIContent** aResult, PRUint32* aIndex, PR
   *aDefaultContent = nsnull;
   *aMultipleInsertionPoints = PR_FALSE;
   if (mContent)
-    return mPrototypeBinding->GetSingleInsertionPoint(mBoundElement, mContent, aResult, aIndex, 
-                                                      aMultipleInsertionPoints, aDefaultContent);
+    mPrototypeBinding->GetSingleInsertionPoint(mBoundElement, mContent, aResult, aIndex, 
+                                               aMultipleInsertionPoints, aDefaultContent);
   else if (mNextBinding)
     return mNextBinding->GetSingleInsertionPoint(aResult, aIndex, aMultipleInsertionPoints, aDefaultContent);
   return NS_OK;
@@ -1619,7 +1633,7 @@ nsXBLBinding::MarkedForDeath(PRBool* aResult)
 NS_IMETHODIMP
 nsXBLBinding::ImplementsInterface(REFNSIID aIID, PRBool* aResult)
 {
-  mPrototypeBinding->ImplementsInterface(aIID, aResult);
+  *aResult = mPrototypeBinding->ImplementsInterface(aIID);
   if (!*aResult && mNextBinding)
     return mNextBinding->ImplementsInterface(aIID, aResult);
   return NS_OK;
@@ -1643,7 +1657,7 @@ nsXBLBinding::ShouldBuildChildFrames(PRBool* aResult)
 {
   *aResult = PR_TRUE;
   if (mContent)
-    return mPrototypeBinding->ShouldBuildChildFrames(aResult);
+    *aResult = mPrototypeBinding->ShouldBuildChildFrames();
   else if (mNextBinding) 
     return mNextBinding->ShouldBuildChildFrames(aResult);
 
@@ -1653,7 +1667,7 @@ nsXBLBinding::ShouldBuildChildFrames(PRBool* aResult)
 // Creation Routine ///////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLBinding(nsIXBLPrototypeBinding* aBinding, nsIXBLBinding** aResult)
+NS_NewXBLBinding(nsXBLPrototypeBinding* aBinding, nsIXBLBinding** aResult)
 {
   *aResult = new nsXBLBinding(aBinding);
   if (!*aResult)

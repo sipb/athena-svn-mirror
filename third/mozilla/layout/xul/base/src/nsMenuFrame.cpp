@@ -49,7 +49,7 @@
 #include "nsIAtom.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsCSSRendering.h"
 #include "nsINameSpaceManager.h"
 #include "nsLayoutAtoms.h"
@@ -60,7 +60,6 @@
 #include "nsIDocument.h"
 #include "nsIDOMNSDocument.h"
 #include "nsIDOMDocument.h"
-#include "nsIDOMXULDocument.h"
 #include "nsIDOMElement.h"
 #include "nsISupportsArray.h"
 #include "nsIDOMText.h"
@@ -76,7 +75,8 @@
 #include "nsIXBLService.h"
 #include "nsCSSFrameConstructor.h"
 #include "nsIDOMKeyEvent.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsIScrollableView.h"
 #include "nsXPIDLString.h"
 #include "nsReadableUtils.h"
@@ -87,7 +87,7 @@
 #include "nsITimerInternal.h"
 #define NS_MENU_POPUP_LIST_INDEX   0
 
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 #define NSCONTEXTMENUISMOUSEUP 1
 #endif
 
@@ -182,7 +182,7 @@ NS_IMETHODIMP
 nsMenuFrame::Init(nsIPresContext*  aPresContext,
                      nsIContent*      aContent,
                      nsIFrame*        aParent,
-                     nsIStyleContext* aContext,
+                     nsStyleContext*  aContext,
                      nsIFrame*        aPrevInFlow)
 {
   mPresContext = aPresContext; // Don't addref it.  Our lifetime is shorter.
@@ -376,9 +376,7 @@ nsMenuFrame::GetFrameForPoint(nsIPresContext* aPresContext,
     if (value.Equals(NS_LITERAL_STRING("true")))
       return result;
   }
-  const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-  if (vis->IsVisible()) {
+  if (GetStyleVisibility()->IsVisible()) {
     *aFrame = this; // Capture all events so that we can perform selection
     return NS_OK;
   }
@@ -535,7 +533,35 @@ nsMenuFrame::ToggleMenuState()
     OpenMenu(PR_FALSE);
   }
   else {
-    OpenMenu(PR_TRUE);
+    PRBool justRolledUp = PR_FALSE;
+    if (mMenuParent) {
+      mMenuParent->RecentlyRolledUp(this, &justRolledUp);
+    }
+    if (justRolledUp) {
+      // Don't let a click reopen a menu that was just rolled up
+      // from the same click. Otherwise, the user can't click on
+      // a menubar item to toggle its submenu closed.
+      OpenMenu(PR_FALSE);
+      SelectMenu(PR_TRUE);
+      mMenuParent->SetActive(PR_FALSE);
+    }
+    else {
+      if (mMenuParent) {
+        mMenuParent->SetActive(PR_TRUE);
+      }
+      OpenMenu(PR_TRUE);
+    }
+  }
+
+  if (mMenuParent) {
+    // Make sure the current menu which is being toggled on
+    // the menubar is highlighted
+    mMenuParent->SetCurrentMenuItem(this);
+    // We've successfully prevented the same click from both
+    // dismissing and reopening this menu. 
+    // Clear the recent rollup state so we don't prevent
+    // this menu from being opened by the next click.
+    mMenuParent->ClearRecentlyRolledUp();
   }
 
   return NS_OK;
@@ -1230,6 +1256,9 @@ nsMenuFrame::KeyboardNavigation(PRUint32 aKeyCode, PRBool& aHandledFlag)
 NS_IMETHODIMP
 nsMenuFrame::Escape(PRBool& aHandledFlag)
 {
+  if (mMenuParent) {
+    mMenuParent->ClearRecentlyRolledUp();
+  }
   nsIFrame* frame = mPopupFrames.FirstChild();
   if (frame) {
     nsMenuPopupFrame* popup = (nsMenuPopupFrame*)frame;
@@ -1491,13 +1520,13 @@ nsMenuFrame::BuildAcceleratorText()
   nsCOMPtr<nsIDocument> document;
   mContent->GetDocument(*getter_AddRefs(document));
 
-  // Turn the document into a XUL document so we can use getElementById
-  nsCOMPtr<nsIDOMXULDocument> xulDocument(do_QueryInterface(document));
-  if (!xulDocument)
+  // Turn the document into a DOM document so we can use getElementById
+  nsCOMPtr<nsIDOMDocument> domDocument(do_QueryInterface(document));
+  if (!domDocument)
     return;
 
   nsCOMPtr<nsIDOMElement> keyDOMElement;
-  xulDocument->GetElementById(keyValue, getter_AddRefs(keyDOMElement));
+  domDocument->GetElementById(keyValue, getter_AddRefs(keyDOMElement));
   if (!keyDOMElement)
     return;
 
@@ -1555,10 +1584,9 @@ nsMenuFrame::BuildAcceleratorText()
 #endif
 
     // Get the accelerator key value from prefs, overriding the default:
-    nsresult rv;
-    nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-    if (NS_SUCCEEDED(rv) && prefs)
-      rv = prefs->GetIntPref("ui.key.accelKey", &accelKey);
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+    if (prefBranch)
+      prefBranch->GetIntPref("ui.key.accelKey", &accelKey);
   }
 
   nsAutoString modifiers;
@@ -1610,14 +1638,11 @@ nsMenuFrame::BuildAcceleratorText()
 void
 nsMenuFrame::Execute(nsGUIEvent *aEvent)
 {
-  if (!aEvent || (aEvent->message != NS_MOUSE_RIGHT_BUTTON_UP &&
-    aEvent->message != NS_CONTEXTMENU)) {
-    // flip "checked" state if we're a checkbox menu, or
-    // an un-checked radio menu
-    // aEvent is null if called from ::Enter(), we do want to flip our check 
-    // in that case
-    if (mType == eMenuType_Checkbox ||
-        (mType == eMenuType_Radio && !mChecked)) {
+  // flip "checked" state if we're a checkbox menu, or an un-checked radio menu
+  if (mType == eMenuType_Checkbox || (mType == eMenuType_Radio && !mChecked)) {
+    nsAutoString value;
+    mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::autocheck, value);
+    if (!value.Equals(NS_LITERAL_STRING("false"))) {
       if (mChecked) {
         mContent->UnsetAttr(kNameSpaceID_None, nsHTMLAtoms::checked,
                             PR_TRUE);
@@ -1644,8 +1669,16 @@ nsMenuFrame::Execute(nsGUIEvent *aEvent)
   SelectMenu(PR_FALSE);
 
   // Now hide all of the open menus.
-  if (mMenuParent)
+  if (mMenuParent) {
     mMenuParent->HideChain();
+
+    // Since menu was not dismissed via click outside menu
+    // we don't want to keep track of this rollup.
+    // Otherwise, we keep track so that the same click 
+    // won't both dismiss and then reopen a menu.
+    mMenuParent->ClearRecentlyRolledUp();
+  }
+
 
   nsEventStatus status = nsEventStatus_eIgnore;
   nsMouseEvent event;
@@ -1677,25 +1710,7 @@ nsMenuFrame::Execute(nsGUIEvent *aEvent)
   nsIFrame* me = this;
   if (NS_SUCCEEDED(result) && shell) {
     shell->GetViewManager(getter_AddRefs(kungFuDeathGrip));
-
-    // See if we have a command elt.  If so, we execute on the command instead
-    // of on our content element.
-    nsAutoString command;
-    mContent->GetAttr(kNameSpaceID_None, nsXULAtoms::command, command);
-    if (!command.IsEmpty()) {
-      nsCOMPtr<nsIDocument> doc;
-      mContent->GetDocument(*getter_AddRefs(doc));
-      nsCOMPtr<nsIDOMDocument> domDoc(do_QueryInterface(doc));
-      nsCOMPtr<nsIDOMElement> commandElt;
-      domDoc->GetElementById(command, getter_AddRefs(commandElt));
-      nsCOMPtr<nsIContent> commandContent(do_QueryInterface(commandElt));
-      if (commandContent)
-        shell->HandleDOMEventWithTarget(commandContent, &event, &status);
-      else
-        NS_ASSERTION(PR_FALSE, "A XUL <menuitem> is attached to a command that doesn't exist! Unable to execute menu item!\n");
-    }
-    else
-      shell->HandleDOMEventWithTarget(mContent, &event, &status);
+    shell->HandleDOMEventWithTarget(mContent, &event, &status);
   }
 
   // XXX HACK. Just gracefully exit if the node has been removed, e.g., window.close()
@@ -2118,7 +2133,7 @@ nsMenuFrame::SetActiveChild(nsIDOMElement* aChild)
 }
 
 NS_IMETHODIMP
-nsMenuFrame::GetScrollableView(nsIScrollableView** aView)
+nsMenuFrame::GetScrollableView(nsIPresContext* aPresContext, nsIScrollableView** aView)
 {
   *aView = nsnull;
   if (!mPopupFrames.FirstChild())

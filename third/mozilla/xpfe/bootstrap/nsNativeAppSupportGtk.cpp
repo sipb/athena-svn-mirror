@@ -25,7 +25,9 @@
 
 #include "nsNativeAppSupportBase.h"
 #include "gdk/gdk.h"
-#ifdef MOZ_PHOENIX
+#include "prenv.h"
+#include "nsString.h"
+#ifdef MOZ_XUL_APP
 extern char* splash_xpm[];
 #else
 #include SPLASH_XPM
@@ -53,9 +55,6 @@ NS_IMPL_ISUPPORTS1(nsSplashScreenGtk, nsISplashScreen)
 
 nsSplashScreenGtk::nsSplashScreenGtk()
 {
-  NS_INIT_ISUPPORTS();
-  // if this fails, we exit
-  gdk_init(0, NULL);
 }
 
 nsSplashScreenGtk::~nsSplashScreenGtk()
@@ -65,14 +64,30 @@ nsSplashScreenGtk::~nsSplashScreenGtk()
 
 NS_IMETHODIMP nsSplashScreenGtk::Show()
 {
-#ifdef MOZ_PHOENIX
+#ifdef MOZ_XUL_APP
   if (!splash_xpm[0])
     return NS_OK;
 #endif
-  /* create a pixmap based on xpm data */
-  GdkPixmap* pmap = gdk_pixmap_colormap_create_from_xpm_d(NULL,
+
+  nsCAutoString path(PR_GetEnv("MOZILLA_FIVE_HOME"));
+
+  if (path.IsEmpty()) {
+    path.Assign("splash.xpm");
+  } else {
+    path.Append("/splash.xpm");
+  }
+
+  /* See if the user has a custom splash screen */
+  GdkPixmap* pmap = gdk_pixmap_colormap_create_from_xpm(NULL,
+                                                    gdk_colormap_get_system(),
+                                                    NULL, NULL, path.get());
+
+  if (!pmap) {
+    /* create a pixmap based on xpm data */
+    pmap = gdk_pixmap_colormap_create_from_xpm_d(NULL,
                                                     gdk_colormap_get_system(),
                                                     NULL, NULL, splash_xpm);
+  }
 
   if (!pmap) {
     gdk_window_destroy(mDialog);

@@ -36,6 +36,8 @@
  * the terms of any one of the NPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+
+#include "gfx-config.h"
  
 /* PostScript/Xprint print modules do not support more than one object
  * instance because they use global vars which cannot be shared between
@@ -51,17 +53,36 @@
 
 #include "nsDeviceContextPS.h"
 #include "nsRenderingContextPS.h"
+#include "nsIServiceManager.h"
+#include "nsIPref.h"
 #include "nsString.h"
 #include "nsFontMetricsPS.h"
 #include "nsPostScriptObj.h"
+#include "nsFontPSDebug.h"
+#include "nspr.h"
+#include "nsILanguageAtomService.h"
 
 #ifdef PR_LOGGING
 static PRLogModuleInfo *nsDeviceContextPSLM = PR_NewLogModule("nsDeviceContextPS");
 #endif /* PR_LOGGING */
 
+PRUint32 gFontPSDebug = 0;
+nsIAtom* gUsersLocale = nsnull;
+
 #ifdef WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS
 static int instance_counter = 0;
 #endif /* WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS */
+
+static PRBool
+FreePSFontGeneratorList(nsHashKey *aKey, void *aData, void *aClosure)
+{
+  nsPSFontGenerator *psFG = (nsPSFontGenerator*)aData;
+  if (psFG) {
+    delete psFG;
+    psFG = nsnull;
+  }
+  return PR_TRUE;
+}
 
 /** ---------------------------------------------------
  *  See documentation in nsIDeviceContext.h
@@ -71,7 +92,8 @@ nsDeviceContextPS :: nsDeviceContextPS()
   : DeviceContextImpl(),
   mSpec(nsnull),
   mParentDeviceContext(nsnull),
-  mPSObj(nsnull)
+  mPSObj(nsnull),
+  mPSFontGeneratorList(nsnull)
 { 
   PR_LOG(nsDeviceContextPSLM, PR_LOG_DEBUG, ("nsDeviceContextPS::nsDeviceContextPS()\n"));
 
@@ -102,6 +124,13 @@ nsDeviceContextPS::~nsDeviceContextPS()
   instance_counter--;
   NS_ASSERTION(instance_counter >= 0, "We cannot have less than zero instances.");
 #endif /* WE_DO_NOT_SUPPORT_MULTIPLE_PRINT_DEVICECONTEXTS */
+
+  if (mPSFontGeneratorList) {
+    mPSFontGeneratorList->Reset(FreePSFontGeneratorList, nsnull);
+    delete mPSFontGeneratorList;
+    mPSFontGeneratorList = nsnull;
+  }
+  NS_IF_RELEASE(gUsersLocale);
 }
 
 NS_IMETHODIMP
@@ -180,6 +209,40 @@ nsDeviceContextPS::InitDeviceContextPS(nsIDeviceContext *aCreatingDeviceContext,
   mDevUnitsToAppUnits = 1.0f / mAppUnitsToDevUnits;
 
   mParentDeviceContext = aParentContext;
+
+  mPSFontGeneratorList = new nsHashtable();
+  NS_ENSURE_TRUE(mPSFontGeneratorList, NS_ERROR_OUT_OF_MEMORY);
+ 
+  nsresult rv;
+  nsCOMPtr<nsIPref> pref(do_GetService(NS_PREF_CONTRACTID, &rv));
+  if (NS_SUCCEEDED(rv)) {
+    rv = pref->GetBoolPref("font.FreeType2.enable", &mFTPEnable);
+    if (NS_FAILED(rv))
+      mFTPEnable = PR_FALSE;
+    if (mFTPEnable) {
+      rv = pref->GetBoolPref("font.FreeType2.printing", &mFTPEnable);
+      if (NS_FAILED(rv))
+        mFTPEnable = PR_FALSE;
+    }
+  }
+  
+#ifdef NS_FONTPS_DEBUG
+  char* debug = PR_GetEnv("NS_FONTPS_DEBUG");
+  if (debug) {
+    PR_sscanf(debug, "%lX", &gFontPSDebug);
+  }
+#endif
+
+  // the user's locale
+  nsCOMPtr<nsILanguageAtomService> langService;
+  langService = do_GetService(NS_LANGUAGEATOMSERVICE_CONTRACTID);
+  if (langService) {
+    langService->GetLocaleLanguageGroup(&gUsersLocale);
+  }
+  if (!gUsersLocale) {
+    gUsersLocale = NS_NewAtom("x-western");
+  }
+
   return NS_OK;
 }
 
@@ -251,18 +314,6 @@ NS_IMETHODIMP nsDeviceContextPS::GetScrollBarDimensions(float &aWidth, float &aH
   GetCanonicalPixelScale(scale);
   aWidth  = 20.f * scale;
   aHeight = 20.f * scale;
-  return NS_OK;
-}
-
-/** ---------------------------------------------------
- *  See documentation in nsIDeviceContext.h
- *	@update 12/21/98 dwc
- */
-NS_IMETHODIMP nsDeviceContextPS::GetDrawingSurface(nsIRenderingContext &aContext, nsDrawingSurface &aSurface)
-{
-  PR_LOG(nsDeviceContextPSLM, PR_LOG_DEBUG, ("nsDeviceContextPS::GetDrawingSurface()\n"));
-
-  aSurface = nsnull;
   return NS_OK;
 }
 
@@ -369,9 +420,22 @@ NS_IMETHODIMP nsDeviceContextPS::BeginDocument(PRUnichar * aTitle, PRUnichar* aP
   return NS_OK;
 }
 
+static PRBool PR_CALLBACK
+GeneratePSFontCallback(nsHashKey *aKey, void *aData, void* aClosure)
+{
+  nsPSFontGenerator* psFontGenerator = (nsPSFontGenerator*)aData;
+  nsPostScriptObj *psObj = (nsPostScriptObj*)aClosure;
+  NS_ENSURE_TRUE(psFontGenerator && psObj, PR_FALSE);
+
+  FILE *f = psObj->GetPrintFile();
+  if (f)
+    psFontGenerator->GeneratePSFont(f);
+  return PR_TRUE;
+}
+
 /** ---------------------------------------------------
  *  See documentation in nsIDeviceContext.h
- *	@update 12/21/98 dwc
+ *       @update 12/12/02 louie
  */
 NS_IMETHODIMP nsDeviceContextPS::EndDocument(void)
 {
@@ -379,6 +443,20 @@ NS_IMETHODIMP nsDeviceContextPS::EndDocument(void)
 
   NS_ENSURE_TRUE(mPSObj != nsnull, NS_ERROR_NULL_POINTER);
   
+#ifdef MOZ_ENABLE_FREETYPE2
+  // Before output Type8 font, check whether printer support CID font
+  if (mFTPEnable && mPSFontGeneratorList)
+    if (mPSFontGeneratorList->Count() > 0)
+      mPSObj->add_cid_check();
+#endif
+ 
+  /* Core of TrueType printing:
+   *   enumerate items("nsPSFontGenerator") in hashtable
+   *   to generate Type8 font and output to Postscript file
+   */
+  if (mPSFontGeneratorList)
+    mPSFontGeneratorList->Enumerate(GeneratePSFontCallback, (void *) mPSObj);
+
   /* Finish the document and print it... */  
   nsresult rv = mPSObj->end_document();
 
@@ -387,6 +465,7 @@ NS_IMETHODIMP nsDeviceContextPS::EndDocument(void)
 
   return rv;
 }
+
 
 /** ---------------------------------------------------
  *  See documentation in nsIDeviceContext.h
