@@ -1,0 +1,5 @@
+ * Internationalization. 
+
+ * Better documentation. 
+
+ * Clean up Makefiles. Make it possible to build RPMs using BuildRoot. 

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Settings
+Name[sv]=Inställningar
+Comment=Settings for launch feedback
+Comment[sv]=Inställningar för programstartsindikator
+Exec=xalf-capplet
+Icon=hourglass-small.png
+Terminal=0
+Type=Application
