@@ -1,0 +1,323 @@
+# Slovenian translation file for gconf-editor.
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Andraz Tori <andraz.tori1@guest.arnes.si> 2000
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gconf-editor\n"
+"POT-Creation-Date: 2002-12-10 18:40+0100\n"
+"PO-Revision-Date: 2001-02-12 20:02+0100\n"
+"Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/gconf-editor.desktop.in.h:1
+msgid "Configuration Editor"
+msgstr "Urejevalnik nastavitev"
+
+#: data/gconf-editor.desktop.in.h:2
+msgid "Directly edit your entire configuration database"
+msgstr "Neposredno urejaj celotno zbirko podatkov nastavitev"
+
+#: src/gconf-bookmarks-dialog.c:204
+msgid "Edit bookmarks"
+msgstr "Uredi zaznamke"
+
+#: src/gconf-editor-window.c:159
+msgid "About GConf-Editor"
+msgstr "O Urejevalnik GConf"
+
+#: src/gconf-editor-window.c:187
+msgid "GConf-Editor"
+msgstr "Urejevalnik GConf"
+
+#: src/gconf-editor-window.c:188
+msgid "An editor for the GConf configuration system."
+msgstr "Urejevalnik za nastavitveni sistem GConf."
+
+#: src/gconf-editor-window.c:189
+msgid "Copyright (C) Anders Carlsson 2001, 2002"
+msgstr "Avtorske pravice pridržane (C) Anders Carlsson 2001, 2002"
+
+#: src/gconf-editor-window.c:202
+msgid "/_File"
+msgstr "/_Datoteka"
+
+#: src/gconf-editor-window.c:203 src/gconf-editor-window.c:221
+msgid "/File/tearoff1"
+msgstr "/Datoteka/odtrg1"
+
+#: src/gconf-editor-window.c:204
+msgid "/File/_New window"
+msgstr "/Datoteka/_Novo okno"
+
+#: src/gconf-editor-window.c:205
+msgid "/File/_Close window"
+msgstr "/Datoteka/_Zapri okno"
+
+#: src/gconf-editor-window.c:206
+msgid "/File/sep1"
+msgstr "/Datoteka/sep1"
+
+#: src/gconf-editor-window.c:207
+msgid "/File/_Quit"
+msgstr "/Datoteka/Iz_hod"
+
+#: src/gconf-editor-window.c:208
+msgid "/_Edit"
+msgstr "/_Uredi"
+
+#: src/gconf-editor-window.c:209 src/gconf-editor-window.c:222
+msgid "/Edit/tearoff2"
+msgstr "/Uredi/odtrg2"
+
+#: src/gconf-editor-window.c:210
+msgid "/Edit/_Copy key name"
+msgstr "/Uredi/_Kopiraj ime ključa"
+
+#: src/gconf-editor-window.c:211
+msgid "/_Bookmarks"
+msgstr "/_Zaznamki"
+
+#: src/gconf-editor-window.c:212 src/gconf-editor-window.c:223
+msgid "/Bookmarks/tearoff3"
+msgstr "/Zaznamki/odtrg3"
+
+#: src/gconf-editor-window.c:213
+msgid "/Bookmarks/_Add bookmark"
+msgstr "/Zaznamki/_Dodaj zaznamek"
+
+#: src/gconf-editor-window.c:214
+msgid "/Bookmarks/_Edit bookmarks..."
+msgstr "/Zaznamki/_Uredi zaznamke"
+
+#: src/gconf-editor-window.c:215
+msgid "/_Help"
+msgstr "/_Pomoč"
+
+#: src/gconf-editor-window.c:216 src/gconf-editor-window.c:224
+msgid "/Help/tearoff4"
+msgstr "/Pomoč/odtrg4"
+
+#: src/gconf-editor-window.c:217
+msgid "/Help/_About..."
+msgstr "/Pomoč/_O programu..."
+
+#: src/gconf-editor-window.c:228
+msgid "/File/New window"
+msgstr "/Datoteka/Novo okno"
+
+#: src/gconf-editor-window.c:229
+msgid "/File/Close window"
+msgstr "/Datoteka/Zapri okno"
+
+#: src/gconf-editor-window.c:230
+msgid "/File/Quit"
+msgstr "/Datoteka/Izhod"
+
+#: src/gconf-editor-window.c:231
+msgid "/Edit/Copy key name"
+msgstr "/Uredi/Kopiraj ime ključa"
+
+#: src/gconf-editor-window.c:232
+msgid "/Help/About..."
+msgstr "/Pomoč/O programu..."
+
+#: src/gconf-editor-window.c:277
+#, c-format
+msgid ""
+"Couldn't unset key. Error was:\n"
+"%s"
+msgstr ""
+"Nisem mogel odnastaviti ključa. Napaka je bila:\n"
+"%s"
+
+#: src/gconf-editor-window.c:301
+#, c-format
+msgid ""
+"Could not create key. The error is:\n"
+"%s"
+msgstr ""
+"Nisem mogel ustvariti ključa. Napaka je bila:\n"
+"%s"
+
+#: src/gconf-editor-window.c:376
+#, c-format
+msgid ""
+"Could not change key value. Error message:\n"
+"%s"
+msgstr ""
+"Nisem mogel spremeniti vrednosti ključa. Sporočilo napake:\n"
+"%s"
+
+#: src/gconf-editor-window.c:407
+msgid ""
+"Currently pairs and schemas can't be edited. This will be change in a later "
+"version."
+msgstr ""
+"Trenutno parov in shem ni mogoče urejati. To se bo v kasnejših različicah "
+"spremenilo."
+
+#: src/gconf-editor-window.c:441
+msgid "/_New key..."
+msgstr "/_Nov ključ..."
+
+#: src/gconf-editor-window.c:442
+msgid "/Edit key..."
+msgstr "/Uredi ključ..."
+
+#: src/gconf-editor-window.c:443
+msgid "/sep1"
+msgstr "/sep1"
+
+#: src/gconf-editor-window.c:444
+msgid "/_Unset key"
+msgstr "/_Odnastavi ključ"
+
+#: src/gconf-editor-window.c:448
+msgid "/New key..."
+msgstr "/Nov ključ..."
+
+#: src/gconf-editor-window.c:449
+msgid "/Unset key"
+msgstr "/Odnastavi ključ"
+
+#: src/gconf-editor-window.c:458 src/gconf-editor-window.c:465
+#: src/gconf-editor-window.c:831
+msgid "GConf editor"
+msgstr "Urejevalnik GConf"
+
+#: src/gconf-editor-window.c:473
+#, c-format
+msgid "GConf editor - %s"
+msgstr "Urejevalnik GConf - %s"
+
+#: src/gconf-editor-window.c:611 src/gconf-editor-window.c:612
+#: src/gconf-editor-window.c:613 src/gconf-editor-window.c:614
+#: src/gconf-editor-window.c:636 src/gconf-editor-window.c:644
+#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:986
+#: src/gconf-editor-window.c:998 src/gconf-editor-window.c:1010
+#: src/gconf-editor-window.c:1025
+msgid "(None)"
+msgstr "(brez)"
+
+#: src/gconf-editor-window.c:923
+msgid "Name"
+msgstr "Ime"
+
+#: src/gconf-editor-window.c:944
+msgid "Value"
+msgstr "Vrednost"
+
+#. Create details area
+#: src/gconf-editor-window.c:970
+msgid "Key Documentation"
+msgstr "Dokumentacija ključa"
+
+#: src/gconf-editor-window.c:980
+msgid "Key Name:"
+msgstr "Ime ključa:"
+
+#: src/gconf-editor-window.c:993
+msgid "Key Owner:"
+msgstr "Lastnik ključa:"
+
+#: src/gconf-editor-window.c:1005
+msgid "Short Description:"
+msgstr "Kratek opis:"
+
+#: src/gconf-editor-window.c:1018
+msgid "Long Description:"
+msgstr "Dolg opis:"
+
+#: src/gconf-key-editor.c:82
+msgid "T_rue"
+msgstr "_Resnično"
+
+#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:244
+#: src/gconf-key-editor.c:484
+msgid "_False"
+msgstr "_Neresnično"
+
+#: src/gconf-key-editor.c:121 src/gconf-key-editor.c:153
+msgid "Integer"
+msgstr "Celo število"
+
+#: src/gconf-key-editor.c:123 src/gconf-key-editor.c:155
+msgid "Boolean"
+msgstr "Boolean"
+
+#: src/gconf-key-editor.c:125 src/gconf-key-editor.c:157
+msgid "String"
+msgstr "Niz"
+
+#: src/gconf-key-editor.c:127
+msgid "Float"
+msgstr "Število s plavajočo vejico"
+
+#: src/gconf-key-editor.c:129
+msgid "List"
+msgstr "Seznam"
+
+#: src/gconf-key-editor.c:217
+msgid "Add new list entry"
+msgstr "Dodaj nov vnos seznama"
+
+#: src/gconf-key-editor.c:235
+msgid "_New list element:"
+msgstr "_Nov element seznama:"
+
+#: src/gconf-key-editor.c:419
+msgid "Key path:"
+msgstr "Pot ključa:"
+
+#: src/gconf-key-editor.c:431
+msgid "Key _name:"
+msgstr "_Ime ključa:"
+
+#: src/gconf-key-editor.c:444
+msgid "_Type:"
+msgstr "_Vrsta:"
+
+#: src/gconf-key-editor.c:470 src/gconf-key-editor.c:483
+#: src/gconf-key-editor.c:496 src/gconf-key-editor.c:507
+#: src/gconf-key-editor.c:530
+msgid "Key _value:"
+msgstr "Vre_dnost ključa:"
+
+#: src/gconf-key-editor.c:522
+msgid "List _type:"
+msgstr "_Vrste seznama:"
+
+#: src/gconf-key-editor.c:628
+msgid "New key"
+msgstr "Nov ključ"
+
+#: src/gconf-key-editor.c:632
+msgid "Edit key"
+msgstr "Uredi ključ"
+
+#: src/gconf-message-dialog.c:184
+msgid "_Show this dialog again"
+msgstr "_Znova kaži ta dialog"
+
+#: src/main.c:53
+msgid ""
+"This tool allows you to directly edit your configuration database. This is "
+"not the recommended way of setting desktop preferences. Use this tool at "
+"your own risk."
+msgstr ""
+"To orodje vam omogoča, da neposredno urejate podatkovno zbirko nastavitev. "
+"To ni priporočen način nastavljanja namizja. Orodje uporabljate na svojo "
+"lastno odgovornost."
+
+#~ msgid ""
+#~ "This is the GConf configuration editor. It is not tested and may cause "
+#~ "the GConf configuration database to wreak Havoc and other bad things. Use "
+#~ "it at your own risk!"
+#~ msgstr ""
+#~ "To je urejevalnik nastavitev GConf. Ni preizkušen in lahko povzroči, da "
+#~ "se zbirka nastavitvenih podatkov GConf uniči. Uporabljate ga na lastno "
+#~ "odgovornost!"

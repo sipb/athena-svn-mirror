@@ -1,0 +1,333 @@
+# GCONF-EDITOR.HEAD in Vietnamese.
+# Copyright (C) 2002 Gnome i18n Project for Vietnamese
+# This file is distributed under the same license as the GConf-Editor package.
+# Trinh Minh Thanh <tmthanh@yahoo.com>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"POT-Creation-Date: 2002-12-10 18:40+0100\n"
+"PO-Revision-Date: 2002-06-12 14:32+0700\n"
+"Last-Translator: Trinh Minh Thanh <tmthanhmd@fptnet.com ; tmthanh@yahoo."
+"com>\n"
+"Language-Team: GnomeVi Team <Gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/gconf-editor.desktop.in.h:1
+msgid "Configuration Editor"
+msgstr "Trình Biên Soạn Cấu Hình"
+
+#: data/gconf-editor.desktop.in.h:2
+msgid "Directly edit your entire configuration database"
+msgstr "Trực tiếp biên soạn toàn bộ cơ sở dữ liệu về cấu hình của bạn"
+
+#: src/gconf-bookmarks-dialog.c:204
+msgid "Edit bookmarks"
+msgstr "Biên soạn Đánh dấu"
+
+#: src/gconf-editor-window.c:159
+msgid "About GConf-Editor"
+msgstr "Nói về GConf-Editor"
+
+#: src/gconf-editor-window.c:187
+msgid "GConf-Editor"
+msgstr "GConf-Editor"
+
+#: src/gconf-editor-window.c:188
+msgid "An editor for the GConf configuration system."
+msgstr "Trình biên soạn cho hệ thống cấu hình GConf."
+
+#: src/gconf-editor-window.c:189
+msgid "Copyright (C) Anders Carlsson 2001, 2002"
+msgstr "Bản quyền (C) Anders Carlsson 2001, 2002"
+
+#: src/gconf-editor-window.c:202
+msgid "/_File"
+msgstr "/_Tệp"
+
+#: src/gconf-editor-window.c:203 src/gconf-editor-window.c:221
+#, fuzzy
+msgid "/File/tearoff1"
+msgstr "/Tệp/sep1"
+
+#: src/gconf-editor-window.c:204
+msgid "/File/_New window"
+msgstr "/Tệp/_Cửa sổ mới"
+
+#: src/gconf-editor-window.c:205
+msgid "/File/_Close window"
+msgstr "/Tệp/_Đóng cửa sổ"
+
+#: src/gconf-editor-window.c:206
+msgid "/File/sep1"
+msgstr "/Tệp/sep1"
+
+#: src/gconf-editor-window.c:207
+msgid "/File/_Quit"
+msgstr "/Tệp/_Thoát"
+
+#: src/gconf-editor-window.c:208
+msgid "/_Edit"
+msgstr "/_Soạn thảo"
+
+#: src/gconf-editor-window.c:209 src/gconf-editor-window.c:222
+msgid "/Edit/tearoff2"
+msgstr ""
+
+#: src/gconf-editor-window.c:210
+msgid "/Edit/_Copy key name"
+msgstr "/Soạn thảo/_Sao chép tên khóa"
+
+#: src/gconf-editor-window.c:211
+msgid "/_Bookmarks"
+msgstr "/_Đánh dấu"
+
+#: src/gconf-editor-window.c:212 src/gconf-editor-window.c:223
+#, fuzzy
+msgid "/Bookmarks/tearoff3"
+msgstr "/_Đánh dấu"
+
+#: src/gconf-editor-window.c:213
+msgid "/Bookmarks/_Add bookmark"
+msgstr "/Đánh dấu/_Thêm"
+
+#: src/gconf-editor-window.c:214
+msgid "/Bookmarks/_Edit bookmarks..."
+msgstr "/Đánh dấu/_Biên soạn Đánh dấu..."
+
+#: src/gconf-editor-window.c:215
+msgid "/_Help"
+msgstr "/_Giúp"
+
+#: src/gconf-editor-window.c:216 src/gconf-editor-window.c:224
+msgid "/Help/tearoff4"
+msgstr ""
+
+#: src/gconf-editor-window.c:217
+msgid "/Help/_About..."
+msgstr "/Giúp/_Nói về..."
+
+#: src/gconf-editor-window.c:228
+#, fuzzy
+msgid "/File/New window"
+msgstr "/Tệp/_Cửa sổ mới"
+
+#: src/gconf-editor-window.c:229
+#, fuzzy
+msgid "/File/Close window"
+msgstr "/Tệp/_Đóng cửa sổ"
+
+#: src/gconf-editor-window.c:230
+#, fuzzy
+msgid "/File/Quit"
+msgstr "/Tệp/_Thoát"
+
+#: src/gconf-editor-window.c:231
+#, fuzzy
+msgid "/Edit/Copy key name"
+msgstr "/Soạn thảo/_Sao chép tên khóa"
+
+#: src/gconf-editor-window.c:232
+#, fuzzy
+msgid "/Help/About..."
+msgstr "/Giúp/_Nói về..."
+
+#: src/gconf-editor-window.c:277
+#, c-format
+msgid ""
+"Couldn't unset key. Error was:\n"
+"%s"
+msgstr ""
+"Không thể không đặt khóa. Lỗi :\n"
+"%s"
+
+#: src/gconf-editor-window.c:301
+#, c-format
+msgid ""
+"Could not create key. The error is:\n"
+"%s"
+msgstr ""
+"Không thể tạo key. Lỗi đó là:\n"
+"%s"
+
+#: src/gconf-editor-window.c:376
+#, c-format
+msgid ""
+"Could not change key value. Error message:\n"
+"%s"
+msgstr ""
+"Không thể thay đổi giá trị khóa. Thông điệp báo lỗi:\n"
+"%s"
+
+#: src/gconf-editor-window.c:407
+#, fuzzy
+msgid ""
+"Currently pairs and schemas can't be edited. This will be change in a later "
+"version."
+msgstr ""
+"Hiện thời không thể biên soạn các danh sách, cặp đôi và giản đồ. Sẽ được "
+"thay đổi trong phiên bản sau này."
+
+#: src/gconf-editor-window.c:441
+msgid "/_New key..."
+msgstr "/_Khóa mới..."
+
+#: src/gconf-editor-window.c:442
+msgid "/Edit key..."
+msgstr "/Biên soạn khóa..."
+
+#: src/gconf-editor-window.c:443
+msgid "/sep1"
+msgstr "/sep1"
+
+#: src/gconf-editor-window.c:444
+msgid "/_Unset key"
+msgstr "/_Khóa chưa đặt"
+
+#: src/gconf-editor-window.c:448
+#, fuzzy
+msgid "/New key..."
+msgstr "/_Khóa mới..."
+
+#: src/gconf-editor-window.c:449
+#, fuzzy
+msgid "/Unset key"
+msgstr "/_Khóa chưa đặt"
+
+#: src/gconf-editor-window.c:458 src/gconf-editor-window.c:465
+#: src/gconf-editor-window.c:831
+msgid "GConf editor"
+msgstr "Trình biên soạn GConf"
+
+#: src/gconf-editor-window.c:473
+#, c-format
+msgid "GConf editor - %s"
+msgstr "Trình biên soạn GConf - %s"
+
+#: src/gconf-editor-window.c:611 src/gconf-editor-window.c:612
+#: src/gconf-editor-window.c:613 src/gconf-editor-window.c:614
+#: src/gconf-editor-window.c:636 src/gconf-editor-window.c:644
+#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:986
+#: src/gconf-editor-window.c:998 src/gconf-editor-window.c:1010
+#: src/gconf-editor-window.c:1025
+msgid "(None)"
+msgstr "(Không)"
+
+#: src/gconf-editor-window.c:923
+msgid "Name"
+msgstr "Tên"
+
+#: src/gconf-editor-window.c:944
+msgid "Value"
+msgstr "Giá trị"
+
+#. Create details area
+#: src/gconf-editor-window.c:970
+msgid "Key Documentation"
+msgstr "Tài liệu Key"
+
+#: src/gconf-editor-window.c:980
+msgid "Key Name:"
+msgstr "Tên Key:"
+
+#: src/gconf-editor-window.c:993
+msgid "Key Owner:"
+msgstr "Sở hữu Key:"
+
+#: src/gconf-editor-window.c:1005
+msgid "Short Description:"
+msgstr "Mô tả vắn tắt:"
+
+#: src/gconf-editor-window.c:1018
+msgid "Long Description:"
+msgstr "Mô tả chi tiết:"
+
+#: src/gconf-key-editor.c:82
+#, fuzzy
+msgid "T_rue"
+msgstr "_Thực"
+
+#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:244
+#: src/gconf-key-editor.c:484
+msgid "_False"
+msgstr "_Sai"
+
+#: src/gconf-key-editor.c:121 src/gconf-key-editor.c:153
+msgid "Integer"
+msgstr "Số nguyên"
+
+#: src/gconf-key-editor.c:123 src/gconf-key-editor.c:155
+msgid "Boolean"
+msgstr "Boolean"
+
+#: src/gconf-key-editor.c:125 src/gconf-key-editor.c:157
+msgid "String"
+msgstr "Chuỗi"
+
+#: src/gconf-key-editor.c:127
+msgid "Float"
+msgstr ""
+
+#: src/gconf-key-editor.c:129
+msgid "List"
+msgstr ""
+
+#: src/gconf-key-editor.c:217
+msgid "Add new list entry"
+msgstr ""
+
+#: src/gconf-key-editor.c:235
+msgid "_New list element:"
+msgstr ""
+
+#: src/gconf-key-editor.c:419
+msgid "Key path:"
+msgstr "Đường dẫn khóa:"
+
+#: src/gconf-key-editor.c:431
+msgid "Key _name:"
+msgstr "Tên_khóa:"
+
+#: src/gconf-key-editor.c:444
+msgid "_Type:"
+msgstr "_Loại:"
+
+#: src/gconf-key-editor.c:470 src/gconf-key-editor.c:483
+#: src/gconf-key-editor.c:496 src/gconf-key-editor.c:507
+#: src/gconf-key-editor.c:530
+msgid "Key _value:"
+msgstr "Giá trị_khóa:"
+
+#: src/gconf-key-editor.c:522
+msgid "List _type:"
+msgstr ""
+
+#: src/gconf-key-editor.c:628
+msgid "New key"
+msgstr "Khóa mới"
+
+#: src/gconf-key-editor.c:632
+msgid "Edit key"
+msgstr "Biên soạn khóa"
+
+#: src/gconf-message-dialog.c:184
+msgid "_Show this dialog again"
+msgstr "_Hiển thị lại đối thoại này"
+
+#: src/main.c:53
+msgid ""
+"This tool allows you to directly edit your configuration database. This is "
+"not the recommended way of setting desktop preferences. Use this tool at "
+"your own risk."
+msgstr ""
+
+#~ msgid ""
+#~ "This is the GConf configuration editor. It is not tested and may cause "
+#~ "the GConf configuration database to wreak Havoc and other bad things. Use "
+#~ "it at your own risk!"
+#~ msgstr ""
+#~ "Đây là trình biên soạn cấu hình GConf. Nó chưa được thử kỹ và có thể gây "
+#~ "phá hủy cơ sở dữ liệu cấu hình GConf và các vấn đề tồi tệ khác. Việc sử "
+#~ "dụng không có đảm bảo nào !"

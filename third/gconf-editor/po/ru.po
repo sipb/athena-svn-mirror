@@ -1,0 +1,322 @@
+# Copyright (C) 2002 Free Software Foundation, Inc.
+# Valek Filippov <frob@df.ru>, 2002.
+# Dmitry G. Mastrukov <dmitry@taurussoft.org>, 2002.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gconf-editor\n"
+"POT-Creation-Date: 2002-12-10 18:40+0100\n"
+"PO-Revision-Date: 2002-08-16 11:43+04:00\n"
+"Last-Translator: Dmitry G. Mastrukov <dmitry@taurussoft.org>\n"
+"Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/gconf-editor.desktop.in.h:1
+msgid "Configuration Editor"
+msgstr "Редактор настроек"
+
+#: data/gconf-editor.desktop.in.h:2
+msgid "Directly edit your entire configuration database"
+msgstr "Позволяет напрямую редактировать всю базу данных настроек"
+
+#: src/gconf-bookmarks-dialog.c:204
+msgid "Edit bookmarks"
+msgstr "Изменить закладки"
+
+#: src/gconf-editor-window.c:159
+msgid "About GConf-Editor"
+msgstr "О программе GConf-Editor"
+
+#: src/gconf-editor-window.c:187
+msgid "GConf-Editor"
+msgstr "GConf-Editor"
+
+#: src/gconf-editor-window.c:188
+msgid "An editor for the GConf configuration system."
+msgstr "Редактор для системы настроек GConf."
+
+#: src/gconf-editor-window.c:189
+msgid "Copyright (C) Anders Carlsson 2001, 2002"
+msgstr "Авторское право (С) Anders Carlsson 2001, 2002"
+
+#: src/gconf-editor-window.c:202
+msgid "/_File"
+msgstr "/_Файл"
+
+#: src/gconf-editor-window.c:203 src/gconf-editor-window.c:221
+msgid "/File/tearoff1"
+msgstr "/Файл/tearoff1"
+
+#: src/gconf-editor-window.c:204
+msgid "/File/_New window"
+msgstr "/Файл/_Создать окно"
+
+#: src/gconf-editor-window.c:205
+msgid "/File/_Close window"
+msgstr "/Файл/_Закрыть окно"
+
+#: src/gconf-editor-window.c:206
+msgid "/File/sep1"
+msgstr "/Файл/sep1"
+
+#: src/gconf-editor-window.c:207
+msgid "/File/_Quit"
+msgstr "/Файл/В_ыйти"
+
+#: src/gconf-editor-window.c:208
+msgid "/_Edit"
+msgstr "/_Правка"
+
+#: src/gconf-editor-window.c:209 src/gconf-editor-window.c:222
+msgid "/Edit/tearoff2"
+msgstr "/Правка/tearoff2"
+
+#: src/gconf-editor-window.c:210
+msgid "/Edit/_Copy key name"
+msgstr "/Правка/С_копировать название ключа"
+
+#: src/gconf-editor-window.c:211
+msgid "/_Bookmarks"
+msgstr "/_Закладки"
+
+#: src/gconf-editor-window.c:212 src/gconf-editor-window.c:223
+msgid "/Bookmarks/tearoff3"
+msgstr "/Закладки/tearoff3"
+
+#: src/gconf-editor-window.c:213
+msgid "/Bookmarks/_Add bookmark"
+msgstr "/Закладки/Доб_авить закладку"
+
+#: src/gconf-editor-window.c:214
+msgid "/Bookmarks/_Edit bookmarks..."
+msgstr "/Закладки/_Изменить закладки..."
+
+#: src/gconf-editor-window.c:215
+msgid "/_Help"
+msgstr "/_Справка"
+
+#: src/gconf-editor-window.c:216 src/gconf-editor-window.c:224
+msgid "/Help/tearoff4"
+msgstr "/Справка/tearoff4"
+
+#: src/gconf-editor-window.c:217
+msgid "/Help/_About..."
+msgstr "/Справка/_О программе..."
+
+#: src/gconf-editor-window.c:228
+msgid "/File/New window"
+msgstr "/Файл/Создать окно"
+
+#: src/gconf-editor-window.c:229
+msgid "/File/Close window"
+msgstr "/Файл/Закрыть окно"
+
+#: src/gconf-editor-window.c:230
+msgid "/File/Quit"
+msgstr "/Файл/В_ыйти"
+
+#: src/gconf-editor-window.c:231
+msgid "/Edit/Copy key name"
+msgstr "/Правка/Скопировать название ключа"
+
+#: src/gconf-editor-window.c:232
+msgid "/Help/About..."
+msgstr "/Справка/О программе..."
+
+#: src/gconf-editor-window.c:277
+#, c-format
+msgid ""
+"Couldn't unset key. Error was:\n"
+"%s"
+msgstr ""
+"Не удалось убрать значение ключа. Сообщение об ошибке:\n"
+"%s"
+
+#: src/gconf-editor-window.c:301
+#, c-format
+msgid ""
+"Could not create key. The error is:\n"
+"%s"
+msgstr ""
+"Не удалось создать ключ. Сообщение об ошибке:\n"
+"%s"
+
+#: src/gconf-editor-window.c:376
+#, c-format
+msgid ""
+"Could not change key value. Error message:\n"
+"%s"
+msgstr ""
+"Не удалось изменить значение ключа. Сообщение об ошибке:\n"
+"%s"
+
+#: src/gconf-editor-window.c:407
+#, fuzzy
+msgid ""
+"Currently pairs and schemas can't be edited. This will be change in a later "
+"version."
+msgstr ""
+"В настоящий момент списки, пары и схемы не могут быть изменены. Это будет "
+"исправлено в следующей версии."
+
+#: src/gconf-editor-window.c:441
+msgid "/_New key..."
+msgstr "/_Создать ключ..."
+
+#: src/gconf-editor-window.c:442
+msgid "/Edit key..."
+msgstr "/Изменить ключ..."
+
+#: src/gconf-editor-window.c:443
+msgid "/sep1"
+msgstr "/sep1"
+
+#: src/gconf-editor-window.c:444
+msgid "/_Unset key"
+msgstr "У_брать значение ключа"
+
+#: src/gconf-editor-window.c:448
+msgid "/New key..."
+msgstr "/Создать ключ..."
+
+#: src/gconf-editor-window.c:449
+msgid "/Unset key"
+msgstr "Убрать значение ключа"
+
+#: src/gconf-editor-window.c:458 src/gconf-editor-window.c:465
+#: src/gconf-editor-window.c:831
+msgid "GConf editor"
+msgstr "Редактор системы GConf"
+
+#: src/gconf-editor-window.c:473
+#, c-format
+msgid "GConf editor - %s"
+msgstr "Редактор системы GConf - %s"
+
+#: src/gconf-editor-window.c:611 src/gconf-editor-window.c:612
+#: src/gconf-editor-window.c:613 src/gconf-editor-window.c:614
+#: src/gconf-editor-window.c:636 src/gconf-editor-window.c:644
+#: src/gconf-editor-window.c:653 src/gconf-editor-window.c:986
+#: src/gconf-editor-window.c:998 src/gconf-editor-window.c:1010
+#: src/gconf-editor-window.c:1025
+msgid "(None)"
+msgstr "(Нет)"
+
+#: src/gconf-editor-window.c:923
+msgid "Name"
+msgstr "Имя"
+
+#: src/gconf-editor-window.c:944
+msgid "Value"
+msgstr "Значение"
+
+#. Create details area
+#: src/gconf-editor-window.c:970
+msgid "Key Documentation"
+msgstr "Описание ключа"
+
+#: src/gconf-editor-window.c:980
+msgid "Key Name:"
+msgstr "Наименование ключа:"
+
+#: src/gconf-editor-window.c:993
+msgid "Key Owner:"
+msgstr "Владелец ключа:"
+
+#: src/gconf-editor-window.c:1005
+msgid "Short Description:"
+msgstr "Краткое описание:"
+
+#: src/gconf-editor-window.c:1018
+msgid "Long Description:"
+msgstr "Подробное описание:"
+
+#: src/gconf-key-editor.c:82
+#, fuzzy
+msgid "T_rue"
+msgstr "_Истинно"
+
+#: src/gconf-key-editor.c:85 src/gconf-key-editor.c:244
+#: src/gconf-key-editor.c:484
+msgid "_False"
+msgstr "_Ложно"
+
+#: src/gconf-key-editor.c:121 src/gconf-key-editor.c:153
+msgid "Integer"
+msgstr "Целое"
+
+#: src/gconf-key-editor.c:123 src/gconf-key-editor.c:155
+msgid "Boolean"
+msgstr "Логическое"
+
+#: src/gconf-key-editor.c:125 src/gconf-key-editor.c:157
+msgid "String"
+msgstr "Строковое"
+
+#: src/gconf-key-editor.c:127
+msgid "Float"
+msgstr "С плавающей точкой"
+
+#: src/gconf-key-editor.c:129
+msgid "List"
+msgstr ""
+
+#: src/gconf-key-editor.c:217
+msgid "Add new list entry"
+msgstr ""
+
+#: src/gconf-key-editor.c:235
+msgid "_New list element:"
+msgstr ""
+
+#: src/gconf-key-editor.c:419
+msgid "Key path:"
+msgstr "Путь к ключу:"
+
+#: src/gconf-key-editor.c:431
+msgid "Key _name:"
+msgstr "Наи_менование ключа:"
+
+#: src/gconf-key-editor.c:444
+msgid "_Type:"
+msgstr "Ти_п:"
+
+#: src/gconf-key-editor.c:470 src/gconf-key-editor.c:483
+#: src/gconf-key-editor.c:496 src/gconf-key-editor.c:507
+#: src/gconf-key-editor.c:530
+msgid "Key _value:"
+msgstr "Зна_чение ключа:"
+
+#: src/gconf-key-editor.c:522
+msgid "List _type:"
+msgstr ""
+
+#: src/gconf-key-editor.c:628
+msgid "New key"
+msgstr "Создать ключ"
+
+#: src/gconf-key-editor.c:632
+msgid "Edit key"
+msgstr "Изменить ключ"
+
+#: src/gconf-message-dialog.c:184
+msgid "_Show this dialog again"
+msgstr "По_казывать этот диалог снова"
+
+#: src/main.c:53
+msgid ""
+"This tool allows you to directly edit your configuration database. This is "
+"not the recommended way of setting desktop preferences. Use this tool at "
+"your own risk."
+msgstr ""
+
+#~ msgid ""
+#~ "This is the GConf configuration editor. It is not tested and may cause "
+#~ "the GConf configuration database to wreak Havoc and other bad things. Use "
+#~ "it at your own risk!"
+#~ msgstr ""
+#~ "Это редактор для системы конфигурации GConf. Он не оттестирован и может "
+#~ "вызвать сбои в системе конфигурации GConf. Используйте его на свой "
+#~ "собственный риск!"
