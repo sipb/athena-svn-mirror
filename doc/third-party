@@ -208,7 +208,7 @@ rules to get the value of such variables):
 	ATHENA_SYS	Architecture name for this system
 	HOSTTYPE	Platform name for this system
 	SRVD		Install destination directory (e.g. /srvd)
-	SOURCE		Source tree (e.g. /source0
+	SOURCE		Source tree (e.g. /mit/source)
 	COMPILER	Appropriate compiler for this system
 	CONFIGDIR	Location of Athena Imake templates
 	XCONFIGDIR	Location of X-style Imake templates
