@@ -3,9 +3,12 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.6 1987-12-04 11:36:25 shanzer Exp $
-#	$Author: shanzer $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.7 1989-02-22 16:51:28 epeisach Exp $
+#	$Author: epeisach $
 #	$Log: not supported by cvs2svn $
+# Revision 1.6  87/12/04  11:36:25  shanzer
+# Added -ldes to the list of libriaries..
+# 
 # Revision 1.5  87/08/27  16:56:33  ambar
 # fixed clean target.
 # 
@@ -56,4 +59,4 @@ clean:
 	rm -f finger
 
 install:	finger
-	install finger ${DESTDIR}/usr/athena/finger
+	install -c -s -m 755 finger ${DESTDIR}/usr/athena/finger
