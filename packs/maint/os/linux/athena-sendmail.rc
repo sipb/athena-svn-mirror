@@ -26,37 +26,42 @@ fi
 
 [ -f /usr/sbin/sendmail ] || exit 0
 
-[ "$SENDMAIL" = true ] || exit 0
-
 RETVAL=0
 
 # See how we were called
 case "$1" in
   start)
-	echo -n "Starting Athena sendmail: "
-
 	# Remove temporary files
 	if [ -d /var/spool/mqueue ]; then
 		(cd /var/spool/mqueue && rm -f nf* lf*)
 	fi
-	
-	# Sync aliases database
-	/usr/sbin/sendmail -bi > /dev/null
 
-	daemon sendmail -bd -q1h
+	# Sync aliases database
+	echo -n "Syncing aliases database: "
+	/usr/sbin/sendmail -bi > /dev/null && success alias || failure alias
 	RETVAL=$?
 
 	echo
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-sendmail
+
+	if [ "$SENDMAIL" = true ]; then
+		echo -n "Starting Athena sendmail;"
+		daemon sendmail -bd -q1h
+		RETVAL=$?
+
+		echo
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/athena-sendmail
+	fi
 	;;
 
   stop)
-	echo -n "Stopping Athena sendmail: "
-	killproc sendmail
-	RETVAL=$?
+	if [ "$SENDMAIL" = true ]; then
+		echo -n "Stopping Athena sendmail: "
+		killproc sendmail
+		RETVAL=$?
 
-	echo
-	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athena-sendmail
+		echo
+		[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/athena-sendmail
+	fi
 	;;
 
   status)
