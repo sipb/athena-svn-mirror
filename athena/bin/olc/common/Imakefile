@@ -6,18 +6,19 @@
 # For copying and distribution information, see the file "mit-copyright.h."
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/Imakefile,v $
-#	$Id: Imakefile,v 1.2 1990-05-25 11:23:49 vanharen Exp $
-#	$Author: vanharen $
+#	$Id: Imakefile,v 1.3 1990-08-26 16:33:58 lwvanels Exp $
+#	$Author: lwvanels $
 #
+
+/* #define Profiling */
 
 SRCS=	string_utils.c io.c
 OBJS=	string_utils.o io.o
 
-/**
+#ifdef Profiling
 ProfiledLibraryObjectRule()
-
 ProfiledLibraryTarget(common,$(OBJS))
-**/
-
+#else
 NormalLibraryTarget(common,$(OBJS))
+#endif
 DependTarget()
