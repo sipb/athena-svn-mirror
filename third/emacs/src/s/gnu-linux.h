@@ -54,11 +54,6 @@ Boston, MA 02111-1307, USA.  */
 #endif /* emacs */
 #endif /* NOT_C_CODE */
 
-/* Letter to use in finding device name of first pty,
-  if system supports pty's.  'p' means it is /dev/ptyp0  */
-
-#define FIRST_PTY_LETTER 'p'
-
 /*
  *	Define HAVE_TERMIOS if the system provides POSIX-style
  *	functions and macros for terminal control.
@@ -71,6 +66,49 @@ Boston, MA 02111-1307, USA.  */
  */
 
 #define HAVE_PTYS
+
+#if defined HAVE_GRANTPT
+#define UNIX98_PTYS
+
+/* Run only once.  We need a `for'-loop because the code uses
+   `continue'.  */
+
+#define PTY_ITERATION	for (i = 0; i < 1; i++)
+
+#ifdef HAVE_GETPT
+#define PTY_NAME_SPRINTF
+#define PTY_OPEN fd = getpt ()
+#else /* not HAVE_GETPT */
+#define PTY_NAME_SPRINTF strcpy (pty_name, "/dev/ptmx");
+#endif /* not HAVE_GETPT */
+
+/* Note that grantpt and unlockpt may fork.  We must block SIGCHLD to
+   prevent sigchld_handler from intercepting the child's death.  */
+
+#define PTY_TTY_NAME_SPRINTF				\
+  {							\
+    char *ptyname;					\
+							\
+    sigblock (sigmask (SIGCHLD));			\
+    if (grantpt (fd) == -1 || unlockpt (fd) == -1	\
+        || !(ptyname = ptsname(fd)))			\
+      {							\
+	sigunblock (sigmask (SIGCHLD));			\
+	close (fd);					\
+	return -1;					\
+      }							\
+    strncpy (pty_name, ptyname, sizeof (pty_name));	\
+    pty_name[sizeof (pty_name) - 1] = 0;		\
+    sigunblock (sigmask (SIGCHLD));			\
+  }
+
+#else /* not HAVE_GRANDPT */
+
+/* Letter to use in finding device name of first pty,
+  if system supports pty's.  'p' means it is /dev/ptyp0  */
+
+#define FIRST_PTY_LETTER 'p'
+#endif  /* not HAVE_GRANDPT */
 
 /* Uncomment this later when other problems are dealt with -mkj */
 
@@ -226,12 +264,12 @@ Boston, MA 02111-1307, USA.  */
 
 #ifdef TERM
 #define LIBS_SYSTEM -lclient -lresolv
-#define C_SWITCH_SYSTEM -D_BSD_SOURCE -I/usr/src/term
+#define C_SWITCH_SYSTEM -D_BSD_SOURCE -D_XOPEN_SOURCE -I/usr/src/term
 #else
 /* alane@wozzle.linet.org says that -lipc is not a separate library,
    since libc-4.4.1.  So -lipc was deleted.  */
 #define LIBS_SYSTEM -lresolv
-#define C_SWITCH_SYSTEM -D_BSD_SOURCE
+#define C_SWITCH_SYSTEM -D_BSD_SOURCE -D_XOPEN_SOURCE
 #endif
 
 /* Paul Abrahams <abrahams@equinox.shaysnet.com> says this is needed.  */

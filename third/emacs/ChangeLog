@@ -1,3 +1,7 @@
+2000-08-01  Thomas Bushnell, BSG  <tb@mit.edu>
+
+	* configure.in (grantpt, getpt): Copy in change from Emacs 20.7.
+
 1998-08-19  Richard Stallman  <rms@psilocin.ai.mit.edu>
 
 	* Version 20.3 released.

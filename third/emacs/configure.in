@@ -1626,6 +1626,13 @@ random lrand48 bcopy bcmp logb frexp fmod rint cbrt ftime res_init setsid \
 strerror fpathconf select mktime euidaccess getpagesize tzset setlocale \
 utimes setrlimit setpgid getcwd shutdown strftime)
 
+
+# UNIX98 PTYs.
+AC_CHECK_FUNCS(grantpt)
+# PTY-related GNU extensions.
+AC_CHECK_FUNCS(getpt)
+
+
 # Check this now, so that we will NOT find the above functions in ncurses.
 # That is because we have not set up to link ncurses in lib-src.
 # It's better to believe a function is not available
