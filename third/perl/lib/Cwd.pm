@@ -128,8 +128,12 @@ sub fastcwd {
 	    next if $direntry eq '.';
 	    next if $direntry eq '..';
 
-	    ($tdev, $tino) = lstat($direntry);
-	    last unless $tdev != $odev || $tino != $oino;
+	    if ($odev == $cdev) {
+		last unless $_INO != $oino;
+	    } else {
+		($tdev, $tino) = lstat($direntry);
+		last unless $tdev != $odev || $tino != $oino;
+	    }
 	}
 	closedir(DIR);
 	return undef unless defined $direntry; # should never happen
