@@ -1,7 +1,7 @@
 /* 
- * $Id: from.c,v 1.10 1991-08-11 21:19:21 probe Exp $
+ * $Id: from.c,v 1.11 1991-08-16 15:01:34 lwvanels Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: probe $
+ * $Author: lwvanels $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.10 1991-08-11 21:19:21 probe Exp $";
+static char *rcsid = "$Id: from.c,v 1.11 1991-08-16 15:01:34 lwvanels Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -34,6 +34,19 @@ extern char *malloc();
 #define DONE 1
 
 #define MAX_HEADER_LINES 512
+
+#ifdef OFF_SWITCH
+/* 
+ * if the ok file does not exist, then print the default error and do not
+ * proceed with the request. If the ok file is missing and the message 
+ * file exists, print the contents of the message file and do not proceed 
+ * with the request. The message file will be ignored if the ok file exists.
+ */
+
+#define OK_FILE   "/afs/athena.mit.edu/system/config/from/ok"
+#define MSG_FILE  "/afs/athena.mit.edu/system/config/from/message"
+char    *default_err = "Cannot stat the \"ok\" file.. unable to continue with request.";
+#endif /* OFF_SWITCH */
 
 FILE 	*sfi, *sfo;
 char 	Errmsg[80];
@@ -211,6 +224,11 @@ getmail_pop(user, host, printhdr)
 	register int i, j;
 	struct winsize windowsize;
 	int	header_scan();
+
+#ifdef OFF_SWITCH
+	if(pop_ok() == NOTOK)
+	     return (1);
+#endif /* OFF_SWITCH */
 
 	if (pop_init(host) == NOTOK) {
 		error(Errmsg);
@@ -589,3 +607,30 @@ print_report(headers, num_headers, winlength)
   for (j = 0; j < num_headers; j++)
     free(headers[j]);
 }
+
+
+#ifdef OFF_SWITCH
+
+pop_ok()
+{
+  FILE *fp;
+  struct stat sbuf;
+  char buf[BUFSIZ];
+
+  if(stat(OK_FILE, &sbuf) == 0)
+       return(OK);
+
+  if(!(fp = fopen(MSG_FILE, "r")))  {
+       printf("%s\n", default_err);
+       return(NOTOK);
+  }
+
+  bzero(buf, sizeof(buf));
+  while(fgets(buf, sizeof(buf), fp))
+      printf("%s", buf);
+  fclose(fp);
+  return(NOTOK);
+}
+
+#endif /* OFF_SWITCH */
+  
