@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.32 1990-12-17 08:32:13 lwvanels Exp $
+ *	$Id: olcd.c,v 1.33 1991-01-01 14:32:35 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.32 1990-12-17 08:32:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.33 1991-01-01 14:32:35 lwvanels Exp $";
 #endif
 #endif
 
@@ -714,7 +714,7 @@ dump_profile(sig)
      int sig;
 {
   olc_broadcast_message("syslog", fmt("%s Daemon dumping profiling stats.",
-				      Daemon_Inst),"system");
+				      DaemonInst),"system");
   log_status("Dumping profile..");
   monitor(0);
   moncontrol(0);
@@ -725,7 +725,7 @@ start_profile(sig)
      int sig;
 {
   olc_broadcast_message("syslog", fmt("%s Daemon starting profiling.",
-				      Daemon_Inst),"system");
+				      DaemonInst),"system");
   log_status("Starting profile..");
   moncontrol(1);
 }
