@@ -253,18 +253,6 @@ if [ -f $sourcedir/packs/build/sunpkg/depend/$package_name ]; then
     >> $destdir/INSTALL/$source_name/depend
 fi
 
-# If this package contains any info files, add a dependency on MIT-texinfo,
-# to ensure that install-info is available when the package is installed.
-# The MIT-texinfo info files will be handled properly, since class "none"
-# files are always installed first.
-if [ "$package_name" != MIT-texinfo ]; then
-  grep -q '^CLASSES=.*\<info\>.*' $destdir/INSTALL/$source_name/pkginfo &&
-    [ -z "`awk '$1 == "P" && $2 == "MIT-texinfo"' \
-            $destdir/INSTALL/$source_name/depend`" ] &&
-      echo "P MIT-texinfo  The GNU texinfo documentation system, for Athena" \
-	>> $destdir/INSTALL/$source_name/depend
-fi
-    
 if [ -f $destdir/INSTALL/$source_name/depend ]; then
   echo "i depend" >> $prototype
 fi
