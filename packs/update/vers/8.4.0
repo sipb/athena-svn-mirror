@@ -3,9 +3,20 @@
 case "$HOSTTYPE" in
 sun4)
 	echo "MINIROOT=true"				>> "$CONFVARS"
+	echo "/etc/athena/named-bootconf"		>> "$DEADFILES"
+	echo "/etc/athena/syslogd"			>> "$DEADFILES"
+	echo "/etc/athena/xdm"				>> "$DEADFILES"
 	;;
 
 sgi)
+	echo "/etc/athena/axdm"				>> "$DEADFILES"
+	echo "/etc/athena/login/elmer"			>> "$DEADFILES"
+	echo "/etc/athena/login/xdm"			>> "$DEADFILES"
+	echo "/etc/athena/named-bootconf"		>> "$DEADFILES"
+	echo "/etc/athena/nanny"			>> "$DEADFILES"
+	echo "/etc/athena/syslogd"			>> "$DEADFILES"
+	echo "/etc/init.d/axdm"				>> "$DEADFILES"
+
 	rm -f /etc/init.d/axdm /etc/rc2.d/S98xdm /etc/rc0.d/K02xdm
 	ln -s ../init.d/xdm /etc/rc2.d/S98xdm
 	ln -s ../init.d/xdm /etc/rc0.d/K02xdm
