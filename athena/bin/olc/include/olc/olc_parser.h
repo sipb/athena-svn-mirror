@@ -17,7 +17,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_parser.h,v $
- *	$Id: olc_parser.h,v 1.10 1991-09-11 10:49:46 lwvanels Exp $
+ *	$Id: olc_parser.h,v 1.11 1991-11-05 14:01:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -117,5 +117,8 @@ ERRCODE do_olc_topic P((char **arguments ));
 
 /* p_utils.c */
 char **handle_argument P((char **args , REQUEST *req , int *status ));
+
+/* p_zephyr.c */
+ERRCODE do_olc_zephyr P((char **arguments ));
 
 #undef P
