@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.5 1990-11-07 13:47:27 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.6 1990-11-16 10:04:54 epeisach Exp $
  */
 
 /*
@@ -89,8 +89,9 @@ extern int      CP;	        /* Cost per page */
 extern char 	*QS;		/* Quota service for printer */
 #endif /* PQUOTA */
 #ifdef LACL
-extern char	 *AC;		/* Local ACL file to use */
-extern short	 PA;		/* ACL file used as positive ACL */
+extern char	*AC;		/* Local ACL file to use */
+extern short	PA;		/* ACL file used as positive ACL */
+extern short	RA;		/* Restricted host access */
 #endif /* LACL */
 
 extern char	line[BUFSIZ];

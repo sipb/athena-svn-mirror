@@ -59,13 +59,14 @@ int	XC;		/* flags to clear for local mode */
 int	XS;		/* flags to set for local mode */
 short	RS;		/* restricted to those with local accounts */
 #ifdef PQUOTA
-char     *RQ; 	        /* Name of remote quota server */
-int      CP; 	  	/* Cost per page */
-char	 *QS;		/* Quota service for printer */
+char    *RQ; 	        /* Name of remote quota server */
+int     CP; 	  	/* Cost per page */
+char	*QS;		/* Quota service for printer */
 #endif /* PQUOTA */
 #ifdef LACL
-char	 *AC;		/* Local ACL file to use */
-short	 PA;		/* ACL file used as positive ACL */
+char	*AC;		/* Local ACL file to use */
+short	PA;		/* ACL file used as positive ACL */
+short	RA;		/* Restricted host access */
 #endif /* LACL */
 #endif SERVER
 
