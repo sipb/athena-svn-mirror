@@ -1,15 +1,15 @@
-# $Id: Makefile.athena,v 1.6 2004-10-26 16:25:08 ghudson Exp $
+# $Id: Makefile.athena,v 1.7 2004-10-28 16:17:28 ghudson Exp $
 
 dist:
 
 prepare:
-	PATH=${sprobin}:$PATH PERL=/usr/athena/bin/perl ./config shared --prefix=/usr/athena
+	PATH=${sprobin}:${PATH} PERL=/usr/athena/bin/perl ./config shared --prefix=/usr/athena
 
 clean:
 	${MAKE} clean
 
 all:
-	${MAKE} PATH=/afs/athena.mit.edu/software/sunsoft/SUNWspro/bin:${PATH}
+	${MAKE} PATH=${sprobin}:${PATH}
 
 check:
 	${MAKE} test
