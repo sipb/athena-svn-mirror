@@ -559,7 +559,8 @@ int dodir(src,dst,part)
 	((pflag && ((srcuid != targuid) || \
 		    ((srcgid >= 0) && (srcgid != targgid)))) \
 	 ? FIXOWNANDMODE : \
-	 ((srcmode&modemask) != (targmode&modemask)) ? FIXMODE : UPTODATE)
+	 (pflag && ((srcmode&modemask) != (targmode&modemask)))
+	 ? FIXMODE : UPTODATE)
 
 #define setdates() \
 	{ time_t date = srcstat.st_mtime; \
