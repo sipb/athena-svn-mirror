@@ -1,0 +1,566 @@
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+DESTDIR =
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+ACLOCAL_AMFLAGS = @ACLOCAL_AMFLAGS@
+AR = @AR@
+AS = @AS@
+CATALOGS = @CATALOGS@
+CATOBJEXT = @CATOBJEXT@
+CC = @CC@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+DATADIRNAME = @DATADIRNAME@
+DISABLE_DEPRECATED_CFLAGS = @DISABLE_DEPRECATED_CFLAGS@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EGREP = @EGREP@
+EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
+GCONFTOOL = @GCONFTOOL@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
+GDK_PIXBUF_CSOURCE = @GDK_PIXBUF_CSOURCE@
+GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
+GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
+GMOFILES = @GMOFILES@
+GMSGFMT = @GMSGFMT@
+HAVE_LIB = @HAVE_LIB@
+INSTOBJEXT = @INSTOBJEXT@
+INTLLIBS = @INTLLIBS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIB = @LIB@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LTLIB = @LTLIB@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+MKINSTALLDIRS = @MKINSTALLDIRS@
+NETSTATUS_CFLAGS = @NETSTATUS_CFLAGS@
+NETSTATUS_DEBUG_CFLAGS = @NETSTATUS_DEBUG_CFLAGS@
+NETSTATUS_LIBS = @NETSTATUS_LIBS@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PERL = @PERL@
+PKG_CONFIG = @PKG_CONFIG@
+POFILES = @POFILES@
+POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
+RANLIB = @RANLIB@
+RC = @RC@
+REBUILD = @REBUILD@
+STRIP = @STRIP@
+USE_NLS = @USE_NLS@
+VERSION = @VERSION@
+WARN_CFLAGS = @WARN_CFLAGS@
+WARN_CXXFLAGS = @WARN_CXXFLAGS@
+
+INCLUDES =  	-I$(top_builddir)/gnome-netstatus 	-DPREFIX=\""$(prefix)\"" 	-DSYSCONFDIR=\""$(sysconfdir)\"" 	-DDATADIR=\""$(datadir)\"" 	-DLIBDIR=\""$(libdir)\"" 	$(NETSTATUS_CFLAGS) 	$(NETSTATUS_DEBUG_CFLAGS) 	$(WARN_CFLAGS) 	-DNETSTATUS_ICONDIR=\""$(datadir)/icons/gnome-netstatus\"" 	-DNETSTATUS_GLADEDIR=\""$(gladedir)\"" 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
+
+
+libexec_PROGRAMS = gnome-netstatus-applet
+
+gnome_netstatus_applet_LDADD = $(NETSTATUS_LIBS)
+
+gnome_netstatus_applet_SOURCES =  	netstatus-applet.c 	netstatus-applet.h 	netstatus-util.h 	netstatus-util.c 	netstatus-iface.c 	netstatus-iface.h 	netstatus-sysdeps.h 	netstatus-sysdeps.c 	netstatus-icon.c 	netstatus-icon.h 	netstatus-dialog.c 	netstatus-dialog.h 	netstatus-fallback-pixbuf.h 	netstatus-enums.c 	netstatus-enums.h
+
+
+netstatus_enum_headers = $(srcdir)/netstatus-util.h
+
+BUILT_SOURCES =  	netstatus-enums.c 	netstatus-enums.h
+
+
+noinst_DATA = netstatus-fallback-pixbuf.h
+
+gladedir = $(datadir)/gnome-netstatus
+glade_DATA = gnome-netstatus.glade
+
+serverdir = $(libdir)/bonobo/servers
+server_in_files = GNOME_NetstatusApplet_Factory.server.in
+server_DATA = $(server_in_files:.server.in=.server)
+
+schemasdir = $(GCONF_SCHEMA_FILE_DIR)
+schemas_in_files = netstatus.schemas.in
+schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
+
+uidir = $(datadir)/gnome-2.0/ui
+ui_DATA = GNOME_NetstatusApplet.xml
+
+CLEANFILES = $(BUILT_SOURCES) $(noinst_DATA)
+EXTRA_DIST =  	$(glade_DATA) 	$(ui_DATA) 	$(schemas_in_files) 	GNOME_NetstatusApplet_Factory.server.in.in
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../config.h
+CONFIG_CLEAN_FILES = 
+libexec_PROGRAMS =  gnome-netstatus-applet$(EXEEXT)
+PROGRAMS =  $(libexec_PROGRAMS)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+gnome_netstatus_applet_OBJECTS =  netstatus-applet.$(OBJEXT) \
+netstatus-util.$(OBJEXT) netstatus-iface.$(OBJEXT) \
+netstatus-sysdeps.$(OBJEXT) netstatus-icon.$(OBJEXT) \
+netstatus-dialog.$(OBJEXT) netstatus-enums.$(OBJEXT)
+gnome_netstatus_applet_DEPENDENCIES = 
+gnome_netstatus_applet_LDFLAGS = 
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
+DATA =  $(glade_DATA) $(noinst_DATA) $(schemas_DATA) $(server_DATA) \
+$(ui_DATA)
+
+DIST_COMMON =  Makefile.am Makefile.in
+
+
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP_ENV = --best
+SOURCES = $(gnome_netstatus_applet_SOURCES)
+OBJECTS = $(gnome_netstatus_applet_OBJECTS)
+
+all: all-redirect
+.SUFFIXES:
+.SUFFIXES: .S .c .lo .o .obj .s
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps src/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+
+mostlyclean-libexecPROGRAMS:
+
+clean-libexecPROGRAMS:
+	-test -z "$(libexec_PROGRAMS)" || rm -f $(libexec_PROGRAMS)
+
+distclean-libexecPROGRAMS:
+
+maintainer-clean-libexecPROGRAMS:
+
+install-libexecPROGRAMS: $(libexec_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
+	@list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	  else :; fi; \
+	done
+
+uninstall-libexecPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	list='$(libexec_PROGRAMS)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(libexecdir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
+	done
+
+.c.o:
+	$(COMPILE) -c $<
+
+# FIXME: We should only use cygpath when building on Windows,
+# and only if it is available.
+.c.obj:
+	$(COMPILE) -c `cygpath -w $<`
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+	-rm -f *.$(OBJEXT)
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.c.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+gnome-netstatus-applet$(EXEEXT): $(gnome_netstatus_applet_OBJECTS) $(gnome_netstatus_applet_DEPENDENCIES)
+	@rm -f gnome-netstatus-applet$(EXEEXT)
+	$(LINK) $(gnome_netstatus_applet_LDFLAGS) $(gnome_netstatus_applet_OBJECTS) $(gnome_netstatus_applet_LDADD) $(LIBS)
+
+install-gladeDATA: $(glade_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gladedir)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gladeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(glade_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gladedir)/$$p; \
+	done
+
+install-schemasDATA: $(schemas_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(schemasdir)
+	@list='$(schemas_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemasdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(schemasdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(schemasdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(schemasdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-schemasDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(schemas_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(schemasdir)/$$p; \
+	done
+
+install-serverDATA: $(server_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(serverdir)
+	@list='$(server_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(serverdir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(serverdir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-serverDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(server_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(serverdir)/$$p; \
+	done
+
+install-uiDATA: $(ui_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(uidir)
+	@list='$(ui_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(uidir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(uidir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-uiDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(ui_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(uidir)/$$p; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP)
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	here=`pwd` && cd $(srcdir) \
+	  && mkid -f$$here/ID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)'; \
+	unique=`for i in $$list; do echo $$i; done | \
+	  awk '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+
+mostlyclean-tags:
+
+clean-tags:
+
+distclean-tags:
+	-rm -f TAGS ID
+
+maintainer-clean-tags:
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = src
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  if test -d $$d/$$file; then \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	    || cp -p $$d/$$file $(distdir)/$$file || :; \
+	  fi; \
+	done
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+netstatus-applet.o: netstatus-applet.c ../config.h netstatus-applet.h \
+	netstatus-icon.h netstatus-iface.h netstatus-util.h \
+	netstatus-dialog.h
+netstatus-dialog.o: netstatus-dialog.c ../config.h netstatus-dialog.h \
+	netstatus-iface.h netstatus-util.h netstatus-icon.h
+netstatus-enums.o: netstatus-enums.c netstatus-enums.h netstatus-util.h
+netstatus-icon.o: netstatus-icon.c ../config.h netstatus-icon.h \
+	netstatus-iface.h netstatus-util.h netstatus-enums.h \
+	netstatus-fallback-pixbuf.h
+netstatus-iface.o: netstatus-iface.c ../config.h netstatus-iface.h \
+	netstatus-util.h netstatus-sysdeps.h netstatus-enums.h
+netstatus-sysdeps.o: netstatus-sysdeps.c ../config.h netstatus-sysdeps.h
+netstatus-util.o: netstatus-util.c ../config.h netstatus-util.h
+
+info-am:
+info: info-am
+dvi-am:
+dvi: dvi-am
+check-am: all-am
+check: check-am
+installcheck-am:
+installcheck: installcheck-am
+install-exec-am: install-libexecPROGRAMS
+install-exec: install-exec-am
+
+install-data-am: install-gladeDATA install-schemasDATA \
+		install-serverDATA install-uiDATA install-data-local
+install-data: install-data-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+install: install-am
+uninstall-am: uninstall-libexecPROGRAMS uninstall-gladeDATA \
+		uninstall-schemasDATA uninstall-serverDATA \
+		uninstall-uiDATA
+uninstall: uninstall-am
+all-am: Makefile $(PROGRAMS) $(DATA)
+all-redirect: all-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
+installdirs:
+	$(mkinstalldirs)  $(DESTDIR)$(libexecdir) $(DESTDIR)$(gladedir) \
+		$(DESTDIR)$(schemasdir) $(DESTDIR)$(serverdir) \
+		$(DESTDIR)$(uidir)
+
+
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean-am:  mostlyclean-libexecPROGRAMS mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
+
+mostlyclean: mostlyclean-am
+
+clean-am:  clean-libexecPROGRAMS clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
+
+clean: clean-am
+
+distclean-am:  distclean-libexecPROGRAMS distclean-compile \
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
+	-rm -f libtool
+
+distclean: distclean-am
+
+maintainer-clean-am:  maintainer-clean-libexecPROGRAMS \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+maintainer-clean: maintainer-clean-am
+
+.PHONY: mostlyclean-libexecPROGRAMS distclean-libexecPROGRAMS \
+clean-libexecPROGRAMS maintainer-clean-libexecPROGRAMS \
+uninstall-libexecPROGRAMS install-libexecPROGRAMS mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool uninstall-gladeDATA install-gladeDATA \
+uninstall-schemasDATA install-schemasDATA uninstall-serverDATA \
+install-serverDATA uninstall-uiDATA install-uiDATA tags \
+mostlyclean-tags distclean-tags clean-tags maintainer-clean-tags \
+distdir info-am info dvi-am dvi check check-am installcheck-am \
+installcheck install-exec-am install-exec install-data-local \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
+
+
+netstatus-enums.c: @REBUILD@ $(netstatus_enum_headers)
+	glib-mkenums    --fhead "#include <glib-object.h>\n" \
+	                --fhead "#include \"netstatus-enums.h\"\n\n" \
+	                --fprod "\n/* enumerations from \"@filename@\" */" \
+	                --fprod "\n#include \"@filename@\"\n" \
+	                --vhead "static const GEnumValue _@enum_name@_values[] = {" \
+	                --vprod "  { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+	                --vtail "  { 0, NULL, NULL }\n};\n\n" \
+	                --vtail "GType\n@enum_name@_get_type (void)\n{\n" \
+	                --vtail "  static GType type = 0;\n\n" \
+	                --vtail "  if (!type)\n" \
+	                --vtail "    type = g_enum_register_static (\"@EnumName@\", _@enum_name@_values);\n\n" \
+	                --vtail "  return type;\n}\n\n" \
+                $(netstatus_enum_headers) > $@
+
+netstatus-enums.h: @REBUILD@ $(netstatus_enum_headers)
+	glib-mkenums    --fhead "#ifndef __NETSTATUS_ENUMS_H__\n" \
+	                --fhead "#define __NETSTATUS_ENUMS_H__ 1\n\n" \
+	                --fhead "G_BEGIN_DECLS\n\n" \
+	                --ftail "G_END_DECLS\n\n" \
+	                --ftail "#endif /* __PANEL_ENUMS_H__ */\n" \
+	                --fprod "\n/* --- @filename@ --- */" \
+	                --eprod "#define NETSTATUS_TYPE_@ENUMSHORT@ @enum_name@_get_type()\n" \
+	                --eprod "GType @enum_name@_get_type (void);\n" \
+                $(netstatus_enum_headers) >  $@
+
+netstatus-fallback-pixbuf.h: $(top_srcdir)/icons/gnome-netstatus-disconn.png
+	$(GDK_PIXBUF_CSOURCE) --raw --name=fallback_icon_data $(top_srcdir)/icons/gnome-netstatus-error.png > $(srcdir)/netstatus-fallback-pixbuf.h
+
+$(gnome_netstatus_applet_OBJECTS): netstatus-fallback-pixbuf.h
+$(OBJECTS): netstatus-fallback-pixbuf.h
+
+$(server_in_files): $(server_in_files).in
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+
+@INTLTOOL_SERVER_RULE@
+
+@INTLTOOL_SCHEMAS_RULE@
+
+# don't do this if we are building in eg. rpm
+@GCONF_SCHEMAS_INSTALL_TRUE@install-data-local:
+@GCONF_SCHEMAS_INSTALL_TRUE@	if test -z "$(DESTDIR)" ; then \
+@GCONF_SCHEMAS_INSTALL_TRUE@		for p in $(schemas_DATA) ; do \
+@GCONF_SCHEMAS_INSTALL_TRUE@			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/src/$$p ; \
+@GCONF_SCHEMAS_INSTALL_TRUE@		done \
+@GCONF_SCHEMAS_INSTALL_TRUE@	fi
+@GCONF_SCHEMAS_INSTALL_FALSE@install-data-local:
+
+dist-hook:
+	cd $(distdir) ; rm -f $(CLEANFILES)
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,1816 @@
+# Swedish translation of gnome-netstatus.
+# Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+# Christian Rose <menthos@menthos.com>, 2003, 2004.
+#
+# $Id: sv.po,v 1.1.1.1 2004-10-06 18:41:35 ghudson Exp $
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-netstatus\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-03 15:35+0100\n"
+"PO-Revision-Date: 2004-08-17 23:36+0200\n"
+"Last-Translator: Christian Rose <menthos@menthos.com>\n"
+"Language-Team: Swedish <sv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:1
+msgid "Factory for Network Monitor applet"
+msgstr "Fabrik för nätverksövervakarpanelprogram"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:2
+msgid "Internet"
+msgstr "Internet"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:3
+msgid "Monitor network activity"
+msgstr "Övervaka nätverksaktivitet"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:4
+#: src/netstatus-applet.c:290
+msgid "Network Monitor"
+msgstr "Nätverksövervakare"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:5
+msgid "Network Monitor Factory"
+msgstr "Fabrik för nätverksövervakare"
+
+#: src/GNOME_NetstatusApplet.xml.h:1
+msgid "_About"
+msgstr "_Om"
+
+#: src/GNOME_NetstatusApplet.xml.h:2
+msgid "_Help"
+msgstr "_Hjälp"
+
+#: src/GNOME_NetstatusApplet.xml.h:3
+msgid "_Properties"
+msgstr "_Egenskaper"
+
+#: src/gnome-netstatus.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/gnome-netstatus.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: src/gnome-netstatus.glade.h:4
+#, no-c-format
+msgid "0%"
+msgstr "0%"
+
+#: src/gnome-netstatus.glade.h:5
+msgid "<b>Activity</b>"
+msgstr "<b>Aktivitet</b>"
+
+#: src/gnome-netstatus.glade.h:6
+msgid "<b>Connection</b>"
+msgstr "<b>Anslutning</b>"
+
+#: src/gnome-netstatus.glade.h:7
+msgid "<b>Internet Protocol (IPv4)</b>"
+msgstr "<b>Internet-protokollet (IPv4)</b>"
+
+#: src/gnome-netstatus.glade.h:8
+msgid "<b>Internet Protocol (IPv6)</b>"
+msgstr "<b>Internet-protokollet (IPv6)</b>"
+
+#: src/gnome-netstatus.glade.h:9
+msgid "<b>Network Device</b>"
+msgstr "<b>Nätverksenhet</b>"
+
+#: src/gnome-netstatus.glade.h:10
+msgid "<b>Signal Strength</b>"
+msgstr "<b>Signalstyrka</b>"
+
+#: src/gnome-netstatus.glade.h:11
+msgid "Address:"
+msgstr "Adress:"
+
+#: src/gnome-netstatus.glade.h:12
+msgid "Broadcast:"
+msgstr "Broadcast:"
+
+#: src/gnome-netstatus.glade.h:13
+msgid "Con_figure"
+msgstr "Kon_figurera"
+
+#: src/gnome-netstatus.glade.h:14
+msgid "Destination:"
+msgstr "Destination:"
+
+#: src/gnome-netstatus.glade.h:15
+msgid "General"
+msgstr "Allmänt"
+
+#: src/gnome-netstatus.glade.h:16
+msgid "Received:"
+msgstr "Mottaget:"
+
+#: src/gnome-netstatus.glade.h:17
+msgid "Scope:"
+msgstr "Omfattning:"
+
+#: src/gnome-netstatus.glade.h:18
+msgid "Sent:"
+msgstr "Skickat:"
+
+#: src/gnome-netstatus.glade.h:19
+msgid "Status:"
+msgstr "Status:"
+
+#: src/gnome-netstatus.glade.h:20
+msgid "Subnet Mask:"
+msgstr "Subnätsmask:"
+
+#: src/gnome-netstatus.glade.h:21
+msgid "Support"
+msgstr "Stöd"
+
+#: src/gnome-netstatus.glade.h:22
+msgid "Type:"
+msgstr "Typ:"
+
+#: src/gnome-netstatus.glade.h:23
+msgid "_Name:"
+msgstr "_Namn:"
+
+#: src/netstatus.schemas.in.h:1
+msgid "Network configuration tool"
+msgstr "Verktyg för nätverkskonfiguration"
+
+#: src/netstatus.schemas.in.h:2
+msgid "Network interface"
+msgstr "Nätverksgränssnitt"
+
+#: src/netstatus.schemas.in.h:3
+msgid "The Network Interface monitored by the Network Monitor."
+msgstr "Nätverksgränssnittet som övervakas av nätverksövervakaren."
+
+#: src/netstatus.schemas.in.h:5
+#, no-c-format
+msgid ""
+"This key specifies the name of the network configuration tool which should "
+"be invoked when the \"Configure\" button in the properties dialog is "
+"clicked. If the configuration tool can take a parameter of the interface to "
+"configure you may use %i in the string and it will be substituted with the "
+"interface name before invoking the configuration tool. For example, gnome-"
+"system-tool's network-admin tool takes the interface name through a --"
+"configure parameter. Thus, you could set the value of this key to be: "
+"\"network-admin --configure %i\"."
+msgstr ""
+"Denna nyckel anger namnet på det verktyg för nätverkskonfiguration som ska "
+"startas då du klickar på knappen \"Konfigurera\" i egenskapsdialogen. Om "
+"konfigurationsverktyget kan ta en parameter med gränssnittet som ska "
+"konfigureras kan du använda %i i strängen, vilket kommer att bytas ut med "
+"gränssnittsnamnet innan konfigurationsverktyget startas. Till exempel tar "
+"nätverksadministrationsverktyget i gnome-system-tools gränssnittsnamnet "
+"genom en --configure-parameter. Därför kan du ställa in värdet av denna "
+"nyckel till att vara: \"network-admin --configure %i\"."
+
+#: src/netstatus-applet.c:249
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Det uppstod ett fel vid visning av hjälp: %s"
+
+#: src/netstatus-applet.c:271
+msgid "translator_credits"
+msgstr ""
+"Christian Rose\n"
+"Skicka synpunkter på översättningen till sv@li.org"
+
+#: src/netstatus-applet.c:292
+msgid "The Network Monitor displays the status of a network device."
+msgstr "Nätverksövervakaren visar statusen för en nätverksenhet."
+
+#: src/netstatus-dialog.c:47 src/netstatus-dialog.c:306
+msgid "Unknown"
+msgstr "Okänd"
+
+#: src/netstatus-dialog.c:110
+msgid "Connection Properties"
+msgstr "Anslutningsegenskaper"
+
+#: src/netstatus-dialog.c:116
+#, c-format
+msgid "Connection Properties: %s"
+msgstr "Anslutningsegenskaper: %s"
+
+#: src/netstatus-dialog.c:129
+#, c-format
+msgid "%lu packet"
+msgid_plural "%lu packets"
+msgstr[0] "%lu paket"
+msgstr[1] "%lu paket"
+
+#: src/netstatus-dialog.c:390
+#, c-format
+msgid ""
+"There was an error displaying help:\n"
+"%s"
+msgstr ""
+"Det uppstod ett fel vid visning av hjälp:\n"
+"%s"
+
+#: src/netstatus-dialog.c:568
+#, c-format
+msgid "Failed to launch time configuration tool: %s"
+msgstr "Misslyckades med att starta verktyget för tidskonfiguration: %s"
+
+#: src/netstatus-icon.c:381
+#, c-format
+msgid "Network Connection: %s"
+msgstr "Nätverksanslutning: %s"
+
+#: src/netstatus-icon.c:386
+msgid "Network Connection"
+msgstr "Nätverksanslutning"
+
+#: src/netstatus-icon.c:809
+msgid "Interface"
+msgstr "Gränssnitt"
+
+#: src/netstatus-icon.c:810
+msgid "The current interface the icon is monitoring."
+msgstr "Det aktuella gränssnitt som ikonen övervakar."
+
+#: src/netstatus-icon.c:817
+msgid "Orientation"
+msgstr "Orientering"
+
+# Osäker
+#: src/netstatus-icon.c:818
+msgid "The orientation of the tray."
+msgstr "Orienteringen av lådan."
+
+#: src/netstatus-icon.c:826
+msgid "Tooltips Enabled"
+msgstr "Verktygstips aktiverade"
+
+#: src/netstatus-icon.c:827
+msgid "Whether or not the icon's tooltips are enabled."
+msgstr "Huruvida ikonens verktygstips är aktiverade eller inte."
+
+#: src/netstatus-icon.c:834
+msgid "Show Signal"
+msgstr "Visa signal"
+
+#: src/netstatus-icon.c:835
+msgid "Whether or not the signal strength should be displayed."
+msgstr "Huruvida signalstyrkan ska visas eller inte."
+
+#: src/netstatus-icon.c:948
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"\n"
+"%s"
+msgstr ""
+"Kontakta din systemadministratör för att lösa följande problem:\n"
+"\n"
+"%s"
+
+#: src/netstatus-iface.c:153
+msgid "Name"
+msgstr "Namn"
+
+#: src/netstatus-iface.c:154
+msgid "The interface name"
+msgstr "Gränssnittsnamnet"
+
+#: src/netstatus-iface.c:161
+msgid "State"
+msgstr "Tillstånd"
+
+#: src/netstatus-iface.c:162
+msgid "The interface state"
+msgstr "Gränssnittstillståndet"
+
+#: src/netstatus-iface.c:170
+msgid "Stats"
+msgstr "Statistik"
+
+#: src/netstatus-iface.c:171
+msgid "The interface packets/bytes statistics"
+msgstr "Statistiken för gränssnittets paket/byte"
+
+#: src/netstatus-iface.c:178
+msgid "Wireless"
+msgstr "Trådlöst"
+
+#: src/netstatus-iface.c:179
+msgid "Whether the interface is a wireless interface"
+msgstr "Huruvida gränssnittet är ett trådlöst gränssnitt"
+
+#: src/netstatus-iface.c:186
+msgid "Signal"
+msgstr "Signal"
+
+#: src/netstatus-iface.c:187
+msgid "Wireless signal strength percentage"
+msgstr "Trådlös signalstyrka i procent"
+
+#: src/netstatus-iface.c:196 src/netstatus-util.c:167
+msgid "Error"
+msgstr "Fel"
+
+#: src/netstatus-iface.c:197
+msgid "The current error condition"
+msgstr "Aktuellt felvillkor"
+
+#: src/netstatus-iface.c:439 src/netstatus-iface.c:1202
+#, c-format
+msgid "Unable to open socket: %s"
+msgstr "Kan inte öppna uttag: %s"
+
+#: src/netstatus-iface.c:501 src/netstatus-iface.c:1228
+#, c-format
+msgid "SIOCGIFFLAGS error: %s"
+msgstr "SIOCGIFFLAGS-fel: %s"
+
+#: src/netstatus-iface.c:875
+msgid "AMPR NET/ROM"
+msgstr "AMPR NET/ROM"
+
+#: src/netstatus-iface.c:878
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: src/netstatus-iface.c:884
+msgid "AMPR AX.25"
+msgstr "AMPR AX.25"
+
+#: src/netstatus-iface.c:893 src/netstatus-iface.c:1013
+msgid "16/4 Mbps Token Ring"
+msgstr "16/4 Mb/s Token Ring"
+
+#: src/netstatus-iface.c:896
+msgid "ARCnet"
+msgstr "ARCnet"
+
+#: src/netstatus-iface.c:902
+msgid "Frame Relay DLCI"
+msgstr "Frame Relay DLCI"
+
+#: src/netstatus-iface.c:908
+msgid "Metricom Starmode IP"
+msgstr "Metricom Starmode IP"
+
+#: src/netstatus-iface.c:911
+msgid "Serial Line IP"
+msgstr "IP över seriell kabel (SLIP)"
+
+#: src/netstatus-iface.c:914
+msgid "VJ Serial Line IP"
+msgstr "VJ IP över seriell kabel (VJ SLIP)"
+
+#: src/netstatus-iface.c:917
+msgid "6-bit Serial Line IP"
+msgstr "6-bitars IP över seriell kabel (SLIP)"
+
+#: src/netstatus-iface.c:920
+msgid "VJ 6-bit Serial Line IP"
+msgstr "VJ 6-bitars IP över seriell kabel (VJ SLIP)"
+
+#: src/netstatus-iface.c:926
+msgid "Adaptive Serial Line IP"
+msgstr "Adaptiv IP över seriell kabel"
+
+#: src/netstatus-iface.c:929
+msgid "AMPR ROSE"
+msgstr "AMPR ROSE"
+
+#: src/netstatus-iface.c:932
+msgid "Generic X.25"
+msgstr "Allmän X.25"
+
+#: src/netstatus-iface.c:935
+msgid "Point-to-Point Protocol"
+msgstr "Point-to-Point Protocol (PPP)"
+
+#: src/netstatus-iface.c:941
+msgid "(Cisco)-HDLC"
+msgstr "(Cisco)-HDLC"
+
+#: src/netstatus-iface.c:944
+msgid "LAPB"
+msgstr "LAPB"
+
+#: src/netstatus-iface.c:953
+msgid "IPIP Tunnel"
+msgstr "IPIP-tunnel"
+
+#: src/netstatus-iface.c:959
+msgid "Frame Relay Access Device"
+msgstr "Frame Relay Access-enhet"
+
+#: src/netstatus-iface.c:965
+msgid "Local Loopback"
+msgstr "Lokal vändslinga"
+
+#: src/netstatus-iface.c:971
+msgid "Fiber Distributed Data Interface"
+msgstr "Fiber Distributed Data-gränssnitt"
+
+#: src/netstatus-iface.c:977
+msgid "IPv6-in-IPv4"
+msgstr "IPv6-i-IPv4"
+
+#: src/netstatus-iface.c:989
+msgid "HIPPI"
+msgstr "HIPPI"
+
+#: src/netstatus-iface.c:992
+msgid "Ash"
+msgstr "Ash"
+
+#: src/netstatus-iface.c:995
+msgid "Econet"
+msgstr "Econet"
+
+#: src/netstatus-iface.c:998
+msgid "IrLAP"
+msgstr "IrLAP"
+
+#: src/netstatus-iface.c:1160
+#, c-format
+msgid "SIOCGIFCONF error: %s"
+msgstr "SIOCGIFCONF-fel: %s"
+
+#: src/netstatus-iface.c:1253
+msgid "No network devices found"
+msgstr "Inga nätverksenheter hittades"
+
+#: src/netstatus-sysdeps.c:170
+#, c-format
+msgid "Cannot open /proc/net/dev: %s"
+msgstr "Kan inte öppna /proc/net/dev: %s"
+
+#: src/netstatus-sysdeps.c:179
+msgid "Could not parse /proc/net/dev. Unknown format."
+msgstr "Kunde inte tolka /proc/net/dev. Okänt format."
+
+#: src/netstatus-sysdeps.c:194 src/netstatus-sysdeps.c:320
+#, c-format
+msgid "Could not parse interface name from '%s'"
+msgstr "Kunde inte tolka gränssnittsnamn från \"%s\""
+
+#: src/netstatus-sysdeps.c:207 src/netstatus-sysdeps.c:462
+#, c-format
+msgid ""
+"Could not parse interface statistics from '%s'. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+msgstr ""
+"Kunde inte tolka gränssnittsstatistik från \"%s\". prx_idx = %d; ptx_idx = %"
+"d; brx_idx = %d; btx_idx = %d;"
+
+#: src/netstatus-sysdeps.c:304
+msgid "Could not parse /proc/net/wireless. Unknown format."
+msgstr "Kunde inte tolka /proc/net/wireless. Okänt format."
+
+#: src/netstatus-sysdeps.c:331
+#, c-format
+msgid "Could not parse wireless details from '%s'. link_idx = %d;"
+msgstr ""
+"Kunde inte tolka detaljer för trådlöst nätverk från \"%s\". link_idx = %d;"
+
+#: src/netstatus-sysdeps.c:415
+#, c-format
+msgid "Could not parse command line '%s': %s"
+msgstr "Kunde inte tolka kommandoraden \"%s\": %s"
+
+#: src/netstatus-sysdeps.c:452
+msgid "Could not parse 'netstat' output. Unknown format"
+msgstr "Kunde inte tolka utdata från \"netstat\". Okänt format"
+
+#: src/netstatus-util.c:152
+msgid "Disconnected"
+msgstr "Frånkopplad"
+
+#: src/netstatus-util.c:155
+msgid "Idle"
+msgstr "Tomgång"
+
+#: src/netstatus-util.c:158
+msgid "Sending"
+msgstr "Skickar"
+
+#: src/netstatus-util.c:161
+msgid "Receiving"
+msgstr "Tar emot"
+
+#: src/netstatus-util.c:164
+msgid "Sending/Receiving"
+msgstr "Skickar/Tar emot"
+
+#~ msgid "Signal Strength"
+#~ msgstr "Signalstyrka"
+
+#~ msgid "<b>Signal strength</b>"
+#~ msgstr "<b>Signalstyrka</b>"
+
+#~ msgid "Signal strength"
+#~ msgstr "Signalstyrka"
+
+#~ msgid "translator-credits"
+#~ msgstr ""
+#~ "Christian Rose\n"
+#~ "Skicka synpunkter på översättningen till sv@li.org"
+
+#~ msgid "Cannot open /proc/net/wireless: %s"
+#~ msgstr "Kan inte öppna /proc/net/wireless: %s"
+
+#~ msgid "_About..."
+#~ msgstr "_Om..."
+
+#~ msgid "_Properties..."
+#~ msgstr "_Egenskaper..."
+
+#~ msgid "dialog1"
+#~ msgstr "dialog1"
+
+#~ msgid "_Type:"
+#~ msgstr "_Typ:"
+
+#~ msgid "Name:"
+#~ msgstr "Namn:"
+
+#~ msgid "Could not parse 'netstat' output. Unknown format."
+#~ msgstr "Kunde inte tolka utdata från \"netstat\". Okänt format."
+
+#~ msgid "Network Device"
+#~ msgstr "Nätverksenhet"
+
+#~ msgid "Configure"
+#~ msgstr "Konfigurera"
+
+#~ msgid "Type"
+#~ msgstr "Typ"
+
+#~ msgid "AMPR NET/ROM Device"
+#~ msgstr "AMPR NET/ROM-enhet"
+
+#~ msgid "Ethernet Device"
+#~ msgstr "Ethernetenhet"
+
+#~ msgid "AMPR AX.25 Device"
+#~ msgstr "AMPR AX.25-enhet"
+
+#~ msgid "16/4 Mbps Token Ring Device"
+#~ msgstr "16/4 Mb/s Token Ring-enhet"
+
+#~ msgid "ARCnet Device"
+#~ msgstr "ARCnet-enhet"
+
+#~ msgid "Frame Relay DLCI Device"
+#~ msgstr "Frame Relay DLCI-enhet"
+
+#~ msgid "Metricom Starmode IP Device"
+#~ msgstr "Metricom Starmode IP-enhet"
+
+#~ msgid "Serial Line IP Device"
+#~ msgstr "Enhet för IP över seriell kabel (SLIP)"
+
+#~ msgid "VJ Serial Line IP Device"
+#~ msgstr "Enhet för VJ IP över seriell kabel (VJ SLIP)"
+
+#~ msgid "Adaptive Serial Line IP Device"
+#~ msgstr "Enhet för adaptiv IP över seriell kabel"
+
+#~ msgid "AMPR ROSE Device"
+#~ msgstr "AMPR ROSE-enhet"
+
+#~ msgid "Generic X.25 Device"
+#~ msgstr "Allmän X.25-enhet"
+
+#~ msgid "Point-to-Point Protocol Device"
+#~ msgstr "PPP-enhet"
+
+#~ msgid "(Cisco)-HDLC Device"
+#~ msgstr "(Cisco)-HDLC-enhet"
+
+#~ msgid "LAPB Device"
+#~ msgstr "LAPB-enhet"
+
+#~ msgid "IPIP Tunnel Device"
+#~ msgstr "IPIP-tunnelenhet"
+
+#~ msgid "Frame Relay Access Device Device"
+#~ msgstr "Frame Relay Access-enhet"
+
+#~ msgid "Local Loopback Device"
+#~ msgstr "Lokal vändslingeenhet"
+
+#~ msgid "Fiber Distributed Data Interface Device"
+#~ msgstr "Fiber Distributed Data-gränssnittsenhet"
+
+#~ msgid "IPv6-in-IPv4 Device"
+#~ msgstr "IPv6-i-IPv4-enhet"
+
+#~ msgid "HIPPI Device"
+#~ msgstr "HIPPI-enhet"
+
+#~ msgid "Ash Device"
+#~ msgstr "Ash-enhet"
+
+#~ msgid "Econet Device"
+#~ msgstr "Econet-enhet"
+
+#~ msgid "IrLAP Device"
+#~ msgstr "IrLAP-enhet"
+
+#~ msgid "Network interface."
+#~ msgstr "Nätverksgränssnitt."
+
+#~ msgid "Modem Device"
+#~ msgstr "Modemenhet"
+
+#~ msgid "About..."
+#~ msgstr "Om..."
+
+#~ msgid "Properties..."
+#~ msgstr "Egenskaper..."
+
+#~ msgid "Activity"
+#~ msgstr "Aktivitet"
+
+#~ msgid "Connection"
+#~ msgstr "Anslutning"
+
+#~ msgid "Internet Protocol (IPv4)"
+#~ msgstr "Internet-protokollet (IPv4)"
+
+#~ msgid "Internet Protocol"
+#~ msgstr "Internet-protokollet"
+
+#~ msgid "<b>Internet Protocol</b>"
+#~ msgstr "<b>Internet-protokollet</b>"
+
+#~ msgid "<b>Interrnet Protocol (IPv6)</b>"
+#~ msgstr "<b>Internet-protokollet (IPv6)</b>"
+
+#~ msgid "Address"
+#~ msgstr "Adress"
+
+#~ msgid "Broadcast"
+#~ msgstr "Broadcast"
+
+#~ msgid "Destination"
+#~ msgstr "Destination"
+
+#~ msgid "Received"
+#~ msgstr "Mottaget"
+
+#~ msgid "Scope"
+#~ msgstr "Omfattning"
+
+#~ msgid "Sent"
+#~ msgstr "Skickat"
+
+#~ msgid "Subnet Mask"
+#~ msgstr "Subnätsmask"
+
+#~ msgid "Evolution data"
+#~ msgstr "Evolution-data"
+
+#~ msgid "Backup to local file"
+#~ msgstr "Säkerhetskopiera till lokal fil"
+
+#~ msgid "FILENAME"
+#~ msgstr "FILNAMN"
+
+#~ msgid "COMPRESS"
+#~ msgstr "KOMPRIMERA"
+
+#~ msgid "Compress"
+#~ msgstr "Komprimera"
+
+#~ msgid "Back up"
+#~ msgstr "Säkerhetskopiera"
+
+#~ msgid "Items"
+#~ msgstr "Objekt"
+
+#~ msgid "Size"
+#~ msgstr "Storlek"
+
+#~ msgid "Last backed up"
+#~ msgstr "Senast säkerhetskopierat"
+
+#~ msgid "Copyright (C) 2003 Rodrigo Moya"
+#~ msgstr "Copyright © 2003 Rodrigo Moya"
+
+#~ msgid "Backup client tool for GNOME"
+#~ msgstr "GNOME-klientverktyg för säkerhetskopiering"
+
+#~ msgid "/_File"
+#~ msgstr "/_Arkiv"
+
+#~ msgid "/File/_New"
+#~ msgstr "/Arkiv/_Ny"
+
+#~ msgid "<control>N"
+#~ msgstr "<control>N"
+
+#~ msgid "/File/sep1"
+#~ msgstr "/Arkiv/avsk1"
+
+#~ msgid "/File/_Quit"
+#~ msgstr "/Arkiv/_Avsluta"
+
+#~ msgid "<control>Q"
+#~ msgstr "<control>Q"
+
+#~ msgid "/_Edit"
+#~ msgstr "/_Redigera"
+
+#~ msgid "/Edit/_Properties"
+#~ msgstr "/Redigera/_Egenskaper"
+
+#~ msgid "/_Help"
+#~ msgstr "/_Hjälp"
+
+#~ msgid "/Help/_About"
+#~ msgstr "/Hjälp/_Om"
+
+#~ msgid "Select backup destination"
+#~ msgstr "Välj destination för säkerhetskopieringen"
+
+#~ msgid "Set options for selected backup destination"
+#~ msgstr "Ställ in akternativ för markerad säkerhetskopieringsdestination"
+
+#~ msgid "Create a new set of files to be backed up"
+#~ msgstr "Skapa en ny samling filer att säkerhetskopiera"
+
+#~ msgid "Edit properties for selection"
+#~ msgstr "Redigera egenskaper för markeringen"
+
+#~ msgid "<b>Desktop settings</b>"
+#~ msgstr "<b>Skrivbordsinställningar</b>"
+
+#~ msgid "<b>Method</b>"
+#~ msgstr "<b>Metod</b>"
+
+#~ msgid "Color depth"
+#~ msgstr "Färgdjup"
+
+#~ msgid "Display"
+#~ msgstr "Display"
+
+#~ msgid "Display size"
+#~ msgstr "Displaystorlek"
+
+#~ msgid "GNOME Remote Desktop"
+#~ msgstr "GNOME-fjärrskrivbord"
+
+#~ msgid "Host"
+#~ msgstr "Värd"
+
+#~ msgid ""
+#~ "Select the method for connecting to the remote host. For Windows systems, "
+#~ "you want to choose VNC. For UNIX systems, usually X11, though VNC will "
+#~ "also work."
+#~ msgstr ""
+#~ "Välj metoden för anslutning till fjärrvärden. För Windowssystem använder "
+#~ "du VNC. För UNIX-system använder du vanligtvis X11, även om VNC också "
+#~ "fungerar."
+
+#~ msgid ""
+#~ "Select the size and color depth (not supported for all cases, so use with "
+#~ "care) of your remote desktop"
+#~ msgstr ""
+#~ "Välj storleken och färgdjupet (stöds inte för alla fall, så använd detta "
+#~ "försiktigt) för ditt fjärrskrivbord"
+
+#~ msgid ""
+#~ "Type the name of the computer to open a new desktop session and/or the "
+#~ "display number to connect to an already running session"
+#~ msgstr ""
+#~ "Ange namnet på datorn för att öppna en ny skrivbordssession och/eller "
+#~ "displaynumret för att ansluta till en redan körande session"
+
+#~ msgid "VNC"
+#~ msgstr "VNC"
+
+#~ msgid "X11"
+#~ msgstr "X11"
+
+# Osäker
+#~ msgid "by"
+#~ msgstr "med"
+
+#~ msgid "You don't have the Xnest program installed in the system"
+#~ msgstr "Du har inte Xnest-programmet installerat på systemet"
+
+#~ msgid "You have to specify at least a host or display name"
+#~ msgstr "Du måste ange åtminstone ett värdnamn eller displaynamn"
+
+#~ msgid "You don't have a VNC viewer installed in the system"
+#~ msgstr "Du har ingen VNC-visare installerad på systemet"
+
+#~ msgid "Could not load UI for remote desktop client"
+#~ msgstr "Kunde inte läsa in användargränssnitt för fjärrskrivbordsklient"
+
+#~ msgid "(for instance: 192.168.2.1 or www.domain.com)"
+#~ msgstr "(till exempel 192.168.2.1 eller www.domän.se)"
+
+#~ msgid "0.0"
+#~ msgstr "0.0"
+
+#~ msgid "Average:"
+#~ msgstr "Genomsnitt:"
+
+#~ msgid "Choose the network interface to get information"
+#~ msgstr "Välj nätverksgränssnittet för att få information"
+
+#~ msgid "Collisions"
+#~ msgstr "Kollisioner"
+
+#~ msgid "Enter the target Internet address to check for activity and delay"
+#~ msgstr ""
+#~ "Ange Internetmåladressen för att kontrollera aktivitet och fördröjning"
+
+#~ msgid "Enter the target Internet address to scan for services running"
+#~ msgstr "Ange Internetmåladressen för att genomsöka tjänster som körs"
+
+#~ msgid "Enter the target Internet address to trace the route in Internet"
+#~ msgstr "Ange Internetmåladressen för att spåra vägen över Internet"
+
+#~ msgid "For instance: www.domain.com or 192.168.2.1"
+#~ msgstr "Till exempel www.domän.se eller 192.168.2.1"
+
+#~ msgid "Hardware Address"
+#~ msgstr "Hårdvaruadress"
+
+#~ msgid "IP address"
+#~ msgstr "IP-adress"
+
+#~ msgid "Information"
+#~ msgstr "Information"
+
+#~ msgid "Link speed"
+#~ msgstr "Länkhastighet"
+
+#~ msgid "MTU"
+#~ msgstr "MTU"
+
+#~ msgid "Maximum:"
+#~ msgstr "Maximum:"
+
+#~ msgid "Minimum:"
+#~ msgstr "Minimum:"
+
+#~ msgid "Multicast"
+#~ msgstr "Multicast"
+
+#~ msgid "Netmask"
+#~ msgstr "Nätmask"
+
+#~ msgid "Netstat"
+#~ msgstr "Netstat"
+
+#~ msgid "Packets loss:"
+#~ msgstr "Paketförluster:"
+
+#~ msgid "Packets received:"
+#~ msgstr "Mottagna paket:"
+
+#~ msgid "Packets transmitted:"
+#~ msgstr "Överförda paket:"
+
+#~ msgid "Ping"
+#~ msgstr "Ping"
+
+# Osäker
+#~ msgid "Port _Scan"
+#~ msgstr "Port_skanna"
+
+#~ msgid "Received packets"
+#~ msgstr "Mottagna paket"
+
+#~ msgid "Reception errors"
+#~ msgstr "Mottagningsfel"
+
+#~ msgid "Round trip time"
+#~ msgstr "Varvtid"
+
+# Osäker
+#~ msgid "Scan"
+#~ msgstr "Skanna"
+
+#~ msgid "Sent only"
+#~ msgstr "Skickade endast"
+
+#~ msgid "Sent unlimited requests (pings)"
+#~ msgstr "Skickade obegränsade begäranden (ping)"
+
+#~ msgid "Statistics"
+#~ msgstr "Statistik"
+
+#~ msgid "Trace"
+#~ msgstr "Spår"
+
+#~ msgid "Transmission"
+#~ msgstr "Överföring"
+
+#~ msgid "Transmition errors"
+#~ msgstr "Överföringsfel"
+
+#~ msgid "Transmitted packets"
+#~ msgstr "Överförda paket"
+
+#~ msgid "View active Internet services"
+#~ msgstr "Visa aktiva Internettjänster"
+
+#~ msgid "View information of routing table"
+#~ msgstr "Visa information från routingtabell"
+
+#~ msgid "View multicast information"
+#~ msgstr "Visa multicast-information"
+
+#~ msgid "_Information"
+#~ msgstr "_Information"
+
+#~ msgid "_Netstat"
+#~ msgstr "_Netstat"
+
+#~ msgid "_Ping"
+#~ msgstr "_Ping"
+
+#~ msgid "_Traceroute"
+#~ msgstr "_Traceroute"
+
+# millisekunder
+#~ msgid "ms"
+#~ msgstr "ms"
+
+#~ msgid "not available"
+#~ msgstr "inte tillgänglig"
+
+#~ msgid "requests (pings)"
+#~ msgstr "begäranden (ping)"
+
+#~ msgid "Active"
+#~ msgstr "Aktiv"
+
+#~ msgid "Inactive"
+#~ msgstr "Inaktiv"
+
+#~ msgid "Disabled"
+#~ msgstr "Inaktiverad"
+
+#~ msgid ""
+#~ "The file %s doesn't exist, please check if gnome-netinfo is correcly "
+#~ "installed"
+#~ msgstr ""
+#~ "Filen %s finns inte, kontrollera om gnome-netinfo är korrekt installerat"
+
+#~ msgid "Traceroute"
+#~ msgstr "Traceroute"
+
+#~ msgid "Information not available"
+#~ msgstr "Information inte tillgänglig"
+
+#~ msgid "Stop"
+#~ msgstr "Stoppa"
+
+#~ msgid "Run"
+#~ msgstr "Kör"
+
+#~ msgid "Bytes"
+#~ msgstr "Byte"
+
+#~ msgid "Source"
+#~ msgstr "Källa"
+
+#~ msgid "Seq"
+#~ msgstr "Sekvens"
+
+#~ msgid "Time"
+#~ msgstr "Tid"
+
+#~ msgid "Units"
+#~ msgstr "Enheter"
+
+#~ msgid "unknown"
+#~ msgstr "okänd"
+
+#~ msgid "Port"
+#~ msgstr "Port"
+
+#~ msgid "Service"
+#~ msgstr "Tjänst"
+
+#~ msgid "Hop"
+#~ msgstr "Hopp"
+
+#~ msgid "Hostname"
+#~ msgstr "Värdnamn"
+
+#~ msgid "IP"
+#~ msgstr "IP"
+
+#~ msgid "Time 1"
+#~ msgstr "Tid 1"
+
+#~ msgid "Time 2"
+#~ msgstr "Tid 2"
+
+#~ msgid "Enter search string"
+#~ msgstr "Ange söksträng"
+
+#~ msgid "Enter transmission string"
+#~ msgstr "Ange överföringssträng"
+
+#~ msgid "Send User Name"
+#~ msgstr "Sänd användarnamn"
+
+#~ msgid "Username taken from Authentication"
+#~ msgstr "Användarnamn har tagits från autentisering"
+
+#~ msgid "Send User Password"
+#~ msgstr "Sänd användarlösenord"
+
+#~ msgid "Password taken from Authentication"
+#~ msgstr "Lösenord har tagits från autentisering"
+
+#~ msgid "Dialog Box Input"
+#~ msgstr "Indatadialogruta"
+
+#~ msgid "Enter text to be used as a dialog message when prompted for input"
+#~ msgstr ""
+#~ "Ange text som ska användas som dialogmeddelande då indata efterfrågas"
+
+#~ msgid "open_account_window(): account=NULL with clone flag"
+#~ msgstr "open_account_window(): account=NULL med klonflagga"
+
+#~ msgid "open_account_window(): calling arguments invalid"
+#~ msgstr "open_account_window(): uppringningsargumenten ogiltiga"
+
+#~ msgid "DNS"
+#~ msgstr "DNS"
+
+#~ msgid "Script"
+#~ msgstr "Skript"
+
+#~ msgid "PPP"
+#~ msgstr "PPP"
+
+#~ msgid "Modem"
+#~ msgstr "Modem"
+
+#~ msgid "Account Name"
+#~ msgstr "Kontonamn"
+
+#~ msgid "Redial Maximum"
+#~ msgstr "Antal återuppringningar"
+
+#~ msgid "Dial Timeout (sec)"
+#~ msgstr "Tidsgräns för uppringning (s)"
+
+#~ msgid "Phone Numbers"
+#~ msgstr "Telefonnummer:"
+
+#~ msgid "#"
+#~ msgstr "Nr"
+
+#~ msgid "Add"
+#~ msgstr "Lägg till"
+
+#~ msgid "Remove"
+#~ msgstr "Ta bort"
+
+#~ msgid "PAP/CHAP"
+#~ msgstr "PAP/CHAP"
+
+#~ msgid "User Name"
+#~ msgstr "Användarnamn"
+
+#~ msgid "Remote Name"
+#~ msgstr "Fjärrnamn"
+
+#~ msgid "Hidden Password"
+#~ msgstr "Dolt lösenord"
+
+#~ msgid "Password"
+#~ msgstr "Lösenord"
+
+#~ msgid "Local IP Address"
+#~ msgstr "Lokal IP-adress"
+
+#~ msgid "Dynamic"
+#~ msgstr "Dynamiskt"
+
+#~ msgid "Static"
+#~ msgstr "Statiskt"
+
+#~ msgid "Remote IP Address"
+#~ msgstr "Fjärr-IP-adress"
+
+#~ msgid "DNS Servers"
+#~ msgstr "DNS-servrar"
+
+#~ msgid "Search Domains"
+#~ msgstr "Sökdomäner"
+
+#~ msgid "Domain Name"
+#~ msgstr "Domännamn"
+
+#~ msgid "Action"
+#~ msgstr "Åtgärd"
+
+#~ msgid "Text"
+#~ msgstr "Text"
+
+#~ msgid "Login Script"
+#~ msgstr "Inloggningsskript"
+
+#~ msgid "Add Default Route"
+#~ msgstr "Lägg till standardväg"
+
+#~ msgid "Lock Dialout Device"
+#~ msgstr "Lås uppringningsenhet"
+
+#~ msgid "Maximum Transmission Unit"
+#~ msgstr "Största överföringsenhet (MTU)"
+
+#~ msgid "Maximum Receive Unit"
+#~ msgstr "Största mottagningsenhet (MRU)"
+
+#~ msgid "Run Program After Connect"
+#~ msgstr "Kör program efter anslutning"
+
+#~ msgid "Run Program After Disconnect"
+#~ msgstr "Kör program efter frånkoppling"
+
+#~ msgid "Flow Control"
+#~ msgstr "Flödeskontroll"
+
+#~ msgid "Line Termination"
+#~ msgstr "Linjeterminering"
+
+#~ msgid "Modem Speaker Volume"
+#~ msgstr "Modemhögtalarvolym"
+
+#~ msgid " Edit Modem Commands "
+#~ msgstr " Redigera modemkommandon "
+
+#~ msgid "**PASSWORD**"
+#~ msgstr "**LÖSENORD**"
+
+#~ msgid "script_type_cb(): optionmenu data bad"
+#~ msgstr "script_type_cb(): felaktiga data för optionmenu"
+
+#~ msgid "_Debug Terminal"
+#~ msgstr "_Felsökningsterminal"
+
+#~ msgid "_New..."
+#~ msgstr "_Ny..."
+
+#~ msgid "D_uplicate..."
+#~ msgstr "D_uplicera..."
+
+#~ msgid "_Edit..."
+#~ msgstr "_Redigera..."
+
+#~ msgid "_Delete..."
+#~ msgstr "_Ta bort..."
+
+#~ msgid "_Account"
+#~ msgstr "_Konto"
+
+#~ msgid "gnome-ppp"
+#~ msgstr "gnome-ppp"
+
+#~ msgid "Dialing"
+#~ msgstr "Ringer"
+
+#~ msgid "Connected"
+#~ msgstr "Ansluten"
+
+#~ msgid "refresh_dial_app(): gtk_clist_append failed."
+#~ msgstr "refresh_dial_app(): gtk_clist_append misslyckades."
+
+#~ msgid "Cancel"
+#~ msgstr "Avbryt"
+
+#~ msgid "You must disconnect before closing."
+#~ msgstr "Du måste koppla från innan du stänger."
+
+#~ msgid "Are you sure you want to delete this account?\n"
+#~ msgstr "Är du säker på att du vill ta bort detta konto?\n"
+
+#~ msgid "The account cannot be deleted."
+#~ msgstr "Kontot kan inte tas bort."
+
+#~ msgid "The account is in use and cannot be deleted."
+#~ msgstr "Kontot används och kan inte tas bort."
+
+#~ msgid "GNOME Internet Dialer"
+#~ msgstr "GNOME Internetuppringare"
+
+#~ msgid "Raise PPP Link"
+#~ msgstr "Höj PPP-länk"
+
+#~ msgid "Offline"
+#~ msgstr "Frånkopplad"
+
+#~ msgid "Connecting..."
+#~ msgstr "Ansluter..."
+
+#~ msgid "PPP Connected"
+#~ msgstr "PPP-ansluten"
+
+#~ msgid "PPP Error!"
+#~ msgstr "PPP-fel!"
+
+#~ msgid "That account is already in use.\n"
+#~ msgstr "Det kontot används redan.\n"
+
+#~ msgid "GNOME PPP Dialer Applet"
+#~ msgstr "GNOME PPP-uppringningspanelprogram"
+
+#~ msgid ""
+#~ "An unnecessarily nice looking applet for GNOME's panel for easy control "
+#~ "of PPP network links."
+#~ msgstr ""
+#~ "Ett panelprogram för GNOME-panelen som ser onödigt trevligt ut och enkel "
+#~ "styrning av PPP-nätverkslänkar."
+
+#~ msgid "PPP Applet Properties"
+#~ msgstr "Egenskaper för PPP-panelprogram"
+
+#~ msgid "Animation"
+#~ msgstr "Animation"
+
+#~ msgid "Small"
+#~ msgstr "Liten"
+
+#~ msgid "Large"
+#~ msgstr "Stor"
+
+#~ msgid "None"
+#~ msgstr "Ingen"
+
+#~ msgid "Options"
+#~ msgstr "Alternativ"
+
+#~ msgid "Freeze Animation on Connect"
+#~ msgstr "Stanna animering vid anslutning"
+
+#~ msgid "Disconnect PPP on GNOME logout"
+#~ msgstr "Koppla från animering vid GNOME-utloggning"
+
+#~ msgid "Timer"
+#~ msgstr "Tidtagare"
+
+#~ msgid "Label"
+#~ msgstr "Etikett"
+
+#~ msgid "Tooltip"
+#~ msgstr "Verktygstips"
+
+#~ msgid "Animation Speed"
+#~ msgstr "Animationshastighet"
+
+#~ msgid "PPP Applet"
+#~ msgstr "PPP-panelprogram"
+
+#~ msgid "---NEW CONNECTION---"
+#~ msgstr "---NY ANSLUTNING---"
+
+#~ msgid "Account already connected."
+#~ msgstr "Kontot är redan anslutet."
+
+#~ msgid "Starting PPP Connection."
+#~ msgstr "Startar PPP-anslutning."
+
+#~ msgid "You don't have permission to execute pppd."
+#~ msgstr "Du har inte de nödvändiga rättigheterna för att köra pppd."
+
+#~ msgid "The modem is in use by another program."
+#~ msgstr "Modemet används av ett annat program."
+
+#~ msgid "Running pppd."
+#~ msgstr "Kör pppd."
+
+#~ msgid "Closing connection."
+#~ msgstr "Stänger anslutning."
+
+#~ msgid "The pppd program failed to run gnome-ppp-chat."
+#~ msgstr "Programmet pppd kunde inte starta gnome-ppp-chat."
+
+#~ msgid "The modem could not be hung up."
+#~ msgstr "Modemet kunde inte lägga på."
+
+#~ msgid "Initalizing modem."
+#~ msgstr "Initierar modem."
+
+#~ msgid "Your modem is not responding to initalization."
+#~ msgstr "Ditt modem svarar inte på initieringen."
+
+#~ msgid "The command to set the volume on your modem's speaker failed."
+#~ msgstr ""
+#~ "Kommandot för att ställa in volymen på ditt modems högtalare misslyckades."
+
+#~ msgid "No answer after maximum number of re-dial attempts."
+#~ msgstr "Inget svar efter största antalet återuppringningsförsök."
+
+#~ msgid "No phone numbers specified for this account."
+#~ msgstr "Inga telefonnummer har angivits för detta konto."
+
+#~ msgid "Dialing."
+#~ msgstr "Ringer upp."
+
+#~ msgid "Dialing timeout."
+#~ msgstr "Tidsgränsen för uppringning passerades."
+
+#~ msgid "No dialtone."
+#~ msgstr "Ingen kopplingston."
+
+#~ msgid "Number busy."
+#~ msgstr "Numret är upptaget."
+
+#~ msgid "Ring, but no answer."
+#~ msgstr "Ringer, men inget svar."
+
+#~ msgid "Connection failure, reason unknown."
+#~ msgstr "Anslutningen misslyckades på grund av okänd orsak."
+
+#~ msgid "Connected."
+#~ msgstr "Ansluten."
+
+#~ msgid "The modem lost connection with remote host."
+#~ msgstr "Modemet tappade förbindelsen med fjärrvärden."
+
+#~ msgid "Running Script."
+#~ msgstr "Kör skript."
+
+#~ msgid "Script Complete."
+#~ msgstr "Skript klart."
+
+#~ msgid "PPP connection established."
+#~ msgstr "PPP-anslutning har skapats."
+
+#~ msgid "Failed to establish a PPP connection."
+#~ msgstr "Misslyckades med att skapa en PPP-anslutning."
+
+#~ msgid "The pppd daemon died unexpectedly."
+#~ msgstr "pppd-demonen dog oväntat."
+
+#~ msgid "open_modem_window(): account=NULL"
+#~ msgstr "open_modem_window(): account=NULL"
+
+#~ msgid "Commands"
+#~ msgstr "Kommandon"
+
+#~ msgid "Responses"
+#~ msgstr "Svar"
+
+#~ msgid "Initialization"
+#~ msgstr "Initiering"
+
+#~ msgid "Hangup"
+#~ msgstr "Lägg på"
+
+#~ msgid "Volume Mute"
+#~ msgstr "Tysta volym"
+
+#~ msgid "Volume Low"
+#~ msgstr "Låg volym"
+
+#~ msgid "Volume High"
+#~ msgstr "Hög volym"
+
+#~ msgid "Busy"
+#~ msgstr "Upptagen"
+
+#~ msgid "No Answer"
+#~ msgstr "Inget svar"
+
+#~ msgid "No Carrier"
+#~ msgstr "Ingen bärvåg"
+
+#~ msgid "No Dialtone"
+#~ msgstr "Ingen kopplingston"
+
+#~ msgid "No host specified"
+#~ msgstr "Inget värdnamn angivet"
+
+#~ msgid "A user name is required for SSH"
+#~ msgstr "Ett användarnamn krävs för SSH"
+
+#~ msgid "Method"
+#~ msgstr "Metod"
+
+#~ msgid "User"
+#~ msgstr "Användare"
+
+#~ msgid "Terminal Window"
+#~ msgstr "Terminalfönster"
+
+#~ msgid "Width"
+#~ msgstr "Bredd"
+
+#~ msgid "Height"
+#~ msgstr "Höjd"
+
+#~ msgid "GNOME Remote Shell"
+#~ msgstr "GNOME-fjärrskal"
+
+#~ msgid "Could not load UI for entry configuration dialog"
+#~ msgstr "Kunde inte läsa in användargränssnitt för postkonfigurationsdialog"
+
+#~ msgid "Entry name"
+#~ msgstr "Postnamn"
+
+#~ msgid "Local path"
+#~ msgstr "Lokal sökväg"
+
+#~ msgid "Preserve group"
+#~ msgstr "Bevara grupp"
+
+#~ msgid "Preserve permissions"
+#~ msgstr "Bevara rättigheter"
+
+#~ msgid "Preserve times"
+#~ msgstr "Bevara tider"
+
+#~ msgid "Recurse into directories"
+#~ msgstr "Gå rekursivt in i kataloger"
+
+#~ msgid "Remote host"
+#~ msgstr "Fjärrvärd"
+
+#~ msgid "Remote path"
+#~ msgstr "Fjärrsökväg"
+
+#~ msgid "Synchronization options"
+#~ msgstr "Synkroniseringsalternativ"
+
+#~ msgid "Update only (don't overwrite newer files)"
+#~ msgstr "Uppdatera endast (skriv inte över nyare filer)"
+
+#~ msgid "Use relative path names"
+#~ msgstr "Använd relativa sökvägar"
+
+#~ msgid "Use rsync"
+#~ msgstr "Använd rsync"
+
+#~ msgid "Use unison"
+#~ msgstr "Använd unison"
+
+#~ msgid "rsync"
+#~ msgstr "rsync"
+
+# Osäker
+#~ msgid "unison"
+#~ msgstr "unison"
+
+#~ msgid "Local"
+#~ msgstr "Lokal"
+
+#~ msgid "Remote"
+#~ msgstr "Fjärr"
+
+#~ msgid "Last sync"
+#~ msgstr "Senaste synkronisering"
+
+#~ msgid "_Synchronize"
+#~ msgstr "_Synkronisera"
+
+#~ msgid "New entry..."
+#~ msgstr "Ny post..."
+
+#~ msgid "Edit..."
+#~ msgstr "Redigera..."
+
+#~ msgid "Synchronize"
+#~ msgstr "Synkronisera"
+
+#~ msgid "Gnome Synchronize"
+#~ msgstr "Gnome-synkronisering"
+
+#~ msgid "The GNOME file synchronization program."
+#~ msgstr "GNOME-filsynkroniseringsprogrammet."
+
+#~ msgid "New"
+#~ msgstr "Ny"
+
+#~ msgid "Create new synchronization entry"
+#~ msgstr "Skapa ny synkroniseringspost"
+
+#~ msgid "Start synchronization for selected entries"
+#~ msgstr "Starta synkronisering för markerade poster"
+
+#~ msgid "Edit"
+#~ msgstr "Redigera"
+
+#~ msgid "Edit selected entry"
+#~ msgstr "Redigera markerad post"
+
+#~ msgid "Delete"
+#~ msgstr "Ta bort"
+
+#~ msgid "Delete selected entries"
+#~ msgstr "Ta bort markerade poster"
+
+#~ msgid "_Compress"
+#~ msgstr "_Komprimera"
+
+#~ msgid "<b>About GNOME Remote Desktop</b>"
+#~ msgstr "<b>Om GNOME-fjärrskrivbord</b>"
+
+#~ msgid "About"
+#~ msgstr "Om"
+
+#~ msgid "Desktop"
+#~ msgstr "Skrivbord"
+
+#~ msgid ""
+#~ "GNOME Remote Desktop\n"
+#~ "By Rodrigo Moya <rodrigo@gnome-db.org>\n"
+#~ "Copyright 2002. All Rights Reserved.\n"
+#~ "\n"
+#~ "GNOME Remote Desktop lets you connect to remote desktops by using many "
+#~ "different available protocols, such as UNIX's X11 or VNC.\n"
+#~ "\n"
+#~ "This program is free software; you can redistribute it and/or modify it "
+#~ "under the terms of the GNU General Public License as published by the "
+#~ "Free Software Foundation; either version 2 of the License, or (at your "
+#~ "option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program; if not, write to the Free Software Foundation, Inc., "
+#~ "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
+#~ msgstr ""
+#~ "GNOME-fjärrskrivbord\n"
+#~ "Av Rodrigo Moya <rodrigo@gnome-db.org>\n"
+#~ "Copyright 2002. Alla rättigheter förbehållna.\n"
+#~ "\n"
+#~ "GNOME-fjärrskrivbord låter dig ansluta till fjärrskrivbord genom många "
+#~ "olika tillgängliga protokoll, som till exempel UNIX X11 eller VNC.\n"
+#~ "\n"
+#~ "Följande text är en informell översättning som enbart\n"
+#~ "tillhandahålls i informativt syfte. För alla juridiska\n"
+#~ "tolkningar gäller den engelska originaltexten.\n"
+#~ "\n"
+#~ "Detta program är fri programvara. Du kan distribuera det och/eller "
+#~ "modifiera det under villkoren i GNU General Public License, publicerad av "
+#~ "Free Software Foundation, version 2 av licensen, eller (om du så önskar) "
+#~ "någon senare version.\n"
+#~ "\n"
+#~ "Du bör ha fått en kopia av GNU General Public License tillsammans med "
+#~ "detta program; om inte bör du skriva till Free Software Foundation, Inc., "
+#~ "59 Temple Place, Suite 330, Boston, MA  02111-1307 USA.\n"
+#~ "\n"
+#~ "Detta program distribueras i hopp om att det ska vara användbart, men "
+#~ "UTAN NÅGON GARANTI, även utan underförstådd garanti vid KÖP eller "
+#~ "LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL. Se GNU General Public License för "
+#~ "ytterligare information.\n"
+#~ "\n"
+#~ "This program is free software; you can redistribute it and/or modify it "
+#~ "under the terms of the GNU General Public License as published by the "
+#~ "Free Software Foundation; either version 2 of the License, or (at your "
+#~ "option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program; if not, write to the Free Software Foundation, Inc., "
+#~ "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n"
+
+#~ msgid "Item"
+#~ msgstr "Objekt"
+
+#~ msgid "_File"
+#~ msgstr "_Arkiv"
+
+#~ msgid "_Edit"
+#~ msgstr "_Redigera"
+
+#~ msgid "Properties"
+#~ msgstr "Egenskaper"
+
+#~ msgid "File"
+#~ msgstr "Fil"
+
+#~ msgid "About GNOME Remote Desktop"
+#~ msgstr "Om GNOME-fjärrskrivbord"
+
+#~ msgid "Connection settings"
+#~ msgstr "Anslutningsinställningar"
+
+#~ msgid "Desktop settings"
+#~ msgstr "Skrivbordsinställningar"
+
+# Osäker
+#~ msgid "Port Scan"
+#~ msgstr "Portskanna"
+
+#~ msgid "Transmission errors"
+#~ msgstr "Överföringsfel"
+
+#~ msgid "Sequence"
+#~ msgstr "Sekvens"
+
+#~ msgid "Unit"
+#~ msgstr "Enhet"
+
+#~ msgid "Open"
+#~ msgstr "Öppen"
+
+#~ msgid "PPP Error"
+#~ msgstr "PPP-fel"
+
+#~ msgid "--- NEW CONNECTION ---"
+#~ msgstr "--- NY ANSLUTNING ---"
+
+#~ msgid "Command"
+#~ msgstr "Kommando"
+
+#~ msgid "Response"
+#~ msgstr "Svar"
+
+#~ msgid "New..."
+#~ msgstr "Ny..."
+
+#~ msgid "_New"
+#~ msgstr "_Ny"
+
+#~ msgid "_Delete"
+#~ msgstr "_Ta bort"
+
+#~ msgid "Delete..."
+#~ msgstr "Ta bort..."
+
+#~ msgid "GNOME Talk"
+#~ msgstr "GNOME Talk"
+
+#~ msgid "The GNOME talk program."
+#~ msgstr "GNOME-samtalsprogrammet."
+
+#~ msgid "_Terminate"
+#~ msgstr "_Avsluta"
+
+#~ msgid "Terminates this talk session"
+#~ msgstr "Avslutar denna samtalsession"
+
+#~ msgid "Info about this program"
+#~ msgstr "Information om detta program"
+
+#~ msgid "_Talk"
+#~ msgstr "_Samtala"
+
+#~ msgid "Talking to "
+#~ msgstr "Samtalar med "
+
+#~ msgid "Talk"
+#~ msgstr "Samtala"
+
+#~ msgid "Talk to"
+#~ msgstr "Samtala med"
+
+#~ msgid "Specify TTY"
+#~ msgstr "Ange TTY"
+
+#~ msgid "Failed to find the address for this host"
+#~ msgstr "Kunde inte hitta adressen för den här värden"
+
+#~ msgid "Failed to find the address for the remote host"
+#~ msgstr "Kunde inte hitta adressen för den här fjärrvärden"
+
+#~ msgid "Talk progress"
+#~ msgstr "Samtal pågår"
+
+#~ msgid "could not create socket"
+#~ msgstr "kunde inte skapa uttag (socket)"
+
+#~ msgid "init_control_socket: could not bind()"
+#~ msgstr "init_control_socket: kunde inte utföra bind()"
+
+#~ msgid "getsockname() failed"
+#~ msgstr "getsockname() misslyckades"
+
+#~ msgid "could not bind ()"
+#~ msgstr "kunde inte utföra bind ()"
+
+#~ msgid "Error sending"
+#~ msgstr "Fel vid sändning"
+
+#~ msgid "Error when reading from talk daemon"
+#~ msgstr "Fel vid läsning från talk-demonen"
+
+#~ msgid "Error trying to listen for caller"
+#~ msgstr "Fel vid försök att lyssna efter inkommande samtal"
+
+#~ msgid "Trying to connect to your party's talk daemon"
+#~ msgstr "Försöker ansluta till din motparts talk-demon"
+
+#~ msgid "Lost connection"
+#~ msgstr "Tappade förbindelsen"
+
+#~ msgid "Unable to connect with your party"
+#~ msgstr "Kunde inte ansluta till din motpart"
+
+#~ msgid "Waiting for your party to respond"
+#~ msgstr "Väntar på att din motpart ska svara"
+
+#~ msgid "response uses an invalid network address"
+#~ msgstr "svaret använder en ogiltig nätadress"
+
+#~ msgid "CANCEL CALLBACK:Answer:%d\n"
+#~ msgstr "AVBRYT MOTRINGNING:Svar:%d\n"
+
+#~ msgid "Your party is not logged on"
+#~ msgstr "Din motpart är inte inloggad"
+
+#~ msgid "Target machine is too confused to talk to us"
+#~ msgstr "Måldatorn är för förvirrad för att kunna prata med oss"
+
+#~ msgid "Target machine does not recognize us"
+#~ msgstr "Måldatorn känner inte igen oss"
+
+#~ msgid "Your party is refusing messages"
+#~ msgstr "Din motpart vägrar att ta emot meddelanden"
+
+#~ msgid "Target machine can not handle remote talk"
+#~ msgstr "Måldatorn kan inte hantera fjärrsamtal"
+
+#~ msgid "Target machine indicates protocol mismatch"
+#~ msgstr "Måldatorn indikerar att protokollen inte stämmer överens"
+
+#~ msgid "Target machine indicates protocol botch (addr)"
+#~ msgstr "Måldatorn indikerar ett protokollfel (addr)"
+
+#~ msgid "Target machine indicates protocol botch (ctl_addr)"
+#~ msgstr "Måldatorn indikerar ett protokollfel (ctl_addr)"
+
+#~ msgid "Error while writing to remote file"
+#~ msgstr "Fel vid skrivning till fjärrfil"
+
+#~ msgid "Error while writing to local file"
+#~ msgstr "Fel vid skrivning till lokal fil"
+
+#~ msgid "Error while writing to database file"
+#~ msgstr "Fel vid skrivning till databasfil"
+
+#~ msgid "Copying from local to remote"
+#~ msgstr "Kopierar från lokal till fjärr"
+
+#~ msgid "Copying from remote to local"
+#~ msgstr "Kopierar från fjärr till lokal"
+
+#~ msgid "Couldn't open file for writing: "
+#~ msgstr "Kunde inte öppna fil för skrivning: "
+
+#~ msgid "Error while reading database file"
+#~ msgstr "Fel vid läsning från databasfil"
+
+#~ msgid "Initial entry"
+#~ msgstr "Ursprunglig post"
+
+#~ msgid "Retry"
+#~ msgstr "Försök igen"
+
+#~ msgid "Immediately synchronize with remote"
+#~ msgstr "Synkronisera omedelbart med fjärrkatalog"
+
+#~ msgid "Error while synchronizing database file"
+#~ msgstr "Fel vid synkronisering av databasfil"
+
+#~ msgid "Browse..."
+#~ msgstr "Bläddra..."
+
+#~ msgid "New entry"
+#~ msgstr "Ny post"
+
+#~ msgid "Both files modified since last synchronization"
+#~ msgstr "Båda filerna har ändrats sedan senaste synkroniseringen"
+
+#~ msgid "Error while reading local file"
+#~ msgstr "Fel vid läsning av lokal fil"
+
+#~ msgid "Error while reading remote file"
+#~ msgstr "Fel vid läsning av fjärrfil"
+
+#~ msgid "Couldn't open remote file for reading"
+#~ msgstr "Kunde inte öppna fjärrfilen för läsning"
+
+#~ msgid "Couldn't open local file for reading"
+#~ msgstr "Kunde inte öppna den lokala filen för läsning"
+
+#~ msgid "Both local and remote files are missing"
+#~ msgstr "Både den lokala filen och fjärrfilen saknas"

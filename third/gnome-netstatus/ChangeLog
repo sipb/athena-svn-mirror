@@ -1,0 +1,1282 @@
+2004-09-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.8.0.
+
+2004-09-08  Abel Cheung  <maddog@linux.org.hk>
+
+	* configure.in: Added zh_TW to ALL_LINGUAS.
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.93.
+
+==================== 2.7.92 ====================
+
+2004-08-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.92.
+
+2004-08-28  Akagic Amila  <bono@linux.org.ba>
+
+	* configure.in: Added 'bs' to ALL_LINGUAS.
+
+2004-08-27  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am: add MAINTAINERS to EXTRA_DIST.
+
+2004-08-25  Iñaki Larañaga  <dooteo@euskalgnu.org>
+
+	* configure.in:  Added "eu" (Basque) to ALL_LINGUAS.
+
+2004-08-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add nb to ALL_LINGUAS.
+
+2004-08-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.92.
+
+==================== 2.7.91 ====================
+
+2004-08-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.91.
+
+2004-08-09  Ankit Patel <ankit@redhat.com>
+	
+	* gu.po: Updated Gujarati translation
+	
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.91.
+
+==================== 2.7.90 ====================
+
+2004-08-03  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.90.
+
+2004-07-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-sysdeps.c:
+	(netstatus_sysdeps_read_iface_wireless_details):
+	If /proc/net/wireless doesn't exist assume the
+	interface isn't a wireless device rather than
+	giving an error.
+
+2004-07-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-iface.c,
+	  src/netstatus-util.h,
+	  src/netstatus-sysdeps.[ch]: use unsigned longs
+	everywhere to fix integer overflow. Bug #148747.
+
+2004-07-22  Calum Benson  <calum.benson@sun.com>
+
+	Trimmed signal icons of their padding at Mark's request.
+
+	* icons/gnome-netstatus-0-24.png:
+	* icons/gnome-netstatus-25-49.png:
+	* icons/gnome-netstatus-50-74.png:
+	* icons/gnome-netstatus-75-100.png:
+
+2004-07-21  Calum Benson  <calum.benson@sun.com>
+
+	Added some sexier wireless signal strength icons.
+
+	* icons/gnome-netstatus-0-24.png:
+	* icons/gnome-netstatus-25-49.png:
+	* icons/gnome-netstatus-50-74.png:
+	* icons/gnome-netstatus-75-100.png:
+
+2004-07-13  Mohammad DAMT  <mdamt@Bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation done by Ahmad Riza H Nst <ari@160c.afraid.org>
+	* configure.in: Added "id" to ALL_LINGUAS
+
+2004-07-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.4.
+
+==================== 2.7.3.1 ====================
+
+2004-07-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.3.1
+
+2004-07-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-iface.c: fix build breakage with --enable-debug.
+
+2004-07-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.4.
+
+==================== 2.7.3 ====================
+
+2004-07-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.3.
+
+2004-07-05  Mark McLoughlin  <mark@skynet.ie>
+
+	Make the interface statistics update even when the
+	interface state isn't changing - e.g. if we're
+	constantly sending/receiving the stats weren't
+	being updated.
+	
+	* src/netstatus-util.[ch]:
+	(netstatus_stats_copy),	(netstatus_stats_free),
+	(netstatus_stats_get_type): Add a NetstatusStats boxed type.
+
+	* src/netstatus-iface.[ch]:
+	(netstatus_iface_class_init),
+	(netstatus_iface_get_property): add a readonly "stats" property.
+	(netstatus_iface_get_statistics): merge get_byte_stats() and
+	get_packet_stats() into this.
+	(netstatus_iface_poll_state): notify when stats change.
+	
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_update_activity): upd.
+	(netstatus_dialog_iface_state_changed): don't update the
+	stats here.
+	(netstatus_dialog_iface_stats_changed): update them from here
+	instead.
+	(netstatus_dialog_new): connect to the iface's notify::stats
+	signal.
+
+2004-06-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-dialog.c: (print_bytes_string): for once
+	and for all print out the correct figures for bytes
+	sent and received.
+
+2004-06-11  Dennis Smit  <ds@nerds-incorporated.org>
+
+        * src/GNOME_NetstatusApplet.xml:  Remove from
+        ellipsizing per HIG. Fixes gnome-netstatus part of
+        bug #133782.
+
+        Patch by: Dennis Cranston  <dennis_cranston at yahoo com>
+	
+2004-06-06  Alexander Shopov <ash@contact.bg>
+
+	* configure.in: Added "bg" (Bulgarian) to ALL_LINGUAS
+
+2004-05-31  Dinesh Nadarajah <dinesh_list@sbcglobal.net>
+
+        * ta.po: Added/Updated Tamil Translation.
+
+2004-05-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: post-release bump to 2.7.2.
+
+==================== 2.7.1 ====================
+
+2004-05-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.7.1:
+
+2004-05-28  Mark McLoughlin  <mark@skynet.ie>
+
+	And now in kinda blueish rather than nasty 
+	yellowish/greenish !
+
+	* icons/gnome-netstatus-rx.png,
+	  icons/gnome-netstatus-tx.png,
+	  icons/gnome-netstatus-txrx.png: new color scheme
+	from Piero <piero@saputello.net>
+
+2004-05-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-dialog.c: (print_bytes_string): oopsie,
+	you'd think I'd know about operator precedence at this
+	stage.
+
+2004-05-26  Mark McLoughlin  <mark@skynet.ie>
+
+	Add support for Gb. For Tb, Pb etc. we'd need to
+	use long long all over the place and I couldn't
+	be bothered right now.
+
+	* src/netstatus-dialog.c: (print_bytes_string):
+	Handle gigabytes (> 2 ^ 30)
+
+2004-05-26  Mark McLoughlin  <mark@skynet.ie>
+
+	Fixes the icon in the properties dialog not appearing.
+
+	* src/netstatus-icon.c: (netstatus_icon_size_allocate):
+	Pass an allocation relative to our window, not the parents
+	window, to the relevant GtkBox allocation function.
+
+2004-05-14  Muktha  <muktha.narayan@wipro.com>
+
+	* src/GNOME_NetstatusApplet.xml:
+	* src/netstatus-applet.c: (netstatus_applet_display_help): show help
+	in the context menu.
+	* src/netstatus-dialog.c: (netstatus_dialog_response): invoke the
+	correct help page. Bug #141267.
+
+2004-05-10  Laszlo Peter  <laca@sun.com>
+
+	* src/netstatus-iface.c: include socket.h to fix build on Solaris
+
+2004-04-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-dialog.c: (print_packets_string): use ngettext
+	to handle plurals correctly. Bug #135077. Solution pointed out
+	by Christian Rose.
+
+2004-04-01  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-dialog.c: (netstatus_dialog_set_icon): lookup the
+	icon according to the icon theme rather than looking for it in
+	the old location where it doesn't exist anymore.
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Davyd Madeley <davyd@ucc.asn.au> in bug #137895.
+
+	* src/netstatus-sysdeps.c:
+	(netstatus_sysdeps_read_iface_statistics),
+	(netstatus_sysdeps_read_iface_wireless_details): flush the
+	stream's input buffer since we don't read to EOF anymore.
+
+2004-03-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-icon.c: (netstatus_icon_size_allocate):
+	Kill debug spew.
+
+2004-03-29  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Joe Marcus Clarke in bug #138371.
+
+	* src/netstatus-sysdeps.c:
+	(netstatus_sysdeps_read_iface_statistics): don't shutdown
+	the iochannel after unreffing it.
+
+2004-03-26  Andras Timar  <timar@gnome.hu>
+
+	* configure.in: Added 'hu' to ALL_LINGUAS.
+
+2004-03-23  Åsmund Skjæveland  <aasmunds@fys.uio.no>
+
+	* configure.in: Added 'nn' to ALL_LINGUAS.
+	* po/nn.po: Added Norwegian Nynorsk translation.
+
+2004-03-22  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch from Paolo Borelli <pborelli@katamail.com>
+	in bug #137920.
+
+	* src/netstatus-icon.c:
+	(netstatus_icon_destroy): destroy the error dialog.
+	(netstatus_icon_invoke): Only display one copy of the error
+	dialog at a time.
+
+2004-03-21  Mugurel Tudor  <mugurelu@go.ro>
+
+	* configure.in: Added "ro" to ALL_LINGUAS
+
+2004-03-20  Gareth Owen  <gowen72@yahoo.com>
+
+	* configure.in: Added en_GB to ALL_LINGUAS
+
+2004-03-19  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Julio M. Merino Vidal <jmmv@menta.net> in bug #137191.
+
+	* src/netstatus-iface.c: include <sys/param.h>. Fixes build
+	on NetBSD.
+
+2004-03-18  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "hi" for Hindi to ALL_LINGUAS.
+
+2004-03-17  Mark McLoughlin  <mark@skynet.ie>
+
+	Add support for displaying the wireless signal strength based
+	on a UI design from Calum Benson.
+
+	* src/netstatus-dialog.[ch]: impl a new "Signal Strength" section
+	with a progressbar showing the signal strength.
+
+	* src/netstatus-icon.[ch]: show a little signal strength bar
+	beside the normal icon.
+	
+	* src/netstatus-iface.[ch]: add support for monitoring the signal
+	strength and whether the device is a wireless one.
+	
+	* src/netstatus-sysdeps.[ch]:
+	(parse_wireless_header), (get_proc_net_wireless_fh),
+	(netstatus_sysdeps_read_iface_wireless_details): impl. support
+	for parsing /proc/net/wireless
+	
+	* src/netstatus-util.h: add wireless parsing error code.
+	
+	* src/gnome-netstatus.glade: add a signal strength section.
+	
+	* icons/gnome-netstatus-0-24.png,
+	  icons/gnome-netstatus-25-49.png,
+	  icons/gnome-netstatus-50-74.png,
+	  icons/gnome-netstatus-75-100.png: Add signal strength icons
+	from Calum.
+
+2004-03-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: bump version to 2.7.1.
+
+==================== 2.5.92 ====================
+
+2004-03-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.92.
+
+2004-03-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* help/*/Makefile.am: do the same link-icons-at-install-time
+	hack we do for the C docs to avoid shipping 12 identical
+	copies of the icons.
+	
+	* help/*/figures/*.png: remove.
+	
+	* configure.in: add zh_HK
+	
+	* help/Makefile.am: add zh_HK.
+
+2004-03-15  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in, help/Makefile.am: Add localized documentation to
+	the build.
+	* help/*: Add localized documentation for de, fr, it, ja, ko, sv,
+	zh_CN, zh_HK and zh_TW.
+
+2004-03-14  Thomas Vander Stichele <thomas at apestaart dot org>
+
+	* configure.in: use ACLOCAL_AMFLAGS to make maintainer builds work
+
+2004-03-14 Sayamindu Dasgupta <sayamindu@clai.net>
+
+	* configure.in: Add 'bn' to ALL_LINGUAS.
+
+2004-03-13 Maxim Dziumanenko  <mvd@mylinux.com.ua>
+
+	* configure.in: Add 'uk' to ALL_LINGUAS.
+
+2004-03-11  Dafydd Harries  <daf@muse.19inch.net>
+
+	* configure.in: Add 'cy' to ALL_LINGUAS.
+
+2004-03-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added forgotten 'no' to ALL_LINGUAS.
+
+2004-03-10  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* configure.in: Added pt_BR to ALL_LINGUAS.
+
+==================== 2.5.91 ====================
+
+2004-03-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.5.91.
+
+2004-03-08  Mark McLoughlin  <mark@skynet.ie>
+
+	Look up the icons according to the icon theme.
+
+	* icons/Makefile.am: install the icons into the hicolor
+	icon theme.
+	
+	* src/netstatus-icon.c:
+	(netstatus_icon_theme_changed),	(netstatus_icon_get_icon_theme),
+	(netstatus_icon_lookup_icon_theme),(netstatus_icon_init_pixbuf),
+	(netstatus_icon_init_pixbufs): lookup the icons according to
+	the icon theme.
+
+	* help/C/Makefile.am: update for the new location of the icons.
+	
+2004-03-07  Å½ygimantas BeruÄka  <uid0@akl.lt>
+
+	* configure.in: Added "lt" (Lithuanian) to ALL_LINGUAS.
+
+2004-03-06  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added "th" (Thai) to ALL_LINGUAS.
+
+2004-03-04  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-03  Mark McLoughlin  <mark@skynet.ie>
+
+	Include sys/sockio.h for the socket ioctls on system which
+	have the header. Patch from Nial Power <niall.power@sun.com>.
+
+	* configure.in: check for sys/sockio.h.
+	
+	* src/netstatus-iface.c: include it if its found.
+
+2004-02-26  Ole Laursen  <olau@hardworking.dk>
+
+	* src/gnome-netstatus.glade: Removed the dummy title "dialog1"
+	network_status_dialog so that it won't show up in .po files.
+
+2004-02-24  Jordi Mallach  <jordi@sindominio.net>
+
+	* configure.in (ALL_LINGUAS): Added "ca" (Catalan).
+
+2004-02-24  Ole Laursen  <olau@hardworking.dk>
+
+	* configure.in: Added "da" (Danish) to ALL_LINGUAS.
+
+2004-02-21  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "en_CA" to ALL_LINGUAS.
+
+2004-02-19  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix last little FreeBSD problem pointed out by
+	Joe Marcus Clarke.
+
+	* src/netstatus-sysdeps.c:
+	(netstatus_sysdeps_read_iface_statistics): Fixup
+	command line.
+
+2004-02-18  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* configure.in: Added "fi" (Finnish) to ALL_LINGUAS.
+
+2004-02-18  Mark McLoughlin  <mark@skynet.ie>
+
+	* help/C/Makefile.am: install symlinks to the actual
+	icons rather than installing a copy of them.
+	
+	* help/C/figures/gnome-netstatus-disconn.png,
+	  help/C/figures/gnome-netstatus-error.png,
+	  help/C/figures/gnome-netstatus-idle.png,
+	  help/C/figures/gnome-netstatus-rx.png,
+	  help/C/figures/gnome-netstatus-tx.png,
+	  help/C/figures/gnome-netstatus-txrx.png:
+	Remove these.
+
+==================== 0.16 ====================
+
+2004-02-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.16.
+
+2004-02-16  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-icon.c:
+	(netstatus_icon_get_default_pixbuf): warning fix.
+
+2004-02-11  Arafat Medini  <lumina@silverpen.de>
+                                                                                
+        * configure.in: Added Arabic locale ar to ALL_LINGUAS.
+                                                                                
+==================== 0.15 ====================
+
+2004-02-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.15.
+
+2004-02-11  Mark McLoughlin  <mark@skynet.ie>
+
+	Based on a patch from Shakti Sen in bug #126960.
+
+	* src/netstatus-dialog.c: (netstatus_dialog_response): Hook
+	up the help button to the help docs.
+	
+	* src/Makefile.am: add the standard domain file locations
+	for gnome_program_init to pick up.
+	
+2004-02-11  Mark McLoughlin  <mark@skynet.ie>
+	
+	* Makefile.am: build help dir.
+	
+	* autogen.sh: use common docs build.
+	
+	* configure.in: require libgnomeui 2.5.2 for multiscreen
+	help support. Delete stale screen-exec stuff. Generate
+	help Makefiles.
+	
+	* help/C/Makefile.am: build the docs.
+
+2004-02-09 Breda McColgan <breda.mccolgan@sun.com>
+
+	* help: Created for GNOME 2.6.
+	* help/C: Created for GNOME 2.6.
+	* help/C/gnome-netstatus.xml: Created for GNOME 2.6. Issued for technical review.
+	* help/C/gnome-netstatus-C.omf: Created for GNOME 2.6.
+	* help/C/legal.xml: Created for GNOME 2.6.
+	* help/C/l10n.txt: Created for GNOME 2.6.
+	* help/C/figures: Created for GNOME 2.6.
+	* help/C/figures/gnome-netstatus-disconn.png: Created for GNOME 2.6.
+	* help/C/figures/gnome-netstatus-error.png: Created for GNOME 2.6.
+	* help/C/figures/gnome-netstatus-idle.png: Created for GNOME 2.6.
+	* help/C/figures/gnome-netstatus-rx.png: Created for GNOME 2.6.
+	* help/C/figures/gnome-netstatus-tx.png: Created for GNOME 2.6.
+	* help/C/figures/gnome-netstatus-txrx.png: Created for GNOME 2.6.
+
+2004-02-06  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" (Croatian) to ALL_LINGUAS.
+
+2004-02-04 Alastair McKinstry <mckinstry@computer.org>
+
+	* configure.in: Added "ga" (Irish) to ALL_LINGUAS.
+
+==================== 0.14 ====================
+
+2004-02-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.14.
+
+2004-02-01  Marcel Telka  <marcel@telka.sk>
+
+	* configure.in (ALL_LINGUAS): Added sk.
+
+2004-01-23  Changwoo Ryu  <cwryu@debian.org>
+
+	* configure.in: Added "ko" to ALL_LINGUAS.
+
+2004-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+	Another FreeBSD fix based on a patch from Joe in bug #128706.
+
+	* src/netstatus-sysdeps.c:
+	(parse_header),
+	(netstatus_sysdeps_read_iface_statistics): Add implementation
+	which uses netstat to get the transmitted/received statistics
+	on FreeBSD.
+
+2004-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+	Another FreeBSD fix based on a patch from Joe in bug #128706.
+
+	* configure.in: add a check for sockaddr->sa_len.
+	Also, fix usage of AC_DEFINE so we don't need acconfig.h.
+	
+	* acconfig.h: remove.
+	
+	* src/netstatus-iface.c: (netstatus_list_interface_names):
+	Change the way we loop over the interfaces returned from
+	SIOCGIFCONF so that we handle variable length sockaddrs.
+	
+	* src/netstatus-util.[ch]: (netstatus_list_insert_unique):
+	Utility function.
+
+2004-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-dialog.c: (netstatus_dialog_set_iface_name):
+	Don't set an empty interface name while the entry is being
+	edited.
+	
+2004-01-20  Mark McLoughlin  <mark@skynet.ie>
+	
+	FreeBSD fix from Joe Marcus Clarke <marcus@freebsd.org>
+	in bug #128706.
+
+	* src/netstatus-iface.c: (netstatus_iface_get_hw_details):
+	Don't use SIOCGIFHWADDR if it doesn't exist.
+
+2004-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+	FreeBSD fix from Joe Marcus Clarke <marcus@freebsd.org>
+	in bug #128706.
+
+	* src/netstatus-iface.c: (netstatus_iface_get_inet4_details):
+	Use ifreq->ifr_addr with SIOCGIFNETMASK instead of ifreq->ifr_netmask.
+
+2004-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: kill cut-n-paste Makefiles.
+
+2004-01-17  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2004-01-15  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* src/gnome-netstatus.glade:
+	More HIG work --  add missing mnemonic and adjust widget padding.
+
+2004-01-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: require gtk+ >= 2.3.1. Actually requires
+	gtk+ HEAD ...
+	
+	* src/netstatus-dialog.c: (netstatus_iface_configure):
+	Use gdk_spawn functions instead of the libegg functions.
+	
+	* src/Makefile.am, Makefile.am: don't build cut-n-paste.
+	
+	* cut-n-paste/screen-exec/*: remove.
+
+==================== 0.13 ====================
+
+2004-01-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.13.
+
+2004-01-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Dennis Cranston in bug #129762.
+
+	* src/netstatus-dialog.c: Add support for Fedora's
+	system-control-network.
+
+2003-12-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/gnome-netstatus.glade: tweak the device details a little
+	bit based on feedback from Breda and Calum. The header is now
+	"Network Device" and the actually device type is specified in
+	the section.
+	
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_update_device_support),
+	(netstatus_dialog_setup_device_support): update.
+	
+	* src/netstatus-iface.c: Remove the "Device" bit from all
+	the hardware types again.
+
+2003-12-04  Sanlig Badral  <badral@openmn.org>
+
+	* configure.in: Added Mongolian "mn" to ALL_LINGUAS.
+	
+2003-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.12.
+
+2003-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Extend the configuration tool patch to allow the preferred
+	config tool to be configured through GConf. Also add support
+	for redhat-config-network and multi-screen.
+
+	* src/netstatus.schemas.in: add the global "config_tool" key.
+	
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_destroy): free up stuff.
+	(netstatus_dialog_check_config_tool): check that the tool
+	exists.
+	(netstatus_dialog_config_tool_notify): handle changes in
+	the config_tool key.
+	(netstatus_dialog_detect_configuration_tool): try the configured
+	tool and failing that try the hardcoded tools. Support for
+	gnome-system-tools and redhat-config-network now.
+	(netstatus_iface_configure): impl substituting %i with the
+	interface name, better error handling and mutli-screen launching
+	(netstatus_dialog_setup_configure_button): update.
+	
+	* src/Makefile.am: link against the screen-exec stuff.
+	
+	* configure.in: add --enable-deprecations and
+	detect libgnome for the screen-exec stuff.
+	
+	* cut-n-paste/screen-exec/*: add the screen-exec
+	stuff to get some multi-screen execution action
+	happening.
+
+2003-12-04  Mark McLoughlin  <mark@skynet.ie>
+
+	Patch from Carlos Garnacho Parro <carlosg@gnome.org> to
+	add a "Configure" button which invokes the network system
+	tool to configure the interface. See bug #124612.
+	
+	* src/gnome-netstatus.glade: add the button.
+	
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_set_iface_name): disable the button if this
+	is the loopback interface.
+	(netstatus_iface_configure),
+	(netstatus_dialog_setup_configure_button),
+	(netstatus_dialog_new): implement setting up the button and
+	launching network-admin when clicked.
+
+2003-11-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-applet.c:
+	(netstatus_applet_key_press_event): if enter or space is
+	pressed invoke the dialog.
+	
+	* src/netstatus-icon.[ch]: 
+	(netstatus_icon_invoke): rename from emit_invoked_signal()
+	and expose.
+	(netstatus_icon_button_press_event):  use it here.
+
+2003-10-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-iface.[ch]:
+	(netstatus_iface_get_hw_details): split out from
+	get_device_details().
+	(netstatus_iface_get_is_loopback): implement.
+	(netstatus_iface_get_device_details): update.
+
+2003-09-21  Christian Neumair  <chris@gnome-de.org>
+
+	* src/netstatus-dialog.c:
+	* src/netstatus-iface.c: Rename hardware labels (#114868).
+
+2003-09-01  Metin Amiroff  <metin@karegen.com>
+
+	configure.in: Added "az" in ALL_LINGUAS.
+
+2003-08-30  Wang Jian  <lark@linux.net.cn>
+
+	* configure.in: Added "zh_CN" to ALL_LINGUAS.
+
+2003-08-18  Mark McLoughlin  <mark@skynet.ie>
+	
+	* packaging/gnome-netstatus.spec.in: add spec file
+	from Rui Miguel Seabra <rms@1407.org>.
+
+	* Makefile.am:
+	* configure.in:
+	* packaging/Makefile.am: build it.
+
+2003-07-31  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* configure.in: Added French 'fr' to ALL_LINGUAS.
+
+2003-07-30  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* configure.in: Added Japanese 'ja' to ALL_LINGUAS.
+
+2003-07-28  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * configure.in: Added Portuguese (pt) to ALL_LINGUAS.
+
+2003-07-27  Hasbullah Bin Pit  <sebol@ikhlas.com>
+                                                                                
+        * configure.in: Added 'ms' (Malay)  to ALL_LINGUAS.
+
+2003-07-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/Makefile.am: try some other random automake foo
+	to (hopefully) make netstatus-fallback-pixbuf.h get built
+	for others.
+
+2003-07-17  Christian Neumair  <chris@gnome-de.org>
+
+	* .cvsignore: Added missing files.
+
+	* Makefile.am (SUBDIRS): Added po.
+
+	* configure.in (ALL_LINGUAS, AC_OUTPUT): Added "de" to ALL_LINGUAS
+	and po/Makefile.in to AC_OUTPUT.
+
+	* src/gnome-netstatus.glade: Changed spacing values to HIG-compliant
+	values.
+
+2003-07-16  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* configure.in: Added "pl" to ALL_LINGUAS.
+
+==================== 0.11 ====================
+
+2003-07-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.11.
+
+2003-07-02  Danilo Å egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-06-28  Miloslav Trmac  <mitr@volny.cz>
+
+	* configure.in: Added cs (Czech) to ALL_LINGUAS.
+
+2003-06-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-applet.c:
+	(netstatus_applet_instance_init),
+	(netstatus_applet_create): move the setting of
+	the applet flags to the factory function - there
+	is not property bag on which to set it before then.
+
+2003-06-18  Fatih Demir <kabalak@gtranslator.org>
+
+	* configure.in: Added Turkish ("tr") to the languages' list.
+
+2003-06-17  Pablo Gonzalo del Campo  <pablodc@bigfoot.com>
+
+	* configure.in: Added "es" (Spanish) to ALL_LINGUAS.
+
+2003-06-16  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* configure.in: Added "it" (Italian) to ALL_LINGUAS.
+
+==================== 0.10 ====================
+
+2003-06-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.10.
+
+2003-06-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/gnome-netstatus.glade:
+	HIG work from Luca Ferretti <elle.uca@libero.it>.
+
+2003-06-10  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "sv" to ALL_LINGUAS.
+
+2003-06-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/gnome-netstatus.glade: s/Interrnet/Internet/
+	Typo pointed out by Christian Rose in #114866.
+
+==================== 0.9 ====================
+
+2003-06-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.9.
+
+2003-06-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/gnome-netstatus.glade: fixup the device support
+	interface to not be Ethernet specific.
+	
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_update_name): set the window title when
+	the interface name changes.
+	(set_label_bold): impl helper to make the label bold without
+	using markup.
+	(netstatus_dialog_update_device_support): impl. to not be
+	Ethernet specific.
+	(netstatus_dialog_setup_connection): disable tooltips on
+	the icon.
+	(netstatus_dialog_setup_device_support): upd. for glade
+	changes.
+	
+	* src/netstatus-icon.[ch]:
+	(netstatus_icon_name_changed): update the tooltip when
+	the interface name changes.
+	(netstatus_icon_state_changed): the tooltips doesn't
+	depend on the interface state anymore.
+	(netstatus_icon_destroy): disconnect the name changed
+	signal handler.
+	(netstatus_icon_set_property),
+	(netstatus_icon_get_property),
+	(netstatus_icon_class_init): add a "tooltips-enabled"
+	property.
+	(netstatus_icon_set_iface): connect to the interfaces
+	name changed signal.
+	(netstatus_icon_set_tooltips_enabled),
+	(netstatus_icon_get_tooltips_enabled): impl.
+	
+	* src/netstatus-iface.[ch]: (print_mac_addr), (print_ash_addr),
+	(print_ax25_addr), (print_rose_addr), (print_x25_addr),
+	(print_arcnet_addr), (print_dlci_addr), (print_irda_addr),
+	(print_econet_addr), (netstatus_iface_get_device_details):
+	Add support for all sorts of different hardware. Based on
+	the GNU net-tools code.
+
+2003-06-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus.schemas.in: add.
+
+2003-06-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_update_ether_support): actually set the label.
+
+2003-06-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add some GConf magic.
+
+	* src/GNOME_NetstatusApplet.xml: add "Properties" menu item.
+	
+	* src/Makefile.am: install the schemas and make the error
+	icon the fallback pixbuf.
+	
+	* src/gnome-netstatus.glade: various tweaking.
+	
+	* src/netstatus-applet.c: implement configuring the interface
+	to monitor using GConf. Also handle "Properties" menu item.
+	
+	* src/netstatus-dialog.c: manage a combo box with the list of
+	available interfaces and implement the "Support" tab. Also,
+	add the number of bytes sent and received to the statistics.
+
+	* src/netstatus-icon.c: (netstatus_icon_init_pixbuf): yay, we
+	have an error icon.
+	
+	* src/netstatus-iface.[ch]:
+	(netstatus_iface_set_name): check the interface name length
+	against IFNAMESIZE.
+	(netstatus_iface_get_packet_statistics): use longs for the
+	number of packets.
+	(netstatus_iface_get_byte_statistics): impl.
+	(netstatus_iface_poll_iface_statistics),
+	(netstatus_iface_poll_state): poll for the no. bytes sent/received
+	as well as packets.
+	(netstatus_iface_init_monitor): zero out the stats.
+	(netstatus_iface_get_inet4_details),
+	(netstatus_iface_get_ether_details): implement.
+	(netstatus_list_interface_names): return a GList instead of a
+	GSList because gtk_combo_set_popdown_strings() takes a GList
+	and I'm lazy.
+	
+	* src/netstatus-sysdeps.[ch]: (parse_header), (parse_stats),
+	(netstatus_sysdeps_read_iface_statistics): read the number
+	of bytes too.
+	
+2003-06-09  Mark McLoughlin  <mark@skynet.ie>
+
+	More goodies from Calum.
+	
+	* icons/Makefile.am: install error icon.
+	
+	* icons/gnome-netstatus-disconn.png: grey out the
+	monitors.
+	
+	* icons/gnome-netstatus-disconn.png: new icon.
+
+==================== 0.8 ====================
+
+2003-06-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: version 0.8.
+
+2003-06-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/Makefile.am: add nestatus-dialog.[ch] back to the build.
+	
+	* src/netstatus-applet.c:
+	(netstatus_applet_instance_init),
+	(netstatus_applet_finalize),
+	(netstatus_applet_display_status_dialog): display the status
+	dialog when the icon is clicked.
+
+	* src/netstatus-dialog.[ch]: get working again.
+	
+	* src/netstatus-util.[ch]: (netstatus_connect_signal_while_alive):
+	add support for detailed signals.
+
+2003-06-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am:
+	* src/Makefile.am: distcheck fixes.
+
+2003-06-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: netstatus-main.c doesn't exist anymore.
+	
+	* src/.cvsignore, src/Makefile.am,
+	  src/netstatus-iface.c: nor does netstatus-marshal.[ch].
+
+2003-06-05  Mark McLoughlin  <mark@skynet.ie>
+
+	* autogen.sh: use gnome-autogen.sh.
+
+	* configure.in: bump version to 0.7, check for gdk-pixbuf-csource
+	and intltool, use GNOME_COMPILE_WARNINGS, require libglade and
+	libpanel-applet and remove the architecture check for now.
+
+	* icons/Makefile.am: install gnome-netstatus-tx.png in pixmaps
+	as a logo.
+
+	* src/GNOME_NetstatusApplet.xml:
+	* src/GNOME_NetstatusApplet_Factory.server.in.in: add.
+	
+	* src/Makefile.am: upd.
+	
+	* src/eggtrayicon.[ch],	src/update-from-egg.sh: remove.
+	
+	* src/netstatus-applet.[ch]: Implement this thing as an applet.
+	
+	* src/netstatus-icon.[ch]: loads of changes. Add error handling,
+	do proper width for height size negotiation etc.
+	
+	* src/netstatus-iface.[ch]: re-write and rename.
+
+	* src/netstatus-interface.[ch]: remove.
+	
+	* src/netstatus-main.c: kill, might resurrect someday, though.
+	
+	* src/netstatus-sysdeps.c: split out system dependancies from
+	NetstatusIface.
+	
+	* src/netstatus-util.[ch]: (netstatus_setup_debug_flags),
+	(netstatus_error_quark), (netstatus_g_error_get_type),
+	(netstatus_adopt_error): add various error handling and
+	debugging related utilities.
+	
+	* src/test-iface.c: add simple test program. Not built.
+
+2003-01-31 Erwann Chenede - <erwann.chenede@sun.com>
+	
+	* src/netstatus-interface.c:
+	  (get_interface_names) linux implementation:
+	  don't try to monitor experimental ipsec interfaces.
+         
+2003-01-31 Erwann Chenede - <erwann.chenede@sun.com>
+	
+	* src/netstatus-interface.c:
+	  (get_interface_names) linux and solaris implementation:
+	  removed the loopback interface from the interface list 
+	  if it exists.
+	  
+2003-01-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_set_icon): impl setting the window
+	icon to the tx icon.
+	(netstatus_dialog_new): use it here.
+
+2003-01-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-dialog.c: (netstatus_dialog_initial_size_hack):
+	be a little more paranoid in my hackery.
+
+2003-01-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/Makefile.am: generate the enums from
+	netstatus-util.h.
+
+	* src/netstatus-interface.h: move NetstatusState definition
+
+	* src/netstatus-util.h: to here.
+
+	* src/netstatus-util.[ch]:
+	(netstatus_get_state_string): impl.
+
+	* src/gnome-netstatus.glade: make the hbox which
+	the icon is in not homogenous and kill the default
+	window size.
+
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_update_general_info):
+	use netstatus_get_state_string().
+	(netstatus_dialog_initial_size_hack): crappy hack to make
+	sure the dialog is big enough to contain all status strings
+	without resizing.
+	(netstatus_dialog_new): use the initial size hack;
+
+	* src/netstatus-icon.c: (netstatus_icon_update_tooltip):
+	use netstatus_get_state_string().
+
+2003-01-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-interface.c: (dummy_init):
+	initialise the interface name.
+
+2003-01-28  Mark McLoughlin  <mark@skynet.ie>
+
+	Added a tooltip displaying the current interface state.
+
+	* src/netstatus-icon.c:
+	(netstatus_icon_update_tooltip): set the tooltip to whatever
+	the current state is.
+	(netstatus_icon_state_changed): update tooltip.
+	(netstatus_icon_destroy): unref tooltips.
+	(netstatus_icon_instance_init): create tooltips.
+
+2003-01-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* icons/gnome-netstatus-rx.png: new icon from Calum
+	which fixes a glitch in the previous one.
+
+2003-01-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/netstatus-icon.[ch]:
+	(netstatus_icon_ref_icons): split out from
+	(netstatus_icon_size_allocate): here.
+	(netstatus_icon_remove_icon), (netstatus_icon_position_menu),
+	(netstatus_icon_popup_menu), (netstatus_icon_button_press_event):
+	Add a popup menu with a "Remove Icon" item.
+	(netstatus_icon_class_init): kill the about and help signals.
+
+	* src/netstatus-main.c: (netstatus_icon_exit),
+	(netstatus_display_interface): handle the exit signal by
+	quitting (first disabling re-spawn, though).
+
+2003-01-25  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/gnome-netstatus.glade: moved the icon to
+	the right hand side of the connection frame rather
+	than the left hand side of the activity frame.
+
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_update_general_info): don't re-fetch
+	the interface state - use the state as supplied in the
+	signal. Stops the icon and the text getting out of sync.
+	(netstatus_dialog_new): update for new location of the
+	icon.
+
+	* src/netstatus-icon.[ch]: add a new property, "use-default-size"
+	to indicate that the icon shouldn't be scaled down.
+
+	* src/netstatus-main.c:
+	(netstatus_dialog_destroyed): remove our reference to the
+	dialog when it is destroyed.
+	(netstatus_display_interface): don't use the default icon
+	size for these icons.
+
+2003-01-25  Mark McLoughlin  <mark@skynet.ie>
+
+	UI work from Calum:
+
+	* icons/gnome-netstatus-rx.png:
+	* icons/gnome-netstatus-txrx.png: upd icons.
+
+	* src/gnome-netstatus.glade: follow the suggested HIG style.
+
+	* src/netstatus-dialog.c: (netstatus_dialog_update_general_info):
+	tweak some strings.
+
+2003-01-21 Erwann Chenede - <erwann.chenede@sun.com>
+        * configure.in: added missing -lX11
+
+	* src/Makefile.am : added OTHER_LIBS in gnome_netstatus_LDADD
+
+	* src/netstatus-interface.c : added missing include
+	  (solaris_init): strdup all information strings.
+	  (linux_init): strdup all information strings.
+	  (linux_get_packets_stats): remove unused variables.
+
+2003-01-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: check for glib-genmarshal.
+
+	* src/Makefile.am: add netstatus-util.c to the build
+	and generate the marshallers.
+
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_update_general_info): don't update the icon,
+	happens automatically now.
+	(netstatus_dialog_interface_state_changed),
+	(netstatus_dialog_new): connect to the interface's state changed
+	signal and update the dialog accordingly.
+
+	* src/netstatus-dialog.h: kill netstatus_dialog_update().
+
+	* src/netstatus-icon.c:
+	(netstatus_icon_state_changed): impl signal handler for the
+	interface's state changed signal.
+	(netstatus_icon_destroy): disconnect from the signal.
+	(netstatus_icon_set_interface): disconnect/connect to the
+	interface.
+
+	* src/netstatus-icon.h: kill netstatus_icon_update().
+
+	* src/netstatus-interface.c:
+	(netstatus_interface_class_init): marshal the state as an
+	enum rather than an int.
+	(netstatus_interface_timeout_handler): rename.
+	(netstatus_interface_remove_polling_timeout),
+	(netstatus_interface_add_polling_timeout): impl.
+	(netstatus_interface_set_polling_delay): re-init the timeout
+	with the new delay.
+	(netstatus_interface_start_monitoring),
+	(netstatus_interface_stop_monitoring): make stopping the monitoring
+	have immediate effect rather than only completing when the next
+	update happens.
+
+	* src/netstatus-interface.h: fix the signal definition.
+
+	* src/netstatus-main.c: remove the forced dialog/icon updates.
+	* src/netstatus-marshal.list:
+	* src/netstatus-util.c: (netstatus_connect_signal_while_alive):
+	* src/netstatus-util.h:
+
+2003-01-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 0.6.
+
+2003-01-21  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add a --enable-dummy-code argument to
+	use the dummy NetstatusInterface code.
+
+	* src/netstatus-dialog.c:
+	(netstatus_dialog_update_support_info): upd.
+
+	* src/netstatus-interface.[ch]: incorporate Erwann's
+	changes to implement the Linux version and add a
+	"state-changed" signal.
+
+2003-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+        * configure.in: Version 0.4.
+
+2003-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+        * icons/*.png: added Calum's brand spanking new
+	yellow and black icons. 
+
+2003-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+        * configure.in: Version 0.3.
+
+2003-01-20  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add libglade dependancy.
+
+	* src/Makefile.am: install gnome-netstatus.glade.
+
+	* src/netstatus-dialog.[ch]: impl the status dialog.
+
+	* src/netstatus-icon.c:
+	(netstatus_icon_button_press_event): emit the "invoked"
+	signal on button1 press.
+	(netstatus_icon_class_init): add various signals.
+
+	* src/netstatus-interface.c:
+	(netstatus_interface_get_connection_time_str),
+	(netstatus_interface_get_connection_speed_str): add dummy
+	functions.
+
+	* src/netstatus-main.c: display the dialog when the
+	icon is invoked.
+
+2003-01-17  Mark McLoughlin  <mark@skynet.ie>
+
+        * configure.in: Version 0.2.
+
+2003-01-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* icons/gnome-netstatus-disconn.png,
+	  icons/gnome-netstatus-idle.png,
+	  icons/gnome-netstatus-rx.png,
+	  icons/gnome-netstatus-tx.png,
+	  icons/gnome-netstatus-txrx.png: updated icons from
+	Calum.  Supposed to be easier for colour blind weirdos
+	like myself to see ..
+
+	* acconfig.h: add HAVE_SOLARIS and HAVE_LINUX.
+
+	* configure.in: check for Solaris/Linux.
+
+	* src/netstatus-interface.[ch]: add network interface
+	monitoring implementation from Erwann.
+
+	* src/Makefile.am: add netstatus-interface.[ch] to the
+	build.
+
+	* src/netstatus-icon.[ch]:
+	(netstatus_icon_update_image): allow this to be called
+	without the scaling being already done.
+	(netstatus_icon_update): impl. The interface should do
+	the polling itself, though.
+	(netstatus_icon_set_property),
+	(netstatus_icon_get_property), (netstatus_icon_class_init):
+	remove the state proprty and replace it with an interface
+	property.
+	(netstatus_icon_new): add interface argument.
+	(netstatus_icon_set_interface),
+	(netstatus_icon_get_interface): impl.
+
+	* src/netstatus-main.c:
+	(netstatus_timeout_handler): call netstatus_icon_update().
+	(netstatus_display_interface), (main): display an icon
+	for each available interface.
+
+2003-01-16  Mark McLoughlin  <mark@skynet.ie>
+
+        * configure.in: Version 0.1.
+

@@ -1,0 +1,516 @@
+# Slovak translations for gnome-netstatus package.
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnome-netstatus package.
+# Marcel Telka <marcel@telka.sk>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-netstatus\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-03 15:35+0100\n"
+"PO-Revision-Date: 2004-02-22 16:26+0100\n"
+"Last-Translator: Marcel Telka <marcel@telka.sk>\n"
+"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:1
+msgid "Factory for Network Monitor applet"
+msgstr "Továreň pre applet Sieťového sledovača"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:2
+msgid "Internet"
+msgstr "Internet"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:3
+msgid "Monitor network activity"
+msgstr "Sledovať aktivitu siete"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:4
+#: src/netstatus-applet.c:290
+msgid "Network Monitor"
+msgstr "Sieťový sledovač"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:5
+msgid "Network Monitor Factory"
+msgstr "Továreň Sieťového sledovača"
+
+#: src/GNOME_NetstatusApplet.xml.h:1
+#, fuzzy
+msgid "_About"
+msgstr "_O programe..."
+
+#: src/GNOME_NetstatusApplet.xml.h:2
+msgid "_Help"
+msgstr ""
+
+#: src/GNOME_NetstatusApplet.xml.h:3
+#, fuzzy
+msgid "_Properties"
+msgstr "_Vlastnosti..."
+
+#: src/gnome-netstatus.glade.h:1
+msgid "    "
+msgstr "    "
+
+#: src/gnome-netstatus.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: src/gnome-netstatus.glade.h:4
+#, no-c-format
+msgid "0%"
+msgstr ""
+
+#: src/gnome-netstatus.glade.h:5
+msgid "<b>Activity</b>"
+msgstr "<b>Aktivita</b>"
+
+#: src/gnome-netstatus.glade.h:6
+msgid "<b>Connection</b>"
+msgstr "<b>Spojenie</b>"
+
+#: src/gnome-netstatus.glade.h:7
+msgid "<b>Internet Protocol (IPv4)</b>"
+msgstr "<b>Internetový protokol (IPv4)</b>"
+
+#: src/gnome-netstatus.glade.h:8
+msgid "<b>Internet Protocol (IPv6)</b>"
+msgstr "<b>Internetový protokol (IPv6)</b>"
+
+#: src/gnome-netstatus.glade.h:9
+msgid "<b>Network Device</b>"
+msgstr "<b>Sieťové zariadenie</b>"
+
+#: src/gnome-netstatus.glade.h:10
+msgid "<b>Signal Strength</b>"
+msgstr ""
+
+#: src/gnome-netstatus.glade.h:11
+msgid "Address:"
+msgstr "Adresa:"
+
+#: src/gnome-netstatus.glade.h:12
+msgid "Broadcast:"
+msgstr "Vysielanie:"
+
+#: src/gnome-netstatus.glade.h:13
+msgid "Con_figure"
+msgstr "Kon_figurovať"
+
+#: src/gnome-netstatus.glade.h:14
+msgid "Destination:"
+msgstr "Miesto určenia:"
+
+#: src/gnome-netstatus.glade.h:15
+msgid "General"
+msgstr "Všeobecné"
+
+#: src/gnome-netstatus.glade.h:16
+msgid "Received:"
+msgstr "Prijatých:"
+
+#: src/gnome-netstatus.glade.h:17
+msgid "Scope:"
+msgstr "Rozsah:"
+
+#: src/gnome-netstatus.glade.h:18
+msgid "Sent:"
+msgstr "Odoslaných:"
+
+#: src/gnome-netstatus.glade.h:19
+msgid "Status:"
+msgstr "Stav:"
+
+#: src/gnome-netstatus.glade.h:20
+msgid "Subnet Mask:"
+msgstr "Maska podsiete:"
+
+#: src/gnome-netstatus.glade.h:21
+msgid "Support"
+msgstr "Podpora"
+
+#: src/gnome-netstatus.glade.h:22
+msgid "Type:"
+msgstr "Typ:"
+
+#: src/gnome-netstatus.glade.h:23
+msgid "_Name:"
+msgstr "_Názov:"
+
+#: src/netstatus.schemas.in.h:1
+msgid "Network configuration tool"
+msgstr "Nástroj na konfiguráciu siete"
+
+#: src/netstatus.schemas.in.h:2
+msgid "Network interface"
+msgstr "Sieťové rozhranie"
+
+#: src/netstatus.schemas.in.h:3
+msgid "The Network Interface monitored by the Network Monitor."
+msgstr "Sieťové rozhranie sledované Sieťovým sledovačom."
+
+#: src/netstatus.schemas.in.h:5
+#, no-c-format
+msgid ""
+"This key specifies the name of the network configuration tool which should "
+"be invoked when the \"Configure\" button in the properties dialog is "
+"clicked. If the configuration tool can take a parameter of the interface to "
+"configure you may use %i in the string and it will be substituted with the "
+"interface name before invoking the configuration tool. For example, gnome-"
+"system-tool's network-admin tool takes the interface name through a --"
+"configure parameter. Thus, you could set the value of this key to be: "
+"\"network-admin --configure %i\"."
+msgstr ""
+"Tento kľúč určuje názov nástroja pre konfiguráciu siete, ktorý má byť "
+"spustený pri kliknutí na tlačidlo \"Konfigurovať\" v dialógovom okne "
+"vlastností. Ak môže konfiguračný nástroj dostať parameter s rozhraním, ktoré "
+"bude konfigurovať, môžete použiť %i v reťazci a bude nahradené s názvom "
+"rozhrania pred spustením konfiguračného nástroja. Napríklad: Nástroj network-"
+"admin z gnome-system-tools dostáva názov rozhrania cez parameter --"
+"configure. Teda môžete nastaviť hodnotu tohoto kľúča na: \"network-admin --"
+"configure %i\"."
+
+#: src/netstatus-applet.c:249
+#, fuzzy, c-format
+msgid "There was an error displaying help: %s"
+msgstr ""
+"Vyskytla sa chyba pri zobrazovaní pomocníka:\n"
+"%s"
+
+#: src/netstatus-applet.c:271
+msgid "translator_credits"
+msgstr "Marcel Telka <marcel@telka.sk>"
+
+#: src/netstatus-applet.c:292
+msgid "The Network Monitor displays the status of a network device."
+msgstr "Sieťový sledovač zobrazuje stav sieťového zariadenia."
+
+#: src/netstatus-dialog.c:47 src/netstatus-dialog.c:306
+msgid "Unknown"
+msgstr "Neznámy"
+
+#: src/netstatus-dialog.c:110
+msgid "Connection Properties"
+msgstr "Vlastnosti spojenia"
+
+#: src/netstatus-dialog.c:116
+#, c-format
+msgid "Connection Properties: %s"
+msgstr "Vlastnosti spojenia: %s"
+
+#: src/netstatus-dialog.c:129
+#, fuzzy, c-format
+msgid "%lu packet"
+msgid_plural "%lu packets"
+msgstr[0] "%lu paketov"
+msgstr[1] "%lu paketov"
+
+#: src/netstatus-dialog.c:390
+#, c-format
+msgid ""
+"There was an error displaying help:\n"
+"%s"
+msgstr ""
+"Vyskytla sa chyba pri zobrazovaní pomocníka:\n"
+"%s"
+
+#: src/netstatus-dialog.c:568
+#, c-format
+msgid "Failed to launch time configuration tool: %s"
+msgstr "Spustenie nástroja na konfiguríciu času zlyhalo: %s"
+
+#: src/netstatus-icon.c:381
+#, c-format
+msgid "Network Connection: %s"
+msgstr "Sieťové spojenie: %s"
+
+#: src/netstatus-icon.c:386
+msgid "Network Connection"
+msgstr "Sieťové spojenie"
+
+#: src/netstatus-icon.c:809
+msgid "Interface"
+msgstr "Rozhranie"
+
+#: src/netstatus-icon.c:810
+msgid "The current interface the icon is monitoring."
+msgstr "Ikona práve sledovaného rozhrania."
+
+#: src/netstatus-icon.c:817
+msgid "Orientation"
+msgstr "Orientácia"
+
+#: src/netstatus-icon.c:818
+msgid "The orientation of the tray."
+msgstr "Orientácia zásobníka."
+
+#: src/netstatus-icon.c:826
+msgid "Tooltips Enabled"
+msgstr ""
+
+#: src/netstatus-icon.c:827
+msgid "Whether or not the icon's tooltips are enabled."
+msgstr ""
+
+#: src/netstatus-icon.c:834
+msgid "Show Signal"
+msgstr ""
+
+#: src/netstatus-icon.c:835
+msgid "Whether or not the signal strength should be displayed."
+msgstr ""
+
+#: src/netstatus-icon.c:948
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"\n"
+"%s"
+msgstr ""
+"Prosím kontaktujte vášho správcu systému, aby vyriešil nasledujúci problém:\n"
+"\n"
+"%s"
+
+#: src/netstatus-iface.c:153
+msgid "Name"
+msgstr "Názov"
+
+#: src/netstatus-iface.c:154
+msgid "The interface name"
+msgstr "Názov rozhrania"
+
+#: src/netstatus-iface.c:161
+msgid "State"
+msgstr "Stav"
+
+#: src/netstatus-iface.c:162
+msgid "The interface state"
+msgstr "Stav rozhrania"
+
+#: src/netstatus-iface.c:170
+#, fuzzy
+msgid "Stats"
+msgstr "Stav:"
+
+#: src/netstatus-iface.c:171
+#, fuzzy
+msgid "The interface packets/bytes statistics"
+msgstr "Stav rozhrania"
+
+#: src/netstatus-iface.c:178
+msgid "Wireless"
+msgstr ""
+
+#: src/netstatus-iface.c:179
+msgid "Whether the interface is a wireless interface"
+msgstr ""
+
+#: src/netstatus-iface.c:186
+msgid "Signal"
+msgstr ""
+
+#: src/netstatus-iface.c:187
+msgid "Wireless signal strength percentage"
+msgstr ""
+
+#: src/netstatus-iface.c:196 src/netstatus-util.c:167
+msgid "Error"
+msgstr "Chyba"
+
+#: src/netstatus-iface.c:197
+msgid "The current error condition"
+msgstr "Aktuálny chybový stav"
+
+#: src/netstatus-iface.c:439 src/netstatus-iface.c:1202
+#, c-format
+msgid "Unable to open socket: %s"
+msgstr "Nepodarilo sa otvoriť zásuvku: %s"
+
+#: src/netstatus-iface.c:501 src/netstatus-iface.c:1228
+#, c-format
+msgid "SIOCGIFFLAGS error: %s"
+msgstr "Chyba SIOCGIFFLAGS: %s"
+
+#: src/netstatus-iface.c:875
+msgid "AMPR NET/ROM"
+msgstr "AMPR NET/ROM"
+
+#: src/netstatus-iface.c:878
+msgid "Ethernet"
+msgstr "Ethernet"
+
+#: src/netstatus-iface.c:884
+msgid "AMPR AX.25"
+msgstr "AMPR AX.25"
+
+#: src/netstatus-iface.c:893 src/netstatus-iface.c:1013
+msgid "16/4 Mbps Token Ring"
+msgstr "16/4 Mbps Token Ring"
+
+#: src/netstatus-iface.c:896
+msgid "ARCnet"
+msgstr "ARCnet"
+
+#: src/netstatus-iface.c:902
+msgid "Frame Relay DLCI"
+msgstr "Frame Relay DLCI"
+
+#: src/netstatus-iface.c:908
+msgid "Metricom Starmode IP"
+msgstr "Metricom Starmode IP"
+
+#: src/netstatus-iface.c:911
+msgid "Serial Line IP"
+msgstr "IP na sériovej linke"
+
+#: src/netstatus-iface.c:914
+msgid "VJ Serial Line IP"
+msgstr "IP na sériovej linke VJ"
+
+#: src/netstatus-iface.c:917
+msgid "6-bit Serial Line IP"
+msgstr "IP na 6-bitovej sériovej linke"
+
+#: src/netstatus-iface.c:920
+msgid "VJ 6-bit Serial Line IP"
+msgstr "IP na 6-bitovej sériovej linke VJ"
+
+#: src/netstatus-iface.c:926
+msgid "Adaptive Serial Line IP"
+msgstr "IP na prispôsobivej sériovej linke"
+
+#: src/netstatus-iface.c:929
+msgid "AMPR ROSE"
+msgstr "AMPR ROSE"
+
+#: src/netstatus-iface.c:932
+msgid "Generic X.25"
+msgstr "Všeobecné X.25"
+
+#: src/netstatus-iface.c:935
+msgid "Point-to-Point Protocol"
+msgstr "Protokol bod-bod (PPP)"
+
+#: src/netstatus-iface.c:941
+msgid "(Cisco)-HDLC"
+msgstr "(Cisco)-HDLC"
+
+#: src/netstatus-iface.c:944
+msgid "LAPB"
+msgstr "LAPB"
+
+#: src/netstatus-iface.c:953
+msgid "IPIP Tunnel"
+msgstr "Tunel IPIP"
+
+#: src/netstatus-iface.c:959
+msgid "Frame Relay Access Device"
+msgstr "Zariadenie pre prístup k Frame Relay"
+
+#: src/netstatus-iface.c:965
+msgid "Local Loopback"
+msgstr "Miestna spätná väzba"
+
+#: src/netstatus-iface.c:971
+msgid "Fiber Distributed Data Interface"
+msgstr "Rozhranie vláknom distribuovaných údajov"
+
+#: src/netstatus-iface.c:977
+msgid "IPv6-in-IPv4"
+msgstr "IPv6-v-IPv4"
+
+#: src/netstatus-iface.c:989
+msgid "HIPPI"
+msgstr "HIPPI"
+
+#: src/netstatus-iface.c:992
+msgid "Ash"
+msgstr "Ash"
+
+#: src/netstatus-iface.c:995
+msgid "Econet"
+msgstr "Econet"
+
+#: src/netstatus-iface.c:998
+msgid "IrLAP"
+msgstr "IrLAP"
+
+#: src/netstatus-iface.c:1160
+#, c-format
+msgid "SIOCGIFCONF error: %s"
+msgstr "chyba SIOCGIFCONF: %s"
+
+#: src/netstatus-iface.c:1253
+msgid "No network devices found"
+msgstr "Neboli nájdené žiadne sieťové zariadenia"
+
+#: src/netstatus-sysdeps.c:170
+#, c-format
+msgid "Cannot open /proc/net/dev: %s"
+msgstr "Nepodarilo sa otvoriť /proc/net/dev: %s"
+
+#: src/netstatus-sysdeps.c:179
+msgid "Could not parse /proc/net/dev. Unknown format."
+msgstr "Nepodarilo sa analyzovať /proc/net/dev. Neznámy formát."
+
+#: src/netstatus-sysdeps.c:194 src/netstatus-sysdeps.c:320
+#, c-format
+msgid "Could not parse interface name from '%s'"
+msgstr "Nepodarilo sa analyzovať názov rozhrania z '%s'"
+
+#: src/netstatus-sysdeps.c:207 src/netstatus-sysdeps.c:462
+#, c-format
+msgid ""
+"Could not parse interface statistics from '%s'. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+msgstr ""
+"Nepodarilo sa analyzovať štatistiky rozhrania z '%s'. prx_idx = %d; ptx_idx "
+"= %d; brx_idx = %d; btx_idx = %d;"
+
+#: src/netstatus-sysdeps.c:304
+#, fuzzy
+msgid "Could not parse /proc/net/wireless. Unknown format."
+msgstr "Nepodarilo sa analyzovať /proc/net/dev. Neznámy formát."
+
+#: src/netstatus-sysdeps.c:331
+#, fuzzy, c-format
+msgid "Could not parse wireless details from '%s'. link_idx = %d;"
+msgstr "Nepodarilo sa analyzovať názov rozhrania z '%s'"
+
+#: src/netstatus-sysdeps.c:415
+#, c-format
+msgid "Could not parse command line '%s': %s"
+msgstr "Nepodarilo sa analyzovať príkazový riadok '%s': %s"
+
+#: src/netstatus-sysdeps.c:452
+msgid "Could not parse 'netstat' output. Unknown format"
+msgstr "Nepodarilo sa analyzovať výstup z 'netstat'. Neznámy formát."
+
+#: src/netstatus-util.c:152
+msgid "Disconnected"
+msgstr "Rozpojené"
+
+#: src/netstatus-util.c:155
+msgid "Idle"
+msgstr "Nečinné"
+
+#: src/netstatus-util.c:158
+msgid "Sending"
+msgstr "Odosielanie"
+
+#: src/netstatus-util.c:161
+msgid "Receiving"
+msgstr "Prijímanie"
+
+#: src/netstatus-util.c:164
+msgid "Sending/Receiving"
+msgstr "Odosielanie/prijímanie"
+
+#, fuzzy
+#~ msgid "Cannot open /proc/net/wireless: %s"
+#~ msgstr "Nepodarilo sa otvoriť /proc/net/dev: %s"
+
+#~ msgid "dialog1"
+#~ msgstr "dialog1"

@@ -1,0 +1,515 @@
+#  Bengali Translation of  GNOME-NetStatus
+# Copyright (C) 1999, 2000, 01, 02, 03, 04 Free Software Foundation, Inc.
+# This file is distributed under the same license as the GNOME-NetStatus package.
+# ayamindu Dasgupta <sayamindu@clai.net>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: GNOME-Netstatus\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-08-03 15:35+0100\n"
+"PO-Revision-Date: 2004-03-14 09:30++0530\n"
+"Last-Translator: Sayamindu Dasgupta <sayamindu@clai.net>\n"
+"Language-Team: Bengali <gnome-translation@bengalinux.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:1
+msgid "Factory for Network Monitor applet"
+msgstr "নেটওয়ার্ক মনিটর অ্যাপ্লেটের জন্য ফ্যাকট্রি"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:2
+msgid "Internet"
+msgstr "ইন্টারনেট"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:3
+msgid "Monitor network activity"
+msgstr "নেটওয়ার্ক-এ তথ্য আদানপ্রদানের উপর নজর রাখুন"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:4
+#: src/netstatus-applet.c:290
+msgid "Network Monitor"
+msgstr "নেটওয়ার্ক-এ তথ্য আদানপ্রদান নজরকারী"
+
+#: src/GNOME_NetstatusApplet_Factory.server.in.in.h:5
+msgid "Network Monitor Factory"
+msgstr "নেটওয়ার্ক-এ তথ্য আদানপ্রদান নজরকারী ফ্যাক্টরী"
+
+#: src/GNOME_NetstatusApplet.xml.h:1
+#, fuzzy
+msgid "_About"
+msgstr "সম্বন্ধে (_স)..."
+
+#: src/GNOME_NetstatusApplet.xml.h:2
+msgid "_Help"
+msgstr ""
+
+# FIXME
+#: src/GNOME_NetstatusApplet.xml.h:3
+#, fuzzy
+msgid "_Properties"
+msgstr "বৈশিষ্টাবলী (_ব)..."
+
+#: src/gnome-netstatus.glade.h:1
+msgid "    "
+msgstr "   "
+
+#: src/gnome-netstatus.glade.h:2
+msgid "*"
+msgstr "*"
+
+#: src/gnome-netstatus.glade.h:4
+#, no-c-format
+msgid "0%"
+msgstr ""
+
+#: src/gnome-netstatus.glade.h:5
+msgid "<b>Activity</b>"
+msgstr "<b>আদানপ্রদান</b>"
+
+#: src/gnome-netstatus.glade.h:6
+msgid "<b>Connection</b>"
+msgstr "<b>যোগাযোগ</b>"
+
+#: src/gnome-netstatus.glade.h:7
+msgid "<b>Internet Protocol (IPv4)</b>"
+msgstr "<b>ইন্টারনেট প্রোটকল (IPv4)</b>"
+
+#: src/gnome-netstatus.glade.h:8
+msgid "<b>Internet Protocol (IPv6)</b>"
+msgstr "<b>ইন্টারনেট প্রোটকল (IPv6)</b>"
+
+#: src/gnome-netstatus.glade.h:9
+msgid "<b>Network Device</b>"
+msgstr "<b>নেটওয়ার্ক যন্ত্র</b>"
+
+#: src/gnome-netstatus.glade.h:10
+msgid "<b>Signal Strength</b>"
+msgstr ""
+
+#: src/gnome-netstatus.glade.h:11
+msgid "Address:"
+msgstr "ঠিকানা:"
+
+#: src/gnome-netstatus.glade.h:12
+msgid "Broadcast:"
+msgstr "ব্রডকাস্ট:"
+
+#: src/gnome-netstatus.glade.h:13
+msgid "Con_figure"
+msgstr "কনফিগার (_ন)"
+
+#: src/gnome-netstatus.glade.h:14
+msgid "Destination:"
+msgstr "গন্তব্য:"
+
+#: src/gnome-netstatus.glade.h:15
+msgid "General"
+msgstr "সাধারণ"
+
+#: src/gnome-netstatus.glade.h:16
+msgid "Received:"
+msgstr "প্রাপ্ত:"
+
+#: src/gnome-netstatus.glade.h:17
+msgid "Scope:"
+msgstr "স্কোপ"
+
+# এটা কি?
+#: src/gnome-netstatus.glade.h:18
+msgid "Sent:"
+msgstr "প্রেরিত:"
+
+#: src/gnome-netstatus.glade.h:19
+msgid "Status:"
+msgstr "অবস্থা:"
+
+#: src/gnome-netstatus.glade.h:20
+msgid "Subnet Mask:"
+msgstr "সাবনেট মাস্ক:"
+
+#: src/gnome-netstatus.glade.h:21
+msgid "Support"
+msgstr "অতিরিক্ত তথ্য"
+
+#: src/gnome-netstatus.glade.h:22
+msgid "Type:"
+msgstr "ধরন:"
+
+#: src/gnome-netstatus.glade.h:23
+msgid "_Name:"
+msgstr "নাম (_ন):"
+
+#: src/netstatus.schemas.in.h:1
+msgid "Network configuration tool"
+msgstr "নেটওয়ার্ক কনফিগারেশন করার প্রোগ্রাম"
+
+#: src/netstatus.schemas.in.h:2
+msgid "Network interface"
+msgstr "নেটওয়ার্ক ইন্টারফেস"
+
+#: src/netstatus.schemas.in.h:3
+msgid "The Network Interface monitored by the Network Monitor."
+msgstr "নেটওয়ার্ক মনিটর যে নেটওয়ার্ক ইন্টারফেস-এর নজর রাখবে"
+
+#: src/netstatus.schemas.in.h:5
+#, no-c-format
+msgid ""
+"This key specifies the name of the network configuration tool which should "
+"be invoked when the \"Configure\" button in the properties dialog is "
+"clicked. If the configuration tool can take a parameter of the interface to "
+"configure you may use %i in the string and it will be substituted with the "
+"interface name before invoking the configuration tool. For example, gnome-"
+"system-tool's network-admin tool takes the interface name through a --"
+"configure parameter. Thus, you could set the value of this key to be: "
+"\"network-admin --configure %i\"."
+msgstr ""
+
+#: src/netstatus-applet.c:249
+#, fuzzy, c-format
+msgid "There was an error displaying help: %s"
+msgstr ""
+"সহায়িকা প্রদর্শনে সমস্যা দেখা দিয়েছে:\n"
+"%s"
+
+#: src/netstatus-applet.c:271
+msgid "translator_credits"
+msgstr ""
+"সায়মিন্দু দাশগুপ্ত <unmadindu@bengalinux.org> \n"
+" (অঙ্কুর বাংলা প্রকল্পের তরফ থেকে)"
+
+#: src/netstatus-applet.c:292
+msgid "The Network Monitor displays the status of a network device."
+msgstr "নেটওয়ার্কের উপর নজরকারী কোন একটি নেটওয়ার্ক ডিভাইসের অবস্থা দেখায়"
+
+#: src/netstatus-dialog.c:47 src/netstatus-dialog.c:306
+msgid "Unknown"
+msgstr "অজানা"
+
+#: src/netstatus-dialog.c:110
+msgid "Connection Properties"
+msgstr "যোগাযোগের বৈশিষ্টাবলী"
+
+#: src/netstatus-dialog.c:116
+#, c-format
+msgid "Connection Properties: %s"
+msgstr "যোগাযোগের বৈশিষ্টাবলী: %s"
+
+#: src/netstatus-dialog.c:129
+#, fuzzy, c-format
+msgid "%lu packet"
+msgid_plural "%lu packets"
+msgstr[0] "%lu প্যাকেট"
+msgstr[1] "%lu প্যাকেট"
+
+#: src/netstatus-dialog.c:390
+#, c-format
+msgid ""
+"There was an error displaying help:\n"
+"%s"
+msgstr ""
+"সহায়িকা প্রদর্শনে সমস্যা দেখা দিয়েছে:\n"
+"%s"
+
+#: src/netstatus-dialog.c:568
+#, c-format
+msgid "Failed to launch time configuration tool: %s"
+msgstr ""
+
+#: src/netstatus-icon.c:381
+#, c-format
+msgid "Network Connection: %s"
+msgstr "নেটওয়ার্ক যোগাযোগ: %s"
+
+#: src/netstatus-icon.c:386
+msgid "Network Connection"
+msgstr "নেটওয়ার্ক যোগাযোগ"
+
+#: src/netstatus-icon.c:809
+msgid "Interface"
+msgstr "ইন্টারফেস"
+
+#: src/netstatus-icon.c:810
+msgid "The current interface the icon is monitoring."
+msgstr "বর্তমানে আইকনটি যে ইন্টারফেস-টির উপর নজর রাখছে"
+
+#: src/netstatus-icon.c:817
+msgid "Orientation"
+msgstr "দিশা"
+
+#: src/netstatus-icon.c:818
+msgid "The orientation of the tray."
+msgstr "ট্রে-র দিশা"
+
+#: src/netstatus-icon.c:826
+msgid "Tooltips Enabled"
+msgstr "টুলটিপ চালু"
+
+#: src/netstatus-icon.c:827
+msgid "Whether or not the icon's tooltips are enabled."
+msgstr "আইকনের টুলটিপ চালু কিনা"
+
+#: src/netstatus-icon.c:834
+msgid "Show Signal"
+msgstr ""
+
+#: src/netstatus-icon.c:835
+#, fuzzy
+msgid "Whether or not the signal strength should be displayed."
+msgstr "আইকনের টুলটিপ চালু কিনা"
+
+#: src/netstatus-icon.c:948
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"\n"
+"%s"
+msgstr ""
+"এই ত্রুটিটিকে ঠিক করার জন্য আপনার সিস্টেম অ্যাডমিনিস্ট্রেটর-এর সাথে যোগাযোগ করুন:\n"
+"\n"
+"%s"
+
+#: src/netstatus-iface.c:153
+msgid "Name"
+msgstr "নাম"
+
+#: src/netstatus-iface.c:154
+msgid "The interface name"
+msgstr "ইন্টারফেসের নাম"
+
+#: src/netstatus-iface.c:161
+msgid "State"
+msgstr "অবস্থা"
+
+#: src/netstatus-iface.c:162
+msgid "The interface state"
+msgstr "ইন্টারফেসের অবস্থা"
+
+#: src/netstatus-iface.c:170
+#, fuzzy
+msgid "Stats"
+msgstr "অবস্থা:"
+
+#: src/netstatus-iface.c:171
+#, fuzzy
+msgid "The interface packets/bytes statistics"
+msgstr "ইন্টারফেসের অবস্থা"
+
+#: src/netstatus-iface.c:178
+msgid "Wireless"
+msgstr ""
+
+#: src/netstatus-iface.c:179
+msgid "Whether the interface is a wireless interface"
+msgstr ""
+
+#: src/netstatus-iface.c:186
+msgid "Signal"
+msgstr ""
+
+#: src/netstatus-iface.c:187
+msgid "Wireless signal strength percentage"
+msgstr ""
+
+#: src/netstatus-iface.c:196 src/netstatus-util.c:167
+msgid "Error"
+msgstr "ত্রুটি"
+
+#: src/netstatus-iface.c:197
+msgid "The current error condition"
+msgstr "বর্তমান ত্রুটি অবস্থা"
+
+# # এটা কি??
+#: src/netstatus-iface.c:439 src/netstatus-iface.c:1202
+#, c-format
+msgid "Unable to open socket: %s"
+msgstr "সকেট খোলা গেল না: %s"
+
+#: src/netstatus-iface.c:501 src/netstatus-iface.c:1228
+#, c-format
+msgid "SIOCGIFFLAGS error: %s"
+msgstr "SIOCGIFFLAGS ত্রুটি: %s"
+
+# #খাইছে!!
+#: src/netstatus-iface.c:875
+msgid "AMPR NET/ROM"
+msgstr "এ-এম-পি-আর নেট রম"
+
+#: src/netstatus-iface.c:878
+msgid "Ethernet"
+msgstr "ইথারনেট"
+
+#: src/netstatus-iface.c:884
+msgid "AMPR AX.25"
+msgstr "এ-এম-পি-আর AX.25"
+
+#: src/netstatus-iface.c:893 src/netstatus-iface.c:1013
+msgid "16/4 Mbps Token Ring"
+msgstr "১৬/৪ এম্-বি-পি-এস টোকেন রিংগ"
+
+#: src/netstatus-iface.c:896
+msgid "ARCnet"
+msgstr "আর্ক-নেট"
+
+#: src/netstatus-iface.c:902
+msgid "Frame Relay DLCI"
+msgstr "Frame Relay DLCI"
+
+#: src/netstatus-iface.c:908
+msgid "Metricom Starmode IP"
+msgstr "Metricom Starmode IP"
+
+#: src/netstatus-iface.c:911
+msgid "Serial Line IP"
+msgstr "Serial Line IP"
+
+#: src/netstatus-iface.c:914
+msgid "VJ Serial Line IP"
+msgstr "VJ Serial Line IP"
+
+#: src/netstatus-iface.c:917
+msgid "6-bit Serial Line IP"
+msgstr "6-bit Serial Line IP"
+
+#: src/netstatus-iface.c:920
+msgid "VJ 6-bit Serial Line IP"
+msgstr "VJ 6-bit Serial Line IP"
+
+#: src/netstatus-iface.c:926
+msgid "Adaptive Serial Line IP"
+msgstr "Adaptive Serial Line IP"
+
+#: src/netstatus-iface.c:929
+msgid "AMPR ROSE"
+msgstr "AMPR ROSE"
+
+#: src/netstatus-iface.c:932
+msgid "Generic X.25"
+msgstr "Generic X.25"
+
+#: src/netstatus-iface.c:935
+msgid "Point-to-Point Protocol"
+msgstr "Point-to-Point Protocol"
+
+#: src/netstatus-iface.c:941
+msgid "(Cisco)-HDLC"
+msgstr "(Cisco)-HDLC"
+
+#: src/netstatus-iface.c:944
+msgid "LAPB"
+msgstr "LAPB"
+
+#: src/netstatus-iface.c:953
+msgid "IPIP Tunnel"
+msgstr "IPIP Tunnel"
+
+#: src/netstatus-iface.c:959
+msgid "Frame Relay Access Device"
+msgstr "Frame Relay Access Device"
+
+#: src/netstatus-iface.c:965
+msgid "Local Loopback"
+msgstr "লোকাল লুপব্যাক"
+
+#: src/netstatus-iface.c:971
+msgid "Fiber Distributed Data Interface"
+msgstr "Fiber Distributed Data Interface"
+
+#: src/netstatus-iface.c:977
+msgid "IPv6-in-IPv4"
+msgstr "IPv6-in-IPv4"
+
+#: src/netstatus-iface.c:989
+msgid "HIPPI"
+msgstr "HIPPI"
+
+#: src/netstatus-iface.c:992
+msgid "Ash"
+msgstr "Ash"
+
+#: src/netstatus-iface.c:995
+msgid "Econet"
+msgstr "Econet"
+
+#: src/netstatus-iface.c:998
+msgid "IrLAP"
+msgstr "IrLAP"
+
+#: src/netstatus-iface.c:1160
+#, c-format
+msgid "SIOCGIFCONF error: %s"
+msgstr "SIOCGIFCONF ত্রুটি: %s"
+
+#: src/netstatus-iface.c:1253
+msgid "No network devices found"
+msgstr "কোন নেটওয়ার্ক ডিভাইস পাওয়া গেল না"
+
+#: src/netstatus-sysdeps.c:170
+#, c-format
+msgid "Cannot open /proc/net/dev: %s"
+msgstr "/proc/net/dev-কে খোলা গেল না: %s"
+
+#: src/netstatus-sysdeps.c:179
+msgid "Could not parse /proc/net/dev. Unknown format."
+msgstr "/proc/net/dev-কে পার্স করা গেল না - অজানা ফর্মা"
+
+#: src/netstatus-sysdeps.c:194 src/netstatus-sysdeps.c:320
+#, c-format
+msgid "Could not parse interface name from '%s'"
+msgstr "'%s'-এর থেকে ইন্টারফেসের নাম পার্স করা গেল না"
+
+#: src/netstatus-sysdeps.c:207 src/netstatus-sysdeps.c:462
+#, c-format
+msgid ""
+"Could not parse interface statistics from '%s'. prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+msgstr ""
+"%s'-এর থেকে ইন্টারফেসের নাম পার্স করা গেল না: prx_idx = %d; ptx_idx = %d; "
+"brx_idx = %d; btx_idx = %d;"
+
+#: src/netstatus-sysdeps.c:304
+#, fuzzy
+msgid "Could not parse /proc/net/wireless. Unknown format."
+msgstr "/proc/net/dev-কে পার্স করা গেল না - অজানা ফর্মা"
+
+#: src/netstatus-sysdeps.c:331
+#, fuzzy, c-format
+msgid "Could not parse wireless details from '%s'. link_idx = %d;"
+msgstr "'%s'-এর থেকে ইন্টারফেসের নাম পার্স করা গেল না"
+
+#: src/netstatus-sysdeps.c:415
+#, c-format
+msgid "Could not parse command line '%s': %s"
+msgstr "কমান্ড লাইন '%s' পার্স করা গেল না : %s"
+
+#: src/netstatus-sysdeps.c:452
+msgid "Could not parse 'netstat' output. Unknown format"
+msgstr "'netstat'-এর আউটপুট পার্স করা গেল না - অজানা ফর্মা"
+
+#: src/netstatus-util.c:152
+msgid "Disconnected"
+msgstr "সংযোগ বিচ্ছিন্ন"
+
+#: src/netstatus-util.c:155
+msgid "Idle"
+msgstr "কোন তথ্য সমপ্রচার হচ্ছে না"
+
+#: src/netstatus-util.c:158
+msgid "Sending"
+msgstr "তথ্য সমপ্রচার হচ্ছে"
+
+#: src/netstatus-util.c:161
+msgid "Receiving"
+msgstr "তথ্য আদান করা হচ্ছে"
+
+#: src/netstatus-util.c:164
+msgid "Sending/Receiving"
+msgstr "আদানপ্রদান চলছে"
+
+#, fuzzy
+#~ msgid "Cannot open /proc/net/wireless: %s"
+#~ msgstr "/proc/net/dev-কে খোলা গেল না: %s"
+
+#~ msgid "dialog1"
+#~ msgstr "ডায়ালগ১"

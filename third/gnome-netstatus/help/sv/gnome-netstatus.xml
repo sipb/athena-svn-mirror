@@ -1,0 +1,271 @@
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "0.11" >
+  <!ENTITY manrevision "2.0.1" >
+  <!ENTITY date "januari 2004" >
+  <!ENTITY app "<application>N&auml;tverks&ouml;vervakare</application>" >
+  <!ENTITY appname "N&auml;tverks&ouml;vervakare" >
+]><!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Feb 12, 2002
+--><!-- =============Document Header ============================= -->
+<article id="index" lang="sv"><!-- please do not change the id; for translations, change lang to --><!-- appropriate code -->
+
+
+  <articleinfo> 
+    <title>Handbok f&ouml;r &appname;, version &manrevision; </title>       
+    <copyright><year>2004</year> <holder>Sun Microsystems</holder>  </copyright><!-- translators: uncomment this:
+
+  <copyright>
+   <year>2004</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+
+    <publisher><publishername>Dokumentationsprojekt f&ouml;r GNOME</publishername>  </publisher><!-- This file  contains link to license for the documentation (GNU FDL), and 
+        other legal stuff such as "NO WARRANTY" statement. Please do not change 
+	any of this. -->&legal;  <authorgroup> 
+      <author><firstname>Suns</firstname> <surname>GNOME-dokumentationsteam</surname> <affiliation><orgname>Sun Microsystems</orgname> </affiliation>
+      </author><!-- This is appropriate place for other contributors: translators,
+      maintainers,  etc. Commented out by default.
+       <othercredit role="translator">
+	<firstname>Latin</firstname> 
+	<surname>Translator 1</surname> 
+	<affiliation> 
+	  <orgname>Latin Translation Team</orgname> 
+	  <address> <email>translator@gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+
+    </authorgroup>
+
+
+    <revhistory>
+      <revision><revnumber>Handbok f&ouml;r panelprogrammet &appname;, version &manrevision;</revnumber> <date>&date;</date> <revdescription> 
+          <para role="author">Suns GNOME-dokumentationsteam</para>
+          <para role="publisher">Dokumentationsprojekt f&ouml;r GNOME </para>
+	</revdescription> 
+      </revision> 
+    </revhistory><releaseinfo>I den h&auml;r handboken beskrivs version &appversion; av &app;.</releaseinfo>  <legalnotice> 
+      <title>Feedback</title> 
+      <para>F&ouml;lj instruktionerna p&aring; <ulink url="ghelp:gnome-feedback" type="help">GNOME:s feedbacksida</ulink> om du vill rapportera ett fel eller ge f&ouml;rslag betr&auml;ffande panelprogrammet &app; eller den h&auml;r handboken.  </para><!-- Translators may also add here feedback address for translations -->
+
+    </legalnotice> 
+  </articleinfo><!-- ============= Introduction  ================================ --><indexterm zone="index"> <primary>Panelprogrammet N&auml;tverks&ouml;vervakare</primary> </indexterm> <sect1 id="gnome-netstatus-intro">
+    <title>Introduktion</title>
+
+    <figure id="gnome-netstatus-fig"> 
+      <title>Panelprogrammet &appname;</title> 
+      <screenshot><mediaobject><imageobject><imagedata fileref="figures/gnome-netstatus-txrx.png" format="PNG"/> 
+         
+           
+          
+           
+            </imageobject><textobject><phrase>Panelprogrammet &appname;.</phrase> 
+           
+         
+       </textobject></mediaobject></screenshot> 
+    </figure>
+
+    <para>Med panelprogrammet &app; kan du &ouml;vervaka trafiken &ouml;ver en n&auml;tverksanslutning. </para>
+
+    <sect2 id="gnome-netstatus-intro-add">
+      <title>S&aring; h&auml;r l&auml;gger du till &appname; i en panel </title>
+      <para>Om du vill l&auml;gga till &app; i en panel h&ouml;gerklickar du i panelen och v&auml;ljer sedan  <menuchoice><guimenu>L&auml;gg till i panelen</guimenu> <guisubmenu>Internet</guisubmenu> <guimenuitem>&appname;</guimenuitem> </menuchoice>. </para>
+    </sect2>
+
+  </sect1><!-- ============= Usage  ================================ -->
+
+  
+  <sect1 id="gnome-netstatus-usage">
+    <title>Anv&auml;ndning </title>
+    <para>Panelprogramikonen visar n&auml;tverksstatus p&aring; f&ouml;ljande s&auml;tt: </para>
+    <informaltable frame="all">
+      <tgroup cols="2" colsep="1" rowsep="1">
+        <colspec colname="COLSPEC0" colwidth="50*"/>
+        <colspec colname="COLSPEC1" colwidth="50*"/>
+        <thead>
+          <row valign="top">
+            <entry colname="COLSPEC0">
+              <para>Ikon</para></entry>
+            <entry colname="COLSPEC1">
+              <para>N&auml;tverksstatus </para></entry>
+          </row>
+        </thead>
+        <tbody>
+          <row valign="top">
+            <entry>
+              <para>
+                <inlinemediaobject>
+                  <imageobject><imagedata fileref="figures/gnome-netstatus-idle.png" format="PNG"/>  </imageobject>
+                  <textobject><phrase>Visar ikon f&ouml;r inaktivt n&auml;tverk.</phrase>  </textobject>
+                </inlinemediaobject>
+              </para>
+            </entry>
+            <entry>
+              <para>Tomg&aring;ng  </para>
+            </entry>
+          </row>
+          <row valign="top">
+            <entry>
+              <para>
+                <inlinemediaobject>
+                  <imageobject><imagedata fileref="figures/gnome-netstatus-tx.png" format="PNG"/>  </imageobject>
+                  <textobject><phrase>Visar ikon f&ouml;r &ouml;verf&ouml;ring.</phrase>  </textobject>
+                </inlinemediaobject>
+              </para>
+            </entry>
+            <entry>
+              <para>&Ouml;verf&ouml;ring  </para>
+            </entry>
+          </row>
+          <row valign="top">
+            <entry>
+              <para>
+                <inlinemediaobject>
+                  <imageobject><imagedata fileref="figures/gnome-netstatus-rx.png" format="PNG"/>  </imageobject>
+                  <textobject><phrase>Visar ikon f&ouml;r mottagande.</phrase>  </textobject>
+                </inlinemediaobject>
+              </para>
+            </entry>
+            <entry>
+              <para>Mottagande  </para>
+            </entry>
+          </row>
+          <row valign="top">
+            <entry>
+              <para>
+                <inlinemediaobject>
+                  <imageobject><imagedata fileref="figures/gnome-netstatus-txrx.png" format="PNG"/>  </imageobject>
+                  <textobject><phrase>Visar ikon f&ouml;r &ouml;verf&ouml;ring och mottagande.</phrase>  </textobject>
+                </inlinemediaobject>
+              </para>
+            </entry>
+            <entry>
+              <para>&Ouml;verf&ouml;ring och mottagande  </para>
+            </entry>
+          </row>
+          <row valign="top">
+            <entry>
+              <para>
+                <inlinemediaobject>
+                  <imageobject><imagedata fileref="figures/gnome-netstatus-disconn.png" format="PNG"/>  </imageobject>
+                  <textobject><phrase>Visar ikon f&ouml;r fr&aring;nkoppling.</phrase>  </textobject>
+                </inlinemediaobject>
+              </para>
+            </entry>
+            <entry>
+              <para>Fr&aring;nkoppling  </para>
+            </entry>
+          </row>
+          <row valign="top">
+            <entry>
+              <para>
+                <inlinemediaobject>
+                  <imageobject><imagedata fileref="figures/gnome-netstatus-error.png" format="PNG"/>  </imageobject>
+                  <textobject><phrase>Visar ikon f&ouml;r fel.</phrase>  </textobject>
+                </inlinemediaobject>
+              </para>
+            </entry>
+            <entry>
+              <para>Felet </para>
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+  </sect1>
+
+  <sect1 id="gnome-netstatus-props">
+    <title>Egenskaper </title>
+    <para>Om du vill visa egenskaperna f&ouml;r en n&auml;tverksanslutning, h&ouml;gerklickar du p&aring; panelprogrammet och v&auml;ljer <guimenuitem>Egenskaper</guimenuitem>.  </para>
+    <para>Dialogf&ouml;nstret <guilabel>Anslutningsegenskaper</guilabel> har tv&aring; flikar:  </para>
+    <itemizedlist>
+      <listitem>
+        <para><xref linkend="gnome-netstatus-props-gen"/>  </para>
+      </listitem>
+      <listitem>
+        <para><xref linkend="gnome-netstatus-props-supp"/> </para>
+      </listitem>
+    </itemizedlist>
+
+    <sect2 id="gnome-netstatus-props-gen">
+      <title>Allm&auml;nt </title>
+      <variablelist>
+        <varlistentry><term><guilabel>Anslutning</guilabel></term>  <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><guilabel>Namn</guilabel>  </para>
+                <para>Du anv&auml;nder den h&auml;r nedrullningsbara kombinationsrutan n&auml;r du vill ange namnet p&aring; den n&auml;tverksanslutning som ska &ouml;vervakas.  </para>
+              </listitem>
+              <listitem>
+                <para><guilabel>Status</guilabel>  </para>
+                <para>Visar aktuell status f&ouml;r den &ouml;vervakade n&auml;tverksanslutningen.  </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry><term><guilabel>Aktivitet</guilabel></term>  <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><guilabel>Mottaget</guilabel>  </para>
+                <para>Visar den m&auml;ngd information som mottagits &ouml;ver den &ouml;vervakade n&auml;tverksanslutningen.  </para>
+              </listitem>
+              <listitem>
+                <para><guilabel>Skickat</guilabel>  </para>
+                <para>Visar den m&auml;ngd information som skickats &ouml;ver den &ouml;vervakade n&auml;tverksanslutningen. </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </sect2>
+
+    <sect2 id="gnome-netstatus-props-supp">
+      <title>St&ouml;d </title>
+      <variablelist>
+        <varlistentry><term><guilabel>Internet-protokoll (IPv4)</guilabel></term>  <listitem>
+            <itemizedlist>
+              <listitem>
+                <para><guilabel>Adress</guilabel>  </para>
+                <para>Visar IP-adressen f&ouml;r den &ouml;vervakade n&auml;tverksanslutningen.  </para>
+              </listitem>
+              <listitem>
+                <para><guilabel>M&aring;l</guilabel>  </para>
+                <para>Visar IP-adressen f&ouml;r modemet hos Internet-leverant&ouml;ren. Den h&auml;r egenskapen visas bara f&ouml;r uppringda anslutningar.  </para>
+              </listitem>
+              <listitem>
+                <para><guilabel>Uts&auml;ndning</guilabel>  </para>
+                <para>Visar uts&auml;ndningsadressen f&ouml;r den &ouml;vervakade n&auml;tverksanslutningen. Den h&auml;r egenskapen visas inte f&ouml;r lokala anslutningar.  </para>
+              </listitem>
+              <listitem>
+                <para><guilabel>Deln&auml;tmask</guilabel>  </para>
+                <para>Visar deln&auml;tmasken f&ouml;r den &ouml;vervakade n&auml;tverksanslutningen.  </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+        <varlistentry><term>N&auml;tverksspecifikt avsnitt</term>  <listitem>
+            <itemizedlist>
+              <listitem>
+                <para>Rubriken f&ouml;r det h&auml;r avsnittet indikerar maskinvarutypen f&ouml;r den &ouml;vervakade n&auml;tverksanslutningen.  </para>
+              </listitem>
+              <listitem>
+                <para><guilabel>Adress</guilabel>  </para>
+                <para>Visar maskinvaruadressen f&ouml;r den &ouml;vervakade n&auml;tverksanslutningen. </para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+   </sect2>
+
+ </sect1>
+</article>
