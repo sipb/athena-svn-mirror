@@ -4,13 +4,13 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/Imakefile,v $
-/**/#	$Author: probe $
-/**/#	$Id: Imakefile,v 1.5 1993-11-24 14:38:42 probe Exp $
+/**/#	$Author: cfields $
+/**/#	$Id: Imakefile,v 1.6 1995-12-13 23:49:41 cfields Exp $
 /**/#
 
 SRCS = zshutdown_notify.c
 OBJS = zshutdown_notify.o
 
-SimpleProgram(zshutdown_notify,$(OBJS) $(ZLIB),$(ZLIBS),$(ATHETCDIR))
+SimpleProgram(zshutdown_notify,$(OBJS) $(ZLIB),$(ZLIBS),$(ATHRETCDIR))
 install_man(zshutdown_notify.8,zshutdown_notify.8)
 create_depend($(SRCS))
