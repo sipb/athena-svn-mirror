@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.13 1990-11-14 14:44:08 lwvanels Exp $
+ *	$Id: t_ask.c,v 1.14 1991-01-03 15:35:25 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.13 1990-11-14 14:44:08 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.14 1991-01-03 15:35:25 lwvanels Exp $";
 #endif
 #endif
 
@@ -187,7 +187,8 @@ t_ask(Request,topic)
       break;
     }
 
-  if (instance != Request->requester.instance)
+  if ((instance != Request->requester.instance) &&
+      (strcmp(Request->requester.username,Request->target.username) == 0))
     {
       printf("You are now %s [%d].\n",Request->requester.username,
 	     Request->requester.instance);
