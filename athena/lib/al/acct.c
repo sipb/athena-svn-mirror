@@ -17,7 +17,7 @@
  * functions for creating and reverting local accounts.
  */
 
-static const char rcsid[] = "$Id: acct.c,v 1.5 1997-11-11 02:26:32 ghudson Exp $";
+static const char rcsid[] = "$Id: acct.c,v 1.6 1997-11-15 07:31:23 ghudson Exp $";
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -91,7 +91,6 @@ int al_acct_create(const char *username, const char *cryptpw,
 {
   int retval = AL_SUCCESS, nwarns = 0, warns[6], i;
   struct al_record record;
-  pid_t *newpids;
 
   /* Get and lock the session record. */
   retval = al__get_session_record(username, &record);
@@ -148,21 +147,9 @@ int al_acct_create(const char *username, const char *cryptpw,
 	  if (record.pids[i] == sessionpid)
 	    break;
 	}
-
+      /* al__get_session_record() leaves an extra slot in record.pids. */
       if (i == record.npids)
-	{
-	  newpids = malloc((record.npids + 1) * sizeof(pid_t));
-	  if (!newpids)
-	    {
-	      retval = AL_ENOMEM;
-	      goto cleanup;
-	    }
-	  memcpy(newpids, record.pids, record.npids * sizeof(pid_t));
-	  newpids[record.npids] = sessionpid;
-	  free(record.pids);
-	  record.pids = newpids;
-	  record.npids++;
-	}
+	record.pids[record.npids++] = sessionpid;
     }
 
   retval = al__setup_homedir(username, &record, havecred, tmphomedir);
