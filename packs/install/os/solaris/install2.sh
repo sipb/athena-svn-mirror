@@ -28,8 +28,14 @@ ln -s var/rtmp /root/tmp
 
 
 echo "Mount var, usr , var/usr/vice..."
-/sbin/mount  $vardrive /root/var
-/sbin/mount  $usrdrive /root/usr
+case $partitioning in
+many)
+    /sbin/mount  $vardrive /root/var
+    /sbin/mount  $usrdrive /root/usr
+    ;;
+*)
+    ;;
+esac
 mkdir /root/var/usr
 mkdir /root/var/usr/vice
 mkdir /root/var/tmp
@@ -169,7 +175,14 @@ sed  -e "s/RVD/Workstation/g" < /srvd/.rvdinfo >> /root/etc/athena/version
 
 echo "Updating vfstab"
 rm -f etc/vfstab
-sed "s/@DISK@/$drive/g" /srvd/etc/vfstab.std > etc/vfstab
+case $partitioning in
+many)
+    sed "s/@DISK@/$drive/g" /srvd/etc/vfstab.std > etc/vfstab
+    ;;
+*)
+    sed "s/@DISK@/$drive/g;/d0s5/d;/d0s6/d" /srvd/etc/vfstab.std > etc/vfstab
+    ;;
+esac
 chmod 644 etc/vfstab
 cp /dev/null etc/named.local
 
@@ -224,10 +237,14 @@ cd /
 
 umount /var/usr/vice > /dev/null 2>&1
 fsck -y -F ufs $rcachedrive
-umount /root/var > /dev/null 2>&1
-fsck -y -F ufs $rvardrive
-umount /root/usr
-fsck -y -F ufs $rusrdrive
+case $partitioning in
+many)
+    umount /root/var > /dev/null 2>&1
+    fsck -y -F ufs $rvardrive
+    umount /root/usr
+    fsck -y -F ufs $rusrdrive
+    ;;
+esac
 /sbin/umount /root > /dev/null 2>&1
 /usr/sbin/fsck -y -F ufs $rrootdrive
 sleep 5
