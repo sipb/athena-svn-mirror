@@ -52,7 +52,11 @@ tail -1 /etc/athena/version | awk '{print $5}'
 echo "   O/S pack attached: " `attach | awk '$2=="/os" {print $1;s=1} END {if (s==0) print "none"}'`
 echo "System pack attached: " `attach | awk '$2=="/srvd" {print $1;s=1} END {if (s==0) print "none"}'`
 echo $N "System pack is: $C"
-cat /srvd/.rvdinfo
+if [ -f /srvd/.rvdinfo ]; then
+	cat /srvd/.rvdinfo
+else
+	echo "none"
+fi
 echo "Hesiod information:"
 hesinfo `hostname` cluster | awk '{printf("\t%s\n", $0)}'
 echo "Address: " $ADDR
