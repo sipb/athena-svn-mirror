@@ -6,8 +6,8 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
- *      $Author: opus $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.5 1988-02-25 19:16:48 opus Exp $
+ *      $Author: jtkohl $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v 1.6 1988-06-17 17:10:06 jtkohl Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -41,6 +41,7 @@
 #define MAXRETRIES 2
 
 extern char *malloc();
+extern Code_t send_outgoing();
 
 #ifdef vax
 #define MACHINE "vax"
