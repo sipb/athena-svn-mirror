@@ -9,12 +9,12 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/incarnate.c,v $
- *	$Id: incarnate.c,v 1.1 1997-04-30 17:34:30 ghudson Exp $
- *	$Author: ghudson $
+ *	$Id: incarnate.c,v 1.2 1998-12-18 18:23:00 rbasch Exp $
+ *	$Author: rbasch $
  */
 
 #if !defined(SABER) && !defined(lint)
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/incarnate.c,v 1.1 1997-04-30 17:34:30 ghudson Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/incarnate.c,v 1.2 1998-12-18 18:23:00 rbasch Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -251,7 +251,7 @@ char *client_nl_service_name(void)
   if (nlserv == NULL)
     {
       fprintf(stderr, "%s: out of memory, giving up!\n", clt_name);
-      return FATAL;
+      return NULL;
     }
 
   strcpy(nlserv, service_name);

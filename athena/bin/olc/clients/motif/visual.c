@@ -9,8 +9,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/visual.c,v $
- *	$Id: visual.c,v 1.10 1992-06-11 17:14:21 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: visual.c,v 1.11 1998-12-18 18:23:08 rbasch Exp $
+ *	$Author: rbasch $
  */
 
 #include <mit-copyright.h>
@@ -334,7 +334,7 @@ MakeDialogs()
  */
 
   w = w_motd_dlg = XmCreateInformationDialog(main_form, "motd_dlg", NULL, 0);
-  XtAddCallback(w, XmNokCallback, dlg_ok, MOTD_BTN);
+  XtAddCallback(w, XmNokCallback, dlg_ok, (XtPointer) MOTD_BTN);
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_CANCEL_BUTTON));
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
 
@@ -345,7 +345,7 @@ MakeDialogs()
   MuSetEmacsBindings(XmSelectionBoxGetChild(w, XmDIALOG_TEXT));
 
   w = w_help_dlg = XmCreateInformationDialog(main_form, "help_dlg", NULL, 0);
-  XtAddCallback(w, XmNokCallback, dlg_ok, HELP_BTN);
+  XtAddCallback(w, XmNokCallback, dlg_ok, (XtPointer) HELP_BTN);
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_CANCEL_BUTTON));
   XtDestroyWidget(XmMessageBoxGetChild(w, XmDIALOG_HELP_BUTTON));
 

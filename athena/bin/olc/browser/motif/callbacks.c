@@ -11,11 +11,11 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v $
- *      $Author: ghudson $
+ *      $Author: rbasch $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.14 1997-04-30 17:31:44 ghudson Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.15 1998-12-18 18:22:43 rbasch Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -26,6 +26,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <Xm/Text.h>
 #include <Xm/SelectioB.h>
 #include <Xm/MessageB.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <ctype.h>
