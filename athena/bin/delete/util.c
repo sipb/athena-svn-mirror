@@ -1,5 +1,5 @@
 /*
- * $Id: util.c,v 1.32 1999-01-22 23:09:09 ghudson Exp $
+ * $Id: util.c,v 1.33 2002-11-20 19:09:24 zacheiss Exp $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Id: util.c,v 1.32 1999-01-22 23:09:09 ghudson Exp $";
+     static char rcsid_util_c[] = "$Id: util.c,v 1.33 2002-11-20 19:09:24 zacheiss Exp $";
 #endif
 
 #include <stdio.h>
@@ -41,11 +41,10 @@ char user_name[];  /* RETURN */
      char *ptr, *q;
      
      (void) strcpy(user_name, real_name);
-     while (ptr = strrindex(user_name, ".#")) {
-	  for (q = ptr; *(q + 2); q++)
-	       *q = *(q + 2);
-	  *q = '\0';
-     }
+     ptr = strrindex(user_name, ".#");
+     for (q = ptr; *(q + 2); q++)
+       *q = *(q + 2);
+     *q = '\0';
      return (user_name);
 }
 

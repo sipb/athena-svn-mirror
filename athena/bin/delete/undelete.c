@@ -1,5 +1,5 @@
 /*
- * $Id: undelete.c,v 1.29 1999-01-22 23:09:07 ghudson Exp $
+ * $Id: undelete.c,v 1.30 2002-11-20 19:09:24 zacheiss Exp $
  *
  * This program is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Id: undelete.c,v 1.29 1999-01-22 23:09:07 ghudson Exp $";
+     static char rcsid_undelete_c[] = "$Id: undelete.c,v 1.30 2002-11-20 19:09:24 zacheiss Exp $";
 #endif
 
 #include <stdio.h>
@@ -386,26 +386,25 @@ char *real_name, *user_name;
      (void) strcpy(old_name, real_name);
      (void) strcpy(new_name, real_name);
 
-     while (ptr = strrindex(new_name, ".#")) {
-	  (void) convert_to_user_name(ptr, ptr);
-	  (void) strcpy(ptr, firstpart(ptr, buf));
-	  (void) strcpy(&old_name[ptr - new_name],
-			firstpart(&old_name[ptr - new_name], buf));
-	  if (rename(old_name, new_name)) {
-	       set_error(errno);
-	       (void) sprintf(error_buf, "renaming %s to %s",
-			      old_name, new_name);
-	       error(error_buf);
-	       return error_code;
-	  }
-	  if (ptr > new_name) {
-	       *--ptr = '\0';
-	       old_name[ptr - new_name] = '\0';
-	  }
+     ptr = strrindex(new_name, ".#");
+     (void) convert_to_user_name(ptr, ptr);
+     (void) strcpy(ptr, firstpart(ptr, buf));
+     (void) strcpy(&old_name[ptr - new_name],
+		   firstpart(&old_name[ptr - new_name], buf));
+     if (rename(old_name, new_name)) {
+       set_error(errno);
+       (void) sprintf(error_buf, "renaming %s to %s",
+		      old_name, new_name);
+       error(error_buf);
+       return error_code;
+     }
+     if (ptr > new_name) {
+       *--ptr = '\0';
+       old_name[ptr - new_name] = '\0';
      }
      if (retval = change_path(real_name, user_name)) {
-	  error("change_path");
-	  return retval;
+       error("change_path");
+       return retval;
      }
      
      return 0;
