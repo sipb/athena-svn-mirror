@@ -1,6 +1,0 @@
-#
-# $Id: hpux.rcf,v 1.1.1.1 2001-03-20 18:02:37 ghudson Exp $
-#
-# HPUX Runtime Configuration File
-#
-MinOsVer="10.20"
