@@ -6,7 +6,7 @@
 
 /**/###########################################################################
 /**/# Makefile generated from IMAKE_TEMPLATE and INCLUDE_IMAKEFILE
-/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.14 1991-09-22 12:15:41 lwvanels Exp $
+/**/# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/Imake.template,v 1.15 1992-01-10 20:04:45 lwvanels Exp $
 /**/#
 /**/# Platform-specific parameters may be set in the appropriate .cf
 /**/# configuration files.  Site-wide parameters may be set in the file
@@ -252,6 +252,11 @@
 				      function prototypes */
 #endif
 
+#ifndef UseSharedLibs
+#define UseSharedLibs           0 /* If 1, look for libraries first in
+                                     /usr/athena/lib/shared */
+#endif
+
 #ifndef HasVFork
 #if SystemV
 #define HasVFork		NO	/* not yet... */
@@ -319,6 +324,10 @@
 #else
 /* otherwise, it has int * signal returns */
 #define SigRetDef
+#endif
+
+#if UseSharedLibs
+LDFLAGS = -L/usr/athena/lib/shared
 #endif
 
 #define OptionDefines TermIODef PutenvDef ErrnoDef SelectMDef \
