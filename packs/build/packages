@@ -1,4 +1,4 @@
-# $Id: packages,v 1.174 2002-06-24 22:25:19 rbasch Exp $
+# $Id: packages,v 1.175 2002-07-22 19:21:26 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -141,7 +141,7 @@ third/db
 third/control-center		requires gnome-libs,libxml,libglade,esound,gdk-pixbuf,gnome-vfs
 third/diffutils			on solaris
 third/eel			requires librsvg
-third/emacs			requires hesiod,krb5
+third/emacs			requires hesiod,krb5,texinfo
 third/enscript
 third/esound			requires audiofile
 third/evolution			requires bonobo,libglade,gtkhtml,gnome-vfs,bonobo-conf,scrollkeeper,bison
@@ -217,7 +217,8 @@ third/sysinfo			on solaris,irix,linux
 third/talk			on solaris,irix
 third/tcp_wrappers		except linux
 third/tcsh			requires hesiod
-third/tetex
+third/tetex			requires texinfo
+third/texinfo
 third/top			except irix,linux
 third/traceroute		on solaris
 third/wcl			requires openmotif
