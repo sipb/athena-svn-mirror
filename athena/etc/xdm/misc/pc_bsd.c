@@ -30,6 +30,12 @@ long pc_init(pc_state **ps)
   return 0L;
 }
 
+long pc_destroy(pc_state *ps)
+{
+  free(ps);
+  return 0L;
+}
+
 long pc_freemessage(pc_message *m)
 {
   if (m == NULL)
@@ -228,7 +234,10 @@ long pc_openport(pc_port **pp, char *name)
       free(p);
       if (errcopy == EACCES)
 	return PCerrNotAllowed;
-      if (errcopy == ENOENT)
+      /* Hmmm. I've seen ECONNREFUSED when the listener has died.
+	 If you can also get it when the listener is backed up,
+	 we're screwed. */
+      if (errcopy == ENOENT || errcopy == ECONNREFUSED)
 	return PCerrNoListener;
       syslog(LOG_ERR, "connect returned %d\n", errcopy);
       return PCerrConnectFailed;
