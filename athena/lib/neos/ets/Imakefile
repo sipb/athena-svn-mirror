@@ -1,0 +1,43 @@
+/*
+ * Imakefile for the FX (file exchange) error tables
+ *
+ * $Author: probe $
+ * $Id: Imakefile,v 1.1 1991-06-30 15:45:07 probe Exp $
+ *
+ *
+ * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ */
+
+AnsiCC()
+
+.SUFFIXES: .et .o
+
+.et.c:
+	rm -f $*.o $*.c
+	compile_et $*.et
+	rm -f ../include/$*.h
+	mv $*.h ../include
+
+all:: rpc_err.o fxserver_err.o fxcl_err.o krb_err.o
+
+rpc_err.c: rpc_err.et
+rpc_err.o: rpc_err.c
+fxserver_err.c: fxserver_err.et
+fxserver_err.o: fxserver_err.c
+fxcl_err.c: fxcl_err.et
+fxcl_err.o: fxcl_err.c
+krb_err.c: krb_err.et
+krb_err.o: krb_err.c
+
+krb_err.et: mk_krb_err
+	./mk_krb_err > $@
+
+build_program(mk_krb_err,mk_krb_err.c,,-lkrb)
+
+clean::
+	rm -f core *.o *~ rpc_err.c fxserver_err.c fxcl_err.c \
+	krb_err.c krb_err.et mk_krb_err
