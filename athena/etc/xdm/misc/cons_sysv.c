@@ -61,6 +61,14 @@ int cons_fd(cons_state *c)
   return c->pty_fd;
 }
 
+int cons_fd_tty(cons_state *c)
+{
+  if (c == NULL || c->gotpty == 0)
+    return -1;
+
+  return c->tty_fd;
+}
+
 char *cons_name(cons_state *c)
 {
   if (c == NULL || c->gotpty == 0)
@@ -83,15 +91,27 @@ void cons_io(cons_state *c)
 
 int cons_getpty(cons_state *c)
 {
+  char *ttyname;
+
   if (c == NULL || c->gotpty == 1)
     return 1;
 
+#ifdef notdef
+  /* This code seems to buy you a "/dev/pts/#" device. I'd like our
+     pty to look like xterm's, so I stole the block outside of this
+     ifdef. Other code in this routine was adapted from xconsole. */
   if ((c->pty_fd = open ("/dev/ptmx", O_RDWR)) < 0)
     return 1;
+  strcpy(c->ttydev, ptsname(c->pty_fd));
+#endif
+
+  ttyname = _getpty(&(c->pty_fd), O_RDWR, 0622, 0);
+  if (ttyname == NULL)
+    return 1;
+  strcpy(c->ttydev, ttyname);
 
   grantpt(c->pty_fd);
   unlockpt(c->pty_fd);
-  strcpy(c->ttydev, ptsname(c->pty_fd));
   if ((c->tty_fd = open(c->ttydev, O_RDWR)) >= 0)
     {
       (void)ioctl(c->tty_fd, I_PUSH, "ttcompat");
