@@ -104,6 +104,10 @@ fi
 sed -e 's%$source/packs/build/version%version%' < $sourcedir/packs/build/do.sh > $source_name/do.sh
 cp $sourcedir/packs/build/version $source_name
 
+# Force all source files to the same timestamp, to prevent third-party
+# build systems from thinking some are out of date with respect to others.
+find $source_name -print | xargs touch -t `date +%Y%m%d%H%M.%S`
+
 # Do the `do.sh dist' step
 (cd $source_name; \
  $sourcedir/packs/build/do.sh  \
