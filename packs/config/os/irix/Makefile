@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1999-02-23 20:50:41 rbasch Exp $
+# $Id: Makefile,v 1.6 1999-03-31 15:11:39 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -35,7 +35,9 @@ install:
 	install -c -m 0644 ../../aliases ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 4DWm ${DESTDIR}${APPDEFS}
+	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
 	install -c -m 0444 DefaultIconList ${DESTDIR}${XDMDIR}
+	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 TIMEZONE ${DESTDIR}${ETCDIR}
 	install -c -m 0644 Toolchest ${DESTDIR}${APPDEFS}

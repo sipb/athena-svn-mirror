@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1998-12-25 19:32:53 ghudson Exp $
+# $Id: Makefile,v 1.2 1999-03-31 15:11:49 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -41,6 +41,8 @@ install:
 	install -c -m 0644 Athena5.kt ${DESTDIR}${KEYTABLES}
 	install -c -m 0644 AthenaModifiers ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 AthenaType5Keypad ${DESTDIR}${KEYMAPS}
+	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
+	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 SunModifiers ${DESTDIR}${KEYMAPS}
 	install -c -m 0644 SunType5Keypad ${DESTDIR}${KEYMAPS}

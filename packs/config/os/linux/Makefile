@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1999-02-04 17:25:34 ghudson Exp $
+# $Id: Makefile,v 1.2 1999-03-31 15:11:45 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -16,6 +16,8 @@ install:
 	mkdir -p ${DESTDIR}${APPDEFS}
 	install -c -m 0644 ../../aliases ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${ATHX11LIB}
+	install -c -m 0644 Bugme ${DESTDIR}${APPDEFS}
+	install -c -m 0644 Dash ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Mwm ${DESTDIR}${APPDEFS}
 	install -c -m 0644 athinfo.defs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
