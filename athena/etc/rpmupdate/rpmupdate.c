@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.27 2003-05-13 20:28:53 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.28 2004-03-23 21:19:54 amb Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -858,7 +858,7 @@ static char *fudge_arch_in_filename(char *filename)
 {
   static const char *arches[] = { "i386", "i486", "i586", "i686", NULL };
   const char *p;
-  int i, j, len;
+  int i, j, k, len;
   struct utsname buf;
   char *newfile;
   struct stat statbuf;
@@ -898,9 +898,9 @@ static char *fudge_arch_in_filename(char *filename)
    * new string with the highest version of the architecture available
    * and free the old one.  
    */
-  for(i = j; i >= 0; i--)
+  for (k = j; k >= 0; k--)
     {
-      easprintf(&newfile, "%.*s%s%s", p - filename, filename, arches[i],
+      easprintf(&newfile, "%.*s%s%s", p - filename, filename, arches[k],
 		p + strlen(arches[i]));
       if (!stat(newfile,&statbuf))
 	{
