@@ -3,7 +3,7 @@
 # MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.4 1997-03-20 23:02:43 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sgi/inetd.conf.athena,v 1.5 1997-07-04 00:55:02 ghudson Exp $
 #
 
 # Services moved from SGI's inetd.conf to be switched.
@@ -19,7 +19,7 @@ finger	stream	tcp	nowait	unswitched	guest	/usr/etc/fingerd	fingerd
 
 # Athena services.
 
-ntalk	dgram	udp	wait	unswitched	root	/usr/athena/etc/ntalkd	ntalkd
+ntalk	dgram	udp	wait	unswitched	root	/usr/athena/etc/talkd	ntalkd
 telnet	stream	tcp	nowait	switched	root	/etc/athena/telnetd	telnetd -a off
 kshell	stream	tcp	nowait	switched	root	/usr/athena/etc/kshd	kshd -k
 klogin	stream	tcp	nowait	switched	root	/usr/athena/etc/klogind	klogind -k
