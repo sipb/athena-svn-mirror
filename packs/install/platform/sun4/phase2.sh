@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.13 1996-04-26 15:44:24 miki Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.14 1996-04-26 15:52:22 miki Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -217,6 +217,7 @@ cpio -idm </srvd/install/var.cpio
 #ln -s /srvd/var/sadm sadm
 mkdir sadm
 (cd /os/var/sadm;  tar cf - . ) | ( cd /root/var/sadm; tar xf - . )
+cd /root/var
 mkdir tmp 2>/dev/null
 chmod 1777 tmp
 
