@@ -709,8 +709,17 @@ getterminaltype(name)
 	    my_state_is_wont(TELOPT_ENCRYPT))
 	    encrypt_failure();
 
-	if (!EncryptStartInput() || !EncryptStartOutput())
-	    encrypt_failure();
+	while (!EncryptStartInput()) {
+	    if (time (0) > timeout)
+		encrypt_failure();
+	    ttloop();
+	}
+
+	while (!EncryptStartOutput()) {
+	    if (time (0) > timeout)
+		encrypt_failure();
+	    ttloop();
+	}
 
 	while (!encrypt_is_encrypting()) {
 	    if (time(0) > timeout)
