@@ -4,4 +4,7 @@ AC_INIT(panel-wrapper.c)
 AC_PROG_CC
 AC_PROG_INSTALL
 
+dnl Temporary workaround for IRIX
+AC_CHECK_LIB(intl, gettext)
+
 AC_OUTPUT(Makefile)
