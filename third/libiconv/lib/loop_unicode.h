@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 1999-2001 Free Software Foundation, Inc.
+ * Copyright (C) 1999-2002 Free Software Foundation, Inc.
  * This file is part of the GNU LIBICONV Library.
  *
  * The GNU LIBICONV Library is free software; you can redistribute it
@@ -144,7 +144,7 @@ static int unicode_transliterate (conv_t cd, ucs4_t wc,
       cd->ostate = backup_state;
       outptr = backup_outptr;
       outleft = backup_outleft;
-      if (sub_outcount < 0)
+      if (sub_outcount != RET_ILUNI)
         return RET_TOOSMALL;
     }
   }
@@ -162,6 +162,7 @@ static size_t unicode_loop_convert (iconv_t icd,
   unsigned char* outptr = (unsigned char*) *outbuf;
   size_t outleft = *outbytesleft;
   while (inleft > 0) {
+    state_t last_istate = cd->istate;
     ucs4_t wc;
     int incount;
     int outcount;
@@ -169,6 +170,21 @@ static size_t unicode_loop_convert (iconv_t icd,
     if (incount < 0) {
       if (incount == RET_ILSEQ) {
         /* Case 1: invalid input */
+        if (cd->discard_ilseq) {
+          switch (cd->iindex) {
+            case ei_ucs4: case ei_ucs4be: case ei_ucs4le:
+            case ei_utf32: case ei_utf32be: case ei_utf32le:
+            case ei_ucs4internal: case ei_ucs4swapped:
+              incount = 4; break;
+            case ei_ucs2: case ei_ucs2be: case ei_ucs2le:
+            case ei_utf16: case ei_utf16be: case ei_utf16le:
+            case ei_ucs2internal: case ei_ucs2swapped:
+              incount = 2; break;
+            default:
+              incount = 1; break;
+          }
+          goto outcount_zero;
+        }
         errno = EILSEQ;
         result = -1;
         break;
@@ -184,6 +200,7 @@ static size_t unicode_loop_convert (iconv_t icd,
     } else {
       /* Case 4: k bytes read, making up a wide character */
       if (outleft == 0) {
+        cd->istate = last_istate;
         errno = E2BIG;
         result = -1;
         break;
@@ -201,22 +218,26 @@ static size_t unicode_loop_convert (iconv_t icd,
         if (outcount != RET_ILUNI)
           goto outcount_ok;
       }
+      if (cd->discard_ilseq)
+        goto outcount_zero;
       outcount = cd->ofuncs.xxx_wctomb(cd,outptr,0xFFFD,outleft);
       if (outcount != RET_ILUNI)
         goto outcount_ok;
+      cd->istate = last_istate;
       errno = EILSEQ;
       result = -1;
       break;
     outcount_ok:
       if (outcount < 0) {
+        cd->istate = last_istate;
         errno = E2BIG;
         result = -1;
         break;
       }
       if (!(outcount <= outleft)) abort();
       outptr += outcount; outleft -= outcount;
-    outcount_zero: ;
     }
+  outcount_zero:
     if (!(incount <= inleft)) abort();
     inptr += incount; inleft -= incount;
   }
@@ -239,6 +260,7 @@ static size_t unicode_loop_reset (iconv_t icd,
   } else {
     size_t result = 0;
     if (cd->ifuncs.xxx_flushwc) {
+      state_t last_istate = cd->istate;
       ucs4_t wc;
       if (cd->ifuncs.xxx_flushwc(cd, &wc)) {
         unsigned char* outptr = (unsigned char*) *outbuf;
@@ -256,13 +278,17 @@ static size_t unicode_loop_reset (iconv_t icd,
           if (outcount != RET_ILUNI)
             goto outcount_ok;
         }
+        if (cd->discard_ilseq)
+          goto outcount_zero;
         outcount = cd->ofuncs.xxx_wctomb(cd,outptr,0xFFFD,outleft);
         if (outcount != RET_ILUNI)
           goto outcount_ok;
+        cd->istate = last_istate;
         errno = EILSEQ;
         return -1;
       outcount_ok:
         if (outcount < 0) {
+          cd->istate = last_istate;
           errno = E2BIG;
           return -1;
         }

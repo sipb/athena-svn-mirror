@@ -1,4 +1,4 @@
-# Makefile for libiconv/tests
+# -*- Makefile -*- for libiconv/tests
 
 #### Start of system configuration section. ####
 
@@ -38,7 +38,7 @@ srcdir = .
 CC = cl
 CFLAGS = $(MFLAGS) -W1 $(OPTIMFLAGS)
 INCLUDES = -I. -I$(srcdir) -I..\include -I$(srcdir)\..\include -I..\lib
-RM = del
+RM = -del
 
 #### End of system configuration section. ####
 
@@ -115,6 +115,7 @@ check : all table-from.exe table-to.exe ../src/iconv.exe uniq-u.exe
 	$(srcdir)\check-stateless.bat $(srcdir) ARMSCII-8
 	$(srcdir)\check-stateless.bat $(srcdir) Georgian-Academy
 	$(srcdir)\check-stateless.bat $(srcdir) Georgian-PS
+	$(srcdir)\check-stateless.bat $(srcdir) KOI8-T
 	$(srcdir)\check-stateless.bat $(srcdir) MuleLao-1
 	$(srcdir)\check-stateless.bat $(srcdir) CP1133
 	$(srcdir)\check-stateless.bat $(srcdir) TIS-620
@@ -133,7 +134,7 @@ check : all table-from.exe table-to.exe ../src/iconv.exe uniq-u.exe
 #	$(srcdir)\check-stateless.bat $(srcdir) KSC_5601 # redundant, see EUC-KR
 #	/* CJK encodings */
 	$(srcdir)\check-stateless.bat $(srcdir) EUC-JP
-	$(srcdir)\check-stateless.bat $(srcdir) SHIFT-JIS
+	$(srcdir)\check-stateless.bat $(srcdir) SHIFT_JIS
 	$(srcdir)\check-stateless.bat $(srcdir) CP932
 	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-JP
 	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-JP-2
@@ -152,6 +153,22 @@ check : all table-from.exe table-to.exe ../src/iconv.exe uniq-u.exe
 	$(srcdir)\check-stateless.bat $(srcdir) CP949
 	$(srcdir)\check-stateless.bat $(srcdir) JOHAB
 	$(srcdir)\check-stateful.bat $(srcdir) ISO-2022-KR
+#	/* DOS encodings */
+	$(srcdir)\check-stateless.bat $(srcdir) CP437
+	$(srcdir)\check-stateless.bat $(srcdir) CP737
+	$(srcdir)\check-stateless.bat $(srcdir) CP775
+	$(srcdir)\check-stateless.bat $(srcdir) CP852
+	$(srcdir)\check-stateless.bat $(srcdir) CP853
+	$(srcdir)\check-stateless.bat $(srcdir) CP855
+	$(srcdir)\check-stateless.bat $(srcdir) CP857
+	$(srcdir)\check-stateless.bat $(srcdir) CP858
+	$(srcdir)\check-stateless.bat $(srcdir) CP860
+	$(srcdir)\check-stateless.bat $(srcdir) CP861
+	$(srcdir)\check-stateless.bat $(srcdir) CP863
+	$(srcdir)\check-stateless.bat $(srcdir) CP864
+	$(srcdir)\check-stateless.bat $(srcdir) CP865
+	$(srcdir)\check-stateless.bat $(srcdir) CP869
+	$(srcdir)\check-stateless.bat $(srcdir) CP1125
 #	/* transliteration */
 	$(srcdir)\check-translit.bat $(srcdir) Quotes UTF-8 ISO-8859-1
 	$(srcdir)\check-translit.bat $(srcdir) Quotes UTF-8 ASCII

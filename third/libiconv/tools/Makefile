@@ -51,6 +51,7 @@ ALL = \
  armscii_8.h \
  georgian_academy.h \
  georgian_ps.h \
+ koi8_t.h \
  mulelao.h \
  cp1133.h \
  tis620.h \
@@ -92,15 +93,27 @@ ALL = \
  cp1046.h \
  cp1124.h \
  cp1129.h \
+ cp1161.h \
+ cp1162.h \
+ cp1163.h \
  cp437.h \
+ cp737.h \
  cp775.h \
  cp852.h \
+ cp853.h \
  cp855.h \
  cp857.h \
+ cp858.h \
+ cp860.h \
  cp861.h \
+ cp863.h \
  cp864.h \
  cp865.h \
  cp869.h \
+ cp1125.h \
+ jisx0213.h \
+ tds565.h \
+ riscos1.h \
  cjk_variants.h
 
 all : $(ALL)
@@ -147,7 +160,7 @@ iso8859_14.h : $(TABLESDIR)/unicode.org-mappings/ISO8859/8859-14.TXT 8bit_tab_to
 iso8859_15.h : $(TABLESDIR)/unicode.org-mappings/ISO8859/8859-15.TXT 8bit_tab_to_h
 	./8bit_tab_to_h ISO-8859-15 iso8859_15 < $<
 
-iso8859_16.h : $(TABLESDIR)/csets-new/ISO-8859-16.TXT 8bit_tab_to_h
+iso8859_16.h : $(TABLESDIR)/unicode.org-mappings/ISO8859/8859-16.TXT 8bit_tab_to_h
 	./8bit_tab_to_h ISO-8859-16 iso8859_16 < $<
 
 koi8_r.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MISC/KOI8-R.TXT 8bit_tab_to_h
@@ -237,14 +250,17 @@ hp_roman8.h : $(TABLESDIR)/glibc-2.1-iconv/HP-ROMAN8.TXT 8bit_tab_to_h
 nextstep.h : $(TABLESDIR)/clisp/NEXTSTEP.TXT 8bit_tab_to_h
 	./8bit_tab_to_h NEXTSTEP nextstep < $<
 
-armscii_8.h : $(TABLESDIR)/csets-1.6/AST166-8.TXT 8bit_tab_to_h
-	./8bit_tab_to_h ARMSCII-8 armscii_8 < $<
+armscii_8.h : $(TABLESDIR)/glibc-2.2.90-iconv/ARMSCII-8.TXT 8bit_tab_to_h
+	(echo '#' ; cat $<) | ./8bit_tab_to_h ARMSCII-8 armscii_8
 
 georgian_academy.h : $(TABLESDIR)/csets-1.6/GEO-ITA.TXT 8bit_tab_to_h
 	./8bit_tab_to_h GEORGIAN-ACADEMY georgian_academy < $<
 
 georgian_ps.h : $(TABLESDIR)/csets-1.6/GEO-PS.TXT 8bit_tab_to_h
 	./8bit_tab_to_h GEORGIAN-PS georgian_ps < $<
+
+koi8_t.h : $(TABLESDIR)/glibc-2.2.90-iconv/KOI8-T.TXT
+	(echo '#' ; cat $<) | ./8bit_tab_to_h KOI8-T koi8_t
 
 mulelao.h : $(TABLESDIR)/csets-new/MULELAO1.TXT 8bit_tab_to_h
 	./8bit_tab_to_h MULELAO-1 mulelao < $<
@@ -328,34 +344,34 @@ gb18030uni.h : GB18030uni.TXT cjk_tab_to_h
 GB18030uni.TXT : $(TABLESDIR)/gb18030/filled-GB18030.TXT
 	grep '^0x........	0x....$$' < $(TABLESDIR)/gb18030/filled-GB18030.TXT > $@
 
-cns11643_1.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_1.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0x1\)' < $< | sed -e 's,^0x1,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 1' cns11643_1 > $@
 
-cns11643_2.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_2.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0x2\)' < $< | sed -e 's,^0x2,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 2' cns11643_2 > $@
 
-cns11643_3.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_3.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0x3\)' < $< | sed -e 's,^0x3,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 3' cns11643_3 > $@
 
-cns11643_4a.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_4a.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0x4[0-3]\)' < $< | sed -e 's,^0x4,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 4 part a' cns11643_4a > $@
 
-cns11643_4b.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_4b.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0x4[4-7]\)' < $< | sed -e 's,^0x4,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 4 part b' cns11643_4b > $@
 
-cns11643_5.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_5.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0x5\)' < $< | sed -e 's,^0x5,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 5' cns11643_5 > $@
 
-cns11643_6.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_6.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0x6\)' < $< | sed -e 's,^0x6,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 6' cns11643_6 > $@
 
-cns11643_7.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_7.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0x7\)' < $< | sed -e 's,^0x7,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 7' cns11643_7 > $@
 
-cns11643_15.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_15.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	grep '^\(#\|0xF\)' < $< | sed -e 's,^0xF,0x,' | ./cjk_tab_to_h 'CNS 11643-1992 plane 15' cns11643_15 > $@
 
-cns11643_inv.h : $(TABLESDIR)/csets-new/CNS11643-Unicode31.TXT cjk_tab_to_h
+cns11643_inv.h : $(TABLESDIR)/csets-new/CNS11643-Unicode32.TXT cjk_tab_to_h
 	./cjk_tab_to_h 'CNS 11643-1992 planes 1-7, CNS 11643-1986 plane 15' cns11643_inv < $< > $@
 
 big5.h : $(TABLESDIR)/unicode.org-mappings/EASTASIA/OTHER/BIG5.TXT cjk_tab_to_h
@@ -367,8 +383,13 @@ cp950ext.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/WINDOWS/CP950.TXT 
 hkscs.h : $(TABLESDIR)/big5hkscs/HKSCS.TXT cjk_tab_to_h
 	(echo '#' ; cat $<) | ./cjk_tab_to_h HKSCS hkscs > $@
 
+# We use a modified KSC 5601 = KSX 1001 table. Jungshik Shin <jshin@mailaps.org>
+# reports that Prof. GIM Geongseog (KIM Keyongseok) <gimgs@asadal.cs.pusan.ac.kr>
+# (who represents South Korea in ISO/IEC JTC1 SC2/WG2 and SC22/WG20) says that
+# these two characters were added to KSX 1001 in December 1998, and one more
+# (Korean zip code sign) is likely to follow in 2002.
 ksc5601.h : $(TABLESDIR)/unicode.org-mappings/EASTASIA/KSC/KSC5601.TXT cjk_tab_to_h
-	./cjk_tab_to_h KSC5601.1987-0 ksc5601 < $< > $@
+	(cat $< ; echo '0xA2E6	0x20AC'; echo '0xA2E7	0x00AE') | ./cjk_tab_to_h KSC5601.1987-0 ksc5601 > $@
 
 uhc_1.h : $(TABLESDIR)/unicode.org-mappings/EASTASIA/KSC/KSC5601.TXT cjk_tab_to_h
 	(echo '#' ; grep '^0x\([8-9]\|A0\)' < $< ) | ./cjk_tab_to_h 'Unified Hangul Code part 1' uhc_1 > $@
@@ -395,9 +416,21 @@ cp1124.h : $(TABLESDIR)/aix-4.3.2/IBM-1124.TXT 8bit_tab_to_h
 cp1129.h : $(TABLESDIR)/aix-4.3.2/IBM-1129.TXT 8bit_tab_to_h
 	(echo '#' ; cat $<) | ./8bit_tab_to_h CP1129 cp1129
 
+cp1161.h : $(TABLESDIR)/glibc-2.2.90-iconv/IBM1161.TXT
+	(echo '#' ; cat $(TABLESDIR)/glibc-2.2-iconv/ASCII.TXT ; grep -v '^0x[0-7]' $<) | ./8bit_tab_to_h CP1161 cp1161
+
+cp1162.h : $(TABLESDIR)/glibc-2.2.90-iconv/IBM1162.TXT
+	(echo '#' ; cat $<) | ./8bit_tab_to_h CP1162 cp1162
+
+cp1163.h : $(TABLESDIR)/glibc-2.2.90-iconv/IBM1163.TXT
+	(echo '#' ; cat $<) | ./8bit_tab_to_h CP1163 cp1163
+
 
 cp437.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP437.TXT 8bit_tab_to_h
 	./8bit_tab_to_h CP437 cp437 < $<
+
+cp737.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP737.TXT 8bit_tab_to_h
+	./8bit_tab_to_h CP737 cp737 < $<
 
 cp775.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP775.TXT 8bit_tab_to_h
 	./8bit_tab_to_h CP775 cp775 < $<
@@ -405,14 +438,26 @@ cp775.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP775.TXT 8bit_tab
 cp852.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP852.TXT 8bit_tab_to_h
 	./8bit_tab_to_h CP852 cp852 < $<
 
+cp853.h : $(TABLESDIR)/other/CP853.TXT 8bit_tab_to_h
+	(echo '#'; cat $<) | ./8bit_tab_to_h CP853 cp853
+
 cp855.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP855.TXT 8bit_tab_to_h
 	./8bit_tab_to_h CP855 cp855 < $<
 
 cp857.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP857.TXT 8bit_tab_to_h
 	./8bit_tab_to_h CP857 cp857 < $<
 
+cp858.h : $(TABLESDIR)/windows-2000/CP858.TXT 8bit_tab_to_h
+	(echo '#' ; cat $<) | ./8bit_tab_to_h CP858 cp858
+
+cp860.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP860.TXT 8bit_tab_to_h
+	./8bit_tab_to_h CP860 cp860 < $<
+
 cp861.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP861.TXT 8bit_tab_to_h
 	./8bit_tab_to_h CP861 cp861 < $<
+
+cp863.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP863.TXT 8bit_tab_to_h
+	./8bit_tab_to_h CP863 cp863 < $<
 
 cp864.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP864.TXT 8bit_tab_to_h
 	./8bit_tab_to_h CP864 cp864 < $<
@@ -422,6 +467,19 @@ cp865.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP865.TXT 8bit_tab
 
 cp869.h : $(TABLESDIR)/unicode.org-mappings/VENDORS/MICSFT/PC/CP869.TXT 8bit_tab_to_h
 	./8bit_tab_to_h CP869 cp869 < $<
+
+cp1125.h : $(TABLESDIR)/csets-new/CP1125.TXT 8bit_tab_to_h
+	./8bit_tab_to_h CP1125 cp1125 < $<
+
+
+jisx0213.h : JISX0213.TXT cjk_tab_to_h
+	./cjk_tab_to_h JISX0213:2000 jisx0213 < $< > $@
+
+tds565.h : $(TABLESDIR)/recode-cvs/TDS565.TXT 8bit_tab_to_h
+	(echo '#'; cat $<) | ./8bit_tab_to_h TDS565 tds565 > $@
+
+riscos1.h : $(TABLESDIR)/recode-cvs/RISCOS-LATIN1.TXT 8bit_tab_to_h
+	(echo '#'; cat $<) | ./8bit_tab_to_h RISCOS-LATIN1 riscos1 > $@
 
 
 cjk_variants.h : $(TABLESDIR)/yasuoka/UniVariants cjk_variants

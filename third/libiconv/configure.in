@@ -1,4 +1,4 @@
-dnl Copyright (C) 1999-2001 Free Software Foundation, Inc.
+dnl Copyright (C) 1999-2002 Free Software Foundation, Inc.
 dnl This file is part of the GNU LIBICONV Library.
 dnl
 dnl The GNU LIBICONV Library is free software; you can redistribute it
@@ -16,12 +16,32 @@ dnl License along with the GNU LIBICONV Library; see the file COPYING.LIB.
 dnl If not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl Suite 330, Boston, MA 02111-1307, USA.  */
 
-AC_PREREQ(2.13)
+AC_PREREQ(2.52)
 
-AC_INIT(lib/iconv.c)
+AC_INIT(libiconv,1.8)
+
+PACKAGE=$PACKAGE_NAME
+VERSION=$PACKAGE_VERSION
+AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
+AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
+AC_SUBST(PACKAGE)
+AC_SUBST(VERSION)
+
+AC_CONFIG_SRCDIR(lib/iconv.c)
 AC_CONFIG_AUX_DIR(autoconf)
-AC_CONFIG_HEADER(lib/config.h)
+AC_CONFIG_HEADERS(lib/config.h src/config.h)
 AC_PROG_MAKE_SET
+
+dnl           checks for installer options
+
+AC_ARG_ENABLE([extra-encodings],
+  [AC_HELP_STRING([--enable-extra-encodings],
+                  [add support for a few rarely used encodings])],
+  [AC_DEFINE([ENABLE_EXTRA], 1,
+             [Define to 1 to enable a few rarely used encodings.])
+   USE_EXTRA_ENCODINGS=yes],
+  [USE_EXTRA_ENCODINGS=no])
+AC_SUBST([USE_EXTRA_ENCODINGS])
 
 dnl           checks for programs
 
@@ -29,7 +49,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_GCC_TRADITIONAL
 CL_PROG_RANLIB
-CL_PROG_INSTALL
+AC_PROG_INSTALL
 CL_PROG_CP
 CL_PROG_LN
 CL_PROG_LN_S
@@ -51,9 +71,10 @@ AC_EXEEXT
 
 dnl           check for build configuration
 
-PACKAGE=libiconv
 AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
+AM_ICONV
+AM_GNU_GETTEXT([external])
 
 dnl           checks for header files
 
@@ -65,15 +86,16 @@ AC_MBSTATE_T
 
 dnl           checks for functions and declarations
 
-CL_ICONV
-if test $cl_cv_func_iconv = yes -a -z "$cl_cv_proto_iconv_arg1"; then
+if test "$am_cv_func_iconv" = yes -a -z "$am_cv_proto_iconv_arg1"; then
   ICONV_CONST=""
 else
   ICONV_CONST="const"
 fi
 AC_SUBST(ICONV_CONST)
 
-AC_CHECK_FUNCS(mbrtowc wcrtomb setlocale)
+AC_CHECK_FUNCS(mbrtowc wcrtomb mbsinit setlocale)
+
+AC_EILSEQ
 
 CL_WORDS_LITTLEENDIAN
 
@@ -99,5 +121,5 @@ if test -d "${srcdir}/tests"; then
 else
   TESTS_MAKEFILE=""
 fi
-AC_OUTPUT(Makefile lib/Makefile src/Makefile man/Makefile ${TESTS_MAKEFILE} include/iconv.h)
-AC_OUTPUT_SUBDIRS(libcharset)
+AC_CONFIG_SUBDIRS(libcharset)
+AC_OUTPUT(Makefile lib/Makefile src/Makefile po/Makefile.in man/Makefile ${TESTS_MAKEFILE} include/iconv.h)
