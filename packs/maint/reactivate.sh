@@ -1,11 +1,11 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.35 1997-12-15 07:27:37 ghudson Exp $
+# $Id: reactivate.sh,v 1.36 1998-01-20 23:18:16 ghudson Exp $
 
 trap "" 1 15
 
-PATH=/bin:/bin/athena:/usr/ucb:/usr/bin; export PATH
+PATH=/bin:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb; export PATH
 HOSTTYPE=`/bin/athena/machtype`; export HOSTTYPE
 
 umask 22
@@ -47,7 +47,7 @@ fi
 # kdestroy from /tmp any ticket files that may have escaped other methods
 # of destruction, before we clear /tmp.
 for i in /tmp/tkt* /tmp/krb5cc*; do
-	KRBTKFILE=$i /usr/athena/bin/kdestroy -f
+	KRBTKFILE=$i /usr/athena/bin/kdestroy -q
 done
 
 if [ "$full" = true ]; then
@@ -109,7 +109,7 @@ if [ "$full" = true ]; then
 			logger -p user.notice "Non-empty session record $i"
 		fi
 		rm -f $i
-	end
+	done
 
 	# Detach all remote filesystems
 	/bin/athena/detach -O -h -n $quiet $dflags -a
