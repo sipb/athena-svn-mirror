@@ -89,7 +89,7 @@ DOC_OVERRIDES =
 # Everything below here is generic and you shouldn't need to change it.
 ###########################################################################
 
-TARGET_DIR=$(HTML_DIR)/$(DOC_MODULE)
+TARGET_DIR=$(HTML_DIR)/libgnomeprint-2.2
 
 EXTRA_DIST = 				\
 	$(content_files)		\

@@ -2,7 +2,7 @@ SUBDIRS = files output tools
 
 CFLAGS=$(WARN_CFLAGS)
 
-noinst_PROGRAMS = generate gpa-test fonts
+noinst_PROGRAMS = generate gpa-test fonts simple
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -17,6 +17,10 @@ print_libs = \
 generate_SOURCES = generate.c
 generate_LDFLAGS =
 generate_LDADD = $(print_libs)
+
+simple_SOURCES = simple.c
+simple_LDFLAGS =
+simple_LDADD = $(print_libs)
 
 EXTRA_DIST = quit.txt run-test.pl quit.txt
 

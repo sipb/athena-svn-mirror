@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-
 <synopsis>
 
 
@@ -133,8 +132,6 @@ struct      <link linkend="GnomePrintContext">GnomePrintContext</link>;
 
 
 
-
-
 <refsect1>
 <title>Description</title>
 <para>
@@ -182,13 +179,17 @@ latter also can create output context for you, so in most cases
 you may want to ignore gnome_print_context_new at all.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara> GnomePrintConfig object to query print settings from
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The new GnomePrintContext or NULL on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry> GnomePrintConfig object to query print settings from
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The new GnomePrintContext or NULL on error
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-context-close">gnome_print_context_close ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_context_close       (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -200,14 +201,18 @@ Some printing contexts may not start printing before context is
 closed.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-newpath">gnome_print_newpath ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_newpath             (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -216,14 +221,18 @@ Resets currentpath to empty path. As currentpoint is defined as
 the last point of open path segment, is also erases currentpoint.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-moveto">gnome_print_moveto ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_moveto              (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -234,20 +243,24 @@ Starts new subpath in currentpath with coordinates <parameter>x</parameter>,<par
 Moves currentpoint to <parameter>x</parameter>,<parameter>y</parameter>.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara> X position in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara> Y position in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry> X position in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry> Y position in user coordinates
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-lineto">gnome_print_lineto ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_lineto              (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -259,20 +272,24 @@ Moves currentpoint to <parameter>x</parameter>,<parameter>y</parameter>.
 If currentpoint is not defined, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPOINT-CAPS">GNOME_PRINT_ERROR_NOCURRENTPOINT</link>.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara> X position in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara> Y position in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry> X position in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry> Y position in user coordinates
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-curveto">gnome_print_curveto ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_curveto             (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -289,32 +306,36 @@ Moves currentpoint to <parameter>x3</parameter>,<parameter>y3</parameter>.
 If currentpoint is not defined, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPOINT-CAPS">GNOME_PRINT_ERROR_NOCURRENTPOINT</link>.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x1</parameter>&nbsp;:</term>
-<listitem><simpara> X position of first control point in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
-<listitem><simpara> Y position of first control point in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x2</parameter>&nbsp;:</term>
-<listitem><simpara> X position of second control point in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y2</parameter>&nbsp;:</term>
-<listitem><simpara> Y position of second control point in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x3</parameter>&nbsp;:</term>
-<listitem><simpara> X position of endpoint in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y3</parameter>&nbsp;:</term>
-<listitem><simpara> Y position of endpoint in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>x1</parameter>&nbsp;:</entry>
+<entry> X position of first control point in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>y1</parameter>&nbsp;:</entry>
+<entry> Y position of first control point in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>x2</parameter>&nbsp;:</entry>
+<entry> X position of second control point in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>y2</parameter>&nbsp;:</entry>
+<entry> Y position of second control point in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>x3</parameter>&nbsp;:</entry>
+<entry> X position of endpoint in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>y3</parameter>&nbsp;:</entry>
+<entry> Y position of endpoint in user coordinates
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-closepath">gnome_print_closepath ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_closepath           (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -325,14 +346,18 @@ Erases currentpoint.
 If currentpath is empty, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-CAPS">GNOME_PRINT_ERROR_NOCURRENTPATH</link>.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-strokepath">gnome_print_strokepath ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_strokepath          (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -344,14 +369,18 @@ If currentpath is empty, returns <link linkend="GNOME-PRINT-ERROR-NOCURRENTPATH-
 Stroked path is always closed, so currentpoint is erased.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-bpath">gnome_print_bpath ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_bpath               (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -365,20 +394,24 @@ This is identical to adding all segments by hand, so the final state
 of currentpoint depends on segments processed.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>bpath</parameter>&nbsp;:</term>
-<listitem><simpara> Array of <link linkend="ArtBpath">ArtBpath</link> segments
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>append</parameter>&nbsp;:</term>
-<listitem><simpara> Whether to append to currentpath
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>bpath</parameter>&nbsp;:</entry>
+<entry> Array of <link linkend="ArtBpath">ArtBpath</link> segments
+</entry></row>
+<row><entry align="right"><parameter>append</parameter>&nbsp;:</entry>
+<entry> Whether to append to currentpath
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-vpath">gnome_print_vpath ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_vpath               (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -392,20 +425,24 @@ This is identical to adding all segments by hand, so the final state
 of currentpoint depends on segments processed.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>vpath</parameter>&nbsp;:</term>
-<listitem><simpara> Array of <link linkend="ArtVpath">ArtVpath</link> segments
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>append</parameter>&nbsp;:</term>
-<listitem><simpara> Whether to append to currentpath
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>vpath</parameter>&nbsp;:</entry>
+<entry> Array of <link linkend="ArtVpath">ArtVpath</link> segments
+</entry></row>
+<row><entry align="right"><parameter>append</parameter>&nbsp;:</entry>
+<entry> Whether to append to currentpath
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-arcto">gnome_print_arcto ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_arcto               (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -420,31 +457,35 @@ Adds an arc with control points <parameter>x</parameter> and <parameter>y</param
 <parameter>angle1</parameter> to <parameter>andgle2</parameter> in degrees. <parameter>direction</parameter> 1 is clockwise 0 counterclockwise</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContextx">GnomePrintContextx</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara> X position of control point in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara> Y position of control point in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>radius</parameter>&nbsp;:</term>
-<listitem><simpara> the radius of the arc
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>angle1</parameter>&nbsp;:</term>
-<listitem><simpara> start angle in degrees
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>angle2</parameter>&nbsp;:</term>
-<listitem><simpara> end angle in degrees
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>direction</parameter>&nbsp;:</term>
-<listitem><simpara> direction of movement, 0 counterclockwise 1 clockwise
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_PRINT_OK or postive value on success, a negative value otherwise
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContextx">GnomePrintContextx</link>
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry> X position of control point in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry> Y position of control point in user coordinates
+</entry></row>
+<row><entry align="right"><parameter>radius</parameter>&nbsp;:</entry>
+<entry> the radius of the arc
+</entry></row>
+<row><entry align="right"><parameter>angle1</parameter>&nbsp;:</entry>
+<entry> start angle in degrees
+</entry></row>
+<row><entry align="right"><parameter>angle2</parameter>&nbsp;:</entry>
+<entry> end angle in degrees
+</entry></row>
+<row><entry align="right"><parameter>direction</parameter>&nbsp;:</entry>
+<entry> direction of movement, 0 counterclockwise 1 clockwise
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> GNOME_PRINT_OK or postive value on success, a negative value otherwise
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-setrgbcolor">gnome_print_setrgbcolor ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_setrgbcolor         (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -457,23 +498,27 @@ about which colorspace is used internally.
 Channel values are clamped to 0.0 - 1.0 region, 0.0 meaning minimum.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>r</parameter>&nbsp;:</term>
-<listitem><simpara> Red channel value
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>g</parameter>&nbsp;:</term>
-<listitem><simpara> Green channel value
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>b</parameter>&nbsp;:</term>
-<listitem><simpara> Blue channel value
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>r</parameter>&nbsp;:</entry>
+<entry> Red channel value
+</entry></row>
+<row><entry align="right"><parameter>g</parameter>&nbsp;:</entry>
+<entry> Green channel value
+</entry></row>
+<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
+<entry> Blue channel value
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-setopacity">gnome_print_setopacity ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_setopacity          (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -484,17 +529,21 @@ Value is clamped to 0.0 - 1.0 region, 0.0 meaning full transparency and
 1.0 completely opaque paint.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>opacity</parameter>&nbsp;:</term>
-<listitem><simpara> Opacity value
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>opacity</parameter>&nbsp;:</entry>
+<entry> Opacity value
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-setlinewidth">gnome_print_setlinewidth ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_setlinewidth        (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -508,17 +557,21 @@ factor of CTM.
 Default line width is 1.0 in user coordinates.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara> Line width in user coordinates
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
+<entry> Line width in user coordinates
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-setmiterlimit">gnome_print_setmiterlimit ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_setmiterlimit       (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -529,17 +582,21 @@ used. For smaller angles, join is beveled.
 Default miter limit is 4 degrees.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>limit</parameter>&nbsp;:</term>
-<listitem><simpara> Miter limit in degrees
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>limit</parameter>&nbsp;:</entry>
+<entry> Miter limit in degrees
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-setlinejoin">gnome_print_setlinejoin ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_setlinejoin         (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -552,17 +609,21 @@ Sets join type for non-colinear line segments.
 Default join type is miter.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>jointype</parameter>&nbsp;:</term>
-<listitem><simpara> Integer indicating join type
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>jointype</parameter>&nbsp;:</entry>
+<entry> Integer indicating join type
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-setlinecap">gnome_print_setlinecap ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_setlinecap          (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -575,17 +636,21 @@ Sets cap type for line endpoints.
 Default cap type is butt.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>captype</parameter>&nbsp;:</term>
-<listitem><simpara> Integer indicating cap type
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>captype</parameter>&nbsp;:</entry>
+<entry> Integer indicating cap type
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-setdash">gnome_print_setdash ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_setdash             (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -604,23 +669,27 @@ regardless of the stretching factor of CTM.
 Default is solid line.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>n_values</parameter>&nbsp;:</term>
-<listitem><simpara> Number of dash segment lengths
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>values</parameter>&nbsp;:</term>
-<listitem><simpara> Array of dash segment lengths
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
-<listitem><simpara> Line starting offset in dash
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>n_values</parameter>&nbsp;:</entry>
+<entry> Number of dash segment lengths
+</entry></row>
+<row><entry align="right"><parameter>values</parameter>&nbsp;:</entry>
+<entry> Array of dash segment lengths
+</entry></row>
+<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
+<entry> Line starting offset in dash
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-setfont">gnome_print_setfont ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_setfont             (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -631,17 +700,21 @@ so caller may discard it immediately afterwards.
 Default font is system dependent.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> <link linkend="GnomeFont">GnomeFont</link> to use for text
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> <link linkend="GnomeFont">GnomeFont</link> to use for text
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-clip">gnome_print_clip ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_clip                (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -655,14 +728,18 @@ returned.
 Currentpath is emptied by this function.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-eoclip">gnome_print_eoclip ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_eoclip              (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -676,14 +753,18 @@ returned.
 Currentpath is emptied by this function.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-concat">gnome_print_concat ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_concat              (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -698,17 +779,21 @@ X' = X * m[0] + Y * m[2] + m[4]
 Y' = X * m[1] + Y * m[3] + m[5]</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
-<listitem><simpara> 3x2 affine transformation matrix
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>matrix</parameter>&nbsp;:</entry>
+<entry> 3x2 affine transformation matrix
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-scale">gnome_print_scale ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_scale               (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -718,20 +803,24 @@ code on failure.
 Scales user coordinate system by given X and Y values.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>sx</parameter>&nbsp;:</term>
-<listitem><simpara> X scale
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>sy</parameter>&nbsp;:</term>
-<listitem><simpara> Y scale
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>sx</parameter>&nbsp;:</entry>
+<entry> X scale
+</entry></row>
+<row><entry align="right"><parameter>sy</parameter>&nbsp;:</entry>
+<entry> Y scale
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-rotate">gnome_print_rotate ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_rotate              (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -740,17 +829,21 @@ code on failure.
 Rotates user coordinate system theta degrees counterclockwise.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>theta</parameter>&nbsp;:</term>
-<listitem><simpara> Angle in degrees
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>theta</parameter>&nbsp;:</entry>
+<entry> Angle in degrees
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-translate">gnome_print_translate ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_translate           (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -760,20 +853,24 @@ code on failure.
 Move the starting point of user coordinate system to given point.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara> New starting X
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara> New starting Y
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry> New starting X
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry> New starting Y
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-gsave">gnome_print_gsave ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_gsave               (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -786,14 +883,18 @@ over page boundaries. Graphic state stack has to be cleared for each
 match the number of <link linkend="gnome-print-grestore">gnome_print_grestore</link> for each page.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-grestore">gnome_print_grestore ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_grestore            (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -802,14 +903,18 @@ Retrieves last saved graphic state from stack (pop). Stack has to be
 at least the size of one.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-fill">gnome_print_fill ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_fill                (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -823,14 +928,18 @@ returned.
 Currentpath is emptied by this function.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-eofill">gnome_print_eofill ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_eofill              (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -844,14 +953,18 @@ returned.
 Currentpath is emptied by this function.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-stroke">gnome_print_stroke ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_stroke              (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -863,14 +976,18 @@ returned.
 Currentpath is emptied by this function.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-show">gnome_print_show ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_show                (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -883,17 +1000,21 @@ if it is not valid UTF-8.
 Both currentpath and currentpoint are erased.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
-<listitem><simpara> Null-terminated UTF-8 string
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> Null-terminated UTF-8 string
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-show-sized">gnome_print_show_sized ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_show_sized          (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -907,20 +1028,24 @@ if it is not valid UTF-8.
 Both currentpath and currentpoint are erased.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
-<listitem><simpara> UTF-8 text string
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>bytes</parameter>&nbsp;:</term>
-<listitem><simpara> Number of bytes to use from string
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
+<entry> UTF-8 text string
+</entry></row>
+<row><entry align="right"><parameter>bytes</parameter>&nbsp;:</entry>
+<entry> Number of bytes to use from string
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-glyphlist">gnome_print_glyphlist ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_glyphlist           (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -932,17 +1057,21 @@ currentpoint.
 Both currentpath and currentpoint are erased.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyphlist</parameter>&nbsp;:</term>
-<listitem><simpara> <link linkend="GnomeGlyphList">GnomeGlyphList</link> text object
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>glyphlist</parameter>&nbsp;:</entry>
+<entry> <link linkend="GnomeGlyphList">GnomeGlyphList</link> text object
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-grayimage">gnome_print_grayimage ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_grayimage           (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -957,26 +1086,30 @@ Image buffer has to be 1 byte per pixel, with value 255 marking
 white and 0 black.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><simpara> Pointer to image pixel buffer
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer width
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer height
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>rowstride</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer rowstride
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry> Pointer to image pixel buffer
+</entry></row>
+<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
+<entry> Image buffer width
+</entry></row>
+<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
+<entry> Image buffer height
+</entry></row>
+<row><entry align="right"><parameter>rowstride</parameter>&nbsp;:</entry>
+<entry> Image buffer rowstride
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-rgbimage">gnome_print_rgbimage ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_rgbimage            (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -991,26 +1124,30 @@ Image buffer has to be 3 bytes per pixel, order RGB, with value 255 marking
 maximum and 0 minimum value.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><simpara> Pointer to image pixel buffer
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer width
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer height
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>rowstride</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer rowstride
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry> Pointer to image pixel buffer
+</entry></row>
+<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
+<entry> Image buffer width
+</entry></row>
+<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
+<entry> Image buffer height
+</entry></row>
+<row><entry align="right"><parameter>rowstride</parameter>&nbsp;:</entry>
+<entry> Image buffer rowstride
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-rgbaimage">gnome_print_rgbaimage ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_rgbaimage           (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -1026,26 +1163,30 @@ maximum and 0 minimum value. Alpha value 255 means full opacity, 0 full
 transparency.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>data</parameter>&nbsp;:</term>
-<listitem><simpara> Pointer to image pixel buffer
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer width
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer height
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>rowstride</parameter>&nbsp;:</term>
-<listitem><simpara> Image buffer rowstride
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry> Pointer to image pixel buffer
+</entry></row>
+<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
+<entry> Image buffer width
+</entry></row>
+<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
+<entry> Image buffer height
+</entry></row>
+<row><entry align="right"><parameter>rowstride</parameter>&nbsp;:</entry>
+<entry> Image buffer rowstride
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-beginpage">gnome_print_beginpage ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_beginpage           (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -1060,17 +1201,21 @@ graphic state values (transformation, color, line properties, font),
 so one has to define these again at the beginning of each page.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>name</parameter>&nbsp;:</term>
-<listitem><simpara> Name of the page, NULL if you just want to use the page number of the page
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><parameter>name</parameter>&nbsp;:</entry>
+<entry> Name of the page, NULL if you just want to use the page number of the page
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-showpage">gnome_print_showpage ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_showpage            (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc);</programlisting>
@@ -1083,14 +1228,18 @@ operators to internal stack, and only after <link linkend="gnome-print-showpage"
 any output produced.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara> A <link linkend="GnomePrintContext">GnomePrintContext</link>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry> A <link linkend="GnomePrintContext">GnomePrintContext</link>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="GNOME-PRINT-OK-CAPS">GNOME_PRINT_OK</link> or positive value on success, negative error
 code on failure.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-line-stroked">gnome_print_line_stroked ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_line_stroked        (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -1100,27 +1249,31 @@ code on failure.
                                              <link linkend="gdouble">gdouble</link> y1);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x0</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y0</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>x0</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>y0</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>x1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>y1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-rect-stroked">gnome_print_rect_stroked ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_rect_stroked        (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -1130,27 +1283,31 @@ code on failure.
                                              <link linkend="gdouble">gdouble</link> height);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-rect-filled">gnome_print_rect_filled ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_rect_filled         (<link linkend="GnomePrintContext">GnomePrintContext</link> *pc,
@@ -1160,27 +1317,31 @@ code on failure.
                                              <link linkend="gdouble">gdouble</link> height);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>pc</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pc</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 

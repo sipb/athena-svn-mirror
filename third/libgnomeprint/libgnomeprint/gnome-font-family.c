@@ -129,6 +129,7 @@ gnome_font_family_style_list (GnomeFontFamily * family)
 	GPFontMap * map;
 	GPFamilyEntry * f;
 	GList * list;
+	GHashTable *styles;
 
 	g_return_val_if_fail (family != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT_FAMILY (family), NULL);
@@ -136,21 +137,28 @@ gnome_font_family_style_list (GnomeFontFamily * family)
 	list = NULL;
 
 	map = gp_fontmap_get ();
+	styles = g_hash_table_new (g_str_hash, g_str_equal);
 
 	f = g_hash_table_lookup (map->familydict, family->name);
 
 	if (f) {
 		GSList * l;
 		for (l = f->fonts; l != NULL; l = l->next) {
-			GPFontEntry * e;
-			e = (GPFontEntry *) l->data;
+			GPFontEntry *e = l->data;
+			const gchar *style = e->speciesname;
+			
 			if (e->is_alias)
 				continue;
-			list = g_list_prepend (list, g_strdup (e->speciesname));
+
+			if (!g_hash_table_lookup (styles, style)) {
+				g_hash_table_insert (styles, (gchar *) style, (gpointer) 1);
+				list = g_list_prepend (list, g_strdup (e->speciesname));
+			}
 		}
 		list = g_list_reverse (list);
 	}
 
+	g_hash_table_destroy (styles);
 	gp_fontmap_release (map);
 
 	return list;

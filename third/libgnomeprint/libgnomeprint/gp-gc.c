@@ -460,7 +460,7 @@ gp_gc_get_linecap (GPGC * gc)
 {
 	g_return_val_if_fail (gc != NULL, -1);
 
-	return ((GPCtx *) gc->ctx->data)->linejoin;
+	return ((GPCtx *) gc->ctx->data)->linecap;
 }
 
 gint

@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-
 <synopsis>
 
 
@@ -57,8 +56,6 @@ const <link linkend="ArtSVP">ArtSVP</link>* <link linkend="gnome-rfont-get-glyph
 
 
 
-
-
 <refsect1>
 <title>Description</title>
 <para>
@@ -91,40 +88,52 @@ retrieved. RFont is referenced, so you have to unref it
 somewhere</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>t</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the font created, NULL on error.
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>font</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>t</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the font created, NULL on error.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-ref">gnome_rfont_ref()</title>
 <programlisting>#define     gnome_rfont_ref(o)</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-unref">gnome_rfont_unref()</title>
 <programlisting>#define     gnome_rfont_unref(o)</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>o</parameter>&nbsp;:</term>
-<listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>o</parameter>&nbsp;:</entry>
+<entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-render-pgl-rgb8">gnome_rfont_render_pgl_rgb8</title>
 <programlisting>#define     gnome_rfont_render_pgl_rgb8</programlisting>
@@ -149,47 +158,59 @@ somewhere</para>
 <programlisting><link linkend="GnomeFont">GnomeFont</link>*  gnome_rfont_get_font            (const <link linkend="GnomeRFont">GnomeRFont</link> *rfont);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-face">gnome_rfont_get_face ()</title>
 <programlisting><link linkend="GnomeFontFace">GnomeFontFace</link>* gnome_rfont_get_face         (const <link linkend="GnomeRFont">GnomeRFont</link> *rfont);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-matrix">gnome_rfont_get_matrix ()</title>
 <programlisting><link linkend="gdouble">gdouble</link>*    gnome_rfont_get_matrix          (const <link linkend="GnomeRFont">GnomeRFont</link> *rfont,
                                              <link linkend="gdouble">gdouble</link> *matrix);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>matrix</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>matrix</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-glyph-stdadvance">gnome_rfont_get_glyph_stdadvance ()</title>
 <programlisting><link linkend="ArtPoint">ArtPoint</link>*   gnome_rfont_get_glyph_stdadvance
@@ -198,21 +219,25 @@ somewhere</para>
                                              <link linkend="ArtPoint">ArtPoint</link> *advance);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>advance</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>advance</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-glyph-stdbbox">gnome_rfont_get_glyph_stdbbox ()</title>
 <programlisting><link linkend="ArtDRect">ArtDRect</link>*   gnome_rfont_get_glyph_stdbbox   (<link linkend="GnomeRFont">GnomeRFont</link> *rfont,
@@ -220,21 +245,25 @@ somewhere</para>
                                              <link linkend="ArtDRect">ArtDRect</link> *bbox);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>bbox</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>bbox</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-glyph-stdkerning">gnome_rfont_get_glyph_stdkerning ()</title>
 <programlisting><link linkend="ArtPoint">ArtPoint</link>*   gnome_rfont_get_glyph_stdkerning
@@ -244,60 +273,72 @@ somewhere</para>
                                              <link linkend="ArtPoint">ArtPoint</link> *kerning);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph0</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph1</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>kerning</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph0</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph1</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>kerning</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-glyph-bpath">gnome_rfont_get_glyph_bpath ()</title>
 <programlisting>const <link linkend="ArtBpath">ArtBpath</link>* gnome_rfont_get_glyph_bpath (<link linkend="GnomeRFont">GnomeRFont</link> *rfont,
                                              <link linkend="gint">gint</link> glyph);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-glyph-svp">gnome_rfont_get_glyph_svp ()</title>
 <programlisting>const <link linkend="ArtSVP">ArtSVP</link>* gnome_rfont_get_glyph_svp     (<link linkend="GnomeRFont">GnomeRFont</link> *rfont,
                                              <link linkend="gint">gint</link> glyph);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>glyph</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>glyph</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-closest-pango-font">gnome_rfont_get_closest_pango_font ()</title>
 <programlisting><link linkend="PangoFont">PangoFont</link>*  gnome_rfont_get_closest_pango_font
@@ -305,33 +346,41 @@ somewhere</para>
                                              <link linkend="PangoFontMap">PangoFontMap</link> *map);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>map</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>map</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-rfont-get-pango-description">gnome_rfont_get_pango_description ()</title>
 <programlisting><link linkend="PangoFontDescription">PangoFontDescription</link>* gnome_rfont_get_pango_description
                                             (const <link linkend="GnomeRFont">GnomeRFont</link> *rfont);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>rfont</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rfont</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
 
 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 

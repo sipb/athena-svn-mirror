@@ -10,7 +10,6 @@
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
-
 <synopsis>
 
 
@@ -44,8 +43,6 @@ struct      <link linkend="GnomePrintJob">GnomePrintJob</link>;
 
 
 
-
-
 <refsect1>
 <title>Description</title>
 <para>
@@ -68,14 +65,18 @@ struct      <link linkend="GnomePrintJob">GnomePrintJob</link>;
 Creates a new GnomePrintJob.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara> The job options, can be NULL in which case a
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry> The job options, can be NULL in which case a
          default GnomePrintConfig is created
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> A new GnomePrintJob, NULL on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A new GnomePrintJob, NULL on error
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-get-config">gnome_print_job_get_config ()</title>
 <programlisting><link linkend="GnomePrintConfig">GnomePrintConfig</link>* gnome_print_job_get_config
@@ -84,13 +85,17 @@ Creates a new GnomePrintJob.</para>
 Gets a referenced pointer to the configuration of the job</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> a referenced GnomePrintConfig for this job, NULL on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>job</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a referenced GnomePrintConfig for this job, NULL on error
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-get-context">gnome_print_job_get_context ()</title>
 <programlisting><link linkend="GnomePrintContext">GnomePrintContext</link>* gnome_print_job_get_context
@@ -100,13 +105,17 @@ Retrieve the GnomePrintContext which applications
 print to.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
-<listitem><simpara> An initialised GnomePrintJob.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> The printing context, NULL on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>job</parameter>&nbsp;:</entry>
+<entry> An initialised GnomePrintJob.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The printing context, NULL on error
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-close">gnome_print_job_close ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_job_close           (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);</programlisting>
@@ -116,13 +125,17 @@ previewing. To be called after the application has finished
 sending the drawing commands</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
-<listitem><simpara> A GnomePrintJob which has had printing performed
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>job</parameter>&nbsp;:</entry>
+<entry> A GnomePrintJob which has had printing performed
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-print">gnome_print_job_print ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_job_print           (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);</programlisting>
@@ -131,13 +144,17 @@ Print the pages stored in the GnomePrintJob to
 the phyisical printing device.</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
-<listitem><simpara> A closed GnomePrintJob.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> GNOME_PRINT_OK on success GNOME_PRINT_ERROR_UNKNOWN otherwise
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>job</parameter>&nbsp;:</entry>
+<entry> A closed GnomePrintJob.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> GNOME_PRINT_OK on success GNOME_PRINT_ERROR_UNKNOWN otherwise
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-render">gnome_print_job_render ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_job_render          (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
@@ -147,16 +164,20 @@ Renders printout to specified context
 (with layout, ignoring copies)</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>job</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>ctx</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-render-page">gnome_print_job_render_page ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_job_render_page     (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
@@ -167,22 +188,26 @@ Renders printout to specified context
 Renders the specified page <parameter>page</parameter></para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>ctx</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>page</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>pageops</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> 
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>job</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>ctx</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>page</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>pageops</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-get-pages">gnome_print_job_get_pages ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_job_get_pages       (<link linkend="GnomePrintJob">GnomePrintJob</link> *job);</programlisting>
@@ -193,13 +218,17 @@ can hold 4 pages per page, and 5 logical pages are printed
 (5 beginpage/endpage convinations) 2 is returned</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
-<listitem><simpara> An initialised and closed GnomePrintJob.
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the number of pages, 0 on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>job</parameter>&nbsp;:</entry>
+<entry> An initialised and closed GnomePrintJob.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the number of pages, 0 on error
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-get-page-size-from-config">gnome_print_job_get_page_size_from_config ()</title>
 <programlisting><link linkend="gboolean">gboolean</link>    gnome_print_job_get_page_size_from_config
@@ -210,35 +239,43 @@ can hold 4 pages per page, and 5 logical pages are printed
 Deprecated, use gnome_print_config_get_page_size</para>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>config</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
-<listitem><simpara> 
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> TRUE on success, FALSE on error
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>config</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
+<entry> 
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE on error
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 <refsect2>
 <title><anchor id="gnome-print-job-print-to-file">gnome_print_job_print_to_file ()</title>
 <programlisting><link linkend="gint">gint</link>        gnome_print_job_print_to_file   (<link linkend="GnomePrintJob">GnomePrintJob</link> *job,
                                              <link linkend="gchar">gchar</link> *output);</programlisting>
 <para>
 
-</para><variablelist role="params">
-<varlistentry><term><parameter>job</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><parameter>output</parameter>&nbsp;:</term>
-<listitem><simpara>
-</simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-</simpara></listitem></varlistentry>
-</variablelist></refsect2>
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>job</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><parameter>output</parameter>&nbsp;:</entry>
+<entry>
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
 
 </refsect1>
 

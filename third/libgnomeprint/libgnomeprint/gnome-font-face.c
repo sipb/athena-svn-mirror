@@ -893,7 +893,9 @@ gff_load_outline (GnomeFontFace *face, gint glyph)
 	g_assert (face->ft_face);
 	g_assert (!face->glyphs[glyph].bpath);
 
-	FT_Load_Glyph (face->ft_face, glyph, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
+	FT_Load_Glyph (face->ft_face, glyph,
+		       FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING |
+		       FT_LOAD_NO_BITMAP | FT_LOAD_IGNORE_TRANSFORM);
 
 	a[0] = a[3] = face->ft2ps;
 	a[1] = a[2] = a[4] = a[5] = 0.0;
@@ -1043,7 +1045,7 @@ static void gnome_font_face_ps_embed_ensure_size (GnomeFontPsObject *pso, gint s
  */
 
 GnomeFontPsObject *
-gnome_font_face_pso_new (GnomeFontFace *face, guchar *residentname)
+gnome_font_face_pso_new (GnomeFontFace *face, guchar *residentname, gint instance)
 {
 	GnomeFontPsObject *pso;
 
@@ -1056,7 +1058,10 @@ gnome_font_face_pso_new (GnomeFontFace *face, guchar *residentname)
 	g_object_ref (G_OBJECT (face));
 	if (residentname)
 		pso->residentname = g_strdup (residentname);
-	pso->encodedname = g_strdup_printf ("GnomeUni-%s", face->psname);
+	if (instance == 0)
+		pso->encodedname = g_strdup_printf ("GnomeUni-%s", face->psname);
+	else
+		pso->encodedname = g_strdup_printf ("GnomeUni-%s_%03d", face->psname, instance);
 	pso->bufsize = 0;
 	pso->length = 0;
 	pso->buf = NULL;

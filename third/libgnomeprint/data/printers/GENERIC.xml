@@ -14,14 +14,21 @@
   <Name xml:lang="hu">ÃltalÃ¡nos Postscript</Name>
   <Name xml:lang="it">Postscript generica</Name>
   <Name xml:lang="ja">éå¸¸ã®ãã¹ãã¹ã¯ãªãã</Name>
+  <Name xml:lang="ko">ì¼ë° í¬ì¤í¸ì¤í¬ë¦½í¸</Name>
   <Name xml:lang="lv">Parasts Postscript</Name>
+  <Name xml:lang="mn">PostScript, ÐµÑÓ©Ð½ÑÐ¸Ð¹</Name>
   <Name xml:lang="nl">Generiek Postscript</Name>
   <Name xml:lang="no">Vanlig Postscript</Name>
   <Name xml:lang="pl">ZwykÅy PostScript</Name>
+  <Name xml:lang="pt">Postscript GenÃ©rico</Name>
+  <Name xml:lang="pt_BR">Postscript GenÃ©rico</Name>
+  <Name xml:lang="ro">Postscript generic</Name>
+  <Name xml:lang="sk">vÅ¡eobecnÃ½ PostScript</Name>
   <Name xml:lang="sl">GeneriÄni Postscript</Name>
   <Name xml:lang="sv">Generisk Postscript</Name>
   <Name xml:lang="tr">Genel Postscript</Name>
   <Name xml:lang="vi">Postscript chung</Name>
+  <Name xml:lang="zh_CN">æ®é Postscript</Name>
   <Name xml:lang="zh_TW">ä¸è¬ Postscript</Name>
   <Model>GNOME-GENERIC-PS</Model>
   <Settings Id="SETTINGS-000989541673031997000001">
