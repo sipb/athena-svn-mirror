@@ -1,0 +1,1187 @@
+<HTML
+><HEAD
+><TITLE
+>State and StateSets</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
+REL="HOME"
+TITLE="AT-SPI C Bindings Reference Manual"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Accessible Object Methods and Interface Query"
+HREF="spi-accessible.html"><LINK
+REL="PREVIOUS"
+TITLE="AccessibleRelations and RelationSets"
+HREF="at-spi-cspi-accessiblerelations-and-relationsets.html"><LINK
+REL="NEXT"
+TITLE="Subinterface Methods"
+HREF="spi-component.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>AT-SPI C Bindings Reference Manual</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-accessiblerelations-and-relationsets.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-accessible.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="spi-component.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="AT-SPI-CSPI-STATE-AND-STATESETS"
+>State and StateSets</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2649"
+></A
+><H2
+>Name</H2
+>State and StateSets&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN2652"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+enum        <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+>;
+void        <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-REF"
+>AccessibleStateSet_ref</A
+>          (AccessibleStateSet *obj);
+void        <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-UNREF"
+>AccessibleStateSet_unref</A
+>        (AccessibleStateSet *obj);
+void        <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-ADD"
+>AccessibleStateSet_add</A
+>          (AccessibleStateSet *obj,
+                                             <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> state);
+AccessibleStateSet* <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-COMPARE"
+>AccessibleStateSet_compare</A
+>
+                                            (AccessibleStateSet *obj,
+                                             AccessibleStateSet *obj2);
+SPIBoolean  <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-CONTAINS"
+>AccessibleStateSet_contains</A
+>     (AccessibleStateSet *obj,
+                                             <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> state);
+SPIBoolean  <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-EQUALS"
+>AccessibleStateSet_equals</A
+>       (AccessibleStateSet *obj,
+                                             AccessibleStateSet *obj2);
+SPIBoolean  <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-ISEMPTY"
+>AccessibleStateSet_isEmpty</A
+>      (AccessibleStateSet *obj);
+void        <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-REMOVE"
+>AccessibleStateSet_remove</A
+>       (AccessibleStateSet *obj,
+                                             <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> state);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2681"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2684"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2686"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATE"
+></A
+>enum AccessibleState</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum
+{
+  SPI_STATE_INVALID,
+  /* Indicates a window is currently the active window */
+  SPI_STATE_ACTIVE,
+  /* Indicates that the object is armed */
+  SPI_STATE_ARMED,
+  /* Indicates the current object is busy */
+  SPI_STATE_BUSY,
+  /* Indicates this object is currently checked */
+  SPI_STATE_CHECKED,
+  /* Indicates this object is collapsed */
+  SPI_STATE_COLLAPSED,
+  /* Indicates the user interface object corresponding to this object no longer exists */
+  SPI_STATE_DEFUNCT,
+  /* Indicates the user can change the contents of this object */
+  SPI_STATE_EDITABLE,
+  /* Indicates that this object is enabled */
+  SPI_STATE_ENABLED,
+  /* Indicates this object allows progressive disclosure of its children */
+  SPI_STATE_EXPANDABLE,
+  /* Indicates this object its expanded */
+  SPI_STATE_EXPANDED,
+  /*
+   * Indicates this object can accept keyboard focus, which means all
+   * events resulting from typing on the keyboard will normally be passed
+   * to it when it has focus
+   */
+  SPI_STATE_FOCUSABLE,
+  /* Indicates this object currently has the keyboard focus */
+  SPI_STATE_FOCUSED,
+  /* Indicates the orientation of thsi object is horizontal */
+  SPI_STATE_HORIZONTAL,
+  /* Indicates this object is minimized and is represented only by an icon */
+  SPI_STATE_ICONIFIED,
+  /*
+   * Indicates something must be done with this object before the user can
+   * interact with an object in a different window.
+   */
+  SPI_STATE_MODAL,
+  /* Indicates this (text) object can contain multiple lines of text */
+  SPI_STATE_MULTI_LINE,
+  /*
+   * Indicates this object allows more than one of its children to be
+   * selected at the same time
+   */
+  SPI_STATE_MULTISELECTABLE,
+  /* Indicates this object paints every pixel within its rectangular region. */
+  SPI_STATE_OPAQUE,
+  /* Indicates this object is currently pressed */
+  SPI_STATE_PRESSED,
+  /* Indicates the size of this object is not fixed */
+  SPI_STATE_RESIZABLE,
+  /*
+   * Indicates this object is the child of an object that allows its
+   * children to be selected and that this child is one of those children
+   * that can be selected.
+   */
+  SPI_STATE_SELECTABLE,
+  /*
+   * Indicates this object is the child of an object that allows its
+   * children to be selected and that this child is one of those children
+   * that has been selected.
+   */
+  SPI_STATE_SELECTED,
+  /* Indicates this object is sensitive */
+  SPI_STATE_SENSITIVE,
+  /*
+   * Indicates this object, the object's parent, the object's parent's
+   * parent, and so on, are all visible
+   */
+  SPI_STATE_SHOWING,
+  /* Indicates this (text) object can contain only a single line of text */
+  SPI_STATE_SINGLE_LINE,
+  /* Indicates that the index associated with this object has changed since the user accessed the object. */
+  SPI_STATE_STALE,
+  /* Indicates this object is transient */
+  SPI_STATE_TRANSIENT,
+  /* Indicates the orientation of this object is vertical */
+  SPI_STATE_VERTICAL,
+  /* Indicates this object is visible */
+  SPI_STATE_VISIBLE,
+  SPI_STATE_LAST_DEFINED
+} AccessibleState;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2691"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATESET-REF"
+></A
+>AccessibleStateSet_ref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleStateSet_ref          (AccessibleStateSet *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Increment the reference count for an AccessibleStateSet object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2699"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleStateSet object on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2709"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATESET-UNREF"
+></A
+>AccessibleStateSet_unref ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleStateSet_unref        (AccessibleStateSet *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Decrement the reference count for an AccessibleStateSet object.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2717"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleStateSet object on which to operate.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2727"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATESET-ADD"
+></A
+>AccessibleStateSet_add ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleStateSet_add          (AccessibleStateSet *obj,
+                                             <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> state);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Add a particular <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> to an AccessibleStateSet (i.e. set the
+      given state to <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> in the stateset.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2738"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleStateSet object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>state</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> to be added to the specified AccessibleStateSet</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2754"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATESET-COMPARE"
+></A
+>AccessibleStateSet_compare ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>AccessibleStateSet* AccessibleStateSet_compare
+                                            (AccessibleStateSet *obj,
+                                             AccessibleStateSet *obj2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Determine the differences between two instances of AccessibleStateSet.
+Not Yet Implemented.
+.
+<TT
+CLASS="PARAMETER"
+><I
+>see</I
+></TT
+> <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-EQUALS"
+>AccessibleStateSet_equals</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2766"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the first AccessibleStateSet object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the second AccessibleStateSet object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an AccessibleStateSet object containing all states contained on one of
+         the two sets but not the other.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2786"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATESET-CONTAINS"
+></A
+>AccessibleStateSet_contains ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleStateSet_contains     (AccessibleStateSet *obj,
+                                             <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> state);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Determine whether a given AccessibleStateSet includes a given state; that is,
+      whether <TT
+CLASS="PARAMETER"
+><I
+>state</I
+></TT
+> is true for the stateset in question.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2797"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleStateSet object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>state</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> for which the specified AccessibleStateSet
+      will be queried.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if <TT
+CLASS="PARAMETER"
+><I
+>state</I
+></TT
+> is true/included in the given AccessibleStateSet,
+         otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2821"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATESET-EQUALS"
+></A
+>AccessibleStateSet_equals ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleStateSet_equals       (AccessibleStateSet *obj,
+                                             AccessibleStateSet *obj2);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Determine whether two instances of AccessibleStateSet are equivalent (i.e.
+        consist of the same AccessibleStates).  Useful for checking multiple
+        state variables at once; construct the target state then compare against it.</P
+><P
+><TT
+CLASS="PARAMETER"
+><I
+>see</I
+></TT
+> <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATESET-COMPARE"
+>AccessibleStateSet_compare</A
+>().</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2835"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the first AccessibleStateSet object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj2</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the second AccessibleStateSet object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the two AccessibleStateSets are equivalent,
+         otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2857"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATESET-ISEMPTY"
+></A
+>AccessibleStateSet_isEmpty ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>SPIBoolean  AccessibleStateSet_isEmpty      (AccessibleStateSet *obj);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Determine whether a given AccessibleStateSet is the empty set.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2866"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleStateSet object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> <A
+HREF=../glib/glib-standard-macros.html#TRUE-CAPS
+>TRUE</A> if the given AccessibleStateSet contains no (true) states,
+         otherwise <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A>.&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2883"
+></A
+><H3
+><A
+NAME="ACCESSIBLESTATESET-REMOVE"
+></A
+>AccessibleStateSet_remove ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        AccessibleStateSet_remove       (AccessibleStateSet *obj,
+                                             <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> state);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove a particular <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> to an AccessibleStateSet (i.e. set the
+      given state to <A
+HREF=../glib/glib-standard-macros.html#FALSE-CAPS
+>FALSE</A> in the stateset.)</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2894"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>obj</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a pointer to the AccessibleStateSet object on which to operate.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>state</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> an <A
+HREF="at-spi-cspi-state-and-statesets.html#ACCESSIBLESTATE"
+>AccessibleState</A
+> to be removed from the specified AccessibleStateSet</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="at-spi-cspi-accessiblerelations-and-relationsets.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="book1.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="spi-accessible.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="spi-component.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>AccessibleRelations and RelationSets</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Subinterface Methods</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

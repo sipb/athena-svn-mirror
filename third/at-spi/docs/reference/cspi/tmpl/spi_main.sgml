@@ -1,0 +1,75 @@
+<!-- ##### SECTION Title ##### -->
+SPI main loop and initialization
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION SPI_init ##### -->
+<para>
+
+</para>
+
+@Returns: 
+<!-- # Unused Parameters # -->
+@isGNOMEApp: 
+
+
+<!-- ##### FUNCTION SPI_event_main ##### -->
+<para>
+
+</para>
+
+<!-- # Unused Parameters # -->
+@isGNOMEApp: 
+
+
+<!-- ##### FUNCTION SPI_event_quit ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION SPI_eventIsReady ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION SPI_nextEvent ##### -->
+<para>
+
+</para>
+
+@waitForEvent: 
+@Returns: 
+
+
+<!-- ##### FUNCTION SPI_exit ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION SPI_freeString ##### -->
+<para>
+
+</para>
+
+@s: 
+
+

@@ -1,0 +1,70 @@
+<!-- ##### SECTION Title ##### -->
+Event Listener Support
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### TYPEDEF AccessibleEvent ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### USER_FUNCTION AccessibleEventListenerCB ##### -->
+<para>
+
+</para>
+
+@event: 
+@user_data: 
+
+
+<!-- ##### FUNCTION SPI_createAccessibleEventListener ##### -->
+<para>
+
+</para>
+
+@callback: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION AccessibleEventListener_unref ##### -->
+<para>
+
+</para>
+
+@listener: 
+
+
+<!-- ##### FUNCTION AccessibleEventListener_addCallback ##### -->
+<para>
+
+</para>
+
+@listener: 
+@callback: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION AccessibleEventListener_removeCallback ##### -->
+<para>
+
+</para>
+
+@listener: 
+@callback: 
+@Returns: 
+
+

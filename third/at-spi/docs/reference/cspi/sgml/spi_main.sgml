@@ -1,0 +1,162 @@
+<refentry id="at-spi-cspi-SPI-main-loop-and-initialization">
+<refmeta>
+<refentrytitle>SPI main loop and initialization</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>AT-SPI-CSPI Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>SPI main loop and initialization</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+int         <link linkend="SPI-init">SPI_init</link>                        (void);
+void        <link linkend="SPI-event-main">SPI_event_main</link>                  (void);
+void        <link linkend="SPI-event-quit">SPI_event_quit</link>                  (void);
+<link linkend="SPIBoolean">SPIBoolean</link>  <link linkend="SPI-eventIsReady">SPI_eventIsReady</link>                (void);
+<link linkend="AccessibleEvent">AccessibleEvent</link>* <link linkend="SPI-nextEvent">SPI_nextEvent</link>              (<link linkend="SPIBoolean">SPIBoolean</link> waitForEvent);
+int         <link linkend="SPI-exit">SPI_exit</link>                        (void);
+
+void        <link linkend="SPI-freeString">SPI_freeString</link>                  (char *s);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="SPI-init">SPI_init ()</title>
+<programlisting>int         SPI_init                        (void);</programlisting>
+<para>
+Connects to the accessibility registry and initializes the SPI.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 0 on success, otherwise an integer error code.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-event-main">SPI_event_main ()</title>
+<programlisting>void        SPI_event_main                  (void);</programlisting>
+<para>
+Starts/enters the main event loop for the SPI services.
+</para>
+<para>
+(NOTE: This method does not return control, it is exited via a call to
+ <link linkend="SPI-event-quit">SPI_event_quit</link>() from within an event handler).</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SPI-event-quit">SPI_event_quit ()</title>
+<programlisting>void        SPI_event_quit                  (void);</programlisting>
+<para>
+Quits the last main event loop for the SPI services,
+see SPI_event_main</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SPI-eventIsReady">SPI_eventIsReady ()</title>
+<programlisting><link linkend="SPIBoolean">SPIBoolean</link>  SPI_eventIsReady                (void);</programlisting>
+<para>
+Checks to see if an SPI event is waiting in the event queue.
+Used by clients that don't wish to use <link linkend="SPI-event-main">SPI_event_main</link>().
+</para>
+<para>
+Not Yet Implemented.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> <link linkend="TRUE-CAPS">TRUE</link> if an event is waiting, otherwise <link linkend="FALSE-CAPS">FALSE</link>.
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-nextEvent">SPI_nextEvent ()</title>
+<programlisting><link linkend="AccessibleEvent">AccessibleEvent</link>* SPI_nextEvent              (<link linkend="SPIBoolean">SPIBoolean</link> waitForEvent);</programlisting>
+<para>
+Gets the next event in the SPI event queue; blocks if no event
+is pending and <parameter>waitForEvent</parameter> is <link linkend="TRUE-CAPS">TRUE</link>.
+Used by clients that don't wish to use <link linkend="SPI-event-main">SPI_event_main</link>().
+</para>
+<para>
+Not Yet Implemented.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>waitForEvent</parameter>&nbsp;:</entry>
+<entry> a <link linkend="SPIBoolean">SPIBoolean</link> indicating whether to block or not.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the next <link linkend="AccessibleEvent">AccessibleEvent</link> in the SPI event queue.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-exit">SPI_exit ()</title>
+<programlisting>int         SPI_exit                        (void);</programlisting>
+<para>
+Disconnects from the Accessibility Registry and releases 
+any floating resources. Call only once at exit.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 0 if there were no leaks, otherwise non zero.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="SPI-freeString">SPI_freeString ()</title>
+<programlisting>void        SPI_freeString                  (char *s);</programlisting>
+<para>
+Free a character string returned from an at-spi call.  Clients of
+at-spi should use this function instead of <link linkend="free">free</link>() or <link linkend="g-free">g_free</link>().
+A NULL string <parameter>s</parameter> will be silently ignored.
+This API should not be used to free strings
+from other libraries or allocated by the client.</para>
+<para>
+
+</para><informaltable pgwide="1" frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry> a character string returned from another at-spi call.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>
