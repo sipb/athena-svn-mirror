@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.16 1991-04-08 20:46:28 lwvanels Exp $
+ *	$Id: utils.c,v 1.17 1991-04-10 09:34:49 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.16 1991-04-08 20:46:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.17 1991-04-10 09:34:49 lwvanels Exp $";
 #endif
 #endif
 
@@ -42,6 +42,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <errno.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <strings.h>
 
 OFillRequest(req)
      REQUEST *req;
