@@ -3,6 +3,11 @@ release, for the construction of the Athena release notes.
 
 Changes from release 8.0 to release 8.1:
 
+	* Athena version numbers are now dotted triplets, e.g. 8.1.0
+	  or 8.1.12.  Paths which include all or part of the Athena
+	  version number now take the form "pathname-version",
+	  e.g. "srvd-8.1" or "dash.menus-8.1"
+
 	* In release 8.0, running "xmkmf" with the default path would
 	  generate a Makefile which looked for its include files and
 	  libraries in /mit/x11, which could be one of several
@@ -19,7 +24,9 @@ Changes from release 8.0 to release 8.1:
 	  Previously, they were in /usr/athena/lib/X11/bitmaps before
 	  because of the /mit/x11 glue.
 
-	* The symlink /bin/csh -> /bin/athena/tcsh has gone away.
+	* The symlink /bin/csh -> /bin/athena/tcsh has gone away.  The
+	  update to 8.0 will fix /bin/csh references in /etc/passwd
+	  and /etc/passwd.local to refer to /bin/athena/tcsh instead.
 
 	* emacs18 has gone away.
 
@@ -34,8 +41,6 @@ Changes from release 8.0 to release 8.1:
 	  /usr/openwin/lib for easy use of the Solaris Motif
 	  libraries.
 
-	* <need an item about named>
-
 	* AFS includes and libraries are installed in
 	  /usr/afsws/include and /usr/afsws/lib.
 
@@ -43,3 +48,6 @@ Changes from release 8.0 to release 8.1:
 
 	* The basic krb5 headers and libraries are installed in
 	  /usr/athena.
+
+	* emacs has been upgraded from 19.30 to 19.34.  There should
+	  be no significant user-visible changes.
