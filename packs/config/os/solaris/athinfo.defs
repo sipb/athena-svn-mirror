@@ -35,3 +35,4 @@ login		test -f /etc/nologin; echo $?
 cpuspeed	/usr/athena/bin/sysinfo | grep MHz
 packages  	pkginfo
 patches  	showrev -p
+modules  	modinfo
