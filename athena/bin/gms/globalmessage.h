@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/globalmessage.h,v $
- * $Author: epeisach $
+ * $Author: miki $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -12,7 +12,12 @@
 #define __GLOBALMESSAGE_H__
 
 #include <errno.h>
+#ifdef SOLARIS
+#include <string.h>
+#include <fcntl.h>
+#else
 #include <strings.h>
+#endif
 extern int errno;
 #include "globalmessage_err.h"
 	/* Function return code */
