@@ -8,12 +8,12 @@
  * Copyright (C) 1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: polld.c,v 1.17 1999-06-28 22:52:48 ghudson Exp $
+ *	$Id: polld.c,v 1.18 2001-04-04 22:08:59 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: polld.c,v 1.17 1999-06-28 22:52:48 ghudson Exp $";
+static char rcsid[] ="$Id: polld.c,v 1.18 2001-04-04 22:08:59 ghudson Exp $";
 #endif
 #endif
 
@@ -30,6 +30,7 @@ static char rcsid[] ="$Id: polld.c,v 1.17 1999-06-28 22:52:48 ghudson Exp $";
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <limits.h>
+#include <unistd.h>
 
 #ifdef   HAVE_SYSLOG_H
 #include   <syslog.h>
@@ -161,17 +162,7 @@ int main(int argc, char **argv)
    */
   
   if (!nofork) {
-    int max_fd;
-#ifdef RLIMIT_NOFILE
-    struct rlimit rl;
-
-    if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
-      max_fd = OPEN_MAX; /* either that or abort()... --bert 29jan1996 */
-    else
-      max_fd = (int)rl.rlim_cur;
-#else
-    max_fd = getdtablesize ();
-#endif
+    int max_fd = sysconf(_SC_OPEN_MAX);
     
     switch (fork()) {
     case 0:				/* child */

@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Id: rpd.c,v 1.21 1999-06-28 22:52:52 ghudson Exp $";
+static char *RCSid = "$Id: rpd.c,v 1.22 2001-04-04 22:09:13 ghudson Exp $";
 #endif
 #endif
 
@@ -97,14 +97,7 @@ main(argc, argv)
       exit(0);		/* Parent */
     }
 #endif
-#ifdef RLIMIT_NOFILE
-    if (getrlimit(RLIMIT_NOFILE, &rl) < 0)
-      max_fd = OPEN_MAX; /* either that or abort()... --bert 29jan1996 */
-    else
-      max_fd = (int)rl.rlim_cur;
-#else
-    max_fd = getdtablesize();
-#endif
+    max_fd = sysconf(_SC_OPEN_MAX);
     
     for(fd = 0;fd<max_fd;fd++)
       close(fd);
