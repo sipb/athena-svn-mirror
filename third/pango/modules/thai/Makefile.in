@@ -189,19 +189,19 @@ X_CFLAGS = @X_CFLAGS@
 X_LIBS = @X_LIBS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
+@HAVE_X_TRUE@@INCLUDE_THAI_X_TRUE@pango_thai_x_la_DEPENDENCIES = 
 @HAVE_X_TRUE@@INCLUDE_THAI_X_FALSE@pango_thai_x_la_DEPENDENCIES =  \
 @HAVE_X_TRUE@@INCLUDE_THAI_X_FALSE@$(top_builddir)/pango/libpangox-$(PANGO_API_VERSION).la \
 @HAVE_X_TRUE@@INCLUDE_THAI_X_FALSE@$(top_builddir)/pango/libpango-$(PANGO_API_VERSION).la
 @HAVE_X_FALSE@@INCLUDE_THAI_X_TRUE@pango_thai_x_la_DEPENDENCIES = 
 @HAVE_X_FALSE@@INCLUDE_THAI_X_FALSE@pango_thai_x_la_DEPENDENCIES = 
-@HAVE_X_TRUE@@INCLUDE_THAI_X_TRUE@pango_thai_x_la_DEPENDENCIES = 
 pango_thai_x_la_OBJECTS =  thai-shaper.lo thai-x.lo
-@HAVE_XFT_TRUE@@INCLUDE_THAI_XFT_TRUE@pango_thai_xft_la_DEPENDENCIES = 
-@HAVE_XFT_FALSE@@INCLUDE_THAI_XFT_TRUE@pango_thai_xft_la_DEPENDENCIES = 
-@HAVE_XFT_FALSE@@INCLUDE_THAI_XFT_FALSE@pango_thai_xft_la_DEPENDENCIES = 
-@HAVE_XFT_TRUE@@INCLUDE_THAI_XFT_FALSE@pango_thai_xft_la_DEPENDENCIES =  \
-@HAVE_XFT_TRUE@@INCLUDE_THAI_XFT_FALSE@$(top_builddir)/pango/libpangoxft-$(PANGO_API_VERSION).la \
-@HAVE_XFT_TRUE@@INCLUDE_THAI_XFT_FALSE@$(top_builddir)/pango/libpango-$(PANGO_API_VERSION).la
+@INCLUDE_THAI_XFT_TRUE@@HAVE_XFT_FALSE@pango_thai_xft_la_DEPENDENCIES = 
+@INCLUDE_THAI_XFT_FALSE@@HAVE_XFT_TRUE@pango_thai_xft_la_DEPENDENCIES =  \
+@INCLUDE_THAI_XFT_FALSE@@HAVE_XFT_TRUE@$(top_builddir)/pango/libpangoxft-$(PANGO_API_VERSION).la \
+@INCLUDE_THAI_XFT_FALSE@@HAVE_XFT_TRUE@$(top_builddir)/pango/libpango-$(PANGO_API_VERSION).la
+@INCLUDE_THAI_XFT_TRUE@@HAVE_XFT_TRUE@pango_thai_xft_la_DEPENDENCIES = 
+@INCLUDE_THAI_XFT_FALSE@@HAVE_XFT_FALSE@pango_thai_xft_la_DEPENDENCIES = 
 pango_thai_xft_la_OBJECTS =  thai-shaper.lo thai-xft.lo
 libpango_thai_x_la_LDFLAGS = 
 libpango_thai_x_la_LIBADD = 

@@ -165,8 +165,8 @@
 </sub>
 </sub>
 <sub name="Text Attributes" link="pango-Text-Attributes.html">
-<sub name="Description" link="pango-Text-Attributes.html#id2852847"/>
-<sub name="Details" link="pango-Text-Attributes.html#id2852871">
+<sub name="Description" link="pango-Text-Attributes.html#id2852898"/>
+<sub name="Details" link="pango-Text-Attributes.html#id2852923">
 <sub name="enum PangoAttrType" link="pango-Text-Attributes.html#PangoAttrType"/>
 <sub name="PANGO_TYPE_ATTR_TYPE" link="pango-Text-Attributes.html#PANGO-TYPE-ATTR-TYPE-CAPS"/>
 <sub name="struct PangoAttrClass" link="pango-Text-Attributes.html#PangoAttrClass"/>
@@ -241,8 +241,8 @@
 </sub>
 </sub>
 <sub name="Tab Stops" link="pango-Tab-Stops.html">
-<sub name="Description" link="pango-Tab-Stops.html#id2860394"/>
-<sub name="Details" link="pango-Tab-Stops.html#id2860407">
+<sub name="Description" link="pango-Tab-Stops.html#id2860445"/>
+<sub name="Details" link="pango-Tab-Stops.html#id2860458">
 <sub name="struct PangoTabArray" link="pango-Tab-Stops.html#PangoTabArray"/>
 <sub name="PANGO_TYPE_TAB_ARRAY" link="pango-Tab-Stops.html#PANGO-TYPE-TAB-ARRAY-CAPS"/>
 <sub name="enum PangoTabAlign" link="pango-Tab-Stops.html#PangoTabAlign"/>
@@ -260,12 +260,12 @@
 </sub>
 </sub>
 <sub name="Pango Text Attribute Markup" link="PangoMarkupFormat.html">
-<sub name="Pango Text Attribute Markup Language" link="PangoMarkupFormat.html#id2860001"/>
+<sub name="Pango Text Attribute Markup Language" link="PangoMarkupFormat.html#id2860052"/>
 </sub>
 <sub name="Layout Objects" link="pango-Layout-Objects.html">
-<sub name="Object Hierarchy" link="pango-Layout-Objects.html#id2864126"/>
-<sub name="Description" link="pango-Layout-Objects.html#id2864149"/>
-<sub name="Details" link="pango-Layout-Objects.html#id2864167">
+<sub name="Object Hierarchy" link="pango-Layout-Objects.html#id2864177"/>
+<sub name="Description" link="pango-Layout-Objects.html#id2864201"/>
+<sub name="Details" link="pango-Layout-Objects.html#id2864218">
 <sub name="struct PangoLayout" link="pango-Layout-Objects.html#PangoLayout-struct"/>
 <sub name="struct PangoLayoutIter" link="pango-Layout-Objects.html#PangoLayoutIter"/>
 <sub name="pango_layout_new ()" link="pango-Layout-Objects.html#pango-layout-new"/>
@@ -342,8 +342,8 @@
 </sub>
 <sub name="Rendering with Pango" link="rendering.html">
 <sub name="X Fonts and Rendering" link="pango-X-Fonts-and-Rendering.html">
-<sub name="Description" link="pango-X-Fonts-and-Rendering.html#id2873294"/>
-<sub name="Details" link="pango-X-Fonts-and-Rendering.html#id2873317">
+<sub name="Description" link="pango-X-Fonts-and-Rendering.html#id2873346"/>
+<sub name="Details" link="pango-X-Fonts-and-Rendering.html#id2873369">
 <sub name="PANGO_RENDER_TYPE_X" link="pango-X-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-X-CAPS"/>
 <sub name="pango_x_get_context ()" link="pango-X-Fonts-and-Rendering.html#pango-x-get-context"/>
 <sub name="pango_x_context_set_funcs ()" link="pango-X-Fonts-and-Rendering.html#pango-x-context-set-funcs"/>
@@ -376,8 +376,8 @@
 </sub>
 </sub>
 <sub name="Win32 Fonts and Rendering" link="pango-Win32-Fonts-and-Rendering.html">
-<sub name="Description" link="pango-Win32-Fonts-and-Rendering.html#id2877321"/>
-<sub name="Details" link="pango-Win32-Fonts-and-Rendering.html#id2877334">
+<sub name="Description" link="pango-Win32-Fonts-and-Rendering.html#id2877374"/>
+<sub name="Details" link="pango-Win32-Fonts-and-Rendering.html#id2877386">
 <sub name="PANGO_RENDER_TYPE_WIN32" link="pango-Win32-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-WIN32-CAPS"/>
 <sub name="pango_win32_get_context ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-get-context"/>
 <sub name="pango_win32_render ()" link="pango-Win32-Fonts-and-Rendering.html#pango-win32-render"/>
@@ -399,8 +399,8 @@
 </sub>
 </sub>
 <sub name="FreeType Fonts and Rendering" link="pango-FreeType-Fonts-and-Rendering.html">
-<sub name="Description" link="pango-FreeType-Fonts-and-Rendering.html#id2879587"/>
-<sub name="Details" link="pango-FreeType-Fonts-and-Rendering.html#id2879600">
+<sub name="Description" link="pango-FreeType-Fonts-and-Rendering.html#id2879642"/>
+<sub name="Details" link="pango-FreeType-Fonts-and-Rendering.html#id2879652">
 <sub name="struct PangoFT2FontMap" link="pango-FreeType-Fonts-and-Rendering.html#PangoFT2FontMap"/>
 <sub name="PANGO_RENDER_TYPE_FT2" link="pango-FreeType-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-FT2-CAPS"/>
 <sub name="pango_ft2_font_map_new ()" link="pango-FreeType-Fonts-and-Rendering.html#pango-ft2-font-map-new"/>
@@ -422,8 +422,8 @@
 </sub>
 </sub>
 <sub name="Xft Fonts and Rendering" link="pango-Xft-Fonts-and-Rendering.html">
-<sub name="Description" link="pango-Xft-Fonts-and-Rendering.html#id2882144"/>
-<sub name="Details" link="pango-Xft-Fonts-and-Rendering.html#id2882157">
+<sub name="Description" link="pango-Xft-Fonts-and-Rendering.html#id2882198"/>
+<sub name="Details" link="pango-Xft-Fonts-and-Rendering.html#id2882211">
 <sub name="PANGO_RENDER_TYPE_XFT" link="pango-Xft-Fonts-and-Rendering.html#PANGO-RENDER-TYPE-XFT-CAPS"/>
 <sub name="pango_xft_get_context ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-get-context"/>
 <sub name="pango_xft_get_font_map ()" link="pango-Xft-Fonts-and-Rendering.html#pango-xft-get-font-map"/>
@@ -445,8 +445,8 @@
 </sub>
 <sub name="Low Level Functionality" link="lowlevel.html">
 <sub name="OpenType Font Handling" link="pango-OpenType-Font-Handling.html">
-<sub name="Description" link="pango-OpenType-Font-Handling.html#id2884737"/>
-<sub name="Details" link="pango-OpenType-Font-Handling.html#id2884750">
+<sub name="Description" link="pango-OpenType-Font-Handling.html#id2884791"/>
+<sub name="Details" link="pango-OpenType-Font-Handling.html#id2884803">
 <sub name="PangoOTTag" link="pango-OpenType-Font-Handling.html#PangoOTTag"/>
 <sub name="struct PangoOTInfo" link="pango-OpenType-Font-Handling.html#PangoOTInfo"/>
 <sub name="struct PangoOTRuleset" link="pango-OpenType-Font-Handling.html#PangoOTRuleset"/>
@@ -464,8 +464,8 @@
 </sub>
 </sub>
 <sub name="Coverage Maps" link="pango-Coverage-Maps.html">
-<sub name="Description" link="pango-Coverage-Maps.html#id2886990"/>
-<sub name="Details" link="pango-Coverage-Maps.html#id2887015">
+<sub name="Description" link="pango-Coverage-Maps.html#id2887044"/>
+<sub name="Details" link="pango-Coverage-Maps.html#id2887068">
 <sub name="enum PangoCoverageLevel" link="pango-Coverage-Maps.html#PangoCoverageLevel"/>
 <sub name="PANGO_TYPE_COVERAGE_LEVEL" link="pango-Coverage-Maps.html#PANGO-TYPE-COVERAGE-LEVEL-CAPS"/>
 <sub name="struct PangoCoverage" link="pango-Coverage-Maps.html#PangoCoverage"/>
@@ -481,8 +481,8 @@
 </sub>
 </sub>
 <sub name="Engines" link="pango-Engines.html">
-<sub name="Description" link="pango-Engines.html#id2888392"/>
-<sub name="Details" link="pango-Engines.html#id2888458">
+<sub name="Description" link="pango-Engines.html#id2888446"/>
+<sub name="Details" link="pango-Engines.html#id2888512">
 <sub name="struct PangoEngineInfo" link="pango-Engines.html#PangoEngineInfo"/>
 <sub name="struct PangoEngineRange" link="pango-Engines.html#PangoEngineRange"/>
 <sub name="struct PangoEngine" link="pango-Engines.html#PangoEngine"/>
@@ -497,8 +497,8 @@
 </sub>
 </sub>
 <sub name="Indic Engine Support" link="pango-Indic-Engine-Support.html">
-<sub name="Description" link="pango-Indic-Engine-Support.html#id2889663"/>
-<sub name="Details" link="pango-Indic-Engine-Support.html#id2889686">
+<sub name="Description" link="pango-Indic-Engine-Support.html#id2889718"/>
+<sub name="Details" link="pango-Indic-Engine-Support.html#id2889739">
 <sub name="PANGO_ZERO_WIDTH_NON_JOINER" link="pango-Indic-Engine-Support.html#PANGO-ZERO-WIDTH-NON-JOINER-CAPS"/>
 <sub name="PANGO_ZERO_WIDTH_JOINER" link="pango-Indic-Engine-Support.html#PANGO-ZERO-WIDTH-JOINER-CAPS"/>
 <sub name="struct PangoIndicScript" link="pango-Indic-Engine-Support.html#PangoIndicScript"/>
@@ -509,8 +509,8 @@
 </sub>
 </sub>
 <sub name="Modules" link="pango-Modules.html">
-<sub name="Description" link="pango-Modules.html#id2890909"/>
-<sub name="Details" link="pango-Modules.html#id2890920">
+<sub name="Description" link="pango-Modules.html#id2890963"/>
+<sub name="Details" link="pango-Modules.html#id2890975">
 <sub name="struct PangoIncludedModule" link="pango-Modules.html#PangoIncludedModule"/>
 <sub name="struct PangoMap" link="pango-Modules.html#PangoMap"/>
 <sub name="struct PangoMapEntry" link="pango-Modules.html#PangoMapEntry"/>

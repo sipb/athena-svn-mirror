@@ -1,5 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Fonts</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+<html><head><meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"><title>Fonts</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V1.0 (XML mode)"><style type="text/css">
         .synopsis, .classsynopsis {
             background: #eeeeee;
             border: solid 1px #aaaaaa;
@@ -921,6 +921,9 @@ href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 
 
 </td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="PangoFontMapClass"></a>struct PangoFontMapClass</h3><pre class="programlisting">struct PangoFontMapClass {
+
+  GObjectClass parent_class;
+
   
   PangoFont *   (*load_font)     (PangoFontMap               *fontmap,
 				  PangoContext               *context,
@@ -937,7 +940,10 @@ href="../gobject/gobject-The-Base-Object-Type.html#GObject"
 </pre><p>
 The <a href="pango-Fonts.html#PangoFontMapClass">PangoFontMapClass</a> structure holds the virtual functions for
 a particular <a href="pango-Fonts.html#PangoFontMap">PangoFontMap</a> implementation.
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a href="pango-Fonts.html#PangoFont">PangoFont</a>* (*<i><tt>load_font</tt></i>) (PangoFontMap               *fontmap,
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a
+href="../gobject/gobject-The-Base-Object-Type.html#GObjectClass"
+>GObjectClass</a> <i><tt>parent_class</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a href="pango-Fonts.html#PangoFont">PangoFont</a>* (*<i><tt>load_font</tt></i>) (PangoFontMap               *fontmap,
 				  PangoContext               *context,
 				  const PangoFontDescription *desc)</span></td><td>a function to load a font with a given description. See
             <a href="pango-Fonts.html#pango-font-map-load-font">pango_font_map_load_font</a>()
@@ -1017,6 +1023,9 @@ set of metrics for the entire fontset.
 </pre><p>
 The GObject type for <a href="pango-Fonts.html#PangoFontset">PangoFontset</a>.
 </p></div><hr><div class="refsect2"><h3><a name="PangoFontsetClass"></a>struct PangoFontsetClass</h3><pre class="programlisting">struct PangoFontsetClass {
+
+  GObjectClass parent_class;
+
    
   PangoFont *       (*get_font)     (PangoFontset  *fontset,
 				     guint          wc);
@@ -1028,7 +1037,10 @@ The GObject type for <a href="pango-Fonts.html#PangoFontset">PangoFontset</a>.
 </pre><p>
 The <a href="pango-Fonts.html#PangoFontsetClass">PangoFontsetClass</a> structure holds the virtual functions for
 a particular <a href="pango-Fonts.html#PangoFontset">PangoFontset</a> implementation.
-</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a href="pango-Fonts.html#PangoFont">PangoFont</a>* (*<i><tt>get_font</tt></i>) (PangoFontset  *fontset,
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><a
+href="../gobject/gobject-The-Base-Object-Type.html#GObjectClass"
+>GObjectClass</a> <i><tt>parent_class</tt></i></span></td><td>
+</td></tr><tr><td><span class="term"><a href="pango-Fonts.html#PangoFont">PangoFont</a>* (*<i><tt>get_font</tt></i>) (PangoFontset  *fontset,
 				     guint          wc)</span></td><td>a function to get the font in the fontset that contains the 
    best glyph for the given unicode character; see <a href="pango-Fonts.html#pango-fontset-get-font">pango_fontset_get_font</a>().
 </td></tr><tr><td><span class="term"><a href="pango-Fonts.html#PangoFontMetrics">PangoFontMetrics</a>* (*<i><tt>get_metrics</tt></i>) (PangoFontset  *fontset)</span></td><td>a function to get overall metric information for the fonts 

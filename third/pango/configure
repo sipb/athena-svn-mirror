@@ -1431,12 +1431,12 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 PANGO_MAJOR_VERSION=1
 PANGO_MINOR_VERSION=2
-PANGO_MICRO_VERSION=0
+PANGO_MICRO_VERSION=1
 PANGO_VERSION=$PANGO_MAJOR_VERSION.$PANGO_MINOR_VERSION.$PANGO_MICRO_VERSION
 
 PANGO_API_VERSION=1.0
 
-PANGO_INTERFACE_AGE=0
+PANGO_INTERFACE_AGE=1
 
 # PANGO_BINARY_AGE=0
 PANGO_BINARY_AGE=`expr 100 '*' $PANGO_MINOR_VERSION + $PANGO_MICRO_VERSION`
@@ -12633,7 +12633,7 @@ if test "$no_create" != yes; then
 fi
 
 echo "configuration:
-	backends: `if $have_freetype ; then echo " FreeType"; fi \
+	backends: `if $have_freetype && $have_fontconfig; then echo " FreeType"; fi \
 	``if $have_x ; then echo " X"; fi \
 	``if $have_xft ; then echo " Xft"; fi \
 	``if $have_win32 ; then echo " Win32"; fi`"

@@ -2,8 +2,8 @@
 
 # Build zipfiles for Pango on Win32: separate runtime and developer packages
 
-ZIP=/tmp/pango-1.2.0-`date +%Y%m%d`.zip
-DEVZIP=/tmp/pango-dev-1.2.0-`date +%Y%m%d`.zip
+ZIP=/tmp/pango-1.2.1-`date +%Y%m%d`.zip
+DEVZIP=/tmp/pango-dev-1.2.1-`date +%Y%m%d`.zip
 cd /usr
 
 rm $ZIP
