@@ -33,10 +33,11 @@ typedef gpointer (*ORBit_free_childvals)(gpointer mem,
 					 gpointer func_data,
 					 CORBA_boolean free_strings);
 
+/* Please make sure this structure's size is divisible by 8, at least. */
 typedef struct {
-#ifdef ORBIT_DEBUG
 	gulong magic;
-#endif
+	gulong unused;
+
 	/* If this routine returns FALSE, it indicates that it already free'd
 	   the memory block itself */
 	ORBit_free_childvals free; /* function pointer to free function */

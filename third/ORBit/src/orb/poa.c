@@ -923,6 +923,9 @@ PortableServer_ObjectId *PortableServer_POA_reference_to_id(PortableServer_POA o
 	ORBit_POAObject *objinfo;
 
 	g_assert(reference);
+
+	ORBit_object_get_connection(reference);
+
 	g_assert(reference->active_profile);
 
 	if(obj->request_processing != PortableServer_USE_DEFAULT_SERVANT
@@ -1045,11 +1048,14 @@ my_PortableServer_POA_id_to_reference(PortableServer_POA obj,
 	if(retval != CORBA_OBJECT_NIL
 	   && ev->_major == CORBA_NO_EXCEPTION
 	   && objkey && objkey->class_info && objkey->class_info->init_local_objref) {
-		/* XXX potential memleak if we get an already-valid objref */
+	  if(!retval->vepv)
+	    {
+	     /* XXX potential memleak if we get an already-valid objref */
 		retval->vepv = g_new0(gpointer, ORBit_class_assignment_counter + 1);
 		retval->vepv_size = ORBit_class_assignment_counter + 1;
 		objkey->class_info->init_local_objref(retval, pobj->servant);
 		retval->servant = pobj->servant;
+	    }
 	} else
 		retval->vepv = retval->servant = NULL;
 

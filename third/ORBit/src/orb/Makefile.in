@@ -550,7 +550,7 @@ orb.lo orb.o : orb.c ../../config.h ../../src/IIOP/iiop-endianP.h \
 	allocator-defs.h cdr.h dii.h ../orb/interface_repository.h \
 	dynany.h env.h ir.h options.h orb.h poa.h orbit_poa_type.h \
 	sequences.h orbit_typecode.h typecode.h orbit_poa.h
-orbit.lo orbit.o : orbit.c orbit.h ../../src/IIOP/IIOP.h \
+orbit.lo orbit.o : orbit.c ../../config.h orbit.h ../../src/IIOP/IIOP.h \
 	../../src/ORBitutil/util.h ../../src/ORBitutil/thread-safety.h \
 	../../src/ORBitutil/trace.h ../../src/ORBitutil/compat.h \
 	../../src/ORBitutil/os-specifics.h \

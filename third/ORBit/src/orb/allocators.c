@@ -148,7 +148,7 @@ gpointer
 ORBit_free_via_TypeCode(gpointer mem, gpointer tcp, gboolean free_strings)
 {
 	CORBA_TypeCode tc = *(CORBA_TypeCode *)tcp, subtc;
-	int i, n;
+	int i;
 	guchar *retval = NULL;
 
 	switch(tc->kind) {
@@ -231,7 +231,9 @@ ORBit_free_via_TypeCode(gpointer mem, gpointer tcp, gboolean free_strings)
 		retval = ORBit_free_via_TypeCode(mem, &subtc, free_strings);
 		break;
 	default:
-		retval = ((guchar *)mem) + ORBit_gather_alloc_info(tc);
+		/* NB. alignment != alloc size */
+		retval  = ALIGN_ADDRESS (mem, ORBit_find_alignment (tc)) +
+			ORBit_gather_alloc_info (tc);
 		break;
 	}
 

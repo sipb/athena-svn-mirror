@@ -93,7 +93,7 @@ VERSION = @VERSION@
 YACC = @YACC@
 pkglibdir = @pkglibdir@
 
-noinst_PROGRAMS = test test-dynamic echo-client echo-server test-object echo-local test-any-client test-any-server test-tc-client test-tc-server test-ir-client test-ir-server empty-server empty-client
+noinst_PROGRAMS = test test-dynamic echo-client echo-server test-object echo-local test-any-client test-any-server test-tc-client test-tc-server test-ir-client test-ir-server empty-server empty-client test-dynany
 
 bin_PROGRAMS = ior-decode
 SUBDIRS = test-poa idl
@@ -157,6 +157,11 @@ test_any_server_LDFLAGS = $(FLAGS)
 test_any_server_DEPENDENCIES = $(DEPS) test-any.h
 test_any_server_LDADD = $(LDADDS)
 
+test_dynany_SOURCES = test-dynany.c
+test_dynany_LDFLAGS = $(FLAGS)
+test_dynany_DEPENDENCIES = $(DEPS)
+test_dynany_LDADD = $(LDADDS)
+
 test_tc_client_SOURCES = test-tc-client.c test-tc-common.c test-tc-stubs.c
 test_tc_client_LDFLAGS = $(FLAGS)
 test_tc_client_DEPENDENCIES = $(DEPS) test-tc.h
@@ -193,6 +198,8 @@ EXTRA_DIST = echo.idl test-args.idl inheritance-test.idl 	test-any.idl test-ir.i
 
 
 CLEANFILES = echo_built empty_built test_any_built test_tc_built test_ir_built
+
+TESTS = test-dynany
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -226,6 +233,7 @@ test_ir_server_OBJECTS =  test-ir-server.o test-ir-common.o \
 test-ir-skels.o
 empty_server_OBJECTS =  empty-server.o empty-common.o empty-skels.o
 empty_client_OBJECTS =  empty-client.o empty-common.o empty-stubs.o
+test_dynany_OBJECTS =  test-dynany.o
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -238,8 +246,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(ior_decode_SOURCES) $(test_SOURCES) $(test_dynamic_SOURCES) $(echo_client_SOURCES) $(echo_server_SOURCES) $(test_object_SOURCES) $(echo_local_SOURCES) $(test_any_client_SOURCES) $(test_any_server_SOURCES) $(test_tc_client_SOURCES) $(test_tc_server_SOURCES) $(test_ir_client_SOURCES) $(test_ir_server_SOURCES) $(empty_server_SOURCES) $(empty_client_SOURCES)
-OBJECTS = $(ior_decode_OBJECTS) $(test_OBJECTS) $(test_dynamic_OBJECTS) $(echo_client_OBJECTS) $(echo_server_OBJECTS) $(test_object_OBJECTS) $(echo_local_OBJECTS) $(test_any_client_OBJECTS) $(test_any_server_OBJECTS) $(test_tc_client_OBJECTS) $(test_tc_server_OBJECTS) $(test_ir_client_OBJECTS) $(test_ir_server_OBJECTS) $(empty_server_OBJECTS) $(empty_client_OBJECTS)
+SOURCES = $(ior_decode_SOURCES) $(test_SOURCES) $(test_dynamic_SOURCES) $(echo_client_SOURCES) $(echo_server_SOURCES) $(test_object_SOURCES) $(echo_local_SOURCES) $(test_any_client_SOURCES) $(test_any_server_SOURCES) $(test_tc_client_SOURCES) $(test_tc_server_SOURCES) $(test_ir_client_SOURCES) $(test_ir_server_SOURCES) $(empty_server_SOURCES) $(empty_client_SOURCES) $(test_dynany_SOURCES)
+OBJECTS = $(ior_decode_OBJECTS) $(test_OBJECTS) $(test_dynamic_OBJECTS) $(echo_client_OBJECTS) $(echo_server_OBJECTS) $(test_object_OBJECTS) $(echo_local_OBJECTS) $(test_any_client_OBJECTS) $(test_any_server_OBJECTS) $(test_tc_client_OBJECTS) $(test_tc_server_OBJECTS) $(test_ir_client_OBJECTS) $(test_ir_server_OBJECTS) $(empty_server_OBJECTS) $(empty_client_OBJECTS) $(test_dynany_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -383,6 +391,10 @@ empty-server: $(empty_server_OBJECTS) $(empty_server_DEPENDENCIES)
 empty-client: $(empty_client_OBJECTS) $(empty_client_DEPENDENCIES)
 	@rm -f empty-client
 	$(LINK) $(empty_client_LDFLAGS) $(empty_client_OBJECTS) $(empty_client_LDADD) $(LIBS)
+
+test-dynany: $(test_dynany_OBJECTS) $(test_dynany_DEPENDENCIES)
+	@rm -f test-dynany
+	$(LINK) $(test_dynany_LDFLAGS) $(test_dynany_OBJECTS) $(test_dynany_LDADD) $(LIBS)
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -958,6 +970,33 @@ test-any-stubs.o: test-any-stubs.c test-any.h ../src/orb/orbit.h \
 	../src/orb/orb.h ../src/orb/poa.h ../src/orb/orbit_poa_type.h \
 	../src/orb/sequences.h ../src/orb/orbit_typecode.h \
 	../src/orb/typecode.h
+test-dynany.o: test-dynany.c ../src/orb/orbit.h ../src/IIOP/IIOP.h \
+	../src/ORBitutil/util.h ../src/ORBitutil/thread-safety.h \
+	../src/ORBitutil/trace.h ../src/ORBitutil/compat.h \
+	../src/ORBitutil/os-specifics.h \
+	../src/ORBitutil/orbit-os-config.h \
+	../src/ORBitutil/os-feature-alloca.h ../src/IIOP/IIOP-config.h \
+	../src/IIOP/IIOP-types.h ../src/ORBitutil/basic_types.h \
+	../src/IIOP/giop-msg-buffer.h ../src/orb/iop.h \
+	../src/orb/corba_basic_sequences_type.h \
+	../src/orb/corba_sequences.h ../src/IIOP/iiop-encoders.h \
+	../src/IIOP/iiop-endian.h ../src/orb/orbit_config.h \
+	../src/orb/orbit_types.h ../src/orb/corba_orb.h \
+	../src/orb/corba_any.h ../src/orb/corba_typecode.h \
+	../src/orb/corba_context.h ../src/orb/orbit_object_type.h \
+	../src/orb/orbit_object.h ../src/orb/corba_object.h \
+	../src/orb/corba_env.h ../src/orb/corba_portableserver.h \
+	../src/orb/corba_sequences_type.h \
+	../src/orb/corba_object_type.h ../src/orb/corba_orb_type.h \
+	../src/orb/corba_typecode_type.h ../src/orb/corba_any_type.h \
+	../src/orb/corba_any_proto.h ../src/orb/corba_env_type.h \
+	../src/orb/corba_portableserver_type.h ../src/orb/allocators.h \
+	../src/orb/allocator-defs.h ../src/orb/cdr.h ../src/orb/dii.h \
+	../src/orb/interface_repository.h ../src/orb/dynany.h \
+	../src/orb/env.h ../src/orb/ir.h ../src/orb/options.h \
+	../src/orb/orb.h ../src/orb/poa.h ../src/orb/orbit_poa_type.h \
+	../src/orb/sequences.h ../src/orb/orbit_typecode.h \
+	../src/orb/typecode.h
 test-ir-client.o: test-ir-client.c ../src/orb/orbit.h ../src/IIOP/IIOP.h \
 	../src/ORBitutil/util.h ../src/ORBitutil/thread-safety.h \
 	../src/ORBitutil/trace.h ../src/ORBitutil/compat.h \
@@ -1283,11 +1322,37 @@ test.o: test.c ../src/orb/orbit.h ../src/IIOP/IIOP.h \
 	../src/orb/sequences.h ../src/orb/orbit_typecode.h \
 	../src/orb/typecode.h
 
+check-TESTS: $(TESTS)
+	@failed=0; all=0; \
+	srcdir=$(srcdir); export srcdir; \
+	for tst in $(TESTS); do \
+	  if test -f $$tst; then dir=.; \
+	  else dir="$(srcdir)"; fi; \
+	  if $(TESTS_ENVIRONMENT) $$dir/$$tst; then \
+	    all=`expr $$all + 1`; \
+	    echo "PASS: $$tst"; \
+	  elif test $$? -ne 77; then \
+	    all=`expr $$all + 1`; \
+	    failed=`expr $$failed + 1`; \
+	    echo "FAIL: $$tst"; \
+	  fi; \
+	done; \
+	if test "$$failed" -eq 0; then \
+	  banner="All $$all tests passed"; \
+	else \
+	  banner="$$failed of $$all tests failed"; \
+	fi; \
+	dashes=`echo "$$banner" | sed s/./=/g`; \
+	echo "$$dashes"; \
+	echo "$$banner"; \
+	echo "$$dashes"; \
+	test "$$failed" -eq 0
 info-am:
 info: info-recursive
 dvi-am:
 dvi: dvi-recursive
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-recursive
 installcheck-am:
 installcheck: installcheck-recursive
@@ -1362,10 +1427,10 @@ uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
 all-recursive check-recursive installcheck-recursive info-recursive \
 dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs-am \
+distclean-tags clean-tags maintainer-clean-tags distdir check-TESTS \
+info-am info dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 

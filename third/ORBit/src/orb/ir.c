@@ -70,8 +70,8 @@ CORBA_boolean CORBA_TypeCode_equal(CORBA_TypeCode obj, CORBA_TypeCode tc, CORBA_
 
 			if (! CORBA_TypeCode_equal (obj->subtypes[i],
 						    tc->subtypes[i], ev)
-			    || ! ORBit_any_equivalent (obj->sublabels[i],
-						       tc->sublabels[i], ev))
+			    || ! ORBit_any_equivalent (&obj->sublabels[i],
+						       &tc->sublabels[i], ev))
 				return CORBA_FALSE;
 
 		break;

@@ -2,11 +2,10 @@
 
 /*
  * Test code for the POA
- *
  */
 
+#include <stdio.h>
 #include "orbit.h"
-
 
 /* orb internals */
 typedef struct _ORBit_ServantPrivate {
@@ -111,7 +110,6 @@ int main(int argc, char **argv)
 	CORBA_Environment ev;
 	CORBA_Object obj, dummy;
 	PortableServer_POA root_poa;
-	POA_Counter *counter;
 	int i;
 
 	orb=CORBA_ORB_init(&argc, argv, "orbit-local-orb", &ev);

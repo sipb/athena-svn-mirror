@@ -55,9 +55,12 @@ void ORBit_pseudo_object_init(ORBit_PseudoObject obj,
 	ORBIT_PSEUDO_OBJECT(obj)->pseudo_object_type = obj_type;
 }
 
+static void ORBit_Policy_release(CORBA_Policy policy,
+				 CORBA_Environment *ev);
+
 static const ORBit_RootObject_Interface CORBA_Policy__epv =
 {
-	(void (*)(gpointer, CORBA_Environment *))CORBA_Policy_destroy
+	(void (*)(gpointer, CORBA_Environment *))ORBit_Policy_release
 };
 
 void ORBit_policy_object_init(CORBA_Policy obj,
@@ -72,6 +75,17 @@ void ORBit_policy_object_init(CORBA_Policy obj,
 	ORBit_RootObject_set_interface(ORBIT_ROOT_OBJECT(obj),
 				       (gpointer)&CORBA_Policy__epv,
 				       ev);
+}
+
+/* Release method implementation for CORBA_Policy */
+static void
+ORBit_Policy_release(CORBA_Policy policy,
+		     CORBA_Environment *ev)
+{
+	if(--(ORBIT_ROOT_OBJECT(policy)->refs) > 0)
+		return;
+
+	g_free(policy);
 }
 
 void ORBit_object_reference_init(CORBA_Object obj, CORBA_Environment *ev)

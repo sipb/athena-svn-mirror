@@ -327,25 +327,39 @@ ch_output_type_union(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Info *ci)
   g_free(id);
 }
 
-static void
-ch_output_codefrag(IDL_tree tree, OIDL_Run_Info *rinfo, OIDL_C_Info *ci)
+static const char token_pragma[]="pragma";
+static const char token_include_defs[]="include_defs";
+
+static void ch_output_codefrag(IDL_tree tree, OIDL_Run_Info * rinfo, OIDL_C_Info * ci)
 {
   GSList *list;
 
-  for(list = IDL_CODEFRAG(tree).lines; list;
-      list = g_slist_next(list)) {
-    if(!strncmp(list->data,
-		"#pragma include_defs",
-		sizeof("#pragma include_defs")-1)) {
-	char *ctmp, *cte;
-	ctmp = ((char *)list->data) + sizeof("#pragma include_defs");
-	while(*ctmp && (isspace(*ctmp) || *ctmp == '"')) ctmp++;
-	cte = ctmp;
-	while(*cte && !isspace(*cte) && *cte != '"') cte++;
-	*cte = '\0';
-      fprintf(ci->fh, "#include <%s>\n", ctmp);
-    } else
-      fprintf(ci->fh, "%s\n", (char *)list->data);
+  for (list = IDL_CODEFRAG(tree).lines; list; list = g_slist_next(list)) {
+    int pragmatic = 0;
+
+    if (*(char *) list->data == '#') {
+      char *ctmp;
+      ctmp = (char *) list->data + 1;
+      /* eat blanks between '#' and 'pragma' */
+      while (isspace(*ctmp)) ctmp++;
+      if (!strncmp(ctmp, token_pragma, sizeof(token_pragma) - 1)) {
+        ctmp += sizeof(token_pragma) - 1;
+        /* eat blanks between 'pragma' and next token */
+        while (isspace(*ctmp)) ctmp++;
+        if (!strncmp(ctmp, token_include_defs, sizeof(token_include_defs) - 1)) {
+          char *cte;
+          ctmp += sizeof(token_include_defs);
+          while (*ctmp && (isspace(*ctmp) || *ctmp == '"')) ctmp++;
+          cte = ctmp;
+          while (*cte && !isspace(*cte) && *cte != '"') cte++;
+          *cte = '\0';
+          fprintf(ci->fh, "#include <%s>\n", ctmp);
+          pragmatic = 1;
+        }
+      }
+    }
+    if (!pragmatic)
+      fprintf(ci->fh, "%s\n", (char *) list->data);
   }
 }
 
