@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v 1.2 1990-04-25 11:52:55 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v 1.3 1990-07-10 20:05:08 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/user.c,v $ */
 /* $Author: epeisach $ */
 
@@ -11,6 +11,9 @@
 #include "logger.h"
 #include <strings.h>
 #include <sys/types.h>
+#if defined(ultrix) && defined(NULL)
+#undef NULL
+#endif
 #include <sys/param.h> 
 #include <errno.h>
 #include <sys/file.h>
@@ -32,7 +35,7 @@ char *name;
 
     db1 = dbm_open(name, 0, 0);
     if (db1 == NULL) {
-	db1 = dbm_open(name, O_CREAT, USER_DB_MODE);
+	db1 = dbm_open(name, (O_RDWR | O_CREAT), USER_DB_MODE);
 	if(db1 == NULL) return -1;
     }
     dbm_close(db1);
