@@ -1852,10 +1852,24 @@ ditem_execute (const GnomeDesktopItem *item,
 				      NULL, /* child_setup_func_data */
 				      &ret /* child_pid */,
 				      error)) {
-			/* The error was set for us,
-			 * we just can't launch this thingie */
-			ret = -1;
-			break;
+			/* Athena addition: the user's homedir may not be
+			 * accessible under AFS.  Try again in "/". */
+			if (g_error_matches (*error, G_SPAWN_ERROR,
+					     G_SPAWN_ERROR_CHDIR)) {
+				g_clear_error (error);
+				if ( ! g_spawn_async ("/", real_argv, envp,
+						      G_SPAWN_SEARCH_PATH,
+						      NULL, NULL, &ret,
+						      error)) {
+					ret = -1;
+					break;
+				}
+			} else {
+				/* The error was set for us,
+				 * we just can't launch this thingie */
+				ret = -1;
+				break;
+			}
 		}
 		launched ++;
 
