@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.7 1991-08-12 13:13:27 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.8 1992-01-07 20:54:10 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -148,7 +148,7 @@ ParseContents(dir)
       MuError(error);
       return(ERROR);
     }
-    *delim_ptr = NULL;
+    *delim_ptr = '\0';
     title_ptr = delim_ptr + 1;
     if ( !strcmp(inbuf, B_ENTRY) )
       new_entry_table[i].type = PLAINFILE;
@@ -159,7 +159,7 @@ ParseContents(dir)
       MuError(error);
       return(ERROR);
     }
-    *delim_ptr = NULL;
+    *delim_ptr = '\0';
     strcpy(new_entry_table[i].title, title_ptr);
     filename_ptr = delim_ptr + 1;
     if ((delim_ptr = index(filename_ptr, CONTENTS_DELIM)) == NULL){
@@ -167,7 +167,7 @@ ParseContents(dir)
       MuError(error);
       return(ERROR);
     }
-    *delim_ptr = NULL;
+    *delim_ptr = '\0';
     strcpy(new_entry_table[i].filename, filename_ptr);
     format_ptr = delim_ptr + 1;
     if ((delim_ptr = index(format_ptr, CONTENTS_DELIM)) == NULL) {
@@ -175,7 +175,7 @@ ParseContents(dir)
       MuError(error);
       return(ERROR);
     }
-    *delim_ptr = NULL;
+    *delim_ptr = '\0';
     strcpy(new_entry_table[i].formatter, format_ptr);
     maintainer_ptr = delim_ptr + 1;
     strcpy(new_entry_table[i].maintainer, maintainer_ptr);
