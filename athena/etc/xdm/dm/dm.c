@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.61 1998-03-01 20:04:48 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.62 1998-05-17 03:42:16 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -37,7 +37,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.61 1998-03-01 20:04:48 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.62 1998-05-17 03:42:16 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -118,7 +118,7 @@ static int grabconsole(void);
 #define DAEMON 1
 
 #define X_START_WAIT	30	/* wait up to 30 seconds for X to be ready */
-#define X_STOP_WAIT	3	/* (seconds / 2) wait for graceful shutdown */
+#define X_STOP_WAIT	4	/* seconds to wait for graceful shutdown */
 #define LOGIN_START_WAIT 60	/* wait up to 1 minute for Xlogin */
 #ifndef BUFSIZ
 #define BUFSIZ		1024
@@ -548,6 +548,7 @@ int main(int argc, char **argv)
 	if (login_running == NONEXISTENT || x_running == NONEXISTENT) {
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
 	  cleanup(logintty);
+	  sleep(X_STOP_WAIT);
 	  _exit(0);
 	}
     }
@@ -561,6 +562,7 @@ static void console_login(char *conf, char *msg)
     int i, graceful = FALSE, cfirst = TRUE, pgrp;
     char *nl = "\r\n";
     struct termios ttybuf;
+    sigset_t mask, omask;
     char *p, **cargv;
 
 #ifdef DEBUG
@@ -568,32 +570,28 @@ static void console_login(char *conf, char *msg)
 #endif
 
     sigemptyset(&sig_zero);
-    for (i = 0; i < X_STOP_WAIT; i++) {
-	if (login_running != NONEXISTENT && login_running != STARTUP)
-	  kill(loginpid, SIGKILL);
-	if (console_running != NONEXISTENT) {
-	    if (cfirst)
-	      kill(consolepid, SIGHUP);
-	    else
-	      kill(consolepid, SIGKILL);
-	    cfirst = FALSE;	
-	}
-	if (x_running != NONEXISTENT)
-	  kill(xpid, SIGTERM);
-
-	/* wait 1 sec for children to exit */
-#ifndef SOLARIS
-	alarm(2);
-	sigpause(0); 
-#endif
-
-	if (x_running == NONEXISTENT &&
-	    console_running == NONEXISTENT &&
-	    (login_running == NONEXISTENT || login_running == STARTUP)) {
-	    graceful = TRUE;
-	    break;
-	}
+    if (login_running != NONEXISTENT && login_running != STARTUP)
+	kill(loginpid, SIGKILL);
+    if (console_running != NONEXISTENT) {
+	if (cfirst)
+	    kill(consolepid, SIGHUP);
+	else
+	    kill(consolepid, SIGKILL);
+	cfirst = FALSE;	
     }
+    if (x_running != NONEXISTENT)
+	kill(xpid, SIGTERM);
+
+    /* Wait X_STOP_WAIT seconds for children to exit and for the graphics
+     * device to recover.  Be paranoid about other signals interrupting
+     * the sleep and about prior alarms.
+     */
+    sigfillset(&mask);
+    sigdelset(&mask, SIGALRM);
+    sigprocmask(SIG_BLOCK, &mask, &omask);
+    alarm(0);
+    sleep(X_STOP_WAIT);
+    sigprocmask(SIG_SETMASK, &omask, NULL);
 
     p = getconf(conf, "ttylogin");
     if (p == NULL) {
