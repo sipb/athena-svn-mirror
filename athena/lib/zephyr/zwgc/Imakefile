@@ -4,8 +4,8 @@
 /**/#	"mit-copyright.h". 
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/Imakefile,v $
-/**/#	$Author: jtkohl $
-/**/#	$Id: Imakefile,v 1.7 1989-12-18 13:29:11 jtkohl Exp $
+/**/#	$Author: raeburn $
+/**/#	$Id: Imakefile,v 1.8 1990-10-19 08:25:20 raeburn Exp $
 /**/#
 
 SUBDIRS= Memory String Dictionary
@@ -63,7 +63,8 @@ DEPENDSRCS= ${CODE} ${GENERATED}
 ZWGCDESC=$(ACLDIR)/zwgc.desc
 APPDEF=$(ACLDIR)/zwgc_resources
 
-DEFINES=-DREVSTACK -DDEFDESC=\"$(ZWGCDESC)\" -DAPPDEFDATABASE=\"$(APPDEF)\"
+DEFINES=-DREVSTACK -DDEFDESC=\"$(ZWGCDESC)\" -DAPPDEFDATABASE=\"$(APPDEF)\" \
+	-DZWGCPATH=\"$(USRETCDIR)/zwgc\"
 
 normal_obj_rule()
 
