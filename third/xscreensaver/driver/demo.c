@@ -118,7 +118,7 @@ extern Widget preferences_dialog;
 extern Widget preferences_form;
 extern Widget prefs_done, prefs_cancel;
 extern Widget timeout_text, cycle_text, fade_text, fade_ticks_text;
-extern Widget lock_timeout_text, passwd_timeout_text;
+extern Widget lock_timeout_text, passwd_timeout_text, max_idle_text;
 extern Widget verbose_toggle, install_cmap_toggle, fade_toggle, unfade_toggle,
   lock_toggle;
 
@@ -819,6 +819,7 @@ prefs_ok_cb (Widget button, XtPointer client_data, XtPointer call_data)
   p->cycle	    = p2->cycle;
   p->lock_timeout   = p2->lock_timeout;
   p->passwd_timeout = p2->passwd_timeout;
+  p->max_idle_time  = p2->max_idle_time;
   p->fade_seconds   = p2->fade_seconds;
   p->fade_ticks	    = p2->fade_ticks;
   p->verbose_p	    = p2->verbose_p;
@@ -863,6 +864,7 @@ make_preferences_dialog (prefs_pair *pair, Widget parent)
   CB (fade_ticks_text,		prefs_int_cb,  &p2->fade_ticks);
   CB (lock_timeout_text,	prefs_min_cb,  &p2->lock_timeout);
   CB (passwd_timeout_text,	prefs_sec_cb,  &p2->passwd_timeout);
+  CB (max_idle_text,		prefs_min_cb,  &p2->max_idle_time);
 #endif /* HAVE_MOTIF */
 
   CBT (verbose_toggle,		prefs_bool_cb, &p2->verbose_p);
@@ -931,6 +933,7 @@ pop_preferences_dialog (prefs_pair *pair)
   format_time (s, p2->cycle);          set_text_string(cycle_text, s);
   format_time (s, p2->lock_timeout);   set_text_string(lock_timeout_text, s);
   format_time (s, p2->passwd_timeout); set_text_string(passwd_timeout_text, s);
+  format_time (s, p2->max_idle_time);  set_text_string(max_idle_text, s);
   format_time (s, p2->fade_seconds);   set_text_string(fade_text, s);
   sprintf (s, "%u", p2->fade_ticks);   set_text_string(fade_ticks_text, s);
 

@@ -213,7 +213,7 @@ EXT_SED_CMD =	INDOT_U=`echo "${INDOT}"|tr "[a-z]" "[A-Z]"`; \
 #
 # Command used to produce manual entries
 #
-MK_MANFILE = ( ${EXT_SED_CMD} | ${MANROFF} )
+MK_MANFILE = ${EXT_SED_CMD}
 
 #
 # Extensions for the generated manual entries

@@ -2,17 +2,20 @@
 #* LPRng IFHP Filter
 #* Copyright 1994-1999 Patrick Powell, San Diego, CA <papowell@astart.com>
 #*
-#* $Id: Makefile.in,v 1.1.1.2 1999-05-04 18:50:33 mwhitson Exp $
+#* $Id: Makefile.in,v 1.6 1999-05-12 18:29:00 danw Exp $
 #
 
 
 prefix=@prefix@
+exec_prefix=@exec_prefix@
+libexecdir=@libexecdir@
+datadir=@datadir@
 ADMINDIR=@ADMINDIR@
 SHELL=@SHELL@
 
 # where the filters are installed:
-INSTDIR=${prefix}/lib/filters
-FONTDIR=${prefix}/lib/filters/fonts
+INSTDIR=${libexecdir}/filters
+DATAINSTDIR=${datadir}/filters
 
 # shell to use
 
@@ -30,7 +33,7 @@ DEFS=@DEFS@
 CFLAGS = $(CCOPTFLAGS) $(DEFS) $(FLAGS) -DADMINDIR=\"$(ADMINDIR)\"
 
 # libraries you will need (found by config), add more to end
-LIBS=@LIBS@
+LIBS=-L$(ATHTOOLROOT)/usr/athena/lib -lzephyr -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lhesiod @LIBS@
 
 INSTALLCMD=@INSTALL@
 SHELL = @SHELL@
@@ -46,7 +49,7 @@ RANLIB=@RANLIB@
 # ACCNTSH= -DACCNTSH=\"$(INSTDIR)/accounting.sh\"
 
 SRCDIRS=${SRC}/.
-INCLUDE=.. ${SRC}/.
+INCLUDE=.. ${SRC}/. $(ATHTOOLROOT)/usr/athena/include
 #GNU
 VPATH=$(subst :, ,$(INCLUDE) $(SRCDIRS))
 INCS=$(patsubst %,-I%,$(INCLUDE))
@@ -59,7 +62,8 @@ INCS=$(patsubst %,-I%,$(INCLUDE))
 FLAGS=  $(QUIET) $(INCS)
 
 # commands
-INSTALL=$(SRC)/psbanner.ps $(SRC)/pclbanner
+DATAINSTALL=$(SRC)/psbanner.ps
+INSTALL=$(SRC)/pclbanner
 COMMANDS= ifhp textps accounting.sh
 
 .SUFFIXES: .sh .sh_init
@@ -97,15 +101,23 @@ textps: textps.o
 # Installation of commands
 #
 install: all
-	${SRC}/mkinstalldirs $(INSTDIR)
+	${SRC}/mkinstalldirs $(DESTDIR)$(INSTDIR)
 	for i in $(COMMANDS) ; do \
-		$(INSTALLCMD) -m 755 $$i $(INSTDIR); \
+		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR); \
 	done ;
 	for i in $(INSTALL) ; do \
-		$(INSTALLCMD) -m 755 $$i $(INSTDIR)/`basename $$i`; \
+		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(INSTDIR)/`basename $$i`; \
 	done ;
-	cd $(INSTDIR); rm -f ofhp banner; \
+	${SRC}/mkinstalldirs $(DESTDIR)$(DATAINSTDIR)
+	for i in $(DATAINSTALL) ; do \
+		$(INSTALLCMD) -m 755 $$i $(DESTDIR)$(DATAINSTDIR)/`basename $$i`; \
+	done ;
+	cd $(DESTDIR)$(INSTDIR); rm -f ofhp banner; \
 		ln -s ifhp ofhp; ln -s ifhp banner
+	@if test ! -f $(DESTDIR)/etc/ifhp.conf; then \
+		echo "You do not have an /etc/ifhp.conf file"; \
+		echo "copy ifhp.conf to /etc/ifhp.conf file"; \
+	fi;
 #
 # Miscellaneous
 #

@@ -136,6 +136,11 @@ xpm_to_ximage (Display *dpy, Visual *visual, Colormap cmap, char **xpm_data)
 
 #else  /* !HAVE_XPM */
 
+#include <stdio.h>
+#include <X11/Intrinsic.h>
+
+extern char *progname;
+
 XImage *
 xpm_to_ximage (char **xpm_data)
 {

@@ -1,0 +1,36 @@
+# $Id: Makefile.athena,v 1.4 1999-01-29 03:04:25 ghudson Exp $
+
+SHELL=/bin/sh
+
+prepare:
+
+clean:
+	${MAKE} clean
+
+all:
+	case $$ATHENA_SYS in \
+		*_linux*) target=linux ;; \
+		sun4x_5*) target=sunos5 ;; \
+		sgi_6*) target=irix6 ;; \
+	esac; \
+	make $$target REAL_DAEMON_DIR=/ STYLE=-DPROCESS_OPTIONS "CC=$$COMPILER"
+
+check:
+
+install:
+	mkdir -p "$$SRVD/usr/athena/etc"
+	mkdir -p "$$SRVD/usr/athena/include"
+	mkdir -p "$$SRVD/usr/athena/lib"
+	mkdir -p "$$SRVD/usr/athena/man"
+	mkdir -p "$$SRVD/usr/athena/man/man3"
+	mkdir -p "$$SRVD/usr/athena/man/man5"
+	mkdir -p "$$SRVD/usr/athena/man/man8"
+	install tcpdchk "$$SRVD/usr/athena/etc"
+	install tcpdmatch "$$SRVD/usr/athena/etc"
+	install -m 644 libwrap.a "$$SRVD/usr/athena/lib"
+	install -m 644 tcpd.h "$$SRVD/usr/athena/include"
+	install -m 644 hosts_access.3 "$$SRVD/usr/athena/man/man3"
+	install -m 644 hosts_access.5 "$$SRVD/usr/athena/man/man5"
+	install -m 644 hosts_options.5 "$$SRVD/usr/athena/man/man5"
+	install -m 644 tcpdchk.8 "$$SRVD/usr/athena/man/man8"
+	install -m 644 tcpdmatch.8 "$$SRVD/usr/athena/man/man8"

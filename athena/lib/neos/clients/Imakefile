@@ -1,0 +1,53 @@
+/* 
+ * Imakefile for the FX (file exchange) clients
+ *
+ * $Id: Imakefile,v 1.7 1999-01-22 23:17:23 ghudson Exp $
+ *
+ *
+ * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ */
+
+AnsiCC()
+
+CLIENTS = turnin pickup collect uncollect return fxpurge \
+	 fxblanche fxcreate fxdestroy fxls fxping
+
+INCLUDES = -I../lib -I../include
+LDDEFS = -L../lib
+LIBS = -lfxcl -lhesiod -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err
+FXOBJS = main.o fx_ct.o fx.o arg.o
+FXSRCS = main.c fx_ct.o fx.c arg.c
+
+DEFINES= ${INCLUDES}
+
+.SUFFIXES: .o .h .lint .c .ct
+
+.ct.c:
+	rm -f $*.c
+	mk_cmds $*.ct
+
+.c.lint:
+	lint -u $(INCLUDES) $*.c $(LIBS) | tee $@
+
+
+SimpleProgram(turnin,turnin.o fxmain.o full_name.o,$(LIBS),$(ATHBINDIR))
+SimpleProgram(pickup,dump.o pickup.o array.o fxmain.o,$(LIBS),$(ATHBINDIR))
+SimpleProgram(collect,full_name.o dump.o collect.o array.o fxmain.o,\
+		 $(LIBS),$(ATHBINDIR))
+SimpleProgram(uncollect,uncollect.o fxmain.o,$(LIBS),$(ATHBINDIR))
+SimpleProgram(return,return.o array.o full_name.o fxmain.o,\
+		$(LIBS),$(ATHBINDIR))
+SimpleProgram(fxpurge,full_name.o purge.o fxpurge.o array.o fxmain.o,\
+		$(LIBS),$(ATHBINDIR))
+SimpleProgram(fxblanche,fxblanche.o full_name.o,$(LIBS),$(ATHBINDIR))
+SimpleProgram(fxcreate,fxcreate.o full_name.o,$(LIBS),$(ATHBINDIR))
+SimpleProgram(fxdestroy,fxdestroy.o,$(LIBS),$(ATHBINDIR))
+SimpleProgram(fxls,fxls.o,$(LIBS),$(ATHBINDIR))
+SimpleProgram(fxping,fxping.o,$(LIBS),$(ATHBINDIR))
+
+clean::
+	rm -f *.lint core 

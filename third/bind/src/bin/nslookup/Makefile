@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.3 1999-03-16 19:45:16 danw Exp $
+# $Id: Makefile,v 1.5 1999-03-16 20:34:26 danw Exp $
 
 DESTDIR=
 CC= cc
@@ -51,6 +51,9 @@ SRCS=	${CSRCS} commands.l
 OBJS=	main.${O} getinfo.${O} debug.${O} send.${O} skip.${O} list.${O} \
 	subr.${O} commands.${O}
 
+.SUFFIXES:
+.SUFFIXES: .c .o
+
 all: ${PROG}${EXE}
 
 ${PROG}${EXE}: ${OBJS} ${LIBBIND} Makefile
@@ -86,9 +89,6 @@ links: FRC
 
 tags: FRC
 	ctags ${CSRCS} *.h
-
-commands.c: commands.l
-	${LEX} -t $< > $@ || rm $@
 
 FRC:
 

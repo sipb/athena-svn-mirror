@@ -149,6 +149,10 @@ char copyright[] =
 #include "krb5.h"
 #include "com_err.h"
 #include "loginpaths.h"
+#ifdef KRB5_KRB4_COMPAT
+#include <kerberosIV/krb.h>
+Key_schedule v4_schedule;
+#endif
 
 #if HAVE_ARPA_NAMESER_H
 #include <arpa/nameser.h>
@@ -158,26 +162,20 @@ char copyright[] =
 #define MAXDNAME 256 /*per the rfc*/
 #endif
 
+#include <al.h>
+
 #define ARGSTR	"ek54ciD:S:M:AP:?L:w:"
 
 #define RSHD_BUFSIZ 5120
 
 #define MAXRETRIES 4
 
-char des_inbuf[2*RSHD_BUFSIZ];    /* needs to be > largest read size */
-krb5_encrypt_block eblock;        /* eblock for encrypt/decrypt */
-char des_outbuf[2*RSHD_BUFSIZ];   /* needs to be > largest write size */
-krb5_data desinbuf,desoutbuf;
 krb5_context bsd_context;
 char *srvtab = NULL;
 krb5_keytab keytab = NULL;
 krb5_ccache ccache = NULL;
 void fatal();
-int v5_des_read();
-int v5_des_write();
 
-int (*des_read)() = v5_des_read;
-int (*des_write)() = v5_des_write;
 int require_encrypt = 0;
 int do_encrypt = 0;
 int anyport = 0;
@@ -190,8 +188,6 @@ int always_ip = 0;
 #else /* !KERBEROS */
 
 #define ARGSTR	"RD:?"
-int (*des_read)() = read;
-int (*des_write)() = write;
      
 #endif /* KERBEROS */
      
@@ -518,6 +514,7 @@ int maxlogs;
 
 #define NMAX   16 
 
+pid_t acctpid = 0;
 int pid;
 char locuser[NMAX+1];
 char remuser[NMAX +1];
@@ -565,6 +562,8 @@ cleanup(signumber)
     
     pty_logwtmp(ttyn,"","");
     syslog(LOG_INFO ,"Daemon terminated via signal %d.", signumber);
+    if (acctpid)
+	al_acct_revert(locuser, acctpid);
     if (ccache)
 	krb5_cc_destroy(bsd_context, ccache);
     exit(0);
@@ -671,8 +670,6 @@ void doit(f, fromp)
     }
 #ifdef KERBEROS
     netf = f;
-    desinbuf.data = des_inbuf;
-    desoutbuf.data = des_outbuf;
     if ( (fromp->sin_port >= IPPORT_RESERVED ||
 	    fromp->sin_port < IPPORT_RESERVED/2))
       non_privileged = 1;
@@ -789,12 +786,11 @@ void doit(f, fromp)
 	error("Authentication failed: %s\n", error_message(status));
 	exit(1);
     }
-    if (!strncmp(cmdbuf, "-x ", 3))
-	do_encrypt = 1;
 #else
     getstr(f, remuser, sizeof(remuser), "remuser");
     getstr(f, locuser, sizeof(locuser), "locuser");
     getstr(f, cmdbuf, sizeof(cmdbuf), "command");
+    rcmd_stream_init_normal();
 #endif /* KERBEROS */
     
 #ifdef CRAY
@@ -1087,7 +1083,6 @@ void doit(f, fromp)
 		    ((auth_sys == KRB5_RECVAUTH_V4) ? AUTH_KRB4 : AUTH_KRB5);
 	}
 
-	
 #else
     if (pwd->pw_passwd != 0 && *pwd->pw_passwd != '\0' &&
 	ruserok(hostname[0] ? hostname : hostaddra,
@@ -1246,7 +1241,7 @@ if(port)
 			shutdown(s, 1+1);
 			FD_CLR(pv[0], &readfrom);
 		    } else {
-			(void) (*des_write)(s, buf, cc);
+			(void) rcmd_stream_write(s, buf, cc);
 		    }
 		}
 		if (FD_ISSET(pw[0], &ready)) {
@@ -1257,12 +1252,12 @@ if(port)
 			shutdown(f, 1+1);
 			FD_CLR(pw[0], &readfrom);
 		    } else {
-			(void) (*des_write)(f, buf, cc);
+			(void) rcmd_stream_write(f, buf, cc);
 		    }
 		}
 		if (port&&FD_ISSET(s, &ready)) {
 		    /* read from the alternate channel, signal the child */
-		    if ((*des_read)(s, &sig, 1) <= 0) {
+		    if (rcmd_stream_read(s, &sig, 1) <= 0) {
 			FD_CLR(s, &readfrom);
 		    } else {
 #ifdef POSIX_SIGNALS
@@ -1278,7 +1273,7 @@ if(port)
 		if (FD_ISSET(f, &ready)) {
 		    /* read from the net, write to child stdin */
 		    errno = 0;
-		    cc = (*des_read)(f, buf, sizeof(buf));
+		    cc = rcmd_stream_read(f, buf, sizeof(buf));
 		    if (cc <= 0) {
 			(void) close(px[1]);
 			FD_CLR(f, &readfrom);
@@ -1306,6 +1301,8 @@ if(port)
 #endif
 	    /* Finish session in wmtp */
 	    pty_logwtmp(ttyn,"","");
+	    if (acctpid)
+		al_acct_revert(locuser, acctpid);
 	    if (ccache)
 		krb5_cc_destroy(bsd_context, ccache);
 	    exit(0);
@@ -1499,6 +1496,8 @@ if(port)
     exit(1);
     
   signout_please:
+    if (acctpid)
+	al_acct_revert(locuser, acctpid);
     if (ccache)
 	krb5_cc_destroy(bsd_context, ccache);
     ccache = NULL;
@@ -1772,7 +1771,7 @@ recvauth(netf, peersin, valid_checksum)
     krb5_error_code status;
     struct sockaddr_in laddr;
     char krb_vers[KRB_SENDAUTH_VLEN + 1];
-    int len;
+    int len, local_acct;
     krb5_data inbuf;
     char v4_instance[INST_SZ];	/* V4 Instance */
     char v4_version[9];
@@ -1856,6 +1855,8 @@ recvauth(netf, peersin, valid_checksum)
     getstr(netf, cmdbuf, sizeof(cmdbuf), "command");
 
     if (auth_sys == KRB5_RECVAUTH_V4) {
+	rcmd_stream_init_normal();
+	
 	/* We do not really know the remote user's login name.
          * Assume it to be the same as the first component of the
 	 * principal's name. 
@@ -1919,14 +1920,12 @@ recvauth(netf, peersin, valid_checksum)
     }
     krb5_free_authenticator(bsd_context, authenticator);
 
-    
-    /* Setup eblock for encrypted sessions. */
-    krb5_use_enctype(bsd_context, &eblock, ticket->enc_part2->session->enctype);
-    if ((status = krb5_process_key(bsd_context, &eblock,
-				   ticket->enc_part2->session)))
-	fatal(netf, "Permission denied");
 
-    /* Null out the "session" because eblock.key references the session
+    if (!strncmp(cmdbuf, "-x ", 3))
+	do_encrypt = 1;
+    rcmd_stream_init_krb5(ticket->enc_part2->session, do_encrypt, 0);
+
+    /* Null out the "session" because kcmd.c references the session
      * key here, and we do not want krb5_free_ticket() to destroy it. */
     ticket->enc_part2->session = 0;
 
@@ -1934,6 +1933,16 @@ recvauth(netf, peersin, valid_checksum)
 				    &inbuf))) {
 	error("Error reading message: %s\n", error_message(status));
 	exit(1);
+    }
+
+    if (al_login_allowed(locuser, 1, &local_acct, NULL) != 0) {
+	error("You are not authorized to log in here remotely.\n");
+	exit(1);
+    }
+
+    if (!local_acct) {
+	acctpid = getpid();
+	al_acct_create(locuser, NULL, acctpid, 0, 0, NULL);
     }
 
     if (inbuf.length) { /* Forwarding being done, read creds */
@@ -1959,136 +1968,8 @@ recvauth(netf, peersin, valid_checksum)
     krb5_free_ticket(bsd_context, ticket);
     return 0;
 }
+#endif /* KERBEROS */
 
-
-char storage[2*RSHD_BUFSIZ];               /* storage for the decryption */
-int nstored = 0;
-char *store_ptr = storage;
-
-int
-v5_des_read(fd, buf, len)
-     int fd;
-     register char *buf;
-     int len;
-{
-    int nreturned = 0;
-    krb5_ui_4 net_len,rd_len;
-    int cc,retry;
-    unsigned char len_buf[4];
-    
-    if (!do_encrypt)
-      return(read(fd, buf, len));
-    
-    if (nstored >= len) {
-	memcpy(buf, store_ptr, len);
-	store_ptr += len;
-	nstored -= len;
-	return(len);
-    } else if (nstored) {
-	memcpy(buf, store_ptr, nstored);
-	nreturned += nstored;
-	buf += nstored;
-	len -= nstored;
-	nstored = 0;
-    }
-    
-    if ((cc = krb5_net_read(bsd_context, fd, (char *)len_buf, 4)) != 4) {
-	if ((cc < 0)  && ((errno == EWOULDBLOCK) || (errno == EAGAIN)))
-	    return(cc);
-	/* XXX can't read enough, pipe must have closed */
-	return(0);
-    }
-    rd_len =
-	((len_buf[0]<<24) |
-	 (len_buf[1]<<16) |
-	 (len_buf[2]<<8) |
-	 len_buf[3]);
-    net_len = krb5_encrypt_size(rd_len, eblock.crypto_entry);
-    /* note: net_len is unsigned */
-    if (net_len > sizeof(des_inbuf)) {
-	/* XXX preposterous length, probably out of sync.
-	   act as if pipe closed */
-	syslog(LOG_ERR,"Read size problem (rd_len=%d, net_len=%d)",
-	       rd_len, net_len);
-	return(0);
-    }
-    retry = 0;
-  datard:
-    if ((cc = krb5_net_read(bsd_context, fd, desinbuf.data, net_len)) != net_len) {
-	/* XXX can't read enough, pipe must have closed */
-	if ((cc < 0)  && ((errno == EWOULDBLOCK) || (errno == EAGAIN))) {
-	    retry++;
-	    if (retry > MAXRETRIES){
-		syslog(LOG_ERR, "des_read retry count exceeded %d\n", retry);
-		return(0);
-	    }
-	    sleep(1);
-	    goto datard;
-	}
-	syslog(LOG_ERR,
-	       "Read data received %d != expected %d.",
-	       cc, net_len);
-	return(0);
-    }
-
-    /* decrypt info */
-    if (krb5_decrypt(bsd_context, desinbuf.data, (krb5_pointer) storage, net_len,
-		     &eblock, 0)) {
-	syslog(LOG_ERR,"Read decrypt problem.");
-	return(0);
-    }
-
-    store_ptr = storage;
-    nstored = rd_len;
-    if (nstored > len) {
-	memcpy(buf, store_ptr, len);
-	nreturned += len;
-	store_ptr += len;
-	nstored -= len;
-    } else {
-	memcpy(buf, store_ptr, nstored);
-	nreturned += nstored;
-	nstored = 0;
-    }
-    return(nreturned);
-}
-    
-
-int
-v5_des_write(fd, buf, len)
-     int fd;
-     char *buf;
-     int len;
-{
-    unsigned char len_buf[4];
-    
-    if (!do_encrypt)
-      return(write(fd, buf, len));
-    
-    desoutbuf.length = krb5_encrypt_size(len, eblock.crypto_entry);
-    if (desoutbuf.length > sizeof(des_outbuf)){
-	syslog(LOG_ERR,"Write size problem (%d > %d)",
-	       desoutbuf.length, sizeof(des_outbuf));
-	return(-1);
-    }
-
-    if (krb5_encrypt(bsd_context, (krb5_pointer)buf, desoutbuf.data, len, &eblock, 0)) {
-	syslog(LOG_ERR,"Write encrypt problem.");
-	return(-1);
-    }
-    
-    len_buf[0] = (len & 0xff000000) >> 24;
-    len_buf[1] = (len & 0xff0000) >> 16;
-    len_buf[2] = (len & 0xff00) >> 8;
-    len_buf[3] = (len & 0xff);
-    (void) write(fd, len_buf, 4);
-
-    if (write(fd, desoutbuf.data, desoutbuf.length) != desoutbuf.length){
-	syslog(LOG_ERR,"Could not write out all data.");
-	return(-1);
-    }
-    else return(len);
-}
 
 
 void fatal(f, msg)
@@ -2103,7 +1984,7 @@ void fatal(f, msg)
     buf[0] = '\01';             /* error indicator */
     (void) sprintf(buf + 1, "%s: %s.\r\n",progname, msg);
     if ((f == netf) && (pid > 0))
-      (void) (*des_write)(f, buf, strlen(buf));
+      (void) rcmd_stream_write(f, buf, strlen(buf));
     else
       (void) write(f, buf, strlen(buf));
     syslog(LOG_ERR,"%s\n",msg);
@@ -2119,4 +2000,3 @@ void fatal(f, msg)
     }
     exit(1);
 }
-#endif /* KERBEROS */

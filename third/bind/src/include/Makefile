@@ -24,7 +24,7 @@ INSTALL_INC=
 MARGS= DESTDIR="${DESTDIR}" DESTINC="${DESTINC}" INSTALL="${INSTALL}" \
 	MAKE="${MAKE}" INSTALL_INC=${INSTALL_INC}
 
-all depend clean distclean install::
+all depend clean distclean::
 	@for x in ${SUBDIRS}; do \
 		(cd $$x; pwd; ${MAKE} ${MARGS} $@); \
 	done
@@ -34,10 +34,7 @@ distclean:: clean
 clean:: FRC
 	rm -f *~ *.BAK *.CKP *.orig
 
-install:: ${DESTDIR}${DESTINC}
-	@set -x; for x in ${HFILES}; do \
-		${INSTALL} -c ${INSTALL_INC} -m 444 $$x ${DESTDIR}${DESTINC}/$$x; \
-	done
+install::
 
 ${DESTDIR}${DESTINC}:
 	mkdir -p ${DESTDIR}${DESTINC}; 

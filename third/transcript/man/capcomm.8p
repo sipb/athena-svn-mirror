@@ -1,11 +1,11 @@
 .TH CAPCOMM 8 "19 August 1992" "Adobe Systems"
 \" Copyright (c) 1992 Adobe Systems Incorporated. All Rights Reserved.
 \" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
-\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/capcomm.8p,v 1.1.1.1 1996-10-07 20:25:37 ghudson Exp $
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/capcomm.8p,v 1.2 1996-10-14 05:09:41 ghudson Exp $
 .ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
 .ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
 .SH NAME
-capcomm\(em\*(TS Appletalk communication filter for \*(PS printers
+capcomm \- TranScript Appletalk communication filter for PostScript printers
 .SH "SYNOPSIS"
 .B XPSLIBDIRX/pscomm
 .SH "DESCRIPTION"

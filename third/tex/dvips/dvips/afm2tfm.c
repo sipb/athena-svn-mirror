@@ -23,11 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#if defined(SYSV) || defined(VMS) || defined(__THINK__) || defined(MSDOS) || defined(OS2) || defined(ATARIST)
 #include <string.h>
-#else
-#include <strings.h>
-#endif
 #include <math.h>
 #ifdef ATARIST
 #include <float.h>

@@ -92,6 +92,7 @@ krb5_ktsrvint_close(context, id)
 	return 0;
     (void) fclose(KTFILEP(id));
     KTFILEP(id) = 0;
+    return 0;
 }
 
 krb5_error_code

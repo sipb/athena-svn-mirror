@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getqueue.c,v 1.1.1.2 1999-05-04 18:06:50 danw Exp $";
+"$Id: getqueue.c,v 1.4 1999-05-12 02:07:59 danw Exp $";
 
 
 /***************************************************************************
@@ -442,6 +442,11 @@ void Get_datafile_info( const char *dir, struct line_list *cf_line_list, struct 
 			Set_str_value(datafile,"N",s+1);
 		} else if( c == 'U' ){
 			Set_str_value(datafile,"U",s+1);
+		} else if( c == 'Z' && Athena_Z_compat_DYN ){
+			char *z;
+			z = malloc_or_die(strlen(s) + 8,__FILE__,__LINE__);
+			sprintf( z, "Mzephyr%%%s", s+1 );
+			Add_line_list(&job->controlfile,z,0,0,0);
 		} else {
 			Add_line_list(&job->controlfile,s,0,0,0);
 		}

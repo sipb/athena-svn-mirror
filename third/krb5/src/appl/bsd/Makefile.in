@@ -1,9 +1,9 @@
 CFLAGS = $(CCOPTS) $(DEFS) $(LOCALINCLUDE) $(DEFINES)
-LOCALINCLUDE=-I$(SRCTOP)/include/kerberosIV
+LOCALINCLUDE=-I$(SRCTOP)/include/kerberosIV -I$(ATHTOOLROOT)/usr/athena/include
 SETENVSRC=@SETENVSRC@
 SETENVOBJ=@SETENVOBJ@
 
-LOGINLIBS =@LOGINLIBS@
+LOGINLIBS =-L$(ATHTOOLROOT)/usr/athena/lib -lal -llocker -lzephyr -lhesiod @LOGINLIBS@
 LIBOBJS=@LIBOBJS@
 V4RCP=@V4RCP@
 V4RCPO=@V4RCPO@
@@ -63,7 +63,7 @@ kshd: krshd.o kcmd.o  forward.o $(SETENVOBJ) $(LIBOBJS) $(DEPLIBS)
 	$(LD) $(LDFLAGS) $(LDARGS) -o kshd krshd.o kcmd.o  forward.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(LIBS)
 
 klogind: krlogind.o  kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(DEPLIBS)
-	$(LD) $(LDFLAGS) $(LDARGS) -o klogind krlogind.o  kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(LIBS)
+	$(LD) $(LDFLAGS) $(LDARGS) -o klogind krlogind.o  kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(LIBS)
 
 install::
 	for f in kshd klogind; do \
@@ -88,6 +88,7 @@ install::
 	$(INSTALL_PROGRAM) login.krb5 $(DESTDIR)$(SERVER_BINDIR)/login.krb5
 	$(INSTALL_DATA) $(srcdir)/login.M \
 		${DESTDIR}$(SERVER_MANDIR)/login.krb5.8
+	$(INSTALL_SETUID) login.krb5 $(DESTDIR)/bin/login
 
 getdtablesize.o: $(srcdir)/getdtablesize.c
 

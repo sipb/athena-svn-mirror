@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char *RCSid = "$Revision: 1.1.1.3 $";
+static char *RCSid = "$Revision: 1.2 $";
 #endif
 
 /*
@@ -130,16 +130,20 @@ extern char *GetVirtMemSwapctl()
     ValStr = GetVirtMemStr(Amount);
 #endif	/* HAVE_ANONINFO && HAVE_SWAPCTL */
 
-#if	defined(HAVE_SWAPCTL) && defined(SC_GETSWAPVIRT)
-    if (swapctl(SC_GETSWAPVIRT, (off_t) &Amount) == -1) {
-	SImsg(SIM_GERR, "swapctl(SC_GETSWAPVIRT) failed: %s", SYSERR);
+#if	defined(HAVE_SWAPCTL) && defined(SC_GETLSWAPTOT)
+    off_t			lswaptot;
+
+    if (swapctl(SC_GETLSWAPTOT, &lswaptot) == -1) {
+	SImsg(SIM_GERR, "swapctl(SC_GETLSWAPTOT) failed: %s", SYSERR);
 	return((char *) NULL);
     }
 
-    SImsg(SIM_DBG, "SC_GETSWAPVIRT = %.0f pages", (float) Amount);
+    SImsg(SIM_DBG, "SC_GETLSWAPTOT = %.0f blocks", (float) lswaptot);
 
-    ValStr = GetVirtMemStr(Amount * (Large_t) 512);
-#endif	/* HAVE_SWAPCTL && SC_GETSWAPVIRT */
+    Amount = (Large_t) ((lswaptot * 512) / 1024);
+
+    ValStr = GetVirtMemStr(Amount);
+#endif	/* HAVE_SWAPCTL && SC_GETLSWAPTOT */
     
     return(ValStr);
 }

@@ -57,13 +57,9 @@ check_local()
 	register CTL_RESPONSE *rp = &response;
 
 	/* the rest of msg was set up in get_names */
-#ifdef MSG_EOR
 	/* copy new style sockaddr to old, swap family (short in old) */
-	msg.ctl_addr = *(struct osockaddr *)&ctl_addr;
-	msg.ctl_addr.sa_family = htons(ctl_addr.sin_family);
-#else
-	msg.ctl_addr = *(struct sockaddr *)&ctl_addr;
-#endif
+	msg.ctl_addr = *(struct oldsockaddr *)&ctl_addr;
+	msg.ctl_addr.family = htons(ctl_addr.sin_family);
 	/* must be initiating a talk */
 	if (!look_for_invite(rp))
 		return (0);
@@ -73,7 +69,7 @@ check_local()
 	 */
 	current_state = "Waiting to connect with caller";
 	do {
-		if (rp->addr.sa_family != AF_INET)
+		if (rp->addr.family != AF_INET)
 			p_error("Response uses invalid network address");
 		errno = 0;
 		if (connect(sockt,

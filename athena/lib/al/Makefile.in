@@ -1,0 +1,62 @@
+# $Id: Makefile.in,v 1.3 1998-05-07 17:13:36 ghudson Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+RANLIB=@RANLIB@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=-I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
+OBJS=access.o acct.o allowed.o group.o homedir.o passwd.o session.o util.o
+
+all: libal.a
+
+libal.a: ${OBJS}
+	ar cru $@ ${OBJS}
+	${RANLIB} $@
+
+${OBJS}: al.h al_private.h
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man3
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man5
+	${INSTALL} -m 644 libal.a ${DESTDIR}${libdir}
+	${RANLIB} ${DESTDIR}${libdir}/libal.a
+	chmod u-w ${DESTDIR}${libdir}/libal.a
+	${INSTALL} -m 444 ${srcdir}/al.h ${DESTDIR}${includedir}
+	${INSTALL} -m 444 ${srcdir}/access.5 ${DESTDIR}${mandir}/man5
+	${INSTALL} -m 444 ${srcdir}/al_acct_cleanup.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_acct_create.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_acct_revert.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_free_errmem.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_get_access.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_is_local_acct.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_login_allowed.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/al_strerror.3 ${DESTDIR}${mandir}/man3
+	${INSTALL} -m 444 ${srcdir}/sessions.5 ${DESTDIR}${mandir}/man5
+
+clean:
+	rm -f ${OBJS} libal.a
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

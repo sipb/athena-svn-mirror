@@ -1,6 +1,6 @@
 /* vmh.c - visual front-end to mh */
 #ifndef	lint
-static char ident[] = "@(#)$Id: vmh.c,v 1.1.1.1 1996-10-07 07:14:25 ghudson Exp $";
+static char ident[] = "@(#)$Id: vmh.c,v 1.4 1999-01-29 18:32:28 ghudson Exp $";
 #endif	/* lint */
 #if defined(SYS5) && !defined(TERMINFO)
 /*
@@ -30,6 +30,9 @@ static char ident[] = "@(#)$Id: vmh.c,v 1.1.1.1 1996-10-07 07:14:25 ghudson Exp 
 #undef	OK			/* tricky */
 #ifdef	TERMINFO
 #include <term.h>	/* variables describing terminal capabilities */
+#ifdef __linux__
+#include <sys/ioctl.h>
+#endif
 #endif	/* TERMINFO */
 #include "../h/mh.h"
 #include "../h/vmhsbr.h"
@@ -188,11 +191,6 @@ static TYPESIG	TSTPser ();
 
 
 					/* MISCELLANY */
-extern int  errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-#endif
 
 static void	adorn ();
 
@@ -1135,10 +1133,12 @@ WINDOW *w;
 	adios (NULLCP, "unable to allocate line storage");
 
     lp -> l_no = (ltail ? ltail -> l_no : 0) + 1;
-#ifndef	BSD44
-    lp -> l_buf = getcpy (w -> _y[w -> _cury]);
+#ifdef BSD44
+    lp -> l_buf = getcpy (w->lines[w->_cury]->line);
+#elif defined(NCURSES_VERSION)
+    lp -> l_buf = getcpy (w->_line[w->_cury].text);
 #else
-    lp -> l_buf = getcpy (w -> lines[w -> _cury]->line);
+    lp -> l_buf = getcpy (w->_y[w->_cury]);
 #endif
     for (cp = lp -> l_buf + strlen (lp -> l_buf) - 1; cp >= lp -> l_buf; cp--)
 	if (isspace (*cp))
@@ -1515,12 +1515,7 @@ char   *what,
 	    iov -> iov_len = strlen (iov -> iov_base = ": ");
 	    iov++;
 	}
-	if (eindex > 0 && eindex < sys_nerr)
-	    iov -> iov_len = strlen (iov -> iov_base = sys_errlist[eindex]);
-	else {
-	    (void) sprintf (err, "Error %d", eindex);
-	    iov -> iov_len = strlen (iov -> iov_base = err);
-	}
+	iov -> iov_len = strlen (iov -> iov_base = strerror(eindex));
 	iov++;
     }
     if (tail && *tail) {

@@ -1,5 +1,5 @@
 /* strings.h - define standard string functions */
-/* @(#)$Id: strings.h,v 1.1.1.1 1996-10-07 07:12:53 ghudson Exp $ */
+/* @(#)$Id: strings.h,v 1.2 1999-01-29 18:12:55 ghudson Exp $ */
 
 #ifndef	_STRINGS		/* once-only... */
 #define	_STRINGS
@@ -56,10 +56,6 @@ char   *getenv ();
 char   *calloc (), *malloc (), *realloc ();
 #endif	/* SVR4 */
 
-#if defined(__HIGHC__) || __GNUC__ == 2
-#define	bcopy(s,d,l)	memcpy(d,s,l)
-#endif
-
 #ifdef	SYS5
 #include <memory.h>
 #define bcmp(b1,b2,length)	memcmp(b1, b2, length)
@@ -67,5 +63,10 @@ char   *calloc (), *malloc (), *realloc ();
 #define	bcpy(b1,b2,length)	memcmp (b1, b2, length)
 #define	bzero(b,length)		(void) memset (b, 0, length)
 #endif /* SYS5 */
+
+#if (defined(__HIGHC__) || __GNUC__ == 2) && !defined(bcopy)
+#define       bcopy(s,d,l)    memcpy(d,s,l)
+#endif
+
 #endif	/* _AIX */
 #endif /* not _STRINGS */

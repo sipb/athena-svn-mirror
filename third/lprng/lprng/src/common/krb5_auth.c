@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: krb5_auth.c,v 1.1.1.3 1999-05-24 18:29:20 danw Exp $";
+"$Id: krb5_auth.c,v 1.4 1999-05-24 18:34:53 danw Exp $";
 
 
 #include "lp.h"
@@ -345,8 +345,15 @@ int client_krb5_auth( char *keytabfile, char *service, char *host,
 		}
 		
 	} else {
-		if ((retval = krb5_sname_to_principal(context, host, service, 
-			 KRB5_NT_SRV_HST, &server))){
+		/* XXX perhaps we want a better metric for determining localhost? */
+		if (strncasecmp("localhost", host, sizeof(host)))
+			retval = krb5_sname_to_principal(context, host, service,
+							 KRB5_NT_SRV_HST, &server);
+		else
+			/* Let libkrb5 figure out its notion of the local host */
+			retval = krb5_sname_to_principal(context, NULL, service,
+							 KRB5_NT_SRV_HST, &server);
+		if (retval) {
 			plp_snprintf( err, errlen, "client_krb5_auth failed - "
 			"when parsing service/host '%s'/'%s'"
 			" - %s", service,host,error_message(retval) );

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1.1.1 1998-10-03 21:09:40 danw Exp $
+# $Id: Makefile.in,v 1.3 1998-11-04 17:21:15 danw Exp $
 #	Makefile.in	4.3	6/11/83
 #
 # C Shell with process control; VM/UNIX VAX Makefile
@@ -209,8 +209,8 @@ LIBES= @LIBS@	 			 ## This is set by autoconf.
 ## EXTRAFLAGS and EXTRALIBS
 ################################################################
 # Compiling for HESIOD
-#HESDEF = -DHESIOD -I/usr/athena/include
-#HESLIB = -L/usr/athena/lib -lhesiod
+HESDEF = -DHESIOD -I$(ATHTOOLROOT)/usr/athena/include
+HESLIB = -L$(ATHTOOLROOT)/usr/athena/lib -lhesiod @HES_RES_LIB@
 #
 # Compiling for AFS with kerberos authentication
 #AFSLIBDIR = /usr/afsws/lib
@@ -271,11 +271,11 @@ PARALLEL=12				# Make the multi-max run fast.
 P=
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-DESTDIR=${prefix}
-#DESTDIR=/usr/contrib
+bindir=@bindir@
+lbindir=@lbindir@
 MANSECT=1
-DESTBIN=@bindir@
-DESTMAN=${DESTDIR}/man/man${MANSECT}
+DESTBIN=${DESTDIR}${lbindir}
+DESTMAN=${DESTDIR}${prefix}/man/man${MANSECT}
 # DESTMAN=${DESTDIR}/catman/man${MANSECT}	 # A/UX
 # DESTMAN=${DESTDIR}/usr/share/man/man${MANSECT} # Stardent Vistra (SysVR4)
 # DESTMAN=/usr/catman/1l			 # Amiga unix (SysVR4)
@@ -464,12 +464,9 @@ vgrind:
 	@vgrind -t -x -h Index index >/crp/bill/csh/index.t
 
 install: tcsh 
-	-mv -f ${DESTBIN}/tcsh  ${DESTBIN}/tcsh.old
+	-rm -f ${DESTBIN}/tcsh
 	cp tcsh ${DESTBIN}/tcsh
-	-strip ${DESTBIN}/tcsh
 	chmod 555 ${DESTBIN}/tcsh
-
-install.man: tcsh.man
 	-rm -f ${DESTMAN}/tcsh.${MANSECT}
 	cp $(srcdir)/tcsh.man ${DESTMAN}/tcsh.${MANSECT}
 	chmod 444 ${DESTMAN}/tcsh.${MANSECT}

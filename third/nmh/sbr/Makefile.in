@@ -1,7 +1,7 @@
 #
 # Makefile for sbr subdirectory
 #
-# $Id: Makefile.in,v 1.1.1.1 1999-02-07 18:14:11 danw Exp $
+# $Id: Makefile.in,v 1.2 1999-02-23 17:00:43 danw Exp $
 #
 
 SHELL = /bin/sh
@@ -22,7 +22,7 @@ RANLIB = @RANLIB@
 
 LIBOBJS = @LIBOBJS@
 
-COMPILE = $(CC) -c $(DEFS) $(INCLUDES) $(CFLAGS)
+COMPILE = $(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDES) $(CFLAGS)
 
 .SUFFIXES:
 .SUFFIXES: .c .o

@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.3 1999-03-16 19:45:19 danw Exp $
+# $Id: Makefile,v 1.4 1999-03-16 20:34:29 danw Exp $
 
 SUBDIRS = resolv irs isc bsd inet nameser dst cylink dnssafe
 
@@ -82,8 +82,7 @@ clean:: FRC
 	rm -f ${LIBBIND} ${LIBTS}
 	rm -f ${LIBBINDR} ${LIBRTS}
 
-install:: ${DESTDIR}${DESTLIB} ${DESTDIR}${DESTLIB}/${LIB}
-install:: ${DESTDIR}${DESTLIB} ${DESTDIR}${DESTLIB}/${LIBR}
+install::
 
 ${DESTDIR}${DESTLIB}:
 	mkdir -p ${DESTDIR}${DESTLIB}

@@ -1,0 +1,28 @@
+# $Id: Makefile.athena,v 1.9 1998-09-12 17:41:51 ghudson Exp $
+
+SHELL=/bin/sh
+
+compiler.sun4:
+	@/bin/athena/attach -h -q sunsoft
+	@echo /mit/sunsoft/sun4bin/cc
+
+# We can't use the Athena config.site file because it specifies
+# cc to be gcc.
+prepare:
+	CC=`${MAKE} -f Makefile.athena "compiler.$$HOSTTYPE"` CONFIG_SITE= \
+		./configure --prefix=/usr/gcc
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all LANGUAGES=c
+	${MAKE} stage1
+	${MAKE} all CC="stage1/xgcc -Bstage1/" CFLAGS=-O2 LANGUAGES=c
+
+check:
+
+install:
+	mkdir -p "$$SRVD/usr"
+	${MAKE} install "prefix=$$SRVD/usr/gcc" CC="stage1/xgcc -Bstage1/" \
+		CFLAGS=-O2 LANGUAGES=c

@@ -21,6 +21,7 @@
 *cycle:			10
 *lockTimeout:		0
 *passwdTimeout:		30
+*maxIdleTime:		20
 *nice:			10
 *lock:			False
 *lockVTs:		True
@@ -33,7 +34,7 @@
 *splash:		True
 *splashDuration:	5
 
-*captureStderr: 	True
+*captureStderr: 	False
 *overlayTextForeground:	#FFFF00
 *overlayTextBackground:	#000000
 *overlayStderr:		True
@@ -46,10 +47,10 @@
 *procInterrupts:	True
 
 ! This is what the "Demo" button on the splash screen runs (/bin/sh syntax.)
-*demoCommand: xscreensaver-demo
+*demoCommand: xss-demo
 
 ! This is what the "Prefs" button on the splash screen runs (/bin/sh syntax.)
-*prefsCommand: xscreensaver-demo -prefs
+*prefsCommand: xss-demo -prefs
 
 ! This is the URL that the "Help" button on the splash screen loads.
 *helpURL: http://www.jwz.org/xscreensaver/man.html
@@ -100,11 +101,6 @@
 ! pages for details.
 !
 *programs:	qix -root -solid -delay 0 -segments 100			\n\
-		attraction -root -mode balls				\n\
-		attraction -root -mode lines -points 3 -segments 200	\n\
-		attraction -root -mode splines -segments 300		\n\
-		attraction -root -mode lines -radius 300		  \
-			-orbit -vmult 0.5				\n\
 		pyro -root						\n\
 		helix -root						\n\
 		pedal -root						\n\
@@ -113,12 +109,6 @@
 		greynetic -root						\n\
 		xroger -root						\n\
 		imsmap -root						\n\
-		slidescreen -root					\n\
-		decayscreen -root					\n\
-		jigsaw -root						\n\
-		blitspin -root -grab					\n\
-		slip -root						\n\
-		distort -root						\n\
 		hypercube -root						\n\
 		halo -root						\n\
 		maze -root						\n\
@@ -164,13 +154,11 @@
 		vines -root						\n\
 		kaleidescope -root					\n\
 		xjack -root						\n\
-  -		xlyap -root -randomize					\n\
 		cynosure -root						\n\
 		flow -root						\n\
 		epicycle -root						\n\
 		interference -root					\n\
 		truchet -root -randomize				\n\
-		bsod -root						\n\
 		crystal -root						\n\
 		discrete -root						\n\
 		kumppa -root						\n\
@@ -179,36 +167,7 @@
 		sonar -root						\n\
 		t3d -root						\n\
 		penetrate -root						\n\
-		deluxe -root						\n\
-									  \
-	mono:	rocks -root						\n\
-	color:	rocks -root -fg darksalmon				\n\
-									  \
-	mono:	qix -root -linear -count 5 -size 200 -spread 30		  \
-			-segments 75 -solid -xor			\n\
-									  \
-	color:	attraction -root -mode polygons				\n\
-	color:	attraction -root -mode filled-splines -segments 0	\n\
-	color:	attraction -root -glow -points 10			\n\
-	color:	bubbles -root						\n\
-									  \
-  PseudoColor:	qix -root -count 4 -solid -transparent			\n\
-  PseudoColor:	qix -root -count 5 -solid -transparent -linear		  \
-			-segments 250 -size 100				\n\
-									  \
-@GL_KLUDGE@	gears -root					  	\n\
-@GL_KLUDGE@	superquadrics -root				  	\n\
-@GL_KLUDGE@	morph3d -root					  	\n\
-@GL_KLUDGE@	cage -root					  	\n\
-@GL_KLUDGE@	moebius -root					  	\n\
-@GL_KLUDGE@	stairs -root					  	\n\
-@GL_KLUDGE@	pipes -root					  	\n\
-@GL_KLUDGE@	sproingies -root				  	\n\
-@GL_KLUDGE@	rubik -root					  	\n\
-@GL_KLUDGE@	atlantis -root					  	\n\
-@GL_KLUDGE@	lament -root					  	\n\
-@GL_KLUDGE@	bubble3d -root					  	\n\
-@GL_KLUDGE@	glplanet -root					  	\n
+		deluxe -root						\n
  
 
 ! A few of the hacks require OpenGL, and will only be built if you have it.
@@ -347,6 +306,8 @@ XScreenSaver.bourneShell:		/bin/sh
 *passwd.body.label:		This display is locked.
 *passwd.user.label:		User:
 *passwd.passwd.label:		Password:
+*passwd.idle.label:		Idle time:
+*passwd.logout.label:		Press Ctrl-L to logout
 *passwd.passwdFont:		*-courier-medium-r-*-*-*-140-*-*-*-iso8859-1
 *passwd.thermometer.width:	8
 
@@ -404,6 +365,7 @@ XScreenSaver*XmList.fontList:      *-courier-medium-r-*-*-*-120-*-*-*-iso8859-1
 *fadeTicksLabel.labelString:	Fade Ticks
 *lockLabel.labelString:		Lock Timeout
 *passwdLabel.labelString:	Password Timeout
+*maxIdleLabel.labelString:	Maximum Idle Time
 *preferencesForm*XmTextField.columns:	8
 
 *verboseToggle.labelString:	Verbose

@@ -159,19 +159,20 @@ install-strip:
 
 install-program: $(EXES)
 	@exes="$(EXES)" ;						\
-	if [ ! -d $(HACKDIR) ]; then $(INSTALL_DIRS) $(HACKDIR) ; fi ;	\
+	$(INSTALL_DIRS) $(DESTDIR)$(HACKDIR) ; 				\
 	for program in $$exes; do					\
-	  echo $(INSTALL_PROGRAM) $$program $(HACKDIR)/$$program ;	\
-	  $(INSTALL_PROGRAM) $$program $(HACKDIR)/$$program ;		\
+	  echo $(INSTALL_PROGRAM) $$program $(DESTDIR)$(HACKDIR)/$$program ; \
+	  $(INSTALL_PROGRAM) $$program $(DESTDIR)$(HACKDIR)/$$program ; \
 	done
 
 install-man: $(MEN)
 	@men="$(MEN)" ;							\
-	if [ ! -d $(man1dir) ]; then $(INSTALL_DIRS) $(man1dir) ; fi ;	\
+	$(INSTALL_DIRS) $(DESTDIR)$(man1dir) ;				\
 	for man in $$men; do						\
 	  instname=`echo $$man | sed 's/\.man$$/\.$(mansuffix)/'` ;	\
-	  echo $(INSTALL_DATA) $(srcdir)/$$man $(man1dir)/$$instname ;	\
-	  $(INSTALL_DATA) $(srcdir)/$$man $(man1dir)/$$instname ;	\
+	  echo $(INSTALL_DATA) $(srcdir)/$$man \
+		$(DESTDIR)$(man1dir)/$$instname ; \
+	  $(INSTALL_DATA) $(srcdir)/$$man $(DESTDIR)$(man1dir)/$$instname ; \
 	done
 
 uninstall-program:

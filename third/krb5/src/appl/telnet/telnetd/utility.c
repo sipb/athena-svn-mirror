@@ -35,6 +35,7 @@
 
 #define PRINTOPTIONS
 #include "telnetd.h"
+#include <sys/utsname.h>
 
 /*
  * utility functions performing io related tasks
@@ -59,11 +60,10 @@ ttloop()
     if (nfrontp-nbackp) {
 	netflush();
     }
-read_again:
     ncc = read(net, netibuf, sizeof netibuf);
     if (ncc < 0) {
 	if (errno == EINTR)
-	    goto read_again;
+	    return; /* interrupt from alarm() */
 	syslog(LOG_INFO, "ttloop:  read: %m");
 	exit(1);
     } else if (ncc == 0) {
@@ -79,6 +79,67 @@ read_again:
 	telrcv();
     }
 }  /* end of ttloop */
+
+
+/* 
+ * ttsuck - This is a horrible kludge to deal with a bug in
+ * HostExplorer. HostExplorer thinks it knows how to do krb5 auth, but
+ * it doesn't really. So if you offer it krb5 as an auth choice before
+ * krb4, it will sabotage the connection. So we peek ahead into the
+ * input stream to see if the client is a UNIX client, and then
+ * (later) offer krb5 first only if it is. Since no Mac/PC telnet
+ * clients do auto switching between krb4 and krb5 like the UNIX
+ * client does, it doesn't matter what order they see the choices in
+ * (except for HostExplorer).
+ *
+ * It is actually not possible to do this without looking ahead into
+ * the input stream: the client and server both try to begin
+ * auth/encryption negotiation as soon as possible, so if we let the
+ * server process things normally, it will already have sent the list
+ * of supported auth types before seeing the NEW-ENVIRON option. If
+ * you change the code to hold off sending the list of supported auth
+ * types until after it knows whether or not the remote side supports
+ * NEW-ENVIRON, then the auth negotiation and encryption negotiation
+ * race conditions won't interact properly, and encryption negotiation
+ * will reliably fail.
+ */
+
+    void
+ttsuck()
+{
+    int nread;
+    struct timeval tv;
+    fd_set fds;
+    char *p, match[] = {IAC, WILL, TELOPT_NEW_ENVIRON};
+
+    if (nfrontp-nbackp) {
+	netflush();
+    }
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
+    FD_SET(net, &fds);
+
+    while (select(net + 1, &fds, NULL, NULL, &tv) == 1)
+      {
+	nread = read(net, netibuf + ncc, sizeof(netibuf) - ncc);
+	if (nread <= 0)
+	  break;
+	ncc += nread;
+      }
+
+    auth_client_non_unix = 1;
+    for (p = netibuf; p < netibuf + ncc; p++)
+      {
+	if (!memcmp(p, match, sizeof(match)))
+	  {
+	    auth_client_non_unix = 0;
+	    break;
+	  }
+      }
+
+    if (ncc > 0)
+      telrcv();
+}
 
 /*
  * Check a descriptor to see if out of band data exists on it.
@@ -448,6 +509,9 @@ putf(cp, where)
 	char *slash;
 	time_t t;
 	char db[100];
+	struct utsname utsinfo;
+
+	uname(&utsinfo);
 
 	putlocation = where;
 
@@ -479,6 +543,22 @@ putf(cp, where)
 			(void)time(&t);
 			(void)strftime(db, sizeof(db), fmtstr, localtime(&t));
 			putstr(db);
+			break;
+
+		case 's':
+			putstr(utsinfo.sysname);
+			break;
+
+		case 'm':
+			putstr(utsinfo.machine);
+			break;
+
+		case 'r':
+			putstr(utsinfo.release);
+			break;
+
+		case 'v':
+			putstr(utsinfo.version);
 			break;
 
 		case '%':

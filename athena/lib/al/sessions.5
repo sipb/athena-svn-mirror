@@ -1,0 +1,64 @@
+.\" $Id: sessions.5,v 1.3 1999-04-17 02:29:49 ghudson Exp $
+.\"
+.\" Copyright 1997, 1999 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH SESSIONS 5 "13 April 1999"
+.SH NAME
+sessions \- Directory containing Athena login session records
+.SH SYNOPSIS
+.B /var/athena/sessions
+.SH DESCRIPTION
+The directory
+.B /var/athena/sessions
+contains session records giving information about each user's active
+login sessions and recording the changes made during account setup.
+Each file in the directory is a username, and contains the following
+information if it is not empty:
+.TP 3
+*
+A line containing either "0" or "1", specifying whether a passwd entry
+was added for the user.
+.TP 3
+*
+A line containing either "0" or "1", specifying whether the user's
+home directory was successfully attached.
+.TP 3
+*
+A line containing either "0" by itself or "1" followed by a string,
+specifying whether the user's passwd entry was modified to point to a
+temporary home directory.
+.TP 3
+*
+A list of gid values, each followed by a colon, specifying the groups
+the user was added to during account creation.
+.TP 3
+*
+A list of pid values, each followed by a colon, giving the user's
+active login sessions.  There must be at least one pid.
+.PP
+If a session record is empty, it indicates that the user has no active
+login sessions and has no account set up.  For locking reasons,
+session records are never deleted under normal system operation; the
+session database may be cleared at boot time and empty records may be
+deleted at times when users are known not to be logging in or out (see
+reactivate(8)).  Before reading or writing a session record, a process
+must obtain an exclusive lock on the record using
+.IR fcntl .
+.SH SEE ALSO
+al_acct_create(3), al_acct_revert(3)
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1997, 1999 by the Massachusetts Institute of Technology.

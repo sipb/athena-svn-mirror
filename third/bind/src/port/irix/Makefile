@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.2 1999-03-16 19:47:28 danw Exp $
+# $Id: Makefile,v 1.2 1999-03-18 22:33:01 danw Exp $
 
 # these are only appropriate for BSD 4.4 or derivatives, and are used in
 # development.  normal builds will be done in the top level directory and
@@ -46,9 +46,9 @@ OBJS=	noop.${O}
 MARGS= DESTDIR="${DESTDIR}" DESTINC="${DESTINC}" INSTALL="${INSTALL}"
 
 depend::
-	if [[ ! -a "irix_patch_applied" ]]; then\
+	if [ ! -f "irix_patch_applied" ]; then\
 		echo "Applying IRIX patches.";\
-		patch -cfN -d ../../ < irix_8.2.patch;\
+		/usr/sbin/patch -cfN -d ../../ < irix_8.2.patch;\
 		touch irix_patch_applied;\
 	else\
 		echo "IRIX patches are already in-place.";\
@@ -74,9 +74,9 @@ distclean:: clean
 clean:: FRC
 	rm -f .depend a.out core tags
 	rm -f *.${O} *.BAK *.CKP *~
-	if [[ -a "irix_patch_applied" ]]; then\
+	if [ -f "irix_patch_applied" ]; then\
 		echo "Reversing IRIX patches...";\
-		patch -cfR -d ../../ < irix_8.2.patch;\
+		/usr/sbin/patch -cfR -d ../../ < irix_8.2.patch;\
 		rm -fr irix_patch_applied;\
 	else\
 		echo "IRIX aren't in-place";\

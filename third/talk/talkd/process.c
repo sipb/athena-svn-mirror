@@ -33,7 +33,7 @@
 
 #ifndef lint
 /*static char sccsid[] = "from: @(#)process.c	5.10 (Berkeley) 2/26/91";*/
-static char rcsid[] = "$Id: process.c,v 1.1.1.1 1996-10-07 20:39:11 ghudson Exp $";
+static char rcsid[] = "$Id: process.c,v 1.4 1997-10-17 06:51:19 ghudson Exp $";
 #endif /* not lint */
 
 /*
@@ -53,7 +53,15 @@ static char rcsid[] = "$Id: process.c,v 1.1.1.1 1996-10-07 20:39:11 ghudson Exp 
 #include <syslog.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_PATHS_H
 #include <paths.h>
+#endif
+#ifndef _PATH_UTMP
+#define _PATH_UTMP GUESSED_PATH_UTMP
+#endif
+#ifndef _PATH_DEV
+#define _PATH_DEV "/dev/"
+#endif
 
 CTL_MSG *find_request();
 CTL_MSG *find_match();
@@ -74,17 +82,17 @@ process_request(mp, rp)
 		return;
 	}
 	mp->id_num = ntohl(mp->id_num);
-	mp->addr.sa_family = ntohs(mp->addr.sa_family);
-	if (mp->addr.sa_family != AF_INET) {
+	mp->addr.family = ntohs(mp->addr.family);
+	if (mp->addr.family != AF_INET) {
 		syslog(LOG_WARNING, "Bad address, family %d",
-		    mp->addr.sa_family);
+		    mp->addr.family);
 		rp->answer = BADADDR;
 		return;
 	}
-	mp->ctl_addr.sa_family = ntohs(mp->ctl_addr.sa_family);
-	if (mp->ctl_addr.sa_family != AF_INET) {
+	mp->ctl_addr.family = ntohs(mp->ctl_addr.family);
+	if (mp->ctl_addr.family != AF_INET) {
 		syslog(LOG_WARNING, "Bad control address, family %d",
-		    mp->ctl_addr.sa_family);
+		    mp->ctl_addr.family);
 		rp->answer = BADCTLADDR;
 		return;
 	}
@@ -111,7 +119,7 @@ process_request(mp, rp)
 		if (ptr != (CTL_MSG *)0) {
 			rp->id_num = htonl(ptr->id_num);
 			rp->addr = ptr->addr;
-			rp->addr.sa_family = htons(ptr->addr.sa_family);
+			rp->addr.family = htons(ptr->addr.family);
 			rp->answer = SUCCESS;
 		} else
 			rp->answer = NOT_HERE;
@@ -192,7 +200,11 @@ find_user(name, tty)
 #define SCMPN(a, b)	strncmp(a, b, sizeof (a))
 	status = NOT_HERE;
 	(void) strcpy(ftty, _PATH_DEV);
-	while (fread((char *) &ubuf, sizeof ubuf, 1, fd) == 1)
+	while (fread((char *) &ubuf, sizeof ubuf, 1, fd) == 1) {
+#ifdef USER_PROCESS
+		if (ubuf.ut_type != USER_PROCESS)
+			continue;
+#endif
 		if (SCMPN(ubuf.ut_name, name) == 0) {
 			if (*tty == '\0') {
 				status = PERMISSION_DENIED;
@@ -211,6 +223,7 @@ find_user(name, tty)
 				break;
 			}
 		}
+	}
 	fclose(fd);
 	return (status);
 }

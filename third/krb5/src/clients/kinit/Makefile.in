@@ -3,7 +3,8 @@ CFLAGS = $(CCOPTS) $(DEFS) $(LOCALINCLUDE)
 all::
 
 kinit: kinit.o $(DEPLIBS)
-	$(LD) $(LDFLAGS) $(LDARGS) $(LDFLAGS) -o kinit kinit.o $(LIBS)
+	$(LD) $(LDFLAGS) $(LDARGS) $(LDFLAGS) -o kinit kinit.o \
+		../../krb524/libkrb524.a -lkrb4 -ldes425 $(LIBS)
 
 kinit.o:	$(srcdir)/kinit.c
 

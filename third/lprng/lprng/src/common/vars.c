@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: vars.c,v 1.1.1.3 1999-05-24 18:29:16 danw Exp $";
+"$Id: vars.c,v 1.6 1999-05-24 18:34:54 danw Exp $";
 
 
 /* force local definitions */
@@ -102,6 +102,8 @@ struct keywords Pc_var_list[] = {
 { "auth_receive_filter", STRING_K, &Auth_receive_filter_DYN,0,0},
    /* authentication server id */
 { "auth_server_id", STRING_K, &Auth_server_id_DYN,0,0},
+   /*  Athena compat: 'Z' means zephyr, not "pass to filter" */
+{ "az",  FLAG_K,  &Athena_Z_compat_DYN,0,0},
    /*  end banner printing program overides bp */
 { "be",  STRING_K,  &Banner_end_DYN,0,0},
    /*  Berkeley LPD: job file strictly RFC-compliant */
@@ -206,6 +208,8 @@ struct keywords Pc_var_list[] = {
 { "ignore_requested_user_priority",  FLAG_K,  &Ignore_requested_user_priority_DYN,0,0},
    /*  Running IPV6 */
 { "ipv6",  FLAG_K,  &IPV6Protocol_DYN,0,0},
+   /*  Old Athena Kerberos authentication flag */
+{ "ka",  FLAG_K, &KA_DYN,0,0},
 	/* keytab file location for kerberos, used by server */
 { "kerberos_keytab", STRING_K, &Kerberos_keytab_DYN,0,0,"=/etc/lpd.keytab"},
 	/* key lifetime for kerberos, used by server */
@@ -410,6 +414,10 @@ struct keywords Pc_var_list[] = {
 { "use_shorthost",  FLAG_K,  &Use_shorthost_DYN,0,0},
    /*  server user for SUID purposes */
 { "user", STRING_K, &Daemon_user_DYN,1,0,"=daemon"},
+   /*  server supports extended notification (Mzephyr%foo) */
+{ "xn",  FLAG_K, &Extended_notification_DYN,0,0},
+   /* zwrite program */
+{ "zwrite", STRING_K, &Zwrite_DYN,1,0,"=/usr/athena/bin/zwrite"},
 /* END */
 { (char *)0 }
 } ;

@@ -9,9 +9,48 @@
 
 */
 /*
- * $Id: auth-kerberos.c,v 1.1.1.3 1999-03-08 17:43:32 danw Exp $
+ * $Id: auth-kerberos.c,v 1.11 1999-03-08 18:20:00 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.3  1998/01/02  06:13:56  kivinen
+ * Revision 1.10  1998/11/09 16:25:21  ghudson
+ * Close some possible buffer overflows.
+ *
+ * Revision 1.9  1998/08/01 18:38:49  danw
+ * from amu: malloc enough space to store the full ticket file name
+ *
+ * Revision 1.8  1998/07/28 03:15:50  ghudson
+ * Dan didn't actually just leave out a right paren; he put in a
+ * semicolon instead.  Nuke the semicolon.
+ *
+ * Revision 1.7  1998/07/15 22:48:53  ghudson
+ * Dan left out a right paren.
+ *
+ * Revision 1.6  1998/07/14 17:34:49  danw
+ * use krb5_build_principal_ext instead of krb5_build_principal in case
+ * the realm data isn't NUL-terminated
+ *
+ * Revision 1.5  1998/01/24 01:47:20  danw
+ * merge in changes for 1.2.22
+ *
+ * Revision 1.4  1997/11/19 20:44:42  danw
+ * do chown later
+ *
+ * Revision 1.3  1997/11/15 00:04:12  danw
+ * Use atexit() functions to destroy tickets and call al_acct_revert.
+ * Work around Solaris lossage with libucb and grantpt.
+ *
+ * Revision 1.2  1997/11/12 21:16:08  danw
+ * Athena-login changes (including some krb4 stuff)
+ *
+ * Revision 1.1.1.1  1997/10/17 22:26:14  danw
+ * Import of ssh 1.2.21
+ *
+ * Revision 1.1.1.2  1998/01/24 01:25:35  danw
+ * Import of ssh 1.2.22
+ *
+ * Revision 1.1.1.3  1999/03/08 17:43:32  danw
+ * Import of ssh 1.2.26
+ *
+ * Revision 1.3  1998/01/02 06:13:56  kivinen
  * 	Fixed kerberos ticket allocation.
  *
  * Revision 1.2  1997/04/17 03:56:51  kivinen
@@ -33,9 +72,14 @@
 #ifdef KERBEROS
 #if defined (KRB5)
 #include <krb5.h>
+/* kludge to allow us to #include krb.h without namespace conflicts */
+#define des_cbc_encrypt krb_des_cbc_encrypt
+#include <krb.h>
 
 extern  krb5_context ssh_context;
 extern  krb5_auth_context auth_context;
+extern  int havecred;
+void	krb_cleanup(void);
 
 int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
 {
@@ -63,11 +107,11 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
 	  krb5_auth_con_free(ssh_context, auth_context);
 	  auth_context = 0;
 	}
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
       
-      debug("Kerberos krb5_auth_con_genaddrs (%s).", error_message(problem));
-      packet_send_debug("Kerberos krb5_auth_con_genaddrs: %s",
+      debug("Kerberos krb5_auth_con_genaddrs (%.100s).", error_message(problem));
+      packet_send_debug("Kerberos krb5_auth_con_genaddrs: %.100s",
 			error_message(problem));
       return 0;
     }
@@ -80,11 +124,11 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
 	  krb5_auth_con_free(ssh_context, auth_context);
 	  auth_context = 0;  
 	}
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
       
-      debug("Kerberos V5 rd_req failed (%s).", error_message(problem));
-      packet_send_debug("Kerberos V5 krb5_rd_req: %s", error_message(problem));
+      debug("Kerberos V5 rd_req failed (%.100s).", error_message(problem));
+      packet_send_debug("Kerberos V5 krb5_rd_req: %.100s", error_message(problem));
       return 0;
     }
   
@@ -93,22 +137,22 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
   if (problem)
     {
       krb5_free_ticket(ssh_context, ticket);
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
       
-      debug("Kerberos krb5_unparse_name failed (%s).", error_message(problem));
-      packet_send_debug("Kerberos krb5_unparse_name: %s",
+      debug("Kerberos krb5_unparse_name failed (%.100s).", error_message(problem));
+      packet_send_debug("Kerberos krb5_unparse_name: %.100s",
 			error_message(problem));
       return 0;
     }
   if (strncmp(server, "host/", strlen("host/")))
     {
       krb5_free_ticket(ssh_context, ticket);
-      log_msg("Kerberos ticket authentication of user %s failed: invalid service name (%s)",
+      log_msg("Kerberos ticket authentication of user %.100s failed: invalid service name (%.100s)",
 	      server_user, server);
       
-      debug("Kerberos invalid service name (%s).", server);
-      packet_send_debug("Kerberos invalid service name (%s).", server);
+      debug("Kerberos invalid service name (%.100s).", server);
+      packet_send_debug("Kerberos invalid service name (%.100s).", server);
       krb5_xfree(server);
       return 0;
     }
@@ -122,11 +166,11 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
   
   if (problem)
     {
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
-      debug("Kerberos krb5_copy_principal failed (%s).", 
+      debug("Kerberos krb5_copy_principal failed (%.100s).", 
 	    error_message(problem));
-      packet_send_debug("Kerberos krb5_copy_principal: %s", 
+      packet_send_debug("Kerberos krb5_copy_principal: %.100s", 
 			error_message(problem));
       return 0;
     }
@@ -135,11 +179,11 @@ int auth_kerberos(char *server_user, krb5_data *auth, krb5_principal *client)
   /* Make the reply - so that mutual authentication can be done */
   if ((problem = krb5_mk_rep(ssh_context, auth_context, &reply)))
     {
-      log_msg("Kerberos ticket authentication of user %s failed: %s",
+      log_msg("Kerberos ticket authentication of user %.100s failed: %.100s",
 	      server_user, error_message(problem));
-      debug("Kerberos krb5_mk_rep failed (%s).",
+      debug("Kerberos krb5_mk_rep failed (%.100s).",
 	    error_message(problem));
-      packet_send_debug("Kerberos krb5_mk_rep failed: %s",
+      packet_send_debug("Kerberos krb5_mk_rep failed: %.100s",
 			error_message(problem));
       return 0;
     }
@@ -160,7 +204,7 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
 {
   krb5_creds **creds;
   krb5_error_code retval;
-  static char ccname[128];
+  static char ccname[512], tktname[512];
   krb5_ccache ccache = NULL;
   struct passwd *pwd;
   extern char *ticket;
@@ -169,6 +213,9 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   struct sockaddr_in local, foreign;
   krb5_address *local_addr, *remote_addr;
   int s;
+  krb5_data *realm;
+  krb5_creds increds, *v5creds;
+  CREDENTIALS v4creds;
   
   if (!(pwd = (struct passwd *) getpwnam(server_user)))
     {
@@ -208,9 +255,9 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   
   if (retval = krb5_rd_cred(ssh_context, auth_context, krb5data, &creds, NULL))
     {
-      log_msg("Kerberos V5 tgt rejected for user %.100s : %s", server_user,
+      log_msg("Kerberos V5 tgt rejected for user %.100s : %.100s", server_user,
 	      error_message(retval));
-      packet_send_debug("Kerberos V5 tgt rejected for %.100s : %s",
+      packet_send_debug("Kerberos V5 tgt rejected for %.100s : %.100s",
 			server_user,
 			error_message(retval));
       packet_start(SSH_SMSG_FAILURE);
@@ -230,23 +277,57 @@ int auth_kerberos_tgt( char *server_user, krb5_data *krb5data)
   if (retval = krb5_cc_store_cred(ssh_context, ccache, *creds))
     goto errout;
   
-  if (retval = chown(ccname+5, pwd->pw_uid, -1))
-    goto errout;
-  
   ticket = xmalloc(strlen(ccname) + 1);
-  (void) sprintf(ticket, "%s", ccname);
+  (void) sprintf(ticket, "%.100s", ccname);
   
+  /* Now try to get krb4 tickets */
+  krb524_init_ets(ssh_context);
+  realm = krb5_princ_realm(ssh_context, (*creds)->client);
+  memset(&increds, 0, sizeof(increds));
+  if (retval = krb5_build_principal_ext(ssh_context, &(increds.server),
+					realm->length, realm->data, 6,
+					"krbtgt", realm->length, realm->data,
+					NULL))
+    goto errout2;
+
+  increds.client = (*creds)->client;
+  increds.times.endtime = 0;
+  increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+  if (retval = krb5_get_credentials(ssh_context, 0, ccache, &increds,
+				    &v5creds))
+    goto errout2;
+  
+  if (retval = krb524_convert_creds_kdc(ssh_context, v5creds, &v4creds))
+    goto errout2;
+
+  sprintf(tktname, "KRBTKFILE=/tmp/tkt_p%d", getpid());
+  putenv(xstrdup(tktname));
+  if (retval = in_tkt(v4creds.pname, v4creds.pinst))
+    goto errout2;
+
+  if (retval = krb_save_credentials(v4creds.service, v4creds.instance,
+				    v4creds.realm, v4creds.session,
+				    v4creds.lifetime, v4creds.kvno,
+				    &(v4creds.ticket_st), v4creds.issue_date))
+    goto errout2;
+
   /* Successful */
   packet_start(SSH_SMSG_SUCCESS);
   packet_send();
   packet_write_wait();
+  havecred = 1;
+  atexit(krb_cleanup);
   return 1;
   
+errout3:
+  dest_tkt();
+errout2:
+  krb5_cc_destroy(ssh_context, ccache);
 errout:
   krb5_free_tgt_creds(ssh_context, creds);
-  log_msg("Kerberos V5 tgt rejected for user %.100s :%s", server_user,
+  log_msg("Kerberos V5 tgt rejected for user %.100s :%.100s", server_user,
 	  error_message(retval));
-  packet_send_debug("Kerberos V5 tgt rejected for %.100s : %s", server_user,
+  packet_send_debug("Kerberos V5 tgt rejected for %.100s : %.100s", server_user,
 		    error_message(retval));
   packet_start(SSH_SMSG_FAILURE);
   packet_send();

@@ -26,11 +26,11 @@ SHELL = /bin/sh
 # Here are the things that we expect ../configure to edit.
 version=@version@
 prefix=@prefix@
-datadir=@datadir@
+datadir=$(prefix)/share
 srcdir=@srcdir@
 
 # Where to install LEIM files.
-INSTALLDIR=${datadir}/emacs/${version}/leim
+INSTALLDIR=$(DESTDIR)${datadir}/emacs/${version}/leim
 
 # On Xenix and the IBM RS6000, double-dot gets screwed up.
 dot = .

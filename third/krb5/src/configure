@@ -1570,6 +1570,10 @@ krb524=krb524
 fi
 subdirs="util include lib $krb524 kdc kadmin slave clients appl tests config-files gen-manpages"
 
+
+# override subdirs to not build in appl (but still configure it)
+subdirs="util include lib $krb524 kdc kadmin slave clients tests config-files gen-manpages"
+
 ALL_RECURSE="all-recurse"
 CLEAN_RECURSE="clean-recurse"
 INSTALL_RECURSE="install-recurse"

@@ -2,7 +2,7 @@
 #    Instructions to Make, for compilation of MH modules
 #
 #	@(MHWARNING)
-# @(#)$Id: sbr,v 1.1.1.1 1996-10-07 07:12:46 ghudson Exp $
+# @(#)$Id: sbr,v 1.2 1997-10-18 06:11:26 ghudson Exp $
 ##############################################################################
 
 OPTIONS	=	@(MHOPTIONS)
@@ -109,7 +109,7 @@ libmh.a: 	$(OFILES)
 		ar r $@ $(OFILES); ranlib $@
 @END: RANLIB
 @BEGIN: LORDER
-		ar r $@ `lorder $(OFILES) | tsort`
+		ar r $@ $(OFILES)
 @END: LORDER
 		-@ls -l $@
 		-@echo "MH library built normally"
@@ -135,7 +135,7 @@ libmh.sa:	$(ODEFS)
 		ar r $@ $(ODEFS); ranlib $@
 @END: RANLIB
 @BEGIN: LORDER
-		ar r $@ `lorder $(ODEFS) | tsort`
+		ar r $@ $(ODEFS)
 @END: LORDER
 		-@rm -f $@.$(SLIBVER)
 		ln $@ $@.$(SLIBVER)

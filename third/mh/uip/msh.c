@@ -1,6 +1,6 @@
 /* msh.c - The MH shell (sigh) */
 #ifndef	lint
-static char ident[] = "@(#)$Id: msh.c,v 1.1.1.1 1996-10-07 07:14:18 ghudson Exp $";
+static char ident[] = "@(#)$Id: msh.c,v 1.2 1999-01-29 18:27:35 ghudson Exp $";
 #endif	/* lint */
 
 /* TODO:
@@ -32,6 +32,10 @@ static char ident[] = "@(#)$Id: msh.c,v 1.1.1.1 1996-10-07 07:14:18 ghudson Exp 
 #include "../h/vmhsbr.h"
 #ifdef LOCALE
 #include	<locale.h>
+#endif
+
+#ifndef SIGEMT
+#define SIGEMT SIGUSR1
 #endif
 
 #ifdef	MIME
@@ -693,11 +697,11 @@ char   *folder;
 
     fmsh = getcpy (folder);
 
-#ifndef	BSD42
+#ifdef _NFILE
     maxfds = _NFILE / 2;
-#else	/* BSD42 */
+#else
     maxfds = getdtablesize () / 2;
-#endif	/* BSD42 */
+#endif
     if ((maxfds -= 2) < 1)
 	maxfds = 1;
 }

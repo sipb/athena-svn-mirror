@@ -8,8 +8,55 @@
 #
 # Created: Wed Mar 22 17:37:49 1995 ylo
 #
-# $Id: Makefile.in,v 1.1.1.4 1999-03-08 17:42:51 danw Exp $
+# $Id: Makefile.in,v 1.13 1999-03-21 21:03:25 ghudson Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.12  1999/03/11 04:10:30  danw
+# liblockerize
+#
+# Revision 1.11  1999/03/08 18:19:59  danw
+# merge changes
+#
+# Revision 1.10  1998/06/17 17:29:36  ghudson
+# Add code from a CORE SDI advisory to prevent connection hijacking.
+#
+# Revision 1.9  1998/05/30 16:03:39  danw
+# ssh 1.2.23 by default installs files as "foo1" with a "foo" -> "foo1"
+# symlink. This reverts back to the old (not "foo1") behavior
+#
+# Revision 1.8  1998/05/13 20:18:45  danw
+# merge in changes from 1.2.23
+#
+# Revision 1.7  1998/04/16 22:31:56  ghudson
+# Install sshd stripped, but install an unstripped "sshd.unstripped" to
+# help debugging.  It won't get tracked in.
+#
+# Revision 1.6  1998/04/08 02:28:43  ghudson
+# Don't create .old files in the install directory.
+#
+# Revision 1.5  1998/01/24 01:47:20  danw
+# merge in changes for 1.2.22
+#
+# Revision 1.4  1998/01/01 18:17:31  danw
+# put sshd in the right place
+#
+# Revision 1.3  1997/11/19 20:52:02  danw
+# Fix make depend rule
+#
+# Revision 1.2  1997/11/12 21:16:07  danw
+# Athena-login changes (including some krb4 stuff)
+#
+# Revision 1.1.1.1  1997/10/17 22:25:52  danw
+# Import of ssh 1.2.21
+#
+# Revision 1.1.1.2  1998/01/24 01:25:07  danw
+# Import of ssh 1.2.22
+#
+# Revision 1.1.1.3  1998/05/13 19:10:56  danw
+# Import of ssh 1.2.23
+#
+# Revision 1.1.1.4  1999/03/08 17:42:51  danw
+# Import of ssh 1.2.26
+#
 # Revision 1.49  1998/07/08 01:20:28  kivinen
 # 	Changed SSH_PROGRAM to be ssh1.
 #
@@ -245,7 +292,7 @@ install_prefix	=
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
-sbindir		= @sbindir@
+sbindir		= /etc/athena
 mandir		= @mandir@
 man1dir		= $(mandir)/man1
 man8dir		= $(mandir)/man8
@@ -281,6 +328,11 @@ KERBEROS_OBJS   = @KERBEROS_OBJS@
 RSAREFDEP	= @RSAREFDEP@
 
 WRAPLIBS	= @WRAPLIBS@
+
+ATHENA_LIBS	= -L${ATHTOOLROOT}/usr/athena/lib -lal -llocker -lzephyr \
+			-lhesiod @ATHENA_LIBS@
+ATHENA_INCS	= -I${ATHTOOLROOT}/usr/athena/include \
+	-I${ATHTOOLROOT}/usr/athena/include/kerberosIV
 
 SSH_INSTALL_MODE= @SSHINSTALLMODE@
 
@@ -393,7 +445,7 @@ SCRIPT_PROGRAMS = make-ssh-known-hosts
 SBIN_PROGRAMS = sshd
 PROGRAMS = ssh $(SBIN_PROGRAMS) $(NORMAL_PROGRAMS) $(SCRIPT_PROGRAMS) \
 $(X_PROGRAMS) $(OTHER_PROGRAMS)
-SSH_PROGRAM = $(bindir)/ssh1
+SSH_PROGRAM = $(bindir)/ssh
 
 all: $(PROGRAMS)
 
@@ -404,12 +456,13 @@ rfc-pg: rfc-pg.o
 	$(CC) -o rfc-pg rfc-pg.o
 
 .c.o:
-	$(CC) -c -I. $(KERBEROS_INCS) -I$(srcdir)/$(GMPDIR) -I$(srcdir)/$(ZLIBDIR) $(DEFS) -DHOST_KEY_FILE=\"$(HOST_KEY_FILE)\" -DHOST_CONFIG_FILE=\"$(HOST_CONFIG_FILE)\" -DSERVER_CONFIG_FILE=\"$(SERVER_CONFIG_FILE)\" -DSSH_PROGRAM=\"$(SSH_PROGRAM)\" -DETCDIR=\"$(etcdir)\" -DPIDDIR=\"$(piddir)\" -DSSH_BINDIR=\"$(bindir)\" -DTIS_MAP_FILE=\"$(TIS_MAP_FILE)\" $(CFLAGS) $(X_CFLAGS) $<
+	$(CC) -c -I. $(KERBEROS_INCS) -I$(srcdir)/$(GMPDIR) -I$(srcdir)/$(ZLIBDIR) $(ATHENA_INCS) $(DEFS) -DHOST_KEY_FILE=\"$(HOST_KEY_FILE)\" -DHOST_CONFIG_FILE=\"$(HOST_CONFIG_FILE)\" -DSERVER_CONFIG_FILE=\"$(SERVER_CONFIG_FILE)\" -DSSH_PROGRAM=\"$(SSH_PROGRAM)\" -DETCDIR=\"$(etcdir)\" -DPIDDIR=\"$(piddir)\" -DSSH_BINDIR=\"$(bindir)\" -DTIS_MAP_FILE=\"$(TIS_MAP_FILE)\" $(CFLAGS) $(X_CFLAGS) $<
 
 sshd: $(SSHD_OBJS) $(GMPDEP) $(RSAREFDEP) $(ZLIBDEP)
 	-rm -f sshd
 	$(CC) $(LDFLAGS) -o sshd $(SSHD_OBJS) \
-		$(GMPLIBS) $(ZLIBLIBS) $(WRAPLIBS) $(LIBS) $(KERBEROS_LIBS)
+		$(GMPLIBS) $(ZLIBLIBS) $(WRAPLIBS) $(ATHENA_LIBS) $(LIBS) \
+		$(KERBEROS_LIBS)
 
 ssh: $(SSH_OBJS) $(GMPDEP) $(RSAREFDEP) $(ZLIBDEP)
 	-rm -f ssh
@@ -516,19 +569,8 @@ hostinstall: $(PROGRAMS) make-dirs generate-host-key install-configs
 # (otherwise it can only log in as the user it runs as, and must be
 # bound to a non-privileged port).  Also, password authentication may
 # not be available if non-root and using shadow passwords.
-install: $(PROGRAMS) make-dirs generate-host-key install-configs
-	-rm -f $(install_prefix)$(bindir)/ssh1.old
-	-chmod 755 $(install_prefix)$(bindir)/ssh1
-	-chmod 755 $(install_prefix)$(bindir)/ssh
-	-mv $(install_prefix)$(bindir)/ssh1 $(install_prefix)$(bindir)/ssh1.old
-	$(INSTALL_PROGRAM) -o root -m $(SSH_INSTALL_MODE) ssh $(install_prefix)$(bindir)/ssh1
-	-if test -f $(install_prefix)$(bindir)/ssh2; then \
-	  echo "Ssh version 2 program found, installation doesn't touch ssh link"; \
-	else \
-	  rm -f $(install_prefix)$(bindir)/ssh.old; \
-	  mv $(install_prefix)$(bindir)/ssh $(install_prefix)$(bindir)/ssh.old ;\
-	  $(LN_S) ssh1 $(install_prefix)$(bindir)/ssh ;\
-        fi
+install: $(PROGRAMS) make-dirs
+	$(INSTALL_PROGRAM) -o root -m $(SSH_INSTALL_MODE) ssh $(install_prefix)$(bindir)/ssh
 	-if test "`echo ssh | sed '$(transform)'`" '!=' ssh; then \
 	  rm -f $(install_prefix)$(bindir)/`echo ssh | sed '$(transform)'`; \
 	  $(LN_S) ssh \
@@ -540,66 +582,35 @@ install: $(PROGRAMS) make-dirs generate-host-key install-configs
 	  $(LN_S) ssh \
 	    $(install_prefix)$(bindir)/`echo slogin | sed '$(transform)'`; fi
 	-for p in $(NORMAL_PROGRAMS) $(X_PROGRAMS) $(OTHER_PROGRAMS); do \
-	  rm -f $(install_prefix)$(bindir)/$${p}1.old ; \
-	  mv $(install_prefix)$(bindir)/$${p}1 $(install_prefix)$(bindir)/$${p}1.old; \
-	  $(INSTALL_PROGRAM) -m 0755 $$p $(install_prefix)$(bindir)/$${p}1; \
-	  if test -f $(install_prefix)$(bindir)/$${p}2; then \
-	    echo "Ssh version 2 $$p utility found, installation doesn't touch $$p link"; \
-	  else \
-	    rm -f $(install_prefix)$(bindir)/$$p.old ;\
-	    mv $(install_prefix)$(bindir)/$$p $(install_prefix)$(bindir)/$$p.old ;\
-	    $(LN_S) $${p}1 $(install_prefix)$(bindir)/$$p ;\
-          fi ;\
+	  $(INSTALL_PROGRAM) -m 0755 $$p $(install_prefix)$(bindir)/$${p}; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(bindir)/`echo $$p | sed '$(transform)'`; \
 	    $(LN_S) $$p \
 	      $(install_prefix)$(bindir)/`echo $$p | sed '$(transform)'`; fi; \
 	done
 	-for p in $(SCRIPT_PROGRAMS); do \
-	  rm -f $(install_prefix)$(bindir)/$${p}1.old ; \
-	  mv $(install_prefix)$(bindir)/$${p}1 $(install_prefix)$(bindir)/$${p}1.old; \
-	  $(INSTALL_DATA) $$p $(install_prefix)$(bindir)/$${p}1; \
-	  chmod 755 $(install_prefix)$(bindir)/$${p}1; \
-	  if test -f $(install_prefix)$(bindir)/$${p}2; then \
-	    echo "Ssh version 2 $$p utility found, installation doesn't touch $$p link"; \
-	  else \
-	    rm -f $(install_prefix)$(bindir)/$$p.old ;\
-	    mv $(install_prefix)$(bindir)/$$p $(install_prefix)$(bindir)/$$p.old ;\
-	    $(LN_S) $${p}1 $(install_prefix)$(bindir)/$$p ;\
-          fi ;\
+	  $(INSTALL_DATA) $$p $(install_prefix)$(bindir)/$${p}; \
+	  chmod 755 $(install_prefix)$(bindir)/$${p}; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(bindir)/`echo $$p | sed '$(transform)'`; \
 	    $(LN_S) $$p \
 	      $(install_prefix)$(bindir)/`echo $$p | sed '$(transform)'`; fi; \
 	done
 	-for p in $(SBIN_PROGRAMS); do \
-	  rm -f $(install_prefix)$(sbindir)/$${p}1.old ; \
-	  mv $(install_prefix)$(sbindir)/$${p}1 $(install_prefix)$(sbindir)/$${p}1.old; \
-	  $(INSTALL_PROGRAM) -m 0755 $$p $(install_prefix)$(sbindir)/$${p}1; \
-	  if test -f $(install_prefix)$(sbindir)/$${p}2; then \
-	    echo "Ssh version 2 $$p utility found, installation doesn't touch $$p link"; \
-	  else \
-	    rm -f $(install_prefix)$(sbindir)/$$p.old ;\
-	    mv $(install_prefix)$(sbindir)/$$p $(install_prefix)$(sbindir)/$$p.old ;\
-	    $(LN_S) $${p}1 $(install_prefix)$(sbindir)/$$p ;\
-          fi ;\
+	  $(INSTALL_PROGRAM) -m 0755 $$p $(install_prefix)$(sbindir)/$${p}; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(sbindir)/`echo $$p | sed '$(transform)'`;\
 	    $(LN_S) $$p \
 	      $(install_prefix)$(sbindir)/`echo $$p | sed '$(transform)'`; fi;\
 	done
 	-for p in $(MAN1PAGES); do \
-	  $(INSTALL_DATA) -m 0644 $(srcdir)/$$p.1 $(install_prefix)$(man1dir)/$${p}1.1 ; \
-	  rm -f $(install_prefix)$(man1dir)/$$p.1 ;\
-	  $(LN_S) $${p}1.1 $(install_prefix)$(man1dir)/$$p.1 ;\
+	  $(INSTALL_DATA) -m 0644 $(srcdir)/$$p.1 $(install_prefix)$(man1dir)/$${p}.1 ; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(man1dir)/`echo $$p | sed '$(transform)'`.1;\
 	    $(LN_S) $${p}1.1 \
 	      $(install_prefix)$(man1dir)/`echo $$p | sed '$(transform)'`.1; \
 	  fi; \
 	done
-	rm -f $(install_prefix)$(man1dir)/slogin1.1
-	$(LN_S) ssh1.1 $(install_prefix)$(man1dir)/slogin1.1
 	rm -f $(install_prefix)$(man1dir)/slogin.1
 	$(LN_S) ssh.1 $(install_prefix)$(man1dir)/slogin.1
 	-if test "`echo slogin.1 | sed '$(transform)'`" '!=' slogin.1; then \
@@ -608,9 +619,7 @@ install: $(PROGRAMS) make-dirs generate-host-key install-configs
 	    $(install_prefix)$(man1dir)/`echo slogin.1 | sed '$(transform)'`; \
 	fi
 	-for p in $(MAN1GENERATED); do \
-	  $(INSTALL_DATA) -m 0644 $$p.1 $(install_prefix)$(man1dir)/$${p}1.1 ; \
-	  rm -f $(install_prefix)$(man1dir)/$$p.1 ; \
-	  $(LN_S) $${p}1.1 $(install_prefix)$(man1dir)/$$p.1 ; \
+	  $(INSTALL_DATA) -m 0644 $$p.1 $(install_prefix)$(man1dir)/$${p}.1 ; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(man1dir)/`echo $$p | sed '$(transform)'`.1;\
 	    $(LN_S) $${p}1.1 \
@@ -618,9 +627,7 @@ install: $(PROGRAMS) make-dirs generate-host-key install-configs
 	  fi; \
 	done
 	-for p in $(MAN8GENERATED); do \
-	  $(INSTALL_DATA) -m 0644 $$p.8 $(install_prefix)$(man8dir)/$${p}1.8; \
-	  rm -f $(install_prefix)$(man8dir)/$$p.8 ; \
-	  $(LN_S) $${p}1.8 $(install_prefix)$(man8dir)/$$p.8 ; \
+	  $(INSTALL_DATA) -m 0644 $$p.8 $(install_prefix)$(man8dir)/$${p}.8; \
 	  if test "`echo $$p | sed '$(transform)'`" '!=' $$p; then \
 	    rm -f $(install_prefix)$(man8dir)/`echo $$p | sed '$(transform)'`.8;\
 	    $(LN_S) $${p}1.8 \
@@ -742,7 +749,7 @@ dist-increment-version:
 	 (echo "s/\.$$old_version\"/.$$new_version\"/g"; echo w; echo q) | ed $(srcdir)/version.h >/dev/null
 
 depend:
-	$(MAKEDEP) -I$(srcdir) -I. -I$(GMPDIR) -I$(ZLIBDIR) $(DEFS) $(SRCS)
+	$(MAKEDEP) -I$(srcdir) -I. $(KERBEROS_INCS) -I$(GMPDIR) -I$(ZLIBDIR) $(ATHENA_INCS) $(X_CFLAGS) $(DEFS) $(SRCS)
 
 tags:
 	-rm -f TAGS

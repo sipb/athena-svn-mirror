@@ -1,0 +1,21 @@
+error_table	olcc
+
+ec	OLCC_BAD_OPEN,
+	"Error opening file"
+
+ec	OLCC_BAD_STAT,
+	"Error stat'ing file"
+
+ec	OLCC_NOMEM,
+	"Failed to allocate memory"
+
+ec	OLCC_BAD_READ,
+	"Error reading file"
+
+ec	OLCC_BAD_CLOSE,
+	"Error closing file"
+
+ec	OLCC_BAD_FEATURE_FORMAT,
+	"Error parsing features"
+
+end

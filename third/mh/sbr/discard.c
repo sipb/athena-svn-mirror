@@ -1,6 +1,6 @@
 /* discard.c - discard output on a file pointer */
 #ifndef	lint
-static char ident[] = "@(#)$Id: discard.c,v 1.1.1.1 1996-10-07 07:13:49 ghudson Exp $";
+static char ident[] = "@(#)$Id: discard.c,v 1.2 1999-01-29 18:17:33 ghudson Exp $";
 #endif	/* lint */
 
 #include "../h/mh.h"
@@ -48,6 +48,8 @@ FILE   *io;
 
 #ifdef _FSTDIO
     fpurge (io);
+#elif defined _STDIO_USES_IOSTREAM
+    io -> _IO_write_ptr = io -> _IO_write_base;
 #else
     if (io -> _ptr = io -> _base)
 	io -> _cnt = 0;

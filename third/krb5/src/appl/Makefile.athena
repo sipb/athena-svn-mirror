@@ -1,0 +1,17 @@
+# $Id: Makefile.athena,v 1.2 1999-03-11 04:11:46 danw Exp $
+
+SHELL=/bin/sh
+
+prepare:
+	@test -f Makefile || { echo "You must build third/krb5 before building third/krb5/appl"; exit 1; }
+
+clean:
+	${MAKE} clean
+
+all:
+	${MAKE} all
+
+check:
+
+install:
+	${MAKE} install DESTDIR="$$SRVD"

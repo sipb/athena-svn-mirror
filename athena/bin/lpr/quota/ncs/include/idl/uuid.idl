@@ -1,0 +1,85 @@
+%pascal
+
+[local] interface uuid_;
+
+import
+    'nbase.idl';
+
+type
+    uuid_$string_t = 
+        array[1..37] of char;   /* tttttttttttt.ff.h1.h2.h3.h4.h5.h6.h7 */
+
+
+{*
+ * U U I D _ $ G E N
+ *
+ * Generate a new UUID.
+ *}
+
+procedure uuid_$gen(
+    out uuid:   uuid_$t
+    );
+
+
+{*
+ * U U I D _ $ E N C O D E
+ *
+ * Encode a UUID into a printable string.
+ *}
+
+procedure uuid_$encode(
+    in ref uuid:    uuid_$t;
+    out s:          uuid_$string_t
+    );
+
+
+{*
+ * U U I D _ $ D E C O D E
+ *
+ * Decode a UUID from a printable string.
+ *}
+
+procedure uuid_$decode(
+    in ref s:       uuid_$string_t;
+    out uuid:       uuid_$t;
+    out st:         status_$t
+    );
+ 
+
+{*
+ * U U I D _ $ E Q U A L
+ *
+ * Compare two UUIDs
+ *}
+
+function uuid_$equal(
+    in ref u1:      uuid_$t;
+    in ref u2:      uuid_$t
+    ): boolean; 
+
+{*
+ * U U I D _ $ C M P
+ *
+ * Compare two UUIDs; returns <0/0/>0 according as u1 is </=/> than u2
+ *}
+
+function uuid_$cmp(
+    in ref u1:      uuid_$t;
+    in ref u2:      uuid_$t
+    ): integer32; 
+
+
+{*
+ * U U I D _ $ H A S H
+ *
+ * Compute hash function on a UUID
+ * This returns a value between 0 and modulus-1.
+ *}
+
+function uuid_$hash(
+    in ref u:       uuid_$t;
+    in modulus:     unsigned32
+    ): unsigned32;
+
+end;
+

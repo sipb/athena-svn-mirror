@@ -1,0 +1,177 @@
+.\" $Id: locker_detach.3,v 1.1 1999-02-26 19:05:11 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LOCKER_DETACH 3
+.SH NAME
+locker_detach_simple, locker_detach, locker_detach_explicit,
+locker_detach_attachent \- Detach a locker
+.SH SYNOPSIS
+.nf
+.B #include <locker.h>
+.PP
+.B
+int locker_detach(locker_context \fIcontext\fP, 
+.B
+	char *\fIfilesystem\fP, char *\fImountpoint\fP,
+.B
+	int \fIoptions\fP, locker_attachent **\fIatp\fP)
+.PP
+.B
+int locker_detach_explicit(locker_context \fIcontext\fP, char *\fItype\fP
+.B
+	char *\fIdesc\fP, char *\fImountpoint\fP, int \fIoptions\fP,
+.B
+	locker_attachent **\fIatp\fP)
+.PP
+.B
+int locker_detach_attachent(locker_context \fIcontext\fP,
+.B
+	locker_attachent *\fIat\fP, int \fIoptions\fP)
+.PP
+.B cc file.c -llocker ...
+.fi
+.SH DESCRIPTION
+These functions attempt to detach an attached filesystem from the
+workstation. The
+.I context
+argument to each of these functions must be a locker context
+initialized by
+.B locker_init\fP.
+.PP
+The
+.B locker_detach
+function detaches the named
+.I filesystem\fP.
+.PP
+.B locker_detach_explicit
+is used to detach filesystems that aren't described in Hesiod or
+attach.conf.
+.B type
+should be the type of the locker (e.g., "AFS"), and
+.B desc
+should be a filesystem-specific description of the filesystem's
+location. (For AFS, this is the path to the filesystem. For most other
+filesystem types, it is the path or host:path that would be passed to
+.BR mount (1).)
+.PP
+The
+.I mountpoint
+argument must be passed if the filesystem was attached on a non-default
+mountpoint. If the filesystem was attached to its default mountpoint,
+the caller can pass NULL.
+.PP
+.B locker_detach_attachent
+can be used to detach a locker when you already have a
+.I locker_attachent
+describing it. This is most likely to be useful with
+.BR locker_iterate_attachtab (3).
+.PP
+The
+.I options
+argument is a bit field which can have any of the following options
+set:
+.TP 8
+.I LOCKER_DETACH_OPT_OVERRIDE
+Override various restrictions set in attach.conf. (See
+.BR attach.conf (5)
+for more details.) This option can only be used by trusted users
+(as specified by attach.conf).
+.TP 8
+.I LOCKER_DETACH_OPT_UNLOCK
+Unlock the locker. This option must be used to detach a locked locker.
+It can only be used by trusted users.
+.I LOCKER_DETACH_OPT_UNZEPHYR
+Discard Zephyr subscriptions for the detached locker.
+.TP 8
+.I LOCKER_DETACH_OPT_UNAUTH
+Discard authentication associated with the detached locker.
+.TP 8
+.I LOCKER_DETACH_OPT_OWNERCHECK
+Do not detach locker if any other user still wants it.
+.TP 8
+.I LOCKER_DETACH_OPT_CLEAN
+Clean out users who are not in /etc/passwd from the owner list.
+Implies LOCKER_DETACH_OPT_OWNERCHECK.
+.PP
+.B locker_detach
+uses
+.I LOCKER_DETACH_DEFAULT_OPTIONS\fP,
+which sets
+.I LOCKER_DETACH_OPT_UNZEPHYR
+and
+.I LOCKER_DETACH_OPT_UNAUTH\fP.
+.PP
+The
+.I callback
+argument to
+.B locker_detach
+and
+.B locker_detach_explicit
+is used to specify code to be run if the locker is successfully
+detached. The callback function will be called with the provided
+.B arg
+and a
+.I locker_attachent
+corresponding to the locker. If the caller doesn't need to do any
+special processing, it should pass NULL for
+.I callback\fP.
+See
+.BR locker_read_attachent (3)
+for more information about the format of a
+.I locker_attachent\fP.
+.SH RETURN VALUES
+The detach functions can return the following values:
+.TP 15
+.I LOCKER_SUCCESS
+The locker was succesfully detached.
+.TP 15
+.I LOCKER_ENOTATTACHED
+The locker was already not attached.
+.PP
+The caller can use the
+.I LOCKER_DETACH_SUCCESS()
+macro on the status to see if it was one of the previous two values.
+.TP 15
+.I LOCKER_EUNKNOWN
+No such filesystem.
+.TP 15
+.I LOCKER_EDETACH
+Unable to detach the locker. (Mount or rm failed.)
+.TP 15
+.I LOCKER_EHESIOD
+Error looking up locker in Hesiod.
+.TP 15
+.I LOCKER_EMOUNTPOINT
+Could not clean up the mountpoint.
+.TP 15
+.I LOCKER_EPARSE
+Unable to parse filesystem description.
+.TP 15
+.I LOCKER_EPERM
+Untrusted user attempted privileged operation.
+.TP 15
+.I LOCKER_EATTACHTAB
+Error creating or reading the detachtab entry corresponding to this
+locker.
+.TP 15
+.I LOCKER_ENOMEM
+Memory was exhausted.
+.SH SEE ALSO
+locker_init(3), locker_attach(3)
+.SH AUTHOR
+Dan Winship, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

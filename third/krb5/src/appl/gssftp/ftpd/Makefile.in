@@ -20,17 +20,22 @@ SRCS	= ftpd.c ftpcmd.y popen.c vers.c \
 OBJS	= ftpd.o ftpcmd.o glob.o popen.o vers.o radix.o \
 	  secure.o $(LIBOBJS) $(SETENVOBJ)
 
-KLIB = -lgssapi_krb5 -lkrb5 -lcrypto -lcom_err
+ATHLIBS = -L$(ATHTOOLROOT)/usr/athena/lib -lal -lhesiod -llocker -lzephyr
+KLIB = ../../../krb524/libkrb524.a @KRB4_LIB@ @KRB4_CRYPTO_LIB@ \
+	-lgssapi_krb5 -lkrb5 -lcrypto -lcom_err
 DEPKLIB = $(TOPLIBD)/gssapi/libgssapi_krb5.a $(TOPLIBD)/libkrb5.a \
 		$(TOPLIBD)/libcrypto.a $(COMERRLIB)
+EXTRALIBS = @EXTRALIBS@
 
-LOCALINCLUDE = -I$(srcdir)/..
+LOCALINCLUDE = -I$(srcdir)/.. -I$(srcdir) @KRB4_INCLUDES@ \
+	-I$(ATHTOOLROOT)/usr/athena/include
 DEFINES = -DGSSAPI -DNOCONFIDENTIAL
 
 all::	ftpd
 
 ftpd:	$(OBJS) $(DEPKLIB)
-	$(LD) $(LDFLAGS) $(LDARGS) -o $@ $(OBJS) $(KLIB) $(LIBS)
+	$(LD) $(LDFLAGS) $(LDARGS) -o $@ $(OBJS) $(ATHLIBS) $(EXTRALIBS) \
+		$(KLIB) $(LIBS)
 
 clean::
 	$(RM) ftpd ftpcmd.c

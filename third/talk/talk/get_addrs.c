@@ -58,11 +58,11 @@ get_addrs(my_machine_name, his_machine_name)
 	/* look up the address of the local host */
 	hp = gethostbyname(my_machine_name);
 	if (hp == NULL) {
-		fprintf(stderr, "talk: %s: ", my_machine_name);
-		herror((char *)NULL);
+		fprintf(stderr, "talk: Can't resolve hostname %s",
+			my_machine_name);
 		exit(-1);
 	}
-	bcopy(hp->h_addr, (char *)&my_machine_addr, hp->h_length);
+	memcpy(&my_machine_addr, hp->h_addr, hp->h_length);
 	/*
 	 * If the callee is on-machine, just copy the
 	 * network address, otherwise do a lookup...
@@ -70,11 +70,11 @@ get_addrs(my_machine_name, his_machine_name)
 	if (strcmp(his_machine_name, my_machine_name)) {
 		hp = gethostbyname(his_machine_name);
 		if (hp == NULL) {
-			fprintf(stderr, "talk: %s: ", his_machine_name);
-			herror((char *)NULL);
+			fprintf(stderr, "talk: Can't resolve hostname %s: ",
+				his_machine_name);
 			exit(-1);
 		}
-		bcopy(hp->h_addr, (char *) &his_machine_addr, hp->h_length);
+		memcpy(&his_machine_addr, hp->h_addr, hp->h_length);
 	} else
 		his_machine_addr = my_machine_addr;
 	/* find the server's port */

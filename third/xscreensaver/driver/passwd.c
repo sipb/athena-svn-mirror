@@ -22,37 +22,35 @@
 # include <unistd.h>
 #endif
 
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include "prefs.h"
+
 extern char *blurb(void);
 
-
-/* blargh */
-#undef  Bool
-#undef  True
-#undef  False
-#define Bool  int
-#define True  1
-#define False 0
 
 #undef countof
 #define countof(x) (sizeof((x))/sizeof(*(x)))
 
 struct auth_methods {
   const char *name;
-  Bool (*init) (int argc, char **argv, Bool verbose_p);
+  Bool (*init) (saver_preferences *p);
   Bool (*valid_p) (const char *typed_passwd, Bool verbose_p);
   Bool initted_p;
 };
 
 
+extern Bool explicit_lock_init (saver_preferences *p);
+extern Bool explicit_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 #ifdef HAVE_KERBEROS
-extern Bool kerberos_lock_init (int argc, char **argv, Bool verbose_p);
+extern Bool kerberos_lock_init (saver_preferences *p);
 extern Bool kerberos_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 #endif
 #ifdef HAVE_PAM
-extern Bool pam_lock_init (int argc, char **argv, Bool verbose_p);
+extern Bool pam_lock_init (saver_preferences *p);
 extern Bool pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 #endif
-extern Bool pwent_lock_init (int argc, char **argv, Bool verbose_p);
+extern Bool pwent_lock_init (saver_preferences *p);
 extern Bool pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 
 
@@ -62,6 +60,7 @@ extern Bool pwent_passwd_valid_p (const char *typed_passwd, Bool verbose_p);
    (It's all in the same file since the APIs are randomly nearly-identical.)
  */
 struct auth_methods methods[] = {
+  { "explicit", explicit_lock_init,	explicit_passwd_valid_p, False },
 # ifdef HAVE_KERBEROS
   { "Kerberos",	kerberos_lock_init,	kerberos_passwd_valid_p, False },
 # endif
@@ -73,16 +72,16 @@ struct auth_methods methods[] = {
 
 
 Bool
-lock_init (int argc, char **argv, Bool verbose_p)
+lock_init (saver_preferences *p)
 {
   int i;
   Bool any_ok = False;
   for (i = 0; i < countof(methods); i++)
     {
-      methods[i].initted_p = methods[i].init (argc, argv, verbose_p);
+      methods[i].initted_p = methods[i].init (p);
       if (methods[i].initted_p)
         any_ok = True;
-      else if (verbose_p)
+      else if (p->verbose_p)
         fprintf (stderr, "%s: initialization of %s passwords failed.\n",
                  blurb(), methods[i].name);
     }

@@ -254,6 +254,10 @@ fi
 dnl
 CONFIG_DIRS(util include lib $krb524 kdc kadmin slave clients appl tests config-files gen-manpages)
 dnl $kadminv4 removed from the above
+
+# override subdirs to not build in appl (but still configure it)
+subdirs="util include lib $krb524 kdc kadmin slave clients tests config-files gen-manpages"
+
 DO_SUBDIRS
 dnl AC_OUTPUT(Makefile,[EXTRA_RULES])
 V5_AC_OUTPUT_MAKEFILE

@@ -3,7 +3,8 @@ CFLAGS = $(CCOPTS) $(DEFS) $(LOCALINCLUDE)
 all::
 
 kdestroy: kdestroy.o $(DEPLIBS)
-	$(LD) $(LDFLAGS) $(LDARGS) -o kdestroy kdestroy.o $(LIBS)
+	$(LD) $(LDFLAGS) $(LDARGS) -o kdestroy kdestroy.o -lkrb4 -ldes425 \
+		$(LIBS)
 
 kdestroy.o:	$(srcdir)/kdestroy.c
 

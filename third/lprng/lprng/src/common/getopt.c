@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getopt.c,v 1.1.1.2 1999-05-04 18:06:53 danw Exp $";
+"$Id: getopt.c,v 1.3 1999-05-04 19:24:23 danw Exp $";
 
 
 #include "lp.h"
@@ -68,7 +68,7 @@ int Getopt (int argc, char *argv[], char *optstring)
 
 	/* check for start of option string AND no initial '-'  */
 	if( (next_opt == argv[Optind-1]) ){
-		if( next_opt[0] != '-' ){
+		if( next_opt[0] != '-' || next_opt[1] == '\0' ){
 			--Optind;
 			return( EOF );
 		} else {

@@ -1,0 +1,70 @@
+.\" $Id: larvnet.cgroups.5,v 1.2 1999-04-13 21:22:09 ghudson Exp $
+.\"
+.\" Copyright 1998, 1999 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH LARVNET.CLUSTERS 5 "13 April 1999"
+.SH NAME
+larvnet.cgroups \- larvnetd cluster group report file
+.SH SYNOPSIS
+.B /var/athena/larvnet.cgroups
+.SH DESCRIPTION
+The file
+.B /var/athena/larvnet.cgroups
+contains configuration information about public clusters.  It is
+written by
+.BR larvnetd (8)
+and typically presented to the user by
+.BR cviewd (8).
+.PP
+The report consists of lines in the following format:
+.PP
+.RS
+\fIcgname\fP \fIx\fP \fIy\fP {\fIcluster\fP \fIphone\fP} ... \fB---\fP \fIprinter\fP ...
+.RE
+.PP
+The field
+.I cgname
+is the cluster group name.  The fields
+.I x
+and
+.I y
+give the coordinates of the cluster group on the cluster map (see
+.BR xcluster(1)).
+The
+.I cluster
+and
+.I phone
+fields give the names and phone numbers of clusters in the cluster
+group, and the
+.I printer
+fields give the names of printers in the cluster group.
+.SH EXAMPLE
+The following example reports on two cluster groups, each with only
+one cluster.
+.PP
+.RS
+.nf
+1-142 34120 22686 M1-142 3-2019 --- bob plato
+2-032 40228 22700 M2-032 3-2190 --- corfu
+.fi
+.RE
+.SH SEE ALSO
+.BR larvnetd (8),
+.BR cviewd (8),
+.BR larvnet.conf (5)
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1998, 1999 by the Massachusetts Institute of Technology.

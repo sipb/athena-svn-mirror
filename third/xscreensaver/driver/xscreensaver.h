@@ -281,7 +281,8 @@ extern void ungrab_keyboard_and_mouse (saver_info *si);
 
 #ifndef NO_LOCKING
 extern Bool unlock_p (saver_info *si);
-extern Bool lock_init (int argc, char **argv, Bool verbose_p);
+extern void pwent_lock_privileged_init (int argc, char **argv);
+extern Bool lock_init (saver_preferences *p);
 extern Bool passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 
 extern void make_passwd_window (saver_info *si);

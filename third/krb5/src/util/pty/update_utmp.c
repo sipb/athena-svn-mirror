@@ -83,6 +83,9 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 #endif
 
 #ifndef NO_UT_PID
+#ifdef __linux__ /* Behave like native login. */
+    strncpy(ent.ut_id, line + 8, sizeof(ent.ut_id));
+#else
     if (!strcmp (line, "/dev/console"))
       strncpy (ent.ut_id, "cons", 4);
     else {
@@ -95,6 +98,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 #endif
       strncpy(ent.ut_id, utmp_id, sizeof(ent.ut_id));
     }
+#endif /* __linux__ */
     strncpy(ent.ut_user, username, sizeof(ent.ut_user));
 #else
     strncpy(ent.ut_name, username, sizeof(ent.ut_name));
@@ -117,10 +121,12 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
 	&&line)  
 	{
 	  struct utmp *utptr;
-	  strncpy(ut.ut_line, line, sizeof(ut.ut_line));
+	  strncpy(ut.ut_line, ent.ut_line, sizeof(ut.ut_line));
 	  utptr = getutline(&ut);
 	  if (utptr)
 	    strncpy(userbuf,utptr->ut_user,sizeof(ut.ut_user));
+	  /* Reset the file pointer for pututline(). */
+	  setutent();
 	}
 #endif
 
@@ -152,6 +158,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     utx.ut_tv.tv_sec = ent.ut_time;
     utx.ut_tv.tv_usec = 0;
 #endif
+    utx.ut_pid = pid;
     if (host)
       strncpy(utx.ut_host, host, sizeof(utx.ut_host));
     else

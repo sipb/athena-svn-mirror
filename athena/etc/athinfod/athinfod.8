@@ -1,0 +1,44 @@
+.\" $Id: athinfod.8,v 1.1 1998-11-03 17:57:43 ghudson Exp $
+.\"
+.\" Copyright 1998 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.TH ATHINFOD 8 "30 Oct 1998"
+.SH NAME
+athinfod \- Supply information about a workstation
+.SH SYNOPSIS
+.B athinfod
+.SH DESCRIPTION
+.B athinfod
+is normally run from inetd.  It responds to those queries which are
+defined in
+.B /etc/athena/athinfo.defs
+and enabled in
+.BR /etc/athena/athinfo.access .
+The query is read from standard input and must be a sequence of
+printable nonspace characters terminated by a newline (optionally
+preceded by a carriage return).  Once the query has been read, the
+receiving side of the inetd socket is shut down and standard input is
+replaced with /dev/null, so that input from the client may not affect
+the response to the query.
+.SH FILES
+.B /etc/athena/athinfo.defs
+.br
+.B /etc/athena/athinfo.access
+.SH "SEE ALSO"
+.BR athinfo.defs (5),
+.BR athinfo.access (5)
+.SH AUTHOR
+Greg Hudson, MIT Information Systems
+.br
+Copyright 1998 by the Massachusetts Institute of Technology.

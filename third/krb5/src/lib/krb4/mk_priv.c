@@ -87,7 +87,7 @@ krb_mk_priv(in,out,length,schedule,key,sender,receiver)
                                  * (header stuff) overlap */
     unsigned KRB4_32 length;	/* of in data */
     Key_schedule schedule;      /* precomputed key schedule */
-    C_Block *key;               /* encryption key for seed and ivec */
+    C_Block key;               /* encryption key for seed and ivec */
     struct sockaddr_in *sender; /* sender address */
     struct sockaddr_in *receiver; /* receiver address */
 {

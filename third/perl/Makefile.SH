@@ -518,7 +518,7 @@ test-prep: miniperl perl preplibrary $(dynamic_ext)
 	cd t && (rm -f perl$(EXE_EXT); $(LNS) ../perl$(EXE_EXT) perl$(EXE_EXT))
 
 test check: test-prep
-	cd t && ./perl TEST </dev/tty
+	cd t && ./perl TEST
 
 # For testing without a tty or controling terminal. See t/op/stat.t
 test-notty: test-prep
@@ -530,7 +530,7 @@ minitest: miniperl
 	@echo "You may see some irrelevant test failures if you have been unable"
 	@echo "to build lib/Config.pm."
 	- cd t && (rm -f perl$(EXE_EXT); $(LNS) ../miniperl$(EXE_EXT) perl$(EXE_EXT)) \
-		&& ./perl TEST base/*.t comp/*.t cmd/*.t io/*.t op/*.t pragma/*.t </dev/tty
+		&& ./perl TEST base/*.t comp/*.t cmd/*.t io/*.t op/*.t pragma/*.t
 
 # Handy way to run perlbug -ok without having to install and run the
 # installed perlbug. We don't re-run the tests here - we trust the user.

@@ -1,5 +1,6 @@
 % This is OCRB10F_mf   (outline)
 %
+mode_setup;
 
 font_identifier:="OCRB10F";
 font_size 10pt#;

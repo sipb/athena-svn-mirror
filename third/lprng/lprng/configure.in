@@ -54,9 +54,9 @@ dnl want the user informed during the configure process where stuff is going
 dnl
 AC_MSG_CHECKING(where to install the lpd binary)
 AC_ARG_WITH(lpddir,
-[  --with-lpddir=DIR       where to install the lpd binary.  default: \$(bindir)],
+[  --with-lpddir=DIR       where to install the lpd binary.  default: \$(sbindir)],
 	LPRNGLPDDIR=$withval,
-	LPRNGLPDDIR='${bindir}'
+	LPRNGLPDDIR='${sbindir}'
 )
 
 AC_MSG_RESULT($LPRNGLPDDIR)
@@ -78,10 +78,10 @@ dnl
 AC_MSG_CHECKING(where to install the LPRng administrative commands)
 AC_ARG_WITH(admindir,
 [  --with-admindir=DIR     where to install the administrative commands, like
-                          checkpc, lpc, etc.                default: \$(bindir)]
+                          checkpc, lpc, etc.                default: \$(sbindir)]
 ,
 	LPRNGADMINDIR=$withval,
-	LPRNGADMINDIR='${bindir}'
+	LPRNGADMINDIR='${sbindir}'
 )
 
 AC_MSG_RESULT($LPRNGADMINDIR)
@@ -257,8 +257,8 @@ AC_CHECK_LIB(krb5, krb5_init_context,
 	[LIBS="$LIBS -lkrb5 -lcrypto -lcom_err"], , -lcrypto -lcom_err)
 
 dnl Kerberos 4
-AC_CHECK_LIB(krb, krb_recvauth,
-	[LIBS="$LIBS -lkrb -ldes"], , -ldes )
+AC_CHECK_LIB(krb4, krb_recvauth,
+	[LIBS="$LIBS -lkrb4 -ldes425"], , -ldes425 )
 
 dnl **** end library checks
 
@@ -266,6 +266,11 @@ dnl **** force libraries for some odd systems the the above did not find
 case $target_os in
 	 mips-sni* )
 		LIBS="$LIBS -lcurses";
+		;;
+	 irix* )
+		dnl Kerberos V
+		AC_CHECK_LIB(krb5, krb5_init_context,
+		    [LIBS="$LIBS -lkrb5 -lcrypto -lcom_err"], , -lcrypto -lcom_err)
 		;;
 esac
 

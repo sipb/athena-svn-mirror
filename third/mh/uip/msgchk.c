@@ -1,6 +1,6 @@
 /* msgchk.c - check for mail */
 #ifndef	lint
-static char ident[] = "@(#)$Id: msgchk.c,v 1.1.1.1 1996-10-07 07:14:18 ghudson Exp $";
+static char ident[] = "@(#)$Id: msgchk.c,v 1.2 1998-04-28 18:24:11 ghudson Exp $";
 #endif	/* lint */
 
 #include "../h/mh.h"
@@ -200,7 +200,8 @@ char   *argv[];
 
 /*  */
 #ifdef	POP
-    if (!host || !*host) {	/* -host not specified by user */
+    /* If MAILDROP isn't set, make sure a pop host is set. */
+    if ((!host || !*host) && !getenv("MAILDROP")) {
 #ifdef HESIOD
 	/*
 	 * Scheme is:

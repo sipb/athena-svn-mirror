@@ -1,7 +1,7 @@
 #
 # Makefile for top level of nmh distribution
 #
-# $Id: Makefile.in,v 1.1.1.1 1999-02-07 18:14:05 danw Exp $
+# $Id: Makefile.in,v 1.4 1999-04-18 15:19:49 ghudson Exp $
 #
 
 # nmh version
@@ -26,10 +26,10 @@ exec_prefix = @exec_prefix@
 bindir      = @bindir@
 
 # location of support binaries and scripts
-libdir      = @libdir@
+libdir      = @libexecdir@
 
 # location of nmh configuration and formats files
-etcdir      = @sysconfdir@
+etcdir      = /usr/athena/etc
 
 # location of man pages
 mandir      = @mandir@
@@ -57,7 +57,7 @@ LIBS     = @LIBS@
 
 # flags passed to recursive makes in subdirectories
 MAKEDEFS = CC='$(CC)' CPPFLAGS='$(CPPFLAGS)' DEFS='$(DEFS)' \
-CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)' LIBS='$(LIBS)' \
+CFLAGS='$(CFLAGS)' LDFLAGS='$(LDFLAGS)' LIBS='$(LIBS)' DESTDIR='$(DESTDIR)' \
 prefix='$(prefix)' exec_prefix='$(exec_prefix)' bindir='$(bindir)' \
 etcdir='$(etcdir)' libdir='$(libdir)' mandir='$(mandir)' \
 mailspool='$(mailspool)' sendmailpath='$(sendmailpath)' \
@@ -134,11 +134,6 @@ configure: configure.in aclocal.m4
 config.h: stamp-h
 stamp-h: config.h.in config.status
 	CONFIG_FILES= CONFIG_HEADERS=config.h ./config.status
-
-config.h.in: stamp-h.in
-stamp-h.in: configure.in acconfig.h aclocal.m4
-	cd $(srcdir) && autoheader
-	echo > $@
 
 # rebuild all autoconf files
 reset:

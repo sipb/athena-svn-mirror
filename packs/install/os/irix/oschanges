@@ -1,0 +1,126 @@
+#!/bin/sh
+
+# Get standard options from command line or defaults.
+. ais-options
+
+localize()
+{
+    mv $1 $1.symlink
+    if [ $? -eq 0 ]; then
+	cp -p $1.symlink $1
+	if [ $? -eq 0 ]; then
+	    rm -f $1.symlink
+	else
+	    echo "localize: copying file for $1 failed"
+	    mv $1.symlink $1
+	fi
+    else
+	echo "localize: renaming $1 failed"
+    fi
+}
+
+# Athena "customizations" to OS. Need to be done whenever inst updates
+# the OS. This is stuff that can't be done by track. This code is needed
+# both by the installation software and the update software.
+
+# SGI's getty runs scheme instead of /usr/bin/login, if it exists.
+# We don't want this, so we move it out of the way if we have just
+# installed the SGI version.  (The showfiles command used here will
+# only output something if the scheme file matches what is in the
+# inst database).
+scheme=/usr/lib/iaf/scheme
+if [ -f ${AIS_ROOT}$scheme \
+     -a -n "`showfiles -r ${AIS_ROOT} -u -- $scheme`" ]; then
+    mv ${AIS_ROOT}$scheme ${AIS_ROOT}$scheme.old
+fi
+
+# Midi startup doesn't have an /etc/config option. Sigh.
+# Note that for rc?.d scripts, we use test -l instead of -f. This
+# is because sometimes there are absolute symlinks involved, while
+# absolute paths during an install really live under ${AIS_ROOT},
+# so that test -f may fail even if there is a link there.
+if [ -l ${AIS_ROOT}/etc/rc2.d/S98midi ]; then
+    mv ${AIS_ROOT}/etc/rc2.d/S98midi ${AIS_ROOT}/etc/rc2.d/s98midi
+fi
+
+if [ -l ${AIS_ROOT}/etc/rc0.d/K02midi ]; then
+    mv ${AIS_ROOT}/etc/rc0.d/K02midi ${AIS_ROOT}/etc/rc0.d/k02midi
+fi
+
+# ns_admin runs a config script (and therefore makes noise) whether
+# its /etc/config file shuts it off or not. SIGH.
+if [ -l ${AIS_ROOT}/etc/rc2.d/S60ns_admin ]; then
+    mv ${AIS_ROOT}/etc/rc2.d/S60ns_admin ${AIS_ROOT}/etc/rc2.d/s60ns_admin
+fi
+
+if [ -l ${AIS_ROOT}/etc/rc0.d/K30ns_admin ]; then
+    mv ${AIS_ROOT}/etc/rc0.d/K30ns_admin ${AIS_ROOT}/etc/rc0.d/k30ns_admin
+fi
+
+# So, setsym and all of the objects in IP*boot need to be installed
+# locally for the proper functioning of autoconfig. Or, more
+# specifically, to enable autoconfig to function well enough to tweak
+# all the devices. Or, more specifically, to enable autoconfig to
+# function well enough to tweak the camera device. Because the camera
+# doesn't work unless you've run autoconfig since you last booted. So
+# the only reason I'm doing this hack at the moment is so that the
+# camera will work. (Actually, setsym is not needed under 6.2, but
+# what the heck.)
+localize ${AIS_ROOT}/usr/sbin/setsym
+
+sysgendir=${AIS_ROOT}/usr/cpu/sysgen/${AIS_CPUBOARD}boot
+for i in `find $sysgendir -follow -fstype afs -print`; do
+    localize $i
+done
+
+case ${AIS_OSVERSION} in
+    6.2)
+	# bsdlpr startup doesn't have an /etc/config option in 6.2
+	if [ -l ${AIS_ROOT}/etc/rc2.d/S61bsdlpr ]; then
+	    mv ${AIS_ROOT}/etc/rc2.d/S61bsdlpr ${AIS_ROOT}/etc/rc2.d/s61bsdlpr
+	fi
+	if [ -l ${AIS_ROOT}/etc/rc0.d/K26bsdlpr ]; then
+	    mv ${AIS_ROOT}/etc/rc0.d/K26bsdlpr ${AIS_ROOT}/etc/rc0.d/k26bsdlpr
+	fi
+	;;
+
+    6.3)
+	# This particular file is the only nonlocal one in sysgen/system. Its
+	# absence causes autoconfig to complain at boot time, though doesn't
+	# prevent the camera from working.
+	localize ${AIS_ROOT}/var/sysgen/system/fddi.sm
+	;;
+
+    6.5)
+	# iforls and iforncs don't have /etc/config options
+	if [ -l ${AIS_ROOT}/etc/rc2.d/S71iforls ]; then
+	    mv ${AIS_ROOT}/etc/rc2.d/S71iforls ${AIS_ROOT}/etc/rc2.d/s71iforls
+	fi
+	if [ -l ${AIS_ROOT}/etc/rc0.d/K26iforls ]; then
+	    mv ${AIS_ROOT}/etc/rc0.d/K26iforls ${AIS_ROOT}/etc/rc0.d/k26iforls
+	fi
+	if [ -l ${AIS_ROOT}/etc/rc2.d/S72iforncs ]; then
+	    mv ${AIS_ROOT}/etc/rc2.d/S72iforncs \
+		    ${AIS_ROOT}/etc/rc2.d/s72iforncs
+	fi
+	if [ -l ${AIS_ROOT}/etc/rc0.d/K27iforncs ]; then
+	    mv ${AIS_ROOT}/etc/rc0.d/K27iforncs \
+		    ${AIS_ROOT}/etc/rc0.d/k27iforncs
+	fi
+	# motif_eoe.sw.eoe invokes a script mksymlinks as an exit
+	# command, which leaves the following superseded directory
+	# around.  Clean it up.
+	rm -rf ${AIS_ROOT}/usr/include/Vk.O
+	;;
+esac
+
+# On an O2, set the video refresh rate to 75 hz, if not already set.
+if [ "${AIS_CPUBOARD}" = "IP32" ]; then
+    if [ ! -f ${AIS_ROOT}/var/X11/Xvc/Crm0_TimingTable ]; then
+	# setmon -x actually modifies a file in the filesystem, hence
+	# the chroot.
+	chroot ${AIS_ROOT} /usr/gfx/setmon -x 75hz
+    fi
+fi
+
+exit 0

@@ -1,7 +1,7 @@
 /* ftpsbr.c - simple FTP client library (why doesn't BSD have one?!?) */
 
 #ifndef	lint
-static char ident[] = "@(#)$Id: ftpsbr.c,v 1.1.1.1 1996-10-07 07:14:12 ghudson Exp $";
+static char ident[] = "@(#)$Id: ftpsbr.c,v 1.2 1997-12-14 00:33:05 ghudson Exp $";
 #endif
 
 #include "../h/mh.h"
@@ -12,6 +12,7 @@ static char ident[] = "@(#)$Id: ftpsbr.c,v 1.1.1.1 1996-10-07 07:14:12 ghudson E
 #undef NULLVP          /* stdio.h */
 #endif
 #include <stdio.h>
+#include <errno.h>
 #include <arpa/ftp.h>
 #ifdef __STDC__
 #include <stdarg.h>
@@ -66,11 +67,6 @@ struct hostent *gethostbystring ();
 
 /*  */
 
-extern	int	errno;
-#ifndef	BSD44
-extern	int	sys_nerr;
-extern	char   *sys_errlist[];
-#endif
 
 
 #define	start_tcp_client(sock,priv) \
@@ -161,10 +157,7 @@ va_list	ap;
 	    (void) sprintf (bp, " %s: ", what);
 	    bp += strlen (bp);
 	}
-	if (0 < eindex && eindex < sys_nerr)
-	    (void) strcpy (bp, sys_errlist[eindex]);
-	else
-	    (void) sprintf (bp, "Error %d", eindex);
+	strcpy (bp, strerror (eindex));
 	bp += strlen (bp);
     }
 

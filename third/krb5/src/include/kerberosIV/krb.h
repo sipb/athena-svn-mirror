@@ -136,7 +136,7 @@ typedef struct ktext KTEXT_ST;
 /* Maximum alloable clock skew in seconds */
 #define 	CLOCK_SKEW	5*60
 /* Filename for readservkey */
-#define		KEYFILE		((char*)krb__get_srvtabname("/etc/srvtab"))
+#define		KEYFILE	     ((char*)krb__get_srvtabname("/etc/athena/srvtab"))
 
 /* Structure definition for rd_ap_req */
 
@@ -478,4 +478,199 @@ typedef int (*key_proc_type) PROTOTYPE ((char *, char *, char *,
 typedef int (*decrypt_tkt_type) PROTOTYPE ((char *, char *, char *, char *,
 				     key_proc_type, KTEXT *));
 #define DECRYPT_TKT_TYPE_DEFINED
+
+#ifndef _KRB4_PROTO_H__
+#define _KRB4_PROTO_H__
+
+/*
+ * Function Prototypes for Kerberos V4.
+ */
+
+#include <stdio.h>
+struct sockaddr_in;
+
+/* add_ticket.c */
+int add_ticket PROTOTYPE((KTEXT , int , char *, int , char *, char *, char *, int , KTEXT ));
+
+/* cr_err_reply.c */
+void cr_err_reply PROTOTYPE((KTEXT , char *, char *, char *, u_long , u_long , char *));
+
+/* create_auth_reply.c */
+KTEXT create_auth_reply PROTOTYPE((char *, char *, char *, long , int , unsigned long , int , KTEXT ));
+
+/* create_ciph.c */
+int create_ciph PROTOTYPE((KTEXT , C_Block , char *, char *, char *, unsigned long , int , KTEXT , unsigned long , C_Block ));
+
+/* create_death_packet.c */
+KTEXT krb_create_death_packet PROTOTYPE((char *));
+
+/* debug_decl.c */
+
+/* decomp_ticket.c */
+int decomp_ticket PROTOTYPE((KTEXT , unsigned char *, char *, char *, char *, unsigned KRB4_32 *, C_Block , int *, unsigned KRB4_32 *, char *, char *, C_Block , Key_schedule ));
+
+/* dest_tkt.c */
+int dest_tkt PROTOTYPE((void ));
+
+/* extract_ticket.c */
+int extract_ticket PROTOTYPE((KTEXT , int , char *, int *, int *, char *, KTEXT ));
+
+/* fgetst.c */
+int fgetst PROTOTYPE((FILE *, char *, int ));
+
+/* get_ad_tkt.c */
+int get_ad_tkt PROTOTYPE((char *, char *, char *, int ));
+
+/* get_admhst.c */
+int krb_get_admhst PROTOTYPE((char *, char *, int ));
+
+/* get_cred.c */
+int krb_get_cred PROTOTYPE((char *, char *, char *, CREDENTIALS *));
+
+/* get_in_tkt.c */
+int krb_get_pw_in_tkt PROTOTYPE((char *, char *, char *, char *, char *, int , char *));
+int placebo_read_password PROTOTYPE((des_cblock *, char *, int ));
+int placebo_read_pw_string PROTOTYPE((char *, int , char *, int ));
+
+/* get_krbhst.c */
+int krb_get_krbhst PROTOTYPE((char *, char *, int ));
+
+/* get_krbrlm.c */
+int krb_get_lrealm PROTOTYPE((char *, int ));
+
+/* get_phost.c */
+char *krb_get_phost PROTOTYPE((char *));
+
+/* get_pw_tkt.c */
+int get_pw_tkt PROTOTYPE((char *, char *, char *, char *));
+
+/* get_request.c */
+int get_request PROTOTYPE((KTEXT , int , char **, char **));
+
+/* get_svc_in_tkt.c */
+int krb_get_svc_in_tkt PROTOTYPE((char *, char *, char *, char *, char *, int , char *));
+
+/* get_tf_fullname.c */
+int krb_get_tf_fullname PROTOTYPE((char *, char *, char *, char *));
+
+/* get_tf_realm.c */
+int krb_get_tf_realm PROTOTYPE((char *, char *));
+
+/* getrealm.c */
+char *krb_realmofhost PROTOTYPE((char *));
+
+/* getst.c */
+int getst PROTOTYPE((int , char *, int ));
+
+/* in_tkt.c */
+int in_tkt PROTOTYPE((char *, char *));
+
+/* k_gethostname.c */
+int k_gethostname PROTOTYPE((char *, int ));
+
+/* klog.c */
+char *klog PROTOTYPE((int , char *, char * , char * , char * , char * , char * , char * , char * , char * , char * , char * ));
+int kset_logfile PROTOTYPE((char *));
+
+/* kname_parse.c */
+int kname_parse PROTOTYPE((char *, char *, char *, char *));
+int k_isname PROTOTYPE((char *));
+int k_isinst PROTOTYPE((char *));
+int k_isrealm PROTOTYPE((char *));
+
+/* kntoln.c */
+int krb_kntoln PROTOTYPE((AUTH_DAT *, char *));
+
+/* krb_err_txt.c */
+
+/* krb_get_in_tkt.c */
+int krb_get_in_tkt PROTOTYPE((char *, char *, char *, char *, char *, int , int (*key_proc )(), int (*decrypt_proc )(), char *));
+
+/* kuserok.c */
+int kuserok PROTOTYPE((AUTH_DAT *, char *));
+
+/* mk_err.c */
+long krb_mk_err PROTOTYPE((u_char *, long , char *));
+
+/* mk_priv.c */
+long krb_mk_priv PROTOTYPE((u_char *, u_char *, u_long , Key_schedule , C_Block , struct sockaddr_in *, struct sockaddr_in *));
+
+/* mk_req.c */
+int krb_mk_req PROTOTYPE((KTEXT , char *, char *, char *, long ));
+int krb_set_lifetime PROTOTYPE((int ));
+
+/* mk_safe.c */
+long krb_mk_safe PROTOTYPE((u_char *, u_char *, u_long , C_Block *, struct sockaddr_in *, struct sockaddr_in *));
+
+/* month_sname.c */
+char *month_sname PROTOTYPE((int ));
+
+/* netread.c */
+int krb_net_read PROTOTYPE((int , char *, int ));
+
+/* netwrite.c */
+int krb_net_write PROTOTYPE((int , char *, int ));
+
+/* one.c */
+
+/* pkt_cipher.c */
+KTEXT pkt_cipher PROTOTYPE((KTEXT ));
+
+/* pkt_clen.c */
+int pkt_clen PROTOTYPE((KTEXT ));
+
+/* rd_err.c */
+int krb_rd_err PROTOTYPE((u_char *, u_long , long *, MSG_DAT *));
+
+/* rd_priv.c */
+long krb_rd_priv PROTOTYPE((u_char *, u_long , Key_schedule , C_Block *, struct sockaddr_in *, struct sockaddr_in *, MSG_DAT *));
+
+/* rd_req.c */
+int krb_set_key PROTOTYPE((char *, int ));
+int krb_rd_req PROTOTYPE((KTEXT , char *, char *, unsigned KRB4_32 , AUTH_DAT *, char *));
+
+/* rd_safe.c */
+long krb_rd_safe PROTOTYPE((u_char *, u_long , C_Block *, struct sockaddr_in *, struct sockaddr_in *, MSG_DAT *));
+
+/* read_service_key.c */
+int read_service_key PROTOTYPE((char *, char *, char *, int , char *, char *));
+
+/* recvauth.c */
+int krb_recvauth PROTOTYPE((long , int , KTEXT , char *, char *, struct sockaddr_in *, struct sockaddr_in *, AUTH_DAT *, char *, Key_schedule , char *));
+
+/* save_credentials.c */
+int krb_save_credentials PROTOTYPE((char *, char *, char *, C_Block , int , int , KTEXT , long ));
+
+/* send_to_kdc.c */
+int send_to_kdc PROTOTYPE((KTEXT , KTEXT , char *));
+
+/* sendauth.c */
+int krb_sendauth PROTOTYPE((long , int , KTEXT , char *, char *, char *, u_long , MSG_DAT *, CREDENTIALS *, Key_schedule , struct sockaddr_in *, struct sockaddr_in *, char *));
+int krb_sendsvc PROTOTYPE((int , char *));
+
+/* stime.c */
+char *krb_stime PROTOTYPE((long *));
+
+/* tf_shm.c */
+int krb_shm_create PROTOTYPE((char *));
+int krb_is_diskless PROTOTYPE((void ));
+int krb_shm_dest PROTOTYPE((char *));
+
+/* tf_util.c */
+int tf_init PROTOTYPE((char *, int ));
+int tf_get_pname PROTOTYPE((char *));
+int tf_get_pinst PROTOTYPE((char *));
+int tf_get_cred PROTOTYPE((CREDENTIALS *));
+int tf_close PROTOTYPE((void ));
+int tf_save_cred PROTOTYPE((char *, char *, char *, C_Block , int , int , KTEXT , long ));
+
+/* tkt_string.c */
+char *tkt_string PROTOTYPE((void ));
+void krb_set_tkt_string PROTOTYPE((char *));
+
+/* util.c */
+void ad_print PROTOTYPE((AUTH_DAT *));
+int placebo_cblock_print PROTOTYPE((des_cblock ));
+
+#endif /*  _KRB4_PROTO_H__ */
 #endif	/* KRB_DEFS */

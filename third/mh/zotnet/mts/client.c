@@ -1,6 +1,6 @@
 /* client.c - connect to a server */
 #ifndef	lint
-static char ident[] = "@(#)$Id: client.c,v 1.1.1.1 1996-10-07 07:14:31 ghudson Exp $";
+static char ident[] = "@(#)$Id: client.c,v 1.4 1998-04-09 23:31:41 ghudson Exp $";
 #endif	/* lint */
 
 #if	defined(SYS5) && defined(AUX)
@@ -52,11 +52,6 @@ static Key_schedule schedule;
 
 /*  */
 
-extern int errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-#endif
 
 
 struct addrent {
@@ -221,6 +216,7 @@ register char *response;
     register struct sockaddr_in *isock = &in_socket;
 #ifdef KPOP
     int rem;
+    char *instance;
 #endif	/* KPOP */
 
     for (ap = nets; ap < ne; ap++)
@@ -267,13 +263,20 @@ register char *response;
 
 #ifdef KPOP
     if (kservice) {	/* "pop" */
+	instance = strdup(hp->h_name);
+	if (instance == NULL) {
+	    close(sd);
+	    (void) strcpy(response, "Out of memory.");
+	    return OOPS2;
+	}
 	ticket = (KTEXT)malloc( sizeof(KTEXT_ST) );
-	rem = krb_sendauth(0L, sd, ticket, kservice, hp->h_name,
-			   (char *) krb_realmofhost(hp->h_name),
+	rem = krb_sendauth(0L, sd, ticket, kservice, instance,
+			   (char *) krb_realmofhost(instance),
 			   (unsigned long)0, &msg_data, &cred, schedule,
 			   (struct sockaddr_in *)NULL,
 			   (struct sockaddr_in *)NULL,
 			   "KPOPV0.1");
+	free(instance);
 	if (rem != KSUCCESS) {
 	    close(sd);
 	    (void) strcpy(response, "Post office refused connection: ");
@@ -307,8 +310,7 @@ register char *response;
 
     if ((sd = socket (AF_INET, SOCK_STREAM, 0)) == NOTOK) {
 	(void) sprintf (response, "unable to create socket: %s",
-		errno > 0 && errno < sys_nerr ? sys_errlist[errno]
-		: "unknown error");
+		strerror (errno));
 	return NOTOK;
     }
 #ifdef KPOP
@@ -336,8 +338,7 @@ register char *response;
 
 	    default: 
 		(void) sprintf (response, "unable to bind socket: %s",
-			errno > 0 && errno < sys_nerr ? sys_errlist[errno]
-			: "unknown error");
+			strerror (errno));
 		return NOTOK;
 	}
     }
@@ -358,13 +359,6 @@ int	net;
 /*  */
 
 /* taken from ISODE's compat/internet.c */
-
-#ifndef	DG
-u_long	inet_addr ();
-#else
-struct in_addr inet_addr ();
-#endif
-
 
 static char *empty = NULL;
 #ifdef	h_addr

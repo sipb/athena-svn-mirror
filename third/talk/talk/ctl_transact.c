@@ -65,6 +65,7 @@ ctl_transact(target, msg, type, rp)
 	struct timeval wait;
 
 	msg.type = type;
+	daemon_addr.sin_family = AF_INET;
 	daemon_addr.sin_addr = target;
 	daemon_addr.sin_port = daemon_port;
 	ctl_mask = 1 << ctl_sockt;
@@ -114,5 +115,5 @@ ctl_transact(target, msg, type, rp)
 		    rp->type != type));
 	} while (rp->vers != TALK_VERSION || rp->type != type);
 	rp->id_num = ntohl(rp->id_num);
-	rp->addr.sa_family = ntohs(rp->addr.sa_family);
+	rp->addr.family = ntohs(rp->addr.family);
 }

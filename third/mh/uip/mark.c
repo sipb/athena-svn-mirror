@@ -1,6 +1,6 @@
 /* mark.c - mark messages */
 #ifndef	lint
-static char ident[] = "@(#)$Id: mark.c,v 1.1.1.1 1996-10-07 07:14:13 ghudson Exp $";
+static char ident[] = "@(#)$Id: mark.c,v 1.2 1996-10-13 18:45:00 ghudson Exp $";
 #endif	/* lint */
 
 #include "../h/mh.h"
@@ -237,11 +237,16 @@ char  **argv;
 	int bits = FFATTRSLOT;
 
 	if (seqp == 0)
-	    for (i = 0; mp -> msgattrs[i]; i++)
-		printf ("%s%s: %s\n", mp -> msgattrs[i],
-			mp -> attrstats & (1 << (bits + i))
-			    ? " (private)" : "",
-			m_seq (mp, mp -> msgattrs[i]));
+	    for (i = 0; mp -> msgattrs[i]; i++) {
+		char *val;
+
+		val = m_seq (mp, mp -> msgattrs[i]);
+		if (val)
+		    printf ("%s%s: %s\n", mp -> msgattrs[i],
+			    mp -> attrstats & (1 << (bits + i))
+				? " (private)" : "",
+			    val);
+	    }
 	else
 	    for (seqp = 0; seqs[seqp]; seqp++)
 		printf ("%s: %s\n", seqs[seqp], m_seq (mp, seqs[seqp]));

@@ -35,14 +35,9 @@ extern char *blurb(void);
 
 #include <sys/stat.h>
 
-
-/* blargh */
-#undef  Bool
-#undef  True
-#undef  False
-#define Bool  int
-#define True  1
-#define False 0
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include "prefs.h"
 
 #undef countof
 #define countof(x) (sizeof((x))/sizeof(*(x)))
@@ -203,7 +198,7 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
 
 
 Bool 
-pam_lock_init (int argc, char **argv, Bool verbose_p)
+pam_lock_init (saver_preferences *p)
 {
   /* We have nothing to do at init-time.
      However, we might as well do some error checking.

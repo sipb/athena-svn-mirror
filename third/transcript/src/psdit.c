@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987,1990,1991,1992 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/psdit.c,v 1.1.1.1 1996-10-07 20:25:51 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/psdit.c,v 1.2 1997-10-30 01:24:23 ghudson Exp $";
 #endif
 /* psdit.c
  *
@@ -18,6 +18,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/sr
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.1.1.1  1996/10/07 20:25:51  ghudson
+ * Import of Transcript 4.1
+ *
  * Revision 3.6  1993/12/21  23:43:24  snichols
  * missed one of those bogus escapes.
  *
@@ -563,7 +566,7 @@ register FILE *fp;
 		lastcmd = CPUT;
 		break;
 	    case 'C': 
-		fscanf(fp, "%s", str);
+		fscanf(fp, "%99s", str);
 		put1s(str);
 		lastcmd = CPUT;
 		break;
@@ -607,7 +610,7 @@ register FILE *fp;
 		lastcmd = FNT;
 		break;
 	    case 'f': 
-		fscanf (fp, "%s", str);
+		fscanf (fp, "%99s", str);
 		setfont (t_font (str));
 		lastcmd = FNT;
 		break;
@@ -730,7 +733,7 @@ FILE *fp;
     char largebuf[128];
     char *nl;
 
-    fscanf (fp, "%s", str);
+    fscanf (fp, "%19s", str);
     switch (str[0]) {		/* crude for now */
 	case 'i': 		/* initialize */
 	    fileinit ();
@@ -738,7 +741,7 @@ FILE *fp;
 	    lastcmd = NONE;
 	    break;
 	case 'T': 		/* device name */
-	    fscanf (fp, "%s", devname);
+	    fscanf (fp, "%19s", devname);
 	    if (strcmp (devname, "psc")) {
 		fprintf(stderr,"%s: device not psc\n",prog);
 		exit(2);
@@ -774,7 +777,7 @@ FILE *fp;
 		    break;
 		case 'f' :
 		    FlushShow(0);MoveTo();DoMove();
-		    if (fscanf(fp, "%s", largebuf) == 1) {
+		    if (fscanf(fp, "%127s", largebuf) == 1) {
 			nl = strchr(largebuf, '\n');
 			if (nl) *nl = '\0';
 			includefile(largebuf);
@@ -803,7 +806,7 @@ FILE *fp;
 	    lastcmd = NONE;
 	    break;
 	case 'f': 		/* font used */
-	    fscanf (fp, "%d %s", &n, str);
+	    fscanf (fp, "%d %19s", &n, str);
 	    fgets (buf, sizeof buf, fp);/* in case theres a filename */
 	    ungetc ('\n', fp);	/* fgets goes too far */
 	    str1[0] = 0;	/* in case there is nothing to come in */
@@ -1049,7 +1052,7 @@ char *s, *s1;
 	pexit(prog, 2);
     }
 
-    fscanf(ptrfile, "%s", Adobefont);
+    fscanf(ptrfile, "%255s", Adobefont);
     FlushShow(0);
     if (!strcmp(Adobefont, "DIThacks"))
 	printf("%d(%s)xf %d f\n", n, Adobefont, n);

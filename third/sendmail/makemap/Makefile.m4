@@ -42,6 +42,7 @@ LIBS=	ifdef(`confLIBS', `confLIBS')
 
 # location of makemap binary (usually /usr/sbin or /usr/etc)
 SBINDIR=${DESTDIR}ifdef(`confSBINDIR', `confSBINDIR', `/usr/sbin')
+ATHSBINDIR=athSBINDIR
 
 # additional .o files needed
 OBJADD=	ifdef(`confOBJADD', `confOBJADD')
@@ -95,14 +96,18 @@ makemap.${MAN8SRC}: makemap.8
 install: install-makemap install-docs
 
 install-makemap: makemap
-	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} makemap ${SBINDIR}
+	mkdir -p ${DESTDIR}${ATHSBINDIR}
+	mkdir -p ${SBINDIR}
+	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} makemap ${DESTDIR}${ATHSBINDIR}
+	rm -f ${SBINDIR}/makemap
+	ln -s ${ATHSBINDIR}/makemap ${SBINDIR}/makemap
 
 install-docs: makemap.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
 `	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} makemap.${MAN8SRC} ${MAN8}/makemap.${MAN8EXT}')
 
 clean:
-	rm -f ${OBJS} makemap makemap.${MAN8SRC}
+	rm -f ${OBJS} makemap
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE', 

@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.3 1999-03-16 19:44:52 danw Exp $
+# $Id: Makefile,v 1.7 1999-03-21 21:02:37 ghudson Exp $
 
 DESTDIR=
 CC= cc
@@ -69,6 +69,9 @@ OBJS=	db_dump.${O} db_load.${O} db_lookup.${O} db_save.${O} db_update.${O} \
 	ns_udp.${O} ns_config.${O} ns_update.${O} ns_ixfr.${O} ns_signal.${O} \
 	ns_sort.${O}
 
+.SUFFIXES:
+.SUFFIXES: .c .o
+
 all: ${PROG}${EXE} pathnames${EXE}
 
 ${PROG}${EXE}: pathnames.h ${OBJS} ${LIBBIND} Makefile tmp_version.${O}
@@ -122,7 +125,7 @@ ${DESTDIR}${DESTSBIN}:
 	mkdir -p ${DESTDIR}${DESTSBIN}
 
 install: ${DESTDIR}${DESTSBIN} ${PROG}${EXE}
-	${INSTALL} ${STRIP} -c ${INSTALL_EXEC} -m 755 ${PROG}${EXE} ${DESTDIR}${DESTSBIN}/${PROG}${EXE}
+	${INSTALL} -c -m 755 ${PROG}${EXE} ${DESTDIR}${DESTSBIN}/${PROG}${EXE}
 
 links: FRC
 	@ln -s SRC/*.[chy] SRC/test .; rm -f ns_parser.[ch]

@@ -1,22 +1,20 @@
 /* closefds.c - close-up fd:s */
 #ifndef	lint
-static char ident[] = "@(#)$Id: closefds.c,v 1.1.1.1 1996-10-07 07:13:49 ghudson Exp $";
+static char ident[] = "@(#)$Id: closefds.c,v 1.2 1999-01-29 18:15:18 ghudson Exp $";
 #endif	/* lint */
 
 #include "../h/mh.h"
-#ifndef	BSD42
 #include <stdio.h>
-#endif	/* not BSD42 */
 
 
 void	closefds (i)
 register int	i;
 {
-#ifndef	BSD42
+#ifdef	_NFILE
     int     nbits = _NFILE;
-#else	/* BSD42 */
+#else
     int     nbits = getdtablesize ();
-#endif	/* BSD42 */
+#endif
 
     for (; i < nbits; i++)
 #ifdef	OVERHEAD

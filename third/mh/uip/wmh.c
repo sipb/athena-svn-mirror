@@ -1,6 +1,6 @@
 /* wmh.c - window front-end to mh */
 #ifndef	lint
-static char ident[] = "@(#)$Id: wmh.c,v 1.1.1.1 1996-10-07 07:14:26 ghudson Exp $";
+static char ident[] = "@(#)$Id: wmh.c,v 1.2 1997-12-14 00:33:09 ghudson Exp $";
 #endif	lint
 
 /* TODO:
@@ -143,11 +143,6 @@ int	ADJser (), REFser ();
 
 
 					/* MISCELLANY */
-extern int  errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-#endif
 
 void	adorn ();
 
@@ -1433,12 +1428,7 @@ char   *what,
 	    iov -> iov_len = strlen (iov -> iov_base = ": ");
 	    iov++;
 	}
-	if (eindex > 0 && eindex < sys_nerr)
-	    iov -> iov_len = strlen (iov -> iov_base = sys_errlist[eindex]);
-	else {
-	    (void) sprintf (err, "Error %d", eindex);
-	    iov -> iov_len = strlen (iov -> iov_base = err);
-	}
+	iov -> iov_len = strlen (iov -> iov_base = strerror (eindex));
 	iov++;
     }
     if (tail && *tail) {

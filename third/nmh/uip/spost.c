@@ -5,7 +5,7 @@
  * This is a simpler, faster, replacement for "post" for use
  * when "sendmail" is the transport system.
  *
- * $Id: spost.c,v 1.1.1.1 1999-02-07 18:14:17 danw Exp $
+ * $Id: spost.c,v 1.2 1999-06-02 16:54:09 danw Exp $
  */
 
 #include <h/mh.h>
@@ -311,8 +311,15 @@ main (int argc, char **argv)
 		    continue;
 
 		case LIBSW:
+		    if (!(cp = *argp++) || *cp == '-')
+			adios (NULL, "missing argument to %s", argp[-2]);
+		    /* create a minimal context */
+		    if (context_foil (cp) == -1)
+			done(1);
+		    continue;
+
 		case ANNOSW:
-		    /* -library & -idanno switch ignored */
+		    /* -idanno switch ignored */
 		    if (!(cp = *argp++) || *cp == '-')
 			adios (NULL, "missing argument to %s", argp[-2]);
 		    continue;

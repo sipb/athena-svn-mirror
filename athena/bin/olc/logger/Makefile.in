@@ -1,0 +1,59 @@
+# $Id: Makefile.in,v 1.1 1999-03-06 16:48:42 ghudson Exp $
+#
+# Copyright (C) 1999 by the Massachusetts Institute of Technology.
+# For copying and distribution information, see the file "mit-copyright.h".
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+
+CC=@CC@
+PURIFY=
+LD=${PURIFY} ${CC}
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@ -I@top_srcdir@/include
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=$(LOCAL_LIBS) @HESIOD_LIBS@ @KRB4_LIBS@ @LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+RANLIB=@RANLIB@
+
+LIB_SRCS=log.c
+LIB_OBJS=log.o
+
+SRCS=bbd.c
+OBJS=bbd.o
+
+all: liblogger.a bbd
+
+liblogger.a: $(LIB_OBJS)
+	ar cq $@ $(LIB_OBJS)
+	${RANLIB} $@
+
+bbd: $(OBJS)
+	${LD} ${LDFLAGS} $(OBJS) ${LIBS} -o $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+# we don't install the library anywhere, it's here only for our
+# private use in building the binaries.
+# the usage-logging binary isn't installed on the packs either.
+install:
+
+clean:
+	rm -f $(LIB_OBJS) $(OBJS) liblogger.a bbd
+
+distclean: clean
+	rm -f Makefile
+
+depend.in: Makefile.in
+	makedepend -f Makefile.in ${CPPFLAGS} ${DEFS} *.[ch]

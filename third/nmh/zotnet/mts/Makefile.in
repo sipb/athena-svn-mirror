@@ -1,7 +1,7 @@
 #
 # Makefile for zotnet/mts subdirectory
 #
-# $Id: Makefile.in,v 1.1.1.1 1999-02-07 18:14:11 danw Exp $
+# $Id: Makefile.in,v 1.2 1999-02-23 17:00:48 danw Exp $
 #
 
 SHELL = /bin/sh
@@ -27,8 +27,8 @@ HESIOD_INCLUDES = @HESIOD_INCLUDES@
 INCLUDES   = -I../.. -I$(srcdir) -I$(top_srcdir) $(KRB4_INCLUDES) $(HESIOD_INCLUDES)
 CONFIGDEFS = -DNMHETCDIR='"$(etcdir)"' -DMAILSPOOL='"$(mailspool)"' -DSENDMAILPATH='"$(sendmailpath)"'
 
-COMPILE  = $(CC) -c $(DEFS) $(INCLUDES) $(CFLAGS)
-COMPILE2 = $(CC) -c $(DEFS) $(CONFIGDEFS) $(INCLUDES) $(CFLAGS)
+COMPILE  = $(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDES) $(CFLAGS)
+COMPILE2 = $(CC) -c $(CPPFLAGS) $(DEFS) $(CONFIGDEFS) $(INCLUDES) $(CFLAGS)
 
 SED = sed
 

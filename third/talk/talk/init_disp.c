@@ -46,11 +46,9 @@ static char rcsid[] = "$NetBSD: init_disp.c,v 1.6 1994/12/09 02:14:17 jtc Exp $"
  */
 
 #include <sys/ioctl.h>
-#include <sys/ioctl_compat.h>
 
 #include <termios.h>
 #include <signal.h>
-#include <err.h>
 #include "talk.h"
 
 /* 
@@ -60,20 +58,25 @@ static char rcsid[] = "$NetBSD: init_disp.c,v 1.6 1994/12/09 02:14:17 jtc Exp $"
 init_display()
 {
 	void sig_sent();
-	struct sigvec sigv;
+	struct sigaction action;
 
-	if (initscr() == NULL)
-		errx(1, "Terminal type unset or lacking necessary features.");
-	(void) sigvec(SIGTSTP, (struct sigvec *)0, &sigv);
-	sigv.sv_mask |= sigmask(SIGALRM);
-	(void) sigvec(SIGTSTP, &sigv, (struct sigvec *)0);
+	if (initscr() == NULL) {
+		fprintf(stderr, "talk: Terminal type unset or lacking necessary features.\n");
+		exit(1);
+	}
+	sigaction(SIGTSTP, NULL, &action);
+	sigaddset(&action.sa_mask, SIGALRM);
+	sigaction(SIGTSTP, &action, NULL);
 	curses_initialized = 1;
 	clear();
 	refresh();
 	noecho();
 	crmode();
-	signal(SIGINT, sig_sent);
-	signal(SIGPIPE, sig_sent);
+	action.sa_handler = sig_sent;
+	sigemptyset(&action.sa_mask);
+	action.sa_flags = 0;
+	sigaction(SIGINT, &action, NULL);
+	sigaction(SIGPIPE, &action, NULL);
 	/* curses takes care of ^Z */
 	my_win.x_nlines = LINES / 2;
 	my_win.x_ncols = COLS;

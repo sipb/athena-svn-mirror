@@ -522,16 +522,20 @@ else {
     if (eval { setpwent(); getpwent(); 1 }) {
 	setpwent();
 	my @getpwent = getpwent();
-	die "getpwent: $!\n" unless (@getpwent);
-	test 136,(    not tainted $getpwent[0]
-	          and not tainted $getpwent[1]
-	          and not tainted $getpwent[2]
-	          and not tainted $getpwent[3]
-	          and not tainted $getpwent[4]
-	          and not tainted $getpwent[5]
-	          and     tainted $getpwent[6] # gecos
-	          and not tainted $getpwent[7]
-		  and not tainted $getpwent[8]);
+	if (@getpwent) {
+	    test 136,(    not tainted $getpwent[0]
+		      and not tainted $getpwent[1]
+		      and not tainted $getpwent[2]
+		      and not tainted $getpwent[3]
+		      and not tainted $getpwent[4]
+		      and not tainted $getpwent[5]
+		      and     tainted $getpwent[6] # gecos
+		      and not tainted $getpwent[7]
+		      and not tainted $getpwent[8]);
+	} else {
+	    print "# getpwent() returned no entry\n";
+	    print "ok 136\n";
+	}
 	endpwent();
     } else {
 	print "# getpwent() is not available\n";

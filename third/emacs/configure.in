@@ -731,6 +731,10 @@ case "${canonical}" in
   mips-sgi-irix4* )
     machine=iris4d opsys=irix4-0
   ;;
+  mips-sgi-irix6.5 )
+    machine=iris4d opsys=irix6-5
+    NON_GNU_CPP=/lib/cpp
+  ;;
   mips-sgi-irix6* )
     machine=iris4d opsys=irix6-0
     NON_GNU_CPP=/lib/cpp
@@ -1631,10 +1635,10 @@ if test "${with_kerberos+set}" = set; then
       AC_CHECK_LIB(gssapi_krb5,gss_init_sec_context)
     fi
   else
-    AC_CHECK_LIB(des, des_cbc_encrypt,,
-		 AC_CHECK_LIB(des425, des_cbc_encrypt))
-    AC_CHECK_LIB(krb, krb_get_cred,,
-		 AC_CHECK_LIB(krb4, krb_get_cred))
+    AC_CHECK_LIB(des425, des_cbc_encrypt,,
+		 AC_CHECK_LIB(des, des_cbc_encrypt))
+    AC_CHECK_LIB(krb4, krb_get_cred,,
+		 AC_CHECK_LIB(krb, krb_get_cred))
   fi
 
   if test "${with_kerberos5+set}" = set; then

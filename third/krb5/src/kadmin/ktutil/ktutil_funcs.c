@@ -182,29 +182,6 @@ krb5_error_code ktutil_write_keytab(context, list, name)
 
 #ifdef KRB5_KRB4_COMPAT
 /*
- * getst() takes a file pointer, a string and a count.  It reads from
- * the file until either it has read "count" characters, or until it
- * reads a null byte.  When finished, what has been read exists in the
- * given string "s".  If "count" characters were actually read, the
- * last is changed to a null, so the returned string is always null-
- * terminated.  getst() returns the number of characters read,
- * including the null terminator.
- */
-
-int getst(fp, s, n)
-    FILE *fp;
-    register char *s;
-    int n;
-{
-    register count = n;
-    while (fread(s, 1, 1, fp) > 0 && --count)
-        if (*s++ == '\0')
-            return (n - count);
-    *s = '\0';
-    return (n - count);
-}
-
-/*
  * Read in a named krb4 srvtab and append to list.  Allocate new list
  * if needed.
  */
@@ -241,9 +218,9 @@ krb5_error_code ktutil_read_srvtab(context, name, list)
 	memset(sname, 0, sizeof (sname));
 	memset(sinst, 0, sizeof (sinst));
 	memset(srealm, 0, sizeof (srealm));
-	if (!(getst(fp, sname, SNAME_SZ) > 0 &&
-	      getst(fp, sinst, INST_SZ) > 0 &&
-	      getst(fp, srealm, REALM_SZ) > 0 &&
+	if (!(fgetst(fp, sname, SNAME_SZ) > 0 &&
+	      fgetst(fp, sinst, INST_SZ) > 0 &&
+	      fgetst(fp, srealm, REALM_SZ) > 0 &&
 	      fread(&kvno, 1, 1, fp) > 0 &&
 	      fread((char *)key, sizeof (key), 1, fp) > 0))
 	    break;

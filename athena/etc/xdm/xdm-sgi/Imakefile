@@ -1,0 +1,19 @@
+#
+# $Id: Imakefile,v 1.9 1999-05-11 18:09:17 rbasch Exp $
+#
+
+CONFDIR=	/etc/athena/login/xdm
+XCONFIGS=	Xreset Xstartup
+CONFIGS=	xdm-config Xaccess Xservers
+
+install::
+	$(MKDIRHIER) $(DESTDIR)$(CONFDIR)
+	-for i in $(CONFIGS); do \
+		$(INSTALL) -m 0644 $$i $(DESTDIR)$(CONFDIR)/; \
+		done
+	-for i in $(XCONFIGS); do \
+		$(INSTALL) -m 0755 $$i $(DESTDIR)$(CONFDIR)/; \
+		done
+	$(INSTALL) -m 0755 Xlogin.${ATHENA_SYS} $(DESTDIR)$(CONFDIR)/Xlogin
+	$(INSTALL) -m 0755 xdm.${ATHENA_SYS} $(DESTDIR)$(ATHRETCDIR)/axdm
+	$(INSTALL) -m 0755 xwrapper.sh $(DESTDIR)$(ATHRETCDIR)/xwrapper

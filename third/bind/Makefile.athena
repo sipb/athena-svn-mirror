@@ -1,0 +1,27 @@
+# $Id: Makefile.athena,v 1.9 1999-03-26 21:50:13 ghudson Exp $
+
+SHELL=/bin/sh
+
+prepare:
+
+clean:
+	cd src && ${MAKE} clean
+
+all:
+	cd src && ${MAKE} depend all \
+		"CC=$$COMPILER" CDEBUG=-g YACC="yacc -d"\
+		DESTBIN=/usr/athena/bin \
+		DESTSBIN=/etc/athena \
+		DESTEXEC=/etc/athena \
+		DESTETC=/etc \
+		DESTMAN=/usr/athena/man \
+		DESTHELP=/usr/athena/lib \
+		DESTRUN=/var/athena
+
+check:
+
+install:
+	cd src && ${MAKE} install "DESTDIR=$$SRVD"
+	mkdir -p "$$SRVD/usr/athena/man"
+	cd doc/man && ${MAKE} install "DESTDIR=$$SRVD" \
+		DESTMAN=/usr/athena/man MANDIR=man OUT_EXT=man CATEXT='$$$$N'

@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.1.1.1 1997-09-03 21:08:20 ghudson Exp $
+# $Id: Makefile,v 1.2 1999-03-11 16:51:29 danw Exp $
 #
 # Copyright 1994, Geoff Kuenning, Granada Hills, CA
 # All rights reserved.
@@ -42,6 +42,9 @@
 # languages/english directory for most of its input files.
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.1.1.1  1997/09/03 21:08:20  ghudson
+# Import of ispell 3.1.20
+#
 # Revision 1.4  1995/01/08  23:24:15  geoff
 # Remember to set SHELLDEBUG when making dictcomponents.
 #
@@ -59,7 +62,6 @@
 #
 
 SHELL = /bin/sh
-MAKE = make
 
 CONFIG		=	../../config.sh
 PATHADDER	=	../..

@@ -67,11 +67,11 @@ uid_t	getuid();
 sigtype	intr(), lostpeer();
 extern	char *home;
 char	*getlogin();
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 #include <krb.h>
 struct servent staticsp;
 extern char realm[];
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 
 main(argc, argv)
 	char *argv[];
@@ -86,15 +86,16 @@ main(argc, argv)
 		fprintf(stderr, "ftp: ftp/tcp: unknown service\n");
 		exit(1);
 	}
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 /* GDM need to static sp so that the information is not lost
    when kerberos calls getservbyname */
 	memcpy(&staticsp,sp,sizeof(struct servent));
 	sp = &staticsp;
-#endif /* KERBEROS */
+#endif /* KRB5_KRB4_COMPAT */
 	doglob = 1;
 	interactive = 1;
 	autologin = 1;
+	forward = 0;
 	argc--, argv++;
 	while (argc > 0 && **argv == '-') {
 		for (cp = *argv + 1; *cp; cp++)
@@ -105,7 +106,7 @@ main(argc, argv)
 				debug++;
 				break;
 
-#ifdef KERBEROS
+#ifdef KRB5_KRB4_COMPAT
 			case 'k':
 				if (*++cp != '\0')
 					strncpy(realm, ++cp, REALM_SZ);
@@ -138,6 +139,10 @@ main(argc, argv)
 				doglob = 0;
 				break;
 
+			case 'f':
+				forward = 1;
+				break;
+
 			default:
 				fprintf(stdout,
 				  "ftp: %c: unknown option\n", *cp);
@@ -152,7 +157,7 @@ main(argc, argv)
 	cpend = 0;	/* no pending replies */
 	proxy = 0;	/* proxy not active */
 #ifndef NO_PASSIVE_MODE
-	passivemode = 1; /* passive mode active */
+	passivemode = 0; /* passive mode active */
 #endif
 	crflag = 1;	/* strip c.r. on ascii gets */
 	sendport = -1;	/* not using ports */

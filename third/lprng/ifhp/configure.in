@@ -209,10 +209,6 @@ if test -z "$checklibs"; then
 	AC_CHECK_FUNC(_res,[have_res=1])
 	fi
 
-	dnl Kerberos V
-	AC_CHECK_LIB(krb5, krb5_init_context,
-		[LIBS="$LIBS -lkrb5 -lcrypto -lcom_err"], , -lcrypto -lcom_err)
-
 	dnl this should solve problems of missing termlib, termcap
 	dnl libraries.  Note that there may be some conflicts if both
 	dnl termcap and termlib are both included, but this is not
@@ -266,7 +262,7 @@ dnl headers:
 AC_CHECK_HEADERS(sys/types.h)
 AC_CHECK_HEADERS(a.out.h a_out.h aouthdr.h ar.h arpa/inet.h arpa/nameser.h)
 AC_CHECK_HEADERS(assert.h com_err.h compat.h ctype.h curses.h dirent.h)
-AC_CHECK_HEADERS(errno.h exechdr.h fcntl.h filehdr.h grp.h krb5.h)
+AC_CHECK_HEADERS(errno.h exechdr.h fcntl.h filehdr.h grp.h)
 AC_CHECK_HEADERS(limits.h locale.h machine/vmparam.h malloc.h memory.h)
 AC_CHECK_HEADERS(ncurses.h ndir.h)
 AC_CHECK_HEADERS(netdb.h netinet/in.h nlist.h pwd.h reloc.h resolv.h)

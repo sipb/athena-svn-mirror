@@ -1,6 +1,6 @@
 /* popsbr.c - POP client subroutines */
 #ifndef	lint
-static char ident[] = "@(#)$Id: pshsbr.c,v 1.1.1.1 1996-10-07 07:14:20 ghudson Exp $";
+static char ident[] = "@(#)$Id: pshsbr.c,v 1.2 1997-12-14 00:33:07 ghudson Exp $";
 #endif	lint
 
 #if defined(NNTP) && !defined(PSHSBR)
@@ -14,6 +14,7 @@ static char ident[] = "@(#)$Id: pshsbr.c,v 1.1.1.1 1996-10-07 07:14:20 ghudson E
 #include "../h/nntp.h"
 #endif /* NNTP */
 #include <stdio.h>
+#include <errno.h>
 #include <signal.h>
 
 #ifndef	POPSERVICE
@@ -27,11 +28,6 @@ static char ident[] = "@(#)$Id: pshsbr.c,v 1.1.1.1 1996-10-07 07:14:20 ghudson E
 #define	TRM	"."
 #define	TRMLEN	(sizeof TRM - 1)
 
-extern int  errno;
-#ifndef	BSD44
-extern int  sys_nerr;
-extern char *sys_errlist[];
-#endif
 
 static int  poprint = 0;
 static int  pophack = 0;
@@ -157,8 +153,7 @@ int	snoop;
 
     if ((fd2 = dup (fd1)) == NOTOK) {
 	(void) sprintf (response, "unable to dup connection descriptor: %s",
-		errno > 0 && errno < sys_nerr ? sys_errlist[errno]
-		: "unknown error");
+		strerror (errno));
 	(void) close (fd1);
 	return NOTOK;
     }

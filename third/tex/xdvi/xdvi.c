@@ -78,7 +78,7 @@ static	char	copyright[] =
 #endif
 
 #ifndef	SHRINK
-#define	SHRINK	3
+#define	SHRINK	6
 #endif
 
 #ifndef	BDPI
@@ -329,7 +329,7 @@ static	XtResource	application_resources[] = {
 {"shrinkFactor", "ShrinkFactor", XtRInt, sizeof(int),
   offset(shrinkfactor), XtRImmediate, (XtPointer) SHRINK},
 {"densityPercent", "DensityPercent", XtRInt, sizeof(int),
-  offset(_density), XtRString, "40"},
+  offset(_density), XtRString, "20"},
 #ifdef	GREY
 {"gamma", "Gamma", XtRFloat, sizeof(float),
   offset(_gamma), XtRString, "1"},
