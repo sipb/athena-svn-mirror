@@ -12,7 +12,7 @@
  */
 
 #ifndef lint
-static char rcsid_mount_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.1 1990-04-19 12:16:44 jfc Exp $";
+static char rcsid_mount_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.2 1990-04-19 12:16:56 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -22,7 +22,9 @@ static char rcsid_mount_c[] = "$Header: /afs/dev.mit.edu/source/repository/athen
 #include <mntent.h>
 #endif
 #include <rpcsvc/mount.h>
-
+#ifdef AIX
+#define unmount(x) umount(x)
+#endif
 /*
  * Unmount a filesystem.
  */
@@ -152,7 +154,7 @@ nfs_unmount(errname, host, hostaddr, mntpt, rmntpt)
 	return (SUCCESS);
     }
 
-    client->cl_auth = spoofunix_create_default(spoofhost);
+    client->cl_auth = spoofunix_create_default(spoofhost, real_uid);
 
     timeout.tv_usec = 0;
     timeout.tv_sec = 20;
