@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the gnome-themes package.
 # Christian Rose <menthos@menthos.com>, 2002, 2003, 2004.
 #
-# $Id: sv.po,v 1.1.1.3 2004-09-24 20:33:48 ghudson Exp $
+# $Id: sv.po,v 1.1.1.4 2005-03-10 20:22:25 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-themes\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 13:42+0100\n"
+"POT-Creation-Date: 2004-12-03 18:20+0000\n"
 "PO-Revision-Date: 2004-08-18 14:54+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"

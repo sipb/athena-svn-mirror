@@ -45,24 +45,7 @@ crux_style_class_init (CruxStyleClass *klass)
 
   parent_class = g_type_class_peek_parent (klass);
 
-  style_class->draw_hline = draw_hline;
-  style_class->draw_vline = draw_vline;
-  style_class->draw_shadow = draw_shadow;
-  style_class->draw_polygon = draw_polygon;
-  style_class->draw_arrow = draw_arrow;
-  style_class->draw_diamond = draw_diamond;
-  style_class->draw_string = draw_string;
-  style_class->draw_box = draw_box;
-  //style_class->draw_flat_box = draw_flat_box;
-  style_class->draw_check = draw_check;
-  style_class->draw_option = draw_option;
-  style_class->draw_tab = draw_tab;
-  style_class->draw_shadow_gap = draw_shadow_gap;
-  style_class->draw_box_gap = draw_box_gap;
-  style_class->draw_extension = draw_extension;
-  style_class->draw_focus = draw_focus;
-  style_class->draw_slider = draw_slider;
-  style_class->draw_handle = draw_handle;
+  crux_draw_style_class_init (style_class);
 }
     
 

@@ -1,3 +1,12 @@
+2004-10-12  Calum Benson  <calum.benson@sun.com>
+
+	* src/crux-draw.c: (draw_handle), (crux_draw_style_class_init):
+	* src/crux-draw.h:
+	* src/crux-style.c: (crux_style_class_init):
+
+	Patch to fix crash-causing namespace issue (Robert Basch, bug
+	#116693).
+
 2004-08-18  Calum Benson  <calum.benson@sun.com>
 
 	Fix issues reported by sparse/gcc (Kjartan Maraas, bug #150348)

@@ -1,3 +1,89 @@
+2004-10-28  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* id.po: Updated Indonesian translation
+
+2004-10-17  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-09-22  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* ru.po: Updated Russian translation
+	from Russian team <gnome-cyr@gnome.org>.
+
+2004-09-15  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Updated Italian translation by
+	Luca Ferretti <elle.uca@infinito.it>.
+
+2004-09-13  Calum Benson  <calum.benson@sun.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* am.po:
+	* ar.po:
+	* az.po:
+	* be.po:
+	* bg.po:
+	* bn.po:
+	* bs.po:
+	* ca.po:
+	* cs.po:
+	* cy.po:
+	* da.po:
+	* de.po:
+	* el.po:
+	* en_CA.po:
+	* en_GB.po:
+	* es.po:
+	* et.po:
+	* eu.po:
+	* fa.po:
+	* fi.po:
+	* fr.po:
+	* ga.po:
+	* gu.po:
+	* he.po:
+	* hi.po:
+	* hr.po:
+	* hu.po:
+	* id.po:
+	* is.po:
+	* it.po:
+	* ja.po:
+	* ko.po:
+	* li.po:
+	* lt.po:
+	* lv.po:
+	* mk.po:
+	* ml.po:
+	* mn.po:
+	* ms.po:
+	* nb.po:
+	* nl.po:
+	* nn.po:
+	* no.po:
+	* pa.po:
+	* pl.po:
+	* pt.po:
+	* pt_BR.po:
+	* ro.po:
+	* ru.po:
+	* sk.po:
+	* sl.po:
+	* sq.po:
+	* sr.po:
+	* sr@Latn.po:
+	* sv.po:
+	* ta.po:
+	* th.po:
+	* tr.po:
+	* uk.po:
+	* vi.po:
+	* wa.po:
+	* zh_CN.po:
+	* zh_TW.po:
+
 2004-09-11  Dafydd Harries  <daf@muse.19inch.net>
 
 	* cy.po: Updated Welsh translation.
