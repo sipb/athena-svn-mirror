@@ -1,9 +1,9 @@
 #!/bin/sh
-# $Id: import.sh,v 1.7 2003-05-03 15:21:01 ghudson Exp $
+# $Id: import.sh,v 1.8 2004-09-25 05:36:17 ghudson Exp $
 
 # import - Interactive scripts to do Athena imports conveniently and correctly
 #
-# Usage: import [-d repdir] [-n pkgname] [-v pkgver] tarfile oldver
+# Usage: import [-d repdir] [-n pkgname] [-o oldver] [-v pkgver] tarfile
 #
 # tarfile may be a .tar.gz or .tar.bz2 file.  It must be an absolute
 #  path.
@@ -12,8 +12,9 @@
 #  pkgname-pkgver.tar.{gz,bz2} and pkgver is composed entirely of
 #  dots and digits.  Otherwise, specify them by hand.
 # repdir defaults to third/pkgname.
-# If this is the first import, specify an empty oldver ("" on the
-#  command line).
+# oldver is deduced from the RCS files in the existing repository dir,
+#  if it exists.  If the package version numbers are not in X.Y.Z
+#  form, specify the old version.  "none" means no old version.
 # You will get a chance to confirm the parameters before things start.
 
 # Bomb out on any error.
@@ -37,7 +38,9 @@ confirmrun() {
 }
 
 # Process arguments.
-while getopts d:n:v: opt; do
+unset repdir pkgname oldver pkgver
+usage="Usage: import [-d repdir] [-n pkgname] [-o oldver] [-v pkgver] tarfile"
+while getopts d:n:o:v: opt; do
   case "$opt" in
   d)
     repdir=$OPTARG
@@ -45,22 +48,24 @@ while getopts d:n:v: opt; do
   n)
     pkgname=$OPTARG
     ;;
+  o)
+    oldver=$OPTARG
+    ;;
   v)
     pkgver=$OPTARG
     ;;
   \?)
-    echo "$usage"
+    echo "$usage" >&2
     exit 1
     ;;
   esac
 done
 shift `expr $OPTIND - 1 || true`
-if [ $# -ne 2 ]; then
-  echo "Usage: import [-d repdir] [-n pkgname] [-v pkgver] tarfile oldver" >&2
+if [ $# -ne 1 ]; then
+  echo "$usage" >&2
   exit 1
 fi
 tarfile=$1
-oldver=$2
 
 # We handle either gzipped or bzip2-ed tarfiles; check which we got.
 case $tarfile in
@@ -82,12 +87,44 @@ case $tarfile in
   ;;
 esac
 
+# Point CVS at the Athena repository.
+CVSROOT=/afs/dev.mit.edu/source/repository
+export CVSROOT
+
 # Compute package name, package version, tag, and repository directory.
 : ${pkgname=`expr "$base" : '\(.*\)-[0-9\.]*$'`}
 : ${pkgver=`expr "$base" : '.*-\([0-9\.]*\)$'`}
 : ${repdir=third/$pkgname}
+
+# Compute the old version if not specified.
+if [ "${oldver+set}" != set ]; then
+  if [ ! -d "$CVSROOT/$repdir" ]; then
+    oldver=none
+  else
+    oldver=`find $CVSROOT/$repdir -name "*,v" -print | xargs rlog -h | 
+      perl -e '
+	sub vercmp {
+	  @a = split(/\./, shift @_); @b = split(/\./, shift @_);
+	  while (@a and @b) {
+	    return $a[0] <=> $b[0] if $a[0] != $b[0];
+	    shift @a; shift @b;
+	  }
+	  return @a <=> @b;
+	}
+	$pkg = "'"$pkgname"'";
+	$maxver = "0";
+	while (<>) {
+	  if (/^\t$pkg-([\d_]+):/) {
+	    ($ver = $1) =~ s/_/./g;
+	    $maxver = $ver if (vercmp($ver, $maxver) == 1);
+	  }
+	}
+	print $maxver;'`
+  fi
+fi
+
 tag=${pkgname}-`echo "$pkgver" | sed -e 's/\./_/g'`
-if [ -n "$oldver" ]; then
+if [ none != "$oldver" ]; then
   oldtag=${pkgname}-`echo "$oldver" | sed -e 's/\./_/g'`
 fi
 
@@ -108,10 +145,6 @@ echo "Old release tag:      $oldtag"
 echo ""
 printf "Please confirm:"
 read dummy
-
-# Point CVS at the Athena repository.
-CVSROOT=/afs/dev.mit.edu/source/repository
-export CVSROOT
 
 # Create temporary area and go there.
 tmpdir=/tmp/import.$$
