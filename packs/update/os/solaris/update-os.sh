@@ -3,6 +3,23 @@
 CONFVARS=$UPDATE_ROOT/var/athena/update.confvars
 . $CONFVARS
 
+# If we have one partition of sufficient size, install all packages
+# local and use the unmodified patches.  If we have many partitions or
+# the one partition is smallish, install the packages from the non-local
+# package list as symlinks and use the adjusted patches.
+usrpart=`df -k $UPDATE_ROOT/usr | awk '{part=$NF;} END {print part;}'`
+rootsize=`df -k ${UPDATE_ROOT:-/} | awk '{sz=$2;} END {print sz;}'`
+if [ "$usrpart" = ${UPDATE_ROOT:-/} -a 3145728 -le "$rootsize" ]; then
+  echo "Installing packages and srvd local."
+  cdnl=/install/cdrom
+  patches=/install/patches
+  subscr=sys_rvd.local
+else
+  cdnl=/install/cdrom/cdrom.link
+  patches=/install/patches/patches.link
+  subscr=sys_rvd
+fi
+
 # drvconfig requires this.  In theory, nothing else should.
 cd ${UPDATE_ROOT:-/}
 
@@ -45,7 +62,7 @@ if [ -s "$LINKPACKAGES" ]; then
   echo "Installing the os link packages"
   for i in `cat "$LINKPACKAGES"`; do
     echo "$i"
-    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d /install/cdrom/cdrom.link "$i"
+    echo "$yes" | pkgadd -R "$UPDATE_ROOT" -d "$cdnl" "$i"
   done 2>>$pkglog
 fi
 
@@ -62,8 +79,7 @@ if [ -s "$PATCHES" ]; then
   # patchadd is stupid and elides blank arguments, so we have to be careful
   # specifying the update root.
   ur="${UPDATE_ROOT:+-R $UPDATE_ROOT}"
-  echo "$yes" | patchadd -d $ur -u -M /install/patches/patches.link \
-    `cat $PATCHES`
+  echo "$yes" | patchadd -d $ur -u -M "$patches" `cat $PATCHES`
 fi
 
 if [ "$OSCHANGES" = true ]; then
@@ -91,7 +107,8 @@ touch $UPDATE_ROOT/reconfigure
 echo "Finished os installation"
 
 echo "Tracking the srvd"
-track -d -F /srvd -T "$UPDATE_ROOT" -W /srvd/usr/athena/lib
+track -d -F /srvd -T "$UPDATE_ROOT" -W /srvd/usr/athena/lib \
+  -s stats/$subscr slists/$subscr
 rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
 
 echo "Copying kernel modules from /srvd/kernel"
