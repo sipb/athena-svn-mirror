@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.87.2.1 1997-05-17 08:45:09 ghudson Exp $
+ * $Id: login.c,v 1.87.2.2 1997-06-28 18:22:57 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.87.2.1 1997-05-17 08:45:09 ghudson Exp $";
+static char *rcsid = "$Id: login.c,v 1.87.2.2 1997-06-28 18:22:57 ghudson Exp $";
 #endif
 
 /*
@@ -735,7 +735,7 @@ main(argc, argv)
 		krbval = krb_get_pw_in_tkt(lusername, "", realm,
 				    "krbtgt", realm, KRBTKLIFETIME, pp2);
 #ifdef KRB5
-		{
+		if (krbval == 0) {
 		    krb5_error_code krb5_ret;
 		    char *etext;
 		    
@@ -1611,7 +1611,7 @@ done:
 }
 /* END TRASH */
 
-#if !defined(ultrix) && !defined(sun)
+#if !defined(ultrix)
 /*
  * Set the value of var to be arg in the Unix 4.2 BSD environment env.
  * Var should NOT end in '='; setenv inserts it. 
