@@ -628,6 +628,8 @@ ALL = $(WERMIT)
 all: $(ALL)
 
 install: $(ALL)
+	mkdir -p $(DESTDIR)$(BINDIR)
+	mkdir -p $(DESTDIR)$(MANDIR)
 	cp wermit $(DESTDIR)$(BINDIR)/kermit
 # The following can fail if the program image was already stripped,
 # for example by the link flags in the makefile entry.
