@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v 1.6 1989-03-24 10:36:16 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/Imakefile,v 1.7 1989-05-30 23:20:29 jtkohl Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
@@ -57,6 +57,5 @@ depend::
 	(cd et; make ${MFLAGS} depend)
 	(cd et; make ${MFLAGS} all)
 	(cd ss; make ${MFLAGS} depend)
-	(cd ss/lib; make ${MFLAGS} ss.h)
 #endif /* LOCAL_LIBS */
 
