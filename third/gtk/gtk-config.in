@@ -92,9 +92,9 @@ fi
 
 if test "$echo_cflags" = "yes"; then
       if test @includedir@ != /usr/include ; then
-        includes=-I@includedir@
+        includes=-I$ATHTOOLROOT@includedir@
         for i in $glib_cflags ; do
-          if test $i = -I@includedir@ ; then
+          if test $i = -I$ATHTOOLROOT@includedir@ ; then
             includes=""
           fi
         done
@@ -104,9 +104,9 @@ fi
 
 if test "$echo_libs" = "yes"; then
       my_glib_libs=
-      libdirs=-L@libdir@
+      libdirs=-L$ATHTOOLROOT@libdir@
       for i in $glib_libs ; do
-        if test $i != -L@libdir@ ; then
+        if test $i != -L$ATHTOOLROOT@libdir@ ; then
           if test -z "$my_glib_libs" ; then
             my_glib_libs="$i"
           else
