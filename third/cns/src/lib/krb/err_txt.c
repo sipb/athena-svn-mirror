@@ -20,9 +20,9 @@ const
 /* Some C compilers (like ThinkC when producing a driver) can't grok
    initialized multimentional arrays! */
 #ifdef MULTIDIMENSIONAL_ERR_TXT
- char krb_err_txt[256][60] = {  
+ char krb_err_txt[MAX_KRB_ERRORS][60] = {  
 #else 
- char *const krb_err_txt [256] = { 
+ char *const krb_err_txt [MAX_KRB_ERRORS] = { 
 #endif
   "OK",							/* 000 */
   "Principal expired (kerberos)",			/* 001 */
