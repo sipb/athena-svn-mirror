@@ -1899,6 +1899,8 @@ do_unset(GConfEngine* conf, const gchar** args)
 static int
 do_recursive_unset (GConfEngine* conf, const gchar** args)
 {
+  GError *err;
+
   if (args == NULL)
     {
       fprintf (stderr, _("Must specify one or more keys to recursively unset.\n"));
@@ -1907,8 +1909,6 @@ do_recursive_unset (GConfEngine* conf, const gchar** args)
       
   while (*args)
     {
-      GError *err;
-
       err = NULL;
       gconf_engine_recursive_unset (conf, *args,
                                     GCONF_UNSET_INCLUDING_SCHEMA_NAMES,
@@ -1921,6 +1921,17 @@ do_recursive_unset (GConfEngine* conf, const gchar** args)
         }
       
       ++args;
+    }
+
+  err = NULL;
+
+  gconf_engine_suggest_sync(conf, &err);
+
+  if (err != NULL)
+    {
+      fprintf(stderr, _("Error syncing: %s\n"),
+              err->message);
+      return 1;
     }
 
   return 0;
