@@ -11,20 +11,17 @@ INCLUDES =							\
 
 lib_LTLIBRARIES = libgnome-desktop-2.la
 
-noinst_PROGRAMS = test-ditem test-hint test-ditem-edit test-icon-theme
+noinst_PROGRAMS = test-ditem test-hint test-ditem-edit
 
 libgnome_desktop_2_la_SOURCES = \
-	gnome-theme-parser.h	\
-	gnome-icon-loader.c	\
-	gnome-theme-parser.c	\
 	gnome-desktop-item.c	\
 	gnome-ditem-edit.c	\
-	gnome-hint.c
+	gnome-hint.c		\
+	$(EGGFILES)
 
 
 libgnome_desktopdir = $(includedir)/gnome-desktop-2.0/libgnome
 libgnome_desktop_HEADERS = \
-	gnome-icon-loader.h	\
 	gnome-desktop-item.h
 
 libgnomeui_desktopdir = $(includedir)/gnome-desktop-2.0/libgnomeui
@@ -37,13 +34,6 @@ libgnome_desktop_2_la_LIBADD = \
 
 libgnome_desktop_2_la_LDFLAGS = \
 	-version-info $(LT_VERSION)
-
-test_icon_theme_SOURCES = \
-	test-icon-theme.c
-
-test_icon_theme_LDADD = \
-	libgnome-desktop-2.la		\
-	$(GNOME_DESKTOP_LIBS)
 
 test_ditem_SOURCES = \
 	test-ditem.c
@@ -70,3 +60,12 @@ pkgconfig_DATA = gnome-desktop-2.0.pc
 
 EXTRA_DIST = \
 	gnome-desktop-2.0.pc.in
+
+EGGFILES =		\
+	egg-spawn.h	\
+	egg-spawn.c
+
+EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
+
+regenerate-built-sources:
+	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh

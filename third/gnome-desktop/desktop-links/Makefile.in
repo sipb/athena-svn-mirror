@@ -80,19 +80,16 @@ GMSGFMT = @GMSGFMT@
 GNOME_ABOUT_CFLAGS = @GNOME_ABOUT_CFLAGS@
 GNOME_ABOUT_LIBS = @GNOME_ABOUT_LIBS@
 GNOME_DATE = @GNOME_DATE@
-GNOME_DESCRIPTION = @GNOME_DESCRIPTION@
 GNOME_DESKTOP_CFLAGS = @GNOME_DESKTOP_CFLAGS@
 GNOME_DESKTOP_LIBS = @GNOME_DESKTOP_LIBS@
 GNOME_MICRO = @GNOME_MICRO@
 GNOME_MINOR = @GNOME_MINOR@
 GNOME_PLATFORM = @GNOME_PLATFORM@
 GNOME_VENDOR = @GNOME_VENDOR@
-GNOME_VFS_MODULE_REQUIRED = @GNOME_VFS_MODULE_REQUIRED@
+GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
 GTK_REQUIRED = @GTK_REQUIRED@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -107,6 +104,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -126,33 +124,30 @@ PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 REBUILD = @REBUILD@
+STARTUP_NOTIFICATION_PACKAGE = @STARTUP_NOTIFICATION_PACKAGE@
+STARTUP_NOTIFICATION_REQUIRED = @STARTUP_NOTIFICATION_REQUIRED@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 cxxflags_set = @cxxflags_set@
 
-NULL = 
-
-Desktopdir = $(datadir)/applications
 Directorydir = $(datadir)/gnome/vfolders
-Orderdir = $(datadir)/gnome/vfolders
 
-Order_DATA =  	Root.order 	Settings.order
-
-
-Directory_in_files =  	Root.directory			Accessories.directory   	Applications.directory		Graphics.directory		Home.directory			System.directory		Multimedia.directory		Internet.directory		Games.directory			Development.directory   	Office.directory		Settings.directory
+Directory_in_files =  	Root.directory			Accessories.directory   	Applications.directory		Graphics.directory		System.directory		Multimedia.directory		Internet.directory		Games.directory			Development.directory   	Office.directory		Settings.directory
 
 
 Directory_DATA = $(Directory_in_files:.directory.in=.directory)
 
-EXTRA_DIST = $(Directory_DATA) $(Order_DATA)
+EXTRA_DIST = $(Directory_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(Directory_DATA) $(Order_DATA)
+DATA =  $(Directory_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
@@ -189,25 +184,6 @@ uninstall-DirectoryDATA:
 	list='$(Directory_DATA)'; for p in $$list; do \
 	  rm -f $(DESTDIR)$(Directorydir)/$$p; \
 	done
-
-install-OrderDATA: $(Order_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(Orderdir)
-	@list='$(Order_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Orderdir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(Orderdir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(Orderdir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(Orderdir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-OrderDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(Order_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(Orderdir)/$$p; \
-	done
 tags: TAGS
 TAGS:
 
@@ -238,20 +214,20 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-DirectoryDATA install-OrderDATA
+install-data-am: install-DirectoryDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-DirectoryDATA uninstall-OrderDATA
+uninstall-am: uninstall-DirectoryDATA
 uninstall: uninstall-am
 all-am: Makefile $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(Directorydir) $(DESTDIR)$(Orderdir)
+	$(mkinstalldirs)  $(DESTDIR)$(Directorydir)
 
 
 mostlyclean-generic:
@@ -282,11 +258,10 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-DirectoryDATA install-DirectoryDATA \
-uninstall-OrderDATA install-OrderDATA tags distdir info-am info dvi-am \
-dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
+.PHONY: uninstall-DirectoryDATA install-DirectoryDATA tags distdir \
+info-am info dvi-am dvi check check-am installcheck-am installcheck \
+install-exec-am install-exec install-data-am install-data install-am \
+install uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 

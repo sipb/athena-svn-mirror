@@ -49,7 +49,16 @@
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
+#include "egg-spawn.h"
+
 #include "gnome-desktop-item.h"
+
+#ifdef HAVE_STARTUP_NOTIFICATION
+#define SN_API_NOT_YET_FROZEN
+#include <libsn/sn.h>
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+#endif
 
 #define sure_string(s) ((s)!=NULL?(s):"")
 
@@ -1471,10 +1480,176 @@ expand_string (const GnomeDesktopItem *item,
 	return g_string_free (gs, FALSE);
 }
 
+#ifdef HAVE_STARTUP_NOTIFICATION
+static void
+sn_error_trap_push (SnDisplay *display,
+		    Display   *xdisplay)
+{
+	gdk_error_trap_push ();
+}
+
+static void
+sn_error_trap_pop (SnDisplay *display,
+		   Display   *xdisplay)
+{
+	gdk_error_trap_pop ();
+}
+
+extern char **environ;
+
+static char **
+make_spawn_environment_for_sn_context (SnLauncherContext *sn_context,
+				       char             **envp)
+{
+	char **retval = NULL;
+	int    i;
+	int    desktop_startup_id_len;
+
+	if (envp == NULL)
+		envp = environ;
+	
+	for (i = 0; envp[i]; i++)
+		;
+
+	retval = g_new (char *, i + 2);
+
+	desktop_startup_id_len = strlen ("DESKTOP_STARTUP_ID");
+	
+	for (i = 0; envp[i]; i++) {
+		if (strncmp (envp[i], "DESKTOP_STARTUP_ID", desktop_startup_id_len) != 0)
+			retval[i] = g_strdup (envp[i]);
+	}
+
+	retval[i] = g_strdup_printf ("DESKTOP_STARTUP_ID=%s",
+				     sn_launcher_context_get_startup_id (sn_context));
+	++i;
+	retval[i] = NULL;
+
+	return retval;
+}
+
+/* This should be fairly long, as it's confusing to users if a startup
+ * ends when it shouldn't (it appears that the startup failed, and
+ * they have to relaunch the app). Also the timeout only matters when
+ * there are bugs and apps don't end their own startup sequence.
+ *
+ * This timeout is a "last resort" timeout that ignores whether the
+ * startup sequence has shown activity or not.  Metacity and the
+ * tasklist have smarter, and correspondingly able-to-be-shorter
+ * timeouts. The reason our timeout is dumb is that we don't monitor
+ * the sequence (don't use an SnMonitorContext)
+ */
+#define STARTUP_TIMEOUT_LENGTH (30 /* seconds */ * 1000)
+
+typedef struct
+{
+	GdkScreen *screen;
+	GSList *contexts;
+	guint timeout_id;
+} StartupTimeoutData;
+
+static void
+free_startup_timeout (void *data)
+{
+	StartupTimeoutData *std = data;
+
+	g_slist_foreach (std->contexts,
+			 (GFunc) sn_launcher_context_unref,
+			 NULL);
+	g_slist_free (std->contexts);
+
+	if (std->timeout_id != 0) {
+		g_source_remove (std->timeout_id);
+		std->timeout_id = 0;
+	}
+
+	g_free (std);
+}
+
+static gboolean
+startup_timeout (void *data)
+{
+	StartupTimeoutData *std = data;
+	GSList *tmp;
+	GTimeVal now;
+	int min_timeout;
+
+	min_timeout = STARTUP_TIMEOUT_LENGTH;
+	
+	g_get_current_time (&now);
+	
+	tmp = std->contexts;
+	while (tmp != NULL) {
+		SnLauncherContext *sn_context = tmp->data;
+		GSList *next = tmp->next;
+		long tv_sec, tv_usec;
+		double elapsed;
+		
+		sn_launcher_context_get_last_active_time (sn_context,
+							  &tv_sec, &tv_usec);
+
+		elapsed =
+			((((double)now.tv_sec - tv_sec) * G_USEC_PER_SEC +
+			  (now.tv_usec - tv_usec))) / 1000.0;
+
+		if (elapsed >= STARTUP_TIMEOUT_LENGTH) {
+			std->contexts = g_slist_remove (std->contexts,
+							sn_context);
+			sn_launcher_context_complete (sn_context);
+			sn_launcher_context_unref (sn_context);
+		} else {
+			min_timeout = MIN (min_timeout, (STARTUP_TIMEOUT_LENGTH - elapsed));
+		}
+		
+		tmp = next;
+	}
+
+	if (std->contexts == NULL) {
+		std->timeout_id = 0;
+	} else {
+		std->timeout_id = g_timeout_add (min_timeout,
+						 startup_timeout,
+						 std);
+	}
+
+	/* always remove this one, but we may have reinstalled another one. */
+	return FALSE;
+}
+
+static void
+add_startup_timeout (GdkScreen         *screen,
+		     SnLauncherContext *sn_context)
+{
+	StartupTimeoutData *data;
+
+	data = g_object_get_data (G_OBJECT (screen), "gnome-startup-data");
+	if (data == NULL) {
+		data = g_new (StartupTimeoutData, 1);
+		data->screen = screen;
+		data->contexts = NULL;
+		data->timeout_id = 0;
+		
+		g_object_set_data_full (G_OBJECT (screen), "gnome-startup-data",
+					data, free_startup_timeout);		
+	}
+
+	sn_launcher_context_ref (sn_context);
+	data->contexts = g_slist_prepend (data->contexts, sn_context);
+	
+	if (data->timeout_id == 0) {
+		data->timeout_id = g_timeout_add (STARTUP_TIMEOUT_LENGTH,
+						  startup_timeout,
+						  data);		
+	}
+}
+#endif /* HAVE_STARTUP_NOTIFICATION */
+
 static int
 ditem_execute (const GnomeDesktopItem *item,
 	       const char *exec,
 	       GList *file_list,
+	       GdkScreen *screen,
+	       int workspace,
                char **envp,
 	       gboolean launch_only_one,
 	       gboolean use_current_dir,
@@ -1482,6 +1657,7 @@ ditem_execute (const GnomeDesktopItem *item,
 	       gboolean append_paths,
 	       GError **error)
 {
+	char **free_me = NULL;
 	char **real_argv;
 	int i, ret;
 	char **term_argv = NULL;
@@ -1494,7 +1670,12 @@ ditem_execute (const GnomeDesktopItem *item,
 	int temp_argc = 0;
 	char *new_exec, *uris, *temp;
 	int launched = 0;
-
+#ifdef HAVE_STARTUP_NOTIFICATION
+	SnLauncherContext *sn_context;
+	SnDisplay *sn_display;
+	const char *startup_class;
+#endif
+	
 	g_return_val_if_fail (item, -1);
 
 	if (!use_current_dir)
@@ -1518,6 +1699,70 @@ ditem_execute (const GnomeDesktopItem *item,
 	args = make_args (file_list);
 	arg_ptr = make_args (file_list);
 
+#ifdef HAVE_STARTUP_NOTIFICATION
+	sn_display = sn_display_new (gdk_display,
+				     sn_error_trap_push,
+				     sn_error_trap_pop);
+
+	
+	/* Only initiate notification if desktop file supports it.
+	 * (we could avoid setting up the SnLauncherContext if we aren't going
+	 * to initiate, but why bother)
+	 */
+
+	startup_class = gnome_desktop_item_get_string (item,
+						       "StartupWMClass");
+	if (startup_class ||
+	    gnome_desktop_item_get_boolean (item, "StartupNotify")) {
+		const char *name;
+		const char *icon;
+
+		sn_context = sn_launcher_context_new (sn_display,
+						      screen ? gdk_screen_get_number (screen) :
+						      DefaultScreen (gdk_display));
+		
+		name = gnome_desktop_item_get_localestring (item,
+							    GNOME_DESKTOP_ITEM_NAME);
+
+		if (name == NULL)
+			name = gnome_desktop_item_get_localestring (item,
+								    GNOME_DESKTOP_ITEM_GENERIC_NAME);
+		
+		if (name != NULL) {
+			char *description;
+			
+			sn_launcher_context_set_name (sn_context, name);
+			
+			description = g_strdup_printf (_("Starting %s"), name);
+			
+			sn_launcher_context_set_description (sn_context, description);
+			
+			g_free (description);
+		}
+		
+		icon = gnome_desktop_item_get_string (item,
+						      GNOME_DESKTOP_ITEM_ICON);
+		
+		if (icon != NULL)
+			sn_launcher_context_set_icon_name (sn_context, icon);
+		
+		sn_launcher_context_set_workspace (sn_context, workspace);
+
+		if (startup_class != NULL)
+			sn_launcher_context_set_wmclass (sn_context,
+							 startup_class);
+	} else {
+		sn_context = NULL;
+	}
+#endif
+
+	if (screen) {
+		envp = egg_make_spawn_environment_for_screen (screen, envp);
+		if (free_me)
+			g_strfreev (free_me);
+		free_me = envp;
+	}
+	
 	do {
 		added_status = ADDED_NONE;
 		new_exec = expand_string (item,
@@ -1572,12 +1817,39 @@ ditem_execute (const GnomeDesktopItem *item,
 		g_slist_foreach (vector_list, (GFunc)g_free, NULL);
 		g_slist_free (vector_list);
 
+#ifdef HAVE_STARTUP_NOTIFICATION
+		if (sn_context != NULL &&
+		    !sn_launcher_context_get_initiated (sn_context)) {
+
+			/* This means that we always use the first real_argv[0]
+			 * we select for the "binary name", but it's probably
+			 * OK to do that. Binary name isn't super-important
+			 * anyway, and we can't initiate twice, and we
+			 * must initiate prior to fork/exec.
+			 */
+			
+			sn_launcher_context_set_binary_name (sn_context,
+							     real_argv[0]);
+			
+			sn_launcher_context_initiate (sn_context,
+						      g_get_prgname () ? g_get_prgname () : "unknown",
+						      real_argv[0],
+						      CurrentTime);
+
+			envp = make_spawn_environment_for_sn_context (sn_context, envp);
+			if (free_me)
+				g_strfreev (free_me);
+			free_me = envp;
+		}
+#endif
+		
+		
 		if ( ! g_spawn_async (working_dir,
 				      real_argv,
 				      envp,
 				      G_SPAWN_SEARCH_PATH /* flags */,
-				      NULL /* child_setup */,
-				      NULL /* user_data */,
+				      NULL, /* child_setup_func */
+				      NULL, /* child_setup_func_data */
 				      &ret /* child_pid */,
 				      error)) {
 			/* The error was set for us,
@@ -1596,10 +1868,27 @@ ditem_execute (const GnomeDesktopItem *item,
 		 arg_ptr != NULL &&
 		 ! launch_only_one);
 
+#ifdef HAVE_STARTUP_NOTIFICATION
+	if (sn_context != NULL) {
+		if (ret < 0)
+			sn_launcher_context_complete (sn_context); /* end sequence */
+		else
+			add_startup_timeout (screen ? screen :
+					     gdk_display_get_default_screen (gdk_display_get_default ()),
+					     sn_context);
+		sn_launcher_context_unref (sn_context);
+	}
+	
+	sn_display_unref (sn_display);
+#endif /* HAVE_STARTUP_NOTIFICATION */
+	
 	free_args (args);
-
+	
 	if (term_argv)
 		g_strfreev (term_argv);
+
+	if (free_me)
+		g_strfreev (free_me);
 
 	return ret;
 }
@@ -1629,58 +1918,16 @@ strip_the_amp (char *exec)
 	return TRUE;
 }
 
-/**
- * gnome_desktop_item_launch:
- * @item: A desktop item
- * @file_list:  Files/URIs to launch this item with, can be %NULL
- * @flags: FIXME
- * @error: FIXME
- *
- * This function runs the program listed in the specified 'item',
- * optionally appending additional arguments to its command line.  It uses
- * #g_shell_parse_argv to parse the the exec string into a vector which is
- * then passed to #g_spawn_async for execution. This can return all
- * the errors from GnomeURL, #g_shell_parse_argv and #g_spawn_async,
- * in addition to it's own.  The files are
- * only added if the entry defines one of the standard % strings in it's
- * Exec field.
- *
- * Returns: The the pid of the process spawned.  If more then one
- * process was spawned the last pid is returned.  On error -1
- * is returned and @error is set.
- */
-int
-gnome_desktop_item_launch (const GnomeDesktopItem *item,
-			   GList *file_list,
-			   GnomeDesktopItemLaunchFlags flags,
-			   GError **error)
-{
-	return gnome_desktop_item_launch_with_env (
-			item, file_list, flags, NULL, error);
-}
 
-/**
- * gnome_desktop_item_launch_with_env:
- * @item: A desktop item
- * @file_list:  Files/URIs to launch this item with, can be %NULL
- * @flags: FIXME
- * @envp: child's environment, or %NULL to inherit parent's
- * @error: FIXME
- *
- * See gnome_desktop_item_launch for a full description. This function
- * additionally passes an environment vector for the child process
- * which is to be launched.
- *
- * Returns: The the pid of the process spawned.  If more then one
- * process was spawned the last pid is returned.  On error -1
- * is returned and @error is set.
- */
-int
-gnome_desktop_item_launch_with_env (const GnomeDesktopItem       *item,
-				    GList                        *file_list,
-				    GnomeDesktopItemLaunchFlags   flags,
-				    char                        **envp,
-				    GError                      **error)
+static int
+gnome_desktop_item_launch_on_screen_with_env (
+		const GnomeDesktopItem       *item,
+		GList                        *file_list,
+		GnomeDesktopItemLaunchFlags   flags,
+		GdkScreen                    *screen,
+		int                           workspace,
+		char                        **envp,
+		GError                      **error)
 {
 	const char *exec;
 	char *the_exec;
@@ -1743,7 +1990,7 @@ gnome_desktop_item_launch_with_env (const GnomeDesktopItem       *item,
 		return -1;
 	}
 
-	ret = ditem_execute (item, the_exec, file_list, envp,
+	ret = ditem_execute (item, the_exec, file_list, screen, workspace, envp,
 			     (flags & GNOME_DESKTOP_ITEM_LAUNCH_ONLY_ONE),
 			     (flags & GNOME_DESKTOP_ITEM_LAUNCH_USE_CURRENT_DIR),
 			     (flags & GNOME_DESKTOP_ITEM_LAUNCH_APPEND_URIS),
@@ -1751,6 +1998,94 @@ gnome_desktop_item_launch_with_env (const GnomeDesktopItem       *item,
 			     error);
 
 	return ret;
+}
+
+/**
+ * gnome_desktop_item_launch:
+ * @item: A desktop item
+ * @file_list:  Files/URIs to launch this item with, can be %NULL
+ * @flags: FIXME
+ * @error: FIXME
+ *
+ * This function runs the program listed in the specified 'item',
+ * optionally appending additional arguments to its command line.  It uses
+ * #g_shell_parse_argv to parse the the exec string into a vector which is
+ * then passed to #g_spawn_async for execution. This can return all
+ * the errors from GnomeURL, #g_shell_parse_argv and #g_spawn_async,
+ * in addition to it's own.  The files are
+ * only added if the entry defines one of the standard % strings in it's
+ * Exec field.
+ *
+ * Returns: The the pid of the process spawned.  If more then one
+ * process was spawned the last pid is returned.  On error -1
+ * is returned and @error is set.
+ */
+int
+gnome_desktop_item_launch (const GnomeDesktopItem       *item,
+			   GList                        *file_list,
+			   GnomeDesktopItemLaunchFlags   flags,
+			   GError                      **error)
+{
+	return gnome_desktop_item_launch_on_screen_with_env (
+			item, file_list, flags, NULL, -1, NULL, error);
+}
+
+/**
+ * gnome_desktop_item_launch_with_env:
+ * @item: A desktop item
+ * @file_list:  Files/URIs to launch this item with, can be %NULL
+ * @flags: FIXME
+ * @envp: child's environment, or %NULL to inherit parent's
+ * @error: FIXME
+ *
+ * See gnome_desktop_item_launch for a full description. This function
+ * additionally passes an environment vector for the child process
+ * which is to be launched.
+ *
+ * Returns: The the pid of the process spawned.  If more then one
+ * process was spawned the last pid is returned.  On error -1
+ * is returned and @error is set.
+ */
+int
+gnome_desktop_item_launch_with_env (const GnomeDesktopItem       *item,
+				    GList                        *file_list,
+				    GnomeDesktopItemLaunchFlags   flags,
+				    char                        **envp,
+				    GError                      **error)
+{
+	return gnome_desktop_item_launch_on_screen_with_env (
+			item, file_list, flags,
+			NULL, -1, envp, error);
+}
+
+/**
+ * gnome_desktop_item_launch_on_screen:
+ * @item: A desktop item
+ * @file_list:  Files/URIs to launch this item with, can be %NULL
+ * @flags: FIXME
+ * @screen: the %GdkScreen on which the application should be launched
+ * @workspace: the workspace on which the app should be launched (-1 for current)
+ * @error: FIXME
+ *
+ * See gnome_desktop_item_launch for a full description. This function
+ * additionally attempts to launch the application on a given screen
+ * and workspace.
+ *
+ * Returns: The the pid of the process spawned.  If more then one
+ * process was spawned the last pid is returned.  On error -1
+ * is returned and @error is set.
+ */
+int
+gnome_desktop_item_launch_on_screen (const GnomeDesktopItem       *item,
+				     GList                        *file_list,
+				     GnomeDesktopItemLaunchFlags   flags,
+				     GdkScreen                    *screen,
+				     int                           workspace,
+				     GError                      **error)
+{
+	return gnome_desktop_item_launch_on_screen_with_env (
+			item, file_list, flags,
+			screen, workspace, NULL, error);
 }
 
 /**
@@ -1785,6 +2120,48 @@ gnome_desktop_item_drop_uri_list (const GnomeDesktopItem *item,
 	}
 
 	ret = gnome_desktop_item_launch (item, list, flags, error);
+
+	g_list_foreach (list, (GFunc)g_free, NULL);
+	g_list_free (list);
+
+	return ret;
+}
+
+/**
+* gnome_desktop_item_drop_uri_list_with_env:
+* @item: A desktop item
+* @uri_list: text as gotten from a text/uri-list
+* @flags: FIXME
+* @envp: child's environment
+* @error: FIXME
+*
+* See gnome_desktop_item_drop_uri_list for a full description. This function
+* additionally passes an environment vector for the child process
+* which is to be launched.
+*
+* Returns: The value returned by #gnome_execute_async() upon execution of
+* the specified item or -1 on error.  If multiple instances are run, the
+* return of the last one is returned.
+*/
+int
+gnome_desktop_item_drop_uri_list_with_env (const GnomeDesktopItem *item,
+					   const char *uri_list,
+					   GnomeDesktopItemLaunchFlags flags,
+					   char                        **envp,
+					   GError **error)
+{
+	GList *li;
+	int ret;
+	GList *list = gnome_vfs_uri_list_parse (uri_list);
+
+	for (li = list; li != NULL; li = li->next) {
+		GnomeVFSURI *uri = li->data;
+		li->data = gnome_vfs_uri_to_string (uri, 0 /* hide_options */);
+		gnome_vfs_uri_unref (uri);
+	}
+
+	ret =  gnome_desktop_item_launch_with_env (
+			item, list, flags, envp, error);
 
 	g_list_foreach (list, (GFunc)g_free, NULL);
 	g_list_free (list);
@@ -2152,7 +2529,7 @@ find_kde_directory (void)
  * Returns: A newly allocated string
  */
 char *
-gnome_desktop_item_find_icon (GnomeIconLoader *icon_loader,
+gnome_desktop_item_find_icon (GnomeIconTheme *icon_theme,
 			      const char *icon,
 			      int desired_size,
 			      int flags)
@@ -2171,10 +2548,10 @@ gnome_desktop_item_find_icon (GnomeIconLoader *icon_loader,
 		char *icon_no_extension;
 		char *p;
 
-		if (icon_loader == NULL) {
-			icon_loader = gnome_icon_loader_new ();
+		if (icon_theme == NULL) {
+			icon_theme = gnome_icon_theme_new ();
 		} else {
-			g_object_ref (icon_loader);
+			g_object_ref (icon_theme);
 		}
 
 		
@@ -2187,12 +2564,12 @@ gnome_desktop_item_find_icon (GnomeIconLoader *icon_loader,
 		    *p = 0;
 		}
 
-		full = gnome_icon_loader_lookup_icon (icon_loader,
-						      icon_no_extension,
-						      desired_size,
-						      NULL);
+		full = gnome_icon_theme_lookup_icon (icon_theme,
+						     icon_no_extension,
+						     desired_size,
+						     NULL, NULL);
 		
-		g_object_unref (icon_loader);
+		g_object_unref (icon_theme);
 		
 		g_free (icon_no_extension);
 	}
@@ -2263,7 +2640,7 @@ gnome_desktop_item_find_icon (GnomeIconLoader *icon_loader,
  */
 char *
 gnome_desktop_item_get_icon (const GnomeDesktopItem *item,
-			     GnomeIconLoader *icon_loader)
+			     GnomeIconTheme *icon_theme)
 {
 	/* maybe this function should be deprecated in favour of find icon
 	 * -George */
@@ -2274,7 +2651,7 @@ gnome_desktop_item_get_icon (const GnomeDesktopItem *item,
 
 	icon = gnome_desktop_item_get_string (item, GNOME_DESKTOP_ITEM_ICON);
 
-	return gnome_desktop_item_find_icon (icon_loader, icon,
+	return gnome_desktop_item_find_icon (icon_theme, icon,
 					     48 /* desired_size */,
 					     0 /* flags */);
 }

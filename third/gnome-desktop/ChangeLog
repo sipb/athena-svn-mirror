@@ -1,20 +1,113 @@
-2002-11-15  Mark McLoughlin  <mark@skynet.ie>
+2002-01-21  Mark McLoughlin  <mark@skynet.ie>
 
-	* configure.in: Version 2.0.10.
+	* configure.in: Version 2.2.0.
+
+2003-01-20  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in: require startup-notification 0.5
+
+2002-01-06  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.90.
+
+2002-12-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.5.
+
+2002-12-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.4.
+
+2002-12-06  Glynn Foster  <glynn.foster@sun.com>
+
+	* pixmaps/Makefile.am: Add new icon.
+	* pixmaps/advanced-directory.png: Move icon from gnome-control-center
+	to here, since it's now used in the context panel menu.
+
+2002-11-30  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in (STARTUP_NOTIFICATION_REQUIRED): require startup notification 0.4
+
+2002-11-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.3.
+
+2002-11-22  Ross Burton  <ross@burtonini.com>
+
+	* pixmaps/gnome-cardgame.png: Updated icon with a new icon, via
+	Tim Musson <trmusson@ihug.co.nz>, via Jakub Steiner (as usual).
+
+2002-11-04  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.2.
 
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-10-14  Mark McLoughlin  <mark@skynet.ie>
+2002-11-01  Dennis Cranston <dennis_cranston@yahoo.com>
 
-	* configure.in: Version 2.0.9.
+	* pixmaps/gnome-logo-icon.png, pixmaps/gnome-logo-large.png:
+	Replaced logos with the GNOME 2.x version.
+	
+2002-10-31  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in (STARTUP_NOTIFICATION_PACKAGE): AC_SUBST this for
+	inclusion in gnome-desktop-2.0.pc
+
+2002-10-31  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: add AC_PATH_PROG(PKG_CONFIG, pkg-config)
+	to make it build.
+
+2002-10-29  Havoc Pennington  <hp@pobox.com>
+
+	* configure.in (HAVE_STARTUP_NOTIFICATION): optionally build with
+	libstartup-notification
+
+2002-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: Version 2.1.0.
+
+2002-09-28  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: kill gconftool check.
+
+2002-09-27  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am:
+	* desktop_gnome_icon_theme.schemas
+	Remove schemas file.
+
+2002-09-27  Alexander Larsson  <alexl@redhat.com>
+
+	* configure.in:
+	Bump major due to removed gnome-icon-loader.
+
+2002-09-18  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am:
+	* configure.in:
+	* desktop_gnome_icon_theme.schemas:
+	Add schemas file with icon_theme default.
+
+2002-09-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: libtool versioning update
+	to reflect Alex's ABI compatible additions.
+	Current++, Revision=0, Age++.
 
 2002-09-12  John Fleck <jfleck@inkstain.net>
 
 	* configure.in: add
 	desktop-docs/gnome-feedback/Makefile and
 	desktop-docs/gnome-feedback/C/Makefile.
+
+2002-09-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: set version to 2.1.0, and
+	GNOME version to 2.1.0. 2.0.x development
+	is now happening on the gnome-2-0 branch.
 
 2002-09-05  Mark McLoughlin  <mark@skynet.ie>
 

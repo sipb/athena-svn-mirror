@@ -8,13 +8,13 @@
 # Abel Cheung <maddog@linux.org.hk>, 2001.
 #
 # Gnome-desktop:
-# Abel Cheung <maddog@linux.org.hk>, 2001-2002.
+# Abel Cheung <maddog@linux.org.hk>, 2001-2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-desktop 2.0.8\n"
-"POT-Creation-Date: 2002-10-14 13:08+1300\n"
-"PO-Revision-Date: 2002-09-25 20:30+0800\n"
+"Project-Id-Version: gnome-desktop 2.1.5\n"
+"POT-Creation-Date: 2003-01-21 17:24+1300\n"
+"PO-Revision-Date: 2003-01-01 20:49+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -61,21 +61,13 @@ msgstr "美工繪圖"
 msgid "Graphics menu"
 msgstr "美工繪圖選單"
 
-#: desktop-links/Home.directory.in.h:1
-msgid "Home"
-msgstr "家用程式"
-
-#: desktop-links/Home.directory.in.h:2
-msgid "Home Applications"
-msgstr "家用程式"
-
 #: desktop-links/Internet.directory.in.h:1
 msgid "Internet"
-msgstr "互聯網"
+msgstr "網際網路"
 
 #: desktop-links/Internet.directory.in.h:2
 msgid "Programs for Internet and networks"
-msgstr "網絡及互聯網相關應用程式"
+msgstr "網路及網際網路相關應用程式"
 
 #: desktop-links/Multimedia.directory.in.h:1
 msgid "Multimedia menu"
@@ -83,7 +75,7 @@ msgstr "多媒體選單"
 
 #: desktop-links/Multimedia.directory.in.h:2
 msgid "Sound & Video"
-msgstr "多媒體"
+msgstr "影音"
 
 #: desktop-links/Office.directory.in.h:1
 msgid "Office"
@@ -131,218 +123,246 @@ msgstr "Szabolcs 'Shooby' Ban"
 msgid "Jerome Bolliet"
 msgstr "Jerome Bolliet"
 
+#. if your encoding allows it, use eacute (U00E9) for the first
+#. * and the last 'e' in 'Chenede'
+#: gnome-about/contributors.h:54
+msgid "Erwann Chenede"
+msgstr "Erwann Chenede"
+
 #. CJK people please use (U5F35) (U570B) (U51A0) to replace
 #. * this name
-#: gnome-about/contributors.h:51
+#: gnome-about/contributors.h:57
 msgid "Abel Cheung"
 msgstr "Abel Cheung"
 
+#. if you encoding allows it, use eacute (U00E9) for the two
+#. * 'e' of 'Frederic'
+#: gnome-about/contributors.h:70
+msgid "Frederic Crozat"
+msgstr "Frederic Crozat"
+
 #. if your encoding allows it, use eacute (U00E9) for the two
 #. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:66
+#: gnome-about/contributors.h:77
 msgid "Frederic Devernay"
 msgstr "Frederic Devernay"
 
 #. if your encoding allows it, use odoubleacute (U0151) for the 'o'
 #. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:79
+#: gnome-about/contributors.h:91
 msgid "Gergo Erdi"
 msgstr "Gergo Erdi"
 
-#: gnome-about/contributors.h:86
+#: gnome-about/contributors.h:98
 msgid "Raul Perusquia Flores"
 msgstr "Raul Perusquia Flores"
 
-#: gnome-about/contributors.h:98
+#: gnome-about/contributors.h:112
 msgid "The Mysterious GEGL"
 msgstr "The Mysterious GEGL"
 
-#: gnome-about/contributors.h:100
+#: gnome-about/contributors.h:114
 msgid "Bjoern Giesler"
 msgstr "Bjoern Giesler"
 
-#: gnome-about/contributors.h:106
+#: gnome-about/contributors.h:120
 msgid "Dov Grobgeld"
 msgstr "Dov Grobgeld"
 
 #. Wang is the surname. CJK people, please use (U738B) (U5251)
 #. * to replace this name.
-#: gnome-about/contributors.h:128
+#: gnome-about/contributors.h:143
 msgid "Wang Jian"
 msgstr "王劍"
 
-#: gnome-about/contributors.h:137
+#: gnome-about/contributors.h:152
 msgid "Helmut Koeberle"
 msgstr "Helmut Koeberle"
 
-#: gnome-about/contributors.h:173
+#: gnome-about/contributors.h:189
 msgid "Matthew Marjanovic"
 msgstr "Matthew Marjanovic"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Muniz'
-#: gnome-about/contributors.h:197
+#: gnome-about/contributors.h:213
 msgid "Alexandre Muniz"
 msgstr "Alexandre Muniz"
 
 #. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:199
+#: gnome-about/contributors.h:215
 msgid "Sung-Hyun Nam"
 msgstr "Sung-Hyun Nam"
 
 #. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
 #. * of 'Norbaeck'
-#: gnome-about/contributors.h:208
+#: gnome-about/contributors.h:224
 msgid "Martin Norbaeck"
 msgstr "Martin Norbaeck"
 
 #. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
 #. * of 'Oegren'
-#: gnome-about/contributors.h:215
+#: gnome-about/contributors.h:231
 msgid "Tomas Oegren"
 msgstr "Tomas Oegren"
 
 #. If your encoding allows it, use oacute (U00F3) for the 'o'
 #. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:225
+#: gnome-about/contributors.h:241
 msgid "Carlos Perello Marin"
 msgstr "Carlos Perello Marin"
 
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#. If your encoding allows it, use aacute (U00E1) for the 'a'
+#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
 #: gnome-about/contributors.h:250
+msgid "German Poo-Caamano"
+msgstr "German Poo-Caamano"
+
+#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#: gnome-about/contributors.h:271
 msgid "Kazuhiro Sasayama"
 msgstr "Kazuhiro Sasayama"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Inigo'
-#: gnome-about/contributors.h:259
+#: gnome-about/contributors.h:281
 msgid "Inigo Serna"
 msgstr "Inigo Serna"
 
-#: gnome-about/contributors.h:263
+#: gnome-about/contributors.h:285
 msgid "Miroslav Silovic"
 msgstr "Miroslav Silovic"
 
 #. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:273
+#: gnome-about/contributors.h:296
 msgid "The Squeaky Rubber Gnome"
-msgstr "嘈吵的橡膠小精靈"
+msgstr "橡膠小精靈"
 
-#: gnome-about/contributors.h:280
+#: gnome-about/contributors.h:304
 msgid "Istvan Szekeres"
 msgstr "Istvan Szekeres"
 
-#: gnome-about/contributors.h:291
+#: gnome-about/contributors.h:317
 msgid "Manish Vachharajani"
 msgstr "Manish Vachharajani"
 
-#: gnome-about/contributors.h:292
+#: gnome-about/contributors.h:318
 msgid "Neil Vachharajani"
 msgstr "Neil Vachharajani"
 
-#: gnome-about/contributors.h:299
+#: gnome-about/contributors.h:326
 msgid "Wanda the GNOME Fish"
 msgstr "GNOME 小魚 Wanda"
 
-#: gnome-about/gnome-about.c:267
+#: gnome-about/gnome-about.c:273
 msgid "Click here to visit the site : "
 msgstr "請按這裡瀏覽網站："
 
-#: gnome-about/gnome-about.c:279
+#: gnome-about/gnome-about.c:285
 msgid "List of GNOME Contributors"
 msgstr "GNOME 開發者一覽表"
 
-#: gnome-about/gnome-about.c:281
-msgid "Gnome Logo Image"
-msgstr "Gnome 標誌"
+#: gnome-about/gnome-about.c:287
+msgid "GNOME Logo Image"
+msgstr "Gnome 標誌圖像"
 
-#: gnome-about/gnome-about.c:289
+#: gnome-about/gnome-about.c:295
 msgid "Contributors' Names"
 msgstr "開發者的名稱"
 
-#: gnome-about/gnome-about.c:291
-msgid "Gnome Logo"
-msgstr "Gnome 標誌"
+#: gnome-about/gnome-about.c:297
+msgid "GNOME Logo"
+msgstr "GNOME 標誌"
 
-#: gnome-about/gnome-about.c:435
-msgid "<big><b>GNOME Was Brought To You By</b></big>"
-msgstr "<big><u>GNOME 由以下人士合作開發</u></big>"
+#: gnome-about/gnome-about.c:506
+msgid "GNOME"
+msgstr "GNOME"
 
-#: gnome-about/gnome-about.c:569
-msgid "<big><b>And Many More ...</b></big>"
-msgstr "<big><u>還有很多 ...</u></big>"
+#: gnome-about/gnome-about.c:660
+msgid "And Many More ..."
+msgstr "還有很多人 ..."
 
-#: gnome-about/gnome-about.c:725
-msgid "About GNOME"
-msgstr "關於 GNOME"
+#: gnome-about/gnome-about.c:838
+#, c-format
+msgid "About GNOME%s%s%s"
+msgstr "關於 GNOME%s%s%s"
 
-#: gnome-about/gnome-about.c:829
+#: gnome-about/gnome-about.c:949
 msgid "GNOME News Site"
 msgstr "GNOME 新聞網頁"
 
-#: gnome-about/gnome-about.c:833
+#: gnome-about/gnome-about.c:953
 msgid "http://www.gnome.org/"
 msgstr "http://www.gnome.org/"
 
-#: gnome-about/gnome-about.c:834
+#: gnome-about/gnome-about.c:954
 msgid "GNOME Main Site"
 msgstr "GNOME 主網頁"
 
-#: gnome-about/gnome-about.c:839
+#: gnome-about/gnome-about.c:959
 msgid "GNOME Developers' Site"
 msgstr "GNOME 開發者網頁"
 
-#: libgnome-desktop/gnome-desktop-item.c:199
-#: libgnome-desktop/gnome-desktop-item.c:569
+#: gnome-about/gnome-about.c:981
+msgid "GNOME is a part of the GNU Project"
+msgstr "GNOME 是 GNU 計劃中的一部份"
+
+#: libgnome-desktop/gnome-desktop-item.c:208
+#: libgnome-desktop/gnome-desktop-item.c:578
 #, c-format
 msgid "Error reading file '%s': %s"
 msgstr "讀取檔案‘%s’時發生錯誤：%s"
 
-#: libgnome-desktop/gnome-desktop-item.c:267
+#: libgnome-desktop/gnome-desktop-item.c:276
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "回到檔案‘%s’的開始位置時發生錯誤：%s"
 
-#: libgnome-desktop/gnome-desktop-item.c:584
+#: libgnome-desktop/gnome-desktop-item.c:593
 #, c-format
 msgid "File '%s' is not a regular file or directory."
 msgstr "檔案‘%s’不是普通的檔案或目錄。"
 
-#: libgnome-desktop/gnome-desktop-item.c:600
+#: libgnome-desktop/gnome-desktop-item.c:609
 #, c-format
 msgid "File '%s' has invalid MIME type: %s"
 msgstr "檔案‘%s’的 MIME 類型無效：%s"
 
-#: libgnome-desktop/gnome-desktop-item.c:751
+#: libgnome-desktop/gnome-desktop-item.c:760
 msgid "No filename to save to"
 msgstr "沒有任何檔案名稱供儲存檔案用"
 
-#: libgnome-desktop/gnome-desktop-item.c:1709
+#: libgnome-desktop/gnome-desktop-item.c:1736
+#, c-format
+msgid "Starting %s"
+msgstr "準備啟動 %s"
+
+#: libgnome-desktop/gnome-desktop-item.c:1956
 msgid "No URL to launch"
 msgstr "沒有可以啟動的 URL"
 
-#: libgnome-desktop/gnome-desktop-item.c:1719
+#: libgnome-desktop/gnome-desktop-item.c:1966
 msgid "Not a launchable item"
 msgstr "不是可以啟動的項目"
 
-#: libgnome-desktop/gnome-desktop-item.c:1729
+#: libgnome-desktop/gnome-desktop-item.c:1976
 msgid "No command (Exec) to launch"
 msgstr "沒有可啟動的指令 (Exec)"
 
-#: libgnome-desktop/gnome-desktop-item.c:1742
+#: libgnome-desktop/gnome-desktop-item.c:1989
 msgid "Bad command (Exec) to launch"
 msgstr "準備啟動的指令 (Exec) 出現錯誤"
 
-#: libgnome-desktop/gnome-desktop-item.c:3242
+#: libgnome-desktop/gnome-desktop-item.c:3619
 msgid "No name"
 msgstr "沒有名稱"
 
-#: libgnome-desktop/gnome-desktop-item.c:3299
+#: libgnome-desktop/gnome-desktop-item.c:3676
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "以下 URI 內容的編碼不明：%s"
 
-#: libgnome-desktop/gnome-desktop-item.c:3530
+#: libgnome-desktop/gnome-desktop-item.c:3907
 #, c-format
 msgid "Error writing file '%s': %s"
 msgstr "寫入檔案‘%s’時發生錯誤：%s"
@@ -365,8 +385,8 @@ msgid "FSDevice"
 msgstr "檔案系統裝置"
 
 #: libgnome-desktop/gnome-ditem-edit.c:224
-msgid "MimeType"
-msgstr "Mime 類型"
+msgid "MIME Type"
+msgstr "MIME 類型"
 
 #: libgnome-desktop/gnome-ditem-edit.c:226
 msgid "Service"
@@ -479,6 +499,12 @@ msgstr "進階設定"
 #: libgnome-desktop/gnome-hint.c:175
 msgid "_Show Hints at Startup"
 msgstr "啟動 GNOME 時顯示使用提示(_S)"
+
+#~ msgid "Home"
+#~ msgstr "家用程式"
+
+#~ msgid "Home Applications"
+#~ msgstr "家用程式"
 
 #~ msgid "Applications"
 #~ msgstr "應用程式"

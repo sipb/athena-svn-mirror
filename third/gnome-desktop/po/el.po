@@ -1,8 +1,8 @@
 # Gnome-core Greek PO file.
-# Copyright (C) 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+# Copyright (C) 1999, 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
 # Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 1999.
 # Simos Xenitellis <simos@hellug.gr>, 1999, 2000, 2001, 2002.
-# Sarantis Paskalis <paskalis@di.uoa.gr>, 2000.         
+# Sarantis Paskalis <paskalis@di.uoa.gr>, 2000.
 #
 # Comment: Most of the work done by Spiros (around 600 messages).
 # Comment: Simos/Sarantis did 12%.
@@ -18,17 +18,19 @@
 # simos: 959 messages, 06Jun2001, (fixed minor typo)
 # simos: 897 messages, 28Nov2001, (feeling good to translate HEAD)
 # simos: 105 messages, 06Aug2002, file split from gnome-core, first full translation.
-# 
+# kostas: 105 messages, 06Jan2003, one more update
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-desktop 2.0.5\n"
-"POT-Creation-Date: 2002-10-14 13:08+1300\n"
-"PO-Revision-Date: 2002-08-07 13:11+0100\n"
-"Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
+"POT-Creation-Date: 2003-01-21 17:24+1300\n"
+"PO-Revision-Date: 2003-01-06 18:04+0200\n"
+"Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: desktop-links/Accessories.directory.in.h:1
 msgid "Accessories"
@@ -69,14 +71,6 @@ msgstr "Γραφικά"
 #: desktop-links/Graphics.directory.in.h:2
 msgid "Graphics menu"
 msgstr "Μενού προγραμμάτων σχετικών με γραφικά"
-
-#: desktop-links/Home.directory.in.h:1
-msgid "Home"
-msgstr "Αρχή"
-
-#: desktop-links/Home.directory.in.h:2
-msgid "Home Applications"
-msgstr "Οικιακές Εφαρμογές"
 
 #: desktop-links/Internet.directory.in.h:1
 msgid "Internet"
@@ -140,218 +134,246 @@ msgstr "Szabolcs 'Shooby' Ban"
 msgid "Jerome Bolliet"
 msgstr "Τζέρομ Μπολιέτ"
 
+#. if your encoding allows it, use eacute (U00E9) for the first
+#. * and the last 'e' in 'Chenede'
+#: gnome-about/contributors.h:54
+msgid "Erwann Chenede"
+msgstr "Erwann Chenede"
+
 #. CJK people please use (U5F35) (U570B) (U51A0) to replace
 #. * this name
-#: gnome-about/contributors.h:51
+#: gnome-about/contributors.h:57
 msgid "Abel Cheung"
 msgstr "Άβελ Τσεούνγκ"
 
+#. if you encoding allows it, use eacute (U00E9) for the two
+#. * 'e' of 'Frederic'
+#: gnome-about/contributors.h:70
+msgid "Frederic Crozat"
+msgstr "Frederic Crozat"
+
 #. if your encoding allows it, use eacute (U00E9) for the two
 #. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:66
+#: gnome-about/contributors.h:77
 msgid "Frederic Devernay"
 msgstr "Φρέντερικ Ντεβερνέ"
 
 #. if your encoding allows it, use odoubleacute (U0151) for the 'o'
 #. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:79
+#: gnome-about/contributors.h:91
 msgid "Gergo Erdi"
 msgstr "Gergo Erdi"
 
-#: gnome-about/contributors.h:86
+#: gnome-about/contributors.h:98
 msgid "Raul Perusquia Flores"
 msgstr "Ραούλ Περούσκια Φλόρες"
 
-#: gnome-about/contributors.h:98
+#: gnome-about/contributors.h:112
 msgid "The Mysterious GEGL"
 msgstr "O Μυστηριώδης GEGL"
 
-#: gnome-about/contributors.h:100
+#: gnome-about/contributors.h:114
 msgid "Bjoern Giesler"
 msgstr "Μπιόρν Γκίσλερ"
 
-#: gnome-about/contributors.h:106
+#: gnome-about/contributors.h:120
 msgid "Dov Grobgeld"
 msgstr "Ντοβ Γκρόμπγκελντ"
 
 #. Wang is the surname. CJK people, please use (U738B) (U5251)
 #. * to replace this name.
-#: gnome-about/contributors.h:128
+#: gnome-about/contributors.h:143
 msgid "Wang Jian"
 msgstr "Γουάνγκ Ζιάν"
 
-#: gnome-about/contributors.h:137
+#: gnome-about/contributors.h:152
 msgid "Helmut Koeberle"
 msgstr "Χέλμουτ Κέμπερλε"
 
-#: gnome-about/contributors.h:173
+#: gnome-about/contributors.h:189
 msgid "Matthew Marjanovic"
 msgstr "Μάθιου Μαρτζάνοβιτς"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Muniz'
-#: gnome-about/contributors.h:197
+#: gnome-about/contributors.h:213
 msgid "Alexandre Muniz"
 msgstr "Alexandre Muniz"
 
 #. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:199
+#: gnome-about/contributors.h:215
 msgid "Sung-Hyun Nam"
 msgstr "Sung-Hyun Nam"
 
 #. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
 #. * of 'Norbaeck'
-#: gnome-about/contributors.h:208
+#: gnome-about/contributors.h:224
 msgid "Martin Norbaeck"
 msgstr "Martin Norbaeck"
 
 #. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
 #. * of 'Oegren'
-#: gnome-about/contributors.h:215
+#: gnome-about/contributors.h:231
 msgid "Tomas Oegren"
 msgstr "Tomas Ogren"
 
 #. If your encoding allows it, use oacute (U00F3) for the 'o'
 #. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:225
+#: gnome-about/contributors.h:241
 msgid "Carlos Perello Marin"
 msgstr "Carlos Perello Marin"
 
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#. If your encoding allows it, use aacute (U00E1) for the 'a'
+#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
 #: gnome-about/contributors.h:250
+msgid "German Poo-Caamano"
+msgstr "German Poo-Caamano"
+
+#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#: gnome-about/contributors.h:271
 msgid "Kazuhiro Sasayama"
 msgstr "Kazuhiro Sasayama"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Inigo'
-#: gnome-about/contributors.h:259
+#: gnome-about/contributors.h:281
 msgid "Inigo Serna"
 msgstr "Inigo Serna"
 
-#: gnome-about/contributors.h:263
+#: gnome-about/contributors.h:285
 msgid "Miroslav Silovic"
 msgstr "Μίροσλαβ Σίλοβιτς"
 
 #. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:273
+#: gnome-about/contributors.h:296
 msgid "The Squeaky Rubber Gnome"
 msgstr "Το Τσιριχτό και Ελαστικό Gnome"
 
-#: gnome-about/contributors.h:280
+#: gnome-about/contributors.h:304
 msgid "Istvan Szekeres"
 msgstr "Ίστβαν Τσεκέρες"
 
-#: gnome-about/contributors.h:291
+#: gnome-about/contributors.h:317
 msgid "Manish Vachharajani"
 msgstr "Μάνις Βακαρατζάνι"
 
-#: gnome-about/contributors.h:292
+#: gnome-about/contributors.h:318
 msgid "Neil Vachharajani"
 msgstr "Νιλ Βακαρατζάνι"
 
-#: gnome-about/contributors.h:299
+#: gnome-about/contributors.h:326
 msgid "Wanda the GNOME Fish"
 msgstr "Γουάντα το Ψάρι του GNOME"
 
-#: gnome-about/gnome-about.c:267
+#: gnome-about/gnome-about.c:273
 msgid "Click here to visit the site : "
 msgstr "Κάντε κλικ εδώ για να επισκεφτείτε το δικτυακό τόπο : "
 
-#: gnome-about/gnome-about.c:279
+#: gnome-about/gnome-about.c:285
 msgid "List of GNOME Contributors"
 msgstr "Λίστα Ατόμων Που Έχουν Συνεισφέρει στο GNOME"
 
-#: gnome-about/gnome-about.c:281
-msgid "Gnome Logo Image"
+#: gnome-about/gnome-about.c:287
+msgid "GNOME Logo Image"
 msgstr "Εικόνα Λογοτύπου του GNOME"
 
-#: gnome-about/gnome-about.c:289
+#: gnome-about/gnome-about.c:295
 msgid "Contributors' Names"
 msgstr "Ονόματα Ατόμων Που Έχουν Συνεισφέρει"
 
-#: gnome-about/gnome-about.c:291
-msgid "Gnome Logo"
-msgstr "Λογότυπο του Gnome"
+#: gnome-about/gnome-about.c:297
+msgid "GNOME Logo"
+msgstr "Λογότυπο GNOME"
 
-#: gnome-about/gnome-about.c:435
-msgid "<big><b>GNOME Was Brought To You By</b></big>"
-msgstr "<big><b>Το GNOME Είναι Προσφορά Των</b></big>"
+#: gnome-about/gnome-about.c:506
+msgid "GNOME"
+msgstr "GNOME"
 
-#: gnome-about/gnome-about.c:569
-msgid "<big><b>And Many More ...</b></big>"
-msgstr "<big><b>Και Πολλοί Άλλοι...</b></big>"
+#: gnome-about/gnome-about.c:660
+msgid "And Many More ..."
+msgstr "Και Πολλοί Άλλοι..."
 
-#: gnome-about/gnome-about.c:725
-msgid "About GNOME"
-msgstr "Περί GNOME"
+#: gnome-about/gnome-about.c:838
+#, c-format
+msgid "About GNOME%s%s%s"
+msgstr "Περί GNOME%s%s%s"
 
-#: gnome-about/gnome-about.c:829
+#: gnome-about/gnome-about.c:949
 msgid "GNOME News Site"
 msgstr "Κόμβος Νέων του GNOME"
 
-#: gnome-about/gnome-about.c:833
+#: gnome-about/gnome-about.c:953
 msgid "http://www.gnome.org/"
 msgstr "http://www.gnome.org/"
 
-#: gnome-about/gnome-about.c:834
+#: gnome-about/gnome-about.c:954
 msgid "GNOME Main Site"
 msgstr "Κύριος Κόμβος GNOME"
 
-#: gnome-about/gnome-about.c:839
+#: gnome-about/gnome-about.c:959
 msgid "GNOME Developers' Site"
 msgstr "Κόμβος Προγραμματιστών GNOME"
 
-#: libgnome-desktop/gnome-desktop-item.c:199
-#: libgnome-desktop/gnome-desktop-item.c:569
+#: gnome-about/gnome-about.c:981
+msgid "GNOME is a part of the GNU Project"
+msgstr "Το GNOME είναι μέρος του GNU Project"
+
+#: libgnome-desktop/gnome-desktop-item.c:208
+#: libgnome-desktop/gnome-desktop-item.c:578
 #, c-format
 msgid "Error reading file '%s': %s"
 msgstr "Σφάλμα στην ανάγνωση του αρχείου '%s': %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:267
+#: libgnome-desktop/gnome-desktop-item.c:276
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "Σφάλμα επαναφοράς αρχείου '%s': %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:584
+#: libgnome-desktop/gnome-desktop-item.c:593
 #, c-format
 msgid "File '%s' is not a regular file or directory."
 msgstr "Το αρχείο '%s' δεν είναι κανονικό αρχείο ή κατάλογος."
 
-#: libgnome-desktop/gnome-desktop-item.c:600
+#: libgnome-desktop/gnome-desktop-item.c:609
 #, c-format
 msgid "File '%s' has invalid MIME type: %s"
 msgstr "Το αρχείο '%s' δεν έχει έγκυρο τύπο MIME: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:751
+#: libgnome-desktop/gnome-desktop-item.c:760
 msgid "No filename to save to"
 msgstr "Δεν υπάρχει όνομα αρχείου για την αποθήκευση"
 
-#: libgnome-desktop/gnome-desktop-item.c:1709
+#: libgnome-desktop/gnome-desktop-item.c:1736
+#, c-format
+msgid "Starting %s"
+msgstr "Εκκινείται %s "
+
+#: libgnome-desktop/gnome-desktop-item.c:1956
 msgid "No URL to launch"
 msgstr "Δεν υπάρχει URL προς εκκίνηση"
 
-#: libgnome-desktop/gnome-desktop-item.c:1719
+#: libgnome-desktop/gnome-desktop-item.c:1966
 msgid "Not a launchable item"
 msgstr "Δεν είναι εκκινήσιμο αντικείμενο"
 
-#: libgnome-desktop/gnome-desktop-item.c:1729
+#: libgnome-desktop/gnome-desktop-item.c:1976
 msgid "No command (Exec) to launch"
 msgstr "Δεν υπάρχει εντολή (Exec) για εκκίνηση"
 
-#: libgnome-desktop/gnome-desktop-item.c:1742
+#: libgnome-desktop/gnome-desktop-item.c:1989
 msgid "Bad command (Exec) to launch"
 msgstr "Εσφαλμένη εντολή (Exec) για εκκίνηση"
 
-#: libgnome-desktop/gnome-desktop-item.c:3242
+#: libgnome-desktop/gnome-desktop-item.c:3619
 msgid "No name"
 msgstr "Χωρίς όνομα"
 
-#: libgnome-desktop/gnome-desktop-item.c:3299
+#: libgnome-desktop/gnome-desktop-item.c:3676
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "Άγνωστη Κωδικοποίηση: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:3530
+#: libgnome-desktop/gnome-desktop-item.c:3907
 #, c-format
 msgid "Error writing file '%s': %s"
 msgstr "Σφάλμα εγγραφής στο αρχείο '%s': %s"
@@ -374,8 +396,8 @@ msgid "FSDevice"
 msgstr "FSDevice"
 
 #: libgnome-desktop/gnome-ditem-edit.c:224
-msgid "MimeType"
-msgstr "Τύπος ΜΙΜΕ"
+msgid "MIME Type"
+msgstr "Τύπος MIME"
 
 #: libgnome-desktop/gnome-ditem-edit.c:226
 msgid "Service"
@@ -488,6 +510,21 @@ msgstr "Για προχωρημένους"
 #: libgnome-desktop/gnome-hint.c:175
 msgid "_Show Hints at Startup"
 msgstr "Εμ_φάνιση Υποδείξεων κατά την Εκκίνηση"
+
+#~ msgid "Home"
+#~ msgstr "Αρχή"
+
+#~ msgid "Home Applications"
+#~ msgstr "Οικιακές Εφαρμογές"
+
+#~ msgid "Gnome Logo"
+#~ msgstr "Λογότυπο του Gnome"
+
+#~ msgid "<big><b>GNOME Was Brought To You By</b></big>"
+#~ msgstr "<big><b>Το GNOME Είναι Προσφορά Των</b></big>"
+
+#~ msgid "MimeType"
+#~ msgstr "Τύπος ΜΙΜΕ"
 
 #, fuzzy
 #~ msgid "Applications"
@@ -987,9 +1024,6 @@ msgstr "Εμ_φάνιση Υποδείξεων κατά την Εκκίνηση"
 #~ msgid "Select a font"
 #~ msgstr "Επιλογή κινούμενων σχεδίων"
 
-#~ msgid "GNOME Login"
-#~ msgstr "Είσοδος στο GNOME"
-
 #~ msgid "Start with default programs"
 #~ msgstr "Εκκίνηση με εξ ορισμού προγράμματα"
 
@@ -1067,9 +1101,6 @@ msgstr "Εμ_φάνιση Υποδείξεων κατά την Εκκίνηση"
 
 #~ msgid "Waiting to start or already finished."
 #~ msgstr "Αναμονή εκκίνησης ή ήδη τερματισμένο."
-
-#~ msgid "Starting"
-#~ msgstr "Εκκινείται"
 
 #~ msgid "Started but has not yet reported state."
 #~ msgstr "Εκκινήθηκε αλλά δεν έχει αναφέρει ακόμα κατάσταση."
@@ -1271,9 +1302,6 @@ msgstr "Εμ_φάνιση Υποδείξεων κατά την Εκκίνηση"
 
 #~ msgid "Starting GNOME: done"
 #~ msgstr "Εκκίνηση του GNOME: έγινε"
-
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
 
 #~ msgid "Starting GNOME"
 #~ msgstr "Εκκίνηση GNOME"
@@ -2623,9 +2651,6 @@ msgstr "Εμ_φάνιση Υποδείξεων κατά την Εκκίνηση"
 
 #~ msgid "By Name"
 #~ msgstr "Βάση Ονόματος"
-
-#~ msgid "By Type"
-#~ msgstr "Βάση Είδους"
 
 #~ msgid "By Size"
 #~ msgstr "Βάση Μεγέθους"

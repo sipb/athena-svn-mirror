@@ -6,12 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-desktop 1.5.7\n"
-"POT-Creation-Date: 2002-10-14 13:08+1300\n"
+"POT-Creation-Date: 2003-01-21 17:24+1300\n"
 "PO-Revision-Date: 2002-04-29 17:11+0200\n"
 "Last-Translator: Joseba Bidaurrazaga van Dierdonck <jbv@euskalnet.net>\n"
 "Language-Team: euskara <linux-eu@chanae.alphanet.ch>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: desktop-links/Accessories.directory.in.h:1
@@ -55,14 +55,6 @@ msgstr "Grafikoak"
 #: desktop-links/Graphics.directory.in.h:2
 msgid "Graphics menu"
 msgstr "Grafikoen menua"
-
-#: desktop-links/Home.directory.in.h:1
-msgid "Home"
-msgstr "Etxe"
-
-#: desktop-links/Home.directory.in.h:2
-msgid "Home Applications"
-msgstr "Etxeko Aplikazioak"
 
 #: desktop-links/Internet.directory.in.h:1
 msgid "Internet"
@@ -120,224 +112,256 @@ msgstr "Timur I. Bakeyev"
 #. * for the 'a' of 'Ban'
 #: gnome-about/contributors.h:23
 msgid "Szabolcs 'Shooby' Ban"
-msgstr "Szabolcs 'Shooby' Bán"
+msgstr "Szabolcs 'Shooby' BÃ¡n"
 
 #: gnome-about/contributors.h:36
 msgid "Jerome Bolliet"
 msgstr "Jerome Bolliet"
 
+#. if your encoding allows it, use eacute (U00E9) for the first
+#. * and the last 'e' in 'Chenede'
+#: gnome-about/contributors.h:54
+msgid "Erwann Chenede"
+msgstr ""
+
 #. CJK people please use (U5F35) (U570B) (U51A0) to replace
 #. * this name
-#: gnome-about/contributors.h:51
+#: gnome-about/contributors.h:57
 msgid "Abel Cheung"
 msgstr "Abel Cheung"
 
+#. if you encoding allows it, use eacute (U00E9) for the two
+#. * 'e' of 'Frederic'
+#: gnome-about/contributors.h:70
+#, fuzzy
+msgid "Frederic Crozat"
+msgstr "FrÃ©dÃ©ric Devernay"
+
 #. if your encoding allows it, use eacute (U00E9) for the two
 #. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:66
+#: gnome-about/contributors.h:77
 msgid "Frederic Devernay"
-msgstr "Frédéric Devernay"
+msgstr "FrÃ©dÃ©ric Devernay"
 
 #. if your encoding allows it, use odoubleacute (U0151) for the 'o'
 #. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:79
+#: gnome-about/contributors.h:91
 msgid "Gergo Erdi"
-msgstr "Gergo Érdi"
+msgstr "Gergo Ã‰rdi"
 
-#: gnome-about/contributors.h:86
+#: gnome-about/contributors.h:98
 msgid "Raul Perusquia Flores"
 msgstr "Raul Perusquia Flores"
 
-#: gnome-about/contributors.h:98
+#: gnome-about/contributors.h:112
 msgid "The Mysterious GEGL"
 msgstr "GEGL misteriotsua"
 
-#: gnome-about/contributors.h:100
+#: gnome-about/contributors.h:114
 msgid "Bjoern Giesler"
 msgstr "Bjoern Giesler"
 
-#: gnome-about/contributors.h:106
+#: gnome-about/contributors.h:120
 msgid "Dov Grobgeld"
 msgstr "Dov Grobgeld"
 
 #. Wang is the surname. CJK people, please use (U738B) (U5251)
 #. * to replace this name.
-#: gnome-about/contributors.h:128
+#: gnome-about/contributors.h:143
 msgid "Wang Jian"
 msgstr "Wang Jian"
 
-#: gnome-about/contributors.h:137
+#: gnome-about/contributors.h:152
 msgid "Helmut Koeberle"
 msgstr "Helmut Koeberle"
 
-#: gnome-about/contributors.h:173
+#: gnome-about/contributors.h:189
 msgid "Matthew Marjanovic"
 msgstr "Matthew Marjanovic"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Muniz'
-#: gnome-about/contributors.h:197
+#: gnome-about/contributors.h:213
 msgid "Alexandre Muniz"
-msgstr "Alexandre Muñiz"
+msgstr "Alexandre MuÃ±iz"
 
 #. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:199
+#: gnome-about/contributors.h:215
 msgid "Sung-Hyun Nam"
 msgstr "Sung-Hyun Nam"
 
 #. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
 #. * of 'Norbaeck'
-#: gnome-about/contributors.h:208
+#: gnome-about/contributors.h:224
 msgid "Martin Norbaeck"
-msgstr "Martin Norbäck"
+msgstr "Martin NorbÃ¤ck"
 
 #. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
 #. * of 'Oegren'
-#: gnome-about/contributors.h:215
+#: gnome-about/contributors.h:231
 msgid "Tomas Oegren"
-msgstr "Tomas Ögren"
+msgstr "Tomas Ã–gren"
 
 #. If your encoding allows it, use oacute (U00F3) for the 'o'
 #. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:225
+#: gnome-about/contributors.h:241
 msgid "Carlos Perello Marin"
 msgstr "Carlos Perello Marin"
 
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#. If your encoding allows it, use aacute (U00E1) for the 'a'
+#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
 #: gnome-about/contributors.h:250
+msgid "German Poo-Caamano"
+msgstr ""
+
+#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#: gnome-about/contributors.h:271
 msgid "Kazuhiro Sasayama"
 msgstr "Kazuhiro Sasayama"
 
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Inigo'
-#: gnome-about/contributors.h:259
+#: gnome-about/contributors.h:281
 msgid "Inigo Serna"
-msgstr "Iñigo Serna"
+msgstr "IÃ±igo Serna"
 
-#: gnome-about/contributors.h:263
+#: gnome-about/contributors.h:285
 msgid "Miroslav Silovic"
 msgstr "Miroslav Silovic"
 
 #. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:273
+#: gnome-about/contributors.h:296
 msgid "The Squeaky Rubber Gnome"
 msgstr "The Squeaky Rubber Gnome"
 
-#: gnome-about/contributors.h:280
+#: gnome-about/contributors.h:304
 msgid "Istvan Szekeres"
 msgstr "Istvan Szekeres"
 
-#: gnome-about/contributors.h:291
+#: gnome-about/contributors.h:317
 msgid "Manish Vachharajani"
 msgstr "Manish Vachharajani"
 
-#: gnome-about/contributors.h:292
+#: gnome-about/contributors.h:318
 msgid "Neil Vachharajani"
 msgstr "Neil Vachharajani"
 
-#: gnome-about/contributors.h:299
+#: gnome-about/contributors.h:326
 msgid "Wanda the GNOME Fish"
 msgstr "Wandak, GNOME arrainak"
 
-#: gnome-about/gnome-about.c:267
+#: gnome-about/gnome-about.c:273
 msgid "Click here to visit the site : "
 msgstr "Klikatu hemen tokiara joateko : "
 
-#: gnome-about/gnome-about.c:279
+#: gnome-about/gnome-about.c:285
 msgid "List of GNOME Contributors"
 msgstr "GNOME Laguntzaileen zerrenda"
 
-#: gnome-about/gnome-about.c:281
-msgid "Gnome Logo Image"
+#: gnome-about/gnome-about.c:287
+#, fuzzy
+msgid "GNOME Logo Image"
 msgstr "Gnome Logo Irudia"
 
-#: gnome-about/gnome-about.c:289
+#: gnome-about/gnome-about.c:295
 msgid "Contributors' Names"
 msgstr "Laguntzaileen Izenak"
 
-#: gnome-about/gnome-about.c:291
-msgid "Gnome Logo"
-msgstr "Gnome Logo"
+#: gnome-about/gnome-about.c:297
+#, fuzzy
+msgid "GNOME Logo"
+msgstr "GNOME Login"
 
-#: gnome-about/gnome-about.c:435
-msgid "<big><b>GNOME Was Brought To You By</b></big>"
-msgstr "<b><big>'k GNOME eskura ekarri dizu</b></big>"
+#: gnome-about/gnome-about.c:506
+msgid "GNOME"
+msgstr "GNOME"
 
-#: gnome-about/gnome-about.c:569
-msgid "<big><b>And Many More ...</b></big>"
+#: gnome-about/gnome-about.c:660
+#, fuzzy
+msgid "And Many More ..."
 msgstr "<big><b>Beste hauek ere ...</b></big>"
 
-#: gnome-about/gnome-about.c:725
-msgid "About GNOME"
+#: gnome-about/gnome-about.c:838
+#, fuzzy, c-format
+msgid "About GNOME%s%s%s"
 msgstr "GNOMEri buruz"
 
-#: gnome-about/gnome-about.c:829
+#: gnome-about/gnome-about.c:949
 msgid "GNOME News Site"
 msgstr "GNOMEren Berriak"
 
-#: gnome-about/gnome-about.c:833
+#: gnome-about/gnome-about.c:953
 msgid "http://www.gnome.org/"
 msgstr "http://www.gnome.org/"
 
-#: gnome-about/gnome-about.c:834
+#: gnome-about/gnome-about.c:954
 msgid "GNOME Main Site"
 msgstr "GNOMEren Toki Nagusia"
 
-#: gnome-about/gnome-about.c:839
+#: gnome-about/gnome-about.c:959
 msgid "GNOME Developers' Site"
 msgstr "GNOMEren garatzaileen tokia"
 
-#: libgnome-desktop/gnome-desktop-item.c:199
-#: libgnome-desktop/gnome-desktop-item.c:569
+#: gnome-about/gnome-about.c:981
+msgid "GNOME is a part of the GNU Project"
+msgstr ""
+
+#: libgnome-desktop/gnome-desktop-item.c:208
+#: libgnome-desktop/gnome-desktop-item.c:578
 #, c-format
 msgid "Error reading file '%s': %s"
 msgstr "Errorea fitxategian '%s': %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:267
+#: libgnome-desktop/gnome-desktop-item.c:276
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "Errorea fitxategia berrikustean '%s': %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:584
+#: libgnome-desktop/gnome-desktop-item.c:593
 #, c-format
 msgid "File '%s' is not a regular file or directory."
 msgstr ""
 
-#: libgnome-desktop/gnome-desktop-item.c:600
+#: libgnome-desktop/gnome-desktop-item.c:609
 #, c-format
 msgid "File '%s' has invalid MIME type: %s"
 msgstr ""
 
-#: libgnome-desktop/gnome-desktop-item.c:751
+#: libgnome-desktop/gnome-desktop-item.c:760
 msgid "No filename to save to"
 msgstr "Fitxategi izenik ez"
 
-#: libgnome-desktop/gnome-desktop-item.c:1709
+#: libgnome-desktop/gnome-desktop-item.c:1736
+#, fuzzy, c-format
+msgid "Starting %s"
+msgstr "abiarazten"
+
+#: libgnome-desktop/gnome-desktop-item.c:1956
 msgid "No URL to launch"
 msgstr "URLrik ez abiatzeko"
 
-#: libgnome-desktop/gnome-desktop-item.c:1719
+#: libgnome-desktop/gnome-desktop-item.c:1966
 msgid "Not a launchable item"
 msgstr "Ez da abiagarria"
 
-#: libgnome-desktop/gnome-desktop-item.c:1729
+#: libgnome-desktop/gnome-desktop-item.c:1976
 msgid "No command (Exec) to launch"
 msgstr "Ez komandorik (Exec) abiatzeko"
 
-#: libgnome-desktop/gnome-desktop-item.c:1742
+#: libgnome-desktop/gnome-desktop-item.c:1989
 msgid "Bad command (Exec) to launch"
 msgstr "Komando okerra (Exec)abiatzeko"
 
-#: libgnome-desktop/gnome-desktop-item.c:3242
+#: libgnome-desktop/gnome-desktop-item.c:3619
 msgid "No name"
 msgstr "Izenik ez"
 
-#: libgnome-desktop/gnome-desktop-item.c:3299
+#: libgnome-desktop/gnome-desktop-item.c:3676
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "Kodetze ezezaguna: %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:3530
+#: libgnome-desktop/gnome-desktop-item.c:3907
 #, c-format
 msgid "Error writing file '%s': %s"
 msgstr "Errorea fitxategia idazterakoan '%s': %s"
@@ -360,8 +384,9 @@ msgid "FSDevice"
 msgstr "FSTresna:"
 
 #: libgnome-desktop/gnome-ditem-edit.c:224
-msgid "MimeType"
-msgstr "MimeMota"
+#, fuzzy
+msgid "MIME Type"
+msgstr "Motaz"
 
 #: libgnome-desktop/gnome-ditem-edit.c:226
 msgid "Service"
@@ -474,6 +499,21 @@ msgstr "Aurrerakoia"
 #: libgnome-desktop/gnome-hint.c:175
 msgid "_Show Hints at Startup"
 msgstr "_Erakuts aholkuak abiarazterakoan"
+
+#~ msgid "Home"
+#~ msgstr "Etxe"
+
+#~ msgid "Home Applications"
+#~ msgstr "Etxeko Aplikazioak"
+
+#~ msgid "Gnome Logo"
+#~ msgstr "Gnome Logo"
+
+#~ msgid "<big><b>GNOME Was Brought To You By</b></big>"
+#~ msgstr "<b><big>'k GNOME eskura ekarri dizu</b></big>"
+
+#~ msgid "MimeType"
+#~ msgstr "MimeMota"
 
 #~ msgid "UTF-8"
 #~ msgstr "UTF-8"
@@ -946,9 +986,6 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ msgid "Select a font"
 #~ msgstr "Hauta hizkia"
 
-#~ msgid "GNOME Login"
-#~ msgstr "GNOME Login"
-
 #~ msgid "Start with default programs"
 #~ msgstr "Abiarazi jatorrizko programez"
 
@@ -1025,9 +1062,6 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 
 #~ msgid "Waiting to start or already finished."
 #~ msgstr "Abiarazteko zain edo benetan bukatuta."
-
-#~ msgid "Starting"
-#~ msgstr "abiarazten"
 
 #~ msgid "Started but has not yet reported state."
 #~ msgstr "Abiatua, baina oraindik egoeraz jabetu gabe."
@@ -1228,9 +1262,6 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ msgid "Starting GNOME: done"
 #~ msgstr "GNOME abiarazten: eginda"
 
-#~ msgid "GNOME"
-#~ msgstr "GNOME"
-
 #~ msgid "Starting GNOME"
 #~ msgstr "GNOME abiarazten"
 
@@ -1426,7 +1457,7 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ msgstr "Bertoko postaren direktorioa"
 
 #~ msgid "Remote POP3-server"
-#~ msgstr "Urruneko POP·-zerbitzaria"
+#~ msgstr "Urruneko POPÂ·-zerbitzaria"
 
 #~ msgid "Remote IMAP-server"
 #~ msgstr "Urruneko IMAP-zerbitzaria"
@@ -2511,9 +2542,6 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ msgid "By Name"
 #~ msgstr "Izenez"
 
-#~ msgid "By Type"
-#~ msgstr "Motaz"
-
 #~ msgid "By Size"
 #~ msgstr "Neurrira"
 
@@ -3541,7 +3569,7 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ msgstr "Ezin applet-a erregistratu!"
 
 #~ msgid "Whoops! for some reason we can't add to the panel"
-#~ msgstr "Ño! batek daki zergatik baina ezin dugu panelera gehitu"
+#~ msgstr "Ã‘o! batek daki zergatik baina ezin dugu panelera gehitu"
 
 #~ msgid "No socket was created"
 #~ msgstr "Ez da socket-ik eratu"
@@ -4068,7 +4096,7 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ msgstr "Slashdot-ko izenburuak erakusteko pegatina\n"
 
 #~ msgid "(C) 1998"
-#~ msgstr "© 1998"
+#~ msgstr "Â© 1998"
 
 #~ msgid "SlashApp"
 #~ msgstr "SlashApp"
@@ -4407,7 +4435,7 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ "Eskerrak Balasz Nagy (Kevin)<julian7@kva.hu> laguntzeagatik."
 
 #~ msgid "(C) 1998-99 LSC - Linux Supporting Center"
-#~ msgstr "© 1998-1999 LSC - Linux Supporting Center"
+#~ msgstr "Â© 1998-1999 LSC - Linux Supporting Center"
 
 #~ msgid "1.0.1"
 #~ msgstr "1.0.1"
@@ -4477,7 +4505,7 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ msgstr "Esound Manager-aren applet-a"
 
 #~ msgid "Copyright (C)1998 Red Hat Software"
-#~ msgstr "Copyright © 1998 Red Hat Software"
+#~ msgstr "Copyright Â© 1998 Red Hat Software"
 
 #~ msgid "Use automount friendly status test"
 #~ msgstr "Erabili automuntaketa test lagungarria."
@@ -4602,7 +4630,7 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ "postaz ohartzeko izan daiteke."
 
 #~ msgid "(C) 1999"
-#~ msgstr "© 1999"
+#~ msgstr "Â© 1999"
 
 #~ msgid "Clock and Mail Notify Applet"
 #~ msgstr "Erlojua eta postaz ohartzeko Applet-a"
@@ -4621,7 +4649,7 @@ msgstr "_Erakuts aholkuak abiarazterakoan"
 #~ "lizentzia publiko orokorrarrarekin."
 
 #~ msgid "Copyright (C) 1998"
-#~ msgstr "Copyright © 1998"
+#~ msgstr "Copyright Â© 1998"
 
 #~ msgid "0.02"
 #~ msgstr "0.02"

@@ -6,403 +6,364 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2002-10-14 13:08+1300\n"
-"PO-Revision-Date: 2002-05-10 17:14+5:30\n"
+"Project-Id-Version: gnome-desktop VERSION\n"
+"POT-Creation-Date: 2003-01-21 17:24+1300\n"
+"PO-Revision-Date: 2003-01-11 20:45+0530\n"
 "Last-Translator: Anurag Seetha <anuragseetha@yahoo.com>\n"
-"Language-Team: Hindi <indlinux-hindi-gnome@lists.sourceforge.net>\n"
+"Language-Team: Gnome Hindi Team <indlinux-hindi-gnome@lists.sourceforge."
+"net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# desktop-links/Accessories.directory.in.h:1
 #: desktop-links/Accessories.directory.in.h:1
 msgid "Accessories"
 msgstr "सहायक प्रोग्राम"
 
-# desktop-links/Accessories.directory.in.h:1
 #: desktop-links/Accessories.directory.in.h:2
-#, fuzzy
 msgid "Accessories menu"
 msgstr "सहायक प्रोग्राम"
 
 #: desktop-links/Applications.directory.in.h:1
 msgid "Applications without a category"
-msgstr ""
+msgstr "अनवर्गिकत अनुप्रयोग"
 
 #: desktop-links/Applications.directory.in.h:2
 msgid "Other"
-msgstr ""
+msgstr "अन्य"
 
-# desktop-links/Development.directory.in.h:1
 #: desktop-links/Development.directory.in.h:1
 msgid "Programming"
 msgstr "प्रोग्रामिंग"
 
-# desktop-links/Development.directory.in.h:2
 #: desktop-links/Development.directory.in.h:2
 msgid "Tools for software development"
 msgstr "साफ्टवेयर विकास के लिए टूल्स"
 
-# desktop-links/Games.directory.in.h:1
 #: desktop-links/Games.directory.in.h:1
 msgid "Games"
 msgstr "खेल"
 
-# desktop-links/Games.directory.in.h:2
 #: desktop-links/Games.directory.in.h:2
 msgid "Games menu"
 msgstr "खेल मेनू"
 
-# desktop-links/Graphics.directory.in.h:1
 #: desktop-links/Graphics.directory.in.h:1
 msgid "Graphics"
 msgstr "ग्राफिक्स"
 
-# desktop-links/Graphics.directory.in.h:2
 #: desktop-links/Graphics.directory.in.h:2
 msgid "Graphics menu"
 msgstr "ग्राफिक्स मेनू"
 
-# desktop-links/Home.directory.in.h:1
-#: desktop-links/Home.directory.in.h:1
-msgid "Home"
-msgstr "होम (घर)"
-
-# desktop-links/Home.directory.in.h:2
-#: desktop-links/Home.directory.in.h:2
-msgid "Home Applications"
-msgstr "घरेलू अनुप्रयोग"
-
-# desktop-links/Internet.directory.in.h:1
 #: desktop-links/Internet.directory.in.h:1
 msgid "Internet"
 msgstr "इन्टरनेट"
 
-# desktop-links/Internet.directory.in.h:2
 #: desktop-links/Internet.directory.in.h:2
 msgid "Programs for Internet and networks"
 msgstr "इन्टरनेट तथा नेटवर्क के लिए प्रोग्राम"
 
-# desktop-links/Multimedia.directory.in.h:1
 #: desktop-links/Multimedia.directory.in.h:1
 msgid "Multimedia menu"
 msgstr "मल्टीमीडिया मेनू"
 
-# desktop-links/Multimedia.directory.in.h:2
 #: desktop-links/Multimedia.directory.in.h:2
 msgid "Sound & Video"
 msgstr "ध्वनि तथा वीडियो"
 
-# desktop-links/Office.directory.in.h:1
 #: desktop-links/Office.directory.in.h:1
 msgid "Office"
 msgstr "कार्यालय (आॅफिस)"
 
-# desktop-links/Office.directory.in.h:2
 #: desktop-links/Office.directory.in.h:2
 msgid "Office Applications"
 msgstr "कार्यालयीन अनुप्रयोग"
 
-# desktop-links/Root.directory.in.h:1
 #: desktop-links/Root.directory.in.h:1
 msgid "Programs"
 msgstr "प्रोग्राम"
 
-# desktop-links/Root.directory.in.h:2
 #: desktop-links/Root.directory.in.h:2
 msgid "Programs menu"
 msgstr "प्रोग्राम मेनू"
 
-# desktop-links/Settings.directory.in.h:2
 #: desktop-links/Settings.directory.in.h:1
-#, fuzzy
 msgid "Desktop Preferences"
-msgstr "वरीयता"
+msgstr "डेस्कटाप वरीयता"
 
 #: desktop-links/Settings.directory.in.h:2
 msgid "Preferences that affect the whole GNOME desktop"
-msgstr ""
+msgstr "गनोम डेस्कटाप के विकल्प"
 
-# desktop-links/System.directory.in.h:1
 #: desktop-links/System.directory.in.h:1
 msgid "System Tools"
 msgstr "सिस्टम टूल्स"
 
-# desktop-links/System.directory.in.h:2
 #: desktop-links/System.directory.in.h:2
 msgid "System menu"
 msgstr "सिस्टम मेनू"
 
-# gnome-about/contributors.h:20
 #: gnome-about/contributors.h:20
 msgid "Timur I. Bakeyev"
 msgstr "टिमूर आई. बेकयेव"
 
-# gnome-about/contributors.h:23
 #. if your encoding allows it, use aacute (U00E1)
 #. * for the 'a' of 'Ban'
 #: gnome-about/contributors.h:23
 msgid "Szabolcs 'Shooby' Ban"
 msgstr "शैजबोल्क्स 'शोबी' बान"
 
-# gnome-about/contributors.h:36
 #: gnome-about/contributors.h:36
 msgid "Jerome Bolliet"
 msgstr "जैरोम बोलिएट"
 
+#. if your encoding allows it, use eacute (U00E9) for the first
+#. * and the last 'e' in 'Chenede'
+#: gnome-about/contributors.h:54
+msgid "Erwann Chenede"
+msgstr "एरवॉन्न चेनेडे"
+
 #. CJK people please use (U5F35) (U570B) (U51A0) to replace
 #. * this name
-#: gnome-about/contributors.h:51
+#: gnome-about/contributors.h:57
 msgid "Abel Cheung"
-msgstr ""
+msgstr "अबेल् चेउइंग"
 
-# gnome-about/contributors.h:62
+#. if you encoding allows it, use eacute (U00E9) for the two
+#. * 'e' of 'Frederic'
+#: gnome-about/contributors.h:70
+msgid "Frederic Crozat"
+msgstr "फ्रैड्रिक क्रोजाट"
+
 #. if your encoding allows it, use eacute (U00E9) for the two
 #. * 'e' of 'Frederic'
-#: gnome-about/contributors.h:66
+#: gnome-about/contributors.h:77
 msgid "Frederic Devernay"
 msgstr "फ्रैड्रिक देवेरनए"
 
-# gnome-about/contributors.h:75
 #. if your encoding allows it, use odoubleacute (U0151) for the 'o'
 #. * of 'Gergo' and use Eacute (U00C9) for the 'E' of 'Erdi'
-#: gnome-about/contributors.h:79
+#: gnome-about/contributors.h:91
 msgid "Gergo Erdi"
 msgstr "जार्ज एरडी"
 
-# gnome-about/contributors.h:82
-#: gnome-about/contributors.h:86
+#: gnome-about/contributors.h:98
 msgid "Raul Perusquia Flores"
 msgstr "राउल पेरीसकिया फ्लोरेस"
 
-# gnome-about/contributors.h:94
-#: gnome-about/contributors.h:98
+#: gnome-about/contributors.h:112
 msgid "The Mysterious GEGL"
 msgstr "The Mysterious GEGL"
 
-# gnome-about/contributors.h:96
-#: gnome-about/contributors.h:100
+#: gnome-about/contributors.h:114
 msgid "Bjoern Giesler"
 msgstr "बेजोर्न गिसलेर"
 
-# gnome-about/contributors.h:102
-#: gnome-about/contributors.h:106
+#: gnome-about/contributors.h:120
 msgid "Dov Grobgeld"
 msgstr "डोव ग्रोबगेल्ड"
 
 #. Wang is the surname. CJK people, please use (U738B) (U5251)
 #. * to replace this name.
-#: gnome-about/contributors.h:128
+#: gnome-about/contributors.h:143
 msgid "Wang Jian"
-msgstr ""
+msgstr "वागं जियान्"
 
-# gnome-about/contributors.h:129
-#: gnome-about/contributors.h:137
+#: gnome-about/contributors.h:152
 msgid "Helmut Koeberle"
 msgstr "हेलमुट कोबेरेल"
 
-# gnome-about/contributors.h:164
-#: gnome-about/contributors.h:173
+#: gnome-about/contributors.h:189
 msgid "Matthew Marjanovic"
 msgstr "मैथ्यू माॅरजानविक"
 
-# gnome-about/contributors.h:188
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Muniz'
-#: gnome-about/contributors.h:197
+#: gnome-about/contributors.h:213
 msgid "Alexandre Muniz"
 msgstr "अलेकजेन्डर मुनीज़"
 
-# gnome-about/contributors.h:190
 #. Name in Hangeul is: Ub0a8 Uc131 Ud604
-#: gnome-about/contributors.h:199
+#: gnome-about/contributors.h:215
 msgid "Sung-Hyun Nam"
 msgstr "सुंग-हुन नाम"
 
-# gnome-about/contributors.h:198
 #. If your encodings allows it, use adiaeresis (U00E4) for the 'ae'
 #. * of 'Norbaeck'
-#: gnome-about/contributors.h:208
+#: gnome-about/contributors.h:224
 msgid "Martin Norbaeck"
 msgstr "मार्टिन नोरविक"
 
-# gnome-about/contributors.h:205
 #. If your encodings allows it, use Odiaeresis (U00D6) for the 'Oe'
 #. * of 'Oegren'
-#: gnome-about/contributors.h:215
+#: gnome-about/contributors.h:231
 msgid "Tomas Oegren"
 msgstr "टाॅमस अोगरेन"
 
-# gnome-about/contributors.h:215
 #. If your encoding allows it, use oacute (U00F3) for the 'o'
 #. * of 'Perello' and use iacute (U00ED) for the 'i' of 'Marin'
-#: gnome-about/contributors.h:225
+#: gnome-about/contributors.h:241
 msgid "Carlos Perello Marin"
 msgstr "कार्लोस परेलो माॅरिन"
 
-# gnome-about/contributors.h:240
-#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#. If your encoding allows it, use aacute (U00E1) for the 'a'
+#. * of 'German' and use ntilde (U00F1) for the 'n' of 'Caamano'
 #: gnome-about/contributors.h:250
+msgid "German Poo-Caamano"
+msgstr "जर्मन पू-कामानो"
+
+#. Name in Japanese is: U7b39 U5c71 U548c U5b8f
+#: gnome-about/contributors.h:271
 msgid "Kazuhiro Sasayama"
 msgstr "काजुहिरो सासायामा"
 
-# gnome-about/contributors.h:248
 #. If your encodings allows it, use ntilde (U00F1) for the 'n'
 #. * of 'Inigo'
-#: gnome-about/contributors.h:259
+#: gnome-about/contributors.h:281
 msgid "Inigo Serna"
 msgstr "इनिगो सेरना"
 
-# gnome-about/contributors.h:252
-#: gnome-about/contributors.h:263
+#: gnome-about/contributors.h:285
 msgid "Miroslav Silovic"
 msgstr "मिरोस्लाव सिलोविक"
 
-# gnome-about/contributors.h:262
 #. not really a person name :) translate its meaning
-#: gnome-about/contributors.h:273
+#: gnome-about/contributors.h:296
 msgid "The Squeaky Rubber Gnome"
 msgstr "The Squeaky Rubber Gnome"
 
-# gnome-about/contributors.h:268
-#: gnome-about/contributors.h:280
+#: gnome-about/contributors.h:304
 msgid "Istvan Szekeres"
 msgstr "इस्तवान सेज्ट्केरस"
 
-# gnome-about/contributors.h:279
-#: gnome-about/contributors.h:291
+#: gnome-about/contributors.h:317
 msgid "Manish Vachharajani"
 msgstr "मनीष वाच्छाराजानी"
 
-# gnome-about/contributors.h:280
-#: gnome-about/contributors.h:292
+#: gnome-about/contributors.h:318
 msgid "Neil Vachharajani"
 msgstr "नील वाच्छाराजानी"
 
-# gnome-about/contributors.h:287
-#: gnome-about/contributors.h:299
+#: gnome-about/contributors.h:326
 msgid "Wanda the GNOME Fish"
-msgstr "Wanda the GNOME Fish"
+msgstr "वान्डा गनोम मछली"
 
-#: gnome-about/gnome-about.c:267
+#: gnome-about/gnome-about.c:273
 msgid "Click here to visit the site : "
-msgstr ""
+msgstr "साइट पे जाने के लिए इधर क्लिक करें :"
 
-#: gnome-about/gnome-about.c:279
+#: gnome-about/gnome-about.c:285
 msgid "List of GNOME Contributors"
-msgstr ""
+msgstr "गनोम कार्यदाता की सूची"
 
-#: gnome-about/gnome-about.c:281
-msgid "Gnome Logo Image"
-msgstr ""
+#: gnome-about/gnome-about.c:287
+msgid "GNOME Logo Image"
+msgstr "गनोम लोगो चित्र"
 
-#: gnome-about/gnome-about.c:289
+#: gnome-about/gnome-about.c:295
 msgid "Contributors' Names"
-msgstr ""
+msgstr "कार्यदाता के नाम"
 
-#: gnome-about/gnome-about.c:291
-msgid "Gnome Logo"
-msgstr ""
+#: gnome-about/gnome-about.c:297
+msgid "GNOME Logo"
+msgstr "गनोम लोगो"
 
-# gnome-about/gnome-about.c:368
-#: gnome-about/gnome-about.c:435
-msgid "<big><b>GNOME Was Brought To You By</b></big>"
-msgstr "<big><b>आपके लिए जीनोम उपलब्ध कराने वाले हैं </b></big>"
+#: gnome-about/gnome-about.c:506
+msgid "GNOME"
+msgstr "गनोम के बारे में"
 
-# gnome-about/gnome-about.c:485
-#: gnome-about/gnome-about.c:569
-msgid "<big><b>And Many More ...</b></big>"
-msgstr "<big><b> एवं कई अन्य......</b></big>"
+#: gnome-about/gnome-about.c:660
+msgid "And Many More ..."
+msgstr "एवं कई अन्य..."
 
-# gnome-about/gnome-about.c:600
-#: gnome-about/gnome-about.c:725
-msgid "About GNOME"
-msgstr "जीनोम के बारे में"
+#: gnome-about/gnome-about.c:838
+#, c-format
+msgid "About GNOME%s%s%s"
+msgstr "गनोम के बारे में %s%s%s"
 
-# gnome-about/gnome-about.c:698
-#: gnome-about/gnome-about.c:829
+#: gnome-about/gnome-about.c:949
 msgid "GNOME News Site"
-msgstr "जीनोम की खबरों की वेब साइट"
+msgstr "गनोम की खबरों की वेब साइट"
 
-# gnome-about/gnome-about.c:702
-#: gnome-about/gnome-about.c:833
+#: gnome-about/gnome-about.c:953
 msgid "http://www.gnome.org/"
 msgstr "http://www.gnome.org/"
 
-# gnome-about/gnome-about.c:703
-#: gnome-about/gnome-about.c:834
+#: gnome-about/gnome-about.c:954
 msgid "GNOME Main Site"
 msgstr "जीनोम की मुख्य वेब साइट"
 
-# gnome-about/gnome-about.c:708
-#: gnome-about/gnome-about.c:839
+#: gnome-about/gnome-about.c:959
 msgid "GNOME Developers' Site"
 msgstr "जीनोम के विकासकर्ताओं की वेब साइट"
 
-# libgnome-desktop/gnome-desktop-item.c:199
-# libgnome-desktop/gnome-desktop-item.c:547
-#: libgnome-desktop/gnome-desktop-item.c:199
-#: libgnome-desktop/gnome-desktop-item.c:569
+#: gnome-about/gnome-about.c:981
+msgid "GNOME is a part of the GNU Project"
+msgstr "गनोम गनू प्रोजेक्ट का भाग है"
+
+#: libgnome-desktop/gnome-desktop-item.c:208
+#: libgnome-desktop/gnome-desktop-item.c:578
 #, c-format
 msgid "Error reading file '%s': %s"
 msgstr "'%s' फाइल पढ़ने में त्रुटि : %s"
 
-# libgnome-desktop/gnome-desktop-item.c:267
-#: libgnome-desktop/gnome-desktop-item.c:267
+#: libgnome-desktop/gnome-desktop-item.c:276
 #, c-format
 msgid "Error rewinding file '%s': %s"
 msgstr "'%s' फाइल की रिवाइंडिंग में त्रुटि : %s"
 
-#: libgnome-desktop/gnome-desktop-item.c:584
+#: libgnome-desktop/gnome-desktop-item.c:593
 #, c-format
 msgid "File '%s' is not a regular file or directory."
-msgstr ""
+msgstr "फाइल '%s' सामान्य फाइल अथवा डायरेक्ट्री नहीं है"
 
-#: libgnome-desktop/gnome-desktop-item.c:600
+#: libgnome-desktop/gnome-desktop-item.c:609
 #, c-format
 msgid "File '%s' has invalid MIME type: %s"
-msgstr ""
+msgstr "फाइल '%s' का माइम : '%s' अवेध है"
 
-# libgnome-desktop/gnome-desktop-item.c:693
-#: libgnome-desktop/gnome-desktop-item.c:751
+#: libgnome-desktop/gnome-desktop-item.c:760
 msgid "No filename to save to"
 msgstr "संग्रहित करने के लिए कोई फाइल-नाम नहीं दिया गया है"
 
-# libgnome-desktop/gnome-desktop-item.c:1545
-#: libgnome-desktop/gnome-desktop-item.c:1709
+#: libgnome-desktop/gnome-desktop-item.c:1736
+#, c-format
+msgid "Starting %s"
+msgstr "शुरु है रहा है %s"
+
+#: libgnome-desktop/gnome-desktop-item.c:1956
 msgid "No URL to launch"
 msgstr "कोई URL उपलब्ध नहीं है"
 
-# libgnome-desktop/gnome-desktop-item.c:1555
-#: libgnome-desktop/gnome-desktop-item.c:1719
+#: libgnome-desktop/gnome-desktop-item.c:1966
 msgid "Not a launchable item"
 msgstr "चलाने योग्य प्रोग्राम नहीं है"
 
 # libgnome-desktop/gnome-desktop-item.c:1565
-#: libgnome-desktop/gnome-desktop-item.c:1729
+#: libgnome-desktop/gnome-desktop-item.c:1976
 msgid "No command (Exec) to launch"
 msgstr "चलाने हेतु कोई निर्देश नहीं है"
 
 # libgnome-desktop/gnome-desktop-item.c:1578
-#: libgnome-desktop/gnome-desktop-item.c:1742
+#: libgnome-desktop/gnome-desktop-item.c:1989
 msgid "Bad command (Exec) to launch"
 msgstr "चलाने योग्य (प्रोग्राम) निर्देश खराब है"
 
 # libgnome-desktop/gnome-desktop-item.c:334
 # libgnome-desktop/gnome-desktop-item.c:3026
-#: libgnome-desktop/gnome-desktop-item.c:3242
+#: libgnome-desktop/gnome-desktop-item.c:3619
 msgid "No name"
 msgstr "कोई नाम नहीं"
 
 # libgnome-desktop/gnome-desktop-item.c:3083
-#: libgnome-desktop/gnome-desktop-item.c:3299
+#: libgnome-desktop/gnome-desktop-item.c:3676
 #, c-format
 msgid "Unknown encoding of: %s"
 msgstr "%s की अज्ञात एनकोडिंग"
 
 # libgnome-desktop/gnome-desktop-item.c:3307
-#: libgnome-desktop/gnome-desktop-item.c:3530
+#: libgnome-desktop/gnome-desktop-item.c:3907
 #, c-format
 msgid "Error writing file '%s': %s"
 msgstr "'%s' फाइल में लिखने की त्रुटि: %s"
@@ -410,36 +371,32 @@ msgstr "'%s' फाइल में लिखने की त्रुटि: %
 #: libgnome-desktop/gnome-ditem-edit.c:209
 #: libgnome-desktop/gnome-ditem-edit.c:217
 msgid "Directory"
-msgstr ""
+msgstr "डायरेक्ट्री"
 
 # desktop-links/Applications.directory.in.h:1
 #: libgnome-desktop/gnome-ditem-edit.c:213
-#, fuzzy
 msgid "Application"
 msgstr "अनुप्रयोग"
 
 #: libgnome-desktop/gnome-ditem-edit.c:220
 msgid "Link"
-msgstr ""
+msgstr "लिंक"
 
 #: libgnome-desktop/gnome-ditem-edit.c:222
 msgid "FSDevice"
-msgstr ""
+msgstr "FSDevice"
 
-# libgnome-desktop/gnome-ditem-edit.c:260
-# libgnome-desktop/gnome-ditem-edit.c:351
 #: libgnome-desktop/gnome-ditem-edit.c:224
-#, fuzzy
-msgid "MimeType"
-msgstr "प्रकार: "
+msgid "MIME Type"
+msgstr "माइम प्रकार"
 
 #: libgnome-desktop/gnome-ditem-edit.c:226
 msgid "Service"
-msgstr ""
+msgstr "सेवा"
 
 #: libgnome-desktop/gnome-ditem-edit.c:228
 msgid "ServiceType"
-msgstr ""
+msgstr "सेवा प्रकार"
 
 # libgnome-desktop/gnome-ditem-edit.c:257
 #: libgnome-desktop/gnome-ditem-edit.c:314
@@ -472,9 +429,8 @@ msgstr "टिप्पणी :"
 
 # libgnome-desktop/gnome-ditem-edit.c:381
 #: libgnome-desktop/gnome-ditem-edit.c:391
-#, fuzzy
 msgid "Browse"
-msgstr "आइकाॅन ब्राउस करें"
+msgstr "ब्राउस करें"
 
 # libgnome-desktop/gnome-ditem-edit.c:260
 # libgnome-desktop/gnome-ditem-edit.c:351
@@ -573,7 +529,22 @@ msgstr "उन्नत"
 # libgnome-desktop/gnome-hint.c:175
 #: libgnome-desktop/gnome-hint.c:175
 msgid "_Show Hints at Startup"
-msgstr "_प्रारंभ में संकेत प्रदर्शित करें"
+msgstr "प्रारंभ में संकेत प्रदर्शित करें (_S)"
+
+#~ msgid "Home"
+#~ msgstr "होम (घर)"
+
+#~ msgid "Home Applications"
+#~ msgstr "घरेलू अनुप्रयोग"
+
+# gnome-about/gnome-about.c:368
+#~ msgid "<big><b>GNOME Was Brought To You By</b></big>"
+#~ msgstr "<big><b>आपके लिए जीनोम उपलब्ध कराने वाले हैं </b></big>"
+
+# libgnome-desktop/gnome-ditem-edit.c:260
+# libgnome-desktop/gnome-ditem-edit.c:351
+#~ msgid "MimeType"
+#~ msgstr "माइम प्रकार: "
 
 # libgnome-desktop/gnome-desktop-item.c:337
 #~ msgid "UTF-8"
