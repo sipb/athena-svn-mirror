@@ -96,7 +96,19 @@ case "$1" in
 	if [ "$PUBLIC" = true ] && grep /dev/cdrom /etc/fstab | \
 	    grep -vq user; then
 		echo -n "Fixing mount options for CDROM"
-		sed -e 's/[ 	]*iso9660[ 	]*/      iso9660 user,/' \
+		sed -e 's/iso9660[^ 	]*[ 	]*/&user,/' \
+		    /etc/fstab > /etc/fstab.new \
+			&& mv /etc/fstab.new /etc/fstab \
+			&& chmod 644 /etc/fstab \
+			&& success "fstab mod for CDROM" \
+			|| failure "fstab mod for CDROM"
+		echo
+	fi
+
+	if [ "$PUBLIC" = true ] && grep /dev/cdrom /etc/fstab | \
+	    grep -vq udf; then
+		echo -n "Fixing fstype options for CDROM"
+		sed -e 's/iso9660/udf,&/' \
 		    /etc/fstab > /etc/fstab.new \
 			&& mv /etc/fstab.new /etc/fstab \
 			&& chmod 644 /etc/fstab \
