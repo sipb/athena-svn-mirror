@@ -1,4 +1,4 @@
-## Copyright (c) 1996 by Internet Software Consortium
+## Copyright (c) 1996,1999 by Internet Software Consortium
 ##
 ## Permission to use, copy, modify, and distribute this software for any
 ## purpose with or without fee is hereby granted, provided that the above
@@ -13,7 +13,7 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.4 1998-05-17 03:40:33 ghudson Exp $
+# $Id: Makefile,v 1.5 1999-03-16 20:34:26 danw Exp $
 
 DESTDIR=
 CC= cc
@@ -29,15 +29,17 @@ PORTINCL = ${TOP}/port/${SYSTYPE}/include
 LIBBIND = ${TOP}/lib/libbind.a
 A=a
 O=o
+EXE=
 LEX = lex -I
 SYSLIBS = -ll -lutil
-PIDDIR = /var/run
 DESTBIN = /usr/local/bin
 DESTSBIN = /usr/local/sbin
 DESTEXEC = /usr/local/libexec
 DESTMAN = /usr/share/man
 DESTHELP= /usr/share/misc
 STRIP=-s
+INSTALL_EXEC=
+INSTALL_LIB=-o bin -g bin
 
 LDFLAGS=
 DEFS=	-D_PATH_HELPFILE=\"${DESTDIR}${DESTHELP}/nslookup.help\"
@@ -52,17 +54,20 @@ OBJS=	main.${O} getinfo.${O} debug.${O} send.${O} skip.${O} list.${O} \
 .SUFFIXES:
 .SUFFIXES: .c .o
 
-all: ${PROG}
+all: ${PROG}${EXE}
 
-${PROG}: ${OBJS} ${LIBBIND} Makefile
-	${CC} ${CDEBUG} ${LDFLAGS} -o ${PROG} ${OBJS} \
+${PROG}${EXE}: ${OBJS} ${LIBBIND} Makefile
+	${CC} ${CDEBUG} ${LDFLAGS} ${BOUNDS} -o ${PROG}${EXE} ${OBJS} \
 		${LIBBIND} ${SYSLIBS}
+
+.c.${O}:
+	${CC} ${CPPFLAGS} ${CFLAGS} ${BOUNDS} -c $*.c
 
 distclean: clean
 	rm -f commands.c
 
 clean: FRC
-	rm -f ${PROG} ${OBJS} core .depend
+	rm -f ${PROG}${EXE} ${OBJS} core .depend
 	rm -f *.BAK *.CKP *~ *.orig
 	rm -f lex.yy.c lex.yy.o
 
@@ -75,9 +80,9 @@ ${DESTDIR}${DESTHELP}:
 ${DESTDIR}${DESTBIN}:
 	mkdir -p ${DESTDIR}${DESTBIN}
 
-install: ${DESTDIR}${DESTBIN} ${DESTDIR}${DESTHELP} ${PROG}
-	${INSTALL} ${STRIP} -c -m 755 ${PROG} ${DESTDIR}${DESTBIN}/${PROG}
-	${INSTALL} -c -o bin -g bin -m 444 nslookup.help ${DESTDIR}${DESTHELP}/
+install: ${DESTDIR}${DESTBIN} ${DESTDIR}${DESTHELP} ${PROG}${EXE}
+	${INSTALL} ${STRIP} -c ${INSTALL_EXEC} -m 755 ${PROG}${EXE} ${DESTDIR}${DESTBIN}/${PROG}${EXE}
+	${INSTALL} -c ${INSTALL_LIB} -m 444 nslookup.help ${DESTDIR}${DESTHELP}/
 
 links: FRC
 	@set -e; ln -s SRC/*.[chl] SRC/nslookup.help .

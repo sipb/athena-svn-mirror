@@ -1,4 +1,4 @@
-# Copyright (c) 1996 by Internet Software Consortium
+# Copyright (c) 1996,1999 by Internet Software Consortium
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -14,14 +14,15 @@
 # SOFTWARE.
 
 SUBDIRS = arpa isc
-HFILES = netdb.h resolv.h irs.h hesiod.h
+HFILES = netdb.h resolv.h irs.h irp.h hesiod.h
 
 DESTDIR=
 DESTINC= /usr/local/bind/include
 INSTALL= install
+INSTALL_INC=
 
 MARGS= DESTDIR="${DESTDIR}" DESTINC="${DESTINC}" INSTALL="${INSTALL}" \
-	MAKE="${MAKE}"
+	MAKE="${MAKE}" INSTALL_INC=${INSTALL_INC}
 
 all depend clean distclean::
 	@for x in ${SUBDIRS}; do \
