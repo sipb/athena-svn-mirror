@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.75 1995-01-27 09:57:01 cfields Exp $
+ * $Id: login.c,v 1.76 1995-01-27 09:58:26 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.75 1995-01-27 09:57:01 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.76 1995-01-27 09:58:26 cfields Exp $";
 #endif
 
 /*
@@ -718,7 +718,7 @@ main(argc, argv)
 		    krb5_ret = do_v5_kinit(lusername, "", realm,
 					   KRBTKLIFETIME,
 					   pp2, 0, &etext);
-		    if (krb5_ret) {
+		    if (krb5_ret && krb5_ret != KRB5KRB_AP_ERR_BAD_INTEGRITY) {
 			com_err("login", krb5_ret, etext);
 		    }
 		}
