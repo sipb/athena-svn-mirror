@@ -2,8 +2,11 @@
  *   Disk quota reporting program.
  *
  *   $Author jnrees $
- *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.4 1990-05-17 15:04:02 jnrees Exp $
+ *   $Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/quota.c,v 1.5 1990-05-22 12:12:09 jnrees Exp $
  *   $Log: not supported by cvs2svn $
+ * Revision 1.4  90/05/17  15:04:02  jnrees
+ * Fixed bug where unknown uid or gid would result in a bus error
+ * 
  *   
  *   Uses the rcquota rpc call for group and user quotas
  */
@@ -23,15 +26,16 @@
 #include <rpc/pmap_prot.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <rpcsvc/rquota.h>
 #include <rpcsvc/rcquota.h>
 
-int	vflag, iflag, localflag, gflag;
+static int	vflag, iflag, localflag, gflag;
 #define QFNAME	"quotas"
 
 #define kb(n)   (howmany(dbtob(n), 1024))
 
 main(argc, argv)
-	char *argv[];
+     char *argv[];
 {
   register char *cp;
 
@@ -41,15 +45,15 @@ main(argc, argv)
       for (cp = &argv[0][1]; *cp; cp++) switch (*cp) {
 
       case 'v':
-	vflag++;
+	vflag=1;
 	break;
 
       case 'i':
-	iflag++;
-	break;
-	
+        iflag=1;
+        break;
+
       case 'g':
-	gflag++;
+	gflag=1;
 	break;
 
       default:
@@ -61,82 +65,118 @@ main(argc, argv)
       break;
     argc--, argv++;
   }
-  if (argc == 0) {
-    showuid(getuid());
+  if (argc == 0){
+    showid(getuid());
     exit(0);
   }
 
   localflag++;
   for (; argc > 0; argc--, argv++) {
     if (alldigits(*argv))
-      showuid(atoi(*argv));
+      showid(atoi(*argv));
     else
       showname(*argv);
   }
   exit(0);
 }
 
-showuid(uid)
-	int uid;
+showid(id)
+	int id;
 {
-	struct passwd *pwd = getpwuid(uid);
+  struct passwd *pwd = getpwuid(id);
+  struct group  *grp = getgrgid(id);
 
-	if (uid == 0) {
-		if (vflag)
-			printf("no disk quota for uid 0\n");
-		return;
-	}
-	if (pwd == NULL)
-		showquotas(uid, "(no account)");
-	else
-		showquotas(uid, pwd->pw_name);
+  if (id == 0) {
+    if (vflag)
+      printf("no disk quota for %s 0\n",
+	     (gflag ? "gid": "uid"));
+    return;
+  }
+  if (gflag){
+    if (grp == NULL) showquotas(id, "(no group)");
+    else showquotas(id, grp->gr_name);
+  }
+  else{
+    if (pwd == NULL) showquotas(id, "(no account)");
+    else showquotas(id, pwd->pw_name);
+  }
 }
 
 showname(name)
 	char *name;
 {
-	struct passwd *pwd = getpwnam(name);
+  struct passwd *pwd = getpwnam(name);
+  struct group  *grp = getgrnam(name);
 
-	if (pwd == NULL) {
-		fprintf(stderr, "quota: %s: unknown user\n", name);
-		return;
-	}
-	if (pwd->pw_uid == 0) {
-		if (vflag)
-			printf("no disk quota for %s (uid 0)\n", name);
-		return;
-	}
-	showquotas(pwd->pw_uid, name);
+  if (gflag){
+    if (grp == NULL){
+      fprintf(stderr, "quota: %s: unknown group\n", name);
+      return;
+    }
+    if (grp->gr_gid == 0){
+      if (vflag) printf("no disk quota for %s (gid 0)\n", name);
+      return;
+    }
+    showquotas(grp->gr_gid, name);
+  }
+  else{
+    if (pwd == NULL) {
+      fprintf(stderr, "quota: %s: unknown user\n", name);
+      return;
+    }
+    if (pwd->pw_uid == 0) {
+      if (vflag)
+	printf("no disk quota for %s (uid 0)\n", name);
+      return;
+    }
+    showquotas(pwd->pw_uid, name);
+  }
 }
 
-showquotas(uid, name)
-	int uid;
+showquotas(id, name)
+	int id;
 	char *name;
 {
   register struct mntent *mntp;
   FILE *mtab;
   struct getcquota_rslt qvalues;
-  int myuid;
+  int myuid, ngroups, gidset[NGROUPS];
 
   myuid = getuid();
-  if (uid != myuid && myuid != 0) {
-    printf("quota: %s (uid %d): permission denied\n", name, uid);
-    return;
+
+  if (gflag){			/* User must be in group or be root */
+    if ((ngroups = getgroups(NGROUPS, gidset)) == -1){
+      perror("Couldn't get groups you are in.");
+      exit(-1);
+    }
+    while(ngroups){
+      if (id == gidset[ngroups-1]) break;
+      --ngroups;
+    }
+    if (!ngroups && myuid != 0){
+      printf("quota: %s (gid %d): permission denied\n", name, id);
+      return;
+    }
   }
+  else{
+    if (id != myuid && myuid != 0) {
+      printf("quota: %s (uid %d): permission denied\n", name, id);
+      return;
+    }
+  }
+
   if (vflag && !localflag)
-    heading(uid, name);
-  if (localflag) localheading(uid,name);
+    heading(id, name);
+  if (localflag) localheading(id,name);
 
   mtab = setmntent(MOUNTED, "r");
   while (mntp = getmntent(mtab)) {
-    if (strcmp(mntp->mnt_type, MNTTYPE_42) == 0) {
-      if (getlocalquota(mntp, uid, &qvalues)){
-	continue;
-      }
+    if (strcmp(mntp->mnt_type, MNTTYPE_42) == 0
+	&& hasmntopt(mntp, MNTOPT_QUOTA)){
+      if (getlocalquota(mntp, id, &qvalues)) continue;
     }
     else if (!localflag && (strcmp(mntp->mnt_type, MNTTYPE_NFS) == 0)){
-      if (!getnfsquota(mntp, uid, &qvalues))
-	continue;
+      if (!getnfsquota(mntp, id, &qvalues)) continue;
     }
     else {
       continue;
@@ -146,7 +186,8 @@ showquotas(uid, name)
     else
       warn(mntp, &qvalues);
   }
-  endmntent(mtab);
+
+    endmntent(mtab);
 }
 
 getlocalquota(mntp, uid, qvp)
@@ -158,9 +199,6 @@ getlocalquota(mntp, uid, qvp)
   FILE *qotab;
   struct dqblk dqblk;
 
-  /* Make sure quotas are actually on */
-  if (!hasmntopt(mntp, MNTOPT_QUOTA)) return(-1);
-
   /* First get the options */
   qotab = setqoent(QOTAB);
   while(qoent = getqoent(qotab)){
@@ -168,17 +206,23 @@ getlocalquota(mntp, uid, qvp)
       break;
     else continue;
   }
-  if (!qoent){ /* this partition has no quota options */
-    fprintf(stderr, "Missing quota options : %s\n", mntp->mnt_dir);
-    return(-1);
+  if (!qoent){ /* this partition has no quota options, use defaults */
+    qvp->rq_group = !strcmp(QOTYPE_DEFAULT, QOTYPE_GROUP);
+    qvp->rq_bsize = DEV_BSIZE;
+    qvp->gqr_zm.rq_bhardlimit = QO_BZHL_DEFAULT;
+    qvp->gqr_zm.rq_bsoftlimit = QO_BZSL_DEFAULT;
+    qvp->gqr_zm.rq_fhardlimit = QO_FZHL_DEFAULT;
+    qvp->gqr_zm.rq_fsoftlimit = QO_FZSL_DEFAULT;
   }
-  /* qoent contains options */
-  qvp->rq_group = QO_GROUP(qoent);
-  qvp->rq_bsize = DEV_BSIZE;
-  qvp->gqr_zm.rq_bhardlimit = qoent->qo_bzhl;
-  qvp->gqr_zm.rq_bsoftlimit = qoent->qo_bzsl;
-  qvp->gqr_zm.rq_fhardlimit = qoent->qo_fzhl;
-  qvp->gqr_zm.rq_fsoftlimit = qoent->qo_fzsl;
+  else{
+    /* qoent contains options */
+    qvp->rq_group = QO_GROUP(qoent);
+    qvp->rq_bsize = DEV_BSIZE;
+    qvp->gqr_zm.rq_bhardlimit = qoent->qo_bzhl;
+    qvp->gqr_zm.rq_bsoftlimit = qoent->qo_bzsl;
+    qvp->gqr_zm.rq_fhardlimit = qoent->qo_fzhl;
+    qvp->gqr_zm.rq_fsoftlimit = qoent->qo_fzsl;
+  }
 
   if (localflag){
     if ((qvp->rq_group && !gflag) ||
@@ -265,11 +309,12 @@ warn(mntp, qvp)
       rqp->rq_fhardlimit = qvp->gqr_zm.rq_fhardlimit;
 
     /* Now check for over...*/
-    if(rqp->rq_curblocks >= rqp->rq_bhardlimit)
+    if(rqp->rq_curblocks != 0 && rqp->rq_curblocks >= rqp->rq_bhardlimit)
       printf("Block limit reached for %s %s on %s\n",
 	     id_type, id_name, mntp->mnt_dir);
 
-    else if (rqp->rq_curblocks >= rqp->rq_bsoftlimit){
+    else if (rqp->rq_curblocks != 0 &&
+	     rqp->rq_curblocks >= rqp->rq_bsoftlimit){
       if (rqp->rq_btimeleft == 0) {
 	printf("%s %s over disk quota on %s, remove %dK\n",
 	       id_type, id_name, mntp->mnt_dir,
@@ -291,11 +336,13 @@ warn(mntp, qvp)
       }
     }
 
-    if (rqp->rq_curfiles >= rqp->rq_fhardlimit)
+    if (rqp->rq_curfiles != 0 &&
+	rqp->rq_curfiles >= rqp->rq_fhardlimit)
       printf("File count limit reached for %s %s on %s\n",
 	     id_type, id_name, mntp->mnt_dir);
 
-    else if (rqp->rq_curfiles >= rqp->rq_fsoftlimit) {
+    else if (rqp->rq_curfiles != 0 &&
+	     rqp->rq_curfiles >= rqp->rq_fsoftlimit) {
       if (rqp->rq_ftimeleft == 0) {
 	printf("%s %s over file quota on %s, remove %d file%s\n",
 	       id_type, id_name, mntp->mnt_dir,
@@ -371,7 +418,7 @@ prquota(mntp, qvp)
   char ftimeleft[80], btimeleft[80], idbuf[20];
   char *cp;
   int i;
-  char *id_name, *id_type;
+  char *id_name = "", *id_type;
   struct rcquota *rqp;
 
   id_type = (qvp->rq_group? "group" : "user");
@@ -520,7 +567,7 @@ getnfsquota(mntp, uid, qvp)
 {
 	char *hostp;
 	char *cp;
-	struct getquota_args gq_args;
+	struct getcquota_args gq_args;
 	extern char *index();
 
 	hostp = mntp->mnt_fsname;
@@ -532,14 +579,53 @@ getnfsquota(mntp, uid, qvp)
 	*cp = '\0';
 	gq_args.gqa_pathp = cp + 1;
 	gq_args.gqa_uid = uid;
-	if (callrpc(hostp, RCQUOTAPROG, RCQUOTAVERS,
-	    (vflag? RCQUOTAPROC_GETQUOTA: RCQUOTAPROC_GETACTIVEQUOTA),
-	    xdr_getquota_args, &gq_args, xdr_getcquota_rslt, qvp) != 0) {
-		*cp = ':';
-		return (0);
+	if ((enum clnt_stat)
+	    callrpc(hostp, RCQUOTAPROG, RCQUOTAVERS,
+		    (vflag? RCQUOTAPROC_GETQUOTA: RCQUOTAPROC_GETACTIVEQUOTA),
+		    xdr_getcquota_args, &gq_args, xdr_getcquota_rslt, qvp) ==
+	    RPC_PROGNOTREGISTERED) {
+	  /* Fallback on old rpc */
+	  struct getquota_rslt oldquota_result;
+
+	  if (callaurpc(hostp, RQUOTAPROG, RQUOTAVERS,
+			(vflag? RQUOTAPROC_GETQUOTA:
+			 RQUOTAPROC_GETACTIVEQUOTA),
+			xdr_getquota_args, &gq_args,
+			xdr_getquota_rslt, &oldquota_result) != 0){
+	    /* Okay, it really failed */
+	    *cp = ':';
+	    return (0);
+	  }
+	  else{
+	    /* We have to convert the old return structure to
+	       a new format structure */
+	    qvp->gqr_status = (enum gcqr_status) oldquota_result.gqr_status;
+	    qvp->rq_group = 0;
+	    qvp->rq_ngrps = 0;
+	    qvp->rq_bsize = oldquota_result.gqr_rquota.rq_bsize;
+	    bzero((char*)&qvp->gqr_zm, sizeof(struct rcquota));
+	    qvp->gqr_rcquota[0].rq_id = getuid();
+	    qvp->gqr_rcquota[0].rq_bhardlimit =
+	      oldquota_result.gqr_rquota.rq_bhardlimit;
+	    qvp->gqr_rcquota[0].rq_bsoftlimit =
+	      oldquota_result.gqr_rquota.rq_bsoftlimit;
+	    qvp->gqr_rcquota[0].rq_curblocks =
+	      oldquota_result.gqr_rquota.rq_curblocks;
+	    qvp->gqr_rcquota[0].rq_fhardlimit =
+	      oldquota_result.gqr_rquota.rq_fhardlimit;
+	    qvp->gqr_rcquota[0].rq_fsoftlimit =
+	      oldquota_result.gqr_rquota.rq_fsoftlimit;
+	    qvp->gqr_rcquota[0].rq_curfiles = 
+	      oldquota_result.gqr_rquota.rq_curfiles;
+	    qvp->gqr_rcquota[0].rq_btimeleft = 
+	      oldquota_result.gqr_rquota.rq_btimeleft;
+	    qvp->gqr_rcquota[0].rq_ftimeleft = 
+	      oldquota_result.gqr_rquota.rq_ftimeleft;
+	  }
 	}
+	
 	switch (qvp->gqr_status) {
-	case Q_OK:
+	case QC_OK:
 		{
 		struct timeval tv;
 		int i;
@@ -562,10 +648,10 @@ getnfsquota(mntp, uid, qvp)
 		return (1);
 		}
 
-	case Q_NOQUOTA:
+	case QC_NOQUOTA:
 		break;
 
-	case Q_EPERM:
+	case QC_EPERM:
 		if (vflag)
 		  fprintf(stderr, "Warning: no NFS mapping on host: %s\n", hostp);
 		break;
@@ -577,3 +663,73 @@ getnfsquota(mntp, uid, qvp)
 	*cp = ':';
 	return (0);
 }
+
+callaurpc(host, prognum, versnum, procnum, inproc, in, outproc, out)
+	char *host;
+	xdrproc_t inproc, outproc;
+	char *in, *out;
+{
+	struct sockaddr_in server_addr;
+	enum clnt_stat clnt_stat;
+	struct hostent *hp;
+	struct timeval timeout, tottimeout;
+
+	static CLIENT *client = NULL;
+	static int socket = RPC_ANYSOCK;
+	static int valid = 0;
+	static int oldprognum, oldversnum;
+	static char oldhost[256];
+
+	if (valid && oldprognum == prognum && oldversnum == versnum
+		&& strcmp(oldhost, host) == 0) {
+		/* reuse old client */		
+	}
+	else {
+		valid = 0;
+		close(socket);
+		socket = RPC_ANYSOCK;
+		if (client) {
+			clnt_destroy(client);
+			client = NULL;
+		}
+		if ((hp = gethostbyname(host)) == NULL)
+			return ((int) RPC_UNKNOWNHOST);
+		timeout.tv_usec = 0;
+		timeout.tv_sec = 6;
+		bcopy(hp->h_addr, &server_addr.sin_addr, hp->h_length);
+		server_addr.sin_family = AF_INET;
+		/* ping the remote end via tcp to see if it is up */
+		server_addr.sin_port =  htons(PMAPPORT);
+		if ((client = clnttcp_create(&server_addr, PMAPPROG,
+		    PMAPVERS, &socket, 0, 0)) == NULL) {
+			return ((int) rpc_createerr.cf_stat);
+		} else {
+			/* the fact we succeeded means the machine is up */
+			close(socket);
+			socket = RPC_ANYSOCK;
+			clnt_destroy(client);
+			client = NULL;
+		}
+		/* now really create a udp client handle */
+		server_addr.sin_port =  0;
+		if ((client = clntudp_create(&server_addr, prognum,
+		    versnum, timeout, &socket)) == NULL)
+			return ((int) rpc_createerr.cf_stat);
+		client->cl_auth = authunix_create_default();
+		valid = 1;
+		oldprognum = prognum;
+		oldversnum = versnum;
+		strcpy(oldhost, host);
+	}
+	tottimeout.tv_sec = 25;
+	tottimeout.tv_usec = 0;
+	clnt_stat = clnt_call(client, procnum, inproc, in,
+	    outproc, out, tottimeout);
+	/* 
+	 * if call failed, empty cache
+	 */
+	if (clnt_stat != RPC_SUCCESS)
+		valid = 0;
+	return ((int) clnt_stat);
+}
+
