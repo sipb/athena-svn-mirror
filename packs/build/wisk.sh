@@ -321,19 +321,6 @@ switch ($package)
 		( cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile )
 	breaksw
 
-	case athena/bin/dash
-		(echo In $package >> & $outfile)
-		((cd /build/$package ; /usr/athena/bin/xmkmf >>& $outfile) &&\
-		(cd /build/$package ; make Makefiles >>& $outfile) && \
-		(cd /build/$package ; make clean >>& $outfile) && \
-		(cd /build/$package ; make depend >>& $outfile) && \
-		(cd /build/$package ; make all >>& $outfile ) && \
-		(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
-		if ($status == 1) then
-			echo "We bombed in $package">>& $outfile
-			exit -1
-		endif
-		breaksw		
 	case athena/lib/zephyr.p4
 		(echo In $package >>& $outfile)
                 ((cd /build/$package ; /usr/athena/bin/xmkmf $cwd  >>& $outfile ) && \
@@ -368,15 +355,24 @@ switch ($package)
                 endif
 		breaksw
 	case third/supported/emacs-18.59
-		((cd /build/$package ; xmkmf >>& $outfile) &&\
+# Temporarily create compat symlinks
+	if ($machine == "decmips") then
+		ln -s /usr/athena/include/X11 $SRVD/usr/include/X11
+		ln -s /usr/athena/lib/lib[MWX]* $SRVD/usr/lib
+	endif
+		((cd /build/$package ; xmkmf . >>& $outfile) &&\
 		(cd /build/$package/etc ; xmkmf >> $outfile) &&\
-		(cd /build/$package/etc ; make clean >>& $outfile) &&\
-		(cd /build/$package/etc ; make all >>& $outfile) &&\
-		(cd /build/$package/etc ; make install DESTDIR=$SRVD >>& $outfile))
+		(cd /build/$package ; make clean >>& $outfile) &&\
+		(cd /build/$package ; make all >>& $outfile) &&\
+		(cd /build/$package ; make install DESTDIR=$SRVD >>& $outfile))
 		if ($status == 1) then
 			echo "We bombed in $package" >>& $outfile
 			exit -1
 		endif
+	if ($machine == "decmips") then
+		rm $SRVD/usr/lib/lib[MWX]* $SRVD/usr/include/X11
+	endif
+
 		breaksw
 	case athena/lib/moira.dev
 		(echo In $package >>& $outfile)
