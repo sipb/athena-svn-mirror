@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.49 1997-04-01 01:09:48 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.49.2.1 1997-05-24 21:36:09 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -58,7 +58,7 @@ static sigset_t sig_cur;
 #include <X11/Xlib.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.49 1997-04-01 01:09:48 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.49.2.1 1997-05-24 21:36:09 ghudson Exp $";
 #endif
 
 #ifndef NULL
@@ -1631,7 +1631,7 @@ char *login;
 	    write(newfile, buf, start - buf);
 	}
 	cc -= start - buf;
-	memmove(start, buf, cc);
+	memmove(buf, start, cc);
 	cc += read(oldfile, &buf[cc], BUFSIZ - cc);
     }
     close(newfile);
@@ -1681,7 +1681,7 @@ char *login;
 	    write(newfile, buf, start - buf);
 	}
 	cc -= start - buf;
-	memmove(start, buf, cc);
+	memmove(buf, start, cc);
 	cc += read(oldfile, &buf[cc], BUFSIZ - cc);
     }
     close(newfile);
