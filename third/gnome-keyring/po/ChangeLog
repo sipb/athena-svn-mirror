@@ -1,0 +1,328 @@
+2004-09-09  Mugurel Tudor  <mugurelu@go.ro>
+
+	* ro.po: Added Romanian translation
+
+2004-09-08  Adam Weinberger  <adamw@gnome.org>
+
+	* en_CA.po: Updated Canadian English translation.
+
+=== gnome-keyring 0.3.3 ===
+
+2004-08-28  Akagic Amila  <bono@linux.org.ba>
+
+	* bs.po: Added Bosnian translation.
+
+2004-08-26  Jayaradha  <njaya@redhat.com>
+
+	* ta.po: Updated Tamil translation.
+2004-08-25  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Updated Spanih translation.
+
+2004-08-20  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation by Elian Myftiu.
+
+2004-08-18  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation by Elian Myftiu.
+
+2004-08-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* nb.po: Added this here.
+
+=== gnome-keyring 0.3.1 ===
+2004-08-07 Runa Bhattacharjee	<runab@redhat.com>
+	* bn.po: Added Bengali(bn.po) Translation
+
+2004-06-28  Laurent Dhima  <laurenti@alblinux.net>
+
+	* sq.po: Translation updated by Elian Myftiu.
+
+2004-05-27  Mohammad DAMT  <mdamt@bisnisweb.com>
+ 
+        * id.po: Added Indonesian translation done by Ahmad Riza H Nst <rizahnst@eriagempita.co.id>
+
+2004-05-26  Alexander Shopov <ash@contact.bg>
+
+	* bg.po: Added Bulgarian translation
+	by Rostislav Raykov <zbrox@dir.bg>
+
+2004-05-21  Iñaki Larrañaga  <dooteo@euskalgnu.org>
+
+	* eu.po: Added Basque translation.
+
+2004-05-20  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Updated Hungarian translation.
+
+=== gnome-keyring 0.2.1 ===
+
+2004-04-10  Baris Cicek  <baris@teamforce.name.tr>
+
+	* tr.po: Fixed UTF8.
+
+2004-04-03  Samúel Jón Gunnarsson  <sammi@techattack.nu>
+
+	* is.po: Added Icelandic translation by
+	Helgi Þormar Þorbjörnsson  <helgi@trance.is>
+	
+2004-03-24  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * pa.po: Added Punjabi translation by
+        Jaswinder Singh Phulewala <jaswinderlinux@netscape.net>.
+
+=== gnome-keyring 0.2.0 ===
+
+2004-03-21  Žygimantas Beručka  <uid0@akl.lt>
+
+	* lt.po: Updated Lithuanian translation.
+
+2004-03-21  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2004-03-21  Abel Cheung  <maddog@linux.org.hk>
+
+	* ar.po, ko.po: Mark wrong entry as fuzzy (msgfmt check failed).
+
+2004-03-20  Gareth Owen  <gowen72@yahoo.com>
+
+	* en_GB.po: Added British translation
+
+2004-03-20  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: New traditional Chinese translation from
+	  Woodman Tuen <woodman@culturecom.com.hk>.
+
+2004-03-19  Andras Timar  <timar@gnome.hu>
+
+	* hu.po: Added Hungarian translation.
+
+2004-03-17  Dafydd Harries  <daf@muse.19inch.net>
+
+	* cy.po: New Welsh translation by Bryn Salisbury, Chris M. Jackson,
+	  Rhys Jones and Dafydd Tomos.
+
+=== gnome-keyring 0.1.91 ===
+
+2004-03-13  Maxim Dziumanenko <mvd@mylinux.com.ua>
+
+	* uk.po: Updated Ukrainian translation
+
+2004-03-11  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* ru.po: Added Russian translation
+	from Russian team <gnome-cyr@gnome.org>.
+
+2004-03-10  Gustavo Maciel Dias Vieira  <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Added Brazilian Portuguese translation done by
+	Guilherme de S. Pastore <gpastore@colband.com.br>.
+
+2004-03-08  Alexander Winston  <alexander.winston@comcast.net>
+
+	* en_CA.po: Added Canadian English translation at "41 translated
+	messages" status.
+
+=== gnome-keyring 0.1.90 ===
+
+2004-03-06  Mətin Əmirov  <metin@karegen.com>
+
+	* az.po: Translation updated.
+
+2004-02-27  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* th.po: Added Thai translation.
+
+2004-02-25  Alessio Frusciante  <algol@firenze.linux.it>
+
+	* it.po: Added Italian translation by
+	Francesco Marletta <francesco.marletta@tiscali.it>.
+
+2004-02-20  Laurent Dhiam  <laurenti@alblinux.net>
+
+	* sq.po: Updated Albanian translation by
+	 Elian Myftiu <elian@lycos.com>.
+
+2004-02-15  Mətin Əmirov  <metin@karegen.com>
+
+	* az.po: Translation updated.
+
+2004-02-11  Arafat Medini  <lumina@silverpen.de>
+                                                                                
+        * ar.po: Added Arabic translation.
+                                                                                
+2004-02-11  Pauli Virtanen  <pauli.virtanen@hut.fi>
+
+	* fi.po: Added Finnish translation from Tommi Vainikainen.
+
+=== gnome-keyring 0.1.4 ===
+
+2004-02-10  Funda Wang  <fundawang@linux.net.cn>
+
+	* zh_CN.po: Added Simplified Chinese translation.
+
+2004-02-06  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+	* hr.po: Updated Croatian translation.
+
+2004-02-04  Laurent Dhiam  <laurenti@alblinux.net>
+
+	* sq.po: Added Albanian translation by
+	 Elian Myftiu <elian@lycos.com>.
+
+2004-02-02  Hasbullah Bin Pit <sebol@my-penguin.org>
+                                                                                
+        * ms.po: Updated Malay translation.
+
+2004-01-31  Sanlig Badral  <badral@openmn.org>
+
+        * mn.po: Added Mongolian translation by Tamir.
+
+2004-01-31  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+
+2004-01-31  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+2004-01-30  Ole Laursen  <olau@hardworking.dk>
+
+	* da.po: Updated Danish translation.
+
+2004-01-30  Metin Amiroff  <metin@karegen.com>
+
+	* az.po: Translation added by Mətin Əmirov.
+
+=== gnome-keyring 0.1.3 ===
+
+2004-01-28  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Updated French translation.
+
+2004-01-28  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Fixed Czech translation.
+
+2004-01-28  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* pl.po: Updated Polish translation by GNOME PL Team.
+
+2004-01-27  Kostas Papadimas <pkst@gnome.org>
+
+	* el.po: Updated  Greek translation.
+
+2004-01-25  Jordi Mallach  <jordi@sindominio.net>
+
+	* ca.po: Added Catalan translation.
+
+2004-01-25  Marcel Telka  <marcel@telka.sk>
+
+	* sk.po: Updated Slovak translation.
+
+2004-01-22  Duarte Loreto <happyguy_pt@hotmail.com>
+
+	* pt.po: Updated and revised Portuguese translation.
+
+2004-01-19  Vincent van Adrighem  <adrighem@gnome.org>
+
+	* nl.po: Translation updated by Daniel van Eeden.
+
+2004-01-14  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2004-01-15  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Added Korean translation.
+
+2004-01-14  Christian Neumair  <chris@gnome-de.org>
+
+	* de.po: Added German translation.
+
+2004-01-14  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Updated Spanish translation.
+
+2004-01-14  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Updated Czech translation.
+
+2004-01-14  Danilo Šegan  <dsegan@gmx.net>
+
+	* sr.po, sr@Latn.po: Updated Serbian translation.
+
+2004-01-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+
+2004-01-12  Žygimantas Beručka  <uid0@tuxfamily.org>
+
+	* lt.po: Added Lithuanian translation by Tomas Kuliavas.
+
+=== gnome-keyring 0.1.1 ===
+
+2004-01-11  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* fr.po: Added French translation from
+	Sebastien Bacher <seb128@debian.org>.
+
+2004-01-07  Marcel Telka  <marcel@telka.sk>
+
+	* sk.po: Added Slovak translation.
+
+2004-01-06  Kostas Papadimas <pkst@gnome.org>
+
+	* el.po: Added  Greek translation.
+
+2004-01-05  Vincent van Adrighem  <adrighem@gnome.org>
+
+	* nl.po: Translation added by Daniel van Eeden.
+
+2004-01-05  Artur Flinta  <aflinta@cvs.gnome.org>
+
+	* pl.po: Updated Polish translation by GNOME PL Team.
+
+2003-12-29  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Updated Japanese translation.
+
+=== gnome-keyring 0.1.1 ===
+
+2003-12-27  Hasbullah Bin Pit <sebol@ikhlas.com>
+                                                                                
+        * ms.po: Added Malay Translation.
+	
+2003-12-24  Duarte Loreto <happyguy_pt@hotmail.com>
+
+	* pt.po: Added Portuguese translation.
+
+2003-12-21  Francisco Javier F. Serrador  <serrador@cvs.gnome.org>
+
+	* es.po: Added Spanish translation.
+
+2003-12-19  Danilo Šegan  <dsegan@gmx.net>
+
+	* sr.po, sr@Latn.po: Updated Serbian translation.
+
+2003-12-17  Miloslav Trmac  <mitr@volny.cz>
+
+	* cs.po: Added Czech translation.
+
+2003-12-17  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Added Swedish translation.
+
+2003-12-15  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* ja.po: Added Japanese translation.
+
+=== gnome-keyring 0.1 ===
+
+2003-11-29  Danilo Šegan  <dsegan@gmx.net>
+
+	* POTFILES.in: Added comment.
+	* sr.po, sr@Latn.po: Added Serbian translation.
+
