@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
  *      $Author: raeburn $
- *      $Id: olcd.h,v 1.11 1990-01-16 05:32:39 raeburn Exp $
+ *      $Id: olcd.h,v 1.12 1990-01-16 11:27:23 raeburn Exp $
  */
 
 #ifndef __olcd_h
@@ -336,10 +336,7 @@ extern int              needs_backup;
 #ifdef __STDC__
 /* These declarations should go elsewhere!!! */
 
-extern void	log_error (const char *message);
 extern int	get_knuckle (char *, int, KNUCKLE **, int);
-extern ERRCODE	write_message_to_user (KNUCKLE *, char *, int);
-extern void	log_status (const char *);
 extern int	insert_knuckle (KNUCKLE *);
 extern int	insert_knuckle_in_user (KNUCKLE *, USER *);
 extern void	init_dbinfo (USER *);
@@ -348,19 +345,15 @@ extern int	verify_topic (char *);
 extern ERRCODE	init_log (KNUCKLE *, const char *);
 extern int	is_topic (int *, int);
 extern int	owns_question (KNUCKLE *);
-extern void	log_daemon (const KNUCKLE *, const char *);
 extern int	insert_topic (TOPIC *);
 extern void	get_list_info (KNUCKLE *, LIST *);
 extern int	load_db (void);
 extern void	load_data (void);
 extern ERRCODE	read_request (int, REQUEST *);
 extern int	authenticate (REQUEST *, unsigned long);
-extern ERRCODE	olc_broadcast_message (const char *, const char *,
-				       const char *);
 extern int	find_knuckle (PERSON *, KNUCKLE **);
 extern int	get_user (PERSON *, USER **);
 extern void	dump_data (const char *);
-extern void	log_admin (char *);
 extern int	save_user_info (USER *);
 extern int	match_knuckle (char *, int, KNUCKLE **);
 extern int	match_maker (KNUCKLE *);
@@ -371,17 +364,29 @@ extern int	send_list (int, REQUEST *, LIST *);
 extern ERRCODE	terminate_log_answered (KNUCKLE *);
 extern ERRCODE	terminate_log_unanswered (KNUCKLE *);
 extern void	new_message (char **, KNUCKLE *, char *);
+extern int	list_user_knuckles (KNUCKLE *, LIST **, int *);
+extern int	list_queue (int, LIST **, int, int *, int, char *, int *);
+extern int	connect_knuckles (KNUCKLE *, KNUCKLE *);
+extern int	init_question (KNUCKLE *, char *, char *);
+
+/* notifications */
+extern ERRCODE	write_message_to_user (KNUCKLE *, char *, int);
+extern ERRCODE	olc_broadcast_message (const char *, const char *,
+				       const char *);
+
+/* user/question logs */
 extern void	log_message (const KNUCKLE *, const KNUCKLE *, const char *);
 extern void	log_comment (const KNUCKLE *, const KNUCKLE *, const char *);
 extern void	log_description (const KNUCKLE *, const KNUCKLE *,
 				 const char *);
-extern int	list_user_knuckles (KNUCKLE *, LIST **, int *);
-extern int	list_queue (int, LIST **, int, int *, int, char *, int *);
 extern void	log_mail (const KNUCKLE *, const KNUCKLE *, const char *);
-extern int	connect_knuckles (KNUCKLE *, KNUCKLE *);
-extern int	init_question (KNUCKLE *, char *, char *);
+extern void	log_daemon (const KNUCKLE *, const char *);
 
-extern int	errno;
+/* OLCD system logs */
+extern void	log_error (const char *message);
+extern void	log_status (const char *);
+extern void	log_admin (const char *);
+extern void	log_debug (const char *);
 
 #if is_cplusplus
 extern "C" {
