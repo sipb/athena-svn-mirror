@@ -21,7 +21,7 @@
 
 #ifndef lint
 static char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.10 1990-04-25 19:36:07 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.11 1990-04-26 12:51:41 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -83,15 +83,14 @@ t_list_queue(Request,sort,queues,topics,users,stati,comments,file,display)
     return(status);
 }
 
+static char old_status[30] = "";
+
 void output_status_header (file, status)
     FILE *file;
     const char *status;
 {
-    static char old_status[30];
     int active;
     static int old_active;
-
-    old_status[0] = '\0';
 
     if (status == 0) {
 	old_status[0] = '\0';
