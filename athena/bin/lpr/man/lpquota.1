@@ -1,6 +1,6 @@
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v $
-.\"     $Author: epeisach $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v 1.2 1990-04-25 12:00:09 epeisach Exp $
+.\"     $Author: ilham $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/man/lpquota.1,v 1.3 1990-07-10 02:42:30 ilham Exp $
 .\"
 .\" Copyright 1990 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -20,9 +20,13 @@ lpquota \- enquire about print quota
 ] [
 .BI \-S service
 ] [
+.B \-g group
+] [
 .B \-c
 ] [
 .B \-q
+] [
+.BI \-l
 ] [
 .BI \-f allowed
 ] [
@@ -35,14 +39,22 @@ lpquota \- enquire about print quota
 ] [
 .BI \-a amount
 ] [
+.BI \+A
+] [
+.BI \-A
+] [
+.BI \+U
+] [
+.BI \-U
+] [
 username
 ]
 .SH DESCRIPTION
 .B lpquota
 is the client that interacts with the Quota Server, allowing users to
 determine their printing usage as well as get a list of all times that
-they have printed. For the privileged user, this client also allows
-manipulation of the quota database.
+they have printed. For the privileged user and group account
+administrators, this client also allows manipulation of the quota database.
 .PP
 The
 .B \-Pprinter
@@ -61,25 +73,43 @@ The
 can be used to explicitly specify the machine that the
 quota server is running on.
 .PP
+The
+.B \-ggroup
+is used when referencing a group account instead of a user.  Only
+account administrators and the group's administrators can display a 
+group account usage.
+.PP
 The following single letter specify options to the program.
 .IP \fB\-q\fP 5
 Display a users Print Quota and associated charges
 .IP \fB\-l\fP 5
 Display a complete log of all print activity for the particular user.
-.IP \fB\-c\fP 5
-Create the user in the Quota Database
 .PP
-The following options which are only available for an administrator, all
-take an amount which is in cents.
+The following options are only available to an account administrator. 
+All amounts are specified in cents.
+.IP \fB\-c\fP 5
+Create the user/group in the Quota Database
 .IP \fB\-i\fP 5
-Increases the users quota limit
+Increases the users/groups quota limit
 .IP \fB\-d\fP 5
-Decrease the users quota limit
+Decrease the users/groups quota limit
 .IP \fB\-s\fP 5
-Sets the users quota limit
+Sets the users/groups quota limit
 .IP \fB\-a\fP 5
-Adjusts the users actual usage. This is to be used in giving a user
-credit for poor quality printouts.
+Adjusts the users/groups actual usage. This is to be used in giving a
+user/group credit for poor quality printouts.
+.PP
+The following options are available to the account administrator and the
+group's administrators. These options require a username.
+.PP
+.IP \fB\+A\fP 5
+Adds a user to the group administrator list
+.IP \fB\-A\fP 5
+Removes a user from the group administrator list
+.IP \fB\+U\fP 5
+Adds a user to the group user list
+.IP \fB\-U\fP 5
+Removes a user from the group user list
 .PP
 The 
 .B \-S 
@@ -100,11 +130,11 @@ lprm(1),
 kerberos(1),
 printcap(5)
 .SH BUGS
-Currently account numbers are not supported.
-
-There is no way to delete a user once entered in the database.
-.SH AUTHOR
+There is no way to delete a user/group once entered in the database.
+.SH AUTHORS
 Ezra Peisach (MIT-Project Athena)
+.br
+Ilhamuddin Ahmed (MIT-Project Athena)
 .SH COPYRIGHT
 Copyright (c) 1990 by the Massachusetts Institute of Technology.
 .PP
