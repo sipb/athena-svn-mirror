@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.9 1990-11-07 13:48:38 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.10 1990-11-16 15:08:25 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.9 1990-11-07 13:48:38 epeisach Exp $";
+static char *rcsid_lpd_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpd.c,v 1.10 1990-11-16 15:08:25 epeisach Exp $";
 #endif lint
 
 /*
@@ -85,6 +85,10 @@ int kerberos_override = -1;    /* Does command option override KA in printcap? *
 int kerberos_cf = 0;           /* Are we using a kerberized cf file? */
 int use_kerberos;
 #endif KERBEROS
+
+#ifdef LACL
+char from_host[MAXHOSTNAMELEN];
+#endif
 
 main(argc, argv)
 	int argc;
@@ -593,9 +597,11 @@ chkhost(f)
 
 	strcpy(fromb, hp->h_name);
 	from = fromb;
+#ifdef LACL
+	strcpy(from_host, fromb);
+#endif
 	if (!strcasecmp(from, host))
 		return;
-
 #ifdef	ws
 	/* Code for workstation printing only which permits any machine on the 
 	   Athena network, and in the namespace, to print, even if not

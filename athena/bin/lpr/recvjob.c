@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.5 1990-11-07 14:18:56 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.6 1990-11-16 15:08:49 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.5 1990-11-07 14:18:56 epeisach Exp $";
+static char *rcsid_recvjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/recvjob.c,v 1.6 1990-11-16 15:08:49 epeisach Exp $";
 #endif lint
 
 /*
@@ -109,6 +109,7 @@ recvjob()
 #ifdef LACL
 	AC = pgetstr("ac", &bp);
 	PA = pgetflag("pa");
+	RA = pgetflag("ra");
 #endif /* LACL */
 	    
 	(void) close(2);			/* set up log file */
@@ -189,7 +190,7 @@ readjob()
 	char *check_quota();
 #endif
 #ifdef LACL
-	char *check_lacl();
+	char *check_lacl(), *check_remhost();
 #endif
 
 	if (lflag) syslog(LOG_INFO, "In readjob");
@@ -256,6 +257,12 @@ readjob()
 #endif KERBEROS
 
 #ifdef LACL
+			if(RA && ((cret = check_remhost()) != 0)) {
+			    (void) write(1, cret, 1);
+			    rcleanup();
+			    continue;
+			}
+
 			if(AC && (cret = check_lacl(tfname)) != 0) {
 			    /* We return !=0 for error. Old clients
 			       stupidly don't print any error in this sit.
@@ -761,4 +768,43 @@ char *file;
 	else return "\4"; /* NOALLOWEDTOPRINT */
     }
 
+char *
+check_remhost()
+{
+    register char *cp, *sp;
+    extern char from_host[];
+    register FILE *hostf;
+    char ahost[MAXHOSTNAMELEN];
+    int baselen = -1;
+
+    if(!strcasecmp(from_host, host)) return NULL;
+#if 0
+    syslog(LOG_DEBUG, "About to check on %s\n", from_host);
+#endif
+    sp = from_host;
+    cp = ahost;
+    while (*sp) {
+	if (*sp == '.') {
+	    if (baselen == -1)
+		baselen = sp - from_host;
+	    *cp++ = *sp++;
+	} else {
+	    *cp++ = isupper(*sp) ? tolower(*sp++) : *sp++;
+	}
+    }
+    *cp = '\0';
+    hostf = fopen("/etc/hosts.lpd", "r");
+#define DUMMY ":nobody::"
+    if (hostf) {
+	if (!_validuser(hostf, ahost, DUMMY, DUMMY, baselen)) {
+	    (void) fclose(hostf);
+	    return NULL;
+	}
+	(void) fclose(hostf);
+	return "\4";
+    } else {
+	/* Could not open hosts.lpd file */
+	return NULL;
+    }
+}
 #endif /* LACL */
