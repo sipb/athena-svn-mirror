@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.21 2002-07-22 01:16:05 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.22 2003-03-23 06:53:47 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -35,6 +35,10 @@ static const char rcsid[] = "$Id: rpmupdate.c,v 1.21 2002-07-22 01:16:05 ghudson
 #include <assert.h>
 #include <errno.h>
 #include <rpmlib.h>
+#include <rpmdb.h>
+#include <rpmts.h>
+#include <rpmps.h>
+#include <rpmds.h>
 #include <misc.h>	/* From /usr/include/rpm */
 
 #define HASHSIZE 1009
@@ -87,8 +91,7 @@ static void *notify(const void *arg, rpmCallbackType what,
 static void print_hash(struct notify_data *ndata, int amount);
 static enum act decide_public(struct package *pkg);
 static enum act decide_private(struct package *pkg);
-static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep,
-			    int copy);
+static void schedule_update(struct package *pkg, rpmts ts, int copy);
 static void display_action(struct package *pkg, enum act action);
 static int kernel_was_updated(rpmdb db, struct package *pkg);
 static void update_lilo(struct package *pkg);
@@ -350,12 +353,11 @@ static void decide_actions(struct package **pkgtab, int public)
 static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
 			    int copy)
 {
-  int r, i, npackages, nconflicts;
+  int r, i, npackages;
   struct package *pkg;
   rpmdb db;
-  rpmTransactionSet rpmdep;
-  rpmProblemSet probs = NULL;
-  rpmDependencyConflict conflicts;
+  rpmts ts;
+  rpmps ps;
   rpmdbMatchIterator mi;
   Header h;
   char *pkgname;
@@ -365,7 +367,7 @@ static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
     {
       if (rpmdbOpen(NULL, &db, O_RDWR, 0644))
 	die("Can't open RPM database for writing");
-      rpmdep = rpmtransCreateSet(db, NULL);
+      ts = rpmtsCreate();
 
       if (copy)
 	{
@@ -387,7 +389,7 @@ static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
 	    display_action(pkg, pkg->action);
 	  else if (pkg->action == UPDATE)
 	    {
-	      schedule_update(pkg, rpmdep, copy);
+	      schedule_update(pkg, ts, copy);
 	      npackages++;
 	    }
 	}
@@ -413,29 +415,30 @@ static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
 	continue;
       pkg = get_package(pkgtab, pkgname);
       if (pkg->action == ERASE)
-	rpmtransRemovePackage(rpmdep, rpmdbGetIteratorOffset(mi));
+	rpmtsAddEraseElement(ts, h, rpmdbGetIteratorOffset(mi));
     }
 
   /* The transaction set is complete.  Check for dependency problems. */
-  if (rpmdepCheck(rpmdep, &conflicts, &nconflicts) != 0)
+  if (rpmtsCheck(ts) != 0)
     exit(1);
-  if (conflicts)
+  ps = rpmtsProblems(ts);
+  if (rpmpsNumProblems(ps) > 0)
     {
       fprintf(stderr, "Update would break dependencies:\n");
-      printDepProblems(stderr, conflicts, nconflicts);
-      rpmdepFreeConflicts(conflicts, nconflicts);
+      rpmpsPrint(NULL, rpmtsProblems(ts));
       exit(1);
     }
 
-  /* Attempt to order the packages. */
-  rpmdepOrder(rpmdep);
+  rpmtsOrder(ts);
 
+  /* Set up the notification callback. */
   ndata.hashmarks_flag = hashmarks;
   ndata.packages = 0;
   ndata.npackages = npackages;
   ndata.pkgtab = pkgtab;
-  r = rpmRunTransactions(rpmdep, notify, &ndata, NULL, &probs, 0,
-			 RPMPROB_FILTER_OLDPACKAGE|RPMPROB_FILTER_REPLACEPKG);
+  rpmtsSetNotifyCallback(ts, notify, &ndata);
+
+  r = rpmtsRun(ts, NULL, RPMPROB_FILTER_OLDPACKAGE|RPMPROB_FILTER_REPLACEPKG);
   if (copy)
     clear_copy_area();
   if (r < 0)
@@ -450,7 +453,7 @@ static void perform_updates(struct package **pkgtab, int dryrun, int hashmarks,
   else if (r > 0)
     {
       fprintf(stderr, "Update failed due to the following problems:\n");
-      rpmProblemSetPrint(stderr, probs);
+      rpmpsPrint(NULL, rpmtsProblems(ts));
       exit(1);
     }
 
@@ -615,11 +618,11 @@ static enum act decide_private(struct package *pkg)
 }
 
 /* Read the header from an RPM file and add an update transaction for it. */
-static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep,
-			    int copy)
+static void schedule_update(struct package *pkg, rpmts ts, int copy)
 {
   Header h;
   FD_t fd;
+  int status;
 
   assert(pkg->filename != NULL);
   pkg->filename = fudge_arch_in_filename(pkg->filename);
@@ -628,9 +631,10 @@ static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep,
   fd = fdOpen(pkg->filename, O_RDONLY, 0);
   if (fd == NULL)
     die("Can't read package file %s", pkg->filename);
-  if (rpmReadPackageHeader(fd, &h, NULL, NULL, NULL) != 0)
-    die("Invalid rpm header in file %s", pkg->filename);
-  if (rpmtransAddPackage(rpmdep, h, NULL, pkg->filename, 1, NULL) != 0)
+  status = rpmReadPackageFile(ts, fd, pkg->filename, &h);
+  if (status == RPMRC_FAIL || status == RPMRC_NOTFOUND)
+    die("Invalid package file %s", pkg->filename);
+  if (rpmtsAddInstallElement(ts, h, pkg->filename, 1, NULL) != 0)
     die("Can't install or update package %s", pkg->pkgname);
   fdClose(fd);
   headerFree(h);
