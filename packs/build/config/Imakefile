@@ -21,3 +21,4 @@ create_depend(imake.c)
 clean::
 	rm ccimake
 
+install::
