@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v $
- *	$Author: jtkohl $
+ *	$Author: marc $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
 #include <ctype.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.31 1990-03-02 15:54:53 jtkohl Exp $";
+static char rcsid_zwrite_c[] = "$Id: zwrite.c,v 1.32 1990-03-13 18:09:19 marc Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -271,8 +271,7 @@ main(argc, argv)
 	    } 
 	}
 	message[msgsize] = '\n';
-	message[msgsize+1] = '\0';
-	msgsize += 2;
+	msgsize += 1;
     } else {
 	if (isatty(0)) {
 	    for (;;) {
@@ -286,7 +285,6 @@ main(argc, argv)
 		msgsize += strlen(bfr);
 	    }
 	    message = realloc(message, (unsigned)(msgsize+1));
-	    message[msgsize++] = '\0';
 	}
 	else {	/* Use read so you can send binary messages... */
 	    while (nchars = read(fileno(stdin), bfr, sizeof bfr)) {
@@ -300,7 +298,6 @@ main(argc, argv)
 	    }
 	    /* end of msg */
 	    message = realloc(message, (unsigned)(msgsize+1));
-	    message[msgsize++] = '\0';	/* null-terminate */
 	} 
     }
 
