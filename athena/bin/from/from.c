@@ -1,7 +1,7 @@
 /* 
- * $Id: from.c,v 1.15 1994-06-24 10:33:27 miki Exp $
+ * $Id: from.c,v 1.16 1996-04-26 17:11:08 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: miki $
+ * $Author: ghudson $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.15 1994-06-24 10:33:27 miki Exp $";
+static char *rcsid = "$Id: from.c,v 1.16 1996-04-26 17:11:08 ghudson Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -53,7 +53,7 @@ char    *default_err = "Cannot stat the \"ok\" file.. unable to continue with re
 
 FILE 	*sfi, *sfo;
 char 	Errmsg[80];
-char	*getlogin(), *strdup(), *parse_from_field();
+char	*getlogin(), *parse_from_field();
 extern int	optind;
 extern char     *optarg;
 struct	passwd *getpwuid();
@@ -432,23 +432,6 @@ MakeLowerCase(s)
       int i;
       for (i=0;s[i];i++)
               s[i]=isupper(s[i]) ? tolower(s[i]) : s[i];
-}
-
-/*
- * Duplicate a string in malloc'ed memory
- */
-char *strdup(s)
-      char    *s;
-{
-      register char   *cp;
-      
-      if (!s)
-	      return(NULL);
-      if (!(cp = malloc((unsigned) strlen(s)+1))) {
-              fprintf(stderr, "%s: out of memory\n", progname);
-	      exit(1);
-      }
-      return(strcpy(cp,s));
 }
 
 char *parse_from_field(str)
