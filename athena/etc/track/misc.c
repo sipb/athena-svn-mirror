@@ -1,26 +1,34 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 1.1 1987-02-12 21:15:04 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 1.2 1987-11-12 16:51:18 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.1  87/02/12  21:15:04  rfrench
+ * Initial revision
+ * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 1.1 1987-02-12 21:15:04 rfrench Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 1.2 1987-11-12 16:51:18 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
 
 #include "track.h"
 
+/*
+ * diagnostic stuff: used throughout track
+ */
+
 printmsg()
+
 {
 	fprintf(stderr,
 		"%s, errno = %d -- %s\nWorking on list named %s and item %s\n",
 		prgname,
 		errno,
 		errmsg,
-		subname,
+		subfilename,
 		entries[cur_ent].fromfile);
 }
 
@@ -37,14 +45,9 @@ do_panic()
 	exit(1);
 }
 
-
-mycpy(to,from)
-char *to, *from;
-{
-	while ((*from != '\0') && isprint(*from) && (!isspace(*from)))
-		*to++ = *from++;
-	*to = '\0';
-}
+/*
+ * parser / lexer support routines:
+ */
 
 skipword(theptr)
 char **theptr;
@@ -60,15 +63,31 @@ char **theptr;
 		(*theptr)++;
 }
 
+/*
+ * parser-support routines:
+ */
+
 doreset()
 {
 	strcpy(linebuf,"");;
 	wordcnt = 0;
 }
 
+parseinit()
+{
+	if ( *subfilepath);
+        else sprintf( subfilepath, "%s%s/%s", twdir, DEF_SUBDIR, subfilename);
+        if (!( yyin = fopen( subfilepath, "r"))) {
+                sprintf( errmsg, "Can't open %s\n", subfilepath);
+                do_panic();
+        }
+	yyout = stderr;
+	doreset();
+}
+
 clear_ent()
 {
-	int i;
+	int i,j;
 	char ebuf[WORDLEN],*eptr;
 
 	entries[entrycnt].followlink  =         0;
@@ -80,9 +99,17 @@ clear_ent()
 	*/
 	eptr = g_except;
 	skipspace(&eptr);
-	for(i=0;*eptr != '\0';i++)
+	for(i=0; *eptr != '\0';i++)
 	{
-		mycpy(ebuf,eptr);
+		/* copy eptr's first word to ebuf:
+		 */
+		for ( j = 0; eptr[ j]; j++) {
+			if ( !isprint( eptr[ j]) ||
+			      isspace( eptr[ j])) break;
+			ebuf[ j] = eptr[ j];
+		}
+		ebuf[ j + 1] = '\0';
+
 		savestr(&entries[entrycnt].exceptions[i],ebuf);
 		skipword(&eptr);
 		skipspace(&eptr);
@@ -93,14 +120,7 @@ clear_ent()
 	*/
 	for(;i<WORDMAX;i++)
 		entries[entrycnt].exceptions[i] = (char*) 0;
-	entries[entrycnt].cmdbuf      = (char*) 0;
-}
-
-parseinit()
-{
-	yyin = subfile;
-	yyout = stderr;
-	doreset();
+	entries[ entrycnt].cmdbuf      = (char*) 0;
 }
 
 savestr(to,from)
@@ -113,41 +133,4 @@ char **to, *from;
 		do_panic();
 	}
 	strcpy(*to,from);
-}
-
-mapname(theline,from,to)
-char *theline,*from,*to;
-{
-	char buf[LINELEN],word1[LINELEN],word2[LINELEN],*ptr;
-
-	if (debug)
-		printf("mapname(%s,%s,%s)\n",theline,from,to);
-
-	strcpy(buf,theline);
-	if (!strcmp(from,to))
-		return(0);
-		
-	/*
-	**	start from first slash
-	*/
-	if (!(ptr = index(buf,'/'))) {
-		sprintf(errmsg,"can't find / in :%s:\n",buf);
-		do_gripe();
-		return(0);
-	}
-	/*
-	**	skip first character on the line
-	*/
-	mycpy(word1,ptr);
-	strcpy(word2,"");
-	strncpy(word2,buf,ptr-buf);
-	word2[ptr-buf] ='\0';
-	if (!strncmp(word1,from,strlen(from)))
-		sprintf(theline,"%s%s%s",
-		       word2,to,ptr+strlen(from));
-
-	if (debug)
-		printf("mapname returns %s\n",theline);
-
-	return(0);
 }
