@@ -6,9 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-#ifndef lint
-static char rcsid_detach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.3 1990-04-19 13:05:18 jfc Exp $";
-#endif lint
+static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.4 1990-07-04 17:35:56 jfc Exp $";
 
 #include "attach.h"
 
@@ -32,7 +30,7 @@ detach(name)
 	if (!(atp = attachtab_lookup_mntpt(name))) {
 	    unlock_attachtab();
 	    free_attachtab();
-	    fprintf(stderr, "%s: Not attached\n", name);
+	    fprintf(stderr, "%s: Filesystem \"%s\" is not attached\n", progname, name);
 	    error_status = ERR_DETACHNOTATTACHED;
 	    return (FAILURE);
 	} else
@@ -42,8 +40,8 @@ detach(name)
     switch (atp->status) {
     case STATUS_ATTACHING:
 	if (!force && really_in_use(name)) {
-	    fprintf(stderr, "%s: Being attached by another process\n",
-		    name);
+	    fprintf(stderr, "%s: Filesystem \"%s\" is being attached by another process\n",
+		    progname, name);
 	    error_status = ERR_DETACHINUSE;
 	    unlock_attachtab();
 	    free_attachtab();
@@ -56,8 +54,8 @@ detach(name)
 	break;
     case STATUS_DETACHING:
 	if (!force && really_in_use(name)) {
-	    fprintf(stderr, "%s: Already being detached by another process\n",
-		    name);
+	    fprintf(stderr, "%s: Filesystem \"%s\" already being detached by another process\n",
+		    progname, name);
 	    error_status = ERR_DETACHINUSE;
 	    unlock_attachtab();
 	    free_attachtab();
@@ -89,7 +87,8 @@ detach(name)
 	    } else if (owner_check && !clean_detach) {
 		    if (del_an_owner(atp, owner_uid)) {
 			    int ret = SUCCESS;
-			    fprintf(stderr, "%s: Filesystem wanted by others, not unmounted.\n", name);
+			    fprintf(stderr, "%s: Filesystem \"%s\" wanted by others, not unmounted.\n",
+				    progname, name);
 			    error_status = ERR_ATTACHINUSE;
 			    put_attachtab();
 			    if (atp->fs->type == TYPE_NFS && do_nfsid)
@@ -105,7 +104,13 @@ detach(name)
 	    }
 	    if (!override && atp->flags & FLAG_LOCKED) {
 		    error_status = ERR_DETACHNOTALLOWED;
-		    fprintf(stderr, "%s: Filesystem locked, use -override to detach it.\n", name);
+		    if(trusted_user(real_uid))
+		      fprintf(stderr,
+			      "%s: Filesystem \"%s\" locked, use -override to detach it.\n", 
+			      progname, name);
+		    else
+		      fprintf(stderr, "%s: Filesystem \"%s\" locked, can't detach\n", 
+			      progname, name);
 		    put_attachtab();
 		    unlock_attachtab();
 		    free_attachtab();
@@ -124,16 +129,15 @@ detach(name)
     if (at.fs->detach)
 	    status = (at.fs->detach)(&at);
     else {
-	    fprintf(stderr,
-		    "Sorry, I don't know how to detach %s type filesystems\n",
-		    at.fs->name);
+	    fprintf(stderr, "%s: Can't detach filesystem type \"%s\"\n",
+		    progname, at.fs->name);
 	    status = ERR_FATAL;
 	    return(FAILURE);
     }
     
     if (status == SUCCESS) {
 	if (verbose)
-		printf("%s: detached\n", at.hesiodname);
+		printf("%s: %s detached\n", progname, at.hesiodname);
 	if (at.fs->flags & FS_MNTPT)
 		rm_mntpt(&at);
 	lock_attachtab();
