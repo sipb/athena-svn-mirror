@@ -1,4 +1,4 @@
-#   Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2002 Free Software Foundation, Inc.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 load_lib dg.exp
 load_lib libgloss.exp
+load_lib prune.exp
 
 proc libstdc++-v3-copy-files {srcfiles dstdir} {
     foreach f $srcfiles {
@@ -66,7 +67,32 @@ proc libstdc++-v3-init { args } {
 
     set ld_library_path "."
     append ld_library_path ":${gccdir}"
+    set compiler ${gccdir}/g++
+    if { [is_remote host] == 0 && [which $compiler] != 0 } {
+      foreach i "[exec $compiler --print-multi-lib]" {
+	set mldir ""
+	regexp -- "\[a-z0-9=/\.-\]*;" $i mldir
+	set mldir [string trimright $mldir "\;@"]
+	if { "$mldir" == "." } {
+	  continue
+	}
+	if { [llength [glob -nocomplain ${gccdir}/${mldir}/libgcc_s*.so.*]] == 1 } {
+	  append ld_library_path ":${gccdir}/${mldir}"
+	}
+      }
+    }
     append ld_library_path ":${blddir}/src/.libs"
+
+    # On IRIX 6, we have to set variables akin to LD_LIBRARY_PATH, but
+    # called LD_LIBRARYN32_PATH (for the N32 ABI) and LD_LIBRARY64_PATH
+    # (for the 64-bit ABI).  The right way to do this would be to modify
+    # unix.exp -- but that's not an option since it's part of DejaGNU
+    # proper, so we do it here.  We really only need to do 
+    # this on IRIX, but it shouldn't hurt to do it anywhere else.
+    setenv  LD_LIBRARY_PATH     $ld_library_path
+    setenv  SHLIB_PATH          $ld_library_path
+    setenv  LD_LIBRARYN32_PATH  $ld_library_path
+    setenv  LD_LIBRARY64_PATH   $ld_library_path
 
     # Do a bunch of handstands and backflips for cross compiling and
     # finding simulators...
@@ -78,7 +104,7 @@ proc libstdc++-v3-init { args } {
         }
       set cxx [transform "g++"]
       set cxxflags "-ggdb3 -DDEBUG_ASSERT"
-        set includes "-I./"
+      set includes "-I./"
     } else {
         # If we find a testsuite_flags file, we're testing in the build dir.
         set flags_file "${blddir}/testsuite_flags"
@@ -93,7 +119,8 @@ proc libstdc++-v3-init { args } {
         }
     }
 
-    if { [target_info needs_status_wrapper]!="" && ![info exists gluefile] } {
+    if { [target_info needs_status_wrapper]!=""} {
+      file delete ${objdir}/testglue.o;
       set gluefile ${objdir}/testglue.o;
       set result [build_wrapper $gluefile];
       if { $result != "" } {
@@ -123,14 +150,14 @@ proc libstdc++-v3-dg-test { prog do_what extra_tool_flags } {
 	}
 	"link" {
 	    set compile_type "executable"
-	    set output_file "./[file rootname [file tail $prog]]"
+	    set output_file "./[file rootname [file tail $prog]].exe"
 	}
 	"run" {
 	    set compile_type "executable"
 	    # FIXME: "./" is to cope with "." not being in $PATH.
 	    # Should this be handled elsewhere?
 	    # YES.
-	    set output_file "./[file rootname [file tail $prog]]"
+	    set output_file "./[file rootname [file tail $prog]].exe"
 	    # This is the only place where we care if an executable was
 	    # created or not.  If it was, dg.exp will try to run it.
 	    remote_file build delete $output_file;
@@ -146,6 +173,7 @@ proc libstdc++-v3-dg-test { prog do_what extra_tool_flags } {
     }
 
     set comp_output [libstdc++-v3_target_compile "$prog" "$output_file" "$compile_type" $options];
+    set comp_output [ prune_g++_output $comp_output ];
 
     return [list $comp_output $output_file]
 }
@@ -174,15 +202,3 @@ proc libstdc++-v3_target_compile { source dest type options } {
     return [target_compile $source $dest $type $options]
 }
 
-# On IRIX 6, we have to set variables akin to LD_LIBRARY_PATH, but
-# called LD_LIBRARYN32_PATH (for the N32 ABI) and LD_LIBRARY64_PATH
-# (for the 64-bit ABI).  The right way to do this would be to modify
-# unix.exp -- but that's not an option since it's part of DejaGNU
-# proper, so we do it here, by trickery.  We really only need to do 
-# this on IRIX, but it shouldn't hurt to do it anywhere else.
-proc libstdc++-v3_set_ld_library_path { name element op } {
-  setenv LD_LIBRARYN32_PATH [getenv LD_LIBRARY_PATH]
-  setenv LD_LIBRARY64_PATH [getenv LD_LIBRARY_PATH]
-}
-
-trace variable env(LD_LIBRARY_PATH) w libstdc++-v3_set_ld_library_path

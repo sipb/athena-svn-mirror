@@ -1,6 +1,6 @@
 // 1999-09-20 bkoz
 
-// Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+// Copyright (C) 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
 // software; you can redistribute it and/or modify it under the
@@ -31,18 +31,32 @@
 // NB: This file is for testing ostream with NO OTHER INCLUDES.
 
 #include <ostream>
+#include <testsuite_hooks.h>
 
-namespace test {
- 
-#if 0
-  // XXX Should work, but doesn't.
+// { dg-do compile }
+
+// libstdc++/7216
+void test01()
+{
+  // Check for required typedefs
+  typedef std::ostream test_type;
+  typedef test_type::char_type char_type;
+  typedef test_type::traits_type traits_type;
+  typedef test_type::int_type int_type;
+  typedef test_type::pos_type pos_type;
+  typedef test_type::off_type off_type;
+}
+
+namespace test 
+{
   using namespace std;
   typedef short type_t;
   template class basic_ostream<type_t, char_traits<type_t> >;
-#endif
-
+  template class basic_ostream<gnu_char, char_traits<gnu_char> >;
 } // test
 
-int main() {
+int main() 
+{
+  test01();
   return 0;
 }

@@ -1,6 +1,6 @@
 // String support -*- C++ -*-
 
-// Copyright (C) 2001 Free Software Foundation, Inc.
+// Copyright (C) 2001, 2002 Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
 // software; you can redistribute it and/or modify it under the
@@ -31,6 +31,11 @@
 // ISO C++ 14882: 21 Strings library
 //
 
+/** @file stringfwd.h
+ *  This is an internal header file, included by other library headers.
+ *  You should not attempt to use it directly.
+ */
+
 #ifndef _CPP_BITS_STRINGFWD_H
 #define _CPP_BITS_STRINGFWD_H	1
 
@@ -40,29 +45,25 @@
 
 namespace std
 {
-  template<class _CharT>
-    struct char_traits;
-  
-  template<> struct char_traits<char>;
-#ifdef _GLIBCPP_USE_WCHAR_T
-  template<> struct char_traits<wchar_t>;
-#endif
-
   template<typename _Alloc> 
     class allocator;
+
+  template<class _CharT>
+    struct char_traits;
 
   template<typename _CharT, typename _Traits = char_traits<_CharT>, 
            typename _Alloc = allocator<_CharT> >
     class basic_string;
+  
+  template<> struct char_traits<char>;
 
   typedef basic_string<char>    string;
+
 #ifdef _GLIBCPP_USE_WCHAR_T
+  template<> struct char_traits<wchar_t>;
+
   typedef basic_string<wchar_t> wstring;
 #endif
 } // namespace std
 
 #endif	// _CPP_BITS_STRINGFWD_H
-
-// Local Variables:
-// mode:c++
-// End:

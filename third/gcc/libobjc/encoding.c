@@ -30,14 +30,17 @@ Boston, MA 02111-1307, USA.  */
 #include "objc-api.h"
 #include "encoding.h"
 
+#undef  MAX
 #define MAX(X, Y)                    \
   ({ typeof(X) __x = (X), __y = (Y); \
      (__x > __y ? __x : __y); })
 
+#undef  MIN
 #define MIN(X, Y)                    \
   ({ typeof(X) __x = (X), __y = (Y); \
      (__x < __y ? __x : __y); })
 
+#undef  ROUND
 #define ROUND(V, A) \
   ({ typeof(V) __v=(V); typeof(A) __a=(A); \
      __a*((__v+__a-1)/__a); })
@@ -54,6 +57,10 @@ Boston, MA 02111-1307, USA.  */
 #define QUAL_UNION_TYPE _C_UNION_B
 #define ARRAY_TYPE      _C_ARY_B
 
+#define REAL_TYPE       _C_DBL
+
+#define VECTOR_TYPE	_C_VECTOR
+
 #define TYPE_FIELDS(TYPE)     objc_skip_typespec (TYPE)
 
 #define DECL_MODE(TYPE) *(TYPE)
@@ -68,6 +75,11 @@ Boston, MA 02111-1307, USA.  */
    one that has a constant value for this compilation.  */
 #undef STRUCTURE_SIZE_BOUNDARY
 #define STRUCTURE_SIZE_BOUNDARY (BITS_PER_UNIT * sizeof (struct{char a;}))
+
+/* Some ROUND_TYPE_ALIGN macros use TARGET_foo, and consequently
+   target_flags.  Define a dummy entry here to so we don't die.  */
+
+static int target_flags = 0;
 
 static inline int
 atoi (const char* str)

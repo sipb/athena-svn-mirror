@@ -1,4 +1,5 @@
-// Copyright (C) 1997, 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
+// Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002
+// Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
 // software; you can redistribute it and/or modify it under the
@@ -25,24 +26,25 @@
 // invalidate any other reasons why the executable file might be covered by
 // the GNU General Public License.
 
-#include <bits/std_clocale.h>
-#include <bits/std_cstring.h>
-#include <bits/std_cassert.h>
-#include <bits/std_cctype.h>
-#include <bits/std_limits.h>
-#include <exception>
-#include <bits/std_stdexcept.h>
-#include <bits/std_locale.h>
-#include <bits/std_istream.h>
-#include <bits/std_ostream.h>
-#include <bits/std_vector.h>
-#include <bits/std_memory.h>      // for auto_ptr
-#ifdef _GLIBCPP_USE_WCHAR_T  
-# include <bits/std_cwctype.h>     // for towupper, etc.
-#endif
+#include <clocale>
+#include <cstring>
+#include <cassert>
+#include <cctype>
+#include <cwctype>     // For towupper, etc.
+#include <locale>
+#include <bits/atomicity.h>
+
+namespace __gnu_cxx
+{
+  // Defined in globals.cc.
+  extern std::locale 		c_locale;
+  extern std::locale::_Impl 	c_locale_impl;
+} // namespace __gnu_cxx
 
 namespace std 
 {
+  using namespace __gnu_cxx;
+
   // Definitions for static const data members of locale.
   const locale::category 	locale::none;
   const locale::category 	locale::ctype;
@@ -53,22 +55,17 @@ namespace std
   const locale::category 	locale::messages;
   const locale::category 	locale::all;
 
+  // In the future, GLIBCXX_ABI > 5 should remove all uses of
+  // _GLIBCPP_ASM_SYMVER in this file, and remove exports of any
+  // static data members of locale.
   locale::_Impl* 		locale::_S_classic;
   locale::_Impl* 		locale::_S_global; 
-  const size_t 			locale::_S_num_categories;
-  const size_t 			locale::_S_num_facets;
-
-  // Definitions for locale::id of standard facets. 
-  locale::id ctype<char>::id;
-  locale::id codecvt<char, char, mbstate_t>::id;
-
-#ifdef _GLIBCPP_USE_WCHAR_T  
-  locale::id ctype<wchar_t>::id;
-  locale::id codecvt<wchar_t, char, mbstate_t>::id;
-#endif
+  const size_t 			locale::_S_categories_size;
+  _GLIBCPP_ASM_SYMVER(_ZNSt6locale18_S_categories_sizeE, _ZNSt6locale17_S_num_categoriesE, GLIBCPP_3.2)
+  const size_t 			locale::_S_extra_categories_size;
 
   // Definitions for static const data members of locale::id
-  size_t locale::id::_S_highwater;  // init'd to 0 by linker
+  _Atomic_word locale::id::_S_highwater;  // init'd to 0 by linker
 
   // Definitions for static const data members of locale::_Impl
   const locale::id* const
@@ -110,9 +107,11 @@ namespace std
   const locale::id* const
   locale::_Impl::_S_id_time[] =
   {
+    &__timepunct<char>::id, 
     &time_get<char>::id, 
     &time_put<char>::id, 
 #ifdef _GLIBCPP_USE_WCHAR_T
+    &__timepunct<wchar_t>::id, 
     &time_get<wchar_t>::id,
     &time_put<wchar_t>::id,
 #endif
@@ -158,222 +157,132 @@ namespace std
     0
   };
 
-  // Construct and return valid pattern consisting of some combination of:
-  // space none symbol sign value
-  money_base::pattern
-  money_base::_S_construct_pattern(char __preceeds, char __space, char __posn)
-  { 
-    pattern __ret;
-
-    // This insanely complicated routine attempts to construct a valid
-    // pattern for use with monyepunct. A couple of invariants:
-
-    // if (__preceeds) symbol -> value
-    // else value -> symbol
-    
-    // if (__space) space
-    // else none
-
-    // none == never first
-    // space never first or last
-
-    // Any elegant implementations of this are welcome.
-    switch (__posn)
-      {
-      case 1:
-	// 1 The sign precedes the value and symbol.
-	if (__space)
-	  {
-	    // Pattern starts with sign.
-	    if (__preceeds)
-	      {
-		__ret.field[1] = symbol;
-		__ret.field[2] = space;
-		__ret.field[3] = value;
-	      }
-	    else
-	      {
-		__ret.field[1] = value;
-		__ret.field[2] = space;
-		__ret.field[3] = symbol;
-	      }
-	    __ret.field[0] = sign;
-	  }
-	else
-	  {
-	    // Pattern starts with sign and ends with none.
-	    if (__preceeds)
-	      {
-		__ret.field[1] = symbol;
-		__ret.field[2] = value;
-	      }
-	    else
-	      {
-		__ret.field[1] = value;
-		__ret.field[2] = symbol;
-	      }
-	    __ret.field[0] = sign;
-	    __ret.field[3] = none;
-	  }
-	break;
-      case 2:
-	// 2 The sign follows the value and symbol.
-	if (__space)
-	  {
-	    // Pattern either ends with sign.
-	    if (__preceeds)
-	      {
-		__ret.field[0] = symbol;
-		__ret.field[1] = space;
-		__ret.field[2] = value;
-	      }
-	    else
-	      {
-		__ret.field[0] = value;
-		__ret.field[1] = space;
-		__ret.field[2] = symbol;
-	      }
-	    __ret.field[3] = sign;
-	  }
-	else
-	  {
-	    // Pattern ends with sign then none.
-	    if (__preceeds)
-	      {
-		__ret.field[0] = symbol;
-		__ret.field[1] = value;
-	      }
-	    else
-	      {
-		__ret.field[0] = value;
-		__ret.field[1] = symbol;
-	      }
-	    __ret.field[2] = sign;
-	    __ret.field[3] = none;
-	  }
-	break;
-      case 3:
-	// 3 The sign immediately precedes the symbol.
-	if (__space)
-	  {
-	    // Have space.
-	    if (__preceeds)
-	      {
-		__ret.field[0] = sign;
-		__ret.field[1] = symbol;
-		__ret.field[2] = space;
-		__ret.field[3] = value;
-	      }
-	    else
-	      {
-		__ret.field[0] = value;
-		__ret.field[1] = space;
-		__ret.field[2] = sign;
-		__ret.field[3] = symbol;
-	      }
-	  }
-	else
-	  {
-	    // Have none.
-	    if (__preceeds)
-	      {
-		__ret.field[0] = sign;
-		__ret.field[1] = symbol;
-		__ret.field[2] = value;
-	      }
-	    else
-	      {
-		__ret.field[0] = value;
-		__ret.field[1] = sign;
-		__ret.field[2] = symbol;
-	      }
-	    __ret.field[3] = none;
-	  }
-	break;
-      case 4:
-	// 4 The sign immediately follows the symbol. 
-	if (__space)
-	  {
-	    // Have space.
-	    if (__preceeds)
-	      {
-		__ret.field[0] = symbol;
-		__ret.field[1] = sign;
-		__ret.field[2] = space;
-		__ret.field[3] = value;
-	      }
-	    else
-	      {
-		__ret.field[0] = value;
-		__ret.field[1] = space;
-		__ret.field[2] = symbol;
-		__ret.field[3] = sign;
-	      }
-	  }
-	else
-	  {
-	    // Have none.
-	    if (__preceeds)
-	      {
-		__ret.field[0] = symbol;
-		__ret.field[1] = sign;
-		__ret.field[2] = value;
-	      }
-	    else
-	      {
-		__ret.field[0] = value;
-		__ret.field[1] = symbol;
-		__ret.field[2] = sign;
-	      }
-	    __ret.field[3] = none;
-	  }
-	break;
-      default:
-	;
-      }
-    return __ret;
-  }
-
-  locale::~locale() throw()
-  { _M_impl->_M_remove_reference(); }
-
-  void
-  locale::_M_coalesce(const locale& __base, const locale& __add, 
-		      category __cat)
-  {
-    __cat = _S_normalize_category(__cat);  
-    _M_impl = new _Impl(*__base._M_impl, 1);  
-
-    try 
-      { _M_impl->_M_replace_categories(__add._M_impl, __cat); }
-    catch (...) 
-      { 
-	_M_impl->_M_remove_reference(); 
-	__throw_exception_again;
-      }
-  }
-
   locale::locale() throw()
   { 
     _S_initialize(); 
     (_M_impl = _S_global)->_M_add_reference(); 
-  } // XXX MT
+  }
 
   locale::locale(const locale& __other) throw()
   { (_M_impl = __other._M_impl)->_M_add_reference(); }
 
-  locale::locale(_Impl* __ip) throw()
-  : _M_impl(__ip)
-  { __ip->_M_add_reference(); }
+  // This is used to initialize global and classic locales, and
+  // assumes that the _Impl objects are constructed correctly.
+  // The lack of a reference increment is intentional.
+  locale::locale(_Impl* __ip) throw() : _M_impl(__ip)
+  { }
 
   locale::locale(const char* __s)
   {
     if (__s)
       {
+	_S_initialize(); 
 	if (strcmp(__s, "C") == 0 || strcmp(__s, "POSIX") == 0)
 	  (_M_impl = _S_classic)->_M_add_reference();
-	else
+	else if (strcmp(__s, "") != 0)
 	  _M_impl = new _Impl(__s, 1);
+	else
+	  {
+	    // Get it from the environment.
+	    char* __env = getenv("LC_ALL");
+	    // If LC_ALL is set we are done.
+	    if (__env && strcmp(__env, "") != 0)
+	      {
+		if (strcmp(__env, "C") == 0 || strcmp(__env, "POSIX") == 0)
+		  (_M_impl = _S_classic)->_M_add_reference();
+		else
+		  _M_impl = new _Impl(__env, 1);
+	      }
+	    else
+	      {
+		char* __res;
+		// LANG may set a default different from "C".
+		char* __env = getenv("LANG");
+		if (!__env || strcmp(__env, "") == 0 || strcmp(__env, "C") == 0
+		    || strcmp(__env, "POSIX") == 0)
+		  __res = strdup("C");
+		else 
+		  __res = strdup(__env);
+		
+		// Scan the categories looking for the first one
+		// different from LANG.
+		size_t __i = 0;
+		if (strcmp(__res, "C") == 0)
+		  for (__i = 0; 
+		       __i < _S_categories_size + _S_extra_categories_size; 
+		       ++__i)
+		    {
+		      __env = getenv(_S_categories[__i]);
+		      if (__env && strcmp(__env, "") != 0 
+			  && strcmp(__env, "C") != 0 
+			  && strcmp(__env, "POSIX") != 0) 
+			break;
+		    }
+		else
+		  for (__i = 0; 
+		       __i < _S_categories_size + _S_extra_categories_size; 
+		       ++__i)
+		    {
+		      __env = getenv(_S_categories[__i]);
+		      if (__env && strcmp(__env, "") != 0 
+			  && strcmp(__env, __res) != 0) 
+			break;
+		    }
+	
+		// If one is found, build the complete string of
+		// the form LC_CTYPE=xxx;LC_NUMERIC=yyy; and so on...
+		if (__i < _S_categories_size + _S_extra_categories_size)
+		  {
+		    string __str;
+		    for (size_t __j = 0; __j < __i; ++__j)
+		      {
+			__str += _S_categories[__j];
+			__str += "=";
+			__str += __res;
+			__str += ";";
+		      }
+		    __str += _S_categories[__i];
+		    __str += "=";
+		    __str += __env;
+		    __str += ";";
+		    __i++;
+		    for (; __i < _S_categories_size
+			   + _S_extra_categories_size; ++__i)
+		      {
+			__env = getenv(_S_categories[__i]);
+			if (!__env || strcmp(__env, "") == 0)
+			  {
+			    __str += _S_categories[__i];
+			    __str += '=';
+			    __str += __res;
+			    __str += ';';
+			  }
+			else if (strcmp(__env, "C") == 0
+				 || strcmp(__env, "POSIX") == 0)
+			  {
+			    __str += _S_categories[__i];
+			    __str += "=C;";
+			  }
+			else
+			  {
+			    __str += _S_categories[__i];
+			    __str += "=";
+			    __str += __env;
+			    __str += ";";
+			  }
+		      }
+		    __str.erase(__str.end() - 1);
+		    _M_impl = new _Impl(__str.c_str(), 1);
+		  }
+		// ... otherwise either an additional instance of
+		// the "C" locale or LANG.
+		else if (strcmp(__res, "C") == 0)
+		  (_M_impl = _S_classic)->_M_add_reference();
+		else
+		  _M_impl = new _Impl(__res, 1);
+		free(__res);
+	      }
+	  }
       }
     else
       __throw_runtime_error("attempt to create locale from NULL name");
@@ -390,6 +299,9 @@ namespace std
 
   locale::locale(const locale& __base, const locale& __add, category __cat)
   { _M_coalesce(__base, __add, __cat); }
+
+  locale::~locale() throw()
+  { _M_impl->_M_remove_reference(); }
 
   bool
   locale::operator==(const locale& __rhs) const throw()
@@ -413,65 +325,88 @@ namespace std
   {
     // XXX MT
     _S_initialize();
-    locale __old(_S_global);
+    _Impl* __old = _S_global;
     __other._M_impl->_M_add_reference();
-    _S_global->_M_remove_reference();
     _S_global = __other._M_impl; 
-    if (_S_global->_M_check_same_name() && _S_global->_M_names[0] != "*")
+    if (_S_global->_M_check_same_name() 
+	&& (strcmp(_S_global->_M_names[0], "*") != 0))
       setlocale(LC_ALL, __other.name().c_str());
-    return __old;
+
+    // Reference count sanity check: one reference removed for the
+    // subsition of __other locale, one added by return-by-value. Net
+    // difference: zero. When the returned locale object's destrutor
+    // is called, then the reference count is decremented and possibly
+    // destroyed.
+    return locale(__old);
   }
 
   string
   locale::name() const
   {
     string __ret;
-    // Need some kind of separator character. This one was pretty much
-    // arbitrarily chosen as to not conflict with glibc locales: the
-    // exact formatting is not set in stone.
-    const char __separator = '|';
-
     if (_M_impl->_M_check_same_name())
       __ret = _M_impl->_M_names[0];
     else
       {
-	for (size_t i = 0; i < _S_num_categories; ++i)
-	  __ret += __separator + _M_impl->_M_names[i];
+	__ret += _S_categories[0];
+	__ret += "=";
+	__ret += _M_impl->_M_names[0]; 
+	for (size_t __i = 1; 
+	     __i < _S_categories_size + _S_extra_categories_size; 
+	     ++__i)
+	  {
+	    __ret += ";";
+	    __ret += _S_categories[__i];
+	    __ret += "=";
+	    __ret += _M_impl->_M_names[__i];
+	  }
       }
     return __ret;
   }
 
-  locale const&
+  const locale&
   locale::classic()
   {
-    static locale* __classic_locale;
-    // XXX MT
+    static _STL_mutex_lock __lock __STL_MUTEX_INITIALIZER;
+    _STL_auto_lock __auto(__lock);
+
     if (!_S_classic)
       {
 	try 
 	  {
 	    // 26 Standard facets, 2 references.
-	    // One reference for _M_classic, one for _M_global
-	    _S_classic = new _Impl("C", 2);
+	    // One reference for _S_classic, one for _S_global
+	    _S_classic = new (&c_locale_impl) _Impl(0, 2, true);
 	    _S_global = _S_classic; 	    
-
-	    // Finesse static init order hassles
-	    __classic_locale = new locale(_S_classic);
+	    new (&c_locale) locale(_S_classic);
 	  }
 	catch(...) 
 	  {
-	    delete __classic_locale;
+	    // Just call destructor, so that locale_impl_c's memory is
+	    // not deallocated via a call to delete.
 	    if (_S_classic)
-	      {
-		_S_classic->_M_remove_reference();
-		_S_global->_M_remove_reference();
-	      }
+	      _S_classic->~_Impl();
 	    _S_classic = _S_global = 0;
-	    // XXX MT
 	    __throw_exception_again;
 	  }
       }
-    return *__classic_locale;
+    return c_locale;
+  }
+
+  void
+  locale::_M_coalesce(const locale& __base, const locale& __add, 
+		      category __cat)
+  {
+    __cat = _S_normalize_category(__cat);  
+    _M_impl = new _Impl(*__base._M_impl, 1);  
+
+    try 
+      { _M_impl->_M_replace_categories(__add._M_impl, __cat); }
+    catch (...) 
+      { 
+	_M_impl->_M_remove_reference(); 
+	__throw_exception_again;
+      }
   }
 
   locale::category
@@ -515,516 +450,65 @@ namespace std
     return __ret;
   }
 
+  __c_locale
+  locale::facet::_S_c_locale;
+  
   locale::facet::
-  facet(size_t __refs) throw()
-  : _M_references(__refs) 
+  ~facet() { }
+
+  locale::facet::
+  facet(size_t __refs) throw() : _M_references(__refs ? 1 : 0) 
   { }
 
   void  
   locale::facet::
   _M_add_reference() throw()
-  { ++_M_references; }                     // XXX MT
+  { __atomic_add(&_M_references, 1); }
 
   void  
   locale::facet::
   _M_remove_reference() throw()
   {
-    if (_M_references)
-      --_M_references;
-    else
+    if (__exchange_and_add(&_M_references, -1) == 1)
       {
         try 
-	  { delete this; }  // XXX MT
+	  { delete this; }  
 	catch (...) 
 	  { }
       }
   }
   
-  // Definitions for static const data members of ctype_base.
-  const ctype_base::mask ctype_base::space;
-  const ctype_base::mask ctype_base::print;
-  const ctype_base::mask ctype_base::cntrl;
-  const ctype_base::mask ctype_base::upper;
-  const ctype_base::mask ctype_base::lower;
-  const ctype_base::mask ctype_base::alpha;
-  const ctype_base::mask ctype_base::digit;
-  const ctype_base::mask ctype_base::punct;
-  const ctype_base::mask ctype_base::xdigit;
-  const ctype_base::mask ctype_base::alnum;
-  const ctype_base::mask ctype_base::graph;
-
-  // Platform-specific initialization code for ctype tables.
-  #include <bits/ctype_noninline.h>
-
-  const size_t ctype<char>::table_size;
-
-  ctype<char>::~ctype()
-  { if (_M_del) delete[] this->table(); }
-
-  // These are dummy placeholders as these virtual functions are never called.
-  bool 
-  ctype<char>::do_is(mask, char_type) const 
-  { return false; }
-  
-  const char*
-  ctype<char>::do_is(const char_type* __c, const char_type*, mask*) const 
-  { return __c; }
-  
-  const char*
-  ctype<char>::do_scan_is(mask, const char_type* __c, const char_type*) const 
-  { return __c; }
-
-  const char* 
-  ctype<char>::do_scan_not(mask, const char_type* __c, const char_type*) const
-  { return __c; }
-
-  char
-  ctype<char>::do_widen(char __c) const
-  { return __c; }
-  
-  const char* 
-  ctype<char>::do_widen(const char* __lo, const char* __hi, char* __dest) const
-  {
-    memcpy(__dest, __lo, __hi - __lo);
-    return __hi;
-  }
-  
-  char
-  ctype<char>::do_narrow(char __c, char /*__dfault*/) const
-  { return __c; }
-  
-  const char* 
-  ctype<char>::do_narrow(const char* __lo, const char* __hi, 
-			 char /*__dfault*/, char* __dest) const
-  {
-    memcpy(__dest, __lo, __hi - __lo);
-    return __hi;
-  }
-
-  template<>
-  ctype_byname<char>::ctype_byname(const char* /*__s*/, size_t __refs)
-  : ctype<char>(new mask[table_size], true, __refs)
+  locale::id::id() 
   { }
+
+  // Definitions for static const data members of time_base
+  template<> 
+    const char*
+    __timepunct<char>::_S_timezones[14] =
+    { 
+      "GMT", "HST", "AKST", "PST", "MST", "CST", "EST", "AST", "NST", "CET", 
+      "IST", "EET", "CST", "JST"  
+    };
+ 
+#ifdef _GLIBCPP_USE_WCHAR_T
+  template<> 
+    const wchar_t*
+    __timepunct<wchar_t>::_S_timezones[14] =
+    { 
+      L"GMT", L"HST", L"AKST", L"PST", L"MST", L"CST", L"EST", L"AST", 
+      L"NST", L"CET", L"IST", L"EET", L"CST", L"JST"  
+    };
+#endif
 
   // Definitions for static const data members of money_base
   const money_base::pattern 
-  money_base::_S_default_pattern =  {{symbol, sign, none, value}};
+  money_base::_S_default_pattern =  { {symbol, sign, none, value} };
 
-  template<>
-    _Format_cache<char>::_Format_cache()
-    : _M_valid(true),
-    _M_decimal_point('.'), _M_thousands_sep(','),
-    _M_truename("true"), _M_falsename("false"), _M_use_grouping(false)
-    { }
+  const char __num_base::_S_atoms[] = "0123456789eEabcdfABCDF";
 
-#ifdef _GLIBCPP_USE_WCHAR_T
-  template<>
-    _Format_cache<wchar_t>::_Format_cache()
-    : _M_valid(true),
-    _M_decimal_point(L'.'), _M_thousands_sep(L','),
-    _M_truename(L"true"), _M_falsename(L"false"), _M_use_grouping(false)
-    { }
-#endif
-
-  template<>
-    const ctype<char>&
-    use_facet<ctype<char> >(const locale& __loc)
-    {
-      size_t __i = ctype<char>::id._M_index;
-      const locale::_Impl* __tmp = __loc._M_impl;
-      return static_cast<const ctype<char>&>(* (*(__tmp->_M_facets))[__i]);
-    }
-
-#ifdef _GLIBCPP_USE_WCHAR_T
-  template<>
-    const ctype<wchar_t>&
-    use_facet<ctype<wchar_t> >(const locale& __loc)
-    {
-      size_t __i = ctype<wchar_t>::id._M_index;
-      const locale::_Impl* __tmp = __loc._M_impl;
-      return static_cast<const ctype<wchar_t>&>(* (*(__tmp->_M_facets))[__i]);
-    }
-#endif
-
-  // This interface passes a fixed size buffer. The function cannot handle
-  // input longer than the buffer and sets failbit in that case. This is
-  // not strictly compliant since the input may be valid, but we are stuck
-  // with this ABI on the 3.0 branch. Since leading zeros are discarded all
-  // valid integer input should be OK, only floating point input can exceed
-  // the buffer.
-  template<>
-    void
-    num_get<char, istreambuf_iterator<char> >::
-    _M_extract(istreambuf_iterator<char> __beg, 
-	       istreambuf_iterator<char> __end, ios_base& __io, 
-	       ios_base::iostate& __err, char* __xtrc, int& __base, 
-	       bool __fp) const
-    {
-      typedef _Format_cache<char> __cache_type;	
-
-      // Prepare for possible failure
-      __xtrc[0] = '\0';
-
-      // Stage 1: determine a conversion specifier.
-      ios_base::fmtflags __basefield = __io.flags() & ios_base::basefield;
-      if (__basefield == ios_base::dec)
-        __base = 10;
-      else if (__basefield == ios_base::oct)
-        __base = 8;
-      else if (__basefield == ios_base::hex)
-        __base = 16;
-      else
-        __base = 0;
-      // As far as I can tell, bases other than 10 are not available for
-      // floating point types
-      if (__fp)
-        __base = 10;
-
-      // Stage 2: extract characters.
-      __cache_type const* __fmt = __cache_type::_S_get(__io);
-
-      // Fail quickly if !__valid
-      if (__beg == __end)
-        {
-          __err |= (ios_base::eofbit | ios_base::failbit);
-          return;
-        }
-
-      // Acceptable formats for numbers here are based on 22.2.3.1
-      string __grp;
-      int __sep_pos = 0;
-      int __pos = 0;
-      const char* __lits = __fmt->_S_literals;
-      char __c = *__beg;
-
-      // Check first for sign
-      bool __testsign = false;
-      if ((__c == __lits[__cache_type::_S_minus])
-	  || (__c == __lits[__cache_type::_S_plus]))
-        {
-          __testsign = true;
-          __xtrc[__pos++] = __c;
-          ++__beg;
-	  __c = * __beg;
-
-          // Whitespace may follow a sign
-          while ((__beg != __end) && (isspace(__c)))
-	    {
-	      ++__beg;
-	      __c = *__beg;
-	    }
-
-          // There had better be more to come...
-          if (__beg == __end)
-            {
-              __xtrc[__pos] = '\0';
-              __err |= (ios_base::eofbit | ios_base::failbit);
-              return;
-            }
-        }
-
-      // Now check if first character is a zero.
-      bool __testzero = false;    
-      if (__c == __lits[__cache_type::_S_digits])
-        {
-           __testzero = true;
-           ++__beg;
-	   __c = *__beg;
-
-           // We have to check for __beg == __end here. If so,
-           // a plain '0' (possibly with a sign) can be got rid of now
-           if (__beg == __end)
-             {
-               __xtrc[__pos++] = __lits[__cache_type::_S_digits];
-               __xtrc[__pos] = '\0';
-               __err |= ios_base::eofbit;
-               return;
-             }
-
-          // Figure out base for integer types only
-          // Based on Table 55 of 22.2.2.1.2
-          if (!__fp && __base != 10 && __base != 8)
-            {
-              // Here, __base == 0 or 16
-              if ((__c == __lits[__cache_type::_S_x])
-                 || (__c == __lits[__cache_type::_S_X]))
-                {
-                  ++__beg;
-		  __c = *__beg;
-                  __base = 16;
-                  __testzero = false; // "0x" is not a leading zero
-                }
-              else if (__base == 0)
-                __base = 8;
-            }
-
-          // Remove any more leading zeros
-          while (__beg != __end)
-            {
-              if (__c == __lits[__cache_type::_S_digits])
-                {
-                  ++__beg;
-		  __c = *__beg;
-                  __testzero = true;
-                }
-              else
-                break;
-            }
-        }
-      else if (__base == 0) // 1st character is not zero
-        __base = 10;
-
-      // We now seek "units", i.e. digits and thousands separators.
-      // We may need to know if anything is found here. A leading zero
-      // (removed by now) would count.
-      bool __testunits = __testzero;
-      while (__beg != __end)
-        {
-          const char* __p = strchr(__lits, __c);
-
-          // NB: strchr returns true for __c == 0x0
-          if (__p && __c
-	      &&((__p >= &__lits[__cache_type::_S_digits]
-		  && __p < &__lits[__cache_type::_S_digits + __base])
-		 || (__p >= &__lits[__cache_type::_S_udigits]
-		     && __p < &__lits[__cache_type::_S_udigits + __base])))
-	    {
-	      // Try first for acceptable digit; record it if found.
-	      __xtrc[__pos++] = __c;
-              if (__pos == _M_extract_buffer_length)
-                {
-                  // XXX This is non-compliant, but our fixed-size
-                  // buffer is full.
-                  __xtrc[_M_extract_buffer_length-1] = '\0';
-		  __err |= ios_base::failbit;
-                  return;
-                }
-	      ++__sep_pos;
-	      __testunits = true;
-	      ++__beg;
-	      __c = *__beg;
-	    }
-          else if (__c == __fmt->_M_thousands_sep && __fmt->_M_use_grouping)
-	    {
-              // NB: Thousands separator at the beginning of a string
-              // is a no-no, as is two consecutive thousands
-              // separators.
-              if (__sep_pos)
-                {
-                  __grp += static_cast<char>(__sep_pos);
-                  __sep_pos = 0;
-		  ++__beg;
-		  __c = *__beg;
-                }
-              else
-		{
-		  __err |= ios_base::failbit;
-		  break;
-		}
-            }
-	  else
-	    // Not a valid input item.
-	    break;
-        }
-
-      // Digit grouping is checked. If _M_groupings() doesn't
-      // match, then get very very upset, and set failbit.
-      if (__fmt->_M_use_grouping && !__grp.empty())
-        {
-          // Add the ending grouping
-          __grp += static_cast<char>(__sep_pos);
-
-          // __grp is parsed L to R
-          // 1,222,444 == __grp of "/1/3/3"
-          // __fmt->_M_grouping is parsed R to L
-          // 1,222,444 == __fmt->_M_grouping of "/3" == "/3/3/3"
-          int __i = 0;
-          int __j = 0;
-          const int __len = __fmt->_M_grouping.size();
-          int __n = __grp.size();
-          bool __test = true;
-
-          // Parsed number groupings have to match the
-          // numpunct::grouping string exactly, starting at the
-          // right-most point of the parsed sequence of elements ...
-          while (__test && __i < __n - 1)
-            for (__j = 0; __test && __j < __len && __i < __n - 1; ++__j,++__i)
-              __test &= __fmt->_M_grouping[__j] == __grp[__n - __i - 1];
-          // ... but the last parsed grouping can be <= numpunct
-          // grouping.
-          __j == __len ? __j = 0 : __j;
-          __test &= __fmt->_M_grouping[__j] >= __grp[__n - __i - 1];
-
-          if (!__test)
-            {
-              __err |= ios_base::failbit;
-              __xtrc[__pos] = '\0';
-              if (__beg == __end)
-                __err |= ios_base::eofbit;
-              return;
-            }
-        }
-
-      // If there was nothing but zeros, put one in the output string
-      if (__testzero && (__pos == 0 || (__pos == 1 && __testsign)))
-        __xtrc[__pos++] = __lits[__cache_type::_S_digits];
-
-      // That's it for integer types. Remaining code is for floating point
-      if (__fp && __beg != __end)
-        {
-          // Check first for decimal point. There MUST be one if
-          // __testunits is false.
-          bool __testdec = false;    // Is there a decimal point
-                                     // with digits following it?
-          if (__c == __fmt->_M_decimal_point)
-            {
-              __xtrc[__pos++] = '.';
-              if (__pos == _M_extract_buffer_length)
-                {
-                  // XXX This is non-compliant, but our fixed-size
-                  // buffer is full.
-                  __xtrc[_M_extract_buffer_length-1] = '\0';
-		  __err |= ios_base::failbit;
-                  return;
-                }
-              ++__beg;
-	      __c = *__beg;
-
-              // Now we get any digits after the decimal point
-              // There MUST be some if __testunits is false.
-              while (__beg != __end)
-                {
-                  const char* __p = strchr(__lits, __c);
-                  if ((__p >= &__lits[__cache_type::_S_digits]
-                        && __p < &__lits[__cache_type::_S_digits + __base])
-                       || (__p >= &__lits[__cache_type::_S_udigits]
-                           && __p < &__lits[__cache_type::_S_udigits + __base]))
-                    {
-                      __xtrc[__pos++] = __c;
-                      if (__pos == _M_extract_buffer_length)
-                        {
-                          // XXX This is non-compliant, but our fixed-size
-                          // buffer is full.
-                          __xtrc[_M_extract_buffer_length-1] = '\0';
-        		  __err |= ios_base::failbit;
-                          return;
-                        }
-                      ++__beg;
-		      __c = *__beg;
-                      __testdec = true;
-                    }
-                  else
-                    break;
-                }
-            }
-          if (!__testunits && !__testdec) // Ill formed
-            {
-              __err |= ios_base::failbit;
-              __xtrc[__pos] = '\0';
-              if (__beg == __end)
-                __err |= ios_base::eofbit;
-              return;
-            }
-
-          // Now we may find an exponent
-          if (__beg != __end)
-            {
-              if ((__c == __lits[__cache_type::_S_ee])
-                   || (__c == __lits[__cache_type::_S_Ee]))
-                {
-                  __xtrc[__pos++] = __c;
-                  if (__pos == _M_extract_buffer_length)
-                    {
-                      // XXX This is non-compliant, but our fixed-size
-                      // buffer is full.
-                      __xtrc[_M_extract_buffer_length-1] = '\0';
-        		  __err |= ios_base::failbit;
-                      return;
-                    }
-                  ++__beg;
-		  __c = *__beg;
-
-                  // Now there may be a sign
-                  if (__beg != __end)
-                    {
-                      if ((__c == __lits[__cache_type::_S_minus])
-                          || (__c == __lits[__cache_type::_S_plus]))
-                        {
-                          __xtrc[__pos++] = __c;
-                          if (__pos == _M_extract_buffer_length)
-                            {
-                              // XXX This is non-compliant, but our fixed-size
-                              // buffer is full.
-                              __xtrc[_M_extract_buffer_length-1] = '\0';
-                		  __err |= ios_base::failbit;
-                              return;
-                            }
-                          ++__beg;
-			  __c = *__beg;
-                          // whitespace may follow a sign
-                          while ((__beg != __end) && (isspace(__c)))
-			    {
-			      ++__beg;
-			      __c = *__beg;
-			    }
-                        }
-                    }
-                  // And now there must be some digits
-                  if (__beg == __end)
-                    {
-                      __xtrc[__pos] = '\0';
-                      __err |= (ios_base::eofbit | ios_base::failbit);
-                      return;
-                    }
-                  while (__beg != __end)
-                    {
-                      const char* __p = strchr(__lits, __c);
-                      if ((__p >= &__lits[__cache_type::_S_digits]
-                            && __p < &__lits[__cache_type::_S_digits + __base])
-                           || (__p >= &__lits[__cache_type::_S_udigits]
-                               && __p < &__lits[__cache_type::_S_udigits + __base]))
-                        {
-                          __xtrc[__pos++] = __c;
-                          if (__pos == _M_extract_buffer_length)
-                            {
-                              // XXX This is non-compliant, but our fixed-size
-                              // buffer is full.
-                              __xtrc[_M_extract_buffer_length-1] = '\0';
-                		  __err |= ios_base::failbit;
-                              return;
-                            }
-                          ++__beg;
-			  __c = *__beg;
-                        }
-                      else
-                        break;
-                    }
-                }
-            }
-          // Finally, that's it for floating point
-        }
-
-      // Finish up
-      __xtrc[__pos] = '\0';
-      if (__beg == __end)
-        __err |= ios_base::eofbit;
-    }
-
-  // The following code uses sprintf() to convert floating point
-  // values for insertion into a stream. The current implementation
-  // replicates the code in _S_pad_numeric() (in _S_output_float()) in
-  // order to prevent having to create a "wide" buffer in addition to
-  // the "narrow" buffer passed to sprintf(). An optimization would be
-  // to replace sprintf() with code that works directly on a wide
-  // buffer and then use _S_pad_numeric() to do the padding. It would
-  // be good to replace sprintf() anyway to avoid accidental buffer
-  // overruns and to gain back the efficiency that C++ provides by
-  // knowing up front the type of the values to insert. This
-  // implementation follows the C++ standard fairly directly as
-  // outlined in 22.2.2.2 [lib.locale.num.put]
   bool
-  __build_float_format(ios_base& __io, char* __fptr, char __modifier,
-		       streamsize __prec)
+  __num_base::_S_format_float(const ios_base& __io, char* __fptr, char __mod,
+			      streamsize __prec)
   {
     bool __incl_prec = false;
     ios_base::fmtflags __flags = __io.flags();
@@ -1037,12 +521,12 @@ namespace std
     // As per [22.2.2.2.2.11]
     if (__flags & ios_base::fixed || __prec > 0)
       {
-        *__fptr++ = '.';
-        *__fptr++ = '*';
-        __incl_prec = true;
+	*__fptr++ = '.';
+	*__fptr++ = '*';
+	__incl_prec = true;
       }
-    if (__modifier)
-      *__fptr++ = __modifier;
+    if (__mod)
+      *__fptr++ = __mod;
     ios_base::fmtflags __fltfield = __flags & ios_base::floatfield;
     // [22.2.2.2.2] Table 58
     if (__fltfield == ios_base::fixed)
@@ -1054,264 +538,32 @@ namespace std
     *__fptr = '\0';
     return __incl_prec;
   }
-
-  template <>
-  collate<char>::collate(size_t __refs)
-  : locale::facet(__refs) { }
   
-  template<>
-  collate<char>::~collate() { }
-  
-  template<>
-  int 
-  collate<char>::do_compare(const char* __lo1, const char* __hi1, 
-			    const char* __lo2, const char* __hi2) const
+  void
+  __num_base::_S_format_int(const ios_base& __io, char* __fptr, char __mod, 
+			    char __modl)
   {
-    for (; __lo1 < __hi1 && __lo2 < __hi2; ++__lo1, ++__lo2) 
-      if (*__lo1 != *__lo2) 
-	return (*__lo1 < *__lo2) ? -1 : 1;
-    if (__lo1 < __hi1) 
-      return 1;
-    else if (__lo2 < __hi2) 
-      return -1;
-    else 
-      return 0;
+    ios_base::fmtflags __flags = __io.flags();
+    *__fptr++ = '%';
+    // [22.2.2.2.2] Table 60
+    if (__flags & ios_base::showpos)
+      *__fptr++ = '+';
+    if (__flags & ios_base::showbase)
+      *__fptr++ = '#';
+    *__fptr++ = 'l';
+
+    // For long long types.
+    if (__modl)
+      *__fptr++ = __modl;
+
+    ios_base::fmtflags __bsefield = __flags & ios_base::basefield;
+    if (__bsefield == ios_base::hex)
+      *__fptr++ = (__flags & ios_base::uppercase) ? 'X' : 'x';
+    else if (__bsefield == ios_base::oct)
+      *__fptr++ = 'o';
+    else
+      *__fptr++ = __mod;
+    *__fptr = '\0';
   }
-  
-  template<>
-  string
-  collate<char>::
-  do_transform(const char* __lo, const char* __hi) const
-  { return string(__lo, __hi - __lo); }
-  
-  template<>
-  long
-  collate<char>::
-  do_hash(const char* __lo, const char* __hi) const
-  {
-    unsigned long __val = 0xdeadbeef;
-    for (; __lo < __hi; ++__lo)
-      __val = *__lo ^ ((__val << 7) & 
-		   (__val >> (numeric_limits<unsigned long>::digits - 1)));
-    return __val;
-  }
-
-  template<>  
-  collate_byname<char>::collate_byname(const char* /*__s*/, size_t __refs)
-  : collate<char>(__refs) { }
-
-  template<>
-  moneypunct_byname<char, false>::moneypunct_byname(const char* /*__s*/, 
-						    size_t __refs)
-  : moneypunct<char, false>(__refs) { }
-  
-  template<>
-  moneypunct_byname<char, true>::moneypunct_byname(const char* /*__s*/, 
-						   size_t __refs)
-  : moneypunct<char, true>(__refs) { }
-  
-  template<>
-  messages_byname<char>::
-  messages_byname(const char* /*__s*/, size_t __refs)
-  : messages<char>(__refs) { }
-
-#ifdef _GLIBCPP_USE_WCHAR_T  
-  ctype<wchar_t>::__wmask_type
-  ctype<wchar_t>::_M_convert_to_wmask(const mask __m) const
-  {
-    __wmask_type __ret;
-    switch (__m)
-      {
-      case space:
-	__ret = wctype("space");
-	break;
-      case print:
-	__ret = wctype("print");
-	break;
-      case cntrl:
-	__ret = wctype("cntrl");
-	break;
-      case upper:
-	__ret = wctype("upper");
-	break;
-      case lower:
-	__ret = wctype("lower");
-	break;
-      case alpha:
-	__ret = wctype("alpha");
-	break;
-      case digit:
-	__ret = wctype("digit");
-	break;
-      case punct:
-	__ret = wctype("punct");
-	break;
-      case xdigit:
-	__ret = wctype("xdigit");
-	break;
-      case alnum:
-	__ret = wctype("alnum");
-	break;
-      case graph:
-	__ret = wctype("graph");
-	break;
-      default:
-	__ret = 0;
-      }
-    return __ret;
-  };
-  
-  ctype<wchar_t>::~ctype() { }
-
-  // NB: These ctype<wchar_t> methods are not configuration-specific,
-  // unlike the ctype<char> bits.
-  ctype<wchar_t>::ctype(size_t __refs) : __ctype_abstract_base<wchar_t>(__refs)
-  { }
-
-  wchar_t
-  ctype<wchar_t>::do_toupper(wchar_t __c) const
-  { return towupper(__c); }
-
-  const wchar_t*
-  ctype<wchar_t>::do_toupper(wchar_t* __lo, const wchar_t* __hi) const
-  {
-    while (__lo < __hi)
-      {
-        *__lo = towupper(*__lo);
-        ++__lo;
-      }
-    return __hi;
-  }
-  
-  wchar_t
-  ctype<wchar_t>::do_tolower(wchar_t __c) const
-  { return towlower(__c); }
-  
-  const wchar_t*
-  ctype<wchar_t>::do_tolower(wchar_t* __lo, const wchar_t* __hi) const
-  {
-    while (__lo < __hi)
-      {
-        *__lo = towlower(*__lo);
-        ++__lo;
-      }
-    return __hi;
-  }
-
-  bool
-  ctype<wchar_t>::
-  do_is(mask __m, char_type __c) const
-  { return static_cast<bool>(iswctype(__c, _M_convert_to_wmask(__m))); }
-  
-  const wchar_t* 
-  ctype<wchar_t>::
-  do_is(const wchar_t* __lo, const wchar_t* __hi, mask* __m) const
-  {
-    while (__lo < __hi && !this->is(*__m, *__lo))
-      ++__lo;
-    return __lo;
-  }
-  
-  const wchar_t* 
-  ctype<wchar_t>::
-  do_scan_is(mask __m, const wchar_t* __lo, const wchar_t* __hi) const
-  {
-    while (__lo < __hi && !this->is(__m, *__lo))
-      ++__lo;
-    return __lo;
-  }
-
-  const wchar_t*
-  ctype<wchar_t>::
-  do_scan_not(mask __m, const char_type* __lo, const char_type* __hi) const
-  {
-    while (__lo < __hi && this->is(__m, *__lo) != 0)
-      ++__lo;
-    return __lo;
-  }
-
-  wchar_t
-  ctype<wchar_t>::
-  do_widen(char __c) const
-  { return btowc(__c); }
-  
-  const char* 
-  ctype<wchar_t>::
-  do_widen(const char* __lo, const char* __hi, wchar_t* __dest) const
-  {
-    mbstate_t __state;
-    memset(static_cast<void*>(&__state), 0, sizeof(mbstate_t));
-    mbsrtowcs(__dest, &__lo, __hi - __lo, &__state);
-    return __hi;
-  }
-
-  char
-  ctype<wchar_t>::
-  do_narrow(wchar_t __wc, char __dfault) const
-  { 
-    int __c = wctob(__wc);
-    return (__c == EOF ? __dfault : static_cast<char>(__c)); 
-  }
-
-  const wchar_t*
-  ctype<wchar_t>::
-  do_narrow(const wchar_t* __lo, const wchar_t* __hi, char __dfault, 
-	    char* __dest) const
-  {
-    mbstate_t __state;
-    memset(static_cast<void*>(&__state), 0, sizeof(mbstate_t));
-    size_t __len = __hi - __lo;
-    size_t __conv = wcsrtombs(__dest, &__lo, __len, &__state);
-    if (__conv == __len)
-      *__dest = __dfault;
-    return __hi;
-  }
-
-  template<>
-  ctype_byname<wchar_t>::
-  ctype_byname(const char* /*__s*/, size_t __refs)
-  : ctype<wchar_t>(__refs) { }
-
-  template<>
-  collate<wchar_t>::
-  collate(size_t __refs): locale::facet(__refs) { }
-  
-  template<>
-  collate<wchar_t>::
-  ~collate() { }
-
-  template<>
-  int 
-  collate<wchar_t>::
-  do_compare(const wchar_t* /*__lo1*/, const wchar_t* /*__hi1*/,
-	     const wchar_t* /*__lo2*/, const wchar_t* /*__hi2*/) const
-  {
-    return 0; // XXX not done
-  }
-
-  template<>  
-  wstring collate<wchar_t>::
-  do_transform(const wchar_t* /*__lo*/, const wchar_t* /*__hi*/) const
-  {
-    return wstring(); // XXX not done
-  }
-  
-  template<>
-  long collate<wchar_t>::
-  do_hash(const wchar_t* /*__lo*/, const wchar_t* /*__hi*/) const
-  {
-    return 0; // XXX not done
-  }
-
-  template<>
-  collate_byname<wchar_t>::
-  collate_byname(const char* /*__s*/, size_t __refs)
-  : collate<wchar_t> (__refs) { }
-  
-  template<>
-  messages_byname<wchar_t>::
-  messages_byname(const char* /*__s*/, size_t __refs)
-  : messages<wchar_t> (__refs) { }
-#endif //  _GLIBCPP_USE_WCHAR_T
 } // namespace std
 

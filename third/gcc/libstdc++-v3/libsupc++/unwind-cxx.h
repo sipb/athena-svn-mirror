@@ -18,6 +18,15 @@
 // the Free Software Foundation, 59 Temple Place - Suite 330,
 // Boston, MA 02111-1307, USA.
 
+// As a special exception, you may use this file as part of a free software
+// library without restriction.  Specifically, if other files instantiate
+// templates or use macros or inline functions from this file, or you compile
+// this file and link it with other files to produce an executable, this
+// file does not by itself cause the resulting executable to be covered by
+// the GNU General Public License.  This exception does not however
+// invalidate any other reasons why the executable file might be covered by
+// the GNU General Public License.
+
 // This is derived from the C++ ABI for IA-64.  Where we diverge
 // for cross-architecture compatibility are noted with "@@@".
 
@@ -96,7 +105,7 @@ extern "C" void __cxa_throw (void *thrown_exception,
      __attribute__((noreturn));
 
 // Used to implement exception handlers.
-extern "C" void *__cxa_begin_catch (_Unwind_Exception *) throw();
+extern "C" void *__cxa_begin_catch (void *) throw();
 extern "C" void __cxa_end_catch ();
 extern "C" void __cxa_rethrow () __attribute__((noreturn));
 
@@ -109,8 +118,7 @@ extern "C" void __cxa_bad_typeid ();
 // Handles re-checking the exception specification if unexpectedHandler
 // throws, and if bad_exception needs to be thrown.  Called from the
 // compiler.
-extern "C" void __cxa_call_unexpected (_Unwind_Exception *)
-     __attribute__((noreturn));
+extern "C" void __cxa_call_unexpected (void *) __attribute__((noreturn));
 
 // Invokes given handler, dying appropriately if the user handler was
 // so inconsiderate as to return.

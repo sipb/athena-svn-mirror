@@ -1,5 +1,6 @@
 /* lang-specs.h file for Fortran
-   Copyright (C) 1995, 1996, 1997, 1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1996, 1997, 1999, 2000, 2002
+   Free Software Foundation, Inc.
    Contributed by James Craig Burley.
 
 This file is part of GNU Fortran.
@@ -33,7 +34,7 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
   {".r", "@ratfor", 0},
   {"@ratfor",
    "%{C:%{!E:%eGNU C does not support -C without using -E}}\
-    ratfor %{C} %{v} %i %{E:%W{o*}} %{!E: %{!pipe:-o %g.f} |\n\
+    ratfor %{C} %{v} %{E:%W{o*}} %{!E: %{!pipe:-o %g.f} %i |\n\
     f771 %{!pipe:%g.f} %(cc1_options) %{I*} %{!fsyntax-only:%(invoke_as)}}", 0},
   {".f",   "@f77", 0},
   {".for", "@f77", 0},
@@ -41,19 +42,3 @@ the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
   {"@f77",
    "%{!M:%{!MM:%{!E:f771 %i %(cc1_options) %{I*}\
 	%{!fsyntax-only:%(invoke_as)}}}}", 0},
-  /* XXX This is perverse and should not be necessary.  */
-  {"@f77-version",
-   "tradcpp0 -lang-fortran %(cpp_options) %j \n\
-    f771 -fnull-version %1 \
-      %{!Q:-quiet} -dumpbase g77-version.f %{d*} %{m*} %{a*} \
-      %{g*} %{O*} %{W*} %{w} %{pedantic*} \
-      -version -fversion %{f*} %{I*} -o %g.s %j \n\
-     as %a %Y -o %g%O %g.s %A \n\
-     ld %l %X -o %g %g%O %{A} %{d} %{e*} %{m} %{N} %{n} \
-      %{r} %{s} %{t} %{u*} %{x} %{z} %{Z} \
-      %{!A:%{!nostdlib:%{!nostartfiles:%S}}} \
-      %{static:} %{L*} %D -lg2c -lm \
-      %{!nostdlib:%{!nodefaultlibs:%G %L %G}} \
-      %{!A:%{!nostdlib:%{!nostartfiles:%E}}} \
-      %{T*} \n\
-     %g \n", 0},

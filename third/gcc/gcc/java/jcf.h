@@ -1,6 +1,6 @@
 /* Utility macros to read Java(TM) .class files and byte codes.
 
-   Copyright (C) 1996, 1997, 1998, 1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ The Free Software Foundation is independent of Sun Microsystems, Inc.  */
 
 /* Written by Per Bothner <bothner@cygnus.com>, February 1996. */
 
-#ifndef JCF_H
-#define JCF_H
+#ifndef GCC_JCF_H
+#define GCC_JCF_H
 #include "javaop.h"
 #ifndef DEFUN
 #if defined (__STDC__)
@@ -63,6 +63,14 @@ The Free Software Foundation is independent of Sun Microsystems, Inc.  */
 #define JCF_word JCF_u4
 #endif
 
+/* If we have both "scandir" and "alphasort", we can cache directory
+   listings to reduce the time taken to search the classpath.  */
+#if defined(HAVE_SCANDIR) && defined(HAVE_ALPHASORT)
+#define JCF_USE_SCANDIR 1
+#else
+#define JCF_USE_SCANDIR 0
+#endif 
+
 struct JCF;
 typedef int (*jcf_filbuf_t) PARAMS ((struct JCF*, int needed));
 
@@ -90,6 +98,7 @@ typedef struct JCF {
   unsigned char *read_end;
   int java_source : 1;
   int right_zip : 1;
+  int finished : 1;
   jcf_filbuf_t filbuf;
   void *read_state;
   const char *filename;
@@ -144,7 +153,8 @@ typedef struct JCF {
   CPOOL_FINISH(&(JCF)->cpool); \
   if ((JCF)->buffer) FREE ((JCF)->buffer); \
   if ((JCF)->filename) FREE ((char *) (JCF)->filename); \
-  if ((JCF)->classname) FREE ((char *) (JCF)->classname); }
+  if ((JCF)->classname) FREE ((char *) (JCF)->classname); \
+  (JCF)->finished = 1; }
   
 #define CPOOL_INIT(CPOOL) \
   ((CPOOL)->capacity = 0, (CPOOL)->count = 0, (CPOOL)->tags = 0, (CPOOL)->data = 0)
@@ -154,7 +164,8 @@ typedef struct JCF {
 #define JCF_ZERO(JCF)  \
   ((JCF)->buffer = (JCF)->buffer_end = (JCF)->read_ptr = (JCF)->read_end = 0,\
    (JCF)->read_state = 0, (JCF)->filename = (JCF)->classname = 0, \
-   CPOOL_INIT(&(JCF)->cpool), (JCF)->java_source = 0, (JCF)->zipd = 0)
+   CPOOL_INIT(&(JCF)->cpool), (JCF)->java_source = 0, (JCF)->zipd = 0, \
+   (JCF)->finished = 0)
 
 /* Given that PTR points to a 2-byte unsigned integer in network
    (big-endian) byte-order, return that integer. */
@@ -204,6 +215,7 @@ typedef struct JCF {
 #define ACC_NATIVE 0x0100
 #define ACC_INTERFACE 0x0200
 #define ACC_ABSTRACT 0x0400
+#define ACC_STRICT 0x0800
 
 #define ACC_VISIBILITY (ACC_PUBLIC | ACC_PRIVATE | ACC_PROTECTED)
 
@@ -230,7 +242,7 @@ extern int jcf_unexpected_eof PARAMS ((JCF*, int)) ATTRIBUTE_NORETURN;
 /* Extract a character from a Java-style Utf8 string.
  * PTR points to the current character.
  * LIMIT points to the end of the Utf8 string.
- * PTR is incremented to point after the character thta gets returns.
+ * PTR is incremented to point after the character that gets returned.
  * On an error, -1 is returned. */
 #define UTF8_GET(PTR, LIMIT) \
   ((PTR) >= (LIMIT) ? -1 \
@@ -268,9 +280,10 @@ extern void jcf_dependency_print_dummies PARAMS ((void));
 /* Declarations for path handling code.  */
 extern void jcf_path_init PARAMS ((void));
 extern void jcf_path_classpath_arg PARAMS ((const char *));
-extern void jcf_path_CLASSPATH_arg PARAMS ((const char *));
+extern void jcf_path_bootclasspath_arg PARAMS ((const char *));
+extern void jcf_path_extdirs_arg PARAMS ((const char *));
 extern void jcf_path_include_arg PARAMS ((const char *));
-extern void jcf_path_seal PARAMS ((void));
+extern void jcf_path_seal PARAMS ((int));
 extern void *jcf_path_start PARAMS ((void));
 extern void *jcf_path_next PARAMS ((void *));
 extern char *jcf_path_name PARAMS ((void *));
@@ -278,4 +291,4 @@ extern int jcf_path_is_zipfile PARAMS ((void *));
 extern int jcf_path_is_system PARAMS ((void *));
 extern int jcf_path_max_len PARAMS ((void));
 
-#endif
+#endif /* ! GCC_JCF_H */

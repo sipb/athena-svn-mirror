@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -34,6 +34,421 @@ funds for GNU development.
    Contributed by James Craig Burley (<craig@jcb-sc.com>).  Inspired by
 a first pass at translating `g77-0.5.16/f/DOC' that was contributed to
 Craig by David Ronis (<ronis@onsager.chem.mcgill.ca>).
+
+
+File: g77.info,  Node: Other Intrinsics,  Prev: Intrinsic Groups,  Up: Compiler Intrinsics
+
+Other Intrinsics
+----------------
+
+   `g77' supports intrinsics other than those in the GNU Fortran
+language proper.  This set of intrinsics is described below.
+
+   (Note that the empty lines appearing in the menu below are not
+intentional--they result from a bug in the `makeinfo' program.)
+
+* Menu:
+
+
+* ACosD Intrinsic::     (Reserved for future use.)
+
+* AIMax0 Intrinsic::    (Reserved for future use.)
+* AIMin0 Intrinsic::    (Reserved for future use.)
+
+* AJMax0 Intrinsic::    (Reserved for future use.)
+* AJMin0 Intrinsic::    (Reserved for future use.)
+
+* ASinD Intrinsic::     (Reserved for future use.)
+
+* ATan2D Intrinsic::    (Reserved for future use.)
+* ATanD Intrinsic::     (Reserved for future use.)
+
+* BITest Intrinsic::    (Reserved for future use.)
+
+* BJTest Intrinsic::    (Reserved for future use.)
+
+* CDAbs Intrinsic::     Absolute value (archaic).
+* CDCos Intrinsic::     Cosine (archaic).
+* CDExp Intrinsic::     Exponential (archaic).
+* CDLog Intrinsic::     Natural logarithm (archaic).
+* CDSin Intrinsic::     Sine (archaic).
+* CDSqRt Intrinsic::    Square root (archaic).
+
+* ChDir Intrinsic (function):: Change directory.
+
+* ChMod Intrinsic (function):: Change file modes.
+
+* CosD Intrinsic::      (Reserved for future use.)
+
+* DACosD Intrinsic::    (Reserved for future use.)
+
+* DASinD Intrinsic::    (Reserved for future use.)
+
+* DATan2D Intrinsic::   (Reserved for future use.)
+* DATanD Intrinsic::    (Reserved for future use.)
+* Date Intrinsic::      Get current date as dd-Mon-yy.
+
+* DbleQ Intrinsic::     (Reserved for future use.)
+
+* DCmplx Intrinsic::    Construct `COMPLEX(KIND=2)' value.
+* DConjg Intrinsic::    Complex conjugate (archaic).
+
+* DCosD Intrinsic::     (Reserved for future use.)
+
+* DFloat Intrinsic::    Conversion (archaic).
+
+* DFlotI Intrinsic::    (Reserved for future use.)
+* DFlotJ Intrinsic::    (Reserved for future use.)
+
+* DImag Intrinsic::     Convert/extract imaginary part of complex (archaic).
+
+* DReal Intrinsic::     Convert value to type `REAL(KIND=2)'.
+
+* DSinD Intrinsic::     (Reserved for future use.)
+
+* DTanD Intrinsic::     (Reserved for future use.)
+
+* DTime Intrinsic (function):: Get elapsed time since last time.
+
+* FGet Intrinsic (function):: Read a character from unit 5 stream-wise.
+
+* FGetC Intrinsic (function):: Read a character stream-wise.
+
+* FloatI Intrinsic::    (Reserved for future use.)
+* FloatJ Intrinsic::    (Reserved for future use.)
+
+* FPut Intrinsic (function):: Write a character to unit 6 stream-wise.
+
+* FPutC Intrinsic (function):: Write a character stream-wise.
+
+* IDate Intrinsic (VXT):: Get local time info (VAX/VMS).
+
+* IIAbs Intrinsic::     (Reserved for future use.)
+* IIAnd Intrinsic::     (Reserved for future use.)
+* IIBClr Intrinsic::    (Reserved for future use.)
+* IIBits Intrinsic::    (Reserved for future use.)
+* IIBSet Intrinsic::    (Reserved for future use.)
+* IIDiM Intrinsic::     (Reserved for future use.)
+* IIDInt Intrinsic::    (Reserved for future use.)
+* IIDNnt Intrinsic::    (Reserved for future use.)
+* IIEOr Intrinsic::     (Reserved for future use.)
+* IIFix Intrinsic::     (Reserved for future use.)
+* IInt Intrinsic::      (Reserved for future use.)
+* IIOr Intrinsic::      (Reserved for future use.)
+* IIQint Intrinsic::    (Reserved for future use.)
+* IIQNnt Intrinsic::    (Reserved for future use.)
+* IIShftC Intrinsic::   (Reserved for future use.)
+* IISign Intrinsic::    (Reserved for future use.)
+
+* IMax0 Intrinsic::     (Reserved for future use.)
+* IMax1 Intrinsic::     (Reserved for future use.)
+* IMin0 Intrinsic::     (Reserved for future use.)
+* IMin1 Intrinsic::     (Reserved for future use.)
+* IMod Intrinsic::      (Reserved for future use.)
+
+* INInt Intrinsic::     (Reserved for future use.)
+* INot Intrinsic::      (Reserved for future use.)
+
+* IZExt Intrinsic::     (Reserved for future use.)
+* JIAbs Intrinsic::     (Reserved for future use.)
+* JIAnd Intrinsic::     (Reserved for future use.)
+* JIBClr Intrinsic::    (Reserved for future use.)
+* JIBits Intrinsic::    (Reserved for future use.)
+* JIBSet Intrinsic::    (Reserved for future use.)
+* JIDiM Intrinsic::     (Reserved for future use.)
+* JIDInt Intrinsic::    (Reserved for future use.)
+* JIDNnt Intrinsic::    (Reserved for future use.)
+* JIEOr Intrinsic::     (Reserved for future use.)
+* JIFix Intrinsic::     (Reserved for future use.)
+* JInt Intrinsic::      (Reserved for future use.)
+* JIOr Intrinsic::      (Reserved for future use.)
+* JIQint Intrinsic::    (Reserved for future use.)
+* JIQNnt Intrinsic::    (Reserved for future use.)
+* JIShft Intrinsic::    (Reserved for future use.)
+* JIShftC Intrinsic::   (Reserved for future use.)
+* JISign Intrinsic::    (Reserved for future use.)
+* JMax0 Intrinsic::     (Reserved for future use.)
+* JMax1 Intrinsic::     (Reserved for future use.)
+* JMin0 Intrinsic::     (Reserved for future use.)
+* JMin1 Intrinsic::     (Reserved for future use.)
+* JMod Intrinsic::      (Reserved for future use.)
+* JNInt Intrinsic::     (Reserved for future use.)
+* JNot Intrinsic::      (Reserved for future use.)
+* JZExt Intrinsic::     (Reserved for future use.)
+
+* Kill Intrinsic (function):: Signal a process.
+
+* Link Intrinsic (function):: Make hard link in file system.
+
+* QAbs Intrinsic::      (Reserved for future use.)
+* QACos Intrinsic::     (Reserved for future use.)
+* QACosD Intrinsic::    (Reserved for future use.)
+* QASin Intrinsic::     (Reserved for future use.)
+* QASinD Intrinsic::    (Reserved for future use.)
+* QATan Intrinsic::     (Reserved for future use.)
+* QATan2 Intrinsic::    (Reserved for future use.)
+* QATan2D Intrinsic::   (Reserved for future use.)
+* QATanD Intrinsic::    (Reserved for future use.)
+* QCos Intrinsic::      (Reserved for future use.)
+* QCosD Intrinsic::     (Reserved for future use.)
+* QCosH Intrinsic::     (Reserved for future use.)
+* QDiM Intrinsic::      (Reserved for future use.)
+* QExp Intrinsic::      (Reserved for future use.)
+* QExt Intrinsic::      (Reserved for future use.)
+* QExtD Intrinsic::     (Reserved for future use.)
+* QFloat Intrinsic::    (Reserved for future use.)
+* QInt Intrinsic::      (Reserved for future use.)
+* QLog Intrinsic::      (Reserved for future use.)
+* QLog10 Intrinsic::    (Reserved for future use.)
+* QMax1 Intrinsic::     (Reserved for future use.)
+* QMin1 Intrinsic::     (Reserved for future use.)
+* QMod Intrinsic::      (Reserved for future use.)
+* QNInt Intrinsic::     (Reserved for future use.)
+* QSin Intrinsic::      (Reserved for future use.)
+* QSinD Intrinsic::     (Reserved for future use.)
+* QSinH Intrinsic::     (Reserved for future use.)
+* QSqRt Intrinsic::     (Reserved for future use.)
+* QTan Intrinsic::      (Reserved for future use.)
+* QTanD Intrinsic::     (Reserved for future use.)
+* QTanH Intrinsic::     (Reserved for future use.)
+
+* Rename Intrinsic (function):: Rename file.
+
+* Secnds Intrinsic::    Get local time offset since midnight.
+
+* Signal Intrinsic (function):: Muck with signal handling.
+
+* SinD Intrinsic::      (Reserved for future use.)
+
+* SnglQ Intrinsic::     (Reserved for future use.)
+
+* SymLnk Intrinsic (function):: Make symbolic link in file system.
+
+* System Intrinsic (function):: Invoke shell (system) command.
+
+* TanD Intrinsic::      (Reserved for future use.)
+
+* Time Intrinsic (VXT):: Get the time as a character value.
+
+* UMask Intrinsic (function):: Set file creation permissions mask.
+
+* Unlink Intrinsic (function):: Unlink file.
+
+* ZExt Intrinsic::      (Reserved for future use.)
+
+
+File: g77.info,  Node: ACosD Intrinsic,  Next: AIMax0 Intrinsic,  Up: Other Intrinsics
+
+ACosD Intrinsic
+...............
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL ACosD' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: AIMax0 Intrinsic,  Next: AIMin0 Intrinsic,  Prev: ACosD Intrinsic,  Up: Other Intrinsics
+
+AIMax0 Intrinsic
+................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL AIMax0' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: AIMin0 Intrinsic,  Next: AJMax0 Intrinsic,  Prev: AIMax0 Intrinsic,  Up: Other Intrinsics
+
+AIMin0 Intrinsic
+................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL AIMin0' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: AJMax0 Intrinsic,  Next: AJMin0 Intrinsic,  Prev: AIMin0 Intrinsic,  Up: Other Intrinsics
+
+AJMax0 Intrinsic
+................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL AJMax0' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: AJMin0 Intrinsic,  Next: ASinD Intrinsic,  Prev: AJMax0 Intrinsic,  Up: Other Intrinsics
+
+AJMin0 Intrinsic
+................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL AJMin0' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: ASinD Intrinsic,  Next: ATan2D Intrinsic,  Prev: AJMin0 Intrinsic,  Up: Other Intrinsics
+
+ASinD Intrinsic
+...............
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL ASinD' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: ATan2D Intrinsic,  Next: ATanD Intrinsic,  Prev: ASinD Intrinsic,  Up: Other Intrinsics
+
+ATan2D Intrinsic
+................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL ATan2D' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: ATanD Intrinsic,  Next: BITest Intrinsic,  Prev: ATan2D Intrinsic,  Up: Other Intrinsics
+
+ATanD Intrinsic
+...............
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL ATanD' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: BITest Intrinsic,  Next: BJTest Intrinsic,  Prev: ATanD Intrinsic,  Up: Other Intrinsics
+
+BITest Intrinsic
+................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL BITest' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: BJTest Intrinsic,  Next: CDAbs Intrinsic,  Prev: BITest Intrinsic,  Up: Other Intrinsics
+
+BJTest Intrinsic
+................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL BJTest' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: CDAbs Intrinsic,  Next: CDCos Intrinsic,  Prev: BJTest Intrinsic,  Up: Other Intrinsics
+
+CDAbs Intrinsic
+...............
+
+     CDAbs(A)
+
+CDAbs: `REAL(KIND=2)' function.
+
+A: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c', `vxt'.
+
+Description:
+
+   Archaic form of `ABS()' that is specific to one type for A.  *Note
+Abs Intrinsic::.
+
+
+File: g77.info,  Node: CDCos Intrinsic,  Next: CDExp Intrinsic,  Prev: CDAbs Intrinsic,  Up: Other Intrinsics
+
+CDCos Intrinsic
+...............
+
+     CDCos(X)
+
+CDCos: `COMPLEX(KIND=2)' function.
+
+X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c', `vxt'.
+
+Description:
+
+   Archaic form of `COS()' that is specific to one type for X.  *Note
+Cos Intrinsic::.
+
+
+File: g77.info,  Node: CDExp Intrinsic,  Next: CDLog Intrinsic,  Prev: CDCos Intrinsic,  Up: Other Intrinsics
+
+CDExp Intrinsic
+...............
+
+     CDExp(X)
+
+CDExp: `COMPLEX(KIND=2)' function.
+
+X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c', `vxt'.
+
+Description:
+
+   Archaic form of `EXP()' that is specific to one type for X.  *Note
+Exp Intrinsic::.
+
+
+File: g77.info,  Node: CDLog Intrinsic,  Next: CDSin Intrinsic,  Prev: CDExp Intrinsic,  Up: Other Intrinsics
+
+CDLog Intrinsic
+...............
+
+     CDLog(X)
+
+CDLog: `COMPLEX(KIND=2)' function.
+
+X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c', `vxt'.
+
+Description:
+
+   Archaic form of `LOG()' that is specific to one type for X.  *Note
+Log Intrinsic::.
+
+
+File: g77.info,  Node: CDSin Intrinsic,  Next: CDSqRt Intrinsic,  Prev: CDLog Intrinsic,  Up: Other Intrinsics
+
+CDSin Intrinsic
+...............
+
+     CDSin(X)
+
+CDSin: `COMPLEX(KIND=2)' function.
+
+X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c', `vxt'.
+
+Description:
+
+   Archaic form of `SIN()' that is specific to one type for X.  *Note
+Sin Intrinsic::.
+
+
+File: g77.info,  Node: CDSqRt Intrinsic,  Next: ChDir Intrinsic (function),  Prev: CDSin Intrinsic,  Up: Other Intrinsics
+
+CDSqRt Intrinsic
+................
+
+     CDSqRt(X)
+
+CDSqRt: `COMPLEX(KIND=2)' function.
+
+X: `COMPLEX(KIND=2)'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c', `vxt'.
+
+Description:
+
+   Archaic form of `SQRT()' that is specific to one type for X.  *Note
+SqRt Intrinsic::.
 
 
 File: g77.info,  Node: ChDir Intrinsic (function),  Next: ChMod Intrinsic (function),  Prev: CDSqRt Intrinsic,  Up: Other Intrinsics
@@ -1268,393 +1683,5 @@ QExt Intrinsic
 
    This intrinsic is not yet implemented.  The name is, however,
 reserved as an intrinsic.  Use `EXTERNAL QExt' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QExtD Intrinsic,  Next: QFloat Intrinsic,  Prev: QExt Intrinsic,  Up: Other Intrinsics
-
-QExtD Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QExtD' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QFloat Intrinsic,  Next: QInt Intrinsic,  Prev: QExtD Intrinsic,  Up: Other Intrinsics
-
-QFloat Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QFloat' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QInt Intrinsic,  Next: QLog Intrinsic,  Prev: QFloat Intrinsic,  Up: Other Intrinsics
-
-QInt Intrinsic
-..............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QInt' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QLog Intrinsic,  Next: QLog10 Intrinsic,  Prev: QInt Intrinsic,  Up: Other Intrinsics
-
-QLog Intrinsic
-..............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QLog' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QLog10 Intrinsic,  Next: QMax1 Intrinsic,  Prev: QLog Intrinsic,  Up: Other Intrinsics
-
-QLog10 Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QLog10' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QMax1 Intrinsic,  Next: QMin1 Intrinsic,  Prev: QLog10 Intrinsic,  Up: Other Intrinsics
-
-QMax1 Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QMax1' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QMin1 Intrinsic,  Next: QMod Intrinsic,  Prev: QMax1 Intrinsic,  Up: Other Intrinsics
-
-QMin1 Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QMin1' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QMod Intrinsic,  Next: QNInt Intrinsic,  Prev: QMin1 Intrinsic,  Up: Other Intrinsics
-
-QMod Intrinsic
-..............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QMod' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QNInt Intrinsic,  Next: QSin Intrinsic,  Prev: QMod Intrinsic,  Up: Other Intrinsics
-
-QNInt Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QNInt' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QSin Intrinsic,  Next: QSinD Intrinsic,  Prev: QNInt Intrinsic,  Up: Other Intrinsics
-
-QSin Intrinsic
-..............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QSin' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QSinD Intrinsic,  Next: QSinH Intrinsic,  Prev: QSin Intrinsic,  Up: Other Intrinsics
-
-QSinD Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QSinD' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QSinH Intrinsic,  Next: QSqRt Intrinsic,  Prev: QSinD Intrinsic,  Up: Other Intrinsics
-
-QSinH Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QSinH' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QSqRt Intrinsic,  Next: QTan Intrinsic,  Prev: QSinH Intrinsic,  Up: Other Intrinsics
-
-QSqRt Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QSqRt' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QTan Intrinsic,  Next: QTanD Intrinsic,  Prev: QSqRt Intrinsic,  Up: Other Intrinsics
-
-QTan Intrinsic
-..............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QTan' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QTanD Intrinsic,  Next: QTanH Intrinsic,  Prev: QTan Intrinsic,  Up: Other Intrinsics
-
-QTanD Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QTanD' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: QTanH Intrinsic,  Next: Rename Intrinsic (function),  Prev: QTanD Intrinsic,  Up: Other Intrinsics
-
-QTanH Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL QTanH' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: Rename Intrinsic (function),  Next: Secnds Intrinsic,  Prev: QTanH Intrinsic,  Up: Other Intrinsics
-
-Rename Intrinsic (function)
-...........................
-
-     Rename(PATH1, PATH2)
-
-Rename: `INTEGER(KIND=1)' function.
-
-PATH1: `CHARACTER'; scalar; INTENT(IN).
-
-PATH2: `CHARACTER'; scalar; INTENT(IN).
-
-Intrinsic groups: `badu77'.
-
-Description:
-
-   Renames the file PATH1 to PATH2.  A null character (`CHAR(0)') marks
-the end of the names in PATH1 and PATH2--otherwise, trailing blanks in
-PATH1 and PATH2 are ignored.  See `rename(2)'.  Returns 0 on success or
-a non-zero error code.
-
-   Due to the side effects performed by this intrinsic, the function
-form is not recommended.
-
-   For information on other intrinsics with the same name: *Note Rename
-Intrinsic (subroutine)::.
-
-
-File: g77.info,  Node: Secnds Intrinsic,  Next: Signal Intrinsic (function),  Prev: Rename Intrinsic (function),  Up: Other Intrinsics
-
-Secnds Intrinsic
-................
-
-     Secnds(T)
-
-Secnds: `REAL(KIND=1)' function.
-
-T: `REAL(KIND=1)'; scalar; INTENT(IN).
-
-Intrinsic groups: `vxt'.
-
-Description:
-
-   Returns the local time in seconds since midnight minus the value T.
-
-   This values returned by this intrinsic become numerically less than
-previous values (they wrap around) during a single run of the compiler
-program, under normal circumstances (such as running through the
-midnight hour).
-
-
-File: g77.info,  Node: Signal Intrinsic (function),  Next: SinD Intrinsic,  Prev: Secnds Intrinsic,  Up: Other Intrinsics
-
-Signal Intrinsic (function)
-...........................
-
-     Signal(NUMBER, HANDLER)
-
-Signal: `INTEGER(KIND=7)' function.
-
-NUMBER: `INTEGER'; scalar; INTENT(IN).
-
-HANDLER: Signal handler (`INTEGER FUNCTION' or `SUBROUTINE') or
-dummy/global `INTEGER(KIND=1)' scalar.
-
-Intrinsic groups: `badu77'.
-
-Description:
-
-   If HANDLER is a an `EXTERNAL' routine, arranges for it to be invoked
-with a single integer argument (of system-dependent length) when signal
-NUMBER occurs.  If HANDLER is an integer, it can be used to turn off
-handling of signal NUMBER or revert to its default action.  See
-`signal(2)'.
-
-   Note that HANDLER will be called using C conventions, so the value
-of its argument in Fortran terms is obtained by applying `%LOC()' (or
-LOC()) to it.
-
-   The value returned by `signal(2)' is returned.
-
-   Due to the side effects performed by this intrinsic, the function
-form is not recommended.
-
-   _Warning:_ If the returned value is stored in an `INTEGER(KIND=1)'
-(default `INTEGER') argument, truncation of the original return value
-occurs on some systems (such as Alphas, which have 64-bit pointers but
-32-bit default integers), with no warning issued by `g77' under normal
-circumstances.
-
-   Therefore, the following code fragment might silently fail on some
-systems:
-
-     INTEGER RTN
-     EXTERNAL MYHNDL
-     RTN = SIGNAL(SIGNUM, MYHNDL)
-     ...
-     ! Restore original handler:
-     RTN = SIGNAL(SIGNUM, RTN)
-
-   The reason for the failure is that `RTN' might not hold all the
-information on the original handler for the signal, thus restoring an
-invalid handler.  This bug could manifest itself as a spurious run-time
-failure at an arbitrary point later during the program's execution, for
-example.
-
-   _Warning:_ Use of the `libf2c' run-time library function `signal_'
-directly (such as via `EXTERNAL SIGNAL') requires use of the `%VAL()'
-construct to pass an `INTEGER' value (such as `SIG_IGN' or `SIG_DFL')
-for the HANDLER argument.
-
-   However, while `RTN = SIGNAL(SIGNUM, %VAL(SIG_IGN))' works when
-`SIGNAL' is treated as an external procedure (and resolves, at link
-time, to `libf2c''s `signal_' routine), this construct is not valid
-when `SIGNAL' is recognized as the intrinsic of that name.
-
-   Therefore, for maximum portability and reliability, code such
-references to the `SIGNAL' facility as follows:
-
-     INTRINSIC SIGNAL
-     ...
-     RTN = SIGNAL(SIGNUM, SIG_IGN)
-
-   `g77' will compile such a call correctly, while other compilers will
-generally either do so as well or reject the `INTRINSIC SIGNAL'
-statement via a diagnostic, allowing you to take appropriate action.
-
-   For information on other intrinsics with the same name: *Note Signal
-Intrinsic (subroutine)::.
-
-
-File: g77.info,  Node: SinD Intrinsic,  Next: SnglQ Intrinsic,  Prev: Signal Intrinsic (function),  Up: Other Intrinsics
-
-SinD Intrinsic
-..............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL SinD' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: SnglQ Intrinsic,  Next: SymLnk Intrinsic (function),  Prev: SinD Intrinsic,  Up: Other Intrinsics
-
-SnglQ Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL SnglQ' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: SymLnk Intrinsic (function),  Next: System Intrinsic (function),  Prev: SnglQ Intrinsic,  Up: Other Intrinsics
-
-SymLnk Intrinsic (function)
-...........................
-
-     SymLnk(PATH1, PATH2)
-
-SymLnk: `INTEGER(KIND=1)' function.
-
-PATH1: `CHARACTER'; scalar; INTENT(IN).
-
-PATH2: `CHARACTER'; scalar; INTENT(IN).
-
-Intrinsic groups: `badu77'.
-
-Description:
-
-   Makes a symbolic link from file PATH1 to PATH2.  A null character
-(`CHAR(0)') marks the end of the names in PATH1 and PATH2--otherwise,
-trailing blanks in PATH1 and PATH2 are ignored.  Returns 0 on success
-or a non-zero error code (`ENOSYS' if the system does not provide
-`symlink(2)').
-
-   Due to the side effects performed by this intrinsic, the function
-form is not recommended.
-
-   For information on other intrinsics with the same name: *Note SymLnk
-Intrinsic (subroutine)::.
-
-
-File: g77.info,  Node: System Intrinsic (function),  Next: TanD Intrinsic,  Prev: SymLnk Intrinsic (function),  Up: Other Intrinsics
-
-System Intrinsic (function)
-...........................
-
-     System(COMMAND)
-
-System: `INTEGER(KIND=1)' function.
-
-COMMAND: `CHARACTER'; scalar; INTENT(IN).
-
-Intrinsic groups: `badu77'.
-
-Description:
-
-   Passes the command COMMAND to a shell (see `system(3)').  Returns
-the value returned by `system(3)', presumably 0 if the shell command
-succeeded.  Note that which shell is used to invoke the command is
-system-dependent and environment-dependent.
-
-   Due to the side effects performed by this intrinsic, the function
-form is not recommended.  However, the function form can be valid in
-cases where the actual side effects performed by the call are
-unimportant to the application.
-
-   For example, on a UNIX system, `SAME = SYSTEM('cmp a b')' does not
-perform any side effects likely to be important to the program, so the
-programmer would not care if the actual system call (and invocation of
-`cmp') was optimized away in a situation where the return value could
-be determined otherwise, or was not actually needed (`SAME' not
-actually referenced after the sample assignment statement).
-
-   For information on other intrinsics with the same name: *Note System
-Intrinsic (subroutine)::.
-
-
-File: g77.info,  Node: TanD Intrinsic,  Next: Time Intrinsic (VXT),  Prev: System Intrinsic (function),  Up: Other Intrinsics
-
-TanD Intrinsic
-..............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL TanD' to use this name for an
 external procedure.
 

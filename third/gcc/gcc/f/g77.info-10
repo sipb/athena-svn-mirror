@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -34,6 +34,334 @@ funds for GNU development.
    Contributed by James Craig Burley (<craig@jcb-sc.com>).  Inspired by
 a first pass at translating `g77-0.5.16/f/DOC' that was contributed to
 Craig by David Ronis (<ronis@onsager.chem.mcgill.ca>).
+
+
+File: g77.info,  Node: Real Intrinsic,  Next: RealPart Intrinsic,  Prev: Range Intrinsic,  Up: Table of Intrinsic Functions
+
+Real Intrinsic
+..............
+
+     Real(A)
+
+Real: `REAL' function.  The exact type is `REAL(KIND=1)' when argument
+A is any type other than `COMPLEX', or when it is `COMPLEX(KIND=1)'.
+When A is any `COMPLEX' type other than `COMPLEX(KIND=1)', this
+intrinsic is valid only when used as the argument to `REAL()', as
+explained below.
+
+A: `INTEGER', `REAL', or `COMPLEX'; scalar; INTENT(IN).
+
+Intrinsic groups: (standard FORTRAN 77).
+
+Description:
+
+   Converts A to `REAL(KIND=1)'.
+
+   Use of `REAL()' with a `COMPLEX' argument (other than
+`COMPLEX(KIND=1)') is restricted to the following case:
+
+     REAL(REAL(A))
+
+This expression converts the real part of A to `REAL(KIND=1)'.
+
+   *Note RealPart Intrinsic::, for information on a GNU Fortran
+intrinsic that extracts the real part of an arbitrary `COMPLEX' value.
+
+   *Note REAL() and AIMAG() of Complex::, for more information.
+
+
+File: g77.info,  Node: RealPart Intrinsic,  Next: Rename Intrinsic (subroutine),  Prev: Real Intrinsic,  Up: Table of Intrinsic Functions
+
+RealPart Intrinsic
+..................
+
+     RealPart(Z)
+
+RealPart: `REAL' function, the `KIND=' value of the type being that of
+argument Z.
+
+Z: `COMPLEX'; scalar; INTENT(IN).
+
+Intrinsic groups: `gnu'.
+
+Description:
+
+   The real part of Z is returned, without conversion.
+
+   _Note:_ The way to do this in standard Fortran 90 is `REAL(Z)'.
+However, when, for example, Z is `COMPLEX(KIND=2)', `REAL(Z)' means
+something different for some compilers that are not true Fortran 90
+compilers but offer some extensions standardized by Fortran 90 (such as
+the `DOUBLE COMPLEX' type, also known as `COMPLEX(KIND=2)').
+
+   The advantage of `REALPART()' is that, while not necessarily more or
+less portable than `REAL()', it is more likely to cause a compiler that
+doesn't support it to produce a diagnostic than generate incorrect code.
+
+   *Note REAL() and AIMAG() of Complex::, for more information.
+
+
+File: g77.info,  Node: Rename Intrinsic (subroutine),  Next: Repeat Intrinsic,  Prev: RealPart Intrinsic,  Up: Table of Intrinsic Functions
+
+Rename Intrinsic (subroutine)
+.............................
+
+     CALL Rename(PATH1, PATH2, STATUS)
+
+PATH1: `CHARACTER'; scalar; INTENT(IN).
+
+PATH2: `CHARACTER'; scalar; INTENT(IN).
+
+STATUS: `INTEGER(KIND=1)'; OPTIONAL; scalar; INTENT(OUT).
+
+Intrinsic groups: `unix'.
+
+Description:
+
+   Renames the file PATH1 to PATH2.  A null character (`CHAR(0)') marks
+the end of the names in PATH1 and PATH2--otherwise, trailing blanks in
+PATH1 and PATH2 are ignored.  See `rename(2)'.  If the STATUS argument
+is supplied, it contains 0 on success or a non-zero error code upon
+return.
+
+   Some non-GNU implementations of Fortran provide this intrinsic as
+only a function, not as a subroutine, or do not support the (optional)
+STATUS argument.
+
+   For information on other intrinsics with the same name: *Note Rename
+Intrinsic (function)::.
+
+
+File: g77.info,  Node: Repeat Intrinsic,  Next: Reshape Intrinsic,  Prev: Rename Intrinsic (subroutine),  Up: Table of Intrinsic Functions
+
+Repeat Intrinsic
+................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Repeat' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: Reshape Intrinsic,  Next: RRSpacing Intrinsic,  Prev: Repeat Intrinsic,  Up: Table of Intrinsic Functions
+
+Reshape Intrinsic
+.................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Reshape' to use this name for
+an external procedure.
+
+
+File: g77.info,  Node: RRSpacing Intrinsic,  Next: RShift Intrinsic,  Prev: Reshape Intrinsic,  Up: Table of Intrinsic Functions
+
+RRSpacing Intrinsic
+...................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL RRSpacing' to use this name
+for an external procedure.
+
+
+File: g77.info,  Node: RShift Intrinsic,  Next: Scale Intrinsic,  Prev: RRSpacing Intrinsic,  Up: Table of Intrinsic Functions
+
+RShift Intrinsic
+................
+
+     RShift(I, SHIFT)
+
+RShift: `INTEGER' function, the `KIND=' value of the type being that of
+argument I.
+
+I: `INTEGER'; scalar; INTENT(IN).
+
+SHIFT: `INTEGER'; scalar; INTENT(IN).
+
+Intrinsic groups: `f2c'.
+
+Description:
+
+   Returns I shifted to the right SHIFT bits.
+
+   Although similar to the expression `I/(2**SHIFT)', there are
+important differences.  For example, the sign of the result is
+undefined.
+
+   Currently this intrinsic is defined assuming the underlying
+representation of I is as a two's-complement integer.  It is unclear at
+this point whether that definition will apply when a different
+representation is involved.
+
+   *Note RShift Intrinsic::, for the inverse of this function.
+
+   *Note IShft Intrinsic::, for information on a more widely available
+right-shifting intrinsic that is also more precisely defined.
+
+
+File: g77.info,  Node: Scale Intrinsic,  Next: Scan Intrinsic,  Prev: RShift Intrinsic,  Up: Table of Intrinsic Functions
+
+Scale Intrinsic
+...............
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Scale' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: Scan Intrinsic,  Next: Second Intrinsic (function),  Prev: Scale Intrinsic,  Up: Table of Intrinsic Functions
+
+Scan Intrinsic
+..............
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Scan' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: Second Intrinsic (function),  Next: Second Intrinsic (subroutine),  Prev: Scan Intrinsic,  Up: Table of Intrinsic Functions
+
+Second Intrinsic (function)
+...........................
+
+     Second()
+
+Second: `REAL(KIND=1)' function.
+
+Intrinsic groups: `unix'.
+
+Description:
+
+   Returns the process's runtime in seconds--the same value as the UNIX
+function `etime' returns.
+
+   On some systems, the underlying timings are represented using types
+with sufficiently small limits that overflows (wraparounds) are
+possible, such as 32-bit types.  Therefore, the values returned by this
+intrinsic might be, or become, negative, or numerically less than
+previous values, during a single run of the compiled program.
+
+   For information on other intrinsics with the same name: *Note Second
+Intrinsic (subroutine)::.
+
+
+File: g77.info,  Node: Second Intrinsic (subroutine),  Next: Selected_Int_Kind Intrinsic,  Prev: Second Intrinsic (function),  Up: Table of Intrinsic Functions
+
+Second Intrinsic (subroutine)
+.............................
+
+     CALL Second(SECONDS)
+
+SECONDS: `REAL'; scalar; INTENT(OUT).
+
+Intrinsic groups: `unix'.
+
+Description:
+
+   Returns the process's runtime in seconds in SECONDS--the same value
+as the UNIX function `etime' returns.
+
+   On some systems, the underlying timings are represented using types
+with sufficiently small limits that overflows (wraparounds) are
+possible, such as 32-bit types.  Therefore, the values returned by this
+intrinsic might be, or become, negative, or numerically less than
+previous values, during a single run of the compiled program.
+
+   This routine is known from Cray Fortran.  *Note CPU_Time Intrinsic::,
+for a standard equivalent.
+
+   For information on other intrinsics with the same name: *Note Second
+Intrinsic (function)::.
+
+
+File: g77.info,  Node: Selected_Int_Kind Intrinsic,  Next: Selected_Real_Kind Intrinsic,  Prev: Second Intrinsic (subroutine),  Up: Table of Intrinsic Functions
+
+Selected_Int_Kind Intrinsic
+...........................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Selected_Int_Kind' to use this
+name for an external procedure.
+
+
+File: g77.info,  Node: Selected_Real_Kind Intrinsic,  Next: Set_Exponent Intrinsic,  Prev: Selected_Int_Kind Intrinsic,  Up: Table of Intrinsic Functions
+
+Selected_Real_Kind Intrinsic
+............................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Selected_Real_Kind' to use
+this name for an external procedure.
+
+
+File: g77.info,  Node: Set_Exponent Intrinsic,  Next: Shape Intrinsic,  Prev: Selected_Real_Kind Intrinsic,  Up: Table of Intrinsic Functions
+
+Set_Exponent Intrinsic
+......................
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Set_Exponent' to use this name
+for an external procedure.
+
+
+File: g77.info,  Node: Shape Intrinsic,  Next: Short Intrinsic,  Prev: Set_Exponent Intrinsic,  Up: Table of Intrinsic Functions
+
+Shape Intrinsic
+...............
+
+   This intrinsic is not yet implemented.  The name is, however,
+reserved as an intrinsic.  Use `EXTERNAL Shape' to use this name for an
+external procedure.
+
+
+File: g77.info,  Node: Short Intrinsic,  Next: Sign Intrinsic,  Prev: Shape Intrinsic,  Up: Table of Intrinsic Functions
+
+Short Intrinsic
+...............
+
+     Short(A)
+
+Short: `INTEGER(KIND=6)' function.
+
+A: `INTEGER'; scalar; INTENT(IN).
+
+Intrinsic groups: `unix'.
+
+Description:
+
+   Returns A with the fractional portion of its magnitude truncated and
+its sign preserved, converted to type `INTEGER(KIND=6)'.
+
+   If A is type `COMPLEX', its real part is truncated and converted,
+and its imaginary part is disgregarded.
+
+   *Note Int Intrinsic::.
+
+   The precise meaning of this intrinsic might change in a future
+version of the GNU Fortran language, as more is learned about how it is
+used.
+
+
+File: g77.info,  Node: Sign Intrinsic,  Next: Signal Intrinsic (subroutine),  Prev: Short Intrinsic,  Up: Table of Intrinsic Functions
+
+Sign Intrinsic
+..............
+
+     Sign(A, B)
+
+Sign: `INTEGER' or `REAL' function, the exact type being the result of
+cross-promoting the types of all the arguments.
+
+A: `INTEGER' or `REAL'; scalar; INTENT(IN).
+
+B: `INTEGER' or `REAL'; scalar; INTENT(IN).
+
+Intrinsic groups: (standard FORTRAN 77).
+
+Description:
+
+   Returns `ABS(A)*S', where S is +1 if `B.GE.0', -1 otherwise.
+
+   *Note Abs Intrinsic::, for the function that returns the magnitude
+of a value.
 
 
 File: g77.info,  Node: Signal Intrinsic (subroutine),  Next: Sin Intrinsic,  Prev: Sign Intrinsic,  Up: Table of Intrinsic Functions
@@ -1051,9 +1379,7 @@ constant in `R = 3 . 1').
 implementation choices made for the compiler, since those choices are
 explicitly left to the implementation by the published Fortran
 standards.  GNU Fortran currently tries to be somewhat like a few
-popular compilers (`f2c', Digital ("DEC") Fortran, and so on), though a
-cleaner default definition along with more flexibility offered by
-command-line options is likely to be offered in version 0.6.
+popular compilers (`f2c', Digital ("DEC") Fortran, and so on).
 
    This section describes how `g77' interprets source lines.
 
@@ -1095,19 +1421,6 @@ spaces (a la the default for the UNIX `expand' command) before doing
 any other processing, other than (currently) noting whether a tab was
 found on a line and using this information to decide how to interpret
 the length of the line and continued constants.
-
-   Note that this default behavior probably will change for version 0.6,
-when it will presumably be available via a command-line option.  The
-default as of version 0.6 is planned to be a "pure visual" model, where
-tabs are immediately converted to spaces and otherwise have no effect,
-so the way a typical user sees source lines produces a consistent
-result no matter how the spacing in those source lines is actually
-implemented via tabs, spaces, and trailing tabs/spaces before newline.
-Command-line options are likely to be added to specify whether all or
-just-tabbed lines are to be extended to 132 or full input-line length,
-and perhaps even an option will be added to specify the truncated-line
-behavior to which some Digital compilers default (and which affects the
-way continued character/Hollerith constants are interpreted).
 
 
 File: g77.info,  Node: Short Lines,  Next: Long Lines,  Prev: Tabs,  Up: Source Form
@@ -1205,349 +1518,4 @@ Dollar Signs in Symbol Names
 
    Dollar signs (`$') are allowed in symbol names (after the first
 character) when the `-fdollar-ok' option is specified.
-
-
-File: g77.info,  Node: Case Sensitivity,  Next: VXT Fortran,  Prev: Dollar Signs,  Up: Other Dialects
-
-Case Sensitivity
-================
-
-   GNU Fortran offers the programmer way too much flexibility in
-deciding how source files are to be treated vis-a-vis uppercase and
-lowercase characters.  There are 66 useful settings that affect case
-sensitivity, plus 10 settings that are nearly useless, with the
-remaining 116 settings being either redundant or useless.
-
-   None of these settings have any effect on the contents of comments
-(the text after a `c' or `C' in Column 1, for example) or of character
-or Hollerith constants.  Note that things like the `E' in the statement
-`CALL FOO(3.2E10)' and the `TO' in `ASSIGN 10 TO LAB' are considered
-built-in keywords, and so are affected by these settings.
-
-   Low-level switches are identified in this section as follows:
-
-     A Source Case Conversion:
-
-          0 Preserve (see Note 1)
-
-          1 Convert to Upper Case
-
-          2 Convert to Lower Case
-
-     B Built-in Keyword Matching:
-
-          0 Match Any Case (per-character basis)
-
-          1 Match Upper Case Only
-
-          2 Match Lower Case Only
-
-          3 Match InitialCaps Only (see tables for spellings)
-
-     C Built-in Intrinsic Matching:
-
-          0 Match Any Case (per-character basis)
-
-          1 Match Upper Case Only
-
-          2 Match Lower Case Only
-
-          3 Match InitialCaps Only (see tables for spellings)
-
-     D User-defined Symbol Possibilities (warnings only):
-
-          0 Allow Any Case (per-character basis)
-
-          1 Allow Upper Case Only
-
-          2 Allow Lower Case Only
-
-          3 Allow InitialCaps Only (see Note 2)
-
-   Note 1: `g77' eventually will support `NAMELIST' in a manner that is
-consistent with these source switches--in the sense that input will be
-expected to meet the same requirements as source code in terms of
-matching symbol names and keywords (for the exponent letters).
-
-   Currently, however, `NAMELIST' is supported by `libg2c', which
-uppercases `NAMELIST' input and symbol names for matching.  This means
-not only that `NAMELIST' output currently shows symbol (and keyword)
-names in uppercase even if lower-case source conversion (option A2) is
-selected, but that `NAMELIST' cannot be adequately supported when
-source case preservation (option A0) is selected.
-
-   If A0 is selected, a warning message will be output for each
-`NAMELIST' statement to this effect.  The behavior of the program is
-undefined at run time if two or more symbol names appear in a given
-`NAMELIST' such that the names are identical when converted to upper
-case (e.g. `NAMELIST /X/ VAR, Var, var').  For complete and total
-elegance, perhaps there should be a warning when option A2 is selected,
-since the output of NAMELIST is currently in uppercase but will someday
-be lowercase (when a `libg77' is written), but that seems to be
-overkill for a product in beta test.
-
-   Note 2: Rules for InitialCaps names are:
-
-   - Must be a single uppercase letter, *or*
-
-   - Must start with an uppercase letter and contain at least one
-     lowercase letter.
-
-   So `A', `Ab', `ABc', `AbC', and `Abc' are valid InitialCaps names,
-but `AB', `A2', and `ABC' are not.  Note that most, but not all,
-built-in names meet these requirements--the exceptions are some of the
-two-letter format specifiers, such as `BN' and `BZ'.
-
-   Here are the names of the corresponding command-line options:
-
-     A0: -fsource-case-preserve
-     A1: -fsource-case-upper
-     A2: -fsource-case-lower
-     
-     B0: -fmatch-case-any
-     B1: -fmatch-case-upper
-     B2: -fmatch-case-lower
-     B3: -fmatch-case-initcap
-     
-     C0: -fintrin-case-any
-     C1: -fintrin-case-upper
-     C2: -fintrin-case-lower
-     C3: -fintrin-case-initcap
-     
-     D0: -fsymbol-case-any
-     D1: -fsymbol-case-upper
-     D2: -fsymbol-case-lower
-     D3: -fsymbol-case-initcap
-
-   Useful combinations of the above settings, along with abbreviated
-option names that set some of these combinations all at once:
-
-      1: A0--  B0---  C0---  D0---    -fcase-preserve
-      2: A0--  B0---  C0---  D-1--
-      3: A0--  B0---  C0---  D--2-
-      4: A0--  B0---  C0---  D---3
-      5: A0--  B0---  C-1--  D0---
-      6: A0--  B0---  C-1--  D-1--
-      7: A0--  B0---  C-1--  D--2-
-      8: A0--  B0---  C-1--  D---3
-      9: A0--  B0---  C--2-  D0---
-     10: A0--  B0---  C--2-  D-1--
-     11: A0--  B0---  C--2-  D--2-
-     12: A0--  B0---  C--2-  D---3
-     13: A0--  B0---  C---3  D0---
-     14: A0--  B0---  C---3  D-1--
-     15: A0--  B0---  C---3  D--2-
-     16: A0--  B0---  C---3  D---3
-     17: A0--  B-1--  C0---  D0---
-     18: A0--  B-1--  C0---  D-1--
-     19: A0--  B-1--  C0---  D--2-
-     20: A0--  B-1--  C0---  D---3
-     21: A0--  B-1--  C-1--  D0---
-     22: A0--  B-1--  C-1--  D-1--    -fcase-strict-upper
-     23: A0--  B-1--  C-1--  D--2-
-     24: A0--  B-1--  C-1--  D---3
-     25: A0--  B-1--  C--2-  D0---
-     26: A0--  B-1--  C--2-  D-1--
-     27: A0--  B-1--  C--2-  D--2-
-     28: A0--  B-1--  C--2-  D---3
-     29: A0--  B-1--  C---3  D0---
-     30: A0--  B-1--  C---3  D-1--
-     31: A0--  B-1--  C---3  D--2-
-     32: A0--  B-1--  C---3  D---3
-     33: A0--  B--2-  C0---  D0---
-     34: A0--  B--2-  C0---  D-1--
-     35: A0--  B--2-  C0---  D--2-
-     36: A0--  B--2-  C0---  D---3
-     37: A0--  B--2-  C-1--  D0---
-     38: A0--  B--2-  C-1--  D-1--
-     39: A0--  B--2-  C-1--  D--2-
-     40: A0--  B--2-  C-1--  D---3
-     41: A0--  B--2-  C--2-  D0---
-     42: A0--  B--2-  C--2-  D-1--
-     43: A0--  B--2-  C--2-  D--2-    -fcase-strict-lower
-     44: A0--  B--2-  C--2-  D---3
-     45: A0--  B--2-  C---3  D0---
-     46: A0--  B--2-  C---3  D-1--
-     47: A0--  B--2-  C---3  D--2-
-     48: A0--  B--2-  C---3  D---3
-     49: A0--  B---3  C0---  D0---
-     50: A0--  B---3  C0---  D-1--
-     51: A0--  B---3  C0---  D--2-
-     52: A0--  B---3  C0---  D---3
-     53: A0--  B---3  C-1--  D0---
-     54: A0--  B---3  C-1--  D-1--
-     55: A0--  B---3  C-1--  D--2-
-     56: A0--  B---3  C-1--  D---3
-     57: A0--  B---3  C--2-  D0---
-     58: A0--  B---3  C--2-  D-1--
-     59: A0--  B---3  C--2-  D--2-
-     60: A0--  B---3  C--2-  D---3
-     61: A0--  B---3  C---3  D0---
-     62: A0--  B---3  C---3  D-1--
-     63: A0--  B---3  C---3  D--2-
-     64: A0--  B---3  C---3  D---3    -fcase-initcap
-     65: A-1-  B01--  C01--  D01--    -fcase-upper
-     66: A--2  B0-2-  C0-2-  D0-2-    -fcase-lower
-
-   Number 22 is the "strict" ANSI FORTRAN 77 model wherein all input
-(except comments, character constants, and Hollerith strings) must be
-entered in uppercase.  Use `-fcase-strict-upper' to specify this
-combination.
-
-   Number 43 is like Number 22 except all input must be lowercase.  Use
-`-fcase-strict-lower' to specify this combination.
-
-   Number 65 is the "classic" ANSI FORTRAN 77 model as implemented on
-many non-UNIX machines whereby all the source is translated to
-uppercase.  Use `-fcase-upper' to specify this combination.
-
-   Number 66 is the "canonical" UNIX model whereby all the source is
-translated to lowercase.  Use `-fcase-lower' to specify this
-combination.
-
-   There are a few nearly useless combinations:
-
-     67: A-1-  B01--  C01--  D--2-
-     68: A-1-  B01--  C01--  D---3
-     69: A-1-  B01--  C--23  D01--
-     70: A-1-  B01--  C--23  D--2-
-     71: A-1-  B01--  C--23  D---3
-     72: A--2  B01--  C0-2-  D-1--
-     73: A--2  B01--  C0-2-  D---3
-     74: A--2  B01--  C-1-3  D0-2-
-     75: A--2  B01--  C-1-3  D-1--
-     76: A--2  B01--  C-1-3  D---3
-
-   The above allow some programs to be compiled but with restrictions
-that make most useful programs impossible: Numbers 67 and 72 warn about
-_any_ user-defined symbol names (such as `SUBROUTINE FOO'); Numbers 68
-and 73 warn about any user-defined symbol names longer than one
-character that don't have at least one non-alphabetic character after
-the first; Numbers 69 and 74 disallow any references to intrinsics; and
-Numbers 70, 71, 75, and 76 are combinations of the restrictions in
-67+69, 68+69, 72+74, and 73+74, respectively.
-
-   All redundant combinations are shown in the above tables anyplace
-where more than one setting is shown for a low-level switch.  For
-example, `B0-2-' means either setting 0 or 2 is valid for switch B.
-The "proper" setting in such a case is the one that copies the setting
-of switch A--any other setting might slightly reduce the speed of the
-compiler, though possibly to an unmeasurable extent.
-
-   All remaining combinations are useless in that they prevent
-successful compilation of non-null source files (source files with
-something other than comments).
-
-
-File: g77.info,  Node: VXT Fortran,  Next: Fortran 90,  Prev: Case Sensitivity,  Up: Other Dialects
-
-VXT Fortran
-===========
-
-   `g77' supports certain constructs that have different meanings in
-VXT Fortran than they do in the GNU Fortran language.
-
-   Generally, this manual uses the invented term VXT Fortran to refer
-VAX FORTRAN (circa v4).  That compiler offered many popular features,
-though not necessarily those that are specific to the VAX processor
-architecture, the VMS operating system, or Digital Equipment
-Corporation's Fortran product line.  (VAX and VMS probably are
-trademarks of Digital Equipment Corporation.)
-
-   An extension offered by a Digital Fortran product that also is
-offered by several other Fortran products for different kinds of
-systems is probably going to be considered for inclusion in `g77'
-someday, and is considered a VXT Fortran feature.
-
-   The `-fvxt' option generally specifies that, where the meaning of a
-construct is ambiguous (means one thing in GNU Fortran and another in
-VXT Fortran), the VXT Fortran meaning is to be assumed.
-
-* Menu:
-
-* Double Quote Meaning::  `"2000' as octal constant.
-* Exclamation Point::     `!' in column 6.
-
-
-File: g77.info,  Node: Double Quote Meaning,  Next: Exclamation Point,  Up: VXT Fortran
-
-Meaning of Double Quote
------------------------
-
-   `g77' treats double-quote (`"') as beginning an octal constant of
-`INTEGER(KIND=1)' type when the `-fvxt' option is specified.  The form
-of this octal constant is
-
-     "OCTAL-DIGITS
-
-where OCTAL-DIGITS is a nonempty string of characters in the set
-`01234567'.
-
-   For example, the `-fvxt' option permits this:
-
-     PRINT *, "20
-     END
-
-The above program would print the value `16'.
-
-   *Note Integer Type::, for information on the preferred construct for
-integer constants specified using GNU Fortran's octal notation.
-
-   (In the GNU Fortran language, the double-quote character (`"')
-delimits a character constant just as does apostrophe (`'').  There is
-no way to allow both constructs in the general case, since statements
-like `PRINT *,"2000 !comment?"' would be ambiguous.)
-
-
-File: g77.info,  Node: Exclamation Point,  Prev: Double Quote Meaning,  Up: VXT Fortran
-
-Meaning of Exclamation Point in Column 6
-----------------------------------------
-
-   `g77' treats an exclamation point (`!') in column 6 of a fixed-form
-source file as a continuation character rather than as the beginning of
-a comment (as it does in any other column) when the `-fvxt' option is
-specified.
-
-   The following program, when run, prints a message indicating whether
-it is interpreted according to GNU Fortran (and Fortran 90) rules or
-VXT Fortran rules:
-
-     C234567  (This line begins in column 1.)
-           I = 0
-          !1
-           IF (I.EQ.0) PRINT *, ' I am a VXT Fortran program'
-           IF (I.EQ.1) PRINT *, ' I am a Fortran 90 program'
-           IF (I.LT.0 .OR. I.GT.1) PRINT *, ' I am a HAL 9000 computer'
-           END
-
-   (In the GNU Fortran and Fortran 90 languages, exclamation point is a
-valid character and, unlike space (<SPC>) or zero (`0'), marks a line
-as a continuation line when it appears in column 6.)
-
-
-File: g77.info,  Node: Fortran 90,  Next: Pedantic Compilation,  Prev: VXT Fortran,  Up: Other Dialects
-
-Fortran 90
-==========
-
-   The GNU Fortran language includes a number of features that are part
-of Fortran 90, even when the `-ff90' option is not specified.  The
-features enabled by `-ff90' are intended to be those that, when `-ff90'
-is not specified, would have another meaning to `g77'--usually meaning
-something invalid in the GNU Fortran language.
-
-   So, the purpose of `-ff90' is not to specify whether `g77' is to
-gratuitously reject Fortran 90 constructs.  The `-pedantic' option
-specified with `-fno-f90' is intended to do that, although its
-implementation is certainly incomplete at this point.
-
-   When `-ff90' is specified:
-
-   * The type of `REAL(EXPR)' and `AIMAG(EXPR)', where EXPR is
-     `COMPLEX' type, is the same type as the real part of EXPR.
-
-     For example, assuming `Z' is type `COMPLEX(KIND=2)', `REAL(Z)'
-     would return a value of type `REAL(KIND=2)', not of type
-     `REAL(KIND=1)', since `-ff90' is specified.
 

@@ -27,7 +27,7 @@ Boston, MA 02111-1307, USA.  */
 #include "cp-tree.h"
 
 void
-print_lang_decl (file, node, indent)
+cxx_print_decl (file, node, indent)
      FILE *file;
      tree node;
      int indent;
@@ -66,7 +66,7 @@ print_lang_decl (file, node, indent)
 }
 
 void
-print_lang_type (file, node, indent)
+cxx_print_type (file, node, indent)
      FILE *file;
      register tree node;
      int indent;
@@ -152,15 +152,13 @@ print_lang_type (file, node, indent)
 	fprintf (file, " interface-only");
       if (CLASSTYPE_INTERFACE_UNKNOWN (node))
 	fprintf (file, " interface-unknown");
-      if (CLASSTYPE_VTABLE_NEEDS_WRITING (node))
-	fprintf (file, " vtable-needs-writing");
       print_node (file, "member-functions", CLASSTYPE_METHOD_VEC (node),
 		  indent + 4);
     }
 }
 
 void
-print_lang_identifier (file, node, indent)
+cxx_print_identifier (file, node, indent)
      FILE *file;
      tree node;
      int indent;
@@ -175,7 +173,7 @@ print_lang_identifier (file, node, indent)
 }
 
 void
-lang_print_xnode (file, node, indent)
+cxx_print_xnode (file, node, indent)
      FILE *file;
      tree node;
      int indent;

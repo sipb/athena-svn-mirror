@@ -1,10 +1,82 @@
-This is doc/cpp.info, produced by makeinfo version 4.0 from
+This is doc/cpp.info, produced by makeinfo version 4.2 from
 doc/cpp.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * Cpp: (cpp).		       The GNU C preprocessor.
 END-INFO-DIR-ENTRY
+
+
+File: cpp.info,  Node: Ifdef,  Next: If,  Up: Conditional Syntax
+
+Ifdef
+-----
+
+   The simplest sort of conditional is
+
+     #ifdef MACRO
+     
+     CONTROLLED TEXT
+     
+     #endif /* MACRO */
+
+   This block is called a "conditional group".  CONTROLLED TEXT will be
+included in the output of the preprocessor if and only if MACRO is
+defined.  We say that the conditional "succeeds" if MACRO is defined,
+"fails" if it is not.
+
+   The CONTROLLED TEXT inside of a conditional can include
+preprocessing directives.  They are executed only if the conditional
+succeeds.  You can nest conditional groups inside other conditional
+groups, but they must be completely nested.  In other words, `#endif'
+always matches the nearest `#ifdef' (or `#ifndef', or `#if').  Also,
+you cannot start a conditional group in one file and end it in another.
+
+   Even if a conditional fails, the CONTROLLED TEXT inside it is still
+run through initial transformations and tokenization.  Therefore, it
+must all be lexically valid C.  Normally the only way this matters is
+that all comments and string literals inside a failing conditional group
+must still be properly ended.
+
+   The comment following the `#endif' is not required, but it is a good
+practice if there is a lot of CONTROLLED TEXT, because it helps people
+match the `#endif' to the corresponding `#ifdef'.  Older programs
+sometimes put MACRO directly after the `#endif' without enclosing it in
+a comment.  This is invalid code according to the C standard.  GNU CPP
+accepts it with a warning.  It never affects which `#ifndef' the
+`#endif' matches.
+
+   Sometimes you wish to use some code if a macro is _not_ defined.
+You can do this by writing `#ifndef' instead of `#ifdef'.  One common
+use of `#ifndef' is to include code only the first time a header file
+is included.  *Note Once-Only Headers::.
+
+   Macro definitions can vary between compilations for several reasons.
+Here are some samples.
+
+   * Some macros are predefined on each kind of machine (*note
+     System-specific Predefined Macros::).  This allows you to provide
+     code specially tuned for a particular machine.
+
+   * System header files define more macros, associated with the
+     features they implement.  You can test these macros with
+     conditionals to avoid using a system feature on a machine where it
+     is not implemented.
+
+   * Macros can be defined or undefined with the `-D' and `-U' command
+     line options when you compile the program.  You can arrange to
+     compile the same source file into two different programs by
+     choosing a macro name to specify which program you want, writing
+     conditionals to test whether or how this macro is defined, and
+     then controlling the state of the macro with command line options,
+     perhaps set in the Makefile.  *Note Invocation::.
+
+   * Your program might have a special header file (often called
+     `config.h') that is adjusted when the program is compiled.  It can
+     define or not define macros depending on the features of the
+     system and the desired capabilities of the program.  The
+     adjustment can be automated by a tool such as `autoconf', or done
+     by hand.
 
 
 File: cpp.info,  Node: If,  Next: Defined,  Prev: Ifdef,  Up: Conditional Syntax
@@ -272,6 +344,13 @@ the current preprocessor input file.  `#line' has three variants:
      effect.  In addition, FILENAME is a string constant.  The
      following line and all subsequent lines are reported to come from
      the file it specifies, until something else happens to change that.
+     FILENAME is interpreted according to the normal rules for a string
+     constant: backslash escapes are interpreted.  This is different
+     from `#include'.
+
+     Previous versions of GNU CPP did not interpret escapes in `#line';
+     we have changed it because the standard requires they be
+     interpreted, and most other compilers do.
 
 `#line ANYTHING ELSE'
      ANYTHING ELSE is checked for macro calls, which are expanded.  The
@@ -280,7 +359,33 @@ the current preprocessor input file.  `#line' has three variants:
    `#line' directives alter the results of the `__FILE__' and
 `__LINE__' predefined macros from that point on.  *Note Standard
 Predefined Macros::.  They do not have any effect on `#include''s idea
-of the directory containing the current file.
+of the directory containing the current file.  This is a change from
+GCC 2.95.  Previously, a file reading
+
+     #line 1 "../src/gram.y"
+     #include "gram.h"
+
+   would search for `gram.h' in `../src', then the `-I' chain; the
+directory containing the physical source file would not be searched.
+In GCC 3.0 and later, the `#include' is not affected by the presence of
+a `#line' referring to a different directory.
+
+   We made this change because the old behavior caused problems when
+generated source files were transported between machines.  For instance,
+it is common practice to ship generated parsers with a source release,
+so that people building the distribution do not need to have yacc or
+Bison installed.  These files frequently have `#line' directives
+referring to the directory tree of the system where the distribution was
+created.  If GCC tries to search for headers in those directories, the
+build is likely to fail.
+
+   The new behavior can cause failures too, if the generated file is not
+in the same directory as its source and it attempts to include a header
+which would be visible searching from the directory containing the
+source file.  However, this problem is easily solved with an additional
+`-I' switch on the command line.  The failures caused by the old
+semantics could sometimes be corrected only by editing the generated
+files, which is difficult and error-prone.
 
 
 File: cpp.info,  Node: Pragmas,  Next: Other Directives,  Prev: Line Control,  Up: Top
@@ -441,6 +546,8 @@ the form
 These are called "linemarkers".  They are inserted as needed into the
 output (but never within a string or character constant).  They mean
 that the following line originated in file FILENAME at line LINENUM.
+FILENAME will never contain any non-printing characters; they are
+replaced with octal escape sequences.
 
    After the file name comes zero or more flags, which are `1', `2',
 `3', or `4'.  If there are multiple flags, spaces separate them.  Here
@@ -571,7 +678,7 @@ conforming compiler, such as the `#' and `##' operators.
      understands but would ignore because the `#' does not appear as the
      first character on the line.  It also suggests you hide directives
      like `#pragma' not understood by traditional C by indenting them.
-     Some traditional implementations would not recognise `#elif', so it
+     Some traditional implementations would not recognize `#elif', so it
      suggests avoiding it altogether.
 
    * A function-like macro that appears without an argument list.  In
@@ -601,7 +708,7 @@ Implementation Details
 
    Here we document details of how the preprocessor's implementation
 affects its user-visible behavior.  You should try to avoid undue
-reliance on behaviour described here, as it is possible that it will
+reliance on behavior described here, as it is possible that it will
 change subtly in future implementations.
 
    Also documented here are obsolete features and changes from previous
@@ -871,9 +978,9 @@ Miscellaneous obsolete features
    * Attempting to paste two tokens which together do not form a valid
      preprocessing token.
 
-     The preprocessor currently warns about this and outputs the two
-     tokens adjacently, which is probably the behavior the programmer
-     intends.  It may not work in future, though.
+     The preprocessor currently warns about this, and the resulting
+     preprocessed output is undefined.  The tokens remain distinct if
+     the preprocessor is being used directly by the compiler front end.
 
      Most of the time, when you get this warning, you will find that
      `##' is being used superstitiously, to guard against whitespace
@@ -972,4 +1079,24 @@ they generally represent bugs in the snapshots.
      a separate program and does not implement any of the GNU
      extensions, except for a partial implementation of assertions.
      Even those may be removed in a future release.
+
+   * `#line' and `#include'
+
+     The `#line' directive used to change GCC's notion of the
+     "directory containing the current file," used by `#include' with a
+     double-quoted header file name.  In 3.0 and later, it does not.
+     *Note Line Control::, for further explanation.
+
+   * Syntax of `#line'
+
+     In GCC 2.95 and previous, the string constant argument to `#line'
+     was treated the same way as the argument to `#include': backslash
+     escapes were not honored, and the string ended at the second `"'.
+     This is not compliant with the C standard.  In GCC 3.0, an attempt
+     was made to correct the behavior, so that the string was treated
+     as a real string constant, but it turned out to be buggy.  In 3.1,
+     the bugs have been fixed.  (We are not fixing the bugs in 3.0
+     because they affect relatively few people and the fix is quite
+     invasive.)
+
 

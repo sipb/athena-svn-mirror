@@ -66,7 +66,7 @@ push_pending_label (target_label)
 
 /* Note that TARGET_LABEL is a possible successor instruction.
    Merge the type state etc.
-   Return NULL on sucess, or an error message on failure. */
+   Return NULL on success, or an error message on failure. */
 
 static const char *
 check_pending_block (target_label)
@@ -102,6 +102,22 @@ check_pending_block (target_label)
 	return "transfer out of subroutine";
     }
   return NULL;
+}
+
+/* Count the number of nested jsr calls needed to reach LABEL. */
+
+static int
+subroutine_nesting (tree label)
+{
+  int nesting = 0;
+  while (label != NULL_TREE && LABEL_IN_SUBR (label))
+    {
+      if (! LABEL_IS_SUBR_START(label))
+	label = LABEL_SUBR_START (label);
+      label = LABEL_SUBR_CONTEXT (label);
+      nesting++;
+    }
+  return nesting;
 }
 
 /* Return the "merged" types of TYPE1 and TYPE2.
@@ -398,7 +414,7 @@ pop_argument_types (arg_types)
 #define BCODE byte_ops
 
 /* Verify the bytecodes of the current method.
-   Return 1 on sucess, 0 on failure. */
+   Return 1 on success, 0 on failure. */
 int
 verify_jvm_instructions (jcf, byte_ops, length)
      JCF* jcf;
@@ -497,11 +513,9 @@ verify_jvm_instructions (jcf, byte_ops, length)
       if (current_subr 
 	  && PC == INVALID_PC)
 	{
-	  tree caller = LABEL_SUBR_CONTEXT (current_subr);
-
 	  if (pending_blocks == NULL_TREE
-	      || ! LABEL_IN_SUBR (pending_blocks)
-	      || LABEL_SUBR_START (pending_blocks) == caller)
+	      || (subroutine_nesting (pending_blocks)
+		  < subroutine_nesting (current_subr)))
 	    {
 	      int size = DECL_MAX_LOCALS(current_function_decl)+stack_pointer;
 	      tree ret_map = LABEL_RETURN_TYPE_STATE (current_subr);
@@ -511,7 +525,7 @@ verify_jvm_instructions (jcf, byte_ops, length)
 		 have returned to an earlier caller.  Obviously a
 		 "ret" can only return one level, but a throw may
 		 return many levels.*/
-	      current_subr = caller;
+	      current_subr = LABEL_SUBR_CONTEXT (current_subr);
 
 	      if (RETURN_MAP_ADJUSTED (ret_map))
 		{
@@ -594,7 +608,7 @@ verify_jvm_instructions (jcf, byte_ops, length)
 	  goto push_int;
 	push_int:
 	  if (byte_ops[PC] == OPCODE_newarray
-	      || byte_ops[PC] == OPCODE_newarray)
+	      || byte_ops[PC] == OPCODE_anewarray)
 	    int_value = i;
 	  PUSH_TYPE (int_type_node);  break;
 	case OPCODE_lconst_0:	case OPCODE_lconst_1:
@@ -901,9 +915,15 @@ verify_jvm_instructions (jcf, byte_ops, length)
 	case OPCODE_putfield:  is_putting = 1;  is_static = 0;  goto field;
 	field:
 	  {
-	    int index = IMMEDIATE_u2;
-	    tree field_signature = COMPONENT_REF_SIGNATURE (&current_jcf->cpool, index);
-	    tree field_type = get_type_from_signature (field_signature);
+	    tree field_signature, field_type;
+	    index = IMMEDIATE_u2;
+	    if (index <= 0 || index >= JPOOL_SIZE(current_jcf))
+	      VERIFICATION_ERROR_WITH_INDEX ("bad constant pool index %d");
+	    if (JPOOL_TAG (current_jcf, index) != CONSTANT_Fieldref)
+	      VERIFICATION_ERROR
+		("field instruction does not reference a Fieldref");
+	    field_signature = COMPONENT_REF_SIGNATURE (&current_jcf->cpool, index);
+	    field_type = get_type_from_signature (field_signature);
 	    if (is_putting)
 	      POP_TYPE (field_type, "incorrect type for field");
 	    if (! is_static)
@@ -959,7 +979,7 @@ verify_jvm_instructions (jcf, byte_ops, length)
 	  index = IMMEDIATE_u2;  goto ldc;
 	ldc:
 	  if (index <= 0 || index >= JPOOL_SIZE(current_jcf))
-	    VERIFICATION_ERROR ("bad constant pool index in ldc");
+	    VERIFICATION_ERROR_WITH_INDEX ("bad constant pool index %d in ldc");
 	  int_value = -1;
 	  switch (JPOOL_TAG (current_jcf, index) & ~CONSTANT_ResolvedFlag)
 	    {
@@ -988,13 +1008,32 @@ verify_jvm_instructions (jcf, byte_ops, length)
 	case OPCODE_invokestatic:
 	case OPCODE_invokeinterface:
 	  {
-	    int index = IMMEDIATE_u2;
-	    tree sig = COMPONENT_REF_SIGNATURE (&current_jcf->cpool, index);
-	    tree self_type = get_class_constant
+	    tree sig, method_name, method_type, self_type;
+	    int self_is_interface, tag;
+	    index = IMMEDIATE_u2;
+	    if (index <= 0 || index >= JPOOL_SIZE(current_jcf))
+	      VERIFICATION_ERROR_WITH_INDEX
+		("bad constant pool index %d for invoke");
+	    tag = JPOOL_TAG (current_jcf, index);
+	    if (op_code == OPCODE_invokeinterface)
+	      {
+		if (tag != CONSTANT_InterfaceMethodref)
+		  VERIFICATION_ERROR
+		    ("invokeinterface does not reference an InterfaceMethodref");
+	      }
+	    else
+	      {
+		if (tag != CONSTANT_Methodref)
+		  VERIFICATION_ERROR ("invoke does not reference a Methodref");
+	      }
+	    sig = COMPONENT_REF_SIGNATURE (&current_jcf->cpool, index);
+	    self_type = get_class_constant
 	      (current_jcf, COMPONENT_REF_CLASS_INDEX (&current_jcf->cpool,
 						       index));
-	    tree method_name = COMPONENT_REF_NAME (&current_jcf->cpool, index);
-	    tree method_type;
+	    if (! CLASS_LOADED_P (self_type))
+	      load_class (self_type, 1);
+	    self_is_interface = CLASS_INTERFACE (TYPE_NAME (self_type));
+	    method_name = COMPONENT_REF_NAME (&current_jcf->cpool, index);
 	    method_type = parse_signature_string (IDENTIFIER_POINTER (sig),
 						  IDENTIFIER_LENGTH (sig));
 	    if (TREE_CODE (method_type) != FUNCTION_TYPE)
@@ -1027,7 +1066,14 @@ verify_jvm_instructions (jcf, byte_ops, length)
 		  if (!nargs || notZero)
 		      VERIFICATION_ERROR 
 		        ("invalid argument number in invokeinterface");
-		  break;		  
+		  /* If we verify/resolve the constant pool, as we should,
+		     this test (and the one just following) are redundant.  */
+		  if (! self_is_interface)
+		    VERIFICATION_ERROR ("invokeinterface calls method not in interface");
+		  break;
+		default:
+		  if (self_is_interface)
+		    VERIFICATION_ERROR ("method in interface called");
 		}
 	      }
 
@@ -1142,12 +1188,14 @@ verify_jvm_instructions (jcf, byte_ops, length)
 	  break;
 
 	case OPCODE_checkcast:
-	  pop_type (ptr_type_node);
+	  POP_TYPE (object_ptr_type_node,
+		    "checkcast operand is not a pointer");
 	  type = get_class_constant (current_jcf, IMMEDIATE_u2);
 	  PUSH_TYPE (type);
 	  break;
 	case OPCODE_instanceof:
-	  pop_type (ptr_type_node);
+	  POP_TYPE (object_ptr_type_node,
+		    "instanceof operand is not a pointer");
 	  get_class_constant (current_jcf, IMMEDIATE_u2);
 	  PUSH_TYPE (int_type_node);
 	  break;

@@ -1,26 +1,157 @@
-2001-12-20  Release Manager
+2002-11-19  Release Manager
 
-	* GCC 3.0.3 Released.
+	* GCC 3.2.1 Released.
 
-2001-10-23  Release Manager
+2002-11-19  Release Manager
 
-	* GCC 3.0.2 Released.
+	* GCC 3.2.1 Released.
 
-2001-08-19  Release Manager
+2002-11-18  Release Manager
 
-	* GCC 3.0.1 Released.
+	* GCC 3.2.1 Released.
 
-2001-08-19  Release Manager
+2002-11-11  Tom Tromey  <tromey@redhat.com>
 
-	* GCC 3.0.1 Released.
+	* dostime.c (dos2unixtime): Mask for seconds is 0x1f.  Correctly
+	compute month.
+	(unix2dostime): Handle years before 1980.  Correctly compute month
+	and day of month.
 
-20010617 Release Manager
+2002-11-07  Tom Tromey  <tromey@redhat.com>
 
-        * GCC 3.0 Released.
+	* dostime.c: Rewrote from scratch.
+	* dostime.h (dostime): Removed.
+
+2002-08-14  Release Manager
+
+	* GCC 3.2 Released.
+
+2002-07-25  Release Manager
+
+	* GCC 3.1.1 Released.
+
+2002-05-14  Release Manager
+
+	* GCC 3.1 Released.
+
+2002-05-14  Release Manager
+
+	* GCC 3.1 Released.
+
+2002-03-18  Bryce McKinlay  <bryce@waitaki.otago.ac.nz>
+
+	* jartool.c (expand_options): Handle tar-style argument list with a
+	leading "-".
+
+2002-02-23  Anthony Green  <green@redhat.com>
+
+	* jartool.c (main): Fix handling of -C.
+
+2002-01-30  Tom Tromey  <tromey@redhat.com>
+
+	* jartool.c (main): NULL-terminate new_argv.  Pass 0 as argument
+	to init_args.
+
+2002-01-11  Tom Tromey  <tromey@redhat.com>
+
+	* Makefile.in: Rebuilt.
+	* Makefile.am (AUTOMAKE_OPTIONS): New macro.
+
+2002-01-09  Tom Tromey  <tromey@redhat.com>
+
+	For PR libgcj/5303:
+	* jargrep.h: Removed RCS keywords.
+	(GVERSION): Removed.
+	* configure, Makefile.in, config.h.in: Rebuilt.
+	* configure.in: Added AM_MAINTAINER_MODE.
+	Don't look for getopt.h.  Use `fastjar' as package name.
+	* Makefile.am (INCLUDES): Look in ../include.
+	(LIBIBERTY): New macro.
+	(jar_LDADD): Use it.
+	(jar_DEPENDENCIES): Likewise.
+	(grepjar_LDADD): Likewise.
+	(grepjar_DEPENDENCIES): Likewise.
+	* jargrep.c: Removed RCS keywords.  Always include getopt.h.
+	(LONG_OPT): New macro.
+	(OPT_HELP): Likewise.
+	(main): Use getopt_long.  Let getopt print invalid argument
+	message.  Handle --help.  Use version().
+	(version): New function.
+	(optarg, optind): Don't declare.
+	(option_vec): New global.
+	(help): New function.
+	(Usage): Updated to GNU standards.
+	* jartool.c: Removed RCS keywords.  Include getopt.h.
+	(LONG_OPT): New macro.
+	(OPT_HELP): Likewise.
+	(options): New global.
+	(help): New function.
+	(usage): Print a single line.
+	(version): New function.
+	(expand_options): New function.
+	(main): Use getopt_long and expand_options.  Fail if `-u'
+	specified.  Changed handling of -f, -m, -V options.
+	(OPTION_STRING): New macro.
+	(version_string): Removed.
+
+2001-01-02  Craig Rodrigues  <rodrigc@gcc.gnu.org>
+
+	PR bootstrap/5117
+	* configure.in (AC_CHECK_HEADERS): Check for stdlib.h.
+	* Makefile.am: Move grepjar to bin_PROGRAMS.
+	* config.h.in: Regenerated.
+	* Makefile.in: Regenerated.
+	* aclocal.m4: Regenerated.
+	* stamp-h.in: Regenerated.
+	* jargrep.c: Eliminate some signed/unsigned and default
+	uninitialized warnings. Use HAVE_STDLIB_H instead of 
+	STDC_HEADERS macro.
+	* jartool.c: Likewise.
+	* compress.c: Likewise.
+
+2001-09-17  Tom Tromey  <tromey@redhat.com>
+
+	For PR java/4295:
+	* aclocal.m4, configure, Makefile.in: Rebuilt.
+	* configure.in: Added AC_EXEEXT.
+
+2001-10-12  Bryce McKinlay  <bryce@waitaki.otago.ac.nz>
+
+	* jatool.c (extract_jar): Account for null termination when determining
+	whether to expand "filename".
+
+2001-08-28  Alexandre Petit-Bianco  <apbianco@redhat.com>
+
+	* jartool.c (add_to_jar): Return 1 if `stat' initialy failed.
+	Fixes PR java/3949.
+
+2001-08-27  Tom Tromey  <tromey@redhat.com>
+
+	* jartool.c (jarfile): Remove length limitation.
+	(main): Use jt_strdup when initializing jarfile.
+
+2001-07-04  Tom Tromey  <tromey@redhat.com>
+
+	Modified from patch by Julian Hall <jules@acris.co.uk>:
+	* jartool.c (errno): Conditionally declare.
+	(O_BINARY): Conditionally define.
+	(main): Use open, not creat.  Use O_BINARY everywhere.
+	(make_manifest): Use O_BINARY.
+	(add_to_jar): Likewise.
+
+2001-06-28  Tom Tromey  <tromey@redhat.com>
+
+	* configure: Rebuilt.
+	* configure.in: Accept --with-system-zlib.  Fixes PR java/3441.
 
 2001-05-15  Per Bothner  <per@bothner.com>
 
         * Makefile.am (bin_PROGRAMS):  Renamed from "fastjar" to "jar".
+
+2001-05-03  John David Anglin  <dave@hiauly1.hia.nrc.ca>
+
+	* jartool.c (jt_strdup): New function.
+	(get_next_arg): Use jt_strdup instead of strdup.
 
 2001-01-21  Tom Tromey  <tromey@redhat.com>
 

@@ -41,6 +41,11 @@
  * purpose.  It is provided "as is" without express or implied warranty.
  */
 
+/** @file type_traits.h
+ *  This is an internal header file, included by other library headers.
+ *  You should not attempt to use it directly.
+ */
+
 #ifndef _CPP_BITS_TYPE_TRAITS_H
 #define _CPP_BITS_TYPE_TRAITS_H 1
 
@@ -82,10 +87,8 @@ template <class _Tp> inline void copy(_Tp* __source,_Tp* __destination,int __n) 
 }
 */
 
-
-template <bool _Truth> struct _Bool {};
-typedef _Bool<true>  __true_type;
-typedef _Bool<false> __false_type;
+struct __true_type {};
+struct __false_type {};
 
 template <class _Tp>
 struct __type_traits { 
@@ -319,12 +322,13 @@ template<typename _Tp> struct _Is_normal_iterator {
 };
 
 // Forward declaration hack, should really include this from somewhere.
-namespace std {
-   template<typename _Iterator, typename _Container> class __normal_iterator;
-};
+namespace __gnu_cxx
+{
+  template<typename _Iterator, typename _Container> class __normal_iterator;
+}
 
 template<typename _Iterator, typename _Container>
-struct _Is_normal_iterator< std::__normal_iterator<_Iterator, _Container> > {
+struct _Is_normal_iterator< __gnu_cxx::__normal_iterator<_Iterator, _Container> > {
    typedef __true_type _Normal;
 };
 

@@ -57,10 +57,10 @@ int main()
     switch (ar2)
     {
     case 1:
-	printf ("PASS\n");
+	std::printf ("PASS\n");
         break;
     default:
-	{ printf ("FAIL\n"); return 1; }
+	{ std::printf ("FAIL\n"); return 1; }
     }
 
     B b(a);

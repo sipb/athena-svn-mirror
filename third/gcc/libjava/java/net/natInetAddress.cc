@@ -1,6 +1,6 @@
 // natInetAddress.cc
 
-/* Copyright (C) 1998, 1999, 2000  Free Software Foundation
+/* Copyright (C) 1998, 1999, 2000, 2002  Free Software Foundation
 
    This file is part of libgcj.
 
@@ -10,10 +10,11 @@ details.  */
 
 #include <config.h>
 
-#ifdef USE_WINSOCK
+#ifdef WIN32
 
 #include <windows.h>
 #include <winsock.h>
+#undef STRICT
 
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN	64
@@ -42,7 +43,7 @@ details.  */
 #include <netdb.h>
 #endif
 
-#endif /* USE_WINSOCK */
+#endif /* WIN32 */
 
 #include <gcj/cni.h>
 #include <jvm.h>
@@ -95,7 +96,7 @@ java::net::InetAddress::aton (jstring host)
   if (len < 100)
     hostname = buf;
   else
-    hostname = (char*) _Jv_AllocBytesChecked (len+1);
+    hostname = (char*) _Jv_AllocBytes (len+1);
   JvGetStringUTFRegion (host, 0, host->length(), hostname);
   buf[len] = '\0';
   char* bytes = NULL;
@@ -180,7 +181,7 @@ java::net::InetAddress::lookup (jstring host, java::net::InetAddress* iaddr,
       if (len < 100)
 	hostname = buf;
       else
-	hostname = (char*) _Jv_AllocBytesChecked (len+1);
+	hostname = (char*) _Jv_AllocBytes (len+1);
       JvGetStringUTFRegion (host, 0, host->length(), hostname);
       buf[len] = '\0';
 #ifdef HAVE_GETHOSTBYNAME_R
@@ -201,7 +202,7 @@ java::net::InetAddress::lookup (jstring host, java::net::InetAddress* iaddr,
 	  if (! ok && herr == ERANGE)
 	    {
 	      size_r *= 2;
-	      buffer_r = (char *) _Jv_AllocBytesChecked (size_r);
+	      buffer_r = (char *) _Jv_AllocBytes (size_r);
 	    }
 	  else
 #endif /* HAVE_STRUCT_HOSTENT_DATA */
@@ -255,7 +256,7 @@ java::net::InetAddress::lookup (jstring host, java::net::InetAddress* iaddr,
 	  if (! ok && herr == ERANGE)
 	    {
 	      size_r *= 2;
-	      buffer_r = (char *) _Jv_AllocBytesChecked (size_r);
+	      buffer_r = (char *) _Jv_AllocBytes (size_r);
 	    }
 	  else 
 #endif /* HAVE_STRUCT_HOSTENT_DATA */

@@ -16,10 +16,10 @@
  */
 /* Boehm, September 14, 1994 4:44 pm PDT */
 
-# if defined(SOLARIS_THREADS)
+# if defined(GC_SOLARIS_THREADS) || defined(GC_SOLARIS_PTHREADS)
 
-# include "gc_priv.h"
-# include "solaris_threads.h"
+# include "private/gc_priv.h"
+# include "private/solaris_threads.h"
 # include <thread.h>
 # include <synch.h>
 # include <signal.h>
@@ -414,7 +414,6 @@ GC_bool GC_thr_initialized = FALSE;
 
 size_t GC_min_stack_sz;
 
-size_t GC_page_sz;
 
 /*
  * stack_head is stored at the top of free stacks
@@ -456,7 +455,7 @@ ptr_t GC_stack_alloc(size_t * stack_size)
         GC_stack_free_lists[index] = GC_stack_free_lists[index]->next;
     } else {
 #ifdef MMAP_STACKS
-        base = (ptr_t)mmap(0, search_sz + GC_page_sz,
+        base = (ptr_t)mmap(0, search_sz + GC_page_size,
 			     PROT_READ|PROT_WRITE, MAP_PRIVATE |MAP_NORESERVE,
 			     GC_zfd, 0);
 	if (base == (ptr_t)-1)
@@ -465,27 +464,27 @@ ptr_t GC_stack_alloc(size_t * stack_size)
 		return NULL;
 	}
 
-	mprotect(base, GC_page_sz, PROT_NONE);
-	/* Should this use divHBLKSZ(search_sz + GC_page_sz) ? -- cf */
+	mprotect(base, GC_page_size, PROT_NONE);
+	/* Should this use divHBLKSZ(search_sz + GC_page_size) ? -- cf */
 	GC_is_fresh((struct hblk *)base, divHBLKSZ(search_sz));
-	base += GC_page_sz;
+	base += GC_page_size;
 
 #else
-        base = (ptr_t) GC_scratch_alloc(search_sz + 2*GC_page_sz);
+        base = (ptr_t) GC_scratch_alloc(search_sz + 2*GC_page_size);
 	if (base == NULL)
 	{
 		*stack_size = 0;
 		return NULL;
 	}
 
-        base = (ptr_t)(((word)base + GC_page_sz) & ~(GC_page_sz - 1));
+        base = (ptr_t)(((word)base + GC_page_size) & ~(GC_page_size - 1));
         /* Protect hottest page to detect overflow. */
 #	ifdef SOLARIS23_MPROTECT_BUG_FIXED
-            mprotect(base, GC_page_sz, PROT_NONE);
+            mprotect(base, GC_page_size, PROT_NONE);
 #	endif
         GC_is_fresh((struct hblk *)base, divHBLKSZ(search_sz));
 
-        base += GC_page_sz;
+        base += GC_page_size;
 #endif
     }
     *stack_size = search_sz;
@@ -558,6 +557,11 @@ void GC_old_stacks_are_fresh()
 # define THREAD_TABLE_SZ 128	/* Must be power of 2	*/
 volatile GC_thread GC_threads[THREAD_TABLE_SZ];
 
+void GC_push_thread_structures GC_PROTO((void))
+{
+    GC_push_all((ptr_t)(GC_threads), (ptr_t)(GC_threads)+sizeof(GC_threads));
+}
+
 /* Add a thread to GC_threads.  We assume it wasn't already there.	*/
 /* Caller holds allocation lock.					*/
 GC_thread GC_new_thread(thread_t id)
@@ -573,7 +577,7 @@ GC_thread GC_new_thread(thread_t id)
     	/* Dont acquire allocation lock, since we may already hold it. */
     } else {
         result = (struct GC_Thread_Rep *)
-        	 GC_generic_malloc_inner(sizeof(struct GC_Thread_Rep), NORMAL);
+        	 GC_INTERNAL_MALLOC(sizeof(struct GC_Thread_Rep), NORMAL);
     }
     if (result == 0) return(0);
     result -> id = id;
@@ -660,8 +664,8 @@ void GC_my_stack_limits()
       /* original thread */
         /* Empirically, what should be the stack page with lowest	*/
         /* address is actually inaccessible.				*/
-        stack_size = GC_get_orig_stack_size() - GC_page_sz;
-        stack = GC_stackbottom - stack_size + GC_page_sz;
+        stack_size = GC_get_orig_stack_size() - GC_page_size;
+        stack = GC_stackbottom - stack_size + GC_page_size;
     } else {
         stack = me -> stack;
     }
@@ -684,7 +688,7 @@ void GC_push_all_stacks()
     
 #   define PUSH(bottom,top) \
       if (GC_dirty_maintained) { \
-	GC_push_dirty((bottom), (top), GC_page_was_ever_dirty, \
+	GC_push_selected((bottom), (top), GC_page_was_ever_dirty, \
 		      GC_push_all_stack); \
       } else { \
         GC_push_all_stack((bottom), (top)); \
@@ -699,7 +703,7 @@ void GC_push_all_stacks()
             top = p -> stack + p -> stack_size;
         } else {
             /* The original stack. */
-            bottom = GC_stackbottom - GC_get_orig_stack_size() + GC_page_sz;
+            bottom = GC_stackbottom - GC_get_orig_stack_size() + GC_page_size;
             top = GC_stackbottom;
         }
         if ((word)sp > (word)bottom && (word)sp < (word)top) bottom = sp;
@@ -714,7 +718,6 @@ int GC_is_thread_stack(ptr_t addr)
     register int i;
     register GC_thread p;
     register ptr_t bottom, top;
-    struct rlimit rl;
     
     for (i = 0; i < THREAD_TABLE_SZ; i++) {
       for (p = GC_threads[i]; p != 0; p = p -> next) {
@@ -725,6 +728,7 @@ int GC_is_thread_stack(ptr_t addr)
 	}
       }
     }
+    return 0;
 }
 
 /* The only thread that ever really performs a thr_join.	*/
@@ -784,7 +788,6 @@ void GC_thr_init(void)
     GC_thr_initialized = TRUE;
     GC_min_stack_sz = ((thr_min_stack() + 32*1024 + HBLKSIZE-1)
     		       & ~(HBLKSIZE - 1));
-    GC_page_sz = sysconf(_SC_PAGESIZE);
 #ifdef MMAP_STACKS
     GC_zfd = open("/dev/zero", O_RDONLY);
     if (GC_zfd == -1)
@@ -906,10 +909,7 @@ GC_thr_create(void *stack_base, size_t stack_size,
     void * stack = stack_base;
    
     LOCK();
-    if (!GC_thr_initialized)
-    {
-    GC_thr_init();
-    }
+    if (!GC_is_initialized) GC_init_inner();
     GC_multithreaded++;
     if (stack == 0) {
      	if (stack_size == 0) stack_size = 1024*1024;
@@ -944,7 +944,7 @@ GC_thr_create(void *stack_base, size_t stack_size,
     return(result);
 }
 
-# else /* SOLARIS_THREADS */
+# else /* !GC_SOLARIS_THREADS */
 
 #ifndef LINT
   int GC_no_sunOS_threads;

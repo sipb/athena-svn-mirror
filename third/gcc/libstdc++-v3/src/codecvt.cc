@@ -1,4 +1,4 @@
-// Copyright (C) 2000 Free Software Foundation, Inc.
+// Copyright (C) 2000, 2002 Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
 // software; you can redistribute it and/or modify it under the
@@ -27,14 +27,21 @@
 
 // Written by Benjamin Kosnik <bkoz@cygnus.com>
 
-#include <bits/std_locale.h>
+#include <locale>
 
-namespace std {
+namespace std 
+{
+  // Definitions for locale::id of standard facets that are specialized.
+ locale::id codecvt<char, char, mbstate_t>::id;
 
-#ifdef _GLIBCPP_USE_WCHAR_T
+#ifdef _GLIBCPP_USE_WCHAR_T  
+  locale::id codecvt<wchar_t, char, mbstate_t>::id;
+#endif
+
+#ifdef _GLIBCPP_USE___ENC_TRAITS
   // Definitions for static const data members of __enc_traits.
   const int __enc_traits::_S_max_size;
-#endif /* _GLIBCPP_USE_WCHAR_T */
+#endif 
 
   codecvt<char, char, mbstate_t>::
   codecvt(size_t __refs)
@@ -42,11 +49,12 @@ namespace std {
   { }
 
   codecvt<char, char, mbstate_t>::
-  ~codecvt() { }
+  ~codecvt()
+  { }
   
   codecvt_base::result
   codecvt<char, char, mbstate_t>::
-  do_out(state_type& /*__state*/, const intern_type* __from, 
+  do_out(state_type&, const intern_type* __from, 
 	 const intern_type* __from_end, const intern_type*& __from_next,
 	 extern_type* __to, extern_type* __to_end, 
 	 extern_type*& __to_next) const
@@ -60,8 +68,8 @@ namespace std {
   
   codecvt_base::result
   codecvt<char, char, mbstate_t>::
-  do_unshift(state_type& /*__state*/, extern_type* __to,
-             extern_type* /*__to_end*/, extern_type*& __to_next) const
+  do_unshift(state_type&, extern_type* __to,
+             extern_type*, extern_type*& __to_next) const
   { 
     __to_next = __to; 
     return noconv; 
@@ -69,7 +77,7 @@ namespace std {
   
   codecvt_base::result
   codecvt<char, char, mbstate_t>::
-  do_in(state_type& /*__state*/, const extern_type* __from, 
+  do_in(state_type&, const extern_type* __from, 
 	const extern_type* __from_end, const extern_type*& __from_next,
 	intern_type* __to, intern_type* __to_end, 
 	intern_type*& __to_next) const
@@ -93,7 +101,7 @@ namespace std {
   
   int 
   codecvt<char, char, mbstate_t>::
-  do_length (const state_type& /*__state*/, const extern_type* __from,
+  do_length (const state_type&, const extern_type* __from,
 	     const extern_type* __end, size_t __max) const
   { return min(__max, static_cast<size_t>(__end - __from)); }
   
@@ -106,82 +114,26 @@ namespace std {
   // codecvt<wchar_t, char, mbstate_t> required specialization
   codecvt<wchar_t, char, mbstate_t>::
   codecvt(size_t __refs)
-  : __codecvt_abstract_base<wchar_t, char, mbstate_t>(__refs) { }
+  : __codecvt_abstract_base<wchar_t, char, mbstate_t>(__refs)
+  { }
 
   codecvt<wchar_t, char, mbstate_t>::
-  ~codecvt() { }
+  ~codecvt()
+  { }
   
   codecvt_base::result
   codecvt<wchar_t, char, mbstate_t>::
-  do_out(state_type& __state, const intern_type* __from, 
-	 const intern_type* __from_end, const intern_type*& __from_next,
-	 extern_type* __to, extern_type* __to_end,
-	 extern_type*& __to_next) const
-  {
-    result __ret = error;
-    size_t __len = min(__from_end - __from, __to_end - __to);
-    size_t __conv = wcsrtombs(__to, &__from, __len, &__state);
-
-    if (__conv == __len)
-      {
-	__from_next = __from;
-	__to_next = __to + __conv;
-	__ret = ok;
-      }
-    else if (__conv > 0 && __conv < __len)
-      {
-	__from_next = __from;
-	__to_next = __to + __conv;
-	__ret = partial;
-      }
-    else
-      __ret = error;
-	
-    return __ret; 
-  }
-  
-  codecvt_base::result
-  codecvt<wchar_t, char, mbstate_t>::
-  do_unshift(state_type& /*__state*/, extern_type* __to,
-	     extern_type* /*__to_end*/, extern_type*& __to_next) const
+  do_unshift(state_type&, extern_type* __to,
+	     extern_type*, extern_type*& __to_next) const
   {
     __to_next = __to;
     return noconv;
   }
   
-  codecvt_base::result
-  codecvt<wchar_t, char, mbstate_t>::
-  do_in(state_type& __state, const extern_type* __from, 
-	const extern_type* __from_end, const extern_type*& __from_next,
-	intern_type* __to, intern_type* __to_end,
-	intern_type*& __to_next) const
-  {
-    result __ret = error;
-    size_t __len = min(__from_end - __from, __to_end - __to);
-    size_t __conv = mbsrtowcs(__to, &__from, __len, &__state);
-
-    if (__conv == __len)
-      {
-	__from_next = __from;
-	__to_next = __to + __conv;
-	__ret = ok;
-      }
-    else if (__conv > 0 && __conv < __len)
-      {
-	__from_next = __from;
-	__to_next = __to + __conv;
-	__ret = partial;
-      }
-    else
-      __ret = error;
-	
-    return __ret; 
-  }
-  
   int 
   codecvt<wchar_t, char, mbstate_t>::
   do_encoding() const throw()
-  { return 0; }
+  { return sizeof(wchar_t); }
   
   bool 
   codecvt<wchar_t, char, mbstate_t>::
@@ -190,7 +142,7 @@ namespace std {
   
   int 
   codecvt<wchar_t, char, mbstate_t>::
-  do_length(const state_type& /*__state*/, const extern_type* __from,
+  do_length(const state_type&, const extern_type* __from,
 	    const extern_type* __end, size_t __max) const
   { return min(__max, static_cast<size_t>(__end - __from)); }
 
@@ -199,7 +151,4 @@ namespace std {
   do_max_length() const throw()
   { return 1; }
 #endif //  _GLIBCPP_USE_WCHAR_T
-
 } // namespace std
-
-

@@ -1,5 +1,5 @@
 /* Definitions for specs for C++.
-   Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2001
+   Copyright (C) 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002
    Free Software Foundation, Inc.
 
 This file is part of GNU CC.
@@ -36,25 +36,22 @@ Boston, MA 02111-1307, USA.  */
    /* cc1plus has an integrated ISO C preprocessor.  We should invoke
       the external preprocessor if -save-temps is given.  */
     "%{E|M|MM:cpp0 -lang-c++ %{!no-gcc:-D__GNUG__=%v1}\
-       %{!Wno-deprecated:-D__GXX_DEPRECATED}\
+       %{!Wno-deprecated:-D__DEPRECATED}\
        %{!fno-exceptions:-D__EXCEPTIONS}\
-       %{!fno-new-abi:-D__GXX_ABI_VERSION=100}\
        %{ansi:-D__STRICT_ANSI__ -trigraphs -$} %(cpp_options)}\
      %{!E:%{!M:%{!MM:\
-       %{save-temps:cpp0 -lang-c++ \
+       %{save-temps|no-integrated-cpp:cpp0 -lang-c++ \
 		    %{!no-gcc:-D__GNUG__=%v1}\
-       		    %{!Wno-deprecated:-D__GXX_DEPRECATED}\
+       		    %{!Wno-deprecated:-D__DEPRECATED}\
 		    %{!fno-exceptions:-D__EXCEPTIONS}\
-		    %{!fno-new-abi:-D__GXX_ABI_VERSION=100}\
 		    %{ansi:-D__STRICT_ANSI__ -trigraphs -$}\
-		    %(cpp_options) %b.ii \n}\
-      cc1plus %{save-temps:-fpreprocessed %b.ii}\
-              %{!save-temps:%(cpp_options)\
+		    %(cpp_options) %{save-temps:%b.ii} %{!save-temps:%g.ii} \n}\
+      cc1plus %{save-temps|no-integrated-cpp:-fpreprocessed %{save-temps:%b.ii} %{!save-temps:%g.ii}}\
+              %{!save-temps:%{!no-integrated-cpp:%(cpp_unique_options)\
 			    %{!no-gcc:-D__GNUG__=%v1} \
-       			    %{!Wno-deprecated:-D__GXX_DEPRECATED}\
+       			    %{!Wno-deprecated:-D__DEPRECATED}\
 			    %{!fno-exceptions:-D__EXCEPTIONS}\
-			    %{!fno-new-abi:-D__GXX_ABI_VERSION=100}\
-			    %{ansi:-D__STRICT_ANSI__}}\
+			    %{ansi:-D__STRICT_ANSI__}}}\
        %{ansi:-trigraphs -$}\
        %(cc1_options) %2 %{+e1*}\
        %{!fsyntax-only:%(invoke_as)}}}}",

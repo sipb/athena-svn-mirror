@@ -1,5 +1,15 @@
 // acconfig.h symbols and macros for libstdc++ v3 -*- C++ -*-
 
+// Defines libstdc++ version.
+#undef PACKAGE
+#undef VERSION
+
+// Needed for gettext.
+#undef ENABLE_NLS
+#undef HAVE_CATGETS
+#undef HAVE_GETTEXT
+#undef HAVE_STPCPY
+
 // Define if GCC supports weak symbols.
 #undef _GLIBCPP_SUPPORTS_WEAK
 
@@ -24,6 +34,9 @@
 // Define if using setrlimit to limit memory usage during 'make check'.
 #undef _GLIBCPP_MEM_LIMITS
 
+// Define to use concept checking code from the boost libraries.
+#undef _GLIBCPP_CONCEPT_CHECKS
+
 // Define if you have the atan2f function.
 #undef _GLIBCPP_HAVE_ATAN2F 
 
@@ -33,6 +46,20 @@
 // Define if you have the copysignf function.
 #undef _GLIBCPP_HAVE_COPYSIGNF
 
+// Define to use symbol versioning in the shared library.
+#undef _GLIBCPP_SYMVER
+
+// Define symbol versioning in assember directives. If symbol
+// versioning is beigng used, and the assembler supports this kind of
+// thing, then use it.
+// NB: _GLIBCPP_AT_AT is a hack to work around quoting issues in m4.
+#if _GLIBCPP_SYMVER
+  #define _GLIBCPP_ASM_SYMVER(cur, old, version) \
+   asm (".symver " #cur "," #old _GLIBCPP_AT_AT #version);
+#else
+  #define _GLIBCPP_ASM_SYMVER(cur, old, version)
+#endif
+
 // Define if mbstate_t exists in wchar.h.
 #undef HAVE_MBSTATE_T
 
@@ -41,6 +68,18 @@
 
 // Define if you have the modfl function.
 #undef HAVE_MODFL
+
+// Define if you have the expf function.
+#undef HAVE_EXPF
+
+// Define if you have the expl function.
+#undef HAVE_EXPL
+
+// Define if you have the hypotf function.
+#undef HAVE_HYPOTF
+
+// Define if you have the hypotl function.
+#undef HAVE_HYPOTL
 
 // Define if the compiler/host combination has __builtin_abs
 #undef HAVE___BUILTIN_ABS
@@ -75,8 +114,8 @@
 // Define if the compiler/host combination has __builtin_sinl
 #undef HAVE___BUILTIN_SINL
 
-// Define if the compiler/host combination has __builtin_fsqrt
-#undef HAVE___BUILTIN_FSQRT
+// Define if the compiler/host combination has __builtin_sqrt
+#undef HAVE___BUILTIN_SQRT
 
 // Define if the compiler/host combination has __builtin_sqrtf
 #undef HAVE___BUILTIN_SQRTF

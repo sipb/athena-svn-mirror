@@ -17,7 +17,6 @@ details.  */
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/param.h>
-#include <fcntl.h>
 
 #ifdef HAVE_SYS_IOCTL_H
 #define BSD_COMP /* Get FIONREAD on Solaris2. */
@@ -45,6 +44,14 @@ details.  */
 
 #define NO_FSYNC_MESSAGE "sync unsupported"
 
+void
+java::io::FileDescriptor::init(void)
+{
+  in = new java::io::FileDescriptor(0);
+  out = new java::io::FileDescriptor(1);
+  err = new java::io::FileDescriptor(2);
+}
+
 jboolean
 java::io::FileDescriptor::valid (void)
 {
@@ -59,19 +66,17 @@ java::io::FileDescriptor::sync (void)
   // as errors.
 #ifdef HAVE_FSYNC
   if (::fsync (fd) && errno != EROFS && errno != EINVAL)
-    JvThrow (new SyncFailedException (JvNewStringLatin1 (strerror (errno))));
+    throw new SyncFailedException (JvNewStringLatin1 (strerror (errno)));
 #else
-  JvThrow (new SyncFailedException (JvNewStringLatin1 (NO_FSYNC_MESSAGE)));
+  throw new SyncFailedException (JvNewStringLatin1 (NO_FSYNC_MESSAGE));
 #endif
 }
 
 jint
 java::io::FileDescriptor::open (jstring path, jint jflags)
 {
-  // FIXME: eww.
-  char buf[MAXPATHLEN];
+  char *buf = (char *) _Jv_AllocBytes (_Jv_GetStringUTFLength (path) + 1);
   jsize total = JvGetStringUTFRegion (path, 0, path->length(), buf);
-  // FIXME?
   buf[total] = '\0';
   int flags = 0;
 #ifdef O_BINARY
@@ -111,9 +116,14 @@ java::io::FileDescriptor::open (jstring path, jint jflags)
   if (fd == -1)
     {
       char msg[MAXPATHLEN + 200];
-      sprintf (msg, "%s: %s", buf, strerror (errno));
-      JvThrow (new FileNotFoundException (JvNewStringLatin1 (msg)));
+      // We choose the formatting here for JDK compatibility, believe
+      // it or not.
+      sprintf (msg, "%s (%s)", buf, strerror (errno));
+      throw new FileNotFoundException (JvNewStringLatin1 (msg));
     }
+
+  _Jv_platform_close_on_exec (fd);
+
   return fd;
 }
 
@@ -121,38 +131,53 @@ void
 java::io::FileDescriptor::write (jint b)
 {
   jbyte d = (jbyte) b;
-  int r = ::write (fd, &d, 1);
-  if (java::lang::Thread::interrupted())
+  int r = 0;
+  while (r != 1)
     {
-      InterruptedIOException *iioe
-	= new InterruptedIOException (JvNewStringLatin1 ("write interrupted"));
-      iioe->bytesTransferred = r == -1 ? 0 : r;
-      JvThrow (iioe);
+      r = ::write (fd, &d, 1);
+      if (r == -1)
+        {
+	  if (java::lang::Thread::interrupted())
+	    {
+	      InterruptedIOException *iioe
+		= new InterruptedIOException (JvNewStringLatin1 (strerror (errno)));
+	      iioe->bytesTransferred = r == -1 ? 0 : r;
+	      throw iioe;
+	    }	    
+	  throw new IOException (JvNewStringLatin1 (strerror (errno)));
+	}
     }
-  else if (r == -1)
-    JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
-  // FIXME: loop if r != 1.
 }
 
 void
 java::io::FileDescriptor::write (jbyteArray b, jint offset, jint len)
 {
   if (! b)
-    JvThrow (new java::lang::NullPointerException);
+    throw new java::lang::NullPointerException;
   if (offset < 0 || len < 0 || offset + len > JvGetArrayLength (b))
-    JvThrow (new java::lang::ArrayIndexOutOfBoundsException);
+    throw new java::lang::ArrayIndexOutOfBoundsException;
   jbyte *bytes = elements (b) + offset;
-  int r = ::write (fd, bytes, len);
-  if (java::lang::Thread::interrupted())
+
+  int written = 0;
+  while (len > 0)
     {
-      InterruptedIOException *iioe
-	= new InterruptedIOException (JvNewStringLatin1 ("write interrupted"));
-      iioe->bytesTransferred = r == -1 ? 0 : r;
-      JvThrow (iioe);
+      int r = ::write (fd, bytes, len);
+      if (r == -1)
+        {
+	  if (java::lang::Thread::interrupted())
+	    {
+	      InterruptedIOException *iioe
+		= new InterruptedIOException (JvNewStringLatin1 (strerror (errno)));
+	      iioe->bytesTransferred = written;
+	      throw iioe;
+	    }
+	  throw new IOException (JvNewStringLatin1 (strerror (errno)));
+	}
+
+      written += r;
+      len -= r;
+      bytes += r;
     }
-  else if (r == -1)
-    JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
-  // FIXME: loop if r != len.
 }
 
 void
@@ -161,23 +186,27 @@ java::io::FileDescriptor::close (void)
   jint save = fd;
   fd = -1;
   if (::close (save))
-    JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
+    throw new IOException (JvNewStringLatin1 (strerror (errno)));
 }
 
 jint
-java::io::FileDescriptor::seek (jlong pos, jint whence)
+java::io::FileDescriptor::seek (jlong pos, jint whence, jboolean eof_trunc)
 {
   JvAssert (whence == SET || whence == CUR);
 
   jlong len = length ();
   jlong here = getFilePointer ();
 
-  if ((whence == SET && pos > len) || (whence == CUR && here + pos > len))
-    JvThrow (new EOFException);
+  if (eof_trunc
+      && ((whence == SET && pos > len) || (whence == CUR && here + pos > len)))
+    {
+      whence = SET;
+      pos = len;
+    }
 
   off_t r = ::lseek (fd, (off_t) pos, whence == SET ? SEEK_SET : SEEK_CUR);
   if (r == -1)
-    JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
+    throw new IOException (JvNewStringLatin1 (strerror (errno)));
   return r;
 }
 
@@ -186,7 +215,7 @@ java::io::FileDescriptor::length (void)
 {
   struct stat sb;
   if (::fstat (fd, &sb))
-    JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
+    throw new IOException (JvNewStringLatin1 (strerror (errno)));
   return sb.st_size;
 }
 
@@ -195,7 +224,7 @@ java::io::FileDescriptor::getFilePointer (void)
 {
   off_t r = ::lseek (fd, 0, SEEK_CUR);
   if (r == -1)
-    JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
+    throw new IOException (JvNewStringLatin1 (strerror (errno)));
   return r;
 }
 
@@ -206,15 +235,17 @@ java::io::FileDescriptor::read (void)
   int r = ::read (fd, &b, 1);
   if (r == 0)
     return -1;
-  if (java::lang::Thread::interrupted())
+  if (r == -1)
     {
-      InterruptedIOException *iioe
-	= new InterruptedIOException (JvNewStringLatin1 ("read interrupted"));
-      iioe->bytesTransferred = r == -1 ? 0 : r;
-      JvThrow (iioe);
+      if (java::lang::Thread::interrupted())
+	{
+	  InterruptedIOException *iioe
+	    = new InterruptedIOException (JvNewStringLatin1 (strerror (errno)));
+	  iioe->bytesTransferred = r == -1 ? 0 : r;
+	  throw iioe;
+	}
+      throw new IOException (JvNewStringLatin1 (strerror (errno)));
     }
-  else if (r == -1)
-    JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
   return b & 0xFF;
 }
 
@@ -222,23 +253,25 @@ jint
 java::io::FileDescriptor::read (jbyteArray buffer, jint offset, jint count)
 {
   if (! buffer)
-    JvThrow (new java::lang::NullPointerException);
+    throw new java::lang::NullPointerException;
   jsize bsize = JvGetArrayLength (buffer);
   if (offset < 0 || count < 0 || offset + count > bsize)
-    JvThrow (new java::lang::ArrayIndexOutOfBoundsException);
+    throw new java::lang::ArrayIndexOutOfBoundsException;
   jbyte *bytes = elements (buffer) + offset;
   int r = ::read (fd, bytes, count);
   if (r == 0)
     return -1;
-  if (java::lang::Thread::interrupted())
-    {
-      InterruptedIOException *iioe
-	= new InterruptedIOException (JvNewStringLatin1 ("read interrupted"));
-      iioe->bytesTransferred = r == -1 ? 0 : r;
-      JvThrow (iioe);
+  if (r == -1)
+    {    
+      if (java::lang::Thread::interrupted())
+	{
+	  InterruptedIOException *iioe
+	    = new InterruptedIOException (JvNewStringLatin1 (strerror (errno)));
+	  iioe->bytesTransferred = r == -1 ? 0 : r;
+	  throw iioe;
+	}
+      throw new IOException (JvNewStringLatin1 (strerror (errno)));
     }
-  else if (r == -1)
-    JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
   return r;
 }
 
@@ -271,7 +304,7 @@ java::io::FileDescriptor::available (void)
   if (r == -1)
     {
     posix_error:
-      JvThrow (new IOException (JvNewStringLatin1 (strerror (errno))));
+      throw new IOException (JvNewStringLatin1 (strerror (errno)));
     }
 
   // If we didn't get anything, and we have fstat, then see if see if
@@ -313,6 +346,6 @@ java::io::FileDescriptor::available (void)
 
   return (jint) num;
 #else
-  JvThrow (new IOException (JvNewStringLatin1 ("unimplemented")));
+  throw new IOException (JvNewStringLatin1 ("unimplemented"));
 #endif
 }

@@ -6,7 +6,7 @@
 
 <body>
 
-<h1 align="center">GCC Frequently Asked Questions</h1>
+<h1>GCC Frequently Asked Questions</h1>
 
 <p>The latest version of this document is always available at 
 <a href="http://www.gnu.org/software/gcc/faq.html">http://www.gnu.org/software/gcc/faq.html</a>.</p>
@@ -14,17 +14,17 @@
 <p>This FAQ tries to answer specific questions concerning GCC. For
 general information regarding C, C++, resp. Fortran please check the 
 <a href="http://www.eskimo.com/~scs/C-faq/top.html">comp.lang.c FAQ</a>,
-<a href="http://reality.sgi.com/austern_mti/std-c++/faq.html">
-comp.std.c++ FAQ</a>, and the <a
-href="http://www.fortran.com/fortran/info.html">Fortran Information
-page</a>.</p>
+<a href="http://www.research.att.com/~austern/csc/faq.html">comp.std.c++
+FAQ</a>,
+and the <a href="http://www.fortran.com/fortran/info.html">Fortran
+Information page</a>.</p>
 
 <p>Other GCC-related FAQs: 
    <a href="http://gcc.gnu.org/onlinedocs/libstdc++/faq/index.html">
      libstdc++-v3</a>, and 
    <a href="http://gcc.gnu.org/java/faq.html">GCJ</a>.</p>
 
-<hr>
+<hr />
 <h1>Questions</h1>
 <ol>
   <li><a href="#general">General information</a>
@@ -34,13 +34,11 @@ page</a>.</p>
      <li><a href="#open-development">What is an open development model?</a></li>
      <li><a href="#bugreport">How do I report a bug?</a></li>
      <li><a href="#support">How do I get a bug fixed or a feature added?</a></li>
-     <li><a href="#noncvs">How can I get a development environment for GCC without using CVS?</a></li>
      <li><a href="#platforms">Does GCC work on my platform?</a></li>
   </ol></li> 
 
   <li><a href="#installation">Installation</a>
   <ol>
-    <li><a href="#fortran">Problems building the Fortran compiler</a></li>
     <li><a href="#multiple">How to install multiple versions of GCC</a></li>
     <li><a href="#rpath">Dynamic linker is unable to find GCC libraries</a></li>
     <li><a href="#rpath">libstdc++/libio tests fail badly with --enable-shared</a></li>
@@ -77,7 +75,7 @@ page</a>.</p>
 </ol>
 
 
-<hr>
+<hr />
 <a name="general"></a>
 <h1>General information</h1>
 
@@ -100,14 +98,14 @@ carries forward GCC development under the ultimate control of the
 <a href="steering.html">GCC Steering Committee</a>.</p>
 
 
-<hr>
+<hr />
 <h2><a name="cygnus">What is the relationship between GCC and Cygnus / Red Hat?</a></h2>
 
 <p>It is a common mis-conception that Red Hat controls GCC either
 directly or indirectly.</p>
 
 <p>While Red Hat does donate hardware, network connections, code and
-developer time to GCC development, Red Hat does not control GCC.
+developer time to GCC development, Red Hat does not control GCC.</p>
 
 <p>Overall control of GCC is in the hands of the
 <a href="steering.html">GCC Steering Committee</a>
@@ -119,7 +117,7 @@ individual or company has control over the project.</p>
 <p>To summarize, Red Hat contributes to the GCC project, but does not exert
 a controlling influence over GCC.</p>
 
-<hr>
+<hr />
 <h2><a name="open-development">What is an open development model?</a></h2>
 
 <p>We are using a bazaar style
@@ -171,13 +169,13 @@ than we've had before.</p>
 </blockquote>
 
 
-<hr>
+<hr />
 <h2><a name="bugreport">How do I report a bug?</a></h2>
 
 <p>There are complete instructions <a href="bugs.html">here</a>.</p>
 
 
-<hr>
+<hr />
 <h2><a name="support">How do I get a bug fixed or a feature added?</a></h2>
 
 <p>There are lots of ways to get something fixed.  The list below may be
@@ -210,15 +208,7 @@ disadvantages.</p>
     into an official release of GCC.</li>
 </ul>
 
-<hr>
-
-<h2><a name="noncvs">How can I get a development environment for GCC
-without using CVS?</a></h2>
-
-<p>GCC snapshots are available from the FTP server and its mirrors;
-see the <a href="mirrors.html">GCC mirror list</a>.</p>
-
-<hr>
+<hr />
 
 <h2><a name="platforms">Does GCC work on my platform?</a></h2>
 
@@ -227,27 +217,13 @@ about known problems with installing or using GCC on particular platforms.
 These are included in the sources for a release in INSTALL/specific.html,
 and the <a href="http://gcc.gnu.org/install/specific.html">latest version</a>
 is always available at the GCC web site.
-Reports of successful builds for GCC versions
-<a href="http://gcc.gnu.org/gcc-3.0/buildstat.html">3.0</a> and
-<a href="http://gcc.gnu.org/gcc-2.95/buildstat.html">2.95</a>
-are also available at the web site.</p>
+Reports of <a href="http://gcc.gnu.org/buildstat.html">successful builds</a>
+for several versions of GCC are also available at the web site.</p>
 
-<hr>
+<hr />
 <a name="installation"></a>
 <h1>Installation</h1>
 
-<h2><a name="fortran">Problems building the Fortran compiler</a></h2>
-
-<p>The Fortran front end can not be built with most vendor compilers;
-it must be built with GCC.  As a result, you may get an error if you
-do not follow the install instructions carefully.</p>
-
-<p>In particular, instead of using "make" to build GCC, you should use
-"make bootstrap" if you are building a native compiler or "make cross"
-if you are building a cross compiler.</p>
-
-
-<hr>
 <h2><a name="multiple">How to install multiple versions of GCC</a></h2>
 
 <p>It may be desirable to install multiple versions of the compiler on
@@ -281,11 +257,11 @@ complication with <code>--program-transform-name</code> is that the
 sed command invariably contains characters significant to the shell,
 and these have to be escaped correctly, also it is not possible to use
 "^" or "$" in the command. Here is the option to prefix "new-" to the
-new GCC installed programs:
+new GCC installed programs:</p>
 <blockquote><code>
 --program-transform-name='s,\\\\(.*\\\\),new-\\\\1,'
 </code></blockquote>
-With the above <code>--prefix</code> option, that will install the new
+<p>With the above <code>--prefix</code> option, that will install the new
 GCC programs into <code>/usr/local/gcc/bin</code> with names prefixed
 by "new-". You can use <code>--program-transform-name</code> if you
 have multiple versions of GCC, and wish to be sure about which version
@@ -299,15 +275,15 @@ as/GNU ld</a> explains how to deal with this.</p>
 <code>--program-prefix=</code> or <code>--program-suffix=</code>
 options to configure. So if you're installing GCC 2.95.2 and don't
 want to disturb the current version of GCC in
-<code>/usr/local/bin/</code>, you could do
+<code>/usr/local/bin/</code>, you could do</p>
 <blockquote><code>
 configure --program-suffix=-2.95.2 &lt;other configure options&gt;
 </code></blockquote>
-This should result in GCC being installed as
+<p>This should result in GCC being installed as
 <code>/usr/local/bin/gcc-2.95.2</code> instead of
 <code>/usr/local/bin/gcc</code>.</p>
 
-<hr>
+<hr />
 <h2><a name="rpath">Dynamic linker is unable to find GCC libraries</a></h2>
 
 <p>This problem manifests itself by programs not finding shared
@@ -351,7 +327,7 @@ accomplished by modifying the appropriate <tt>.ml</tt> file within
 building libg++), so that <code>$(libdir)/</code> appears just before
 the library name in <code>-soname</code> or <code>-h</code> options.</p>
 
-<hr>
+<hr />
 <h2><a name="gas">GCC can not find GNU as/GNU ld</a></h2>
 <p>GCC searches the PATH for an assembler and a loader, but it only
 does so after searching a directory list hard-coded in the GCC
@@ -362,7 +338,7 @@ the GNU versions of those programs.</p>
 
 <p>To ensure that GCC finds the GNU assembler (the GNU loader), which
 are required by <a href="http://gcc.gnu.org/install/specific.html">some
-configurations</A>,
+configurations</a>,
 you should configure these with the same --prefix option as you used
 for GCC.  Then build &amp; install GNU as (GNU ld) and proceed with
 building GCC.</p>
@@ -387,7 +363,7 @@ is that it won't allow you to override the search path for assembler
 and linker with command-line options <tt>-B/path/</tt> if the
 specified filenames exist.</p>
 
-<hr>
+<hr />
 <h2><a name="environ">cpp: Usage:... Error</a></h2>
 
 <p>If you get an error like this when building GCC (particularly when building
@@ -404,18 +380,17 @@ or end of these variables is an implicit '.' and will cause problems.</p>
 <p>Also note '::' in these paths will also cause similar problems.</p>
 
 
-<hr>
+<hr />
 <h2><a name="optimizing">Optimizing the compiler itself</a></h2>
 
 <p>If you want to test a particular optimization option, it's useful to try
 bootstrapping the compiler with that option turned on.  For example, to 
-test the <code>-fssa</code> option, you could bootstrap like this:
+test the <code>-fssa</code> option, you could bootstrap like this:</p>
 
 <pre>make BOOT_CFLAGS="-O2 -fssa" bootstrap</pre>
-</p>
 
 
-<hr>
+<hr />
 <a name="testsuite"></a>
 <h1>Testsuite problems</h1>
 
@@ -427,7 +402,7 @@ You will need to get a newer version of dejagnu from
 <a href="http://www.gnu.org/software/dejagnu/dejagnu.html">
   http://www.gnu.org/software/dejagnu/dejagnu.html</a>.</p>
 
-<hr>
+<hr />
 <h2><a name="testoptions">How do I pass flags like
   <code>-fnew-abi</code> to the testsuite?</a></h2>
 
@@ -442,7 +417,7 @@ You will need to get a newer version of dejagnu from
   make RUNTESTFLAGS="--tool_opts '-fnew-abi -fno-honor-std'" check-g++
 </pre>
 
-<hr>
+<hr />
 <h2><a name="multipletests"> How can I run the test suite with multiple options? </a></h2>
 
 <p>If you invoke <code>runtest</code> directly, you can use the
@@ -461,7 +436,7 @@ no additional flags.</p>
 
 <p>This technique is particularly useful on multilibbed targets.</p>
 
-<hr>
+<hr />
 <a name="old"></a>
 <h1>Older versions of GCC and EGCS</h1>
 
@@ -469,9 +444,9 @@ no additional flags.</p>
 
 <p>Yes, it's at: 
 <a href="http://gcc.gnu.org/ml/libstdc++/2000-q2/msg00700/sstream">
-  http://gcc.gnu.org/ml/libstdc++/2000-q2/msg00700/sstream</a>.<p>
+  http://gcc.gnu.org/ml/libstdc++/2000-q2/msg00700/sstream</a>.</p>
 
-<hr>
+<hr />
 <a name="misc"></a>  
 <h1>Miscellaneous</h1>
 
@@ -489,7 +464,7 @@ STL.  Also note that -Wall includes -Wreturn-type, so if you use -Wall you
 will need to specify -Wno-return-type to turn it off.</p>
 
 
-<hr>
+<hr />
 <h2><a name="friend">Friend Templates</a></h2>
 
 <p>In order to make a specialization of a template function a friend
@@ -503,15 +478,15 @@ template &lt;typename T&gt; class foo {
 }
 </pre>
 <p>The above declaration declares a non-template function named
-<TT>bar</TT>, so it must be explicitly defined for <B>each</B>
-specialization of <TT>foo</TT>.  A template definition of <TT>bar</TT>
+<code>bar</code>, so it must be explicitly defined for <b>each</b>
+specialization of <code>foo</code>.  A template definition of <code>bar</code>
 won't do, because it is unrelated with the non-template declaration
 above.  So you'd have to end up writing:</p>
 <pre>
 void bar(foo&lt;int&gt;) { /* ... */ }
 void bar(foo&lt;void&gt;) { /* ... */ }
 </pre>
-<p>If you meant <TT>bar</TT> to be a template function, you should
+<p>If you meant <code>bar</code> to be a template function, you should
 have forward-declared it as follows.  Note that, since the template
 function declaration refers to the template class, the template class
 must be forward-declared too:</p>
@@ -544,7 +519,7 @@ that the forward declaration was not necessary, but, according to the
 final version of the Standard, it is.</p>
 
 
-<hr>
+<hr />
 <h2><a name="dso"><code>dynamic_cast</code>, <code>throw</code>, <code>typeid</code> don't work with shared libraries</a></h2>
 
 <p>The new C++ ABI in the GCC 3.0 series uses address comparisons,
@@ -597,13 +572,13 @@ linkage the same name is a violation of the One Definition Rule (ODR)
 
 <p>For more details about the way that GCC implements these and other
 C++ features, please read the <a
-href="http://www.codesourcery.com/cxx-abi">ABI specification</a>.
+href="http://www.codesourcery.com/cxx-abi/">ABI specification</a>.
 Note the <code>std::typeinfo_t</code> objects which <i>must</i> be
 resolved all begin with "_ZTS". Refer to <code>ld</code>'s
 documentation for a description of the "<code>-E</code>" &amp;
 "<code>-Bsymbolic</code>" flags.</p>
 
-<hr>
+<hr />
 <h2><a name="generated_files">Why do I need autoconf, bison, xgettext, automake, etc?</a></h2>
 
 <p>If you're using diffs up dated from one snapshot to the next, or
@@ -617,11 +592,11 @@ bison, and xgettext.</p>
 correct.  This causes problems for generated files as "make" may think
 those generated files are out of date and try to regenerate them.</p>
 
-<p>An easy way to work around this problem is to use the <CODE>gcc_update
-</CODE> script in the contrib subdirectory of GCC, which handles this
+<p>An easy way to work around this problem is to use the <code>gcc_update
+</code> script in the contrib subdirectory of GCC, which handles this
 transparently without requiring installation of any additional tools.
-(Note: Up to and including GCC 2.95 this script was called <CODE>egcs_update
-</CODE>.)</p>
+(Note: Up to and including GCC 2.95 this script was called <code>egcs_update
+</code>.)</p>
 
 
 <p>When building from diffs or CVS or if you modified some sources,
@@ -638,7 +613,7 @@ ftp://gcc.gnu.org/pub/gcc/infrastructure/</a> for any special versions
 of packages.</p>
 
 
-<hr>
+<hr />
 <h2><a name="picflag-needed">Why can't I build a shared library?</a></h2>
 
 <p>When building a shared library you may get an error message from the
@@ -661,7 +636,7 @@ support PIC in this manner.  For example:</p>
 </pre>
 
 
-<hr>
+<hr />
 <h2><a name="squangle">How to work around too long C++ symbol names
 (<tt>-fsquangle</tt>)</a></h2>
 
@@ -688,7 +663,7 @@ have to rebuild them all again. :-(</p>
 initialized by default), then rebuilding GCC and any C++ libraries.</p>
 
 
-<hr>
+<hr />
 <h2><a name="vtables">When building C++, the linker says my constructors, destructors or virtual tables are undefined, but I defined them</a></h2>
 
 <p>The ISO C++ Standard specifies that all virtual methods of a class
@@ -710,7 +685,7 @@ pure are defined.  Note that a destructor must be defined even if it
 is declared pure-virtual [class.dtor]/7.</p>
 
 
-<hr>
+<hr />
 <h2><a name="incremental">Will GCC someday include an incremental linker?</a></h2>
 
 <p>Incremental linking is part of the linker, not the compiler. As

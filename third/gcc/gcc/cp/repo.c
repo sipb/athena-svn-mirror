@@ -33,10 +33,11 @@ Boston, MA 02111-1307, USA.  */
 #include "obstack.h"
 #include "toplev.h"
 #include "ggc.h"
+#include "diagnostic.h"
 
 static tree repo_get_id PARAMS ((tree));
 static char *extract_string PARAMS ((char **));
-static char *get_base_filename PARAMS ((const char *));
+static const char *get_base_filename PARAMS ((const char *));
 static void open_repo_file PARAMS ((const char *));
 static char *afgets PARAMS ((FILE *));
 static void reopen_repo_file_for_write PARAMS ((void));
@@ -48,7 +49,6 @@ static FILE *repo_file;
 
 static char *old_args, *old_dir, *old_main;
 
-extern int flag_use_repository;
 static struct obstack temporary_obstack;
 extern struct obstack permanent_obstack;
 
@@ -103,7 +103,7 @@ repo_get_id (t)
 	 the vtable, so going ahead would give the wrong answer.
          See g++.pt/instantiate4.C.  */
       if (!COMPLETE_TYPE_P (t) || TYPE_BEING_DEFINED (t))
-	my_friendly_abort (981113);
+	abort ();
 
       vtable = get_vtbl_decl_for_binfo (TYPE_BINFO (t));
 
@@ -147,7 +147,7 @@ repo_template_used (t)
 				0);
     }
   else
-    my_friendly_abort (1);
+    abort ();
 
   if (! IDENTIFIER_REPO_USED (id))
     {
@@ -246,7 +246,7 @@ extract_string (pp)
   return obstack_finish (&temporary_obstack);
 }
 
-static char *
+const char *
 get_base_filename (filename)
      const char *filename;
 {
@@ -274,7 +274,7 @@ get_base_filename (filename)
       return NULL;
     }
 
-  return file_name_nondirectory (filename);
+  return lbasename (filename);
 }        
 
 static void
@@ -287,7 +287,7 @@ open_repo_file (filename)
   if (s == NULL)
     return;
 
-  p = file_name_nondirectory (s);
+  p = lbasename (s);
   p = strrchr (p, '.');
   if (! p)
     p = s + strlen (s);

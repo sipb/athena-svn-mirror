@@ -1,5 +1,6 @@
 // Methods for type_info for -*- C++ -*- Run Time Type Identification.
-// Copyright (C) 1994, 1996, 1998, 1999, 2000, 2001 Free Software Foundation
+// Copyright (C) 1994, 1996, 1998, 1999, 2000, 2001, 2002
+// Free Software Foundation
 //
 // This file is part of GNU CC.
 //
@@ -172,12 +173,12 @@ __vmi_class_type_info::
 {}
 
 // __upcast_result is used to hold information during traversal of a class
-// heirarchy when catch matching.
+// hierarchy when catch matching.
 struct __class_type_info::__upcast_result
 {
   const void *dst_ptr;        // pointer to caught object
   __sub_kind part2dst;        // path from current base to target
-  int src_details;            // hints about the source type heirarchy
+  int src_details;            // hints about the source type hierarchy
   const __class_type_info *base_type; // where we found the target,
                               // if in vbase the __class_type_info of vbase
                               // if a non-virtual base then 1
@@ -189,14 +190,14 @@ struct __class_type_info::__upcast_result
 };
 
 // __dyncast_result is used to hold information during traversal of a class
-// heirarchy when dynamic casting.
+// hierarchy when dynamic casting.
 struct __class_type_info::__dyncast_result
 {
   const void *dst_ptr;        // pointer to target object or NULL
   __sub_kind whole2dst;       // path from most derived object to target
   __sub_kind whole2src;       // path from most derived object to sub object
   __sub_kind dst2src;         // path from target to sub object
-  int whole_details;          // details of the whole class heirarchy
+  int whole_details;          // details of the whole class hierarchy
   
   public:
   __dyncast_result (int details_ = __vmi_class_type_info::__flags_unknown_mask)
@@ -294,7 +295,7 @@ __do_find_public_src (ptrdiff_t src2dst,
         }
       base = convert_to_base (base, is_virtual, offset);
       
-      __sub_kind base_kind = __base_info[i].__base->__do_find_public_src
+      __sub_kind base_kind = __base_info[i].__base_type->__do_find_public_src
                               (src2dst, base, src_type, src_ptr);
       if (contained_p (base_kind))
         {
@@ -431,7 +432,7 @@ __do_dyncast (ptrdiff_t src2dst,
         }
       
       bool result2_ambig
-          = __base_info[i].__base->__do_dyncast (src2dst, base_access,
+          = __base_info[i].__base_type->__do_dyncast (src2dst, base_access,
                                              dst_type, base,
                                              src_type, src_ptr, result2);
       result.whole2src = __sub_kind (result.whole2src | result2.whole2src);
@@ -483,7 +484,7 @@ __do_dyncast (ptrdiff_t src2dst,
                   || !(result.whole_details & __diamond_shaped_mask)))
             {
               // We already found SRC_PTR as a base of most derived, and
-              // either it was non-virtual, or the whole heirarchy is
+              // either it was non-virtual, or the whole hierarchy is
               // not-diamond shaped. Therefore if it is in either choice, it
               // can only be in one of them, and we will already know.
               if (old_sub_kind == __unknown)
@@ -615,10 +616,10 @@ __do_upcast (const __class_type_info *dst, const void *obj_ptr,
       if (base)
         base = convert_to_base (base, is_virtual, offset);
       
-      if (__base_info[i].__base->__do_upcast (dst, base, result2))
+      if (__base_info[i].__base_type->__do_upcast (dst, base, result2))
         {
           if (result2.base_type == nonvirtual_base_type && is_virtual)
-            result2.base_type = __base_info[i].__base;
+            result2.base_type = __base_info[i].__base_type;
           if (contained_p (result2.part2dst) && !is_public)
             result2.part2dst = __sub_kind (result2.part2dst & ~__contained_public_mask);
           

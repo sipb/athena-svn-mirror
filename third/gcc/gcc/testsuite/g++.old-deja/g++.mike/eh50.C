@@ -1,5 +1,5 @@
 // Special g++ Options: -fexceptions
-// excess errors test - XFAIL a29k-*-* sparc64-*-elf z8k-*-* arm-*-pe
+// excess errors test - XFAIL hppa*-*-* a29k-*-* sparc64-*-elf z8k-*-* arm-*-pe
 
 #include <exception>
 
@@ -7,7 +7,7 @@ void my_unexpected() {
   throw 42;
 }
 
-template <class T> int foo(T) throw (int) { throw "Hi"; }
+template <class T> void foo(T) throw (int) { throw "Hi"; }
 
 main() {
   std::set_unexpected (my_unexpected);

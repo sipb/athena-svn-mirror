@@ -1,5 +1,5 @@
 /* java.util.Calendar
-   Copyright (C) 1998, 1999, 2000 Free Software Foundation, Inc.
+   Copyright (C) 1998, 1999, 2000, 2001 Free Software Foundation, Inc.
 
 This file is part of GNU Classpath.
 
@@ -18,11 +18,22 @@ along with GNU Classpath; see the file COPYING.  If not, write to the
 Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
 02111-1307 USA.
 
-As a special exception, if you link this library with other files to
-produce an executable, this library does not by itself cause the
-resulting executable to be covered by the GNU General Public License.
-This exception does not however invalidate any other reasons why the
-executable file might be covered by the GNU General Public License. */
+Linking this library statically or dynamically with other modules is
+making a combined work based on this library.  Thus, the terms and
+conditions of the GNU General Public License cover the whole
+combination.
+
+As a special exception, the copyright holders of this library give you
+permission to link this library with independent modules to produce an
+executable, regardless of the license terms of these independent
+modules, and to copy and distribute the resulting executable under
+terms of your choice, provided that you also meet, for each linked
+independent module, the terms and conditions of the license of that
+module.  An independent module is a module which is not derived from
+or based on this library.  If you modify this library, you may extend
+this exception to your version of the library, but you are not
+obligated to do so.  If you do not wish to do so, delete this
+exception statement from your version. */
 
 
 package java.util;
@@ -54,7 +65,7 @@ import java.io.*;
  *
  * When computing the date from time fields, it may happen, that there
  * are either two few fields set, or some fields are inconsistent.  This
- * cases will handled in a calender specific way.  Missing fields are
+ * cases will handled in a calendar specific way.  Missing fields are
  * replaced by the fields of the epoch: 1970 January 1 00:00. <br>
  *
  * To understand, how the day of year is computed out of the fields
@@ -356,7 +367,7 @@ public abstract class Calendar implements Serializable, Cloneable
   private static final String bundleName = "gnu.java.locale.Calendar";
 
   /**
-   * Constructs a new Calender with the default time zone and the default
+   * Constructs a new Calendar with the default time zone and the default
    * locale.
    */
   protected Calendar()
@@ -365,7 +376,7 @@ public abstract class Calendar implements Serializable, Cloneable
   }
 
   /**
-   * Constructs a new Calender with the given time zone and the given
+   * Constructs a new Calendar with the given time zone and the given
    * locale.
    * @param zone a time zone.
    * @param locale a locale.
@@ -445,7 +456,7 @@ public abstract class Calendar implements Serializable, Cloneable
   }
 
   /**
-   * Gets the set of locales for which a Calendar is availiable.
+   * Gets the set of locales for which a Calendar is available.
    * @exception MissingResourceException if locale data couldn't be found.
    * @return the set of locales.
    */
@@ -483,7 +494,7 @@ public abstract class Calendar implements Serializable, Cloneable
   }
 
   /**
-   * Sets this Calender's time to the given Date.  All time fields
+   * Sets this Calendar's time to the given Date.  All time fields
    * are invalidated by this method.
    */
   public final void setTime(Date date)
@@ -503,7 +514,7 @@ public abstract class Calendar implements Serializable, Cloneable
   }
 
   /**
-   * Sets this Calender's time to the given Time.  All time fields
+   * Sets this Calendar's time to the given Time.  All time fields
    * are invalidated by this method.
    * @param time the time in milliseconds since the epoch
    */
@@ -522,6 +533,9 @@ public abstract class Calendar implements Serializable, Cloneable
    */
   public final int get(int field)
   {
+    // If the requested field is invalid, force all fields to be recomputed.
+    if (!isSet[field])
+      areFieldsSet = false;
     complete();
     return fields[field];
   }
@@ -546,11 +560,31 @@ public abstract class Calendar implements Serializable, Cloneable
    */
   public final void set(int field, int value)
   {
-    if (!areFieldsSet)
-      computeFields();
     isTimeSet = false;
     fields[field] = value;
     isSet[field] = true;
+    switch (field)
+      {
+      case YEAR:
+      case MONTH:
+      case DATE:
+	isSet[WEEK_OF_YEAR] = false;
+	isSet[DAY_OF_YEAR] = false;
+	isSet[WEEK_OF_MONTH] = false;
+	isSet[DAY_OF_WEEK] = false;
+	isSet[DAY_OF_WEEK_IN_MONTH] = false;
+	break;
+      case AM_PM:
+	isSet[HOUR_OF_DAY] = false;
+	break;
+      case HOUR_OF_DAY:
+	isSet[AM_PM] = false;
+	isSet[HOUR] = false;
+	break;
+      case HOUR:
+	isSet[HOUR_OF_DAY] = false;
+	break;
+      }
   }
 
   /**
@@ -561,13 +595,16 @@ public abstract class Calendar implements Serializable, Cloneable
    */
   public final void set(int year, int month, int date)
   {
-    if (!areFieldsSet)
-      computeFields();
     isTimeSet = false;
     fields[YEAR] = year;
     fields[MONTH] = month;
     fields[DATE] = date;
     isSet[YEAR] = isSet[MONTH] = isSet[DATE] = true;
+    isSet[WEEK_OF_YEAR] = false;
+    isSet[DAY_OF_YEAR] = false;
+    isSet[WEEK_OF_MONTH] = false;
+    isSet[DAY_OF_WEEK] = false;
+    isSet[DAY_OF_WEEK_IN_MONTH] = false;
   }
 
   /**
@@ -584,6 +621,8 @@ public abstract class Calendar implements Serializable, Cloneable
     fields[HOUR_OF_DAY] = hour;
     fields[MINUTE] = minute;
     isSet[HOUR_OF_DAY] = isSet[MINUTE] = true;
+    isSet[AM_PM] = false;
+    isSet[HOUR] = false;
   }
 
   /**
@@ -611,7 +650,10 @@ public abstract class Calendar implements Serializable, Cloneable
     isTimeSet = false;
     areFieldsSet = false;
     for (int i = 0; i < FIELD_COUNT; i++)
-      isSet[i] = false;
+      {
+	isSet[i] = false;
+	fields[i] = 0;
+      }
   }
 
   /**
@@ -623,6 +665,7 @@ public abstract class Calendar implements Serializable, Cloneable
     isTimeSet = false;
     areFieldsSet = false;
     isSet[field] = false;
+    fields[field] = 0;
   }
 
   /**
@@ -647,10 +690,10 @@ public abstract class Calendar implements Serializable, Cloneable
   }
 
   /**
-   * Compares the given calender with this.  
+   * Compares the given calendar with this.  
    * @param o the object to that we should compare.
    * @return true, if the given object is a calendar, that represents
-   * the same time (but doesn't neccessary have the same fields).
+   * the same time (but doesn't necessary have the same fields).
    */
   public boolean equals(Object o)
   {
@@ -670,10 +713,10 @@ public abstract class Calendar implements Serializable, Cloneable
   }
 
   /**
-   * Compares the given calender with this.  
+   * Compares the given calendar with this.  
    * @param o the object to that we should compare.
    * @return true, if the given object is a calendar, and this calendar
-   * represents a smaller time than the calender o.
+   * represents a smaller time than the calendar o.
    * @exception ClassCastException if o is not an calendar.
    * @since JDK1.2 you don't need to override this method
    */
@@ -683,10 +726,10 @@ public abstract class Calendar implements Serializable, Cloneable
   }
 
   /**
-   * Compares the given calender with this.  
+   * Compares the given calendar with this.  
    * @param o the object to that we should compare.
    * @return true, if the given object is a calendar, and this calendar
-   * represents a bigger time than the calender o.
+   * represents a bigger time than the calendar o.
    * @exception ClassCastException if o is not an calendar.
    * @since JDK1.2 you don't need to override this method
    */
@@ -860,23 +903,23 @@ public abstract class Calendar implements Serializable, Cloneable
 
   /**
    * Gets the actual minimum value that is allowed for the specified field.
-   * This value is dependant on the values of the other fields.
+   * This value is dependent on the values of the other fields.
    * @param field the time field. One of the time field constants.
    * @return the actual minimum value.
    * @since jdk1.2
    */
   // FIXME: XXX: Not abstract in JDK 1.2.
-  // public abstract int getActualMinimum(int field);
+  public abstract int getActualMinimum(int field);
 
   /**
    * Gets the actual maximum value that is allowed for the specified field.
-   * This value is dependant on the values of the other fields.
+   * This value is dependent on the values of the other fields.
    * @param field the time field. One of the time field constants.
    * @return the actual maximum value.  
    * @since jdk1.2
    */
   // FIXME: XXX: Not abstract in JDK 1.2.
-  // public abstract int getActualMaximum(int field);
+  public abstract int getActualMaximum(int field);
 
   /**
    * Return a clone of this object.

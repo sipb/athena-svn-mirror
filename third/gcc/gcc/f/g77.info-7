@@ -1,16 +1,16 @@
-This is g77.info, produced by makeinfo version 4.0 from g77.texi.
+This is g77.info, produced by makeinfo version 4.2 from g77.texi.
 
 INFO-DIR-SECTION Programming
 START-INFO-DIR-ENTRY
 * g77: (g77).                  The GNU Fortran compiler.
 END-INFO-DIR-ENTRY
    This file documents the use and the internals of the GNU Fortran
-(`g77') compiler.  It corresponds to the GCC-3.0 version of `g77'.
+(`g77') compiler.  It corresponds to the GCC-3.2 version of `g77'.
 
    Published by the Free Software Foundation 59 Temple Place - Suite 330
 Boston, MA 02111-1307 USA
 
-   Copyright (C) 1995,1996,1997,1998,1999,2000,2001 Free Software
+   Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002 Free Software
 Foundation, Inc.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -34,6 +34,245 @@ funds for GNU development.
    Contributed by James Craig Burley (<craig@jcb-sc.com>).  Inspired by
 a first pass at translating `g77-0.5.16/f/DOC' that was contributed to
 Craig by David Ronis (<ronis@onsager.chem.mcgill.ca>).
+
+
+File: g77.info,  Node: Generics and Specifics,  Next: REAL() and AIMAG() of Complex,  Prev: %DESCR(),  Up: Functions and Subroutines
+
+Generics and Specifics
+----------------------
+
+   The ANSI FORTRAN 77 language defines generic and specific intrinsics.
+In short, the distinctions are:
+
+   * _Specific_ intrinsics have specific types for their arguments and
+     a specific return type.
+
+   * _Generic_ intrinsics are treated, on a case-by-case basis in the
+     program's source code, as one of several possible specific
+     intrinsics.
+
+     Typically, a generic intrinsic has a return type that is
+     determined by the type of one or more of its arguments.
+
+   The GNU Fortran language generalizes these concepts somewhat,
+especially by providing intrinsic subroutines and generic intrinsics
+that are treated as either a specific intrinsic subroutine or a
+specific intrinsic function (e.g. `SECOND').
+
+   However, GNU Fortran avoids generalizing this concept to the point
+where existing code would be accepted as meaning something possibly
+different than what was intended.
+
+   For example, `ABS' is a generic intrinsic, so all working code
+written using `ABS' of an `INTEGER' argument expects an `INTEGER'
+return value.  Similarly, all such code expects that `ABS' of an
+`INTEGER*2' argument returns an `INTEGER*2' return value.
+
+   Yet, `IABS' is a _specific_ intrinsic that accepts only an
+`INTEGER(KIND=1)' argument.  Code that passes something other than an
+`INTEGER(KIND=1)' argument to `IABS' is not valid GNU Fortran code,
+because it is not clear what the author intended.
+
+   For example, if `J' is `INTEGER(KIND=6)', `IABS(J)' is not defined
+by the GNU Fortran language, because the programmer might have used
+that construct to mean any of the following, subtly different, things:
+
+   * Convert `J' to `INTEGER(KIND=1)' first (as if `IABS(INT(J))' had
+     been written).
+
+   * Convert the result of the intrinsic to `INTEGER(KIND=1)' (as if
+     `INT(ABS(J))' had been written).
+
+   * No conversion (as if `ABS(J)' had been written).
+
+   The distinctions matter especially when types and values wider than
+`INTEGER(KIND=1)' (such as `INTEGER(KIND=2)'), or when operations
+performing more "arithmetic" than absolute-value, are involved.
+
+   The following sample program is not a valid GNU Fortran program, but
+might be accepted by other compilers.  If so, the output is likely to
+be revealing in terms of how a given compiler treats intrinsics (that
+normally are specific) when they are given arguments that do not
+conform to their stated requirements:
+
+           PROGRAM JCB002
+     C Version 1:
+     C Modified 1999-02-15 (Burley) to delete my email address.
+     C Modified 1997-05-21 (Burley) to accommodate compilers that implement
+     C INT(I1-I2) as INT(I1)-INT(I2) given INTEGER*2 I1,I2.
+     C
+     C Version 0:
+     C Written by James Craig Burley 1997-02-20.
+     C
+     C Purpose:
+     C Determine how compilers handle non-standard IDIM
+     C on INTEGER*2 operands, which presumably can be
+     C extrapolated into understanding how the compiler
+     C generally treats specific intrinsics that are passed
+     C arguments not of the correct types.
+     C
+     C If your compiler implements INTEGER*2 and INTEGER
+     C as the same type, change all INTEGER*2 below to
+     C INTEGER*1.
+     C
+           INTEGER*2 I0, I4
+           INTEGER I1, I2, I3
+           INTEGER*2 ISMALL, ILARGE
+           INTEGER*2 ITOOLG, ITWO
+           INTEGER*2 ITMP
+           LOGICAL L2, L3, L4
+     C
+     C Find smallest INTEGER*2 number.
+     C
+           ISMALL=0
+      10   I0 = ISMALL-1
+           IF ((I0 .GE. ISMALL) .OR. (I0+1 .NE. ISMALL)) GOTO 20
+           ISMALL = I0
+           GOTO 10
+      20   CONTINUE
+     C
+     C Find largest INTEGER*2 number.
+     C
+           ILARGE=0
+      30   I0 = ILARGE+1
+           IF ((I0 .LE. ILARGE) .OR. (I0-1 .NE. ILARGE)) GOTO 40
+           ILARGE = I0
+           GOTO 30
+      40   CONTINUE
+     C
+     C Multiplying by two adds stress to the situation.
+     C
+           ITWO = 2
+     C
+     C Need a number that, added to -2, is too wide to fit in I*2.
+     C
+           ITOOLG = ISMALL
+     C
+     C Use IDIM the straightforward way.
+     C
+           I1 = IDIM (ILARGE, ISMALL) * ITWO + ITOOLG
+     C
+     C Calculate result for first interpretation.
+     C
+           I2 = (INT (ILARGE) - INT (ISMALL)) * ITWO + ITOOLG
+     C
+     C Calculate result for second interpretation.
+     C
+           ITMP = ILARGE - ISMALL
+           I3 = (INT (ITMP)) * ITWO + ITOOLG
+     C
+     C Calculate result for third interpretation.
+     C
+           I4 = (ILARGE - ISMALL) * ITWO + ITOOLG
+     C
+     C Print results.
+     C
+           PRINT *, 'ILARGE=', ILARGE
+           PRINT *, 'ITWO=', ITWO
+           PRINT *, 'ITOOLG=', ITOOLG
+           PRINT *, 'ISMALL=', ISMALL
+           PRINT *, 'I1=', I1
+           PRINT *, 'I2=', I2
+           PRINT *, 'I3=', I3
+           PRINT *, 'I4=', I4
+           PRINT *
+           L2 = (I1 .EQ. I2)
+           L3 = (I1 .EQ. I3)
+           L4 = (I1 .EQ. I4)
+           IF (L2 .AND. .NOT.L3 .AND. .NOT.L4) THEN
+              PRINT *, 'Interp 1: IDIM(I*2,I*2) => IDIM(INT(I*2),INT(I*2))'
+              STOP
+           END IF
+           IF (L3 .AND. .NOT.L2 .AND. .NOT.L4) THEN
+              PRINT *, 'Interp 2: IDIM(I*2,I*2) => INT(DIM(I*2,I*2))'
+              STOP
+           END IF
+           IF (L4 .AND. .NOT.L2 .AND. .NOT.L3) THEN
+              PRINT *, 'Interp 3: IDIM(I*2,I*2) => DIM(I*2,I*2)'
+              STOP
+           END IF
+           PRINT *, 'Results need careful analysis.'
+           END
+
+   No future version of the GNU Fortran language will likely permit
+specific intrinsic invocations with wrong-typed arguments (such as
+`IDIM' in the above example), since it has been determined that
+disagreements exist among many production compilers on the
+interpretation of such invocations.  These disagreements strongly
+suggest that Fortran programmers, and certainly existing Fortran
+programs, disagree about the meaning of such invocations.
+
+   The first version of `JCB002' didn't accommodate some compilers'
+treatment of `INT(I1-I2)' where `I1' and `I2' are `INTEGER*2'.  In such
+a case, these compilers apparently convert both operands to `INTEGER*4'
+and then do an `INTEGER*4' subtraction, instead of doing an `INTEGER*2'
+subtraction on the original values in `I1' and `I2'.
+
+   However, the results of the careful analyses done on the outputs of
+programs compiled by these various compilers show that they all
+implement either `Interp 1' or `Interp 2' above.
+
+   Specifically, it is believed that the new version of `JCB002' above
+will confirm that:
+
+   * Digital Semiconductor ("DEC") Alpha OSF/1, HP-UX 10.0.1, AIX 3.2.5
+     `f77' compilers all implement `Interp 1'.
+
+   * IRIX 5.3 `f77' compiler implements `Interp 2'.
+
+   * Solaris 2.5, SunOS 4.1.3, DECstation ULTRIX 4.3, and IRIX 6.1
+     `f77' compilers all implement `Interp 3'.
+
+   If you get different results than the above for the stated
+compilers, or have results for other compilers that might be worth
+adding to the above list, please let us know the details (compiler
+product, version, machine, results, and so on).
+
+
+File: g77.info,  Node: REAL() and AIMAG() of Complex,  Next: CMPLX() of DOUBLE PRECISION,  Prev: Generics and Specifics,  Up: Functions and Subroutines
+
+`REAL()' and `AIMAG()' of Complex
+---------------------------------
+
+   The GNU Fortran language disallows `REAL(EXPR)' and `AIMAG(EXPR)',
+where EXPR is any `COMPLEX' type other than `COMPLEX(KIND=1)', except
+when they are used in the following way:
+
+     REAL(REAL(EXPR))
+     REAL(AIMAG(EXPR))
+
+The above forms explicitly specify that the desired effect is to
+convert the real or imaginary part of EXPR, which might be some `REAL'
+type other than `REAL(KIND=1)', to type `REAL(KIND=1)', and have that
+serve as the value of the expression.
+
+   The GNU Fortran language offers clearly named intrinsics to extract
+the real and imaginary parts of a complex entity without any conversion:
+
+     REALPART(EXPR)
+     IMAGPART(EXPR)
+
+   To express the above using typical extended FORTRAN 77, use the
+following constructs (when EXPR is `COMPLEX(KIND=2)'):
+
+     DBLE(EXPR)
+     DIMAG(EXPR)
+
+   The FORTRAN 77 language offers no way to explicitly specify the real
+and imaginary parts of a complex expression of arbitrary type,
+apparently as a result of requiring support for only one `COMPLEX' type
+(`COMPLEX(KIND=1)').  The concepts of converting an expression to type
+`REAL(KIND=1)' and of extracting the real part of a complex expression
+were thus "smooshed" by FORTRAN 77 into a single intrinsic, since they
+happened to have the exact same effect in that language (due to having
+only one `COMPLEX' type).
+
+   _Note:_ When `-ff90' is in effect, `g77' treats `REAL(EXPR)', where
+EXPR is of type `COMPLEX', as `REALPART(EXPR)', whereas with
+`-fugly-complex -fno-f90' in effect, it is treated as
+`REAL(REALPART(EXPR))'.
+
+   *Note Ugly Complex Part Extraction::, for more information.
 
 
 File: g77.info,  Node: CMPLX() of DOUBLE PRECISION,  Next: MIL-STD 1753,  Prev: REAL() and AIMAG() of Complex,  Up: Functions and Subroutines
@@ -630,10 +869,10 @@ Description:
 
    If A is type `COMPLEX', the absolute value is computed as:
 
-     SQRT(REALPART(A)**2, IMAGPART(A)**2)
+     SQRT(REALPART(A)**2+IMAGPART(A)**2)
 
-Otherwise, it is computed by negating the A if it is negative, or
-returning A.
+Otherwise, it is computed by negating A if it is negative, or returning
+A.
 
    *Note Sign Intrinsic::, for how to explicitly compute the positive
 or negative form of the absolute value of an expression.
@@ -1165,7 +1404,7 @@ BesJN Intrinsic
 BesJN: `REAL' function, the `KIND=' value of the type being that of
 argument X.
 
-N: `INTEGER'; scalar; INTENT(IN).
+N: `INTEGER' not wider than the default kind; scalar; INTENT(IN).
 
 X: `REAL'; scalar; INTENT(IN).
 
@@ -1227,7 +1466,7 @@ BesYN Intrinsic
 BesYN: `REAL' function, the `KIND=' value of the type being that of
 argument X.
 
-N: `INTEGER'; scalar; INTENT(IN).
+N: `INTEGER' not wider than the default kind; scalar; INTENT(IN).
 
 X: `REAL'; scalar; INTENT(IN).
 
@@ -1436,363 +1675,4 @@ STATUS argument.
 
    For information on other intrinsics with the same name: *Note ChDir
 Intrinsic (function)::.
-
-
-File: g77.info,  Node: ChMod Intrinsic (subroutine),  Next: CLog Intrinsic,  Prev: ChDir Intrinsic (subroutine),  Up: Table of Intrinsic Functions
-
-ChMod Intrinsic (subroutine)
-............................
-
-     CALL ChMod(NAME, MODE, STATUS)
-
-NAME: `CHARACTER'; scalar; INTENT(IN).
-
-MODE: `CHARACTER'; scalar; INTENT(IN).
-
-STATUS: `INTEGER(KIND=1)'; OPTIONAL; scalar; INTENT(OUT).
-
-Intrinsic groups: `unix'.
-
-Description:
-
-   Changes the access mode of file NAME according to the specification
-MODE, which is given in the format of `chmod(1)'.  A null character
-(`CHAR(0)') marks the end of the name in NAME--otherwise, trailing
-blanks in NAME are ignored.  Currently, NAME must not contain the
-single quote character.
-
-   If the STATUS argument is supplied, it contains 0 on success or a
-non-zero error code upon return.
-
-   Note that this currently works by actually invoking `/bin/chmod' (or
-the `chmod' found when the library was configured) and so might fail in
-some circumstances and will, anyway, be slow.
-
-   Some non-GNU implementations of Fortran provide this intrinsic as
-only a function, not as a subroutine, or do not support the (optional)
-STATUS argument.
-
-   For information on other intrinsics with the same name: *Note ChMod
-Intrinsic (function)::.
-
-
-File: g77.info,  Node: CLog Intrinsic,  Next: Cmplx Intrinsic,  Prev: ChMod Intrinsic (subroutine),  Up: Table of Intrinsic Functions
-
-CLog Intrinsic
-..............
-
-     CLog(X)
-
-CLog: `COMPLEX(KIND=1)' function.
-
-X: `COMPLEX(KIND=1)'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Archaic form of `LOG()' that is specific to one type for X.  *Note
-Log Intrinsic::.
-
-
-File: g77.info,  Node: Cmplx Intrinsic,  Next: Complex Intrinsic,  Prev: CLog Intrinsic,  Up: Table of Intrinsic Functions
-
-Cmplx Intrinsic
-...............
-
-     Cmplx(X, Y)
-
-Cmplx: `COMPLEX(KIND=1)' function.
-
-X: `INTEGER', `REAL', or `COMPLEX'; scalar; INTENT(IN).
-
-Y: `INTEGER' or `REAL'; OPTIONAL (must be omitted if X is `COMPLEX');
-scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   If X is not type `COMPLEX', constructs a value of type
-`COMPLEX(KIND=1)' from the real and imaginary values specified by X and
-Y, respectively.  If Y is omitted, `0.' is assumed.
-
-   If X is type `COMPLEX', converts it to type `COMPLEX(KIND=1)'.
-
-   *Note Complex Intrinsic::, for information on easily constructing a
-`COMPLEX' value of arbitrary precision from `REAL' arguments.
-
-
-File: g77.info,  Node: Complex Intrinsic,  Next: Conjg Intrinsic,  Prev: Cmplx Intrinsic,  Up: Table of Intrinsic Functions
-
-Complex Intrinsic
-.................
-
-     Complex(REAL, IMAG)
-
-Complex: `COMPLEX' function, the exact type being the result of
-cross-promoting the types of all the arguments.
-
-REAL: `INTEGER' or `REAL'; scalar; INTENT(IN).
-
-IMAG: `INTEGER' or `REAL'; scalar; INTENT(IN).
-
-Intrinsic groups: `gnu'.
-
-Description:
-
-   Returns a `COMPLEX' value that has `Real' and `Imag' as its real and
-imaginary parts, respectively.
-
-   If REAL and IMAG are the same type, and that type is not `INTEGER',
-no data conversion is performed, and the type of the resulting value
-has the same kind value as the types of REAL and IMAG.
-
-   If REAL and IMAG are not the same type, the usual type-promotion
-rules are applied to both, converting either or both to the appropriate
-`REAL' type.  The type of the resulting value has the same kind value
-as the type to which both REAL and IMAG were converted, in this case.
-
-   If REAL and IMAG are both `INTEGER', they are both converted to
-`REAL(KIND=1)', and the result of the `COMPLEX()' invocation is type
-`COMPLEX(KIND=1)'.
-
-   _Note:_ The way to do this in standard Fortran 90 is too hairy to
-describe here, but it is important to note that `CMPLX(D1,D2)' returns
-a `COMPLEX(KIND=1)' result even if `D1' and `D2' are type
-`REAL(KIND=2)'.  Hence the availability of `COMPLEX()' in GNU Fortran.
-
-
-File: g77.info,  Node: Conjg Intrinsic,  Next: Cos Intrinsic,  Prev: Complex Intrinsic,  Up: Table of Intrinsic Functions
-
-Conjg Intrinsic
-...............
-
-     Conjg(Z)
-
-Conjg: `COMPLEX' function, the `KIND=' value of the type being that of
-argument Z.
-
-Z: `COMPLEX'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Returns the complex conjugate:
-
-     COMPLEX(REALPART(Z), -IMAGPART(Z))
-
-
-File: g77.info,  Node: Cos Intrinsic,  Next: CosH Intrinsic,  Prev: Conjg Intrinsic,  Up: Table of Intrinsic Functions
-
-Cos Intrinsic
-.............
-
-     Cos(X)
-
-Cos: `REAL' or `COMPLEX' function, the exact type being that of
-argument X.
-
-X: `REAL' or `COMPLEX'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Returns the cosine of X, an angle measured in radians.
-
-   *Note ACos Intrinsic::, for the inverse of this function.
-
-
-File: g77.info,  Node: CosH Intrinsic,  Next: Count Intrinsic,  Prev: Cos Intrinsic,  Up: Table of Intrinsic Functions
-
-CosH Intrinsic
-..............
-
-     CosH(X)
-
-CosH: `REAL' function, the `KIND=' value of the type being that of
-argument X.
-
-X: `REAL'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Returns the hyperbolic cosine of X.
-
-
-File: g77.info,  Node: Count Intrinsic,  Next: CPU_Time Intrinsic,  Prev: CosH Intrinsic,  Up: Table of Intrinsic Functions
-
-Count Intrinsic
-...............
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL Count' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: CPU_Time Intrinsic,  Next: CShift Intrinsic,  Prev: Count Intrinsic,  Up: Table of Intrinsic Functions
-
-CPU_Time Intrinsic
-..................
-
-     CALL CPU_Time(SECONDS)
-
-SECONDS: `REAL'; scalar; INTENT(OUT).
-
-Intrinsic groups: `f90'.
-
-Description:
-
-   Returns in SECONDS the current value of the system time.  This
-implementation of the Fortran 95 intrinsic is just an alias for
-`second' *Note Second Intrinsic (subroutine)::.
-
-   On some systems, the underlying timings are represented using types
-with sufficiently small limits that overflows (wraparounds) are
-possible, such as 32-bit types.  Therefore, the values returned by this
-intrinsic might be, or become, negative, or numerically less than
-previous values, during a single run of the compiled program.
-
-
-File: g77.info,  Node: CShift Intrinsic,  Next: CSin Intrinsic,  Prev: CPU_Time Intrinsic,  Up: Table of Intrinsic Functions
-
-CShift Intrinsic
-................
-
-   This intrinsic is not yet implemented.  The name is, however,
-reserved as an intrinsic.  Use `EXTERNAL CShift' to use this name for an
-external procedure.
-
-
-File: g77.info,  Node: CSin Intrinsic,  Next: CSqRt Intrinsic,  Prev: CShift Intrinsic,  Up: Table of Intrinsic Functions
-
-CSin Intrinsic
-..............
-
-     CSin(X)
-
-CSin: `COMPLEX(KIND=1)' function.
-
-X: `COMPLEX(KIND=1)'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Archaic form of `SIN()' that is specific to one type for X.  *Note
-Sin Intrinsic::.
-
-
-File: g77.info,  Node: CSqRt Intrinsic,  Next: CTime Intrinsic (subroutine),  Prev: CSin Intrinsic,  Up: Table of Intrinsic Functions
-
-CSqRt Intrinsic
-...............
-
-     CSqRt(X)
-
-CSqRt: `COMPLEX(KIND=1)' function.
-
-X: `COMPLEX(KIND=1)'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Archaic form of `SQRT()' that is specific to one type for X.  *Note
-SqRt Intrinsic::.
-
-
-File: g77.info,  Node: CTime Intrinsic (subroutine),  Next: CTime Intrinsic (function),  Prev: CSqRt Intrinsic,  Up: Table of Intrinsic Functions
-
-CTime Intrinsic (subroutine)
-............................
-
-     CALL CTime(STIME, RESULT)
-
-STIME: `INTEGER'; scalar; INTENT(IN).
-
-RESULT: `CHARACTER'; scalar; INTENT(OUT).
-
-Intrinsic groups: `unix'.
-
-Description:
-
-   Converts STIME, a system time value, such as returned by `TIME8()',
-to a string of the form `Sat Aug 19 18:13:14 1995', and returns that
-string in RESULT.
-
-   *Note Time8 Intrinsic::.
-
-   Some non-GNU implementations of Fortran provide this intrinsic as
-only a function, not as a subroutine.
-
-   For information on other intrinsics with the same name: *Note CTime
-Intrinsic (function)::.
-
-
-File: g77.info,  Node: CTime Intrinsic (function),  Next: DAbs Intrinsic,  Prev: CTime Intrinsic (subroutine),  Up: Table of Intrinsic Functions
-
-CTime Intrinsic (function)
-..........................
-
-     CTime(STIME)
-
-CTime: `CHARACTER*(*)' function.
-
-STIME: `INTEGER'; scalar; INTENT(IN).
-
-Intrinsic groups: `unix'.
-
-Description:
-
-   Converts STIME, a system time value, such as returned by `TIME8()',
-to a string of the form `Sat Aug 19 18:13:14 1995', and returns that
-string as the function value.
-
-   *Note Time8 Intrinsic::.
-
-   For information on other intrinsics with the same name: *Note CTime
-Intrinsic (subroutine)::.
-
-
-File: g77.info,  Node: DAbs Intrinsic,  Next: DACos Intrinsic,  Prev: CTime Intrinsic (function),  Up: Table of Intrinsic Functions
-
-DAbs Intrinsic
-..............
-
-     DAbs(A)
-
-DAbs: `REAL(KIND=2)' function.
-
-A: `REAL(KIND=2)'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Archaic form of `ABS()' that is specific to one type for A.  *Note
-Abs Intrinsic::.
-
-
-File: g77.info,  Node: DACos Intrinsic,  Next: DASin Intrinsic,  Prev: DAbs Intrinsic,  Up: Table of Intrinsic Functions
-
-DACos Intrinsic
-...............
-
-     DACos(X)
-
-DACos: `REAL(KIND=2)' function.
-
-X: `REAL(KIND=2)'; scalar; INTENT(IN).
-
-Intrinsic groups: (standard FORTRAN 77).
-
-Description:
-
-   Archaic form of `ACOS()' that is specific to one type for X.  *Note
-ACos Intrinsic::.
 

@@ -1,5 +1,5 @@
 /* Declarations for getopt.
-   Copyright (C) 1989, 1990, 1991, 1992, 1993, 1994, 1996, 1997
+   Copyright 1989, 1990, 1991, 1992, 1993, 1994, 1996, 1997, 1998, 2000
    Free Software Foundation, Inc.
 
    NOTE: The canonical source of this file is maintained with the GNU C Library.
@@ -111,7 +111,7 @@ struct option
    errors, only prototype getopt for the GNU C library.  */
 extern int getopt (int argc, char *const *argv, const char *shortopts);
 #else /* not __GNU_LIBRARY__ */
-# if !defined (HAVE_DECL_GETOPT)
+# if !defined (HAVE_DECL_GETOPT) && !defined (__cplusplus)
 extern int getopt ();
 # endif
 #endif /* __GNU_LIBRARY__ */

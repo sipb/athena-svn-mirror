@@ -1,18 +1,176 @@
-2001-12-20  Release Manager
+2002-11-19  Release Manager
 
-	* GCC 3.0.3 Released.
+	* GCC 3.2.1 Released.
 
-2001-10-23  Release Manager
+2002-11-19  Release Manager
 
-	* GCC 3.0.2 Released.
+	* GCC 3.2.1 Released.
 
-2001-08-19  Release Manager
+2002-11-18  Release Manager
 
-	* GCC 3.0.1 Released.
+	* GCC 3.2.1 Released.
 
-2001-08-19  Release Manager
+2002-10-07  Kaveh R. Ghazi  <ghazi@caip.rutgers.edu>
 
-	* GCC 3.0.1 Released.
+	* Makefile.am (all-multi): Fix multilib parallel build.
+
+2002-08-14  Release Manager
+
+	* GCC 3.2 Released.
+
+2002-07-25  Release Manager
+
+	* GCC 3.1.1 Released.
+
+2002-05-28  Bo Thorsen  <bo@suse.de>
+
+	* src/x86/ffi.c (ffi_prep_incoming_args_SYSV): Remove avn
+	here too.
+
+2002-05-27  Roger Sayle  <roger@eyesopen.com>
+
+	* src/x86/ffi.c (ffi_prep_args): Remove reference to avn.
+
+2002-05-27  Bo Thorsen  <bo@suse.de>
+
+	* src/x86/ffi.c (ffi_prep_args): Remove unused variable and
+	fix formatting.
+
+2002-05-14  Release Manager
+
+	* GCC 3.1 Released.
+
+2002-05-14  Release Manager
+
+	* GCC 3.1 Released.
+
+2002-05-08  Alexandre Oliva  <aoliva@redhat.com>
+
+	* configure.in (ORIGINAL_LD_FOR_MULTILIBS): Preserve LD at
+	script entry, and set LD to it when configuring multilibs.
+	* configure: Rebuilt.
+
+2002-04-28  David S. Miller  <davem@redhat.com>
+
+	* configure.in, configure: Fix SPARC test in previous change.
+
+2002-04-28  Jakub Jelinek  <jakub@redhat.com>
+
+	* configure.in (HAVE_AS_SPARC_UA_PCREL): Check for working
+	%r_disp32().
+	* src/sparc/v8.S: Use it.
+	* src/sparc/v9.S: Likewise.
+	* fficonfig.h.in: Rebuilt.
+	* configure: Rebuilt.
+
+2002-04-08  Hans Boehm  <Hans_Boehm@hp.com>
+
+	* src/java_raw_api.c (ffi_java_raw_size): Handle FFI_TYPE_DOUBLE
+	correctly.
+	* src/ia64/unix.S: Add unwind information. Fix comments.
+	Save sp in a way that's compatible with unwind info.
+	(ffi_call_unix): Correctly restore sp in all cases.
+	* src/ia64/ffi.c: Add, fix comments.
+
+2002-04-08  Jakub Jelinek  <jakub@redhat.com>
+
+	* src/sparc/v8.S: Make .eh_frame dependent on target word size.
+
+2002-04-04  Jeff Sturm  <jsturm@one-point.com>
+
+	* src/sparc/v8.S: Add unwind info.
+	* src/sparc/v9.S: Likewise.
+
+2002-04-01  Loren J. Rittle  <ljrittle@acm.org>
+
+	* configure.in: Enable alpha*-*-freebsd*.
+	* configure: Rebuilt.
+
+2002-03-30  Krister Walfridsson  <cato@df.lth.se>
+
+	* configure.in: Enable i*86-*-netbsdelf*.
+	* configure: Rebuilt.
+	
+2002-03-29  David Billinghurst <David.Billinghurst@riotinto.com>
+
+	PR other/2620
+	* src/mips/n32.s: Delete
+	* src/mips/o32.s: Delete
+
+2002-03-17  Bryce McKinlay  <bryce@waitaki.otago.ac.nz>
+
+	* Makefile.am: libfficonvenience -> libffi_convenience.
+	* Makefile.in: Rebuilt.
+	
+	* Makefile.am: Define ffitest_OBJECTS.
+	* Makefile.in: Rebuilt.
+
+2002-03-07  Andreas Tobler  <toa@pop.agri.ch>
+	    David Edelsohn  <edelsohn@gnu.org>
+
+	* Makefile.am (EXTRA_DIST): Add Darwin and AIX closure files.
+	(TARGET_SRC_POWERPC_AIX): Add aix_closure.S.
+	(TARGET_SRC_POWERPC_DARWIN): Add darwin_closure.S.
+	* Makefile.in: Regenerate.
+	* include/ffi.h.in: Add AIX and Darwin closure definitions.
+	* src/powerpc/ffi_darwin.c (ffi_prep_closure): New function.
+	(flush_icache, flush_range): New functions.
+	(ffi_closure_helper_DARWIN): New function.
+	* src/powerpc/aix_closure.S: New file.
+	* src/powerpc/darwin_closure.S: New file.
+	
+2002-02-24  Jeff Sturm  <jsturm@one-point.com>
+
+	* include/ffi.h.in: Add typedef for ffi_arg.
+	* src/ffitest.c (main): Declare rint with ffi_arg.
+ 
+2002-02-21  Andreas Tobler  <toa@pop.agri.ch>
+
+	* src/powerpc/ffi_darwin.c (ffi_prep_args): Skip appropriate
+	number of GPRs for floating-point arguments.
+
+2002-01-31  Anthony Green  <green@redhat.com>
+
+	* configure: Rebuilt.
+	* configure.in: Replace CHECK_SIZEOF and endian tests with
+	cross-compiler friendly macros.
+	* aclocal.m4 (AC_COMPILE_CHECK_SIZEOF, AC_C_BIGENDIAN_CROSS): New
+	macros.
+
+2002-01-18  David Edelsohn  <edelsohn@gnu.org>
+
+	* src/powerpc/darwin.S (_ffi_call_AIX): New.
+	* src/powerpc/aix.S (ffi_call_DARWIN): New.
+
+2002-01-17  David Edelsohn  <edelsohn@gnu.org>
+
+	* Makefile.am (EXTRA_DIST): Add Darwin and AIX files.
+	(TARGET_SRC_POWERPC_AIX): New.
+	(POWERPC_AIX): New stanza.
+	* Makefile.in: Regenerate.
+	* configure.in: Add AIX case.
+	* configure: Regenerate.
+	* include/ffi.h.in (ffi_abi): Add FFI_AIX.
+	* src/powerpc/ffi_darwin.c (ffi_status): Use "long" to scale frame
+	size.  Fix "long double" support.
+	(ffi_call): Add FFI_AIX case.
+	* src/powerpc/aix.S: New.
+
+2001-10-09  John Hornkvist  <john@toastedmarshmallow.com>
+
+	Implement Darwin PowerPC ABI.
+	* configure.in: Handle powerpc-*-darwin*.
+	* Makefile.am: Set source files for POWERPC_DARWIN.
+	* configure: Rebuilt.
+	* Makefile.in: Rebuilt.
+	* include/ffi.h.in: Define FFI_DARWIN and FFI_DEFAULT_ABI for
+	POWERPC_DARWIN.
+	* src/powerpc/darwin.S: New file.
+	* src/powerpc/ffi_darwin.c: New file.
+
+2001-10-07  Joseph S. Myers  <jsm28@cam.ac.uk>
+
+	* src/x86/ffi.c: Fix spelling error of "separate" as "seperate".
 
 2001-07-16  Rainer Orth  <ro@TechFak.Uni-Bielefeld.DE>
 
@@ -33,29 +191,31 @@
 	* configure.in: Recognize sparc*-sun-* host.
 	* configure: Regenerate.
 	
-20010617 Release Manager
-
-        * GCC 3.0 Released.
-
 2001-06-06  Andrew Haley  <aph@redhat.com>
 
-	* src/alpha/osf.S (__FRAME_BEGIN__): Conditionalize for ELF.
+        * src/alpha/osf.S (__FRAME_BEGIN__): Conditionalize for ELF.
 
 2001-06-03  Andrew Haley  <aph@redhat.com>
 
-	* src/alpha/osf.S: Add unwind info.
-	* src/powerpc/sysv.S: Add unwind info.
-	* src/powerpc/ppc_closure.S: Likewise.
+        * src/alpha/osf.S: Add unwind info.
+        * src/powerpc/sysv.S: Add unwind info.
+        * src/powerpc/ppc_closure.S: Likewise.
+
+2000-05-31  Jeff Sturm  <jsturm@one-point.com>
+
+	* configure.in: Fix AC_ARG_ENABLE usage.
+	* configure: Rebuilt.
 
 2001-05-06  Bryce McKinlay  <bryce@waitaki.otago.ac.nz>
 
 	* configure.in: Remove warning about beta code.
 	* configure: Rebuilt.
 
-2001-04-25 Hans Boehm <Hans_Boehm@hp.com>
+2001-04-25  Hans Boehm <Hans_Boehm@hp.com>
 
 	* src/ia64/unix.S: Restore stack pointer when returning from
 	ffi_closure_UNIX.
+	* src/ia64/ffi.c: Fix typo in comment.
 
 2001-04-18  Jim Wilson  <wilson@redhat.com>
 
@@ -66,7 +226,7 @@
 
 	* Makefile.am: Make a libtool convenience library.
 	* Makefile.in: Rebuilt.
-	
+
 2001-03-29  Bryce McKinlay  <bryce@albatross.co.nz>
 
 	* configure.in: Use different syntax for subdirectory creation.
@@ -114,6 +274,27 @@
 
 	* Makefile.in: Rebuilt.
 	* Makefile.am (ffitest_LDFLAGS): New macro.
+
+2001-03-02  Nick Clifton  <nickc@redhat.com>
+
+	* include/ffi.h.in: Remove RCS ident string.
+	* include/ffi_mips.h: Remove RCS ident string.
+	* src/debug.c: Remove RCS ident string.
+	* src/ffitest.c: Remove RCS ident string.
+	* src/prep_cif.c: Remove RCS ident string.
+	* src/types.c: Remove RCS ident string.
+	* src/alpha/ffi.c: Remove RCS ident string.
+	* src/alpha/osf.S: Remove RCS ident string.
+	* src/arm/ffi.c: Remove RCS ident string.
+	* src/arm/sysv.S: Remove RCS ident string.
+	* src/mips/ffi.c: Remove RCS ident string.
+	* src/mips/n32.S: Remove RCS ident string.
+	* src/mips/o32.S: Remove RCS ident string.
+	* src/sparc/ffi.c: Remove RCS ident string.
+	* src/sparc/v8.S: Remove RCS ident string.
+	* src/sparc/v9.S: Remove RCS ident string.
+	* src/x86/ffi.c: Remove RCS ident string.
+	* src/x86/sysv.S: Remove RCS ident string.
 
 2001-02-08  Joseph S. Myers  <jsm28@cam.ac.uk>
 

@@ -1,4 +1,4 @@
-This is doc/cpp.info, produced by makeinfo version 4.0 from
+This is doc/cpp.info, produced by makeinfo version 4.2 from
 doc/cpp.texi.
 
 INFO-DIR-SECTION Programming
@@ -7,7 +7,7 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: cpp.info,  Node: Invocation,  Next: GNU Free Documentation License,  Prev: Implementation Details,  Up: Top
+File: cpp.info,  Node: Invocation,  Next: Environment Variables,  Prev: Implementation Details,  Up: Top
 
 Invocation
 **********
@@ -52,9 +52,7 @@ single-letter options may _not_ be grouped: `-dM' is very different from
      no restrictions on the contents of DEFINITION, but if you are
      invoking the preprocessor from a shell or shell-like program you
      may need to use the shell's quoting syntax to protect characters
-     such as spaces that have a meaning in the shell syntax.  If you
-     use more than one `-D' for the same NAME, the rightmost definition
-     takes effect.
+     such as spaces that have a meaning in the shell syntax.
 
      If you wish to define a function-like macro on the command line,
      write its argument list with surrounding parentheses before the
@@ -62,12 +60,13 @@ single-letter options may _not_ be grouped: `-dM' is very different from
      so you will need to quote the option.  With `sh' and `csh',
      `-D'NAME(ARGS...)=DEFINITION'' works.
 
+     `-D' and `-U' options are processed in the order they are given on
+     the command line.  All `-imacros FILE' and `-include FILE' options
+     are processed after all `-D' and `-U' options.
+
 `-U NAME'
      Cancel any previous definition of NAME, either built in or
      provided with a `-D' option.
-
-     All `-imacros FILE' and `-include FILE' options are processed
-     after all `-D' and `-U' options.
 
 `-undef'
      Do not predefine any system-specific macros.  The common predefined
@@ -80,7 +79,7 @@ single-letter options may _not_ be grouped: `-dM' is very different from
 
      It is dangerous to specify a standard system include directory in
      an `-I' option.  This defeats the special treatment of system
-     headers (*note System Headers::).  It can also defeat the repairs
+     headers (*note System Headers::) .  It can also defeat the repairs
      to buggy system headers which GCC makes when it is installed.
 
 `-o FILE'
@@ -159,18 +158,33 @@ single-letter options may _not_ be grouped: `-dM' is very different from
      files then the rule is split into several lines using `\'-newline.
      The rule has no commands.
 
+     This option does not suppress the preprocessor's debug output,
+     such as `-dM'.  To avoid mixing such debug output with the
+     dependency rules you should explicitly specify the dependency
+     output file with `-MF', or use an environment variable like
+     `DEPENDENCIES_OUTPUT' (*note DEPENDENCIES_OUTPUT::).  Debug output
+     will still be sent to the regular output stream as normal.
+
+     Passing `-M' to the driver implies `-E'.
+
 `-MM'
-     Like `-M', but mention only the files included with
-     `#include "FILE"' or with `-include' or `-imacros' command line
-     options.  System header files included with `#include <FILE>' are
-     omitted.
+     Like `-M' but do not mention header files that are found in system
+     header directories, nor header files that are included, directly
+     or indirectly, from such a header.
+
+     This implies that the choice of angle brackets or double quotes in
+     an `#include' directive does not in itself determine whether that
+     header will appear in `-MM' dependency output.  This is a slight
+     change in semantics from GCC versions 3.0 and earlier.
 
 `-MF FILE'
      When used with `-M' or `-MM', specifies a file to write the
-     dependencies to.  This allows the preprocessor to write the
-     preprocessed file to stdout normally.  If no `-MF' switch is
-     given, CPP sends the rules to stdout and suppresses normal
-     preprocessed output.
+     dependencies to.  If no `-MF' switch is given the preprocessor
+     sends the rules to the same place it would have sent preprocessed
+     output.
+
+     When used with the driver options `-MD' or `-MMD', `-MF' overrides
+     the default dependency output file.
 
 `-MG'
      When used with `-M' or `-MM', `-MG' says to treat missing header
@@ -215,14 +229,24 @@ single-letter options may _not_ be grouped: `-dM' is very different from
      The default target is automatically quoted, as if it were given
      with `-MQ'.
 
-`-MD FILE'
-`-MMD FILE'
-     `-MD FILE' is equivalent to `-M -MF FILE', and `-MMD FILE' is
-     equivalent to `-MM -MF FILE'.
+`-MD'
+     `-MD' is equivalent to `-M -MF FILE', except that `-E' is not
+     implied.  The driver determines FILE based on whether an `-o'
+     option is given.  If it is, the driver uses its argument but with
+     a suffix of `.d', otherwise it take the basename of the input file
+     and applies a `.d' suffix.
 
-     Due to limitations in the compiler driver, you must use these
-     switches when you want to generate a dependency file as a
-     side-effect of normal compilation.
+     If `-MD' is used in conjunction with `-E', any `-o' switch is
+     understood to specify the dependency output file (but *note
+     -MF::), but if used without `-E', each `-o' is understood to
+     specify a target object file.
+
+     Since `-E' is not implied, `-MD' can be used to generate a
+     dependency output file as a side-effect of the compilation process.
+
+`-MMD'
+     Like `-MD' except mention only user header files, not system
+     -header files.
 
 `-x c'
 `-x c++'
@@ -282,8 +306,8 @@ single-letter options may _not_ be grouped: `-dM' is very different from
      directives.
 
      In addition, `-I-' inhibits the use of the directory of the current
-     file directory as the first search directory for
-     `#include "FILE"'.  *Note Search Path::.
+     file directory as the first search directory for `#include "FILE"'.
+     *Note Search Path::.
 
 `-nostdinc'
      Do not search the standard system directories for header files.
@@ -473,13 +497,73 @@ single-letter options may _not_ be grouped: `-dM' is very different from
      preprocess as normal.  With two dashes, exit immediately.
 
 
-File: cpp.info,  Node: GNU Free Documentation License,  Next: Index of Directives,  Prev: Invocation,  Up: Top
+File: cpp.info,  Node: Environment Variables,  Next: GNU Free Documentation License,  Prev: Invocation,  Up: Top
+
+Environment Variables
+*********************
+
+   This section describes the environment variables that affect how CPP
+operates.  You can use them to specify directories or prefixes to use
+when searching for include files, or to control dependency output.
+
+   Note that you can also specify places to search using options such as
+`-I', and control dependency output with options like `-M' (*note
+Invocation::).  These take precedence over environment variables, which
+in turn take precedence over the configuration of GCC.
+
+`CPATH'
+`C_INCLUDE_PATH'
+`CPLUS_INCLUDE_PATH'
+`OBJC_INCLUDE_PATH'
+     Each variable's value is a list of directories separated by a
+     special character, much like `PATH', in which to look for header
+     files.  The special character, `PATH_SEPARATOR', is
+     target-dependent and determined at GCC build time.  For
+     Windows-based targets it is a semicolon, and for almost all other
+     targets it is a colon.
+
+     `CPATH' specifies a list of directories to be searched as if
+     specified with `-I', but after any paths given with `-I' options
+     on the command line.  The environment variable is used regardless
+     of which language is being preprocessed.
+
+     The remaining environment variables apply only when preprocessing
+     the particular language indicated.  Each specifies a list of
+     directories to be searched as if specified with `-isystem', but
+     after any paths given with `-isystem' options on the command line.
+
+     See also *Note Search Path::.
+
+`DEPENDENCIES_OUTPUT'
+     If this variable is set, its value specifies how to output
+     dependencies for Make based on the non-system header files
+     processed by the compiler.  System header files are ignored in the
+     dependency output.
+
+     The value of `DEPENDENCIES_OUTPUT' can be just a file name, in
+     which case the Make rules are written to that file, guessing the
+     target name from the source file name.  Or the value can have the
+     form `FILE TARGET', in which case the rules are written to file
+     FILE using TARGET as the target name.
+
+     In other words, this environment variable is equivalent to
+     combining the options `-MM' and `-MF' (*note Invocation::), with
+     an optional `-MT' switch too.
+
+`SUNPRO_DEPENDENCIES'
+     This variable is the same as the environment variable
+     `DEPENDENCIES_OUTPUT' (*note DEPENDENCIES_OUTPUT::), except that
+     system header files are not ignored, so it implies `-M' rather
+     than `-MM'.  However, the dependence on the main input file is
+     omitted.  *Note Invocation::.
+
+
+File: cpp.info,  Node: GNU Free Documentation License,  Next: Option Index,  Prev: Environment Variables,  Up: Top
 
 GNU Free Documentation License
 ******************************
 
                         Version 1.1, March 2000
-
      Copyright (C) 2000 Free Software Foundation, Inc.
      59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
      
@@ -859,7 +943,80 @@ free software license, such as the GNU General Public License, to
 permit their use in free software.
 
 
-File: cpp.info,  Node: Index of Directives,  Next: Concept Index,  Prev: GNU Free Documentation License,  Up: Top
+File: cpp.info,  Node: Option Index,  Next: Index of Directives,  Prev: GNU Free Documentation License,  Up: Top
+
+Option Index
+************
+
+   CPP's command line options are indexed here without any initial `-'
+or `--'.
+
+* Menu:
+
+* $:                                     Invocation.
+* A:                                     Invocation.
+* A-:                                    Invocation.
+* ansi:                                  Invocation.
+* C:                                     Invocation.
+* D:                                     Invocation.
+* dD:                                    Invocation.
+* dI:                                    Invocation.
+* dM:                                    Invocation.
+* dN:                                    Invocation.
+* fno-show-column:                       Invocation.
+* fpreprocessed:                         Invocation.
+* ftabstop:                              Invocation.
+* gcc:                                   Invocation.
+* H:                                     Invocation.
+* h:                                     Invocation.
+* help:                                  Invocation.
+* I:                                     Invocation.
+* I-:                                    Invocation.
+* idirafter:                             Invocation.
+* imacros:                               Invocation.
+* include:                               Invocation.
+* iprefix:                               Invocation.
+* isystem:                               Invocation.
+* iwithprefix:                           Invocation.
+* iwithprefixbefore:                     Invocation.
+* M:                                     Invocation.
+* MD:                                    Invocation.
+* MF:                                    Invocation.
+* MG:                                    Invocation.
+* MM:                                    Invocation.
+* MMD:                                   Invocation.
+* MP:                                    Invocation.
+* MQ:                                    Invocation.
+* MT:                                    Invocation.
+* nostdinc:                              Invocation.
+* nostdinc++:                            Invocation.
+* o:                                     Invocation.
+* P:                                     Invocation.
+* pedantic:                              Invocation.
+* pedantic-errors:                       Invocation.
+* remap:                                 Invocation.
+* std=:                                  Invocation.
+* target-help:                           Invocation.
+* traditional:                           Invocation.
+* trigraphs:                             Invocation.
+* U:                                     Invocation.
+* undef:                                 Invocation.
+* v:                                     Invocation.
+* version:                               Invocation.
+* w:                                     Invocation.
+* Wall:                                  Invocation.
+* Wcomment:                              Invocation.
+* Wcomments:                             Invocation.
+* Werror:                                Invocation.
+* Wimport:                               Invocation.
+* Wsystem-headers:                       Invocation.
+* Wtraditional:                          Invocation.
+* Wtrigraphs:                            Invocation.
+* Wundef:                                Invocation.
+* x:                                     Invocation.
+
+
+File: cpp.info,  Node: Index of Directives,  Next: Concept Index,  Prev: Option Index,  Up: Top
 
 Index of Directives
 *******************
@@ -888,118 +1045,10 @@ Index of Directives
 * #unassert:                             Assertions.
 * #undef:                                Undefining and Redefining Macros.
 * #warning:                              Diagnostics.
-
-
-File: cpp.info,  Node: Concept Index,  Prev: Index of Directives,  Up: Top
-
-Concept Index
-*************
-
-* Menu:
-
-* # operator:                            Stringification.
-* ## operator:                           Concatenation.
-* _Pragma:                               Pragmas.
-* alternative tokens:                    Tokenization.
-* arguments:                             Macro Arguments.
-* arguments in macro definitions:        Macro Arguments.
-* assertions:                            Assertions.
-* assertions, cancelling:                Assertions.
-* backslash-newline:                     Initial processing.
-* block comments:                        Initial processing.
-* C++ named operators:                   C++ Named Operators.
-* character constants:                   Tokenization.
-* character sets:                        Initial processing.
-* command line:                          Invocation.
-* commenting out code:                   Deleted Code.
-* comments:                              Initial processing.
-* common predefined macros:              Common Predefined Macros.
-* computed includes:                     Computed Includes.
-* concatenation:                         Concatenation.
-* conditional group:                     Ifdef.
-* conditionals:                          Conditionals.
-* continued lines:                       Initial processing.
-* controlling macro:                     Once-Only Headers.
-* defined:                               Defined.
-* diagnostic:                            Diagnostics.
-* differences from previous versions:    Differences from previous versions.
-* digraphs:                              Tokenization.
-* directive line:                        The preprocessing language.
-* directive name:                        The preprocessing language.
-* directives:                            The preprocessing language.
-* empty macro arguments:                 Macro Arguments.
-* expansion of arguments:                Argument Prescan.
-* FDL, GNU Free Documentation License:   GNU Free Documentation License.
-* function-like macros:                  Function-like Macros.
-* grouping options:                      Invocation.
-* guard macro:                           Once-Only Headers.
-* header file:                           Header Files.
-* header file names:                     Tokenization.
-* identifiers:                           Tokenization.
-* implementation limits:                 Implementation limits.
-* implementation-defined behavior:       Implementation-defined behavior.
-* including just once:                   Once-Only Headers.
-* invalid token paste:                   Miscellaneous obsolete features.
-* invocation:                            Invocation.
-* iso646.h:                              C++ Named Operators.
-* line comments:                         Initial processing.
-* line control:                          Line Control.
-* line endings:                          Initial processing.
-* linemarkers:                           Preprocessor Output.
-* macro argument expansion:              Argument Prescan.
-* macros in include:                     Computed Includes.
-* macros with arguments:                 Macro Arguments.
-* macros with variable arguments:        Variadic Macros.
-* manifest constants:                    Object-like Macros.
-* multi-line string constants:           Miscellaneous obsolete features.
-* named operators:                       C++ Named Operators.
-* newlines in macro arguments:           Newlines in Arguments.
-* null directive:                        Other Directives.
-* numbers:                               Tokenization.
-* object-like macro:                     Object-like Macros.
-* options:                               Invocation.
-* options, grouping:                     Invocation.
-* other tokens:                          Tokenization.
-* output format:                         Preprocessor Output.
-* overriding a header file:              Wrapper Headers.
-* parentheses in macro bodies:           Operator Precedence Problems.
-* pitfalls of macros:                    Macro Pitfalls.
-* pragma poison:                         Miscellaneous obsolete features.
-* predefined macros:                     Predefined Macros.
-* predefined macros, system-specific:    System-specific Predefined Macros.
-* predicates:                            Assertions.
-* preprocessing directives:              The preprocessing language.
-* preprocessing numbers:                 Tokenization.
-* preprocessing tokens:                  Tokenization.
-* prescan of macro arguments:            Argument Prescan.
-* problems with macros:                  Macro Pitfalls.
-* punctuators:                           Tokenization.
-* redefining macros:                     Undefining and Redefining Macros.
-* repeated inclusion:                    Once-Only Headers.
-* reporting errors:                      Diagnostics.
-* reporting warnings:                    Diagnostics.
-* reserved namespace:                    System-specific Predefined Macros.
-* self-reference:                        Self-Referential Macros.
-* semicolons (after macro calls):        Swallowing the Semicolon.
-* side effects (in macro arguments):     Duplication of Side Effects.
-* standard predefined macros.:           Standard Predefined Macros.
-* string constants:                      Tokenization.
-* string literals:                       Tokenization.
-* stringification:                       Stringification.
-* symbolic constants:                    Object-like Macros.
-* system header files <1>:               System Headers.
-* system header files:                   Header Files.
-* system-specific predefined macros:     System-specific Predefined Macros.
-* testing predicates:                    Assertions.
-* token concatenation:                   Concatenation.
-* token pasting:                         Concatenation.
-* tokens:                                Tokenization.
-* trigraphs:                             Initial processing.
-* undefining macros:                     Undefining and Redefining Macros.
-* unsafe macros:                         Duplication of Side Effects.
-* variable number of arguments:          Variadic Macros.
-* variadic macros:                       Variadic Macros.
-* wrapper #ifndef:                       Once-Only Headers.
-* wrapper headers:                       Wrapper Headers.
-
+* C_INCLUDE_PATH:                        Environment Variables.
+* CPATH:                                 Environment Variables.
+* CPLUS_INCLUDE_PATH:                    Environment Variables.
+* DEPENDENCIES_OUTPUT:                   Environment Variables.
+* OBJC_INCLUDE_PATH:                     Environment Variables.
+* SUNPRO_DEPENDENCIES:                   Environment Variables.
 
