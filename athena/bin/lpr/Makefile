@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v $
 #	$Author: epeisach $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.8 1990-02-09 14:52:45 epeisach Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/Makefile,v 1.9 1990-04-16 11:44:11 epeisach Exp $
 #
 #
 # Copyright (c) 1983 Regents of the University of California.
@@ -19,8 +19,8 @@
 #
 DESTDIR=
 
-CFLAGS=-O -DVFS -DHESIOD
-LIBS= -lhesiod
+CFLAGS=-O -DVFS -DHESIOD -DKERBEROS -DZEPHYR -DPQUOTA -Iquota
+LIBS= -lhesiod -lzephyr -lcom_err -lkrb -ldes
 LIBDIR=/usr/lib
 BINDIR=/usr/ucb
 SPOOLDIR=/usr/spool/lpd
@@ -35,9 +35,17 @@ OP_GID = 28
 SRCS=	lpd.c lpr.c lpq.c lprm.c pac.c lpd.c cmds.c cmdtab.c \
 	printjob.c recvjob.c displayq.c rmjob.c \
 	startdaemon.c common.c printcap.c lpdchar.c
-ALL=	lpd lpc lptest pac o_lprm o_lpc lpr lpq lprm s_lpq s_lprm s_lpr
+ALL=	lpd lpc lptest pac o_lprm o_lpc lpr lpq lprm s_lpq s_lprm s_lpr 
 
-all:	${ALL} FILTERS
+SUBDIR=quota transcript-v2.1 man
+all:	${ALL} FILTERS ${SUBDIR}
+
+${SUBDIR}: FRC
+	cd $@; make ${MFLAGS} all; cd ..
+FRC:
+
+saber_lpr:
+	#load $(CFLAGS) lpr.c netsend.c common.c printcap.c ${LIBS}
 
 lpd:	lpd.o printjob.o recvjob.o s_displayq.o s_rmjob.o 
 lpd:	lpdchar.o s_common.o printcap.o 
@@ -120,6 +128,8 @@ o_lpc.o: lp.h lp.local.h
 	$(LN) lpc.c o_lpc.c
 	${CC} ${CFLAGS} -c -D${OPERATOR} o_lpc.c
 
+
+
 lpd.o lpr.o lpq.o lprm.o o_lprm.o pac.o: lp.h lp.local.h
 recvjob.o printjob.o displayq.o rmjob.o common.o: lp.h lp.local.h
 startdaemon.o: lp.local.h
@@ -134,6 +144,9 @@ install:
 		install -c -s -o root -g ${SPGRP} -m 6755 $$i \
 			${DESTDIR}/${BINDIR}/$$i.ucb; \
 	done
+	for i in ${SUBDIR}; do \
+		(cd $$i; make ${MFLAGS} DESTDIR=${DESTDIR} install; cd ..); \
+		done
 	install -c print.sh ${DESTDIR}/usr/ucb/print
 
 install_old:
@@ -164,6 +177,9 @@ install_old:
 clean:
 	rm -f ${ALL} *.o *~
 	cd filters; make ${MFLAGS} clean
+	for i in ${SUBDIR}; do \
+		(cd $$i; make ${MFLAGS} clean; cd ..); \
+		done
 
 print:
 	@pr makefile
@@ -172,3 +188,6 @@ print:
 
 depend:
 	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS}
+	for i in ${SUBDIR}; do \
+		(cd $$i; make ${MFLAGS} depend; cd ..); \
+		done
