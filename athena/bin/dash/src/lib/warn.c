@@ -9,17 +9,16 @@
  *
  */
 
-#ifndef	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/warn.c,v 1.1 1991-09-03 11:20:22 vanharen Exp $";
-#endif	lint
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/warn.c,v 1.2 1991-12-17 11:22:45 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include "Jets.h"
 #include "Window.h"
 #include "Button.h"
 #include "Label.h"
-#include "Icon.h"
 #include "Form.h"
 #include "warn.h"
 
@@ -71,7 +70,7 @@ Warning *UserWarning(okProc, realize)
 			     XjNlabel, w->l1, NULL, NULL);
   warn2label = XjVaCreateJet("warn2Label", labelJetClass, warnForm,
 			     XjNlabel, w->l2, NULL, NULL);
-  warn1icon = XjVaCreateJet("dashLogo", iconJetClass, warnForm,
+  warn1icon = XjVaCreateJet("dashLogo", labelJetClass, warnForm,
 			    NULL, NULL);
   warnokwindow = XjVaCreateJet("warnOKWindow", windowJetClass, warnForm,
 			       NULL, NULL);
