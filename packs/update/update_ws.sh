@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.19 1997-04-02 21:42:09 ghudson Exp $
+# $Id: update_ws.sh,v 1.20 1997-04-04 18:04:31 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -101,7 +101,7 @@ fi
 rm -f /var/athena/clusterinfo.bsh.update
 
 # Check if we're already in the middle of an update.
-if [ "$VERSION" = Update ]; then
+if [ "$VERSION" = Update -o "$VERSION" = Reboot ]; then
 	if [ ! -f /var/tmp/update.check ]; then
 		logger -t `$HOSTNAME` -p user.notice at revision $VERSION
 		touch /var/tmp/update.check
