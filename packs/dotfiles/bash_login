@@ -1,5 +1,5 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.3 1999-08-10 16:07:11 ghudson Exp $
+# $Id: bash_login,v 1.4 2001-03-26 19:59:29 ghudson Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
@@ -58,7 +58,7 @@ fi
 # *******************   DEVICE SETUP   *******************
 
 # On IRIX, the terminal type may not be set yet.
-if [ "${term+set}" != set ]; then
+if [ "${TERM+set}" != set ]; then
 	eval `tset -s -Q`
 fi
 
