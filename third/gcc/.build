@@ -1,6 +1,6 @@
 # Pick something to build gcc with.
 if [ "$HOSTTYPE" = sun4 ]; then
-	/bin/athena/attach -h -q sunsoft
+	/bin/athena/attach -h -n -q sunsoft
 	gcc_compiler=/mit/sunsoft/sun4bin/cc
 fi
 echo In ${package}: configure --prefix=/usr/gcc &&
