@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.1 1990-11-14 12:39:11 lwvanels Exp $
+# $Id: Imakefile,v 1.2 1991-01-23 15:15:56 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/Imakefile,v $
 #
 
@@ -16,6 +16,8 @@ OBJS=	t_ask.o t_connect.o t_consult.o t_instance.o \
 	t_send.o t_topic.o t_data.o t_utils.o t_status.o \
 	t_live.o t_describe.o t_acl.o t_misc.o t_db.o \
 	t_list.o
+
+DEFINES = -DCDATE="\"`date`\""
 
 LibraryTarget(tty,$(OBJS))
 SaberLibraryTarget(tty,$(SRCS),$(OBJS))
