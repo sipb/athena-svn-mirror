@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v $
- *	$Id: olc.c,v 1.23 1991-01-21 01:17:15 lwvanels Exp $
+ *	$Id: olc.c,v 1.24 1991-03-28 16:36:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.23 1991-01-21 01:17:15 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.24 1991-03-28 16:36:47 lwvanels Exp $";
 #endif
 #endif
 
@@ -43,6 +43,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <netdb.h>
+#include <strings.h>
 
 #ifdef KERBEROS
 extern int krb_ap_req_debug;
