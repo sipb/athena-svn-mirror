@@ -48,7 +48,7 @@ case "$1" in
 	;;
 
   stop)
-	echo -n "Stopping Athena printer service: "
+	echo -n "Stopping Athena ssh: "
 	killproc sshd
 	RETVAL=$?
 
