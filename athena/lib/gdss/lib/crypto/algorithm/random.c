@@ -56,6 +56,7 @@
 #endif
 #ifdef SOLARIS
 #include <sys/rusage.h>
+#include <sys/times.h>
 #endif
 
 #include "DEScrypto.h"
@@ -104,10 +105,16 @@ int nl;
    DES_MAC (0, seed, nl, &rng.key, &random_key_schedule) ;
 
    /* get whatever resource usage there is */
+#ifdef SOLARIS
+   rs = (struct tms *)malloc (sizeof(struct tms));
+   (void) times(rs);
+   DES_MAC (0, rs, sizeof(struct tms), &rng.seed, &random_key_schedule) ;
+#else
    rs = (struct rusage *) malloc(sizeof(struct rusage));
    getrusage(0,rs);
    rs->ru_stime.tv_sec += (long) rs ;
    DES_MAC (0, rs, sizeof(struct rusage), &rng.seed, &random_key_schedule) ;
+#endif
    free(rs);
 
    /* get the current wall clock time, mix in process id */
