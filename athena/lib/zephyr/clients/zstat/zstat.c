@@ -22,7 +22,7 @@
 #include "zserver.h"
 
 #if !defined(lint) && !defined(SABER)
-static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.13 1993-09-24 16:33:29 probe Exp $";
+static char rcsid_zstat_c[] = "$Id: zstat.c,v 1.14 1993-10-16 21:51:40 probe Exp $";
 #endif
 		     
 extern long atol();
@@ -163,6 +163,9 @@ hm_stat(host,server)
 	long runtime;
 	struct tm *tim;
 	ZNotice_t notice;
+#ifdef POSIX
+	struct sigaction sa;
+#endif
 	
 	_BZERO((char *)&sin,sizeof(struct sockaddr_in));
 
@@ -202,8 +205,14 @@ hm_stat(host,server)
 		com_err("zstat", ret, "sending notice");
 		exit(-1);
 	}
-
+#ifdef POSIX
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler = timeout;
+	(void) sigaction(SIGALRM, &sa, (struct sigaction *)0);
+#else
 	(void) signal(SIGALRM,timeout);
+#endif
 	outoftime = 0;
 	(void) alarm(10);
 	if (((ret = ZReceiveNotice(&notice, (struct sockaddr_in *) 0))
@@ -259,7 +268,10 @@ srv_stat(host)
 	ZNotice_t notice;
 	long runtime;
 	struct tm *tim;
-	
+#ifdef POSIX
+	struct sigaction sa;
+#endif
+		
 	_BZERO((char *) &sin,sizeof(struct sockaddr_in));
 
 	sin.sin_port = srv_port;
@@ -299,7 +311,14 @@ srv_stat(host)
 		exit(-1);
 	}
 
+#ifdef POSIX
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler = timeout;
+	(void) sigaction(SIGALRM, &sa, (struct sigaction *)0);
+#else
 	(void) signal(SIGALRM,timeout);
+#endif
 	outoftime = 0;
 	(void) alarm(10);
 	if (((ret = ZReceiveNotice(&notice, (struct sockaddr_in *) 0))

@@ -16,7 +16,7 @@
 #include <zephyr/zephyr.h>
 
 #ifndef lint
-static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.20 1993-10-16 20:33:52 probe Exp $";
+static char rcsid_zlocate_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zleave/zleave.c,v 1.21 1993-10-16 21:51:26 probe Exp $";
 #endif /* lint */
 
 /*
@@ -221,6 +221,9 @@ long nmins;
 	long seconds, gseconds;
 	long daytime;
 	FILE *fp;
+#ifdef POSIX
+	struct sigaction sa;
+#endif
 
 	seconds = 60 * nmins;
 	if (seconds <= 0)
@@ -282,10 +285,20 @@ long nmins;
 		      (void) perror("fclose on pid file");
 	}
 
+#ifdef POSIX
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGINT, &sa, (struct sigaction *)0);
+	sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+	sigaction(SIGTERM, &sa, (struct sigaction *)0);
+	sigaction(SIGTTOU, &sa, (struct sigaction *)0);
+#else
 	(void) signal(SIGINT, SIG_IGN);
 	(void) signal(SIGQUIT, SIG_IGN);
 	(void) signal(SIGTERM, SIG_IGN);
 	(void) signal(SIGTTOU, SIG_IGN);
+#endif
 
 	if (slp1)
 		bother(slp1, msg1);
