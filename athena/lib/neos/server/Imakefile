@@ -2,7 +2,7 @@
  * Imakefile for the FX (file exchange) server
  *
  * $Author: ghudson $
- * $Id: Imakefile,v 1.4 1997-11-14 22:26:16 ghudson Exp $
+ * $Id: Imakefile,v 1.5 1997-11-17 20:59:06 ghudson Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -36,15 +36,9 @@ DEFMULTI = -DMULTI
 /**/# Define DEBUG for command debugging messages
 /**/# Define DEBUGDB for db debugging messages
 /**/# Define DEBUGMULTI for debugging multiple server support
-/**/# Define MALLOC_LEAK for malloc scribble checking and function tracing
 /**/#DEFDEBUG = -DDEBUG -DDEBUGDB
 
 DEFINES= ${INCLUDES} ${DEFKRB} ${DEFHES} ${DEFMULTI} ${DEFDEBUG}
-
-#if !defined(_IBMR2)
-MALLOCSRC = malloc.c
-MALLOCOBJ = malloc.o
-#endif
 
 FXSRVOBJS = \
 	${ETSDIR}/fxserver_err.o \
@@ -53,7 +47,7 @@ FXSRVOBJS = \
 	${PROTDIR}/fx_prot_xdr.o \
 	db.o \
 	commands.o \
-	main.o ${MALLOCOBJ} \
+	main.o \
 	multi.o \
 	util.o
 
@@ -64,7 +58,7 @@ FXSRVSRCS = \
 	${PROTDIR}/fx_prot_xdr.c \
 	db.c \
 	commands.c \
-	main.c ${MALLOCSRC} \
+	main.c \
 	multi.c \
 	util.c
 
