@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2000-11-26 05:32:19 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2002-02-11 16:57:28 ghudson Exp $
 
 .PHONY: dist
 
@@ -17,4 +17,4 @@ clean all:
 	cd build_unix && ${MAKE} $@
 
 install:
-	cd build_unix && ${MAKE} DESTDIR=${SRVD} $@
+	cd build_unix && ${MAKE} prefix="$$SRVD/usr/athena" install
