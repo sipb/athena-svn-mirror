@@ -7,3 +7,8 @@ Requires: athena-freetype athena-glib2
 
 %description
 Pango is a system for layout and rendering of internationalized text.
+
+%post
+PATH=/usr/athena/bin:$PATH
+umask 022
+pango-querymodules > /etc/athena/pango/pango.modules

@@ -9,3 +9,7 @@ Requires: athena-freetype
 %description
 Fontconfig is designed to locate fonts within the system and select
 them according to requirements specified by applications.
+
+%post
+umask 022
+HOME=/root fc-cache -f 2>/dev/null
