@@ -69,6 +69,7 @@ GreetDone (w, data, status)
     case NOTIFY_OK:
 	strcpy (name, data->name);
 	strcpy (password, data->passwd);
+	memset (data->passwd, 0, sizeof(data->passwd));
 	code = 0;
 	done = 1;
 	break;
@@ -206,4 +207,6 @@ struct display	*d;
 struct greet_info	*greet;
 {
     DrawFail (login);
+    memset(greet->name, 0, strlen(greet->name));
+    memset (greet->password, 0, strlen(greet->password));
 }
