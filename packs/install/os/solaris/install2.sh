@@ -15,9 +15,9 @@ if [ "$CPUTYPE" = SPARC/4 ]; then
     /os/usr/platform/$platform/sbin/eeprom fcode-debug?=true
 fi
 
-ROOT=/root; export ROOT
+UPDATE_ROOT=/root; export UPDATE_ROOT
 echo "Mounting hard disk's root partition..."
-/etc/mount  $rootdrive $ROOT
+/etc/mount  $rootdrive $UPDATE_ROOT
 
 cd /
 echo "Making dirs on root"
@@ -74,7 +74,7 @@ echo "Installing Requested and Security patches for OS "
 
 
 echo "add/remove osfiles as needed\n"
-sh /util/oschanges 2>/dev/null
+sh /srvd/install/oschanges 2>/dev/null
 date >/tmp/end
 echo "the os part is installed"
 
@@ -176,7 +176,11 @@ cp /dev/null etc/named.local
 
 cd /var/usr/vice
 for i in  CellServDB SuidCells 
-        do cp -p /afs/athena/service/$i etc/ ; done
+	do
+	cp -p /afs/athena/service/$i etc/
+	chown root:root etc/$i
+	chmod a+r etc/$i
+done
 echo "Copied afs service files into var/usr/vice/etc"
 
 echo "turn fs slow"
