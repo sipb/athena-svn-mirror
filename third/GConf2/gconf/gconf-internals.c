@@ -828,7 +828,6 @@ gconf_load_source_path(const gchar* filename, GError** err)
   FILE* f;
   GSList *l = NULL;
   gchar buf[512];
-  guint n;
 
   f = fopen(filename, "r");
 
@@ -886,9 +885,12 @@ gconf_load_source_path(const gchar* filename, GError** err)
           if (*varsubst != '\0') /* Drop lines with just two quote marks or something */
             {
               gconf_log(GCL_DEBUG, _("Adding source `%s'\n"), varsubst);
-              l = g_slist_append (l, g_strdup(varsubst));
+              l = g_slist_append (l, varsubst);
             }
-          g_free(varsubst);
+	  else
+	    {
+	      g_free (varsubst);
+	    }
         }
     }
 
@@ -906,15 +908,6 @@ gconf_load_source_path(const gchar* filename, GError** err)
 
   fclose(f);  
 
-  /* This will make sense if you realize that we reversed the list 
-     as we loaded it, and are now reversing it to be correct again. 
-  */
-
-  if (l == NULL)
-    return NULL;
-
-  n = g_slist_length(l);
-  g_assert(n > 0);
   return l;
 }
 
@@ -3055,7 +3048,8 @@ gconf_activate_server (gboolean  start_if_not_found,
 
   g_string_free (failure_log, TRUE);
   
-  close (p[0]);
+  if (p[0] != -1)
+    close (p[0]);
   
   return server;
 }
