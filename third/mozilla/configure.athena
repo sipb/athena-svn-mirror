@@ -1,12 +1,19 @@
 #!/bin/sh
 
+common_options="--enable-crypto --disable-debug --disable-tests"
+
 case $OS in
 linux)
-  optimize=-O2
+  ./configure --enable-optimize=-O2 $common_options
   ;;
 solaris)
-  optimize=-O3
+  CC=/afs/athena/software/sunsoft_v7/SUNWspro/bin/cc \
+  CXX=/afs/athena/software/sunsoft_v7/SUNWspro/bin/CC \
+  CFLAGS="-xlibmil" \
+  CXXFLAGS="-xlibmil -xlibmopt" \
+  CPPFLAGS=-D_REENTRANT \
+  LDFLAGS= \
+  ./configure --with-gtk-prefix=/usr/sfw --with-glib-prefix=/usr/sfw \
+    --enable-optimize=-xO2 $common_options
   ;;
 esac
-
-exec ./configure --enable-crypto --disable-debug --enable-optimize=$optimize
