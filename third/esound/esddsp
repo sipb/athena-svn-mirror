@@ -94,7 +94,7 @@ if test "$verbose" = 1; then
 fi
 
 # setup esd to hijack calls made to /dev/dsp
-prefix=/home/b/gnome2/head
+prefix=/usr
 exec_prefix=${prefix}
 
 LD_PRELOAD="${exec_prefix}/lib/libesddsp.so.0 ${exec_prefix}/lib/libesd.so.0 $LD_PRELOAD"

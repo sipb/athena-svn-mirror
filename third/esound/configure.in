@@ -6,7 +6,7 @@ AM_CONFIG_HEADER(config.h)
 
 ESD_MAJOR_VERSION=0
 ESD_MINOR_VERSION=2
-ESD_MICRO_VERSION=29
+ESD_MICRO_VERSION=33
 ESD_VERSION=$ESD_MAJOR_VERSION.$ESD_MINOR_VERSION.$ESD_MICRO_VERSION
 
 dnl set version info for libesd.so to package rev - $MAJOR + $MINOR : $MICRO : $MINOR
@@ -24,6 +24,7 @@ AM_MAINTAINER_MODE
 
 AC_PROG_CC
 AC_PROG_CPP
+AC_LIBTOOL_WIN32_DLL
 AM_PROG_LIBTOOL
 
 
@@ -46,20 +47,30 @@ AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(setenv putenv fchown fchmod gethostbyname2)
 AC_CHECK_FUNC(connect,,[AC_CHECK_LIB(socket,connect)])
 AC_CHECK_FUNC(gethostbyname,,[AC_CHECK_LIB(nsl,gethostbyname)])
+AC_CHECK_FUNC(hstrerror,,[AC_CHECK_LIB(resolv,hstrerror)])
 AC_CHECK_FUNC(nanosleep,,[
   AC_CHECK_LIB(rt,nanosleep,,[AC_CHECK_LIB(posix4,nanosleep)])])
 AC_CHECK_FUNCS(usleep)
-AC_CHECK_FUNC(inet_aton,,[AC_CHECK_LIB(resolv,inet_aton)])
 AC_CHECK_FUNCS(strtok_r)
+
+use_inet_pton=no
+AC_CHECK_FUNC(inet_pton,use_inet_pton=yes,[AC_CHECK_LIB(resolv,inet_pton)])
+       if test "x$use_inet_pton" = "xyes"; then
+               case $ac_cv_func_inet_pton/$ac_cv_lib_resolv_inet_pton in
+               no/no) ;;
+               *) AC_DEFINE(HAVE_INET_PTON)
+               esac
+       else
+               AC_CHECK_FUNC(inet_aton,,[AC_CHECK_LIB(resolv,inet_aton)])
+               case $ac_cv_func_inet_aton/$ac_cv_lib_resolv_inet_aton in
+               no/no) ;;
+               *) AC_DEFINE(HAVE_INET_ATON)
+               esac
+       fi
 
 case $ac_cv_func_nanosleep/$ac_cv_lib_rt_nanosleep/$ac_cv_lib_posix4_nanosleep in
 no/no/no) ;;
 *) AC_DEFINE(HAVE_NANOSLEEP)
-esac
-
-case $ac_cv_func_inet_aton/$ac_cv_lib_resolv_inet_aton in 
-no/no) ;;
-*) AC_DEFINE(HAVE_INET_ATON)
 esac
 
 dnl Check if INADDR_LOOPBACK exists
@@ -70,6 +81,48 @@ AC_TRY_COMPILE([
     [unsigned long ul = INADDR_LOOPBACK;],,
     [AC_DEFINE(INADDR_LOOPBACK, (u_int32_t)0x7f000001)])
     
+
+dnl ========================================================================
+dnl Begin IPv6 checks
+dnl ========================================================================
+AC_MSG_CHECKING([whether to enable ipv6])
+AC_ARG_ENABLE(ipv6, [  --enable-ipv6 enable IPv6 extensions], ,enable_ipv6=yes)
+
+if test $enable_ipv6 = yes; then
+  AC_TRY_COMPILE([
+    #include <sys/types.h>
+    #include <sys/socket.h>], [
+    socket(AF_INET6, SOCK_STREAM, 0)
+    ],
+    have_ipv6=yes,
+    have_ipv6=no
+  )
+  AC_MSG_RESULT($have_ipv6)
+
+  if test $have_ipv6=yes; then
+    have_getaddrinfo=no
+    AC_CHECK_FUNC(getaddrinfo, have_getaddrinfo=yes)
+    if test $have_getaddrinfo = no; then
+      for lib in bsd socket inet; do
+        AC_CHECK_LIB($lib,getaddrinfo,[LIBS="$LIBS -l$lib";have_getaddrinfo=yes;break])
+      done
+    fi
+
+    if test $have_getaddrinfo = yes; then
+      AC_DEFINE(ENABLE_IPV6)
+    fi
+
+
+    dnl Check for inet_ntop. We need it only for debugging
+    AC_CHECK_FUNC(inet_ntop, AC_DEFINE(HAVE_INET_NTOP))
+  fi
+else
+  AC_MSG_RESULT(no)
+fi
+
+dnl ========================================================================
+dnl End of IPv6 checks
+dnl ========================================================================
 
 dnl Check if SUN_LEN exists
 
@@ -111,6 +164,7 @@ if test "x$enable_local_sound" = "xyes"; then
    AC_CHECK_HEADERS(soundcard.h sys/soundcard.h machine/soundcard.h sys/audio.h)
    AC_CHECK_HEADERS(sys/audioio.h sys/audio.io.h sun/audioio.h)
    AC_CHECK_HEADERS(dmedia/audio.h sys/soundlib.h sys/asoundlib.h alsa/asoundlib.h)
+   AC_CHECK_HEADERS(CoreAudio/CoreAudio.h)
    # mme_api.h directly includes other files from the mme subdir
    xCPPFLAGS="$CPPFLAGS"
    CPPFLAGS="$CPPFLAGS -I/usr/include/mme"
@@ -194,6 +248,12 @@ if test "x$enable_local_sound" = "xyes"; then
       fi
    fi
 
+   if test "${ac_cv_header_CoreAudio_CoreAudio_h}" = "yes"; then
+      found_sound=yes
+      AC_DEFINE(DRIVER_COREAUDIO)
+      SOUND_LIBS="-Wl,-framework -Wl,CoreAudio"
+   fi
+
    if test "$found_sound" = "no"; then
       AC_MSG_ERROR([Could not find a support sound driver])
    fi
@@ -209,6 +269,24 @@ if test "x$enable_local_sound" = "xyes"; then
       AC_CHECK_FUNC(snd_cards,,[AC_CHECK_LIB(sound,snd_cards)])
       AC_CHECK_FUNC(snd_cards,,[AC_CHECK_LIB(asound,snd_cards)])
       AC_CHECK_FUNC(snd_pcm_pause,,[AC_CHECK_LIB(asound,snd_pcm_pause)])
+
+      dnl Check if ALSA uses new API
+      saved_cflags="$CFLAGS"
+      CFLAGS="$CFLAGS -Werror"
+      echo -n "checking for alsa new PCM API... "
+      AC_TRY_LINK([
+	  #include <alsa/asoundlib.h>
+	  ], [
+	  snd_pcm_t *pcm;
+	  snd_pcm_hw_params_t *params;
+	  unsigned int val;
+	  int dir;
+	  /* intentionally not uses pointers, trying to replicate bug 129709 */
+	  snd_pcm_hw_params_set_rate_near(pcm, params, val, &dir);
+	  ],[ echo "no" ], AC_DEFINE(DRIVER_ALSA_09_NEW_PCM_API) [ echo "yes" ],
+	  ])
+
+      CFLAGS="$saved_cflags"
    fi
 else
    AC_DEFINE(DRIVER_NONE)

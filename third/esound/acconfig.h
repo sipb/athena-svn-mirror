@@ -8,15 +8,20 @@
 #undef DRIVER_ALSA
 #undef DRIVER_NEWALSA
 #undef DRIVER_ALSA_09
+#undef DRIVER_ALSA_09_NEW_PCM_API
 #undef DRIVER_DART
+#undef DRIVER_COREAUDIO
 #undef DRIVER_NONE
 #undef HAVE_INET_ATON
+#undef HAVE_INET_PTON
 #undef HAVE_NANOSLEEP
 #undef USE_LIBWRAP
 #undef WITH_SYMBOL_UNDERSCORE
 #undef ESDBG 
 
 #undef INADDR_LOOPBACK
+#undef ENABLE_IPV6
+#undef HAVE_INET_NTOP
 #undef HAVE_SUN_LEN
 
 /* Define this for AF_UNIX sockets support on OS/2 */
