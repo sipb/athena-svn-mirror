@@ -56,7 +56,7 @@ static void _init(void) __attribute__ ((section (".init")));
 /* Athena mod -- force use of _init, since __attribute__ ((constructor))
  * extension does not seem to work for shared libraries.
  */
-#if !defined(linux) && defined __GNUC__ && ( ( __GNUC__ == 2 ) && ( __GNUC_MINOR__ >= 96) || ( __GNUC__ >= 3) )
+#if !defined(linux) && !defined(sgi) && defined __GNUC__ && ( ( __GNUC__ == 2 ) && ( __GNUC_MINOR__ >= 96) || ( __GNUC__ >= 3) )
 void initialize (void) __attribute__ ((constructor));
 void initialize (void)
 #else
