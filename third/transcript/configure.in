@@ -1,10 +1,10 @@
-dnl $Header: /afs/dev.mit.edu/source/repository/third/transcript/configure.in,v 1.1 1996-10-14 04:30:10 ghudson Exp $
+dnl $Header: /afs/dev.mit.edu/source/repository/third/transcript/configure.in,v 1.2 1999-01-29 17:41:57 ghudson Exp $
 dnl
 dnl This is the global Autoconf template for TranScript on Athena.
 dnl It was mostly designed to make life easier than with the Adobe mess.
 
-AC_REVISION([$Revision: 1.1 $
-[#] RCS-$Header: /afs/dev.mit.edu/source/repository/third/transcript/configure.in,v 1.1 1996-10-14 04:30:10 ghudson Exp $
+AC_REVISION([$Revision: 1.2 $
+[#] RCS-$Header: /afs/dev.mit.edu/source/repository/third/transcript/configure.in,v 1.2 1999-01-29 17:41:57 ghudson Exp $
 [#]])dnl
 AC_INIT(src/enscript.c)dnl
 
@@ -39,10 +39,10 @@ dnl
 AC_CHECK_TYPE(time_t,long)
 dnl
 dnl Find makedev.  (ditroff uses /usr/lib, vendors use God knows what.)
+dnl groff doesn't use makedev, so if it's not there, just ignore it.
 dnl
 mdevPATH=/usr/lib:/usr/bin
-AC_PATH_PROG(MAKEDEV,makedev,,$mdevPATH)
-test -n "${MAKEDEV}" || AC_MSG_ERROR(cannot find makedev in ${mdevPATH})
+AC_PATH_PROG(MAKEDEV,makedev,:,$mdevPATH)
 
 ### Generate output...
 AC_CONFIG_HEADER(src/config-defs.h)
