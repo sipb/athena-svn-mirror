@@ -1,4 +1,4 @@
-# $Id: packages,v 1.136 2001-05-18 03:18:33 zacheiss Exp $
+# $Id: packages,v 1.137 2001-06-05 19:15:47 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -167,6 +167,7 @@ third/lprng/athena		package lprng-misc
 third/lprng/ifhp
 third/lprng/lprng		requires krb5,zephyr,hesiod
 third/mdoc
+third/mingetty			on linux
 third/motif			on linux
 third/motif/clients/mwm		on solaris
 third/nmh			requires krb5,hesiod
