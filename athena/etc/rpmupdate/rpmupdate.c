@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.16 2002-05-14 22:08:57 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.17 2002-05-14 23:24:18 ghudson Exp $";
 
 #define _GNU_SOURCE
 #include <sys/types.h>
@@ -515,7 +515,9 @@ static void *notify(const void *arg, rpmCallbackType what,
       if (amount == total)
 	{
 	  ndata->packages++;
-	  printf(" [%3d%%]\n", ndata->packages * 100 / ndata->npackages);
+	  printf(" [%3d%%]\n",
+		 (ndata->packages == 0) ? 100
+		 : ndata->packages * 100 / ndata->npackages);
 	}
       break;
 
@@ -534,7 +536,7 @@ static void print_hash(struct notify_data *ndata, int amount)
 {
   int n;
 
-  n = 43 * amount / ndata->total;
+  n = (ndata->total == 0) ? 43 : 43 * amount / ndata->total;
   for (; ndata->hashmarks_printed < n; ndata->hashmarks_printed++)
     putchar('#');
   fflush(stdout);
