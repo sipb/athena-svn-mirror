@@ -1,100 +1,29 @@
+/* Copyright 1998 by the Massachusetts Institute of Technology.
+ *
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ */
+
+static char rcsid[] = "$Id: athdir.c,v 1.3 1998-03-17 03:46:02 cfields Exp $";
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/param.h>		/* MAXPATHLEN */
+#include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
-#define NUMCONVENTIONS 5
-
-#ifdef ultrix
-#define HOSTTYPESET 1
-#define HOSTTYPE "decmips"
-#endif
-
-#ifdef _IBMR2
-#define HOSTTYPESET 1
-#define HOSTTYPE "rsaix"
-#endif
-
-#ifdef SOLARIS
-#define HOSTTYPESET 1
-#define HOSTTYPE "sun4"
-#endif
-
-#ifdef linux
-#define HOSTTYPESET 1
-#define HOSTTYPE "linux"
-#endif
-
-/*
- * Don't define HOSTTYPE on platforms for which `machtype`bin was
- * never widely used.
- */
-
-/*
- * This should be passed in as a compile flag.
- */
-#ifndef ATHSYS
-#define ATHSYS "@sys"
-#endif
-
-char *athsys = ATHSYS;
-
-#ifdef HOSTTYPE
-int hosttypeset = 1;
-char *hosttype = HOSTTYPE;
-#else
-int hosttypeset = 0;
-char *hosttype = NULL;
-#endif
+#include <athdir.h>
 
 char *progName;
-
-/*
- * Definition of known conventions and what flavors they are.
- */
-
-typedef struct {
-  char *name;
-  int flavor;
-} Convention;
-
-#define ARCHflavor (1<<0)
-#define MACHflavor (1<<1)
-#define PLAINflavor (1<<2)
-#define SYSflavor (1<<3)
-#define DEPENDENTflavor (1<<8)
-#define INDEPENDENTflavor (1<<9)
-
-Convention conventions[NUMCONVENTIONS] = {
-  { NULL,		ARCHflavor | MACHflavor | PLAINflavor |
-      			DEPENDENTflavor | INDEPENDENTflavor },
-  { "%p/arch/%s/%t",	ARCHflavor | DEPENDENTflavor },
-  { "%p/%s/%t",		SYSflavor | DEPENDENTflavor },
-  { "%p/%m%t",		MACHflavor | DEPENDENTflavor },
-  { "%p/%t",		PLAINflavor | INDEPENDENTflavor }
-};
-
-/*
- * Editorial tagging for what conventions are acceptable or
- * preferable for what types.
- */
-
-typedef struct {
-  char *type;
-  int allowedFlavors;	/* searching parameters */
-  int preferredFlavor;	/* creating paramaters */
-} Editorial;
-
-Editorial editorials[] = {
-  { "bin",	ARCHflavor | SYSflavor | MACHflavor,	DEPENDENTflavor },
-  { "lib",	ARCHflavor | SYSflavor | MACHflavor,	DEPENDENTflavor },
-  { "etc",	ARCHflavor | SYSflavor | MACHflavor,	DEPENDENTflavor },
-  { "man",	ARCHflavor | PLAINflavor,		INDEPENDENTflavor },
-  { "include",	ARCHflavor | PLAINflavor,		INDEPENDENTflavor },
-  { NULL,	ARCHflavor | PLAINflavor,		DEPENDENTflavor }
-};
 
 usage()
 {
@@ -107,88 +36,20 @@ usage()
   exit(1);
 }
 
-/*
- * path = template(dir, type, sys, machine)
- *	%p = path (dir)
- *	%t = type
- *	%s = sys
- *	%m = machine
- * %foo is inserted if the corresponding string is NULL.
- * If this happens, expand returns 1 (not a valid path).
- * Otherwise, expand returns 0.
- */
-expand(path, template, dir, type, sys, machine)
-     char *path, *template, *dir, *type, *sys, *machine;
+void repeatflag(char *option)
 {
-  char *src, *dst;
-  int somenull = 0;
-
-  src = template;
-  dst = path;
-  *dst = '\0';
-
-  while (*src != '\0')
-    {
-      if (*src != '%' && *src != '\0')
-	*dst++ = *src++;
-      else
-	{
-
-#define copystring(casec, cases, string)			\
-	case casec:						\
-	  src++;						\
-	  if (string)						\
-	    {							\
-	      strcpy(dst, string);				\
-	      dst += strlen(string);				\
-	    }							\
-	  else							\
-	    {							\
-	      strcpy(dst, cases);				\
-	      dst += 2;						\
-	      somenull = 1;					\
-	    }							\
-	  break;
-
-	  src++;
-	  switch(*src)
-	    {
-	      copystring('p', "%p", dir);
-	      copystring('t', "%t", type);
-	      copystring('s', "%s", sys);
-	      copystring('m', "%m", machine);
-
-#undef copystring
-
-	    case '\0':
-	      break;
-
-	    default:
-	      *dst++ = '%';
-	      *dst++ = *src++;
-	      break;
-	    }
-	}
-    }
-
-  *dst = '\0';
-  return somenull;
+  fprintf(stderr, "%s: %s already specified.\n", progName, *option);
+  usage();
 }
 
-main(argc, argv)
-     int argc;
-     char **argv;
+main(int argc, char **argv)
 {
-  int numPaths = 0, eflag = 0, cflag = 0, lflag = 0, tflag = 0,
-    sflag = 0, mflag = 0, dflag = 0, iflag = 0;
-  int preferredFlavor = 0;
-  char **pathList, *type = NULL, *tmp;
-  char *recsep = NULL;
-  char path[MAXPATHLEN];
-  struct stat statbuf;
+  int num_dirs = 0, flags = 0, mflag = 0;
+  char **dir_list, *type = NULL, *athsys = NULL, *hosttype = NULL;
+  char *auxconvention = NULL, *recsep = NULL, **ptr;
+  char **path_list;
   int i, j, t;
-  int complete;
-  int failed, status = 0, first = 1;
+  int failed, match = 0;
 
   progName = strrchr(argv[0], '/');
   if (progName != NULL)
@@ -200,22 +61,20 @@ main(argc, argv)
     usage();
 
   if (argc)
-    pathList = malloc((argc + 1) * sizeof(char *));
+    dir_list = malloc((argc + 1) * sizeof(char *));
 
-  /*
-   * ATHENA_SYS environment variable overrides hard-coded
-   * value.
-   */
-  tmp = getenv("ATHENA_SYS");
-  if (tmp != NULL && strchr(tmp, '/') == NULL)
-    athsys = tmp;
+  if (dir_list == NULL)
+    {
+      fprintf(stderr, "%s: out of memory\n", progName);
+      exit(1);
+    }
 
   if (argv[1][0] != '-')
     {
       if (argc > 3)
 	usage();
 
-      pathList[numPaths++] = argv[1];
+      dir_list[num_dirs++] = argv[1];
 
       if (argv[2])
 	{
@@ -241,89 +100,77 @@ main(argc, argv)
 
 	  switch((*argv)[1])
 	    {
-
-#define repeatflag							\
-		{							\
-		  fprintf(stderr, "%s: %s already specified.\n",	\
-			  progName, *argv);				\
-		  usage();						\
-		}
-
 	    case 't':
-	      if (tflag)
-		repeatflag;
+	      if (type)
+		repeatflag(*argv);
 	      argv++;
 	      if (*argv == NULL)
 		usage();
 	      type = *argv++;
-	      tflag++;
 	      break;
 
 	    case 'p':
-	      if (numPaths != 0)
-		repeatflag;
+	      if (num_dirs != 0)
+		repeatflag(*argv);
 
 	      argv++;
 	      if (*argv == NULL)
 		usage();
 	      while (*argv != NULL && **argv != '-')
-		pathList[numPaths++] = *argv++;
+		dir_list[num_dirs++] = *argv++;
 	      break;
 
 	    case 'e':
-	      if (eflag)
-		repeatflag;
+	      if (flags & ATHDIR_SUPPRESSEDITORIALS)
+		repeatflag(*argv);
 	      argv++;
-	      eflag++;
+	      flags |= ATHDIR_SUPPRESSEDITORIALS;
 	      break;
 
 	    case 'c':
-	      if (cflag)
-		repeatflag;
+	      if (flags & ATHDIR_SUPPRESSSEARCH)
+		repeatflag(*argv);
 	      argv++;
-	      cflag++;
+	      flags |= ATHDIR_SUPPRESSSEARCH;
 	      break;
 
 	    case 'l':
-	      if (lflag)
-		repeatflag;
+	      if (flags & ATHDIR_LISTSEARCHDIRECTORIES)
+		repeatflag(*argv);
 	      argv++;
-	      lflag++;
+	      flags |= ATHDIR_LISTSEARCHDIRECTORIES;
 	      break;
 
 	    case 's':
-	      if (sflag)
-		repeatflag;
+	      if (athsys)
+		repeatflag(*argv);
 	      argv++;
 	      if (*argv == NULL)
 		usage();
 	      athsys = *argv++;
-	      sflag++;
 	      break;
 
 	    case 'm':
-	      if (mflag)
-		repeatflag;
+	      if (hosttype != NULL)
+		repeatflag(*argv);
 	      argv++;
 	      if (*argv == NULL)
 		usage();
 	      hosttype = *argv++;
-	      hosttypeset = 1;
-	      mflag++;
 	      break;
 
 	    case 'f':
-	      if (conventions[0].name)
-		repeatflag;
+	      if (auxconvention)
+		repeatflag(*argv);
 	      argv++;
 	      if (*argv == NULL)
 		usage();
-	      conventions[0].name = *argv++;
+	      auxconvention = *argv++;
 	      break;
 
 	    case 'r':
 	      if (recsep != NULL)
-		repeatflag;
+		repeatflag(*argv);
 	      argv++;
 	      if (*argv == NULL)
 		usage();
@@ -331,19 +178,17 @@ main(argc, argv)
 	      break;
 
 	    case 'd':
-	      if (dflag)
-	        repeatflag;
+	      if (flags & ATHDIR_MACHINEDEPENDENT)
+	        repeatflag(*argv);
 	      argv++;
-	      dflag++;
-	      preferredFlavor = DEPENDENTflavor;
+	      flags |= ATHDIR_MACHINEDEPENDENT;
 	      break;
 
 	    case 'i':
-	      if (iflag)
-	        repeatflag;
+	      if (flags & ATHDIR_MACHINEINDEPENDENT)
+	        repeatflag(*argv);
 	      argv++;
-	      iflag++;
-	      preferredFlavor = INDEPENDENTflavor;
+	      flags |= ATHDIR_MACHINEINDEPENDENT;
 	      break;
 
 	    default:
@@ -354,100 +199,52 @@ main(argc, argv)
 	}
     }
 
-  if (!numPaths)
-    pathList[numPaths++] = NULL;
+  if (!num_dirs)
+    dir_list[num_dirs++] = NULL;
 
+  /* Default record separator is a newline. */
   if (!recsep)
     recsep = "\n";
 
-  /*
-   * You are in a twisty little maze of interconnecting
-   * command line options, all different.
-   */
-  for (i = 0; i < numPaths; i++)
+  for (i = 0; i < num_dirs; i++)
     {
-      /* Find matching editorial. */
-      for (t = 0; editorials[t].type != NULL; t++)
-	if (type != NULL &&
-	    !strcmp(type, editorials[t].type))
-	  break;
-
-      if (!preferredFlavor)
-	preferredFlavor = editorials[t].preferredFlavor;
-
-      failed = 1;
-
-      /* Cycle through matching conventions */
-      for (j = 0; j < NUMCONVENTIONS; j++)
+      path_list = athdir_get_paths(dir_list[i], type, athsys, NULL, hosttype,
+				   auxconvention, flags);
+      if (path_list != NULL)
 	{
-	  if (conventions[j].name == NULL)
-	    continue; /* User specified convention is not set. */
-
-	  if (/* -e: explicit editorial override */
-	      eflag || 
-
-	      /* -d, -i also imply override, but only have meaning with -c */
-	      ((dflag || iflag) && cflag) || 
-
-	      /* otherwise, we make our editorial comments */
-	      (editorials[t].allowedFlavors & conventions[j].flavor))
+	  for (ptr = path_list; *ptr != NULL; ptr++)
 	    {
-	      if (cflag &&
-		  !(preferredFlavor & conventions[j].flavor))
-		continue;
-
-	      complete = !expand(path, conventions[j].name,
-				pathList[i], type, athsys, hosttype);
-
-	      if (lflag ||
-		  (cflag && complete))
-		{
-		  if (!first)
-		    fprintf(stdout, "%s", recsep);
-		  fprintf(stdout, "%s", path);
-		  first = 0;
-		  failed = 0;
-		  if (cflag)
-		    break;
-		}
-
-	      if (complete && !lflag && !cflag &&
-		  !stat(path, &statbuf))
-		{
-		  if (!first)
-		    fprintf(stdout, "%s", recsep);
-		  fprintf(stdout, "%s", path);
-		  first = 0;
-		  failed = 0;
-		  break;
-		}
+	      if (match == 1)
+		fprintf(stdout, "%s", recsep);
+	      match = 1;
+	      fprintf(stdout, "%s", *ptr);
 	    }
+
+	  athdir_free_paths(path_list);
 	}
-      if (failed)
-	status = 1;
     }
 
-  if (!first)
+  if (match)
     fprintf(stdout, "\n");
 
 #ifdef DEBUG
   fprintf(stdout, "%s ", progName);
   if (type != NULL)
     fprintf(stdout, "-t %s ", type);
-  if (numPaths)
+  if (num_dirs)
     {
       fprintf(stdout, "-p ");
-      for (i = 0; i < numPaths; i++)
-	fprintf(stdout, "%s ", pathList[i]);
+      for (i = 0; i < num_dirs; i++)
+	fprintf(stdout, "%s ", dir_list[i]);
     }
-  if (eflag)
+  if (ATHDIR_SUPPRESSEDITORIALS & flags)
     fprintf(stdout, "-e ");
-  if (cflag)
+  if (ATHDIR_SUPPRESSSEARCH & flags)
     fprintf(stdout, "-c ");
-  if (lflag)
+  if (ATHDIR_LISTSEARCHDIRECTORIES & flags)
     fprintf(stdout, "-l ");
   fprintf(stdout, "\n");
 #endif
 
-  exit(status);
+  exit(match == 0);
 }
