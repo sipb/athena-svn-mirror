@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v $
- *	$Id: ask.c,v 1.12 1991-02-24 11:31:55 lwvanels Exp $
+ *	$Id: ask.c,v 1.13 1991-03-28 23:57:05 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.12 1991-02-24 11:31:55 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.13 1991-03-28 23:57:05 lwvanels Exp $";
 #endif
 #endif
 
@@ -78,6 +78,7 @@ OAsk(Request,topic,file)
       return(status);
     }
 
+#ifdef ATHENA
 #ifdef m68k
   strcpy(machinfo,"Macintosh AUX, 8M");
 #else
@@ -89,7 +90,13 @@ OAsk(Request,topic,file)
       strcat(machinfo, ", ");
     }
   machinfo[strlen(machinfo) - 2] = '\0';
-#endif
+#endif /* m68k */
+#else
+  /* Put something useful for your machine; typically
+     processor, display, memory
+  */
+  strcpy(machinfo,"No Machine Information compiled in\n");
+#endif /* Athena */
   write_text_to_fd(fd, machinfo);
   read_response(fd, &status);
 
