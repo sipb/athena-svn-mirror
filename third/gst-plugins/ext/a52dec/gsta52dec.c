@@ -17,10 +17,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <string.h>
 
 #include <stdlib.h>
-#include <stdint.h>
+#include "_stdint.h"
+
 #include <gst/gst.h>
 #include <a52dec/a52.h>
 #include <a52dec/mm_accel.h>
@@ -29,14 +34,13 @@
 /* elementfactory information */
 static GstElementDetails gst_a52dec_details = {
   "ATSC A/52 audio decoder",
-  "Codec/Audio/Decoder",
-  "GPL",
+  "Codec/Decoder/Audio",
   "Decodes ATSC A/52 encoded audio streams",
-  VERSION,
   "David I. Lehn <dlehn@users.sourceforge.net>",
-  "(C) 2001",
 };
 
+GST_DEBUG_CATEGORY_STATIC (a52dec_debug);
+#define GST_CAT_DEFAULT (a52dec_debug)
 
 /* A52Dec signals and args */
 enum
@@ -48,61 +52,44 @@ enum
 enum
 {
   ARG_0,
-  ARG_DRC,
-  ARG_STREAMINFO
+  ARG_DRC
 };
 
 /*
- * "audio/a52" and "audio/ac3" are the same format.  The name
- * "ac3" is now deprecated and should not be used in new code.
+ * "audio/a52", "audio/x-a52" and "audio/ac3" should not be used (deprecated names)
+ * Only use "audio/x-ac3" in new code.
  */
-GST_PAD_TEMPLATE_FACTORY (sink_factory,
-  "sink",
-  GST_PAD_SINK,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "a52dec_sink",
-    "audio/a52",
-     NULL
-  ), 
-  GST_CAPS_NEW (
-    "ac3dec_sink", 
-    "audio/ac3", 
-    NULL
-  )
-);
+static GstStaticPadTemplate sink_factory = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-ac3")
+    );
 
-GST_PAD_TEMPLATE_FACTORY (src_factory,
-  "src",
-  GST_PAD_SRC,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "a52dec_src",
-      "audio/raw",
-       "format", 	GST_PROPS_STRING ("int"),
-       "law", 		GST_PROPS_INT (0),
-       "endianness", 	GST_PROPS_INT (G_BYTE_ORDER),
-       "signed", 	GST_PROPS_BOOLEAN (TRUE),
-       "width",	 	GST_PROPS_INT (16),
-       "depth", 	GST_PROPS_INT (16),
-       "rate", 		GST_PROPS_INT_RANGE (4000, 48000),
-       "channels", 	GST_PROPS_INT_RANGE (1, 6)
-  )
-);
+static GstStaticPadTemplate src_factory = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "endianness = (int) BYTE_ORDER, "
+        "signed = (boolean) true, "
+        "width = (int) 16, "
+        "depth = (int) 16, "
+        "rate = (int) [ 4000, 48000 ], " "channels = (int) [ 1, 6 ]")
+    );
 
-static void 		gst_a52dec_class_init 	(GstA52DecClass * klass);
-static void 		gst_a52dec_init 	(GstA52Dec * a52dec);
+static void gst_a52dec_base_init (gpointer g_class);
+static void gst_a52dec_class_init (GstA52DecClass * klass);
+static void gst_a52dec_init (GstA52Dec * a52dec);
 
-static void 		gst_a52dec_loop 	(GstElement * element);
-static GstElementStateReturn 
-			gst_a52dec_change_state (GstElement * element);
+static void gst_a52dec_loop (GstElement * element);
+static GstElementStateReturn gst_a52dec_change_state (GstElement * element);
 
-static void 		gst_a52dec_set_property (GObject * object, guint prop_id,
-				    		 const GValue * value, GParamSpec * pspec);
-static void 		gst_a52dec_get_property (GObject * object, guint prop_id,
-				    		 GValue * value, GParamSpec * pspec);
+static void gst_a52dec_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_a52dec_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 
 static GstElementClass *parent_class = NULL;
+
 /* static guint gst_a52dec_signals[LAST_SIGNAL] = { 0 }; */
 
 GType
@@ -112,7 +99,9 @@ gst_a52dec_get_type (void)
 
   if (!a52dec_type) {
     static const GTypeInfo a52dec_info = {
-      sizeof (GstA52DecClass), NULL, NULL, (GClassInitFunc) gst_a52dec_class_init,
+      sizeof (GstA52DecClass),
+      gst_a52dec_base_init,
+      NULL, (GClassInitFunc) gst_a52dec_class_init,
       NULL,
       NULL,
       sizeof (GstA52Dec),
@@ -120,9 +109,25 @@ gst_a52dec_get_type (void)
       (GInstanceInitFunc) gst_a52dec_init,
     };
 
-    a52dec_type = g_type_register_static (GST_TYPE_ELEMENT, "GstA52Dec", &a52dec_info, 0);
+    a52dec_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstA52Dec", &a52dec_info, 0);
+
+    GST_DEBUG_CATEGORY_INIT (a52dec_debug, "a52dec", 0,
+        "AC3/A52 software decoder");
   }
   return a52dec_type;
+}
+
+static void
+gst_a52dec_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_factory));
+  gst_element_class_set_details (element_class, &gst_a52dec_details);
 }
 
 static void
@@ -136,12 +141,8 @@ gst_a52dec_class_init (GstA52DecClass * klass)
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DRC,
-    g_param_spec_boolean ("drc", "Dynamic Range Compression",
-                          "Use Dynamic Range Compression", FALSE,
-                          G_PARAM_READWRITE));
-  g_object_class_install_property (gobject_class, ARG_STREAMINFO,
-    g_param_spec_boxed ("streaminfo", "Streaminfo", "Streaminfo",
-                        GST_TYPE_CAPS, G_PARAM_READABLE));
+      g_param_spec_boolean ("drc", "Dynamic Range Compression",
+          "Use Dynamic Range Compression", FALSE, G_PARAM_READWRITE));
 
   gobject_class->set_property = gst_a52dec_set_property;
   gobject_class->get_property = gst_a52dec_get_property;
@@ -153,15 +154,20 @@ static void
 gst_a52dec_init (GstA52Dec * a52dec)
 {
   /* create the sink and src pads */
-  a52dec->sinkpad = gst_pad_new_from_template (GST_PAD_TEMPLATE_GET (sink_factory), "sink");
+  a52dec->sinkpad =
+      gst_pad_new_from_template (gst_element_get_pad_template (GST_ELEMENT
+          (a52dec), "sink"), "sink");
   gst_element_add_pad (GST_ELEMENT (a52dec), a52dec->sinkpad);
   gst_element_set_loop_function ((GstElement *) a52dec, gst_a52dec_loop);
 
-  a52dec->srcpad = gst_pad_new_from_template (GST_PAD_TEMPLATE_GET (src_factory), "src");
+  a52dec->srcpad =
+      gst_pad_new_from_template (gst_element_get_pad_template (GST_ELEMENT
+          (a52dec), "src"), "src");
+  gst_pad_use_explicit_caps (a52dec->srcpad);
   gst_element_add_pad (GST_ELEMENT (a52dec), a52dec->srcpad);
 
+  GST_FLAG_SET (GST_ELEMENT (a52dec), GST_ELEMENT_EVENT_AWARE);
   a52dec->dynamic_range_compression = FALSE;
-  a52dec->streaminfo = NULL;
 }
 
 /* BEGIN modified a52dec conversion code */
@@ -306,7 +312,8 @@ gst_a52dec_channels (int flags)
 }
 
 static int
-gst_a52dec_push (GstPad * srcpad, int flags, sample_t * _samples, gint64 timestamp)
+gst_a52dec_push (GstPad * srcpad, int flags, sample_t * _samples,
+    GstClockTime timestamp)
 {
   GstBuffer *buf;
   int chans;
@@ -334,7 +341,7 @@ gst_a52dec_push (GstPad * srcpad, int flags, sample_t * _samples, gint64 timesta
   GST_BUFFER_TIMESTAMP (buf) = timestamp;
   float_to_int (samples, (int16_t *) GST_BUFFER_DATA (buf), flags);
 
-  gst_pad_push (srcpad, buf);
+  gst_pad_push (srcpad, GST_DATA (buf));
 
   return 0;
 }
@@ -344,26 +351,19 @@ gst_a52dec_push (GstPad * srcpad, int flags, sample_t * _samples, gint64 timesta
 static void
 gst_a52dec_reneg (GstPad * pad, int channels, int rate)
 {
-  GST_INFO (GST_CAT_PLUGIN_INFO, "a52dec: reneg channels:%d rate:%d\n", channels, rate);
+  GST_INFO ("a52dec: reneg channels:%d rate:%d\n", channels, rate);
 
-  if (gst_pad_try_set_caps (pad, 
-		  GST_CAPS_NEW ("a52dec_src_caps",
-			        "audio/raw",
-				  "format", 	GST_PROPS_STRING ("int"),
-				  "law", 	GST_PROPS_INT (0),
-				  "endianness",	GST_PROPS_INT (G_BYTE_ORDER),
-				  "signed", 	GST_PROPS_BOOLEAN (TRUE),
-				  "width", 	GST_PROPS_INT (16),
-				  "depth", 	GST_PROPS_INT (16),
-				  "channels", 	GST_PROPS_INT (channels),
-				  "rate", 	GST_PROPS_INT (rate))
-		    ) <= 0) {
-    gst_element_error (GST_PAD_PARENT (pad), "could not set caps on source pad, aborting...");
-  }
+  gst_pad_set_explicit_caps (pad,
+      gst_caps_new_simple ("audio/x-raw-int",
+          "endianness", G_TYPE_INT, G_BYTE_ORDER,
+          "signed", G_TYPE_BOOLEAN, TRUE,
+          "width", G_TYPE_INT, 16,
+          "depth", G_TYPE_INT, 16,
+          "channels", G_TYPE_INT, channels, "rate", G_TYPE_INT, rate, NULL));
 }
 
 static void
-gst_a52dec_handle_event (GstA52Dec *a52dec)
+gst_a52dec_handle_event (GstA52Dec * a52dec)
 {
   guint32 remaining;
   GstEvent *event;
@@ -375,36 +375,35 @@ gst_a52dec_handle_event (GstA52Dec *a52dec)
     return;
   }
 
+  GST_LOG ("Handling event of type %d timestamp %llu", GST_EVENT_TYPE (event),
+      GST_EVENT_TIMESTAMP (event));
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_DISCONTINUOUS:
+    case GST_EVENT_FLUSH:
       gst_bytestream_flush_fast (a52dec->bs, remaining);
+      break;
     default:
-      gst_pad_event_default (a52dec->sinkpad, event);
       break;
   }
+  gst_pad_event_default (a52dec->sinkpad, event);
 }
 
 static void
-gst_a52dec_update_streaminfo (GstA52Dec *a52dec)
+gst_a52dec_update_streaminfo (GstA52Dec * a52dec)
 {
-  GstProps *props;
-  GstPropsEntry *entry;
-	      
-  props = gst_props_empty_new ();
-	      
-  entry = gst_props_entry_new ("bitrate", GST_PROPS_INT (a52dec->bit_rate));
-  gst_props_add_entry (props, (GstPropsEntry *) entry);
+  GstTagList *taglist;
 
-  gst_caps_unref (a52dec->streaminfo);
+  taglist = gst_tag_list_new ();
 
-  a52dec->streaminfo = gst_caps_new ("a52dec_streaminfo",
-	                             "application/x-gst-streaminfo",
-				     props);
-  g_object_notify (G_OBJECT (a52dec), "streaminfo");
+  gst_tag_list_add (taglist, GST_TAG_MERGE_APPEND,
+      GST_TAG_BITRATE, (guint) a52dec->bit_rate, NULL);
+
+  gst_element_found_tags_for_pad (GST_ELEMENT (a52dec),
+      GST_PAD (a52dec->srcpad), a52dec->current_ts, taglist);
 }
 
 static void
-gst_a52dec_loop (GstElement *element)
+gst_a52dec_loop (GstElement * element)
 {
   GstA52Dec *a52dec;
   guint8 *data;
@@ -413,28 +412,31 @@ gst_a52dec_loop (GstElement *element)
   GstBuffer *buf;
   guint32 got_bytes;
   gboolean need_reneg;
-  GstClockTime timestamp;
+  GstClockTime timestamp = 0;
 
   a52dec = GST_A52DEC (element);
 
   /* find and read header */
-  while (1) {
-    got_bytes = gst_bytestream_peek_bytes (a52dec->bs, &data, 7);
-    if (got_bytes < 7) {
-      gst_a52dec_handle_event (a52dec);
-      return;
-    }
-    length = a52_syncinfo (data, &flags, &sample_rate, &bit_rate);
-    if (length == 0) {
-      /* slide window to next 7 bytesa */
-      gst_bytestream_flush_fast (a52dec->bs, 1);
-    }
-    else
-      break;
+  do {
+    gint skipped_bytes = 0;
 
-    /* FIXME this can potentially be an infinite loop, we might
-     * have to insert a yield operation here */
+    while (skipped_bytes < 3840) {
+      got_bytes = gst_bytestream_peek_bytes (a52dec->bs, &data, 7);
+      if (got_bytes < 7) {
+        gst_a52dec_handle_event (a52dec);
+        return;
+      }
+      length = a52_syncinfo (data, &flags, &sample_rate, &bit_rate);
+      if (length == 0) {
+        /* slide window to next 7 bytesa */
+        gst_bytestream_flush_fast (a52dec->bs, 1);
+        skipped_bytes++;
+        GST_LOG ("Skipped");
+      } else
+        break;
+    }
   }
+  while (0);
 
   need_reneg = FALSE;
 
@@ -458,11 +460,12 @@ gst_a52dec_loop (GstElement *element)
   }
   data = GST_BUFFER_DATA (buf);
   timestamp = gst_bytestream_get_timestamp (a52dec->bs);
-  if (timestamp == a52dec->last_ts) {
-    timestamp = a52dec->current_ts;
-  }
-  else {
-    a52dec->last_ts = timestamp;
+  if (GST_CLOCK_TIME_IS_VALID (timestamp)) {
+    if (timestamp == a52dec->last_ts) {
+      timestamp = a52dec->current_ts;
+    } else {
+      a52dec->last_ts = timestamp;
+    }
   }
 
   /* process */
@@ -470,7 +473,7 @@ gst_a52dec_loop (GstElement *element)
   a52dec->level = 1;
 
   if (a52_frame (a52dec->state, data, &flags, &a52dec->level, a52dec->bias)) {
-    g_warning ("a52dec: a52_frame error\n");
+    GST_WARNING ("a52_frame error");
     goto end;
   }
 
@@ -482,7 +485,7 @@ gst_a52dec_loop (GstElement *element)
   }
 
   if (need_reneg == TRUE) {
-    GST_DEBUG (0, "a52dec reneg: sample_rate:%d stream_chans:%d using_chans:%d\n",
+    GST_DEBUG ("a52dec reneg: sample_rate:%d stream_chans:%d using_chans:%d\n",
         a52dec->sample_rate, a52dec->stream_channels, a52dec->using_channels);
     gst_a52dec_reneg (a52dec->srcpad,
         gst_a52dec_channels (a52dec->using_channels), a52dec->sample_rate);
@@ -494,17 +497,21 @@ gst_a52dec_loop (GstElement *element)
 
   for (i = 0; i < 6; i++) {
     if (a52_block (a52dec->state)) {
-      g_warning ("a52dec a52_block error %d\n", i);
+      GST_WARNING ("a52_block error %d", i);
       continue;
     }
     /* push on */
-    if (gst_a52dec_push (a52dec->srcpad, a52dec->using_channels, a52dec->samples, timestamp)) {
-      g_warning ("a52dec push error\n");
-    }
-    else {
-      timestamp += sizeof (int16_t) * 256 * GST_SECOND / a52dec->sample_rate;
+
+    if (gst_a52dec_push (a52dec->srcpad, a52dec->using_channels,
+            a52dec->samples, timestamp)) {
+      GST_WARNING ("a52dec push error");
+    } else {
+
+      if (i % 2)
+        timestamp += 256 * GST_SECOND / a52dec->sample_rate;
     }
   }
+
   a52dec->current_ts = timestamp;
 
 end:
@@ -515,13 +522,23 @@ static GstElementStateReturn
 gst_a52dec_change_state (GstElement * element)
 {
   GstA52Dec *a52dec = GST_A52DEC (element);
+  GstCPUFlags cpuflags;
+  uint32_t a52_cpuflags = 0;
 
   switch (GST_STATE_TRANSITION (element)) {
     case GST_STATE_NULL_TO_READY:
+      a52dec->bs = gst_bytestream_new (a52dec->sinkpad);
+      cpuflags = gst_cpu_get_flags ();
+      if (cpuflags & GST_CPU_FLAG_MMX)
+        a52_cpuflags |= MM_ACCEL_X86_MMX;
+      if (cpuflags & GST_CPU_FLAG_3DNOW)
+        a52_cpuflags |= MM_ACCEL_X86_3DNOW;
+      if (cpuflags & GST_CPU_FLAG_MMXEXT)
+        a52_cpuflags |= MM_ACCEL_X86_MMXEXT;
+
+      a52dec->state = a52_init (a52_cpuflags);
       break;
     case GST_STATE_READY_TO_PAUSED:
-      a52dec->bs = gst_bytestream_new (a52dec->sinkpad);
-      a52dec->state = a52_init (0);	/* mm_accel()); */
       a52dec->samples = a52_samples (a52dec->state);
       a52dec->bit_rate = -1;
       a52dec->sample_rate = -1;
@@ -531,8 +548,11 @@ gst_a52dec_change_state (GstElement * element)
       a52dec->using_channels = A52_CHANNEL;
       a52dec->level = 1;
       a52dec->bias = 384;
-      a52dec->last_ts = -1;
+      a52dec->last_ts = 0;
       a52dec->current_ts = 0;
+      a52dec->last_timestamp = 0;
+      a52dec->last_diff = 0;
+
       break;
     case GST_STATE_PAUSED_TO_PLAYING:
       break;
@@ -542,11 +562,10 @@ gst_a52dec_change_state (GstElement * element)
       gst_bytestream_destroy (a52dec->bs);
       a52dec->bs = NULL;
       a52dec->samples = NULL;
-      a52_free (a52dec->state);
-      a52dec->state = NULL;
-      gst_caps_unref (a52dec->streaminfo);
       break;
     case GST_STATE_READY_TO_NULL:
+      a52_free (a52dec->state);
+      a52dec->state = NULL;
       break;
     default:
       break;
@@ -559,7 +578,8 @@ gst_a52dec_change_state (GstElement * element)
 }
 
 static void
-gst_a52dec_set_property (GObject * object, guint prop_id, const GValue * value, GParamSpec * pspec)
+gst_a52dec_set_property (GObject * object, guint prop_id, const GValue * value,
+    GParamSpec * pspec)
 {
   GstA52Dec *src;
 
@@ -578,7 +598,8 @@ gst_a52dec_set_property (GObject * object, guint prop_id, const GValue * value, 
 }
 
 static void
-gst_a52dec_get_property (GObject * object, guint prop_id, GValue * value, GParamSpec * pspec)
+gst_a52dec_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   GstA52Dec *src;
 
@@ -590,9 +611,6 @@ gst_a52dec_get_property (GObject * object, guint prop_id, GValue * value, GParam
     case ARG_DRC:
       g_value_set_boolean (value, src->dynamic_range_compression);
       break;
-    case ARG_STREAMINFO:
-      g_value_set_boxed (value, src->streaminfo);
-      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -600,30 +618,21 @@ gst_a52dec_get_property (GObject * object, guint prop_id, GValue * value, GParam
 }
 
 static gboolean
-plugin_init (GModule * module, GstPlugin * plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
 
-  /* this filter needs the bytestream package */
   if (!gst_library_load ("gstbytestream"))
     return FALSE;
 
-  /* create an elementfactory for the a52dec element */
-  factory = gst_element_factory_new ("a52dec", GST_TYPE_A52DEC, &gst_a52dec_details);
-  g_return_val_if_fail (factory != NULL, FALSE);
-
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (src_factory));
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (sink_factory));
-  gst_element_factory_set_rank (factory, GST_ELEMENT_RANK_PRIMARY);
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
+  if (!gst_element_register (plugin, "a52dec", GST_RANK_PRIMARY,
+          GST_TYPE_A52DEC))
+    return FALSE;
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "a52dec",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "a52dec",
+    "Decodes ATSC A/52 encoded audio streams",
+    plugin_init, VERSION, "GPL", GST_PACKAGE, GST_ORIGIN);

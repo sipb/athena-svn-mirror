@@ -22,7 +22,7 @@
 #define __GST_SMPTE_H__
 
 #include <gst/gst.h>
-#include <gstmask.h>
+#include "gstmask.h"
 
 #define GST_TYPE_SMPTE \
   (gst_smpte_get_type())
@@ -44,6 +44,7 @@ struct _GstSMPTE {
   gint 		 format;
   gint 		 width;
   gint 		 height;
+  gdouble	 fps;
 
   gint 		 duration;
   gint 		 position;
@@ -53,7 +54,6 @@ struct _GstSMPTE {
   		*sinkpad2;
 
   gint 		 type;
-  gint 		 fps;
   gint 		 border;
   gint 		 depth;
   GstMask	*mask;

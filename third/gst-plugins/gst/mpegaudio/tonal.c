@@ -63,6 +63,10 @@ tonal.c
  * 8/05/93 Masahiro Iwadare     noise_label modification "option"     *
  **********************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "common.h"
 #include "encoder.h"
 #define LONDON                  /* enable "LONDON" modification */
@@ -88,22 +92,25 @@ extern int FAR *mpegaudio_cbound;
 extern int mpegaudio_sub_size;
 
 
-void mpegaudio_make_map(power, ltg)       /* this function calculates the */
-mask FAR power[HAN_SIZE];   /* global masking threshold     */
-g_thres FAR *ltg;
+void
+mpegaudio_make_map (power, ltg) /* this function calculates the */
+     mask FAR power[HAN_SIZE];  /* global masking threshold     */
+     g_thres FAR *ltg;
 {
- int i,j;
+  int i, j;
 
- for(i=1;i<mpegaudio_sub_size;i++) for(j=ltg[i-1].line;j<=ltg[i].line;j++)
-    power[j].map = i;
+  for (i = 1; i < mpegaudio_sub_size; i++)
+    for (j = ltg[i - 1].line; j <= ltg[i].line; j++)
+      power[j].map = i;
 }
 
-double mpegaudio_add_db(a,b)
-double a,b;
+double
+mpegaudio_add_db (a, b)
+     double a, b;
 {
- a = pow(10.0,a/10.0);
- b = pow(10.0,b/10.0);
- return 10 * log10(a+b);
+  a = pow (10.0, a / 10.0);
+  b = pow (10.0, b / 10.0);
+  return 10 * log10 (a + b);
 }
 
 /**************************************************************** 
@@ -112,66 +119,69 @@ double a,b;
  *
  ****************************************************************/
 
-void mpegaudio_II_f_f_t(sample, power)      /* this function calculates an */
-double FAR sample[FFT_SIZE];  /* FFT analysis for the freq.  */
-mask FAR power[HAN_SIZE];     /* domain                      */
+void
+mpegaudio_II_f_f_t (sample, power)      /* this function calculates an */
+     double FAR sample[FFT_SIZE];       /* FFT analysis for the freq.  */
+     mask FAR power[HAN_SIZE];  /* domain                      */
 {
- int i,j,k,L,l=0;
- int ip, le, le1;
- double t_r, t_i, u_r, u_i;
- static int M, MM1, init = 0, N;
- double *x_r, *x_i, *energy;
- static int *rev;
- static double *w_r, *w_i;
+  int i, j, k, L, l = 0;
+  int ip, le, le1;
+  double t_r, t_i, u_r, u_i;
+  static int M, MM1, init = 0, N;
+  double *x_r, *x_i, *energy;
+  static int *rev;
+  static double *w_r, *w_i;
 
- x_r = (double *) mpegaudio_mem_alloc(sizeof(DFFT), "x_r");
- x_i = (double *) mpegaudio_mem_alloc(sizeof(DFFT), "x_i");
- energy = (double *) mpegaudio_mem_alloc(sizeof(DFFT), "energy");
- for(i=0;i<FFT_SIZE;i++) x_r[i] = x_i[i] = energy[i] = 0;
- if(!init){
-    rev = (int *) mpegaudio_mem_alloc(sizeof(IFFT), "rev");
-    w_r = (double *) mpegaudio_mem_alloc(sizeof(D10), "w_r");
-    w_i = (double *) mpegaudio_mem_alloc(sizeof(D10), "w_i");
+  x_r = (double *) mpegaudio_mem_alloc (sizeof (DFFT), "x_r");
+  x_i = (double *) mpegaudio_mem_alloc (sizeof (DFFT), "x_i");
+  energy = (double *) mpegaudio_mem_alloc (sizeof (DFFT), "energy");
+  for (i = 0; i < FFT_SIZE; i++)
+    x_r[i] = x_i[i] = energy[i] = 0;
+  if (!init) {
+    rev = (int *) mpegaudio_mem_alloc (sizeof (IFFT), "rev");
+    w_r = (double *) mpegaudio_mem_alloc (sizeof (D10), "w_r");
+    w_i = (double *) mpegaudio_mem_alloc (sizeof (D10), "w_i");
     M = 10;
     MM1 = 9;
     N = FFT_SIZE;
-    for(L=0;L<M;L++){
-       le = 1 << (M-L);
-       le1 = le >> 1;
-       w_r[L] = cos(PI/le1);
-       w_i[L] = -sin(PI/le1);
+    for (L = 0; L < M; L++) {
+      le = 1 << (M - L);
+      le1 = le >> 1;
+      w_r[L] = cos (PI / le1);
+      w_i[L] = -sin (PI / le1);
     }
-    for(i=0;i<FFT_SIZE;rev[i] = l,i++) for(j=0,l=0;j<10;j++){
-       k=(i>>j) & 1;
-       l |= (k<<(9-j));                
-    }
+    for (i = 0; i < FFT_SIZE; rev[i] = l, i++)
+      for (j = 0, l = 0; j < 10; j++) {
+        k = (i >> j) & 1;
+        l |= (k << (9 - j));
+      }
     init = 1;
- }
- memcpy( (char *) x_r, (char *) sample, sizeof(double) * FFT_SIZE);
- for(L=0;L<MM1;L++){
-    le = 1 << (M-L);
+  }
+  memcpy ((char *) x_r, (char *) sample, sizeof (double) * FFT_SIZE);
+  for (L = 0; L < MM1; L++) {
+    le = 1 << (M - L);
     le1 = le >> 1;
     u_r = 1;
     u_i = 0;
-    for(j=0;j<le1;j++){
-       for(i=j;i<N;i+=le){
-          ip = i + le1;
-          t_r = x_r[i] + x_r[ip];
-          t_i = x_i[i] + x_i[ip];
-          x_r[ip] = x_r[i] - x_r[ip];
-          x_i[ip] = x_i[i] - x_i[ip];
-          x_r[i] = t_r;
-          x_i[i] = t_i;
-          t_r = x_r[ip];
-          x_r[ip] = x_r[ip] * u_r - x_i[ip] * u_i;
-          x_i[ip] = x_i[ip] * u_r + t_r * u_i;
-       }
-       t_r = u_r;
-       u_r = u_r * w_r[L] - u_i * w_i[L];
-       u_i = u_i * w_r[L] + t_r * w_i[L];
+    for (j = 0; j < le1; j++) {
+      for (i = j; i < N; i += le) {
+        ip = i + le1;
+        t_r = x_r[i] + x_r[ip];
+        t_i = x_i[i] + x_i[ip];
+        x_r[ip] = x_r[i] - x_r[ip];
+        x_i[ip] = x_i[i] - x_i[ip];
+        x_r[i] = t_r;
+        x_i[i] = t_i;
+        t_r = x_r[ip];
+        x_r[ip] = x_r[ip] * u_r - x_i[ip] * u_i;
+        x_i[ip] = x_i[ip] * u_r + t_r * u_i;
+      }
+      t_r = u_r;
+      u_r = u_r * w_r[L] - u_i * w_i[L];
+      u_i = u_i * w_r[L] + t_r * w_i[L];
     }
- }
- for(i=0;i<N;i+=2){
+  }
+  for (i = 0; i < N; i += 2) {
     ip = i + 1;
     t_r = x_r[i] + x_r[ip];
     t_i = x_i[i] + x_i[ip];
@@ -180,21 +190,23 @@ mask FAR power[HAN_SIZE];     /* domain                      */
     x_r[i] = t_r;
     x_i[i] = t_i;
     energy[i] = x_r[i] * x_r[i] + x_i[i] * x_i[i];
- }
- for(i=0;i<FFT_SIZE;i++) if(i<rev[i]){
-    t_r = energy[i];
-    energy[i] = energy[rev[i]];
-    energy[rev[i]] = t_r;
- }
- for(i=0;i<HAN_SIZE;i++){    /* calculate power density spectrum */
-    if (energy[i] < 1E-20) energy[i] = 1E-20;
-    power[i].x = 10 * log10(energy[i]) + POWERNORM;
+  }
+  for (i = 0; i < FFT_SIZE; i++)
+    if (i < rev[i]) {
+      t_r = energy[i];
+      energy[i] = energy[rev[i]];
+      energy[rev[i]] = t_r;
+    }
+  for (i = 0; i < HAN_SIZE; i++) {      /* calculate power density spectrum */
+    if (energy[i] < 1E-20)
+      energy[i] = 1E-20;
+    power[i].x = 10 * log10 (energy[i]) + POWERNORM;
     power[i].next = STOP;
     power[i].type = FALSE;
- }
- mpegaudio_mem_free((void **) &x_r);
- mpegaudio_mem_free((void **) &x_i);
- mpegaudio_mem_free((void **) &energy);
+  }
+  mpegaudio_mem_free (x_r);
+  mpegaudio_mem_free (x_i);
+  mpegaudio_mem_free (energy);
 }
 
 /**************************************************************** 
@@ -203,24 +215,28 @@ mask FAR power[HAN_SIZE];     /* domain                      */
  *
  ****************************************************************/
 
-void mpegaudio_II_hann_win(sample)          /* this function calculates a  */
-double FAR sample[FFT_SIZE];  /* Hann window for PCM (input) */
-{                                 /* samples for a 1024-pt. FFT  */
- register int i;
- register double sqrt_8_over_3;
- static int init = 0;
- static double FAR *window;
+void
+mpegaudio_II_hann_win (sample)  /* this function calculates a  */
+     double FAR sample[FFT_SIZE];       /* Hann window for PCM (input) */
+{                               /* samples for a 1024-pt. FFT  */
+  register int i;
+  register double sqrt_8_over_3;
+  static int init = 0;
+  static double FAR *window;
 
- if(!init){  /* calculate window function for the Fourier transform */
-    window = (double FAR *) mpegaudio_mem_alloc(sizeof(DFFT), "window");
-    sqrt_8_over_3 = pow(8.0/3.0, 0.5);
-    for(i=0;i<FFT_SIZE;i++){
-       /* Hann window formula */
-       window[i]=sqrt_8_over_3*0.5*(1-cos(2.0*PI*i/(FFT_SIZE)))/FFT_SIZE;
+  if (!init) {                  /* calculate window function for the Fourier transform */
+    window = (double FAR *) mpegaudio_mem_alloc (sizeof (DFFT), "window");
+    sqrt_8_over_3 = pow (8.0 / 3.0, 0.5);
+    for (i = 0; i < FFT_SIZE; i++) {
+      /* Hann window formula */
+      window[i] =
+          sqrt_8_over_3 * 0.5 * (1 -
+          cos (2.0 * PI * i / (FFT_SIZE))) / FFT_SIZE;
     }
     init = 1;
- }
- for(i=0;i<FFT_SIZE;i++) sample[i] *= window[i];
+  }
+  for (i = 0; i < FFT_SIZE; i++)
+    sample[i] *= window[i];
 }
 
 /******************************************************************* 
@@ -231,31 +247,35 @@ double FAR sample[FFT_SIZE];  /* Hann window for PCM (input) */
  *
  *******************************************************************/
 #ifndef LONDON
-void mpegaudio_II_pick_max(power, spike)
-double FAR spike[SBLIMIT];
-mask FAR power[HAN_SIZE];
+void
+mpegaudio_II_pick_max (power, spike)
+     double FAR spike[SBLIMIT];
+     mask FAR power[HAN_SIZE];
 {
- double max;
- int i,j;
+  double max;
+  int i, j;
 
- for(i=0;i<HAN_SIZE;spike[i>>4] = max, i+=16)      /* calculate the      */
- for(j=0, max = DBMIN;j<16;j++)                    /* maximum spectral   */
-    max = (max>power[i+j].x) ? max : power[i+j].x; /* component in each  */
-}                                                  /* subband from bound */
+  for (i = 0; i < HAN_SIZE; spike[i >> 4] = max, i += 16)       /* calculate the      */
+    for (j = 0, max = DBMIN; j < 16; j++)       /* maximum spectral   */
+      max = (max > power[i + j].x) ? max : power[i + j].x;      /* component in each  */
+}                               /* subband from bound */
+
                                                    /* 4-16               */
 #else
-void mpegaudio_II_pick_max(power, spike)
-double FAR spike[SBLIMIT];
-mask FAR power[HAN_SIZE];
+void
+mpegaudio_II_pick_max (power, spike)
+     double FAR spike[SBLIMIT];
+     mask FAR power[HAN_SIZE];
 {
- double sum;
- int i,j;
+  double sum;
+  int i, j;
 
- for(i=0;i<HAN_SIZE;spike[i>>4] = 10.0*log10(sum), i+=16)
-                                                   /* calculate the      */
- for(j=0, sum = pow(10.0,0.1*DBMIN);j<16;j++)      /* sum of spectral   */
-   sum += pow(10.0,0.1*power[i+j].x);              /* component in each  */
-}                                                  /* subband from bound */
+  for (i = 0; i < HAN_SIZE; spike[i >> 4] = 10.0 * log10 (sum), i += 16)
+    /* calculate the      */
+    for (j = 0, sum = pow (10.0, 0.1 * DBMIN); j < 16; j++)     /* sum of spectral   */
+      sum += pow (10.0, 0.1 * power[i + j].x);  /* component in each  */
+}                               /* subband from bound */
+
                                                    /* 4-16               */
 #endif
 
@@ -266,71 +286,84 @@ mask FAR power[HAN_SIZE];
  *
  ****************************************************************/
 
-void mpegaudio_II_tonal_label(power, tone)  /* this function extracts (tonal) */
-mask FAR power[HAN_SIZE];     /* sinusoidals from the spectrum  */
-int *tone;
+void
+mpegaudio_II_tonal_label (power, tone)  /* this function extracts (tonal) */
+     mask FAR power[HAN_SIZE];  /* sinusoidals from the spectrum  */
+     int *tone;
 {
- int i,j, last = LAST, first, run, last_but_one = LAST; /* dpwe */
- double max;
+  int i, j, last = LAST, first, run, last_but_one = LAST;       /* dpwe */
+  double max;
 
- *tone = LAST;
- for(i=2;i<HAN_SIZE-12;i++){
-    if(power[i].x>power[i-1].x && power[i].x>=power[i+1].x){
-       power[i].type = TONE;
-       power[i].next = LAST;
-       if(last != LAST) power[last].next = i;
-       else first = *tone = i;
-       last = i;
+  *tone = LAST;
+  for (i = 2; i < HAN_SIZE - 12; i++) {
+    if (power[i].x > power[i - 1].x && power[i].x >= power[i + 1].x) {
+      power[i].type = TONE;
+      power[i].next = LAST;
+      if (last != LAST)
+        power[last].next = i;
+      else
+        first = *tone = i;
+      last = i;
     }
- }
- last = LAST;
- first = *tone;
- *tone = LAST;
- while(first != LAST){               /* the conditions for the tonal          */
-    if(first<3 || first>500) run = 0;/* otherwise k+/-j will be out of bounds */
-    else if(first<63) run = 2;       /* components in layer II, which         */
-    else if(first<127) run = 3;      /* are the boundaries for calc.          */
-    else if(first<255) run = 6;      /* the tonal components                  */
-    else run = 12;
-    max = power[first].x - 7;        /* after calculation of tonal   */
-    for(j=2;j<=run;j++)              /* components, set to local max */
-       if(max < power[first-j].x || max < power[first+j].x){
-          power[first].type = FALSE;
-          break;
-       }
-    if(power[first].type == TONE){   /* extract tonal components */
-       int help=first;
-       if(*tone==LAST) *tone = first;
-       while((power[help].next!=LAST)&&(power[help].next-first)<=run)
-          help=power[help].next;
-       help=power[help].next;
-       power[first].next=help;
-       if((first-last)<=run){
-          if(last_but_one != LAST) power[last_but_one].next=first;
-       }
-       if(first>1 && first<500){     /* calculate the sum of the */
-          double tmp;                /* powers of the components */
-          tmp = mpegaudio_add_db(power[first-1].x, power[first+1].x);
-          power[first].x = mpegaudio_add_db(power[first].x, tmp);
-       }
-       for(j=1;j<=run;j++){
-          power[first-j].x = power[first+j].x = DBMIN;
-          power[first-j].next = power[first+j].next = STOP;
-          power[first-j].type = power[first+j].type = FALSE;
-       }
-       last_but_one=last;
-       last = first;
-       first = power[first].next;
+  }
+  last = LAST;
+  first = *tone;
+  *tone = LAST;
+  while (first != LAST) {       /* the conditions for the tonal          */
+    if (first < 3 || first > 500)
+      run = 0;                  /* otherwise k+/-j will be out of bounds */
+    else if (first < 63)
+      run = 2;                  /* components in layer II, which         */
+    else if (first < 127)
+      run = 3;                  /* are the boundaries for calc.          */
+    else if (first < 255)
+      run = 6;                  /* the tonal components                  */
+    else
+      run = 12;
+    max = power[first].x - 7;   /* after calculation of tonal   */
+    for (j = 2; j <= run; j++)  /* components, set to local max */
+      if (max < power[first - j].x || max < power[first + j].x) {
+        power[first].type = FALSE;
+        break;
+      }
+    if (power[first].type == TONE) {    /* extract tonal components */
+      int help = first;
+
+      if (*tone == LAST)
+        *tone = first;
+      while ((power[help].next != LAST) && (power[help].next - first) <= run)
+        help = power[help].next;
+      help = power[help].next;
+      power[first].next = help;
+      if ((first - last) <= run) {
+        if (last_but_one != LAST)
+          power[last_but_one].next = first;
+      }
+      if (first > 1 && first < 500) {   /* calculate the sum of the */
+        double tmp;             /* powers of the components */
+
+        tmp = mpegaudio_add_db (power[first - 1].x, power[first + 1].x);
+        power[first].x = mpegaudio_add_db (power[first].x, tmp);
+      }
+      for (j = 1; j <= run; j++) {
+        power[first - j].x = power[first + j].x = DBMIN;
+        power[first - j].next = power[first + j].next = STOP;
+        power[first - j].type = power[first + j].type = FALSE;
+      }
+      last_but_one = last;
+      last = first;
+      first = power[first].next;
+    } else {
+      int ll;
+
+      if (last == LAST);        /* *tone = power[first].next; dpwe */
+      else
+        power[last].next = power[first].next;
+      ll = first;
+      first = power[first].next;
+      power[ll].next = STOP;
     }
-    else {
-       int ll;
-       if(last == LAST); /* *tone = power[first].next; dpwe */
-       else power[last].next = power[first].next;
-       ll = first;
-       first = power[first].next;
-       power[ll].next = STOP;
-    }
- }
+  }
 }
 
 /**************************************************************** 
@@ -340,71 +373,86 @@ int *tone;
  * one single line.
  *
  ****************************************************************/
-        
-void mpegaudio_noise_label(power, noise, ltg)
-g_thres FAR *ltg;
-mask FAR *power;
-int *noise;
+
+void
+mpegaudio_noise_label (power, noise, ltg)
+     g_thres FAR *ltg;
+     mask FAR *power;
+     int *noise;
 {
- int i,j, centre, last = LAST;
- double index, weight, sum;
-                              /* calculate the remaining spectral */
- for(i=0;i<mpegaudio_crit_band-1;i++){  /* lines for non-tonal components   */
-     for(j=mpegaudio_cbound[i],weight = 0.0,sum = DBMIN;j<mpegaudio_cbound[i+1];j++){
-        if(power[j].type != TONE){
-           if(power[j].x != DBMIN){
-              sum = mpegaudio_add_db(power[j].x,sum);
+  int i, j, centre, last = LAST;
+  double index, weight, sum;
+
+  /* calculate the remaining spectral */
+  for (i = 0; i < mpegaudio_crit_band - 1; i++) {       /* lines for non-tonal components   */
+    for (j = mpegaudio_cbound[i], weight = 0.0, sum = DBMIN;
+        j < mpegaudio_cbound[i + 1]; j++) {
+      if (power[j].type != TONE) {
+        if (power[j].x != DBMIN) {
+          sum = mpegaudio_add_db (power[j].x, sum);
 /* the line below and others under the "MAKE_SENSE" condition are an alternate
    interpretation of "geometric mean". This approach may make more sense but
    it has not been tested with hardware. */
 #ifdef MAKE_SENSE
-              weight += pow(10.0, power[j].x/10.0) * (ltg[power[j].map].bark-i);
+          weight +=
+              pow (10.0, power[j].x / 10.0) * (ltg[power[j].map].bark - i);
 #endif
-              power[j].x = DBMIN;
-           }
-        }   /*  check to see if the spectral line is low dB, and if  */
-     }      /* so replace the center of the critical band, which is */
-            /* the center freq. of the noise component              */
+          power[j].x = DBMIN;
+        }
+      }                         /*  check to see if the spectral line is low dB, and if  */
+    }                           /* so replace the center of the critical band, which is */
+    /* the center freq. of the noise component              */
 
 #ifdef MAKE_SENSE
-     if(sum <= DBMIN)  centre = (mpegaudio_cbound[i+1]+mpegaudio_cbound[i]) /2;
-     else {
-        index = weight/pow(10.0,sum/10.0);
-        centre = mpegaudio_cbound[i] + (int) (index * (double) (mpegaudio_cbound[i+1]-mpegaudio_cbound[i]) );
-     } 
+    if (sum <= DBMIN)
+      centre = (mpegaudio_cbound[i + 1] + mpegaudio_cbound[i]) / 2;
+    else {
+      index = weight / pow (10.0, sum / 10.0);
+      centre =
+          mpegaudio_cbound[i] + (int) (index * (double) (mpegaudio_cbound[i +
+                  1] - mpegaudio_cbound[i]));
+    }
 #else
-     index = (double)( ((double)mpegaudio_cbound[i]) * ((double)(mpegaudio_cbound[i+1]-1)) );
-     centre = (int)(pow(index,0.5)+0.5);
+    index =
+        (double) (((double) mpegaudio_cbound[i]) *
+        ((double) (mpegaudio_cbound[i + 1] - 1)));
+    centre = (int) (pow (index, 0.5) + 0.5);
 #endif
 
     /* locate next non-tonal component until finished; */
     /* add to list of non-tonal components             */
 #ifdef MI_OPTION
-     /* Masahiro Iwadare's fix for infinite looping problem? */
-     if(power[centre].type == TONE) {
-       if (power[centre+1].type == TONE) centre++; else centre--;
-     }
+    /* Masahiro Iwadare's fix for infinite looping problem? */
+    if (power[centre].type == TONE) {
+      if (power[centre + 1].type == TONE)
+        centre++;
+      else
+        centre--;
+    }
 #else
-     /* Mike Li's fix for infinite looping problem */
-     if(power[centre].type == FALSE) centre++;
+    /* Mike Li's fix for infinite looping problem */
+    if (power[centre].type == FALSE)
+      centre++;
 
-     if(power[centre].type == NOISE){
-       if(power[centre].x >= ltg[power[i].map].hear){
-         if(sum >= ltg[power[i].map].hear) sum = mpegaudio_add_db(power[j].x,sum);
-         else
-         sum = power[centre].x;
-       }
-     }
+    if (power[centre].type == NOISE) {
+      if (power[centre].x >= ltg[power[i].map].hear) {
+        if (sum >= ltg[power[i].map].hear)
+          sum = mpegaudio_add_db (power[j].x, sum);
+        else
+          sum = power[centre].x;
+      }
+    }
 #endif
-     if(last == LAST) *noise = centre;
-     else {
-        power[centre].next = LAST;
-        power[last].next = centre;
-     }
-     power[centre].x = sum;
-     power[centre].type = NOISE;        
-     last = centre;
- }        
+    if (last == LAST)
+      *noise = centre;
+    else {
+      power[centre].next = LAST;
+      power[last].next = centre;
+    }
+    power[centre].x = sum;
+    power[centre].type = NOISE;
+    last = centre;
+  }
 }
 
 /**************************************************************** 
@@ -414,59 +462,68 @@ int *noise;
  *
  ****************************************************************/
 
-void mpegaudio_subsampling(power, ltg, tone, noise)
-mask FAR power[HAN_SIZE];
-g_thres FAR *ltg;
-int *tone, *noise;
+void
+mpegaudio_subsampling (power, ltg, tone, noise)
+     mask FAR power[HAN_SIZE];
+     g_thres FAR *ltg;
+     int *tone, *noise;
 {
- int i, old;
+  int i, old;
 
- i = *tone; old = STOP;    /* calculate tonal components for */
- while(i!=LAST){           /* reduction of spectral lines    */
-    if(power[i].x < ltg[power[i].map].hear){
-       power[i].type = FALSE;
-       power[i].x = DBMIN;
-       if(old == STOP) *tone = power[i].next;
-       else power[old].next = power[i].next;
-    }
-    else old = i;
+  i = *tone;
+  old = STOP;                   /* calculate tonal components for */
+  while (i != LAST) {           /* reduction of spectral lines    */
+    if (power[i].x < ltg[power[i].map].hear) {
+      power[i].type = FALSE;
+      power[i].x = DBMIN;
+      if (old == STOP)
+        *tone = power[i].next;
+      else
+        power[old].next = power[i].next;
+    } else
+      old = i;
     i = power[i].next;
- }
- i = *noise; old = STOP;    /* calculate non-tonal components for */
- while(i!=LAST){            /* reduction of spectral lines        */
-    if(power[i].x < ltg[power[i].map].hear){
-       power[i].type = FALSE;
-       power[i].x = DBMIN;
-       if(old == STOP) *noise = power[i].next;
-       else power[old].next = power[i].next;
-    }
-    else old = i;
+  }
+  i = *noise;
+  old = STOP;                   /* calculate non-tonal components for */
+  while (i != LAST) {           /* reduction of spectral lines        */
+    if (power[i].x < ltg[power[i].map].hear) {
+      power[i].type = FALSE;
+      power[i].x = DBMIN;
+      if (old == STOP)
+        *noise = power[i].next;
+      else
+        power[old].next = power[i].next;
+    } else
+      old = i;
     i = power[i].next;
- }
- i = *tone; old = STOP;
- while(i != LAST){                              /* if more than one */
-    if(power[i].next == LAST)break;             /* tonal component  */
-    if(ltg[power[power[i].next].map].bark -     /* is less than .5  */
-       ltg[power[i].map].bark < 0.5) {          /* bark, take the   */
-       if(power[power[i].next].x > power[i].x ){/* maximum          */
-          if(old == STOP) *tone = power[i].next;
-          else power[old].next = power[i].next;
-          power[i].type = FALSE;
-          power[i].x = DBMIN;
-          i = power[i].next;
-       }
-       else {
-          power[power[i].next].type = FALSE;
-          power[power[i].next].x = DBMIN;
-          power[i].next = power[power[i].next].next;
-          old = i;
-       }
-    }
-    else {
+  }
+  i = *tone;
+  old = STOP;
+  while (i != LAST) {           /* if more than one */
+    if (power[i].next == LAST)
+      break;                    /* tonal component  */
+    if (ltg[power[power[i].next].map].bark -    /* is less than .5  */
+        ltg[power[i].map].bark < 0.5) { /* bark, take the   */
+      if (power[power[i].next].x > power[i].x) {        /* maximum          */
+        if (old == STOP)
+          *tone = power[i].next;
+        else
+          power[old].next = power[i].next;
+        power[i].type = FALSE;
+        power[i].x = DBMIN;
+        i = power[i].next;
+      } else {
+        power[power[i].next].type = FALSE;
+        power[power[i].next].x = DBMIN;
+        power[i].next = power[power[i].next].next;
+        old = i;
+      }
+    } else {
       old = i;
       i = power[i].next;
     }
- }
+  }
 }
 
 /**************************************************************** 
@@ -476,52 +533,63 @@ int *tone, *noise;
  *
  ****************************************************************/
 
-void mpegaudio_threshold(power, ltg, tone, noise, bit_rate)
-mask FAR power[HAN_SIZE];
-g_thres FAR *ltg;
-int *tone, *noise, bit_rate;
+void
+mpegaudio_threshold (power, ltg, tone, noise, bit_rate)
+     mask FAR power[HAN_SIZE];
+     g_thres FAR *ltg;
+     int *tone, *noise, bit_rate;
 {
- int k, t;
- double dz, tmps, vf=0;
+  int k, t;
+  double dz, tmps, vf = 0;
 
- for(k=1;k<mpegaudio_sub_size;k++){
+  for (k = 1; k < mpegaudio_sub_size; k++) {
     ltg[k].x = DBMIN;
-    t = *tone;          /* calculate individual masking threshold for */
-    while(t != LAST){   /* components in order to find the global     */
-       if(ltg[k].bark-ltg[power[t].map].bark >= -3.0 && /*threshold (LTG)*/
-          ltg[k].bark-ltg[power[t].map].bark <8.0){
-          dz = ltg[k].bark-ltg[power[t].map].bark; /* distance of bark value*/
-          tmps = -1.525-0.275*ltg[power[t].map].bark - 4.5 + power[t].x;
-             /* masking function for lower & upper slopes */
-          if(-3<=dz && dz<-1) vf = 17*(dz+1)-(0.4*power[t].x +6);
-          else if(-1<=dz && dz<0) vf = (0.4 *power[t].x + 6) * dz;
-          else if(0<=dz && dz<1) vf = (-17*dz);
-          else if(1<=dz && dz<8) vf = -(dz-1) * (17-0.15 *power[t].x) - 17;
-          tmps += vf;        
-          ltg[k].x = mpegaudio_add_db(ltg[k].x, tmps);
-       }
-       t = power[t].next;
+    t = *tone;                  /* calculate individual masking threshold for */
+    while (t != LAST) {         /* components in order to find the global     */
+      if (ltg[k].bark - ltg[power[t].map].bark >= -3.0 &&       /*threshold (LTG) */
+          ltg[k].bark - ltg[power[t].map].bark < 8.0) {
+        dz = ltg[k].bark - ltg[power[t].map].bark;      /* distance of bark value */
+        tmps = -1.525 - 0.275 * ltg[power[t].map].bark - 4.5 + power[t].x;
+        /* masking function for lower & upper slopes */
+        if (-3 <= dz && dz < -1)
+          vf = 17 * (dz + 1) - (0.4 * power[t].x + 6);
+        else if (-1 <= dz && dz < 0)
+          vf = (0.4 * power[t].x + 6) * dz;
+        else if (0 <= dz && dz < 1)
+          vf = (-17 * dz);
+        else if (1 <= dz && dz < 8)
+          vf = -(dz - 1) * (17 - 0.15 * power[t].x) - 17;
+        tmps += vf;
+        ltg[k].x = mpegaudio_add_db (ltg[k].x, tmps);
+      }
+      t = power[t].next;
     }
 
-    t = *noise;        /* calculate individual masking threshold  */
-    while(t != LAST){  /* for non-tonal components to find LTG    */
-       if(ltg[k].bark-ltg[power[t].map].bark >= -3.0 &&
-          ltg[k].bark-ltg[power[t].map].bark <8.0){
-          dz = ltg[k].bark-ltg[power[t].map].bark; /* distance of bark value */
-          tmps = -1.525-0.175*ltg[power[t].map].bark -0.5 + power[t].x;
-             /* masking function for lower & upper slopes */
-          if(-3<=dz && dz<-1) vf = 17*(dz+1)-(0.4*power[t].x +6);
-          else if(-1<=dz && dz<0) vf = (0.4 *power[t].x + 6) * dz;
-          else if(0<=dz && dz<1) vf = (-17*dz);
-          else if(1<=dz && dz<8) vf = -(dz-1) * (17-0.15 *power[t].x) - 17;
-          tmps += vf;
-          ltg[k].x = mpegaudio_add_db(ltg[k].x, tmps);
-       }
-       t = power[t].next;
+    t = *noise;                 /* calculate individual masking threshold  */
+    while (t != LAST) {         /* for non-tonal components to find LTG    */
+      if (ltg[k].bark - ltg[power[t].map].bark >= -3.0 &&
+          ltg[k].bark - ltg[power[t].map].bark < 8.0) {
+        dz = ltg[k].bark - ltg[power[t].map].bark;      /* distance of bark value */
+        tmps = -1.525 - 0.175 * ltg[power[t].map].bark - 0.5 + power[t].x;
+        /* masking function for lower & upper slopes */
+        if (-3 <= dz && dz < -1)
+          vf = 17 * (dz + 1) - (0.4 * power[t].x + 6);
+        else if (-1 <= dz && dz < 0)
+          vf = (0.4 * power[t].x + 6) * dz;
+        else if (0 <= dz && dz < 1)
+          vf = (-17 * dz);
+        else if (1 <= dz && dz < 8)
+          vf = -(dz - 1) * (17 - 0.15 * power[t].x) - 17;
+        tmps += vf;
+        ltg[k].x = mpegaudio_add_db (ltg[k].x, tmps);
+      }
+      t = power[t].next;
     }
-    if(bit_rate<96)ltg[k].x = mpegaudio_add_db(ltg[k].hear, ltg[k].x);
-    else ltg[k].x = mpegaudio_add_db(ltg[k].hear-12.0, ltg[k].x);
- }
+    if (bit_rate < 96)
+      ltg[k].x = mpegaudio_add_db (ltg[k].hear, ltg[k].x);
+    else
+      ltg[k].x = mpegaudio_add_db (ltg[k].hear - 12.0, ltg[k].x);
+  }
 }
 
 /**************************************************************** 
@@ -531,26 +599,28 @@ int *tone, *noise, bit_rate;
  *
  ****************************************************************/
 
-void mpegaudio_II_minimum_mask(ltg,ltmin,sblimit)
-g_thres FAR *ltg;
-double FAR ltmin[SBLIMIT];
-int sblimit;
+void
+mpegaudio_II_minimum_mask (ltg, ltmin, sblimit)
+     g_thres FAR *ltg;
+     double FAR ltmin[SBLIMIT];
+     int sblimit;
 {
- double min;
- int i,j;
+  double min;
+  int i, j;
 
- j=1;
- for(i=0;i<sblimit;i++)
-    if(j>=mpegaudio_sub_size-1)                   /* check subband limit, and       */
-       ltmin[i] = ltg[mpegaudio_sub_size-1].hear; /* calculate the minimum masking  */
-    else {                              /* level of LTMIN for each subband*/
-       min = ltg[j].x;
-       while(ltg[j].line>>4 == i && j < mpegaudio_sub_size){
-       if(min>ltg[j].x)  min = ltg[j].x;
-       j++;
+  j = 1;
+  for (i = 0; i < sblimit; i++)
+    if (j >= mpegaudio_sub_size - 1)    /* check subband limit, and       */
+      ltmin[i] = ltg[mpegaudio_sub_size - 1].hear;      /* calculate the minimum masking  */
+    else {                      /* level of LTMIN for each subband */
+      min = ltg[j].x;
+      while (ltg[j].line >> 4 == i && j < mpegaudio_sub_size) {
+        if (min > ltg[j].x)
+          min = ltg[j].x;
+        j++;
+      }
+      ltmin[i] = min;
     }
-    ltmin[i] = min;
- }
 }
 
 /***************************************************************** 
@@ -560,21 +630,23 @@ int sblimit;
  *
  *****************************************************************/
 
-void mpegaudio_II_smr(ltmin, spike, scale, sblimit)
-double FAR spike[SBLIMIT], scale[SBLIMIT], ltmin[SBLIMIT];
-int sblimit;
+void
+mpegaudio_II_smr (ltmin, spike, scale, sblimit)
+     double FAR spike[SBLIMIT], scale[SBLIMIT], ltmin[SBLIMIT];
+     int sblimit;
 {
- int i;
- double max;
-                
- for(i=0;i<sblimit;i++){                     /* determine the signal   */
-    max = 20 * log10(scale[i] * 32768) - 10; /* level for each subband */
-    if(spike[i]>max) max = spike[i];         /* for the maximum scale  */
-    max -= ltmin[i];                         /* factors                */
+  int i;
+  double max;
+
+  for (i = 0; i < sblimit; i++) {       /* determine the signal   */
+    max = 20 * log10 (scale[i] * 32768) - 10;   /* level for each subband */
+    if (spike[i] > max)
+      max = spike[i];           /* for the maximum scale  */
+    max -= ltmin[i];            /* factors                */
     ltmin[i] = max;
- }
+  }
 }
-        
+
 /**************************************************************** 
  *
  *        This procedure calls all the necessary functions to
@@ -582,55 +654,62 @@ int sblimit;
  *
  ****************************************************************/
 
-void mpegaudio_II_Psycho_One(buffer, scale, ltmin, fr_ps)
-short FAR buffer[2][1152];
-double FAR scale[2][SBLIMIT], ltmin[2][SBLIMIT];
-frame_params *fr_ps;
+void
+mpegaudio_II_Psycho_One (buffer, scale, ltmin, fr_ps)
+     short FAR buffer[2][1152];
+     double FAR scale[2][SBLIMIT], ltmin[2][SBLIMIT];
+     frame_params *fr_ps;
 {
- layer *info = fr_ps->header;
- int   stereo = fr_ps->stereo;
- int   sblimit = fr_ps->sblimit;
- int k,i, tone=0, noise=0;
- static char init = 0;
- static int off[2] = {256,256};
- double *sample;
- DSBL *spike;
- static D1408 *fft_buf;
- static mask_ptr FAR power;
- static g_ptr FAR ltg;
+  layer *info = fr_ps->header;
+  int stereo = fr_ps->stereo;
+  int sblimit = fr_ps->sblimit;
+  int k, i, tone = 0, noise = 0;
+  static char init = 0;
+  static int off[2] = { 256, 256 };
+  double *sample;
+  DSBL *spike;
+  static D1408 *fft_buf;
+  static mask_ptr FAR power;
+  static g_ptr FAR ltg;
 
- sample = (double *) mpegaudio_mem_alloc(sizeof(DFFT), "sample");
- spike = (DSBL *) mpegaudio_mem_alloc(sizeof(D2SBL), "spike");
-     /* call functions for critical boundaries, freq. */
- if(!init){  /* bands, bark values, and mapping */
-    fft_buf = (D1408 *) mpegaudio_mem_alloc((long) sizeof(D1408) * 2, "fft_buf");
-    power = (mask_ptr FAR ) mpegaudio_mem_alloc(sizeof(mask) * HAN_SIZE, "power");
-    mpegaudio_read_cbound(info->lay,info->sampling_frequency);
-    mpegaudio_read_freq_band(&ltg,info->lay,info->sampling_frequency);
-    mpegaudio_make_map(power,ltg);
-    for (i=0;i<1408;i++) fft_buf[0][i] = fft_buf[1][i] = 0;
+  sample = (double *) mpegaudio_mem_alloc (sizeof (DFFT), "sample");
+  spike = (DSBL *) mpegaudio_mem_alloc (sizeof (D2SBL), "spike");
+  /* call functions for critical boundaries, freq. */
+  if (!init) {                  /* bands, bark values, and mapping */
+    fft_buf =
+        (D1408 *) mpegaudio_mem_alloc ((long) sizeof (D1408) * 2, "fft_buf");
+    power =
+        (mask_ptr FAR) mpegaudio_mem_alloc (sizeof (mask) * HAN_SIZE, "power");
+    mpegaudio_read_cbound (info->lay, info->sampling_frequency);
+    mpegaudio_read_freq_band (&ltg, info->lay, info->sampling_frequency);
+    mpegaudio_make_map (power, ltg);
+    for (i = 0; i < 1408; i++)
+      fft_buf[0][i] = fft_buf[1][i] = 0;
     init = 1;
- }
- for(k=0;k<stereo;k++){  /* check pcm input for 3 blocks of 384 samples */
-    for(i=0;i<1152;i++) fft_buf[k][(i+off[k])%1408]= (double)buffer[k][i]/SCALE;
-    for(i=0;i<FFT_SIZE;i++) sample[i] = fft_buf[k][(i+1216+off[k])%1408];
+  }
+  for (k = 0; k < stereo; k++) {        /* check pcm input for 3 blocks of 384 samples */
+    for (i = 0; i < 1152; i++)
+      fft_buf[k][(i + off[k]) % 1408] = (double) buffer[k][i] / SCALE;
+    for (i = 0; i < FFT_SIZE; i++)
+      sample[i] = fft_buf[k][(i + 1216 + off[k]) % 1408];
     off[k] += 1152;
     off[k] %= 1408;
-                            /* call functions for windowing PCM samples,*/
-    mpegaudio_II_hann_win(sample);    /* location of spectral components in each  */
-    for(i=0;i<HAN_SIZE;i++) power[i].x = DBMIN;  /*subband with labeling*/
-    mpegaudio_II_f_f_t(sample, power);                     /*locate remaining non-*/
-    mpegaudio_II_pick_max(power, &spike[k][0]);            /*tonal sinusoidals,   */
-    mpegaudio_II_tonal_label(power, &tone);                /*reduce noise & tonal */
-    mpegaudio_noise_label(power, &noise, ltg);             /*components, find     */
-    mpegaudio_subsampling(power, ltg, &tone, &noise);      /*global & minimal     */
-    mpegaudio_threshold(power, ltg, &tone, &noise,         /*threshold, and sgnl- */
-      mpegaudio_bitrate[info->lay-1][info->bitrate_index]/stereo); /*to-mask ratio*/
-    mpegaudio_II_minimum_mask(ltg, &ltmin[k][0], sblimit);
-    mpegaudio_II_smr(&ltmin[k][0], &spike[k][0], &scale[k][0], sblimit);        
- }
- mpegaudio_mem_free((void **) &sample);
- mpegaudio_mem_free((void **) &spike);
+    /* call functions for windowing PCM samples, */
+    mpegaudio_II_hann_win (sample);     /* location of spectral components in each  */
+    for (i = 0; i < HAN_SIZE; i++)
+      power[i].x = DBMIN;       /*subband with labeling */
+    mpegaudio_II_f_f_t (sample, power); /*locate remaining non- */
+    mpegaudio_II_pick_max (power, &spike[k][0]);        /*tonal sinusoidals,   */
+    mpegaudio_II_tonal_label (power, &tone);    /*reduce noise & tonal */
+    mpegaudio_noise_label (power, &noise, ltg); /*components, find     */
+    mpegaudio_subsampling (power, ltg, &tone, &noise);  /*global & minimal     */
+    mpegaudio_threshold (power, ltg, &tone, &noise,     /*threshold, and sgnl- */
+        mpegaudio_bitrate[info->lay - 1][info->bitrate_index] / stereo);        /*to-mask ratio */
+    mpegaudio_II_minimum_mask (ltg, &ltmin[k][0], sblimit);
+    mpegaudio_II_smr (&ltmin[k][0], &spike[k][0], &scale[k][0], sblimit);
+  }
+  mpegaudio_mem_free (sample);
+  mpegaudio_mem_free (spike);
 }
 
 /********************************************************************** 
@@ -641,73 +720,76 @@ frame_params *fr_ps;
  * routine.
  *
  **********************************************************************/
- 
+
 /**************************************************************** 
  *
  *        Fast Fourier transform of the input samples.
  *
  ****************************************************************/
 
-void mpegaudio_I_f_f_t(sample, power)         /* this function calculates */
-double FAR sample[FFT_SIZE/2];  /* an FFT analysis for the  */
-mask FAR power[HAN_SIZE/2];     /* freq. domain             */
+void
+mpegaudio_I_f_f_t (sample, power)       /* this function calculates */
+     double FAR sample[FFT_SIZE / 2];   /* an FFT analysis for the  */
+     mask FAR power[HAN_SIZE / 2];      /* freq. domain             */
 {
- int i,j,k,L,l=0;
- int ip, le, le1;
- double t_r, t_i, u_r, u_i;
- static int M, MM1, init = 0, N;
- double *x_r, *x_i, *energy;
- static int *rev;
- static double *w_r, *w_i;
+  int i, j, k, L, l = 0;
+  int ip, le, le1;
+  double t_r, t_i, u_r, u_i;
+  static int M, MM1, init = 0, N;
+  double *x_r, *x_i, *energy;
+  static int *rev;
+  static double *w_r, *w_i;
 
- x_r = (double *) mpegaudio_mem_alloc(sizeof(DFFT2), "x_r");
- x_i = (double *) mpegaudio_mem_alloc(sizeof(DFFT2), "x_i");
- energy = (double *) mpegaudio_mem_alloc(sizeof(DFFT2), "energy");
- for(i=0;i<FFT_SIZE/2;i++) x_r[i] = x_i[i] = energy[i] = 0;
- if(!init){
-    rev = (int *) mpegaudio_mem_alloc(sizeof(IFFT2), "rev");
-    w_r = (double *) mpegaudio_mem_alloc(sizeof(D9), "w_r");
-    w_i = (double *) mpegaudio_mem_alloc(sizeof(D9), "w_i");
+  x_r = (double *) mpegaudio_mem_alloc (sizeof (DFFT2), "x_r");
+  x_i = (double *) mpegaudio_mem_alloc (sizeof (DFFT2), "x_i");
+  energy = (double *) mpegaudio_mem_alloc (sizeof (DFFT2), "energy");
+  for (i = 0; i < FFT_SIZE / 2; i++)
+    x_r[i] = x_i[i] = energy[i] = 0;
+  if (!init) {
+    rev = (int *) mpegaudio_mem_alloc (sizeof (IFFT2), "rev");
+    w_r = (double *) mpegaudio_mem_alloc (sizeof (D9), "w_r");
+    w_i = (double *) mpegaudio_mem_alloc (sizeof (D9), "w_i");
     M = 9;
     MM1 = 8;
-    N = FFT_SIZE/2;
-    for(L=0;L<M;L++){
-       le = 1 << (M-L);
-       le1 = le >> 1;
-       w_r[L] = cos(PI/le1);
-       w_i[L] = -sin(PI/le1);
+    N = FFT_SIZE / 2;
+    for (L = 0; L < M; L++) {
+      le = 1 << (M - L);
+      le1 = le >> 1;
+      w_r[L] = cos (PI / le1);
+      w_i[L] = -sin (PI / le1);
     }
-    for(i=0;i<FFT_SIZE/2;rev[i] = l,i++) for(j=0,l=0;j<9;j++){
-       k=(i>>j) & 1;
-       l |= (k<<(8-j));                
-    }
+    for (i = 0; i < FFT_SIZE / 2; rev[i] = l, i++)
+      for (j = 0, l = 0; j < 9; j++) {
+        k = (i >> j) & 1;
+        l |= (k << (8 - j));
+      }
     init = 1;
- }
- memcpy( (char *) x_r, (char *) sample, sizeof(double) * FFT_SIZE/2);
- for(L=0;L<MM1;L++){
-    le = 1 << (M-L);
+  }
+  memcpy ((char *) x_r, (char *) sample, sizeof (double) * FFT_SIZE / 2);
+  for (L = 0; L < MM1; L++) {
+    le = 1 << (M - L);
     le1 = le >> 1;
     u_r = 1;
     u_i = 0;
-    for(j=0;j<le1;j++){
-       for(i=j;i<N;i+=le){
-          ip = i + le1;
-          t_r = x_r[i] + x_r[ip];
-          t_i = x_i[i] + x_i[ip];
-          x_r[ip] = x_r[i] - x_r[ip];
-          x_i[ip] = x_i[i] - x_i[ip];
-          x_r[i] = t_r;
-          x_i[i] = t_i;
-          t_r = x_r[ip];
-          x_r[ip] = x_r[ip] * u_r - x_i[ip] * u_i;
-          x_i[ip] = x_i[ip] * u_r + t_r * u_i;
-       }
-       t_r = u_r;
-       u_r = u_r * w_r[L] - u_i * w_i[L];
-       u_i = u_i * w_r[L] + t_r * w_i[L];
+    for (j = 0; j < le1; j++) {
+      for (i = j; i < N; i += le) {
+        ip = i + le1;
+        t_r = x_r[i] + x_r[ip];
+        t_i = x_i[i] + x_i[ip];
+        x_r[ip] = x_r[i] - x_r[ip];
+        x_i[ip] = x_i[i] - x_i[ip];
+        x_r[i] = t_r;
+        x_i[i] = t_i;
+        t_r = x_r[ip];
+        x_r[ip] = x_r[ip] * u_r - x_i[ip] * u_i;
+        x_i[ip] = x_i[ip] * u_r + t_r * u_i;
+      }
+      t_r = u_r;
+      u_r = u_r * w_r[L] - u_i * w_i[L];
+      u_i = u_i * w_r[L] + t_r * w_i[L];
     }
- }
- for(i=0;i<N;i+=2){
+  }
+  for (i = 0; i < N; i += 2) {
     ip = i + 1;
     t_r = x_r[i] + x_r[ip];
     t_i = x_i[i] + x_i[ip];
@@ -716,21 +798,23 @@ mask FAR power[HAN_SIZE/2];     /* freq. domain             */
     x_r[i] = t_r;
     x_i[i] = t_i;
     energy[i] = x_r[i] * x_r[i] + x_i[i] * x_i[i];
- }
- for(i=0;i<FFT_SIZE/2;i++) if(i<rev[i]){
-    t_r = energy[i];
-    energy[i] = energy[rev[i]];
-    energy[rev[i]] = t_r;
- }
- for(i=0;i<HAN_SIZE/2;i++){                     /* calculate power  */
-    if(energy[i] < 1E-20) energy[i] = 1E-20;    /* density spectrum */
-       power[i].x = 10 * log10(energy[i]) + POWERNORM;
-       power[i].next = STOP;
-       power[i].type = FALSE;
- }
- mpegaudio_mem_free((void **) &x_r);
- mpegaudio_mem_free((void **) &x_i);
- mpegaudio_mem_free((void **) &energy);
+  }
+  for (i = 0; i < FFT_SIZE / 2; i++)
+    if (i < rev[i]) {
+      t_r = energy[i];
+      energy[i] = energy[rev[i]];
+      energy[rev[i]] = t_r;
+    }
+  for (i = 0; i < HAN_SIZE / 2; i++) {  /* calculate power  */
+    if (energy[i] < 1E-20)
+      energy[i] = 1E-20;        /* density spectrum */
+    power[i].x = 10 * log10 (energy[i]) + POWERNORM;
+    power[i].next = STOP;
+    power[i].type = FALSE;
+  }
+  mpegaudio_mem_free (x_r);
+  mpegaudio_mem_free (x_i);
+  mpegaudio_mem_free (energy);
 }
 
 /**************************************************************** 
@@ -739,24 +823,28 @@ mask FAR power[HAN_SIZE/2];     /* freq. domain             */
  *
  ****************************************************************/
 
-void mpegaudio_I_hann_win(sample)             /* this function calculates a  */
-double FAR sample[FFT_SIZE/2];  /* Hann window for PCM (input) */
-{                                   /* samples for a 512-pt. FFT   */
- register int i;
- register double sqrt_8_over_3;
- static int init = 0;
- static double FAR *window;
+void
+mpegaudio_I_hann_win (sample)   /* this function calculates a  */
+     double FAR sample[FFT_SIZE / 2];   /* Hann window for PCM (input) */
+{                               /* samples for a 512-pt. FFT   */
+  register int i;
+  register double sqrt_8_over_3;
+  static int init = 0;
+  static double FAR *window;
 
- if(!init){  /* calculate window function for the Fourier transform */
-    window = (double FAR *) mpegaudio_mem_alloc(sizeof(DFFT2), "window");
-    sqrt_8_over_3 = pow(8.0/3.0, 0.5);
-    for(i=0;i<FFT_SIZE/2;i++){
+  if (!init) {                  /* calculate window function for the Fourier transform */
+    window = (double FAR *) mpegaudio_mem_alloc (sizeof (DFFT2), "window");
+    sqrt_8_over_3 = pow (8.0 / 3.0, 0.5);
+    for (i = 0; i < FFT_SIZE / 2; i++) {
       /* Hann window formula */
-      window[i]=sqrt_8_over_3*0.5*(1-cos(2.0*PI*i/(FFT_SIZE/2)))/(FFT_SIZE/2);
+      window[i] =
+          sqrt_8_over_3 * 0.5 * (1 -
+          cos (2.0 * PI * i / (FFT_SIZE / 2))) / (FFT_SIZE / 2);
     }
     init = 1;
- }
- for(i=0;i<FFT_SIZE/2;i++) sample[i] *= window[i];
+  }
+  for (i = 0; i < FFT_SIZE / 2; i++)
+    sample[i] *= window[i];
 }
 
 /******************************************************************* 
@@ -767,30 +855,33 @@ double FAR sample[FFT_SIZE/2];  /* Hann window for PCM (input) */
  *
  *******************************************************************/
 #ifndef LONDON
-void mpegaudio_I_pick_max(power, spike)
-double FAR spike[SBLIMIT];
-mask FAR power[HAN_SIZE/2];
+void
+mpegaudio_I_pick_max (power, spike)
+     double FAR spike[SBLIMIT];
+     mask FAR power[HAN_SIZE / 2];
 {
- double max;
- int i,j;
+  double max;
+  int i, j;
 
- /* calculate the spectral component in each subband */
- for(i=0;i<HAN_SIZE/2;spike[i>>3] = max, i+=8)
-    for(j=0, max = DBMIN;j<8;j++) max = (max>power[i+j].x) ? max : power[i+j].x;
+  /* calculate the spectral component in each subband */
+  for (i = 0; i < HAN_SIZE / 2; spike[i >> 3] = max, i += 8)
+    for (j = 0, max = DBMIN; j < 8; j++)
+      max = (max > power[i + j].x) ? max : power[i + j].x;
 }
 #else
-void mpegaudio_I_pick_max(power, spike)
-double FAR spike[SBLIMIT];
-mask FAR power[HAN_SIZE];
+void
+mpegaudio_I_pick_max (power, spike)
+     double FAR spike[SBLIMIT];
+     mask FAR power[HAN_SIZE];
 {
- double sum;
- int i,j;
+  double sum;
+  int i, j;
 
- for(i=0;i<HAN_SIZE/2;spike[i>>3] = 10.0*log10(sum), i+=8)
-                                                   /* calculate the      */
- for(j=0, sum = pow(10.0,0.1*DBMIN);j<8;j++)       /* sum of spectral   */
-   sum += pow(10.0,0.1*power[i+j].x);              /* component in each  */
-}                                                  /* subband from bound */
+  for (i = 0; i < HAN_SIZE / 2; spike[i >> 3] = 10.0 * log10 (sum), i += 8)
+    /* calculate the      */
+    for (j = 0, sum = pow (10.0, 0.1 * DBMIN); j < 8; j++)      /* sum of spectral   */
+      sum += pow (10.0, 0.1 * power[i + j].x);  /* component in each  */
+}                               /* subband from bound */
 #endif
 /**************************************************************** 
  *
@@ -799,73 +890,85 @@ mask FAR power[HAN_SIZE];
  *
  ****************************************************************/
 
-void mpegaudio_I_tonal_label(power, tone)     /* this function extracts   */
-mask FAR power[HAN_SIZE/2];     /* (tonal) sinusoidals from */
-int *tone;                          /* the spectrum             */
+void
+mpegaudio_I_tonal_label (power, tone)   /* this function extracts   */
+     mask FAR power[HAN_SIZE / 2];      /* (tonal) sinusoidals from */
+     int *tone;                 /* the spectrum             */
 {
- int i,j, last = LAST, first, run;
- double max;
- int last_but_one= LAST;
+  int i, j, last = LAST, first, run;
+  double max;
+  int last_but_one = LAST;
 
- *tone = LAST;
- for(i=2;i<HAN_SIZE/2-6;i++){
-    if(power[i].x>power[i-1].x && power[i].x>=power[i+1].x){
-       power[i].type = TONE;
-       power[i].next = LAST;
-       if(last != LAST) power[last].next = i;
-       else first = *tone = i;
-       last = i;
+  *tone = LAST;
+  for (i = 2; i < HAN_SIZE / 2 - 6; i++) {
+    if (power[i].x > power[i - 1].x && power[i].x >= power[i + 1].x) {
+      power[i].type = TONE;
+      power[i].next = LAST;
+      if (last != LAST)
+        power[last].next = i;
+      else
+        first = *tone = i;
+      last = i;
     }
- }
- last = LAST;
- first = *tone;
- *tone = LAST;
- while(first != LAST){                /* conditions for the tonal     */
-    if(first<3 || first>250) run = 0; /* otherwise k+/-j will be out of bounds*/
-    else if(first<63) run = 2;        /* components in layer I, which */
-    else if(first<127) run = 3;       /* are the boundaries for calc.   */
-    else run = 6;                     /* the tonal components          */
+  }
+  last = LAST;
+  first = *tone;
+  *tone = LAST;
+  while (first != LAST) {       /* conditions for the tonal     */
+    if (first < 3 || first > 250)
+      run = 0;                  /* otherwise k+/-j will be out of bounds */
+    else if (first < 63)
+      run = 2;                  /* components in layer I, which */
+    else if (first < 127)
+      run = 3;                  /* are the boundaries for calc.   */
+    else
+      run = 6;                  /* the tonal components          */
     max = power[first].x - 7;
-    for(j=2;j<=run;j++)  /* after calc. of tonal components, set to loc.*/
-       if(max < power[first-j].x || max < power[first+j].x){   /* max   */
-          power[first].type = FALSE;
-          break;
-       }
-    if(power[first].type == TONE){    /* extract tonal components */
-       int help=first;
-       if(*tone == LAST) *tone = first;
-       while((power[help].next!=LAST)&&(power[help].next-first)<=run)
-          help=power[help].next;
-       help=power[help].next;
-       power[first].next=help;
-       if((first-last)<=run){
-          if(last_but_one != LAST) power[last_but_one].next=first;
-       }
-       if(first>1 && first<255){     /* calculate the sum of the */
-          double tmp;                /* powers of the components */
-          tmp = mpegaudio_add_db(power[first-1].x, power[first+1].x);
-          power[first].x = mpegaudio_add_db(power[first].x, tmp);
-       }
-       for(j=1;j<=run;j++){
-          power[first-j].x = power[first+j].x = DBMIN;
-          power[first-j].next = power[first+j].next = STOP; /*dpwe: 2nd was .x*/
-          power[first-j].type = power[first+j].type = FALSE;
-       }
-       last_but_one=last;
-       last = first;
-       first = power[first].next;
+    for (j = 2; j <= run; j++)  /* after calc. of tonal components, set to loc. */
+      if (max < power[first - j].x || max < power[first + j].x) {       /* max   */
+        power[first].type = FALSE;
+        break;
+      }
+    if (power[first].type == TONE) {    /* extract tonal components */
+      int help = first;
+
+      if (*tone == LAST)
+        *tone = first;
+      while ((power[help].next != LAST) && (power[help].next - first) <= run)
+        help = power[help].next;
+      help = power[help].next;
+      power[first].next = help;
+      if ((first - last) <= run) {
+        if (last_but_one != LAST)
+          power[last_but_one].next = first;
+      }
+      if (first > 1 && first < 255) {   /* calculate the sum of the */
+        double tmp;             /* powers of the components */
+
+        tmp = mpegaudio_add_db (power[first - 1].x, power[first + 1].x);
+        power[first].x = mpegaudio_add_db (power[first].x, tmp);
+      }
+      for (j = 1; j <= run; j++) {
+        power[first - j].x = power[first + j].x = DBMIN;
+        power[first - j].next = power[first + j].next = STOP;   /*dpwe: 2nd was .x */
+        power[first - j].type = power[first + j].type = FALSE;
+      }
+      last_but_one = last;
+      last = first;
+      first = power[first].next;
+    } else {
+      int ll;
+
+      if (last == LAST);        /* *tone = power[first].next; dpwe */
+      else
+        power[last].next = power[first].next;
+      ll = first;
+      first = power[first].next;
+      power[ll].next = STOP;
     }
-    else {
-       int ll;
-       if(last == LAST) ; /* *tone = power[first].next; dpwe */
-       else power[last].next = power[first].next;
-       ll = first;
-       first = power[first].next;
-       power[ll].next = STOP;
-    }
- }
-}                        
-                                
+  }
+}
+
 /**************************************************************** 
  *
  *        This function finds the minimum masking threshold and
@@ -873,24 +976,26 @@ int *tone;                          /* the spectrum             */
  *
  ****************************************************************/
 
-void mpegaudio_I_minimum_mask(ltg,ltmin)
-g_thres FAR *ltg;
-double FAR ltmin[SBLIMIT];
+void
+mpegaudio_I_minimum_mask (ltg, ltmin)
+     g_thres FAR *ltg;
+     double FAR ltmin[SBLIMIT];
 {
- double min;
- int i,j;
+  double min;
+  int i, j;
 
- j=1;
- for(i=0;i<SBLIMIT;i++)
-    if(j>=mpegaudio_sub_size-1)                   /* check subband limit, and       */
-       ltmin[i] = ltg[mpegaudio_sub_size-1].hear; /* calculate the minimum masking  */
-    else {                              /* level of LTMIN for each subband*/
-       min = ltg[j].x;
-       while(ltg[j].line>>3 == i && j < mpegaudio_sub_size){
-          if (min>ltg[j].x)  min = ltg[j].x;
-          j++;
-       }
-       ltmin[i] = min;
+  j = 1;
+  for (i = 0; i < SBLIMIT; i++)
+    if (j >= mpegaudio_sub_size - 1)    /* check subband limit, and       */
+      ltmin[i] = ltg[mpegaudio_sub_size - 1].hear;      /* calculate the minimum masking  */
+    else {                      /* level of LTMIN for each subband */
+      min = ltg[j].x;
+      while (ltg[j].line >> 3 == i && j < mpegaudio_sub_size) {
+        if (min > ltg[j].x)
+          min = ltg[j].x;
+        j++;
+      }
+      ltmin[i] = min;
     }
 }
 
@@ -901,20 +1006,22 @@ double FAR ltmin[SBLIMIT];
  *
  *****************************************************************/
 
-void mpegaudio_I_smr(ltmin, spike, scale)
-double FAR spike[SBLIMIT], scale[SBLIMIT], ltmin[SBLIMIT];
+void
+mpegaudio_I_smr (ltmin, spike, scale)
+     double FAR spike[SBLIMIT], scale[SBLIMIT], ltmin[SBLIMIT];
 {
- int i;
- double max;
-                
- for(i=0;i<SBLIMIT;i++){                      /* determine the signal   */
-    max = 20 * log10(scale[i] * 32768) - 10;  /* level for each subband */
-    if(spike[i]>max) max = spike[i];          /* for the scalefactor    */
+  int i;
+  double max;
+
+  for (i = 0; i < SBLIMIT; i++) {       /* determine the signal   */
+    max = 20 * log10 (scale[i] * 32768) - 10;   /* level for each subband */
+    if (spike[i] > max)
+      max = spike[i];           /* for the scalefactor    */
     max -= ltmin[i];
     ltmin[i] = max;
- }
+  }
 }
-        
+
 /**************************************************************** 
  *
  *        This procedure calls all the necessary functions to
@@ -922,54 +1029,59 @@ double FAR spike[SBLIMIT], scale[SBLIMIT], ltmin[SBLIMIT];
  *
  ****************************************************************/
 
-void mpegaudio_I_Psycho_One(buffer, scale, ltmin, fr_ps)
-short FAR buffer[2][1152];
-double FAR scale[2][SBLIMIT], ltmin[2][SBLIMIT];
-frame_params *fr_ps;
+void
+mpegaudio_I_Psycho_One (buffer, scale, ltmin, fr_ps)
+     short FAR buffer[2][1152];
+     double FAR scale[2][SBLIMIT], ltmin[2][SBLIMIT];
+     frame_params *fr_ps;
 {
- int stereo = fr_ps->stereo;
- the_layer info = fr_ps->header;
- int k,i, tone=0, noise=0;
- static char init = 0;
- static int off[2] = {256,256};
- double *sample;
- DSBL *spike;
- static D640 *fft_buf;
- static mask_ptr FAR power;
- static g_ptr FAR ltg;
+  int stereo = fr_ps->stereo;
+  the_layer info = fr_ps->header;
+  int k, i, tone = 0, noise = 0;
+  static char init = 0;
+  static int off[2] = { 256, 256 };
+  double *sample;
+  DSBL *spike;
+  static D640 *fft_buf;
+  static mask_ptr FAR power;
+  static g_ptr FAR ltg;
 
- sample = (double *) mpegaudio_mem_alloc(sizeof(DFFT2), "sample");
- spike = (DSBL *) mpegaudio_mem_alloc(sizeof(D2SBL), "spike");
-            /* call functions for critical boundaries, freq. */
- if(!init){ /* bands, bark values, and mapping              */
-    fft_buf = (D640 *) mpegaudio_mem_alloc(sizeof(D640) * 2, "fft_buf");
-    power = (mask_ptr FAR ) mpegaudio_mem_alloc(sizeof(mask) * HAN_SIZE/2, "power");
-    mpegaudio_read_cbound(info->lay,info->sampling_frequency);
-    mpegaudio_read_freq_band(&ltg,info->lay,info->sampling_frequency);
-    mpegaudio_make_map(power,ltg);
-    for(i=0;i<640;i++) fft_buf[0][i] = fft_buf[1][i] = 0;
+  sample = (double *) mpegaudio_mem_alloc (sizeof (DFFT2), "sample");
+  spike = (DSBL *) mpegaudio_mem_alloc (sizeof (D2SBL), "spike");
+  /* call functions for critical boundaries, freq. */
+  if (!init) {                  /* bands, bark values, and mapping              */
+    fft_buf = (D640 *) mpegaudio_mem_alloc (sizeof (D640) * 2, "fft_buf");
+    power =
+        (mask_ptr FAR) mpegaudio_mem_alloc (sizeof (mask) * HAN_SIZE / 2,
+        "power");
+    mpegaudio_read_cbound (info->lay, info->sampling_frequency);
+    mpegaudio_read_freq_band (&ltg, info->lay, info->sampling_frequency);
+    mpegaudio_make_map (power, ltg);
+    for (i = 0; i < 640; i++)
+      fft_buf[0][i] = fft_buf[1][i] = 0;
     init = 1;
- }
- for(k=0;k<stereo;k++){    /* check PCM input for a block of */
-    for(i=0;i<384;i++)     /* 384 samples for a 512-pt. FFT  */
-       fft_buf[k][(i+off[k])%640]= (double) buffer[k][i]/SCALE;
-    for(i=0;i<FFT_SIZE/2;i++)
-       sample[i] = fft_buf[k][(i+448+off[k])%640];
+  }
+  for (k = 0; k < stereo; k++) {        /* check PCM input for a block of */
+    for (i = 0; i < 384; i++)   /* 384 samples for a 512-pt. FFT  */
+      fft_buf[k][(i + off[k]) % 640] = (double) buffer[k][i] / SCALE;
+    for (i = 0; i < FFT_SIZE / 2; i++)
+      sample[i] = fft_buf[k][(i + 448 + off[k]) % 640];
     off[k] += 384;
     off[k] %= 640;
-                        /* call functions for windowing PCM samples,   */
-    mpegaudio_I_hann_win(sample); /* location of spectral components in each     */
-    for(i=0;i<HAN_SIZE/2;i++) power[i].x = DBMIN;   /* subband with    */
-    mpegaudio_I_f_f_t(sample, power);              /* labeling, locate remaining */
-    mpegaudio_I_pick_max(power, &spike[k][0]);     /* non-tonal sinusoidals,     */
-    mpegaudio_I_tonal_label(power, &tone);         /* reduce noise & tonal com., */
-    mpegaudio_noise_label(power, &noise, ltg);     /* find global & minimal      */
-    mpegaudio_subsampling(power, ltg, &tone, &noise);  /* threshold, and sgnl-   */
-    mpegaudio_threshold(power, ltg, &tone, &noise,     /* to-mask ratio          */
-      mpegaudio_bitrate[info->lay-1][info->bitrate_index]/stereo);
-    mpegaudio_I_minimum_mask(ltg, &ltmin[k][0]);
-    mpegaudio_I_smr(&ltmin[k][0], &spike[k][0], &scale[k][0]);        
- }
- mpegaudio_mem_free((void **) &sample);
- mpegaudio_mem_free((void **) &spike);
+    /* call functions for windowing PCM samples,   */
+    mpegaudio_I_hann_win (sample);      /* location of spectral components in each     */
+    for (i = 0; i < HAN_SIZE / 2; i++)
+      power[i].x = DBMIN;       /* subband with    */
+    mpegaudio_I_f_f_t (sample, power);  /* labeling, locate remaining */
+    mpegaudio_I_pick_max (power, &spike[k][0]); /* non-tonal sinusoidals,     */
+    mpegaudio_I_tonal_label (power, &tone);     /* reduce noise & tonal com., */
+    mpegaudio_noise_label (power, &noise, ltg); /* find global & minimal      */
+    mpegaudio_subsampling (power, ltg, &tone, &noise);  /* threshold, and sgnl-   */
+    mpegaudio_threshold (power, ltg, &tone, &noise,     /* to-mask ratio          */
+        mpegaudio_bitrate[info->lay - 1][info->bitrate_index] / stereo);
+    mpegaudio_I_minimum_mask (ltg, &ltmin[k][0]);
+    mpegaudio_I_smr (&ltmin[k][0], &spike[k][0], &scale[k][0]);
+  }
+  mpegaudio_mem_free (sample);
+  mpegaudio_mem_free (spike);
 }

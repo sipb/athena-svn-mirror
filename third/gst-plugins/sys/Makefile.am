@@ -10,10 +10,28 @@ else
 OSS_DIR=
 endif
 
+if USE_OSX_AUDIO
+OSX_AUDIO_DIR=osxaudio
+else
+OSX_AUDIO_DIR=
+endif
+
+if USE_OSX_VIDEO
+OSX_VIDEO_DIR=osxvideo
+else
+OSX_VIDEO_DIR=
+endif
+
 if USE_QCAM
 QCAM_DIR=qcam
 else
 QCAM_DIR=
+endif
+
+if USE_SUNAUDIO
+SUNAUDIO_DIR=sunaudio
+else
+SUNAUDIO_DIR=
 endif
 
 if USE_V4L
@@ -22,7 +40,7 @@ else
 V4L_DIR=
 endif
 
-if USE_V4L2
+if USE_GST_V4L2
 V4L2_DIR=v4l2
 else
 V4L2_DIR=
@@ -34,16 +52,16 @@ else
 VCD_DIR=
 endif
 
-if USE_VGA
-VGA_DIR=vga
+if USE_X
+XI_DIR=ximage
 else
-VGA_DIR=
+XI_DIR=
 endif
 
 if USE_XVIDEO
-XVIDEO_DIR=xvideo videosink
+XV_DIR=xvimage
 else
-XVIDEO_DIR=
+XV_DIR=
 endif
 
 if USE_CDROM
@@ -52,7 +70,16 @@ else
 CDROM_DIR=
 endif
 
-SUBDIRS=$(DXR3_DIR) $(OSS_DIR) $(QCAM_DIR) $(V4L_DIR) $(V4L2_DIR) \
-	$(VCD_DIR) $(VGA_DIR) $(XVIDEO_DIR) $(CDROM_DIR)
+if USE_OPENGL
+GL_DIR=glsink
+else
+GL_DIR=
+endif
 
-DIST_SUBDIRS=dxr3 oss qcam v4l v4l2 vcd vga xvideo videosink cdrom
+SUBDIRS=$(DXR3_DIR) $(OSS_DIR) $(OSX_AUDIO_DIR) $(OSX_VIDEO_DIR) $(QCAM_DIR) \
+        $(SUNAUDIO_DIR) $(V4L_DIR) $(V4L2_DIR) $(VCD_DIR) $(CDROM_DIR) \
+        $(XI_DIR) $(XV_DIR) $(GL_DIR)
+
+DIST_SUBDIRS=dxr3 oss osxaudio osxvideo qcam sunaudio v4l v4l2 vcd ximage \
+        xvimage glsink cdrom
+

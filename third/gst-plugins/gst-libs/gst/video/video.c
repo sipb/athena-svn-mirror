@@ -18,47 +18,86 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include "video.h"
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
 
-#define NUM_UNITS 1000000000
+#include "video.h"
 
 /* This is simply a convenience function, nothing more or less */
 
 gdouble
-gst_video_frame_rate (GstPad *pad)
+gst_video_frame_rate (GstPad * pad)
 {
-  GstFormat dest_format = GST_FORMAT_UNITS;
-  gint64 dest_value = 0;
-  gdouble fps;
+  gdouble fps = 0.;
+  const GstCaps *caps = NULL;
+  GstStructure *structure;
 
-  /* do a convert request on the source pad */
-  if (!gst_pad_convert(pad,
-			GST_FORMAT_TIME, GST_SECOND * NUM_UNITS,
-			&dest_format, &dest_value))
-  {
-    g_warning("gstvideo: pad %s:%s failed to convert time to unit!\n",
-		GST_ELEMENT_NAME(gst_pad_get_parent (pad)), GST_PAD_NAME(pad));
+  /* get pad caps */
+  caps = GST_PAD_CAPS (pad);
+  if (caps == NULL) {
+    g_warning ("gstvideo: failed to get caps of pad %s:%s",
+        GST_ELEMENT_NAME (gst_pad_get_parent (pad)), GST_PAD_NAME (pad));
     return 0.;
   }
 
-  fps = ((gdouble) dest_value) / NUM_UNITS;
+  structure = gst_caps_get_structure (caps, 0);
+  if (!gst_structure_get_double (structure, "framerate", &fps)) {
+    g_warning ("gstvideo: failed to get framerate property of pad %s:%s",
+        GST_ELEMENT_NAME (gst_pad_get_parent (pad)), GST_PAD_NAME (pad));
+    return 0.;
+  }
 
-  GST_DEBUG(GST_CAT_ELEMENT_PADS, "Framerate request on pad %s:%s - %f fps",
-		GST_ELEMENT_NAME(gst_pad_get_parent (pad)), GST_PAD_NAME(pad), fps);
+  GST_DEBUG ("Framerate request on pad %s:%s: %f",
+      GST_ELEMENT_NAME (gst_pad_get_parent (pad)), GST_PAD_NAME (pad), fps);
 
   return fps;
 }
 
-static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+gboolean
+gst_video_get_size (GstPad * pad, gint * width, gint * height)
 {
-  gst_plugin_set_longname (plugin, "Convenience routines for video plugins");
+  const GstCaps *caps = NULL;
+  GstStructure *structure;
+  gboolean ret;
+
+  g_return_val_if_fail (pad != NULL, FALSE);
+  g_return_val_if_fail (width != NULL, FALSE);
+  g_return_val_if_fail (height != NULL, FALSE);
+
+  caps = GST_PAD_CAPS (pad);
+
+  if (caps == NULL) {
+    g_warning ("gstvideo: failed to get caps of pad %s:%s",
+        GST_ELEMENT_NAME (gst_pad_get_parent (pad)), GST_PAD_NAME (pad));
+    return FALSE;
+  }
+
+  structure = gst_caps_get_structure (caps, 0);
+  ret = gst_structure_get_int (structure, "width", width);
+  ret &= gst_structure_get_int (structure, "height", height);
+
+  if (!ret) {
+    g_warning ("gstvideo: failed to get size properties on pad %s:%s",
+        GST_ELEMENT_NAME (gst_pad_get_parent (pad)), GST_PAD_NAME (pad));
+    return FALSE;
+  }
+
+  GST_DEBUG ("size request on pad %s:%s: %dx%d",
+      GST_ELEMENT_NAME (gst_pad_get_parent (pad)),
+      GST_PAD_NAME (pad), width ? *width : -1, height ? *height : -1);
+
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "gstvideo",
-  plugin_init
-};
+static gboolean
+plugin_init (GstPlugin * plugin)
+{
+  return TRUE;
+}
+
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "gstvideo",
+    "Convenience routines for video plugins",
+    plugin_init, VERSION, GST_LICENSE, GST_PACKAGE, GST_ORIGIN)

@@ -22,7 +22,6 @@
 #define __GST_VIDEOSCALE_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 
@@ -30,6 +29,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/* debugging */
+GST_DEBUG_CATEGORY_EXTERN (videoscale_debug);
+#define GST_CAT_DEFAULT videoscale_debug
 
 #define GST_TYPE_VIDEOSCALE \
   (gst_videoscale_get_type())
@@ -58,20 +60,27 @@ struct _GstVideoscale {
   GstPad *sinkpad,*srcpad;
 
   /* video state */
-  guint32 format;
-  gint width;
-  gint height;
-  gint targetwidth;
-  gint targetheight;
+  gboolean inited;
+  struct videoscale_format_struct *format;
+  gint to_width;
+  gint to_height;
+  gint from_width;
+  gint from_height;
+  GValue *to_par;	/* pixel aspect ratio of sink pad */
+  GValue *from_par;	/* pixel aspect ratio of src pad */
+  gboolean passthru;
+  float framerate;
+
   GstVideoScaleMethod method;
-  guint scale_bytes;
   
   /* private */
+  gint from_buf_size;
+  gint to_buf_size;
+#if 0
   guchar *temp;
-  void (*scale_cc) (GstVideoscale *scale, guchar *src, guchar *dest);
-  void (*scaler) (GstVideoscale *scale, guchar *src, guchar *dest,int,int,int,int);
   guchar (*filter) (guchar *src, gdouble x, gdouble y, gint sw, gint sh);
   guchar copy_row[8192];
+#endif
 };
 
 struct _GstVideoscaleClass {

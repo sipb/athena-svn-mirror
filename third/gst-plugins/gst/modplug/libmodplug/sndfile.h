@@ -5,10 +5,6 @@
  *          Adam Goode       <adam@evdebs.org> (endian and char fixes for PPC)
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #ifndef __SNDFILE_H
 #define __SNDFILE_H
 
@@ -509,7 +505,7 @@ enum {
 	MIDIOUT_VOLUME,
 	MIDIOUT_PAN,
 	MIDIOUT_BANKSEL,
-	MIDIOUT_PROGRAM,
+	MIDIOUT_PROGRAM
 };
 
 
@@ -940,7 +936,7 @@ int _muldivr(long a, long b, long c);
      ({ unsigned short int __bsx = (x);					      \
         ((((__bsx) >> 8) & 0xff) | (((__bsx) & 0xff) << 8)); }))
 #else
-static __inline unsigned short int
+static inline unsigned short int
 bswap_16 (unsigned short int __bsx)
 {
   return ((((__bsx) >> 8) & 0xff) | (((__bsx) & 0xff) << 8));
@@ -955,7 +951,7 @@ bswap_16 (unsigned short int __bsx)
         ((((__bsx) & 0xff000000) >> 24) | (((__bsx) & 0x00ff0000) >>  8) |    \
 	 (((__bsx) & 0x0000ff00) <<  8) | (((__bsx) & 0x000000ff) << 24)); }))
 #else
-static __inline unsigned int
+static inline unsigned int
 bswap_32 (unsigned int __bsx)
 {
   return ((((__bsx) & 0xff000000) >> 24) | (((__bsx) & 0x00ff0000) >>  8) |

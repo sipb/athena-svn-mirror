@@ -18,42 +18,26 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <gst/gst.h>
 
 
 #include "gstdv1394src.h"
 
-/* elementfactory information */
-static GstElementDetails gst_dv1394src_details = {
-  "Firewire (1394) DV Source",
-  "Source/1394/DV",
-  "LGPL",
-  "Source for DV video data from firewire port",
-  VERSION,
-  "Erik Walthinsen <omega@temple-baptist.com>\n"
-  "Daniel Fischer <dan@f3c.com>",
-  "(C) 2001-2002",
-};
-
-
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-
-  factory = gst_element_factory_new("dv1394src",GST_TYPE_DV1394SRC,
-                                   &gst_dv1394src_details);
-  g_return_val_if_fail(factory != NULL, FALSE);
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
+  if (!gst_element_register (plugin, "dv1394src", GST_RANK_NONE,
+          GST_TYPE_DV1394SRC))
+    return FALSE;
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = { 
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "gst1394",
-  plugin_init
-};
-
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "gst1394",
+    "Source for DV data via IEEE1394 interface",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN);

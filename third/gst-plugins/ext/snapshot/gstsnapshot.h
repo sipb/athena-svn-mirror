@@ -22,13 +22,8 @@
 #define __GST_SNAPSHOT_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 #include <png.h>
-
-#include "../hermes/yuv2rgb.h"
-#include "../hermes/yuv2yuv.h"
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -63,8 +58,6 @@ struct _GstSnapshot {
 
   png_structp png_struct_ptr;
   png_infop png_info_ptr;
-
-  GstColorSpaceConverter *converter;
 
   GstPad *sinkpad,*srcpad;
 };

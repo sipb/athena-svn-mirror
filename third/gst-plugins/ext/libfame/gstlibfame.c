@@ -17,37 +17,40 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <fame.h>
 #include <string.h>
+#include <math.h>
 
 #include "gstlibfame.h"
+#include <gst/video/video.h>
 
-#define FAMEENC_BUFFER_SIZE (300 * 1024) 
+#define FAMEENC_BUFFER_SIZE (300 * 1024)
 
 /* elementfactory information */
 static GstElementDetails gst_fameenc_details = {
   "MPEG1 and MPEG4 video encoder using the libfame library",
-  "Codec/Video/Encoder",
+  "Codec/Encoder/Video",
   "Uses fameenc to encode MPEG video streams",
-  VERSION,
-  "fameenc: (C) 2000-2001, Vivien Chappelier\n"
-  "Thomas Vander Stichele <thomas@apestaart.org>",
-  "(C) 2002",
+  "Thomas Vander Stichele <thomas@apestaart.org>"
 };
 
 static GQuark fame_object_name;
 
 
 /* FameEnc signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
   ARG_VERSION,
-  ARG_FRAMERATE,
   ARG_BITRATE,
   ARG_QUALITY,
   ARG_PATTERN,
@@ -56,107 +59,90 @@ enum {
   ARG_FRAMES_PER_SEQUENCE,
   /* dynamically generated properties start here */
   ARG_FAME_PROPS_START
-  /* FILL ME */
+      /* FILL ME */
 };
 
-GST_PAD_TEMPLATE_FACTORY (sink_template_factory,
-  "sink",
-  GST_PAD_SINK,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "fameenc_sink_caps",
-    "video/raw",
-      "format",		GST_PROPS_FOURCC (GST_MAKE_FOURCC ('I','4','2','0')),
-      "width",		GST_PROPS_INT_RANGE (16, 4096),
-      "height",		GST_PROPS_INT_RANGE (16, 4096)
-  )
-)
+static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("video/x-raw-yuv, "
+        "format = (fourcc) I420, "
+        "width = (int) [ 16, 4096 ], "
+        "height = (int) [ 16, 4096 ], "
+        "framerate = (double) { 23.976024, 24.0, 25.0, 29.970030, 30.0, "
+        "  50.0, 59.940060, 60.0 }")
+    );
 
-GST_PAD_TEMPLATE_FACTORY (src_template_factory,
-  "src",
-  GST_PAD_SRC,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "fameenc_src_caps",
-    "video/mpeg",
-      "mpegversion", GST_PROPS_LIST (
-	  GST_PROPS_INT (1), GST_PROPS_INT (4)),
-      "systemstream", GST_PROPS_BOOLEAN (FALSE)
-  )
-);
+static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("video/mpeg, "
+        "mpegversion = (int) { 1, 4 }, "
+        "systemstream = (boolean) FALSE, "
+        "width = (int) [ 16, 4096 ], "
+        "height = (int) [ 16, 4096 ], "
+        "framerate = (double) { 23.976024, 24.0, 25.0, 29.970030, 30.0, "
+        "  50.0, 59.940060, 60.0 }")
+    );
 
-#define MAX_FRAME_RATES  16
+#define MAX_FRAME_RATES  9
 typedef struct
 {
   gint num;
   gint den;
-} frame_rate_entry;
+}
+frame_rate_entry;
 
-static const frame_rate_entry frame_rates[] =
-{
-  { 0, 0 },
-  { 24000, 1001 },
-  { 24, 1 },
-  { 25, 1 },
-  { 30000, 1001 },
-  { 30, 1 },
-  { 50, 1 },
-  { 60000, 1001 },
-  { 60, 1 },
-  { 0, 0 },
-  { 0, 0 },
-  { 0, 0 },
-  { 0, 0 },
-  { 0, 0 },
-  { 0, 0 },
-  { 0, 0 },
+static const frame_rate_entry frame_rates[] = {
+  {0, 0},
+  {24000, 1001},
+  {24, 1},
+  {25, 1},
+  {30000, 1001},
+  {30, 1},
+  {50, 1},
+  {60000, 1001},
+  {60, 1},
 };
 
 static gint
-framerate_to_index (num, den)
+framerate_to_index (gfloat fps)
 {
   gint i;
-  
-  for (i = 0; i < MAX_FRAME_RATES; i++) {
-    if (frame_rates[i].num == num && frame_rates[i].den == den)
-      return i;
+  gint idx = -1;
+
+  for (i = 1; i < MAX_FRAME_RATES; i++) {
+    if (idx == -1) {
+      idx = i;
+    } else {
+      gfloat old_diff = fabs ((1. * frame_rates[idx].num /
+              frame_rates[idx].den) - fps),
+          new_diff = fabs ((1. * frame_rates[i].num /
+              frame_rates[i].den) - fps);
+
+      if (new_diff < old_diff) {
+        idx = i;
+      }
+    }
   }
-  return 0;
+
+  return idx;
 }
 
-#define GST_TYPE_FAMEENC_FRAMERATE (gst_fameenc_framerate_get_type())
-static GType
-gst_fameenc_framerate_get_type(void) {
-  static GType fameenc_framerate_type = 0;
-  static GEnumValue fameenc_framerate[] = {
-    {1, "1", "24000/1001 (23.97)"},
-    {2, "2", "24"},
-    {3, "3", "25"},
-    {4, "4", "30000/1001 (29.97)"},
-    {5, "5", "30"},
-    {6, "6", "50"},
-    {7, "7", "60000/1001 (59.94)"},
-    {8, "8", "60"},
-    {0, NULL, NULL},
-  };
-  if (!fameenc_framerate_type) {
-    fameenc_framerate_type = g_enum_register_static("GstFameEncFrameRate", fameenc_framerate);
-  }
-  return fameenc_framerate_type;
-}
+static void gst_fameenc_class_init (GstFameEncClass * klass);
+static void gst_fameenc_base_init (GstFameEncClass * klass);
+static void gst_fameenc_init (GstFameEnc * fameenc);
+static void gst_fameenc_dispose (GObject * object);
 
-static void	gst_fameenc_class_init		(GstFameEncClass *klass);
-static void	gst_fameenc_init		(GstFameEnc *fameenc);
-static void	gst_fameenc_dispose		(GObject *object);
+static void gst_fameenc_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_fameenc_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 
-static void	gst_fameenc_set_property	(GObject *object, guint prop_id, 
-						 const GValue *value, GParamSpec *pspec);
-static void	gst_fameenc_get_property	(GObject *object, guint prop_id, 
-						 GValue *value, GParamSpec *pspec);
-
-static void	gst_fameenc_chain		(GstPad *pad, GstBuffer *buf);
+static void gst_fameenc_chain (GstPad * pad, GstData * _data);
 
 static GstElementClass *parent_class = NULL;
+
 /*static guint gst_fameenc_signals[LAST_SIGNAL] = { 0 };*/
 
 GType
@@ -166,8 +152,8 @@ gst_fameenc_get_type (void)
 
   if (!fameenc_type) {
     static const GTypeInfo fameenc_info = {
-      sizeof (GstFameEncClass),      
-      NULL,
+      sizeof (GstFameEncClass),
+      (GBaseInitFunc) gst_fameenc_base_init,
       NULL,
       (GClassInitFunc) gst_fameenc_class_init,
       NULL,
@@ -176,20 +162,34 @@ gst_fameenc_get_type (void)
       0,
       (GInstanceInitFunc) gst_fameenc_init,
     };
-    fameenc_type = g_type_register_static (GST_TYPE_ELEMENT, 
-	                                   "GstFameEnc", &fameenc_info, 0);
+
+    fameenc_type = g_type_register_static (GST_TYPE_ELEMENT,
+        "GstFameEnc", &fameenc_info, 0);
   }
   return fameenc_type;
 }
 
 static int
-gst_fameenc_item_compare (fame_list_t *item1, fame_list_t *item2)
+gst_fameenc_item_compare (fame_list_t * item1, fame_list_t * item2)
 {
   return strcmp (item1->type, item2->type);
 }
 
 static void
-gst_fameenc_class_init (GstFameEncClass *klass)
+gst_fameenc_base_init (GstFameEncClass * klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_template));
+
+  gst_element_class_set_details (element_class, &gst_fameenc_details);
+}
+
+static void
+gst_fameenc_class_init (GstFameEncClass * klass)
 {
   GObjectClass *gobject_class = NULL;
   GstElementClass *gstelement_class = NULL;
@@ -198,8 +198,8 @@ gst_fameenc_class_init (GstFameEncClass *klass)
   GList *props = NULL, *props_walk;
   gint current_prop = ARG_FAME_PROPS_START;
 
-  gobject_class = (GObjectClass*) klass;
-  gstelement_class = (GstElementClass*) klass;
+  gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
@@ -215,7 +215,9 @@ gst_fameenc_class_init (GstFameEncClass *klass)
   /* first sort the list */
   walk = context->type_list;
   while (walk) {
-    props = g_list_insert_sorted (props, walk, (GCompareFunc)gst_fameenc_item_compare);
+    props =
+        g_list_insert_sorted (props, walk,
+        (GCompareFunc) gst_fameenc_item_compare);
     walk = walk->next;
   }
 
@@ -228,7 +230,7 @@ gst_fameenc_class_init (GstFameEncClass *klass)
     fame_object_t *current_default;
     gint default_index;
 
-    walk = (fame_list_t *)props_walk->data;
+    walk = (fame_list_t *) props_walk->data;
     array = g_array_new (TRUE, FALSE, sizeof (GEnumValue));
 
     current_type = walk->type;
@@ -239,85 +241,96 @@ gst_fameenc_class_init (GstFameEncClass *klass)
 
     do {
       if (strstr (walk->type, "/")) {
-	GEnumValue value;
+        GEnumValue value;
 
-	if (current_default == walk->item) 
+        if (current_default == walk->item)
           default_index = current_value;
 
-	value.value = current_value++;
-	value.value_name = g_strdup (walk->type);
-	value.value_nick = g_strdup (walk->item->name);
-	
-	g_array_append_val (array, value);
+        value.value = current_value++;
+        value.value_name = g_strdup (walk->type);
+        value.value_nick = g_strdup (walk->item->name);
+
+        g_array_append_val (array, value);
       }
 
       props_walk = g_list_next (props_walk);
       if (props_walk)
-	walk = (fame_list_t *)props_walk->data;
+        walk = (fame_list_t *) props_walk->data;
 
     } while (props_walk && !strncmp (walk->type, current_type, current_len));
 
     if (array->len > 0) {
       GType type;
       GParamSpec *pspec;
-      
-      type = g_enum_register_static (g_strdup_printf ("GstFameEnc_%s", current_type), (GEnumValue *)array->data);
 
-      pspec = g_param_spec_enum (current_type, current_type, g_strdup_printf ("The FAME \"%s\" object", current_type),
-                           type, default_index, G_PARAM_READWRITE);
+      type =
+          g_enum_register_static (g_strdup_printf ("GstFameEnc_%s",
+              current_type), (GEnumValue *) array->data);
+
+      pspec =
+          g_param_spec_enum (current_type, current_type,
+          g_strdup_printf ("The FAME \"%s\" object", current_type), type,
+          default_index, G_PARAM_READWRITE);
 
       g_param_spec_set_qdata (pspec, fame_object_name, (gpointer) current_type);
-      
-      g_object_class_install_property (G_OBJECT_CLASS (klass), current_prop++, pspec);
+
+      g_object_class_install_property (G_OBJECT_CLASS (klass), current_prop++,
+          pspec);
     }
   }
 
-  g_object_class_install_property (gobject_class, ARG_FRAMERATE,
-    g_param_spec_enum ("framerate", "Frame Rate", "Number of frames per second",
-                       GST_TYPE_FAMEENC_FRAMERATE, 3, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_BITRATE,
-    g_param_spec_int ("bitrate", "Bitrate", "Target bitrate (0 = VBR)",
-                      0, 5000000, 0, G_PARAM_READWRITE));
+      g_param_spec_int ("bitrate", "Bitrate", "Target bitrate (0 = VBR)",
+          0, 5000000, 0, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_QUALITY,
-    g_param_spec_int ("quality", "Quality", "Percentage of quality of compression (versus size)",
-                      0, 100, 75, G_PARAM_READWRITE)); 
+      g_param_spec_int ("quality", "Quality",
+          "Percentage of quality of compression (versus size)", 0, 100, 75,
+          G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_PATTERN,
-    g_param_spec_string ("pattern", "Pattern", "Encoding pattern of I, P, and B frames",
-                         "IPPPPPPPPPPP", G_PARAM_READWRITE)); 
+      g_param_spec_string ("pattern", "Pattern",
+          "Encoding pattern of I, P, and B frames", "IPPPPPPPPPPP",
+          G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_FRAMES_PER_SEQUENCE,
-    g_param_spec_int ("frames_per_sequence", "Frames Per Sequence", 
-	              "The number of frames in one sequence",
-                      1, G_MAXINT, 12, G_PARAM_READWRITE)); 
+      g_param_spec_int ("frames_per_sequence", "Frames Per Sequence",
+          "The number of frames in one sequence", 1, G_MAXINT, 12,
+          G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_FAME_VERBOSE,
-    g_param_spec_boolean ("fame_verbose", "Fame Verbose", "Make FAME produce verbose output",
-                         FALSE, G_PARAM_READWRITE));
+      g_param_spec_boolean ("fame_verbose", "Fame Verbose",
+          "Make FAME produce verbose output", FALSE, G_PARAM_READWRITE));
   g_object_class_install_property (gobject_class, ARG_BUFFER_SIZE,
-    g_param_spec_int ("buffer_size", "Buffer Size", "Set the decoding output buffer size",
-                      0, 1024*1024, FAMEENC_BUFFER_SIZE, G_PARAM_READWRITE)); 
+      g_param_spec_int ("buffer_size", "Buffer Size",
+          "Set the decoding output buffer size", 0, 1024 * 1024,
+          FAMEENC_BUFFER_SIZE, G_PARAM_READWRITE));
 }
 
 static GstPadLinkReturn
-gst_fameenc_sinkconnect (GstPad *pad, GstCaps *caps)
+gst_fameenc_sink_link (GstPad * pad, const GstCaps * caps)
 {
-  gint width, height;
+  gint width, height, fps_idx;
+  gdouble fps;
   GstFameEnc *fameenc;
+  GstStructure *structure;
 
   fameenc = GST_FAMEENC (gst_pad_get_parent (pad));
 
-  if (!GST_CAPS_IS_FIXED (caps)) 
-    return GST_PAD_LINK_DELAYED;
-
   if (fameenc->initialized) {
-    GST_DEBUG(0, "error: fameenc encoder already initialized !");
+    GST_DEBUG ("error: fameenc encoder already initialized !");
     return GST_PAD_LINK_REFUSED;
   }
 
-  gst_caps_get_int (caps, "width", &width);
-  gst_caps_get_int (caps, "height", &height);
-  
+  structure = gst_caps_get_structure (caps, 0);
+  gst_structure_get_int (structure, "width", &width);
+  gst_structure_get_int (structure, "height", &height);
+  gst_structure_get_double (structure, "framerate", &fps);
+
   /* fameenc requires width and height to be multiples of 16 */
   if (width % 16 != 0 || height % 16 != 0)
     return GST_PAD_LINK_REFUSED;
+
+  fps_idx = framerate_to_index (fps);
+  fameenc->fp.frame_rate_num = frame_rates[fps_idx].num;
+  fameenc->fp.frame_rate_den = frame_rates[fps_idx].den;
+  fameenc->time_interval = 0;
 
   fameenc->fp.width = width;
   fameenc->fp.height = height;
@@ -336,12 +349,12 @@ gst_fameenc_sinkconnect (GstPad *pad, GstCaps *caps)
 
   fameenc->initialized = TRUE;
   fameenc->time_interval = 0;
-  
+
   return GST_PAD_LINK_OK;
 }
 
 static void
-gst_fameenc_init (GstFameEnc *fameenc)
+gst_fameenc_init (GstFameEnc * fameenc)
 {
   g_assert (fameenc != NULL);
   g_assert (GST_IS_FAMEENC (fameenc));
@@ -351,14 +364,16 @@ gst_fameenc_init (GstFameEnc *fameenc)
   g_assert (fameenc->fc != NULL);
 
   /* create the sink and src pads */
-  fameenc->sinkpad = gst_pad_new_from_template (
-		  GST_PAD_TEMPLATE_GET (sink_template_factory), "sink");
+  fameenc->sinkpad =
+      gst_pad_new_from_template (gst_static_pad_template_get (&sink_template),
+      "sink");
   gst_element_add_pad (GST_ELEMENT (fameenc), fameenc->sinkpad);
   gst_pad_set_chain_function (fameenc->sinkpad, gst_fameenc_chain);
-  gst_pad_set_link_function (fameenc->sinkpad, gst_fameenc_sinkconnect);
+  gst_pad_set_link_function (fameenc->sinkpad, gst_fameenc_sink_link);
 
-  fameenc->srcpad = gst_pad_new_from_template (
-                      GST_PAD_TEMPLATE_GET (src_template_factory), "src");
+  fameenc->srcpad =
+      gst_pad_new_from_template (gst_static_pad_template_get (&src_template),
+      "src");
   gst_element_add_pad (GST_ELEMENT (fameenc), fameenc->srcpad);
   /* FIXME: set some more handler functions here */
 
@@ -373,21 +388,21 @@ gst_fameenc_init (GstFameEnc *fameenc)
   fameenc->fp.bitrate = 0;
   fameenc->fp.quality = 75;
   fameenc->fp.frame_rate_num = 25;
-  fameenc->fp.frame_rate_den = 1; /* avoid floating point exceptions */
-  fameenc->fp.frames_per_sequence = 12; 
+  fameenc->fp.frame_rate_den = 1;       /* avoid floating point exceptions */
+  fameenc->fp.frames_per_sequence = 12;
 
   fameenc->pattern = g_strdup ("IPPPPPPPPPP");
 
   /* allocate space for the buffer */
-  fameenc->buffer_size = FAMEENC_BUFFER_SIZE; /* FIXME */
+  fameenc->buffer_size = FAMEENC_BUFFER_SIZE;   /* FIXME */
   fameenc->buffer = (unsigned char *) g_malloc (fameenc->buffer_size);
-  
-  fameenc->next_time = 0; 
+
+  fameenc->next_time = 0;
   fameenc->time_interval = 0;
 }
 
 static void
-gst_fameenc_dispose (GObject *object)
+gst_fameenc_dispose (GObject * object)
 {
   GstFameEnc *fameenc = GST_FAMEENC (object);
 
@@ -397,8 +412,9 @@ gst_fameenc_dispose (GObject *object)
 }
 
 static void
-gst_fameenc_chain (GstPad *pad, GstBuffer *buf)
+gst_fameenc_chain (GstPad * pad, GstData * _data)
 {
+  GstBuffer *buf = GST_BUFFER (_data);
   GstFameEnc *fameenc;
   guchar *data;
   gulong size;
@@ -415,8 +431,8 @@ gst_fameenc_chain (GstPad *pad, GstBuffer *buf)
   data = (guchar *) GST_BUFFER_DATA (buf);
   size = GST_BUFFER_SIZE (buf);
 
-  GST_DEBUG (0,"gst_fameenc_chain: got buffer of %ld bytes in '%s'", 
-	     size, GST_OBJECT_NAME (fameenc));
+  GST_DEBUG ("gst_fameenc_chain: got buffer of %ld bytes in '%s'",
+      size, GST_OBJECT_NAME (fameenc));
 
   /* the data contains the three planes side by side, with size w * h, w * h /4,
    * w * h / 4 */
@@ -425,7 +441,7 @@ gst_fameenc_chain (GstPad *pad, GstBuffer *buf)
 
   frame_size = fameenc->fp.width * fameenc->fp.height;
 
-  fameenc->fy.p = 0; 
+  fameenc->fy.p = 0;
   fameenc->fy.y = data;
   fameenc->fy.u = data + frame_size;
   fameenc->fy.v = fameenc->fy.u + (frame_size >> 2);
@@ -439,10 +455,13 @@ gst_fameenc_chain (GstPad *pad, GstBuffer *buf)
 
     /* FIXME: safeguard, remove me when a better way is found */
     if (length > FAMEENC_BUFFER_SIZE)
-      g_warning ("FAMEENC_BUFFER_SIZE is defined too low, encoded slice has size %d !\n", length);
+      g_warning
+          ("FAMEENC_BUFFER_SIZE is defined too low, encoded slice has size %d !\n",
+          length);
 
     if (!fameenc->time_interval) {
-  	fameenc->time_interval = GST_SECOND / fameenc->fp.frame_rate_num;
+      fameenc->time_interval =
+          GST_SECOND * fameenc->fp.frame_rate_den / fameenc->fp.frame_rate_num;
     }
 
     fameenc->next_time += fameenc->time_interval;
@@ -450,23 +469,23 @@ gst_fameenc_chain (GstPad *pad, GstBuffer *buf)
     GST_BUFFER_SIZE (outbuf) = length;
     GST_BUFFER_TIMESTAMP (outbuf) = fameenc->next_time;
     GST_BUFFER_DATA (outbuf) = g_malloc (length);
-    memcpy (GST_BUFFER_DATA(outbuf), fameenc->buffer, length);
+    memcpy (GST_BUFFER_DATA (outbuf), fameenc->buffer, length);
     GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buf);
 
-    GST_DEBUG (0,"gst_fameenc_chain: pushing buffer of size %d",
-               GST_BUFFER_SIZE(outbuf));
+    GST_DEBUG ("gst_fameenc_chain: pushing buffer of size %d",
+        GST_BUFFER_SIZE (outbuf));
 
-    gst_pad_push (fameenc->srcpad, outbuf);
+    gst_pad_push (fameenc->srcpad, GST_DATA (outbuf));
   }
 
-  fame_end_frame (fameenc->fc, NULL); 
+  fame_end_frame (fameenc->fc, NULL);
 
-  gst_buffer_unref(buf);
+  gst_buffer_unref (buf);
 }
 
 static void
-gst_fameenc_set_property (GObject *object, guint prop_id, 
-	                  const GValue *value, GParamSpec *pspec)
+gst_fameenc_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
 {
   GstFameEnc *fameenc;
 
@@ -474,20 +493,12 @@ gst_fameenc_set_property (GObject *object, guint prop_id,
   fameenc = GST_FAMEENC (object);
 
   if (fameenc->initialized) {
-    GST_DEBUG(0, "error: fameenc encoder already initialized, cannot set properties !");
+    GST_DEBUG
+        ("error: fameenc encoder already initialized, cannot set properties !");
     return;
   }
 
   switch (prop_id) {
-    case ARG_FRAMERATE:
-    {
-      gint index = g_value_get_enum (value);
-
-      fameenc->fp.frame_rate_num = frame_rates[index].num;
-      fameenc->fp.frame_rate_den = frame_rates[index].den;
-      fameenc->time_interval = 0;
-      break;
-    }
     case ARG_BITRATE:
       fameenc->fp.bitrate = g_value_get_int (value);
       break;
@@ -509,24 +520,24 @@ gst_fameenc_set_property (GObject *object, guint prop_id,
       break;
     default:
       if (prop_id >= ARG_FAME_PROPS_START) {
-	gchar *name;
-	gint index = g_value_get_enum (value);
-	GEnumValue *values;
+        gchar *name;
+        gint index = g_value_get_enum (value);
+        GEnumValue *values;
 
-	values = G_ENUM_CLASS (g_type_class_ref (pspec->value_type))->values;
-	name = (gchar *) g_param_spec_get_qdata (pspec, fame_object_name);
-	
-        fame_register (fameenc->fc, name, fame_get_object (fameenc->fc, values[index].value_name));
-      }
-      else
+        values = G_ENUM_CLASS (g_type_class_ref (pspec->value_type))->values;
+        name = (gchar *) g_param_spec_get_qdata (pspec, fame_object_name);
+
+        fame_register (fameenc->fc, name, fame_get_object (fameenc->fc,
+                values[index].value_name));
+      } else
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
   }
 }
 
 static void
-gst_fameenc_get_property (GObject *object, guint prop_id, 
-	                  GValue *value, GParamSpec *pspec)
+gst_fameenc_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec)
 {
   GstFameEnc *fameenc;
 
@@ -534,13 +545,6 @@ gst_fameenc_get_property (GObject *object, guint prop_id,
   fameenc = GST_FAMEENC (object);
 
   switch (prop_id) {
-    case ARG_FRAMERATE:
-    {
-      gint index = framerate_to_index (fameenc->fp.frame_rate_num, 
-		                       fameenc->fp.frame_rate_den);
-      g_value_set_enum (value, index);
-      break;
-    }
     case ARG_BITRATE:
       g_value_set_int (value, fameenc->fp.bitrate);
       break;
@@ -561,23 +565,23 @@ gst_fameenc_get_property (GObject *object, guint prop_id,
       break;
     default:
       if (prop_id >= ARG_FAME_PROPS_START) {
-	gchar *name;
-	gint index = 0;
-	GEnumValue *values;
-	fame_object_t *f_object;
+        gchar *name;
+        gint index = 0;
+        GEnumValue *values;
+        fame_object_t *f_object;
 
-	values = G_ENUM_CLASS (g_type_class_ref (pspec->value_type))->values;
-	name = (gchar *) g_param_spec_get_qdata (pspec, fame_object_name);
-	
-	f_object = fame_get_object (fameenc->fc, name);
+        values = G_ENUM_CLASS (g_type_class_ref (pspec->value_type))->values;
+        name = (gchar *) g_param_spec_get_qdata (pspec, fame_object_name);
 
-	while (values[index].value_name) {
-	  if (!strcmp (values[index].value_nick, f_object->name)) {
+        f_object = fame_get_object (fameenc->fc, name);
+
+        while (values[index].value_name) {
+          if (!strcmp (values[index].value_nick, f_object->name)) {
             g_value_set_enum (value, index);
-	    return;
-	  }
-	  index++;
-	}
+            return;
+          }
+          index++;
+        }
       }
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -585,28 +589,15 @@ gst_fameenc_get_property (GObject *object, guint prop_id,
 }
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-
-  /* create an elementfactory for the fameenc element */
-  factory = gst_element_factory_new ("fameenc", GST_TYPE_FAMEENC,
-                                     &gst_fameenc_details);
-  g_return_val_if_fail (factory != NULL, FALSE);
-
-  gst_element_factory_add_pad_template (factory, 
-      GST_PAD_TEMPLATE_GET (sink_template_factory));
-  gst_element_factory_add_pad_template (factory, 
-      GST_PAD_TEMPLATE_GET (src_template_factory));
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-
-  return TRUE;
+  return gst_element_register (plugin, "fameenc",
+      GST_RANK_NONE, GST_TYPE_FAMEENC);
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "fameenc",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "fameenc",
+    "Fast Assembly MPEG Encoder",
+    plugin_init,
+    LIBFAME_VERSION, "LGPL", "libfame", "http://fame.sourceforge.net/")

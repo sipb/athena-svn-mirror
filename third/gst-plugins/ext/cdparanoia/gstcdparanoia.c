@@ -20,6 +20,9 @@
 
 /* #define GST_DEBUG_ENABLED */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,11 +35,12 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <errno.h>
+#include "gst/gst-i18n-plugin.h"
 
 /* taken from linux/cdrom.h */
-#define CD_MSF_OFFSET       150	/* MSF numbering offset of first frame */
-#define CD_SECS              60	/* seconds per minute */
-#define CD_FRAMES            75	/* frames per second */
+#define CD_MSF_OFFSET       150 /* MSF numbering offset of first frame */
+#define CD_SECS              60 /* seconds per minute */
+#define CD_FRAMES            75 /* frames per second */
 
 #include "gstcdparanoia.h"
 
@@ -44,31 +48,24 @@
 static GstElementDetails cdparanoia_details = {
   "CD Audio (cdda) Source, Paranoia IV",
   "Source/File",
-  "LGPL",
   "Read audio from CD in paranoid mode",
-  VERSION,
   "Erik Walthinsen <omega@cse.ogi.edu>",
-  "(C) 2000",
 };
 
-GST_PAD_TEMPLATE_FACTORY (cdparanoia_src_factory,
-  "src",
-  GST_PAD_SRC,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "cdparanoia_src",
-    "audio/raw",
-	"format", 	GST_PROPS_STRING ("int"),
-	"law", 		GST_PROPS_INT (0),
-	"endianness", 	GST_PROPS_INT (G_BYTE_ORDER),
-	"signed", 	GST_PROPS_BOOLEAN (TRUE),
-	"width", 	GST_PROPS_INT (16),
-	"depth", 	GST_PROPS_INT (16),
-	"rate", 	GST_PROPS_INT (44100),
-	"channels", 	GST_PROPS_INT (2),
-	"chunksize", 	GST_PROPS_INT (CD_FRAMESIZE_RAW)
-  )
-);
+static GstStaticPadTemplate cdparanoia_src_template =
+GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "endianness = (int) BYTE_ORDER, "
+        "signed = (boolean) true, "
+        "width = (int) 16, "
+        "depth = (int) 16, "
+        "rate = (int) 44100, "
+        "channels = (int) 2, "
+        "chunksize = (int) " G_STRINGIFY (CD_FRAMESIZE_RAW)
+    )
+    );
 
 
 /********** Define useful types for non-programmatic interfaces **********/
@@ -78,14 +75,15 @@ gst_paranoia_mode_get_type (void)
 {
   static GType paranoia_mode_type = 0;
   static GEnumValue paranoia_modes[] = {
-    { PARANOIA_MODE_DISABLE, "0",   "Disable paranoid checking"},
-    { PARANOIA_MODE_OVERLAP, "4",   "cdda2wav-style overlap checking"},
-    { PARANOIA_MODE_FULL,    "255", "Full paranoia"},
+    {PARANOIA_MODE_DISABLE, "0", "Disable paranoid checking"},
+    {PARANOIA_MODE_OVERLAP, "4", "cdda2wav-style overlap checking"},
+    {PARANOIA_MODE_FULL, "255", "Full paranoia"},
     {0, NULL, NULL},
   };
 
   if (!paranoia_mode_type) {
-    paranoia_mode_type = g_enum_register_static ("GstParanoiaMode", paranoia_modes);
+    paranoia_mode_type =
+        g_enum_register_static ("GstParanoiaMode", paranoia_modes);
   }
   return paranoia_mode_type;
 }
@@ -96,13 +94,14 @@ gst_paranoia_endian_get_type (void)
 {
   static GType paranoia_endian_type = 0;
   static GEnumValue paranoia_endians[] = {
-    { 0, "0", "treat drive as little endian"},
-    { 1, "1", "treat drive as big endian"},
-    { 0, NULL, NULL},
+    {0, "0", "treat drive as little endian"},
+    {1, "1", "treat drive as big endian"},
+    {0, NULL, NULL},
   };
 
   if (!paranoia_endian_type) {
-    paranoia_endian_type = g_enum_register_static ("GstParanoiaEndian", paranoia_endians);
+    paranoia_endian_type =
+        g_enum_register_static ("GstParanoiaEndian", paranoia_endians);
   }
   return paranoia_endian_type;
 }
@@ -135,35 +134,30 @@ enum
   ARG_DISCID
 };
 
+static void cdparanoia_base_init (gpointer g_class);
+static void cdparanoia_class_init (CDParanoiaClass * klass);
+static void cdparanoia_init (CDParanoia * cdparanoia);
 
-static void 		cdparanoia_class_init 		(CDParanoiaClass *klass);
-static void 		cdparanoia_init 		(CDParanoia *cdparanoia);
+static void cdparanoia_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void cdparanoia_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 
-static void 		cdparanoia_set_property 	(GObject *object, guint prop_id, 
-							 const GValue *value, GParamSpec *pspec);
-static void 		cdparanoia_get_property 	(GObject *object, guint prop_id,
-							 GValue *value, GParamSpec *pspec);
+static GstData *cdparanoia_get (GstPad * pad);
+static gboolean cdparanoia_event (GstPad * pad, GstEvent * event);
+static const GstEventMask *cdparanoia_get_event_mask (GstPad * pad);
+static const GstFormat *cdparanoia_get_formats (GstPad * pad);
+static gboolean cdparanoia_convert (GstPad * pad,
+    GstFormat src_format,
+    gint64 src_value, GstFormat * dest_format, gint64 * dest_value);
+static gboolean cdparanoia_query (GstPad * pad, GstQueryType type,
+    GstFormat * format, gint64 * value);
+static const GstQueryType *cdparanoia_get_query_types (GstPad * pad);
+static void cdparanoia_set_index (GstElement * element, GstIndex * index);
+static GstIndex *cdparanoia_get_index (GstElement * element);
 
-static GstBuffer*	cdparanoia_get 			(GstPad *pad);
-static gboolean 	cdparanoia_event 		(GstPad *pad, GstEvent *event);
-static const GstEventMask*
-			cdparanoia_get_event_mask 	(GstPad *pad);
-static const GstFormat*
-			cdparanoia_get_formats 		(GstPad *pad);
-static gboolean 	cdparanoia_convert 		(GstPad *pad,
-				    			 GstFormat src_format,
-				    			 gint64 src_value, 
-							 GstFormat *dest_format, 
-							 gint64 *dest_value);
-static gboolean 	cdparanoia_query 		(GstPad *pad, GstQueryType type,
-		     					 GstFormat *format, gint64 *value);
-static const GstQueryType*
-			cdparanoia_get_query_types 	(GstPad *pad);
-static void cdparanoia_set_index (GstElement *element, GstIndex *index);
-static GstIndex *cdparanoia_get_index (GstElement *element);
-																	
 
-static GstElementStateReturn cdparanoia_change_state (GstElement *element);
+static GstElementStateReturn cdparanoia_change_state (GstElement * element);
 
 
 static GstElementClass *parent_class = NULL;
@@ -179,7 +173,8 @@ cdparanoia_get_type (void)
 
   if (!cdparanoia_type) {
     static const GTypeInfo cdparanoia_info = {
-      sizeof (CDParanoiaClass), NULL,
+      sizeof (CDParanoiaClass),
+      cdparanoia_base_init,
       NULL,
       (GClassInitFunc) cdparanoia_class_init,
       NULL,
@@ -189,8 +184,10 @@ cdparanoia_get_type (void)
       (GInstanceInitFunc) cdparanoia_init,
     };
 
-    cdparanoia_type = g_type_register_static (GST_TYPE_ELEMENT, "CDParanoia", &cdparanoia_info, 0);
-    
+    cdparanoia_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "CDParanoia",
+        &cdparanoia_info, 0);
+
     /* Register the track format */
     track_format = gst_format_register ("track", "CD track");
     sector_format = gst_format_register ("sector", "CD sector");
@@ -199,7 +196,18 @@ cdparanoia_get_type (void)
 }
 
 static void
-cdparanoia_class_init (CDParanoiaClass *klass)
+cdparanoia_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&cdparanoia_src_template));
+  gst_element_class_set_details (element_class, &cdparanoia_details);
+
+}
+
+static void
+cdparanoia_class_init (CDParanoiaClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
@@ -213,81 +221,86 @@ cdparanoia_class_init (CDParanoiaClass *klass)
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
   cdparanoia_signals[SMILIE_CHANGE] =
-    g_signal_new ("smilie_change", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (CDParanoiaClass, smilie_change), NULL, NULL,
-		  g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
+      g_signal_new ("smilie-change", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (CDParanoiaClass, smilie_change), NULL,
+      NULL, g_cclosure_marshal_VOID__STRING, G_TYPE_NONE, 1, G_TYPE_STRING);
   cdparanoia_signals[TRANSPORT_ERROR] =
-    g_signal_new ("transport_error", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (CDParanoiaClass, transport_error), NULL, NULL,
-		  g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
+      g_signal_new ("transport-error", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (CDParanoiaClass, transport_error),
+      NULL, NULL, g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
   cdparanoia_signals[UNCORRECTED_ERROR] =
-    g_signal_new ("uncorrected_error", G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (CDParanoiaClass, uncorrected_error), NULL, NULL,
-		  g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
+      g_signal_new ("uncorrected-error", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST, G_STRUCT_OFFSET (CDParanoiaClass, uncorrected_error),
+      NULL, NULL, g_cclosure_marshal_VOID__INT, G_TYPE_NONE, 1, G_TYPE_INT);
 
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LOCATION, 
-    g_param_spec_string ("location", "location", "location", 
-	                 NULL, G_PARAM_READWRITE));	
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_GENERIC_DEVICE, 
-    g_param_spec_string ("generic_device", "Generic device", "Use specified generic scsi device", 
-	                 NULL, G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DEFAULT_SECTORS, 
-    g_param_spec_int ("default_sectors", "Default sectors", 
-	    	      "Force default number of sectors in read to n sectors", 
-		      -1, 100, -1, G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SEARCH_OVERLAP, 
-    g_param_spec_int ("search_overlap", "Search overlap", 
-	    	      "Force minimum overlap search during verification to n sectors", 
-		       -1, 75, -1, G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ENDIAN, 
-    g_param_spec_enum ("endian", "Endian", "Force endian on drive", 
-		       GST_TYPE_PARANOIA_ENDIAN, 0, G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_READ_SPEED, 
-    g_param_spec_int ("read_speed", "Read speed", "Read from device at specified speed", 
-		      G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_TOC_OFFSET,
-    g_param_spec_int("toc_offset", "TOC offset", "Add <n> sectors to the values reported",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); 
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_TOC_BIAS,
-    g_param_spec_boolean("toc_bias", "TOC bias",
-	    		 "Assume that the beginning offset of track 1 as reported in the TOC "
-			 "will be addressed as LBA 0.  Necessary for some Toshiba drives to "
-			 "get track boundaries",
-                         TRUE,G_PARAM_READWRITE)); 
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_NEVER_SKIP, 
-    g_param_spec_int ("never_skip", "Never skip", 
-	    	      "never accept any less than perfect data reconstruction (don't allow "
-		      "'V's) but if [n] is given, skip after [n] retries without progress.", 
-		      0, G_MAXINT, 0, G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ABORT_ON_SKIP, 
-    g_param_spec_boolean ("abort_on_skip", "Abort on skip", "Abort on imperfect reads/skips", 
-		          TRUE, G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PARANOIA_MODE, 
-    g_param_spec_enum ("paranoia_mode", "Paranoia mode", "Type of checking to perform", 
-		       GST_TYPE_PARANOIA_MODE, 0, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LOCATION,
+      g_param_spec_string ("location", "location", "location",
+          NULL, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_GENERIC_DEVICE,
+      g_param_spec_string ("generic_device", "Generic device",
+          "Use specified generic scsi device", NULL, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DEFAULT_SECTORS,
+      g_param_spec_int ("default_sectors", "Default sectors",
+          "Force default number of sectors in read to n sectors", -1, 100, -1,
+          G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SEARCH_OVERLAP,
+      g_param_spec_int ("search_overlap", "Search overlap",
+          "Force minimum overlap search during verification to n sectors", -1,
+          75, -1, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ENDIAN,
+      g_param_spec_enum ("endian", "Endian", "Force endian on drive",
+          GST_TYPE_PARANOIA_ENDIAN, 0, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_READ_SPEED,
+      g_param_spec_int ("read_speed", "Read speed",
+          "Read from device at specified speed", G_MININT, G_MAXINT, 0,
+          G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_TOC_OFFSET,
+      g_param_spec_int ("toc_offset", "TOC offset",
+          "Add <n> sectors to the values reported", G_MININT, G_MAXINT, 0,
+          G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_TOC_BIAS,
+      g_param_spec_boolean ("toc_bias", "TOC bias",
+          "Assume that the beginning offset of track 1 as reported in the TOC "
+          "will be addressed as LBA 0.  Necessary for some Toshiba drives to "
+          "get track boundaries", TRUE, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_NEVER_SKIP,
+      g_param_spec_int ("never_skip", "Never skip",
+          "never accept any less than perfect data reconstruction (don't allow "
+          "'V's) but if [n] is given, skip after [n] retries without progress.",
+          0, G_MAXINT, 0, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ABORT_ON_SKIP,
+      g_param_spec_boolean ("abort_on_skip", "Abort on skip",
+          "Abort on imperfect reads/skips", TRUE, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_PARANOIA_MODE,
+      g_param_spec_enum ("paranoia_mode", "Paranoia mode",
+          "Type of checking to perform", GST_TYPE_PARANOIA_MODE, 0,
+          G_PARAM_READWRITE));
   g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_DISCID,
-    g_param_spec_string ("discid", "discid", "The dics id",
-			 NULL, G_PARAM_READABLE));
+      g_param_spec_string ("discid", "discid", "The dics id", NULL,
+          G_PARAM_READABLE));
 
   gobject_class->set_property = cdparanoia_set_property;
   gobject_class->get_property = cdparanoia_get_property;
 
   gstelement_class->change_state = cdparanoia_change_state;
-	gstelement_class->set_index = cdparanoia_set_index;
-	gstelement_class->get_index = cdparanoia_get_index;
+  gstelement_class->set_index = cdparanoia_set_index;
+  gstelement_class->get_index = cdparanoia_get_index;
 }
 
 static void
-cdparanoia_init (CDParanoia *cdparanoia)
+cdparanoia_init (CDParanoia * cdparanoia)
 {
   cdparanoia->srcpad =
-    gst_pad_new_from_template (GST_PAD_TEMPLATE_GET (cdparanoia_src_factory), "src");
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&cdparanoia_src_template), "src");
   gst_pad_set_get_function (cdparanoia->srcpad, cdparanoia_get);
   gst_pad_set_event_function (cdparanoia->srcpad, cdparanoia_event);
-  gst_pad_set_event_mask_function (cdparanoia->srcpad, cdparanoia_get_event_mask);
+  gst_pad_set_event_mask_function (cdparanoia->srcpad,
+      cdparanoia_get_event_mask);
   gst_pad_set_convert_function (cdparanoia->srcpad, cdparanoia_convert);
   gst_pad_set_query_function (cdparanoia->srcpad, cdparanoia_query);
-  gst_pad_set_query_type_function (cdparanoia->srcpad, cdparanoia_get_query_types);
+  gst_pad_set_query_type_function (cdparanoia->srcpad,
+      cdparanoia_get_query_types);
   gst_pad_set_formats_function (cdparanoia->srcpad, cdparanoia_get_formats);
 
   gst_element_add_pad (GST_ELEMENT (cdparanoia), cdparanoia->srcpad);
@@ -305,12 +318,13 @@ cdparanoia_init (CDParanoia *cdparanoia)
   cdparanoia->abort_on_skip = FALSE;
 
   cdparanoia->total_seconds = 0;
-  cdparanoia->discont_pending = FALSE;
+  cdparanoia->discont_sent = FALSE;
 }
 
 
 static void
-cdparanoia_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+cdparanoia_set_property (GObject * object, guint prop_id, const GValue * value,
+    GParamSpec * pspec)
 {
   CDParanoia *src;
 
@@ -322,24 +336,24 @@ cdparanoia_set_property (GObject *object, guint prop_id, const GValue *value, GP
   switch (prop_id) {
     case ARG_LOCATION:
       if (src->device)
-	g_free (src->device);
+        g_free (src->device);
       /* clear the filename if we get a NULL (is that possible?) */
       if (!g_ascii_strcasecmp (g_value_get_string (value), ""))
-	src->device = NULL;
+        src->device = NULL;
       /* otherwise set the new filename */
       else
-	src->device = g_strdup (g_value_get_string (value));
+        src->device = g_strdup (g_value_get_string (value));
       break;
     case ARG_GENERIC_DEVICE:
 
       if (src->generic_device)
-	g_free (src->generic_device);
+        g_free (src->generic_device);
       /* reset the device if we get a NULL (is that possible?) */
       if (!g_ascii_strcasecmp (g_value_get_string (value), ""))
-	src->generic_device = NULL;
+        src->generic_device = NULL;
       /* otherwise set the new filename */
       else
-	src->generic_device = g_strdup (g_value_get_string (value));
+        src->generic_device = g_strdup (g_value_get_string (value));
       break;
     case ARG_DEFAULT_SECTORS:
       src->default_sectors = g_value_get_int (value);
@@ -375,7 +389,8 @@ cdparanoia_set_property (GObject *object, guint prop_id, const GValue *value, GP
 }
 
 static void
-cdparanoia_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+cdparanoia_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   CDParanoia *src;
 
@@ -418,6 +433,15 @@ cdparanoia_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
       g_value_set_enum (value, src->paranoia_mode);
       break;
     case ARG_DISCID:
+      /**
+       * Due to possible autocorrections of start sectors of audio tracks on 
+       * multisession cds, we can maybe not compute the correct discid.
+       * So issue a warning.
+       * See cdparanoia/interface/common-interface.c:FixupTOC
+       */
+      if (src->d && src->d->cd_extra)
+        g_warning
+            ("DiscID on multisession discs might be broken. Use at own risk.");
       g_value_set_string (value, src->discid);
       break;
     default:
@@ -431,8 +455,8 @@ cdparanoia_callback (long inpos, int function)
 {
 }
 
-static GstBuffer *
-cdparanoia_get (GstPad *pad)
+static GstData *
+cdparanoia_get (GstPad * pad)
 {
   CDParanoia *src;
   GstBuffer *buf;
@@ -443,38 +467,50 @@ cdparanoia_get (GstPad *pad)
 
   /* stop things apropriatly */
   if (src->cur_sector > src->segment_end_sector) {
-    GST_DEBUG (0, "setting EOS");
+    GST_DEBUG ("setting EOS");
 
     buf = GST_BUFFER (gst_event_new (GST_EVENT_EOS));
     gst_element_set_eos (GST_ELEMENT (src));
-  }
-  else {
+  } else {
     gint16 *cdda_buf;
     gint64 timestamp;
     GstFormat format;
 
-    /* read a sector */
-    cdda_buf = paranoia_read (src->p, cdparanoia_callback);
-
     /* convert the sequence sector number to a timestamp */
     format = GST_FORMAT_TIME;
     timestamp = 0LL;
-    gst_pad_convert (src->srcpad, sector_format, src->seq, 
-		    &format, &timestamp);
+    gst_pad_convert (src->srcpad, sector_format, src->cur_sector, &format,
+        &timestamp);
+
+    if (!src->discont_sent && src->prev_sec != src->cur_sector) {
+      GstEvent *discont_ev;
+
+      discont_ev =
+          gst_event_new_discontinuous (FALSE, GST_FORMAT_TIME, timestamp,
+          GST_FORMAT_UNDEFINED);
+
+      src->discont_sent = TRUE;
+      return GST_DATA (discont_ev);
+    }
+
+    src->discont_sent = FALSE;
+
+    /* read a sector */
+    cdda_buf = paranoia_read (src->p, cdparanoia_callback);
 
     /* have to copy the buffer for now since we don't own it... */
     /* FIXME must ask monty about allowing ownership transfer */
     buf = gst_buffer_new_and_alloc (CD_FRAMESIZE_RAW);
     memcpy (GST_BUFFER_DATA (buf), cdda_buf, CD_FRAMESIZE_RAW);
     GST_BUFFER_TIMESTAMP (buf) = timestamp;
-  
+
     /* update current sector */
     src->cur_sector++;
-    src->seq++;
+    src->prev_sec = src->cur_sector;
   }
 
   /* we're done, push the buffer off now */
-  return buf;
+  return GST_DATA (buf);
 }
 
 /* need some stuff to get a discid (cdparanoia doesn't do cddb but lets
@@ -492,7 +528,7 @@ toc_msf;
 /* cdparanoia provides the toc in lba format dang we need it in msf so
  * we have to convert it */
 static inline void
-lba_to_msf (const gint lba, byte *m, byte *s, byte *f)
+lba_to_msf (const gint lba, byte * m, byte * s, byte * f)
 {
   gint lba2 = lba;
 
@@ -507,12 +543,13 @@ lba_to_msf (const gint lba, byte *m, byte *s, byte *f)
 }
 
 static void
-lba_toc_to_msf_toc (TOC *lba_toc, toc_msf *msf_toc, gint tracks)
+lba_toc_to_msf_toc (TOC * lba_toc, toc_msf * msf_toc, gint tracks)
 {
   gint i;
 
   for (i = 0; i <= tracks; i++)
-    lba_to_msf (lba_toc[i].dwStartSector, &msf_toc[i].m, &msf_toc[i].s, &msf_toc[i].f);
+    lba_to_msf (lba_toc[i].dwStartSector, &msf_toc[i].m, &msf_toc[i].s,
+        &msf_toc[i].f);
 }
 
 /* the cddb hash function */
@@ -530,7 +567,7 @@ cddb_sum (gint n)
 }
 
 static void
-cddb_discid (gchar *discid, toc_msf *toc, gint tracks)
+cddb_discid (gchar * discid, toc_msf * toc, gint tracks)
 {
   guint i = 0, t = 0, n = 0;
 
@@ -539,13 +576,14 @@ cddb_discid (gchar *discid, toc_msf *toc, gint tracks)
     i++;
   }
   t = ((toc[tracks].m * 60) + toc[tracks].s) - ((toc[0].m * 60)
-						+ toc[0].s);
+      + toc[0].s);
   sprintf (discid, "%08x", ((n % 0xff) << 24 | t << 8 | tracks));
 }
 
 /* get all the cddb info at once */
 static void
-get_cddb_info (TOC *toc, gint tracks, gchar *discid, gint64 *offsets, gint64 *total_seconds)
+get_cddb_info (TOC * toc, gint tracks, gchar * discid, gint64 * offsets,
+    gint64 * total_seconds)
 {
   toc_msf msf_toc[MAXTRK];
   gint i;
@@ -563,43 +601,44 @@ get_cddb_info (TOC *toc, gint tracks, gchar *discid, gint64 *offsets, gint64 *to
 }
 
 static void
-add_index_associations (CDParanoia *src)
+add_index_associations (CDParanoia * src)
 {
-	int i;
+  int i;
 
-	for (i = 0; i < src->d->tracks; i++) {
-		gint64 sector;
+  for (i = 0; i < src->d->tracks; i++) {
+    gint64 sector;
 
-		sector = cdda_track_firstsector (src->d, i + 1);
-		gst_index_add_association (src->index, src->index_id,
-															 GST_ASSOCIATION_FLAG_KEY_UNIT,
-															 track_format, i,
-															 sector_format, sector,
-															 GST_FORMAT_TIME, (gint64) (((CD_FRAMESIZE_RAW >> 2) * sector * GST_SECOND) / 44100),
-															 GST_FORMAT_BYTES, (gint64) (sector << 2),
-															 GST_FORMAT_UNITS, (gint64) ((CD_FRAMESIZE_RAW >> 2) * sector),
-															 NULL);
+    sector = cdda_track_firstsector (src->d, i + 1);
+    gst_index_add_association (src->index, src->index_id,
+        GST_ASSOCIATION_FLAG_KEY_UNIT,
+        track_format, i,
+        sector_format, sector,
+        GST_FORMAT_TIME,
+        (gint64) (((CD_FRAMESIZE_RAW >> 2) * sector * GST_SECOND) / 44100),
+        GST_FORMAT_BYTES, (gint64) (sector << 2), GST_FORMAT_DEFAULT,
+        (gint64) ((CD_FRAMESIZE_RAW >> 2) * sector), NULL);
 #if 0
-		g_print ("Added association for track %d\n", i + 1);
-		g_print ("Sector: %lld\n", sector);
-		g_print ("Time: %lld\n", (gint64) (((CD_FRAMESIZE_RAW >> 2) * sector * GST_SECOND) / 44100));
-		g_print ("Bytes: %lld\n", (gint64) (sector << 2));
-		g_print ("Units: %lld\n", (gint64) ((CD_FRAMESIZE_RAW >> 2) * sector));
-		g_print ("-----------\n");
+    g_print ("Added association for track %d\n", i + 1);
+    g_print ("Sector: %lld\n", sector);
+    g_print ("Time: %lld\n",
+        (gint64) (((CD_FRAMESIZE_RAW >> 2) * sector * GST_SECOND) / 44100));
+    g_print ("Bytes: %lld\n", (gint64) (sector << 2));
+    g_print ("Units: %lld\n", (gint64) ((CD_FRAMESIZE_RAW >> 2) * sector));
+    g_print ("-----------\n");
 #endif
-	}
+  }
 }
-			
+
 /* open the file, necessary to go to RUNNING state */
 static gboolean
-cdparanoia_open (CDParanoia *src)
+cdparanoia_open (CDParanoia * src)
 {
   gint i;
   gint paranoia_mode;
 
   g_return_val_if_fail (!GST_FLAG_IS_SET (src, CDPARANOIA_OPEN), FALSE);
 
-  GST_DEBUG_ENTER ("(\"%s\",...)", gst_element_get_name (GST_ELEMENT (src)));
+  GST_DEBUG_OBJECT (src, "trying to open device...");
 
   /* find the device */
   if (src->generic_device != NULL) {
@@ -614,7 +653,8 @@ cdparanoia_open (CDParanoia *src)
 
   /* fail if the device couldn't be found */
   if (src->d == NULL) {
-    GST_DEBUG (0, "couldn't open device");
+    GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ,
+        (_("Could not open CD device for reading.")), ("cdda_identify failed"));
     return FALSE;
   }
 
@@ -629,7 +669,8 @@ cdparanoia_open (CDParanoia *src)
 
   /* open the disc */
   if (cdda_open (src->d)) {
-    GST_DEBUG (0, "couldn't open disc");
+    GST_ELEMENT_ERROR (src, RESOURCE, OPEN_READ,
+        (_("Could not open CD device for reading.")), ("cdda_open failed"));
     cdda_close (src->d);
     src->d = NULL;
     return FALSE;
@@ -640,7 +681,7 @@ cdparanoia_open (CDParanoia *src)
    */
 
   get_cddb_info (&src->d->disc_toc[0], src->d->tracks, src->discid,
-		 src->offsets, &src->total_seconds);
+      src->offsets, &src->total_seconds);
 
   g_object_freeze_notify (G_OBJECT (src));
   g_object_notify (G_OBJECT (src), "discid");
@@ -659,23 +700,23 @@ cdparanoia_open (CDParanoia *src)
 
   /* save thse ones */
   src->first_sector = cdda_disc_firstsector (src->d);
-  src->last_sector  = cdda_disc_lastsector (src->d);
+  src->last_sector = cdda_disc_lastsector (src->d);
 
   /* this is the default segment we will play */
   src->segment_start_sector = src->first_sector;
-  src->segment_end_sector   = src->last_sector;
+  src->segment_end_sector = src->last_sector;
 
   /* create the paranoia struct and set it up */
   src->p = paranoia_init (src->d);
   if (src->p == NULL) {
-    GST_DEBUG (0, "couldn't create paranoia struct");
+    GST_ELEMENT_ERROR (src, LIBRARY, INIT, (NULL), (NULL));
     return FALSE;
   }
 
   paranoia_mode = src->paranoia_mode;
   if (src->never_skip)
     paranoia_mode |= PARANOIA_MODE_NEVERSKIP;
-	
+
   paranoia_modeset (src->p, paranoia_mode);
 
   if (src->search_overlap != -1) {
@@ -683,23 +724,24 @@ cdparanoia_open (CDParanoia *src)
   }
 
   src->cur_sector = src->first_sector;
+  src->prev_sec = src->cur_sector;
   paranoia_seek (src->p, src->cur_sector, SEEK_SET);
-  GST_DEBUG (0, "successfully seek'd to beginning of disk");
+  GST_DEBUG ("successfully seek'd to beginning of disk");
 
   GST_FLAG_SET (src, CDPARANOIA_OPEN);
 
-	if (src->index && GST_INDEX_IS_WRITABLE (src->index)) {
-		add_index_associations (src);
-	}
-	
-  GST_DEBUG_LEAVE ("");
+  if (src->index && GST_INDEX_IS_WRITABLE (src->index)) {
+    add_index_associations (src);
+  }
+
+  GST_DEBUG_OBJECT (src, "device successfully openend");
 
   return TRUE;
 }
 
 /* close the file */
 static void
-cdparanoia_close (CDParanoia *src)
+cdparanoia_close (CDParanoia * src)
 {
   g_return_if_fail (GST_FLAG_IS_SET (src, CDPARANOIA_OPEN));
 
@@ -716,7 +758,7 @@ cdparanoia_close (CDParanoia *src)
 }
 
 static GstElementStateReturn
-cdparanoia_change_state (GstElement *element)
+cdparanoia_change_state (GstElement * element)
 {
   CDParanoia *cdparanoia;
 
@@ -725,28 +767,28 @@ cdparanoia_change_state (GstElement *element)
   cdparanoia = CDPARANOIA (element);
 
   switch (GST_STATE_TRANSITION (element)) {
-	case GST_STATE_NULL_TO_READY:
-		break;
-	case GST_STATE_READY_TO_PAUSED:
-		if (!cdparanoia_open (CDPARANOIA (element))) {
-			g_warning ("cdparanoia: failed opening cd");
-			return GST_STATE_FAILURE;
-		}
-		cdparanoia->seq = 0;
-		break;
-	case GST_STATE_PAUSED_TO_PLAYING:
-		break;
-	case GST_STATE_PLAYING_TO_PAUSED:
-		break;
-	case GST_STATE_PAUSED_TO_READY:
-		cdparanoia_close (CDPARANOIA (element));
-		break;
-	case GST_STATE_READY_TO_NULL:
-		break;
-	default:
-		break;
+    case GST_STATE_NULL_TO_READY:
+      if (!cdparanoia_open (CDPARANOIA (element))) {
+        g_warning ("cdparanoia: failed opening cd");
+        return GST_STATE_FAILURE;
+      }
+      break;
+    case GST_STATE_READY_TO_PAUSED:
+      break;
+    case GST_STATE_PAUSED_TO_PLAYING:
+      break;
+    case GST_STATE_PLAYING_TO_PAUSED:
+      break;
+    case GST_STATE_PAUSED_TO_READY:
+      /* FIXME: Need code here to reset element to start of cd */
+      break;
+    case GST_STATE_READY_TO_NULL:
+      cdparanoia_close (CDPARANOIA (element));
+      break;
+    default:
+      break;
   }
-	
+
   /* if we haven't failed already, give the parent class a chance too ;-) */
   if (GST_ELEMENT_CLASS (parent_class)->change_state)
     return GST_ELEMENT_CLASS (parent_class)->change_state (element);
@@ -755,17 +797,13 @@ cdparanoia_change_state (GstElement *element)
 }
 
 static const GstEventMask *
-cdparanoia_get_event_mask (GstPad *pad)
+cdparanoia_get_event_mask (GstPad * pad)
 {
   static const GstEventMask masks[] = {
-    {GST_EVENT_SEEK,         GST_SEEK_METHOD_SET | 
-	                     GST_SEEK_METHOD_CUR | 
-	                     GST_SEEK_METHOD_END | 
-		             GST_SEEK_FLAG_FLUSH },
-    {GST_EVENT_SEEK_SEGMENT, GST_SEEK_METHOD_SET | 
-	                     GST_SEEK_METHOD_CUR | 
-	                     GST_SEEK_METHOD_END | 
-		             GST_SEEK_FLAG_FLUSH },
+    {GST_EVENT_SEEK, GST_SEEK_METHOD_SET |
+          GST_SEEK_METHOD_CUR | GST_SEEK_METHOD_END | GST_SEEK_FLAG_FLUSH},
+    {GST_EVENT_SEEK_SEGMENT, GST_SEEK_METHOD_SET |
+          GST_SEEK_METHOD_CUR | GST_SEEK_METHOD_END | GST_SEEK_FLAG_FLUSH},
     {0,}
   };
 
@@ -773,7 +811,7 @@ cdparanoia_get_event_mask (GstPad *pad)
 }
 
 static gboolean
-cdparanoia_event (GstPad *pad, GstEvent *event)
+cdparanoia_event (GstPad * pad, GstEvent * event)
 {
   CDParanoia *src;
   gboolean res = TRUE;
@@ -781,9 +819,9 @@ cdparanoia_event (GstPad *pad, GstEvent *event)
   src = CDPARANOIA (gst_pad_get_parent (pad));
 
   if (!GST_FLAG_IS_SET (src, CDPARANOIA_OPEN)) {
-		g_print ("Not open\n");
+    GST_DEBUG ("device not open, cannot handle event");
     goto error;
-	}
+  }
 
   switch (GST_EVENT_TYPE (event)) {
     case GST_EVENT_SEEK:
@@ -792,97 +830,95 @@ cdparanoia_event (GstPad *pad, GstEvent *event)
       gint64 offset, endoffset;
       gint format;
       gint64 seg_start_sector = -1, seg_end_sector = -1;
-	    
-      format    = GST_EVENT_SEEK_FORMAT (event);
-      offset    = GST_EVENT_SEEK_OFFSET (event);
+
+      format = GST_EVENT_SEEK_FORMAT (event);
+      offset = GST_EVENT_SEEK_OFFSET (event);
       endoffset = GST_EVENT_SEEK_ENDOFFSET (event);
 
       /* we can only seek on sectors, so we convert the requested
        * offsets to sectors first */
       if (offset != -1) {
-        res &= gst_pad_convert (src->srcpad, format, offset, 
-																&sector_format, &seg_start_sector);
+        res &= gst_pad_convert (src->srcpad, format, offset,
+            &sector_format, &seg_start_sector);
       }
       if (endoffset != -1) {
-        res &= gst_pad_convert (src->srcpad, format, endoffset, 
-																&sector_format, &seg_end_sector);
+        res &= gst_pad_convert (src->srcpad, format, endoffset,
+            &sector_format, &seg_end_sector);
       }
-      
+
       if (!res) {
-				GST_DEBUG (0, "could not convert offsets to sectors");
-				goto error;
+        GST_DEBUG ("could not convert offsets to sectors");
+        goto error;
       }
-      
+
       switch (GST_EVENT_SEEK_METHOD (event)) {
-			case GST_SEEK_METHOD_SET:
-				/* values are set for regular seek set */
-				break;
-			case GST_SEEK_METHOD_CUR:
-				if (seg_start_sector != -1) {
-					seg_start_sector += src->cur_sector;
-				}
-				if (seg_end_sector != -1) {
-					seg_end_sector += src->cur_sector;
-				}
-				break;
-			case GST_SEEK_METHOD_END:
-				if (seg_start_sector != -1) {
-					seg_start_sector = src->last_sector - seg_start_sector;
-				}
-				if (seg_end_sector != -1) {
-					seg_end_sector = src->last_sector - seg_end_sector;
-				}
-				break;
-			default:
-				goto error;
+        case GST_SEEK_METHOD_SET:
+          /* values are set for regular seek set */
+          break;
+        case GST_SEEK_METHOD_CUR:
+          if (seg_start_sector != -1) {
+            seg_start_sector += src->cur_sector;
+          }
+          if (seg_end_sector != -1) {
+            seg_end_sector += src->cur_sector;
+          }
+          break;
+        case GST_SEEK_METHOD_END:
+          if (seg_start_sector != -1) {
+            seg_start_sector = src->last_sector - seg_start_sector;
+          }
+          if (seg_end_sector != -1) {
+            seg_end_sector = src->last_sector - seg_end_sector;
+          }
+          break;
+        default:
+          goto error;
       }
       /* do we need to update the start sector? */
       if (seg_start_sector != -1) {
-        seg_start_sector = CLAMP (seg_start_sector, 
-																	src->first_sector, src->last_sector);
-				
+        seg_start_sector = CLAMP (seg_start_sector,
+            src->first_sector, src->last_sector);
+
         if (paranoia_seek (src->p, seg_start_sector, SEEK_SET) > -1) {
-					GST_DEBUG (0, "seeked to %lld", seg_start_sector);
-					
-					src->segment_start_sector = seg_start_sector;;
-					src->cur_sector = src->segment_start_sector;
-				}
-				else {
-					goto error;
-				}
+          GST_DEBUG ("seeked to %" G_GINT64_FORMAT, seg_start_sector);
+
+          src->segment_start_sector = seg_start_sector;
+          src->cur_sector = src->segment_start_sector;
+        } else {
+          goto error;
+        }
       }
       if (seg_end_sector != -1) {
-        seg_end_sector = CLAMP (seg_end_sector, 
-																src->first_sector, src->last_sector);
-        src->segment_end_sector = seg_end_sector;;
+        seg_end_sector = CLAMP (seg_end_sector,
+            src->first_sector, src->last_sector);
+        src->segment_end_sector = seg_end_sector;
       }
-      GST_DEBUG (GST_CAT_PLUGIN_INFO, "configured for %d -> %d sectors\n", 
-								 src->segment_start_sector, 
-								 src->segment_end_sector);
+      GST_DEBUG ("configured for %d -> %d sectors\n",
+          src->segment_start_sector, src->segment_end_sector);
       break;
     }
-	default:
-		goto error;
+    default:
+      goto error;
   }
-	
+
   if (FALSE) {
-	error:
+  error:
     res = FALSE;
   }
   gst_event_unref (event);
-	
+
   return res;
 }
 
 static const GstFormat *
-cdparanoia_get_formats (GstPad *pad)
+cdparanoia_get_formats (GstPad * pad)
 {
   static GstFormat formats[] = {
     GST_FORMAT_TIME,
     GST_FORMAT_BYTES,
-    GST_FORMAT_UNITS,
-    0,			/* filled later */
-    0,			/* filled later */
+    GST_FORMAT_DEFAULT,
+    0,                          /* filled later */
+    0,                          /* filled later */
     0
   };
 
@@ -893,9 +929,9 @@ cdparanoia_get_formats (GstPad *pad)
 }
 
 static gboolean
-cdparanoia_convert (GstPad *pad,
-		    GstFormat src_format, gint64 src_value, 
-		    GstFormat *dest_format, gint64 *dest_value)
+cdparanoia_convert (GstPad * pad,
+    GstFormat src_format, gint64 src_value,
+    GstFormat * dest_format, gint64 * dest_value)
 {
   CDParanoia *src;
 
@@ -903,110 +939,103 @@ cdparanoia_convert (GstPad *pad,
 
   if (!GST_FLAG_IS_SET (src, CDPARANOIA_OPEN)) {
     return FALSE;
-	}
+  }
 
   switch (src_format) {
-	case GST_FORMAT_TIME:
-		switch (*dest_format) {
-		case GST_FORMAT_BYTES:
-			src_value <<= 2;	/* 4 bytes per sample */
-		case GST_FORMAT_UNITS:
-			*dest_value = src_value * 44100 / GST_SECOND;
-			break;
-		default:
-			if (*dest_format == track_format || *dest_format == sector_format) {
-				gint sector = (src_value * 44100) / ((CD_FRAMESIZE_RAW >> 2) * GST_SECOND);
-				
-				if (*dest_format == sector_format) {
-					*dest_value = sector;
-				}
-				else {
-					*dest_value = cdda_sector_gettrack (src->d, sector) - 1;
-				}
-			}
-			else 
-				return FALSE;
-			break;
-		}
-		break;
-	case GST_FORMAT_BYTES:
-		src_value >>= 2;
-	case GST_FORMAT_UNITS:
-		switch (*dest_format) {
-		case GST_FORMAT_BYTES:
-			*dest_value = src_value * 4;
-			break;
-		case GST_FORMAT_TIME:
-			*dest_value = src_value * GST_SECOND / 44100;
-			break;
-		default:
-			if (*dest_format == track_format || *dest_format == sector_format) {
-				gint sector = src_value / (CD_FRAMESIZE_RAW >> 2);
-				
-				if (*dest_format == track_format) {
-					*dest_value = cdda_sector_gettrack (src->d, sector) - 1;
-				}
-				else {
-					*dest_value = sector;
-				}
-			}
-			else 
-				return FALSE;
-			break;
-		}
-		break;
-	default:
-	{
-		gint sector;
-		
-		if (src_format == track_format) {
-			/* some sanity checks */
-			if (src_value < 0 || src_value > src->d->tracks)
-				return FALSE;
-			
-			sector = cdda_track_firstsector (src->d, src_value + 1);
-		}
-		else if (src_format == sector_format) {
-			sector = src_value;
-		}
-		else {
-			return FALSE;
-		}
-		
-		switch (*dest_format) {
-		case GST_FORMAT_TIME:
-			*dest_value = ((CD_FRAMESIZE_RAW >> 2) * sector * GST_SECOND) / 44100;
-			break;
-		case GST_FORMAT_BYTES:
-			sector <<= 2;
-		case GST_FORMAT_UNITS:
-			*dest_value = (CD_FRAMESIZE_RAW >> 2) * sector;
-			break;
-		default:
-			if (*dest_format == sector_format) {
-				*dest_value = sector;
-			}
-			else if (*dest_format == track_format) {
-				/* if we go past the last sector, make sure to report the last track */
-				if (sector > src->last_sector)
-					*dest_value = cdda_sector_gettrack (src->d, src->last_sector);
-				else 
-					*dest_value = cdda_sector_gettrack (src->d, sector) - 1;
-			}
-			else {
-				return FALSE;
-			}
-			break;
-		}
-		break;
-	}
-	}
-	
+    case GST_FORMAT_TIME:
+      switch (*dest_format) {
+        case GST_FORMAT_BYTES:
+          src_value <<= 2;      /* 4 bytes per sample */
+        case GST_FORMAT_DEFAULT:
+          *dest_value = src_value * 44100 / GST_SECOND;
+          break;
+        default:
+          if (*dest_format == track_format || *dest_format == sector_format) {
+            gint sector =
+                (src_value * 44100) / ((CD_FRAMESIZE_RAW >> 2) * GST_SECOND);
+
+            if (*dest_format == sector_format) {
+              *dest_value = sector;
+            } else {
+              *dest_value = cdda_sector_gettrack (src->d, sector) - 1;
+            }
+          } else
+            return FALSE;
+          break;
+      }
+      break;
+    case GST_FORMAT_BYTES:
+      src_value >>= 2;
+    case GST_FORMAT_DEFAULT:
+      switch (*dest_format) {
+        case GST_FORMAT_BYTES:
+          *dest_value = src_value * 4;
+          break;
+        case GST_FORMAT_TIME:
+          *dest_value = src_value * GST_SECOND / 44100;
+          break;
+        default:
+          if (*dest_format == track_format || *dest_format == sector_format) {
+            gint sector = src_value / (CD_FRAMESIZE_RAW >> 2);
+
+            if (*dest_format == track_format) {
+              *dest_value = cdda_sector_gettrack (src->d, sector) - 1;
+            } else {
+              *dest_value = sector;
+            }
+          } else
+            return FALSE;
+          break;
+      }
+      break;
+    default:
+    {
+      gint sector;
+
+      if (src_format == track_format) {
+        /* some sanity checks */
+        if (src_value < 0 || src_value > src->d->tracks)
+          return FALSE;
+
+        sector = cdda_track_firstsector (src->d, src_value + 1);
+      } else if (src_format == sector_format) {
+        sector = src_value;
+      } else {
+        return FALSE;
+      }
+
+      switch (*dest_format) {
+        case GST_FORMAT_TIME:
+          *dest_value = ((CD_FRAMESIZE_RAW >> 2) * sector * GST_SECOND) / 44100;
+          break;
+        case GST_FORMAT_BYTES:
+          sector <<= 2;
+        case GST_FORMAT_DEFAULT:
+          *dest_value = (CD_FRAMESIZE_RAW >> 2) * sector;
+          break;
+        default:
+          if (*dest_format == sector_format) {
+            *dest_value = sector;
+          } else if (*dest_format == track_format) {
+            /* if we go past the last sector, make sure to report the last track */
+            if (sector > src->last_sector)
+              *dest_value = cdda_sector_gettrack (src->d, src->last_sector);
+            else
+              *dest_value = cdda_sector_gettrack (src->d, sector) - 1;
+          } else {
+            return FALSE;
+          }
+          break;
+      }
+      break;
+    }
+  }
+
   return TRUE;
 }
 
-static const GstQueryType*
-cdparanoia_get_query_types (GstPad *pad)
+static const GstQueryType *
+cdparanoia_get_query_types (GstPad * pad)
 {
   static const GstQueryType src_query_types[] = {
     GST_QUERY_TOTAL,
@@ -1015,12 +1044,13 @@ cdparanoia_get_query_types (GstPad *pad)
     GST_QUERY_SEGMENT_END,
     0
   };
+
   return src_query_types;
 }
 
 static gboolean
-cdparanoia_query (GstPad *pad, GstQueryType type,
-		  GstFormat *format, gint64 *value)
+cdparanoia_query (GstPad * pad, GstQueryType type,
+    GstFormat * format, gint64 * value)
 {
   gboolean res = TRUE;
   CDParanoia *src;
@@ -1029,31 +1059,27 @@ cdparanoia_query (GstPad *pad, GstQueryType type,
 
   if (!GST_FLAG_IS_SET (src, CDPARANOIA_OPEN)) {
     return FALSE;
-	}
+  }
 
   switch (type) {
     case GST_QUERY_TOTAL:
       /* we take the last sector + 1 so that we also have the full
        * size of that last sector */
-      res = gst_pad_convert (src->srcpad, 
-		             sector_format, src->last_sector + 1,
-		             format, value);
+      res = gst_pad_convert (src->srcpad,
+          sector_format, src->last_sector + 1, format, value);
       break;
     case GST_QUERY_POSITION:
       /* bring our current sector to the requested format */
-      res = gst_pad_convert (src->srcpad, 
-		             sector_format, src->cur_sector,
-		             format, value);
+      res = gst_pad_convert (src->srcpad,
+          sector_format, src->cur_sector, format, value);
       break;
     case GST_QUERY_START:
-      res = gst_pad_convert (src->srcpad, 
-		             sector_format, src->segment_start_sector,
-		             format, value);
+      res = gst_pad_convert (src->srcpad,
+          sector_format, src->segment_start_sector, format, value);
       break;
     case GST_QUERY_SEGMENT_END:
-      res = gst_pad_convert (src->srcpad, 
-		             sector_format, src->segment_end_sector,
-		             format, value);
+      res = gst_pad_convert (src->srcpad,
+          sector_format, src->segment_end_sector, format, value);
       break;
     default:
       res = FALSE;
@@ -1063,55 +1089,42 @@ cdparanoia_query (GstPad *pad, GstQueryType type,
 }
 
 static void
-cdparanoia_set_index (GstElement *element,
-											GstIndex *index)
+cdparanoia_set_index (GstElement * element, GstIndex * index)
 {
-	CDParanoia *cdparanoia;
+  CDParanoia *cdparanoia;
 
-	cdparanoia = CDPARANOIA (element);
+  cdparanoia = CDPARANOIA (element);
 
-	cdparanoia->index = index;
+  cdparanoia->index = index;
 
-	gst_index_get_writer_id (index, GST_OBJECT (cdparanoia->srcpad),
-													 &cdparanoia->index_id);
-	gst_index_add_format (index, cdparanoia->index_id, track_format);
-	gst_index_add_format (index, cdparanoia->index_id, sector_format);
+  gst_index_get_writer_id (index, GST_OBJECT (cdparanoia->srcpad),
+      &cdparanoia->index_id);
+  gst_index_add_format (index, cdparanoia->index_id, track_format);
+  gst_index_add_format (index, cdparanoia->index_id, sector_format);
 }
 
 static GstIndex *
-cdparanoia_get_index (GstElement *element)
+cdparanoia_get_index (GstElement * element)
 {
-	CDParanoia *cdparanoia;
+  CDParanoia *cdparanoia;
 
-	cdparanoia = CDPARANOIA (element);
+  cdparanoia = CDPARANOIA (element);
 
-	return cdparanoia->index;
+  return cdparanoia->index;
 }
-											
+
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-
-  /* create an elementfactory for the cdparanoia element */
-  factory = gst_element_factory_new ("cdparanoia", 
-		                     GST_TYPE_CDPARANOIA, 
-				     &cdparanoia_details);
-  g_return_val_if_fail (factory != NULL, FALSE);
-
-  /* register the source's caps */
-  gst_element_factory_add_pad_template (factory, 
-		  GST_PAD_TEMPLATE_GET (cdparanoia_src_factory));
-
-  /* and add the cdparanoia element factory to the plugin */
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
+  if (!gst_element_register (plugin, "cdparanoia", GST_RANK_NONE,
+          GST_TYPE_CDPARANOIA))
+    return FALSE;
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "cdparanoia",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "cdparanoia",
+    "Read audio from CD in paranoid mode",
+    plugin_init, VERSION, "GPL", GST_PACKAGE, GST_ORIGIN)

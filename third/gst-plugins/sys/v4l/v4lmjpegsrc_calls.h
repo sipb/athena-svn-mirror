@@ -1,4 +1,7 @@
-/* G-Streamer hardware MJPEG video source plugin
+/* GStreamer
+ *
+ * v4lmjpegsrc_calls.h: functions for hardware MJPEG video source
+ *
  * Copyright (C) 2001-2002 Ronald Bultje <rbultje@ronald.bitfreak.net>
  *
  * This library is free software; you can redistribute it and/or
@@ -27,21 +30,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-
-typedef enum {
-  V4L_MJPEG_INPUT_COMPOSITE = 0,
-  V4L_MJPEG_INPUT_SVIDEO    = 1,
-  V4L_MJPEG_INPUT_TVTUNER   = 2,
-  V4L_MJPEG_INPUT_AUTO      = 3,
-} GstV4lMjpegInputType;
-
-extern char *input_name[];
-
-
-/* set input/norm (includes autodetection, norm = VIDEO_MODE_{PAL|NTSC|SECAM|AUTO}) */
-gboolean gst_v4lmjpegsrc_set_input_norm (GstV4lMjpegSrc       *v4lmjpegsrc,
-                                         GstV4lMjpegInputType input,
-                                         gint                 norm);
 
 /* frame grabbing/capture */
 gboolean gst_v4lmjpegsrc_set_buffer     (GstV4lMjpegSrc *v4lmjpegsrc,

@@ -15,8 +15,9 @@ main (int argc, char *argv[])
   GstElement *pipeline;
   GstElement *sinesrc, *spider, *volume, *fakesink;
   GstCaps *caps;
+  gchar *caps_str;
   GstPad *pad;
- 
+
   gst_init (&argc, &argv);
 
   g_print ("Trying spider connection between sinesrc and volume ! fakesink\n");
@@ -25,7 +26,6 @@ main (int argc, char *argv[])
   g_assert (pipeline);
   sinesrc = gst_element_factory_make ("sinesrc", "sinesrc");
   g_assert (sinesrc);
-  gst_element_set (sinesrc, "samplerate", 44100, NULL);
   spider = gst_element_factory_make ("spider", "spider");
   g_assert (spider);
   volume = gst_element_factory_make ("volume", "volume");
@@ -33,33 +33,26 @@ main (int argc, char *argv[])
   fakesink = gst_element_factory_make ("fakesink", "fakesink");
   g_assert (fakesink);
 
-  gst_bin_add_many (GST_BIN (pipeline), 
-                    sinesrc, spider, volume, fakesink, NULL);
+  gst_bin_add_many (GST_BIN (pipeline),
+      sinesrc, spider, volume, fakesink, NULL);
   /* force standard audio caps on spider ! volume */
-  caps = gst_caps_new ("stereo", "audio/raw",
-		       gst_props_new (
-				  "format",     GST_PROPS_STRING ("int"),
-				  "law",        GST_PROPS_INT (0),
-				  "endianness", GST_PROPS_INT (G_BYTE_ORDER),
-				  "signed",     GST_PROPS_BOOLEAN (TRUE),
-				  "width",      GST_PROPS_INT (16),
-				  "depth",      GST_PROPS_INT (16),
-				  "rate",       GST_PROPS_INT (44100),
-				  "channels",   GST_PROPS_INT (2),
-				  NULL));
+  caps = gst_caps_new_simple ("audio/x-raw-int",
+      "endianness", G_TYPE_INT, G_BYTE_ORDER,
+      "signed", G_TYPE_BOOLEAN, TRUE,
+      "width", G_TYPE_INT, 16,
+      "depth", G_TYPE_INT, 16,
+      "rate", G_TYPE_INT, 44100, "channels", G_TYPE_INT, 2, NULL);
 
-  if (!gst_element_connect_filtered (spider, volume, caps))
+  if (!gst_element_link_filtered (spider, volume, caps))
     g_error ("Could not connect_filtered spider and volume");
 
   /* force samplerate on sinesrc ! spider */
-  caps = gst_caps_new ("samplerate", "audio/raw",
-		       gst_props_new (
-				  "rate", GST_PROPS_INT (44100),
-				  NULL));
-  if (!gst_element_connect_filtered (sinesrc, spider, caps))
+  caps = gst_caps_new_simple ("audio/x-raw-int",
+      "rate", G_TYPE_INT, 44100, NULL);
+  if (!gst_element_link_filtered (sinesrc, spider, caps))
     g_error ("Could not connect_filtered sinesrc and spider");
 
-  gst_element_connect (volume, fakesink);
+  gst_element_link (volume, fakesink);
   g_print ("Setting pipeline to ready\n");
   gst_element_set_state (pipeline, GST_STATE_READY);
   g_print ("Setting pipeline to paused\n");
@@ -70,27 +63,30 @@ main (int argc, char *argv[])
   g_assert (pad);
   caps = gst_pad_get_caps (pad);
   g_assert (caps);
-  g_print ("Dumping caps of sinesrc's src pad\n");
-  gst_caps_debug (caps, "sinesrc src pad after filtered connection");
-  g_assert (GST_CAPS_IS_FIXED (caps));
+  caps_str = gst_caps_to_string (caps);
+  g_print ("caps of sinesrc's src pad: %s\n", caps_str);
+  g_free (caps_str);
+  g_assert (gst_caps_is_fixed (caps));
 
   /* debug volume sink caps, make sure they got fixed */
   pad = gst_element_get_pad (volume, "sink");
   g_assert (pad);
   caps = gst_pad_get_caps (pad);
   g_assert (caps);
-  g_print ("Dumping caps of volume's sink pad\n");
-  gst_caps_debug (caps, "volume sink pad after filtered connection");
-  g_assert (GST_CAPS_IS_FIXED (caps));
+  caps_str = gst_caps_to_string (caps);
+  g_print ("caps of volume's sink pad: %s\n", caps_str);
+  g_free (caps_str);
+  g_assert (gst_caps_is_fixed (caps));
 
   /* debug volume source caps, make sure they got fixed */
   pad = gst_element_get_pad (volume, "src");
   g_assert (pad);
   caps = gst_pad_get_caps (pad);
   g_assert (caps);
-  g_print ("Dumping caps of volume's source pad\n");
-  gst_caps_debug (caps, "volume source pad after filtered connection");
-  g_assert (GST_CAPS_IS_FIXED (caps));
+  caps_str = gst_caps_to_string (caps);
+  g_print ("caps of volume's src pad: %s\n", caps_str);
+  g_free (caps_str);
+  g_assert (gst_caps_is_fixed (caps));
 
 
   g_print ("Setting pipeline to play\n");

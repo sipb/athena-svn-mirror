@@ -19,190 +19,192 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <string.h>
 
 #include "gstcdxaparse.h"
+#include "gst/riff/riff-ids.h"
+#include "gst/riff/riff-media.h"
 
-#define MAKE_FOUR_CC(a,b,c,d) ( ((guint32)a)     | (((guint32)b)<< 8) | \
-	                        ((guint32)c)<<16 | (((guint32)d)<<24) )
+static void gst_cdxaparse_base_init (gpointer g_class);
+static void gst_cdxaparse_class_init (GstCDXAParseClass * klass);
+static void gst_cdxaparse_init (GstCDXAParse * cdxaparse);
 
+static GstElementStateReturn gst_cdxaparse_change_state (GstElement * element);
 
-/* RIFF types */
-#define GST_RIFF_TAG_RIFF  MAKE_FOUR_CC('R','I','F','F')
-#define GST_RIFF_RIFF_CDXA MAKE_FOUR_CC('C','D','X','A')
+static void gst_cdxaparse_loop (GstElement * element);
 
+static GstStaticPadTemplate sink_template_factory =
+GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("video/x-cdxa")
+    );
 
-#define GST_RIFF_TAG_fmt  MAKE_FOUR_CC('f','m','t',' ')
-#define GST_RIFF_TAG_data MAKE_FOUR_CC('d','a','t','a')
-
-
-/* elementfactory information */
-static GstElementDetails gst_cdxa_parse_details = {
-  ".dat parser",
-  "Codec/Parser",
-  "LGPL",
-  "Parse a .dat file (VCD) into raw mpeg1",
-  VERSION,
-  "Wim Taymans <wim.taymans@tvd.be>",
-  "(C) 2002",
-};
-
-static GstCaps* cdxa_type_find (GstBuffer *buf, gpointer private);
-
-/* typefactory for 'cdxa' */
-static GstTypeDefinition cdxadefinition = {
-  "cdxaparse_video/avi",
-  "video/avi",
-  ".dat",
-  cdxa_type_find,
-};
+static GstStaticPadTemplate src_template_factory =
+GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("video/mpeg, " "systemstream = (boolean) TRUE")
+    );
 
 /* CDXAParse signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
   /* FILL ME */
 };
 
-GST_PAD_TEMPLATE_FACTORY (sink_templ,
-  "sink",
-  GST_PAD_SINK,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "cdxaparse_sink",
-     "video/avi",
-      "format", GST_PROPS_STRING ("CDXA")
-  )
-)
-
-GST_PAD_TEMPLATE_FACTORY (src_templ,
-  "src",
-  GST_PAD_SRC,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "cdxaparse_src",
-    "video/mpeg",
-      "mpegversion",   GST_PROPS_INT (1),
-      "systemstream",  GST_PROPS_BOOLEAN (TRUE)
-  )
-)
-
-static void 	gst_cdxa_parse_class_init	(GstCDXAParseClass *klass);
-static void 	gst_cdxa_parse_init		(GstCDXAParse *cdxa_parse);
-
-static void 	gst_cdxa_parse_loop 		(GstElement *element);
-
-static GstElementStateReturn
-		gst_cdxa_parse_change_state 	(GstElement *element);
-
-
 static GstElementClass *parent_class = NULL;
-/*static guint gst_cdxa_parse_signals[LAST_SIGNAL] = { 0 }; */
 
 GType
-gst_cdxa_parse_get_type(void) 
+gst_cdxaparse_get_type (void)
 {
-  static GType cdxa_parse_type = 0;
+  static GType cdxaparse_type = 0;
 
-  if (!cdxa_parse_type) {
-    static const GTypeInfo cdxa_parse_info = {
-      sizeof(GstCDXAParseClass),      
+  if (!cdxaparse_type) {
+    static const GTypeInfo cdxaparse_info = {
+      sizeof (GstCDXAParseClass),
+      gst_cdxaparse_base_init,
+      NULL,
+      (GClassInitFunc) gst_cdxaparse_class_init,
       NULL,
       NULL,
-      (GClassInitFunc)gst_cdxa_parse_class_init,
-      NULL,
-      NULL,
-      sizeof(GstCDXAParse),
+      sizeof (GstCDXAParse),
       0,
-      (GInstanceInitFunc)gst_cdxa_parse_init,
+      (GInstanceInitFunc) gst_cdxaparse_init,
     };
-    cdxa_parse_type = g_type_register_static(GST_TYPE_ELEMENT, "GstCDXAParse", &cdxa_parse_info, 0);
+
+    cdxaparse_type =
+        g_type_register_static (GST_TYPE_RIFF_READ, "GstCDXAParse",
+        &cdxaparse_info, 0);
   }
-  return cdxa_parse_type;
+  return cdxaparse_type;
+}
+
+
+static void
+gst_cdxaparse_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+  static GstElementDetails gst_cdxaparse_details =
+      GST_ELEMENT_DETAILS (".dat parser",
+      "Codec/Parser",
+      "Parse a .dat file (VCD) into raw mpeg1",
+      "Wim Taymans <wim.taymans@tvd.be>");
+
+  gst_element_class_set_details (element_class, &gst_cdxaparse_details);
+
+  /* register src pads */
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&sink_template_factory));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&src_template_factory));
 }
 
 static void
-gst_cdxa_parse_class_init (GstCDXAParseClass *klass) 
+gst_cdxaparse_class_init (GstCDXAParseClass * klass)
 {
-  GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
+  GObjectClass *object_class;
 
-  gobject_class = (GObjectClass*)klass;
-  gstelement_class = (GstElementClass*)klass;
+  gstelement_class = (GstElementClass *) klass;
+  object_class = (GObjectClass *) klass;
 
-  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
-  
-  gstelement_class->change_state = gst_cdxa_parse_change_state;
+  parent_class = g_type_class_ref (GST_TYPE_RIFF_READ);
+
+  gstelement_class->change_state = gst_cdxaparse_change_state;
 }
 
-static void 
-gst_cdxa_parse_init (GstCDXAParse *cdxa_parse) 
+static void
+gst_cdxaparse_init (GstCDXAParse * cdxaparse)
 {
-  GST_FLAG_SET (cdxa_parse, GST_ELEMENT_EVENT_AWARE);
-				
-  cdxa_parse->sinkpad = gst_pad_new_from_template (
-		  GST_PAD_TEMPLATE_GET (sink_templ), "sink");
-  gst_element_add_pad (GST_ELEMENT (cdxa_parse), cdxa_parse->sinkpad);
+  /* sink */
+  cdxaparse->sinkpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&sink_template_factory), "sink");
+  gst_element_add_pad (GST_ELEMENT (cdxaparse), cdxaparse->sinkpad);
+  GST_RIFF_READ (cdxaparse)->sinkpad = cdxaparse->sinkpad;
 
-  cdxa_parse->srcpad = gst_pad_new_from_template (
-		  GST_PAD_TEMPLATE_GET (src_templ), "src");
-  gst_element_add_pad (GST_ELEMENT (cdxa_parse), cdxa_parse->srcpad);
 
-  gst_element_set_loop_function (GST_ELEMENT (cdxa_parse), gst_cdxa_parse_loop);
+  gst_element_set_loop_function (GST_ELEMENT (cdxaparse), gst_cdxaparse_loop);
 
-}
+  cdxaparse->state = GST_CDXAPARSE_START;
 
-static GstCaps*
-cdxa_type_find (GstBuffer *buf,
-              gpointer private)
-{
-  gchar *data = GST_BUFFER_DATA (buf);
-  GstCaps *new;
+  cdxaparse->srcpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&src_template_factory), "src");
+  gst_element_add_pad (GST_ELEMENT (cdxaparse), cdxaparse->srcpad);
 
-  GST_DEBUG (0,"cdxa_parse: typefind");
-
-  if (GUINT32_FROM_LE (((guint32 *)data)[0]) != GST_RIFF_TAG_RIFF)
-    return NULL;
-  if (GUINT32_FROM_LE (((guint32 *)data)[2]) != GST_RIFF_RIFF_CDXA)
-    return NULL;
-
-  new = GST_CAPS_NEW ("cdxa_type_find",
-		      "video/avi", 
-		        "RIFF", GST_PROPS_STRING ("CDXA"));
-
-  return new;
+  cdxaparse->seek_pending = FALSE;
+  cdxaparse->seek_offset = 0;
 }
 
 static gboolean
-gst_cdxa_parse_handle_event (GstCDXAParse *cdxa_parse)
+gst_cdxaparse_stream_init (GstCDXAParse * cdxa)
 {
-  guint32 remaining;
-  GstEvent *event;
-  GstEventType type;
-  
-  gst_bytestream_get_status (cdxa_parse->bs, &remaining, &event);
+  GstRiffRead *riff = GST_RIFF_READ (cdxa);
+  guint32 doctype;
 
-  type = event? GST_EVENT_TYPE (event) : GST_EVENT_UNKNOWN;
+  if (!gst_riff_read_header (riff, &doctype))
+    return FALSE;
 
-  switch (type) {
-    case GST_EVENT_EOS:
-      gst_pad_event_default (cdxa_parse->sinkpad, event);
+  if (doctype != GST_RIFF_RIFF_CDXA) {
+    GST_ELEMENT_ERROR (cdxa, STREAM, WRONG_TYPE, (NULL), (NULL));
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+/* Read 'fmt ' header */
+static gboolean
+gst_cdxaparse_fmt (GstCDXAParse * cdxa)
+{
+  GstRiffRead *riff = GST_RIFF_READ (cdxa);
+  gst_riff_strf_auds *header;
+
+  if (!gst_riff_read_strf_auds (riff, &header)) {
+    g_warning ("Not fmt");
+    return FALSE;
+  }
+
+  /* As we don't know what is in this fmt field, we do nothing */
+
+  return TRUE;
+}
+
+static gboolean
+gst_cdxaparse_other (GstCDXAParse * cdxa)
+{
+  GstRiffRead *riff = GST_RIFF_READ (cdxa);
+  guint32 tag, length;
+
+  if (!gst_riff_peek_head (riff, &tag, &length, NULL)) {
+    return FALSE;
+  }
+
+  switch (tag) {
+    case GST_RIFF_TAG_data:
+      if (!gst_bytestream_flush (riff->bs, 8))
+        return FALSE;
+
+      cdxa->state = GST_CDXAPARSE_DATA;
+      cdxa->dataleft = cdxa->datasize = (guint64) length;
+      cdxa->datastart = gst_bytestream_tell (riff->bs);
       break;
-    case GST_EVENT_SEEK:
-      g_warning ("seek event\n");
-      break;
-    case GST_EVENT_FLUSH:
-      g_warning ("flush event\n");
-      break;
-    case GST_EVENT_DISCONTINUOUS:
-      g_warning ("discont event\n");
-      break;
+
     default:
-      g_warning ("unhandled event %d\n", type);
+      if (!gst_riff_read_skip (riff))
+        return FALSE;
       break;
   }
 
@@ -211,154 +213,139 @@ gst_cdxa_parse_handle_event (GstCDXAParse *cdxa_parse)
 
 /*
 
-CDXA starts with the following header:
- 
-! RIFF:4 ! size:4 ! "CDXA" ! "fmt " ! size:4 ! (size+1)&~1 bytes of crap ! 
-! "data" ! data_size:4 ! (data_size/2352) sectors...
-
-*/
-
-typedef struct 
-{
-  gchar   RIFF_tag[4];
-  guint32 riff_size;
-  gchar   CDXA_tag[4];
-  gchar   fmt_tag[4];
-  guint32 fmt_size;
-} CDXAParseHeader;
-   
-/*
-A sectors is 2352 bytes long and is composed of:
+A sector is 2352 bytes long and is composed of:
 
 !  sync    !  header ! subheader ! data ...   ! edc     !
 ! 12 bytes ! 4 bytes ! 8 bytes   ! 2324 bytes ! 4 bytes !
 !-------------------------------------------------------!
 
 We parse the data out of it and send it to the srcpad.
+
+sync : 00 FF FF FF FF FF FF FF FF FF FF 00
+header : hour minute second mode
+sub-header : track channel sub_mode coding repeat (4 bytes)
+edc : checksum
+
 */
 
 static void
-gst_cdxa_parse_loop (GstElement *element)
+gst_cdxaparse_loop (GstElement * element)
 {
-  GstCDXAParse *cdxa_parse;
-  CDXAParseHeader *header;
+  GstCDXAParse *cdxa = GST_CDXAPARSE (element);
+  GstRiffRead *riff = GST_RIFF_READ (cdxa);
 
-  g_return_if_fail (element != NULL);
-  g_return_if_fail (GST_IS_CDXA_PARSE (element));
+  if (cdxa->state == GST_CDXAPARSE_DATA) {
 
-  cdxa_parse = GST_CDXA_PARSE (element);
+    if (cdxa->dataleft > 0) {
+      guint32 got_bytes, desired;
+      GstBuffer *buf = NULL;
+      GstBuffer *outbuf = NULL;
 
-  if (cdxa_parse->state == CDXA_PARSE_HEADER) {
-    guint32 fmt_size;
-    guint8 *buf;
-    guint32 got_bytes;
+      desired = GST_CDXA_SECTOR_SIZE;
 
-    got_bytes = gst_bytestream_peek_bytes (cdxa_parse->bs, (guint8**)&header, 20);
-    if (got_bytes < 20)
-      return;
+      if (!(buf = gst_riff_read_element_data (riff, desired, &got_bytes)))
+        return;
 
-    cdxa_parse->riff_size = GUINT32_FROM_LE (header->riff_size);
-    fmt_size = (GUINT32_FROM_LE (header->fmt_size) + 1)&~1;
+      /* Skip CDXA headers, only keep data */
+      outbuf =
+          gst_buffer_create_sub (buf, GST_CDXA_HEADER_SIZE, GST_CDXA_DATA_SIZE);
 
-    /* flush the header + fmt_size bytes + 4 bytes "data" */
-    if (!gst_bytestream_flush (cdxa_parse->bs, 20 + fmt_size + 4))
-      return;
-    
-    /* get the data size */
-    got_bytes = gst_bytestream_peek_bytes (cdxa_parse->bs, (guint8**)&buf, 4);
-    if (got_bytes < 4)
-      return;
-    cdxa_parse->data_size = GUINT32_FROM_LE (*((guint32 *)buf));
+      gst_buffer_unref (buf);
+      gst_pad_push (cdxa->srcpad, GST_DATA (outbuf));
 
-    /* flush the data size */
-    if (!gst_bytestream_flush (cdxa_parse->bs, 4))
-      return;
-
-    if (cdxa_parse->data_size % CDXA_SECTOR_SIZE)
-      g_warning ("cdxa_parse: size not multiple of %d bytes", CDXA_SECTOR_SIZE);
-
-    cdxa_parse->sectors = cdxa_parse->data_size / CDXA_SECTOR_SIZE;
-    
-    cdxa_parse->state = CDXA_PARSE_DATA;
-  }
-  else {
-    GstBuffer *buf;
-    GstBuffer *outbuf;
-    guint32 got_bytes;
-
-    got_bytes = gst_bytestream_read (cdxa_parse->bs, &buf, CDXA_SECTOR_SIZE);
-    if (got_bytes < CDXA_SECTOR_SIZE) {
-      gst_cdxa_parse_handle_event (cdxa_parse);
-      return;
+      cdxa->byteoffset += got_bytes;
+      if (got_bytes < cdxa->dataleft) {
+        cdxa->dataleft -= got_bytes;
+        return;
+      } else {
+        cdxa->dataleft = 0;
+        cdxa->state = GST_CDXAPARSE_OTHER;
+      }
+    } else {
+      cdxa->state = GST_CDXAPARSE_OTHER;
     }
+  }
 
-    outbuf = gst_buffer_create_sub (buf, 24, CDXA_DATA_SIZE);
-    gst_buffer_unref (buf);
+  switch (cdxa->state) {
+    case GST_CDXAPARSE_START:
+      if (!gst_cdxaparse_stream_init (cdxa)) {
+        return;
+      }
 
-    gst_pad_push (cdxa_parse->srcpad, outbuf);
+      cdxa->state = GST_CDXAPARSE_FMT;
+      /* fall-through */
+
+    case GST_CDXAPARSE_FMT:
+      if (!gst_cdxaparse_fmt (cdxa)) {
+        return;
+      }
+
+      cdxa->state = GST_CDXAPARSE_OTHER;
+      /* fall-through */
+
+    case GST_CDXAPARSE_OTHER:
+      if (!gst_cdxaparse_other (cdxa)) {
+        return;
+      }
+
+      break;
+
+    case GST_CDXAPARSE_DATA:
+
+    default:
+      g_assert_not_reached ();
   }
 }
 
 static GstElementStateReturn
-gst_cdxa_parse_change_state (GstElement *element)
+gst_cdxaparse_change_state (GstElement * element)
 {
-  GstCDXAParse *cdxa_parse = GST_CDXA_PARSE (element);
+  GstCDXAParse *cdxa = GST_CDXAPARSE (element);
 
   switch (GST_STATE_TRANSITION (element)) {
     case GST_STATE_NULL_TO_READY:
       break;
+
     case GST_STATE_READY_TO_PAUSED:
-      cdxa_parse->state = CDXA_PARSE_HEADER;
-      cdxa_parse->bs = gst_bytestream_new (cdxa_parse->sinkpad);
+      cdxa->state = GST_CDXAPARSE_START;
       break;
+
     case GST_STATE_PAUSED_TO_PLAYING:
       break;
+
     case GST_STATE_PLAYING_TO_PAUSED:
       break;
+
     case GST_STATE_PAUSED_TO_READY:
-      gst_bytestream_destroy (cdxa_parse->bs);
+      cdxa->state = GST_CDXAPARSE_START;
+
+      cdxa->seek_pending = FALSE;
+      cdxa->seek_offset = 0;
       break;
+
     case GST_STATE_READY_TO_NULL:
-      break;
-    default:
       break;
   }
 
-  parent_class->change_state (element);
+  if (GST_ELEMENT_CLASS (parent_class)->change_state)
+    return GST_ELEMENT_CLASS (parent_class)->change_state (element);
 
   return GST_STATE_SUCCESS;
 }
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-  GstTypeFactory *type;
-
-  /* this filter needs the riff parser */
-  if (!gst_library_load ("gstbytestream"))
+  if (!gst_library_load ("riff")) {
     return FALSE;
+  }
 
-  /* create an elementfactory for the cdxa_parse element */
-  factory = gst_element_factory_new ("cdxaparse", GST_TYPE_CDXA_PARSE,
-                                    &gst_cdxa_parse_details);
-  g_return_val_if_fail (factory != NULL, FALSE);
-
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (src_templ));
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (sink_templ));
-
-  type = gst_type_factory_new (&cdxadefinition);
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (type));
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-
-  return TRUE;
+  return gst_element_register (plugin, "cdxaparse", GST_RANK_PRIMARY,
+      GST_TYPE_CDXAPARSE);
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "cdxaparse",
-  plugin_init
-};
-
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "cdxaparse",
+    "Parse a .dat file (VCD) into raw mpeg1",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN)

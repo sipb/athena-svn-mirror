@@ -22,7 +22,6 @@
 #define __GST_CUTTER_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 /* #include <gst/meta/audioraw.h> */
 
@@ -37,7 +36,7 @@ extern "C" {
 #define GST_CUTTER(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj),GST_TYPE_CUTTER,GstCutter))
 #define GST_CUTTER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_ULAW,GstCutter))
+  (G_TYPE_CHECK_CLASS_CAST((klass),GST_TYPE_CUTTER,GstCutter))
 #define GST_IS_CUTTER(obj) \
   (G_TYPE_CHECK_INSTANCE_TYPE((obj),GST_TYPE_CUTTER))
 #define GST_IS_CUTTER_CLASS(obj) \
@@ -46,7 +45,7 @@ extern "C" {
 typedef struct _GstCutter GstCutter;
 typedef struct _GstCutterClass GstCutterClass;
 
-struct _GstCutter 
+struct _GstCutter
 {
   GstElement element;
 
@@ -61,14 +60,15 @@ struct _GstCutter
 
   double pre_length;		/* how long can the pre-record buffer be ? */
   double pre_run_length;        /* how long is it currently ? */
-  GList *pre_buffer;
-  
+  GList *pre_buffer;		/* list of GstBuffers in pre-record buffer */
+  gboolean leaky;		/* do we leak an overflowing prebuffer ? */
+
   gboolean have_caps;		/* did we get the needed caps yet ? */
   gint width;			/* bit width of data */
   long max_sample;		/* maximum sample value */
 };
 
-struct _GstCutterClass 
+struct _GstCutterClass
 {
   GstElementClass parent_class;
   void (*cut_start) (GstCutter* filter);

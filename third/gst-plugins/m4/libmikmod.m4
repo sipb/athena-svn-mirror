@@ -8,7 +8,7 @@ dnl AM_PATH_LIBMIKMOD([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND 
 dnl Test for libmikmod, and define LIBMIKMOD_CFLAGS, LIBMIKMOD_LIBS and
 dnl LIBMIKMOD_LDADD
 dnl
-AC_DEFUN(AM_PATH_LIBMIKMOD,
+AC_DEFUN([AM_PATH_LIBMIKMOD],
 [dnl 
 dnl Get the cflags and libraries from the libmikmod-config script
 dnl
@@ -72,6 +72,7 @@ dnl
 #include <mikmod.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 char* my_strdup (char *str)
 {
@@ -125,7 +126,7 @@ int main()
 	   (libmikmod_minor_version != LIBMIKMOD_VERSION_MINOR) ||
            (libmikmod_micro_version != LIBMIKMOD_REVISION))
     {
-      printf("*** libmikmod header files (version %d.%d.%d) do not match\n",
+      printf("*** libmikmod header files (version %ld.%ld.%ld) do not match\n",
 	     LIBMIKMOD_VERSION_MAJOR, LIBMIKMOD_VERSION_MINOR, LIBMIKMOD_REVISION);
       printf("*** library (version %d.%d.%d)\n",
 	     libmikmod_major_version, libmikmod_minor_version, libmikmod_micro_version);

@@ -22,7 +22,6 @@
 #define __VORBISENC_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 #include <vorbis/codec.h>
@@ -51,11 +50,6 @@ struct _VorbisEnc {
   GstPad          *sinkpad,
                   *srcpad;
 
-  ogg_stream_state os; /* take physical pages, weld into a logical
-			                              stream of packets */
-  ogg_page         og; /* one Ogg bitstream page.  Vorbis packets are inside */
-  ogg_packet       op; /* one raw packet of data for decode */
-
   vorbis_info      vi; /* struct that stores all the static vorbis bitstream
 				                            settings */
   vorbis_comment   vc; /* struct that stores all the user comments */
@@ -71,7 +65,6 @@ struct _VorbisEnc {
   gint             max_bitrate;
   gfloat           quality;
   gboolean	   quality_set;
-  gint             serial;
 
   gint             channels;
   gint             frequency;
@@ -79,11 +72,12 @@ struct _VorbisEnc {
   guint64	   samples_in;
   guint64	   bytes_out;
 
-  GstCaps         *metadata;
+  GstTagList *	   tags;
 
   gboolean         setup;
-  gboolean         flush_header;
+  gboolean         header_sent;
   gchar		  *last_message;
+  guint16 newmediacount;
 };
 
 struct _VorbisEncClass {

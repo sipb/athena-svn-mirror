@@ -21,14 +21,9 @@
 #ifndef __GST_SILENCE_H__
 #define __GST_SILENCE_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define GST_TYPE_SILENCE \
   (gst_silence_get_type())
@@ -41,32 +36,34 @@ extern "C" {
 #define GST_IS_SILENCE_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_SILENCE))
   
-  typedef struct _GstSilence GstSilence;
-  typedef struct _GstSilenceClass GstSilenceClass;
+typedef struct _GstSilence GstSilence;
+typedef struct _GstSilenceClass GstSilenceClass;
   
-  struct _GstSilence {
-    GstElement element;
-    
-    GstPad *srcpad;
-    
-    glong bytes_per_read;
-    gint law;
-    glong frequency;
-    glong channels;
-    
-  };
+struct _GstSilence {
+  GstElement element;
 
-GType gst_silence_get_type(void);
+  GstPad *srcpad;
+
+  glong bytes_per_read;
+  gboolean sync;
+  gint law;
+  gint frequency;
+  gint channels;
+  gint width;
+
+  guint64 samples;
+  guint64 offset;
+  guint64 timestamp;
+
+  GstClock *clock;
+};
 
 struct _GstSilenceClass {
   GstElementClass parent_class;
 };
 
+GType gst_silence_get_type(void);
 
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* __GST_SILENCE_H__ */

@@ -22,7 +22,6 @@
 #define __GST_LAME_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 #ifdef __cplusplus
@@ -73,7 +72,8 @@ struct _GstLame {
   gboolean extension;
   gboolean strict_iso;
   gboolean disable_reservoir;
-  gboolean vbr;
+  gint vbr;
+  gint vbr_quality;
   gint vbr_mean_bitrate;
   gint vbr_min_bitrate;
   gint vbr_max_bitrate;
@@ -91,8 +91,18 @@ struct _GstLame {
   gboolean allow_diff_short;
   gboolean no_short_blocks;
   gboolean emphasis;
+  gboolean xingheader;
+  gint preset;
 
   lame_global_flags *lgf;
+
+  GstTagList *tags;
+
+  /* time tracker */
+  guint64 last_ts, last_offs, last_duration;
+
+  /* new media count */
+  gint16 newmediacount;
 };
 
 struct _GstLameClass {

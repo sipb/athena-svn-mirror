@@ -1,15 +1,18 @@
-dnl as-compiler.m4 0.0.1
-dnl autostars m4 macro for detection of compiler flavour
-dnl
-dnl thomas@apestaart.org
+dnl as-compiler.m4 0.1.0
+                                                                                
+dnl autostars m4 macro for detection of compiler flavor
 
+dnl Thomas Vander Stichele <thomas at apestaart dot org>
+
+dnl $Id: as-compiler.m4,v 1.1.1.2 2004-10-06 18:28:05 ghudson Exp $
+                                                                                
 dnl AS_COMPILER(COMPILER)
-dnl will set COMPILER to
+dnl will set variable COMPILER to
 dnl - gcc
 dnl - forte
 dnl - (empty) if no guess could be made
 
-AC_DEFUN(AS_COMPILER,
+AC_DEFUN([AS_COMPILER],
 [
   as_compiler=
   AC_MSG_CHECKING(for compiler flavour)

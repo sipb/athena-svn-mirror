@@ -24,7 +24,6 @@
 #define __GST_LADSPA_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 #include <gst/bytestream/bytestream.h>
 
@@ -60,12 +59,9 @@ struct _GstLADSPA {
   GstPad **sinkpads, 
          **srcpads;
 
-         
-  GstBufferPool *bufpool;
+  gboolean activated;
 
-  gboolean newcaps, activated;
-
-  gint samplerate, buffersize, numbuffers;
+  gint samplerate, buffer_frames;
   gint64 timestamp;
   gboolean inplace_broken;
 };

@@ -17,6 +17,9 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <string.h>
 #include <math.h>
@@ -26,40 +29,46 @@
 /*#include <ml.h> */
 #include "private.h"
 
-void conv_double_float_ref(double *dest, float *src, int n)
+void
+conv_double_float_ref (double *dest, float *src, int n)
 {
-	int i;
-	for(i=0;i<n;i++){
-		dest[i]=src[i];
-	}
+  int i;
+
+  for (i = 0; i < n; i++) {
+    dest[i] = src[i];
+  }
 }
 
-void conv_float_double_ref(float *dest, double *src, int n)
+void
+conv_float_double_ref (float *dest, double *src, int n)
 {
-	int i;
-	for(i=0;i<n;i++){
-		dest[i]=src[i];
-	}
+  int i;
+
+  for (i = 0; i < n; i++) {
+    dest[i] = src[i];
+  }
 }
 
-void conv_double_float_dstr(double *dest, float *src, int n, int dstr)
+void
+conv_double_float_dstr (double *dest, float *src, int n, int dstr)
 {
-	int i;
-	void *d = dest;
-	for(i=0;i<n;i++){
-		(*(double *)d)=*src++;
-		d += dstr;
-	}
+  int i;
+  void *d = dest;
+
+  for (i = 0; i < n; i++) {
+    (*(double *) d) = *src++;
+    d += dstr;
+  }
 }
 
-void conv_float_double_sstr(float *dest, double *src, int n, int sstr)
+void
+conv_float_double_sstr (float *dest, double *src, int n, int sstr)
 {
-	int i;
-	void *s = src;
+  int i;
+  void *s = src;
 
-	for(i=0;i<n;i++){
-		*dest++ = *(double *)s;
-		s += sstr;
-	}
+  for (i = 0; i < n; i++) {
+    *dest++ = *(double *) s;
+    s += sstr;
+  }
 }
-

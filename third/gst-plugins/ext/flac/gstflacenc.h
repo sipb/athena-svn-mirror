@@ -22,7 +22,6 @@
 #define __FLACENC_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 #include <FLAC/all.h>
@@ -56,7 +55,10 @@ struct _FlacEnc {
   gboolean	 stopped;
   FLAC__int32 	*data;
 
-  FLAC__StreamEncoder *encoder;
+  FLAC__SeekableStreamEncoder *encoder;
+  FLAC__StreamMetadata **meta;
+
+  GstTagList *	   tags;
 };
 
 struct _FlacEncClass {
@@ -69,6 +71,5 @@ GType flacenc_get_type(void);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
 
 #endif /* __FLACENC_H__ */

@@ -25,7 +25,6 @@
 #define __GST_AFPARSE_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 #include <gst/bytestream/bytestream.h>
 #include <audiofile.h>			/* what else are we to do */
@@ -95,7 +94,7 @@ struct _GstAFParseClass {
   void (*handoff) (GstElement *element,GstPad *pad);
 };
 
-gboolean 	gst_afparse_plugin_init 	(GModule *module, GstPlugin *plugin);
+gboolean 	gst_afparse_plugin_init 	(GstPlugin *plugin);
 
 #ifdef __cplusplus
 }

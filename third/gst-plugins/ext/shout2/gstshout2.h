@@ -30,8 +30,7 @@ extern "C" {
 
   /* Protocol type enum */
 typedef enum {
-  SHOUT2SEND_PROTOCOL_ICE = 1,
-  SHOUT2SEND_PROTOCOL_XAUDIOCAST,
+  SHOUT2SEND_PROTOCOL_XAUDIOCAST = 1,
   SHOUT2SEND_PROTOCOL_ICY,
   SHOUT2SEND_PROTOCOL_HTTP
 } GstShout2SendProtocol;
@@ -56,6 +55,14 @@ struct _GstShout2send {
   gchar *genre;
   gchar *mount;
   gchar *url;
+  gboolean sync;
+  gboolean started;
+
+  guint16 audio_format;
+
+  GstTagList* tags;
+
+  GstClock 	*clock;
 
 };
 
@@ -65,6 +72,9 @@ struct _GstShout2send {
 typedef struct _GstShout2sendClass GstShout2sendClass;
 struct _GstShout2sendClass {
   GstElementClass parent_class;
+
+  /* signal callbacks */
+  void (*connection_problem) (GstElement *element,guint errno);
 };
 
 /* Standard macros for defining types for this element.  */

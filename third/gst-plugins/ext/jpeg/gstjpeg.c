@@ -16,98 +16,39 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "gstjpegdec.h"
 #include "gstjpegenc.h"
-
-/* elementfactory information */
-extern GstElementDetails gst_jpegdec_details;
-extern GstElementDetails gst_jpegenc_details;
-
-GstPadTemplate *jpegdec_src_template, *jpegdec_sink_template; 
-GstPadTemplate *jpegenc_src_template, *jpegenc_sink_template;
-
-static GstCaps*
-jpeg_caps_factory (void) 
-{
-  return
-    gst_caps_new (
-  	"jpeg_jpeg",
-  	"video/jpeg",
-  	NULL);
-}
-
-static GstCaps*
-raw_caps_factory (void)
-{
-  return
-    gst_caps_new (
-  	"jpeg_raw",
-  	"video/raw",
-	gst_props_new (
-  	  "format",    GST_PROPS_LIST (
-                 	 GST_PROPS_FOURCC (GST_MAKE_FOURCC ('I','4','2','0'))
-               	       ),
-  	  "width",     GST_PROPS_INT_RANGE (16, 4096),
-  	  "height",    GST_PROPS_INT_RANGE (16, 4096),
-  	  NULL));
-}
+#include "gstsmokeenc.h"
+#include "gstsmokedec.h"
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *dec, *enc;
-  GstCaps *raw_caps, *jpeg_caps;
+  if (!gst_element_register (plugin, "jpegenc", GST_RANK_NONE,
+          GST_TYPE_JPEGENC))
+    return FALSE;
 
-  /* create an elementfactory for the jpegdec element */
-  enc = gst_element_factory_new("jpegenc",GST_TYPE_JPEGENC,
-                                   &gst_jpegenc_details);
-  g_return_val_if_fail(enc != NULL, FALSE);
+  if (!gst_element_register (plugin, "jpegdec", GST_RANK_PRIMARY,
+          GST_TYPE_JPEGDEC))
+    return FALSE;
 
-  raw_caps = raw_caps_factory ();
-  jpeg_caps = jpeg_caps_factory ();
+  if (!gst_element_register (plugin, "smokeenc", GST_RANK_PRIMARY,
+          GST_TYPE_SMOKEENC))
+    return FALSE;
 
-  /* register sink pads */
-  jpegenc_sink_template = gst_pad_template_new ("sink", GST_PAD_SINK, 
-		                              GST_PAD_ALWAYS, 
-					      raw_caps, NULL);
-  gst_element_factory_add_pad_template (enc, jpegenc_sink_template);
-
-  /* register src pads */
-  jpegenc_src_template = gst_pad_template_new ("src", GST_PAD_SRC, 
-		                             GST_PAD_ALWAYS, 
-					     jpeg_caps, NULL);
-  gst_element_factory_add_pad_template (enc, jpegenc_src_template);
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (enc));
-
-  /* create an elementfactory for the jpegdec element */
-  dec = gst_element_factory_new("jpegdec",GST_TYPE_JPEGDEC,
-                                   &gst_jpegdec_details);
-  g_return_val_if_fail(dec != NULL, FALSE);
-  gst_element_factory_set_rank (dec, GST_ELEMENT_RANK_PRIMARY);
- 
-  /* register sink pads */
-  jpegdec_sink_template = gst_pad_template_new ("sink", GST_PAD_SINK, 
-		                              GST_PAD_ALWAYS, 
-					      jpeg_caps, NULL);
-  gst_element_factory_add_pad_template (dec, jpegdec_sink_template);
-
-  /* register src pads */
-  jpegdec_src_template = gst_pad_template_new ("src", GST_PAD_SRC, 
-		                             GST_PAD_ALWAYS, 
-					     raw_caps, NULL);
-  gst_element_factory_add_pad_template (dec, jpegdec_src_template);
-  
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (dec));
+  if (!gst_element_register (plugin, "smokedec", GST_RANK_PRIMARY,
+          GST_TYPE_SMOKEDEC))
+    return FALSE;
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "jpeg",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "jpeg",
+    "JPeg plugin library",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN)

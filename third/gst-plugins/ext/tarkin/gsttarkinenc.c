@@ -18,23 +18,22 @@
  */
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <stdlib.h>
 #include <string.h>
 
 #include "gsttarkinenc.h"
 
-extern GstPadTemplate *enc_src_template, *enc_sink_template;
+static GstPadTemplate *enc_src_template, *enc_sink_template;
 
 /* elementfactory information */
 GstElementDetails tarkinenc_details = {
   "Ogg Tarkin encoder",
-  "Filter/Video/Encoder",
-  "LGPL",
+  "Codec/Encoder/Video",
   "Encodes video in OGG Tarkin format",
-  VERSION,
-  "Monty <monty@xiph.org>, " 
-  "Wim Taymans <wim.taymans@chello.be>",
-  "(C) 2002",
+  "Monty <monty@xiph.org>, " "Wim Taymans <wim.taymans@chello.be>",
 };
 
 /* TarkinEnc signals and args */
@@ -49,21 +48,23 @@ enum
   ARG_0,
   ARG_BITRATE,
   ARG_S_MOMENTS,
-  ARG_A_MOMENTS,
+  ARG_A_MOMENTS
 };
 
-static void 	gst_tarkinenc_class_init 	(TarkinEncClass *klass);
-static void 	gst_tarkinenc_init 		(TarkinEnc *arkinenc);
+static void gst_tarkinenc_base_init (gpointer g_class);
+static void gst_tarkinenc_class_init (TarkinEncClass * klass);
+static void gst_tarkinenc_init (TarkinEnc * arkinenc);
 
-static void 	gst_tarkinenc_chain 		(GstPad *pad, GstBuffer *buf);
-static void 	gst_tarkinenc_setup 		(TarkinEnc *tarkinenc);
+static void gst_tarkinenc_chain (GstPad * pad, GstData * _data);
+static void gst_tarkinenc_setup (TarkinEnc * tarkinenc);
 
-static void 	gst_tarkinenc_get_property 	(GObject *object, guint prop_id, GValue *value,
-						 GParamSpec *pspec);
-static void 	gst_tarkinenc_set_property 	(GObject *object, guint prop_id, const GValue *value,
-						 GParamSpec *pspec);
+static void gst_tarkinenc_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
+static void gst_tarkinenc_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
 
 static GstElementClass *parent_class = NULL;
+
 /*static guint gst_tarkinenc_signals[LAST_SIGNAL] = { 0 }; */
 
 GType
@@ -73,8 +74,8 @@ tarkinenc_get_type (void)
 
   if (!tarkinenc_type) {
     static const GTypeInfo tarkinenc_info = {
-      sizeof (TarkinEncClass), 
-      NULL,
+      sizeof (TarkinEncClass),
+      gst_tarkinenc_base_init,
       NULL,
       (GClassInitFunc) gst_tarkinenc_class_init,
       NULL,
@@ -84,13 +85,58 @@ tarkinenc_get_type (void)
       (GInstanceInitFunc) gst_tarkinenc_init,
     };
 
-    tarkinenc_type = g_type_register_static (GST_TYPE_ELEMENT, "TarkinEnc", &tarkinenc_info, 0);
+    tarkinenc_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "TarkinEnc", &tarkinenc_info,
+        0);
   }
   return tarkinenc_type;
 }
 
+static GstCaps *
+tarkin_caps_factory (void)
+{
+  return gst_caps_new ("tarkin_tarkin", "application/ogg", NULL);
+}
+
+static GstCaps *
+raw_caps_factory (void)
+{
+  return
+      GST_CAPS_NEW ("tarkin_raw",
+      "video/x-raw-rgb",
+      "bpp", GST_PROPS_INT (24),
+      "depth", GST_PROPS_INT (24),
+      "endianness", GST_PROPS_INT (G_BYTE_ORDER),
+      "red_mask", GST_PROPS_INT (0xff0000),
+      "green_mask", GST_PROPS_INT (0xff00),
+      "blue_mask", GST_PROPS_INT (0xff),
+      "width", GST_PROPS_INT_RANGE (0, G_MAXINT),
+      "height", GST_PROPS_INT_RANGE (0, G_MAXINT),
+      "framerate", GST_PROPS_FLOAT_RANGE (0, G_MAXFLOAT)
+      );
+}
+
 static void
-gst_tarkinenc_class_init (TarkinEncClass *klass)
+gst_tarkinenc_base_init (gpointer g_class)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (g_class);
+  GstCaps *raw_caps, *tarkin_caps;
+
+  raw_caps = raw_caps_factory ();
+  tarkin_caps = tarkin_caps_factory ();
+
+  enc_sink_template = gst_pad_template_new ("sink",
+      GST_PAD_SINK, GST_PAD_ALWAYS, raw_caps, NULL);
+  enc_src_template = gst_pad_template_new ("src",
+      GST_PAD_SRC, GST_PAD_ALWAYS, tarkin_caps, NULL);
+  gst_element_class_add_pad_template (element_class, enc_sink_template);
+  gst_element_class_add_pad_template (element_class, enc_src_template);
+
+  gst_element_class_set_details (element_class, &tarkinenc_details);
+}
+
+static void
+gst_tarkinenc_class_init (TarkinEncClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
@@ -98,17 +144,17 @@ gst_tarkinenc_class_init (TarkinEncClass *klass)
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
 
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_BITRATE, 
-    g_param_spec_int ("bitrate", "bitrate", "bitrate", 
-	    G_MININT, G_MAXINT, 3000, G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_S_MOMENTS, 
-    g_param_spec_int ("s_moments", "Synthesis Moments", 
-	              "Number of vanishing moments for the synthesis filter", 
-	              1, 4, 2, G_PARAM_READWRITE));
-  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_A_MOMENTS, 
-    g_param_spec_int ("a_moments", "Analysis Moments", 
-	              "Number of vanishing moments for the analysis filter", 
-	              1, 4, 2, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_BITRATE,
+      g_param_spec_int ("bitrate", "bitrate", "bitrate",
+          G_MININT, G_MAXINT, 3000, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_S_MOMENTS,
+      g_param_spec_int ("s_moments", "Synthesis Moments",
+          "Number of vanishing moments for the synthesis filter",
+          1, 4, 2, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_A_MOMENTS,
+      g_param_spec_int ("a_moments", "Analysis Moments",
+          "Number of vanishing moments for the analysis filter",
+          1, 4, 2, G_PARAM_READWRITE));
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
@@ -117,7 +163,7 @@ gst_tarkinenc_class_init (TarkinEncClass *klass)
 }
 
 static GstPadLinkReturn
-gst_tarkinenc_sinkconnect (GstPad *pad, GstCaps *caps)
+gst_tarkinenc_sinkconnect (GstPad * pad, GstCaps * caps)
 {
   TarkinEnc *tarkinenc;
 
@@ -161,12 +207,14 @@ gst_tarkinenc_init (TarkinEnc * tarkinenc)
   tarkinenc->setup = FALSE;
 }
 
-TarkinError free_frame (void *s, void *ptr) 
+TarkinError
+free_frame (void *s, void *ptr)
 {
-  return(TARKIN_OK);
+  return (TARKIN_OK);
 }
 
-TarkinError packet_out (void *stream, ogg_packet *op) 
+TarkinError
+packet_out (void *stream, ogg_packet * op)
 {
   ogg_page og;
   TarkinStream *s = stream;
@@ -175,30 +223,30 @@ TarkinError packet_out (void *stream, ogg_packet *op)
 
   ogg_stream_packetin (&te->os, op);
 
-  if(op->e_o_s){
+  if (op->e_o_s) {
     ogg_stream_flush (&te->os, &og);
     outbuf = gst_buffer_new ();
     GST_BUFFER_DATA (outbuf) = og.header;
     GST_BUFFER_SIZE (outbuf) = og.header_len;
     GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_DONTFREE);
-    gst_pad_push (te->srcpad, outbuf);
+    gst_pad_push (te->srcpad, GST_DATA (outbuf));
     outbuf = gst_buffer_new ();
     GST_BUFFER_DATA (outbuf) = og.body;
     GST_BUFFER_SIZE (outbuf) = og.body_len;
     GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_DONTFREE);
-    gst_pad_push (te->srcpad, outbuf);
+    gst_pad_push (te->srcpad, GST_DATA (outbuf));
   } else {
-    while (ogg_stream_pageout (&te->os, &og)){
+    while (ogg_stream_pageout (&te->os, &og)) {
       outbuf = gst_buffer_new ();
       GST_BUFFER_DATA (outbuf) = og.header;
       GST_BUFFER_SIZE (outbuf) = og.header_len;
       GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_DONTFREE);
-      gst_pad_push (te->srcpad, outbuf);
+      gst_pad_push (te->srcpad, GST_DATA (outbuf));
       outbuf = gst_buffer_new ();
       GST_BUFFER_DATA (outbuf) = og.body;
       GST_BUFFER_SIZE (outbuf) = og.body_len;
       GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_DONTFREE);
-      gst_pad_push (te->srcpad, outbuf);
+      gst_pad_push (te->srcpad, GST_DATA (outbuf));
     }
   }
   return (TARKIN_OK);
@@ -206,7 +254,7 @@ TarkinError packet_out (void *stream, ogg_packet *op)
 
 
 static void
-gst_tarkinenc_setup (TarkinEnc *tarkinenc)
+gst_tarkinenc_setup (TarkinEnc * tarkinenc)
 {
   gint i;
   GstBuffer *outbuf;
@@ -216,20 +264,20 @@ gst_tarkinenc_setup (TarkinEnc *tarkinenc)
 
   tarkinenc->ti.inter.numerator = 1;
   tarkinenc->ti.inter.denominator = 1;
-  
+
   tarkin_comment_init (&tarkinenc->tc);
   tarkin_comment_add_tag (&tarkinenc->tc, "TITLE", "GStreamer produced file");
   tarkin_comment_add_tag (&tarkinenc->tc, "ARTIST", "C coders ;)");
 
   tarkinenc->tarkin_stream = tarkin_stream_new ();
-  tarkin_analysis_init (tarkinenc->tarkin_stream, 
-		        &tarkinenc->ti, free_frame, packet_out, (void*)tarkinenc);
-  tarkin_analysis_add_layer(tarkinenc->tarkin_stream, &tarkinenc->layer[0]);
+  tarkin_analysis_init (tarkinenc->tarkin_stream,
+      &tarkinenc->ti, free_frame, packet_out, (void *) tarkinenc);
+  tarkin_analysis_add_layer (tarkinenc->tarkin_stream, &tarkinenc->layer[0]);
 
-  tarkin_analysis_headerout (tarkinenc->tarkin_stream, &tarkinenc->tc, 
-		  tarkinenc->op, &tarkinenc->op[1], &tarkinenc->op[2]);
-  for(i = 0; i < 3; i++){
-    ogg_stream_packetin(&tarkinenc->os, &tarkinenc->op[i]);
+  tarkin_analysis_headerout (tarkinenc->tarkin_stream, &tarkinenc->tc,
+      tarkinenc->op, &tarkinenc->op[1], &tarkinenc->op[2]);
+  for (i = 0; i < 3; i++) {
+    ogg_stream_packetin (&tarkinenc->os, &tarkinenc->op[i]);
   }
 
   ogg_stream_flush (&tarkinenc->os, &tarkinenc->og);
@@ -240,20 +288,21 @@ gst_tarkinenc_setup (TarkinEnc *tarkinenc)
   GST_BUFFER_DATA (outbuf) = tarkinenc->og.header;
   GST_BUFFER_SIZE (outbuf) = tarkinenc->og.header_len;
   GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_DONTFREE);
-  gst_pad_push (tarkinenc->srcpad, outbuf);
+  gst_pad_push (tarkinenc->srcpad, GST_DATA (outbuf));
 
   outbuf = gst_buffer_new ();
   GST_BUFFER_DATA (outbuf) = tarkinenc->og.body;
   GST_BUFFER_SIZE (outbuf) = tarkinenc->og.body_len;
   GST_BUFFER_FLAG_SET (outbuf, GST_BUFFER_DONTFREE);
-  gst_pad_push (tarkinenc->srcpad, outbuf);
+  gst_pad_push (tarkinenc->srcpad, GST_DATA (outbuf));
 
   tarkinenc->setup = TRUE;
 }
 
 static void
-gst_tarkinenc_chain (GstPad *pad, GstBuffer *buf)
+gst_tarkinenc_chain (GstPad * pad, GstData * _data)
 {
+  GstBuffer *buf = GST_BUFFER (_data);
   TarkinEnc *tarkinenc;
 
   g_return_if_fail (pad != NULL);
@@ -263,7 +312,8 @@ gst_tarkinenc_chain (GstPad *pad, GstBuffer *buf)
   tarkinenc = GST_TARKINENC (gst_pad_get_parent (pad));
 
   if (!tarkinenc->setup) {
-    gst_element_error (GST_ELEMENT (tarkinenc), "encoder not initialized (input is not audio?)");
+    GST_ELEMENT_ERROR (tarkinenc, CORE, NEGOTIATION, (NULL),
+        ("encoder not initialized (input is not tarkin?)"));
     if (GST_IS_BUFFER (buf))
       gst_buffer_unref (buf);
     else
@@ -274,19 +324,18 @@ gst_tarkinenc_chain (GstPad *pad, GstBuffer *buf)
   if (GST_IS_EVENT (buf)) {
     switch (GST_EVENT_TYPE (buf)) {
       case GST_EVENT_EOS:
-        tarkin_analysis_framein (tarkinenc->tarkin_stream, NULL, 0, NULL); /* EOS */
+        tarkin_analysis_framein (tarkinenc->tarkin_stream, NULL, 0, NULL);      /* EOS */
         tarkin_comment_clear (&tarkinenc->tc);
         tarkin_stream_destroy (tarkinenc->tarkin_stream);
       default:
-	gst_pad_event_default (pad, GST_EVENT (buf));
-	break;
+        gst_pad_event_default (pad, GST_EVENT (buf));
+        break;
     }
-  }
-  else {
+  } else {
     gchar *data;
     gulong size;
     TarkinTime date;
-  
+
     /* data to encode */
     data = GST_BUFFER_DATA (buf);
     size = GST_BUFFER_SIZE (buf);
@@ -301,7 +350,8 @@ gst_tarkinenc_chain (GstPad *pad, GstBuffer *buf)
 }
 
 static void
-gst_tarkinenc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+gst_tarkinenc_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   TarkinEnc *tarkinenc;
 
@@ -326,8 +376,8 @@ gst_tarkinenc_get_property (GObject *object, guint prop_id, GValue *value, GPara
 }
 
 static void
-gst_tarkinenc_set_property (GObject *object, guint prop_id, const GValue *value,
-			    GParamSpec *pspec)
+gst_tarkinenc_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
 {
   TarkinEnc *tarkinenc;
 
@@ -346,9 +396,8 @@ gst_tarkinenc_set_property (GObject *object, guint prop_id, const GValue *value,
 
       s_moments = g_value_get_int (value);
       if (s_moments != 1 || s_moments != 2 || s_moments != 4) {
-	g_warning ("tarkinenc: s_moments must be 1, 2 or 4");
-      }
-      else {
+        g_warning ("tarkinenc: s_moments must be 1, 2 or 4");
+      } else {
         tarkinenc->s_moments = s_moments;
       }
       break;
@@ -359,9 +408,8 @@ gst_tarkinenc_set_property (GObject *object, guint prop_id, const GValue *value,
 
       a_moments = g_value_get_int (value);
       if (a_moments != 1 || a_moments != 2 || a_moments != 4) {
-	g_warning ("tarkinenc: a_moments must be 1, 2 or 4");
-      }
-      else {
+        g_warning ("tarkinenc: a_moments must be 1, 2 or 4");
+      } else {
         tarkinenc->a_moments = a_moments;
       }
       break;

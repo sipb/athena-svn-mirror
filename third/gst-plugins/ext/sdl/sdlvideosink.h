@@ -17,18 +17,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 #ifndef __GST_SDLVIDEOSINK_H__
 #define __GST_SDLVIDEOSINK_H__
 
-#include <gst/gst.h>
+#include <gst/video/videosink.h>
 
 #include <SDL.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
+G_BEGIN_DECLS
 
 #define GST_TYPE_SDLVIDEOSINK \
   (gst_sdlvideosink_get_type())
@@ -51,41 +47,28 @@ typedef struct _GstSDLVideoSink GstSDLVideoSink;
 typedef struct _GstSDLVideoSinkClass GstSDLVideoSinkClass;
 
 struct _GstSDLVideoSink {
-  GstElement element;
+  GstVideoSink videosink;
 
-  GstPad *sinkpad;
+  guint32 format;
+  gint width, height;   /* the size of the incoming YUV stream */
+  unsigned long xwindow_id;
 
-  gulong format;
-  gint window_width, window_height; /* the size of the SDL window */
-  gint image_width, image_height;   /* the size of the incoming YUV stream */
-  gint window_id;
+  gboolean init;
 
-  gint frames_displayed;
-  guint64 frame_time;
-
-  GstClock *clock;
-
-  GstCaps *capslist;
-
-  unsigned char *yuv[3];
   SDL_Surface *screen;
-  SDL_Overlay *yuv_overlay;
+  SDL_Overlay *overlay;
   SDL_Rect rect;
+
+  GMutex *lock;
 };
 
 struct _GstSDLVideoSinkClass {
-  GstElementClass parent_class;
+  GstVideoSinkClass parent_class;
 
-  /* signals */
-  void (*frame_displayed) (GstElement *element);
-  void (*have_size) 	  (GstElement *element, guint width, guint height);
 };
 
 GType gst_sdlsink_get_type(void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
+G_END_DECLS
 
 #endif /* __GST_SDLVIDEOSINK_H__ */

@@ -3,6 +3,9 @@
    <rainer@johanni.de>
 */
 
+#ifndef __VIDEODEV_MJPEG_H__
+#define __VIDEODEV_MJPEG_H__
+
 /* This is identical with the mgavideo internal params struct, 
    please tell me if you change this struct here ! <gz@lysator.liu.se) */
 struct mjpeg_params
@@ -62,7 +65,7 @@ struct mjpeg_params
    unsigned long jpeg_markers;    /* Which markers should go into the JPEG output.
                                      Unless you exactly know what you do, leave them untouched.
                                      Inluding less markers will make the resulting code
-                                     smaller, but there will be fewer aplications
+                                     smaller, but there will be fewer applications
                                      which can read it.
                                      The presence of the APP and COM marker is
                                      influenced by APP0_len and COM_len ONLY! */
@@ -116,3 +119,5 @@ Private IOCTL to set up for displaying MJPEG
 #define MJPIOC_QBUF_PLAY      _IOW ('v', BASE_VIDIOCPRIVATE+4,  int)
 #define MJPIOC_SYNC           _IOR ('v', BASE_VIDIOCPRIVATE+5,  struct mjpeg_sync)
 #define MJPIOC_G_STATUS       _IOWR('v', BASE_VIDIOCPRIVATE+6,  struct mjpeg_status)
+
+#endif /* __VIDEODEV_MJPEG_H__ */

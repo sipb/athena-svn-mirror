@@ -1,4 +1,4 @@
-dnl as-auto-alt.m4 0.0.1
+dnl as-auto-alt.m4 0.0.2
 dnl autostars m4 macro for supplying alternate autotools versions to configure
 dnl thomas@apestaart.org
 dnl
@@ -6,7 +6,7 @@ dnl AS_AUTOTOOLS_ALTERNATE()
 dnl
 dnl supplies --with arguments for autoconf, autoheader, automake, aclocal
 
-AC_DEFUN(AS_AUTOTOOLS_ALTERNATE,
+AC_DEFUN([AS_AUTOTOOLS_ALTERNATE],
 [
   dnl allow for different autoconf version
   AC_ARG_WITH(autoconf,

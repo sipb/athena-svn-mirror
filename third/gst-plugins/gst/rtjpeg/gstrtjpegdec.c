@@ -18,39 +18,43 @@
  */
 
 
-#include <gstrtjpegdec.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#include "gstrtjpegdec.h"
 
 
 
 /* elementfactory information */
 GstElementDetails gst_rtjpegdec_details = {
   "RTjpeg decoder",
-  "Codec/Video/Decoder",
-  "LGPL",
+  "Codec/Decoder/Video",
   "Decodes video in RTjpeg format",
-  VERSION,
-  "Erik Walthinsen <omega@cse.ogi.edu>",
-  "(C) 1999",
+  "Erik Walthinsen <omega@cse.ogi.edu>"
 };
 
 /* GstRTJpegDec signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
-  ARG_QUALITY,
+  ARG_QUALITY
 };
 
 
-static void	gst_rtjpegdec_class_init	(GstRTJpegDecClass *klass);
-static void	gst_rtjpegdec_init		(GstRTJpegDec *rtjpegdec);
+static void gst_rtjpegdec_class_init (GstRTJpegDecClass * klass);
+static void gst_rtjpegdec_base_init (GstRTJpegDecClass * klass);
+static void gst_rtjpegdec_init (GstRTJpegDec * rtjpegdec);
 
-static void	gst_rtjpegdec_chain		(GstPad *pad, GstBuffer *buf);
+static void gst_rtjpegdec_chain (GstPad * pad, GstData * _data);
 
 static GstElementClass *parent_class = NULL;
+
 /*static guint gst_rtjpegdec_signals[LAST_SIGNAL] = { 0 }; */
 
 GType
@@ -60,43 +64,56 @@ gst_rtjpegdec_get_type (void)
 
   if (!rtjpegdec_type) {
     static const GTypeInfo rtjpegdec_info = {
-      sizeof(GstRTJpegDecClass),      NULL,
+      sizeof (GstRTJpegDecClass),
+      (GBaseInitFunc) gst_rtjpegdec_base_init,
       NULL,
-      (GClassInitFunc)gst_rtjpegdec_class_init,
+      (GClassInitFunc) gst_rtjpegdec_class_init,
       NULL,
       NULL,
-      sizeof(GstRTJpegDec),
+      sizeof (GstRTJpegDec),
       0,
-      (GInstanceInitFunc)gst_rtjpegdec_init,
+      (GInstanceInitFunc) gst_rtjpegdec_init,
     };
-    rtjpegdec_type = g_type_register_static(GST_TYPE_ELEMENT, "GstRTJpegDec", &rtjpegdec_info, 0);
+
+    rtjpegdec_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstRTJpegDec",
+        &rtjpegdec_info, 0);
   }
   return rtjpegdec_type;
 }
 
 static void
-gst_rtjpegdec_class_init (GstRTJpegDecClass *klass)
+gst_rtjpegdec_base_init (GstRTJpegDecClass * klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_set_details (element_class, &gst_rtjpegdec_details);
+}
+
+static void
+gst_rtjpegdec_class_init (GstRTJpegDecClass * klass)
 {
   GstElementClass *gstelement_class;
 
-  gstelement_class = (GstElementClass*)klass;
+  gstelement_class = (GstElementClass *) klass;
 
-  parent_class = g_type_class_ref(GST_TYPE_ELEMENT);
+  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 }
 
 static void
-gst_rtjpegdec_init (GstRTJpegDec *rtjpegdec)
+gst_rtjpegdec_init (GstRTJpegDec * rtjpegdec)
 {
-  rtjpegdec->sinkpad = gst_pad_new("sink",GST_PAD_SINK);
-  gst_element_add_pad(GST_ELEMENT(rtjpegdec),rtjpegdec->sinkpad);
-  gst_pad_set_chain_function(rtjpegdec->sinkpad,gst_rtjpegdec_chain);
-  rtjpegdec->srcpad = gst_pad_new("src",GST_PAD_SRC);
-  gst_element_add_pad(GST_ELEMENT(rtjpegdec),rtjpegdec->srcpad);
+  rtjpegdec->sinkpad = gst_pad_new ("sink", GST_PAD_SINK);
+  gst_element_add_pad (GST_ELEMENT (rtjpegdec), rtjpegdec->sinkpad);
+  gst_pad_set_chain_function (rtjpegdec->sinkpad, gst_rtjpegdec_chain);
+  rtjpegdec->srcpad = gst_pad_new ("src", GST_PAD_SRC);
+  gst_element_add_pad (GST_ELEMENT (rtjpegdec), rtjpegdec->srcpad);
 }
 
 static void
-gst_rtjpegdec_chain (GstPad *pad, GstBuffer *buf)
+gst_rtjpegdec_chain (GstPad * pad, GstData * _data)
 {
+  GstBuffer *buf = GST_BUFFER (_data);
   GstRTJpegDec *rtjpegdec;
   guchar *data;
   gulong size;
@@ -106,10 +123,10 @@ gst_rtjpegdec_chain (GstPad *pad, GstBuffer *buf)
   g_return_if_fail (buf != NULL);
 
   rtjpegdec = GST_RTJPEGDEC (GST_OBJECT_PARENT (pad));
-  data = GST_BUFFER_DATA(buf);
-  size = GST_BUFFER_SIZE(buf);
+  data = GST_BUFFER_DATA (buf);
+  size = GST_BUFFER_SIZE (buf);
 
-  gst_info("would be encoding frame here\n");
+  g_warning ("would be encoding frame here\n");
 
-  gst_pad_push(rtjpegdec->srcpad,buf);
+  gst_pad_push (rtjpegdec->srcpad, GST_DATA (buf));
 }

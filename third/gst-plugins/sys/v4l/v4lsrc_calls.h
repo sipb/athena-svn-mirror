@@ -1,4 +1,7 @@
-/* G-Streamer BT8x8/V4L frame grabber plugin
+/* GStreamer
+ *
+ * v4lsrc_calls.h: functions for V4L video source
+ *
  * Copyright (C) 2001-2002 Ronald Bultje <rbultje@ronald.bitfreak.net>
  *
  * This library is free software; you can redistribute it and/or
@@ -28,9 +31,6 @@ extern "C" {
 #endif /* __cplusplus */
 
 
-extern char *palette_name[];
-
-
 /* frame grabbing/capture (palette = VIDEO_PALETTE_* - see videodev.h) */
 gboolean gst_v4lsrc_set_capture    (GstV4lSrc *v4lsrc, gint width, gint height, gint palette);
 gboolean gst_v4lsrc_capture_init   (GstV4lSrc *v4lsrc);
@@ -42,7 +42,7 @@ gboolean gst_v4lsrc_capture_stop   (GstV4lSrc *v4lsrc);
 gboolean gst_v4lsrc_capture_deinit (GstV4lSrc *v4lsrc);
 
 /* "the ugliest hack ever, now available at your local mirror" */
-gboolean gst_v4lsrc_try_palette    (GstV4lSrc *v4lsrc, gint palette);
+gboolean gst_v4lsrc_try_capture    (GstV4lSrc *v4lsrc, gint width, gint height, gint palette);
 
 
 #ifdef __cplusplus

@@ -23,7 +23,6 @@
 #define __GST_VOLUME_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 /* #include <gst/meta/audioraw.h> */
 
@@ -60,9 +59,10 @@ struct _GstVolume {
   GstDParamManager *dpman;
 
   gboolean mute;
-  gint   volume_i, real_vol_i;
-  gfloat volume_f, real_vol_f;
+  gint   volume_i, real_vol_i; /* the _i(nt) values get synchronized with the */
+  gfloat volume_f, real_vol_f; /* _f(loat) values on each update */
   
+  GList *tracklist;
 };
 
 struct _GstVolumeClass {

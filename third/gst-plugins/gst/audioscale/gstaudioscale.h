@@ -22,15 +22,12 @@
 #define __AUDIOSCALE_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 #include <gst/resample/resample.h>
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 
 #define GST_TYPE_AUDIOSCALE \
@@ -59,15 +56,16 @@ struct _Audioscale {
   GstPad *sinkpad,*srcpad;
 
   /* audio state */
-  gint format;
-  gint channels;
-  gint frequency;
-  gint targetfrequency;
-  gint64 offset;
+  gboolean passthru;
+  gint64 gst_resample_offset;
 
-  resample_t *resample;
-
-  GstBuffer *outbuf;
+  gint64* offsets;
+  gboolean increase; /* is the rate change an increase */
+  gint num_iterations; /* number of iterations through gst_audioscale/(increase|decrease)_rate */
+  
+  gst_resample_t gst_resample_template;
+  gst_resample_t* gst_resample;
+  GstBuffer* outbuf;
 };
 
 struct _AudioscaleClass {
@@ -77,9 +75,7 @@ struct _AudioscaleClass {
 GType gst_audioscale_get_type(void);
 
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 
 #endif /* __AUDIOSCALE_H__ */

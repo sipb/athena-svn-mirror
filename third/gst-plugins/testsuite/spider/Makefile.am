@@ -1,8 +1,7 @@
-testprogs = spider1 spider2 spider3
 
-TESTS = $(testprogs)
+TESTS = 
 
-check_PROGRAMS = $(testprogs)
+check_PROGRAMS = spider1 spider2 spider3
 
 # we have nothing but apps here, we can do this safely
 LIBS = $(GST_LIBS)

@@ -1,4 +1,4 @@
-AC_DEFUN(GST_DOC, [
+AC_DEFUN([GST_DOC], [
 AC_ARG_WITH(html-dir, AC_HELP_STRING([--with-html-dir=PATH], [path to installed docs]))
 
 if test "x$with_html_dir" = "x" ; then
@@ -11,13 +11,13 @@ AC_SUBST(HTML_DIR)
 
 dnl check for gtk-doc
 AC_CHECK_PROG(HAVE_GTK_DOC, gtkdoc-scangobj, true, false)
-gtk_doc_min_version=0.7
+gtk_doc_min_version=1.0
 if $HAVE_GTK_DOC ; then
     gtk_doc_version=`gtkdoc-mkdb --version`
     AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
     if perl -w <<EOF
-      (\$min_version_major, \$min_version_minor ) = "$gtk_doc_min_version" =~ /^(\d)+\.(\d+)$/;
-      (\$gtk_doc_version_major, \$gtk_doc_version_minor ) = "$gtk_doc_version" =~ /^(\d)+\.(\d+)$/;
+      (\$min_version_major, \$min_version_minor ) = "$gtk_doc_min_version" =~ /^(\d+)\.(\d+)$/;
+      (\$gtk_doc_version_major, \$gtk_doc_version_minor ) = "$gtk_doc_version" =~ /^(\d+)\.(\d+)$/;
       exit (("$gtk_doc_version" =~ /^[[0-9]]+\.[[0-9]]+$/) &&
             ((\$gtk_doc_version_major > \$min_version_major) ||
 	     (\$gtk_doc_version_major == \$min_version_major) &&
@@ -27,34 +27,52 @@ EOF
       AC_MSG_RESULT(yes)
    else
       AC_MSG_RESULT(no)
-      AC_MSG_ERROR([gtk-doc version is too low, need $gtk_doc_min_version, please disable doc building])
       HAVE_GTK_DOC=false
    fi
 fi
+
 # don't you love undocumented command line options?
 GTK_DOC_SCANOBJ="gtkdoc-scangobj --nogtkinit"
 AC_SUBST(HAVE_GTK_DOC)
 AC_SUBST(GTK_DOC_SCANOBJ)
 
 dnl check for docbook tools
-AC_CHECK_PROG(HAVE_XSLTPROC, xsltproc, true, false)
-AC_CHECK_PROG(HAVE_PDFTOPS, pdftops, true, false)
-dnl this does not yet work properly, at least on debian -- wingo
-HAVE_PDFXMLTEX=false
+AC_CHECK_PROG(HAVE_DOCBOOK2PS, docbook2ps, true, false)
+AC_CHECK_PROG(HAVE_DOCBOOK2HTML, docbook2html, true, false)
+AC_CHECK_PROG(HAVE_JADETEX, jadetex, true, false)
+AC_CHECK_PROG(HAVE_PS2PDF, ps2pdf, true, false)
 
-dnl check if net access for xsltproc is enabled
-AC_SUBST(XSLTPROC_OPTIONS)
-AC_ARG_ENABLE(xsltproc-net,
-AC_HELP_STRING([--disable-xsltproc-net],[pass --nonet to xsltproc]),
-[case "${enableval}" in
-  yes) XSLTPROC_OPTIONS="" ;;
-  no)  XSLTPROC_OPTIONS="--nonet" ;;
-  *) AC_MSG_ERROR(bad value ${enableval} for --disable-xsltproc-net) ;;
-esac],
-[XSLTPROC_OPTIONS=""]) dnl Default value
+# -V option appeared in 0.6.10
+docbook2html_min_version=0.6.10
+if $HAVE_DOCBOOK2HTML ; then
+    docbook2html_version=`docbook2html --version`
+    AC_MSG_CHECKING([docbook2html version ($docbook2html_version) >= $docbook2html_min_version])
+    if perl -w <<EOF
+      (\$min_version_major, \$min_version_minor, \$min_version_micro ) = "$docbook2html_min_version" =~ /(\d+)\.(\d+)\.(\d+)/;
+      (\$docbook2html_version_major, \$docbook2html_version_minor, \$docbook2html_version_micro ) = "$docbook2html_version" =~ /(\d+)\.(\d+)\.(\d+)/;
+      exit (((\$docbook2html_version_major > \$min_version_major) ||
+	     ((\$docbook2html_version_major == \$min_version_major) &&
+	      (\$docbook2html_version_minor >= \$min_version_minor)) ||
+	     ((\$docbook2html_version_major == \$min_version_major) &&
+	      (\$docbook2html_version_minor >= \$min_version_minor) &&
+	      (\$docbook2html_version_micro >= \$min_version_micro)))
+	     ? 0 : 1);
+EOF
+   then
+      AC_MSG_RESULT(yes)
+   else
+      AC_MSG_RESULT(no)
+      HAVE_DOCBOOK2HTML=false
+   fi
+fi
 
+dnl check if we can process docbook stuff
+AS_DOCBOOK(HAVE_DOCBOOK=true, HAVE_DOCBOOK=false)
 
-dnl check for image conversion tool
+dnl check for extra tools
+AC_CHECK_PROG(HAVE_DVIPS, dvips, true, false)
+
+dnl check for image conversion tools
 AC_CHECK_PROG(HAVE_FIG2DEV, fig2dev, true, false)
 if test "x$HAVE_FIG2DEV" = "xfalse" ; then
   AC_MSG_WARN([Did not find fig2dev (from xfig), images will not be generated.])
@@ -62,6 +80,13 @@ fi
 
 dnl The following is a hack: if fig2dev doesn't display an error message
 dnl for the desired type, we assume it supports it.
+HAVE_FIG2DEV_EPS=false
+if test "x$HAVE_FIG2DEV" = "xtrue" ; then
+  fig2dev_quiet=`fig2dev -L pdf </dev/null 2>&1 >/dev/null`
+  if test "x$fig2dev_quiet" = "x" ; then
+    HAVE_FIG2DEV_EPS=true
+  fi
+fi
 HAVE_FIG2DEV_PNG=false
 if test "x$HAVE_FIG2DEV" = "xtrue" ; then
   fig2dev_quiet=`fig2dev -L png </dev/null 2>&1 >/dev/null`
@@ -77,23 +102,64 @@ if test "x$HAVE_FIG2DEV" = "xtrue" ; then
   fi
 fi
 
+AC_CHECK_PROG(HAVE_PNGTOPNM, pngtopnm, true, false)
+AC_CHECK_PROG(HAVE_PNMTOPS,  pnmtops,  true, false)
+AC_CHECK_PROG(HAVE_EPSTOPDF, epstopdf, true, false)
+
+dnl check if we can generate HTML
+if test "x$HAVE_DOCBOOK2HTML" = "xtrue" && \
+   test "x$HAVE_DOCBOOK" = "xtrue" && \
+   test "x$HAVE_FIG2DEV_PNG" = "xtrue"; then
+  DOC_HTML=true
+  AC_MSG_NOTICE(Will output HTML documentation)
+else
+  DOC_HTML=false
+  AC_MSG_NOTICE(Will not output HTML documentation)
+fi
+
+dnl check if we can generate PS
+if test "x$HAVE_DOCBOOK2PS" = "xtrue" && \
+   test "x$HAVE_DOCBOOK" = "xtrue" && \
+   test "x$HAVE_JADETEX" = "xtrue" && \
+   test "x$HAVE_FIG2DEV_EPS" = "xtrue" && \
+   test "x$HAVE_DVIPS" = "xtrue" && \
+   test "x$HAVE_PNGTOPNM" = "xtrue" && \
+   test "x$HAVE_PNMTOPS" = "xtrue"; then
+  DOC_PS=true
+  AC_MSG_NOTICE(Will output PS documentation)
+else
+  DOC_PS=false
+  AC_MSG_NOTICE(Will not output PS documentation)
+fi
+
+dnl check if we can generate PDF - using only ps2pdf
+if test "x$DOC_PS" = "xtrue" && \
+   test "x$HAVE_DOCBOOK" = "xtrue" && \
+   test "x$HAVE_PS2PDF" = "xtrue"; then
+  DOC_PDF=true
+  AC_MSG_NOTICE(Will output PDF documentation)
+else
+  DOC_PDF=false
+  AC_MSG_NOTICE(Will not output PDF documentation)
+fi
+
 AS_PATH_PYTHON(2.1)
 AC_SUBST(PYTHON)
 
 AC_ARG_ENABLE(docs-build,
-AC_HELP_STRING([--enable-docs-build],[enable building of documentation]),
+AC_HELP_STRING([--disable-docs-build],[disable building of documentation]),
 [case "${enableval}" in
   yes)
-    if test "x$HAVE_GTK_DOC" = "xtrue" ; then
+    if test "x$HAVE_GTK_DOC" = "xtrue" && \
+       test "x$HAVE_DOCBOOK" = "xtrue"; then
       BUILD_DOCS=yes
     else
-      AC_MSG_ERROR([you don't have gtk-doc, so don't use --enable-docs-build])
       BUILD_DOCS=no
     fi ;;
   no)  BUILD_DOCS=no ;;
-  *) AC_MSG_ERROR(bad value ${enableval} for --enable-docs-build) ;;
+  *) AC_MSG_ERROR(bad value ${enableval} for --disable-docs-build) ;;
 esac],
-[BUILD_DOCS=no]) dnl Default value
+[BUILD_DOCS=yes]) dnl Default value
 
 dnl AC_ARG_ENABLE(plugin-docs,
 dnl [  --enable-plugin-docs         enable the building of plugin documentation
@@ -103,17 +169,15 @@ dnl   yes) BUILD_PLUGIN_DOCS=yes ;;
 dnl   no)  BUILD_PLUGIN_DOCS=no ;;
 dnl   *) AC_MSG_ERROR(bad value ${enableval} for --enable-plugin-docs) ;;
 dnl esac], 
-dnl [BUILD_PLUGIN_DOCS=no]) dnl Default value
+dnl [BUILD_PLUGIN_DOCS=yes]) dnl Default value
 BUILD_PLUGIN_DOCS=no
 
 AM_CONDITIONAL(HAVE_GTK_DOC,        $HAVE_GTK_DOC)
+AM_CONDITIONAL(HAVE_DOCBOOK,        $HAVE_DOCBOOK)
 AM_CONDITIONAL(BUILD_DOCS,          test "x$BUILD_DOCS" = "xyes")
 AM_CONDITIONAL(BUILD_PLUGIN_DOCS,   test "x$BUILD_PLUGIN_DOCS" = "xyes")
-AM_CONDITIONAL(HAVE_PDFXMLTEX,      $HAVE_PDFXMLTEX)
-AM_CONDITIONAL(HAVE_PDFTOPS,        $HAVE_PDFTOPS)
-AM_CONDITIONAL(HAVE_XSLTPROC,       $HAVE_XSLTPROC)
-AM_CONDITIONAL(HAVE_FIG2DEV_PNG,    $HAVE_FIG2DEV_PNG)
-AM_CONDITIONAL(HAVE_FIG2DEV_PDF,    $HAVE_FIG2DEV_PDF)
-
+AM_CONDITIONAL(DOC_HTML,            $DOC_HTML)
+AM_CONDITIONAL(DOC_PDF,             $DOC_PDF)
+AM_CONDITIONAL(DOC_PS,              $DOC_PS)
 ])
 

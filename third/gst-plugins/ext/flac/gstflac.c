@@ -17,132 +17,43 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "gstflacenc.h"
 #include "gstflacdec.h"
+#include "gstflactag.h"
 
 #include "flac_compat.h"
 
-extern GstElementDetails flacenc_details;
-extern GstElementDetails flacdec_details;
-
-static GstCaps* 	flac_type_find 	(GstBuffer *buf, gpointer private);
-
-GstPadTemplate *gst_flacdec_src_template, *gst_flacdec_sink_template; 
-GstPadTemplate *gst_flacenc_src_template, *gst_flacenc_sink_template;
-
-static GstCaps*
-flac_caps_factory (void)
-{
-  return
-   gst_caps_new (
-  	"flac_flac",
-  	"application/x-flac",
-  	NULL);
-}
-
-static GstCaps*
-raw_caps_factory (void)
-{
-  return
-   gst_caps_new (
-  	"flac_raw",
-  	"audio/raw",
-	gst_props_new (
-  	  "format",   		GST_PROPS_STRING ("int"),
-    	    "law",   		GST_PROPS_INT (0),
-    	    "endianness", 	GST_PROPS_INT (G_BYTE_ORDER),
-    	    "signed", 		GST_PROPS_BOOLEAN (TRUE),
-    	    "width", 		GST_PROPS_INT (16),
-    	    "depth",    	GST_PROPS_INT (16),
-    	    "rate",     	GST_PROPS_INT_RANGE (11025, 48000),
-    	    "channels", 	GST_PROPS_INT_RANGE (1, 2),
-	    NULL));
-}
-
-static GstTypeDefinition flacdefinition = {
-  "flac_application/x-flac",
-  "application/x-flac",
-  ".flac",
-  flac_type_find,
-};
-
-static GstCaps* 
-flac_type_find (GstBuffer *buf, gpointer private) 
-{
-  gulong head = GULONG_FROM_BE (*((gulong *)GST_BUFFER_DATA (buf)));
-
-  if (head  != 0x664C6143)
-    return NULL;
-
-  return gst_caps_new ("flac_type_find", "application/x-flac", NULL);
-}
-
-
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *enc, *dec;
-  GstTypeFactory *type;
-  GstCaps *raw_caps, *flac_caps;
-
-  /* this filter needs the bytestream package */
   if (!gst_library_load ("gstbytestream"))
     return FALSE;
 
-  gst_plugin_set_longname (plugin, "The FLAC Lossless compressor Codec");
+  /* we need the gsttags plugin for metadata querying */
+  if (!gst_plugin_load ("gsttags"))
+    return FALSE;
 
-  /* create an elementfactory for the flacenc element */
-  enc = gst_element_factory_new ("flacenc", GST_TYPE_FLACENC,
-                                &flacenc_details);
-  g_return_val_if_fail (enc != NULL, FALSE);
+  if (!gst_element_register (plugin, "flacenc", GST_RANK_NONE,
+          GST_TYPE_FLACENC))
+    return FALSE;
 
-  raw_caps = raw_caps_factory ();
-  flac_caps = flac_caps_factory ();
+  if (!gst_element_register (plugin, "flacdec", GST_RANK_PRIMARY,
+          GST_TYPE_FLACDEC))
+    return FALSE;
 
-  /* register sink pads */
-  gst_flacenc_sink_template = gst_pad_template_new ("sink", GST_PAD_SINK, 
-		                              GST_PAD_ALWAYS, 
-					      raw_caps, NULL);
-  gst_element_factory_add_pad_template (enc, gst_flacenc_sink_template);
-
-  /* register src pads */
-  gst_flacenc_src_template = gst_pad_template_new ("src", GST_PAD_SRC, 
-		                             GST_PAD_ALWAYS, 
-					     flac_caps, NULL);
-  gst_element_factory_add_pad_template (enc, gst_flacenc_src_template);
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (enc));
-
-  /* create an elementfactory for the flacdec element */
-  dec = gst_element_factory_new("flacdec",GST_TYPE_FLACDEC,
-                               &flacdec_details);
-  g_return_val_if_fail(dec != NULL, FALSE);
-  gst_element_factory_set_rank (dec, GST_ELEMENT_RANK_PRIMARY);
- 
-  /* register sink pads */
-  gst_flacdec_sink_template = gst_pad_template_new ("sink", GST_PAD_SINK, 
-		                              GST_PAD_ALWAYS, 
-					      flac_caps, NULL);
-  gst_element_factory_add_pad_template (dec, gst_flacdec_sink_template);
-
-  /* register src pads */
-  gst_flacdec_src_template = gst_pad_template_new ("src", GST_PAD_SRC, 
-		                             GST_PAD_ALWAYS, 
-					     raw_caps, NULL);
-  gst_element_factory_add_pad_template (dec, gst_flacdec_src_template);
-  
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (dec));
-
-  type = gst_type_factory_new (&flacdefinition);
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (type));
+  if (!gst_element_register (plugin, "flactag", GST_RANK_PRIMARY,
+          gst_flac_tag_get_type ()))
+    return FALSE;
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "flac",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "flac",
+    "The FLAC Lossless compressor Codec",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN)

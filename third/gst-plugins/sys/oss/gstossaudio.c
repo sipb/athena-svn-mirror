@@ -17,31 +17,47 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
+#include "gst/gst-i18n-plugin.h"
+
+#include "gstosselement.h"
 #include "gstosssink.h"
 #include "gstosssrc.h"
-#include "gstossgst.h"
+
+extern gchar *__gst_oss_plugin_dir;
+
+GST_DEBUG_CATEGORY (oss_debug);
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  gboolean ret;
+  if (!gst_library_load ("gstaudio"))
+    return FALSE;
 
-  ret = gst_osssink_factory_init (plugin);
-  g_return_val_if_fail (ret == TRUE, FALSE);
+  if (!gst_element_register (plugin, "ossmixer", GST_RANK_PRIMARY,
+          GST_TYPE_OSSELEMENT) ||
+      !gst_element_register (plugin, "osssrc", GST_RANK_PRIMARY,
+          GST_TYPE_OSSSRC) ||
+      !gst_element_register (plugin, "osssink", GST_RANK_PRIMARY,
+          GST_TYPE_OSSSINK)) {
+    return FALSE;
+  }
 
-  ret = gst_osssrc_factory_init (plugin);
-  g_return_val_if_fail (ret == TRUE, FALSE);
+  GST_DEBUG_CATEGORY_INIT (oss_debug, "oss", 0, "OSS elements");
 
-  ret = gst_ossgst_factory_init (plugin);
-  g_return_val_if_fail (ret == TRUE, FALSE);
+#ifdef ENABLE_NLS
+  setlocale (LC_ALL, "");
+  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+#endif /* ENABLE_NLS */
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "ossaudio",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "ossaudio",
+    "OSS (Open Sound System) support for GStreamer",
+    plugin_init, VERSION, GST_LICENSE, GST_PACKAGE, GST_ORIGIN)

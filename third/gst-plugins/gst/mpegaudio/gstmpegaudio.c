@@ -18,72 +18,59 @@
  */
 
 /*#define DEBUG_ENABLED */
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "gstmpegaudio.h"
 
 /* elementfactory information */
 static GstElementDetails gst_mpegaudio_details = {
   "mpegaudio mp3 encoder",
-  "Codec/Audio/Encoder",
-  "LGPL",
+  "Codec/Encoder/Audio",
   "Uses modified mpegaudio code to encode to mp3 streams",
-  VERSION,
-  "Erik Walthinsen <omega@cse.ogi.edu>\n"
-  "Wim Taymans <wim.taymans@chello.be>",
-  "(C) 1999",
+  "Erik Walthinsen <omega@cse.ogi.edu>\n" "Wim Taymans <wim.taymans@chello.be>"
 };
 
 
 /* MpegAudio signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
   ARG_MODE,
   ARG_LAYER,
   ARG_MODEL,
   ARG_BITRATE,
-  ARG_EMPHASIS,
-  /* FILL ME */
+  ARG_EMPHASIS
+      /* FILL ME */
 };
 
-GST_PAD_TEMPLATE_FACTORY (mpegaudio_sink_templ,
-  "sink",
-  GST_PAD_SINK,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "mpegaudio_sink_caps",
-    "audio/raw",
-      "format",    GST_PROPS_STRING ("int"),
-      "law",         GST_PROPS_INT (0),
-      "endianness",  GST_PROPS_INT (G_BYTE_ORDER),
-      "signed",      GST_PROPS_BOOLEAN (TRUE),
-      "width",       GST_PROPS_INT (16),
-      "depth",       GST_PROPS_INT (16),
-      "rate",        GST_PROPS_LIST (
-      		       GST_PROPS_INT (32000),
-      		       GST_PROPS_INT (44100),
-      		       GST_PROPS_INT (48000)
-		     ),
-      "channels",    GST_PROPS_LIST (
-                       GST_PROPS_INT (1),
-                       GST_PROPS_INT (2)
-		     )
-  )
-)
+static GstStaticPadTemplate mpegaudio_sink_templ =
+GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "endianness = (int) BYTE_ORDER, "
+        "signed = (boolean) true, "
+        "width = (int) 16, "
+        "depth = (int) 16, "
+        "rate = (int) { 32000, 44100, 48000 }, " "channels = (int) [ 1, 2 ]")
+    );
 
-GST_PAD_TEMPLATE_FACTORY (mpegaudio_src_templ,
-  "src",
-  GST_PAD_SRC,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "mpegaudio_src_caps",
-    "audio/x-mp3",
-      "layer",        GST_PROPS_INT_RANGE (1, 2)
-  )
-)
+static GstStaticPadTemplate mpegaudio_src_templ =
+GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/mpeg, "
+        "mpegversion = (int) 1, "
+        "layer = (int) [ 1, 2 ], "
+        "channels = (int) [ 1, 2 ], " "rate = [ 8000, 96000 ]")
+    );
 
 /********** Define useful types for non-programmatic interfaces **********/
 #define GST_TYPE_MPEGAUDIO_MODE (gst_mpegaudio_mode_get_type())
@@ -92,27 +79,33 @@ gst_mpegaudio_mode_get_type (void)
 {
   static GType mpegaudio_mode_type = 0;
   static GEnumValue mpegaudio_modes[] = {
-    { MPG_MD_STEREO, 		"0", "Stereo" },
-    { MPG_MD_JOINT_STEREO, 	"1", "Joint-Stereo" },
-    { MPG_MD_DUAL_CHANNEL, 	"2", "Dual channel" },
-    { MPG_MD_MONO, 		"3", "Mono" },
-    { 0, NULL, NULL },
+    {MPG_MD_STEREO, "0", "Stereo"},
+    {MPG_MD_JOINT_STEREO, "1", "Joint-Stereo"},
+    {MPG_MD_DUAL_CHANNEL, "2", "Dual channel"},
+    {MPG_MD_MONO, "3", "Mono"},
+    {0, NULL, NULL},
   };
+
   if (!mpegaudio_mode_type) {
-    mpegaudio_mode_type = g_enum_register_static ("GstMpegAudioMode", mpegaudio_modes);
+    mpegaudio_mode_type =
+        g_enum_register_static ("GstMpegAudioMode", mpegaudio_modes);
   }
   return mpegaudio_mode_type;
 }
 
-static void	gst_mpegaudio_class_init	(GstMpegAudioClass *klass);
-static void	gst_mpegaudio_init		(GstMpegAudio *mpegaudio);
+static void gst_mpegaudio_class_init (GstMpegAudioClass * klass);
+static void gst_mpegaudio_base_init (GstMpegAudioClass * klass);
+static void gst_mpegaudio_init (GstMpegAudio * mpegaudio);
 
-static void	gst_mpegaudio_chain		(GstPad *pad, GstBuffer *buf);
+static void gst_mpegaudio_chain (GstPad * pad, GstData * _data);
 
-static void 	gst_mpegaudio_get_property 		(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
-static void 	gst_mpegaudio_set_property 		(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
+static void gst_mpegaudio_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
+static void gst_mpegaudio_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
 
 static GstElementClass *parent_class = NULL;
+
 /*static guint gst_mpegaudio_signals[LAST_SIGNAL] = { 0 }; */
 
 GType
@@ -122,46 +115,53 @@ gst_mpegaudio_get_type (void)
 
   if (!mpegaudio_type) {
     static const GTypeInfo mpegaudio_info = {
-      sizeof(GstMpegAudioClass),      NULL,
+      sizeof (GstMpegAudioClass),
+      (GBaseInitFunc) gst_mpegaudio_base_init,
       NULL,
-      (GClassInitFunc)gst_mpegaudio_class_init,
+      (GClassInitFunc) gst_mpegaudio_class_init,
       NULL,
       NULL,
-      sizeof(GstMpegAudio),
+      sizeof (GstMpegAudio),
       0,
-      (GInstanceInitFunc)gst_mpegaudio_init,
+      (GInstanceInitFunc) gst_mpegaudio_init,
     };
-    mpegaudio_type = g_type_register_static(GST_TYPE_ELEMENT, "GstMpegAudio", &mpegaudio_info, 0);
+
+    mpegaudio_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstMpegAudio",
+        &mpegaudio_info, 0);
   }
   return mpegaudio_type;
 }
 
 static void
-gst_mpegaudio_class_init (GstMpegAudioClass *klass)
+gst_mpegaudio_base_init (GstMpegAudioClass * klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&mpegaudio_sink_templ));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&mpegaudio_src_templ));
+  gst_element_class_set_details (element_class, &gst_mpegaudio_details);
+}
+
+static void
+gst_mpegaudio_class_init (GstMpegAudioClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
 
-  gobject_class = (GObjectClass*)klass;
-  gstelement_class = (GstElementClass*)klass;
+  gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
 
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_MODE,
-    g_param_spec_enum("mode","mode","mode",
-                      GST_TYPE_MPEGAUDIO_MODE,0,G_PARAM_READWRITE)); /* CHECKME! */
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_LAYER,
-    g_param_spec_int("layer","layer","layer",
-                     1, 3, 1, G_PARAM_READWRITE));
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_MODEL,
-    g_param_spec_int("model","model","model",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); /* CHECKME */
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_BITRATE,
-    g_param_spec_int("bitrate","bitrate","bitrate",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); /* CHECKME */
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_EMPHASIS,
-    g_param_spec_int("emphasis","emphasis","emphasis",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_MODE, g_param_spec_enum ("mode", "mode", "mode", GST_TYPE_MPEGAUDIO_MODE, 0, G_PARAM_READWRITE));        /* CHECKME! */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_LAYER,
+      g_param_spec_int ("layer", "layer", "layer", 1, 3, 1, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_MODEL, g_param_spec_int ("model", "model", "model", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));  /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_BITRATE, g_param_spec_int ("bitrate", "bitrate", "bitrate", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));  /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_EMPHASIS, g_param_spec_int ("emphasis", "emphasis", "emphasis", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));      /* CHECKME */
 
-  parent_class = g_type_class_ref(GST_TYPE_ELEMENT);
+  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
   gobject_class->set_property = gst_mpegaudio_set_property;
   gobject_class->get_property = gst_mpegaudio_get_property;
@@ -169,18 +169,18 @@ gst_mpegaudio_class_init (GstMpegAudioClass *klass)
 }
 
 static GstPadLinkReturn
-gst_mpegaudio_sinkconnect (GstPad *pad, GstCaps *caps)
+gst_mpegaudio_sinkconnect (GstPad * pad, const GstCaps * caps)
 {
   GstMpegAudio *mpegaudio;
   gint frequency, channels;
+  GstStructure *structure;
 
   mpegaudio = GST_MPEGAUDIO (gst_pad_get_parent (pad));
 
-  if (!GST_CAPS_IS_FIXED (caps))
-    return GST_PAD_LINK_DELAYED;
+  structure = gst_caps_get_structure (caps, 0);
 
-  gst_caps_get_int (caps, "rate", &frequency);
-  gst_caps_get_int (caps, "channels", &channels);
+  gst_structure_get_int (structure, "rate", &frequency);
+  gst_structure_get_int (structure, "channels", &channels);
   mpegaudio->encoder->frequency = frequency;
 
   if (channels == 1)
@@ -188,100 +188,110 @@ gst_mpegaudio_sinkconnect (GstPad *pad, GstCaps *caps)
 
   mpegaudio_sync_parms (mpegaudio->encoder);
 
-  return GST_PAD_LINK_OK;
+  caps = gst_caps_new_simple ("audio/mpeg",
+      "mpegversion", G_TYPE_INT, 1,
+      "layer", G_TYPE_INT, mpegaudio->encoder->info.lay,
+      "channels", G_TYPE_INT, channels, "rate", G_TYPE_INT, frequency, NULL);
+
+  return gst_pad_try_set_caps (mpegaudio->srcpad, caps);
 }
 
 static void
-gst_mpegaudio_init (GstMpegAudio *mpegaudio)
+gst_mpegaudio_init (GstMpegAudio * mpegaudio)
 {
   /* create the sink and src pads */
-  mpegaudio->sinkpad = gst_pad_new_from_template (
-		  GST_PAD_TEMPLATE_GET (mpegaudio_sink_templ), "sink");
+  mpegaudio->sinkpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&mpegaudio_sink_templ), "sink");
   gst_element_add_pad (GST_ELEMENT (mpegaudio), mpegaudio->sinkpad);
   gst_pad_set_chain_function (mpegaudio->sinkpad, gst_mpegaudio_chain);
   gst_pad_set_link_function (mpegaudio->sinkpad, gst_mpegaudio_sinkconnect);
 
-  mpegaudio->srcpad = gst_pad_new_from_template (
-		  GST_PAD_TEMPLATE_GET (mpegaudio_src_templ), "src");
+  mpegaudio->srcpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&mpegaudio_src_templ), "src");
   gst_element_add_pad (GST_ELEMENT (mpegaudio), mpegaudio->srcpad);
 
   /* initialize the mpegaudio encoder state */
-  mpegaudio->encoder = mpegaudio_init_encoder();
+  mpegaudio->encoder = mpegaudio_init_encoder ();
   mpegaudio->partialbuf = NULL;
   mpegaudio->partialsize = 0;
 }
 
 static void
-gst_mpegaudio_chain (GstPad *pad, GstBuffer *buf)
+gst_mpegaudio_chain (GstPad * pad, GstData * _data)
 {
+  GstBuffer *buf = GST_BUFFER (_data);
   GstMpegAudio *mpegaudio;
   guchar *data;
   gulong size;
   GstBuffer *outbuf;
   guint handled, tohandle;
 
-  g_return_if_fail(pad != NULL);
-  g_return_if_fail(GST_IS_PAD(pad));
-  g_return_if_fail(buf != NULL);
+  g_return_if_fail (pad != NULL);
+  g_return_if_fail (GST_IS_PAD (pad));
+  g_return_if_fail (buf != NULL);
 /*  g_return_if_fail(GST_IS_BUFFER(buf)); */
 
   mpegaudio = GST_MPEGAUDIO (gst_pad_get_parent (pad));
 
-  data = (guchar *)GST_BUFFER_DATA(buf);
-  size = GST_BUFFER_SIZE(buf);
+  data = (guchar *) GST_BUFFER_DATA (buf);
+  size = GST_BUFFER_SIZE (buf);
 
-  GST_DEBUG (0,"gst_mpegaudio_chain: got buffer of %ld bytes in '%s'",size,
-          GST_OBJECT_NAME (mpegaudio));
+  GST_DEBUG ("gst_mpegaudio_chain: got buffer of %ld bytes in '%s'", size,
+      GST_OBJECT_NAME (mpegaudio));
 
   handled = 0;
-  tohandle = mpegaudio_get_number_of_input_bytes(mpegaudio->encoder);
+  tohandle = mpegaudio_get_number_of_input_bytes (mpegaudio->encoder);
 
   if (mpegaudio->partialbuf) {
-     mpegaudio->partialbuf = g_realloc(mpegaudio->partialbuf, mpegaudio->partialsize+size);
-     memcpy(mpegaudio->partialbuf+mpegaudio->partialsize, data,size);
+    mpegaudio->partialbuf =
+        g_realloc (mpegaudio->partialbuf, mpegaudio->partialsize + size);
+    memcpy (mpegaudio->partialbuf + mpegaudio->partialsize, data, size);
 
-     data = mpegaudio->partialbuf;
-     size += mpegaudio->partialsize;
+    data = mpegaudio->partialbuf;
+    size += mpegaudio->partialsize;
   }
 
-  GST_DEBUG (0,"need to handle %d bytes", tohandle);
-  while (handled+tohandle < size) {
+  GST_DEBUG ("need to handle %d bytes", tohandle);
+  while (handled + tohandle < size) {
 
-    outbuf = gst_buffer_new();
-    GST_BUFFER_DATA(outbuf) = g_malloc(tohandle);
+    outbuf = gst_buffer_new ();
+    GST_BUFFER_DATA (outbuf) = g_malloc (tohandle);
 
-    GST_DEBUG (0,"about to encode a frame");
-    mpegaudio_encode_frame(mpegaudio->encoder,data, GST_BUFFER_DATA(outbuf), (gulong *)&GST_BUFFER_SIZE(outbuf));
+    GST_DEBUG ("about to encode a frame");
+    mpegaudio_encode_frame (mpegaudio->encoder, data, GST_BUFFER_DATA (outbuf),
+        (gulong *) & GST_BUFFER_SIZE (outbuf));
 
-    GST_DEBUG (0,"mpegaudio: pushing %d bytes", GST_BUFFER_SIZE(outbuf));
-    gst_pad_push(mpegaudio->srcpad,outbuf);
-    GST_DEBUG (0,"mpegaudio: pushed buffer");
+    GST_DEBUG ("mpegaudio: pushing %d bytes", GST_BUFFER_SIZE (outbuf));
+    gst_pad_push (mpegaudio->srcpad, GST_DATA (outbuf));
+    GST_DEBUG ("mpegaudio: pushed buffer");
 
     data += tohandle;
     handled += tohandle;
   }
 
   if (size > handled) {
-    GST_DEBUG (0,"mpegaudio: leftover buffer %ld bytes", size - handled);
+    GST_DEBUG ("mpegaudio: leftover buffer %ld bytes", size - handled);
 
     if (!mpegaudio->partialbuf) {
-      mpegaudio->partialbuf = g_malloc(size-handled);
+      mpegaudio->partialbuf = g_malloc (size - handled);
     }
-    memcpy(mpegaudio->partialbuf, data, size-handled);
-    mpegaudio->partialsize = size-handled;
-  }
-  else {
+    memcpy (mpegaudio->partialbuf, data, size - handled);
+    mpegaudio->partialsize = size - handled;
+  } else {
     if (mpegaudio->partialbuf) {
-      g_free(mpegaudio->partialbuf);
+      g_free (mpegaudio->partialbuf);
       mpegaudio->partialbuf = NULL;
     }
   }
 
-  gst_buffer_unref(buf);
+  gst_buffer_unref (buf);
 }
 
 static void
-gst_mpegaudio_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+gst_mpegaudio_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   GstMpegAudio *mpegaudio;
 
@@ -312,7 +322,8 @@ gst_mpegaudio_get_property (GObject *object, guint prop_id, GValue *value, GPara
 }
 
 static void
-gst_mpegaudio_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+gst_mpegaudio_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec)
 {
   GstMpegAudio *mpegaudio;
 
@@ -343,30 +354,14 @@ gst_mpegaudio_set_property (GObject *object, guint prop_id, const GValue *value,
 }
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-
-  /* this filter needs the putbits package */
-  if (!gst_library_load ("gstputbits"))
-    return FALSE;
-
-  /* create an elementfactory for the mpegaudio element */
-  factory = gst_element_factory_new ("mpegaudio", GST_TYPE_MPEGAUDIO,
-                                     &gst_mpegaudio_details);
-  g_return_val_if_fail(factory != NULL, FALSE);
-
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (mpegaudio_sink_templ));
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (mpegaudio_src_templ));
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-
-  return TRUE;
+  return gst_element_register (plugin, "mpegaudio",
+      GST_RANK_NONE, GST_TYPE_MPEGAUDIO);
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "mpegaudio",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "mpegaudio",
+    "MPEG-1 layer 1/2 audio encoder",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN)

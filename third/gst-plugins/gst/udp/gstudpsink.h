@@ -22,7 +22,6 @@
 #define __GST_UDPSINK_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 #ifdef __cplusplus
@@ -41,6 +40,7 @@ extern "C" {
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <arpa/inet.h>
 #include "gstudp.h"
 
 #define GST_TYPE_UDPSINK \
@@ -71,6 +71,7 @@ struct _GstUDPSink {
 
   int sock;
   struct sockaddr_in theiraddr;
+  struct ip_mreq multi_addr;
 
   gint port;
   Gst_UDP_Control control;

@@ -21,9 +21,54 @@
 #define __GST_V4L2ELEMENT_H__
 
 #include <gst/gst.h>
+#include <gst/xwindowlistener/xwindowlistener.h>
+
+/* Because of some really cool feature in video4linux1, also known as
+ * 'not including sys/types.h and sys/time.h', we had to include it
+ * ourselves. In all their intelligence, these people decided to fix
+ * this in the next version (video4linux2) in such a cool way that it
+ * breaks all compilations of old stuff...
+ * The real problem is actually that linux/time.h doesn't use proper
+ * macro checks before defining types like struct timeval. The proper
+ * fix here is to either fuck the kernel header (which is what we do
+ * by defining _LINUX_TIME_H, an innocent little hack) or by fixing it
+ * upstream, which I'll consider doing later on. If you get compiler
+ * errors here, check your linux/time.h && sys/time.h header setup.
+ */
 #include <sys/types.h>
 #include <linux/types.h>
+#define _LINUX_TIME_H
 #include <linux/videodev2.h>
+
+/*
+ * See bug #135919, the Suse9 (and Mandrake10) videodev2 headers
+ * contain a bug where (for userspace applications) the v4l2_buffer
+ * struct is not declared, so applications have to declare it.
+ * Declaration straightly ripped out from <linux/videodev2.h>.
+ */
+#ifdef GST_V4L2_MISSING_BUFDECL
+struct v4l2_buffer
+{
+	__u32			index;
+	enum v4l2_buf_type      type;
+	__u32			bytesused;
+	__u32			flags;
+	enum v4l2_field		field;
+	struct timeval		timestamp;
+	struct v4l2_timecode	timecode;
+	__u32			sequence;
+
+	/* memory location */
+	enum v4l2_memory        memory;
+	union {
+		__u32           offset;
+		unsigned long   userptr;
+	} m;
+	__u32			length;
+
+	__u32			reserved[2];
+};
+#endif /* GST_V4L2_MISSING_BUFDECL */
 
 
 #define GST_TYPE_V4L2ELEMENT \
@@ -36,32 +81,12 @@
 		(G_TYPE_CHECK_INSTANCE_TYPE((obj), GST_TYPE_V4L2ELEMENT))
 #define GST_IS_V4L2ELEMENT_CLASS(obj) \
 		(G_TYPE_CHECK_CLASS_TYPE((klass), GST_TYPE_V4L2ELEMENT))
+#define GST_V4L2ELEMENT_GET_CLASS(obj) \
+		(G_TYPE_INSTANCE_GET_CLASS ((obj), GST_TYPE_V4L2ELEMENT, GstV4l2ElementClass))
 
 
 typedef	struct _GstV4l2Element		GstV4l2Element;
 typedef	struct _GstV4l2ElementClass	GstV4l2ElementClass;
-
-typedef enum {
-	GST_V4L2_ATTRIBUTE_VALUE_TYPE_INTEGER = V4L2_CTRL_TYPE_INTEGER,
-	GST_V4L2_ATTRIBUTE_VALUE_TYPE_BOOLEAN = V4L2_CTRL_TYPE_BOOLEAN,
-	GST_V4L2_ATTRIBUTE_VALUE_TYPE_MENU    = V4L2_CTRL_TYPE_MENU,
-	GST_V4L2_ATTRIBUTE_VALUE_TYPE_BUTTON  = V4L2_CTRL_TYPE_BUTTON,
-} GstV4l2AttributeValueType;
-
-typedef enum {
-	GST_V4L2_ATTRIBUTE_TYPE_VIDEO,
-	GST_V4L2_ATTRIBUTE_TYPE_AUDIO,
-	GST_V4L2_ATTRIBUTE_TYPE_OTHER,
-} GstV4l2AttributeType;
-
-typedef struct _GstV4l2Attribute {
-	gint index;
-	gchar *name;
-	GstV4l2AttributeType type;
-	GstV4l2AttributeValueType val_type;
-	gint min, max, value;
-	GList *list_items; /* in case of 'list' */
-} GstV4l2Attribute;
 
 struct _GstV4l2Element {
 	GstElement element;
@@ -79,27 +104,34 @@ struct _GstV4l2Element {
 	struct v4l2_capability vcap;
 
 	/* the toys available to us */
-	GList /*v4l2_input*/ *inputs;
-	GList /*v4l2_output*/ *outputs;
-	GList /*v4l2_enumstd*/ *norms;
-	GList /*v4l2_queryctrl*/ *controls;
-	GList /*GList:v4l2_querymenu*/ *menus;
+	GList *channels;
+	GList *norms;
+	GList *colors;
+
+	/* X-overlay */
+	GstXWindowListener *overlay;
+	XID xwindow_id;
+
+	/* properties */
+	gchar *norm;
+	gchar *channel;
+	gulong frequency;
 
 	/* caching values */
-	gint channel;
-	gint output;
-	gint norm;
-	gulong frequency;
+	gchar *display;
 };
 
 struct _GstV4l2ElementClass {
 	GstElementClass parent_class;
 
+	/* probed devices */
+	GList *devices;
+
 	/* signals */
-	void (*open)	(GstElement  *element,
-			 const gchar *device);
-	void (*close)	(GstElement  *element,
-			 const gchar *device);
+	void     (*open)            (GstElement  *element,
+	                             const gchar *device);
+	void     (*close)           (GstElement  *element,
+	                             const gchar *device);
 };
 
 

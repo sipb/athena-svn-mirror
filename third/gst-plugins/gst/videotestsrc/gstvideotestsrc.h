@@ -18,12 +18,9 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
 #ifndef __GST_VIDEOTESTSRC_H__
 #define __GST_VIDEOTESTSRC_H__
 
-
-#include <config.h>
 #include <gst/gst.h>
 
 G_BEGIN_DECLS
@@ -40,11 +37,10 @@ G_BEGIN_DECLS
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_VIDEOTESTSRC))
 
 typedef enum {
-  GST_VIDEOTESTSRC_POINT_SAMPLE,
-  GST_VIDEOTESTSRC_NEAREST,
-  GST_VIDEOTESTSRC_BILINEAR,
-  GST_VIDEOTESTSRC_BICUBIC
-} GstVideoTestSrcMethod;
+  GST_VIDEOTESTSRC_SMPTE,
+  GST_VIDEOTESTSRC_SNOW,
+  GST_VIDEOTESTSRC_BLACK,
+} GstVideotestsrcPattern;
 
 typedef struct _GstVideotestsrc GstVideotestsrc;
 typedef struct _GstVideotestsrcClass GstVideotestsrcClass;
@@ -52,32 +48,39 @@ typedef struct _GstVideotestsrcClass GstVideotestsrcClass;
 struct _GstVideotestsrc {
   GstElement element;
 
-  GstPad *sinkpad,*srcpad;
+  GstPad *sinkpad, *srcpad;
+
+  /* parameters */
+  gboolean sync;
 
   /* video state */
-  guint32 format;
+  char *format_name;
   gint width;
   gint height;
-  gint forced_format;
-  
+  struct fourcc_list_struct *fourcc;
+
   /* private */
-  gint64 timestamp;
-  gint64 interval;
+  gint64 timestamp_offset;		/* base offset */
+  GstClockTime running_time;		/* total running time */
+  gint64 n_frames;			/* total frames sent */
   gint bpp;
-  int rate;
+  gdouble rate;
+  int type;
+  GstClock *clock;
+  gint num_buffers, num_buffers_left;
+  gboolean need_discont;
+  gboolean loop;
+  gint64 segment_start_frame;
+  gint64 segment_end_frame;
 
-  GstBufferPool *pool;
-
-  void (*make_image)(GstVideotestsrc *v, unsigned char *dest, int w, int h);
+  void (*make_image) (GstVideotestsrc *v, unsigned char *dest, int w, int h);
 };
 
 struct _GstVideotestsrcClass {
   GstElementClass parent_class;
 };
 
-static GType gst_videotestsrc_get_type(void);
-
-static void gst_videotestsrc_setup(GstVideotestsrc *);
+GType gst_videotestsrc_get_type (void) G_GNUC_CONST;
 
 G_END_DECLS
 

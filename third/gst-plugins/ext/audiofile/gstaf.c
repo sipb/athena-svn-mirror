@@ -17,24 +17,30 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "gstafsrc.h"
 #include "gstafsink.h"
 #include "gstafparse.h"
 
+gboolean gst_aftypes_plugin_init (GstPlugin * plugin);
+
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  gst_afsink_plugin_init (module, plugin);
-  gst_afsrc_plugin_init (module, plugin);
-  gst_afparse_plugin_init (module, plugin);
+  if (!gst_library_load ("gstbytestream"))
+    return FALSE;
+
+  gst_afsink_plugin_init (plugin);
+  gst_afsrc_plugin_init (plugin);
+  gst_afparse_plugin_init (plugin);
 
   return TRUE;
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "gstaf",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "gstaf",
+    "Audiofile plugin", plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN)

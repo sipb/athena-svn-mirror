@@ -17,28 +17,31 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <string.h>
-#include <gstsmooth.h>
+#include "gstsmooth.h"
+#include <gst/video/video.h>
 
 /* elementfactory information */
 static GstElementDetails smooth_details = {
   "Smooth effect",
-  "Filter/Video",
-  "LGPL",
+  "Filter/Effect/Video",
   "Apply a smooth filter to an image",
-  VERSION,
-  "Wim Taymans <wim.taymans@chello.be>",
-  "(C) 2000",
+  "Wim Taymans <wim.taymans@chello.be>"
 };
 
 
 /* Smooth signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
   ARG_ACTIVE,
   ARG_TOLERANCE,
@@ -46,39 +49,37 @@ enum {
   ARG_LUM_ONLY
 };
 
-GST_PAD_TEMPLATE_FACTORY (smooth_src_factory,
-  "src",
-  GST_PAD_SRC,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-   "smooth_src",
-   "video/raw",
-     "format",   GST_PROPS_FOURCC (GST_STR_FOURCC ("I420"))
-  )
-)
+static GstStaticPadTemplate gst_smooth_src_template =
+GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("I420")
+    )
+    );
 
-GST_PAD_TEMPLATE_FACTORY (smooth_sink_factory,
-  "sink",
-  GST_PAD_SINK,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-   "smooth_src",
-   "video/raw",
-     "format",   GST_PROPS_FOURCC (GST_STR_FOURCC ("I420"))
-  )
-)
+static GstStaticPadTemplate gst_smooth_sink_template =
+GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_YUV ("I420")
+    )
+    );
 
-static void	gst_smooth_class_init	(GstSmoothClass *klass);
-static void	gst_smooth_init		(GstSmooth *smooth);
+static void gst_smooth_class_init (GstSmoothClass * klass);
+static void gst_smooth_base_init (GstSmoothClass * klass);
+static void gst_smooth_init (GstSmooth * smooth);
 
-static void	gst_smooth_chain	(GstPad *pad, GstBuffer *buf);
-static void	smooth_filter		(unsigned char* dest, unsigned char* src,
-					 int width, int height, int tolerance, int filtersize);
+static void gst_smooth_chain (GstPad * pad, GstData * _data);
+static void smooth_filter (unsigned char *dest, unsigned char *src,
+    int width, int height, int tolerance, int filtersize);
 
-static void	gst_smooth_set_property	(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
-static void	gst_smooth_get_property	(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
+static void gst_smooth_set_property (GObject * object, guint prop_id,
+    const GValue * value, GParamSpec * pspec);
+static void gst_smooth_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 
 static GstElementClass *parent_class = NULL;
+
 /*static guint gst_smooth_signals[LAST_SIGNAL] = { 0 }; */
 
 GType
@@ -88,40 +89,49 @@ gst_smooth_get_type (void)
 
   if (!smooth_type) {
     static const GTypeInfo smooth_info = {
-      sizeof(GstSmoothClass),      NULL,
+      sizeof (GstSmoothClass),
+      (GBaseInitFunc) gst_smooth_base_init,
       NULL,
-      (GClassInitFunc)gst_smooth_class_init,
+      (GClassInitFunc) gst_smooth_class_init,
       NULL,
       NULL,
-      sizeof(GstSmooth),
+      sizeof (GstSmooth),
       0,
-      (GInstanceInitFunc)gst_smooth_init,
+      (GInstanceInitFunc) gst_smooth_init,
     };
-    smooth_type = g_type_register_static(GST_TYPE_ELEMENT, "GstSmooth", &smooth_info, 0);
+
+    smooth_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstSmooth", &smooth_info, 0);
   }
   return smooth_type;
 }
 
 static void
-gst_smooth_class_init (GstSmoothClass *klass)
+gst_smooth_base_init (GstSmoothClass * klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_smooth_sink_template));
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_smooth_src_template));
+  gst_element_class_set_details (element_class, &smooth_details);
+}
+
+static void
+gst_smooth_class_init (GstSmoothClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
 
-  gobject_class = (GObjectClass*)klass;
-  gstelement_class = (GstElementClass*)klass;
+  gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
 
-  parent_class = g_type_class_ref(GST_TYPE_ELEMENT);
+  parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_ACTIVE,
-    g_param_spec_boolean("active","active","active",
-                         TRUE,G_PARAM_READWRITE)); /* CHECKME */
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_TOLERANCE,
-    g_param_spec_int("tolerance","tolerance","tolerance",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); /* CHECKME */
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_FILTERSIZE,
-    g_param_spec_int("filtersize","filtersize","filtersize",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_ACTIVE, g_param_spec_boolean ("active", "active", "active", TRUE, G_PARAM_READWRITE));   /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_TOLERANCE, g_param_spec_int ("tolerance", "tolerance", "tolerance", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));  /* CHECKME */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_FILTERSIZE, g_param_spec_int ("filtersize", "filtersize", "filtersize", G_MININT, G_MAXINT, 0, G_PARAM_READWRITE));      /* CHECKME */
 
   gobject_class->set_property = gst_smooth_set_property;
   gobject_class->get_property = gst_smooth_get_property;
@@ -129,32 +139,38 @@ gst_smooth_class_init (GstSmoothClass *klass)
 }
 
 static GstPadLinkReturn
-gst_smooth_sinkconnect (GstPad *pad, GstCaps *caps)
+gst_smooth_link (GstPad * pad, const GstCaps * caps)
 {
   GstSmooth *filter;
+  GstStructure *structure;
+  gboolean ret;
 
   filter = GST_SMOOTH (gst_pad_get_parent (pad));
 
-  if (!GST_CAPS_IS_FIXED (caps))
-    return GST_PAD_LINK_DELAYED;
+  structure = gst_caps_get_structure (caps, 0);
+  ret = gst_structure_get_int (structure, "width", &filter->width);
+  ret &= gst_structure_get_int (structure, "height", &filter->height);
 
-  gst_caps_get_int (caps, "width", &filter->width);
-  gst_caps_get_int (caps, "height", &filter->height);
+  if (!ret)
+    return GST_PAD_LINK_REFUSED;
 
-  return GST_PAD_LINK_OK;
+  return gst_pad_try_set_caps (filter->srcpad, caps);
 }
 
 static void
-gst_smooth_init (GstSmooth *smooth)
+gst_smooth_init (GstSmooth * smooth)
 {
-  smooth->sinkpad = gst_pad_new_from_template (
-                  GST_PAD_TEMPLATE_GET (smooth_sink_factory), "sink");
-  gst_pad_set_link_function (smooth->sinkpad, gst_smooth_sinkconnect);
+  smooth->sinkpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&gst_smooth_sink_template), "sink");
+  gst_pad_set_link_function (smooth->sinkpad, gst_smooth_link);
   gst_pad_set_chain_function (smooth->sinkpad, gst_smooth_chain);
   gst_element_add_pad (GST_ELEMENT (smooth), smooth->sinkpad);
 
-  smooth->srcpad = gst_pad_new_from_template (
-                  GST_PAD_TEMPLATE_GET (smooth_src_factory), "src");
+  smooth->srcpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&gst_smooth_sink_template), "src");
+  gst_pad_set_link_function (smooth->srcpad, gst_smooth_link);
   gst_element_add_pad (GST_ELEMENT (smooth), smooth->srcpad);
 
   smooth->active = TRUE;
@@ -164,56 +180,55 @@ gst_smooth_init (GstSmooth *smooth)
 }
 
 static void
-smooth_filter (unsigned char* dest, unsigned char* src, int width, int height, int tolerance, int filtersize)
+smooth_filter (unsigned char *dest, unsigned char *src, int width, int height,
+    int tolerance, int filtersize)
 {
   int refval, aktval, upperval, lowerval, numvalues, sum;
   int x, y, fx, fy, fy1, fy2, fx1, fx2;
   unsigned char *srcp = src;
 
   fy1 = 0;
-  fy2 = MIN(filtersize+1, height) * width;
+  fy2 = MIN (filtersize + 1, height) * width;
 
-  for(y = 0; y < height; y++)
-  {
-    if (y>(filtersize+1)) fy1 += width;
-    if (y<height-(filtersize+1)) fy2 += width;
+  for (y = 0; y < height; y++) {
+    if (y > (filtersize + 1))
+      fy1 += width;
+    if (y < height - (filtersize + 1))
+      fy2 += width;
 
-    for(x = 0; x < width; x++)
-    {
-      refval    = *src;
-      upperval  = refval + tolerance;
-      lowerval  = refval - tolerance;
+    for (x = 0; x < width; x++) {
+      refval = *src;
+      upperval = refval + tolerance;
+      lowerval = refval - tolerance;
 
       numvalues = 1;
-      sum       = refval;
+      sum = refval;
 
-      fx1      = MAX(x-filtersize,   0)     + fy1;
-      fx2      = MIN(x+filtersize+1, width) + fy1;
+      fx1 = MAX (x - filtersize, 0) + fy1;
+      fx2 = MIN (x + filtersize + 1, width) + fy1;
 
-      for (fy = fy1; fy<fy2; fy+=width)
-      {
-        for (fx = fx1; fx<fx2; fx++)
-        {
+      for (fy = fy1; fy < fy2; fy += width) {
+        for (fx = fx1; fx < fx2; fx++) {
           aktval = srcp[fx];
-          if ((lowerval-aktval)*(upperval-aktval)<0)
-          {
-            numvalues ++;
+          if ((lowerval - aktval) * (upperval - aktval) < 0) {
+            numvalues++;
             sum += aktval;
           }
-        } /*for fx */
+        }                       /*for fx */
         fx1 += width;
         fx2 += width;
-      } /*for fy */
+      }                         /*for fy */
 
       src++;
-      *dest++ = sum/numvalues;
+      *dest++ = sum / numvalues;
     }
   }
 }
 
 static void
-gst_smooth_chain (GstPad *pad, GstBuffer *buf)
+gst_smooth_chain (GstPad * pad, GstData * _data)
 {
+  GstBuffer *buf = GST_BUFFER (_data);
   GstSmooth *smooth;
   guchar *data;
   gulong size;
@@ -227,49 +242,51 @@ gst_smooth_chain (GstPad *pad, GstBuffer *buf)
   smooth = GST_SMOOTH (GST_OBJECT_PARENT (pad));
 
   if (!smooth->active) {
-    gst_pad_push(smooth->srcpad,buf);
+    gst_pad_push (smooth->srcpad, GST_DATA (buf));
     return;
   }
 
   data = GST_BUFFER_DATA (buf);
   size = GST_BUFFER_SIZE (buf);
 
-  GST_DEBUG (0,"smooth: have buffer of %d", GST_BUFFER_SIZE (buf));
+  GST_DEBUG ("smooth: have buffer of %d", GST_BUFFER_SIZE (buf));
 
-  outbuf = gst_buffer_new();
+  outbuf = gst_buffer_new ();
   GST_BUFFER_DATA (outbuf) = g_malloc (GST_BUFFER_SIZE (buf));
   GST_BUFFER_SIZE (outbuf) = GST_BUFFER_SIZE (buf);
 
-  lumsize = smooth->width*smooth->height;
-  chromsize = lumsize/4;
+  lumsize = smooth->width * smooth->height;
+  chromsize = lumsize / 4;
 
-  smooth_filter (GST_BUFFER_DATA (outbuf), data, smooth->width, smooth->height, 
-		  smooth->tolerance, smooth->filtersize);
+  smooth_filter (GST_BUFFER_DATA (outbuf), data, smooth->width, smooth->height,
+      smooth->tolerance, smooth->filtersize);
   if (!smooth->lum_only) {
-    smooth_filter (GST_BUFFER_DATA (outbuf)+lumsize, data+lumsize, smooth->width/2, smooth->height/2, 
-		  smooth->tolerance, smooth->filtersize/2);
-    smooth_filter (GST_BUFFER_DATA (outbuf)+lumsize+chromsize, data+lumsize+chromsize, smooth->width/2, 
-		  smooth->height/2, smooth->tolerance, smooth->filtersize/2);
-  }
-  else {
-    memcpy (GST_BUFFER_DATA (outbuf)+lumsize, data+lumsize, chromsize*2);
+    smooth_filter (GST_BUFFER_DATA (outbuf) + lumsize, data + lumsize,
+        smooth->width / 2, smooth->height / 2, smooth->tolerance,
+        smooth->filtersize / 2);
+    smooth_filter (GST_BUFFER_DATA (outbuf) + lumsize + chromsize,
+        data + lumsize + chromsize, smooth->width / 2, smooth->height / 2,
+        smooth->tolerance, smooth->filtersize / 2);
+  } else {
+    memcpy (GST_BUFFER_DATA (outbuf) + lumsize, data + lumsize, chromsize * 2);
   }
 
   GST_BUFFER_TIMESTAMP (outbuf) = GST_BUFFER_TIMESTAMP (buf);
 
   gst_buffer_unref (buf);
 
-  gst_pad_push (smooth->srcpad, outbuf);
+  gst_pad_push (smooth->srcpad, GST_DATA (outbuf));
 }
 
 static void
-gst_smooth_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+gst_smooth_set_property (GObject * object, guint prop_id, const GValue * value,
+    GParamSpec * pspec)
 {
   GstSmooth *smooth;
 
   /* it's not null if we got it, but it might not be ours */
-  g_return_if_fail(GST_IS_SMOOTH(object));
-  smooth = GST_SMOOTH(object);
+  g_return_if_fail (GST_IS_SMOOTH (object));
+  smooth = GST_SMOOTH (object);
 
   switch (prop_id) {
     case ARG_ACTIVE:
@@ -290,13 +307,14 @@ gst_smooth_set_property (GObject *object, guint prop_id, const GValue *value, GP
 }
 
 static void
-gst_smooth_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+gst_smooth_get_property (GObject * object, guint prop_id, GValue * value,
+    GParamSpec * pspec)
 {
   GstSmooth *smooth;
 
   /* it's not null if we got it, but it might not be ours */
-  g_return_if_fail(GST_IS_SMOOTH(object));
-  smooth = GST_SMOOTH(object);
+  g_return_if_fail (GST_IS_SMOOTH (object));
+  smooth = GST_SMOOTH (object);
 
   switch (prop_id) {
     case ARG_ACTIVE:
@@ -319,26 +337,14 @@ gst_smooth_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-
-  factory = gst_element_factory_new("smooth",GST_TYPE_SMOOTH,
-                                   &smooth_details);
-  g_return_val_if_fail(factory != NULL, FALSE);
-
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (smooth_sink_factory));
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (smooth_src_factory));
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-
-  return TRUE;
+  return gst_element_register (plugin, "smooth",
+      GST_RANK_NONE, GST_TYPE_SMOOTH);
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "smooth",
-  plugin_init
-};
-
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "smooth",
+    "Apply a smooth filter to an image",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN)

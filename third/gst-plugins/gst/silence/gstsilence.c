@@ -20,134 +20,153 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <string.h>
 #include <gstsilence.h>
 
 
 /* Silence signals and args */
-enum {
+enum
+{
   /* FILL ME */
   LAST_SIGNAL
 };
 
-enum {
+enum
+{
   ARG_0,
   ARG_BYTESPERREAD,
-  ARG_LAW,
-  ARG_CHANNELS,
-  ARG_FREQUENCY
+  ARG_SYNC
 };
 
 /* elementfactory information */
 static GstElementDetails gst_silence_details = {
   "silence source",
   "Source/Audio",
-  "LGPL",
   "Generates silence",
-  VERSION,
-  "Zaheer Merali <zaheer@grid9.net>",
-  "(C) 2001",
+  "Zaheer Abbas Merali <zaheerabbas at merali dot org>"
 };
 
-GST_PAD_TEMPLATE_FACTORY (silence_src_factory,
-  "src",
-  GST_PAD_SRC,
-  GST_PAD_ALWAYS,
-  GST_CAPS_NEW (
-    "silence_src",
-    "audio/raw",
-      "format",		GST_PROPS_STRING ("int"),
-      "law",     	GST_PROPS_INT_RANGE (0,1),
-      "endianness",     GST_PROPS_INT (G_BYTE_ORDER),
-      "signed",   	GST_PROPS_LIST (
-					GST_PROPS_BOOLEAN (TRUE),
-					GST_PROPS_BOOLEAN (FALSE)
-			),
-      "width",   	GST_PROPS_LIST (
-			  GST_PROPS_INT (8),
-			  GST_PROPS_INT (16)
-			),
-      "depth",   	GST_PROPS_LIST (
-			  GST_PROPS_INT (8),
-			  GST_PROPS_INT (16)
-			),
-      "rate",     	GST_PROPS_INT_RANGE (8000, 48000),
-      "channels", 	GST_PROPS_INT_RANGE (1, 2)
-  )
-)
+static GstStaticPadTemplate gst_silence_src_template =
+    GST_STATIC_PAD_TEMPLATE ("src",
+    GST_PAD_SRC,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS ("audio/x-raw-int, "
+        "endianness = (int) BYTE_ORDER, "
+        "signed = (boolean) true, "
+        "width = (int) 16, "
+        "depth = (int) 16, "
+        "rate = (int) [ 8000, 48000 ], "
+        "channels = (int) [ 1, 2 ]; "
+        "audio/x-mulaw, "
+        "rate = (int) [ 8000, 48000 ], " "channels = (int) [ 1, 2 ]")
+    );
 
-static void 			gst_silence_class_init	(GstSilenceClass *klass);
-static void 			gst_silence_init		(GstSilence *silence);
+static void gst_silence_class_init (GstSilenceClass * klass);
+static void gst_silence_base_init (GstSilenceClass * klass);
+static void gst_silence_init (GstSilence * silence);
 
-static void 			gst_silence_set_property	(GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
-static void 			gst_silence_get_property	(GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
-static GstElementStateReturn 	gst_silence_change_state	(GstElement *element);
+static void gst_silence_set_property (GObject * object,
+    guint prop_id, const GValue * value, GParamSpec * pspec);
+static void gst_silence_get_property (GObject * object,
+    guint prop_id, GValue * value, GParamSpec * pspec);
+static GstElementStateReturn gst_silence_change_state (GstElement * element);
+static void gst_silence_set_clock (GstElement * element, GstClock * clock);
 
-static void 			gst_silence_sync_parms	(GstSilence *silence);
-
-static GstBuffer *		gst_silence_get		(GstPad *pad);
+static GstData *gst_silence_get (GstPad * pad);
+static GstPadLinkReturn gst_silence_link (GstPad * pad, const GstCaps * caps);
+static const GstQueryType *gst_silence_get_query_types (GstPad * pad);
+static gboolean gst_silence_src_query (GstPad * pad,
+    GstQueryType type, GstFormat * format, gint64 * value);
 
 static GstElementClass *parent_class = NULL;
+
 /*static guint gst_osssrc_signals[LAST_SIGNAL] = { 0 }; */
 
 GType
-gst_silence_get_type (void) 
+gst_silence_get_type (void)
 {
   static GType silence_type = 0;
 
   if (!silence_type) {
     static const GTypeInfo silence_info = {
-      sizeof(GstSilenceClass),
+      sizeof (GstSilenceClass),
+      (GBaseInitFunc) gst_silence_base_init,
+      NULL,
+      (GClassInitFunc) gst_silence_class_init,
       NULL,
       NULL,
-      (GClassInitFunc)gst_silence_class_init,
-      NULL,
-      NULL,
-      sizeof(GstSilence),
+      sizeof (GstSilence),
       0,
-      (GInstanceInitFunc)gst_silence_init,
+      (GInstanceInitFunc) gst_silence_init,
     };
-    silence_type = g_type_register_static (GST_TYPE_ELEMENT, "GstSilence", &silence_info, 0);
+
+    silence_type =
+        g_type_register_static (GST_TYPE_ELEMENT, "GstSilence", &silence_info,
+        0);
   }
   return silence_type;
 }
 
 static void
-gst_silence_class_init (GstSilenceClass *klass) 
+gst_silence_base_init (GstSilenceClass * klass)
+{
+  GstElementClass *element_class = GST_ELEMENT_CLASS (klass);
+
+  gst_element_class_add_pad_template (element_class,
+      gst_static_pad_template_get (&gst_silence_src_template));
+  gst_element_class_set_details (element_class, &gst_silence_details);
+}
+
+static void
+gst_silence_class_init (GstSilenceClass * klass)
 {
   GObjectClass *gobject_class;
   GstElementClass *gstelement_class;
 
-  gobject_class = (GObjectClass*)klass;
-  gstelement_class = (GstElementClass*)klass;
+  gobject_class = (GObjectClass *) klass;
+  gstelement_class = (GstElementClass *) klass;
 
   parent_class = g_type_class_ref (GST_TYPE_ELEMENT);
 
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_BYTESPERREAD,
-    g_param_spec_ulong("bytes_per_read","bytes_per_read","bytes_per_read",
-                       0,G_MAXULONG,0,G_PARAM_READWRITE)); /* CHECKME */
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_LAW,
-    g_param_spec_int("law","law","law",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); /* CHECKME */
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_CHANNELS,
-    g_param_spec_int("channels","channels","channels",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); /* CHECKME */
-  g_object_class_install_property(G_OBJECT_CLASS(klass), ARG_FREQUENCY,
-    g_param_spec_int("frequency","frequency","frequency",
-                     G_MININT,G_MAXINT,0,G_PARAM_READWRITE)); /* CHECKME   */
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_BYTESPERREAD,
+      g_param_spec_ulong ("bytes_per_read", "Bytes per read",
+          "Bytes per buffer in one cycle",
+          0, G_MAXULONG, 0, G_PARAM_READWRITE));
+  g_object_class_install_property (G_OBJECT_CLASS (klass), ARG_SYNC,
+      g_param_spec_boolean ("sync", "Sync", "Synchronize to clock",
+          TRUE, G_PARAM_READWRITE));
+
   gobject_class->set_property = gst_silence_set_property;
   gobject_class->get_property = gst_silence_get_property;
 
   gstelement_class->change_state = gst_silence_change_state;
+  gstelement_class->set_clock = gst_silence_set_clock;
 }
 
-static void 
-gst_silence_init (GstSilence *silence) 
+static void
+gst_silence_set_clock (GstElement * element, GstClock * clock)
 {
-  silence->srcpad = gst_pad_new_from_template (
-					       GST_PAD_TEMPLATE_GET 
-					       (silence_src_factory), "src");
-  gst_pad_set_get_function(silence->srcpad,gst_silence_get);
+  GstSilence *silence;
+
+  silence = GST_SILENCE (element);
+
+  gst_object_replace ((GstObject **) & silence->clock, (GstObject *) clock);
+}
+
+static void
+gst_silence_init (GstSilence * silence)
+{
+  silence->srcpad =
+      gst_pad_new_from_template (gst_static_pad_template_get
+      (&gst_silence_src_template), "src");
+  gst_pad_set_get_function (silence->srcpad, gst_silence_get);
+  gst_pad_set_link_function (silence->srcpad, gst_silence_link);
+  gst_pad_set_query_function (silence->srcpad, gst_silence_src_query);
+  gst_pad_set_query_type_function (silence->srcpad,
+      gst_silence_get_query_types);
   gst_element_add_pad (GST_ELEMENT (silence), silence->srcpad);
 
   /* adding some default values */
@@ -155,81 +174,175 @@ gst_silence_init (GstSilence *silence)
   silence->channels = 2;
   silence->frequency = 44100;
   silence->bytes_per_read = 4096;
+  silence->width = 2;           /* 2 bytes */
+  silence->timestamp = 0;
+  silence->offset = 0;
+  silence->samples = 0;
 }
 
-static GstBuffer *
-gst_silence_get (GstPad *pad)
+#define gst_caps_get_int_range(caps, name, min, max) \
+  gst_props_entry_get_int_range(gst_props_get_entry((caps)->properties, \
+                                                    name), \
+                                min, max)
+
+static GstPadLinkReturn
+gst_silence_link (GstPad * pad, const GstCaps * caps)
+{
+  GstSilence *silence = GST_SILENCE (gst_pad_get_parent (pad));
+  GstStructure *structure;
+
+  structure = gst_caps_get_structure (caps, 0);
+
+  gst_structure_get_int (structure, "rate", &silence->frequency);
+  gst_structure_get_int (structure, "channels", &silence->channels);
+
+  if (!strcmp (gst_structure_get_name (structure), "audio/x-raw-int")) {
+    silence->law = 0;
+    gst_structure_get_int (structure, "width", &silence->width);
+    silence->width /= 8;
+  } else {
+    silence->law = 1;
+    silence->width = 1;
+  }
+
+  return GST_PAD_LINK_OK;
+}
+
+static const GstQueryType *
+gst_silence_get_query_types (GstPad * pad)
+{
+  static const GstQueryType query_types[] = {
+    GST_QUERY_POSITION,
+    0,
+  };
+
+  return query_types;
+}
+
+static gboolean
+gst_silence_src_query (GstPad * pad,
+    GstQueryType type, GstFormat * format, gint64 * value)
+{
+  gboolean res = FALSE;
+  GstSilence *src;
+
+  src = GST_SILENCE (gst_pad_get_parent (pad));
+
+  switch (type) {
+    case GST_QUERY_POSITION:
+      switch (*format) {
+        case GST_FORMAT_TIME:
+          *value = src->timestamp;
+          res = TRUE;
+          break;
+        case GST_FORMAT_DEFAULT:       /* samples */
+          *value = src->samples;
+          res = TRUE;
+          break;
+        case GST_FORMAT_BYTES:
+          *value = src->offset;
+          res = TRUE;
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return res;
+}
+
+static GstData *
+gst_silence_get (GstPad * pad)
 {
   GstSilence *src;
   GstBuffer *buf;
+  guint tdiff, samples;
+  gint i;
 
   g_return_val_if_fail (pad != NULL, NULL);
-  src = GST_SILENCE(gst_pad_get_parent (pad));
+  src = GST_SILENCE (gst_pad_get_parent (pad));
 
-  buf = gst_buffer_new ();
-  g_return_val_if_fail (buf, NULL);
-  
-  GST_BUFFER_DATA (buf) = (gpointer)g_malloc (src->bytes_per_read);
+  if (!GST_PAD_CAPS (src->srcpad)) {
+    if (gst_silence_link (src->srcpad,
+            gst_pad_get_allowed_caps (src->srcpad)) <= 0) {
+      GST_ELEMENT_ERROR (src, CORE, NEGOTIATION, (NULL), (NULL));
+      return NULL;
+    }
+  }
 
-  if (src->law == 0)
-    memset(GST_BUFFER_DATA (buf), 0, src->bytes_per_read);
-  else if (src->law == 1)
-    memset(GST_BUFFER_DATA (buf), 128, src->bytes_per_read);
+  samples = src->bytes_per_read / (src->channels * src->width);
+  tdiff = samples * GST_SECOND / src->frequency;
+
+  buf = gst_buffer_new_and_alloc (src->bytes_per_read);
+  GST_BUFFER_OFFSET (buf) = src->offset;
+  GST_BUFFER_TIMESTAMP (buf) = src->timestamp;
+  if (src->sync && src->clock) {
+    gst_element_wait (GST_ELEMENT (src), GST_BUFFER_TIMESTAMP (buf));
+  }
+  GST_BUFFER_DURATION (buf) = tdiff;
   GST_BUFFER_SIZE (buf) = src->bytes_per_read;
-  
-  return buf;
+
+  if (src->law || src->width == 1)
+    memset (GST_BUFFER_DATA (buf), src->law ? 0 : 128, src->bytes_per_read);
+  else {
+    /* ok src->width = 2 */
+    gint16 *tmp = (gint16 *) GST_BUFFER_DATA (buf);
+
+    for (i = 0; i < src->bytes_per_read / 2; i++) {
+      tmp[i] = (gint16) 0;
+    }
+  }
+
+  src->timestamp += tdiff;
+  src->samples += samples;
+  src->offset += src->bytes_per_read;
+
+  return GST_DATA (buf);
 }
 
-static void 
-gst_silence_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec) 
+static void
+gst_silence_set_property (GObject * object,
+    guint prop_id, const GValue * value, GParamSpec * pspec)
 {
   GstSilence *src;
 
   /* it's not null if we got it, but it might not be ours */
   g_return_if_fail (GST_IS_SILENCE (object));
-  
+
   src = GST_SILENCE (object);
 
   switch (prop_id) {
     case ARG_BYTESPERREAD:
       src->bytes_per_read = g_value_get_ulong (value);
       break;
-    case ARG_LAW:
-      src->law = g_value_get_int (value);
-      break;
-    case ARG_CHANNELS:
-      src->channels = g_value_get_int (value);
-      break;
-    case ARG_FREQUENCY:
-      src->frequency = g_value_get_int (value);
+    case ARG_SYNC:
+      src->sync = g_value_get_boolean (value);
       break;
     default:
       break;
   }
 }
 
-static void 
-gst_silence_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec) 
+static void
+gst_silence_get_property (GObject * object,
+    guint prop_id, GValue * value, GParamSpec * pspec)
 {
   GstSilence *src;
 
   /* it's not null if we got it, but it might not be ours */
   g_return_if_fail (GST_IS_SILENCE (object));
-  
+
   src = GST_SILENCE (object);
 
   switch (prop_id) {
     case ARG_BYTESPERREAD:
       g_value_set_ulong (value, src->bytes_per_read);
       break;
-    case ARG_LAW:
-      g_value_set_int (value, src->law);
-      break;
-    case ARG_CHANNELS:
-      g_value_set_int (value, src->channels);
-      break;
-    case ARG_FREQUENCY:
-      g_value_set_int (value, src->frequency);
+    case ARG_SYNC:
+      g_value_set_boolean (value, src->sync);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -237,61 +350,59 @@ gst_silence_get_property (GObject *object, guint prop_id, GValue *value, GParamS
   }
 }
 
-static GstElementStateReturn 
-gst_silence_change_state (GstElement *element) 
+static GstElementStateReturn
+gst_silence_change_state (GstElement * element)
 {
-  g_return_val_if_fail (GST_IS_SILENCE (element), FALSE);
-  GST_DEBUG (0, "osssrc: state change");
+  GstSilence *silence = GST_SILENCE (element);
 
-  if (GST_STATE_PENDING (element) != GST_STATE_NULL) {
-    gst_silence_sync_parms (GST_SILENCE (element));
+  switch (GST_STATE_PENDING (element)) {
+    case GST_STATE_PAUSED_TO_READY:
+      silence->timestamp = 0;
+      silence->offset = 0;
+      silence->samples = 0;
+      break;
+    default:
+      break;
   }
+
   if (GST_ELEMENT_CLASS (parent_class)->change_state)
     return GST_ELEMENT_CLASS (parent_class)->change_state (element);
-  
+
   return GST_STATE_SUCCESS;
 }
 
-static void 
-gst_silence_sync_parms (GstSilence *silence)
+#if 0
+static void
+gst_silence_sync_parms (GstSilence * silence)
 {
+  GstCaps *caps;
+
+  if (silence->law) {
+    caps = gst_caps_from_string ("audio/x-mulaw");
+  } else {
+    caps = gst_caps_from_string ("audio/x-raw-int, "
+        "endianness = (int) BYTE_ORDER, "
+        "signed = (boolean) true, " "width = (int) 16, " "depth = (int) 16");
+  }
+
+  gst_caps_set_simple (caps,
+      "rate", G_TYPE_INT, (int) silence->frequency,
+      "channels", G_TYPE_INT, (int) silence->channels, NULL);
+
   /* set caps on src pad */
-  gst_pad_try_set_caps (silence->srcpad, 
-		      GST_CAPS_NEW (
-    			"silence_src",
-    			"audio/raw",
-      			  "format",       GST_PROPS_STRING ("int"),
-        		  "law",        GST_PROPS_INT (silence->law),              /*FIXME */
-        		  "endianness", GST_PROPS_INT (G_BYTE_ORDER),   /*FIXME */
-        		  "signed",     GST_PROPS_BOOLEAN (TRUE),	/*FIXME */
-        		  "width",      GST_PROPS_INT (silence->law ? 8 : 16),
-        		  "depth",      GST_PROPS_INT (silence->law ? 8 : 16),
-        		  "rate",       GST_PROPS_INT (silence->frequency),
-        		  "channels",   GST_PROPS_INT (silence->channels)
-        	       )); 
+  gst_pad_try_set_caps (silence->srcpad, caps);
 }
+#endif
 
 static gboolean
-plugin_init (GModule *module, GstPlugin *plugin)
+plugin_init (GstPlugin * plugin)
 {
-  GstElementFactory *factory;
-
-  /* create the plugin structure */
-  /* create an elementfactory for the parseau element and list it */
-  factory = gst_element_factory_new ("silence", GST_TYPE_SILENCE,
-                                    &gst_silence_details);
-  g_return_val_if_fail (factory != NULL, FALSE);
-
-  gst_element_factory_add_pad_template (factory, GST_PAD_TEMPLATE_GET (silence_src_factory));
-
-  gst_plugin_add_feature (plugin, GST_PLUGIN_FEATURE (factory));
-
-  return TRUE;
+  return gst_element_register (plugin, "silence",
+      GST_RANK_NONE, GST_TYPE_SILENCE);
 }
 
-GstPluginDesc plugin_desc = {
-  GST_VERSION_MAJOR,
-  GST_VERSION_MINOR,
-  "silence",
-  plugin_init
-};
+GST_PLUGIN_DEFINE (GST_VERSION_MAJOR,
+    GST_VERSION_MINOR,
+    "silence",
+    "Generates silent audio",
+    plugin_init, VERSION, "LGPL", GST_PACKAGE, GST_ORIGIN)

@@ -2,7 +2,7 @@ dnl
 dnl Check for compiler mechanism to show functions in debugging
 dnl copied from an Ali patch floating on the internet
 dnl
-AC_DEFUN(GST_CHECK_FUNCTION,[
+AC_DEFUN([GST_CHECK_FUNCTION],[
   dnl #1: __PRETTY_FUNCTION__
   AC_MSG_CHECKING(whether $CC implements __PRETTY_FUNCTION__)
   AC_CACHE_VAL(have_pretty_function,[
@@ -59,5 +59,5 @@ dnl now define FUNCTION to whatever works, and fallback to ""
       fi
     fi
   fi
-  AC_DEFINE_UNQUOTED(FUNCTION, $function, [macro to use to show function name])
+  AC_DEFINE_UNQUOTED(GST_FUNCTION, $function, [macro to use to show function name])
 ])

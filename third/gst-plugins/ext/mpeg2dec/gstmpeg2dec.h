@@ -22,7 +22,6 @@
 #define __GST_MPEG2DEC_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 #include <mpeg2.h>
 
@@ -39,8 +38,8 @@ G_BEGIN_DECLS
 #define GST_IS_MPEG2DEC_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_MPEG2DEC))
 
-#define MPEGTIME_TO_GSTTIME(time) (((time) * (GST_MSECOND/10)) / 9LL)
-#define GSTTIME_TO_MPEGTIME(time) (((time) * 9LL) / (GST_MSECOND/10))
+#define MPEG_TIME_TO_GST_TIME(time) (((time) * (GST_MSECOND/10)) / 9LL)
+#define GST_TIME_TO_MPEG_TIME(time) (((time) * 9LL) / (GST_MSECOND/10))
 
 typedef struct _GstMpeg2dec GstMpeg2dec;
 typedef struct _GstMpeg2decClass GstMpeg2decClass;
@@ -48,15 +47,16 @@ typedef struct _GstMpeg2decClass GstMpeg2decClass;
 typedef enum
 {
   MPEG2DEC_FORMAT_NONE,
+  MPEG2DEC_FORMAT_I422,
   MPEG2DEC_FORMAT_I420,
-  MPEG2DEC_FORMAT_YV12,
+  MPEG2DEC_FORMAT_YV12
 } Mpeg2decFormat;
 
 typedef enum 
 {
   MPEG2DEC_DISC_NONE 		= 0,
   MPEG2DEC_DISC_NEW_PICTURE,
-  MPEG2DEC_DISC_NEW_KEYFRAME,
+  MPEG2DEC_DISC_NEW_KEYFRAME
 } DiscontState;
 
 struct _GstMpeg2dec {
@@ -66,7 +66,6 @@ struct _GstMpeg2dec {
   GstPad 	*sinkpad,
   		*srcpad,
   		*userdatapad;
-  GstBufferPool *peerpool;
 
   mpeg2dec_t 	*decoder;
   gboolean	 closed;
@@ -87,9 +86,9 @@ struct _GstMpeg2dec {
   gint		 frame_rate_code;
   gint64	 total_frames;
   gint64	 frame_period;
+  gdouble	 frame_rate;
   gboolean	 need_sequence;
 
-  GstCaps	*streaminfo;
   GstEvent	*pending_event;
 
   GstIndex	*index;

@@ -283,7 +283,7 @@ extern int            mpegaudio_BitrateIndex(int, int);
 extern int            mpegaudio_SmpFrqIndex(long);
 extern int            mpegaudio_memcheck(char*, int, int);
 extern void           FAR *mpegaudio_mem_alloc(unsigned long, char*);
-extern void           mpegaudio_mem_free(void**);
+extern void           mpegaudio_mem_free(void*);
 extern void           mpegaudio_double_to_extended(double*, char[10]);
 extern void           mpegaudio_extended_to_double(char[10], double*);
 extern void           mpegaudio_I_CRC_calc(frame_params*, unsigned int[2][SBLIMIT],

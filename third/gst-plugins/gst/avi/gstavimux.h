@@ -23,7 +23,8 @@
 
 
 #include <gst/gst.h>
-#include <gst/riff/riff.h>
+#include <gst/riff/riff-ids.h>
+#include "avi-ids.h"
 
 
 #ifdef __cplusplus
@@ -56,9 +57,6 @@ struct _GstAviMux {
   GstPad *videosinkpad;
   gboolean video_pad_connected, video_pad_eos;
 
-  /* timestamps of first and current frame + num_frames for fps calculation */
-  gdouble framerate;
-
   /* the AVI header */
   gst_riff_avih avi_hdr;
   guint32 total_frames; /* total number of frames */
@@ -69,6 +67,7 @@ struct _GstAviMux {
   gboolean write_header;
   gboolean restart;
   guint32 audio_size;
+  guint64 audio_time;
 
   /* video header */
   gst_riff_strh vids_hdr;

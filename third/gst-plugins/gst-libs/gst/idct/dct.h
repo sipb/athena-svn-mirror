@@ -1,7 +1,5 @@
 /* define DCT types */
 
-#include "config.h"
-
 /*
  * DCTSIZE      underlying (1d) transform size
  * DCTSIZE2     DCTSIZE squared
@@ -22,12 +20,6 @@ extern void gst_idct_int_idct();
 
 extern void gst_idct_init_fast_int_idct (void);
 extern void gst_idct_fast_int_idct (short *block);
-
-#ifdef HAVE_LIBMMX
-extern void gst_idct_mmx_idct (short *block);
-extern void gst_idct_mmx32_idct (short *block);
-extern void gst_idct_sse_idct (short *block);
-#endif /* HAVE_LIBMMX */
 
 extern void gst_idct_init_float_idct(void);
 extern void gst_idct_float_idct (short *block);

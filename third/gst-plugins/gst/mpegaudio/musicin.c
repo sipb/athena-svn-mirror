@@ -95,6 +95,10 @@ musicin.c
  *         Bill Truerniet                                             *
  **********************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifdef MS_DOS
 #include <dos.h>
 #endif
@@ -138,32 +142,34 @@ musicin.c
  * PURPOSE:  Prints the encoding parameters used
  *
  ************************************************************************/
- 
+
 void
-print_config(fr_ps, psy, num_samples, inPath, outPath)
-frame_params *fr_ps;
-int     *psy;
-unsigned long *num_samples;
-char    inPath[MAX_NAME_SIZE];
-char    outPath[MAX_NAME_SIZE];
+print_config (fr_ps, psy, num_samples, inPath, outPath)
+     frame_params *fr_ps;
+     int *psy;
+     unsigned long *num_samples;
+     char inPath[MAX_NAME_SIZE];
+     char outPath[MAX_NAME_SIZE];
 {
- layer *info = fr_ps->header;
- 
-   printf("mpegaudio: Encoding configuration:\n");
-   if(info->mode != MPG_MD_JOINT_STEREO)
-      printf("mpegaudio: Layer=%s   mode=%s   extn=%d   psy model=%d\n",
-             mpegaudio_layer_names[info->lay-1], mpegaudio_mode_names[info->mode],
-             info->mode_ext, *psy);
-   else printf("mpegaudio: Layer=%s   mode=%s   extn=data dependant   psy model=%d\n",
-               mpegaudio_layer_names[info->lay-1], mpegaudio_mode_names[info->mode], *psy);
-   printf("mpegaudio: samp frq=%.1f kHz   total bitrate=%d kbps\n",
-          mpegaudio_s_freq[info->sampling_frequency],
-          mpegaudio_bitrate[info->lay-1][info->bitrate_index]);
-   printf("mpegaudio: de-emph=%d   c/right=%d   orig=%d   errprot=%d\n",
-          info->emphasis, info->copyright, info->original,
-          info->error_protection);
+  layer *info = fr_ps->header;
+
+  printf ("mpegaudio: Encoding configuration:\n");
+  if (info->mode != MPG_MD_JOINT_STEREO)
+    printf ("mpegaudio: Layer=%s   mode=%s   extn=%d   psy model=%d\n",
+        mpegaudio_layer_names[info->lay - 1], mpegaudio_mode_names[info->mode],
+        info->mode_ext, *psy);
+  else
+    printf
+        ("mpegaudio: Layer=%s   mode=%s   extn=data dependant   psy model=%d\n",
+        mpegaudio_layer_names[info->lay - 1], mpegaudio_mode_names[info->mode],
+        *psy);
+  printf ("mpegaudio: samp frq=%.1f kHz   total bitrate=%d kbps\n",
+      mpegaudio_s_freq[info->sampling_frequency],
+      mpegaudio_bitrate[info->lay - 1][info->bitrate_index]);
+  printf ("mpegaudio: de-emph=%d   c/right=%d   orig=%d   errprot=%d\n",
+      info->emphasis, info->copyright, info->original, info->error_protection);
 }
- 
+
 /************************************************************************
  *
  * main
@@ -208,74 +214,96 @@ char    outPath[MAX_NAME_SIZE];
  *
  ************************************************************************/
 
-struct mpegaudio_encoder *mpegaudio_init_encoder()
+struct mpegaudio_encoder *
+mpegaudio_init_encoder ()
 {
-  struct mpegaudio_encoder *new = malloc(sizeof(struct mpegaudio_encoder));
+  struct mpegaudio_encoder *new = malloc (sizeof (struct mpegaudio_encoder));
   layer *info;
- 
+
   new->extra_slot = 0;
   new->frameNum = 0;
   new->sentBits = 0;
 
   /* Most large variables are declared dynamically to ensure
-       compatibility with smaller machines */
+     compatibility with smaller machines */
 
-  new->sb_sample = (SBS FAR *) mpegaudio_mem_alloc(sizeof(SBS), "sb_sample");
-  new->j_sample = (JSBS FAR *) mpegaudio_mem_alloc(sizeof(JSBS), "j_sample");
-  new->win_que = (IN FAR *) mpegaudio_mem_alloc(sizeof(IN), "Win_que");
-  new->subband = (SUB FAR *) mpegaudio_mem_alloc(sizeof(SUB),"subband");
-  new->win_buf = (short FAR **) mpegaudio_mem_alloc(sizeof(short *)*2, "win_buf");
- 
+  new->sb_sample = (SBS FAR *) mpegaudio_mem_alloc (sizeof (SBS), "sb_sample");
+  new->j_sample = (JSBS FAR *) mpegaudio_mem_alloc (sizeof (JSBS), "j_sample");
+  new->win_que = (IN FAR *) mpegaudio_mem_alloc (sizeof (IN), "Win_que");
+  new->subband = (SUB FAR *) mpegaudio_mem_alloc (sizeof (SUB), "subband");
+  new->win_buf =
+      (short FAR **) mpegaudio_mem_alloc (sizeof (short *) * 2, "win_buf");
+
   /* clear buffers */
-  memset((char *) new->buffer, 0, sizeof(new->buffer));
-  memset((char *) new->bit_alloc, 0, sizeof(new->bit_alloc));
-  memset((char *) new->scalar, 0, sizeof(new->scalar));
-  memset((char *) new->j_scale, 0, sizeof(new->j_scale));
-  memset((char *) new->scfsi, 0, sizeof(new->scfsi));
-  memset((char *) new->ltmin, 0, sizeof(new->ltmin));
-  memset((char *) new->lgmin, 0, sizeof(new->lgmin));
-  memset((char *) new->max_sc, 0, sizeof(new->max_sc));
-  memset((char *) new->snr32, 0, sizeof(new->snr32));
-  memset((char *) new->sam, 0, sizeof(new->sam));
- 
+  memset ((char *) new->buffer, 0, sizeof (new->buffer));
+  memset ((char *) new->bit_alloc, 0, sizeof (new->bit_alloc));
+  memset ((char *) new->scalar, 0, sizeof (new->scalar));
+  memset ((char *) new->j_scale, 0, sizeof (new->j_scale));
+  memset ((char *) new->scfsi, 0, sizeof (new->scfsi));
+  memset ((char *) new->ltmin, 0, sizeof (new->ltmin));
+  memset ((char *) new->lgmin, 0, sizeof (new->lgmin));
+  memset ((char *) new->max_sc, 0, sizeof (new->max_sc));
+  memset ((char *) new->snr32, 0, sizeof (new->snr32));
+  memset ((char *) new->sam, 0, sizeof (new->sam));
+
   new->fr_ps.header = &new->info;
-  new->fr_ps.tab_num = -1;             /* no table loaded */
+  new->fr_ps.tab_num = -1;      /* no table loaded */
   new->fr_ps.alloc = NULL;
   new->info.version = MPEG_AUDIO_ID;
 
   info = new->fr_ps.header;
 
   info->lay = DFLT_LAY;
-  switch(DFLT_MOD) {
-    case 's': info->mode = MPG_MD_STEREO; info->mode_ext = 0; break;
-    case 'd': info->mode = MPG_MD_DUAL_CHANNEL; info->mode_ext=0; break;
-    case 'j': info->mode = MPG_MD_JOINT_STEREO; break;
-    case 'm': info->mode = MPG_MD_MONO; info->mode_ext = 0; break;
+  switch (DFLT_MOD) {
+    case 's':
+      info->mode = MPG_MD_STEREO;
+      info->mode_ext = 0;
+      break;
+    case 'd':
+      info->mode = MPG_MD_DUAL_CHANNEL;
+      info->mode_ext = 0;
+      break;
+    case 'j':
+      info->mode = MPG_MD_JOINT_STEREO;
+      break;
+    case 'm':
+      info->mode = MPG_MD_MONO;
+      info->mode_ext = 0;
+      break;
     default:
-      fprintf(stderr, "Bad mode dflt %c\n", DFLT_MOD);
-      abort();
+      fprintf (stderr, "Bad mode dflt %c\n", DFLT_MOD);
+      abort ();
   }
   new->model = DFLT_PSY;
-  if((info->sampling_frequency = mpegaudio_SmpFrqIndex((long)(1000*DFLT_SFQ))) < 0) {
-    fprintf(stderr, "bad sfrq default %.2f\n", DFLT_SFQ);
-    abort();
+  if ((info->sampling_frequency =
+          mpegaudio_SmpFrqIndex ((long) (1000 * DFLT_SFQ))) < 0) {
+    fprintf (stderr, "bad sfrq default %.2f\n", DFLT_SFQ);
+    abort ();
   }
 
   new->bitrate = DFLT_BRT;
 
-  if((info->bitrate_index = mpegaudio_BitrateIndex(info->lay, DFLT_BRT)) < 0) {
-    fprintf(stderr, "bad default bitrate %u\n", DFLT_BRT);
-    abort();
+  if ((info->bitrate_index = mpegaudio_BitrateIndex (info->lay, DFLT_BRT)) < 0) {
+    fprintf (stderr, "bad default bitrate %u\n", DFLT_BRT);
+    abort ();
   }
-  switch(DFLT_EMP) {
-    case 'n': info->emphasis = 0; break;
-    case '5': info->emphasis = 1; break;
-    case 'c': info->emphasis = 3; break;
-    default: 
-      fprintf(stderr, "Bad emph dflt %c\n", DFLT_EMP);
-      abort();
+  switch (DFLT_EMP) {
+    case 'n':
+      info->emphasis = 0;
+      break;
+    case '5':
+      info->emphasis = 1;
+      break;
+    case 'c':
+      info->emphasis = 3;
+      break;
+    default:
+      fprintf (stderr, "Bad emph dflt %c\n", DFLT_EMP);
+      abort ();
   }
-  info->copyright = 0; info->original = 0; info->error_protection = FALSE;
+  info->copyright = 0;
+  info->original = 0;
+  info->error_protection = FALSE;
   new->num_samples = MAX_U_32_NUM;
 
   return new;
@@ -283,226 +311,265 @@ struct mpegaudio_encoder *mpegaudio_init_encoder()
 
 
 void
-mpegaudio_sync_parms (struct mpegaudio_encoder *new) 
+mpegaudio_sync_parms (struct mpegaudio_encoder *new)
 {
-  /*print_config(&new->fr_ps, &new->model, &new->num_samples,*/
+  /*print_config(&new->fr_ps, &new->model, &new->num_samples, */
   /*             new->original_file_name, new->encoded_file_name); */
 
-  mpegaudio_hdr_to_frps(&new->fr_ps);
+  mpegaudio_hdr_to_frps (&new->fr_ps);
   new->stereo = new->fr_ps.stereo;
   new->error_protection = new->info.error_protection;
 
-  if((new->info.bitrate_index = mpegaudio_BitrateIndex(new->info.lay, new->bitrate)) < 0) {
-    fprintf(stderr, "bad bitrate %u\n", new->bitrate);
+  if ((new->info.bitrate_index =
+          mpegaudio_BitrateIndex (new->info.lay, new->bitrate)) < 0) {
+    fprintf (stderr, "bad bitrate %u\n", new->bitrate);
     return;
   }
-  if((new->info.sampling_frequency = mpegaudio_SmpFrqIndex(new->frequency)) < 0) {
-    fprintf(stderr, "bad sfrq %d\n", new->frequency);
-    abort();
+  if ((new->info.sampling_frequency =
+          mpegaudio_SmpFrqIndex (new->frequency)) < 0) {
+    fprintf (stderr, "bad sfrq %d\n", new->frequency);
+    abort ();
   }
- 
-  if (new->info.lay == 1) { new->bitsPerSlot = 32; new->samplesPerFrame = 384;  }
-  else               { new->bitsPerSlot = 8;  new->samplesPerFrame = 1152; }
+
+  if (new->info.lay == 1) {
+    new->bitsPerSlot = 32;
+    new->samplesPerFrame = 384;
+  } else {
+    new->bitsPerSlot = 8;
+    new->samplesPerFrame = 1152;
+  }
   /* Figure average number of 'slots' per frame. */
   /* Bitrate means TOTAL for both channels, not per side. */
-  new->avg_slots_per_frame = ((double)new->samplesPerFrame /
-                         mpegaudio_s_freq[new->info.sampling_frequency]) *
-                        ((double)mpegaudio_bitrate[new->info.lay-1][new->info.bitrate_index] /
-                         (double)new->bitsPerSlot);
+  new->avg_slots_per_frame = ((double) new->samplesPerFrame /
+      mpegaudio_s_freq[new->info.sampling_frequency]) *
+      ((double) mpegaudio_bitrate[new->info.lay - 1][new->info.bitrate_index] /
+      (double) new->bitsPerSlot);
   new->whole_SpF = (int) new->avg_slots_per_frame;
-  /*printf("mpegaudio: slots/frame = %d\n",new->whole_SpF);*/
-  new->frac_SpF  = new->avg_slots_per_frame - (double)new->whole_SpF;
-  new->slot_lag  = -new->frac_SpF;
-  /*printf("mpegaudio: frac SpF=%.3f, tot bitrate=%d kbps, s freq=%.1f kHz\n",*/
+  /*printf("mpegaudio: slots/frame = %d\n",new->whole_SpF); */
+  new->frac_SpF = new->avg_slots_per_frame - (double) new->whole_SpF;
+  new->slot_lag = -new->frac_SpF;
+  /*printf("mpegaudio: frac SpF=%.3f, tot bitrate=%d kbps, s freq=%.1f kHz\n", */
   /*       new->frac_SpF, bitrate[new->info.lay-1][new->info.bitrate_index], */
   /*       s_freq[new->info.sampling_frequency]); */
- 
-  /*if (new->frac_SpF != 0)*/
-    /*printf("mpegaudio: Fractional number of slots, padding required\n");*/
+
+  /*if (new->frac_SpF != 0) */
+  /*printf("mpegaudio: Fractional number of slots, padding required\n"); */
   /*else */
-    new->info.padding = 0;
+  new->info.padding = 0;
 }
- 
-int mpegaudio_encode_frame(struct mpegaudio_encoder *enc, unsigned char *inbuf, unsigned char *outbuf, unsigned long *outlen) 
+
+int
+mpegaudio_encode_frame (struct mpegaudio_encoder *enc, unsigned char *inbuf,
+    unsigned char *outbuf, unsigned long *outlen)
 {
   int i, j, k, adb, ret;
 
-   ret = mpegaudio_get_audio(inbuf, enc->buffer, enc->num_samples, enc->stereo, enc->info.lay);
+  ret =
+      mpegaudio_get_audio (inbuf, enc->buffer, enc->num_samples, enc->stereo,
+      enc->info.lay);
 
-   gst_putbits_init(&enc->pb);
-   gst_putbits_new_buffer(&enc->pb, outbuf, *outlen);
+  gst_putbits_init (&enc->pb);
+  gst_putbits_new_buffer (&enc->pb, outbuf, *outlen);
 
-   enc->sentBits = 0;
+  enc->sentBits = 0;
 
-       enc->win_buf[0] = &enc->buffer[0][0];
-       enc->win_buf[1] = &enc->buffer[1][0];
-       if (enc->frac_SpF != 0) {
-          if (enc->slot_lag > (enc->frac_SpF-1.0) ) {
-             enc->slot_lag -= enc->frac_SpF;
-             enc->extra_slot = 0;
-             enc->info.padding = 0;
-             /*  printf("No padding for this frame\n"); */
-          }
-          else {
-             enc->extra_slot = 1;
-             enc->info.padding = 1;
-             enc->slot_lag += (1-enc->frac_SpF);
-             /*  printf("Padding for this frame\n");    */
-          }
-       }
-       adb = (enc->whole_SpF+enc->extra_slot) * enc->bitsPerSlot;
+  enc->win_buf[0] = &enc->buffer[0][0];
+  enc->win_buf[1] = &enc->buffer[1][0];
+  if (enc->frac_SpF != 0) {
+    if (enc->slot_lag > (enc->frac_SpF - 1.0)) {
+      enc->slot_lag -= enc->frac_SpF;
+      enc->extra_slot = 0;
+      enc->info.padding = 0;
+      /*  printf("No padding for this frame\n"); */
+    } else {
+      enc->extra_slot = 1;
+      enc->info.padding = 1;
+      enc->slot_lag += (1 - enc->frac_SpF);
+      /*  printf("Padding for this frame\n");    */
+    }
+  }
+  adb = (enc->whole_SpF + enc->extra_slot) * enc->bitsPerSlot;
 
-       switch (enc->info.lay) {
- 
+  switch (enc->info.lay) {
+
 /***************************** Layer I **********************************/
- 
-          case 1 :
-             for (j=0;j<SCALE_BLOCK;j++)
-             for (k=0;k<enc->stereo;k++) {
-                mpegaudio_window_subband(&enc->win_buf[k], &(*enc->win_que)[k][0], k);
-                mpegaudio_filter_subband(&(*enc->win_que)[k][0], &(*enc->sb_sample)[k][0][j][0]);
-             }
 
-             mpegaudio_I_scale_factor_calc(*enc->sb_sample, enc->scalar, enc->stereo);
-             if(enc->fr_ps.actual_mode == MPG_MD_JOINT_STEREO) {
-                mpegaudio_I_combine_LR(*enc->sb_sample, *enc->j_sample);
-                mpegaudio_I_scale_factor_calc(enc->j_sample, &enc->j_scale, 1);
-             }
- 
-             mpegaudio_put_scale(enc->scalar, &enc->fr_ps, enc->max_sc);
- 
-             if (enc->model == 1) mpegaudio_I_Psycho_One(enc->buffer, enc->max_sc, enc->ltmin, &enc->fr_ps);
-             else {
-                for (k=0;k<enc->stereo;k++) {
-                   mpegaudio_psycho_anal(&enc->buffer[k][0],&enc->sam[k][0], k, enc->info.lay, enc->snr32,
-                               (FLOAT)mpegaudio_s_freq[enc->info.sampling_frequency]*1000);
-                   for (i=0;i<SBLIMIT;i++) enc->ltmin[k][i] = (double) enc->snr32[i];
-                }
-             }
- 
-             mpegaudio_I_main_bit_allocation(enc->ltmin, enc->bit_alloc, &adb, &enc->fr_ps);
- 
-             if (enc->error_protection) mpegaudio_I_CRC_calc(&enc->fr_ps, enc->bit_alloc, &enc->crc);
- 
-             mpegaudio_encode_info(&enc->fr_ps, &enc->pb);
- 
-             if (enc->error_protection) mpegaudio_encode_CRC(enc->crc, &enc->pb);
- 
-             mpegaudio_I_encode_bit_alloc(enc->bit_alloc, &enc->fr_ps, &enc->pb);
-             mpegaudio_I_encode_scale(enc->scalar, enc->bit_alloc, &enc->fr_ps, &enc->pb);
-             mpegaudio_I_subband_quantization(enc->scalar, *enc->sb_sample, enc->j_scale, *enc->j_sample,
-                                    enc->bit_alloc, *enc->subband, &enc->fr_ps);
-             mpegaudio_I_sample_encoding(*enc->subband, enc->bit_alloc, &enc->fr_ps, &enc->pb);
-             for (i=0;i<adb;i++) gst_putbits1(&enc->pb, 0);
-          break;
- 
+    case 1:
+      for (j = 0; j < SCALE_BLOCK; j++)
+        for (k = 0; k < enc->stereo; k++) {
+          mpegaudio_window_subband (&enc->win_buf[k], &(*enc->win_que)[k][0],
+              k);
+          mpegaudio_filter_subband (&(*enc->win_que)[k][0],
+              &(*enc->sb_sample)[k][0][j][0]);
+        }
+
+      mpegaudio_I_scale_factor_calc (*enc->sb_sample, enc->scalar, enc->stereo);
+      if (enc->fr_ps.actual_mode == MPG_MD_JOINT_STEREO) {
+        mpegaudio_I_combine_LR (*enc->sb_sample, *enc->j_sample);
+        mpegaudio_I_scale_factor_calc (enc->j_sample, &enc->j_scale, 1);
+      }
+
+      mpegaudio_put_scale (enc->scalar, &enc->fr_ps, enc->max_sc);
+
+      if (enc->model == 1)
+        mpegaudio_I_Psycho_One (enc->buffer, enc->max_sc, enc->ltmin,
+            &enc->fr_ps);
+      else {
+        for (k = 0; k < enc->stereo; k++) {
+          mpegaudio_psycho_anal (&enc->buffer[k][0], &enc->sam[k][0], k,
+              enc->info.lay, enc->snr32,
+              (FLOAT) mpegaudio_s_freq[enc->info.sampling_frequency] * 1000);
+          for (i = 0; i < SBLIMIT; i++)
+            enc->ltmin[k][i] = (double) enc->snr32[i];
+        }
+      }
+
+      mpegaudio_I_main_bit_allocation (enc->ltmin, enc->bit_alloc, &adb,
+          &enc->fr_ps);
+
+      if (enc->error_protection)
+        mpegaudio_I_CRC_calc (&enc->fr_ps, enc->bit_alloc, &enc->crc);
+
+      mpegaudio_encode_info (&enc->fr_ps, &enc->pb);
+
+      if (enc->error_protection)
+        mpegaudio_encode_CRC (enc->crc, &enc->pb);
+
+      mpegaudio_I_encode_bit_alloc (enc->bit_alloc, &enc->fr_ps, &enc->pb);
+      mpegaudio_I_encode_scale (enc->scalar, enc->bit_alloc, &enc->fr_ps,
+          &enc->pb);
+      mpegaudio_I_subband_quantization (enc->scalar, *enc->sb_sample,
+          enc->j_scale, *enc->j_sample, enc->bit_alloc, *enc->subband,
+          &enc->fr_ps);
+      mpegaudio_I_sample_encoding (*enc->subband, enc->bit_alloc, &enc->fr_ps,
+          &enc->pb);
+      for (i = 0; i < adb; i++)
+        gst_putbits1 (&enc->pb, 0);
+      break;
+
 /***************************** Layer 2 **********************************/
- 
-          case 2 :
-             for (i=0;i<3;i++) for (j=0;j<SCALE_BLOCK;j++)
-                for (k=0;k<enc->stereo;k++) {
-                   mpegaudio_window_subband(&enc->win_buf[k], &(*enc->win_que)[k][0], k);
-                   mpegaudio_filter_subband(&(*enc->win_que)[k][0], &(*enc->sb_sample)[k][i][j][0]);
-                }
- 
-                mpegaudio_II_scale_factor_calc(*enc->sb_sample, enc->scalar, enc->stereo, enc->fr_ps.sblimit);
-                mpegaudio_pick_scale(enc->scalar, &enc->fr_ps, enc->max_sc);
-                if(enc->fr_ps.actual_mode == MPG_MD_JOINT_STEREO) {
-                   mpegaudio_II_combine_LR(*enc->sb_sample, *enc->j_sample, enc->fr_ps.sblimit);
-                   mpegaudio_II_scale_factor_calc(enc->j_sample, &enc->j_scale, 1, enc->fr_ps.sblimit);
-                }       /* this way we calculate more mono than we need */
-                        /* but it is cheap */
- 
-                if (enc->model == 1) mpegaudio_II_Psycho_One(enc->buffer, enc->max_sc, enc->ltmin, &enc->fr_ps);
-                else {
-                   for (k=0;k<enc->stereo;k++) {
-                      mpegaudio_psycho_anal(&enc->buffer[k][0],&enc->sam[k][0], k, 
-                                 enc->info.lay, enc->snr32,
-                                 (FLOAT)mpegaudio_s_freq[enc->info.sampling_frequency]*1000);
-                      for (i=0;i<SBLIMIT;i++) enc->ltmin[k][i] = (double) enc->snr32[i];
-                   }
-                }
- 
-                mpegaudio_II_transmission_pattern(enc->scalar, enc->scfsi, &enc->fr_ps);
-                mpegaudio_II_main_bit_allocation(enc->ltmin, enc->scfsi, enc->bit_alloc, &adb, &enc->fr_ps);
- 
-                if (enc->error_protection)
-                   mpegaudio_II_CRC_calc(&enc->fr_ps, enc->bit_alloc, enc->scfsi, &enc->crc);
- 
-                mpegaudio_encode_info(&enc->fr_ps, &enc->pb);
- 
-                if (enc->error_protection) mpegaudio_encode_CRC(enc->crc, &enc->pb);
- 
-                mpegaudio_II_encode_bit_alloc(enc->bit_alloc, &enc->fr_ps, &enc->pb);
-                mpegaudio_II_encode_scale(enc->bit_alloc, enc->scfsi, enc->scalar, &enc->fr_ps, &enc->pb);
-                mpegaudio_II_subband_quantization(enc->scalar, *enc->sb_sample, enc->j_scale,
-                                      *enc->j_sample, enc->bit_alloc, *enc->subband, &enc->fr_ps);
-                mpegaudio_II_sample_encoding(*enc->subband, enc->bit_alloc, &enc->fr_ps, &enc->pb);
-                for (i=0;i<adb;i++) gst_putbits1(&enc->pb, 0);
-          break;
- 
+
+    case 2:
+      for (i = 0; i < 3; i++)
+        for (j = 0; j < SCALE_BLOCK; j++)
+          for (k = 0; k < enc->stereo; k++) {
+            mpegaudio_window_subband (&enc->win_buf[k], &(*enc->win_que)[k][0],
+                k);
+            mpegaudio_filter_subband (&(*enc->win_que)[k][0],
+                &(*enc->sb_sample)[k][i][j][0]);
+          }
+
+      mpegaudio_II_scale_factor_calc (*enc->sb_sample, enc->scalar, enc->stereo,
+          enc->fr_ps.sblimit);
+      mpegaudio_pick_scale (enc->scalar, &enc->fr_ps, enc->max_sc);
+      if (enc->fr_ps.actual_mode == MPG_MD_JOINT_STEREO) {
+        mpegaudio_II_combine_LR (*enc->sb_sample, *enc->j_sample,
+            enc->fr_ps.sblimit);
+        mpegaudio_II_scale_factor_calc (enc->j_sample, &enc->j_scale, 1,
+            enc->fr_ps.sblimit);
+      }
+
+      /* this way we calculate more mono than we need */
+      /* but it is cheap */
+      if (enc->model == 1)
+        mpegaudio_II_Psycho_One (enc->buffer, enc->max_sc, enc->ltmin,
+            &enc->fr_ps);
+      else {
+        for (k = 0; k < enc->stereo; k++) {
+          mpegaudio_psycho_anal (&enc->buffer[k][0], &enc->sam[k][0], k,
+              enc->info.lay, enc->snr32,
+              (FLOAT) mpegaudio_s_freq[enc->info.sampling_frequency] * 1000);
+          for (i = 0; i < SBLIMIT; i++)
+            enc->ltmin[k][i] = (double) enc->snr32[i];
+        }
+      }
+
+      mpegaudio_II_transmission_pattern (enc->scalar, enc->scfsi, &enc->fr_ps);
+      mpegaudio_II_main_bit_allocation (enc->ltmin, enc->scfsi, enc->bit_alloc,
+          &adb, &enc->fr_ps);
+
+      if (enc->error_protection)
+        mpegaudio_II_CRC_calc (&enc->fr_ps, enc->bit_alloc, enc->scfsi,
+            &enc->crc);
+
+      mpegaudio_encode_info (&enc->fr_ps, &enc->pb);
+
+      if (enc->error_protection)
+        mpegaudio_encode_CRC (enc->crc, &enc->pb);
+
+      mpegaudio_II_encode_bit_alloc (enc->bit_alloc, &enc->fr_ps, &enc->pb);
+      mpegaudio_II_encode_scale (enc->bit_alloc, enc->scfsi, enc->scalar,
+          &enc->fr_ps, &enc->pb);
+      mpegaudio_II_subband_quantization (enc->scalar, *enc->sb_sample,
+          enc->j_scale, *enc->j_sample, enc->bit_alloc, *enc->subband,
+          &enc->fr_ps);
+      mpegaudio_II_sample_encoding (*enc->subband, enc->bit_alloc, &enc->fr_ps,
+          &enc->pb);
+      for (i = 0; i < adb; i++)
+        gst_putbits1 (&enc->pb, 0);
+      break;
+
 /***************************** Layer 3 **********************************/
 
-          case 3 : break;
+    case 3:
+      break;
 
-       }
- 
-       enc->frameBits = gst_putbits_bitcount(&enc->pb) - enc->sentBits;
-       if(enc->frameBits%enc->bitsPerSlot)   /* a program failure */
-          fprintf(stderr,"Sent %ld bits = %ld slots plus %ld %d\n",
-                  enc->frameBits, enc->frameBits/enc->bitsPerSlot,
-                  enc->frameBits%enc->bitsPerSlot, gst_putbits_bitcount(&enc->pb));
+  }
 
-       *outlen = enc->frameBits/8;
+  enc->frameBits = gst_putbits_bitcount (&enc->pb) - enc->sentBits;
+  if (enc->frameBits % enc->bitsPerSlot)        /* a program failure */
+    fprintf (stderr, "Sent %ld bits = %ld slots plus %ld %d\n",
+        enc->frameBits, enc->frameBits / enc->bitsPerSlot,
+        enc->frameBits % enc->bitsPerSlot, gst_putbits_bitcount (&enc->pb));
 
-       return ret;
+  *outlen = enc->frameBits / 8;
 
-    /* } */
+  return ret;
+
+  /* } */
 }
 
-void mpegaudio_end(struct mpegaudio_encoder *enc) 
+void
+mpegaudio_end (struct mpegaudio_encoder *enc)
 {
 
-    printf("Avg slots/frame = %.3f; b/smp = %.2f; br = %.3f kbps\n",
-           (FLOAT) enc->sentBits / (enc->frameNum * enc->bitsPerSlot),
-           (FLOAT) enc->sentBits / (enc->frameNum * enc->samplesPerFrame),
-           (FLOAT) enc->sentBits / (enc->frameNum * enc->samplesPerFrame) *
-           mpegaudio_s_freq[enc->info.sampling_frequency]);
+  printf ("Avg slots/frame = %.3f; b/smp = %.2f; br = %.3f kbps\n",
+      (FLOAT) enc->sentBits / (enc->frameNum * enc->bitsPerSlot),
+      (FLOAT) enc->sentBits / (enc->frameNum * enc->samplesPerFrame),
+      (FLOAT) enc->sentBits / (enc->frameNum * enc->samplesPerFrame) *
+      mpegaudio_s_freq[enc->info.sampling_frequency]);
 
-    /*if (fclose(musicin) != 0){*/
-    /*   printf("Could not close \"%s\".\n", enc->original_file_name); */
-    /*   exit(2); */
-    /* } */
+  /*if (fclose(musicin) != 0){ */
+  /*   printf("Could not close \"%s\".\n", enc->original_file_name); */
+  /*   exit(2); */
+  /* } */
 
 #ifdef  MACINTOSH
-    mpegaudio_set_mac_file_attr(encoded_file_name, VOL_REF_NUM, CREATOR_ENCODE,
-                      FILETYPE_ENCODE);
+  mpegaudio_set_mac_file_attr (encoded_file_name, VOL_REF_NUM, CREATOR_ENCODE,
+      FILETYPE_ENCODE);
 #endif
 
-    printf("Encoding of \"%s\" with psychoacoustic model %d is finished\n",
-           enc->original_file_name, enc->model);
-    printf("The MPEG encoded output file name is \"%s\"\n",
-            enc->encoded_file_name);
-    exit(0);
-}
- 
-unsigned long mpegaudio_get_number_of_input_bytes(struct mpegaudio_encoder *enc) 
-{
-  if (enc->info.lay == 1){
-    if(enc->stereo == 2){ /* layer 1, stereo */
-      return 768*sizeof(short);
-    }
-    else { /* layer 1, mono */
-      return 384*sizeof(short);
-    }
-  }
-  else {
-    if(enc->stereo == 2){ /* layer 2 (or 3), stereo */
-      return 2304*sizeof(short);
-    }
-    else { /* layer 2 (or 3), mono */
-      return 1152*sizeof(short);
-    }
-  }
+  printf ("Encoding of \"%s\" with psychoacoustic model %d is finished\n",
+      enc->original_file_name, enc->model);
+  printf ("The MPEG encoded output file name is \"%s\"\n",
+      enc->encoded_file_name);
+  exit (0);
 }
 
+unsigned long
+mpegaudio_get_number_of_input_bytes (struct mpegaudio_encoder *enc)
+{
+  if (enc->info.lay == 1) {
+    if (enc->stereo == 2) {     /* layer 1, stereo */
+      return 768 * sizeof (short);
+    } else {                    /* layer 1, mono */
+      return 384 * sizeof (short);
+    }
+  } else {
+    if (enc->stereo == 2) {     /* layer 2 (or 3), stereo */
+      return 2304 * sizeof (short);
+    } else {                    /* layer 2 (or 3), mono */
+      return 1152 * sizeof (short);
+    }
+  }
+}

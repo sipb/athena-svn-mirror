@@ -22,7 +22,6 @@
 #define __AC3PARSE_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
 
 
@@ -54,6 +53,10 @@ struct _GstAc3Parse {
   guint lastframebytes;		/* bytes in previous of last frame so far */
   guint lastframesize;		/* total length of last frame */
   guint skip; /* number of frames to skip */
+
+  /* some stream parameters */
+  gint sample_rate;
+  gint channels;
 };
 
 struct _GstAc3ParseClass {

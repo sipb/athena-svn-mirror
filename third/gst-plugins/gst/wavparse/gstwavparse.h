@@ -22,10 +22,9 @@
 #define __GST_WAVPARSE_H__
 
 
-#include <config.h>
 #include <gst/gst.h>
-#include <gstriff.h>
-
+#include "gst/riff/riff-ids.h"
+#include "gst/riff/riff-read.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,42 +42,40 @@ extern "C" {
 #define GST_IS_WAVPARSE_CLASS(obj) \
   (G_TYPE_CHECK_CLASS_TYPE((klass),GST_TYPE_WAVPARSE))
 
-
-#define GST_WAVPARSE_UNKNOWN	0	/* initialized state */
-#define GST_WAVPARSE_CHUNK_FMT	1	/* searching for fmt */
-#define GST_WAVPARSE_CHUNK_DATA	2	/* searching for data */
-#define GST_WAVPARSE_DATA	3	/* in data region */
-#define GST_WAVPARSE_OTHER	4	/* in unknown region */
+typedef enum {
+  GST_WAVPARSE_START,
+  GST_WAVPARSE_FMT,
+  GST_WAVPARSE_OTHER,
+  GST_WAVPARSE_DATA,
+} GstWavParseState;
 
 typedef struct _GstWavParse GstWavParse;
 typedef struct _GstWavParseClass GstWavParseClass;
 
 struct _GstWavParse {
-  GstElement element;
+  GstRiffRead parent;
 
   /* pads */
   GstPad *sinkpad,*srcpad;
 
   /* WAVE decoding state */
-  gint state;
-
-  /* RIFF decoding state */
-  GstRiff *riff;
-  gulong riff_nextlikely;
-
-  /* expected length of audio */
-  gulong size;
+  GstWavParseState state;
 
   /* format of audio, see defines below */
   gint format;
 
   /* useful audio data */
-  gint bps;
+  guint16 depth;
   gint rate;
-  gint channels;
-  gint width;
+  guint16 channels;
+  guint16 width;
+  guint32 bps;
 
-  gint64 offset;
+  guint64 dataleft, datasize, datastart;
+  int byteoffset;
+  
+  gboolean seek_pending;
+  guint64 seek_offset;
 };
 
 struct _GstWavParseClass {
@@ -87,17 +84,16 @@ struct _GstWavParseClass {
 
 GType gst_wavparse_get_type(void);
 
-typedef struct _GstWavParseFormat GstWavParseFormat;
-
-struct _GstWavParseFormat {
+typedef struct _gst_riff_fmt {
   gint16 wFormatTag;
   guint16 wChannels;
   guint32 dwSamplesPerSec;
   guint32 dwAvgBytesPerSec;
   guint16 wBlockAlign;
   guint16 wBitsPerSample;
-};
-
+} gst_riff_fmt;
+  
+  
 /**** from public Microsoft RIFF docs ******/
 #define GST_RIFF_WAVE_FORMAT_UNKNOWN        (0x0000)
 #define GST_RIFF_WAVE_FORMAT_PCM            (0x0001)
@@ -118,8 +114,9 @@ struct _GstWavParseFormat {
 #define GST_RIFF_IBM_FORMAT_MULAW           (0x0101)
 #define GST_RIFF_IBM_FORMAT_ALAW            (0x0102)
 #define GST_RIFF_IBM_FORMAT_ADPCM           (0x0103)
-#define GST_RIFF_WAVE_FORMAT_DIVX           (0x0160)
-#define GST_RIFF_WAVE_FORMAT_divx           (0x0161)
+#define GST_RIFF_WAVE_FORMAT_WMAV1          (0x0160)
+#define GST_RIFF_WAVE_FORMAT_WMAV2          (0x0161)
+#define GST_RIFF_WAVE_FORMAT_WMAV3          (0x0162)
 #define GST_RIFF_WAVE_FORMAT_VORBIS1        (0x674f)
 #define GST_RIFF_WAVE_FORMAT_VORBIS2        (0x6750)
 #define GST_RIFF_WAVE_FORMAT_VORBIS3        (0x6751)

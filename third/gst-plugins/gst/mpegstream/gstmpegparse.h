@@ -61,25 +61,24 @@ struct _GstMPEGParse {
 
   /* pack header values */
   guint32	 mux_rate;
-  guint64	 current_scr;
-  guint64	 next_scr;
+  guint64	 current_scr;		/* Current SCR from the stream. */
+  guint64	 next_scr;		/* Expected next SCR. */
   guint64	 bytes_since_scr;
 
-  gint64	 adjust;
+  gboolean	 do_adjust;		/* Adjust timestamps to smooth
+                                           discontinuities. */
+  gint64	 adjust;		/* Current timestamp adjust value. */
 
   gboolean	 discont_pending;
   gboolean	 scr_pending;
   gint		 max_discont;
 
-  GstClock 	*provided_clock;
   GstClock 	*clock;
   gboolean	 sync;
   GstClockID	 id;
 
   GstIndex	*index;
   gint		 index_id;
-
-  GstCaps	*streaminfo;
 };
 
 struct _GstMPEGParseClass {
@@ -91,14 +90,17 @@ struct _GstMPEGParseClass {
   gboolean 	(*parse_packet)		(GstMPEGParse *parse, GstBuffer *buffer);
   gboolean 	(*parse_pes)		(GstMPEGParse *parse, GstBuffer *buffer);
 
+  /* process events */
+  void		(*handle_discont)	(GstMPEGParse *parse, GstEvent *event);
+
   /* optional method to send out the data */
   void	 	(*send_data)		(GstMPEGParse *parse, GstData *data, GstClockTime time);
-  void	 	(*handle_discont)	(GstMPEGParse *parse);
+  void	 	(*send_discont)		(GstMPEGParse *parse, GstClockTime time);
 };
 
 GType gst_mpeg_parse_get_type(void);
 
-gboolean 	gst_mpeg_parse_plugin_init 		(GModule *module, GstPlugin *plugin);
+gboolean 	gst_mpeg_parse_plugin_init 		(GstPlugin *plugin);
 
 const GstFormat*
 		gst_mpeg_parse_get_src_formats 		(GstPad *pad);
