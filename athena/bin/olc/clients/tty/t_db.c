@@ -1,0 +1,121 @@
+/*
+ * This file is part of the OLC On-Line Consulting System.
+ * It contains procedures for exectuting olc commands.
+ *
+ *      Win Treese
+ *      Dan Morgan
+ *      Bill Saphir
+ *      MIT Project Athena
+ *
+ *      Ken Raeburn
+ *      MIT Information Systems
+ *
+ *      Tom Coppeto
+ *      MIT Project Athena
+ *
+ *      Copyright (c) 1989 by the Massachusetts Institute of Technology
+ *
+ *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v $
+ *      $Author: tjcoppet $
+ */
+
+#ifndef lint
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_db.c,v 1.1 1989-11-17 14:10:43 tjcoppet Exp $";
+#endif
+
+#include <olc/olc.h>
+#include <olc/olc_tty.h>
+
+
+ERRCODE
+t_load_user(Request)
+     REQUEST *Request;
+{
+  int status;
+
+  status = OLoadUser(Request);
+  if(status == SUCCESS)
+    printf("ok\n");
+  else
+    handle_response(status,Request);
+
+  return(status);
+}
+
+
+t_dbinfo(Request,file)
+     REQUEST *Request;
+     char *file;
+{
+  DBINFO dbinfo;
+  int status;
+
+  status = OGetDBInfo(Request,&dbinfo);
+  if(status == SUCCESS)
+    {
+      printf("asker attributes:    %s %d\n",dbinfo.title1, dbinfo.max_ask);
+      printf("answerer attributes: %s %d\n",dbinfo.title2, dbinfo.max_answer);
+    }
+  else
+    status = handle_response(status,Request);
+
+  return(status);
+}
+
+
+t_change_dbinfo(Request)
+     REQUEST *Request;
+{
+  DBINFO dbinfo;
+  int status;
+  char buf[BUF_SIZE];
+  char mesg[BUF_SIZE];
+
+  status = OGetDBInfo(Request,&dbinfo);
+  if(status != SUCCESS)
+    {
+      status = handle_response(status,Request);
+      fprintf(stderr,"Error querying.\n");
+      return(ERROR);
+    }
+
+  sprintf(mesg, "title [%s]: ",dbinfo.title1);
+  buf[0] = '\0';
+  get_prompted_input(mesg,buf);
+  if(buf[0] != '\0')
+    {
+      strncpy(dbinfo.title1, buf,LABEL_SIZE);
+      dbinfo.title1[LABEL_SIZE-1] = '\0';
+    }
+  
+  sprintf(mesg, "# questions allowed to ask [%d]: ",dbinfo.max_ask);
+  buf[0] = '\0';
+  get_prompted_input(mesg,buf);
+  if(buf[0] != '\0')
+    {
+      if(atoi(buf) > 0)
+	dbinfo.max_ask = atoi(buf);
+    }
+
+  sprintf(mesg, "title [%s]: ",dbinfo.title2);
+  buf[0] = '\0';
+  get_prompted_input(mesg,buf);
+  if(buf[0] != '\0')
+    {
+      strncpy(dbinfo.title2, buf,LABEL_SIZE);
+      dbinfo.title2[LABEL_SIZE-1] = '\0';
+    }
+
+  sprintf(mesg, "# questions allowed to answer [%d]: ",dbinfo.max_answer);
+  buf[0] = '\0';
+  get_prompted_input(mesg,buf);
+  if(buf[0] != '\0')
+    {
+      if(atoi(buf) > 0)
+	dbinfo.max_answer = atoi(buf);
+    }
+
+  status = OSetDBInfo(Request, &dbinfo);
+  status = handle_response(status,Request);
+  return(status);
+}
