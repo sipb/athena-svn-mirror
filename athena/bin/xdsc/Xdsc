@@ -12,18 +12,28 @@
 *pane.toptext.scrollVertical:		whenNeeded
 *pane.toptext.cursor:			left_ptr
 *pane.toptext.translations: #override \
+<Btn1Down>(2):	Stub() \n\
+<Btn1Up>(2):	Update() \n\
 <Btn2Down>:	select-start() \n\
 <Btn2Up>:	Update() \n\
 <Btn3Down>:	select-start() \n\
 <Btn3Up>:	Update() \n\
+<Key>Return:	Update() \n\
+<Key>Right:	forward-character() \n\
+<Key>Left:	backward-character() \n\
+<Key>Down:	next-line() \n\
+<Key>Up:	previous-line() \n\
 Ctrl<Key>r:     search(backward) \n\
 Ctrl<Key>s:     search(forward) \n\
 <Key>:		Stub()
 
 *pane.bottext.preferredPaneSize:	250
 *pane.bottext.scrollVertical:		always
-*pane.bottext.scrollHorizontal:		whenNeeded
 *pane.bottext.allowResize:		True
+*pane.bottext.scrollHorizontal:		never
+*pane.bottext.wrap:			line
+*enterpopup*bodytext.autoFill: 		on
+
 
 *pane.label.label:			(no current meeting)
 *pane.label.showGrip:			True
@@ -41,14 +51,14 @@ Ctrl<Key>s:     search(forward) \n\
 *enterpopup.pane.bodytext.height:               150
 *enterpopup*subjecttext.translations: \
 #override \n\
-Ctrl<Key>Return:	TriggerSend(1) \n\
-<Key>Escape:		TriggerSend(0) \n\
-<Key>Return:		TriggerFocusMove(2)
+Ctrl<Key>Return:	TriggerSend(Go) \n\
+<Key>Escape:		TriggerSend(Cancel) \n\
+<Key>Return:		TriggerFocusMove(Next)
 *enterpopup*bodytext.translations: \
 #override \n\
-Shift<Key>Return:	TriggerFocusMove(1) \n\
-Ctrl<Key>Return:	TriggerSend(1) \n\
-<Key>Escape:		TriggerSend(0)
+Shift<Key>Return:	TriggerFocusMove(Prev) \n\
+Ctrl<Key>Return:	TriggerSend(Go) \n\
+<Key>Escape:		TriggerSend(Cancel)
 
 *enterpopup.pane.botbox.send.label:             Send
 *enterpopup.pane.botbox.abort.label:            Abort
@@ -62,9 +72,8 @@ Ctrl<Key>Return:	TriggerSend(1) \n\
 *writepopup.pane.text.showGrip:		False
 *writepopup*translations: \
 #override \n\
-Ctrl<Key>Return:	TriggerWrite(1) \n\
-<Key>Return:		Stub() \n\
-<Key>Escape:		TriggerWrite(0)
+<Key>Return:		TriggerWrite(Go) \n\
+<Key>Escape:		TriggerWrite(Cancel)
 
 *numpopup.pane.label.label:		Go to transaction number:
 *numpopup.pane.label.showGrip:		False
@@ -73,11 +82,10 @@ Ctrl<Key>Return:	TriggerWrite(1) \n\
 *numpopup.pane.text.showGrip:		False
 *numpopup*translations: \
 #override \n\
-<Key>Escape:		TriggerNum(0) \n\
-Ctrl<Key>Return:	TriggerNum(1) \n\
-<Key>Return:		Stub()
+<Key>Escape:		TriggerNum(Cancel) \n\
+<Key>Return:		TriggerNum(Go)
 
-*helppopup.pane.box.okay.label:		Dismiss
+*helppopup.pane.box.okay.label:		dismiss
 *helppopup.pane.helptext.height:	500
 *helppopup.pane.helptext.allowResize:	True
 
@@ -95,9 +103,9 @@ Ctrl<Key>Return:	TriggerNum(1) \n\
 *addpopup.pane.box3.allowResize:	False
 *addpopup*translations: \
 #override \n\
-<Key>Escape:            TriggerAdd(0) \n\
-Ctrl<Key>Return:        TriggerAdd(1) \n\
-<Key>Return:		TriggerFocusMove(0)
+<Key>Escape:            TriggerAdd(Cancel) \n\
+Ctrl<Key>Return:        TriggerAdd(Go) \n\
+<Key>Return:		TriggerFocusMove(Next)
 
 *deletepopup.pane.width:			600
 *deletepopup.pane.label.label:			Deleting a meeting
@@ -111,74 +119,78 @@ Ctrl<Key>Return:        TriggerAdd(1) \n\
 *deletepopup.pane.box2.width:			300
 *deletepopup*translations: \
 #override \n\
-<Key>Escape:		TriggerDelete(0) \n\
-Ctrl<Key>Return:	TriggerDelete(1) \n\
-<Key>Return:		Stub()
+<Key>Escape:		TriggerDelete(Cancel) \n\
+<Key>Return:		TriggerDelete(Go)
 
-*warningpopup.pane.box.acknowledge.label:	Dismiss
+*configurebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
+*modebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
+*showbutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
+*gotobutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
+*enterbutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
+*botbox.writebutton.leftBitmap: /usr/lib/X11/bitmaps/menu12
+
+*warningpopup.pane.box.acknowledge.label:	dismiss
 *warningpopup.pane.label1.showGrip:		False
 *warningpopup.pane.label2.showGrip:		False
 *warningpopup.pane.box.showGrip:		False
 
 *pane.accelerators: \
 #override \n\
-Shift<Key>N:	KeyCallback(1,2) \n\
-Shift<Key>P:	KeyCallback(1,3) \n\
-<Key>d:		PopdownCB() \n\
-!<Key>n:	KeyCallback(1,0) \n\
-!<Key>p:	KeyCallback(1,1) \n\
+Shift<Key>N:	KeyCallback(nchainbutton) \n\
+Shift<Key>P:	KeyCallback(pchainbutton) \n\
+!<Key>n:	KeyCallback(nextbutton) \n\
+!<Key>p:	KeyCallback(prevbutton) \n\
 <Key>space:	DoTheRightThing() \n\
 <Key>Delete:	DoTheRightThingInReverse() \n\
-<Key>Down:      KeyCallback(0,0) \n\
-<Key>Up:        KeyCallback(0,1) \n\
-<Key>u:         KeyCallback(0,2) \n\
-Shift<Key>H:    KeyCallback(0,6) \n\
-Shift<Key>Q:    KeyCallback(0,7) \n\
-<Key>Right:     KeyCallback(1,0) \n\
-<Key>Left:      KeyCallback(1,1) \n\
-<Key>c:		KeyCallback(0,3) \n\
-<Key>m:		KeyCallback(0,4) \n\
-!<Key>s:	KeyCallback(0,5) \n\
-!<Key>g:	KeyCallback(1,4) \n\
-<Key>e:		KeyCallback(1,5) \n\
-<Key>w:		KeyCallback(1,6) \n\
+Shift<Key>D:	KeyCallback(downbutton) \n\
+Shift<Key>U:	KeyCallback(upbutton) \n\
+<Key>u:         KeyCallback(updatebutton) \n\
+Shift<Key>H:    KeyCallback(helpbutton) \n\
+Shift<Key>Q:    KeyCallback(quitbutton) \n\
+<Key>c:		KeyCallback(configurebutton) \n\
+<Key>m:		KeyCallback(modebutton) \n\
+!<Key>s:	KeyCallback(showbutton) \n\
+<Key>g:		KeyCallback(gotobutton) \n\
+<Key>e:		KeyCallback(enterbutton) \n\
+<Key>w:		KeyCallback(writebutton) \n\
+<Key>d:		PopdownCB() \n\
 ~Ctrl<Key>h:	HelpCB()
 
 *configure.translations: \
 #override \n\
-<Key>a: TopCallback(3,0) \n\
-<Key>d: TopCallback(3,1) \n\
-<Key>: TopCallback(-1,-1) \n\
+<Key>a: MenuCallback(configurebutton, addbutton) \n\
+<Key>d: MenuCallback(configurebutton, deletebutton) \n\
+<Key>: MenuCallback(abort) \n\
 
 *mode.translations: \
 #override \n\
-<Key>t: TopCallback(4,0) \n\
-<Key>m: TopCallback(4,1) \n\
-<Key>: TopCallback(-1,-1) \n\
+<Key>t: MenuCallback(modebutton, transbutton) \n\
+<Key>m: MenuCallback(modebutton, meetingbutton) \n\
+<Key>: MenuCallback(abort) \n\
 
 *show.translations: \
 #override \n\
-<Key>u: TopCallback(5,0) \n\
-<Key>a: TopCallback(5,1) \n\
-<Key>b: TopCallback(5,2) \n\
-<Key>: TopCallback(-1,-1) \n\
+<Key>u: MenuCallback(showbutton, unreadbutton) \n\
+<Key>a: MenuCallback(showbutton, allbutton) \n\
+<Key>b: MenuCallback(showbutton, backbutton) \n\
+<Key>: MenuCallback(abort) \n\
 
 *goto.translations: \
 #override \n\
-<Key>n: BotCallback(4,0) \n\
-<Key>f: BotCallback(4,1) \n\
-<Key>l: BotCallback(4,2) \n\
-<Key>: BotCallback(-1,-1) \n\
+<Key>n: MenuCallback(gotobutton, numberbutton) \n\
+<Key>f: MenuCallback(gotobutton, firstbutton) \n\
+<Key>l: MenuCallback(gotobutton, lastbutton) \n\
+<Key>: MenuCallback(abort) \n\
 
 *enter.translations: \
 #override \n\
-<Key>r: BotCallback(5,0) \n\
-<Key>n: BotCallback(5,1) \n\
-<Key>: BotCallback(-1,-1) \n\
+<Key>r: MenuCallback(enterbutton, replybutton) \n\
+<Key>n: MenuCallback(enterbutton, newbutton) \n\
+<Key>: MenuCallback(abort) \n\
 
 *write.translations: \
 #override \n\
-<Key>w: BotCallback(6,0) \n\
-<Key>m: BotCallback(6,1) \n\
-<Key>: BotCallback(-1,-1) \n\
+<Key>w: MenuCallback(writebutton, writebutton) \n\
+<Key>m: MenuCallback(writebutton, mailbutton) \n\
+<Key>: MenuCallback(abort) \n\
 
