@@ -22,7 +22,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.11 1996-11-15 04:21:02 ghudson Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.12 1998-12-22 21:27:08 rbasch Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */
@@ -43,6 +43,7 @@ typedef int bool;
 #define CPNULL		((char *) NULL)
 
 extern char *gethinfobyname(), *getmxbyname();
+extern struct hostent *hostinfo_gethostbyname(), *hostinfo_gethostbyaddr();
 
 static char *usage[] = {
   "Usage: %s <options> <host-names-or-addresses>",
