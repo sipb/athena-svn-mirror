@@ -1,6 +1,6 @@
 /* 
  *
- * $Id: Imakefile,v 1.2 1991-03-21 10:48:43 epeisach Exp $
+ * $Id: Imakefile,v 1.3 1991-03-21 10:50:56 epeisach Exp $
  *
 */
 
@@ -9,7 +9,7 @@ SimpleProgram(just,just.o,,$(ATHBINDIR))
 
 install::
 	$(RM) ${DESTDIR}${ATHBINDIR}/fill
-	ln ${DESTDIR}${CONFDIR}/just ${DESTDIR}${ATHBINDIR}/fill
+	ln ${DESTDIR}${ATHBINDIR}/just ${DESTDIR}${ATHBINDIR}/fill
 
 install_man(just.1,just.1)
 install_man(fill.1,fill.1)
