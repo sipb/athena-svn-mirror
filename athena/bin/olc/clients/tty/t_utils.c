@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.1 1989-07-06 22:06:20 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.2 1989-07-16 17:03:54 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -245,7 +245,7 @@ handle_response(response, req)
       return(ERROR); 	   
 
     case USER_NOT_FOUND:
-      fprintf(stderr,"user not found.\n");
+      fprintf(stderr,"User, %s, not found.\n",req->target.username);
       return(ERROR); 
 
 #ifdef KERBEROS     /* these error codes are < 100 */
@@ -360,7 +360,7 @@ what_now(file, edit_first, editor)
 	{
 	  (void) get_prompted_input("\nWhat now? (type '?' for options): ", 
 				    inbuf);
-	  if (*inbuf == '?' || *inbuf == '\0') {
+	  if (*inbuf == '?' || *inbuf == '\0' || *inbuf == 'h') {
 	    printf("Commands are:\n");
 	    printf("\t?\tPrint help information.\n");
 	    printf("\te\tEdit the message.\n");
@@ -379,7 +379,7 @@ what_now(file, edit_first, editor)
 	return(SUCCESS);
       else if (*inbuf == 'l')
 	display_file(file);
-      else if (*inbuf == 'h')
+      else if (*inbuf == 'a')
 	printf("hello!\n");
 	  
     }

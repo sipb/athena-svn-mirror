@@ -54,7 +54,7 @@ t_done(Request,title,off)
            printf("and OLC will save your question until a consultant can answer it.  If you\n");
            printf("wish to withdraw your question, use the 'cancel' command.\n");
 	   get_prompted_input("Really done? [y/n] ", buf);
-	   if(string_equiv(title,"y",1))
+	   if(string_equiv(title,"n",1))
 	     {
                printf("OK, your question will remain in the queue.\n");
 	       return(NO_ACTION);
@@ -95,7 +95,9 @@ t_done(Request,title,off)
 
     case OK:
       printf("The consultant has been notified that you are finished with your question.\n");
-      exit(0);
+      printf("Thank you for using OLC!\n");
+     if(OLC)
+        exit(0);
 
     case SUCCESS:
       printf("Your question is resolved. Thank you for using OLC.\n");
@@ -160,7 +162,8 @@ t_cancel(Request,title)
 
     case OK:
       printf("Your question has been cancelled.\n");
-      exit(0);
+      if(OLC)
+         exit(0);
 
     case SIGNED_OFF:
       printf("Question cancelled.  You have signed off of OLC.\n");

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.1 1989-07-06 22:05:48 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_messages.c,v 1.2 1989-07-16 17:02:57 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -45,7 +45,8 @@ t_replay(Request,file, display)
 
     case NOT_CONNECTED:
       fprintf(stderr,
-	"You do not have a question and are not connected to another user.\n");
+	"%s (%d) does not have a question.\n",
+	 Request->target.username, Request->target.instance);
       break;
 
     case PERMISSION_DENIED:

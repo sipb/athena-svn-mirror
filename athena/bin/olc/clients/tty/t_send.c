@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.1 1989-07-06 22:06:05 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.2 1989-07-16 17:03:36 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -106,8 +106,8 @@ t_reply(Request,file,editor)
       break;
 
     case NOT_CONNECTED:
-      printf("You are not connected to a consultant but the next one\n");
-      printf("to answer your question will receive your message.\n");
+      printf("You are not currently connected to a consultant but the next one\n");
+      printf("available will receive your message.\n");
       status = ERROR;
       break;
 
@@ -116,7 +116,7 @@ t_reply(Request,file,editor)
       break;
 
     case PERMISSION_DENIED:
-      fprintf(stderr, "You no longer allowed to send to %s (%d).\n",
+      fprintf(stderr, "You are no longer allowed to send to %s (%d).\n",
 	      Request->target.username,
 	      Request->target.instance);
       status = ERROR;
@@ -286,8 +286,11 @@ t_mail(Request,file,editor)
 	}
       break;
 
+    case NOT_CONNECTED:
+      printf("You are not connected.\n");
+      return(ERROR);
     default:
-      status = handle_response(status, &Request);
+      status = handle_response(status, Request);
       return(status);
     }
 
