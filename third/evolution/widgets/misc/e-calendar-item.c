@@ -7,9 +7,8 @@
  * Copyright 2000, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -2890,17 +2889,25 @@ e_calendar_item_signal_emission_idle_cb	(gpointer data)
 
 	calitem->signal_emission_idle_id = 0;
 
+	/* We ref the calitem & check in case it gets destroyed, since we
+	   were getting a free memory write here. */
+	gtk_object_ref (calitem);
+
 	if (calitem->date_range_changed) {
+		calitem->date_range_changed = FALSE;
 		gtk_signal_emit (GTK_OBJECT (calitem),
 				 e_calendar_item_signals[DATE_RANGE_CHANGED]);
-		calitem->date_range_changed = FALSE;
 	}
 
-	if (calitem->selection_changed) {
+	if (GTK_OBJECT_DESTROYED (calitem)) {
+		g_warning ("e_calendar_item_signal_emission_idle_cb: item destroyed");
+	} else if (calitem->selection_changed) {
+		calitem->selection_changed = FALSE;
 		gtk_signal_emit (GTK_OBJECT (calitem),
 				 e_calendar_item_signals[SELECTION_CHANGED]);
-		calitem->selection_changed = FALSE;
 	}
+
+	gtk_object_unref (calitem);
 
 	GDK_THREADS_LEAVE ();
 	return FALSE;

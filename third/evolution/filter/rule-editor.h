@@ -3,19 +3,19 @@
  *
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifndef _RULE_EDITOR_H
@@ -30,6 +30,7 @@
 
 typedef struct _RuleEditor	RuleEditor;
 typedef struct _RuleEditorClass	RuleEditorClass;
+typedef struct _RuleEditorUndo	RuleEditorUndo;
 
 struct _RuleEditor {
 	GnomeDialog parent;
@@ -38,8 +39,13 @@ struct _RuleEditor {
 	struct _RuleContext *context;
 	struct _FilterRule *current;
 	struct _FilterRule *edit;	/* for editing/adding rules, so we only do 1 at a time */
-
+	
+	GtkWidget *dialog;
+	
 	char *source;
+
+	struct _RuleEditorUndo *undo_log;	/* cancel/undo log */
+	unsigned int undo_active:1; /* we're performing undo */
 
 	struct _RuleEditorPrivate *priv;
 };
@@ -54,6 +60,22 @@ struct _RuleEditorClass {
 	struct _FilterRule *(*create_rule)(RuleEditor *);
 
 	/* signals */
+};
+
+enum {
+	RULE_EDITOR_LOG_EDIT,
+	RULE_EDITOR_LOG_ADD,
+	RULE_EDITOR_LOG_REMOVE,
+	RULE_EDITOR_LOG_RANK,
+};
+
+struct _RuleEditorUndo {
+	struct _RuleEditorUndo *next;
+
+	unsigned int type;
+	struct _FilterRule *rule;
+	int rank;
+	int newrank;
 };
 
 struct _GladeXML;

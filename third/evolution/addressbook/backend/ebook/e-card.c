@@ -95,7 +95,6 @@ static void e_card_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 static void assign_string(VObject *vobj, char *default_charset, char **string);
 
 char *e_v_object_get_child_value(VObject *vobj, char *name, char *default_charset);
-static ECardDate e_card_date_from_string (char *str);
 
 static void parse_bday(ECard *card, VObject *object, char *default_charset);
 static void parse_full_name(ECard *card, VObject *object, char *default_charset);
@@ -326,7 +325,7 @@ e_card_get_id (ECard *card)
 {
 	g_return_val_if_fail (card && E_IS_CARD (card), NULL);
 
-	return card->id;
+	return card->id ? card->id : "";
 }
 
 /**
@@ -344,7 +343,7 @@ e_card_set_id (ECard *card, const char *id)
 
 	if ( card->id )
 		g_free(card->id);
-	card->id = g_strdup(id);
+	card->id = g_strdup(id ? id : "");
 }
 
 EBook *
@@ -367,7 +366,7 @@ e_card_set_book (ECard *card, EBook *book)
 		gtk_object_ref (GTK_OBJECT (card->book));
 }
 
-static gchar *
+gchar *
 e_card_date_to_string (ECardDate *dt)
 {
 	if (dt) 
@@ -383,27 +382,110 @@ static VObject *
 addPropValueUTF8(VObject *o, const char *p, const char *v)
 {
 	VObject *prop = addPropValue (o, p, v);
-	if (!e_utf8_is_ascii (v))
-		addPropValue (prop, "CHARSET", "UTF-8");
+	for (; *v; v++) {
+		if ((*v) & 0x80) {
+			addPropValue (prop, "CHARSET", "UTF-8");
+			for (; *v; v++) {
+				if (*v == '\n') {
+					addProp(prop, VCQuotedPrintableProp);
+					return prop;
+				}
+			}
+			return prop;
+		}
+		if (*v == '\n') {
+			addProp(prop, VCQuotedPrintableProp);
+			for (; *v; v++) {
+				if ((*v) & 0x80) {
+					addPropValue (prop, "CHARSET", "UTF-8");
+					return prop;
+				}
+			}
+			return prop;
+		}
+	}
 	return prop;
 }
 
-#define ADD_PROP_VALUE(o, p, v)              (assumeUTF8 ? (addPropValue ((o), (p), (v))) : addPropValueUTF8 ((o), (p), (v)))
-#define ADD_PROP_VALUE_SET_IS_ASCII(o, p, v) (addPropValue ((o), (p), (v)), is_ascii = is_ascii && e_utf8_is_ascii ((v)))
+static VObject *
+addPropValueQP(VObject *o, const char *p, const char *v)
+{
+	VObject *prop = addPropValue (o, p, v);
+	for (; *v; v++) {
+		if (*v == '\n') {
+			addProp(prop, VCQuotedPrintableProp);
+			break;
+		}
+	}
+	return prop;
+}
+
+static void
+addPropValueSets (VObject *o, const char *p, const char *v, gboolean assumeUTF8, gboolean *is_ascii, gboolean *has_return)
+{
+	addPropValue (o, p, v);
+	if (*has_return && (assumeUTF8 || !*is_ascii))
+		return;
+	if (*has_return) {
+		for (; *v; v++) {
+			if (*v & 0x80) {
+				*is_ascii = FALSE;
+				return;
+			}
+		}
+		return;
+	}
+	if (assumeUTF8 || !*is_ascii) {
+		for (; *v; v++) {
+			if (*v == '\n') {
+				*has_return = TRUE;
+				return;
+			}
+		}
+		return;
+	}
+	for (; *v; v++) {
+		if (*v & 0x80) {
+			*is_ascii = FALSE;
+			for (; *v; v++) {
+				if (*v == '\n') {
+					*has_return = TRUE;
+					return;
+				}
+			}
+			return;
+		}
+		if (*v == '\n') {
+			*has_return = TRUE;
+			for (; *v; v++) {
+				if (*v & 0x80) {
+					*is_ascii = FALSE;
+					return;
+				}
+			}
+			return;
+		}
+	}
+	return;
+}
+
+#define ADD_PROP_VALUE(o, p, v)              (assumeUTF8 ? (addPropValueQP ((o), (p), (v))) : addPropValueUTF8 ((o), (p), (v)))
+#define ADD_PROP_VALUE_SET_IS_ASCII(o, p, v) (addPropValueSets ((o), (p), (v), assumeUTF8, &is_ascii, &has_return))
+
 
 static VObject *
-e_card_get_vobject (ECard *card, gboolean assumeUTF8)
+e_card_get_vobject (const ECard *card, gboolean assumeUTF8)
 {
 	VObject *vobj;
 	
 	vobj = newVObject (VCCardProp);
 
-	if ( card->file_as && *card->file_as )
+	if (card->file_as && *card->file_as)
 		ADD_PROP_VALUE(vobj, "X-EVOLUTION-FILE-AS", card->file_as);
 	else if (card->file_as)
 		addProp(vobj, "X-EVOLUTION-FILE_AS");
 
-	if ( card->fname )
+	if (card->fname && *card->fname)
 		ADD_PROP_VALUE(vobj, VCFullNameProp, card->fname);
 	else if (card->fname)
 		addProp(vobj, VCFullNameProp);
@@ -411,6 +493,7 @@ e_card_get_vobject (ECard *card, gboolean assumeUTF8)
 	if ( card->name && (card->name->prefix || card->name->given || card->name->additional || card->name->family || card->name->suffix) ) {
 		VObject *nameprop;
 		gboolean is_ascii = TRUE;
+		gboolean has_return = FALSE;
 		nameprop = addProp(vobj, VCNameProp);
 		if ( card->name->prefix )
 			ADD_PROP_VALUE_SET_IS_ASCII(nameprop, VCNamePrefixesProp, card->name->prefix);
@@ -422,6 +505,8 @@ e_card_get_vobject (ECard *card, gboolean assumeUTF8)
 			ADD_PROP_VALUE_SET_IS_ASCII(nameprop, VCFamilyNameProp, card->name->family);
 		if ( card->name->suffix )
 			ADD_PROP_VALUE_SET_IS_ASCII(nameprop, VCNameSuffixesProp, card->name->suffix);
+		if (has_return)
+			addProp(nameprop, VCQuotedPrintableProp);
 		if (!(is_ascii || assumeUTF8))
 			addPropValue (nameprop, "CHARSET", "UTF-8");
 	}
@@ -435,25 +520,28 @@ e_card_get_vobject (ECard *card, gboolean assumeUTF8)
 			VObject *addressprop;
 			ECardDeliveryAddress *address = (ECardDeliveryAddress *) e_iterator_get(iterator);
 			gboolean is_ascii = TRUE;
+			gboolean has_return = FALSE;
 
 			addressprop = addProp(vobj, VCAdrProp);
 			
 			set_address_flags (addressprop, address->flags);
-			if ( address->po )
+			if (address->po)
 				ADD_PROP_VALUE_SET_IS_ASCII(addressprop, VCPostalBoxProp, address->po);
-			if ( address->ext )
+			if (address->ext)
 				ADD_PROP_VALUE_SET_IS_ASCII(addressprop, VCExtAddressProp, address->ext);
-			if ( address->street )
+			if (address->street)
 				ADD_PROP_VALUE_SET_IS_ASCII(addressprop, VCStreetAddressProp, address->street);
-			if ( address->city )
+			if (address->city)
 				ADD_PROP_VALUE_SET_IS_ASCII(addressprop, VCCityProp, address->city);
-			if ( address->region )
+			if (address->region)
 				ADD_PROP_VALUE_SET_IS_ASCII(addressprop, VCRegionProp, address->region);
-			if ( address->code )
+			if (address->code)
 				ADD_PROP_VALUE_SET_IS_ASCII(addressprop, VCPostalCodeProp, address->code);
-			if ( address->country )
+			if (address->country)
 				ADD_PROP_VALUE_SET_IS_ASCII(addressprop, VCCountryNameProp, address->country);
-			addProp(addressprop, VCQuotedPrintableProp);
+
+			if (has_return)
+				addProp(addressprop, VCQuotedPrintableProp);
 			if (!(is_ascii || assumeUTF8))
 				addPropValue (addressprop, "CHARSET", "UTF-8");
 		}
@@ -471,7 +559,6 @@ e_card_get_vobject (ECard *card, gboolean assumeUTF8)
 				labelprop = addProp(vobj, VCDeliveryLabelProp);
 			
 			set_address_flags (labelprop, address_label->flags);
-			addProp(labelprop, VCQuotedPrintableProp);
 		}
 		gtk_object_unref(GTK_OBJECT(iterator));
 	}
@@ -511,12 +598,16 @@ e_card_get_vobject (ECard *card, gboolean assumeUTF8)
 	if (card->org || card->org_unit) {
 		VObject *orgprop;
 		gboolean is_ascii = TRUE;
+		gboolean has_return = FALSE;
 		orgprop = addProp(vobj, VCOrgProp);
 		
 		if (card->org)
 			ADD_PROP_VALUE_SET_IS_ASCII(orgprop, VCOrgNameProp, card->org);
 		if (card->org_unit)
 			ADD_PROP_VALUE_SET_IS_ASCII(orgprop, VCOrgUnitProp, card->org_unit);
+
+		if (has_return)
+			addProp(orgprop, VCQuotedPrintableProp);
 		if (!(is_ascii || assumeUTF8))
 			addPropValue (orgprop, "CHARSET", "UTF-8");
 	}
@@ -554,7 +645,7 @@ e_card_get_vobject (ECard *card, gboolean assumeUTF8)
 	}
 	
 	if (card->caluri)
-		addPropValue(vobj, "CALURI", card->caluri);
+		addPropValueQP(vobj, "CALURI", card->caluri);
 
 	if (card->fburl)
 		ADD_PROP_VALUE(vobj, "FBURL", card->fburl);
@@ -563,7 +654,6 @@ e_card_get_vobject (ECard *card, gboolean assumeUTF8)
 		VObject *noteprop;
 
 		noteprop = ADD_PROP_VALUE(vobj, VCNoteProp, card->note);
-		addProp(noteprop, VCQuotedPrintableProp);
 	}
 
 	if (card->last_use) {
@@ -638,7 +728,7 @@ e_card_get_vobject (ECard *card, gboolean assumeUTF8)
 		}
 	}
 
-	ADD_PROP_VALUE (vobj, VCUniqueStringProp, card->id);
+	addPropValueQP (vobj, VCUniqueStringProp, (card->id ? card->id : ""));
 
 #if 0	
 	if (crd->photo.prop.used) {
@@ -748,7 +838,7 @@ e_card_get_vcard_assume_utf8 (ECard *card)
  * Returns: a string in vCard format.
  */
 char *
-e_card_list_get_vcard (GList *list)
+e_card_list_get_vcard (const GList *list)
 {
 	VObject *vobj;
 
@@ -781,10 +871,9 @@ parse_file_as(ECard *card, VObject *vobj, char *default_charset)
 static void
 parse_name(ECard *card, VObject *vobj, char *default_charset)
 {
-	if ( card->name ) {
-		e_card_name_free(card->name);
-	}
-	card->name = g_new(ECardName, 1);
+	e_card_name_unref(card->name);
+
+	card->name = e_card_name_new();
 
 	card->name->family     = e_v_object_get_child_value (vobj, VCFamilyNameProp,      default_charset);
 	card->name->given      = e_v_object_get_child_value (vobj, VCGivenNameProp,       default_charset);
@@ -832,7 +921,7 @@ parse_bday(ECard *card, VObject *vobj, char *default_charset)
 static void
 parse_phone(ECard *card, VObject *vobj, char *default_charset)
 {
-	ECardPhone *next_phone = g_new(ECardPhone, 1);
+	ECardPhone *next_phone = e_card_phone_new ();
 	EList *list;
 
 	assign_string(vobj, default_charset, &(next_phone->number));
@@ -842,13 +931,13 @@ parse_phone(ECard *card, VObject *vobj, char *default_charset)
 		       "phone", &list,
 		       NULL);
 	e_list_append(list, next_phone);
-	e_card_phone_free (next_phone);
+	e_card_phone_unref (next_phone);
 }
 
 static void
 parse_address(ECard *card, VObject *vobj, char *default_charset)
 {
-	ECardDeliveryAddress *next_addr = g_new(ECardDeliveryAddress, 1);
+	ECardDeliveryAddress *next_addr = e_card_delivery_address_new ();
 	EList *list;
 
 	next_addr->flags   = get_address_flags (vobj);
@@ -864,13 +953,13 @@ parse_address(ECard *card, VObject *vobj, char *default_charset)
 		       "address", &list,
 		       NULL);
 	e_list_append(list, next_addr);
-	e_card_delivery_address_free (next_addr);
+	e_card_delivery_address_unref (next_addr);
 }
 
 static void
 parse_address_label(ECard *card, VObject *vobj, char *default_charset)
 {
-	ECardAddrLabel *next_addr = g_new(ECardAddrLabel, 1);
+	ECardAddrLabel *next_addr = e_card_address_label_new ();
 	EList *list;
 
 	next_addr->flags   = get_address_flags (vobj);
@@ -880,7 +969,7 @@ parse_address_label(ECard *card, VObject *vobj, char *default_charset)
 		       "address_label", &list,
 		       NULL);
 	e_list_append(list, next_addr);
-	e_card_address_label_free (next_addr);
+	e_card_address_label_unref (next_addr);
 }
 
 static void
@@ -1169,7 +1258,7 @@ parse_arbitrary(ECard *card, VObject *vobj, char *default_charset)
 		       "arbitrary", &list,
 		       NULL);
 	e_list_append(list, arbitrary);
-	e_card_arbitrary_free(arbitrary);
+	e_card_arbitrary_unref(arbitrary);
 }
 
 static void
@@ -1337,6 +1426,7 @@ e_card_phone_new (void)
 {
 	ECardPhone *newphone = g_new(ECardPhone, 1);
 
+	newphone->ref_count = 1;
 	newphone->number = NULL;
 	newphone->flags = 0;
 	
@@ -1344,20 +1434,31 @@ e_card_phone_new (void)
 }
 
 void
-e_card_phone_free (ECardPhone *phone)
+e_card_phone_unref (ECardPhone *phone)
 {
-	if ( phone ) {
-		g_free(phone->number);
-
-		g_free(phone);
+	if (phone) {
+		phone->ref_count --;
+		if (phone->ref_count == 0) {
+			g_free(phone->number);
+			g_free(phone);
+		}
 	}
+}
+
+ECardPhone *
+e_card_phone_ref (const ECardPhone *phone)
+{
+	ECardPhone *phone_mutable = (ECardPhone *) phone;
+	if (phone_mutable)
+		phone_mutable->ref_count ++;
+	return phone_mutable;
 }
 
 ECardPhone *
 e_card_phone_copy (const ECardPhone *phone)
 {
 	if ( phone ) {
-		ECardPhone *phone_copy = g_new(ECardPhone, 1);
+		ECardPhone *phone_copy = e_card_phone_new();
 		phone_copy->number = g_strdup(phone->number);
 		phone_copy->flags  = phone->flags;
 		return phone_copy;
@@ -1370,6 +1471,7 @@ e_card_delivery_address_new (void)
 {
 	ECardDeliveryAddress *newaddr = g_new(ECardDeliveryAddress, 1);
 
+	newaddr->ref_count = 1;
 	newaddr->po      = NULL;
 	newaddr->ext     = NULL;
 	newaddr->street  = NULL;
@@ -1383,26 +1485,37 @@ e_card_delivery_address_new (void)
 }
 
 void
-e_card_delivery_address_free (ECardDeliveryAddress *addr)
+e_card_delivery_address_unref (ECardDeliveryAddress *addr)
 {
 	if ( addr ) {
-		g_free(addr->po);
-		g_free(addr->ext);
-		g_free(addr->street);
-		g_free(addr->city);
-		g_free(addr->region);
-		g_free(addr->code);
-		g_free(addr->country);
-
-		g_free(addr);
+		addr->ref_count --;
+		if (addr->ref_count == 0) {
+			g_free(addr->po);
+			g_free(addr->ext);
+			g_free(addr->street);
+			g_free(addr->city);
+			g_free(addr->region);
+			g_free(addr->code);
+			g_free(addr->country);
+			g_free(addr);
+		}
 	}
+}
+
+ECardDeliveryAddress *
+e_card_delivery_address_ref (const ECardDeliveryAddress *addr)
+{
+	ECardDeliveryAddress *addr_mutable = (ECardDeliveryAddress *) addr;
+	if (addr_mutable)
+		addr_mutable->ref_count ++;
+	return addr_mutable;
 }
 
 ECardDeliveryAddress *
 e_card_delivery_address_copy (const ECardDeliveryAddress *addr)
 {
 	if ( addr ) {
-		ECardDeliveryAddress *addr_copy = g_new(ECardDeliveryAddress, 1);
+		ECardDeliveryAddress *addr_copy = e_card_delivery_address_new ();
 		addr_copy->po      = g_strdup(addr->po     );
 		addr_copy->ext     = g_strdup(addr->ext    );
 		addr_copy->street  = g_strdup(addr->street );
@@ -1431,7 +1544,7 @@ e_card_delivery_address_is_empty (const ECardDeliveryAddress *addr)
 ECardDeliveryAddress *
 e_card_delivery_address_from_label(const ECardAddrLabel *label)
 {
-	ECardDeliveryAddress *addr = g_new(ECardDeliveryAddress, 1);
+	ECardDeliveryAddress *addr = e_card_delivery_address_new ();
 	EAddressWestern *western = e_address_western_parse (label->data);
 	
 	addr->po      = g_strdup (western->po_box     );
@@ -1507,6 +1620,7 @@ e_card_address_label_new (void)
 {
 	ECardAddrLabel *newaddr = g_new(ECardAddrLabel, 1);
 
+	newaddr->ref_count = 1;
 	newaddr->data = NULL;
 	newaddr->flags = 0;
 	
@@ -1514,22 +1628,33 @@ e_card_address_label_new (void)
 }
 
 void
-e_card_address_label_free (ECardAddrLabel *addr)
+e_card_address_label_unref (ECardAddrLabel *addr)
 {
-	if ( addr ) {
-		g_free(addr->data);
-
-		g_free(addr);
+	if (addr) {
+		addr->ref_count --;
+		if (addr->ref_count == 0) {
+			g_free(addr->data);
+			g_free(addr);
+		}
 	}
+}
+
+ECardAddrLabel *
+e_card_address_label_ref (const ECardAddrLabel *addr)
+{
+	ECardAddrLabel *addr_mutable = (ECardAddrLabel *) addr;
+	if (addr_mutable)
+		addr_mutable->ref_count ++;
+	return addr_mutable;
 }
 
 ECardAddrLabel *
 e_card_address_label_copy (const ECardAddrLabel *addr)
 {
 	if ( addr ) {
-		ECardAddrLabel *addr_copy = g_new(ECardAddrLabel, 1);
-		addr_copy->data    = g_strdup(addr->data);
-		addr_copy->flags   = addr->flags;
+		ECardAddrLabel *addr_copy = e_card_address_label_new ();
+		addr_copy->data  = g_strdup(addr->data);
+		addr_copy->flags = addr->flags;
 		return addr_copy;
 	} else
 		return NULL;
@@ -1537,8 +1662,9 @@ e_card_address_label_copy (const ECardAddrLabel *addr)
 
 ECardName *e_card_name_new(void)
 {
-	ECardName *newname = g_new(ECardName, 1);
+	ECardName *newname  = g_new(ECardName, 1);
 
+	newname->ref_count  = 1;
 	newname->prefix     = NULL;
 	newname->given      = NULL;
 	newname->additional = NULL;
@@ -1549,29 +1675,36 @@ ECardName *e_card_name_new(void)
 }
 
 void
-e_card_name_free(ECardName *name)
+e_card_name_unref(ECardName *name)
 {
 	if (name) {
-		if ( name->prefix )
-			g_free(name->prefix);
-		if ( name->given )
-			g_free(name->given);
-		if ( name->additional )
-			g_free(name->additional);
-		if ( name->family )
-			g_free(name->family);
-		if ( name->suffix )
-			g_free(name->suffix);
-		g_free ( name );
+		name->ref_count --;
+		if (name->ref_count == 0) {
+			g_free (name->prefix);
+			g_free (name->given);
+			g_free (name->additional);
+			g_free (name->family);
+			g_free (name->suffix);
+			g_free (name);
+		}
 	}
+}
+
+ECardName *
+e_card_name_ref(const ECardName *name)
+{
+	ECardName *name_mutable = (ECardName *) name;
+	if (name_mutable)
+		name_mutable->ref_count ++;
+	return name_mutable;
 }
 
 ECardName *
 e_card_name_copy(const ECardName *name)
 {
 	if (name) {
-		ECardName *newname = g_new(ECardName, 1);
-		
+		ECardName *newname = e_card_name_new ();
+               
 		newname->prefix = g_strdup(name->prefix);
 		newname->given = g_strdup(name->given);
 		newname->additional = g_strdup(name->additional);
@@ -1582,6 +1715,7 @@ e_card_name_copy(const ECardName *name)
 	} else
 		return NULL;
 }
+
 
 char *
 e_card_name_to_string(const ECardName *name)
@@ -1607,7 +1741,7 @@ e_card_name_to_string(const ECardName *name)
 ECardName *
 e_card_name_from_string(const char *full_name)
 {
-	ECardName *name = g_new(ECardName, 1);
+	ECardName *name = e_card_name_new ();
 	ENameWestern *western = e_name_western_parse (full_name);
 	
 	name->prefix     = g_strdup (western->prefix);
@@ -1625,17 +1759,32 @@ ECardArbitrary *
 e_card_arbitrary_new(void)
 {
 	ECardArbitrary *arbitrary = g_new(ECardArbitrary, 1);
+	arbitrary->ref_count = 1;
 	arbitrary->key = NULL;
 	arbitrary->type = NULL;
 	arbitrary->value = NULL;
 	return arbitrary;
 }
 
+void
+e_card_arbitrary_unref(ECardArbitrary *arbitrary)
+{
+	if (arbitrary) {
+		arbitrary->ref_count --;
+		if (arbitrary->ref_count == 0) {
+			g_free(arbitrary->key);
+			g_free(arbitrary->type);
+			g_free(arbitrary->value);
+			g_free(arbitrary);
+		}
+	}
+}
+
 ECardArbitrary *
 e_card_arbitrary_copy(const ECardArbitrary *arbitrary)
 {
 	if (arbitrary) {
-		ECardArbitrary *arb_copy = g_new(ECardArbitrary, 1);
+		ECardArbitrary *arb_copy = e_card_arbitrary_new ();
 		arb_copy->key = g_strdup(arbitrary->key);
 		arb_copy->type = g_strdup(arbitrary->type);
 		arb_copy->value = g_strdup(arbitrary->value);
@@ -1644,15 +1793,13 @@ e_card_arbitrary_copy(const ECardArbitrary *arbitrary)
 		return NULL;
 }
 
-void
-e_card_arbitrary_free(ECardArbitrary *arbitrary)
+ECardArbitrary *
+e_card_arbitrary_ref(const ECardArbitrary *arbitrary)
 {
-	if (arbitrary) {
-		g_free(arbitrary->key);
-		g_free(arbitrary->type);
-		g_free(arbitrary->value);
-	}
-	g_free(arbitrary);
+	ECardArbitrary *arbitrary_mutable = (ECardArbitrary *) arbitrary;
+	if (arbitrary_mutable)
+		arbitrary_mutable->ref_count ++;
+	return arbitrary_mutable;
 }
 
 /* EMail matching */
@@ -1744,8 +1891,7 @@ e_card_destroy (GtkObject *object)
 		gtk_object_unref (GTK_OBJECT (card->book));
 	g_free(card->file_as);
 	g_free(card->fname);
-	if ( card->name )
-		e_card_name_free(card->name);
+	e_card_name_unref(card->name);
 	g_free(card->bday);
 
 	g_free(card->url);
@@ -1792,19 +1938,19 @@ e_card_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		if (card->file_as == NULL)
 			card->file_as = g_strdup("");
 		break;
+
 	case ARG_FULL_NAME:
 		g_free(card->fname);
 		card->fname = g_strdup(GTK_VALUE_STRING(*arg));
-		if (card->name)
-			e_card_name_free (card->name);
 		if (card->fname == NULL)
 			card->fname = g_strdup("");
+
+		e_card_name_unref (card->name);
 		card->name = e_card_name_from_string (card->fname);
 		break;
 	case ARG_NAME:
-		if ( card->name )
-			e_card_name_free(card->name);
-		card->name = e_card_name_copy(GTK_VALUE_POINTER(*arg));
+		e_card_name_unref (card->name);
+		card->name = e_card_name_ref(GTK_VALUE_POINTER(*arg));
 		if (card->name == NULL)
 			card->name = e_card_name_new();
 		if (card->fname == NULL) {
@@ -1930,6 +2076,8 @@ e_card_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	case ARG_ID:
 		g_free(card->id);
 		card->id = g_strdup(GTK_VALUE_STRING(*arg));
+		if (card->id == NULL)
+			card->id = g_strdup ("");
 		break;
 	case ARG_LAST_USE:
 		g_free(card->last_use);
@@ -1974,22 +2122,22 @@ e_card_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		break;
 	case ARG_ADDRESS:
 		if (!card->address)
-			card->address = e_list_new((EListCopyFunc) e_card_delivery_address_copy, 
-						   (EListFreeFunc) e_card_delivery_address_free,
+			card->address = e_list_new((EListCopyFunc) e_card_delivery_address_ref,
+						   (EListFreeFunc) e_card_delivery_address_unref,
 						   NULL);
 		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(card->address);
 		break;
 	case ARG_ADDRESS_LABEL:
 		if (!card->address_label)
-			card->address_label = e_list_new((EListCopyFunc) e_card_address_label_copy, 
-							 (EListFreeFunc) e_card_address_label_free,
+			card->address_label = e_list_new((EListCopyFunc) e_card_address_label_ref,
+							 (EListFreeFunc) e_card_address_label_unref,
 							 NULL);
 		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(card->address_label);
 		break;
 	case ARG_PHONE:
 		if (!card->phone)
-			card->phone = e_list_new((EListCopyFunc) e_card_phone_copy, 
-						 (EListFreeFunc) e_card_phone_free,
+			card->phone = e_list_new((EListCopyFunc) e_card_phone_ref,
+						 (EListFreeFunc) e_card_phone_unref,
 						 NULL);
 		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(card->phone);
 		break;
@@ -2086,8 +2234,8 @@ e_card_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		break;
 	case ARG_ARBITRARY:
 		if (!card->arbitrary)
-			card->arbitrary = e_list_new((EListCopyFunc) e_card_arbitrary_copy,
-						     (EListFreeFunc) e_card_arbitrary_free,
+			card->arbitrary = e_list_new((EListCopyFunc) e_card_arbitrary_ref,
+						     (EListFreeFunc) e_card_arbitrary_unref,
 						     NULL);
 
 		GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(card->arbitrary);
@@ -2731,7 +2879,7 @@ e_card_get_name (VObject *o)
 	VObject *vo;
 	char *the_str;
 
-	name = g_new0 (ECardName, 1);
+	name = e_card_name_new ();
 
 	name->family     = e_card_prop_get_substr (o, VCFamilyNameProp);
 	name->given      = e_card_prop_get_substr (o, VCGivenNameProp);
@@ -3742,8 +3890,8 @@ card_to_string (Card *crd)
 }
 #endif
 
-static ECardDate
-e_card_date_from_string (char *str)
+ECardDate
+e_card_date_from_string (const char *str)
 {
 	ECardDate date;
 	int length;

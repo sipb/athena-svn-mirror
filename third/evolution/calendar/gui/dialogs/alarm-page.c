@@ -7,10 +7,9 @@
  *          Seth Alves <alves@hungry.com>
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,7 +32,10 @@
 #include <glade/glade.h>
 #include <gal/widgets/e-unicode.h>
 #include "e-util/e-dialog-widgets.h"
+#include "e-util/e-time-utils.h"
 #include "cal-util/cal-util.h"
+#include "cal-util/timeutil.h"
+#include "../calendar-config.h"
 #include "comp-editor-util.h"
 #include "alarm-options.h"
 #include "alarm-page.h"
@@ -119,7 +121,7 @@ static void alarm_page_destroy (GtkObject *object);
 static GtkWidget *alarm_page_get_widget (CompEditorPage *page);
 static void alarm_page_focus_main_widget (CompEditorPage *page);
 static void alarm_page_fill_widgets (CompEditorPage *page, CalComponent *comp);
-static void alarm_page_fill_component (CompEditorPage *page, CalComponent *comp);
+static gboolean alarm_page_fill_component (CompEditorPage *page, CalComponent *comp);
 static void alarm_page_set_summary (CompEditorPage *page, const char *summary);
 static void alarm_page_set_dates (CompEditorPage *page, CompEditorPageDates *dates);
 
@@ -359,9 +361,7 @@ get_alarm_string (CalComponentAlarm *alarm)
 	CalAlarmAction action;
 	CalAlarmTrigger trigger;
 	char string[256];
-	char *base;
-	char *str;
-	char *dur;
+	char *base, *str = NULL, *dur;
 
 	string [0] = '\0';
 
@@ -430,20 +430,27 @@ get_alarm_string (CalComponentAlarm *alarm)
 		break;
 
 	case CAL_ALARM_TRIGGER_ABSOLUTE: {
-		time_t t;
+		struct icaltimetype itt;
+		icaltimezone *utc_zone, *current_zone;
+		char *location;
 		struct tm tm;
+		char buf[256];
 		char *date;
 
-		t = icaltime_as_timet (trigger.u.abs_time);
-		if (t == -1)
-			date = g_strdup_printf (_("%s at an unknown time"), base);
-		else {
-			char buf[256];
+		/* Absolute triggers come in UTC, so convert them to the local timezone */
 
-			tm = *localtime (&t);
-			strftime (buf, sizeof (buf), "%A %b %d %Y %H:%M", &tm);
-			date = g_strdup_printf (_("%s at %s"), base, buf);
-		}
+		itt = trigger.u.abs_time;
+
+		utc_zone = icaltimezone_get_utc_timezone ();
+		location = calendar_config_get_timezone ();
+		current_zone = icaltimezone_get_builtin_timezone (location);
+
+		tm = icaltimetype_to_tm_with_zone (&itt, utc_zone, current_zone);
+
+		e_time_format_date_and_time (&tm, calendar_config_get_24_hour_format (),
+					     FALSE, FALSE, buf, sizeof (buf));
+
+		date = g_strdup_printf (_("%s at %s"), base, buf);
 
 		break; }
 
@@ -536,7 +543,7 @@ alarm_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 }
 
 /* fill_component handler for the alarm page */
-static void
+static gboolean
 alarm_page_fill_component (CompEditorPage *page, CalComponent *comp)
 {
 	AlarmPage *apage;
@@ -576,6 +583,8 @@ alarm_page_fill_component (CompEditorPage *page, CalComponent *comp)
 		cal_component_add_alarm (comp, alarm_copy);
 		cal_component_alarm_free (alarm_copy);
 	}
+
+	return TRUE;
 }
 
 /* set_summary handler for the alarm page */
@@ -613,7 +622,10 @@ alarm_page_set_dates (CompEditorPage *page, CompEditorPageDates *dates)
 static gboolean
 get_widgets (AlarmPage *apage)
 {
+	CompEditorPage *page = COMP_EDITOR_PAGE (apage);
 	AlarmPagePrivate *priv;
+	GSList *accel_groups;
+	GtkWidget *toplevel;
 
 	priv = apage->priv;
 
@@ -622,6 +634,15 @@ get_widgets (AlarmPage *apage)
 	priv->main = GW ("alarm-page");
 	if (!priv->main)
 		return FALSE;
+
+	/* Get the GtkAccelGroup from the toplevel window, so we can install
+	   it when the notebook page is mapped. */
+	toplevel = gtk_widget_get_toplevel (priv->main);
+	accel_groups = gtk_accel_groups_from_object (GTK_OBJECT (toplevel));
+	if (accel_groups) {
+		page->accel_group = accel_groups->data;
+		gtk_accel_group_ref (page->accel_group);
+	}
 
 	gtk_widget_ref (priv->main);
 	gtk_widget_unparent (priv->main);

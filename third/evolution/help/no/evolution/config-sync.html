@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Setting up your synchronization system</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -17,9 +17,14 @@ TITLE="General Preferences"
 HREF="config-prefs-general.html"><LINK
 REL="NEXT"
 TITLE="Utfyllende menyreferanse"
-HREF="p2563.html"></HEAD
+HREF="p2934.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,7 +45,7 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="config-prefs-general.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
@@ -52,8 +57,8 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="p2563.html"
->Next</A
+HREF="p2934.html"
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -65,7 +70,7 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="CONFIG-SYNC"
->Chapter 10. Setting up your synchronization system</A
+>Setting up your synchronization system</A
 ></H1
 ><P
 >        Synchronization presents you with two issues you'll need to
@@ -78,9 +83,9 @@ BORDER="0"
 ><TR
 ><TD
 >            Your computer needs to recognize and access your handheld.
-            At this time, <SPAN
+            At this time, <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > only
             supports Palm-OS devices like the PalmPilot and the
             Handspring Visor.
@@ -97,48 +102,79 @@ CLASS="APPLICATION"
 ><P
 ></P
 >
-
     </P
 ><P
 >       If you haven't used a handheld device with your computer
-       before, you'll need to run the GNOME <SPAN
+       before, you'll need to run the GNOME <TT
 CLASS="APPLICATION"
 >Control
-       Center</SPAN
-> and make sure that <SPAN
+       Center</TT
+> by selecting
+       <B
+CLASS="GUIMENU"
+>System</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Settings</B
+>,
+       and make sure that <TT
 CLASS="APPLICATION"
->Pilot
-       Link</SPAN
-> is properly configured. Then, select the
-       <SPAN
-CLASS="APPLICATION"
->Evolution</SPAN
-> <A
+>Pilot Link</TT
+> is
+       properly configured.
+    </P
+><P
+>        Once your computer and your Palm-OS device are talking happily
+        to each other, select the <A
 HREF="apx-gloss.html#CONDUIT"
 ><I
 CLASS="GLOSSTERM"
 >conduits</I
 ></A
-> under the
-       <SPAN
+> you want under the
+        <TT
 CLASS="GUILABEL"
->Pilot Conduits</SPAN
+><B
+>Pilot Conduits</B
+></TT
 > section of the Control
-       Center.
-  </P
+        Center.  You may use conduits to synchronize data with several
+        applications; the <TT
+CLASS="APPLICATION"
+>Ximian Evolution</TT
+>
+        conduits are labelled <TT
+CLASS="GUILABEL"
+><B
+>EAddress</B
+></TT
+>, for the
+        address cards in your Contact Manager,
+        <TT
+CLASS="GUILABEL"
+><B
+>ECalendar</B
+></TT
+>, for your Calendar, and
+        <TT
+CLASS="GUILABEL"
+><B
+>ETodo</B
+></TT
+>, for your Task List.
+    </P
 ><P
->        Once your computer and your Palm-OS device are talking happily
-        to each other, you'll have to decide what exactly you want
-        them to do with the data they exchange.  To enable a conduit, click the
-        <SPAN
+>      To enable a conduit, click the
+        <B
 CLASS="GUIBUTTON"
->Enable</SPAN
-> to enable it and click
-        <SPAN
+>Enable</B
+> to enable it, and click
+        <B
 CLASS="GUIBUTTON"
->Settings</SPAN
->.  Your options may vary
-        depending on the conduit, but typically they will be:
+>Settings</B
+> to change what it will do when
+        activated.  Your options may vary depending on the conduit,
+        but typically they will be:
 
         <P
 ></P
@@ -200,33 +236,59 @@ CLASS="VARIABLELIST"
 >
     </P
 ><P
->      Select a behavior for each conduit available.  For the most
-      part, you'll want to stick with
-      <SPAN
+>      Select the behavior you want for each conduit you choose to use.
+      If you're not sure, go ahead and stick with
+      <TT
 CLASS="GUILABEL"
->Synchronize</SPAN
+><B
+>Synchronize</B
+></TT
 >.  Then, put your handheld on
-      its cradle and press the synchronization button.
+      its cradle and press the HotSync button.
     </P
 ><P
 > 
          <DIV
 CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Data Loss Prevention: </B
+>Data Loss Prevention</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	    It's always a good idea to make a backup.  To do that,
-	    make a copy of your <SPAN
-CLASS="SYSTEMITEM"
->	    <TT
+	    make a copy of the <TT
 CLASS="FILENAME"
->~/evolution</TT
-> </SPAN
-> directory.
+>evolution</TT
+>
+	    directory inside your home directory.
           </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 >
        </P
@@ -247,7 +309,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="config-prefs-general.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -262,8 +324,8 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="p2563.html"
->Next</A
+HREF="p2934.html"
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

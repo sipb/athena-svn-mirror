@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
->Checking Mail</TITLE
+>Checking for New Mail</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -16,10 +16,15 @@ REL="PREVIOUS"
 TITLE="Using Evolution for Email"
 HREF="usage-mail.html"><LINK
 REL="NEXT"
-TITLE="Writing and Sending Mail"
+TITLE="Composing New Email Messages"
 HREF="usage-mail-getnsend-send.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,20 +45,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="usage-mail.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 3. Using Evolution for Email</TD
+>Using Evolution for Email</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="usage-mail-getnsend-send.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -66,7 +71,7 @@ CLASS="SECT1"
 CLASS="SECT1"
 ><A
 NAME="USAGE-MAIL-GETNSEND-GET"
->Checking Mail</A
+>Checking for New Mail</A
 ></H1
 ><P
 >      Now that you've had a look around the
@@ -74,9 +79,9 @@ NAME="USAGE-MAIL-GETNSEND-GET"
 CLASS="INTERFACE"
 >Inbox</SPAN
 >, it's time to check for new mail.
-      Click <SPAN
+      Click <B
 CLASS="GUIBUTTON"
->Get Mail</SPAN
+>Get Mail</B
 > in the toolbar to check
       your mail.  If you haven't entered any mail settings yet, the
       <SPAN
@@ -109,68 +114,165 @@ CLASS="INTERFACE"
 >
     </P
 ><P
->      To check your email, press the <SPAN
+>      To check your email, press the <B
 CLASS="GUIBUTTON"
->Check Mail</SPAN
+>Check Mail</B
 >
       button.  If this is your first time checking mail, or you
-      haven't asked <SPAN
+      haven't asked <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > to store your
       password, you'll be prompted for the password.  Enter your
       password and your email will be downloaded.
     </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><A
 NAME="BADMAILSETTINGS"
 ></A
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Can't Check Mail?: </B
->	If you get an error message instead of mail, you probably need to check
-	your network settings.  To learn how to do that,
-	 have a look at <A
-HREF="config-prefs.html#CONFIG-PREFS-MAIL-NETWORK"
+>Can't Check Mail?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	If you get an error message instead of mail, you probably need
+	to check your network settings.  To learn how to do that, have
+	a look at <A
+HREF="config-prefs.html#CONFIG-PREFS-MAIL"
 >the section called <I
->Network Settings</I
-> in Chapter 9</A
->, or
-	 ask your system administrator.
+>Mail Settings</I
+> in the chapter called <I
+>Advanced Configuration</I
+></A
+>, or ask your
+	system administrator.
        </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
-CLASS="SECT2"
-><H2
-CLASS="SECT2"
-><A
-NAME="USAGE-MAIL-GETNSEND-GET-NEWS"
->Using Evolution for News</A
-></H2
+CLASS="TIP"
 ><P
->	  Newsgroups are so similar to email that there's no reason not
-	  to read them side by side.  If you want to do that, add a
-	  news source to your configuration (see <A
-HREF="config-prefs.html#CONFIG-PREFS-NETWORK-NEWS"
->the section called <I
->News Servers</I
-> in Chapter 9</A
->). The news server will
-	  appear as a remote server, and will look quite similar to an
-	  IMAP folder.  When you click <SPAN
-CLASS="GUIBUTTON"
->Get Mail</SPAN
->,
-	  <SPAN
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Sharing Mailboxes with Other Mail Programs</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>              If you want to use <TT
 CLASS="APPLICATION"
->Evolution</SPAN
-> will also check for news
-	  messages.
-	</P
+>Evolution</TT
+>
+              and another email client, such as
+              <TT
+CLASS="APPLICATION"
+>Mutt</TT
+>, at the same time,
+              here's how:
+              <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>                      Download your mail in the other application as
+                      you would normally.
+                   </P
+></LI
+><LI
+><P
+>                      In <TT
+CLASS="APPLICATION"
+>Evolution</TT
+>
+                      <B
+CLASS="GUIMENU"
+>Tools</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Mail
+                      Settings</B
+>, and pick the account
+                      you'd like to use to share mail. You may want to
+                      create a new account just for this source of
+                      mail.
+                   </P
+></LI
+><LI
+><P
+>                      Under the <TT
+CLASS="GUILABEL"
+><B
+>Receiving Mail</B
+></TT
+>
+                      tab, select the type of mail file that your
+                      other mail application uses, and then enter the
+                      full path to that file.
+                   </P
+></LI
+><LI
+><P
+>                      Click the <B
+CLASS="GUIBUTTON"
+>OK</B
+> button.
+                   </P
+></LI
+></OL
+>
+               </P
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -178,7 +280,7 @@ CLASS="SECT2"
 CLASS="SECT2"
 ><A
 NAME="USAGE-MAIL-GETNSEND-GET-ATTACH"
->Attachments and HTML Mail</A
+>Working with Attachments and HTML Mail</A
 ></H2
 ><P
 >	   If someone sends you an <I
@@ -186,94 +288,62 @@ CLASS="GLOSSTERM"
 >attachment</I
 >,
 	   a file attached to an email,
-	   <SPAN
+	   <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will display the file
 	   at the bottom of the message to which it's attached.  Text,
-	   including HTML formatting, will appear as part of the
-	   message.  To minimize download time, and to foil spammers
-	   who use server information to track their messages, images
-	   linked from an HTML message <I
-CLASS="EMPHASIS"
->not</I
->
-	   display unless you select the
-	   <SPAN
-CLASS="GUIMENU"
->View</SPAN
->-&gt;<SPAN
-CLASS="GUISUBMENU"
->Message
-	   Display</SPAN
->-&gt;<SPAN
-CLASS="GUIMENUITEM"
->Load Images
-	   </SPAN
-> option.  For other files,
-	   <SPAN
+	   including HTML formatting and embedded images, will appear
+	   as part of the message, rather than at the end of the
+	   message as an attachment.
+     </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="USAGE-MAIL-GETNSEND-GET-ATTACH-ACTIONS"
+>Saving or Opening Attachments</A
+></H3
+><P
+>        If you get an attachment with an email message,
+        <TT
 CLASS="APPLICATION"
->Evolution</SPAN
-> will show an icon at
-	   the end of the message.
+>Ximian Evolution</TT
+> can help you save
+        it or open it with the appropriate applications.
      </P
 ><P
->       To Save an Attachment to Disk:
+>       To save an attachment to disk:
        <P
 ></P
 ><OL
 TYPE="1"
 ><LI
 ><P
->	     Open up the desired email
-	   </P
-></LI
-><LI
-><P
->	     Click on the down arrow at the bottom of the email for the desired
-	     attachment.
-	   </P
-></LI
-><LI
-><P
->	     Select <SPAN
-CLASS="GUIBUTTON"
->Save to Disk</SPAN
+>	     Click the downward pointing arrow on the attachment icon
+	     and select <B
+CLASS="GUIMENUITEM"
+>Save to Disk</B
 >.
 	   </P
 ></LI
 ><LI
 ><P
->	     Choose the directory and filename you wish.
+>	     Choose a location and name for the file.
 	   </P
 ></LI
 ><LI
 ><P
->	     Click <SPAN
+>	     Click <B
 CLASS="GUIBUTTON"
->OK</SPAN
->
+>OK</B
+>.
 	   </P
 ></LI
 ></OL
 >
       </P
-><DIV
-CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
-><A
-NAME="SPACEANDBS"
-></A
-><P
-><B
->Reading email with keyboard: </B
->	  You can click the spacebar to page down while you're reading an email,
-	  and press backspace to page up in an email.  This may help to make
-	  reading your email faster.
-	</P
-></BLOCKQUOTE
-></DIV
 ><P
 >	To Open an Attachment in a Program:
 	<P
@@ -287,7 +357,7 @@ TYPE="1"
 ></LI
 ><LI
 ><P
->	      Click the aarrow next the the attachment icon.
+>	      Click the arrow next the attachment icon.
 	    </P
 ></LI
 ><LI
@@ -300,17 +370,254 @@ TYPE="1"
 >
       </P
 ><P
->           <SPAN
+>      </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="USAGE-MAIL-GETNSEND-GET-ATTACH-HTML"
+>Inline Images in HTML Mail</A
+></H3
+><P
+>         When someone sends you HTML mail that includes an image in
+         the body of the message&#8212; like the welcome message in
+         your Inbox when you first started <TT
 CLASS="APPLICATION"
->Evolution</SPAN
-> can also display
-           HTML-formatted mail, complete with graphics.  Graphics
-           don't load automatically by default, because they can be
-           large and take a long time to download.  They can also be
-           used by spammers to help track who reads their email.  So
-           having them not load automatically helps protect your
-           privacy.
+>Ximian
+         Evolution</TT
+>&#8212;
+         <TT
+CLASS="APPLICATION"
+>Evolution</TT
+> will display the image
+         inside the message.  You can create messages like this by
+         using the
+         <B
+CLASS="GUIMENU"
+>Insert</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Image</B
+>
+         tool in the message composer.
       </P
+><P
+>         If the image isn't included in the message, but is, instead,
+         a link to an image, <TT
+CLASS="APPLICATION"
+>Evolution</TT
+> can
+         download the image from the Internet for you.  However,
+         <TT
+CLASS="APPLICATION"
+>Evolution</TT
+> will not display the
+         image unless you ask it to. This is because remotely hosted
+         images can be slow to load and display, and can even be used
+         by spammers to track who reads their email.  Having images
+         not load automatically helps protect your privacy.
+      </P
+><P
+>	 If you want the images to load for one message, select 
+	 <B
+CLASS="GUIMENU"
+>View</B
+>-&gt;<B
+CLASS="GUISUBMENU"
+>Message Display</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Load Images</B
+>.  
+
+         If you want <TT
+CLASS="APPLICATION"
+>Ximian Evolution</TT
+> to
+         load remotely hosted images more often, go to the
+         <TT
+CLASS="GUILABEL"
+><B
+>Display</B
+></TT
+> tab of the
+         <B
+CLASS="GUIMENU"
+>Tools</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Mail Settings</B
+> dialog.
+      </P
+><DIV
+CLASS="NOTE"
+><A
+NAME="HTTP-PROXY"
+></A
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>Loading Images from the Net through an HTTP Proxy</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>           If you use an HTTP proxy,
+           <TT
+CLASS="APPLICATION"
+>Evolution</TT
+> must be able to find
+           it through the <SPAN
+CLASS="SYSTEMITEM"
+>gnome-vfs</SPAN
+> subsystem
+           before it can load images from the Internet.  This is also
+           the case if you wish to access weather and news information
+           through the Summary tool. You can tell the GNOME Virtual
+           File System about your HTTP proxy in one of two ways:
+            <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Configure it with Nautilus</DT
+><DD
+><P
+>                 <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>			Open a Nautilus window
+	               </P
+></LI
+><LI
+><P
+>	                 Select <B
+CLASS="GUIMENU"
+>Preferences</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Edit Preferences</B
+>.
+	               </P
+></LI
+><LI
+><P
+>			Go to the <TT
+CLASS="GUILABEL"
+><B
+>Navigation</B
+></TT
+> tab.
+	               </P
+></LI
+><LI
+><P
+>			Click the <TT
+CLASS="GUILABEL"
+><B
+>Use HTTP Proxy</B
+></TT
+>
+			checkbox and enter the location of your HTTP
+			proxy in the <TT
+CLASS="GUILABEL"
+><B
+>Location</B
+></TT
+> field.
+	               </P
+></LI
+></OL
+>
+                </P
+></DD
+><DT
+>Configure it with the gconftool command</DT
+><DD
+><P
+>                 <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>                        Open a terminal.
+                      </P
+></LI
+><LI
+><P
+>                        Enter the command 
+                        <B
+CLASS="COMMAND"
+>                        gconftool --type=bool --set /system/gnome-vfs/use-http-proxy "TRUE"
+                        </B
+>
+                      </P
+></LI
+><LI
+><P
+>                        Enter the command 
+                        <B
+CLASS="COMMAND"
+>      gconftool --type=string --set /system/gnome-vfs/http-proxy-host "your-proxy-url"
+                        </B
+>
+                      </P
+></LI
+><LI
+><P
+>                        Enter the command 
+                        <B
+CLASS="COMMAND"
+>                        gconftool --type=int --set /system/gnome-vfs/http-proxy-port "8080"
+                        </B
+>                  
+                      </P
+></LI
+></OL
+>
+                </P
+><P
+>                  For more information about the gconftool command,
+                  read the gconftool man page.
+                </P
+></DD
+></DL
+></DIV
+>
+         </P
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
 ></DIV
 ></DIV
 ><DIV
@@ -329,7 +636,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="usage-mail.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -345,7 +652,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="usage-mail-getnsend-send.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR
@@ -366,7 +673,7 @@ HREF="usage-mail.html"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Writing and Sending Mail</TD
+>Composing New Email Messages</TD
 ></TR
 ></TABLE
 ></DIV

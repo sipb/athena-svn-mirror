@@ -10,9 +10,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -365,15 +364,14 @@ mail_search_construct (MailSearch *ms, MailDisplay *mail)
   	gtk_box_pack_start (GTK_BOX (frame_vbox), matches_hbox, TRUE, TRUE, 0); 
   	gtk_box_pack_start (GTK_BOX (frame_vbox), toggles_hbox, TRUE, TRUE, 0);
 	
-	gtk_container_add (GTK_CONTAINER (GTK_FRAME (msg_frame)), GTK_WIDGET (frame_vbox));
+	gtk_container_add (GTK_CONTAINER (msg_frame), GTK_WIDGET (frame_vbox));
 
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (ms)->vbox), msg_hbox, TRUE, TRUE, 0); 	
-	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (ms)->vbox), GTK_WIDGET (GTK_FRAME (msg_frame)), TRUE, TRUE, 0);
 
 	gtk_widget_grab_focus (entry); /* Give focus to entry by default */ 
 	gnome_dialog_set_default (GNOME_DIALOG (ms), 0); 
 	gnome_dialog_editable_enters (GNOME_DIALOG (ms), GTK_EDITABLE(entry)); /* Make <enter> run the search */
-	gnome_window_icon_set_from_file (GTK_WINDOW (GNOME_DIALOG (ms)), EVOLUTION_ICONSDIR "/find-message.xpm");
+	gnome_window_icon_set_from_file (GTK_WINDOW (ms), EVOLUTION_ICONSDIR "/find-message.xpm");
 
 	gtk_widget_show_all (msg_hbox);
 	gtk_widget_show_all (find_hbox);

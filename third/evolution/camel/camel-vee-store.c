@@ -3,20 +3,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or 
- *  modify it under the terms of the GNU General Public License as 
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- *  USA
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #include "camel-exception.h"
@@ -26,6 +25,8 @@
 #include "camel-private.h"
 
 #include <string.h>
+
+#define d(x)
 
 static CamelFolder *vee_get_folder (CamelStore *store, const char *folder_name, guint32 flags, CamelException *ex);
 static void vee_delete_folder(CamelStore *store, const char *folder_name, CamelException *ex);
@@ -170,7 +171,14 @@ build_info(char *name, CamelVeeFolder *folder, struct _build_info *data)
 	/* check we have to include this one */
 	if (data->top) {
 		if (data->flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) {
-			if (strncmp(name, data->top, strlen(data->top) != 0))
+			int namelen = strlen(name);
+			int toplen = strlen(data->top);
+
+			if (!((namelen == toplen &&
+			       strcmp(name, data->top) == 0)
+			      || ((namelen > toplen)
+				  && strncmp(name, data->top, toplen) == 0
+				  && name[toplen] == '/')))
 				return;
 		} else {
 			if (strcmp(name, data->top))
@@ -261,7 +269,6 @@ vee_delete_folder(CamelStore *store, const char *folder_name, CamelException *ex
 		if (store->vtrash)
 			camel_vee_folder_remove_folder((CamelVeeFolder *)store->vtrash, folder);
 
-		/* FIXME: deleted event shoudl just pass out the folder name, not all this shit?? */
 		if (update) {
 			CamelFolderInfo *fi = g_malloc0(sizeof(*fi));
 
@@ -291,7 +298,8 @@ static void
 vee_rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex)
 {
 	CamelFolder *folder;
-	char *key, *oldname, *full_oldname;
+
+	d(printf("vee rename folder '%s' '%s'\n", old, new));
 
 	if (strcmp(old, CAMEL_UNMATCHED_NAME) == 0) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
@@ -299,31 +307,12 @@ vee_rename_folder(CamelStore *store, const char *old, const char *new, CamelExce
 		return;
 	}
 
+	/* See if it exists, for vfolders, all folders are in the folders hash */
 	CAMEL_STORE_LOCK(store, cache_lock);
-	if (g_hash_table_lookup_extended(store->folders, old, (void **)&key, (void **)&folder)) {
-		g_hash_table_remove(store->folders, key);
-		g_free(key);
-
-		/* this should really be atomic */
-		oldname = folder->name;
-		full_oldname = folder->full_name;
-		key = folder->name;
-		folder->full_name = g_strdup(new);
-		key = strrchr(new, '/');
-		key = key?key+1:(char *)new;
-		folder->name = g_strdup(key);
-		g_hash_table_insert(store->folders, g_strdup(new), folder);
-
-		g_free(oldname);
-		g_free(full_oldname);
-		CAMEL_STORE_UNLOCK(store, cache_lock);
-
-		
-	} else {
-		CAMEL_STORE_UNLOCK(store, cache_lock);
-
+	if ((folder = g_hash_table_lookup(store->folders, old)) == NULL) {
 		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
-				     _("Cannot rename folder: %s: No such folder"), new);
+				     _("Cannot rename folder: %s: No such folder"), old);
 	}
-}
 
+	CAMEL_STORE_UNLOCK(store, cache_lock);
+}

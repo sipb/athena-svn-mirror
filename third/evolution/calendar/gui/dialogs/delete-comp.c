@@ -4,10 +4,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,10 +25,9 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
-#include <libgnomeui/gnome-uidefs.h>
+#include <libgnomeui/gnome-stock.h>
 #include <gal/widgets/e-unicode.h>
+#include "widgets/misc/e-messagebox.h"
 #include "../calendar-config.h"
 #include "delete-comp.h"
 
@@ -39,6 +37,9 @@
  * delete_component_dialog:
  * @comp: A calendar component if a single component is to be deleted, or NULL
  * if more that one component is to be deleted.
+ * @consider_as_untitled: If deleting more than one component, this is ignored.
+ * Otherwise, whether to consider the component as not having a summary; if
+ * FALSE then the component's summary string will be used.
  * @n_comps: Number of components that are to be deleted.
  * @vtype: Type of the components that are to be deleted.  This is ignored
  * if only one component is to be deleted, and the vtype is extracted from
@@ -56,6 +57,7 @@
  **/
 gboolean
 delete_component_dialog (CalComponent *comp,
+			 gboolean consider_as_untitled,
 			 int n_comps, CalComponentVType vtype,
 			 GtkWidget *widget)
 {
@@ -81,9 +83,12 @@ delete_component_dialog (CalComponent *comp,
 		char *tmp;
 
 		vtype = cal_component_get_vtype (comp);
-		cal_component_get_summary (comp, &summary);
 
-		tmp = e_utf8_to_gtk_string (widget, summary.value);
+		if (!consider_as_untitled) {
+			cal_component_get_summary (comp, &summary);
+			tmp = e_utf8_to_gtk_string (widget, summary.value);
+		} else
+			tmp = NULL;
 
 		switch (vtype) {
 		case CAL_COMPONENT_EVENT:
@@ -145,10 +150,15 @@ delete_component_dialog (CalComponent *comp,
 		}
 	}
 
-	dialog = gnome_question_dialog_modal (str, NULL, NULL);
+	dialog = e_message_box_new (str, E_MESSAGE_BOX_QUESTION,
+				    GNOME_STOCK_BUTTON_YES,
+				    GNOME_STOCK_BUTTON_NO,
+				    NULL);
 	g_free (str);
 
-	if (gnome_dialog_run (GNOME_DIALOG (dialog)) == GNOME_YES)
+	gtk_widget_hide (e_message_box_get_checkbox (E_MESSAGE_BOX (dialog)));
+
+	if (gnome_dialog_run_and_close (GNOME_DIALOG (dialog)) == 0)
 		return TRUE;
 	else
 		return FALSE;

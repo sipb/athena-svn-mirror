@@ -1,3 +1,128 @@
+2001-10-29  Aaron Weber  <aaron@ximian.com>
+
+	* C/apx-bugs.sgml: typos, redescribe 1.1 bugs. Re-validated.
+
+	* C/apx-authors.sgml: Added last few authors, a few more credits,
+	etc. Also changed contact info and URL for evolution.
+
+	* C/menuref.sgml: did we have only 1 item in the calendar?
+	yes. Also, s/Contact Manager/Addressbook/
+	
+	* C/usage-calendar.sgml: phrasing. UI. Spelling. Validation.
+
+	* C/Makefile.am: removed config-encryption and
+	usage-encryption. Stray files. Do not use, ship, etc. All
+	encryption info is in the mail docs.
+
+	* C/config-sync.sgml: call it the addressbook. added : for <terms>
+
+	* C/config-prefs.sgml: commented out empty section.
+
+	* C/figures/print-preview.png: ch. screenshot
+
+	* C/usage-contact.sgml: address book--> addressbook
+
+	* C/usage-mail-org.sgml: added "the note below" (duplicate of data
+	in mainwindow.sgml, but so is all the import information. The
+	import process is available in two places, we should document it
+	in two places. Also typos.  removed a commented-out section on
+	subscription management-- now in usage-mail and mainwindow.
+
+	* C/usage-mail.sgml: mdash correction.
+
+	* C/usage-mainwindow.sgml: replaced &mdash; with :
+
+	* C/apx-gloss.sgml: typo.
+
+	* C/preface.sgml: gnome-help-browser doesn't understand &mdash; 
+
+2001-10-28  Kevin Breit  <mrproper@ximian.com>
+
+	* C/usage-mail-org.sgml: Added the iCalendar format to the list of imported types.  The .ics importing was added _last minute_.
+
+	* C/usage-calendar.sgml: Fixed stupid build bugs
+
+	* C/usage-mail.sgml: Fixed a boo-boo
+
+	* C/usage-exec-summary.sgml: Touchups, nothing here, run along
+
+2001-10-27  Kevin Breit  <mrproper@ximian.com>
+
+	* C/config-prefs.sgml: Rewrite of the calendar preferences.  I love how I'm having to rewrite this 48 hours before the freeze.  Why are we waiting this long?  It's beyond me, but oh well.  I'll continue writing and listening to The Doors.
+
+	* C/figures/calendar.png: Added labels
+
+	* C/figures/mail-inbox.png: Added labels and changed which image is used
+
+	* C/evolution.sgml: Bumped the version # to 1.0
+
+	* C/figures/summary.png: I played with the labels a bit
+
+2001-10-26  Kevin Breit  <mrproper@ximian.com>
+
+	* C/usage-calendar.sgml: Lots of changes on recommendation from Damon Chaplin.  We love you Damon!
+
+	* C/usage-contact.sgml: One more FIXME...done
+
+	* C/config-prefs.sgml: Fixed a definition, one less FIXME to deal with.
+
+	* C/usage-mail-org.sgml: Moved importing information here.
+
+	* C/usage-mail.sgml: Moved importing information to -org.sgml
+
+	* C/usage-mail-org.sgml: Added a note
+
+	* C/usage-mainwindow.sgml: Added screenshot and labels of stuff for summary.
+
+2001-10-24  Kevin Breit  <mrproper@ximian.com>
+
+	* C/figures/mail-composer.png: I updated this becuase the screenshot was humerously _old_.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* C/topic.dat: s/usage-exec-summary.html/usage-summary.html.
+
+2001-10-22  Aaron Weber  <aaron@ximian.com>
+
+	* C/evolution.sgml: validation. SIlly me.
+
+2001-10-19  Aaron Weber  <aaron@ximian.com>
+
+	* C/usage-mail-org.sgml: Many changes w/r/t IMAP and importation and encryption.
+
+	* C/usage-contact.sgml: A few changes, w/r/t import.
+
+	* C/usage-mainwindow.sgml: IMAP stuff.
+
+	* C/usage-exec-summary.sgml: More changes. Update to intro sect.
+	
+2001-10-19  Aaron Weber  <aaron@ximian.com>
+
+	* C/usage-mainwindow.sgml: Assorted fixes. Kevin, there's a FIXME for ya in here.
+
+	* C/preface.sgml: Added a few fixes.
+
+	* C/apx-bugs.sgml: Added a link to bugzilla, and a list of a few
+	1.1 features.
+
+2001-10-19  Kevin Breit  <mrproper@ximian.com>
+
+	* C/usage-mail.sgml: Added in import dialogue documentation
+
+2001-10-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* C/usage-mail-org.sgml: Add a missing </orderedlist>
+	
+	* C/apx-authors.sgml: Fix my name.
+	
+2001-10-05  Aaron Weber  <aaron@ximian.com>
+
+	* C/usage-mail-org.sgml: added example to filter bulk mail.
+
+2001-10-01  Aaron Weber  <aaron@ximian.com>
+
+	* C/usage-mail.sgml: missing directory for figure file ref.
+
 2001-09-29  Kevin Breit  <battery841@mediaone.net>
 
 	* C/usage-mail.sgml: Slightly improved encryption documentation.

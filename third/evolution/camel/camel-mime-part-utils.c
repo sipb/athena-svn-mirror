@@ -7,9 +7,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,6 +29,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+
+#include <gal/util/e-iconv.h>
+#include <gal/unicode/gunicode.h>
 
 #include "string-utils.h"
 #include "camel-mime-part-utils.h"
@@ -80,7 +82,7 @@ check_html_charset(char *buffer, int length)
 			    && (val = camel_html_parser_attr(hp, "content"))
 			    && (ct = header_content_type_decode(val))) {
 				charset = header_content_type_param(ct, "charset");
-				charset = camel_charset_to_iconv (charset);
+				charset = e_iconv_charset_name (charset);
 				header_content_type_unref(ct);
 			}
 			break;
@@ -105,7 +107,7 @@ static GByteArray *convert_buffer(GByteArray *in, const char *to, const char *fr
 
 	d(printf("converting buffer from %s to %s: '%.*s'\n", from, to, (int)in->len, in->data));
 
-	ic = iconv_open(to, from);
+	ic = e_iconv_open(to, from);
 	if (ic == (iconv_t) -1) {
 		g_warning("Cannot convert from '%s' to '%s': %s", from, to, strerror(errno));
 		return NULL;
@@ -120,7 +122,7 @@ static GByteArray *convert_buffer(GByteArray *in, const char *to, const char *fr
 		inlen = in->len;
 		outbuf = buffer;
 
-		if (iconv(ic, (const char **)&inbuf, &inlen, &outbuf, &outlen) == -1) {
+		if (e_iconv(ic, (const char **)&inbuf, &inlen, &outbuf, &outlen) == -1) {
 			g_free(buffer);
 			g_warning("conversion failed: %s", strerror(errno));
 			/* we didn't have enough space */
@@ -137,7 +139,7 @@ static GByteArray *convert_buffer(GByteArray *in, const char *to, const char *fr
 		/* close off the conversion */
 		outbuf = buffer;
 		outlen = in->len * i + 16;
-		if (iconv(ic, NULL, 0, &outbuf, &outlen) != -1)
+		if (e_iconv(ic, NULL, 0, &outbuf, &outlen) != -1)
 			g_byte_array_append(out, buffer, (in->len*i+16) - outlen);
 		g_free(buffer);
 
@@ -146,9 +148,21 @@ static GByteArray *convert_buffer(GByteArray *in, const char *to, const char *fr
 		break;
 	} while (1);
 
-	iconv_close(ic);
+	e_iconv_close(ic);
 
 	return out;
+}
+
+static gboolean
+is_7bit (GByteArray *buffer)
+{
+	register int i;
+	
+	for (i = 0; i < buffer->len; i++)
+		if (buffer->data[i] > 127)
+			return FALSE;
+	
+	return TRUE;
 }
 
 /* simple data wrapper */
@@ -188,7 +202,7 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 	ct = camel_mime_parser_content_type(mp);
 	if (header_content_type_is(ct, "text", "*")) {
 		charset = header_content_type_param(ct, "charset");
-		charset = camel_charset_to_iconv (charset);
+		charset = e_iconv_charset_name(charset);
 		
 		if (fdec) {
 			d(printf("Adding CRLF conversion filter\n"));
@@ -208,13 +222,13 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 	/* Possible Lame Mailer Alert... check the META tags for a charset */
 	if (!charset && header_content_type_is (ct, "text", "html"))
 		charset = check_html_charset(buffer->data, buffer->len);
-
+	
 	/* if we need to do charset conversion, see if we can/it works/etc */
 	if (charset && !(strcasecmp(charset, "us-ascii") == 0
 			 || strcasecmp(charset, "utf-8") == 0
 			 || strncasecmp(charset, "x-", 2) == 0)) {
 		GByteArray *out;
-
+		
 		out = convert_buffer(buffer, "UTF-8", charset);
 		if (out) {
 			/* converted ok, use this data instead */
@@ -226,7 +240,20 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw, CamelMimeParser
 			dw->rawtext = TRUE;
 			/* should we change the content-type header? */
 		}
+	} else if (header_content_type_is (ct, "text", "*")) {
+		if (charset == NULL) {
+			/* check that it's 7bit */
+			dw->rawtext = !is_7bit (buffer);
+		} else if (!strncasecmp (charset, "x-", 2)) {
+			/* we're not even going to bother trying to convert, so set the
+			   rawtext bit to TRUE and let the mailer deal with it. */
+			dw->rawtext = TRUE;
+		} else if (!strcasecmp (charset, "utf-8")) {
+			/* check that it is valid utf8 */
+			dw->rawtext = !g_utf8_validate (buffer->data, buffer->len, NULL);
+		}
 	}
+			
 
 	d(printf("message part kept in memory!\n"));
 		

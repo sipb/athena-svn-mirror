@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -324,6 +323,49 @@ e_folder_type_registry_set_handler_for_type  (EFolderTypeRegistry *folder_type_r
 	g_return_val_if_fail (BONOBO_IS_OBJECT_CLIENT (handler), FALSE);
 
 	return set_handler (folder_type_registry, type_name, handler);
+}
+
+
+gboolean
+e_folder_type_register_type_registered  (EFolderTypeRegistry *folder_type_registry,
+					 const char *type_name)
+{
+	EFolderTypeRegistryPrivate *priv;
+
+	g_return_val_if_fail (folder_type_registry != NULL, FALSE);
+	g_return_val_if_fail (E_IS_FOLDER_TYPE_REGISTRY (folder_type_registry), FALSE);
+	g_return_val_if_fail (type_name != NULL, FALSE);
+
+	priv = folder_type_registry->priv;
+
+	if (get_folder_type (folder_type_registry, type_name) == NULL)
+		return FALSE;
+
+	return TRUE;
+}
+
+void
+e_folder_type_register_unregister_type (EFolderTypeRegistry *folder_type_registry,
+					const char *type_name)
+{
+	EFolderTypeRegistryPrivate *priv;
+	FolderType *folder_type;
+
+	g_return_if_fail (folder_type_registry != NULL);
+	g_return_if_fail (E_IS_FOLDER_TYPE_REGISTRY (folder_type_registry));
+	g_return_if_fail (type_name != NULL);
+
+	priv = folder_type_registry->priv;
+
+	folder_type = get_folder_type (folder_type_registry, type_name);
+	if (folder_type == NULL) {
+		g_warning ("e_folder_type_register_unregister_type(): cannot find type `%s'\n",
+			   type_name);
+		return;
+	}
+
+	g_hash_table_remove (priv->name_to_type, folder_type->name);
+	folder_type_free (folder_type);
 }
 
 

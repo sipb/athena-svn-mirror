@@ -1,5 +1,378 @@
-Version 0.15
-------------
+Version 0.99.0 (1.0 Release Candidate 1), 2001-11-05
+----------------------------------------------------
+
+Shell:
+
+  - Fixed problems with icons not showing up in the druids.  (Ettore,
+    Anna)
+
+  - Fixed some dnd brokenness.  (Ettore)
+
+  - Fixed some random crashes and made the shell more robust in case
+    of activation problems or components crashing.  (Ettore)
+
+  - Implemented a newer, prettier about box.  (Ettore)
+
+  - Made sure the quit message always gets displayed.  (Ettore)
+
+  - Made sure the shell doesn't allow for folder names with slashes.
+    (Ettore)
+
+  - Made the folder selection and folder creation dialogs play better
+    with the WM for out-of-proc components.  (Ettore)
+
+  - Make sure components don't display dialogs before the shell
+    windows are displayed.  (Ettore)
+
+  - Fixed some problems with copying/transferring/renaming folders.
+    (Ettore)
+
+  - Made the pop-up folder bar have the expected size when popped up.
+    (Ettore)
+
+Mailer:
+
+  - Fixed SMTP truncation, IMAP/SSL truncation/hangs when
+    sending/appending messages.  (Jeff)
+
+  - Implemented rename for imap/maildir folders.  Rename also tracked
+    in vfolder and filter code.  Use rename for local folders when we
+    can instead of copy/delete.  (Michael, Jeff)
+
+  - Fixed startup wizard next page race bugs. (Michael)
+
+  - Fixed toolbars vanishing, Bonobo Suxors. (Michael)
+
+  - Made filter/vfolder on mailing lists honour domains, but also
+    backward compatible.  (Michael)
+
+  - Fixed the password coming up behind the main window.  (Michael,
+    Ettore)
+
+  - Fixed numerous crash on startup/exit/while doing nothing/switching
+    folder/components, many races and other architectural errors.
+    (Michael, Jeff)
+
+  - Bunch of vFolder fixes and feature completion. (Michael)
+
+  - Added a 'index body' option to configure folder.  (Michael)
+
+  - Fixed 'unread' counts, again.  (Michael)
+
+  - Fixed some problems leaking file descriptors and overusing them
+    when not necessary.  (Michael)
+
+  - Implemented iconv() caching and Solaris friendly iconv name
+    converter.  Made override display charset work in more cases.
+    (Michael, Jeff)
+
+  - Various untranslated buttons/menus and other translation issues
+    fixed.  (Michael, Jeff)
+
+  - Offline searching in IMAP. (Michael)
+
+  - Don't warn the user if he drags a message and drops it in the same
+    place.  (Jeff)
+
+  - Fixed replying-to and forwarding messages with attachments to
+    attach the appropriate attachments in the new message.  (Jeff, Larry)
+
+  - Don't allow the user to edit the default searches and keep all the
+    search menus consistant accross all folders.  (Jeff)
+
+  - Allow the user to drag&drop and/or move messages to the Trash
+    folder.  (Jeff)
+
+  - Various fixes to the filtering code.  (Jeff, Michael)
+
+  - Make various dialogs non-modal.  (Jeff)
+
+  - Fixes to POP3 UID caching so users can "leave mail on server" and
+    not get duplicates.  (Jeff)
+
+  - Fixes to IMAP caching code where servers support the UIDPLUS
+    extension. Will also now un-cache a folder when the user deletes
+    it from the IMAP server.  (Jeff)
+
+  - Removed support for PGP 2.6.x due to security issues (pgp would
+    always return 0 suggesting that the signature was valid even when
+    it wasn't).  (Jeff)
+
+  - "Whitespace-only" recipients are now ignored, rather than being
+    flagged as invalid. (Trow)
+
+  - Fixed bugs related to message searching: memory leak, i18n problems,
+    etc. (Trow)
+
+  - We no longer leave stray windows lying around after doing the
+    "Add Sender to Addressbook" operation. (Trow)
+
+  - Bcc: headers are now shown when viewing drafts, sent mail. (Trow)
+
+  - Lots and lots and lots of other little and not so little things.
+    (Michael, Jeff, Dan, Trow)
+
+Addressbook:
+
+  - General bug fixes.  (Everybody)
+
+  - Printing fixes.  (Trow)
+
+  - Fixed the dreaded "this should never happen" bug.  (Trow)
+
+  - Plugged memory leaks.  (Trow)
+
+  - Fixed use-score sort ordering when doing completion.  (Trow)
+
+  - Fixed EAddressPopup race conditions.  (Trow)
+
+  - Implemented transfer function for shell, so moving contact
+    folders now works.  (Trow)
+
+  - Fixed occasional completion flakiness.  (Trow)
+
+  - Fixed contact count on folder bar.  (Trow)
+
+  - Fixes for LDAP/multibook address completion.  (Toshok, Trow)
+
+  - Added a "Do you want to save changes?" dialog to the contact 
+    and contact list editors. (Toshok)
+
+  - Fixed date (birthday and anniversary) handling for LDAP. (Toshok)
+
+  - Fixed nasty LDAP modification bug. (Toshok)
+
+  - Add a config setting (/Addressbook/default_book_uri) to specify where
+    vcards and email addresses from mail messages are stored as contacts.
+    (Toshok)
+
+  - Fixed problem that arose in an earlier beta where some contacts
+    couldn't be modified or deleted from local addressbook.
+    (Chris Toshok)
+
+  - LDIF Importer.  (Chris Toshok, Michael M. Morrison)
+
+  - Fixed Memory Leaks.  (Trow)
+
+  - Always show the correct message about the number of contacts on the
+    message bar.  (Trow)
+
+  - Fixed printing of contacts.  (Trow)
+
+  - Fixed the incredibly annoying bug which caused completed
+    (underlined) contacts to spontaneously revert when edited.
+    (Trow)
+
+  - Better event handling in minicard view.  (Chris Lahey)
+
+  - Fixed Bold font in select names dialog.  (Chris Lahey)
+
+  - Show error dialog if saving a contact to a file fails.  (Chris Lahey)
+
+  - Handle carriage returns in any contact field properly.  (Chris Lahey)
+
+Summary:
+
+  - Worked around gnome-vfs problems that were causing crashes.  (Trow)
+
+  - Set the defaults to be CNN and Boston (Ettore)
+
+  - Move the location of the RDF file to be in a place that will always exist.
+
+  - Fixed numerous bugs (Trow, iain)
+
+  - Made the offline stuff work correctly (iain)
+
+  - Fixed a bug were the summary wouldn't retain settings if all folders,
+    or RDFs, or weather stations were removed. (iain)
+
+Importers:
+
+  - Made the pine importer work for multidepth mail folders. (iain)
+
+Calendar:
+
+  - Underlined accelerators now work in the editor dialogs.  (Damon)
+
+  - Many fixes for scheduling meetings.  (JP)
+
+  - Status bar messages for long queries.  (Rodrigo)
+
+  - Appointments with empty summaries are now deleted from the views.
+    Also, you can press Escape to cancel editing [#780].  (Federico)
+
+  - The alarm daemon no longer displays "old" alarms twice. (Federico)
+
+  - Alarms now handle timezones correctly [#5852].  (Federico)
+
+  - Repeating alarms are now handled [#12163].  (Federico)
+
+  - The alarm daemon is launched as soon as the calendar starts, not
+    when you actually open a folder [#13867].  (Federico)
+
+  - You can now set a default reminder to be added to new appointments
+    [#13649].  (Federico)
+
+  - Fixes for printing week views [#13687, #13688].  (Damon)
+
+  - Tasks printout now matches the task list better [#10280].  (Damon)
+
+  - Better handling of DATE values, as opposed to DATE-TIME ones.  (Damon)
+
+  - Many changes to handle the default timezone better.  (Damon)
+
+  - Recurrence generation fixes [#11525].  (Damon)
+
+  - Fixed merging of complete VCALENDAR components.  (Damon)
+
+  - Fixes to the folder transfer functions.  (Ettore, Federico)
+
+  - Tasks activation fixes.  (Damon)
+
+  - Outlook interoperability fixes.  (Damon, JP)
+
+  - Miscellaneous fixes to the event/task editors.  (Damon, JP, Federico)
+
+  - New iCalendar importer.  (Rodrigo)
+
+  - Fixed problems introduced in Beta 6 due to the changes in the URI
+    management functions.  (Rodrigo)
+
+  - Prettier alarm notification dialog.  (Larry)
+
+  - Session management for the alarm daemon.  (Federico)
+
+  - Added activity bars for long calendar operations.  (Rodrigo)
+
+  - Added iCal file importer.  (Rodrigo)
+
+  - Show error dialogs on calendar failures.  (Rodrigo)
+
+Conduits:
+
+  - Addressbook phone numbers now preserved if they can't all be
+    synced to desktop (JP)
+
+  - Sync addressbook phone numbers from non-english pilots (JP)
+
+  - Various memory leak fixes (JP)
+
+  - Handle multi-day calendar events (without recurrences) (JP)
+
+  - Make sure task records are marked complete in every relevant field
+    (JP)
+
+  - Use new timezone stuff everywhere (JP, Damon)
+
+  - Translate task priorities better (JP)
+
+
+Version 0.16 (Beta 6), 2001-10-10
+---------------------------------
+
+Shell:
+
+  - Now the shell restarts stale components from previous sessions
+    properly.  This should reduce the need for oaf-slay to only the
+    cases in which a specific component is completely stuck (which
+    hopefully should never happen).  (Ettore)
+
+  - Fixed the saving of the size of the shortcut bar and the folder
+    bar.  (Ettore)
+
+  - Always display a new default view for the shell, unless the user
+    specified an `evolution:' URI on the command-line.  (Ettore)
+
+  - Fix the weird behavior for right click -> open in new window in a
+    pop-up folder bar.  (Ettore)
+
+  - Make the copy/move and dnd code to detect copying of folders onto
+    themselves correctly.  (Ettore)
+
+Mailer:
+
+  - Bcc: addresses are now visible when browsing messages in
+    the "Sent" folder.  (Trow)
+
+  - Various backend fixes like thread safeness of concurrent
+    triggered events, more forgiving address header decoding,
+    fixes for recent breakage to progress reports, adding a deleted
+    event/state for folders, various deadlocks.  (Michael, Jeff)
+
+  - Fixed quick-searching by receipients to work.  (Michael)
+
+  - Caching of iconv handles to improve performance of many internal
+    mail reading/indexing operations.  (Michael)
+
+  - Major oops in mbox code that caused significant performance
+    problems getting/filtering mail fixed.  (Michael)
+
+  - Message charsets can now be overridden by a user-chosen charset
+    encoding in the mail display.  (Jeff)
+
+  - Report errors when file cannot be attached in the composer.  (Jeff)
+
+  - File->Folder->Properties and Delete Folder now work for VFolders.
+    (Michael)
+
+  - VFolders, Filters and Searches are saved in a safe manner so that
+    they should not be lost with quota/filled disk problems.  (Michael)
+ 
+  - VFolders now update with new mail on their sources.  (Michael)
+
+  - Fixed the "Load HTML Images" radio button options in the mail
+    config dialog to work properly.  (Jeff)
+
+  - When an IMAP folder is deleted, removed any cached messages that
+    had been in that folder when it was "alive".  (Jeff)
+
+  - New icons for PGP signature authenticity.  (Jeff, Jimmac)
+
+Addressbook:
+
+  - General fixes.  (Chris Toshok, Trow, Iain, Chris Lahey, JP)
+
+  - LDAP configuration dialog fixes.  (Chris Toshok)
+
+  - New authentication work.  (Chris Toshok)
+
+  - Fixed crashes related to editing the Master Category List.  (Trow)
+
+  - Address completion is no longer confused by whitespace.  (Trow)
+
+  - More work on having multiple wombats.  (Chris Toshok)
+
+  - Contact names no longer mysteriously disappear when using the
+    SelectNames dialog.  (Trow)
+
+Calendar:
+
+  - Backend improvements (Rodrigo)
+
+  - Compilation fixes for latest Bonobo (Rodrigo)
+
+  - Fixed problem with exceptions to recurring events.  (Damon)
+
+  - Fixed handling of UNTIL property in recurring events. (Damon)
+
+  - The alarm daemon will now notify you of alarms that should have
+    occurred while it was not running.  (Federico)
+
+  - Handle monthly-by-day and "last day" recurrences in the conduits.  (JP)
+
+  - Added priorities to the fields in the attendee list.  (Chris)
+
+  - Enhancements to the event editor for meetings.  (JP)
+
+Summary:
+
+  - Bugfixes.  (Iain)
+
+  - Recurring events have the correct time and date.  (Iain)
+
+
+Version 0.15 (Beta 5), 2001-10-02
+---------------------------------
 
 Shell:
 

@@ -10,9 +10,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,6 +29,7 @@
 
 #include <gtk/gtk.h>
 #include <libgnome/gnome-defs.h>
+#include <addressbook/backend/ebook/e-book.h>
 #include <addressbook/backend/ebook/e-card.h>
 #include <bonobo/bonobo-event-source.h>
 
@@ -61,6 +61,7 @@ struct _EAddressPopup {
 	gboolean transitory;
 
 	guint scheduled_refresh;
+	EBook *book;
 	guint query_tag;
 	gboolean multiple_matches;
 	ECard *card;

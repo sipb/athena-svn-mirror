@@ -3,24 +3,26 @@
  *
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <string.h>
 
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
@@ -28,11 +30,17 @@
 #include "filter-context.h"
 #include "filter-filter.h"
 
+/* For poking into filter-folder guts */
+#include "filter-folder.h"
+
 #define d(x)
 
 static void filter_context_class_init	(FilterContextClass *class);
 static void filter_context_init	(FilterContext *gspaper);
 static void filter_context_finalise	(GtkObject *obj);
+
+static int filter_rename_uri(RuleContext *f, const char *olduri, const char *newuri, GCompareFunc cmp);
+static int filter_delete_uri(RuleContext *f, const char *uri, GCompareFunc cmp);
 
 #define _PRIVATE(x) (((FilterContext *)(x))->priv)
 
@@ -73,12 +81,16 @@ static void
 filter_context_class_init (FilterContextClass *class)
 {
 	GtkObjectClass *object_class;
-	
+	RuleContextClass *rule_class = (RuleContextClass *)class;
+
 	object_class = (GtkObjectClass *)class;
 	parent_class = gtk_type_class(rule_context_get_type ());
 
 	object_class->finalize = filter_context_finalise;
+
 	/* override methods */
+	rule_class->rename_uri = filter_rename_uri;
+	rule_class->delete_uri = filter_delete_uri;
 
 	/* signals */
 
@@ -151,3 +163,75 @@ FilterPart 	*filter_context_next_action(FilterContext *f, FilterPart *last)
 {
 	return filter_part_next_list(f->actions, last);
 }
+
+/* We search for any folders in our actions list that need updating, update them */
+static int filter_rename_uri(RuleContext *f, const char *olduri, const char *newuri, GCompareFunc cmp)
+{
+	FilterRule *rule;
+	GList *l, *el;
+	FilterPart *action;
+	FilterElement *element;
+	const char *name;
+	int count = 0;
+
+	name = strrchr(newuri, '/');
+	if (name)
+		name++;
+	else
+		name = newuri;
+
+	d(printf("uri '%s' renamed to '%s'\n", olduri, newuri));
+
+	/* For all rules, for all actions, for all elements, rename any folder elements */
+	/* Yes we could do this inside each part itself, but not today */
+	rule = NULL;
+	while ( (rule = rule_context_next_rule(f, rule, NULL)) ) {
+		int rulecount = 0;
+
+		d(printf("checking rule '%s'\n", rule->name));
+		
+		l = FILTER_FILTER(rule)->actions;
+		while (l) {
+			action = l->data;
+
+			d(printf("checking action '%s'\n", action->name));
+			
+			el = action->elements;
+			while (el) {
+				element = el->data;
+
+				d(printf("checking element '%s'\n", element->name));
+				if (IS_FILTER_FOLDER(element))
+					d(printf(" is folder, existing uri = '%s'\n", FILTER_FOLDER(element)->uri));
+
+				if (IS_FILTER_FOLDER(element)
+				    && cmp(((FilterFolder *)element)->uri, olduri)) {
+					d(printf(" Changed!\n"));
+					filter_folder_set_value((FilterFolder *)element, newuri, name);
+					rulecount++;
+				}
+				el = el->next;
+			}
+			l = l->next;
+		}
+
+		if (rulecount)
+			filter_rule_emit_changed(rule);
+
+		count += rulecount;
+	}
+
+	return count + parent_class->rename_uri(f, olduri, newuri, cmp);
+}
+
+static int filter_delete_uri(RuleContext *f, const char *uri, GCompareFunc cmp)
+{
+	/* We basically should do similar to above, but when we find it,
+	   Remove the action, and if thats the last action, remove the rule? */
+
+	/* But i'm not confident the rest of the mailer wont accidentlly delete
+	   something which was just temporarily not available. */
+
+	return parent_class->delete_uri(f, uri, cmp);
+}
+

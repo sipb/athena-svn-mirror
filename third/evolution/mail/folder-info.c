@@ -113,7 +113,7 @@ do_get_info (struct _mail_msg *mm)
 #endif
 
 	ex = camel_exception_new ();
-	folder = mail_tool_uri_to_folder (m->foldername, ex);
+	folder = mail_tool_uri_to_folder (m->foldername, 0, ex);
 	if (camel_exception_is_set (ex)) {
 		g_warning ("Camel exception: %s", camel_exception_get_description (ex));
 	}
@@ -132,7 +132,7 @@ do_got_info (struct _mail_msg *mm)
 	CORBA_any a;
 	GNOME_Evolution_FolderInfo_MessageCount count;
 
-	g_print ("You've got mail: %d, %d\n", m->read, m->unread);
+	/*g_print ("You've got mail: %d, %d\n", m->read, m->unread);*/
 
 	count.path = m->foldername;
 	count.count = m->read;
@@ -179,7 +179,7 @@ mail_get_info (const char *foldername,
 
 	m = mail_msg_new (&get_info_op, NULL, sizeof (*m));
 
-	g_print ("Folder: %s", foldername);
+	/*g_print ("Folder: %s", foldername);*/
 	m->foldername = g_strdup (foldername);
 
 	CORBA_exception_init (&ev);
@@ -227,7 +227,7 @@ evolution_folder_info_factory_fn (BonoboGenericFactory *factory,
 	return BONOBO_OBJECT (info);
 }
 
-void 
+gboolean
 evolution_folder_info_factory_init (void)
 {
 	BonoboGenericFactory *factory;
@@ -238,8 +238,9 @@ evolution_folder_info_factory_init (void)
 
 	if (factory == NULL) {
 		g_warning ("Error starting FolderInfo");
-		return;
+		return FALSE;
 	}
 
 	bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
+	return TRUE;
 }

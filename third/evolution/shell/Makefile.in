@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -220,10 +221,10 @@ libeshell_la_SOURCES =  	$(IDL_GENERATED)				e-folder-tree.c					evolution-activ
 
 bin_PROGRAMS = evolution
 
-evolution_SOURCES =  	e-activity-handler.c				e-activity-handler.h				e-component-registry.c				e-component-registry.h				e-corba-shortcuts.c				e-corba-shortcuts.h				e-corba-storage-registry.c			e-corba-storage-registry.h			e-corba-storage.c				e-corba-storage.h				e-folder-type-registry.c			e-folder-type-registry.h			e-folder.c					e-folder.h					e-gray-bar.c					e-gray-bar.h					e-local-folder.c				e-local-folder.h				e-local-storage.c				e-local-storage.h				e-setup.c					e-setup.h					e-shell-constants.h				e-shell-folder-commands.c			e-shell-folder-commands.h			e-shell-folder-creation-dialog.c		e-shell-folder-creation-dialog.h		e-shell-folder-selection-dialog.c		e-shell-folder-selection-dialog.h		e-shell-folder-title-bar.c			e-shell-folder-title-bar.h			e-shell-importer.c				e-shell-importer.h				e-shell-offline-handler.c			e-shell-offline-handler.h			e-shell-startup-wizard.c			e-shell-startup-wizard.h			e-shell-user-creatable-items-handler.c		e-shell-user-creatable-items-handler.h		e-shell-utils.c					e-shell-utils.h					e-shell-view-menu.c				e-shell-view-menu.h				e-shell-view.c					e-shell-view.h					e-shell.c					e-shell.h					e-shortcuts-view-model.c			e-shortcuts-view-model.h			e-shortcuts-view.c				e-shortcuts-view.h				e-shortcuts.c					e-shortcuts.h					e-splash.c					e-splash.h					e-storage-set-view.c				e-storage-set-view.h				e-storage-set.c					e-storage-set.h					e-storage.c					e-storage.h					e-summary-storage.c				e-summary-storage.h				e-task-bar.c					e-task-bar.h					e-task-widget.c					e-task-widget.h					e-uri-schema-registry.c				e-uri-schema-registry.h				evolution-storage-set-view.c			evolution-storage-set-view.h			evolution-storage-set-view-factory.c		evolution-storage-set-view-factory.h		main.c
+evolution_SOURCES =  	e-activity-handler.c				e-activity-handler.h				e-component-registry.c				e-component-registry.h				e-corba-shortcuts.c				e-corba-shortcuts.h				e-corba-storage-registry.c			e-corba-storage-registry.h			e-corba-storage.c				e-corba-storage.h				e-folder-type-registry.c			e-folder-type-registry.h			e-folder.c					e-folder.h					e-gray-bar.c					e-gray-bar.h					e-local-folder.c				e-local-folder.h				e-local-storage.c				e-local-storage.h				e-setup.c					e-setup.h					e-shell-about-box.h				e-shell-about-box.c				e-shell-constants.h				e-shell-folder-commands.c			e-shell-folder-commands.h			e-shell-folder-creation-dialog.c		e-shell-folder-creation-dialog.h		e-shell-folder-selection-dialog.c		e-shell-folder-selection-dialog.h		e-shell-folder-title-bar.c			e-shell-folder-title-bar.h			e-shell-importer.c				e-shell-importer.h				e-shell-offline-handler.c			e-shell-offline-handler.h			e-shell-startup-wizard.c			e-shell-startup-wizard.h			e-shell-user-creatable-items-handler.c		e-shell-user-creatable-items-handler.h		e-shell-utils.c					e-shell-utils.h					e-shell-view-menu.c				e-shell-view-menu.h				e-shell-view.c					e-shell-view.h					e-shell.c					e-shell.h					e-shortcuts-view-model.c			e-shortcuts-view-model.h			e-shortcuts-view.c				e-shortcuts-view.h				e-shortcuts.c					e-shortcuts.h					e-splash.c					e-splash.h					e-storage-set-view.c				e-storage-set-view.h				e-storage-set.c					e-storage-set.h					e-storage.c					e-storage.h					e-summary-storage.c				e-summary-storage.h				e-task-bar.c					e-task-bar.h					e-task-widget.c					e-task-widget.h					e-uri-schema-registry.c				e-uri-schema-registry.h				evolution-storage-set-view.c			evolution-storage-set-view.h			evolution-storage-set-view-factory.c		evolution-storage-set-view-factory.h		main.c
 
 
-evolution_LDADD =  	libeshell.la							importer/libevolution-importer.la				$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a		$(top_builddir)/widgets/misc/libemiscwidgets.a			$(top_builddir)/e-util/libeutil.la				$(top_builddir)/libical/src/libical/libical.la			$(EXTRA_GNOME_LIBS)						$(GNOME_PRINT_LIBS)						$(GTKHTML_LIBS)							$(BONOBO_CONF_LIBS)						$(BONOBO_GNOME_LIBS)
+evolution_LDADD =  	libeshell.la							importer/libevolution-importer.la				$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a		$(top_builddir)/widgets/misc/libemiscwidgets.a			$(top_builddir)/e-util/libeutil.la				$(top_builddir)/libical/src/libical/libical-evolution.la		$(EXTRA_GNOME_LIBS)						$(GNOME_PRINT_LIBS)						$(GTKHTML_LIBS)							$(BONOBO_CONF_LIBS)						$(BONOBO_GNOME_LIBS)
 
 
 # Test component
@@ -284,7 +285,8 @@ e-component-registry.$(OBJEXT) e-corba-shortcuts.$(OBJEXT) \
 e-corba-storage-registry.$(OBJEXT) e-corba-storage.$(OBJEXT) \
 e-folder-type-registry.$(OBJEXT) e-folder.$(OBJEXT) \
 e-gray-bar.$(OBJEXT) e-local-folder.$(OBJEXT) e-local-storage.$(OBJEXT) \
-e-setup.$(OBJEXT) e-shell-folder-commands.$(OBJEXT) \
+e-setup.$(OBJEXT) e-shell-about-box.$(OBJEXT) \
+e-shell-folder-commands.$(OBJEXT) \
 e-shell-folder-creation-dialog.$(OBJEXT) \
 e-shell-folder-selection-dialog.$(OBJEXT) \
 e-shell-folder-title-bar.$(OBJEXT) e-shell-importer.$(OBJEXT) \
@@ -301,7 +303,7 @@ evolution_DEPENDENCIES =  libeshell.la importer/libevolution-importer.la \
 $(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a \
 $(top_builddir)/widgets/misc/libemiscwidgets.a \
 $(top_builddir)/e-util/libeutil.la \
-$(top_builddir)/libical/src/libical/libical.la
+$(top_builddir)/libical/src/libical/libical-evolution.la
 evolution_LDFLAGS = 
 evolution_test_component_OBJECTS =  evolution-test-component.$(OBJEXT)
 evolution_test_component_DEPENDENCIES =  libeshell.la
@@ -320,7 +322,7 @@ DIST_COMMON =  README ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libeshell_la_SOURCES) $(evolution_SOURCES) $(evolution_test_component_SOURCES)
 OBJECTS = $(libeshell_la_OBJECTS) $(evolution_OBJECTS) $(evolution_test_component_OBJECTS)
@@ -637,6 +639,260 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+Evolution-common.lo Evolution-common.o : Evolution-common.c Evolution.h
+Evolution-skels.lo Evolution-skels.o : Evolution-skels.c Evolution.h
+Evolution-stubs.lo Evolution-stubs.o : Evolution-stubs.c Evolution.h
+e-activity-handler.o: e-activity-handler.c ../config.h \
+	e-activity-handler.h Evolution.h e-task-bar.h e-task-widget.h
+e-component-registry.o: e-component-registry.c ../config.h \
+	e-component-registry.h e-shell.h Evolution.h e-shortcuts.h \
+	e-folder-type-registry.h evolution-shell-component-client.h \
+	evolution-shell-component.h evolution-shell-client.h \
+	e-storage-set.h e-storage.h e-folder.h e-shell-view.h \
+	e-task-bar.h e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h \
+	e-shell-utils.h
+e-corba-shortcuts.o: e-corba-shortcuts.c ../config.h e-corba-shortcuts.h \
+	e-shortcuts.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-storage-set.h \
+	e-storage.h e-folder.h ../e-util/e-corba-utils.h
+e-corba-storage-registry.o: e-corba-storage-registry.c ../config.h \
+	e-corba-storage.h e-storage.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-folder.h \
+	e-corba-storage-registry.h e-storage-set.h \
+	e-folder-type-registry.h
+e-corba-storage.o: e-corba-storage.c ../config.h e-corba-storage.h \
+	e-storage.h evolution-shell-component-client.h \
+	evolution-shell-component.h Evolution.h \
+	evolution-shell-client.h e-folder.h
+e-folder-tree.lo e-folder-tree.o : e-folder-tree.c ../config.h \
+	e-folder-tree.h
+e-folder-type-registry.o: e-folder-type-registry.c ../config.h \
+	e-shell-utils.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h
+e-folder.o: e-folder.c ../config.h e-folder.h
+e-gray-bar.o: e-gray-bar.c ../config.h e-gray-bar.h
+e-local-folder.o: e-local-folder.c ../config.h e-local-folder.h \
+	e-folder.h
+e-local-storage.o: e-local-storage.c ../config.h ../e-util/e-path.h \
+	e-local-folder.h e-folder.h evolution-storage.h Evolution.h \
+	e-local-storage.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	evolution-shell-client.h e-storage.h
+e-setup.o: e-setup.c ../config.h e-local-folder.h e-folder.h e-setup.h
+e-shell-about-box.o: e-shell-about-box.c ../config.h e-shell-about-box.h
+e-shell-folder-commands.o: e-shell-folder-commands.c ../config.h \
+	e-shell-folder-commands.h e-shell.h Evolution.h \
+	e-component-registry.h evolution-shell-component-client.h \
+	evolution-shell-component.h evolution-shell-client.h \
+	e-shortcuts.h e-folder-type-registry.h e-storage-set.h \
+	e-storage.h e-folder.h e-shell-view.h e-task-bar.h \
+	e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h \
+	../e-util/e-request.h e-shell-constants.h \
+	e-shell-folder-creation-dialog.h \
+	e-shell-folder-selection-dialog.h e-shell-utils.h
+e-shell-folder-creation-dialog.o: e-shell-folder-creation-dialog.c \
+	../config.h e-storage-set.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-storage.h e-folder.h \
+	e-storage-set-view.h e-shell-utils.h \
+	e-shell-folder-creation-dialog.h e-shell.h \
+	e-component-registry.h e-shortcuts.h e-shell-view.h \
+	e-task-bar.h e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h
+e-shell-folder-selection-dialog.o: e-shell-folder-selection-dialog.c \
+	../config.h e-shell-constants.h e-storage-set-view.h \
+	e-storage-set.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-storage.h e-folder.h \
+	e-shell-folder-creation-dialog.h e-shell.h \
+	e-component-registry.h e-shortcuts.h e-shell-view.h \
+	e-task-bar.h e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h \
+	e-shell-folder-selection-dialog.h
+e-shell-folder-title-bar.o: e-shell-folder-title-bar.c ../config.h \
+	../widgets/misc/e-clipped-label.h e-shell-constants.h \
+	e-shell-folder-title-bar.h
+e-shell-importer.o: e-shell-importer.c ../config.h e-shell.h Evolution.h \
+	e-component-registry.h evolution-shell-component-client.h \
+	evolution-shell-component.h evolution-shell-client.h \
+	e-shortcuts.h e-folder-type-registry.h e-storage-set.h \
+	e-storage.h e-folder.h e-shell-view.h e-task-bar.h \
+	e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h \
+	e-shell-folder-selection-dialog.h \
+	importer/evolution-importer-client.h \
+	importer/evolution-importer.h \
+	importer/GNOME_Evolution_Importer.h \
+	importer/evolution-importer-listener.h ../e-util/e-html-utils.h \
+	../e-util/e-gtk-utils.h e-shell-importer.h
+e-shell-offline-handler.o: e-shell-offline-handler.c ../config.h \
+	e-shell-offline-handler.h e-component-registry.h e-shell.h \
+	Evolution.h e-shortcuts.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	evolution-shell-client.h e-storage-set.h e-storage.h e-folder.h \
+	e-shell-view.h e-task-bar.h e-task-widget.h \
+	e-uri-schema-registry.h e-shell-user-creatable-items-handler.h \
+	e-local-storage.h
+e-shell-startup-wizard.o: e-shell-startup-wizard.c ../config.h \
+	e-shell-startup-wizard.h \
+	../widgets/e-timezone-dialog/e-timezone-dialog.h \
+	importer/GNOME_Evolution_Importer.h ../e-util/e-gtk-utils.h \
+	evolution-wizard.h Evolution.h
+e-shell-user-creatable-items-handler.o: \
+	e-shell-user-creatable-items-handler.c ../config.h \
+	e-shell-user-creatable-items-handler.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-shell-view.h \
+	e-task-bar.h e-task-widget.h e-shell.h e-component-registry.h \
+	e-shortcuts.h e-folder-type-registry.h e-storage-set.h \
+	e-storage.h e-folder.h e-uri-schema-registry.h \
+	e-local-storage.h ../e-util/e-corba-utils.h
+e-shell-utils.o: e-shell-utils.c ../config.h e-shell-constants.h \
+	e-shell-utils.h
+e-shell-view-menu.o: e-shell-view-menu.c ../config.h \
+	e-shell-folder-creation-dialog.h e-shell.h Evolution.h \
+	e-component-registry.h evolution-shell-component-client.h \
+	evolution-shell-component.h evolution-shell-client.h \
+	e-shortcuts.h e-folder-type-registry.h e-storage-set.h \
+	e-storage.h e-folder.h e-shell-view.h e-task-bar.h \
+	e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h \
+	e-shell-folder-selection-dialog.h e-shell-constants.h \
+	e-shell-view-menu.h e-shell-importer.h e-shell-about-box.h \
+	e-shell-folder-commands.h evolution-shell-component-utils.h
+e-shell-view.o: e-shell-view.c ../config.h \
+	../widgets/misc/e-clipped-label.h \
+	../widgets/misc/e-bonobo-widget.h ../e-util/e-gtk-utils.h \
+	evolution-shell-view.h Evolution.h e-gray-bar.h \
+	e-shell-constants.h e-shell-folder-title-bar.h e-shell-utils.h \
+	e-shell.h e-component-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	evolution-shell-client.h e-shortcuts.h e-folder-type-registry.h \
+	e-storage-set.h e-storage.h e-folder.h e-shell-view.h \
+	e-task-bar.h e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h \
+	e-shortcuts-view.h e-storage-set-view.h \
+	../widgets/misc/e-title-bar.h e-shell-view-menu.h
+e-shell.o: e-shell.c ../config.h Evolution.h ../e-util/e-dialog-utils.h \
+	e-activity-handler.h e-task-bar.h e-task-widget.h \
+	e-component-registry.h e-shell.h e-shortcuts.h \
+	e-folder-type-registry.h evolution-shell-component-client.h \
+	evolution-shell-component.h evolution-shell-client.h \
+	e-storage-set.h e-storage.h e-folder.h e-shell-view.h \
+	e-uri-schema-registry.h e-shell-user-creatable-items-handler.h \
+	e-local-storage.h e-corba-shortcuts.h \
+	e-corba-storage-registry.h e-shell-constants.h \
+	e-shell-folder-selection-dialog.h e-shell-offline-handler.h \
+	e-shell-startup-wizard.h e-splash.h e-summary-storage.h \
+	evolution-storage-set-view-factory.h importer/intelligent.h
+e-shortcuts-view-model.o: e-shortcuts-view-model.c ../config.h \
+	e-shortcuts-view-model.h e-shortcuts.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-storage-set.h \
+	e-storage.h e-folder.h
+e-shortcuts-view.o: e-shortcuts-view.c ../config.h ../e-util/e-request.h \
+	e-shell-constants.h e-shortcuts-view-model.h e-shortcuts.h \
+	e-folder-type-registry.h evolution-shell-component-client.h \
+	evolution-shell-component.h Evolution.h \
+	evolution-shell-client.h e-storage-set.h e-storage.h e-folder.h \
+	e-shortcuts-view.h
+e-shortcuts.o: e-shortcuts.c ../config.h e-shortcuts.h \
+	e-folder-type-registry.h evolution-shell-component-client.h \
+	evolution-shell-component.h Evolution.h \
+	evolution-shell-client.h e-storage-set.h e-storage.h e-folder.h \
+	e-shortcuts-view.h e-shell-constants.h
+e-splash.o: e-splash.c ../config.h e-splash.h ../e-util/e-gtk-utils.h
+e-storage-set-view.o: e-storage-set-view.c ../config.h \
+	e-storage-set-view.h e-storage-set.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-storage.h e-folder.h \
+	../e-util/e-gtk-utils.h e-shell-constants.h e-local-storage.h \
+	e-summary-storage.h
+e-storage-set.o: e-storage-set.c ../config.h e-storage-set-view.h \
+	e-storage-set.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-storage.h e-folder.h
+e-storage.o: e-storage.c ../config.h e-folder-tree.h e-storage.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-folder.h
+e-summary-storage.o: e-summary-storage.c ../config.h e-summary-storage.h \
+	e-storage.h evolution-shell-component-client.h \
+	evolution-shell-component.h Evolution.h \
+	evolution-shell-client.h e-folder.h
+e-task-bar.o: e-task-bar.c ../config.h e-task-bar.h e-task-widget.h
+e-task-widget.o: e-task-widget.c ../config.h e-task-widget.h
+e-uri-schema-registry.o: e-uri-schema-registry.c ../config.h \
+	e-uri-schema-registry.h evolution-shell-component-client.h \
+	evolution-shell-component.h Evolution.h \
+	evolution-shell-client.h
+evolution-activity-client.lo evolution-activity-client.o : \
+	evolution-activity-client.c ../config.h \
+	evolution-activity-client.h evolution-shell-client.h \
+	Evolution.h
+evolution-local-storage.lo evolution-local-storage.o : \
+	evolution-local-storage.c ../config.h evolution-local-storage.h \
+	evolution-storage.h Evolution.h
+evolution-session.lo evolution-session.o : evolution-session.c \
+	../config.h Evolution.h evolution-session.h
+evolution-shell-client.lo evolution-shell-client.o : \
+	evolution-shell-client.c ../config.h evolution-shell-client.h \
+	Evolution.h
+evolution-shell-component-client.lo evolution-shell-component-client.o : \
+	evolution-shell-component-client.c ../config.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h
+evolution-shell-component-dnd.lo evolution-shell-component-dnd.o : \
+	evolution-shell-component-dnd.c Evolution.h \
+	evolution-shell-component-dnd.h
+evolution-shell-component-utils.lo evolution-shell-component-utils.o : \
+	evolution-shell-component-utils.c ../config.h \
+	evolution-shell-component-utils.h
+evolution-shell-component.lo evolution-shell-component.o : \
+	evolution-shell-component.c ../config.h \
+	evolution-shell-component.h Evolution.h \
+	evolution-shell-client.h
+evolution-shell-view.lo evolution-shell-view.o : evolution-shell-view.c \
+	../config.h evolution-shell-view.h Evolution.h
+evolution-storage-listener.lo evolution-storage-listener.o : \
+	evolution-storage-listener.c ../config.h \
+	evolution-storage-listener.h Evolution.h
+evolution-storage-set-view-factory.o: \
+	evolution-storage-set-view-factory.c ../config.h \
+	e-storage-set-view.h e-storage-set.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-storage.h e-folder.h \
+	e-shell.h e-component-registry.h e-shortcuts.h e-shell-view.h \
+	e-task-bar.h e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h \
+	evolution-storage-set-view.h \
+	evolution-storage-set-view-factory.h
+evolution-storage-set-view-listener.lo evolution-storage-set-view-listener.o : \
+	evolution-storage-set-view-listener.c ../config.h \
+	evolution-storage-set-view-listener.h Evolution.h
+evolution-storage-set-view.o: evolution-storage-set-view.c ../config.h \
+	evolution-storage-set-view.h e-storage-set-view.h \
+	e-storage-set.h e-folder-type-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	Evolution.h evolution-shell-client.h e-storage.h e-folder.h
+evolution-storage.lo evolution-storage.o : evolution-storage.c \
+	../config.h Evolution.h e-folder-tree.h evolution-storage.h
+evolution-test-component.o: evolution-test-component.c ../config.h \
+	evolution-shell-component.h Evolution.h \
+	evolution-shell-client.h evolution-activity-client.h
+evolution-wizard.lo evolution-wizard.o : evolution-wizard.c ../config.h \
+	evolution-wizard.h Evolution.h
+main.o: main.c ../config.h ../e-util/e-gtk-utils.h e-shell-constants.h \
+	e-setup.h e-shell.h Evolution.h e-component-registry.h \
+	evolution-shell-component-client.h evolution-shell-component.h \
+	evolution-shell-client.h e-shortcuts.h e-folder-type-registry.h \
+	e-storage-set.h e-storage.h e-folder.h e-shell-view.h \
+	e-task-bar.h e-task-widget.h e-uri-schema-registry.h \
+	e-shell-user-creatable-items-handler.h e-local-storage.h
 
 info-am:
 info: info-recursive

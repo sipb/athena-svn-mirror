@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -159,15 +159,20 @@ set_errno (int code)
 {
 	/* FIXME: this should handle more. */
 	switch (code) {
+	case PR_PENDING_INTERRUPT_ERROR:
+		errno = EINTR;
+		break;
+	case PR_IO_PENDING_ERROR:
 	case PR_IO_TIMEOUT_ERROR:
 		errno = EAGAIN;
 		break;
+	case PR_WOULD_BLOCK_ERROR:
+		errno = EWOULDBLOCK;
+		break;
 	case PR_IO_ERROR:
+	default:
 		errno = EIO;
 		break;
-	default:
-		/* what to set by default?? */
-		errno = EINTR;
 	}
 }
 
@@ -179,10 +184,9 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 	
 	do {
 		nread = PR_Read (tcp_stream_ssl->priv->sockfd, buffer, n);
-	} while (nread == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
-	
-	if (nread == -1)
-		set_errno (PR_GetError ());
+		if (nread == -1)
+			set_errno (PR_GetError ());
+	} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
 	
 	return nread;
 }
@@ -191,14 +195,18 @@ static ssize_t
 stream_write (CamelStream *stream, const char *buffer, size_t n)
 {
 	CamelTcpStreamSSL *tcp_stream_ssl = CAMEL_TCP_STREAM_SSL (stream);
-	ssize_t written = 0;
+	ssize_t w, written = 0;
 	
 	do {
-		written = PR_Write (tcp_stream_ssl->priv->sockfd, buffer, n);
-	} while (written == -1 && PR_GetError () == PR_PENDING_INTERRUPT_ERROR);
-	
-	if (written == -1)
-		set_errno (PR_GetError ());
+		do {
+			w = PR_Write (tcp_stream_ssl->priv->sockfd, buffer + written, n - written);
+			if (w == -1)
+				set_errno (PR_GetError ());
+		} while (w == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+		
+		if (w > 0)
+			written += w;
+	} while (w != -1 && written < n);
 	
 	return written;
 }
@@ -333,6 +341,53 @@ ssl_auth_cert (void *data, PRFileDesc *sockfd, PRBool checksig, PRBool is_server
 }
 #endif
 
+static void
+save_ssl_cert (const char *certid)
+{
+	char *path, *filename;
+	struct stat st;
+	int fd;
+	
+	path = g_strdup_printf ("%s/.camel_certs", getenv ("HOME"));
+	if (mkdir (path, 0700) == -1) {
+		if (errno != EEXIST)
+			return;
+		
+		if (stat (path, &st) == -1)
+			return;
+		
+		if (!S_ISDIR (st.st_mode))
+			return;
+	}
+	
+	filename = g_strdup_printf ("%s/%s", path, certid);
+	g_free (path);
+	
+	fd = open (filename, O_WRONLY | O_CREAT);
+	if (fd != -1)
+		close (fd);
+	
+	g_free (filename);
+}
+
+static gboolean
+ssl_cert_is_saved (const char *certid)
+{
+	char *filename;
+	struct stat st;
+	
+	filename = g_strdup_printf ("%s/.camel_certs/%s", getenv ("HOME"), certid);
+	
+	if (stat (filename, &st) == -1) {
+		g_free (filename);
+		return FALSE;
+	}
+	
+	g_free (filename);
+	
+	return st.st_uid == getuid ();
+}
+
 static SECStatus
 ssl_bad_cert (void *data, PRFileDesc *sockfd)
 {
@@ -347,6 +402,10 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 	
 	ssl = CAMEL_TCP_STREAM_SSL (data);
 	service = ssl->priv->service;
+	
+	/* this is part of a work-around hack */
+	if (ssl_cert_is_saved (ssl->priv->expected_host))
+		return SECSuccess;
 	
 	cert = SSL_PeerCertificate (sockfd);
 	
@@ -375,29 +434,22 @@ ssl_bad_cert (void *data, PRFileDesc *sockfd)
 	g_free (prompt);
 	
 	if (accept) {
-#if 0
-		/* this code would work, except guess what? mozilla
-                   again changed api - these are all deprecated
-                   functions again. */
-		CERTCertificate *temp;
-		CERTCertTrust *trust;
-		PK11SlotInfo *slot;
-		char *nickname;
+		SECItem *certs[1];
 		
-		nickname = CERT_MakeCANickname (cert);
+		if (!cert->trust)
+			cert->trust = PORT_ZAlloc (sizeof (CERTCertTrust));
 		
-		slot = PK11_GetInternalKeySlot ();
+		cert->trust->sslFlags = CERTDB_VALID_PEER | CERTDB_TRUSTED;
 		
-		trust = PORT_ZAlloc (sizeof (CERTCertTrust));
-		trust->sslFlags = CERTDB_TRUSTED_CA | CERTDB_VALID_CA;
+		certs[0] = &cert->derCert;
 		
-		temp = CERT_NewTempCertificate (CERT_GetDefaultCertDB (), &cert->derCert, NULL, PR_FALSE, PR_TRUE);
+		CERT_ImportCerts (CERT_GetDefaultCertDB (), certUsageSSLServer, 1, certs,
+				  NULL, TRUE, FALSE, cert->nickname);
 		
-		CERT_AddTempCertToPerm (temp, nickname, trust);
+		/* and since the above code doesn't seem to
+                   work... time for a good ol' fashioned hack */
+		save_ssl_cert (ssl->priv->expected_host);
 		
-		CERT_DestroyCertificate (temp);
-		PORT_Free (nickname);
-#endif		
 		return SECSuccess;
 	}
 	

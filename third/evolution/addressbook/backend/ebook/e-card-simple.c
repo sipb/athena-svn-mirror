@@ -14,7 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtkobject.h>
-#include <e-util/e-unicode-i18n.h>
+#include <gal/util/e-unicode-i18n.h>
+#include <gal/util/e-util.h>
 
 #include <libversit/vcc.h>
 #include "e-card-simple.h"
@@ -36,6 +37,7 @@ enum _ECardSimpleInternalType {
 	E_CARD_SIMPLE_INTERNAL_TYPE_PHONE,
 	E_CARD_SIMPLE_INTERNAL_TYPE_EMAIL,
 	E_CARD_SIMPLE_INTERNAL_TYPE_SPECIAL,
+	E_CARD_SIMPLE_INTERNAL_TYPE_BOOL,
 };
 
 struct _ECardSimpleFieldData {
@@ -104,6 +106,8 @@ static ECardSimpleFieldData field_data[] =
  	{ E_CARD_SIMPLE_FIELD_GIVEN_NAME,         "given_name",      "Given Name",    "Given Name",  0,                                E_CARD_SIMPLE_INTERNAL_TYPE_SPECIAL },
  	{ E_CARD_SIMPLE_FIELD_ADDITIONAL_NAME,    "additional_name",  "Additional Name", "Additional Name",  0,                        E_CARD_SIMPLE_INTERNAL_TYPE_SPECIAL },
  	{ E_CARD_SIMPLE_FIELD_NAME_SUFFIX,        "name_suffix",     "Name Suffix",   "Name Suffix",  0,                               E_CARD_SIMPLE_INTERNAL_TYPE_SPECIAL },
+ 	{ E_CARD_SIMPLE_FIELD_WANTS_HTML,         "wants_html",      "Wants HTML",    "Wants HTML",   0,                               E_CARD_SIMPLE_INTERNAL_TYPE_BOOL },
+ 	{ E_CARD_SIMPLE_FIELD_IS_LIST,            "list",            "Is List",       "Is List",      0,                               E_CARD_SIMPLE_INTERNAL_TYPE_BOOL },
 };
 static int field_data_count = sizeof (field_data) / sizeof (field_data[0]);
 
@@ -345,13 +349,13 @@ e_card_simple_destroy (GtkObject *object)
 	simple->temp_fields = NULL;
 
 	for(i = 0; i < E_CARD_SIMPLE_PHONE_ID_LAST; i++)
-		e_card_phone_free (simple->phone[i]);
+		e_card_phone_unref (simple->phone[i]);
 	for(i = 0; i < E_CARD_SIMPLE_EMAIL_ID_LAST; i++)
 		g_free(simple->email[i]);
 	for(i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i++)
-		e_card_address_label_free(simple->address[i]);
+		e_card_address_label_unref(simple->address[i]);
 	for(i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i++)
-		e_card_delivery_address_free(simple->delivery[i]);
+		e_card_delivery_address_unref(simple->delivery[i]);
 }
 
 
@@ -446,7 +450,7 @@ fill_in_info(ECardSimple *simple)
 			       "email",         &email_list,
 			       NULL);
 		for (i = 0; i < E_CARD_SIMPLE_PHONE_ID_LAST; i++) {
-			e_card_phone_free(simple->phone[i]);
+			e_card_phone_unref(simple->phone[i]);
 			simple->phone[i] = NULL;
 		}
 		for (iterator = e_list_get_iterator(phone_list); e_iterator_is_valid(iterator); e_iterator_next(iterator)) {
@@ -454,7 +458,7 @@ fill_in_info(ECardSimple *simple)
 			phone = e_iterator_get(iterator);
 			for (i = 0; i < E_CARD_SIMPLE_PHONE_ID_LAST; i ++) {
 				if ((phone->flags == phone_correspondences[i]) && (simple->phone[i] == NULL)) {
-					simple->phone[i] = e_card_phone_copy(phone);
+					simple->phone[i] = e_card_phone_ref(phone);
 					found = TRUE;
 					break;
 				}
@@ -463,7 +467,7 @@ fill_in_info(ECardSimple *simple)
 				continue;
 			for (i = 0; i < E_CARD_SIMPLE_PHONE_ID_LAST; i ++) {
 				if (((phone->flags & phone_correspondences[i]) == phone_correspondences[i]) && (simple->phone[i] == NULL)) {
-					simple->phone[i] = e_card_phone_copy(phone);
+					simple->phone[i] = e_card_phone_ref(phone);
 					break;
 				}
 			}
@@ -486,14 +490,14 @@ fill_in_info(ECardSimple *simple)
 		gtk_object_unref(GTK_OBJECT(iterator));
 
 		for (i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i++) {
-			e_card_address_label_free(simple->address[i]);
+			e_card_address_label_unref(simple->address[i]);
 			simple->address[i] = NULL;
 		}
 		for (iterator = e_list_get_iterator(address_list); e_iterator_is_valid(iterator); e_iterator_next(iterator)) {
 			address = e_iterator_get(iterator);
 			for (i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i ++) {
 				if (((address->flags & addr_correspondences[i]) == addr_correspondences[i]) && (simple->address[i] == NULL)) {
-					simple->address[i] = e_card_address_label_copy(address);
+					simple->address[i] = e_card_address_label_ref(address);
 					break;
 				}
 			}
@@ -501,14 +505,14 @@ fill_in_info(ECardSimple *simple)
 		gtk_object_unref(GTK_OBJECT(iterator));
 
 		for (i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i++) {
-			e_card_delivery_address_free(simple->delivery[i]);
+			e_card_delivery_address_unref(simple->delivery[i]);
 			simple->delivery[i] = NULL;
 		}
 		for (iterator = e_list_get_iterator(delivery_list); e_iterator_is_valid(iterator); e_iterator_next(iterator)) {
 			delivery = e_iterator_get(iterator);
 			for (i = 0; i < E_CARD_SIMPLE_ADDRESS_ID_LAST; i ++) {
 				if (((delivery->flags & addr_correspondences[i]) == addr_correspondences[i]) && (simple->delivery[i] == NULL)) {
-					simple->delivery[i] = e_card_delivery_address_copy(delivery);
+					simple->delivery[i] = e_card_delivery_address_ref(delivery);
 					break;
 				}
 			}
@@ -555,7 +559,7 @@ e_card_simple_sync_card(ECardSimple *simple)
 						} else {
 							e_iterator_delete(iterator);
 						}
-						e_card_phone_free(simple->phone[i]);
+						e_card_phone_unref(simple->phone[i]);
 						simple->phone[i] = NULL;
 						found = TRUE;
 						break;
@@ -573,7 +577,7 @@ e_card_simple_sync_card(ECardSimple *simple)
 						} else {
 							e_iterator_delete(iterator);
 						}
-						e_card_phone_free(simple->phone[i]);
+						e_card_phone_unref(simple->phone[i]);
 						simple->phone[i] = NULL;
 						break;
 					}
@@ -585,7 +589,7 @@ e_card_simple_sync_card(ECardSimple *simple)
 			if (simple->phone[i]) {
 				simple->phone[i]->flags = phone_correspondences[i];
 				e_list_append(phone_list, simple->phone[i]);
-				e_card_phone_free(simple->phone[i]);
+				e_card_phone_unref(simple->phone[i]);
 				simple->phone[i] = NULL;
 			}
 		}
@@ -627,7 +631,7 @@ e_card_simple_sync_card(ECardSimple *simple)
 						} else {
 							e_iterator_delete(iterator);
 						}
-						e_card_address_label_free(simple->address[i]);
+						e_card_address_label_unref(simple->address[i]);
 						simple->address[i] = NULL;
 						break;
 					}
@@ -639,7 +643,7 @@ e_card_simple_sync_card(ECardSimple *simple)
 			if (simple->address[i]) {
 				simple->address[i]->flags = addr_correspondences[i];
 				e_list_append(address_list, simple->address[i]);
-				e_card_address_label_free(simple->address[i]);
+				e_card_address_label_unref(simple->address[i]);
 				simple->address[i] = NULL;
 			}
 		}
@@ -656,7 +660,7 @@ e_card_simple_sync_card(ECardSimple *simple)
 						} else {
 							e_iterator_delete(iterator);
 						}
-						e_card_delivery_address_free(simple->delivery[i]);
+						e_card_delivery_address_unref(simple->delivery[i]);
 						simple->delivery[i] = NULL;
 						break;
 					}
@@ -668,7 +672,7 @@ e_card_simple_sync_card(ECardSimple *simple)
 			if (simple->delivery[i]) {
 				simple->delivery[i]->flags = addr_correspondences[i];
 				e_list_append(delivery_list, simple->delivery[i]);
-				e_card_delivery_address_free(simple->delivery[i]);
+				e_card_delivery_address_unref(simple->delivery[i]);
 				simple->delivery[i] = NULL;
 			}
 		}
@@ -707,9 +711,8 @@ void            e_card_simple_set_phone   (ECardSimple          *simple,
 					   ECardSimplePhoneId    id,
 					   const ECardPhone           *phone)
 {
-	if (simple->phone[id])
-		e_card_phone_free(simple->phone[id]);
-	simple->phone[id] = e_card_phone_copy(phone);
+	e_card_phone_unref(simple->phone[id]);
+	simple->phone[id] = e_card_phone_ref(phone);
 	simple->changed = TRUE;
 }
 
@@ -717,21 +720,17 @@ void            e_card_simple_set_email   (ECardSimple          *simple,
 					   ECardSimpleEmailId    id,
 					   const char                 *email)
 {
-	if (simple->email[id])
-		g_free(simple->email[id]);
+	g_free(simple->email[id]);
 	simple->email[id] = g_strdup(email);
 	simple->changed = TRUE;
 }
 
-void            e_card_simple_set_address (ECardSimple          *simple,
-					   ECardSimpleAddressId  id,
-					   const ECardAddrLabel       *address)
+void
+e_card_simple_set_address (ECardSimple *simple, ECardSimpleAddressId id, const ECardAddrLabel *address)
 {
-	if (simple->address[id])
-		e_card_address_label_free(simple->address[id]);
-	simple->address[id] = e_card_address_label_copy(address);
-	if (simple->delivery[id])
-		e_card_delivery_address_free(simple->delivery[id]);
+	e_card_address_label_unref(simple->address[id]);
+	simple->address[id] = e_card_address_label_ref(address);
+	e_card_delivery_address_unref(simple->delivery[id]);
 	simple->delivery[id] = e_card_delivery_address_from_label(simple->address[id]);
 	simple->changed = TRUE;
 }
@@ -740,9 +739,8 @@ void            e_card_simple_set_delivery_address (ECardSimple          *simple
 						    ECardSimpleAddressId  id,
 						    const ECardDeliveryAddress *delivery)
 {
-	if (simple->delivery[id])
-		e_card_delivery_address_free(simple->delivery[id]);
-	simple->delivery[id] = e_card_delivery_address_copy(delivery);
+	e_card_delivery_address_unref(simple->delivery[id]);
+	simple->delivery[id] = e_card_delivery_address_ref(delivery);
 	simple->changed = TRUE;
 }
 
@@ -778,7 +776,20 @@ char     *e_card_simple_get            (ECardSimple          *simple,
 			gtk_object_get(GTK_OBJECT(simple->card),
 				       field_data[field].ecard_field, &date,
 				       NULL);
-			return NULL; /* FIXME!!!! */
+			if (date != NULL) {
+				char buf[26];
+				struct tm then;
+				then.tm_year = date->year;
+				then.tm_mon  = date->month - 1;
+				then.tm_mday = date->day;
+				then.tm_hour = 12;
+				then.tm_min  = 0;
+				then.tm_sec  = 0;
+				e_strftime_fix_am_pm (buf, 26, _("%x"), &then);
+				return g_strdup (buf);
+			} else {
+				return NULL;
+			}
 		} else
 			return NULL;
 	case E_CARD_SIMPLE_INTERNAL_TYPE_ADDRESS:
@@ -799,6 +810,19 @@ char     *e_card_simple_get            (ECardSimple          *simple,
 		string = e_card_simple_get_email(simple,
 						 field_data[field].list_type_index);
 		return g_strdup(string);
+	case E_CARD_SIMPLE_INTERNAL_TYPE_BOOL:
+		if (simple->card) {
+			gboolean boole;
+			gtk_object_get (GTK_OBJECT (simple->card),
+					field_data[field].ecard_field, &boole,
+					NULL);
+			if (boole)
+				return "true";
+			else
+				return NULL;
+		} else {
+			return NULL;
+		}
 	case E_CARD_SIMPLE_INTERNAL_TYPE_SPECIAL:
 		switch (field) {
 		case E_CARD_SIMPLE_FIELD_NAME_OR_ORG:
@@ -919,19 +943,17 @@ file_as_get_style (ECardSimple *simple)
 {
 	char *filestring = e_card_simple_get(simple, E_CARD_SIMPLE_FIELD_FILE_AS);
 	char *trystring;
-	char *full_name = e_card_simple_get(simple, E_CARD_SIMPLE_FIELD_FULL_NAME);
 	char *company = e_card_simple_get(simple, E_CARD_SIMPLE_FIELD_ORG);
 	ECardName *name = NULL;
 	int i;
 	int style;
 	style = 0;
-	if (!full_name)
-		full_name = g_strdup("");
 	if (!company)
 		company = g_strdup("");
 	if (filestring) {
-
-		name = e_card_name_from_string(full_name);
+		gtk_object_get (GTK_OBJECT (simple->card),
+				"name", &name,
+				NULL);
 		
 		if (!name) {
 			goto end;
@@ -952,10 +974,7 @@ file_as_get_style (ECardSimple *simple)
  end:
 		
 	g_free(filestring);
-	g_free(full_name);
 	g_free(company);
-	if (name)
-		e_card_name_free(name);
 	
 	return style;
 }
@@ -965,23 +984,20 @@ file_as_set_style(ECardSimple *simple, int style)
 {
 	if (style != -1) {
 		char *string;
-		char *full_name = e_card_simple_get(simple, E_CARD_SIMPLE_FIELD_FULL_NAME);
 		char *company = e_card_simple_get(simple, E_CARD_SIMPLE_FIELD_ORG);
 		ECardName *name;
-		
-		if (!full_name)
-			full_name = g_strdup("");
+
 		if (!company)
 			company = g_strdup("");
-		name = e_card_name_from_string(full_name);
+		gtk_object_get (GTK_OBJECT (simple->card),
+				"name", &name,
+				NULL);
 		if (name) {
 			string = name_to_style(name, company, style);
 			e_card_simple_set(simple, E_CARD_SIMPLE_FIELD_FILE_AS, string);
 			g_free(string);
 		}
-		g_free(full_name);
 		g_free(company);
-		e_card_name_free(name);
 	}
 }
 
@@ -1014,21 +1030,19 @@ void            e_card_simple_set            (ECardSimple          *simple,
 			break; /* FIXME!!!! */
 		case E_CARD_SIMPLE_INTERNAL_TYPE_ADDRESS:
 			address = e_card_address_label_new();
-			address->data = (char *) data;
+			address->data = g_strdup (data);
 			e_card_simple_set_address(simple,
 						  field_data[field].list_type_index,
 						  address);
-			address->data = NULL;
-			e_card_address_label_free(address);
+			e_card_address_label_unref(address);
 			break;
 		case E_CARD_SIMPLE_INTERNAL_TYPE_PHONE:
 			phone = e_card_phone_new();
-			phone->number = (char *) data;
+			phone->number = g_strdup (data);
 			e_card_simple_set_phone(simple,
 						field_data[field].list_type_index,
 						phone);
-			phone->number = NULL;
-			e_card_phone_free(phone);
+			e_card_phone_unref(phone);
 			break;
 		case E_CARD_SIMPLE_INTERNAL_TYPE_EMAIL:
 			e_card_simple_set_email(simple,
@@ -1036,6 +1050,18 @@ void            e_card_simple_set            (ECardSimple          *simple,
 						data);
 			break;
 		case E_CARD_SIMPLE_INTERNAL_TYPE_SPECIAL:
+			break;
+		case E_CARD_SIMPLE_INTERNAL_TYPE_BOOL:
+			if (simple->card) {
+				gboolean boole = TRUE;
+				if (data == NULL)
+					boole = FALSE;
+				else if (!strcasecmp (data, "false"))
+					boole = FALSE;
+				gtk_object_set (GTK_OBJECT (simple->card),
+						field_data[field].ecard_field, boole,
+						NULL);
+			}
 			break;
 		}
 		break;
@@ -1053,6 +1079,9 @@ ECardSimpleType e_card_simple_type       (ECardSimple          *simple,
 	case E_CARD_SIMPLE_INTERNAL_TYPE_EMAIL:
 	default:
 		return E_CARD_SIMPLE_TYPE_STRING;
+
+	case E_CARD_SIMPLE_INTERNAL_TYPE_BOOL:
+		return E_CARD_SIMPLE_TYPE_BOOL;
 
 	case E_CARD_SIMPLE_INTERNAL_TYPE_DATE:
 		return E_CARD_SIMPLE_TYPE_DATE;
@@ -1072,6 +1101,31 @@ const char     *e_card_simple_get_name       (ECardSimple          *simple,
 					      ECardSimpleField      field)
 {
 	return U_(field_data[field].name);
+}
+
+gboolean
+e_card_simple_get_allow_newlines (ECardSimple          *simple,
+				  ECardSimpleField      field)
+{
+	ECardSimpleInternalType type = field_data[field].type;
+	switch(type) {
+	case E_CARD_SIMPLE_INTERNAL_TYPE_STRING:
+	case E_CARD_SIMPLE_INTERNAL_TYPE_PHONE:
+	case E_CARD_SIMPLE_INTERNAL_TYPE_EMAIL:
+	case E_CARD_SIMPLE_INTERNAL_TYPE_BOOL:
+	case E_CARD_SIMPLE_INTERNAL_TYPE_DATE:
+	case E_CARD_SIMPLE_INTERNAL_TYPE_SPECIAL:
+	default:
+		switch (field) {
+		case E_CARD_SIMPLE_FIELD_NOTE:
+			return TRUE;
+		default:
+			return FALSE;
+		}
+
+	case E_CARD_SIMPLE_INTERNAL_TYPE_ADDRESS:
+		return TRUE;
+	}
 }
 
 const char     *e_card_simple_get_short_name (ECardSimple          *simple,
@@ -1141,7 +1195,7 @@ void                  e_card_simple_set_arbitrary     (ECardSimple          *sim
 				new_arb->type = g_strdup(type);
 				new_arb->value = g_strdup(value);
 				e_iterator_set(iterator, new_arb);
-				e_card_arbitrary_free(new_arb);
+				e_card_arbitrary_unref(new_arb);
 				return;
 			}
 		}
@@ -1150,8 +1204,19 @@ void                  e_card_simple_set_arbitrary     (ECardSimple          *sim
 		new_arb->type = g_strdup(type);
 		new_arb->value = g_strdup(value);
 		e_list_append(list, new_arb);
-		e_card_arbitrary_free(new_arb);
+		e_card_arbitrary_unref(new_arb);
 	}
+}
+
+void
+e_card_simple_set_name (ECardSimple *simple, ECardName *name)
+{
+	int style;
+	style = file_as_get_style(simple);
+	gtk_object_set (GTK_OBJECT (simple->card),
+			"name", name,
+			NULL);
+	file_as_set_style(simple, style);
 }
 
 /* These map between the individual list types and ECardSimpleField */

@@ -14,8 +14,10 @@
 ) && !defined(TC_DEF_TC_GNOME_Evolution_WombatClient)
 #define TC_DEF_TC_GNOME_Evolution_WombatClient 1
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_WombatClient_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
+
    CORBA_tk_objref, "WombatClient", "IDL:GNOME/Evolution/WombatClient:1.0",
    0, 0,
    NULL,
@@ -33,8 +35,10 @@ const struct CORBA_TypeCode_struct TC_GNOME_Evolution_WombatClient_struct = {
 ) && !defined(TC_DEF_TC_GNOME_Evolution_Config)
 #define TC_DEF_TC_GNOME_Evolution_Config 1
 const struct CORBA_TypeCode_struct TC_GNOME_Evolution_Config_struct = {
-   {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
+   
+      {{(ORBit_RootObject_Interface *) & ORBit_TypeCode_epv, TRUE, -1},
     ORBIT_PSEUDO_TYPECODE},
+
    CORBA_tk_objref, "Config", "IDL:GNOME/Evolution/Config:1.0",
    0, 0,
    NULL,

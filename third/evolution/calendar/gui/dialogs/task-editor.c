@@ -9,10 +9,9 @@
  *          Seth Alves <alves@hungry.com>
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -44,6 +43,7 @@ struct _TaskEditorPrivate {
 	EMeetingModel *model;
 	
 	gboolean meeting_shown;
+	gboolean existing_org;
 	gboolean updating;	
 };
 
@@ -52,6 +52,7 @@ struct _TaskEditorPrivate {
 static void task_editor_class_init (TaskEditorClass *class);
 static void task_editor_init (TaskEditor *te);
 static void task_editor_edit_comp (CompEditor *editor, CalComponent *comp);
+static void task_editor_send_comp (CompEditor *editor, CalComponentItipMethod method);
 static void task_editor_destroy (GtkObject *object);
 
 static void assign_task_cmd (GtkWidget *widget, gpointer data);
@@ -120,6 +121,7 @@ task_editor_class_init (TaskEditorClass *klass)
 	parent_class = gtk_type_class (TYPE_COMP_EDITOR);
 
 	editor_class->edit_comp = task_editor_edit_comp;
+	editor_class->send_comp = task_editor_send_comp;
 
 	object_class->destroy = task_editor_destroy;
 }
@@ -128,18 +130,22 @@ static void
 set_menu_sens (TaskEditor *te) 
 {
 	TaskEditorPrivate *priv;
+	gboolean sens;
 	
 	priv = te->priv;
 
+	sens = priv->meeting_shown;
 	comp_editor_set_ui_prop (COMP_EDITOR (te), 
 				 "/commands/ActionAssignTask", 
-				 "sensitive", priv->meeting_shown ? "0" : "1");
+				 "sensitive", sens ? "0" : "1");
+
+	sens = sens && priv->existing_org;
 	comp_editor_set_ui_prop (COMP_EDITOR (te), 
 				 "/commands/ActionRefreshTask", 
-				 "sensitive", priv->meeting_shown ? "1" : "0");
+				 "sensitive", sens ? "1" : "0");
 	comp_editor_set_ui_prop (COMP_EDITOR (te), 
 				 "/commands/ActionCancelTask", 
-				 "sensitive", priv->meeting_shown ? "1" : "0");
+				 "sensitive", sens ? "1" : "0");
 }
 
 static void
@@ -183,11 +189,10 @@ task_editor_init (TaskEditor *te)
 				 COMP_EDITOR_PAGE (priv->meet_page),
 				 _("Assignment"));
 
-	comp_editor_merge_ui (COMP_EDITOR (te), EVOLUTION_DATADIR 
-			      "/gnome/ui/evolution-task-editor.xml",
-			      verbs);
+	comp_editor_merge_ui (COMP_EDITOR (te), "evolution-task-editor.xml", verbs);
 
 	priv->meeting_shown = TRUE;
+	priv->existing_org = FALSE;
 	priv->updating = FALSE;	
 
 	init_widgets (te);
@@ -206,13 +211,20 @@ task_editor_edit_comp (CompEditor *editor, CalComponent *comp)
 
 	priv->updating = TRUE;
 
+	priv->existing_org = cal_component_has_organizer (comp);
+	
 	cal_component_get_attendee_list (comp, &attendees);
 	if (attendees == NULL) {
-		comp_editor_remove_page (editor, COMP_EDITOR_PAGE (priv->meet_page));
+		if (priv->meeting_shown)
+			comp_editor_remove_page (editor, COMP_EDITOR_PAGE (priv->meet_page));
 		priv->meeting_shown = FALSE;
-		set_menu_sens (te);
 	} else {
 		GSList *l;
+
+		if (!priv->meeting_shown)
+			comp_editor_append_page (COMP_EDITOR (te),
+						 COMP_EDITOR_PAGE (priv->meet_page),
+						 _("Assignment"));
 
 		for (l = attendees; l != NULL; l = l->next) {
 			CalComponentAttendee *ca = l->data;
@@ -232,6 +244,31 @@ task_editor_edit_comp (CompEditor *editor, CalComponent *comp)
 	
 	if (parent_class->edit_comp)
 		parent_class->edit_comp (editor, comp);
+}
+
+static void
+task_editor_send_comp (CompEditor *editor, CalComponentItipMethod method)
+{
+	TaskEditor *te = TASK_EDITOR (editor);
+	TaskEditorPrivate *priv;
+	CalComponent *comp = NULL;
+
+	priv = te->priv;
+
+	/* Don't cancel more than once or when just publishing */
+	if (method == CAL_COMPONENT_METHOD_PUBLISH ||
+	    method == CAL_COMPONENT_METHOD_CANCEL)
+		goto parent;
+	
+	comp = meeting_page_get_cancel_comp (priv->meet_page);
+	if (comp != NULL) {		
+		itip_send_comp (CAL_COMPONENT_METHOD_CANCEL, comp);
+		gtk_object_unref (GTK_OBJECT (comp));
+	}
+
+ parent:
+	if (parent_class->send_comp)
+		parent_class->send_comp (editor, method);
 }
 
 /* Destroy handler for the event editor */
@@ -298,7 +335,6 @@ refresh_task_cmd (GtkWidget *widget, gpointer data)
 {
 	TaskEditor *te = TASK_EDITOR (data);
 
-	comp_editor_save_comp (COMP_EDITOR (te));
 	comp_editor_send_comp (COMP_EDITOR (te), CAL_COMPONENT_METHOD_REFRESH);
 }
 
@@ -320,8 +356,8 @@ forward_cmd (GtkWidget *widget, gpointer data)
 {
 	TaskEditor *te = TASK_EDITOR (data);
 	
-	comp_editor_save_comp (COMP_EDITOR (te));
-	comp_editor_send_comp (COMP_EDITOR (te), CAL_COMPONENT_METHOD_PUBLISH);
+	if (comp_editor_save_comp (COMP_EDITOR (te), TRUE))
+		comp_editor_send_comp (COMP_EDITOR (te), CAL_COMPONENT_METHOD_PUBLISH);
 }
 
 static void

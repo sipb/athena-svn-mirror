@@ -8,9 +8,8 @@
  * Copyright 2001, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -249,7 +248,7 @@ e_week_view_event_item_draw (GnomeCanvasItem  *canvas_item,
 	EWeekViewEvent *event;
 	EWeekViewEventSpan *span;
 	GtkStyle *style;
-	GdkGC *fg_gc, *gc;
+	GdkGC *gc;
 	gint x1, y1, x2, y2, time_x, time_y;
 	gint icon_x, icon_y, time_width, min_end_time_x, max_icon_x;
 	gint rect_x, rect_w, rect_x2;
@@ -277,7 +276,6 @@ e_week_view_event_item_draw (GnomeCanvasItem  *canvas_item,
 			       event->spans_index + wveitem->span_num);
 
 	style = GTK_WIDGET (week_view)->style;
-	fg_gc = style->fg_gc[GTK_STATE_NORMAL];
 	gc = week_view->main_gc;
 
 	x1 = canvas_item->x1 - x;
@@ -495,6 +493,7 @@ e_week_view_draw_time	(EWeekView	*week_view,
 	small_font = week_view->small_font;
 	gc = week_view->main_gc;
 
+	gdk_gc_set_foreground (gc, &week_view->colors[E_WEEK_VIEW_COLOR_EVENT_TEXT]);
 
 	time_y_normal_font = time_y_small_font = time_y + font->ascent;
 	if (small_font)
@@ -816,7 +815,7 @@ e_week_view_event_item_button_release (EWeekViewEventItem *wveitem,
 	week_view = E_WEEK_VIEW (GTK_WIDGET (item->canvas)->parent);
 	g_return_val_if_fail (E_IS_WEEK_VIEW (week_view), FALSE);
 
-#if 1
+#if 0
 	g_print ("In e_week_view_event_item_button_release\n");
 #endif
 

@@ -3,7 +3,7 @@
   FILE: icalrecur.c
   CREATOR: eric 16 May 2000
   
-  $Id: icalrecur.c,v 1.1.1.1 2001-11-02 18:41:58 ghudson Exp $
+  $Id: icalrecur.c,v 1.1.1.2 2001-11-08 23:19:47 ghudson Exp $
   $Locker:  $
     
 
@@ -147,6 +147,10 @@
 #include <stddef.h> /* For offsetof() macro */
 
 #include "pvl.h"
+
+/* This is the last year we will go up to, since 32-bit time_t values only
+   go up to the start of 2038. */
+#define MAX_TIME_T_YEAR	2037
 
 #define TEMP_MAX 1024
 
@@ -642,7 +646,7 @@ int icalrecur_two_byrule(struct icalrecur_iterator_impl* impl,
     enum byrule itr;
     int passes = 0;
 
-    memset(test_array,0,9);
+    memset(test_array,0,sizeof (test_array));
 
     test_array[one] = 1;
     test_array[two] = 1;
@@ -726,6 +730,11 @@ int has_by_data(struct icalrecur_iterator_impl* impl, enum byrule byrule){
     return (impl->orig_data[byrule] == 1);
 }
 
+
+void increment_year(struct icalrecur_iterator_impl* impl, int inc)
+{
+    impl->last.year+=inc;
+}
 
 int expand_year_days(struct icalrecur_iterator_impl* impl,short year);
 
@@ -998,11 +1007,6 @@ void icalrecur_iterator_free(icalrecur_iterator* i)
 
 }
 
-
-void increment_year(struct icalrecur_iterator_impl* impl, int inc)
-{
-    impl->last.year+=inc;
-}
 
 /* Increment month is different that the other incement_* routines --
    it figures out the interval for itself, and uses BYMONTH data if
@@ -1732,6 +1736,16 @@ int expand_year_days(struct icalrecur_iterator_impl* impl,short year)
         
     case 0: {
         /* FREQ=YEARLY; */
+
+        short doy;
+
+        t = impl->dtstart;
+	t.year = year;
+	t.is_date = 1;
+      
+	doy = icaltime_day_of_year(t);
+
+	impl->days[days_index++] = doy;
         
         break;
     }
@@ -2031,6 +2045,12 @@ int next_year(struct icalrecur_iterator_impl* impl)
 
 	for (;;) {
 	  increment_year(impl,impl->rule.interval);
+
+	  /* Make sure we don't go past the max time_t year, or any calls to
+	     mktime() etc. will fail. */
+	  if (impl->last.year > MAX_TIME_T_YEAR)
+	    return 1;
+
 	  expand_year_days(impl,impl->last.year);
 	  if (impl->days[0] != ICAL_RECURRENCE_ARRAY_MAX)
 	    break;
@@ -2167,7 +2187,7 @@ struct icaltimetype icalrecur_iterator_next(icalrecur_iterator *itr)
 	    }
 	}    
 	
-	if(impl->last.year >= 2038 ){
+	if(impl->last.year > MAX_TIME_T_YEAR ){
 	    /* HACK */
 	    return icaltime_null_time();
 	}

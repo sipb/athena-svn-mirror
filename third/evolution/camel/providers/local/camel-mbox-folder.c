@@ -5,9 +5,8 @@
  * Copyright (C) 1999, 2000 Ximian Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -261,10 +260,14 @@ mbox_append_message(CamelFolder *folder, CamelMimeMessage * message, const Camel
 	return;
 
 fail_write:
-	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Cannot append message to mbox file: %s: %s"),
-			      lf->folder_path, g_strerror (errno));
-
+	if (errno == EINTR)
+		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+				     _("Mail append cancelled"));
+	else
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot append message to mbox file: %s: %s"),
+				      lf->folder_path, g_strerror (errno));
+	
 	if (filter_stream)
 		camel_object_unref(CAMEL_OBJECT(filter_stream));
 
@@ -384,8 +387,7 @@ retry:
 	
 	message = camel_mime_message_new();
 	if (camel_mime_part_construct_from_parser((CamelMimePart *)message, parser) == -1) {
-		g_warning("Construction failed");
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+		camel_exception_setv(ex, errno==EINTR?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
 				     _("Message construction failed: Corrupt mailbox?"));
 		camel_object_unref((CamelObject *)parser);
@@ -393,6 +395,8 @@ retry:
 		camel_local_folder_unlock(lf);
 		return NULL;
 	}
+
+	camel_medium_remove_header((CamelMedium *)message, "X-Evolution");
 
 	/* and unlock now we're finished with it */
 	camel_local_folder_unlock(lf);

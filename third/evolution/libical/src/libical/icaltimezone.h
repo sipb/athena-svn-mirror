@@ -4,7 +4,7 @@
  CREATOR: Damon Chaplin 15 March 2001
 
 
- $Id: icaltimezone.h,v 1.1.1.1 2001-11-02 18:41:09 ghudson Exp $
+ $Id: icaltimezone.h,v 1.1.1.2 2001-11-08 23:20:20 ghudson Exp $
  $Locker:  $
 
  (C) COPYRIGHT 2001, Damon Chaplin
@@ -74,6 +74,10 @@ char*	icaltimezone_get_location		(icaltimezone	*zone);
    may also return NULL. */
 char*	icaltimezone_get_tznames		(icaltimezone	*zone);
 
+/* Returns a string suitable for displaying to the user. If there is a
+   LOCATION property it returns that, else the TZNAMEs, else the TZID. */
+char*	icaltimezone_get_display_name		(icaltimezone	*zone);
+
 /* Returns the latitude of a builtin timezone. */
 double	icaltimezone_get_latitude		(icaltimezone	*zone);
 
@@ -93,6 +97,9 @@ int	icaltimezone_set_component		(icaltimezone	*zone,
  * Converting times between timezones.
  */
 
+/* This converts the icaltimetype from one timezone to another. Note that it
+   does not convert DATE values. If you need to do that, you should clear the
+   is_date field first. */
 void	icaltimezone_convert_time		(struct icaltimetype *tt,
 						 icaltimezone	*from_zone,
 						 icaltimezone	*to_zone);

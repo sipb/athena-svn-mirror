@@ -10,9 +10,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -58,7 +57,7 @@ struct _ESelectNamesCompletionClass {
 GtkType e_select_names_completion_get_type (void);
 
 ECompletion *e_select_names_completion_new (EBook *, ESelectNamesModel *);
-
+void     e_select_names_completion_add_book (ESelectNamesCompletion *, EBook *);
 gboolean e_select_names_completion_get_match_contact_lists (ESelectNamesCompletion *);
 void     e_select_names_completion_set_match_contact_lists (ESelectNamesCompletion *, gboolean);
 

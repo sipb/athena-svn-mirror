@@ -4,9 +4,9 @@
  * Copyright (C) 1999  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
+ * modify it under the terms of version 2 of the GNU General Public
  * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +28,7 @@
    attachment manually. */
 
 #include <sys/stat.h>
+#include <errno.h>
 
 #include <gtk/gtknotebook.h>
 #include <gtk/gtktogglebutton.h>
@@ -63,7 +64,7 @@ destroy (GtkObject *object)
 	EMsgComposerAttachment *attachment;
 
 	attachment = E_MSG_COMPOSER_ATTACHMENT (object);
-
+	
 	camel_object_unref (CAMEL_OBJECT (attachment->body));
 	if (attachment->pixbuf_cache != NULL)
 		gdk_pixbuf_unref (attachment->pixbuf_cache);
@@ -143,12 +144,14 @@ e_msg_composer_attachment_get_type (void)
  * e_msg_composer_attachment_new:
  * @file_name: filename to attach
  * @disposition: Content-Disposition of the attachment
+ * @ex: exception
  *
  * Return value: the new attachment, or %NULL on error
  **/
 EMsgComposerAttachment *
-e_msg_composer_attachment_new (const gchar *file_name,
-			       const gchar *disposition)
+e_msg_composer_attachment_new (const char *file_name,
+			       const char *disposition,
+			       CamelException *ex)
 {
 	EMsgComposerAttachment *new;
 	CamelMimePart *part;
@@ -156,21 +159,32 @@ e_msg_composer_attachment_new (const gchar *file_name,
 	CamelStream *stream;
 	struct stat statbuf;
 	gchar *mime_type;
-	char *content_id;
 	char *filename;
 	
 	g_return_val_if_fail (file_name != NULL, NULL);
 	
-	if (stat (file_name, &statbuf) < 0)
+	if (stat (file_name, &statbuf) < 0) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot attach file %s: %s"),
+				      file_name, g_strerror (errno));
 		return NULL;
+	}
 	
 	/* return if it's not a regular file */
-	if (!S_ISREG (statbuf.st_mode))
+	if (!S_ISREG (statbuf.st_mode)) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot attach file %s: not a regular file"),
+				      file_name);
 		return NULL;
+	}
 	
 	stream = camel_stream_fs_new_with_name (file_name, O_RDONLY, 0);
-	if (!stream)
+	if (!stream) {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot attach file %s: %s"),
+				      file_name, g_strerror (errno));
 		return NULL;
+	}
 	wrapper = camel_data_wrapper_new ();
 	camel_data_wrapper_construct_from_stream (wrapper, stream);
 	camel_object_unref (CAMEL_OBJECT (stream));
@@ -193,7 +207,7 @@ e_msg_composer_attachment_new (const gchar *file_name,
 	
 	camel_mime_part_set_filename (part, filename);
 	g_free (filename);
-
+	
 #if 0
 	/* Note: Outlook 2002 is broken with respect to Content-Ids on
            non-multipart/related parts, so as an interoperability
@@ -206,6 +220,7 @@ e_msg_composer_attachment_new (const gchar *file_name,
 #endif
 	
 	new = e_msg_composer_attachment_new_from_mime_part (part);
+	camel_object_unref (CAMEL_OBJECT (part));
 	
 	new->size = statbuf.st_size;
 	new->guessed_type = TRUE;
@@ -346,7 +361,7 @@ ok_cb (GtkWidget *widget,
 
 	str = e_utf8_gtk_entry_get_text (dialog_data->mime_type_entry);
 	camel_mime_part_set_content_type (attachment->body, str);
-
+	
 	camel_data_wrapper_set_mime_type (
 		camel_medium_get_content_object (CAMEL_MEDIUM (attachment->body)), str);
 	g_free (str);

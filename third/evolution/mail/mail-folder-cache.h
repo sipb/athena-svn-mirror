@@ -8,9 +8,8 @@
  * Copyright 2000,2001 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -34,6 +33,9 @@
 void
 mail_note_store(CamelStore *store, EvolutionStorage *storage, GNOME_Evolution_Storage corba_storage,
 		void (*done)(CamelStore *store, CamelFolderInfo *info, void *data), void *data);
+
+/* de-note a store */
+void mail_note_store_remove(CamelStore *store);
 
 /* When a folder has been opened, notify it for watching.
    The folder must have already been created on the store (which has already been noted)

@@ -9,10 +9,9 @@
  *          Federico Mena-Quintero <federico@ximian.com>
  *          Seth Alves <alves@hungry.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -47,8 +46,9 @@ struct _EventEditorPrivate {
 	SchedulePage *sched_page;
 
 	EMeetingModel *model;
-	
+
 	gboolean meeting_shown;
+	gboolean existing_org;
 	gboolean updating;	
 };
 
@@ -137,18 +137,22 @@ static void
 set_menu_sens (EventEditor *ee) 
 {
 	EventEditorPrivate *priv;
+	gboolean sens;
 	
 	priv = ee->priv;
 
+	sens = priv->meeting_shown;
 	comp_editor_set_ui_prop (COMP_EDITOR (ee), 
 				 "/commands/ActionScheduleMeeting", 
-				 "sensitive", priv->meeting_shown ? "0" : "1");
+				 "sensitive", sens ? "0" : "1");
+
+	sens = sens && priv->existing_org;
 	comp_editor_set_ui_prop (COMP_EDITOR (ee), 
 				 "/commands/ActionRefreshMeeting", 
-				 "sensitive", priv->meeting_shown ? "1" : "0");
+				 "sensitive", sens ? "1" : "0");
 	comp_editor_set_ui_prop (COMP_EDITOR (ee), 
 				 "/commands/ActionCancelMeeting", 
-				 "sensitive", priv->meeting_shown ? "1" : "0");
+				 "sensitive", sens ? "1" : "0");
 }
 
 static void
@@ -202,11 +206,10 @@ event_editor_init (EventEditor *ee)
 				 COMP_EDITOR_PAGE (priv->meet_page),
 				 _("Meeting"));
 
- 	comp_editor_merge_ui (COMP_EDITOR (ee), EVOLUTION_DATADIR 
- 			      "/gnome/ui/evolution-event-editor.xml",
- 			      verbs);
+ 	comp_editor_merge_ui (COMP_EDITOR (ee), "evolution-event-editor.xml", verbs);
 
 	priv->meeting_shown = TRUE;
+	priv->existing_org = FALSE;
 	priv->updating = FALSE;	
 
 	init_widgets (ee);
@@ -239,6 +242,8 @@ event_editor_edit_comp (CompEditor *editor, CalComponent *comp)
 	priv = ee->priv;
 	
 	priv->updating = TRUE;
+
+	priv->existing_org = cal_component_has_organizer (comp);
 	
 	cal_component_get_attendee_list (comp, &attendees);
 	if (attendees == NULL) {
@@ -278,16 +283,18 @@ event_editor_send_comp (CompEditor *editor, CalComponentItipMethod method)
 
 	priv = ee->priv;
 
-	/* Don't cancel more than once */
-	if (method == CAL_COMPONENT_METHOD_CANCEL)
-		return;	
+	/* Don't cancel more than once or when just publishing */
+	if (method == CAL_COMPONENT_METHOD_PUBLISH ||
+	    method == CAL_COMPONENT_METHOD_CANCEL)
+		goto parent;
 	
 	comp = meeting_page_get_cancel_comp (priv->meet_page);
 	if (comp != NULL) {		
 		itip_send_comp (CAL_COMPONENT_METHOD_CANCEL, comp);
 		gtk_object_unref (GTK_OBJECT (comp));
 	}
-	
+
+ parent:
 	if (parent_class->send_comp)
 		parent_class->send_comp (editor, method);
 }
@@ -349,6 +356,7 @@ schedule_meeting_cmd (GtkWidget *widget, gpointer data)
 		priv->meeting_shown = TRUE;
 
 		set_menu_sens (ee);
+ 		comp_editor_set_changed (COMP_EDITOR (ee), priv->meeting_shown);
 		comp_editor_set_needs_send (COMP_EDITOR (ee), priv->meeting_shown);
 	}
 	
@@ -360,8 +368,7 @@ static void
 refresh_meeting_cmd (GtkWidget *widget, gpointer data)
 {
 	EventEditor *ee = EVENT_EDITOR (data);
-
-	comp_editor_save_comp (COMP_EDITOR (ee));
+	
 	comp_editor_send_comp (COMP_EDITOR (ee), CAL_COMPONENT_METHOD_REFRESH);
 }
 
@@ -382,9 +389,9 @@ static void
 forward_cmd (GtkWidget *widget, gpointer data)
 {
 	EventEditor *ee = EVENT_EDITOR (data);
-	
-	comp_editor_save_comp (COMP_EDITOR (ee));
-	comp_editor_send_comp (COMP_EDITOR (ee), CAL_COMPONENT_METHOD_PUBLISH);
+
+	if (comp_editor_save_comp (COMP_EDITOR (ee), TRUE))
+		comp_editor_send_comp (COMP_EDITOR (ee), CAL_COMPONENT_METHOD_PUBLISH);
 }
 
 static void

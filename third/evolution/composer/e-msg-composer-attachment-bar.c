@@ -4,9 +4,9 @@
  * Copyright (C) 1999  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
+ * modify it under the terms of version 2 of the GNU General Public
  * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -31,6 +31,8 @@
 #include <libgnomeui/gnome-app.h>
 #include <libgnomeui/gnome-app-helper.h>
 #include <libgnomeui/gnome-popup-menu.h>
+#include <libgnomeui/gnome-dialog-util.h>
+#include <libgnomeui/gnome-dialog.h>
 #include <glade/glade.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -48,7 +50,9 @@
 
 #include "camel/camel-data-wrapper.h"
 #include "camel/camel-stream-fs.h"
-#include "camel/camel-stream-mem.h"
+#include "camel/camel-stream-null.h"
+#include "camel/camel-stream-filter.h"
+#include "camel/camel-mime-filter-bestenc.h"
 #include "camel/camel-mime-part.h"
 
 
@@ -145,17 +149,17 @@ add_common (EMsgComposerAttachmentBar *bar,
 	    EMsgComposerAttachment *attachment)
 {
 	g_return_if_fail (attachment != NULL);
-
+	
 	gtk_signal_connect (GTK_OBJECT (attachment), "changed",
 			    GTK_SIGNAL_FUNC (attachment_changed_cb),
 			    bar);
-
+	
 	bar->priv->attachments = g_list_append (bar->priv->attachments,
 						attachment);
 	bar->priv->num_attachments++;
-
+	
 	update (bar);
-
+	
 	gtk_signal_emit (GTK_OBJECT (bar), signals[CHANGED]);
 }
 
@@ -168,10 +172,28 @@ add_from_mime_part (EMsgComposerAttachmentBar *bar,
 
 static void
 add_from_file (EMsgComposerAttachmentBar *bar,
-	       const gchar *file_name,
-	       const gchar *disposition)
+	       const char *file_name,
+	       const char *disposition)
 {
-	add_common (bar, e_msg_composer_attachment_new (file_name, disposition));
+	EMsgComposerAttachment *attachment;
+	EMsgComposer *composer;
+	CamelException ex;
+	GtkWidget *dialog;
+	
+	camel_exception_init (&ex);
+	attachment = e_msg_composer_attachment_new (file_name, disposition, &ex);
+	if (attachment) {
+		add_common (bar, attachment);
+	} else {
+		composer = E_MSG_COMPOSER (gtk_widget_get_toplevel (GTK_WIDGET (bar)));
+		
+		dialog = gnome_error_dialog_parented (camel_exception_get_description (&ex),
+						      GTK_WINDOW (composer));
+		
+		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+		
+		camel_exception_clear (&ex);
+	}
 }
 
 static void
@@ -694,39 +716,6 @@ e_msg_composer_attachment_bar_new (GtkAdjustment *adj)
 	return GTK_WIDGET (new);
 }
 
-/* FIXME: is_8bit() and best_encoding() should really be shared
-   between e-msg-composer.c and this file. */
-static gboolean
-is_8bit (const guchar *text)
-{
-	guchar *c;
-	
-	for (c = (guchar *) text; *c; c++)
-		if (*c > (guchar) 127)
-			return TRUE;
-	
-	return FALSE;
-}
-
-static int
-best_encoding (const guchar *text)
-{
-	guchar *ch;
-	int count = 0;
-	int total;
-	
-	for (ch = (guchar *) text; *ch; ch++)
-		if (*ch > (guchar) 127)
-			count++;
-	
-	total = (int) (ch - text);
-	
-	if ((float) count <= total * 0.17)
-		return CAMEL_MIME_PART_ENCODING_QUOTEDPRINTABLE;
-	else
-		return CAMEL_MIME_PART_ENCODING_BASE64;
-}
-
 static void
 attach_to_multipart (CamelMultipart *multipart,
 		     EMsgComposerAttachment *attachment,
@@ -738,23 +727,32 @@ attach_to_multipart (CamelMultipart *multipart,
 	
 	if (!header_content_type_is (content_type, "multipart", "*")) {
 		if (header_content_type_is (content_type, "text", "*")) {
+			CamelMimePartEncodingType encoding;
+			CamelStreamFilter *filtered_stream;
+			CamelMimeFilterBestenc *bestenc;
 			CamelStream *stream;
-			GByteArray *array;
-			guchar *text;
+			char *type;
 			
-			array = g_byte_array_new ();
-			stream = camel_stream_mem_new_with_byte_array (array);
-			camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (attachment->body), stream);
-			g_byte_array_append (array, "", 1);
-			text = array->data;
-			
-			if (is_8bit (text)) {
-				camel_mime_part_set_encoding (attachment->body, best_encoding (text));
-				header_content_type_set_param (content_type, "charset", default_charset);
-			} else
-				camel_mime_part_set_encoding (attachment->body, CAMEL_MIME_PART_ENCODING_7BIT);
-			
+			stream = camel_stream_null_new ();
+			filtered_stream = camel_stream_filter_new_with_stream (stream);
+			bestenc = camel_mime_filter_bestenc_new (CAMEL_BESTENC_GET_ENCODING);
+			camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (bestenc));
 			camel_object_unref (CAMEL_OBJECT (stream));
+			
+			camel_data_wrapper_write_to_stream (CAMEL_DATA_WRAPPER (attachment->body),
+							    CAMEL_STREAM (filtered_stream));
+			
+			encoding = camel_mime_filter_bestenc_get_best_encoding (bestenc, CAMEL_BESTENC_8BIT);
+			camel_mime_part_set_encoding (attachment->body, encoding);
+			
+			/* looks kinda nasty, but this is how ya have to do it */
+			header_content_type_set_param (content_type, "charset", default_charset);
+			type = header_content_type_format (content_type);
+			camel_mime_part_set_content_type (attachment->body, type);
+			g_free (type);
+			
+			camel_object_unref (CAMEL_OBJECT (bestenc));
+			camel_object_unref (CAMEL_OBJECT (filtered_stream));
 		} else if (!header_content_type_is (content_type, "message", "*")) {
 			camel_mime_part_set_encoding (attachment->body,
 						      CAMEL_MIME_PART_ENCODING_BASE64);
@@ -776,12 +774,12 @@ e_msg_composer_attachment_bar_to_multipart (EMsgComposerAttachmentBar *bar,
 	g_return_if_fail (E_IS_MSG_COMPOSER_ATTACHMENT_BAR (bar));
 	g_return_if_fail (multipart != NULL);
 	g_return_if_fail (CAMEL_IS_MULTIPART (multipart));
-
+	
 	priv = bar->priv;
-
+	
 	for (p = priv->attachments; p != NULL; p = p->next) {
 		EMsgComposerAttachment *attachment;
-
+		
 		attachment = E_MSG_COMPOSER_ATTACHMENT (p->data);
 		attach_to_multipart (multipart, attachment, default_charset);
 	}

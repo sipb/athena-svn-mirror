@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -96,6 +95,8 @@ struct _ESummaryPrivate {
 
 	GList *connections;
 
+	guint pending_reload_tag;
+
 	gpointer alarm;
 
 	gboolean frozen;
@@ -129,6 +130,11 @@ destroy (GtkObject *object)
 		return;
 	}
 
+	if (priv->pending_reload_tag) {
+		gtk_timeout_remove (priv->pending_reload_tag);
+		priv->pending_reload_tag = 0;
+	}
+		
 	if (summary->mail) {
 		e_summary_mail_free (summary);
 	}
@@ -449,7 +455,7 @@ alarm_fn (gpointer alarm_id,
 
 	summary = data;
 	t = time (NULL);
-	day_end = time_day_end (t);
+	day_end = time_day_end_with_zone (t, summary->tz);
 	summary->priv->alarm = alarm_add (day_end, alarm_fn, summary, NULL);
 
 	e_summary_reconfigure (summary);
@@ -472,6 +478,7 @@ e_summary_init (ESummary *summary)
 
 	priv->frozen = FALSE;
 	priv->redraw_pending = FALSE;
+	priv->pending_reload_tag = 0;
 
 	priv->html_scroller = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (priv->html_scroller),
@@ -548,7 +555,7 @@ e_summary_new (const GNOME_Evolution_Shell shell)
 	e_summary_rdf_init (summary);
 	e_summary_weather_init (summary);
 
-	e_summary_draw (summary);
+/*  	e_summary_draw (summary); */
 
 	return GTK_WIDGET (summary);
 }
@@ -744,6 +751,24 @@ e_summary_reconfigure (ESummary *summary)
 	}
 }
 
+static gint
+e_summary_reload_timeout (gpointer closure)
+{
+	ESummary *summary = closure;
+
+	if (summary->rdf != NULL) {
+		e_summary_rdf_update (summary);
+	}
+
+	if (summary->weather != NULL) {
+		e_summary_weather_update (summary);
+	}
+
+	summary->priv->pending_reload_tag = 0;
+
+	return FALSE;
+}
+
 void
 e_summary_reload (BonoboUIComponent *component,
 		  gpointer userdata,
@@ -751,7 +776,25 @@ e_summary_reload (BonoboUIComponent *component,
 {
 	ESummary *summary = userdata;
 
-	e_summary_reconfigure (summary);
+	/*
+	  This is an evil hack to work around a bug in gnome-vfs:
+	  gnome-vfs seems to not properly lock partially-constructed
+	  objects, so if you gnome_vfs_async_open and then immediately
+	  gnome_vfs_async_cancel, it is possible to start to destroy
+	  an object before it is totally constructed.  Hilarity ensures.
+
+	  This is an evil and stupid hack, but it slows down our reload
+	  requests enough the gnome-vfs should be able to keep up.  And
+	  given that these are not instantaneous operations to begin 
+	  with, the users should be none the wiser. -JT
+	*/
+
+	if (summary->priv->pending_reload_tag) {
+		gtk_timeout_remove (summary->priv->pending_reload_tag);
+	}
+
+	summary->priv->pending_reload_tag =
+		gtk_timeout_add (80, e_summary_reload_timeout, summary);
 }
 
 int 
@@ -771,6 +814,7 @@ e_summary_count_connections (ESummary *summary)
 		count += c->count (summary, c->closure);
 	}
 
+	g_print ("Count: %d", count);
 	return count;
 }
 
@@ -818,6 +862,11 @@ e_summary_set_online (ESummary *summary,
 		c->callback_closure = closure;
 
 		c->set_online (summary, progress, online, c->closure);
+		g_print ("Setting %s\n", online ? "online" : "offline");
+
+		if (callback != NULL) {
+			callback (summary, closure);
+		}
 	}
 }
 

@@ -4,20 +4,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or 
- *  modify it under the terms of the GNU General Public License as 
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- *  USA
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -399,15 +398,11 @@ mbox_summary_check(CamelLocalSummary *cls, CamelFolderChangeInfo *changes, Camel
 	/* FIXME: move upstream? */
 
 	if (ret != -1) {
-		mbs->folder_size = st.st_size;
-		s->time = st.st_mtime;
-#if 0
-		/* this failing is not a fatal event */
-		if (camel_folder_summary_save(s) == -1)
-			g_warning("Could not save summary: %s", strerror(errno));
-		if (cls->index)
-			ibex_save(cls->index);
-#endif
+		if (mbs->folder_size != st.st_size || s->time != st.st_mtime) {
+			mbs->folder_size = st.st_size;
+			s->time = st.st_mtime;
+			camel_folder_summary_touch(s);
+		}
 	}
 
 	return ret;
@@ -535,7 +530,7 @@ mbox_summary_sync_full(CamelLocalSummary *cls, gboolean expunge, CamelFolderChan
 
 		g_assert(info);
 
-		d(printf("Looking at message %s\n", info->info.uid));
+		d(printf("Looking at message %s\n", camel_message_info_uid(info)));
 
 		/* only need to seek past deleted messages, otherwise we should be at the right spot/state already */
 		if (lastdel) {
@@ -586,7 +581,7 @@ mbox_summary_sync_full(CamelLocalSummary *cls, gboolean expunge, CamelFolderChan
 		}
 
 		if (info && info->info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV | CAMEL_MESSAGE_FOLDER_FLAGGED)) {
-			d(printf("Updating header for %s flags = %08x\n", info->info.uid, info->info.flags));
+			d(printf("Updating header for %s flags = %08x\n", camel_message_info_uid(info), info->info.flags));
 
 			if (camel_mime_parser_step(mp, &buffer, &len) == HSCAN_FROM_END) {
 				g_warning("camel_mime_parser_step failed (2)");
@@ -611,7 +606,7 @@ mbox_summary_sync_full(CamelLocalSummary *cls, gboolean expunge, CamelFolderChan
 		if (info) {
 			d(printf("looking for message content to copy across from %d\n", (int)camel_mime_parser_tell(mp)));
 			while (camel_mime_parser_step(mp, &buffer, &len) == HSCAN_PRE_FROM) {
-				d(printf("copying mbox contents to tmp: '%.*s'\n", len, buffer));
+				/*d(printf("copying mbox contents to tmp: '%.*s'\n", len, buffer));*/
 				if (write(fdout, buffer, len) != len) {
 					camel_exception_setv(ex, CAMEL_EXCEPTION_SYSTEM,
 							     _("Writing to tmp mailbox failed: %s: %s"),
@@ -728,7 +723,7 @@ mbox_summary_sync_quick(CamelLocalSummary *cls, gboolean expunge, CamelFolderCha
 
 		g_assert(info);
 
-		d(printf("Checking message %s %08x\n", info->info.uid, info->info.flags));
+		d(printf("Checking message %s %08x\n", camel_message_info_uid(info), info->info.flags));
 
 		if ((info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED) == 0) {
 			camel_folder_summary_info_free(s, (CamelMessageInfo *)info);
@@ -736,7 +731,7 @@ mbox_summary_sync_quick(CamelLocalSummary *cls, gboolean expunge, CamelFolderCha
 			continue;
 		}
 
-		d(printf("Updating message %s\n", info->info.uid));
+		d(printf("Updating message %s\n", camel_message_info_uid(info)));
 
 		camel_mime_parser_seek(mp, info->frompos, SEEK_SET);
 
@@ -836,7 +831,7 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 	int ret;
 
 	/* first, sync ourselves up, just to make sure */
-	if (summary_update(cls, mbs->folder_size, changeinfo, ex) == -1)
+	if (camel_local_summary_check(cls, changeinfo, ex) == -1)
 		return -1;
 
 	count = camel_folder_summary_count(s);
@@ -879,10 +874,11 @@ mbox_summary_sync(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInf
 		return -1;
 	}
 
-	camel_folder_summary_touch(s);
-	s->time = st.st_mtime;
-	mbs->folder_size = st.st_size;
-	camel_folder_summary_save(s);
+	if (mbs->folder_size != st.st_size || s->time != st.st_mtime) {
+		s->time = st.st_mtime;
+		mbs->folder_size = st.st_size;
+		camel_folder_summary_touch(s);
+	}
 
-	return 0;
+	return ((CamelLocalSummaryClass *)camel_mbox_summary_parent)->sync(cls, expunge, changeinfo, ex);
 }

@@ -3,20 +3,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or 
- *  modify it under the terms of the GNU General Public License as 
- *  published by the Free Software Foundation; either version 2 of the
- *  License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- *  USA
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,6 +27,8 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+
+#include <gal/util/e-iconv.h>
 
 #include "camel-folder-summary.h"
 
@@ -1492,7 +1493,7 @@ message_info_new(CamelFolderSummary *s, struct _header_raw *h)
 	     && (strcasecmp(charset, "us-ascii") == 0))
 		charset = NULL;
 
-	charset = camel_charset_to_iconv(charset);
+	charset = e_iconv_charset_name(charset);
 
 	subject = summary_format_string(h, "subject", charset);
 	from = summary_format_address(h, "from");
@@ -1742,7 +1743,7 @@ content_info_new (CamelFolderSummary *s, struct _header_raw *h)
 	
 	ci = camel_folder_summary_content_info_new (s);
 	
-	charset = camel_charset_locale_name ();
+	charset = e_iconv_locale_charset();
 	ci->id = header_msgid_decode (header_raw_find (&h, "content-id", NULL));
 	ci->description = header_decode_string (header_raw_find (&h, "content-description", NULL), NULL);
 	ci->encoding = header_content_encoding_decode (header_raw_find (&h, "content-transfer-encoding", NULL));
@@ -2150,8 +2151,49 @@ camel_flag_list_free(CamelFlag **list)
 	*list = NULL;
 }
 
-const char
-*camel_tag_get(CamelTag **list, const char *name)
+/**
+ * camel_flag_list_copy:
+ * @to: 
+ * @from: 
+ * 
+ * Copy a flag list, return true if the destination list @to changed.
+ * 
+ * Return value: 
+ **/
+gboolean
+camel_flag_list_copy(CamelFlag **to, CamelFlag **from)
+{
+	CamelFlag *flag, *tmp;
+	int changed = FALSE;
+
+	if (*to == NULL && from == NULL)
+		return FALSE;
+
+	/* Remove any now-missing flags */
+	flag = (CamelFlag *)to;
+	while (flag->next) {
+		tmp = flag->next;
+		if (!camel_flag_get(from, tmp->name)) {
+			flag->next = tmp->next;
+			g_free(tmp);
+			changed = TRUE;
+		} else {
+			flag = tmp;
+		}
+	}
+
+	/* Add any new flags */
+	flag = *from;
+	while (flag) {
+		changed |= camel_flag_set(to, flag->name, TRUE);
+		flag = flag->next;
+	}
+
+	return changed;
+}
+
+const char *
+camel_tag_get(CamelTag **list, const char *name)
 {
 	CamelTag *tag;
 
@@ -2229,6 +2271,54 @@ int		camel_tag_list_size(CamelTag **list)
 		tag = tag->next;
 	}
 	return count;
+}
+
+static void
+rem_tag(char *key, char *value, CamelTag **to)
+{
+	camel_tag_set(to, key, NULL);
+}
+
+/**
+ * camel_tag_list_copy:
+ * @to: 
+ * @from: 
+ * 
+ * Copy a list of tags.
+ * 
+ * Return value: 
+ **/
+gboolean
+camel_tag_list_copy(CamelTag **to, CamelTag **from)
+{
+	int changed = FALSE;
+	CamelTag *tag;
+	GHashTable *left;
+
+	if (*to == NULL && from == NULL)
+		return FALSE;
+
+	left = g_hash_table_new(g_str_hash, g_str_equal);
+	tag = *to;
+	while (tag) {
+		g_hash_table_insert(left, tag->name, tag);
+		tag = tag->next;
+	}
+
+	tag = *from;
+	while (tag) {
+		changed |= camel_tag_set(to, tag->name, tag->value);
+		g_hash_table_remove(left, tag->name);
+		tag = tag->next;
+	}
+
+	if (g_hash_table_size(left)>0) {
+		g_hash_table_foreach(left, (GHFunc)rem_tag, to);
+		changed = TRUE;
+	}
+	g_hash_table_destroy(left);
+
+	return changed;
 }
 
 /**
@@ -2358,7 +2448,7 @@ camel_message_info_new_from_header (struct _header_raw *header)
 	    && (strcasecmp(charset, "us-ascii") == 0))
 		charset = NULL;
 
-	charset = camel_charset_to_iconv(charset);
+	charset = e_iconv_charset_name(charset);
 	
 	subject = summary_format_string(header, "subject", charset);
 	from = summary_format_address(header, "from");

@@ -4,10 +4,9 @@
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -153,6 +152,7 @@ static void
 comp_editor_page_init (CompEditorPage *page)
 {
 	page->client = NULL;
+	page->accel_group = NULL;
 }
 
 
@@ -169,6 +169,11 @@ comp_editor_page_destroy (GtkObject *object)
 	if (page->client) {
 		gtk_object_ref (GTK_OBJECT (page->client));
 		page->client = NULL;
+	}
+
+	if (page->accel_group) {
+		gtk_accel_group_unref (page->accel_group);
+		page->accel_group = NULL;
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -239,16 +244,20 @@ comp_editor_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
  * Takes the data from the widgets of an editor page and sets it on a calendar
  * component, replacing the contents of the properties that the editor page
  * knows how to manipulate.
+ *
+ * Returns: TRUE if the component could be filled, FALSE otherwise
  **/
-void
+gboolean
 comp_editor_page_fill_component (CompEditorPage *page, CalComponent *comp)
 {
-	g_return_if_fail (page != NULL);
-	g_return_if_fail (IS_COMP_EDITOR_PAGE (page));
-	g_return_if_fail (comp != NULL);
+	g_return_val_if_fail (page != NULL, FALSE);
+	g_return_val_if_fail (IS_COMP_EDITOR_PAGE (page), FALSE);
+	g_return_val_if_fail (comp != NULL, FALSE);
 
 	if (CLASS (page)->fill_component != NULL)
-		(* CLASS (page)->fill_component) (page, comp);
+		return (* CLASS (page)->fill_component) (page, comp);
+
+	return TRUE;
 }
 
 /**

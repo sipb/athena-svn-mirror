@@ -5,9 +5,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -44,6 +43,7 @@
 #include <addressbook/backend/ebook/e-book.h>
 #include <addressbook/backend/ebook/e-card.h>
 #include <addressbook/backend/ebook/e-card-simple.h>
+#include <addressbook/backend/ebook/e-destination.h>
 
 #define SCALE 5
 #define HYPHEN_PIXELS 20
@@ -438,6 +438,8 @@ e_contact_get_card_size(ECardSimple *simple, EContactPrintContext *ctxt)
 		g_free(string);
 	}
 	height += gnome_font_get_size (ctxt->style->headings_font) * .4;
+
+	/* g_message ("%s %g", e_card_simple_get (simple, E_CARD_SIMPLE_FIELD_FILE_AS), height); */
 	return height;
 }
 
@@ -474,6 +476,17 @@ e_contact_print_card (ECardSimple *simple, EContactPrintContext *ctxt)
 	for(field = E_CARD_SIMPLE_FIELD_FULL_NAME; field != E_CARD_SIMPLE_FIELD_LAST_SIMPLE_STRING; field++) {
 		char *string;
 		string = e_card_simple_get(simple, field);
+
+		if (string && !strncmp (string, "<?xml", 4)) {
+			EDestination *dest = e_destination_import (string);
+			if (dest != NULL) {
+				gchar *new_string = g_strdup (e_destination_get_address (dest));
+				g_free (string);
+				string = new_string;
+				gtk_object_unref (GTK_OBJECT (dest));
+			}
+		}
+
 		if (string && *string) {
 			double xoff = 0;
 			e_contact_output(ctxt->pc, ctxt->style->body_font, ctxt->x + xoff, ctxt->y, -1, e_card_simple_get_name(simple, field));
@@ -859,8 +872,10 @@ e_contact_build_style(EContactPrintStyle *style)
 	style->blank_forms = 2;
 	style->letter_tabs = TRUE;
 	style->letter_headings = FALSE;
-	style->headings_font = gnome_font_new("Helvetica-Bold", 8);
-	style->body_font = gnome_font_new("Helvetica", 6);
+
+	style->headings_font = gnome_font_new_closest("Helvetica", GNOME_FONT_BOLD, FALSE, 8);
+	style->body_font = gnome_font_new_closest("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
+
 	style->print_using_grey = TRUE;
 	style->paper_type = 0;
 	style->paper_width = 8.5;
@@ -882,11 +897,15 @@ e_contact_build_style(EContactPrintStyle *style)
 	style->page_height = 8.5;
 #endif
 	style->orientation_portrait = FALSE;
-	style->header_font = gnome_font_new("Helvetica", 6);
+
+	style->header_font = gnome_font_new_closest("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
+
 	style->left_header = g_strdup("");
 	style->center_header = g_strdup("");
 	style->right_header = g_strdup("");
-	style->footer_font = gnome_font_new("Helvetica", 6);
+
+	style->footer_font = gnome_font_new_closest("Helvetica", GNOME_FONT_BOOK, FALSE, 6);
+
 	style->left_footer = g_strdup("");
 	style->center_footer = g_strdup("");
 	style->right_footer = g_strdup("");

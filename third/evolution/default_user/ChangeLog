@@ -1,3 +1,26 @@
+2001-11-02  JP Rosevear  <jpr@ximian.com>
+
+	* local/Inbox/mbox: Fix email link to be valid
+
+2001-10-11  Chris Toshok  <toshok@ximian.com>
+
+	* Makefile.am (install-data-hook): make the private dir so it gets
+	created in ~/evolution.
+
+2001-10-03  Ettore Perazzoli  <ettore@ximian.com>
+
+	* local/Inbox/mbox: Oops, remove stray ">".
+
+2001-10-03  Ettore Perazzoli  <ettore@ximian.com>
+
+	* local/Inbox/mbox: New version of the default mailbox by Aaron.
+
+2001-10-03  Ettore Perazzoli  <ettore@ximian.com>
+
+	* local/Drafts/Makefile.am: Install the empty mbox file too.
+	* local/Sent/Makefile.am: Likewise.
+	* local/Outbox/Makefile.am: Likewise.
+
 2001-09-06  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* Makefile.am: Add mkdir config in dist-hook here instead.

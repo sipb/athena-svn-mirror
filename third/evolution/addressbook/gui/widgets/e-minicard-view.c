@@ -5,9 +5,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -287,9 +286,22 @@ e_minicard_view_selection_event (EReflow *reflow, GnomeCanvasItem *item, GdkEven
 	}
 
 	switch (event->type) {
+	case GDK_FOCUS_CHANGE:
+		if (event->focus_change.in) {
+			int i;
+			for (i = 0; i < reflow->count; i++) {
+				if (reflow->items[i] == item) {
+					e_selection_model_maybe_do_something(reflow->selection, i, 0, 0);
+					break;
+				}
+			}
+		}
+		break;
 	case GDK_BUTTON_PRESS:
 		if (event->button.button == 3) {
 			return_val = e_addressbook_reflow_adapter_right_click (view->adapter, event, reflow->selection);
+			if (!return_val)
+				e_selection_model_right_click_up(E_SELECTION_MODEL (view->selection));
 		}
 		break;
 	default:

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -14,7 +14,7 @@
 #  FILE: Makefile.am
 #  CREATOR: eric 
 #  
-#  $Id: Makefile.in,v 1.1.1.1 2001-11-02 18:32:09 ghudson Exp $
+#  $Id: Makefile.in,v 1.1.1.2 2001-11-08 23:22:08 ghudson Exp $
 #
 #
 # (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -111,10 +111,10 @@ python_val = @python_val@
 DESIGNDATA = $(top_srcdir)/design-data
 ICALSCRIPTS = $(top_srcdir)/scripts
 
-lib_LTLIBRARIES = libical.la
+lib_LTLIBRARIES = libical-evolution.la
 
 noinst_LTLIBRARIES = libical-static.la
-libical_static_la_SOURCES = $(libical_la_SOURCES)
+libical_static_la_SOURCES = $(libical_evolution_la_SOURCES)
 libical_static_la_LDFLAGS = --all-static
 
 YFLAGS = -d -v -t -pical_yy
@@ -126,12 +126,13 @@ CPPFLAGS = -DPACKAGE_DATA_DIR=\""$(datadir)/$(PACKAGE)"\"
 INCLUDES =  	-I$(top_builddir)		-I$(top_srcdir)/src		-I$(top_builddir)/src		-I$(srcdir)
 
 
-libical_la_LDFLAGS = -version-info 0:0:0
+libical_evolution_la_LDFLAGS = -version-info 0:0:0
 
-libical_la_SOURCES =  	$(BUILT_SOURCES)		icalarray.c			icalarray.h			icalattendee.h			icalattendee.c			icalcomponent.c			icalcomponent.h			icalenums.c			icalenums.h			icalerror.c			icalerror.h			icallexer.l			icalmemory.c			icalmemory.h			icalmime.c			icalmime.h			icalparameter.c			icalparameter.h			icalparameterimpl.h		icalparser.c			icalparser.h			icalproperty.c			icalproperty.h			icalrecur.c			icalrecur.h			icalrestriction.h		icaltime.c			icaltime.h			icaltimezone.c			icaltimezone.h			icalduration.h			icalduration.c			icalperiod.h			icalperiod.c			icaltypes.c			icaltypes.h			icalvalue.c			icalvalue.h			icalvalueimpl.h			icalyacc.h			icalyacc.y			pvl.c				pvl.h				sspm.c				sspm.h				vsnprintf.c			icallangbind.h			icallangbind.c
+libical_evolution_la_SOURCES =  	$(BUILT_SOURCES)		icalarray.c			icalarray.h			icalattendee.h			icalattendee.c			icalcomponent.c			icalcomponent.h			icalenums.c			icalenums.h			icalerror.c			icalerror.h			icallexer.l			icalmemory.c			icalmemory.h			icalmime.c			icalmime.h			icalparameter.c			icalparameter.h			icalparameterimpl.h		icalparser.c			icalparser.h			icalproperty.c			icalproperty.h			icalrecur.c			icalrecur.h			icalrestriction.h		icaltime.c			icaltime.h			icaltimezone.c			icaltimezone.h			icalduration.h			icalduration.c			icalperiod.h			icalperiod.c			icaltypes.c			icaltypes.h			icalvalue.c			icalvalue.h			icalvalueimpl.h			icalyacc.h			icalyacc.y			pvl.c				pvl.h				sspm.c				sspm.h				vsnprintf.c			icallangbind.h			icallangbind.c
 
 
-libicalincludedir = $(includedir)
+#libicalincludedir = $(includedir)/$(PACKAGE)
+libicalincludedir = $(includedir)/evolution
 
 libicalinclude_HEADERS = ical.h 
 
@@ -169,7 +170,7 @@ VALUEDEPS =  	$(ICALSCRIPTS)/mkderivedvalues.pl  		$(DESIGNDATA)/value-types.csv
 # housekeeping
 CONFIG_CLEAN_FILES = y.output
 
-CLEANFILES =  $(BUILT_SOURCES) ical.h
+CLEANFILES = $(BUILT_SOURCES) ical.h
 
 EXTRA_DIST =  	icalderivedparameter.c.in 	icalderivedparameter.h.in 	icalderivedproperty.c.in 	icalderivedproperty.h.in 	icalrestriction.c.in		icalderivedvalue.c.in		icalderivedvalue.h.in		icalversion.h.in		icallexer.c			icalyacc.c
 
@@ -181,13 +182,14 @@ LTLIBRARIES =  $(lib_LTLIBRARIES) $(noinst_LTLIBRARIES)
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libical_la_LIBADD = 
-libical_la_OBJECTS =  icalderivedparameter.lo icalderivedproperty.lo \
-icalrestriction.lo icalderivedvalue.lo icalarray.lo icalattendee.lo \
-icalcomponent.lo icalenums.lo icalerror.lo icallexer.lo icalmemory.lo \
-icalmime.lo icalparameter.lo icalparser.lo icalproperty.lo icalrecur.lo \
-icaltime.lo icaltimezone.lo icalduration.lo icalperiod.lo icaltypes.lo \
-icalvalue.lo icalyacc.lo pvl.lo sspm.lo vsnprintf.lo icallangbind.lo
+libical_evolution_la_LIBADD = 
+libical_evolution_la_OBJECTS =  icalderivedparameter.lo \
+icalderivedproperty.lo icalrestriction.lo icalderivedvalue.lo \
+icalarray.lo icalattendee.lo icalcomponent.lo icalenums.lo icalerror.lo \
+icallexer.lo icalmemory.lo icalmime.lo icalparameter.lo icalparser.lo \
+icalproperty.lo icalrecur.lo icaltime.lo icaltimezone.lo \
+icalduration.lo icalperiod.lo icaltypes.lo icalvalue.lo icalyacc.lo \
+pvl.lo sspm.lo vsnprintf.lo icallangbind.lo
 libical_static_la_LIBADD = 
 libical_static_la_OBJECTS =  icalderivedparameter.lo \
 icalderivedproperty.lo icalrestriction.lo icalderivedvalue.lo \
@@ -210,10 +212,10 @@ icalyacc.c
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libical_la_SOURCES) $(libical_static_la_SOURCES)
-OBJECTS = $(libical_la_OBJECTS) $(libical_static_la_OBJECTS)
+SOURCES = $(libical_evolution_la_SOURCES) $(libical_static_la_SOURCES)
+OBJECTS = $(libical_evolution_la_OBJECTS) $(libical_static_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -306,8 +308,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libical.la: $(libical_la_OBJECTS) $(libical_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libical_la_LDFLAGS) $(libical_la_OBJECTS) $(libical_la_LIBADD) $(LIBS)
+libical-evolution.la: $(libical_evolution_la_OBJECTS) $(libical_evolution_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libical_evolution_la_LDFLAGS) $(libical_evolution_la_OBJECTS) $(libical_evolution_la_LIBADD) $(LIBS)
 
 libical-static.la: $(libical_static_la_OBJECTS) $(libical_static_la_DEPENDENCIES)
 	$(LINK)  $(libical_static_la_LDFLAGS) $(libical_static_la_OBJECTS) $(libical_static_la_LIBADD) $(LIBS)
@@ -381,6 +383,118 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+icalarray.lo icalarray.o : icalarray.c ../../config.h icalarray.h \
+	icalerror.h
+icalattendee.lo icalattendee.o : icalattendee.c ../../config.h \
+	icalattendee.h icalenums.h icaltime.h icalduration.h \
+	icalperiod.h icalderivedparameter.h icalderivedvalue.h \
+	icaltypes.h icalrecur.h
+icalcomponent.lo icalcomponent.o : icalcomponent.c ../../config.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalenums.h icaltypes.h icaltime.h icalduration.h \
+	icalperiod.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h icalerror.h \
+	icalmemory.h icalarray.h icaltimezone.h icalparser.h
+icalderivedparameter.lo icalderivedparameter.o : icalderivedparameter.c \
+	../../config.h icalparameter.h icalderivedparameter.h \
+	icalparameterimpl.h icalproperty.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalderivedvalue.h icalerror.h \
+	icalmemory.h
+icalderivedproperty.lo icalderivedproperty.o : icalderivedproperty.c \
+	../../config.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalenums.h icaltypes.h icaltime.h icalduration.h \
+	icalperiod.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalcomponent.h icalattendee.h pvl.h \
+	icalerror.h icalmemory.h icalparser.h
+icalderivedvalue.lo icalderivedvalue.o : icalderivedvalue.c \
+	../../config.h icalerror.h icalmemory.h icalparser.h \
+	icalenums.h icaltypes.h icaltime.h icalduration.h icalperiod.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h icalvalueimpl.h
+icalduration.lo icalduration.o : icalduration.c ../../config.h \
+	icalduration.h icaltime.h icalerror.h icalmemory.h icalvalue.h \
+	icalenums.h icaltypes.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedparameter.h \
+	icalderivedvalue.h
+icalenums.lo icalenums.o : icalenums.c ../../config.h icalenums.h
+icalerror.lo icalerror.o : icalerror.c ../../config.h icalerror.h
+icallangbind.lo icallangbind.o : icallangbind.c icalcomponent.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalattendee.h pvl.h icalerror.h ../../config.h icalmemory.h
+icallexer.lo icallexer.o : icallexer.c icalparser.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h icalmemory.h icalyacc.h
+icalmemory.lo icalmemory.o : icalmemory.c ../../config.h icalmemory.h \
+	icalerror.h
+icalmime.lo icalmime.o : icalmime.c icalmime.h icalcomponent.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalattendee.h pvl.h icalparser.h icalerror.h ../../config.h \
+	icalmemory.h sspm.h
+icalparameter.lo icalparameter.o : icalparameter.c ../../config.h \
+	icalparameter.h icalderivedparameter.h icalproperty.h \
+	icalvalue.h icalenums.h icaltypes.h icaltime.h icalduration.h \
+	icalperiod.h icalrecur.h icalderivedproperty.h \
+	icalderivedvalue.h icalerror.h icalmemory.h icalparameterimpl.h
+icalparser.lo icalparser.o : icalparser.c ../../config.h icalparser.h \
+	icalenums.h icaltypes.h icaltime.h icalduration.h icalperiod.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h icalmemory.h \
+	icalerror.h
+icalperiod.lo icalperiod.o : icalperiod.c ../../config.h icalperiod.h \
+	icaltime.h icalduration.h icalerror.h icalmemory.h
+icalproperty.lo icalproperty.o : icalproperty.c ../../config.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalcomponent.h icalattendee.h pvl.h icalerror.h icalmemory.h \
+	icalparser.h
+icalrecur.lo icalrecur.o : icalrecur.c ../../config.h icalrecur.h \
+	icaltime.h icalerror.h icalmemory.h pvl.h
+icalrestriction.lo icalrestriction.o : icalrestriction.c ../../config.h \
+	icalrestriction.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalenums.h icaltypes.h icaltime.h icalduration.h \
+	icalperiod.h icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalcomponent.h icalattendee.h pvl.h \
+	icalerror.h
+icaltime.lo icaltime.o : icaltime.c ../../config.h icaltime.h \
+	icalerror.h icalmemory.h icaltimezone.h icalarray.h \
+	icalcomponent.h icalproperty.h icalderivedparameter.h \
+	icalvalue.h icalenums.h icaltypes.h icalduration.h icalperiod.h \
+	icalrecur.h icalderivedproperty.h icalparameter.h \
+	icalderivedvalue.h icalattendee.h pvl.h
+icaltimezone.lo icaltimezone.o : icaltimezone.c ../../config.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalenums.h \
+	icaltypes.h icaltime.h icalduration.h icalperiod.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalarray.h icalerror.h icalparser.h icalcomponent.h \
+	icalattendee.h pvl.h icaltimezone.h
+icaltypes.lo icaltypes.o : icaltypes.c ../../config.h icaltypes.h \
+	icalenums.h icaltime.h icalduration.h icalperiod.h icalerror.h \
+	icalmemory.h icalvalueimpl.h icalderivedvalue.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedparameter.h
+icalvalue.lo icalvalue.o : icalvalue.c ../../config.h icalerror.h \
+	icalmemory.h icalparser.h icalenums.h icaltypes.h icaltime.h \
+	icalduration.h icalperiod.h icalcomponent.h icalproperty.h \
+	icalderivedparameter.h icalvalue.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalattendee.h pvl.h icalvalueimpl.h
+icalyacc.lo icalyacc.o : icalyacc.c icalparser.h icalenums.h icaltypes.h \
+	icaltime.h icalduration.h icalperiod.h icalcomponent.h \
+	icalproperty.h icalderivedparameter.h icalvalue.h icalrecur.h \
+	icalderivedproperty.h icalparameter.h icalderivedvalue.h \
+	icalattendee.h pvl.h
+pvl.lo pvl.o : pvl.c ../../config.h pvl.h
+sspm.lo sspm.o : sspm.c sspm.h
+vsnprintf.lo vsnprintf.o : vsnprintf.c
 
 info-am:
 info: info-am

@@ -48,6 +48,9 @@ struct _CamelOperation {
 #define CAMEL_OPERATION_CANCELLED (1<<0)
 #define CAMEL_OPERATION_TRANSIENT (1<<1)
 
+/* Delay before a transient operation has any effect on the status */
+#define CAMEL_OPERATION_TRANSIENT_DELAY (5)
+
 #ifdef ENABLE_THREADS
 #define CAMEL_ACTIVE_LOCK() pthread_mutex_lock(&operation_active_lock)
 #define CAMEL_ACTIVE_UNLOCK() pthread_mutex_unlock(&operation_active_lock)
@@ -92,7 +95,7 @@ CamelOperation *camel_operation_new(CamelOperationStatusFunc status, void *statu
 #ifdef ENABLE_THREADS
 	cc->id = ~0;
 	cc->cancel_port = e_msgport_new();
-	cc->cancel_fd = e_msgport_fd(cc->cancel_port);
+	cc->cancel_fd = -1;
 #endif
 
 	return cc;
@@ -253,9 +256,9 @@ cancel_thread(void *key, CamelOperation *cc, void *data)
 	if (cc) {
 		d(printf("cancelling thread %d\n", cc->id));
 
+		cc->flags |= CAMEL_OPERATION_CANCELLED;
 		msg = g_malloc0(sizeof(*msg));
 		e_msgport_put(cc->cancel_port, (EMsg *)msg);
-		cc->flags |= CAMEL_OPERATION_CANCELLED;
 	}
 }
 
@@ -279,9 +282,9 @@ void camel_operation_cancel(CamelOperation *cc)
 	} else if ((cc->flags & CAMEL_OPERATION_CANCELLED) == 0) {
 		d(printf("cancelling thread %d\n", cc->id));
 
+		cc->flags |= CAMEL_OPERATION_CANCELLED;
 		msg = g_malloc0(sizeof(*msg));
 		e_msgport_put(cc->cancel_port, (EMsg *)msg);
-		cc->flags |= CAMEL_OPERATION_CANCELLED;
 	}
 
 	CAMEL_ACTIVE_UNLOCK();
@@ -413,17 +416,22 @@ gboolean camel_operation_cancel_check(CamelOperation *cc)
  **/
 int camel_operation_cancel_fd(CamelOperation *cc)
 {
+	CAMEL_ACTIVE_LOCK();
+
 	if (cc == NULL && operation_active) {
-		CAMEL_ACTIVE_LOCK();
 		cc = g_hash_table_lookup(operation_active, (void *)pthread_self());
-		CAMEL_ACTIVE_UNLOCK();
 	}
 
-	if (cc == NULL)
+	if (cc == NULL
+	    || cc->blocked) {
+		CAMEL_ACTIVE_UNLOCK();
 		return -1;
+	}
 
-	if (cc->blocked)
-		return -1;
+	if (cc->cancel_fd == -1)
+		cc->cancel_fd = e_msgport_fd(cc->cancel_port);
+
+	CAMEL_ACTIVE_UNLOCK();
 
 	return cc->cancel_fd;
 }
@@ -562,12 +570,20 @@ void camel_operation_progress(CamelOperation *cc, int pc)
 	s = cc->status_stack->data;
 	s->pc = pc;
 
+	/* Transient messages dont start updating till 4 seconds after
+	   they started, then they update every second */
 	now = stamp();
-	if (cc->status_update != now
-	    && s->flags & CAMEL_OPERATION_TRANSIENT
-	    && s->stamp/16 > now/16)
+	if (cc->status_update == now) {
 		cc = NULL;
-	else {
+	} else if (s->flags & CAMEL_OPERATION_TRANSIENT) {
+		if (s->stamp + CAMEL_OPERATION_TRANSIENT_DELAY > now) {
+			cc = NULL;
+		} else {
+			cc->status_update = now;
+			cc->lastreport = s;
+			msg = g_strdup(s->msg);
+		}
+	} else {
 		s->stamp = cc->status_update = now;
 		cc->lastreport = s;
 		msg = g_strdup(s->msg);
@@ -627,7 +643,7 @@ void camel_operation_end(CamelOperation *cc)
 			while (l) {
 				p = l->data;
 				if (p->flags & CAMEL_OPERATION_TRANSIENT) {
-					if (p->stamp/16 < now/16) {
+					if (p->stamp + CAMEL_OPERATION_TRANSIENT_DELAY < now) {
 						msg = g_strdup(p->msg);
 						pc = p->pc;
 						cc->lastreport = p;

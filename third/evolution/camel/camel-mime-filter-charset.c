@@ -3,19 +3,19 @@
  *
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 
@@ -23,6 +23,8 @@
 
 #include <string.h>
 #include <errno.h>
+
+#include <gal/util/e-iconv.h>
 
 #include "camel-mime-filter-charset.h"
 #include "camel-charset-map.h"
@@ -61,7 +63,7 @@ camel_mime_filter_charset_finalize(CamelObject *o)
 	g_free(f->from);
 	g_free(f->to);
 	if (f->ic != (iconv_t)-1) {
-		iconv_close(f->ic);
+		e_iconv_close(f->ic);
 		f->ic = (iconv_t) -1;
 	}
 }
@@ -77,7 +79,7 @@ reset(CamelMimeFilter *mf)
 	/* what happens with the output bytes if this resets the state? */
 	if (f->ic != (iconv_t) -1) {
 		buffer = buf;
-		iconv(f->ic, NULL, 0, &buffer, &outlen);
+		e_iconv(f->ic, NULL, 0, &buffer, &outlen);
 	}
 }
 
@@ -107,7 +109,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 	d(memset(outbuf, 0, outlen));
 
 	if (inlen>0) {
-		converted = iconv(f->ic, &inbuf, &inlen, &outbuf, &outlen);
+		converted = e_iconv(f->ic, &inbuf, &inlen, &outbuf, &outlen);
 		if (converted == -1) {
 			if (errno != EINVAL) {
 				g_warning("error occured converting: %s", strerror(errno));
@@ -122,7 +124,7 @@ complete(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out,
 
 	/* this 'resets' the output stream, returning back to the initial
 	   shift state for multishift charactersets */
-	converted = iconv(f->ic, NULL, 0, &outbuf, &outlen);
+	converted = e_iconv(f->ic, NULL, 0, &outbuf, &outlen);
 	if (converted == -1) {
 		g_warning("Conversion failed to complete: %s", strerror(errno));
 	}
@@ -166,7 +168,7 @@ filter(CamelMimeFilter *mf, char *in, size_t len, size_t prespace, char **out, s
 	inlen = len;
 	outbuf = mf->outbuf;
 	outlen = mf->outsize;
-	converted = iconv(f->ic, &inbuf, &inlen, &outbuf, &outlen);
+	converted = e_iconv(f->ic, &inbuf, &inlen, &outbuf, &outlen);
 	if (converted == -1) {
 		if (errno != EINVAL) {
 			g_warning("error occured converting: %s", strerror(errno));
@@ -231,10 +233,7 @@ camel_mime_filter_charset_new_convert (const char *from_charset, const char *to_
 {
 	CamelMimeFilterCharset *new = CAMEL_MIME_FILTER_CHARSET (camel_object_new (camel_mime_filter_charset_get_type ()));
 	
-	from_charset = camel_charset_to_iconv (from_charset);
-	to_charset = camel_charset_to_iconv (to_charset);
-	
-	new->ic = iconv_open (to_charset, from_charset);
+	new->ic = e_iconv_open (to_charset, from_charset);
 	if (new->ic == (iconv_t) -1) {
 		g_warning("Cannot create charset conversion from %s to %s: %s", from_charset, to_charset, strerror(errno));
 		camel_object_unref ((CamelObject *)new);

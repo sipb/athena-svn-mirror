@@ -5,9 +5,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -142,7 +141,7 @@ e_addressbook_search_dialog_init (EAddressbookSearchDialog *view)
 	GnomeDialog *dialog = GNOME_DIALOG (view);
 
 	gtk_window_set_policy(GTK_WINDOW(view), FALSE, TRUE, FALSE);
-	gtk_window_set_default_size (GTK_WINDOW (view), 500, 400);
+	gtk_window_set_default_size (GTK_WINDOW (view), 550, 400);
 	gtk_window_set_title(GTK_WINDOW(view), _("Advanced Search"));
 	view->search = get_widget(view);
 	gtk_box_pack_start(GTK_BOX(dialog->vbox), view->search, TRUE, TRUE, 0);

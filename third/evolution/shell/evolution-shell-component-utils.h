@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,6 +22,7 @@
 #define __EVOLUTION_SHELL_COMPONENT_UTILS_H__
 
 #include <bonobo/bonobo-ui-component.h>
+#include <gtk/gtkwindow.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,6 +40,9 @@ typedef struct _EPixmap {
 
 /* Takes an array of pixmaps, terminated by E_PIXMAP_END, and loads into uic */
 void e_pixmaps_update (BonoboUIComponent *uic, EPixmap *pixcache);
+
+void e_activation_failure_dialog (GtkWindow *parent, const char *msg,
+				  const char *oafiid, const char *repo_id);
 
 #ifdef __cplusplus
 }

@@ -100,6 +100,7 @@ static void
 model_and_selection_free (ModelAndSelection *mns)
 {
 	gtk_object_unref(GTK_OBJECT(mns->adapter));
+	e_selection_model_right_click_up(mns->selection);
 	gtk_object_unref(GTK_OBJECT(mns->selection));
 	g_free(mns);
 }
@@ -322,7 +323,7 @@ addressbook_height (EReflowModel *erm, int i, GnomeCanvasGroup *parent)
 	height = text_height (GNOME_CANVAS_ITEM (parent)->canvas, string ? string : "") + 10.0;
 	g_free(string);
 
-	for(field = E_CARD_SIMPLE_FIELD_FULL_NAME; field != E_CARD_SIMPLE_FIELD_LAST - 2 && count < 5; field++) {
+	for(field = E_CARD_SIMPLE_FIELD_FULL_NAME; field != E_CARD_SIMPLE_FIELD_LAST_SIMPLE_STRING && count < 5; field++) {
 
 		if (field == E_CARD_SIMPLE_FIELD_FAMILY_NAME)
 			continue;

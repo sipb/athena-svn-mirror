@@ -6,19 +6,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -253,7 +253,7 @@ build_auth_menu (MailAccountGuiService *service, GList *all_authtypes,
 	for (l = all_authtypes, i = 0; l; l = l->next, i++) {
 		authtype = l->data;
 		
-		item = gtk_menu_item_new_with_label (_(authtype->name));
+		item = gtk_menu_item_new_with_label (authtype->name);
 		for (s = supported_authtypes; s; s = s->next) {
 			sauthtype = s->data;
 			if (!strcmp (authtype->name, sauthtype->name))
@@ -502,11 +502,24 @@ service_check_supported (GtkButton *button, gpointer user_data)
 	MailAccountGuiService *gsvc = user_data;
 	MailConfigService *service;
 	GList *authtypes = NULL;
+	GtkWidget *authitem;
+	GtkWidget *window;
 	
 	service = g_new0 (MailConfigService, 1);
+	
+	/* This is sort of a hack, when checking for supported AUTH
+           types we don't want to use whatever authtype is selected
+           because it may not be available. */
+	authitem = gsvc->authitem;
+	gsvc->authitem = NULL;
+	
 	save_service (gsvc, NULL, service);
 	
-	if (mail_config_check_service (service->url, gsvc->provider_type, &authtypes)) {
+	gsvc->authitem = authitem;
+	
+	window = gtk_widget_get_ancestor (GTK_WIDGET (button), GTK_TYPE_WINDOW);
+	
+	if (mail_config_check_service (service->url, gsvc->provider_type, &authtypes, GTK_WINDOW (window))) {
 		build_auth_menu (gsvc, gsvc->provider->authtypes, authtypes, TRUE);
 		if (!authtypes) {
 			/* provider doesn't support any authtypes */
@@ -615,7 +628,7 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			if (entries[i].name && !strcmp (entries[i].name, "mailcheck"))
 				cur_vbox = glade_xml_get_widget (gui->xml, "extra_mailcheck_vbox");
 			else {
-				frame = gtk_frame_new (_(entries[i].text));
+				frame = gtk_frame_new (entries[i].text);
 				gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
 				cur_vbox = gtk_vbox_new (FALSE, 4);
 				gtk_container_set_border_width (GTK_CONTAINER (cur_vbox), 4);
@@ -632,7 +645,7 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			GtkWidget *checkbox;
 			gboolean active;
 			
-			checkbox = gtk_check_button_new_with_label (_(entries[i].text));
+			checkbox = gtk_check_button_new_with_label (entries[i].text);
 			if (url)
 				active = camel_url_get_param (url, entries[i].name) != NULL;
 			else
@@ -651,7 +664,7 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			const char *text;
 			
 			hbox = gtk_hbox_new (FALSE, 8);
-			label = gtk_label_new (_(entries[i].text));
+			label = gtk_label_new (entries[i].text);
 			entry = gtk_entry_new ();
 			if (url)
 				text = camel_url_get_param (url, entries[i].name);
@@ -680,7 +693,7 @@ mail_account_gui_build_extra_conf (MailAccountGui *gui, const char *url_string)
 			double min, def, max;
 			gboolean enable;
 			
-			data = _(entries[i].text);
+			data = entries[i].text;
 			p = strstr (data, "%s");
 			g_return_if_fail (p != NULL);
 			
@@ -819,7 +832,9 @@ folder_picker_clicked (GtkButton *button, gpointer user_data)
 	
 	physical_uri = evolution_uri = NULL;
 	evolution_shell_client_user_select_folder (
-		global_shell_client, _("Select Folder"), folder->uri,
+		global_shell_client,
+		GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (button))),
+		_("Select Folder"), folder->uri,
 		allowed_types, &evolution_uri, &physical_uri);
 	if (!physical_uri || !*physical_uri) {
 		g_free (physical_uri);
@@ -1040,6 +1055,12 @@ do_exit (ESignatureEditor *editor)
 		destroy_editor (editor);
 }
 
+static int
+delete_event_cb (GtkWidget *w, GdkEvent *event, ESignatureEditor *editor)
+{
+	do_exit (editor);
+}
+
 static void
 menu_file_close_cb (BonoboUIComponent *uic, gpointer data, const gchar *path)
 {
@@ -1049,11 +1070,23 @@ menu_file_close_cb (BonoboUIComponent *uic, gpointer data, const gchar *path)
 	do_exit (editor);
 }
 
+static void
+menu_file_save_close_cb (BonoboUIComponent *uic, gpointer data, const gchar *path)
+{
+	ESignatureEditor *editor;
+	
+	editor = E_SIGNATURE_EDITOR (data);
+
+	menu_file_save_cb (uic, editor, path);
+	destroy_editor (editor);
+}
+
 static BonoboUIVerb verbs [] = {
 
-	BONOBO_UI_VERB ("FileSave",   menu_file_save_cb),
-	BONOBO_UI_VERB ("FileClose",  menu_file_close_cb),
-	
+	BONOBO_UI_VERB ("FileSave",       menu_file_save_cb),
+	BONOBO_UI_VERB ("FileClose",      menu_file_close_cb),
+	BONOBO_UI_VERB ("FileSaveClose",  menu_file_save_close_cb),
+
 	BONOBO_UI_VERB_END
 };
 
@@ -1121,7 +1154,8 @@ launch_signature_editor (MailAccountGui *gui, const gchar *filename, gboolean ht
 	
 	editor->html     = html;
 	editor->filename = g_strdup (filename);
-	
+	editor->has_changed = TRUE;
+
 	title       = g_strdup_printf ("Edit %ssignature (%s)", html ? "HTML " : "", filename);
 	editor->win = bonobo_window_new ("e-sig-editor", title);
 	editor->gui = gui;
@@ -1133,7 +1167,7 @@ launch_signature_editor (MailAccountGui *gui, const gchar *filename, gboolean ht
 	container = bonobo_ui_container_new ();
 	bonobo_ui_container_set_win (container, BONOBO_WINDOW (editor->win));
 	
-	component = bonobo_ui_component_new ("evolution-signature-editor");
+	component = bonobo_ui_component_new_default ();
 	bonobo_ui_component_set_container (component, bonobo_object_corba_objref (BONOBO_OBJECT (container)));
 	bonobo_ui_component_add_verb_list_with_data (component, verbs, editor);
 	bonobo_ui_util_set_ui (component, EVOLUTION_DATADIR, "evolution-signature-editor.xml", "evolution-signature-editor");
@@ -1149,7 +1183,10 @@ launch_signature_editor (MailAccountGui *gui, const gchar *filename, gboolean ht
 	}
 	
 	load_signature (editor);
-	
+
+	gtk_signal_connect (GTK_OBJECT (editor->win), "delete_event",
+			    GTK_SIGNAL_FUNC (delete_event_cb), editor);
+
 	bonobo_window_set_contents (BONOBO_WINDOW (editor->win), editor->control);
 	bonobo_widget_set_property (BONOBO_WIDGET (editor->control), "FormatHTML", html, NULL);
 	gtk_widget_show (GTK_WIDGET (editor->win));
@@ -1242,6 +1279,7 @@ mail_account_gui_new (MailConfigAccount *account)
 	}
 	
 	/* Source */
+	gui->source.provider_type = CAMEL_PROVIDER_STORE;
 	gui->source.type = GTK_OPTION_MENU (glade_xml_get_widget (gui->xml, "source_type_omenu"));
 	gui->source.description = GTK_LABEL (glade_xml_get_widget (gui->xml, "source_description"));
 	gui->source.hostname = GTK_ENTRY (glade_xml_get_widget (gui->xml, "source_host"));
@@ -1264,6 +1302,7 @@ mail_account_gui_new (MailConfigAccount *account)
 	gui->source_auto_check_min = GTK_SPIN_BUTTON (glade_xml_get_widget (gui->xml, "extra_auto_check_min"));
 	
 	/* Transport */
+	gui->transport.provider_type = CAMEL_PROVIDER_TRANSPORT;
 	gui->transport.type = GTK_OPTION_MENU (glade_xml_get_widget (gui->xml, "transport_type_omenu"));
 	gui->transport.description = GTK_LABEL (glade_xml_get_widget (gui->xml, "transport_description"));
 	gui->transport.hostname = GTK_ENTRY (glade_xml_get_widget (gui->xml, "transport_host"));
@@ -1376,7 +1415,7 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 		
 		item = NULL;
 		if (provider->object_types[CAMEL_PROVIDER_STORE] && provider->flags & CAMEL_PROVIDER_IS_SOURCE) {
-			item = gtk_menu_item_new_with_label (_(provider->name));
+			item = gtk_menu_item_new_with_label (provider->name);
 			gtk_object_set_data (GTK_OBJECT (item), "provider", provider);
 			gtk_signal_connect (GTK_OBJECT (item), "activate",
 					    GTK_SIGNAL_FUNC (source_type_changed),
@@ -1400,7 +1439,7 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 		}
 		
 		if (provider->object_types[CAMEL_PROVIDER_TRANSPORT]) {
-			item = gtk_menu_item_new_with_label (_(provider->name));
+			item = gtk_menu_item_new_with_label (provider->name);
 			gtk_object_set_data (GTK_OBJECT (item), "provider", provider);
 			gtk_signal_connect (GTK_OBJECT (item), "activate",
 					    GTK_SIGNAL_FUNC (transport_type_changed),
@@ -1432,9 +1471,9 @@ mail_account_gui_setup (MailAccountGui *gui, GtkWidget *top)
 			for (a = provider->authtypes; a; a = a->next) {
 				at = a->data;
 				
-				width = gdk_string_width (font, _(at->name));
+				width = gdk_string_width (font, at->name);
 				if (width > max_width) {
-					max_authname = _(at->name);
+					max_authname = at->name;
 					max_width = width;
 				}
 			}
@@ -1649,7 +1688,7 @@ mail_account_gui_save (MailAccountGui *gui)
 	save_service (&gui->transport, NULL, account->transport);
 	
 	/* Check to make sure that the Drafts folder uri is "valid" before assigning it */
-	url = source_url ? camel_url_new (gui->drafts_folder.uri, NULL) : NULL;
+	url = source_url && gui->drafts_folder.uri ? camel_url_new (gui->drafts_folder.uri, NULL) : NULL;
 	if (mail_config_get_account_by_source_url (gui->drafts_folder.uri) ||
 	    (url && provider->url_equal (source_url, url))) {
 		g_free (account->drafts_folder_name);
@@ -1668,7 +1707,7 @@ mail_account_gui_save (MailAccountGui *gui)
 		camel_url_free (url);
 	
 	/* Check to make sure that the Sent folder uri is "valid" before assigning it */
-	url = camel_url_new (gui->drafts_folder.uri, NULL);
+	url = source_url && gui->sent_folder.uri ? camel_url_new (gui->sent_folder.uri, NULL) : NULL;
 	if (mail_config_get_account_by_source_url (gui->sent_folder.uri) ||
 	    (url && provider->url_equal (source_url, url))) {
 		g_free (account->sent_folder_name);
@@ -1703,7 +1742,7 @@ mail_account_gui_save (MailAccountGui *gui)
 	if (gtk_toggle_button_get_active (gui->default_account))
 		mail_config_set_default_account (account);
 	
-	mail_autoreceive_setup_account (account->source);
+	mail_autoreceive_setup ();
 	
 	return TRUE;
 }

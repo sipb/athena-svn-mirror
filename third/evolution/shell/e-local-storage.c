@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,8 +47,8 @@
 #include <libgnome/gnome-util.h>
 #include <gal/util/e-util.h>
 #include <gal/widgets/e-unicode.h>
+#include <gal/util/e-unicode-i18n.h>
 #include "e-util/e-path.h"
-#include "e-util/e-unicode-i18n.h"
 #include "e-local-folder.h"
 
 #include "evolution-storage.h"
@@ -208,6 +207,19 @@ load_all_folders (ELocalStorage *local_storage)
 	setup_stock_folders (local_storage);
 
 	return TRUE;
+}
+
+static EStorageResult
+storage_result_from_component_result (EvolutionShellComponentResult result)
+{
+	switch (result) {
+	case EVOLUTION_SHELL_COMPONENT_PERMISSIONDENIED:
+		return E_STORAGE_PERMISSIONDENIED;
+	case EVOLUTION_SHELL_COMPONENT_NOSPACE:
+		return E_STORAGE_NOSPACE; 
+	default:
+		return E_STORAGE_GENERICERROR;
+	}
 }
 
 
@@ -783,14 +795,15 @@ async_xfer_folder_step (ELocalStorage *local_storage,
 }
 
 static void
-async_xfer_folder_complete (XferData *xfer_data)
+async_xfer_folder_complete (XferData *xfer_data,
+			    gboolean success)
 {
 	ELocalStorage *local_storage;
 	GList *p;
 
 	local_storage = xfer_data->local_storage;
 
-	if (xfer_data->remove_source) {
+	if (success && xfer_data->remove_source) {
 		EStorageResult result;
 
 		/* Remove all the source physical directories, and also the
@@ -839,11 +852,17 @@ async_xfer_folder_callback (EvolutionShellComponentClient *shell_component_clien
 	char *dest_physical_path;
 	char *new_physical_uri;
 	
-	/* FIXME handle errors.  */
-
 	xfer_data = (XferData *) callback_data;
 
 	item = (XferItem *) xfer_data->current_folder_item->data;
+
+	if (result != EVOLUTION_SHELL_COMPONENT_OK) {
+		(* xfer_data->callback) (E_STORAGE (xfer_data->local_storage),
+					 storage_result_from_component_result (result),
+					 xfer_data->callback_data);
+		async_xfer_folder_complete (xfer_data, FALSE);
+		return;
+	}
 
 	source_folder = e_storage_get_folder (E_STORAGE (xfer_data->local_storage), item->source_path);
 	destination_folder = e_local_folder_new (e_folder_get_name (source_folder),
@@ -861,7 +880,8 @@ async_xfer_folder_callback (EvolutionShellComponentClient *shell_component_clien
 
 	xfer_data->current_folder_item = xfer_data->current_folder_item->next;
 	if (xfer_data->current_folder_item == NULL) {
-		async_xfer_folder_complete (xfer_data);
+		(* xfer_data->callback) (E_STORAGE (xfer_data->local_storage), E_STORAGE_OK, xfer_data->callback_data);
+		async_xfer_folder_complete (xfer_data, TRUE);
 		return;
 	}
 
@@ -892,8 +912,10 @@ impl_async_xfer_folder (EStorage *storage,
 	local_storage = E_LOCAL_STORAGE (storage);
 	priv = local_storage->priv;
 
-	if (remove_source && e_folder_get_is_stock (e_storage_get_folder (storage, source_path)))
+	if (remove_source && e_folder_get_is_stock (e_storage_get_folder (storage, source_path))) {
 		(* callback) (storage, E_STORAGE_CANTCHANGESTOCKFOLDER, callback_data);
+		return;
+	}
 
 	folder_items = NULL;
 	append_xfer_item_list (storage, g_strdup (source_path), g_strdup (destination_path), &folder_items);
@@ -951,7 +973,6 @@ bonobo_interface_remove_folder_cb (EvolutionStorage *storage,
 static void
 bonobo_interface_update_folder_cb (EvolutionStorage *storage,
 				   const char *path,
-				   const char *display_name,
 				   int unread_count,
 				   void *data)
 {
@@ -964,9 +985,7 @@ bonobo_interface_update_folder_cb (EvolutionStorage *storage,
 	if (folder == NULL)
 		return;
 
-	/* e_folder_set_name (folder, display_name); */
 	e_folder_set_unread_count (folder, unread_count);
-
 	return;
 }
 

@@ -8,10 +8,9 @@
  *          Federico Mena-Quintero <federico@ximian.com>
  *          Seth Alves <alves@hungry.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -32,6 +31,7 @@
 #include <bonobo/bonobo-ui-component.h>
 #include <widgets/misc/e-calendar.h>
 #include <cal-client/cal-client.h>
+#include "e-calendar-table.h"
 
 BEGIN_GNOME_DECLS
 
@@ -68,7 +68,12 @@ struct _GnomeCalendarClass {
 
 	/* Notification signals */
 	void (* dates_shown_changed)    (GnomeCalendar *gcal);
-	void (* selection_changed)	(GnomeCalendar *gcal);
+
+	void (* calendar_selection_changed) (GnomeCalendar *gcal);
+	void (* taskpad_selection_changed) (GnomeCalendar *gcal);
+
+	void (* calendar_focus_change)  (GnomeCalendar *gcal, gboolean in);
+	void (* taskpad_focus_change)   (GnomeCalendar *gcal, gboolean in);
 };
 
 
@@ -76,6 +81,8 @@ GtkType    gnome_calendar_get_type         	(void);
 GtkWidget *gnome_calendar_construct		(GnomeCalendar *gcal);
 
 GtkWidget *gnome_calendar_new			(void);
+
+ECalendarTable *gnome_calendar_get_task_pad	(GnomeCalendar *gcal);
 
 CalClient *gnome_calendar_get_cal_client	(GnomeCalendar *gcal);
 CalClient *gnome_calendar_get_task_pad_cal_client(GnomeCalendar *gcal);
@@ -133,6 +140,9 @@ gboolean   gnome_calendar_get_visible_time_range (GnomeCalendar *gcal,
 /* Returns the number of selected events (0 or 1 at present). */
 gint	   gnome_calendar_get_num_events_selected (GnomeCalendar *gcal);
 
+/* Returns the number of selected tasks */
+gint       gnome_calendar_get_num_tasks_selected (GnomeCalendar *gcal);
+
 /* Tells the calendar to reload all config settings. initializing should be
    TRUE when we are setting the config settings for the first time. */
 void	   gnome_calendar_update_config_settings (GnomeCalendar *gcal,
@@ -147,7 +157,7 @@ void       gnome_calendar_cut_clipboard         (GnomeCalendar  *gcal);
 void       gnome_calendar_copy_clipboard        (GnomeCalendar  *gcal);
 void       gnome_calendar_paste_clipboard       (GnomeCalendar  *gcal);
 
-void       gnome_calendar_delete_event		(GnomeCalendar  *gcal);
+void       gnome_calendar_delete_selection	(GnomeCalendar  *gcal);
 
 
 

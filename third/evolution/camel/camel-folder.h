@@ -8,9 +8,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -63,12 +62,15 @@ struct _CamelFolder
 	CamelStore *parent_store;
 	CamelFolderSummary *summary;
 
+	guint32 folder_flags;
 	guint32 permanent_flags;
-	gboolean has_summary_capability:1;
-	gboolean has_search_capability:1;
-	gboolean filter_recent:1;
-
 };
+
+#define CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY (1<<0)
+#define CAMEL_FOLDER_HAS_SEARCH_CAPABILITY  (1<<1)
+#define CAMEL_FOLDER_FILTER_RECENT          (1<<2)
+#define CAMEL_FOLDER_HAS_BEEN_DELETED       (1<<3)
+#define CAMEL_FOLDER_IS_TRASH               (1<<4)
 
 typedef struct {
 	CamelObjectClass parent_class;
@@ -133,9 +135,8 @@ typedef struct {
 
 	gboolean (*has_search_capability) (CamelFolder *folder);
 
-	GPtrArray * (*search_by_expression) (CamelFolder *folder,
-					     const char *expression,
-					     CamelException *ex);
+	GPtrArray * (*search_by_expression) (CamelFolder *, const char *, CamelException *);
+	GPtrArray * (*search_by_uids) (CamelFolder *, const char *, GPtrArray *uids, CamelException *);
 
 	void (*search_free) (CamelFolder *folder, GPtrArray *result);
 
@@ -152,6 +153,9 @@ typedef struct {
 				  GPtrArray *uids,
 				  CamelFolder *destination,
 				  CamelException *ex);
+	
+	void (*delete)           (CamelFolder *folder);
+	void (*rename)           (CamelFolder *folder, const char *newname);
 	
 	void     (*freeze)    (CamelFolder *folder);
 	void     (*thaw)      (CamelFolder *folder);
@@ -249,9 +253,8 @@ void               camel_folder_free_uids             (CamelFolder *folder,
 
 /* search api */
 gboolean           camel_folder_has_search_capability (CamelFolder *folder);
-GPtrArray *	   camel_folder_search_by_expression  (CamelFolder *folder,
-						       const char *expression,
-						       CamelException *ex);
+GPtrArray *	   camel_folder_search_by_expression  (CamelFolder *folder, const char *expr, CamelException *ex);
+GPtrArray *	   camel_folder_search_by_uids	      (CamelFolder *folder, const char *expr, GPtrArray *uids, CamelException *ex);
 void		   camel_folder_search_free	      (CamelFolder *folder, GPtrArray *);
 
 /* summary info */
@@ -268,6 +271,9 @@ void               camel_folder_move_messages_to       (CamelFolder *source,
 							GPtrArray *uids,
 							CamelFolder *dest,
 							CamelException *ex);
+
+void               camel_folder_delete                 (CamelFolder *folder);
+void               camel_folder_rename                 (CamelFolder *folder, const char *new);
 
 /* stop/restart getting events */
 void               camel_folder_freeze                (CamelFolder *folder);

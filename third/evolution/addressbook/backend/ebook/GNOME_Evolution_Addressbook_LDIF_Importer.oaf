@@ -1,0 +1,61 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_LDIF_ImporterFactory"
+	    type="exe"
+	    location="evolution-ldif-importer">
+
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/ObjectFactory:1.0"/>
+	</oaf_attribute>
+
+	<oaf_attribute name="description" type="string"
+		       value="Factory to import LDIF files into Evolution."/>
+	<oaf_attribute name="description-ru" type="string"
+		       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#201;&#205;&#208;&#207;&#210;&#212;&#193; &#198;&#193;&#202;&#204;&#207;&#215; LDIF &#215; Evolution."/>
+	<oaf_attribute name="description-pt_BR" type="string"
+		       value="F&#225;brica para importar arquivos LDIF no Evolution."/>
+	<oaf_attribute name="description-no" type="string"
+		       value="Factory for import av LDIF-filer til Evolution."/>
+	<oaf_attribute name="description-pl" type="string"
+		       value="Generator importu plik&#243;w z LDIF do Evolution."/>
+	<oaf_attribute name="description-sv" type="string"
+		       value="Fabrik f&#246;r import av LDIF-filer till Evolution."/>
+	<oaf_attribute name="description-es" type="string"
+		       value="Factor&#237;a para importar archivos LDIF a Evolution."/>
+	<oaf_attribute name="description-fr" type="string"
+		       value="Usine &#224; outils pour importer des fichiers LDIF dans Evolution"/>
+	<oaf_attribute name="description-da" type="string"
+		       value="Fabrik for import af LDIF filer til Evolution."/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:GNOME_Evolution_Addressbook_LDIF_Importer"
+	    type="factory"
+	    location="OAFIID:GNOME_Evolution_Addressbook_LDIF_ImporterFactory">
+
+	<oaf_attribute name="repo_ids" type="stringv">
+		<item value="IDL:GNOME/Evolution/Importer:1.0"/>
+	</oaf_attribute>
+
+	<oaf_attribute name="evolution:menu-name" type="string"
+		       value="LDAP Data Interchange Format (.ldif)"/>
+	<oaf_attribute name="description" type="string"
+		       value="Imports LDIF files into Evolution."/>
+	<oaf_attribute name="description-ru" type="string"
+		       value="&#233;&#205;&#208;&#207;&#210;&#212;&#201;&#210;&#213;&#197;&#212; &#198;&#193;&#202;&#204;&#217; LDIF &#215; Evolution."/>
+	<oaf_attribute name="description-pt_BR" type="string"
+		       value="Importa arquivos LDIF no Evolution."/>
+	<oaf_attribute name="description-no" type="string"
+		       value="Importerer LDIF-filer til Evolution."/>
+	<oaf_attribute name="description-pl" type="string"
+		       value="Importuje pliki LDIF do Evolution."/>
+	<oaf_attribute name="description-sv" type="string"
+		       value="Importerar LDIF-filer till Evolution."/>
+	<oaf_attribute name="description-es" type="string"
+		       value="Importa archivos LDIF a Evolution."/>
+	<oaf_attribute name="description-fr" type="string"
+		       value="Importation de fichiers LDIF dans Evolution"/>
+	<oaf_attribute name="description-da" type="string"
+		       value="Importerer LDIF filer til Evolution."/>
+</oaf_server>
+
+</oaf_info>

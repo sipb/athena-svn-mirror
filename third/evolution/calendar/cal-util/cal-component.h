@@ -5,10 +5,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -79,6 +78,7 @@ typedef enum {
 	CAL_COMPONENT_FIELD_COLOR,		/* not a real field */
 	CAL_COMPONENT_FIELD_STATUS,
 	CAL_COMPONENT_FIELD_COMPONENT,		/* not a real field */
+	CAL_COMPONENT_FIELD_LOCATION,
 	CAL_COMPONENT_FIELD_NUM_FIELDS
 } CalComponentField;
 
@@ -206,6 +206,7 @@ void cal_component_set_new_vtype (CalComponent *comp, CalComponentVType type);
 
 gboolean cal_component_set_icalcomponent (CalComponent *comp, icalcomponent *icalcomp);
 icalcomponent *cal_component_get_icalcomponent (CalComponent *comp);
+void cal_component_rescan (CalComponent *comp);
 
 CalComponentVType cal_component_get_vtype (CalComponent *comp);
 
@@ -270,6 +271,7 @@ void cal_component_set_last_modified (CalComponent *comp, struct icaltimetype *t
 
 void cal_component_get_organizer (CalComponent *comp, CalComponentOrganizer *organizer);
 void cal_component_set_organizer (CalComponent *comp, CalComponentOrganizer *organizer);
+gboolean cal_component_has_organizer (CalComponent *comp);
 
 void cal_component_get_percent (CalComponent *comp, int **percent);
 void cal_component_set_percent (CalComponent *comp, int *percent);
@@ -308,6 +310,10 @@ void cal_component_set_url (CalComponent *comp, const char *url);
 
 void cal_component_get_attendee_list (CalComponent *comp, GSList **attendee_list);
 void cal_component_set_attendee_list (CalComponent *comp, GSList *attendee_list);
+gboolean cal_component_has_attendees (CalComponent *comp);
+
+void cal_component_get_location (CalComponent *comp, const char **location);
+void cal_component_set_location (CalComponent *comp, const char *location);
 
 gboolean cal_component_event_dates_match (CalComponent *comp1, CalComponent *comp2);
 

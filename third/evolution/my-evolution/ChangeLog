@@ -1,3 +1,208 @@
+2001-10-31  Iain Holmes  <iain@ximian.com>
+
+	* Locations: Removed Frobisher.
+
+2001-10-31  Iain Holmes  <iain@ximian.com>
+
+	* Locations: Fixed a spelling mistake.
+
+2001-10-31  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-preferences.c (make_initial_rdf_list): Put this back.
+	(make_initial_weather_list): This too plus fixed a memory leak.
+	(vector_from_str_list): Allow a NULL list. Return "" instead of NULL.
+	(e_summary_preferences_restore): Allow the display_folders, rdf_urls, 
+	and stations to be NULL.
+
+	* e-summary-weather.c (e_summary_weather_init): Revert the last changes
+	
+	* e-summary-rdf.c (e_summary_rdf_init): Same.
+
+2001-10-30  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-preferences.c (find_name_from_url): Check a for NULL values
+
+2001-10-29  Damon Chaplin  <damon@ximian.com>
+
+	* Makefile.am (evolution_executive_summary_LDADD): use
+	libical-evolution.la
+
+2001-10-29  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-preferences.c (make_initial_rdf_list): Set list to NULL.
+	(make_initial_weather_list): Set list to NULL.
+
+	* e-summary-weather.c (e_summary_weather_init): Check if the prefs are
+	NULL or if the weather stations are NULL.
+
+	* e-summary-rdf.c (e_summary_rdf_init): Check if the prefs or the list
+	of news feeds is NULL.
+
+2001-10-29  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-preferences.c (fill_rdf_all_clist): Open the new location.
+	If it doesn't exist try the old location.
+	(save_known_rdfs): Save to the new location.
+
+2001-10-29  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-summary-calendar.c (e_summary_calendar_init): retrieve the
+	default URI for calendars from the configuration instead of
+	hard-coding it
+
+	* e-summary-tasks.c (e_summary_tasks_init): likewise for tasks
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-summary-preferences.c (make_initial_weather_list): We only
+	want KBOS by default.
+
+	* e-summary-weather.c (e_summary_weather_init): We only want KBOS
+	by default.
+
+2001-10-27  Jon Trowbridge  <trow@ximian.com>
+
+	* e-summary.c (e_summary_reload): Slow down reload requests
+	to work around a bug in gnome-vfs.  Ugly, but it works.
+	(Bug #12956)
+
+2001-10-26  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-rdf.c (open_callback): NULL the handle after a failed 
+	open so the offline handler won't think they're still open.
+	(e_summary_rdf_set_online): Cancel all the open connections when the
+	summary goes offline.
+	
+	* e-summary-weather.c (open_callback): NULL the handle after a failed
+	open so the offline handler won't think they're still open.
+	(e_summary_weather_set_online): Cancel all the open connections when the
+	summary goes offline.
+
+	* e-summary.c (e_summary_set_online): Call the callback if it's not
+	NULL.
+
+2001-10-25  Jon Trowbridge  <trow@ximian.com>
+
+	* e-summary-tasks.c (sort_uids): It is possible for
+	start_foo.value to be NULL after a call to
+	cal_component_get_dtstart, so we need to check for this before
+	dereferencing it. (Bug #13259)
+
+2001-10-24  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-mail.c (e_summary_mail_init): Don't free the mail part.
+	Allows the summary to still function without the mail part.
+
+2001-10-22  Anna Marie Dirks  <anna@ximian.com>
+
+	* my-evolution.glade: Changed "Add new feed" to "Add news feed".
+
+2001-10-22  Damon Chaplin  <damon@ximian.com>
+
+	* e-summary-tasks.c (generate_html): set the default timezone on the
+	server.
+
+	* e-summary-calendar.c (e_cal_comp_util_compare_event_timezones): 
+	update to check for DATE values.
+	(uids_to_array): pass the default timezone
+	to cal_recur_generate_instances.
+	(generate_html): set the default timezone on the server.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-summary-preferences.c (e_summary_configure): Remove the
+	help_button in the property box.
+
+2001-10-19  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-mail.c (e_summary_mail_init): set the summary->mail to
+	NULL after freeing it.
+	(mail_change_notify): Return if mail == NULL.
+	
+
+2001-10-18  Iain Holmes  <iain@ximian.com>
+
+	* e-summary.c (e_summary_reload): Only reload the views, don't do an
+	entire reconfigure.
+
+	* e-summary-rdf.c (e_summary_rdf_update): Free stuff and update.
+
+	* e-summary-weather.c (e_summary_weather_update): Ditto
+
+2001-10-16  Iain Holmes  <iain@ximian.com>
+
+	* e-summary.c (e_summary_new): Don't call a draw.
+
+	* e-summary-mail.c (e_summary_mail_init): Make sure html is NULL.
+
+2001-10-14  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* e-summary-calendar.c (generate_html): Made temporary buffer for
+	strftime much bigger (it was too small for Polish month names), added
+	missing colon and conversion to UTF-8.
+
+2001-10-12  Iain Holmes  <iain@ximian.com>
+
+	* component-factory.c (component_factory_init): Fix message.
+
+	* metar.c: Fix some names.
+	Made the weather descriptions easier on the eyes.
+
+2001-10-11  Dan Winship  <danw@ximian.com>
+
+	* e-summary-mail.c (update_folder_cb): Update the signature to
+	match the new signal.
+
+2001-10-10  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-weather.c (e_summary_weather_update): Return a value.
+	Only repoll if the summary is online.
+
+	* e-summary-rdf.c (e_summary_rdf_update): Only poll if online
+
+2001-10-10  Iain Holmes  <iain@ximian.com>
+
+	* my-evolution.glade: Set the minimum length of time for updates to 
+	5 minutes.
+
+2001-10-06  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* e-summary-preferences.c: Added HispaLinux
+
+2001-10-05  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-rdf.c (e_summary_rdf_reconfigure): Set the RDF list to
+	NULL before destroying it to fix a race condition.
+
+2001-10-04  Iain Holmes  <iain@ximian.com>
+	
+	* my-evolution.glade: Capitalise stuff
+
+2001-10-03  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-weather.c (e_summary_weather_init): Swap Xiamen for Tokyo
+
+2001-10-01  Damon Chaplin  <damon@ximian.com>
+
+	* e-summary-calendar.c (generate_html): used time_add_day/week/month
+	_with_zone() functions rather than the old versions.
+
+	* e-summary.c (alarm_fn): use time_day_end_with_zone ().
+
+	* e-summary-tasks.c (generate_html): removed day_begin and day_end
+	since they aren't used, and the calls to time_day_begin/end().
+
+2001-10-02  Iain Holmes  <iain@ximian.com>
+
+	* e-summary-calendar.c (uids_to_array): Handle recurrances correctly.
+	(add_recurrances): Function to generate occurrances
+
+2001-10-02  Rodrigo Moya <rodrigo@ximian.com>
+
+	* Makefile.am: add $(BONOBO_GNOME_CFLAGS) to make it compile with
+	latest Bonobo, which does not install headers in
+	$(gnome_prefix)/include
+
 2001-10-01  Iain Holmes  <iain@ximian.com>
 
 	* e-summary-rdf.c: Applied patch from Takuo Kitame for using charset

@@ -1,3 +1,62 @@
+2001-11-05  JP Rosevear  <jpr@ximian.com>
+
+	* Makefile.am (EXTRA_DIST): dist the glade data
+
+2001-11-01  Ettore Perazzoli  <ettore@ximian.com>
+
+	* Makefile.am (gladedir): New.
+	(glade_DATA): Pixmap files required to be installed by the glade
+	files.
+
+2001-10-31  Ettore Perazzoli  <ettore@ximian.com>
+
+	* Makefile.am: Install `evolution.png', not `evolution-icon.png'.
+
+	* evolution.png: Renamed from `evolution-icon.png', removing the
+	old, now unused `evolution.png'.
+
+2001-10-30  Jakub Steiner <jimmac@ximian.com>
+
+	* splash-1-0.png: new style splash 
+
+2001-10-23  Tuomas Kuosmanen  <tigert@ximian.com>
+
+	* splash.png: Remove the "1" from "1.0 Release Candidate 1" so it
+	looks better.
+
+2001-10-23  Tuomas Kuosmanen  <tigert@ximian.com>
+
+	* Makefile.am (appicon_DATA): Changed the filename here too 
+	so the icon gets installed.
+
+	* evolution-icon.png: New icon that scales better.
+
+2001-10-22  Jakub Steiner <jimmac@ximian.com>
+
+	* about-box.png: update the layout a bit
+	* splash.png: update to 0.17 
+
+2001-10-16  Ettore Perazzoli  <ettore@ximian.com>
+
+	* Makefile.am (images_DATA): Add `about-box.png'.
+
+	* about-box.png: New image for the about box from Jakub.
+
+2001-10-18  Larry Ewing  <lewing@ximian.com>
+
+	* Makefile.am (images_DATA): add alarm.png for the new alarm
+	notification code.
+
+2001-10-04  Chris Toshok  <toshok@ximian.com>
+
+	* Makefile.am (images_DATA): change ldap-16.png to ldap-mini.png,
+	and add ldap.png.
+
+2001-10-04  Jakub Steiner <jimmac@ximian.com>
+
+	* splash.png: bump to 0.16
+	* ldap.png: 48x48 version for shortcut bar
+
 2001-09-25  Iain Holmes  <iain@ximian.com>
 
 	* add task.png

@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >The First Time you Start Ximian Evolution</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="A User's Guide to Ximian Evolution"
 HREF="index.html"><LINK
@@ -20,6 +20,11 @@ TITLE="What's What in Ximian Evolution"
 HREF="ui-intro.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,20 +45,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="usage-mainwindow.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 1. Getting Started with Ximian Evolution</TD
+>Getting Started with Ximian Evolution</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="ui-intro.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -69,9 +74,9 @@ NAME="USAGE-MAINWINDOW-STARTING"
 >The First Time you Start Ximian Evolution</A
 ></H1
 ><P
->      To start <SPAN
+>      To start <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 >, do either
       of the following: 
       <P
@@ -79,12 +84,12 @@ CLASS="APPLICATION"
 ><UL
 ><LI
 ><P
->      Select <SPAN
+>      Select <B
 CLASS="GUIMENU"
->Programs</SPAN
->-&gt;<SPAN
+>Programs</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Evolution</SPAN
+>Evolution</B
 > from your
       menu panel.
       </P
@@ -126,34 +131,34 @@ NAME="FIRST-STEP"
 >	The Identity window is the first of four steps in the
 	assistant.  The identity step will ask you to enter your basic
 	personal information.  You can define multiple identities
-	later on with the <SPAN
+	later on with the <B
 CLASS="GUIMENU"
->Tools</SPAN
->-&gt;<SPAN
+>Tools</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Mail Settings</SPAN
+>Mail Settings</B
 > tool.
 	<P
 ></P
 ><UL
 ><LI
 ><P
->	      Full Name &#8212; Your full name (Example: John Doe).
+>	      Full Name: Your full name (Example: John Doe).
 	    </P
 ></LI
 ><LI
 ><P
->	      Email Address &#8212; Your email address (Example: john@doe.com)
+>	      Email Address: Your email address (Example: john@doe.com)
 	    </P
 ></LI
 ><LI
 ><P
->	      Organization &#8212; The company where you work (optional).
+>	      Organization: The company where you work (optional).
 	    </P
 ></LI
 ><LI
 ><P
->	      Signature file &#8212; If you'd like to use an email
+>	      Signature file: If you'd like to use an email
 	      <A
 HREF="apx-gloss.html#SIGNATURE"
 ><I
@@ -183,9 +188,11 @@ NAME="SECOND-STEP"
 >Recieving Email</A
 ></H2
 ><P
->	The <SPAN
+>	The <TT
 CLASS="GUILABEL"
->Recieving Email</SPAN
+><B
+>Recieving Email</B
+></TT
 > step lets you configure
 	receving email people have sent you.
 	<P
@@ -193,47 +200,42 @@ CLASS="GUILABEL"
 ><UL
 ><LI
 ><P
->	      Server Type &#8212; There are numerous types of servers
-	      from which <SPAN
+>	      Server Type: There are numerous types of servers
+	      from which <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 >
-	      can fetch your mail:
+	      can fetch your mail.  Ask your system administrator if
+	      you're not sure which of the following are available to
+	      you:
 	      <P
 ></P
 ><UL
 ><LI
 ><P
->		    POP &#8212; Downloads your email to your hard disk for
+>		    POP: Downloads your email to your hard disk for
 		    permanent storage.
 		  </P
 ></LI
 ><LI
 ><P
->		    IMAPv4 &#8212; Keeps the email on your server so
-		    you can access your email from any computer that
-		    supports IMAPv4 and have everything be the
-		    same. For more information about how to use IMAP
-		    mail, see <A
-HREF="usage-mail-subscriptions.html"
->the section called <I
->Subscription Management</I
-> in Chapter 3</A
->.
+>		    IMAP: Keeps the email on your server so you
+		    can access your email from multiple systems. 
 		  </P
 ></LI
 ><LI
 ><P
->		    Unix mail spool file &#8212; If you run a mail
-		    server on your desktop computer, choose this optino.
+>		    Unix mail spool file: If you run a mail
+		    server on your desktop computer, choose this
+		    option.
 		  </P
 ></LI
 ><LI
 ><P
->		    Standard Unix .mbox file &#8212; If you want
-		    <SPAN
+>		    Standard Unix .mbox file: If you want
+		    <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > to
 		    read mail from a specific file, or if you download
 		    mail with another application, choose this option.
@@ -241,47 +243,110 @@ CLASS="APPLICATION"
 ></LI
 ><LI
 ><P
->		    Qmail maildir format files &#8212; If you download your
+>		    Qmail maildir format files: If you download your
 		    mail using qmail, you'll want to use this.
 		  </P
 ></LI
 ><LI
 ><P
->		    None &#8212; How do you  have None?  figure out!
+>		    None: Select this if you do not plan to
+		    check mail with this account.
 		  </P
 ></LI
 ></UL
+>
+
+         <DIV
+CLASS="NOTE"
+><A
+NAME="IMAP-NOTE-ONE"
+></A
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>What's an IMAP Namespace?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>                    For IMAP mail servers, your sysadmin may provide
+		    you with a specific namespace, the path on the
+		    IMAP server where you check for mail.  If you
+		    check your IMAP mail and your folder list includes
+		    files that don't look like mail folders, you
+		    probably need to change your mail
+		    namespace. Typical values are "mail" and "Mail."
+		    If you prefer, you can choose to subscribe to
+		    individual mail folders one at a time. For more
+		    information about how to use IMAP mail, see <A
+HREF="usage-mail-subscriptions.html"
+>the section called <I
+>Subscription Management</I
+> in the chapter called <I
+>Using Evolution for Email</I
+></A
+>.
+               </P
+></TD
+></TR
+></TABLE
+></DIV
 >
 	    </P
 ></LI
 ><LI
 ><P
->	      Email Server &#8212; This is the address of the server you're
+>	      Email Server: This is the address of the server you're
 	      downloading from.
 	    </P
 ></LI
 ><LI
 ><P
->	      Username &#8212; The username that you login to your email.  That
+>	      Username: The username that you login to your email.  That
 	      is often the part before the @ in your email.
 	    </P
 ><P
->	      Authentication Type &#8212; Chances are you are using
-	      <SPAN
+>	      Authentication Type: Chances are you are using
+	      <TT
 CLASS="GUILABEL"
->Password</SPAN
->.  Ask your administrator for more
-	      details.  You can have <SPAN
+><B
+>Password</B
+></TT
+>.  Ask your administrator
+	      for more details.  You can have <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
-> check
-	      by clicking <SPAN
+>Ximian
+	      Evolution</TT
+> make sure you've chosen
+	      correctly by clicking <B
 CLASS="GUIBUTTON"
->Check for supported types</SPAN
+>Check for supported
+	      types</B
 >.
 	    </P
 ><P
->	      Remember Password &#8212; If you prefer to not enter your
+>	      Remember Password: If you prefer to not enter your
 	      password every time you check email, press this button.
 	    </P
 ></LI
@@ -290,27 +355,53 @@ CLASS="GUIBUTTON"
       </P
 ><DIV
 CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
 ><A
 NAME="EXCHANGE-INFO"
 ></A
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Can Ximian Evolution Talk to Exchange?: </B
->	  <SPAN
+>Can Ximian Evolution Talk to Exchange?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	  <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > can work with the
-	   <SPAN
+	   <TT
 CLASS="APPLICATION"
->Microsoft Exchange</SPAN
+>Microsoft Exchange</TT
 > server over
 	   standard protocols such as POP or IMAP. Check with your
 	   system administrator to see if you can get POP or IMAP
 	   access to your email server.
 	</P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ></DIV
 ><DIV
@@ -322,9 +413,11 @@ NAME="THIRD-STEP"
 >Sending Email</A
 ></H2
 ><P
->	The <SPAN
+>	The <TT
 CLASS="GUILABEL"
->Sending Email</SPAN
+><B
+>Sending Email</B
+></TT
 > step lets you configure sending 
 	email.
 	<P
@@ -332,10 +425,10 @@ CLASS="GUILABEL"
 ><UL
 ><LI
 ><P
->	      Server Type &#8212; There are numerous server types that
-	      <SPAN
+>	      Server Type: There are numerous server types that
+	      <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > supports for sending your
 	      mail.
 	      <P
@@ -343,12 +436,12 @@ CLASS="APPLICATION"
 ><UL
 ><LI
 ><P
->		    SMTP &#8212; Downloads mail into your mailbox file.
+>		    SMTP: Downloads mail into your mailbox file.
 		  </P
 ></LI
 ><LI
 ><P
->		    Sendmail &#8212; Uses another program to download your mail
+>		    Sendmail: Uses another program to download your mail
 		    to your mailbox files.
 		  </P
 ></LI
@@ -358,46 +451,48 @@ CLASS="APPLICATION"
 ></LI
 ><LI
 ><P
->	      Host &#8212; If you chose SMTP, enter the server's name
+>	      Host: If you chose SMTP, enter the server's name
 	      or IP address here.
 	    </P
 ></LI
 ><LI
 ><P
->	      Server requires authentication &#8212; If your server
+>	      Server requires authentication: If your server
 	      requires you to enter a password to send mail, check
 	      this box.
 	    </P
 ></LI
 ><LI
 ><P
->	      Authentication Type &#8212; Chances are you are using
-	      <SPAN
+>	      Authentication Type: Chances are you are using
+	      <TT
 CLASS="GUILABEL"
->Password</SPAN
+><B
+>Password</B
+></TT
 >.  If you're not sure, ask
 	      your system administrator or ISP, or have
-	      <SPAN
+	      <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > check for you by
-	      clicking <SPAN
+	      clicking <B
 CLASS="GUIBUTTON"
 >Check for supported
-	      types</SPAN
+	      types</B
 >.
 	    </P
 ></LI
 ><LI
 ><P
->	      Username &#8212; The account name you use when you login
+>	      Username: The account name you use when you login
 	      to check your email.  Normally, this is the part of your
 	      email address before the '@' character.
 	    </P
 ></LI
 ><LI
 ><P
->	      Remember Password &#8212; If you prefer to not enter
+>	      Remember Password: If you prefer to not enter
 	      your password every time you check email, press this
 	      button.
 	    </P
@@ -415,18 +510,27 @@ NAME="FOURTH-STEP"
 >Importing Mail (Optional)</A
 ></H2
 ><P
->	If <SPAN
+>	If <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
-> finds mail or address
-	files from another application, it will offer to import them.
-	If you're not sure which file format your mail program uses,
-	ask your system administrator.
+>Ximian Evolution</TT
+> finds mail or
+	address files from another application, it will offer to
+	import them.  If you're not sure which file format your mail
+	program uses, ask your system administrator.  If you want, you
+	can skip this step and return to it at a later time by
+	selecting
+	<B
+CLASS="GUIMENU"
+>File</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Import</B
+>.
       </P
 ><P
->	<SPAN
+>	<TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > can import the following types of
 	files:
           <P
@@ -435,21 +539,26 @@ CLASS="APPLICATION"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
->VCard (.vcf, gcrd)</DT
+>VCard (.vcf, gcrd):</DT
 ><DD
 ><P
->	         The most common addressbook format.
+>	         The addressbook format used by the GNOME, KDE, and
+	         many other contact management applications. You
+	         should be able to export to VCard format from any
+	         address book application.
 	      </P
 ></DD
 ><DT
->Outlook Express 4 (.mbx)</DT
+>Microsoft Outlook Express 4 (.mbx):</DT
 ><DD
 ><P
->                 Email file format used by Outlook Express 4.
+>                 Email file format used by Microsoft Outlook Express
+4. For other versions of Microsoft Outlook and Outlook Express, see
+the workaround described in the note below.
 	      </P
 ></DD
 ><DT
->MBox (mbox)</DT
+>MBox (mbox):</DT
 ><DD
 ><P
 >	       The email box format used by Mozilla, Netscape,
@@ -462,17 +571,43 @@ CLASS="VARIABLELIST"
 ><P
 >    <DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Outlook 2000 Users: </B
->	Outlook 2000 uses a proprietary format that
-	<SPAN
+>Microsoft Outlook and Outlook Express Users</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>	Microsoft Outlook, and versions of Outlook Express after
+	version 4, use proprietary formats that <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
-> cannot import directly.
-	To import files from Outlook 2000, do the following:
+>Ximian
+	Evolution</TT
+> cannot read or import.  For contacts,
+	you may have to email them to yourself and import them that
+	way.  For email, there is a simpler workaround:
 	<P
 ></P
 ><OL
@@ -487,63 +622,115 @@ TYPE="1"
 ><LI
 ><P
 >          Copy the files to the system or partition you use for
-          <SPAN
+          <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 >.  
          </P
 ></LI
 ><LI
 ><P
->	  Use the <SPAN
+>	  Use the <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > import
-          tool to import the files.  Read the FAQ at the Ximian
-          website for more information.
+          tool to import the files.  There's more information about
+          why this works, and how, at the Ximian support website.
       </P
 ></LI
 ></OL
 >
     </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 >     
 
     <DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Netscape Users: </B
+>Netscape Users</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	Before importing mail from Netscape, make sure you select
-	<SPAN
+	<B
 CLASS="GUIMENU"
->File</SPAN
->-&gt;<SPAN
+>File</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Compact All
-	Folders</SPAN
+	Folders</B
 >. If you don't,
-	<SPAN
+	<TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > will import and undelete
 	the messages in your Trash folders.
       </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 >     
 
     </P
 ><DIV
 CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Exporting Files From Ximian Evolution: </B
+>Exporting Files From Ximian Evolution</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >          Ximian Evolution uses standard file types for all its information,
           so you should have no trouble taking your information
           elsewhere if you want.
@@ -562,7 +749,9 @@ CLASS="FILENAME"
 >.db3</TT
 > database.
         </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ></DIV
 ></DIV
@@ -582,7 +771,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="usage-mainwindow.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -598,7 +787,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="ui-intro.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

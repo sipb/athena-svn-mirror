@@ -10,9 +10,8 @@
  * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -759,7 +758,7 @@ e_date_edit_get_time_of_day		(EDateEdit	*dedit,
 /**
  * e_date_edit_set_time_of_day:
  * @dedit: an #EDateEdit widget.
- * @hour: the hour to set.
+ * @hour: the hour to set, or -1 to set the time to None (i.e. empty).
  * @minute: the minute to set.
  *
  * Description: Sets the time in the time field.
@@ -776,9 +775,16 @@ e_date_edit_set_time_of_day		(EDateEdit	*dedit,
 
 	priv = dedit->priv;
 
-	if (priv->time_set_to_none
-	    || priv->hour != hour
-	    || priv->minute != minute) {
+	if (hour == -1) {
+		gboolean allow_no_date_set = e_date_edit_get_allow_no_date_set (dedit);
+		g_return_if_fail (allow_no_date_set);
+		if (!priv->time_set_to_none) {
+			priv->time_set_to_none = TRUE;
+			time_changed = TRUE;
+		}
+	} else if (priv->time_set_to_none
+		   || priv->hour != hour
+		   || priv->minute != minute) {
 		priv->time_set_to_none = FALSE;
 		priv->hour = hour;
 		priv->minute = minute;
@@ -792,6 +798,34 @@ e_date_edit_set_time_of_day		(EDateEdit	*dedit,
 				 date_edit_signals [CHANGED]);
 }
 
+void 
+e_date_edit_set_date_and_time_of_day       (EDateEdit      *dedit,
+					    gint            year,
+					    gint            month,
+					    gint            day,
+					    gint            hour,
+					    gint            minute)
+{
+	EDateEditPrivate *priv;
+	gboolean date_changed, time_changed;
+
+	g_return_if_fail (E_IS_DATE_EDIT (dedit));
+
+	priv = dedit->priv;
+
+	date_changed = e_date_edit_set_date_internal (dedit, TRUE, FALSE,
+						      year - 1900, month - 1, day);
+	time_changed = e_date_edit_set_time_internal (dedit, TRUE, FALSE,
+						      hour, minute);
+	
+	e_date_edit_update_date_entry (dedit);
+	e_date_edit_update_time_entry (dedit);
+	e_date_edit_update_time_combo_state (dedit);
+
+	if (date_changed || time_changed)
+		gtk_signal_emit (GTK_OBJECT (dedit),
+				 date_edit_signals [CHANGED]);
+}
 
 /**
  * e_date_edit_get_show_date:
@@ -1681,15 +1715,24 @@ e_date_edit_check_date_changed		(EDateEdit	*dedit)
 	EDateEditPrivate *priv;
 	gchar *date_text;
 	struct tm tmp_tm;
-	gboolean none = FALSE, valid = TRUE, date_changed;
+	gboolean none = FALSE, valid = TRUE, date_changed = FALSE;
 
 	priv = dedit->priv;
 
+	tmp_tm.tm_year = 0;
+	tmp_tm.tm_mon = 0;
+	tmp_tm.tm_mday = 0;
+
 	date_text = gtk_entry_get_text (GTK_ENTRY (priv->date_entry));
-	if (field_set_to_none (date_text))
+	if (field_set_to_none (date_text)) {
 		none = TRUE;
-	else if (!e_date_edit_parse_date (dedit, date_text, &tmp_tm))
+	} else if (!e_date_edit_parse_date (dedit, date_text, &tmp_tm)) {
 		valid = FALSE;
+		tmp_tm.tm_year = 0;
+		tmp_tm.tm_mon = 0;
+		tmp_tm.tm_mday = 0;
+	}
+
 
 	date_changed = e_date_edit_set_date_internal (dedit, valid, none,
 						      tmp_tm.tm_year,
@@ -1713,6 +1756,9 @@ e_date_edit_check_time_changed		(EDateEdit	*dedit)
 	gboolean none = FALSE, valid = TRUE, time_changed;
 
 	priv = dedit->priv;
+
+	tmp_tm.tm_hour = 0;
+	tmp_tm.tm_min = 0;
 
 	time_text = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (priv->time_combo)->entry));
 	if (field_set_to_none (time_text))

@@ -1,3 +1,134 @@
+2001-11-05  JP Rosevear  <jpr@ximian.com>
+
+	* e-dateedit.c (e_date_edit_set_date_and_time_of_day): set both
+	the date and the time of day in one call, creating only a single
+	changed signal
+
+	* e-dateedit.h: add proto
+
+2001-11-05  Christopher James Lahey  <clahey@ximian.com>
+
+Based on a patch by Damon Chaplin <damon@ximian.com>
+
+	* e-cell-date-edit.c: Connect to the button_press signal on the
+	popup and do the grab correctly so that this dialog behaves
+	properly when the user clicks it away.  Also, changed all
+	instances of setting of popup_shown field of ECellPopup to call
+	e_cell_popup_set_shown.  Fixes Ximian bug #14016.
+
+2001-10-31    <NotZed@Ximian.com>
+
+	* e-filter-bar.c (build_items): Snotty code so we only disconnect
+	to rules we no longer have, etc.
+
+2001-11-01  Not Zed  <NotZed@Ximian.com>
+
+	* e-filter-bar.c (build_items): Ref and connect to rule changed
+	here, also clear out previous ref's.
+	(generate_menu): No longer connect to rules, or reset rule array.
+	(set_option): Dont reset option rules array.
+	(context_rule_removed): Disconnect changed event on rule.
+	(clear_rules): Fujnction to clear rules from an array.
+	(destroy): Disconnect from context signals, and clear rules arrays.
+
+	* e-filter-bar.h: Remove hash table for change id's.
+
+2001-10-30  Damon Chaplin  <damon@ximian.com>
+
+	* e-dateedit.c (e_date_edit_set_time_of_day): emit signal when time
+	set to none/empty.
+
+2001-10-30    <NotZed@Ximian.com>
+
+	* e-filter-bar.c (generate_menu): Hook to rule changed events.
+	(destroy): Free change id table/unconnect to signals.
+	(init): Setup change id table.
+	(e_filter_bar_new): Hook onto rule removed signal.
+	(context_rule_removed): If rule removed, disconnect from signal handler.
+	(rule_changed): For changed rules, also rebuild menu.  Fixed #12233.
+
+2001-10-30  Damon Chaplin  <damon@ximian.com>
+
+	* e-cell-date-edit.c (e_cell_date_edit_set_popup_values): try to parse
+	just a date first, and if that works we assume it is a DATE value,
+	so we clear the time field in the popup.
+	(e_cell_date_edit_on_ok_clicked): if the time field is empty, use a
+	DATE value.
+	Also removed some debug messages.
+
+2001-10-30    <NotZed@Ximian.com>
+
+	* e-filter-bar.c (set_option): Set the item to the option_base on
+	it, so the current item is set.  Fix for #7081.
+
+2001-10-30  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-date-edit.c (e_cell_date_edit_get_popup_pos): Adapt to
+	the new ECellPopup signature.
+
+2001-10-29  Damon Chaplin  <damon@ximian.com>
+
+	* e-calendar-item.c (e_calendar_item_signal_emission_idle_cb): ref
+	the ECalendarItem and check if it gets destroyed, to try to avoid a
+	free memory write.
+
+	* e-dateedit.c (e_date_edit_set_time_of_day): allow setting the time
+	to empty by passing hour as -1.
+
+2001-10-23  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-filter-bar.c (rule_editor_clicked): Don't add the menu item
+	here, do this in the context_changed signal callback instead.
+	(context_changed): rebuild the search menu.
+	(set_menu): Copy the items into a default_items list so we can
+	regenerate the menu when something changes. Then call
+	generate_menu().
+	(generate_menu): Do what set_menu() used to do.
+	(e_filter_bar_new): Don't do a rule_context_load() anymore since
+	we don't need to.
+	(destroy): free the default_items list.
+
+2001-10-23  Damon Chaplin  <damon@ximian.com>
+
+	* e-search-bar.c (copy_subitems): copy the translate field over as
+	well. Should fix an uninitialized memory read.
+
+2001-10-23  Damon Chaplin  <damon@ximian.com>
+
+	* e-dateedit.c (e_date_edit_check_date_changed):
+	(e_date_edit_check_time_changed): clear the struct tm fields to keep
+	purify happy.
+
+2001-10-22  Damon Chaplin  <damon@ximian.com>
+
+	* e-cell-date-edit.c (e_cell_date_edit_set_popup_values): 
+	(e_cell_date_edit_update_cell): use the new ECellText methods to get
+	the text and set the value.
+
+	* e-cell-percent.c: new subclass of ECellText to display & edit a
+	percentage value.
+
+2001-10-20  Jon Trowbridge  <trow@ximian.com>
+
+	* e-dateedit.c (e_date_edit_check_date_changed): Keep us from
+	reading tmp_tm uninitialized, so purify won't complain.
+
+2001-10-09  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* e-charset-picker.c (e_charset_picker_bonobo_ui_populate): Now
+	takes a menu path argument.
+
+2001-10-04  Rodrigo Moya <rodrigo@ximian.com>
+
+	* Makefile.am: added BONOBO_GNOME_CFLAGS to make it compile with
+	latest Bonobo
+
+2001-10-04  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-cell-date-edit.c (e_cell_date_edit_get_popup_pos): Call
+	gnome_canvas_world_to_window here.  Finishes fixing Ximian bug
+	#2613.
+
 2001-09-18  Damon Chaplin  <damon@ximian.com>
 
 	* e-dateedit.c (e_date_edit_grab_focus): grab focus to the date entry

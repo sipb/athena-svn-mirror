@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -244,6 +243,42 @@ entry_changed (GtkWidget *widget, BonoboControl *control)
 		bonobo_control_set_property (control, "entry_changed", TRUE, NULL);
 }
 
+static void
+manager_changed_cb (ESelectNamesManager *manager, const gchar *section_id, gint changed_working_copy, gpointer closure)
+{
+	ESelectNamesBonobo *select_names = E_SELECT_NAMES_BONOBO (closure);
+	BonoboArg *arg;
+
+	arg = bonobo_arg_new (BONOBO_ARG_STRING);
+	BONOBO_ARG_SET_STRING (arg, section_id);
+
+	bonobo_event_source_notify_listeners_full (select_names->priv->event_source,
+						   "GNOME/Evolution",
+						   "changed",
+						   changed_working_copy ? "working_copy" : "model",
+						   arg, NULL);
+
+	bonobo_arg_release (arg);
+}
+
+static void
+manager_ok_cb (ESelectNamesManager *manager, gpointer closure)
+{
+	ESelectNamesBonobo *select_names = E_SELECT_NAMES_BONOBO (closure);
+	BonoboArg *arg;
+
+	arg = bonobo_arg_new (BONOBO_ARG_NULL);
+
+	bonobo_event_source_notify_listeners_full (select_names->priv->event_source,
+						   "GNOME/Evolution",
+						   "ok",
+						   "dialog",
+						   arg,
+						   NULL);
+
+	bonobo_arg_release (arg);
+}
+
 static Bonobo_Control
 impl_SelectNames_get_entry_for_section (PortableServer_Servant servant,
 					const CORBA_char *section_id,
@@ -289,8 +324,7 @@ impl_SelectNames_get_entry_for_section (PortableServer_Servant servant,
 
 	bonobo_control_set_properties (control, property_bag);
 
-	gtk_signal_connect (GTK_OBJECT (entry_widget), "changed",
-			    GTK_SIGNAL_FUNC (entry_changed), control);
+	gtk_signal_connect (GTK_OBJECT (entry_widget), "changed", GTK_SIGNAL_FUNC (entry_changed), control);
 
 	return CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (control)), ev);
 }
@@ -323,7 +357,13 @@ impl_destroy (GtkObject *object)
 	select_names = E_SELECT_NAMES_BONOBO (object);
 	priv = select_names->priv;
 
-	gtk_object_unref (GTK_OBJECT (priv->manager));
+	if (priv->manager->names) {
+		gtk_widget_destroy (GTK_WIDGET (priv->manager->names));
+		priv->manager->names = NULL;
+	}
+	
+	/* FIXME: We leak on purpose.  This sucks. */
+	/* gtk_object_unref (GTK_OBJECT (priv->manager)); */
 
 	g_free (priv);
 }
@@ -366,24 +406,6 @@ class_init (ESelectNamesBonoboClass *klass)
 }
 
 static void
-manager_changed_cb (ESelectNamesManager *manager, const gchar *section_id, gint changed_working_copy, gpointer closure)
-{
-	ESelectNamesBonobo *select_names = E_SELECT_NAMES_BONOBO (closure);
-	BonoboArg *arg;
-
-	arg = bonobo_arg_new (BONOBO_ARG_STRING);
-	BONOBO_ARG_SET_STRING (arg, section_id);
-
-	bonobo_event_source_notify_listeners_full (select_names->priv->event_source,
-						   "GNOME/Evolution",
-						   "changed",
-						   changed_working_copy ? "working_copy" : "model",
-						   arg, NULL);
-
-	bonobo_arg_release (arg);
-}
-
-static void
 init (ESelectNamesBonobo *select_names)
 {
 	ESelectNamesBonoboPrivate *priv;
@@ -396,6 +418,11 @@ init (ESelectNamesBonobo *select_names)
 	gtk_signal_connect (GTK_OBJECT (priv->manager),
 			    "changed",
 			    GTK_SIGNAL_FUNC (manager_changed_cb),
+			    select_names);
+
+	gtk_signal_connect (GTK_OBJECT (priv->manager),
+			    "ok",
+			    GTK_SIGNAL_FUNC (manager_ok_cb),
 			    select_names);
 
 	select_names->priv = priv;

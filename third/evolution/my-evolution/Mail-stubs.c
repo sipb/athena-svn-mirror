@@ -18,7 +18,8 @@ GNOME_Evolution_MessageList_selectMessage(GNOME_Evolution_MessageList _obj,
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && GNOME_Evolution_MessageList__classid) {
-      ((POA_GNOME_Evolution_MessageList__epv *) _obj->
+      
+	 ((POA_GNOME_Evolution_MessageList__epv *) _obj->
        vepv[GNOME_Evolution_MessageList__classid])->selectMessage(_obj->
 								  servant,
 								  message_number,
@@ -42,6 +43,7 @@ GNOME_Evolution_MessageList_selectMessage(GNOME_Evolution_MessageList _obj,
       14, "selectMessage"};
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 18 };
+
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
 				      CORBA_TRUE,
@@ -71,8 +73,7 @@ GNOME_Evolution_MessageList_selectMessage(GNOME_Evolution_MessageList _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {
@@ -115,7 +116,8 @@ GNOME_Evolution_MessageList_openMessage(GNOME_Evolution_MessageList _obj,
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && GNOME_Evolution_MessageList__classid) {
-      ((POA_GNOME_Evolution_MessageList__epv *) _obj->
+      
+	 ((POA_GNOME_Evolution_MessageList__epv *) _obj->
        vepv[GNOME_Evolution_MessageList__classid])->openMessage(_obj->servant,
 								message_number,
 								ev);
@@ -138,6 +140,7 @@ GNOME_Evolution_MessageList_openMessage(GNOME_Evolution_MessageList _obj,
       12, "openMessage"};
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 16 };
+
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
 				      CORBA_TRUE,
@@ -167,8 +170,7 @@ GNOME_Evolution_MessageList_openMessage(GNOME_Evolution_MessageList _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {
@@ -237,6 +239,7 @@ GNOME_Evolution_FolderBrowser_getMessageList(GNOME_Evolution_FolderBrowser
       15, "getMessageList"};
       static const struct iovec _ORBIT_operation_vec =
 	 { (gpointer) & _ORBIT_operation_name_data, 19 };
+
       _ORBIT_send_buffer =
 	 giop_send_request_buffer_use(_cnx, NULL, _ORBIT_request_id,
 				      CORBA_TRUE,
@@ -261,8 +264,7 @@ GNOME_Evolution_FolderBrowser_getMessageList(GNOME_Evolution_FolderBrowser
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
 	 GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur = _ORBIT_curptr;
@@ -318,7 +320,8 @@ GNOME_Evolution_FolderInfo_getInfo(GNOME_Evolution_FolderInfo _obj,
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && GNOME_Evolution_FolderInfo__classid) {
-      ((POA_GNOME_Evolution_FolderInfo__epv *) _obj->
+      
+	 ((POA_GNOME_Evolution_FolderInfo__epv *) _obj->
        vepv[GNOME_Evolution_FolderInfo__classid])->getInfo(_obj->servant,
 							   foldername,
 							   listener, ev);
@@ -385,8 +388,7 @@ GNOME_Evolution_FolderInfo_getInfo(GNOME_Evolution_FolderInfo _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {
@@ -429,7 +431,8 @@ GNOME_Evolution_MailConfig_addAccount(GNOME_Evolution_MailConfig _obj,
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && GNOME_Evolution_MailConfig__classid) {
-      ((POA_GNOME_Evolution_MailConfig__epv *) _obj->
+      
+	 ((POA_GNOME_Evolution_MailConfig__epv *) _obj->
        vepv[GNOME_Evolution_MailConfig__classid])->addAccount(_obj->servant,
 							      acc, ev);
       return;
@@ -743,8 +746,7 @@ GNOME_Evolution_MailConfig_addAccount(GNOME_Evolution_MailConfig _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {
@@ -787,7 +789,8 @@ GNOME_Evolution_MailFilter_addFilter(GNOME_Evolution_MailFilter _obj,
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && GNOME_Evolution_MailFilter__classid) {
-      ((POA_GNOME_Evolution_MailFilter__epv *) _obj->
+      
+	 ((POA_GNOME_Evolution_MailFilter__epv *) _obj->
        vepv[GNOME_Evolution_MailFilter__classid])->addFilter(_obj->servant,
 							     rule, ev);
       return;
@@ -852,8 +855,7 @@ GNOME_Evolution_MailFilter_addFilter(GNOME_Evolution_MailFilter _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {
@@ -896,7 +898,8 @@ GNOME_Evolution_MailFilter_removeFilter(GNOME_Evolution_MailFilter _obj,
    register GIOPConnection *_cnx;
 
    if (_obj->servant && _obj->vepv && GNOME_Evolution_MailFilter__classid) {
-      ((POA_GNOME_Evolution_MailFilter__epv *) _obj->
+      
+	 ((POA_GNOME_Evolution_MailFilter__epv *) _obj->
        vepv[GNOME_Evolution_MailFilter__classid])->removeFilter(_obj->servant,
 								rule, ev);
       return;
@@ -961,8 +964,7 @@ GNOME_Evolution_MailFilter_removeFilter(GNOME_Evolution_MailFilter _obj,
 	 goto _ORBIT_system_exception;
       _ORBIT_completion_status = CORBA_COMPLETED_YES;
       if (_ORBIT_recv_buffer->message.u.reply.reply_status !=
-	  GIOP_NO_EXCEPTION)
-	 goto _ORBIT_msg_exception;
+	  GIOP_NO_EXCEPTION) goto _ORBIT_msg_exception;
       _ORBIT_curptr = GIOP_RECV_BUFFER(_ORBIT_recv_buffer)->cur;
       if (giop_msg_conversion_needed(GIOP_MESSAGE_BUFFER(_ORBIT_recv_buffer))) {
       } else {

@@ -6,9 +6,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -204,8 +203,7 @@ folder_created_cb (BonoboListener *listener,
 	fullpath = g_strconcat ("file://", result->path, NULL);
 
 	ex = camel_exception_new ();
-	importer->folder = mail_tool_uri_to_folder (fullpath, ex);
-	
+	importer->folder = mail_tool_uri_to_folder (fullpath, CAMEL_STORE_FOLDER_CREATE, ex);
 	if (camel_exception_is_set (ex)) {
 		g_warning ("Error opening %s", fullpath);
 		camel_exception_free (ex);
@@ -213,6 +211,9 @@ folder_created_cb (BonoboListener *listener,
 		g_free (fullpath);
 		return;
 	}
+
+	camel_folder_freeze (importer->folder);
+	importer->frozen = TRUE;
 
 	g_free (fullpath);
 	bonobo_object_unref (BONOBO_OBJECT (listener));
@@ -269,7 +270,7 @@ load_file_fn (EvolutionImporter *eimporter,
 
 		fullpath = e_path_to_physical (homedir, folderpath);
 		ex = camel_exception_new ();
-		importer->folder = mail_tool_uri_to_folder (fullpath, ex);
+		importer->folder = mail_tool_uri_to_folder (fullpath, 0, ex);
 		g_free (homedir);
 	
 		if (camel_exception_is_set (ex) || importer->folder == NULL) {
@@ -291,7 +292,8 @@ load_file_fn (EvolutionImporter *eimporter,
 			mail_importer_create_folder (parent, name, NULL, listener);
 			camel_exception_free (ex);
 			ex = camel_exception_new ();
-			importer->folder = mail_tool_uri_to_folder (fullpath, ex);
+			importer->folder = NULL;
+			g_print ("No folder yet\n");
 			delayed = TRUE;
 			g_free (parent);
 		}
@@ -300,7 +302,7 @@ load_file_fn (EvolutionImporter *eimporter,
 	}
 
 	if (importer->folder == NULL && delayed == FALSE){
-		g_print ("Bad folder\n");
+		g_warning ("Bad folder\n");
 		goto fail;
 	}
 

@@ -7,9 +7,8 @@
  * Copyright 1999, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,21 +54,32 @@
 
 #include <gal/widgets/e-canvas.h>
 #include <gal/widgets/e-canvas-utils.h>
+#include <gal/widgets/e-font.h>
 #include <gal/e-table/e-cell-combo.h>
 #include <gal/e-table/e-cell-text.h>
 #include <gal/e-table/e-table-simple.h>
 #include <gal/e-table/e-table-scrolled.h>
+#include <gal/e-table/e-table-header-item.h>
+#include <gal/e-table/e-table-header-utils.h>
 
 #include <widgets/misc/e-dateedit.h>
 #include "component-factory.h"
 #include "calendar-config.h"
 #include "e-meeting-time-sel-item.h"
 
-/* An array of hour strings, "0:00" .. "23:00". */
+/* An array of hour strings for 24 hour time, "0:00" .. "23:00". */
 const gchar *EMeetingTimeSelectorHours[24] = {
 	"0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", 
 	"8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", 
 	"16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
+};
+
+/* An array of hour strings for 12 hour time, "12:00am" .. "11:00pm". */
+const gchar *EMeetingTimeSelectorHours12[24] = {
+	"12:00am", "1:00am", "2:00am", "3:00am", "4:00am", "5:00am", "6:00am", 
+	"7:00am", "8:00am", "9:00am", "10:00am", "11:00am", "12:00pm", 
+	"1:00pm", "2:00pm", "3:00pm", "4:00pm", "5:00pm", "6:00pm", "7:00pm",
+	"8:00pm", "9:00pm", "10:00pm", "11:00pm"
 };
 
 /* The number of days shown in the entire canvas. */
@@ -82,6 +92,14 @@ const gchar *EMeetingTimeSelectorHours[24] = {
 /* This is the maximum scrolling speed. */
 #define E_MEETING_TIME_SELECTOR_MAX_SCROLL_SPEED	4
 
+/* Signals */
+enum {
+	CHANGED,
+	LAST_SIGNAL
+};
+
+
+static gint mts_signals [LAST_SIGNAL] = { 0 };
 
 static void e_meeting_time_selector_class_init (EMeetingTimeSelectorClass * klass);
 static void e_meeting_time_selector_init (EMeetingTimeSelector * mts);
@@ -101,6 +119,8 @@ static void e_meeting_time_selector_autopick_menu_detacher (GtkWidget *widget,
 							    GtkMenu   *menu);
 static void e_meeting_time_selector_realize (GtkWidget *widget);
 static void e_meeting_time_selector_unrealize (GtkWidget *widget);
+static void e_meeting_time_selector_style_set (GtkWidget *widget,
+					       GtkStyle  *previous_style);
 static gint e_meeting_time_selector_expose_event (GtkWidget *widget,
 						  GdkEventExpose *event);
 static void e_meeting_time_selector_draw (GtkWidget    *widget,
@@ -110,6 +130,8 @@ static void e_meeting_time_selector_hadjustment_changed (GtkAdjustment *adjustme
 							 EMeetingTimeSelector *mts);
 static void e_meeting_time_selector_vadjustment_changed (GtkAdjustment *adjustment,
 							 EMeetingTimeSelector *mts);
+static void e_meeting_time_selector_table_vadjustment_changed (GtkAdjustment *adjustment,
+							       EMeetingTimeSelector *mts);
 
 static void e_meeting_time_selector_on_canvas_realized (GtkWidget *widget,
 							EMeetingTimeSelector *mts);
@@ -168,7 +190,7 @@ static EMeetingFreeBusyPeriod* e_meeting_time_selector_find_time_clash (EMeeting
 static void e_meeting_time_selector_recalc_grid (EMeetingTimeSelector *mts);
 static void e_meeting_time_selector_recalc_date_format (EMeetingTimeSelector *mts);
 static void e_meeting_time_selector_save_position (EMeetingTimeSelector *mts,
-						   EMeetingTime*mtstime);
+						   EMeetingTime *mtstime);
 static void e_meeting_time_selector_restore_position (EMeetingTimeSelector *mts,
 						      EMeetingTime*mtstime);
 static void e_meeting_time_selector_on_start_time_changed (GtkWidget *widget,
@@ -224,14 +246,25 @@ e_meeting_time_selector_class_init (EMeetingTimeSelectorClass * klass)
 	GtkWidgetClass *widget_class;
 
 	parent_class = gtk_type_class (gtk_table_get_type());
-
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
+
+	mts_signals [CHANGED] = 
+		gtk_signal_new ("changed", GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EMeetingTimeSelectorClass, 
+						   changed),
+				gtk_signal_default_marshaller,
+				GTK_TYPE_NONE, 0);
+
+	gtk_object_class_add_signals (object_class, mts_signals,
+				      LAST_SIGNAL);
 
 	object_class->destroy = e_meeting_time_selector_destroy;
 
 	widget_class->realize      = e_meeting_time_selector_realize;
 	widget_class->unrealize    = e_meeting_time_selector_unrealize;
+	widget_class->style_set    = e_meeting_time_selector_style_set;
 	widget_class->expose_event = e_meeting_time_selector_expose_event;
 	widget_class->draw	   = e_meeting_time_selector_draw;
 }
@@ -261,7 +294,7 @@ void
 e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *emm)
 {
 	GtkWidget *hbox, *vbox, *separator, *button, *label, *table;
-	GtkWidget *alignment, *child_hbox, *child_vbox, *arrow, *menuitem;
+	GtkWidget *alignment, *child_hbox, *arrow, *menuitem;
 	GSList *group;
 	GdkVisual *visual;
 	GdkColormap *colormap;
@@ -293,8 +326,8 @@ e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *em
 	mts->meeting_positions_valid = FALSE;
 
 	mts->row_height = 19;
-	mts->col_width = 50;
-	mts->day_width = 50 * 24 + 1;
+	mts->col_width = 55;
+	mts->day_width = 55 * 24 + 1;
 
 	mts->auto_scroll_timeout_id = 0;
 
@@ -303,10 +336,9 @@ e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *em
 			  vbox, 0, 1, 0, 2, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (vbox);
 
-	child_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_set_usize (child_vbox, 1, mts->row_height * 2 - 6);
-	gtk_box_pack_start (GTK_BOX (vbox), child_vbox, FALSE, FALSE, 0);
-	gtk_widget_show (child_vbox);
+	mts->attendees_vbox_spacer = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), mts->attendees_vbox_spacer, FALSE, FALSE, 0);
+	gtk_widget_show (mts->attendees_vbox_spacer);
 	
 	mts->attendees_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), mts->attendees_vbox, TRUE, TRUE, 0);
@@ -324,6 +356,8 @@ e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *em
 	mts->etable = GTK_WIDGET (e_meeting_model_etable_from_model (mts->model,
 								EVOLUTION_ETSPECDIR "/e-meeting-time-sel.etspec",
 								filename));
+	e_scroll_frame_set_policy (E_SCROLL_FRAME (mts->etable), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+	e_scroll_frame_set_scrollbar_spacing (E_SCROLL_FRAME (mts->etable), 0);
 
 	real_table = e_table_scrolled_get_table (E_TABLE_SCROLLED (mts->etable));
 	gtk_signal_connect (GTK_OBJECT (real_table->sort_info), "sort_info_changed",
@@ -332,7 +366,7 @@ e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *em
 	gtk_box_pack_start (GTK_BOX (mts->attendees_vbox), mts->etable, TRUE, TRUE, 2);
 	gtk_widget_show (mts->etable);
 	g_free (filename);
-	
+
 	/* The free/busy information */
 	mts->display_top = gnome_canvas_new ();
 	gtk_widget_set_usize (mts->display_top, -1, mts->row_height * 3);
@@ -592,7 +626,7 @@ e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *em
 	gtk_widget_show (menuitem);
 
 	/* Create the date entry fields on the right. */
-	alignment = gtk_alignment_new (0.5, 0.5, 0, 0);
+	alignment = gtk_alignment_new (0.0, 0.5, 0, 0);
 	gtk_table_attach (GTK_TABLE (mts), alignment,
 			  1, 4, 5, 6, GTK_FILL, 0, 0, 0);
 	gtk_widget_show (alignment);
@@ -664,17 +698,21 @@ e_meeting_time_selector_construct (EMeetingTimeSelector * mts, EMeetingModel *em
 	mts->stipple = gdk_bitmap_create_from_data (NULL, (gchar*)stipple_bits,
 						    8, 8);
 
-	/* Connect handlers to the adjustments in the main canvas, so we can
-	   scroll the other 2 canvases. */
+	/* Connect handlers to the adjustments  scroll the other items. */
 	gtk_signal_connect (GTK_OBJECT (GTK_LAYOUT (mts->display_main)->hadjustment), "value_changed", GTK_SIGNAL_FUNC (e_meeting_time_selector_hadjustment_changed), mts);
 	gtk_signal_connect (GTK_OBJECT (GTK_LAYOUT (mts->display_main)->vadjustment), "value_changed", GTK_SIGNAL_FUNC (e_meeting_time_selector_vadjustment_changed), mts);
 	gtk_signal_connect (GTK_OBJECT (GTK_LAYOUT (mts->display_main)->vadjustment), "changed", GTK_SIGNAL_FUNC (e_meeting_time_selector_vadjustment_changed), mts);
 
+	gtk_signal_connect (GTK_OBJECT (e_scroll_frame_get_vadjustment (E_SCROLL_FRAME (mts->etable))), "value_changed", GTK_SIGNAL_FUNC (e_meeting_time_selector_table_vadjustment_changed), mts);
+	gtk_signal_connect (GTK_OBJECT (e_scroll_frame_get_vadjustment (E_SCROLL_FRAME (mts->etable))), "changed", GTK_SIGNAL_FUNC (e_meeting_time_selector_table_vadjustment_changed), mts);
+
 	e_meeting_time_selector_recalc_grid (mts);
 	e_meeting_time_selector_ensure_meeting_time_shown (mts);
 	e_meeting_time_selector_update_start_date_edit (mts);
-	e_meeting_time_selector_update_end_date_edit (mts);
+	e_meeting_time_selector_update_end_date_edit (mts);	
 	e_meeting_time_selector_update_date_popup_menus (mts);
+
+	gtk_signal_emit (GTK_OBJECT (mts), mts_signals [CHANGED]);
 }
 
 
@@ -810,8 +848,6 @@ static void
 e_meeting_time_selector_destroy (GtkObject *object)
 {
 	EMeetingTimeSelector *mts;
-	ETable *real_table;
-	char *filename;
 
 	mts = E_MEETING_TIME_SELECTOR (object);
 
@@ -819,12 +855,6 @@ e_meeting_time_selector_destroy (GtkObject *object)
 
 	gdk_color_context_free (mts->color_context);
 	gdk_bitmap_unref (mts->stipple);
-
-	filename = g_strdup_printf ("%s/config/et-header-meeting-time-sel",
-				    evolution_dir);
-	real_table = e_table_scrolled_get_table (E_TABLE_SCROLLED (mts->etable));
-	e_table_save_state (real_table, filename);
-	g_free (filename);
 		
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(*GTK_OBJECT_CLASS (parent_class)->destroy)(object);
@@ -857,6 +887,70 @@ e_meeting_time_selector_unrealize (GtkWidget *widget)
 
 	if (GTK_WIDGET_CLASS (parent_class)->unrealize)
 		(*GTK_WIDGET_CLASS (parent_class)->unrealize)(widget);
+}
+
+static void
+e_meeting_time_selector_style_set (GtkWidget *widget,
+				   GtkStyle  *previous_style)
+{
+	EMeetingTimeSelector *mts;
+	EMeetingTime saved_time;
+	ETable *real_table;
+	ETableHeader *eth;
+	GdkFont *font;
+	EFont *efont;
+	int hour, max_hour_width;
+	int numcols, col;
+	int maxheight;      
+
+	if (GTK_WIDGET_CLASS (parent_class)->style_set)
+		(*GTK_WIDGET_CLASS (parent_class)->style_set)(widget, previous_style);
+
+	mts = E_MEETING_TIME_SELECTOR (widget);
+	font = widget->style->font;
+	efont = e_font_from_gdk_font (font);
+	
+	/* Calculate the widths of the hour strings in the style's font. */
+	max_hour_width = 0;
+	for (hour = 0; hour < 24; hour++) {
+		if (calendar_config_get_24_hour_format ())
+			mts->hour_widths[hour] = gdk_string_width (font, EMeetingTimeSelectorHours[hour]);
+		else
+			mts->hour_widths[hour] = gdk_string_width (font, EMeetingTimeSelectorHours12[hour]);
+		max_hour_width = MAX (max_hour_width, mts->hour_widths[hour]);
+	}
+              
+	/* FIXME the 5 is for the padding etable adds on */
+	mts->row_height = e_font_height (efont) + 5;
+	mts->col_width = max_hour_width + 6;
+
+	e_font_unref (efont);
+              
+	e_meeting_time_selector_save_position (mts, &saved_time);
+	e_meeting_time_selector_recalc_grid (mts);
+	e_meeting_time_selector_restore_position (mts, &saved_time);
+              
+	gtk_widget_set_usize (mts->display_top, -1, mts->row_height * 3);
+
+	/* Calculate header height */
+	real_table = e_table_scrolled_get_table (E_TABLE_SCROLLED (mts->etable));
+	eth = real_table->full_header;
+	numcols = e_table_header_count (eth);
+	maxheight = 0;
+	for (col = 0; col < numcols; col++) {
+		ETableCol *ecol = e_table_header_get_column (eth, col);
+		int height;
+
+		height = e_table_header_compute_height (ecol, widget->style, font);
+
+		if (height > maxheight)
+			maxheight = height;
+	}
+	/* FIXME the 5 is for the padding etable adds on */
+	gtk_widget_set_usize (mts->attendees_vbox_spacer, 1, mts->row_height * 3 - maxheight - 5);
+
+	GTK_LAYOUT (mts->display_main)->hadjustment->step_increment = mts->col_width;
+	GTK_LAYOUT (mts->display_main)->vadjustment->step_increment = mts->row_height;
 }
 
 /* This draws a shadow around the top display and main display. */
@@ -939,6 +1033,19 @@ e_meeting_time_selector_vadjustment_changed (GtkAdjustment *adjustment,
 	}
 }
 
+static void
+e_meeting_time_selector_table_vadjustment_changed (GtkAdjustment *adjustment,
+						   EMeetingTimeSelector *mts)
+{
+	GtkAdjustment *adj;
+
+	adj = GTK_LAYOUT (mts->display_main)->vadjustment;
+	if (adj->value != adjustment->value) {
+		adj->value = adjustment->value;
+		gtk_adjustment_value_changed (adj);
+	}
+}
+
 
 void
 e_meeting_time_selector_get_meeting_time (EMeetingTimeSelector *mts,
@@ -1005,11 +1112,35 @@ e_meeting_time_selector_set_meeting_time (EMeetingTimeSelector *mts,
 	gtk_widget_queue_draw (mts->display_top);
 	gtk_widget_queue_draw (mts->display_main);
 
-	/* Set the times in the GnomeDateEdit widgets. */
+	/* Set the times in the EDateEdit widgets. */
 	e_meeting_time_selector_update_start_date_edit (mts);
 	e_meeting_time_selector_update_end_date_edit (mts);
 
+	gtk_signal_emit (GTK_OBJECT (mts), mts_signals [CHANGED]);
+
 	return TRUE;
+}
+
+void
+e_meeting_time_selector_set_all_day (EMeetingTimeSelector *mts,
+				     gboolean all_day)
+{
+	EMeetingTime saved_time;
+
+	mts->all_day = all_day;
+	
+	e_date_edit_set_show_time (E_DATE_EDIT (mts->start_date_edit),
+				   !all_day);
+	e_date_edit_set_show_time (E_DATE_EDIT (mts->end_date_edit),
+				   !all_day);
+
+	e_meeting_time_selector_save_position (mts, &saved_time);
+	e_meeting_time_selector_recalc_grid (mts);
+	e_meeting_time_selector_restore_position (mts, &saved_time);
+
+	gtk_widget_queue_draw (mts->display_top);
+	gtk_widget_queue_draw (mts->display_main);
+	e_meeting_time_selector_update_date_popup_menus (mts);
 }
 
 
@@ -1259,8 +1390,7 @@ static void
 e_meeting_time_selector_on_invite_others_button_clicked (GtkWidget *button,
 							 EMeetingTimeSelector *mts)
 {
-
-
+	e_meeting_model_invite_others_dialog (mts->model);
 }
 
 
@@ -1398,7 +1528,7 @@ e_meeting_time_selector_autopick (EMeetingTimeSelector *mts,
 
 	/* Get the current meeting duration in days + hours + minutes. */
 	e_meeting_time_selector_calculate_time_difference (&mts->meeting_start_time, &mts->meeting_end_time, &duration_days, &duration_hours, &duration_minutes);
-
+	
 	/* Find the first appropriate start time. */
 	start_time = mts->meeting_start_time;
 	if (forward)
@@ -1425,7 +1555,7 @@ e_meeting_time_selector_autopick (EMeetingTimeSelector *mts,
 
 		/* Step through each attendee, checking if the meeting time
 		   intersects one of the attendees busy periods. */
-		for (row = 0; row <  e_meeting_model_count_attendees (mts->model); row++) {
+		for (row = 0; row <  e_meeting_model_count_actual_attendees (mts->model); row++) {
 			attendee = e_meeting_model_find_attendee_at_row (mts->model, row);
 
 			/* Skip optional people if they don't matter. */
@@ -1489,9 +1619,12 @@ e_meeting_time_selector_autopick (EMeetingTimeSelector *mts,
 			/* Make sure the time is shown. */
 			e_meeting_time_selector_ensure_meeting_time_shown (mts);
 
-			/* Set the times in the GnomeDateEdit widgets. */
+			/* Set the times in the EDateEdit widgets. */
 			e_meeting_time_selector_update_start_date_edit (mts);
 			e_meeting_time_selector_update_end_date_edit (mts);
+
+			gtk_signal_emit (GTK_OBJECT (mts), mts_signals [CHANGED]);
+
 			return;
 		}
 
@@ -1536,15 +1669,21 @@ e_meeting_time_selector_find_nearest_interval (EMeetingTimeSelector *mts,
 	gint minutes_shown;
 	gboolean set_to_start_of_working_day = FALSE;
 
-	if (mts->zoomed_out) {
-		start_time->hour++;
-		start_time->minute = 0;
+	if (!mts->all_day) {
+		if (mts->zoomed_out) {
+			start_time->hour++;
+			start_time->minute = 0;
+		} else {
+			start_time->minute += 30;
+			start_time->minute -= start_time->minute % 30;
+		}
 	} else {
-		start_time->minute += 30;
-		start_time->minute -= start_time->minute % 30;
+		g_date_add_days (&start_time->date, 1);
+		start_time->hour = 0;
+		start_time->minute = 0;	
 	}
 	e_meeting_time_selector_fix_time_overflows (start_time);
-
+	
 	*end_time = *start_time;
 	e_meeting_time_selector_adjust_time (end_time, days, hours, mins);
 
@@ -1587,6 +1726,7 @@ e_meeting_time_selector_find_nearest_interval (EMeetingTimeSelector *mts,
 			start_time->minute += 29;
 			start_time->minute -= start_time->minute % 30;
 		}
+		
 		e_meeting_time_selector_fix_time_overflows (start_time);
 
 		*end_time = *start_time;
@@ -1606,25 +1746,31 @@ e_meeting_time_selector_find_nearest_interval_backward (EMeetingTimeSelector *mt
 	gint new_hour, minutes_shown;
 	gboolean set_to_end_of_working_day = FALSE;
 
-	new_hour = start_time->hour;
-	if (mts->zoomed_out) {
-		if (start_time->minute == 0)
-			new_hour--;
-		start_time->minute = 0;
-	} else {
-		if (start_time->minute == 0) {
-			start_time->minute = 30;
-			new_hour--;
-		} else if (start_time->minute <= 30)
+	if (!mts->all_day) {
+		new_hour = start_time->hour;
+		if (mts->zoomed_out) {
+			if (start_time->minute == 0)
+				new_hour--;
 			start_time->minute = 0;
-		else
-			start_time->minute = 30;
-	}
-	if (new_hour < 0) {
-		new_hour += 24;
+		} else {
+			if (start_time->minute == 0) {
+				start_time->minute = 30;
+				new_hour--;
+			} else if (start_time->minute <= 30)
+				start_time->minute = 0;
+			else
+				start_time->minute = 30;
+		}
+		if (new_hour < 0) {
+			new_hour += 24;
+			g_date_subtract_days (&start_time->date, 1);
+		}
+		start_time->hour = new_hour;
+	} else {
 		g_date_subtract_days (&start_time->date, 1);
+		start_time->hour = 0;
+		start_time->minute = 0;	
 	}
-	start_time->hour = new_hour;
 
 	*end_time = *start_time;
 	e_meeting_time_selector_adjust_time (end_time, days, hours, mins);
@@ -1667,7 +1813,7 @@ e_meeting_time_selector_find_nearest_interval_backward (EMeetingTimeSelector *mt
 		} else {
 			start_time->minute -= start_time->minute % 30;
 		}
-
+		
 		*end_time = *start_time;
 		e_meeting_time_selector_adjust_time (end_time, days, hours, mins);
 	}
@@ -1936,9 +2082,11 @@ e_meeting_time_selector_recalc_date_format (EMeetingTimeSelector *mts)
 	   %B = full month name, %d = month day, %Y = full year. */
 	g_date_strftime (buffer, sizeof (buffer), _("%A, %B %d, %Y"), &date);
 
+#if 0
 	g_print ("longest_month: %i longest_weekday: %i date: %s\n",
 		 longest_month, longest_weekday, buffer);
-	
+#endif
+
 	if (gdk_string_width (font, buffer) < max_date_width) {
 		mts->date_format = E_MEETING_TIME_SELECTOR_DATE_FULL;
 		return;
@@ -1964,9 +2112,11 @@ e_meeting_time_selector_recalc_date_format (EMeetingTimeSelector *mts)
 	   %m = month number, %d = month day, %Y = full year. */
 	g_date_strftime (buffer, sizeof (buffer), _("%a %m/%d/%Y"), &date);
 
+#if 0
 	g_print ("longest_month: %i longest_weekday: %i date: %s\n",
 		 longest_month, longest_weekday, buffer);
-	
+#endif
+
 	if (gdk_string_width (font, buffer) < max_date_width)
 		mts->date_format = E_MEETING_TIME_SELECTOR_DATE_ABBREVIATED_DAY;
 	else
@@ -1995,15 +2145,18 @@ e_meeting_time_selector_on_start_time_changed (GtkWidget *widget,
 {
 	gint duration_days, duration_hours, duration_minutes;
 	EMeetingTime mtstime;
+	gint hour = 0, minute = 0;
 	time_t newtime;
-	struct tm *newtime_tm;
 
+	/* Date */
 	newtime = e_date_edit_get_time (E_DATE_EDIT (mts->start_date_edit));
-	newtime_tm = localtime (&newtime);
 	g_date_clear (&mtstime.date, 1);
 	g_date_set_time (&mtstime.date, newtime);
-	mtstime.hour = newtime_tm->tm_hour;
-	mtstime.minute = newtime_tm->tm_min;
+
+	/* Time */
+	e_date_edit_get_time_of_day (E_DATE_EDIT (mts->start_date_edit), &hour, &minute);
+	mtstime.hour = hour;
+	mtstime.minute = minute;
 
 	/* If the time hasn't changed, just return. */
 	if (e_meeting_time_selector_compare_times (&mtstime, &mts->meeting_start_time) == 0)
@@ -2036,15 +2189,20 @@ e_meeting_time_selector_on_end_time_changed (GtkWidget *widget,
 					     EMeetingTimeSelector *mts)
 {
 	EMeetingTime mtstime;
+	gint hour = 0, minute = 0;
 	time_t newtime;
-	struct tm *newtime_tm;
 
+	/* Date */
 	newtime = e_date_edit_get_time (E_DATE_EDIT (mts->end_date_edit));
-	newtime_tm = localtime (&newtime);
 	g_date_clear (&mtstime.date, 1);
 	g_date_set_time (&mtstime.date, newtime);
-	mtstime.hour = newtime_tm->tm_hour;
-	mtstime.minute = newtime_tm->tm_min;
+	if (mts->all_day)
+		g_date_add_days (&mtstime.date, 1);
+
+	/* Time */
+	e_date_edit_get_time_of_day (E_DATE_EDIT (mts->end_date_edit), &hour, &minute);
+	mtstime.hour = hour;
+	mtstime.minute = minute;
 
 	/* If the time hasn't changed, just return. */
 	if (e_meeting_time_selector_compare_times (&mtstime, &mts->meeting_end_time) == 0)
@@ -2110,7 +2268,7 @@ e_meeting_time_selector_update_main_canvas_scroll_region (EMeetingTimeSelector *
 {
 	gint height, canvas_height;
 
-	height = mts->row_height * (e_meeting_model_count_attendees (mts->model) + 1);
+	height = mts->row_height * (e_meeting_model_count_actual_attendees (mts->model) + 2);
 	canvas_height = GTK_WIDGET (mts->display_main)->allocation.height;
 
 	height = MAX (height,  canvas_height);
@@ -2182,13 +2340,20 @@ e_meeting_time_selector_drag_meeting_time (EMeetingTimeSelector *mts,
 
 	/* Calculate the nearest half-hour or hour, depending on whether
 	   zoomed_out is set. */
-	if (mts->zoomed_out) {
-		if (drag_time.minute > 30)
-			drag_time.hour++;
-		drag_time.minute = 0;
+	if (!mts->all_day) {
+		if (mts->zoomed_out) {
+			if (drag_time.minute > 30)
+				drag_time.hour++;
+			drag_time.minute = 0;
+		} else {
+			drag_time.minute += 15;
+			drag_time.minute -= drag_time.minute % 30;
+		}
 	} else {
-		drag_time.minute += 15;
-		drag_time.minute -= drag_time.minute % 30;
+		if (drag_time.hour > 12)
+			g_date_add_days (&drag_time.date, 1);
+		drag_time.hour = 0;
+		drag_time.minute = 0;		
 	}
 	e_meeting_time_selector_fix_time_overflows (&drag_time);
 
@@ -2208,11 +2373,21 @@ e_meeting_time_selector_drag_meeting_time (EMeetingTimeSelector *mts,
 	if (e_meeting_time_selector_compare_times (time_to_set, &drag_time) == 0)
 		return;
 
+	/* Don't let an empty occur for all day events */
+	if (mts->all_day
+	    && mts->dragging_position == E_MEETING_TIME_SELECTOR_POS_START
+	    && e_meeting_time_selector_compare_times (&mts->meeting_end_time, &drag_time) == 0)
+		return;
+	else if (mts->all_day
+		&& mts->dragging_position == E_MEETING_TIME_SELECTOR_POS_END
+		&& e_meeting_time_selector_compare_times (&mts->meeting_start_time, &drag_time) == 0)
+		return;
+	
 	*time_to_set = drag_time;
 
 	/* Check if the start time and end time need to be switched. */
 	if (e_meeting_time_selector_compare_times (&mts->meeting_start_time,
-						 &mts->meeting_end_time) > 0) {
+						   &mts->meeting_end_time) > 0) {
 		drag_time = mts->meeting_start_time;
 		mts->meeting_start_time = mts->meeting_end_time;
 		mts->meeting_end_time = drag_time;
@@ -2224,6 +2399,7 @@ e_meeting_time_selector_drag_meeting_time (EMeetingTimeSelector *mts,
 
 		set_both_times = TRUE;
 	}
+	
 
 	/* Mark the calculated positions as invalid. */
 	mts->meeting_positions_valid = FALSE;
@@ -2240,6 +2416,11 @@ e_meeting_time_selector_drag_meeting_time (EMeetingTimeSelector *mts,
 	if (set_both_times
 	    || mts->dragging_position == E_MEETING_TIME_SELECTOR_POS_END)
 		e_meeting_time_selector_update_end_date_edit (mts);
+
+	if (set_both_times
+	    || mts->dragging_position == E_MEETING_TIME_SELECTOR_POS_END
+	    || mts->dragging_position == E_MEETING_TIME_SELECTOR_POS_START)
+		gtk_signal_emit (GTK_OBJECT (mts), mts_signals [CHANGED]);
 }
 
 
@@ -2354,6 +2535,11 @@ e_meeting_time_selector_timeout_handler (gpointer data)
 	    || mts->dragging_position == E_MEETING_TIME_SELECTOR_POS_END)
 		e_meeting_time_selector_update_end_date_edit (mts);
 
+	if (set_both_times
+	    || mts->dragging_position == E_MEETING_TIME_SELECTOR_POS_END
+	    || mts->dragging_position == E_MEETING_TIME_SELECTOR_POS_START)
+		gtk_signal_emit (GTK_OBJECT (mts), mts_signals [CHANGED]);
+
 	/* Redraw the canvases. We freeze and thaw the layouts so that they
 	   get redrawn completely. Otherwise the pixels get scrolled left or
 	   right which is not good for us (since our vertical bars have been
@@ -2387,15 +2573,12 @@ e_meeting_time_selector_remove_timeout (EMeetingTimeSelector *mts)
 static void
 e_meeting_time_selector_update_start_date_edit (EMeetingTimeSelector *mts)
 {
-	struct tm start_tm;
-	time_t start_time_t;
-
-	g_date_to_struct_tm (&mts->meeting_start_time.date, &start_tm);
-	start_tm.tm_hour = mts->meeting_start_time.hour;
-	start_tm.tm_min = mts->meeting_start_time.minute;
-	start_time_t = mktime (&start_tm);
-	e_date_edit_set_time (E_DATE_EDIT (mts->start_date_edit),
-			      start_time_t);
+	e_date_edit_set_date_and_time_of_day (E_DATE_EDIT (mts->start_date_edit),
+					      g_date_year (&mts->meeting_start_time.date),
+					      g_date_month (&mts->meeting_start_time.date),
+					      g_date_day (&mts->meeting_start_time.date),
+					      mts->meeting_start_time.hour,
+					      mts->meeting_start_time.minute);
 }
 
 
@@ -2403,15 +2586,18 @@ e_meeting_time_selector_update_start_date_edit (EMeetingTimeSelector *mts)
 static void
 e_meeting_time_selector_update_end_date_edit (EMeetingTimeSelector *mts)
 {
-	struct tm end_tm;
-	time_t end_time_t;
+	GDate date;
+	
+	date = mts->meeting_end_time.date;
+	if (mts->all_day)
+		g_date_subtract_days (&date, 1);
 
-	g_date_to_struct_tm (&mts->meeting_end_time.date, &end_tm);
-	end_tm.tm_hour = mts->meeting_end_time.hour;
-	end_tm.tm_min = mts->meeting_end_time.minute;
-	end_time_t = mktime (&end_tm);
-	e_date_edit_set_time (E_DATE_EDIT (mts->end_date_edit),
-			      end_time_t);
+	e_date_edit_set_date_and_time_of_day (E_DATE_EDIT (mts->end_date_edit),
+					      g_date_year (&date),
+					      g_date_month (&date),
+					      g_date_day (&date),
+					      mts->meeting_end_time.hour,
+					      mts->meeting_end_time.minute);
 }
 
 

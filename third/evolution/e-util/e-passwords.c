@@ -8,9 +8,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,32 +35,50 @@
 #include <libgnomeui/gnome-stock.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkcheckbutton.h>
+#include <bonobo-conf/bonobo-config-database.h>
+#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-moniker-util.h>
+#include <bonobo/bonobo-exception.h>
 
 static char *decode_base64 (char *base64);
 
+Bonobo_ConfigDatabase db;
 static GHashTable *passwords = NULL;
+static char *component_name = NULL;
 
 static int base64_encode_close(unsigned char *in, int inlen, gboolean break_lines, unsigned char *out, int *state, int *save);
 static int base64_encode_step(unsigned char *in, int len, gboolean break_lines, unsigned char *out, int *state, int *save);
 
+/**
+ * e_passwords_init:
+ *
+ * Initializes the e_passwords routines. Must be called before any other
+ * e_passwords_* function.
+ **/
 void
-e_passwords_init ()
+e_passwords_init (const char *component)
 {
-	char *key, *value;
-	void *iter;
+	CORBA_Environment ev;
 
+	/* open up our bonobo config database */
+	CORBA_exception_init (&ev);
+	db = bonobo_get_object ("wombat-private:", "Bonobo/ConfigDatabase", &ev);
+
+	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
+		char *err;
+		g_error ("Very serious error, cannot activate private config database '%s'",
+			 (err = bonobo_exception_get_text (&ev)));
+		g_free (err);
+		CORBA_exception_free (&ev);
+		return;
+ 	}
+
+	CORBA_exception_free (&ev);
+
+	/* and create the per-session hash table */
 	passwords = g_hash_table_new (g_str_hash, g_str_equal);
 
-	iter = gnome_config_private_init_iterator ("/Evolution/Passwords");
-	if (iter) {
-		while (gnome_config_iterator_next (iter, &key, &value)) {
-			g_hash_table_insert (passwords,
-					     decode_base64 (key),
-					     decode_base64 (value));
-			g_free (key);
-			g_free (value);
-		}
-	}
+	component_name = g_strdup (component);
 }
 
 static gboolean
@@ -73,57 +90,120 @@ free_entry (gpointer key, gpointer value, gpointer user_data)
 	return TRUE;
 }
 
+/**
+ * e_passwords_shutdown:
+ *
+ * Cleanup routine to call before exiting.
+ **/
 void
 e_passwords_shutdown ()
 {
-	gnome_config_sync ();
+	CORBA_Environment ev;
+
+	/* sync our db work */
+	CORBA_exception_init (&ev);
+	Bonobo_ConfigDatabase_sync (db, &ev);
+	bonobo_object_release_unref (db, &ev);
+	CORBA_exception_free (&ev);
+	db = NULL;
+
+	/* and destroy our per session hash */
 	g_hash_table_foreach_remove (passwords, free_entry, NULL);
 	g_hash_table_destroy (passwords);
 	passwords = NULL;
+
+	g_free (component_name);
+	component_name = NULL;
 }
 
 
+/**
+ * e_passwords_forget_passwords:
+ *
+ * Forgets all cached passwords, in memory and on disk.
+ **/
 void
 e_passwords_forget_passwords ()
 {
+	CORBA_Environment ev;
+
+	/* remove all the persistent passwords */
+	CORBA_exception_init (&ev);
+	Bonobo_ConfigDatabase_removeDir (db, "/Passwords", &ev);
+	Bonobo_ConfigDatabase_sync (db, &ev);
+	CORBA_exception_free (&ev);
+
+	/* free up the session passwords */
 	g_hash_table_foreach_remove (passwords, free_entry, NULL);
-	gnome_config_private_clean_section ("/Evolution/Passwords");
-	gnome_config_sync ();
 }
 
-static void
-maybe_remember_password (gpointer key, gpointer password, gpointer url)
+/**
+ * e_passwords_clear_component_passwords:
+ *
+ * Forgets all disk cached passwords.
+ **/
+void
+e_passwords_clear_component_passwords ()
 {
+	CORBA_Environment ev;
+	char *path;
+
+	path = g_strdup_printf ("/Passwords/%s", component_name);
+
+	CORBA_exception_init (&ev);
+	Bonobo_ConfigDatabase_removeDir (db, path, &ev);
+	Bonobo_ConfigDatabase_sync (db, &ev);
+	CORBA_exception_free (&ev);
+
+	g_free (path);
+}
+
+/**
+ * e_passwords_remember_password:
+ * @key: the key
+ *
+ * Saves the password associated with @key to disk.
+ **/
+void
+e_passwords_remember_password (const char *key)
+{
+	gpointer okey, value;
 	char *path, *key64, *pass64;
 	int len, state, save;
-	
-	len = strlen (url);
-	if (strncmp (key, url, len) != 0)
+
+	if (!g_hash_table_lookup_extended (passwords, key, &okey, &value))
 		return;
-	
-	len = strlen (key);
+
+	/* add it to the on-disk cache of passwords */
+	len = strlen (okey);
 	key64 = g_malloc0 ((len + 2) * 4 / 3 + 1);
 	state = save = 0;
-	base64_encode_close (key, len, FALSE, key64, &state, &save);
-	path = g_strdup_printf ("/Evolution/Passwords/%s", key64);
+	base64_encode_close (okey, len, FALSE, key64, &state, &save);
+	path = g_strdup_printf ("/Passwords/%s/%s", component_name, key64);
 	g_free (key64);
-	
-	len = strlen (password);
+
+	len = strlen (value);
 	pass64 = g_malloc0 ((len + 2) * 4 / 3 + 1);
 	state = save = 0;
-	base64_encode_close (password, len, FALSE, pass64, &state, &save);
-	
-	gnome_config_private_set_string (path, pass64);
+	base64_encode_close (value, len, FALSE, pass64, &state, &save);
+
+	bonobo_config_set_string (db, path, pass64, NULL);
 	g_free (path);
 	g_free (pass64);
+
+	/* now remove it from our session hash */
+	g_hash_table_remove (passwords, key);
+	g_free (okey);
+	g_free (value);
 }
 
-void
-e_passwords_remember_password (const char *url)
-{
-	g_hash_table_foreach (passwords, maybe_remember_password, (gpointer)url);
-}
-
+/**
+ * e_passwords_forget_password:
+ * @key: the key
+ *
+ * Forgets the password associated with @key for the rest of the session,
+ * but does not affect the on-disk cache.
+ **/
 void
 e_passwords_forget_password (const char *key)
 {
@@ -137,16 +217,71 @@ e_passwords_forget_password (const char *key)
 	}
 }
 
-const char *
+/**
+ * e_passwords_get_password:
+ * @key: the key
+ *
+ * Return value: the password associated with @key, or %NULL.  Caller
+ * must free the returned password.
+ **/
+char *
 e_passwords_get_password (const char *key)
 {
-	return g_hash_table_lookup (passwords, key);
+	char *passwd = g_hash_table_lookup (passwords, key);
+	char *path, *key64;
+	int len, state, save;
+	CORBA_Environment ev;
+
+	if (passwd)
+		return g_strdup (passwd);
+
+	/* not part of the session hash, look it up in the on disk db */
+	len = strlen (key);
+	key64 = g_malloc0 ((len + 2) * 4 / 3 + 1);
+	state = save = 0;
+	base64_encode_close ((char*)key, len, FALSE, key64, &state, &save);
+	path = g_strdup_printf ("/Passwords/%s/%s", component_name, key64);
+	g_free (key64);
+
+	/* We need to pass an ev to bonobo-conf, or it will emit a
+	 * g_warning if the data isn't found.
+	 */
+	CORBA_exception_init (&ev);
+	passwd = bonobo_config_get_string (db, path, &ev);
+	CORBA_exception_free (&ev);
+
+	g_free (path);
+
+	if (passwd)
+		return decode_base64 (passwd);
+	else
+		return NULL;
 }
 
+/**
+ * e_passwords_add_password:
+ * @key: a key
+ * @passwd: the password for @key
+ *
+ * This stores the @key/@passwd pair in the current session's password
+ * hash.
+ **/
 void
 e_passwords_add_password (const char *key, const char *passwd)
 {
-	g_hash_table_insert (passwords, (gpointer)key, (gpointer)passwd);
+	gpointer okey, value;
+
+	/* FIXME: shouldn't this be g_return_if_fail? */
+	if (!key || !passwd)
+		return;
+
+	if (g_hash_table_lookup_extended (passwords, key, &okey, &value)) {
+		g_hash_table_remove (passwords, key);
+		g_free (okey);
+		g_free (value);
+	}
+
+	g_hash_table_insert (passwords, g_strdup (key), g_strdup (passwd));
 }
 
 
@@ -164,9 +299,10 @@ e_passwords_add_password (const char *key, const char *passwd)
  *
  * Asks the user for a password.
  *
- * Return value: the password, or %NULL if the user cancelled the
- * operation. *@remember will be set if the return value is non-%NULL
- * and @remember_type is not E_PASSWORDS_DO_NOT_REMEMBER.
+ * Return value: the password, which the caller must free, or %NULL if
+ * the user cancelled the operation. *@remember will be set if the
+ * return value is non-%NULL and @remember_type is not
+ * E_PASSWORDS_DO_NOT_REMEMBER.
  **/
 char *
 e_passwords_ask_password (const char *title, const char *key,
@@ -176,7 +312,7 @@ e_passwords_ask_password (const char *title, const char *key,
 			  GtkWindow *parent)
 {
 	GtkWidget *dialog;
-	GtkWidget *check, *entry;
+	GtkWidget *check = NULL, *entry;
 	char *password;
 	int button;
 
@@ -225,12 +361,14 @@ e_passwords_ask_password (const char *title, const char *key,
 
 	if (button == 0) {
 		password = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
-		*remember = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check));
+		if (remember_type != E_PASSWORDS_DO_NOT_REMEMBER) {
+			*remember = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (check));
 
-		if (*remember || remember_type == E_PASSWORDS_REMEMBER_FOREVER)
-			e_passwords_add_password (key, password);
-		if (*remember && remember_type == E_PASSWORDS_REMEMBER_FOREVER)
-			e_passwords_remember_password (key);
+			if (*remember || remember_type == E_PASSWORDS_REMEMBER_FOREVER)
+				e_passwords_add_password (key, password);
+			if (*remember && remember_type == E_PASSWORDS_REMEMBER_FOREVER)
+				e_passwords_remember_password (key);
+		}
 	} else
 		password = NULL;
 

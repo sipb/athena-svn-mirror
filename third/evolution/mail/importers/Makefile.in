@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -188,7 +189,7 @@ importersdir = $(pkglibdir)/evolution-mail-importers/$(VERSION)
 
 importers_LTLIBRARIES = liboutlook.la libmbox.la
 
-INCLUDES = -I.. 	-I$(srcdir)/..					-I$(top_srcdir)					-I$(top_srcdir)/shell				-I$(top_builddir)/shell				-I$(includedir)					$(EXTRA_GNOME_CFLAGS)				-DG_LOG_DOMAIN=\"evolution-mail-importer\"
+INCLUDES = -I.. 	-I$(srcdir)/..					-I$(top_srcdir)					-I$(top_srcdir)/shell				-I$(top_builddir)/shell				-I$(includedir)					$(EXTRA_GNOME_CFLAGS)				$(BONOBO_GNOME_CFLAGS)				-DG_LOG_DOMAIN=\"evolution-mail-importer\"
 
 
 liboutlook_la_SOURCES =  	evolution-outlook-importer.c
@@ -231,7 +232,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(liboutlook_la_SOURCES) $(libmbox_la_SOURCES)
 OBJECTS = $(liboutlook_la_OBJECTS) $(libmbox_la_OBJECTS)
@@ -385,6 +386,105 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+evolution-mbox-importer.lo evolution-mbox-importer.o : \
+	evolution-mbox-importer.c ../../config.h \
+	../../camel/camel-exception.h ../../camel/camel-types.h \
+	../../camel/camel-exception-list.def \
+	../../camel/camel-mime-message.h ../../camel/camel-mime-part.h \
+	../../camel/camel-medium.h ../../camel/camel-data-wrapper.h \
+	../../camel/camel-object.h ../../camel/camel-mime-utils.h \
+	../../camel/camel-mime-parser.h ../../camel/camel-mime-filter.h \
+	../../camel/camel-stream.h ../../camel/camel-internet-address.h \
+	../../camel/camel-address.h \
+	../../camel/camel-mime-filter-bestenc.h \
+	../../camel/camel-charset-map.h \
+	../../shell/importer/evolution-importer.h \
+	../../shell/importer/GNOME_Evolution_Importer.h \
+	../../mail/mail-importer.h ../../camel/camel-folder.h \
+	../../camel/camel-folder-summary.h ../../libibex/ibex.h \
+	../../camel/camel-stream-mem.h \
+	../../camel/camel-seekable-stream.h \
+	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
+	../mail-tools.h ../../camel/camel.h \
+	../../camel/camel-cipher-context.h ../../camel/camel-session.h \
+	../../camel/camel-provider.h ../../e-util/e-msgport.h \
+	../../camel/camel-cms-context.h \
+	../../camel/camel-digest-folder.h \
+	../../camel/camel-disco-diary.h \
+	../../camel/camel-disco-folder.h \
+	../../camel/camel-disco-store.h \
+	../../camel/camel-remote-store.h ../../camel/camel-store.h \
+	../../camel/camel-service.h ../../camel/camel-url.h \
+	../../camel/camel-operation.h ../../camel/camel-vee-folder.h \
+	../../camel/camel-mime-filter-basic.h \
+	../../camel/camel-mime-filter-charset.h \
+	../../camel/camel-mime-filter-index.h \
+	../../camel/camel-mime-filter-save.h \
+	../../camel/camel-mime-filter-crlf.h \
+	../../camel/camel-mime-part-utils.h \
+	../../camel/camel-movemail.h ../../camel/camel-multipart.h \
+	../../camel/camel-pgp-context.h ../../camel/camel-pgp-mime.h \
+	../../camel/camel-seekable-substream.h \
+	../../camel/camel-smime-context.h \
+	../../camel/camel-smime-utils.h \
+	../../camel/camel-stream-buffer.h \
+	../../camel/camel-stream-filter.h ../../camel/camel-stream-fs.h \
+	../../camel/camel-tcp-stream-raw.h \
+	../../camel/camel-tcp-stream.h \
+	../../camel/camel-tcp-stream-ssl.h \
+	../../camel/camel-transport.h ../../camel/camel-uid-cache.h \
+	../../camel/gstring-util.h ../../camel/hash-table-utils.h \
+	../../camel/string-utils.h ../../camel/camel-filter-driver.h \
+	../../e-util/e-path.h
+evolution-outlook-importer.lo evolution-outlook-importer.o : \
+	evolution-outlook-importer.c ../../config.h \
+	../../shell/importer/evolution-importer.h \
+	../../shell/importer/GNOME_Evolution_Importer.h \
+	../../camel/camel-exception.h ../../camel/camel-types.h \
+	../../camel/camel-exception-list.def ../../e-util/e-memory.h \
+	../mail-importer.h ../../camel/camel-folder.h \
+	../../camel/camel-object.h ../../camel/camel-folder-summary.h \
+	../../camel/camel-mime-parser.h ../../camel/camel-mime-utils.h \
+	../../camel/camel-mime-filter.h ../../camel/camel-stream.h \
+	../../libibex/ibex.h ../../camel/camel-stream-mem.h \
+	../../camel/camel-seekable-stream.h \
+	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
+	../mail-tools.h ../../camel/camel.h \
+	../../camel/camel-cipher-context.h ../../camel/camel-session.h \
+	../../camel/camel-provider.h ../../e-util/e-msgport.h \
+	../../camel/camel-cms-context.h \
+	../../camel/camel-mime-message.h ../../camel/camel-mime-part.h \
+	../../camel/camel-medium.h ../../camel/camel-data-wrapper.h \
+	../../camel/camel-internet-address.h \
+	../../camel/camel-address.h \
+	../../camel/camel-mime-filter-bestenc.h \
+	../../camel/camel-charset-map.h \
+	../../camel/camel-digest-folder.h \
+	../../camel/camel-disco-diary.h \
+	../../camel/camel-disco-folder.h \
+	../../camel/camel-disco-store.h \
+	../../camel/camel-remote-store.h ../../camel/camel-store.h \
+	../../camel/camel-service.h ../../camel/camel-url.h \
+	../../camel/camel-operation.h ../../camel/camel-vee-folder.h \
+	../../camel/camel-mime-filter-basic.h \
+	../../camel/camel-mime-filter-charset.h \
+	../../camel/camel-mime-filter-index.h \
+	../../camel/camel-mime-filter-save.h \
+	../../camel/camel-mime-filter-crlf.h \
+	../../camel/camel-mime-part-utils.h \
+	../../camel/camel-movemail.h ../../camel/camel-multipart.h \
+	../../camel/camel-pgp-context.h ../../camel/camel-pgp-mime.h \
+	../../camel/camel-seekable-substream.h \
+	../../camel/camel-smime-context.h \
+	../../camel/camel-smime-utils.h \
+	../../camel/camel-stream-buffer.h \
+	../../camel/camel-stream-filter.h ../../camel/camel-stream-fs.h \
+	../../camel/camel-tcp-stream-raw.h \
+	../../camel/camel-tcp-stream.h \
+	../../camel/camel-tcp-stream-ssl.h \
+	../../camel/camel-transport.h ../../camel/camel-uid-cache.h \
+	../../camel/gstring-util.h ../../camel/hash-table-utils.h \
+	../../camel/string-utils.h ../../camel/camel-filter-driver.h
 
 info-am:
 info: info-am

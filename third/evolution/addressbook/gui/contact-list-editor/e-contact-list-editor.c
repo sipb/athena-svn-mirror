@@ -4,9 +4,8 @@
  * Author: Chris Toshok <toshok@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +27,8 @@
 #include <gal/e-table/e-table-scrolled.h>
 #include <gal/widgets/e-unicode.h>
 #include "shell/evolution-shell-component-utils.h"
+
+#include "addressbook/gui/widgets/e-addressbook-util.h"
 
 #include "e-contact-editor.h"
 #include "e-contact-list-editor.h"
@@ -207,6 +208,7 @@ e_contact_list_editor_init (EContactListEditor *editor)
 	editor->card = NULL;
 	editor->changed = FALSE;
 	editor->editable = TRUE;
+	editor->in_async_call = FALSE;
 	editor->is_new_list = FALSE;
 
 	gui = glade_xml_new (EVOLUTION_GLADEDIR "/contact-list-editor.glade", NULL);
@@ -309,6 +311,9 @@ list_added_cb (EBook *book, EBookStatus status, const char *id, EditorCloseStruc
 
 	g_free (ecs);
 
+	gtk_widget_set_sensitive (cle->app, TRUE);
+	cle->in_async_call = FALSE;
+
 	e_card_set_id (cle->card, id);
 
 	gtk_signal_emit (GTK_OBJECT (cle), contact_list_editor_signals[LIST_ADDED],
@@ -332,6 +337,9 @@ list_modified_cb (EBook *book, EBookStatus status, EditorCloseStruct *ecs)
 
 	g_free (ecs);
 
+	gtk_widget_set_sensitive (cle->app, TRUE);
+	cle->in_async_call = FALSE;
+
 	gtk_signal_emit (GTK_OBJECT (cle), contact_list_editor_signals[LIST_MODIFIED],
 			 status, cle->card);
 
@@ -352,6 +360,9 @@ save_card (EContactListEditor *cle, gboolean should_close)
 		ecs->cle = cle;
 		ecs->should_close = should_close;
 
+		gtk_widget_set_sensitive (cle->app, FALSE);
+		cle->in_async_call = TRUE;
+
 		if (cle->is_new_list)
 			e_book_add_card (cle->book, cle->card, GTK_SIGNAL_FUNC(list_added_cb), ecs);
 		else
@@ -359,10 +370,31 @@ save_card (EContactListEditor *cle, gboolean should_close)
 	}
 }
 
+static gboolean
+prompt_to_save_changes (EContactListEditor *editor)
+{
+	if (!editor->changed)
+		return TRUE;
+
+	switch (e_addressbook_prompt_save_dialog (GTK_WINDOW(editor->app))) {
+	case 0: /* Save */
+		save_card (editor, FALSE);
+		return TRUE;
+	case 1: /* Discard */
+		return TRUE;
+	case 2: /* Cancel */
+	default:
+		return FALSE;
+	}
+}
+
 static void
 file_close_cb (GtkWidget *widget, gpointer data)
 {
 	EContactListEditor *cle = E_CONTACT_LIST_EDITOR (data);
+
+	if (!prompt_to_save_changes (cle))
+		return;
 
 	close_dialog (cle);
 }
@@ -385,6 +417,9 @@ tb_save_and_close_cb (GtkWidget *widget, gpointer data)
 static void
 list_deleted_cb (EBook *book, EBookStatus status, EContactListEditor *cle)
 {
+	gtk_widget_set_sensitive (cle->app, TRUE);
+	cle->in_async_call = FALSE;
+
 	gtk_signal_emit (GTK_OBJECT (cle), contact_list_editor_signals[LIST_DELETED],
 			 status, cle->card);
 
@@ -405,8 +440,12 @@ delete_cb (GtkWidget *widget, gpointer data)
 
 		extract_info (cle);
 		
-		if (!cle->is_new_list)
+		if (!cle->is_new_list) {
+			gtk_widget_set_sensitive (cle->app, FALSE);
+			cle->in_async_call = TRUE;
+
 			e_book_remove_card (cle->book, card, GTK_SIGNAL_FUNC(list_deleted_cb), cle);
+		}
 	}
 
 	gtk_object_unref(GTK_OBJECT(card));
@@ -593,10 +632,16 @@ e_contact_list_editor_create_table(gchar *name,
 static void
 add_email_cb (GtkWidget *w, EContactListEditor *editor)
 {
+	GtkAdjustment *adj = e_scroll_frame_get_vadjustment (E_SCROLL_FRAME (editor->table));
 	char *text = gtk_entry_get_text (GTK_ENTRY(editor->email_entry));
 
-	if (text && *text)
+	if (text && *text) {
 		e_contact_list_model_add_email (E_CONTACT_LIST_MODEL(editor->model), text);
+
+		/* Skip to the end of the list */
+		if (adj->upper - adj->lower > adj->page_size)
+			gtk_adjustment_set_value (adj, adj->upper);
+	}
 
 	gtk_entry_set_text (GTK_ENTRY(editor->email_entry), "");
 
@@ -671,6 +716,13 @@ app_delete_event_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
 
 	ce = E_CONTACT_LIST_EDITOR (data);
 
+	/* if we're in an async call, don't allow the dialog to close */
+	if (ce->in_async_call)
+		return TRUE;
+
+	if (!prompt_to_save_changes (ce))
+		return TRUE;
+
 	close_dialog (ce);
 	return TRUE;
 }
@@ -720,12 +772,14 @@ table_drag_data_received_cb (ETable *table, int row, int col,
 			     GtkSelectionData *selection_data,
 			     guint info, guint time, EContactListEditor *editor)
 {
+	GtkAdjustment *adj = e_scroll_frame_get_vadjustment (E_SCROLL_FRAME (editor->table));
 	char *target_type;
 	gboolean changed = FALSE;
 
 	target_type = gdk_atom_name (selection_data->target);
 
 	if (!strcmp (target_type, VCARD_TYPE)) {
+
 		GList *card_list = e_card_load_cards_from_string_with_default_charset (selection_data->data, "ISO-8859-1");
 		GList *c;
 
@@ -745,6 +799,10 @@ table_drag_data_received_cb (ETable *table, int row, int col,
 		}
 		g_list_foreach (card_list, (GFunc)gtk_object_unref, NULL);
 		g_list_free (card_list);
+
+		/* Skip to the end of the list */
+		if (adj->upper - adj->lower > adj->page_size)
+			gtk_adjustment_set_value (adj, adj->upper);
 	}
 
 	if (changed && !editor->changed) {
@@ -856,7 +914,7 @@ fill_in_info(EContactListEditor *editor)
 			const char *dest_xml = e_iterator_get (email_iter);
 			EDestination *dest;
 
-			g_message ("incoming xml: [%s]", dest_xml);
+			/* g_message ("incoming xml: [%s]", dest_xml); */
 			dest = e_destination_import (dest_xml);
 
 			if (dest != NULL) {

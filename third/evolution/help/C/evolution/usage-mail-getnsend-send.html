@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Composing New Email Messages</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="A User's Guide to Ximian Evolution"
 HREF="index.html"><LINK
@@ -20,6 +20,11 @@ TITLE="RSVPs in Mail"
 HREF="rsvp-stuff.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,20 +45,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="usage-mail-getnsend-get.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 3. Using Evolution for Email</TD
+>Using Evolution for Email</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="rsvp-stuff.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -70,19 +75,19 @@ NAME="USAGE-MAIL-GETNSEND-SEND"
 ></H1
 ><P
 >         You can start writing a new email message by selecting
-         <SPAN
+         <B
 CLASS="GUIMENU"
->File</SPAN
->-&gt;<SPAN
+>File</B
+>-&gt;<B
 CLASS="GUISUBMENU"
->New</SPAN
->-&gt;<SPAN
+>New</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->         Mail Message</SPAN
+>         Mail Message</B
 >, or by pressing the
-         <SPAN
+         <B
 CLASS="GUIBUTTON"
->Compose</SPAN
+>Compose</B
 > button in the Inbox toolbar.
          When you do so, the <SPAN
 CLASS="INTERFACE"
@@ -90,7 +95,7 @@ CLASS="INTERFACE"
 > window
          will open, as shown in <A
 HREF="usage-mail-getnsend-send.html#USAGE-MAIL-NEWMSG-FIG"
->Figure 3-2</A
+>Figure 2</A
 >.
       </P
 ><DIV
@@ -98,10 +103,6 @@ CLASS="FIGURE"
 ><A
 NAME="USAGE-MAIL-NEWMSG-FIG"
 ></A
-><P
-><B
->Figure 3-2. New Message Window</B
-></P
 ><DIV
 CLASS="MEDIAOBJECT"
 ><P
@@ -110,21 +111,29 @@ SRC="figures/newmsg.png"
 ></IMG
 ></P
 ></DIV
+><P
+><B
+>Figure 2. New Message Window</B
+></P
 ></DIV
 ><P
->      Enter an address in the <SPAN
+>      Enter an address in the <TT
 CLASS="GUILABEL"
->To:</SPAN
+><B
+>To:</B
+></TT
 > field.  If you
-      wish, enter a subject in the <SPAN
+      wish, enter a subject in the <TT
 CLASS="GUILABEL"
->Subject:</SPAN
+><B
+>Subject:</B
+></TT
 >, and
       a message in the box at the bottom of the window.
       Once you have written your message, press
-      <SPAN
+      <B
 CLASS="GUIBUTTON"
->Send</SPAN
+>Send</B
 >.
     </P
 ><DIV
@@ -136,31 +145,33 @@ NAME="USAGE-MAIL-GETNSEND-SEND-DELAY"
 >Sending Composed Messages Later</A
 ></H2
 ><P
->           <SPAN
+>           <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will send mail
            immediately unless you tell it to do otherwise by selecting
-           <SPAN
+           <B
 CLASS="GUIMENU"
->File</SPAN
->-&gt;<SPAN
+>File</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Send
-           Later</SPAN
+           Later</B
 >.  This will add your
-           messages to the <SPAN
+           messages to the <TT
 CLASS="GUILABEL"
->Outbox</SPAN
+><B
+>Outbox</B
+></TT
 > queue.  The
            "Send Later" feature is particularly useful if you use a
            modem to connect to the Internet and pay per-minute
            charges: you can remain offline until you need to send
            mail, then connect and send all your mail at once.  Mail in
            the outbox is sent when you click
-           <SPAN
+           <B
 CLASS="GUIBUTTON"
->Send/Recieve</SPAN
+>Send/Recieve</B
 > in the main window.
         </P
 ><P
@@ -169,41 +180,69 @@ CLASS="GUIBUTTON"
 HREF="config-prefs.html#CONFIG-PREFS-MAIL"
 >the section called <I
 >Mail Settings</I
-> in Chapter 9</A
+> in the chapter called <I
+>Advanced Configuration</I
+></A
 >.
         </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Working Offline: </B
+>Working Offline</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	      Select
-	      <SPAN
+	      <B
 CLASS="GUIMENU"
->File</SPAN
->-&gt;<SPAN
+>File</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Work
-	      Offline</SPAN
+	      Offline</B
 > to have
-	      <SPAN
+	      <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 > disconnect
 	      from the Internet while you work. When you want to
 	      reconnect, choose
-	      <SPAN
+	      <B
 CLASS="GUIMENU"
->File</SPAN
->-&gt;<SPAN
+>File</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Work
-	      Online</SPAN
+	      Online</B
 >.  Alternativly, you can click the connection button at the bottom left side of the window.
             </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><P
 >	You can also choose to save messages as drafts or as text
@@ -214,12 +253,12 @@ CLASS="GUIMENUITEM"
 ><LI
 ><P
 >          Choose
-	  <SPAN
+	  <B
 CLASS="GUIMENU"
->File</SPAN
->-&gt;<SPAN
+>File</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Save Draft</SPAN
+>Save Draft</B
 >
           to store your messages in the drafts folder for later
           revision.
@@ -228,9 +267,9 @@ CLASS="GUIMENUITEM"
 ><LI
 ><P
 >         If you'd like to have the message sent later, you
-         can choose <SPAN
+         can choose <B
 CLASS="GUIMENUITEM"
->Send Later</SPAN
+>Send Later</B
 >. That way,
          the message will be added to the queue, and you can send a 
          batch of messages all at once.
@@ -240,9 +279,9 @@ CLASS="GUIMENUITEM"
 ><P
 > 
          If you prefer to save your message as a text file,
-         choose <SPAN
+         choose <B
 CLASS="GUIMENUITEM"
->Save As</SPAN
+>Save As</B
 > and then choose a
          file name.
            </P
@@ -261,9 +300,9 @@ NAME="USAGE-MAIL-GETNSEND-SEND-COMPOSE"
 ></H2
 ><P
 >        In the next few sections, you'll see how
-	<SPAN
+	<TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > handles advanced email
 	features, including large recipient lists, attachments, and
 	forwarding.
@@ -294,9 +333,9 @@ TYPE="1"
 ></LI
 ><LI
 ><P
->		Press <SPAN
+>		Press <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 >
 	      </P
 ></LI
@@ -309,17 +348,17 @@ CLASS="GUIBUTTON"
         </P
 ><P
 >            To hide the display of files you've attached to the
-            message, select <SPAN
+            message, select <B
 CLASS="GUIMENU"
->View</SPAN
->-&gt;<SPAN
+>View</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Hide
-            Attachments</SPAN
+            Attachments</B
 >; to show them
-            again, choose <SPAN
+            again, choose <B
 CLASS="GUIMENUITEM"
->Show Attachments</SPAN
+>Show Attachments</B
 >.
         </P
 ><P
@@ -337,9 +376,9 @@ NAME="USAGE-MAIL-GETNSEND-SEND-TO-TYPES"
 >Specifying Recipients for Email</A
 ></H3
 ><P
->	  <SPAN
+>	  <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 >, like most email
 	   programs, recognizes three types of addressee: primary
 	   recipients, secondary recipients, and hidden ("blind")
@@ -347,15 +386,19 @@ CLASS="APPLICATION"
          </P
 ><P
 >            The simplest way to direct a message is to put the email
-            address or addresses in the <SPAN
+            address or addresses in the <TT
 CLASS="GUILABEL"
->To:</SPAN
+><B
+>To:</B
+></TT
 >
             field, which denotes primary recipients.  To send mail to
             more than one or two people, you can use the
-            <SPAN
+            <TT
 CLASS="GUILABEL"
->Cc:</SPAN
+><B
+>Cc:</B
+></TT
 > field.
           </P
 ><P
@@ -365,30 +408,38 @@ CLASS="GUILABEL"
             message you've written to someone else.
           </P
 ><P
->            <SPAN
+>            <TT
 CLASS="GUILABEL"
->Bcc:</SPAN
+><B
+>Bcc:</B
+></TT
 > is a little more complex.  You
-            use it like <SPAN
+            use it like <TT
 CLASS="GUILABEL"
->Cc:</SPAN
+><B
+>Cc:</B
+></TT
 >, but people on the
-            <SPAN
+            <TT
 CLASS="GUILABEL"
->Bcc:</SPAN
+><B
+>Bcc:</B
+></TT
 > list are hidden from the other
             recipients of the message. Use it to send mail to large
             groups of people, especially if they don't know each other
-            or if privacy is a concern.  If your <SPAN
+            or if privacy is a concern.  If your <TT
 CLASS="GUILABEL"
->Bcc:</SPAN
+><B
+>Bcc:</B
+></TT
 > field is absent, click
-	    <SPAN
+	    <B
 CLASS="GUIMENU"
->View</SPAN
->-&gt;<SPAN
+>View</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Bcc Field</SPAN
+>Bcc Field</B
 >.
 		
           </P
@@ -400,7 +451,9 @@ CLASS="GUIMENUITEM"
 HREF="usage-contact-organize.html#USAGE-CONTACT-ORGANIZE-GROUP-LIST"
 >the section called <I
 >Creating a List of Contacts</I
-> in Chapter 5</A
+> in the chapter called <I
+>Working with Your Contacts</I
+></A
 >.
         </P
 ></DIV
@@ -415,9 +468,9 @@ NAME="USAGE-MAIL-GETNSEND-SEND-TO"
 ><P
 >	  If you have created address cards in the contact manager,
           you can also enter nicknames or other portions of address
-          data, and <SPAN
+          data, and <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will offer a
           drop down list of possible address completions from your
           address book.  If you enter a name or nickname that can go
@@ -428,18 +481,18 @@ CLASS="APPLICATION"
           </P
 ><P
 >            Alternately, you can click on the
-            <SPAN
+            <B
 CLASS="GUIBUTTON"
->To:</SPAN
->, <SPAN
+>To:</B
+>, <B
 CLASS="GUIBUTTON"
->Cc:</SPAN
+>Cc:</B
 >, or
-            <SPAN
+            <B
 CLASS="GUIBUTTON"
->Bcc:</SPAN
-> buttons to get a list &#8212;
-            potentially a very long one &#8212; of the email addresses
+>Bcc:</B
+> buttons to get a list --
+            potentially a very long one -- of the email addresses
             in your contact manager.  Select addresses and click on
             the arrows to move them into the appropriate address
             columns.
@@ -450,12 +503,16 @@ CLASS="GUIBUTTON"
 HREF="contact-automation-basic.html"
 >the section called <I
 >Send me a Card: Adding New Cards Quickly</I
-> in Chapter 5</A
+> in the chapter called <I
+>Working with Your Contacts</I
+></A
 > and <A
 HREF="usage-calendar-apts.html"
 >the section called <I
 >Scheduling With the Evolution Calendar</I
-> in Chapter 6</A
+> in the chapter called <I
+>Managing your Schedule</I
+></A
 >.
           </P
 ></DIV
@@ -470,25 +527,29 @@ NAME="USAGE-MAIL-GETNSEND-SEND-REPLY"
 ></H2
 ><P
 >           To reply to a message, press the
-           <SPAN
+           <B
 CLASS="GUIBUTTON"
->Reply:</SPAN
+>Reply:</B
 > button while it is selected,
-           or choose <SPAN
+           or choose <B
 CLASS="GUIMENUITEM"
->Reply to Sender:</SPAN
+>Reply to Sender:</B
 > from
            the message's right-click menu.  That will open the
            <SPAN
 CLASS="INTERFACE"
 >message composer</SPAN
 >.  The
-           <SPAN
+           <TT
 CLASS="GUILABEL"
->To:</SPAN
-> and <SPAN
+><B
+>To:</B
+></TT
+> and <TT
 CLASS="GUILABEL"
->Subject:</SPAN
+><B
+>Subject:</B
+></TT
 >
            fields will already be filled, although you can alter them
            if you wish.  In addition, the full text of the old message
@@ -498,7 +559,7 @@ CLASS="GUILABEL"
            previous message.  People often intersperse their message
            with the quoted material as shown in <A
 HREF="usage-mail-getnsend-send.html#USAGE-MAIL-GETNSEND-REPLY-FIG"
->Figure 3-3</A
+>Figure 3</A
 >.
 
  
@@ -507,10 +568,6 @@ CLASS="FIGURE"
 ><A
 NAME="USAGE-MAIL-GETNSEND-REPLY-FIG"
 ></A
-><P
-><B
->Figure 3-3. Reply Message Window</B
-></P
 ><DIV
 CLASS="MEDIAOBJECT"
 ><P
@@ -519,54 +576,64 @@ SRC="figures/replymsg.png"
 ></IMG
 ></P
 ></DIV
+><P
+><B
+>Figure 3. Reply Message Window</B
+></P
 ></DIV
 >
         </P
 ><P
 >          If you're reading a message with several recipients, you may
-           wish to use <SPAN
+           wish to use <B
 CLASS="GUIBUTTON"
->Reply to All</SPAN
+>Reply to All</B
 > instead of
-           <SPAN
+           <B
 CLASS="GUIBUTTON"
->Reply</SPAN
+>Reply</B
 >.  If there are large numbers
-           of people in the <SPAN
+           of people in the <TT
 CLASS="GUILABEL"
->Cc:</SPAN
+><B
+>Cc:</B
+></TT
 > or
-           <SPAN
+           <TT
 CLASS="GUILABEL"
->To:</SPAN
+><B
+>To:</B
+></TT
 > fields, this can save substantial
            amounts of time.
           <DIV
 CLASS="EXAMPLE"
 ><A
-NAME="AEN1138"
+NAME="AEN1181"
 ></A
 ><P
 ><B
->Example 3-1. Using the Reply to All feature</B
+>Example 1. Using the Reply to All feature</B
 ></P
 ><P
 >              Susan sends an email to a client and sends copies to Tim
               and to an internal company mailing list of co-workers.
               If Tim wants to make a comment for all of them to read,
-              he uses <SPAN
+              he uses <B
 CLASS="GUIBUTTON"
->Reply to All</SPAN
+>Reply to All</B
 >, but if he
               just wants to tell Susan that he agrees with her, he
-              uses <SPAN
+              uses <B
 CLASS="GUIBUTTON"
->Reply</SPAN
+>Reply</B
 >.  Note that his reply
               will not reach anyone that Susan put on her
-              <SPAN
+              <TT
 CLASS="GUILABEL"
->Bcc</SPAN
+><B
+>Bcc</B
+></TT
 > list, since that list is not
               shared with anyone.
             </P
@@ -576,25 +643,49 @@ CLASS="GUILABEL"
 ><P
 >          If you're subscribed to a mailing list, and want your reply
           to go just to the list, rather than to the sender, choose
-          <SPAN
+          <B
 CLASS="GUIBUTTON"
->Reply to List</SPAN
+>Reply to List</B
 > instead of
-          <SPAN
+          <B
 CLASS="GUIBUTTON"
->Reply</SPAN
-> or <SPAN
+>Reply</B
+> or <B
 CLASS="GUIBUTTON"
 >Reply to
-          All</SPAN
+          All</B
 >.
           <DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->What is a Mailing List?: </B
+>What is a Mailing List?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >              Mailing Lists are one of the most popular tools for
               group collaboration on the Internet. Here's how they work: 
               <P
@@ -635,7 +726,9 @@ HREF="mailto:evolution@ximian.com"
               control mail flow, list membership, and even moderate
               the content of mailing lists.
             </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 >
         </P
@@ -652,9 +745,9 @@ NAME="USAGE-MAIL-GETNSEND-SEND-FIND"
 >           You are probably familiar with search and replace features
            in any sort of text-editing software, and if you come from
            a Linux or Unix background, you may know what
-           <SPAN
+           <B
 CLASS="GUIMENUITEM"
->Find Regex</SPAN
+>Find Regex</B
 > does.  If you aren't
            among the lucky who already know, here's a quick rundown of
            the automated text searching features that the message
@@ -667,24 +760,24 @@ CLASS="GUIMENUITEM"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><SPAN
+><B
 CLASS="GUIMENUITEM"
->Find</SPAN
+>Find:</B
 ></DT
 ><DD
 ><P
 > Enter a word or phrase, and
-              <SPAN
+              <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will find it
               in your message.
               </P
 ></DD
 ><DT
-><SPAN
+><B
 CLASS="GUIMENUITEM"
->Find Regex</SPAN
+>Find Regex:</B
 ></DT
 ><DD
 ><P
@@ -700,9 +793,9 @@ CLASS="GLOSSTERM"
                </P
 ></DD
 ><DT
-><SPAN
+><B
 CLASS="GUIMENUITEM"
->Find Again</SPAN
+>Find Again:</B
 ></DT
 ><DD
 ><P
@@ -710,9 +803,9 @@ CLASS="GUIMENUITEM"
               </P
 ></DD
 ><DT
-><SPAN
+><B
 CLASS="GUIMENUITEM"
->Replace</SPAN
+>Replace:</B
 ></DT
 ><DD
 ><P
@@ -726,16 +819,20 @@ CLASS="GUIMENUITEM"
         </P
 ><P
 >            For all of these menu items, you can choose whether or not
-            to <SPAN
+            to <TT
 CLASS="GUILABEL"
->Search Backwards</SPAN
+><B
+>Search Backwards</B
+></TT
 > in the document
             from the point where your cursor is.  For all but the
             regular expression search (which doesn't need it), you are
             offered a check box to determine whether the search is to
-            be <SPAN
+            be <TT
 CLASS="GUILABEL"
->Case Sensitive</SPAN
+><B
+>Case Sensitive</B
+></TT
 > when it determines
             a match.
         </P
@@ -765,31 +862,57 @@ CLASS="GLOSSTERM"
         </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->HTML Mail is not a Default Setting: </B
+>HTML Mail is not a Default Setting</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >            Some people do not have HTML-capable mail clients, or
             prefer not to receive HTML-enhanced mail because it is
             slower to download and display. Because some people may
             prefer not to get HTML mail,
-            <SPAN
+            <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > sends plain text
             unless you explicitly ask for HTML.  
            </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><P
 > You can change the format of an email message between
-            plain text and HTML by choosing <SPAN
+            plain text and HTML by choosing <B
 CLASS="GUIMENU"
->Format</SPAN
->-&gt;<SPAN
+>Format</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->            HTML</SPAN
+>            HTML</B
 >.
 	  </P
 ><P
@@ -799,20 +922,22 @@ CLASS="GUIMENUITEM"
 HREF="config-prefs.html#CONFIG-PREFS-MAIL-OTHER"
 >the section called <I
 >Other Mail Preferences</I
-> in Chapter 9</A
+> in the chapter called <I
+>Advanced Configuration</I
+></A
 > for more
             information.
       </P
 ><P
 >	HTML formatting tools are located in the toolbar just above
 	the space where you'll actually compose the message, and
-	they also appear in the <SPAN
+	they also appear in the <B
 CLASS="GUIMENU"
->Insert</SPAN
+>Insert</B
 > and
-	<SPAN
+	<B
 CLASS="GUIMENU"
->Format</SPAN
+>Format</B
 > menus.
       </P
 ><P
@@ -831,26 +956,34 @@ CLASS="GLOSSTERM"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
->Headers and lists</DT
+>Headers and lists:</DT
 ><DD
 ><P
 >                  At the left edge of the toolbar, you can choose
-                  <SPAN
+                  <TT
 CLASS="GUILABEL"
->Normal</SPAN
+><B
+>Normal</B
+></TT
 > for a default text style
-                  or <SPAN
+                  or <TT
 CLASS="GUILABEL"
->Header 1</SPAN
+><B
+>Header 1</B
+></TT
 > through
-                  <SPAN
+                  <TT
 CLASS="GUILABEL"
->Header 6</SPAN
+><B
+>Header 6</B
+></TT
 > for varying sizes of
                   header from large (1) to tiny (6). Other styles
-                  include <SPAN
+                  include <TT
 CLASS="GUILABEL"
->preformat</SPAN
+><B
+>preformat</B
+></TT
 >, to use the HTML
                   tag for preformatted blocks of text, and three types
                   of bullet points for the highly
@@ -858,7 +991,7 @@ CLASS="GUILABEL"
                 </P
 ></DD
 ><DT
->Text style</DT
+>Text style:</DT
 ><DD
 ><P
 >		Use these buttons to determine the way your letters
@@ -872,33 +1005,33 @@ CLASS="GUILABEL"
 ><LI
 STYLE="list-style-type: none"
 ><P
->Push <SPAN
+>Push <B
 CLASS="GUIBUTTON"
->B</SPAN
+>B</B
 > for bold text</P
 ></LI
 ><LI
 STYLE="list-style-type: none"
 ><P
->Push <SPAN
+>Push <B
 CLASS="GUIBUTTON"
->I</SPAN
+>I</B
 > for italics</P
 ></LI
 ><LI
 STYLE="list-style-type: none"
 ><P
->Push <SPAN
+>Push <B
 CLASS="GUIBUTTON"
->U</SPAN
+>U</B
 > to underline</P
 ></LI
 ><LI
 STYLE="list-style-type: none"
 ><P
->Push <SPAN
+>Push <B
 CLASS="GUIBUTTON"
->S</SPAN
+>S</B
 > for a strikethrough.</P
 ></LI
 ></UL
@@ -906,7 +1039,7 @@ CLASS="GUIBUTTON"
 	      </P
 ></DD
 ><DT
->Alignment</DT
+>Alignment:</DT
 ><DD
 ><P
 >		Located next to the text style buttons, these three
@@ -918,7 +1051,7 @@ CLASS="GUIBUTTON"
 	      </P
 ></DD
 ><DT
->Indentation rules</DT
+>Indentation rules:</DT
 ><DD
 ><P
 >                  The button with the arrow pointing left will reduce
@@ -927,7 +1060,7 @@ CLASS="GUIBUTTON"
                </P
 ></DD
 ><DT
->Color Selection</DT
+>Color Selection:</DT
 ><DD
 ><P
 >                  At the far right is the color section tool.  The
@@ -938,9 +1071,11 @@ CLASS="GUIBUTTON"
                   selected, the color will apply to whatever you type
                   next.  You can select a background color or image by
                   right-clicking on the message background and
-                  selecting <SPAN
+                  selecting <TT
 CLASS="GUILABEL"
->Page</SPAN
+><B
+>Page</B
+></TT
 >.
                </P
 ></DD
@@ -949,9 +1084,9 @@ CLASS="GUILABEL"
 >
         </P
 ><P
->	The <SPAN
+>	The <B
 CLASS="GUIMENU"
->Insert</SPAN
+>Insert</B
 > gives you opinions which let you
            spruce up your email to make it more interesting:
 	<P
@@ -960,17 +1095,17 @@ CLASS="GUIMENU"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
-><SPAN
+><B
 CLASS="GUIMENUITEM"
->Link</SPAN
+>Link:</B
 ></DT
 ><DD
 ><P
 >		Lets you link some text to a website.  Use this tool to put hyperlinks in your HTML
                   messages.  If you don't want special link text, you can just enter the address
-                  directly, and <SPAN
+                  directly, and <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 >
                   will recognize it as a link.  To add a link:
 		<P
@@ -984,25 +1119,27 @@ TYPE="1"
 ></LI
 ><LI
 ><P
->		      Right click on the text and click on <SPAN
+>		      Right click on the text and click on <B
 CLASS="GUIBUTTON"
->Link</SPAN
+>Link</B
 >.
 		    </P
 ></LI
 ><LI
 ><P
->		      Put the URL you want to use in the <SPAN
+>		      Put the URL you want to use in the <TT
 CLASS="GUILABEL"
->URL</SPAN
+><B
+>URL</B
+></TT
 > field.
 		    </P
 ></LI
 ><LI
 ><P
->		      Click <SPAN
+>		      Click <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 >.
 		    </P
 ></LI
@@ -1011,20 +1148,36 @@ CLASS="GUIBUTTON"
 	      </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
-><B
->Note: </B
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >		  If you're typing a webpage address to be automatically formatted, keep in mind that a space terminates the link.
 		</P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ></DD
 ><DT
-><SPAN
+><B
 CLASS="GUIMENUITEM"
->Image</SPAN
+>Image:</B
 ></DT
 ><DD
 ><P
@@ -1038,53 +1191,53 @@ CLASS="GUIMENUITEM"
 TYPE="1"
 ><LI
 ><P
->		      Open a new email by clicking <SPAN
+>		      Open a new email by clicking <B
 CLASS="GUIBUTTON"
->New Message</SPAN
+>New Message</B
 >
 		    </P
 ></LI
 ><LI
 ><P
 >		      Make sure that you have the
-		      <SPAN
+		      <B
 CLASS="GUIMENU"
->Format</SPAN
->-&gt;<SPAN
+>Format</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->HTML</SPAN
+>HTML</B
 >
                       selector checked.
 		    </P
 ></LI
 ><LI
 ><P
->		      Click the <SPAN
+>		      Click the <B
 CLASS="GUIBUTTON"
->Insert Image</SPAN
+>Insert Image</B
 > button in the toolbar, or select		   
-		         <SPAN
+		         <B
 CLASS="GUIMENU"
->Insert</SPAN
->-&gt;<SPAN
+>Insert</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Image</SPAN
+>Image</B
 >.
 		      </P
 ></LI
 ><LI
 ><P
->		      Choose your image by clicking the <SPAN
+>		      Choose your image by clicking the <B
 CLASS="GUIBUTTON"
->Browse</SPAN
+>Browse</B
 > button.
 		    </P
 ></LI
 ><LI
 ><P
->		      Press <SPAN
+>		      Press <B
 CLASS="GUIBUTTON"
->Insert</SPAN
+>Insert</B
 > to insert the image.
 		    </P
 ></LI
@@ -1093,9 +1246,9 @@ CLASS="GUIBUTTON"
 	      </P
 ></DD
 ><DT
-><SPAN
+><B
 CLASS="GUIMENUITEM"
->Rule</SPAN
+>Rule:</B
 ></DT
 ><DD
 ><P
@@ -1110,33 +1263,35 @@ CLASS="GUIMENUITEM"
 TYPE="1"
 ><LI
 ><P
->		      Open a new email by clicking <SPAN
+>		      Open a new email by clicking <B
 CLASS="GUIBUTTON"
->New Message</SPAN
+>New Message</B
 >
 		    </P
 ></LI
 ><LI
 ><P
 >		      Make sure that you have the
-		      <SPAN
+		      <B
 CLASS="GUIMENU"
->Format</SPAN
->-&gt;<SPAN
+>Format</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->HTML</SPAN
+>HTML</B
 >
                       selector checked.
 		    </P
 ></LI
 ><LI
 ><P
->		      Click the <SPAN
+>		      Click the <B
 CLASS="GUIBUTTON"
->Rule</SPAN
-> button in the <SPAN
+>Rule</B
+> button in the <TT
 CLASS="GUILABEL"
->Toolbar</SPAN
+><B
+>Toolbar</B
+></TT
 >.
 		    </P
 ></LI
@@ -1161,9 +1316,9 @@ CLASS="GUILABEL"
 ></LI
 ><LI
 ><P
->		      Click <SPAN
+>		      Click <B
 CLASS="GUIBUTTON"
->Insert</SPAN
+>Insert</B
 > to insert the rule.
 		    </P
 ></LI
@@ -1172,7 +1327,7 @@ CLASS="GUIBUTTON"
 	      </P
 ></DD
 ><DT
->Table</DT
+>Table:</DT
 ><DD
 ><P
 >		Inserts a table into the text to help divide two
@@ -1186,41 +1341,43 @@ CLASS="GUIBUTTON"
 TYPE="1"
 ><LI
 ><P
->		      Open a new email by clicking <SPAN
+>		      Open a new email by clicking <B
 CLASS="GUIBUTTON"
->New Message</SPAN
+>New Message</B
 >
 		    </P
 ></LI
 ><LI
 ><P
 >		      Make sure that you have the
-		      <SPAN
+		      <B
 CLASS="GUIMENU"
->Format</SPAN
->-&gt;<SPAN
+>Format</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->HTML</SPAN
+>HTML</B
 >
                       selector checked.
 		    </P
 ></LI
 ><LI
 ><P
->		      Click the <SPAN
+>		      Click the <B
 CLASS="GUIBUTTON"
->Table</SPAN
-> button in the <SPAN
+>Table</B
+> button in the <TT
 CLASS="GUILABEL"
->Toolbar</SPAN
+><B
+>Toolbar</B
+></TT
 >.
 		    </P
 ></LI
 ><LI
 ><P
->		      Select the <SPAN
+>		      Select the <B
 CLASS="GUIBUTTON"
->Template</SPAN
+>Template</B
 > you wish to use.  Each template has a slightly different feel and layout.
 		    </P
 ></LI
@@ -1231,9 +1388,9 @@ CLASS="GUIBUTTON"
 ></LI
 ><LI
 ><P
->		      Click the <SPAN
+>		      Click the <B
 CLASS="GUIBUTTON"
->Insert</SPAN
+>Insert</B
 > button.
 		    </P
 ></LI
@@ -1257,26 +1414,28 @@ TYPE="1"
 ><LI
 ><P
 >	      Right click on text and select
-	      <SPAN
+	      <B
 CLASS="GUIMENUITEM"
->Link</SPAN
+>Link</B
 >
 	    </P
 ></LI
 ><LI
 ><P
 >	      Enter the address you wish to link to in the
-	      <SPAN
+	      <TT
 CLASS="GUILABEL"
->URL</SPAN
+><B
+>URL</B
+></TT
 > field.
 	    </P
 ></LI
 ><LI
 ><P
->	      Press <SPAN
+>	      Press <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 >.
 	    </P
 ></LI
@@ -1292,20 +1451,20 @@ TYPE="1"
 ><LI
 ><P
 >	     Select
-	      <SPAN
+	      <B
 CLASS="GUIMENU"
->Insert</SPAN
->-&gt;<SPAN
+>Insert</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Image</SPAN
+>Image</B
 >.
 	    </P
 ></LI
 ><LI
 ><P
->	      Click <SPAN
+>	      Click <B
 CLASS="GUIBUTTON"
->Browse</SPAN
+>Browse</B
 > to select the image
 	      you want to include in your email.
 	    </P
@@ -1321,9 +1480,11 @@ CLASS="GUIBUTTON"
 ><LI
 ><P
 >	     If you would like to make the image a clickable link,
-	     enter a URL in the <SPAN
+	     enter a URL in the <TT
 CLASS="GUILABEL"
->Link</SPAN
+><B
+>Link</B
+></TT
 > tab of the
 	     window.
 	    </P
@@ -1331,9 +1492,9 @@ CLASS="GUILABEL"
 ><LI
 ><P
 >	      When you are finished, press
-	      <SPAN
+	      <B
 CLASS="GUIBUTTON"
->Insert</SPAN
+>Insert</B
 > to include the image in
 	      your message.
 	    </P
@@ -1344,9 +1505,9 @@ CLASS="GUIBUTTON"
 ><P
 >        You can insert an image into the background of your message by
         right-clicking on the message background and selecting
-        <SPAN
+        <B
 CLASS="GUIMENUITEM"
->Page</SPAN
+>Page</B
 >. From that dialog, you may
         also select background color and set other general options
         about the html message you are composing.
@@ -1360,9 +1521,9 @@ NAME="HTML-TEMPLATES"
 >HTML Templates</A
 ></H3
 ><P
->          <SPAN
+>          <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > not only allows you to
 	  decorate your email with HTML text and graphics, but
 	  provides you with prebuilt templates for you to use when
@@ -1377,62 +1538,70 @@ CLASS="APPLICATION"
 TYPE="1"
 ><LI
 ><P
->		Create a new email by clicking <SPAN
+>		Create a new email by clicking <B
 CLASS="GUIBUTTON"
->New Message</SPAN
+>New Message</B
 >.
 	      </P
 ></LI
 ><LI
 ><P
 >		Make sure that the
-		<SPAN
+		<B
 CLASS="GUIMENU"
 >		    Format
-		  </SPAN
->-&gt;<SPAN
+		  </B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >		    HTML
-		  </SPAN
+		  </B
 >
 		selector is checked.
 	      </P
 ></LI
 ><LI
 ><P
->		Click the <SPAN
+>		Click the <B
 CLASS="GUIBUTTON"
->HTML Template</SPAN
+>HTML Template</B
 > button in the 
-		<SPAN
+		<TT
 CLASS="GUILABEL"
->Toolbar</SPAN
+><B
+>Toolbar</B
+></TT
 > or select 		
-		<SPAN
+		<B
 CLASS="GUIMENU"
 >		  Insert
-		  </SPAN
->-&gt;<SPAN
+		  </B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >		    HTML Template
-		  </SPAN
+		  </B
 >
 	      </P
 ></LI
 ><LI
 ><P
 >		Select the template type in the
-		<SPAN
+		<TT
 CLASS="GUILABEL"
->Template</SPAN
+><B
+>Template</B
+></TT
 > selection box. Your
-		options are <SPAN
+		options are <TT
 CLASS="GUILABEL"
->Note</SPAN
+><B
+>Note</B
+></TT
 > and
-		<SPAN
+		<TT
 CLASS="GUILABEL"
->Image Frame</SPAN
+><B
+>Image Frame</B
+></TT
 >.  
 	      </P
 ></LI
@@ -1443,9 +1612,9 @@ CLASS="GUILABEL"
 ></LI
 ><LI
 ><P
->		Click <SPAN
+>		Click <B
 CLASS="GUIBUTTON"
->Insert</SPAN
+>Insert</B
 > to insert it where the 
 		cursor is.
 	      </P
@@ -1458,9 +1627,9 @@ CLASS="GUIBUTTON"
 ><P
 >		If you have selected an image frame template,
 		right-click on the image and select
-		<SPAN
+		<B
 CLASS="GUIMENUITEM"
->Image</SPAN
+>Image</B
 > to select the image
 		you want to place in the frame.
 	      </P
@@ -1478,16 +1647,16 @@ NAME="COMPOSER-TABLES"
 >Tables in Email</A
 ></H3
 ><P
->	  <SPAN
+>	  <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > allows you to put
 	  tables in your HTML email to help organize your thoughts.
 	  These tables are a simplified version of what you might find
 	  in a spreadsheet program like
-	  <SPAN
+	  <TT
 CLASS="APPLICATION"
->Gnumeric</SPAN
+>Gnumeric</TT
 >.
 	</P
 ><P
@@ -1498,23 +1667,23 @@ CLASS="APPLICATION"
 TYPE="1"
 ><LI
 ><P
->		Create a new email by clicking <SPAN
+>		Create a new email by clicking <B
 CLASS="GUIBUTTON"
->New Message</SPAN
+>New Message</B
 >.
 	      </P
 ></LI
 ><LI
 ><P
 >		Make sure you have the
-		<SPAN
+		<B
 CLASS="GUIMENU"
 >		    Format
-		  </SPAN
->-&gt;<SPAN
+		  </B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >		    HTML
-		  </SPAN
+		  </B
 >
 		selector checked.
 	      </P
@@ -1522,18 +1691,18 @@ CLASS="GUIMENUITEM"
 ><LI
 ><P
 >	      Select
-		<SPAN
+		<B
 CLASS="GUIMENU"
 >		    Insert
-		  </SPAN
->-&gt;<SPAN
+		  </B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >		    Table
-		  </SPAN
+		  </B
 >
-		or click the <SPAN
+		or click the <B
 CLASS="GUIICON"
->Table</SPAN
+>Table</B
 > button in the
 		toolbar.
 	      </P
@@ -1551,9 +1720,9 @@ CLASS="GUIICON"
 ></LI
 ><LI
 ><P
->		Click the <SPAN
+>		Click the <B
 CLASS="GUIBUTTON"
->Insert</SPAN
+>Insert</B
 > button.
 	      </P
 ></LI
@@ -1567,45 +1736,71 @@ CLASS="GUIBUTTON"
 	</P
 ><P
 >	  You can also edit a table after creation.  Just right-click
-	  on it and select <SPAN
+	  on it and select <B
 CLASS="GUIMENUITEM"
->Table</SPAN
+>Table</B
 > to open
 	  the table editing window again. Or, you can select items
-	  from the <SPAN
+	  from the <B
 CLASS="GUIMENU"
->Table Delete</SPAN
-> and <SPAN
+>Table Delete</B
+> and <B
 CLASS="GUIMENU"
 >Table
-	  Insert</SPAN
+	  Insert</B
 > menus.
 	  </P
 ><P
 >	  <DIV
 CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
 ><A
 NAME="TABLE-TIP"
 ></A
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Deleting an Entire Table: </B
+>Deleting an Entire Table</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	    You can delete an entire table by right-clicking on
             a table or other HTML object in a message, and selecting
-	  <SPAN
+	  <B
 CLASS="GUIMENU"
->Table Delete</SPAN
->-&gt;<SPAN
+>Table Delete</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Table</SPAN
+>Table</B
 >.  In an
 	    HMTL message, your signature, templates, and image
 	    inclusions all have tables around them, and you can remove
 	    them completely and quickly with this shortcut.
 	  </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 >
         </P
@@ -1622,9 +1817,11 @@ NAME="USAGE-MAIL-GETNSEND-FWD"
 ><P
 >          The post office forwards your mail for you when you change
           addresses, and you can forward a letter if it comes to you by mistake.
-          The email <SPAN
+          The email <TT
 CLASS="GUILABEL"
->Forward</SPAN
+><B
+>Forward</B
+></TT
 > button
           works in much the same way.  It's particularly useful if you
           have received a message and you think someone else would
@@ -1648,16 +1845,16 @@ CLASS="GLOSSTERM"
         </P
 ><P
 >          To forward a message you are reading, press
-          <SPAN
+          <B
 CLASS="GUIBUTTON"
->Forward</SPAN
+>Forward</B
 > on the toolbar, or select
-          <SPAN
+          <B
 CLASS="GUIMENU"
->Message</SPAN
->-&gt;<SPAN
+>Message</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Forward</SPAN
+>Forward</B
 >.  If you
           prefer to forward the message <A
 HREF="apx-gloss.html#INLINE"
@@ -1666,13 +1863,13 @@ CLASS="GLOSSTERM"
 >inline</I
 ></A
 >
-          instead of attached, select <SPAN
+          instead of attached, select <B
 CLASS="GUIMENU"
->Message</SPAN
->-&gt;<SPAN
+>Message</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Forward
-          Inline</SPAN
+          Inline</B
 > from the menu.  Choose an
           addressee as you would when sending a new message; the
           subject will already be entered, but you can alter it.
@@ -1681,9 +1878,9 @@ CLASS="GUIMENUITEM"
 CLASS="INTERFACE"
 >composition frame</SPAN
 >, and press
-          <SPAN
+          <B
 CLASS="GUIBUTTON"
->Send</SPAN
+>Send</B
 >.
         </P
 ></DIV
@@ -1725,9 +1922,9 @@ NAME="USAGE-MAIL-GETNSEND-ETTIQUETTE"
 ><LI
 ><P
 >               Check your spelling and use complete sentences. By
-               default, <SPAN
+               default, <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > will put
                a red line beneath words it doesn't recognize, as you
                type them.
@@ -1774,7 +1971,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="usage-mail-getnsend-get.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -1790,7 +1987,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="rsvp-stuff.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

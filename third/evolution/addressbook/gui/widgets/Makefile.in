@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -184,7 +185,7 @@ cxxflags_set = @cxxflags_set@
 l = @l@
 localedir = @localedir@
 
-INCLUDES =  	-DG_LOG_DOMAIN=\"e-minicard\"				-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			-DEVOLUTION_DATADIR=\""$(datadir)"\"			-DEVOLUTION_IMAGESDIR=\""$(datadir)"/images/evolution\" 	-I$(top_srcdir)						-I$(top_srcdir)/addressbook/backend/ebook		-I$(top_srcdir)/addressbook/gui/contact-editor		-I$(top_srcdir)/addressbook/gui/merging			-I$(top_srcdir)/widgets/misc				-I$(top_builddir)/shell					$(BONOBO_GNOME_CFLAGS)					$(EXTRA_GNOME_CFLAGS)
+INCLUDES =  	-DG_LOG_DOMAIN=\"e-minicard\"				-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			-DEVOLUTION_DATADIR=\""$(datadir)"\"			-DEVOLUTION_IMAGESDIR=\""$(datadir)"/images/evolution\" 	-I$(top_srcdir)						-I$(top_srcdir)/addressbook/backend			-I$(top_srcdir)/addressbook/gui/contact-editor		-I$(top_srcdir)/addressbook/gui/merging			-I$(top_srcdir)/addressbook/gui/component		-I$(top_srcdir)/widgets/misc				-I$(top_builddir)/shell					$(BONOBO_GNOME_CFLAGS)					$(EXTRA_GNOME_CFLAGS)
 
 
 noinst_LIBRARIES =  	libeminicard.a
@@ -317,7 +318,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libeminicard_a_SOURCES)
 OBJECTS = $(libeminicard_a_OBJECTS)
@@ -454,6 +455,240 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+e-addressbook-model.o: e-addressbook-model.c ../../../config.h \
+	e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-card-simple.h
+e-addressbook-reflow-adapter.o: e-addressbook-reflow-adapter.c \
+	../../../config.h e-addressbook-reflow-adapter.h \
+	e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	e-addressbook-util.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
+	../../../addressbook/gui/component/select-names/e-select-names.h \
+	e-addressbook-model.h \
+	../../../addressbook/gui/component/select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
+	e-minicard.h \
+	../../../addressbook/gui/contact-editor/e-contact-save-as.h \
+	../../../addressbook/printing/e-contact-print.h \
+	../../../addressbook/printing/e-contact-print-types.h \
+	../../../addressbook/printing/e-contact-print-envelope.h
+e-addressbook-table-adapter.o: e-addressbook-table-adapter.c \
+	../../../config.h e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	e-addressbook-table-adapter.h \
+	../../../addressbook/gui/merging/e-card-merging.h \
+	e-addressbook-util.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
+	../../../addressbook/gui/component/select-names/e-select-names.h \
+	e-addressbook-model.h \
+	../../../addressbook/gui/component/select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h
+e-addressbook-util.o: e-addressbook-util.c ../../../config.h \
+	e-addressbook-util.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
+	../../../addressbook/gui/component/select-names/e-select-names.h \
+	e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../addressbook/gui/component/select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
+	../../../addressbook/gui/merging/e-card-merging.h
+e-addressbook-view.o: e-addressbook-view.c ../../../config.h \
+	../../../addressbook/printing/e-contact-print.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/printing/e-contact-print-types.h \
+	../../../addressbook/printing/e-contact-print-envelope.h \
+	gal-view-factory-minicard.h gal-view-minicard.h \
+	e-addressbook-view.h e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../widgets/menus/gal-view-menus.h e-addressbook-util.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
+	../../../addressbook/gui/component/select-names/e-select-names.h \
+	e-addressbook-model.h \
+	../../../addressbook/gui/component/select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
+	e-addressbook-table-adapter.h e-addressbook-reflow-adapter.h \
+	e-minicard-view-widget.h e-minicard-view.h e-minicard.h \
+	../../../addressbook/gui/contact-editor/e-contact-save-as.h \
+	../../../addressbook/gui/merging/e-card-merging.h
+e-minicard-control.o: e-minicard-control.c ../../../config.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-book-util.h \
+	../../../addressbook/gui/component/addressbook.h \
+	e-minicard-control.h e-minicard-widget.h \
+	../../../addressbook/gui/merging/e-card-merging.h
+e-minicard-label.o: e-minicard-label.c ../../../config.h \
+	e-minicard-label.h
+e-minicard-view-widget.o: e-minicard-view-widget.c ../../../config.h \
+	e-minicard-view-widget.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	e-minicard-view.h e-minicard.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
+	../../../addressbook/gui/component/select-names/e-select-names.h \
+	e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../addressbook/gui/component/select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h e-addressbook-reflow-adapter.h \
+	e-addressbook-model.h
+e-minicard-view.o: e-minicard-view.c ../../../config.h e-minicard-view.h \
+	e-minicard.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/gui/component/select-names/e-select-names.h \
+	e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../addressbook/gui/component/select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h e-addressbook-reflow-adapter.h \
+	e-addressbook-model.h e-addressbook-util.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h
+e-minicard-widget.o: e-minicard-widget.c ../../../config.h \
+	e-minicard-widget.h ../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h e-minicard.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
+	../../../addressbook/gui/component/select-names/e-select-names.h \
+	e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../addressbook/gui/component/select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h
+e-minicard.o: e-minicard.c ../../../config.h \
+	../../../addressbook/backend/ebook/e-book.h \
+	../../../addressbook/backend/ebook/e-card.h \
+	../../../addressbook/backend/ebook/e-card-types.h \
+	../../../e-util/e-list.h ../../../e-util/e-list-iterator.h \
+	../../../e-util/e-iterator.h \
+	../../../addressbook/backend/ebook/e-card-cursor.h \
+	../../../addressbook/backend/ebook/addressbook.h \
+	../../../addressbook/backend/ebook/e-book-view.h \
+	../../../addressbook/backend/ebook/e-book-view-listener.h \
+	../../../addressbook/backend/ebook/e-book-types.h \
+	e-addressbook-util.h \
+	../../../addressbook/gui/contact-editor/e-contact-editor.h \
+	../../../addressbook/gui/component/select-names/e-select-names-manager.h \
+	../../../addressbook/gui/component/select-names/e-select-names.h \
+	e-addressbook-model.h \
+	../../../addressbook/backend/ebook/e-card-simple.h \
+	../../../addressbook/gui/component/select-names/e-select-names-model.h \
+	../../../addressbook/backend/ebook/e-destination.h \
+	../../../shell/evolution-storage-listener.h \
+	../../../shell/Evolution.h \
+	../../../addressbook/gui/contact-list-editor/e-contact-list-editor.h \
+	e-minicard.h e-minicard-label.h e-minicard-view.h \
+	e-addressbook-reflow-adapter.h e-addressbook-model.h \
+	../../../addressbook/gui/merging/e-card-merging.h
+gal-view-factory-minicard.o: gal-view-factory-minicard.c \
+	../../../config.h gal-view-factory-minicard.h \
+	gal-view-minicard.h
+gal-view-minicard.o: gal-view-minicard.c ../../../config.h \
+	gal-view-minicard.h
 
 info-am:
 info: info-am

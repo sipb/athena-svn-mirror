@@ -10,9 +10,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -61,26 +60,30 @@ struct _EDestinationPrivate {
 
 	ECard *old_card;
 	gint old_card_email_num;
+	gchar *old_textrep;
 
 	gchar *name;
 	gchar *email;
 	gchar *addr;
 	gchar *textrep;
 
-	gboolean html_mail_override;
-	gboolean wants_html_mail;
-
 	GList *list_dests;
-	gboolean show_addresses;
 
-	gboolean has_been_cardified;
-	gboolean allow_cardify;
-	gboolean cannot_cardify;
+	guint html_mail_override : 1;
+	guint wants_html_mail : 1;
+
+	guint show_addresses : 1;
+
+	guint has_been_cardified : 1;
+	guint allow_cardify : 1;
+	guint cannot_cardify : 1;
 	guint pending_cardification;
+
+	guint pending_change : 1;
+
 	EBook *cardify_book;
 
 	gint freeze_count;
-	gboolean pending_change;
 };
 
 static void e_destination_clear_card    (EDestination *);
@@ -100,6 +103,8 @@ e_destination_destroy (GtkObject *obj)
 	
 	if (dest->priv->cardify_book)
 		gtk_object_unref (GTK_OBJECT (dest->priv->cardify_book));
+
+	g_free (dest->priv->old_textrep);
 
 	g_free (dest->priv);
 
@@ -221,6 +226,7 @@ e_destination_copy (const EDestination *dest)
 	new_dest->priv->addr               = g_strdup (dest->priv->addr);
 	new_dest->priv->card_email_num     = dest->priv->card_email_num;
 	new_dest->priv->old_card_email_num = dest->priv->old_card_email_num;
+	new_dest->priv->old_textrep        = g_strdup (dest->priv->old_textrep);
 
 	new_dest->priv->card     = dest->priv->card;
 	if (new_dest->priv->card)
@@ -244,11 +250,6 @@ e_destination_copy (const EDestination *dest)
 static void
 e_destination_clear_card (EDestination *dest)
 {
-	g_free (dest->priv->book_uri);
-	dest->priv->book_uri = NULL;
-	g_free (dest->priv->card_uid);
-	dest->priv->card_uid = NULL;
-
 	if (dest->priv->card) {
 		
 		if (dest->priv->old_card)
@@ -256,7 +257,15 @@ e_destination_clear_card (EDestination *dest)
 
 		dest->priv->old_card = dest->priv->card;
 		dest->priv->old_card_email_num = dest->priv->card_email_num;
+
+		g_free (dest->priv->old_textrep);
+		dest->priv->old_textrep = g_strdup (e_destination_get_textrep (dest));
 	}
+
+	g_free (dest->priv->book_uri);
+	dest->priv->book_uri = NULL;
+	g_free (dest->priv->card_uid);
+	dest->priv->card_uid = NULL;
 
 	dest->priv->card = NULL;
 	dest->priv->card_email_num = -1;
@@ -307,6 +316,17 @@ e_destination_clear (EDestination *dest)
 	e_destination_thaw (dest);
 }
 
+static gboolean
+nonempty (const gchar *s)
+{
+	while (s) {
+		if (! isspace ((gint) *s))
+			return TRUE;
+		++s;
+	}
+	return FALSE;
+}
+
 gboolean
 e_destination_is_empty (const EDestination *dest)
 {
@@ -317,10 +337,10 @@ e_destination_is_empty (const EDestination *dest)
 	return !(p->card != NULL
 		 || (p->book_uri && *p->book_uri)
 		 || (p->card_uid && *p->card_uid)
-		 || (p->raw && *p->raw)
-		 || (p->name && *p->name)
-		 || (p->email && *p->email)
-		 || (p->addr && *p->addr)
+		 || (p->raw && nonempty (p->raw))
+		 || (p->name && nonempty (p->name))
+		 || (p->email && nonempty (p->email))
+		 || (p->addr && nonempty (p->addr))
 		 || (p->list_dests != NULL));
 }
 
@@ -571,11 +591,8 @@ e_destination_use_card (EDestination *dest, EDestinationCardCallback cb, gpointe
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 
 	if (dest->priv->card != NULL) {
-
-		if (cb) {
+		if (cb)
 			cb (dest, dest->priv->card, closure);
-		}
-
 	} else if (dest->priv->book_uri != NULL && dest->priv->card_uid != NULL) {
 
 		UseCard *uc = g_new (UseCard, 1);
@@ -585,6 +602,9 @@ e_destination_use_card (EDestination *dest, EDestinationCardCallback cb, gpointe
 		uc->cb = cb;
 		uc->closure = closure;
 		e_card_load_uri (dest->priv->book_uri, dest->priv->card_uid, use_card_cb, uc);
+	} else {
+		if (cb)
+			cb (dest, NULL, closure);
 	}
 }
 
@@ -924,8 +944,13 @@ name_and_email_simple_query_cb (EBook *book, EBookSimpleQueryStatus status, cons
 		}
 
 		if (email_num >= 0) {
+			const char *book_uri;
+
+			book_uri = e_book_get_uri (book);
+
 			dest->priv->has_been_cardified = TRUE;
 			e_destination_set_card (dest, card, email_num);
+			e_destination_set_book_uri (dest, book_uri);
 			gtk_signal_emit (GTK_OBJECT (dest), e_destination_signals[CARDIFIED]);
 		}
 	}
@@ -946,8 +971,13 @@ nickname_simple_query_cb (EBook *book, EBookSimpleQueryStatus status, const GLis
 	if (status == E_BOOK_SIMPLE_QUERY_STATUS_SUCCESS) {
 
 		if (g_list_length ((GList *) cards) == 1) {
+			const char *book_uri;
+
+			book_uri = e_book_get_uri (book);
+
 			dest->priv->has_been_cardified = TRUE;
 			e_destination_set_card (dest, E_CARD (cards->data), 0); /* Uses primary e-mail by default. */
+			e_destination_set_book_uri (dest, book_uri);
 			gtk_signal_emit (GTK_OBJECT (dest), e_destination_signals[CARDIFIED]);
 			
 			gtk_object_unref (GTK_OBJECT (dest)); /* drop the reference held by the query */
@@ -1003,6 +1033,27 @@ use_local_book_cb (EBook *book, gpointer closure)
 }
 
 
+static gboolean
+e_destination_reverting_is_a_good_idea (EDestination *dest)
+{
+	const gchar *textrep;
+	gint len, old_len;
+
+	g_return_val_if_fail (E_IS_DESTINATION (dest), FALSE);
+	if (dest->priv->old_textrep == NULL)
+		return FALSE;
+
+	textrep = e_destination_get_textrep (dest);
+
+	len = g_utf8_strlen (textrep, -1);
+	old_len = g_utf8_strlen (dest->priv->old_textrep, -1);
+
+	if (len <= old_len/2)
+		return FALSE;
+
+	return TRUE;
+}
+
 void
 e_destination_cardify (EDestination *dest, EBook *book)
 {
@@ -1024,7 +1075,9 @@ e_destination_cardify (EDestination *dest, EBook *book)
 	e_destination_cancel_cardify (dest);
 
 	/* In some cases, we can revert to the previous card. */
-	if (!e_destination_is_valid (dest) && e_destination_revert (dest)) {
+	if (!e_destination_is_valid (dest)
+	    && e_destination_reverting_is_a_good_idea (dest)
+	    && e_destination_revert (dest)) {
 		return;
 	}
 
@@ -1118,6 +1171,8 @@ e_destination_revert (EDestination *dest)
 		card_email_num = dest->priv->old_card_email_num;
 
 		dest->priv->old_card = NULL;
+		g_free (dest->priv->old_textrep);
+		dest->priv->old_textrep = NULL;
 
 		e_destination_freeze (dest);
 		e_destination_clear (dest);
@@ -1507,7 +1562,7 @@ e_destination_importv (const gchar *str)
 		EDestination *dest;
 		
 		dest = e_destination_new ();
-		if (e_destination_xml_decode (dest, node)) {
+		if (e_destination_xml_decode (dest, node) && !e_destination_is_empty (dest)) {
 			g_ptr_array_add (dest_array, dest);
 		} else {
 			gtk_object_unref (GTK_OBJECT (dest));

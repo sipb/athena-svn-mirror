@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Questions about Bugs and Debugging</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -20,6 +20,11 @@ TITLE="Glossary"
 HREF="apx-gloss.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,20 +45,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="faq-trouble.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Appendix A. Frequently Asked Questions About Ximian Evolution</TD
+>Frequently Asked Questions About Ximian Evolution</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="apx-gloss.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -75,20 +80,20 @@ NAME="FAQ-DEBUGGING"
 CLASS="QANDASET"
 ><DL
 ><DT
->1. <A
-HREF="faq-debugging.html#AEN3733"
+>Q: <A
+HREF="faq-debugging.html#AEN3430"
 >            Where should I report bugs for Evolution?
           </A
 ></DT
 ><DT
->2. <A
-HREF="faq-debugging.html#AEN3741"
+>Q: <A
+HREF="faq-debugging.html#AEN3438"
 >             What is a stack trace (backtrace) and how do I get one?
            </A
 ></DT
 ><DT
->3. <A
-HREF="faq-debugging.html#AEN3771"
+>Q: <A
+HREF="faq-debugging.html#AEN3468"
 >             A component of evolution crashed, but since the rest of
              evolution stayed up, I couldn't use bug-buddy to get a
              stack trace. How can I use gdb to get a stack trace of
@@ -101,19 +106,21 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3733"
+NAME="AEN3430"
 ></A
 ><B
->1. </B
->            Where should I report bugs for Evolution?
-          </P
+>Q:             Where should I report bugs for Evolution?
+          </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >            You can use the GNOME Bug Report Tool
             (<B
 CLASS="COMMAND"
@@ -136,19 +143,21 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3741"
+NAME="AEN3438"
 ></A
 ><B
->2. </B
->             What is a stack trace (backtrace) and how do I get one?
-           </P
+>Q:              What is a stack trace (backtrace) and how do I get one?
+           </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >              A stack trace is a list of the chain of function calls
               that lead to some point in the program. Typically, you
               want to get a stack trace when Evolution crashes or
@@ -157,9 +166,9 @@ CLASS="ANSWER"
               traces are extremely useful for the Evolution
               developers, so it's important that you learn how to get
               them, and include them in crash reports. The
-              <SPAN
+              <TT
 CLASS="APPLICATION"
->bug-buddy</SPAN
+>bug-buddy</TT
 > tool can get and
               submit a stack trace for you.  If you want to do it by
               yourself, here's how:
@@ -175,9 +184,9 @@ CLASS="APPLICATION"
           </P
 ><P
 >            Finally, you must put the component that crashes through
-            <SPAN
+            <TT
 CLASS="APPLICATION"
->gdb</SPAN
+>gdb</TT
 >, the GNU debugging tool.
             To do so, make sure all the components are dead (exit
             Evolution and run <B
@@ -210,17 +219,17 @@ CLASS="COMMAND"
 >             Then, at the gdb prompt, type r (for "run") and wait a
              few seconds to make sure the component has registered
              with the name service. Then start
-             <SPAN
+             <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > normally from a
              different terminal.
            </P
 ><P
 >             When you have started
-             <SPAN
+             <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 >, reproduce the
              crash, and go back to the terminal where you ran gdb. If
              the component crashed, you should have a prompt there;
@@ -256,9 +265,9 @@ CLASS="PROGRAMLISTING"
 >
  
              For the most part, only
-             <SPAN
+             <TT
 CLASS="APPLICATION"
->evolution-mail</SPAN
+>evolution-mail</TT
 > will have more
              than one thread.
          </P
@@ -295,9 +304,9 @@ CLASS="USERINPUT"
 >            If you prefer, you can start gdb while a process is
             running. You'll want to do this right after a crash dialog
             appears, but before hitting "OK" or "Submit bug report".
-            Start <SPAN
+            Start <TT
 CLASS="APPLICATION"
->gdb</SPAN
+>gdb</TT
 > as above, but instead
             of using <TT
 CLASS="USERINPUT"
@@ -328,22 +337,24 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3771"
+NAME="AEN3468"
 ></A
 ><B
->3. </B
->             A component of evolution crashed, but since the rest of
+>Q:              A component of evolution crashed, but since the rest of
              evolution stayed up, I couldn't use bug-buddy to get a
              stack trace. How can I use gdb to get a stack trace of
              the component?
-           </P
+           </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >             To trace a failing component (in this example, evolution-mail):
              <P
 ></P
@@ -422,7 +433,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="faq-trouble.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -438,7 +449,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="apx-gloss.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

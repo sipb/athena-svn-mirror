@@ -6,19 +6,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -111,9 +111,6 @@ apply_changes (MailAccountEditor *editor)
 	if (mail_account_gui_save (editor->gui) == FALSE)
 		return FALSE;
 	
-	/* FIXME: uh, what the hell is this for? */
-	account = editor->gui->account;
-	
 	/* save any changes we may have */
 	mail_config_write ();
 	
@@ -162,7 +159,7 @@ construct (MailAccountEditor *editor, MailConfigAccount *account)
 	/* give our dialog an OK button and title */
 	gtk_window_set_title (GTK_WINDOW (editor), _("Evolution Account Editor"));
 	gtk_window_set_policy (GTK_WINDOW (editor), FALSE, TRUE, TRUE);
-	gtk_window_set_modal (GTK_WINDOW (editor), TRUE);
+	gtk_window_set_modal (GTK_WINDOW (editor), FALSE);
 	gnome_dialog_append_buttons (GNOME_DIALOG (editor),
 				     GNOME_STOCK_BUTTON_OK,
 				     GNOME_STOCK_BUTTON_APPLY,
@@ -188,9 +185,9 @@ MailAccountEditor *
 mail_account_editor_new (MailConfigAccount *account)
 {
 	MailAccountEditor *new;
-
+	
 	new = (MailAccountEditor *) gtk_type_new (mail_account_editor_get_type ());
 	construct (new, account);
-
+	
 	return new;
 }

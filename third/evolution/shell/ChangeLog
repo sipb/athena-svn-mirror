@@ -1,3 +1,774 @@
+2001-11-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-storage-set-view.c (set_e_shortcut_selection): Get the storage
+	name if we are dragging a storage instead of a folder.
+
+2001-11-01  Anna Marie Dirks  <anna@ximian.com>
+
+	* e-shell-importer.c (prepare_intelligent_page): Fixed spacing and
+	alignment probelms. (See bug #14281)
+
+	* e-shell-startup-wizard.c (prepare_importer_page): Fixed
+	spacing and alignment problems. (See bug #14281) 
+
+2001-11-05  Dan Winship  <danw@ximian.com>
+
+	* e-storage-set-view.c (set_e_shortcut_selection): Set the
+	shortcut name to be the folder name, not just the last component
+	of its path, which may be different.
+
+2001-11-01  Ettore Perazzoli  <ettore@ximian.com>
+
+	* glade/evolution-startup-wizard.glade: `timezone-48.png', not
+	`timezone.png'.
+
+2001-11-01  Anna Marie Dirks  <anna@ximian.com>
+
+	* glade/evolution-startup-wizard.glade: Changed the welcome
+	message and the finishing message to be more descriptive. Also
+	changed the window title to be "Evolution Setup Assistant". Finally,
+	fixed a misnamed icon (replaced timezone.png with timezone-48.png).
+	Partially fixes bug #14281 and totally fixes #14286. 
+
+2001-10-31  Christopher James Lahey  <clahey@ximian.com>
+
+	* e-storage-set-view.c (cursor_activated): Don't do operations on
+	a NULL path.
+	(updated_folder_cb, folder_changed_cb): Send pre_change signal
+	here.
+
+2001-10-31  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-storage-set-view.c (handle_evolution_path_drag_motion): If the
+	source folder is stock and the operation is GDK_ACTION_MOVE,
+	always return %FALSE as we don't want that to be allowed ever.
+
+2001-10-30  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (bonobo_widget_is_dead): Removed.
+	(show_existing_view): Don't call it.
+
+2001-10-30  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-component-registry.c (sleep_with_g_main_loop): New utility
+	function.
+	(sleep_with_g_main_loop_timeout_callback): Callback function for
+	`sleep_with_g_main_loop()'.
+	(wait_for_corba_object_to_die): Use `sleep_with_g_main_loop()'
+	instead of `sleep()'.
+
+2001-10-30  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (development_warning): Removed.
+	(idle_cb): Don't call it.
+	(warning_dialog_clicked_callback): Removed.
+
+2001-10-30  Iain Holmes  <iain@ximian.com>
+
+	* e-shell-view.c (e_shell_view_load_settings): If the display uri is
+	NULL, set the view to the default.
+
+2001-10-30  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-shell-component.c (owner_ping_callback): Duplicate the
+	owner before pinging it.  Fixes #13802.
+
+2001-10-30  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-shell-component.c (impl_owner_unset): New.
+	(class_init): Install it.
+	(impl_unsetOwner): Just emit the "owner_unset" signal as the
+	default implementation for that signal does all the work now.
+	(impl_owner_died): Set the owner_client to %NULL before unreffing
+	it.
+	(destroy): Likewise.
+	(impl_owner_unset): Likewise.
+
+2001-10-30  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (e_shell_view_construct): Connect to the
+	"removed_folder" signal with gtk_signal_connect_while_alive() so
+	we don't crash if the view gets destroyed.  Fixes #13285.
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-startup-wizard.c (next_func): If we're not at the end of
+	the druid list, tell the druid we're going to change the page.
+	(back_func): Same for going back a page.  This way we can properly
+	synchronise with the druid object and not race with the wizard
+	object to set the right page.  Part of fix for #12127.
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-shell-component.c (owner_ping_callback): Slightly
+	change the debugigng message for when the shell has disappeared.
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-shell-component.c (owner_ping_callback): Remove
+	ping debugging messages.
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (set_interactive): Remove debugging message.
+
+2001-10-29  Damon Chaplin  <damon@ximian.com>
+
+	* Makefile.am (evolution_LDADD): use libical-evolution.la
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (e_shell_view_construct): Ref the shell.
+	(destroy): Unref the shell.
+	(destroy): Free the delayed_selection.  No need to call
+	`cleanup_delayed_selection()' as the signal handler will have
+	already be disconnected at this point [as we are using
+	connect_while_alive()'].
+
+2001-10-28  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (destroy): Call `cleanup_delayed_selection()' as
+	there is a slight chance that the callback gets invoked during the
+	cleanup phase.
+	(e_shell_view_display_uri): For extra safety, make sure we don't
+	get invoked on a dead object by connecting the "new_folder" signal
+	with `e_gtk_signal_connect_full_while_alive()' instead of using
+	plain `gtk_signal_connect_after()'.
+
+2001-10-28  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (new_folder_cb): Don't do the
+	`gtk_signal_disconnect_by_func()' as it's already done in
+	`cleanup_delayed_selection()'.
+	(e_shell_view_construct): Set the ->shell member as the first
+	thing.
+	(set_current_notebook_page): Add a cast to make the compiler
+	happy.
+	(new_folder_cb): Don't set priv->uri before calling
+	`e_shell_view_display_uri()', because the latter does it anyways,
+	and also if you set it before calling it, the selection in the
+	folder tree doesn't get updated properly.
+
+2001-10-29    <NotZed@Ximian.com>
+
+	* evolution-storage.c (class_init): Set the return type of the
+	signal handlers to GTK_TYPE_NONE.
+
+2001-10-28  Ettore Perazzoli  <ettore@ximian.com>
+
+	[The following should fix #13802, crash on exit.]
+
+	* evolution-shell-component.c (impl_unsetOwner): Set the ping
+	timeout ID to -1 when removing the source.
+	(impl_destroy): Likewise.
+	(impl_unsetOwner): Remove the timeout before unreffing, not after
+	unreffing.
+
+2001-10-28  Jon Trowbridge  <trow@ximian.com>
+
+	* e-shell-about-box.c: Distribute credit equally.
+
+2001-10-27    <NotZed@Ximian.com>
+
+	* evolution-storage.c (impl_Storage_async_xfer_folder): We want
+	XFER_FOLDER not REMOVE_FOLDER!
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-offline-handler.c (prepare_for_offline): Remove
+	debugging messages.
+	(finalize_offline_hash_foreach): Likewise.
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-offline-handler.c: New member `finished' in
+	`EShellOfflineHandlerPrivate'.
+	(finalize_offline): Ref the handler as we might get destroyed
+	while putting every component offline.
+	(impl_OfflineProgressListener_updateProgress): Don't emit
+	::offline_procedure_finished if ->finished is %TRUE.  Also, set it
+	to %TRUE after emitting the signal.
+	(cancel_offline): Likewise.
+	(finalize_offline): Likewise.
+	(update_dialog_clist): Guard against NULL ->dialog_gui.
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-storage.c (impl_Storage_async_xfer_folder): Implement.
+	(class_init): Add the signal "xfer_folder" signal.
+
+	* evolution-storage.h: New signal "xfer_folder".
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-corba-storage.c
+	(async_xfer_folder): New, implementation for the
+	::async_xfer_folder method.
+	(class_init): Install it.
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (destroy): Set ->is_initialized to %FALSE.
+	(e_shell_unregister_all): Same here.
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-importer.c (prepare_intelligent_page):
+	gtk_widget_show_now() the dialog.
+	* e-shell-startup-wizard.c (prepare_importer_page): Likewise.
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (quit_box_new): Use gtk_widget_show_now() so the stupid
+	dialog hopefully displays all the time.
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (set_current_notebook_page): Clear the folder bar
+	label to be empty.  [#12553]
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-about-box.c (timeout_callback): Draw one more line.
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view-menu.c (command_about_box): Set the GtkWindow
+	policy so that @allow_shrink, @allow_grow and @auto_shrink are all
+	%FALSE.
+
+2001-10-26  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-folder-commands.c (e_shell_command_rename_folder): Don't
+	allow invalid folder names.  [#12027]
+
+	* e-shell-folder-creation-dialog.c (entry_name_is_valid): Removed.
+	(dialog_clicked_cb): Use `e_shell_folder_name_is_valid()' instead.
+
+	* e-shell-utils.c (e_shell_folder_name_is_valid): New.  Sorry I18N
+	people, it breaks the string freeze slighty.
+
+	* e-component-registry.c (component_free): Add a cast.
+	(e_component_registry_restart_component): Argh, use the
+	corba_objref properly in calling `wait_for_corba_object_to_die()'.
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view-menu.c (update_offline_menu_item): Add accelerators
+	for "Work Offline" and "Work Online".
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (update_for_current_uri): Don't allow translators
+	to translate "Ximian Evolution".
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-component-registry.c (wait_for_corba_object_to_die): New
+	helper function.
+	(e_component_registry_restart_component): Use it.
+	(component_free): Call it to wait for the unowned object to die.
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (impl_Shell_selectUserFolder): Handle failure from
+	XGetClassHint properly.  Also, free res_name and res_class in case
+	of success.  Fixes #13554.
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-storage-set-view.c (etree_icon_at): Don't display an icon for
+	storages that have subfolders.
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-importer.c: #include "e-util/e-gtk-utils.h".
+
+	* e-shell-folder-creation-dialog.c
+	(e_shell_show_folder_creation_dialog): Constify a local variable
+	to placate a warning.
+
+	* e-activity-handler.c (task_widget_cancel_callback): #if 0'ed
+	out.
+
+	* evolution-shell-component-client.c
+	(evolution_shell_component_client_new): Remove unused variable
+	`ior'.
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-activity-handler.c (impl_destroy): Set ->priv to NULL.
+	(impl_operationStarted): Check for priv not being NULL.
+	(impl_operationProgressing): Likewise.
+	(impl_operationFinished): Likewise.
+	(impl_requestDialog): Likewise.
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-startup-wizard.c (make_mail_dialog_pages): Set the
+	->mailer to be CORBA_OBJECT_NIL in case of an exception, otherwise
+	the caller will not realize about the problem.
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-wizard.c (evolution_wizard_set_buttons_sensitive):
+	Don't use __FUNCTION__.
+	(evolution_wizard_set_show_finish): Likewise.
+	(evolution_wizard_set_page): Likewise.
+
+	* e-shell-startup-wizard.c (make_mail_dialog_pages): Do not use
+	__FUNCTION__ and __LINE__.  This breaks the string freeze, but the
+	old way made Evolution non-compilable with non-GNU compilers.
+
+2001-10-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-about-box.c: Add a few names to the box.
+
+2001-10-24  Dan Winship  <danw@ximian.com>
+
+	* evolution-storage.c (evolution_storage_new_folder):
+	g_return_if_fail if the display_name is NULL. "Fixes" 11182
+	although there may be a few more cases lying around that pass
+	NULLs in.
+
+2001-10-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (quit_box_new): Set the WMClass of the quit dialog to be
+	different from the default one in an attempt to fix #13441.
+
+2001-10-24  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-local-storage.c (storage_result_from_component_result): New.
+	(async_xfer_folder_callback): Use it so we get the right error
+	message.
+	(async_xfer_folder_complete): New arg @success.  Don't remove the
+	directory and the metadata if @success is %FALSE.
+
+2001-10-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-folder-commands.c (rename_callback_data_new): Get the
+	path and the shell view instead.
+	(rename_callback_data_free): Updated accordingly.
+	(rename_cb): Set the name on the folder based on the path, not the
+	actual object [as the old object gets unreffed -- of course].
+
+2001-10-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-folder-commands.c (rename_callback_data_new): New.
+	(rename_callback_data_free): New.
+	(rename_cb): Rename the folder here.
+	(e_shell_command_rename_folder): Don't rename the EFolder here.
+
+2001-10-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-local-storage.c (async_xfer_folder_callback): Handle the
+	return codes properly, and invoke the result callback too.
+
+2001-10-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-activity-handler.c (show_cancellation_popup): #if 0'ed for
+	now, per #7427.
+
+2001-10-23  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (storage_set_removed_folder_callback): Explicitly
+	deactivate the control frame, and display the default URI before
+	destroying the dead one.
+
+	* e-shell.c (e_shell_component_maybe_crashed): If the URI is of a
+	folder that doesn't exist anymore, don't assume that the
+	corresponding component has crashed.  Also, try pinging the
+	component first; if the component responds, don't pop up the
+	dialog.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view-menu.c (command_open_folder_in_new_window): No need
+	to gtk_widget_show() the view anymore.
+
+	* e-shell-view.c (activate_shortcut_cb): No need to
+	gtk_widget_show() the view anymore.
+
+	* e-shell.c (impl_Shell_createNewView): Don't explicitly show the
+	new view.
+	(e_shell_create_view): gtk_widget_show() the new view and flush
+	the GTK+ event loop before sending the ::interactive notification.
+	(create_view): New helper function.
+	(e_shell_create_view): Use it.
+	(e_shell_create_view_from_settings): New.
+	(e_shell_restore_from_settings): Use
+	`e_shell_create_view_from_settings()'.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view-menu.c (command_open_folder_in_new_window): Don't
+	explicitly show the new view.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-shell-component.c (impl_unsetOwner): Remove the ping
+	timeout.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (impl_Shell_selectUserFolder): Don't die if the parent
+	window has no WMHints.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (show_existing_view): If the view is dead, just
+	return FALSE.  Prevents crash #12483.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c: New member `is_interactive' in `EShellPrivate'.
+	(init): Init to %FALSE.
+ 	(set_interactive): New.
+	(e_shell_create_view): Make interactive.
+	(view_destroy_cb): If no views are left, make non-interactive.
+
+	* evolution-shell-component.c (class_init): Set up the
+	"interactive" signal.
+	(impl_interactive): New implementation for the ::interactive
+	method.
+	(class_init): Install.
+
+	* evolution-shell-component.h: New signal `interactive'.
+
+	* Evolution-ShellComponent.idl: New method ::interactive.
+
+2001-10-19  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-storage-set-view.c (tree_drag_data_received): Pass the
+	@folder_type to ::handleDrop.
+
+	* evolution-shell-component-dnd.c
+	(impl_GNOME_Evolution_ShellComponentDnd_DestinationFolder_handleMotion):
+	New arg @folder_type.
+	(impl_GNOME_Evolution_ShellComponentDnd_DestinationFolder_handleDrop):
+	Likewise.
+
+	* evolution-shell-component-dnd.h: Add @folder_type to
+	`DndDestinationFolderHandleDropFn' and
+	`DndDestinationFolderHandleMotionFn'.
+
+	* e-storage-set-view.c (tree_drag_motion): Pass the folder type to
+	`::handleMotion'.
+
+	* Evolution-ShellComponentDnd.idl: Pass @folder_type in
+	::handleDrop and ::handleMotion.
+
+2001-10-19  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view-menu.c (command_about_box): Use EShellAboutBox.
+	(zero_pointer): Removed.
+
+	* e-shell-about-box.h: New.
+	* e-shell-about-box.c: New.
+
+2001-10-18  Ettore Perazzoli  <ettore@ximian.com>
+
+	* Makefile.am (evolution_SOURCES): Ooops.  Remove stale files
+	`e-shell-about-box.[ch]'.
+
+2001-10-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (impl_Shell_selectUserFolder): Set the parent
+	according to the XID we get.
+
+	* Evolution-Shell.idl: New arg @parent_xid in `::selectUserFolder'.
+
+	* evolution-shell-client.c
+	(evolution_shell_client_user_select_folder): New arg @parent.
+	(user_select_folder): Likewise.  Pass it to the CORBA method.
+
+2001-10-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (idle_cb): Urgh.  Remove stale line that caused
+	`display_default' to be set to TRUE for all the non-NULL shell
+	cases.
+
+2001-10-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (set_owner_on_components): Re-set the owner on the
+	component that raised OldOwnerHasDied.
+
+2001-10-15  Iain Holmes  <iain@ximian.com>
+
+	* e-shell-startup-wizard.c (prepare_importer_page): Stop the prepare
+	running twice.
+
+2001-10-14  Dan Winship  <danw@ximian.com>
+
+	* e-corba-storage.c (async_folder_cb): 
+	* e-storage.c (e_storage_result_to_string): Add two missing codes.
+
+2001-10-13  Dan Winship  <danw@ximian.com>
+
+	* evolution-shell-component-utils.c (e_activation_failure_dialog):
+	New function to try to activate a component when you know it's
+	going to fail, and then pop up a dialog explaining why it failed.
+
+2001-10-12  Iain Holmes  <iain@ximian.com>
+
+	* e-shell-importer.c (prepare_intelligent_page): Flush the gdk 
+	functions so that the window will be shown.
+
+	* e-shell-startup-wizard.c (make_mail_dialog_pages): Fix some
+	strings.
+	(prepare_importer_page): Flush GDK functions so that the window 
+	is shown.
+
+2001-10-12  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #7643, Starting new view doesn't honor "view" settings.]
+
+	* e-shell-view-menu.c (command_open_folder_in_new_window): Pass
+	the parent @shell_view as the @template_view arg to
+	`e_shell_create_view()'
+
+	* e-shell-view.c (activate_shortcut_cb): Pass the _view as the
+	@template_view arg to `e_shell_create_view()'.
+
+	* e-shell-folder-commands.c
+	(e_shell_command_open_folder_in_other_window): Pass the parent
+	@shell_view as the @template_view arg to `e_shell_create_view()'.
+
+	* e-shell.c (e_shell_create_view): New arg @template_view.
+	(impl_Shell_createNewView): Pass %NULL as @template_view when
+	calling it.
+	(e_shell_restore_from_settings): Likewise.
+
+2001-10-12  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (quit_box_new): Also flush GDK after flushing GTK.
+	Otherwise GTK might queue draw requests to X that don't get
+	executed.
+
+2001-10-12  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Hopefully really fix #8615 and friends.]
+
+	* main.c (no_views_left_cb): Invoke `e_shell_disconnect_db()'
+	before unreffing the shell.
+
+	* e-shell.c (e_shell_disconnect_db): New.
+	(destroy): Call it instead of unreffing the db manually here.
+
+2001-10-12  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-folder-commands.c
+	(folder_selection_dialog_folder_selected_callback): Don't free the
+	folder_command_data here.  It is supposed to be freed in the async
+	callback.  The leak that Dan supposedly fixed was probably only
+	due to the fact that the component that was supposed to perform
+	the xfer didn't report a result.  Now that xfer actually works, it
+	was triggering the crash instead.  [Fixes #9769.]
+
+2001-10-12  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-offline-handler.c (prepare_for_offline): Only invoke
+	`progress_listener_servant_free()', no need to also do `__fini()'
+	on it as `__fini()' is also called by the former.  [Fixes #12329.]
+	Also, print out the CORBA exception that gets raised so we have
+	some more clues about what is wrong.
+
+2001-10-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c
+	(reparent_storage_set_view_box_and_destroy_popup): Don't die if
+	the folder_bar_popup is %NULL.  Fixes #10922.
+
+2001-10-11  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (idle_cb): Display the default view only if we are
+	starting our own shell, or if the command-line has no arguments
+	and we are talking to an already existing shell.
+
+	* e-uri-schema-registry.c
+	(e_uri_schema_registry_set_handler_for_schema): Do not return a
+	value.
+
+2001-10-11  Dan Winship  <danw@ximian.com>
+
+	* Evolution-Storage.idl: Remove "display_name" arg from update
+	methods. It was only there to do the "Inbox (5)" hack, which is
+	supported directly now.
+
+	* evolution-storage.c (impl_Storage_updateFolder): no longer takes
+	display_name.
+	(evolution_storage_update_folder,
+	evolution_storage_update_folder_by_uri): Likewise.
+	(class_init): Update signal signature.
+
+	* evolution-storage-listener.c
+	(impl_GNOME_Evolution_StorageListener_notifyFolderUpdated): No
+	longer takes display_name, but make it pass the unread_count along
+	in the signal it emits.
+	(class_init): Update signal signature.
+
+	* e-local-storage.c (bonobo_interface_update_folder_cb): 
+	* e-corba-storage.c (impl_StorageListener_notifyFolderUpdated): No
+	longer take display_name.
+
+2001-10-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-storage-set-view.c (handle_evolution_path_drag_motion): Ooops,
+	remove debugging message.
+
+2001-10-10  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-storage.c (e_storage_async_xfer_folder): Make this a no-op if
+	the source and the destination path are the same.
+
+	* e-local-storage.c (impl_async_xfer_folder): return after
+	returning `E_STORAGE_CANTCHANGESTOCKFOLDER' to the callback.
+
+	* e-storage-set-view.c (handle_evolution_path_drag_motion): Make
+	the check for dragging a folder over itself a little bit more
+	accurate.
+
+2001-10-05  Jon Trowbridge  <trow@ximian.com>
+
+	* e-shell-view-menu.c (command_work_offline): This is a message,
+	not a warning!
+	(command_work_online): This is also a message, not a warning!
+	(I'm feeling very anal today.)
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (idle_cb): Do not invoke
+	`e_shell_restore_from_settings()' if `shell' is NULL.
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (e_shell_view_save_settings): Get the right
+	hpaned positions for when the shortcut bar and/or the folder bar
+	are visible.
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (impl_Shell_handleURI): Handle the return value from
+	`evolution_shell_component_client_handle_external_uri()' as an
+	EvolutionShellComponentClientResult instead of treating it as a
+	boolean.  This prevents the incorrect NotFound exceptions we were
+	getting for `mailto:' invocations.
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c (quit_box_new): Also `gdk_flush()'.
+	(idle_cb): If the user doesn't specify at least one `evolution:'
+	URI, restore from the settings.  [Fixes #6093.]
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-shell-component.c: New member `ping_timeout_id' in
+	`EvolutionShellComponentPrivate'.
+	(setup_owner_pinging): New helper function.
+	(impl_owner_died): Unref the owner and set ->owner_client to
+	%NULL.
+	(impl_setOwner): Don't unref here.
+	(destroy): Remove the source for ->ping_timeout_id if not -1.
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* main.c: #include "e-util/e-gtk-utils.h".
+	(quit_box_new): Queue a draw on the window; otherwise it seems to
+	fail to redraw in some cases for some reason [see #11412].
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* evolution-shell-component.c (impl_setOwner): If the owner is
+	dead, emit "owner_died" instead of "owner_unset".
+	(impl_owner_died): New, default implementation for "owner_died".
+	(class_init): Install it.
+
+	* evolution-shell-component.h: New signal "owner_died".
+
+2001-10-05  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (set_owner_on_components): If setting the owner fails,
+	print the a warning message out.  Then restart the component.
+
+	* e-component-registry.c (component_free): Return a boolean value.
+	%FALSE if ::unsetOwner raises an exception.
+	(register_type): New arg @override_duplicate, to avoid complaining
+	if a component gets re-registered.
+	(register_component): Likewise.
+	(e_component_registry_restart_component): New.
+
+	* e-uri-schema-registry.c
+	(e_uri_schema_registry_set_handler_for_schema): Changed return
+	type to `void'.  Just remove the old handler and set up the new
+	one.
+
+	* evolution-shell-component-client.c (corba_exception_to_result):
+	Translate ::OldOwnerHasDied into
+	EVOLUTION_SHELL_COMPONENT_OLDOWNERHASDIED.
+
+	* evolution-shell-component.h: New enum value
+	`EVOLUTION_SHELL_COMPONENT_OLDOWNERHASDIED'.
+
+	* evolution-shell-component.c (impl_setOwner): If the old owner is
+	not alive anymore [use CORBA_Object_non_existent() to figure this
+	out], emit OWNER_UNSET and raise `OldOwnerHasDied'.
+	(evolution_shell_component_result_to_string): New.
+
+	* Evolution-ShellComponent.idl: New exception `OldOwnerHasDied'.
+	(ShellComponent::setOwner): Can raise it.
+
+	* e-folder-type-registry.c
+	(e_folder_type_register_type_registered): New.
+	(e_folder_type_register_unregister_type): New.
+
+2001-10-04  Rodrigo Moya <rodrigo@ximian.com>
+
+	* importer/Makefile.am: added BONOBO_GNOME_CFLAGS to make it compile
+	with latest Bonobo
+
+2001-10-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Fix #11326, The folder list can become detached from its parent
+	window.]
+
+	* e-shell-view.c (folder_context_menu_popped_down_cb): Pop down
+	the folder bar if it's popped up.
+
+2001-10-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell.c (e_shell_component_maybe_crashed): Make the crash
+	message less dorky.  [#10264]
+
+2001-10-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	[Don't allow dragging from a folder to one of its descendants or
+	onto itself, when the operation is GDK_DRAG_MOVE.  This fixes bugs
+	like #8737.]
+
+	* e-storage-set-view.c (handle_evolution_path_drag_motion): Don't
+	highlight if the user is attempting to move a folder to one of its
+	descendants.
+
+2001-10-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (e_shell_view_construct): Use
+	`bonobo_ui_component_new_default()', not
+	`bonobo_ui_component_new()'.
+
+2001-10-02  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-shell-view.c (storage_set_removed_folder_callback): New,
+	callback for the ::removed_folder signal on the shell's
+	EStorageSet.
+	(e_shell_view_construct): Connect.
+	(e_shell_view_remove_control_for_uri): Removed.
+
+	* e-shell-folder-commands.c
+	(folder_selection_dialog_folder_selected_callback): Don't call
+	`e_shell_view_remove_control_for_uri()'.
+	(e_shell_command_delete_folder): Not here either.  And don't
+	display the default URI either.
+
 2001-09-28  Ettore Perazzoli  <ettore@ximian.com>
 
 	[Fix #8053, `GNOME_Evolution_Shortcuts' doesn't seem to work.]

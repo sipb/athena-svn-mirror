@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,8 +25,13 @@
 #endif
 
 #include <glib.h>
+
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gdk/gdkx.h>
+
+#include <X11/Xatom.h>
+
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -43,6 +47,8 @@
 #include <gal/util/e-util.h>
 
 #include "Evolution.h"
+
+#include "e-util/e-dialog-utils.h"
 
 #include "e-activity-handler.h"
 #include "e-component-registry.h"
@@ -117,6 +123,11 @@ struct _EShellPrivate {
 	   the start-up sequence, to avoid CORBA calls to do make wrong things
 	   to happen while the shell is initializing.  */
 	unsigned int is_initialized : 1;
+
+	/* Wether the shell is working in "interactive" mode or not.
+	   (Currently, it's interactive IIF there is at least one active
+	   view.)  */
+	unsigned int is_interactive : 1;
 };
 
 
@@ -135,6 +146,47 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
+
+
+/* Interactivity handling.  */
+
+static void
+set_interactive (EShell *shell,
+		 gboolean interactive)
+{
+	EShellPrivate *priv;
+	GList *id_list, *p;
+
+	priv = shell->priv;
+
+	if (!! priv->is_interactive == !! interactive)
+		return;
+
+	priv->is_interactive = interactive;
+
+	id_list = e_component_registry_get_id_list (priv->component_registry);
+	for (p = id_list; p != NULL; p = p->next) {
+		EvolutionShellComponentClient *shell_component_client;
+		GNOME_Evolution_ShellComponent shell_component_objref;
+		const char *id;
+		CORBA_Environment ev;
+
+		id = (const char *) p->data;
+		shell_component_client = e_component_registry_get_component_by_id (priv->component_registry, id);
+		shell_component_objref = bonobo_object_corba_objref (BONOBO_OBJECT (shell_component_client));
+
+		CORBA_exception_init (&ev);
+
+		GNOME_Evolution_ShellComponent_interactive (shell_component_objref, interactive, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION)
+			g_warning ("Error changing interactive status of component %s to %s -- %s\n",
+				   id, interactive ? "TRUE" : "FALSE", ev._repo_id);
+
+		CORBA_exception_free (&ev);
+	}
+
+	e_free_string_list (id_list);
+}
 
 
 /* Callback for the folder selection dialog.  */
@@ -287,14 +339,12 @@ impl_Shell_createNewView (PortableServer_Servant servant,
 		return CORBA_OBJECT_NIL;
 	}
 
-	shell_view = e_shell_create_view (shell, uri);
+	shell_view = e_shell_create_view (shell, uri, NULL);
 	if (shell_view == NULL) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_GNOME_Evolution_Shell_NotFound, NULL);
 		return CORBA_OBJECT_NIL;
 	}
-
-	gtk_widget_show (GTK_WIDGET (shell_view));
 
 	shell_view_interface = e_shell_view_get_corba_interface (shell_view);
 	if (shell_view_interface == CORBA_OBJECT_NIL) {
@@ -348,7 +398,8 @@ impl_Shell_handleURI (PortableServer_Servant servant,
 		return;
 	}
 
-	if (! evolution_shell_component_client_handle_external_uri (schema_handler, uri)) {
+	if (evolution_shell_component_client_handle_external_uri (schema_handler, uri)
+	    != EVOLUTION_SHELL_COMPONENT_OK) {
 		/* FIXME: Just a wild guess here.  */
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_GNOME_Evolution_Shell_NotFound, NULL);
@@ -371,6 +422,7 @@ corba_listener_destroy_notify (void *data)
 
 static void
 impl_Shell_selectUserFolder (PortableServer_Servant servant,
+			     const CORBA_long_long parent_xid,
 			     const GNOME_Evolution_FolderSelectionListener listener,
 			     const CORBA_char *title,
 			     const CORBA_char *default_folder,
@@ -406,6 +458,7 @@ impl_Shell_selectUserFolder (PortableServer_Servant servant,
 								       allowed_type_names,
 								       default_type);
 
+
 	listener_duplicate = CORBA_Object_duplicate (listener, ev);
 	gtk_object_set_data_full (GTK_OBJECT (folder_selection_dialog), "corba_listener",
 				  listener_duplicate, corba_listener_destroy_notify);
@@ -415,7 +468,43 @@ impl_Shell_selectUserFolder (PortableServer_Servant servant,
 	gtk_signal_connect (GTK_OBJECT (folder_selection_dialog), "cancelled",
 			    GTK_SIGNAL_FUNC (folder_selection_dialog_cancelled_cb), shell);
 
-	gtk_widget_show (folder_selection_dialog);
+	if (parent_xid == 0) {
+		gtk_widget_show (folder_selection_dialog);
+	} else {
+		XClassHint class_hints;
+		XWMHints *parent_wm_hints;
+
+		/* Set the WM class and the WindowGroup hint to be the same as
+		   the foreign parent window's.  This way smartass window
+		   managers like Sawfish don't get confused.  */
+
+		e_set_dialog_parent_from_xid (GTK_WINDOW (folder_selection_dialog), parent_xid);
+
+		if (XGetClassHint (GDK_DISPLAY (), (Window) parent_xid, &class_hints)) {
+			gtk_window_set_wmclass (GTK_WINDOW (folder_selection_dialog),
+						class_hints.res_name, class_hints.res_class);
+			XFree (class_hints.res_name);
+			XFree (class_hints.res_class);
+		}
+
+		gtk_widget_show (folder_selection_dialog);
+
+		while (folder_selection_dialog->window == NULL)
+			gtk_main_iteration ();
+
+		parent_wm_hints = XGetWMHints (GDK_DISPLAY (), (Window) parent_xid);
+
+		if (parent_wm_hints != NULL && (parent_wm_hints->flags & WindowGroupHint)) {
+			XWMHints *wm_hints;
+
+			wm_hints = XAllocWMHints ();
+			wm_hints->flags = WindowGroupHint;
+			wm_hints->window_group = parent_wm_hints->window_group;
+			XSetWMHints (GDK_DISPLAY (), GDK_WINDOW_XWINDOW (folder_selection_dialog->window), wm_hints);
+			XFree (wm_hints);
+			XFree (parent_wm_hints);
+		}
+	}
 }
 
 static GNOME_Evolution_Storage
@@ -686,19 +775,35 @@ set_owner_on_components (EShell *shell)
 	id_list = e_component_registry_get_id_list (priv->component_registry);
 	for (p = id_list; p != NULL; p = p->next) {
 		EvolutionShellComponentClient *component_client;
+		EvolutionShellComponentResult result;
 		const char *id;
 
 		id = (const char *) p->data;
 		component_client = e_component_registry_get_component_by_id (priv->component_registry, id);
 
-		evolution_shell_component_client_set_owner (component_client, corba_shell, local_directory);
+		result = evolution_shell_component_client_set_owner (component_client, corba_shell, local_directory);
+		if (result != EVOLUTION_SHELL_COMPONENT_OK) {
+			g_warning ("Error setting owner on component %s -- %s",
+				   id, evolution_shell_component_result_to_string (result));
+
+			if (result == EVOLUTION_SHELL_COMPONENT_OLDOWNERHASDIED) {
+				component_client = e_component_registry_restart_component (priv->component_registry, id);
+				result = evolution_shell_component_client_set_owner (component_client, corba_shell,
+										     local_directory);
+				if (result != EVOLUTION_SHELL_COMPONENT_OK) {
+					g_warning ("Error re-setting owner on component %s -- %s",
+						   id, evolution_shell_component_result_to_string (result));
+					/* (At this point, we give up.)  */
+				}
+			}
+		}
 	}
 
 	e_free_string_list (id_list);
 }
 
 
-/* EShellView destruction callback.  */
+/* EShellView handling and bookkeeping.  */
 
 static int
 view_delete_event_cb (GtkWidget *widget,
@@ -738,10 +843,51 @@ view_destroy_cb (GtkObject *object,
 	shell->priv->views = g_list_remove (shell->priv->views, object);
 
 	if (shell->priv->views == NULL) {
+		set_interactive (shell, FALSE);
+
 		bonobo_object_ref (BONOBO_OBJECT (shell));
 		gtk_signal_emit (GTK_OBJECT (shell), signals [NO_VIEWS_LEFT]);
 		bonobo_object_unref (BONOBO_OBJECT (shell));
 	}
+}
+
+static EShellView *
+create_view (EShell *shell,
+	     const char *uri,
+	     EShellView *template_view)
+{
+	EShellPrivate *priv;
+	EShellView *view;
+	ETaskBar *task_bar;
+
+	priv = shell->priv;
+
+	view = e_shell_view_new (shell);
+
+	gtk_signal_connect (GTK_OBJECT (view), "delete_event",
+			    GTK_SIGNAL_FUNC (view_delete_event_cb), shell);
+	gtk_signal_connect (GTK_OBJECT (view), "destroy",
+			    GTK_SIGNAL_FUNC (view_destroy_cb), shell);
+
+	if (uri != NULL) {
+		if (!e_shell_view_display_uri (E_SHELL_VIEW (view), uri)) {
+			/* FIXME: Consider popping a dialog box up about how the provided URI does not
+			   exist/could not be displayed.  */
+			e_shell_view_display_uri (E_SHELL_VIEW (view), E_SHELL_VIEW_DEFAULT_URI);
+		}
+	}
+
+	shell->priv->views = g_list_prepend (shell->priv->views, view);
+
+	task_bar = e_shell_view_get_task_bar (view);
+	e_activity_handler_attach_task_bar (priv->activity_handler, task_bar);
+
+	if (template_view != NULL) {
+		e_shell_view_show_folder_bar (view, e_shell_view_folder_bar_shown (template_view));
+		e_shell_view_show_shortcut_bar (view, e_shell_view_shortcut_bar_shown (template_view));
+	}
+
+	return view;
 }
 
 
@@ -757,18 +903,19 @@ destroy (GtkObject *object)
 	shell = E_SHELL (object);
 	priv = shell->priv;
 
-	if (shell->priv->db != CORBA_OBJECT_NIL) {
-		bonobo_object_release_unref (shell->priv->db, NULL);
-		shell->priv->db = CORBA_OBJECT_NIL;
-	}
+	priv->is_initialized = FALSE;
+
+	e_shell_disconnect_db (shell);
 
 	if (priv->iid != NULL)
 		oaf_active_server_unregister (priv->iid, bonobo_object_corba_objref (BONOBO_OBJECT (shell)));
 
 	g_free (priv->local_directory);
 
-	if (priv->storage_set != NULL)
+	if (priv->storage_set != NULL) {
 		gtk_object_unref (GTK_OBJECT (priv->storage_set));
+		priv->storage_set = NULL;
+	}
 
 	if (priv->local_storage != NULL)
 		gtk_object_unref (GTK_OBJECT (priv->local_storage));
@@ -895,6 +1042,7 @@ init (EShell *shell)
 	priv->line_status                  = E_SHELL_LINE_STATUS_ONLINE;
 	priv->db                           = CORBA_OBJECT_NIL;
 	priv->is_initialized               = FALSE;
+	priv->is_interactive               = FALSE;
 
 	shell->priv = priv;
 }
@@ -1083,6 +1231,7 @@ e_shell_new (const char *local_directory,
  * e_shell_create_view:
  * @shell: The shell for which to create a new view.
  * @uri: URI for the new view.
+ * @template_view: Window from which to copy the view settings (can be %NULL).
  * 
  * Create a new view for @uri.
  * 
@@ -1090,35 +1239,49 @@ e_shell_new (const char *local_directory,
  **/
 EShellView *
 e_shell_create_view (EShell *shell,
-		     const char *uri)
+		     const char *uri,
+		     EShellView *template_view)
 {
 	EShellView *view;
 	EShellPrivate *priv;
-	ETaskBar *task_bar;
 
 	g_return_val_if_fail (shell != NULL, NULL);
 	g_return_val_if_fail (E_IS_SHELL (shell), NULL);
 
 	priv = shell->priv;
 
-	view = e_shell_view_new (shell);
+	view = create_view (shell, uri, template_view);
 
-	gtk_signal_connect (GTK_OBJECT (view), "delete_event",
-			    GTK_SIGNAL_FUNC (view_delete_event_cb), shell);
-	gtk_signal_connect (GTK_OBJECT (view), "destroy",
-			    GTK_SIGNAL_FUNC (view_destroy_cb), shell);
+	gtk_widget_show (GTK_WIDGET (view));
+	while (gtk_events_pending ())
+		gtk_main_iteration ();
 
-	if (uri != NULL)
-		if (!e_shell_view_display_uri (E_SHELL_VIEW (view), uri))
-			/* FIXME: Consider popping a dialog box up
-			   about how the provided URI does not
-			   exist/could not be displayed */
-			e_shell_view_display_uri (E_SHELL_VIEW (view), E_SHELL_VIEW_DEFAULT_URI);
+	set_interactive (shell, TRUE);
 
-	shell->priv->views = g_list_prepend (shell->priv->views, view);
+	return view;
+}
 
-	task_bar = e_shell_view_get_task_bar (view);
-	e_activity_handler_attach_task_bar (priv->activity_handler, task_bar);
+EShellView *
+e_shell_create_view_from_settings (EShell *shell,
+				   const char *uri,
+				   EShellView *template_view,
+				   int view_num,
+				   gboolean *settings_found)
+{
+	EShellView *view;
+
+	g_return_val_if_fail (shell != NULL, NULL);
+	g_return_val_if_fail (E_IS_SHELL (shell), NULL);
+
+	view = create_view (shell, uri, template_view);
+
+	*settings_found = e_shell_view_load_settings (view, view_num);
+
+	gtk_widget_show (GTK_WIDGET (view));
+	while (gtk_events_pending ())
+		gtk_main_iteration ();
+
+	set_interactive (shell, TRUE);
 
 	return view;
 }
@@ -1386,17 +1549,11 @@ e_shell_restore_from_settings (EShell *shell)
 
 	for (i = 0; i < num_views; i++) {
 		EShellView *view;
+		gboolean settings_found;
 
-		/* FIXME: restore the URI here.  There should be an
-                   e_shell_create_view_from_configuration() thingie.  */
-		view = e_shell_create_view (shell, NULL);
-
-		if (! e_shell_view_load_settings (view, i))
+		view = e_shell_create_view_from_settings (shell, NULL, NULL, i, &settings_found);
+		if (! settings_found)
 			retval = FALSE;
-
-		/* This needs to be done after loading the settings as the
-		   default size is in the settings as well.  */
-		gtk_widget_show (GTK_WIDGET (view));
 	}
 
 	return retval;
@@ -1453,6 +1610,7 @@ e_shell_component_maybe_crashed   (EShell *shell,
 {
 	EShellPrivate *priv;
 	GtkWindow *parent_window;
+	EvolutionShellComponentClient *component;
 	GList *p;
 
 	g_return_if_fail (shell != NULL);
@@ -1462,6 +1620,19 @@ e_shell_component_maybe_crashed   (EShell *shell,
 	g_return_if_fail (E_IS_SHELL_VIEW (shell_view));
 
 	priv = shell->priv;
+
+	if (strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0) {
+		const char *path;
+
+		path = uri + E_SHELL_URI_PREFIX_LEN;
+		if (e_storage_set_get_folder (priv->storage_set, path) == NULL)
+			return;
+	}
+
+	component = e_folder_type_registry_get_handler_for_type (priv->folder_type_registry, type_name);
+	if (component != NULL
+	    && bonobo_unknown_ping (bonobo_object_corba_objref (BONOBO_OBJECT (component))))
+		return;
 
 	/* See if that type has caused a crash already.  */
 
@@ -1485,9 +1656,10 @@ e_shell_component_maybe_crashed   (EShell *shell,
 		parent_window = GTK_WINDOW (shell_view);
 
 	e_notice (parent_window, GNOME_MESSAGE_BOX_ERROR,
-		  _("Ooops!  The views for `%s' have died unexpectedly.  :-(\n"
-		    "This probably means that the %s component has crashed."),
-		  uri, type_name);
+		  _("The Evolution component that handles folders of type \"%s\"\n"
+		    "has unexpectedly quit. You will need to quit Evolution and restart\n"
+		    "in order to access that data again."),
+		  type_name);
 
 	if (shell_view)
 		bonobo_window_deregister_dead_components (BONOBO_WINDOW (shell_view));
@@ -1668,6 +1840,8 @@ e_shell_get_user_creatable_items_handler (EShell *shell)
 }
 
 
+/* FIXME: These are ugly hacks, they really should not be needed.  */
+
 void
 e_shell_unregister_all (EShell *shell)
 {
@@ -1679,8 +1853,26 @@ e_shell_unregister_all (EShell *shell)
 
 	priv = shell->priv;
 
+	priv->is_initialized = FALSE;
+
 	gtk_object_unref (GTK_OBJECT (priv->component_registry));
 	priv->component_registry = NULL;
+}
+
+void
+e_shell_disconnect_db (EShell *shell)
+{
+	EShellPrivate *priv;
+
+	g_return_if_fail (E_IS_SHELL (shell));
+
+	priv = shell->priv;
+
+	if (priv->db == CORBA_OBJECT_NIL)
+		return;
+
+	bonobo_object_release_unref (priv->db, NULL);
+	priv->db = CORBA_OBJECT_NIL;
 }
 
 

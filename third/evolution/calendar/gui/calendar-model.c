@@ -7,10 +7,9 @@
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,8 +36,12 @@
 #include <cal-util/timeutil.h>
 #include "calendar-commands.h"
 #include "calendar-config.h"
+#include "comp-util.h"
 #include "itip-utils.h"
 #include "calendar-model.h"
+#include "evolution-activity-client.h"
+#include "e-cell-date-edit-text.h"
+#include "misc.h"
 
 /* This specifies how often we refresh the list, so that completed tasks are
    hidden according to the config setting, and overdue tasks change color etc.
@@ -46,6 +49,19 @@
    Note that if the user is editing an item in the list, they will probably
    lose their edit, so this isn't ideal. */
 #define CALENDAR_MODEL_REFRESH_TIMEOUT	1000 * 60 * 10
+
+/* These hold the date values of the objects, so we can free the values when
+   we no longer need them. */
+typedef struct _CalendarModelObjectData CalendarModelObjectData;
+struct _CalendarModelObjectData {
+	ECellDateEditValue *dtstart;
+	ECellDateEditValue *dtend;
+	ECellDateEditValue *due;
+	ECellDateEditValue *completed;
+};
+
+/* We use a pointer to this value to indicate that the property is not set. */
+static ECellDateEditValue unset_date_edit_value;
 
 /* Private part of the ECalendarModel structure */
 struct _CalendarModelPrivate {
@@ -61,6 +77,10 @@ struct _CalendarModelPrivate {
 
 	/* Array of pointers to calendar objects */
 	GArray *objects;
+
+	/* Array of CalendarModelObjectData* holding data for each of the
+	   objects in the objects array above. */
+	GArray *objects_data;
 
 	/* UID -> array index hash */
 	GHashTable *uid_index_hash;
@@ -84,6 +104,9 @@ struct _CalendarModelPrivate {
 
 	/* The id of our timeout function for refreshing the list. */
 	gint timeout_id;
+
+	/* The activity client used to show messages on the status bar. */
+	EvolutionActivityClient *activity;
 };
 
 
@@ -203,6 +226,7 @@ calendar_model_init (CalendarModel *model)
 	priv->query = NULL;
 
 	priv->objects = g_array_new (FALSE, TRUE, sizeof (CalComponent *));
+	priv->objects_data = g_array_new (FALSE, FALSE, sizeof (CalendarModelObjectData));
 	priv->uid_index_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->new_comp_vtype = CAL_COMPONENT_EVENT;
 	priv->use_24_hour_format = TRUE;
@@ -213,6 +237,25 @@ calendar_model_init (CalendarModel *model)
 	priv->addresses = itip_addresses_get ();
 	
 	priv->zone = NULL;
+
+	priv->activity = NULL;
+}
+
+static void
+calendar_model_free_object_data (CalendarModel *model,
+				 CalendarModelObjectData *object_data)
+{
+	if (object_data->dtstart != &unset_date_edit_value)
+		g_free (object_data->dtstart);
+
+	if (object_data->dtend != &unset_date_edit_value)
+		g_free (object_data->dtend);
+
+	if (object_data->due != &unset_date_edit_value)
+		g_free (object_data->due);
+
+	if (object_data->completed != &unset_date_edit_value)
+		g_free (object_data->completed);
 }
 
 /* Called from g_hash_table_foreach_remove(), frees a stored UID->index
@@ -242,13 +285,19 @@ free_objects (CalendarModel *model)
 
 	for (i = 0; i < priv->objects->len; i++) {
 		CalComponent *comp;
+		CalendarModelObjectData *object_data;
 
 		comp = g_array_index (priv->objects, CalComponent *, i);
 		g_assert (comp != NULL);
 		gtk_object_unref (GTK_OBJECT (comp));
+
+		object_data = &g_array_index (priv->objects_data,
+					      CalendarModelObjectData, i);
+		calendar_model_free_object_data (model, object_data);
 	}
 
 	g_array_set_size (priv->objects, 0);
+	g_array_set_size (priv->objects_data, 0);
 }
 
 /* Destroy handler for the calendar table model */
@@ -298,9 +347,17 @@ calendar_model_destroy (GtkObject *object)
 	g_array_free (priv->objects, TRUE);
 	priv->objects = NULL;
 
+	g_array_free (priv->objects_data, TRUE);
+	priv->objects_data = NULL;
+
 	g_free (priv->default_category);
 
 	itip_addresses_free (priv->addresses);
+
+	if (priv->activity) {
+		gtk_object_unref (GTK_OBJECT (priv->activity));
+		priv->activity = NULL;
+	}
 
 	/* Free the private structure */
 
@@ -333,44 +390,6 @@ calendar_model_row_count (ETableModel *etm)
 	priv = model->priv;
 
 	return priv->objects->len;
-}
-
-/* Creates a nice string representation of a time value. If show_midnight is
-   FALSE, and the time is midnight, then we just show the date. */
-static char*
-get_time_t (CalendarModel *model, time_t *t, gboolean show_midnight)
-{
-	static char buffer[64];
-	struct tm tmp_tm;
-	struct icaltimetype tt;
-
-	if (*t <= 0) {
-		buffer[0] = '\0';
-	} else {
-		/* Note that although the property may be in a different
-		   timezone, we convert it to the current timezone to display
-		   it in the table. If the user actually edits the value,
-		   it will be set to the current timezone. See set_datetime. */
-		tt = icaltime_from_timet_with_zone (*t, FALSE,
-						    model->priv->zone);
-		tmp_tm.tm_year = tt.year - 1900;
-		tmp_tm.tm_mon = tt.month - 1;
-		tmp_tm.tm_mday = tt.day;
-		tmp_tm.tm_hour = tt.hour;
-		tmp_tm.tm_min = tt.minute;
-		tmp_tm.tm_sec = tt.second;
-		tmp_tm.tm_isdst = -1;
-
-		tmp_tm.tm_wday = time_day_of_week (tt.day, tt.month - 1,
-						   tt.year);
-
-		e_time_format_date_and_time (&tmp_tm,
-					     model->priv->use_24_hour_format,
-					     show_midnight, FALSE,
-					     buffer, sizeof (buffer));
-	}
-
-	return buffer;
 }
 
 /* Builds a string based on the list of CATEGORIES properties of a calendar
@@ -406,79 +425,98 @@ get_classification (CalComponent *comp)
 	}
 }
 
-/* Builds a string for the COMPLETED property of a calendar component */
-static char *
+/* Returns an ECellDateEditValue* for a COMPLETED property of a
+   calendar component. Note that we cache these in the objects_data array so
+   we can free them eventually. */
+static ECellDateEditValue*
 get_completed	(CalendarModel *model,
-		 CalComponent  *comp)
+		 CalComponent  *comp,
+		 int row)
 {
+	CalendarModelPrivate *priv;
+	CalendarModelObjectData *object_data;
 	struct icaltimetype *completed;
-	time_t t;
 
-	cal_component_get_completed (comp, &completed);
+	priv = model->priv;
 
-	if (!completed)
-		t = 0;
-	else {
-		/* Note that COMPLETED is stored in UTC, though we show it in
-		   the current timezone. */
-		t = icaltime_as_timet_with_zone (*completed, icaltimezone_get_utc_timezone ());
-		cal_component_free_icaltimetype (completed);
+	object_data = &g_array_index (priv->objects_data,
+				      CalendarModelObjectData, row);
+
+	if (!object_data->completed) {
+		cal_component_get_completed (comp, &completed);
+
+		if (completed) {
+			object_data->completed = g_new (ECellDateEditValue, 1);
+			object_data->completed->tt = *completed;
+			object_data->completed->zone = icaltimezone_get_utc_timezone ();
+			cal_component_free_icaltimetype (completed);
+		} else {
+			object_data->completed = &unset_date_edit_value;
+		}
 	}
 
-	return get_time_t (model, &t, TRUE);
+	return (object_data->completed == &unset_date_edit_value)
+		? NULL : object_data->completed;
 }
 
-/* Builds a string for and frees a date/time value */
-static char *
-get_and_free_datetime (CalendarModel *model, CalComponentDateTime dt)
+/* Returns an ECellDateEditValue* for a DTSTART, DTEND or DUE property of a
+   calendar component. Note that we cache these in the objects_data array so
+   we can free them eventually. */
+static ECellDateEditValue*
+get_date_edit_value (CalendarModel *model, CalComponent *comp,
+		     int col, int row)
 {
-	time_t t;
+	CalendarModelPrivate *priv;
+	CalComponentDateTime dt;
+	CalendarModelObjectData *object_data;
+	ECellDateEditValue **value;
 
-	if (!dt.value)
-		t = 0;
-	else {
-		CalClientGetStatus status;
-		icaltimezone *zone;
+	priv = model->priv;
 
-		/* FIXME: TIMEZONES: Handle error. */
-		status = cal_client_get_timezone (model->priv->client, dt.tzid,
-						  &zone);
-		t = icaltime_as_timet_with_zone (*dt.value, zone);
+	object_data = &g_array_index (priv->objects_data,
+				      CalendarModelObjectData, row);
+
+	if (col == CAL_COMPONENT_FIELD_DTSTART)
+		value = &object_data->dtstart;
+	else if (col == CAL_COMPONENT_FIELD_DTEND)
+		value = &object_data->dtend;
+	else
+		value = &object_data->due;
+
+	if (!(*value)) {
+		if (col == CAL_COMPONENT_FIELD_DTSTART)
+			cal_component_get_dtstart (comp, &dt);
+		else if (col == CAL_COMPONENT_FIELD_DTEND)
+			cal_component_get_dtend (comp, &dt);
+		else
+			cal_component_get_due (comp, &dt);
+
+		if (dt.value) {
+			CalClientGetStatus status;
+			icaltimezone *zone;
+
+			/* For a DTEND with a DATE value, we subtract 1 from
+			   the day to display it. */
+			if (col == CAL_COMPONENT_FIELD_DTEND
+			    && dt.value->is_date) {
+				icaltime_adjust (dt.value, -1, 0, 0, 0);
+			}
+
+			*value = g_new (ECellDateEditValue, 1);
+			(*value)->tt = *dt.value;
+
+			/* FIXME: TIMEZONES: Handle error. */
+			status = cal_client_get_timezone (model->priv->client,
+							  dt.tzid, &zone);
+			(*value)->zone = zone;
+		} else {
+			*value = &unset_date_edit_value;
+		}
+
+		cal_component_free_datetime (&dt);
 	}
 
-	cal_component_free_datetime (&dt);
-
-	return get_time_t (model, &t, TRUE);
-}
-
-/* Builds a string for the DTEND property of a calendar component */
-static char *
-get_dtend (CalendarModel *model, CalComponent *comp)
-{
-	CalComponentDateTime dt;
-
-	cal_component_get_dtend (comp, &dt);
-	return get_and_free_datetime (model, dt);
-}
-
-/* Builds a string for the DTSTART property of a calendar component */
-static char *
-get_dtstart (CalendarModel *model, CalComponent *comp)
-{
-	CalComponentDateTime dt;
-
-	cal_component_get_dtstart (comp, &dt);
-	return get_and_free_datetime (model, dt);
-}
-
-/* Builds a string for the DUE property of a calendar component */
-static char *
-get_due (CalendarModel *model, CalComponent *comp)
-{
-	CalComponentDateTime dt;
-
-	cal_component_get_due (comp, &dt);
-	return get_and_free_datetime (model, dt);
+	return (*value == &unset_date_edit_value) ? NULL : *value;
 }
 
 /* Builds a string for the GEO property of a calendar component */
@@ -505,22 +543,21 @@ get_geo (CalComponent *comp)
 }
 
 /* Builds a string for the PERCENT property of a calendar component */
-static char *
+static int
 get_percent (CalComponent *comp)
 {
-	int *percent;
-	static char buf[32];
+	int *percent, retval;
 
 	cal_component_get_percent (comp, &percent);
 
-	if (!percent)
-		buf[0] = '\0';
-	else {
-		g_snprintf (buf, sizeof (buf), "%d%%", *percent);
+	if (percent) {
+		retval = *percent;
 		cal_component_free_percent (percent);
+	} else {
+		retval = -1;
 	}
 
-	return buf;
+	return retval;
 }
 
 /* Builds a string for the PRIORITY property of a calendar component */
@@ -731,6 +768,15 @@ get_status (CalComponent *comp)
 	}
 }
 
+static void *
+get_location (CalComponent *comp)
+{
+	const char *location;
+
+	cal_component_get_location (comp, &location);
+	return (void*) location;
+}
+
 /* value_at handler for the calendar table model */
 static void *
 calendar_model_value_at (ETableModel *etm, int col, int row)
@@ -760,22 +806,18 @@ calendar_model_value_at (ETableModel *etm, int col, int row)
 		return get_classification (comp);
 
 	case CAL_COMPONENT_FIELD_COMPLETED:
-		return get_completed (model, comp);
+		return get_completed (model, comp, row);
 
 	case CAL_COMPONENT_FIELD_DTEND:
-		return get_dtend (model, comp);
-
 	case CAL_COMPONENT_FIELD_DTSTART:
-		return get_dtstart (model, comp);
-
 	case CAL_COMPONENT_FIELD_DUE:
-		return get_due (model, comp);
+		return get_date_edit_value (model, comp, col, row);
 
 	case CAL_COMPONENT_FIELD_GEO:
 		return get_geo (comp);
 
 	case CAL_COMPONENT_FIELD_PERCENT:
-		return get_percent (comp);
+		return GINT_TO_POINTER (get_percent (comp));
 
 	case CAL_COMPONENT_FIELD_PRIORITY:
 		return get_priority (comp);
@@ -860,66 +902,14 @@ calendar_model_value_at (ETableModel *etm, int col, int row)
 	case CAL_COMPONENT_FIELD_COMPONENT:
 		return comp;
 
+	case CAL_COMPONENT_FIELD_LOCATION :
+		return get_location (comp);
+
 	default:
 		g_message ("calendar_model_value_at(): Requested invalid column %d", col);
 		g_assert_not_reached ();
 		return NULL;
 	}
-}
-
-/* Returns whether a string is NULL, empty, or full of whitespace */
-static gboolean
-string_is_empty (const char *value)
-{
-	const char *p;
-	gboolean empty = TRUE;
-
-	if (value) {
-		p = value;
-		while (*p) {
-			if (!isspace (*p)) {
-				empty = FALSE;
-				break;
-			}
-			p++;
-		}
-	}
-	return empty;
-}
-
-
-/* FIXME: We need to set the "transient_for" property for the dialog, but
-   the model doesn't know anything about the windows. */
-static void
-show_date_warning (CalendarModel *model)
-{
-	GtkWidget *dialog;
-	char buffer[64], message[256], *format;
-	time_t t;
-	struct tm *tmp_tm;
-
-	t = time (NULL);
-	/* We are only using this as an example, so the timezone doesn't
-	   matter. */
-	tmp_tm = localtime (&t);
-
-	if (model->priv->use_24_hour_format)
-		/* strftime format of a weekday, a date and a time, 24-hour. */
-		format = _("%a %m/%d/%Y %H:%M:%S");
-	else
-		/* strftime format of a weekday, a date and a time, 12-hour. */
-		format = _("%a %m/%d/%Y %I:%M:%S %p");
-
-	strftime (buffer, sizeof (buffer), format, tmp_tm);
-
-	g_snprintf (message, 256,
-		    _("The date must be entered in the format: \n\n%s"),
-		    buffer);
-
-	dialog = gnome_message_box_new (message,
-					GNOME_MESSAGE_BOX_ERROR,
-					GNOME_STOCK_BUTTON_OK, NULL);
-	gtk_widget_show (dialog);
 }
 
 /* Builds a list of categories from a comma-delimited string */
@@ -1005,31 +995,18 @@ set_classification (CalComponent *comp,
 /* Called to set the "Date Completed" field. We also need to update the
    Status and Percent fields to make sure they match. */
 static void
-set_completed (CalendarModel *model, CalComponent *comp, const char *value)
+set_completed (CalendarModel *model, CalComponent *comp, const void *value)
 {
-	ETimeParseStatus status;
-	struct tm tmp_tm;
-	time_t t;
+	ECellDateEditValue *dv = (ECellDateEditValue*) value;
 
-	status = e_time_parse_date_and_time (value, &tmp_tm);
-
-	if (status == E_TIME_PARSE_INVALID) {
-		show_date_warning (model);
-	} else if (status == E_TIME_PARSE_NONE) {
+	if (!dv) {
 		ensure_task_not_complete (comp);
 	} else {
-		struct icaltimetype itt = icaltime_null_time ();
-
-		itt.year = tmp_tm.tm_year + 1900;
-		itt.month = tmp_tm.tm_mon + 1;
-		itt.day = tmp_tm.tm_mday;
-		itt.hour = tmp_tm.tm_hour;
-		itt.minute = tmp_tm.tm_min;
-		itt.second = tmp_tm.tm_sec;
+		time_t t;
 
 		/* We assume that COMPLETED is entered in the current timezone,
 		   even though it gets stored in UTC. */
-		t = icaltime_as_timet_with_zone (itt, model->priv->zone);
+		t = icaltime_as_timet_with_zone (dv->tt, dv->zone);
 
 		ensure_task_complete (comp, t);
 	}
@@ -1037,33 +1014,24 @@ set_completed (CalendarModel *model, CalComponent *comp, const char *value)
 
 /* Sets a CalComponentDateTime value */
 static void
-set_datetime (CalendarModel *model, CalComponent *comp, const char *value,
-	      void (* set_func) (CalComponent *comp, CalComponentDateTime *dt))
+set_datetime (CalendarModel *model, CalComponent *comp, const void *value,
+	      void (* set_func) (CalComponent *comp, CalComponentDateTime *dt),
+	      gboolean is_dtend)
 {
-	ETimeParseStatus status;
-	struct tm tmp_tm;
+	ECellDateEditValue *dv = (ECellDateEditValue*) value;
 
-	status = e_time_parse_date_and_time (value, &tmp_tm);
-
-	if (status == E_TIME_PARSE_INVALID) {
-		show_date_warning (model);
-	} else if (status == E_TIME_PARSE_NONE) {
+	if (!dv) {
 		(* set_func) (comp, NULL);
 	} else {
 		CalComponentDateTime dt;
-		struct icaltimetype itt = icaltime_null_time ();
 
-		itt.year = tmp_tm.tm_year + 1900;
-		itt.month = tmp_tm.tm_mon + 1;
-		itt.day = tmp_tm.tm_mday;
-		itt.hour = tmp_tm.tm_hour;
-		itt.minute = tmp_tm.tm_min;
-		itt.second = tmp_tm.tm_sec;
+		dt.value = &dv->tt;
+		dt.tzid = icaltimezone_get_tzid (dv->zone);
 
-		dt.value = &itt;
-		/* FIXME: We assume it is being set to the current timezone.
-		   Is that OK? */
-		dt.tzid = icaltimezone_get_tzid (model->priv->zone);
+		/* For a DTEND with a DATE value, we add 1 day to it. */
+		if (is_dtend && dt.value->is_date) {
+			icaltime_adjust (dt.value, 1, 0, 0, 0);
+		}
 
 		(* set_func) (comp, &dt);
 	}
@@ -1109,45 +1077,27 @@ set_geo (CalComponent *comp, const char *value)
 	cal_component_set_geo (comp, &geo);
 }
 
-/* FIXME: We need to set the "transient_for" property for the dialog, but the
- * model doesn't know anything about the windows.
- */
-static void
-show_percent_warning (void)
-{
-	GtkWidget *dialog;
-
-	dialog = gnome_message_box_new (_("The percent value must be between 0 and 100, inclusive"),
-					GNOME_MESSAGE_BOX_ERROR,
-					GNOME_STOCK_BUTTON_OK, NULL);
-	gtk_widget_show (dialog);
-}
-
 /* Sets the percent value of a calendar component */
 static void
-set_percent (CalComponent *comp, const char *value)
+set_percent (CalComponent *comp, const void *value)
 {
-	int matched, percent;
+	gint percent = GPOINTER_TO_INT (value);
 
-	if (string_is_empty (value)) {
+	g_return_if_fail (percent >= -1);
+	g_return_if_fail (percent <= 100);
+
+	/* A value of -1 means it isn't set. */
+	if (percent == -1) {
 		cal_component_set_percent (comp, NULL);
 		ensure_task_not_complete (comp);
-		return;
+	} else {
+		cal_component_set_percent (comp, &percent);
+
+		if (percent == 100)
+			ensure_task_complete (comp, -1);
+		else
+			ensure_task_not_complete (comp);
 	}
-
-	matched = sscanf (value, "%i", &percent);
-
-	if (matched != 1 || percent < 0 || percent > 100) {
-		show_percent_warning ();
-		return;
-	}
-
-	cal_component_set_percent (comp, &percent);
-
-	if (percent == 100)
-		ensure_task_complete (comp, -1);
-	else
-		ensure_task_not_complete (comp);
 }
 
 /* Sets the priority of a calendar component */
@@ -1202,8 +1152,6 @@ set_transparency (CalComponent *comp, const char *value)
 static void
 set_url (CalComponent *comp, const char *value)
 {
-	g_print ("In calendar model set_url\n");
-
 	if (string_is_empty (value)) {
 		cal_component_set_url (comp, NULL);
 		return;
@@ -1233,8 +1181,6 @@ set_status (CalComponent *comp, const char *value)
 	icalproperty_status status;
 	int percent;
 
-	g_print ("In calendar model set_status: %s\n", value);
-
 	/* An empty string is the same as 'None'. */
 	if (!value[0] || !g_strcasecmp (value, _("None")))
 		status = ICAL_STATUS_NONE;
@@ -1262,6 +1208,17 @@ set_status (CalComponent *comp, const char *value)
 	}
 }
 
+static void
+set_location (CalComponent *comp, const char *value)
+{
+	if (string_is_empty (value)) {
+		cal_component_set_location (comp, NULL);
+		return;
+	}
+
+	cal_component_set_location (comp, value);
+}
+
 /* set_value_at handler for the calendar table model */
 static void
 calendar_model_set_value_at (ETableModel *etm, int col, int row, const void *value)
@@ -1279,7 +1236,7 @@ calendar_model_set_value_at (ETableModel *etm, int col, int row, const void *val
 	comp = g_array_index (priv->objects, CalComponent *, row);
 	g_assert (comp != NULL);
 
-#if 1
+#if 0
 	g_print ("In calendar_model_set_value_at: %i\n", col);
 #endif
 
@@ -1298,16 +1255,19 @@ calendar_model_set_value_at (ETableModel *etm, int col, int row, const void *val
 
 	case CAL_COMPONENT_FIELD_DTEND:
 		/* FIXME: Need to reset dtstart if dtend happens before it */
-		set_datetime (model, comp, value, cal_component_set_dtend);
+		set_datetime (model, comp, value, cal_component_set_dtend,
+			      TRUE);
 		break;
 
 	case CAL_COMPONENT_FIELD_DTSTART:
 		/* FIXME: Need to reset dtend if dtstart happens after it */
-		set_datetime (model, comp, value, cal_component_set_dtstart);
+		set_datetime (model, comp, value, cal_component_set_dtstart,
+			      FALSE);
 		break;
 
 	case CAL_COMPONENT_FIELD_DUE:
-		set_datetime (model, comp, value, cal_component_set_due);
+		set_datetime (model, comp, value, cal_component_set_due,
+			      FALSE);
 		break;
 
 	case CAL_COMPONENT_FIELD_GEO:
@@ -1340,6 +1300,10 @@ calendar_model_set_value_at (ETableModel *etm, int col, int row, const void *val
 
 	case CAL_COMPONENT_FIELD_STATUS:
 		set_status (comp, value);
+		break;
+
+	case CAL_COMPONENT_FIELD_LOCATION :
+		set_location (comp, value);
 		break;
 
 	default:
@@ -1403,17 +1367,21 @@ calendar_model_append_row (ETableModel *etm, ETableModel *source, gint row)
 	/* FIXME: This should support other types of components, but for now it
 	 * is only used for the task list.
 	 */
-	comp = cal_component_new ();
-	cal_component_set_new_vtype (comp, priv->new_comp_vtype);
+	if (priv->new_comp_vtype == CAL_COMPONENT_EVENT)
+		comp = cal_comp_event_new_with_defaults ();
+	else {
+		comp = cal_component_new ();
+		cal_component_set_new_vtype (comp, priv->new_comp_vtype);
+	}
 
 	set_categories (comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_CATEGORIES, row));
 	set_classification (comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_CLASSIFICATION, row));
 	set_completed (model, comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_COMPLETED, row));
 	/* FIXME: Need to reset dtstart if dtend happens before it */
-	set_datetime (model, comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_DTEND, row), cal_component_set_dtend);
+	set_datetime (model, comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_DTEND, row), cal_component_set_dtend, TRUE);
 	/* FIXME: Need to reset dtend if dtstart happens after it */
-	set_datetime (model, comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_DTSTART, row), cal_component_set_dtstart);
-	set_datetime (model, comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_DUE, row), cal_component_set_due);
+	set_datetime (model, comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_DTSTART, row), cal_component_set_dtstart, FALSE);
+	set_datetime (model, comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_DUE, row), cal_component_set_due, FALSE);
 	set_geo (comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_GEO, row));
 	set_percent (comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_PERCENT, row));
 	set_priority (comp, e_table_model_value_at(source, CAL_COMPONENT_FIELD_PRIORITY, row));
@@ -1438,6 +1406,22 @@ dup_string (const char *value)
 	return g_strdup (value);
 }
 
+static void*
+dup_date_edit_value (const void *value)
+{
+	ECellDateEditValue *dv, *orig_dv;
+
+	if (value == NULL)
+		return NULL;
+
+	orig_dv = (ECellDateEditValue*) value;
+
+	dv = g_new (ECellDateEditValue, 1);
+	*dv = *orig_dv;
+
+	return dv;
+}
+
 /* duplicate_value handler for the calendar table model */
 static void *
 calendar_model_duplicate_value (ETableModel *etm, int col, const void *value)
@@ -1451,12 +1435,7 @@ calendar_model_duplicate_value (ETableModel *etm, int col, const void *value)
 	switch (col) {
 	case CAL_COMPONENT_FIELD_CATEGORIES:
 	case CAL_COMPONENT_FIELD_CLASSIFICATION:
-	case CAL_COMPONENT_FIELD_COMPLETED:
-	case CAL_COMPONENT_FIELD_DTEND:
-	case CAL_COMPONENT_FIELD_DTSTART:
-	case CAL_COMPONENT_FIELD_DUE:
 	case CAL_COMPONENT_FIELD_GEO:
-	case CAL_COMPONENT_FIELD_PERCENT:
 	case CAL_COMPONENT_FIELD_PRIORITY:
 	case CAL_COMPONENT_FIELD_SUMMARY:
 	case CAL_COMPONENT_FIELD_TRANSPARENCY:
@@ -1464,9 +1443,16 @@ calendar_model_duplicate_value (ETableModel *etm, int col, const void *value)
 	case CAL_COMPONENT_FIELD_STATUS:
 		return dup_string (value);
 
+	case CAL_COMPONENT_FIELD_COMPLETED:
+	case CAL_COMPONENT_FIELD_DTEND:
+	case CAL_COMPONENT_FIELD_DTSTART:
+	case CAL_COMPONENT_FIELD_DUE:
+		return dup_date_edit_value (value);
+
 	case CAL_COMPONENT_FIELD_HAS_ALARMS:
 	case CAL_COMPONENT_FIELD_ICON:
 	case CAL_COMPONENT_FIELD_COMPLETE:
+	case CAL_COMPONENT_FIELD_PERCENT:
 	case CAL_COMPONENT_FIELD_RECURRING:
 	case CAL_COMPONENT_FIELD_OVERDUE:
 	case CAL_COMPONENT_FIELD_COLOR:
@@ -1506,7 +1492,6 @@ calendar_model_free_value (ETableModel *etm, int col, void *value)
 	case CAL_COMPONENT_FIELD_DTSTART:
 	case CAL_COMPONENT_FIELD_DUE:
 	case CAL_COMPONENT_FIELD_GEO:
-	case CAL_COMPONENT_FIELD_PERCENT:
 	case CAL_COMPONENT_FIELD_PRIORITY:
 	case CAL_COMPONENT_FIELD_SUMMARY:
 	case CAL_COMPONENT_FIELD_STATUS:
@@ -1522,6 +1507,7 @@ calendar_model_free_value (ETableModel *etm, int col, void *value)
 			g_free (value);
 		break;
 
+	case CAL_COMPONENT_FIELD_PERCENT:
 	case CAL_COMPONENT_FIELD_HAS_ALARMS:
 	case CAL_COMPONENT_FIELD_ICON:
 	case CAL_COMPONENT_FIELD_COMPLETE:
@@ -1562,12 +1548,7 @@ calendar_model_initialize_value (ETableModel *etm, int col)
 		return g_strdup (model->priv->default_category ? model->priv->default_category : "");
 
 	case CAL_COMPONENT_FIELD_CLASSIFICATION:
-	case CAL_COMPONENT_FIELD_COMPLETED:
-	case CAL_COMPONENT_FIELD_DTEND:
-	case CAL_COMPONENT_FIELD_DTSTART:
-	case CAL_COMPONENT_FIELD_DUE:
 	case CAL_COMPONENT_FIELD_GEO:
-	case CAL_COMPONENT_FIELD_PERCENT:
 	case CAL_COMPONENT_FIELD_PRIORITY:
 	case CAL_COMPONENT_FIELD_SUMMARY:
 	case CAL_COMPONENT_FIELD_TRANSPARENCY:
@@ -1575,6 +1556,10 @@ calendar_model_initialize_value (ETableModel *etm, int col)
 	case CAL_COMPONENT_FIELD_STATUS:
 		return init_string ();
 
+	case CAL_COMPONENT_FIELD_COMPLETED:
+	case CAL_COMPONENT_FIELD_DTEND:
+	case CAL_COMPONENT_FIELD_DTSTART:
+	case CAL_COMPONENT_FIELD_DUE:
 	case CAL_COMPONENT_FIELD_HAS_ALARMS:
 	case CAL_COMPONENT_FIELD_ICON:
 	case CAL_COMPONENT_FIELD_COMPLETE:
@@ -1583,6 +1568,9 @@ calendar_model_initialize_value (ETableModel *etm, int col)
 	case CAL_COMPONENT_FIELD_COLOR:
 	case CAL_COMPONENT_FIELD_COMPONENT:
 		return NULL;
+
+	case CAL_COMPONENT_FIELD_PERCENT:
+		return GINT_TO_POINTER (-1);
 
 	default:
 		g_message ("calendar_model_initialize_value(): Requested invalid column %d", col);
@@ -1619,18 +1607,22 @@ calendar_model_value_is_empty (ETableModel *etm, int col, const void *value)
 			return string_is_empty (value);
 
 	case CAL_COMPONENT_FIELD_CLASSIFICATION: /* actually goes here, not by itself */
-	case CAL_COMPONENT_FIELD_COMPLETED:
-	case CAL_COMPONENT_FIELD_DTEND:
-	case CAL_COMPONENT_FIELD_DTSTART:
-	case CAL_COMPONENT_FIELD_DUE:
 	case CAL_COMPONENT_FIELD_GEO:
-	case CAL_COMPONENT_FIELD_PERCENT:
 	case CAL_COMPONENT_FIELD_PRIORITY:
 	case CAL_COMPONENT_FIELD_SUMMARY:
 	case CAL_COMPONENT_FIELD_TRANSPARENCY:
 	case CAL_COMPONENT_FIELD_URL:
 	case CAL_COMPONENT_FIELD_STATUS:
 		return string_is_empty (value);
+
+	case CAL_COMPONENT_FIELD_COMPLETED:
+	case CAL_COMPONENT_FIELD_DTEND:
+	case CAL_COMPONENT_FIELD_DTSTART:
+	case CAL_COMPONENT_FIELD_DUE:
+		return value ? FALSE : TRUE;
+
+	case CAL_COMPONENT_FIELD_PERCENT:
+		return (GPOINTER_TO_INT (value) < 0) ? TRUE : FALSE;
 
 	case CAL_COMPONENT_FIELD_HAS_ALARMS:
 	case CAL_COMPONENT_FIELD_ICON:
@@ -1647,6 +1639,43 @@ calendar_model_value_is_empty (ETableModel *etm, int col, const void *value)
 	}
 }
 
+static char*
+date_value_to_string (ETableModel *etm, const void *value)
+{
+	CalendarModel *model;
+	CalendarModelPrivate *priv;
+	ECellDateEditValue *dv = (ECellDateEditValue *) value;
+	struct icaltimetype tt;
+	struct tm tmp_tm;
+	char buffer[64];
+
+	model = CALENDAR_MODEL (etm);
+	priv = model->priv;
+
+	if (!dv)
+		return g_strdup ("");
+
+	/* We currently convert all the dates to the current timezone. */
+	tt = dv->tt;
+	icaltimezone_convert_time (&tt, dv->zone, priv->zone);
+
+	tmp_tm.tm_year = tt.year - 1900;
+	tmp_tm.tm_mon = tt.month - 1;
+	tmp_tm.tm_mday = tt.day;
+	tmp_tm.tm_hour = tt.hour;
+	tmp_tm.tm_min = tt.minute;
+	tmp_tm.tm_sec = tt.second;
+	tmp_tm.tm_isdst = -1;
+
+	tmp_tm.tm_wday = time_day_of_week (tt.day, tt.month - 1, tt.year);
+
+	e_time_format_date_and_time (&tmp_tm, priv->use_24_hour_format,
+				     TRUE, FALSE,
+				     buffer, sizeof (buffer));
+	return g_strdup (buffer);
+}
+
+
 static char *
 calendar_model_value_to_string (ETableModel *etm, int col, const void *value)
 {
@@ -1655,12 +1684,7 @@ calendar_model_value_to_string (ETableModel *etm, int col, const void *value)
 	switch (col) {
 	case CAL_COMPONENT_FIELD_CATEGORIES:
 	case CAL_COMPONENT_FIELD_CLASSIFICATION:
-	case CAL_COMPONENT_FIELD_COMPLETED:
-	case CAL_COMPONENT_FIELD_DTEND:
-	case CAL_COMPONENT_FIELD_DTSTART:
-	case CAL_COMPONENT_FIELD_DUE:
 	case CAL_COMPONENT_FIELD_GEO:
-	case CAL_COMPONENT_FIELD_PERCENT:
 	case CAL_COMPONENT_FIELD_PRIORITY:
 	case CAL_COMPONENT_FIELD_SUMMARY:
 	case CAL_COMPONENT_FIELD_TRANSPARENCY:
@@ -1668,10 +1692,16 @@ calendar_model_value_to_string (ETableModel *etm, int col, const void *value)
 	case CAL_COMPONENT_FIELD_STATUS:
 		return e_utf8_from_locale_string (value);
 
+	case CAL_COMPONENT_FIELD_COMPLETED:
+	case CAL_COMPONENT_FIELD_DTEND:
+	case CAL_COMPONENT_FIELD_DTSTART:
+	case CAL_COMPONENT_FIELD_DUE:
+		return date_value_to_string (etm, value);
+
 	case CAL_COMPONENT_FIELD_ICON:
-		if ((int)value == 0)
+		if (GPOINTER_TO_INT (value) == 0)
 			return e_utf8_from_locale_string (_("Normal"));
-		else if ((int)value == 1)
+		else if (GPOINTER_TO_INT (value) == 1)
 			return e_utf8_from_locale_string (_("Recurring"));
 		else
 			return e_utf8_from_locale_string (_("Assigned"));
@@ -1687,6 +1717,12 @@ calendar_model_value_to_string (ETableModel *etm, int col, const void *value)
 
 	case CAL_COMPONENT_FIELD_COMPONENT:
 		return NULL;
+
+	case CAL_COMPONENT_FIELD_PERCENT:
+		if (GPOINTER_TO_INT (value) < 0)
+			return NULL;
+		else
+			return g_strdup_printf ("%i%%", GPOINTER_TO_INT (value));
 
 	default:
 		g_message ("calendar_model_value_as_string(): Requested invalid column %d", col);
@@ -1724,6 +1760,7 @@ query_obj_updated_cb (CalQuery *query, const char *uid,
 	const char *new_comp_uid;
 	int *new_idx;
 	CalClientGetStatus status;
+	CalendarModelObjectData new_object_data = { NULL, NULL, NULL, NULL };
 
 	model = CALENDAR_MODEL (data);
 	priv = model->priv;
@@ -1742,6 +1779,7 @@ query_obj_updated_cb (CalQuery *query, const char *uid,
 			/* The object not in the model originally, so we just append it */
 
 			g_array_append_val (priv->objects, new_comp);
+			g_array_append_val (priv->objects_data, new_object_data);
 
 			new_idx = g_new (int, 1);
 			*new_idx = priv->objects->len - 1;
@@ -1754,6 +1792,8 @@ query_obj_updated_cb (CalQuery *query, const char *uid,
 			/* Insert the new version of the object in its old position */
 
 			g_array_insert_val (priv->objects, orig_idx, new_comp);
+			g_array_insert_val (priv->objects_data, orig_idx,
+					    new_object_data);
 
 			new_idx = g_new (int, 1);
 			*new_idx = orig_idx;
@@ -1830,6 +1870,8 @@ query_query_done_cb (CalQuery *query, CalQueryDoneStatus status, const char *err
 
 	/* FIXME */
 
+	calendar_model_set_status_message (model, NULL);
+
 	if (status != CAL_QUERY_DONE_SUCCESS)
 		fprintf (stderr, "query done: %s\n", error_str);
 }
@@ -1844,6 +1886,8 @@ query_eval_error_cb (CalQuery *query, const char *error_str, gpointer data)
 
 	/* FIXME */
 
+	calendar_model_set_status_message (model, NULL);
+
 	fprintf (stderr, "eval error: %s\n", error_str);
 }
 
@@ -1857,8 +1901,7 @@ adjust_query_sexp (CalendarModel *model, const char *sexp)
 	CalendarModelPrivate *priv;
 	CalObjType type;
 	char *type_sexp;
-	char *completed_sexp = "";
-	gboolean free_completed_sexp = FALSE;
+	char *completed_sexp;
 	char *new_sexp;
 
 	priv = model->priv;
@@ -1876,58 +1919,13 @@ adjust_query_sexp (CalendarModel *model, const char *sexp)
 
 	/* Create a sub-expression for filtering out completed tasks, based on
 	   the config settings. */
-	if (calendar_config_get_hide_completed_tasks ()) {
-		CalUnits units;
-		gint value;
-
-		units = calendar_config_get_hide_completed_tasks_units ();
-		value = calendar_config_get_hide_completed_tasks_value ();
-
-		if (value == 0) {
-			/* If the value is 0, we want to hide completed tasks
-			   immediately, so we filter out all completed tasks.*/
-			completed_sexp = "(not is-completed?)";
-		} else {
-			char *location, *isodate;
-			icaltimezone *zone;
-			struct icaltimetype tt;
-			time_t t;
-
-			/* Get the current time, and subtract the appropriate
-			   number of days/hours/minutes. */
-			location = calendar_config_get_timezone ();
-			zone = icaltimezone_get_builtin_timezone (location);
-			tt = icaltime_current_time_with_zone (zone);
-
-			switch (units) {
-			case CAL_DAYS:
-				icaltime_adjust (&tt, -value, 0, 0, 0);
-				break;
-			case CAL_HOURS:
-				icaltime_adjust (&tt, 0, -value, 0, 0);
-				break;
-			case CAL_MINUTES:
-				icaltime_adjust (&tt, 0, 0, -value, 0);
-				break;
-			default:
-				g_assert_not_reached ();
-			}
-
-			t = icaltime_as_timet_with_zone (tt, zone);
-
-			/* Convert the time to an ISO date string, and build
-			   the query sub-expression. */
-			isodate = isodate_from_time_t (t);
-			completed_sexp = g_strdup_printf ("(not (completed-before? (make-time \"%s\")))", isodate);
-			free_completed_sexp = TRUE;
-		}
-	}
+	completed_sexp = calendar_config_get_hide_completed_tasks_sexp ();
 
 	new_sexp = g_strdup_printf ("(and %s %s %s)", type_sexp,
-				    completed_sexp, sexp);
+				    completed_sexp ? completed_sexp : "",
+				    sexp);
 	g_free (type_sexp);
-	if (free_completed_sexp)
-		g_free (completed_sexp);
+	g_free (completed_sexp);
 
 #if 0
 	g_print ("Calendar model sexp:\n%s\n", new_sexp);
@@ -1965,6 +1963,7 @@ update_query (CalendarModel *model)
 	g_assert (priv->sexp != NULL);
 	real_sexp = adjust_query_sexp (model, priv->sexp);
 
+	calendar_model_set_status_message (model, _("Searching"));
 	priv->query = cal_client_get_query (priv->client, real_sexp);
 	g_free (real_sexp);
 
@@ -2010,6 +2009,7 @@ remove_object (CalendarModel *model, const char *uid)
 	CalComponent *orig_comp;
 	int i;
 	int n;
+	CalendarModelObjectData *object_data;
 
 	priv = model->priv;
 
@@ -2046,12 +2046,53 @@ remove_object (CalendarModel *model, const char *uid)
 	g_hash_table_remove (priv->uid_index_hash, uid);
 	g_array_remove_index (priv->objects, *idx);
 
+	object_data = &g_array_index (priv->objects_data,
+				      CalendarModelObjectData, *idx);
+	calendar_model_free_object_data (model, object_data);
+	g_array_remove_index (priv->objects_data, *idx);
+
 	gtk_object_unref (GTK_OBJECT (orig_comp));
 
 	n = *idx;
 	g_free (idx);
 
 	return n;
+}
+
+/* Displays messages on the status bar */
+#define EVOLUTION_TASKS_PROGRESS_IMAGE "evolution-tasks-mini.png"
+static GdkPixbuf *progress_icon[2] = { NULL, NULL };
+
+void
+calendar_model_set_status_message (CalendarModel *model, const char *message)
+{
+	extern EvolutionShellClient *global_shell_client; /* ugly */
+	CalendarModelPrivate *priv;
+
+	g_return_if_fail (IS_CALENDAR_MODEL (model));
+
+	priv = model->priv;
+
+	if (!message || !*message) {
+		if (priv->activity) {
+			gtk_object_unref (GTK_OBJECT (priv->activity));
+			priv->activity = NULL;
+		}
+	}
+	else if (!priv->activity) {
+		int display;
+		char *client_id = g_strdup_printf ("%p", model);
+
+		if (progress_icon[0] == NULL)
+			progress_icon[0] = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/" EVOLUTION_TASKS_PROGRESS_IMAGE);
+		priv->activity = evolution_activity_client_new (
+			global_shell_client, client_id,
+			progress_icon, message, TRUE, &display);
+
+		g_free (client_id);
+	}
+	else
+		evolution_activity_client_update (priv->activity, message, -1.0);
 }
 
 /**
@@ -2341,6 +2382,7 @@ calendar_model_set_use_24_hour_format (CalendarModel *model,
 	g_return_if_fail (IS_CALENDAR_MODEL (model));
 
 	if (model->priv->use_24_hour_format != use_24_hour_format) {
+		e_table_model_pre_change (E_TABLE_MODEL (model));
 		model->priv->use_24_hour_format = use_24_hour_format;
 		/* Get the views to redraw themselves. */
 		e_table_model_changed (E_TABLE_MODEL (model));
@@ -2377,6 +2419,7 @@ calendar_model_set_timezone		(CalendarModel	*model,
 	g_return_if_fail (IS_CALENDAR_MODEL (model));
 
 	if (model->priv->zone != zone) {
+		e_table_model_pre_change (E_TABLE_MODEL (model));
 		model->priv->zone = zone;
 
 		/* The timezone affects the times shown for COMPLETED and

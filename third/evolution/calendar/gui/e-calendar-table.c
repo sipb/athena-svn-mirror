@@ -9,9 +9,8 @@
  * Copyright 2000, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -38,9 +37,12 @@
 #include <gal/e-table/e-cell-toggle.h>
 #include <gal/e-table/e-cell-text.h>
 #include <gal/e-table/e-cell-combo.h>
+#include <gal/util/e-unicode-i18n.h>
 #include <gal/widgets/e-popup-menu.h>
 #include <widgets/misc/e-cell-date-edit.h>
+#include <widgets/misc/e-cell-percent.h>
 #include "e-calendar-table.h"
+#include "e-cell-date-edit-text.h"
 #include "calendar-config.h"
 #include "calendar-model.h"
 #include "dialogs/delete-comp.h"
@@ -201,8 +203,6 @@ task_compare_cb (gconstpointer a, gconstpointer b)
 	int *prio_a, *prio_b;
 	int retval;
 
-	g_print ("In task_compare_cb\n");
-
 	ca = CAL_COMPONENT (a);
 	cb = CAL_COMPONENT (b);
 
@@ -244,26 +244,46 @@ task_compare_cb (gconstpointer a, gconstpointer b)
 static gint
 date_compare_cb (gconstpointer a, gconstpointer b)
 {
-	const char *value1 = a, *value2 = b;
+	ECellDateEditValue *dv1 = (ECellDateEditValue *) a;
+	ECellDateEditValue *dv2 = (ECellDateEditValue *) b;
+	struct icaltimetype tt;
 
-	g_print ("In date_compare_cb '%s' '%s'\n", value1, value2);
+	/* First check if either is NULL. NULL dates sort last. */
+	if (!dv1 || !dv2) {
+		if (dv1 == dv2)
+			return 0;
+		else if (dv1)
+			return -1;
+		else
+			return 1;
+	}
 
-	return 0;
+	/* Copy the 2nd value and convert it to the same timezone as the
+	   first. */
+	tt = dv2->tt;
+
+	icaltimezone_convert_time (&tt, dv2->zone, dv1->zone);
+
+	/* Now we can compare them. */
+
+	return icaltime_compare (dv1->tt, tt);
 }
 
 static gint
 percent_compare_cb (gconstpointer a, gconstpointer b)
 {
-	const char *value1 = a, *value2 = b;
+	int percent1 = GPOINTER_TO_INT (a);
+	int percent2 = GPOINTER_TO_INT (b);
+	int retval;
 
-	/* FIXME: Currently this isn't working as the ETableSorter caches
-	   all the values in the table before sorting, but our get_value()
-	   function returns a pointer to a static buffer. So all the cached
-	   pointers point to the same buffer. */
+	if (percent1 > percent2)
+		retval = 1;
+	else if (percent1 < percent2)
+		retval = -1;
+	else
+		retval = 0;
 
-	g_print ("In percent_compare_cb '%s' '%s'\n", value1, value2);
-
-	return 0;
+	return retval;
 }
 
 static gint
@@ -324,7 +344,7 @@ e_calendar_table_init (ECalendarTable *cal_table)
 	/*
 	 * Date fields.
 	 */
-	cell = e_cell_text_new (NULL, GTK_JUSTIFY_LEFT);
+	cell = e_cell_date_edit_text_new (NULL, GTK_JUSTIFY_LEFT);
 	gtk_object_set (GTK_OBJECT (cell),
 			"strikeout_column", CAL_COMPONENT_FIELD_COMPLETE,
 			"bold_column", CAL_COMPONENT_FIELD_OVERDUE,
@@ -360,9 +380,9 @@ e_calendar_table_init (ECalendarTable *cal_table)
 	gtk_object_unref (GTK_OBJECT (cell));
 
 	strings = NULL;
-	strings = g_list_append (strings, _("Public"));
-	strings = g_list_append (strings, _("Private"));
-	strings = g_list_append (strings, _("Confidential"));
+	strings = g_list_append (strings, (char*) U_("Public"));
+	strings = g_list_append (strings, (char*) U_("Private"));
+	strings = g_list_append (strings, (char*) U_("Confidential"));
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell),
 					  strings);
 
@@ -382,17 +402,17 @@ e_calendar_table_init (ECalendarTable *cal_table)
 	gtk_object_unref (GTK_OBJECT (cell));
 
 	strings = NULL;
-	strings = g_list_append (strings, _("High"));
-	strings = g_list_append (strings, _("Normal"));
-	strings = g_list_append (strings, _("Low"));
-	strings = g_list_append (strings, _("Undefined"));
+	strings = g_list_append (strings, (char*) U_("High"));
+	strings = g_list_append (strings, (char*) U_("Normal"));
+	strings = g_list_append (strings, (char*) U_("Low"));
+	strings = g_list_append (strings, (char*) U_("Undefined"));
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell),
 					  strings);
 
 	e_table_extras_add_cell (extras, "priority", popup_cell);
 
 	/* Percent field. */
-	cell = e_cell_text_new (NULL, GTK_JUSTIFY_LEFT);
+	cell = e_cell_percent_new (NULL, GTK_JUSTIFY_LEFT);
 	gtk_object_set (GTK_OBJECT (cell),
 			"strikeout_column", CAL_COMPONENT_FIELD_COMPLETE,
 			"bold_column", CAL_COMPONENT_FIELD_OVERDUE,
@@ -404,17 +424,17 @@ e_calendar_table_init (ECalendarTable *cal_table)
 	gtk_object_unref (GTK_OBJECT (cell));
 
 	strings = NULL;
-	strings = g_list_append (strings, _("0%"));
-	strings = g_list_append (strings, _("10%"));
-	strings = g_list_append (strings, _("20%"));
-	strings = g_list_append (strings, _("30%"));
-	strings = g_list_append (strings, _("40%"));
-	strings = g_list_append (strings, _("50%"));
-	strings = g_list_append (strings, _("60%"));
-	strings = g_list_append (strings, _("70%"));
-	strings = g_list_append (strings, _("80%"));
-	strings = g_list_append (strings, _("90%"));
-	strings = g_list_append (strings, _("100%"));
+	strings = g_list_append (strings, (char*) U_("0%"));
+	strings = g_list_append (strings, (char*) U_("10%"));
+	strings = g_list_append (strings, (char*) U_("20%"));
+	strings = g_list_append (strings, (char*) U_("30%"));
+	strings = g_list_append (strings, (char*) U_("40%"));
+	strings = g_list_append (strings, (char*) U_("50%"));
+	strings = g_list_append (strings, (char*) U_("60%"));
+	strings = g_list_append (strings, (char*) U_("70%"));
+	strings = g_list_append (strings, (char*) U_("80%"));
+	strings = g_list_append (strings, (char*) U_("90%"));
+	strings = g_list_append (strings, (char*) U_("100%"));
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell),
 					  strings);
 
@@ -434,8 +454,8 @@ e_calendar_table_init (ECalendarTable *cal_table)
 	gtk_object_unref (GTK_OBJECT (cell));
 
 	strings = NULL;
-	strings = g_list_append (strings, _("Free"));
-	strings = g_list_append (strings, _("Busy"));
+	strings = g_list_append (strings, (char*) U_("Free"));
+	strings = g_list_append (strings, (char*) U_("Busy"));
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell),
 					  strings);
 
@@ -455,10 +475,10 @@ e_calendar_table_init (ECalendarTable *cal_table)
 	gtk_object_unref (GTK_OBJECT (cell));
 
 	strings = NULL;
-	strings = g_list_append (strings, _("Not Started"));
-	strings = g_list_append (strings, _("In Progress"));
-	strings = g_list_append (strings, _("Completed"));
-	strings = g_list_append (strings, _("Cancelled"));
+	strings = g_list_append (strings, (char*) U_("Not Started"));
+	strings = g_list_append (strings, (char*) U_("In Progress"));
+	strings = g_list_append (strings, (char*) U_("Completed"));
+	strings = g_list_append (strings, (char*) U_("Cancelled"));
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell),
 					  strings);
 
@@ -697,6 +717,9 @@ delete_selected_components (ECalendarTable *cal_table)
 
 	client = calendar_model_get_cal_client (cal_table->model);
 
+	calendar_model_set_status_message (e_calendar_table_get_model (cal_table),
+					   _("Deleting selected objects"));
+
 	for (l = uids; l; l = l->next) {
 		const char *uid;
 
@@ -707,6 +730,8 @@ delete_selected_components (ECalendarTable *cal_table)
 		 */
 		cal_client_remove_object (client, uid);
 	}
+
+	calendar_model_set_status_message (e_calendar_table_get_model (cal_table), NULL);
 
 	g_slist_free (uids);
 }
@@ -739,7 +764,8 @@ e_calendar_table_delete_selected (ECalendarTable *cal_table)
 
 	/* FIXME: this may be something other than a TODO component */
 
-	if (delete_component_dialog (comp, n_selected, CAL_COMPONENT_TODO, GTK_WIDGET (cal_table)))
+	if (delete_component_dialog (comp, FALSE, n_selected, CAL_COMPONENT_TODO,
+				     GTK_WIDGET (cal_table)))
 		delete_selected_components (cal_table);
 }
 
@@ -866,7 +892,6 @@ e_calendar_table_on_double_click (ETable *table,
 				  GdkEvent *event,
 				  ECalendarTable *cal_table)
 {
-	g_print ("In e_calendar_table_on_double_click\n");
 	open_task_by_row (cal_table, row);
 }
 
@@ -1112,6 +1137,9 @@ selection_received (GtkWidget *invisible,
 		return;
 	}
 
+	calendar_model_set_status_message (e_calendar_table_get_model (cal_table),
+					   _("Updating objects"));
+
 	if (kind == ICAL_VCALENDAR_COMPONENT) {
 		icalcomponent_kind child_kind;
 		icalcomponent *subcomp;
@@ -1155,6 +1183,8 @@ selection_received (GtkWidget *invisible,
 			comp);
 		gtk_object_unref (GTK_OBJECT (comp));
 	}
+
+	calendar_model_set_status_message (e_calendar_table_get_model (cal_table), NULL);
 }
 
 

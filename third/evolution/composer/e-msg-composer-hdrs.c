@@ -4,9 +4,9 @@
  * Copyright (C) 1999 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
+ * modify it under the terms of version 2 of the GNU General Public
  * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -49,7 +49,6 @@
 #include "addressbook/backend/ebook/e-book-util.h"
 
 
-#define SELECT_NAMES_OAFID "OAFIID:GNOME_Evolution_Addressbook_SelectNames"
 
 /* Indexes in the GtkTable assigned to various items */
 
@@ -103,12 +102,11 @@ setup_corba (EMsgComposerHdrs *hdrs)
 
 	CORBA_exception_init (&ev);
 
-	priv->corba_select_names = oaf_activate_from_id (SELECT_NAMES_OAFID, 0, NULL, &ev);
+	priv->corba_select_names = oaf_activate_from_id (SELECT_NAMES_OAFIID, 0, NULL, &ev);
 
 	/* OAF seems to be broken -- it can return a CORBA_OBJECT_NIL without
            raising an exception in `ev'.  */
 	if (ev._major != CORBA_NO_EXCEPTION || priv->corba_select_names == CORBA_OBJECT_NIL) {
-		g_warning ("Cannot activate -- %s", SELECT_NAMES_OAFID);
 		CORBA_exception_free (&ev);
 		return FALSE;
 	}
@@ -203,34 +201,37 @@ create_from_optionmenu (EMsgComposerHdrs *hdrs)
 			continue;
 		}
 		
-		if (strcmp (account->name, account->id->address))
-			label = g_strdup_printf ("%s <%s> (%s)", account->id->name,
-						 account->id->address, account->name);
-		else
-			label = g_strdup_printf ("%s <%s>", account->id->name, account->id->address);
-		
-		native_label = e_utf8_to_gtk_string (GTK_WIDGET (menu), label);
-		item = gtk_menu_item_new_with_label (native_label);
-		g_free (native_label);
-		g_free (label);
-		
-		gtk_object_set_data (GTK_OBJECT (item), "account", account_copy (account));
-		gtk_signal_connect (GTK_OBJECT (item), "activate",
-				    GTK_SIGNAL_FUNC (from_changed), hdrs);
-		
-		if (i == default_account) {
-			first = item;
-			history = i;
+		if (account->id->address && *account->id->address) {
+
+			if (strcmp (account->name, account->id->address))
+				label = g_strdup_printf ("%s <%s> (%s)", account->id->name,
+							 account->id->address, account->name);
+			else
+				label = g_strdup_printf ("%s <%s>", account->id->name, account->id->address);
+			
+			native_label = e_utf8_to_gtk_string (GTK_WIDGET (menu), label);
+			item = gtk_menu_item_new_with_label (native_label);
+			g_free (native_label);
+			g_free (label);
+			
+			gtk_object_set_data (GTK_OBJECT (item), "account", account_copy (account));
+			gtk_signal_connect (GTK_OBJECT (item), "activate",
+					    GTK_SIGNAL_FUNC (from_changed), hdrs);
+			
+			if (i == default_account) {
+				first = item;
+				history = i;
+			}
+			
+			/* this is so we can later set which one we want */
+			hdrs->priv->from_options = g_slist_append (hdrs->priv->from_options, item);
+			
+			gtk_menu_append (GTK_MENU (menu), item);
+			gtk_widget_show (item);
+			++i;
 		}
 		
-		/* this is so we can later set which one we want */
-		hdrs->priv->from_options = g_slist_append (hdrs->priv->from_options, item);
-		
-		gtk_menu_append (GTK_MENU (menu), item);
-		gtk_widget_show (item);
-		
 		accounts = accounts->next;
-		i++;
 	}
 	
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (omenu), menu);
@@ -399,6 +400,13 @@ create_headers (EMsgComposerHdrs *hdrs)
 		   "the message."));
 }
 
+static GtkDirectionType
+focus_cb (GtkContainer *contain, GtkDirectionType dir, gpointer closure)
+{
+	g_message ("FOCUS: %d", dir);
+	return dir;
+}
+
 static void
 attach_couple (EMsgComposerHdrs *hdrs, EMsgComposerHdrPair *pair, int line)
 {
@@ -408,7 +416,7 @@ attach_couple (EMsgComposerHdrs *hdrs, EMsgComposerHdrPair *pair, int line)
 		pad = GNOME_PAD;
 	else
 		pad = 2;
-	
+
 	gtk_table_attach (GTK_TABLE (hdrs),
 			  pair->label, 0, 1,
 			  line, line + 1,
@@ -497,9 +505,8 @@ destroy (GtkObject *object)
 
 	if (priv->corba_select_names != CORBA_OBJECT_NIL) {
 		CORBA_Environment ev;
-
 		CORBA_exception_init (&ev);
-		CORBA_Object_release (priv->corba_select_names, &ev);
+		bonobo_object_release_unref (priv->corba_select_names, &ev);
 		CORBA_exception_free (&ev);
 	}
 
@@ -770,7 +777,10 @@ e_msg_composer_hdrs_set_from_account (EMsgComposerHdrs *hdrs,
 	
 	omenu = GTK_OPTION_MENU (hdrs->priv->from.entry);
 	
-	default_account = mail_config_get_default_account_num ();
+	if (account_name)
+		default_account = -1;
+	else
+		default_account = mail_config_get_default_account_num ();
 	
 	/* find the item that represents the account and activate it */
 	l = hdrs->priv->from_options;
@@ -779,8 +789,9 @@ e_msg_composer_hdrs_set_from_account (EMsgComposerHdrs *hdrs,
 		item = l->data;
 		
 		account = gtk_object_get_data (GTK_OBJECT (item), "account");
-		if ((account_name && !strcmp (account_name, account->name)) ||
-		    (!account_name && i == default_account)) {
+		if (i == default_account ||
+		    (account_name && ((account->name && !strcmp (account_name, account->name))
+				      || (account->id->address && strstr (account_name, account->id->address))))) {
 			/* set the correct optionlist item */
 			gtk_option_menu_set_history (omenu, i);
 			gtk_signal_emit_by_name (GTK_OBJECT (item), "activate", hdrs);

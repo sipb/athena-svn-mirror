@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Create Rules to Automatically Organize Mail</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="A User's Guide to Ximian Evolution"
 HREF="index.html"><LINK
@@ -20,6 +20,11 @@ TITLE="Getting Really Organized with vFolders"
 HREF="usage-mail-organize-vfolders.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,20 +45,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="usage-mail-organize-search.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Chapter 4. Organizing and Managing your Email</TD
+>Organizing and Managing your Email</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="usage-mail-organize-vfolders.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -96,28 +101,30 @@ TYPE="1"
 ><LI
 ><P
 >	      Click 
-	      <SPAN
+	      <B
 CLASS="GUIMENU"
->Tools</SPAN
->-&gt;<SPAN
+>Tools</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Filters</SPAN
+>Filters</B
 >
 	    </P
 ></LI
 ><LI
 ><P
->	      Press the <SPAN
+>	      Press the <B
 CLASS="GUIBUTTON"
->Add</SPAN
+>Add</B
 > button.
 	    </P
 ></LI
 ><LI
 ><P
->	      Name your filter in the <SPAN
+>	      Name your filter in the <TT
 CLASS="GUILABEL"
->Rule name</SPAN
+><B
+>Rule name</B
+></TT
 > field.
 	      For each filter criterion, you must first select 
 	      which of the following parts of the message you want the filter to 
@@ -158,9 +165,9 @@ CLASS="GUILABEL"
 ><P
 >		    Expression - For programmers only: match a message according to an
 		    expression you write in the Scheme language, used to
-		    define filters in <SPAN
+		    define filters in <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 >.
 		  </P
 ></LI
@@ -168,13 +175,17 @@ CLASS="APPLICATION"
 ><P
 > Date sent - Filter messages according to the date on
 		    which they were sent: First, choose the conditions you
-		    want a message to meet &#8212; <SPAN
+		    want a message to meet &#8212; <TT
 CLASS="GUILABEL"
->before</SPAN
+><B
+>before</B
+></TT
 >
-		    a given time, <SPAN
+		    a given time, <TT
 CLASS="GUILABEL"
->after</SPAN
+><B
+>after</B
+></TT
 > it, and so forth.
 		    Then, choose the time. The filter will compare the
 		    message's time-stamp to the system clock when the filter
@@ -186,9 +197,11 @@ CLASS="GUILABEL"
 ></LI
 ><LI
 ><P
->		    Date Recieved - This works the same way as the <SPAN
+>		    Date Recieved - This works the same way as the <TT
 CLASS="GUILABEL"
->Date Sent</SPAN
+><B
+>Date Sent</B
+></TT
 > 
 		    option, except that it compares the time you got the message 
 		    with the dates you specify.
@@ -223,17 +236,63 @@ CLASS="GUILABEL"
 ><P
 >		    Mailing List - Filter based on the mailing list it came from.
 		  </P
+><DIV
+CLASS="NOTE"
+><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
+><B
+>How Does Filtering on Mailing Lists Work?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>		      Filtering on mailing list actually looks for a
+		      specific mailing-list header called the
+		      <TT
+CLASS="COMPUTEROUTPUT"
+>X-BeenThere</TT
+>
+		      header, used to identify mailing lists or other
+		      redistributors of mail.
+		    </P
+></TD
+></TR
+></TABLE
+></DIV
 ></LI
 ><LI
 ><P
->		    Regex Match - If you know your way around a <A
+>		    Regex Match - If you know your way around a
+		    <A
 HREF="apx-gloss.html#REGULAR-EXPRESSION"
 ><I
 CLASS="GLOSSTERM"
 >regex</I
 ></A
 >, or
-		    regular expression, put your knowledge to use here.
+		    regular expression, put your knowledge to use
+		    here.
 		  </P
 ></LI
 ><LI
@@ -251,18 +310,20 @@ CLASS="GLOSSTERM"
 ><LI
 ><P
 >	      Select the criterion for the condition.   If you want multiple
-	      criteria for this filter, press <SPAN
+	      criteria for this filter, press <B
 CLASS="GUIBUTTON"
 >Add
-		criterion</SPAN
+		criterion</B
 > and repeat the previous step.
 	    </P
 ></LI
 ><LI
 ><P
->	      Select the actions for the filter in the <SPAN
+>	      Select the actions for the filter in the <TT
 CLASS="GUILABEL"
->Then</SPAN
+><B
+>Then</B
+></TT
 >
 	      section.  You can select any of the following options.
 	      <P
@@ -270,28 +331,28 @@ CLASS="GUILABEL"
 ><UL
 ><LI
 ><P
->		    Move to Folder - If you select this item, <SPAN
+>		    Move to Folder - If you select this item, <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 >
 		    will put the messages into a folder you specify.  Click the 
-		    <SPAN
+		    <B
 CLASS="GUIBUTTON"
->&#60;click here to select a folder&#62;</SPAN
+>&#60;click here to select a folder&#62;</B
 > button
 		    to select a folder. 
 		  </P
 ></LI
 ><LI
 ><P
->		    Copy to Folder - If you select this item, <SPAN
+>		    Copy to Folder - If you select this item, <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 >
 		    will put the messages into a folder you specify.  Click the 
-		    <SPAN
+		    <B
 CLASS="GUIBUTTON"
->&#60;click here to select a folder&#62;</SPAN
+>&#60;click here to select a folder&#62;</B
 > button
 		    to select a folder. 
 		  </P
@@ -305,9 +366,9 @@ CLASS="GUIBUTTON"
 ><LI
 ><P
 >		    Delete - Marks the message for deletion.  You can still get the message
-		    back, at least until you <SPAN
+		    back, at least until you <B
 CLASS="GUIMENUITEM"
->Expunge</SPAN
+>Expunge</B
 > your
 		    mail yourself.
 		  </P
@@ -321,9 +382,9 @@ CLASS="GUIMENUITEM"
 ></LI
 ><LI
 ><P
->		    Assign Color - Select this item, and <SPAN
+>		    Assign Color - Select this item, and <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 >
 		    will mark the message with whatever color you please.
 		  </P
@@ -344,23 +405,138 @@ CLASS="APPLICATION"
 ><LI
 ><P
 >	      Set Status - If you want to add multiple actions for this filter, press
-	      <SPAN
+	      <B
 CLASS="GUIBUTTON"
->Add filter</SPAN
+>Add filter</B
 > and repeat the previous step.
 	    </P
 ></LI
 ><LI
 ><P
->	      Press <SPAN
+>	      Press <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 >.
 	    </P
 ></LI
 ></OL
 >
       </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="FILTER-EXAMPLE"
+></A
+><P
+><B
+>Example 1. Using a Filter to Avoid Spam</B
+></P
+><P
+>           A good deal of bulk mail is eventually tagged with the
+           <TT
+CLASS="COMPUTEROUTPUT"
+>Precedence: Bulk</TT
+> header at
+           one point or another.  Not all of it is, of course, and
+           there are "good" messages (mailing lists you subscribe to,
+           for example) that are also considered "Bulk" mail.
+           However, if you filter out all the mail with that header,
+           you'll catch a lot of the mail you don't want to get.
+         </P
+><P
+>           To catch them and automatically mark them for deletion, do
+           the following:
+            <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>                 Select <B
+CLASS="GUIMENU"
+>Tools</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Filters</B
+>.
+             </P
+></LI
+><LI
+><P
+>                 Click <B
+CLASS="GUIBUTTON"
+>New</B
+>.
+             </P
+></LI
+><LI
+><P
+>               Set the first part of your search critera to look in a <TT
+CLASS="GUILABEL"
+><B
+>Specific header</B
+></TT
+>.
+             </P
+></LI
+><LI
+><P
+>               Enter <TT
+CLASS="USERINPUT"
+><B
+>Precedence</B
+></TT
+> as the name of the header.
+             </P
+></LI
+><LI
+><P
+>               Choose <TT
+CLASS="GUILABEL"
+><B
+>contains</B
+></TT
+> at the second drop-down box.
+             </P
+></LI
+><LI
+><P
+>               Enter <TT
+CLASS="USERINPUT"
+><B
+>Bulk</B
+></TT
+> as the content to search for. 
+               You're now working with all email that has the word "Bulk" in the 
+               "Precedence" header.
+             </P
+></LI
+><LI
+><P
+>               For actions, select "Move to Folder" and choose the
+               folder where you'd like to place bulk mail.
+             </P
+></LI
+><LI
+><P
+> If you like, add another action and
+               choose <TT
+CLASS="GUILABEL"
+><B
+>Delete</B
+></TT
+>.
+               </P
+></LI
+><LI
+><P
+>                Click OK. You're done.
+             </P
+></LI
+></OL
+>
+         </P
+></DIV
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -379,24 +555,26 @@ TYPE="1"
 ><LI
 ><P
 >	      Select
-	      <SPAN
+	      <B
 CLASS="GUIMENU"
->Tools</SPAN
->+<SPAN
-CLASS="GUIMENU"
->Filters</SPAN
+>Tools</B
+>-&gt;<B
+CLASS="GUIMENUITEM"
+>Filters</B
 >
 	    </P
 ></LI
 ><LI
 ><P
->	      Select the filter in the <SPAN
+>	      Select the filter in the <TT
 CLASS="GUILABEL"
->Filter Rules</SPAN
+><B
+>Filter Rules</B
+></TT
 > section
-	      and press <SPAN
+	      and press <B
 CLASS="GUIBUTTON"
->Edit</SPAN
+>Edit</B
 >.
 	    </P
 ></LI
@@ -407,17 +585,17 @@ CLASS="GUIBUTTON"
 ></LI
 ><LI
 ><P
->	      Press <SPAN
+>	      Press <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 > in the filter editor window.
 	    </P
 ></LI
 ><LI
 ><P
->	      Press <SPAN
+>	      Press <B
 CLASS="GUIBUTTON"
->OK</SPAN
+>OK</B
 > in the filter manager window.
 	    </P
 ></LI
@@ -442,20 +620,20 @@ TYPE="1"
 ><LI
 ><P
 >	      Select
-	      <SPAN
+	      <B
 CLASS="GUIMENU"
->Tools</SPAN
->+<SPAN
+>Tools</B
+>+<B
 CLASS="GUIMENU"
->Filters</SPAN
+>Filters</B
 >
 	    </P
 ></LI
 ><LI
 ><P
->	      Select the filter and press <SPAN
+>	      Select the filter and press <B
 CLASS="GUIBUTTON"
->Delete</SPAN
+>Delete</B
 >.
 	    </P
 ></LI
@@ -465,11 +643,35 @@ CLASS="GUIBUTTON"
 ><P
 >	<DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Changing Folder Names and Filters: </B
+>Changing Folder Names and Filters</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	    <P
 ></P
 ><UL
@@ -483,7 +685,9 @@ CLASS="NOTE"
 ></UL
 >
 	  </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 >
       </P
@@ -505,7 +709,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="usage-mail-organize-search.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -521,7 +725,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="usage-mail-organize-vfolders.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

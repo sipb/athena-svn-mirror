@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Using Evolution for Email</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="A User's Guide to Ximian Evolution"
 HREF="index.html"><LINK
@@ -20,6 +20,11 @@ TITLE="Checking for New Mail"
 HREF="usage-mail-getnsend-get.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -40,7 +45,7 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="customizing-summary.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
@@ -53,7 +58,7 @@ ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="usage-mail-getnsend-get.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -65,51 +70,14 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="USAGE-MAIL"
->Chapter 3. Using Evolution for Email</A
+>Using Evolution for Email</A
 ></H1
-><DIV
-CLASS="TOC"
-><DL
-><DT
-><B
->Table of Contents</B
-></DT
-><DT
-><A
-HREF="usage-mail.html#USAGE-MAIL-GETNSEND-READ"
->Reading Mail</A
-></DT
-><DT
-><A
-HREF="usage-mail-getnsend-get.html"
->Checking for New Mail</A
-></DT
-><DT
-><A
-HREF="usage-mail-getnsend-send.html"
->Composing New Email Messages</A
-></DT
-><DT
-><A
-HREF="rsvp-stuff.html"
->RSVPs in Mail</A
-></DT
-><DT
-><A
-HREF="usage-mail-subscriptions.html"
->Subscription Management</A
-></DT
-><DT
-><A
-HREF="encryption.html"
->Encryption</A
-></DT
-></DL
-></DIV
 ><P
 >    This chapter, and <A
 HREF="usage-mail-organize.html"
->Chapter 4</A
+>the chapter called <I
+>Organizing and Managing your Email</I
+></A
 >, will
       provide you with an in-depth guide to the capabilities of
       Evolution as a mail client.  For information about how to set up
@@ -117,16 +85,42 @@ HREF="usage-mail-organize.html"
 HREF="config-prefs.html#CONFIG-PREFS-MAIL"
 >the section called <I
 >Mail Settings</I
-> in Chapter 9</A
+> in the chapter called <I
+>Advanced Configuration</I
+></A
 >.
   </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->If you use IMAP Mail: </B
+>If you use IMAP Mail</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >      If you chose IMAP mail during the setup process, you must
       subscribe to your mail folders before you can read mail in
       them. Read <A
@@ -137,7 +131,9 @@ HREF="usage-mail-subscriptions.html"
 > to find out
       how.
     </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
 CLASS="SECT1"
@@ -149,9 +145,9 @@ NAME="USAGE-MAIL-GETNSEND-READ"
 ></H1
 ><P
 >      Start the mail client by clicking on the
-      <SPAN
+      <B
 CLASS="GUIBUTTON"
->Inbox</SPAN
+>Inbox</B
 > icon in the shortcut bar, or by
       selecting a mail folder in the folder bar.  To read a message,
       select it in the message list; if you'd like to see it in its
@@ -166,19 +162,45 @@ CLASS="KEYCAP"
     </P
 ><DIV
 CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
 ><A
 NAME="SPACEANDBS"
 ></A
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Reading Mail with the Keyboard: </B
+>Reading Mail with the Keyboard</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	  You can click the spacebar to page down while you're reading
 	  an email, and press backspace to page up in an email.  This
 	  may help to make reading your email faster.
 	</P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><DIV
 CLASS="SECT2"
@@ -189,87 +211,117 @@ NAME="USAGE-MAIL-LISTORDER"
 >Sorting the message list</A
 ></H2
 ><P
->	<SPAN
+>	<TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > helps you work by letting you sort
 	your email.  To sort by sender, subject, or date, click
 	on the bars with those labels at the top of the message
 	list. The direction of the arrow next to the label indicates
 	the direction of the sort, and if you click again, you'll
 	sort them in reverse order. For example, click once on
-	<SPAN
+	<TT
 CLASS="GUILABEL"
->Date</SPAN
+><B
+>Date</B
+></TT
 > to sort messages by date from
 	oldest to newest.  Click again, and
-	<SPAN
+	<TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > sorts the list from
 	newest to oldest. You can also right-click on the message
 	header bars to get a set of sorting options, and add or
 	remove columns from the message list.  You can find detailed
 	instructions on how to customize your message display
 	columns in <A
-HREF="usage-mail-organize.html#USAGE-MAIL-ORGANIZE-COLUMNS"
+HREF="usage-mail-organize-columns.html"
 >the section called <I
 >Sorting Mail with Column Headers</I
-> in Chapter 4</A
+> in the chapter called <I
+>Organizing and Managing your Email</I
+></A
 >.
       </P
 ><DIV
-CLASS="TIP"
-><BLOCKQUOTE
 CLASS="TIP"
 ><A
 NAME="VIEW-HEADERS"
 ></A
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Email Headers: </B
+>Email Headers</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	  To look at the complete headers for email messages, select
-	  <SPAN
+	  <B
 CLASS="GUIMENU"
->View</SPAN
->-&gt;<SPAN
+>View</B
+>-&gt;<B
 CLASS="GUISUBMENU"
 >Message
-	  Display</SPAN
->-&gt;<SPAN
+	  Display</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Show Full
-	  Headers</SPAN
+	  Headers</B
 >. To see absolutely every
 	  bit, choose
-	  <SPAN
+	  <B
 CLASS="GUIMENU"
->View</SPAN
->-&gt;<SPAN
+>View</B
+>-&gt;<B
 CLASS="GUISUBMENU"
 >Message
-	  Display</SPAN
->-&gt;<SPAN
+	  Display</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Show Email Source
-	  </SPAN
+	  </B
 >.
        </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ><P
 >	You can also choose a threaded message view. Select
-	<SPAN
+	<B
 CLASS="GUIMENU"
->View</SPAN
->-&gt;<SPAN
+>View</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Threaded</SPAN
+>Threaded</B
 > 
 	to turn the threaded view on or off.  When you select this option,
-	<SPAN
+	<TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Evolution</TT
 > groups the replies to a
 	message with the original, so you can follow the thread of a
 	conversation from one message to the next.
@@ -277,20 +329,20 @@ CLASS="APPLICATION"
 ><DIV
 CLASS="FIGURE"
 ><A
-NAME="AEN821"
+NAME="AEN864"
 ></A
-><P
-><B
->Figure 3-1. Threaded Mail View</B
-></P
 ><DIV
 CLASS="MEDIAOBJECT"
 ><P
 ><IMG
-SRC="mail-threaded.png"
+SRC="figures/mail-threaded.png"
 ></IMG
 ></P
 ></DIV
+><P
+><B
+>Figure 1. Threaded Mail View</B
+></P
 ></DIV
 ></DIV
 ><DIV
@@ -317,21 +369,47 @@ TYPE="1"
 ><LI
 ><P
 >	      Press delete button or right click on the message and
-	      choose <SPAN
+	      choose <TT
 CLASS="GUILABEL"
->Delete</SPAN
+><B
+>Delete</B
+></TT
 >.
 	    </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Why do I still see deleted mail?: </B
->		When you press <SPAN
+>Why do I still see deleted mail?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
+>		When you press <B
 CLASS="GUIBUTTON"
->Delete</SPAN
+>Delete</B
 > or click
 		the trash button, your mail isn't actually deleted,
 		but is marked for deletion.  Your email is not gone
@@ -341,32 +419,36 @@ CLASS="GUIBUTTON"
 	      </P
 ><P
 >                 If you don't like this behavior, select
-                 <SPAN
+                 <B
 CLASS="GUIMENU"
->View</SPAN
->-&gt;<SPAN
+>View</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Hide
-                 Deleted Messages</SPAN
+                 Deleted Messages</B
 >. Then,
                  you will only see deleted messages when you look in
-                 your <SPAN
+                 your <TT
 CLASS="GUILABEL"
->Trash</SPAN
+><B
+>Trash</B
+></TT
 > folder.
               </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ></LI
 ><LI
 ><P
 >	      Click
-	      <SPAN
+	      <B
 CLASS="GUIMENU"
->Actions</SPAN
->-&gt;<SPAN
+>Actions</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Expunge</SPAN
+>Expunge</B
 >
 	      or press
 	      <B
@@ -383,33 +465,61 @@ CLASS="KEYCAP"
       </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Trash is Actually a vFolder?: </B
+>Trash is Actually a vFolder?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	  Your trash folder is actually a vFolder that displays all
           messages you have marked for later deletion.  For more
           information about vFolders, see <A
 HREF="usage-mail-organize-vfolders.html"
 >the section called <I
 >Getting Really Organized with vFolders</I
-> in Chapter 4</A
+> in the chapter called <I
+>Organizing and Managing your Email</I
+></A
 >.  If you choose
-          <SPAN
+          <B
 CLASS="GUIMENU"
->Actions</SPAN
->-&gt;<SPAN
+>Actions</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
 >Empty
-          Trash</SPAN
+          Trash</B
 > you will expunge
           <I
 CLASS="EMPHASIS"
 >all</I
 > your folders.
 	</P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ></DIV
 ><DIV
@@ -441,28 +551,54 @@ CLASS="KEYCAP"
 >U</B
 >
 	      or choose
-	      <SPAN
+	      <B
 CLASS="GUIMENU"
->Actions</SPAN
->-&gt;<SPAN
+>Actions</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Undelete</SPAN
+>Undelete</B
 >
 
 	    </P
 ><DIV
 CLASS="NOTE"
-><BLOCKQUOTE
-CLASS="NOTE"
 ><P
+></P
+><TABLE
+CLASS="NOTE"
+WIDTH="90%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/note.gif"
+HSPACE="5"
+ALT="Note"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->What does Undelete actually do?: </B
+>What does Undelete actually do?</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >                If you have marked a message for deletion, undeleting
 		it will unmark it, and the message will be removed
 		from the Trash folder. However, it can't bring back
 		messages that have been expunged.
 	      </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 ></LI
 ></OL
@@ -487,7 +623,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="customizing-summary.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -503,7 +639,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="usage-mail-getnsend-get.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

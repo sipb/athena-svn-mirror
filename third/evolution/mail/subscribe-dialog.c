@@ -6,19 +6,19 @@
  *
  *  Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -53,7 +53,7 @@
 #include "art/empty.xpm"
 #include "art/mark.xpm"
 
-#define d(x) x
+#define d(x) 
 
 /* Things to test.
  * - Feature
@@ -229,9 +229,7 @@ get_short_folderinfo_get (struct _mail_msg *mm)
 {
 	struct _get_short_folderinfo_msg *m = (struct _get_short_folderinfo_msg *) mm;
 
-	camel_operation_register (mm->cancel);
 	m->info = camel_store_get_folder_info (m->ftree->store, m->prefix, CAMEL_STORE_FOLDER_INFO_FAST, &mm->ex);
-	camel_operation_unregister (mm->cancel);
 }
 
 static void
@@ -831,7 +829,7 @@ fe_done_subscribing (const char *full_name, const char *name, gboolean subscribe
 {
 	ftree_op_data *closure = (ftree_op_data *) user_data;
 
-	if (success) {
+	if (success && closure->handle != -1) {
 		char *path;
 
 		path = fe_node_to_shell_path (closure->data);
@@ -852,7 +850,9 @@ fe_done_subscribing (const char *full_name, const char *name, gboolean subscribe
 		e_tree_model_node_data_changed (E_TREE_MODEL (closure->ftree), closure->path);
 	}
 
-	g_hash_table_remove (closure->ftree->subscribe_ops, closure->path);
+	if (closure->handle != -1)
+		g_hash_table_remove (closure->ftree->subscribe_ops, closure->path);
+
 	g_free (closure);
 }
 
@@ -866,10 +866,9 @@ fe_cancel_op_foreach (gpointer key, gpointer value, gpointer user_data)
 
 	if (closure->handle != -1)
 		mail_msg_cancel (closure->handle);
-	else
-		printf ("aaagh, annoying race condition in fe_cancel_op_foreach.\n");
 
-	g_free (value);
+	closure->handle = -1;
+
 	return TRUE;
 }
 
@@ -1137,7 +1136,7 @@ static void
 store_data_async_get_store (StoreData *sd, StoreDataStoreFunc func, gpointer user_data)
 {
 	if (sd->request_id) {
-		printf ("Already loading store, nooping\n");
+		d(printf ("Already loading store, nooping\n"));
 		return;
 	}
 	
@@ -1593,11 +1592,10 @@ static void
 subscribe_dialog_construct (GtkObject *object)
 {
 	SubscribeDialog *sc = SUBSCRIBE_DIALOG (object);
-
+	
 	/* Load the XML */
-
 	sc->priv->xml            = glade_xml_new (EVOLUTION_GLADEDIR "/subscribe-dialog.glade", NULL);
-
+	
 	sc->app                  = glade_xml_get_widget (sc->priv->xml, "Manage Subscriptions");
 	sc->priv->hbox           = glade_xml_get_widget (sc->priv->xml, "tree_box");
 	sc->priv->search_entry   = glade_xml_get_widget (sc->priv->xml, "search_entry");
@@ -1606,32 +1604,29 @@ subscribe_dialog_construct (GtkObject *object)
 	sc->priv->sub_button     = glade_xml_get_widget (sc->priv->xml, "subscribe_button");
 	sc->priv->unsub_button   = glade_xml_get_widget (sc->priv->xml, "unsubscribe_button");
 	sc->priv->refresh_button = glade_xml_get_widget (sc->priv->xml, "refresh_button");
-
+	
 	/* create default view */
-
 	sc->priv->default_widget = sc_create_default_widget();
 	sc->priv->current_widget = sc->priv->default_widget;
 	gtk_box_pack_start (GTK_BOX (sc->priv->hbox), sc->priv->default_widget, TRUE, TRUE, 0);
 	gtk_widget_show (sc->priv->default_widget);
-
+	
 	gtk_widget_set_sensitive (sc->priv->all_radio, FALSE);
 	gtk_widget_set_sensitive (sc->priv->filter_radio, FALSE);
 	gtk_widget_set_sensitive (sc->priv->search_entry, FALSE);
 	gtk_widget_set_sensitive (sc->priv->sub_button, FALSE);
 	gtk_widget_set_sensitive (sc->priv->unsub_button, FALSE);
 	gtk_widget_set_sensitive (sc->priv->refresh_button, FALSE);
-
+	
 	/* hook up some signals */
-
 	gtk_signal_connect (GTK_OBJECT (sc->priv->search_entry), "activate", sc_search_activated, sc);
 	gtk_signal_connect (GTK_OBJECT (sc->priv->sub_button), "clicked", sc_subscribe_pressed, sc);
 	gtk_signal_connect (GTK_OBJECT (sc->priv->unsub_button), "clicked", sc_unsubscribe_pressed, sc);
 	gtk_signal_connect (GTK_OBJECT (sc->priv->refresh_button), "clicked", sc_refresh_pressed, sc);
 	gtk_signal_connect (GTK_OBJECT (sc->priv->all_radio), "toggled", sc_all_toggled, sc);
 	gtk_signal_connect (GTK_OBJECT (sc->priv->filter_radio), "toggled", sc_filter_toggled, sc);
-
+	
 	/* Get the list of stores */
-
 	populate_store_list (sc);
 }
 
@@ -1639,17 +1634,11 @@ GtkObject *
 subscribe_dialog_new (void)
 {
 	SubscribeDialog *subscribe_dialog;
-
+	
 	subscribe_dialog = gtk_type_new (SUBSCRIBE_DIALOG_TYPE);
 	subscribe_dialog_construct (GTK_OBJECT (subscribe_dialog));
-
+	
 	return GTK_OBJECT (subscribe_dialog);
 }
 
 E_MAKE_TYPE (subscribe_dialog, "SubscribeDialog", SubscribeDialog, subscribe_dialog_class_init, subscribe_dialog_init, PARENT_TYPE);
-
-void
-subscribe_dialog_run_and_close (SubscribeDialog *dialog)
-{
-	gnome_dialog_run_and_close (GNOME_DIALOG (dialog->app));
-}

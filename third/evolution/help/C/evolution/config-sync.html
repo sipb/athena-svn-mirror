@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Setting up your synchronization system</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="A User's Guide to Ximian Evolution"
 HREF="index.html"><LINK
@@ -13,13 +13,18 @@ REL="UP"
 TITLE="Configuring and Managing Ximian Evolution"
 HREF="config.html"><LINK
 REL="PREVIOUS"
-TITLE="General Preferences"
-HREF="config-prefs-general.html"><LINK
+TITLE="Managing the Addressbook"
+HREF="config-prefs-contact.html"><LINK
 REL="NEXT"
 TITLE="Quick Reference"
 HREF="menuref.html"></HEAD
 ><BODY
 CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -39,8 +44,8 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="config-prefs-general.html"
->Prev</A
+HREF="config-prefs-contact.html"
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
@@ -53,7 +58,7 @@ ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="menuref.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -65,7 +70,7 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="CONFIG-SYNC"
->Chapter 10. Setting up your synchronization system</A
+>Setting up your synchronization system</A
 ></H1
 ><P
 >        Synchronization presents you with two issues you'll need to
@@ -78,9 +83,9 @@ BORDER="0"
 ><TR
 ><TD
 >            Your computer needs to recognize and access your handheld.
-            At this time, <SPAN
+            At this time, <TT
 CLASS="APPLICATION"
->Evolution</SPAN
+>Ximian Evolution</TT
 > only
             supports Palm-OS devices like the PalmPilot and the
             Handspring Visor.
@@ -100,21 +105,21 @@ CLASS="APPLICATION"
     </P
 ><P
 >       If you haven't used a handheld device with your computer
-       before, you'll need to run the GNOME <SPAN
+       before, you'll need to run the GNOME <TT
 CLASS="APPLICATION"
 >Control
-       Center</SPAN
+       Center</TT
 > by selecting
-       <SPAN
+       <B
 CLASS="GUIMENU"
->System</SPAN
->-&gt;<SPAN
+>System</B
+>-&gt;<B
 CLASS="GUIMENUITEM"
->Settings</SPAN
+>Settings</B
 >,
-       and make sure that <SPAN
+       and make sure that <TT
 CLASS="APPLICATION"
->Pilot Link</SPAN
+>Pilot Link</TT
 > is
        properly configured.
     </P
@@ -127,38 +132,46 @@ CLASS="GLOSSTERM"
 >conduits</I
 ></A
 > you want under the
-        <SPAN
+        <TT
 CLASS="GUILABEL"
->Pilot Conduits</SPAN
+><B
+>Pilot Conduits</B
+></TT
 > section of the Control
         Center.  You may use conduits to synchronize data with several
-        applications; the <SPAN
+        applications; the <TT
 CLASS="APPLICATION"
->Ximian Evolution</SPAN
+>Ximian Evolution</TT
 >
-        conduits are labelled <SPAN
+        conduits are labelled <TT
 CLASS="GUILABEL"
->EAddress</SPAN
+><B
+>EAddress</B
+></TT
 >, for the
-        address cards in your Contact Manager,
-        <SPAN
+        contacts in your addressbook, <TT
 CLASS="GUILABEL"
->ECalendar</SPAN
->, for your Calendar, and
-        <SPAN
+><B
+>ECalendar</B
+></TT
+>,
+        for your calendar, and <TT
 CLASS="GUILABEL"
->ETodo</SPAN
->, for your Task List.
+><B
+>ETodo</B
+></TT
+>, for your
+        task list.
     </P
 ><P
 >      To enable a conduit, click the
-        <SPAN
+        <B
 CLASS="GUIBUTTON"
->Enable</SPAN
+>Enable</B
 > to enable it, and click
-        <SPAN
+        <B
 CLASS="GUIBUTTON"
->Settings</SPAN
+>Settings</B
 > to change what it will do when
         activated.  Your options may vary depending on the conduit,
         but typically they will be:
@@ -169,14 +182,14 @@ CLASS="GUIBUTTON"
 CLASS="VARIABLELIST"
 ><DL
 ><DT
->Disabled</DT
+>Disabled:</DT
 ><DD
 ><P
 >                  Do nothing.
                </P
 ></DD
 ><DT
->Synchronize</DT
+>Synchronize:</DT
 ><DD
 ><P
 >                  Copy new data from the computer to the handheld, and
@@ -186,7 +199,7 @@ CLASS="VARIABLELIST"
                </P
 ></DD
 ><DT
->Copy From Pilot</DT
+>Copy From Pilot:</DT
 ><DD
 ><P
 >                  If there is any new data on the the handheld device,
@@ -194,14 +207,14 @@ CLASS="VARIABLELIST"
                </P
 ></DD
 ><DT
->Copy To Pilot</DT
+>Copy To Pilot:</DT
 ><DD
 ><P
 >                 Copy new data from the computer to the handheld. 
                </P
 ></DD
 ><DT
->Merge From Pilot</DT
+>Merge From Pilot:</DT
 ><DD
 ><P
 >                  Copy new data from the handheld to the computer, and
@@ -210,7 +223,7 @@ CLASS="VARIABLELIST"
                </P
 ></DD
 ><DT
->Merge To Pilot</DT
+>Merge To Pilot:</DT
 ><DD
 ><P
 >                  Copy new data from the computer to the handheld, and
@@ -225,9 +238,11 @@ CLASS="VARIABLELIST"
 ><P
 >      Select the behavior you want for each conduit you choose to use.
       If you're not sure, go ahead and stick with
-      <SPAN
+      <TT
 CLASS="GUILABEL"
->Synchronize</SPAN
+><B
+>Synchronize</B
+></TT
 >.  Then, put your handheld on
       its cradle and press the HotSync button.
     </P
@@ -235,11 +250,35 @@ CLASS="GUILABEL"
 > 
          <DIV
 CLASS="TIP"
-><BLOCKQUOTE
-CLASS="TIP"
 ><P
+></P
+><TABLE
+CLASS="TIP"
+WIDTH="100%"
+BORDER="0"
+><TR
+><TD
+WIDTH="25"
+ALIGN="CENTER"
+VALIGN="TOP"
+><IMG
+SRC="./stylesheet-images/tip.gif"
+HSPACE="5"
+ALT="Tip"></TD
+><TH
+ALIGN="LEFT"
+VALIGN="CENTER"
 ><B
->Data Loss Prevention: </B
+>Data Loss Prevention</B
+></TH
+></TR
+><TR
+><TD
+>&nbsp;</TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+><P
 >	    It's always a good idea to make a backup.  To do that,
 	    make a copy of the <TT
 CLASS="FILENAME"
@@ -247,7 +286,9 @@ CLASS="FILENAME"
 >
 	    directory inside your home directory.
           </P
-></BLOCKQUOTE
+></TD
+></TR
+></TABLE
 ></DIV
 >
        </P
@@ -267,8 +308,8 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="config-prefs-general.html"
->Prev</A
+HREF="config-prefs-contact.html"
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -284,7 +325,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="menuref.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR
@@ -292,7 +333,7 @@ HREF="menuref.html"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->General Preferences</TD
+>Managing the Addressbook</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"

@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -27,6 +27,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -108,6 +109,108 @@ camel_tcp_stream_raw_get_type (void)
 	return type;
 }
 
+#ifdef SIMULATE_FLAKY_NETWORK
+static ssize_t
+flaky_tcp_write (int fd, const char *buffer, size_t buflen)
+{
+	size_t len = buflen;
+	ssize_t nwritten;
+	int val;
+	
+	if (buflen == 0)
+		return 0;
+	
+	val = 1 + (int) (10.0 * rand () / (RAND_MAX + 1.0));
+	
+	switch (val) {
+	case 1:
+		printf ("flaky_tcp_write (%d, ..., %d): (-1) EINTR\n", fd, buflen);
+		errno = EINTR;
+		return -1;
+	case 2:
+		printf ("flaky_tcp_write (%d, ..., %d): (-1) EAGAIN\n", fd, buflen);
+		errno = EAGAIN;
+		return -1;
+	case 3:
+		printf ("flaky_tcp_write (%d, ..., %d): (-1) EWOULDBLOCK\n", fd, buflen);
+		errno = EWOULDBLOCK;
+		return -1;
+	case 4:
+	case 5:
+	case 6:
+		len = 1 + (size_t) (buflen * rand () / (RAND_MAX + 1.0));
+		len = MIN (len, buflen);
+		/* fall through... */
+	default:
+		printf ("flaky_tcp_write (%d, ..., %d): (%d) '%.*s'", fd, buflen, len, (int) len, buffer);
+		nwritten = write (fd, buffer, len);
+		if (nwritten < 0)
+			printf (" errno => %s\n", g_strerror (errno));
+		else if (nwritten < len)
+			printf (" only wrote %d bytes\n", nwritten);
+		else
+			printf ("\n");
+		
+		return nwritten;
+	}
+}
+
+#define write(fd, buffer, buflen) flaky_tcp_write (fd, buffer, buflen)
+
+static ssize_t
+flaky_tcp_read (int fd, char *buffer, size_t buflen)
+{
+	size_t len = buflen;
+	ssize_t nread;
+	int val;
+	
+	if (buflen == 0)
+		return 0;
+	
+	val = 1 + (int) (10.0 * rand () / (RAND_MAX + 1.0));
+	
+	switch (val) {
+	case 1:
+		printf ("flaky_tcp_read (%d, ..., %d): (-1) EINTR\n", fd, buflen);
+		errno = EINTR;
+		return -1;
+	case 2:
+		printf ("flaky_tcp_read (%d, ..., %d): (-1) EAGAIN\n", fd, buflen);
+		errno = EAGAIN;
+		return -1;
+	case 3:
+		printf ("flaky_tcp_read (%d, ..., %d): (-1) EWOULDBLOCK\n", fd, buflen);
+		errno = EWOULDBLOCK;
+		return -1;
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+	case 10:
+		len = 1 + (size_t) (10.0 * rand () / (RAND_MAX + 1.0));
+		len = MIN (len, buflen);
+		/* fall through... */
+	default:
+		printf ("flaky_tcp_read (%d, ..., %d): (%d)", fd, buflen, len);
+		nread = read (fd, buffer, len);
+		if (nread < 0)
+			printf (" errno => %s\n", g_strerror (errno));
+		else if (nread < len)
+			printf (" only read %d bytes\n", nread);
+		else
+			printf ("\n");
+		
+		return nread;
+	}
+}
+
+#define read(fd, buffer, buflen) flaky_tcp_read (fd, buffer, buflen)
+
+#endif /* SIMULATE_FLAKY_NETWORK */
+
+
 
 /**
  * camel_tcp_stream_raw_new:
@@ -130,8 +233,7 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 	CamelTcpStreamRaw *tcp_stream_raw = CAMEL_TCP_STREAM_RAW (stream);
 	ssize_t nread;
 	int cancel_fd;
-	int saveerrno;
-
+	
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
 		return  -1;
@@ -141,32 +243,35 @@ stream_read (CamelStream *stream, char *buffer, size_t n)
 	if (cancel_fd == -1) {
 		do {
 			nread = read (tcp_stream_raw->sockfd, buffer, n);
-		} while (nread == -1 && errno == EINTR);
+		} while (nread == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
 	} else {
-		int flags, fdmax;
+		int error, flags, fdmax;
 		fd_set rdset;
 		
 		flags = fcntl (tcp_stream_raw->sockfd, F_GETFL);
 		fcntl (tcp_stream_raw->sockfd, F_SETFL, flags | O_NONBLOCK);
 		
-		FD_ZERO (&rdset);
-		FD_SET (tcp_stream_raw->sockfd, &rdset);
-		FD_SET (cancel_fd, &rdset);
-		fdmax = MAX (tcp_stream_raw->sockfd, cancel_fd) + 1;
-		
-		select (fdmax, &rdset, 0, 0, NULL);
-		if (FD_ISSET (cancel_fd, &rdset)) {
-			fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
-			errno = EINTR;
-			return -1;
-		}
-		
 		do {
-			nread = read (tcp_stream_raw->sockfd, buffer, n);
-		} while (nread == -1 && errno == EINTR);
-		saveerrno = errno;
+			FD_ZERO (&rdset);
+			FD_SET (tcp_stream_raw->sockfd, &rdset);
+			FD_SET (cancel_fd, &rdset);
+			fdmax = MAX (tcp_stream_raw->sockfd, cancel_fd) + 1;
+			
+			select (fdmax, &rdset, 0, 0, NULL);
+			if (FD_ISSET (cancel_fd, &rdset)) {
+				fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
+				errno = EINTR;
+				return -1;
+			}
+			
+			do {
+				nread = read (tcp_stream_raw->sockfd, buffer, n);
+			} while (nread == -1 && errno == EINTR);
+		} while (nread == -1 && (errno == EAGAIN || errno == EWOULDBLOCK));
+		
+		error = errno;
 		fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
-		errno = saveerrno;
+		errno = error;
 	}
 	
 	return nread;
@@ -178,8 +283,7 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 	CamelTcpStreamRaw *tcp_stream_raw = CAMEL_TCP_STREAM_RAW (stream);
 	ssize_t w, written = 0;
 	int cancel_fd;
-	int saveerrno;
-
+	
 	if (camel_operation_cancel_check (NULL)) {
 		errno = EINTR;
 		return -1;
@@ -188,11 +292,16 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 	cancel_fd = camel_operation_cancel_fd (NULL);
 	if (cancel_fd == -1) {
 		do {
-			written = write (tcp_stream_raw->sockfd, buffer, n);
-		} while (written == -1 && errno == EINTR);
+			do {
+				w = write (tcp_stream_raw->sockfd, buffer + written, n - written);
+			} while (w == -1 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK));
+			
+			if (w > 0)
+				written += w;
+		} while (w != -1 && written < n);
 	} else {
+		int error, flags, fdmax;
 		fd_set rdset, wrset;
-		int flags, fdmax;
 		
 		flags = fcntl (tcp_stream_raw->sockfd, F_GETFL);
 		fcntl (tcp_stream_raw->sockfd, F_SETFL, flags | O_NONBLOCK);
@@ -214,14 +323,21 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 			do {
 				w = write (tcp_stream_raw->sockfd, buffer + written, n - written);
 			} while (w == -1 && errno == EINTR);
-
-			if (w > 0)
+			
+			if (w == -1) {
+				if (errno == EAGAIN || errno == EWOULDBLOCK) {
+					w = 0;
+				} else {
+					error = errno;
+					fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
+					errno = error;
+					return -1;
+				}
+			} else
 				written += w;
 		} while (w != -1 && written < n);
 		
-		saveerrno = errno;
 		fcntl (tcp_stream_raw->sockfd, F_SETFL, flags);
-		errno = saveerrno;
 	}
 	
 	return written;
@@ -230,7 +346,7 @@ stream_write (CamelStream *stream, const char *buffer, size_t n)
 static int
 stream_flush (CamelStream *stream)
 {
-	return fsync (((CamelTcpStreamRaw *)stream)->sockfd);
+	return 0;
 }
 
 static int

@@ -7,10 +7,9 @@
  *          Seth Alves <alves@hungry.com>
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,19 +26,14 @@
 #endif
 
 #include <glib.h>
-#include <liboaf/liboaf.h>
-#include <bonobo/bonobo-control.h>
-#include <bonobo/bonobo-widget.h>
-#include <bonobo/bonobo-exception.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-dialog-util.h>
 #include <glade/glade.h>
+#include <libgnomeui/gnome-stock.h>
 #include <gal/e-table/e-cell-combo.h>
 #include <gal/e-table/e-cell-text.h>
 #include <gal/e-table/e-table-simple.h>
@@ -49,8 +43,6 @@
 #include <gal/widgets/e-gui-utils.h>
 #include <widgets/misc/e-dateedit.h>
 #include <e-util/e-dialog-widgets.h>
-#include <e-destination.h>
-#include "Evolution-Addressbook-SelectNames.h"
 #include "../component-factory.h"
 #include "../e-meeting-attendee.h"
 #include "../e-meeting-model.h"
@@ -60,7 +52,6 @@
 #include "meeting-page.h"
 
 
-#define SELECT_NAMES_OAFID "OAFIID:GNOME_Evolution_Addressbook_SelectNames"
 
 enum columns {
 	MEETING_ATTENDEE_COL,
@@ -114,9 +105,6 @@ struct _MeetingPagePrivate {
 	gboolean other;
 	gboolean existing;
         gboolean updating;
-	
-	/* For handling the invite button */
-        GNOME_Evolution_Addressbook_SelectNames corba_select_names;
 };
 
 
@@ -128,7 +116,7 @@ static void meeting_page_destroy (GtkObject *object);
 static GtkWidget *meeting_page_get_widget (CompEditorPage *page);
 static void meeting_page_focus_main_widget (CompEditorPage *page);
 static void meeting_page_fill_widgets (CompEditorPage *page, CalComponent *comp);
-static void meeting_page_fill_component (CompEditorPage *page, CalComponent *comp);
+static gboolean meeting_page_fill_component (CompEditorPage *page, CalComponent *comp);
 
 static gint right_click_cb (ETable *etable, gint row, gint col, GdkEvent *event, gpointer data);
 
@@ -252,8 +240,6 @@ meeting_page_destroy (GtkObject *object)
 {
 	MeetingPage *mpage;
 	MeetingPagePrivate *priv;
-	ETable *real_table;
-	char *filename;
 	
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (IS_MEETING_PAGE (object));
@@ -271,13 +257,6 @@ meeting_page_destroy (GtkObject *object)
 	g_list_free (priv->address_strings);
 
 	gtk_object_unref (GTK_OBJECT (priv->model));
-
-	/* Save state */
-	filename = g_strdup_printf ("%s/config/et-header-meeting-page", 
-				    evolution_dir);
-	real_table = e_table_scrolled_get_table (priv->etable);
-	e_table_save_state (real_table, filename);
-	g_free (filename);
 	
 	if (priv->xml) {
 		gtk_object_unref (GTK_OBJECT (priv->xml));
@@ -382,15 +361,21 @@ meeting_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 
 	if (organizer.value != NULL) {
 		const gchar *strip = itip_strip_mailto (organizer.value);
-		gchar *s = e_utf8_to_gtk_string (priv->existing_organizer, strip);
+		gchar *s, *string;
 
 		gtk_widget_hide (priv->organizer_table);
 		gtk_widget_show (priv->existing_organizer_table);
 		gtk_widget_hide (priv->invite);
 		
+		if (organizer.cn != NULL)
+			string = g_strdup_printf ("%s <%s>", organizer.cn, strip);
+		else
+			string = g_strdup (strip);
+		s = e_utf8_to_gtk_string (priv->existing_organizer, string);
 		gtk_label_set_text (GTK_LABEL (priv->existing_organizer), s);
 		g_free (s);
-		
+		g_free (string);
+
 		priv->existing = TRUE;
 	} else {
 		gtk_widget_hide (priv->other_organizer_lbl);
@@ -403,13 +388,13 @@ meeting_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 }
 
 /* fill_component handler for the meeting page */
-static void
+static gboolean
 meeting_page_fill_component (CompEditorPage *page, CalComponent *comp)
 {
 	MeetingPage *mpage;
 	MeetingPagePrivate *priv;
 	CalComponentOrganizer organizer = {NULL, NULL, NULL, NULL};
-	
+
 	mpage = MEETING_PAGE (page);
 	priv = mpage->priv;
 
@@ -432,10 +417,12 @@ meeting_page_fill_component (CompEditorPage *page, CalComponent *comp)
 			g_free (str);
 		}
 		
-		if (addr == NULL || strlen (addr) == 0) {		
+		if (addr == NULL || strlen (addr) == 0) {
+			e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+				  _("An organizer is required."));
 			g_free (addr);
-			g_free (cn);		
-			return;
+			g_free (cn);
+			return FALSE;
 		} else {
 			gchar *tmp;
 			
@@ -451,7 +438,14 @@ meeting_page_fill_component (CompEditorPage *page, CalComponent *comp)
 		g_free (cn);
 	}
 
+	if (e_meeting_model_count_actual_attendees (priv->model) < 1) {
+		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+			  _("At least one attendee is required."));
+		return FALSE;
+	}
 	set_attendees (comp, e_meeting_model_get_attendees (priv->model));
+	
+	return TRUE;
 }
 
 
@@ -460,7 +454,10 @@ meeting_page_fill_component (CompEditorPage *page, CalComponent *comp)
 static gboolean
 get_widgets (MeetingPage *mpage)
 {
+	CompEditorPage *page = COMP_EDITOR_PAGE (mpage);
 	MeetingPagePrivate *priv;
+	GSList *accel_groups;
+	GtkWidget *toplevel;
 
 	priv = mpage->priv;
 
@@ -469,6 +466,15 @@ get_widgets (MeetingPage *mpage)
 	priv->main = GW ("meeting-page");
 	if (!priv->main)
 		return FALSE;
+
+	/* Get the GtkAccelGroup from the toplevel window, so we can install
+	   it when the notebook page is mapped. */
+	toplevel = gtk_widget_get_toplevel (priv->main);
+	accel_groups = gtk_accel_groups_from_object (GTK_OBJECT (toplevel));
+	if (accel_groups) {
+		page->accel_group = accel_groups->data;
+		gtk_accel_group_ref (page->accel_group);
+	}
 
 	gtk_widget_ref (priv->main);
 	gtk_widget_unparent (priv->main);
@@ -498,139 +504,6 @@ get_widgets (MeetingPage *mpage)
 		&& priv->existing_organizer_btn);
 }
 
-static void
-duplicate_error (void)
-{
-	GtkWidget *dlg = gnome_error_dialog (_("That person is already attending the meeting!"));
-	gnome_dialog_run_and_close (GNOME_DIALOG (dlg));
-}
-
-static void
-invite_entry_changed (BonoboListener    *listener,
-		      char              *event_name,
-		      CORBA_any         *arg,
-		      CORBA_Environment *ev,
-		      gpointer           data)
-{
-	MeetingPage *mpage = data;
-	MeetingPagePrivate *priv;
-	Bonobo_Control corba_control;
-	GtkWidget *control_widget;
-	EDestination **destv;
-	char *string = NULL, *section;
-	int i;
-	
-	priv = mpage->priv;
-
-	section = BONOBO_ARG_GET_STRING (arg);
-	
-	g_message ("event: \"%s\", section \"%s\"", event_name, section);
-
-	corba_control = GNOME_Evolution_Addressbook_SelectNames_getEntryBySection (priv->corba_select_names, section, ev);
-	control_widget = bonobo_widget_new_control_from_objref (corba_control, CORBA_OBJECT_NIL);
-
-	bonobo_widget_get_property (BONOBO_WIDGET (control_widget), "destinations", &string, NULL);
-	destv = e_destination_importv (string);
-	if (destv == NULL)
-		return;
-	
-	for (i = 0; destv[i] != NULL; i++) {
-		EMeetingAttendee *ia;
-		const char *name, *address;
-		
-		name = e_destination_get_name (destv[i]);		
-		address = e_destination_get_email (destv[i]);
-		
-		if (e_meeting_model_find_attendee (priv->model, address, NULL) == NULL) {
-			ia = e_meeting_model_add_attendee_with_defaults (priv->model);
-
-			e_meeting_attendee_set_address (ia, g_strdup_printf ("MAILTO:%s", address));
-			if (!strcmp (section, _("Chair Persons")))
-				e_meeting_attendee_set_role (ia, ICAL_ROLE_CHAIR);
-			else if (!strcmp (section, _("Required Participants")))
-				e_meeting_attendee_set_role (ia, ICAL_ROLE_REQPARTICIPANT);
-			else if (!strcmp (section, _("Optional Participants")))
-				e_meeting_attendee_set_role (ia, ICAL_ROLE_OPTPARTICIPANT);
-			else if (!strcmp (section, _("Non-Participants")))
-				e_meeting_attendee_set_role (ia, ICAL_ROLE_NONPARTICIPANT);
-			e_meeting_attendee_set_cn (ia, g_strdup (name));
-		}
-	}
-	e_destination_freev (destv);
-}
-
-static void
-add_section (GNOME_Evolution_Addressbook_SelectNames corba_select_names, const char *name, int limit)
-{
-	CORBA_Environment ev;
-
-	CORBA_exception_init (&ev);
-
-	if (limit != 0)
-		GNOME_Evolution_Addressbook_SelectNames_addSectionWithLimit (corba_select_names,
-									     name, name, limit, &ev);
-	else
-		GNOME_Evolution_Addressbook_SelectNames_addSection (corba_select_names,
-								    name, name, &ev);
-
-	CORBA_exception_free (&ev);
-}
-
-static gboolean
-get_select_name_dialog (MeetingPage *mpage) 
-{
-	MeetingPagePrivate *priv;
-	const char *sections[] = {_("Chair Persons"), _("Required Participants"), _("Optional Participants"), _("Non-Participants")};
-	CORBA_Environment ev;
-	
-	priv = mpage->priv;
-
-	if (priv->corba_select_names != CORBA_OBJECT_NIL) {
-		Bonobo_Control corba_control;
-		GtkWidget *control_widget;
-		int i;
-		
-		CORBA_exception_init (&ev);
-		for (i = 0; i < 4; i++) {			
-			corba_control = GNOME_Evolution_Addressbook_SelectNames_getEntryBySection (priv->corba_select_names, sections[i], &ev);
-			if (BONOBO_EX (&ev)) {
-				CORBA_exception_free (&ev);
-				return FALSE;				
-			}
-			
-			control_widget = bonobo_widget_new_control_from_objref (corba_control, CORBA_OBJECT_NIL);
-			
-			bonobo_widget_set_property (BONOBO_WIDGET (control_widget), "text", "", NULL);		
-		}
-		CORBA_exception_free (&ev);
-
-		return TRUE;
-	}
-	
-	CORBA_exception_init (&ev);
-
-	priv->corba_select_names = oaf_activate_from_id (SELECT_NAMES_OAFID, 0, NULL, &ev);
-
-	add_section (priv->corba_select_names, sections[0], 0);
-	add_section (priv->corba_select_names, sections[1], 0);
-	add_section (priv->corba_select_names, sections[2], 0);
-	add_section (priv->corba_select_names, sections[3], 0);
-
-	bonobo_event_source_client_add_listener (priv->corba_select_names,
-						 invite_entry_changed,
-						 "GNOME/Evolution:changed:model",
-						 NULL, mpage);
-	
-	if (BONOBO_EX (&ev)) {
-		CORBA_exception_free (&ev);
-		return FALSE;
-	}
-
-	CORBA_exception_free (&ev);
-
-	return TRUE;
-}
-
 /* This is called when any field is changed; it notifies upstream. */
 static void
 field_changed_cb (GtkWidget *widget, gpointer data)
@@ -655,10 +528,11 @@ other_clicked_cb (GtkWidget *widget, gpointer data)
 	mpage = MEETING_PAGE (data);
 	priv = mpage->priv;
 
+	gtk_widget_hide (priv->organizer_lbl);
+	gtk_widget_hide (priv->organizer);
+	gtk_widget_hide (priv->other_organizer_btn);
 	gtk_widget_show (priv->other_organizer_lbl);
 	gtk_widget_show (priv->other_organizer);
-
-	gtk_label_set_text (GTK_LABEL (priv->organizer_lbl), _("Sent By:"));
 
 	priv->other = TRUE;
 }
@@ -689,20 +563,11 @@ invite_cb (GtkWidget *widget, gpointer data)
 {
 	MeetingPage *mpage;
 	MeetingPagePrivate *priv;
-	CORBA_Environment ev;
 	
 	mpage = MEETING_PAGE (data);
 	priv = mpage->priv;
-	
-	if (!get_select_name_dialog (mpage))
-		return;
-	
-	CORBA_exception_init (&ev);
 
-	GNOME_Evolution_Addressbook_SelectNames_activateDialog (
-		priv->corba_select_names, _("Required Participants"), &ev);
-
-	CORBA_exception_free (&ev);
+	e_meeting_model_invite_others_dialog (priv->model);
 }
 
 /* Hooks the widget signals */
@@ -727,6 +592,7 @@ init_widgets (MeetingPage *mpage)
 			    GTK_SIGNAL_FUNC (invite_cb), mpage);
 }
 
+#if 0
 static void
 popup_delegate_cb (GtkWidget *widget, gpointer data) 
 {
@@ -753,7 +619,8 @@ popup_delegate_cb (GtkWidget *widget, gpointer data)
 
 		/* Make sure we can add the new delegatee person */
 		if (e_meeting_model_find_attendee (priv->model, address, NULL) != NULL) {
-			duplicate_error ();
+			e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
+				  _("That person is already attending the meeting!"));
 			goto cleanup;
 		}
 		
@@ -784,6 +651,7 @@ popup_delegate_cb (GtkWidget *widget, gpointer data)
 	g_free (address);
 	gtk_object_unref (GTK_OBJECT (edd));
 }
+#endif
 
 static void
 popup_delete_cb (GtkWidget *widget, gpointer data) 
@@ -826,10 +694,12 @@ enum {
 };
 
 static EPopupMenu context_menu[] = {
+#if 0
 	{ N_("_Delegate To..."),              NULL,
 	  GTK_SIGNAL_FUNC (popup_delegate_cb),NULL,  CAN_DELEGATE },
 
 	E_POPUP_SEPARATOR,
+#endif
 
 	{ N_("_Delete"),                      GNOME_STOCK_MENU_TRASH,
 	  GTK_SIGNAL_FUNC (popup_delete_cb),  NULL,  CAN_DELETE },
@@ -848,7 +718,7 @@ right_click_cb (ETable *etable, gint row, gint col, GdkEvent *event, gpointer da
 
 	priv = mpage->priv;
 
-	priv->row = row;
+	priv->row = e_meeting_model_etable_view_to_model_row (priv->model, row);
 
 	menu = e_popup_menu_create (context_menu, enable_mask, hide_mask, data);
 	e_auto_kill_popup_menu_on_hide (menu);
@@ -860,6 +730,25 @@ right_click_cb (ETable *etable, gint row, gint col, GdkEvent *event, gpointer da
 }
 
 
+
+/* Callback used when the ETable gets a focus-out event.  We have to commit any
+ * pending click-to-add state for if the event editor is being destroyed.
+ */
+static gint
+table_canvas_focus_out_cb (GtkWidget *widget, GdkEventFocus *event, gpointer data)
+{
+	MeetingPage *mpage;
+	MeetingPagePrivate *priv;
+	ETable *etable;
+
+	mpage = MEETING_PAGE (data);
+	priv = mpage->priv;
+
+	etable = e_table_scrolled_get_table (priv->etable);
+
+	e_table_commit_click_to_add (etable);
+	return TRUE;
+}
 
 /**
  * meeting_page_construct:
@@ -906,6 +795,9 @@ meeting_page_construct (MeetingPage *mpage, EMeetingModel *emm)
 	real_table = e_table_scrolled_get_table (priv->etable);
 	gtk_signal_connect (GTK_OBJECT (real_table),
 			    "right_click", GTK_SIGNAL_FUNC (right_click_cb), mpage);
+
+	gtk_signal_connect (GTK_OBJECT (real_table->table_canvas), "focus_out_event",
+			    GTK_SIGNAL_FUNC (table_canvas_focus_out_cb), mpage);
 
 	gtk_widget_show (GTK_WIDGET (priv->etable));
 	gtk_box_pack_start (GTK_BOX (priv->main), GTK_WIDGET (priv->etable), TRUE, TRUE, 2);
@@ -956,7 +848,7 @@ meeting_page_get_cancel_comp (MeetingPage *mpage)
 
 	priv = mpage->priv;
 
-	if (priv->deleted_attendees == NULL)
+	if (priv->deleted_attendees->len == 0)
 		return NULL;
 	
 	set_attendees (priv->comp, priv->deleted_attendees);

@@ -7,9 +7,8 @@
  * Copyright 1999, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -87,8 +86,10 @@ typedef enum
 	E_MEETING_TIME_SELECTOR_REQUIRED_PEOPLE_AND_ONE_RESOURCE
 } EMeetingTimeSelectorAutopickOption;
 
-/* An array of hour strings, "0:00" .. "23:00". */
+/* An array of hour strings for 24 hour time, "0:00" .. "23:00". */
 extern const gchar *EMeetingTimeSelectorHours[24];
+/* An array of hour strings for 12 hour time, "12:00am" .. "11:00pm". */
+extern const gchar *EMeetingTimeSelectorHours12[24];
 
 
 #define E_MEETING_TIME_SELECTOR(obj)          GTK_CHECK_CAST (obj, e_meeting_time_selector_get_type (), EMeetingTimeSelector)
@@ -117,7 +118,8 @@ struct _EMeetingTimeSelector
 	   title bar packed at the end. Extra widgets can be added here
 	   with PACK_START if necessary. */
 	GtkWidget *attendees_vbox;
-
+	GtkWidget *attendees_vbox_spacer;
+	
 	/* The etable and model */
 	EMeetingModel *model;
 	GtkWidget *etable;
@@ -149,7 +151,7 @@ struct _EMeetingTimeSelector
 	/* The vertical scrollbar which scrolls attendees & display_main. */
 	GtkWidget *vscrollbar;
 
-	/* The 2 GnomeDateEdit widgets for the meeting start & end times. */
+	/* The 2 EDateEdit widgets for the meeting start & end times. */
 	GtkWidget *start_date_edit;
 	GtkWidget *end_date_edit;
 
@@ -181,6 +183,9 @@ struct _EMeetingTimeSelector
 	 * Option Settings.
 	 */
 
+	/* True if we are selecting all day events */
+	gboolean all_day;
+	
 	/* If this is TRUE we only show hours between day_start_hour and
 	   day_end_hour, defaults to TRUE (9am-6pm). */
 	gboolean working_hours_only;
@@ -250,6 +255,8 @@ struct _EMeetingTimeSelector
 struct _EMeetingTimeSelectorClass
 {
 	GtkTableClass parent_class;
+
+	void (* changed) (EMeetingTimeSelector *mts);
 };
 
 
@@ -291,6 +298,8 @@ gboolean e_meeting_time_selector_set_meeting_time (EMeetingTimeSelector *mts,
 						   gint end_hour,
 						   gint end_minute);
 
+void e_meeting_time_selector_set_all_day (EMeetingTimeSelector *mts,
+					  gboolean all_day);
 void e_meeting_time_selector_set_working_hours_only (EMeetingTimeSelector *mts,
 						     gboolean working_hours_only);
 void e_meeting_time_selector_set_working_hours (EMeetingTimeSelector *mts,

@@ -5,9 +5,8 @@
  * Copyright (C) 1999, 2000 Ximian Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -168,9 +167,13 @@ mh_append_message (CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (folder->summary),
 					 camel_message_info_uid (mi));
 	
-	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Cannot append message to mh folder: %s: %s"),
-			      name, g_strerror (errno));
+	if (errno == EINTR)
+		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+				     _("MH append message cancelled"));
+	else
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot append message to mh folder: %s: %s"),
+				      name, g_strerror (errno));
 	
 	if (output_stream) {
 		camel_object_unref (CAMEL_OBJECT (output_stream));

@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -41,6 +40,8 @@
 #include <config.h>
 #endif
 
+#include "addressbook-storage.h"
+
 #include <sys/types.h>
 #include <sys/fcntl.h>
 #include <sys/stat.h>
@@ -56,20 +57,21 @@
 #include <libgnome/gnome-util.h>
 #include <bonobo/bonobo-object.h>
 
+#include <gal/util/e-unicode-i18n.h>
 #include <gal/util/e-util.h>
 #include <gal/util/e-xml-utils.h>
 #include <libgnome/gnome-i18n.h>
 
-#include "e-util/e-unicode-i18n.h"
-
 #include "evolution-shell-component.h"
-#include "evolution-storage.h"
 
-#include "addressbook-storage.h"
+#include "addressbook-config.h"
 
 #define ADDRESSBOOK_SOURCES_XML "addressbook-sources.xml"
 
+#ifdef HAVE_LDAP
 static gboolean load_source_data (const char *file_path);
+#endif
+
 static gboolean save_source_data (const char *file_path);
 static void deregister_storage (void);
 
@@ -97,8 +99,10 @@ addressbook_storage_setup (EvolutionShellComponent *shell_component,
 	if (storage_path)
 		g_free (storage_path);
 	storage_path = g_concat_dir_and_file (evolution_homedir, ADDRESSBOOK_SOURCES_XML);
+#ifdef HAVE_LDAP
 	if (!load_source_data (storage_path))
 		deregister_storage ();
+#endif 
 }
 
 #ifdef HAVE_LDAP
@@ -204,6 +208,7 @@ deregister_storage (void)
 	storage = NULL;
 }
 
+#ifdef HAVE_LDAP
 static char *
 get_string_value (xmlNode *node,
 		  const char *name)
@@ -226,6 +231,7 @@ get_string_value (xmlNode *node,
 
 	return retval;
 }
+#endif
 
 static char *
 ldap_unparse_auth (AddressbookLDAPAuthType auth_type)
@@ -241,6 +247,7 @@ ldap_unparse_auth (AddressbookLDAPAuthType auth_type)
 	}
 }
 
+#ifdef HAVE_LDAP
 static AddressbookLDAPAuthType
 ldap_parse_auth (const char *auth)
 {
@@ -252,6 +259,7 @@ ldap_parse_auth (const char *auth)
 	else
 		return ADDRESSBOOK_LDAP_AUTH_NONE;
 }
+#endif
 
 static char *
 ldap_unparse_scope (AddressbookLDAPScopeType scope_type)
@@ -269,6 +277,7 @@ ldap_unparse_scope (AddressbookLDAPScopeType scope_type)
 	}
 }
 
+#ifdef HAVE_LDAP
 static AddressbookLDAPScopeType
 ldap_parse_scope (const char *scope)
 {
@@ -282,6 +291,7 @@ ldap_parse_scope (const char *scope)
 	else
 		return ADDRESSBOOK_LDAP_SCOPE_SUBTREE;
 }
+#endif
 
 void
 addressbook_storage_init_source_uri (AddressbookSource *source)
@@ -294,6 +304,7 @@ addressbook_storage_init_source_uri (AddressbookSource *source)
 					source->rootdn, ldap_unparse_scope(source->scope));
 }
 
+#ifdef HAVE_LDAP
 static gboolean
 load_source_data (const char *file_path)
 {
@@ -378,6 +389,7 @@ load_source_data (const char *file_path)
 	xmlFreeDoc (doc);
 	return TRUE;
 }
+#endif
 
 static void
 ldap_source_foreach(AddressbookSource *source, xmlNode *root)

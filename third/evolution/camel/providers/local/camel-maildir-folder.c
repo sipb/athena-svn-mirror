@@ -5,9 +5,8 @@
  * Copyright (C) 1999, 2000 Ximian Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -112,8 +111,8 @@ camel_maildir_folder_new(CamelStore *parent_store, const char *full_name, guint3
 	folder = (CamelFolder *)camel_object_new(CAMEL_MAILDIR_FOLDER_TYPE);
 
 	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
-	    && strcmp(full_name, "") == 0)
-		folder->filter_recent = TRUE;
+	    && strcmp(full_name, ".") == 0)
+		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 
 	folder = (CamelFolder *)camel_local_folder_construct((CamelLocalFolder *)folder,
 							     parent_store, full_name, flags, ex);
@@ -177,9 +176,13 @@ maildir_append_message (CamelFolder *folder, CamelMimeMessage *message, const Ca
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (folder->summary),
 					 camel_message_info_uid (mi));
 	
-	camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-			      _("Cannot append message to maildir folder: %s: %s"),
-			      name, g_strerror (errno));
+	if (errno == EINTR)
+		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+				     _("Maildir append message cancelled"));
+	else
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Cannot append message to maildir folder: %s: %s"),
+				      name, g_strerror (errno));
 	
 	if (output_stream) {
 		camel_object_unref (CAMEL_OBJECT (output_stream));
@@ -223,7 +226,8 @@ static CamelMimeMessage *maildir_get_message(CamelFolder * folder, const gchar *
 
 	message = camel_mime_message_new();
 	if (camel_data_wrapper_construct_from_stream((CamelDataWrapper *)message, message_stream) == -1) {
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID, _("Cannot get message: %s\n  %s"),
+		camel_exception_setv(ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+				     _("Cannot get message: %s\n  %s"),
 				     name, _("Invalid message contents"));
 		g_free(name);
 		camel_object_unref((CamelObject *)message_stream);

@@ -1,16 +1,16 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
- * Author :
+ * Authors :
  *  Damon Chaplin <damon@ximian.com>
+ *  Rodrigo Moya <rodrigo@ximian.com>
  *
  * Copyright 2000, Ximian, Inc.
  * Copyright 2000, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,9 +33,11 @@
 #include <libgnome/gnome-config.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <widgets/e-timezone-dialog/e-timezone-dialog.h>
+#include <cal-util/timeutil.h>
 #include "component-factory.h"
 #include "calendar-commands.h"
 #include "e-tasks.h"
+#include "e-cell-date-edit-text.h"
 #include "calendar-config.h"
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
@@ -43,6 +45,8 @@
 
 typedef struct
 {
+	gchar          *default_uri;
+	gchar          *default_tasks_uri;
 	gchar	       *timezone;
 	CalWeekdays	working_days;
 	gboolean	use_24_hour_format;
@@ -66,6 +70,9 @@ typedef struct
 	CalUnits	hide_completed_tasks_units;
 	gint		hide_completed_tasks_value;
 	gboolean	confirm_delete;
+	gboolean        use_default_reminder;
+	int             default_reminder_interval;
+	CalUnits        default_reminder_units;
 } CalendarConfig;
 
 
@@ -95,7 +102,7 @@ calendar_config_init			(void)
    case the user can choose between 12 and 24-hour time formats. */
 gboolean
 calendar_config_locale_supports_12_hour_format (void)
-{  
+{
 	char s[16];
 	time_t t = 0;
 
@@ -111,9 +118,9 @@ config_read				(void)
 	char *units;
 
 	CORBA_exception_init (&ev);
-	
+
 	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
-	
+
 	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
 		CORBA_exception_free (&ev);
 		return;
@@ -121,16 +128,43 @@ config_read				(void)
 
 	CORBA_exception_free (&ev);
 
-	config->timezone =  bonobo_config_get_string (db, 
-                "/Calendar/Display/Timezone", NULL);
+	CORBA_exception_init (&ev);
+	config->default_uri = bonobo_config_get_string (db,
+		"/Calendar/DefaultUri", &ev);
+	if (BONOBO_USER_EX (&ev, ex_Bonobo_ConfigDatabase_NotFound))
+		config->default_uri = NULL;
+	else if (BONOBO_EX (&ev))
+		g_message ("config_read(): Could not get the /Calendar/DefaultUri");
 
- 	config->working_days = bonobo_config_get_long_with_default (db, 
+	CORBA_exception_free (&ev);
+
+	CORBA_exception_init (&ev);
+	config->default_tasks_uri = bonobo_config_get_string (db,
+		"/Calendar/DefaultTasksUri", &ev);
+	if (BONOBO_USER_EX (&ev, ex_Bonobo_ConfigDatabase_NotFound))
+		config->default_tasks_uri = NULL;
+	else if (BONOBO_EX (&ev))
+		g_message ("config_read(): Could not get the /Calendar/DefaultTasksUri");
+
+	CORBA_exception_free (&ev);
+
+	CORBA_exception_init (&ev);
+	config->timezone =  bonobo_config_get_string (db,
+                "/Calendar/Display/Timezone", &ev);
+	if (BONOBO_USER_EX (&ev, ex_Bonobo_ConfigDatabase_NotFound))
+		config->timezone = NULL;
+	else if (BONOBO_EX (&ev))
+		g_message ("config_read(): Could not get the /Calendar/Display/Timezone");
+
+	CORBA_exception_free (&ev);
+
+ 	config->working_days = bonobo_config_get_long_with_default (db,
                 "/Calendar/Display/WorkingDays", CAL_MONDAY | CAL_TUESDAY |
 		CAL_WEDNESDAY | CAL_THURSDAY | CAL_FRIDAY, NULL);
- 
-	config->week_start_day = bonobo_config_get_long_with_default (db, 
+
+	config->week_start_day = bonobo_config_get_long_with_default (db,
                 "/Calendar/Display/WeekStartDay", 1, NULL);
- 
+
 	/* If the locale defines 'am' and 'pm' strings then the user has the
 	   choice of 12-hour or 24-hour time format, with 12-hour as the
 	   default. If the locale doesn't have 'am' and 'pm' strings we have
@@ -141,43 +175,43 @@ config_read				(void)
 		config->use_24_hour_format = TRUE;
 	}
 
-	config->week_start_day = bonobo_config_get_long_with_default (db, 
+	config->week_start_day = bonobo_config_get_long_with_default (db,
                 "/Calendar/Display/WeekStartDay", 1, NULL);
- 
-	config->day_start_hour = bonobo_config_get_long_with_default (db, 
+
+	config->day_start_hour = bonobo_config_get_long_with_default (db,
                 "/Calendar/Display/DayStartHour", 9, NULL);
- 
-	config->day_start_minute = bonobo_config_get_long_with_default (db, 
+
+	config->day_start_minute = bonobo_config_get_long_with_default (db,
                 "/Calendar/Display/DayStartMinute", 0, NULL);
- 
-	config->day_end_hour =  bonobo_config_get_long_with_default (db, 
+
+	config->day_end_hour =  bonobo_config_get_long_with_default (db,
                 "/Calendar/Display/DayEndHour", 17, NULL);
 
-	config->day_end_minute = bonobo_config_get_long_with_default (db, 
+	config->day_end_minute = bonobo_config_get_long_with_default (db,
                 "/Calendar/Display/DayEndMinute", 0, NULL);
 
-	config->time_divisions = bonobo_config_get_long_with_default (db, 
+	config->time_divisions = bonobo_config_get_long_with_default (db,
                 "/Calendar/Display/TimeDivisions", 30, NULL);
 
-	config->view = bonobo_config_get_long_with_default (db, 
+	config->view = bonobo_config_get_long_with_default (db,
 		"/Calendar/Display/View", 0, NULL);
 
-	config->hpane_pos = bonobo_config_get_float_with_default (db, 
+	config->hpane_pos = bonobo_config_get_float_with_default (db,
                 "/Calendar/Display/HPanePosition", 1.0, NULL);
 
-	config->vpane_pos = bonobo_config_get_float_with_default (db, 
+	config->vpane_pos = bonobo_config_get_float_with_default (db,
                 "/Calendar/Display/VPanePosition", 1.0, NULL);
 
-	config->month_hpane_pos = bonobo_config_get_float_with_default (db, 
+	config->month_hpane_pos = bonobo_config_get_float_with_default (db,
                 "/Calendar/Display/MonthHPanePosition", 0.0, NULL);
 
-	config->month_vpane_pos = bonobo_config_get_float_with_default (db, 
+	config->month_vpane_pos = bonobo_config_get_float_with_default (db,
                 "/Calendar/Display/MonthVPanePosition", 1.0, NULL);
 
 	config->compress_weekend =  bonobo_config_get_boolean_with_default (db,
                 "/Calendar/Display/CompressWeekend", TRUE, NULL);
 
-	config->show_event_end =  bonobo_config_get_boolean_with_default (db, 
+	config->show_event_end =  bonobo_config_get_boolean_with_default (db,
                 "/Calendar/Display/ShowEventEndTime", TRUE, NULL);
 
 	/* 'DateNavigator' settings. */
@@ -206,85 +240,138 @@ config_read				(void)
 	else
 		config->hide_completed_tasks_units = CAL_DAYS;
 
+	g_free (units);
+
 	config->hide_completed_tasks_value = bonobo_config_get_long_with_default (
 		db, "/Calendar/Tasks/HideCompletedTasksValue", 1, NULL);
 
+	/* Confirmation */
 	config->confirm_delete = bonobo_config_get_boolean_with_default (
 		db, "/Calendar/Other/ConfirmDelete", TRUE, NULL);
+
+	/* Default reminders */
+	config->use_default_reminder = bonobo_config_get_boolean_with_default (
+		db, "/Calendar/Other/UseDefaultReminder", FALSE, NULL);
+
+	config->default_reminder_interval = bonobo_config_get_long_with_default (
+		db, "/Calendar/Other/DefaultReminderInterval", 15, NULL);
+
+	units = bonobo_config_get_string_with_default (db,
+		"/Calendar/Other/DefaultReminderUnits", "minutes", NULL);
+
+	if (!strcmp (units, "days"))
+		config->default_reminder_units = CAL_DAYS;
+	else if (!strcmp (units, "hours"))
+		config->default_reminder_units = CAL_HOURS;
+	else
+		config->default_reminder_units = CAL_MINUTES; /* changed from above because
+							       * if bonobo-config fucks up
+							       * we want minutes, not days!
+							       */
+	g_free (units);
 
 	bonobo_object_release_unref (db, NULL);
 }
 
+/* Returns the string representation of a units value */
+static const char *
+units_to_string (CalUnits units)
+{
+	switch (units) {
+	case CAL_DAYS:
+		return "days";
+
+	case CAL_HOURS:
+		return "hours";
+
+	case CAL_MINUTES:
+		return "minutes";
+
+	default:
+		g_assert_not_reached ();
+		return NULL;
+	}
+}
 
 void
 calendar_config_write			(void)
 {
 	Bonobo_ConfigDatabase db;
 	CORBA_Environment ev;
-	char *units;
 
 	CORBA_exception_init (&ev);
-	
+
 	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
-	
+
 	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
 		CORBA_exception_free (&ev);
 		return;
  	}
 
+	if (config->default_uri)
+		bonobo_config_set_string (db, "/Calendar/DefaultUri",
+					  config->default_uri, NULL);
+
+	if (config->default_tasks_uri)
+		bonobo_config_set_string (db, "/Calendar/DefaultTasksUri",
+					  config->default_tasks_uri, NULL);
+
 	if (config->timezone)
-		bonobo_config_set_string (db, "/Calendar/Display/Timezone", 
+		bonobo_config_set_string (db, "/Calendar/Display/Timezone",
 					  config->timezone, NULL);
 
-	bonobo_config_set_long (db, "/Calendar/Display/WorkingDays", 
+	bonobo_config_set_long (db, "/Calendar/Display/WorkingDays",
 				config->working_days, NULL);
-	bonobo_config_set_boolean (db, "/Calendar/Display/Use24HourFormat", 
+	bonobo_config_set_boolean (db, "/Calendar/Display/Use24HourFormat",
 				   config->use_24_hour_format, NULL);
-	bonobo_config_set_long (db, "/Calendar/Display/WeekStartDay", 
+	bonobo_config_set_long (db, "/Calendar/Display/WeekStartDay",
 				config->week_start_day, NULL);
-	bonobo_config_set_long (db, "/Calendar/Display/DayStartHour", 
+	bonobo_config_set_long (db, "/Calendar/Display/DayStartHour",
 				config->day_start_hour, NULL);
-	bonobo_config_set_long (db, "/Calendar/Display/DayStartMinute", 
+	bonobo_config_set_long (db, "/Calendar/Display/DayStartMinute",
 				config->day_start_minute, NULL);
-	bonobo_config_set_long (db, "/Calendar/Display/DayEndHour", 
+	bonobo_config_set_long (db, "/Calendar/Display/DayEndHour",
 				config->day_end_hour, NULL);
-	bonobo_config_set_long (db, "/Calendar/Display/DayEndMinute", 
+	bonobo_config_set_long (db, "/Calendar/Display/DayEndMinute",
 				config->day_end_minute, NULL);
-	bonobo_config_set_boolean (db, "/Calendar/Display/CompressWeekend", 
+	bonobo_config_set_boolean (db, "/Calendar/Display/CompressWeekend",
 				   config->compress_weekend, NULL);
-	bonobo_config_set_boolean (db, "/Calendar/Display/ShowEventEndTime", 
+	bonobo_config_set_boolean (db, "/Calendar/Display/ShowEventEndTime",
 				   config->show_event_end, NULL);
 
-	bonobo_config_set_boolean (db, 
-				   "/Calendar/DateNavigator/ShowWeekNumbers", 
+	bonobo_config_set_boolean (db,
+				   "/Calendar/DateNavigator/ShowWeekNumbers",
 				   config->dnav_show_week_no, NULL);
 
-	bonobo_config_set_string (db, "/Calendar/Tasks/Colors/TasksDueToday", 
+	bonobo_config_set_string (db, "/Calendar/Tasks/Colors/TasksDueToday",
 				  config->tasks_due_today_color, NULL);
 
-	bonobo_config_set_string (db, "/Calendar/Tasks/Colors/TasksOverdue", 
+	bonobo_config_set_string (db, "/Calendar/Tasks/Colors/TasksOverdue",
 				  config->tasks_overdue_color, NULL);
 
-	bonobo_config_set_boolean (db, "/Calendar/Tasks/HideCompletedTasks", 
+	bonobo_config_set_boolean (db, "/Calendar/Tasks/HideCompletedTasks",
 				   config->hide_completed_tasks, NULL);
 
-	if (config->hide_completed_tasks_units == CAL_MINUTES)
-		units = "minutes";
-	else if (config->hide_completed_tasks_units == CAL_HOURS)
-		units = "hours";
-	else
-		units = "days";
 	bonobo_config_set_string (db,
-				  "/Calendar/Tasks/HideCompletedTasksUnits", 
-				  units, NULL);
-	bonobo_config_set_long (db, 
-				"/Calendar/Tasks/HideCompletedTasksValue", 
+				  "/Calendar/Tasks/HideCompletedTasksUnits",
+				  units_to_string (config->hide_completed_tasks_units), NULL);
+	bonobo_config_set_long (db,
+				"/Calendar/Tasks/HideCompletedTasksValue",
 				config->hide_completed_tasks_value, NULL);
 
 	bonobo_config_set_boolean (db, "/Calendar/Other/ConfirmDelete", config->confirm_delete, NULL);
 
+	bonobo_config_set_boolean (db, "/Calendar/Other/UseDefaultReminder",
+				   config->use_default_reminder, NULL);
+
+	bonobo_config_set_long (db, "/Calendar/Other/DefaultReminderInterval",
+				config->default_reminder_interval, NULL);
+
+	bonobo_config_set_string (db, "/Calendar/Other/DefaultReminderUnits",
+				  units_to_string (config->default_reminder_units), NULL);
+
 	Bonobo_ConfigDatabase_sync (db, &ev);
- 
+
 	bonobo_object_release_unref (db, NULL);
 
 	CORBA_exception_free (&ev);
@@ -299,27 +386,27 @@ calendar_config_write_on_exit		(void)
 	CORBA_exception_init (&ev);
 
 	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
-	
+
 	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
 		CORBA_exception_free (&ev);
 		return;
  	}
 
-	bonobo_config_set_long (db, "/Calendar/Display/View", 
+	bonobo_config_set_long (db, "/Calendar/Display/View",
 				config->view, NULL);
-	bonobo_config_set_long (db, "/Calendar/Display/TimeDivisions", 
+	bonobo_config_set_long (db, "/Calendar/Display/TimeDivisions",
 				config->time_divisions, NULL);
-	bonobo_config_set_float (db, "/Calendar/Display/HPanePosition", 
+	bonobo_config_set_float (db, "/Calendar/Display/HPanePosition",
 				 config->hpane_pos, NULL);
-	bonobo_config_set_float (db, "/Calendar/Display/VPanePosition", 
+	bonobo_config_set_float (db, "/Calendar/Display/VPanePosition",
 				 config->vpane_pos, NULL);
-	bonobo_config_set_float (db, "/Calendar/Display/MonthHPanePosition", 
+	bonobo_config_set_float (db, "/Calendar/Display/MonthHPanePosition",
 				 config->month_hpane_pos, NULL);
-	bonobo_config_set_float (db, "/Calendar/Display/MonthVPanePosition", 
+	bonobo_config_set_float (db, "/Calendar/Display/MonthVPanePosition",
 				 config->month_vpane_pos, NULL);
 
 	Bonobo_ConfigDatabase_sync (db, &ev);
- 
+
 	bonobo_object_release_unref (db, NULL);
 
 	CORBA_exception_free (&ev);
@@ -329,6 +416,44 @@ calendar_config_write_on_exit		(void)
 /*
  * Calendar Settings.
  */
+
+/* The default URI is the one that will be used in places where there
+   might be some action on a calendar from outside, such as adding
+   a meeting request. */
+gchar *
+calendar_config_get_default_uri (void)
+{
+	return config->default_uri;
+}
+
+/* Sets the default calendar URI */
+void
+calendar_config_set_default_uri (gchar *default_uri)
+{
+	g_free (config->default_uri);
+
+	if (default_uri && default_uri[0])
+		config->default_uri = g_strdup (default_uri);
+	else
+		config->default_uri = NULL;
+}
+
+gchar *
+calendar_config_get_default_tasks_uri (void)
+{
+	return config->default_tasks_uri;
+}
+
+void
+calendar_config_set_default_tasks_uri (gchar *default_tasks_uri)
+{
+	g_free (config->default_tasks_uri);
+
+	if (default_tasks_uri && default_tasks_uri[0])
+		config->default_tasks_uri = g_strdup (default_tasks_uri);
+	else
+		config->default_tasks_uri = NULL;
+}
 
 /* The current timezone, e.g. "Europe/London". It may be NULL, in which case
    you should assume UTC (though Evolution will show the timezone-setting
@@ -633,10 +758,10 @@ calendar_config_set_hide_completed_tasks_value	(gint		value)
 
 /**
  * calendar_config_get_confirm_delete:
- * 
+ *
  * Queries the configuration value for whether a confirmation dialog is
  * presented when deleting calendar/tasks items.
- * 
+ *
  * Return value: Whether confirmation is required when deleting items.
  **/
 gboolean
@@ -648,7 +773,7 @@ calendar_config_get_confirm_delete (void)
 /**
  * calendar_config_set_confirm_delete:
  * @confirm: Whether confirmation is required when deleting items.
- * 
+ *
  * Sets the configuration value for whether a confirmation dialog is presented
  * when deleting calendar/tasks items.
  **/
@@ -719,8 +844,18 @@ calendar_config_configure_e_cell_date_edit	(ECellDateEdit	*ecde)
 {
 	gboolean use_24_hour;
 	gint start_hour, end_hour;
+	ECellPopup *ecp;
+	ECellDateEditText *ecd;
+	char *location;
+	icaltimezone *zone;
 
 	g_return_if_fail (E_IS_CELL_DATE_EDIT (ecde));
+
+	ecp = E_CELL_POPUP (ecde);
+	ecd = E_CELL_DATE_EDIT_TEXT (ecp->child);
+
+	location = calendar_config_get_timezone ();
+	zone = icaltimezone_get_builtin_timezone (location);
 
 	calendar_config_configure_e_calendar (E_CALENDAR (ecde->calendar));
 
@@ -743,6 +878,9 @@ calendar_config_configure_e_cell_date_edit	(ECellDateEdit	*ecde)
 #endif
 			NULL);
 	e_cell_date_edit_thaw (ecde);
+
+	e_cell_date_edit_text_set_timezone (ecd, zone);
+	e_cell_date_edit_text_set_use_24_hour_format (ecd, use_24_hour);
 }
 
 
@@ -822,8 +960,6 @@ on_timezone_set			(GnomeDialog	*dialog,
 
 	e_timezone_dialog_get_timezone (etd, &display_name);
 
-	g_print ("Location: %s\n", display_name ? display_name : "");
-
 	if (display_name && display_name[0]) {
 		calendar_config_set_timezone (display_name);
 
@@ -848,9 +984,9 @@ on_timezone_dialog_delete_event	(GnomeDialog	*dialog,
 
 /**
  * calendar_config_get_tasks_due_today_color:
- * 
+ *
  * Queries the color to be used to display tasks that are due today.
- * 
+ *
  * Return value: An X color specification.
  **/
 const char *
@@ -863,7 +999,7 @@ calendar_config_get_tasks_due_today_color (void)
 /**
  * calendar_config_set_tasks_due_today_color:
  * @color: X color specification
- * 
+ *
  * Sets the color to be used to display tasks that are due today.
  **/
 void
@@ -879,9 +1015,9 @@ calendar_config_set_tasks_due_today_color (const char *color)
 
 /**
  * calendar_config_get_tasks_overdue_color:
- * 
+ *
  * Queries the color to be used to display overdue tasks.
- * 
+ *
  * Return value: An X color specification.
  **/
 const char *
@@ -894,7 +1030,7 @@ calendar_config_get_tasks_overdue_color (void)
 /**
  * calendar_config_set_tasks_overdue_color:
  * @color: X color specification
- * 
+ *
  * Sets the color to be used to display overdue tasks.
  **/
 void
@@ -906,4 +1042,146 @@ calendar_config_set_tasks_overdue_color (const char *color)
 
 	g_free (config->tasks_overdue_color);
 	config->tasks_overdue_color = g_strdup (color);
+}
+
+/**
+ * calendar_config_get_use_default_reminder:
+ *
+ * Queries whether new appointments should be created with a default reminder.
+ *
+ * Return value: Boolean value indicating whether new appointments should be
+ * created with a default reminder from the values of
+ * calendar_config_get_default_reminder_interval() and
+ * calendar_config_get_default_reminder_units().
+ **/
+gboolean
+calendar_config_get_use_default_reminder (void)
+{
+	return config->use_default_reminder;
+}
+
+/**
+ * calendar_config_set_use_default_reminder:
+ * @value: Whether to create new appointments with a default reminder.
+ *
+ * Sets whether newly-created appointments should get a default reminder set
+ * them.
+ **/
+void
+calendar_config_set_use_default_reminder (gboolean value)
+{
+	config->use_default_reminder = value;
+}
+
+/**
+ * calendar_config_get_default_reminder_interval:
+ *
+ * Queries the interval for the default reminder of newly-created
+ * appointments, i.e. 5 in "5 minutes".
+ *
+ * Return value: Interval for default reminders.
+ **/
+int
+calendar_config_get_default_reminder_interval (void)
+{
+	return config->default_reminder_interval;
+}
+
+/**
+ * calendar_config_set_default_reminder_interval:
+ * @interval: Interval value, e.g. 5 for "5 minutes".
+ *
+ * Sets the interval that should be used for the default reminder in new
+ * appointments.
+ **/
+void
+calendar_config_set_default_reminder_interval (int interval)
+{
+	config->default_reminder_interval = interval;
+}
+
+/**
+ * calendar_config_get_default_reminder_units:
+ *
+ * Queries the units of time in which default reminders should be created for
+ * new appointments, e.g. CAL_MINUTES for "5 minutes".
+ *
+ * Return value: Time units for default reminders.
+ **/
+CalUnits
+calendar_config_get_default_reminder_units (void)
+{
+	return config->default_reminder_units;
+}
+
+/**
+ * calendar_config_set_default_reminder_units:
+ * @units: Time units, e.g. CAL_MINUTES for "5 minutes".
+ *
+ * Sets the units to be used for default reminders in new appointments.
+ **/
+void
+calendar_config_set_default_reminder_units (CalUnits units)
+{
+	config->default_reminder_units = units;
+}
+
+/**
+ * calendar_config_get_hide_completed_tasks_sexp:
+ *
+ * Returns the subexpression to use to filter out completed tasks according
+ * to the config settings. The returned sexp should be freed.
+ **/
+char*
+calendar_config_get_hide_completed_tasks_sexp (void)
+{
+	char *sexp = NULL;
+
+	if (calendar_config_get_hide_completed_tasks ()) {
+		CalUnits units;
+		gint value;
+
+		units = calendar_config_get_hide_completed_tasks_units ();
+		value = calendar_config_get_hide_completed_tasks_value ();
+
+		if (value == 0) {
+			/* If the value is 0, we want to hide completed tasks
+			   immediately, so we filter out all completed tasks.*/
+			sexp = g_strdup ("(not is-completed?)");
+		} else {
+			char *location, *isodate;
+			icaltimezone *zone;
+			struct icaltimetype tt;
+			time_t t;
+
+			/* Get the current time, and subtract the appropriate
+			   number of days/hours/minutes. */
+			location = calendar_config_get_timezone ();
+			zone = icaltimezone_get_builtin_timezone (location);
+			tt = icaltime_current_time_with_zone (zone);
+
+			switch (units) {
+			case CAL_DAYS:
+				icaltime_adjust (&tt, -value, 0, 0, 0);
+				break;
+			case CAL_HOURS:
+				icaltime_adjust (&tt, 0, -value, 0, 0);
+				break;
+			case CAL_MINUTES:
+				icaltime_adjust (&tt, 0, 0, -value, 0);
+				break;
+			default:
+				g_assert_not_reached ();
+			}
+
+			t = icaltime_as_timet_with_zone (tt, zone);
+
+			/* Convert the time to an ISO date string, and build
+			   the query sub-expression. */
+			isodate = isodate_from_time_t (t);
+			sexp = g_strdup_printf ("(not (completed-before? (make-time \"%s\")))", isodate);
+		}
+	}
+
+	return sexp;
 }

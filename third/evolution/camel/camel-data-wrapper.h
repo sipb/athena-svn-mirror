@@ -9,9 +9,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +26,6 @@
 
 #ifndef CAMEL_DATA_WRAPPER_H
 #define CAMEL_DATA_WRAPPER_H 1
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,10 +43,11 @@ extern "C" {
 struct _CamelDataWrapper
 {
 	CamelObject parent_object;
-
+	struct _CamelDataWrapperPrivate *priv;
+	
 	CamelContentType *mime_type;
 	CamelStream *stream;
-
+	
 	unsigned int offline:1;
 	unsigned int rawtext:1;
 };

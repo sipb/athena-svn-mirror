@@ -6,19 +6,19 @@
  *
  *  Copyright 2000, 2001 Ximian, Inc.
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -35,12 +35,14 @@
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <gal/widgets/e-unicode.h>
+#include <gal/util/e-iconv.h>
 
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-pgp-mime.h>
 #include <camel/camel-stream-null.h>
 #include <shell/e-setup.h>
 #include <e-util/e-html-utils.h>
+#include <gal/util/e-unicode-i18n.h>
 
 #include "mail.h"
 #include "mail-tools.h"
@@ -48,14 +50,14 @@
 #include "mail-mt.h"
 #include "mail-crypto.h"
 
-static char *get_data_wrapper_text (CamelDataWrapper *data);
-
-static char *try_inline_pgp (char *start, CamelMimePart *part, MailDisplay *md);
-static char *try_inline_pgp_sig (char *start, CamelMimePart *part, MailDisplay *md);
-static char *try_uudecoding (char *start, CamelMimePart *part, MailDisplay *md);
-static char *try_inline_binhex (char *start, CamelMimePart *part, MailDisplay *md);
-
-static void decode_pgp (CamelStream *ciphertext, CamelStream *plaintext, MailDisplay *md);
+static char *try_inline_pgp (char *start, CamelMimePart *part,
+			     guint offset, MailDisplay *md);
+static char *try_inline_pgp_sig (char *start, CamelMimePart *part,
+				 guint offset, MailDisplay *md);
+static char *try_uudecoding (char *start, CamelMimePart *part,
+			     guint offset, MailDisplay *md);
+static char *try_inline_binhex (char *start, CamelMimePart *part,
+				guint offset, MailDisplay *md);
 
 static gboolean handle_text_plain            (CamelMimePart *part,
 					      const char *mime_type,
@@ -95,12 +97,6 @@ static gboolean handle_message_rfc822        (CamelMimePart *part,
 static gboolean handle_message_external_body (CamelMimePart *part,
 					      const char *mime_type,
 					      MailDisplay *md);
-
-#ifdef APPLICATION_PGP_IS_NO_LONGER_SUPPORTED
-static gboolean handle_application_pgp       (CamelMimePart *part,
-					      const char *mime_type,
-					      MailDisplay *md);
-#endif /* APPLICATION_PGP_IS_NO_LONGER_SUPPORTED */
 
 static gboolean handle_via_bonobo            (CamelMimePart *part,
 					      const char *mime_type,
@@ -160,28 +156,33 @@ add_url (const char *kind, char *url, gpointer data, MailDisplay *md)
 void
 mail_format_mime_message (CamelMimeMessage *mime_message, MailDisplay *md)
 {
-	GHashTable *urls;
+	GHashTable *hash;
 	
 	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (mime_message));
 	
-	urls = g_datalist_get_data (md->data, "part_urls");
-	if (!urls) {
-		urls = g_hash_table_new (g_str_hash, g_str_equal);
-		g_datalist_set_data_full (md->data, "part_urls", urls,
+	hash = g_datalist_get_data (md->data, "part_urls");
+	if (!hash) {
+		hash = g_hash_table_new (g_str_hash, g_str_equal);
+		g_datalist_set_data_full (md->data, "part_urls", hash,
 					  free_part_urls);
 	}
-	urls = g_datalist_get_data (md->data, "data_urls");
-	if (!urls) {
-		urls = g_hash_table_new (g_str_hash, g_str_equal);
-		g_datalist_set_data_full (md->data, "data_urls", urls,
+	hash = g_datalist_get_data (md->data, "data_urls");
+	if (!hash) {
+		hash = g_hash_table_new (g_str_hash, g_str_equal);
+		g_datalist_set_data_full (md->data, "data_urls", hash,
 					  free_data_urls);
 	}
 	
-	/* ok, so they're not urls. so sue me. */
-	urls = g_datalist_get_data (md->data, "attachment_states");
-	if (!urls) {
-		urls = g_hash_table_new (g_direct_hash, g_direct_equal);
-		g_datalist_set_data_full (md->data, "attachment_states", urls,
+	hash = g_datalist_get_data (md->data, "attachment_states");
+	if (!hash) {
+		hash = g_hash_table_new (NULL, NULL);
+		g_datalist_set_data_full (md->data, "attachment_states", hash,
+					  (GDestroyNotify) g_hash_table_destroy);
+	}
+	hash = g_datalist_get_data (md->data, "fake_parts");
+	if (!hash) {
+		hash = g_hash_table_new (NULL, NULL);
+		g_datalist_set_data_full (md->data, "fake_parts", hash,
 					  (GDestroyNotify) g_hash_table_destroy);
 	}
 	
@@ -200,22 +201,29 @@ mail_format_mime_message (CamelMimeMessage *mime_message, MailDisplay *md)
 void
 mail_format_raw_message (CamelMimeMessage *mime_message, MailDisplay *md)
 {
-	char *text, *html;
-
+	GByteArray *bytes;
+	char *html;
+	
 	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (mime_message));
 	
 	if (!mail_content_loaded (CAMEL_DATA_WRAPPER (mime_message), md,
 				  TRUE, NULL, NULL))
 		return;
-
-	mail_html_write (md->html, md->stream, "<table cellspacing=0 cellpadding=10 width=\"100%%\"><tr><td><tt>\n");
-
-	text = get_data_wrapper_text (CAMEL_DATA_WRAPPER (mime_message));
-	html = e_text_to_html (text, E_TEXT_TO_HTML_CONVERT_NL | E_TEXT_TO_HTML_CONVERT_SPACES | E_TEXT_TO_HTML_ESCAPE_8BIT);
-	g_free (text);
-	gtk_html_write (md->html, md->stream, html, strlen (html));
-	g_free (html);
-
+	
+	mail_html_write (md->html, md->stream,
+			 "<table cellspacing=0 cellpadding=10 width=\"100%\"><tr><td><tt>\n");
+	
+	bytes = mail_format_get_data_wrapper_text (CAMEL_DATA_WRAPPER (mime_message), md);
+	if (bytes) {
+		g_byte_array_append (bytes, "", 1);
+		html = e_text_to_html (bytes->data, E_TEXT_TO_HTML_CONVERT_NL |
+				       E_TEXT_TO_HTML_CONVERT_SPACES | E_TEXT_TO_HTML_ESCAPE_8BIT);
+		g_byte_array_free (bytes, TRUE);
+		
+		mail_html_write (md->html, md->stream, html);
+		g_free (html);
+	}
+	
 	mail_html_write (md->html, md->stream, "</tt></td></tr></table>");
 }
 
@@ -352,15 +360,6 @@ setup_mime_tables (void)
 	g_hash_table_insert (mime_function_table, "multipart/signed",
 			     handle_multipart_signed);
 	
-#ifdef APPLICATION_PGP_IS_NO_LONGER_SUPPORTED
-	/* Some broken mailers, such as The Bat! send pgp
-	 * signed/encrypted messages with a content-type of
-	 * application/pgp which basically means it's a text/plain but
-	 * either signed or encrypted. */
-	g_hash_table_insert (mime_function_table, "application/pgp",
-			     handle_application_pgp);
-#endif /* APPLICATION_PGP_IS_NO_LONGER_SUPPORTED */
-	
 	/* RFC 2046 says unrecognized text subtypes can be treated
 	 * as text/plain (as long as you recognize the character set),
 	 * and unrecognized multipart subtypes as multipart/mixed.  */
@@ -409,7 +408,8 @@ mail_lookup_handler (const char *mime_type)
 {
 	MailMimeHandler *handler;
 	char *mime_type_main;
-
+	const char *p;
+	
 	if (mime_handler_table == NULL)
 		setup_mime_tables ();
 
@@ -441,15 +441,18 @@ mail_lookup_handler (const char *mime_type)
 		handler->builtin = handle_via_bonobo;
 		goto reg;
 	}
-
+	
 	/* Try for a generic builtin match. */
-	mime_type_main = g_strdup_printf ("%.*s/*",
-					  (int)strcspn (mime_type, "/"),
-					  mime_type);
+	p = strchr (mime_type, '/');
+	if (p == NULL)
+		p = mime_type + strlen (mime_type);
+	mime_type_main = alloca ((p - mime_type) + 3);
+	memcpy (mime_type_main, mime_type, p - mime_type);
+	memcpy (mime_type_main + (p - mime_type), "/*", 3);
+	
 	handler->builtin = g_hash_table_lookup (mime_function_table,
 						mime_type_main);
-	g_free (mime_type_main);
-
+	
 	if (handler->builtin) {
 		handler->generic = TRUE;
 		if (handler->component) {
@@ -525,15 +528,6 @@ mail_part_is_inline (CamelMimePart *part)
 	if (!header_content_type_is (content_type, "message", "*"))
 		return TRUE;
 	
-#ifdef APPLICATION_PGP_IS_NO_LONGER_SUPPORTED
-	/* The Bat! and possibly a few other broken mailers send application/pgp
-	 * parts instead of following rfc2015 because they SUCK!!! Since this part
-	 * is really a text/plain part, we should show it inline.
-	 */
-	if (!header_content_type_is (content_type, "application", "pgp"))
-		return TRUE;
-#endif /* APPLICATION_PGP_IS_NO_LONGER_SUPPORTED */
-	
 	/* Otherwise, display it inline if it's "anonymous", and
 	 * as an attachment otherwise.
 	 */
@@ -604,36 +598,50 @@ mail_part_toggle_displayed (CamelMimePart *part, MailDisplay *md)
 	g_hash_table_insert (asht, part, GINT_TO_POINTER (state));
 }
 
+static void
+mail_part_set_default_displayed_inline (CamelMimePart *part, MailDisplay *md,
+					gboolean displayed)
+{
+	GHashTable *asht = g_datalist_get_data (md->data, "attachment_states");
+	gint state;
+	
+	if (g_hash_table_lookup (asht, part))
+		return;
+
+	state = I_VALID | (displayed ? I_DISPLAYED : 0);
+	g_hash_table_insert (asht, part, GINT_TO_POINTER (state));
+}
 
 static void
 attachment_header (CamelMimePart *part, const char *mime_type, MailDisplay *md)
 {
+	char *htmlinfo, *html, *fmt;
 	const char *info;
-	char *htmlinfo;
-	char *fmt;
 	
 	/* Start the table, create the pop-up object. */
-	mail_html_write (md->html, md->stream,
-			 "<table cellspacing=0 cellpadding=0>"
-			 "<tr><td><table width=10 cellspacing=0 cellpadding=0><tr><td></td></tr></table></td>"
-			 "<td><object classid=\"popup:%s\" type=\"%s\"></object></td>"
-			 "<td><table width=3 cellspacing=0 cellpadding=0><tr><td></td></tr></table></td>"
-			 "<td><font size=-1>",
-			 get_cid (part, md), mime_type);
+	gtk_html_stream_printf (md->stream,
+				"<table cellspacing=0 cellpadding=0>"
+				"<tr><td><table width=10 cellspacing=0 cellpadding=0><tr><td></td></tr></table></td>"
+				"<td><object classid=\"popup:%s\" type=\"%s\"></object></td>"
+				"<td><table width=3 cellspacing=0 cellpadding=0><tr><td></td></tr></table></td>"
+				"<td><font size=-1>",
+				get_cid (part, md), mime_type);
 	
 	/* Write the MIME type */
 	info = gnome_vfs_mime_get_value (mime_type, "description");
-	htmlinfo = e_text_to_html (info ? info : mime_type, 0);
+	html = e_text_to_html (info ? info : mime_type, 0);
+	htmlinfo = e_utf8_from_locale_string (html);
+	g_free (html);
 	fmt = e_utf8_from_locale_string (_("%s attachment"));
-	mail_html_write (md->html, md->stream, fmt, htmlinfo);
-	g_free (fmt);
+	gtk_html_stream_printf (md->stream, fmt, htmlinfo);
 	g_free (htmlinfo);
-	
+	g_free (fmt);
+		
 	/* Write the name, if we have it. */
 	info = camel_mime_part_get_filename (part);
 	if (info) {
 		htmlinfo = e_text_to_html (info, 0);
-		mail_html_write (md->html, md->stream, " (%s)", htmlinfo);
+		gtk_html_stream_printf (md->stream, " (%s)", htmlinfo);
 		g_free (htmlinfo);
 	}
 	
@@ -641,20 +649,12 @@ attachment_header (CamelMimePart *part, const char *mime_type, MailDisplay *md)
 	info = camel_mime_part_get_description (part);
 	if (info) {
 		htmlinfo = e_text_to_html (info, E_TEXT_TO_HTML_CONVERT_URLS);
-		mail_html_write (md->html, md->stream, ", \"%s\"", htmlinfo);
+		gtk_html_stream_printf (md->stream, ", \"%s\"", htmlinfo);
 		g_free (htmlinfo);
 	}
 	
-#if 0
-	/* Describe the click action, if any. */
-	if (action) {
-		mail_html_write (md->html, md->stream,
-				 "<br>Click on the icon to %s.", action);
-	}
-#endif
-	
-	mail_html_write (md->html, md->stream,
-			 "</font></td></tr><tr><td height=10><table height=10 cellspacing=0 cellpadding=0>"
+	mail_html_write (md->html, md->stream, "</font></td></tr><tr>"
+			 "<td height=10><table height=10 cellspacing=0 cellpadding=0>"
 			 "<tr><td></td></tr></table></td></tr></table>\n");
 }
 
@@ -678,7 +678,7 @@ format_mime_part (CamelMimePart *part, MailDisplay *md)
 		char *mesg;
 		
 		mesg = e_utf8_from_locale_string (_("Could not parse MIME message. Displaying as source."));
-		mail_error_write (md->html, md->stream, "%s", mesg);
+		mail_error_printf (md->html, md->stream, "\n%s\n", mesg);
 		g_free (mesg);
 		if (mail_content_loaded (wrapper, md, TRUE, NULL, NULL))
 			handle_text_plain (part, "text/plain", md);
@@ -741,14 +741,13 @@ write_field_row_begin (const char *name, gint flags, GtkHTML *html, GtkHTMLStrea
 	encoded_name = e_utf8_from_gtk_string (GTK_WIDGET (html), name);
 	
 	if (nocolumns) {
-		mail_html_write (html, stream, "<tr><td>%s%s:%s ",
-				 bold ? "<b>" : "", encoded_name,
-				 bold ? "</b>" : "");
+		gtk_html_stream_printf (stream, "<tr><td>%s%s:%s ",
+					bold ? "<b>" : "", encoded_name,
+					bold ? "</b>" : "");
 	} else {
-		mail_html_write (html, stream,
-				 "<tr><%s align=\"right\" valign=\"top\">%s:"
-				 "<b>&nbsp;</%s><td>",
-				 bold ? "th" : "td", encoded_name, bold ? "th" : "td");
+		gtk_html_stream_printf (stream, "<tr><%s align=\"right\" valign=\"top\">%s:"
+					"<b>&nbsp;</%s><td>", bold ? "th" : "td",
+					encoded_name, bold ? "th" : "td");
 	}
 	
 	g_free (encoded_name);
@@ -766,7 +765,7 @@ write_date (CamelMimeMessage *message, int flags, GtkHTML *html, GtkHTMLStream *
 	date = camel_mime_message_get_date (message, &offset);
 	datestr = header_format_date (date, offset);
 	
-	mail_html_write (html, stream, "%s</td> </tr>", datestr);
+	gtk_html_stream_printf (stream, "%s</td> </tr>", datestr);
 	
 	g_free (datestr);
 }
@@ -783,25 +782,10 @@ write_text_header (const char *name, const char *value, int flags, GtkHTML *html
 	
 	write_field_row_begin (name, flags, html, stream);
 	
-	mail_html_write (html, stream, "%s</td> </tr>", encoded);
+	gtk_html_stream_printf (stream, "%s</td> </tr>", encoded);
 	
 	if (value && *value)
 		g_free (encoded);
-}
-
-static gchar *
-elide_quotes (const gchar *str)
-{
-	gchar *cpy = g_strdup (str);
-	gchar *c = cpy;
-
-	if (c) {
-		while (*c) {
-			if (*c != '"')
-				++c;
-		}
-	}
-	return cpy;
 }
 
 static void
@@ -821,8 +805,6 @@ write_address (MailDisplay *md, const CamelInternetAddress *addr, const char *fi
 		gchar *addr_txt, *addr_url;
 		gboolean have_name = name && *name;
 		gboolean have_email = email && *email;
-		gchar *name_arg = NULL;
-		gchar *email_arg = NULL;
 		gchar *name_disp = NULL;
 		gchar *email_disp = NULL;
 
@@ -837,7 +819,6 @@ write_address (MailDisplay *md, const CamelInternetAddress *addr, const char *fi
 		}
 		
 		if (have_email) {
-			email_arg = elide_quotes (email); /* should never be an issue */
 			email_disp = e_text_to_html (email, 0);
 		}
 		
@@ -846,26 +827,27 @@ write_address (MailDisplay *md, const CamelInternetAddress *addr, const char *fi
 		
 		if (have_email || have_name) {
 			if (!have_email) {
-				email_arg = g_strdup ("???");
 				email_disp = g_strdup ("???");
 			}
 			
-			mail_html_write (md->html, md->stream,
-					 "%s &lt;<a href=\"mailto:%s\">%s</a>&gt;",
-					 have_name ? name_disp : "",
-					 addr_url,
-					 email_disp);
-			
+			if (have_name) {
+				gtk_html_stream_printf (md->stream,
+							"%s &lt;<a href=\"mailto:%s\">%s</a>&gt;",
+							name_disp, addr_url, email_disp);
+			} else {
+				gtk_html_stream_printf (md->stream,
+							"<a href=\"mailto:%s\">%s</a>",
+							addr_url, email_disp);
+			}			
+
 		} else {
 			char *str;
 			
 			str = e_utf8_from_locale_string (_("Bad Address"));
-			mail_html_write (md->html, md->stream, "<i>%s</i>", str);
+			gtk_html_stream_printf (md->stream, "<i>%s</i>", str);
 			g_free (str);
 		}
 
-		g_free (name_arg);
-		g_free (email_arg);
 		g_free (name_disp);
 		g_free (email_disp);
 		g_free (addr_txt);
@@ -873,12 +855,13 @@ write_address (MailDisplay *md, const CamelInternetAddress *addr, const char *fi
 		
 		i++;
 	}
+	
 	mail_html_write (md->html, md->stream, "</td></tr>");
 }
 
 /* order of these must match write_header code */
 static char *default_headers[] = {
-	"From", "Reply-To", "To", "Cc", "Subject", "Date",
+	"From", "Reply-To", "To", "Cc", "Bcc", "Subject", "Date",
 };
 
 /* return index of header in default_headers array */
@@ -903,7 +886,7 @@ write_default_header(CamelMimeMessage *message, MailDisplay *md, int index, int 
 		write_address (md, camel_mime_message_get_from (message), _("From"), flags | WRITE_BOLD);
 		break;
 	case 1:
-		write_address (md, camel_mime_message_get_reply_to (message), _("Reply-To"), flags);
+		write_address (md, camel_mime_message_get_reply_to (message), _("Reply-To"), flags | WRITE_BOLD);
 		break;
 	case 2:
 		write_address(md, camel_mime_message_get_recipients(message, CAMEL_RECIPIENT_TYPE_TO),
@@ -914,10 +897,14 @@ write_default_header(CamelMimeMessage *message, MailDisplay *md, int index, int 
 			       _("Cc"), flags | WRITE_BOLD);
 		break;
 	case 4:
+		write_address (md, camel_mime_message_get_recipients (message, CAMEL_RECIPIENT_TYPE_BCC),
+			       _("Bcc"), flags | WRITE_BOLD);
+		break;
+	case 5:
 		write_text_header (_("Subject"), camel_mime_message_get_subject (message),
 				   flags | WRITE_BOLD, md->html, md->stream);
 		break;
-	case 5:
+	case 6:
 		write_date (message, flags | WRITE_BOLD, md->html, md->stream);
 		break;
 	default:
@@ -967,16 +954,16 @@ write_headers (CamelMimeMessage *message, MailDisplay *md)
 		strcpy (fontcolor, "000000");
 	}
 	
-	mail_html_write (md->html, md->stream,
-			 "<table width=\"100%%\" cellpadding=0 cellspacing=0>"
-			 "<tr><td colspan=3 height=10><table height=10 cellpadding=0 cellspacing=0>"
-			 "<tr><td></td></tr></table></td></tr>"
-			 "<tr><td><table width=10 cellpadding=0 cellspacing=0><tr><td></td></tr></table></td>"
-			 "<td width=\"100%%\"><font color=\"#%s\">"
-			 "<table bgcolor=\"#000000\" width=\"100%%\" "
-			 "cellspacing=0 cellpadding=1><tr><td>"
-			 "<table bgcolor=\"#%s\" width=\"100%%\" cellpadding=0 cellspacing=0>"
-			 "<tr><td><table>\n", fontcolor, bgcolor);
+	gtk_html_stream_printf (md->stream,
+				"<table width=\"100%%\" cellpadding=0 cellspacing=0>"
+				"<tr><td colspan=3 height=10><table height=10 cellpadding=0 cellspacing=0>"
+				"<tr><td></td></tr></table></td></tr>"
+				"<tr><td><table width=10 cellpadding=0 cellspacing=0><tr><td></td></tr></table></td>"
+				"<td width=\"100%%\"><font color=\"#%s\">"
+				"<table bgcolor=\"#000000\" width=\"100%%\" "
+				"cellspacing=0 cellpadding=1><tr><td>"
+				"<table bgcolor=\"#%s\" width=\"100%%\" cellpadding=0 cellspacing=0>"
+				"<tr><td><table>\n", fontcolor, bgcolor);
 	
 	if (full) {
 		struct _header_raw *header;
@@ -986,7 +973,7 @@ write_headers (CamelMimeMessage *message, MailDisplay *md)
 
 		ct = camel_mime_part_get_content_type(CAMEL_MIME_PART(message));
 		charset = header_content_type_param(ct, "charset");
-		charset = camel_charset_to_iconv(charset);
+		charset = e_iconv_charset_name(charset);
 
 		header = CAMEL_MIME_PART(message)->headers;
 		while (header) {
@@ -1006,8 +993,8 @@ write_headers (CamelMimeMessage *message, MailDisplay *md)
 	
 	mail_html_write (md->html, md->stream,
 			 "</table></td></tr></table></td></tr></table></font></td>"
-			 "<td><table width=10 cellpadding=0 cellspacing=0><tr><td></td></tr></table></td></tr>"
-			 "</table>\n");
+			 "<td><table width=10 cellpadding=0 cellspacing=0><tr><td>"
+			 "</td></tr></table></td></tr></table>\n");
 }
 
 static void
@@ -1040,8 +1027,8 @@ mail_content_loaded (CamelDataWrapper *wrapper, MailDisplay *md, gboolean redisp
 /* Return the contents of a data wrapper, or %NULL if it contains only
  * whitespace.
  */
-static char *
-get_data_wrapper_text (CamelDataWrapper *wrapper)
+GByteArray *
+mail_format_get_data_wrapper_text (CamelDataWrapper *wrapper, MailDisplay *mail_display)
 {
 	CamelStream *memstream;
 	CamelStreamFilter *filtered_stream;
@@ -1055,11 +1042,38 @@ get_data_wrapper_text (CamelDataWrapper *wrapper)
 	filtered_stream = camel_stream_filter_new_with_stream (memstream);
 	camel_object_unref (CAMEL_OBJECT (memstream));
 	
-	if (wrapper->rawtext) {
+	if (wrapper->rawtext || (mail_display && mail_display->charset)) {
 		CamelMimeFilterCharset *filter;
 		const char *charset;
 		
-		charset = mail_config_get_default_charset ();
+		if (!wrapper->rawtext) {
+			/* data wrapper had been successfully converted to UTF-8 using the mime
+			   part's charset, but the user thinks he knows best so we'll let him
+			   shoot himself in the foot here... */
+			CamelContentType *content_type;
+			
+			/* get the original charset of the mime part */
+			content_type = camel_data_wrapper_get_mime_type_field (wrapper);
+			charset = content_type ? header_content_type_param (content_type, "charset") : NULL;
+			if (!charset)
+				charset = mail_config_get_default_charset ();
+			
+			/* since the content is already in UTF-8, we need to decode into the
+			   original charset before we can convert back to UTF-8 using the charset
+			   the user is overriding with... */
+			filter = camel_mime_filter_charset_new_convert ("utf-8", charset);
+			if (filter) {
+				camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (filter));
+				camel_object_unref (CAMEL_OBJECT (filter));
+			}
+		}
+		
+		/* find out the charset the user wants to override to */
+		if (mail_display && mail_display->charset)
+			charset = mail_display->charset;
+		else
+			charset = mail_config_get_default_charset ();
+		
 		filter = camel_mime_filter_charset_new_convert (charset, "utf-8");
 		if (filter) {
 			camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (filter));
@@ -1081,11 +1095,15 @@ get_data_wrapper_text (CamelDataWrapper *wrapper)
 		return NULL;
 	}
 	
-	g_byte_array_append (ba, "", 1);
-	text = ba->data;
-	g_byte_array_free (ba, FALSE);
-	
-	return text;
+	return ba;
+}
+
+static void
+write_hr (MailDisplay *md)
+{
+	mail_html_write (md->html, md->stream,
+			 "<table cellspacing=0 cellpadding=10 width=\"100%\"><tr><td width=\"100%\">"
+			 "<hr noshadow size=1></td></tr></table>\n");
 }
 
 /*----------------------------------------------------------------------*
@@ -1094,7 +1112,8 @@ get_data_wrapper_text (CamelDataWrapper *wrapper)
 
 struct {
 	char *start;
-	char * (*handler) (char *start, CamelMimePart *part, MailDisplay *md);
+	char * (*handler) (char *start, CamelMimePart *part,
+			   guint offset, MailDisplay *md);
 } text_specials[] = {
 	{ "-----BEGIN PGP MESSAGE-----\n", try_inline_pgp },
 	{ "-----BEGIN PGP SIGNED MESSAGE-----\n", try_inline_pgp_sig },
@@ -1103,31 +1122,47 @@ struct {
 };
 #define NSPECIALS (sizeof (text_specials) / sizeof (*text_specials))
 
+static void
+write_one_text_plain_chunk (const char *text, int len, MailDisplay *md)
+{
+	char *buf;
+	
+	mail_html_write (md->html, md->stream,
+			 "<table cellspacing=0 cellpadding=10 width=\"100%\"><tr><td>\n");
+	
+	buf = g_strndup (text, len);
+	mail_text_write  (md->html, md->stream, buf);
+	g_free (buf);
+	
+	mail_html_write (md->html, md->stream, "</td></tr></table>\n");
+}
+
 static gboolean
 handle_text_plain (CamelMimePart *part, const char *mime_type,
 		   MailDisplay *md)
 {
 	CamelDataWrapper *wrapper =
 		camel_medium_get_content_object (CAMEL_MEDIUM (part));
-	char *text, *p, *start;
 	CamelContentType *type;
 	gboolean check_specials;
+	char *p, *start, *text;
 	const char *format;
+	GByteArray *bytes;
 	int i;
 	
-	text = get_data_wrapper_text (wrapper);
-	if (!text)
+	bytes = mail_format_get_data_wrapper_text (wrapper, md);
+	if (!bytes)
 		return FALSE;
+	
+	g_byte_array_append (bytes, "", 1);
+	text = bytes->data;
+	g_byte_array_free (bytes, FALSE);
 	
 	/* Check for RFC 2646 flowed text. */
 	type = camel_mime_part_get_content_type (part);
 	format = header_content_type_param (type, "format");
 	if (format && !g_strcasecmp (format, "flowed"))
 		return handle_text_plain_flowed (text, md);
-
-	mail_html_write (md->html, md->stream,
-			 "\n<!-- text/plain -->\n"
-			 "<table cellspacing=0 cellpadding=10 width=\"100%%\"><tr><td>\n");
 	
 	/* Only look for binhex and stuff if this is real text/plain.
 	 * (and not, say, application/mac-binhex40 that mail-identify
@@ -1148,87 +1183,33 @@ handle_text_plain (CamelMimePart *part, const char *mime_type,
 			break;
 		
 		/* Deal with special case */
-		if (start != p) {
-			/* the %.*s thing just grabs upto start-p chars; go read ANSI C */
-			mail_text_write (md->html, md->stream, "%.*s", start-p, p);
-		}
+		if (start != p)
+			write_one_text_plain_chunk (p, start - p, md);
 		
-		p = text_specials[i].handler (start, part, md);
+		p = text_specials[i].handler (start, part, start - text, md);
 		if (p == start) {
 			/* Oops. That failed. Output this line normally and
 			 * skip over it.
 			 */
 			p = strchr (start, '\n');
-			if (!p++)
+			/* Last line, drop out, and dump */
+			if (p == NULL) {
+				p = start;
 				break;
-			mail_text_write (md->html, md->stream, "%.*s", p-start, start);
+			}
+			p++;
+			write_one_text_plain_chunk (start, p - start, md);
 		} else if (p)
-			mail_html_write (md->html, md->stream, "<hr>");
+			write_hr (md);
 	}
 	/* Finish up (or do the whole thing if there were no specials). */
 	if (p)
-		mail_text_write (md->html, md->stream, "%s", p);
+		write_one_text_plain_chunk (p, strlen (p), md);
 	
 	g_free (text);
-	mail_html_write (md->html, md->stream, "</td></tr></table>\n");
 	
 	return TRUE;
 }
-
-#ifdef APPLICATION_PGP_IS_NO_LONGER_SUPPORTED
-/* This is a special-case hack from broken mailers such as The Bat! */
-static gboolean
-handle_application_pgp (CamelMimePart *part, const char *mime_type,
-			MailDisplay *md)
-{
-	CamelDataWrapper *wrapper =
-		camel_medium_get_content_object (CAMEL_MEDIUM (part));
-	const char *format, *xaction;
-	CamelMimePart *mime_part;
-	CamelContentType *type;
-	char *text;
-	
-	/* Check the format and x-action parameters. */
-	type = camel_mime_part_get_content_type (part);
-	format = header_content_type_param (type, "format");
-	xaction = header_content_type_param (type, "x-action");
-	
-	/* We don't know how to handle non-text broken-pgp'd mime parts */
-	if (g_strcasecmp (format, "text") != 0)
-		return FALSE;
-	
-	text = get_data_wrapper_text (wrapper);
-	if (!text)
-		return FALSE;
-	
-	mime_part = camel_mime_part_new ();
-	if (!g_strcasecmp (xaction, "sign")) {
-		camel_mime_part_set_content (mime_part, text, strlen (text), "text/plain");
-	} else {
-		CamelStream *ciphertext, *plaintext;
-		GByteArray *buffer;
-		
-		ciphertext = camel_stream_mem_new ();
-		camel_stream_write (ciphertext, text, strlen (text));
-		camel_stream_reset (ciphertext);
-		
-		plaintext = camel_stream_mem_new ();
-		decode_pgp (ciphertext, plaintext, md);
-		camel_object_unref (CAMEL_OBJECT (ciphertext));
-		
-		buffer = CAMEL_STREAM_MEM (plaintext)->buffer;
-		
-		camel_mime_part_set_content (mime_part, buffer->data, buffer->len, "text/plain");
-		camel_object_unref (CAMEL_OBJECT (plaintext));
-	}
-	
-	camel_medium_set_content_object (CAMEL_MEDIUM (part),
-					 camel_medium_get_content_object (CAMEL_MEDIUM (mime_part)));
-	camel_object_unref (CAMEL_OBJECT (mime_part));
-	
-	return handle_text_plain (part, "text/plain", md);
-}
-#endif /* APPLICATION_PGP_IS_NO_LONGER_SUPPORTED */
 
 static gboolean
 handle_text_plain_flowed (char *buf, MailDisplay *md)
@@ -1236,11 +1217,11 @@ handle_text_plain_flowed (char *buf, MailDisplay *md)
 	char *text, *line, *eol, *p;
 	int prevquoting = 0, quoting, len, br_pending = 0;
 	guint32 citation_color = mail_config_get_citation_color ();
-
+	
 	mail_html_write (md->html, md->stream,
 			 "\n<!-- text/plain, flowed -->\n"
-			 "<table cellspacing=0 cellpadding=10 width=\"100%%\"><tr><td>\n<tt>\n");
-
+			 "<table cellspacing=0 cellpadding=10 width=\"100%\"><tr><td>\n<tt>\n");
+	
 	for (line = buf; *line; line = eol + 1) {
 		/* Process next line */
 		eol = strchr (line, '\n');
@@ -1252,30 +1233,25 @@ handle_text_plain_flowed (char *buf, MailDisplay *md)
 			quoting++;
 		if (quoting != prevquoting) {
 			if (prevquoting == 0) {
-				mail_html_write (md->html, md->stream,
-						 "<font color=\"#%06x\">",
-						 citation_color);
+				gtk_html_stream_printf (md->stream, "<font color=\"#%06x\">", citation_color);
 				if (br_pending)
 					br_pending--;
 			}
 			while (quoting > prevquoting) {
-				mail_html_write (md->html, md->stream,
-						 "<blockquote>");
+				mail_html_write (md->html, md->stream, "<blockquote>");
 				prevquoting++;
 			}
 			while (quoting < prevquoting) {
-				mail_html_write (md->html, md->stream,
-						 "</blockquote>");
+				mail_html_write (md->html, md->stream, "</blockquote>");
 				prevquoting--;
 			}
 			if (quoting == 0) {
-				mail_html_write (md->html, md->stream,
-						 "</font>\n");
+				mail_html_write (md->html, md->stream, "</font>\n");
 				if (br_pending)
 					br_pending--;
 			}
 		}
-
+		
 		if (*p == ' ')
 			p++;
 		len = strlen (p);
@@ -1283,22 +1259,22 @@ handle_text_plain_flowed (char *buf, MailDisplay *md)
 			br_pending++;
 			continue;
 		}
-
+		
 		while (br_pending) {
 			mail_html_write (md->html, md->stream, "<br>\n");
 			br_pending--;
 		}
-
+		
 		/* replace '<' with '&lt;', etc. */
 		text = e_text_to_html (p, E_TEXT_TO_HTML_CONVERT_SPACES |
 				       E_TEXT_TO_HTML_CONVERT_URLS);
 		if (text && *text)
-			mail_html_write (md->html, md->stream, "%s", text);
+			mail_html_write (md->html, md->stream, text);
 		g_free (text);
-
+		
 		if (p[len - 1] != ' ' || !strcmp (p, "-- "))
 			br_pending++;
-
+		
 		if (!eol)
 			break;
 	}
@@ -1310,11 +1286,17 @@ handle_text_plain_flowed (char *buf, MailDisplay *md)
 }
 
 static CamelMimePart *
-fake_mime_part_from_data (const char *data, int len, const char *type)
+fake_mime_part_from_data (const char *data, int len, const char *type,
+			  guint offset, MailDisplay *md)
 {
+	GHashTable *fake_parts = g_datalist_get_data (md->data, "fake_parts");
 	CamelStream *memstream;
 	CamelDataWrapper *wrapper;
 	CamelMimePart *part;
+
+	part = g_hash_table_lookup (fake_parts, GUINT_TO_POINTER (offset));
+	if (part)
+		return part;
 
 	memstream = camel_stream_mem_new_with_buffer (data, len);
 	wrapper = camel_data_wrapper_new ();
@@ -1325,6 +1307,8 @@ fake_mime_part_from_data (const char *data, int len, const char *type)
 	camel_medium_set_content_object (CAMEL_MEDIUM (part), wrapper);
 	camel_object_unref (CAMEL_OBJECT (wrapper));
 	camel_mime_part_set_disposition (part, "inline");
+
+	g_hash_table_insert (fake_parts, GUINT_TO_POINTER (offset), part);
 	return part;
 }
 
@@ -1334,235 +1318,121 @@ destroy_part (CamelObject *root, gpointer event_data, gpointer user_data)
 	camel_object_unref (user_data);
 }
 
-static void
-decode_pgp (CamelStream *ciphertext, CamelStream *plaintext, MailDisplay *md)
-{
-	CamelException ex;
-	
-	camel_exception_init (&ex);
-	
-	/* FIXME: multipart parts */
-	if (g_datalist_get_data (md->data, "show_pgp")) {
-		CamelPgpContext *ctx;
-		
-		ctx = camel_pgp_context_new (session, mail_config_get_pgp_type (),
-					     mail_config_get_pgp_path ());
-		
-		if (ctx) {
-			camel_pgp_decrypt (ctx, ciphertext, plaintext, &ex);
-			camel_object_unref (CAMEL_OBJECT (ctx));
-			camel_stream_reset (plaintext);
-		} else {
-			camel_exception_setv (&ex, CAMEL_EXCEPTION_SYSTEM,
-					      _("No GPG/PGP program configured."));
-		}
-		
-		if (!camel_exception_is_set (&ex))
-			return;
-	}
-	
-	mail_html_write (md->html, md->stream,
-			 "<table><tr valign=top><td>"
-			 "<a href=\"x-evolution-decode-pgp:\">"
-			 "<img src=\"%s\"></a></td><td>",
-			 get_url_for_icon ("gnome-lockscreen.png", md));
-	
-	if (camel_exception_is_set (&ex)) {
-		char *str;
-		
-		str = e_utf8_from_locale_string (_("Encrypted message not displayed"));
-		mail_html_write (md->html, md->stream, "%s<br><br>\n", str);
-		g_free (str);
-		
-		str = e_utf8_from_locale_string (camel_exception_get_description (&ex));
-		mail_error_write (md->html, md->stream, "%s", str);
-		camel_exception_clear (&ex);
-		g_free (str);
-	} else {
-		char *str1, *str2;
-		
-		str1 = e_utf8_from_locale_string (_("Encrypted message"));
-		str2 = e_utf8_from_locale_string (_("Click icon to decrypt."));
-		mail_html_write (md->html, md->stream, "%s<br><br>\n%s",
-		                 str1, str2);
-		g_free (str1);
-		g_free (str2);
-	}
-	
-	mail_html_write (md->html, md->stream, "</td></tr></table>");
-}
-
 static char *
-try_inline_pgp (char *start, CamelMimePart *part, MailDisplay *md)
+try_inline_pgp (char *start, CamelMimePart *mime_part,
+		guint offset, MailDisplay *md)
 {
-	CamelStream *ciphertext, *plaintext;
-	GByteArray *buffer;
+	CamelMimePart *part;
+	CamelMultipart *multipart;
 	char *end;
 	
-	end = strstr (start, "-----END PGP MESSAGE-----");
+	end = strstr (start, "\n-----END PGP MESSAGE-----\n");
 	if (!end)
 		return start;
 	
-	end += strlen ("-----END PGP MESSAGE-----") - 1;
+	end += sizeof ("\n-----END PGP MESSAGE-----\n") - 1;
 	
-	mail_html_write (md->html, md->stream, "<hr>");
+	multipart = camel_multipart_new ();
+	camel_data_wrapper_set_mime_type (CAMEL_DATA_WRAPPER (multipart),
+					  "multipart/encrypted; "
+					  "protocol=\"application/pgp-encrypted\"");
 	
-	ciphertext = camel_stream_mem_new ();
-	camel_stream_write (ciphertext, start, end - start);
-	camel_stream_reset (ciphertext);
+	part = fake_mime_part_from_data ("Version: 1\n",
+					 sizeof ("Version: 1\n") - 1,
+					 "application/pgp-encrypted",
+					 offset + 1, md);
+	camel_multipart_add_part (multipart, part);
+	camel_object_unref (CAMEL_OBJECT (part));
 	
-	plaintext = camel_stream_mem_new ();
-	decode_pgp (ciphertext, plaintext, md);
-	camel_object_unref (CAMEL_OBJECT (ciphertext));
+	part = fake_mime_part_from_data (start, end - start + 1,
+					 "application/octet-stream",
+					 offset, md);
+	camel_multipart_add_part (multipart, part);
+	camel_object_unref (CAMEL_OBJECT (part));
 	
-	buffer = CAMEL_STREAM_MEM (plaintext)->buffer;
-	if (buffer && buffer->len) {
-		mail_html_write (md->html, md->stream,
-				 "<table width=\"100%%\" border=2 "
-				 "cellpadding=4><tr><td>");
-		mail_text_write (md->html, md->stream, "%.*s", buffer->len, buffer->data);
-		mail_html_write (md->html, md->stream, "</td></tr></table>");
-	}
+	part = camel_mime_part_new ();
+	camel_medium_set_content_object (CAMEL_MEDIUM (part),
+					 CAMEL_DATA_WRAPPER (multipart));
 	
-	camel_object_unref (CAMEL_OBJECT (plaintext));
+	camel_object_hook_event (CAMEL_OBJECT (md->current_message),
+				 "finalize", destroy_part, part);
+	
+	write_hr (md);
+	format_mime_part (part, md);
 	
 	return end;
 }
 
-static void
-mail_write_authenticity (MailDisplay *md, CamelCipherValidity *valid)
-{
-	char *str;
-	
-	/* Now display the "seal-of-authenticity" or something... */
-	if (valid && camel_cipher_validity_get_valid (valid)) {
-		str = e_utf8_from_locale_string (
-			_("This message is digitally signed and "
-			  "has been found to be authentic."));
-		mail_html_write (md->html, md->stream,
-				 "<hr>\n<table><tr valign=top>"
-				 "<td><img src=\"%s\"></td>"
-				 "<td><font size=-1>%s<br><br>",
-				 get_url_for_icon (EVOLUTION_ICONSDIR "/wax-seal.png", md),
-				 str);
-		g_free (str);
-	} else {
-		str = e_utf8_from_locale_string (
-			_("This message is digitally signed but can "
-			  "not be proven to be authentic."));
-		mail_html_write (md->html, md->stream,
-				 "<hr>\n<table><tr valign=top>"
-				 "<td><img src=\"%s\"></td>"
-				 "<td><font size=-1>%s<br><br>",
-				 get_url_for_icon (EVOLUTION_ICONSDIR "/wax-seal-broken.png", md),
-				 str);
-		g_free (str);
-	}
-	
-	if (valid && camel_cipher_validity_get_description (valid)) {
-		mail_error_write (md->html, md->stream, "%s",
-				  camel_cipher_validity_get_description (valid));
-		mail_html_write (md->html, md->stream, "<br><br>");
-	}
-}
-
 static char *
-try_inline_pgp_sig (char *start, CamelMimePart *part, MailDisplay *md)
+try_inline_pgp_sig (char *start, CamelMimePart *mime_part,
+		    guint offset, MailDisplay *md)
 {
-	CamelCipherValidity *valid = NULL;
-	CamelPgpContext *context;
-	char *msg_start, *pgp_start, *sig_start, *sig_end;
+	CamelMimePart *part;
+	CamelMultipart *multipart;
+	char *msg_start, *msg_end, *sig_start, *sig_end;
+	CamelContentType *type;
+	char *type_str;
 	
-	pgp_start = strstr (start, "-----BEGIN PGP SIGNED MESSAGE-----");
-	if (pgp_start) {
-		/* skip over -----BEGIN PGP SIGNED MESSAGE----- */
-		msg_start = strchr (pgp_start, '\n');
-		if (!msg_start++)
-			return start;
-		
-		/* skip over Hash: header */
-		msg_start = strchr (msg_start, '\n');
-		if (!msg_start++)
-			return start;
-	} else {
-		/* Some MUAs don't enclose the signed text in
-                   -----BEGIN PGP SIGNED MESSAGE----- */
-		msg_start = start;
-	}
-	
-	/* find the beginning of the signature block */
-	sig_start = strstr (msg_start, "-----BEGIN PGP SIGNATURE-----");
-	if (!sig_start)
+	/* We know start points to "-----BEGIN PGP SIGNED MESSAGE-----\n" */
+	msg_start = start + sizeof ("-----BEGIN PGP SIGNED MESSAGE-----\n") - 1;
+	/* Skip 'One or more "Hash" Armor Headers' followed by
+	 * 'Exactly one empty line'.
+	 */
+	msg_start = strstr (msg_start, "\n\n");
+	if (!msg_start)
+		return start;
+	msg_start += 2;
+	msg_end = strstr (msg_start, "\n-----BEGIN PGP SIGNATURE-----\n");
+	if (!msg_end)
 		return start;
 	
-	/* find the end of the pgp signature block */
-	sig_end = strstr (sig_start, "-----END PGP SIGNATURE-----");
+	sig_start = msg_end;
+	sig_end = strstr (sig_start, "\n-----END PGP SIGNATURE-----\n");
 	if (!sig_end)
 		return start;
+	sig_end += sizeof ("\n-----END PGP SIGNATURE-----\n") - 1;
 	
-	sig_end += strlen ("-----END PGP SIGNATURE-----") + 1;
+	multipart = camel_multipart_new ();
+	camel_data_wrapper_set_mime_type (CAMEL_DATA_WRAPPER (multipart),
+					  "multipart/signed; micalg=pgp-sha1;"
+					  "x-inline-pgp-hack=true");
 	
-	mail_html_write (md->html, md->stream, "<hr>");
+	type = camel_mime_part_get_content_type (mime_part);
+	type_str = header_content_type_format (type);
+	part = fake_mime_part_from_data (msg_start, msg_end - msg_start,
+					 type_str, offset, md);
+	g_free (type_str);
+	camel_multipart_add_part (multipart, part);
+	camel_object_unref (CAMEL_OBJECT (part));
 	
-	context = camel_pgp_context_new (session, mail_config_get_pgp_type (),
-					 mail_config_get_pgp_path ());
+	part = fake_mime_part_from_data (sig_start, sig_end - sig_start,
+					 "application/pgp-signature",
+					 offset + 1, md);
+	camel_multipart_add_part (multipart, part);
+	camel_object_unref (CAMEL_OBJECT (part));
 	
-	if (context) {
-		CamelMimeFilterCharset *charset_filter;
-		CamelStreamFilter *filtered_stream;
-		CamelStream *ciphertext;
-		CamelContentType *type;
-		const char *charset;
-		CamelException *ex;
-		
-		ex = camel_exception_new ();
-		
-		ciphertext = camel_stream_mem_new ();
-		
-		type = camel_mime_part_get_content_type (part);
-		charset = header_content_type_param (type, "charset");
-		if (!charset)
-			charset = mail_config_get_default_charset ();
-		
-		filtered_stream = camel_stream_filter_new_with_stream (ciphertext);
-		charset_filter = camel_mime_filter_charset_new_convert ("utf-8", charset);
-		if (charset_filter) {
-			camel_stream_filter_add (filtered_stream, CAMEL_MIME_FILTER (charset_filter));
-			camel_object_unref (CAMEL_OBJECT (charset_filter));
-		}
-		
-		camel_stream_write (CAMEL_STREAM (filtered_stream), pgp_start, sig_end - pgp_start);
-		camel_stream_flush (CAMEL_STREAM (filtered_stream));
-		camel_object_unref (CAMEL_OBJECT (filtered_stream));
-		
-		camel_stream_reset (ciphertext);
-		
-		valid = camel_pgp_verify (context, ciphertext, NULL, ex);
-		camel_object_unref (CAMEL_OBJECT (ciphertext));
-		camel_object_unref (CAMEL_OBJECT (context));
-		
-		camel_exception_free (ex);
-	}
+	part = camel_mime_part_new ();
+	camel_medium_set_content_object (CAMEL_MEDIUM (part),
+					 CAMEL_DATA_WRAPPER (multipart));
 	
-	mail_text_write (md->html, md->stream, "%.*s", sig_start - msg_start, msg_start);
+	camel_object_hook_event (CAMEL_OBJECT (md->current_message),
+				 "finalize", destroy_part, part);
 	
-	mail_write_authenticity (md, valid);
-	
-	mail_html_write (md->html, md->stream, "</font></td></table>");
-	
-	camel_cipher_validity_free (valid);
+	write_hr (md);
+	format_mime_part (part, md);
 	
 	return sig_end;
 }
 
 static char *
-try_uudecoding (char *start, CamelMimePart *mime_part, MailDisplay *md)
+try_uudecoding (char *start, CamelMimePart *mime_part,
+		guint offset, MailDisplay *md)
 {
 	int mode, len, state = 0;
 	char *filename, *estart, *p, *out, uulen = 0;
 	guint32 save = 0;
 	CamelMimePart *part;
-
+	
 	/* Make sure it's a real uudecode begin line:
 	 * begin [0-7]+ .*
 	 */
@@ -1587,21 +1457,23 @@ try_uudecoding (char *start, CamelMimePart *mime_part, MailDisplay *md)
 	out = g_malloc (p - estart);
 	len = uudecode_step (estart, p - estart, out, &state, &save, &uulen);
 	
-	part = fake_mime_part_from_data (out, len, "application/octet-stream");
+	part = fake_mime_part_from_data (out, len, "application/octet-stream",
+					 offset, md);
 	g_free (out);
 	camel_mime_part_set_filename (part, filename);
 	g_free (filename);
 	camel_object_hook_event (CAMEL_OBJECT (md->current_message),
 				 "finalize", destroy_part, part);
 	
-	mail_html_write (md->html, md->stream, "<hr>");
+	write_hr (md);
 	format_mime_part (part, md);
 	
 	return p + 4;
 }
 
 static char *
-try_inline_binhex (char *start, CamelMimePart *mime_part, MailDisplay *md)
+try_inline_binhex (char *start, CamelMimePart *mime_part,
+		   guint offset, MailDisplay *md)
 {
 	char *p;
 	CamelMimePart *part;
@@ -1618,14 +1490,27 @@ try_inline_binhex (char *start, CamelMimePart *mime_part, MailDisplay *md)
 	p += 2;
 	
 	part = fake_mime_part_from_data (start, p - start,
-					 "application/mac-binhex40");
+					 "application/mac-binhex40",
+					 offset, md);
 	camel_object_hook_event (CAMEL_OBJECT (md->current_message),
 				 "finalize", destroy_part, part);
 	
-	mail_html_write (md->html, md->stream, "<hr>");
+	write_hr (md);
 	format_mime_part (part, md);
 	
 	return p;
+}
+
+static void
+g_string_append_len (GString *string, const char *str, int len)
+{
+	char *tmp;
+	
+	tmp = g_malloc (len + 1);
+	tmp[len] = 0;
+	memcpy (tmp, str, len);
+	g_string_append (string, tmp);
+	g_free (tmp);
 }
 
 /* text/enriched (RFC 1896) or text/richtext (included in RFC 1341) */
@@ -1636,11 +1521,11 @@ handle_text_enriched (CamelMimePart *part, const char *mime_type,
 	static GHashTable *translations = NULL;
 	CamelDataWrapper *wrapper =
 		camel_medium_get_content_object (CAMEL_MEDIUM (part));
-	GString *string;
-	GByteArray *ba;
+	GByteArray *ba, *bytes;
 	char *text, *p, *xed;
 	int len, nofill = 0;
 	gboolean enriched;
+	GString *string;
 	
 	if (!translations) {
 		translations = g_hash_table_new (g_strcase_hash,
@@ -1675,8 +1560,8 @@ handle_text_enriched (CamelMimePart *part, const char *mime_type,
 		g_hash_table_insert (translations, "np", "<hr>");
 	}
 	
-	text = get_data_wrapper_text (wrapper);
-	if (!text)
+	bytes = mail_format_get_data_wrapper_text (wrapper, md);
+	if (!bytes)
 		return FALSE;
 	
 	if (!g_strcasecmp (mime_type, "text/richtext")) {
@@ -1692,13 +1577,15 @@ handle_text_enriched (CamelMimePart *part, const char *mime_type,
 	/* This is not great code, but I don't feel like fixing it right
 	 * now. I mean, it's just text/enriched...
 	 */
-	p = text;
-	string = g_string_sized_new (2 * strlen (p));
+	string = g_string_sized_new (2 * bytes->len);
+	g_byte_array_append (bytes, "", 1);
+	p = text = bytes->data;
+	g_byte_array_free (bytes, FALSE);
 	
 	while (p) {
 		len = strcspn (p, " <>&\n");
 		if (len)
-			g_string_sprintfa (string, "%.*s", len, p);
+			g_string_append_len (string, p, len);
 		
 		p += len;
 		if (!*p)
@@ -1773,13 +1660,11 @@ handle_text_enriched (CamelMimePart *part, const char *mime_type,
 	
 	ba = g_byte_array_new ();
 	g_byte_array_append (ba, (const guint8 *)string->str,
-			     strlen (string->str));
+			     string->len);
 	g_string_free (string, TRUE);
 	
 	xed = g_strdup_printf ("x-evolution-data:%p", part);
-	mail_html_write (md->html, md->stream,
-			 "<iframe src=\"%s\" frameborder=0 scrolling=no>"
-			 "</iframe>", xed);
+	gtk_html_stream_printf (md->stream, "<iframe src=\"%s\" frameborder=0 scrolling=no></iframe>", xed);
 	add_url ("data_urls", xed, ba, md);
 	
 	return TRUE;
@@ -1797,17 +1682,15 @@ handle_text_html (CamelMimePart *part, const char *mime_type,
 	location = get_location (part, md);
 	if (!location)
 		location = get_cid (part, md);
-	mail_html_write (md->html, md->stream,
-			 "<iframe src=\"%s\" frameborder=0 scrolling=no>"
-			 "</iframe>", location);
+	gtk_html_stream_printf (md->stream, "<iframe src=\"%s\" frameborder=0 scrolling=no></iframe>", location);
 	return TRUE;
 }
 
 static gboolean
 handle_image (CamelMimePart *part, const char *mime_type, MailDisplay *md)
 {
-	mail_html_write (md->html, md->stream, "<img hspace=10 vspace=10 src=\"%s\">",
-			 get_cid (part, md));
+	gtk_html_stream_printf (md->stream, "<img hspace=10 vspace=10 src=\"%s\">",
+				get_cid (part, md));
 	return TRUE;
 }
 
@@ -1827,9 +1710,7 @@ handle_multipart_mixed (CamelMimePart *part, const char *mime_type,
 	nparts = camel_multipart_get_number (mp);	
 	for (i = 0; i < nparts; i++) {
 		if (i != 0 && output)
-			mail_html_write (md->html, md->stream,
-					 "<table cellspacing=0 cellpadding=10 width=\"100%%\"><tr><td width=\"100%%\">"
-					 "<hr noshadow size=1></td></tr></table>\n");
+			write_hr (md);
 
 		part = camel_multipart_get_part (mp, i);
 		
@@ -1859,12 +1740,17 @@ handle_multipart_encrypted (CamelMimePart *part, const char *mime_type,
 	mime_part = mail_crypto_pgp_mime_part_decrypt (part, &ex);
 	
 	if (camel_exception_is_set (&ex)) {
-		/* I guess we just treat this as a multipart/mixed */
+		char *error;
+		
+		error = e_utf8_from_locale_string (camel_exception_get_description (&ex));
+		
+		mail_error_printf (md->html, md->stream, "\n%s\n", error);
+		g_free (error);
+		
 		camel_exception_clear (&ex);
-		return handle_multipart_mixed (part, mime_type, md);
+		return TRUE;
 	} else {
 		/* replace the encrypted part with the decrypted part */
-		/* FIXME: will this cause problems anywhere? -- seems to work okay so far */
 		camel_medium_set_content_object (CAMEL_MEDIUM (part),
 						 camel_medium_get_content_object (CAMEL_MEDIUM (mime_part)));
 		camel_object_unref (CAMEL_OBJECT (mime_part));
@@ -1878,52 +1764,105 @@ static gboolean
 handle_multipart_signed (CamelMimePart *part, const char *mime_type,
 			 MailDisplay *md)
 {
+	CamelMimePart *subpart;
 	CamelDataWrapper *wrapper;
 	CamelMultipart *mp;
-	CamelException *ex;
 	gboolean output = FALSE;
-	CamelCipherValidity *valid;
 	int nparts, i;
 	
 	wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
 	
 	g_return_val_if_fail (CAMEL_IS_MULTIPART (wrapper), FALSE);
 	
-	ex = camel_exception_new ();
-	
-	if (camel_pgp_mime_is_rfc2015_signed (part)) {
-		valid = mail_crypto_pgp_mime_part_verify (part, ex);
-	} else {
-		camel_exception_free (ex);
-		return handle_multipart_mixed (part, mime_type, md);
-	}
-	
-	if (!valid) {
-		camel_exception_free (ex);
-		return handle_multipart_mixed (part, mime_type, md);
-	}
-	
-	camel_exception_free (ex);
-	
-	/* now display all the subparts (there should be only 1) *except* the signature (last part) */
+	/* Display all the subparts (there should be only 1)
+	 * except the signature (last part).
+	 */
 	mp = CAMEL_MULTIPART (wrapper);
 	
 	nparts = camel_multipart_get_number (mp);
 	for (i = 0; i < nparts - 1; i++) {
 		if (i != 0 && output)
-			mail_html_write (md->html, md->stream,
-					 "<table cellspacing=0 cellpadding=10 width=\"100%%\"><tr><td width=\"100%%\">"
-					 "<hr noshadow size=1></td></tr></table>\n");
+			write_hr (md);
 		
-		part = camel_multipart_get_part (mp, i);
+		subpart = camel_multipart_get_part (mp, i);
 		
-		output = format_mime_part (part, md);
+		output = format_mime_part (subpart, md);
 	}
 	
-	mail_write_authenticity (md, valid);
-	camel_cipher_validity_free (valid);
+	subpart = camel_multipart_get_part (mp, i);
+	mail_part_set_default_displayed_inline (subpart, md, FALSE);
 	
-	mail_html_write (md->html, md->stream, "</font></td></table>");
+	if (!mail_part_is_displayed_inline (subpart, md)) {
+		char *url;
+		
+		/* Write out the click-for-info object */
+		url = g_strdup_printf ("signature:%p/%lu", subpart,
+				       (unsigned long)time (NULL));
+		gtk_html_stream_printf (md->stream,
+					"<br><table cellspacing=0 cellpadding=0>"
+					"<tr><td><table width=10 cellspacing=0 cellpadding=0>"
+					"<tr><td></td></tr></table></td>"
+					"<td><object classid=\"%s\"></object></td>"
+					"<td><table width=3 cellspacing=0 cellpadding=0>"
+					"<tr><td></td></tr></table></td>"
+					"<td><font size=-1>", url);
+		add_url ("part_urls", url, subpart, md);
+		
+		mail_html_write (md->html, md->stream, 
+				 U_("This message is digitally signed. "
+				    "Click the lock icon for more information."));
+		
+		mail_html_write (md->html, md->stream,
+				 "</font></td></tr><tr><td height=10><table height=10 cellspacing=0 cellpadding=0>"
+				 "<tr><td></td></tr></table></td></tr></table>\n");
+	} else {
+		CamelCipherValidity *valid = NULL;
+		CamelException ex;
+		const char *message = NULL;
+		gboolean good = FALSE;
+		
+		/* Write out the verification results */
+		camel_exception_init (&ex);
+		if (camel_pgp_mime_is_rfc2015_signed (part)) {
+			valid = mail_crypto_pgp_mime_part_verify (part, &ex);
+			if (!valid) {
+				message = camel_exception_get_description (&ex);
+			} else {
+				good = camel_cipher_validity_get_valid (valid);
+				message = camel_cipher_validity_get_description (valid);
+			}
+		} else
+			message = U_("Evolution does not recognize this type of signed message.");
+		
+		if (good) {
+			gtk_html_stream_printf (md->stream,
+						"<table><tr valign=top>"
+						"<td><img src=\"%s\"></td>"
+						"<td>%s<br><br>",
+						get_url_for_icon (EVOLUTION_ICONSDIR "/pgp-signature-ok.png", md),
+						U_("This message is digitally signed and "
+						   "has been found to be authentic."));
+		} else {
+			gtk_html_stream_printf (md->stream,
+						"<table><tr valign=top>"
+						"<td><img src=\"%s\"></td>"
+						"<td>%s<br><br>",
+						get_url_for_icon (EVOLUTION_ICONSDIR "/pgp-signature-bad.png", md),
+						U_("This message is digitally signed but can "
+						   "not be proven to be authentic."));
+		}
+		
+		if (message) {
+			gtk_html_stream_printf (md->stream, "<font size=-1 %s>",
+						good ? "" : "color=red");
+			mail_text_write (md->html, md->stream, message);
+			mail_html_write (md->html, md->stream, "</font>");
+		}
+		
+		mail_html_write (md->html, md->stream, "</td></tr></table>");
+		camel_exception_clear (&ex);
+		camel_cipher_validity_free (valid);
+	}
 	
 	return TRUE;
 }
@@ -2071,7 +2010,7 @@ handle_message_rfc822 (CamelMimePart *part, const char *mime_type,
 	mail_html_write (md->html, md->stream, "<blockquote>");
 	mail_format_mime_message (CAMEL_MIME_MESSAGE (wrapper), md);
 	mail_html_write (md->html, md->stream, "</blockquote>");
-
+	
 	return TRUE;
 }
 
@@ -2203,9 +2142,9 @@ static gboolean
 handle_via_bonobo (CamelMimePart *part, const char *mime_type,
 		   MailDisplay *md)
 {
-	mail_html_write (md->html, md->stream,
-			 "<object classid=\"%s\" type=\"%s\"></object>",
-			 get_cid (part, md), mime_type);
+	gtk_html_stream_printf (md->stream,
+				"<object classid=\"%s\" type=\"%s\"></object>",
+				get_cid (part, md), mime_type);
 	return TRUE;
 }
 
@@ -2318,33 +2257,42 @@ mail_get_message_rfc822 (CamelMimeMessage *message, gboolean want_plain, gboolea
 char *
 mail_get_message_body (CamelDataWrapper *data, gboolean want_plain, gboolean cite)
 {
-	CamelMultipart *mp;
-	CamelMimePart *subpart;
-	int i, nparts;
-	char *subtext, *old, *div;
-	char *text = NULL;
 	CamelContentType *mime_type;
-
+	char *subtext, *old, *div, *text = NULL;
+	GByteArray *bytes = NULL;
+	CamelMimePart *subpart;
+	CamelMultipart *mp;
+	int i, nparts;
+	
 	mime_type = camel_data_wrapper_get_mime_type_field (data);
-
+	
 	/* If it is message/rfc822 or message/news, extract the
 	 * important headers and recursively process the body.
 	 */
 	if (header_content_type_is (mime_type, "message", "rfc822") ||
 	    header_content_type_is (mime_type, "message", "news"))
 		return mail_get_message_rfc822 (CAMEL_MIME_MESSAGE (data), want_plain, cite);
-
+	
 	/* If it's a vcard or icalendar, ignore it. */
 	if (header_content_type_is (mime_type, "text", "x-vcard") ||
 	    header_content_type_is (mime_type, "text", "calendar"))
 		return NULL;
-
+	
 	/* Get the body data for other text/ or message/ types */
 	if (header_content_type_is (mime_type, "text", "*") ||
 	    header_content_type_is (mime_type, "message", "*")) {
-		text = get_data_wrapper_text (data);
+		bytes = mail_format_get_data_wrapper_text (data, NULL);
+		
+		if (bytes) {
+			g_byte_array_append (bytes, "", 1);
+			text = bytes->data;
+			g_byte_array_free (bytes, FALSE);
+		}
+		
 		if (text && !header_content_type_is (mime_type, "text", "html")) {
-			char *html = e_text_to_html (text, E_TEXT_TO_HTML_PRE | (cite ? E_TEXT_TO_HTML_CITE : 0));
+			char *html;
+			
+			html = e_text_to_html (text, E_TEXT_TO_HTML_PRE | (cite ? E_TEXT_TO_HTML_CITE : 0));
 			g_free (text);
 			text = html;
 		}
@@ -2378,7 +2326,7 @@ mail_get_message_body (CamelDataWrapper *data, gboolean want_plain, gboolean cit
 			div = "<br>\n----<br>\n<br>\n";
 	} else
 		div = "<br><hr><br>";
-
+	
 	nparts = camel_multipart_get_number (mp);
 	for (i = 0; i < nparts; i++) {
 		subpart = camel_multipart_get_part (mp, i);

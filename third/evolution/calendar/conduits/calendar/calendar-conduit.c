@@ -7,10 +7,9 @@
  * Authors: Eskil Heyn Olsen <deity@eskil.dk> 
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,6 +44,7 @@
 
 #include <calendar-conduit.h>
 
+static void free_local (ECalLocalRecord *local);
 GnomePilotConduit * conduit_get_gpilot_conduit (guint32);
 void conduit_destroy_gpilot_conduit (GnomePilotConduit*);
 
@@ -112,6 +112,8 @@ static char *print_remote (GnomePilotRecord *remote)
 		    appt.note ?
 		    appt.note : "");
 
+	free_Appointment (&appt);
+
 	return buff;
 }
 
@@ -123,18 +125,29 @@ e_calendar_context_new (guint32 pilot_id)
 
 	calconduit_load_configuration (&ctxt->cfg, pilot_id);
 
+	ctxt->client = NULL;
+	ctxt->uids = NULL;
+	ctxt->changed_hash = NULL;
+	ctxt->changed = NULL;
+	ctxt->locals = NULL;
+	ctxt->map = NULL;
+	
 	return ctxt;
 }
 
-static void
+static gboolean
 e_calendar_context_foreach_change (gpointer key, gpointer value, gpointer data) 
 {
 	g_free (key);
+
+	return TRUE;
 }
 
 static void
 e_calendar_context_destroy (ECalConduitContext *ctxt)
 {
+	GList *l;
+	
 	g_return_if_fail (ctxt != NULL);
 
 	if (ctxt->cfg != NULL)
@@ -143,19 +156,24 @@ e_calendar_context_destroy (ECalConduitContext *ctxt)
 	if (ctxt->client != NULL)
 		gtk_object_unref (GTK_OBJECT (ctxt->client));
 
-	if (ctxt->calendar_file)
-		g_free (ctxt->calendar_file);
-
-	if (ctxt->uids)
+	if (ctxt->uids != NULL)
 		cal_obj_uid_list_free (ctxt->uids);
 
-	if (ctxt->changed_hash)
-		g_hash_table_foreach (ctxt->changed_hash, e_calendar_context_foreach_change, NULL);
+	if (ctxt->changed_hash != NULL) {
+		g_hash_table_foreach_remove (ctxt->changed_hash, e_calendar_context_foreach_change, NULL);
+		g_hash_table_destroy (ctxt->changed_hash);
+	}
+	
+	if (ctxt->locals != NULL) {
+		for (l = ctxt->locals; l != NULL; l = l->next)
+			free_local (l->data);
+		g_list_free (ctxt->locals);
+	}
 
-	if (ctxt->changed)
+	if (ctxt->changed != NULL)
 		cal_client_change_list_free (ctxt->changed);
 	
-	if (ctxt->map)
+	if (ctxt->map != NULL)
 		e_pilot_map_destroy (ctxt->map);
 
 	g_free (ctxt);
@@ -167,45 +185,45 @@ start_calendar_server_cb (CalClient *cal_client,
 			  CalClientOpenStatus status,
 			  gpointer data)
 {
-	ECalConduitContext *ctxt;
-
-	ctxt = data;
-
-	LOG ("  entering start_calendar_server_cb\n");
+	gboolean *success = data;
 
 	if (status == CAL_CLIENT_OPEN_SUCCESS) {
-		ctxt->calendar_open_success = TRUE;
-		LOG ("    success\n");
-	} else
-		LOG ("    open of calendar failed\n");
-
+		*success = TRUE;
+	} else {
+		*success = FALSE;
+		WARN ("Failed to open calendar!\n");
+	}
+	
 	gtk_main_quit (); /* end the sub event loop */
 }
 
 static int
 start_calendar_server (ECalConduitContext *ctxt)
 {
+	char *calendar_file;
+	gboolean success = FALSE;
 	
 	g_return_val_if_fail (ctxt != NULL, -2);
 
 	ctxt->client = cal_client_new ();
 
 	/* FIX ME */
-	ctxt->calendar_file = g_concat_dir_and_file (g_get_home_dir (),
-			       "evolution/local/Calendar/calendar.ics");
+	calendar_file = g_concat_dir_and_file (g_get_home_dir (),
+					       "evolution/local/"
+					       "Calendar/calendar.ics");
 
 	gtk_signal_connect (GTK_OBJECT (ctxt->client), "cal_opened",
-			    start_calendar_server_cb, ctxt);
+			    start_calendar_server_cb, &success);
 
-	LOG ("    calling cal_client_open_calendar\n");
-	if (!cal_client_open_calendar (ctxt->client, ctxt->calendar_file, FALSE))
+	if (!cal_client_open_calendar (ctxt->client, calendar_file, FALSE))
 		return -1;
 
 	/* run a sub event loop to turn cal-client's async load
 	   notification into a synchronous call */
 	gtk_main ();
+	g_free (calendar_file);
 
-	if (ctxt->calendar_open_success)
+	if (success)
 		return 0;
 
 	return -1;
@@ -323,12 +341,120 @@ is_empty_time (struct tm time)
 	return TRUE;
 }
 
+static gboolean
+is_all_day (CalClient *client, CalComponentDateTime *dt_start, CalComponentDateTime *dt_end) 
+{
+	time_t dt_start_time, dt_end_time;
+	icaltimezone *timezone;
+
+	if (dt_start->value->is_date && dt_end->value->is_date)
+		return TRUE;
+	
+	timezone = get_timezone (client, dt_start->tzid);
+	dt_start_time = icaltime_as_timet_with_zone (*dt_start->value, timezone);
+	dt_end_time = icaltime_as_timet_with_zone (*dt_end->value, get_timezone (client, dt_end->tzid));
+
+	if (dt_end_time == time_add_day_with_zone (dt_start_time, 1, timezone))
+		return TRUE;
+
+	return FALSE;
+}
+
+static gboolean
+process_multi_day (ECalConduitContext *ctxt, CalClientChange *ccc, GList **multi_uid, GList **multi_ccc)
+{
+	CalComponentDateTime dt_start, dt_end;
+	icaltimezone *tz_start, *tz_end;
+	time_t event_start, event_end, day_end;
+	struct icaltimetype *old_start_value, *old_end_value;
+	const char *uid;
+	gboolean last = FALSE;
+	gboolean ret = TRUE;
+
+	*multi_ccc = NULL;
+	*multi_uid = NULL;
+	
+	if (ccc->type == CAL_CLIENT_CHANGE_DELETED)
+		return FALSE;
+
+	/* Start time */
+	cal_component_get_dtstart (ccc->comp, &dt_start);
+	if (dt_start.value->is_date)
+		tz_start = ctxt->timezone;
+	else
+		tz_start = get_timezone (ctxt->client, dt_start.tzid);
+	event_start = icaltime_as_timet_with_zone (*dt_start.value, tz_start);
+
+	cal_component_get_dtend (ccc->comp, &dt_end);
+	if (dt_end.value->is_date)
+		tz_end = ctxt->timezone;
+	else
+		tz_end = get_timezone (ctxt->client, dt_end.tzid);
+	event_end = icaltime_as_timet_with_zone (*dt_end.value, tz_end);
+
+	day_end = time_day_end_with_zone (event_start, ctxt->timezone);			
+	if (day_end >= event_end) {
+		ret = FALSE;
+		goto cleanup;
+	} else if (cal_component_has_recurrences (ccc->comp)) {
+		ret = TRUE;
+		goto cleanup;
+	}
+
+	old_start_value = dt_start.value;
+ 	old_end_value = dt_end.value;
+	while (!last) {
+		CalComponent *clone = cal_component_clone (ccc->comp);
+		char *new_uid = cal_component_gen_uid ();
+		struct icaltimetype start_value, end_value;
+		CalClientChange *c = g_new0 (CalClientChange, 1);
+		
+		if (day_end >= event_end) {
+			day_end = event_end;
+			last = TRUE;
+		}
+
+		cal_component_set_uid (clone, new_uid);
+
+		start_value = icaltime_from_timet_with_zone (event_start, FALSE, tz_start);
+		dt_start.value = &start_value;
+		cal_component_set_dtstart (clone, &dt_start);
+		
+		end_value = icaltime_from_timet_with_zone (day_end, FALSE, tz_end);
+		dt_end.value = &end_value;
+		cal_component_set_dtend (clone, &dt_end);
+
+		cal_client_update_object (ctxt->client, clone);
+
+		c->comp = clone;
+		c->type = CAL_CLIENT_CHANGE_ADDED;
+		
+		*multi_ccc = g_list_prepend (*multi_ccc, c);
+		*multi_uid = g_list_prepend (*multi_uid, new_uid);
+
+		event_start = day_end;
+		day_end = time_day_end_with_zone (event_start, ctxt->timezone);
+	}
+	dt_start.value = old_start_value;
+	dt_end.value = old_end_value;
+	
+	cal_component_get_uid (ccc->comp, &uid);
+	cal_client_remove_object (ctxt->client, uid);
+	ccc->type = CAL_CLIENT_CHANGE_DELETED;
+
+ cleanup:
+	cal_component_free_datetime (&dt_start);
+	cal_component_free_datetime (&dt_end);
+
+	return ret;
+}
+
 static short
 nth_weekday (int pos, icalrecurrencetype_weekday weekday)
 {
-	g_assert (pos > 0 && pos <= 5);
+	g_assert ((pos > 0 && pos <= 5) || (pos == -1));
 
-	return (pos << 3) | (int) weekday;
+	return ((abs (pos) * 8) + weekday) * (pos < 0 ? -1 : 1);
 }
 
 static GList *
@@ -380,12 +506,22 @@ compute_status (ECalConduitContext *ctxt, ECalLocalRecord *local, const char *ui
 	}
 }
 
+static void
+free_local (ECalLocalRecord *local) 
+{
+	gtk_object_unref (GTK_OBJECT (local->comp));
+	free_Appointment (local->appt);
+	g_free (local->appt);	
+	g_free (local);
+}
+
 static GnomePilotRecord
 local_record_to_pilot_record (ECalLocalRecord *local,
 			      ECalConduitContext *ctxt)
 {
 	GnomePilotRecord p;
-	
+	static char record[0xffff];
+
 	g_assert (local->comp != NULL);
 	g_assert (local->appt != NULL );
 	
@@ -396,7 +532,7 @@ local_record_to_pilot_record (ECalLocalRecord *local,
 	p.secret = local->local.secret;
 
 	/* Generate pilot record structure */
-	p.record = g_new0 (char, 0xffff);
+	p.record = record;
 	p.length = pack_Appointment (local->appt, p.record, 0xffff);
 
 	return p;	
@@ -412,9 +548,9 @@ local_record_from_comp (ECalLocalRecord *local, CalComponent *comp, ECalConduitC
 	CalComponentText summary;
 	GSList *d_list = NULL, *edl = NULL, *l;
 	CalComponentText *description;
-	CalComponentDateTime dt;
+	CalComponentDateTime dt_start, dt_end;
 	CalComponentClassification classif;
-	time_t dt_time;
+	icaltimezone *default_tz = ctxt->timezone;
 	int i;
 	
 	g_return_if_fail (local != NULL);
@@ -424,7 +560,7 @@ local_record_from_comp (ECalLocalRecord *local, CalComponent *comp, ECalConduitC
 	gtk_object_ref (GTK_OBJECT (comp));
 	
 	cal_component_get_uid (local->comp, &uid);
-	local->local.ID = e_pilot_map_lookup_pid (ctxt->map, uid);
+	local->local.ID = e_pilot_map_lookup_pid (ctxt->map, uid, TRUE);
 	compute_status (ctxt, local, uid);
 
 	local->appt = g_new0 (struct Appointment, 1);
@@ -433,6 +569,7 @@ local_record_from_comp (ECalLocalRecord *local, CalComponent *comp, ECalConduitC
          * we don't overwrite them 
 	 */
 	if (local->local.ID != 0) {
+		struct Appointment appt;		
 		char record[0xffff];
 		int cat = 0;
 		
@@ -440,8 +577,13 @@ local_record_from_comp (ECalLocalRecord *local, CalComponent *comp, ECalConduitC
 					ctxt->dbi->db_handle,
 					local->local.ID, &record, 
 					NULL, NULL, NULL, &cat) > 0) {
-			local->local.category = cat;			
-			unpack_Appointment (local->appt, record, 0xffff);
+			local->local.category = cat;
+			memset (&appt, 0, sizeof (struct Appointment));
+			unpack_Appointment (&appt, record, 0xffff);
+			local->appt->alarm = appt.alarm;
+			local->appt->advance = appt.advance;
+			local->appt->advanceUnits = appt.advanceUnits;
+			free_Appointment (&appt);
 		}
 	}
 
@@ -462,24 +604,31 @@ local_record_from_comp (ECalLocalRecord *local, CalComponent *comp, ECalConduitC
 		local->appt->note = NULL;
 	}
 
-	cal_component_get_dtstart (comp, &dt);	
-	if (dt.value) {
-		dt_time = icaltime_as_timet_with_zone (*dt.value, get_timezone (ctxt->client, dt.tzid));
-		
-		local->appt->begin = *localtime (&dt_time);
+	/* Start/End */
+	cal_component_get_dtstart (comp, &dt_start);
+	cal_component_get_dtend (comp, &dt_end);
+	if (dt_start.value) {
+		icaltimezone_convert_time (dt_start.value, 
+					   get_timezone (ctxt->client, dt_start.tzid),
+					   default_tz);
+		local->appt->begin = icaltimetype_to_tm (dt_start.value);
 	}
-	cal_component_free_datetime (&dt);	
-
-	cal_component_get_dtend (comp, &dt);	
-	if (dt.value && time_add_day (dt_time, 1) != icaltime_as_timet_with_zone (*dt.value, get_timezone (ctxt->client, dt.tzid))) {
-		dt_time = icaltime_as_timet_with_zone (*dt.value, get_timezone (ctxt->client, dt.tzid));
-		
-		local->appt->end = *localtime (&dt_time);
-		local->appt->event = 0;
+	
+	if (dt_start.value && dt_end.value) {
+		if (is_all_day (ctxt->client, &dt_start, &dt_end)) {
+			local->appt->event = 1;
+		} else {
+			icaltimezone_convert_time (dt_end.value, 
+						   get_timezone (ctxt->client, dt_end.tzid),
+						   default_tz);
+			local->appt->end = icaltimetype_to_tm (dt_end.value);
+			local->appt->event = 0;
+		}
 	} else {
 		local->appt->event = 1;
 	}
-	cal_component_free_datetime (&dt);	
+	cal_component_free_datetime (&dt_start);
+	cal_component_free_datetime (&dt_end);	
 
 	/* Recurrence Rules */
 	local->appt->repeatType = repeatNone;
@@ -547,8 +696,10 @@ local_record_from_comp (ECalLocalRecord *local, CalComponent *comp, ECalConduitC
 			local->appt->repeatForever = 1;
 		} else {
 			local->appt->repeatForever = 0;
-			dt_time = icaltime_as_timet_with_zone (recur->until, get_timezone (ctxt->client, dt.tzid));
-			local->appt->repeatEnd = *localtime (&dt_time);
+			icaltimezone_convert_time (&recur->until, 
+						   icaltimezone_get_utc_timezone (),
+						   default_tz);
+			local->appt->repeatEnd = icaltimetype_to_tm (&recur->until);
 		}
 		
 		cal_component_free_recur_list (list);
@@ -561,14 +712,10 @@ local_record_from_comp (ECalLocalRecord *local, CalComponent *comp, ECalConduitC
 	for (l = edl, i = 0; l != NULL; l = l->next, i++) {
 		CalComponentDateTime *dt = l->data;
 
-		if (dt->value->is_date) {
-			local->appt->exception[i].tm_mday = dt->value->day;
-			local->appt->exception[i].tm_mon = dt->value->month - 1;
-			local->appt->exception[i].tm_year = dt->value->year - 1900;
-		} else {
-			dt_time = icaltime_as_timet_with_zone (*dt->value, get_timezone (ctxt->client, dt->tzid));
-			local->appt->exception[i] = *localtime (&dt_time);
-		}		
+		icaltimezone_convert_time (dt->value, 
+					   icaltimezone_get_utc_timezone (),
+					   default_tz);
+		*local->appt->exception = icaltimetype_to_tm (dt->value);
 	}
 	cal_component_free_exdate_list (edl);
 	
@@ -596,11 +743,13 @@ local_record_from_uid (ECalLocalRecord *local,
 
 	if (status == CAL_CLIENT_GET_SUCCESS) {
 		local_record_from_comp (local, comp, ctxt);
+		gtk_object_unref (GTK_OBJECT (comp));
 	} else if (status == CAL_CLIENT_GET_NOT_FOUND) {
 		comp = cal_component_new ();
 		cal_component_set_new_vtype (comp, CAL_COMPONENT_EVENT);
 		cal_component_set_uid (comp, uid);
 		local_record_from_comp (local, comp, ctxt);
+		gtk_object_unref (GTK_OBJECT (comp));
 	} else {
 		INFO ("Object did not exist");
 	}	
@@ -658,20 +807,18 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 	} 
 
 	if (!is_empty_time (appt.begin)) {
-		it = icaltime_from_timet_with_zone (mktime (&appt.begin), FALSE, timezone);
+		it = tm_to_icaltimetype (&appt.begin, FALSE);
 		dt.value = &it;
 		cal_component_set_dtstart (comp, &dt);
 	}
 
 	if (appt.event) {
-		time_t t = mktime (&appt.begin);
-		
-		t = time_day_end (t);
-		it = icaltime_from_timet_with_zone (t, FALSE, timezone);
+		it = tm_to_icaltimetype (&appt.begin, FALSE);
+		icaltime_adjust (&it, 1, 0, 0, 0);
 		dt.value = &it;
 		cal_component_set_dtend (comp, &dt);
 	} else if (!is_empty_time (appt.end)) {
-		it = icaltime_from_timet_with_zone (mktime (&appt.end), FALSE, timezone);
+		it = tm_to_icaltimetype (&appt.end, FALSE);
 		dt.value = &it;
 		cal_component_set_dtend (comp, &dt);
 	}
@@ -704,7 +851,11 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 	case repeatMonthlyByDay:
 		recur.freq = ICAL_MONTHLY_RECURRENCE;
 		recur.interval = appt.repeatFrequency;
-		recur.by_day[0] = nth_weekday (appt.repeatDay / 5, get_ical_day (appt.repeatDay % 5 - 1));
+		if (appt.repeatDay < domLastSun)
+			recur.by_day[0] = nth_weekday ((appt.repeatDay / 7) + 1, 
+						       get_ical_day (appt.repeatDay % 7));
+		else
+			recur.by_day[0] = nth_weekday (-1, get_ical_day (appt.repeatDay % 7));		
 		break;
 		
 	case repeatMonthlyByDate:
@@ -729,9 +880,7 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 		recur.week_start = get_ical_day (appt.repeatWeekstart);
 
 		if (!appt.repeatForever) {
-			time_t t = mktime (&appt.repeatEnd);
-			t = time_add_day (t, 1);
-			recur.until = icaltime_from_timet_with_zone (t, FALSE, timezone);
+			recur.until = tm_to_icaltimetype (&appt.repeatEnd, TRUE);
 		}
 
 		list = g_slist_append (list, &recur);
@@ -750,16 +899,9 @@ comp_from_remote_record (GnomePilotConduitSyncAbs *conduit,
 		dt->tzid = NULL;		
 		
 		ex = appt.exception[i];
-		*dt->value = icaltime_from_timet_with_zone (mktime (&ex), TRUE, timezone);
+		*dt->value = tm_to_icaltimetype (&ex, TRUE);
 		
 		edl = g_slist_prepend (edl, dt);
-		
-		INFO ("%d %d %d %d %d %d %d %d %d",
-		      ex.tm_sec, ex.tm_min,
-		      ex.tm_hour, ex.tm_mday,
-		      ex.tm_mon, ex.tm_year,
-		      ex.tm_wday, ex.tm_yday,
-		      ex.tm_isdst);		
 	}
 	cal_component_set_exdate_list (comp, edl);
 	cal_component_free_exdate_list (edl);
@@ -796,17 +938,17 @@ update_comp (GnomePilotConduitSyncAbs *conduit, CalComponent *comp,
 static void
 check_for_slow_setting (GnomePilotConduit *c, ECalConduitContext *ctxt)
 {
-	int count, map_count;
+	GnomePilotConduitStandard *conduit = GNOME_PILOT_CONDUIT_STANDARD (c);
+	int map_count;
 
-	count = g_list_length (ctxt->uids);
+	/* If there are objects but no log */
 	map_count = g_hash_table_size (ctxt->map->pid_map);
-	
-	/* If there are no objects or objects but no log */
-	if (map_count == 0) {
-		GnomePilotConduitStandard *conduit;
-		LOG ("    doing slow sync\n");
-		conduit = GNOME_PILOT_CONDUIT_STANDARD (c);
+	if (map_count == 0)
 		gnome_pilot_conduit_standard_set_slow (conduit, TRUE);
+
+	if (gnome_pilot_conduit_standard_get_slow (conduit)) {
+		ctxt->map->write_touched_only = TRUE;
+		LOG ("    doing slow sync\n");
 	} else {
 		LOG ("    doing fast sync\n");
 	}
@@ -819,7 +961,7 @@ pre_sync (GnomePilotConduit *conduit,
 	  ECalConduitContext *ctxt)
 {
 	GnomePilotConduitSyncAbs *abs_conduit;
-	GList *l;
+	GList *removed = NULL, *added = NULL, *l;
 	int len;
 	unsigned char *buf;
 	char *filename, *change_id;
@@ -832,7 +974,9 @@ pre_sync (GnomePilotConduit *conduit,
 
 	ctxt->dbi = dbi;	
 	ctxt->client = NULL;
-	
+
+	gnome_pilot_conduit_warning (conduit, "Random warning");
+
 	if (start_calendar_server (ctxt) != 0) {
 		WARN(_("Could not start wombat server"));
 		gnome_pilot_conduit_error (conduit, _("Could not start wombat"));
@@ -845,6 +989,10 @@ pre_sync (GnomePilotConduit *conduit,
 		return -1;
 	LOG ("  Using timezone: %s", icaltimezone_get_tzid (ctxt->timezone));
 	
+	/* Set the default timezone on the backend. */
+	if (ctxt->timezone)
+		cal_client_set_default_timezone (ctxt->client, ctxt->timezone);
+
 	/* Load the uid <--> pilot id mapping */
 	filename = map_name (ctxt);
 	e_pilot_map_read (filename, &ctxt->map);
@@ -857,14 +1005,43 @@ pre_sync (GnomePilotConduit *conduit,
 	change_id = g_strdup_printf ("pilot-sync-evolution-calendar-%d", ctxt->cfg->pilot_id);
 	ctxt->changed = cal_client_get_changes (ctxt->client, CALOBJ_TYPE_EVENT, change_id);
 	ctxt->changed_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	g_free (change_id);
+	
+	/* See if we need to split up any events */
+	for (l = ctxt->changed; l != NULL; l = l->next) {
+		CalClientChange *ccc = l->data;
+		GList *multi_uid = NULL, *multi_ccc = NULL;
+		
+		if (process_multi_day (ctxt, ccc, &multi_uid, &multi_ccc)) {
+			ctxt->uids = g_list_concat (ctxt->uids, multi_uid);
+			
+			added = g_list_concat (added, multi_ccc);
+			removed = g_list_prepend (removed, ccc);
+		}
+	}
 
+	/* Remove the events that were split up */
+	g_list_concat (ctxt->changed, added);
+	for (l = removed; l != NULL; l = l->next) {
+		CalClientChange *ccc = l->data;
+		const char *uid;
+
+		cal_component_get_uid (ccc->comp, &uid);
+		if (e_pilot_map_lookup_pid (ctxt->map, uid, FALSE) == 0) {
+			ctxt->changed = g_list_remove (ctxt->changed, ccc);
+			gtk_object_unref (GTK_OBJECT (ccc->comp));
+			g_free (ccc);
+		}
+	}
+	g_list_free (removed);
+	
 	for (l = ctxt->changed; l != NULL; l = l->next) {
 		CalClientChange *ccc = l->data;
 		const char *uid;
 		
 		cal_component_get_uid (ccc->comp, &uid);
 		if (!e_pilot_map_uid_is_archived (ctxt->map, uid)) {
-			
+
 			g_hash_table_insert (ctxt->changed_hash, g_strdup (uid), ccc);
 
 			switch (ccc->type) {
@@ -878,9 +1055,11 @@ pre_sync (GnomePilotConduit *conduit,
 				del_records++;
 				break;
 			}
+		} else if (ccc->type == CAL_CLIENT_CHANGE_DELETED) {
+			e_pilot_map_remove_by_uid (ctxt->map, uid);
 		}
 	}
-
+	
 	/* Set the count information */
 	num_records = cal_client_get_n_objects (ctxt->client, CALOBJ_TYPE_EVENT);
 	gnome_pilot_conduit_sync_abs_set_num_local_records(abs_conduit, num_records);
@@ -903,7 +1082,10 @@ pre_sync (GnomePilotConduit *conduit,
 	g_free (buf);
 
 	check_for_slow_setting (conduit, ctxt);
-
+	if (ctxt->cfg->sync_type == GnomePilotConduitSyncTypeCopyToPilot
+	    || ctxt->cfg->sync_type == GnomePilotConduitSyncTypeCopyFromPilot)
+		ctxt->map->write_touched_only = TRUE;
+	
 	return 0;
 }
 
@@ -927,7 +1109,8 @@ post_sync (GnomePilotConduit *conduit,
 	change_id = g_strdup_printf ("pilot-sync-evolution-calendar-%d", ctxt->cfg->pilot_id);
 	changed = cal_client_get_changes (ctxt->client, CALOBJ_TYPE_EVENT, change_id);
 	cal_client_change_list_free (changed);
-
+	g_free (change_id);
+	
 	LOG ("---------------------------------------------------------\n");
 
 	return 0;
@@ -985,6 +1168,7 @@ for_each (GnomePilotConduitSyncAbs *conduit,
 
 			*local = g_new0 (ECalLocalRecord, 1);
 			local_record_from_uid (*local, uids->data, ctxt);
+			g_list_prepend (ctxt->locals, *local);
 
 			iterator = uids;
 		} else {
@@ -999,6 +1183,7 @@ for_each (GnomePilotConduitSyncAbs *conduit,
 
 			*local = g_new0 (ECalLocalRecord, 1);
 			local_record_from_uid (*local, iterator->data, ctxt);
+			g_list_prepend (ctxt->locals, *local);
 		} else {
 			LOG ("for_each ending");
 
@@ -1023,7 +1208,7 @@ for_each_modified (GnomePilotConduitSyncAbs *conduit,
 	g_return_val_if_fail (local != NULL, -1);
 
 	if (*local == NULL) {
-		LOG ("beginning for_each_modified: beginning\n");
+		LOG ("for_each_modified beginning\n");
 		
 		iterator = ctxt->changed;
 		
@@ -1037,6 +1222,7 @@ for_each_modified (GnomePilotConduitSyncAbs *conduit,
 		
 			*local = g_new0 (ECalLocalRecord, 1);
 			local_record_from_comp (*local, ccc->comp, ctxt);
+			g_list_prepend (ctxt->locals, *local);
 		} else {
 			LOG ("no events");
 
@@ -1050,6 +1236,7 @@ for_each_modified (GnomePilotConduitSyncAbs *conduit,
 			
 			*local = g_new0 (ECalLocalRecord, 1);
 			local_record_from_comp (*local, ccc->comp, ctxt);
+			g_list_prepend (ctxt->locals, *local);
 		} else {
 			LOG ("for_each_modified ending");
 
@@ -1108,9 +1295,10 @@ add_record (GnomePilotConduitSyncAbs *conduit,
 	update_comp (conduit, comp, ctxt);
 
 	cal_component_get_uid (comp, &uid);
-
 	e_pilot_map_insert (ctxt->map, remote->ID, uid, FALSE);
 
+	gtk_object_unref (GTK_OBJECT (comp));
+	
 	return retval;
 }
 
@@ -1190,7 +1378,7 @@ match (GnomePilotConduitSyncAbs *conduit,
 	g_return_val_if_fail (remote != NULL, -1);
 
 	*local = NULL;
-	uid = e_pilot_map_lookup_uid (ctxt->map, remote->ID);
+	uid = e_pilot_map_lookup_uid (ctxt->map, remote->ID, TRUE);
 	
 	if (!uid)
 		return 0;
@@ -1212,8 +1400,7 @@ free_match (GnomePilotConduitSyncAbs *conduit,
 
 	g_return_val_if_fail (local != NULL, -1);
 
-	gtk_object_unref (GTK_OBJECT (local->comp));
-	g_free (local);
+	free_local (local);
 
 	return 0;
 }

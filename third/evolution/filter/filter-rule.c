@@ -4,19 +4,19 @@
  *  Authors: Not Zed <notzed@lostzed.mmc.com.au>
  *           Jeffrey Stedfast <fejj@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #include <config.h>
@@ -169,18 +169,30 @@ void
 filter_rule_set_name (FilterRule *fr, const char *name)
 {
 	g_assert (IS_FILTER_RULE (fr));
+
+	if ((fr->name && name && strcmp(fr->name, name) == 0)
+	    || (fr->name == NULL && name == NULL))
+		return;
 	
 	g_free (fr->name);
 	fr->name = g_strdup (name);
+
+	filter_rule_emit_changed(fr);
 }
 
 void
 filter_rule_set_source (FilterRule *fr, const char *source)
 {
 	g_assert (IS_FILTER_RULE (fr));
+
+	if ((fr->source && source && strcmp(fr->source, source) == 0)
+	    || (fr->source == NULL && source == NULL))
+		return;
 	
 	g_free (fr->source);
 	fr->source = g_strdup (source);
+
+	filter_rule_emit_changed(fr);
 }
 
 int

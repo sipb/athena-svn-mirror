@@ -1,3 +1,165 @@
+2001-10-30  Damon Chaplin  <damon@ximian.com>
+
+	* e-time-utils.c (e_time_parse_date): added a 2nd format, with the
+	weekday and the date. We need this so we can try to parse DATE values
+	in the ECalendarTable.
+
+2001-10-29  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-dialog-utils.c (e_set_dialog_parent): Remove a g_warning.
+
+2001-10-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* ename/e-name-western.c (e_name_western_fixup): Added French
+	conjunction.
+
+	* e-host-utils.c: Don't define gethost_mutex unless we need it.
+
+2001-10-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* ename/e-name-western.c: Cleaned this up a bit.
+
+2001-10-29  Christopher James Lahey  <clahey@ximian.com>
+
+	* ename/e-name-western.c (e_name_western_fixup): Check for
+	compound first names here (X & Y).  Fixes Ximian bug #13859.
+
+2001-10-28  JP Rosevear  <jpr@ximian.com>
+
+	* e-pilot-map.c (e_pilot_map_remove_by_pid): make sure to free the
+	keys as well
+	(e_pilot_map_remove_by_uid): ditto
+
+2001-10-27  JP Rosevear  <jpr@ximian.com>
+
+	* e-pilot-map.h: update proto
+
+	* e-pilot-map.c (e_pilot_map_lookup_pid): touch the nodes if
+	indicated and found
+	(e_pilot_map_lookup_uid): ditto
+
+2001-10-26  JP Rosevear  <jpr@ximian.com>
+
+	* e-pilot-map.c (real_e_pilot_map_insert): take an extra param on
+	whether to mark touched
+	(map_sax_start_element): use above
+	(e_pilot_map_insert): ditto
+	(e_pilot_map_write): pass in extra info to foreach call
+	(map_write_foreach): if we are in touched only mode, write out the
+	map only if its been touched
+
+	* e-pilot-map.h: add new member
+
+2001-10-26  JP Rosevear  <jpr@ximian.com>
+	
+	* e-pilot-map.c (map_sax_start_element): add archived records
+	with pilot id of 0
+	(map_write_foreach): use the uid map for writing
+	(e_pilot_map_write): write using the uid map
+
+2001-10-26  JP Rosevear  <jpr@ximian.com>
+
+	* e-pilot-map.c (e_pilot_map_insert): free up old memory first
+	(e_pilot_map_destroy): free allocated memory when destroying
+
+2001-10-22  JP Rosevear  <jpr@ximian.com>
+
+	* e-pilot-map.c (map_set_node_timet): plug leak
+
+2001-10-23  Dan Winship  <danw@ximian.com>
+
+	* e-html-utils.c (e_text_to_html_full): Change " " to "&nbsp;" at
+	start of line.
+
+2001-10-22  Dan Winship  <danw@ximian.com>
+
+	* e-passwords.c (e_passwords_get_password): Pass a
+	CORBA_Environment to bonobo_config_get_string so it doesn't g_warn
+	on error. (Since the "error" is most likely just that the password
+	isn't cached.)
+	(e_passwords_remember_password, e_passwords_get_password,
+	e_passwords_add_password): Change "if (foo) { entire function; }"
+	to "if (!foo) return;"
+
+	* e-html-utils.c (special_chars): Don't allow single quote or
+	backtick in email addresses, or pipes following URLs.
+
+2001-10-22  JP Rosevear  <jpr@ximian.com>
+	
+	* e-dbhash.c (e_dbhash_foreach_key): null out DBT memory prior to
+	usage (from Edd Dumbill <edd@usefulinc.com>)
+	
+2001-10-17  Ettore Perazzoli  <ettore@ximian.com>
+
+	* e-dialog-utils.c (e_set_dialog_parent_from_xid): New.
+
+2001-10-12  Chris Toshok  <toshok@ximian.com>
+
+	* e-passwords.h: new parameter to e_passwords_init, and add
+	prototype for e_passwords_clear_component_passwords.
+
+	* e-passwords.c (e_passwords_init): copy off the component name.
+	(e_passwords_shutdown): free/NULL the component name.
+	(e_passwords_clear_component_passwords): new function.  remove the
+	subtree rooted at /Passwords/<ComponentName>.
+	(e_passwords_remember_password): use component_name when building
+	up the path.
+	(e_passwords_get_password): same.
+	(e_passwords_add_password): remove/free the currently stored
+	session password for this key if there is one, before adding the
+	new one.
+
+2001-10-11  Chris Toshok  <toshok@ximian.com>
+
+	* e-passwords.h: change prototype for e_passwords_get_password.
+
+	* e-passwords.c (e_passwords_get_password): remove 'const' from
+	return type - the return type is now allocated and must be freed
+	by the caller.
+	
+2001-10-11  Chris Toshok  <toshok@ximian.com>
+
+	* e-passwords.c (e_passwords_init): open the bonobo config db for
+	our passwords.
+	(e_passwords_shutdown): sync and unref the bonobo db, and clear
+	out the per session hash.
+	(e_passwords_forget_passwords): remove the bonobo config db
+	/Passwords path, and free up the session hash (but don't destroy
+	it).
+	(e_passwords_remember_password): remove the key/value from the
+	session hash, after inserting it into the bonobo db.
+	(e_passwords_get_password): look up a session password for the
+	uri, and if it's not there, consult the bonobo db.
+	(e_passwords_ask_password): quiet gcc's warnings, and only consult
+	the toggle button state if we actaully created it.
+
+2001-10-09  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-url.c (e_uri_to_string): don't add the host if it's null
+
+2001-10-06  Christopher James Lahey  <clahey@ximian.com>
+
+	* ename/e-address-western.c (e_address_western_parse): Made this
+	refuse to parse more than 2047 characters of address.
+
+2001-10-04  Dan Winship  <danw@ximian.com>
+
+	* e-passwords.c (e_passwords_add_password): Make this dup the
+	strings it's passed.
+	(*) Add lots of docs.
+
+2001-10-03  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-url.c (e_uri_new): default protocol to file: if not specified
+
+2001-10-02  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-url.c (e_uri_copy): duplicate also the params member
+
+2001-10-02  Rodrigo Moya <rodrigo@ximian.com>
+
+	* e-url.[ch] (e_uri_copy, e_uri_to_string): new functions
+	
 2001-10-01  Rodrigo Moya <rodrigo@ximian.com>
 	
 	* e-url.[ch]: added basic URI management functions

@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -65,19 +64,20 @@ make_initial_rdf_list (ESummaryPrefs *prefs)
 {
 	GList *rdfs;
 
-	rdfs = g_list_prepend (NULL, g_strdup ("http://news.gnome.org/gnome-news/rdf"));
-
+	rdfs = g_list_prepend (NULL, g_strdup ("http://www.cnn.com/cnn.rss"));
+	
 	prefs->rdf_urls = rdfs;
 }
 
 static void
 make_initial_weather_list (ESummaryPrefs *prefs)
 {
-	/* translators: Put here a list of codes for locations you want to
-	   see in My Evolution by default. You can find the list of all
-	   stations and their codes in Evolution sources
-	   (evolution/my-evolution/Locations) */
-	char *default_stations = _("KBOS:ZSAM:EGAA"), **stations_v, **p;
+	/* translators: Put a list of codes for locations you want to see in
+	   My Evolution by default here. You can find the list of all
+	   stations and their codes in Evolution sources.
+	   (evolution/my-evolution/Locations)
+	   Codes are seperated with : eg. "KBOS:EGAA"*/
+	char *default_stations = _("KBOS"), **stations_v, **p;
 	GList *stations = NULL;
 
 	stations_v = g_strsplit (default_stations, ":", 0);
@@ -85,7 +85,7 @@ make_initial_weather_list (ESummaryPrefs *prefs)
 	for (p = stations_v; *p != NULL; p++) {
 		stations = g_list_prepend (stations, *p);
 	}
-	g_free (stations_v);
+	g_strfreev (stations_v);
 
 	prefs->stations = g_list_reverse (stations);
 }
@@ -98,7 +98,9 @@ vector_from_str_list (GList *strlist)
 	char *vector;
 	GString *str;
 
-	g_return_val_if_fail (strlist != NULL, NULL);
+	if (strlist == NULL) {
+		return g_strdup ("");
+	}
 
 	str = g_string_new ("");
 	for (; strlist; strlist = strlist->next) {
@@ -157,7 +159,7 @@ e_summary_preferences_restore (ESummaryPrefs *prefs)
 
 	CORBA_exception_free (&ev);
 	vector = bonobo_config_get_string (db, "My-Evolution/Mail/display_folders", &ev);
-	if (BONOBO_EX (&ev) || vector == NULL) {
+	if (BONOBO_EX (&ev)) {
 		g_warning ("Error getting Mail/display_folders");
 		CORBA_exception_free (&ev);
 		bonobo_object_release_unref (db, NULL);
@@ -176,7 +178,7 @@ e_summary_preferences_restore (ESummaryPrefs *prefs)
 
 
 	vector = bonobo_config_get_string (db, "My-Evolution/RDF/rdf_urls", &ev);
-	if (BONOBO_EX (&ev) || vector == NULL) {
+	if (BONOBO_EX (&ev)) {
 		g_warning ("Error getting RDF/rdf_urls");
 		CORBA_exception_free (&ev);
 		bonobo_object_release_unref (db, NULL);
@@ -190,7 +192,7 @@ e_summary_preferences_restore (ESummaryPrefs *prefs)
 	prefs->limit = bonobo_config_get_long_with_default (db, "My-Evolution/RDF/limit", 10, NULL);
 
 	vector = bonobo_config_get_string (db, "My-Evolution/Weather/stations", &ev);
-	if (BONOBO_EX (&ev) || vector == NULL) {
+	if (BONOBO_EX (&ev)) {
 		g_warning ("Error getting Weather/stations");
 		CORBA_exception_free (&ev);
 		bonobo_object_release_unref (db, NULL);
@@ -438,11 +440,13 @@ static struct _RDFInfo rdfs[] = {
 	{"http://www.bsdtoday.com/backend/bt.rdf", "BSD Today"},
 	{"http://beyond2000.com/b2k.rdf", "Beyond 2000"},
 	{"http://www.cnn.com/cnn.rss", "CNN"},
+        {"http://www.debianplanet.org/debianplanet/backend.php", "Debian Planet"},
 	{"http://www.dictionary.com/wordoftheday/wotd.rss", N_("Dictionary.com Word of the Day")},
 	{"http://www.dvdreview.com/rss/newschannel.rss", "DVD Review"},
 	{"http://freshmeat.net/backend/fm.rdf", "Freshmeat"},
 	{"http://news.gnome.org/gnome-news/rdf", "GNotices"},
 	{"http://headlines.internet.com/internetnews/prod-news/news.rss", "Internet.com"},
+	{"http://www.hispalinux.es/backend.php", "HispaLinux"},
 	{"http://dot.kde.org/rdf", "KDE Dot News"},
 	{"http://www.kuro5hin.org/backend.rdf", "Kuro5hin"},
 	{"http://linuxgames.com/bin/mynetscape.pl", "Linux Games"},
@@ -486,6 +490,11 @@ find_name_for_url (PropertyData *pd,
 
 	for (p = pd->rdf->known; p; p = p->next) {
 		struct _RDFInfo *info = p->data;
+		
+		if (info == NULL || info->url == NULL) {
+			continue;
+		}
+
 		if (strcmp (url, info->url) == 0) {
 			return info->name;
 		}
@@ -500,7 +509,7 @@ save_known_rdfs (GList *rdfs)
 	FILE *handle;
 	char *rdf_file;
 
-	rdf_file = gnome_util_prepend_user_home ("evolution/config/RDF-urls.txt");
+	rdf_file = gnome_util_prepend_user_home ("evolution/RDF-urls.txt");
 	handle = fopen (rdf_file, "w");
 	g_free (rdf_file);
 
@@ -530,9 +539,15 @@ fill_rdf_all_clist (GtkCList *clist,
 	int i;
 	char *rdf_file, line[4096];
 
-	rdf_file = gnome_util_prepend_user_home ("evolution/config/RDF-urls.txt");
+	rdf_file = gnome_util_prepend_user_home ("evolution/RDF-urls.txt");
 	handle = fopen (rdf_file, "r");
 	g_free (rdf_file);
+	if (handle == NULL) {
+		/* Open the old location just so that users data isn't lost */
+		rdf_file = gnome_util_prepend_user_home ("evolution/config/RDF-urls.txt");
+		handle = fopen (rdf_file, "r");
+		g_free (rdf_file);
+	}
 
 	if (handle == NULL) {
 		for (i = 0; rdfs[i].url; i++) {
@@ -576,6 +591,8 @@ fill_rdf_all_clist (GtkCList *clist,
 					     (GtkDestroyNotify) free_rdf_info);
 		g_strfreev (tokens);
 	}
+
+	fclose (handle);
 }
 
 static void
@@ -1481,6 +1498,7 @@ e_summary_configure (BonoboUIComponent *component,
 	g_return_if_fail (pd->xml != NULL);
 
 	pd->box = GNOME_PROPERTY_BOX (glade_xml_get_widget (pd->xml, "dialog1"));
+	gtk_widget_hide (pd->box->help_button);
 	summary->prefs_window = GTK_WIDGET (pd->box);
 
 	gtk_window_set_title (GTK_WINDOW (pd->box), _("Summary Settings"));

@@ -5,10 +5,9 @@
  * Authors: Damon Chaplin <damon@ximian.com>
  *          Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -218,11 +217,11 @@ tag_calendar_by_comp (ECalendar *ecal, CalComponent *comp, CalClient *client, gb
 		cal_recur_generate_instances (comp, c.start_time, c.end_time,
 					      tag_calendar_cb, &c,
 					      cal_client_resolve_tzid_cb,
-					      client);
+					      client, c.zone);
 	} else {
 		cal_recur_generate_instances (comp, c.start_time, c.end_time,
 					      tag_calendar_cb, &c,
 					      resolve_tzid_cb,
-					      client);
+					      client, c.zone);
 	}
 }

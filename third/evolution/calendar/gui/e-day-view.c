@@ -8,9 +8,8 @@
  * Copyright 1999, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -52,11 +51,13 @@
 #include "dialogs/delete-comp.h"
 #include "comp-util.h"
 #include "calendar-commands.h"
+#include "calendar-config.h"
 #include "goto.h"
 #include "e-day-view-time-item.h"
 #include "e-day-view-top-item.h"
 #include "e-day-view-layout.h"
 #include "e-day-view-main-item.h"
+#include "misc.h"
 
 /* Images */
 #include "art/bell.xpm"
@@ -96,6 +97,9 @@
    we get from the server. */
 #define E_DAY_VIEW_LAYOUT_TIMEOUT	100
 
+/* Used for the status bar messages */
+#define EVOLUTION_CALENDAR_PROGRESS_IMAGE "evolution-calendar-mini.png"
+static GdkPixbuf *progress_icon[2] = { NULL, NULL };
 
 /* Signal IDs */
 enum {
@@ -870,6 +874,8 @@ e_day_view_init (EDayView *day_view)
 			    GTK_SIGNAL_FUNC (invisible_destroyed),
 			    (gpointer) day_view);
 	day_view->clipboard_selection = NULL;
+
+	day_view->activity = NULL;
 }
 
 
@@ -955,8 +961,15 @@ e_day_view_destroy (GtkObject *object)
 
 	if (day_view->invisible)
 		gtk_widget_destroy (day_view->invisible);
-	if (day_view->clipboard_selection)
+	if (day_view->clipboard_selection) {
 		g_free (day_view->clipboard_selection);
+		day_view->clipboard_selection = NULL;
+	}
+
+	if (day_view->activity) {
+		gtk_object_unref (GTK_OBJECT (day_view->activity));
+		day_view->activity = NULL;
+	}
 
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
@@ -1542,7 +1555,8 @@ query_obj_updated_cb (CalQuery *query, const char *uid,
 	cal_recur_generate_instances (comp, day_view->lower,
 				      day_view->upper,
 				      e_day_view_add_event, day_view,
-				      cal_client_resolve_tzid_cb, day_view->client);
+				      cal_client_resolve_tzid_cb, day_view->client,
+				      day_view->zone);
 	gtk_object_unref (GTK_OBJECT (comp));
 
 	e_day_view_queue_layout (day_view);
@@ -1574,6 +1588,8 @@ query_query_done_cb (CalQuery *query, CalQueryDoneStatus status, const char *err
 
 	/* FIXME */
 
+	e_day_view_set_status_message (day_view, NULL);
+
 	if (status != CAL_QUERY_DONE_SUCCESS)
 		fprintf (stderr, "query done: %s\n", error_str);
 }
@@ -1587,6 +1603,8 @@ query_eval_error_cb (CalQuery *query, const char *error_str, gpointer data)
 	day_view = E_DAY_VIEW (data);
 
 	/* FIXME */
+
+	e_day_view_set_status_message (day_view, NULL);
 
 	fprintf (stderr, "eval error: %s\n", error_str);
 }
@@ -1654,6 +1672,7 @@ update_query (EDayView *day_view)
 	if (!real_sexp)
 		return; /* No time range is set, so don't start a query */
 
+	e_day_view_set_status_message (day_view, _("Searching"));
 	day_view->query = cal_client_get_query (day_view->client, real_sexp);
 	g_free (real_sexp);
 
@@ -2702,9 +2721,13 @@ e_day_view_cut_clipboard (EDayView *day_view)
 	if (event == NULL)
 		return;
 
+	e_day_view_set_status_message (day_view, _("Deleting selected objects"));
+
 	e_day_view_copy_clipboard (day_view);
 	cal_component_get_uid (event->comp, &uid);
 	cal_client_remove_object (day_view->client, uid);
+
+	e_day_view_set_status_message (day_view, NULL);
 }
 
 void
@@ -2977,7 +3000,9 @@ e_day_view_on_main_canvas_button_press (GtkWidget *widget,
 	gint event_x, event_y, scroll_x, scroll_y, row, day, event_num;
 	EDayViewPosition pos;
 
+#if 0
 	g_print ("In e_day_view_on_main_canvas_button_press\n");
+#endif
 
 	/* Handle scroll wheel events */
 	if (event->button == 4) {
@@ -3630,7 +3655,7 @@ e_day_view_delete_event_internal (EDayView *day_view, EDayViewEvent *event)
 
 	vtype = cal_component_get_vtype (event->comp);
 
-	if (delete_component_dialog (event->comp, 1, vtype,
+	if (delete_component_dialog (event->comp, FALSE, 1, vtype,
 				     GTK_WIDGET (day_view))) {
 		const char *uid;
 
@@ -3841,7 +3866,9 @@ e_day_view_on_main_canvas_button_release (GtkWidget *widget,
 					  GdkEventButton *event,
 					  EDayView *day_view)
 {
+#if 0
 	g_print ("In e_day_view_on_main_canvas_button_release\n");
+#endif
 
 	if (day_view->selection_is_being_dragged) {
 		gdk_pointer_ungrab (event->time);
@@ -4994,8 +5021,8 @@ e_day_view_key_press (GtkWidget *widget, GdkEventKey *event)
 	guint keyval;
 	gboolean stop_emission;
 	time_t dtstart, dtend;
-	CalComponentDateTime dt;
-	struct icaltimetype itt;
+	CalComponentDateTime start_dt, end_dt;
+	struct icaltimetype start_tt, end_tt;
 	const char *uid;
 
 	g_return_val_if_fail (widget != NULL, FALSE);
@@ -5075,31 +5102,39 @@ e_day_view_key_press (GtkWidget *widget, GdkEventKey *event)
 	   character. */
 	if (keyval == GDK_Return) {
 		initial_text = NULL;
-	} else if ((keyval < 0x20)
-		   || (keyval > 0xFF)
+	} else if (((keyval >= 0x20) && (keyval <= 0xFF)
+		    && (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)))
 		   || (event->length == 0)
-		   || (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK))) {
+		   || (keyval == GDK_Tab)) {
 		return FALSE;
 	} else
 		initial_text = e_utf8_from_gtk_event_key (widget, event->keyval, event->string);
 
 	/* Add a new event covering the selected range */
 
-	comp = cal_component_new ();
-	cal_component_set_new_vtype (comp, CAL_COMPONENT_EVENT);
+	comp = cal_comp_event_new_with_defaults ();
 
 	e_day_view_get_selected_time_range (day_view, &dtstart, &dtend);
 
-	dt.value = &itt;
-	dt.tzid = icaltimezone_get_tzid (day_view->zone);
+	start_tt = icaltime_from_timet_with_zone (dtstart, FALSE,
+						  day_view->zone);
 
-	*dt.value = icaltime_from_timet_with_zone (dtstart, FALSE,
-						   day_view->zone);
-	cal_component_set_dtstart (comp, &dt);
+	end_tt = icaltime_from_timet_with_zone (dtend, FALSE,
+						day_view->zone);
 
-	*dt.value = icaltime_from_timet_with_zone (dtend, FALSE,
-						   day_view->zone);
-	cal_component_set_dtend (comp, &dt);
+	if (day_view->selection_in_top_canvas) {
+		start_dt.tzid = NULL;
+		start_tt.is_date = 1;
+		end_tt.is_date = 1;
+	} else {
+		start_dt.tzid = icaltimezone_get_tzid (day_view->zone);
+	}
+
+	start_dt.value = &start_tt;
+	end_dt.value = &end_tt;
+	end_dt.tzid = start_dt.tzid;
+	cal_component_set_dtstart (comp, &start_dt);
+	cal_component_set_dtend (comp, &end_dt);
 
 	cal_component_set_categories (comp, day_view->default_category);
 
@@ -5484,6 +5519,36 @@ e_day_view_stop_editing_event (EDayView *day_view)
 }
 
 
+/* Cancels the current edition by resetting the appointment's text to its original value */
+static void
+cancel_editing (EDayView *day_view)
+{
+	int day, event_num;
+	EDayViewEvent *event;
+	CalComponentText summary;
+
+	day = day_view->editing_event_day;
+	event_num = day_view->editing_event_num;
+
+	g_assert (day != -1);
+
+	if (day == E_DAY_VIEW_LONG_EVENT)
+		event = &g_array_index (day_view->long_events, EDayViewEvent, event_num);
+	else
+		event = &g_array_index (day_view->events[day], EDayViewEvent, event_num);
+
+	/* Reset the text to what was in the component */
+
+	cal_component_get_summary (event->comp, &summary);
+	gtk_object_set (GTK_OBJECT (event->canvas_item),
+			"text", summary.value ? summary.value : "",
+			NULL);
+
+	/* Stop editing */
+	e_day_view_stop_editing_event (day_view);
+}
+
+
 static gboolean
 e_day_view_on_text_item_event (GnomeCanvasItem *item,
 			       GdkEvent *event,
@@ -5501,10 +5566,16 @@ e_day_view_on_text_item_event (GnomeCanvasItem *item,
 			gtk_signal_emit_stop_by_name (GTK_OBJECT (item),
 						      "event");
 			return TRUE;
+		} else if (event->key.keyval == GDK_Escape) {
+			cancel_editing (day_view);
+			gtk_signal_emit_stop_by_name (GTK_OBJECT (item), "event");
+			return TRUE;
 		}
 		break;
 	case GDK_2BUTTON_PRESS:
+#if 0
 		g_print ("Item got double-click\n");
+#endif
 		break;
 
 	case GDK_BUTTON_PRESS:
@@ -5568,7 +5639,6 @@ e_day_view_on_editing_started (EDayView *day_view,
 			 e_day_view_signals[SELECTION_CHANGED]);
 }
 
-
 static void
 e_day_view_on_editing_stopped (EDayView *day_view,
 			       GnomeCanvasItem *item)
@@ -5619,6 +5689,48 @@ e_day_view_on_editing_stopped (EDayView *day_view,
 			NULL);
 	g_assert (text != NULL);
 
+	if (string_is_empty (text)) {
+		ConfirmDeleteEmptyCompResult result;
+
+		result = cal_comp_confirm_delete_empty_comp (event->comp, day_view->client,
+							     GTK_WIDGET (day_view));
+
+		switch (result) {
+		case EMPTY_COMP_REMOVE_LOCALLY: {
+			const char *uid;
+
+			cal_component_get_uid (event->comp, &uid);
+
+			e_day_view_foreach_event_with_uid (day_view, uid,
+							   e_day_view_remove_event_cb, NULL);
+			e_day_view_check_layout (day_view);
+			gtk_widget_queue_draw (day_view->top_canvas);
+			gtk_widget_queue_draw (day_view->main_canvas);
+			goto out; }
+
+		case EMPTY_COMP_REMOVED_FROM_SERVER:
+			goto out;
+
+		case EMPTY_COMP_DO_NOT_REMOVE:
+			/* But we cannot keep an empty summary, so make the
+			 * canvas item refresh itself from the text that the
+			 * component already had.
+			 */
+
+			if (day == E_DAY_VIEW_LONG_EVENT)
+				e_day_view_reshape_long_event (day_view, event_num);
+			else
+				e_day_view_update_event_label (day_view, day, event_num);
+
+			goto out;
+
+		default:
+			g_assert_not_reached ();
+		}
+
+		g_assert_not_reached ();
+	}
+
 	/* Only update the summary if necessary. */
 	cal_component_get_summary (event->comp, &summary);
 	if (summary.value && !strcmp (text, summary.value)) {
@@ -5635,6 +5747,8 @@ e_day_view_on_editing_stopped (EDayView *day_view,
 		if (!cal_client_update_object (day_view->client, event->comp))
 			g_message ("e_day_view_on_editing_stopped(): Could not update the object!");
 	}
+
+ out:
 
 	g_free (text);
 
@@ -6577,6 +6691,7 @@ e_day_view_on_top_canvas_drag_data_received  (GtkWidget          *widget,
 	CalComponentDateTime date;
 	struct icaltimetype itt;
 	time_t dt;
+	gboolean all_day_event;
 
 	/* Note that we only support DnD within the EDayView at present. */
 	if ((data->length >= 0) && (data->format == 8)
@@ -6588,7 +6703,7 @@ e_day_view_on_top_canvas_drag_data_received  (GtkWidget          *widget,
 			const char *uid;
 			num_days = 1;
 			start_offset = 0;
-			end_offset = -1;
+			end_offset = 0;
 
 			if (day_view->drag_event_day == E_DAY_VIEW_LONG_EVENT) {
 				event = &g_array_index (day_view->long_events, EDayViewEvent,
@@ -6620,28 +6735,47 @@ e_day_view_on_top_canvas_drag_data_received  (GtkWidget          *widget,
 			if (!event_uid || !uid || strcmp (event_uid, uid))
 				g_warning ("Unexpected event UID");
 
-			/* We use a temporary shallow of the comp since we
-			   don't want to change the original comp here.
+			/* We clone the event since we don't want to change
+			   the original comp here.
 			   Otherwise we would not detect that the event's time
 			   had changed in the "update_event" callback. */
 
 			comp = cal_component_clone (event->comp);
 
+			if (start_offset == 0 && end_offset == 0)
+				all_day_event = TRUE;
+			else
+				all_day_event = FALSE;
+
 			date.value = &itt;
-			/* FIXME: Should probably keep the timezone of the
-			   original start and end times. */
-			date.tzid = icaltimezone_get_tzid (day_view->zone);
 
 			dt = day_view->day_starts[day] + start_offset * 60;
-			*date.value = icaltime_from_timet_with_zone (dt, FALSE,
-								     day_view->zone);
+			itt = icaltime_from_timet_with_zone (dt, FALSE,
+							     day_view->zone);
+			if (all_day_event) {
+				itt.is_date = TRUE;
+				date.tzid = NULL;
+			} else {
+				/* FIXME: Should probably keep the timezone of
+				   the original start and end times. */
+				date.tzid = icaltimezone_get_tzid (day_view->zone);
+			}
 			cal_component_set_dtstart (comp, &date);
-			if (end_offset == -1 || end_offset == 0)
+
+			if (end_offset == 0)
 				dt = day_view->day_starts[day + num_days];
 			else
 				dt = day_view->day_starts[day + num_days - 1] + end_offset * 60;
-			*date.value = icaltime_from_timet_with_zone (dt, FALSE,
-								     day_view->zone);
+			itt = icaltime_from_timet_with_zone (dt, FALSE,
+							     day_view->zone);
+			if (all_day_event) {
+				itt.is_date = TRUE;
+				date.tzid = NULL;
+			} else {
+				/* FIXME: Should probably keep the timezone of
+				   the original start and end times. */
+				date.tzid = icaltimezone_get_tzid (day_view->zone);
+			}
 			cal_component_set_dtend (comp, &date);
 
 			gtk_drag_finish (context, TRUE, TRUE, time);
@@ -6892,6 +7026,7 @@ selection_received (GtkWidget *invisible,
 		return;
 	}
 
+	e_day_view_set_status_message (day_view, _("Updating objects"));
 	e_day_view_get_selected_time_range (day_view, &dtstart, &dtend);
 
 	if (kind == ICAL_VCALENDAR_COMPONENT) {
@@ -6962,6 +7097,8 @@ selection_received (GtkWidget *invisible,
 
 		gtk_object_unref (GTK_OBJECT (comp));
 	}
+
+	e_day_view_set_status_message (day_view, NULL);
 }
 
 
@@ -7024,4 +7161,34 @@ e_day_view_get_num_events_selected (EDayView *day_view)
 	g_return_val_if_fail (E_IS_DAY_VIEW (day_view), 0);
 
 	return (day_view->editing_event_day != -1) ? 1 : 0;
+}
+
+/* Displays messages on the status bar. */
+void
+e_day_view_set_status_message (EDayView *day_view, const char *message)
+{
+	extern EvolutionShellClient *global_shell_client; /* ugly */
+
+	g_return_if_fail (E_IS_DAY_VIEW (day_view));
+
+	if (!message || !*message) {
+		if (day_view->activity) {
+			gtk_object_unref (GTK_OBJECT (day_view->activity));
+			day_view->activity = NULL;
+		}
+	}
+	else if (!day_view->activity) {
+		int display;
+		char *client_id = g_strdup_printf ("%p", day_view);
+
+		if (progress_icon[0] == NULL)
+			progress_icon[0] = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/" EVOLUTION_CALENDAR_PROGRESS_IMAGE);
+		day_view->activity = evolution_activity_client_new (
+			global_shell_client, client_id,
+			progress_icon, message, TRUE, &display);
+
+		g_free (client_id);
+	}
+	else
+		evolution_activity_client_update (day_view->activity, message, -1.0);
 }

@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/* Evolution calendar - Addressbook Conduit Configuration
+/* Evolution addressbook - Addressbook Conduit Configuration
  *
  * Copyright (C) 1998 Free Software Foundation
  * Copyright (C) 2000 Ximian, Inc.
@@ -7,10 +7,9 @@
  * Authors: Eskil Heyn Olsen <deity@eskil.dk> 
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,6 +42,8 @@ struct _EAddrConduitCfg {
 static void 
 addrconduit_load_configuration (EAddrConduitCfg **c, guint32 pilot_id) 
 {
+	GnomePilotConduitManagement *management;
+	GnomePilotConduitConfig *config;
 	gchar prefix[256];
 	g_snprintf (prefix, 255, "/gnome-pilot.d/e-address-conduit/Pilot_%u/",
 		    pilot_id);
@@ -50,14 +51,20 @@ addrconduit_load_configuration (EAddrConduitCfg **c, guint32 pilot_id)
 	*c = g_new0 (EAddrConduitCfg,1);
 	g_assert (*c != NULL);
 
+	(*c)->pilot_id = pilot_id;
+	management = gnome_pilot_conduit_management_new ("e_address_conduit", GNOME_PILOT_CONDUIT_MGMT_ID);
+	config = gnome_pilot_conduit_config_new (management, pilot_id);
+	if (!gnome_pilot_conduit_config_is_enabled (config, &(*c)->sync_type))
+		(*c)->sync_type = GnomePilotConduitSyncTypeNotSet;
+	gtk_object_unref (GTK_OBJECT (config));
+	gtk_object_unref (GTK_OBJECT (management));
+
+	/* Custom settings */
 	gnome_config_push_prefix (prefix);
+
 	(*c)->open_secret = gnome_config_get_bool ("open_secret=FALSE");
 
-        /* set in capplets main */
-	(*c)->sync_type = GnomePilotConduitSyncTypeCustom; 
 	gnome_config_pop_prefix ();
-	
-	(*c)->pilot_id = pilot_id;
 }
 #endif
 

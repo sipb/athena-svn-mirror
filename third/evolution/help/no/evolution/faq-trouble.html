@@ -1,11 +1,11 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <HTML
 ><HEAD
 ><TITLE
 >Troubleshooting</TITLE
 ><META
 NAME="GENERATOR"
-CONTENT="Modular DocBook HTML Stylesheet Version 1.64
-"><LINK
+CONTENT="Modular DocBook HTML Stylesheet Version 1.59"><LINK
 REL="HOME"
 TITLE="En brukers håndbok for Evolution"
 HREF="index.html"><LINK
@@ -21,6 +21,11 @@ TITLE="Questions about Bugs and Debugging"
 HREF="faq-debugging.html"></HEAD
 ><BODY
 CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
 ><DIV
 CLASS="NAVHEADER"
 ><TABLE
@@ -41,20 +46,20 @@ ALIGN="left"
 VALIGN="bottom"
 ><A
 HREF="faq-get-and-compile.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="80%"
 ALIGN="center"
 VALIGN="bottom"
->Appendix A. Frequently Asked Questions About Ximian Evolution</TD
+>Frequently Asked Questions About Ximian Evolution</TD
 ><TD
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
 HREF="faq-debugging.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ></TABLE
@@ -73,8 +78,8 @@ NAME="FAQ-TROUBLE"
 CLASS="QANDASET"
 ><DL
 ><DT
->1. <A
-HREF="faq-trouble.html#AEN3626"
+>Q: <A
+HREF="faq-trouble.html#AEN3323"
 >	    I get <TT
 CLASS="COMPUTEROUTPUT"
 >Cannot initialize the Evolution
@@ -83,8 +88,8 @@ CLASS="COMPUTEROUTPUT"
 	   </A
 ></DT
 ><DT
->2. <A
-HREF="faq-trouble.html#AEN3650"
+>Q: <A
+HREF="faq-trouble.html#AEN3347"
 >            I get <TT
 CLASS="COMPUTEROUTPUT"
 >Cannot open composer window</TT
@@ -92,22 +97,22 @@ CLASS="COMPUTEROUTPUT"
           </A
 ></DT
 ><DT
->3. <A
-HREF="faq-trouble.html#AEN3658"
+>Q: <A
+HREF="faq-trouble.html#AEN3355"
 >            The address suggestion list steals focus from the "To:"
             entry box when I'm typing. How can I make it keep focus?
           </A
 ></DT
 ><DT
->4. <A
-HREF="faq-trouble.html#AEN3663"
+>Q: <A
+HREF="faq-trouble.html#AEN3360"
 >            I updated Evolution and now my addressbook information is gone!
             What should I do?
           </A
 ></DT
 ><DT
->5. <A
-HREF="faq-trouble.html#AEN3693"
+>Q: <A
+HREF="faq-trouble.html#AEN3390"
 >            Evolution reported an error when trying to retrieve from my
             local spool in <TT
 CLASS="FILENAME"
@@ -116,15 +121,15 @@ CLASS="FILENAME"
           </A
 ></DT
 ><DT
->6. <A
-HREF="faq-trouble.html#AEN3702"
+>Q: <A
+HREF="faq-trouble.html#AEN3399"
 >            Evolution crashes reporting that it couldn't allocate N
             billion bytes; how do I fix this?
           </A
 ></DT
 ><DT
->7. <A
-HREF="faq-trouble.html#AEN3708"
+>Q: <A
+HREF="faq-trouble.html#AEN3405"
 >            What is <B
 CLASS="COMMAND"
 >killev</B
@@ -132,8 +137,8 @@ CLASS="COMMAND"
           </A
 ></DT
 ><DT
->8. <A
-HREF="faq-trouble.html#AEN3716"
+>Q: <A
+HREF="faq-trouble.html#AEN3413"
 >            What is <B
 CLASS="COMMAND"
 >oaf-slay</B
@@ -146,23 +151,25 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3626"
+NAME="AEN3323"
 ></A
 ><B
->1. </B
->	    I get <TT
+>Q: 	    I get <TT
 CLASS="COMPUTEROUTPUT"
 >Cannot initialize the Evolution
 	    shell</TT
 >.
-	   </P
+	   </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >	    There are a number of things that can cause this error.
 	    Check that:
 	  </P
@@ -241,22 +248,24 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3650"
+NAME="AEN3347"
 ></A
 ><B
->2. </B
->            I get <TT
+>Q:             I get <TT
 CLASS="COMPUTEROUTPUT"
 >Cannot open composer window</TT
 >.
-          </P
+          </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >            This actually means that Evolution cannot activate the HTML
             editor component from GtkHTML.  The comments in the previous
             answer still apply; also make sure that
@@ -276,20 +285,22 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3658"
+NAME="AEN3355"
 ></A
 ><B
->3. </B
->            The address suggestion list steals focus from the "To:"
+>Q:             The address suggestion list steals focus from the "To:"
             entry box when I'm typing. How can I make it keep focus?
-          </P
+          </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >           This is a bug in GTK version 1.2.10. To avoid it, downgrade
            to GTK version 1.2.9, or install the Ximian version of GTK
            1.2.10.
@@ -301,20 +312,22 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3663"
+NAME="AEN3360"
 ></A
 ><B
->4. </B
->            I updated Evolution and now my addressbook information is gone!
+>Q:             I updated Evolution and now my addressbook information is gone!
             What should I do?
-          </P
+          </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >            Evolution uses the <TT
 CLASS="FILENAME"
 >libdb</TT
@@ -449,23 +462,25 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3693"
+NAME="AEN3390"
 ></A
 ><B
->5. </B
->            Evolution reported an error when trying to retrieve from my
+>Q:             Evolution reported an error when trying to retrieve from my
             local spool in <TT
 CLASS="FILENAME"
 >/var/spool/mail/username</TT
 >.  Why?
-          </P
+          </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >            Evolution doesn't have an external helper for moving mail,
             so <TT
 CLASS="FILENAME"
@@ -496,20 +511,22 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3702"
+NAME="AEN3399"
 ></A
 ><B
->6. </B
->            Evolution crashes reporting that it couldn't allocate N
+>Q:             Evolution crashes reporting that it couldn't allocate N
             billion bytes; how do I fix this?
-          </P
+          </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >            This usually happens when a component tries talking a
             certain version of a CORBA interface to another component
             that supports a different version.  For example, this can
@@ -530,22 +547,24 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3708"
+NAME="AEN3405"
 ></A
 ><B
->7. </B
->            What is <B
+>Q:             What is <B
 CLASS="COMMAND"
 >killev</B
 > and why do I need to use it?
-          </P
+          </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >            Evolution is actually made up of several components that run
             as separate processes.  Evolution's shell is not very good
             at cleaning up stale processes, so it is possible that
@@ -569,22 +588,24 @@ CLASS="QANDAENTRY"
 ><DIV
 CLASS="QUESTION"
 ><P
+><BIG
 ><A
-NAME="AEN3716"
+NAME="AEN3413"
 ></A
 ><B
->8. </B
->            What is <B
+>Q:             What is <B
 CLASS="COMMAND"
 >oaf-slay</B
 > and why do I need to use it?
-          </P
+          </B
+></BIG
+></P
 ></DIV
 ><DIV
 CLASS="ANSWER"
 ><P
 ><B
-> </B
+>A: </B
 >            <B
 CLASS="COMMAND"
 >oaf-slay</B
@@ -607,9 +628,9 @@ CLASS="COMMAND"
 >oaf-slay</B
 > is quite drastic and can cause
             problems with other programs that use oaf, especially with
-            <SPAN
+            <TT
 CLASS="APPLICATION"
->Nautilus</SPAN
+>Nautilus</TT
 >. To avoid problems, do
             not run <B
 CLASS="COMMAND"
@@ -636,7 +657,7 @@ ALIGN="left"
 VALIGN="top"
 ><A
 HREF="faq-get-and-compile.html"
->Prev</A
+>&#60;&#60;&#60; Previous</A
 ></TD
 ><TD
 WIDTH="34%"
@@ -652,7 +673,7 @@ ALIGN="right"
 VALIGN="top"
 ><A
 HREF="faq-debugging.html"
->Next</A
+>Next &#62;&#62;&#62;</A
 ></TD
 ></TR
 ><TR

@@ -5,9 +5,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,13 +20,16 @@
  */
 
 #include <config.h>
+
+#include "e-minicard-label.h"
+
 #include <gtk/gtksignal.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <gal/util/e-util.h>
 #include <gal/e-text/e-text.h>
 #include <gal/widgets/e-canvas.h>
 #include <gal/widgets/e-canvas-utils.h>
-#include "e-minicard-label.h"
+#include <gdk/gdkkeysyms.h>
 
 static void e_minicard_label_init		(EMinicardLabel		 *card);
 static void e_minicard_label_class_init	(EMinicardLabelClass	 *klass);
@@ -301,6 +303,17 @@ e_minicard_label_event (GnomeCanvasItem *item, GdkEvent *event)
 
   switch( event->type )
     {
+    case GDK_KEY_PRESS:
+	    if (event->key.keyval == GDK_Escape) {
+		    GnomeCanvasItem *parent;
+
+		    e_text_cancel_editing (E_TEXT (e_minicard_label->field));
+
+		    parent = GNOME_CANVAS_ITEM (e_minicard_label)->parent;
+		    if (parent)
+			    e_canvas_item_grab_focus(parent, FALSE);
+	    }
+	    break;
     case GDK_FOCUS_CHANGE:
       {
 	GdkEventFocus *focus_event = (GdkEventFocus *) event;

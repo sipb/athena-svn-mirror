@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,25 +25,35 @@
 #endif
 
 #include <glib.h>
+#include <liboaf/liboaf.h>
+#include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-widget.h>
+#include <bonobo/bonobo-exception.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <gal/e-table/e-table-without.h>
 #include <gal/e-table/e-cell-text.h>
 #include <gal/e-table/e-cell-popup.h>
 #include <gal/e-table/e-cell-combo.h>
+#include <gal/util/e-unicode-i18n.h>
 #include <e-book.h>
 #include <e-card-types.h>
 #include <e-card-cursor.h>
 #include <e-card.h>
 #include <e-card-simple.h>
+#include <e-destination.h>
 #include <cal-util/cal-component.h>
 #include <cal-util/cal-util.h>
 #include <cal-util/timeutil.h>
+#include "Evolution-Addressbook-SelectNames.h"
 #include "calendar-config.h"
 #include "itip-utils.h"
 #include "e-meeting-attendee.h"
 #include "e-meeting-model.h"
+
+#define SELECT_NAMES_OAFID "OAFIID:GNOME_Evolution_Addressbook_SelectNames"
 
 enum columns {
 	ITIP_ADDRESS_COL,
@@ -63,7 +72,8 @@ enum columns {
 struct _EMeetingModelPrivate 
 {
 	GPtrArray *attendees;
-
+	ETableWithout *without;
+	
 	CalClient *client;
 	
 	EBook *ebook;
@@ -74,9 +84,23 @@ struct _EMeetingModelPrivate
 	GList *refresh_data;
 	gint refresh_count;
 	gboolean refreshing;
+
+	/* For invite others dialogs */
+        GNOME_Evolution_Addressbook_SelectNames corba_select_names;
 };
 
 #define BUF_SIZE 1024
+
+static char *sections[] = {N_("Chair Persons"), 
+			   N_("Required Participants"), 
+			   N_("Optional Participants"), 
+			   N_("Non-Participants"),
+			   NULL};
+static icalparameter_role roles[] = {ICAL_ROLE_CHAIR,
+				     ICAL_ROLE_REQPARTICIPANT,
+				     ICAL_ROLE_OPTPARTICIPANT,
+				     ICAL_ROLE_NONPARTICIPANT,
+				     ICAL_ROLE_NONE};
 
 typedef struct _EMeetingModelAttendeeRefreshData EMeetingModelAttendeeRefreshData;
 struct _EMeetingModelAttendeeRefreshData {
@@ -99,9 +123,15 @@ static void init	(EMeetingModel		 *model);
 static void destroy	(GtkObject *obj);
 
 static void attendee_changed_cb (EMeetingAttendee *ia, gpointer data);
+static void select_names_ok_cb (BonoboListener    *listener,
+				char              *event_name,
+				CORBA_any         *arg,
+				CORBA_Environment *ev,
+				gpointer           data);
+
+static void table_destroy_cb (ETableScrolled *etable, gpointer data);
 
 static ETableModelClass *parent_class = NULL;
-
 
 GtkType
 e_meeting_model_get_type (void)
@@ -147,7 +177,7 @@ book_open_cb (EBook *book, EBookStatus status, gpointer data)
 	}
 }
 
-static int
+static void
 start_addressbook_server (EMeetingModel *im)
 {
 	EMeetingModelPrivate *priv;
@@ -545,6 +575,40 @@ value_to_string (ETableModel *etm, int col, const void *val)
 	return g_strdup (val);
 }
 
+static void *
+get_key (ETableModel *source, int row, gpointer data) 
+{
+	EMeetingModel *im;
+	EMeetingModelPrivate *priv;
+	char *str;
+	
+	im = E_MEETING_MODEL (source);
+	priv = im->priv;
+
+	str = value_at (source, ITIP_DELTO_COL, row);
+	if (str && *str)
+		return g_strdup ("delegator");
+
+	return g_strdup ("none");
+}
+
+static void *
+duplicate_key (const void *key, gpointer data) 
+{
+	return g_strdup (key);
+}
+
+static void
+free_gotten_key (void *key, gpointer data)
+{
+	g_free (key);
+}
+
+static void
+free_duplicated_key (void *key, gpointer data)
+{
+	g_free (key);
+}
 
 static void
 class_init (EMeetingModelClass *klass)
@@ -583,6 +647,16 @@ init (EMeetingModel *im)
 	im->priv = priv;
 
 	priv->attendees = g_ptr_array_new ();
+
+	priv->without = E_TABLE_WITHOUT (e_table_without_new (E_TABLE_MODEL (im),
+							      g_str_hash,
+							      g_str_equal,
+							      get_key,
+							      duplicate_key,
+							      free_gotten_key,
+							      free_duplicated_key,
+							      NULL));
+	e_table_without_hide (priv->without, g_strdup ("delegator"));
 	
 	priv->client = NULL;
 	
@@ -667,11 +741,11 @@ build_etable (ETableModel *model, const gchar *spec_file, const gchar *state_fil
 	gtk_object_unref (GTK_OBJECT (cell));
 	
 	strings = NULL;
-	strings = g_list_append (strings, _("Individual"));
-	strings = g_list_append (strings, _("Group"));
-	strings = g_list_append (strings, _("Resource"));
-	strings = g_list_append (strings, _("Room"));
-	strings = g_list_append (strings, _("Unknown"));
+	strings = g_list_append (strings, (char*) U_("Individual"));
+	strings = g_list_append (strings, (char*) U_("Group"));
+	strings = g_list_append (strings, (char*) U_("Resource"));
+	strings = g_list_append (strings, (char*) U_("Room"));
+	strings = g_list_append (strings, (char*) U_("Unknown"));
 
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell), strings);
 	e_table_extras_add_cell (extras, "typeedit", popup_cell);
@@ -683,11 +757,11 @@ build_etable (ETableModel *model, const gchar *spec_file, const gchar *state_fil
 	gtk_object_unref (GTK_OBJECT (cell));
 	
 	strings = NULL;
-	strings = g_list_append (strings, _("Chair"));
-	strings = g_list_append (strings, _("Required Participant"));
-	strings = g_list_append (strings, _("Optional Participant"));
-	strings = g_list_append (strings, _("Non-Participant"));
-	strings = g_list_append (strings, _("Unknown"));
+	strings = g_list_append (strings, (char*) U_("Chair"));
+	strings = g_list_append (strings, (char*) U_("Required Participant"));
+	strings = g_list_append (strings, (char*) U_("Optional Participant"));
+	strings = g_list_append (strings, (char*) U_("Non-Participant"));
+	strings = g_list_append (strings, (char*) U_("Unknown"));
 
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell), strings);
 	e_table_extras_add_cell (extras, "roleedit", popup_cell);
@@ -699,8 +773,8 @@ build_etable (ETableModel *model, const gchar *spec_file, const gchar *state_fil
 	gtk_object_unref (GTK_OBJECT (cell));
 
 	strings = NULL;
-	strings = g_list_append (strings, _("Yes"));
-	strings = g_list_append (strings, _("No"));
+	strings = g_list_append (strings, (char*) U_("Yes"));
+	strings = g_list_append (strings, (char*) U_("No"));
 
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell), strings);
 	e_table_extras_add_cell (extras, "rsvpedit", popup_cell);
@@ -712,29 +786,27 @@ build_etable (ETableModel *model, const gchar *spec_file, const gchar *state_fil
 	gtk_object_unref (GTK_OBJECT (cell));
 
 	strings = NULL;
-	strings = g_list_append (strings, _("Needs Action"));
-	strings = g_list_append (strings, _("Accepted"));
-	strings = g_list_append (strings, _("Declined"));
-	strings = g_list_append (strings, _("Tentative"));
-	strings = g_list_append (strings, _("Delegated"));
+	strings = g_list_append (strings, (char*) U_("Needs Action"));
+	strings = g_list_append (strings, (char*) U_("Accepted"));
+	strings = g_list_append (strings, (char*) U_("Declined"));
+	strings = g_list_append (strings, (char*) U_("Tentative"));
+	strings = g_list_append (strings, (char*) U_("Delegated"));
 
 	e_cell_combo_set_popdown_strings (E_CELL_COMBO (popup_cell), strings);
 	e_table_extras_add_cell (extras, "statusedit", popup_cell);
 
-
 	etable = e_table_scrolled_new_from_spec_file (model, extras, spec_file, NULL);
-
 	real_table = e_table_scrolled_get_table (E_TABLE_SCROLLED (etable));
-	e_scroll_frame_set_policy (E_SCROLL_FRAME (etable), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-	e_scroll_frame_set_scrollbar_spacing (E_SCROLL_FRAME (etable), 0);
+	gtk_object_set (GTK_OBJECT (real_table), "uniform_row_height", TRUE, NULL);
 	e_table_load_state (real_table, state_file);
 
 #if 0
 	gtk_signal_connect (GTK_OBJECT (real_table),
 			    "right_click", GTK_SIGNAL_FUNC (right_click_cb), mpage);
-	gtk_signal_connect (GTK_OBJECT (real_table->sort_info),
-			    "sort_info_changed", GTK_SIGNAL_FUNC (sort_info_changed_cb), mts);
 #endif
+
+	gtk_signal_connect (GTK_OBJECT (etable), "destroy", 
+			    GTK_SIGNAL_FUNC (table_destroy_cb), g_strdup (state_file));
 
 	gtk_object_unref (GTK_OBJECT (extras));
 	
@@ -866,20 +938,25 @@ EMeetingAttendee *
 e_meeting_model_find_attendee_at_row (EMeetingModel *im, gint row)
 {
 	EMeetingModelPrivate *priv;
-	
+
+	g_return_val_if_fail (im != NULL, NULL);
+	g_return_val_if_fail (E_IS_MEETING_MODEL (im), NULL);
+	g_return_val_if_fail (row >= 0, NULL);
+
 	priv = im->priv;
-	
+	g_return_val_if_fail (row < priv->attendees->len, NULL);
+
 	return g_ptr_array_index (priv->attendees, row);
 }
 
 gint 
-e_meeting_model_count_attendees (EMeetingModel *im)
+e_meeting_model_count_actual_attendees (EMeetingModel *im)
 {
 	EMeetingModelPrivate *priv;
 	
 	priv = im->priv;
 
-	return priv->attendees->len;
+	return e_table_model_row_count (E_TABLE_MODEL (priv->without));	
 }
 
 const GPtrArray *
@@ -1015,7 +1092,7 @@ process_free_busy_comp (EMeetingAttendee *ia, icalcomponent *fb_comp, icalcompon
 		default:
 		}
 			
-		if (fbtype != E_MEETING_FREE_BUSY_LAST) {
+		if (busy_type != E_MEETING_FREE_BUSY_LAST) {
 			fb.start = convert_time (fb.start, NULL, view_zone);
 			fb.end = convert_time (fb.end, NULL, view_zone);
 			e_meeting_attendee_add_busy_period (ia,
@@ -1034,6 +1111,28 @@ process_free_busy_comp (EMeetingAttendee *ia, icalcomponent *fb_comp, icalcompon
 		
 		ip = icalcomponent_get_next_property (fb_comp, ICAL_FREEBUSY_PROPERTY);
 	}
+}
+
+static void
+process_callbacks (EMeetingModel *im) 
+{
+	EMeetingModelPrivate *priv;	
+	GList *l, *m;	
+
+	priv = im->priv;
+
+	for (l = priv->refresh_callbacks, m = priv->refresh_data; l != NULL; l = l->next, m = m->next) {
+		EMeetingModelRefreshCallback cb = l->data;
+			
+		cb (m->data);
+	}
+
+	g_list_free (priv->refresh_callbacks);
+	g_list_free (priv->refresh_data);
+	priv->refresh_callbacks = NULL;
+	priv->refresh_data = NULL;
+	
+	priv->refreshing = FALSE;
 }
 
 static void
@@ -1096,17 +1195,8 @@ async_close (GnomeVFSAsyncHandle *handle,
 	
 	priv->refresh_count--;
 	
-	if (priv->refresh_count == 0) {
-		GList *l, *m;
-		
-		for (l = priv->refresh_callbacks, m = priv->refresh_data; l != NULL; l = l->next, m = m->next) {
-			EMeetingModelRefreshCallback cb = l->data;
-			
-			cb (m->data);
-		}
-
-		priv->refreshing = FALSE;
-	}
+	if (priv->refresh_count == 0)
+		process_callbacks (r_data->im);
 }
 
 static void
@@ -1253,7 +1343,11 @@ e_meeting_model_refresh_busy_periods (EMeetingModel *im, EMeetingModelRefreshCal
 			
 			if (ia != NULL)
 				process_free_busy (im, ia, cal_component_get_as_string (comp));
-		}	
+			
+			process_callbacks (im);
+		}
+		
+		
 	}
 
 	/* Look for fburl's of attendee with no free busy info on server */
@@ -1287,10 +1381,186 @@ e_meeting_model_refresh_busy_periods (EMeetingModel *im, EMeetingModelRefreshCal
 ETableScrolled *
 e_meeting_model_etable_from_model (EMeetingModel *im, const gchar *spec_file, const gchar *state_file)
 {
+	EMeetingModelPrivate *priv;
+	
 	g_return_val_if_fail (im != NULL, NULL);
 	g_return_val_if_fail (E_IS_MEETING_MODEL (im), NULL);
 
-	return build_etable (E_TABLE_MODEL (im), spec_file, state_file);
+	priv = im->priv;
+	
+	return build_etable (E_TABLE_MODEL (priv->without), spec_file, state_file);
+}
+
+int
+e_meeting_model_etable_model_to_view_row (EMeetingModel *im, int model_row)
+{
+	EMeetingModelPrivate *priv;
+	
+	g_return_val_if_fail (im != NULL, -1);
+	g_return_val_if_fail (E_IS_MEETING_MODEL (im), -1);
+	
+	priv = im->priv;
+	
+	return e_table_subset_model_to_view_row (priv->without, model_row);
+}
+
+int
+e_meeting_model_etable_view_to_model_row (EMeetingModel *im, int view_row)
+{
+	EMeetingModelPrivate *priv;
+	
+	g_return_val_if_fail (im != NULL, -1);
+	g_return_val_if_fail (E_IS_MEETING_MODEL (im), -1);
+	
+	priv = im->priv;
+	
+	return e_table_subset_view_to_model_row (priv->without, view_row);
+}
+
+
+static void
+add_section (GNOME_Evolution_Addressbook_SelectNames corba_select_names, const char *name)
+{
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+
+	GNOME_Evolution_Addressbook_SelectNames_addSection (corba_select_names,
+							    name, 
+							    gettext (name),
+							    &ev);
+
+	CORBA_exception_free (&ev);
+}
+
+static gboolean
+get_select_name_dialog (EMeetingModel *im) 
+{
+	EMeetingModelPrivate *priv;
+	CORBA_Environment ev;
+	int i;
+	
+	priv = im->priv;
+
+	if (priv->corba_select_names != CORBA_OBJECT_NIL) {
+		Bonobo_Control corba_control;
+		GtkWidget *control_widget;
+		int i;
+		
+		CORBA_exception_init (&ev);
+		for (i = 0; sections[i] != NULL; i++) {			
+			corba_control = GNOME_Evolution_Addressbook_SelectNames_getEntryBySection 
+				(priv->corba_select_names, sections[i], &ev);
+			if (BONOBO_EX (&ev)) {
+				CORBA_exception_free (&ev);
+				return FALSE;				
+			}
+			
+			control_widget = bonobo_widget_new_control_from_objref (corba_control, CORBA_OBJECT_NIL);
+			
+			bonobo_widget_set_property (BONOBO_WIDGET (control_widget), "text", "", NULL);		
+		}
+		CORBA_exception_free (&ev);
+
+		return TRUE;
+	}
+	
+	CORBA_exception_init (&ev);
+
+	priv->corba_select_names = oaf_activate_from_id (SELECT_NAMES_OAFID, 0, NULL, &ev);
+
+	for (i = 0; sections[i] != NULL; i++)
+		add_section (priv->corba_select_names, sections[i]);
+
+	bonobo_event_source_client_add_listener (priv->corba_select_names,
+						 select_names_ok_cb,
+						 "GNOME/Evolution:ok:dialog",
+						 NULL, im);
+	
+	if (BONOBO_EX (&ev)) {
+		CORBA_exception_free (&ev);
+		return FALSE;
+	}
+
+	CORBA_exception_free (&ev);
+
+	return TRUE;
+}
+
+void
+e_meeting_model_invite_others_dialog (EMeetingModel *im)
+{
+	EMeetingModelPrivate *priv;
+	CORBA_Environment ev;
+
+	priv = im->priv;
+	
+	if (!get_select_name_dialog (im))
+		return;
+
+	CORBA_exception_init (&ev);
+
+	GNOME_Evolution_Addressbook_SelectNames_activateDialog (
+		priv->corba_select_names, _("Required Participants"), &ev);
+
+	CORBA_exception_free (&ev);
+}
+
+static void
+process_section (EMeetingModel *im, EDestination **destv, icalparameter_role role)
+{
+	int i;
+	
+	for (i = 0; destv[i] != NULL; i++) {
+		EMeetingAttendee *ia;
+		const char *name, *address;
+		
+		name = e_destination_get_name (destv[i]);		
+		address = e_destination_get_email (destv[i]);
+		
+		if (address == NULL || *address == '\0')
+			continue;
+		
+		if (e_meeting_model_find_attendee (im, address, NULL) == NULL) {
+			ia = e_meeting_model_add_attendee_with_defaults (im);
+
+			e_meeting_attendee_set_address (ia, g_strdup_printf ("MAILTO:%s", address));
+			e_meeting_attendee_set_role (ia, role);
+			e_meeting_attendee_set_cn (ia, g_strdup (name));
+		}
+	}
+}
+
+static void
+select_names_ok_cb (BonoboListener    *listener,
+		    char              *event_name,
+		    CORBA_any         *arg,
+		    CORBA_Environment *ev,
+		    gpointer           data)
+{
+	EMeetingModel *im = data;
+	EMeetingModelPrivate *priv;
+	Bonobo_Control corba_control;
+	GtkWidget *control_widget;
+	EDestination **destv;
+	char *string = NULL;
+	int i;
+	
+	priv = im->priv;
+
+	for (i = 0; sections[i] != NULL; i++) {
+		corba_control = GNOME_Evolution_Addressbook_SelectNames_getEntryBySection 
+			(priv->corba_select_names, sections[i], ev);
+		control_widget = bonobo_widget_new_control_from_objref
+			(corba_control, CORBA_OBJECT_NIL);
+		
+		bonobo_widget_get_property (BONOBO_WIDGET (control_widget), "destinations", &string, NULL);
+		destv = e_destination_importv (string);
+		if (destv != NULL) {
+			process_section (im, destv, roles[i]);
+			e_destination_freev (destv);
+		}		
+	}
 }
 
 static void
@@ -1314,3 +1584,16 @@ attendee_changed_cb (EMeetingAttendee *ia, gpointer data)
 	
 	e_table_model_row_changed (E_TABLE_MODEL (im), row);
 }
+
+static void
+table_destroy_cb (ETableScrolled *etable, gpointer data)
+{
+	ETable *real_table;
+	char *filename = data;
+	
+	real_table = e_table_scrolled_get_table (etable);
+	e_table_save_state (real_table, filename);
+
+	g_free (data);
+}
+

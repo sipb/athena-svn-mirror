@@ -8,9 +8,8 @@
  * Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,6 +42,31 @@ struct _uid_state {
 static void free_uid (gpointer key, gpointer value, gpointer data);
 static void maybe_write_uid (gpointer key, gpointer value, gpointer data);
 
+
+static int
+mkdir_heir (const char *path, mode_t mode)
+{
+	char *copy, *p;
+	
+	p = copy = g_strdup (path);
+	do {
+		p = strchr (p + 1, '/');
+		if (p)
+			*p = '\0';
+		if (access (copy, F_OK) == -1) {
+			if (mkdir (copy, mode) == -1) {
+				g_free (copy);
+				return -1;
+			}
+		}
+		if (p)
+			*p = '/';
+	} while (p);
+	
+	g_free (copy);
+	return 0;
+}
+
 /**
  * camel_uid_cache_new:
  * @filename: path to load the cache from
@@ -58,8 +82,12 @@ camel_uid_cache_new (const char *filename)
 {
 	CamelUIDCache *cache;
 	struct stat st;
-	char *buf, **uids;
+	char *dirname, *buf, **uids;
 	int fd, i;
+	
+	dirname = g_dirname (filename);
+	mkdir_heir (dirname, 0700);
+	g_free (dirname);
 	
 	fd = open (filename, O_RDWR | O_CREAT, 0700);
 	if (fd == -1)
@@ -178,7 +206,7 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids)
 		struct _uid_state *state;
 		
 		uid = uids->pdata[i];
-		if (g_hash_table_lookup_extended (cache->uids, uid, &old_uid, &state)) {
+		if (g_hash_table_lookup_extended (cache->uids, uid, (void **)&old_uid, (void **)&state)) {
 			g_hash_table_remove (cache->uids, uid);
 			g_free (old_uid);
 		} else {
@@ -210,7 +238,7 @@ camel_uid_cache_save_uid (CamelUIDCache *cache, const char *uid)
 	
 	g_return_if_fail (uid != NULL);
 	
-	if (g_hash_table_lookup_extended (cache->uids, uid, &old_uid, &state)) {
+	if (g_hash_table_lookup_extended (cache->uids, uid, (void **)&old_uid, (void **)&state)) {
 		state->save = TRUE;
 		state->level = cache->level;
 	} else {

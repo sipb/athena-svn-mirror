@@ -11,7 +11,7 @@ idl_flags = `$(GNOME_CONFIG) --cflags idl` -I $(datadir)/idl
 $(CORBA_GENERATED): $(idls)
 	$(ORBIT_IDL) $(idl_flags) $(top_srcdir)/calendar/idl/evolution-calendar.idl
 
-bin_PROGRAMS = evolution-alarm-notify # evolution-alarm-client
+bin_PROGRAMS = evolution-alarm-notify
 
 noinst_LIBRARIES = libalarm.a
 
@@ -29,10 +29,15 @@ INCLUDES = 						\
 	-I$(top_srcdir)/widgets				\
 	-I$(includedir)					\
 	$(BONOBO_VFS_GNOME_CFLAGS)			\
+	$(BONOBO_CONF_CFLAGS)				\
+	$(BONOBO_HTML_GNOME_CFLAGS)			\
 	$(EXTRA_GNOME_CFLAGS)				\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
+	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"		\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"
+
+iconsdir = $(datadir)/images/evolution
 
 gladedir   = $(datadir)/evolution/glade
 
@@ -47,26 +52,27 @@ evolution_alarm_notify_SOURCES =	\
 	alarm-notify-dialog.h		\
 	alarm-queue.c			\
 	alarm-queue.h			\
-	notify-main.c
+	config-data.c			\
+	config-data.h			\
+	notify-main.c			\
+	save.c				\
+	save.h
 
 evolution_alarm_notify_LDADD =					\
 	libalarm.a						\
 	$(top_builddir)/calendar/cal-client/libcal-client.la	\
 	$(top_builddir)/calendar/cal-util/libcal-util.la	\
-	$(top_builddir)/libical/src/libical/libical.la		\
+	$(top_builddir)/libical/src/libical/libical-evolution.la	\
 	$(top_builddir)/libwombat/libwombat.la			\
+	$(top_builddir)/e-util/libeutil.la						\
+	$(BONOBO_CONF_LIBS)					\
 	$(BONOBO_VFS_GNOME_LIBS)				\
+	$(BONOBO_HTML_GNOME_LIBS)				\
 	$(EXTRA_GNOME_LIBS)					\
+	$(GAL_LIBS)						\
 	$(INTLLIBS)
 
-# evolution_alarm_client_SOURCES =	\
-# 	client-main.c			\
-# 	$(CORBA_GENERATED)
-# 
-# evolution_alarm_client_LDADD =		\
-# 	 $(BONOBO_VFS_GNOME_LIBS)	\
-# 	 $(EXTRA_GNOME_LIBS)		\
-# 	 $(INTLLIBS)
+evolution_alarm_notify_LDFLAGS = -export-dynamic
 
 oafdir = $(datadir)/oaf
 oaf_in_files = \

@@ -1,22 +1,328 @@
-2001-10-02  gettextize  <bug-gnu-utils@gnu.org>
+2001-11-05  Zbigniew Chyla  <cyba@gnome.pl>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.39.
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
 
-2001-10-02  gettextize  <bug-gnu-utils@gnu.org>
+2001-11-05  Christian Rose  <menthos@menthos.com>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.39.
+	* sv.po: Updated Swedish translation.
 
-2001-10-01  gettextize  <bug-gnu-utils@gnu.org>
+2001-11-01  Christophe Merlet  <redfox@eikonex.org>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.39.
+	* fr.po: Updated French translation from work of
+	Frederic Riss <frederic.riss@laposte.net>.
 
-2001-10-01  gettextize  <bug-gnu-utils@gnu.org>
+2001-11-01  Zbigniew Chyla  <cyba@gnome.pl>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.39.
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
 
-2001-10-01  gettextize  <bug-gnu-utils@gnu.org>
+2001-10-31  Ettore Perazzoli  <ettore@ximian.com>
 
-	* Makefile.in.in: Upgrade to gettext-0.10.39.
+	* POTFILES.in: Add `calendar/cal-util/cal-component.c' and
+	`shell/e-shell-utils.c'.
+
+2001-10-31  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-10-31  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-10-31  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-10-30  Roy-Magne Mo <rmo@sunnmore.net>
+
+	* nn.po: Small update to Norwegian (nynorsk) translation.
+
+2001-10-30    <NotZed@Ximian.com>
+
+	* en_AU.po: Changed the weather to be something more appropriate
+	for the other side of the world.  And some updates.
+
+2001-10-29  Damon Chaplin  <damon@ximian.com>
+
+	* en_AU.po: new file. Copied en_GB.po since they should be pretty much
+	exactly the same.
+
+2001-10-30  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Li <charlesw1234@163.com>.
+
+2001-10-29  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Strip extra \r at end of each line, so that
+	  GTP status report shows it correctly. (Thanks Joe Man
+	  <trmetal@yahoo.com.hk>)
+
+2001-10-28  Matthias Warkus  <mawarkus@gnome.org>
+
+	* de.po: Updated translation for string freeze. Hopefully
+	everything is in order.
+
+2001-10-28  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-10-27  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation.
+	
+2001-10-27  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-10-27  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* lt.po: Updated Lithuanian translation.
+
+2001-10-26  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-10-26  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-10-26  Christian Rose  <menthos@menthos.com>
+
+	* POTFILES.in: Removed the reference to the non-existant
+	"wombat/GNOME_Evolution_Wombat.oaf.in".
+
+2001-10-26  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated SLovak translation.
+
+2001-10-25  Ettore Perazzoli  <ettore@ximian.com>
+
+	* it.po: More updates to make it a little more usable.
+
+2001-10-26  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	* POTFILES.in: Updated with some missing files.
+	
+2001-10-25  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-10-24  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
+2001-10-24  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2001-10-24  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-10-24  Takuo KITAME  <kitame@debian.org>
+
+	* ja.po: Updated Japanese translation.
+
+2001-10-23  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation.
+	
+2001-10-23  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation from work of
+	Frederic Riss <frederic.riss@laposte.net>.
+
+2001-10-23  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation by
+	Wang Li <charlesw1234@163.com>.
+
+2001-10-23  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-10-22  Damon Chaplin  <damon@ximian.com>
+
+	* POTFILES.in: added calendar/gui/e-cell-date-edit-text.c and
+	widgets/misc/e-cell-percent.c.
+
+2001-10-22  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation from work of
+	Frederic Riss <frederic.riss@laposte.net>.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* it.po: More updates.
+
+2001-10-22  Ettore Perazzoli  <ettore@ximian.com>
+
+	* it.po: Fixed up a little bit.
+
+2001-10-22  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-10-22  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-10-22  Marius Andreiana  <mandreiana@yahoo.com>
+
+	* ro.po: updated
+
+2001-10-21  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-10-21  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation.
+	
+2001-10-21  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-10-20  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Updated Simplified Chinese translation from
+	Wang Li <charlesw1234@163.com>.
+
+2001-10-20  Christopher R. Gabriel  <cgabriel@cgabriel.org>
+
+	* it.po: Updated italian translation from Clara Tattoni
+	<clara.tattoni@libero.it>
+	
+2001-10-20  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-10-19  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-10-18  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* POTFILES.in: Fixed.
+
+2001-10-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-10-18  Wang Jian  <lark@linux.net.cn>
+
+	* zh_CN.po: Added Simplified Chinese translation by
+	Wang Li <charlesw1234@163.com>.
+
+2001-10-17  Abel Cheung  <maddog@linux.org.hk>
+
+	* ja.po: Mark line 3436, 9375 as fuzzy, fails at "msgfmt -c" check.
+
+2001-10-17  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation from Joe Man
+	<trmetal@yahoo.com.hk> and Jau-Shiung Liau <pesder@seed.net.tw>.
+
+2001-10-17  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-10-16  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-10-15  Andras Timar <timar@gnome.hu>
+
+        * hu.po: Updated Hungarian translation
+
+2001-10-13  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation.
+
+2001-10-13  Dan Winship  <danw@ximian.com>
+
+	* POTFILES.in: Add shell/evolution-shell-component-utils.c
+
+2001-10-13  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2001-10-13  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-10-13  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-10-13  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation.
+	
+2001-10-12 Ismael Olea <ismael@olea.org>
+
+	* es.po: Updates Spanish trasnlation
+
+2001-10-12  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-10-11  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-10-10  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation.
+	
+2001-10-09  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-10-07  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
+
+2001-10-07  Hector Garcia Alvarez <hector@scouts-es.org>
+
+        * es.po: Updated Spanish translation.
+
+2001-10-06  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation. 
+
+2001-10-06  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-10-05  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-10-04  Takuo KITAME  <kitame@debian.org>
+
+	* ja.po: Updated Japanese translation.
+
+2001-10-03  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-10-03  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Reverted a change from Ismael and /s/fichero/archivo/
+	* POTFILES.in: Fixed.
+
+2001-10-03  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation.
 
 2001-10-02  Valek Filippov  <frob@df.ru>
 
@@ -336,14 +642,6 @@
 2001-08-23  Andras Timar <timar@gnome.hu>
 
         * hu.po: Updated Hungarian translation.
-
-2001-08-22  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.38.
-
-2001-08-22  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.38.
 
 2001-08-22  Kjartan Maraas  <kmaraas@gnome.org>
 

@@ -1,14 +1,19 @@
 ## CORBA stuff
 
-IDLS =												   \
-	$(top_srcdir)/composer/Evolution-Composer.idl						   \
-	$(top_srcdir)/calendar/idl/evolution-calendar.idl
+IDLS =												   	\
+	$(top_srcdir)/composer/Evolution-Composer.idl						  	\
+	$(top_srcdir)/calendar/idl/evolution-calendar.idl						\
+	$(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
 
 IDL_GENERATED =                 			\
         Evolution-Composer.h              		\
         Evolution-Composer-common.c       		\
         Evolution-Composer-skels.c        		\
         Evolution-Composer-stubs.c			\
+	Evolution-Addressbook-SelectNames.h		\
+	Evolution-Addressbook-SelectNames-common.c	\
+	Evolution-Addressbook-SelectNames-skels.c	\
+	Evolution-Addressbook-SelectNames-stubs.c	\
 	evolution-calendar.h				\
 	evolution-calendar-common.c			\
 	evolution-calendar-skels.c			\
@@ -19,6 +24,8 @@ $(IDL_GENERATED): $(IDLS)
                 $(srcdir)/../../composer/Evolution-Composer.idl
 	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`   \
                 $(top_srcdir)/calendar/idl/evolution-calendar.idl
+	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl `$(GNOME_CONFIG) --cflags idl`   \
+                $(top_srcdir)/addressbook/gui/component/select-names/Evolution-Addressbook-SelectNames.idl
 
 BUILT_SOURCES = $(IDL_GENERATED)
 
@@ -28,29 +35,30 @@ help_base = $(datadir)/gnome/help/cal
 
 bin_PROGRAMS = evolution-calendar
 
-INCLUDES = 						\
-	-DG_LOG_DOMAIN=\"calendar-gui\"			\
-	-I$(top_builddir)/shell				\
-	-I$(top_srcdir)/shell				\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_srcdir)/calendar/cal-client		\
-	-I$(top_builddir)/calendar/cal-client		\
-	-I$(top_srcdir)/libical/src/libical		\
-	-I$(top_builddir)/libical/src/libical		\
-	-I$(top_srcdir)/addressbook/backend/ebook	\
-	-I$(top_builddir)/addressbook/backend/ebook	\
-	-I$(top_srcdir)/widgets				\
-	-I$(includedir)					\
-	$(BONOBO_HTML_GNOME_CFLAGS)			\
-	$(GNOME_VFS_CFLAGS)				\
-	$(GAL_CFLAGS)					\
-	$(BONOBO_CONF_CFLAGS)				\
-	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
-	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
-        -DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"        \
-	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"		\
-	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"
+INCLUDES = 							\
+	-DG_LOG_DOMAIN=\"calendar-gui\"				\
+	-I$(top_builddir)/shell					\
+	-I$(top_srcdir)/shell					\
+	-I$(top_srcdir)						\
+	-I$(top_srcdir)/calendar				\
+	-I$(top_srcdir)/calendar/cal-client			\
+	-I$(top_builddir)/calendar/cal-client			\
+	-I$(top_srcdir)/libical/src/libical			\
+	-I$(top_builddir)/libical/src/libical			\
+	-I$(top_srcdir)/addressbook/backend/ebook		\
+	-I$(top_builddir)/addressbook/backend/ebook		\
+	-I$(top_srcdir)/widgets					\
+	-I$(includedir)						\
+	$(BONOBO_HTML_GNOME_CFLAGS)				\
+	$(GNOME_VFS_CFLAGS)					\
+	$(GAL_CFLAGS)						\
+	$(BONOBO_CONF_CFLAGS)					\
+	-DEVOLUTION_DATADIR=\""$(datadir)"\"			\
+	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"			\
+        -DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"        	\
+	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"			\
+	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"		\
+	-DEVOLUTION_IMAGESDIR=\""$(datadir)"/images/evolution\"
 
 iconsdir = $(datadir)/images/evolution
 
@@ -88,6 +96,8 @@ evolution_calendar_SOURCES =			\
 	component-factory.h			\
 	e-calendar-table.h			\
 	e-calendar-table.c			\
+	e-cell-date-edit-text.h			\
+	e-cell-date-edit-text.c			\
 	e-day-view-layout.c			\
 	e-day-view-layout.h			\
 	e-day-view-main-item.c			\
@@ -132,6 +142,8 @@ evolution_calendar_SOURCES =			\
 	itip-utils.c				\
 	itip-utils.h				\
 	main.c					\
+	misc.c					\
+	misc.h					\
 	print.c					\
 	print.h					\
 	tag-calendar.c				\
@@ -154,7 +166,7 @@ evolution_calendar_LDADD =								\
 	$(top_builddir)/calendar/cal-util/libcal-util.la				\
 	$(top_builddir)/e-util/libeutil.la						\
 	$(top_builddir)/libversit/libversit.la						\
-	$(top_builddir)/libical/src/libical/libical.la					\
+	$(top_builddir)/libical/src/libical/libical-evolution.la			\
 	$(top_builddir)/libwombat/libwombat.la						\
 	$(top_builddir)/addressbook/backend/ebook/libebook.la				\
 	$(top_builddir)/camel/libcamel.la						\

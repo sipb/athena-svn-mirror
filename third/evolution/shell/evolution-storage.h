@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -94,9 +93,14 @@ struct _EvolutionStorageClass {
 			       const char *path,
 			       const char *physical_uri);
 
+	void (*xfer_folder) (EvolutionStorage *storage,
+			     const Bonobo_Listener listener,
+			     const char *source_path,
+			     const char *destination_path,
+			     gboolean remove_source);
+
 	void (*update_folder) (EvolutionStorage *storage,
 			       const char *path,
-			       const char *display_name,
 			       int unread_count);
 };
 
@@ -131,11 +135,9 @@ EvolutionStorageResult  evolution_storage_new_folder           (EvolutionStorage
 								int                              unread_count);
 EvolutionStorageResult  evolution_storage_update_folder        (EvolutionStorage                *evolution_storage,
 								const char                      *path,
-								const char                      *display_name,
 								int                              unread_count);
 EvolutionStorageResult  evolution_storage_update_folder_by_uri (EvolutionStorage                *evolution_storage,
 								const char                      *physical_uri,
-								const char                      *display_name,
 								int                              unread_count);
 EvolutionStorageResult  evolution_storage_removed_folder       (EvolutionStorage                *evolution_storage,
 								const char                      *path);

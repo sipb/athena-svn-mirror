@@ -5,9 +5,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -66,6 +65,8 @@ struct _EMinicardField {
 	GnomeCanvasItem *label;
 };
 
+#define d(x)
+
 #define LIST_ICON_FILENAME "contact-is-a-list.png"
 
 #define E_MINICARD_FIELD(field) ((EMinicardField *)(field))
@@ -84,6 +85,7 @@ enum {
 	ARG_HEIGHT,
 	ARG_HAS_FOCUS,
 	ARG_SELECTED,
+	ARG_HAS_CURSOR,
 	ARG_EDITABLE,
 	ARG_CARD
 };
@@ -140,6 +142,8 @@ e_minicard_class_init (EMinicardClass *klass)
 				 GTK_ARG_READWRITE, ARG_HAS_FOCUS);
 	gtk_object_add_arg_type ("EMinicard::selected", GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE, ARG_SELECTED);
+	gtk_object_add_arg_type ("EMinicard::has_cursor", GTK_TYPE_BOOL,
+				 GTK_ARG_READWRITE, ARG_HAS_CURSOR);
 	gtk_object_add_arg_type ("EMinicard::editable", GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE, ARG_EDITABLE);
 	gtk_object_add_arg_type ("EMinicard::card", GTK_TYPE_OBJECT, 
@@ -180,23 +184,24 @@ static void
 e_minicard_init (EMinicard *minicard)
 {
 	/*   minicard->card = NULL;*/
-	minicard->rect = NULL;
-	minicard->fields = NULL;
-	minicard->width = 10;
-	minicard->height = 10;
-	minicard->has_focus = FALSE;
-	minicard->selected = FALSE;
-	minicard->editable = FALSE;
+	minicard->rect             = NULL;
+	minicard->fields           = NULL;
+	minicard->width            = 10;
+	minicard->height           = 10;
+	minicard->has_focus        = FALSE;
+	minicard->selected         = FALSE;
+	minicard->editable         = FALSE;
+	minicard->has_cursor       = FALSE;
 
-	minicard->card = NULL;
-	minicard->simple = e_card_simple_new(NULL);
+	minicard->card             = NULL;
+	minicard->simple           = e_card_simple_new(NULL);
 
 	minicard->list_icon_pixbuf = gdk_pixbuf_new_from_file (EVOLUTION_IMAGESDIR "/" LIST_ICON_FILENAME);
-	minicard->list_icon_size = gdk_pixbuf_get_height (minicard->list_icon_pixbuf);
+	minicard->list_icon_size   = gdk_pixbuf_get_height (minicard->list_icon_pixbuf);
 
-	minicard->editor = NULL;
+	minicard->editor           = NULL;
 
-	minicard->changed = FALSE;
+	minicard->changed          = FALSE;
 
 	e_canvas_item_set_reflow_callback(GNOME_CANVAS_ITEM(minicard), e_minicard_reflow);
 }
@@ -227,6 +232,14 @@ set_selected (EMinicard *minicard, gboolean selected)
 				       NULL);
 	}
 	minicard->selected = selected;
+}
+
+static void
+set_has_cursor (EMinicard *minicard, gboolean has_cursor)
+{
+	if (!minicard->has_focus && has_cursor)
+		e_canvas_item_grab_focus(GNOME_CANVAS_ITEM (minicard), FALSE);
+	minicard->has_cursor = has_cursor;
 }
 
 
@@ -262,8 +275,10 @@ e_minicard_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
 						      NULL);
 			}
 		}
-		else
-			e_canvas_item_grab_focus(item, FALSE);
+		else {
+			if (!e_minicard->has_focus)
+				e_canvas_item_grab_focus(item, FALSE);
+		}
 		break;
 	case ARG_SELECTED:
 		if (e_minicard->selected != GTK_VALUE_BOOL(*arg))
@@ -275,6 +290,11 @@ e_minicard_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
 			gtk_object_set (GTK_OBJECT (E_MINICARD_FIELD (l->data)->label),
 					"editable", e_minicard->editable,
 					NULL);
+		break;
+	case ARG_HAS_CURSOR:
+		d(g_print("%s: ARG_HAS_CURSOR\n", __FUNCTION__));
+		if (e_minicard->has_cursor != GTK_VALUE_BOOL(*arg))
+			set_has_cursor (e_minicard, GTK_VALUE_BOOL(*arg));
 		break;
 	case ARG_CARD:
 		if (e_minicard->card)
@@ -311,6 +331,9 @@ e_minicard_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		break;
 	case ARG_SELECTED:
 		GTK_VALUE_BOOL (*arg) = e_minicard->selected;
+		break;
+	case ARG_HAS_CURSOR:
+		GTK_VALUE_BOOL (*arg) = e_minicard->has_cursor;
 		break;
 	case ARG_EDITABLE:
 		GTK_VALUE_BOOL (*arg) = e_minicard->editable;
@@ -447,7 +470,7 @@ e_minicard_unrealize (GnomeCanvasItem *item)
 static void
 card_modified_cb (EBook* book, EBookStatus status, gpointer user_data)
 {
-	g_print ("%s: %s(): a card was modified\n", __FILE__, __FUNCTION__);
+	d(g_print ("%s: %s(): a card was modified\n", __FILE__, __FUNCTION__));
 	if (status != E_BOOK_STATUS_SUCCESS)
 		e_addressbook_error_dialog (_("Error modifying card"), status);
 }
@@ -474,7 +497,10 @@ e_minicard_event (GnomeCanvasItem *item, GdkEvent *event)
 	case GDK_FOCUS_CHANGE:
 		{
 			GdkEventFocus *focus_event = (GdkEventFocus *) event;
+			d(g_print("%s: GDK_FOCUS_CHANGE: %s\n", __FUNCTION__, focus_event->in?"in":"out"));
 			if (focus_event->in) {
+				/* Chris: When EMinicard gets the cursor, if it doesn't have the focus, it should take it.  */
+				e_minicard->has_focus = TRUE;
 				if (!e_minicard->selected) {
 					e_minicard_selected(e_minicard, event);
 				}
@@ -511,7 +537,7 @@ e_minicard_event (GnomeCanvasItem *item, GdkEvent *event)
 		}
 		break;
 	case GDK_BUTTON_PRESS: {
-		if (1 <= event->button.button && event->button.button <= 3) {
+		if (1 <= event->button.button && event->button.button <= 2) {
 			int ret_val = e_minicard_selected(e_minicard, event);
 			GdkEventMask mask = ((1 << (4 + event->button.button)) |
 					     GDK_POINTER_MOTION_MASK |
@@ -530,6 +556,10 @@ e_minicard_event (GnomeCanvasItem *item, GdkEvent *event)
 			e_minicard->drag_button = event->button.button;
 			e_minicard->drag_button_down = TRUE;
 			return ret_val;
+		} else if (event->button.button == 3) {
+			int ret_val = e_minicard_selected(e_minicard, event);
+			if (ret_val != 0)
+				return ret_val;
 		}
 		break;
 	}
@@ -679,6 +709,13 @@ field_changed (EText *text, EMinicard *e_minicard)
 }
 
 static void
+field_activated (EText *text, EMinicard *e_minicard)
+{
+	e_text_stop_editing (text);
+	e_canvas_item_grab_focus (GNOME_CANVAS_ITEM (e_minicard), FALSE);
+}
+
+static void
 add_field (EMinicard *e_minicard, ECardSimpleField field, gdouble left_width)
 {
 	GnomeCanvasItem *new_item;
@@ -695,7 +732,7 @@ add_field (EMinicard *e_minicard, ECardSimpleField field, gdouble left_width)
 	string = e_card_simple_get(e_minicard->simple, field);
 
 	/* Magically convert embedded XML into an address. */
-	if (!strncmp (string, "<?xml", 4)) {
+	if (!strncmp (string, "<?xml", 5)) {
 		EDestination *dest = e_destination_import (string);
 		if (dest != NULL) {
 			gchar *new_string = g_strdup (e_destination_get_address (dest));
@@ -715,6 +752,11 @@ add_field (EMinicard *e_minicard, ECardSimpleField field, gdouble left_width)
 			       NULL );
 	gtk_signal_connect(GTK_OBJECT(E_MINICARD_LABEL(new_item)->field),
 			   "changed", GTK_SIGNAL_FUNC(field_changed), e_minicard);
+	gtk_signal_connect(GTK_OBJECT(E_MINICARD_LABEL(new_item)->field),
+			   "activate", GTK_SIGNAL_FUNC(field_activated), e_minicard);
+	gtk_object_set(GTK_OBJECT(E_MINICARD_LABEL(new_item)->field),
+		       "allow_newlines", e_card_simple_get_allow_newlines (e_minicard->simple, field),
+		       NULL);
 	gtk_object_set_data(GTK_OBJECT(E_MINICARD_LABEL(new_item)->field),
 			    "EMinicard:field",
 			    GINT_TO_POINTER(field));
@@ -770,7 +812,7 @@ remodel( EMinicard *e_minicard )
 			g_free(file_as);
 		}
 
-		if ( e_card_evolution_list (e_minicard->card) ) {
+		if (e_minicard->card && e_card_evolution_list (e_minicard->card) ) {
 			gnome_canvas_item_show (e_minicard->list_icon);
 		}
 		else {
@@ -780,11 +822,8 @@ remodel( EMinicard *e_minicard )
 		list = e_minicard->fields;
 		e_minicard->fields = NULL;
 
-		for(field = E_CARD_SIMPLE_FIELD_FULL_NAME; field != E_CARD_SIMPLE_FIELD_LAST - 6 && count < 5; field++) {
+		for(field = E_CARD_SIMPLE_FIELD_FULL_NAME; field != E_CARD_SIMPLE_FIELD_LAST_SIMPLE_STRING && count < 5; field++) {
 			EMinicardField *minicard_field = NULL;
-
-			if (field == E_CARD_SIMPLE_FIELD_FAMILY_NAME)
-				continue;
 
 			if (list)
 				minicard_field = list->data;

@@ -4,9 +4,9 @@
  * Copyright (C) 1999, 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
+ * modify it under the terms of version 2 of the GNU General Public
  * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -70,7 +70,8 @@ struct _EMsgComposer {
 	Bonobo_PersistStream     persist_stream_interface;
 	GNOME_GtkHTML_Editor_Engine  editor_engine;
 	BonoboObject            *editor_listener;
-	GHashTable              *inline_images;
+	GHashTable              *inline_images, *inline_images_by_url;
+	GList                   *current_images;
 
 	Bonobo_ConfigDatabase    config_db;
 	
@@ -81,6 +82,7 @@ struct _EMsgComposer {
 
 	gboolean attachment_bar_visible : 1;
 	gboolean send_html     : 1;
+	gboolean is_alternative: 1;
 	gboolean pgp_sign      : 1;
 	gboolean pgp_encrypt   : 1;
 	gboolean smime_sign    : 1;
@@ -93,6 +95,8 @@ struct _EMsgComposer {
 	gboolean has_changed   : 1;
 
 	gboolean in_signature_insert : 1;
+
+	gboolean enable_autosave : 1;
 };
 
 struct _EMsgComposerClass {
@@ -104,7 +108,6 @@ struct _EMsgComposerClass {
 
 
 GtkType           e_msg_composer_get_type             (void);
-void              e_msg_composer_construct            (EMsgComposer     *composer);
 EMsgComposer     *e_msg_composer_new                  (void);
 EMsgComposer     *e_msg_composer_new_with_message     (CamelMimeMessage *msg);
 EMsgComposer     *e_msg_composer_new_from_url         (const char       *url);
@@ -123,6 +126,10 @@ void              e_msg_composer_add_header           (EMsgComposer     *compose
 						       const char       *value);
 void              e_msg_composer_attach               (EMsgComposer     *composer,
 						       CamelMimePart    *attachment);
+CamelMimePart    *e_msg_composer_add_inline_image_from_file      (EMsgComposer  *composer,
+								  const char    *filename);
+void              e_msg_composer_add_inline_image_from_mime_part (EMsgComposer  *composer,
+								  CamelMimePart *part);
 CamelMimeMessage *e_msg_composer_get_message          (EMsgComposer     *composer);
 CamelMimeMessage *e_msg_composer_get_message_draft    (EMsgComposer     *composer);
 void              e_msg_composer_show_sig_file        (EMsgComposer     *composer);
@@ -153,6 +160,8 @@ gchar *           e_msg_composer_guess_mime_type      (const gchar *file_name);
 
 void              e_msg_composer_set_changed          (EMsgComposer *composer);
 void              e_msg_composer_unset_changed        (EMsgComposer *composer);
+gboolean          e_msg_composer_is_dirty             (EMsgComposer *composer);
+void              e_msg_composer_set_enable_autosave  (EMsgComposer *composer, gboolean enabled);
 
 /* PGP */
 void              e_msg_composer_set_pgp_sign         (EMsgComposer     *composer,
@@ -171,6 +180,10 @@ void              e_msg_composer_set_smime_encrypt      (EMsgComposer     *compo
 gboolean          e_msg_composer_get_smime_encrypt      (EMsgComposer     *composer);
 gchar *           e_msg_composer_get_sig_file_content   (const char       *sigfile,
 							 gboolean          in_html);
+
+void              e_msg_composer_add_message_attachments (EMsgComposer *composer, 
+							  CamelMimeMessage *message,
+							  gboolean just_inlines);
 
 #ifdef __cplusplus
 }

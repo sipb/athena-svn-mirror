@@ -4,19 +4,18 @@
     Copyright (C) 2000 Ximian, Inc.
     Authors:           Radek Doulik <rodo@ximian.com>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Library General Public
-    License as published by the Free Software Foundation; either
-    version 2 of the License, or (at your option) any later version.
-
-    This library is distributed in the hope that it will be useful,
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of version 2 of the GNU General Public
+    License as published by the Free Software Foundation.
+ 
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Library General Public License for more details.
-
-    You should have received a copy of the GNU Library General Public License
-    along with this library; see the file COPYING.LIB.  If not, write to
-    the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+    General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public
+    License along with this program; if not, write to the
+    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
     Boston, MA 02111-1307, USA.
 */
 
@@ -26,6 +25,7 @@
 
 #include <bonobo/bonobo-arg.h>
 #include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-stream-client.h>
 
 #include "listener.h"
 
@@ -52,23 +52,27 @@ get_any_null ()
 static gchar *
 resolve_image_url (EditorListener *l, gchar *url)
 {
-	gchar *cid = NULL;
+	CamelMimePart *part;
+	const char *cid;
 
-	printf ("resolve_image_url %s\n", url);
-
-	if (!strncmp (url, "file:", 5)) {
-		gchar *id;
-
-		id = (gchar *) g_hash_table_lookup (l->composer->inline_images, url + 5);
-		if (!id) {
-			id = header_msgid_generate ();
-			g_hash_table_insert (l->composer->inline_images, g_strdup (url + 5), id);
-		}
-		cid = g_strconcat ("cid:", id, NULL);
-		printf ("resolved to %s\n", cid);
+	part = g_hash_table_lookup (l->composer->inline_images_by_url, url);
+	if (!part && !strncmp (url, "file:", 5)) {
+		part = e_msg_composer_add_inline_image_from_file (l->composer,
+								  url + 5);
 	}
+	if (!part && !strncmp (url, "cid:", 4)) {
+		part = g_hash_table_lookup (l->composer->inline_images, url);
+	}
+	if (!part)
+		return NULL;
 
-	return cid;
+	l->composer->current_images  = g_list_prepend (l->composer->current_images, part);
+
+	cid = camel_mime_part_get_content_id (part);
+	if (!cid)
+		return NULL;
+
+	return g_strconcat ("cid:", cid, NULL);
 }
 
 static void
@@ -78,6 +82,8 @@ reply_indent (EditorListener *l, CORBA_Environment * ev)
 		if (GNOME_GtkHTML_Editor_Engine_isPreviousParagraphEmpty (l->composer->editor_engine, ev))
 			GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "cursor-backward", ev);
 		else {
+			GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "text-default-color", ev);
+			GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "italic-off", ev);
 			GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "insert-paragraph", ev);
 			return;
 		}
@@ -85,12 +91,8 @@ reply_indent (EditorListener *l, CORBA_Environment * ev)
 
 	GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "style-normal", ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "indent-zero", ev);
-	GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "cursor-position-save", ev);
-	GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "select-paragraph-extended", ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "text-default-color", ev);
 	GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "italic-off", ev);
-	GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "disable-selection", ev);
-	GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "cursor-position-restore", ev);
 }
 
 static void
@@ -103,6 +105,60 @@ clear_signature (GNOME_GtkHTML_Editor_Engine e, CORBA_Environment * ev)
 		GNOME_GtkHTML_Editor_Engine_setParagraphData (e, "signature", "0", ev);
 		GNOME_GtkHTML_Editor_Engine_runCommand (e, "cursor-forward", ev);
 	}
+	GNOME_GtkHTML_Editor_Engine_runCommand (e, "text-default-color", ev);
+	GNOME_GtkHTML_Editor_Engine_runCommand (e, "italic-off", ev);
+}
+
+static void
+insert_paragraph_before (EditorListener *l, CORBA_Environment * ev)
+{
+	if (!l->composer->in_signature_insert) {
+		CORBA_char *orig, *signature;
+		gboolean changed = FALSE;
+		/* FIXME check for insert-paragraph command */
+
+		orig = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "orig", ev);
+		if (ev->_major == CORBA_NO_EXCEPTION) {
+			if (orig && *orig == '1') {
+				GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "text-default-color", ev);
+				GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "italic-off", ev);
+				changed = TRUE;
+			}
+		}
+		if (!changed) {
+			signature = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "signature", ev);
+			if (ev->_major == CORBA_NO_EXCEPTION) {
+				if (signature && *signature == '1') {
+					GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "text-default-color",
+										ev);
+					GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "italic-off", ev);
+				}
+			}
+		}
+	}
+}
+
+static void
+insert_paragraph_after (EditorListener *l, CORBA_Environment * ev)
+{
+	if (!l->composer->in_signature_insert) {
+		CORBA_char *orig, *signature;
+		/* FIXME check for insert-paragraph command */
+		GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "text-default-color", ev);
+		GNOME_GtkHTML_Editor_Engine_runCommand (l->composer->editor_engine, "italic-off", ev);
+
+		orig = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "orig", ev);
+		if (ev->_major == CORBA_NO_EXCEPTION) {
+			if (orig && *orig == '1')
+				reply_indent (l, ev);
+			GNOME_GtkHTML_Editor_Engine_setParagraphData (l->composer->editor_engine, "orig", "0", ev);
+		}
+		signature = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "signature", ev);
+		if (ev->_major == CORBA_NO_EXCEPTION) {
+			if (signature && *signature == '1')
+				clear_signature (l->composer->editor_engine, ev);
+		}
+	}
 }
 
 static CORBA_any *
@@ -112,24 +168,19 @@ impl_event (PortableServer_Servant _servant,
 {
 	EditorListener *l = listener_from_servant (_servant);
 	CORBA_any  *rv = NULL;
+	gchar *command;
 
-	/* printf ("impl_event\n"); */
+	printf ("impl_event = %s\n", name); 
 
-	if (!strcmp (name, "command")) {
-		if (!l->composer->in_signature_insert) {
-			CORBA_char *orig, *signature;
-			/* FIXME check for insert-paragraph command */
-			orig = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "orig", ev);
-			if (ev->_major == CORBA_NO_EXCEPTION) {
-				if (orig && *orig == '1')
-					reply_indent (l, ev);
-				GNOME_GtkHTML_Editor_Engine_setParagraphData (l->composer->editor_engine, "orig", "0", ev);
-			}
-			signature = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "signature", ev);
-			if (ev->_major == CORBA_NO_EXCEPTION) {
-				if (signature && *signature == '1')
-					clear_signature (l->composer->editor_engine, ev);
-			}
+	if (!strcmp (name, "command_before")) {
+		command = BONOBO_ARG_GET_STRING (arg);
+		if (!strcmp (command, "insert-paragraph")) {
+			insert_paragraph_before (l, ev);
+		}
+	} else if (!strcmp (name, "command_after")) {
+		command = BONOBO_ARG_GET_STRING (arg);
+		if (!strcmp (command, "insert-paragraph")) {
+			insert_paragraph_after (l, ev);
 		}
 	} else if (!strcmp (name, "image_url")) {
 		gchar *url;
@@ -142,7 +193,7 @@ impl_event (PortableServer_Servant _servant,
 		}
 	} else if (!strcmp (name, "delete")) {
 		CORBA_char *orig;
-
+		
 		if (GNOME_GtkHTML_Editor_Engine_isParagraphEmpty (l->composer->editor_engine, ev)) {
 			orig = GNOME_GtkHTML_Editor_Engine_getParagraphData (l->composer->editor_engine, "orig", ev);
 			if (ev->_major == CORBA_NO_EXCEPTION) {
@@ -158,6 +209,33 @@ impl_event (PortableServer_Servant _servant,
 				}
 			}
 		}
+	} else if (!strcmp (name, "url_requested")) {
+		GNOME_GtkHTML_Editor_URLRequestEvent *e;
+		CamelMimePart *part;
+		GByteArray *ba;
+		CamelStream *cstream;
+		CamelDataWrapper *wrapper;
+
+		e = (GNOME_GtkHTML_Editor_URLRequestEvent *)arg->_value;
+
+		if (!e->url || e->stream == CORBA_OBJECT_NIL)
+			return get_any_null ();
+
+		part = g_hash_table_lookup (l->composer->inline_images_by_url, e->url);
+		if (!part)
+			part = g_hash_table_lookup (l->composer->inline_images, e->url);
+		if (!part)
+			return get_any_null ();
+
+		/* Write the data to a CamelStreamMem... */
+		ba = g_byte_array_new ();
+		cstream = camel_stream_mem_new_with_byte_array (ba);
+		wrapper = camel_medium_get_content_object (CAMEL_MEDIUM (part));
+		camel_data_wrapper_write_to_stream (wrapper, cstream);
+
+		bonobo_stream_client_write (e->stream, ba->data, ba->len, ev);
+
+		camel_object_unref (CAMEL_OBJECT (cstream));
 	}
 
 	return rv ? rv : get_any_null ();

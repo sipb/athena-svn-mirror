@@ -10,9 +10,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -138,6 +137,7 @@ struct _SimpleQueryInfo {
 	guint add_tag;
 	guint seq_complete_tag;
 	GList *cards;
+	gboolean cancelled;
 };
 
 static void
@@ -199,6 +199,7 @@ simple_query_new (EBook *book, const char *query, EBookSimpleQueryCallback cb, g
 	sq->query = g_strdup_printf (query);
 	sq->cb = cb;
 	sq->closure = closure;
+	sq->cancelled = FALSE;
 
 	/* Automatically add ourselves to the EBook's pending list. */
 	book_add_simple_query (book, sq);
@@ -228,12 +229,12 @@ simple_query_disconnect (SimpleQueryInfo *sq)
 static void
 simple_query_free (SimpleQueryInfo *sq)
 {
+	simple_query_disconnect (sq);
+
 	/* Remove ourselves from the EBook's pending list. */
 	book_remove_simple_query (sq->book, sq);
 
 	g_free (sq->query);
-
-	simple_query_disconnect (sq);
 
 	if (sq->book)
 		gtk_object_unref (GTK_OBJECT (sq->book));
@@ -249,6 +250,9 @@ simple_query_card_added_cb (EBookView *view, const GList *cards, gpointer closur
 {
 	SimpleQueryInfo *sq = closure;
 
+	if (sq->cancelled)
+		return;
+
 	sq->cards = g_list_concat (sq->cards, g_list_copy ((GList *) cards));
 	g_list_foreach ((GList *) cards, (GFunc) gtk_object_ref, NULL);
 }
@@ -261,7 +265,8 @@ simple_query_sequence_complete_cb (EBookView *view, gpointer closure)
 	/* Disconnect signals, so that we don't pick up any changes to the book that occur
 	   in our callback */
 	simple_query_disconnect (sq);
-	sq->cb (sq->book, E_BOOK_SIMPLE_QUERY_STATUS_SUCCESS, sq->cards, sq->closure);
+	if (! sq->cancelled)
+		sq->cb (sq->book, E_BOOK_SIMPLE_QUERY_STATUS_SUCCESS, sq->cards, sq->closure);
 	simple_query_free (sq);
 }
 
@@ -270,7 +275,13 @@ simple_query_book_view_cb (EBook *book, EBookStatus status, EBookView *book_view
 {
 	SimpleQueryInfo *sq = closure;
 
+	if (sq->cancelled) {
+		simple_query_free (sq);
+		return;
+	}
+
 	if (status != E_BOOK_STATUS_SUCCESS) {
+		simple_query_disconnect (sq);
 		sq->cb (sq->book, E_BOOK_SIMPLE_QUERY_STATUS_OTHER_ERROR, NULL, sq->closure);
 		simple_query_free (sq);
 		return;
@@ -314,8 +325,8 @@ e_book_simple_query_cancel (EBook *book, guint tag)
 	sq = book_lookup_simple_query (book, tag);
 
 	if (sq) {
+		sq->cancelled = TRUE;
 		sq->cb (sq->book, E_BOOK_SIMPLE_QUERY_STATUS_CANCELLED, NULL, sq->closure);
-		simple_query_free (sq);
 	} else {
 		g_warning ("Simple query tag %d is unknown", tag);
 	}
@@ -503,7 +514,11 @@ e_book_nickname_query (EBook *book,
 	guint retval;
 
 	g_return_val_if_fail (E_IS_BOOK (book), 0);
-	g_return_val_if_fail (nickname && *nickname, 0);
+	g_return_val_if_fail (nickname != NULL, 0);
+
+	/* The empty-string case shouldn't generate a warning. */
+	if (! *nickname)
+		return 0;
 
 	info = g_new0 (NicknameQueryInfo, 1);
 	info->nickname = g_strdup (nickname);
@@ -534,8 +549,7 @@ static void
 have_address_query_cb (EBook *book, EBookSimpleQueryStatus status, const GList *cards, gpointer closure)
 {
 	HaveAddressInfo *info = (HaveAddressInfo *) closure;
-
-
+	
 	info->cb (book, 
 		  info->email,
 		  cards && (status == E_BOOK_SIMPLE_QUERY_STATUS_SUCCESS) ? E_CARD (cards->data) : NULL,

@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,6 +47,7 @@
 #include "importer/GNOME_Evolution_Importer.h"
 
 #include "e-timezone-dialog/e-timezone-dialog.h"
+#include "e-util/e-gtk-utils.h"
 
 #include <evolution-wizard.h>
 #include "Evolution.h"
@@ -156,16 +156,17 @@ make_mail_dialog_pages (SWData *data)
 	data->mailer = oaf_activate_from_id ("OAFIID:GNOME_Evolution_Mail_Wizard", 0, NULL, &ev);
 	if (BONOBO_EX (&ev)) {
 		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-			  _("Could not start the Evolution Mailer Wizard interface\n%s"), CORBA_exception_id (&ev));
+			  _("Could not start the Evolution Mailer Assistant interface\n(%s)"), CORBA_exception_id (&ev));
 		g_warning ("Could not start mailer (%s)", CORBA_exception_id (&ev));
 		CORBA_exception_free (&ev);
+		data->mailer = CORBA_OBJECT_NIL;
 		return;
 	}
 
 	CORBA_exception_free (&ev);
 	if (data->mailer == CORBA_OBJECT_NIL) {
 		e_notice (NULL, GNOME_MESSAGE_BOX_ERROR,
-			  _("Cannot initialize the Evolution Mailer Wizard interface"));
+			  _("Could not start the Evolution Mailer Assistant interface\n"));
 		return;
 	}
 
@@ -199,7 +200,12 @@ next_func (GnomeDruidPage *page,
 	pagenum = page_to_num (page);
 	GNOME_Evolution_Wizard_notifyAction (data->mailer, pagenum, GNOME_Evolution_Wizard_NEXT, &ev);
 	CORBA_exception_free (&ev);
-	return FALSE;
+
+	/* If on last page we own, let druid goto next page */
+	if (pagenum == g_list_length(page_list)-1)
+		return FALSE;
+
+	return TRUE;
 }
 
 static gboolean
@@ -229,7 +235,12 @@ back_func (GnomeDruidPage *page,
 	pagenum = page_to_num (page);
 	GNOME_Evolution_Wizard_notifyAction (data->mailer, pagenum, GNOME_Evolution_Wizard_BACK, &ev);
 	CORBA_exception_free (&ev);
-	return FALSE;
+
+	/* if we're on page 0, let the druid go back to the start page, if we have one */
+	if (pagenum == 0)
+		return FALSE;
+
+	return TRUE;
 }
 
 static void
@@ -554,15 +565,6 @@ get_intelligent_importers (void)
 	return iids_ret;
 }
 
-static void
-dialog_mapped (GtkWidget *w,
-	       gpointer data)
-{
-	while (gtk_events_pending ()) {
-		gtk_main_iteration ();
-	}
-}
-
 static gboolean
 prepare_importer_page (GnomeDruidPage *page,
 
@@ -579,11 +581,18 @@ prepare_importer_page (GnomeDruidPage *page,
 		return TRUE;
 	}
 
+	data->import_page->prepared = TRUE;
+
 	dialog = gnome_message_box_new (_("Please wait...\nScanning for existing setups"), GNOME_MESSAGE_BOX_INFO, NULL);
-	gtk_signal_connect (GTK_OBJECT (dialog), "map",
-			    GTK_SIGNAL_FUNC (dialog_mapped), NULL);
+	e_make_widget_backing_stored (dialog);
+
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Starting Intelligent Importers"));
 	gtk_widget_show_all (dialog);
+	gtk_widget_show_now (dialog);
+
+	gtk_widget_queue_draw (dialog);
+	gdk_flush ();
+
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
 	}
@@ -703,10 +712,13 @@ prepare_importer_page (GnomeDruidPage *page,
 		str = g_strdup_printf (_("From %s:"), id->name);
 		label = gtk_label_new (str);
 		g_free (str);
+
+		gtk_misc_set_alignment (GTK_MISC (label), 0, .5); 
+
 		gtk_table_attach (GTK_TABLE (table), label, 0, 1, running - 1,
-				  running, 0, 0, 0, 0);
+				  running, GTK_FILL, 0, 0, 0);
 		gtk_table_attach (GTK_TABLE (table), id->widget, 1, 2,
-				  running - 1, running, 0, 0, 0, 0);
+				  running - 1, running, GTK_FILL, 0, 3, 0);
 		gtk_widget_show_all (table);
 
 		gtk_box_pack_start (GTK_BOX (data->import_page->vbox), table,
@@ -742,11 +754,11 @@ make_importer_page (SWData *data)
 	page->vbox = GNOME_DRUID_PAGE_STANDARD (page->page)->vbox;
 	gtk_container_set_border_width (GTK_CONTAINER (page->vbox), 4);
 
-	label = gtk_label_new (_("Please select the information\nthat you would like to import"));
-	gtk_box_pack_start (GTK_BOX (page->vbox), label, FALSE, FALSE, 0);
+	label = gtk_label_new (_("Please select the information that you would like to import:"));
+	gtk_box_pack_start (GTK_BOX (page->vbox), label, FALSE, FALSE, 3);
 
 	sep = gtk_hseparator_new ();
-	gtk_box_pack_start (GTK_BOX (page->vbox), sep, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (page->vbox), sep, FALSE, FALSE, 3);
 
 	page->prepared = FALSE;
 	return page;

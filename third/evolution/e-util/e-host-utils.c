@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -29,7 +28,9 @@
 #include <stdio.h>
 #include <errno.h>
 
+#ifndef HAVE_GETHOSTBYNAME_R
 G_LOCK_DEFINE_STATIC (gethost_mutex);
+#endif
 
 /**
  * e_gethostbyname_r:

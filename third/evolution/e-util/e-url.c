@@ -11,9 +11,8 @@
 
 /*
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +27,7 @@
 
 #include <config.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include <string.h>
 #include "e-url.h"
 
@@ -137,6 +137,8 @@ e_uri_new (const char *uri_string)
 		g_strdown (uri->protocol);
 		uri_string = p + 1;
 	}
+	else
+		uri->protocol = g_strdup ("file");
 
 	if (!*uri_string)
 		return uri;
@@ -260,4 +262,78 @@ const char *
 e_uri_get_param (EUri *uri, const char *name)
 {
 	return g_datalist_get_data (&uri->params, name);
+}
+
+static void
+copy_param_cb (GQuark key_id, gpointer data, gpointer user_data)
+{
+	GData *params = (GData *) user_data;
+
+	g_datalist_id_set_data_full (&params, key_id, g_strdup (data), g_free);
+}
+
+EUri *
+e_uri_copy (EUri *uri)
+{
+	EUri *uri_copy;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	uri_copy = g_new0 (EUri, 1);
+	uri_copy->protocol = g_strdup (uri->protocol);
+	uri_copy->user = g_strdup (uri->user);
+	uri_copy->authmech = g_strdup (uri->authmech);
+	uri_copy->passwd = g_strdup (uri->passwd);
+	uri_copy->host = g_strdup (uri->host);
+	uri_copy->port = uri->port;
+	uri_copy->path = g_strdup (uri->path);
+	uri_copy->query = g_strdup (uri->query);
+	uri_copy->fragment = g_strdup (uri->fragment);
+
+	/* copy uri->params */
+	g_datalist_foreach (&uri->params,
+			    (GDataForeachFunc) copy_param_cb,
+			    &uri_copy->params);
+
+	return uri_copy;
+}
+
+char *
+e_uri_to_string (EUri *uri, gboolean show_password)
+{
+	char *str_uri = NULL;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	if (uri->port != 0)
+		str_uri = g_strdup_printf (
+			"%s://%s%s%s%s%s%s%s:%d%s%s%s",
+			uri->protocol,
+			uri->user ? uri->user : "",
+			uri->authmech ? ";auth=" : "",
+			uri->authmech ? uri->authmech : "",
+			uri->passwd && show_password ? ":" : "",
+			uri->passwd && show_password ? uri->passwd : "",
+			uri->user ? "@" : "",
+			uri->host ? uri->host : "",
+			uri->port,
+			uri->path ? uri->path : "",
+			uri->query ? "?" : "",
+			uri->query ? uri->query : "");
+	else
+		str_uri = g_strdup_printf(
+                        "%s://%s%s%s%s%s%s%s%s%s%s",
+                        uri->protocol,
+                        uri->user ? uri->user : "",
+                        uri->authmech ? ";auth=" : "",
+                        uri->authmech ? uri->authmech : "",
+                        uri->passwd && show_password ? ":" : "",
+                        uri->passwd && show_password ? uri->passwd : "",
+                        uri->user ? "@" : "",
+                        uri->host ? uri->host : "",
+                        uri->path ? uri->path : "",
+                        uri->query ? "?" : "",
+                        uri->query ? uri->query : "");
+
+	return str_uri;
 }

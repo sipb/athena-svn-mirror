@@ -4,26 +4,26 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
 #ifndef MAIL_CONFIG_H
 #define MAIL_CONFIG_H
 
-#include <glib.h>
+#include <gtk/gtk.h>
 #include <camel/camel.h>
 
 #ifdef __cplusplus
@@ -69,17 +69,20 @@ typedef struct {
 } MailConfigAccount;
 
 typedef enum {
-	MAIL_CONFIG_HTTP_NEVER, MAIL_CONFIG_HTTP_SOMETIMES,
+	MAIL_CONFIG_HTTP_NEVER,
+	MAIL_CONFIG_HTTP_SOMETIMES,
 	MAIL_CONFIG_HTTP_ALWAYS
 } MailConfigHTTPMode;
 
 typedef enum {
-	MAIL_CONFIG_FORWARD_ATTACHED, MAIL_CONFIG_FORWARD_INLINE,
+	MAIL_CONFIG_FORWARD_ATTACHED,
+	MAIL_CONFIG_FORWARD_INLINE,
 	MAIL_CONFIG_FORWARD_QUOTED
 } MailConfigForwardStyle;
 
 typedef enum {
-	MAIL_CONFIG_DISPLAY_NORMAL, MAIL_CONFIG_DISPLAY_FULL_HEADERS,
+	MAIL_CONFIG_DISPLAY_NORMAL,
+	MAIL_CONFIG_DISPLAY_FULL_HEADERS,
 	MAIL_CONFIG_DISPLAY_SOURCE,
 	MAIL_CONFIG_DISPLAY_MAX
 } MailConfigDisplayStyle;
@@ -202,11 +205,11 @@ GSList *mail_config_get_sources (void);
 /* static utility functions */
 char *mail_config_folder_to_cachename (CamelFolder *folder, const char *prefix);
 
-gboolean  mail_config_check_service (const char *url, CamelProviderType type, GList **authtypes);
+gboolean mail_config_check_service (const char *url, CamelProviderType type, GList **authtypes, GtkWindow *window);
 
 
 
-void evolution_mail_config_factory_init (void);
+gboolean evolution_mail_config_factory_init (void);
 
 #ifdef __cplusplus
 }

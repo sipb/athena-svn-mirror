@@ -17,9 +17,11 @@ INCLUDES =						\
 bin_PROGRAMS =	\
 	wombat
 
-wombat_SOURCES = 		\
-	wombat-moniker.c	\
-	wombat-moniker.h	\
+wombat_SOURCES = 			\
+	wombat-moniker.c		\
+	wombat-moniker.h		\
+	wombat-private-moniker.c	\
+	wombat-private-moniker.h	\
 	wombat.c
 
 wombat_LDADD =							\
@@ -31,7 +33,7 @@ wombat_LDADD =							\
 	$(top_builddir)/e-util/ename/libename.la		\
 	$(top_builddir)/calendar/pcs/libpcs.a			\
 	$(top_builddir)/calendar/cal-util/libcal-util.la	\
-	$(top_builddir)/libical/src/libical/libical.la		\
+	$(top_builddir)/libical/src/libical/libical-evolution.la	\
 	$(top_builddir)/libversit/libversit.la			\
 	$(top_builddir)/e-util/libedb3util.la			\
 	$(top_builddir)/e-util/libeutil.la			\
@@ -43,13 +45,23 @@ wombat_LDADD =							\
 
 oafdir = $(datadir)/oaf
 
+if ENABLE_LDAP
+OAF_IN_FILE=GNOME_Evolution_WombatLDAP.oaf.in
+else
+OAF_IN_FILE=GNOME_Evolution_WombatNOLDAP.oaf.in
+endif
+
+GNOME_Evolution_Wombat.oaf.in: $(OAF_IN_FILE)
+	cp $< $@
+
 oaf_in_files = GNOME_Evolution_Wombat.oaf.in
 oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
 @XML_I18N_MERGE_OAF_RULE@
 
 
-EXTRA_DIST = $(oaf_DATA) $(oaf_in_files) wombat.idl
+EXTRA_DIST = $(oaf_DATA) $(oaf_in_files) wombat.idl \
+	     GNOME_Evolution_WombatLDAP.oaf.in GNOME_Evolution_WombatNOLDAP.oaf.in
 
 if ENABLE_PURIFY
 PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@

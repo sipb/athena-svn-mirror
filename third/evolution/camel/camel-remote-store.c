@@ -7,19 +7,19 @@
  *
  *  Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -458,7 +458,6 @@ static int
 remote_recv_line (CamelRemoteStore *store, char **dest, CamelException *ex)
 {
 	CamelStreamBuffer *stream;
-	CamelException internal_ex;
 	char *buf;
 	
 	*dest = NULL;
@@ -477,18 +476,14 @@ remote_recv_line (CamelRemoteStore *store, char **dest, CamelException *ex)
 	
 	buf = camel_stream_buffer_read_line (stream);
 	
-	camel_exception_init (&internal_ex);
 	if (buf == NULL) {
 		if (errno == EINTR)
-			camel_exception_set (&internal_ex, CAMEL_EXCEPTION_USER_CANCEL, _("Operation cancelled"));
+			camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL, _("Operation cancelled"));
 		else
-			camel_exception_setv (&internal_ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
+			camel_exception_setv (ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
 					      _("Server unexpectedly disconnected: %s"),
 					      g_strerror (errno));
-	}
-	
-	if (camel_exception_is_set (&internal_ex)) {
-		camel_exception_xfer (ex, &internal_ex);
+		
 		camel_service_disconnect (CAMEL_SERVICE (store), FALSE, NULL);
 		return -1;
 	}

@@ -25,22 +25,32 @@ struct _PASBookPrivate {
 	GNOME_Evolution_Addressbook_BookListener  listener;
 
 	GList                  *request_queue;
-	gint                    idle_id;
+	gint                    timeout_id;
+	
+	guint                   timeout_lock : 1;
 };
 
 static gboolean
 pas_book_check_queue (PASBook *book)
 {
+	if (book->priv->timeout_lock)
+		return TRUE;
+
+	book->priv->timeout_lock = TRUE;
+
 	if (book->priv->request_queue != NULL) {
 		gtk_signal_emit (GTK_OBJECT (book),
 				 pas_book_signals [REQUESTS_QUEUED]);
 	}
 
 	if (book->priv->request_queue == NULL) {
-		book->priv->idle_id = 0;
-		gtk_object_unref (GTK_OBJECT (book));
+		book->priv->timeout_id = 0;
+		book->priv->timeout_lock = FALSE;
+		bonobo_object_unref (BONOBO_OBJECT (book));
 		return FALSE;
 	}
+
+	book->priv->timeout_lock = FALSE;
 
 	return TRUE;
 }
@@ -51,9 +61,9 @@ pas_book_queue_request (PASBook *book, PASRequest *req)
 	book->priv->request_queue =
 		g_list_append (book->priv->request_queue, req);
 
-	if (book->priv->idle_id == 0) {
-		gtk_object_ref (GTK_OBJECT (book));
-		book->priv->idle_id = g_idle_add ((GSourceFunc) pas_book_check_queue, book);
+	if (book->priv->timeout_id == 0) {
+		bonobo_object_ref (BONOBO_OBJECT (book));
+		book->priv->timeout_id = g_timeout_add (20, (GSourceFunc) pas_book_check_queue, book);
 	}
 }
 
@@ -770,6 +780,15 @@ pas_book_destroy (GtkObject *object)
 	}
 	g_list_free (book->priv->request_queue);
 
+	/* We should never ever have timeout_id == 0 when we get destroyed, unless there
+	   is some sort of reference counting bug.  Still, we do this to try to avoid
+	   horrible crashes in those situations. */
+	if (book->priv->timeout_id) {
+		g_warning ("PASBook destroyed with non-zero timeout_id.  This shouldn't happen.");
+		g_source_remove (book->priv->timeout_id);
+		book->priv->timeout_id = 0;
+	}
+
 	CORBA_exception_init (&ev);
 	CORBA_Object_release (book->priv->listener, &ev);
 
@@ -779,6 +798,7 @@ pas_book_destroy (GtkObject *object)
 	CORBA_exception_free (&ev);
 
 	g_free (book->priv);
+	book->priv = NULL;
 
 	GTK_OBJECT_CLASS (pas_book_parent_class)->destroy (object);	
 }
@@ -839,8 +859,10 @@ static void
 pas_book_init (PASBook *book)
 {
 	book->priv                = g_new0 (PASBookPrivate, 1);
-	book->priv->idle_id       = 0;
+	book->priv->timeout_id    = 0;
 	book->priv->request_queue = NULL;
+	book->priv->timeout_id    = 0;
+	book->priv->timeout_lock  = FALSE;
 }
 
 /**

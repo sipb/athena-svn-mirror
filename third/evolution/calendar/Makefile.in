@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -186,7 +187,7 @@ localedir = @localedir@
 @ENABLE_PILOT_CONDUITS_TRUE@CONDUIT_DIR = conduits
 @ENABLE_PILOT_CONDUITS_FALSE@CONDUIT_DIR = 
 
-SUBDIRS = idl cal-util pcs cal-client gui $(CONDUIT_DIR)
+SUBDIRS = idl cal-util pcs cal-client gui importers $(CONDUIT_DIR)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
@@ -195,9 +196,9 @@ DIST_COMMON =  AUTHORS ChangeLog Makefile.am Makefile.in TODO
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-DIST_SUBDIRS =  idl cal-util pcs cal-client gui conduits
+DIST_SUBDIRS =  idl cal-util pcs cal-client gui importers conduits
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 

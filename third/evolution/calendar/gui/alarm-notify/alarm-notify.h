@@ -5,10 +5,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -56,6 +55,9 @@ struct _AlarmNotifyClass {
 GtkType alarm_notify_get_type (void);
 
 AlarmNotify *alarm_notify_new (void);
+
+void alarm_notify_add_calendar (AlarmNotify *an, const char *str_uri, gboolean load_afterwards,
+				CORBA_Environment *ev);
 
 
 

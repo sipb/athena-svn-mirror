@@ -4,19 +4,19 @@
  *
  *  Copyright 2001 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -28,6 +28,8 @@
 
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
+
+#include "camel-operation.h"
 
 #include "camel-charset-map.h"
 
@@ -52,6 +54,7 @@
 
 #include <iconv.h>
 #include <gal/unicode/gunicode.h>
+#include <gal/util/e-iconv.h>
 
 #define d(x)
 
@@ -166,11 +169,11 @@ pgp_get_type_as_string (CamelPgpType type)
 {
 	switch (type) {
 	case CAMEL_PGP_TYPE_PGP2:
-		return "PGP2.x";
+		return "PGP 2.6.x";
 	case CAMEL_PGP_TYPE_PGP5:
-		return "PGP5";
+		return "PGP 5.x";
 	case CAMEL_PGP_TYPE_PGP6:
-		return "PGP6";
+		return "PGP 6.x";
 	case CAMEL_PGP_TYPE_GPG:
 		return "GnuPG";
 	default:
@@ -287,7 +290,7 @@ crypto_exec_with_passwd (const char *path, char *argv[], const char *input, int 
 	gboolean eof_seen, diag_eof_seen, passwd_eof_seen, input_eof_seen;
 	size_t passwd_remaining, passwd_incr, input_remaining, input_incr;
 	size_t size, alloc_size, diag_size, diag_alloc_size;
-	int select_result, read_len, write_len;
+	int select_result, read_len, write_len, cancel_fd;
 	int ip_fds[2], op_fds[2], diag_fds[2];
 	const char *passwd_next, *input_next;
 	char *buf = NULL, *diag_buf = NULL;
@@ -296,6 +299,10 @@ crypto_exec_with_passwd (const char *path, char *argv[], const char *input, int 
 	size_t tmp_len;
 	pid_t child;
 	
+	if (camel_operation_cancel_check (NULL)) {
+		errno = EINTR;
+		return -1;
+	}
 	
 	if ((pipe (ip_fds) < 0 ) ||
 	    (pipe (op_fds) < 0 ) ||
@@ -372,21 +379,43 @@ crypto_exec_with_passwd (const char *path, char *argv[], const char *input, int 
 		input_incr = 1024;
 	input_eof_seen = FALSE;
 	
+	cancel_fd = camel_operation_cancel_fd (NULL);
+	
 	while (!(eof_seen && diag_eof_seen)) {
+		int max = 0;
+		
 		FD_ZERO (&fdset);
-		if (!eof_seen)
+		if (!eof_seen) {
 			FD_SET (op_fds[0], &fdset);
-		if (!diag_eof_seen)
+			max = op_fds[0];
+		}
+		if (!diag_eof_seen) {
 			FD_SET (diag_fds[0], &fdset);
+			max = MAX (max, diag_fds[0]);
+		}
+		if (cancel_fd != -1) {
+			FD_SET (cancel_fd, &fdset);
+			max = MAX (max, cancel_fd);
+		}
 		
 		FD_ZERO (&write_fdset);
-		if (!passwd_eof_seen)
+		if (!passwd_eof_seen) {
 			FD_SET (passwd_fds[1], &write_fdset);
-		if (!input_eof_seen)
+			max = MAX (max, passwd_fds[1]);
+		}
+		if (!input_eof_seen) {
 			FD_SET (ip_fds[1], &write_fdset);
+			max = MAX (max, ip_fds[1]);
+		}
 		
-		select_result = select (FD_SETSIZE, &fdset, &write_fdset,
+		select_result = select (max + 1, &fdset, &write_fdset,
 					NULL, &timeout);
+		
+		if (cancel_fd != -1 && FD_ISSET (cancel_fd, &fdset)) {
+			/* user-cancelled */
+			break;
+		}
+		
 		if (select_result < 0) {
 			if (errno == EINTR)
 				continue;
@@ -513,6 +542,13 @@ pgp_sign (CamelCipherContext *ctx, const char *userid, CamelCipherHash hash,
 	char passwd_fd[32];
 	int retval, i;
 	
+	/* check for the now unsupported pgp 2.6.x type */
+	if (context->priv->type == CAMEL_PGP_TYPE_PGP2) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     "PGP 2.6.x is no longer supported.");
+		return -1;
+	}
+	
 	/* get the plaintext in a form we can use */
 	plaintext = g_byte_array_new ();
 	stream = camel_stream_mem_new ();
@@ -521,8 +557,8 @@ pgp_sign (CamelCipherContext *ctx, const char *userid, CamelCipherHash hash,
 	camel_object_unref (CAMEL_OBJECT (stream));
 	
 	if (!plaintext->len) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot sign this message: no plaintext to sign"));
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Cannot sign this message: no plaintext to sign"));
 		goto exception;
 	}
 	
@@ -642,8 +678,7 @@ pgp_sign (CamelCipherContext *ctx, const char *userid, CamelCipherHash hash,
 	pass_free (passphrase);
 	
 	if (retval != 0 || !*ciphertext) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      "%s", diagnostics);
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, diagnostics);
 		g_free (diagnostics);
 		g_free (ciphertext);
 		pgp_forget_passphrase (ctx->session, context->priv->type, (char *) userid);
@@ -687,6 +722,13 @@ pgp_clearsign (CamelCipherContext *ctx, const char *userid, CamelCipherHash hash
 	char passwd_fd[32];
 	int retval, i;
 	
+	/* check for the now unsupported pgp 2.6.x type */
+	if (context->priv->type == CAMEL_PGP_TYPE_PGP2) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     "PGP 2.6.x is no longer supported.");
+		return -1;
+	}
+	
 	/* get the plaintext in a form we can use */
 	plaintext = g_byte_array_new ();
 	stream = camel_stream_mem_new ();
@@ -695,8 +737,8 @@ pgp_clearsign (CamelCipherContext *ctx, const char *userid, CamelCipherHash hash
 	camel_object_unref (CAMEL_OBJECT (stream));
 	
 	if (!plaintext->len) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot sign this message: no plaintext to clearsign"));
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Cannot sign this message: no plaintext to clearsign"));
 		goto exception;
 	}
 	
@@ -815,8 +857,7 @@ pgp_clearsign (CamelCipherContext *ctx, const char *userid, CamelCipherHash hash
 	pass_free (passphrase);
 	
 	if (retval != 0 || !*ciphertext) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      "%s", diagnostics);
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, diagnostics);
 		g_free (diagnostics);
 		g_free (ciphertext);
 		pgp_forget_passphrase (ctx->session, context->priv->type, (char *) userid);
@@ -879,6 +920,13 @@ pgp_verify (CamelCipherContext *ctx, CamelCipherHash hash, CamelStream *istream,
 	char *sigfile = NULL;
 	int retval, i, clearlen;
 	
+	/* check for the now unsupported pgp 2.6.x type */
+	if (context->priv->type == CAMEL_PGP_TYPE_PGP2) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     "PGP 2.6.x is no longer supported.");
+		return NULL;
+	}
+	
 	/* get the plaintext in a form we can use */
 	plaintext = g_byte_array_new ();
 	stream = camel_stream_mem_new ();
@@ -887,8 +935,8 @@ pgp_verify (CamelCipherContext *ctx, CamelCipherHash hash, CamelStream *istream,
 	camel_object_unref (CAMEL_OBJECT (stream));
 	
 	if (!plaintext->len) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot verify this message: no plaintext to verify"));
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Cannot verify this message: no plaintext to verify"));
 		goto exception;
 	}
 	
@@ -919,15 +967,14 @@ pgp_verify (CamelCipherContext *ctx, CamelCipherHash hash, CamelStream *istream,
 		argv[i++] = "--verbose";
 		argv[i++] = "--no-secmem-warning";
 		argv[i++] = "--no-greeting";
+		argv[i++] = "--no-tty";
+		if (!camel_session_is_online (ctx->session))
+			argv[i++] = "--no-auto-key-retrieve";
+		
 		argv[i++] = "--yes";
 		argv[i++] = "--batch";
 		
 		argv[i++] = "--verify";
-		
-		argv[i++] = "--no-tty";
-		
-		if (!camel_session_is_online (ctx->session))
-			argv[i++] = "--no-auto-key-retrieve";
 		
 		if (sigstream != NULL)
 			argv[i++] = sigfile;
@@ -980,8 +1027,7 @@ pgp_verify (CamelCipherContext *ctx, CamelCipherHash hash, CamelStream *istream,
 	valid = camel_cipher_validity_new ();
 	
 	if (retval != 0) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      "%s", diagnostics);
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, diagnostics);
 		
 		camel_cipher_validity_set_valid (valid, FALSE);
 	} else {
@@ -999,21 +1045,21 @@ pgp_verify (CamelCipherContext *ctx, CamelCipherHash hash, CamelStream *istream,
 		
 		desc = outbuf = g_new (unsigned char, outlen + 1);
 		
-		locale = camel_charset_locale_name ();
+		locale = e_iconv_locale_charset ();
 		if (!locale)
 			locale = "iso-8859-1";
 		
-		cd = iconv_open ("UTF-8", locale);
+		cd = e_iconv_open ("UTF-8", locale);
 		if (cd != (iconv_t) -1) {
 			const char *inbuf;
 			int ret;
 			
 			inbuf = diagnostics;
-			ret = iconv (cd, &inbuf, &inlen, &outbuf, &outlen);
+			ret = e_iconv (cd, &inbuf, &inlen, &outbuf, &outlen);
 			if (ret >= 0) {
-				iconv (cd, NULL, 0, &outbuf, &outlen);
+				e_iconv (cd, NULL, 0, &outbuf, &outlen);
 			}
-			iconv_close (cd);
+			e_iconv_close (cd);
 			
 			*outbuf = '\0';
 		} else {
@@ -1064,6 +1110,13 @@ pgp_encrypt (CamelCipherContext *ctx, gboolean sign, const char *userid, GPtrArr
 	char passwd_fd[32];
 	char *passphrase = NULL;
 	
+	/* check for the now unsupported pgp 2.6.x type */
+	if (context->priv->type == CAMEL_PGP_TYPE_PGP2) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     "PGP 2.6.x is no longer supported.");
+		return -1;
+	}
+	
 	/* get the plaintext in a form we can use */
 	plaintext = g_byte_array_new ();
 	stream = camel_stream_mem_new ();
@@ -1072,8 +1125,8 @@ pgp_encrypt (CamelCipherContext *ctx, gboolean sign, const char *userid, GPtrArr
 	camel_object_unref (CAMEL_OBJECT (stream));
 	
 	if (!plaintext->len) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot encrypt this message: no plaintext to encrypt"));
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Cannot encrypt this message: no plaintext to encrypt"));
 		goto exception;
 	}
 	
@@ -1098,8 +1151,8 @@ pgp_encrypt (CamelCipherContext *ctx, gboolean sign, const char *userid, GPtrArr
 	
 	/* check to make sure we have recipients */
 	if (recipients->len == 0) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot encrypt this message: no recipients specified"));
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Cannot encrypt this message: no recipients specified"));
 		
 		goto exception;
 	}
@@ -1205,8 +1258,7 @@ pgp_encrypt (CamelCipherContext *ctx, gboolean sign, const char *userid, GPtrArr
 	g_ptr_array_free (argv, TRUE);
 	
 	if (retval != 0 || !*ciphertext) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      "%s", diagnostics);
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, diagnostics);
 		g_free (diagnostics);
 		g_free (ciphertext);
 		if (sign)
@@ -1252,6 +1304,13 @@ pgp_decrypt (CamelCipherContext *ctx, CamelStream *istream,
 	char passwd_fd[32];
 	int retval, i;
 	
+	/* check for the now unsupported pgp 2.6.x type */
+	if (context->priv->type == CAMEL_PGP_TYPE_PGP2) {
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     "PGP 2.6.x is no longer supported.");
+		return -1;
+	}
+	
 	/* get the ciphertext in a form we can use */
 	ciphertext = g_byte_array_new ();
 	stream = camel_stream_mem_new ();
@@ -1260,16 +1319,16 @@ pgp_decrypt (CamelCipherContext *ctx, CamelStream *istream,
 	camel_object_unref (CAMEL_OBJECT (stream));
 	
 	if (!ciphertext->len) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      _("Cannot decrypt this message: no ciphertext to decrypt"));
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM,
+				     _("Cannot decrypt this message: no ciphertext to decrypt"));
 		
 		goto exception;
 	}
 	
 	passphrase = pgp_get_passphrase (ctx->session, context->priv->type, NULL);
 	if (!passphrase) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_USER_CANCEL,
-				      _("Cannot decrypt this message: no password provided"));
+		camel_exception_set (ex, CAMEL_EXCEPTION_USER_CANCEL,
+				     _("Cannot decrypt this message: no password provided"));
 		
 		goto exception;
 	}
@@ -1339,8 +1398,7 @@ pgp_decrypt (CamelCipherContext *ctx, CamelStream *istream,
 	
 	/* gpg returns '1' if it succeedes in decrypting but can't verify the signature */
 	if (retval != 0 || (context->priv->type == CAMEL_PGP_TYPE_GPG && retval == 1) || !*plaintext) {
-		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
-				      "%s", diagnostics);
+		camel_exception_set (ex, CAMEL_EXCEPTION_SYSTEM, diagnostics);
 		g_free (plaintext);
 		g_free (diagnostics);
 		

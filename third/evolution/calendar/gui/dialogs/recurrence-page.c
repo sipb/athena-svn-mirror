@@ -7,10 +7,9 @@
  *          Seth Alves <alves@hungry.com>
  *          JP Rosevear <jpr@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,8 +32,9 @@
 #include <libgnome/gnome-i18n.h>
 #include <glade/glade.h>
 #include <gal/widgets/e-unicode.h>
-#include "e-util/e-dialog-widgets.h"
-#include "widgets/misc/e-dateedit.h"
+#include <e-util/e-dialog-widgets.h>
+#include <e-util/e-time-utils.h>
+#include <widgets/misc/e-dateedit.h>
 #include <cal-util/timeutil.h>
 #include "../calendar-config.h"
 #include "../tag-calendar.h"
@@ -173,7 +173,7 @@ static void recurrence_page_destroy (GtkObject *object);
 static GtkWidget *recurrence_page_get_widget (CompEditorPage *page);
 static void recurrence_page_focus_main_widget (CompEditorPage *page);
 static void recurrence_page_fill_widgets (CompEditorPage *page, CalComponent *comp);
-static void recurrence_page_fill_component (CompEditorPage *page, CalComponent *comp);
+static gboolean recurrence_page_fill_component (CompEditorPage *page, CalComponent *comp);
 static void recurrence_page_set_summary (CompEditorPage *page, const char *summary);
 static void recurrence_page_set_dates (CompEditorPage *page, CompEditorPageDates *dates);
 
@@ -419,7 +419,8 @@ get_exception_string (CalComponentDateTime *dt)
 					   dt->value->month - 1,
 					   dt->value->year);
 
-	strftime (buf, sizeof (buf), _("%a %b %d %Y"), &tmp_tm);
+	e_time_format_date_and_time (&tmp_tm, calendar_config_get_24_hour_format(), FALSE, FALSE, buf, sizeof (buf));
+
 	return buf;
 }
 
@@ -580,8 +581,9 @@ sensitize_recur_widgets (RecurrencePage *rpage)
 	}
 }
 
+#if 0
 /* Encondes a position/weekday pair into the proper format for
- * icalrecurrencetype.by_day.
+ * icalrecurrencetype.by_day. Not needed at present.
  */
 static short
 nth_weekday (int pos, icalrecurrencetype_weekday weekday)
@@ -590,6 +592,7 @@ nth_weekday (int pos, icalrecurrencetype_weekday weekday)
 
 	return (pos << 3) | (int) weekday;
 }
+#endif
 
 /* Gets the simple recurrence data from the recurrence widgets and stores it in
  * the calendar component.
@@ -676,39 +679,42 @@ simple_recur_to_comp (RecurrencePage *rpage, CalComponent *comp)
 			r.by_month_day[0] = day_index;
 			break;
 
+		/* Outlook 2000 uses BYDAY=TU;BYSETPOS=2, and will not
+		   accept BYDAY=2TU. So we now use the same as Outlook
+		   by default. */
 		case MONTH_DAY_MON:
-			r.by_day[0] = nth_weekday (day_index, 
-						   ICAL_MONDAY_WEEKDAY);
+			r.by_day[0] = ICAL_MONDAY_WEEKDAY;
+			r.by_set_pos[0] = day_index;
 			break;
 
 		case MONTH_DAY_TUE:
-			r.by_day[0] = nth_weekday (day_index,
-						   ICAL_TUESDAY_WEEKDAY);
+			r.by_day[0] = ICAL_TUESDAY_WEEKDAY;
+			r.by_set_pos[0] = day_index;
 			break;
 
 		case MONTH_DAY_WED:
-			r.by_day[0] = nth_weekday (day_index,
-						   ICAL_WEDNESDAY_WEEKDAY);
+			r.by_day[0] = ICAL_WEDNESDAY_WEEKDAY;
+			r.by_set_pos[0] = day_index;
 			break;
 
 		case MONTH_DAY_THU:
-			r.by_day[0] = nth_weekday (day_index,
-						   ICAL_THURSDAY_WEEKDAY);
+			r.by_day[0] = ICAL_THURSDAY_WEEKDAY;
+			r.by_set_pos[0] = day_index;
 			break;
 
 		case MONTH_DAY_FRI:
-			r.by_day[0] = nth_weekday (day_index,
-						   ICAL_FRIDAY_WEEKDAY);
+			r.by_day[0] = ICAL_FRIDAY_WEEKDAY;
+			r.by_set_pos[0] = day_index;
 			break;
 
 		case MONTH_DAY_SAT:
-			r.by_day[0] = nth_weekday (day_index,
-						   ICAL_SATURDAY_WEEKDAY);
+			r.by_day[0] = ICAL_SATURDAY_WEEKDAY;
+			r.by_set_pos[0] = day_index;
 			break;
 
 		case MONTH_DAY_SUN:
-			r.by_day[0] = nth_weekday (day_index,
-						   ICAL_SUNDAY_WEEKDAY);
+			r.by_day[0] = ICAL_SUNDAY_WEEKDAY;
+			r.by_set_pos[0] = day_index;
 			break;
 
 		default:
@@ -824,7 +830,9 @@ fill_component (RecurrencePage *rpage, CalComponent *comp)
 		*cdt->value = *dt->value;
 		cdt->tzid = g_strdup (dt->tzid);
 
+#if 0
 		g_print ("Adding exception is_date: %i\n", cdt->value->is_date);
+#endif
 
 		list = g_slist_prepend (list, cdt);
 	}
@@ -1575,11 +1583,14 @@ recurrence_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 		if (n_by_year_day != 0
 		    || n_by_week_no != 0
 		    || n_by_month != 0
-		    || n_by_set_pos != 0)
+		    || n_by_set_pos > 1)
 			goto custom;
 
 		if (n_by_month_day == 1) {
 			int nth;
+
+			if (n_by_set_pos != 0)
+				goto custom;
 
 			nth = r->by_month_day[0];
 			if (nth < 1)
@@ -1592,11 +1603,20 @@ recurrence_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 			int pos;
 			enum month_day_options month_day;
 
+			/* Outlook 2000 uses BYDAY=TU;BYSETPOS=2, and will not
+			   accept BYDAY=2TU. So we now use the same as Outlook
+			   by default. */
+
 			weekday = icalrecurrencetype_day_day_of_week (r->by_day[0]);
 			pos = icalrecurrencetype_day_position (r->by_day[0]);
 
-			if (pos < 1)
+			if (pos == 0) {
+				if (n_by_set_pos != 1)
+					goto custom;
+				pos = r->by_set_pos[0];
+			} else if (pos < 0) {
 				goto custom;
+			}
 
 			switch (weekday) {
 			case ICAL_MONDAY_WEEKDAY:
@@ -1711,13 +1731,15 @@ recurrence_page_fill_widgets (CompEditorPage *page, CalComponent *comp)
 }
 
 /* fill_component handler for the recurrence page */
-static void
+static gboolean
 recurrence_page_fill_component (CompEditorPage *page, CalComponent *comp)
 {
 	RecurrencePage *rpage;
 
 	rpage = RECURRENCE_PAGE (page);
 	fill_component (rpage, comp);
+
+	return TRUE;
 }
 
 /* set_summary handler for the recurrence page */
@@ -1795,7 +1817,10 @@ recurrence_page_set_dates (CompEditorPage *page, CompEditorPageDates *dates)
 static gboolean
 get_widgets (RecurrencePage *rpage)
 {
+	CompEditorPage *page = COMP_EDITOR_PAGE (rpage);
 	RecurrencePagePrivate *priv;
+	GSList *accel_groups;
+	GtkWidget *toplevel;
 
 	priv = rpage->priv;
 
@@ -1804,6 +1829,15 @@ get_widgets (RecurrencePage *rpage)
 	priv->main = GW ("recurrence-page");
 	if (!priv->main)
 		return FALSE;
+
+	/* Get the GtkAccelGroup from the toplevel window, so we can install
+	   it when the notebook page is mapped. */
+	toplevel = gtk_widget_get_toplevel (priv->main);
+	accel_groups = gtk_accel_groups_from_object (GTK_OBJECT (toplevel));
+	if (accel_groups) {
+		page->accel_group = accel_groups->data;
+		gtk_accel_group_ref (page->accel_group);
+	}
 
 	gtk_widget_ref (priv->main);
 	gtk_widget_unparent (priv->main);

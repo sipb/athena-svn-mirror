@@ -5,9 +5,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,6 +27,7 @@
 #include <gtk/gtkcombo.h>
 #include <gtk/gtktext.h>
 #include <libgnomeui/gnome-popup-menu.h>
+#include <libgnomeui/gnome-stock.h>
 #include <libgnome/gnome-i18n.h>
 
 #include <bonobo/bonobo-ui-container.h>
@@ -43,6 +43,7 @@
 
 #include "addressbook/printing/e-contact-print.h"
 #include "addressbook/printing/e-contact-print-envelope.h"
+#include "addressbook/gui/widgets/e-addressbook-util.h"
 #include "e-util/e-gui-utils.h"
 #include "widgets/misc/e-dateedit.h"
 #include "shell/evolution-shell-component-utils.h"
@@ -262,7 +263,6 @@ static void
 phone_entry_changed (GtkWidget *widget, EContactEditor *editor)
 {
 	int which;
-	gchar *string;
 	GtkEntry *entry = GTK_ENTRY(widget);
 	ECardPhone *phone;
 
@@ -276,14 +276,10 @@ phone_entry_changed (GtkWidget *widget, EContactEditor *editor)
 		which = 4;
 	} else
 		return;
-	string = e_utf8_gtk_entry_get_text(entry);
 	phone = e_card_phone_new();
-	phone->number = string;
+	phone->number = e_utf8_gtk_entry_get_text(entry);
 	e_card_simple_set_phone(editor->simple, editor->phone_choice[which - 1], phone);
-#if 0
-	phone->number = NULL;
-#endif
-	e_card_phone_free(phone);
+	e_card_phone_unref(phone);
 	set_fields(editor);
 
 	widget_changed (widget, editor);
@@ -318,7 +314,7 @@ address_text_changed (GtkWidget *widget, EContactEditor *editor)
 	address->data = e_utf8_gtk_editable_get_chars(editable, 0, -1);
 
 	e_card_simple_set_address(editor->simple, editor->address_choice, address);
-	e_card_address_label_free(address);
+	e_card_address_label_unref(address);
 
 	widget_changed (widget, editor);
 }
@@ -485,7 +481,7 @@ name_entry_changed (GtkWidget *widget, EContactEditor *editor)
 
 	style = file_as_get_style(editor);
 	
-	e_card_name_free(editor->name);
+	e_card_name_unref(editor->name);
 
 	string = e_utf8_gtk_entry_get_text (GTK_ENTRY(widget));
 	editor->name = e_card_name_from_string(string);
@@ -689,8 +685,8 @@ full_name_clicked(GtkWidget *button, EContactEditor *editor)
 			g_free(full_name);
 		}
 
-		e_card_name_free(editor->name);
-		editor->name = e_card_name_copy(name);
+		e_card_name_unref(editor->name);
+		editor->name = e_card_name_ref(name);
 
 		file_as_set_style(editor, style);
 	}
@@ -729,12 +725,12 @@ full_addr_clicked(GtkWidget *button, EContactEditor *editor)
 		} else {
 			ECardAddrLabel *address = e_card_delivery_address_to_label(new_address);
 			e_card_simple_set_address(editor->simple, editor->address_choice, address);
-			e_card_address_label_free(address);
+			e_card_address_label_unref(address);
 		}
 
 		e_card_simple_set_delivery_address(editor->simple, editor->address_choice, new_address);
 
-		e_card_delivery_address_free(new_address);
+		e_card_delivery_address_unref(new_address);
 	}
 	gtk_object_unref(GTK_OBJECT(dialog));
 }
@@ -829,7 +825,8 @@ card_added_cb (EBook *book, EBookStatus status, const char *id, EditorCloseStruc
 	EContactEditor *ce = ecs->ce;
 	gboolean should_close = ecs->should_close;
 
-	g_free (ecs);
+	gtk_widget_set_sensitive (ce->app, TRUE);
+	ce->in_async_call = FALSE;
 
 	e_card_set_id (ce->card, id);
 
@@ -847,6 +844,9 @@ card_added_cb (EBook *book, EBookStatus status, const char *id, EditorCloseStruc
 			command_state_changed (ce);
 		}
 	}
+
+	gtk_object_unref (GTK_OBJECT (ce));
+	g_free (ecs);
 }
 
 static void
@@ -855,7 +855,8 @@ card_modified_cb (EBook *book, EBookStatus status, EditorCloseStruct *ecs)
 	EContactEditor *ce = ecs->ce;
 	gboolean should_close = ecs->should_close;
 
-	g_free (ecs);
+	gtk_widget_set_sensitive (ce->app, TRUE);
+	ce->in_async_call = FALSE;
 
 	gtk_signal_emit (GTK_OBJECT (ce), contact_editor_signals[CARD_MODIFIED],
 			 status, ce->card);
@@ -869,6 +870,9 @@ card_modified_cb (EBook *book, EBookStatus status, EditorCloseStruct *ecs)
 			command_state_changed (ce);
 		}
 	}
+
+	gtk_object_unref (GTK_OBJECT (ce));
+	g_free (ecs);
 }
 
 /* Emits the signal to request saving a card */
@@ -882,7 +886,12 @@ save_card (EContactEditor *ce, gboolean should_close)
 		EditorCloseStruct *ecs = g_new(EditorCloseStruct, 1);
 		
 		ecs->ce = ce;
+		gtk_object_ref (GTK_OBJECT (ecs->ce));
+
 		ecs->should_close = should_close;
+
+		gtk_widget_set_sensitive (ce->app, FALSE);
+		ce->in_async_call = TRUE;
 
 		if (ce->is_new_card)
 			e_card_merging_book_add_card (ce->book, ce->card, GTK_SIGNAL_FUNC(card_added_cb), ecs);
@@ -895,12 +904,29 @@ save_card (EContactEditor *ce, gboolean should_close)
 static void
 close_dialog (EContactEditor *ce)
 {
-	g_assert (ce->app != NULL);
+	if (ce->app != NULL) {
+		gtk_widget_destroy (ce->app);
+		ce->app = NULL;
+		gtk_signal_emit (GTK_OBJECT (ce), contact_editor_signals[EDITOR_CLOSED]);
+	}
+}
 
-	gtk_widget_destroy (ce->app);
-	ce->app = NULL;
+static gboolean
+prompt_to_save_changes (EContactEditor *editor)
+{
+	if (!editor->changed)
+		return TRUE;
 
-	gtk_signal_emit (GTK_OBJECT (ce), contact_editor_signals[EDITOR_CLOSED]);
+	switch (e_addressbook_prompt_save_dialog (GTK_WINDOW(editor->app))) {
+	case 0: /* Save */
+		save_card (editor, FALSE);
+		return TRUE;
+	case 1: /* Discard */
+		return TRUE;
+	case 2: /* Cancel */
+	default:
+		return FALSE;
+	}
 }
 
 /* Menu callbacks */
@@ -922,6 +948,9 @@ file_close_cb (GtkWidget *widget, gpointer data)
 	EContactEditor *ce;
 
 	ce = E_CONTACT_EDITOR (data);
+	if (!prompt_to_save_changes (ce))
+		return;
+
 	close_dialog (ce);
 }
 
@@ -993,6 +1022,9 @@ e_contact_editor_confirm_delete(GtkWindow *parent)
 static void
 card_deleted_cb (EBook *book, EBookStatus status, EContactEditor *ce)
 {
+	gtk_widget_set_sensitive (ce->app, TRUE);
+	ce->in_async_call = FALSE;
+
 	gtk_signal_emit (GTK_OBJECT (ce), contact_editor_signals[CARD_DELETED],
 			 status, ce->card);
 
@@ -1016,8 +1048,12 @@ delete_cb (GtkWidget *widget, gpointer data)
 		extract_info (ce);
 		e_card_simple_sync_card (simple);
 		
-		if (!ce->is_new_card && ce->book)
+		if (!ce->is_new_card && ce->book) {
+			gtk_widget_set_sensitive (ce->app, FALSE);
+			ce->in_async_call = TRUE;
+
 			e_book_remove_card (ce->book, card, GTK_SIGNAL_FUNC(card_deleted_cb), ce);
+		}
 	}
 
 	gtk_object_unref(GTK_OBJECT(card));
@@ -1117,6 +1153,13 @@ app_delete_event_cb (GtkWidget *widget, GdkEvent *event, gpointer data)
 
 	ce = E_CONTACT_EDITOR (data);
 
+	/* if we're saving, don't allow the dialog to close */
+	if (ce->in_async_call)
+		return TRUE;
+
+	if (!prompt_to_save_changes (ce))
+		return TRUE;
+
 	close_dialog (ce);
 	return TRUE;
 }
@@ -1194,6 +1237,7 @@ e_contact_editor_init (EContactEditor *e_contact_editor)
 
 	e_contact_editor->card = NULL;
 	e_contact_editor->changed = FALSE;
+	e_contact_editor->in_async_call = FALSE;
 	e_contact_editor->editable = TRUE;
 
 	gui = glade_xml_new (EVOLUTION_GLADEDIR "/contact-editor.glade", NULL);
@@ -1329,9 +1373,7 @@ e_contact_editor_destroy (GtkObject *object) {
 	if (e_contact_editor->book)
 		gtk_object_unref(GTK_OBJECT(e_contact_editor->book));
 
-	if (e_contact_editor->name)
-		e_card_name_free(e_contact_editor->name);
-
+	e_card_name_unref(e_contact_editor->name);
 	g_free (e_contact_editor->company);
 
 	gtk_object_unref(GTK_OBJECT(e_contact_editor->gui));
@@ -2332,8 +2374,8 @@ fill_in_info(EContactEditor *editor)
 		/* File as has to come after company and name or else it'll get messed up when setting them. */
 		fill_in_field(editor, "entry-file-as", file_as);
 		
-		e_card_name_free(editor->name);
-		editor->name = e_card_name_copy(name);
+		e_card_name_unref(editor->name);
+		editor->name = e_card_name_ref(name);
 
 		widget = glade_xml_get_widget(editor->gui, "dateedit-anniversary");
 		if (widget && E_IS_DATE_EDIT(widget)) {
@@ -2473,7 +2515,7 @@ extract_info(EContactEditor *editor)
 						  &anniversary.year,
 						  &anniversary.month,
 						  &anniversary.day)) {
-				g_print ("%d %d %d\n", anniversary.year, anniversary.month, anniversary.day);
+				/* g_print ("%d %d %d\n", anniversary.year, anniversary.month, anniversary.day); */
 				gtk_object_set(GTK_OBJECT(card),
 					       "anniversary", &anniversary,
 					       NULL);
@@ -2489,7 +2531,7 @@ extract_info(EContactEditor *editor)
 						  &bday.year,
 						  &bday.month,
 						  &bday.day)) {
-				g_print ("%d %d %d\n", bday.year, bday.month, bday.day);
+				/* g_print ("%d %d %d\n", bday.year, bday.month, bday.day); */
 				gtk_object_set(GTK_OBJECT(card),
 					       "birth_date", &bday,
 					       NULL);

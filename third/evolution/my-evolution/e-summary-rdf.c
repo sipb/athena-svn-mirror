@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -411,6 +410,7 @@ open_callback (GnomeVFSAsyncHandle *handle,
 	if (result != GNOME_VFS_OK) {
 		char *str;
 
+		r->handle = NULL;
 		g_free (r->html);
 		str = g_strdup_printf ("<b>%s:</b><br>%s", _("Error downloading RDF"),
 				       r->uri);
@@ -428,14 +428,35 @@ open_callback (GnomeVFSAsyncHandle *handle,
 			      (GnomeVFSAsyncReadCallback) read_callback, r);
 }
 
-static gboolean
+gboolean
 e_summary_rdf_update (ESummary *summary)
 {
 	GList *r;
 
+	if (summary->rdf->online == FALSE) {
+		g_warning ("%s: Repolling but offline", __FUNCTION__);
+		return TRUE;
+	}
+
 	for (r = summary->rdf->rdfs; r; r = r->next) {
 		RDF *rdf = r->data;
 
+		if (rdf->handle) {
+			gnome_vfs_async_cancel (rdf->handle);
+			rdf->handle = NULL;
+		}
+
+		if (rdf->buffer) {
+			g_free (rdf->buffer);
+			rdf->buffer = NULL;
+		}
+		
+		if (rdf->string) {
+			g_string_free (rdf->string, TRUE);
+			rdf->string = NULL;
+		}
+
+		g_warning ("Opening %s", rdf->uri);
 		gnome_vfs_async_open (&rdf->handle, rdf->uri, 
 				      GNOME_VFS_OPEN_READ,
 				      (GnomeVFSAsyncOpenCallback) open_callback, rdf);
@@ -561,6 +582,7 @@ e_summary_rdf_set_online (ESummary *summary,
 			  void *data)
 {
 	ESummaryRDF *rdf;
+	GList *p;
 
 	rdf = summary->rdf;
 	if (rdf->online == online) {
@@ -573,6 +595,16 @@ e_summary_rdf_set_online (ESummary *summary,
 						(GtkFunction) e_summary_rdf_update,
 						summary);
 	} else {
+		for (p = rdf->rdfs; p; p = p->next) {
+			RDF *r;
+
+			r = p->data;
+			if (r->handle) {
+				gnome_vfs_async_cancel (r->handle);
+				r->handle = NULL;
+			}
+		}
+
 		gtk_timeout_remove (rdf->timeout);
 		rdf->timeout = 0;
 	}
@@ -604,6 +636,7 @@ e_summary_rdf_init (ESummary *summary)
 	connection->callback_closure = NULL;
 
 	rdf->connection = connection;
+	rdf->online = TRUE;
 	e_summary_add_online_connection (summary, connection);
 
 	e_summary_add_protocol_listener (summary, "rdf", e_summary_rdf_protocol, rdf);
@@ -640,14 +673,15 @@ e_summary_rdf_reconfigure (ESummary *summary)
 	/* Stop timeout */
 	gtk_timeout_remove (rdf->timeout);
 
-	for (old = rdf->rdfs; old; old = old->next) {
+	old = rdf->rdfs;
+	rdf->rdfs = NULL;
+	for (p = old; p; p = p->next) {
 		RDF *r;
 
-		r = old->data;
+		r = p->data;
 		rdf_free (r);
 	}
-	g_list_free (rdf->rdfs);
-	rdf->rdfs = NULL;
+	g_list_free (old);
 
 	for (p = summary->preferences->rdf_urls; p; p = p->next) {
 		e_summary_rdf_add_uri (summary, p->data);

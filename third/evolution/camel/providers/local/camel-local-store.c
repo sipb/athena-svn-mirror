@@ -5,9 +5,8 @@
  * Copyright (C) 2000 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,9 +29,15 @@
 #include <unistd.h>
 #include <stdio.h>
 
+#include <glib.h>
+
+#include "camel-private.h"
+
 #include "camel-local-store.h"
 #include "camel-exception.h"
 #include "camel-url.h"
+
+#include "camel-local-folder.h"
 
 #define d(x)
 
@@ -45,10 +50,10 @@ static CamelFolder *get_folder(CamelStore * store, const char *folder_name, guin
 static char *get_name(CamelService *service, gboolean brief);
 static CamelFolder *get_inbox (CamelStore *store, CamelException *ex);
 static void rename_folder(CamelStore *store, const char *old_name, const char *new_name, CamelException *ex);
-static CamelFolderInfo *get_folder_info (CamelStore *store, const char *top,
-					 guint32 flags, CamelException *ex);
+static CamelFolderInfo *get_folder_info (CamelStore *store, const char *top, guint32 flags, CamelException *ex);
 static void delete_folder(CamelStore *store, const char *folder_name, CamelException *ex);
 static void rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex);
+static CamelFolderInfo *create_folder(CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex);
 
 static CamelStoreClass *parent_class = NULL;
 
@@ -68,6 +73,7 @@ camel_local_store_class_init (CamelLocalStoreClass *camel_local_store_class)
 	camel_store_class->get_folder_info = get_folder_info;
 	camel_store_class->free_folder_info = camel_store_free_folder_info_full;
 
+	camel_store_class->create_folder = create_folder;
 	camel_store_class->delete_folder = delete_folder;
 	camel_store_class->rename_folder = rename_folder;
 }
@@ -203,6 +209,53 @@ get_folder_info (CamelStore *store, const char *top,
 	return NULL;
 }
 
+static CamelFolderInfo *
+create_folder(CamelStore *store, const char *parent_name, const char *folder_name, CamelException *ex)
+{
+	char *path = ((CamelLocalStore *)store)->toplevel_dir;
+	char *name;
+	CamelFolder *folder;
+	CamelFolderInfo *info = NULL;
+	struct stat st;
+
+	/* This is a pretty hacky version of create folder, but should basically work */
+
+	/* FIXME: The strings here are funny because of string freeze */
+
+	if (path[0] != '/') {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+				     _("Store root %s is not an absolute path"), path);
+		return NULL;
+	}
+
+	name = g_strdup_printf("%s/%s/%s", path, parent_name, folder_name);
+
+	if (stat(name, &st) == 0 || errno != ENOENT) {
+		camel_exception_setv(ex, CAMEL_EXCEPTION_STORE_NO_FOLDER,
+				     _("Cannot get folder: %s: %s"), name, strerror(errno));
+		g_free(name);
+		return NULL;
+	}
+
+	g_free(name);
+
+	name = g_strdup_printf("%s/%s", parent_name, folder_name);
+
+	folder = ((CamelStoreClass *)((CamelObject *)store)->classfuncs)->get_folder(store, name, CAMEL_STORE_FOLDER_CREATE, ex);
+	if (folder) {
+		camel_object_unref((CamelObject *)folder);
+		info = ((CamelStoreClass *)((CamelObject *)store)->classfuncs)->get_folder_info(store, name, 0, ex);
+
+		/* get_folder(CREATE) will emit a folder_created event for us */
+		/*if (info)
+		  camel_object_trigger_event((CamelObject *)store, "folder_created", info);*/
+	}
+
+	g_free(name);
+
+	return info;
+}
+
 static int xrename(const char *oldp, const char *newp, const char *prefix, const char *suffix, int missingok, CamelException *ex)
 {
 	struct stat st;
@@ -258,19 +311,51 @@ static void
 rename_folder(CamelStore *store, const char *old, const char *new, CamelException *ex)
 {
 	char *path = CAMEL_LOCAL_STORE (store)->toplevel_dir;
+	CamelLocalFolder *folder;
+	char *newibex = g_strdup_printf("%s%s.ibex", path, new);
+	char *oldibex = g_strdup_printf("%s%s.ibex", path, old);
 
 	/* try to rollback failures, has obvious races */
-	if (xrename(old, new, path, ".ibex", TRUE, ex)) {
-		return;
+
+	d(printf("local rename folder '%s' '%s'\n", old, new));
+
+	CAMEL_STORE_LOCK(store, cache_lock);
+	folder = g_hash_table_lookup(store->folders, old);
+	if (folder) {
+		if (folder->index && ibex_move(folder->index, newibex) == -1)
+			goto ibex_failed;
+	} else {
+		if (xrename(old, new, path, ".ibex", TRUE, ex))
+			goto ibex_failed;
 	}
-	if (xrename(old, new, path, ".ev-summary", TRUE, ex)) {
+
+	if (xrename(old, new, path, ".ev-summary", TRUE, ex))
+		goto summary_failed;
+
+	if (xrename(old, new, path, "", FALSE, ex))
+		goto base_failed;
+
+	CAMEL_STORE_UNLOCK(store, cache_lock);
+
+	g_free(newibex);
+	g_free(oldibex);
+
+	return;
+
+base_failed:
+	xrename(new, old, path, ".ev-summary", TRUE, ex);
+
+summary_failed:
+	if (folder) {
+		if (folder->index)
+			ibex_move(folder->index, oldibex);
+	} else
 		xrename(new, old, path, ".ibex", TRUE, ex);
-		return;
-	}
-	if (xrename(old, new, path, "", FALSE, ex)) {
-		xrename(new, old, path, ".ev-summary", TRUE, ex);
-		xrename(new, old, path, ".ibex", TRUE, ex);
-	}
+
+ibex_failed:
+	CAMEL_STORE_UNLOCK(store, cache_lock);
+	g_free(newibex);
+	g_free(oldibex);
 }
 
 /* default implementation, only delete metadata */

@@ -8,9 +8,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,6 +32,7 @@
 #include "camel-mime-utils.h"
 #include "camel-stream.h"
 #include "camel-exception.h"
+#include "camel-private.h"
 
 #define d(x)
 
@@ -40,7 +40,6 @@ static CamelObjectClass *parent_class = NULL;
 
 /* Returns the class for a CamelDataWrapper */
 #define CDW_CLASS(so) CAMEL_DATA_WRAPPER_CLASS (CAMEL_OBJECT_GET_CLASS(so))
-
 
 static int construct_from_stream(CamelDataWrapper *, CamelStream *);
 static int write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream);
@@ -69,7 +68,12 @@ static void
 camel_data_wrapper_init (gpointer object, gpointer klass)
 {
 	CamelDataWrapper *camel_data_wrapper = CAMEL_DATA_WRAPPER (object);
-
+	
+	camel_data_wrapper->priv = g_malloc (sizeof (struct _CamelDataWrapperPrivate));
+#ifdef ENABLE_THREADS
+	pthread_mutex_init (&camel_data_wrapper->priv->stream_lock, NULL);
+#endif
+	
 	camel_data_wrapper->mime_type = header_content_type_new ("application", "octet-stream");
 	camel_data_wrapper->offline = FALSE;
 	camel_data_wrapper->rawtext = FALSE;
@@ -79,10 +83,15 @@ static void
 camel_data_wrapper_finalize (CamelObject *object)
 {
 	CamelDataWrapper *camel_data_wrapper = CAMEL_DATA_WRAPPER (object);
-
+	
+#ifdef ENABLE_THREADS
+	pthread_mutex_destroy (&camel_data_wrapper->priv->stream_lock);
+#endif
+	g_free (camel_data_wrapper->priv);
+	
 	if (camel_data_wrapper->mime_type)
 		header_content_type_unref (camel_data_wrapper->mime_type);
-
+	
 	if (camel_data_wrapper->stream)
 		camel_object_unref (CAMEL_OBJECT (camel_data_wrapper->stream));
 }
@@ -108,14 +117,22 @@ camel_data_wrapper_get_type (void)
 static int
 write_to_stream (CamelDataWrapper *data_wrapper, CamelStream *stream)
 {
+	int ret;
+	
 	if (data_wrapper->stream == NULL) {
 		return -1;
 	}
-
-	if (camel_stream_reset (data_wrapper->stream) == -1)
+	
+	CAMEL_DATA_WRAPPER_LOCK (data_wrapper, stream_lock);
+	if (camel_stream_reset (data_wrapper->stream) == -1) {
+		CAMEL_DATA_WRAPPER_UNLOCK (data_wrapper, stream_lock);
 		return -1;
-
-	return camel_stream_write_to_stream (data_wrapper->stream, stream);
+	}
+	
+	ret = camel_stream_write_to_stream (data_wrapper->stream, stream);
+	CAMEL_DATA_WRAPPER_UNLOCK (data_wrapper, stream_lock);
+	
+	return ret;
 }
 
 CamelDataWrapper *
@@ -174,7 +191,7 @@ camel_data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 {
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
+	
 	return CDW_CLASS (data_wrapper)->construct_from_stream (data_wrapper, stream);
 }
 

@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,6 +38,9 @@
 #include "Evolution.h"
 
 
+#define PING_DELAY 10000
+
+
 #define PARENT_TYPE BONOBO_X_OBJECT_TYPE
 
 static GtkObjectClass *parent_class = NULL;
@@ -66,13 +68,17 @@ struct _EvolutionShellComponentPrivate {
 
 	GSList *user_creatable_item_types; /* UserCreatableItemType */
 
+	int ping_timeout_id;
+
 	void *closure;
 };
 
 enum {
 	OWNER_SET,
 	OWNER_UNSET,
+	OWNER_DIED,
 	DEBUG,
+	INTERACTIVE,
 	HANDLE_EXTERNAL_URI,
 	USER_CREATE_NEW_ITEM,
 	LAST_SIGNAL
@@ -163,6 +169,68 @@ fill_corba_sequence_from_null_terminated_string_array (CORBA_sequence_CORBA_stri
 
 	for (i = 0; i < count; i++)
 		corba_sequence->_buffer[i] = CORBA_string_dup (array[i]);
+}
+
+
+/* Owner pinging.  */
+
+static gboolean
+owner_ping_callback (void *data)
+{
+	EvolutionShellComponent *shell_component;
+	EvolutionShellComponentPrivate *priv;
+	Bonobo_Unknown owner_objref;
+	CORBA_Environment ev;
+	gboolean alive;
+
+	shell_component = EVOLUTION_SHELL_COMPONENT (data);
+	priv = shell_component->priv;
+
+	owner_objref = bonobo_object_corba_objref (BONOBO_OBJECT (priv->owner_client));
+
+	if (owner_objref == CORBA_OBJECT_NIL)
+		return FALSE;
+
+	/* We are duplicating the object here, as we might get an ::unsetOwner
+	   while we invoke the pinging, and this would make the objref invalid
+	   and thus crash the stubs (cfr. #13802).  */
+
+	CORBA_exception_init (&ev);
+	owner_objref = CORBA_Object_duplicate (owner_objref, &ev);
+
+	alive = bonobo_unknown_ping (owner_objref);
+
+	CORBA_Object_release (owner_objref, &ev);
+	CORBA_exception_free (&ev);
+
+	if (alive)
+		return TRUE;
+
+	/* This is tricky.  During the pinging, we might have gotten an
+	   ::unsetOwner invocation which has invalidated our owner_client.  In
+	   this case, no "owner_died" should be emitted.  */
+	
+	if (priv->owner_client != NULL) {
+		g_print ("\t*** The shell has disappeared\n");
+		gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_DIED]);
+	}
+
+	priv->ping_timeout_id = -1;
+
+	return FALSE;
+}
+
+static void
+setup_owner_pinging (EvolutionShellComponent *shell_component)
+{
+	EvolutionShellComponentPrivate *priv;
+
+	priv = shell_component->priv;
+
+	if (priv->ping_timeout_id != -1)
+		g_source_remove (priv->ping_timeout_id);
+
+	priv->ping_timeout_id = g_timeout_add (PING_DELAY, owner_ping_callback, shell_component);
 }
 
 
@@ -305,8 +373,23 @@ impl_setOwner (PortableServer_Servant servant,
 	priv = shell_component->priv;
 
 	if (priv->owner_client != NULL) {
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-				     ex_GNOME_Evolution_ShellComponent_AlreadyOwned, NULL);
+		int owner_is_dead;
+
+		owner_is_dead = CORBA_Object_non_existent
+			(bonobo_object_corba_objref (BONOBO_OBJECT (priv->owner_client)), ev);
+		if (ev->_major != CORBA_NO_EXCEPTION)
+			owner_is_dead = TRUE;
+
+		if (! owner_is_dead) {
+			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+					     ex_GNOME_Evolution_ShellComponent_AlreadyOwned, NULL);
+		} else {
+			CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+					     ex_GNOME_Evolution_ShellComponent_OldOwnerHasDied, NULL);
+
+			gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_DIED]);
+		}
+
 		return;
 	}
 
@@ -315,6 +398,8 @@ impl_setOwner (PortableServer_Servant servant,
 	if (ev->_major == CORBA_NO_EXCEPTION) {
 		priv->owner_client = evolution_shell_client_new (shell_duplicate);
 		gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_SET], priv->owner_client, evolution_homedir);
+
+		setup_owner_pinging (shell_component);
 	}
 }
 
@@ -335,9 +420,6 @@ impl_unsetOwner (PortableServer_Servant servant,
 				     ex_GNOME_Evolution_ShellComponent_NotOwned, NULL);
 		return;
 	}
-
-	bonobo_object_unref (BONOBO_OBJECT (priv->owner_client));
-	priv->owner_client = NULL;
 
 	gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_UNSET]);
 }
@@ -363,6 +445,20 @@ impl_debug (PortableServer_Servant servant,
 	close (fd);
 
 	gtk_signal_emit (GTK_OBJECT (shell_component), signals[DEBUG]);
+}
+
+static void
+impl_interactive (PortableServer_Servant servant,
+		  CORBA_boolean interactive,
+		  CORBA_Environment *ev)
+{
+	BonoboObject *bonobo_object;
+	EvolutionShellComponent *shell_component;
+
+	bonobo_object = bonobo_object_from_servant (servant);
+	shell_component = EVOLUTION_SHELL_COMPONENT (bonobo_object);
+
+	gtk_signal_emit (GTK_OBJECT (shell_component), signals[INTERACTIVE], interactive);
 }
 
 static Bonobo_Control
@@ -565,10 +661,20 @@ destroy (GtkObject *object)
 
 	priv = shell_component->priv;
 
+	if (priv->ping_timeout_id != -1) {
+		g_source_remove (priv->ping_timeout_id);
+		priv->ping_timeout_id = -1;
+	}
+
 	CORBA_exception_init (&ev);
 
-	if (priv->owner_client != NULL)
-		bonobo_object_unref (BONOBO_OBJECT (priv->owner_client));
+	if (priv->owner_client != NULL) {
+		BonoboObject *owner_client_object;
+
+		owner_client_object = BONOBO_OBJECT (priv->owner_client);
+		priv->owner_client = NULL;
+		bonobo_object_unref (BONOBO_OBJECT (owner_client_object));
+	}
 
 	CORBA_exception_free (&ev);
 
@@ -598,11 +704,53 @@ destroy (GtkObject *object)
 }
 
 
+/* EvolutionShellComponent methods.  */
+
+static void
+impl_owner_unset (EvolutionShellComponent *shell_component)
+{
+	EvolutionShellComponentPrivate *priv;
+	BonoboObject *owner_client_object;
+
+	priv = shell_component->priv;
+
+	if (priv->ping_timeout_id != -1) {
+		g_source_remove (priv->ping_timeout_id);
+		priv->ping_timeout_id = -1;
+	}
+
+	owner_client_object = BONOBO_OBJECT (priv->owner_client);
+	priv->owner_client = NULL;
+	bonobo_object_unref (BONOBO_OBJECT (owner_client_object));
+}
+
+static void
+impl_owner_died (EvolutionShellComponent *shell_component)
+{
+	EvolutionShellComponentPrivate *priv;
+	BonoboObject *owner_client_object;
+
+	priv = shell_component->priv;
+
+	owner_client_object = BONOBO_OBJECT (priv->owner_client);
+	priv->owner_client = NULL;
+	bonobo_object_unref (BONOBO_OBJECT (owner_client_object));
+
+	/* The default implementation for ::owner_died emits ::owner_unset, so
+	   that we make the behavior for old components kind of correct without
+	   even if they don't handle the new ::owner_died signal correctly
+	   yet.  */
+
+	gtk_signal_emit (GTK_OBJECT (shell_component), signals[OWNER_UNSET]);
+}
+
+
 /* Initialization.  */
 
 static void
 class_init (EvolutionShellComponentClass *klass)
 {
+	EvolutionShellComponentClass *shell_component_class;
 	GtkObjectClass *object_class;
 	POA_GNOME_Evolution_ShellComponent__epv *epv = &klass->epv;
 
@@ -617,6 +765,14 @@ class_init (EvolutionShellComponentClass *klass)
 				  gtk_marshal_NONE__POINTER_POINTER,
 				  GTK_TYPE_NONE, 2,
 				  GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+
+	signals[OWNER_DIED]
+		= gtk_signal_new ("owner_died",
+				  GTK_RUN_FIRST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, owner_died),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
 
 	signals[OWNER_UNSET]
 		= gtk_signal_new ("owner_unset",
@@ -633,6 +789,15 @@ class_init (EvolutionShellComponentClass *klass)
 				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, debug),
 				  gtk_marshal_NONE__NONE,
 				  GTK_TYPE_NONE, 0);
+
+	signals[INTERACTIVE]
+		= gtk_signal_new ("interactive",
+				  GTK_RUN_FIRST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (EvolutionShellComponentClass, interactive),
+				  gtk_marshal_NONE__BOOL,
+				  GTK_TYPE_NONE, 1,
+				  GTK_TYPE_BOOL);
 
 	signals[HANDLE_EXTERNAL_URI]
 		= gtk_signal_new ("handle_external_uri",
@@ -663,7 +828,8 @@ class_init (EvolutionShellComponentClass *klass)
 	epv->_get_userCreatableItemTypes = impl__get_userCreatableItemTypes;
 	epv->setOwner                    = impl_setOwner; 
 	epv->unsetOwner                  = impl_unsetOwner; 
-	epv->debug                       = impl_debug; 
+	epv->debug                       = impl_debug;
+	epv->interactive                 = impl_interactive;
 	epv->createView                  = impl_createView; 
 	epv->handleExternalURI           = impl_handleExternalURI; 
 	epv->createFolderAsync           = impl_createFolderAsync; 
@@ -671,6 +837,10 @@ class_init (EvolutionShellComponentClass *klass)
 	epv->xferFolderAsync             = impl_xferFolderAsync; 
 	epv->populateFolderContextMenu   = impl_populateFolderContextMenu;
 	epv->userCreateNewItem           = impl_userCreateNewItem;
+
+	shell_component_class = EVOLUTION_SHELL_COMPONENT_CLASS (object_class);
+	shell_component_class->owner_died = impl_owner_died;
+	shell_component_class->owner_unset = impl_owner_unset;
 }
 
 static void
@@ -692,6 +862,8 @@ init (EvolutionShellComponent *shell_component)
 	priv->owner_client                    = NULL;
 	priv->user_creatable_item_types       = NULL;
 	priv->closure                         = NULL;
+
+	priv->ping_timeout_id                 = -1;
 
 	shell_component->priv = priv;
 }
@@ -822,6 +994,55 @@ evolution_shell_component_add_user_creatable_item  (EvolutionShellComponent *she
 	type = user_creatable_item_type_new (id, description, menu_description, menu_shortcut);
 
 	priv->user_creatable_item_types = g_slist_prepend (priv->user_creatable_item_types, type);
+}
+
+
+/* Public utility functions.  */
+
+const char *
+evolution_shell_component_result_to_string (EvolutionShellComponentResult result)
+{
+	switch (result) {
+	case EVOLUTION_SHELL_COMPONENT_OK:
+		return _("Success");
+	case EVOLUTION_SHELL_COMPONENT_CORBAERROR:
+		return _("CORBA error");
+	case EVOLUTION_SHELL_COMPONENT_INTERRUPTED:
+		return _("Interrupted");
+	case EVOLUTION_SHELL_COMPONENT_INVALIDARG:
+		return _("Invalid argument");
+	case EVOLUTION_SHELL_COMPONENT_ALREADYOWNED:
+		return _("Already has an owner");
+	case EVOLUTION_SHELL_COMPONENT_NOTOWNED:
+		return _("No owner");
+	case EVOLUTION_SHELL_COMPONENT_NOTFOUND:
+		return _("Not found");
+	case EVOLUTION_SHELL_COMPONENT_UNSUPPORTEDTYPE:
+		return _("Unsupported type");
+	case EVOLUTION_SHELL_COMPONENT_UNSUPPORTEDSCHEMA:
+		return _("Unsupported schema");
+	case EVOLUTION_SHELL_COMPONENT_UNSUPPORTEDOPERATION:
+		return _("Unsupported operation");
+	case EVOLUTION_SHELL_COMPONENT_INTERNALERROR:
+		return _("Internal error");
+	case EVOLUTION_SHELL_COMPONENT_BUSY:
+		return _("Busy");
+	case EVOLUTION_SHELL_COMPONENT_EXISTS:
+		return _("Exists");
+	case EVOLUTION_SHELL_COMPONENT_INVALIDURI:
+		return _("Invalid URI");
+	case EVOLUTION_SHELL_COMPONENT_PERMISSIONDENIED:
+		return _("Permission denied");
+	case EVOLUTION_SHELL_COMPONENT_HASSUBFOLDERS:
+		return _("Has subfolders");
+	case EVOLUTION_SHELL_COMPONENT_NOSPACE:
+		return _("No space left");
+	case EVOLUTION_SHELL_COMPONENT_OLDOWNERHASDIED:
+		return _("Old owner has died");
+	case EVOLUTION_SHELL_COMPONENT_UNKNOWNERROR:
+	default:
+		return _("Unknown error");
+	}
 }
 
 

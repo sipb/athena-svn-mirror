@@ -5,9 +5,8 @@
  * Copyright (C) 2001 Ximian Inc (www.ximian.com/)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -64,6 +63,7 @@ static void spool_sync(CamelFolder *folder, gboolean expunge, CamelException *ex
 static void spool_expunge(CamelFolder *folder, CamelException *ex);
 
 static GPtrArray *spool_search_by_expression(CamelFolder *folder, const char *expression, CamelException *ex);
+static GPtrArray *spool_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex);
 static void spool_search_free(CamelFolder *folder, GPtrArray * result);
 
 static void spool_append_message(CamelFolder *folder, CamelMimeMessage * message, const CamelMessageInfo * info, CamelException *ex);
@@ -87,6 +87,7 @@ camel_spool_folder_class_init(CamelSpoolFolderClass * camel_spool_folder_class)
 	camel_folder_class->expunge = spool_expunge;
 
 	camel_folder_class->search_by_expression = spool_search_by_expression;
+	camel_folder_class->search_by_uids = spool_search_by_uids;
 	camel_folder_class->search_free = spool_search_free;
 
 	/* virtual method overload */
@@ -106,8 +107,8 @@ spool_init(gpointer object, gpointer klass)
 	CamelFolder *folder = object;
 	CamelSpoolFolder *spool_folder = object;
 
-	folder->has_summary_capability = TRUE;
-	folder->has_search_capability = TRUE;
+	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
+				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
 	    CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
@@ -227,7 +228,7 @@ camel_spool_folder_new(CamelStore *parent_store, const char *full_name, guint32 
 
 	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
 	    && strcmp(full_name, "INBOX") == 0)
-		folder->filter_recent = TRUE;
+		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 	folder = (CamelFolder *)camel_spool_folder_construct((CamelSpoolFolder *)folder,
 							     parent_store, full_name, flags, ex);
 
@@ -359,6 +360,47 @@ spool_search_by_expression(CamelFolder *folder, const char *expression, CamelExc
 	CAMEL_SPOOL_FOLDER_UNLOCK(folder, search_lock);
 
 	camel_folder_free_summary(folder, summary);
+
+	return matches;
+}
+
+static GPtrArray *
+spool_search_by_uids(CamelFolder *folder, const char *expression, GPtrArray *uids, CamelException *ex)
+{
+	CamelSpoolFolder *spool_folder = CAMEL_SPOOL_FOLDER(folder);
+	GPtrArray *summary, *matches;
+	int i;
+
+	/* NOTE: could get away without the search lock by creating a new
+	   search object each time */
+
+	summary = g_ptr_array_new();
+	for (i=0;i<uids->len;i++) {
+		CamelMessageInfo *info;
+
+		info = camel_folder_get_message_info(folder, uids->pdata[i]);
+		if (info)
+			g_ptr_array_add(summary, info);
+	}
+
+	if (summary->len == 0)
+		return summary;
+
+	CAMEL_SPOOL_FOLDER_LOCK(folder, search_lock);
+
+	if (spool_folder->search == NULL)
+		spool_folder->search = camel_folder_search_new();
+
+	camel_folder_search_set_folder(spool_folder->search, folder);
+	camel_folder_search_set_summary(spool_folder->search, summary);
+
+	matches = camel_folder_search_execute_expression(spool_folder->search, expression, ex);
+
+	CAMEL_SPOOL_FOLDER_UNLOCK(folder, search_lock);
+
+	for (i=0;i<summary->len;i++)
+		camel_folder_free_message_info(folder, summary->pdata[i]);
+	g_ptr_array_free(summary, TRUE);
 
 	return matches;
 }
@@ -593,8 +635,7 @@ retry:
 	
 	message = camel_mime_message_new();
 	if (camel_mime_part_construct_from_parser((CamelMimePart *)message, parser) == -1) {
-		g_warning("Construction failed");
-		camel_exception_setv(ex, CAMEL_EXCEPTION_FOLDER_INVALID_UID,
+		camel_exception_setv(ex, (errno==EINTR)?CAMEL_EXCEPTION_USER_CANCEL:CAMEL_EXCEPTION_FOLDER_INVALID_UID,
 				     _("Cannot get message: %s from folder %s\n  %s"), uid, lf->folder_path,
 				     _("Message construction failed: Corrupt mailbox?"));
 		camel_object_unref((CamelObject *)parser);

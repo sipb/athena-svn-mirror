@@ -4,6 +4,7 @@ images_DATA = \
 	16_customize.png		\
 	16_cut.png			\
 	16_paste.png			\
+	about-box.png			\
 	apply-filters-16.xpm		\
 	bcg.png				\
 	configure_16_addressbook.xpm	\
@@ -28,7 +29,9 @@ images_DATA = \
 	import.xpm			\
 	inbox-16.png			\
 	inbox-full-16.png		\
-   meeting-request.png \
+	meeting-request.png 		\
+	alarm.png			\
+	meeting-request.png		\
 	move_message.xpm		\
 	offline.png			\
 	online.png			\
@@ -36,9 +39,9 @@ images_DATA = \
 	outbox-16.png 			\
 	outbox-full-16.png 		\
 	pattern.png			\
-   pgp-signature-bad.png \
-   pgp-signature-nokey.png \
-   pgp-signature-ok.png \
+	pgp-signature-bad.png 		\
+	pgp-signature-nokey.png 	\
+	pgp-signature-ok.png 		\
 	print.xpm			\
 	print-preview.xpm		\
 	rdf.png				\
@@ -79,7 +82,8 @@ images_DATA = \
 	hide_read_messages.xpm		\
 	hide_selected_messages.xpm	\
 	house.png           		\
-	ldap-16.png			\
+	ldap.png			\
+	ldap-mini.png			\
 	malehead.png			\
 	mail-config-druid.png		\
 	mail-config-druid-identity.png	\
@@ -125,7 +129,7 @@ images_DATA = \
 	task.png			\
 	thankyou.png			\
 	timezone-16.xpm			\
-   	timezone-48.png 		\
+	timezone-48.png 		\
 	undelete_message-16.png		\
 	wax-seal.png			\
 	wax-seal-broken.png		\
@@ -165,7 +169,20 @@ buttons_DATA = 				\
 	send-24.png		\
 	weekview.xpm  			\
 	workweekview.xpm		\
-	yearview.xpm	
+	yearview.xpm
+
+gladedir = $(datadir)/evolution/glade
+glade_DATA = 					\
+	evolution.png				\
+	import.png				\
+	mail-config-druid-account-name.png	\
+	mail-config-druid-identity.png		\
+	mail-config-druid.png			\
+	mail-config-druid-receive.png		\
+	mail-config-druid-send.png		\
+	meeting_widget.png			\
+	thankyou.png				\
+	timezone-48.png
 
 conduitsdir = $(datadir)/images/evolution/conduits
 conduits_DATA =				\
@@ -209,5 +226,7 @@ EXTRA_DIST = \
 	$(images_DATA)			\
 	$(buttons_DATA)			\
 	$(conduits_DATA)		\
+	$(glade_DATA)			\
 	$(appicon_DATA)
+
 

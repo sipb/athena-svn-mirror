@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,6 +34,8 @@
 
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-moniker-util.h>
+#include <bonobo-conf/bonobo-config-database.h>
 #include <liboaf/liboaf.h>
 
 struct _ESummaryTasks {
@@ -151,7 +152,12 @@ sort_uids (gconstpointer a,
 	cal_component_get_dtstart (comp_a, &start_a);
 	cal_component_get_dtstart (comp_b, &start_b);
 
-	retval = icaltime_compare (*start_a.value, *start_b.value);
+	if (start_a.value == NULL || start_b.value == NULL) {
+		/* Try to do something reasonable if one or more of our .values is NULL */
+		retval = (start_a.value ? 1 : 0) - (start_b.value ? 1 : 0);
+	} else {
+		retval = icaltime_compare (*start_a.value, *start_b.value);
+	}
 
 	cal_component_free_datetime (&start_a);
 	cal_component_free_datetime (&start_b);
@@ -215,11 +221,15 @@ generate_html (gpointer data)
 	GList *uids, *l;
 	GString *string;
 	char *tmp;
-	time_t t, day_begin, day_end;
+	time_t t;
+
+	/* Set the default timezone on the server. */
+	if (summary->tz) {
+		cal_client_set_default_timezone (tasks->client,
+						 summary->tz);
+	}
 
 	t = time (NULL);
-	day_begin = time_day_begin (t);
-	day_end = time_day_end (t);
 
 	uids = cal_client_get_uids (tasks->client, CALOBJ_TYPE_TODO);
 	if (summary->preferences->show_tasks == E_SUMMARY_CALENDAR_TODAYS_TASKS && uids != NULL) {
@@ -366,6 +376,9 @@ e_summary_tasks_init (ESummary *summary)
 	ESummaryTasks *tasks;
 	gboolean result;
 	char *uri;
+	char *default_uri;
+	Bonobo_ConfigDatabase db;
+	CORBA_Environment ev;
 
 	g_return_if_fail (summary != NULL);
 
@@ -373,8 +386,18 @@ e_summary_tasks_init (ESummary *summary)
 	summary->tasks = tasks;
 	tasks->html = NULL;
 
+	CORBA_exception_init (&ev);
+	db = bonobo_get_object ("wombat:", "Bonobo/ConfigDatabase", &ev);
+	if (BONOBO_EX (&ev) || db == CORBA_OBJECT_NIL) {
+		CORBA_exception_free (&ev);
+		g_warning ("Error getting Wombat. Using defaults");
+	}
+
+	CORBA_exception_free (&ev);
+
 	tasks->client = cal_client_new ();
 	if (tasks->client == NULL) {
+		bonobo_object_release_unref (db, NULL);
 		g_warning ("Error making the client");
 		return;
 	}
@@ -386,7 +409,12 @@ e_summary_tasks_init (ESummary *summary)
 	gtk_signal_connect (GTK_OBJECT (tasks->client), "obj-removed",
 			    GTK_SIGNAL_FUNC (obj_changed_cb), summary);
 
-	uri = gnome_util_prepend_user_home ("evolution/local/Tasks/tasks.ics");
+	default_uri = bonobo_config_get_string (db, "/Calendar/DefaultTasksUri", NULL);
+	if (!default_uri)
+		uri = gnome_util_prepend_user_home ("evolution/local/Tasks/tasks.ics");
+	else
+		uri = g_strdup (default_uri);
+
 	result = cal_client_open_calendar (tasks->client, uri, FALSE);
 	g_free (uri);
 	if (result == FALSE) {
@@ -394,6 +422,7 @@ e_summary_tasks_init (ESummary *summary)
 	}
 
 	e_summary_add_protocol_listener (summary, "tasks", e_summary_tasks_protocol, tasks);
+	bonobo_object_release_unref (db, NULL);
 }
 
 void

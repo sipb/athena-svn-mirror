@@ -29,7 +29,6 @@ sgml_ents =	\
 	apx-authors.sgml	\
 	apx-bugs.sgml		\
 	apx-gloss.sgml		\
-	config-encryption.sgml	\
 	config-prefs.sgml	\
 	config-sync.sgml	\
 	evolution-faq.sgml	\
@@ -37,13 +36,11 @@ sgml_ents =	\
 	preface.sgml		\
 	usage-calendar.sgml	\
 	usage-contact.sgml	\
-	usage-encryption.sgml	\
 	usage-exec-summary.sgml	\
 	usage-mail-org.sgml	\
 	usage-mail.sgml		\
 	usage-mainwindow.sgml	\
 	usage-print.sgml	\
 	usage-sync.sgml
-	
 include $(top_srcdir)/help/sgmldocs.make
 dist-hook: app-dist-hook

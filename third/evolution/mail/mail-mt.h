@@ -4,19 +4,19 @@
  *
  * Copyright 2000, Ximian, Inc. (www.ximian.com)
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -58,6 +58,7 @@ void mail_msg_check_error(void *msg);
 void mail_msg_cancel(unsigned int msgid);
 void mail_msg_wait(unsigned int msgid);
 void mail_msg_wait_all(void);
+int mail_msg_active(unsigned int msgid);
 
 /* request a string/password */
 char *mail_get_password (CamelService *service, const char *prompt,
@@ -68,8 +69,38 @@ char *mail_get_password (CamelService *service, const char *prompt,
  */
 gboolean mail_user_message (const char *type, const char *prompt, gboolean allow_cancel);
 
+/* asynchronous event proxies */
+typedef struct _MailAsyncEvent {
+	GMutex *lock;
+	GSList *tasks;
+} MailAsyncEvent;
+
+typedef enum _mail_async_event_t {
+	MAIL_ASYNC_GUI,
+	MAIL_ASYNC_THREAD,
+} mail_async_event_t;
+
+typedef void (*MailAsyncFunc)(void *, void *, void *);
+
+/* create a new async event handler */
+MailAsyncEvent *mail_async_event_new(void);
 /* forward a camel event (or other call) to the gui thread */
-int mail_proxy_event(CamelObjectEventHookFunc func, CamelObject *o, void *event_data, void *data);
+int mail_async_event_emit(MailAsyncEvent *ea, mail_async_event_t type, MailAsyncFunc func, void *, void *, void *);
+/* wait for all outstanding async events to complete */
+int mail_async_event_destroy(MailAsyncEvent *ea);
+
+/* Call a function in the gui thread, wait for it to return, type is the marshaller to use */
+typedef enum {
+	MAIL_CALL_p_p,
+	MAIL_CALL_p_pp,
+	MAIL_CALL_p_ppp,
+	MAIL_CALL_p_pppp,
+	MAIL_CALL_p_ppippp,
+} mail_call_t;
+
+typedef void *(*MailMainFunc)();
+
+void *mail_call_main(mail_call_t type, MailMainFunc func, ...);
 
 /* a message port that receives messages in the gui thread, used for sending port */
 extern EMsgPort *mail_gui_port;
@@ -84,5 +115,8 @@ extern EThread *mail_thread_queued_slow;	/* for operations that can (or should) 
 /* The main thread. */
 extern pthread_t mail_gui_thread;
 
+/* A generic proxy event for anything that can be proxied during the life of the mailer (almost nothing) */
+/* Note that almost all objects care about the lifecycle of their events, so this cannot be used */
+extern MailAsyncEvent *mail_async_event;
 
 #endif /* ! _MAIL_MT */

@@ -128,27 +128,35 @@ static ECardSimple *build_card_from_entry (LDAP *ldap, LDAPMessage *e);
 
 static void email_populate (ECardSimple *card, char **values);
 struct berval** email_ber (ECardSimple *card);
-gboolean email_compare (ECardSimple *ecard1, ECardSimple *ecard2);
+static gboolean email_compare (ECardSimple *ecard1, ECardSimple *ecard2);
 
 static void homephone_populate (ECardSimple *card, char **values);
 struct berval** homephone_ber (ECardSimple *card);
-gboolean homephone_compare (ECardSimple *ecard1, ECardSimple *ecard2);
+static gboolean homephone_compare (ECardSimple *ecard1, ECardSimple *ecard2);
 
 static void business_populate (ECardSimple *card, char **values);
 struct berval** business_ber (ECardSimple *card);
-gboolean business_compare (ECardSimple *ecard1, ECardSimple *ecard2);
+static gboolean business_compare (ECardSimple *ecard1, ECardSimple *ecard2);
+
+static void anniversary_populate (ECardSimple *card, char **values);
+struct berval** anniversary_ber (ECardSimple *card);
+static gboolean anniversary_compare (ECardSimple *ecard1, ECardSimple *ecard2);
+
+static void birthday_populate (ECardSimple *card, char **values);
+struct berval** birthday_ber (ECardSimple *card);
+static gboolean birthday_compare (ECardSimple *ecard1, ECardSimple *ecard2);
 
 struct prop_info {
 	ECardSimpleField field_id;
 	char *query_prop;
 	char *ldap_attr;
 #define PROP_TYPE_STRING   0x01
-#define PROP_TYPE_LIST     0x02
+#define PROP_TYPE_COMPLEX     0x02
 #define PROP_DN            0x04
 #define PROP_EVOLVE        0x08
 	int prop_type;
 
-	/* the remaining items are only used for the TYPE_LIST props */
+	/* the remaining items are only used for the TYPE_COMPLEX props */
 
 	/* used when reading from the ldap server populates ECard with the values in **values. */
 	void (*populate_ecard_func)(ECardSimple *card, char **values);
@@ -159,8 +167,8 @@ struct prop_info {
 
 } prop_info[] = {
 
-#define LIST_PROP(fid,q,a,ctor,ber,cmp) {fid, q, a, PROP_TYPE_LIST, ctor, ber, cmp}
-#define E_LIST_PROP(fid,q,a,ctor,ber,cmp) {fid, q, a, PROP_TYPE_LIST | PROP_EVOLVE, ctor, ber, cmp}
+#define COMPLEX_PROP(fid,q,a,ctor,ber,cmp) {fid, q, a, PROP_TYPE_COMPLEX, ctor, ber, cmp}
+#define E_COMPLEX_PROP(fid,q,a,ctor,ber,cmp) {fid, q, a, PROP_TYPE_COMPLEX | PROP_EVOLVE, ctor, ber, cmp}
 #define STRING_PROP(fid,q,a) {fid, q, a, PROP_TYPE_STRING}
 #define E_STRING_PROP(fid,q,a) {fid, q, a, PROP_TYPE_STRING | PROP_EVOLVE}
 
@@ -170,12 +178,12 @@ struct prop_info {
 	STRING_PROP (E_CARD_SIMPLE_FIELD_FAMILY_NAME, "family_name", "sn" ),
 
 	/* email addresses */
-	LIST_PROP   (E_CARD_SIMPLE_FIELD_EMAIL, "email", "mail", email_populate, email_ber, email_compare),
+	COMPLEX_PROP   (E_CARD_SIMPLE_FIELD_EMAIL, "email", "mail", email_populate, email_ber, email_compare),
 
 	/* phone numbers */
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_PHONE_PRIMARY,      "primary_phone", "primaryPhone"),
-	LIST_PROP     (E_CARD_SIMPLE_FIELD_PHONE_BUSINESS,     "business_phone", "telephoneNumber", business_populate, business_ber, business_compare),
-	LIST_PROP     (E_CARD_SIMPLE_FIELD_PHONE_HOME,         "home_phone", "homePhone", homephone_populate, homephone_ber, homephone_compare),
+	COMPLEX_PROP     (E_CARD_SIMPLE_FIELD_PHONE_BUSINESS,     "business_phone", "telephoneNumber", business_populate, business_ber, business_compare),
+	COMPLEX_PROP     (E_CARD_SIMPLE_FIELD_PHONE_HOME,         "home_phone", "homePhone", homephone_populate, homephone_ber, homephone_compare),
 	STRING_PROP   (E_CARD_SIMPLE_FIELD_PHONE_MOBILE,       "mobile_phone", "mobile"),
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_PHONE_CAR,          "car_phone", "carPhone"),
 	STRING_PROP   (E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_FAX, "business_fax", "facsimileTelephoneNumber"), 
@@ -211,8 +219,8 @@ struct prop_info {
 	STRING_PROP   (E_CARD_SIMPLE_FIELD_NICKNAME,    "nickname",  "displayName"),
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_SPOUSE,      "spouse", "spouseName"), 
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_NOTE,        "note", "note"), 
-	E_STRING_PROP (E_CARD_SIMPLE_FIELD_ANNIVERSARY, "anniversary", "anniversary"), 
-	E_STRING_PROP (E_CARD_SIMPLE_FIELD_BIRTH_DATE,  "birth_date", "birthDate"), 
+	E_COMPLEX_PROP (E_CARD_SIMPLE_FIELD_ANNIVERSARY, "anniversary", "anniversary", anniversary_populate, anniversary_ber, anniversary_compare), 
+	E_COMPLEX_PROP (E_CARD_SIMPLE_FIELD_BIRTH_DATE,  "birth_date", "birthDate", birthday_populate, birthday_ber, birthday_compare), 
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_MAILER,      "mailer", "mailer"), 
 
 	E_STRING_PROP (E_CARD_SIMPLE_FIELD_FILE_AS,     "file_as", "fileAs"),
@@ -224,8 +232,8 @@ struct prop_info {
 
 #undef E_STRING_PROP
 #undef STRING_PROP
-#undef E_LIST_PROP
-#undef LIST_PROP
+#undef E_COMPLEX_PROP
+#undef COMPLEX_PROP
 };
 
 static int num_prop_infos = sizeof(prop_info) / sizeof(prop_info[0]);
@@ -611,7 +619,7 @@ free_mods (GPtrArray *mods)
 		g_free (mod);
 	}
 
-	g_ptr_array_free (mods, TRUE /* XXX ? */);
+	g_ptr_array_free (mods, TRUE);
 }
 
 static GPtrArray*
@@ -725,7 +733,7 @@ build_mods_from_ecards (PASBackendLDAP *bl, ECardSimple *current, ECardSimple *n
 				mod->mod_values[0] = new_prop;
 				mod->mod_values[1] = NULL;
 			}
-			else { /* PROP_TYPE_LIST */
+			else { /* PROP_TYPE_COMPLEX */
 				mod->mod_op |= LDAP_MOD_BVALUES;
 				mod->mod_bvalues = new_prop_bers;
 			}
@@ -742,12 +750,12 @@ build_mods_from_ecards (PASBackendLDAP *bl, ECardSimple *current, ECardSimple *n
 }
 
 static void
-add_objectclass_mod (PASBackendLDAP *bl, GPtrArray *mod_array)
+add_objectclass_mod (PASBackendLDAP *bl, GPtrArray *mod_array, gboolean modify)
 {
 	LDAPMod *objectclass_mod;
 
 	objectclass_mod = g_new (LDAPMod, 1);
-	objectclass_mod->mod_op = LDAP_MOD_ADD;
+	objectclass_mod->mod_op = modify ? LDAP_MOD_REPLACE : LDAP_MOD_ADD;
 	objectclass_mod->mod_type = g_strdup ("objectClass");
 	objectclass_mod->mod_values = g_new (char*, bl->priv->evolutionPersonSupported ? 6 : 5);
 	objectclass_mod->mod_values[0] = g_strdup (TOP);
@@ -816,7 +824,7 @@ create_card_handler (PASBackend *backend, LDAPOp *op)
 	g_ptr_array_remove (mod_array, NULL);
 
 	/* add our objectclass(es) */
-	add_objectclass_mod (bl, mod_array);
+	add_objectclass_mod (bl, mod_array, FALSE);
 
 	/* then put the NULL back */
 	g_ptr_array_add (mod_array, NULL);
@@ -913,6 +921,9 @@ create_card_dtor (PASBackend *backend, LDAPOp *op)
 {
 	LDAPCreateOp *create_op = (LDAPCreateOp*)op;
 
+	if (op->view)
+		bonobo_object_release_unref(bonobo_object_corba_objref(BONOBO_OBJECT(op->view)), NULL);
+
 	g_free (create_op->vcard);
 	g_free (create_op);
 }
@@ -929,6 +940,7 @@ pas_backend_ldap_process_create_card (PASBackend *backend,
 	if (bl->priv->book_views) {
 		PASBackendLDAPBookView *v = bl->priv->book_views->data;
 		book_view = v->book_view;
+		bonobo_object_dup_ref(bonobo_object_corba_objref(BONOBO_OBJECT(book_view)), NULL);
 	}
 
 	ldap_op_init ((LDAPOp*)create_op, backend, book,
@@ -1008,6 +1020,9 @@ remove_card_dtor (PASBackend *backend, LDAPOp *op)
 {
 	LDAPRemoveOp *remove_op = (LDAPRemoveOp*)op;
 
+	if (op->view)
+		bonobo_object_release_unref(bonobo_object_corba_objref(BONOBO_OBJECT(op->view)), NULL);
+
 	g_free (remove_op->id);
 	g_free (remove_op);
 }
@@ -1024,6 +1039,7 @@ pas_backend_ldap_process_remove_card (PASBackend *backend,
 	if (bl->priv->book_views) {
 		PASBackendLDAPBookView *v = bl->priv->book_views->data;
 		book_view = v->book_view;
+		bonobo_object_dup_ref(bonobo_object_corba_objref(BONOBO_OBJECT(book_view)), NULL);
 	}
 
 	ldap_op_init ((LDAPOp*)remove_op, backend, book,
@@ -1072,6 +1088,17 @@ modify_card_handler (PASBackend *backend, LDAPOp *op)
 		/* build our mods */
 		mod_array = build_mods_from_ecards (bl, current_card, new_card, &need_new_dn);
 		if (mod_array->len > 0) {
+
+			/* remove the NULL at the end */
+			g_ptr_array_remove (mod_array, NULL);
+
+			/* add our objectclass(es), making sure
+                           evolutionPerson is there if it's supported */
+			add_objectclass_mod (bl, mod_array, TRUE);
+
+			/* then put the NULL back */
+			g_ptr_array_add (mod_array, NULL);
+
 			ldap_mods = (LDAPMod**)mod_array->pdata;
 
 			/* actually perform the ldap modify */
@@ -1137,6 +1164,9 @@ modify_card_dtor (PASBackend *backend, LDAPOp *op)
 {
 	LDAPModifyOp *modify_op = (LDAPModifyOp*)op;
 
+	if (op->view)
+		bonobo_object_release_unref(bonobo_object_corba_objref(BONOBO_OBJECT(op->view)), NULL);
+
 	g_free (modify_op->vcard);
 	g_free (modify_op);
 }
@@ -1153,6 +1183,7 @@ pas_backend_ldap_process_modify_card (PASBackend *backend,
 	if (bl->priv->book_views) {
 		PASBackendLDAPBookView *v = bl->priv->book_views->data;
 		book_view = v->book_view;
+		bonobo_object_dup_ref(bonobo_object_corba_objref(BONOBO_OBJECT(book_view)), NULL);
 	}
 
 	ldap_op_init ((LDAPOp*)modify_op, backend, book,
@@ -1395,7 +1426,7 @@ email_ber(ECardSimple *card)
 	return result;
 }
 
-gboolean
+static gboolean
 email_compare (ECardSimple *ecard1, ECardSimple *ecard2)
 {
 	const char *email1, *email2;
@@ -1461,7 +1492,7 @@ homephone_ber(ECardSimple *card)
 	return result;
 }
 
-gboolean
+static gboolean
 homephone_compare (ECardSimple *ecard1, ECardSimple *ecard2)
 {
 	int phone_ids[2] = { E_CARD_SIMPLE_FIELD_PHONE_HOME, E_CARD_SIMPLE_FIELD_PHONE_HOME_2 };
@@ -1528,7 +1559,7 @@ business_ber(ECardSimple *card)
 	return result;
 }
 
-gboolean
+static gboolean
 business_compare (ECardSimple *ecard1, ECardSimple *ecard2)
 {
 	int phone_ids[2] = { E_CARD_SIMPLE_FIELD_PHONE_BUSINESS, E_CARD_SIMPLE_FIELD_PHONE_BUSINESS_2 };
@@ -1550,6 +1581,140 @@ business_compare (ECardSimple *ecard1, ECardSimple *ecard2)
 	}
 
 	return TRUE;
+}
+
+static void
+anniversary_populate (ECardSimple *card, char **values)
+{
+	if (values[0]) {
+		ECardDate dt = e_card_date_from_string (values[0]);
+		gtk_object_set (GTK_OBJECT (card->card),
+				"anniversary", &dt,
+				NULL);
+	}
+}
+
+struct berval**
+anniversary_ber (ECardSimple *card)
+{
+	ECardDate *dt;
+	struct berval** result = NULL;
+
+	gtk_object_get (GTK_OBJECT (card->card),
+			"anniversary", &dt,
+			NULL);
+
+	if (dt) {
+		char *anniversary;
+
+		anniversary = e_card_date_to_string (dt);
+
+		result = g_new (struct berval*, 2);
+		result[0] = g_new (struct berval, 1);
+		result[0]->bv_val = anniversary;
+		result[0]->bv_len = strlen (anniversary);
+
+		result[1] = NULL;
+	}
+
+	return result;
+}
+
+static gboolean
+anniversary_compare (ECardSimple *ecard1, ECardSimple *ecard2)
+{
+	ECardDate *dt;
+	char *date1 = NULL, *date2 = NULL;
+	gboolean equal;
+
+	gtk_object_get (GTK_OBJECT (ecard1->card),
+			"anniversary", &dt,
+			NULL);
+	if (dt)
+		date1 = e_card_date_to_string (dt);
+
+	gtk_object_get (GTK_OBJECT (ecard2->card),
+			"anniversary", &dt,
+			NULL);
+	if (dt)
+		date2 = e_card_date_to_string (dt);
+
+	if (date1 && date2)
+		equal = !strcmp (date1, date2);
+	else
+		equal = (!!date1 == !!date2);
+
+	g_free (date1);
+	g_free (date2);
+
+	return equal;
+}
+
+static void
+birthday_populate (ECardSimple *card, char **values)
+{
+	if (values[0]) {
+		ECardDate dt = e_card_date_from_string (values[0]);
+		gtk_object_set (GTK_OBJECT (card->card),
+				"birth_date", &dt,
+				NULL);
+	}
+}
+
+struct berval**
+birthday_ber (ECardSimple *card)
+{
+	ECardDate *dt;
+	struct berval** result = NULL;
+
+	gtk_object_get (GTK_OBJECT (card->card),
+			"birth_date", &dt,
+			NULL);
+
+	if (dt) {
+		char *birthday;
+
+		birthday = e_card_date_to_string (dt);
+
+		result = g_new (struct berval*, 2);
+		result[0] = g_new (struct berval, 1);
+		result[0]->bv_val = birthday;
+		result[0]->bv_len = strlen (birthday);
+
+		result[1] = NULL;
+	}
+
+	return result;
+}
+
+static gboolean
+birthday_compare (ECardSimple *ecard1, ECardSimple *ecard2)
+{
+	ECardDate *dt;
+	char *date1 = NULL, *date2 = NULL;
+	gboolean equal;
+
+	gtk_object_get (GTK_OBJECT (ecard1->card),
+			"birth_date", &dt,
+			NULL);
+	if (dt)
+		date1 = e_card_date_to_string (dt);
+
+	gtk_object_get (GTK_OBJECT (ecard2->card),
+			"birth_date", &dt,
+			NULL);
+	if (dt)
+		date2 = e_card_date_to_string (dt);
+
+	if (date1 && date2)
+		equal = !strcmp (date1, date2);
+	else
+		equal = (!!date1 == !!date2);
+
+	g_free (date1);
+	g_free (date2);
+
+	return equal;
 }
 
 #define IS_RFC2254_CHAR(c) ((c) == '*' || (c) =='\\' || (c) == '(' || (c) == ')' || (c) == '\0')
@@ -1953,7 +2118,7 @@ build_card_from_entry (LDAP *ldap, LDAPMessage *e)
 					e_card_simple_set (card, info->field_id, values[0]);
 
 				}
-				else if (info->prop_type & PROP_TYPE_LIST) {
+				else if (info->prop_type & PROP_TYPE_COMPLEX) {
 				/* if it's a list call the ecard-populate function,
 				   which calls gtk_object_set to set the property */
 					info->populate_ecard_func(card,
@@ -2094,6 +2259,9 @@ ldap_search_dtor (PASBackend *backend, LDAPOp *op)
 {
 	LDAPSearchOp *search_op = (LDAPSearchOp*) op;
 
+	if (op->view)
+		bonobo_object_release_unref(bonobo_object_corba_objref(BONOBO_OBJECT(op->view)), NULL);
+
 	g_free (search_op->ldap_query);
 	g_free (search_op);
 }
@@ -2105,6 +2273,7 @@ pas_backend_ldap_search (PASBackendLDAP  	*bl,
 {
 	LDAPSearchOp *op = g_new (LDAPSearchOp, 1);
 
+	bonobo_object_dup_ref(bonobo_object_corba_objref(BONOBO_OBJECT(view->book_view)), NULL);
 	ldap_op_init ((LDAPOp*)op, PAS_BACKEND(bl), book, view->book_view, ldap_search_handler, ldap_search_dtor);
 
 	op->ldap_query = NULL;
@@ -2154,7 +2323,10 @@ pas_backend_ldap_process_get_book_view (PASBackend *backend,
 
 	g_free (req->search);
 	CORBA_exception_init(&ev);
+
+	bonobo_object_unref (BONOBO_OBJECT (book_view));
 	bonobo_object_release_unref(req->listener, &ev);
+
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning("pas_backend_file_process_get_book_view: Exception reffing "
 			  "corba book.\n");
@@ -2384,6 +2556,8 @@ pas_backend_ldap_add_client (PASBackend             *backend,
 
 	pas_book_report_writable (book, bl->priv->writable);
 
+	bonobo_object_unref (BONOBO_OBJECT (book));
+	
 	return TRUE;
 }
 

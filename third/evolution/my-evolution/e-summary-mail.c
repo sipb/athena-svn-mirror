@@ -4,9 +4,8 @@
  * Copyright (C) 2001 Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -118,7 +117,7 @@ e_summary_mail_generate_html (ESummary *summary)
 	ESummaryMail *mail;
 	GString *string;
 	GList *p;
-	gchar *s;
+	char *s, *old;
 
 	g_return_if_fail (summary != NULL);
 	g_return_if_fail (IS_E_SUMMARY (summary));
@@ -137,8 +136,12 @@ e_summary_mail_generate_html (ESummary *summary)
 	}
 
 	g_string_append (string, "</table></dd></dl>");
-	g_free (mail->html);
+
+	old = mail->html;
 	mail->html = string->str;
+
+	g_free (old);
+
 	g_string_free (string, FALSE);
 }
 
@@ -211,7 +214,7 @@ new_folder_cb (EvolutionStorageListener *listener,
 static void
 update_folder_cb (EvolutionStorageListener *listener,
 		  const char *path,
-		  const char *display_name,
+		  int unread_count,
 		  ESummary *summary)
 {
 	char *evolution_dir;
@@ -273,6 +276,8 @@ mail_change_notify (BonoboListener *listener,
 	GList *p;
 
 	mail = summary->mail;
+
+	g_return_if_fail (mail != NULL);
 
 	count = arg->_value;
 	folder = g_hash_table_lookup (mail->folders, count->path);
@@ -391,14 +396,14 @@ e_summary_mail_init (ESummary *summary,
 	mail = g_new0 (ESummaryMail, 1);
 	summary->mail = mail;
 
+	mail->html = NULL;
 	CORBA_exception_init (&ev);
 	mail->folder_info = oaf_activate_from_id (MAIL_IID, 0, NULL, &ev);
-	if (BONOBO_EX (&ev)) {
+	if (BONOBO_EX (&ev) || mail->folder_info == NULL) {
 		g_warning ("Exception creating FolderInfo: %s", 
 			   CORBA_exception_id (&ev));
 		CORBA_exception_free (&ev);
 
-		g_free (mail);
 		return;
 	}
 
@@ -558,6 +563,10 @@ e_summary_mail_free (ESummary *summary)
 
 	mail = summary->mail;
 	bonobo_object_release_unref (mail->folder_info, NULL);
+	mail->folder_info = CORBA_OBJECT_NIL;
+
+	gtk_signal_disconnect_by_func (GTK_OBJECT (mail->listener),
+				       GTK_SIGNAL_FUNC (mail_change_notify), summary);
 	bonobo_object_unref (BONOBO_OBJECT (mail->listener));
 
 	g_hash_table_foreach (mail->folders, free_folder, NULL);

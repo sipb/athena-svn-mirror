@@ -5,9 +5,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -318,12 +317,19 @@ e_tasks_open			(ETasks		*tasks,
 {
 	ETasksPrivate *priv;
 	char *config_filename;
+	char *message;
 
 	g_return_val_if_fail (tasks != NULL, FALSE);
 	g_return_val_if_fail (E_IS_TASKS (tasks), FALSE);
 	g_return_val_if_fail (file != NULL, FALSE);
 
 	priv = tasks->priv;
+
+	message = g_strdup_printf (_("Opening tasks at %s"), file);
+	calendar_model_set_status_message (
+		e_calendar_table_get_model (E_CALENDAR_TABLE (priv->tasks_view)),
+		message);
+	g_free (message);
 
 	if (!cal_client_open_calendar (priv->client, file, FALSE)) {
 		g_message ("e_tasks_open(): Could not issue the request");
@@ -371,13 +377,24 @@ cal_opened_cb				(CalClient	*client,
 {
 	ETasks *tasks;
 	ETasksPrivate *priv;
+	char *location;
+	icaltimezone *zone;
 
 	tasks = E_TASKS (data);
 	priv = tasks->priv;
 
+	calendar_model_set_status_message (
+		e_calendar_table_get_model (E_CALENDAR_TABLE (priv->tasks_view)), NULL);
+
 	switch (status) {
 	case CAL_CLIENT_OPEN_SUCCESS:
 		/* Everything is OK */
+
+		/* Set the client's default timezone, if we have one. */
+		location = calendar_config_get_timezone ();
+		zone = icaltimezone_get_builtin_timezone (location);
+		if (zone)
+			cal_client_set_default_timezone (client, zone);
 		return;
 
 	case CAL_CLIENT_OPEN_ERROR:
@@ -622,10 +639,19 @@ e_tasks_update_all_config_settings	(void)
 	ETasks *tasks;
 	ETasksPrivate *priv;
 	GList *elem;
+	char *location;
+	icaltimezone *zone;
+
+	location = calendar_config_get_timezone ();
+	zone = icaltimezone_get_builtin_timezone (location);
 
 	for (elem = all_tasks; elem; elem = elem->next) {
 		tasks = E_TASKS (elem->data);
 		priv = tasks->priv;
+
 		calendar_config_configure_e_calendar_table (E_CALENDAR_TABLE (priv->tasks_view));
+
+		if (zone)
+			cal_client_set_default_timezone (priv->client, zone);
 	}
 }

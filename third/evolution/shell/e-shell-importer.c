@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,9 +54,11 @@
 #include <glade/glade.h>
 #include <gtkhtml/gtkhtml.h>
 #include <gal/widgets/e-gui-utils.h>
-#include <e-util/e-html-utils.h>
 #include <gal/widgets/e-gui-utils.h>
 #include <gal/widgets/e-unicode.h>
+
+#include "e-util/e-html-utils.h"
+#include "e-util/e-gtk-utils.h"
 
 #include "e-shell-importer.h"
 #include "importer/GNOME_Evolution_Importer.h"
@@ -138,7 +139,7 @@ static struct {
 	char *text;
 } info[] = {
 	{ "type_html",
-	  N_("Choose the type of importer to run")
+	  N_("Choose the type of importer to run:")
 	},
 	{ "file_html",
 	  N_("Choose the file that you want to import into Evolution, "
@@ -147,7 +148,7 @@ static struct {
 	     "Evolution will attempt to work it out.")
 	},
 	{ "intelligent_html",
-	  N_("Please select the information that you would like to import")
+	  N_("Please select the information that you would like to import:")
 	}
 };
 static int num_info = (sizeof (info) / sizeof (info[0]));
@@ -718,8 +719,15 @@ prepare_intelligent_page (GnomeDruid *druid,
 	data->importerpage->prepared = TRUE;
 
 	dialog = gnome_message_box_new (_("Please wait...\nScanning for existing setups"), GNOME_MESSAGE_BOX_INFO, NULL);
+	e_make_widget_backing_stored (dialog);
+
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Starting Intelligent Importers"));
 	gtk_widget_show_all (dialog);
+	gtk_widget_show_now (dialog);
+
+	gtk_widget_queue_draw (dialog);
+	gdk_flush ();
+
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
 	}
@@ -840,10 +848,13 @@ prepare_intelligent_page (GnomeDruid *druid,
 		str = g_strdup_printf (_("From %s:"), id->name);
 		label = gtk_label_new (str);
 		g_free (str);
+		
+		gtk_misc_set_alignment (GTK_MISC (label), 0, .5); 
+
 		gtk_table_attach (GTK_TABLE (table), label, 0, 1, running - 1,
-				  running, 0, 0, 0, 0);
+				  running, GTK_FILL, 0, 0, 0);
 		gtk_table_attach (GTK_TABLE (table), id->widget, 1, 2,
-				  running - 1, running, 0, 0, 0, 0);
+				  running - 1, running, GTK_FILL, 0, 3, 0);
 		gtk_widget_show_all (table);
 
 		gtk_box_pack_start (GTK_BOX (data->importerpage->vbox), table,

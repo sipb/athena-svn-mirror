@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -184,21 +185,21 @@ cxxflags_set = @cxxflags_set@
 l = @l@
 localedir = @localedir@
 
-defaultcalendardir = $(datadir)/evolution/default_user/local/Drafts
-defaultcalendar_DATA = folder-metadata.xml
+defaultfolderdir = $(datadir)/evolution/default_user/local/Drafts
+defaultfolder_DATA = folder-metadata.xml mbox
 
-EXTRA_DIST = $(defaultcalendar_DATA)
+EXTRA_DIST = $(defaultfolder_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(defaultcalendar_DATA)
+DATA =  $(defaultfolder_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -210,23 +211,23 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-install-defaultcalendarDATA: $(defaultcalendar_DATA)
+install-defaultfolderDATA: $(defaultfolder_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(defaultcalendardir)
-	@list='$(defaultcalendar_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(defaultfolderdir)
+	@list='$(defaultfolder_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(defaultcalendardir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(defaultcalendardir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(defaultfolderdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(defaultfolderdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(defaultcalendardir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(defaultcalendardir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(defaultfolderdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(defaultfolderdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-defaultcalendarDATA:
+uninstall-defaultfolderDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(defaultcalendar_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(defaultcalendardir)/$$p; \
+	list='$(defaultfolder_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(defaultfolderdir)/$$p; \
 	done
 tags: TAGS
 TAGS:
@@ -258,20 +259,20 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-defaultcalendarDATA
+install-data-am: install-defaultfolderDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-defaultcalendarDATA
+uninstall-am: uninstall-defaultfolderDATA
 uninstall: uninstall-am
 all-am: Makefile $(DATA)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(defaultcalendardir)
+	$(mkinstalldirs)  $(DESTDIR)$(defaultfolderdir)
 
 
 mostlyclean-generic:
@@ -302,7 +303,7 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-defaultcalendarDATA install-defaultcalendarDATA tags \
+.PHONY: uninstall-defaultfolderDATA install-defaultfolderDATA tags \
 distdir info-am info dvi-am dvi check check-am installcheck-am \
 installcheck install-exec-am install-exec install-data-am install-data \
 install-am install uninstall-am uninstall all-redirect all-am all \

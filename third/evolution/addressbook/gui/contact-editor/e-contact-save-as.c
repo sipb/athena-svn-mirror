@@ -4,9 +4,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,6 +19,9 @@
  */
 
 #include <config.h>
+
+#include "e-contact-save-as.h"
+
 #include <unistd.h>
 #include <fcntl.h>
 #include <gtk/gtkfilesel.h>
@@ -28,8 +30,10 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <gal/util/e-util.h>
 #include <libgnome/gnome-i18n.h>
-#include "e-contact-save-as.h"
 #include <errno.h>
+#include <string.h>
+#include <libgnomeui/gnome-messagebox.h>
+#include <libgnomeui/gnome-stock.h>
 
 static int file_exists(GtkFileSelection *filesel, const char *filename);
 
@@ -55,8 +59,21 @@ save_it(GtkWidget *widget, SaveAsInfo *info)
 				e_write_file(filename, info->vcard, O_WRONLY | O_CREAT | O_TRUNC);
 				break;
 			case 1 : /* cancel */
-				break;
+				return;
 		}
+	} else if (error != 0) {
+		GtkWidget *dialog;
+		char *str;
+
+		str = g_strdup_printf ("Error saving %s: %s", filename, strerror(errno));
+		dialog = gnome_message_box_new (str, GNOME_MESSAGE_BOX_ERROR, GNOME_STOCK_BUTTON_OK, NULL);
+		g_free (str);
+
+		gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (info->filesel));
+
+		gtk_widget_show (dialog);
+		
+		return;
 	}
 	
 	g_free (info->vcard);
@@ -79,17 +96,49 @@ delete_it(GtkWidget *widget, SaveAsInfo *info)
 	g_free (info);
 }
 
+static char *
+make_safe_filename (const char *prefix, char *name)
+{
+	char *safe, *p;
+
+	if (!name) {
+		/* This is a filename. Translators take note. */
+		name = _("card.vcf");
+	}
+
+	p = strrchr (name, '/');
+	if (p)
+		safe = g_strdup_printf ("%s%s%s", prefix, p, ".vcf");
+	else
+		safe = g_strdup_printf ("%s/%s%s", prefix, name, ".vcf");
+	
+	p = strrchr (safe, '/') + 1;
+	if (p)
+		e_filename_make_safe (p);
+	
+	return safe;
+}
+
 void
 e_contact_save_as(char *title, ECard *card)
 {
 	GtkFileSelection *filesel;
+	char *file;
+	char *name;
 	SaveAsInfo *info = g_new(SaveAsInfo, 1);
-	
+
 	filesel = GTK_FILE_SELECTION(gtk_file_selection_new(title));
+
+	gtk_object_get (GTK_OBJECT (card),
+			"file_as", &name,
+			NULL);
+	file = make_safe_filename (g_get_home_dir(), name);
+	gtk_file_selection_set_filename (filesel, file);
+	g_free (file);
 
 	info->filesel = filesel;
 	info->vcard = e_card_get_vcard(card);
-	
+
 	gtk_signal_connect(GTK_OBJECT(filesel->ok_button), "clicked",
 			   save_it, info);
 	gtk_signal_connect(GTK_OBJECT(filesel->cancel_button), "clicked",
@@ -104,8 +153,24 @@ e_contact_list_save_as(char *title, GList *list)
 {
 	GtkFileSelection *filesel;
 	SaveAsInfo *info = g_new(SaveAsInfo, 1);
-	
+
 	filesel = GTK_FILE_SELECTION(gtk_file_selection_new(title));
+
+	/* This is a filename. Translators take note. */
+	if (list && list->data && list->next == NULL) {
+		char *name, *file;
+		gtk_object_get (GTK_OBJECT (list->data),
+				"file_as", &name,
+				NULL);
+		file = make_safe_filename (g_get_home_dir(), name);
+		gtk_file_selection_set_filename (filesel, file);
+		g_free (file);
+	} else {
+		char *file;
+		file = make_safe_filename (g_get_home_dir(), _("list"));
+		gtk_file_selection_set_filename (filesel, file);
+		g_free (file);
+	}
 
 	info->filesel = filesel;
 	info->vcard = e_card_list_get_vcard (list);
@@ -130,7 +195,6 @@ file_exists(GtkFileSelection *filesel, const char *filename)
 
 	gui = glade_xml_new (EVOLUTION_GLADEDIR "/file-exists.glade", NULL);
 	dialog = GNOME_DIALOG(glade_xml_get_widget(gui, "dialog-exists"));
-	gtk_widget_ref(GTK_WIDGET(dialog));
 	
 	label = glade_xml_get_widget (gui, "label-exists");
 	if (GTK_IS_LABEL (label)) {
@@ -144,8 +208,6 @@ file_exists(GtkFileSelection *filesel, const char *filename)
 	gtk_widget_show (GTK_WIDGET (dialog));
 	result = gnome_dialog_run_and_close(dialog);
 
-	gtk_widget_unref(GTK_WIDGET(dialog));
-	gtk_widget_destroy(GTK_WIDGET(dialog));
 	g_free(gui);
 
 	return result;

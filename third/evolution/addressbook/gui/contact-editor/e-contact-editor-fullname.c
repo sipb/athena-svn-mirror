@@ -5,9 +5,8 @@
  * Author: Chris Lahey <clahey@ximian.com>
  *
  * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -123,7 +122,7 @@ e_contact_editor_fullname_destroy (GtkObject *object)
 
 	if (e_contact_editor_fullname->gui)
 		gtk_object_unref(GTK_OBJECT(e_contact_editor_fullname->gui));
-	e_card_name_free(e_contact_editor_fullname->name);
+	e_card_name_unref(e_contact_editor_fullname->name);
 }
 
 GtkWidget*
@@ -145,8 +144,7 @@ e_contact_editor_fullname_set_arg (GtkObject *o, GtkArg *arg, guint arg_id)
 	
 	switch (arg_id){
 	case ARG_NAME:
-		if (e_contact_editor_fullname->name)
-			e_card_name_free(e_contact_editor_fullname->name);
+		e_card_name_unref(e_contact_editor_fullname->name);
 		e_contact_editor_fullname->name = e_card_name_copy(GTK_VALUE_POINTER (*arg));
 		fill_in_info(e_contact_editor_fullname);
 		break;
@@ -188,7 +186,7 @@ e_contact_editor_fullname_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	switch (arg_id) {
 	case ARG_NAME:
 		extract_info(e_contact_editor_fullname);
-		GTK_VALUE_POINTER (*arg) = e_card_name_copy(e_contact_editor_fullname->name);
+		GTK_VALUE_POINTER (*arg) = e_card_name_ref(e_contact_editor_fullname->name);
 		break;
 	case ARG_IS_READ_ONLY:
 		GTK_VALUE_BOOL (*arg) = e_contact_editor_fullname->editable ? TRUE : FALSE;

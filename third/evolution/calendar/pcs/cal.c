@@ -6,10 +6,9 @@
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *          Rodrigo Moya <rodrigo@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,7 +39,7 @@ struct _CalPrivate {
 	/* Listener on the client we notify */
 	GNOME_Evolution_Calendar_Listener listener;
 
-	/* and a reference to the WombatClient interface */
+	/* A reference to the WombatClient interface */
 	GNOME_Evolution_WombatClient wombat_client;
 };
 
@@ -52,17 +51,14 @@ impl_Cal_get_uri (PortableServer_Servant servant,
 {
 	Cal *cal;
 	CalPrivate *priv;
-	GnomeVFSURI *uri;
-	char *str_uri;
+	const char *str_uri;
 	CORBA_char *str_uri_copy;
 
 	cal = CAL (bonobo_object_from_servant (servant));
 	priv = cal->priv;
 
-	uri = cal_backend_get_uri (priv->backend);
-	str_uri = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
+	str_uri = cal_backend_get_uri (priv->backend);
 	str_uri_copy = CORBA_string_dup (str_uri);
-	g_free (str_uri);
 
 	return str_uri_copy;
 }
@@ -244,6 +240,32 @@ impl_Cal_get_objects_in_range (PortableServer_Servant servant,
 	return seq;
 }
 
+static GNOME_Evolution_Calendar_CalObjSeq *
+build_fb_seq (GList *obj_list)
+{
+	GNOME_Evolution_Calendar_CalObjSeq *seq;
+	GList *l;
+	int n, i;
+
+	n = g_list_length (obj_list);
+
+	seq = GNOME_Evolution_Calendar_CalObjSeq__alloc ();
+	CORBA_sequence_set_release (seq, TRUE);
+	seq->_length = n;
+	seq->_buffer = CORBA_sequence_GNOME_Evolution_Calendar_CalObj_allocbuf (n);
+
+	/* Fill the sequence */
+
+	for (i = 0, l = obj_list; l; i++, l = l->next) {
+		char *calobj;
+
+		calobj = l->data;
+		seq->_buffer[i] = CORBA_string_dup (calobj);
+	}
+
+	return seq;
+}
+
 /* Cal::get_free_busy method */
 static GNOME_Evolution_Calendar_CalObjSeq *
 impl_Cal_get_free_busy (PortableServer_Servant servant,
@@ -267,7 +289,7 @@ impl_Cal_get_free_busy (PortableServer_Servant servant,
 
 	if (t_start > t_end || t_start == -1 || t_end == -1) {
 		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_Cal_InvalidRange);
-		return NULL;
+		return build_fb_seq (NULL);
 	}
 
 	/* convert the CORBA user list to a GList */
@@ -280,34 +302,13 @@ impl_Cal_get_free_busy (PortableServer_Servant servant,
 
 	/* call the backend's get_free_busy method */
 	obj_list = cal_backend_get_free_busy (priv->backend, users, t_start, t_end);
+	seq = build_fb_seq (obj_list);	
 	g_list_free (users);
-        if (obj_list) {
-		GList *l;
-		gint count;
-		gint n;
 
-		count = g_list_length (obj_list);
+        if (obj_list == NULL)
+		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_Cal_NotFound);
 
-		seq = GNOME_Evolution_Calendar_CalObjSeq__alloc ();
-		CORBA_sequence_set_release (seq, TRUE);
-		seq->_length = count;
-		seq->_buffer = CORBA_sequence_GNOME_Evolution_Calendar_CalObj_allocbuf (count);
-
-		for (l = obj_list, n = 0; l; l = l->next, n++) {
-			gchar *calobj = (gchar *) l->data;
-
-			seq->_buffer[n] = CORBA_string_dup (calobj);
-			g_free (calobj);
-		}
-
-		g_list_free (obj_list);
-
-		return seq;
-	}
-
-	bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_Cal_NotFound);
-
-        return NULL;
+        return seq;
 }
 
 /* Cal::get_alarms_in_range method */
@@ -446,6 +447,26 @@ impl_Cal_get_query (PortableServer_Servant servant,
 	return query_copy;
 }
 
+/* Cal::set_default_timezone method */
+static void
+impl_Cal_set_default_timezone (PortableServer_Servant servant,
+			       const GNOME_Evolution_Calendar_CalTimezoneObjUID tzid,
+			       CORBA_Environment *ev)
+{
+	Cal *cal;
+	CalPrivate *priv;
+	gboolean zone_set;
+
+	cal = CAL (bonobo_object_from_servant (servant));
+	priv = cal->priv;
+
+	zone_set = cal_backend_set_default_timezone (priv->backend, tzid);
+
+	if (!zone_set) {
+		bonobo_exception_set (ev, ex_GNOME_Evolution_Calendar_Cal_NotFound);
+	}
+}
+
 /* Cal::get_timezone_object method */
 static GNOME_Evolution_Calendar_CalObj
 impl_Cal_get_timezone_object (PortableServer_Servant servant,
@@ -510,7 +531,10 @@ cal_construct (Cal *cal,
 		return NULL;
 	}
 
+	CORBA_exception_free (&ev);
+
 	/* obtain the WombatClient interface */
+	CORBA_exception_init (&ev);
 	priv->wombat_client = Bonobo_Unknown_queryInterface (
 		priv->listener,
 		"IDL:GNOME/Evolution/WombatClient:1.0",
@@ -597,7 +621,7 @@ cal_class_init (CalClass *klass)
 	GtkObjectClass *object_class = (GtkObjectClass *) klass;
 	POA_GNOME_Evolution_Calendar_Cal__epv *epv = &klass->epv;
 
-	parent_class = gtk_type_class (BONOBO_OBJECT_TYPE);
+	parent_class = gtk_type_class (PARENT_TYPE);
 
 	/* Class method overrides */
 	object_class->destroy = cal_destroy;
@@ -607,6 +631,7 @@ cal_class_init (CalClass *klass)
 	epv->setMode = impl_Cal_set_mode;
 	epv->countObjects = impl_Cal_get_n_objects;
 	epv->getObject = impl_Cal_get_object;
+	epv->setDefaultTimezone = impl_Cal_set_default_timezone;
 	epv->getTimezoneObject = impl_Cal_get_timezone_object;
 	epv->getUIDs = impl_Cal_get_uids;
 	epv->getChanges = impl_Cal_get_changes;
@@ -795,6 +820,8 @@ cal_get_password (Cal *cal, const char *prompt, const char *key)
 		CORBA_exception_free (&ev);
 		return NULL;
 	}
+
+	CORBA_exception_free (&ev);
 
 	return pwd;
 }

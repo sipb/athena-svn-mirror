@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -128,6 +128,7 @@ INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 JW = @JW@
+KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
@@ -185,11 +186,15 @@ l = @l@
 localedir = @localedir@
 
 imagesdir = $(datadir)/images/evolution
-images_DATA =  	16_copy.png				16_customize.png			16_cut.png				16_paste.png				apply-filters-16.xpm			bcg.png					configure_16_addressbook.xpm		configure_16_calendar.xpm		configure_16_folder.xpm			configure_16_mail.xpm			contact-is-a-list.png			copy_16_message.xpm			edit.xpm				empty.gif				encrypt.xpm				es-appointments.png			es-weather.png				folder.xpm				forward.xpm				goto-16.png				ico-calendar.png			ico-mail.png				ico-rdf.png				ico-weather.png				import.png				import.xpm				inbox-16.png				inbox-full-16.png		   meeting-request.png 	move_message.xpm			offline.png				online.png				open-in-new-window-16.png 		outbox-16.png 				outbox-full-16.png 			pattern.png			   pgp-signature-bad.png    pgp-signature-nokey.png    pgp-signature-ok.png 	print.xpm				print-preview.xpm			rdf.png					reply.xpm				reply_to_all.xpm			save.xpm				all_contacts.xpm			find_contact.xpm			find_message.xpm			briefcase.png       			butterfly.png				cellphone.png       			compose-message.png			envelope.png        			evolution-calendar-mini.png 		evolution-calendar.png 			evolution-contacts-mini.png 		evolution-contacts-plain.png 		evolution-contacts.png 			evolution-inbox-mini.png 		evolution-inbox.png 			evolution-notes-mini.png 		evolution-notes.png 			evolution-tasks-mini.png 		evolution-tasks.png 			evolution-today-mini.png		evolution-today.png 			evolution-trash-mini.png 		evolution-trash.png 			executive-summary-bg.png		executive-summary-curve.png		faq-16.png				fetch-mail.png				folder-copy-16.png			folder-move-16.png			globe.png           			hide_deleted_messages.xpm		hide_read_messages.xpm			hide_selected_messages.xpm		house.png           			ldap-16.png				malehead.png				mail-config-druid.png			mail-config-druid-identity.png		mail-config-druid-receive.png		mail-config-druid-send.png		mail-config-druid-account-name.png 	mark-as-important-16.png		myevo-appointments.png			myevo-mail-summary.png			myevo-post-it.png			myweather-rain.png			myweather-snow.png			myweather-storm.png			myweather-fog.png			myweather-sun.png			myweather-suncloud.png			myweather-clouds.png			new_appointment.xpm			new_contact.xpm				new-message.xpm				new_task-16.png				save-16.png				save-as-16.png				search-16.png				search-and-replace-16.png		send-16.png                     	send-later-16.png			send-receive.xpm			service-close.png			service-configure.png			service-down.png			service-down-disabled.png		service-left.png			service-left-disabled.png		service-right.png			service-right-disabled.png		service-up.png				service-up-disabled.png			show_all_messages.xpm			splash.png				talking-heads.png			task.xpm				task.png				thankyou.png				timezone-16.xpm			   	timezone-48.png 			undelete_message-16.png			wax-seal.png				wax-seal-broken.png			work_offline.xpm			work_online-16.png			world_map-960.png
+images_DATA =  	16_copy.png				16_customize.png			16_cut.png				16_paste.png				about-box.png				apply-filters-16.xpm			bcg.png					configure_16_addressbook.xpm		configure_16_calendar.xpm		configure_16_folder.xpm			configure_16_mail.xpm			contact-is-a-list.png			copy_16_message.xpm			edit.xpm				empty.gif				encrypt.xpm				es-appointments.png			es-weather.png				folder.xpm				forward.xpm				goto-16.png				ico-calendar.png			ico-mail.png				ico-rdf.png				ico-weather.png				import.png				import.xpm				inbox-16.png				inbox-full-16.png			meeting-request.png 			alarm.png				meeting-request.png			move_message.xpm			offline.png				online.png				open-in-new-window-16.png 		outbox-16.png 				outbox-full-16.png 			pattern.png				pgp-signature-bad.png 			pgp-signature-nokey.png 		pgp-signature-ok.png 			print.xpm				print-preview.xpm			rdf.png					reply.xpm				reply_to_all.xpm			save.xpm				all_contacts.xpm			find_contact.xpm			find_message.xpm			briefcase.png       			butterfly.png				cellphone.png       			compose-message.png			envelope.png        			evolution-calendar-mini.png 		evolution-calendar.png 			evolution-contacts-mini.png 		evolution-contacts-plain.png 		evolution-contacts.png 			evolution-inbox-mini.png 		evolution-inbox.png 			evolution-notes-mini.png 		evolution-notes.png 			evolution-tasks-mini.png 		evolution-tasks.png 			evolution-today-mini.png		evolution-today.png 			evolution-trash-mini.png 		evolution-trash.png 			executive-summary-bg.png		executive-summary-curve.png		faq-16.png				fetch-mail.png				folder-copy-16.png			folder-move-16.png			globe.png           			hide_deleted_messages.xpm		hide_read_messages.xpm			hide_selected_messages.xpm		house.png           			ldap.png				ldap-mini.png				malehead.png				mail-config-druid.png			mail-config-druid-identity.png		mail-config-druid-receive.png		mail-config-druid-send.png		mail-config-druid-account-name.png 	mark-as-important-16.png		myevo-appointments.png			myevo-mail-summary.png			myevo-post-it.png			myweather-rain.png			myweather-snow.png			myweather-storm.png			myweather-fog.png			myweather-sun.png			myweather-suncloud.png			myweather-clouds.png			new_appointment.xpm			new_contact.xpm				new-message.xpm				new_task-16.png				save-16.png				save-as-16.png				search-16.png				search-and-replace-16.png		send-16.png                     	send-later-16.png			send-receive.xpm			service-close.png			service-configure.png			service-down.png			service-down-disabled.png		service-left.png			service-left-disabled.png		service-right.png			service-right-disabled.png		service-up.png				service-up-disabled.png			show_all_messages.xpm			splash.png				talking-heads.png			task.xpm				task.png				thankyou.png				timezone-16.xpm				timezone-48.png 			undelete_message-16.png			wax-seal.png				wax-seal-broken.png			work_offline.xpm			work_online-16.png			world_map-960.png
 
 
 buttonsdir = $(datadir)/images/evolution/buttons
-buttons_DATA =  	arrow-right-24.png			arrow-left-24.png			add-attachment.png			add-service.png				compose-message.png			copy-message.png			copy.png				cut.png					dayview.xpm				delete-message.png			fetch-mail.png				forward.png				goto-24.png  				monthview.xpm  				move-message.png			next-message.png			new_appointment.png			new_task.png				paste.png				previous-message.png			print.png				print-preview-24.png			reply.png				reply-to-all.png			receive-24.png			save-24.png				send-24-receive.png			send-24.png			weekview.xpm  				workweekview.xpm			yearview.xpm	
+buttons_DATA =  	arrow-right-24.png			arrow-left-24.png			add-attachment.png			add-service.png				compose-message.png			copy-message.png			copy.png				cut.png					dayview.xpm				delete-message.png			fetch-mail.png				forward.png				goto-24.png  				monthview.xpm  				move-message.png			next-message.png			new_appointment.png			new_task.png				paste.png				previous-message.png			print.png				print-preview-24.png			reply.png				reply-to-all.png			receive-24.png			save-24.png				send-24-receive.png			send-24.png			weekview.xpm  				workweekview.xpm			yearview.xpm
+
+
+gladedir = $(datadir)/evolution/glade
+glade_DATA =  	evolution.png					import.png					mail-config-druid-account-name.png		mail-config-druid-identity.png			mail-config-druid.png				mail-config-druid-receive.png			mail-config-druid-send.png			meeting_widget.png				thankyou.png					timezone-48.png
 
 
 conduitsdir = $(datadir)/images/evolution/conduits
@@ -199,19 +204,20 @@ conduits_DATA =  	evo-16-address-conduit.png   		evo-16-todo-conduit.png     		e
 appicondir = $(datadir)/pixmaps
 appicon_DATA = evolution.png
 
-EXTRA_DIST =  	attachment.xpm				bell.xpm				check-filled.xpm			empty.xpm				jump.xpm				mail-new.xpm				mail-read.xpm				mail-replied.xpm			mark.xpm				meeting.xpm				priority-high.xpm			priority-low.xpm			recur.xpm				score-higher.xpm			score-highest.xpm			score-high.xpm				score-lower.xpm				score-lowest.xpm			score-low.xpm				score-normal.xpm			task-assigned-to.xpm			task-assigned.xpm			task-recurring.xpm			timezone-16.xpm				tree-expanded.xpm			tree-unexpanded.xpm			$(images_DATA)				$(buttons_DATA)				$(conduits_DATA)			$(appicon_DATA)
+EXTRA_DIST =  	attachment.xpm				bell.xpm				check-filled.xpm			empty.xpm				jump.xpm				mail-new.xpm				mail-read.xpm				mail-replied.xpm			mark.xpm				meeting.xpm				priority-high.xpm			priority-low.xpm			recur.xpm				score-higher.xpm			score-highest.xpm			score-high.xpm				score-lower.xpm				score-lowest.xpm			score-low.xpm				score-normal.xpm			task-assigned-to.xpm			task-assigned.xpm			task-recurring.xpm			timezone-16.xpm				tree-expanded.xpm			tree-unexpanded.xpm			$(images_DATA)				$(buttons_DATA)				$(conduits_DATA)			$(glade_DATA)				$(appicon_DATA)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(appicon_DATA) $(buttons_DATA) $(conduits_DATA) $(images_DATA)
+DATA =  $(appicon_DATA) $(buttons_DATA) $(conduits_DATA) $(glade_DATA) \
+$(images_DATA)
 
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
@@ -280,6 +286,25 @@ uninstall-conduitsDATA:
 	  rm -f $(DESTDIR)$(conduitsdir)/$$p; \
 	done
 
+install-gladeDATA: $(glade_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(gladedir)
+	@list='$(glade_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(gladedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(gladedir)/$$p; \
+	  fi; fi; \
+	done
+
+uninstall-gladeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(glade_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(gladedir)/$$p; \
+	done
+
 install-imagesDATA: $(images_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(imagesdir)
@@ -329,14 +354,16 @@ install-exec-am:
 install-exec: install-exec-am
 
 install-data-am: install-appiconDATA install-buttonsDATA \
-		install-conduitsDATA install-imagesDATA
+		install-conduitsDATA install-gladeDATA \
+		install-imagesDATA
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
 uninstall-am: uninstall-appiconDATA uninstall-buttonsDATA \
-		uninstall-conduitsDATA uninstall-imagesDATA
+		uninstall-conduitsDATA uninstall-gladeDATA \
+		uninstall-imagesDATA
 uninstall: uninstall-am
 all-am: Makefile $(DATA)
 all-redirect: all-am
@@ -344,7 +371,8 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(appicondir) $(DESTDIR)$(buttonsdir) \
-		$(DESTDIR)$(conduitsdir) $(DESTDIR)$(imagesdir)
+		$(DESTDIR)$(conduitsdir) $(DESTDIR)$(gladedir) \
+		$(DESTDIR)$(imagesdir)
 
 
 mostlyclean-generic:
@@ -377,12 +405,13 @@ maintainer-clean: maintainer-clean-am
 
 .PHONY: uninstall-appiconDATA install-appiconDATA uninstall-buttonsDATA \
 install-buttonsDATA uninstall-conduitsDATA install-conduitsDATA \
-uninstall-imagesDATA install-imagesDATA tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+uninstall-gladeDATA install-gladeDATA uninstall-imagesDATA \
+install-imagesDATA tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

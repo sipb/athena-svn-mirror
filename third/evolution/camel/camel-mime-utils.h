@@ -4,19 +4,19 @@
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *           Jeffrey Stedfast <fejj@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 #ifndef _CAMEL_MIME_UTILS_H
@@ -79,6 +79,9 @@ struct _header_address {
 	} v;
 	unsigned int refcount;
 };
+
+/* MUST be called before everything else */
+void camel_mime_utils_init(void);
 
 /* Address lists */
 struct _header_address *header_address_new(void);
@@ -189,6 +192,10 @@ int base64_encode_step(unsigned char *in, int len, gboolean break_lines, unsigne
 int base64_encode_close(unsigned char *in, int inlen, gboolean break_lines, unsigned char *out, int *state, int *save);
 
 int uudecode_step (unsigned char *in, int len, unsigned char *out, int *state, guint32 *save, char *uulen);
+int uuencode_step (unsigned char *in, int len, unsigned char *out, unsigned char *uubuf, int *state,
+		   guint32 *save, char *uulen);
+int uuencode_close (unsigned char *in, int len, unsigned char *out, unsigned char *uubuf, int *state,
+		    guint32 *save, char *uulen);
 
 int quoted_decode_step(unsigned char *in, int len, unsigned char *out, int *savestate, int *saveme);
 

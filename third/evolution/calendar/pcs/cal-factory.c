@@ -5,10 +5,9 @@
  *
  * Author: Federico Mena-Quintero <federico@ximian.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,6 +24,7 @@
 #include <stdio.h>
 #include <gtk/gtksignal.h>
 #include <liboaf/liboaf.h>
+#include "e-util/e-url.h"
 #include "evolution-calendar.h"
 #include "cal.h"
 #include "cal-backend.h"
@@ -84,29 +84,58 @@ free_method (gpointer key, gpointer value, gpointer data)
 static void
 free_backend (gpointer key, gpointer value, gpointer data)
 {
-	GnomeVFSURI *uri;
+	char *uri;
 	CalBackend *backend;
 
 	uri = key;
 	backend = value;
 
-	gnome_vfs_uri_unref (uri);
+	g_free (uri);
 	gtk_object_unref (GTK_OBJECT (backend));
 }
 
 /* Opening calendars */
 
-/* Looks up a calendar backend in a factory's hash table of uri->cal */
+/* Looks up a calendar backend in a factory's hash table of uri->cal.  If
+ * *non-NULL, orig_uri_return will be set to point to the original key in the
+ * *hash table.
+ */
 static CalBackend *
-lookup_backend (CalFactory *factory, GnomeVFSURI *uri)
+lookup_backend (CalFactory *factory, const char *uristr, char **orig_uri_return)
 {
 	CalFactoryPrivate *priv;
-	CalBackend *backend;
+	EUri *uri;
+	char *tmp;
+	gboolean found;
+	gpointer orig_key;
+	gpointer data;
 
 	priv = factory->priv;
 
-	backend = g_hash_table_lookup (priv->backends, uri);
-	return backend;
+	uri = e_uri_new (uristr);
+	if (!uri) {
+		if (orig_uri_return)
+			*orig_uri_return = NULL;
+
+		return NULL;
+	}
+
+	tmp = e_uri_to_string (uri, FALSE);
+	found = g_hash_table_lookup_extended (priv->backends, tmp, &orig_key, &data);
+	g_free (tmp);
+	e_uri_free (uri);
+
+	if (found) {
+		if (orig_uri_return)
+			*orig_uri_return = orig_key;
+
+		return CAL_BACKEND (data);
+	} else {
+		if (orig_uri_return)
+			*orig_uri_return = FALSE;
+
+		return NULL;
+	}
 }
 
 /* Callback used when a backend loses its last connected client */
@@ -115,10 +144,9 @@ backend_last_client_gone_cb (CalBackend *backend, gpointer data)
 {
 	CalFactory *factory;
 	CalFactoryPrivate *priv;
-	GnomeVFSURI *uri;
-	gpointer orig_key;
-	gboolean result;
-	GnomeVFSURI *orig_uri;
+	CalBackend *ret_backend;
+	const char *uristr;
+	char *orig_uristr;
 
 	fprintf (stderr, "backend_last_client_gone_cb() called!\n");
 
@@ -127,16 +155,15 @@ backend_last_client_gone_cb (CalBackend *backend, gpointer data)
 
 	/* Remove the backend from the hash table */
 
-	uri = cal_backend_get_uri (backend);
-	g_assert (uri != NULL);
+	uristr = cal_backend_get_uri (backend);
+	g_assert (uristr != NULL);
 
-	result = g_hash_table_lookup_extended (priv->backends, uri, &orig_key, NULL);
-	g_assert (result != FALSE);
+	ret_backend = lookup_backend (factory, uristr, &orig_uristr);
+	g_assert (ret_backend != NULL);
+	g_assert (ret_backend == backend);
 
-	orig_uri = orig_key;
-
-	g_hash_table_remove (priv->backends, orig_uri);
-	gnome_vfs_uri_unref (orig_uri);
+	g_hash_table_remove (priv->backends, orig_uristr);
+	g_free (orig_uristr);
 
 	gtk_object_unref (GTK_OBJECT (backend));
 
@@ -148,14 +175,21 @@ backend_last_client_gone_cb (CalBackend *backend, gpointer data)
 
 /* Adds a backend to the calendar factory's hash table */
 static void
-add_backend (CalFactory *factory, GnomeVFSURI *uri, CalBackend *backend)
+add_backend (CalFactory *factory, const char *uristr, CalBackend *backend)
 {
 	CalFactoryPrivate *priv;
+	EUri *uri;
+	char *tmp;
 
 	priv = factory->priv;
 
-	gnome_vfs_uri_ref (uri);
-	g_hash_table_insert (priv->backends, uri, backend);
+	uri = e_uri_new (uristr);
+	if (!uri)
+		return;
+
+	tmp = e_uri_to_string (uri, FALSE);
+	g_hash_table_insert (priv->backends, tmp, backend);
+	e_uri_free (uri);
 
 	gtk_signal_connect (GTK_OBJECT (backend), "last_client_gone",
 			    GTK_SIGNAL_FUNC (backend_last_client_gone_cb),
@@ -167,17 +201,25 @@ add_backend (CalFactory *factory, GnomeVFSURI *uri, CalBackend *backend)
  * MethodNotSupported error code.
  */
 static CalBackend *
-launch_backend_for_uri (CalFactory *factory, GnomeVFSURI *uri, GNOME_Evolution_Calendar_Listener listener)
+launch_backend_for_uri (CalFactory *factory,
+			const char *uristr,
+			GNOME_Evolution_Calendar_Listener listener)
 {
 	CalFactoryPrivate *priv;
 	const char *method;
 	GtkType *type;
 	CalBackend *backend;
+	EUri *uri;
 
 	priv = factory->priv;
 
-	method = gnome_vfs_uri_get_scheme (uri);
+	uri = e_uri_new (uristr);
+	if (!uri)
+		return NULL;
+
+	method = uri->protocol;
 	type = g_hash_table_lookup (priv->methods, method);
+	e_uri_free (uri);
 
 	if (!type) {
 		CORBA_Environment ev;
@@ -205,7 +247,7 @@ launch_backend_for_uri (CalFactory *factory, GnomeVFSURI *uri, GNOME_Evolution_C
 
 /* Opens a calendar backend and puts it in the factory's backend hash table */
 static CalBackend *
-open_backend (CalFactory *factory, GnomeVFSURI *uri, gboolean only_if_exists,
+open_backend (CalFactory *factory, const char *uristr, gboolean only_if_exists,
 	      GNOME_Evolution_Calendar_Listener listener)
 {
 	CalFactoryPrivate *priv;
@@ -215,15 +257,15 @@ open_backend (CalFactory *factory, GnomeVFSURI *uri, gboolean only_if_exists,
 
 	priv = factory->priv;
 
-	backend = launch_backend_for_uri (factory, uri, listener);
+	backend = launch_backend_for_uri (factory, uristr, listener);
 	if (!backend)
 		return NULL;
 
-	status = cal_backend_open (backend, uri, only_if_exists);
+	status = cal_backend_open (backend, uristr, only_if_exists);
 
 	switch (status) {
 	case CAL_BACKEND_OPEN_SUCCESS:
-		add_backend (factory, uri, backend);
+		add_backend (factory, uristr, backend);
 		return backend;
 
 	case CAL_BACKEND_OPEN_ERROR:
@@ -268,7 +310,9 @@ open_backend (CalFactory *factory, GnomeVFSURI *uri, gboolean only_if_exists,
  * object.
  */
 static void
-add_calendar_client (CalFactory *factory, CalBackend *backend, GNOME_Evolution_Calendar_Listener listener)
+add_calendar_client (CalFactory *factory,
+		     CalBackend *backend,
+		     GNOME_Evolution_Calendar_Listener listener)
 {
 	Cal *cal;
 	CORBA_Environment ev;
@@ -316,22 +360,17 @@ add_uri (gpointer key, gpointer value, gpointer data)
 	GNOME_Evolution_Calendar_StringSeq *list = cfud->list;
 	GNOME_Evolution_Calendar_CalMode mode = cfud->mode;
 	char *uri_string = key;
-	CalBackend *backend;	
-	GnomeVFSURI *uri;	
+	CalBackend *backend;
 
 	switch (mode) {
 	case GNOME_Evolution_Calendar_MODE_LOCAL:
-		uri = gnome_vfs_uri_new_private (uri_string, TRUE, TRUE, TRUE);
-		backend = lookup_backend (factory, uri);
-		gnome_vfs_uri_unref (uri);
-		if (backend == NULL && cal_backend_get_mode (backend) == CAL_MODE_LOCAL)
+		backend = lookup_backend (factory, uri_string, NULL);
+		if (backend == NULL || cal_backend_get_mode (backend) != CAL_MODE_LOCAL)
 			return;
 		break;		
 	case GNOME_Evolution_Calendar_MODE_REMOTE:
-		uri = gnome_vfs_uri_new_private (uri_string, TRUE, TRUE, TRUE);
-		backend = lookup_backend (factory, uri);
-		gnome_vfs_uri_unref (uri);
-		if (backend == NULL && cal_backend_get_mode (backend) == CAL_MODE_REMOTE)
+		backend = lookup_backend (factory, uri_string, NULL);
+		if (backend == NULL || cal_backend_get_mode (backend) != CAL_MODE_REMOTE)
 			return;
 		break;		
 	case GNOME_Evolution_Calendar_MODE_ANY:
@@ -356,18 +395,17 @@ open_fn (gpointer data)
 {
 	OpenJobData *jd;
 	CalFactory *factory;
-	GnomeVFSURI *uri;
 	gboolean only_if_exists;
 	GNOME_Evolution_Calendar_Listener listener;
 	CalBackend *backend;
 	CORBA_Environment ev;
+	char *uri_string;
 
 	jd = data;
 	g_assert (jd->uri != NULL);
 
 	/* Check the URI */
-
-	uri = gnome_vfs_uri_new_private (jd->uri, TRUE, TRUE, TRUE);
+	uri_string = g_strdup (jd->uri);
 	g_free (jd->uri);
 
 	only_if_exists = jd->only_if_exists;
@@ -375,7 +413,7 @@ open_fn (gpointer data)
 	listener = jd->listener;
 	g_free (jd);
 
-	if (!uri) {
+	if (!uri_string) {
 		CORBA_exception_init (&ev);
 		GNOME_Evolution_Calendar_Listener_notifyCalOpened (
 			listener,
@@ -392,12 +430,10 @@ open_fn (gpointer data)
 
 	/* Look up the backend and create it if needed */
 
-	backend = lookup_backend (factory, uri);
+	backend = lookup_backend (factory, uri_string, NULL);
 
 	if (!backend)
-		backend = open_backend (factory, uri, only_if_exists, listener);
-
-	gnome_vfs_uri_unref (uri);
+		backend = open_backend (factory, uri_string, only_if_exists, listener);
 
 	if (backend)
 		add_calendar_client (factory, backend, listener);
@@ -428,16 +464,15 @@ impl_CalFactory_open (PortableServer_Servant servant,
 	gboolean result;
 	OpenJobData *jd;
 	GNOME_Evolution_Calendar_Listener listener_copy;
-	GnomeVFSURI *uri;
-	const char *method_str;
-	GtkType type;
+	GtkType *type;
+	EUri *uri;
 
 	factory = CAL_FACTORY (bonobo_object_from_servant (servant));
 	priv = factory->priv;
 
 	/* check URI to see if we support it */
 
-	uri = gnome_vfs_uri_new_private (str_uri, TRUE, TRUE, TRUE);
+	uri = e_uri_new (str_uri);
 	if (!uri) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_GNOME_Evolution_Calendar_CalFactory_InvalidURI,
@@ -445,10 +480,9 @@ impl_CalFactory_open (PortableServer_Servant servant,
 		return;
 	}
 
-	method_str = gnome_vfs_uri_get_scheme (uri);
-	type = g_hash_table_lookup (priv->methods, method_str);
+	type = g_hash_table_lookup (priv->methods, uri->protocol);
 
-	gnome_vfs_uri_unref (uri);
+	e_uri_free (uri);
 	if (!type) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_GNOME_Evolution_Calendar_CalFactory_UnsupportedMethod,
@@ -615,7 +649,7 @@ cal_factory_init (CalFactory *factory)
 	factory->priv = priv;
 
 	priv->methods = g_hash_table_new (g_str_hash, g_str_equal);
-	priv->backends = g_hash_table_new (gnome_vfs_uri_hash, gnome_vfs_uri_hequal);
+	priv->backends = g_hash_table_new (g_str_hash, g_str_equal);
 	priv->registered = FALSE;
 }
 
@@ -759,4 +793,28 @@ cal_factory_get_n_backends (CalFactory *factory)
 
 	priv = factory->priv;
 	return g_hash_table_size (priv->backends);
+}
+
+/* Frees a uri/backend pair from the backends hash table */
+static void
+dump_backend (gpointer key, gpointer value, gpointer data)
+{
+	char *uri;
+	CalBackend *backend;
+
+	uri = key;
+	backend = value;
+
+	g_message ("  %s: %p", uri, backend);
+}
+
+void
+cal_factory_dump_active_backends   (CalFactory *factory)
+{
+	CalFactoryPrivate *priv;
+
+	g_message ("Active PCS backends");
+
+	priv = factory->priv;
+	g_hash_table_foreach (priv->backends, dump_backend, NULL);
 }

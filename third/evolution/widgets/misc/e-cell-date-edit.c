@@ -7,9 +7,8 @@
  * Copyright 2001, Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,6 +36,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gal/util/e-util.h>
 #include <gal/e-table/e-table-item.h>
+#include <gal/e-table/e-cell-text.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnome/gnome-i18n.h>
@@ -55,12 +55,18 @@ static void e_cell_date_edit_set_arg		(GtkObject	*o,
 						 guint		 arg_id);
 
 static gint e_cell_date_edit_do_popup		(ECellPopup	*ecp,
-						 GdkEvent	*event);
+						 GdkEvent	*event,
+						 int             row,
+						 int             view_col);
 static void e_cell_date_edit_set_popup_values	(ECellDateEdit	*ecde);
 static void e_cell_date_edit_select_matching_time(ECellDateEdit	*ecde,
 						  char		*time);
-static void e_cell_date_edit_show_popup		(ECellDateEdit	*ecde);
+static void e_cell_date_edit_show_popup		(ECellDateEdit	*ecde,
+						 int             row,
+						 int             view_col);
 static void e_cell_date_edit_get_popup_pos	(ECellDateEdit	*ecde,
+						 int             row,
+						 int             view_col,
 						 gint		*x,
 						 gint		*y,
 						 gint		*height,
@@ -70,6 +76,9 @@ static void e_cell_date_edit_rebuild_time_list	(ECellDateEdit	*ecde);
 
 static int e_cell_date_edit_key_press		(GtkWidget	*popup_window,
 						 GdkEventKey	*event,
+						 ECellDateEdit	*ecde);
+static int  e_cell_date_edit_button_press	(GtkWidget	*popup_window,
+						 GdkEventButton	*event,
 						 ECellDateEdit	*ecde);
 static void e_cell_date_edit_on_ok_clicked	(GtkWidget	*button,
 						 ECellDateEdit	*ecde);
@@ -85,6 +94,7 @@ static void e_cell_date_edit_update_cell	(ECellDateEdit	*ecde,
 static void e_cell_date_edit_on_time_selected	(GtkList	*list,
 						 ECellDateEdit	*ecde);
 static void e_cell_date_edit_hide_popup		(ECellDateEdit	*ecde);
+
 
 /* Our arguments. */
 enum {
@@ -257,6 +267,10 @@ e_cell_date_edit_init			(ECellDateEdit	*ecde)
 			    "key_press_event",
 			    GTK_SIGNAL_FUNC (e_cell_date_edit_key_press),
 			    ecde);
+	gtk_signal_connect (GTK_OBJECT (ecde->popup_window),
+			    "button_press_event",
+			    GTK_SIGNAL_FUNC (e_cell_date_edit_button_press),
+			    ecde);
 }
 
 
@@ -413,12 +427,14 @@ e_cell_date_edit_set_arg		(GtkObject	*o,
 
 static gint
 e_cell_date_edit_do_popup		(ECellPopup	*ecp,
-					 GdkEvent	*event)
+					 GdkEvent	*event,
+					 int             row,
+					 int             view_col)
 {
 	ECellDateEdit *ecde = E_CELL_DATE_EDIT (ecp);
 	guint32 time;
 
-	e_cell_date_edit_show_popup (ecde);
+	e_cell_date_edit_show_popup (ecde, row, view_col);
 	e_cell_date_edit_set_popup_values (ecde);
 
 	if (event->type == GDK_BUTTON_PRESS) {
@@ -427,7 +443,11 @@ e_cell_date_edit_do_popup		(ECellPopup	*ecp,
 		time = event->key.time;
 	}
 
+	gdk_keyboard_grab (ecde->popup_window->window, TRUE, time);
 	gtk_grab_add (ecde->popup_window);
+
+	/* Set the focus to the first widget. */
+	gtk_widget_grab_focus (ecde->time_entry);
 
 	return TRUE;
 }
@@ -437,6 +457,7 @@ static void
 e_cell_date_edit_set_popup_values	(ECellDateEdit	*ecde)
 {
 	ECellPopup *ecp = E_CELL_POPUP (ecde);
+	ECellText *ecell_text = E_CELL_TEXT (ecp->child);
 	ECellView *ecv = (ECellView*) ecp->popup_cell_view;
 	ETableItem *eti = E_TABLE_ITEM (ecp->popup_cell_view->cell_view.e_table_item_view);
 	ETableCol *ecol;
@@ -446,12 +467,19 @@ e_cell_date_edit_set_popup_values	(ECellDateEdit	*ecde)
 	GDate date;
 	ECalendarItem *calitem;
 	char buffer[64];
+	gboolean is_date = TRUE;
 
 	ecol = e_table_header_get_column (eti->header, ecp->popup_view_col);
-	cell_text = e_table_model_value_at (ecv->e_table_model,
-					    ecol->col_idx, ecp->popup_row);
+	cell_text = e_cell_text_get_text (ecell_text, ecv->e_table_model,
+					  ecol->col_idx, ecp->popup_row);
 
-	status = e_time_parse_date_and_time (cell_text, &date_tm);
+	/* Try to parse just a date first. If the value is only a date, we
+	   use a DATE value. */
+	status = e_time_parse_date (cell_text, &date_tm);
+	if (status == E_TIME_PARSE_INVALID) {
+		is_date = FALSE;
+		status = e_time_parse_date_and_time (cell_text, &date_tm);
+	}
 
 	/* If there is no date and time set, or the date is invalid, we clear
 	   the selections, else we select the appropriate date & time. */
@@ -461,8 +489,12 @@ e_cell_date_edit_set_popup_values	(ECellDateEdit	*ecde)
 		e_calendar_item_set_selection (calitem, NULL, NULL);
 		gtk_list_unselect_all (GTK_LIST (ecde->time_list));
 	} else {
-		e_time_format_time (&date_tm, ecde->use_24_hour_format, FALSE,
-				    buffer, sizeof (buffer));
+		if (is_date) {
+			buffer[0] = '\0';
+		} else {
+			e_time_format_time (&date_tm, ecde->use_24_hour_format,
+					    FALSE, buffer, sizeof (buffer));
+		}
 		gtk_entry_set_text (GTK_ENTRY (ecde->time_entry), buffer);
 
 		g_date_clear (&date, 1);
@@ -470,8 +502,14 @@ e_cell_date_edit_set_popup_values	(ECellDateEdit	*ecde)
 				date_tm.tm_year + 1900);
 		e_calendar_item_set_selection (calitem, &date, &date);
 
-		e_cell_date_edit_select_matching_time (ecde, buffer);
+		if (is_date) {
+			gtk_list_unselect_all (GTK_LIST (ecde->time_list));
+		} else {
+			e_cell_date_edit_select_matching_time (ecde, buffer);
+		}
 	}
+
+	e_cell_text_free_text (ecell_text, cell_text);
 }
 
 
@@ -507,7 +545,9 @@ e_cell_date_edit_select_matching_time	(ECellDateEdit	*ecde,
 
 
 static void
-e_cell_date_edit_show_popup		(ECellDateEdit	*ecde)
+e_cell_date_edit_show_popup		(ECellDateEdit	*ecde,
+					 int             row,
+					 int             view_col)
 {
 	gint x, y, width, height, old_width, old_height;
 
@@ -518,7 +558,7 @@ e_cell_date_edit_show_popup		(ECellDateEdit	*ecde)
 	old_width = ecde->popup_window->allocation.width;
 	old_height  = ecde->popup_window->allocation.height;
 
-	e_cell_date_edit_get_popup_pos (ecde, &x, &y, &height, &width);
+	e_cell_date_edit_get_popup_pos (ecde, row, view_col, &x, &y, &height, &width);
 
 	gtk_widget_set_uposition (ecde->popup_window, x, y);
 	gtk_widget_set_usize (ecde->popup_window, width, height);
@@ -526,16 +566,15 @@ e_cell_date_edit_show_popup		(ECellDateEdit	*ecde)
 	gdk_window_resize (ecde->popup_window->window, width, height);
 	gtk_widget_show (ecde->popup_window);
 
-	/* Set the focus to the first widget. */
-	gtk_widget_grab_focus (ecde->time_entry);
-
-	E_CELL_POPUP (ecde)->popup_shown = TRUE;
+	e_cell_popup_set_shown (E_CELL_POPUP (ecde), TRUE);
 }
 
 
 /* Calculates the size and position of the popup window (like GtkCombo). */
 static void
 e_cell_date_edit_get_popup_pos		(ECellDateEdit	*ecde,
+					 int             row,
+					 int             view_col,
 					 gint		*x,
 					 gint		*y,
 					 gint		*height,
@@ -546,22 +585,28 @@ e_cell_date_edit_get_popup_pos		(ECellDateEdit	*ecde,
 	GtkWidget *canvas = GTK_WIDGET (GNOME_CANVAS_ITEM (eti)->canvas);
 	GtkRequisition popup_requisition;
 	gint avail_height, screen_width, column_width, row_height;
-	double x1, y1;
+	double x1, y1, wx, wy;
   
 	gdk_window_get_origin (canvas->window, x, y);
 
-	x1 = e_table_header_col_diff (eti->header, 0, eti->editing_col + 1);
-	y1 = e_table_item_row_diff (eti, 0, eti->editing_row + 1);
-	column_width = e_table_header_col_diff (eti->header, eti->editing_col,
-						eti->editing_col + 1);
-	row_height = e_table_item_row_diff (eti, eti->editing_row,
-					    eti->editing_row + 1);
+	x1 = e_table_header_col_diff (eti->header, 0, view_col + 1);
+	y1 = e_table_item_row_diff (eti, 0, row + 1);
+	column_width = e_table_header_col_diff (eti->header, view_col,
+						view_col + 1);
+	row_height = e_table_item_row_diff (eti, row,
+					    row + 1);
 	gnome_canvas_item_i2w (GNOME_CANVAS_ITEM (eti), &x1, &y1);
 
-	*x += x1;
+	gnome_canvas_world_to_window (GNOME_CANVAS (canvas),
+				      x1,
+				      y1,
+				      &wx,
+				      &wy);
+
+	*x += wx;
 	/* The ETable positions don't include the grid lines, I think, so we
 	   add 1. */
-	*y += y1 + 1;
+	*y += wy + 1;
 
 	avail_height = gdk_screen_height () - *y;
 
@@ -611,13 +656,30 @@ e_cell_date_edit_key_press		(GtkWidget	*popup_window,
 					 GdkEventKey	*event,
 					 ECellDateEdit	*ecde)
 {
-	g_print ("In e_cell_date_edit_key_press\n");
-
 	/* If the Escape key is pressed we hide the popup. */
 	if (event->keyval != GDK_Escape)
 		return FALSE;
 
 	e_cell_date_edit_hide_popup (ecde);
+
+	return TRUE;
+}
+
+
+/* This handles button press events in the popup window. If the button is
+   pressed outside the popup, we hide it and do not change the cell contents.
+*/
+static int
+e_cell_date_edit_button_press		(GtkWidget	*popup_window,
+					 GdkEventButton	*event,
+					 ECellDateEdit	*ecde)
+{
+	GtkWidget *event_widget;
+
+	event_widget = gtk_get_event_widget ((GdkEvent*) event);
+	if (gtk_widget_get_toplevel (event_widget) != popup_window) {
+		e_cell_date_edit_hide_popup (ecde);
+	}
 
 	return TRUE;
 }
@@ -680,6 +742,7 @@ e_cell_date_edit_on_ok_clicked		(GtkWidget	*button,
 	struct tm date_tm;
 	char buffer[64], *text;
 	ETimeParseStatus status;
+	gboolean is_date = FALSE;
 
 	calitem = E_CALENDAR_ITEM (E_CALENDAR (ecde->calendar)->calitem);
 	day_selected = e_calendar_item_get_selection (calitem, &start_date,
@@ -690,6 +753,8 @@ e_cell_date_edit_on_ok_clicked		(GtkWidget	*button,
 	if (status == E_TIME_PARSE_INVALID) {
 		e_cell_date_edit_show_time_invalid_warning (ecde);
 		return;
+	} else if (status == E_TIME_PARSE_NONE) {
+		is_date = TRUE;
 	}
 
 	if (day_selected) {
@@ -700,7 +765,7 @@ e_cell_date_edit_on_ok_clicked		(GtkWidget	*button,
 		mktime (&date_tm);
 		e_time_format_date_and_time (&date_tm,
 					     ecde->use_24_hour_format,
-					     TRUE, FALSE,
+					     !is_date, FALSE,
 					     buffer, sizeof (buffer));
 	} else {
 		buffer[0] = '\0';
@@ -752,8 +817,6 @@ e_cell_date_edit_on_now_clicked		(GtkWidget	*button,
 	time_t t;
 	char buffer[64];
 
-	g_print ("In e_cell_date_edit_on_now_clicked\n");
-
 	if (ecde->time_callback) {
 		tmp_tm = (*ecde->time_callback) (ecde, ecde->time_callback_data);
 	} else {
@@ -774,8 +837,6 @@ static void
 e_cell_date_edit_on_none_clicked	(GtkWidget	*button,
 					 ECellDateEdit	*ecde)
 {
-	g_print ("In e_cell_date_edit_on_none_clicked\n");
-
 	e_cell_date_edit_update_cell (ecde, "");
 	e_cell_date_edit_hide_popup (ecde);
 }
@@ -788,8 +849,6 @@ e_cell_date_edit_on_today_clicked	(GtkWidget	*button,
 	struct tm tmp_tm;
 	time_t t;
 	char buffer[64];
-
-	g_print ("In e_cell_date_edit_on_today_clicked\n");
 
 	if (ecde->time_callback) {
 		tmp_tm = (*ecde->time_callback) (ecde, ecde->time_callback_data);
@@ -816,6 +875,7 @@ e_cell_date_edit_update_cell		(ECellDateEdit	*ecde,
 					 char		*text)
 {
 	ECellPopup *ecp = E_CELL_POPUP (ecde);
+	ECellText *ecell_text = E_CELL_TEXT (ecp->child);
 	ECellView *ecv = (ECellView*) ecp->popup_cell_view;
 	ETableItem *eti = E_TABLE_ITEM (ecv->e_table_item_view);
 	ETableCol *ecol;
@@ -823,15 +883,17 @@ e_cell_date_edit_update_cell		(ECellDateEdit	*ecde,
 
 	/* Compare the new text with the existing cell contents. */
 	ecol = e_table_header_get_column (eti->header, ecp->popup_view_col);
-	old_text = e_table_model_value_at (ecv->e_table_model,
-					   ecol->col_idx, ecp->popup_row);
+
+	old_text = e_cell_text_get_text (ecell_text, ecv->e_table_model,
+					 ecol->col_idx, ecp->popup_row);
 
 	/* If they are different, update the cell contents. */
 	if (strcmp (old_text, text)) {
-		e_table_model_set_value_at (ecv->e_table_model,
-					    ecol->col_idx, ecp->popup_row,
-					    text);
+		e_cell_text_set_value (ecell_text, ecv->e_table_model,
+				       ecol->col_idx, ecp->popup_row, text);
 	}
+
+	e_cell_text_free_text (ecell_text, old_text);
 }
 
 
@@ -841,8 +903,6 @@ e_cell_date_edit_on_time_selected	(GtkList	*list,
 {
 	GtkWidget *listitem, *label;
 	char *list_item_text;
-
-	g_print ("In e_cell_date_edit_on_time_selected\n");
 
 	if (!list->selection)
 		return;
@@ -859,7 +919,7 @@ e_cell_date_edit_hide_popup		(ECellDateEdit	*ecde)
 {
 	gtk_grab_remove (ecde->popup_window);
 	gtk_widget_hide (ecde->popup_window);
-	E_CELL_POPUP (ecde)->popup_shown = FALSE;
+	e_cell_popup_set_shown (E_CELL_POPUP (ecde), FALSE);
 }
 
 
@@ -907,5 +967,3 @@ e_cell_date_edit_set_get_time_callback (ECellDateEdit	*ecde,
 	ecde->time_callback_data = data;
 	ecde->time_callback_destroy = destroy;
 }
-
-

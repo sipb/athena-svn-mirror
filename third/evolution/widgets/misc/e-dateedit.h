@@ -10,9 +10,8 @@
  * Copyright (C) 1997, 1998, 1999, 2000 Free Software Foundation
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -115,7 +114,15 @@ void	   e_date_edit_set_date			(EDateEdit	*dedit,
 gboolean   e_date_edit_get_time_of_day		(EDateEdit	*dedit,
 						 gint		*hour,
 						 gint		*minute);
+/* Set the time. Pass -1 as hour to set to empty. */
 void       e_date_edit_set_time_of_day		(EDateEdit	*dedit,
+						 gint		 hour,
+						 gint		 minute);
+
+void e_date_edit_set_date_and_time_of_day       (EDateEdit      *dedit,
+						 gint		 year,
+						 gint		 month,
+						 gint		 day,
 						 gint		 hour,
 						 gint		 minute);
 

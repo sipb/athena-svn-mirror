@@ -149,6 +149,7 @@
 	      <name>button4</name>
 	      <sensitive>False</sensitive>
 	      <can_focus>True</can_focus>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -185,6 +186,7 @@
 	      <name>button5</name>
 	      <sensitive>False</sensitive>
 	      <can_focus>True</can_focus>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -481,6 +483,7 @@
 	      <name>button9</name>
 	      <sensitive>False</sensitive>
 	      <can_focus>True</can_focus>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -517,6 +520,7 @@
 	      <name>button10</name>
 	      <sensitive>False</sensitive>
 	      <can_focus>True</can_focus>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -774,8 +778,8 @@
 	    <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	    <snap>False</snap>
 	    <wrap>False</wrap>
-	    <value>1</value>
-	    <lower>0</lower>
+	    <value>300</value>
+	    <lower>300</lower>
 	    <upper>1e+06</upper>
 	    <step>1</step>
 	    <page>10</page>
@@ -832,7 +836,8 @@
 	    <class>GtkButton</class>
 	    <name>button11</name>
 	    <can_focus>True</can_focus>
-	    <label>Add n_ew feed</label>
+	    <label>Add n_ews feed</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
 	      <left_attach>3</left_attach>
 	      <right_attach>5</right_attach>
@@ -974,6 +979,7 @@
 	      <name>button6</name>
 	      <sensitive>False</sensitive>
 	      <can_focus>True</can_focus>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -1010,6 +1016,7 @@
 	      <name>button7</name>
 	      <sensitive>False</sensitive>
 	      <can_focus>True</can_focus>
+	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>
@@ -1202,7 +1209,7 @@
 	    <widget>
 	      <class>GtkLabel</class>
 	      <name>label37</name>
-	      <label>Units: </label>
+	      <label>Show temperatures in:</label>
 	      <justify>GTK_JUSTIFY_CENTER</justify>
 	      <wrap>False</wrap>
 	      <xalign>0.5</xalign>
@@ -1220,7 +1227,7 @@
 	      <class>GtkRadioButton</class>
 	      <name>radiobutton7</name>
 	      <can_focus>True</can_focus>
-	      <label>m_etric</label>
+	      <label>C_elcius</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>units_group</group>
@@ -1235,7 +1242,7 @@
 	      <class>GtkRadioButton</class>
 	      <name>radiobutton8</name>
 	      <can_focus>True</can_focus>
-	      <label>_imperial</label>
+	      <label>_Fahrenheit</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>units_group</group>
@@ -1286,8 +1293,8 @@
 	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
 	      <snap>False</snap>
 	      <wrap>False</wrap>
-	      <value>1</value>
-	      <lower>0</lower>
+	      <value>300</value>
+	      <lower>300</lower>
 	      <upper>1e+06</upper>
 	      <step>1</step>
 	      <page>10</page>

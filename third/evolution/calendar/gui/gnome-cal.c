@@ -9,10 +9,9 @@
  *          Federico Mena-Quintero <federico@ximian.com>
  *          Seth Alves <alves@hungry.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,16 +34,15 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
-#include <libgnomevfs/gnome-vfs-types.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
 #include <liboaf/liboaf.h>
 #include <gal/e-paned/e-hpaned.h>
 #include <gal/e-paned/e-vpaned.h>
+#include "e-util/e-url.h"
 #include <cal-util/timeutil.h>
 #include "widgets/menus/gal-view-menus.h"
 #include "dialogs/event-editor.h"
 #include "dialogs/task-editor.h"
-#include "e-calendar-table.h"
+#include "comp-util.h"
 #include "e-day-view.h"
 #include "e-week-view.h"
 #include "evolution-calendar.h"
@@ -154,9 +152,19 @@ struct _GnomeCalendarPrivate {
 
 enum {
 	DATES_SHOWN_CHANGED,
-	SELECTION_CHANGED,
+	CALENDAR_SELECTION_CHANGED,
+	TASKPAD_SELECTION_CHANGED,
+	CALENDAR_FOCUS_CHANGE,
+	TASKPAD_FOCUS_CHANGE,
 	LAST_SIGNAL
 };
+
+/* Used to indicate who has the focus within the calendar view */
+typedef enum {
+	FOCUS_CALENDAR,
+	FOCUS_TASKPAD,
+	FOCUS_OTHER
+} FocusLocation;
 
 static guint gnome_calendar_signals[LAST_SIGNAL];
 
@@ -234,14 +242,39 @@ gnome_calendar_class_init (GnomeCalendarClass *class)
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 
-	gnome_calendar_signals[SELECTION_CHANGED] =
-		gtk_signal_new ("selection_changed",
+	gnome_calendar_signals[CALENDAR_SELECTION_CHANGED] =
+		gtk_signal_new ("calendar_selection_changed",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (GnomeCalendarClass,
-						   selection_changed),
+				GTK_SIGNAL_OFFSET (GnomeCalendarClass, calendar_selection_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
+
+	gnome_calendar_signals[TASKPAD_SELECTION_CHANGED] =
+		gtk_signal_new ("taskpad_selection_changed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (GnomeCalendarClass, taskpad_selection_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+
+	gnome_calendar_signals[CALENDAR_FOCUS_CHANGE] =
+		gtk_signal_new ("calendar_focus_change",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (GnomeCalendarClass, calendar_focus_change),
+				gtk_marshal_NONE__BOOL,
+				GTK_TYPE_NONE, 1,
+				GTK_TYPE_BOOL);
+
+	gnome_calendar_signals[TASKPAD_FOCUS_CHANGE] =
+		gtk_signal_new ("taskpad_focus_change",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (GnomeCalendarClass, taskpad_focus_change),
+				gtk_marshal_NONE__BOOL,
+				GTK_TYPE_NONE, 1,
+				GTK_TYPE_BOOL);
 
 	gtk_object_class_add_signals (object_class,
 				      gnome_calendar_signals,
@@ -250,7 +283,10 @@ gnome_calendar_class_init (GnomeCalendarClass *class)
 	object_class->destroy = gnome_calendar_destroy;
 
 	class->dates_shown_changed = NULL;
-	class->selection_changed = NULL;
+	class->calendar_selection_changed = NULL;
+	class->taskpad_selection_changed = NULL;
+	class->calendar_focus_change = NULL;
+	class->taskpad_focus_change = NULL;
 }
 
 /* Callback used when the calendar query reports of an updated object */
@@ -266,6 +302,16 @@ dn_query_obj_updated_cb (CalQuery *query, const char *uid,
 
 	gcal = GNOME_CALENDAR (data);
 	priv = gcal->priv;
+
+	/* If this is an update that is not part of an ongoing query, we have to
+	 * retag the whole thing:  an event may change dates and the
+	 * tag_calendar_by_comp() below would not know how to untag the old
+	 * dates.
+	 */
+	if (!query_in_progress) {
+		update_query (gcal);
+		return;
+	}
 
 	status = cal_client_get_object (priv->client, uid, &comp);
 
@@ -359,6 +405,55 @@ gnome_calendar_get_current_view_widget (GnomeCalendar *gcal)
 	}
 
 	return retval;
+}
+
+/* Gets the focus location based on who is the focused widget within the
+ * calendar view.
+ */
+static FocusLocation
+get_focus_location (GnomeCalendar *gcal)
+{
+	GnomeCalendarPrivate *priv;
+	ETable *etable;
+
+	priv = gcal->priv;
+
+	etable = e_calendar_table_get_table (E_CALENDAR_TABLE (priv->todo));
+
+	if (GTK_WIDGET_HAS_FOCUS (etable->table_canvas))
+		return FOCUS_TASKPAD;
+	else {
+		GtkWidget *widget;
+		EDayView *dv;
+		EWeekView *wv;
+
+		widget = gnome_calendar_get_current_view_widget (gcal);
+
+		switch (priv->current_view_type) {
+		case GNOME_CAL_DAY_VIEW:
+		case GNOME_CAL_WORK_WEEK_VIEW:
+			dv = E_DAY_VIEW (widget);
+
+			if (GTK_WIDGET_HAS_FOCUS (dv->top_canvas)
+			    || GTK_WIDGET_HAS_FOCUS (dv->main_canvas))
+				return FOCUS_CALENDAR;
+			else
+				return FOCUS_OTHER;
+
+		case GNOME_CAL_WEEK_VIEW:
+		case GNOME_CAL_MONTH_VIEW:
+			wv = E_WEEK_VIEW (widget);
+
+			if (GTK_WIDGET_HAS_FOCUS (wv->main_canvas))
+				return FOCUS_CALENDAR;
+			else
+				return FOCUS_OTHER;
+
+		default:
+			g_assert_not_reached ();
+			return FOCUS_OTHER;
+		}
+	}
 }
 
 /* Computes the range of time that the date navigator is showing */
@@ -591,12 +686,79 @@ search_bar_category_changed_cb (CalSearchBar *cal_search, const char *category, 
 static void
 view_selection_changed_cb (GtkWidget *view, GnomeCalendar *gcal)
 {
-	g_print ("In view_selection_changed_cb\n");
-
 	gtk_signal_emit (GTK_OBJECT (gcal),
-			 gnome_calendar_signals[SELECTION_CHANGED]);
+			 gnome_calendar_signals[CALENDAR_SELECTION_CHANGED]);
 }
 
+
+/* Callback used when the taskpad receives a focus event.  We emit the
+ * corresponding signal so that parents can change the menus as appropriate.
+ */
+static gint
+table_canvas_focus_change_cb (GtkWidget *widget, GdkEventFocus *event, gpointer data)
+{
+	GnomeCalendar *gcal;
+
+	gcal = GNOME_CALENDAR (data);
+
+	gtk_signal_emit (GTK_OBJECT (gcal), gnome_calendar_signals [TASKPAD_FOCUS_CHANGE],
+			 event->in ? TRUE : FALSE);
+
+	return FALSE;
+}
+
+static gint
+calendar_focus_change_cb (GtkWidget *widget, GdkEventFocus *event, gpointer data)
+{
+	GnomeCalendar *gcal;
+
+	gcal = GNOME_CALENDAR (data);
+
+	gtk_signal_emit (GTK_OBJECT (gcal), gnome_calendar_signals [CALENDAR_FOCUS_CHANGE],
+			 event->in ? TRUE : FALSE);
+
+	return FALSE;
+}
+
+/* Connects to the focus change signals of a day view widget */
+static void
+connect_day_view_focus (GnomeCalendar *gcal, EDayView *dv)
+{
+	gtk_signal_connect (GTK_OBJECT (dv->top_canvas), "focus_in_event",
+			    GTK_SIGNAL_FUNC (calendar_focus_change_cb), gcal);
+	gtk_signal_connect (GTK_OBJECT (dv->top_canvas), "focus_out_event",
+			    GTK_SIGNAL_FUNC (calendar_focus_change_cb), gcal);
+
+	gtk_signal_connect (GTK_OBJECT (dv->main_canvas), "focus_in_event",
+			    GTK_SIGNAL_FUNC (calendar_focus_change_cb), gcal);
+	gtk_signal_connect (GTK_OBJECT (dv->main_canvas), "focus_out_event",
+			    GTK_SIGNAL_FUNC (calendar_focus_change_cb), gcal);
+}
+
+/* Connects to the focus change signals of a week view widget */
+static void
+connect_week_view_focus (GnomeCalendar *gcal, EWeekView *wv)
+{
+	gtk_signal_connect (GTK_OBJECT (wv->main_canvas), "focus_in_event",
+			    GTK_SIGNAL_FUNC (calendar_focus_change_cb), gcal);
+	gtk_signal_connect (GTK_OBJECT (wv->main_canvas), "focus_out_event",
+			    GTK_SIGNAL_FUNC (calendar_focus_change_cb), gcal);
+}
+
+/* Callback used when the selection in the taskpad table changes.  We just proxy
+ * the signal with our own one.
+ */
+static void
+table_selection_change_cb (ETable *etable, gpointer data)
+{
+	GnomeCalendar *gcal;
+	int n_selected;
+
+	gcal = GNOME_CALENDAR (data);
+
+	n_selected = e_table_selected_count (etable);
+	gtk_signal_emit (GTK_OBJECT (gcal), gnome_calendar_signals[TASKPAD_SELECTION_CHANGED]);
+}
 
 static void
 setup_widgets (GnomeCalendar *gcal)
@@ -605,6 +767,7 @@ setup_widgets (GnomeCalendar *gcal)
 	GtkWidget *w;
 	gchar *filename;
 	CalendarModel *model;
+	ETable *etable;
 
 	priv = gcal->priv;
 
@@ -675,6 +838,15 @@ setup_widgets (GnomeCalendar *gcal)
 	e_calendar_table_load_state (E_CALENDAR_TABLE (priv->todo), filename);
 	g_free (filename);
 
+	etable = e_calendar_table_get_table (E_CALENDAR_TABLE (priv->todo));
+	gtk_signal_connect (GTK_OBJECT (etable->table_canvas), "focus_in_event",
+			    GTK_SIGNAL_FUNC (table_canvas_focus_change_cb), gcal);
+	gtk_signal_connect (GTK_OBJECT (etable->table_canvas), "focus_out_event",
+			    GTK_SIGNAL_FUNC (table_canvas_focus_change_cb), gcal);
+
+	gtk_signal_connect (GTK_OBJECT (etable), "selection_change",
+			    GTK_SIGNAL_FUNC (table_selection_change_cb), gcal);
+
 	/* The Day View. */
 	priv->day_view = e_day_view_new ();
 	e_day_view_set_calendar (E_DAY_VIEW (priv->day_view), gcal);
@@ -683,6 +855,8 @@ setup_widgets (GnomeCalendar *gcal)
 				  priv->day_view, gtk_label_new (""));
 	gtk_signal_connect (GTK_OBJECT (priv->day_view), "selection_changed",
 			    GTK_SIGNAL_FUNC (view_selection_changed_cb), gcal);
+
+	connect_day_view_focus (gcal, E_DAY_VIEW (priv->day_view));
 
 	/* The Work Week View. */
 	priv->work_week_view = e_day_view_new ();
@@ -696,6 +870,8 @@ setup_widgets (GnomeCalendar *gcal)
 	gtk_signal_connect (GTK_OBJECT (priv->work_week_view), "selection_changed",
 			    GTK_SIGNAL_FUNC (view_selection_changed_cb), gcal);
 
+	connect_day_view_focus (gcal, E_DAY_VIEW (priv->work_week_view));
+
 	/* The Week View. */
 	priv->week_view = e_week_view_new ();
 	e_week_view_set_calendar (E_WEEK_VIEW (priv->week_view), gcal);
@@ -704,6 +880,8 @@ setup_widgets (GnomeCalendar *gcal)
 				  priv->week_view, gtk_label_new (""));
 	gtk_signal_connect (GTK_OBJECT (priv->week_view), "selection_changed",
 			    GTK_SIGNAL_FUNC (view_selection_changed_cb), gcal);
+
+	connect_week_view_focus (gcal, E_WEEK_VIEW (priv->week_view));
 
 	/* The Month View. */
 	priv->month_view = e_week_view_new ();
@@ -714,6 +892,8 @@ setup_widgets (GnomeCalendar *gcal)
 				  priv->month_view, gtk_label_new (""));
 	gtk_signal_connect (GTK_OBJECT (priv->month_view), "selection_changed",
 			    GTK_SIGNAL_FUNC (view_selection_changed_cb), gcal);
+
+	connect_week_view_focus (gcal, E_WEEK_VIEW (priv->month_view));
 
 	gnome_calendar_update_config_settings (gcal, TRUE);
 }
@@ -1342,11 +1522,19 @@ client_cal_opened_cb (CalClient *client, CalClientOpenStatus status, gpointer da
 	gcal = GNOME_CALENDAR (data);
 	priv = gcal->priv;
 
+	e_week_view_set_status_message (E_WEEK_VIEW (priv->week_view), NULL);
+
 	switch (status) {
 	case CAL_CLIENT_OPEN_SUCCESS:
-		if (client == priv->client)
+		/* If this is the main CalClient, update the Date Navigator. */
+		if (client == priv->client) {
 			update_query (gcal);
+		}
 
+		/* Set the client's default timezone, if we have one. */
+		if (priv->zone) {
+			cal_client_set_default_timezone (client, priv->zone);
+		}
 		break;
 
 	case CAL_CLIENT_OPEN_ERROR:
@@ -1657,7 +1845,8 @@ gnome_calendar_open (GnomeCalendar *gcal, const char *str_uri)
 	GnomeCalendarPrivate *priv;
 	char *tasks_uri;
 	gboolean success;
-	GnomeVFSURI *uri;
+	EUri *uri;
+	char *message;
 
 	g_return_val_if_fail (gcal != NULL, FALSE);
 	g_return_val_if_fail (GNOME_IS_CALENDAR (gcal), FALSE);
@@ -1673,6 +1862,10 @@ gnome_calendar_open (GnomeCalendar *gcal, const char *str_uri)
 		cal_client_get_load_state (priv->task_pad_client) == CAL_CLIENT_LOAD_NOT_LOADED,
 		FALSE);
 
+	message = g_strdup_printf (_("Opening calendar at %s"), str_uri);
+	e_week_view_set_status_message (E_WEEK_VIEW (priv->week_view), message);
+	g_free (message);
+
 	if (!cal_client_open_calendar (priv->client, str_uri, FALSE)) {
 		g_message ("gnome_calendar_open(): Could not issue the request");
 		return FALSE;
@@ -1682,7 +1875,7 @@ gnome_calendar_open (GnomeCalendar *gcal, const char *str_uri)
 
 	/* Open the appropriate Tasks folder to show in the TaskPad */
 
-	uri = gnome_vfs_uri_new_private (str_uri, TRUE, TRUE, TRUE);
+	uri = e_uri_new (str_uri);
 	if (!uri) {
 		tasks_uri = g_strdup_printf ("%s/local/Tasks/tasks.ics", evolution_dir);
 		success = cal_client_open_calendar (priv->task_pad_client, tasks_uri, FALSE);
@@ -1691,7 +1884,7 @@ gnome_calendar_open (GnomeCalendar *gcal, const char *str_uri)
 		g_free (tasks_uri);
 	}
 	else {
-		if (!g_strcasecmp (uri->method_string, "file")) {
+		if (!g_strncasecmp (uri->protocol, "file", 4)) {
 			tasks_uri = g_strdup_printf ("%s/local/Tasks/tasks.ics", evolution_dir);
 			success = cal_client_open_calendar (priv->task_pad_client, tasks_uri, FALSE);
 
@@ -1719,7 +1912,7 @@ gnome_calendar_open (GnomeCalendar *gcal, const char *str_uri)
 			success = TRUE;
 		}
 
-		gnome_vfs_uri_unref (uri);
+		e_uri_free (uri);
 	}
 
 	if (!success) {
@@ -1819,6 +2012,16 @@ gnome_calendar_update_config_settings (GnomeCalendar *gcal,
 
 	location = calendar_config_get_timezone ();
 	priv->zone = icaltimezone_get_builtin_timezone (location);
+
+	if (priv->client
+	    && cal_client_get_load_state (priv->client) == CAL_CLIENT_LOAD_LOADED) {
+		cal_client_set_default_timezone (priv->client, priv->zone);
+	}
+	if (priv->task_pad_client
+	    && cal_client_get_load_state (priv->task_pad_client) == CAL_CLIENT_LOAD_LOADED) {
+		cal_client_set_default_timezone (priv->task_pad_client,
+						 priv->zone);
+	}
 
 	e_day_view_set_timezone (E_DAY_VIEW (priv->day_view), priv->zone);
 	e_day_view_set_timezone (E_DAY_VIEW (priv->work_week_view), priv->zone);
@@ -1990,28 +2193,31 @@ gnome_calendar_new_appointment_for (GnomeCalendar *cal,
 	priv = cal->priv;
 
 	dt.value = &itt;
-	dt.tzid = icaltimezone_get_tzid (priv->zone);
+	if (all_day)
+		dt.tzid = NULL;
+	else
+		dt.tzid = icaltimezone_get_tzid (priv->zone);
 
-	/* Component type */
-
-	comp = cal_component_new ();
-	cal_component_set_new_vtype (comp, CAL_COMPONENT_EVENT);
+	comp = cal_comp_event_new_with_defaults ();
 
 	/* DTSTART, DTEND */
 
 	itt = icaltime_from_timet_with_zone (dtstart, FALSE, priv->zone);
-	if (all_day)
+	if (all_day) {
 		itt.hour = itt.minute = itt.second = 0;
+		itt.is_date = TRUE;
+	}
 	cal_component_set_dtstart (comp, &dt);
 
 	itt = icaltime_from_timet_with_zone (dtend, FALSE, priv->zone);
 	if (all_day) {
-		/* If we want an all-day event and the end time isn't on a
-		   day boundary, we move it to the end of the day it is in. */
+		/* We round it up to the end of the day, unless it is already
+		   set to midnight. */
 		if (itt.hour != 0 || itt.minute != 0 || itt.second != 0) {
-			itt.hour = itt.minute = itt.second = 0;
 			icaltime_adjust (&itt, 1, 0, 0, 0);
 		}
+		itt.hour = itt.minute = itt.second = 0;
+		itt.is_date = TRUE;
 	}
 	cal_component_set_dtend (comp, &dt);
 
@@ -2065,8 +2271,6 @@ gnome_calendar_new_task		(GnomeCalendar *gcal)
 	GnomeCalendarPrivate *priv;
 	TaskEditor *tedit;
 	CalComponent *comp;
-
-	g_print ("In gnome_calendar_new_task\n");
 
 	g_return_if_fail (gcal != NULL);
 	g_return_if_fail (GNOME_IS_CALENDAR (gcal));
@@ -2234,7 +2438,6 @@ gnome_calendar_update_date_navigator (GnomeCalendar *gcal)
 	end_date = start_date;
 	g_date_add_days (&end_date, days_shown - 1);
 
-	g_print ("Updating date navigator selection\n");
 	e_calendar_item_set_selection (priv->date_navigator->calitem,
 				       &start_date, &end_date);
 }
@@ -2327,7 +2530,6 @@ static void
 gnome_calendar_on_date_navigator_date_range_changed (ECalendarItem *calitem,
 						     GnomeCalendar *gcal)
 {
-	g_print ("In gnome_calendar_on_date_navigator_date_range_changed\n");
 	update_query (gcal);
 }
 
@@ -2435,73 +2637,97 @@ void
 gnome_calendar_cut_clipboard (GnomeCalendar *gcal)
 {
 	GnomeCalendarPrivate *priv;
+	FocusLocation location;
 
 	priv = gcal->priv;
 
-	switch (priv->current_view_type) {
-	case GNOME_CAL_DAY_VIEW :
-		e_day_view_cut_clipboard (E_DAY_VIEW (priv->day_view));
-		break;
-	case GNOME_CAL_WORK_WEEK_VIEW :
-		e_day_view_cut_clipboard (E_DAY_VIEW (priv->work_week_view));
-		break;
-	case GNOME_CAL_WEEK_VIEW :
-		e_week_view_cut_clipboard (E_WEEK_VIEW (priv->week_view));
-		break;
-	case GNOME_CAL_MONTH_VIEW :
-		e_week_view_cut_clipboard (E_WEEK_VIEW (priv->month_view));
-		break;
-	default:
+	location = get_focus_location (gcal);
+
+	if (location == FOCUS_CALENDAR) {
+		switch (priv->current_view_type) {
+		case GNOME_CAL_DAY_VIEW :
+			e_day_view_cut_clipboard (E_DAY_VIEW (priv->day_view));
+			break;
+		case GNOME_CAL_WORK_WEEK_VIEW :
+			e_day_view_cut_clipboard (E_DAY_VIEW (priv->work_week_view));
+			break;
+		case GNOME_CAL_WEEK_VIEW :
+			e_week_view_cut_clipboard (E_WEEK_VIEW (priv->week_view));
+			break;
+		case GNOME_CAL_MONTH_VIEW :
+			e_week_view_cut_clipboard (E_WEEK_VIEW (priv->month_view));
+			break;
+		default:
+			g_assert_not_reached ();
+		}
+	} else if (location == FOCUS_TASKPAD)
+		e_calendar_table_cut_clipboard (E_CALENDAR_TABLE (priv->todo));
+	else
 		g_assert_not_reached ();
-	}
 }
 
 void
 gnome_calendar_copy_clipboard (GnomeCalendar *gcal)
 {
 	GnomeCalendarPrivate *priv;
+	FocusLocation location;
 
 	priv = gcal->priv;
 
-	switch (priv->current_view_type) {
-	case GNOME_CAL_DAY_VIEW :
-		e_day_view_copy_clipboard (E_DAY_VIEW (priv->day_view));
-		break;
-	case GNOME_CAL_WORK_WEEK_VIEW :
-		e_day_view_copy_clipboard (E_DAY_VIEW (priv->work_week_view));
-		break;
-	case GNOME_CAL_WEEK_VIEW :
-		e_week_view_copy_clipboard (E_WEEK_VIEW (priv->week_view));
-		break;
-	case GNOME_CAL_MONTH_VIEW :
-		e_week_view_copy_clipboard (E_WEEK_VIEW (priv->month_view));
-		break;
-	default:
+	location = get_focus_location (gcal);
+
+	if (location == FOCUS_CALENDAR) {
+		switch (priv->current_view_type) {
+		case GNOME_CAL_DAY_VIEW :
+			e_day_view_copy_clipboard (E_DAY_VIEW (priv->day_view));
+			break;
+		case GNOME_CAL_WORK_WEEK_VIEW :
+			e_day_view_copy_clipboard (E_DAY_VIEW (priv->work_week_view));
+			break;
+		case GNOME_CAL_WEEK_VIEW :
+			e_week_view_copy_clipboard (E_WEEK_VIEW (priv->week_view));
+			break;
+		case GNOME_CAL_MONTH_VIEW :
+			e_week_view_copy_clipboard (E_WEEK_VIEW (priv->month_view));
+			break;
+		default:
+			g_assert_not_reached ();
+		}
+	} else if (location == FOCUS_TASKPAD)
+		e_calendar_table_copy_clipboard (E_CALENDAR_TABLE (priv->todo));
+	else
 		g_assert_not_reached ();
-	}
 }
 
 void
 gnome_calendar_paste_clipboard (GnomeCalendar *gcal)
 {
 	GnomeCalendarPrivate *priv;
+	FocusLocation location;
 
 	priv = gcal->priv;
 
-	switch (priv->current_view_type) {
-	case GNOME_CAL_DAY_VIEW :
-		e_day_view_paste_clipboard (E_DAY_VIEW (priv->day_view));
-		break;
-	case GNOME_CAL_WORK_WEEK_VIEW :
-		e_day_view_paste_clipboard (E_DAY_VIEW (priv->work_week_view));
-		break;
-	case GNOME_CAL_WEEK_VIEW :
-		e_week_view_paste_clipboard (E_WEEK_VIEW (priv->week_view));
-		break;
-	case GNOME_CAL_MONTH_VIEW :
-		e_week_view_paste_clipboard (E_WEEK_VIEW (priv->month_view));
-		break;
-	}
+	location = get_focus_location (gcal);
+
+	if (location == FOCUS_CALENDAR) {
+		switch (priv->current_view_type) {
+		case GNOME_CAL_DAY_VIEW :
+			e_day_view_paste_clipboard (E_DAY_VIEW (priv->day_view));
+			break;
+		case GNOME_CAL_WORK_WEEK_VIEW :
+			e_day_view_paste_clipboard (E_DAY_VIEW (priv->work_week_view));
+			break;
+		case GNOME_CAL_WEEK_VIEW :
+			e_week_view_paste_clipboard (E_WEEK_VIEW (priv->week_view));
+			break;
+		case GNOME_CAL_MONTH_VIEW :
+			e_week_view_paste_clipboard (E_WEEK_VIEW (priv->month_view));
+			break;
+		}
+	} else if (location == FOCUS_TASKPAD)
+		e_calendar_table_paste_clipboard (E_CALENDAR_TABLE (priv->todo));
+	else
+		g_assert_not_reached ();
 }
 
 
@@ -2526,7 +2752,10 @@ gnome_calendar_notify_dates_shown_changed (GnomeCalendar *gcal)
 
 	priv = gcal->priv;
 
-	gnome_calendar_get_visible_time_range (gcal, &start_time, &end_time);
+	/* If no time range is set yet, just return. */
+	if (!gnome_calendar_get_visible_time_range (gcal, &start_time,
+						    &end_time))
+		return;
 
 	/* We check if the visible date range has changed, and only emit the
 	   signal if it has. (This makes sure we only change the folder title
@@ -2560,19 +2789,63 @@ gnome_calendar_get_num_events_selected (GnomeCalendar *gcal)
 	return retval;
 }
 
+/**
+ * gnome_calendar_get_num_tasks_selected:
+ * @gcal: A calendar view.
+ * 
+ * Queries the number of tasks that are currently selected in the task pad of a
+ * calendar view.
+ * 
+ * Return value: Number of selected tasks.
+ **/
+gint
+gnome_calendar_get_num_tasks_selected (GnomeCalendar *gcal)
+{
+	GnomeCalendarPrivate *priv;
+	ETable *etable;
+
+	g_return_val_if_fail (gcal != NULL, -1);
+	g_return_val_if_fail (GNOME_IS_CALENDAR (gcal), -1);
+
+	priv = gcal->priv;
+
+	etable = e_calendar_table_get_table (E_CALENDAR_TABLE (priv->todo));
+	return e_table_selected_count (etable);
+}
+
 
 void
-gnome_calendar_delete_event		(GnomeCalendar  *gcal)
+gnome_calendar_delete_selection		(GnomeCalendar  *gcal)
 {
+	GnomeCalendarPrivate *priv;
+	FocusLocation location;
 	GtkWidget *view;
 
 	g_return_if_fail (GNOME_IS_CALENDAR (gcal));
 
-	view = gnome_calendar_get_current_view_widget (gcal);
-	if (E_IS_DAY_VIEW (view))
-		e_day_view_delete_event (E_DAY_VIEW (view));
+	priv = gcal->priv;
+
+	location = get_focus_location (gcal);
+
+	if (location == FOCUS_CALENDAR) {
+		view = gnome_calendar_get_current_view_widget (gcal);
+
+		if (E_IS_DAY_VIEW (view))
+			e_day_view_delete_event (E_DAY_VIEW (view));
+		else
+			e_week_view_delete_event (E_WEEK_VIEW (view));
+	} else if (location == FOCUS_TASKPAD)
+		e_calendar_table_delete_selected (E_CALENDAR_TABLE (priv->todo));
 	else
-		e_week_view_delete_event (E_WEEK_VIEW (view));
+		g_assert_not_reached ();
 }
 
+
+ECalendarTable*
+gnome_calendar_get_task_pad	(GnomeCalendar *gcal)
+{
+	g_return_val_if_fail (GNOME_IS_CALENDAR (gcal), NULL);
+
+	return E_CALENDAR_TABLE (gcal->priv->todo);
+}
 

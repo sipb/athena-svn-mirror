@@ -4,9 +4,8 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,12 +22,12 @@
  */
 
 #include <config.h>
+#include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-dialog-util.h>
+#include <liboaf/liboaf.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-context.h>
-
-#include <liboaf/liboaf.h>
-
 #include "tasks-control-factory.h"
 #include "tasks-control.h"
 
@@ -72,8 +71,9 @@ tasks_control_factory_fn		(BonoboGenericFactory	*Factory,
 
 	if (control)
 		return BONOBO_OBJECT (control);
-	else
+	else {
+		gnome_warning_dialog (_("Could not create the tasks view.  Please check your "
+					"ORBit and OAF setup."));
 		return NULL;
+	}
 }
-
-

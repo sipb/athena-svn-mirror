@@ -9,9 +9,8 @@
  * Copyright 1999, 2000 Ximian, Inc. (www.ximian.com)
  *
  * This program is free software; you can redistribute it and/or 
- * modify it under the terms of the GNU General Public License as 
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public 
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -31,6 +30,10 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <gal/util/e-iconv.h>
+
+#include <errno.h>
 
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
@@ -452,6 +455,7 @@ construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 	int len;
 	int state;
 	int ret;
+	int err;
 
 	d(printf("constructing mime-message\n"));
 
@@ -480,7 +484,13 @@ construct_from_parser (CamelMimePart *dw, CamelMimeParser *mp)
 #ifndef NO_WARNINGS
 #warning "return a real error code"
 #endif
-	return 0;
+	err = camel_mime_parser_errno(mp);
+	if (err != 0) {
+		errno = err;
+		ret = -1;
+	}
+
+	return ret;
 }
 
 static int
@@ -537,7 +547,7 @@ process_header (CamelMedium *medium, const char *header_name, const char *header
 	case HEADER_SUBJECT:
 		g_free (message->subject);
 		if (((CamelMimePart *)message)->content_type)
-			charset = camel_charset_to_iconv(header_content_type_param(((CamelMimePart *)message)->content_type, "charset"));
+			charset = e_iconv_charset_name(header_content_type_param(((CamelMimePart *)message)->content_type, "charset"));
 		else
 			charset = NULL;
 		message->subject = g_strstrip (header_decode_string (header_value, charset));

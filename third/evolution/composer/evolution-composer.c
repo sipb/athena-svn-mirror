@@ -4,9 +4,9 @@
  * Copyright (C) 2000  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
+ * modify it under the terms of version 2 of the GNU General Public
  * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -95,6 +95,23 @@ impl_Composer_set_headers (PortableServer_Servant servant,
 	e_destination_freev (tov);
 	e_destination_freev (ccv);
 	e_destination_freev (bccv);
+}
+
+static void
+impl_Composer_set_multipart_type (PortableServer_Servant servant,
+				  GNOME_Evolution_Composer_MultipartType type,
+				  CORBA_Environment *ev)
+{
+	BonoboObject *bonobo_object;
+	EvolutionComposer *composer;
+
+	bonobo_object = bonobo_object_from_servant (servant);
+	composer = EVOLUTION_COMPOSER (bonobo_object);
+
+	if (type == GNOME_Evolution_Composer_ALTERNATIVE) {
+		composer->composer->is_alternative = TRUE;
+		composer->composer->send_html = FALSE;
+	}
 }
 
 static void
@@ -205,12 +222,13 @@ evolution_composer_get_epv (void)
 	POA_GNOME_Evolution_Composer__epv *epv;
 
 	epv = g_new0 (POA_GNOME_Evolution_Composer__epv, 1);
-	epv->setHeaders  = impl_Composer_set_headers;
-	epv->setBodyText = impl_Composer_set_body_text;
-	epv->attachMIME  = impl_Composer_attach_MIME;
-	epv->attachData  = impl_Composer_attach_data;
-	epv->show        = impl_Composer_show;
-	epv->send        = impl_Composer_send;
+	epv->setHeaders       = impl_Composer_set_headers;
+	epv->setMultipartType = impl_Composer_set_multipart_type;
+	epv->setBodyText      = impl_Composer_set_body_text;
+	epv->attachMIME       = impl_Composer_attach_MIME;
+	epv->attachData       = impl_Composer_attach_data;
+	epv->show             = impl_Composer_show;
+	epv->send             = impl_Composer_send;
 
 	return epv;
 }
@@ -250,7 +268,7 @@ init (EvolutionComposer *composer)
 
 	account            = mail_config_get_default_account ();
 	composer->composer = e_msg_composer_new ();
-	
+
 	gtk_signal_connect (GTK_OBJECT (composer->composer), "send",
 			    GTK_SIGNAL_FUNC (send_cb), NULL);
 	gtk_signal_connect (GTK_OBJECT (composer->composer), "postpone",

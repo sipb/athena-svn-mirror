@@ -4,9 +4,8 @@
  * Copyright (C) 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -142,8 +141,24 @@ e_set_dialog_parent (GtkWindow *dialog,
 
 	xid = strtol (id, NULL, 10);
 
-	g_warning ("Got id `%s' -> %x", id, xid);
-
 	gdk_window = gdk_window_foreign_new (xid);
 	set_transient_for_gdk (dialog, gdk_window);
+}
+
+/**
+ * e_set_dialog_parent_from_xid:
+ * @dialog: 
+ * @xid: 
+ * 
+ * Like %e_set_dialog_parent_from_xid, but use an XID to specify the parent
+ * window.
+ **/
+void
+e_set_dialog_parent_from_xid (GtkWindow *dialog,
+			      Window xid)
+{
+	g_return_if_fail (dialog != NULL);
+	g_return_if_fail (GTK_IS_WINDOW (dialog));
+
+	set_transient_for_gdk (dialog, gdk_window_foreign_new (xid));
 }

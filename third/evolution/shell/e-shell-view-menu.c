@@ -4,9 +4,8 @@
  * Copyright (C) 2000, 2001  Ximian, Inc.
  *
  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -54,46 +53,11 @@
 
 #include "e-shell-view-menu.h"
 #include "e-shell-importer.h"
+#include "e-shell-about-box.h"
 
 #include "e-shell-folder-commands.h"
 
 #include "evolution-shell-component-utils.h"
-
-
-const char *authors[] = {
-	"Seth Alves",
-	"Anders Carlsson",
-	"Damon Chaplin",
-	"Clifford R. Conover",
-	"Anna Dirks",
-	"Miguel de Icaza",
-	"Radek Doulik",
-	"Arturo Espinoza",
-	"Larry Ewing",
-	"Nat Friedman",
-	"Bertrand Guiheneuf",
-	"Iain Holmes",
-	"Tuomas Kuosmanen",
-	"Christopher J. Lahey",
-	"Jason Leach",
-	"Matthew Loper",
-	"Federico Mena",
-	"Rodrigo Moya",
-	"Eskil Heyn Olsen",
-	"Jesse Pavel",
-	"Ettore Perazzoli",
-	"JP Rosevear",
-	"Jeffrey Stedfast",
-        "Jakub Steiner",
-	"Russell Steinthal",
-	"Peter Teichman",
-	"Chris Toshok",
-	"Jon Trowbridge",
-	"Peter Williams",
-	"Dan Winship",
-	"Michael Zucchi",
-	NULL
-};
 
 
 /* Utility functions.  */
@@ -209,10 +173,19 @@ command_submit_bug (BonoboUIComponent *uih,
                 gnome_error_dialog (_("Bug buddy could not be run."));
 }
 
-static void
-zero_pointer(GtkObject *object, void **pointer)
+static int
+about_box_event_callback (GtkWidget *widget,
+			  GdkEvent *event,
+			  void *data)
 {
-	*pointer = NULL;
+	GtkWidget **widget_pointer;
+
+	widget_pointer = (GtkWidget **) data;
+
+	gtk_widget_destroy (GTK_WIDGET (*widget_pointer));
+	*widget_pointer = NULL;
+
+	return TRUE;
 }
 
 static void
@@ -220,32 +193,28 @@ command_about_box (BonoboUIComponent *uih,
 		   void *data,
 		   const char *path)
 {
-	static GtkWidget *about_box = NULL;
+	static GtkWidget *about_box_window = NULL;
+	GtkWidget *about_box;
 
-	if (about_box) {
-		gdk_window_raise(GTK_WIDGET(about_box)->window);
-	} else {
-		char *version;
-
-		if (SUB_VERSION[0] == '\0')
-			version = g_strdup (VERSION);
-		else
-			version = g_strdup_printf ("%s [%s]", VERSION, SUB_VERSION);
-
-		about_box = gnome_about_new(_("Ximian Evolution"),
-					    version,
-					    _("Copyright 1999, 2000, 2001 Ximian, Inc."),
-					    authors,
-					    _("Ximian Evolution is a suite of groupware applications\n"
-					      "for mail, calendaring, and contact management\n"
-					      "within the GNOME desktop environment."),
-					    NULL);
-		gtk_signal_connect(GTK_OBJECT(about_box), "destroy",
-				   GTK_SIGNAL_FUNC (zero_pointer), &about_box);
-		gtk_widget_show(about_box);
-
-		g_free (version);
+	if (about_box_window != NULL) {
+		gdk_window_raise (about_box_window->window);
+		return;
 	}
+
+	about_box = e_shell_about_box_new ();
+	gtk_widget_show (about_box);
+
+	about_box_window = gtk_window_new (GTK_WINDOW_DIALOG);
+	gtk_window_set_policy (GTK_WINDOW (about_box_window), FALSE, FALSE, FALSE);
+	gtk_signal_connect (GTK_OBJECT (about_box_window), "button_press_event",
+			    GTK_SIGNAL_FUNC (about_box_event_callback), &about_box_window);
+	gtk_signal_connect (GTK_OBJECT (about_box_window), "delete_event",
+			    GTK_SIGNAL_FUNC (about_box_event_callback), &about_box_window);
+
+	gtk_window_set_transient_for (GTK_WINDOW (about_box_window), GTK_WINDOW (data));
+	gtk_window_set_title (GTK_WINDOW (about_box_window), _("About Ximian Evolution"));
+	gtk_container_add (GTK_CONTAINER (about_box_window), about_box);
+	gtk_widget_show (about_box_window);
 }
 
 static void
@@ -327,10 +296,8 @@ command_open_folder_in_new_window (BonoboUIComponent *uih,
 	shell = e_shell_view_get_shell (shell_view);
 
 	uri = g_strconcat (E_SHELL_URI_PREFIX, get_path_for_folder_op (shell_view), NULL);
-	new_view = e_shell_create_view (shell, uri);
+	new_view = e_shell_create_view (shell, uri, shell_view);
 	g_free (uri);
-
-	gtk_widget_show (GTK_WIDGET (new_view));
 }
 
 
@@ -487,7 +454,7 @@ command_work_offline (BonoboUIComponent *uih,
 	shell_view = E_SHELL_VIEW (data);
 	shell = e_shell_view_get_shell (shell_view);
 
-	g_warning ("Putting the shell offline");
+	g_message ("Putting the shell offline");
 	e_shell_go_offline (shell, shell_view);
 }
 
@@ -502,7 +469,7 @@ command_work_online (BonoboUIComponent *uih,
 	shell_view = E_SHELL_VIEW (data);
 	shell = e_shell_view_get_shell (shell_view);
 
-	g_warning ("Putting the shell online");
+	g_message ("Putting the shell online");
 	e_shell_go_online (shell, shell_view);
 }
 
@@ -702,7 +669,7 @@ update_offline_menu_item (EShellView *shell_view,
 	case E_SHELL_LINE_STATUS_OFFLINE:
 		bonobo_ui_component_set_prop (ui_component,
 					      "/menu/File/ToggleOffline",
-					      "label", _("Work Online"), NULL);
+					      "label", _("_Work Online"), NULL);
 		bonobo_ui_component_set_prop (ui_component,
 					      "/menu/File/ToggleOffline",
 					      "verb", "WorkOnline", NULL);
@@ -715,7 +682,7 @@ update_offline_menu_item (EShellView *shell_view,
 	case E_SHELL_LINE_STATUS_ONLINE:
 		bonobo_ui_component_set_prop (ui_component,
 					      "/menu/File/ToggleOffline",
-					      "label", _("Work Offline"), NULL);
+					      "label", _("_Work Offline"), NULL);
 		bonobo_ui_component_set_prop (ui_component,
 					      "/menu/File/ToggleOffline",
 					      "verb", "WorkOffline", NULL);

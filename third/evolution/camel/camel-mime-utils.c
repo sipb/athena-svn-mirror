@@ -4,19 +4,19 @@
  *  Authors: Michael Zucchi <notzed@ximian.com>
  *           Jeffrey Stedfast <fejj@ximian.com>
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public License
- *  as published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this program; if not, write to the Free Software
- *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 /* dont touch this file without my permission - Michael */
@@ -48,6 +48,7 @@
 
 #include <glib.h>
 #include <gal/unicode/gunicode.h>
+#include <gal/util/e-iconv.h>
 
 #include "camel-mime-utils.h"
 #include "camel-charset-map.h"
@@ -70,12 +71,13 @@ int free_count = 0;
 #define g_free(x) (free_count++, g_free(x))
 #endif
 
-/* for all warnings ... */
-#define w(x) x
+/* for all non-essential warnings ... */
+#define w(x) 
 
 #define d(x)
 #define d2(x)
 
+#define CAMEL_UUENCODE_CHAR(c)  ((c) ? (c) + ' ' : '`')
 #define	CAMEL_UUDECODE_CHAR(c)	(((c) - ' ') & 077)
 
 static char *base64_alphabet =
@@ -86,52 +88,10 @@ static unsigned char tohex[16] = {
 	'8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
 };
 
-static unsigned short camel_mime_special_table[256] = {
-	  5,  5,  5,  5,  5,  5,  5,  5,  5,231,  7,  5,  5, 39,  5,  5,
-	  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,  5,
-	242,448, 76,192,192,192,192,192, 76, 76,448,448, 76,448, 72,324,
-	448,448,448,448,448,448,448,448,448,448, 76, 76, 76,  4, 76, 68,
-	 76,448,448,448,448,448,448,448,448,448,448,448,448,448,448,448,
-	448,448,448,448,448,448,448,448,448,448,448,108,236,108,192, 64,
-	192,448,448,448,448,448,448,448,448,448,448,448,448,448,448,448,
-	448,448,448,448,448,448,448,448,448,448,448,192,192,192,192,  5,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-};
+static unsigned short camel_mime_special_table[256];
+static unsigned char camel_mime_base64_rank[256];
 
-static unsigned char camel_mime_base64_rank[256] = {
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255, 62,255,255,255, 63,
-	 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,255,255,255,  0,255,255,
-	255,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-	 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,255,255,255,255,255,
-	255, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-	 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-	255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,
-};
-
-/*
-  if any of these change, then the tables above should be regenerated
-  by compiling this with -DBUILD_TABLE, and running.
-
-  gcc -DCLEAN_DATE -o buildtable -I.. `gnome-config --cflags --libs gal` -DBUILD_TABLE camel-mime-utils.c camel-charset-map.c
-  ./buildtable
-
-*/
+/* Flags bits set in the mime_special table, use the is_*() mactos to access them normally */
 enum {
 	IS_CTRL		= 1<<0,
 	IS_LWSP		= 1<<1,
@@ -156,9 +116,7 @@ enum {
 #define is_especial(x) ((camel_mime_special_table[(unsigned char)(x)] & IS_ESPECIAL) != 0)
 #define is_psafe(x) ((camel_mime_special_table[(unsigned char)(x)] & IS_PSAFE) != 0)
 
-/* only needs to be run to rebuild the tables above */
-#ifdef BUILD_TABLE
-
+/* Used by table initialisation code for special characters */
 #define CHARS_LWSP " \t\n\r"
 #define CHARS_TSPECIAL "()<>@,;:\\\"/[]?="
 #define CHARS_SPECIAL "()<>@,;:\\\".[]"
@@ -233,7 +191,7 @@ header_decode_init(void)
 	header_init_bits(IS_PSAFE, 0, 0, CHARS_PSPECIAL);
 }
 
-void
+static void
 base64_init(void)
 {
 	int i;
@@ -244,46 +202,6 @@ base64_init(void)
 	}
 	camel_mime_base64_rank['='] = 0;
 }
-
-int main(int argc, char **argv)
-{
-	int i;
-	void run_test(void);
-
-	header_decode_init();
-	base64_init();
-
-	printf("static unsigned short camel_mime_special_table[256] = {\n\t");
-	for (i=0;i<256;i++) {
-		printf("%3d,", camel_mime_special_table[i]);
-		if ((i&15) == 15) {
-			printf("\n");
-			if (i!=255) {
-				printf("\t");
-			}
-		}
-	}
-	printf("};\n");
-
-	printf("static unsigned char camel_mime_base64_rank[256] = {\n\t");
-	for (i=0;i<256;i++) {
-		printf("%3d,", camel_mime_base64_rank[i]);
-		if ((i&15) == 15) {
-			printf("\n");
-			if (i!=255) {
-				printf("\t");
-			}
-		}
-	}
-	printf("};\n");
-
-	run_test();
-
-	return 0;
-}
-
-#endif
-
 
 /* call this when finished encoding everything, to
    flush off the last little bit */
@@ -490,19 +408,171 @@ base64_decode_simple (char *data, int len)
 				   (unsigned char *)data, &state, &save);
 }
 
+/**
+ * uuencode_close: uuencode a chunk of data
+ * @in: input stream
+ * @len: input stream length
+ * @out: output stream
+ * @uubuf: temporary buffer of 60 bytes
+ * @state: holds the number of bits that are stored in @save
+ * @save: leftover bits that have not yet been encoded
+ * @uulen: holds the value of the length-char which is used to calculate
+ *         how many more chars need to be decoded for that 'line'
+ *
+ * Returns the number of bytes encoded. Call this when finished
+ * encoding data with uuencode_step to flush off the last little
+ * bit.
+ **/
+int
+uuencode_close (unsigned char *in, int len, unsigned char *out, unsigned char *uubuf, int *state, guint32 *save, char *uulen)
+{
+	register unsigned char *outptr, *bufptr;
+	register guint32 saved;
+	int i;
+	
+	outptr = out;
+	
+	if (len > 0)
+		outptr += uuencode_step (in, len, out, uubuf, state, save, uulen);
+	
+	bufptr = uubuf + ((*uulen / 3) * 4);
+	saved = *save;
+	i = *state;
+	
+	if (i > 0) {
+		while (i < 3) {
+			saved <<= 8 | 0;
+			i++;
+		}
+		
+		if (i == 3) {
+			/* convert 3 normal bytes into 4 uuencoded bytes */
+			unsigned char b0, b1, b2;
+			
+			b0 = saved >> 16;
+			b1 = saved >> 8 & 0xff;
+			b2 = saved & 0xff;
+			
+			*bufptr++ = CAMEL_UUENCODE_CHAR ((b0 >> 2) & 0x3f);
+			*bufptr++ = CAMEL_UUENCODE_CHAR (((b0 << 4) | ((b1 >> 4) & 0xf)) & 0x3f);
+			*bufptr++ = CAMEL_UUENCODE_CHAR (((b1 << 2) | ((b2 >> 6) & 0x3)) & 0x3f);
+			*bufptr++ = CAMEL_UUENCODE_CHAR (b2 & 0x3f);
+		}
+	}
+	
+	if (*uulen || *state) {
+		int cplen = (((*uulen + (*state ? 3 : 0)) / 3) * 4);
+		
+		*outptr++ = CAMEL_UUENCODE_CHAR (*uulen + *state);
+		memcpy (outptr, uubuf, cplen);
+		outptr += cplen;
+		*outptr++ = '\n';
+		*uulen = 0;
+	}
+	
+	*outptr++ = CAMEL_UUENCODE_CHAR (*uulen);
+	*outptr++ = '\n';
+	
+	*save = 0;
+	*state = 0;
+	
+	return outptr - out;
+}
+
+
+/**
+ * uuencode_step: uuencode a chunk of data
+ * @in: input stream
+ * @len: input stream length
+ * @out: output stream
+ * @uubuf: temporary buffer of 60 bytes
+ * @state: holds the number of bits that are stored in @save
+ * @save: leftover bits that have not yet been encoded
+ * @uulen: holds the value of the length-char which is used to calculate
+ *         how many more chars need to be decoded for that 'line'
+ *
+ * Returns the number of bytes encoded. Performs an 'encode step',
+ * only encodes blocks of 45 characters to the output at a time, saves
+ * left-over state in @uubuf, @state and @save (initialize to 0 on first
+ * invocation).
+ **/
+int
+uuencode_step (unsigned char *in, int len, unsigned char *out, unsigned char *uubuf, int *state, guint32 *save, char *uulen)
+{
+	register unsigned char *inptr, *outptr, *bufptr;
+	unsigned char *inend;
+	register guint32 saved;
+	int i;
+	
+	if (*uulen <= 0)
+		*uulen = 0;
+	
+	inptr = in;
+	inend = in + len;
+	
+	outptr = out;
+	
+	bufptr = uubuf + ((*uulen / 3) * 4);
+	
+	saved = *save;
+	i = *state;
+	
+	while (inptr < inend) {
+		while (*uulen < 45 && inptr < inend) {
+			while (i < 3 && inptr < inend) {
+				saved = (saved << 8) | *inptr++;
+				i++;
+			}
+			
+			if (i == 3) {
+				/* convert 3 normal bytes into 4 uuencoded bytes */
+				unsigned char b0, b1, b2;
+				
+				b0 = saved >> 16;
+				b1 = saved >> 8 & 0xff;
+				b2 = saved & 0xff;
+				
+				*bufptr++ = CAMEL_UUENCODE_CHAR ((b0 >> 2) & 0x3f);
+				*bufptr++ = CAMEL_UUENCODE_CHAR (((b0 << 4) | ((b1 >> 4) & 0xf)) & 0x3f);
+				*bufptr++ = CAMEL_UUENCODE_CHAR (((b1 << 2) | ((b2 >> 6) & 0x3)) & 0x3f);
+				*bufptr++ = CAMEL_UUENCODE_CHAR (b2 & 0x3f);
+				
+				i = 0;
+				saved = 0;
+				*uulen += 3;
+			}
+		}
+		
+		if (*uulen >= 45) {
+			*outptr++ = CAMEL_UUENCODE_CHAR (*uulen);
+			memcpy (outptr, uubuf, ((*uulen / 3) * 4));
+			outptr += ((*uulen / 3) * 4);
+			*outptr++ = '\n';
+			*uulen = 0;
+			bufptr = uubuf;
+		}
+	}
+	
+	*save = saved;
+	*state = i;
+	
+	return outptr - out;
+}
+
 
 /**
  * uudecode_step: uudecode a chunk of data
  * @in: input stream
- * @len: max length of data to decode ( normally strlen(in) ??)
+ * @inlen: max length of data to decode ( normally strlen(in) ??)
  * @out: output stream
  * @state: holds the number of bits that are stored in @save
  * @save: leftover bits that have not yet been decoded
  * @uulen: holds the value of the length-char which is used to calculate
  *         how many more chars need to be decoded for that 'line'
  *
- * uudecodes a chunk of data. Assumes the "begin <mode> <file name>" line
- * has been stripped off.
+ * Returns the number of bytes decoded. Performs a 'decode step' on
+ * a chunk of uuencoded data. Assumes the "begin <mode> <file name>"
+ * line has been stripped off.
  **/
 int
 uudecode_step (unsigned char *in, int len, unsigned char *out, int *state, guint32 *save, char *uulen)
@@ -578,6 +648,7 @@ uudecode_step (unsigned char *in, int len, unsigned char *out, int *state, guint
 
 	return outptr - out;
 }
+
 
 /* complete qp encoding */
 int
@@ -913,8 +984,9 @@ rfc2047_decode_word(const char *in, int len)
 	char *outbase = NULL;
 	char *outbuf;
 	int inlen, outlen;
+	gboolean retried = FALSE;
 	iconv_t ic;
-
+	
 	d(printf("rfc2047: decoding '%.*s'\n", len, in));
 
 	/* quick check to see if this could possibly be a real encoded word */
@@ -954,7 +1026,7 @@ rfc2047_decode_word(const char *in, int len)
 			memcpy (encname, in + 2, tmplen);
 			encname[tmplen] = '\0';
 			
-			charset = camel_charset_to_iconv (encname);
+			charset = e_iconv_charset_name (encname);
 			
 			inbuf = decword;
 			
@@ -962,22 +1034,31 @@ rfc2047_decode_word(const char *in, int len)
 			outbase = alloca (outlen);
 			outbuf = outbase;
 			
-			/* TODO: Should this cache iconv converters? */
-			ic = iconv_open ("UTF-8", charset);
+		retry:
+			ic = e_iconv_open ("UTF-8", charset);
 			if (ic != (iconv_t)-1) {
-				ret = iconv (ic, &inbuf, &inlen, &outbuf, &outlen);
+				ret = e_iconv (ic, &inbuf, &inlen, &outbuf, &outlen);
 				if (ret >= 0) {
-					iconv (ic, NULL, 0, &outbuf, &outlen);
+					e_iconv (ic, NULL, 0, &outbuf, &outlen);
 					*outbuf = 0;
 					decoded = g_strdup (outbase);
 				}
-				iconv_close (ic);
+				e_iconv_close (ic);
 			} else {
 				w(g_warning ("Cannot decode charset, header display may be corrupt: %s: %s",
 					     charset, g_strerror (errno)));
-				/* TODO: Should this do this, or just leave the encoded strings? */
-				decword[inlen] = 0;
-				decoded = g_strdup (decword);
+				
+				if (!retried) {
+					charset = e_iconv_locale_charset ();
+					if (!charset)
+						charset = "iso-8859-1";
+					
+					retried = TRUE;
+					goto retry;
+				}
+				
+				/* we return the encoded word here because we've got to return valid utf8 */
+				decoded = g_strndup (in, inlen);
 			}
 		}
 	}
@@ -1028,23 +1109,24 @@ append_8bit (GString *out, const char *inbuf, int inlen, const char *charset)
 	int outlen;
 	iconv_t ic;
 	
-	ic = iconv_open ("UTF-8", charset);
+	ic = e_iconv_open ("UTF-8", charset);
 	if (ic == (iconv_t) -1)
 		return FALSE;
 
 	outlen = inlen * 6 + 16;
 	outbuf = outbase = g_malloc(outlen);
 		
-	if (iconv(ic, &inbuf, &inlen, &outbuf, &outlen) == -1) {
+	if (e_iconv(ic, &inbuf, &inlen, &outbuf, &outlen) == -1) {
 		w(g_warning("Conversion to '%s' failed: %s", charset, strerror(errno)));
 		g_free(outbase);
+		e_iconv_close(ic);
 		return FALSE;
 	}
 
 	*outbuf = 0;
 	g_string_append(out, outbase);
 	g_free(outbase);
-	iconv_close(ic);
+	e_iconv_close(ic);
 
 	return TRUE;
 	
@@ -1055,14 +1137,15 @@ static char *
 header_decode_text (const char *in, int inlen, const char *default_charset)
 {
 	GString *out;
-	const char *inptr, *inend, *start, *locale_charset;
+	const char *inptr, *inend, *start, *chunk, *locale_charset;
 	char *dword = NULL;
 
-	locale_charset = camel_charset_locale_name();
+	locale_charset = e_iconv_locale_charset();
 
 	out = g_string_new("");
 	inptr = in;
 	inend = inptr + inlen;
+	chunk = NULL;
 
 	while (inptr < inend) {
 		start = inptr;
@@ -1072,8 +1155,11 @@ header_decode_text (const char *in, int inlen, const char *default_charset)
 		if (inptr == inend) {
 			g_string_append_len(out, start, inptr-start);
 			break;
-		} else if (dword == NULL)
+		} else if (dword == NULL) {
 			g_string_append_len(out, start, inptr-start);
+		} else {
+			chunk = start;
+		}
 
 		start = inptr;
 		while (inptr < inend && !is_lwsp(*inptr))
@@ -1083,12 +1169,16 @@ header_decode_text (const char *in, int inlen, const char *default_charset)
 		if (dword) {
 			g_string_append(out, dword);
 			g_free(dword);
-		} else if ((default_charset == NULL
-			    || !append_8bit(out, start, inptr-start, default_charset))
-			   && (locale_charset == NULL
-			       || !append_8bit(out, start, inptr-start, locale_charset))) {
-			append_latin1(out, start, inptr-start);
+		} else {
+			if (!chunk)
+				chunk = start;
+			
+			if ((default_charset == NULL || !append_8bit (out, chunk, inptr-chunk, default_charset))
+			    && (locale_charset == NULL || !append_8bit(out, chunk, inptr-chunk, locale_charset)))
+				append_latin1(out, chunk, inptr-chunk);
 		}
+		
+		chunk = NULL;
 	}
 
 	dword = out->str;
@@ -1130,7 +1220,7 @@ rfc2047_encode_word(GString *outstring, const char *in, int len, const char *typ
 	ascii = alloca (bufflen);
 	
 	if (strcasecmp (type, "UTF-8") != 0)
-		ic = iconv_open (type, "UTF-8");
+		ic = e_iconv_open (type, "UTF-8");
 	
 	while (inlen) {
 		int convlen, i, proclen;
@@ -1177,13 +1267,13 @@ rfc2047_encode_word(GString *outstring, const char *in, int len, const char *typ
 			   hopefully-small-enough chunks, and leave it at that */
 			convlen = MIN(inlen, CAMEL_FOLD_PREENCODED);
 			p = inptr;
-			if (iconv(ic, &inptr, &convlen, &out, &outlen) == -1) {
+			if (e_iconv(ic, &inptr, &convlen, &out, &outlen) == -1) {
 				w(g_warning("Conversion problem: conversion truncated: %s", strerror(errno)));
 				/* blah, we include it anyway, better than infinite loop ... */
 				inptr = p + convlen;
 			} else {
 				/* make sure we flush out any shift state */
-				iconv(ic, NULL, 0, &out, &outlen);
+				e_iconv(ic, NULL, 0, &out, &outlen);
 			}
 			inlen -= (inptr - p);
 		}
@@ -1207,9 +1297,8 @@ rfc2047_encode_word(GString *outstring, const char *in, int len, const char *typ
 		}
 	}
 
-	if (ic != (iconv_t) -1) {
-		iconv_close(ic);
-	}
+	if (ic != (iconv_t) -1)
+		e_iconv_close(ic);
 }
 
 
@@ -1767,7 +1856,7 @@ rfc2184_decode (const char *in, int len)
 		return NULL;
 	
 	encoding = g_strndup (in, inptr - in);
-	charset = camel_charset_to_iconv (encoding);
+	charset = e_iconv_charset_name (encoding);
 	g_free (encoding);
 	
 	inptr = memchr (inptr + 1, '\'', inend - inptr - 1);
@@ -1784,22 +1873,22 @@ rfc2184_decode (const char *in, int len)
 		inbuf = decword = hex_decode (inptr, inend - inptr);
 		inlen = strlen (inbuf);
 		
-		ic = iconv_open ("UTF-8", charset);
+		ic = e_iconv_open("UTF-8", charset);
 		if (ic != (iconv_t) -1) {
 			int ret;
 			
 			outlen = inlen * 6 + 16;
 			outbuf = outbase = g_malloc (outlen);
 			
-			ret = iconv (ic, &inbuf, &inlen, &outbuf, &outlen);
+			ret = e_iconv (ic, &inbuf, &inlen, &outbuf, &outlen);
 			if (ret >= 0) {
-				iconv (ic, NULL, 0, &outbuf, &outlen);
+				e_iconv (ic, NULL, 0, &outbuf, &outlen);
 				*outbuf = '\0';
 				g_free (decoded);
 				decoded = outbase;
 			}
 			
-			iconv_close (ic);
+			e_iconv_close(ic);
 		} else {
 			decoded = decword;
 		}
@@ -1890,6 +1979,7 @@ header_decode_param (const char **in, char **paramp, char **valuep, int *is_rfc2
 	if (*inptr == '=') {
 		inptr++;
 		value = header_decode_value (&inptr);
+		
 		if (is_rfc2184) {
 			/* We have ourselves an rfc2184 parameter */
 			
@@ -1911,7 +2001,7 @@ header_decode_param (const char **in, char **paramp, char **valuep, int *is_rfc2
 				 */
 				*is_rfc2184_param = TRUE;
 			}
-		} else if (value && !strcmp (value, "=?")) {
+		} else if (value && !strncmp (value, "=?", 2)) {
 			/* We have a broken param value that is rfc2047 encoded.
 			 * Since both Outlook and Netscape/Mozilla do this, we
 			 * should handle this case.
@@ -1938,21 +2028,21 @@ header_decode_param (const char **in, char **paramp, char **valuep, int *is_rfc2
 		inbuf = value;
 		inlen = strlen (inbuf);
 		
-		charset = camel_charset_locale_name ();
-		ic = iconv_open ("UTF-8", charset ? charset : "ISO-8859-1");
+		charset = e_iconv_locale_charset();
+		ic = e_iconv_open ("UTF-8", charset ? charset : "ISO-8859-1");
 		if (ic != (iconv_t) -1) {
 			int ret;
 			
 			outlen = inlen * 6 + 16;
 			outbuf = outbase = g_malloc (outlen);
 			
-			ret = iconv (ic, &inbuf, &inlen, &outbuf, &outlen);
+			ret = e_iconv (ic, &inbuf, &inlen, &outbuf, &outlen);
 			if (ret >= 0) {
-				iconv (ic, NULL, 0, &outbuf, &outlen);
+				e_iconv (ic, NULL, 0, &outbuf, &outlen);
 				*outbuf = '\0';
 			}
 			
-			iconv_close (ic);
+			e_iconv_close (ic);
 			
 			g_free (value);
 			value = outbase;
@@ -2273,7 +2363,7 @@ header_decode_mailbox(const char **in)
 				/* Fix for stupidly-broken-mailers that like to put '.''s in names unquoted */
 				/* see bug #8147 */
 				if (*inptr && *inptr != '<') {
-					g_warning("Working around stupid mailer bug #5: unescaped characters in names");
+					w(g_warning("Working around stupid mailer bug #5: unescaped characters in names"));
 					name = g_string_append_c(name, *inptr++);
 					pre = header_decode_word(&inptr);
 				}
@@ -2320,10 +2410,9 @@ header_decode_mailbox(const char **in)
 		inptr++;
 		g_free(pre);
 		pre = header_decode_word(&inptr);
-		if (pre) {
-			addr = g_string_append_c(addr, '.');
+		addr = g_string_append_c(addr, '.');
+		if (pre)
 			addr = g_string_append(addr, pre);
-		}
 		comment = inptr;
 		header_decode_lwsp(&inptr);
 	}
@@ -2342,10 +2431,41 @@ header_decode_mailbox(const char **in)
 	} else {
 		/* If we get a <, the address was probably a name part, lets try again shall we? */
 		/* Another fix for seriously-broken-mailers */
-		if (name == NULL && *inptr == '<') {
-			name = addr;
-			addr = g_string_new("");
-			closeme = TRUE;
+		if (*inptr && *inptr != ',') {
+			char *text;
+
+			w(g_warning("We didn't get an '@' where we expected in '%s', trying again", *in));
+			w(g_warning("Name is '%s', Addr is '%s' we're at '%s'\n", name?name->str:"<UNSET>", addr->str, inptr));
+
+			/* need to keep *inptr, as try_address_again will drop the current character */
+			if (*inptr == '<')
+				closeme = TRUE;
+			else
+				g_string_append_c(addr, *inptr);
+
+			/* check for address is encoded word ... */
+			text = header_decode_string(addr->str, NULL);
+			if (name == NULL) {
+				name = addr;
+				addr = g_string_new("");
+				if (text) {
+					g_string_truncate(name, 0);
+					g_string_append(name, text);
+				}
+			} else {
+				g_string_append(name, text?text:addr->str);
+				g_string_truncate(addr, 0);
+			}
+			g_free(text);
+
+			/* or maybe that we've added up a bunch of broken bits to make an encoded word */
+			text = header_decode_string(name->str, NULL);
+			if (text) {
+				g_string_truncate(name, 0);
+				g_string_append(name, text);
+				g_free(text);
+			}
+
 			goto try_address_again;
 		}
 		w(g_warning("invalid address, no '@' domain part at %c: %s", *inptr, *in));
@@ -2600,6 +2720,10 @@ header_address_decode(const char *in)
 	if (in == NULL)
 		return NULL;
 
+	header_decode_lwsp(&inptr);
+	if (*inptr == 0)
+		return NULL;
+
 	do {
 		last = inptr;
 		addr = header_decode_address(&inptr);
@@ -2836,7 +2960,7 @@ header_param_list_format_append (GString *out, struct _header_param *p)
 		
 		value = header_encode_param (p->value, &encoded);
 		if (!value) {
-			g_warning ("appending parameter %s=%s violates rfc2184", p->name, p->value);
+			w(g_warning ("appending parameter %s=%s violates rfc2184", p->name, p->value));
 			value = g_strdup (p->value);
 		}
 		
@@ -3507,58 +3631,77 @@ header_msgid_generate (void)
 static struct {
 	char *name;
 	char *pattern;
+	regex_t regex;
 } mail_list_magic[] = {
-	{ "Sender", " *owner-([^@]+)" },
-	{ "Sender", " *([^@]+)-owner" },
-	{ "Return-Path", " *owner-([^@]+)" },
-	{ "X-BeenThere", " *([^@]+)" },
-	{ "Delivered-To", " *mailing list ([^@]+)" },
-	{ "X-Mailing-List", " *([^@]+)" },
-	{ "X-Loop", " *([^@]+)" },
-	{ "List-Id", " *([^<]+)" },
-	{ "List-Post", " *<mailto:([^@]+)" },
-	{ "Mailing-List", " *list ([^@]+)" },
-	{ "Originator", " *([^@]+)" },
+	/* Sender: owner-gnome-hackers@gnome.org */
+	/* Sender: owner-gnome-hacekrs */
+	{ "Sender", " *owner-([^@]+)@?([^ @\n\t\r>]*)" },
+	/* Sender: gnome-hackers-owner@gnome.org */
+	/* Sender: gnome-hackers-owner */
+	{ "Sender", " *([^@]+)-owner@?([^ @\n\t\r>]*)" },
+	/* Sender: owner-gnome-hackers@gnome.org */
+	/* Sender: <owner-gnome-hackers@gnome.org> */
+	/* Sender: owner-gnome-hackers */
+	/* Sender: <owner-gnome-hackers> */
+	{ "Return-Path", " <?owner-([^@>]+)@?([^ \n\t\r>]*)" },
+	/* X-BeenThere: gnome-hackers@gnome.org */
+	/* X-BeenThere: gnome-hackers */
+	{ "X-BeenThere", " *([^@]+)@?([^ \n\t\r>]*)" },
+	/* Delivered-To: mailing list gnome-hackers@gnome.org */
+	/* Delivered-To: mailing list gnome-hackers */
+	{ "Delivered-To", " *mailing list ([^@]+)@?([^ \n\t\r>]*)" },
+	/* X-Mailing-List: <gnome-hackers@gnome.org> arcive/latest/100 */
+	/* X-Mailing-List: gnome-hackers@gnome.org */
+	/* X-Mailing-List: gnome-hackers */
+	/* X-Mailing-List: <gnome-hackers> */
+	{ "X-Mailing-List", " <?([^@>]+)@?([^ \n\t\r>]*)" },
+	/* X-Loop: gnome-hackers@gnome.org */
+	{ "X-Loop", " *([^@]+)@?([^ \n\t\r>]*)" },
+	/* List-Id: GNOME stuff <gnome-hackers.gnome.org> */
+	/* List-Id: <gnome-hackers.gnome.org> */
+	/* List-Id: <gnome-hackers> */
+	/* This old one wasn't very useful: { "List-Id", " *([^<]+)" },*/
+	{ "List-Id", "[^<]*<([^\\.>]+)\\.?([^ \n\t\r>]*)" },
+	/* List-Post: <mailto:gnome-hackers@gnome.org> */
+	/* List-Post: <mailto:gnome-hackers> */
+	{ "List-Post", " *<mailto:([^@>]+)@?([^ \n\t\r>]*)" },
+	/* Mailing-List: list gnome-hackers@gnome.org; contact gnome-hackers-owner@gnome.org */
+	{ "Mailing-List", " *list ([^@]+)@?([^ \n\t\r>;])*" },
+	/* Originator: gnome-hackers@gnome.org */
+	{ "Originator", " *([^@]+)@?([^ \n\t\r>]*)" },
+	/* X-List: gnome-hackers */
+	/* X-List: gnome-hackers@gnome.org */
+	{ "X-List", " *([^@]+)@?([^ \n\t\r>]*)" },	
 };
 
 char *
 header_raw_check_mailing_list(struct _header_raw **list)
 {
 	const char *v;
-	regex_t pattern;
-	regmatch_t match[2];
-	int i, errcode;
+	regmatch_t match[3];
+	int i;
 	
 	for (i = 0; i < sizeof (mail_list_magic) / sizeof (mail_list_magic[0]); i++) {
-		if ((errcode = regcomp (&pattern, mail_list_magic[i].pattern, REG_EXTENDED|REG_ICASE)) != 0) {
-			char *errstr;
-			size_t len;
-			
-			len = regerror (errcode, &pattern, NULL, 0);
-			errstr = g_malloc0 (len + 1);
-			regerror (errcode, &pattern, errstr, len);
-			regfree (&pattern);
-			
-			g_warning ("Internal error, compiling regex failed: %s: %s",
-				   mail_list_magic[i].pattern, errstr);
-			g_free (errstr);
-			
-			continue;
-		}
-		
 		v = header_raw_find (list, mail_list_magic[i].name, NULL);
-		if (v != NULL && regexec (&pattern, v, 2, match, 0) == 0 && match[1].rm_so != -1) {
-			const char *mlist, *mlend;
-			
-			regfree (&pattern);
-			mlist = v + match[1].rm_so;
-			mlend = v + match[1].rm_eo;
-			if (*mlist == '<')
-				mlist++;
-			
-			return g_strndup (mlist, mlend - mlist);
+		if (v != NULL && regexec (&mail_list_magic[i].regex, v, 3, match, 0) == 0 && match[1].rm_so != -1) {
+			char *list;
+			int len1, len2;
+
+			len1 = match[1].rm_eo - match[1].rm_so;
+			len2 = match[2].rm_eo - match[2].rm_so;
+
+			list = g_malloc(len1+len2+2);
+			memcpy(list, v + match[1].rm_so, len1);
+			if (len2) {
+				list[len1] = '@';
+				memcpy(list+len1+1, v+match[2].rm_so, len2);
+				list[len1+len2+1]=0;
+			} else {
+				list[len1] = 0;
+			}
+
+			return list;
 		}
-		regfree (&pattern);
 	}
 
 	return NULL;
@@ -3956,89 +4099,31 @@ header_unfold(const char *in)
 	return out;
 }
 
-#ifdef BUILD_TABLE
-
-/* for debugging tests */
-/* should also have some regression tests somewhere */
-
-void test_phrase(const char *in)
+void
+camel_mime_utils_init(void)
 {
-	printf("'%s' -> '%s'\n", in, header_encode_phrase(in));
-}
+	int i, errcode, regex_compilation_failed=0;
 
-void test_fold(const char *in)
-{
-	printf("'%s'\n ->\n '%s'\n", in, header_fold(in));
-}
+	/* Init tables */
+	header_decode_init();
+	base64_init();
 
-void run_test(void)
-{
-	char *to = "gnome hacker dudes: license-discuss@opensource.org,
-        \"Richard M. Stallman\" <rms@gnu.org>,
-        Barry Chester <barry_che@antdiv.gov.au>,
-        Michael Zucchi <zucchi.michael(this (is a nested) comment)@zedzone.mmc.com.au>,
-        Miguel de Icaza <miguel@gnome.org>;,
-	zucchi@zedzone.mmc.com.au, \"Foo bar\" <zed@zedzone>,
-	<frob@frobzone>";
-
-#if 0
-	header_to_decode(to);
-
-	header_mime_decode("1.0", 0, 0);
-	header_mime_decode("1.3 (produced by metasend V1.0)", 0, 0);
-	header_mime_decode("(produced by metasend V1.0) 5.2", 0, 0);
-	header_mime_decode("7(produced by metasend 1.0) . (produced by helix/send/1.0) 9 . 5", 0, 0);
-	header_mime_decode("3.", 0, 0);
-	header_mime_decode(".", 0, 0);
-	header_mime_decode(".5", 0, 0);
-	header_mime_decode("c.d", 0, 0);
-	header_mime_decode("", 0, 0);
-
-	header_msgid_decode(" <\"L3x2i1.0.Nm5.Xd-Wu\"@lists.redhat.com>");
-	header_msgid_decode("<200001180446.PAA02065@beaker.htb.com.au>");
-#endif
-
-	test_fold("Header: This is a long header that should be folded properly at the right place, or so i hope.  I should probably set the fold value to something lower for testing");
-	test_fold("Header: nowletstryfoldingsomethingthatistoolongtofold,iwonderwhatitshoulddointsteadtofoldit?hmm,iguessicanjusttruncateitatsomepointortrytorefoldthepreviousstuff(yuck)tofit");
-	test_phrase("Michael Zucchi (NotZed)");
-	test_phrase("Zucchi, ( \\ NotZed \\ ) Michael");
-	{
-		int ic;
-		char *outbuf, *inbuf, buffer[256];
-		int inlen, outlen;
-
-		outlen = 256;
-		inbuf = "Dra¾en Kaèar";
-		inlen = strlen(inbuf);
-		outbuf = buffer;
-		ic = iconv_open("UTF-8", "ISO-8859-1");
-		iconv(ic, &inbuf, &inlen, &outbuf, &outlen);
-		test_phrase(buffer);
-
-		outlen = 256;
-		inbuf = "This is an encoded phrase Tomasz K³oczko";
-		inlen = strlen(inbuf);
-		outbuf = buffer;
-		ic = iconv_open("UTF-8", "ISO-8859-2");
-		iconv(ic, &inbuf, &inlen, &outbuf, &outlen);
-		test_phrase(buffer);
-
+	/* precompile regex's for speed at runtime */
+	for (i = 0; i < sizeof(mail_list_magic) / sizeof(mail_list_magic[0]); i++) {
+		errcode = regcomp(&mail_list_magic[i].regex, mail_list_magic[i].pattern, REG_EXTENDED|REG_ICASE);
+		if (errcode != 0) {
+			char *errstr;
+			size_t len;
+		
+			len = regerror(errcode, &mail_list_magic[i].regex, NULL, 0);
+			errstr = g_malloc0(len + 1);
+			regerror(errcode, &mail_list_magic[i].regex, errstr, len);
+		
+			g_warning("Internal error, compiling regex failed: %s: %s", mail_list_magic[i].pattern, errstr);
+			g_free(errstr);
+			regex_compilation_failed++;
+		}
 	}
 
-	{
-		char *str = "Blah blah\n\t = ? =? ?= This is a TEST For quoted-printable-encoding-encoding-of
-	long lines, and lines that end in spaces                                                                       
-	and line sthat end in tabs 						
-	And lines that just end.";
-
-		char encoded[256];
-		int state=-1,save=0;
-		int len;
-
-		len = quoted_encode_step(str, strlen(str), encoded, &state, &save);
-		len += quoted_encode_close("", 0, encoded+len, &state, &save);
-		printf("encoded = '%.*s'\n", len, encoded);
-	}
+	g_assert(regex_compilation_failed == 0);
 }
-
-#endif /* BUILD_TABLE */

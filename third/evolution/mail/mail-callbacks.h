@@ -4,19 +4,19 @@
  *
  *  Copyright 2000 Ximian, Inc. (www.ximian.com)
  *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of version 2 of the GNU General Public
+ * License as published by the Free Software Foundation.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Street #330, Boston, MA 02111-1307, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  */
 
@@ -60,8 +60,8 @@ void reply_to_all          (GtkWidget *widget, gpointer user_data);
 
 void delete_msg            (GtkWidget *widget, gpointer user_data);
 void undelete_msg          (GtkWidget *widget, gpointer user_data);
-void move_msg              (GtkWidget *widget, gpointer user_data);
-void copy_msg              (GtkWidget *widget, gpointer user_data);
+void move_msg_cb           (GtkWidget *widget, gpointer user_data);
+void copy_msg_cb           (GtkWidget *widget, gpointer user_data);
 void addrbook_sender       (GtkWidget *widget, gpointer user_data);
 void apply_filters         (GtkWidget *widget, gpointer user_data);
 void print_msg             (GtkWidget *widget, gpointer user_data);
@@ -81,6 +81,8 @@ void resend_msg            (GtkWidget *widget, gpointer user_data);
 void search_msg            (GtkWidget *widget, gpointer user_data);
 void load_images           (GtkWidget *widget, gpointer user_data);
 
+void move_msg              (BonoboUIComponent *uih, void *user_data, const char *path);
+void copy_msg              (BonoboUIComponent *uih, void *user_data, const char *path);
 void select_all            (BonoboUIComponent *uih, void *user_data, const char *path);
 void select_thread         (BonoboUIComponent *uih, void *user_data, const char *path);
 void invert_selection      (BonoboUIComponent *uih, void *user_data, const char *path);
@@ -90,6 +92,10 @@ void mark_as_unseen        (BonoboUIComponent *uih, void *user_data, const char 
 void mark_as_important     (BonoboUIComponent *uih, void *user_data, const char *path);
 void mark_as_unimportant   (BonoboUIComponent *uih, void *user_data, const char *path);
 void toggle_as_important   (BonoboUIComponent *uih, void *user_data, const char *path);
+
+void zoom_in               (BonoboUIComponent *uih, void *user_data, const char *path);
+void zoom_out              (BonoboUIComponent *uih, void *user_data, const char *path);
+void zoom_reset            (BonoboUIComponent *uih, void *user_data, const char *path);
 
 void edit_message          (BonoboUIComponent *uih, void *user_data, const char *path);
 void open_message          (BonoboUIComponent *uih, void *user_data, const char *path);

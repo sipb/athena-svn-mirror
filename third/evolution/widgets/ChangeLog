@@ -1,3 +1,24 @@
+2001-10-24  Jon Trowbridge  <trow@ximian.com>
+
+	* menus/gal-view-menus.c (gal_view_menus_apply): Ref the
+	BonoboUIComponent that we are holding.
+	(gvm_destroy): Unref our BonoboUIComponent.
+
+2001-10-21  Christopher James Lahey  <clahey@ximian.com>
+
+	* menus/gal-view-menus.c: Make this not be a radio button, but
+	instead just a normal menu.
+
+2001-10-18  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* menus/gal-view-menus.c: #include bonobo-ui-util.h
+
+2001-10-04  Rodrigo Moya <rodrigo@ximian.com>
+
+	* misc/Makefile.am:
+	* menus/Makefile.am: added BONOBO_GNOME_CFLAGS to make it compile
+	with latest Bonobo
+
 2001-09-19  JP Rosevear  <jpr@ximian.com>
 
 	* Makefile.am: the meeting-time-sel dir is dead, relevant pieces
