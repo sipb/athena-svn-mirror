@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo.HEAD\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
 "PO-Revision-Date: 2002-12-15 22:55+0100\n"
 "Last-Translator: Ivan Stojmirov <stojmir@linux.net.mk>\n"
 "Language-Team: Macedonian <mk@li.org>\n"
@@ -196,12 +196,12 @@ msgstr "Moniker за општи предмети"
 msgid "stream MonikerExtender"
 msgstr "stream MonikerExtender"
 
-#: monikers/bonobo-moniker-oaf.c:51
+#: monikers/bonobo-moniker-oaf.c:53
 #, fuzzy, c-format
 msgid "Exception activating '%s'"
 msgstr "Исклучок при активирање на '%s"
 
-#: monikers/bonobo-moniker-oaf.c:60
+#: monikers/bonobo-moniker-oaf.c:62
 #, fuzzy, c-format
 msgid "Failed to activate '%s'"
 msgstr "Неуспешно активирање на '%s"

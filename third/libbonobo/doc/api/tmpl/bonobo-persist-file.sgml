@@ -157,12 +157,6 @@ save_to_file (BonoboPersistFile *pf,
 
 </para>
 
-@persist: 
-@uri: 
-@save_fn: 
-@load_fn: 
-@closure: 
-@priv: 
 
 <!-- ##### USER_FUNCTION BonoboPersistFileIOFn ##### -->
 <para>

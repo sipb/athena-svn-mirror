@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libbonobo\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
-"PO-Revision-Date: 2002-11-06 08:50--500\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
+"PO-Revision-Date: 2003-01-24 03:00--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +23,7 @@ msgstr "Помилка В/В"
 
 #: bonobo/bonobo-exception.c:160
 msgid "Invalid argument value"
-msgstr "Невірне значення арґумента"
+msgstr "Неправильне значення аргумента"
 
 #: bonobo/bonobo-exception.c:164
 msgid "Object not found"
@@ -103,7 +103,7 @@ msgstr "Команда не має змісту"
 
 #: bonobo/bonobo-exception.c:226
 msgid "incorrect data type"
-msgstr "невірний тип даних"
+msgstr "неправильний тип даних"
 
 #: bonobo/bonobo-exception.c:229
 msgid "stream not found"
@@ -115,7 +115,7 @@ msgstr "властивості не знайдено"
 
 #: bonobo/bonobo-exception.c:236
 msgid "property has invalid type"
-msgstr "властивість має невірний тип"
+msgstr "властивість має неправильний тип"
 
 #: bonobo/bonobo-exception.c:239
 msgid "property is read only"
@@ -123,7 +123,7 @@ msgstr "властивість лише для зчитування"
 
 #: bonobo/bonobo-exception.c:242
 msgid "config database backend failed "
-msgstr "збій в модулі конфіґураційної бази даних"
+msgstr "збій в модулі конфігураційної бази даних"
 
 #: bonobo/bonobo-exception.c:246
 msgid "Moniker interface cannot be found"
@@ -194,13 +194,13 @@ msgstr "Загальний монікер елемента"
 msgid "stream MonikerExtender"
 msgstr "потоковий MonikerExtender"
 
-#: monikers/bonobo-moniker-oaf.c:51
-#, fuzzy, c-format
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
 msgid "Exception activating '%s'"
 msgstr "Вийняткова ситуація під час активації \"%s\""
 
-#: monikers/bonobo-moniker-oaf.c:60
-#, fuzzy, c-format
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
 msgid "Failed to activate '%s'"
 msgstr "Не вдалося активувати \"%s\""
 

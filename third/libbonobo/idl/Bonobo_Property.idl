@@ -65,7 +65,7 @@ interface PropertyBag : Bonobo::Unknown {
 	 * 
 	 * Returns: The type of property @key.
 	 */
-#if defined(__ORBIT_IDL__)
+#ifdef __ORBIT_IDL__
 	TypeCode        getType     (in string key)
 #else
 	CORBA::TypeCode getType     (in string key)

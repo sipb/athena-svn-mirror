@@ -51,15 +51,6 @@ BonoboStream *make_bonobo_stream_on_string (char *string)
 
 </para>
 
-@parent: 
-@buffer: 
-@size: 
-@pos: 
-@read_only: 
-@resizable: 
-@content_type: 
-@name: 
-@priv: 
 
 <!-- ##### STRUCT BonoboStreamMemPrivate ##### -->
 <para>

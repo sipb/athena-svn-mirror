@@ -22,12 +22,13 @@ G_BEGIN_DECLS
 #define BONOBO_IS_STORAGE_MEM_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), BONOBO_TYPE_STORAGE_MEM))
 
 typedef struct _BonoboStorageMemPriv BonoboStorageMemPriv;
+typedef struct _BonoboStorageMem     BonoboStorageMem;
 
-typedef struct {
+struct _BonoboStorageMem {
 	BonoboObject parent;
 
 	BonoboStorageMemPriv *priv;
-} BonoboStorageMem;
+};
 
 typedef struct {
 	BonoboObjectClass parent_class;

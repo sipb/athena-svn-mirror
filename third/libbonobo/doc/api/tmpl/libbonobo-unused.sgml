@@ -450,6 +450,26 @@ bonobo-simple
 bonobo-storage-priv
 
 
+<!-- ##### SECTION ./tmpl/bonobo-transient.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-transient.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/bonobo-transient.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/bonobo-transient.sgml:Title ##### -->
+bonobo-transient
+
+
 <!-- ##### SECTION ./tmpl/bonobo-wrapper.sgml:Long_Description ##### -->
 <para>
    This is a GtkWidget that acts as a cover on top of another
@@ -3305,17 +3325,6 @@ An opaque async reply handle
 @closure: 
 @Returns: 
 
-<!-- ##### SIGNAL BonoboItemContainer::get-object ##### -->
-<para>
-
-</para>
-
-@bonoboitemcontainer: the object which received the signal.
-@arg1: 
-@arg2: 
-@arg3: 
-@Returns: 
-
 <!-- ##### SIGNAL BonoboListener::event-notify ##### -->
 <para>
    This signal is emmited when an event is received from the
@@ -3346,15 +3355,6 @@ An opaque async reply handle
 @arg1: 
 
 <!-- ##### SIGNAL BonoboObject::query-interface ##### -->
-<para>
-
-</para>
-
-@bonoboobject: the object which received the signal.
-@arg1: 
-@arg2: 
-
-<!-- ##### SIGNAL BonoboObject::system-exception ##### -->
 <para>
 
 </para>

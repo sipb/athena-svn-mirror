@@ -23,11 +23,12 @@ G_BEGIN_DECLS
 #define BONOBO_IS_EVENT_SOURCE_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), BONOBO_TYPE_EVENT_SOURCE))
 
 typedef struct _BonoboEventSourcePrivate BonoboEventSourcePrivate;
+typedef struct _BonoboEventSource        BonoboEventSource;
 
-typedef struct {
+struct _BonoboEventSource {
 	BonoboObject             parent;
 	BonoboEventSourcePrivate *priv;
-} BonoboEventSource;
+};
 
 typedef struct {
 	BonoboObjectClass parent_class;

@@ -1,14 +1,15 @@
 # Turkish translation of libbonobo.
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001-2003 Free Software Foundation, Inc.
 # Ömer Fadıl USTA <omer_fad@hotmail.com>, 2001.
+# Arman Aksoy <armish@linux-sevenler.de>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libbonobo 1.102.0\n"
-"POT-Creation-Date: 2003-01-20 16:07+0000\n"
-"PO-Revision-Date: 2002-09-18 05:03+0300\n"
-"Last-Translator: Ömer Fadıl USTA <omer_fad@hotmail.com>\n"
-"Language-Team: GNOME Turk <gnome-turk@gnome.org>\n"
+"Project-Id-Version: libbonobo\n"
+"POT-Creation-Date: 2003-06-12 18:00+0100\n"
+"PO-Revision-Date: 2003-02-10 18:40+0200\n"
+"Last-Translator: Arman Aksoy (Armish) <armish@linux-sevenler.de>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -91,7 +92,7 @@ msgstr "XML kullanıcı arayüzü öğesi için geçersiz yol tanımlaması"
 
 #: bonobo/bonobo-exception.c:216
 msgid "the requested UI attribute didn't exist"
-msgstr ""
+msgstr "istenilen UI özelliği yok"
 
 #: bonobo/bonobo-exception.c:219
 msgid "Unknown command or verb"
@@ -154,9 +155,9 @@ msgid "Could not initialize Bonobo"
 msgstr "Bonobo başlatılamıyor "
 
 #: bonobo/bonobo-moniker.c:353
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to resolve, or extend '%s"
-msgstr "'%s' etkinleştirmesi başarısız"
+msgstr "'%s etkinleştirmesi başarısız"
 
 #: bonobo/bonobo-moniker-util.c:246
 msgid "Failed to activate object"
@@ -194,31 +195,31 @@ msgstr "Moniker genel öğesi"
 msgid "stream MonikerExtender"
 msgstr "Moniker Kapsamındaki akım"
 
-#: monikers/bonobo-moniker-oaf.c:51
-#, fuzzy, c-format
+#: monikers/bonobo-moniker-oaf.c:53
+#, c-format
 msgid "Exception activating '%s'"
-msgstr "'%s' etkinleştirmesi başarısız"
+msgstr "'%s' etkinleştirmesi kullanılmayacak"
 
-#: monikers/bonobo-moniker-oaf.c:60
-#, fuzzy, c-format
+#: monikers/bonobo-moniker-oaf.c:62
+#, c-format
 msgid "Failed to activate '%s'"
 msgstr "'%s' etkinleştirmesi başarısız"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr ""
+msgstr "Bonobo Echo sunucu üreticisi"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr ""
+msgstr "Bonobo Echo sunucu örnek programı"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:3
 msgid "Echo component"
-msgstr ""
+msgstr "Echo içeriği"
 
 #: samples/echo/Bonobo_Sample_Echo.server.in.in.h:4
 msgid "Echo component factory"
-msgstr ""
+msgstr "Echo içerik üreticisi"
 
 #: samples/echo/echo-client.c:22
 msgid "I could not initialize Bonobo"
@@ -226,9 +227,9 @@ msgstr "Bonobo uygulamasını başlatamıyorum"
 
 #: samples/echo/echo-client.c:33
 msgid "Could not create an instance of the sample echo component"
-msgstr ""
+msgstr "Echo içeriğinin  bir örneği yaratılamıyor"
 
 #: samples/echo/echo-client.c:45
 #, c-format
 msgid "An exception occured '%s'"
-msgstr ""
+msgstr "'%s' dışlaması gerçekleşti"

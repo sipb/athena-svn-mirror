@@ -105,8 +105,6 @@ bonobo_std_moniker_factory (BonoboGenericFactory *this,
 
 </para>
 
-@moniker: 
-@priv: 
 
 <!-- ##### STRUCT BonoboMonikerSimplePrivate ##### -->
 <para>

@@ -31,7 +31,9 @@ bonobo_moniker_query_resolve (BonoboMoniker               *moniker,
 	if (parent != CORBA_OBJECT_NIL) {
 		bonobo_object_release_unref (parent, ev);
 
+#ifdef G_ENABLE_DEBUG
 		g_warning ("wierd; queryied moniker with a parent; strange");
+#endif
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_Bonobo_Moniker_InterfaceNotFound, NULL);
 		return CORBA_OBJECT_NIL;

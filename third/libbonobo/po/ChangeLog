@@ -1,3 +1,897 @@
+2003-06-04  Abel Cheung  <maddog@linux.org.hk>
+
+	* ta.po: Fix broken encoding.
+
+2003-05-27  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation.
+
+2003-05-20  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+                                                                                
+        * cy.po: Added Welsh translation from
+        Dafydd Harries <daf@parnassus.ath.cx>
+
+2003-05-08  Changwoo Ryu  <cwryu@debian.org>
+
+	* ko.po: Updated Korean translation.
+
+2003-05-05  Christian Rose  <menthos@menthos.com>
+
+	* sr.po, sr@Latn.po: Added Serbian translation by
+	Veljko M. Stanojević <veljko@vms.homelinux.net>.
+
+2003-04-29  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation.
+
+2003-04-08  Raphael Finkel <raphael@cs.uky.edu>
+
+	* yi.po: Added Yiddish translation by
+	Raphael Finkel <raphael@cs.uky.edu>.
+
+2003-04-05  Fatih Demir	<kabalak@gtranslator.org>
+
+	* ta.po: Committed updated Tamil translation by Dinesh.
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+2003-03-21  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+	* ml.po: Added Malayalam translaion by
+	FSF-India <locale@gnu.org.in>
+o: Added Esperanto translation by
+	Charles Voelger <cvoelger@dweasel.com>.
+
+2003-02-21  Metin Amiroff  <metin@karegen.com>
+
+	* az.po: Updated Azerbaijani translation.
+
+2003-02-14  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
+
+	* be.po: Updated Belarusian translation
+	from Belarusian team <i18n@infonet.by>.
+
+2003-02-11  Fatih Demir <kabalak@gtranslator.org>
+
+	* tr.po: Committed updated Turkish translation by Arman.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* id.po: Added Indonesian translation by
+	Mohammad Damt <mdamt@bisnisweb.com>.
+
+2003-02-06  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Some fixes for problems catched in translation review.
+
+2003-02-05  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation.
+
+2003-02-02  Abel Cheung  <maddog@linux.org.hk>
+
+	* zh_TW.po: Updated traditional Chinese translation.
+
+2003-02-01  Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * pt.po: Updated Portuguese translation.
+
+2003-01-28  Kostas Papadimas <pkst@gmx.net>
+
+	* el.po: Updated Greek translation
+
+2003-01-24  Yuriy Syrota  <rastaman renome.rovno.ua>
+
+	* uk.po: Updated Ukrainian translation
+
+2003-01-22  Marius Andreiana <marius galuna.ro>
+
+	* ro.po: added ( thanks to Mişu Moldovan )
+
+2003-01-22  Christian Rose  <menthos@menthos.com>
+
+	* mn.po: Added Mongolian translation by
+	Sanlig Badral <badral@chinggis.com>.
+
+2003-01-21  Evandro Fernandes Giovanini <evandrofg@ig.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
 2003-01-20  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
 	* vi.po: Updated Vietnamese file

@@ -27,12 +27,13 @@ G_BEGIN_DECLS
 typedef GList BonoboClientSiteList;
 
 typedef struct _BonoboItemContainerPrivate BonoboItemContainerPrivate;
+typedef struct _BonoboItemContainer        BonoboItemContainer;
 
-typedef struct {
+struct _BonoboItemContainer {
 	BonoboObject base;
 
 	BonoboItemContainerPrivate *priv;
-} BonoboItemContainer;
+};
 
 typedef struct {
 	BonoboObjectClass parent_class;

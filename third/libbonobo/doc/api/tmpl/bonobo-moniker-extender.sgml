@@ -108,9 +108,6 @@ bonobo_std_moniker_factory (BonoboGenericFactory *this,
 
 </para>
 
-@object: 
-@resolve: 
-@data: 
 
 <!-- ##### USER_FUNCTION BonoboMonikerExtenderFn ##### -->
 <para>

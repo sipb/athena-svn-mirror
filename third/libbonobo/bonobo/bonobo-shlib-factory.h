@@ -27,12 +27,13 @@ G_BEGIN_DECLS
 #define BONOBO_IS_SHLIB_FACTORY_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), BONOBO_TYPE_SHLIB_FACTORY))
 
 typedef struct _BonoboShlibFactoryPrivate BonoboShlibFactoryPrivate;
+typedef struct _BonoboShlibFactory        BonoboShlibFactory;
 					
-typedef struct {
+struct _BonoboShlibFactory {
 	BonoboGenericFactory base;
 
 	BonoboShlibFactoryPrivate *priv;
-} BonoboShlibFactory;
+};
 
 typedef struct {
 	BonoboGenericFactoryClass parent_class;

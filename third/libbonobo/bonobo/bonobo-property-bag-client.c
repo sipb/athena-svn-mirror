@@ -471,7 +471,7 @@ MAKE_GET_WITH_DEFAULT (gchar, char, );
  * Returns: the value contained in the database.
  */
 MAKE_GET_SIMPLE (gboolean, FALSE, boolean, TC_CORBA_boolean, 
-		 (*(gboolean *)value->_value));
+		 (*(CORBA_boolean *)value->_value));
 
 MAKE_GET_DEFAULT (gboolean, FALSE, boolean, TC_CORBA_boolean, 
 		  (*(CORBA_boolean *)value->_value));
@@ -704,7 +704,7 @@ MAKE_SET_SIMPLE (gdouble, double, TC_CORBA_double)
  *
  * Set a boolean value in the PropertyBag.
  */
-MAKE_SET_SIMPLE (gboolean, boolean, TC_CORBA_boolean)
+MAKE_SET_SIMPLE (CORBA_boolean, boolean, TC_CORBA_boolean)
 /**
  * bonobo_pbclient_set_char:
  * @bag: a reference to the PropertyBag

@@ -8,11 +8,13 @@
 #ifndef _BONOBO_IDL_INCLUDED_
 #define _BONOBO_IDL_INCLUDED_
 
-#if !defined(__Bonobo_COMPILATION) && defined(__ORBIT_IDL__)
+#ifndef __Bonobo_COMPILATION
+#ifdef __ORBIT_IDL__
 %{
 #pragma include_defs bonobo/Bonobo.h
 %}
 #pragma inhibit push
+#endif
 #endif
 
 /* From bonobo-activation */
@@ -47,8 +49,9 @@
 /* Clipboard */
 #include <Bonobo_Clipboard.idl>
 
-#if !defined(__Bonobo_COMPILATION) && defined(__ORBIT_IDL__)
+#ifndef __Bonobo_COMPILATION
+#ifdef __ORBIT_IDL__
 #pragma inhibit pop
 #endif
-
+#endif
 #endif /* _BONOBO_IDL_INCLUDED_ */

@@ -15,12 +15,13 @@
 G_BEGIN_DECLS
 
 typedef struct _BonoboRunningContextPrivate BonoboRunningContextPrivate;
+typedef struct _BonoboRunningContext        BonoboRunningContext;
 
-typedef struct {
+struct _BonoboRunningContext {
 	BonoboObject parent;
 
 	BonoboRunningContextPrivate *priv;
-} BonoboRunningContext;
+};
 
 typedef struct {
 	BonoboObjectClass parent;

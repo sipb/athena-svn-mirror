@@ -22,12 +22,13 @@ G_BEGIN_DECLS
 #define BONOBO_IS_PERSIST_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), BONOBO_TYPE_PERSIST))
 
 typedef struct _BonoboPersistPrivate BonoboPersistPrivate;
+typedef struct _BonoboPersist        BonoboPersist;
 
-typedef struct {
+struct _BonoboPersist {
 	BonoboObject object;
 
 	BonoboPersistPrivate *priv;
-} BonoboPersist;
+};
 
 typedef struct {
 	BonoboObjectClass      parent_class;
