@@ -26,32 +26,32 @@
 
 #include <config.h>
 
-#include <libgnome/gnome-defs.h> /* must come before gnome-init.h */
-#include <libgnomeui/gnome-init.h> /* must come before liboaf.h */
-
 #include "nautilus-adapter-factory-server.h"
+#include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-ui-main.h>
+#include <eel/eel-debug.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-init.h>
+#include <libgnomeui/gnome-client.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <eel/eel-debug.h>
-#include <liboaf/liboaf.h>
+#include <eel/eel-gnome-extensions.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define META_FACTORY_IID "OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f"
-#define FACTORY_OBJECT_IID    "OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4"
+#define META_FACTORY_IID   "OAFIID:Nautilus_Adapter_Factory_Factory"
+#define FACTORY_OBJECT_IID "OAFIID:Nautilus_Adapter_Factory"
 
 static int object_count = 0;
 
 static void
-adapter_factory_object_destroyed (GtkObject *object)
+adapter_factory_object_weak_notify (gpointer data, GObject *object)
 {
-	g_assert (GTK_IS_OBJECT (object));
-
 	object_count--;
 	if (object_count <= 0) {
-		gtk_main_quit ();
+		bonobo_main_quit ();
 	}
 }
 
@@ -73,14 +73,15 @@ adapter_factory_make_object (BonoboGenericFactory *factory,
 		return NULL;
 	}
 
-	adapter = NAUTILUS_ADAPTER_FACTORY_SERVER (gtk_object_new (NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NULL));
+	adapter = NAUTILUS_ADAPTER_FACTORY_SERVER (g_object_new (NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER, NULL));
 
 	/* Connect a handler that will get us out of the main loop
          * when there are no more objects outstanding.
 	 */
 	object_count++;
-	gtk_signal_connect (GTK_OBJECT (adapter), "destroy",
-			    adapter_factory_object_destroyed, NULL);
+	g_object_weak_ref (G_OBJECT (adapter), 
+			   adapter_factory_object_weak_notify,
+			   NULL);
 
 	return BONOBO_OBJECT (adapter);
 }
@@ -88,33 +89,26 @@ adapter_factory_make_object (BonoboGenericFactory *factory,
 int
 main (int argc, char *argv[])
 {
-	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
 	char *registration_id;
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", "ORBit", NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 	
+	if (!bonobo_ui_init ("nautilus-adapter", VERSION, &argc, argv)) {
+		g_error (_("bonobo_ui_init() failed."));
+	}
+
 	/* Disable session manager connection */
-	gnome_client_disable_master_connection ();
-
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
-
-	/* Initialize libraries. */
-        gnome_init ("nautilus-adapter", VERSION, 
-		    argc, argv); 
-	g_thread_init (NULL);
-	gnome_vfs_init ();
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	g_object_set (G_OBJECT (gnome_program_get()),
+	              GNOME_CLIENT_PARAM_SM_CONNECT, FALSE, NULL);
 
 	/* Create the factory. */
 
-	registration_id = oaf_make_registration_id (META_FACTORY_IID, g_getenv ("DISPLAY"));
+	registration_id = eel_bonobo_make_registration_id (META_FACTORY_IID);
 
-	factory = bonobo_generic_factory_new_multi (registration_id, adapter_factory_make_object, NULL);
+	factory = bonobo_generic_factory_new (registration_id, adapter_factory_make_object, NULL);
 
 	g_free (registration_id);
 	
@@ -124,7 +118,7 @@ main (int argc, char *argv[])
 	} while (object_count > 0);
 
 	/* Let the factory go. */
-	bonobo_object_unref (BONOBO_OBJECT (factory));
+	bonobo_object_unref (factory);
 
         gnome_vfs_shutdown ();
 

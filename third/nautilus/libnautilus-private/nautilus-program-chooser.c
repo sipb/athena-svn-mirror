@@ -4,7 +4,8 @@
                                 a program from a list
 
    Copyright (C) 2000, 2001 Eazel, Inc.
-
+   Copyright (C) 2001, 2002 Anders Carlsson <andersca@gnu.org>
+   
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
@@ -20,37 +21,49 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: John Sullivan <sullivan@eazel.com>
+   Authors: John Sullivan <sullivan@eazel.com>
+            Anders Carlsson <andersca@gnu.org>
 */
 
 #include <config.h>
 #include "nautilus-program-chooser.h"
 
-#include <eel/eel-gnome-extensions.h>
-#include <eel/eel-gtk-extensions.h>
 #include "nautilus-global-preferences.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
+#include "nautilus-view-identifier.h"
+#include <eel/eel-gnome-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include "nautilus-view-identifier.h"
-#include <gtk/gtkclist.h>
+#include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkhbbox.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkliststore.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtktreeselection.h>
+#include <gtk/gtktreeview.h>
 #include <gtk/gtkvbox.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnome/gnome-macros.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <gtk/gtkmessagedialog.h>
+#include <libgnome/gnome-help.h>
+
+#define RESPONSE_CHOOSE 1000
 
 enum {
 	PROGRAM_LIST_NAME_COLUMN,
 	PROGRAM_LIST_STATUS_COLUMN,
-	PROGRAM_LIST_COLUMN_COUNT
+	PROGRAM_LIST_PROGRAM_PAIR_COLUMN,
+	PROGRAM_LIST_COLUMN_COUNT	
 };
 
 typedef enum {
@@ -72,10 +85,21 @@ typedef struct {
 	ProgramFileStatus status;
 } ProgramFilePair;
 
-/* gtk_window_set_default_width (and some other functions) use a
- * magic undocumented number of -2 to mean "ignore this parameter".
- */
-#define NO_DEFAULT_MAGIC_NUMBER		-2
+struct NautilusProgramChooserDetails {
+	GtkWidget *prompt_label;
+	GtkWidget *frame;
+	GtkWidget *status_label;
+
+	GtkWidget *tree_view;
+	GtkListStore *list_store;
+
+	NautilusFile *file;
+	GnomeVFSMimeActionType action_type;
+
+	/* Buttons in the dialog box */
+	GtkWidget *cancel_button;
+	GtkWidget *done_button;
+};
 
 /* Scrolling list has no idea how tall to make itself. Its
  * "natural height" is just enough to draw the scroll bar controls.
@@ -92,7 +116,7 @@ typedef struct {
 #define NAME_COLUMN_INITIAL_WIDTH	 200
 
 /* Program name of the mime type capplet */
-#define FILE_TYPES_CAPPLET_NAME 	"file-types-capplet"
+#define FILE_TYPES_CAPPLET_NAME 	"gnome-file-types-properties"
 
 /* This number controls a maximum character count for a file name that is
  * displayed as part of a dialog (beyond this it will be truncated). 
@@ -106,6 +130,13 @@ static gboolean program_file_pair_is_default_for_file_type 	 (ProgramFilePair *p
 static gboolean program_file_pair_is_default_for_file 		 (ProgramFilePair *pair);
 static gboolean program_file_pair_is_in_short_list_for_file_type (ProgramFilePair *pair);
 static gboolean program_file_pair_is_in_short_list_for_file 	 (ProgramFilePair *pair);
+
+#define PROGRAM_FILE_PAIR_TYPE (program_file_pair_get_type ())
+
+static GType program_file_pair_get_type (void);
+
+GNOME_CLASS_BOILERPLATE (NautilusProgramChooser, nautilus_program_chooser,
+			 GtkDialog, GTK_TYPE_DIALOG);
 
 static gboolean
 program_file_pair_compute_status (ProgramFilePair *pair)
@@ -134,6 +165,48 @@ program_file_pair_compute_status (ProgramFilePair *pair)
 }
 
 static void
+help_cb (GtkWidget *button, NautilusProgramChooser *program_chooser)
+{
+	GError *error = NULL;
+	gchar *section;
+
+	switch (program_chooser->details->action_type) {
+	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
+		section = "gosnautilus-75";
+		break;
+	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
+	default:
+		section = "gosnautilus-111";
+		break;
+	}
+
+	gnome_help_display_desktop (NULL,
+				    "user-guide",
+				    "wgosnautilus.xml",
+				    section,
+				    &error);
+
+	if (error) {
+		GtkWidget *err_dialog;
+		err_dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (button)),
+						     GTK_DIALOG_MODAL,
+						     GTK_MESSAGE_ERROR,
+						     GTK_BUTTONS_CLOSE,
+						     _("There was an error displaying help: %s"),
+						     error->message);
+
+		g_signal_connect (G_OBJECT (err_dialog),
+				  "response", G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+
+		gtk_window_set_resizable (GTK_WINDOW (err_dialog), FALSE);
+		gtk_widget_show (err_dialog);
+		g_error_free (error);
+	}
+}
+
+
+static void
 program_file_pair_set_file (ProgramFilePair *pair, NautilusFile *file)
 {
 	if (pair->file == file) {
@@ -146,7 +219,7 @@ program_file_pair_set_file (ProgramFilePair *pair, NautilusFile *file)
 }
 
 static ProgramFilePair *
-program_file_pair_new_from_content_view (OAF_ServerInfo *content_view, NautilusFile *file)
+program_file_pair_new_from_content_view (Bonobo_ServerInfo *content_view, NautilusFile *file)
 {
 	ProgramFilePair *new_pair;
 
@@ -173,6 +246,23 @@ program_file_pair_new_from_application (GnomeVFSMimeApplication *application, Na
 	return new_pair;
 }
 
+static ProgramFilePair *
+program_file_pair_copy (const ProgramFilePair *pair)
+{
+	ProgramFilePair *new_pair;
+
+	new_pair = g_new0 (ProgramFilePair, 1);
+	new_pair->view_identifier = nautilus_view_identifier_copy (pair->view_identifier);
+	new_pair->application = gnome_vfs_mime_application_copy (pair->application);
+	new_pair->action_type = pair->action_type;
+
+	program_file_pair_set_file (new_pair, pair->file);
+
+	new_pair->status = pair->status;
+
+	return new_pair;
+}
+
 static void
 program_file_pair_free (ProgramFilePair *pair)
 {
@@ -181,6 +271,24 @@ program_file_pair_free (ProgramFilePair *pair)
 	nautilus_file_unref (pair->file);
 	
 	g_free (pair);
+}
+
+/* Boxed type, for use in GtkListStore */
+static GType
+program_file_pair_get_type (void)
+{
+	static GType type = 0;
+
+	program_file_pair_get_type ();
+	
+	if (type == 0) {
+		type = g_boxed_type_register_static ("NautilusProgramFilePair",
+						     (GBoxedCopyFunc)program_file_pair_copy,
+						     (GBoxedFreeFunc)program_file_pair_free);
+	}
+
+	return type;
+
 }
 
 static char *
@@ -316,66 +424,52 @@ program_file_pair_get_long_status_text (ProgramFilePair *pair)
 	return result;
 }
 
-static GnomeVFSMimeActionType
-nautilus_program_chooser_get_type (GnomeDialog *program_chooser)
-{
-	GnomeVFSMimeActionType type;
-
-	type = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (program_chooser), "type"));
-
-	g_assert (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT ||
-		  type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-
-	return type;
-}
-
 static void
-repopulate_program_list (GnomeDialog *program_chooser,
-		         NautilusFile *file,
-		         GtkCList *clist)
+repopulate_program_list (NautilusProgramChooser *program_chooser)
 {
-	char **text;
 	GList *programs, *program;
 	ProgramFilePair *pair;
-	int new_row;
 	GnomeVFSMimeActionType type;
-
-	type = nautilus_program_chooser_get_type (program_chooser);
+	GtkListStore *list_store;
+	gchar *program_name, *status_text;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	
+	type = program_chooser->details->action_type;
 
 	g_assert (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
 		  || type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 	
 
 	programs = type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
-		? nautilus_mime_get_all_components_for_file (file)
-		: nautilus_mime_get_all_applications_for_file (file);
+		? nautilus_mime_get_all_components_for_file (program_chooser->details->file)
+		: nautilus_mime_get_all_applications_for_file (program_chooser->details->file);
 
-	gtk_clist_clear (clist);
+	list_store = program_chooser->details->list_store;
+	gtk_list_store_clear (list_store);
 		
 	for (program = programs; program != NULL; program = program->next) {
-		/* One extra slot so it's NULL-terminated */
-		text = g_new0 (char *, PROGRAM_LIST_COLUMN_COUNT+1);
 
 		if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 			pair = program_file_pair_new_from_content_view
-				((OAF_ServerInfo *)program->data, file);
+				((Bonobo_ServerInfo *)program->data, program_chooser->details->file);
 		} else {
 			pair = program_file_pair_new_from_application
-				((GnomeVFSMimeApplication *)program->data, file);
+				((GnomeVFSMimeApplication *)program->data, program_chooser->details->file);
 		}
-		
-		text[PROGRAM_LIST_NAME_COLUMN] = 
-			program_file_pair_get_program_name_for_display (pair);			
-		text[PROGRAM_LIST_STATUS_COLUMN] = 
-			program_file_pair_get_short_status_text (pair);
 
-		new_row = gtk_clist_append (clist, text);
-
-		gtk_clist_set_row_data_full 
-			(clist, new_row, pair, 
-			 (GtkDestroyNotify)program_file_pair_free);
+		program_name = program_file_pair_get_program_name_for_display (pair);
+		status_text = program_file_pair_get_short_status_text (pair);
 		
-		g_strfreev (text);
+		gtk_list_store_append (list_store, &iter);
+
+		gtk_list_store_set (list_store, &iter,
+				    PROGRAM_LIST_PROGRAM_PAIR_COLUMN, pair,
+				    PROGRAM_LIST_NAME_COLUMN, program_name,
+				    PROGRAM_LIST_STATUS_COLUMN, status_text,
+				    -1);
+		g_free (program_name);
+		g_free (status_text);
 	}
 
 	if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
@@ -383,82 +477,25 @@ repopulate_program_list (GnomeDialog *program_chooser,
 	} else {
 		gnome_vfs_mime_application_list_free (programs);
 	}
-
-	gtk_clist_sort (clist);
-
+	
 	/* Start with first item selected, rather than some arbitrary item */
-	gtk_clist_select_row (clist, 0, 0);
-}
-
-static NautilusFile *
-nautilus_program_chooser_get_file (GnomeDialog *chooser)
-{
-	return NAUTILUS_FILE (gtk_object_get_data (GTK_OBJECT (chooser), "file"));
-}
-
-static GtkCList *
-nautilus_program_chooser_get_clist (GnomeDialog *chooser)
-{
-	return GTK_CLIST (gtk_object_get_data (GTK_OBJECT (chooser), "clist"));
-}
-
-static GtkFrame *
-nautilus_program_chooser_get_frame (GnomeDialog *chooser)
-{
-	return GTK_FRAME (gtk_object_get_data (GTK_OBJECT (chooser), "frame"));
-}
-
-static GtkLabel *
-nautilus_program_chooser_get_status_label (GnomeDialog *chooser)
-{
-	return GTK_LABEL (gtk_object_get_data (GTK_OBJECT (chooser), "status_label"));
+	path = gtk_tree_path_new_root ();
+	gtk_tree_selection_select_path (
+		gtk_tree_view_get_selection (GTK_TREE_VIEW (program_chooser->details->tree_view)),
+		path);
+	gtk_tree_path_free (path);
 }
 
 static void
-nautilus_program_chooser_set_is_cancellable (GnomeDialog *chooser, gboolean cancellable)
+nautilus_program_chooser_set_is_cancellable (NautilusProgramChooser *program_chooser, gboolean cancellable)
 {
-	GtkButton *done_button, *cancel_button;
-
-	cancel_button = eel_gnome_dialog_get_button_by_index 
-		(chooser, GNOME_CANCEL);
-	done_button = eel_gnome_dialog_get_button_by_index 
-		(chooser, GNOME_CANCEL+1);
-
 	if (cancellable) {
-		gtk_widget_hide (GTK_WIDGET (done_button));
-		gtk_widget_show (GTK_WIDGET (cancel_button));
+		gtk_widget_hide (program_chooser->details->done_button);
+		gtk_widget_show (program_chooser->details->cancel_button);
 	} else {
-		gtk_widget_hide (GTK_WIDGET (cancel_button));
-		gtk_widget_show (GTK_WIDGET (done_button));
+		gtk_widget_hide (program_chooser->details->cancel_button);
+		gtk_widget_show (program_chooser->details->done_button);
 	}
-}
-
-static void
-nautilus_program_chooser_set_file (GnomeDialog *chooser, NautilusFile *file)
-{
-	nautilus_file_ref (file);
-	gtk_object_set_data_full (GTK_OBJECT (chooser), 
-				  "file", 
-				  file, 
-				  (GtkDestroyNotify)nautilus_file_unref);
-}
-
-static void
-nautilus_program_chooser_set_clist (GnomeDialog *chooser, GtkCList *clist)
-{
-	gtk_object_set_data (GTK_OBJECT (chooser), "clist", clist);
-}
-
-static void
-nautilus_program_chooser_set_frame (GnomeDialog *chooser, GtkFrame *frame)
-{
-	gtk_object_set_data (GTK_OBJECT (chooser), "frame", frame);
-}
-
-static void
-nautilus_program_chooser_set_status_label (GnomeDialog *chooser, GtkLabel *status_label)
-{
-	gtk_object_set_data (GTK_OBJECT (chooser), "status_label", status_label);
 }
 
 static gint
@@ -468,7 +505,7 @@ compare_mime_applications (GnomeVFSMimeApplication *app_1, GnomeVFSMimeApplicati
 }
 
 static gint
-compare_component_with_view (OAF_ServerInfo *info, NautilusViewIdentifier *identifier)
+compare_component_with_view (Bonobo_ServerInfo *info, NautilusViewIdentifier *identifier)
 {
 	return strcmp (info->iid, identifier->iid);
 }
@@ -492,7 +529,7 @@ is_application_default_for_type (GnomeVFSMimeApplication *application, const cha
 static gboolean
 is_component_default_for_type (NautilusViewIdentifier *identifier, const char *mime_type)
 {
-	OAF_ServerInfo *default_component;
+	Bonobo_ServerInfo *default_component;
 	gboolean result;
 
 	g_assert (identifier != NULL);
@@ -525,7 +562,7 @@ is_application_default_for_file (GnomeVFSMimeApplication *application,
 static gboolean
 is_component_default_for_file (NautilusViewIdentifier *identifier, NautilusFile *file)
 {
-	OAF_ServerInfo *default_component;
+	Bonobo_ServerInfo *default_component;
 	gboolean result;
 
 	g_assert (identifier != NULL);
@@ -690,40 +727,38 @@ program_file_pair_is_in_short_list_for_file (ProgramFilePair *pair)
 }
 
 static ProgramFilePair *
-get_program_file_pair_from_row_data (GtkCList *clist, int row)
+get_selected_program_file_pair (NautilusProgramChooser *program_chooser)
 {
-	g_assert (row < clist->rows);
-	return (ProgramFilePair *)gtk_clist_get_row_data (clist, row);
-}
-
-static ProgramFilePair *
-get_selected_program_file_pair (GnomeDialog *dialog)
-{
-	GtkCList *clist;
-	int selected_row;
-
-	clist = nautilus_program_chooser_get_clist (dialog);
-	selected_row = eel_gtk_clist_get_first_selected_row (clist);
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	gboolean selected;
+	GValue value = { 0 };
+	ProgramFilePair *pair;
 	
-	if (selected_row < 0) {
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (program_chooser->details->tree_view));	
+	selected = gtk_tree_selection_get_selected (selection, NULL, &iter);
+
+	if (selected == FALSE) {
 		return NULL;
 	}
+
+	gtk_tree_model_get_value (GTK_TREE_MODEL (program_chooser->details->list_store),
+				  &iter, PROGRAM_LIST_PROGRAM_PAIR_COLUMN,
+				  &value);
+
+	pair = g_value_get_pointer (&value);
+	g_value_unset (&value);
 	
-	return get_program_file_pair_from_row_data (clist, selected_row);
+	return pair;
 }
 
 static void
-update_selected_item_details (GnomeDialog *dialog)
+update_selected_item_details (NautilusProgramChooser *program_chooser)
 {
-	GtkFrame *frame;
-	GtkLabel *status_label;
 	char *frame_label_text, *status_label_text;
 	ProgramFilePair *pair;
 
-	frame = nautilus_program_chooser_get_frame (dialog);
-	status_label = nautilus_program_chooser_get_status_label (dialog);
-
-	pair = get_selected_program_file_pair (dialog);
+	pair = get_selected_program_file_pair (program_chooser);
 
 	if (pair != NULL) {
 		frame_label_text = program_file_pair_get_program_name_for_display (pair);
@@ -733,51 +768,54 @@ update_selected_item_details (GnomeDialog *dialog)
 		status_label_text = NULL;
 	}
 
-	gtk_frame_set_label (frame, frame_label_text);
-	gtk_label_set_text (status_label, status_label_text);
+	gtk_frame_set_label (GTK_FRAME (program_chooser->details->frame), frame_label_text);
+	gtk_label_set_text (GTK_LABEL (program_chooser->details->status_label), status_label_text);
 
 	g_free (frame_label_text);
 	g_free (status_label_text);
 }
 
 static void
-update_all_status (GnomeDialog *dialog)
+update_all_status (NautilusProgramChooser *program_chooser)
 {
-	GtkCList *clist;
 	ProgramFilePair *pair;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
 	char *status_text;
-	int row;
+	gboolean found;
 	gboolean anything_changed;
-
-	clist = nautilus_program_chooser_get_clist (dialog);	
+	
 	anything_changed = FALSE;
-	for (row = 0; row < clist->rows; ++row) {
-		pair = get_program_file_pair_from_row_data (clist, row);
+	model = GTK_TREE_MODEL (program_chooser->details->list_store);
+
+	found = gtk_tree_model_get_iter_root (model, &iter);
+
+	while (found) {
+		gtk_tree_model_get (model, &iter,
+				    PROGRAM_LIST_PROGRAM_PAIR_COLUMN, &pair,
+				    -1);
+
 		if (program_file_pair_compute_status (pair)) {
 			/* Status has changed, update text in list */
 			anything_changed = TRUE;
 			status_text = program_file_pair_get_short_status_text (pair);
-			gtk_clist_set_text (clist, row, PROGRAM_LIST_STATUS_COLUMN, status_text);
+
+			gtk_list_store_set (GTK_LIST_STORE (model),
+					    &iter,
+					    PROGRAM_LIST_STATUS_COLUMN, status_text,
+					    -1);
 			g_free (status_text);
 		}
-	}
 
-	if (anything_changed) {
-		gtk_clist_sort (clist);
+		found = gtk_tree_model_iter_next (model, &iter);
 	}
 }
 
 static void
-program_list_selection_changed_callback (GtkCList *clist, 
-					 gint row, 
-					 gint column, 
-					 GdkEventButton *event, 
+program_list_selection_changed_callback (GtkTreeSelection *selection,
 					 gpointer user_data)
 {
-	g_assert (GTK_IS_CLIST (clist));
-	g_assert (GNOME_IS_DIALOG (user_data));
-
-	update_selected_item_details (GNOME_DIALOG (user_data));
+	update_selected_item_details (NAUTILUS_PROGRAM_CHOOSER (user_data));
 }
 
 static GtkRadioButton *
@@ -898,7 +936,7 @@ set_default_for_type (ProgramFilePair *pair)
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 		gnome_vfs_mime_set_default_application (mime_type, pair->application->id);
 	} else {
-		if (g_strcasecmp (mime_type, "x-directory/normal") == 0) {
+		if (g_ascii_strcasecmp (mime_type, "x-directory/normal") == 0) {
 			nautilus_global_preferences_set_default_folder_viewer (pair->view_identifier->iid);
 		} else {
 			gnome_vfs_mime_set_default_component (mime_type, pair->view_identifier->iid);
@@ -923,48 +961,53 @@ set_default_for_item (ProgramFilePair *pair)
 }
 
 static void
-launch_mime_capplet (GtkWidget *button, gpointer callback_data)
+launch_mime_capplet (NautilusFile *file)
 {
-	char *command;
-		
-	g_assert (GTK_IS_WIDGET (button));
-	
-	command = g_strdup_printf ("%s %s", FILE_TYPES_CAPPLET_NAME, (char *)callback_data);
-		
+	char *command, *tmp, *mime_type, *file_name;
+
+	tmp = nautilus_file_get_mime_type (file);
+	mime_type = g_shell_quote (tmp);
+	g_free (tmp);
+	tmp = nautilus_file_get_name (file);
+	file_name = g_shell_quote (tmp);
+	g_free (tmp);
+
+	command = g_strconcat (FILE_TYPES_CAPPLET_NAME, " ", mime_type, " ", file_name, NULL);
 	nautilus_launch_application_from_command (FILE_TYPES_CAPPLET_NAME, command, NULL, FALSE);
-	
 	g_free (command);
+	g_free (file_name);
+	g_free (mime_type);
 }
 
 static void
-launch_mime_capplet_and_close_dialog (GtkWidget *button, gpointer callback_data)
+launch_mime_capplet_on_ok (GtkDialog *dialog, int response, gpointer callback_data)
+{
+	g_assert (GTK_IS_DIALOG (dialog));
+
+	if (response == GTK_RESPONSE_YES) {
+		launch_mime_capplet (callback_data);
+	}
+	gtk_object_destroy (GTK_OBJECT (dialog));
+}
+
+static void
+launch_mime_capplet_and_close_dialog (GtkButton *button, gpointer callback_data)
 {
 	ProgramFilePair *file_pair;
-	char *mime_type;
-	
-	g_assert (GTK_IS_WIDGET (button));
-	g_assert (GNOME_IS_DIALOG (callback_data));
 
-	file_pair = get_selected_program_file_pair (GNOME_DIALOG (callback_data));
-		
-	mime_type = nautilus_file_get_mime_type (file_pair->file);
+	g_assert (GTK_IS_BUTTON (button));
 
-	launch_mime_capplet (button, mime_type);
-
-	/* Don't leave a nested modal dialogs in the wake of switching
-	 * user's attention to the capplet.
-	 */	
-	gnome_dialog_close (GNOME_DIALOG (callback_data));
-	
-	g_free (mime_type);
+	file_pair = get_selected_program_file_pair (NAUTILUS_PROGRAM_CHOOSER (callback_data));
+ 	launch_mime_capplet (file_pair->file);
+	gtk_dialog_response (GTK_DIALOG (callback_data),
+		GTK_RESPONSE_DELETE_EVENT);
 }
 
 static void
 run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 {
-	GnomeDialog *program_chooser;
+	NautilusProgramChooser *program_chooser;
 	NautilusFile *file;
-	GtkCList *clist;
 	GtkWidget *dialog;
 	GtkWidget *radio_buttons_frame, *framed_vbox;
 	GtkRadioButton *type_radio_button, *type_default_radio_button, *item_radio_button, *item_default_radio_button, *none_radio_button;
@@ -975,12 +1018,9 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	char *title;
 	ProgramFilePair *pair;
 
-	g_assert (GNOME_IS_DIALOG (callback_data));
-
-	program_chooser = GNOME_DIALOG (callback_data);
+	program_chooser = NAUTILUS_PROGRAM_CHOOSER (callback_data);
 	
-	file = nautilus_program_chooser_get_file (program_chooser);
-	clist = nautilus_program_chooser_get_clist (program_chooser);
+	file = program_chooser->details->file;
 
 	file_type = nautilus_file_get_string_attribute_with_default (file, "type");
 	file_name = get_file_name_for_display (file);
@@ -997,10 +1037,11 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 
 	title = g_strdup_printf (_("Modify \"%s\""), program_display_name);
 	
-	dialog = gnome_dialog_new (title,
-				   GNOME_STOCK_BUTTON_OK,
-				   GNOME_STOCK_BUTTON_CANCEL,
-				   NULL);
+	dialog = gtk_dialog_new_with_buttons (title, GTK_WINDOW (program_chooser),
+					      GTK_DIALOG_MODAL,
+					      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OK, GTK_RESPONSE_OK,
+					      NULL);
 	g_free (title);
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "program_chooser", "Nautilus");
 
@@ -1009,7 +1050,7 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	 */
 	radio_buttons_frame = gtk_frame_new (program_display_name);
 	gtk_widget_show (radio_buttons_frame);
-  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), radio_buttons_frame, FALSE, FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), radio_buttons_frame, FALSE, FALSE, 0);
 
 	g_free (program_display_name);
 
@@ -1034,13 +1075,13 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	
 
 	/* Radio button for adding to short list for specific file. */
-	radio_button_text = g_strdup_printf (_("Include in the menu just for \"%s\""), 
+	radio_button_text = g_strdup_printf (_("Include in the menu for \"%s\" only"), 
 					     file_name);
 	item_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
 	g_free (radio_button_text);
 
 	/* Radio button for setting default for specific file. */
-	radio_button_text = g_strdup_printf (_("Use as default just for \"%s\""), 
+	radio_button_text = g_strdup_printf (_("Use as default for \"%s\" only"), 
 					     file_name);
 	item_default_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
 	g_free (radio_button_text);
@@ -1078,21 +1119,10 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (old_active_button), TRUE);
 
-	/* Buttons close this dialog. */
-  	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-
   	/* Make OK button the default. */
-  	gnome_dialog_set_default (GNOME_DIALOG (dialog), GNOME_OK);
+  	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 
-  	gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (program_chooser));
-	
-	/* Don't destroy on close because callers will need 
-	 * to extract some information from the dialog after 
-	 * it closes.
-	 */
-	gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
-
-	if (gnome_dialog_run (GNOME_DIALOG (dialog)) == GNOME_OK) {
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
 		if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (old_active_button))) {
 			/* Selected button has changed, update stuff as necessary. 
 			 * Rather than keep track of a whole bunch of transitions, we
@@ -1150,210 +1180,260 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 		}
 	}
 
-	gtk_widget_destroy (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
 }
 
 static int
-compare_program_file_pairs (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+name_column_sort_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer user_data)
 {
-	GtkCListRow *row1, *row2;
 	ProgramFilePair *pair1, *pair2;
 	char *name1, *name2;
 	gint result;
 
-	g_assert (GTK_IS_CLIST (clist));
+	gtk_tree_model_get (model, a,
+			    PROGRAM_LIST_PROGRAM_PAIR_COLUMN, &pair1,
+			    -1);
 
-	row1 = (GtkCListRow *) ptr1;
-	row2 = (GtkCListRow *) ptr2;
+	gtk_tree_model_get (model, b,
+			    PROGRAM_LIST_PROGRAM_PAIR_COLUMN, &pair2,
+			    -1);
 
-	pair1 = (ProgramFilePair *) row1->data;
-	pair2 = (ProgramFilePair *) row2->data;
+	name1 = program_file_pair_get_program_name_for_display (pair1);
+	name2 = program_file_pair_get_program_name_for_display (pair2);
+	result = g_ascii_strcasecmp (name1, name2);
+	g_free (name1);
+	g_free (name2);
 
-	switch (clist->sort_column) {
-		case PROGRAM_LIST_STATUS_COLUMN:
-			if (pair1->status > pair2->status) {
-				result = -1;
-			} else if (pair1->status < pair2->status) {
-				result = +1;
-			} else {
-				result = 0;
-			}
-			break;
-		case PROGRAM_LIST_NAME_COLUMN:
-			name1 = program_file_pair_get_program_name_for_display (pair1);
-			name2 = program_file_pair_get_program_name_for_display (pair2);
-			result = strcmp (name1, name2);
-			g_free (name1);
-			g_free (name2);
-			break;
-		default:
-			g_warning ("unhandled sort column %d", clist->sort_column);
-			result = 0;
-			break;
+	return result;
+}
+
+static int
+status_column_sort_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer user_data)
+{
+	ProgramFilePair *pair1, *pair2;
+	gint result;
+	
+	gtk_tree_model_get (model, a,
+			    PROGRAM_LIST_PROGRAM_PAIR_COLUMN, &pair1,
+			    -1);
+	
+	gtk_tree_model_get (model, b,
+			    PROGRAM_LIST_PROGRAM_PAIR_COLUMN, &pair2,
+			    -1);
+	
+	if (pair1->status > pair2->status) {
+		result = -1;
+	} else if (pair1->status < pair2->status) {
+		result = +1;
+	} else {
+		result = 0;
 	}
 
-	return result;	
+	return result;
 }
 
 static void
-switch_sort_column (GtkCList *clist, gint column, gpointer user_data)
+tree_view_row_activated_callback (GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, NautilusProgramChooser *program_chooser)
 {
-	g_assert (GTK_IS_CLIST (clist));
-
-	gtk_clist_set_sort_column (clist, column);
-	gtk_clist_sort (clist);
+	gtk_dialog_response (GTK_DIALOG (program_chooser), GTK_RESPONSE_OK);
 }
 
-static GtkWidget *
-create_program_clist ()
+static void
+create_and_set_up_tree_view (NautilusProgramChooser *program_chooser)
 {
-	GtkCList *clist;
-
-	clist = GTK_CLIST (gtk_clist_new (PROGRAM_LIST_COLUMN_COUNT));
-
-	gtk_clist_set_column_title (clist, PROGRAM_LIST_NAME_COLUMN, _("Name"));
-	gtk_clist_set_column_width (clist, PROGRAM_LIST_NAME_COLUMN, NAME_COLUMN_INITIAL_WIDTH);
-
-	gtk_clist_set_column_title (clist, PROGRAM_LIST_STATUS_COLUMN, _("Status"));
-	/* This column will get all the rest of the width */
-
-	gtk_clist_set_selection_mode (clist, GTK_SELECTION_BROWSE);
-	gtk_clist_column_titles_show (clist);
-	gtk_widget_show (GTK_WIDGET (clist));
-
-	gtk_clist_set_sort_column (clist, PROGRAM_LIST_NAME_COLUMN);
-	/* Do not use autosort. The list changes only at well-defined times
-	 * that we control, and autosort has that nasty bug where you can't
-	 * use row data in the compare function because the row is sorted
-	 * on insert before the row data has been added.
-	 */
-	gtk_clist_set_compare_func (clist, compare_program_file_pairs);
-
-	gtk_signal_connect (GTK_OBJECT (clist),
-			    "click_column",
-			    switch_sort_column,
-			    NULL);
-			    
-
-	return GTK_WIDGET (clist);
-}
-
-GnomeDialog *
-nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
-			      NautilusFile *file)
-{
-	GtkWidget *window;
-	GtkWidget *dialog_vbox;
-	GtkWidget *prompt_label;
-	GtkWidget *list_scroller, *clist;
-	GtkWidget *frame;
-	GtkWidget *framed_hbox;
-	GtkWidget *status_label;
-	GtkWidget *change_button_holder;
-	GtkWidget *change_button;
-	GtkWidget *capplet_button_frame, *capplet_hbox;
-	GtkWidget *capplet_button, *capption, *capplet_button_vbox;
-	char *file_name, *prompt;
-	const char *title;
-
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	file_name = get_file_name_for_display (file);
-
-	switch (action_type) {
-	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
-		title = _("Open with Other");
-		prompt = g_strdup_printf (_("Choose an application with which to open \"%s\"."), file_name);
-		break;
-	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
-	default:
-		title = _("View as Other");
-		prompt = g_strdup_printf (_("Choose a view for \"%s\"."), file_name);
-		break;
-	}
-
-	g_free (file_name);
+	GtkTreeViewColumn *column;
 	
-	window = gnome_dialog_new (title, 
-				   _("Choose"), 
-				   GNOME_STOCK_BUTTON_CANCEL, 
-	   			   _("Done"),
-				   NULL);
+	program_chooser->details->tree_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (program_chooser->details->list_store));
+	gtk_widget_show (program_chooser->details->tree_view);
 
-	nautilus_program_chooser_set_is_cancellable (GNOME_DIALOG (window), TRUE);
+	column = gtk_tree_view_column_new_with_attributes (_("Name"),
+							   gtk_cell_renderer_text_new (),
+							   "text", PROGRAM_LIST_NAME_COLUMN,
+							   NULL);
+	gtk_tree_view_column_set_sizing (column, GTK_TREE_VIEW_COLUMN_FIXED);
+	gtk_tree_view_column_set_fixed_width (column, NAME_COLUMN_INITIAL_WIDTH);
+	gtk_tree_view_column_set_sort_column_id (column, PROGRAM_LIST_NAME_COLUMN);	
+	gtk_tree_view_append_column (GTK_TREE_VIEW (program_chooser->details->tree_view), column);
 
-  	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
-  	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
-	gtk_window_set_default_size (GTK_WINDOW (window), 
-				     NO_DEFAULT_MAGIC_NUMBER,
-				     PROGRAM_CHOOSER_DEFAULT_HEIGHT);
-	gtk_window_set_wmclass (GTK_WINDOW (window), "program_chooser", "Nautilus");
+	column = gtk_tree_view_column_new_with_attributes (_("Status"),
+							   gtk_cell_renderer_text_new (),
+							   "text", PROGRAM_LIST_STATUS_COLUMN,
+							   NULL);
+	gtk_tree_view_column_set_sort_column_id (column, PROGRAM_LIST_STATUS_COLUMN);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (program_chooser->details->tree_view), column);
 
-	gtk_object_set_data (GTK_OBJECT (window), "type", GINT_TO_POINTER (action_type));
+	/* Update selected item info whenever selection changes. */
+  	g_signal_connect_object (gtk_tree_view_get_selection (GTK_TREE_VIEW (program_chooser->details->tree_view)),
+				 "changed",
+				 G_CALLBACK (program_list_selection_changed_callback), program_chooser, 0);
 
-	dialog_vbox = GNOME_DIALOG (window)->vbox;
+	g_signal_connect_object (program_chooser->details->tree_view, "row_activated",
+				 G_CALLBACK (tree_view_row_activated_callback), program_chooser, 0);
+}
+
+static gboolean
+tree_model_destroy_program_file_pair (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+{
+	ProgramFilePair *pair;
+
+	gtk_tree_model_get (model, iter,
+			    PROGRAM_LIST_PROGRAM_PAIR_COLUMN, &pair,
+			    -1);
+
+	/* We don't zero out the pointer in the tree view
+	 * because this funcion will only be called at
+	 * finalize time anyway.
+	 */
+	program_file_pair_free (pair);
+
+	return FALSE;
+}
+
+static void
+nautilus_program_chooser_finalize (GObject *object)
+{
+	NautilusProgramChooser *program_chooser;
+
+	program_chooser = NAUTILUS_PROGRAM_CHOOSER (object);
+
+	/* Free the ProgramFilePairs */
+	gtk_tree_model_foreach (GTK_TREE_MODEL (program_chooser->details->list_store),
+				tree_model_destroy_program_file_pair, NULL);
+	g_object_unref (program_chooser->details->list_store);
+
+	nautilus_file_unref (program_chooser->details->file);
+
+	g_free (program_chooser->details);
+	
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
+static void
+nautilus_program_chooser_class_init (NautilusProgramChooserClass *klass)
+{
+	GObjectClass *gobject_class;
+
+	gobject_class = (GObjectClass *)klass;
+
+	gobject_class->finalize = nautilus_program_chooser_finalize;
+}
+
+static void
+nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
+{
+	GtkWidget *dialog_vbox, *scrolled_window;
+	GtkWidget *framed_hbox;
+	GtkWidget *help_button;
+	GtkWidget *change_button_holder, *change_button;
+	GtkWidget *capplet_button_frame, *capplet_hbox;
+	GtkWidget *capplet_button, *caption, *capplet_button_vbox;
+	
+	program_chooser->details = g_new0 (NautilusProgramChooserDetails, 1);
+
+	/* This is a slight hack - we add our own help button to the dialog's
+	   button box. We don't want it to go through the normal response
+	   callback. */
+	help_button = gtk_button_new_from_stock (GTK_STOCK_HELP);
+	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (program_chooser)->action_area),
+			  help_button, FALSE, TRUE, 0);
+	gtk_widget_show (help_button);
+	gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (GTK_DIALOG (program_chooser)->action_area), help_button, TRUE);
+
+	g_signal_connect_object (help_button, "clicked",
+				 G_CALLBACK (help_cb), program_chooser, 0);
+
+	program_chooser->details->cancel_button = gtk_dialog_add_button (GTK_DIALOG (program_chooser),
+									 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+
+	gtk_dialog_add_button (GTK_DIALOG (program_chooser),
+			       _("C_hoose"), GTK_RESPONSE_OK);
+
+	program_chooser->details->done_button = gtk_dialog_add_button (GTK_DIALOG (program_chooser),
+								       _("Done"), GTK_RESPONSE_CANCEL);
+
+	gtk_container_set_border_width (GTK_CONTAINER (program_chooser), GNOME_PAD);
+
+	gtk_window_set_resizable (GTK_WINDOW (program_chooser), TRUE);
+	gtk_window_set_default_size (GTK_WINDOW (program_chooser), -1, PROGRAM_CHOOSER_DEFAULT_HEIGHT);
+	gtk_window_set_wmclass (GTK_WINDOW (program_chooser), "program_chooser", "Nautilus");
+
+	dialog_vbox = gtk_vbox_new (FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (program_chooser)->vbox),
+			    dialog_vbox, TRUE, TRUE, 5);
+	gtk_widget_show (dialog_vbox);
 
 	/* Prompt at top of dialog. */
-	prompt_label = gtk_label_new (prompt);
-	gtk_widget_show (prompt_label);
+	program_chooser->details->prompt_label = gtk_label_new (NULL);
+	gtk_widget_show (program_chooser->details->prompt_label);
 	/* Move prompt to left edge */
-	gtk_misc_set_alignment (GTK_MISC (prompt_label), 0, 0.5);
-  	g_free (prompt);
+	gtk_misc_set_alignment (GTK_MISC (program_chooser->details->prompt_label), 0, 0.5);
 
-  	gtk_box_pack_start (GTK_BOX (dialog_vbox), prompt_label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (dialog_vbox), program_chooser->details->prompt_label, FALSE, FALSE, 0);
 
-	/* Scrolling list to hold choices. */
-	list_scroller = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (list_scroller);
-	gtk_box_pack_start_defaults (GTK_BOX (GNOME_DIALOG (window)->vbox), list_scroller);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_scroller), 
+	/* Create scrolled window */
+	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window), 
 					GTK_POLICY_NEVER, 
-					GTK_POLICY_AUTOMATIC);	  
+					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled_window), GTK_SHADOW_IN);
+	gtk_widget_show (scrolled_window);
 
-	clist = create_program_clist ();
+	gtk_box_pack_start_defaults (GTK_BOX (dialog_vbox), scrolled_window);
 
-	gtk_container_add (GTK_CONTAINER (list_scroller), clist);	  
-	eel_gtk_clist_set_double_click_button 
-		(GTK_CLIST (clist), 
-		 eel_gnome_dialog_get_button_by_index 
-			(GNOME_DIALOG (window), GNOME_OK));
-	gtk_object_set_data (GTK_OBJECT (window), "list", clist);
+	/* Create list store */
+	program_chooser->details->list_store = gtk_list_store_new (PROGRAM_LIST_COLUMN_COUNT,
+								   G_TYPE_STRING, /* PROGRAM_LIST_NAME_COLUMN */
+								   G_TYPE_STRING, /* PROGRAM_LIST_STATUS_COLUMN */
+								   G_TYPE_POINTER /* PROGRAM_LIST_PROGRAM_PAIR_COLUMN */);
 
-	repopulate_program_list (GNOME_DIALOG (window), file, GTK_CLIST (clist));
+	/* Set up sort functions */
+	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (program_chooser->details->list_store),
+					 PROGRAM_LIST_NAME_COLUMN, name_column_sort_func,
+					 NULL, NULL);
+
+	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE (program_chooser->details->list_store),
+					 PROGRAM_LIST_STATUS_COLUMN, status_column_sort_func,
+					 NULL, NULL);
+
+	/* Sort ascending by name */
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (program_chooser->details->list_store),
+					      PROGRAM_LIST_NAME_COLUMN, GTK_SORT_ASCENDING);
+	
+	/* Create and setup tree view */
+	create_and_set_up_tree_view (program_chooser);
+	gtk_container_add (GTK_CONTAINER (scrolled_window), program_chooser->details->tree_view);
 
 	/* Framed area with selection-specific details */
-	frame = gtk_frame_new (NULL);
-	gtk_widget_show (frame);
-  	gtk_box_pack_start (GTK_BOX (dialog_vbox), frame, FALSE, FALSE, 0);
+	program_chooser->details->frame = gtk_frame_new (NULL);
+	gtk_widget_show (program_chooser->details->frame);
+  	gtk_box_pack_start (GTK_BOX (dialog_vbox), program_chooser->details->frame, FALSE, FALSE, 0);
 
-  	framed_hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+	framed_hbox = gtk_hbox_new (FALSE, GNOME_PAD);
   	gtk_widget_show (framed_hbox);
-  	gtk_container_add (GTK_CONTAINER (frame), framed_hbox);
+  	gtk_container_add (GTK_CONTAINER (program_chooser->details->frame), framed_hbox);
   	gtk_container_set_border_width (GTK_CONTAINER (framed_hbox), GNOME_PAD);
 
-  	status_label = gtk_label_new (NULL);
-  	gtk_label_set_justify (GTK_LABEL (status_label), GTK_JUSTIFY_LEFT);
-  	gtk_widget_show (status_label);
-  	gtk_box_pack_start (GTK_BOX (framed_hbox), status_label, FALSE, FALSE, 0);
+	program_chooser->details->status_label = gtk_label_new (NULL);
+  	gtk_label_set_justify (GTK_LABEL (program_chooser->details->status_label), GTK_JUSTIFY_LEFT);
+  	gtk_widget_show (program_chooser->details->status_label);
+  	gtk_box_pack_start (GTK_BOX (framed_hbox), program_chooser->details->status_label, FALSE, FALSE, 0);
 
 	change_button_holder = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (change_button_holder);
   	gtk_box_pack_end (GTK_BOX (framed_hbox), change_button_holder, FALSE, FALSE, 0);
 
-  	change_button = gtk_button_new_with_label(_("Modify..."));
-	eel_gtk_button_set_standard_padding (GTK_BUTTON (change_button));
+  	change_button = gtk_button_new_with_mnemonic (_("_Modify..."));
+
+	g_signal_connect_object (change_button, "clicked",
+				 G_CALLBACK (run_program_configurator_callback), program_chooser, 0);
+
   	gtk_widget_show (change_button);
   	gtk_box_pack_end (GTK_BOX (change_button_holder), change_button, TRUE, FALSE, 0);
-
-  	gtk_signal_connect (GTK_OBJECT (change_button),
-  			    "clicked",
-  			    run_program_configurator_callback,
-  			    window);
 
 	/* Framed area with button to launch mime type editing capplet. */
 	capplet_button_frame = gtk_frame_new (_("File Types and Programs"));
 	gtk_widget_show (capplet_button_frame);
-  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (window)->vbox), capplet_button_frame, FALSE, FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (dialog_vbox), capplet_button_frame, FALSE, FALSE, 0);
 
   	capplet_hbox = gtk_hbox_new (FALSE, GNOME_PAD_BIG);
   	gtk_widget_show (capplet_hbox);
@@ -1363,44 +1443,69 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	capplet_button_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (capplet_button_vbox);
 	gtk_box_pack_end (GTK_BOX (capplet_hbox), capplet_button_vbox, FALSE, FALSE, 0);
-	capplet_button = gtk_button_new_with_label (_("Go There"));	 
-	eel_gtk_button_set_standard_padding (GTK_BUTTON (capplet_button));
-	gtk_signal_connect (GTK_OBJECT (capplet_button),
-			    "clicked",
-			    launch_mime_capplet_and_close_dialog,
-			    window);
+	capplet_button = gtk_button_new_with_mnemonic (_("_Go There"));	 
+
+	g_signal_connect_object (capplet_button, "clicked",
+				 G_CALLBACK (launch_mime_capplet_and_close_dialog), program_chooser, 0);
 	gtk_widget_show (capplet_button);
 	gtk_box_pack_start (GTK_BOX (capplet_button_vbox), capplet_button, TRUE, FALSE, 0);
 
-	capption = gtk_label_new (_("You can configure which programs are offered "
-				    "for which file types in the GNOME Control Center."));
-	gtk_widget_show (capption);
-	gtk_label_set_line_wrap (GTK_LABEL (capption), TRUE);
-	gtk_box_pack_start (GTK_BOX (capplet_hbox), capption, FALSE, FALSE, 0);				    
-
-	/* Buttons close this dialog. */
-  	gnome_dialog_set_close (GNOME_DIALOG (window), TRUE);
+	caption = gtk_label_new (_("You can configure which programs are offered "
+				   "for which file types in the File Types and Programs dialog."));
+	gtk_widget_show (caption);
+	gtk_label_set_line_wrap (GTK_LABEL (caption), TRUE);
+	gtk_box_pack_start (GTK_BOX (capplet_hbox), caption, FALSE, FALSE, 0);				    
 
   	/* Make confirmation button the default. */
-  	gnome_dialog_set_default (GNOME_DIALOG (window), GNOME_OK);
+  	gtk_dialog_set_default_response (GTK_DIALOG (program_chooser), GTK_RESPONSE_OK);
+
+	/* We don't need the separator as we use frames. */
+  	gtk_dialog_set_has_separator (GTK_DIALOG (program_chooser), FALSE);
+}
 
 
-	/* Load up the dialog object with info other functions will need. */
-	nautilus_program_chooser_set_file (GNOME_DIALOG (window), file);
-	nautilus_program_chooser_set_clist (GNOME_DIALOG (window), GTK_CLIST (clist));
-	nautilus_program_chooser_set_frame (GNOME_DIALOG (window), GTK_FRAME (frame));
-	nautilus_program_chooser_set_status_label (GNOME_DIALOG (window), GTK_LABEL (status_label));
+GtkWidget *
+nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
+			      NautilusFile *file)
+{
+	NautilusProgramChooser *program_chooser;
+	char *file_name, *prompt;
+	const char *title;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	/* Create the program chooser */
+	program_chooser = g_object_new (NAUTILUS_TYPE_PROGRAM_CHOOSER, NULL);
+
+	program_chooser->details->action_type = action_type;
+	program_chooser->details->file = nautilus_file_ref (file);
+
+	file_name = get_file_name_for_display (file);
+
+	switch (action_type) {
+	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
+		title = _("Open with Other Application");
+		prompt = g_strdup_printf (_("Choose an application with which to open \"%s\":"), file_name);
+		break;
+	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
+	default:
+		title = _("Open with Other Viewer");
+		prompt = g_strdup_printf (_("Choose a view for \"%s\":"), file_name);
+		break;
+	}
+
+	g_free (file_name);
 	
-	/* Fill in initial info about the selected item. */
-  	update_selected_item_details (GNOME_DIALOG (window));
+	gtk_window_set_title (GTK_WINDOW (program_chooser), title);
+	gtk_label_set_text (GTK_LABEL (program_chooser->details->prompt_label), prompt);
+	
+	nautilus_program_chooser_set_is_cancellable (program_chooser, TRUE);
 
-  	/* Update selected item info whenever selection changes. */
-  	gtk_signal_connect (GTK_OBJECT (clist),
-  			    "select_row",
-  			    program_list_selection_changed_callback,
-  			    window);
+  	g_free (prompt);
 
-  	return GNOME_DIALOG (window);
+	repopulate_program_list (program_chooser);
+
+  	return GTK_WIDGET (program_chooser);
 }
 
 /**
@@ -1420,15 +1525,15 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
  * destroyed.
  */
 GnomeVFSMimeApplication *
-nautilus_program_chooser_get_application (GnomeDialog *program_chooser)
+nautilus_program_chooser_get_application (NautilusProgramChooser *program_chooser)
 {
 	ProgramFilePair *pair;
 
-	g_return_val_if_fail (GNOME_IS_DIALOG (program_chooser), NULL);
+	g_return_val_if_fail (GTK_IS_DIALOG (program_chooser), NULL);
 
-	g_return_val_if_fail (nautilus_program_chooser_get_type (program_chooser)
-			== GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
-		 NULL);
+	g_return_val_if_fail (program_chooser->details->action_type
+			      == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION,
+			      NULL);
 
 	pair = get_selected_program_file_pair (program_chooser);
 	if (pair == NULL) {
@@ -1455,16 +1560,16 @@ nautilus_program_chooser_get_application (GnomeDialog *program_chooser)
  * destroyed.
  */
 NautilusViewIdentifier *
-nautilus_program_chooser_get_component (GnomeDialog *program_chooser)
+nautilus_program_chooser_get_component (NautilusProgramChooser *program_chooser)
 {
 	ProgramFilePair *pair;
 
-	g_return_val_if_fail (GNOME_IS_DIALOG (program_chooser), NULL);
+	g_return_val_if_fail (GTK_IS_DIALOG (program_chooser), NULL);
 
-	g_return_val_if_fail (nautilus_program_chooser_get_type (program_chooser)
-			== GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
-		 NULL);
-
+	g_return_val_if_fail (program_chooser->details->action_type
+			      == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT,
+			      NULL);
+	
 	pair = get_selected_program_file_pair (program_chooser);
 	if (pair == NULL) {
 		return NULL;
@@ -1482,7 +1587,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	char *unavailable_message;
 	char *file_name;
 	char *dialog_title;
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 
 	file_name = get_file_name_for_display (file);
 
@@ -1491,8 +1596,8 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 		dialog_title = g_strdup (_("No Viewers Available"));
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-		unavailable_message = g_strdup_printf (_("No applications are available for \"%s\"."), file_name);
-		dialog_title = g_strdup (_("No Applications Available"));
+		unavailable_message = g_strdup_printf (_("There is no application associated with \"%s\"."), file_name);
+		dialog_title = g_strdup (_("No Application Associated"));
 	}
 
 	/* Note: This might be misleading in the components case, since the
@@ -1500,15 +1605,16 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	 * (They can add applications though.)
 	 */
 	prompt = g_strdup_printf (_("%s\n\n"
-				    "You can configure which programs are offered "
-				    "for which file types with the \"File Types and "
-				    "Programs\" part of the GNOME Control Center. Do "
-				    "you want to go there now?"),
+				    "You can configure GNOME to associate applications "
+				    "with file types.  Do you want to associate an "
+				    "application with this file type now?"),
 				  unavailable_message);
 	dialog = eel_show_yes_no_dialog 
-		(prompt, dialog_title, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
+		(prompt, dialog_title, _("Associate Application"), GTK_STOCK_CANCEL, parent_window);
 
-	gnome_dialog_button_connect (dialog, GNOME_OK, launch_mime_capplet, nautilus_file_get_mime_type (file));
+	g_signal_connect_object (dialog, "response",
+		G_CALLBACK (launch_mime_capplet_on_ok),
+		file, 0);
 
 	g_free (unavailable_message);
 	g_free (file_name);

@@ -27,7 +27,6 @@
 #include "fm-search-list-view.h"
 
 #include "fm-directory-view.h"
-#include "fm-list-view-private.h"
 #include "nautilus-indexing-info.h"
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtksignal.h>
@@ -70,17 +69,18 @@ struct FMSearchListViewDetails {
 	BonoboUIComponent *ui;
 };
 
-static void 	fm_search_list_view_initialize       	 (gpointer          object,
+static void 	fm_search_list_view_init       	 (gpointer          object,
 						      	  gpointer          klass);
-static void 	fm_search_list_view_initialize_class 	 (gpointer          klass);
+static void 	fm_search_list_view_class_init 	 (gpointer          klass);
 static void     real_destroy                             (GtkObject        *object);
 static void 	real_add_file				 (FMDirectoryView  *view,
 							  NautilusFile 	   *file);
+static gboolean real_file_still_belongs 		 (FMDirectoryView  *view, 
+							  NautilusFile 	   *file);
+#if GNOME2_CONVERSION_COMPLETE
 static void	real_adding_file 			 (FMListView 	   *view, 
 							  NautilusFile 	   *file);
 static void	real_removing_file 			 (FMListView 	   *view, 
-							  NautilusFile 	   *file);
-static gboolean real_file_still_belongs 		 (FMDirectoryView  *view, 
 							  NautilusFile 	   *file);
 static int  	real_get_number_of_columns           	 (FMListView       *list_view);
 static int  	real_get_emblems_column                	 (FMListView       *list_view);
@@ -89,6 +89,7 @@ static char *   real_get_default_sort_attribute      	 (FMListView       *view);
 static void 	real_get_column_specification        	 (FMListView       *list_view,
 						      	  int               column_number,
 						      	  FMListViewColumn *specification);
+#endif
 static EelStringList * real_get_emblem_names_to_exclude         (FMDirectoryView  *view);
 static void	real_file_limit_reached 		 (FMDirectoryView  *view);
 static void	real_merge_menus 		     	 (FMDirectoryView  *view);
@@ -107,7 +108,7 @@ static void	reveal_selected_items_callback 		 (BonoboUIComponent *component,
 							  const char 	   *verb);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
+EEL_CLASS_BOILERPLATE (FMSearchListView,
 				   fm_search_list_view,
 				   FM_TYPE_LIST_VIEW)
 
@@ -177,7 +178,7 @@ static void
 real_load_error (FMDirectoryView *nautilus_view, 
 		 GnomeVFSResult result)
 {
-	GnomeDialog *load_error_dialog;
+	GtkDialog *load_error_dialog;
 	char *error_string;
 
 	/* Do not call parent's function; we handle all search errors
@@ -315,7 +316,7 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 static void     
 display_system_services_are_disabled_dialog (gboolean unindexed_search_is_available)
 {
-	GnomeDialog *dialog_shown;
+	GtkDialog *dialog_shown;
 	char *details_string;
 
 	details_string = nautilus_medusa_get_explanation_of_enabling ();
@@ -333,7 +334,7 @@ display_system_services_are_disabled_dialog (gboolean unindexed_search_is_availa
 #endif	
 
 static void
-fm_search_list_view_initialize_class (gpointer klass)
+fm_search_list_view_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
@@ -359,6 +360,7 @@ fm_search_list_view_initialize_class (gpointer klass)
   	fm_directory_view_class->update_menus =	real_update_menus;
   	fm_directory_view_class->load_error = real_load_error;
 
+#if GNOME2_CONVERSION_COMPLETE
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
@@ -366,18 +368,17 @@ fm_search_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
+#endif
 }
 
 static void
-fm_search_list_view_initialize (gpointer object,
+fm_search_list_view_init (gpointer object,
 				gpointer klass)
 {
 	FMSearchListView *search_view;
 	NautilusView *nautilus_view;
 	FMDirectoryView *directory_view;
  
- 	g_assert (GTK_BIN (object)->child == NULL);
-
 	search_view = FM_SEARCH_LIST_VIEW (object);
   	directory_view = FM_DIRECTORY_VIEW (object);
 
@@ -385,10 +386,8 @@ fm_search_list_view_initialize (gpointer object,
 
 	nautilus_view = fm_directory_view_get_nautilus_view (directory_view);
 
-	gtk_signal_connect (GTK_OBJECT (nautilus_view),
-			    "load_location",
-			    GTK_SIGNAL_FUNC (load_location_callback),
-			    NULL);
+	g_signal_connect (nautilus_view, "load_location",
+			  G_CALLBACK (load_location_callback), NULL);
 }
 
 static void
@@ -399,13 +398,24 @@ real_destroy (GtkObject *object)
 	search_view = FM_SEARCH_LIST_VIEW (object);
 
 	if (search_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (search_view->details->ui);
-		bonobo_object_unref (BONOBO_OBJECT (search_view->details->ui));
+		bonobo_ui_component_unset_container (search_view->details->ui, NULL);
+		bonobo_object_unref (search_view->details->ui);
 	}
 	g_free (search_view->details);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
+
+static EelStringList *
+real_get_emblem_names_to_exclude (FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	/* Overridden to show even the trash emblem here */
+	return NULL;
+}
+
+#if GNOME2_CONVERSION_COMPLETE
 
 static int
 real_get_number_of_columns (FMListView *view)
@@ -453,15 +463,6 @@ real_get_default_sort_attribute (FMListView *view)
 	}
 
 	return sort_attribute;
-}
-
-static EelStringList *
-real_get_emblem_names_to_exclude (FMDirectoryView *view)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-
-	/* Overridden to show even the trash emblem here */
-	return NULL;
 }
 
 static int
@@ -528,6 +529,8 @@ real_get_column_specification (FMListView *view,
 		g_assert_not_reached ();
 	}
 }
+
+#endif
 
 static void
 indexing_info_callback (BonoboUIComponent *component, gpointer data, const char *verb)
@@ -610,6 +613,8 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 	nautilus_file_unref (real_file);
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static void
 real_adding_file (FMListView *view, NautilusFile *file)
 {
@@ -625,10 +630,10 @@ real_adding_file (FMListView *view, NautilusFile *file)
 	 * and won't be specific to the search directory. Is that OK? 
 	 */
 
-	gtk_signal_connect_object (GTK_OBJECT (file),
-				   "changed",
-				   fm_directory_view_queue_file_change,
-				   GTK_OBJECT (view));
+	g_signal_connect_object (GTK_OBJECT (file), "changed",
+				 G_CALLBACK (fm_directory_view_queue_file_change),
+				 view, G_CONNECT_SWAPPED);
+
 	/* Monitor the things needed to get the right
 	 * icon. Also monitor a directory's item count because
 	 * the "size" attribute is based on that, and the file's metadata, and
@@ -654,10 +659,12 @@ real_removing_file (FMListView *view, NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	nautilus_file_monitor_remove (file, view);
-	gtk_signal_disconnect_by_func 
-		(GTK_OBJECT (file), fm_directory_view_queue_file_change, view);
+	g_signal_handlers_disconnect_by_func 
+		(G_OBJECT (file), G_CALLBACK (fm_directory_view_queue_file_change), view);
 	EEL_CALL_PARENT (FM_LIST_VIEW_CLASS, removing_file, (view, file));
 }
+
+#endif
 
 static gboolean
 real_file_still_belongs (FMDirectoryView *view, NautilusFile *file)
@@ -710,6 +717,7 @@ static void
 real_merge_menus (FMDirectoryView *view)
 {
 	FMSearchListView *search_view;
+	Bonobo_UIContainer ui_container;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Indexing Info", indexing_info_callback),
 		BONOBO_UI_VERB ("Reveal", reveal_selected_items_callback),
@@ -721,12 +729,14 @@ real_merge_menus (FMDirectoryView *view)
 	search_view = FM_SEARCH_LIST_VIEW (view);
 
 	search_view->details->ui = bonobo_ui_component_new ("Search List View");
+	ui_container = fm_directory_view_get_bonobo_ui_container (view);
 	bonobo_ui_component_set_container (search_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view));
+					   ui_container, NULL);
+	bonobo_object_release_unref (ui_container, NULL);
 	bonobo_ui_util_set_ui (search_view->details->ui,
 			       DATADIR,
 			       "nautilus-search-list-view-ui.xml",
-			       "nautilus");
+			       "nautilus", NULL);
 	bonobo_ui_component_add_verb_list_with_data (search_view->details->ui, verbs, view);
 }
 

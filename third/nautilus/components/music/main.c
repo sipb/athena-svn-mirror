@@ -32,28 +32,25 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-debug.h>
 
-#define FACTORY_IID     "OAFIID:nautilus_music_view_factory:1be0c129-87cd-4daa-9d3a-94397de9bce2"
-#define VIEW_IID        "OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391"
+#define VIEW_IID    "OAFIID:Nautilus_Music_View"
+#define FACTORY_IID "OAFIID:Nautilus_Music_View_Factory"
 
 int
 main (int argc, char *argv[])
 {
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
-	 * Unfortunately, this has to be done explicitly for each domain.
-	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 
 	return nautilus_view_standard_main ("nautilus-music-view",
 					    VERSION,
-					    PACKAGE,
+					    GETTEXT_PACKAGE,
 					    GNOMELOCALEDIR,
 					    argc,
 					    argv,
 					    FACTORY_IID,
 					    VIEW_IID,
 					    nautilus_view_create_from_get_type_function,
-					    nautilus_global_preferences_initialize,
+					    nautilus_global_preferences_init,
 					    nautilus_music_view_get_type);
 }

@@ -34,11 +34,11 @@ struct NautilusVFSFileDetails {
 	char dummy; /* ANSI C does not allow empty structs */
 };
 
-static void nautilus_vfs_file_initialize       (gpointer   object,
+static void nautilus_vfs_file_init       (gpointer   object,
 						gpointer   klass);
-static void nautilus_vfs_file_initialize_class (gpointer   klass);
+static void nautilus_vfs_file_class_init (gpointer   klass);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusVFSFile,
+EEL_CLASS_BOILERPLATE (NautilusVFSFile,
 			      nautilus_vfs_file,
 			      NAUTILUS_TYPE_FILE)
 
@@ -233,7 +233,7 @@ vfs_file_get_where_string (NautilusFile *file)
 }
 
 static void
-nautilus_vfs_file_initialize (gpointer object, gpointer klass)
+nautilus_vfs_file_init (gpointer object, gpointer klass)
 {
 	NautilusVFSFile *file;
 
@@ -255,7 +255,7 @@ vfs_destroy (GtkObject *object)
 }
 
 static void
-nautilus_vfs_file_initialize_class (gpointer klass)
+nautilus_vfs_file_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	NautilusFileClass *file_class;

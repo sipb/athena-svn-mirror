@@ -6,35 +6,32 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Text\"	\
 	-DDATADIR=\""$(datadir)"\" 		\
 	-I$(top_srcdir)				\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
+	$(DISABLE_DEPRECATED_CFLAGS)		\
+	$(COMPONENT_CFLAGS)			\
+	-DGTK_ENABLE_BROKEN			\
 	$(NULL)
 
-bin_PROGRAMS =					\
-	nautilus-text-view
+libexec_PROGRAMS=nautilus-text-view
 
 nautilus_text_view_SOURCES =		        \
-	nautilus-text-view.c			\
-	nautilus-text-view.h			\
-	main.c
+	nautilus-text-view.c
 
 nautilus_text_view_LDADD =			\
-	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	../../libnautilus/libnautilus.la        \
+	$(COMPONENT_LIBS)			\
 	$(NULL)
 
-uidir = $(datadir)/gnome/ui
-ui_DATA = nautilus-text-view-ui.xml
+#uidir = $(datadir)/gnome-2.0/ui
+#ui_DATA = nautilus-text-view-ui.xml
 
-oafdir = $(datadir)/oaf
-oaf_in_files =					\
-	Nautilus_View_text.oaf.in		\
-	$(NULL)
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_in_files = Nautilus_View_text.server.in.in
 
-@XML_I18N_MERGE_OAF_RULE@
+serverdir = $(libdir)/bonobo/servers
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+@INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(ui_DATA) 
-
-
+EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES)
+CLEANFILES = $(server_DATA) $(server_DATA).in

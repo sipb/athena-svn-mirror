@@ -29,19 +29,16 @@
 #include "nautilus-view-identifier.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
-#include <liboaf/liboaf.h>
 
 #define PREFERENCES_SIDEBAR_PANEL_PREFIX "sidebar-panels"
 
-#define NEWS_PANEL_IID		"OAFIID:nautilus_news_view:041601"
-#define NOTES_PANEL_IID		"OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185"
-#define HELP_PANEL_IID		"OAFIID:hyperbola_navigation_tree:57542ce0-71ff-442d-a764-462c92514234"
-#define HISTORY_PANEL_IID	"OAFIID:nautilus_history_view:a7a85bdd-2ecf-4bc1-be7c-ed328a29aacb"
-#define TREE_PANEL_IID		"OAFIID:nautilus_tree_view:2d826a6e-1669-4a45-94b8-23d65d22802d"
+#define NEWS_PANEL_IID		"OAFIID:Nautilus_News_View"
+#define NOTES_PANEL_IID		"OAFIID:Nautilus_Notes_View"
+#define HISTORY_PANEL_IID	"OAFIID:Nautilus_History_View"
+#define TREE_PANEL_IID		"OAFIID:Nautilus_Tree_View"
 
 const char nautilus_sidebar_news_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" NEWS_PANEL_IID;
 const char nautilus_sidebar_notes_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" NOTES_PANEL_IID;
-const char nautilus_sidebar_help_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" HELP_PANEL_IID;
 const char nautilus_sidebar_history_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" HISTORY_PANEL_IID;
 const char nautilus_sidebar_tree_enabled_preference_name[] = PREFERENCES_SIDEBAR_PANEL_PREFIX "/" TREE_PANEL_IID;
 
@@ -50,7 +47,7 @@ sidebar_panel_make_preference_key (const char *panel_iid)
 {
 	g_return_val_if_fail (panel_iid != NULL, NULL);
 
-	return g_strdup_printf ("%s/%s", PREFERENCES_SIDEBAR_PANEL_PREFIX, panel_iid);
+	return g_strconcat (PREFERENCES_SIDEBAR_PANEL_PREFIX "/", panel_iid, NULL);
 }
 
 static int
@@ -97,7 +94,7 @@ sidebar_get_sidebar_panel_view_identifiers (void)
 {
 	CORBA_Environment ev;
 	const char *query;
-        OAF_ServerInfoList *oaf_result;
+        Bonobo_ServerInfoList *bonobo_activation_result;
 	guint i;
 	NautilusViewIdentifier *id;
 	GList *view_identifiers;
@@ -106,21 +103,21 @@ sidebar_get_sidebar_panel_view_identifiers (void)
 
 	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
 
-	oaf_result = oaf_query (query, NULL, &ev);
+	bonobo_activation_result = bonobo_activation_query (query, NULL, &ev);
 		
 	view_identifiers = NULL;
 
-        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
-		for (i = 0; i < oaf_result->_length; i++) {
+        if (ev._major == CORBA_NO_EXCEPTION && bonobo_activation_result != NULL) {
+		for (i = 0; i < bonobo_activation_result->_length; i++) {
 			id = nautilus_view_identifier_new_from_sidebar_panel
-				(&oaf_result->_buffer[i]);
+				(&bonobo_activation_result->_buffer[i]);
 			view_identifiers = g_list_prepend (view_identifiers, id);
 		}
 		view_identifiers = g_list_reverse (view_identifiers);
 	} 
 
-	if (oaf_result != NULL) {
-		CORBA_free (oaf_result);
+	if (bonobo_activation_result != NULL) {
+		CORBA_free (bonobo_activation_result);
 	}
 	
 	CORBA_exception_free (&ev);

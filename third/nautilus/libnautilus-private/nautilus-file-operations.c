@@ -25,13 +25,14 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include "nautilus-file-operations.h"
 
 #include "nautilus-file-operations-progress.h"
 #include "nautilus-lib-self-check-functions.h"
 
-#include <eel/eel-gdk-font-extensions.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-pango-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
@@ -72,7 +73,6 @@ typedef struct {
 	GnomeVFSXferOverwriteMode overwrite_mode;
 	GtkWidget *parent_view;
 	TransferKind kind;
-	gboolean show_progress_dialog;
 	void (* done_callback) (GHashTable *debuting_uris, gpointer data);
 	gpointer done_callback_data;
 	GHashTable *debuting_uris;
@@ -87,7 +87,7 @@ transfer_info_new (GtkWidget *parent_view)
 	result = g_new0 (TransferInfo, 1);
 	result->parent_view = parent_view;
 	
-	eel_nullify_when_destroyed (&result->parent_view);
+	eel_add_weak_pointer (&result->parent_view);
 	
 	return result;
 }
@@ -95,15 +95,14 @@ transfer_info_new (GtkWidget *parent_view)
 static void
 transfer_info_destroy (TransferInfo *transfer_info)
 {
-	eel_nullify_cancel (&transfer_info->parent_view);
+	eel_remove_weak_pointer (&transfer_info->parent_view);
 	
 	if (transfer_info->progress_dialog != NULL) {
 		nautilus_file_operations_progress_done (transfer_info->progress_dialog);
 	}
 	
 	if (transfer_info->debuting_uris != NULL) {
-		eel_g_hash_table_destroy_deep_custom
-			(transfer_info->debuting_uris, (GFunc) g_free, NULL, NULL, NULL);
+		g_hash_table_destroy (transfer_info->debuting_uris);
 	}
 	
 	g_free (transfer_info);
@@ -196,76 +195,60 @@ icon_position_iterator_get_next (IconPositionIterator *position_iterator,
 	return TRUE;
 }
 
-/* Hack to get the GdkFont used by a GtkLabel in an error dialog.
- * We need to do this because the string truncation needs to be
- * done before a dialog is instantiated.
- * 
- * This is probably not super fast but it is not a problem in the
- * context we are using it, truncating a string while displaying an
- * error dialog.
- */
-static GdkFont *
-get_label_font (void)
-{
-	GtkWidget *label;
-	GtkStyle *style;
-	GdkFont *font;
-
-	/* FIXME: Does this really pick up the correct font if the rc
-	 * file has a special case for the particular dialog we are
-	 * preparing?
-	 */
-
-	label = gtk_label_new ("");
-	style = gtk_widget_get_style (label);
-	font = style->font;
-	gdk_font_ref (font);
-	gtk_object_sink (GTK_OBJECT (label));
-
-	return font;
-}
-
 static char *
-ellipsize_string_for_dialog (const char *str)
+ellipsize_string_for_dialog (PangoContext *context, const char *str)
 {
-	GdkFont *font;
 	int maximum_width;
 	char *result;
+	PangoLayout *layout;
+	PangoFontMetrics *metrics;
 
-	/* get a nice length to ellipsize to, based on the font */
-	font = get_label_font ();
-	maximum_width = gdk_string_width (font, "MMMMMMMMMMMMMMMMMMMMMM");
+	layout = pango_layout_new (context);
 
-	result = eel_string_ellipsize (str, font, maximum_width, EEL_ELLIPSIZE_MIDDLE);
-	gdk_font_unref (font);
+	metrics = pango_context_get_metrics (
+		context, pango_context_get_font_description (context), NULL);
+
+	maximum_width = pango_font_metrics_get_approximate_char_width (metrics) * 25 / PANGO_SCALE;
+
+	pango_font_metrics_unref (metrics);
+
+	eel_pango_layout_set_text_ellipsized (
+		layout, str, maximum_width, EEL_ELLIPSIZE_MIDDLE);
+
+	result = g_strdup (pango_layout_get_text (layout));
+
+	g_object_unref (layout);
 
 	return result;
 }
 
 static char *
-format_and_ellipsize_uri_for_dialog (const char *uri)
+format_and_ellipsize_uri_for_dialog (GtkWidget *context, const char *uri)
 {
 	char *unescaped, *result;
 
 	unescaped = eel_format_uri_for_display (uri);
-	result = ellipsize_string_for_dialog (unescaped);
+	result = ellipsize_string_for_dialog (
+		gtk_widget_get_pango_context (context), unescaped);
 	g_free (unescaped);
 
 	return result;
 }
 
 static char *
-extract_and_ellipsize_file_name_for_dialog (const char *uri)
+extract_and_ellipsize_file_name_for_dialog (GtkWidget *context, const char *uri)
 {
-	const char *last_part;
+	char *basename;
 	char *unescaped, *result;
 	
-	last_part = g_basename (uri);
-	g_return_val_if_fail (last_part != NULL, NULL);
+	basename = g_path_get_basename (uri);
+	g_return_val_if_fail (basename != NULL, NULL);
 
-	unescaped = gnome_vfs_unescape_string_for_display (last_part);
-	result = ellipsize_string_for_dialog (unescaped);
+	unescaped = gnome_vfs_unescape_string_for_display (basename);
+	result = ellipsize_string_for_dialog (
+		gtk_widget_get_pango_context (context), unescaped);
 	g_free (unescaped);
+	g_free (basename);
 
 	return result;
 }
@@ -281,97 +264,44 @@ parent_for_error_dialog (TransferInfo *transfer_info)
 }
 
 static void
-fit_rect_on_screen (GdkRectangle *rect)
+handle_response_callback (GtkDialog *dialog, int response, TransferInfo *transfer_info)
 {
-	if (rect->x + rect->width > gdk_screen_width ()) {
-		rect->x = gdk_screen_width () - rect->width;
-	}
-
-	if (rect->y + rect->height > gdk_screen_height ()) {
-		rect->y = gdk_screen_height () - rect->height;
-	}
-
-	if (rect->x < 0) {
-		rect->x = 0;
-	}
-
-	if (rect->y < 0) {
-		rect->y = 0;
-	}
+	transfer_info->cancelled = TRUE;
 }
 
 static void
-center_dialog_over_rect (GtkWindow *window, GdkRectangle rect)
+handle_close_callback (GtkDialog *dialog, TransferInfo *transfer_info)
 {
-	g_return_if_fail (GTK_WINDOW (window) != NULL);
-
-	fit_rect_on_screen (&rect);
-
-	gtk_widget_set_uposition (GTK_WIDGET (window), 
-		rect.x + rect.width / 2 
-			- GTK_WIDGET (window)->allocation.width / 2,
-		rect.y + rect.height / 2
-			- GTK_WIDGET (window)->allocation.height / 2);
-}
-
-static void
-center_dialog_over_window (GtkWindow *window, GtkWindow *over)
-{
-	GdkRectangle rect;
-	int x, y, w, h;
-
-	g_return_if_fail (GTK_WINDOW (window) != NULL);
-	g_return_if_fail (GTK_WINDOW (over) != NULL);
-
-	gdk_window_get_root_origin (GTK_WIDGET (over)->window, &x, &y);
-	gdk_window_get_size (GTK_WIDGET (over)->window, &w, &h);
-	rect.x = x;
-	rect.y = y;
-	rect.width = w;
-	rect.height = h;
-
-	center_dialog_over_rect (window, rect);
-}
-
-static gboolean
-handle_close_callback (GnomeDialog *dialog, TransferInfo *tranfer_info)
-{
-	tranfer_info->cancelled = TRUE;
-	return FALSE;
+	transfer_info->cancelled = TRUE;
 }
 
 static void
 create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 			TransferInfo *transfer_info)
 {
-	if (!transfer_info->show_progress_dialog) {
-		return;
-	}
-
 	g_return_if_fail (transfer_info->progress_dialog == NULL);
 
 	transfer_info->progress_dialog = nautilus_file_operations_progress_new 
-		(transfer_info->operation_title, "", "", "", 0, 0);
+		(transfer_info->operation_title, "", "", "", 0, 0, TRUE);
 
 	/* Treat clicking on the close box or use of the escape key
 	 * the same as clicking cancel.
 	 */
-	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog),
-			    "clicked",
-			    GTK_SIGNAL_FUNC (gnome_dialog_close),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog),
-			    "close",
-			    GTK_SIGNAL_FUNC (handle_close_callback),
-			    transfer_info);
+	g_signal_connect (transfer_info->progress_dialog,
+			  "response",
+			  G_CALLBACK (handle_response_callback),
+			  transfer_info);
+	g_signal_connect (transfer_info->progress_dialog,
+			  "close",
+			  G_CALLBACK (handle_close_callback),
+			  transfer_info);
 
 	/* Make the progress dialog show up over the window we are copying into */
 	if (transfer_info->parent_view != NULL) {
-		center_dialog_over_window (GTK_WINDOW (transfer_info->progress_dialog), 
-					   GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
+		gtk_window_set_transient_for (
+			GTK_WINDOW (transfer_info->progress_dialog), 
+			GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
 	}
-
-	gtk_widget_show (GTK_WIDGET (transfer_info->progress_dialog));
 }
 
 static void
@@ -452,7 +382,8 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		/* If cancelled, delete any partially copied files that are laying
 		 * around and return.
 		 */
-		if (progress_info->bytes_total != progress_info->bytes_copied) {
+		if (progress_info->target_name != NULL
+		    && progress_info->bytes_total != progress_info->bytes_copied) {
 			GList *delete_me;
 
 			delete_me = g_list_prepend (NULL, progress_info->target_name);
@@ -636,8 +567,7 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 		
-		if (error_string != NULL) {
-			g_assert (source_name != NULL);
+		if (error_string != NULL && source_name != NULL) {
 			result = g_strdup_printf (error_string, source_name);
 		}
 
@@ -670,8 +600,7 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 
-		if (error_string != NULL) {
-			g_assert (source_name != NULL);
+		if (error_string != NULL && source_name != NULL) {
 			result = g_strdup_printf (error_string, source_name);
 		}
 
@@ -694,8 +623,7 @@ build_error_string (const char *source_name, const char *target_name,
 			break;
 		}
 
-		if (error_string != NULL) {
-			g_assert (source_name != NULL);
+		if (error_string != NULL && source_name != NULL) {
 			result = g_strdup_printf (error_string, source_name);
 		}
 
@@ -761,8 +689,7 @@ build_error_string (const char *source_name, const char *target_name,
 				break;
 			}
 		}
-		if (error_string != NULL) {
-			g_assert (target_name != NULL);
+		if (error_string != NULL && target_name != NULL) {
 			result = g_strdup_printf (error_string, target_name);
 		}
 	}
@@ -862,17 +789,22 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		/* transfer error, prompt the user to continue or stop */
 
+		/* stop timeout while waiting for user */
+		nautilus_file_operations_progress_pause_timeout (transfer_info->progress_dialog);
+
 		formatted_source_name = NULL;
 		formatted_target_name = NULL;
 
 		if (progress_info->source_name != NULL) {
 			formatted_source_name = format_and_ellipsize_uri_for_dialog
-				(progress_info->source_name);
+				(parent_for_error_dialog (transfer_info),
+				 progress_info->source_name);
 		}
 
 		if (progress_info->target_name != NULL) {
 			formatted_target_name = format_and_ellipsize_uri_for_dialog
-				(progress_info->target_name);
+				(parent_for_error_dialog (transfer_info),
+				 progress_info->target_name);
 		}
 
 		error_kind = ERROR_OTHER;
@@ -983,6 +915,7 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 				break;
 			case 1:
+			case GTK_RESPONSE_DELETE_EVENT:
 				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 				break;
 			default:
@@ -1017,6 +950,8 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		g_free (formatted_source_name);
 		g_free (formatted_target_name);
 
+		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
+
 		return error_dialog_result;
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
@@ -1042,18 +977,12 @@ is_special_link (const char *uri)
 	gboolean is_special;
 
 	local_path = gnome_vfs_get_local_path_from_uri (uri);
-
-	/* FIXME: This should use some API to check if the file is a
-	 * link. Normally we use the MIME type. As things stand, this
-	 * will read files and try to parse them as XML, which could
-	 * result in a lot of output to the console, since the XML
-	 * parser reports errors directly there.
-	 */
-	is_special = local_path != NULL
-		&& nautilus_link_local_get_link_type (local_path) != NAUTILUS_LINK_GENERIC;
-	
+	if (local_path == NULL) {
+		return FALSE;
+	}
+	is_special = nautilus_link_local_is_special_link (local_path);
 	g_free (local_path);
-	
+
 	return is_special;
 }
 
@@ -1064,10 +993,13 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	int result;
 	char *text, *formatted_name;
 
+	nautilus_file_operations_progress_pause_timeout (transfer_info->progress_dialog);	
+
 	/* Handle special case files such as Trash, mount links and home directory */	
 	if (is_special_link (progress_info->target_name)) {
 		formatted_name = extract_and_ellipsize_file_name_for_dialog
-			(progress_info->target_name);
+			(parent_for_error_dialog (transfer_info),
+			 progress_info->target_name);
 		
 		if (transfer_info->kind == TRANSFER_MOVE) {
 			text = g_strdup_printf (_("\"%s\" could not be moved to the new location, "
@@ -1084,16 +1016,19 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		}
 		
 		eel_run_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
-					_("Unable to replace file."), _("OK"), NULL, NULL);
+				       _("Unable to replace file."), GTK_STOCK_OK, NULL, NULL);
 
 		g_free (text);
 		g_free (formatted_name);
+
+		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 
 		return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 	}
 	
 	/* transfer conflict, prompt the user to replace or skip */
-	formatted_name = format_and_ellipsize_uri_for_dialog (progress_info->target_name);
+	formatted_name = format_and_ellipsize_uri_for_dialog (
+		parent_for_error_dialog (transfer_info), progress_info->target_name);
 	text = g_strdup_printf (_("File \"%s\" already exists.\n\n"
 				  "Would you like to replace it?"), 
 				formatted_name);
@@ -1107,6 +1042,9 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace"), _("Skip"), NULL);
+			 
+		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
+					 
 		switch (result) {
 		case 0:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
@@ -1121,6 +1059,8 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
+
+		nautilus_file_operations_progress_resume_timeout (transfer_info->progress_dialog);
 
 		switch (result) {
 		case 0:
@@ -1529,8 +1469,8 @@ handle_transfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
 		break;
-
 	default:
+		break;
 		/* For all other cases we use the name as-is. */
 	}
 
@@ -1619,9 +1559,9 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 							    progress_info->target_name);
 				}
 				if (debuting_uris != NULL) {
-					g_hash_table_insert (debuting_uris,
-							     g_strdup (progress_info->target_name),
-							     GINT_TO_POINTER (TRUE));
+					g_hash_table_replace (debuting_uris,
+							      g_strdup (progress_info->target_name),
+							      GINT_TO_POINTER (TRUE));
 				}
 			}
 			nautilus_file_changes_queue_file_added (progress_info->target_name);
@@ -1652,9 +1592,9 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 				}
 				
 				if (debuting_uris != NULL) {
-					g_hash_table_insert (debuting_uris,
-							     g_strdup (progress_info->target_name),
-							     GINT_TO_POINTER (really_moved));
+					g_hash_table_replace (debuting_uris,
+							      g_strdup (progress_info->target_name),
+							      GINT_TO_POINTER (really_moved));
 				}
 			}
 			if (really_moved) {
@@ -1705,11 +1645,15 @@ static GnomeVFSURI *
 append_basename (const GnomeVFSURI *target_directory,
 		 const GnomeVFSURI *source_directory)
 {
-	const char *file_name;
+	char *file_name;
+	GnomeVFSURI *ret;
 
 	file_name = gnome_vfs_uri_extract_short_name (source_directory);
 	if (file_name != NULL) {
-		return gnome_vfs_uri_append_file_name (target_directory, file_name);
+		ret = gnome_vfs_uri_append_file_name (target_directory, 
+						      file_name);
+		g_free (file_name);
+		return ret;
 	}
 	 
 	return gnome_vfs_uri_dup (target_directory);
@@ -1751,7 +1695,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	gboolean target_is_trash;
 	gboolean is_desktop_trash_link;
 	gboolean duplicate;
-	gboolean all_local;
 	
 	IconPositionIterator *icon_position_iterator;
 
@@ -1775,7 +1718,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	 */
 	source_uri_list = NULL;
 	target_uri_list = NULL;
-	all_local = TRUE;
 	duplicate = copy_action != GDK_ACTION_MOVE;
 	for (p = item_uris; p != NULL; p = p->next) {
 		/* Filter out special Nautilus link files */
@@ -1812,11 +1754,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 			target_uri_list = g_list_prepend (target_uri_list, target_uri);
 			source_uri_list = g_list_prepend (source_uri_list, source_uri);
-
-			if (all_local && (!gnome_vfs_uri_is_local (source_uri)
-					  || !gnome_vfs_uri_is_local (target_uri))) {
-				all_local = FALSE;
-			}
 
 			if (duplicate
 			    && !gnome_vfs_uri_equal (source_dir_uri, target_dir_uri)) {
@@ -1886,11 +1823,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 		transfer_info->kind = TRANSFER_MOVE_TO_TRASH;
 
-		/* Do an arbitrary guess that an operation will take very little
-		 * time and the progress shouldn't be shown.
-		 */
-		transfer_info->show_progress_dialog = 
-			!all_local || g_list_length ((GList *) item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Moving files");
@@ -1903,11 +1835,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 		transfer_info->kind = TRANSFER_MOVE;
 
-		/* Do an arbitrary guess that an operation will take very little
-		 * time and the progress shouldn't be shown.
-		 */
-		transfer_info->show_progress_dialog = 
-			!all_local || g_list_length ((GList *) item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) {
 		/* when creating links, handle name conflicts automatically */
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
@@ -1921,8 +1848,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		transfer_info->cleanup_name = _("Finishing Creating Links...");
 
 		transfer_info->kind = TRANSFER_LINK;
-		transfer_info->show_progress_dialog =
-			g_list_length ((GList *)item_uris) > 20;
+
 	} else {
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Copying files");
@@ -1934,8 +1860,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		transfer_info->cleanup_name = "";
 
 		transfer_info->kind = TRANSFER_COPY;
-		/* always show progress during copy */
-		transfer_info->show_progress_dialog = TRUE;
 	}
 
 	/* we'll need to check for copy into Trash and for moving/copying the Trash itself */
@@ -1950,7 +1874,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				 FALSE,
 				 _("You cannot copy items into the Trash."), 
 				 _("Can't Copy to Trash"),
-				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+				 GTK_STOCK_OK, NULL);
 			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 		}
 	}
@@ -1972,19 +1896,19 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			    	is_desktop_trash_link = vfs_uri_is_special_link (uri);
 
 				eel_run_simple_dialog
-					(parent_view, 
+					(parent_view,
 					 FALSE,
-					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? (is_desktop_trash_link
 						    ? _("The Trash must remain on the desktop.")
 						    : _("You cannot move this trash folder."))
 						 : (is_desktop_trash_link
 						    ? _("You cannot copy the Trash.")
-						    : _("You cannot copy this trash folder.")), 
+						    : _("You cannot copy this trash folder.")),
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? _("Can't Change Trash Location")
 						 : _("Can't Copy Trash"),
-					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+					 GTK_STOCK_OK, NULL, NULL);
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -2011,7 +1935,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("Can't Move Into Self")
 					 : _("Can't Copy Into Self"),
-					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+					 GTK_STOCK_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -2024,7 +1948,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 FALSE,
 					 _("You cannot copy a file over itself."), 
 					 _("Can't Copy Over Self"), 
-					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+					 GTK_STOCK_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -2036,7 +1960,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	transfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
 	transfer_info->done_callback = done_callback;
 	transfer_info->done_callback_data = done_callback_data;
-	transfer_info->debuting_uris = g_hash_table_new (g_str_hash, g_str_equal);
+	transfer_info->debuting_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	sync_transfer_info = g_new (SyncTransferInfo, 1);
 	sync_transfer_info->iterator = icon_position_iterator;
@@ -2046,6 +1970,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		gnome_vfs_async_xfer (&transfer_info->handle, source_uri_list, target_uri_list,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+				      GNOME_VFS_PRIORITY_DEFAULT,
 		      		      update_transfer_callback, transfer_info,
 		      		      sync_transfer_callback, sync_transfer_info);
 	}
@@ -2105,7 +2030,7 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 	switch (progress_info->phase) {
 
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
-		eel_nullify_cancel (&state->parent_view);
+		eel_remove_weak_pointer (&state->parent_view);
 		g_free (state);
 		return 0;
 
@@ -2166,7 +2091,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	state->done_callback = done_callback;
 	state->data = data;
 	state->parent_view = parent_view;
-	eel_nullify_when_destroyed (&state->parent_view);
+	eel_add_weak_pointer (&state->parent_view);
 
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
@@ -2178,6 +2103,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	      		      GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+			      GNOME_VFS_PRIORITY_DEFAULT,
 	      		      new_folder_transfer_callback, state,
 	      		      sync_transfer_callback, NULL);
 
@@ -2201,7 +2127,6 @@ nautilus_file_operations_delete (const GList *item_uris,
 	uri_list = g_list_reverse (uri_list);
 
 	transfer_info = transfer_info_new (parent_view);
-	transfer_info->show_progress_dialog = TRUE;
 
 	/* localizers: progress dialog title */
 	transfer_info->operation_title = _("Deleting files");
@@ -2220,6 +2145,7 @@ nautilus_file_operations_delete (const GList *item_uris,
 	      		      GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+			      GNOME_VFS_PRIORITY_DEFAULT,
 	      		      update_transfer_callback, transfer_info,
 	      		      sync_transfer_callback, NULL);
 
@@ -2236,7 +2162,6 @@ do_empty_trash (GtkWidget *parent_view)
 	if (trash_dir_list != NULL) {
 		/* set up the move parameters */
 		transfer_info = transfer_info_new (parent_view);
-		transfer_info->show_progress_dialog = TRUE;
 
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Emptying the Trash");
@@ -2254,6 +2179,7 @@ do_empty_trash (GtkWidget *parent_view)
 		      		      GNOME_VFS_XFER_EMPTY_DIRECTORIES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+				      GNOME_VFS_PRIORITY_DEFAULT,
 		      		      update_transfer_callback, transfer_info,
 		      		      sync_transfer_callback, NULL);
 	}
@@ -2264,8 +2190,10 @@ do_empty_trash (GtkWidget *parent_view)
 static gboolean
 confirm_empty_trash (GtkWidget *parent_view)
 {
-	GnomeDialog *dialog;
+	GtkWidget *dialog;
 	GtkWindow *parent_window;
+	int response;
+	GtkWidget *hbox, *image, *label, *button;
 
 	/* Just Say Yes if the preference says not to confirm. */
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
@@ -2274,17 +2202,49 @@ confirm_empty_trash (GtkWidget *parent_view)
 	
 	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
 
-	dialog = eel_show_yes_no_dialog (
-		_("Are you sure you want to permanently delete "
-		  "all of the items in the Trash?"),
-		_("Delete Trash Contents?"),
-		_("Empty"),
-		GNOME_STOCK_BUTTON_CANCEL,
-		parent_window);
+	dialog = gtk_dialog_new ();
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Empty Trash"));
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
+				"Nautilus");
+	gtk_window_set_transient_for (GTK_WINDOW (dialog),
+				      GTK_WINDOW (parent_window));
 
-	gnome_dialog_set_default (dialog, GNOME_CANCEL);
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
+			    FALSE, FALSE, 0);
 
-	return gnome_dialog_run (dialog) == GNOME_OK;
+	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_QUESTION,
+					  GTK_ICON_SIZE_DIALOG);
+	gtk_widget_show (image);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Are you sure you want to permanently delete "
+				 "all of the items in the Trash?"));
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label,
+			    TRUE, TRUE, 0);
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL,
+			       GTK_RESPONSE_CANCEL);
+
+	button = eel_gtk_button_new_with_stock_icon (_("_Empty"),
+						     GTK_STOCK_DELETE);
+	gtk_widget_show (button);
+	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button,
+				      GTK_RESPONSE_YES);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+					 GTK_RESPONSE_YES);
+
+	response = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	gtk_object_destroy (GTK_OBJECT (dialog));
+
+	return response == GTK_RESPONSE_YES;
 }
 
 void 

@@ -4,27 +4,12 @@ SUBDIRS = sidebar_tab_pieces backgrounds throbber
 
 crux_eggplant_DATA =				\
 	crux_eggplant.xml			\
-	Back.png				\
-	Forward.png				\
-	Up.png					\
-	Refresh.png				\
-	Home.png				\
 	Search.png				\
-	SearchWeb.png				\
-	Stop.png				\
 	decrement.png				\
 	decrement-i.png				\
 	emblem-nowrite.png			\
 	emblem-nowrite-72.png			\
 	emblem-nowrite-96.png			\
-	i-directory-12-aa.png			\
-	i-directory-20-aa.png			\
-	i-directory-24-aa.png			\
-	i-directory-36-aa.png			\
-	i-directory-aa.png			\
-	i-directory-72-aa.png			\
-	i-directory-96-aa.png			\
-	i-directory-192-aa.png			\
 	i-directory-12.png			\
 	i-directory-20.png			\
 	i-directory-24.png			\

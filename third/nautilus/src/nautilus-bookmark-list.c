@@ -29,21 +29,16 @@
 #include "nautilus-bookmark-list.h"
 
 #include "nautilus-bookmark-parsing.h"
-
-#include <stdlib.h>
-
-#include <gtk/gtksignal.h>
-
-#include <libnautilus-private/nautilus-file-utilities.h>
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-gtk-extensions.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
-
+#include <gtk/gtksignal.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include <libxml/xmlmemory.h>
+#include <stdlib.h>
 
 enum {
 	CONTENTS_CHANGED,
@@ -67,7 +62,7 @@ static void        stop_monitoring_bookmark             (NautilusBookmarkList *b
 /* Initialization.  */
 
 static void
-nautilus_bookmark_list_initialize_class (NautilusBookmarkListClass *class)
+nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 {
 	GtkObjectClass *object_class;
 
@@ -76,26 +71,23 @@ nautilus_bookmark_list_initialize_class (NautilusBookmarkListClass *class)
 	object_class->destroy = destroy;
 
 	signals[CONTENTS_CHANGED] =
-		gtk_signal_new ("contents_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBookmarkListClass, 
+		g_signal_new ("contents_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusBookmarkListClass, 
 						   contents_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class,
-				      signals,
-				      LAST_SIGNAL);
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 }
 
 static void
-nautilus_bookmark_list_initialize (NautilusBookmarkList *bookmarks)
+nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 {
 	nautilus_bookmark_list_load_file (bookmarks);
 }
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
 
 static void
 stop_monitoring_one (gpointer data, gpointer user_data)
@@ -111,7 +103,7 @@ static void
 clear (NautilusBookmarkList *bookmarks)
 {
 	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
-	eel_gtk_object_list_free (bookmarks->list);
+	eel_g_object_list_free (bookmarks->list);
 	bookmarks->list = NULL;
 }
 
@@ -162,6 +154,7 @@ append_bookmark_node (gpointer data, gpointer user_data)
 		xmlSetProp (bookmark_node, "icon_name", icon_name);
 		nautilus_scalable_icon_unref (icon);
 		g_free (icon_uri);
+		g_free (icon_mime_type);
 		g_free (icon_name);
 	}
 }
@@ -181,9 +174,9 @@ static void
 stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
 			  NautilusBookmark *bookmark)
 {
-	gtk_signal_disconnect_by_func (GTK_OBJECT (bookmark), 
-				       bookmark_in_list_changed_callback,
-				       bookmarks);
+	g_signal_handlers_disconnect_by_func (bookmark,
+					      bookmark_in_list_changed_callback,
+					      bookmarks);
 }
 
 static void
@@ -191,19 +184,12 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 			  NautilusBookmark *bookmark,
 			  int index)
 {
-	bookmarks->list = g_list_insert (bookmarks->list, 
-					 bookmark, 
-					 index);
+	bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
-	gtk_signal_connect (GTK_OBJECT (bookmark),
-			    "appearance_changed",
-			    bookmark_in_list_changed_callback,
-			    bookmarks);				 
-
-	gtk_signal_connect (GTK_OBJECT (bookmark),
-			    "contents_changed",
-			    bookmark_in_list_changed_callback,
-			    bookmarks);				 
+	g_signal_connect_object (bookmark, "appearance_changed",
+				 G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
+	g_signal_connect_object (bookmark, "contents_changed",
+				 G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
 }
 
 /**
@@ -261,8 +247,8 @@ nautilus_bookmark_list_contents_changed (NautilusBookmarkList *bookmarks)
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
 	nautilus_bookmark_list_save_file (bookmarks);
-	gtk_signal_emit (GTK_OBJECT (bookmarks), 
-			 signals[CONTENTS_CHANGED]);
+	g_signal_emit (bookmarks, 
+			 signals[CONTENTS_CHANGED], 0);
 }
 
 
@@ -287,7 +273,7 @@ nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks,
 
 	g_assert (NAUTILUS_IS_BOOKMARK (doomed->data));
 	stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (doomed->data));
-	gtk_object_unref (GTK_OBJECT (doomed->data));
+	g_object_unref (doomed->data);
 	
 	g_list_free_1 (doomed);
 	
@@ -320,7 +306,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 		if (eel_strcmp (bookmark_uri, uri) == 0) {
 			bookmarks->list = g_list_remove_link (bookmarks->list, node);
 			stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (node->data));
-			gtk_object_unref (GTK_OBJECT (node->data));
+			g_object_unref (node->data);
 			g_list_free_1 (node);
 			list_changed = TRUE;
 		}
@@ -342,7 +328,7 @@ nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks)
 
 	if (file_path == NULL) {
 		user_directory = nautilus_get_user_directory ();
-		file_path = nautilus_make_path (user_directory, "bookmarks.xml");
+		file_path = g_build_filename (user_directory, "bookmarks.xml", NULL);
 		g_free (user_directory);
 	}
 
@@ -437,11 +423,20 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	/* Wipe out old list. */
 	clear (bookmarks);
 
+	if (!g_file_test (nautilus_bookmark_list_get_file_path (bookmarks),
+			  G_FILE_TEST_EXISTS)) {
+		return;
+	}
+
 	/* Read new list from file */
 	doc = xmlParseFile (nautilus_bookmark_list_get_file_path (bookmarks));
 	for (node = eel_xml_get_root_children (doc);
 	     node != NULL;
 	     node = node->next) {
+
+		if (node->type != XML_ELEMENT_NODE) {
+			continue;
+		}
 
 		if (strcmp (node->name, "bookmark") == 0) {
 			insert_bookmark_internal (bookmarks, 
@@ -471,8 +466,8 @@ nautilus_bookmark_list_new (void)
 {
 	NautilusBookmarkList *list;
 
-	list = NAUTILUS_BOOKMARK_LIST (gtk_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
-	gtk_object_ref (GTK_OBJECT (list));
+	list = NAUTILUS_BOOKMARK_LIST (g_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
+	g_object_ref (list);
 	gtk_object_sink (GTK_OBJECT (list));
 
 	return list;

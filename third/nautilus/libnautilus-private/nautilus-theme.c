@@ -29,6 +29,7 @@
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string-list.h>
@@ -36,18 +37,16 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <librsvg/rsvg.h>
 
-/* static globals to hold the last accessed and default theme files */
+/* static globals to hold the last accessed theme files */
 static char	 *last_theme_name = NULL;
 static xmlDocPtr last_theme_document = NULL;
-static xmlDocPtr default_theme_document = NULL;
 
 static char *theme_from_preferences = NULL;
 
@@ -102,25 +101,20 @@ load_theme_document (const char *theme_name)
 	char *theme_path, *temp_str;
 	char *user_themes_directory;
 	
-	/* formulate the theme path name */
-	if (eel_str_is_equal (theme_name, "default")) {
-		theme_path = nautilus_pixmap_file ("default.xml");
-	} else {
-		temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
-		theme_path = nautilus_pixmap_file (temp_str);
-		g_free(temp_str);
-	}
+	temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
+	theme_path = nautilus_pixmap_file (temp_str);
+	g_free(temp_str);
 
 	/* if we can't find the theme document in the global area, try in the user's home */
 	if (theme_path == NULL) {
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
 		temp_str = g_strdup_printf("%s/%s.xml", theme_name, theme_name);
-		theme_path = nautilus_make_path (user_themes_directory, temp_str);
+		theme_path = g_build_filename (user_themes_directory, temp_str, NULL);
 		
 		g_free (user_themes_directory);
 		g_free (temp_str);
 	
-		if (!g_file_exists (theme_path)) {
+		if (!g_file_test (theme_path, G_FILE_TEST_EXISTS)) {
 			g_free (theme_path);
 			theme_path = NULL;
 		}
@@ -147,16 +141,10 @@ free_last_theme (void)
 	g_free (last_theme_name);
 }
 
-static void
-free_default_theme (void)
-{
-	xmlFreeDoc (default_theme_document);
-}
-
 /* Fetch data from the specified theme.  Cache the last theme file as a parsed xml document
  */
 char *
-nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char *property_name, const char* theme_name)
+nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char *property_name, const char *theme_name)
 {
 	char *temp_str;
 	char *theme_data;
@@ -172,7 +160,7 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 	} else {
 		/* release the old saved data, since the theme changed */
 		if (!did_set_up_free_last_theme) {
-			g_atexit (free_last_theme);
+			eel_debug_call_at_shutdown (free_last_theme);
 			did_set_up_free_last_theme = TRUE;
 		}
 		free_last_theme ();
@@ -185,33 +173,15 @@ nautilus_theme_get_theme_data_from_theme (const char *resource_name, const char 
 	if (theme_document != NULL) {
 		/* fetch the resource node */			
 		resource_node = eel_xml_get_child_by_name (xmlDocGetRootElement (theme_document), resource_name);
-		if (resource_node) {		
-			temp_str = xmlGetProp(resource_node, property_name);
-			if (temp_str) {
+		if (resource_node != NULL) {
+			temp_str = xmlGetProp (resource_node, property_name);
+			if (temp_str != NULL) {
 				theme_data = g_strdup (temp_str);
 				xmlFree (temp_str);
 			}
 		}
 	}
 	
-	/* if we couldn't find anything in the current theme, try the default theme */
-	if (theme_data == NULL) {
-		if (default_theme_document == NULL) {
-			default_theme_document = load_theme_document ("default");
-			g_atexit (free_default_theme);
-		}
-
-		resource_node = eel_xml_get_child_by_name (xmlDocGetRootElement (default_theme_document), resource_name);
-		if (resource_node) {		
-			temp_str = xmlGetProp (resource_node, property_name);
-			if (temp_str) {
-				theme_data = g_strdup (temp_str);
-				xmlFree (temp_str);
-			}
-		}
-
-	}
-
 	return theme_data;
 }
 
@@ -239,8 +209,8 @@ nautilus_pixmap_file_may_be_local (const char *themed_image)
 	if (image_path == NULL) {
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
 		
-		image_path = nautilus_make_path (user_themes_directory, themed_image);
-		if (!g_file_exists (image_path)) {
+		image_path = g_build_filename (user_themes_directory, themed_image, NULL);
+		if (!g_file_test (image_path, G_FILE_TEST_EXISTS)) {
 			g_free (image_path);
 			image_path = NULL;
 		}
@@ -259,34 +229,32 @@ nautilus_theme_get_image_path_from_theme (const char *image_name, const char* th
 {
 	char *image_path, *png_string, *temp_str;
 	
-	if (!eel_str_is_equal (theme_name, "default")) {
-		temp_str = g_strdup_printf ("%s/%s", theme_name, image_name);
-		image_path = nautilus_pixmap_file_may_be_local (temp_str);
+	temp_str = g_strdup_printf ("%s/%s", theme_name, image_name);
+	image_path = nautilus_pixmap_file_may_be_local (temp_str);
+	
+	/* see if a theme-specific image exists; if so, return it */
+	if (image_path != NULL) {
+		g_free (temp_str);	
+		return image_path;
+	}
+	
+	/* try if with a .png extension if it doesn't already have one */
+	if (!eel_istr_has_suffix (image_name, ".png")) {
+		png_string = g_strconcat (temp_str, ".png", NULL);
+		image_path = nautilus_pixmap_file_may_be_local (png_string);
+		g_free (png_string);
 		
-		/* see if a theme-specific image exists; if so, return it */
 		if (image_path) {
 			g_free (temp_str);	
 			return image_path;
 		}
-		
-		/* try if with a .png extension if it doesn't already have one */
-		if (!eel_istr_has_suffix (image_name, ".png")) {
-			png_string = g_strconcat (temp_str, ".png", NULL);
-			image_path = nautilus_pixmap_file_may_be_local (png_string);
-			g_free (png_string);
-			
-			if (image_path) {
-				g_free (temp_str);	
-				return image_path;
-			}
-		}		
-		g_free (temp_str);
 	}
-	
+	g_free (temp_str);
+
+
 	/* we couldn't find a theme specific one, so look for a general image */
 	image_path = nautilus_pixmap_file (image_name);
-	
-	if (image_path) {
+	if (image_path != NULL) {
 		return image_path;
 	}
 	
@@ -328,28 +296,23 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 	GdkPixbuf *pixbuf;
 	
 	/* first, see if we can find an explicit preview */
-
-	/* FIXME: This special handling for "default" is a little weird */
-	if (eel_str_is_equal  (theme_name, "default")) {
-		theme_preview_name = g_strdup ("theme_preview.png");
-	} else {
-		theme_preview_name = g_strdup_printf ("%s/%s", theme_name, "theme_preview.png");
-	}
-	
+	theme_preview_name = g_strdup_printf ("%s/%s", theme_name, "theme_preview.png");
 	pixbuf_file = nautilus_pixmap_file (theme_preview_name);
 	if (pixbuf_file != NULL) {
-		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
+		g_free (theme_preview_name);
 		g_free (pixbuf_file);
 		return pixbuf;
 	} else {
 		/* try the user directory */
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
-		pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
+		pixbuf_file = g_build_filename (user_themes_directory, theme_preview_name, NULL);
 		g_free (user_themes_directory);
 		
-		if (g_file_exists (pixbuf_file)) {
-			pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+		if (g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
+			pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
 			g_free (pixbuf_file);
+			g_free (theme_preview_name);
 			return pixbuf;
 		}  else {
 			g_free (pixbuf_file);
@@ -372,16 +335,16 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 	if (pixbuf_file == NULL) {
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
 		theme_preview_name = g_strdup_printf ("%s/i-directory.png", theme_name);
-		pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
+		pixbuf_file = g_build_filename (user_themes_directory, theme_preview_name, NULL);
 		g_free (theme_preview_name);
 		
-		if (!g_file_exists (pixbuf_file)) {
+		if (!g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
 			g_free (pixbuf_file);
 			theme_preview_name = g_strdup_printf ("%s/i-directory.svg", theme_name);
-			pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
+			pixbuf_file = g_build_filename (user_themes_directory, theme_preview_name, NULL);
 			g_free (theme_preview_name);
 		
-			if (!g_file_exists (pixbuf_file)) {
+			if (!g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
 				g_free (pixbuf_file);
 				pixbuf_file = NULL;
 			}
@@ -399,14 +362,9 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 	
 	/* load the icon that we found and return it */
 	if (eel_istr_has_suffix (pixbuf_file, ".svg")) {
-		FILE *f = fopen (pixbuf_file, "rb");
-		if (f != NULL) {
-			pixbuf = rsvg_render_file (f, 1.0);
-			fclose (f);
-		}
-	
+		pixbuf = rsvg_pixbuf_from_file (pixbuf_file, NULL);
 	} else {
-		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
 	}
 	
 	g_free (pixbuf_file);
@@ -445,12 +403,8 @@ has_image_file (const char *path_uri,
 	char* image_uri;
 	gboolean exists;
 
-	/* FIXME: This special handling for "default" is a little weird */
- 	if (eel_str_is_equal (dir_name, "default")) {
-		image_uri = g_strdup_printf ("%s/%s.png", path_uri, image_file);
-	} else {
-		image_uri = g_strdup_printf ("%s/%s/%s.png", path_uri, dir_name, image_file);
-	}
+	image_uri = g_strdup_printf ("%s/%s/%s.png", path_uri, dir_name, image_file);
+
 	exists = vfs_file_exists (image_uri);
 	g_free (image_uri);
 
@@ -458,12 +412,7 @@ has_image_file (const char *path_uri,
 		return TRUE;
 	}
 
-	/* FIXME: This special handling for "default" is a little weird */
- 	if (eel_str_is_equal (dir_name, "default")) {
-		image_uri = g_strdup_printf ("%s/%s.svg", path_uri, image_file);
-	} else {
-		image_uri = g_strdup_printf ("%s/%s/%s.svg", path_uri, dir_name, image_file);
-	}
+	image_uri = g_strdup_printf ("%s/%s/%s.svg", path_uri, dir_name, image_file);
 
 	exists = vfs_file_exists (image_uri);
 	g_free (image_uri);
@@ -489,22 +438,16 @@ theme_get_property (const char *themes_location_uri,
 	xml_result = NULL;
 	result = NULL;
 
-	/* FIXME: This special handling for "default" is a little weird */
- 	if (eel_str_is_equal (theme_name, "default")) {
-		theme_file_uri = g_strdup_printf ("%s/%s.xml",
-						  themes_location_uri,
-						  theme_name);
-	} else {
-		theme_file_uri = g_strdup_printf ("%s/%s/%s.xml",
-						  themes_location_uri,
-						  theme_name,
-						  theme_name);
-	}
+	theme_file_uri = g_strdup_printf ("%s/%s/%s.xml",
+					  themes_location_uri,
+					  theme_name,
+					  theme_name);
 
 	theme_file_name = gnome_vfs_get_local_path_from_uri (theme_file_uri);
 	g_free (theme_file_uri);
 
-	g_return_val_if_fail (g_file_exists (theme_file_name), NULL);
+	g_return_val_if_fail (g_file_test (theme_file_name,
+					   G_FILE_TEST_EXISTS), NULL);
 	
 	/* read the xml document */
 	theme_document = xmlParseFile (theme_file_name);
@@ -575,13 +518,13 @@ theme_list_prepend (GList *theme_list,
 	
 	attributes = g_new0 (ThemeAttibutes, 1);
 	attributes->name = g_strdup (theme_name);
-	attributes->path = nautilus_make_path (themes_location_uri, theme_name);
+	attributes->path = g_build_filename (themes_location_uri, theme_name, NULL);
 
 	unscaled_preview_pixbuf = nautilus_theme_make_preview_pixbuf (theme_name);
 	attributes->preview_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (unscaled_preview_pixbuf,
 								       THEME_PREVIEW_ICON_WIDTH,
 								       THEME_PREVIEW_ICON_HEIGHT);
-	gdk_pixbuf_unref (unscaled_preview_pixbuf);
+	g_object_unref (unscaled_preview_pixbuf);
 
 	attributes->builtin = builtin;
 
@@ -606,8 +549,7 @@ theme_get_themes_for_location (const char *themes_location_uri,
 	possible_theme_directories = NULL;
 	result = gnome_vfs_directory_list_load (&possible_theme_directories,
 						themes_location_uri,
-						GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-						NULL);
+						GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	
 	if (result != GNOME_VFS_OK) {
 		return NULL;
@@ -665,24 +607,6 @@ theme_get_user_themes (void)
 	return user_themes;
 }
 
-/* Even though there is just one default theme, we use the theme
- * attribute list machinery for simplicity */
-static GList *
-theme_get_default_themes (void)
-{
-	char *pixmap_directory;
- 	char *pixmap_directory_uri;
-	GList *default_themes;
-
-	pixmap_directory = nautilus_get_pixmap_directory ();
-	pixmap_directory_uri = gnome_vfs_get_uri_from_local_path (pixmap_directory);
-	default_themes = theme_list_prepend (NULL, pixmap_directory_uri, "default", TRUE);
-	g_free (pixmap_directory_uri);
-	g_free (pixmap_directory);
-
-	return default_themes;
-}
-
 static void
 theme_list_invoke_callback (GList *theme_list,
 			    NautilusThemeCallback callback,
@@ -728,8 +652,10 @@ attributes_free (gpointer data,
 	g_free (attributes->display_name);
 	g_free (attributes->description);
 	if (attributes->preview_pixbuf != NULL) {
-		gdk_pixbuf_unref (attributes->preview_pixbuf);
+		g_object_unref (attributes->preview_pixbuf);
 	}
+
+	g_free (attributes);
 }
 
 void
@@ -738,19 +664,15 @@ nautilus_theme_for_each_theme (NautilusThemeCallback callback,
 {
 	GList *builtin_themes;
 	GList *user_themes;
-	GList *default_themes;
 
 	g_return_if_fail (callback != NULL);
 
 	builtin_themes = theme_get_builtin_themes ();
  	user_themes = theme_get_user_themes ();
-	default_themes = theme_get_default_themes ();
 
-	theme_list_invoke_callback (default_themes, callback, callback_data);
 	theme_list_invoke_callback (builtin_themes, callback, callback_data);
 	theme_list_invoke_callback (user_themes, callback, callback_data);
 
-	eel_g_list_free_deep_custom (default_themes, attributes_free, NULL);
 	eel_g_list_free_deep_custom (builtin_themes, attributes_free, NULL);
 	eel_g_list_free_deep_custom (user_themes, attributes_free, NULL);
 }
@@ -762,7 +684,7 @@ nautilus_theme_get_user_themes_directory (void)
 	char *user_themes_directory;
 
 	user_directory = nautilus_get_user_directory ();
-	user_themes_directory = nautilus_make_path (user_directory, "themes");
+	user_themes_directory = g_build_filename (user_directory, "themes", NULL);
 	g_free (user_directory);
 
 	return user_themes_directory;
@@ -780,7 +702,7 @@ nautilus_theme_remove_user_theme (const char *theme_to_remove_name)
 	g_return_val_if_fail (theme_to_remove_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 
 	user_themes_directory = nautilus_theme_get_user_themes_directory ();
-	theme_to_remove_path = nautilus_make_path (user_themes_directory, theme_to_remove_name);
+	theme_to_remove_path = g_build_filename (user_themes_directory, theme_to_remove_name, NULL);
 	g_free (user_themes_directory);
 	
 	uri_list = g_list_prepend (NULL, gnome_vfs_uri_new (theme_to_remove_path));			
@@ -798,34 +720,22 @@ nautilus_theme_remove_user_theme (const char *theme_to_remove_name)
 NautilusThemeInstallResult
 nautilus_theme_install_user_theme (const char *theme_to_install_path)
 {
+	GnomeVFSHandle *handle;
 	GnomeVFSResult result;
 	char *theme_name;
 	char *theme_xml_path;
 	char *user_themes_directory;
 	char *theme_destination_path;
-
-	if (theme_to_install_path == NULL
-	    || !g_file_test (theme_to_install_path, G_FILE_TEST_EXISTS | G_FILE_TEST_ISDIR)) {
-		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
-	}
-
-	theme_name = eel_uri_get_basename (theme_to_install_path);
-	g_return_val_if_fail (theme_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
-	
-	theme_xml_path = g_strdup_printf ("%s/%s.xml",
-					  theme_to_install_path,
-					  theme_name);
-
-	if (!g_file_exists (theme_xml_path)) {
-		g_free (theme_name);
-		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
-	}
-	g_free (theme_xml_path);
+	char *command;
+	char *mime_type;
+	char *quoted_user_path;
+	char *quoted_theme_path;
+	int status;
 
 	user_themes_directory = nautilus_theme_get_user_themes_directory ();
-
+	
 	/* Create the user themes directory if it doesn't exist */
-	if (!g_file_exists (user_themes_directory)) {
+	if (!g_file_test (user_themes_directory, G_FILE_TEST_EXISTS)) {
 		result = gnome_vfs_make_directory (user_themes_directory,
 						   GNOME_VFS_PERM_USER_ALL
 						   | GNOME_VFS_PERM_GROUP_ALL
@@ -833,15 +743,86 @@ nautilus_theme_install_user_theme (const char *theme_to_install_path)
 
 		if (result != GNOME_VFS_OK) {
 			g_free (user_themes_directory);
-			g_free (theme_name);
 			return NAUTILUS_THEME_INSTALL_FAILED_USER_THEMES_DIRECTORY_CREATION;
 		}
 	}
+
+	if (theme_to_install_path != NULL && g_file_test (theme_to_install_path, G_FILE_TEST_IS_REGULAR)) {
+		result = gnome_vfs_open (&handle, theme_to_install_path, GNOME_VFS_OPEN_READ);
+		gnome_vfs_close (handle);
+		/* Did we manage to read the file? */
+		if (result != GNOME_VFS_OK) {
+			g_free (user_themes_directory);
+			return NAUTILUS_THEME_INSTALL_FAILED;
+		}
+		mime_type = gnome_vfs_get_mime_type (theme_to_install_path);
+		if (mime_type != NULL) {
+			quoted_theme_path = g_shell_quote (theme_to_install_path);
+			quoted_user_path = g_shell_quote (user_themes_directory);
+			
+			if (strcmp (mime_type, "application/x-compressed-tar") == 0) {
+				/* gzipped tarball */
+				command = g_strdup_printf ("gzip -d -c < %s | (cd %s ; tar -xf -)", 
+							   quoted_theme_path,
+							   quoted_user_path
+							   );
+			} else if (strcmp (mime_type, "application/x-tar") == 0) {
+				/* vanilla tarball */
+				command = g_strdup_printf ("cd %s && tar -xf %s", 
+							   quoted_user_path, 
+							   quoted_theme_path
+							   );
+					   
+			} else if (strcmp (mime_type, "application/x-bzip") == 0) {
+				/* bzipped tarball */
+				command = g_strdup_printf ("bzip2 -d -c < %s | (cd %s ; tar -xf -)", 
+							   quoted_theme_path, 
+							   quoted_user_path
+							   );
+			} else {
+				/* unsupported mime-type */
+				command = NULL;
+			}
+			g_free (user_themes_directory);
+			g_free (quoted_theme_path);
+			g_free (quoted_user_path);
+			g_free (mime_type);
+			if (command != NULL) {
+				status = system (command);
+				g_free (command);
+				if (status != 0) {
+					return NAUTILUS_THEME_INSTALL_FAILED;
+				} else {
+					return NAUTILUS_THEME_INSTALL_OK; 
+				}
+			} else {
+				return NAUTILUS_THEME_INSTALL_NOT_A_THEME_FILE;
+			}
+		} else {
+			g_free (user_themes_directory);
+			return NAUTILUS_THEME_INSTALL_FAILED;
+		}
+	}
+
+	if (theme_to_install_path == NULL
+	    || !g_file_test (theme_to_install_path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
+	}
 	
-	theme_destination_path = nautilus_make_path (user_themes_directory, theme_name);
+	theme_name = eel_uri_get_basename (theme_to_install_path);
+	g_return_val_if_fail (theme_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	theme_destination_path = g_build_filename (user_themes_directory, theme_name, NULL);
+	theme_xml_path = g_strdup_printf ("%s/%s.xml",
+					  theme_to_install_path,
+					  theme_name);
 	g_free (user_themes_directory);
 	g_free (theme_name);
-	
+	if (!g_file_test (theme_xml_path, G_FILE_TEST_EXISTS)) {
+		g_free (theme_destination_path);
+		g_free (theme_xml_path);
+		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
+	}
+	g_free (theme_xml_path);
 	result = eel_copy_uri_simple (theme_to_install_path, theme_destination_path);
 	if (result != GNOME_VFS_OK) {
 		g_free (theme_destination_path);
@@ -849,6 +830,6 @@ nautilus_theme_install_user_theme (const char *theme_to_install_path)
 	}
 
 	g_free (theme_destination_path);
-
+	
 	return NAUTILUS_THEME_INSTALL_OK;
 }

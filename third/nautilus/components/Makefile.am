@@ -1,24 +1,19 @@
 NULL=
 
-if BUILD_MOZILLA_COMPONENT
-MOZILLA_COMPONENT_SUBDIRS = mozilla
-endif
-
 SUBDIRS = 					\
-	adapter 				\
+	adapter                                 \
 	hardware 				\
-	help 					\
 	history 				\
-	image-viewer 				\
 	loser 					\
-	music 					\
-	news					\
+	music					\
 	notes 					\
 	sample 					\
 	text 					\
 	throbber 				\
 	tree 					\
-	$(MOZILLA_COMPONENT_SUBDIRS) 		\
 	$(NULL)
 
 
+#	news					\
+# Disable the news-sidebar for now, It has lots of bugs and doesn't
+# really fit into a file manager.

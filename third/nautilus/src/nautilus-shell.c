@@ -30,11 +30,9 @@
 
 #include "nautilus-desktop-window.h"
 #include "nautilus-main.h"
-#include "nautilus-shell-interface.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-label.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkframe.h>
@@ -43,17 +41,11 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-stock-icons.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <stdlib.h>
-
-/* turn this on to enable the caveat dialog */
-#if 0
-#define SHOW_CAVEAT
-#endif
 
 /* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
 #define APPLICATION_WINDOW_MIN_WIDTH	300
@@ -65,9 +57,7 @@ struct NautilusShellDetails {
 	NautilusApplication *application;
 };
 
-static void     nautilus_shell_initialize       (NautilusShell          *shell);
-static void     nautilus_shell_initialize_class (NautilusShellClass     *klass);
-static void     destroy                         (GtkObject              *shell);
+static void     finalize                         (GObject              *shell);
 static void     corba_open_windows              (PortableServer_Servant  servant,
 						 const Nautilus_URIList *list,
 						 const CORBA_char       *geometry,
@@ -85,81 +75,38 @@ static void     corba_restart                   (PortableServer_Servant  servant
 						 CORBA_Environment      *ev);
 static gboolean restore_window_states           (NautilusShell          *shell);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusShell,
-				   nautilus_shell,
-				   BONOBO_OBJECT_TYPE)
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusShell, nautilus_shell,
+			       Nautilus_Shell,
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 static void
-nautilus_shell_initialize_class (NautilusShellClass *klass)
+nautilus_shell_class_init (NautilusShellClass *klass)
 {
-	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-}
+	G_OBJECT_CLASS (klass)->finalize = finalize;
 
-static POA_Nautilus_Shell__epv *
-nautilus_shell_get_epv (void)
-{
-	static POA_Nautilus_Shell__epv epv;
-
-	epv.open_windows = corba_open_windows;
-	epv.open_default_window = corba_open_default_window;
-	epv.start_desktop = corba_start_desktop;
-	epv.stop_desktop = corba_stop_desktop;
-	epv.quit = corba_quit;
-	epv.restart = corba_restart;
-
-	return &epv;
-}
-
-static POA_Nautilus_Shell__vepv *
-nautilus_shell_get_vepv (void)
-{
-	static POA_Nautilus_Shell__vepv vepv;
-
-	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-	vepv.Nautilus_Shell_epv = nautilus_shell_get_epv ();
-
-	return &vepv;
-}
-
-static POA_Nautilus_Shell *
-nautilus_shell_create_servant (void)
-{
-	POA_Nautilus_Shell *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Nautilus_Shell *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = nautilus_shell_get_vepv ();
-	CORBA_exception_init (&ev);
-	POA_Nautilus_Shell__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION){
-		g_error ("can't initialize Nautilus shell");
-	}
-	CORBA_exception_free (&ev);
-
-	return servant;
+	klass->epv.open_windows = corba_open_windows;
+	klass->epv.open_default_window = corba_open_default_window;
+	klass->epv.start_desktop = corba_start_desktop;
+	klass->epv.stop_desktop = corba_stop_desktop;
+	klass->epv.quit = corba_quit;
+	klass->epv.restart = corba_restart;
 }
 
 static void
-nautilus_shell_initialize (NautilusShell *shell)
+nautilus_shell_instance_init (NautilusShell *shell)
 {
-	Nautilus_Shell corba_shell;
-
 	shell->details = g_new0 (NautilusShellDetails, 1);
-
-	corba_shell = bonobo_object_activate_servant
-		(BONOBO_OBJECT (shell), nautilus_shell_create_servant ());
-	bonobo_object_construct (BONOBO_OBJECT (shell), corba_shell);
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	NautilusShell *shell;
 
 	shell = NAUTILUS_SHELL (object);
 	g_free (shell->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 NautilusShell *
@@ -167,103 +114,9 @@ nautilus_shell_new (NautilusApplication *application)
 {
 	NautilusShell *shell;
 
-	shell = NAUTILUS_SHELL (gtk_object_new (NAUTILUS_TYPE_SHELL, NULL));
+	shell = NAUTILUS_SHELL (g_object_new (NAUTILUS_TYPE_SHELL, NULL));
 	shell->details->application = application;
 	return shell;
-}
-
-#ifdef SHOW_CAVEAT
-
-static void
-display_caveat (GtkWindow *parent_window)
-{
-	GtkWidget *dialog;
-	GtkWidget *frame;
-	GtkWidget *pixmap;
-	GtkWidget *hbox;
-	GtkWidget *vbox;
-	GtkWidget *text;
-	char *file_name;
-
-	dialog = gnome_dialog_new (_("Caveat"),
-				   GNOME_STOCK_BUTTON_OK,
-				   NULL);
-  	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
-  	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
-	gtk_window_set_wmclass (GTK_WINDOW (dialog), "caveat", "Nautilus");
-
-  	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-  	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD);
-  	gtk_widget_show (hbox);
-  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
-  			    hbox,
-  			    FALSE, FALSE, 0);
-
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
-
-	file_name = nautilus_pixmap_file ("About_Image.png");
-	if (file_name != NULL) {
-		pixmap = gnome_pixmap_new_from_file (file_name);
-		g_free (file_name);
-
-		if (pixmap != NULL) {
-			frame = gtk_frame_new (NULL);
-			gtk_widget_show (frame);
-			gtk_frame_set_shadow_type (GTK_FRAME (frame),
-						   GTK_SHADOW_IN);
-			gtk_box_pack_start (GTK_BOX (vbox), frame,
-					    FALSE, FALSE, 0);
-
-			gtk_widget_show (pixmap);
-			gtk_container_add (GTK_CONTAINER (frame), pixmap);
-		}
-	}
-
-  	text = eel_label_new
-		(_("Thank you for your interest in Nautilus.\n "
-		   "\n"
-		   "As with any software under development, you should exercise caution when "
-		   "using Nautilus. We do not provide any guarantee that it will work "
-		   "properly, or assume any liability for your use of it.  Please use it at your "
-		   "own risk.\n"
-		   "\n"
-		   "Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
-		   "comments, and suggestions."));
-	eel_label_make_larger (EEL_LABEL (text), 1);
-	eel_label_set_justify (EEL_LABEL (text), GTK_JUSTIFY_LEFT);
-	eel_label_set_wrap (EEL_LABEL (text), TRUE);
-	gtk_widget_show (text);
-  	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
-
-  	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-	gnome_dialog_set_parent (GNOME_DIALOG (dialog), parent_window);
-
-	gtk_widget_show (GTK_WIDGET (dialog));
-}
-
-#endif /* SHOW_CAVEAT */
-
-static void
-display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
-{
-#ifdef SHOW_CAVEAT
-	static gboolean showed_caveat;
-
-	/* Show the "not ready for prime time" dialog after the first
-	 * window appears, so it's on top.
-	 */
-	/* FIXME bugzilla.gnome.org 41256: It's not on top of the
-         * windows other than the first one.
-	 */
-	if (!showed_caveat
-	    && g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
-		gtk_signal_connect (GTK_OBJECT (window), "show",
-				    display_caveat, window);
-	}
-	showed_caveat = TRUE;
-#endif /* SHOW_CAVEAT */
 }
 
 static void
@@ -277,7 +130,8 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
 								      geometry,
 								      APPLICATION_WINDOW_MIN_WIDTH,
-								      APPLICATION_WINDOW_MIN_HEIGHT);
+								      APPLICATION_WINDOW_MIN_HEIGHT,
+								      FALSE);
 	}
 
 	if (uri == NULL) {
@@ -285,7 +139,6 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 	} else {
 		nautilus_window_go_to (window, uri);
 	}
-	display_caveat_first_time (shell, window);
 }
 
 static void
@@ -297,7 +150,7 @@ corba_open_windows (PortableServer_Servant servant,
 	NautilusShell *shell;
 	guint i;
 
-	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
+	shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
 
 	/* Open windows at each requested location. */
 	for (i = 0; i < list->_length; i++) {
@@ -313,7 +166,7 @@ corba_open_default_window (PortableServer_Servant servant,
 {
 	NautilusShell *shell;
 
-	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
+	shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
 
 	if (!restore_window_states (shell)) {
 		/* Open a window pointing at the default location. */
@@ -328,7 +181,7 @@ corba_start_desktop (PortableServer_Servant servant,
 	NautilusShell	      *shell;
 	NautilusApplication   *application;
 
-	shell	    = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
+	shell	    = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
 	application = NAUTILUS_APPLICATION (shell->details->application);
 	
 	nautilus_application_open_desktop (application);
@@ -446,9 +299,8 @@ restore_one_window_callback (const char *attributes,
 		nautilus_window_go_home (window);
 	}
 
-	gtk_widget_set_uposition (GTK_WIDGET (window), x, y);
-	gtk_widget_set_usize (GTK_WIDGET (window), width, height);
-	display_caveat_first_time (shell, window);
+	gtk_window_move (GTK_WINDOW (window), x, y);
+	gtk_widget_set_size_request (GTK_WIDGET (window), width, height);
 
 	g_free (location);
 	eel_string_list_free (attribute_list);

@@ -23,21 +23,18 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef NAUTILUS_PREFS_GLOBAL_H
-#define NAUTILUS_PREFS_GLOBAL_H
+#ifndef NAUTILUS_GLOBAL_PREFERENCES_H
+#define NAUTILUS_GLOBAL_PREFERENCES_H
 
 #include <eel/eel-preferences.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 /* Which theme is active */
-#define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
+#define NAUTILUS_PREFERENCES_THEME				"/desktop/gnome/file_views/icon_theme"
 
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
-
-/* Text fields */
-#define NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS                "preferences/use_emacs_shortcuts"
 
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
@@ -49,45 +46,25 @@ BEGIN_GNOME_DECLS
 /* Desktop options */
 #define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/show_desktop"
 #define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "preferences/desktop_is_home_dir"
+#define NAUTILUS_PREFERENCES_DESKTOP_FONT			"preferences/desktop_font"
 
 /* Display  */
-#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
-#define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"preferences/show_backup_files"
+#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file_views/show_hidden_files"
+#define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"/desktop/gnome/file_views/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
 
 /* Sidebar panels  */
-#define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar-panels/tree/show_only_directories"
+#define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar_panels/tree/show_only_directories"
 
 /* Navigation  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
 #define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"preferences/hide_built_in_bookmarks"
-
-/* Proxy */
-#define NAUTILUS_PREFERENCES_HTTP_USE_PROXY                	"/system/gnome-vfs/use-http-proxy"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_HOST                 	"/system/gnome-vfs/http-proxy-host"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_PORT                	"/system/gnome-vfs/http-proxy-port"
-
-/* HTTP Proxy Authentication */
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_USE_AUTH                "/system/gnome-vfs/use-http-proxy-authorization"
-#define NAUTILUS_PREFERENCES_HTTP_PROXY_AUTH_USERNAME      	"/system/gnome-vfs/http-proxy-authorization-user"
-#define NAUTILUS_PREFERENCES_HTTP_USE_AUTH_PASSWORD     	"/system/gnome-vfs/http-proxy-authorization-password"
-
-/* adding/removing from property browser */
-#define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"
-
-/* Content fonts */
-#define NAUTILUS_PREFERENCES_DEFAULT_FONT			"preferences/default_font"
-#define NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT		"preferences/default_smooth_font"
-#define NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE			"preferences/default_font_size"
 
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
 
 /* Activating executable text files */
 #define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"preferences/executable_text_activation"
-
-/* Smooth graphics mode (smoother but slower) */
-#define NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE		"preferences/smooth_graphics_mode"
 
 /* Which views should be displayed for new windows */
 #define NAUTILUS_PREFERENCES_START_WITH_TOOLBAR			"preferences/start_with_toolbar"
@@ -109,19 +86,16 @@ enum
 };
 
 /* These IIDs are used by the preferences code and in nautilus-application.c */
-#define NAUTILUS_ICON_VIEW_IID	     "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
-#define NAUTILUS_LIST_VIEW_IID	     "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
+#define NAUTILUS_ICON_VIEW_IID	     "OAFIID:Nautilus_File_Manager_Icon_View"
+#define NAUTILUS_LIST_VIEW_IID	     "OAFIID:Nautilus_File_Manager_List_View"
 
 
 /* Icon View */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"icon-view/default_sort_in_reverse_order"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"icon-view/default_sort_order"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"icon-view/default_use_tighter_layout"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon-view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"icon-view/default_zoom_level_font_size"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon-view/default_use_manual_layout"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_FONT				"icon-view/font"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT			"icon-view/smooth_font"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"icon_view/default_sort_in_reverse_order"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"icon_view/default_sort_order"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"icon_view/default_use_tighter_layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon_view/default_zoom_level"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon_view/default_use_manual_layout"
 
 /* The icon view uses 2 variables to store the sort order and
  * whether to use manual layout.  However, the UI for these
@@ -130,17 +104,15 @@ enum
  * In nautilus-global-preferences.c we install callbacks for
  * the proxy preference and update the other 2 when it changes 
  */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT "icon-view/default_sort_order_or_manual_layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT "icon_view/default_sort_order_or_manual_layout"
 
 /* Which text attributes appear beneath icon names */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"icon-view/captions"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"icon_view/captions"
 
 /* List View */
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list-view/default_sort_in_reverse_order"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list-view/default_sort_order"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"list-view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"list-view/default_zoom_level_font_size"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_FONT				"list-view/font"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list_view/default_sort_in_reverse_order"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list_view/default_sort_order"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"list_view/default_zoom_level"
 
 /* News panel */
 #define NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS				"news/max_items"
@@ -149,8 +121,6 @@ enum
 /* File Indexing */
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE				"preferences/search_bar_type"
 
-/* searching */
-#define NAUTILUS_PREFERENCES_SEARCH_WEB_URI				"preferences/search_web_uri"			
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,
@@ -175,7 +145,6 @@ typedef enum
 #define NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS "preferences/show_directory_item_counts"
 #define NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS	"preferences/show_image_thumbnails"
 #define NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT	"preferences/thumbnail_limit"
-#define NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA	"preferences/use_public_metadata"
 #define NAUTILUS_PREFERENCES_PREVIEW_SOUND		"preferences/preview_sound"
 
 typedef enum
@@ -185,19 +154,12 @@ typedef enum
 } NautilusSearchBarMode;
 
 /* Gnome session management */
-#define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
+#define NAUTILUS_PREFERENCES_ADD_TO_SESSION		   "preferences/add_to_session"
 
+void nautilus_global_preferences_init                      (void);
+void nautilus_global_preferences_init_with_folder_browsing (void);
+void nautilus_global_preferences_set_default_folder_viewer (const char *iid);
 
-void                    nautilus_global_preferences_initialize                   (void);
+G_END_DECLS
 
-/* Sidebar */
-struct EelScalableFont *nautilus_global_preferences_get_icon_view_smooth_font    (void);
-struct EelScalableFont *nautilus_global_preferences_get_default_smooth_font      (void);
-struct EelScalableFont *nautilus_global_preferences_get_default_smooth_bold_font (void);
-
-void                    nautilus_global_preferences_set_default_folder_viewer    (const char *iid);
-
-
-END_GNOME_DECLS
-
-#endif /* NAUTILUS_PREFS_GLOBAL_H */
+#endif /* NAUTILUS_GLOBAL_PREFERENCES_H */

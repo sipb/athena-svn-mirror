@@ -34,16 +34,16 @@ struct NautilusVFSDirectoryDetails {
 	char dummy; /* ANSI C does not allow empty structs */
 };
 
-static void nautilus_vfs_directory_initialize       (gpointer   object,
+static void nautilus_vfs_directory_init       (gpointer   object,
 						     gpointer   klass);
-static void nautilus_vfs_directory_initialize_class (gpointer   klass);
+static void nautilus_vfs_directory_class_init (gpointer   klass);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusVFSDirectory,
-				   nautilus_vfs_directory,
-				   NAUTILUS_TYPE_DIRECTORY)
+EEL_CLASS_BOILERPLATE (NautilusVFSDirectory,
+		       nautilus_vfs_directory,
+		       NAUTILUS_TYPE_DIRECTORY)
 
 static void
-nautilus_vfs_directory_initialize (gpointer object, gpointer klass)
+nautilus_vfs_directory_init (gpointer object, gpointer klass)
 {
 	NautilusVFSDirectory *directory;
 
@@ -163,23 +163,14 @@ vfs_are_all_files_seen (NautilusDirectory *directory)
 static gboolean
 vfs_is_not_empty (NautilusDirectory *directory)
 {
-	GList *node;
-
 	g_return_val_if_fail (NAUTILUS_IS_VFS_DIRECTORY (directory), FALSE);
 	g_return_val_if_fail (nautilus_directory_is_anyone_monitoring_file_list (directory), FALSE);
 
-	for (node = directory->details->file_list; node != NULL; node = node->next) {
-		if (!nautilus_file_is_metafile (NAUTILUS_FILE (node->data))) {
-			/* Return TRUE if the directory contains anything besides a metafile. */
-			return TRUE;
-		}
-	}
-
-	return FALSE;
+	return directory->details->file_list != NULL;
 }
 
 static void
-nautilus_vfs_directory_initialize_class (gpointer klass)
+nautilus_vfs_directory_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	NautilusDirectoryClass *directory_class;

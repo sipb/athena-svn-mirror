@@ -25,11 +25,10 @@
 #ifndef NAUTILUS_SIDEBAR_FUNCTIONS_H
 #define NAUTILUS_SIDEBAR_FUNCTIONS_H
 
-#include <glib.h>
+#include <glib/glist.h>
 
 extern const char nautilus_sidebar_news_enabled_preference_name[];
 extern const char nautilus_sidebar_notes_enabled_preference_name[];
-extern const char nautilus_sidebar_help_enabled_preference_name[];
 extern const char nautilus_sidebar_history_enabled_preference_name[];
 extern const char nautilus_sidebar_tree_enabled_preference_name[];
 

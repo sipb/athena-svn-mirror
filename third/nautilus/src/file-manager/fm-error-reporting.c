@@ -27,7 +27,6 @@
 #include "fm-error-reporting.h"
 
 #include <string.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -64,7 +63,7 @@ fm_report_error_loading_directory (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_loading_directory, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_loading_directory", 
 			   error, gnome_vfs_result_to_string (error));
 		message = g_strdup_printf (_("Sorry, couldn't display all the contents of \"%s\"."), file_name);
 	}
@@ -130,7 +129,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_renaming_file, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_renaming_file", 
 			   error, gnome_vfs_result_to_string (error));
 		/* fall through */
 	case GNOME_VFS_ERROR_GENERIC:
@@ -170,7 +169,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_group, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_group", 
 			   error, gnome_vfs_result_to_string (error));
 		file_name = nautilus_file_get_display_name (file);
 		message = g_strdup_printf (_("Sorry, couldn't change the group of \"%s\"."), file_name);
@@ -204,7 +203,7 @@ fm_report_error_setting_owner (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_owner, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_owner", 
 			   error, gnome_vfs_result_to_string (error));
 		message = g_strdup_printf (_("Sorry, couldn't change the owner of \"%s\"."), file_name);
 	}
@@ -236,7 +235,7 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
-		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_permissions, tell sullivan@eazel.com", 
+		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_permissions", 
 			   error, gnome_vfs_result_to_string (error));
 		message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
 	}
@@ -254,7 +253,7 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (callback_data == NULL);
-	name = gtk_object_get_data (GTK_OBJECT (file), NEW_NAME_TAG);
+	name = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
 	g_assert (name != NULL);
 
 	/* If rename failed, notify the user. */
@@ -274,7 +273,7 @@ cancel_rename (NautilusFile *file)
 {
 	char *name;
 
-	name = gtk_object_get_data (GTK_OBJECT (file), NEW_NAME_TAG);
+	name = g_object_get_data (G_OBJECT (file), NEW_NAME_TAG);
 	if (name == NULL) {
 		return;
 	}
@@ -284,7 +283,7 @@ cancel_rename (NautilusFile *file)
 	eel_timed_wait_stop (cancel_rename_callback, file);
 
 	/* Let go of file name. */
-	gtk_object_remove_data (GTK_OBJECT (file), NEW_NAME_TAG);
+	g_object_set_data (G_OBJECT (file), NEW_NAME_TAG, NULL);
 }
 
 void
@@ -300,10 +299,10 @@ fm_rename_file (NautilusFile *file,
 	cancel_rename (file);
 
 	/* Attach the new name to the file. */
-	gtk_object_set_data_full (GTK_OBJECT (file),
-				  NEW_NAME_TAG,
-				  g_strdup (new_name),
-				  g_free);
+	g_object_set_data_full (G_OBJECT (file),
+				NEW_NAME_TAG,
+				g_strdup (new_name),
+				g_free);
 
 	/* Start the timed wait to cancel the rename. */
 	old_name = nautilus_file_get_display_name (file);

@@ -77,7 +77,7 @@ print_application (GnomeVFSMimeApplication *application)
 }
 
 static void
-print_component (OAF_ServerInfo *component)
+print_component (Bonobo_ServerInfo *component)
 {
         if (component == NULL) {
 	        puts ("(none)");
@@ -145,7 +145,7 @@ main (int argc, char **argv)
 {
         const char *uri;  
 	GnomeVFSMimeApplication *default_application;
-	OAF_ServerInfo *default_component;
+	Bonobo_ServerInfo *default_component;
 	GnomeVFSMimeAction *default_action;
 	GList *all_components;
 	GList *all_applications;
@@ -154,13 +154,8 @@ main (int argc, char **argv)
 	NautilusFile *file;
 	GList *attributes;
 
-	g_thread_init (NULL);
-	gnome_vfs_init ();
-
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	oaf_init (argc, argv);
-	gnome_init("test-nautilus-mime-actions", "0.0",
-		       argc, argv);
+	gnome_program_init ("test-nautilus-mime-actions", "0.0",
+			    LIBGNOMEUI_MODULE, argc, argv, NULL);
 
 	if (argc != 2) {
 		fprintf (stderr, "Usage: %s uri\n", *argv);

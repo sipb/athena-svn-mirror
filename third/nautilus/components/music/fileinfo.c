@@ -64,7 +64,7 @@ static gint find_genre_id(gchar * text)
 
 	for (i = 0; i < GENRE_MAX; i++)
 	{
-		if (!strcmp(mpg123_id3_genres[i], text))
+		if (strcmp (mpg123_id3_genres[i], text) == 0)
 			return i;
 	}
 	if (text[0] == '\0')
@@ -74,7 +74,7 @@ static gint find_genre_id(gchar * text)
 
 static gint genre_comp_func(gconstpointer a, gconstpointer b)
 {
-	return strcasecmp(a, b);
+	return eel_strcoll(a, b);
 }
 
 static void save_cb(GtkWidget * w, gpointer data)
@@ -82,7 +82,7 @@ static void save_cb(GtkWidget * w, gpointer data)
 	gint fd;
 	struct id3v1tag_t tag;
 
-	if (!strncasecmp(current_filename, "http://", 7))
+	if (!g_ascii_strncasecmp(current_filename, "http://", 7))
 		return;
 
 	if ((fd = open(current_filename, O_RDWR)) != -1)
@@ -132,7 +132,7 @@ static void remove_id3_cb(GtkWidget * w, gpointer data)
 	gint fd, len;
 	struct id3v1tag_t tag;
 
-	if (!strncasecmp(current_filename, "http://", 7))
+	if (!g_ascii_strncasecmp(current_filename, "http://", 7))
 		return;
 
 	if ((fd = open(current_filename, O_RDWR)) != -1)
@@ -179,7 +179,7 @@ static gchar* channel_mode_name(int mode)
 static void file_info_http(char *filename)
 {
 	gtk_widget_set_sensitive(id3_frame, FALSE);
-	if (mpg123_filename && !strcmp(filename, mpg123_filename) &&
+	if (mpg123_filename && strcmp(filename, mpg123_filename) == 0 &&
 	    mpg123_bitrate != 0)
 	{
 		set_mpeg_level_label(mpg123_mpeg25, mpg123_lsf, mpg123_layer);
@@ -199,17 +199,15 @@ void mpg123_file_info_box(char *filename)
 				   "", N_("CCIT J.17")};
 	const gchar *bool_label[] = {N_("No"), N_("Yes")};
 
-#ifdef ENABLE_NLS
 	{
 		int i;
 
 		for (i=0; i < 4; i++)
 			if (*emphasis[i])
-				emphasis[i] = gettext(emphasis[i]);
+				emphasis[i] = _(emphasis[i]);
 		for (i=0; i < 2; i++)
-			bool_label[i] = gettext(bool_label[i]);
+			bool_label[i] = _(bool_label[i]);
 	}
-#endif
 	if (!window)
 	{
 		GtkWidget *vbox, *hbox, *left_vbox, *table;
@@ -219,7 +217,7 @@ void mpg123_file_info_box(char *filename)
 		
 		window = gtk_window_new(GTK_WINDOW_DIALOG);
 		gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
-		gtk_signal_connect(GTK_OBJECT(window), "destroy", GTK_SIGNAL_FUNC(gtk_widget_destroyed), &window);
+		g_signal_connect(window, "destroy", G_CALLBACK(gtk_widget_destroyed), &window);
 		gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
 		vbox = gtk_vbox_new(FALSE, 10);
@@ -306,18 +304,18 @@ void mpg123_file_info_box(char *filename)
 		gtk_box_pack_start(GTK_BOX(left_vbox), bbox, FALSE, FALSE, 0);
 
 		save = gtk_button_new_with_label(_("Save"));
-		gtk_signal_connect(GTK_OBJECT(save), "clicked", GTK_SIGNAL_FUNC(save_cb), NULL);
+		g_signal_connect(save, "clicked", G_CALLBACK(save_cb), NULL);
 		GTK_WIDGET_SET_FLAGS(save, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), save, TRUE, TRUE, 0);
 		gtk_widget_grab_default(save);
 
 		remove_id3 = gtk_button_new_with_label(_("Remove ID3"));
-		gtk_signal_connect(GTK_OBJECT(remove_id3), "clicked", GTK_SIGNAL_FUNC(remove_id3_cb), NULL);
+		g_signal_connect(remove_id3, "clicked", G_CALLBACK(remove_id3_cb), NULL);
 		GTK_WIDGET_SET_FLAGS(remove_id3, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), remove_id3, TRUE, TRUE, 0);
 
 		cancel = gtk_button_new_with_label(_("Cancel"));
-		gtk_signal_connect_object(GTK_OBJECT(cancel), "clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy), GTK_OBJECT(window));
+		g_signal_connect_object(cancel, "clicked", G_CALLBACK(gtk_widget_destroy), window, G_CONNECT_SWAPPED);
 		GTK_WIDGET_SET_FLAGS(cancel, GTK_CAN_DEFAULT);
 		gtk_box_pack_start(GTK_BOX(bbox), cancel, TRUE, TRUE, 0);
 
@@ -385,7 +383,7 @@ void mpg123_file_info_box(char *filename)
 	gtk_label_set_text(GTK_LABEL(mpeg_flags), "");
 	gtk_label_set_text(GTK_LABEL(mpeg_fileinfo), "");
 
-	if (!strncasecmp(filename, "http://", 7))
+	if (!g_ascii_strncasecmp(filename, "http://", 7))
 	{
 		file_info_http(filename);
 		return;

@@ -32,10 +32,11 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkaccellabel.h>
+#include <gtk/gtkimage.h>
+#include <gtk/gtkimagemenuitem.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gtkpixmapmenuitem.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -61,22 +62,20 @@ struct NautilusBookmarkDetails
 
 static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
 static void	  nautilus_bookmark_disconnect_file	  (NautilusBookmark	 *file);
-static void       nautilus_bookmark_initialize_class      (NautilusBookmarkClass *class);
-static void       nautilus_bookmark_initialize            (NautilusBookmark      *bookmark);
-static GtkWidget *create_pixmap_widget_for_bookmark       (NautilusBookmark 	 *bookmark);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
+GNOME_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark,
+			 GtkObject, GTK_TYPE_OBJECT)
 
 /* GtkObject methods.  */
 
 static void
-nautilus_bookmark_destroy (GtkObject *object)
+nautilus_bookmark_finalize (GObject *object)
 {
 	NautilusBookmark *bookmark;
 
 	g_assert (NAUTILUS_IS_BOOKMARK (object));
 
-	bookmark = NAUTILUS_BOOKMARK(object);
+	bookmark = NAUTILUS_BOOKMARK (object);
 
 	nautilus_bookmark_disconnect_file (bookmark);	
 
@@ -84,43 +83,38 @@ nautilus_bookmark_destroy (GtkObject *object)
 	g_free (bookmark->details->uri);
 	g_free (bookmark->details);
 
-	/* Chain up */
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 /* Initialization.  */
 
 static void
-nautilus_bookmark_initialize_class (NautilusBookmarkClass *class)
+nautilus_bookmark_class_init (NautilusBookmarkClass *class)
 {
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (class);
-
-	object_class->destroy = nautilus_bookmark_destroy;
+	G_OBJECT_CLASS (class)->finalize = nautilus_bookmark_finalize;
 
 	signals[APPEARANCE_CHANGED] =
-		gtk_signal_new ("appearance_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBookmarkClass, appearance_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("appearance_changed",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusBookmarkClass, appearance_changed),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 
 	signals[CONTENTS_CHANGED] =
-		gtk_signal_new ("contents_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusBookmarkClass, contents_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("contents_changed",
+		              G_TYPE_FROM_CLASS (class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusBookmarkClass, contents_changed),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 				
 }
 
 static void
-nautilus_bookmark_initialize (NautilusBookmark *bookmark)
+nautilus_bookmark_instance_init (NautilusBookmark *bookmark)
 {
 	bookmark->details = g_new0 (NautilusBookmarkDetails, 1);
 }
@@ -153,7 +147,7 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 	}
 
 	if (!eel_uris_match (bookmark_a->details->uri,
-		    		  bookmark_b->details->uri)) {
+			     bookmark_b->details->uri)) {
 		return 1;
 	}
 	
@@ -183,7 +177,7 @@ nautilus_bookmark_compare_uris (gconstpointer a, gconstpointer b)
 	bookmark_b = NAUTILUS_BOOKMARK (b);
 
 	return !eel_uris_match (bookmark_a->details->uri,
-		    		     bookmark_b->details->uri);
+				bookmark_b->details->uri);
 }
 
 NautilusBookmark *
@@ -205,25 +199,6 @@ nautilus_bookmark_get_name (NautilusBookmark *bookmark)
 	return g_strdup (bookmark->details->name);
 }
 
-gboolean	    
-nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
-				       guint icon_size,
-				       GdkPixmap **pixmap_return,
-				       GdkBitmap **mask_return)
-{
-	GdkPixbuf *pixbuf;
-
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, icon_size, FALSE);
-	if (pixbuf == NULL) {
-		return FALSE;
-	}
-
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, EEL_STANDARD_ALPHA_THRESHHOLD);
-	gdk_pixbuf_unref (pixbuf);
-
-	return TRUE;
-}
-
 GdkPixbuf *	    
 nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 			      guint icon_size,
@@ -242,7 +217,6 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	result = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon,
 		 icon_size, icon_size, icon_size, icon_size,
-		 optimize_for_anti_aliasing,
 		 NULL, TRUE);
 	nautilus_scalable_icon_unref (icon);
 	
@@ -286,21 +260,24 @@ nautilus_bookmark_get_uri (NautilusBookmark *bookmark)
  * Change the user-displayed name of a bookmark.
  * @new_name: The new user-displayed name for this bookmark, mustn't be NULL.
  * 
+ * Returns: TRUE if the name changed else FALSE.
  **/
-void
+gboolean
 nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 {
-	g_return_if_fail(NAUTILUS_IS_BOOKMARK (bookmark));
-	g_return_if_fail (new_name != NULL);
+	g_return_val_if_fail (new_name != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), FALSE);
 
 	if (strcmp (new_name, bookmark->details->name) == 0) {
-		return;
+		return FALSE;
 	}
 
 	g_free (bookmark->details->name);
 	bookmark->details->name = g_strdup (new_name);
 
-	gtk_signal_emit (GTK_OBJECT (bookmark), signals[APPEARANCE_CHANGED]);
+	g_signal_emit (bookmark, signals[APPEARANCE_CHANGED], 0);
+
+	return TRUE;
 }
 
 static gboolean
@@ -413,11 +390,11 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	}
 
 	if (should_emit_appearance_changed_signal) {
-		gtk_signal_emit (GTK_OBJECT (bookmark), signals[APPEARANCE_CHANGED]);
+		g_signal_emit (bookmark, signals[APPEARANCE_CHANGED], 0);
 	}
 
 	if (should_emit_contents_changed_signal) {
-		gtk_signal_emit (GTK_OBJECT (bookmark), signals[CONTENTS_CHANGED]);
+		g_signal_emit (bookmark, signals[CONTENTS_CHANGED], 0);
 	}
 }
 
@@ -471,9 +448,9 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 	
 	if (bookmark->details->file != NULL) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (bookmark->details->file),
-					       bookmark_file_changed_callback,
-					       bookmark);
+		g_signal_handlers_disconnect_by_func (bookmark->details->file,
+						      G_CALLBACK (bookmark_file_changed_callback),
+						      bookmark);
 		nautilus_file_unref (bookmark->details->file);
 		bookmark->details->file = NULL;
 	}
@@ -497,10 +474,8 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 		bookmark->details->file = nautilus_file_get (bookmark->details->uri);
 		g_assert (!nautilus_file_is_gone (bookmark->details->file));
 
-		gtk_signal_connect (GTK_OBJECT (bookmark->details->file),
-				    "changed",
-				    bookmark_file_changed_callback,
-				    bookmark);
+		g_signal_connect_object (bookmark->details->file, "changed",
+					 G_CALLBACK (bookmark_file_changed_callback), bookmark, 0);
 	}	
 
 	/* Set icon based on available information; don't force network i/o
@@ -519,8 +494,8 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 {
 	NautilusBookmark *new_bookmark;
 
-	new_bookmark = NAUTILUS_BOOKMARK (gtk_object_new (NAUTILUS_TYPE_BOOKMARK, NULL));
-	gtk_object_ref (GTK_OBJECT (new_bookmark));
+	new_bookmark = NAUTILUS_BOOKMARK (g_object_new (NAUTILUS_TYPE_BOOKMARK, NULL));
+	g_object_ref (new_bookmark);
 	gtk_object_sink (GTK_OBJECT (new_bookmark));
 
 	new_bookmark->details->name = g_strdup (name);
@@ -537,23 +512,24 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 }				 
 
 static GtkWidget *
-create_pixmap_widget_for_bookmark (NautilusBookmark *bookmark)
+create_image_widget_for_bookmark (NautilusBookmark *bookmark)
 {
-	GdkPixmap *gdk_pixmap;
-	GdkBitmap *mask;
+	GdkPixbuf *pixbuf;
+	GtkWidget *widget;
 
-	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, 
-						    NAUTILUS_ICON_SIZE_FOR_MENUS,
-					  	    &gdk_pixmap, 
-					  	    &mask)) {
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS, FALSE);
+	if (pixbuf == NULL) {
 		return NULL;
 	}
 
-	return gtk_pixmap_new (gdk_pixmap, mask);
+        widget = gtk_image_new_from_pixbuf (pixbuf);
+
+	g_object_unref (pixbuf);
+	return widget;
 }
 
 /**
- * nautilus_bookmarnuk_menu_item_new:
+ * nautilus_bookmark_menu_item_new:
  * 
  * Return a menu item representing a bookmark.
  * @bookmark: The bookmark the menu item represents.
@@ -563,21 +539,17 @@ GtkWidget *
 nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 {
 	GtkWidget *menu_item;
-	GtkWidget *pixmap_widget;
+	GtkWidget *image_widget;
 	GtkWidget *label;
 	char *display_name;
+	
+	menu_item = gtk_image_menu_item_new ();
 
-	/* Could check gnome_preferences_get_menus_have_icons here, but these
-	 * are more important than stock menu icons, since they're connected to
-	 * user data. For now let's not let them be turn-offable and see if
-	 * anyone objects strenuously.
-	 */
-	menu_item = gtk_pixmap_menu_item_new ();
-
-	pixmap_widget = create_pixmap_widget_for_bookmark (bookmark);
-	if (pixmap_widget != NULL) {
-		gtk_widget_show (pixmap_widget);
-		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
+	image_widget = create_image_widget_for_bookmark (bookmark);
+	if (image_widget != NULL) {
+		gtk_widget_show (image_widget);
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
+					       image_widget);
 	}
 	display_name = eel_truncate_text_for_menu_item (bookmark->details->name);
 	label = gtk_label_new (display_name);
@@ -603,7 +575,8 @@ nautilus_bookmark_uri_known_not_to_exist (NautilusBookmark *bookmark)
 	}
 
 	/* Now check if the file exists (sync. call OK because it is local). */
-	exists = g_file_exists (path_name);
+	exists = g_file_test (path_name, G_FILE_TEST_EXISTS);
 	g_free (path_name);
+
 	return !exists;
 }

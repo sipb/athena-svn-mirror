@@ -32,7 +32,7 @@
 #include <libnautilus/nautilus-view-component.h>
 #include <bonobo/bonobo-control.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_VIEW	      (nautilus_view_get_type ())
 #define NAUTILUS_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW, NautilusView))
@@ -49,16 +49,19 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent_spot;
+	POA_Nautilus_View__epv epv;
 	
 	void (* load_location)     (NautilusView          *view,
 		                    const char            *location_uri);
 	void (* stop_loading)      (NautilusView          *view);
-	void (* selection_changed) (NautilusView          *view,
-				    GList                 *selection); /* list of URI char *s */
-	void (* title_changed)     (NautilusView          *view,
-				    const char            *title);
-	void (* history_changed)   (NautilusView          *view,
+
+	/* These signals need to be enabled with nautilus_view_set_listener_mask */
+	void (* title_changed)     (NautilusView           *view,
+				    const char             *title);
+	void (* history_changed)   (NautilusView           *view,
 				    const Nautilus_History *history);
+	void (* selection_changed) (NautilusView           *view,
+				    GList                  *selection);
 } NautilusViewClass;
 
 GtkType            nautilus_view_get_type                             (void);
@@ -95,6 +98,7 @@ void               nautilus_view_report_load_failed                   (NautilusV
 void               nautilus_view_set_title                            (NautilusView           *view,
 								       const char             *title);
 void               nautilus_view_go_back                              (NautilusView           *view);
+void               nautilus_view_close_window                         (NautilusView           *view);
 
 /* Some utility functions useful for doing the CORBA work directly.
  * Not needed by most components, but shared with the view frame code,
@@ -109,12 +113,24 @@ BonoboUIComponent *nautilus_view_set_up_ui                            (NautilusV
 								       const char             *ui_xml_file_name,
 								       const char             *application_name);
 
+
+typedef enum {
+	NAUTILUS_VIEW_LISTEN_TITLE     = 1<<0,
+	NAUTILUS_VIEW_LISTEN_HISTORY   = 1<<1,
+	NAUTILUS_VIEW_LISTEN_SELECTION = 1<<2
+} NautilusViewListenerMask;
+
+Bonobo_PropertyBag nautilus_view_get_ambient_properties               (NautilusView            *view,
+								       CORBA_Environment       *opt_ev);
+void               nautilus_view_set_listener_mask                    (NautilusView            *view,
+								       NautilusViewListenerMask mask);
+
 /* `protected' functions for use by subclasses only. */
 NautilusView *     nautilus_view_construct                            (NautilusView           *view,
 								       GtkWidget              *widget);
 NautilusView *     nautilus_view_construct_from_bonobo_control        (NautilusView           *view,
 								       BonoboControl          *bonobo_control);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_VIEW_H */

@@ -67,8 +67,8 @@ construct_password_dialog (gboolean is_proxy_authentication, const GnomeVFSModul
 	dialog = EEL_PASSWORD_DIALOG (eel_password_dialog_new (
 			_("Authentication Required"),
 			message,
-			_(""),
-			_(""),
+			"",
+			"",
 			FALSE));
 
 	g_free (message);
@@ -118,13 +118,13 @@ mark_callback_completed (CallbackInfo *info)
 }
 
 static void
-authentication_dialog_button_clicked (GnomeDialog *dialog, 
+authentication_dialog_button_clicked (GtkDialog *dialog, 
 				      gint button_number, 
 				      CallbackInfo *info)
 {
-	DEBUG_MSG (("+%s button: %d\n", __FUNCTION__, button_number));
+	DEBUG_MSG (("+%s button: %d\n", G_GNUC_FUNCTION, button_number));
 
-	if (button_number == GNOME_OK) {
+	if (button_number == GTK_RESPONSE_OK) {
 		info->out_args->username 
 			= eel_password_dialog_get_username (EEL_PASSWORD_DIALOG (dialog));
 		info->out_args->password
@@ -137,17 +137,17 @@ authentication_dialog_button_clicked (GnomeDialog *dialog,
 }
 
 static void
-authentication_dialog_closed (GnomeDialog *dialog, CallbackInfo *info)
+authentication_dialog_closed (GtkDialog *dialog, CallbackInfo *info)
 {
-	DEBUG_MSG (("+%s\n", __FUNCTION__));
+	DEBUG_MSG (("+%s\n", G_GNUC_FUNCTION));
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
-authentication_dialog_destroyed (GnomeDialog *dialog, CallbackInfo *info)
+authentication_dialog_destroyed (GtkDialog *dialog, CallbackInfo *info)
 {
-	DEBUG_MSG (("+%s\n", __FUNCTION__));
+	DEBUG_MSG (("+%s\n", G_GNUC_FUNCTION));
 
 	mark_callback_completed (info);	
 }
@@ -163,20 +163,14 @@ present_authentication_dialog_nonblocking (CallbackInfo *info)
 
 	gtk_window_set_modal (GTK_WINDOW (dialog), FALSE);
 
-	gtk_signal_connect (GTK_OBJECT (dialog), 
-			     "clicked", 
-			     GTK_SIGNAL_FUNC (authentication_dialog_button_clicked),
-			     info);
+	g_signal_connect (dialog, "response", 
+			  G_CALLBACK (authentication_dialog_button_clicked), info);
 
-	gtk_signal_connect (GTK_OBJECT (dialog), 
-			     "close", 
-			     GTK_SIGNAL_FUNC (authentication_dialog_closed),
-			     info);
+	g_signal_connect (dialog, "close", 
+			  G_CALLBACK (authentication_dialog_closed), info);
 
-	gtk_signal_connect (GTK_OBJECT (dialog), 
-			     "destroy", 
-			     GTK_SIGNAL_FUNC (authentication_dialog_destroyed),
-			     info);
+	g_signal_connect (dialog, "destroy", 
+			  G_CALLBACK (authentication_dialog_destroyed), info);
 
 	gtk_widget_show_all (GTK_WIDGET (dialog));
 
@@ -208,7 +202,7 @@ vfs_async_authentication_callback (gconstpointer in, size_t in_size,
 
 	is_proxy_authentication = (user_data == GINT_TO_POINTER (1));
 
-	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", __FUNCTION__, in_real->uri, (unsigned) is_proxy_authentication));
+	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", G_GNUC_FUNCTION, in_real->uri, (unsigned) is_proxy_authentication));
 
 	info = g_new (CallbackInfo, 1);
 
@@ -220,7 +214,7 @@ vfs_async_authentication_callback (gconstpointer in, size_t in_size,
 
 	present_authentication_dialog_nonblocking (info);
 
-	DEBUG_MSG (("-%s\n", __FUNCTION__));
+	DEBUG_MSG (("-%s\n", G_GNUC_FUNCTION));
 }
 
 static void /* GnomeVFSModuleCallback */
@@ -243,15 +237,15 @@ vfs_authentication_callback (gconstpointer in, size_t in_size,
 
 	is_proxy_authentication = (user_data == GINT_TO_POINTER (1));
 
-	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", __FUNCTION__, in_real->uri, (unsigned) is_proxy_authentication));
+	DEBUG_MSG (("+%s uri:'%s' is_proxy_auth: %u\n", G_GNUC_FUNCTION, in_real->uri, (unsigned) is_proxy_authentication));
 
 	present_authentication_dialog_blocking (is_proxy_authentication, in_real, out_real);
 
-	DEBUG_MSG (("-%s\n", __FUNCTION__));
+	DEBUG_MSG (("-%s\n", G_GNUC_FUNCTION));
 }
 
 void
-nautilus_authentication_manager_initialize (void)
+nautilus_authentication_manager_init (void)
 {
 	callback_cond = g_cond_new ();
 	callback_mutex = g_mutex_new ();

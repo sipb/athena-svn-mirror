@@ -26,10 +26,12 @@
 #ifndef NAUTILUS_ICON_FACTORY_H
 #define NAUTILUS_ICON_FACTORY_H
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libnautilus-private/nautilus-file.h>
 #include <eel/eel-string-list.h>
+#include <gdk/gdktypes.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkobject.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libgnome/gnome-icon-loader.h>
 
 /* NautilusIconFactory is a class that knows how to hand out icons to be
  * used for representing files and some other objects. It was designed
@@ -127,7 +129,6 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
 									  guint                        nominal_size_in_pixels_y,
 									  guint                        maximum_size_in_pixels_x,
 									  guint                        maximum_size_in_pixels_y,
-									  gboolean                     optimized_for_anti_aliasing,
 									  NautilusEmblemAttachPoints  *attach_points,
 									  gboolean                     wants_default);
 									  
@@ -136,23 +137,13 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (Nautil
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (NautilusFile                *file,
 									  const char                  *modifer,
-									  guint                        size_in_pixels,
-									  gboolean                     optimized_for_anti_aliasing);
+									  guint                        size_in_pixels);
 
-/* Convenience functions for legacy interfaces that require a pixmap and
- * bitmap. Maybe we can get rid of these one day.
- */
-void                  nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile                *file,
-									  const char                  *modifer,
-									  guint                        size_in_pixels,
-									  GdkPixmap                  **pixmap,
-									  GdkBitmap                  **mask);
 /* Convenience routine for getting a pixbuf from an icon name
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const char                  *icon_name,
 									  const char                  *modifer,
-									  guint                        size_in_pixels,
-									  gboolean                     optimized_for_anti_aliasing);
+									  guint                        size_in_pixels);
 /* Manage a scalable icon.
  * Since the factory always passes out references to the same scalable
  * icon, you can compare two scalable icons to see if they are the same
@@ -186,3 +177,5 @@ NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces        (const 
 void                  nautilus_scalable_icon_list_free                   (GList                       *scalable_icon_list);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */
+
+GnomeIconLoader *     nautilus_icon_factory_get_icon_loader              (void);

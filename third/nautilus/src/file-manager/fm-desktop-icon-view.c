@@ -25,12 +25,12 @@
 */
 
 #include <config.h>
+#include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 
 #include <X11/Xatom.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkmain.h>
-#include <ctype.h>
 #include <dirent.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -42,9 +42,7 @@
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkcheckmenuitem.h>
-#include <libgnome/gnome-dentry.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-mime.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
@@ -67,12 +65,16 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <gtk/gtkmessagedialog.h>
 
 static const char untranslated_trash_link_name[] = N_("Trash");
 #define TRASH_LINK_NAME _(untranslated_trash_link_name)
 
 #define DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL		"/commands/Empty Trash Conditional"
 #define DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL	"/commands/Unmount Volume Conditional"
+#define DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL      "/commands/Protect Conditional"
+#define DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL       "/commands/Format Conditional"
+#define DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL     "/commands/Media Properties Conditional"
 
 #define DESKTOP_BACKGROUND_POPUP_PATH_DISKS	"/popups/background/Before Zoom Items/Volume Items/Disks"
 
@@ -86,8 +88,7 @@ struct FMDesktopIconViewDetails
 
 	/* For the desktop rescanning
 	 */
-	guint delayed_init_signal;
-	guint done_loading_signal;
+	gulong delayed_init_signal;
 	guint reload_desktop_timeout;
 	gboolean pending_rescan;
 };
@@ -97,25 +98,26 @@ typedef struct {
 	char *mount_path;
 } MountParameters;
 
-static void     fm_desktop_icon_view_initialize                   (FMDesktopIconView      *desktop_icon_view);
-static void     fm_desktop_icon_view_initialize_class             (FMDesktopIconViewClass *klass);
+typedef enum {
+	DELETE_MOUNT_LINKS = 1<<0,
+	UPDATE_HOME_LINK   = 1<<1,
+	UPDATE_TRASH_LINK  = 1<<2
+} UpdateType;
+
+static void     fm_desktop_icon_view_init                   (FMDesktopIconView      *desktop_icon_view);
+static void     fm_desktop_icon_view_class_init             (FMDesktopIconViewClass *klass);
 static void     fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor   *trash,
 								   gboolean                state,
 								   gpointer                callback_data);
 static void     home_uri_changed                                  (gpointer                user_data);
+static void     default_zoom_level_changed                        (gpointer                user_data);
 static void     volume_mounted_callback                           (NautilusVolumeMonitor  *monitor,
 								   NautilusVolume         *volume,
 								   FMDesktopIconView      *icon_view);
 static void     volume_unmounted_callback                         (NautilusVolumeMonitor  *monitor,
 								   NautilusVolume         *volume,
 								   FMDesktopIconView      *icon_view);
-static int      desktop_icons_compare_callback                    (NautilusIconContainer  *container,
-								   NautilusFile           *file_a,
-								   NautilusFile           *file_b,
-								   FMDesktopIconView      *icon_view);
-static void     delete_all_mount_links                            (void);
-static void     update_home_link_and_delete_copies                (void);
-static void     update_trash_link_and_delete_copies               (void);
+static void     update_desktop_directory                          (UpdateType              type);
 static gboolean real_supports_auto_layout                         (FMIconView             *view);
 static void     real_merge_menus                                  (FMDirectoryView        *view);
 static void     real_update_menus                                 (FMDirectoryView        *view);
@@ -123,8 +125,10 @@ static gboolean real_supports_zooming                             (FMDirectoryVi
 static void     update_disks_menu                                 (FMDesktopIconView      *view);
 static void     free_volume_black_list                            (FMDesktopIconView      *view);
 static gboolean	volume_link_is_selection 			  (FMDirectoryView 	  *view);
+static NautilusDeviceType volume_link_device_type                 (FMDirectoryView        *view);
+static void     fm_desktop_icon_view_update_icon_container_fonts  (FMDesktopIconView      *view);
 
-EEL_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
+EEL_CLASS_BOILERPLATE (FMDesktopIconView,
 			      fm_desktop_icon_view,
 			      FM_TYPE_ICON_VIEW)
 
@@ -148,10 +152,40 @@ get_icon_container (FMDesktopIconView *icon_view)
 }
 
 static void
-panel_desktop_area_changed (FMDesktopIconView *icon_view)
+icon_container_set_workarea (NautilusIconContainer *icon_container,
+			     long                  *workareas,
+			     int                    n_items)
 {
-	long *borders = NULL;
-	GdkAtom type_returned;
+	int left, right, top, bottom;
+	int screen_width, screen_height;
+	int i;
+
+	left = right = top = bottom = 0;
+
+	screen_width  = gdk_screen_width ();
+	screen_height = gdk_screen_height ();
+
+	for (i = 0; i < n_items; i += 4) {
+		int x      = workareas [i];
+		int y      = workareas [i + 1];
+		int width  = workareas [i + 2];
+		int height = workareas [i + 3];
+
+		left   = MAX (left, x);
+		right  = MAX (right, screen_width - width - x);
+		top    = MAX (top, y);
+		bottom = MAX (bottom, screen_height - height - y);
+	}
+
+	nautilus_icon_container_set_margins (icon_container,
+					     left, right, top, bottom);
+}
+
+static void
+net_workarea_changed (FMDesktopIconView *icon_view)
+{
+	long *workareas = NULL;
+	Atom type_returned;
 	int format_returned;
 	unsigned long items_returned;
 	unsigned long bytes_after_return;
@@ -164,39 +198,33 @@ panel_desktop_area_changed (FMDesktopIconView *icon_view)
 	gdk_error_trap_push ();
 	if (XGetWindowProperty (GDK_DISPLAY (),
 				GDK_ROOT_WINDOW (),
-				gdk_atom_intern ("GNOME_PANEL_DESKTOP_AREA",
-						 FALSE),
-				0 /* long_offset */, 
-				4 /* long_length */,
-				False /* delete */,
+				gdk_x11_get_xatom_by_name ("_NET_WORKAREA"),
+				0, G_MAXLONG, False,
 				XA_CARDINAL,
 				&type_returned,
 				&format_returned,
 				&items_returned,
 				&bytes_after_return,
-				(unsigned char **)&borders) != Success) {
-		if (borders != NULL)
-			XFree (borders);
-		borders = NULL;
+				(unsigned char **)&workareas) != Success) {
+		if (workareas != NULL)
+			XFree (workareas);
+		workareas = NULL;
 	}
 			    
 	if (gdk_error_trap_pop ()
-	    || borders == NULL
+	    || workareas == NULL
 	    || type_returned != XA_CARDINAL
-	    || items_returned != 4
+	    || (items_returned % 4) != 0
 	    || format_returned != 32) {
 		nautilus_icon_container_set_margins (icon_container,
 						     0, 0, 0, 0);
 	} else {
-		nautilus_icon_container_set_margins (icon_container,
-						     borders[0 /* left */],
-						     borders[1 /* right */],
-						     borders[2 /* top */],
-						     borders[3 /* bottom */]);
+		icon_container_set_workarea (
+				icon_container, workareas, items_returned);
 	}
 
-	if (borders != NULL)
-		XFree (borders);
+	if (workareas != NULL)
+		XFree (workareas);
 }
 
 static GdkFilterReturn
@@ -211,9 +239,8 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
   
 	switch (xevent->type) {
 	case PropertyNotify:
-		if (xevent->xproperty.atom == gdk_atom_intern ("GNOME_PANEL_DESKTOP_AREA", FALSE)) {
-			panel_desktop_area_changed (icon_view);
-		}
+		if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("_NET_WORKAREA"))
+			net_workarea_changed (icon_view);
 		break;
 	default:
 		break;
@@ -223,14 +250,14 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
 }
 
 static void
-fm_desktop_icon_view_destroy (GtkObject *object)
+fm_desktop_icon_view_finalize (GObject *object)
 {
 	FMDesktopIconView *icon_view;
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
 
 	/* Remove the property filter */
-	gdk_window_remove_filter (GDK_ROOT_PARENT (),
+	gdk_window_remove_filter (gdk_get_default_root_window (),
 				  desktop_icon_view_property_filter,
 				  icon_view);
 
@@ -239,55 +266,40 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 		gtk_timeout_remove (icon_view->details->reload_desktop_timeout);
 	}
 
-	if (icon_view->details->done_loading_signal != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (fm_directory_view_get_model
-						   (FM_DIRECTORY_VIEW (icon_view))),
-				       icon_view->details->done_loading_signal);
-	}
-
-	if (icon_view->details->delayed_init_signal != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (icon_view),
-				       icon_view->details->delayed_init_signal);
-	}
-	
 	/* Delete all of the link files. */
-	delete_all_mount_links ();
+	update_desktop_directory (DELETE_MOUNT_LINKS);
 	
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_HOME_URI,
-					      home_uri_changed,
-					      icon_view);
-
+					 home_uri_changed,
+					 icon_view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+					 default_zoom_level_changed,
+					 icon_view);
+	
 	/* Clean up details */	
 	if (icon_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (icon_view->details->ui);
-		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
+		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
+		bonobo_object_unref (icon_view->details->ui);
+		icon_view->details->ui = NULL;
 	}
 	
 	free_volume_black_list (icon_view);
 	
 	g_free (icon_view->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
-fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
+fm_desktop_icon_view_class_init (FMDesktopIconViewClass *class)
 {
-	GtkObjectClass		*object_class;
-	FMDirectoryViewClass	*fm_directory_view_class;
-	FMIconViewClass		*fm_icon_view_class;
+	G_OBJECT_CLASS (class)->finalize = fm_desktop_icon_view_finalize;
 
-	object_class		= GTK_OBJECT_CLASS (klass);
-	fm_directory_view_class	= FM_DIRECTORY_VIEW_CLASS (klass);
-	fm_icon_view_class	= FM_ICON_VIEW_CLASS (klass);
+	FM_DIRECTORY_VIEW_CLASS (class)->merge_menus = real_merge_menus;
+	FM_DIRECTORY_VIEW_CLASS (class)->update_menus = real_update_menus;
+	FM_DIRECTORY_VIEW_CLASS (class)->supports_zooming = real_supports_zooming;
 
-	object_class->destroy = fm_desktop_icon_view_destroy;
-
-	fm_directory_view_class->merge_menus = real_merge_menus;
-	fm_directory_view_class->update_menus = real_update_menus;
-	fm_directory_view_class->supports_zooming = real_supports_zooming;
-
-	fm_icon_view_class->supports_auto_layout = real_supports_auto_layout;
+	FM_ICON_VIEW_CLASS (class)->supports_auto_layout = real_supports_auto_layout;
 }
 
 static void
@@ -306,7 +318,7 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 
 	/* Stop the event because we don't want anyone else dealing with it. */	
 	gdk_flush ();
-	gtk_signal_emit_stop_by_name (GTK_OBJECT(icon_container), "middle_click");
+	g_signal_stop_emission_by_name (icon_container, "middle_click");
 
 	/* build an X event to represent the middle click. */
 	x_event.type = ButtonPress;
@@ -445,23 +457,29 @@ create_mount_link (FMDesktopIconView *icon_view,
 	case NAUTILUS_DEVICE_NFS:
 		icon_name = "i-nfs";
 		break;
+
+	case NAUTILUS_DEVICE_SMB:
+		icon_name = "i-smb";
+		break;
 	
 	case NAUTILUS_DEVICE_ZIP_DRIVE:
 		icon_name = "i-zipdisk";
 		break;
 
+	case NAUTILUS_DEVICE_APPLE:
+	case NAUTILUS_DEVICE_WINDOWS:
 	case NAUTILUS_DEVICE_CAMERA:
 	case NAUTILUS_DEVICE_UNKNOWN:
 		break;
 	}
 
 	target_uri = nautilus_volume_get_target_uri (volume);
-	
+
 	volume_name = create_unique_volume_name (volume);
-	
+
 	/* Create link */
 	nautilus_link_local_create (desktop_directory, volume_name, icon_name, target_uri, NULL, NAUTILUS_LINK_MOUNT);
-				    
+
 	g_free (target_uri);
 	g_free (volume_name);
 }
@@ -478,11 +496,40 @@ event_callback (GtkWidget *widget, GdkEvent *event, FMDesktopIconView *desktop_i
 {
 }
 
+
+static NautilusZoomLevel
+get_default_zoom_level (void)
+{
+	static gboolean auto_storage_added = FALSE;
+	static NautilusZoomLevel default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+
+	if (!auto_storage_added) {
+		auto_storage_added = TRUE;
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+					       (int *) &default_zoom_level);
+	}
+
+	return CLAMP (default_zoom_level, NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
+}
+
+static void
+default_zoom_level_changed (gpointer user_data)
+{
+	NautilusZoomLevel new_level;
+	FMDesktopIconView *desktop_icon_view;
+
+	desktop_icon_view = FM_DESKTOP_ICON_VIEW (user_data);
+	new_level = get_default_zoom_level ();
+
+	nautilus_icon_container_set_zoom_level (get_icon_container (desktop_icon_view),
+						new_level);
+}
+
 /* Update home link to point to new home uri */
 static void
 home_uri_changed (gpointer callback_data)
 {
-	update_home_link_and_delete_copies ();
+	update_desktop_directory (UPDATE_HOME_LINK);
 }
 
 static gboolean
@@ -533,24 +580,46 @@ static void
 delayed_init (FMDesktopIconView *desktop_icon_view)
 {
 	/* Keep track of the load time. */
-	desktop_icon_view->details->done_loading_signal = 
-		gtk_signal_connect (GTK_OBJECT (fm_directory_view_get_model
-						(FM_DIRECTORY_VIEW (desktop_icon_view))),
-				    "done_loading",
-				    GTK_SIGNAL_FUNC (done_loading), desktop_icon_view);
+	g_signal_connect_object (fm_directory_view_get_model (FM_DIRECTORY_VIEW (desktop_icon_view)),
+				 "done_loading",
+				 G_CALLBACK (done_loading), desktop_icon_view, 0);
 
 	/* Monitor desktop directory. */
 	desktop_icon_view->details->reload_desktop_timeout =
 		gtk_timeout_add (RESCAN_TIMEOUT, do_desktop_rescan, desktop_icon_view);
 
-	gtk_signal_disconnect (GTK_OBJECT (desktop_icon_view),
-			       desktop_icon_view->details->delayed_init_signal);
+	g_signal_handler_disconnect (desktop_icon_view,
+				     desktop_icon_view->details->delayed_init_signal);
 
 	desktop_icon_view->details->delayed_init_signal = 0;
 }
 
 static void
-fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
+font_changed_callback (gpointer callback_data)
+{
+ 	g_return_if_fail (FM_IS_DESKTOP_ICON_VIEW (callback_data));
+	
+	fm_desktop_icon_view_update_icon_container_fonts (FM_DESKTOP_ICON_VIEW (callback_data));
+}
+
+static void
+fm_desktop_icon_view_update_icon_container_fonts (FMDesktopIconView *icon_view)
+{
+	NautilusIconContainer *icon_container;
+	char *font;
+	
+	icon_container = get_icon_container (icon_view);
+	g_assert (icon_container != NULL);
+
+	font = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_FONT);
+
+	nautilus_icon_container_set_font (icon_container, font);
+
+	g_free (font);
+}
+
+static void
+fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 {
 	GList *list;
 	NautilusIconContainer *icon_container;
@@ -566,6 +635,9 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	icon_container = get_icon_container (desktop_icon_view);
 
+	nautilus_icon_container_set_use_drop_shadows (icon_container, TRUE);
+	fm_icon_container_set_sort_desktop (FM_ICON_CONTAINER (icon_container), TRUE);
+
 	/* Set up details */
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
 
@@ -573,13 +645,13 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	 * way to keep track of the items on the desktop.
 	 */
 	if (!nautilus_monitor_active ()) {
-		desktop_icon_view->details->delayed_init_signal = gtk_signal_connect
-			(GTK_OBJECT (desktop_icon_view), "begin_loading",
-			 GTK_SIGNAL_FUNC (delayed_init), desktop_icon_view);
+		desktop_icon_view->details->delayed_init_signal = g_signal_connect_object
+			(desktop_icon_view, "begin_loading",
+			 G_CALLBACK (delayed_init), desktop_icon_view, 0);
 	}
 	
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
-	
+
 	/* Set up default mount black list */
 	list = g_list_prepend (NULL, g_strdup ("/proc"));
 	list = g_list_prepend (list, g_strdup ("/boot"));
@@ -589,6 +661,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	allocation = &GTK_WIDGET (icon_container)->allocation;
 	allocation->x = 0;
 	allocation->y = 0;
+	
 	gtk_widget_queue_resize (GTK_WIDGET (icon_container));
 
 	hadj = GTK_LAYOUT (icon_container)->hadjustment;
@@ -604,58 +677,46 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	nautilus_icon_container_set_layout_mode (icon_container,
 						 NAUTILUS_ICON_LAYOUT_T_B_L_R);
 
-	delete_all_mount_links ();
-	update_home_link_and_delete_copies ();
-	update_trash_link_and_delete_copies ();
+	update_desktop_directory (DELETE_MOUNT_LINKS | UPDATE_HOME_LINK | UPDATE_TRASH_LINK);
 
 	/* Create initial mount links */
 	nautilus_volume_monitor_each_mounted_volume (nautilus_volume_monitor_get (),
 					     	     create_one_mount_link,
 						     desktop_icon_view);
 	
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "middle_click",
-			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
-			    desktop_icon_view);
-			    
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "compare_icons",
-			    GTK_SIGNAL_FUNC (desktop_icons_compare_callback),
-			    desktop_icon_view);
-
-	gtk_signal_connect (GTK_OBJECT (desktop_icon_view),
-			    "event",
-			    GTK_SIGNAL_FUNC (event_callback),
-			    desktop_icon_view);
-
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
-					"trash_state_changed",
-					fm_desktop_icon_view_trash_state_changed_callback,
-					desktop_icon_view,
-					GTK_OBJECT (desktop_icon_view));
-	
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
-					"volume_mounted",
-					volume_mounted_callback,
-					desktop_icon_view,
-					GTK_OBJECT (desktop_icon_view));
-	
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
-					"volume_unmounted",
-					volume_unmounted_callback,
-					desktop_icon_view,
-					GTK_OBJECT (desktop_icon_view));
+	g_signal_connect_object (icon_container, "middle_click",
+				 G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
+	g_signal_connect_object (desktop_icon_view, "event",
+				 G_CALLBACK (event_callback), desktop_icon_view, 0);
+	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
+				 G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback), desktop_icon_view, 0);	
+	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_mounted",
+				 G_CALLBACK (volume_mounted_callback), desktop_icon_view, 0);
+	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_unmounted",
+				 G_CALLBACK (volume_unmounted_callback), desktop_icon_view, 0);
 	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
-					   home_uri_changed,
-				  	   desktop_icon_view);
+				      home_uri_changed,
+				      desktop_icon_view);
 
-	/* Read out the panel desktop area and update the icon container
-	 * accordingly */
-	panel_desktop_area_changed (desktop_icon_view);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+				      default_zoom_level_changed,
+				      desktop_icon_view);
+	
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_FONT,
+						  font_changed_callback, 
+						  desktop_icon_view, G_OBJECT (desktop_icon_view));
+	
+	default_zoom_level_changed (desktop_icon_view);
+	fm_desktop_icon_view_update_icon_container_fonts (desktop_icon_view);
+
+	/* Read out the workarea geometry and update the icon container accordingly */
+	net_workarea_changed (desktop_icon_view);
 
 	/* Setup the property filter */
-	gdk_window_add_filter (GDK_ROOT_PARENT (),
+	XSelectInput (GDK_DISPLAY (), GDK_ROOT_WINDOW (), PropertyChangeMask);
+
+	gdk_window_add_filter (gdk_get_default_root_window (),
 			       desktop_icon_view_property_filter,
 			       desktop_icon_view);
 }
@@ -667,13 +728,28 @@ new_terminal_callback (BonoboUIComponent *component, gpointer data, const char *
 }
 
 static void
+new_launcher_callback (BonoboUIComponent *component, gpointer data, const char *verb)
+{
+	char *desktop_directory;
+	
+	desktop_directory = nautilus_get_desktop_directory ();
+
+	nautilus_launch_application_from_command ("gnome-desktop-item-edit", 
+						  "gnome-desktop-item-edit --create-new",
+						  desktop_directory, 
+						  FALSE);
+	g_free (desktop_directory);
+
+}
+
+static void
 change_background_callback (BonoboUIComponent *component, 
 	  		    gpointer data, 
 			    const char *verb)
 {
 	nautilus_launch_application_from_command 
 		(_("Background"),
-		 "background-properties-capplet", NULL, FALSE);
+		 "gnome-background-properties", NULL, FALSE);
 }
 
 static void
@@ -695,40 +771,166 @@ reset_background_callback (BonoboUIComponent *component,
 		(fm_directory_view_get_background (FM_DIRECTORY_VIEW (data)));
 }
 
+static gboolean
+have_volume_format_app (void)
+{
+	static int have_app = -1;
+	char *app;
+
+	if (have_app < 0) {
+		app = g_find_program_in_path ("gmedia_format");
+		if (app == NULL) {
+			app = g_find_program_in_path ("gfloppy");
+		}
+		have_app = (app != NULL);
+		g_free (app);
+	}
+	return have_app;
+}
+
+static gboolean
+have_volume_properties_app (void)
+{
+	static int have_app = -1;
+	char *app;
+
+	if (have_app < 0) {
+		app = g_find_program_in_path ("gmedia_prop");
+		have_app = (app != NULL);
+		g_free (app);
+	}
+	return have_app;
+}
+
+static gboolean
+have_volume_protection_app (void)
+{
+	static int have_app = -1;
+	char *app;
+
+	if (have_app < 0) {
+		app = g_find_program_in_path ("gmedia_prot");
+		have_app = (app != NULL);
+		g_free (app);
+	}
+	return have_app;
+}
+
 static void
-unmount_volume_callback (BonoboUIComponent *component, gpointer data, const char *verb)
+volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *verb)
 {
         FMDirectoryView *view;
 	NautilusFile *file;
-	char *uri, *path, *mount_uri, *mount_path;
+	char *uri, *mount_uri, *mount_path;
 	GList *selection;
-			    
+	char *command;
+	const char *device_path;
+	char *rawdevice_path, *quoted_path;
+	char *program;
+	NautilusVolume *volume;
+	gboolean status;
+	GError *error;
+	GtkWidget *dialog;
+
+
         g_assert (FM_IS_DIRECTORY_VIEW (data));
         
         view = FM_DIRECTORY_VIEW (data);
         
-       if (!volume_link_is_selection (view)) {
+	if (!volume_link_is_selection (view)) {
 		return;       
-       }
+	}
               
 	selection = fm_directory_view_get_selection (view);
-
+	
 	file = NAUTILUS_FILE (selection->data);
-	uri = nautilus_file_get_uri (file);
-	path = gnome_vfs_get_local_path_from_uri (uri);
-	if (path != NULL) {
-		mount_uri = nautilus_link_local_get_link_uri (path);
-		mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
-		if (mount_path != NULL) {
-			nautilus_volume_monitor_mount_unmount_removable (nautilus_volume_monitor_get (), mount_path, FALSE);
-		}
-		
-		g_free (mount_path);
-		g_free (mount_uri);
-		g_free (path);
+	
+	if (!nautilus_file_is_local (file)) {
+		nautilus_file_list_free (selection);
+		return;
 	}
+		
+	uri = nautilus_file_get_uri (file);
+	mount_uri = nautilus_link_local_get_link_uri (uri);
+	mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
 	g_free (uri);
+	g_free (mount_uri);
+	if (mount_path == NULL) {
+		nautilus_file_list_free (selection);
+		return;
+	}
 
+	volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), mount_path);
+	device_path = nautilus_volume_get_device_path (volume);
+	if (device_path == NULL) {
+		g_free (mount_path);
+		nautilus_file_list_free (selection);
+		return;
+	}
+		
+	/* Solaris specif cruft: */
+	if (eel_str_has_prefix (device_path, "/vol/dev/")) {
+		rawdevice_path = g_strconcat ("/vol/dev/r",
+					device_path + strlen ("/vol/dev/"),
+					NULL);
+	} else {
+		rawdevice_path = g_strdup (device_path);
+	}
+	
+	quoted_path = g_shell_quote (rawdevice_path);
+	g_free (rawdevice_path);
+	rawdevice_path = quoted_path;
+		
+	if (strcmp (verb, "Unmount Volume Conditional") == 0) {
+		nautilus_volume_monitor_mount_unmount_removable (nautilus_volume_monitor_get (),
+								 mount_path, FALSE, TRUE);
+	} else {
+		command = NULL;
+		
+		if (strcmp (verb, "Format Conditional") == 0) {
+			program = g_find_program_in_path ("gmedia_format");
+			if (program != NULL) {
+				command = g_strdup_printf ("%s -d %s", program, rawdevice_path);
+				g_free (program);
+			} else {
+				program = g_find_program_in_path ("gfloppy");
+				if (program != NULL) {
+					command = g_strdup_printf ("%s --device %s", program, device_path);
+					g_free (program);
+				}
+			}
+		} else if (strcmp (verb, "Media Properties Conditional") == 0) {
+			program = g_find_program_in_path ("gmedia_prop");
+			if (program) {
+				command = g_strdup_printf ("%s %s", program, rawdevice_path);
+				g_free (program);
+			} 
+		} else if (strcmp (verb, "Protect Conditional") == 0) {
+			program = g_find_program_in_path ("gmedia_prot");
+			if (program) {
+				command = g_strdup_printf ("%s %s", program, rawdevice_path);
+				g_free (program);
+			} 
+		}
+
+		if (command) {
+			error = NULL;
+			status = g_spawn_command_line_async (command, &error);
+			if (!status) {
+				dialog = gtk_message_dialog_new (NULL, 0,
+								 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, 
+								 _("Error executing utility program '%s': %s"), command, error->message);
+				g_signal_connect (G_OBJECT (dialog), "response", 
+						  G_CALLBACK (gtk_widget_destroy), NULL);
+				gtk_widget_show (dialog);
+				g_error_free (error);
+			}
+			g_free (command);
+		}
+	}
+	
+	g_free (rawdevice_path);
+	g_free (mount_path);
 	nautilus_file_list_free (selection);
 }
 
@@ -737,7 +939,7 @@ trash_link_is_selection (FMDirectoryView *view)
 {
 	GList *selection;
 	gboolean result;
-	char *uri, *path;
+	char *uri;
 
 	result = FALSE;
 	
@@ -749,11 +951,9 @@ trash_link_is_selection (FMDirectoryView *view)
 		/* It's probably OK that this only works for local
 		 * items, since the trash we care about is on the desktop.
 		 */
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		if (path != NULL && nautilus_link_local_is_trash_link (path)) {
+		if (nautilus_link_local_is_trash_link (uri, NULL)) {
 			result = TRUE;
 		}
-		g_free (path);
 		g_free (uri);
 	}
 	
@@ -767,7 +967,7 @@ volume_link_is_selection (FMDirectoryView *view)
 {
 	GList *selection;
 	gboolean result;
-	char *uri, *path;
+	char *uri;
 
 	result = FALSE;
 	
@@ -779,11 +979,9 @@ volume_link_is_selection (FMDirectoryView *view)
 		/* It's probably OK that this only works for local
 		 * items, since the volume we care about is on the desktop.
 		 */
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		if (path != NULL && nautilus_link_local_is_volume_link (path)) {
+		if (nautilus_link_local_is_volume_link (uri, NULL)) {
 			result = TRUE;
 		}
-		g_free (path);
 		g_free (uri);
 	}
 	
@@ -792,6 +990,43 @@ volume_link_is_selection (FMDirectoryView *view)
 	return result;
 }
 
+/*
+ *  Returns Device Type for device icon on desktop
+ */
+
+static NautilusDeviceType
+volume_link_device_type (FMDirectoryView *view)
+{
+	GList *selection;
+	gchar *uri, *mount_uri, *mount_path;
+	NautilusVolume *volume;
+
+	selection = fm_directory_view_get_selection (view);
+
+	if (selection == NULL) {
+		return NAUTILUS_DEVICE_UNKNOWN;
+	}
+
+	volume = NULL;
+	
+	uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+	mount_uri = nautilus_link_local_get_link_uri (uri);
+	mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
+	if(mount_path != NULL) {
+		volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), mount_path);
+		g_free (mount_path);
+	}
+	g_free (mount_uri);
+	g_free (uri);
+	nautilus_file_list_free (selection);
+
+	if (volume != NULL)
+		return nautilus_volume_get_device_type (volume);
+
+	return NAUTILUS_DEVICE_UNKNOWN;
+}
+
+
 static void
 fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
 						   gboolean state,
@@ -799,7 +1034,7 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 {
 	char *path;
 
-	path = nautilus_make_path (desktop_directory, TRASH_LINK_NAME);
+	path = g_build_filename (desktop_directory, TRASH_LINK_NAME, NULL);
 
 	nautilus_link_local_set_icon (path, state ? "trash-empty" : "trash-full");
 
@@ -817,7 +1052,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor,
 static void
 unlink_and_notify (const char *path)
 {
-	char *uri;
+	char *uri, *unescaped_uri;
 	GList one_item_list;
 
 	unlink (path);
@@ -826,8 +1061,11 @@ unlink_and_notify (const char *path)
 	if (uri == NULL) {
 		return;
 	}
+ 
+	unescaped_uri = gnome_vfs_unescape_string (uri, NULL);
+	g_free (uri);
 
-	one_item_list.data = uri;
+	one_item_list.data = unescaped_uri;
 	one_item_list.next = NULL;
 	one_item_list.prev = NULL;
 	nautilus_directory_notify_files_removed (&one_item_list);
@@ -847,212 +1085,11 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 		return;
 	}
 	
-	link_path = nautilus_make_path (desktop_directory, volume_name);
+	link_path = g_build_filename (desktop_directory, volume_name, NULL);
 	unlink_and_notify (link_path);
 
 	g_free (volume_name);
 	g_free (link_path);
-}
-
-/* update_link_and_delete_copies
- * 
- * Look for a particular type of link on the desktop. If the right
- * link is there, update its target URI. Delete any extra links of
- * that type.
- * 
- * @is_link_function: predicate function to test whether a link is the right type.
- * @link_name: if non-NULL, only a link with this name is considered a match.
- * @link_target_uri: new URI to set as link target.
- */
-static gboolean
-update_link_and_delete_copies (gboolean (*is_link_function) (const char *path),
-			       const char *link_name,
-			       const char *link_target_uri)
-{
-	DIR *dir;
-	gboolean found_link;
-	struct dirent *dir_entry;
-	char *link_path;
-
-	dir = opendir (desktop_directory);
-	if (dir == NULL) {
-		return FALSE;
-	}
-
-	found_link = FALSE;
-
-	while ((dir_entry = readdir (dir)) != NULL) {
-		link_path = nautilus_make_path (desktop_directory, dir_entry->d_name);
-		if ((* is_link_function) (link_path)) {
-			if (!found_link &&
-			     (link_name == NULL || strcmp (dir_entry->d_name, link_name) == 0)) {
-				nautilus_link_local_set_link_uri (link_path, link_target_uri);
-				found_link = TRUE;
-			} else {
-				unlink_and_notify (link_path);
-			}
-		}
-		g_free (link_path);
-	}
-	
-	closedir (dir);
-
-	return found_link;
-}
-
-/* update_home_link_and_delete_copies
- * 
- * Add an icon representing the user's home directory on the desktop.
- * Create if necessary
- */
-static void
-update_home_link_and_delete_copies (void)
-{
-	char *home_link_name, *home_uri;
-
-	/* Note to translators: If it's hard to compose a good home
-	 * icon name from the user name, you can use a string without
-	 * an "%s" here, in which case the home icon name will not
-	 * include the user's name, which should be fine. To avoid a
-	 * warning, put "%.0s" somewhere in the string, which will
-	 * match the user name string passed by the C code, but not
-	 * put the user name in the final string.
-	 */
-	home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
-	
-	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-	
-	if (!update_link_and_delete_copies (nautilus_link_local_is_home_link,
-					    NULL,
-					    home_uri)) {
-		nautilus_link_local_create (desktop_directory,
-					    home_link_name,
-					    "temp-home", 
-					    home_uri,
-					    NULL,
-					    NAUTILUS_LINK_HOME);
-	}
-	
-	g_free (home_link_name);
-	g_free (home_uri);
-}
-
-static void
-update_trash_link_and_delete_copies (void)
-{
-
-	/* Check for trash link */
-	if (!update_link_and_delete_copies (nautilus_link_local_is_trash_link,
-					    TRASH_LINK_NAME,
-					    EEL_TRASH_URI)) {
-		nautilus_link_local_create (desktop_directory,
-					    TRASH_LINK_NAME,
-					    "trash-empty", 
-					    EEL_TRASH_URI,
-					    NULL,
-					    NAUTILUS_LINK_TRASH);
-	}
-
-	/* Make sure link represents current trash state */
-	fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),
-						   	   nautilus_trash_monitor_is_empty (),
-						   	   NULL);
-
-}
-
-static void
-delete_all_mount_links (void)
-{
-	update_link_and_delete_copies (nautilus_link_local_is_volume_link,
-				       "", "");
-}
-
-static char *
-get_local_path (NautilusFile *file)
-{
-	char *uri, *local_path;
-
-	uri = nautilus_file_get_uri (file);
-	local_path = gnome_vfs_get_local_path_from_uri (uri);
-	g_free (uri);
-	return local_path;
-}
-
-/* Sort as follows:
- *   1) home link
- *   2) mount links
- *   3) other
- *   4) trash link
- */
-
-typedef enum {
-	SORT_HOME_LINK,
-	SORT_MOUNT_LINK,
-	SORT_OTHER,
-	SORT_TRASH_LINK
-} SortCategory;
-
-static SortCategory
-get_sort_category (NautilusFile *file)
-{
-	char *path;
-	SortCategory category;
-
-	if (!nautilus_file_is_nautilus_link (file)) {
-		category = SORT_OTHER;
-	} else {
-		path = get_local_path (file);
-		g_return_val_if_fail (path != NULL, SORT_OTHER);
-		
-		switch (nautilus_link_local_get_link_type (path)) {
-		case NAUTILUS_LINK_HOME:
-			category = SORT_HOME_LINK;
-			break;
-		case NAUTILUS_LINK_MOUNT:
-			category = SORT_MOUNT_LINK;
-			break;
-		case NAUTILUS_LINK_TRASH:
-			category = SORT_TRASH_LINK;
-			break;
-		default:
-			category = SORT_OTHER;
-			break;
-		}
-		
-		g_free (path);
-	}
-	
-	return category;
-}
-
-static int
-desktop_icons_compare_callback (NautilusIconContainer *container,
-				NautilusFile *file_a,
-				NautilusFile *file_b,
-				FMDesktopIconView *icon_view)
-{
-	SortCategory category_a, category_b;
-	
-	category_a = get_sort_category (file_a);
-	category_b = get_sort_category (file_b);
-
-	if (category_a == category_b) {
-		return nautilus_file_compare_for_sort 
-			(file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, 
-			 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)), 
-			 FALSE);
-	}
-
-	/* We know the answer, so prevent the other handlers
-	 * from overwriting our result.
-	 */
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (container),
-				      "compare_icons");
-	if (category_a < category_b) {
-		return -1;
-	} else {
-		return +1;
-	}
 }
 
 static MountParameters *
@@ -1064,7 +1101,6 @@ mount_parameters_new (FMDesktopIconView *view, const char *mount_path)
 	g_assert (!eel_str_is_empty (mount_path)); 
 
 	new_parameters = g_new (MountParameters, 1);
-	gtk_object_ref (GTK_OBJECT (view));
 	new_parameters->view = view;
 	new_parameters->mount_path = g_strdup (mount_path);
 
@@ -1076,13 +1112,12 @@ mount_parameters_free (MountParameters *parameters)
 {
 	g_assert (parameters != NULL);
 
-	gtk_object_unref (GTK_OBJECT (parameters->view));
 	g_free (parameters->mount_path);
 	g_free (parameters);
 }
 
 static void
-mount_parameters_free_wrapper (gpointer user_data)
+mount_parameters_free_wrapper (gpointer user_data, GClosure *closure)
 {
 	mount_parameters_free ((MountParameters *)user_data);
 }
@@ -1095,6 +1130,7 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 	       			   gpointer user_data)
 {
 	MountParameters *parameters;
+	gboolean mount;
 
 	g_assert (BONOBO_IS_UI_COMPONENT (component));
 
@@ -1104,10 +1140,11 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 	}
 
 	parameters = (MountParameters *) user_data;
+	mount = (strcmp (state, "1") == 0);
 	nautilus_volume_monitor_mount_unmount_removable 
 		(nautilus_volume_monitor_get (),
 		 parameters->mount_path,
-		 strcmp (state, "1") == 0);
+		 mount, !mount);
 	update_disks_menu (parameters->view);
 }	       
 
@@ -1159,13 +1196,11 @@ update_disks_menu (FMDesktopIconView *view)
 		g_free (command_path);
 
 		bonobo_ui_component_add_listener_full
-			(view->details->ui,
-			 command_name,
-			 mount_or_unmount_removable_volume,
-			 mount_parameters_new (view, nautilus_volume_get_mount_path (volume)),
-			 mount_parameters_free_wrapper);			 
+			(view->details->ui, command_name,
+			 g_cclosure_new (G_CALLBACK (mount_or_unmount_removable_volume),
+					 mount_parameters_new (view, nautilus_volume_get_mount_path (volume)),
+					 mount_parameters_free_wrapper));
 		g_free (command_name);
-		
 	}
 }
 
@@ -1174,7 +1209,9 @@ real_update_menus (FMDirectoryView *view)
 {
 	FMDesktopIconView *desktop_view;
 	char *label;
-	gboolean include_empty_trash, include_unmount_volume;
+	gboolean include_empty_trash, include_media_commands;
+	NautilusDeviceType media_type;
+	char *unmount_label;
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
@@ -1201,11 +1238,7 @@ real_update_menus (FMDirectoryView *view)
 		 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
 		 !include_empty_trash);
 	if (include_empty_trash) {
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
-			label = g_strdup (_("Empty Trash..."));
-		} else {
-			label = g_strdup (_("Empty Trash"));
-		}
+		label = g_strdup (_("Empty Trash"));
 		nautilus_bonobo_set_label
 			(desktop_view->details->ui, 
 			 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
@@ -1218,23 +1251,150 @@ real_update_menus (FMDirectoryView *view)
 	}
 
 	/* Unmount Volume */
-	include_unmount_volume = volume_link_is_selection (view);
-	nautilus_bonobo_set_hidden
-		(desktop_view->details->ui,
-		 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
-		 !include_unmount_volume);
-	if (include_unmount_volume) {
-		label = g_strdup (_("Unmount Volume"));
+	include_media_commands = volume_link_is_selection (view);
+
+	if (include_media_commands) {
+		media_type = volume_link_device_type (view);
+
+		unmount_label = _("E_ject");
+		
+		switch(media_type) {
+		case NAUTILUS_DEVICE_FLOPPY_DRIVE:
+			if (have_volume_format_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, FALSE);
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+			}
+
+			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+			 		DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			}
+
+			nautilus_bonobo_set_hidden
+				(desktop_view->details->ui,
+				DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
+			break;
+		
+		case NAUTILUS_DEVICE_CDROM_DRIVE:
+			nautilus_bonobo_set_hidden
+				(desktop_view->details->ui,
+				DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
+
+			nautilus_bonobo_set_hidden
+				(desktop_view->details->ui,
+				DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+
+			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			}
+			break;	
+		
+		case NAUTILUS_DEVICE_ZIP_DRIVE:
+		case NAUTILUS_DEVICE_JAZ_DRIVE:
+			if (have_volume_format_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, FALSE);
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
+			}
+
+			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
+			}
+
+			if (have_volume_protection_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, FALSE);
+				nautilus_bonobo_set_sensitive
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
+			} else {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
+			}
+			break;
+		default:
+			unmount_label = _("_Unmount Volume");
+			break;
+		}
+
+		/* We always want a unmount entry */
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
+			 FALSE);
+		nautilus_bonobo_set_sensitive
+			(desktop_view->details->ui,
+			DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, TRUE);
+
+		/* But call it eject for removable media */
 		nautilus_bonobo_set_label
 			(desktop_view->details->ui, 
+			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, unmount_label);
+	} else {
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL,
+			 TRUE);
+		
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL,
+			 TRUE);
+		
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL,
+			 TRUE);
+		
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
 			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
-			 label);
-		nautilus_bonobo_set_sensitive 
-			(desktop_view->details->ui, 
-			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, TRUE);
-		g_free (label);
+			 TRUE);
 	}
-
+	
 	bonobo_ui_component_thaw (desktop_view->details->ui, NULL);
 }
 
@@ -1242,12 +1402,17 @@ static void
 real_merge_menus (FMDirectoryView *view)
 {
 	FMDesktopIconView *desktop_view;
+	Bonobo_UIContainer ui_container;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Change Background", change_background_callback),
 		BONOBO_UI_VERB ("Empty Trash Conditional", empty_trash_callback),
 		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
+		BONOBO_UI_VERB ("New Launcher Desktop", new_launcher_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
-		BONOBO_UI_VERB ("Unmount Volume Conditional", unmount_volume_callback),
+		BONOBO_UI_VERB ("Unmount Volume Conditional", volume_ops_callback),
+		BONOBO_UI_VERB ("Protect Conditional", volume_ops_callback),
+		BONOBO_UI_VERB ("Format Conditional", volume_ops_callback),
+		BONOBO_UI_VERB ("Media Properties Conditional", volume_ops_callback),
 		BONOBO_UI_VERB_END
 	};
 
@@ -1256,12 +1421,15 @@ real_merge_menus (FMDirectoryView *view)
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
 	desktop_view->details->ui = bonobo_ui_component_new ("Desktop Icon View");
+
+	ui_container = fm_directory_view_get_bonobo_ui_container (view);
 	bonobo_ui_component_set_container (desktop_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view));
+					   ui_container, NULL);
+	bonobo_object_release_unref (ui_container, NULL);
 	bonobo_ui_util_set_ui (desktop_view->details->ui,
 			       DATADIR,
 			       "nautilus-desktop-icon-view-ui.xml",
-			       "nautilus");
+			       "nautilus", NULL);
 	bonobo_ui_component_add_verb_list_with_data (desktop_view->details->ui, verbs, view);
 }
 
@@ -1283,3 +1451,127 @@ real_supports_zooming (FMDirectoryView *view)
 	 */
 	return FALSE;
 }
+
+/* update_desktop_directory
+ *
+ * Look for a particular type of link on the desktop. If the right
+ * link is there, update its target URI. Delete any extra links of
+ * that type.
+ */
+static void
+update_desktop_directory (UpdateType type)
+{
+	char *link_path;
+	GnomeVFSResult result;
+	GList *desktop_files, *l;
+	GnomeVFSFileInfo *info;
+
+	char *home_uri = NULL;
+	char *home_link_name = NULL;
+	gboolean found_home_link;
+	gboolean found_trash_link;
+
+	if (type & UPDATE_HOME_LINK) {
+		/* Note to translators: If it's hard to compose a good home
+		 * icon name from the user name, you can use a string without
+		 * an "%s" here, in which case the home icon name will not
+		 * include the user's name, which should be fine. To avoid a
+		 * warning, put "%.0s" somewhere in the string, which will
+		 * match the user name string passed by the C code, but not
+		 * put the user name in the final string.
+		 */
+		home_link_name = g_strdup_printf (_("%s's Home"), g_get_user_name ());
+	
+#ifdef WEB_NAVIGATION_ENABLED
+		home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
+#else
+		home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
+#endif
+	}
+
+	result = gnome_vfs_directory_list_load
+		(&desktop_files, desktop_directory,
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE |
+		 GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+
+	found_home_link = found_trash_link = FALSE;
+
+	if (result != GNOME_VFS_OK) {
+		desktop_files = NULL;
+	}
+
+	for (l = desktop_files; l; l = l->next) {
+		info = l->data;
+
+		if (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE &&
+		    info->type != GNOME_VFS_FILE_TYPE_REGULAR &&
+		    info->type != GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
+			continue;
+		}
+		
+		link_path = g_build_filename (desktop_directory, info->name, NULL);
+
+
+		if (type & DELETE_MOUNT_LINKS &&
+		    nautilus_link_local_is_volume_link (link_path, info)) {
+			unlink_and_notify (link_path);
+		}
+
+
+		if (type & UPDATE_HOME_LINK &&
+		    nautilus_link_local_is_home_link (link_path, info)) {
+			if (!found_home_link &&
+			    nautilus_link_local_is_utf8 (link_path, info)) {
+				nautilus_link_local_set_link_uri (link_path, home_uri);
+				found_home_link = TRUE;
+			} else {
+				unlink_and_notify (link_path); /* kill duplicates */
+			}
+		}
+
+		if (type & UPDATE_TRASH_LINK &&
+		    nautilus_link_local_is_trash_link (link_path, info)) {
+			if (!found_trash_link &&
+			    nautilus_link_local_is_utf8 (link_path, info) &&
+			    !strcmp (TRASH_LINK_NAME, info->name)) {
+				nautilus_link_local_set_link_uri (link_path, EEL_TRASH_URI);
+				found_trash_link = TRUE;
+			} else {
+				unlink_and_notify (link_path); /* kill duplicates */
+			}
+		}
+		g_free (link_path);
+	}
+
+	gnome_vfs_file_info_list_free (desktop_files);
+
+	if (type & UPDATE_HOME_LINK && !found_home_link &&
+	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+		nautilus_link_local_create (desktop_directory,
+					    home_link_name,
+					    "desktop-home", 
+					    home_uri,
+					    NULL,
+					    NAUTILUS_LINK_HOME);
+	}
+	       
+	if (type & UPDATE_TRASH_LINK) {
+		if (!found_trash_link) {
+			nautilus_link_local_create (desktop_directory,
+						    TRASH_LINK_NAME,
+						    "trash-empty", 
+						    EEL_TRASH_URI,
+						    NULL,
+						    NAUTILUS_LINK_TRASH);
+		}
+
+		/* Make sure link represents current trash state */
+		fm_desktop_icon_view_trash_state_changed_callback (nautilus_trash_monitor_get (),
+								   nautilus_trash_monitor_is_empty (),
+								   NULL);
+	}
+
+	g_free (home_link_name);
+	g_free (home_uri);
+}
+

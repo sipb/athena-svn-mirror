@@ -36,12 +36,12 @@
 #include "nautilus-metafile.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-vfs-directory.h"
-#include <ctype.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 enum {
 	FILES_ADDED,
@@ -63,64 +63,66 @@ static guint signals[LAST_SIGNAL];
 
 static GHashTable *directories;
 
-static void               nautilus_directory_destroy          (GtkObject              *object);
-static void               nautilus_directory_initialize       (gpointer                object,
+static void               nautilus_directory_finalize         (GObject                *object);
+static void               nautilus_directory_init             (gpointer                object,
 							       gpointer                klass);
-static void               nautilus_directory_initialize_class (NautilusDirectoryClass *klass);
+static void               nautilus_directory_class_init (NautilusDirectoryClass *klass);
 static NautilusDirectory *nautilus_directory_new              (const char             *uri);
 static char *             real_get_name_for_self_as_new_file  (NautilusDirectory      *directory);
 static void               set_directory_uri                   (NautilusDirectory      *directory,
 							       const char             *new_uri);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusDirectory,
-				   nautilus_directory,
-				   GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusDirectory,
+		       nautilus_directory,
+		       GTK_TYPE_OBJECT)
 
 static void
-nautilus_directory_initialize_class (NautilusDirectoryClass *klass)
+nautilus_directory_class_init (NautilusDirectoryClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 	
-	object_class->destroy = nautilus_directory_destroy;
+	object_class->finalize = nautilus_directory_finalize;
 
 	signals[FILES_ADDED] =
-		gtk_signal_new ("files_added",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_added),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("files_added",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_added),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__POINTER,
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[FILES_CHANGED] =
-		gtk_signal_new ("files_changed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_changed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+		g_signal_new ("files_changed",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_changed),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__POINTER,
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[DONE_LOADING] =
-		gtk_signal_new ("done_loading",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, done_loading),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("done_loading",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusDirectoryClass, done_loading),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 	signals[LOAD_ERROR] =
-		gtk_signal_new ("load_error",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, load_error),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("load_error",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusDirectoryClass, load_error),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__INT,
+		              G_TYPE_NONE, 1, G_TYPE_INT);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
 }
 
 static void
-nautilus_directory_initialize (gpointer object, gpointer klass)
+nautilus_directory_init (gpointer object, gpointer klass)
 {
 	NautilusDirectory *directory;
 
@@ -142,7 +144,7 @@ nautilus_directory_ref (NautilusDirectory *directory)
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	gtk_object_ref (GTK_OBJECT (directory));
+	g_object_ref (directory);
 }
 
 void
@@ -154,15 +156,17 @@ nautilus_directory_unref (NautilusDirectory *directory)
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	gtk_object_unref (GTK_OBJECT (directory));
+	g_object_unref (directory);
 }
 
 static void
-nautilus_directory_destroy (GtkObject *object)
+nautilus_directory_finalize (GObject *object)
 {
 	NautilusDirectory *directory;
 
 	directory = NAUTILUS_DIRECTORY (object);
+
+	g_hash_table_remove (directories, directory->details->uri);
 
 	nautilus_directory_cancel (directory);
 	g_assert (directory->details->count_in_progress == NULL);
@@ -181,22 +185,21 @@ nautilus_directory_destroy (GtkObject *object)
 		nautilus_directory_unregister_metadata_monitor (directory);
 	}
 
-	if (directory->details->metafile_corba_object != CORBA_OBJECT_NIL) {
-		bonobo_object_release_unref (directory->details->metafile_corba_object, NULL);
-	}
-
-	g_hash_table_remove (directories, directory->details->uri);
+	bonobo_object_release_unref (directory->details->metafile_corba_object, NULL);
 
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
 	}
  
 	g_free (directory->details->uri);
+
 	if (directory->details->vfs_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->vfs_uri);
 	}
+
 	g_assert (directory->details->file_list == NULL);
 	g_hash_table_destroy (directory->details->file_hash);
+
 	nautilus_file_queue_destroy (directory->details->high_priority_queue);
 	nautilus_file_queue_destroy (directory->details->low_priority_queue);
 	nautilus_idle_queue_destroy (directory->details->idle_queue);
@@ -207,7 +210,7 @@ nautilus_directory_destroy (GtkObject *object)
 
 	g_free (directory->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -240,7 +243,7 @@ emit_change_signals_for_all_files (NautilusDirectory *directory)
 {
 	GList *files;
 
-	files = eel_g_list_copy (directory->details->file_list);
+	files = g_list_copy (directory->details->file_list);
 	if (directory->details->as_file != NULL) {
 		files = g_list_prepend (files, directory->details->as_file);
 	}
@@ -280,6 +283,8 @@ async_data_preference_changed_callback (gpointer callback_data)
 static void
 add_preferences_callbacks (void)
 {
+	nautilus_global_preferences_init ();
+
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 				      filtering_changed_callback,
 				      NULL);
@@ -290,9 +295,6 @@ add_preferences_callbacks (void)
 				      async_data_preference_changed_callback,
 				      NULL);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-				      async_data_preference_changed_callback,
-				      NULL);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 				      async_data_preference_changed_callback,
 				      NULL);
 }
@@ -401,6 +403,20 @@ nautilus_directory_get_existing (const char *uri)
 	return nautilus_directory_get_internal (uri, FALSE);
 }
 
+NautilusDirectory *
+nautilus_directory_get_for_file (NautilusFile *file)
+{
+	char *uri;
+	NautilusDirectory *directory;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	uri = nautilus_file_get_uri (file);
+	directory = nautilus_directory_get (uri);
+	g_free (uri);
+	return directory;
+}
+
 /* Returns a reffed NautilusFile object for this directory.
  */
 NautilusFile *
@@ -484,11 +500,11 @@ nautilus_directory_new (const char *uri)
 	g_assert (uri != NULL);
 
 	if (eel_uri_is_trash (uri)) {
-		directory = NAUTILUS_DIRECTORY (gtk_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
+		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_TRASH_DIRECTORY, NULL));
 	} else {
-		directory = NAUTILUS_DIRECTORY (gtk_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
+		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}
-	gtk_object_ref (GTK_OBJECT (directory));
+	g_object_ref (directory);
 	gtk_object_sink (GTK_OBJECT (directory));
 
 	set_directory_uri (directory, uri);
@@ -601,10 +617,28 @@ nautilus_directory_remove_file (NautilusDirectory *directory, NautilusFile *file
 	}
 }
 
+#define NAUTILUS_DIRECTORY_FILE_LIST_DEFAULT_LIMIT 4000
+
 gboolean
 nautilus_directory_file_list_length_reached (NautilusDirectory *directory)
 {
-	return directory->details->confirmed_file_count >= NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT;
+	static gboolean inited = FALSE;
+	static int directory_limit = 0;
+
+	if (!inited) {
+		eel_preferences_add_auto_integer
+			("/apps/nautilus/preferences/directory_limit",
+			 &directory_limit);
+		inited = TRUE;
+	}
+	if (directory_limit < 0) {  /* unlimited */
+		return FALSE;
+	}
+	if (directory_limit == 0) { /* dead gconfd */
+		directory_limit = NAUTILUS_DIRECTORY_FILE_LIST_DEFAULT_LIMIT;
+	}
+
+	return directory->details->confirmed_file_count >= directory_limit;
 }
 
 GList *
@@ -667,7 +701,6 @@ nautilus_directory_find_file_by_internal_uri (NautilusDirectory *directory,
 		result = nautilus_directory_get_existing_corresponding_file (directory);
 		if (result != NULL) {
 			nautilus_file_unref (result);
-			g_return_val_if_fail (!GTK_OBJECT_DESTROYED (result), NULL);
 		}
 	} else {
 		result = nautilus_directory_find_file_by_relative_uri (directory, relative_uri);
@@ -681,8 +714,8 @@ nautilus_directory_emit_files_added (NautilusDirectory *directory,
 				     GList *added_files)
 {
 	if (added_files != NULL) {
-		gtk_signal_emit (GTK_OBJECT (directory),
-				 signals[FILES_ADDED],
+		g_signal_emit (directory,
+				 signals[FILES_ADDED], 0,
 				 added_files);
 	}
 }
@@ -692,8 +725,8 @@ nautilus_directory_emit_files_changed (NautilusDirectory *directory,
 				       GList *changed_files)
 {
 	if (changed_files != NULL) {
-		gtk_signal_emit (GTK_OBJECT (directory),
-				 signals[FILES_CHANGED],
+		g_signal_emit (directory,
+				 signals[FILES_CHANGED], 0,
 				 changed_files);
 	}
 }
@@ -713,16 +746,16 @@ nautilus_directory_emit_change_signals (NautilusDirectory *directory,
 void
 nautilus_directory_emit_done_loading (NautilusDirectory *directory)
 {
-	gtk_signal_emit (GTK_OBJECT (directory),
-			 signals[DONE_LOADING]);
+	g_signal_emit (directory,
+			 signals[DONE_LOADING], 0);
 }
 
 void
 nautilus_directory_emit_load_error (NautilusDirectory *directory,
 				    GnomeVFSResult error_result)
 {
-	gtk_signal_emit (GTK_OBJECT (directory),
-			 signals[LOAD_ERROR],
+	g_signal_emit (directory,
+			 signals[LOAD_ERROR], 0,
 			 error_result);
 }
 
@@ -800,8 +833,8 @@ call_files_added_free_list (gpointer key, gpointer value, gpointer user_data)
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	gtk_signal_emit (GTK_OBJECT (key),
-			 signals[FILES_ADDED],
+	g_signal_emit (key,
+			 signals[FILES_ADDED], 0,
 			 value);
 	g_list_free (value);
 }
@@ -810,9 +843,14 @@ static void
 call_files_changed_common (NautilusDirectory *directory, GList *file_list)
 {
 	GList *node;
+	NautilusFile *file;
 
 	for (node = file_list; node != NULL; node = node->next) {
-		nautilus_directory_add_file_to_work_queue (directory, node->data);
+		file = node->data;
+		if (file->details->directory == directory) {
+			nautilus_directory_add_file_to_work_queue (directory, 
+								   file);
+		}
 	}
 	nautilus_directory_async_state_changed (directory);
 	nautilus_directory_emit_change_signals (directory, file_list);
@@ -920,14 +958,26 @@ nautilus_directory_notify_files_added (GList *uris)
 			continue;
 		}
 
-		/* Collect the URIs to use. */
-		vfs_uri = gnome_vfs_uri_new (uri);
-		if (vfs_uri == NULL) {
-			nautilus_directory_unref (directory);
-			g_warning ("bad uri %s", uri);
-			continue;
+		file = nautilus_file_get_existing (uri);
+		if (file) {
+			/* A file already exists, it was probably renamed.
+			 * If it was renamed this could be ignored, but 
+			 * queue a change just in case */
+			nautilus_file_changed (file);
+			nautilus_file_unref (file);
+		} else {
+			/* Collect the URIs to use. */
+			vfs_uri = gnome_vfs_uri_new (uri);
+			if (vfs_uri == NULL) {
+				nautilus_directory_unref (directory);
+				g_warning ("bad uri %s", uri);
+				continue;
+			}
+			
+			hash_table_list_prepend (added_lists, 
+						 directory, 
+						 vfs_uri);
 		}
-		hash_table_list_prepend (added_lists, directory, vfs_uri);
 		nautilus_directory_unref (directory);
 	}
 
@@ -1008,7 +1058,7 @@ nautilus_directory_notify_files_removed (GList *uris)
 
 		/* Find the file. */
 		file = nautilus_file_get_existing (uri);
-		if (file != NULL) {
+		if (file != NULL && !nautilus_file_rename_in_progress (file)) {
 			/* Mark it gone and prepare to send the changed signal. */
 			nautilus_file_mark_gone (file);
 			hash_table_list_prepend (changed_lists,
@@ -1197,7 +1247,8 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
 	char *name;
-
+	GList *cancel_attributes;
+	
 	/* Make a list of added and changed files in each directory. */
 	new_files_list = NULL;
 	added_lists = g_hash_table_new (NULL, NULL);
@@ -1206,6 +1257,8 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 	/* Make a list of parent directories that will need their counts updated. */
 	parent_directories = g_hash_table_new (NULL, NULL);
+
+	cancel_attributes = nautilus_file_get_all_attributes ();
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = p->data;
@@ -1244,6 +1297,10 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			/* Handle notification in the old directory. */
 			old_directory = file->details->directory;
 			collect_parent_directories (parent_directories, old_directory);
+
+			/* Cancel loading of attributes in the old directory */
+			nautilus_directory_cancel_loading_file_attributes
+				(old_directory, file, cancel_attributes);
 
 			/* Locate the new directory. */
 			new_directory = get_parent_directory (pair->to_uri);
@@ -1293,6 +1350,8 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	/* Separate handling for brand new file objects. */
 	nautilus_directory_notify_files_added (new_files_list);
 	g_list_free (new_files_list);
+
+	g_list_free (cancel_attributes);
 }
 
 void 
@@ -1301,7 +1360,7 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 	GList *p;
 	URIPair *pair;
 	NautilusDirectory *source_directory, *destination_directory;
-	const char *source_relative_uri, *destination_relative_uri;
+	char *source_relative_uri, *destination_relative_uri;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = (URIPair *) p->data;
@@ -1309,13 +1368,16 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 		source_directory = get_parent_directory (pair->from_uri);
 		destination_directory = get_parent_directory (pair->to_uri);
 		
-		source_relative_uri = g_basename (pair->from_uri);
-		destination_relative_uri = g_basename (pair->to_uri);
+		source_relative_uri = g_path_get_basename (pair->from_uri);
+		destination_relative_uri = g_path_get_basename (pair->to_uri);
 		
 		nautilus_directory_copy_file_metadata (source_directory,
 						       source_relative_uri,
 						       destination_directory,
 						       destination_relative_uri);
+
+		g_free (source_relative_uri);
+		g_free (destination_relative_uri);
 		
 		nautilus_directory_unref (source_directory);
 		nautilus_directory_unref (destination_directory);
@@ -1328,7 +1390,7 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 	GList *p;
 	URIPair *pair;
 	NautilusDirectory *source_directory, *destination_directory;
-	const char *source_relative_uri, *destination_relative_uri;
+	char *source_relative_uri, *destination_relative_uri;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = (URIPair *) p->data;
@@ -1336,8 +1398,8 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 		source_directory = get_parent_directory (pair->from_uri);
 		destination_directory = get_parent_directory (pair->to_uri);
 		
-		source_relative_uri = g_basename (pair->from_uri);
-		destination_relative_uri = g_basename (pair->to_uri);
+		source_relative_uri = g_path_get_basename (pair->from_uri);
+		destination_relative_uri = g_path_get_basename (pair->to_uri);
 		
 		nautilus_directory_copy_file_metadata (source_directory,
 						       source_relative_uri,
@@ -1346,6 +1408,9 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 		nautilus_directory_remove_file_metadata (source_directory,
 							 source_relative_uri);
 		
+		g_free (source_relative_uri);
+		g_free (destination_relative_uri);
+
 		nautilus_directory_unref (source_directory);
 		nautilus_directory_unref (destination_directory);
 	}
@@ -1357,16 +1422,18 @@ nautilus_directory_schedule_metadata_remove (GList *uris)
 	GList *p;
 	const char *uri;
 	NautilusDirectory *directory;
-	const char *relative_uri;
+	char *relative_uri;
 
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
 
 		directory = get_parent_directory (uri);
-		relative_uri = g_basename (uri);
+		relative_uri = g_path_get_basename (uri);
 		
 		nautilus_directory_remove_file_metadata (directory,
 							 relative_uri);
+
+		g_free (relative_uri);
 		
 		nautilus_directory_unref (directory);
 	}
@@ -1574,7 +1641,7 @@ nautilus_directory_list_ref (GList *list)
 void
 nautilus_directory_list_unref (GList *list)
 {
-	eel_g_list_safe_for_each (list, (GFunc) nautilus_directory_unref, NULL);
+	g_list_foreach (list, (GFunc) nautilus_directory_unref, NULL);
 }
 
 /**

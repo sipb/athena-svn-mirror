@@ -57,14 +57,6 @@
 typedef struct NautilusFile NautilusFile;
 #endif
 
-/* FIXME bugzilla.gnome.org 45382:
- * Increase or remove this limit? 
- */
-/* FIXME bugzilla.gnome.org 45603:
- * This limit is not actually "hard", which can lead to some minor UI problems.
- */
-#define NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT     4000
-
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
 typedef struct
@@ -144,6 +136,7 @@ GtkType            nautilus_directory_get_type                 (void);
  * If two windows are viewing the same uri, the directory object is shared.
  */
 NautilusDirectory *nautilus_directory_get                      (const char                *uri);
+NautilusDirectory *nautilus_directory_get_for_file             (NautilusFile              *file);
 
 /* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
  * 1) You don't have to cast to GtkObject *, so using these is type safe.

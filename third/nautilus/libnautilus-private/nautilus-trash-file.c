@@ -35,15 +35,11 @@
 #include <eel/eel-gtk-macros.h>
 #include "nautilus-trash-directory.h"
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <string.h>
 
 struct NautilusTrashFileDetails {
 	NautilusTrashDirectory *trash_directory;
-
-	guint add_directory_connection_id;
-	guint remove_directory_connection_id;
 
 	GList *files;
 
@@ -77,11 +73,11 @@ static const char * const delegated_attributes[] = {
 	NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES
 };
 
-static void nautilus_trash_file_initialize       (gpointer   object,
+static void nautilus_trash_file_init       (gpointer   object,
 						  gpointer   klass);
-static void nautilus_trash_file_initialize_class (gpointer   klass);
+static void nautilus_trash_file_class_init (gpointer   klass);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashFile,
+EEL_CLASS_BOILERPLATE (NautilusTrashFile,
 				   nautilus_trash_file,
 				   NAUTILUS_TYPE_FILE)
 
@@ -92,7 +88,7 @@ is_delegated_attribute (const char *attribute)
 
 	g_return_val_if_fail (attribute != NULL, FALSE);
 
-	for (i = 0; i < EEL_N_ELEMENTS (delegated_attributes); i++) {
+	for (i = 0; i < G_N_ELEMENTS (delegated_attributes); i++) {
 		if (strcmp (attribute, delegated_attributes[i]) == 0) {
 			return TRUE;
 		}
@@ -285,10 +281,8 @@ add_real_file (NautilusTrashFile *trash,
 	trash->details->files = g_list_prepend
 		(trash->details->files, real_file);
 	
-	gtk_signal_connect (GTK_OBJECT (real_file),
-			    "changed",
-			    real_file_changed_callback,
-			    trash);
+	g_signal_connect_object (real_file, "changed",
+				 G_CALLBACK (real_file_changed_callback), trash, 0);
 
 	/* Add the file to any extant monitors. */
 	g_hash_table_foreach (trash->details->monitors,
@@ -331,9 +325,8 @@ remove_real_file (NautilusTrashFile *trash,
 		 monitor_remove_file,
 		 real_file);
 
-	gtk_signal_disconnect_by_func (GTK_OBJECT (real_file),
-				       real_file_changed_callback,
-				       trash);
+	g_signal_handlers_disconnect_by_func
+		(real_file, G_CALLBACK (real_file_changed_callback), trash);
 
 	trash->details->files = g_list_remove
 		(trash->details->files, real_file);
@@ -735,7 +728,7 @@ remove_all_real_files (NautilusTrashFile *trash)
 }
 
 static void
-nautilus_trash_file_initialize (gpointer object, gpointer klass)
+nautilus_trash_file_init (gpointer object, gpointer klass)
 {
 	NautilusTrashFile *trash_file;
 	NautilusTrashDirectory *trash_directory;
@@ -752,16 +745,10 @@ nautilus_trash_file_initialize (gpointer object, gpointer klass)
 		(trash_callback_hash, trash_callback_equal);
 	trash_file->details->monitors = g_hash_table_new (NULL, NULL);
 
-	trash_file->details->add_directory_connection_id = gtk_signal_connect
-		(GTK_OBJECT (trash_directory),
-		 "add_real_directory",
-		 add_directory_callback,
-		 trash_file);
-	trash_file->details->remove_directory_connection_id = gtk_signal_connect
-		(GTK_OBJECT (trash_directory),
-		 "remove_real_directory",
-		 remove_directory_callback,
-		 trash_file);
+	g_signal_connect_object (trash_directory, "add_real_directory",
+				 G_CALLBACK (add_directory_callback), trash_file, 0);
+	g_signal_connect_object (trash_directory, "remove_real_directory",
+				 G_CALLBACK (remove_directory_callback), trash_file, 0);
 
 	real_directories = nautilus_merged_directory_get_real_directories
 		(NAUTILUS_MERGED_DIRECTORY (trash_directory));
@@ -789,11 +776,6 @@ trash_destroy (GtkObject *object)
 		g_warning ("file monitor still active when trash virtual file is destroyed");
 	}
 
-	gtk_signal_disconnect (GTK_OBJECT (trash_directory),
-			       trash_file->details->add_directory_connection_id);
-	gtk_signal_disconnect (GTK_OBJECT (trash_directory),
-			       trash_file->details->remove_directory_connection_id);
-
 	g_hash_table_destroy (trash_file->details->callbacks);
 	g_hash_table_destroy (trash_file->details->monitors);
 
@@ -805,7 +787,7 @@ trash_destroy (GtkObject *object)
 }
 
 static void
-nautilus_trash_file_initialize_class (gpointer klass)
+nautilus_trash_file_class_init (gpointer klass)
 {
 	GtkObjectClass *object_class;
 	NautilusFileClass *file_class;

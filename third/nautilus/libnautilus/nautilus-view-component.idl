@@ -30,7 +30,7 @@
 #ifndef NAUTILUS_VIEW_COMPONENT_IDL
 #define NAUTILUS_VIEW_COMPONENT_IDL
 
-#if !defined(NAUTILUS_VIEW_COMPONENT_COMPILATION) && defined(__ORBIT_IDL__)
+#if !defined(__nautilus_view_component_COMPILATION) && defined(__ORBIT_IDL__)
 %{
 #pragma include_defs libnautilus/nautilus-view-component.h
 %}
@@ -50,7 +50,6 @@ module Nautilus {
 	struct HistoryItem {
 		string title;
 		URI location;
-		string icon;
 	};
 	typedef sequence<HistoryItem> History;
 
@@ -66,20 +65,16 @@ module Nautilus {
 		 */
 		oneway void load_location (in URI location);
 		oneway void stop_loading ();
-		
-		/* Called to tell the view about selection changes. */
-		oneway void selection_changed (in URIList selection);
-
-		/* Called to tell the view about title changes. */
-		oneway void title_changed (in string title);
-
-		/* Called to tell the view about history changes. */
-		oneway void history_changed (in History history);
 	};
 	
 	/* The ViewFrame interface is used by the view to communicate
 	 * with the Nautilus shell. It's implemented as an interface
 	 * on the Bonobo::ControlFrame for the view.
+	 *
+	 * The Ambient properties on the ControlFrame are:
+	 *      'title'     - ro - string            - the title
+	 *      'history'   - ro - Nautilus::History - the history list
+	 *      'selection' - ro - URIList           - the selection
 	 */
 	interface ViewFrame : ::Bonobo::Unknown {
 		/* Called by the view component to change the location
@@ -155,11 +150,12 @@ module Nautilus {
 		 * which does nothing if there's nowhere to go.
 		 */
 		oneway void go_back ();
+		oneway void close_window ();
 	};
 
 };
 
-#if !defined(NAUTILUS_VIEW_COMPONENT_COMPILATION) && defined(__ORBIT_IDL__)
+#if !defined(__nautilus_view_component_COMPILATION) && defined(__ORBIT_IDL__)
 #pragma inhibit pop
 #endif
 

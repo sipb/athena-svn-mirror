@@ -4,11 +4,15 @@ noinst_LTLIBRARIES=libnautilus-file-manager.la
 
 INCLUDES = 					\
 	-I$(top_srcdir) 			\
-	$(NAUTILUS_PRIVATE_CFLAGS)		\
-	$(MEDUSA_CFLAGS)			\
-	-DVERSION="\"$(VERSION)\"" 		\
+	$(CORE_CFLAGS)				\
+	-DVERSION="\"$(VERSION)\""		\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\"		\
+	-DG_DISABLE_DEPRECATED \
+	-DGDK_DISABLE_DEPRECATED \
+	-DGDK_PIXBUF_DISABLE_DEPRECATED \
+	-DGTK_DISABLE_DEPRECATED \
+	-DGNOME_DISABLE_DEPRECATED \
 	$(NULL)	
 
 
@@ -16,7 +20,9 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\
 	fm-error-reporting.c		\
+	fm-icon-container.c		\
 	fm-icon-view.c			\
+	fm-list-model.c			\
 	fm-list-view.c			\
 	fm-properties-window.c		\
 	fm-search-list-view.c		\
@@ -24,7 +30,9 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\
+	fm-icon-container.h		\
 	fm-icon-view.h 			\
+	fm-list-model.h			\
 	fm-list-view-private.h 		\
 	fm-list-view.h 			\
 	fm-properties-window.h 		\
@@ -32,7 +40,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	nautilus-indexing-info.h 	\
 	$(NULL)
 
-uidir = $(datadir)/gnome/ui
+uidir = $(datadir)/gnome-2.0/ui
 ui_DATA =					\
 	nautilus-desktop-icon-view-ui.xml	\
 	nautilus-directory-view-ui.xml		\

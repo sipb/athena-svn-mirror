@@ -1,7 +1,6 @@
 #include "test.h"
 
 #include <eel/eel-wrap-table.h>
-#include <eel/eel-viewport.h>
 #include <eel/eel-labeled-image.h>
 #include <libnautilus-private/nautilus-customization-data.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -41,14 +40,16 @@ main (int argc, char* argv[])
 
 	gtk_widget_show (scroller);
 
+#if 0
 	/* Get rid of default lowered shadow appearance. 
 	 * This must be done after the widget is realized, due to
 	 * an apparent bug in gtk_viewport_set_shadow_type.
 	 */
-// 	gtk_signal_connect (GTK_OBJECT (GTK_BIN (scroller)->child), 
-// 			    "realize", 
-// 			    remove_default_viewport_shadow, 
-// 			    NULL);
+ 	g_signal_connect (GTK_BIN (scroller->child), 
+			  "realize", 
+			  remove_default_viewport_shadow, 
+			  NULL);
+#endif
 
 
 	/* Use nautilus_customization to make the emblem widgets */
@@ -68,7 +69,7 @@ main (int argc, char* argv[])
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			gdk_pixbuf_unref (pixbuf);
+			g_object_unref (pixbuf);
 			g_free (label);
 			g_free (emblem_name);
 			continue;
@@ -76,13 +77,13 @@ main (int argc, char* argv[])
 		
 		button = eel_labeled_image_check_button_new (label, pixbuf);
 		g_free (label);
-		gdk_pixbuf_unref (pixbuf);
+		g_object_unref (pixbuf);
 
 		/* Attach parameters and signal handler. */
-		gtk_object_set_data_full (GTK_OBJECT (button),
-					  "nautilus_property_name",
-					  emblem_name,
-					  g_free);
+		g_object_set_data_full (G_OBJECT (button),
+					"nautilus_property_name",
+					emblem_name,
+					(GDestroyNotify) g_free);
 				     
 		gtk_container_add (GTK_CONTAINER (emblems_table), button);
 	}

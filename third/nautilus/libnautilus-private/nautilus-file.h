@@ -126,6 +126,7 @@ char *                  nautilus_file_get_display_name                  (Nautilu
 char *                  nautilus_file_get_name                          (NautilusFile                   *file);
 char *                  nautilus_file_get_uri                           (NautilusFile                   *file);
 char *                  nautilus_file_get_uri_scheme                    (NautilusFile                   *file);
+NautilusFile *          nautilus_file_get_parent                        (NautilusFile                   *file);
 char *                  nautilus_file_get_parent_uri                    (NautilusFile                   *file);
 char *                  nautilus_file_get_parent_uri_for_display        (NautilusFile                   *file);
 GnomeVFSFileSize        nautilus_file_get_size                          (NautilusFile                   *file);
@@ -135,9 +136,9 @@ gboolean                nautilus_file_is_mime_type                      (Nautilu
 									 const char                     *mime_type);
 gboolean                nautilus_file_is_symbolic_link                  (NautilusFile                   *file);
 char *                  nautilus_file_get_symbolic_link_target_path     (NautilusFile                   *file);
+char *                  nautilus_file_get_symbolic_link_target_uri      (NautilusFile                   *file);
 gboolean                nautilus_file_is_broken_symbolic_link           (NautilusFile                   *file);
 gboolean                nautilus_file_is_nautilus_link                  (NautilusFile                   *file);
-gboolean                nautilus_file_is_gmc_url                        (NautilusFile                   *file);
 gboolean                nautilus_file_is_executable                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_directory                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_trash                       (NautilusFile                   *file);
@@ -277,7 +278,6 @@ int                     nautilus_file_compare_display_name              (Nautilu
 /* filtering functions for use by various directory views */
 gboolean                nautilus_file_is_hidden_file                    (NautilusFile                   *file);
 gboolean                nautilus_file_is_backup_file                    (NautilusFile                   *file);
-gboolean                nautilus_file_is_metafile                       (NautilusFile                   *file);
 gboolean                nautilus_file_should_show                       (NautilusFile                   *file,
 									 gboolean                        show_hidden,
 									 gboolean                        show_backup);
@@ -290,6 +290,8 @@ GList                  *nautilus_file_list_filter_hidden_and_backup     (GList  
  * Getting this can require reading the contents of the file.
  */
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
+
+char *                  nautilus_file_get_drop_target_uri               (NautilusFile                   *file);
 
 /* Get custom icon (if specified by metadata or link contents) */
 char *                  nautilus_file_get_custom_icon_uri               (NautilusFile                   *file);

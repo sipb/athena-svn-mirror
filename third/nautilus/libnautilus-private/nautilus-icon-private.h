@@ -25,13 +25,12 @@
 #ifndef NAUTILUS_ICON_CONTAINER_PRIVATE_H
 #define NAUTILUS_ICON_CONTAINER_PRIVATE_H
 
-#include "nautilus-entry.h"
 #include <eel/eel-glib-extensions.h>
-#include "nautilus-icon-container.h"
-#include "nautilus-icon-dnd.h"
-#include "nautilus-icon-factory.h"
-#include "nautilus-icon-canvas-item.h"
-#include "nautilus-icon-text-item.h"
+#include <libgnomeui/gnome-icon-item.h>
+#include <libnautilus-private/nautilus-icon-canvas-item.h>
+#include <libnautilus-private/nautilus-icon-container.h>
+#include <libnautilus-private/nautilus-icon-dnd.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 
 /* An Icon. */
 
@@ -98,6 +97,14 @@ typedef struct {
 	guint64 last_typeselect_time;
 } TypeSelectState;
 
+enum {
+	LABEL_COLOR,
+	LABEL_COLOR_HIGHLIGHT,
+	LABEL_INFO_COLOR,
+	LABEL_INFO_COLOR_HIGHLIGHT,
+	LAST_LABEL_COLOR
+};
+
 struct NautilusIconContainerDetails {
 	/* List of icons. */
 	GList *icons;
@@ -149,7 +156,7 @@ struct NautilusIconContainerDetails {
 
 	/* Renaming Details */
 	gboolean renaming;
-	NautilusIconTextItem *rename_widget;	/* Editable text item */
+	GnomeIconTextItem *rename_widget;	/* Editable text item */
 	char *original_text;			/* Copy of editable text for later compare */
 
 	/* typeahead selection state */
@@ -166,21 +173,21 @@ struct NautilusIconContainerDetails {
 
 	/* zoom level */
 	int zoom_level;
-	
-	/* fonts used to draw labels in regular mode */
-	GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
-	/* font used to draw labels in smooth mode */
-	EelScalableFont *smooth_label_font;
+	/* specific fonts used to draw labels */
+	char *font;
+	
+	/* font sizes used to draw labels */
 	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
 	/* pixbuf and color for label highlighting */
 	GdkPixbuf *highlight_frame;
-	guint32 highlight_color;
+	GdkColor   highlight_color;
+	guint32    highlight_color_rgba;
 	
-	/* color for text labels */
-	guint32 label_color;
-	guint32 label_info_color;
+	/* colors for text labels */
+	GdkGC   *label_gcs    [LAST_LABEL_COLOR];
+	GdkColor label_colors [LAST_LABEL_COLOR];
 	
 	/* State used so arrow keys don't wander if icons aren't lined up.
 	 * Keeps track of last axis arrow key was used on.
@@ -206,14 +213,18 @@ struct NautilusIconContainerDetails {
 	gboolean reset_scroll_region_trigger;
 	
 	/* The position we are scaling to on stretch */
-	int window_x;
-	int window_y;
+	double world_x;
+	double world_y;
 
 	/* margins to follow, used for the desktop panel avoidance */
 	int left_margin;
 	int right_margin;
 	int top_margin;
 	int bottom_margin;
+
+	/* Whether we should use drop shadows for the icon labels or not */
+	gboolean use_drop_shadows;
+	gboolean drop_shadows_requested;
 };
 
 /* Private functions shared by mutiple files. */
@@ -246,7 +257,9 @@ gboolean      nautilus_icon_container_scroll                      (NautilusIconC
 void          nautilus_icon_container_update_scroll_region        (NautilusIconContainer *container);
 
 /* label color for items */
-guint32       nautilus_icon_container_get_label_color             (NautilusIconContainer *container,
-								   gboolean               first_line);
+GdkGC        *nautilus_icon_container_get_label_color_and_gc      (NautilusIconContainer *container,
+								   GdkColor             **color,
+								   gboolean               first_line,
+								   gboolean               needs_highlight);
 
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

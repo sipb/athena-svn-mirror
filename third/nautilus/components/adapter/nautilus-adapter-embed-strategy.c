@@ -33,7 +33,8 @@
 
 #include "nautilus-adapter-control-embed-strategy.h"
 #include "nautilus-adapter-embed-strategy-private.h"
-#include "nautilus-adapter-embeddable-embed-strategy.h"
+#include "nautilus-adapter-control-factory-embed-strategy.h"
+
 #include <gtk/gtkobject.h>
 #include <gtk/gtksignal.h>
 #include <eel/eel-gtk-macros.h>
@@ -48,10 +49,10 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyClass *klass);
-static void nautilus_adapter_embed_strategy_initialize       (NautilusAdapterEmbedStrategy      *strategy);
+static void nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *klass);
+static void nautilus_adapter_embed_strategy_init       (NautilusAdapterEmbedStrategy      *strategy);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy,
+EEL_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy,
 				   nautilus_adapter_embed_strategy,
 				   GTK_TYPE_OBJECT)
 
@@ -59,52 +60,53 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_widget)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_zoomable)
 
 static void
-nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyClass *klass)
+nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *klass)
 {
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass *) klass;
 
 	signals[ACTIVATE] =
-		gtk_signal_new ("activate",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_POINTER, 0);
+		g_signal_new ("activate",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__POINTER,
+		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[DEACTIVATE] =
-		gtk_signal_new ("deactivate",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusAdapterEmbedStrategyClass, deactivate),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("deactivate",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, deactivate),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
 	signals[OPEN_LOCATION] =
-		gtk_signal_new ("open_location",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusAdapterEmbedStrategyClass, open_location),
-				gtk_marshal_NONE__STRING,
-				GTK_TYPE_STRING, 0);
-	
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		g_signal_new ("open_location",
+		              G_TYPE_FROM_CLASS (object_class),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (NautilusAdapterEmbedStrategyClass, open_location),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__STRING,
+		              G_TYPE_NONE, 1, G_TYPE_STRING);
 	
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_widget);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_embed_strategy, get_zoomable);
 }
 
 static void
-nautilus_adapter_embed_strategy_initialize (NautilusAdapterEmbedStrategy *strategy)
+nautilus_adapter_embed_strategy_init (NautilusAdapterEmbedStrategy *strategy)
 {
 }
 
 NautilusAdapterEmbedStrategy *
 nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 {
-	Bonobo_Control    control;
-	Bonobo_Embeddable embeddable;
-	CORBA_Environment ev;
 	NautilusAdapterEmbedStrategy *strategy;
+	Bonobo_ControlFactory	control_factory;
+	Bonobo_Control		control;
+	CORBA_Environment	ev;
 
 	CORBA_exception_init (&ev);
 
@@ -119,12 +121,12 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 	}
 	
 	if (strategy != NULL) {
-		embeddable = Bonobo_Unknown_queryInterface
-			(component, "IDL:Bonobo/Embeddable:1.0", &ev);
-		if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (embeddable, &ev)) {
-			strategy = nautilus_adapter_embeddable_embed_strategy_new
-				(embeddable, CORBA_OBJECT_NIL);
-			bonobo_object_release_unref (embeddable, NULL);
+		control_factory = Bonobo_Unknown_queryInterface
+			(component, "IDL:Bonobo/ControlFactory:1.0", &ev);
+		if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (control_factory, &ev)) {
+			strategy = nautilus_adapter_control_factory_embed_strategy_new
+				(control_factory, CORBA_OBJECT_NIL);
+			bonobo_object_release_unref (control_factory, NULL);
 		}
 	}
 
@@ -154,23 +156,23 @@ void
 nautilus_adapter_embed_strategy_activate (NautilusAdapterEmbedStrategy *strategy,
 					  Bonobo_UIContainer            ui_container)
 {
-	gtk_signal_emit (GTK_OBJECT (strategy),
-			 signals[ACTIVATE],
+	g_signal_emit (strategy,
+			 signals[ACTIVATE], 0,
 			 ui_container);
 }
 
 void 
 nautilus_adapter_embed_strategy_deactivate (NautilusAdapterEmbedStrategy *strategy)
 {
-	gtk_signal_emit (GTK_OBJECT (strategy),
-			 signals[DEACTIVATE]);
+	g_signal_emit (strategy,
+			 signals[DEACTIVATE], 0);
 }
 
 void 
 nautilus_adapter_embed_strategy_emit_open_location (NautilusAdapterEmbedStrategy *strategy,
 						    const char                   *uri)
 {
-	gtk_signal_emit (GTK_OBJECT (strategy),
-			 signals[OPEN_LOCATION],
+	g_signal_emit (strategy,
+			 signals[OPEN_LOCATION], 0,
 			 uri);
 }

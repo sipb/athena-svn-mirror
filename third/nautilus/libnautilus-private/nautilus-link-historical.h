@@ -26,35 +26,30 @@
 #ifndef NAUTILUS_LINK_HISTORICAL_H
 #define NAUTILUS_LINK_HISTORICAL_H
 
-#include "nautilus-file.h"
-#include <gdk/gdk.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-dentry.h>
+#include <libnautilus-private/nautilus-link.h>
 
-gboolean         nautilus_link_historical_local_create                      (const char        *directory_path,
+gboolean         nautilus_link_historical_local_create                      (const char        *directory_uri,
 									     const char        *name,
 									     const char        *image,
 									     const char        *target_uri,
 									     const GdkPoint    *point,
 									     NautilusLinkType   type);
-gboolean         nautilus_link_historical_local_set_icon                    (const char        *path,
+gboolean         nautilus_link_historical_local_set_icon                    (const char        *uri,
 									     const char        *icon_name);
 gboolean         nautilus_link_historical_local_set_type                    (const char        *path,
 									     NautilusLinkType   type);
-gboolean         nautilus_link_historical_local_set_link_uri                (const char        *path,
-									     const char        *uri);
+gboolean         nautilus_link_historical_local_set_link_uri                (const char        *uri,
+									     const char        *target_uri);
 char *           nautilus_link_historical_local_get_additional_text         (const char        *path);
 NautilusLinkType nautilus_link_historical_local_get_link_type               (const char        *path);
-gboolean         nautilus_link_historical_local_is_volume_link              (const char        *path);
-gboolean         nautilus_link_historical_local_is_home_link                (const char        *path);
-gboolean         nautilus_link_historical_local_is_trash_link               (const char        *path);
 char *           nautilus_link_historical_local_get_link_uri                (const char        *path);
 char *           nautilus_link_historical_get_link_uri_given_file_contents  (const char        *link_file_contents,
 									     int                link_file_size);
 char *           nautilus_link_historical_get_link_icon_given_file_contents (const char        *link_file_contents,
 									     int                link_file_size);
-void             nautilus_link_historical_local_create_from_gnome_entry     (GnomeDesktopEntry *entry,
+
+void             nautilus_link_historical_local_create_from_gnome_entry     (GnomeDesktopItem  *entry,
 									     const char        *dest_path,
 									     const GdkPoint    *position);
-								 								 
+
 #endif /* NAUTILUS_LINK_HISTORICAL_H */

@@ -22,19 +22,18 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#include "nautilus-directory-metafile-monitor.h"
-#include "nautilus-directory.h"
-#include "nautilus-file.h"
-#include "nautilus-metafile-server.h"
-#include "nautilus-monitor.h"
-#include "nautilus-file-queue.h"
 #include <eel/eel-vfs-extensions.h>
-#include <libxml/tree.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/nautilus-directory-metafile-monitor.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file-queue.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-metafile-server.h>
+#include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus/nautilus-idle-queue.h>
+#include <libxml/tree.h>
 
 typedef struct LinkInfoReadState LinkInfoReadState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
@@ -62,6 +61,7 @@ struct NautilusDirectoryDetails
 	GList *monitor_list;
 
 	NautilusMonitor *monitor;
+	gulong 		 mime_db_monitor;
 
 	NautilusIdleQueue *idle_queue;
 	NautilusMetafileMonitor *metafile_monitor;
@@ -81,7 +81,6 @@ struct NautilusDirectoryDetails
 
 	NautilusFile *load_directory_file;
 	int load_file_count;
-	GnomeVFSDirectoryFilter *load_file_count_filter;
 	GHashTable *load_mime_list_hash;
 
 	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle * */

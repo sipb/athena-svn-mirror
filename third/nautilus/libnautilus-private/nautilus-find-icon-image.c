@@ -32,10 +32,8 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <string.h>
 
@@ -50,25 +48,33 @@ static const char *icon_file_name_suffixes[] =
 static char *
 make_full_icon_path (const char *path,
 		     const char *suffix,
-		     gboolean theme_is_in_user_directory)
+		     gboolean theme_is_in_user_directory,
+		     gboolean document_type_icon)
 {
 	char *partial_path, *full_path;
 	char *user_directory, *themes_directory;
 	
 	partial_path = g_strconcat (path, suffix, NULL);
 
-	if (path[0] == '/') {
+	if (path[0] == '/' && g_file_test (partial_path, G_FILE_TEST_EXISTS)) {
 		return partial_path;
 	}
 
 	/* Build a path for this icon, depending on the theme_is_in_user_directory boolean. */
 	if (theme_is_in_user_directory) {
 		user_directory = nautilus_get_user_directory ();
-		themes_directory = nautilus_make_path (user_directory, "themes");
-		full_path = nautilus_make_path (themes_directory, partial_path);
+		themes_directory = g_build_filename (user_directory, "themes", NULL);
+		full_path = g_build_filename (themes_directory, partial_path, NULL);
 		g_free (user_directory);
 		g_free (themes_directory);
-		if (!g_file_exists (full_path)) {
+
+		if (!g_file_test (full_path, G_FILE_TEST_EXISTS)) {
+			g_free (full_path);
+			full_path = NULL;
+		}
+	} else if (document_type_icon) {
+		full_path = g_build_filename (DATADIR "/pixmaps/document-icons/", partial_path, NULL);
+		if (!g_file_test (full_path, G_FILE_TEST_EXISTS)) {
 			g_free (full_path);
 			full_path = NULL;
 		}
@@ -79,6 +85,8 @@ make_full_icon_path (const char *path,
 	if (full_path == NULL) {
 		full_path = gnome_vfs_icon_path_from_filename (partial_path);
 	}
+
+
 
 	g_free (partial_path);
 	return full_path;
@@ -117,56 +125,66 @@ parse_attach_points (NautilusEmblemAttachPoints *attach_points,
 }
 
 static void
-read_details (const char *path,
-	      guint icon_size,
-	      gboolean for_aa,
-	      NautilusIconDetails *details)
+details_from_doc_node (xmlDocPtr doc,
+		       const char *size_as_string,
+		       NautilusIconDetails *details)
 {
-	xmlDocPtr doc;
 	xmlNodePtr node;
-	char *size_as_string, *property;
+	char c, *property;
 	ArtIRect parsed_rect;
 
-	memset (&details->text_rect, 0, sizeof (details->text_rect));
-	
-	doc = xmlParseFile (path);
-	
-	size_as_string = g_strdup_printf ("%u", icon_size);
 	node = eel_xml_get_root_child_by_name_and_property
 		(doc, "icon", "size", size_as_string);
-	g_free (size_as_string);
-	
-	property = NULL;
-	if (for_aa) {
-		property = xmlGetProp (node, "embedded_text_rectangle_aa");
-	}
-	if (property == NULL) {
-		property = xmlGetProp (node, "embedded_text_rectangle");
-	}
+
+	property = xmlGetProp (node, "embedded_text_rectangle");
 	
 	if (property != NULL) {
 		if (sscanf (property,
-			    " %d , %d , %d , %d %*s",
+			    " %d , %d , %d , %d %c",
 			    &parsed_rect.x0,
 			    &parsed_rect.y0,
 			    &parsed_rect.x1,
-			    &parsed_rect.y1) == 4) {
+			    &parsed_rect.y1,
+			    &c) == 4) {
 			details->text_rect = parsed_rect;
 		}
 		xmlFree (property);
 	}
 	
-	property = NULL;
-	if (for_aa) {
-		property = xmlGetProp (node, "attach_points_aa");
-	}
-	if (property == NULL) {
-		property = xmlGetProp (node, "attach_points");
-	}
-	
+	property = xmlGetProp (node, "attach_points");
 	parse_attach_points (&details->attach_points, property);	
 	xmlFree (property);
+}
+
+static void
+read_details (const char *path,
+	      guint icon_size,
+	      NautilusIconDetails *details,
+	      NautilusIconDetails *opt_scalable_details)
+{
+	xmlDocPtr doc;
+	char *size_as_string;
 	
+	memset (&details->text_rect, 0, sizeof (details->text_rect));
+	if (opt_scalable_details) {
+		memset (&opt_scalable_details->text_rect, 0,
+			sizeof (opt_scalable_details->text_rect));
+	}
+
+	if (path == NULL) {
+		return;
+	}
+
+	doc = xmlParseFile (path);
+
+	size_as_string = g_strdup_printf ("%u", icon_size);
+	details_from_doc_node (doc, size_as_string, details);
+	g_free (size_as_string);
+
+	if (opt_scalable_details) {
+		details_from_doc_node (doc, "*", opt_scalable_details);
+	}
+
 	xmlFreeDoc (doc);
 }
 
@@ -177,28 +195,34 @@ static char *
 get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 			   const char *icon_name,
 			   guint icon_size,
-			   gboolean for_aa,
-			   NautilusIconDetails *details)
+			   NautilusIconDetails *details,
+			   NautilusIconDetails *scalable_details)
 {
 	guint i;
-	gboolean include_size, in_user_directory;
-	char *themed_icon_name, *partial_path, *path, *aa_path, *xml_path;
+	gboolean include_size, in_user_directory, document_type_icon;
+	char *themed_icon_name, *partial_path, *path, *xml_path;
 	
 	g_assert (icon_name != NULL);
 
-	if (icon_theme == NULL || icon_theme->name == NULL || icon_name[0] == '/') {
+	if (icon_name[0] == '/') {
 		themed_icon_name = g_strdup (icon_name);
 		in_user_directory = FALSE;
+		document_type_icon = FALSE;
+	} else if (icon_theme == NULL || icon_theme->name == NULL) {
+		themed_icon_name = g_strdup (icon_name);
+		in_user_directory = FALSE;
+		document_type_icon = TRUE;
 	} else {
 		themed_icon_name = g_strconcat (icon_theme->name, "/", icon_name, NULL);
 		in_user_directory = icon_theme->is_in_user_directory;
+		document_type_icon = FALSE;
 	}
 
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
 	
 	/* Try each suffix. */
-	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
-		if (include_size && g_strcasecmp (icon_file_name_suffixes[i], ".svg") != 0) {
+	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
+		if (include_size && g_ascii_strcasecmp (icon_file_name_suffixes[i], ".svg") != 0) {
 			/* Build a path for this icon. */
 			partial_path = g_strdup_printf ("%s-%u",
 							themed_icon_name,
@@ -207,27 +231,11 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 			partial_path = g_strdup (themed_icon_name);
 		}
 		
-		/* if we're in anti-aliased mode, try for an optimized one first */
-		if (for_aa) {
-			aa_path = g_strconcat (partial_path, "-aa", NULL);
-			path = make_full_icon_path (aa_path,
-						    icon_file_name_suffixes[i],
-						    in_user_directory);
-			g_free (aa_path);
-		
-			/* Return the path if the file exists. */
-			if (path != NULL) {
-				g_free (partial_path);
-				break;
-			}
-			
-			g_free (path);
-			path = NULL;
-		}
-						
+
 		path = make_full_icon_path (partial_path,
 					    icon_file_name_suffixes[i],
-					    in_user_directory);
+					    in_user_directory,
+					    document_type_icon);
 		g_free (partial_path);
 
 		/* Return the path if the file exists. */
@@ -243,8 +251,9 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 	if (path != NULL && details != NULL) {
 		xml_path = make_full_icon_path (themed_icon_name,
 						".xml",
-						in_user_directory);
-		read_details (xml_path, icon_size, for_aa, details);
+						in_user_directory,
+						document_type_icon);
+		read_details (xml_path, icon_size, details, scalable_details);
 		g_free (xml_path);
 	}
 
@@ -265,7 +274,7 @@ theme_has_icon (const NautilusIconTheme *theme,
 
 	path = get_themed_icon_file_path (theme, name,
 					  NAUTILUS_ICON_SIZE_STANDARD,
-					  FALSE, NULL);
+					  NULL, NULL);
 	g_free (path);
 
 	return path != NULL;
@@ -283,12 +292,12 @@ choose_theme (const NautilusIconThemeSpecifications *theme_specs,
 		return NULL;
 	}
 
-	if (theme_has_icon (&theme_specs->current, name)) {
-		return &theme_specs->current;
+	if (theme_has_icon (theme_specs->current, name)) {
+		return theme_specs->current;
 	}
 
-	if (theme_has_icon (&theme_specs->fallback, name)) {
-		return &theme_specs->fallback;
+	if (theme_has_icon (theme_specs->fallback, name)) {
+		return theme_specs->fallback;
 	}
 
 	return NULL;
@@ -314,12 +323,12 @@ get_user_emblem_path (const char *name, guint icon_size)
 
 	user_directory = nautilus_get_user_directory ();
 	path = NULL;
-	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
+	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
 		path = g_strdup_printf ("%s/emblems/%s%s", 
 					user_directory,
 					name + strlen (NAUTILUS_EMBLEM_NAME_PREFIX), 
 					icon_file_name_suffixes[i]);
-		if (g_file_exists (path)) {
+		if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 			break;
 		}
 		g_free (path);
@@ -339,8 +348,8 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 			     const char *name,
 			     const char *modifier,
 			     guint size,
-			     gboolean for_aa,
-			     NautilusIconDetails *details)
+			     NautilusIconDetails *details,
+			     NautilusIconDetails *scalable_details)
 {
 	const NautilusIconTheme *theme;
 	char *path;
@@ -355,11 +364,11 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 	}
 
 	theme = choose_theme (theme_specs, name);
- 	
+
 	/* If there's a modifier, try the modified icon first. */
 	if (modifier != NULL && modifier[0] != '\0') {
 		name_with_modifier = g_strconcat (name, "-", modifier, NULL);
-		path = get_themed_icon_file_path (theme, name_with_modifier, size, for_aa, details);
+		path = get_themed_icon_file_path (theme, name_with_modifier, size, details, scalable_details);
 		g_free (name_with_modifier);
 		if (path != NULL) {
 			return path;
@@ -367,7 +376,7 @@ nautilus_get_icon_file_name (const NautilusIconThemeSpecifications *theme_specs,
 	}
 	
 	/* Check for a normal icon. */
-	path = get_themed_icon_file_path (theme, name, size, for_aa, details);
+	path = get_themed_icon_file_path (theme, name, size, details, scalable_details);
 	if (path != NULL) {
 		return path;
 	}
@@ -387,7 +396,7 @@ nautilus_remove_icon_file_name_suffix (const char *icon_name)
 	guint i;
 	const char *suffix;
 
-	for (i = 0; i < EEL_N_ELEMENTS (icon_file_name_suffixes); i++) {
+	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
 		suffix = icon_file_name_suffixes[i];
 		if (eel_str_has_suffix (icon_name, suffix)) {
 			return eel_str_strip_trailing_str (icon_name, suffix);
@@ -395,3 +404,59 @@ nautilus_remove_icon_file_name_suffix (const char *icon_name)
 	}
 	return g_strdup (icon_name);
 }
+
+NautilusIconTheme *
+nautilus_icon_theme_new (void)
+{
+	return g_new0 (NautilusIconTheme, 1);
+}
+
+/* utility to check if a theme is in user directory or not */
+static gboolean
+is_theme_in_user_directory (const char *theme_name)
+{
+	char *user_directory, *themes_directory, *this_theme_directory;
+	gboolean result;
+	
+	if (theme_name == NULL) {
+		return FALSE;
+	}
+	
+	user_directory = nautilus_get_user_directory ();
+	themes_directory = g_build_filename (user_directory, "themes", NULL);
+	this_theme_directory = g_build_filename (themes_directory, theme_name, NULL);
+	
+	result = g_file_test (this_theme_directory, G_FILE_TEST_EXISTS);
+	
+	g_free (user_directory);
+	g_free (themes_directory);
+	g_free (this_theme_directory);
+
+	return result;
+}
+
+gboolean
+nautilus_icon_theme_set_names (NautilusIconTheme *icon_theme,
+			       const char        *new_name)
+{
+	g_return_val_if_fail (icon_theme != NULL, FALSE);
+
+	if (eel_strcmp (new_name, icon_theme->name)) {
+		g_free (icon_theme->name);
+		icon_theme->name = g_strdup (new_name);
+		icon_theme->is_in_user_directory = is_theme_in_user_directory (new_name);
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+void
+nautilus_icon_theme_destroy (NautilusIconTheme *icon_theme)
+{
+	if (icon_theme) {
+		g_free (icon_theme->name);
+		g_free (icon_theme);
+	}
+}
+

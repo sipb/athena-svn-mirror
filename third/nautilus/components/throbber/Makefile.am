@@ -4,12 +4,12 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Throbber\"		\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-I$(top_srcdir)					\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	$(NAUTILUS_PRIVATE_CFLAGS)			\
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
+	$(DISABLE_DEPRECATED_CFLAGS)			\
+	$(COMPONENT_CFLAGS)				\
 	$(NULL)
 
-bin_PROGRAMS =					\
-	nautilus-throbber
+libexec_PROGRAMS=nautilus-throbber
 
 nautilus_throbber_SOURCES =		        \
 	nautilus-throbber.c			\
@@ -19,18 +19,16 @@ nautilus_throbber_SOURCES =		        \
 nautilus_throbber_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS)
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-oaf_in_files =					\
-	Nautilus_Control_throbber.oaf.in	\
-	$(NULL)
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_in_files = Nautilus_Control_throbber.server.in.in
 
-@XML_I18N_MERGE_OAF_RULE@
+serverdir = $(libdir)/bonobo/servers
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
+@INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = 			\
-	$(oaf_in_files)		\
-	$(oaf_DATA)		\
-	$(NULL)
+EXTRA_DIST = $(server_in_files)
+CLEANFILES = $(server_DATA) $(server_DATA).in

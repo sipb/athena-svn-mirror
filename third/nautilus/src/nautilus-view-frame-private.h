@@ -32,25 +32,16 @@
 
 #include "nautilus-view-frame.h"
 
-typedef struct {
-        POA_Nautilus_ViewFrame servant;
-        gpointer bonobo_object;
-        
-        NautilusViewFrame *view;
-} impl_POA_Nautilus_ViewFrame;
-
 typedef void (* NautilusViewFrameFunction) (NautilusViewFrame *view_frame,
                                             gpointer callback_data);
-
-extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
 
 void          nautilus_view_frame_queue_incoming_call                  (PortableServer_Servant     servant,
                                                                         NautilusViewFrameFunction  call,
                                                                         gpointer                   callback_data,
                                                                         GDestroyNotify             destroy_callback_data);
 
-BonoboObject *impl_Nautilus_ViewFrame__create                          (NautilusViewFrame         *view,
-                                                                        CORBA_Environment         *ev);
+BonoboObject *nautilus_view_frame_create_corba_part                    (NautilusViewFrame           *widget);
+NautilusViewFrame *nautilus_view_frame_from_servant                    (PortableServer_Servant     servant);
 
 /* ViewFrame */
 void          nautilus_view_frame_open_location_in_this_window         (NautilusViewFrame         *view,
@@ -81,6 +72,7 @@ void          nautilus_view_frame_report_load_failed                   (Nautilus
 void          nautilus_view_frame_set_title                            (NautilusViewFrame         *view,
                                                                         const char                *title);
 void          nautilus_view_frame_go_back                              (NautilusViewFrame         *view);
+void          nautilus_view_frame_close_window                         (NautilusViewFrame         *view);
 void          nautilus_view_frame_quit_nautilus                        (NautilusViewFrame         *view);
 void          nautilus_view_frame_close_desktop                        (NautilusViewFrame         *view);
 

@@ -50,9 +50,9 @@ usage (const char *name)
 static GnomeVFSMimeActionType
 str_to_action_type (const char *str)
 {
-	if (g_strcasecmp (str, "component") == 0) {
+	if (g_ascii_strcasecmp (str, "component") == 0) {
 		return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
-	} else if (g_strcasecmp (str, "application") == 0) {
+	} else if (g_ascii_strcasecmp (str, "application") == 0) {
 		return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
 	} else {
 		return GNOME_VFS_MIME_ACTION_TYPE_NONE;
@@ -110,13 +110,8 @@ main (int argc, char **argv)
 	NautilusFile *file;
 	GList *attributes;
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	oaf_init (argc, argv);
-
-	g_thread_init (NULL);
-	gnome_vfs_init ();
-	gnome_init ("test-nautilus-mime-actions-set", "0.0",
-		    argc, argv);
+	gnome_program_init ("test-nautilus-mime-actions-set", "0.0",
+			    LIBGNOMEUI_MODULE, argc, argv, NULL);
 
 	if (argc < 3) {
 		usage (argv[0]);

@@ -26,9 +26,8 @@
 #ifndef NAUTILUS_ICON_CONTAINER_H
 #define NAUTILUS_ICON_CONTAINER_H
 
-#include <libgnomeui/gnome-canvas.h>
-#include "nautilus-icon-factory.h"
-#include <eel/eel-scalable-font.h>
+#include <libgnomecanvas/gnome-canvas.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 
 #define NAUTILUS_ICON_CONTAINER(obj) \
 	GTK_CHECK_CAST (obj, nautilus_icon_container_get_type (), NautilusIconContainer)
@@ -39,6 +38,10 @@
 
 #define NAUTILUS_ICON_CONTAINER_ICON_DATA(pointer) \
 	((NautilusIconData *) (pointer))
+
+#define NAUTILUS_ICON_CONTAINER_GET_CLASS(object) (G_TYPE_INSTANCE_GET_CLASS ((object), \
+					           nautilus_icon_container_get_type (), \
+						   NautilusIconContainerClass))
 
 typedef struct NautilusIconData NautilusIconData;
 
@@ -99,14 +102,9 @@ typedef struct {
 	char *	     (* get_container_uri)	  (NautilusIconContainer *container);
 
 	/* Queries on icons for subclass/client.
-	 * These must be implemented. The default "do nothing" is not good enough.
+	 * These must be implemented. The default "do nothing" is not
+	 * good enough, these are _not_ signals.
 	 */
-	gboolean     (* can_accept_item)	  (NautilusIconContainer *container,
-						   NautilusIconData *target, 
-						   const char *item_uri);
-	gboolean     (* get_stored_icon_position) (NautilusIconContainer *container,
-						   NautilusIconData *data,
-						   NautilusIconPosition *position);
 	NautilusScalableIcon *
 	             (* get_icon_images)          (NautilusIconContainer *container,
 						   NautilusIconData *data,
@@ -116,16 +114,27 @@ typedef struct {
 						   NautilusIconData *data,
 						   char **editable_text,
 						   char **additional_text);
-	char *       (* get_icon_uri)             (NautilusIconContainer *container,
-						   NautilusIconData *data);
-	char *       (* get_icon_drop_target_uri) (NautilusIconContainer *container,
-						   NautilusIconData *data);
 	int          (* compare_icons)            (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
 	int          (* compare_icons_by_name)    (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
+
+	/* Queries on icons for subclass/client.
+	 * These must be implemented => These are signals !
+	 * The default "do nothing" is not good enough.
+	 */
+	gboolean     (* can_accept_item)	  (NautilusIconContainer *container,
+						   NautilusIconData *target, 
+						   const char *item_uri);
+	gboolean     (* get_stored_icon_position) (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   NautilusIconPosition *position);
+	char *       (* get_icon_uri)             (NautilusIconContainer *container,
+						   NautilusIconData *data);
+	char *       (* get_icon_drop_target_uri) (NautilusIconContainer *container,
+						   NautilusIconData *data);
 
 	/* Notifications for the whole container. */
 	void	     (* band_select_started)	  (NautilusIconContainer *container);
@@ -149,10 +158,15 @@ typedef struct {
 	int	     (* preview)		  (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   gboolean start_flag);
+        void         (* icon_added)               (NautilusIconContainer *container,
+                                                   NautilusIconData *data);
+        void         (* icon_removed)             (NautilusIconContainer *container,
+                                                   NautilusIconData *data);
+        void         (* cleared)                  (NautilusIconContainer *container);
 } NautilusIconContainerClass;
 
 /* GtkObject */
-guint             nautilus_icon_container_get_type                      (void);
+GType             nautilus_icon_container_get_type                      (void);
 GtkWidget *       nautilus_icon_container_new                           (void);
 
 
@@ -209,18 +223,12 @@ void              nautilus_icon_container_set_single_click_mode         (Nautilu
 									 gboolean                single_click_mode);
 void              nautilus_icon_container_enable_linger_selection       (NautilusIconContainer  *view,
 									 gboolean                enable);
-gboolean          nautilus_icon_container_get_anti_aliased_mode         (NautilusIconContainer  *view);
-void              nautilus_icon_container_set_anti_aliased_mode         (NautilusIconContainer  *view,
-									 gboolean                anti_aliased_mode);
-void              nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer  *container,
-									 int                     zoom_level,
-									 GdkFont                *font);
-void              nautilus_icon_container_set_smooth_label_font         (NautilusIconContainer  *container,
-									 EelScalableFont   *font);
 gboolean          nautilus_icon_container_get_is_fixed_size             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 									 gboolean                is_fixed_size);
 void              nautilus_icon_container_reset_scroll_region           (NautilusIconContainer  *container);
+void              nautilus_icon_container_set_font                      (NautilusIconContainer  *container,
+									 const char             *font); 
 void              nautilus_icon_container_set_font_size_table           (NautilusIconContainer  *container,
 									 const int               font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1]);
 void              nautilus_icon_container_set_margins                   (NautilusIconContainer  *container,
@@ -228,5 +236,7 @@ void              nautilus_icon_container_set_margins                   (Nautilu
 									 int                     right_margin,
 									 int                     top_margin,
 									 int                     bottom_margin);
+void              nautilus_icon_container_set_use_drop_shadows          (NautilusIconContainer  *container,
+									 gboolean                use_drop_shadows);
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

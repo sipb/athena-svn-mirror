@@ -1,30 +1,35 @@
 NULL =
 
-bin_PROGRAMS=nautilus-history-view
-
 INCLUDES=\
 	-I$(top_srcdir) \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
+	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
-LDADD=\
-	$(top_builddir)/libnautilus/libnautilus.la \
+bonobodir = $(libdir)/bonobo
+bonobo_LTLIBRARIES = libnautilus-history-view.la
+
+libnautilus_history_view_la_SOURCES = \
+	libmain.c		\
+	nautilus-history-view.c	\
+	nautilus-history-view.h	\
+	$(NULL)
+
+libnautilus_history_view_la_LDFLAGS = -module -avoid-version
+
+libnautilus_history_view_la_LIBADD =               \
+	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(COMPONENT_LIBS)
 	$(NULL)
 
-nautilus_history_view_SOURCES=nautilus-history-view.c
+server_in_files = Nautilus_View_history.server.in.in
 
-oafdir = $(datadir)/oaf
+serverdir = $(libdir)/bonobo/servers
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@BONOBODIR\@|$(bonobodir)|" $< > $@
+@INTLTOOL_SERVER_RULE@
 
-oaf_in_files =					\
-	Nautilus_View_history.oaf.in		\
-	$(NULL)
-
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
-
-@XML_I18N_MERGE_OAF_RULE@
-
-EXTRA_DIST=$(oaf_DATA) $(oaf_in_files)
-
+EXTRA_DIST=$(server_in_files)
+CLEANFILES = $(server_DATA) $(server_DATA).in

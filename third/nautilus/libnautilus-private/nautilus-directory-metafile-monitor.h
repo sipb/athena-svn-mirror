@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
 /* nautilus-directory-metafile-monitor.h
  *
@@ -23,11 +23,9 @@
 #ifndef NAUTILUS_METAFILE_MONITOR_H
 #define NAUTILUS_METAFILE_MONITOR_H
 
-#include "nautilus-metafile-server.h"
-
 #include <bonobo/bonobo-object.h>
-#include <bonobo/bonobo-xobject.h>
 #include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-metafile-server.h>
 
 #define NAUTILUS_TYPE_METAFILE_MONITOR	          (nautilus_metafile_monitor_get_type ())
 #define NAUTILUS_METAFILE_MONITOR(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE_MONITOR, NautilusMetafileMonitor))
@@ -38,18 +36,16 @@
 typedef struct NautilusMetafileMonitorDetails NautilusMetafileMonitorDetails;
 
 typedef struct {
-	BonoboXObject parent_slot;
+	BonoboObject parent_slot;
 	NautilusMetafileMonitorDetails *details;
 } NautilusMetafileMonitor;
 
 typedef struct {
-	BonoboXObjectClass parent_slot;
+	BonoboObjectClass parent_slot;
 	POA_Nautilus_MetafileMonitor__epv epv;
 } NautilusMetafileMonitorClass;
 
-GtkType nautilus_metafile_monitor_get_type (void);
-
-
-NautilusMetafileMonitor *nautilus_metafile_monitor_new (NautilusDirectory *directory);
+GtkType                  nautilus_metafile_monitor_get_type (void);
+NautilusMetafileMonitor *nautilus_metafile_monitor_new      (NautilusDirectory *directory);
 
 #endif /* NAUTILUS_METAFILE_MONITOR_H */

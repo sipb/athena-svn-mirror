@@ -25,10 +25,9 @@
 #ifndef NAUTILUS_HORIZONTAL_SPLITTER_H
 #define NAUTILUS_HORIZONTAL_SPLITTER_H
 
-#include <libgnome/gnome-defs.h>
-#include "e-hpaned.h"
+#include <gtk/gtkhpaned.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_HORIZONTAL_SPLITTER            (nautilus_horizontal_splitter_get_type ())
 #define NAUTILUS_HORIZONTAL_SPLITTER(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HORIZONTAL_SPLITTER, NautilusHorizontalSplitter))
@@ -39,22 +38,27 @@ BEGIN_GNOME_DECLS
 typedef struct NautilusHorizontalSplitterDetails NautilusHorizontalSplitterDetails;
 
 typedef struct {
-	EHPaned					parent_slot;
+	GtkHPaned				parent_slot;
 	NautilusHorizontalSplitterDetails	*details;
 } NautilusHorizontalSplitter;
 
 typedef struct {
-	EHPanedClass				parent_slot;
+	GtkHPanedClass				parent_slot;
 } NautilusHorizontalSplitterClass;
 
 /* NautilusHorizontalSplitter public methods */
 GtkType    nautilus_horizontal_splitter_get_type (void);
 GtkWidget *nautilus_horizontal_splitter_new      (void);
 
+gboolean   nautilus_horizontal_splitter_is_hidden	(NautilusHorizontalSplitter *splitter);
 void	   nautilus_horizontal_splitter_collapse	(NautilusHorizontalSplitter *splitter);
+void	   nautilus_horizontal_splitter_hide		(NautilusHorizontalSplitter *splitter);
+void	   nautilus_horizontal_splitter_show		(NautilusHorizontalSplitter *splitter);
 void	   nautilus_horizontal_splitter_expand		(NautilusHorizontalSplitter *splitter);
 void	   nautilus_horizontal_splitter_toggle_position	(NautilusHorizontalSplitter *splitter);
+void	   nautilus_horizontal_splitter_pack2           (NautilusHorizontalSplitter *splitter,
+							 GtkWidget                  *child2);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_HORIZONTAL_SPLITTER_H */

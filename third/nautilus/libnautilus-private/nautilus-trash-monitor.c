@@ -30,12 +30,14 @@
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-trash-directory.h"
+#include <eel/eel-debug.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 struct NautilusTrashMonitorDetails {
 	NautilusDirectory *trash_directory;
@@ -51,15 +53,15 @@ enum {
 static guint signals[LAST_SIGNAL];
 static NautilusTrashMonitor *nautilus_trash_monitor;
 
-static void nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass);
-static void nautilus_trash_monitor_initialize       (gpointer                   object,
+static void nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass);
+static void nautilus_trash_monitor_init       (gpointer                   object,
 						     gpointer                   klass);
 static void destroy                                 (GtkObject                 *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashMonitor, nautilus_trash_monitor, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusTrashMonitor, nautilus_trash_monitor, GTK_TYPE_OBJECT)
 
 static void
-nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)
+nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 {
 	GtkObjectClass *object_class;
 
@@ -67,25 +69,25 @@ nautilus_trash_monitor_initialize_class (NautilusTrashMonitorClass *klass)
 
 	object_class->destroy = destroy;
 
-	signals[TRASH_STATE_CHANGED] = gtk_signal_new
+	signals[TRASH_STATE_CHANGED] = g_signal_new
 		("trash_state_changed",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
-		 gtk_marshal_NONE__BOOL,
-		 GTK_TYPE_NONE, 1,
-		 GTK_TYPE_BOOL);
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__BOOLEAN,
+		 G_TYPE_NONE, 1,
+		 G_TYPE_BOOLEAN);
 
-	signals[CHECK_TRASH_DIRECTORY_ADDED] = gtk_signal_new
+	signals[CHECK_TRASH_DIRECTORY_ADDED] = g_signal_new
 		("check_trash_directory_added",
-		 GTK_RUN_LAST,
-		 object_class->type,
-		 GTK_SIGNAL_OFFSET (NautilusTrashMonitorClass, check_trash_directory_added),
-		 gtk_marshal_NONE__POINTER,
-		 GTK_TYPE_NONE, 1,
-		 GTK_TYPE_POINTER);
-
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+		 G_TYPE_FROM_CLASS (object_class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusTrashMonitorClass, check_trash_directory_added),
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__POINTER,
+		 G_TYPE_NONE, 1,
+		 G_TYPE_POINTER);
 }
 
 static void
@@ -112,14 +114,14 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 		nautilus_file_unref (file);
 
 		/* trash got empty or full, notify everyone who cares */
-		gtk_signal_emit (GTK_OBJECT (trash_monitor), 
-				 signals[TRASH_STATE_CHANGED],
+		g_signal_emit (trash_monitor, 
+				 signals[TRASH_STATE_CHANGED], 0,
 				 trash_monitor->details->empty);
 	}
 }
 
 static void
-nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
+nautilus_trash_monitor_init (gpointer object, gpointer klass)
 {
 	NautilusDirectory *trash_directory;
 	NautilusTrashMonitor *trash_monitor;
@@ -144,18 +146,10 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 
 	g_list_free (attributes);
 
-    	gtk_signal_connect_while_alive
-		(GTK_OBJECT (trash_directory),
-		 "files_added",
-		 nautilus_trash_files_changed_callback,
-		 trash_monitor,
-		 GTK_OBJECT (trash_monitor));
-    	gtk_signal_connect_while_alive
-		(GTK_OBJECT (trash_directory),
-		 "files_changed",
-		 nautilus_trash_files_changed_callback,
-		 trash_monitor,
-		 GTK_OBJECT (trash_monitor));
+    	g_signal_connect_object	(trash_directory, "files_added",
+				 G_CALLBACK (nautilus_trash_files_changed_callback), trash_monitor, 0);
+    	g_signal_connect_object	(trash_directory, "files_changed",
+				 G_CALLBACK (nautilus_trash_files_changed_callback), trash_monitor, 0);
 }
 
 static void
@@ -175,7 +169,7 @@ destroy (GtkObject *object)
 static void
 unref_trash_monitor (void)
 {
-	gtk_object_unref (GTK_OBJECT (nautilus_trash_monitor));
+	g_object_unref (nautilus_trash_monitor);
 }
 
 NautilusTrashMonitor *
@@ -190,10 +184,10 @@ nautilus_trash_monitor_get (void)
 		trash_directory = nautilus_directory_get (EEL_TRASH_URI);
 		
 		nautilus_trash_monitor = NAUTILUS_TRASH_MONITOR
-			(gtk_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
-		gtk_object_ref (GTK_OBJECT (nautilus_trash_monitor));
+			(g_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
+		g_object_ref (nautilus_trash_monitor);
 		gtk_object_sink (GTK_OBJECT (nautilus_trash_monitor));
-		g_atexit (unref_trash_monitor);
+		eel_debug_call_at_shutdown (unref_trash_monitor);
 		
 		/* make sure we get signalled when trash directories get added */
 		nautilus_trash_directory_finish_initializing
@@ -273,8 +267,8 @@ add_one_trash_directory_if_needed (const NautilusVolume *volume,
 	NautilusTrashMonitor *trash_monitor;
 
 	trash_monitor = NAUTILUS_TRASH_MONITOR (callback_data);
-	gtk_signal_emit (GTK_OBJECT (trash_monitor),
-			 signals[CHECK_TRASH_DIRECTORY_ADDED],
+	g_signal_emit (trash_monitor,
+			 signals[CHECK_TRASH_DIRECTORY_ADDED], 0,
 			 volume);
 	
 	return FALSE;

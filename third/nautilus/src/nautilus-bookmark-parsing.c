@@ -29,7 +29,7 @@
 #include "nautilus-bookmark-parsing.h"
 
 #include <eel/eel-xml-extensions.h>
-#include <libxml/xmlmemory.h>
+#include <libxml/globals.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <stdlib.h>
 
@@ -63,6 +63,7 @@ nautilus_bookmark_new_from_node (xmlNodePtr node)
 	xmlFree (uri);
 	xmlFree (icon_uri);
 	xmlFree (icon_name);
-
+	xmlFree (icon_mime_type);
+	
 	return new_bookmark;
 }

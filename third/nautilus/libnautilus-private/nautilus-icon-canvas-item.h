@@ -25,13 +25,10 @@
 #ifndef NAUTILUS_ICON_CANVAS_ITEM_H
 #define NAUTILUS_ICON_CANVAS_ITEM_H
 
-#include <libgnome/gnome-defs.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include "nautilus-icon-factory.h"
-#include <eel/eel-scalable-font.h>
+#include <libgnomecanvas/gnome-canvas.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_ICON_CANVAS_ITEM \
 	(nautilus_icon_canvas_item_get_type ())
@@ -56,9 +53,6 @@ struct NautilusIconCanvasItem {
 
 struct NautilusIconCanvasItemClass {
 	GnomeCanvasItemClass parent_class;
-
-	void (* bounds_changed) (NautilusIconCanvasItem *item,
-				 const ArtDRect         *old_world_bounds);
 };
 
 /* GtkObject */
@@ -79,7 +73,6 @@ const char *nautilus_icon_canvas_item_get_editable_text        (NautilusIconCanv
 void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanvasItem       *icon_item,
 								gboolean                      state);
 
-
 /* geometry and hit testing */
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem       *item,
 								ArtIRect                      canvas_rect);
@@ -88,11 +81,7 @@ gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanv
 void        nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem       *item);
 ArtDRect    nautilus_icon_canvas_item_get_icon_rectangle       (const NautilusIconCanvasItem *item);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem       *item);
-void        nautilus_icon_canvas_item_set_smooth_font          (NautilusIconCanvasItem       *item,
-								EelScalableFont              *font);
-void        nautilus_icon_canvas_item_set_smooth_font_size     (NautilusIconCanvasItem       *item,
-								int                           font_size);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_ICON_CANVAS_ITEM_H */

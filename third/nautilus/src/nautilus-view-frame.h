@@ -33,7 +33,6 @@
 #ifndef NAUTILUS_VIEW_FRAME_H
 #define NAUTILUS_VIEW_FRAME_H
 
-#include <bonobo/bonobo-object-client.h>
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <eel/eel-generous-bin.h>
@@ -93,6 +92,7 @@ typedef struct {
         void               (* zoom_parameters_changed)              (NautilusViewFrame *view);
 	Nautilus_History * (* get_history_list)                     (NautilusViewFrame *view);
         void               (* go_back)                              (NautilusViewFrame *view);
+        void               (* close_window)                         (NautilusViewFrame *view);
 } NautilusViewFrameClass;
 
 /* basic view management */
@@ -115,11 +115,11 @@ void               nautilus_view_frame_title_changed             (NautilusViewFr
                                                                   const char          *title);
 
 /* calls to Bonobo:Zoomable functions */
-double             nautilus_view_frame_get_zoom_level            (NautilusViewFrame   *view);
+float              nautilus_view_frame_get_zoom_level            (NautilusViewFrame   *view);
 void               nautilus_view_frame_set_zoom_level            (NautilusViewFrame   *view,
-                                                                  double               zoom_level);
-double             nautilus_view_frame_get_min_zoom_level        (NautilusViewFrame   *view);
-double             nautilus_view_frame_get_max_zoom_level        (NautilusViewFrame   *view);
+                                                                  float                zoom_level);
+float              nautilus_view_frame_get_min_zoom_level        (NautilusViewFrame   *view);
+float              nautilus_view_frame_get_max_zoom_level        (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_has_min_zoom_level    (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_has_max_zoom_level    (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_is_continuous         (NautilusViewFrame   *view);

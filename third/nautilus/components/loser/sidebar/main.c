@@ -28,8 +28,11 @@
 #include "nautilus-sidebar-loser.h"
 
 #include <gnome.h>
-#include <liboaf/liboaf.h>
+#include <bonobo-activation/bonobo-activation.h>
+#include <eel/eel-gnome-extensions.h>
 #include <bonobo.h>
+
+#define FACTORY_IID "OAFIID:Nautilus_Sidebar_Loser_Factory"
 
 static int object_count = 0;
 
@@ -52,17 +55,17 @@ loser_make_object (BonoboGenericFactory *factory,
 
 	nautilus_sidebar_loser_maybe_fail ("pre-make-object");
 
-	if (strcmp (iid, "OAFIID:nautilus_sidebar_loser:07bfdd1d-7abc-4412-98ab-441b226a10d0")) {
+	if (strcmp (iid, "OAFIID:Nautilus_Sidebar_Loser")) {
 		return NULL;
 	}
 
-	view = NAUTILUS_SIDEBAR_LOSER (gtk_object_new (NAUTILUS_TYPE_SIDEBAR_LOSER, NULL));
+	view = NAUTILUS_SIDEBAR_LOSER (g_object_new (NAUTILUS_TYPE_SIDEBAR_LOSER, NULL));
 
 	object_count++;
 
 	nautilus_view = nautilus_sidebar_loser_get_nautilus_view (view);
 
-	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", loser_object_destroyed, NULL);
+	g_signal_connect (nautilus_view, "destroy", G_CALLBACK (loser_object_destroyed), NULL);
 
 	nautilus_sidebar_loser_maybe_fail ("post-make-object");
 
@@ -72,37 +75,30 @@ loser_make_object (BonoboGenericFactory *factory,
 int main(int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
-	CORBA_ORB orb;
 	CORBA_Environment ev;
 	char *registration_id;
 
-	CORBA_exception_init(&ev);
+	CORBA_exception_init (&ev);
 
 	nautilus_sidebar_loser_maybe_fail ("pre-init");
 
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
-
-        gnome_init ("nautilus-sidebar-loser", VERSION, 
-		    argc, argv); 
+        bonobo_ui_init ("nautilus-sidebar-loser", VERSION, &argc, argv); 
 	
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-
 	nautilus_sidebar_loser_maybe_fail ("post-init");
 
-
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_sidebar_loser_factory:5d9aadfa-a8a4-4ec0-8332-d6f806c211fa", getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new_multi (registration_id, 
-						    loser_make_object,
-						    NULL);
+        registration_id = eel_bonobo_make_registration_id (FACTORY_IID);
+	factory = bonobo_generic_factory_new (FACTORY_IID,
+					      loser_make_object,
+					      NULL);
 	g_free (registration_id);
-
 
 	nautilus_sidebar_loser_maybe_fail ("post-factory-init");
 
-	do {
-		bonobo_main ();
-	} while (object_count > 0);
+	if (factory != NULL) {
+		do {
+			bonobo_main ();
+		} while (object_count > 0);
+	}
 	
 	return 0;
 }

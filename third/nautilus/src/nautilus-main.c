@@ -34,26 +34,27 @@
 #include "nautilus-application.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-window.h"
+#include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-ui-main.h>
 #include <dlfcn.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-self-checks.h>
 #include <gdk/gdkx.h>
-#include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-metadata.h>
-#include <libgnomeui/gnome-init.h>
+#include <libgnome/gnome-init.h>
+#include <libgnomeui/gnome-ui-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
-#include <liboaf/liboaf.h>
+#include <libxml/parser.h>
 #include <popt.h>
 #include <stdlib.h>
-#include <X11/Xlib.h>
+#include <unistd.h>
 
 /* Keeps track of everyone who wants the main event loop kept active */
 static GSList *event_loop_registrants;
@@ -95,9 +96,8 @@ eel_gtk_main_quit_all (void)
 }
 
 static void
-event_loop_unregister (GtkObject* object)
+event_loop_unregister (GtkObject *object)
 {
-	g_assert (g_slist_find (event_loop_registrants, object) != NULL);
 	event_loop_registrants = g_slist_remove (event_loop_registrants, object);
 	if (!is_event_loop_needed ()) {
 		eel_gtk_main_quit_all ();
@@ -105,14 +105,14 @@ event_loop_unregister (GtkObject* object)
 }
 
 void
-nautilus_main_event_loop_register (GtkObject* object)
+nautilus_main_event_loop_register (GtkObject *object)
 {
-	gtk_signal_connect (object, "destroy", event_loop_unregister, NULL);
+	g_signal_connect (object, "destroy", G_CALLBACK (event_loop_unregister), NULL);
 	event_loop_registrants = g_slist_prepend (event_loop_registrants, object);
 }
 
 gboolean
-nautilus_main_is_event_loop_mainstay (GtkObject* object)
+nautilus_main_is_event_loop_mainstay (GtkObject *object)
 {
 	return g_slist_length (event_loop_registrants) == 1
 		&& event_loop_registrants->data == object;
@@ -137,9 +137,10 @@ main (int argc, char *argv[])
 	gboolean perform_self_check;
 	poptContext popt_context;
 	const char **args;
-	CORBA_ORB orb;
 	NautilusApplication *application;
 	char **argv_copy;
+	GnomeProgram *program;
+	GValue context_as_value = { 0 };
 
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
@@ -159,37 +160,14 @@ main (int argc, char *argv[])
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 
-	/* Make criticals and warnings stop in the debugger if
-	 * NAUTILUS_DEBUG is set. Unfortunately, this has to be done
-	 * explicitly for each domain.
-	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib,
-			 "Bonobo",
-			 "Gdk",
-			 "GnomeUI",
-			 "GnomeVFS",
-			 "GnomeVFS-CORBA",
-			 "GnomeVFS-pthread",
-			 "Gtk",
-			 "Nautilus",
-			 "Nautilus-Authenticate",
-			 "Nautilus-Tree",
-			 "ORBit",
-			 NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 	
 	/* Initialize gettext support */
-	/* Sadly, we need this ifdef because otherwise the following
-	 * lines cause empty statement warnings.
-	 */
-#ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	textdomain (PACKAGE);
-#endif
-	/* Disable bug-buddy for now. */
-	eel_setenv ("GNOME_DISABLE_CRASH_DIALOG", "1", TRUE);
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
 
 	/* Get parameters. */
 	geometry = NULL;
@@ -199,20 +177,18 @@ main (int argc, char *argv[])
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
 
-	gnomelib_register_popt_table (oaf_popt_options, 
-				      oaf_get_popt_table_name ());
-	gnome_init_with_popt_table ("nautilus", VERSION,
-				    argc, argv, options, 0,
-				    &popt_context);
-	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
-	orb = oaf_init (argc, argv);
-        gdk_rgb_init ();
+	program = gnome_program_init ("nautilus", VERSION,
+				      LIBGNOMEUI_MODULE, argc, argv,
+				      GNOME_PROGRAM_STANDARD_PROPERTIES,
+				      GNOME_PARAM_POPT_TABLE, options,
+				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
+				      NULL);
 
-	/* Workaround for gnome-libs bug.
-	 * If the first call is gnome_metadata_get, it doesn't initialize properly.
-	 */
-	gnome_metadata_lock ();
-	gnome_metadata_unlock ();
+	g_object_get_property (G_OBJECT (program),
+			       GNOME_PARAM_POPT_CONTEXT,
+			       g_value_init (&context_as_value, G_TYPE_POINTER));
+
+	popt_context = g_value_get_pointer (&context_as_value);
 
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);
@@ -239,28 +215,25 @@ main (int argc, char *argv[])
 
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
-	g_atexit (xmlCleanupParser);
-	g_thread_init (NULL);
 
 	if (g_getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
-		oaf_set_test_components_enabled (TRUE);
+		bonobo_activation_set_test_components_enabled (TRUE);
 	}
-	gnome_vfs_init ();
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	bonobo_activate (); /* do now since we need it before main loop */
 
 	/* Initialize preferences. This is needed so that proper 
 	 * defaults are available before any preference peeking 
 	 * happens.
 	 */
-	nautilus_global_preferences_initialize ();
+	nautilus_global_preferences_init_with_folder_browsing ();
 	if (no_desktop) {
 		eel_preferences_set_is_invisible
 			(NAUTILUS_PREFERENCES_SHOW_DESKTOP, TRUE);
 		eel_preferences_set_is_invisible
 			(NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR, TRUE);
 	}
-		
+	
+	bonobo_activate (); /* do now since we need it before main loop */
+
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
@@ -286,13 +259,16 @@ main (int argc, char *argv[])
 			 geometry,
 			 args);
 		if (is_event_loop_needed ()) {
-			bonobo_main ();
+			gtk_main ();
 		}
-		bonobo_object_unref (BONOBO_OBJECT (application));
+		bonobo_object_unref (application);
 	}
 
 	poptFreeContext (popt_context);
+
 	gnome_vfs_shutdown ();
+	eel_debug_shut_down ();
+	bonobo_ui_debug_shutdown ();
 
 	/* If told to restart, exec() myself again. This is used when
 	 * the program is told to restart with CORBA, for example when
