@@ -255,7 +255,9 @@ tagging part may be unnecessary, but should not be undesirable.)
 If, after an import, there are files which have been modified on the
 mainline but do not need to be locally modified any more, you can run
 "cvs admin -bvendor-branch" on the files to make them revert to the
-vendor branch.
+vendor branch.  But first, check in an unmodified copy of the vendor
+branch file onto the mainline, so that the version history of the file
+is clear.
 
 Third-party build systems
 -------------------------
