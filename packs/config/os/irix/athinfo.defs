@@ -27,5 +27,6 @@ routes		netstat -rn
 listeners	netstat -an -f inet | awk '$NF == "LISTEN"'
 login		test ! -f /etc/nologin; echo $?
 hinv		/sbin/hinv -v
-instmach	cat /var/inst/.machine_inventory
+instmach	/usr/sbin/inst -H
+instmachinv	cat /var/inst/.machine_inventory
 chkconfig	/sbin/chkconfig
