@@ -90,7 +90,9 @@ case "$1" in
 		case `rpm -q --queryformat '%{VERSION}' rpm` in
 		4.*)
 			echo -n Rebuilding RPM db:
-			rpm --rebuilddb && success rebuild || failure rebuild
+			cp -a /var/lib/rpm /var/athena/rpm.save && \
+				rpm --rebuilddb && \
+				success rebuild || failure rebuild
 			;;
 		esac
 	fi
