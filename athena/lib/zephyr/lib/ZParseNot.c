@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.14 1988-05-17 21:22:53 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.15 1988-06-15 16:55:28 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZParseNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.14 1988-05-17 21:22:53 rfrench Exp $";
+static char rcsid_ZParseNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.15 1988-06-15 16:55:28 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -186,6 +186,19 @@ Code_t ZParseNotice(buffer, len, notice)
     }
     else
 	notice->z_multinotice = "";
+
+    if (numfields) {
+	if (ZReadAscii(ptr, end-ptr, (unsigned char *)temp, 
+		       sizeof(ZUnique_Id_t)) == ZERR_BADFIELD)
+	    return (ZERR_BADPKT);
+	bcopy((char *)temp, (char *)&notice->z_multiuid, sizeof(ZUnique_Id_t));
+	notice->z_time.tv_sec = ntohl(notice->z_multiuid.tv.tv_sec);
+	notice->z_time.tv_usec = ntohl(notice->z_multiuid.tv.tv_usec);
+	numfields--;
+	ptr += strlen(ptr)+1;
+    }
+    else
+	bzero(&notice->z_multiuid, sizeof(ZUnique_Id_t));
 
     for (i=0;i<Z_MAXOTHERFIELDS && numfields;i++,numfields--) {
 	notice->z_other_fields[i] = ptr;

@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.6 1988-05-17 21:22:59 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.7 1988-06-15 16:55:35 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.6 1988-05-17 21:22:59 rfrench Exp $";
+static char rcsid_ZPeekIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.7 1988-06-15 16:55:35 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -31,14 +31,9 @@ Code_t ZPeekIfNotice(notice, from, predicate, args)
     char *buffer;
     struct _Z_InputQ *qptr;
 
-    if (ZQLength())
-	retval = Z_ReadEnqueue();
-    else
-	retval = Z_ReadWait();
-	
-    if (retval != ZERR_NONE)
+    if ((retval = Z_WaitForComplete()) != ZERR_NONE)
 	return (retval);
-	
+    
     qptr = (struct _Z_InputQ *) Z_GetFirstComplete();
     
     for (;;) {

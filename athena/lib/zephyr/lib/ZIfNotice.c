@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.6 1988-05-17 21:22:16 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.7 1988-06-15 16:55:05 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.6 1988-05-17 21:22:16 rfrench Exp $";
+static char rcsid_ZIfNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZIfNotice.c,v 1.7 1988-06-15 16:55:05 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -31,12 +31,7 @@ Code_t ZIfNotice(notice, from, predicate, args)
     char *buffer;
     struct _Z_InputQ *qptr;
 
-    if (ZQLength())
-	retval = Z_ReadEnqueue();
-    else
-	retval = Z_ReadWait();
-	
-    if (retval != ZERR_NONE)
+    if ((retval = Z_WaitForComplete()) != ZERR_NONE)
 	return (retval);
 	
     qptr = (struct _Z_InputQ *) Z_GetFirstComplete();

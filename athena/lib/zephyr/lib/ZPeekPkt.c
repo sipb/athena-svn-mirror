@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekPkt.c,v 1.6 1988-05-17 21:23:09 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekPkt.c,v 1.7 1988-06-15 16:55:41 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZPeekPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekPkt.c,v 1.6 1988-05-17 21:23:09 rfrench Exp $";
+static char rcsid_ZPeekPacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekPkt.c,v 1.7 1988-06-15 16:55:41 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -25,22 +25,13 @@ Code_t ZPeekPacket(buffer, ret_len, from)
     int *ret_len;
     struct sockaddr_in *from;
 {
-    int retval;
+    Code_t retval;
     struct _Z_InputQ *nextq;
     
-    if (ZGetFD() < 0)
-	return (ZERR_NOPORT);
+    if ((retval = Z_WaitForComplete()) != ZERR_NONE)
+	return (retval);
 
-    if (ZQLength()) {
-	if ((retval = Z_ReadEnqueue()) != ZERR_NONE)
-	    return (retval);
-    }
-    else {
-	if ((retval = Z_ReadWait()) != ZERR_NONE)
-	    return (retval);
-    }
-
-    nextq = Z_GetFirstComplete();
+    nextq = (struct _Z_InputQ *)Z_GetFirstComplete();
 
     *ret_len = nextq->packet_len;
     

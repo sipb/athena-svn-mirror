@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.6 1988-05-17 21:23:22 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.7 1988-06-15 16:55:51 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZReceiveNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.6 1988-05-17 21:23:22 rfrench Exp $";
+static char rcsid_ZReceiveNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvNot.c,v 1.7 1988-06-15 16:55:51 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -25,16 +25,26 @@ Code_t ZReceiveNotice(notice, from)
     struct sockaddr_in *from;
 {
     char *buffer;
+    struct _Z_InputQ *nextq;
     int len;
     Code_t retval;
 
-    if (!(buffer = malloc(Z_MAXPKTLEN)))
-	return (ENOMEM);
-    
-    if ((retval = ZReceivePacket(buffer, &len, from)) != ZERR_NONE)
+    if ((retval = Z_WaitForComplete()) != ZERR_NONE)
 	return (retval);
 
-    buffer = realloc(buffer, len); /* XXX */
+    nextq = (struct _Z_InputQ *) Z_GetFirstComplete();
+
+    len = nextq->packet_len;
+    
+    if (!(buffer = malloc(len)))
+	return (ENOMEM);
+
+    if (from)
+	*from = nextq->from;
+    
+    bcopy(nextq->packet, buffer, len);
+
+    (void) Z_RemQueue(nextq);
     
     return (ZParseNotice(buffer, len, notice));
 }

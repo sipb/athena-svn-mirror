@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.9 1988-05-17 21:23:26 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.10 1988-06-15 16:55:55 rfrench Exp $ */
 
 #ifndef lint
-static char rcsid_ZReceivePacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.9 1988-05-17 21:23:26 rfrench Exp $";
+static char rcsid_ZReceivePacket_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRecvPkt.c,v 1.10 1988-06-15 16:55:55 rfrench Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -25,24 +25,17 @@ Code_t ZReceivePacket(buffer, ret_len, from)
     int *ret_len;
     struct sockaddr_in *from;
 {
-    int retval;
+    Code_t retval;
     struct _Z_InputQ *nextq;
     
-    if (ZGetFD() < 0)
-	return (ZERR_NOPORT);
-
-    if (ZQLength()) {
-	if ((retval = Z_ReadEnqueue()) != ZERR_NONE)
-	    return (retval);
-    }
-    else {
-	if ((retval = Z_ReadWait()) != ZERR_NONE)
-	    return (retval);
-    }
+    if ((retval = Z_WaitForComplete()) != ZERR_NONE)
+	return (retval);
 
     nextq = (struct _Z_InputQ *) Z_GetFirstComplete();
 
     *ret_len = nextq->packet_len;
+    if (*ret_len > Z_MAXPKTLEN)
+	return (ZERR_PKTLEN);
     
     bcopy(nextq->packet, buffer, *ret_len);
 
