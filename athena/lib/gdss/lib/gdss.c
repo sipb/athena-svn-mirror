@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v $
  * $Author: ghudson $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.11 1996-09-20 04:33:28 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/gdss/lib/gdss.c,v 1.12 1996-11-15 01:12:21 ghudson Exp $
  */
 /*
  * GDSS The Generic Digital Signature Service
@@ -200,7 +200,7 @@ unsigned char *Signature;
       status = GDSS_E_NOSOCKET;
       break;
     }
-    if (connect(s, &sin, sizeof(sin)) < 0) {
+    if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
       status = GDSS_E_NOCONNECT;
       break;
     }
