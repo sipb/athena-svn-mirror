@@ -248,7 +248,9 @@ choose_afsdoptions() {
 case "$1" in 
   start)
     if [ ! "$afs_rh" -o ! -f /var/lock/subsys/openafs ]; then
-	on_network || exit 1
+	if [ `echo "$OPTIONS" | grep -c dynroot` = 0 ]; then
+	    on_network || exit 1
+	fi
 
 	athena_afsadjust
 	choose_afsdoptions
