@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.8 1997-03-18 20:35:58 cfields Exp $
+# $Id: cshrc,v 1.9 1997-04-01 00:53:54 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -48,8 +48,8 @@ if (! $?ENV_SET) then
 
 	set bindir=arch/${ATHENA_SYS}/bin
 
-	if ( ! $?PRINTER && -e /etc/athena/clusterinfo ) then
-	  setenv PRINTER `awk '/LPR/ { print $3 }' /etc/athena/clusterinfo`
+	if ( ! $?PRINTER && -e /var/athena/clusterinfo ) then
+	  setenv PRINTER `awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
 	  if ( $PRINTER == "" ) unsetenv PRINTER
 	endif
 
