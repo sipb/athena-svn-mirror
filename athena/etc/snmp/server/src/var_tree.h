@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.1 1990-04-23 14:28:32 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.2 1990-04-26 18:38:00 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/23  14:28:32  tom
+ * Initial revision
+ * 
  * Revision 1.1  89/11/03  15:43:34  snmpdev
  * Initial revision
  * 
@@ -23,7 +26,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.1 1990-04-23 14:28:32 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 1.2 1990-04-26 18:38:00 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -151,7 +154,7 @@ struct snmp_tree_info {
 #define N_ARPTAB	13
 #define N_ARPSIZE	14
 
-#ifdef ATHENA
+#ifdef MIT
 #define N_AVENRUN       15
 #define N_HZ            16 
 #define N_CPTIME        17
@@ -226,7 +229,7 @@ struct snmp_tree_info {
 #define N_PSP           65
 #define N_NPSP          66
 #endif ibm032
-#endif ATHENA
+#endif MIT
 
 /*
  *  Lookup defines.
@@ -332,6 +335,7 @@ struct snmp_tree_info {
  * unique within a callback. But this is easier for bookkeeping.
  */
 
+#ifdef MIT
 #ifdef ATHENA
 #define N_MACHTYPE        240
 #define N_MACHNDISPLAY    241
@@ -376,6 +380,8 @@ struct snmp_tree_info {
 
 #define N_RELVERSION      287
 #define N_RELDATE	  288		     
+#endif ATHENA
+
 #define N_STATTIME    	  289
 #define N_STATLOAD    	  290
 #define N_STATLOGIN       291
@@ -599,4 +605,4 @@ struct snmp_tree_info {
 #define N_RPCCRED         503
 #define N_RPCCREDPAG      504
 #define N_RPCCREDDIR      505
-#endif ATHENA
+#endif MIT

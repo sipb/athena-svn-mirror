@@ -1,10 +1,32 @@
 /*
- * 
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the kernel stats (vm) portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vm_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
+ *
  */
 
-#include "include.h"
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vm_grp.c,v 1.2 1990-04-26 18:42:50 tom Exp $";
+#endif
 
-#ifdef ATHENA
+
+#include "include.h"
+#include <mit-copyright.h>
+
+#ifdef MIT
 #include <sys/vm.h>
 #include <sys/text.h>
 #include <sys/dk.h>
@@ -32,7 +54,18 @@ struct  ncstats {
 int hz = 0;
 int phz = 0;
 
+static int vmcpu();
+static int vmproctotal();
+static int vmpgrates();
+static int vmsumtotal();
+static int vmxstats();
+static int vmforkstats();
+static int vmtimestats();
+static int vmncstats();
 
+
+
+int
 lu_vmstat(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -164,7 +197,7 @@ lu_vmstat(varnode, repl, instptr, reqflg)
 }
 
 
-
+static int
 vmcpu(offset, value)
      int offset;
      int *value;
@@ -204,7 +237,7 @@ vmcpu(offset, value)
 }
 
 
-
+static int
 vmproctotal(offset, value)
      int offset;
      int *value;
@@ -247,7 +280,7 @@ vmproctotal(offset, value)
 }
 
 
-
+static int
 vmpgrates(offset, value)
      int offset;
      int *value;
@@ -366,7 +399,7 @@ vmpgrates(offset, value)
 }
 
 
-
+static int
 vmsumtotal(offset, value)
      int offset;
      int *value;
@@ -477,6 +510,7 @@ vmsumtotal(offset, value)
 }
 
 
+static int
 vmxstats(offset, value)
      int offset;
      int *value;
@@ -531,6 +565,7 @@ vmxstats(offset, value)
 }
 
 
+static int
 vmforkstats(offset, value)
      int offset;
      int *value;
@@ -572,6 +607,7 @@ vmforkstats(offset, value)
 
 
 
+static int
 vmtimestats(offset, value)
      int offset;
      int *value;
@@ -620,7 +656,7 @@ vmtimestats(offset, value)
 } 
 
 
-
+static int
 vmncstats(offset, value)
      int offset;
      int *value;
@@ -713,6 +749,6 @@ vmncstats(offset, value)
 #endif VFS
 }
 
-#endif ATHENA
+#endif MIT
 
 
