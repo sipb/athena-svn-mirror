@@ -64,7 +64,7 @@ clean::
 install::
 	for f in telnetd; do \
 	  $(INSTALL_PROGRAM) $$f \
-		$(DESTDIR)$(SERVER_BINDIR)/`echo $$f|sed '$(transform)'`; \
+		$(DESTDIR)/etc/athena/telnetd
 	  $(INSTALL_DATA) $(srcdir)/$$f.8 \
 		${DESTDIR}$(SERVER_MANDIR)/`echo $$f|sed '$(transform)'`.8; \
 	done
