@@ -146,7 +146,7 @@ XCOMM operating system:		OSName
 #define LnCmd ln -s
 #define TroffCmd psroff -t
 #ifdef UseInstalled
-#define InstallCmd bsdinst
+#define InstallCmd install
 #endif
 
 /* for xdm or anyone else to use */
