@@ -1,4 +1,5 @@
-# $Id: athena-ws.rc,v 1.8 2003-04-06 21:09:16 ghudson Exp $
+#!/sbin/sh
+# $Id: athena-ws.rc,v 1.9 2003-08-13 05:31:37 zacheiss Exp $
 # /etc/init.d/athena-ws - Start/Stop the athena daemons
 
 # First, set up some useful variables.  Note /usr/athena/etc at the
