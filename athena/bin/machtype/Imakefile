@@ -1,53 +1,41 @@
 /*
- * $Id: Imakefile,v 1.12 1995-07-31 23:34:31 cfields Exp $
+ * $Id: Imakefile,v 1.13 1995-08-01 15:50:50 cfields Exp $
  */
 
-#ifdef ULTRIX40
+#ifdef ultrix
 DEFINES=-DULTRIX_40 -I/usr/include/sys 
+NAME=std
+LIBS=
+INST=-m 2755 -gkmem
+#endif
+
+#ifdef _IBMR2
+NAME=rios
+LIBS=-lodm -lcfg -ldiag
+INST=
+#endif
+
+#ifdef SOLARIS
+NAME=sol
+LIBS=-lkvm
+INST=-m 4755 -o root
+#endif
+
+#ifdef sgi
+NAME=sg/**/i
+LIBS=-lmld
+INST=-m 4755 -o root
 #endif
 
 ATHSYS=`fs sysname | awk -F\' '{ print $$2 }'`
 
-#if defined(_IBMR2)
-#define DONE
-machtype_rios.o: $(ATHVERS) machtype_rios.c
+machtype_${NAME}.o:	${ATHVERS} machtype_${NAME}.c
 	$(RM) $@
 	. $(ATHVERS); \
 	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" \
 	-DATHSYS=\"${ATHSYS}\" $*.c
 
-SimpleProgram(machtype, machtype_rios.o,-lodm -lcfg -ldiag,$(ATHRBINDIR))
-#endif
-#if defined(SOLARIS)
-#define DONE
-machtype_sol.o: $(ATHVERS) machtype_sol.c
-        $(RM) $@
-        . $(ATHVERS); \
-        $(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" \
-	-DATHSYS=\"${ATHSYS}\" $*.c
-
-SimpleProgram(machtype, machtype_sol.o,-lkvm,$(ATHRBINDIR))
-install_program(machtype,-m 4755 -o root,$(ATHRBINDIR))
-#endif
-#if defined(sgi)
-#define DONE
-machtype_sgi.o: $(ATHVERS) machtype_sgi.c
-	$(RM) $@
-	. $(ATHVERS); \
-	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" \
-	-DATHSYS=\"${ATHSYS}\" $*.c
-SimpleProgram(machtype, machtype_sgi.o,-lmld,$(ATHRBINDIR))
-install_program(machtype,-m 4755 -o root,$(ATHRBINDIR))
-#endif
-#ifndef DONE
-machtype_std.o: $(ATHVERS) machtype_std.c
-	$(RM) $@
-	. $(ATHVERS); \
-	$(CC) -c $(CFLAGS) -DATHMAJV=\"$$ATHMAJV\" -DATHMINV=\"$$ATHMINV\" \
-	-DATHSYS=\"${ATHSYS}\" $*.c
-	
-build_program(machtype, machtype_std.o,,)
-install_program(machtype,-m 2755 -g kmem,$(ATHRBINDIR))
-#endif
+build_program(machtype, machtype_${NAME}.o,,${LIBS})
+install_program(machtype,${INST},${ATHRBINDIR})
 
 install_man(machtype.1,machtype.1)
