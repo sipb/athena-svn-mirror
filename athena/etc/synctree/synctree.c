@@ -2,14 +2,19 @@
 
 #include <stdio.h>
 #include <sys/types.h>
-#ifdef SOLARIS
-#undef POSIX
-#include "/usr/ucbinclude/sys/dir.h"
+#include <sys/param.h>
+#ifdef POSIX
+#include <unistd.h>
+#ifndef SOLARIS
+#include <dirent.h>
+#else
+#include "dirent.h"
+#endif
 #else
 #include <sys/dir.h>
 #endif
 #include <sys/stat.h>
-#include <sys/param.h>
+
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <strings.h>
@@ -18,6 +23,9 @@
 #endif
 #ifdef sparc
 #include <alloca.h>
+#endif
+#ifdef SOLARIS
+#define NO_LINEBUF
 #endif
 #include "synctree.h"
 
@@ -56,8 +64,9 @@ char *afile;
 bool nosrcrules = FALSE;
 bool nodstrules = FALSE;
 uid_t uid, euid;
+#ifndef SOLARIS
 uid_t getuid(), geteuid();
-
+#endif
 void usage(arg0)
      char *arg0;
 {
@@ -70,7 +79,9 @@ main(argc, argv)
      char *argv[];
 {
   int i;
+#ifndef POSIX
   char *getwd();
+#endif
 #ifndef NO_RLIMIT
   struct rlimit rl;
 #endif
@@ -183,11 +194,19 @@ main(argc, argv)
   if (srcdir[0] != '/')
     { char *p = srcdir;
       srcdir = (char *) alloca(MAXPATHLEN);
+#ifdef POSIX 
+      if ((srcdir = getcwd(srcdir,MAXPATHLEN )) == NULL)
+	{ perror("getcwd() failed");
+	  fprintf(stderr,"exiting\n");
+	  exit(1);
+	} 
+#else 
       if ((srcdir = getwd(srcdir)) == NULL)
 	{ perror("getwd() failed");
 	  fprintf(stderr,"exiting\n");
 	  exit(1);
 	}
+#endif 
       if ((strlen(srcdir) + strlen("/") + strlen(p) + 1) > MAXPATHLEN)
 	{ fprintf(stderr,"full pathname is too long, exiting");
 	  exit(1);
@@ -199,15 +218,24 @@ main(argc, argv)
   if ((dstdir[0] != '/') && (dstdir[0] != '\0'))
     { char *p = dstdir;
       dstdir = (char *) alloca(MAXPATHLEN);
+#ifdef POSIX
+      if ((dstdir = getcwd(dstdir, MAXPATHLEN)) == NULL)
+	{ perror("getcwd() failed");
+	  fprintf(stderr,"exiting\n");
+	  exit(1);
+	}
+#else 
       if ((dstdir = getwd(dstdir)) == NULL)
 	{ perror("getwd() failed");
 	  fprintf(stderr,"exiting\n");
 	  exit(1);
 	}
+#endif
       if ((strlen(dstdir) + strlen("/") + strlen(p) + 1) > MAXPATHLEN)
 	{ fprintf(stderr,"full pathname is too long, exiting");
 	  exit(1);
 	}
+
       (void) strcat(dstdir,"/");
       (void) strcat(dstdir,p);
     }
@@ -312,6 +340,7 @@ int dodir(src,dst,part)
 	sp->dir    = (struct direct *) getmem(sizeof(struct direct));
 #endif
 	*(sp->dir) = *dp;
+        strcpy(sp->dir->d_name, dp->d_name);
     }
     closedir(dirp);
 
@@ -360,7 +389,6 @@ int dodir(src,dst,part)
 	    (void) strcpy(sp->pathname,src);
 	    (void) strcat(sp->pathname,"/");
 	    (void) strcat(sp->pathname,sp->dir->d_name);
-
 	    /* get information about file */
 	    if (lstat(sp->pathname,&(sp->stat)) < 0) {
 #define perror(problem, whatnext) printf("%s: %s: %s. %s\n", sp->pathname, problem, errno<sys_nerr ? sys_errlist[errno] : "unknown error", whatnext)
