@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.2 1988-01-29 18:24:15 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.3 1988-02-29 20:33:04 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.2 1988-01-29 18:24:15 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.3 1988-02-29 20:33:04 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -136,7 +136,7 @@ extern FILE *yyin,*yyout;
 #define TIME( statbuf) ((long)(statbuf).st_mtime)
 #define UID( statbuf)  ((int )(statbuf).st_uid)
 #define GID( statbuf)  ((int )(statbuf).st_gid)
-#define DEV( statbuf)  ((int )(statbuf).st_dev)
+#define DEV( statbuf)  ((int )(statbuf).st_rdev)
 
 extern int access();
 
