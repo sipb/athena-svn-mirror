@@ -1,7 +1,7 @@
 /*
  * Listener loop for subsystem library libss.a.
  *
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.4 1992-11-05 18:01:32 probe Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.5 1995-07-12 05:21:18 cfields Exp $
  *	$Locker:  $
  * 
  * Copyright 1987, 1988 by MIT Student Information Processing Board
@@ -12,7 +12,7 @@
 #include "copyright.h"
 #include "ss_internal.h"
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <setjmp.h>
 #include <signal.h>
 #include <sys/param.h>
@@ -22,7 +22,7 @@
 
 #ifndef	lint
 static char const rcs_id[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.4 1992-11-05 18:01:32 probe Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/ss/listen.c,v 1.5 1995-07-12 05:21:18 cfields Exp $";
 #endif
 
 #ifdef POSIX
@@ -91,7 +91,7 @@ int ss_listen (sci_idx)
     mask = sigblock(sigmask(SIGINT));
 #endif
 
-    bcopy(listen_jmpb, old_jmpb, sizeof(jmp_buf));
+    memmove(old_jmpb, listen_jmpb, sizeof(jmp_buf));
 
 #ifdef POSIX    
     nsig.sa_handler = listen_int_handler;
@@ -171,7 +171,7 @@ egress:
 #else
     (void) signal(SIGINT, sig_int);
 #endif
-    bcopy(old_jmpb, listen_jmpb, sizeof(jmp_buf));
+    memmove(listen_jmpb, old_jmpb, sizeof(jmp_buf));
     current_info = old_info;
     return code;
 }
