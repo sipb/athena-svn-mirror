@@ -8,8 +8,11 @@
  * Copyright (C) 1999 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: config.h.in,v 1.1 1999-03-06 16:48:24 ghudson Exp $
+ *	$Id: config.h.in,v 1.2 1999-07-30 17:53:22 ghudson Exp $
  */
+
+#ifndef OLC_CONFIG_H
+#define OLC_CONFIG_H
 
 /* Define this to compile the OLTA server, instead of OLC. */
 #undef OLTA
@@ -124,3 +127,5 @@
  * must go into a file that must be edited by hand...
  */
 #include "site.h"
+
+#endif /* OLC_CONFIG_H */
