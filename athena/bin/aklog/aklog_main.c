@@ -1,11 +1,11 @@
 /* 
- * $Id: aklog_main.c,v 1.32 1999-01-24 21:34:19 ghudson Exp $
+ * $Id: aklog_main.c,v 1.33 1999-02-19 17:45:59 ghudson Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
-static const char rcsid[] = "$Id: aklog_main.c,v 1.32 1999-01-24 21:34:19 ghudson Exp $";
+static const char rcsid[] = "$Id: aklog_main.c,v 1.33 1999-02-19 17:45:59 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,6 +24,17 @@ static const char rcsid[] = "$Id: aklog_main.c,v 1.32 1999-01-24 21:34:19 ghudso
 #include <afs/vice.h>
 #include <afs/venus.h>
 #include <afs/ptserver.h>
+
+/* Cheesy test for determining AFS 3.5. */
+#ifndef AFSCONF_CLIENTNAME
+#define AFS35
+#endif
+
+#ifdef AFS35
+#include <afs/dirpath.h>
+#else
+#define AFSDIR_CLIENT_ETC_DIRPATH AFSCONF_CLIENTNAME
+#endif
 
 #include "aklog.h"
 #include "linked_list.h"
@@ -82,6 +93,19 @@ static linked_list zsublist;	/* List of zephyr subscriptions */
 static linked_list hostlist;	/* List of host addresses */
 static linked_list authedcells;	/* List of cells already logged to */
 
+/* This is a pretty gross hack.  Linking against the Transarc
+ * libraries pulls in some rxkad functions which use des.  (I don't
+ * think they ever get called.)  With Transarc-supplied libraries this
+ * creates a reliance on the symbol des_pcbc_init() which is only in
+ * Transarc's DES libraries (it's an exportability symbol-hiding
+ * thing), which we don't want to use because they don't work with
+ * MIT's krb4 routines.  So export a des_pcbc_init() symbol here so we
+ * don't have to link against Transarc's des library.
+ */
+int des_pcbc_init()
+{
+    abort();
+}
 
 static char *afs_realm_of_cell(cellconfig)
     struct afsconf_cell *cellconfig;
@@ -138,10 +162,10 @@ static int get_cellconfig(char *cell, struct afsconf_cell *cellconfig,
     memset(local_cell, 0, sizeof(local_cell));
     memset(cellconfig, 0, sizeof(*cellconfig));
 
-    if (!(configdir = afsconf_Open(AFSCONF_CLIENTNAME))) {
+    if (!(configdir = afsconf_Open(AFSDIR_CLIENT_ETC_DIRPATH))) {
 	sprintf(msgbuf, 
 		"%s: can't get afs configuration (afsconf_Open(%s))\n",
-		progname, AFSCONF_CLIENTNAME);
+		progname, AFSDIR_CLIENT_ETC_DIRPATH);
 	params.pstderr(msgbuf);
 	params.exitprog(AKLOG_AFS);
     }
@@ -171,8 +195,7 @@ static int get_cellconfig(char *cell, struct afsconf_cell *cellconfig,
 /* 
  * Log to a cell.  If the cell has already been logged to, return without
  * doing anything.  Otherwise, log to it and mark that it has been logged
- * to.
- */
+ * to.  */
 static int auth_to_cell(char *cell, char *realm)
 {
     int status = AKLOG_SUCCESS;
@@ -366,7 +389,7 @@ static int auth_to_cell(char *cell, char *realm)
 		params.pstdout(msgbuf);
 	    }
 	    
-	    if (!pr_Initialize (0, AFSCONF_CLIENTNAME, aserver.cell))
+	    if (!pr_Initialize (0, AFSDIR_CLIENT_ETC_DIRPATH, aserver.cell))
 		    status = pr_SNameToId (username, &viceId);
 	    
 	    if (dflag) {
