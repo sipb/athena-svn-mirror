@@ -1,4 +1,4 @@
-# $Id: packages,v 1.147 2002-02-03 15:47:03 ghudson Exp $
+# $Id: packages,v 1.148 2002-02-03 17:12:53 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -153,7 +153,7 @@ third/gnome-print		requires gnome-libs,libxml,gdk-pixbuf
 third/gnome-utils		requires gnome-libs,gnome-core,libxml,libglade
 third/gnome-vfs			requires gnome-libs,oaf,GConf,bzip2
 third/gtk			requires glib
-third/gtkhtml			requires gnome-print,gdk-pixbuf,gal,bonobo,GConf
+third/gtkhtml			requires gnome-print,gdk-pixbuf,gal,bonobo,GConf,control-center
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
