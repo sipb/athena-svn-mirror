@@ -3,12 +3,12 @@
 case "${MACH}" in
 RT*|VAX*|VS*)
 	if [ "${KNETD}" = "true" ]; then
-		echo "Changing KNETD to false in /etc/rc.conf."
-		if [ ! -f /etc/rc.conf.orig ]; then
-			cp /etc/rc.conf /etc/rc.conf.orig
+		echo "Changing KNETD to false in rc.conf."
+		if [ ! -f ${CONFDIR}/rc.conf.old ]; then
+			cp ${CONFDIR}/rc.conf ${CONFDIR}/rc.conf.old
 		fi
-		sed /KNETD=/s/true/false/ < /etc/rc.conf > /tmp/rc.conf
-		cp /tmp/rc.conf /etc/rc.conf
+		sed /KNETD=/s/true/false/ < ${CONFDIR}/rc.conf > /tmp/rc.conf
+		cp /tmp/rc.conf ${CONFDIR}/rc.conf
 	fi
 	if [ `/bin/athena/machtype` = "vax" ]; then
 		echo "Removing extra X servers"
@@ -26,55 +26,22 @@ RT*|VAX*|VS*)
 		fi
 	fi
 
-	echo "Removing old symlinks"
-	old_links=     "/bin/athena/expunge \
-			/bin/athena/get_message \
-			/bin/athena/hostinfo \
-			/bin/athena/lsdel \
-			/bin/athena/purge \
-			/bin/athena/undelete \
-			/bin/rcp \
-			/bin/pts \
-			/bin/tokens \
-			/etc/athena/messaged \
-			/etc/athena/newsyslog \
-			/etc/athena/rkinitd \
-			/etc/athena/track \
-			/etc/athena/backup \
-			/etc/athena/backuperr \
-			/etc/athena/cppart 
-			/etc/athena/cut_msgs \
-			/etc/athena/dumptape \
-			/etc/athena/login-shutdown \
-			/etc/athena/rti_users \
-			/etc/athena/stop_mailer \
-			/etc/athena/zephyr.desc \
-			/etc/xterm \
-			/etc/writed \
-			/etc/tftpd \
-			/etc/timedc \
-			/usr/2020 \
-			/usr/beta \
-			${mold}"
-	for i in $old_links; do
-		rm -f $i
-	done
-
 	;;
 DS3100)
 	echo "Creating new devices"	
-	if [ "${SYSTEM}" = "ULTRIX31" -a -f /etc/rc.conf ]; then
+	if [ "${SYSTEM}" = "ULTRIX31" -a -f ${CONFDIR}/rc.conf ]; then
 		echo "Changing SYSTEM to ULTRIX42 in rc.conf."
-		if [ ! -f /etc/athena/rc.conf.orig ]; then
-			cp /etc/rc.conf /etc/athena/rc.conf.orig
+		if [ ! -f ${CONFDIR}/rc.conf.old ]; then
+			cp ${CONFDIR}/rc.conf ${CONFDIR}/rc.conf.old
 		fi
-		sed -e '/SYSTEM=/s/31/42/' < /etc/rc.conf > /tmp/rc.conf
-		cp /tmp/rc.conf /etc/rc.conf
+		sed -e '/SYSTEM=/s/31/42/' < ${CONFDIR}/rc.conf > /tmp/rc.conf
+		cp /tmp/rc.conf ${CONFDIR}/rc.conf
 	fi
+	fs sysname pmax_ul4
 	NETDEV=${NETDEV-NODEV}
-	if [ "${NETDEV}" = "NODEV" -a -f /etc/rc.conf ]; then
+	if [ "${NETDEV}" = "NODEV" -a -f ${CONFDIR}/rc.conf ]; then
 		echo "Adding NETDEV to rc.conf."
-		echo "NETDEV=ln0;		export NETDEV	# Network device" >> /etc/rc.conf
+		echo "NETDEV=ln0;		export NETDEV	# Network device" >> ${CONFDIR}/rc.conf
 	fi
 	
 	echo "Changing group id's in /etc/group"
@@ -119,6 +86,22 @@ DS3100)
 		echo "Creating /var/adm/lmf"
 		mkdir /var/adm/lmf
 	fi
+	mold="/etc/athena/xdm \
+		/etc/dgated \
+		/etc/fitset \
+		/etc/fverify \
+		/etc/htable \
+		/etc/implog \
+		/etc/implogd \
+		/etc/lprsetup \
+		/etc/named-xfer \
+		/etc/servers \
+		/etc/snapcopy \
+		/etc/revnetgroup \
+		/etc/yp \
+		/usr/local \
+		/usr/demo \
+		/usr/examples"
 	;;
 esac
 
@@ -146,8 +129,30 @@ if [ ! -f /etc/athena/rc.conf ]; then
 	echo "Moving rc.conf files to /etc/athena."
 	mv -f /etc/rc.conf /etc/athena/
 fi
-if [ ! -f /etc/athena/galatea.conf -a -f /etc/galatea.conf ]; then
-	echo "Moving galetea.conf to /etc/athena."
-	mv -f /etc/galetea.conf /etc/athena/
-	ln -s athena/galatea.conf /etc/galatea.conf
+if [ ! -f /etc/athena/clusterinfo -a -f /etc/clusterinfo ]; then
+	echo "Moving clusterinfo* to /etc/athena."
+	mv -f /etc/clusterinfo* /etc/athena/
 fi
+
+echo "Removing old symlinks."
+old_links="/etc/athena/backup \
+		/etc/athena/backuperr \
+		/etc/athena/cppart 
+		/etc/athena/cut_msgs \
+		/etc/athena/dumptape \
+		/etc/athena/lib \
+		/etc/athena/login-shutdown \
+		/etc/athena/messaged \		
+		/etc/athena/rti_users \
+		/etc/athena/rkinitd \
+		/etc/athena/stop_mailer \
+		/etc/athena/zephyr.desc \
+		/etc/writed \
+		/etc/tftpd \
+		/usr/2020 \
+		/usr/beta \
+		${mold}"
+for i in $old_links; do
+	rm -f $i
+done
+
