@@ -1,0 +1,31 @@
+GLOBAL : *.CKP *.local *.pid :
+## Major subscription list for workstations
+##
+##	MIT Project Athena
+##
+##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sgi/sys_rvd,v $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sgi/sys_rvd,v 1.1 1996-05-08 03:40:43 cfields Exp $
+	.:::
+		auto_update
+		install
+		usr
+		etc
+		bin
+		.rvdinfo
+		patch
+		:
+	/usr:::
+		->athena
+		->lib
+		:
+	/usr/bsd::::
+	/usr/etc::::
+	/etc:::
+		passwd
+		passwd.local
+		shadow
+		shadow.local
+		srvtab
+		:
+	/bin:::
+		:
