@@ -9,16 +9,21 @@ reactivate \- reset the state of an idle workstation
 ]
 .SH DESCRIPTION
 The
-.I xlogin(8)
-program uses the
 .I reactivate
-script to both initialize the workstation for users and to reset the
-state after a user has logged out.  It should only be run when no one
-is logged in, or to ensure that noone is logged in.
+script initializes an idle workstation and resets the state after a
+user has logged out.  It is invoked regularly from
+.I cron
+and exits immediately if anyone is logged in, unless the
+.B \-prelogin
+option is specified.  It also exits if another
+.I reactivate
+process is found to be running.
 
-The
+When the workstation is idle,
 .I reactivate
-script performs several tasks:
+performs several tasks:
+.TP
++ It disables logins for the duration of its execution.
 .TP
 * It flushes all filesystem authentication from the workstation.
 .TP
@@ -58,7 +63,10 @@ causes
 .I reactivate
 to detach all attached filesystems.  This is not
 done on every invocation to cut down on the network traffic from idle
-workstations.
+workstations.  Without this option,
+.I reactivate
+will still detach all attached filesystems periodically, by keeping a
+count of how many times it has been invoked.
 .TP
 .B \-prelogin
 causes
@@ -92,6 +100,9 @@ may not be specified simultaneously.
 /etc/passwd.local			Default contents of password file
 /etc/group.local			Default contents of group file
 /etc/athena/reactivate.local	Optional local additions
+/etc/nologin				Disables logins
+/var/athena/reactivate.pid	Contains reactivate process ID
+/var/athena/reactivate.count	Contains reactivate invocation count
 .fi
 .SH SEE ALSO
 dm(8), xlogin(8), save_cluster_info(8), access_on(1) and access_off(1),

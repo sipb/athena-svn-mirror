@@ -1,12 +1,138 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.54 2000-12-22 07:52:39 jweiss Exp $
+# $Id: reactivate.sh,v 1.55 2001-04-04 21:19:16 rbasch Exp $
 
-trap "" 1 15
+# Ignore various terminating signals.
+trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
 
 PATH=/bin:/etc/athena:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb:/usr/bsd; export PATH
 HOSTTYPE=`/bin/athena/machtype`; export HOSTTYPE
+
+pidfile=/var/athena/reactivate.pid
+countfile=/var/athena/reactivate.count
+nologin=/etc/nologin
+made_nologin=false
+
+umask 22
+. /etc/athena/rc.conf
+
+# Quit now if in the middle of an update.
+THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
+case "$THISVERS" in
+[0-9]*|Layered)
+	# Not in an update, OK.
+	;;
+*)
+	# In an update, quit now.
+	echo "reactivate: This workstation is in the middle of an update."
+	exit 1
+	;;
+esac
+
+if [ "$1" = -prelogin ]; then
+	if [ "$PUBLIC" = "false" ]; then
+		exit 0;
+	fi
+	echo "Cleaning up..." >> /dev/console
+	full=false
+else
+	full=true
+fi
+
+# Quit now if another reactivate process is running.
+if [ -s $pidfile ]; then
+	pid=`cat $pidfile 2>/dev/null`
+	if [ -n "$pid" -a "$pid" -ne 0 ]; then
+		kill -0 $pid 2>/dev/null
+		if [ $? -eq 0 ]; then
+			echo "Another reactivate process is running ($pid)."
+			exit 0
+		fi
+	fi
+fi
+
+echo $$ > $pidfile
+
+# Define a function to clean up at exit.
+# We want to ensure that we don't leave logins disabled.
+# This function also removes our pid file.
+# (Note that terminating signals are ignored, above).
+cleanexit()
+{
+	if [ true = "${made_nologin}" ]; then
+		rm -f $nologin
+	fi
+	rm -f $pidfile
+}
+
+trap cleanexit EXIT
+
+# See if anyone is logged in.  We check for stale utmp entries, by
+# doing a kill -0 on the session leader's pid.
+# The Linux who does not give the pid, so we must use ps to figure
+# it out.
+if [ "$full" = true ]; then
+	if [ linux = "$HOSTTYPE" ]; then
+		pids=
+		for tty in `who | awk '{ print $2; }'` ; do
+			pids="$pids `ps --no-heading -j -t $tty | \
+				awk '($1 == $3) { print $1; }'`"
+		done
+	else
+		pids=`who -u | awk '{ print $7; }'`
+	fi
+
+	# If any session leader pid is current, quit now.
+	for pid in $pids ; do
+		kill -0 $pid 2>/dev/null
+		if [ $? -eq 0 ]; then
+			rm -f $countfile
+			exit 0
+		fi
+	done
+
+	# Check for valid Athena session records; these get created for
+	# remote shells, etc., which may not have an associated utmp entry.
+	# Quit if any are found.
+
+	# We need to use nawk on Solaris in parsing the sessions file below.
+	case "$HOSTTYPE" in
+	sun4)
+		awk=nawk
+		;;
+	*)
+		awk=awk
+		;;
+	esac
+
+	for i in /var/athena/sessions/* ; do
+		if [ -s $i ]; then
+			for pid in `					\
+			  $awk -F : '					\
+			    FNR == 5					\
+			    {						\
+				for (i = 1; i <= NF; i++)		\
+				    if (int($i) != 0)			\
+					print $i;			\
+			    }' $i` ; do
+				kill -0 $pid 2>/dev/null
+				if [ $? -eq 0 ]; then
+					rm -f $countfile
+					exit 0
+				fi
+			done
+		fi
+	done
+fi
+
+# There are no current logins or sessions, so proceed.  We disable
+# logins for the duration, by creating /etc/nologin, unless it
+# already exists.
+if [ ! -f $nologin ]; then
+	made_nologin=true
+	echo "Workstation is reactivating." > $nologin
+fi
 
 # Usage: nuke directoryname
 # Do the equivalent of rm -rf directoryname/*, except using saferm.
@@ -21,39 +147,31 @@ nuke()
 	)
 }
 
-umask 22
-. /etc/athena/rc.conf
 if [ -f /var/athena/clusterinfo.bsh ] ; then
 	. /var/athena/clusterinfo.bsh
 fi
 
-# Determine where the congfig files live
-THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
+# Determine where the config files live
 if [ "$HOSTTYPE" = linux -a -n "$SYSPREFIX" ]; then
 	config=$SYSPREFIX/config/$THISVERS
 else
 	config=/srvd
 fi
 
-# Set various flags (based on environment and command-line)
-if [ "$1" = -detach ]; then
+# We don't want to detach all filesystems on every invocation, so
+# we keep a count file, and only detach all every tenth invocation,
+# or when the -detach option is specified.
+count=`cat $countfile 2>/dev/null`
+if [ -z "$count" ]; then
+	count=0
+fi
+if [ "$1" = -detach -o `expr $count % 10` -eq 0 ]; then
 	dflags=""
 else
 	dflags="-clean"
 fi
 
-if [ "$1" = -prelogin ]; then
-	if [ "$PUBLIC" = "false" ]; then
-		exit 0;
-	fi
-	echo "Cleaning up..." >> /dev/console
-	full=false
-else
-	full=true
-fi
-
-if [ -z "$USER" ]; then
-	exec 1>/dev/console 2>&1
+if [ ! -t 0 ]; then
 	quiet=-q
 else
 	echo "Reactivating workstation..."
@@ -78,13 +196,15 @@ rm -f /var/tmp/!!!SuperLock!!!
 
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
-	if [ sun4 = "$HOSTTYPE" -a -f /tmp/ps_data ]; then
-		cp -p /tmp/ps_data /var/athena/ps_data
-		nuke /tmp > /dev/null 2>&1
-		cp -p /var/athena/ps_data /tmp/ps_data
-		rm -f /var/athena/ps_data
-	else
-		nuke /tmp > /dev/null 2>&1
+	if [ "$PUBLIC" = true ]; then
+		if [ sun4 = "$HOSTTYPE" -a -f /tmp/ps_data ]; then
+			cp -p /tmp/ps_data /var/athena/ps_data
+			nuke /tmp > /dev/null 2>&1
+			cp -p /var/athena/ps_data /tmp/ps_data
+			rm -f /var/athena/ps_data
+		else
+			nuke /tmp > /dev/null 2>&1
+		fi
 	fi
 	nuke /var/athena/tmphomedir > /dev/null 2>&1
 fi
@@ -100,9 +220,8 @@ if [ "$PUBLIC" = true ]; then
 			/etc/shadow.local
 	fi
 	if [ -r $config/etc/group ]; then
-		cp -p $config/etc/group /etc/group.local
-		chmod 644 /etc/group.local
-		chown root /etc/group.local
+		syncupdate -c /etc/group.local.new $config/etc/group \
+			/etc/group.local
 	fi
 	rm -rf /etc/athena/access >/dev/null 2>&1
 fi
@@ -189,6 +308,8 @@ if [ "$full" = true ]; then
 	if [ -f /etc/athena/reactivate.local ]; then
 		/etc/athena/reactivate.local
 	fi
+	# Update our invocation count.
+	echo `expr $count + 1` > $countfile
 fi
 
 exit 0
