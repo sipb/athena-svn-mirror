@@ -14,21 +14,27 @@ This file contains the following sections:
 Building packages from the source tree
 --------------------------------------
 
-The general steps involved in building package from the source tree are:
+To build a package from the Athena source tree, you should generally
+first attach the source tree that you want.  You can either attach a
+locker like "source-8.0" or "source-8.1" to get the sources for a
+particular release, or you can attach "source" to get the current
+development sources (actually, "source" is tied to the 8.0 sources
+until the 8.1 release goes to field, for transitional reasons).
+Releases prior to 8.1 will not build using the procedure below.
 
-	set src=/afs/dev.mit.edu/source/src-current
+After attaching the correct locker, you can build a program by doing:
+
+	set src=/mit/source-8.1 # Or whatever
 	mkdir /var/tmp/pkgname
 	cd /var/tmp/pkgname
 	synctree -s $src/path-to-package -d . -a $src/.rconf
-	sh $src/packs/build/do.sh -s $src prepare
-	sh $src/packs/build/do.sh -s $src all
+	sh $src/packs/build/do.sh prepare
+	sh $src/packs/build/do.sh all
 
-You may find it convenient to have an alias "do" which runs
-packs/build/do.sh out of the source tree with the appropriate -s
-parameter.  Without a -s parameter, "do" assumes the source tree is
-located in /source.  (Right now, the source locker still points to the
-8.0 source tree, so /source is not generally useful unless you make
-the symlink by hand.)
+"do" accepts the following options:
+
+	-s srcdir	Specifies the source hierarchy, if not /source
+	-d destdir	Specifies the install hierarchy, if not /srvd
 
 "do" recognizes supports the following build operations:
 
