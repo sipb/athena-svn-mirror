@@ -8,3 +8,8 @@ echo "113096-03"					>> $PATCHES
 echo "112785-17"					>> $PATCHES
 echo "OSCHANGES=true"					>> $CONFVARS
 echo "/etc/athena/athinfo.defs"				>> $CONFCHG
+
+# There was a special Athena cell 9.2.10 release, which means Athena
+# cell machines won't run the dev cell 9.2.10 version script.  So the
+# contents of that script have been moved here.
+cat $LIBDIR/deadfiles-9.2.10				>> $DEADFILES
