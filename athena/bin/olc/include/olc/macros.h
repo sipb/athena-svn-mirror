@@ -17,9 +17,10 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
  *      $Author: raeburn $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.3 1990-01-04 14:37:04 raeburn Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.4 1990-01-05 06:13:27 raeburn Exp $
  */
 
+#include <olc/lang.h>
 
 /* 
  * Error codes
@@ -51,7 +52,8 @@
  */
 
 typedef int     ERRCODE;        /* An error code. */
-typedef ERRCODE (*FUNCTION)();  /* A pointer to a function. */
+typedef ERRCODE (*FUNCTION) OPrototype ((int, struct tREQUEST *, int));
+				/* A pointer to a function. */
 typedef int     RESPONSE;       /* A response code. */
 
 /* Useful macros. */
