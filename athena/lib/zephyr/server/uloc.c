@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/uloc.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -14,7 +14,7 @@
 #include <zephyr/mit-copyright.h>
 
 #ifndef lint
-static char rcsid_uloc_c[] = "$Id: uloc.c,v 1.34 1989-12-13 10:29:46 jtkohl Exp $";
+static char rcsid_uloc_c[] = "$Id: uloc.c,v 1.35 1990-05-17 03:49:15 raeburn Exp $";
 #endif lint
 
 #include "zserver.h"
@@ -1338,7 +1338,7 @@ register FILE *fp;
 			fputs("/NET_ANN/", fp);
 			break;
 		default:
-			fprintf(fp, "/?? %d ??/", locations[i].zlt_exposure);
+			fprintf(fp, "/? %d ?/", locations[i].zlt_exposure);
 			break;
 		}
 		fputs(inet_ntoa(locations[i].zlt_addr), fp);
