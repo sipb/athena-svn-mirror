@@ -1,3 +1,22 @@
+/* 
+ * Copyright (C) 2001, 2002 Red Hat Inc.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -568,7 +587,6 @@ parse_libs (Package *pkg, const char *str, const char *path)
   /* Strip out -l and -L flags, put them in a separate list. */
   
   char *trimmed;
-  GString *other;
   char **argv = NULL;
   int argc;
   int result;
@@ -601,8 +619,6 @@ parse_libs (Package *pkg, const char *str, const char *path)
 
       exit (1);
     }
-  
-  other = g_string_new ("");
 
   i = 0;
   while (i < argc)
@@ -656,9 +672,9 @@ parse_libs (Package *pkg, const char *str, const char *path)
         }
       else
         {
-          g_string_append_c (other, ' ');
-          g_string_append (other, arg);
-          g_string_append_c (other, ' ');
+          if (*arg != '\0')
+            pkg->other_libs = g_slist_prepend (pkg->other_libs,
+                                               g_strdup (arg));
         }
 
       g_free (arg);
@@ -669,12 +685,9 @@ parse_libs (Package *pkg, const char *str, const char *path)
   g_free (argv);
   g_free (trimmed);
 
-  pkg->other_libs = other->str;
-  
-  g_string_free (other, FALSE);
-
   pkg->l_libs = g_slist_reverse (pkg->l_libs);
   pkg->L_libs = g_slist_reverse (pkg->L_libs);
+  pkg->other_libs = g_slist_reverse (pkg->other_libs);
 }
      
 static void
@@ -683,7 +696,6 @@ parse_cflags (Package *pkg, const char *str, const char *path)
   /* Strip out -I flags, put them in a separate list. */
   
   char *trimmed;
-  GString *other;
   char **argv = NULL;
   int argc;
   int result;
@@ -707,8 +719,6 @@ parse_cflags (Package *pkg, const char *str, const char *path)
 
       exit (1);
     }
-  
-  other = g_string_new ("");
 
   i = 0;
   while (i < argc)
@@ -742,9 +752,9 @@ parse_cflags (Package *pkg, const char *str, const char *path)
         }
       else
         {
-          if (other->len > 0)
-            g_string_append (other, " ");
-          g_string_append (other, arg);
+          if (*arg != '\0')
+            pkg->other_cflags = g_slist_prepend (pkg->other_cflags,
+                                                 g_strdup (arg));
         }
 
       g_free (arg);
@@ -755,11 +765,8 @@ parse_cflags (Package *pkg, const char *str, const char *path)
   g_free (argv);
   g_free (trimmed);
 
-  pkg->other_cflags = other->str;
-  
-  g_string_free (other, FALSE);
-
   pkg->I_cflags = g_slist_reverse (pkg->I_cflags);
+  pkg->other_cflags = g_slist_reverse (pkg->other_cflags);
 }
      
 static void
@@ -1003,6 +1010,16 @@ try_command (const char *command)
 Package *
 get_compat_package (const char *name)
 {
+#ifdef G_OS_WIN32
+  /* There has never been any of these legacy *-config scripts on
+   * Windows as far as I know. No use trying to execute them, will
+   * only confuse users to see the "blabla is not recognized as an
+   * internal or external command, operable program or batch file"
+   * messages.
+   */
+  return NULL;
+#else
+
   Package *pkg;
 
   if (name_ends_in_uninstalled (name))
@@ -1321,5 +1338,5 @@ get_compat_package (const char *name)
 
       return pkg;
     }
+#endif
 }
-

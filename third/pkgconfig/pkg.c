@@ -1,3 +1,23 @@
+/* 
+ * Copyright (C) 2001, 2002 Red Hat Inc.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ * 02111-1307, USA.
+ */
+
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -101,12 +121,12 @@ scan_dir (const char *dirname)
   /* Use a copy of dirname cause Win32 opendir doesn't like
    * superfluous trailing (back)slashes in the directory name.
    */
-  char *dirname_copy = strdup (dirname);
+  char *dirname_copy = g_strdup (dirname);
 
   if (dirnamelen > 1 && dirname[dirnamelen-1] == G_DIR_SEPARATOR)
     {
       dirnamelen--;
-      dirname_copy[dirnamelen-1] = '\0';
+      dirname_copy[dirnamelen] = '\0';
     }
 
   dir = opendir (dirname_copy);
@@ -271,12 +291,6 @@ internal_get_package (const char *name, gboolean warn, gboolean check_compat)
       debug_spew ("Failed to parse '%s'\n", location);
       return NULL;
     }
-
-  pkg->path_position =
-    GPOINTER_TO_INT (g_hash_table_lookup (path_positions, pkg->name));
-
-  debug_spew ("Path position of '%s' is %d\n",
-              pkg->name, pkg->path_position);
   
   if (strstr (location, "uninstalled.pc"))
     pkg->uninstalled = TRUE;
@@ -298,6 +312,12 @@ internal_get_package (const char *name, gboolean warn, gboolean check_compat)
       pkg->key = g_strndup (start, end - start);
     }
 
+  pkg->path_position =
+    GPOINTER_TO_INT (g_hash_table_lookup (path_positions, pkg->key));
+
+  debug_spew ("Path position of '%s' is %d\n",
+              pkg->name, pkg->path_position);
+  
   verify_package (pkg);
 
   debug_spew ("Adding '%s' to list of known packages, returning as package '%s'\n",
@@ -331,6 +351,10 @@ string_list_strip_duplicates (GSList *list)
           nodups = g_slist_prepend (nodups, tmp->data);
           g_hash_table_insert (table, tmp->data, tmp->data);
         }
+      else
+        {
+          debug_spew (" removing duplicate \"%s\"\n", tmp->data);
+        }
 
       tmp = g_slist_next (tmp);
     }
@@ -363,7 +387,11 @@ string_list_strip_duplicates_from_back (GSList *list)
           nodups = g_slist_prepend (nodups, tmp->data);
           g_hash_table_insert (table, tmp->data, tmp->data);
         }
-
+      else
+        {
+          debug_spew (" removing duplicate (from back) \"%s\"\n", tmp->data);
+        }
+      
       tmp = g_slist_next (tmp);
     }
 
@@ -410,10 +438,22 @@ get_L_libs (Package *pkg)
   return pkg->L_libs;
 }
 
+static GSList*
+get_other_libs (Package *pkg)
+{  
+  return pkg->other_libs;
+}
+
 static GSList *
 get_I_cflags (Package *pkg)
 {
   return pkg->I_cflags;
+}
+
+static GSList *
+get_other_cflags (Package *pkg)
+{
+  return pkg->other_cflags;
 }
 
 static GSList *
@@ -433,13 +473,48 @@ pathposcmp (gconstpointer a, gconstpointer b)
 {
   const Package *pa = a;
   const Package *pb = b;
-
+  
   if (pa->path_position < pb->path_position)
     return -1;
   else if (pa->path_position > pb->path_position)
     return 1;
   else
     return 0;
+}
+
+static void
+spew_package_list (const char *name,
+                   GSList     *list)
+{
+  GSList *tmp;
+
+  debug_spew (" %s: ", name);
+  
+  tmp = list;
+  while (tmp != NULL)
+    {
+      Package *pkg = tmp->data;
+      debug_spew (" %s ", pkg->name);
+      tmp = tmp->next;
+    }
+  debug_spew ("\n");
+}
+
+static void
+spew_string_list (const char *name,
+                  GSList     *list)
+{
+  GSList *tmp;
+
+  debug_spew (" %s: ", name);
+  
+  tmp = list;
+  while (tmp != NULL)
+    {
+      debug_spew (" %s ", tmp->data);
+      tmp = tmp->next;
+    }
+  debug_spew ("\n");
 }
 
 static GSList*
@@ -476,20 +551,30 @@ recursive_fill_list (Package *pkg, GetListFunc func, GSList **listp)
 }
 
 static void
-fill_list_in_path_order_single_package (Package *pkg, GetListFunc func,
-                                        GSList **listp)
+fill_list_single_package (Package *pkg, GetListFunc func,
+                          GSList **listp, gboolean in_path_order)
 {
   /* First we get the list in natural/recursive order, then
    * stable sort by path position
    */
   GSList *packages;
   GSList *tmp;
-  
+
+  /* Get list of packages */
+  packages = NULL;
   packages = g_slist_append (packages, pkg);
   recursive_fill_list (pkg, get_requires, &packages);
-
-  packages = packages_sort_by_path_position (packages);
-
+  
+  if (in_path_order)
+    {
+      spew_package_list ("original", packages);
+      
+      packages = packages_sort_by_path_position (packages);
+      
+      spew_package_list ("sorted", packages);
+    }
+  
+  /* Convert package list to string list */
   tmp = packages;
   while (tmp != NULL)
     {
@@ -502,8 +587,8 @@ fill_list_in_path_order_single_package (Package *pkg, GetListFunc func,
 }
 
 static void
-fill_list_in_path_order (GSList *packages, GetListFunc func,
-                         GSList **listp)
+fill_list (GSList *packages, GetListFunc func,
+           GSList **listp, gboolean in_path_order)
 {
   GSList *tmp;
   GSList *expanded;
@@ -518,8 +603,15 @@ fill_list_in_path_order (GSList *packages, GetListFunc func,
       tmp = tmp->next;
     }
 
-  expanded = packages_sort_by_path_position (expanded);
-
+  if (in_path_order)
+    {
+      spew_package_list ("original", expanded);
+      
+      expanded = packages_sort_by_path_position (expanded);
+      
+      spew_package_list ("sorted", expanded);
+    }
+  
   tmp = expanded;
   while (tmp != NULL)
     {
@@ -549,16 +641,37 @@ compare_package_keys (gconstpointer a, gconstpointer b)
   return strcmp (pkg_a->key, pkg_b->key);
 }
 
+static GSList *
+add_env_variable_to_list (GSList *list, const gchar *env)
+{
+  gchar **values;
+  gint i;
+
+  /* FIXME: the separator should be a ';' on Windows
+   */
+  values = g_strsplit (env, ":", 0);
+  for (i = 0; values[i] != NULL; i++)
+    {
+      list = g_slist_append (list, g_strdup (values[i]));
+    }
+  g_strfreev (values);
+
+  return list;
+}
+
 static void
 verify_package (Package *pkg)
 {
   GSList *requires = NULL;
   GSList *conflicts = NULL;
+  GSList *system_directories = NULL;
   GSList *iter;
   GSList *requires_iter;
-  GSList *conflicts_iter;  
+  GSList *conflicts_iter;
+  GSList *system_dir_iter = NULL;
   int count;
-  
+  gchar *c_include_path;
+
   /* Be sure we have the required fields */
 
   if (pkg->key == NULL)
@@ -663,24 +776,58 @@ verify_package (Package *pkg)
   g_slist_free (requires);
   g_slist_free (conflicts);
 
+  /* We make a list of system directories that gcc expects so we can remove
+   * them.
+   */
+  system_directories = g_slist_append (NULL, g_strdup ("/usr/include"));
+  
+  c_include_path = g_getenv ("C_INCLUDE_PATH");
+  if (c_include_path != NULL)
+    {
+      system_directories = add_env_variable_to_list (system_directories, c_include_path);
+    }
+  
+  c_include_path = g_getenv ("CPLUS_INCLUDE_PATH");
+  if (c_include_path != NULL)
+    {
+      system_directories = add_env_variable_to_list (system_directories, c_include_path);
+    }
+
   count = 0;
   iter = pkg->I_cflags;
   while (iter != NULL)
     {
+      gint offset = 0;
       /* we put things in canonical -I/usr/include (vs. -I /usr/include) format,
        * but if someone changes it later we may as well be robust
        */
-      if (strcmp (iter->data, "-I/usr/include") == 0 ||
-          strcmp (iter->data, "-I /usr/include") == 0)
+      if (((strncmp (iter->data, "-I", 2) == 0) && (offset = 2))||
+          ((strncmp (iter->data, "-I ", 3) == 0) && (offset = 3)))
         {
-          debug_spew ("Package %s has -I/usr/include in Cflags\n",
-                      pkg->name);
-          if (g_getenv ("PKG_CONFIG_ALLOW_SYSTEM_CFLAGS") == NULL)
-            {
-              iter->data = NULL;
-              ++count;
-              debug_spew ("Removing -I/usr/include from cflags for %s\n", pkg->key);              
-            }
+	  if (offset == 0)
+	    {
+	      iter = iter->next;
+	      continue;
+	    }
+
+	  system_dir_iter = system_directories;
+	  while (system_dir_iter != NULL)
+	    {
+	      if (strcmp (system_dir_iter->data, iter->data + offset) == 0)
+		{
+		  debug_spew ("Package %s has %s in Cflags\n",
+			      pkg->name, (gchar *)iter->data);
+		  if (g_getenv ("PKG_CONFIG_ALLOW_SYSTEM_CFLAGS") == NULL)
+		    {
+		      debug_spew ("Removing %s from cflags for %s\n", iter->data, pkg->key);
+		      ++count;
+		      iter->data = NULL;
+		      
+		      break;
+		    }
+		}
+	      system_dir_iter = system_dir_iter->next;
+	    }
         }
 
       iter = iter->next;
@@ -691,6 +838,9 @@ verify_package (Package *pkg)
       pkg->I_cflags = g_slist_remove (pkg->I_cflags, NULL);
       --count;
     }
+
+  g_slist_foreach (system_directories, (GFunc) g_free, NULL);
+  g_slist_free (system_directories);
 
   count = 0;
   iter = pkg->L_libs;
@@ -705,7 +855,7 @@ verify_package (Package *pkg)
             {              
               iter->data = NULL;
               ++count;
-              debug_spew ("Removing -I/usr/lib from libs for %s\n", pkg->key);
+              debug_spew ("Removing -L/usr/lib from libs for %s\n", pkg->key);
             }
         }
 
@@ -720,13 +870,13 @@ verify_package (Package *pkg)
 }
 
 static char*
-get_merged (Package *pkg, GetListFunc func)
+get_merged (Package *pkg, GetListFunc func, gboolean in_path_order)
 {
   GSList *list;
   GSList *dups_list = NULL;
   char *retval;
   
-  fill_list_in_path_order_single_package (pkg, func, &dups_list);
+  fill_list_single_package (pkg, func, &dups_list, in_path_order);
   
   list = string_list_strip_duplicates (dups_list);
 
@@ -740,13 +890,13 @@ get_merged (Package *pkg, GetListFunc func)
 }
 
 static char*
-get_merged_from_back (Package *pkg, GetListFunc func)
+get_merged_from_back (Package *pkg, GetListFunc func, gboolean in_path_order)
 {
   GSList *list;
   GSList *dups_list = NULL;
   char *retval;
   
-  fill_list_in_path_order_single_package (pkg, func, &dups_list);
+  fill_list_single_package (pkg, func, &dups_list, in_path_order);
   
   list = string_list_strip_duplicates_from_back (dups_list);
 
@@ -760,14 +910,14 @@ get_merged_from_back (Package *pkg, GetListFunc func)
 }
 
 static char*
-get_multi_merged (GSList *pkgs, GetListFunc func)
+get_multi_merged (GSList *pkgs, GetListFunc func, gboolean in_path_order)
 {
   GSList *tmp;
   GSList *dups_list = NULL;
   GSList *list;
   char *retval;
 
-  fill_list_in_path_order (pkgs, func, &dups_list);
+  fill_list (pkgs, func, &dups_list, in_path_order);
   
   list = string_list_strip_duplicates (dups_list);
 
@@ -781,14 +931,14 @@ get_multi_merged (GSList *pkgs, GetListFunc func)
 }
 
 static char*
-get_multi_merged_from_back (GSList *pkgs, GetListFunc func)
+get_multi_merged_from_back (GSList *pkgs, GetListFunc func, gboolean in_path_order)
 {
   GSList *tmp;
   GSList *dups_list = NULL;
   GSList *list;
   char *retval;
 
-  fill_list_in_path_order (pkgs, func, &dups_list);
+  fill_list (pkgs, func, &dups_list, in_path_order);
   
   list = string_list_strip_duplicates_from_back (dups_list);
 
@@ -804,8 +954,11 @@ get_multi_merged_from_back (GSList *pkgs, GetListFunc func)
 char *
 package_get_l_libs (Package *pkg)
 {
+  /* We don't want these in search path order, rather in dependency
+   * order, so static linking works.
+   */
   if (pkg->l_libs_merged == NULL)
-    pkg->l_libs_merged = get_merged_from_back (pkg, get_l_libs);
+    pkg->l_libs_merged = get_merged_from_back (pkg, get_l_libs, FALSE);
 
   return pkg->l_libs_merged;
 }
@@ -813,14 +966,15 @@ package_get_l_libs (Package *pkg)
 char *
 packages_get_l_libs (GSList     *pkgs)
 {
-  return get_multi_merged_from_back (pkgs, get_l_libs);
+  return get_multi_merged_from_back (pkgs, get_l_libs, FALSE);
 }
 
 char *
 package_get_L_libs (Package *pkg)
 {
+  /* We want these in search path order so the -L flags don't override PKG_CONFIG_PATH */
   if (pkg->L_libs_merged == NULL)
-    pkg->L_libs_merged = get_merged (pkg, get_L_libs);
+    pkg->L_libs_merged = get_merged (pkg, get_L_libs, TRUE);
 
   return pkg->L_libs_merged;
 }
@@ -828,42 +982,22 @@ package_get_L_libs (Package *pkg)
 char *
 packages_get_L_libs (GSList     *pkgs)
 {
-  return get_multi_merged (pkgs, get_L_libs);
+  return get_multi_merged (pkgs, get_L_libs, TRUE);
 }
 
 char *
 package_get_other_libs (Package *pkg)
 {
-  return g_strdup (pkg->other_libs);
+  if (pkg->other_libs_merged == NULL)
+    pkg->other_libs_merged = get_merged (pkg, get_other_libs, TRUE);
+
+  return pkg->other_libs_merged;
 }
 
 char *
 packages_get_other_libs (GSList   *pkgs)
 {
-  GSList *tmp;
-  GString *str;
-  char *retval;
-  
-  str = g_string_new ("");
-  
-  tmp = pkgs;
-  while (tmp != NULL)
-    {
-      Package *pkg = tmp->data;
-
-      if (pkg->other_libs)
-        {
-          g_string_append (str, pkg->other_libs);
-          g_string_append (str, " ");
-        }
-
-      tmp = g_slist_next (tmp);
-    }
-
-  retval = str->str;
-  g_string_free (str, FALSE);
-
-  return retval;
+  return get_multi_merged (pkgs, get_other_libs, TRUE);
 }
 
 char *
@@ -904,8 +1038,9 @@ packages_get_all_libs (GSList *pkgs)
 char *
 package_get_I_cflags (Package *pkg)
 {
+  /* sort by path position so PKG_CONFIG_PATH affects -I flag order */
   if (pkg->I_cflags_merged == NULL)
-    pkg->I_cflags_merged = get_merged (pkg, get_I_cflags);
+    pkg->I_cflags_merged = get_merged (pkg, get_I_cflags, TRUE);
 
   return pkg->I_cflags_merged;
 }
@@ -913,42 +1048,23 @@ package_get_I_cflags (Package *pkg)
 char *
 packages_get_I_cflags (GSList     *pkgs)
 {
-  return get_multi_merged (pkgs, get_I_cflags);
+  /* sort by path position so PKG_CONFIG_PATH affects -I flag order */
+  return get_multi_merged (pkgs, get_I_cflags, TRUE);
 }
 
 char *
 package_get_other_cflags (Package *pkg)
 {
-  return g_strdup (pkg->other_cflags);
+  if (pkg->other_cflags_merged == NULL)
+    pkg->other_cflags_merged = get_merged (pkg, get_other_cflags, TRUE);
+
+  return pkg->other_cflags_merged;
 }
 
 char *
 packages_get_other_cflags (GSList *pkgs)
 {
-  GSList *tmp;
-  GString *str;
-  char *retval;
-  
-  str = g_string_new ("");
-  
-  tmp = pkgs;
-  while (tmp != NULL)
-    {
-      Package *pkg = tmp->data;
-
-      if (pkg->other_cflags)
-        {
-          g_string_append (str, pkg->other_cflags);
-          g_string_append (str, " ");
-        }
-
-      tmp = g_slist_next (tmp);
-    }
-
-  retval = str->str;
-  g_string_free (str, FALSE);
-
-  return retval;
+  return get_multi_merged (pkgs, get_other_cflags, TRUE);
 }
 
 char *
