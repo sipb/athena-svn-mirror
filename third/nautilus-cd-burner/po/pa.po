@@ -1,25 +1,27 @@
+# translation of nautilus-cd-burner.gnome-2-8.po to Punjabi
 # translation of nautilus-cd-burner.HEAD.pa.po to Punjabi
 # translation of pa2.po to Punjabi
 # Amanpreet Singh Alam <aalam@redhat.com>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-cd-burner.HEAD.pa\n"
+"Project-Id-Version: nautilus-cd-burner.gnome-2-8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-08-06 10:23+0530\n"
+"POT-Creation-Date: 2004-12-09 05:14+0100\n"
+"PO-Revision-Date: 2004-12-09 10:20+0530\n"
 "Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
-"Language-Team: Punjabi <pa@li.org>\n"
+"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
-"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
 "\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:170
 msgid "Unnamed CDROM"
-msgstr "ਬੇਨਾਮ ਸੀਡੀ ਰੋਮ(CD-ROM)"
+msgstr "ਬੇਨਾਮ ਸੀਡੀ ਰੋਮ"
 
 #: burn-extension.c:64
 msgid "Unable to launch the cd burner application"
@@ -31,7 +33,7 @@ msgstr "ਸੀਡੀ ਨਿਰਮਾਤਾ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨ �
 
 #: burn-extension.c:146 burn-extension.c:173
 msgid "_Write to Disc..."
-msgstr "ਡਿਸਕ ਤੇ ਲਿਖੋ(_W)"
+msgstr "ਡਿਸਕ ਤੇ ਲਿਖੋ(_W)..."
 
 #: burn-extension.c:147
 msgid "Write disc image to a CD or DVD disc"
@@ -45,50 +47,51 @@ msgstr "ਭਾਗ ਸੀਡੀ ਜਾਂ ਡੀਵੀਡੀ ਤੇ ਲਿਖ ਦ
 msgid "Write to Disc"
 msgstr "ਡਿਸਕ ਤੇ ਲਿਖੋ"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
-msgstr "ਬੇਨਾਮ ਸਕਕਸੀ ਸੀਡੀ ਡਿਸਕ(SCSI) (%s)"
+msgstr "ਬੇਨਾਮ ਸਕਕਸੀ ਸੀਡੀ ਡਰਾਇਵ(SCSI) (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "ਫਾਇਲ ਪ੍ਰਤੀਬਿੰਬ"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:374
 msgid "The recorder could not be accessed"
 msgstr "ਰਿਕਾਰਡਰ ਨੂੰ ਖੋਲਿਆ ਨਹੀ ਜਾ ਸਕਿਆ"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:377
 msgid "Not enough space available on the disc"
 msgstr "ਡਿਸਕ ਤੇ ਲੋਡ਼ੀਦੀ ਥਾਂ ਨਹੀ ਹੈ"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:380 cd-recorder.c:383 cd-recorder.c:449
 msgid "The files selected did not fit on the CD"
 msgstr "ਚੁਣੀਆਂ ਫਾਇਲਾਂ ਸੀਡੀ ਤੇ ਠੀਕ ਨਹੀ ਆ ਸਕੀਆ"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:391
 msgid "Unhandled error, aborting"
 msgstr "ਅਣਪਛਾਤੀ ਗਲਤੀ, ਛੱਡਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:436
 msgid "The CD has already been recorded"
 msgstr "ਸੀਡੀ ਪਹਿਲਾਂ ਹੀ ਰਿਕਾਰਡ ਹੋ ਚੁੱਕੀ ਹੈ"
 
-#: cd-recorder.c:377
-msgid ""
-"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+#: cd-recorder.c:453
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr "ਹਰੇਕ ਆਡੀਉ ਫਾਇਲ ਸਟੀਰਿਓ, ੧੬-ਬਿੱਟ-ਡਿਜੀਟਲ ਆਡੀਉ ੪੪੧੦੦ ਹਰਟਜ਼ ਹੀ ਹੋਣੀਆ ਚਾਹੀਦੀ ਹੈ"
 
-#: cd-recorder.c:384
-msgid ""
-"The system is too slow to write the CD at this speed. Try a lower speed."
-msgstr ""
-"ਸਿਸਟਮ ਇੰਨਾ ਹੌਲੀ ਹੈ ਕਿ ਇਸ ਗਤੀ ਤੇ ਸੀਡੀ ਨਹੀਂ ਲਿਖ ਸਕਦਾ ਹੈ| ਕਿਰਪਾ ਕਰਕੇ ਘੱਟ ਗਤੀ ਤੇ ਕੋਸ਼ਿਸ ਕਰੋ|"
+#: cd-recorder.c:466
+msgid "The system is too slow to write the CD at this speed. Try a lower speed."
+msgstr "ਸਿਸਟਮ ਇੰਨਾ ਹੌਲੀ ਹੈ ਕਿ ਇਸ ਗਤੀ ਤੇ ਸੀਡੀ ਨਹੀਂ ਲਿਖ ਸਕਦਾ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਘੱਟ ਗਤੀ ਤੇ ਕੋਸ਼ਿਸ ਕਰੋ।"
 
-#: cd-recorder.c:503
+#: cd-recorder.c:757
 msgid "You can only burn 99 tracks on one disc"
 msgstr "ਇੱਕ ਸੀਡੀ ਤੇ ੯੯ ਟਰੈਕ ਹੀ ਲਿਖੇ ਜਾ ਸਕਦੇ ਹਨ"
+
+#: cd-recorder.c:762
+msgid "Burning CD"
+msgstr "ਸੀਡੀ ਨੂੰ ਲਿਖਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -144,7 +147,7 @@ msgid ""
 "take a long time, depending on data size and write speed."
 msgstr ""
 "ਚੁਣੀਆਂ ਗਈਆਂ ਫਾਇਲਾਂ CD ਡਿਸਕ ਤੇ ਲਿਖਿਆ ਜਾਣੀਆਂ ਹਨ, ਫਾਇਲਾਂ ਦੇ ਆਕਾਰ ਤੇ ਲਿਖਣ ਦੀ ਗਤੀ ਦੇ ਆਧਾਰ ਤੇ "
-"ਇਹ ਕਾਰਵਾਈ ਕੁਝ ਸਮਾਂ ਲੈ ਸਕਦੀ ਹੈ|"
+"ਇਹ ਕਾਰਵਾਈ ਕੁਝ ਸਮਾਂ ਲੈ ਸਕਦੀ ਹੈ।"
 
 #: cdburn.glade.h:14
 msgid "Write _speed:"
@@ -175,109 +178,109 @@ msgid ""
 "Some files don't have a suitable name for a Windows-compatible CD.\n"
 "Do you want to continue with Windows compatibility disabled?"
 msgstr ""
-"ਕੁਝ ਫਾਇਲਾਂ ਦੇ ਨਾਂ ਵਿੰਡੋ ਸੀਡੀ ਦੇ ਅਨੁਰੂਪ ਨਹੀ ਹਨ \n"
-"ਕੀ ਤੁਸੀ ਵਿੰਡੋ ਦੇ ਅਨੁਰੂਪ ਨੂੰ ਅਣਡਿੱਠਾ ਕਰਕੇ ਅੱਗੇ ਜਾਣਾ ਚਾਹੋਗੇ?"
+"ਕੁਝ ਫਾਇਲਾਂ ਦੇ ਨਾਂ Windows ਸੀਡੀ ਦੇ ਅਨੁਰੂਪ ਨਹੀ ਹਨ।\n"
+"ਕੀ ਤੁਸੀ Windows ਦੇ ਅਨੁਰੂਪ ਨੂੰ ਅਣਡਿੱਠਾ ਕਰਕੇ ਅੱਗੇ ਜਾਣਾ ਚਾਹੋਗੇ?"
 
 #: make-iso.c:252
 msgid "Windows compatibility"
-msgstr "ਵਿੰਡੋ ਨਾਲ ਅਨੁਰੂਪ"
+msgstr "Windows ਨਾਲ ਅਨੁਰੂਪ"
 
-#: make-iso.c:576
+#: make-iso.c:581
 msgid "No files selected to write to CD."
-msgstr "ਸੀਡੀ ਤੇ ਲਿਖਣ ਲਈ ਕੋਈ ਫਾਇਲ ਨਹੀ ਚੁਣੀ ਗਈ ਹੈ"
+msgstr "ਸੀਡੀ ਤੇ ਲਿਖਣ ਲਈ ਕੋਈ ਫਾਇਲ ਨਹੀ ਚੁਣੀ ਗਈ ਹੈ।"
 
-#: make-iso.c:578 nautilus-cd-burner.c:1134
+#: make-iso.c:583 nautilus-cd-burner.c:1139
 msgid "No files selected"
 msgstr "ਕੋਈ ਫਾਇਲ ਨਹੀ ਚੁਣੀ ਗਈ ਹੈ"
 
-#: make-iso.c:659
+#: make-iso.c:667
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
-msgstr[0] "ਸੀਡੀ ਪ੍ਰਤੀਬਿੰਬ ਨੂੰ ਸੰਭਾਲ ਲਈ ਲੋਡ਼ੀਦੀ ਥਾਂ ਨਹੀ ਹੈ (%ld ਮੈਗਾਬਾਈਟ ਲੋਡ਼ੀਦੇ ਹਨ) "
+msgstr[0] "ਸੀਡੀ ਪ੍ਰਤੀਬਿੰਬ ਨੂੰ ਸੰਭਾਲ ਲਈ ਲੋਡ਼ੀਦੀ ਥਾਂ ਨਹੀ ਹੈ (%ld ਮੈਗਾਬਾਈਟ ਲੋਡ਼ੀਦੇ ਹਨ)"
 msgstr[1] "ਸੀਡੀ ਪ੍ਰਤੀਬਿੰਬ ਨੂੰ ਸੰਭਾਲ ਲਈ ਲੋਡ਼ੀਦੀ ਥਾਂ ਨਹੀ ਹੈ (%ld ਮੈਗਾਬਾਈਟ ਲੋਡ਼ੀਦੇ ਹਨ) "
 
-#: make-iso.c:664
+#: make-iso.c:672
 msgid "Not enough space"
 msgstr "ਲੋਡ਼ੀਦੀ ਥਾਂ ਨਹੀ ਹੈ"
 
-#: make-iso.c:700
+#: make-iso.c:710
 msgid "Creating CD image"
 msgstr "ਸੀਡੀ ਪ੍ਰਤੀਬਿੰਬ ਬਣਾਇਆ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:137
+#: nautilus-cd-burner.c:138
 msgid " (invalid Unicode)"
 msgstr " (ਗਲਤ ਯੂਨੀਕੋਡ)"
 
-#: nautilus-cd-burner.c:283
+#: nautilus-cd-burner.c:284
 msgid "Preparing to write CD"
 msgstr "ਸੀਡੀ ਨੂੰ ਲਿਖਣ ਲਈ ਤਿਆਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:285
+#: nautilus-cd-burner.c:286
 msgid "Preparing to write DVD"
 msgstr "ਡੀਵੀਡੀ ਨੂੰ ਲਿਖਣ ਲਈ ਤਿਆਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:290
+#: nautilus-cd-burner.c:291
 msgid "Writing CD"
 msgstr "ਸੀਡੀ ਲਿਖ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:292
+#: nautilus-cd-burner.c:293
 msgid "Writing DVD"
 msgstr "ਡੀਵੀਡੀ ਲਿਖ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:297
+#: nautilus-cd-burner.c:298
 msgid "Fixating CD"
 msgstr "ਸੀਡੀ ਨੂੰ ਸਥਿਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:299
+#: nautilus-cd-burner.c:300
 msgid "Fixating DVD"
 msgstr "ਡੀਵੀਡੀ ਨੂੰ ਸਥਿਰ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:304
+#: nautilus-cd-burner.c:305
 msgid "Erasing CD"
 msgstr "ਸੀਡੀ ਨੂੰ ਸਾਫ਼ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:306
+#: nautilus-cd-burner.c:307
 msgid "Erasing DVD"
 msgstr "ਡੀਵੀਡੀ ਨੂੰ ਸਾਫ਼ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
-#: nautilus-cd-burner.c:332
-msgid "Please make sure another application is not using the disc."
-msgstr "ਕਿਰਪਾ ਕਰਕੇ ਇਹ ਯਕੀਨ ਬਣਾ ਲਵੋ ਕਿ ਕੋਈ ਹੋਰ ਕਾਰਜ ਡਿਸਕ ਨੂੰ ਨਹੀਂ ਵਰਤ ਰਿਹਾ ਹੈ"
-
 #: nautilus-cd-burner.c:333
+msgid "Please make sure another application is not using the disc."
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਇਹ ਯਕੀਨ ਬਣਾ ਲਵੋ ਕਿ ਕੋਈ ਹੋਰ ਕਾਰਜ ਡਿਸਕ ਨੂੰ ਨਹੀਂ ਵਰਤ ਰਿਹਾ ਹੈ।"
+
+#: nautilus-cd-burner.c:334
 msgid "Disc is busy"
 msgstr "ਡਿਸਕ ਰੁਝੀ ਹੋਈ ਹੈ"
 
-#: nautilus-cd-burner.c:335
-msgid "Please insert a rewritable or blank media in the drive tray."
-msgstr "ਕਿਰਪਾ ਕਰਕੇ ਡਰਾਇਵ-ਟਰੇ ਵਿੱਚ ਰੀ-ਰਾਇਟਏਬਲ ਜਾਂ ਖਾਲੀ ਮੀਡਿਆ ਪਾਉ"
-
 #: nautilus-cd-burner.c:336
+msgid "Please insert a rewritable or blank media in the drive tray."
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਡਰਾਇਵ-ਟਰੇ ਵਿੱਚ ਰੀ-ਰਾਇਟਏਬਲ ਜਾਂ ਖਾਲੀ ਮੀਡਿਆ ਪਾਉ।"
+
+#: nautilus-cd-burner.c:337
 msgid "Insert rewritable or blank media"
 msgstr "ਰੀ-ਰਾਇਟਏਬਲ ਜਾਂ ਖਾਲੀ ਮੀਡਿਆ ਪਾਉ"
 
-#: nautilus-cd-burner.c:338
-msgid "Please insert a blank media in the drive tray."
-msgstr "ਕਿਰਪਾ ਕਰਕੇ ਡਰਾਇਵ-ਟਰੇ ਵਿਚ ਖਾਲੀ ਮੀਡਿਆ ਪਾਉ"
-
 #: nautilus-cd-burner.c:339
+msgid "Please insert a blank media in the drive tray."
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਡਰਾਇਵ-ਟਰੇ ਵਿਚ ਖਾਲੀ ਮੀਡਿਆ ਪਾਉ।"
+
+#: nautilus-cd-burner.c:340
 msgid "Insert blank media"
 msgstr "ਖਾਲੀ ਮੀਡਿਆ ਪਾਉ"
 
-#: nautilus-cd-burner.c:341
-msgid "Please replace the in-drive media by a rewritable or blank media."
-msgstr "ਕਿਰਪਾ ਕਰਕੇ ਡਰਾਇਵ-ਮੀਡਿਆ ਨੂੰ ਰੀ-ਰਾਇਟਏਬਲ ਜਾਂ ਖਾਲੀ ਮੀਡਿਆ ਨਾਲ ਤਬਦੀਲ ਕਰੋ"
-
 #: nautilus-cd-burner.c:342
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਡਰਾਇਵ-ਮੀਡਿਆ ਨੂੰ ਰੀ-ਰਾਇਟਏਬਲ ਜਾਂ ਖਾਲੀ ਮੀਡਿਆ ਨਾਲ ਤਬਦੀਲ ਕਰੋ।"
+
+#: nautilus-cd-burner.c:343
 msgid "Reload rewritable or blank media"
 msgstr "ਰੀ-ਰਾਇਟਏਬਲ ਜਾਂ ਖਾਲੀ ਮੀਡੀਏ ਨੂੰ ਮੁਡ਼ ਲੋਡ ਕਰੋ"
 
-#: nautilus-cd-burner.c:344
-msgid "Please replace the in-drive media by a blank media."
-msgstr "ਕਿਰਪਾ ਕਰਕੇ ਡਰਾਇਵ-ਮੀਡਿਆ ਖਾਲੀ-ਮੀਡਿਏ ਨਾਲ ਤਬਦੀਲ ਕਰੋ"
-
 #: nautilus-cd-burner.c:345
+msgid "Please replace the in-drive media by a blank media."
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਡਰਾਇਵ-ਮੀਡਿਆ ਖਾਲੀ-ਮੀਡਿਏ ਨਾਲ ਤਬਦੀਲ ਕਰੋ।"
+
+#: nautilus-cd-burner.c:346
 msgid "Reload blank media"
 msgstr "ਖਾਲੀ ਮੀਡਿਏ ਨੂੰ ਮੁਡ਼ ਲੋਡ ਕਰੋ"
 
@@ -295,7 +298,7 @@ msgid ""
 "There was an error writing to the CD:\n"
 "%s"
 msgstr ""
-"ਸੀਡੀ ਤੇ ਲਿਖਣ ਵਿਚ ਗਲਤੀ ਸੀ \n"
+"ਸੀਡੀ ਤੇ ਲਿਖਣ ਵਿਚ ਗਲਤੀ ਸੀ:\n"
 "%s"
 
 #: nautilus-cd-burner.c:421
@@ -308,7 +311,7 @@ msgstr "ਸੀਡੀ ਤੇ ਲਿਖਣ ਵਿਚ ਗਲਤੀ ਹੈ"
 
 #: nautilus-cd-burner.c:428
 msgid "_Details"
-msgstr "ਵੇਰਵਾ"
+msgstr "_ਵੇਰਵਾ"
 
 #: nautilus-cd-burner.c:501
 #, c-format
@@ -316,12 +319,12 @@ msgid ""
 "A file named \"%s\" already exists.\n"
 "Do you want to overwrite it?"
 msgstr ""
-"ਫਾਇਲ ਨਾਂ \"%s\"  ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦਾ ਹੈ \n"
+"ਫਾਇਲ ਨਾਂ \"%s\"  ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦਾ ਹੈ।\n"
 "ਕੀ ਉੱਪਰ ਲਿਖਣਾ ਹੈ?"
 
 #: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
 msgid "_Overwrite"
-msgstr "ਉਪੱਰ ਲਿਖ ਦਿਉ"
+msgstr "ਉ_ਪੱਰ ਲਿਖ ਦਿਉ"
 
 #: nautilus-cd-burner.c:530
 msgid "Choose a filename for the cdrom image"
@@ -330,95 +333,99 @@ msgstr "ਸੀਡੀ-ਪ੍ਰਤੀਬਿੰਬ ਲਈ ਫਾਇਲ ਨਾਂ �
 #: nautilus-cd-burner.c:585
 #, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
-msgstr "ਤੁਹਾਨੂੰ ਫਾਇਲ (%s) ਉੱਪਰ ਲਿਖਣ ਲਈ ਅਧਿਕਾਰ ਨਹੀ ਹਨ|"
+msgstr "ਤੁਹਾਨੂੰ ਫਾਇਲ (%s) ਉੱਪਰ ਲਿਖਣ ਲਈ ਅਧਿਕਾਰ ਨਹੀ ਹਨ।"
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599 nautilus-cd-burner.c:656
 msgid "File image creation failed"
 msgstr "ਫਾਇਲ ਪ੍ਰਤੀਬਿੰਬ ਬਣਾਉਣ ਵਿੱਚ ਅਸਫਲ"
 
 #: nautilus-cd-burner.c:598
 #, c-format
 msgid "You do not have permissions to create that file (%s)."
-msgstr "ਤੁਹਾਨੂੰ (%s) ਫਾਇਲ ਬਣਾਉਣ ਲਈ ਅਧਿਕਾਰ ਨਹੀ ਹਨ|"
+msgstr "ਤੁਹਾਨੂੰ (%s) ਫਾਇਲ ਬਣਾਉਣ ਲਈ ਅਧਿਕਾਰ ਨਹੀ ਹਨ।"
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:656
+msgid "Incorrectly named files were to be added to the CD"
+msgstr "ਸੀਡੀ ਵਿੱਚ ਗਲਤ ਨਾਂ ਦੀਆਂ ਫਾਇਲਾਂ ਸ਼ਾਮਿਲ ਹਨ"
+
+#: nautilus-cd-burner.c:664
 #, c-format
 msgid "Completed writing %s"
 msgstr "ਲਿਖਣਾ %s ਸਮਾਪਤ"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:725
 msgid "Complete"
 msgstr "ਸਮਾਪਤ"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:786
 msgid "Maximum Possible"
 msgstr "ਵੱਧ ਤੋ ਵੱਧ ਸੰਭਵ"
 
-#: nautilus-cd-burner.c:859
+#: nautilus-cd-burner.c:864
 #, c-format
 msgid "%d MB"
-msgstr "%d ਐਮਬੀ"
+msgstr "%d ਮੈਬਾ"
 
 #.
 #. translators: see strftime man page for meaning of %b, %d and %Y
 #. the maximum length for this field is 32 bytes
 #.
-#: nautilus-cd-burner.c:887
+#: nautilus-cd-burner.c:892
 msgid "Personal Data, %b %d, %Y"
 msgstr "ਪੰਜਾਬੀ, %b %d, %Y"
 
-#: nautilus-cd-burner.c:920
+#: nautilus-cd-burner.c:925
 msgid "Cancel write"
 msgstr "ਲਿਖਣਾ ਰੱਦ"
 
-#: nautilus-cd-burner.c:921
+#: nautilus-cd-burner.c:926
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
 "working again."
 msgstr ""
-"ਕੀ ਤੁਸੀ ਨਿਸ਼ਚਿਤ ਹੀ ਸੀਡੀ-ਲਿਖਣ ਦੀ ਕਾਰਵਾਈ ਰੋਕਣਾ ਚਾਹੁੰਦੇ ਹੋ ?\n"
-"ਕੁਝ ਮਾਧਿਅਮ ਡਰਾਇਵ ਕੰਮ ਕਰਨ ਲਈ ਤੁਹਾਡੇ ਕੰਪਿਊਟਰ ਨੂੰ ਮੁਡ਼ ਚਾਲੂ ਕਰ ਸਕਦੇ ਹਨ|"
+"ਕੀ ਤੁਸੀ ਨਿਸ਼ਚਿਤ ਹੀ ਸੀਡੀ-ਲਿਖਣ ਦੀ ਕਾਰਵਾਈ ਰੋਕਣਾ ਚਾਹੁੰਦੇ ਹੋ?\n"
+"ਕੁਝ ਮਾਧਿਅਮ ਡਰਾਇਵ ਕੰਮ ਕਰਨ ਲਈ ਤੁਹਾਡੇ ਕੰਪਿਊਟਰ ਨੂੰ ਮੁਡ਼ ਚਾਲੂ ਕਰ ਸਕਦੇ ਹਨ।"
 
-#: nautilus-cd-burner.c:925
+#: nautilus-cd-burner.c:930
 msgid "Continue"
 msgstr "ਜਾਰੀ ਰੱਖੋ"
 
-#: nautilus-cd-burner.c:977
+#: nautilus-cd-burner.c:982
 #, c-format
 msgid "There was a problem displaying the help contents: %s."
-msgstr "ਸਹਾਇਤਾ ਭਾਗ ਵੇਖਾਉਣ ਵਿੱਚ ਗਲਤੀ ਹੈਃ %s"
+msgstr "ਸਹਾਇਤਾ ਭਾਗ ਵੇਖਾਉਣ ਵਿੱਚ ਗਲਤੀ ਹੈ: %s।"
 
-#: nautilus-cd-burner.c:978
+#: nautilus-cd-burner.c:983
 msgid "Cannot display help"
 msgstr "ਸਹਾਇਤਾ ਵੇਖਾਈ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ"
 
-#: nautilus-cd-burner.c:1093
+#: nautilus-cd-burner.c:1098
 msgid "Too many parameters"
 msgstr "ਬਹੁਟ ਹੀ ਜਿਆਦਾ ਪੈਰਾਮੀਟਰ ਹਨ"
 
-#: nautilus-cd-burner.c:1094
+#: nautilus-cd-burner.c:1099
 msgid "Too many parameters were passed to the application."
-msgstr "ਕਾਰਜ ਲਈ ਕਿੰਨੇ ਹੀ ਆਰਗੂਮਿੰਟ ਭੇਜੇ ਗਏ ਹਨ|"
+msgstr "ਕਾਰਜ ਲਈ ਕਿੰਨੇ ਹੀ ਆਰਗੂਮਿੰਟ ਭੇਜੇ ਗਏ ਹਨ।"
 
-#: nautilus-cd-burner.c:1116
+#: nautilus-cd-burner.c:1121
 #, c-format
 msgid "The file '%s' is not a valid CD image."
-msgstr "ਫਾਇਲ '%s' ਇੱਕ ਠੀਕ ਸੀਡੀ ਪ੍ਰਤੀਬਿੰਬ ਨਹੀ ਹੈ|"
+msgstr "ਫਾਇਲ '%s' ਇੱਕ ਠੀਕ ਸੀਡੀ ਪ੍ਰਤੀਬਿੰਬ ਨਹੀ ਹੈ।"
 
-#: nautilus-cd-burner.c:1119
+#: nautilus-cd-burner.c:1124
 msgid "Not a valid CD image"
 msgstr "ਇੱਕ ਠੀਕ ਸੀਡੀ ਪ੍ਰਤੀਬਿੰਬ ਨਹੀ ਹੈ"
 
-#: nautilus-cd-burner.c:1135
+#: nautilus-cd-burner.c:1140
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
 msgstr ""
-"ਜੋ ਫਾਇਲਾਂ ਤੁਸੀ ਸੀਡੀ ਤੇ ਲਿਖਣਾ ਚਾਹੁੰਦੇ ਹੋ, ਨੂੰ ਸੀਡੀ/ਡੀਵੀਡੀ-ਨਿਰਮਾਣ ਝਰੋਖੇ ਵਿਚ ਨਕਲ ਕਰਨਾ ਪਵੇਗਾ| "
+"ਜੋ ਫਾਇਲਾਂ ਤੁਸੀ ਸੀਡੀ ਤੇ ਲਿਖਣਾ ਚਾਹੁੰਦੇ ਹੋ, ਨੂੰ ਸੀਡੀ/ਡੀਵੀਡੀ-ਨਿਰਮਾਣ ਝਰੋਖੇ ਵਿਚ ਨਕਲ ਕਰਨਾ ਪਵੇਗਾ। "
 "ਕੀ ਤੁਸੀ ਇਸ ਨੂੰ ਹੁਣ ਖੋਲਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
-#: nautilus-cd-burner.c:1137
+#: nautilus-cd-burner.c:1142
 msgid "Open CD/DVD Creator"
 msgstr "ਸੀਡੀ/ਡੀਵੀਡੀ ਨਿਰਮਾਤਾ ਖੋਲੋ"
 
@@ -428,7 +435,7 @@ msgstr "ਮੂਲ ਲਿਖਣ ਦੀ ਗਤੀ"
 
 #: ncb.schemas.in.h:2
 msgid "Default speed at which the media will be written."
-msgstr "ਮੂਲ ਗਤੀ, ਜਿਸ ਤੇ ਮੀਡਿਆ ਤੇ ਡਾਟਾ ਲਿਖਿਆ ਜਾਵੇ"
+msgstr "ਮੂਲ ਗਤੀ, ਜਿਸ ਤੇ ਮੀਡਿਆ ਤੇ ਡਾਟਾ ਲਿਖਿਆ ਜਾਵੇ।"
 
 #: ncb.schemas.in.h:3
 msgid "Directory for the temporary ISO images"
@@ -439,8 +446,8 @@ msgid ""
 "Directory used for the temporary ISO images, leave blank to use the default "
 "system temporary directory."
 msgstr ""
-"ਕੰਪਿਊਟਰ ਦੀ ਆਰਜੀ ਡਾਇਕਰੈਕਟਰੀ ਵਰਤਣ ਲਈ; ਆਰਜ਼ੀ ਆਈਸੋ (ISO) ਪ੍ਰਤੀਬਿਂਬ ਲਈ ਡਾਇਕਰੈਕਟਰੀ, ਨੂੰੂ "
-"ਖਾਲੀ ਛੱਡ ਦ|ਿਉ"
+"ਕੰਪਿਊਟਰ ਦੀ ਆਰਜੀ ਡਾਇਕਰੈਕਟਰੀ ਵਰਤਣ ਲਈ; ਆਰਜ਼ੀ ਆਈਸੋ (ISO) ਪ੍ਰਤੀਬਿੰਬ ਲਈ ਡਾਇਕਰੈਕਟਰੀ, ਨੂੰ "
+"ਖਾਲੀ ਛੱਡ ਦਿਉ।"
 
 #: ncb.schemas.in.h:5
 msgid "Enable Burnproof option"
@@ -456,12 +463,13 @@ msgstr "ਜਿਆਦਾ ਲਿਖਣਾ ਯੋਗ"
 
 #: ncb.schemas.in.h:8
 msgid "Whether to allow the data to exceed the size of the physical medium."
-msgstr "ਕੀ ਅਸਲੀ ਡਿਸਕ ਥਾਂ ਤੋਂ ਜਿਆਦਾ ਲਿਖਣ ਲਈ ਡਾਟਾ ਨੂੰ ਇਜ਼ਾਜਤ ਹੈ|"
+msgstr "ਕੀ ਅਸਲੀ ਡਿਸਕ ਥਾਂ ਤੋਂ ਜਿਆਦਾ ਲਿਖਣ ਲਈ ਡਾਟਾ ਨੂੰ ਇਜ਼ਾਜਤ ਹੈ।"
 
 #: ncb.schemas.in.h:9
 msgid "Whether to enable the debugging for CD Recording."
-msgstr "ਕੀ ਸੀਡੀ ਰਿਕਾਰਡਿੰਗ ਲਈ ਡੀਬੱਗ ਯੋਗ ਕਰਨਾ ਹੈ"
+msgstr "ਕੀ ਸੀਡੀ ਰਿਕਾਰਡਿੰਗ ਲਈ ਡੀਬੱਗ ਯੋਗ ਕਰਨਾ ਹੈ।"
 
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
-msgstr "ਸੁਰੱਖਿਅਤ ਲਿਖਣ ਦੀ ਚੋਣ ਕੁਝ ਰਿਕਾਰਡਰਾਂ ਨਾਲ ਹੀ ਉਪਲੱਬਧ ਹੈ, ਕੀ ਇਸ ਨੂੰ ਵਰਤਣਾ ਹੈ|"
+msgstr "ਸੁਰੱਖਿਅਤ ਲਿਖਣ ਦੀ ਚੋਣ ਕੁਝ ਰਿਕਾਰਡਰਾਂ ਨਾਲ ਹੀ ਉਪਲੱਬਧ ਹੈ, ਕੀ ਇਸ ਨੂੰ ਵਰਤਣਾ ਹੈ।"
+

@@ -6,10 +6,10 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-cd-burner 0.6.5\n"
+"Project-Id-Version: nautilus-cd-burner 2.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-03-15 03:43+0800\n"
+"POT-Creation-Date: 2004-09-12 20:17+0200\n"
+"PO-Revision-Date: 2004-09-13 15:34+0800\n"
 "Last-Translator: woodman <woodman@culturecom.com.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -18,9 +18,8 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: bacon-cd-selection.c:187
-#, fuzzy
 msgid "Unnamed CDROM"
-msgstr "未命名的 SCSI CD-ROM (%s)"
+msgstr "未命名的 CDROM"
 
 #: burn-extension.c:64
 msgid "Unable to launch the cd burner application"
@@ -31,27 +30,23 @@ msgid "Can't launch cd burner"
 msgstr "未能執行光碟燒錄程式"
 
 #: burn-extension.c:146 burn-extension.c:173
-#, fuzzy
 msgid "_Write to Disc..."
-msgstr "將資料寫入光碟..."
+msgstr "寫入光碟(_W)..."
 
 #: burn-extension.c:147
-#, fuzzy
 msgid "Write disc image to a CD or DVD disc"
-msgstr "將 ISO 檔寫入光碟"
+msgstr "將影像檔寫入 CD 或 DVD 光碟"
 
 #: burn-extension.c:174 burn-extension.c:203
-#, fuzzy
 msgid "Write contents to a CD or DVD disc"
-msgstr "將內容寫入光碟"
+msgstr "將內容寫入 CD 或 DVD 光碟"
 
 #: burn-extension.c:202 cdburn.glade.h:15
-#, fuzzy
 msgid "Write to Disc"
 msgstr "寫入光碟"
 
 #: cd-drive.c:744
-#, fuzzy, c-format
+#, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "未命名的 SCSI CD-ROM (%s)"
 
@@ -78,7 +73,7 @@ msgstr "不能處理的錯誤，放棄中"
 
 #: cd-recorder.c:367
 msgid "The CD has already been recorded"
-msgstr ""
+msgstr "這 CD 已曾經燒錄"
 
 #: cd-recorder.c:377
 msgid ""
@@ -88,15 +83,15 @@ msgstr "所有的音效檔，必須是立體聲，取樣率為 44100Hz 的 16 �
 #: cd-recorder.c:384
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
-msgstr ""
+msgstr "機器的速度太慢，不能以這樣的速度進行燒錄。請降低燒錄速度。"
 
 #: cd-recorder.c:503
 msgid "You can only burn 99 tracks on one disc"
-msgstr ""
+msgstr "您只可在一片光碟上燒錄 99 條軌道"
 
 #: cdburn.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: cdburn.glade.h:2
 msgid "*"
@@ -104,40 +99,37 @@ msgstr "*"
 
 #: cdburn.glade.h:3
 msgid "<b>After Writing</b>"
-msgstr ""
+msgstr "<b>燒錄完成後</b>"
 
 #: cdburn.glade.h:4
 msgid "<b>Information</b>"
-msgstr ""
+msgstr "<b>資訊</b>"
 
 #: cdburn.glade.h:5
 msgid "<b>Write Options</b>"
-msgstr ""
+msgstr "<b>燒錄選項</b>"
 
 #: cdburn.glade.h:6
 msgid "<big><b>Writing files to disc progress</b></big>"
-msgstr ""
+msgstr "<big><b>正在燒錄檔案至光碟</b></big>"
 
 #: cdburn.glade.h:7
-#, fuzzy
 msgid "<i>Initializing...</i>"
-msgstr "初始化..."
+msgstr "<i>初始化...</i>"
 
 #: cdburn.glade.h:8
 msgid "Data size:"
-msgstr ""
+msgstr "資料大小："
 
 #: cdburn.glade.h:9
-#, fuzzy
 msgid "Disc _name:"
-msgstr "光碟名稱："
+msgstr "光碟名稱(_N)："
 
 #: cdburn.glade.h:10
 msgid "E_ject disc"
-msgstr ""
+msgstr "退出光碟(_J)"
 
 #: cdburn.glade.h:11
-#, fuzzy
 msgid "Label to identify disc"
 msgstr "光碟識別標籤"
 
@@ -150,35 +142,32 @@ msgid ""
 "Selected files are to be written to a CD or DVD disc. This operation may "
 "take a long time, depending on data size and write speed."
 msgstr ""
+"已選取的檔案會燒錄至 CD 或 DVD 光碟。這工作可能需要一段時間，視乎資料的大小與"
+"燒錄速度而定。"
 
 #: cdburn.glade.h:14
-#, fuzzy
 msgid "Write _speed:"
-msgstr "燒錄速度："
+msgstr "燒錄速度(_S)："
 
 #: cdburn.glade.h:16
-#, fuzzy
 msgid "Writing Files to Disc Progress"
-msgstr "將檔案寫入光碟燒錄機"
+msgstr "正在燒錄檔案至光碟"
 
 #: cdburn.glade.h:17
 msgid "_Dummy write"
-msgstr ""
+msgstr "虛擬燒錄(_D)"
 
 #: cdburn.glade.h:18
-#, fuzzy
 msgid "_Reuse these files for another disc"
-msgstr "燒錄另一片光碟時使用同樣的檔案"
+msgstr "燒錄另一片光碟時使用同樣的檔案(_R)"
 
 #: cdburn.glade.h:19
-#, fuzzy
 msgid "_Write"
-msgstr "寫入光碟(_W)"
+msgstr "寫入(_W)"
 
 #: cdburn.glade.h:20
-#, fuzzy
 msgid "_Write disc to:"
-msgstr "將檔案寫入光碟"
+msgstr "將光碟燒錄至(_W)："
 
 #: make-iso.c:251
 msgid ""
@@ -216,61 +205,55 @@ msgstr "正在製作光碟影像檔"
 
 #: nautilus-cd-burner.c:137
 msgid " (invalid Unicode)"
-msgstr ""
+msgstr "（無效的統一碼）"
 
 #: nautilus-cd-burner.c:283
 msgid "Preparing to write CD"
 msgstr "準備燒錄光碟"
 
 #: nautilus-cd-burner.c:285
-#, fuzzy
 msgid "Preparing to write DVD"
-msgstr "準備燒錄光碟"
+msgstr "準備燒錄 DVD 光碟"
 
 #: nautilus-cd-burner.c:290
 msgid "Writing CD"
 msgstr "燒錄光碟"
 
 #: nautilus-cd-burner.c:292
-#, fuzzy
 msgid "Writing DVD"
-msgstr "燒錄光碟"
+msgstr "燒錄 DVD 光碟"
 
 #: nautilus-cd-burner.c:297
 msgid "Fixating CD"
 msgstr "準備完成光碟燒錄程序"
 
 #: nautilus-cd-burner.c:299
-#, fuzzy
 msgid "Fixating DVD"
-msgstr "準備完成光碟燒錄程序"
+msgstr "準備完成 DVD 光碟燒錄程序"
 
 #: nautilus-cd-burner.c:304
 msgid "Erasing CD"
 msgstr "清除光碟"
 
 #: nautilus-cd-burner.c:306
-#, fuzzy
 msgid "Erasing DVD"
-msgstr "清除光碟"
+msgstr "清除 DVD 光碟"
 
 #: nautilus-cd-burner.c:332
 msgid "Please make sure another application is not using the disc."
-msgstr ""
+msgstr "請確定其它程式沒有使用這片光碟。"
 
 #: nautilus-cd-burner.c:333
 msgid "Disc is busy"
-msgstr ""
+msgstr "光碟正在忙碌中"
 
 #: nautilus-cd-burner.c:335
-#, fuzzy
 msgid "Please insert a rewritable or blank media in the drive tray."
-msgstr "請在燒錄機中放入一片可重寫光碟。"
+msgstr "請在燒錄機中放入一片可重寫或空白光碟。"
 
 #: nautilus-cd-burner.c:336
-#, fuzzy
 msgid "Insert rewritable or blank media"
-msgstr "插入可重寫的光碟"
+msgstr "插入可重寫或空白光碟"
 
 #: nautilus-cd-burner.c:338
 msgid "Please insert a blank media in the drive tray."
@@ -281,14 +264,12 @@ msgid "Insert blank media"
 msgstr "插入空白光碟"
 
 #: nautilus-cd-burner.c:341
-#, fuzzy
 msgid "Please replace the in-drive media by a rewritable or blank media."
-msgstr "請將燒錄機內的光碟更換為可重寫的光碟。"
+msgstr "請將燒錄機內的光碟更換為可重寫或空白的光碟。"
 
 #: nautilus-cd-burner.c:342
-#, fuzzy
 msgid "Reload rewritable or blank media"
-msgstr "重新載入可重寫光碟"
+msgstr "重新載入可重寫或空白光碟"
 
 #: nautilus-cd-burner.c:344
 msgid "Please replace the in-drive media by a blank media."
@@ -299,7 +280,6 @@ msgid "Reload blank media"
 msgstr "重新載入空白光碟"
 
 #: nautilus-cd-burner.c:373
-#, fuzzy
 msgid "Disc writing error details"
 msgstr "光碟燒錄錯誤詳細資料"
 
@@ -346,18 +326,18 @@ msgid "Choose a filename for the cdrom image"
 msgstr "請選取作為光碟影像檔的檔案名稱"
 
 #: nautilus-cd-burner.c:585
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
-msgstr "沒有覆蓋檔案的權限。"
+msgstr "沒有覆蓋該檔案的權限 (%s)。"
 
 #: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
 msgid "File image creation failed"
-msgstr ""
+msgstr "建立影像檔失敗"
 
 #: nautilus-cd-burner.c:598
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have permissions to create that file (%s)."
-msgstr "沒有建立檔案的權限。"
+msgstr "沒有建立檔案的權限 (%s)。"
 
 #: nautilus-cd-burner.c:661
 #, c-format
@@ -375,7 +355,7 @@ msgstr "最大可能"
 #: nautilus-cd-burner.c:859
 #, c-format
 msgid "%d MB"
-msgstr ""
+msgstr "%d MB"
 
 #.
 #. translators: see strftime man page for meaning of %b, %d and %Y
@@ -387,10 +367,9 @@ msgstr "個人資料，%x"
 
 #: nautilus-cd-burner.c:920
 msgid "Cancel write"
-msgstr ""
+msgstr "取清燒錄"
 
 #: nautilus-cd-burner.c:921
-#, fuzzy
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
@@ -401,7 +380,7 @@ msgstr ""
 
 #: nautilus-cd-burner.c:925
 msgid "Continue"
-msgstr ""
+msgstr "繼續"
 
 #: nautilus-cd-burner.c:977
 #, c-format
@@ -410,7 +389,7 @@ msgstr "顯示說明文件時發生錯誤：%s。"
 
 #: nautilus-cd-burner.c:978
 msgid "Cannot display help"
-msgstr ""
+msgstr "無法顯示說明文件"
 
 #: nautilus-cd-burner.c:1093
 msgid "Too many parameters"
@@ -418,7 +397,7 @@ msgstr "參數太多"
 
 #: nautilus-cd-burner.c:1094
 msgid "Too many parameters were passed to the application."
-msgstr ""
+msgstr "傳給程式的參數太多。"
 
 #: nautilus-cd-burner.c:1116
 #, c-format
@@ -430,16 +409,14 @@ msgid "Not a valid CD image"
 msgstr "不是有效的光碟影像檔"
 
 #: nautilus-cd-burner.c:1135
-#, fuzzy
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
-msgstr "請將準備燒錄的檔案複製至「光碟製作程式」視窗。是否想現在開啟？"
+msgstr "請將準備燒錄的檔案複製至「CD/DVD 光碟製作程式」視窗。是否想現在開啟？"
 
 #: nautilus-cd-burner.c:1137
-#, fuzzy
 msgid "Open CD/DVD Creator"
-msgstr "開啟光碟製作程式"
+msgstr "開啟 CD/DVD 光碟製作程式"
 
 #: ncb.schemas.in.h:1
 msgid "Default burn speed"
@@ -461,101 +438,102 @@ msgstr "儲存臨時 ISO 檔的目錄。如果使用系統預設的暫存目錄�
 
 #: ncb.schemas.in.h:5
 msgid "Enable Burnproof option"
-msgstr ""
+msgstr "啟用 Burnproof 選項"
 
 #: ncb.schemas.in.h:6
 msgid "Enable debug"
-msgstr ""
+msgstr "啟用除錯"
 
 #: ncb.schemas.in.h:7
 msgid "Enable overburn"
-msgstr ""
+msgstr "啟用超燒"
 
 #: ncb.schemas.in.h:8
 msgid "Whether to allow the data to exceed the size of the physical medium."
-msgstr ""
+msgstr "是否容許資料的大小大於物理媒體的空間。"
 
 #: ncb.schemas.in.h:9
 msgid "Whether to enable the debugging for CD Recording."
-msgstr ""
+msgstr "是否使用光碟燒錄的除錯模式。"
 
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
-msgstr ""
+msgstr "是否使用一些燒錄機有的 Burnproof 選項。"
 
-#~ msgid "<b>Writing to CD. Please wait.</b>"
-#~ msgstr "<b>正在燒錄光碟，請稍候。</b>"
+msgid "<b>Writing to CD. Please wait.</b>"
+msgstr "<b>正在燒錄光碟，請稍候。</b>"
 
-#~ msgid "Dummy write (debug build)"
-#~ msgstr "模擬燒錄 (偵錯模式)"
+msgid "Dummy write (debug build)"
+msgstr "模擬燒錄 (偵錯模式)"
 
-#~ msgid "Eject CD when done"
-#~ msgstr "當完成後退出光碟片"
+msgid "Eject CD when done"
+msgstr "當完成後退出光碟片"
 
-#~ msgid "Erase CD"
-#~ msgstr "清除光碟"
+msgid "Erase CD"
+msgstr "清除光碟"
 
-#~ msgid "Erase entire contents of CD before writing"
-#~ msgstr "清除光碟上的所有內容"
+msgid "Erase entire contents of CD before writing"
+msgstr "清除光碟上的所有內容"
 
-#~ msgid "Keep the selected files so that you can use them for another CD"
-#~ msgstr "保持選取同樣的檔案，使得燒錄另一片光碟時可以使用"
+msgid "Keep the selected files so that you can use them for another CD"
+msgstr "保持選取同樣的檔案，使得燒錄另一片光碟時可以使用"
 
-#~ msgid "Select a CD writer or image file"
-#~ msgstr "選取光碟燒錄機或影像檔"
+msgid "Select a CD writer or image file"
+msgstr "選取光碟燒錄機或影像檔"
 
-#~ msgid "Target to write to:"
-#~ msgstr "寫入的目的地："
+msgid "Target to write to:"
+msgstr "燒錄的目的地："
 
-#~ msgid "When the write is done, eject the CD tray"
-#~ msgstr "當完成後退出光碟匣"
+msgid "When the write is done, eject the CD tray"
+msgstr "當完成後退出光碟匣"
 
-#~ msgid "Please reload the CD in the CD writer."
-#~ msgstr "請重新載入燒錄機中的光碟。"
+msgid "Please reload the CD in the CD writer."
+msgstr "請重新載入燒錄機中的光碟。"
 
-#~ msgid "Reload CD"
-#~ msgstr "重新載入光碟"
+msgid "Reload CD"
+msgstr "重新載入光碟"
 
-#~ msgid "Please insert a blank CD in the CD writer."
-#~ msgstr "請在燒錄機中放入一片空白光碟。"
+msgid "Please insert a blank CD in the CD writer."
+msgstr "請在燒錄機中放入一片空白光碟。"
 
-#~ msgid "Insert blank CD"
-#~ msgstr "插入空白光碟"
+msgid "Insert blank CD"
+msgstr "插入空白光碟"
 
-#~ msgid "Please insert a blank CD-RW in the CD writer."
-#~ msgstr "請在燒錄機中放入一片可重寫光碟。"
+msgid "Please insert a blank CD-RW in the CD writer."
+msgstr "請在燒錄機中放入一片空白的 CD-RW 光碟。"
 
-#~ msgid "Insert blank CD-RW"
-#~ msgstr "插入空白的可重寫光碟"
+msgid "Insert blank CD-RW"
+msgstr "插入空白 CD-RW 光碟"
 
-#~ msgid "You have selected %d megabyte of files to be written to the CD."
-#~ msgstr "閣下選取了 %d MB 檔案準備燒錄進光碟。"
+msgid "You have selected %d megabyte of files to be written to the CD."
+msgstr "閣下選取了 %d MB 檔案準備燒錄進光碟。"
 
-#~ msgid "Are you sure you want to cancel?"
-#~ msgstr "是否確定要取消？"
+msgid "Are you sure you want to cancel?"
+msgstr "是否確定要取消？"
 
-#~ msgid "Too many parameters to nautilus-cd-burner"
-#~ msgstr "提供給 nautilus-cd-burner 的參數太多"
+msgid "Too many parameters to nautilus-cd-burner"
+msgstr "提供給 nautilus-cd-burner 的參數太多"
 
-#~ msgid ""
-#~ "You do not seem to have any CD recorder in your machine. Please verify "
-#~ "your setup."
-#~ msgstr "看來您的機器上沒有燒錄機。請檢查您的設定。"
+msgid ""
+"You do not seem to have any CD recorder in your machine. Please verify your "
+"setup."
+msgstr "看來您的機器上沒有燒錄機。請檢查您的設定。"
 
-#~ msgid "No CD recorder available"
-#~ msgstr "找不到光碟燒錄機"
+msgid "No CD recorder available"
+msgstr "找不到光碟燒錄機"
 
-#~ msgid "Factory for the nautilus-cd-burner context menu"
-#~ msgstr "nautilus-cd-burner 快顯選單的工廠"
+msgid "Factory for the nautilus-cd-burner context menu"
+msgstr "nautilus-cd-burner 快顯選單的工廠"
 
-#~ msgid "Nautilus context menu entries for CD burning"
-#~ msgstr "Nautilus 快顯選單中有關燒錄光碟的項目"
+msgid "Nautilus context menu entries for CD burning"
+msgstr "Nautilus 快顯選單中有關燒錄光碟的項目"
 
-#~ msgid "nautilus-cd-burner context menu"
-#~ msgstr "nautilus-cd-burner 快顯選單"
+msgid "nautilus-cd-burner context menu"
+msgstr "nautilus-cd-burner 快顯選單"
 
-#~ msgid "nautilus-cd-burner context menu factory"
-#~ msgstr "nautilus-cd-burner 快顯選單工廠"
+msgid "nautilus-cd-burner context menu factory"
+msgstr "nautilus-cd-burner 快顯選單工廠"
 
-#~ msgid "CD burning context menu items"
-#~ msgstr "燒錄光碟快顯選單項目"
+msgid "CD burning context menu items"
+msgstr "燒錄光碟快顯選單項目"
+

@@ -2,7 +2,7 @@
 
    nautilus-cd-burner.c: easy to use cd burner software
  
-   Copyright (C) 2002 Red Hat, Inc.
+   Copyright (C) 2002-2004 Red Hat, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -20,6 +20,7 @@
    Boston, MA 02111-1307, USA.
   
    Authors: Alexander Larsson <alexl@redhat.com>
+   Bastien Nocera <hadess@hadess.net>
 */
 #include "config.h"
 #include <libgnome/gnome-i18n.h>

@@ -1,3 +1,25 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* 
+ * Copyright (C) 2003-2004 Bastien Nocera <hadess@hadess.net>
+ *
+ * cd-recorder.c
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ * Authors: Bastien Nocera <hadess@hadess.net>
+ */
 
 #include <glib.h>
 #include <string.h>
@@ -97,18 +119,19 @@ list_cdroms (void)
 		char *type_str;
 		const char *media;
 		int media_type;
+		gboolean is_rewritable;
 		gint64 size;
 
 		cd = l->data;
 		type_str = drive_type (cd->type);
-		media_type = cd_drive_get_media_type (cd);
+		media_type = cd_drive_get_media_type_and_rewritable (cd, &is_rewritable);
 		media = media_type_get_string (media_type);
 
 		g_print ("name: %s device: %s max_speed_read: %d\n",
 				cd->display_name, cd->device,
 				cd->max_speed_read);
 		g_print ("type: %s\n", type_str);
-		g_print ("media type: %s\n", media);
+		g_print ("media type: %s%s\n", media, is_rewritable?" (rewritable)":"");
 		size = cd_drive_get_media_size (cd);
 		g_print ("media size: %0.2f megs", (float) size / 1024 / 1024);
 		if (media_type == CD_MEDIA_TYPE_CDR || media_type == CD_MEDIA_TYPE_CDRW) {

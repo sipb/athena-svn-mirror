@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2003 Red Hat, Inc.
+ * Copyright (C) 2003-2004 Red Hat, Inc.
  * Copyright (C) 2003 Novell, Inc.
  *
  * This program is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@
 
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
-#include <libgnome/gnome-i18n.h>
+#include <glib/gi18n-lib.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 

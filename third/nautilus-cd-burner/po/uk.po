@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"POT-Creation-Date: 2004-08-23 14:08+0300\n"
 "PO-Revision-Date: 2004-08-23 14:10+0300\n"
 "Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -87,8 +87,7 @@ msgstr ""
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
-"Система надто повільна для запису компакт-диску на цій швидкості. Спробуйте "
-"меншу швидкість."
+"Система надто повільна для запису компакт-диску на цій швидкості. Спробуйте меншу швидкість."
 
 #: cd-recorder.c:503
 msgid "You can only burn 99 tracks on one disc"
@@ -147,8 +146,8 @@ msgid ""
 "Selected files are to be written to a CD or DVD disc. This operation may "
 "take a long time, depending on data size and write speed."
 msgstr ""
-"Вибрані файли будуть записані на CD чи DVD диск. Операція може зайняти "
-"тривалий час, у залежності від розміру даних та швидкості запису."
+"Вибрані файли будуть записані на CD чи DVD диск. Операція може зайняти тривалий час, "
+"у залежності від розміру даних та швидкості запису."
 
 #: cdburn.glade.h:14
 msgid "Write _speed:"
@@ -260,8 +259,7 @@ msgstr "Диск зайнятий"
 
 #: nautilus-cd-burner.c:335
 msgid "Please insert a rewritable or blank media in the drive tray."
-msgstr ""
-"Вставте порожній диск з перезаписом або чистий компакт-диск у пристрій."
+msgstr "Вставте порожній диск з перезаписом або чистий компакт-диск у пристрій."
 
 #: nautilus-cd-burner.c:336
 msgid "Insert rewritable or blank media"
@@ -426,8 +424,8 @@ msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
 msgstr ""
-"Вам необхідно скопіювати файли, які ви хочете записати на диск, у вікно "
-"створення CD/DVD диску. Бажаєте відкрити це вікно зараз?"
+"Вам необхідно скопіювати файли, які ви хочете записати на диск, у "
+"вікно створення CD/DVD диску. Бажаєте відкрити це вікно зараз?"
 
 #: nautilus-cd-burner.c:1137
 msgid "Open CD/DVD Creator"

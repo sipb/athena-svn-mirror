@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus cd burner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-08-07 11:31+0200\n"
+"POT-Creation-Date: 2004-10-02 13:33+0200\n"
+"PO-Revision-Date: 2004-10-02 13:33+0200\n"
 "Last-Translator:  Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <gnom@prevod.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=3;    plural=n%10==1 && n%100!=11 ? 0 :    n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:200
 msgid "Unnamed CDROM"
 msgstr "Безимени ЦД читач (%s)"
 
@@ -48,52 +48,56 @@ msgstr "Упиши садржај на ЦД или ДВД диск"
 msgid "Write to Disc"
 msgstr "Нарежи на диск"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "Безимени Скази уређај (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "Датотека отиска"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:350
 msgid "The recorder could not be accessed"
 msgstr "Не могу да приступим резачу"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:353
 msgid "Not enough space available on the disc"
 msgstr "Недовољно слободног простора на диску"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:356 cd-recorder.c:359 cd-recorder.c:425
 msgid "The files selected did not fit on the CD"
 msgstr "Изабране датотеке нису стале на диск"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:367
 msgid "Unhandled error, aborting"
 msgstr "Необрађена грешка, одустајем"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:412
 msgid "The CD has already been recorded"
 msgstr "ЦД је већ нарезан"
 
-#: cd-recorder.c:377
+#: cd-recorder.c:429
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "Све звучне датотеке морају бити стерео, 16-битни дигитални звук са узорцима "
 "на 44100Hz"
 
-#: cd-recorder.c:384
+#: cd-recorder.c:442
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
 "Систем је преспор за нарезивање ЦД-а овом брзином. Пробајте мању брзину."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:557
 msgid "You can only burn 99 tracks on one disc"
 msgstr "Можете нарезати највише 99 стаза на један диск"
+
+#: cd-recorder.c:562
+msgid "Burning CD"
+msgstr "Нарезујем ЦД"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -195,7 +199,7 @@ msgstr "Ниједна датотека није изабрана за реза�
 msgid "No files selected"
 msgstr "Ниједна датотека није изабрана"
 
-#: make-iso.c:659
+#: make-iso.c:662
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
@@ -206,11 +210,11 @@ msgstr[1] ""
 msgstr[2] ""
 "Немам довољно простора да сачувам отисак диска (потребно је %ld мегабајта)"
 
-#: make-iso.c:664
+#: make-iso.c:667
 msgid "Not enough space"
 msgstr "Немам довољно простора"
 
-#: make-iso.c:700
+#: make-iso.c:703
 msgid "Creating CD image"
 msgstr "Стварам отисак диска"
 
@@ -290,15 +294,15 @@ msgstr "Замените диск у уређају празним диском.
 msgid "Reload blank media"
 msgstr "Поновите убацивање празног диска"
 
-#: nautilus-cd-burner.c:373
+#: nautilus-cd-burner.c:372
 msgid "Disc writing error details"
 msgstr "Детаљи о грешци приликом резања"
 
-#: nautilus-cd-burner.c:379
+#: nautilus-cd-burner.c:378
 msgid "Detailed error output from cdrecord:"
 msgstr "Детаљни излаз о грешкама из цдрекорда:"
 
-#: nautilus-cd-burner.c:420
+#: nautilus-cd-burner.c:419
 #, c-format
 msgid ""
 "There was an error writing to the CD:\n"
@@ -307,19 +311,19 @@ msgstr ""
 "Догодила се грешка приликом резања на диск:\n"
 "%s"
 
-#: nautilus-cd-burner.c:421
+#: nautilus-cd-burner.c:420
 msgid "There was an error writing to the CD"
 msgstr "Догодила се грешка приликом резања на диск"
 
-#: nautilus-cd-burner.c:422
+#: nautilus-cd-burner.c:421
 msgid "Error writing to CD"
 msgstr "Грешка приликом резања на диск"
 
-#: nautilus-cd-burner.c:428
+#: nautilus-cd-burner.c:427
 msgid "_Details"
 msgstr "_Детаљи"
 
-#: nautilus-cd-burner.c:501
+#: nautilus-cd-burner.c:500
 #, c-format
 msgid ""
 "A file named \"%s\" already exists.\n"
@@ -328,38 +332,38 @@ msgstr ""
 "Датотека „%s“ већ постоји.\n"
 "Желите ли да је преснимите?"
 
-#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+#: nautilus-cd-burner.c:502 nautilus-cd-burner.c:511
 msgid "_Overwrite"
 msgstr "Пре_сними"
 
-#: nautilus-cd-burner.c:530
+#: nautilus-cd-burner.c:529
 msgid "Choose a filename for the cdrom image"
 msgstr "Изаберите назив за датотеку отиска диска"
 
-#: nautilus-cd-burner.c:585
+#: nautilus-cd-burner.c:584
 #, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "Немате овлашћења да преснимите ту датотеку (%s)."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:585 nautilus-cd-burner.c:598
 msgid "File image creation failed"
 msgstr "Неуспешно прављење датотеке отиска"
 
-#: nautilus-cd-burner.c:598
+#: nautilus-cd-burner.c:597
 #, c-format
 msgid "You do not have permissions to create that file (%s)."
 msgstr "Немате овлашћења да направите ту датотеку (%s)."
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:660
 #, c-format
 msgid "Completed writing %s"
 msgstr "Завршено резање диска %s"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:718
 msgid "Complete"
 msgstr "Завршено"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:781
 msgid "Maximum Possible"
 msgstr "Највише могуће"
 

@@ -1,21 +1,24 @@
+# translation of nautilus-cd-burner.gnome-2-8.po to Dutch
 # Vertaling van nautilus-cd-burner
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# Reinout van Schouwen <reinout@cs.vu.nl>, 2002, 2003
+# Copyright (C) 2002, 2004 Free Software Foundation, Inc.
+# Reinout van Schouwen <reinout@cs.vu.nl>, 2002, 2003.
+# Vincent van Adrighem <adrighem@gnome.org>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-cd-burner cvs\n"
+"Project-Id-Version: nautilus-cd-burner.gnome-2-8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-08-02 20:12+0100\n"
-"Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
-"Language-Team: Dutch <vertaling@nl.linux.org>\n"
+"POT-Creation-Date: 2004-12-14 21:15+0100\n"
+"PO-Revision-Date: 2004-12-14 21:30+0100\n"
+"Last-Translator: Vincent van Adrighem <adrighem@gnome.org>\n"
+"Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.9.1\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:170
 msgid "Unnamed CDROM"
 msgstr "Naamloze CD-ROM"
 
@@ -43,54 +46,56 @@ msgstr "Inhoud naar een CD- of DVD-schijf branden"
 msgid "Write to Disc"
 msgstr "Naar CD/DVD branden"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "Naamloos SCSI-station (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "Beeldbestand"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:374
 msgid "The recorder could not be accessed"
 msgstr "De brander is ontoegankelijk"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:377
 msgid "Not enough space available on the disc"
 msgstr "Niet genoeg ruimte beschikbaar op de CD"
 
 # inconsequent disc/CD
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:380 cd-recorder.c:383 cd-recorder.c:449
 msgid "The files selected did not fit on the CD"
 msgstr "De geselecteerde bestanden passen niet op de CD"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:391
 msgid "Unhandled error, aborting"
 msgstr "Onafgehandelde fout, afgebroken"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:436
 msgid "The CD has already been recorded"
 msgstr "De CD is reeds beschreven"
 
-#: cd-recorder.c:377
-msgid ""
-"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+#: cd-recorder.c:453
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "Alle audio-bestanden moeten stereo, 16-bit digitale audio zijn met samples "
 "van 44100Hz"
 
-#: cd-recorder.c:384
-msgid ""
-"The system is too slow to write the CD at this speed. Try a lower speed."
+#: cd-recorder.c:466
+msgid "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
 "Het systeem is te langzaam om de CD op deze snelheid te schrijven. Probeer "
 "een lagere snelheid."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:757
 msgid "You can only burn 99 tracks on one disc"
 msgstr "U kunt slechts 99 sporen op een schijf branden"
+
+#: cd-recorder.c:762
+msgid "Burning CD"
+msgstr "Bezig met branden CD"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -186,105 +191,102 @@ msgstr ""
 msgid "Windows compatibility"
 msgstr "Windows-compatibiliteit"
 
-#: make-iso.c:576
+#: make-iso.c:581
 msgid "No files selected to write to CD."
 msgstr "Geen bestanden geselecteerd om naar CD te schrijven."
 
-#: make-iso.c:578 nautilus-cd-burner.c:1134
+#: make-iso.c:583 nautilus-cd-burner.c:1139
 msgid "No files selected"
 msgstr "Geen bestanden geselecteerd"
 
-#: make-iso.c:659
+#: make-iso.c:667
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
-msgstr[0] ""
-"Niet genoeg ruimte om CD-beeldbestand op te slaan (%ld Megabyte benodigd)"
-msgstr[1] ""
-"Niet genoeg ruimte om CD-beeldbestand op te slaan (%ld Megabyte benodigd)"
+msgstr[0] "Niet genoeg ruimte om CD-beeldbestand op te slaan (%ld Megabyte benodigd)"
+msgstr[1] "Niet genoeg ruimte om CD-beeldbestand op te slaan (%ld Megabyte benodigd)"
 
-#: make-iso.c:664
+#: make-iso.c:672
 msgid "Not enough space"
 msgstr "Niet genoeg ruimte"
 
-#: make-iso.c:700
+#: make-iso.c:710
 msgid "Creating CD image"
 msgstr "Bezig met aanmaken CD-beeldbestand"
 
-#: nautilus-cd-burner.c:137
+#: nautilus-cd-burner.c:138
 msgid " (invalid Unicode)"
 msgstr " (ongeldige Unicode)"
 
-#: nautilus-cd-burner.c:283
+#: nautilus-cd-burner.c:284
 msgid "Preparing to write CD"
 msgstr "Bezig met klaarmaken om CD te schrijven"
 
-#: nautilus-cd-burner.c:285
+#: nautilus-cd-burner.c:286
 msgid "Preparing to write DVD"
 msgstr "Bezig met klaarmaken om DVD te schrijven"
 
-#: nautilus-cd-burner.c:290
+#: nautilus-cd-burner.c:291
 msgid "Writing CD"
 msgstr "Schrijven van CD..."
 
-#: nautilus-cd-burner.c:292
+#: nautilus-cd-burner.c:293
 msgid "Writing DVD"
 msgstr "Schrijven van DVD..."
 
-#: nautilus-cd-burner.c:297
+#: nautilus-cd-burner.c:298
 msgid "Fixating CD"
 msgstr "Fixeren van CD..."
 
-#: nautilus-cd-burner.c:299
+#: nautilus-cd-burner.c:300
 msgid "Fixating DVD"
 msgstr "Fixeren van DVD..."
 
-#: nautilus-cd-burner.c:304
+#: nautilus-cd-burner.c:305
 msgid "Erasing CD"
 msgstr "Wissen van CD..."
 
-#: nautilus-cd-burner.c:306
+#: nautilus-cd-burner.c:307
 msgid "Erasing DVD"
 msgstr "Wissen van DVD..."
 
-#: nautilus-cd-burner.c:332
+#: nautilus-cd-burner.c:333
 msgid "Please make sure another application is not using the disc."
 msgstr "Vergewis uzelf ervan dat geen andere toepassing de schijf gebruikt."
 
-#: nautilus-cd-burner.c:333
+#: nautilus-cd-burner.c:334
 msgid "Disc is busy"
 msgstr "Schijf is in gebruik"
 
-#: nautilus-cd-burner.c:335
+#: nautilus-cd-burner.c:336
 msgid "Please insert a rewritable or blank media in the drive tray."
 msgstr "Plaats een herschrijfbaar of leeg medium in het station."
 
-#: nautilus-cd-burner.c:336
+#: nautilus-cd-burner.c:337
 msgid "Insert rewritable or blank media"
 msgstr "Plaats herschrijfbaar of leeg medium"
 
-#: nautilus-cd-burner.c:338
+#: nautilus-cd-burner.c:339
 msgid "Please insert a blank media in the drive tray."
 msgstr "Plaats een leeg medium in het station."
 
-#: nautilus-cd-burner.c:339
+#: nautilus-cd-burner.c:340
 msgid "Insert blank media"
 msgstr "Plaats leeg medium"
 
-#: nautilus-cd-burner.c:341
-msgid "Please replace the in-drive media by a rewritable or blank media."
-msgstr ""
-"Vervang het medium in het station door een herschrijfbaar of leeg medium."
-
 #: nautilus-cd-burner.c:342
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr "Vervang het medium in het station door een herschrijfbaar of leeg medium."
+
+#: nautilus-cd-burner.c:343
 msgid "Reload rewritable or blank media"
 msgstr "Herschrijfbaar of leeg medium herladen"
 
-#: nautilus-cd-burner.c:344
+#: nautilus-cd-burner.c:345
 msgid "Please replace the in-drive media by a blank media."
 msgstr "Vervang het medium in het station door een leeg medium."
 
-#: nautilus-cd-burner.c:345
+#: nautilus-cd-burner.c:346
 msgid "Reload blank media"
 msgstr "Herlaad leeg medium"
 
@@ -339,7 +341,7 @@ msgstr "Kies een bestandsnaam voor het CDROM-beeldbestand"
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "U heeft geen rechten om dat bestand te overschrijven (%s)."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599 nautilus-cd-burner.c:656
 msgid "File image creation failed"
 msgstr "Beeldbestand aanmaken mislukt"
 
@@ -348,20 +350,24 @@ msgstr "Beeldbestand aanmaken mislukt"
 msgid "You do not have permissions to create that file (%s)."
 msgstr "U heeft geen rechten om dat bestand aan te maken (%s)."
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:656
+msgid "Incorrectly named files were to be added to the CD"
+msgstr "Er zouden bestanden met ongeldige benaming aan de CD toegevoegd worden"
+
+#: nautilus-cd-burner.c:664
 #, c-format
 msgid "Completed writing %s"
 msgstr "Schrijven van %s voltooid"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:725
 msgid "Complete"
 msgstr "Voltooid"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:786
 msgid "Maximum Possible"
 msgstr "Maximum haalbaar"
 
-#: nautilus-cd-burner.c:859
+#: nautilus-cd-burner.c:864
 #, c-format
 msgid "%d MB"
 msgstr "%d MB"
@@ -370,15 +376,15 @@ msgstr "%d MB"
 #. translators: see strftime man page for meaning of %b, %d and %Y
 #. the maximum length for this field is 32 bytes
 #.
-#: nautilus-cd-burner.c:887
+#: nautilus-cd-burner.c:892
 msgid "Personal Data, %b %d, %Y"
 msgstr "Gegevens van %d %b %Y"
 
-#: nautilus-cd-burner.c:920
+#: nautilus-cd-burner.c:925
 msgid "Cancel write"
 msgstr "Branden annuleren"
 
-#: nautilus-cd-burner.c:921
+#: nautilus-cd-burner.c:926
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
@@ -388,37 +394,37 @@ msgstr ""
 "Voor sommige optische media-branders dient u de computer opnieuw op te "
 "starten om ze weer aan de praat te krijgen."
 
-#: nautilus-cd-burner.c:925
+#: nautilus-cd-burner.c:930
 msgid "Continue"
 msgstr "Doorgaan"
 
-#: nautilus-cd-burner.c:977
+#: nautilus-cd-burner.c:982
 #, c-format
 msgid "There was a problem displaying the help contents: %s."
 msgstr "Er is een fout opgetreden bij het weergeven van de hulp-inhoud: %s."
 
-#: nautilus-cd-burner.c:978
+#: nautilus-cd-burner.c:983
 msgid "Cannot display help"
 msgstr "Kan hulptekst niet weergeven"
 
-#: nautilus-cd-burner.c:1093
+#: nautilus-cd-burner.c:1098
 msgid "Too many parameters"
 msgstr "Te veel parameters"
 
-#: nautilus-cd-burner.c:1094
+#: nautilus-cd-burner.c:1099
 msgid "Too many parameters were passed to the application."
 msgstr "Te veel parameters zijn aan de toepassing doorgegeven."
 
-#: nautilus-cd-burner.c:1116
+#: nautilus-cd-burner.c:1121
 #, c-format
 msgid "The file '%s' is not a valid CD image."
 msgstr "Het bestand '%s' is geen geldig CD-beeldbestand."
 
-#: nautilus-cd-burner.c:1119
+#: nautilus-cd-burner.c:1124
 msgid "Not a valid CD image"
 msgstr "Geen geldig CD-beeldbestand"
 
-#: nautilus-cd-burner.c:1135
+#: nautilus-cd-burner.c:1140
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
@@ -426,7 +432,7 @@ msgstr ""
 "U dient de bestanden die u naar schijf wilt branden te kopiëren naar het CD/"
 "DVD maker-venster."
 
-#: nautilus-cd-burner.c:1137
+#: nautilus-cd-burner.c:1142
 msgid "Open CD/DVD Creator"
 msgstr "CD/DVD-maker openen"
 
@@ -464,8 +470,7 @@ msgstr "Overburn inschakelen"
 
 #: ncb.schemas.in.h:8
 msgid "Whether to allow the data to exceed the size of the physical medium."
-msgstr ""
-"Of de gegevens groter mogen zijn dan de grootte van het fysieke medium."
+msgstr "Of de gegevens groter mogen zijn dan de grootte van het fysieke medium."
 
 #: ncb.schemas.in.h:9
 msgid "Whether to enable the debugging for CD Recording."
@@ -475,107 +480,3 @@ msgstr "Of fouten opsporen ingeschakeld moet worden voor het opnemen van CD's."
 msgid "Whether to use the Burnproof option available on some recorders."
 msgstr "Of de Burnproof-optie op sommige branders gebruikt moet worden."
 
-#~ msgid "<b>Writing to CD. Please wait.</b>"
-#~ msgstr "<b>Bezig met schrijven naar CD. Even geduld.</b>"
-
-#~ msgid "Dummy write (debug build)"
-#~ msgstr "Dummy-schrijven (debug build)"
-
-#~ msgid "Eject CD when done"
-#~ msgstr "CD uitwerpen na voltooiing"
-
-#~ msgid "Erase CD"
-#~ msgstr "CD wissen"
-
-#~ msgid "Erase entire contents of CD before writing"
-#~ msgstr "Gehele inhoud van CD wissen voordat schrijven begint"
-
-#~ msgid "Keep the selected files so that you can use them for another CD"
-#~ msgstr ""
-#~ "De geselecteerde bestanden behouden zodat u ze voor een andere CD kunt "
-#~ "gebruiken"
-
-#~ msgid "Select a CD writer or image file"
-#~ msgstr "Selecteer een CD-schrijver of beeldbestand"
-
-#~ msgid "Target to write to:"
-#~ msgstr "Doel om naartoe te schrijven:"
-
-#~ msgid "When the write is done, eject the CD tray"
-#~ msgstr "CD uitwerpen wanneer schrijfoperatie is voltooid"
-
-#~ msgid "Please reload the CD in the CD writer."
-#~ msgstr "Plaats de CD opnieuw in de CD-schrijver."
-
-#~ msgid "Reload CD"
-#~ msgstr "Plaats CD opnieuw"
-
-#~ msgid "Please insert a blank CD in the CD writer."
-#~ msgstr "Plaats een lege CD in de CD-schrijver."
-
-#~ msgid "Insert blank CD"
-#~ msgstr "Plaats lege CD"
-
-#~ msgid "Please insert a blank CD-RW in the CD writer."
-#~ msgstr "Plaats een lege CD-RW in de CD-brander."
-
-#~ msgid "Insert blank CD-RW"
-#~ msgstr "Plaats lege CD-RW"
-
-#~ msgid "You have selected %d megabyte of files to be written to the CD."
-#~ msgstr ""
-#~ "U heeft %d Megabyte aan bestanden geselecteerd om naar CD te schrijven."
-
-#~ msgid "Are you sure you want to cancel?"
-#~ msgstr "Weet u zeker dat u wilt annuleren?"
-
-#~ msgid "Too many parameters to nautilus-cd-burner"
-#~ msgstr "Te veel parameters voor nautilus-cd-burner"
-
-#~ msgid ""
-#~ "You do not seem to have any CD recorder in your machine. Please verify "
-#~ "your setup."
-#~ msgstr ""
-#~ "Ogenschijnlijk heeft u geen CD-recorder in uw computer. Controller uw "
-#~ "instellingen."
-
-#~ msgid "No CD recorder available"
-#~ msgstr "Geen CD-recorder beschikbaar"
-
-#~ msgid "Create a CD that you can use with ordinary stereo equipment"
-#~ msgstr "Een CD aanmaken die u met gewone stereo-apparatuur kunt gebruiken"
-
-#~ msgid "Create a music CD"
-#~ msgstr "Een muziek-CD maken"
-
-#~ msgid "Factory for the nautilus-cd-burner context menu"
-#~ msgstr "Fabriek voor het nautilus-cd-burner contextmenu"
-
-#~ msgid "Nautilus context menu entries for CD burning"
-#~ msgstr "Nautilus contextmenu-items voor het branden van CD's"
-
-#~ msgid "nautilus-cd-burner context menu"
-#~ msgstr "nautilus-cd-burner contextmenu"
-
-#~ msgid "nautilus-cd-burner context menu factory"
-#~ msgstr "nautilus-cd-burner contextmenu-fabriek"
-
-#~ msgid "CD burning context menu items"
-#~ msgstr "contextmenu-items voor het branden van CD's"
-
-#, fuzzy
-#~ msgid "You have selected 185 megabyte of files to be written to the CD."
-#~ msgstr ""
-#~ "U heeft %d megabyte aan bestanden geselecteerd om naar CD te schrijven."
-
-#~ msgid ""
-#~ "<big>Write files to a CD recorder</big>\n"
-#~ "\n"
-#~ "You have selected 185 megabyte of files to be written to the CD."
-#~ msgstr ""
-#~ "<big>Bestanden naar een CD-recorder schrijven</big>\n"
-#~ "\n"
-#~ "U heeft 185 megabyte aan bestanden geselecteerd om naar CD te schrijven."
-
-#~ msgid "Burning CD"
-#~ msgstr "Bezig met branden CD"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner.HEAD.ro\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"POT-Creation-Date: 2004-08-17 11:56+0200\n"
 "PO-Revision-Date: 2004-09-07 01:36+0300\n"
 "Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
 "Language-Team: Romanian <@li.org>\n"
@@ -78,18 +78,16 @@ msgid "The CD has already been recorded"
 msgstr "CD-ul a fost deja înregistrat"
 
 #: cd-recorder.c:377
-msgid ""
-"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "Toate fişierele audio trebuie să fie stereo, pe 16 biţi cu 44100Hz rata de "
 "eşantionare"
 
 #: cd-recorder.c:384
-msgid ""
-"The system is too slow to write the CD at this speed. Try a lower speed."
+msgid "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
-"Sistemul este prea lent pentru a putea scrie CD-ul la această viteză. "
-"Încercaţi o viteză mai mică."
+"Sistemul este prea lent pentru a putea scrie CD-ul la această viteză. Încercaţi "
+"o viteză mai mică."
 
 #: cd-recorder.c:503
 msgid "You can only burn 99 tracks on one disc"
@@ -147,9 +145,7 @@ msgstr "Selectaţi viteza folosită pentru scriere"
 msgid ""
 "Selected files are to be written to a CD or DVD disc. This operation may "
 "take a long time, depending on data size and write speed."
-msgstr ""
-"Fişierele selectate vor fi scrise pe un disc CD sau DVD. Această operaţie "
-"poate dura destul de mult, funcţie de mărimea datelor şi viteza de scriere."
+msgstr "Fişierele selectate vor fi scrise pe un disc CD sau DVD. Această operaţie poate dura destul de mult, funcţie de mărimea datelor şi viteza de scriere."
 
 #: cdburn.glade.h:14
 msgid "Write _speed:"
@@ -199,8 +195,7 @@ msgstr "Nici un fişier selectat"
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
-msgstr[0] ""
-"Nu este destul spaţiu pentru a stoca imaginea CD-ului (%ld Megabyte necesar)"
+msgstr[0] "Nu este destul spaţiu pentru a stoca imaginea CD-ului (%ld Megabyte necesar)"
 msgstr[1] ""
 "Nu este destul spaţiu pentru a stoca imaginea CD-ului (%ld Megabytes "
 "necesari)"
@@ -251,8 +246,7 @@ msgstr "Şterg DVD-ul"
 
 #: nautilus-cd-burner.c:332
 msgid "Please make sure another application is not using the disc."
-msgstr ""
-"Vă rugăm să vă asiguraţi că discul nu este folosit de către o altă aplicaţie."
+msgstr "Vă rugăm să vă asiguraţi că discul nu este folosit de către o altă aplicaţie."
 
 #: nautilus-cd-burner.c:333
 msgid "Disc is busy"
@@ -387,8 +381,8 @@ msgid ""
 "working again."
 msgstr ""
 "Sunteţi sigur că doriţi să anulaţi scrierea pe disc?\n"
-"Unele unităţi de discuri pot avea nevoie de o restartare a "
-"calculatoruluipentru a putea funcţiona din nou."
+"Unele unităţi de discuri pot avea nevoie de o restartare a calculatoruluipentru a "
+"putea funcţiona din nou."
 
 #: nautilus-cd-burner.c:925
 msgid "Continue"
@@ -466,8 +460,7 @@ msgstr "Activare overburn"
 
 #: ncb.schemas.in.h:8
 msgid "Whether to allow the data to exceed the size of the physical medium."
-msgstr ""
-"Dacă se va permite datelor să depăşească capacitatea mediului de scriere."
+msgstr "Dacă se va permite datelor să depăşească capacitatea mediului de scriere."
 
 #: ncb.schemas.in.h:9
 msgid "Whether to enable the debugging for CD Recording."
@@ -475,5 +468,5 @@ msgstr "Dacă să se activeze depanarea pentru Înregistrare CD."
 
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
-msgstr ""
-"Dacă să se folosească optiunea Burnproof disponibilă la unele dintre unităţi."
+msgstr "Dacă să se folosească optiunea Burnproof disponibilă la unele dintre unităţi."
+

@@ -413,6 +413,7 @@ fill_in_directory_info (GnomeVFSFileInfo *file_info)
 		GNOME_VFS_FILE_INFO_FIELDS_FLAGS |
 		GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE;
 
+	file_info->uid = getuid ();
 	file_info->type = GNOME_VFS_FILE_TYPE_DIRECTORY;
 	file_info->permissions = GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_OTHER_ALL;
 	file_info->flags = GNOME_VFS_FILE_FLAGS_LOCAL;

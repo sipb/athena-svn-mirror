@@ -10,16 +10,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-07-30 17:18-0300\n"
+"POT-Creation-Date: 2004-12-05 16:41+0100\n"
+"PO-Revision-Date: 2004-12-05 16:49-0200\n"
 "Last-Translator: Raphael Higino <raphaelh@uai.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:170
 msgid "Unnamed CDROM"
 msgstr "CD-ROM sem nome"
 
@@ -33,7 +33,7 @@ msgstr "Impossível executar o gravador de CD"
 
 #: burn-extension.c:146 burn-extension.c:173
 msgid "_Write to Disc..."
-msgstr "_Gravar em disco..."
+msgstr "_Gravar em CD/DVD..."
 
 #: burn-extension.c:147
 msgid "Write disc image to a CD or DVD disc"
@@ -45,55 +45,59 @@ msgstr "Grava o conteúdo em um CD ou DVD"
 
 #: burn-extension.c:202 cdburn.glade.h:15
 msgid "Write to Disc"
-msgstr "Gravar em Disco"
+msgstr "Gravar em CD/DVD"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "Drive SCSI sem nome (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "Imagem ISO"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:374
 msgid "The recorder could not be accessed"
 msgstr "O gravador não pôde ser acessado"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:377
 msgid "Not enough space available on the disc"
 msgstr "Sem espaço suficiente no disco"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:380 cd-recorder.c:383 cd-recorder.c:449
 msgid "The files selected did not fit on the CD"
 msgstr "Os arquivos selecionados não couberam no CD"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:391
 msgid "Unhandled error, aborting"
 msgstr "Erro não tratado, abortando"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:436
 msgid "The CD has already been recorded"
 msgstr "O CD já foi gravado"
 
-#: cd-recorder.c:377
+#: cd-recorder.c:453
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "Todos os arquivos de áudio devem ser estéreo, áudio digital de 16 bits, com "
 "amostras de 44100Hz"
 
-#: cd-recorder.c:384
+#: cd-recorder.c:466
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
 "O sistema é lento demais para gravar o CD a essa velocidade. Tente uma "
 "velocidade menor."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:757
 msgid "You can only burn 99 tracks on one disc"
 msgstr "Você só pode gravar 99 faixas em um disco"
+
+#: cd-recorder.c:762
+msgid "Burning CD"
+msgstr "Gravando CD"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -188,15 +192,15 @@ msgstr ""
 msgid "Windows compatibility"
 msgstr "Compatibilidade com Windows"
 
-#: make-iso.c:576
+#: make-iso.c:581
 msgid "No files selected to write to CD."
 msgstr "Nenhum arquivo selecionado para gravar no CD."
 
-#: make-iso.c:578 nautilus-cd-burner.c:1134
+#: make-iso.c:583 nautilus-cd-burner.c:1139
 msgid "No files selected"
 msgstr "Nenhum arquivo selecionado"
 
-#: make-iso.c:659
+#: make-iso.c:667
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
@@ -205,89 +209,89 @@ msgstr[0] ""
 msgstr[1] ""
 "Espaço insuficiente para armazenar imagem de CD (%ld Megabytes necessários)"
 
-#: make-iso.c:664
+#: make-iso.c:672
 msgid "Not enough space"
 msgstr "Espaço insuficiente"
 
-#: make-iso.c:700
+#: make-iso.c:710
 msgid "Creating CD image"
 msgstr "Criando imagem do CD"
 
-#: nautilus-cd-burner.c:137
+#: nautilus-cd-burner.c:138
 msgid " (invalid Unicode)"
 msgstr " (Unicode inválido)"
 
-#: nautilus-cd-burner.c:283
+#: nautilus-cd-burner.c:284
 msgid "Preparing to write CD"
 msgstr "Preparando para gravar CD"
 
-#: nautilus-cd-burner.c:285
+#: nautilus-cd-burner.c:286
 msgid "Preparing to write DVD"
 msgstr "Preparando para gravar DVD"
 
-#: nautilus-cd-burner.c:290
+#: nautilus-cd-burner.c:291
 msgid "Writing CD"
 msgstr "Gravando CD"
 
-#: nautilus-cd-burner.c:292
+#: nautilus-cd-burner.c:293
 msgid "Writing DVD"
 msgstr "Gravando DVD"
 
-#: nautilus-cd-burner.c:297
+#: nautilus-cd-burner.c:298
 msgid "Fixating CD"
 msgstr "Fixando CD"
 
-#: nautilus-cd-burner.c:299
+#: nautilus-cd-burner.c:300
 msgid "Fixating DVD"
 msgstr "Fixando DVD"
 
-#: nautilus-cd-burner.c:304
+#: nautilus-cd-burner.c:305
 msgid "Erasing CD"
 msgstr "Apagando CD"
 
-#: nautilus-cd-burner.c:306
+#: nautilus-cd-burner.c:307
 msgid "Erasing DVD"
 msgstr "Apagando DVD"
 
-#: nautilus-cd-burner.c:332
+#: nautilus-cd-burner.c:333
 msgid "Please make sure another application is not using the disc."
 msgstr ""
 "Por favor, certifique-se de que nenhuma outra aplicação está usando o disco."
 
-#: nautilus-cd-burner.c:333
+#: nautilus-cd-burner.c:334
 msgid "Disc is busy"
 msgstr "O disco está ocupado"
 
-#: nautilus-cd-burner.c:335
+#: nautilus-cd-burner.c:336
 msgid "Please insert a rewritable or blank media in the drive tray."
 msgstr "Por favor, insira uma mídia regravável ou virgem no gravador."
 
-#: nautilus-cd-burner.c:336
+#: nautilus-cd-burner.c:337
 msgid "Insert rewritable or blank media"
 msgstr "Insira uma mídia regravável ou virgem"
 
-#: nautilus-cd-burner.c:338
+#: nautilus-cd-burner.c:339
 msgid "Please insert a blank media in the drive tray."
 msgstr "Por favor, insira uma mídia virgem no gravador."
 
-#: nautilus-cd-burner.c:339
+#: nautilus-cd-burner.c:340
 msgid "Insert blank media"
 msgstr "Inserir uma mídia virgem"
 
-#: nautilus-cd-burner.c:341
+#: nautilus-cd-burner.c:342
 msgid "Please replace the in-drive media by a rewritable or blank media."
 msgstr ""
 "Por favor, substitua a mídia dentro do gravador por uma regravável ou virgem."
 
-#: nautilus-cd-burner.c:342
+#: nautilus-cd-burner.c:343
 msgid "Reload rewritable or blank media"
 msgstr "Recarregar mídia regravável ou virgem"
 
-#: nautilus-cd-burner.c:344
+#: nautilus-cd-burner.c:345
 msgid "Please replace the in-drive media by a blank media."
 msgstr "Por favor, substitua a mídia dentro do drive por uma virgem."
 
-#: nautilus-cd-burner.c:345
+#: nautilus-cd-burner.c:346
 msgid "Reload blank media"
 msgstr "Recarregar mídia virgem"
 
@@ -342,7 +346,7 @@ msgstr "Selecione um nome de arquivo para a imagem do CD-ROM"
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "Você não tem permissão para sobrescrever esse arquivo (%s)."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599 nautilus-cd-burner.c:656
 msgid "File image creation failed"
 msgstr "Falha ao criar a imagem do arquivo"
 
@@ -351,20 +355,26 @@ msgstr "Falha ao criar a imagem do arquivo"
 msgid "You do not have permissions to create that file (%s)."
 msgstr "Você não tem permissão para criar esse arquivo (%s)."
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:656
+msgid "Incorrectly named files were to be added to the CD"
+msgstr ""
+"Arquivos com nomes incorretos estavam prestes a ser "
+"adicionados ao CD"
+
+#: nautilus-cd-burner.c:664
 #, c-format
 msgid "Completed writing %s"
 msgstr "Gravação de %s terminada"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:725
 msgid "Complete"
 msgstr "Terminado"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:786
 msgid "Maximum Possible"
 msgstr "Máximo Possível"
 
-#: nautilus-cd-burner.c:859
+#: nautilus-cd-burner.c:864
 #, c-format
 msgid "%d MB"
 msgstr "%d MB"
@@ -373,15 +383,15 @@ msgstr "%d MB"
 #. translators: see strftime man page for meaning of %b, %d and %Y
 #. the maximum length for this field is 32 bytes
 #.
-#: nautilus-cd-burner.c:887
+#: nautilus-cd-burner.c:892
 msgid "Personal Data, %b %d, %Y"
 msgstr "Dados Pessoais, %d de %b de %Y"
 
-#: nautilus-cd-burner.c:920
+#: nautilus-cd-burner.c:925
 msgid "Cancel write"
 msgstr "Cancelar gravação"
 
-#: nautilus-cd-burner.c:921
+#: nautilus-cd-burner.c:926
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
@@ -391,37 +401,37 @@ msgstr ""
 "Alguns gravadores poderão requerer o reinício da máquina para que funcionem "
 "novamente."
 
-#: nautilus-cd-burner.c:925
+#: nautilus-cd-burner.c:930
 msgid "Continue"
 msgstr "Continuar"
 
-#: nautilus-cd-burner.c:977
+#: nautilus-cd-burner.c:982
 #, c-format
 msgid "There was a problem displaying the help contents: %s."
 msgstr "Ocorreu um erro ao mostrar o conteúdo da ajuda: %s"
 
-#: nautilus-cd-burner.c:978
+#: nautilus-cd-burner.c:983
 msgid "Cannot display help"
 msgstr "Impossível exibir a ajuda"
 
-#: nautilus-cd-burner.c:1093
+#: nautilus-cd-burner.c:1098
 msgid "Too many parameters"
 msgstr "Muitos parâmetros"
 
-#: nautilus-cd-burner.c:1094
+#: nautilus-cd-burner.c:1099
 msgid "Too many parameters were passed to the application."
 msgstr "Foram passados parâmetros demais para a aplicação."
 
-#: nautilus-cd-burner.c:1116
+#: nautilus-cd-burner.c:1121
 #, c-format
 msgid "The file '%s' is not a valid CD image."
 msgstr "O arquivo '%s' não é uma imagem de CD válida."
 
-#: nautilus-cd-burner.c:1119
+#: nautilus-cd-burner.c:1124
 msgid "Not a valid CD image"
 msgstr "Não é uma imagem de CD válida"
 
-#: nautilus-cd-burner.c:1135
+#: nautilus-cd-burner.c:1140
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
@@ -429,7 +439,7 @@ msgstr ""
 "Você precisa copiar os arquivos que quiser gravar no disco para a janela do "
 "Criador de CD/DVD. Deseja abrí-la agora?"
 
-#: nautilus-cd-burner.c:1137
+#: nautilus-cd-burner.c:1142
 msgid "Open CD/DVD Creator"
 msgstr "Abrir o Criador de CD/DVD"
 

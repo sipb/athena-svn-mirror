@@ -2,7 +2,7 @@
 
    make-iso.h: code to generate iso files
  
-   Copyright (C) 2002 Red Hat, Inc.
+   Copyright (C) 2002-2004 Red Hat, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as

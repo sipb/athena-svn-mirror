@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-04-15 23:46+0700\n"
+"POT-Creation-Date: 2004-09-12 16:02-0500\n"
+"PO-Revision-Date: 2004-09-13 00:52-0500\n"
 "Last-Translator: Paisa Seeluangsawat <paisa@users.sf.net>\n"
 "Language-Team: Thai <L10n@opentle.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,9 +17,8 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: bacon-cd-selection.c:187
-#, fuzzy
 msgid "Unnamed CDROM"
-msgstr "SCSI CD-ROM ที่ไม่มีชื่อ (%s)"
+msgstr "ซีดีไม่มีชื่อ"
 
 #: burn-extension.c:64
 msgid "Unable to launch the cd burner application"
@@ -30,33 +29,29 @@ msgid "Can't launch cd burner"
 msgstr "เรียกตัวเขียนซีดีไม่สำเร็จ"
 
 #: burn-extension.c:146 burn-extension.c:173
-#, fuzzy
 msgid "_Write to Disc..."
-msgstr "กำลังเขียนลงซีดี..."
+msgstr "เ_ขียนลงแผ่น..."
 
 #: burn-extension.c:147
-#, fuzzy
 msgid "Write disc image to a CD or DVD disc"
-msgstr "เขียน ISO image ลงซีดี"
+msgstr "เขียน disc image ลงแผ่นซีดีหรือดีวีดี"
 
 #: burn-extension.c:174 burn-extension.c:203
-#, fuzzy
 msgid "Write contents to a CD or DVD disc"
-msgstr "เขียนข้อมูลลงแผ่นซีดี"
+msgstr "เขียนข้อมูลลงแผ่นซีดีหรือดีวีดี"
 
 #: burn-extension.c:202 cdburn.glade.h:15
-#, fuzzy
 msgid "Write to Disc"
-msgstr "เขียนลงซีดี"
+msgstr "เขียนลงแผ่น"
 
 #: cd-drive.c:744
-#, fuzzy, c-format
+#, c-format
 msgid "Unnamed SCSI Drive (%s)"
-msgstr "SCSI CD-ROM ที่ไม่มีชื่อ (%s)"
+msgstr "ไดรฟ์ SCSI ไม่มีชื่อ (%s)"
 
 #: cd-drive.c:1304
 msgid "File image"
-msgstr ""
+msgstr "แฟ้ม disc image"
 
 #. This fits the "open64" and "open"-like messages
 #: cd-recorder.c:313
@@ -77,7 +72,7 @@ msgstr "เกิดข้อผิดพลาดที่ไม่รองร
 
 #: cd-recorder.c:367
 msgid "The CD has already been recorded"
-msgstr ""
+msgstr "แผ่นซีดีนี้ถูกเขียนบันถึกไว้อยู่แล้ว"
 
 #: cd-recorder.c:377
 msgid ""
@@ -87,15 +82,15 @@ msgstr "แฟ้มเพลงต้องเป็นแบบ สเตอ�
 #: cd-recorder.c:384
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
-msgstr ""
+msgstr "เครื่องช้าเกินกว่าที่จะเขียนซีดีด้วยความเร็วนี้ได้ โปรดลดความเร็วการเขียน"
 
 #: cd-recorder.c:503
 msgid "You can only burn 99 tracks on one disc"
-msgstr ""
+msgstr "แผ่นนึงเก็บได้ไม่เกิน 99 ร่อง"
 
 #: cdburn.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: cdburn.glade.h:2
 msgid "*"
@@ -103,42 +98,39 @@ msgstr "*"
 
 #: cdburn.glade.h:3
 msgid "<b>After Writing</b>"
-msgstr ""
+msgstr "<b>หลังจากเขียน</b>"
 
 #: cdburn.glade.h:4
 msgid "<b>Information</b>"
-msgstr ""
+msgstr "<b>ข้อมูล</b>"
 
 #: cdburn.glade.h:5
 msgid "<b>Write Options</b>"
-msgstr ""
+msgstr "<b>ตัวเลือกการเขียน</b>"
 
 #: cdburn.glade.h:6
 msgid "<big><b>Writing files to disc progress</b></big>"
-msgstr ""
+msgstr "<big><b>กำลังเขียนแฟ้มลงแผ่น</b></big>"
 
 #: cdburn.glade.h:7
-#, fuzzy
 msgid "<i>Initializing...</i>"
-msgstr "กำลังเตรียมการ..."
+msgstr "<i>กำลังเตรียมการ...</i>"
 
 #: cdburn.glade.h:8
 msgid "Data size:"
-msgstr ""
+msgstr "ขนาดข้อมูล:"
 
 #: cdburn.glade.h:9
-#, fuzzy
 msgid "Disc _name:"
-msgstr "ชื่อซีดี:"
+msgstr "ชื่อ_แผ่น:"
 
 #: cdburn.glade.h:10
 msgid "E_ject disc"
-msgstr ""
+msgstr "เ_ด้งแผ่นออก"
 
 #: cdburn.glade.h:11
-#, fuzzy
 msgid "Label to identify disc"
-msgstr "ชื่อแผ่นซีดี"
+msgstr "ชื่อแผ่น"
 
 #: cdburn.glade.h:12
 msgid "Select the speed to use for the write"
@@ -148,36 +140,31 @@ msgstr "เลือกความเร็วการเขียน"
 msgid ""
 "Selected files are to be written to a CD or DVD disc. This operation may "
 "take a long time, depending on data size and write speed."
-msgstr ""
+msgstr "แฟ้มที่เลือกจะถูกเขียนลงแผ่นซีดีหรือดีวีดี  ปฏิบัติการนี้อาจใช้เวลานาน นี่ขึ้นอยู่กับขนาดข้อมูลและความเร็วการเขียน"
 
 #: cdburn.glade.h:14
-#, fuzzy
 msgid "Write _speed:"
-msgstr "ความเร็วการเขียน:"
+msgstr "ความเ_ร็วการเขียน:"
 
 #: cdburn.glade.h:16
-#, fuzzy
 msgid "Writing Files to Disc Progress"
-msgstr "เขียนแฟ้มลงเครื่องเขียนซีดี"
+msgstr "ความคืบหน้าการเขียนแฟ้มลงแผ่น"
 
 #: cdburn.glade.h:17
 msgid "_Dummy write"
-msgstr ""
+msgstr "_ทดลองเขียน"
 
 #: cdburn.glade.h:18
-#, fuzzy
 msgid "_Reuse these files for another disc"
-msgstr "ใช้แฟ้มเหล่านี้อีกสำหรับซีดีแผ่นอื่น"
+msgstr "ใช้แฟ้มเหล่านี้สำหรับแผ่นอื่นอีก"
 
 #: cdburn.glade.h:19
-#, fuzzy
 msgid "_Write"
-msgstr "เ_ขียนลงซีดี..."
+msgstr "เ_ขียน"
 
 #: cdburn.glade.h:20
-#, fuzzy
 msgid "_Write disc to:"
-msgstr "เขียนแฟ้มลงซีดี"
+msgstr "เ_ขียนแผ่นลง:"
 
 #: make-iso.c:251
 msgid ""
@@ -223,54 +210,48 @@ msgid "Preparing to write CD"
 msgstr "กำลังเตรียมการเขียนซีดี"
 
 #: nautilus-cd-burner.c:285
-#, fuzzy
 msgid "Preparing to write DVD"
-msgstr "กำลังเตรียมการเขียนซีดี"
+msgstr "กำลังเตรียมการเขียนดีวีดี"
 
 #: nautilus-cd-burner.c:290
 msgid "Writing CD"
 msgstr "กำลังเขียนซีดี"
 
 #: nautilus-cd-burner.c:292
-#, fuzzy
 msgid "Writing DVD"
-msgstr "กำลังเขียนซีดี"
+msgstr "กำลังเขียนดีวีดี"
 
 #: nautilus-cd-burner.c:297
 msgid "Fixating CD"
 msgstr "กำลังปิดท้ายซีดี"
 
 #: nautilus-cd-burner.c:299
-#, fuzzy
 msgid "Fixating DVD"
-msgstr "กำลังปิดท้ายซีดี"
+msgstr "กำลังปิดท้ายดีวีดี"
 
 #: nautilus-cd-burner.c:304
 msgid "Erasing CD"
 msgstr "กำลังลบซีดี"
 
 #: nautilus-cd-burner.c:306
-#, fuzzy
 msgid "Erasing DVD"
-msgstr "กำลังลบซีดี"
+msgstr "กำลังลบดีวีดี"
 
 #: nautilus-cd-burner.c:332
 msgid "Please make sure another application is not using the disc."
-msgstr ""
+msgstr "โปรดเช็กให้แน่ใจว่าโปรแกรมอื่นไม่ได้ใช้แผ่นอยู่"
 
 #: nautilus-cd-burner.c:333
 msgid "Disc is busy"
-msgstr ""
+msgstr "แผ่นกำลังยุ่งอยู่"
 
 #: nautilus-cd-burner.c:335
-#, fuzzy
 msgid "Please insert a rewritable or blank media in the drive tray."
-msgstr "โปรดใส่แผ่นเปล่า (ชนิดเขียนทับได้) ลงเครื่องเขียน"
+msgstr "โปรดใส่แผ่นเปล่า หรือแผ่นชนิดเขียนทับได้ ลงเครื่องเขียน"
 
 #: nautilus-cd-burner.c:336
-#, fuzzy
 msgid "Insert rewritable or blank media"
-msgstr "โปรดใส่แผ่นเปล่าชนิดเขียนทับได้"
+msgstr "โปรดใส่แผ่นเปล่า หรือแผ่นเขียนทับได้"
 
 #: nautilus-cd-burner.c:338
 msgid "Please insert a blank media in the drive tray."
@@ -278,30 +259,27 @@ msgstr "โปรดใส่แผ่นเปล่าลงเครื่อ
 
 #: nautilus-cd-burner.c:339
 msgid "Insert blank media"
-msgstr "ใส่แผ่นแผ่นเปล่า"
+msgstr "ใส่แผ่นเปล่า"
 
 #: nautilus-cd-burner.c:341
-#, fuzzy
 msgid "Please replace the in-drive media by a rewritable or blank media."
-msgstr "โปรดเปลี่ยนแผ่นในเครื่องเขียนด้วยแผ่นชนิดเขียนทับได้"
+msgstr "โปรดเอาแผ่นในเครื่องเขียนออก แล้วใส่แผ่นเปล่าหรือแผ่นชนิดเขียนทับได้"
 
 #: nautilus-cd-burner.c:342
-#, fuzzy
 msgid "Reload rewritable or blank media"
-msgstr "ใส่แผ่นชนิดเขียนทับได้"
+msgstr "ใส่แผ่นเปล่าปรือแผ่นชนิดเขียนทับได้"
 
 #: nautilus-cd-burner.c:344
 msgid "Please replace the in-drive media by a blank media."
-msgstr "โปรดเปลี่ยนแผ่นในเครื่องเขียนด้วยแผ่นเปล่า"
+msgstr "โปรดเอาแผ่นในเครื่องออก แล้วใส่แผ่นเปล่าแทน"
 
 #: nautilus-cd-burner.c:345
 msgid "Reload blank media"
 msgstr "ใส่แผ่นเปล่า"
 
 #: nautilus-cd-burner.c:373
-#, fuzzy
 msgid "Disc writing error details"
-msgstr "รายละเอียดข้อผิดพลาดในการเขียนซีดี"
+msgstr "รายละเอียดข้อผิดพลาดในการเขียนแผ่น"
 
 #: nautilus-cd-burner.c:379
 msgid "Detailed error output from cdrecord:"
@@ -346,18 +324,18 @@ msgid "Choose a filename for the cdrom image"
 msgstr "เลือกชื่อแฟ้มสำหรับ CD image"
 
 #: nautilus-cd-burner.c:585
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
-msgstr "ไม่มีสิทธิ์จะเขียนแฟ้ม"
+msgstr "คุณไม่มีสิทธิ์สำหรับเขียนทับแฟ้มนั้น (%s)"
 
 #: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
 msgid "File image creation failed"
 msgstr ""
 
 #: nautilus-cd-burner.c:598
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have permissions to create that file (%s)."
-msgstr "ไม่มีสิทธิ์จะสร้างแฟ้ม"
+msgstr "คุณไม่มีสิทธิ์สำหรับสร้างแฟ้มนั้น (%s)"
 
 #: nautilus-cd-burner.c:661
 #, c-format
@@ -375,33 +353,33 @@ msgstr "เท่าที่จะเร็วได้"
 #: nautilus-cd-burner.c:859
 #, c-format
 msgid "%d MB"
-msgstr ""
+msgstr "%d MB"
 
+# This is new CD's name.  Keep this in English for portability
 #.
 #. translators: see strftime man page for meaning of %b, %d and %Y
 #. the maximum length for this field is 32 bytes
 #.
 #: nautilus-cd-burner.c:887
 msgid "Personal Data, %b %d, %Y"
-msgstr "ข้อมูลส่วนตัว %d %b %Y"
+msgstr "data %d-%m-%Y"
 
 #: nautilus-cd-burner.c:920
 msgid "Cancel write"
-msgstr ""
+msgstr "ยกเลิกการเขียน"
 
 #: nautilus-cd-burner.c:921
-#, fuzzy
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
 "working again."
 msgstr ""
-"แน่ใจหรือไม่ว่าคุณต้องการเลิกเขียนซีดีแผ่นนี้ ?\n"
-"เครื่องเขียนซีดีบางรุ่นจะบังคับให้คุณปิดเปิดเครื่องใหม่ก่อนจะใช้งานได้อีกครั้ง"
+"แน่ใจหรือไม่ว่าคุณต้องการเลิกเขียนแผ่นนี้ ?\n"
+"เครื่องเขียนบางรุ่นจะไม่ยอมทำงานใหม่ จนกว่าคุณจะปิดเปิดเครื่องใหม่"
 
 #: nautilus-cd-burner.c:925
 msgid "Continue"
-msgstr ""
+msgstr "ดำเนินการต่อ"
 
 #: nautilus-cd-burner.c:977
 #, c-format
@@ -410,7 +388,7 @@ msgstr "เกิดข้อผิดพลาดขณะแสดงวิธ
 
 #: nautilus-cd-burner.c:978
 msgid "Cannot display help"
-msgstr ""
+msgstr "แสดงวิธีใช้ไม่สำเร็จ"
 
 #: nautilus-cd-burner.c:1093
 msgid "Too many parameters"
@@ -430,18 +408,16 @@ msgid "Not a valid CD image"
 msgstr "CD image ใช้ไม่ได้"
 
 #: nautilus-cd-burner.c:1135
-#, fuzzy
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
 msgstr ""
-"คุณต้องคัดลอกแฟ้มที่จะเขียนลงซีดีไปยังหน้าต่างตัวเขียนซีดี\n"
-"จะให้เปิดหน้าต่างนั้นไหม"
+"คุณต้องคัดลอกแฟ้มที่จะเขียนลงแผ่น ไปยังหน้าต่างตัวเขียนซีดีและดีวีดี\n"
+"จะให้เปิดหน้าต่างนั้นไหม ?"
 
 #: nautilus-cd-burner.c:1137
-#, fuzzy
 msgid "Open CD/DVD Creator"
-msgstr "เปิดตัวเขียนซีดี"
+msgstr "เปิดตัวเขียนซีดีและดีวีดี"
 
 #: ncb.schemas.in.h:1
 msgid "Default burn speed"
@@ -465,27 +441,27 @@ msgstr ""
 
 #: ncb.schemas.in.h:5
 msgid "Enable Burnproof option"
-msgstr ""
+msgstr "เลือกใช้ Burnproof"
 
 #: ncb.schemas.in.h:6
 msgid "Enable debug"
-msgstr ""
+msgstr "เลือกใช้การดีบัก"
 
 #: ncb.schemas.in.h:7
 msgid "Enable overburn"
-msgstr ""
+msgstr "เลือกใช้ overburn"
 
 #: ncb.schemas.in.h:8
 msgid "Whether to allow the data to exceed the size of the physical medium."
-msgstr ""
+msgstr "ว่าจะยอมเขียนข้อมูลเกินขนาดของแผ่นหรือไม่"
 
 #: ncb.schemas.in.h:9
 msgid "Whether to enable the debugging for CD Recording."
-msgstr ""
+msgstr "ว่าจะเลือกใช้การดีบักสำหรับการเขียนซีดี หรือไม่"
 
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
-msgstr ""
+msgstr "ว่าจะเลือกใช้ตัวเลือก Burnproof หรือไม่ (มีแค่ในเครื่องเขียนบางเครื่อง)"
 
 #~ msgid "<b>Writing to CD. Please wait.</b>"
 #~ msgstr "<b>กำลังเขียนลงซีดี โปรดรอ</b>"

@@ -1,3 +1,26 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* 
+ * Copyright (C) 2002-2004 Bastien Nocera <hadess@hadess.net>
+ *
+ * cd-recorder.c
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ * Authors: Bastien Nocera <hadess@hadess.net>
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
@@ -20,6 +43,7 @@
 #include <sys/uio.h>
 #endif /* __FreeBSD__ */
 #include <signal.h>
+#include <gdk/gdk.h>
 
 #ifdef USE_HAL
 #include <libhal.h>
@@ -149,6 +173,25 @@ cd_recorder_cancel (CDRecorder *cdrecorder, gboolean skip_if_dangerous)
 	return cdrecorder->priv->dangerous;
 }
 
+static void
+insert_cd_retry (CDRecorder *cdrecorder, gboolean cancel,
+		 gboolean is_reload, gboolean send_return)
+{
+	if (cancel) {
+		/* Shouldn't be dangerous on reload */
+		cd_recorder_cancel (cdrecorder, FALSE);
+	} else if (is_reload) {
+		if (send_return) {
+			write (cdrecorder->priv->cdr_stdin, "\n", 1);
+		} else {
+			kill (cdrecorder->priv->pid, SIGUSR1);
+		}
+	} else {
+		cdrecorder->priv->result = RESULT_RETRY;
+		g_main_loop_quit (cdrecorder->priv->loop);
+	}
+}
+
 static gboolean
 growisofs_stdout_read (GIOChannel   *source,
 		      GIOCondition  condition,
@@ -221,6 +264,7 @@ cdrecord_stdout_read (GIOChannel   *source,
 	char buf[1];
 	unsigned int track, mb_written, mb_total;
 	GIOStatus status;
+	gboolean res;
 
 	status = g_io_channel_read_line (source,
 					 &line, NULL, NULL, NULL);
@@ -252,7 +296,15 @@ cdrecord_stdout_read (GIOChannel   *source,
 				       percent);
 		} else if (g_str_has_prefix (line, "Re-load disk and hit <CR>") ||
 			   g_str_has_prefix (line, "send SIGUSR1 to continue")) {
-			g_assert_not_reached ();
+			/* This is not supposed to happen since we checked for the cd
+			   before starting, but we try to handle it anyway, since mmc
+			   profiling can fail. */
+			g_signal_emit (G_OBJECT (cdrecorder),
+				       cd_recorder_table_signals[INSERT_CD_REQUEST],
+				       0, TRUE, cdrecorder->priv->can_rewrite,
+				       FALSE, &res);
+			cdrecorder->priv->expect_cdrecord_to_die = TRUE;
+			insert_cd_retry (cdrecorder, !res, TRUE, (*line == 'R'));
 		} else if (g_str_has_prefix (line, "Fixating...")) {
 			g_signal_emit (G_OBJECT (cdrecorder),
 				       cd_recorder_table_signals[ACTION_CHANGED], 0,
@@ -296,6 +348,7 @@ growisofs_stderr_read (GIOChannel   *source,
 	CDRecorder *cdrecorder = (CDRecorder *) data;
 	char *line;
 	GIOStatus status;
+	gboolean res;
 
 	status = g_io_channel_read_line (source,
 					 &line, NULL, NULL, NULL);
@@ -305,9 +358,17 @@ growisofs_stderr_read (GIOChannel   *source,
 
 	/* TODO: Handle errors */
 	if (status == G_IO_STATUS_NORMAL && !cdrecorder->priv->expect_cdrecord_to_die) {
-		g_string_prepend (cdrecorder->priv->cdr_stderr, line);
+		g_string_append (cdrecorder->priv->cdr_stderr, line);
 		if (strstr (line, "unsupported MMC profile") != NULL || (strstr (line, "already carries isofs") != NULL && strstr (line, "FATAL:") != NULL)) {
-			g_assert_not_reached ();
+			/* This is not supposed to happen since we checked for the cd
+			   type before starting, but we try to handle it anyway, since mmc
+			   profiling can fail. */
+			g_signal_emit (G_OBJECT (cdrecorder),
+				       cd_recorder_table_signals[INSERT_CD_REQUEST],
+				       0, TRUE, cdrecorder->priv->can_rewrite,
+				       FALSE, &res);
+			cdrecorder->priv->expect_cdrecord_to_die = TRUE;
+			insert_cd_retry (cdrecorder, !res, FALSE, FALSE);
 		} else if (strstr (line, "unable to open") != NULL || strstr (line, "unable to stat") != NULL) {
 			/* This fits the "open64" and "open"-like messages */
 			cdrecorder->priv->last_error = g_strdup (_("The recorder could not be accessed"));
@@ -350,6 +411,7 @@ cdrecord_stderr_read (GIOChannel   *source,
 	CDRecorder *cdrecorder = (CDRecorder *) data;
 	char *line;
 	GIOStatus status;
+	gboolean res;
 
 	status = g_io_channel_read_line (source,
 					 &line, NULL, NULL, NULL);
@@ -359,16 +421,30 @@ cdrecord_stderr_read (GIOChannel   *source,
 
 	/* TODO: Handle errors */
 	if (status == G_IO_STATUS_NORMAL && !cdrecorder->priv->expect_cdrecord_to_die) {
-		g_string_prepend (cdrecorder->priv->cdr_stderr, line);
+		g_string_append (cdrecorder->priv->cdr_stderr, line);
 		if (strstr (line, "No disk / Wrong disk!") != NULL) {
-			g_warning ("No disk in drive, shouldn't happen");
-			g_assert_not_reached ();
+			/* This is not supposed to happen since we checked for the cd
+			   before starting, but we try to handle it anyway, since mmc
+			   profiling can fail. */
+			g_signal_emit (G_OBJECT (cdrecorder),
+				       cd_recorder_table_signals[INSERT_CD_REQUEST],
+				       0, TRUE, cdrecorder->priv->can_rewrite,
+				       FALSE, &res);
+			cdrecorder->priv->expect_cdrecord_to_die = TRUE;
+			insert_cd_retry (cdrecorder, !res, FALSE, FALSE);
 		} else if (strstr (line, "This means that we are checking recorded media.") != NULL) {
 			cdrecorder->priv->last_error = g_strdup (_("The CD has already been recorded"));
 			cdrecorder->priv->result = RESULT_ERROR;
 		} else if (strstr (line, "Cannot blank disk, aborting.") != NULL) {
-			g_warning ("Right CD type wasn't loaded, shouldn't happen");
-			g_assert_not_reached ();
+			/* This is not supposed to happen since we checked for the cd
+			   type before starting, but we try to handle it anyway, since
+			   mmc profiling can fail. */
+			g_signal_emit (G_OBJECT (cdrecorder),
+				       cd_recorder_table_signals[INSERT_CD_REQUEST],
+				       0, TRUE, TRUE,
+				       FALSE, &res);
+			cdrecorder->priv->expect_cdrecord_to_die = TRUE;
+			insert_cd_retry (cdrecorder, !res, FALSE, FALSE);
 		} else if (strstr (line, "Data may not fit on current disk") != NULL) {
 			cdrecorder->priv->last_error = g_strdup (_("The files selected did not fit on the CD"));
 			/* FIXME should we error out in that case?
@@ -377,9 +453,15 @@ cdrecord_stderr_read (GIOChannel   *source,
 			cdrecorder->priv->last_error = g_strdup (_("All audio files must be stereo, 16-bit digital audio with 44100Hz samples"));
 			cdrecorder->priv->result = RESULT_ERROR;
 		} else if (strstr (line, "cannot write medium - incompatible format") != NULL) {
-			g_warning ("Right CD type wasn't loaded, shouldn't happen");
-			g_assert_not_reached ();
+			/* This is not supposed to happen since we checked for the cd
+			   type before starting, but we try to handle it anyway, since
+			   mmc profiling can fail. */
+			g_signal_emit (G_OBJECT (cdrecorder),
+				       cd_recorder_table_signals[INSERT_CD_REQUEST],
+				       0, TRUE, cdrecorder->priv->can_rewrite,
+				       FALSE, &res);
 			cdrecorder->priv->expect_cdrecord_to_die = TRUE;
+			insert_cd_retry (cdrecorder, !res, FALSE, FALSE);
 		} else if (strstr (line, "DMA speed too slow") != NULL) {
 			cdrecorder->priv->last_error = g_strdup (_("The system is too slow to write the CD at this speed. Try a lower speed."));
 		}
@@ -398,10 +480,8 @@ cdrecord_stderr_read (GIOChannel   *source,
 }
 
 static gboolean
-media_type_matches (CDMediaType type, gboolean *needs_blank)
+media_type_matches (CDMediaType type)
 {
-	*needs_blank = FALSE;
-
 	switch (type)
 	{
 	case CD_MEDIA_TYPE_ERROR:
@@ -416,48 +496,218 @@ media_type_matches (CDMediaType type, gboolean *needs_blank)
 	case CD_MEDIA_TYPE_CDR:
 		return TRUE;
 	case CD_MEDIA_TYPE_CDRW:
-		*needs_blank = TRUE;
 		return TRUE;
 	case CD_MEDIA_TYPE_DVDR:
 		return TRUE;
 	case CD_MEDIA_TYPE_DVDRW:
-		*needs_blank = TRUE;
 		return TRUE;
 	case CD_MEDIA_TYPE_DVD_PLUS_R:
 		return TRUE;
 	case CD_MEDIA_TYPE_DVD_PLUS_RW:
-		*needs_blank = TRUE;
 		return TRUE;
 	}
 
 	return FALSE;
 }
 
+typedef struct {
+	gboolean timeout;
+	gboolean unmount_ok;
+	guint timeout_tag;
+	GMainLoop *loop;
+	char *device;
+	const char *command;
+} UnmountData;
+
+static const char *umount_known_locations [] = {
+	"/sbin/umount", "/bin/umount",
+	"/usr/sbin/umount", "/usr/bin/umount",
+	NULL
+};
+
+static void
+free_unmount_data (UnmountData *unmount_data)
+{
+	g_free (unmount_data->device);
+	g_free (unmount_data);
+}
+
+static gboolean
+unmount_done (gpointer data)
+{
+	UnmountData *unmount_data;
+	unmount_data = data;
+	
+	if (unmount_data->timeout_tag != 0) {
+		g_source_remove (unmount_data->timeout_tag);
+	}
+
+	if (unmount_data->loop != NULL &&
+	    g_main_loop_is_running (unmount_data->loop)) {
+		g_main_loop_quit (unmount_data->loop);
+	}
+	
+	if (unmount_data->timeout) {
+		/* We timed out, so unmount_data wasn't freed
+		   at mainloop exit. */
+		free_unmount_data (unmount_data);
+	}
+	
+	return FALSE;
+}
+
+static gboolean
+unmount_timeout (gpointer data)
+{
+	UnmountData *unmount_data;
+	unmount_data = data;
+
+	/* We're sure, the callback hasn't been run, so just say
+	   we were interrupted and return from the mainloop */
+	
+	unmount_data->unmount_ok = FALSE;
+	unmount_data->timeout_tag = 0;
+	unmount_data->timeout = TRUE;
+	
+	if (g_main_loop_is_running (unmount_data->loop)) {
+		g_main_loop_quit (unmount_data->loop);
+	}
+	
+	return FALSE;
+}
+
+/* Returns the full path to the queried command */
+static const char *
+find_command (const char **known_locations)
+{
+	int i;
+
+	for (i = 0; known_locations [i]; i++){
+		if (g_file_test (known_locations [i], G_FILE_TEST_EXISTS))
+			return known_locations [i];
+	}
+	return NULL;
+}
+
+static void *
+unmount_thread_start (void *arg)
+{
+	UnmountData *data;
+	gint exit_status;
+	char *argv[5];
+	int i;
+	char *envp[] = {
+		"LC_ALL=C",
+		NULL
+	};
+
+	data = arg;
+
+	data->unmount_ok = TRUE;
+	
+	i = 0;
+	argv[i++] = (char *)data->command;
+	argv[i++] = data->device;
+	argv[i++] = NULL;
+	
+	if (g_spawn_sync (NULL,
+			  argv,
+			  envp,
+			  G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
+			  NULL, NULL,
+			  NULL,
+			  NULL,
+			  &exit_status,
+			  NULL)) {
+		if (exit_status == 0) {
+			data->unmount_ok = TRUE;
+		} else {
+			data->unmount_ok = FALSE;
+		}
+
+		/* Delay a bit to make sure unmount finishes */
+		sleep (2);
+	} else {
+		/* spawn failure */
+		data->unmount_ok = FALSE;
+	}
+
+	g_idle_add (unmount_done, data);	
+	
+	g_thread_exit (NULL); 	
+	
+	return NULL;
+}
+
+
+
+static gboolean
+unmount_drive (CDDrive *drive)
+{
+	UnmountData *data;
+	gboolean unmount_ok;
+	
+	if (drive->device == NULL)
+		return FALSE;
+	
+	unmount_ok = FALSE;
+
+	data = g_new0 (UnmountData, 1);
+	data->loop = g_main_loop_new (NULL, FALSE);
+	
+	data->timeout_tag = g_timeout_add (5*1000,
+					   unmount_timeout,
+					   data);
+	data->command = find_command (umount_known_locations);
+	data->device = g_strdup (drive->device);
+	g_thread_create (unmount_thread_start, data, FALSE, NULL);
+	
+	GDK_THREADS_LEAVE ();
+	g_main_loop_run (data->loop);
+	GDK_THREADS_ENTER ();
+	
+	g_main_loop_unref (data->loop);
+	data->loop = NULL;
+	
+	unmount_ok = data->unmount_ok;
+	
+	if (!data->timeout) {
+		/* Don't free data if mount operation still running. */
+		free_unmount_data (data);
+	}
+	
+	return unmount_ok;
+}
+
+
 static CDMediaType
 cd_recorder_wait_for_insertion (CDRecorder *cdrecorder, CDDrive *drive,
-		gboolean *needs_blank)
+				gboolean *needs_blank)
 {
 	CDMediaType type;
 	gboolean reload;
+	gboolean last_was_unmount;
 
 	reload = FALSE;
-	type = cd_drive_get_media_type (drive);
+	type = cd_drive_get_media_type_and_rewritable (drive, needs_blank);
 
 	if (type == CD_MEDIA_TYPE_ERROR) {
 		reload = TRUE;
 	}
 
-	while (!media_type_matches (type, needs_blank)) {
+	last_was_unmount = FALSE;
+	while (!media_type_matches (type)) {
 		gboolean res, busy_cd;
 
 		busy_cd = (type == CD_MEDIA_TYPE_BUSY);
 
-#ifdef USE_HAL
-		if (busy_cd != FALSE) {
-			/* TODO umount the disc if we find it,
-			 * and try it again */
+		if (busy_cd && !last_was_unmount) {
+			/* umount the disc if we find it, and try it again */
+			if (unmount_drive (drive)) {
+				last_was_unmount = TRUE;
+				goto retry;
+			}
 		}
-#endif
 
 		g_signal_emit (G_OBJECT (cdrecorder),
 				cd_recorder_table_signals[INSERT_CD_REQUEST],
@@ -468,7 +718,10 @@ cd_recorder_wait_for_insertion (CDRecorder *cdrecorder, CDDrive *drive,
 			return CD_MEDIA_TYPE_ERROR;
 		}
 
-		type = cd_drive_get_media_type (drive);
+		last_was_unmount = FALSE;
+
+	retry:
+		type = cd_drive_get_media_type_and_rewritable (drive, needs_blank);
 		reload = FALSE;
 		if (type == CD_MEDIA_TYPE_UNKNOWN
 				|| type == CD_MEDIA_TYPE_ERROR) {
@@ -489,6 +742,7 @@ cd_recorder_write_tracks (CDRecorder *cdrecorder,
 {
 	CDMediaType type;
 	gboolean needs_blank;
+	gboolean is_locked;
 
 	g_return_val_if_fail (tracks != NULL, RESULT_ERROR);
 	cdrecorder->priv->tracks = tracks;
@@ -505,8 +759,10 @@ cd_recorder_write_tracks (CDRecorder *cdrecorder,
 		return cdrecorder->priv->result;
 	}
 
+	is_locked = cd_drive_lock (drive, _("Burning CD"), NULL);
+
 	type = cd_recorder_wait_for_insertion (cdrecorder,
-			drive, &needs_blank);
+					       drive, &needs_blank);
 
 	if (type == CD_MEDIA_TYPE_ERROR) {
 		cdrecorder->priv->result = RESULT_CANCEL;
@@ -525,6 +781,9 @@ cd_recorder_write_tracks (CDRecorder *cdrecorder,
 		return cd_recorder_write_cdrecord (cdrecorder,
 						   drive, tracks, speed,
 						   flags);
+	}
+	if (is_locked) {
+		cd_drive_unlock (drive);
 	}
 }
 

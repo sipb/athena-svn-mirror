@@ -3,100 +3,104 @@
 # This file is distributed under the same license as the nautilus-cd-burner package.
 # "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;"
 # 
+# Mohammad DAMT <mdamt@bisnisweb.com>
+# Ahmad Riza H Nst <ari@160c.afraid.org>
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-05-10 19:40+0700\n"
-"Last-Translator: Ahmad Riza H Nst <ari@160c.afraid.org>\n"
+"POT-Creation-Date: 2004-10-25 08:30+0700\n"
+"PO-Revision-Date: 2004-10-22 20:02+0700\n"
+"Last-Translator: Mohammad DAMT <mdamt@bisnisweb.com>\n"
 "Language-Team: Indonesian <sukarelawan@gnome.linux.or.id>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-#: bacon-cd-selection.c:187
-#, fuzzy
+#: bacon-cd-selection.c:200
 msgid "Unnamed CDROM"
-msgstr "CD-ROM SCSI tak bernama (%s)"
+msgstr "CDROM belum diberi judul"
 
 #: burn-extension.c:64
 msgid "Unable to launch the cd burner application"
-msgstr "Gagal meluncurkan aplikasi cd burner"
+msgstr "Gagal meluncurkan aplikasi perekam CD"
 
 #: burn-extension.c:66
 msgid "Can't launch cd burner"
-msgstr "Tidak dapat menjalankan pembakar cd"
+msgstr "Tidak dapat menjalankan perekam cd"
 
 #: burn-extension.c:146 burn-extension.c:173
-#, fuzzy
 msgid "_Write to Disc..."
-msgstr "Tulis ke CD..."
+msgstr "_Rekam ke CD..."
 
 #: burn-extension.c:147
-#, fuzzy
 msgid "Write disc image to a CD or DVD disc"
-msgstr "Tulis file ISO ke CD"
+msgstr "Rekam file image ke CD atau DVD"
 
 #: burn-extension.c:174 burn-extension.c:203
-#, fuzzy
 msgid "Write contents to a CD or DVD disc"
-msgstr "Tulis isi ke CD"
+msgstr "Rekam ke CD atau DVD"
 
 #: burn-extension.c:202 cdburn.glade.h:15
-#, fuzzy
 msgid "Write to Disc"
-msgstr "Tulis ke CD"
+msgstr "Rekam ke Disk"
 
-#: cd-drive.c:744
-#, fuzzy, c-format
+#: cd-drive.c:855
+#, c-format
 msgid "Unnamed SCSI Drive (%s)"
-msgstr "CD-ROM SCSI tak bernama (%s)"
+msgstr "Perangkat SCSI tak berjudul (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "File image"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:374
 msgid "The recorder could not be accessed"
 msgstr "Perekam tidak dapat diakses"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:377
 msgid "Not enough space available on the disc"
 msgstr "Tidak cukup ruang pada disk"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:380 cd-recorder.c:383 cd-recorder.c:449
 msgid "The files selected did not fit on the CD"
 msgstr "File terpilih tidak masuk ke CD"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:391
 msgid "Unhandled error, aborting"
 msgstr "Error tidak teratasi, batal"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:436
 msgid "The CD has already been recorded"
-msgstr ""
+msgstr "CD ini sudah direkam sebelumnya"
 
-#: cd-recorder.c:377
+#: cd-recorder.c:453
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "Seluruh file suara harus stereo, suara digital 16-bit dengan contoh 44100Hz"
 
-#: cd-recorder.c:384
+#: cd-recorder.c:466
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
+"Komputer ini terlalu lambat untuk merekam dengan kecepatan ini. Coba "
+"turunkan kecepatannya."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:757
 msgid "You can only burn 99 tracks on one disc"
-msgstr ""
+msgstr "Anda hanya dapat merekam sebanyak 99 trek dalam satu disk"
+
+#: cd-recorder.c:762
+msgid "Burning CD"
+msgstr "Merekam CD"
 
 #: cdburn.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: cdburn.glade.h:2
 msgid "*"
@@ -104,81 +108,75 @@ msgstr "*"
 
 #: cdburn.glade.h:3
 msgid "<b>After Writing</b>"
-msgstr ""
+msgstr "<b>Setelah Merekam</b>"
 
 #: cdburn.glade.h:4
 msgid "<b>Information</b>"
-msgstr ""
+msgstr "<b>Informasi</b>"
 
 #: cdburn.glade.h:5
 msgid "<b>Write Options</b>"
-msgstr ""
+msgstr "<b>Pilihan Rekaman</b>"
 
 #: cdburn.glade.h:6
 msgid "<big><b>Writing files to disc progress</b></big>"
-msgstr ""
+msgstr "<big><b>Proses rekaman disk</b></big>"
 
 #: cdburn.glade.h:7
-#, fuzzy
 msgid "<i>Initializing...</i>"
-msgstr "Mengenali..."
+msgstr "<i>Proses Inisialisasi Berlangsung...</i>"
 
 #: cdburn.glade.h:8
 msgid "Data size:"
-msgstr ""
+msgstr "Ukuran data:"
 
 #: cdburn.glade.h:9
-#, fuzzy
 msgid "Disc _name:"
-msgstr "Nama CD:"
+msgstr "_Nama disk:"
 
 #: cdburn.glade.h:10
 msgid "E_ject disc"
-msgstr ""
+msgstr "Ke_luarkan disk"
 
 #: cdburn.glade.h:11
-#, fuzzy
 msgid "Label to identify disc"
-msgstr "Nama identitas CD"
+msgstr "Judul disk ini"
 
 #: cdburn.glade.h:12
 msgid "Select the speed to use for the write"
-msgstr "Pilih kecepatan untuk dipergunakan dalam menulis"
+msgstr "Pilih kecepatan untuk dipergunakan dalam merekam"
 
 #: cdburn.glade.h:13
 msgid ""
 "Selected files are to be written to a CD or DVD disc. This operation may "
 "take a long time, depending on data size and write speed."
 msgstr ""
+"File-file ini akan direkam ke dalam disk CD atau DVD. Proses akan cukup "
+"makan waktu bergantung pada besarnya data dan kecepatan rekaman."
 
 #: cdburn.glade.h:14
-#, fuzzy
 msgid "Write _speed:"
-msgstr "Kecepatan menulis:"
+msgstr "Kecepatan _rekam:"
 
 #: cdburn.glade.h:16
-#, fuzzy
 msgid "Writing Files to Disc Progress"
-msgstr "Tulis file ke perekam CD"
+msgstr "Proses Rekam File ke Disk"
 
 #: cdburn.glade.h:17
 msgid "_Dummy write"
-msgstr ""
+msgstr "Tes _rekam saja"
 
 #: cdburn.glade.h:18
-#, fuzzy
 msgid "_Reuse these files for another disc"
-msgstr "Pergunakan file ini untuk CD lain"
+msgstr "Gunakan file-file ini untuk disk _lain"
 
 #: cdburn.glade.h:19
-#, fuzzy
 msgid "_Write"
-msgstr "_Tulis ke CD..."
+msgstr "_Rekam"
 
 #: cdburn.glade.h:20
-#, fuzzy
 msgid "_Write disc to:"
-msgstr "Tulis file ke CD"
+msgstr "_Rekam disk ke:"
 
 #: make-iso.c:251
 msgid ""
@@ -195,118 +193,110 @@ msgstr "Kecocokan dengan Windows"
 
 #: make-iso.c:576
 msgid "No files selected to write to CD."
-msgstr "Tidak ada file yang dipilih untuk ditulis ke CD"
+msgstr "Tidak ada file yang dipilih untuk direkam ke CD"
 
-#: make-iso.c:578 nautilus-cd-burner.c:1134
+#: make-iso.c:578 nautilus-cd-burner.c:1135
 msgid "No files selected"
 msgstr "Tidak ada file yang dipilih"
 
 # c-format
-#: make-iso.c:659
-#, fuzzy, c-format
+#: make-iso.c:662
+#, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
-msgstr[0] ""
-"Tidak cukup ruang untuk menyimpan image CD (diperlukan %ld Megabyte)"
-msgstr[1] ""
-"Tidak cukup ruang untuk menyimpan image CD (diperlukan %ld Megabyte)"
+msgstr[0] "Ruangan untuk menyimpan image CD kurang (diperlukan %ld Megabyte)"
 
-#: make-iso.c:664
+#: make-iso.c:667
 msgid "Not enough space"
 msgstr "Tidak cukup ruang"
 
-#: make-iso.c:700
+#: make-iso.c:703
 msgid "Creating CD image"
 msgstr "Pembuatan image CD"
 
-#: nautilus-cd-burner.c:137
+#: nautilus-cd-burner.c:138
 msgid " (invalid Unicode)"
-msgstr ""
+msgstr " (Unicode tidak benar)"
 
-#: nautilus-cd-burner.c:283
+#: nautilus-cd-burner.c:284
 msgid "Preparing to write CD"
-msgstr "Persiapan menulis CD"
+msgstr "Persiapan merekam CD"
 
-#: nautilus-cd-burner.c:285
-#, fuzzy
+#: nautilus-cd-burner.c:286
 msgid "Preparing to write DVD"
-msgstr "Persiapan menulis CD"
+msgstr "Persiapan merekam DVD"
 
-#: nautilus-cd-burner.c:290
+#: nautilus-cd-burner.c:291
 msgid "Writing CD"
-msgstr "Menulis CD"
+msgstr "Merekam CD"
 
-#: nautilus-cd-burner.c:292
-#, fuzzy
+#: nautilus-cd-burner.c:293
 msgid "Writing DVD"
-msgstr "Menulis CD"
+msgstr "Merekam DVD"
 
-#: nautilus-cd-burner.c:297
+#: nautilus-cd-burner.c:298
 msgid "Fixating CD"
 msgstr "Fiksasi CD"
 
-#: nautilus-cd-burner.c:299
-#, fuzzy
+#: nautilus-cd-burner.c:300
 msgid "Fixating DVD"
-msgstr "Fiksasi CD"
+msgstr "Fiksasi DVD"
 
-#: nautilus-cd-burner.c:304
+#: nautilus-cd-burner.c:305
 msgid "Erasing CD"
 msgstr "Menghapus CD"
 
-#: nautilus-cd-burner.c:306
-#, fuzzy
+#: nautilus-cd-burner.c:307
 msgid "Erasing DVD"
-msgstr "Menghapus CD"
-
-#: nautilus-cd-burner.c:332
-msgid "Please make sure another application is not using the disc."
-msgstr ""
+msgstr "Menghapus DVD"
 
 #: nautilus-cd-burner.c:333
-msgid "Disc is busy"
-msgstr ""
+msgid "Please make sure another application is not using the disc."
+msgstr "Periksa dulu apakah ada aplikasi yang sedang mengakses disk."
 
-#: nautilus-cd-burner.c:335
-#, fuzzy
-msgid "Please insert a rewritable or blank media in the drive tray."
-msgstr "Silahkan masukkan media yang dapat ditulis ulang ke dalam tray drive"
+#: nautilus-cd-burner.c:334
+msgid "Disc is busy"
+msgstr "Disk sedang sibuk"
 
 #: nautilus-cd-burner.c:336
-#, fuzzy
-msgid "Insert rewritable or blank media"
-msgstr "Masukkan media yang dapat ditulis ulang"
+msgid "Please insert a rewritable or blank media in the drive tray."
+msgstr ""
+"Silahkan masukkan media kosonng atau yang dapat direkam ulang ke dalam laci "
+"perekam."
 
-#: nautilus-cd-burner.c:338
+#: nautilus-cd-burner.c:337
+msgid "Insert rewritable or blank media"
+msgstr "Masukkan media kosong atau media yang dapat direkam ulang"
+
+#: nautilus-cd-burner.c:339
 msgid "Please insert a blank media in the drive tray."
 msgstr "Silahkan masukkan sebuah media kosong ke drive tray."
 
-#: nautilus-cd-burner.c:339
+#: nautilus-cd-burner.c:340
 msgid "Insert blank media"
 msgstr "Masukkan media kosong"
 
-#: nautilus-cd-burner.c:341
-#, fuzzy
-msgid "Please replace the in-drive media by a rewritable or blank media."
-msgstr "Silahkan ganti media yang ada dengan media yang dapat ditulis."
-
 #: nautilus-cd-burner.c:342
-#, fuzzy
-msgid "Reload rewritable or blank media"
-msgstr "Baca ulang media yang dapat ditulis"
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr ""
+"Silahkan ganti media yang ada dengan media kosong atau media yang dapat "
+"direkam ulang."
 
-#: nautilus-cd-burner.c:344
+#: nautilus-cd-burner.c:343
+msgid "Reload rewritable or blank media"
+msgstr "Baca ulang media atau media kosong"
+
+#: nautilus-cd-burner.c:345
 msgid "Please replace the in-drive media by a blank media."
 msgstr "Silahkan ganti media yang ada dengan media kosong."
 
-#: nautilus-cd-burner.c:345
+#: nautilus-cd-burner.c:346
 msgid "Reload blank media"
 msgstr "Reload media kosong"
 
 #: nautilus-cd-burner.c:373
-#, fuzzy
 msgid "Disc writing error details"
-msgstr "Rincian error penulisan CD"
+msgstr "Rincian error perekaman disk"
 
 #: nautilus-cd-burner.c:379
 msgid "Detailed error output from cdrecord:"
@@ -318,16 +308,16 @@ msgid ""
 "There was an error writing to the CD:\n"
 "%s"
 msgstr ""
-"Ada error ketika menulis ke CD:\n"
+"Ada error ketika merekam CD:\n"
 "%s"
 
 #: nautilus-cd-burner.c:421
 msgid "There was an error writing to the CD"
-msgstr "Ada error ketika menulis ke CD"
+msgstr "Ada error ketika merekam CD"
 
 #: nautilus-cd-burner.c:422
 msgid "Error writing to CD"
-msgstr "Error ketika menulis ke CD"
+msgstr "Error ketika merekam CD"
 
 #: nautilus-cd-burner.c:428
 msgid "_Details"
@@ -351,111 +341,108 @@ msgid "Choose a filename for the cdrom image"
 msgstr "Pilih sebuah nama untuk image cdrom"
 
 #: nautilus-cd-burner.c:585
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
-msgstr "Tidak memiliki permisi untuk menimpa file."
+msgstr "Tidak memiliki hak untuk menimpa file ini (%s)."
 
 #: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
 msgid "File image creation failed"
-msgstr ""
+msgstr "File image tidak dapat dibuat"
 
 #: nautilus-cd-burner.c:598
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have permissions to create that file (%s)."
-msgstr "Tidak memiliki permisi untuk membuat file."
+msgstr "Tidak memiliki hak untuk membuat file itu (%s)."
 
 #: nautilus-cd-burner.c:661
 #, c-format
 msgid "Completed writing %s"
-msgstr "Penulisan komplit %s"
+msgstr "Proses rekam selesai %s"
 
 #: nautilus-cd-burner.c:719
 msgid "Complete"
-msgstr "Komplit"
+msgstr "Selesai"
 
 #: nautilus-cd-burner.c:782
 msgid "Maximum Possible"
-msgstr "Kemungkinan maksimal"
+msgstr "Kemungkinan Maksimal"
 
-#: nautilus-cd-burner.c:859
+#: nautilus-cd-burner.c:860
 #, c-format
 msgid "%d MB"
-msgstr ""
+msgstr "%d MB"
 
 #.
 #. translators: see strftime man page for meaning of %b, %d and %Y
 #. the maximum length for this field is 32 bytes
 #.
-#: nautilus-cd-burner.c:887
+#: nautilus-cd-burner.c:888
 msgid "Personal Data, %b %d, %Y"
-msgstr "Data pribadi, %b %d, %Y"
-
-#: nautilus-cd-burner.c:920
-msgid "Cancel write"
-msgstr ""
+msgstr "Data Pribadi, %b %d, %Y"
 
 #: nautilus-cd-burner.c:921
-#, fuzzy
+msgid "Cancel write"
+msgstr "Batalkan rekaman"
+
+#: nautilus-cd-burner.c:922
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
 "working again."
 msgstr ""
-"Anda yakin ingin membatalkan operasi penulisan file?\n"
-"Beberapa penulis CD memerlukan anda merestart komputer untuk dapat bekerja "
-"lagi."
+"Anda yakin ingin membatalkan perekaman disk ini?\n"
+"Perhatikan bahwa ada perangkat media optik yang mengharuskan Anda untuk "
+"menyalakan komputer ulang."
 
-#: nautilus-cd-burner.c:925
+#: nautilus-cd-burner.c:926
 msgid "Continue"
-msgstr ""
+msgstr "Lanjutkan"
 
-#: nautilus-cd-burner.c:977
+#: nautilus-cd-burner.c:978
 #, c-format
 msgid "There was a problem displaying the help contents: %s."
 msgstr "Ada masalah menampilkan isi bantuan: %s"
 
-#: nautilus-cd-burner.c:978
+#: nautilus-cd-burner.c:979
 msgid "Cannot display help"
-msgstr ""
+msgstr "Layar bantu tidak dapat ditampilkan"
 
-#: nautilus-cd-burner.c:1093
+#: nautilus-cd-burner.c:1094
 msgid "Too many parameters"
 msgstr "Terlalu banyak parameter"
 
-#: nautilus-cd-burner.c:1094
+#: nautilus-cd-burner.c:1095
 msgid "Too many parameters were passed to the application."
-msgstr ""
+msgstr "Parameter yang diberikan pada aplikasi terlalu banyak."
 
-#: nautilus-cd-burner.c:1116
+#: nautilus-cd-burner.c:1117
 #, c-format
 msgid "The file '%s' is not a valid CD image."
 msgstr "File '%s' bukan sebuah image CD yang valid."
 
-#: nautilus-cd-burner.c:1119
+#: nautilus-cd-burner.c:1120
 msgid "Not a valid CD image"
 msgstr "Bukan image CD yang valid"
 
-#: nautilus-cd-burner.c:1135
-#, fuzzy
+#: nautilus-cd-burner.c:1136
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
 msgstr ""
-"Anda perlu menyalin file yang ingin dituliskan ke CD pada jendela Pembuat "
-"CD. Apakah anda ingin membukanya sekarang?"
+"Anda perlu menyalin file yang ingin direkam ke disk pada jendela Perekam CD/"
+"DVD. Buka sekarang?"
 
-#: nautilus-cd-burner.c:1137
-#, fuzzy
+#: nautilus-cd-burner.c:1138
 msgid "Open CD/DVD Creator"
-msgstr "Buka pembuat CD"
+msgstr "Buka Perekam CD/DVD"
 
 #: ncb.schemas.in.h:1
 msgid "Default burn speed"
-msgstr "Kecepatan bakar default"
+msgstr "Kecepatan rekam default"
 
 #: ncb.schemas.in.h:2
 msgid "Default speed at which the media will be written."
-msgstr "Kecepatan default pada saat menulis media."
+msgstr "Kecepatan default pada saat merekam media."
 
 #: ncb.schemas.in.h:3
 msgid "Directory for the temporary ISO images"
@@ -471,117 +458,27 @@ msgstr ""
 
 #: ncb.schemas.in.h:5
 msgid "Enable Burnproof option"
-msgstr ""
+msgstr "Aktifkan pilihan Burnproof"
 
 #: ncb.schemas.in.h:6
 msgid "Enable debug"
-msgstr ""
+msgstr "Aktifkan debug"
 
 #: ncb.schemas.in.h:7
 msgid "Enable overburn"
-msgstr ""
+msgstr "Aktifkan overburn"
 
 #: ncb.schemas.in.h:8
 msgid "Whether to allow the data to exceed the size of the physical medium."
 msgstr ""
+"Menentukan apakah ukuran data boleh lebih besar dari ukuran fisik media."
 
 #: ncb.schemas.in.h:9
 msgid "Whether to enable the debugging for CD Recording."
-msgstr ""
+msgstr "Menentukan apakah debug akan diaktifkan saat merekam CD."
 
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
 msgstr ""
-
-#~ msgid "<b>Writing to CD. Please wait.</b>"
-#~ msgstr "<b>Menulis ke CD. Silahkan Tunggu.</b>"
-
-#~ msgid "Erase CD"
-#~ msgstr "Hapus CD"
-
-#~ msgid "Erase entire contents of CD before writing"
-#~ msgstr "Hapus keseluruhan isi CD sebelum menulis"
-
-#~ msgid "Keep the selected files so that you can use them for another CD"
-#~ msgstr ""
-#~ "Simpan file terpilih sehingga anda dapat menggunakannya untuk CD lain"
-
-#~ msgid "Select a CD writer or image file"
-#~ msgstr "Pilih sebuah penulis CD atau file image"
-
-#~ msgid "When the write is done, eject the CD tray"
-#~ msgstr "Ketika penulisan berhasil, keluarkan tray CD"
-
-#, fuzzy
-#~ msgid "You have selected 185 megabytes of files to be written to the CD."
-#~ msgstr "Anda memilih %d megabyte file untuk dituliskan ke CD."
-
-#, fuzzy
-#~ msgid "_Eject CD when done"
-#~ msgstr "Keluarkan CD ketika selesai"
-
-#, fuzzy
-#~ msgid "_Target to write to:"
-#~ msgstr "Target menulis ke:"
-
-#~ msgid "Please reload the CD in the CD writer."
-#~ msgstr "Silahkan reload CD dalam penulis CD"
-
-#~ msgid "Reload CD"
-#~ msgstr "Reload CD"
-
-#~ msgid "Please insert a blank CD in the CD writer."
-#~ msgstr "Silahkan masukkan sebuah CD kosong ke penulis CD"
-
-#~ msgid "Insert blank CD"
-#~ msgstr "Masukkan CD kosong"
-
-#~ msgid "Please insert a blank CD-RW in the CD writer."
-#~ msgstr "Silahkan masukkan sebuah CD-RW kosong ke dalam penulis CD"
-
-#~ msgid "Insert blank CD-RW"
-#~ msgstr "Masukkan CD-RW kosong"
-
-#~ msgid "You have selected %d megabyte of files to be written to the CD."
-#~ msgstr "Anda memilih %d megabyte file untuk dituliskan ke CD."
-
-#~ msgid "Are you sure you want to cancel?"
-#~ msgstr "Apakah anda yakin mau membatalkan?"
-
-#~ msgid "Too many parameters to nautilus-cd-burner"
-#~ msgstr "Terlalu banyak parameter terhadap pembakar-cd-nautilus"
-
-#~ msgid ""
-#~ "You do not seem to have any CD recorder in your machine. Please verify "
-#~ "your setup."
-#~ msgstr ""
-#~ "Anda kelihatannya tidak memiliki perekam CD apapun pada mesin anda. "
-#~ "Silahkan pastikan lagi setingan anda."
-
-#~ msgid "No CD recorder available"
-#~ msgstr "Tidak ada perekam CD yang tersedia"
-
-#~ msgid "Dummy write (debug build)"
-#~ msgstr "Tes tulis (debug build)"
-
-#~ msgid "Create a CD that you can use with ordinary stereo equipment"
-#~ msgstr ""
-#~ "Buat sebuah CD yang dapat anda gunakan dengan peralatan stereo biasa"
-
-#~ msgid "Create a music CD"
-#~ msgstr "Buat sebuah CD musik"
-
-#~ msgid "Factory for the nautilus-cd-burner context menu"
-#~ msgstr "Factory untuk konteks menu pembakar-cd-nautilus"
-
-#~ msgid "Nautilus context menu entries for CD burning"
-#~ msgstr "Masukan konteks menu Nautilus untuk pembakaran CD"
-
-#~ msgid "nautilus-cd-burner context menu"
-#~ msgstr "Konteks menu pembakar-cd-nautilus"
-
-#~ msgid "nautilus-cd-burner context menu factory"
-#~ msgstr "Factory konteks menu pembakar-cd-nautilus"
-
-#~ msgid "CD burning context menu items"
-#~ msgstr "Objek konteks menu pembakaran CD"
+"Menentukan apakah pilihan Burnproof diaktifkan atau tidak (hanya tersedia "
+"pada alat perekam tertentu saja)."

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-09-05 16:23+0200\n"
+"POT-Creation-Date: 2004-12-07 13:15+0100\n"
+"PO-Revision-Date: 2004-12-07 18:16+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:170
 msgid "Unnamed CDROM"
 msgstr "Nepojmenovaná CD-ROM"
 
@@ -46,53 +46,57 @@ msgstr "Zapsat obsah na disk CD nebo DVD"
 msgid "Write to Disc"
 msgstr "Zapsat na disk"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "Nepojmenovaná jednotka SCSI (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "Soubor obrazu"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:374
 msgid "The recorder could not be accessed"
 msgstr "Není možné přistupovat k vypalovačce"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:377
 msgid "Not enough space available on the disc"
 msgstr "Na disku není dost místa"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:380 cd-recorder.c:383 cd-recorder.c:449
 msgid "The files selected did not fit on the CD"
 msgstr "Vybrané soubory se nevešly na CD"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:391
 msgid "Unhandled error, aborting"
 msgstr "Neobsloužená chyba, končím"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:436
 msgid "The CD has already been recorded"
 msgstr "Na CD již bylo zapsáno"
 
-#: cd-recorder.c:377
+#: cd-recorder.c:453
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "Všechny soubory hudby musí být stereo, šestnáctibitový digitální zvuk s "
 "44100Hz vzorky"
 
-#: cd-recorder.c:384
+#: cd-recorder.c:466
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
 "Tento systém ji příliš pomalý pro zápis CD touto rychlostí. Zkuste nižší "
 "rychlost."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:757
 msgid "You can only burn 99 tracks on one disc"
 msgstr "Na jeden disk můžete vypálit jen 99 stop"
+
+#: cd-recorder.c:762
+msgid "Burning CD"
+msgstr "Vypaluji CD"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -186,15 +190,15 @@ msgstr ""
 msgid "Windows compatibility"
 msgstr "Kompatibilita s Windows"
 
-#: make-iso.c:576
+#: make-iso.c:581
 msgid "No files selected to write to CD."
 msgstr "Nebyly vybrány soubory pro zápis na CD."
 
-#: make-iso.c:578 nautilus-cd-burner.c:1134
+#: make-iso.c:583 nautilus-cd-burner.c:1139
 msgid "No files selected"
 msgstr "Nevybrány žádné soubory"
 
-#: make-iso.c:659
+#: make-iso.c:667
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
@@ -202,88 +206,88 @@ msgstr[0] "Nedostatek místa pro uložení obrazu CD (potřeba %ld megabajt)"
 msgstr[1] "Nedostatek místa pro uložení obrazu CD (potřeba %ld megabajty)"
 msgstr[2] "Nedostatek místa pro uložení obrazu CD (potřeba %ld megabajtů)"
 
-#: make-iso.c:664
+#: make-iso.c:672
 msgid "Not enough space"
 msgstr "Nedostatek místa"
 
-#: make-iso.c:700
+#: make-iso.c:710
 msgid "Creating CD image"
 msgstr "Vytvářím obraz CD"
 
-#: nautilus-cd-burner.c:137
+#: nautilus-cd-burner.c:138
 msgid " (invalid Unicode)"
 msgstr " (neplatné Unicode)"
 
-#: nautilus-cd-burner.c:283
+#: nautilus-cd-burner.c:284
 msgid "Preparing to write CD"
 msgstr "Připravuji zápis CD"
 
-#: nautilus-cd-burner.c:285
+#: nautilus-cd-burner.c:286
 msgid "Preparing to write DVD"
 msgstr "Připravuji zápis DVD"
 
-#: nautilus-cd-burner.c:290
+#: nautilus-cd-burner.c:291
 msgid "Writing CD"
 msgstr "Zapisuji CD"
 
-#: nautilus-cd-burner.c:292
+#: nautilus-cd-burner.c:293
 msgid "Writing DVD"
 msgstr "Zapisuji DVD"
 
-#: nautilus-cd-burner.c:297
+#: nautilus-cd-burner.c:298
 msgid "Fixating CD"
 msgstr "Zapisuji obsah CD"
 
-#: nautilus-cd-burner.c:299
+#: nautilus-cd-burner.c:300
 msgid "Fixating DVD"
 msgstr "Zapisuji obsah DVD"
 
-#: nautilus-cd-burner.c:304
+#: nautilus-cd-burner.c:305
 msgid "Erasing CD"
 msgstr "Mažu CD"
 
-#: nautilus-cd-burner.c:306
+#: nautilus-cd-burner.c:307
 msgid "Erasing DVD"
 msgstr "Mažu DVD"
 
-#: nautilus-cd-burner.c:332
+#: nautilus-cd-burner.c:333
 msgid "Please make sure another application is not using the disc."
 msgstr "Přesvědčte se prosím, že disk nepoužívá jiná aplikace."
 
-#: nautilus-cd-burner.c:333
+#: nautilus-cd-burner.c:334
 msgid "Disc is busy"
 msgstr "Disk se používá"
 
-#: nautilus-cd-burner.c:335
+#: nautilus-cd-burner.c:336
 msgid "Please insert a rewritable or blank media in the drive tray."
 msgstr "Vložte prosím do mechaniky prázdné nebo přepisovatelné médium."
 
-#: nautilus-cd-burner.c:336
+#: nautilus-cd-burner.c:337
 msgid "Insert rewritable or blank media"
 msgstr "Vložte prázdné nebo přepisovatelné médium"
 
-#: nautilus-cd-burner.c:338
+#: nautilus-cd-burner.c:339
 msgid "Please insert a blank media in the drive tray."
 msgstr "Vložte prosím do mechaniky prázdné médium."
 
-#: nautilus-cd-burner.c:339
+#: nautilus-cd-burner.c:340
 msgid "Insert blank media"
 msgstr "Vložte prázdné médium"
 
-#: nautilus-cd-burner.c:341
+#: nautilus-cd-burner.c:342
 msgid "Please replace the in-drive media by a rewritable or blank media."
 msgstr ""
 "Nahraďte prosím médium v mechanice prázdným nebo přepisovatelným médiem."
 
-#: nautilus-cd-burner.c:342
+#: nautilus-cd-burner.c:343
 msgid "Reload rewritable or blank media"
 msgstr "Znovu vložit prázdné nebo přepisovatelné médium"
 
-#: nautilus-cd-burner.c:344
+#: nautilus-cd-burner.c:345
 msgid "Please replace the in-drive media by a blank media."
 msgstr "Nahraďte prosím médium v mechanice prázdným médiem."
 
-#: nautilus-cd-burner.c:345
+#: nautilus-cd-burner.c:346
 msgid "Reload blank media"
 msgstr "Znovu vložit prázdné médium"
 
@@ -338,7 +342,7 @@ msgstr "Zvolte název souboru pro obraz cdrom"
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "Nemáte oprávnění přepsat tento soubor (%s)."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599 nautilus-cd-burner.c:656
 msgid "File image creation failed"
 msgstr "Tvorba souboru obrazu selhala"
 
@@ -347,20 +351,24 @@ msgstr "Tvorba souboru obrazu selhala"
 msgid "You do not have permissions to create that file (%s)."
 msgstr "Nemáte oprávnění vytvořit tento soubor (%s)."
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:656
+msgid "Incorrectly named files were to be added to the CD"
+msgstr "Na CD měly být přidány nesprávně pojmenované soubory"
+
+#: nautilus-cd-burner.c:664
 #, c-format
 msgid "Completed writing %s"
 msgstr "Dokončen zápis %s"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:725
 msgid "Complete"
 msgstr "Dokončeno"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:786
 msgid "Maximum Possible"
 msgstr "Maximální možná"
 
-#: nautilus-cd-burner.c:859
+#: nautilus-cd-burner.c:864
 #, c-format
 msgid "%d MB"
 msgstr "%d MB"
@@ -369,15 +377,15 @@ msgstr "%d MB"
 #. translators: see strftime man page for meaning of %b, %d and %Y
 #. the maximum length for this field is 32 bytes
 #.
-#: nautilus-cd-burner.c:887
+#: nautilus-cd-burner.c:892
 msgid "Personal Data, %b %d, %Y"
 msgstr "Osobní data, %d %B %Y"
 
-#: nautilus-cd-burner.c:920
+#: nautilus-cd-burner.c:925
 msgid "Cancel write"
 msgstr "Zrušit zápis"
 
-#: nautilus-cd-burner.c:921
+#: nautilus-cd-burner.c:926
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
@@ -387,37 +395,37 @@ msgstr ""
 "Některé mechaniky vyžadují, abyste pro jejich opětovné zprovoznění "
 "restartovali počítač."
 
-#: nautilus-cd-burner.c:925
+#: nautilus-cd-burner.c:930
 msgid "Continue"
 msgstr "Pokračovat"
 
-#: nautilus-cd-burner.c:977
+#: nautilus-cd-burner.c:982
 #, c-format
 msgid "There was a problem displaying the help contents: %s."
 msgstr "Při zobrazování obsahu nápovědy se vyskytl problém: %s."
 
-#: nautilus-cd-burner.c:978
+#: nautilus-cd-burner.c:983
 msgid "Cannot display help"
 msgstr "Nemohu zobrazit nápovědu"
 
-#: nautilus-cd-burner.c:1093
+#: nautilus-cd-burner.c:1098
 msgid "Too many parameters"
 msgstr "Příliš mnoho parametrů"
 
-#: nautilus-cd-burner.c:1094
+#: nautilus-cd-burner.c:1099
 msgid "Too many parameters were passed to the application."
 msgstr "Aplikaci bylo předáno příliš mnoho parametrů."
 
-#: nautilus-cd-burner.c:1116
+#: nautilus-cd-burner.c:1121
 #, c-format
 msgid "The file '%s' is not a valid CD image."
 msgstr "Soubor '%s' není platný obraz CD."
 
-#: nautilus-cd-burner.c:1119
+#: nautilus-cd-burner.c:1124
 msgid "Not a valid CD image"
 msgstr "Není platný obraz CD"
 
-#: nautilus-cd-burner.c:1135
+#: nautilus-cd-burner.c:1140
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
@@ -425,7 +433,7 @@ msgstr ""
 "Soubory, které chcete zapsat na disk, musíte zkopírovat do okna Tvůrce CD/"
 "DVD. Chcete je nyní otevřít?"
 
-#: nautilus-cd-burner.c:1137
+#: nautilus-cd-burner.c:1142
 msgid "Open CD/DVD Creator"
 msgstr "Otevřít Tvůrce CD/DVD"
 

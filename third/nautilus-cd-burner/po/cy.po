@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-03-16 00:20+0000\n"
+"POT-Creation-Date: 2004-09-12 05:01+0100\n"
+"PO-Revision-Date: 2004-09-12 05:17+0100\n"
 "Last-Translator: Dafydd Harries <daf@muse.19inch.net>\n"
 "Language-Team: Cymraeg <gnome-cy@www.linux.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,9 +17,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n == 2) ? 1 : 0;\n"
 
 #: bacon-cd-selection.c:187
-#, fuzzy
 msgid "Unnamed CDROM"
-msgstr "CD-ROM SCSI Heb Enw (%s)"
+msgstr "CD-ROM Heb Enw"
 
 #: burn-extension.c:64
 msgid "Unable to launch the cd burner application"
@@ -30,29 +29,25 @@ msgid "Can't launch cd burner"
 msgstr "Ni ellir lansio'r llosgydd CD"
 
 #: burn-extension.c:146 burn-extension.c:173
-#, fuzzy
 msgid "_Write to Disc..."
-msgstr "Ysgrifennu i'r CD..."
+msgstr "_Ysgrifennu at Ddisg..."
 
 #: burn-extension.c:147
-#, fuzzy
 msgid "Write disc image to a CD or DVD disc"
-msgstr "Ysgrifennu delwedd ISO at CD"
+msgstr "Ysgrifennu delwedd disg at ddisg CD neu DVD"
 
 #: burn-extension.c:174 burn-extension.c:203
-#, fuzzy
 msgid "Write contents to a CD or DVD disc"
-msgstr "Ysgrifennu'r cynnwys at CD"
+msgstr "Ysgrifennu'r cynnwys at ddisg CD neu DVD"
 
 #: burn-extension.c:202 cdburn.glade.h:15
-#, fuzzy
 msgid "Write to Disc"
-msgstr "Ysgrifennu at CD"
+msgstr "Ysgrifennu at Ddisg"
 
 #: cd-drive.c:744
-#, fuzzy, c-format
+#, c-format
 msgid "Unnamed SCSI Drive (%s)"
-msgstr "CD-ROM SCSI Heb Enw (%s)"
+msgstr "Gyrriant SCSI Heb Enw (%s)"
 
 #: cd-drive.c:1304
 msgid "File image"
@@ -77,7 +72,7 @@ msgstr "Gwall heb ei drin, yn terfynnu"
 
 #: cd-recorder.c:367
 msgid "The CD has already been recorded"
-msgstr ""
+msgstr "Mae'r CD wedi ei recordio eisioes"
 
 #: cd-recorder.c:377
 msgid ""
@@ -89,14 +84,16 @@ msgstr ""
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
+"Mae'r system yn rhy araf i ysgrifennu at CD â'r cyflymder hwn. Ceisiwch "
+"gyflymder is."
 
 #: cd-recorder.c:503
 msgid "You can only burn 99 tracks on one disc"
-msgstr ""
+msgstr "Gallwch ond losgi 99 trac ar un disg"
 
 #: cdburn.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: cdburn.glade.h:2
 msgid "*"
@@ -104,42 +101,39 @@ msgstr "*"
 
 #: cdburn.glade.h:3
 msgid "<b>After Writing</b>"
-msgstr ""
+msgstr "<b>Ar Ôl Ysgrifennu</b>"
 
 #: cdburn.glade.h:4
 msgid "<b>Information</b>"
-msgstr ""
+msgstr "<b>Gwybodaeth</b>"
 
 #: cdburn.glade.h:5
 msgid "<b>Write Options</b>"
-msgstr ""
+msgstr "<b>Opsiynnau Ysgrifennu</b>"
 
 #: cdburn.glade.h:6
 msgid "<big><b>Writing files to disc progress</b></big>"
-msgstr ""
+msgstr "<big><b>Cynydd ysgrifennu ffeiliau at ddisg</b></big>"
 
 #: cdburn.glade.h:7
-#, fuzzy
 msgid "<i>Initializing...</i>"
-msgstr "Cychwyn..."
+msgstr "<i>Ymgychwyn...</i>"
 
 #: cdburn.glade.h:8
 msgid "Data size:"
-msgstr ""
+msgstr "Maint data:"
 
 #: cdburn.glade.h:9
-#, fuzzy
 msgid "Disc _name:"
-msgstr "Enw'r CD:"
+msgstr "_Enw'r disc:"
 
 #: cdburn.glade.h:10
 msgid "E_ject disc"
-msgstr ""
+msgstr "_Allfwrw'r disg"
 
 #: cdburn.glade.h:11
-#, fuzzy
 msgid "Label to identify disc"
-msgstr "Label er mwyn adnabod y CD"
+msgstr "Label er mwyn adnabod y disg"
 
 #: cdburn.glade.h:12
 msgid "Select the speed to use for the write"
@@ -150,35 +144,33 @@ msgid ""
 "Selected files are to be written to a CD or DVD disc. This operation may "
 "take a long time, depending on data size and write speed."
 msgstr ""
+"Caiff y ffeiliau dewisiedig eu ysgrifennu at ddisg CD neu DVD. Gall y "
+"weithred hwn gymryd amser hir, yn dibynnu at faint y data a'r cyflymder "
+"ysgrifennu."
 
 #: cdburn.glade.h:14
-#, fuzzy
 msgid "Write _speed:"
-msgstr "Cyflymder ysgrifennu:"
+msgstr "_Cyflymder ysgrifennu:"
 
 #: cdburn.glade.h:16
-#, fuzzy
 msgid "Writing Files to Disc Progress"
-msgstr "Ysgrifennu ffeiliau at recordydd CD"
+msgstr "Cynnydd Ysgrifennu Ffeiliau at Ddisg"
 
 #: cdburn.glade.h:17
 msgid "_Dummy write"
-msgstr ""
+msgstr "Ysgrifennu _ffug"
 
 #: cdburn.glade.h:18
-#, fuzzy
 msgid "_Reuse these files for another disc"
-msgstr "Ailddefnyddio'r ffeiliau hyn ar gyfer CD arall"
+msgstr "_Ailddefnyddio'r ffeiliau hyn ar gyfer CD arall"
 
 #: cdburn.glade.h:19
-#, fuzzy
 msgid "_Write"
-msgstr "_Ysgrifennu at CD"
+msgstr "_Ysgrifennu"
 
 #: cdburn.glade.h:20
-#, fuzzy
 msgid "_Write disc to:"
-msgstr "Ysgrifennu ffeiliau at CD"
+msgstr "_Ysgrifennu disg at:"
 
 #: make-iso.c:251
 msgid ""
@@ -219,61 +211,55 @@ msgstr "Yn creu'r delwedd CD"
 
 #: nautilus-cd-burner.c:137
 msgid " (invalid Unicode)"
-msgstr ""
+msgstr " (Unicode annilys)"
 
 #: nautilus-cd-burner.c:283
 msgid "Preparing to write CD"
-msgstr "Paratoi i ysgrifennu'r CD"
+msgstr "Yn paratoi i ysgrifennu CD"
 
 #: nautilus-cd-burner.c:285
-#, fuzzy
 msgid "Preparing to write DVD"
-msgstr "Paratoi i ysgrifennu'r CD"
+msgstr "Yn paratoi i ysgrifennu DVD"
 
 #: nautilus-cd-burner.c:290
 msgid "Writing CD"
-msgstr "Yn ysgrifennu'r CD"
+msgstr "Yn ysgrifennu CD"
 
 #: nautilus-cd-burner.c:292
-#, fuzzy
 msgid "Writing DVD"
-msgstr "Yn ysgrifennu'r CD"
+msgstr "Yn ysgrifennu DVD"
 
 #: nautilus-cd-burner.c:297
 msgid "Fixating CD"
-msgstr "Yn sefydlogi'r CD"
+msgstr "Yn sefydlogi CD"
 
 #: nautilus-cd-burner.c:299
-#, fuzzy
 msgid "Fixating DVD"
-msgstr "Yn sefydlogi'r CD"
+msgstr "Yn sefydlogi DVD"
 
 #: nautilus-cd-burner.c:304
 msgid "Erasing CD"
-msgstr "Yn dileu'r CD"
+msgstr "Yn dileu CD"
 
 #: nautilus-cd-burner.c:306
-#, fuzzy
 msgid "Erasing DVD"
-msgstr "Yn dileu'r CD"
+msgstr "Yn dileu DVD"
 
 #: nautilus-cd-burner.c:332
 msgid "Please make sure another application is not using the disc."
-msgstr ""
+msgstr "Sicrhewch nad yw rhaglen arall yn defnyddio'r disg"
 
 #: nautilus-cd-burner.c:333
 msgid "Disc is busy"
-msgstr ""
+msgstr "Mae'r disg yn brysur"
 
 #: nautilus-cd-burner.c:335
-#, fuzzy
 msgid "Please insert a rewritable or blank media in the drive tray."
-msgstr "Rhowch gyfrwng amlysgrifenadwy yn y gyrriant os gwelwch yn dda."
+msgstr "Rhowch gyfrwng amlysgrifennadwy neu wag yn y gyrriant os gwelwch yn dda."
 
 #: nautilus-cd-burner.c:336
-#, fuzzy
 msgid "Insert rewritable or blank media"
-msgstr "Rhowch gyfrwng amlysgrifenadwy i fewn"
+msgstr "Rhowch gyfrwng amlysgrifenadwy neu wag i fewn"
 
 #: nautilus-cd-burner.c:338
 msgid "Please insert a blank media in the drive tray."
@@ -284,16 +270,14 @@ msgid "Insert blank media"
 msgstr "Rhowch cyfrwng gwag i fewn"
 
 #: nautilus-cd-burner.c:341
-#, fuzzy
 msgid "Please replace the in-drive media by a rewritable or blank media."
 msgstr ""
 "Os gwelwch yn dda, amnwediwch y cyfrwng yn y gyrriant efo cyfrwng "
-"amlysgrifenadwy."
+"amlysgrifenadwy neu wag."
 
 #: nautilus-cd-burner.c:342
-#, fuzzy
 msgid "Reload rewritable or blank media"
-msgstr "Aillwytho cyfwrng amlysgrifenadwy"
+msgstr "Aillwytho cyfwrng amlysgrifenadwy neu wag"
 
 #: nautilus-cd-burner.c:344
 msgid "Please replace the in-drive media by a blank media."
@@ -305,9 +289,8 @@ msgid "Reload blank media"
 msgstr "Aillwytho cyfrwng gwag"
 
 #: nautilus-cd-burner.c:373
-#, fuzzy
 msgid "Disc writing error details"
-msgstr "Manylion gwall ysgrifennu CD"
+msgstr "Manylion gwall ysgrifennu disg"
 
 #: nautilus-cd-burner.c:379
 msgid "Detailed error output from cdrecord:"
@@ -352,18 +335,18 @@ msgid "Choose a filename for the cdrom image"
 msgstr "Dewiswch enw ffeil ar gyfer y delwedd CD-ROM"
 
 #: nautilus-cd-burner.c:585
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
-msgstr "Does dim caniatad i drosysgrifo'r ffeil."
+msgstr "Nid oes gennych ganiatad i drosysgrifo'r ffeil hwnnw (%s)."
 
 #: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
 msgid "File image creation failed"
-msgstr ""
+msgstr "Methwyd creu delwedd ffeil"
 
 #: nautilus-cd-burner.c:598
-#, fuzzy, c-format
+#, c-format
 msgid "You do not have permissions to create that file (%s)."
-msgstr "Does dim caniatad i greu ffeil."
+msgstr "Nid oes gennych ganiatad i greu 'r ffeil hwnnw (%s)."
 
 #: nautilus-cd-burner.c:661
 #, c-format
@@ -381,7 +364,7 @@ msgstr "Mwyaf Posib"
 #: nautilus-cd-burner.c:859
 #, c-format
 msgid "%d MB"
-msgstr ""
+msgstr "%d MB"
 
 #.
 #. translators: see strftime man page for meaning of %b, %d and %Y
@@ -393,22 +376,21 @@ msgstr "Data Personol, %b %d, %Y"
 
 #: nautilus-cd-burner.c:920
 msgid "Cancel write"
-msgstr ""
+msgstr "Diddymu ysgrifennu"
 
 #: nautilus-cd-burner.c:921
-#, fuzzy
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
 "working again."
 msgstr ""
-"Ydych chi'n sicr eich bod chi eisiau cnaslo'r weithred ysgrifennu at CD?\n"
+"Ydych chi'n sicr eich bod chi eisiau diddymu'r weithred ysgrifennu at CD?\n"
 "Mae rhai ysgrifennwyr CD yn mynnu eich bod chi'n ailgychwyn y peiriant "
-"i'wgael e i weithio eto."
+"i'w gael e i weithio eto."
 
 #: nautilus-cd-burner.c:925
 msgid "Continue"
-msgstr ""
+msgstr "Mynd Ymlaen"
 
 #: nautilus-cd-burner.c:977
 #, c-format
@@ -417,7 +399,7 @@ msgstr "Roedd gwall wrth ddangos cynnwys y cymorth: %s."
 
 #: nautilus-cd-burner.c:978
 msgid "Cannot display help"
-msgstr ""
+msgstr "Ni ellir dangos cymorth"
 
 #: nautilus-cd-burner.c:1093
 msgid "Too many parameters"
@@ -425,7 +407,7 @@ msgstr "Gormod o baramedrau"
 
 #: nautilus-cd-burner.c:1094
 msgid "Too many parameters were passed to the application."
-msgstr ""
+msgstr "Rhoddwyd gormod o baramedrau i'r rhaglen."
 
 #: nautilus-cd-burner.c:1116
 #, c-format
@@ -437,18 +419,16 @@ msgid "Not a valid CD image"
 msgstr "Nid yw'n ddelwedd CD dilys"
 
 #: nautilus-cd-burner.c:1135
-#, fuzzy
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
 msgstr ""
-"Mae'n rhaid i chi gopïo'r ffeiliau rydych eisiau ysgrifennu ar CD i'r "
-"ffenest Creu CD. A hoffech ei agor e nawr?"
+"Mae'n rhaid i chi gopïo'r ffeiliau rydych eisiau ysgrifennu i'r CD/DVD i'r "
+"ffenest Creu CD/DVD. A hoffech ei agor e nawr?"
 
 #: nautilus-cd-burner.c:1137
-#, fuzzy
 msgid "Open CD/DVD Creator"
-msgstr "Agor Creu CD"
+msgstr "Agor Crëwr CD/DVD"
 
 #: ncb.schemas.in.h:1
 msgid "Default burn speed"
@@ -472,27 +452,27 @@ msgstr ""
 
 #: ncb.schemas.in.h:5
 msgid "Enable Burnproof option"
-msgstr ""
+msgstr "Galluogi opsiwn \"Burnproof\""
 
 #: ncb.schemas.in.h:6
 msgid "Enable debug"
-msgstr ""
+msgstr "Galluogi datnamu"
 
 #: ncb.schemas.in.h:7
 msgid "Enable overburn"
-msgstr ""
+msgstr "Galluogi troilosgi"
 
 #: ncb.schemas.in.h:8
 msgid "Whether to allow the data to exceed the size of the physical medium."
-msgstr ""
+msgstr "A ddylid caniatau i'r data fynd dros maint y cyfrwng corfforol."
 
 #: ncb.schemas.in.h:9
 msgid "Whether to enable the debugging for CD Recording."
-msgstr ""
+msgstr "A ddylid galluogi datnamu ar gyfer recordio CD."
 
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
-msgstr ""
+msgstr "A ddylid defnyddio'r opswin \"Burnproof\" sydd ar gael ar recordwyr."
 
 #~ msgid "<b>Writing to CD. Please wait.</b>"
 #~ msgstr "<b>Yn ysgrifennu i'r CD. Arhoswch os gwelwch yn dda.</b>"

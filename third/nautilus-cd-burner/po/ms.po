@@ -5,8 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"POT-Creation-Date: 2004-08-23 22:38+0800\n"
 "PO-Revision-Date: 2004-08-23 22:42+0730\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@my-penguin.org>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.net>\n"
@@ -26,7 +25,8 @@ msgstr "Tak dapat melancar aplikasi pembakar cd"
 msgid "Can't launch cd burner"
 msgstr "Tak dapat melancarkan pembakar cd"
 
-#: burn-extension.c:146 burn-extension.c:173
+#: burn-extension.c:146
+#: burn-extension.c:173
 msgid "_Write to Disc..."
 msgstr "_Tulis ke CD..."
 
@@ -34,11 +34,13 @@ msgstr "_Tulis ke CD..."
 msgid "Write disc image to a CD or DVD disc"
 msgstr "Tulis imej cakera ke cakera  CD atau DVD"
 
-#: burn-extension.c:174 burn-extension.c:203
+#: burn-extension.c:174
+#: burn-extension.c:203
 msgid "Write contents to a CD or DVD disc"
 msgstr "Tulis kandungan ke cakera CD atau DVD"
 
-#: burn-extension.c:202 cdburn.glade.h:15
+#: burn-extension.c:202
+#: cdburn.glade.h:15
 msgid "Write to Disc"
 msgstr "Tulis ke Cakera"
 
@@ -60,7 +62,9 @@ msgstr "Perekod tidak boleh dicapai"
 msgid "Not enough space available on the disc"
 msgstr "Tidak cukup ruang dalam cakera"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:319
+#: cd-recorder.c:322
+#: cd-recorder.c:373
 msgid "The files selected did not fit on the CD"
 msgstr "Fail dipilih tidak muat pada CD"
 
@@ -73,17 +77,12 @@ msgid "The CD has already been recorded"
 msgstr "CD sudah pun direkod"
 
 #: cd-recorder.c:377
-msgid ""
-"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
-msgstr ""
-"Semua fail audio mesti audio streo, digital 16-bit dengan sampel 44100Hz"
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr "Semua fail audio mesti audio streo, digital 16-bit dengan sampel 44100Hz"
 
 #: cd-recorder.c:384
-msgid ""
-"The system is too slow to write the CD at this speed. Try a lower speed."
-msgstr ""
-"Sistem terlalu perlahan untuk menulis CD pada kelajuan ini. Cuba dengan "
-"kelajuan lebih perlahan."
+msgid "The system is too slow to write the CD at this speed. Try a lower speed."
+msgstr "Sistem terlalu perlahan untuk menulis CD pada kelajuan ini. Cuba dengan kelajuan lebih perlahan."
 
 #: cd-recorder.c:503
 msgid "You can only burn 99 tracks on one disc"
@@ -138,12 +137,8 @@ msgid "Select the speed to use for the write"
 msgstr "Pilih kelajuan digunakan untuk menulis"
 
 #: cdburn.glade.h:13
-msgid ""
-"Selected files are to be written to a CD or DVD disc. This operation may "
-"take a long time, depending on data size and write speed."
-msgstr ""
-"Fail dipilih akan ditulis ke cakera CD atau DVD. Operasi ini akan mengambil "
-"masa agak lama, bergantung pada saiz data dan kelajuan menulis."
+msgid "Selected files are to be written to a CD or DVD disc. This operation may take a long time, depending on data size and write speed."
+msgstr "Fail dipilih akan ditulis ke cakera CD atau DVD. Operasi ini akan mengambil masa agak lama, bergantung pada saiz data dan kelajuan menulis."
 
 #: cdburn.glade.h:14
 msgid "Write _speed:"
@@ -185,18 +180,14 @@ msgstr "Keserasian Windows"
 msgid "No files selected to write to CD."
 msgstr "Tiada fail dipilih untuk ditulis ke CD."
 
-#: make-iso.c:578 nautilus-cd-burner.c:1134
+#: make-iso.c:578
+#: nautilus-cd-burner.c:1134
 msgid "No files selected"
 msgstr "Tiada fail dipilih"
 
 #: make-iso.c:659
-#, c-format
-msgid "Not enough space to store CD image (%ld Megabyte needed)"
-msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
-msgstr[0] ""
-msgstr[1] ""
-
 #: make-iso.c:664
+#, c-format
 msgid "Not enough space"
 msgstr "Tidak cukup ruang"
 
@@ -252,8 +243,7 @@ msgstr "Cakera sibuk"
 
 #: nautilus-cd-burner.c:335
 msgid "Please insert a rewritable or blank media in the drive tray."
-msgstr ""
-"Sila masukkan media boleh tulis semula atau kosong ke dalam dulang pemacu."
+msgstr "Sila masukkan media boleh tulis semula atau kosong ke dalam dulang pemacu."
 
 #: nautilus-cd-burner.c:336
 msgid "Insert rewritable or blank media"
@@ -269,8 +259,7 @@ msgstr "Sisipkan media kosong"
 
 #: nautilus-cd-burner.c:341
 msgid "Please replace the in-drive media by a rewritable or blank media."
-msgstr ""
-"Sila gantikan media pemacu-dalam dengan media boleh tulis semula atau kosong."
+msgstr "Sila gantikan media pemacu-dalam dengan media boleh tulis semula atau kosong."
 
 #: nautilus-cd-burner.c:342
 msgid "Reload rewritable or blank media"
@@ -322,7 +311,8 @@ msgstr ""
 "Fail bernama '%s' tersedia wujud.\n"
 "Adakah anda ingin menindihnya?"
 
-#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+#: nautilus-cd-burner.c:503
+#: nautilus-cd-burner.c:512
 msgid "_Overwrite"
 msgstr "_Tindih"
 
@@ -335,7 +325,8 @@ msgstr "Pilih satu namafail bagi imej cdrom"
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "Tak mempunyai keizinan untuk menindih fail itu (%s)."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:586
+#: nautilus-cd-burner.c:599
 msgid "File image creation failed"
 msgstr "Penciptaan imej fail gagal"
 
@@ -377,12 +368,10 @@ msgstr "Batal tulis"
 #: nautilus-cd-burner.c:921
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
-"Some optical media drives may require that you restart the machine to get it "
-"working again."
+"Some optical media drives may require that you restart the machine to get it working again."
 msgstr ""
 "Anda pati untuk membatalkan operasi penulisan cakera?\n"
-"Terdapat pemacu media optikal memerlukan anda mengulanghidup mesin supaya "
-"dapat bekerja semula."
+"Terdapat pemacu media optikal memerlukan anda mengulanghidup mesin supaya dapat bekerja semula."
 
 #: nautilus-cd-burner.c:925
 msgid "Continue"
@@ -415,12 +404,8 @@ msgid "Not a valid CD image"
 msgstr "Bukan imej CD yang sah"
 
 #: nautilus-cd-burner.c:1135
-msgid ""
-"You need to copy the files you want to write to disc to the CD/DVD Creator "
-"window. Would you like to open it now?"
-msgstr ""
-"Anda perlu menyalin fail yang anda ingin tulis ke cakera ke tetingkap "
-"Pencipta CD/DVD. Adakah anda ingin membukanya sekarang?"
+msgid "You need to copy the files you want to write to disc to the CD/DVD Creator window. Would you like to open it now?"
+msgstr "Anda perlu menyalin fail yang anda ingin tulis ke cakera ke tetingkap Pencipta CD/DVD. Adakah anda ingin membukanya sekarang?"
 
 #: nautilus-cd-burner.c:1137
 msgid "Open CD/DVD Creator"
@@ -439,12 +424,8 @@ msgid "Directory for the temporary ISO images"
 msgstr "Direktori bagi imej ISO sementara"
 
 #: ncb.schemas.in.h:4
-msgid ""
-"Directory used for the temporary ISO images, leave blank to use the default "
-"system temporary directory."
-msgstr ""
-"Direktori digunakan untuk imej ISO sementara, biarkan kosong untuk "
-"menggunakan direktori sementara sistem yg default."
+msgid "Directory used for the temporary ISO images, leave blank to use the default system temporary directory."
+msgstr "Direktori digunakan untuk imej ISO sementara, biarkan kosong untuk menggunakan direktori sementara sistem yg default."
 
 #: ncb.schemas.in.h:5
 msgid "Enable Burnproof option"
@@ -469,3 +450,4 @@ msgstr "Samada menghidupkan pengnyahpepijatan bagi perekodan CD."
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
 msgstr "Samada menggunakan opesyen Burnroof yang ada pada sesetengah perekod"
+
