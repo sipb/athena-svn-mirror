@@ -36,7 +36,7 @@
 #define OIDDATA_H
 
 #ifdef DEBUG
-static const char OIDDATA_CVS_ID[] = "@(#) $RCSfile: oiddata.h,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 14:28:38 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: oiddata.h,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 14:28:38 $ $Name: not supported by cvs2svn $";
+static const char OIDDATA_CVS_ID[] = "@(#) $RCSfile: oiddata.h,v $ $Revision: 1.1.1.5 $ $Date: 2004-06-30 14:58:11 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: oiddata.h,v $ $Revision: 1.1.1.5 $ $Date: 2004-06-30 14:58:11 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef NSSPKI1T_H
