@@ -1,5 +1,5 @@
 #
-# $Revision: 1.1.1.1 $
+# $Revision: 1.2 $
 #
 # Makefile for building sysinfo main program
 #
@@ -97,23 +97,23 @@ mcdall: $(Target) sysinfowrapper.in
 		-t bin/sysinfo $(srcdir)/sysinfowrapper.in
 
 install: $(Target) sysinfowrapper
-	@$(MKDIRHIER) $(BIN)
-	@$(MKDIRHIER) $(LIBEXECDIR)
-	@if [ -z "$(LIBEXECDIR)" ]; then \
+	@$(MKDIRHIER) $(DESTDIR)$(BIN)
+	@$(MKDIRHIER) $(DESTDIR)$(LIBEXECDIR)
+	@if [ -z "$(DESTDIR)$(LIBEXECDIR)" ]; then \
 		echo "The LIBEXECDIR variable is not set."; \
 		exit 1; \
 	fi; \
 	RTPLATFORM=`$(BUILDINFO) -rtplatform -cfdir ${srcdir}/../config`; \
-	PLdir=$(LIBEXECDIR)/platform/$${RTPLATFORM}; \
+	PLdir=$(DESTDIR)$(LIBEXECDIR)/platform/$${RTPLATFORM}; \
 	$(MKDIRHIER) $$PLdir; \
 	if [ "$${RTPLATFORM}" = "linux-2-i686" ]; then \
 		(cd $$PLdir/.. && rm -f linux-2-586 && \
 		 ln -s $${RTPLATFORM} linux-2-i586); \
 	fi; \
-	echo $(INSTALLPROG) -c -m 555 $(INSTALLOWN) sysinfowrapper $(BIN)/$(PROG); \
-	$(INSTALLPROG) -c -m 555 $(INSTALLOWN) sysinfowrapper $(BIN)/$(PROG); \
-	echo $(INSTALLPROG) -c ${INSTALLOPTS} ${Target} $$PLdir/${Target}; \
-	$(INSTALLPROG) -s -c ${INSTALLOPTS} ${Target} $$PLdir/${Target};
+	echo $(INSTALLPROG) -c -m 555 $(INSTALLOWN) sysinfowrapper $(DESTDIR)$(BIN)/$(PROG); \
+	$(INSTALLPROG) -c -m 555 $(INSTALLOWN) sysinfowrapper $(DESTDIR)$(BIN)/$(PROG); \
+	echo $(INSTALLPROG) -c ${INSTALLOPTS} ${Target} $(DESTDIR)$$PLdir/${Target}; \
+	$(INSTALLPROG) -s -c ${INSTALLOPTS} ${Target} $(DESTDIR)$$PLdir/${Target};
 
 clean:
 	rm -f *.o ${Target} buildinfo.c
