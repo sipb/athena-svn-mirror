@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.20 1999-01-29 18:58:11 ghudson Exp $
+# $Id: config.site,v 1.21 1999-02-01 16:58:19 ghudson Exp $
 #
 
 athena=true
@@ -13,6 +13,7 @@ case "$HOSTTYPE" in
 	sgi)
 		CC=cc
 		WARN_CPPFLAGS=-fullwarn
+		;;
 	linux)
 		CC=cc
 		WARN_CPPFLAGS="-Wall -Wstrict-prototypes -Wmissing-prototypes"
