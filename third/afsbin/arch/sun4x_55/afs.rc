@@ -28,7 +28,7 @@ case $1 in
 # Athena additions
 #
 . /etc/athena/rc.conf
-if [ "$AFSCLIENT" = false ]; then
+if [ "$AFSCLIENT" = false -a "$AFSSRV" = false ]; then
 	exit 0
 fi
 AFSCLIENTNUM=4
@@ -75,11 +75,15 @@ fi
 # Start the AFS server processes if a bosserver exists
 #
 
-if [ -x /usr/afs/bin/bosserver ]; then
+if [ -x /usr/afs/bin/bosserver -a "$AFSSRV" = true ]; then
 	echo "Starting AFS Server processes"
 	/usr/afs/bin/bosserver &
 	OPTIONS="$OPTIONS -nosettime"
 	sleep 30
+fi
+
+if [ "$AFSCLIENT" = false ]; then
+	exit 0
 fi
 
 #
