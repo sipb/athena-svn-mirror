@@ -3,7 +3,7 @@ Summary: The ORBit object request broker, for Athena
 Copyright: GPL
 Group: System Environment/Daemons
 
-Requires: athena-glib
+Requires: athena-glib gettext
 
 %description
 ORBit is a high-performance CORBA (Common Object Request Broker

@@ -3,6 +3,8 @@ Summary: The rep Lisp interpreter, for Athena
 Copyright: GPL
 Group: System Environment/Libraries
 
+Requires: gmp
+
 %description
 librep is a Lisp system for UNIX. It contains a Lisp interpreter,
 byte-code compiler and virtual machine. Applications may use the Lisp

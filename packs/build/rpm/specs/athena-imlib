@@ -3,6 +3,8 @@ Summary: The imlib library, for Athena
 Copyright: GPL and LGPL
 Group: System Environment/Libraries
 
+Requires: libpng libungif libjpeg athena-gtk
+
 %description
 The imlib library can load and manipulate a variety of different types
 of images.  It is currently used by the GNOME (GNU Network Object
