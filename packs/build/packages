@@ -1,4 +1,4 @@
-# $Id: packages,v 1.135 2001-05-06 15:55:51 ghudson Exp $
+# $Id: packages,v 1.136 2001-05-18 03:18:33 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -199,7 +199,7 @@ third/whois			on irix
 third/x3270
 third/xalf			requires gtk,control-center
 third/xmh
-third/xntp
+third/xntp			package ntp
 third/xpm			on solaris
 third/xscreensaver		requires krb5,control-center
 third/zlib			except linux,irix
