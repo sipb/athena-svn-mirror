@@ -717,6 +717,7 @@ try_convert524 (kcontext, me)
 #endif
 
 #ifdef KRB4_GET_TICKETS
+#define KRB4_DEFAULT_LIFE 120 /* 10 hours */
 try_krb4 (me, user_pwstring)
     krb5_principal me;
     char *user_pwstring;
@@ -725,7 +726,7 @@ try_krb4 (me, user_pwstring)
 
     krbval = krb_get_pw_in_tkt(username, "", realm,
 			       "krbtgt", realm, 
-			       DEFAULT_TKT_LIFE,
+			       KRB4_DEFAULT_LIFE,
 			       user_pwstring);
 
     switch (krbval) {
