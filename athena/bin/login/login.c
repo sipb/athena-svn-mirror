@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.60 1993-06-30 12:48:17 cfields Exp $
+ * $Id: login.c,v 1.61 1993-06-30 13:03:54 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.60 1993-06-30 12:48:17 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.61 1993-06-30 13:03:54 cfields Exp $";
 #endif
 
 /*
@@ -158,6 +158,7 @@ char	noattach[] =	"/etc/noattach";
 char	noremote[] =	"/etc/noremote";
 char	go_register[] =	"/usr/etc/go_register";
 char	get_motd[] =	"get_message";
+char	rmrf[] =	"/bin/rm -rf";
 
 /* uid, gid, etc. used to be -1; guess what setreuid does with that --asp */
 #ifdef POSIX
@@ -1793,6 +1794,7 @@ make_homedir()
 #endif
     char tempname[MAXPATHLEN+1];
     char buf[MAXBSIZE];
+    char killdir[40]; /* > sizeof(rmrf) + " /tmp/username" */
     struct stat statbuf;
     int fold, fnew;
     int n;
@@ -1804,17 +1806,41 @@ make_homedir()
     strcpy(pwd->pw_dir,"/tmp/");
     strcat(pwd->pw_dir,lusername);
     setenv("TMPHOME", "", 1);
+
+    /* Make sure there's not already a directory called pwd->pw_dir
+       before we try to unlink it. This was OK under BSD, but it's
+       a Bad Thing under Ultrix. */
+    if (0 == lstat(pwd->pw_dir, &st))
+      {
+	if ((statbuf.st_mode & S_IFMT) == S_IFDIR)
+	  {
+	    if (statbuf.st_uid == pwd->pw_uid)
+	      return (0); /* user's old temp homedir, presumably */
+
+	    /* Hm. This looks suspicious... Kill it. */
+	    sprintf(killdir, "%s %s", rmrf, pwd->pw_dir);
+	    system(killdir); /* Check for success at mkdir below. */
+	  }
+	else
+	  unlink(pwd->pw_dir); /* not a dir - unlink is safe */
+      }
+    else
+      if (errno != ENOENT) /* == ENOENT --> there was nothing there */
+	{
+	  puts("Error while retrieving status of temporary homedir.");
+	  return(-1);
+	}
+	
     /* Make the home dir and chdir to it */
-    unlink(pwd->pw_dir);
 #ifdef SOLARIS
     if(mkdir(pwd->pw_dir, TEMP_DIR_PERM) < 0) {
 #else
     if(mkdir(pwd->pw_dir) < 0) {
 #endif
-	    if (errno == EEXIST)
-		    return (0);
-	    else
-		    return(-1);
+      puts("Error while creating temporary directory.");
+      /* We want to die even if the error is that the directory
+	 already exists - because it shouldn't. */
+      return(-1);
     } 
     chown(pwd->pw_dir, pwd->pw_uid, pwd->pw_gid);
 #ifndef SOLARIS
@@ -1825,7 +1851,7 @@ make_homedir()
     /* Copy over the proto files */
     if((proto = opendir(PROTOTYPE_DIR)) == NULL) {
 	puts("Can't open prototype directory!");
-	unlink(pwd->pw_dir);
+	rmdir(pwd->pw_dir); /* This was unlink() before - WTF? */
 	return(-1);
     }
 
