@@ -2,12 +2,20 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <hesiod.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+
+#ifndef INADDR_NONE
+#define INADDR_NONE ((unsigned long) -1)
+#endif
+
+/* Delay attaching new packs by up to four hours. */
+#define UPDATE_INTERVAL (3600 * 4)
 
 extern int optind;
 
 static void usage(void);
-static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
-		     int bourneshell);
+static void shellenv(char **hp, char *ws_version, int bourneshell);
 static void output_var(const char *var, const char *val, int bourneshell);
 static void upper(char *v);
 static int vercmp(const char *v1, const char *v2);
@@ -25,8 +33,8 @@ static int vercmp(const char *v1, const char *v2);
 
 int main(int argc, char **argv)
 {
-  char **hp, *envp, buf[256], **hpp;
-  int debug = 0, bourneshell = 0, autoupdate = 0, ch;
+  char buf[256], **hp, **hpp;
+  int debug = 0, bourneshell = 0, ch;
 
   while ((ch = getopt(argc, argv, "bd")) != -1) {
     switch (ch) {
@@ -46,13 +54,10 @@ int main(int argc, char **argv)
   if (argc != 2)
     usage();
 
-  envp = getenv("AUTOUPDATE");
-  if (envp && strcmp(envp, "true") == 0)
-    autoupdate = 1;
-	
   if (debug) {
-    hp = (char **) malloc(100 * sizeof(char *));
-    hpp = hp;
+    /* Get clusterinfo records from standard input. */
+    hpp = (char **) malloc(100 * sizeof(char *));
+    hp = hpp;
     while (fgets(buf, sizeof(buf), stdin) != NULL)
       {
 	*hpp = malloc(strlen(buf) + 1);
@@ -61,19 +66,18 @@ int main(int argc, char **argv)
 	hpp++;
       }
     *hpp = NULL;
-    shellenv(hp, argv[1], autoupdate, bourneshell);
-    return(0);
+  } else {
+    /* Get clusterinfo records from Hesiod. */
+    hp = hes_resolve(argv[0], "cluster");
+    if (hp == NULL)
+      {
+	fprintf(stderr, "No Hesiod information available for %s\n", argv[0]);
+	return(1);
+      }
   }
 
-  hp = hes_resolve(argv[0], "cluster");
-  if (hp == NULL)
-    {
-      fprintf(stderr, "No Hesiod information available for %s\n", argv[0]);
-      return(1);
-    }
-  shellenv(hp, argv[1], autoupdate, bourneshell);
-
-  return(ferror(stdout) ? 1 : 0);
+  shellenv(hp, argv[1], bourneshell);
+  return (ferror(stdout)) ? 1 : 0;
 }
 
 static void usage()
@@ -82,30 +86,55 @@ static void usage()
   exit(1);
 }
 
-/* Cluster information will come in entries of the form:
- *		variable value version flags
- * There may be multiple entries for the same variable, but not multiple
- * entries with the same variable and version.  There may be at most one
- * entry for a given variable that does not list a version.
+/* Cluster records will come in entries of the form:
  *
- * If autoupdate is false, output variable definitions for entries which
- * have a version matching the workstation major and minor version.
+ *	variable value [version [flags]]
  *
- * If autoupdate is true, output a variable definition for each variable,
- * using the entry with the highest version, BUT discarding entries which:
- *		- have 't' listed in the flags string (for "testing"), and
- *		- do not match the current workstation major and minor
- *		  version
+ * There may be multiple records for the same variable, but not
+ * multiple entries with the same variable and version.  There may be
+ * at most one entry for a given variable that does not list a
+ * version.
  *
- * If we would not otherwise output a definition for a variable, and
- * there is an entry with no version number, output a definition using
- * that entry. */
-static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
-		     int bourneshell)
+ * Discard records if they have a version greater than the current
+ * workstation version and any of the following is true:
+ *	- They have 't' listed in the flags.
+ *	- AUTOUPDATE is false.
+ *	- The environment variable UPDATE_TIME doesn't exist or
+ *	  specifies a time later than the current time.
+ * Set NEW_TESTING_RELEASE if any records are discarded for the first
+ * reason, NEW_PRODUCTION_RELEASE if any records are discarded for
+ * the second reason, and UPDATE_TIME if any entries specify a version
+ * greater than the current workstation version and are not discarded
+ * for the first two reasons.
+ *
+ * After discarding records, output the variable definition with the
+ * highest version number.  If there aren't any records left with
+ * version numbers and there's one with no version number, output
+ * that one. */
+static void shellenv(char **hp, char *ws_version, int bourneshell)
 {
-  int *seen, count, i, j;
+  int *seen, count, i, j, output_time = 0, autoupdate = 0;
   char var[80], val[80], vers[80], flags[80], compvar[80], compval[80];
   char compvers[80], defaultval[80], new_production[80], new_testing[80];
+  char timebuf[32], *envp;
+  time_t update_time = -1, now;
+  unsigned long ip = INADDR_NONE;
+
+  time(&now);
+
+  /* Gather information from the environment.  UPDATE_TIME comes from
+   * the clusterinfo file we wrote out last time; AUTOUPDATE and ADDR
+   * come from rc.conf.  If neither file has been sourced by the
+   * caller, we just use defaults. */
+  envp = getenv("UPDATE_TIME");
+  if (envp)
+    update_time = atoi(envp);
+  envp = getenv("AUTOUPDATE");
+  if (envp && strcmp(envp, "true") == 0)
+    autoupdate = 1;
+  envp = getenv("ADDR");
+  if (envp)
+    ip = inet_addr(envp);
 
   count = 0;
   while (hp[count])
@@ -118,8 +147,8 @@ static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
   strcpy(new_production, "0.0");
   strcpy(new_testing, "0.0");
 
-  /* The outer loop is for the purpose of "considering each variable."  We skip
-   * entries for variables which had a previous entry. */
+  /* The outer loop is for the purpose of "considering each variable."
+   * We skip entries for variables which had a previous entry. */
   for (i = 0; i < count; i++)
     {
       if (seen[i])
@@ -137,12 +166,13 @@ static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
 	    continue;
 	  seen[j] = 1;
 
-	  /* If there's no version, keep this as the default value in case we
-	   * don't come up with anything else to print.  If there is a version,
-	   * discard it if it doesn't match the current workstation version and
-	   * (a) we're not autoupdate, or (b) it's a testing version.  If we
-	   * do consider the entry, and its version is greater than the current
-	   * best version we have, update the current best version and its
+	  /* If there's no version, keep this as the default value in
+	   * case we don't come up with anything else to print.  If
+	   * there is a version, discard it if it doesn't match the
+	   * current workstation version and (a) we're not autoupdate,
+	   * or (b) it's a testing version.  If we do consider the
+	   * entry, and its version is greater than the current best
+	   * version we have, update the current best version and its
 	   * value. */
 	  if (!*compvers)
 	    {
@@ -151,6 +181,19 @@ static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
 	  else if (((autoupdate && !strchr(flags, 't')) ||
 		    (vercmp(compvers, ws_version) == 0)))
 	    {
+	      if (vercmp(compvers, ws_version) > 0)
+		{
+		  /* We want to take this value, but not necessarily
+		   * right away.  Accept the record only if we have an
+		   * update time which has already passed.  Make
+		   * a note that we should output the time
+		   * whether or not we discard the entry, since the
+		   * workstation is out of date either way. */
+		  output_time = 1;
+		  if (update_time == -1 || now < update_time)
+		    continue;
+		}
+
 	      if (vercmp(compvers, vers) >= 0)
 		{
 		  strcpy(val, compval);
@@ -180,6 +223,18 @@ static void shellenv(const char *const *hp, char *ws_version, int autoupdate,
     output_var("NEW_TESTING_RELEASE", new_testing, bourneshell);
   if (vercmp(new_production, ws_version) > 0)
     output_var("NEW_PRODUCTION_RELEASE", new_production, bourneshell);
+  if (output_time)
+    {
+      /* If we have no time from the environment, make up one
+       * between now and UPDATE_INTERVAL seconds in the future. */
+      if (update_time == -1)
+	{
+	  srand(ntohl(ip));
+	  update_time = now + rand() % UPDATE_INTERVAL;
+	}
+      sprintf(timebuf, "%lu", update_time);
+      output_var("UPDATE_TIME", timebuf, bourneshell);
+    }
   free(seen);
 }
 
