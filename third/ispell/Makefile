@@ -1,5 +1,5 @@
 #
-# $Id: Makefile,v 1.3 1999-03-01 18:30:26 ghudson Exp $
+# $Id: Makefile,v 1.4 1999-08-09 20:37:10 ghudson Exp $
 #
 # Copyright 1992, 1993, Geoff Kuenning, Granada Hills, CA
 # All rights reserved.
@@ -47,6 +47,9 @@
 #   buildhash <dictfile> <affix-file> <outfile>
 
 # $Log: not supported by cvs2svn $
+# Revision 1.3  1999/03/01 18:30:26  ghudson
+# MAKE=make is bad for gmake.
+#
 # Revision 1.2  1997/09/29 08:52:35  ghudson
 # Treat ispell.info as a source file, like everyone else.  (I would have
 # left things the way they were, but the emacs command for generating
@@ -180,7 +183,7 @@ SHELLDEBUG = +vx
 
 all:	unpacked
 all:	config.sh
-all:	programs showversion ispell.1 ispell.info
+all:	programs showversion ispell.1
 all:	all-languages
 
 programs: buildhash findaffix tryaffix ispell
