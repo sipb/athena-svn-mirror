@@ -1,4 +1,4 @@
-/* $Id: rkinit.h,v 1.2 1999-12-09 22:23:55 danw Exp $ */
+/* $Id: rkinit.h,v 1.3 2000-05-21 23:43:41 ghudson Exp $ */
 
 /* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
@@ -32,9 +32,33 @@ typedef struct {
     char sname[ANAME_SZ + 1];
     char sinst[INST_SZ + 1];
     char username[9];		/* max local name length + 1 */
-    char tktfilename[MAXPATHLEN + 1];
+    char tktfilename[1025];
     long lifetime;
 } rkinit_info;
+
+/* Historically, the rkinit_info structure was sent over the net (with
+ * lifetime in network byte order) with no regard to variability of
+ * the above constants between platforms, structure padding, or the
+ * size of a long.  This explicit message format is designed to be
+ * compatible with the most common host encoding of the above
+ * structure.
+ */
+#define RKINIT_INFO_OFFSET_ANAME	0
+#define RKINIT_INFO_OFFSET_INST		41
+#define RKINIT_INFO_OFFSET_REALM	82
+#define RKINIT_INFO_OFFSET_SNAME	123
+#define RKINIT_INFO_OFFSET_SINST	164
+#define RKINIT_INFO_OFFSET_USERNAME	205
+#define RKINIT_INFO_OFFSET_TKTFILENAME	214
+#define RKINIT_INFO_OFFSET_LIFETIME	1240
+#define RKINIT_INFO_SIZE_ANAME		41
+#define RKINIT_INFO_SIZE_INST		41
+#define RKINIT_INFO_SIZE_REALM		41
+#define RKINIT_INFO_SIZE_SNAME		41
+#define RKINIT_INFO_SIZE_SINST		41
+#define RKINIT_INFO_SIZE_USERNAME	9
+#define RKINIT_INFO_SIZE_TKTFILENAME	1025
+#define RKINIT_INFO_SIZE		1244
 
 #define RKINIT_SUCCESS 0
 
