@@ -52,13 +52,32 @@ set X="X11R4"
 set MOTIF="motif"
 set found=0
 set installonly=0
+set installman=0
+set zap=0
 
-if ( $#argv > 0 ) then
-  if ( $1 == "-install" ) then
-    set installonly=1
-    shift
-  endif
-endif
+while ( $#argv > 0 )
+  switch( $1 )
+
+    case -install:
+      set installonly=1
+      shift
+      breaksw
+
+    case -installman:
+      set installman=1
+      shift
+      breaksw
+
+    case -zap:
+      set zap=1
+      shift
+      breaksw
+
+    default:
+      break
+
+    endsw
+end
 
 echo starting `date` > $outfile
 echo on a $machine >> $outfile
@@ -70,19 +89,44 @@ echo on a $machine >> $outfile
 # need to add in motif. Once that is done I can proceed onto the bin directory
 
 if ($machine == "sun4") then
-foreach package ( setup $machine $libs1 $tools $third $libs2 $etcs $bins)
+
+set packages = setup $machine $libs1 $tools $third $libs2 $etcs $bins
 
 else if ($machine == "rsaix" ) then
 
-foreach package ( setup $libs1 $tools $third $libs2 $etcs $bins )
+set packages = setup $libs1 $tools $third $libs2 $etcs $bins
+
 else
 
 # if ($machine == "decmips") then...
 
-foreach package ( decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $libs2 $etcs $bins $machine athena/etc/nfsc )
+set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $libs2 $etcs $bins $machine athena/etc/nfsc)
+
 # at the moment, lib/resolv gets built twice...
 
 endif
+
+if ($installman == 1) then
+  foreach package ( $packages )
+    echo "Installing man in $package" >>& $outfile
+    switch($package)
+      case third/supported/X11R4
+      case athena/lib/kerberos1
+      case athena/lib/moira.dev
+        breaksw
+      case third/supported/X11R5
+        (cd /build/$package/mit ; make install.man SUBDIRS="util clients demos" >>& $outfile)
+        breaksw
+      case athena/lib/kerberos2
+        set package="athena/lib/kerberos"
+      default:
+        (cd /build/$package ; make install.man >>& $outfile)
+    endsw
+  end
+  exit 0
+endif
+
+foreach package ( $packages )
 
 if ($found == "0" && $1 != "") then
   if ($1 == $package) then
@@ -171,7 +215,9 @@ endif # installonly
 	rmdir /srvd >>& $outfile
 	ln -s /afs/rel-eng/system/pmax_ul4/srvd /srvd >>& $outfile
 	mkdir /srvd.tmp >>& $outfile
+  if ($zap == 1) then			# Accident prevention
 	newfs /dev/rrz3d fuji2266 >>& $outfile
+  endif
 	mount /dev/rz3d /srvd.tmp >>& $outfile
 
 	(echo In $package >>& $outfile)
