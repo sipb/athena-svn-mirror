@@ -1,0 +1,78 @@
+! SCCS_data:    @(#) OptMenu 1.1 92/12/04 14:11:23
+!
+!  Option Menus
+!  ------------
+!
+!  Option Menus are a topic which deserves special consideration, because
+!  they are abit different from what you might expect.  As the Pulldown
+!  example resource file demonstrates, one may create a cascade button
+!  before or after the menu which is controlled by the cascade.  One might
+!  reasonably assume that the same is true for option menus.
+!
+!  Unfortunately, this is an incorrect assumption.  One MUST first create
+!  the pulldown menu which displays the available options, and THEN invoke
+!  the convenience function XmCreateOptionMenu.  This may or may not be a
+!  bug, depending on your point of view.
+!
+!  The widget called an OptionMenu is really a row column with two managed
+!  children: a label, and a cascade.  The significant issue is the size of
+!  the cascade: it is forced to be wide enough for the longest selection
+!  on the pulldown menu.  One cannot after the fact set the subMenuId on
+!  the cascade, because the cascade does not generally size itself based
+!  on the subMenu elements: normally cascade buttons size themselves based
+!  on their label.
+!
+!  One might assume that the RowColumn created by XmCreateOptionMenu would
+!  have a special set_values() method which does the appropriate thing
+!  when subMenuId is set, but this is clearly not the case: the set_values() 
+!  method does something, but it certainly is not appropriate.  Expect a 
+!  core dump if you try it.
+!
+!  So, if you want to use option menus, do it as shown in this example:
+!  first create the pulldown menu using XmCreatePulldownMenu, then create
+!  the `OptionMenu' using XmCreateOptionMenu.  Since the Wcl creates popup 
+!  children before normal children, this specification works as required:
+!
+!	*foo.wcPopups:		fooMenu1,   fooMenu2
+!	*foo.wcChildren:	fooOption1, fooOption2
+
+!  As in earlier versions of Wcl, you can also control the order of creation 
+!  by the order of the widget names in the parent's wcChildren resource:
+!
+!	*foo.wcChildren:	fooMenu1, fooMenu2, fooOption1, fooOption2
+!
+!  However, if you use this latter approach, remember to make the menus 
+!  initially unmanaged by setting "wcManaged: False" on each menu.  You can't 
+!  do this globally, unfortunately, because there is no actual Motif widget 
+!  class named XmPulldownMenu.  Sigh.
+!
+!  Here is a trouble shooting tip: if you use XmCreateOptionMenu and the
+!  cascade button's label is `<optMenName>_cascadeBtn' then you do not
+!  have the subMenuId set properly on the option menu.  Check for spelling
+!  on the resource name, on the resource value, and possibly use
+!  `*wcTrace: True' to make sure you give the right name for the pulldown
+!  menu.
+!
+!----------------------------------------------------------------------
+
+! We need to set the title here, because this resource file is
+! loaded AFTER the application shell (Mri) is created by XtInitialize.
+! Sorry about that, but appShell resources either must go in the Xt
+! loaded resource file, or in a WcSetValue as a wcCallback on the
+! applicationShell.
+!
+Mri.wcCallback:			WcSetValue(Mri.title:OptMenu)
+
+Mri.wcPopups:			doMenu
+Mri.wcChildren:			doOption
+
+*doMenu.wcCreate:		XmCreatePulldownMenu
+*doMenu.wcChildren:		DoYou, BoKnowsIt, justDoIt
+
+*doMenu*wcCreate:		XmPushButton
+
+*justDoIt.activateCallback:	WcExit
+
+*doOption.wcCreate:		XmCreateOptionMenu
+*doOption.labelString:		Do It
+*doOption.subMenuId:		*doMenu

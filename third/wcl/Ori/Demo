@@ -1,0 +1,46 @@
+! SCCS_data: @(#) Demo 1.2 92/12/10 17:50:11
+!
+! Run this demo (after Ori is built) like this:
+!
+!	Ori/Ori -rf Ori/ORi
+
+Ori.WcChildren:		control
+
+! Everything is a button unless otherwise specified
+!
+*wcCreate:	oblongButtonGadgetClass
+
+*threeD:		TRUE
+*background:		grey
+
+*control.wcCreate:	controlAreaWidgetClass
+!*control.layoutType:	fixedrows
+!*control.measure:	1
+*control.wcChildren:	dBtn
+
+! Demo Menu
+*dBtn.wcCreate:		menuButtonWidgetClass
+*dBtn*pushpin:		out
+*dBtn.label:		Demo
+*dBtn.wcCallback:	WcCreateChildren(*dBtn*pane, \
+				Hello, Goodbye, MButtSimp, MButton, \
+				SText, Foot, Abbrev, TextF, \
+				Checks, SLists, SWin, Notice, Menu,  \
+				Gauge, Quit)
+
+*Hello.select:		WcSpawn( Ori -trrf -rf Ori/Hello )
+*Goodbye.select:	WcSpawn( Ori -trrf -rf Ori/Goodbye )
+*MButtSimp.select:	WcSpawn( Ori -trrf -rf Ori/MButtSimp )
+*MButton.select:	WcSpawn( Ori -trrf -rf Ori/MButton )
+*SText.select:		WcSpawn( Ori -trrf -rf Ori/SText )
+*Foot.select:		WcSpawn( Ori -trrf -rf Ori/Foot )
+*Abbrev.select:		WcSpawn( Ori -trrf -rf Ori/Abbrev )
+*TextF.select:		WcSpawn( Ori -trrf -rf Ori/TextF )
+*Checks.select:		WcSpawn( Ori -trrf -rf Ori/Checks )
+*SLists.select:		WcSpawn( Ori -trrf -rf Ori/SLists )
+*SWin.select:		WcSpawn( Ori -trrf -rf Ori/SWin )
+*Notice.select:		WcSpawn( Ori -trrf -rf Ori/Notice )
+*Menu.select:		WcSpawn( Ori -trrf -rf Ori/Menu )
+*Gauge.select:		WcSpawn( Ori -trrf -rf Ori/Gauge )
+
+*Quit.select:		WcExit()

@@ -1,0 +1,35 @@
+! SCCS_data: @(#) Scrollbar 1.1 92/12/02 14:47:14
+!
+!  This provides similar functionality as that shown by the Xaw example
+!  named xscroll, which demonstrates how to use the Scrollbar widget.
+!
+! Widgets to be created appear in the parent widget's wcChildren resource.
+!
+Ari.wcChildren:		box
+Ari.wcAfterChildren:	WcSetValue( this.title:	Scrollbar)
+
+! The type of widget to be created is specified using the wcCreate resource
+! of the widget instance.
+!
+*box.wcCreate:		Box
+*Box*allowResize:	True
+*box.wcChildren:	quit, scrollbar
+
+! The type of the widget can be specified as the class name (as "Box" above)
+! or using the name of the widget class pointer as below.
+!
+*quit.wcCreate:		commandWidgetClass
+*quit.Label:		Quit
+*quit.callback:		WcExit()
+
+! Callbacks can be bound to widgets by giving the name of the callback as
+! the value to any callback resource of a widget.  The characters in the
+! parens are passed as a string to the callback procedure (as client_data).
+!
+*scrollbar.wcClass:	scrollbarWidgetClass
+*scrollbar.orientation:	horizontal
+*scrollbar.topOfThumb:  0.5
+*scrollbar.length:	300
+*scrollbar.jumpProc:	WcSystemCB(echo Jumped)
+*scrollbar.scrollProc:	WcSystemCB( echo Scrolled)
+

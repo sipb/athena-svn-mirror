@@ -1,0 +1,48 @@
+! SCCS_data: @(#) Demo 1.4 92/12/10 17:37:55
+!
+! This may be run from the Wcl distribution directory after Ari is
+! built like this:
+!
+!	Ari/Ari -rf Ari/Demo
+!
+! This demo also comes up after Ari has been installed when you enter:
+!
+!	Ari
+!
+
+Ari.WcChildren:		menuButton
+
+*menuButton.wcCreate:	menuButtonWidgetClass
+*menuButton.wcPopups:	menu
+
+*menu.wcCreate:		simpleMenuWidgetClass
+*menu.wcChildren:	Hello Scrollbar Box Paned Menu Popup Dialog Form \
+			ClkLogo Text MultiWin Quit
+
+*Hello.wcCreate:	smeBSBObjectClass
+*Scrollbar.wcCreate:	smeBSBObjectClass
+*Box.wcCreate:		smeBSBObjectClass
+*Paned.wcCreate:	smeBSBObjectClass
+*Menu.wcCreate:		smeBSBObjectClass
+*Popup.wcCreate:	smeBSBObjectClass
+*Dialog.wcCreate:	smeBSBObjectClass
+*Form.wcCreate:		smeBSBObjectClass
+*ClkLogo.wcCreate:	smeBSBObjectClass
+*Text.wcCreate:		smeBSBObjectClass
+*MultiWin.wcCreate:	smeBSBObjectClass
+*Quit.wcCreate:		smeBSBObjectClass
+
+*Hello.callback:	WcSpawn( Ari -trrf -rf Ari/Hello )
+*Scrollbar.callback:	WcSpawn( Ari -trrf -rf Ari/Scrollbar )
+*Box.callback:		WcSpawn( Ari -trrf -rf Ari/Box )
+*Paned.callback:	WcSpawn( Ari -trrf -rf Ari/Paned )
+*Menu.callback:		WcSpawn( Ari -trrf -rf Ari/Menu )
+*Popup.callback:	WcSpawn( Ari -trrf -rf Ari/Popup )
+*Dialog.callback:	WcSpawn( Ari -trrf -rf Ari/Dialog )
+*Form.callback:		WcSpawn( Ari -trrf -rf Ari/Form )
+*ClkLogo.callback:	WcSpawn( Ari -trrf -rf Ari/ClkLogo )
+*Text.callback:		WcSpawn( Ari -trrf -rf Ari/Text )
+*MultiWin.callback:	WcSpawn( Ari -trrf -rf Ari/MultiWin )
+
+*Quit.callback:		WcExit()
+
