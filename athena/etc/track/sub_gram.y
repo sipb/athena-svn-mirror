@@ -143,9 +143,15 @@ exlist: exceptword
 	;
 exceptword:   WORD
 	{
-	    if ( file_pat( wordbuf))
-		 add_list_elt( re_conv( wordbuf), DONT_TRACK, &e->patterns);
-	    else add_list_elt( wordbuf,		  DONT_TRACK, LIST( e->names));
+	    wordp = wordbuf;		/* XXX lex returns longest match. */
+	    wordcnt = DONT_TRACK;	/*     ->foo will thus come here. */
+	    if ( ! strncmp( wordp, "->", 2)) {
+		 wordp += 2;
+		 wordcnt = FORCE_LINK;
+	    }
+	    if ( file_pat( wordp))
+		 add_list_elt( re_conv( wordp), wordcnt, &e->patterns);
+	    else add_list_elt( wordp,		wordcnt, LIST( e->names));
 	}
 	| ARROW opt_space WORD
 	{
