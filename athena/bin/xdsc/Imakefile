@@ -2,7 +2,7 @@
 /**/# Makefile for xdiscuss
 /**/#
 
-/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.6 1992-10-05 15:33:24 miki Exp $";
+/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.7 1995-06-03 20:22:40 cfields Exp $";
 
 #ifdef _AUX_SOURCE
 CC=cc -B/usr/lib/big/
@@ -11,6 +11,8 @@ CC=cc -B/usr/lib/big/
 INSTDIR=$(ATHBINDIR)
 DEFINES= -I.
 #ifdef sun
+CFLAGS=$(CDEBUG) -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK -I/usr/athena/include
+LDPATH=-L/usr/gcc/lib -L/usr/ccs/lib -L$(ATHLIBDIR)
 LIBS=-lXaw  -lXt -lXmu -lXext -lX11 -lm
 #else
 LIBS=-lXaw  -lXt -lXmu -lXext -lX11 

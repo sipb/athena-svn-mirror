@@ -2,9 +2,9 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.4 1994-08-24 04:06:34 cfields Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.3 1994-04-26 14:11:37 root Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v $
-#	$Author: cfields $
+#	$Author: root $
 #
 # This sendmail configuration file is for Project Athena
 # Client machines. Go ahead... run it elsewhere and find
@@ -245,7 +245,7 @@ R$*			$#ether$@ATHENA.$D$:$1		All else to ATHENA
 ############################################################
 
 Mpop,	P=/usr/athena/etc/spop,	F=nlsmFDM,	S=10, R=20, A=pop $u
-Mlocal,	P=/bin/mail,		F=flsDFMmn,	S=10, R=20, A=mail -d $u
+Mlocal,	P=/bin/mail,		F=rlsDFMmn,	S=10, R=20, A=mail -d $u
 Mprog,	P=/bin/sh,		F=lsDFMe,	S=10, R=20, A=sh -c $u
 Mnull,	P=/bin/echo,		F=lsDFMn,	S=10, R=20, A=echo $u
 

@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.40 1995-01-27 04:10:18 cfields Exp $
+# $Id: xsession,v 1.37 1993-07-20 17:33:38 vrt Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -198,22 +198,13 @@ endif
 # hangs.  Thus, the user will not be left with active windows and no
 # method of easily logging out.
 
-# We also run the notification system, lert. Ideally, we wish the user
-# to receive the alert in the form of a zephyrgram, and since they may
-# run zwgc from their .startup.X, we wait until that has finished.
-# To skip lert (a generally bad idea unless you plan to run it yourself -
-# it is not at all intended for frivolous messages), put the commend
-# "set skip_lert" in your ~/.environment file.
-
 if ((! $?NOCALLS) && (-r ~/.startup.X)) then
 	if ($?verbose_login) then
 	  echo "Running custom startup activities listed in ~/.startup.X..."
 	endif
 	( source ~/.startup.X; \
-	  if (! $?skip_lert) lert -q -z ; \
 	  if ($?verbose_login) echo "Session initialization completed." &)
 else
-	if (! $?skip_lert) lert -q -z
 	echo "Session initialization completed."
 endif
 

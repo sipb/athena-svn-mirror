@@ -395,9 +395,11 @@ typedef char jmp_buf[_JBLEN];
 #define bcmp memcmp
 #define bzero(dst, len) memset((dst), 0, (len))
 #else
+#ifndef SOLARIS
 extern bcopy();
 extern bcmp();
 extern bzero();
+#endif
 #endif
 
 /******************************************************************************/

@@ -86,7 +86,6 @@ int krb_get_lrealm P((char *, int));
 int kuserok P((AUTH_DAT *, char *));
 
 extern auth_debug_mode;
-int krb4_accepted;
 
 static unsigned char str_data[1024] = { IAC, SB, TELOPT_AUTHENTICATION, 0,
 			  		AUTHTYPE_KERBEROS_V4, };
@@ -101,8 +100,6 @@ static unsigned char str_name[1024] = { IAC, SB, TELOPT_AUTHENTICATION,
 
 #define KRB_SERVICE_NAME   "rcmd"
 
-/* Send a message to the user while connected */
-#define GiveUserMsg(string) fputs(string, stderr)
 static	KTEXT_ST auth;
 static	char name[ANAME_SZ];
 static	AUTH_DAT adat = { 0 };
@@ -129,7 +126,7 @@ AthenaUserOk(kdata, username)
 			ALcontext(&AthenaLoginSession));
       if (ALisError(code)) return 1;
 
-      code=ALstart(&AthenaLoginSession, NULL);
+      code=ALstart(&AthenaLoginSession);
       if (code) com_err("telnetd", code, "(%s)",
 			ALcontext(&AthenaLoginSession));
       if (ALisError(code)) return 1;
@@ -194,7 +191,6 @@ kerberos4_init(ap, server)
 {
 	FILE *fp;
 
-	krb4_accepted=0;
 	if (server) {
 		str_data[3] = TELQUAL_REPLY;
 		if ((fp = fopen(KEYFILE, "r")) == NULL)
@@ -224,10 +220,10 @@ kerberos4_send(ap)
 	CREDENTIALS cred;
 	int r;
 
-	GiveUserMsg("[ Trying KERBEROS4 ... ]\r\n");	
+	printf("[ Trying KERBEROS4 ... ]\n");	
 	if (!UserNameRequested) {
 		if (auth_debug_mode) {
-			GiveUserMsg("Kerberos V4: no user name supplied\r\n");
+			printf("Kerberos V4: no user name supplied\r\n");
 		}
 		return(0);
 	}
@@ -276,10 +272,9 @@ kerberos4_send(ap)
 		register int i;
 
 		des_key_sched(cred.session, sched);
-		des_init_random_number_generator(cred.session);
-		des_new_random_key(session_key);
-		des_ecb_encrypt(session_key, session_key, sched, 0);
-		des_ecb_encrypt(session_key, challenge, sched, 0);
+		des_set_random_generator_seed(cred.session);
+		des_new_random_key(challenge);
+		des_ecb_encrypt(challenge, session_key, sched, 1);
 		/*
 		 * Increment the challenge by 1, and encrypt it for
 		 * later comparison.
@@ -389,7 +384,7 @@ kerberos4_is(ap, data, cnt)
 		 * increment by one, re-encrypt it and send it back.
 		 */
 		des_ecb_encrypt(datablock, challenge, sched, 0);
-		for (r = 7; r >= 0; r--) {
+		for (r = 7; r >= 0; r++) {
 			register int t;
 			t = (unsigned int)challenge[r] + 1;
 			challenge[r] = t;	/* ignore overflow */
@@ -424,16 +419,14 @@ kerberos4_reply(ap, data, cnt)
 	switch (*data++) {
 	case KRB_REJECT:
 		if (cnt > 0) {
-			fprintf(stderr,
-				"[ Kerberos V4 refuses authentication because %.*s ]\r\n",
+			printf("[ Kerberos V4 refuses authentication because %.*s ]\r\n",
 				cnt, data);
 		} else
-			GiveUserMsg("[ Kerberos V4 refuses authentication ]\r\n");
+			printf("[ Kerberos V4 refuses authentication ]\r\n");
 		auth_send_retry();
 		return;
 	case KRB_ACCEPT:
-		krb4_accepted=1;
-		GiveUserMsg("[ Kerberos V4 accepts you ]\r\n");
+		printf("[ Kerberos V4 accepts you ]\n");
 		if ((ap->way & AUTH_HOW_MASK) == AUTH_HOW_MUTUAL) {
 			/*
 			 * Send over the encrypted challenge.
@@ -463,12 +456,12 @@ kerberos4_reply(ap, data, cnt)
 						sizeof(challenge))))
 		{
 #endif	/* ENCRYPTION */
-			GiveUserMsg("[ Kerberos V4 challenge failed!!! ]\r\n");
+			printf("[ Kerberos V4 challenge failed!!! ]\r\n");
 			auth_send_retry();
 			return;
 #ifdef	ENCRYPTION
 		}
-		GiveUserMsg("[ Kerberos V4 challenge successful ]\r\n");
+		printf("[ Kerberos V4 challenge successful ]\r\n");
 		auth_finished(ap, AUTH_USER);
 #endif	/* ENCRYPTION */
 		break;

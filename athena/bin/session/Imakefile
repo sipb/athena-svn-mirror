@@ -1,13 +1,10 @@
 #
-# $Id: Imakefile,v 1.4 1995-02-28 17:12:21 cfields Exp $
+# $Id: Imakefile,v 1.3 1994-06-12 16:22:44 cfields Exp $
 #
 
-SCRIPT=  end_session 
+/* Muse is only on ultrix and bsd machines */
 
-#ifdef sgi
-DEFINES=-DSGISession
-LDDEFS=-lX11
-#endif
+SCRIPT=  end_session 
 
 /* Current directory C programs */
 SimpleProgram(session_gate,session_gate.o,,$(ATHBINDIR))

@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.76 1995-01-27 09:58:26 cfields Exp $
+ * $Id: login.c,v 1.71 1994-08-14 17:12:40 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.76 1995-01-27 09:58:26 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.71 1994-08-14 17:12:40 cfields Exp $";
 #endif
 
 /*
@@ -67,7 +67,9 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <signal.h>
 #include <pwd.h>
 #include <stdio.h>
+#ifndef _IBMR2
 #include <lastlog.h>
+#endif
 #include <errno.h>
 #ifndef SOLARIS
 #include <ttyent.h>
@@ -86,12 +88,6 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <termios.h>
 #endif
 
-#ifdef KRB5
-#include <krb5/krb5.h>
-#include <krb5/ext-proto.h>
-#include <krb5/los-proto.h>
-#endif
-
 #ifdef ultrix
 #include <sys/mount.h>
 #include <sys/fs_types.h>
@@ -99,7 +95,10 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 
 #ifdef SOLARIS
 #define INITTAB
-/* #define NGROUPS NGROUPS_MAX; see below */
+#define NGROUPS NGROUPS_MAX
+#endif
+#ifdef _IBMR2
+#defined NGROUPS 16
 #endif
 
 typedef struct in_addr inaddr_t;
@@ -110,17 +109,8 @@ typedef struct in_addr inaddr_t;
 typedef int sigtype;
 #endif
 
+#ifndef SOLARIS
 #define SETPAG
-
-#undef NGROUPS
-#define NGROUPS 16
-
-#ifdef SETPAG
-/* Allow for primary gid and PAG identifier */
-#define MAX_GROUPS (NGROUPS-3)
-#else
-/* Allow for primary gid */
-#define MAX_GROUPS (NGROUPS-1)
 #endif
 
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
@@ -156,13 +146,7 @@ typedef int sigtype;
 
 #define KRB_ENVIRON	"KRBTKFILE" /* Ticket file environment variable */
 #define KRB_TK_DIR	"/tmp/tkt_" /* Where to put the ticket */
-
-#ifdef KRB5
-#define KRB5_ENVIRON	"KRB5CCNAME"
-#define KRB5_TK_DIR	"/tmp/krb5cc_"
-#endif
-
-#define KRBTKLIFETIME	120	/* 10 hours */
+#define KRBTKLIFETIME	DEFAULT_TKT_LIFE
 
 #define PROTOTYPE_DIR	"/usr/athena/lib/prototype_tmpuser" /* Source for temp files */
 #define TEMP_DIR_PERM	0755	/* Permission on temporary directories */
@@ -181,7 +165,6 @@ char	lastlog[] =	"/usr/adm/lastlog";
 char	inhibit[] =	"/etc/nocreate";
 char	noattach[] =	"/etc/noattach";
 char	noremote[] =	"/etc/noremote";
-char	nocrack[] =	"/etc/nocrack";
 char	go_register[] =	"/usr/etc/go_register";
 char	get_motd[] =	"get_message";
 char	rmrf[] =	"/bin/rm -rf";
@@ -252,6 +235,9 @@ char	term[64];
 
 struct	passwd *pwd;
 struct	passwd *hes_getpwnam();
+#if !defined(sun) && !defined(_IBMR2)
+char	*strcat(), *rindex(), *index(), *malloc(), *realloc();
+#endif
 int	timedout();
 char	*ttyname();
 char	*crypt();
@@ -283,8 +269,7 @@ int	inhibitflag = FALSE;	/* inhibit account creation on the fly */
 int	attachable = FALSE;	/* True if /etc/noattach doesn't exist */
 int	attachedflag = FALSE;	/* True if homedir attached */
 int	errorprtflag = FALSE;	/* True if login error already printed */
-int	no_remote = FALSE;	/* True if /etc/noremote exists */
-int	no_crack = FALSE;	/* True if /etc/nocrack exists */
+int	no_remote = FALSE;	/*True if /etc/noremote exists */
 char	rusername[NMAX+1], lusername[NMAX+1];
 char	rpassword[NMAX+1];
 char	name[NMAX+1];
@@ -292,7 +277,7 @@ char	*rhost;
 
 AUTH_DAT *kdata = (AUTH_DAT *)NULL;
 
-#if !defined(SOLARIS)
+#if !defined(SOLARIS) && !defined(_IBMR2)
 union wait waitstat;
 #endif
 
@@ -364,7 +349,7 @@ main(argc, argv)
     signal(SIGINT, SIG_IGN);
 #endif
     setpriority(PRIO_PROCESS, 0, 0);
-    umask(022);
+    umask(0);
 #if !defined(VFS) || defined(ultrix)
     quota(Q_SETUID, 0, 0, 0);
 #endif /* !VFS || ultrix */
@@ -432,9 +417,11 @@ main(argc, argv)
 		}
 	if (strcmp(argv[1], "-h") == 0 && getuid() == 0) {
 #ifdef SOLARIS
-          term1[0] = '\0';
+          tmp = (char *)malloc(strlen(argv[3])*sizeof(char));
+          *tmp=NULL;
+          term1[0]=NULL;
           tmp = index(argv[3], '=');
-          if (tmp != NULL) {
+          if (tmp != NULL ) {
             strcpy(term1, tmp+1);
           }  
 #endif
@@ -546,7 +533,6 @@ main(argc, argv)
     inhibitflag = !access(inhibit,F_OK);
     attachable = access(noattach, F_OK);
     no_remote = !access(noremote, F_OK);
-    no_crack = !access(nocrack, F_OK);
     do {
 	    errorprtflag = 0;
 	    ldisc = 0;
@@ -623,28 +609,14 @@ main(argc, argv)
 	    char *pp, pp2[MAXPWSIZE+1];
 	    int krbval;
 	    char tkfile[32];
-#ifdef KRB5
-	    char tk5file[32];
-#endif
 	    char realm[REALM_SZ];
 	    
 	    /* Set up the ticket file environment variable */
 	    SCPYN(tkfile, KRB_TK_DIR);
-	    strncat(tkfile, strchr(ttyn+1, '/')+1,
+	    strncat(tkfile, rindex(ttyn, '/')+1,
 		    sizeof(tkfile) - strlen(tkfile));
-	    while (pp = strchr((char *)tkfile + strlen(KRB_TK_DIR), '/'))
-		*pp = '_';
 	    (void) unlink (tkfile);
 	    setenv(KRB_ENVIRON, tkfile, 1);
-#ifdef KRB5
-	    SCPYN(tk5file, KRB5_TK_DIR);
-	    strncat(tk5file, strchr(ttyn+1, '/')+1,
-		    sizeof(tk5file) - strlen(tk5file));
-	    while (pp = strchr((char *)tk5file + strlen(KRB5_TK_DIR), '/'))
-		*pp = '_';
-	    (void) unlink (tk5file);
-	    setenv(KRB5_ENVIRON, tk5file, 1);
-#endif
 	    
 	    setpriority(PRIO_PROCESS, 0, -4);
 	    pp = getlongpass("Password:");
@@ -710,19 +682,6 @@ main(argc, argv)
 		lusername[NMAX] = '\0';
 		krbval = krb_get_pw_in_tkt(lusername, "", realm,
 				    "krbtgt", realm, KRBTKLIFETIME, pp2);
-#ifdef KRB5
-		{
-		    krb5_error_code krb5_ret;
-		    char *etext;
-		    
-		    krb5_ret = do_v5_kinit(lusername, "", realm,
-					   KRBTKLIFETIME,
-					   pp2, 0, &etext);
-		    if (krb5_ret && krb5_ret != KRB5KRB_AP_ERR_BAD_INTEGRITY) {
-			com_err("login", krb5_ret, etext);
-		    }
-		}
-#endif
 		bzero(pp2, MAXPWSIZE+1); /* Yes, he's senile.  He doesn't know
             				    what his administration is doing */
 		switch (krbval) {
@@ -761,9 +720,6 @@ main(argc, argv)
 				tmppwflag = TRUE;
 			}
 			chown(getenv(KRB_ENVIRON), pwd->pw_uid, pwd->pw_gid);
-#ifdef KRB5
-			chown(getenv(KRB5_ENVIRON), pwd->pw_uid, pwd->pw_gid);
-#endif
 			/* If we already have a homedir, use it.
 			 * Otherwise, try to attach.  If that fails,
 			 * try to create.
@@ -876,12 +832,8 @@ leavethis:
 		putchar(c);
 	    fflush(stdout);
 	    sleep(5);
-	    if (krbflag) {
-		(void) dest_tkt();
-#ifdef KRB5
-		do_v5_kdestroy(0);
-#endif
-	    }
+	    if (krbflag)
+		    (void) dest_tkt();
 	    exit(0);
 	}
 #ifdef SYSLOG42
@@ -990,12 +942,8 @@ leavethis:
 	else
 	    perror("quota (Q_SETUID)");
 	sleep(5);
-	if (krbflag) {
-	    (void) dest_tkt();
-#ifdef KRB5
-	    do_v5_kdestroy(0);
-#endif
-	}
+	if (krbflag)
+		(void) dest_tkt();
 	exit(0);
     }
 #endif VFS
@@ -1120,12 +1068,8 @@ leavethis:
     /* This call MUST succeed */
     if(setuid(pwd->pw_uid) < 0) {
 	perror("setuid");
-	if (krbflag) {
-	    (void) dest_tkt();
-#ifdef KRB5
-	    do_v5_kdestroy(0);
-#endif
-	}
+	if (krbflag)
+		(void) dest_tkt();
 	exit(1);
     }
     chdir(pwd->pw_dir);
@@ -1232,12 +1176,8 @@ leavethis:
     execlp(pwd->pw_shell, minusnam, 0);
     perror(pwd->pw_shell);
     printf("No shell\n");
-    if (krbflag) {
-	(void) dest_tkt();
-#ifdef KRB5
-        do_v5_kdestroy(0);
-#endif
-    }
+    if (krbflag)
+	    (void) dest_tkt();
     exit(0);
 }
 
@@ -1515,7 +1455,7 @@ doremoteterm(term, tp)
 	char *speed;
 #ifdef SOLARIS
         strncpy(term1, term, cp-term);
-        term1[cp-term + 1] = '\0';
+        term1[cp-term + 1] ="\0";
 #endif
 	if (cp) {
 		*cp++ = '\0';
@@ -1599,12 +1539,8 @@ setenv(var, value, clobber)
 	environ = (char **) realloc(environ, sizeof (char *) * (index + 2));
 	if (environ == NULL) {
 		fprintf(stderr, "login: malloc out of memory\n");
-		if (krbflag) {
-		    (void) dest_tkt();
-#ifdef KRB5
-		    do_v5_kdestroy(0);
-#endif
-		}
+		if (krbflag)
+			(void) dest_tkt();
 		exit(1);
 	}
 	environ[index] = malloc(varlen + vallen + 2);
@@ -1674,9 +1610,6 @@ dofork()
 
     /* Run dest_tkt to destroy tickets */
     (void) dest_tkt();		/* If this fails, we lose quietly */
-#ifdef KRB5
-    do_v5_kdestroy(0);
-#endif
 
 #ifdef SETPAG
     /* Destroy any AFS tokens */
@@ -2083,7 +2016,7 @@ struct passwd *pwd;
     if((pfile=fopen("/etc/passwd", "a")) != NULL) {
 	fprintf(pfile, "%s:%s:%d:%d:%s:%s:%s\n",
 		pwd->pw_name,
-		no_crack ? "*" : pwd->pw_passwd,
+		pwd->pw_passwd,
 		pwd->pw_uid,
 		pwd->pw_gid,
 		pwd->pw_gecos,
@@ -2258,8 +2191,8 @@ get_groups()
 
 	ngroups = (ngroups+1)/2;
 
-	if (ngroups > MAX_GROUPS)
-		ngroups = MAX_GROUPS;
+	if (ngroups > NGROUPS-1)
+		ngroups = NGROUPS-1;
 
 	grname = (char **)malloc(ngroups * sizeof(char *));
 	if (!grname) {
@@ -2465,147 +2398,3 @@ EGRESS:
     bzero (&authdata, sizeof (authdata));
     return retval;
 }
-
-#ifdef KRB5
-/*
- * This routine takes v4 kinit parameters and performs a V5 kinit.
- * 
- * name, instance, realm is the v4 principal information
- *
- * lifetime is the v4 lifetime (i.e., in units of 5 minutes)
- * 
- * password is the password
- *
- * ret_cache_name is an optional output argument in case the caller
- * wants to know the name of the actual V5 credentials cache (to put
- * into the KRB5CCNAME environment variable)
- *
- * etext is a mandatory output variable which is filled in with
- * additional explanatory text in case of an error.
- */
-krb5_error_code do_v5_kinit(name, instance, realm, lifetime, password,
-                           ret_cache_name, etext)
-    char    *name;
-    char    *instance;
-    char    *realm;
-    int     lifetime;
-    char    *password;
-    char    **ret_cache_name;
-    char    **etext;
-{
-    krb5_error_code retval;
-    krb5_principal  me = 0, server = 0;
-    krb5_ccache     ccache = NULL;
-    krb5_creds      my_creds;
-    krb5_timestamp  now;
-    krb5_address    **my_addresses = 0;
-    char            *cache_name = krb5_cc_default_name();
-
-    *etext = 0;
-    if (ret_cache_name)
-	*ret_cache_name = 0;
-    memset((char *)&my_creds, 0, sizeof(my_creds));
-    
-    krb5_init_ets();
-    
-    retval = krb5_425_conv_principal(name, instance, realm, &me);
-    if (retval) {
-	*etext = "while converting V4 principal";
-	goto cleanup;
-    }
-    
-    retval = krb5_cc_resolve (cache_name, &ccache);
-    if (retval) {
-	*etext = "while resolving ccache";
-	goto cleanup;
-    }
-
-    retval = krb5_cc_initialize (ccache, me);
-    if (retval) {
-	*etext = "while initializing cache";
-	goto cleanup;
-    }
-
-    retval = krb5_build_principal_ext(&server,
-				      krb5_princ_realm(me)->length,
-				      krb5_princ_realm(me)->data,
-				      KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME,
-				      krb5_princ_realm(me)->length,
-				      krb5_princ_realm(me)->data,
-				      0);
-    if (retval)  {
-	*etext = "while building server name";
-	goto cleanup;
-    }
-
-    retval = krb5_os_localaddr(&my_addresses);
-    if (retval) {
-	*etext = "when getting my address";
-	goto cleanup;
-    }
-
-    retval = krb5_timeofday(&now);
-    if (retval) {
-	*etext = "while getting time of day";
-	goto cleanup;
-    }
-       
-    my_creds.client = me;
-    my_creds.server = server;
-    my_creds.times.starttime = 0;
-    my_creds.times.endtime = now + lifetime*5*60;
-    my_creds.times.renew_till = 0;
-       
-    retval = krb5_get_in_tkt_with_password(0, my_addresses, 0,
-					   ETYPE_DES_CBC_CRC,
-					   KEYTYPE_DES,
-					   password,
-					   ccache,
-					   &my_creds, 0);
-    if (retval) {
-	*etext = "while calling krb5_get_in_tkt_with_password";
-	goto cleanup;
-    }
-
-    if (ret_cache_name) {
-	*ret_cache_name = malloc(strlen(cache_name)+1);
-	if (!*ret_cache_name) {
-	    retval = ENOMEM;
-	    goto cleanup;
-	}
-	strcpy(*ret_cache_name, cache_name);
-    }
-
- cleanup:
-    if (me)
-	krb5_free_principal(me);
-    if (server)
-	krb5_free_principal(server);
-    if (my_addresses)
-	krb5_free_addresses(my_addresses);
-    if (ccache)
-	krb5_cc_close(ccache);
-    my_creds.client = 0;
-    my_creds.server = 0;
-    krb5_free_cred_contents(&my_creds);
-    return retval;
-}
-
-krb5_error_code do_v5_kdestroy(cachename)
-    char    *cachename;
-{
-    krb5_error_code retval;
-    krb5_ccache cache;
-    
-    if (!cachename)
-	cachename = krb5_cc_default_name();
-    
-    krb5_init_ets();
-    
-    retval = krb5_cc_resolve (cachename, &cache);
-    if (!retval)
-	retval = krb5_cc_destroy(cache);
-
-    return retval;
-}
-#endif /* KRB5 */

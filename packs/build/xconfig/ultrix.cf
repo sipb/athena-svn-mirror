@@ -37,6 +37,7 @@ XCOMM operating system:  OSName
 #if !HasGcc
 #define NeedFunctionPrototypes YES
 #define PexCCOptions -Wf,-XNp15000,-XNd15000
+#define ProfiledLibObjCompile(options) LibObjCompile(profiled,-p1 options)
 #endif
 #endif
 

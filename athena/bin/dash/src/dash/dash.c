@@ -11,17 +11,15 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.11 1995-02-21 05:51:28 cfields Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.10 1994-05-24 15:16:00 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
 #include <signal.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -51,7 +49,7 @@ extern int errno;
 extern char *sys_errlist[];
 extern int sys_nerr;
 #endif
-#if defined(SOLARIS) || defined(sgi)
+#ifdef SOLARIS
 #define sigmask(n)  ((unsigned int)1 << (((n) - 1) & (32 - 1)))
 #endif
 
@@ -591,36 +589,10 @@ int sh(fromJet, what, data)
 void expand(what, where)
      char *what, *where;
 {
-  static int initialized = 0;
-  static char sys[20], bin[20], sysdir[50], bindir[50], home[100];
-  char *start, *wherestart, *tmp, bdirname[1024];
-  struct stat bdir;
-
-  if (initialized == 0)
-    {
-      initialized++;
-
-      tmp = getenv("HOME");
-      if (tmp != NULL)
-	strncpy(home, tmp, sizeof(home)/sizeof(char));
-      else
-	sprintf(home, "nohome");
-
-      tmp = getenv("ATHENA_SYS");
-      if (tmp != NULL)
-	strncpy(sys, tmp, sizeof(sys)/sizeof(char));
-      else
-	sprintf(sys, "@sys");
-
-      strcpy(bin, MACHTYPE);
-
-      sprintf(sysdir, "arch/%s/bin", sys);
-      sprintf(bindir, "%sbin", bin);
-    }
+  char *home, *start;
 
   while (isspace(*what)) what++;
   start = what;
-  wherestart = where;
 
   while (*what != '\0')
     {
@@ -629,6 +601,7 @@ void expand(what, where)
 
       if (*what == '~' && what == start)
 	{
+	  home = (char *) getenv("HOME");
 	  strncpy(where, home, strlen(home));
 	  where += strlen(home);
 	  what++;
@@ -640,35 +613,11 @@ void expand(what, where)
 	    switch(*what)
 	      {
 	      case '%':
-		*where++ = '%'; /* bug? - what++ */
+		*where++ = '%';
 		break;
 	      case 'M':
-		strncpy(where, bin, strlen(bin));
-		where += strlen(bin);
-		what++;
-		break;
-	      case 'S':
-		strncpy(where, sys, strlen(sys));
-		where += strlen(sys);
-		what++;
-		break;
-	      case 'B':
-		tmp = where;
-		while (*tmp != ' ' && tmp > wherestart)
-		  tmp--;
-		if (*tmp == ' ') tmp++;
-
-		strncpy(bdirname, tmp, where - tmp);
-		bdirname[where - tmp] = '\0';
-		strcat(bdirname, sysdir);
-		/* put "cd" on front, if set. Or not... */
-		if (!stat(bdirname, &bdir))
-		  tmp = sysdir;
-		else
-		  tmp = bindir;
-
-		strncpy(where, tmp, strlen(tmp));
-		where += strlen(tmp);
+		strncpy(where, MACHTYPE, strlen(MACHTYPE));
+		where += strlen(MACHTYPE);
 		what++;
 		break;
 	      default:
@@ -741,7 +690,7 @@ void setupEnvironment()
 	  strcat(space, ":");
 	}
 
-      strcat(addpath, "/%B");
+      strcat(addpath, "/%Mbin");
       expand(addpath, &space[strlen(space)]);
       setenv("PATH", space, True);
     }
@@ -1530,7 +1479,7 @@ Window findDASH(display)
 		 : end.tv_usec + 1000000 - start.tv_usec );
 #endif
   
-  if (!strcmp((char *)name, programName))
+  if (!strcmp(name, programName))
     {
       XjFree(name);
       return *prop;
@@ -1804,20 +1753,21 @@ char **argv;
   int count, sign = 1;
   Status e;
   Jet handlejet;
-
 #ifdef POSIX
   struct sigaction act;
   sigemptyset(&act.sa_mask);
   act.sa_flags = 0;
 #endif
-
-  expand("~/.dashrc", userFile); /* Also guarantees expand() is initialized
-				    in this process, not multiple times in
-				    children. */
+  home = (char *) getenv("HOME");
+  if (home != NULL)
+    {
+      sprintf(userFile, "%s/.dashrc", home);
+      home = userFile;
+    }
 
   (void)XSetIOErrorHandler(fatal);
 
-  root = XjCreateRoot(&argc, argv, DASH, userFile,
+  root = XjCreateRoot(&argc, argv, DASH, home,
 		      opTable, XjNumber(opTable));
 
   XjLoadFromResources(NULL,
