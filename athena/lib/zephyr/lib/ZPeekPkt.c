@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekPkt.c,v 1.2 1987-06-20 19:21:39 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekPkt.c,v 1.3 1987-06-29 00:28:10 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -27,7 +27,7 @@ Code_t ZPeekPacket(buffer,buffer_len,ret_len,from)
 	if (ZGetFD() < 0)
 		return (ZERR_NOPORT);
 
-	if (!Z_QLength())
+	if (!ZQLength())
 		if ((retval = Z_ReadWait()) != ZERR_NONE)
 			return (retval);
 

@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPending.c,v 1.1 1987-06-10 12:35:19 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPending.c,v 1.2 1987-06-29 00:28:45 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -23,5 +23,5 @@ int ZPending()
 
 	Z_ReadEnqueue();
 	
-	return(Z_QLength());
+	return(ZQLength());
 }
