@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.11 1995-09-03 21:23:04 cfields Exp $
+/* $Id: cleanup.c,v 2.12 1995-11-30 19:22:04 miki Exp $
  *
  * Cleanup program for stray processes
  *
@@ -39,7 +39,12 @@
 #endif
 #include "cleanup.h"
 
-char *version = "$Id: cleanup.c,v 2.11 1995-09-03 21:23:04 cfields Exp $";
+char *version = "$Id: cleanup.c,v 2.12 1995-11-30 19:22:04 miki Exp $";
+
+
+#ifdef SOLARIS
+#define volatile
+#endif
 
 #ifdef _AIX
 extern char     *sys_errlist[];
