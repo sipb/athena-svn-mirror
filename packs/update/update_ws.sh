@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.67 2004-05-04 20:12:20 ghudson Exp $
+# $Id: update_ws.sh,v 1.68 2004-05-05 18:39:52 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -252,6 +252,7 @@ sun4)
     echo "which is not supported by Athena release 9.3.  You must reinstall"
     echo "in order to take this update.  (If you have a 4GB or smaller disk,"
     echo "you cannot take this update at all.)"
+    logger -t "$HOST" -p user.notice multi-partition sun failed to update
     failupdate
   fi
 
