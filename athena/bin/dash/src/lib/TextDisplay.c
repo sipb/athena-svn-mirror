@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v $
- * $Author: vanharen $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v 1.2 1993-07-01 23:54:57 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/TextDisplay.c,v 1.3 1994-05-09 11:26:47 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -38,6 +38,10 @@ static XjResource resources[] = {
       offset(core.width), XjRString, XjInheritValue },
   { XjNheight, XjCHeight, XjRInt, sizeof(int),
       offset(core.height), XjRString, XjInheritValue },
+  { XjNdisplayWidth, XjCDisplayWidth, XjRInt, sizeof(int),
+      offset(textDisplay.displayWidth), XjRString, "80" },
+  { XjNdisplayHeight, XjCDisplayHeight, XjRInt, sizeof(int),
+      offset(textDisplay.displayHeight), XjRString, "5" },
   { XjNtext, XjCText, XjRString, sizeof(char *),
       offset(textDisplay.text), XjRString,""},
   { XjNforeground, XjCForeground, XjRColor, sizeof(int),
@@ -460,8 +464,10 @@ static void querySize(me, size)
      TextDisplayJet me;
      XjSize *size;
 {
-  size->width = 80 * me->textDisplay.charWidth;
-  size->height = 5 * me->textDisplay.charHeight;
+  size->width = me->textDisplay.displayWidth * me->textDisplay.charWidth +
+    2 * me->textDisplay.internalBorder;
+  size->height = me->textDisplay.displayHeight * me->textDisplay.charHeight +
+    2 * me->textDisplay.internalBorder;
 }
 
 static void move(me, x, y)
