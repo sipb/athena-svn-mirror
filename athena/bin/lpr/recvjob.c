@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.21 1999-01-25 19:13:06 ghudson Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.22 1999-02-22 17:57:50 danw Exp $";
 #endif
 
 /*
@@ -112,7 +112,8 @@ recvjob()
 	if ((LO = pgetstr("lo", &bp)) == NULL)
 		LO = DEFLOCK;
 
-	if (((RM = pgetstr("rm", &bp)) != NULL) && strcasecmp(RM, host)) {
+	if (((RM = pgetstr("rm", &bp)) != NULL) && strcasecmp(RM, host) &&
+	    ((LP = pgetstr("lp", &bp)) == NULL)) {
 #ifdef KERBEROS
 	        if (require_kerberos(printer) > 0)
 		       /* They are not for you */

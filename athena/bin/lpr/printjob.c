@@ -1,5 +1,5 @@
 /*
- *	$Id: printjob.c,v 1.31 1999-01-22 23:10:44 ghudson Exp $
+ *	$Id: printjob.c,v 1.32 1999-02-22 17:57:50 danw Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)printjob.c	5.2 (Berkeley) 9/17/85";
-static char *rcsid_printjob_c = "$Id: printjob.c,v 1.31 1999-01-22 23:10:44 ghudson Exp $";
+static char *rcsid_printjob_c = "$Id: printjob.c,v 1.32 1999-02-22 17:57:50 danw Exp $";
 #endif
 
 /*
@@ -1368,11 +1368,12 @@ init()
 				  RM);
 			}
 			/* if printer is not on local machine,
-			   ignore LP and SD */
+			   ignore LP and maybe SD */
 			else if (strcasecmp(name, hp->h_name) != 0) {
 			        if (lflag) syslog(LOG_INFO, "printer is remote; ignoring LP");
+				if (LP == DEFDEVLP)
+				  SD = DEFSPOOL;
 			        LP = "";
-				SD = DEFSPOOL;
 			}
 		      }
 
