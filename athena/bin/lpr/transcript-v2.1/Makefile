@@ -2,10 +2,10 @@
 #
 # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
 # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.3 1990-04-16 18:10:39 epeisach Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Makefile,v 1.4 1990-07-03 16:31:15 epeisach Exp $
 
 
-LPROGS = pscomm lps40comm
+LPROGS = pscomm #lps40comm
 BPROGS = 
 
 OBJECTS = psbanner.o pscomm.o psrv.o pstext.o \
