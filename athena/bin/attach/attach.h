@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.13 1991-06-19 15:33:23 probe Exp $
+ * $Id: attach.h,v 1.14 1991-07-01 09:47:12 probe Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -70,6 +70,7 @@
 
 
 #define MAXOWNERS 64
+#define MAXHOSTS 64
 
 /*
  * We don't really want to deal with malloc'ing and free'ing stuff
@@ -83,7 +84,7 @@ struct _attachtab {
 	char		status;
 	char		mode;
 	struct _fstypes	*fs;
-	struct		in_addr hostaddr;
+	struct		in_addr hostaddr[MAXHOSTS];
 	int		rmdir;
 	int		drivenum;
 	int		flags;
@@ -313,7 +314,6 @@ extern int afs_auth(), afs_auth_to_cell();
  */
 
 extern	char	*errstr();	/* convert errno to string */
-extern	char	*inaddr_to_name();	/* convert host addr to host name */
 
 AUTH	*spoofunix_create_default();
 CLIENT	*rpc_create();

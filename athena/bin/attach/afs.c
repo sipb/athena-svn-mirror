@@ -3,7 +3,7 @@
  *	Copyright (c) 1990 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.5 1991-01-31 09:39:06 probe Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/afs.c,v 1.6 1991-07-01 09:45:50 probe Exp $";
 
 #include "attach.h"
 
@@ -23,7 +23,8 @@ extern char *krb_realmofhost();	/* <krb.h> doesn't declare this */
 #define AFSAUTH_DOZEPHYR	4
 
 #ifdef __STDC__
-static int afs_auth_internal(char * errorname, char * afs_pathname, int flags);
+static int afs_auth_internal(char * errorname, char * afs_pathname,
+			     struct in_addr hostaddr[], int flags);
 #else
 static int afs_auth_internal();
 #endif
@@ -50,9 +51,8 @@ afs_attach(at, mopt, errorout)
 	if (use_zephyr)
 		afs_auth_flags |= AFSAUTH_DOZEPHYR;
 	
-	if ((afs_auth_flags & (AFSAUTH_DOZEPHYR | AFSAUTH_DOAUTH)) &&
-	    (afs_auth_internal(at->hesiodname, at->hostdir, afs_auth_flags)
-	     == FAILURE))
+	if (afs_auth_internal(at->hesiodname, at->hostdir,
+			      at->hostaddr, afs_auth_flags) == FAILURE)
 		return(FAILURE);
 	
 	if (debug_flag)
@@ -170,19 +170,21 @@ afs_attach(at, mopt, errorout)
  * Actually, it also does the zephyr subscriptions, but that's because
  * aklog does all of that stuff.
  */
-static int afs_auth_internal(errorname, afs_pathname, flags)
+static int afs_auth_internal(errorname, afs_pathname, hostlist, flags)
 	char	*errorname;
 	char	*afs_pathname;	/* For future expansion */
+	struct in_addr hostlist[];
 	int	flags;
 {
-	int	error_ret, save_stderr;
+	int	error_ret;
 	union wait	waitb;
 	int	fds[2];
 	FILE	*f;
 	char	buff[512];
+	int	host_idx = 0;
 	
 	if (debug_flag)
-		printf("performing an %s %s %s -zsubs %s\n", aklog_fn,
+		printf("performing an %s %s %s -hosts -zsubs %s\n", aklog_fn,
 		       flags & AFSAUTH_CELL ? "-cell" : "-path",
 		       afs_pathname, flags & AFSAUTH_DOAUTH ? "" : "-noauth");
 	
@@ -200,13 +202,8 @@ static int afs_auth_internal(errorname, afs_pathname, flags)
 		return(FAILURE);
 	case 0:
 		if (!debug_flag) {
-			save_stderr = dup(2);
 			close(0);
-			close(1);
-			close(2);
-			open("/dev/null", O_RDWR);
-			dup(0);
-			dup(0);
+			open("/dev/null", O_RDWR, 0644);
 		}
 
 		close(fds[0]);
@@ -215,10 +212,8 @@ static int afs_auth_internal(errorname, afs_pathname, flags)
 		setuid(owner_uid);
 		execl(aklog_fn, AKLOG_SHORTNAME,
 		      flags & AFSAUTH_CELL ? "-cell" : "-path", 
-		      afs_pathname, "-zsubs",
+		      afs_pathname, "-hosts", "-zsubs",
 		      (flags & AFSAUTH_DOAUTH) ? 0 : "-noauth", 0);
-		if (!debug_flag)
-			dup2(save_stderr, 2);
 		perror(aklog_fn);
 		exit(1);
 		/*NOTREACHED*/
@@ -237,10 +232,9 @@ static int afs_auth_internal(errorname, afs_pathname, flags)
 			if (!(cp = index(buff, ':')))
 				continue;
 			*cp = '\0';
-			if (strcmp(buff, "zsub"))
-				continue;
 #ifdef ZEPHYR
-			if (flags & AFSAUTH_DOZEPHYR) {
+			if (!strcmp(buff, "zsub") &&
+			    (flags & AFSAUTH_DOZEPHYR)) {
 				cp++;
 				while (*cp && isspace(*cp))
 					cp++;
@@ -251,6 +245,16 @@ static int afs_auth_internal(errorname, afs_pathname, flags)
 				zephyr_addsub(cp);
 			}
 #endif
+			if (hostlist && !strcmp(buff, "host")) {
+				cp++;
+				while (*cp && isspace(*cp))
+					cp++;
+				for (len=strlen(cp)-1;
+				     len>=0 && !isprint(cp[len])
+				     ; len--)
+					cp[len] = '\0';
+				hostlist[host_idx++].s_addr = inet_addr(cp);
+			}
 		}
 		fclose(f);
 		if (wait(&waitb) < 0) {
@@ -261,9 +265,6 @@ static int afs_auth_internal(errorname, afs_pathname, flags)
 	}
 	
 	if (error_ret = waitb.w_retcode) {
-		fprintf(stderr,
-			"%s: aklog returned a bad exit status (%d)\n",
-			errorname, error_ret);
 		error_status = ERR_AUTHFAIL;
 		return (FAILURE);
 	}
@@ -273,7 +274,7 @@ static int afs_auth_internal(errorname, afs_pathname, flags)
 int afs_auth(hesname, afsdir)
 const char *hesname, *afsdir;
 {
-    return(afs_auth_internal(hesname, afsdir, AFSAUTH_DOAUTH));
+    return(afs_auth_internal(hesname, afsdir, 0, AFSAUTH_DOAUTH));
 }
 
 /*
@@ -334,13 +335,13 @@ int afs_detach(at)
 int afs_auth_to_cell(cell)
 const char *cell;
 {
-    return(afs_auth_internal(cell, cell, AFSAUTH_DOAUTH | AFSAUTH_CELL));
+    return(afs_auth_internal(cell, cell, 0, AFSAUTH_DOAUTH | AFSAUTH_CELL));
 }
 
 int afs_zinit(hesname, afsdir)
 const char *hesname, *afsdir;
 {
-    return(afs_auth_internal(hesname, afsdir, AFSAUTH_DOZEPHYR));
+    return(afs_auth_internal(hesname, afsdir, 0, AFSAUTH_DOZEPHYR));
 }
 #endif	/* AFS */
 

@@ -9,7 +9,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.5 1991-01-22 16:16:03 probe Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.6 1991-07-01 09:47:29 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -22,8 +22,6 @@ static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/a
 static int parse_attach();
 
 struct	_attachtab	*attachtab_first, *attachtab_last;
-
-int	old_attab = 0;
 
 /*
  * LOCK the attachtab - wait for it if it's already locked
@@ -158,30 +156,25 @@ put_attachtab()
 	}
 	at = attachtab_first;
 	while (at) {
-		if (strcmp(at->version, ATTACH_VERSION))
-			fprintf(f, "%s %c%c%s %s %s %s %s %d %s %d %c\n",
-				at->version, at->explicit ? '1' : '0',
-				at->status, (at->fs) ? at->fs->name : "---",
-				at->hesiodname, at->host, at->hostdir,
-				inet_ntoa(at->hostaddr), at->rmdir, at->mntpt,
-				at->drivenum, at->mode);
-		else {
-			register int i;
+		register int i;
 
-			fprintf(f, "%s %c%c%s %s %s %s %s %d %s %d ",
-				at->version, at->explicit ? '1' : '0',
-				at->status, (at->fs) ? at->fs->name : "---",
-				at->hesiodname, at->host, at->hostdir,
-				inet_ntoa(at->hostaddr), at->rmdir, at->mntpt,
-				at->flags);
-			if (at->nowners)
-				fprintf(f, "%d", at->owners[0]);
-			else
-				fprintf(f, ",");
-			for (i=1; i < at->nowners; i++)
-				fprintf(f, ",%d", at->owners[i]);
-			fprintf(f, " %d %c\n", at->drivenum, at->mode);
-		}
+		fprintf(f, "%s %c%c%s %s %s %s %s",
+			at->version, at->explicit ? '1' : '0',
+			at->status, (at->fs) ? at->fs->name : "---",
+			at->hesiodname, at->host, at->hostdir,
+			inet_ntoa(at->hostaddr[0]));
+		for (i=1; i<MAXHOSTS && at->hostaddr[i].s_addr; i++)
+			fprintf(f, ",%s", inet_ntoa(at->hostaddr[i]));
+		fprintf(f, " %d %s %d ",
+			at->rmdir, at->mntpt, at->flags);
+		if (at->nowners)
+			fprintf(f, "%d", at->owners[0]);
+		else
+			fprintf(f, ",");
+		for (i=1; i < at->nowners; i++)
+			fprintf(f, ",%d", at->owners[i]);
+		fprintf(f, " %d %c\n", at->drivenum, at->mode);
+
 		at = at->next;
 	}
 	fclose(f);
@@ -236,7 +229,7 @@ static int parse_attach(bfr, at, lintflag)
     int lintflag;
 {
     register char *cp;
-    int	old_version = 0; 	/* Backwards compat attachtab line */
+    register int i;
 
     if (!*bfr)
 	goto bad_line;
@@ -247,9 +240,6 @@ static int parse_attach(bfr, at, lintflag)
     if (!(cp = strtok(bfr, TOKSEP)))
 	    goto bad_line;
 
-    if (!strcmp(cp, "A0"))
-	    old_version = 1;
-    else
     if (strcmp(cp, ATTACH_VERSION)) {
 	    fprintf(stderr, "Bad version number in %s\n", attachtab_fn);
 	    if(lintflag) 
@@ -289,7 +279,15 @@ static int parse_attach(bfr, at, lintflag)
 
     if (!(cp = strtok(NULL, TOKSEP)))
 	    goto bad_line;
-    at->hostaddr.s_addr = inet_addr(cp);
+
+    for (i=0; cp; i++) {
+	    register char *dp;
+
+	    if (dp = index(cp, ','))
+		    *dp++ = '\0';
+	    at->hostaddr[i].s_addr = inet_addr(cp);
+	    cp = dp;
+    }
 
     if (!(cp = strtok(NULL, TOKSEP)))
 	    goto bad_line;
@@ -299,29 +297,22 @@ static int parse_attach(bfr, at, lintflag)
 	    goto bad_line;
     (void) strcpy(at->mntpt, cp);
 
-    if (!old_version) {
-	    if (!(cp = strtok(NULL, TOKSEP)))
-		    goto bad_line;
-	    at->flags = atoi(cp);
+    if (!(cp = strtok(NULL, TOKSEP)))
+	    goto bad_line;
+    at->flags = atoi(cp);
     
-	    if (!(cp = strtok(NULL, TOKSEP)))
-		    goto bad_line;
-	    at->nowners = 0;
-	    if (*cp == ',')	/* If heading character is comma */
-		    cp = 0;	/* we have a null list*/
-	    while (cp) {
-		    register char *dp;
-		    
-		    if (dp = index(cp, ','))
-			    *dp++ = '\0';
-		    at->owners[at->nowners++] = atoi(cp);
-		    cp = dp;
-	    }
-    } else {
-	    at->flags = 0;
-	    at->nowners = 1;
-	    at->owners[0] = 0;
-	    old_attab++;
+    if (!(cp = strtok(NULL, TOKSEP)))
+	    goto bad_line;
+    at->nowners = 0;
+    if (*cp == ',')	/* If heading character is comma */
+	    cp = 0;	/* we have a null list*/
+    while (cp) {
+	    register char *dp;
+	    
+	    if (dp = index(cp, ','))
+		    *dp++ = '\0';
+	    at->owners[at->nowners++] = atoi(cp);
+	    cp = dp;
     }
     
     if (!(cp = strtok(NULL, TOKSEP)))
@@ -442,8 +433,7 @@ attachtab_append(at)
 	}
 	*atnew = *at;
 
-	/* If old_attab, write out entries in old format */
-	strcpy(atnew->version, old_attab ? "A0" : ATTACH_VERSION);
+	strcpy(atnew->version, ATTACH_VERSION);
 	
 	if (attachtab_last)
 		attachtab_last ->next = atnew;
@@ -463,9 +453,8 @@ attachtab_replace(at)
 {
 	register struct _attachtab *p, *next, *prev;
 
-	/* If old_attab, write out entries in old format */
-	strcpy(at->version, old_attab ? "A0" : ATTACH_VERSION);
-		
+	strcpy(at->version, ATTACH_VERSION);
+	
 	p = attachtab_first;
 
 	while (p) {

@@ -1,22 +1,21 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.12 1991-06-24 15:09:27 epeisach Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.13 1991-07-01 09:47:31 probe Exp $";
 
 #include "attach.h"
-#include <sys/file.h>
+
 #include <sys/stat.h>
 #include <pwd.h>
 #include <signal.h>
 #ifdef HESIOD
 #include <hesiod.h>
 #endif
-#include <string.h>
 
 #define TOKSEP " \t\r\n"
 	
@@ -247,10 +246,10 @@ int parse_hes(hes, at, errorname)
 		    fprintf(stderr, abort_msg);
 		    return(-1);
 	    }
-	    bcopy(hent->h_addr_list[0], &at->hostaddr.s_addr, 4);
+	    bcopy(hent->h_addr_list[0], &at->hostaddr[0].s_addr, 4);
 	    strcpy(at->host, hent->h_name);
     } else
-	    at->hostaddr.s_addr = (long) ntohl(0x7f000001); /* 127.0.0.1 */
+	    at->hostaddr[0].s_addr = (long) 0;
     return(0);
     
 bad_hes_line:
@@ -824,7 +823,7 @@ int host_compare(host1, host2)
 {
 	char	bfr[BUFSIZ];
 	static	char	last_host[BUFSIZ] = "********";
-	static	struct in_addr	sin;
+	static	struct in_addr	sin1, sin2;
 	struct hostent	*host;
 
 	/*
@@ -832,25 +831,31 @@ int host_compare(host1, host2)
 	 */
 	if (strcmp(host1, last_host)) {
 		strcpy(last_host, host1);
-		if (host = gethostbyname(host1)) 
-			bcopy(host->h_addr, &sin, (sizeof sin));
+		if ((sin1.s_addr = inet_addr(host1)) == -1) {
+			if (host = gethostbyname(host1))
+				bcopy(host->h_addr, &sin1, (sizeof sin1));
+			else {
+				if (debug_flag) {
+					sprintf(bfr, "%s: gethostbyname",
+						host1);
+					perror(bfr);
+				}
+				return(!strcmp(host1, host2));
+			}
+		}
+	}
+	if ((sin2.s_addr = inet_addr(host2)) == -1) {
+		if (host = gethostbyname(host2))
+			bcopy(host->h_addr, &sin2, (sizeof sin2));
 		else {
 			if (debug_flag) {
-				sprintf(bfr, "%s: gethostbyname", host1);
+				sprintf(bfr, "%s: gethostbyname", host2);
 				perror(bfr);
 			}
 			return(!strcmp(host1, host2));
 		}
 	}
-	if (host = gethostbyname(host2))
-		return(!bcmp(&sin, host->h_addr, (sizeof sin)));
-	else {
-		if (debug_flag) {
-			sprintf(bfr, "%s: gethostbyname", host2);
-			perror(bfr);
-		}
-		return(!strcmp(host1, host2));
-	}
+	return(!bcmp(&sin1, &sin2, (sizeof sin1)));
 }
 
 /*
@@ -1001,23 +1006,4 @@ int e;
     return sys_errlist[e];
   else
     return "Unknown error";
-}
-
-#ifndef ultrix
-#include <sys/socket.h>	/* AF_INET */
-#endif
-#include <arpa/inet.h>
-
-char *inaddr_to_name(addr)
-
-long addr;
-
-{
-  struct hostent *h;
-
-  h = gethostbyaddr(&addr, 4, AF_INET);
-  if(h == 0)
-    return 0;
-  else
-    return h->h_name;
 }

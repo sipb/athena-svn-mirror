@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.8 1991-06-02 23:36:30 probe Exp $";
+static char *rcsid_detach_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.9 1991-07-01 09:47:21 probe Exp $";
 
 #include "attach.h"
 #include <string.h>
@@ -93,7 +93,7 @@ detach(name)
 			    error_status = ERR_ATTACHINUSE;
 			    put_attachtab();
 			    if (atp->fs->type == TYPE_NFS && do_nfsid)
-				    ret = nfsid(atp->host, atp->hostaddr,
+				    ret = nfsid(atp->host, atp->hostaddr[0],
 						MOUNTPROC_KUIDUMAP, 1,
 						atp->hesiodname, 0, real_uid);
 			    unlock_attachtab();
@@ -235,34 +235,39 @@ null_detach(at, mopt, errorout)
  */
 
 void detach_host(host)
-	const char *host;
+    const char *host;
 {
-	struct _attachtab	*atp, *next;
-	int tempexp;
-	extern struct _attachtab	*attachtab_last, *attachtab_first;
-	struct _fstypes	*fs_type = NULL;
+    struct _attachtab	*atp, *next;
+    int tempexp;
+    extern struct _attachtab	*attachtab_last, *attachtab_first;
+    struct _fstypes	*fs_type = NULL;
+    register int i;
 
-	lock_attachtab();
-	get_attachtab();
-	unlock_attachtab();
-    
-	if (filsys_type)
-		fs_type = get_fs(filsys_type);
-	tempexp = explicit;
-	atp = attachtab_last;
-	attachtab_last = attachtab_first = NULL;
-	while (atp) {
-		next = atp->prev;
-		explicit = atp->explicit;
-		if ((override || !owner_check || clean_detach
-		     || is_an_owner(atp,owner_uid)) &&
-		    (!filsys_type || fs_type == atp->fs) &&
-		    (host_compare(host, atp->host)) &&
-		    !(atp->flags & FLAG_LOCKED))
-			detach(atp->hesiodname);
-		free(atp);
-		atp = next;
+    lock_attachtab();
+    get_attachtab();
+    unlock_attachtab();
+
+    if (filsys_type)
+	fs_type = get_fs(filsys_type);
+    tempexp = explicit;
+    atp = attachtab_last;
+    attachtab_last = attachtab_first = NULL;
+    while (atp) {
+	next = atp->prev;
+	explicit = atp->explicit;
+	if ((override || !owner_check || clean_detach
+	     || is_an_owner(atp,owner_uid)) &&
+	    (!filsys_type || fs_type == atp->fs) &&
+	    !(atp->flags & FLAG_LOCKED)) {
+	    for (i=0; i<MAXHOSTS && atp->hostaddr[i].s_addr; i++)
+		if (host_compare(host, inet_ntoa(atp->hostaddr[i]))) {
+		    detach(atp->hesiodname);
+		    break;
+		}
 	}
-	free_attachtab();
-	explicit = tempexp;
+	free(atp);
+	atp = next;
+    }
+    free_attachtab();
+    explicit = tempexp;
 }

@@ -5,7 +5,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.5 1991-01-22 16:22:10 probe Exp $";
+static char *rcsid_nfs_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfs.c,v 1.6 1991-07-01 09:47:19 probe Exp $";
 
 #include "attach.h"
 #ifdef NFS
@@ -81,18 +81,18 @@ nfs_attach(at, mopt, errorout)
 	}
 
 	if ((at->mode != 'n') && do_nfsid)
-		if (nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDMAP,
+		if (nfsid(at->host, at->hostaddr[0], MOUNTPROC_KUIDMAP,
 			  errorout, at->hesiodname, 1, owner_uid) == FAILURE) {
 			if (mopt->flags & M_RDONLY) {
 				printf("%s: Warning, mapping failed for filesystem %s,\n\tcontinuing with read-only mount.\n",
 				       progname, at->hesiodname);
 				/* So the mount rpc wins */
-				clear_errored(at->hostaddr); 
+				clear_errored(at->hostaddr[0]); 
 			} else if(at->mode == 'm') {
 				printf("%s: Warning, mapping failed for filesystem %s.\n", 
 				       progname, at->hesiodname);
 				error_status = 0;
-				clear_errored(at->hostaddr);
+				clear_errored(at->hostaddr[0]);
 			} else
 				return (FAILURE);
 		}
@@ -117,7 +117,7 @@ nfs_attach(at, mopt, errorout)
 
 	if (mountfs(at, fsname, mopt, errorout) == FAILURE) {
 		if ((at->mode != 'n') && do_nfsid)
-			nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDUMAP,
+			nfsid(at->host, at->hostaddr[0], MOUNTPROC_KUIDUMAP,
 			      errorout, at->hesiodname, 1, owner_uid);
 		return (FAILURE);
 	}
@@ -132,7 +132,7 @@ nfs_detach(at)
     struct _attachtab *at;
 {
 	if ((at->mode != 'n') && do_nfsid &&
-	    nfsid(at->host, at->hostaddr, MOUNTPROC_KUIDUMAP, 1,
+	    nfsid(at->host, at->hostaddr[0], MOUNTPROC_KUIDUMAP, 1,
 		  at->hesiodname,0, owner_uid) == FAILURE)
 		printf("%s: Warning: couldn't unmap filesystem %s/host %s\n",
 		       progname, at->hesiodname, at->host);
@@ -143,7 +143,7 @@ nfs_detach(at)
 		return(SUCCESS);
 	}
 	
-	if (nfs_unmount(at->hesiodname, at->host, at->hostaddr,
+	if (nfs_unmount(at->hesiodname, at->host, at->hostaddr[0],
 			at->mntpt, at->hostdir) == FAILURE)
 		return (FAILURE);
     

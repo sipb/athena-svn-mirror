@@ -13,7 +13,7 @@
  * (This may not be true anymore --- [tytso:19890720.2145EDT])
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.5 1991-06-02 23:36:34 probe Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.6 1991-07-01 09:47:25 probe Exp $";
 
 #include "attach.h"
 
@@ -235,7 +235,7 @@ mount_nfs(at, mopt, args, errorout)
 	enum clnt_stat rpc_stat;
 	char	*hostdir = at->hostdir;
 
-	if (errored_out(at->hostaddr)) {
+	if (errored_out(at->hostaddr[0])) {
 		if (errorout)
 			fprintf(stderr,
 		"%s: Ignoring %s due to previous host errors\n",
@@ -243,7 +243,7 @@ mount_nfs(at, mopt, args, errorout)
 		return (FAILURE);
 	}
     
-	if ((client = rpc_create(at->hostaddr, &sin)) == NULL) {
+	if ((client = rpc_create(at->hostaddr[0], &sin)) == NULL) {
 		if (errorout)
 			fprintf(stderr, "%s: Server %s not responding\n",
 				at->hesiodname, at->host);
@@ -257,7 +257,7 @@ mount_nfs(at, mopt, args, errorout)
 	rpc_stat = clnt_call(client, MOUNTPROC_MNT, xdr_path, &hostdir,
 			     xdr_fhstatus, &fhs, timeout);
 	if (rpc_stat != RPC_SUCCESS) {
-		mark_errored(at->hostaddr);
+		mark_errored(at->hostaddr[0]);
 		if (debug_flag)
 			clnt_perror(client, "RPC return status");
 		if (!errorout)
@@ -330,30 +330,6 @@ mount_nfs(at, mopt, args, errorout)
 	return (SUCCESS);
 }
 #endif
-
-/*
- * Returns true if two NFS fsnames are the same.
- */
-nfs_fsname_compare(fsname1, fsname2)
-	char	*fsname1;
-	char	*fsname2;
-{
-	char	host1[BUFSIZ], host2[BUFSIZ];
-	char	*rmdir1, *rmdir2;
-
-	(void) strcpy(host1, fsname1);
-	(void) strcpy(host2, fsname2);
-	if (rmdir1 = index(host1, ':'))
-		*rmdir1++ = '\0';
-	if (rmdir2 = index(host2, ':'))
-		*rmdir2++ = '\0';
-	if (host_compare(host1, host2)) {
-		if (!rmdir1 || !rmdir2)
-			return(0);
-		return(!strcmp(rmdir1, rmdir2));
-	} else
-		return(0);
-}
 
 #ifdef ultrix
 mounted(mntck)
@@ -433,6 +409,30 @@ mounted(mntck)
     return (found);
 }
 
-#endif /* ultrix */
+/*
+ * Returns true if two NFS fsnames are the same.
+ */
+nfs_fsname_compare(fsname1, fsname2)
+	char	*fsname1;
+	char	*fsname2;
+{
+	char	host1[BUFSIZ], host2[BUFSIZ];
+	char	*rmdir1, *rmdir2;
+
+	(void) strcpy(host1, fsname1);
+	(void) strcpy(host2, fsname2);
+	if (rmdir1 = index(host1, ':'))
+		*rmdir1++ = '\0';
+	if (rmdir2 = index(host2, ':'))
+		*rmdir2++ = '\0';
+	if (host_compare(host1, host2)) {
+		if (!rmdir1 || !rmdir2)
+			return(0);
+		return(!strcmp(rmdir1, rmdir2));
+	} else
+		return(0);
+}
+
+#endif /* !ultrix */
 
 #endif /* !MOUNT_CMD */

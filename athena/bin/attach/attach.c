@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.14 1991-06-02 23:36:24 probe Exp $";
+static char rcsid_attach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attach.c,v 1.15 1991-07-01 09:47:08 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -109,14 +109,14 @@ retry:
 		if (verbose && !print_path)
 		    printf(" (mapping)\n");
 		
-		ret = nfsid(atp->host, atp->hostaddr,
+		ret = nfsid(atp->host, atp->hostaddr[0],
 			    MOUNTPROC_KUIDMAP, 1, name, 1, real_uid);
 		if(atp->mode != 'm')
 		  return ret;
 		if (ret == FAILURE)
 		  {
 		    error_status = 0;
-		    clear_errored(atp->hostaddr);
+		    clear_errored(atp->hostaddr[0]);
 		  }
 		return SUCCESS;
 	    }
@@ -145,7 +145,7 @@ retry:
     strcpy(at.hesiodname, name);
     strcpy(at.host, "?");
     strcpy(at.hostdir, "?");
-    at.hostaddr.s_addr = 0;
+    bzero((char *)&at.hostaddr, sizeof(at.hostaddr));
     at.rmdir = 0;
     at.drivenum = 0;
     at.mode = 'r';
@@ -362,4 +362,63 @@ try_attach(name, hesline, errorout)
 	    if (at.fs->flags & AT_FS_MNTPT)
 		    rm_mntpt(&at);
     return (status);
+}
+
+
+char *attach_list_format = "%-22s %-22s %c%-18s%s\n";
+
+int attach_print(host)
+    char *host;
+{
+    static int print_banner = 1;
+    struct _attachtab *atp;
+    extern struct _attachtab *attachtab_first;
+    char optstr[40];
+    int bad = 0;
+    int i;
+
+    lock_attachtab();
+    get_attachtab();
+    unlock_attachtab();
+    atp = attachtab_first;
+    if (!atp) {
+	printf("No filesystems currently attached.\n");
+	free_attachtab();
+	return(ERR_NONE);
+    }
+    if (print_banner) {
+	printf(attach_list_format, "filesystem", "mountpoint",
+	       ' ', "user", "mode");
+	printf(attach_list_format, "----------", "----------",
+	       ' ', "----", "----");
+	print_banner = 0;
+    }
+    while (atp) {
+	optstr[0] = atp->mode;
+	optstr[1] = '\0';
+	if (atp->flags & FLAG_NOSETUID)
+	    strcat(optstr, ",nosuid");
+	if (atp->flags & FLAG_LOCKED)
+	    strcat(optstr, ",locked");
+	if (atp->flags & FLAG_PERMANENT)
+	    strcat(optstr, ",perm");
+	if (host) {
+	    bad = 1;
+	    for (i=0; i<MAXHOSTS && atp->hostaddr[i].s_addr; i++) {
+		if (host_compare(host, inet_ntoa(atp->hostaddr[i]))) {
+		    bad = 0;
+		    break;
+		}
+	    }
+	}
+	if (!bad && atp->status == STATUS_ATTACHED) {
+	    printf(attach_list_format, atp->hesiodname,
+		   (atp->fs->type&TYPE_MUL) ? "-" : atp->mntpt,
+		   atp->flags & FLAG_ANYONE ? '*' : ' ',
+		   ownerlist(atp), optstr);
+	}
+	atp = atp->next;
+    }
+    free_attachtab();
+    return (ERR_NONE);
 }

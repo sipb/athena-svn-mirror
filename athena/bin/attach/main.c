@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.21 1991-06-02 23:36:32 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.22 1991-07-01 09:47:23 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -300,7 +300,7 @@ nfsidcmd(argc, argv)
 		atp = attachtab_first;
 		while (atp) {
 			if (atp->fs->type == TYPE_NFS) {
-				if ((nfsid(atp->host, atp->hostaddr, op, 1,
+				if ((nfsid(atp->host, atp->hostaddr[0], op, 1,
 					   atp->hesiodname, 0, owner_uid)
 				     == SUCCESS) && verbose)
 					printf("%s: %s %s\n", progname,
@@ -396,7 +396,7 @@ int uid;
 			cp = strtok(NULL, ",");
 		}
 	} else if (atp->fs->type == TYPE_NFS) {
-		if ((nfsid(atp->host, atp->hostaddr, op, 1,
+		if ((nfsid(atp->host, atp->hostaddr[0], op, 1,
 			   filsys, 0, owner_uid) == SUCCESS) &&
 		    verbose)
 			printf("%s: %s %s\n", progname, filsys, ops);
@@ -410,16 +410,13 @@ int uid;
 	}
 }
 
-
-char *attach_list_format = "%-22s %-22s %c%-18s%s\n";
-
 attachcmd(argc, argv)
     int argc;
     char *argv[];
 {
     int gotname, i;
-    struct _attachtab *atp;
-    extern struct _attachtab	*attachtab_first;
+    int print_host = 0;
+
     static struct command_list options[] = {
 	{ "-verbose", "-v" },
 	{ "-quiet", "-q" },
@@ -451,49 +448,10 @@ attachcmd(argc, argv)
 	{ "-skipfsck", "-F" },
 	{ "-lock", "-L" },
 	{ "-user", "-U" },
+	{ "-host", "-H" },
 	{ 0, 0 }};
 
     read_config_file(ATTACHCONFFILE);
-
-    /*
-     * Print attachtab out if no arguments specified
-     */
-    if (argc == 1) {
-	    char	optstr[40];
-
-	    lock_attachtab();
-	    get_attachtab();
-	    unlock_attachtab();
-	    atp = attachtab_first;
-	    if (!atp) {
-		    printf("No filesystems currently attached.\n");
-		    free_attachtab();
-		    return(ERR_NONE);
-	    }
-	    printf(attach_list_format, "filesystem", "mountpoint",
-		   ' ', "user", "mode");
-	    printf(attach_list_format, "----------", "----------",
-		   ' ', "----", "----");
-	    while (atp) {
-		    optstr[0] = atp->mode;
-		    optstr[1] = '\0';
-		    if (atp->flags & FLAG_NOSETUID)
-			    strcat(optstr, ",nosuid");
-		    if (atp->flags & FLAG_LOCKED)
-			    strcat(optstr, ",locked");
-		    if (atp->flags & FLAG_PERMANENT)
-			    strcat(optstr, ",perm");
-		    if (atp->status == STATUS_ATTACHED) {
-			    printf(attach_list_format, atp->hesiodname,
-				   (atp->fs->type&TYPE_MUL) ? "-" : atp->mntpt,
-				   atp->flags & FLAG_ANYONE ? '*' : ' ',
-				   ownerlist(atp), optstr);
-		    }
-		    atp = atp->next;
-	    }
-	    free_attachtab();
-	    return (ERR_NONE);
-    }
 
     check_root_privs(progname);
     default_suid = (access(NOSUID_FILENAME, 0) == 0);
@@ -510,6 +468,9 @@ attachcmd(argc, argv)
     mount_options = "";
     error_status = ERR_NONE;
     map_anyway = 1;
+
+    if (argc == 1)
+	return (attach_print(0));
     
     for (i=1;i<argc;i++) {
 	if (*argv[i] == '-') {
@@ -648,6 +609,9 @@ attachcmd(argc, argv)
 		"You are not authorized to use the -user option\n", progname);
 		}
 		break;
+	    case 'H':
+		print_host++;
+		break;
 	    default:
 		fprintf(stderr, "%s: Unknown switch %s\n", progname, argv[i]);
 		return (ERR_BADARGS);		
@@ -655,8 +619,12 @@ attachcmd(argc, argv)
 	    continue;
 	}
 	gotname++;
-	if(attach(argv[i]) == SUCCESS)
+
+	if (print_host)
+		attach_print(argv[i]);
+	else if (attach(argv[i]) == SUCCESS)
 		error_status = 0;
+
 	override_mode = '\0';
 	override_suid = -1;
 	override = 0;

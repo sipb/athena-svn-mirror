@@ -1,13 +1,13 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.5 1991-03-04 12:56:58 epeisach Exp $";
+static char rcsid_rvd_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/rvd.c,v 1.6 1991-07-01 09:47:27 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -32,7 +32,7 @@ rvd_attach(at, mopt, errorout)
     int vddrive, pid;
     char *passwd;
     
-    if (avail_drive(at->hostaddr, at->hostdir, &vddrive) == FAILURE) {
+    if (avail_drive(at->hostaddr[0], at->hostdir, &vddrive) == FAILURE) {
 	if (errorout)
 	    fprintf(stderr, "%s: No free RVD drives\n", at->hesiodname);
 	return (FAILURE);
@@ -45,7 +45,7 @@ rvd_attach(at, mopt, errorout)
     
     passwd = NULL;
     
-    while (rvd_spinup(at->hostaddr, at->hostdir,
+    while (rvd_spinup(at->hostaddr[0], at->hostdir,
 		      vddrive, at->mode, at->host, passwd) == FAILURE &&
 	   rvderrno == RVDEBPWD) {
 	fprintf(stderr, "%s: Need password for RVD spinup\n",
