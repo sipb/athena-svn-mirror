@@ -4,5 +4,5 @@
 X		/usr/X11R6/bin/X vt07
 console		/etc/athena/console -display :0.0 -nosession
 login		/etc/athena/xlogin -config /etc/athena/login -display :0.0
-ttylogin 	/sbin/mingetty tty7
+ttylogin 	/sbin/getty tty7
 ttyloginvt 	7
