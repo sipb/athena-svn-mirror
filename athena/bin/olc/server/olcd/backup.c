@@ -17,13 +17,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *	$Id: backup.c,v 1.19 1991-03-07 13:33:13 lwvanels Exp $
+ *	$Id: backup.c,v 1.20 1991-03-27 16:01:53 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.19 1991-03-07 13:33:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.20 1991-03-27 16:01:53 lwvanels Exp $";
 #endif
 #endif
 
@@ -457,6 +457,10 @@ void
 	  if (status != SUCCESS)
 	    goto PUNT; 
 	  kptr->user = uptr;
+	  if (kptr->question == NULL)
+	    kptr->title = uptr->title2;
+	  else
+	    kptr->title = uptr->title1;
 	  insert_knuckle_in_user(kptr,uptr);
 	  sprintf(kptr->nm_file,"%s/%s_%d.nm", LOG_DIR, kptr->user->username,
 		  kptr->instance);
