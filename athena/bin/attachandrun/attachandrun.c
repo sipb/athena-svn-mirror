@@ -17,7 +17,7 @@
  * Intended mainly for use by scripts.
  */
 
-static const char rcsid[] = "$Id: attachandrun.c,v 1.2 2000-04-14 20:53:52 ghudson Exp $";
+static const char rcsid[] = "$Id: attachandrun.c,v 1.3 2002-05-06 14:51:20 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
   int check = 0;
 
   progname = strrchr(argv[0], '/');
-  progname = (progname == NULL) ? argv[0] : progname;
+  progname = (progname == NULL) ? argv[0] : progname + 1;
 
   /* Process arguments.  Leave argc/argv specifying the arguments for
    * the command to run.
