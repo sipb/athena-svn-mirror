@@ -7,7 +7,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v $
  *	$Author: jtkohl $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.4 1987-07-01 18:06:50 jtkohl Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/zserver.h,v 1.5 1987-07-02 19:11:05 jtkohl Exp $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -25,6 +25,7 @@
 #include <zephyr/acl.h>
 
 #include <syslog.h>
+#include <strings.h>
 #include "timer.h"
 #include "zsrv_err.h"
 
@@ -132,10 +133,12 @@ extern int access_check();
 extern void get_brain_dump(), send_brain_dump();
 
 /* found in class_s.c */
-extern Code_t class_register(), class_deregister();
+extern Code_t class_register(), class_deregister(), class_restrict();
+extern Code_t class_setup_restricted();
 extern ZClientList_t *class_lookup();
 extern ZAcl_t *class_get_acl();
-extern int class_is_control(), class_is_admin(), class_is_hm(), class_is_uloc();
+extern int class_is_control(), class_is_admin(), class_is_hm();
+extern int class_is_ulogin(), class_is_uloc();
 
 /* found in client_s.c */
 extern Code_t client_register();
@@ -155,12 +158,11 @@ extern ZServerDesc_t *hostm_find_server();
 
 /* found in server_s.c */
 extern void server_timo(), server_dispatch(), server_recover();
-Code_t server_register();
-ZServerDesc_t *server_owner();
+extern void server_adispatch();
 
 /* found in subscr_s.c */
 extern Code_t subscr_cancel(), subscr_subscribe();
-extern ZClientList_t * subscr_match_list();
+extern ZClientList_t *subscr_match_list();
 extern void subscr_list_free(), subscr_cancel_client();
 
 /* found in uloc_s.c */
@@ -227,7 +229,6 @@ extern ZNotAcked_t *nacklist;		/* list of not ack'ed packets */
 
 /* ACL's for pre-registered classes */
 #define	ZEPHYR_CTL_ACL	"/site/zephyr/zctl.acl"
-#define	HM_ACL		"/site/zephyr/hm.acl"
 #define	LOGIN_ACL	"/site/zephyr/login.acl"
 #define	LOCATE_ACL	"/site/zephyr/locate.acl"
 #define	MATCH_ALL_ACL	"/site/zephyr/matchall.acl"
