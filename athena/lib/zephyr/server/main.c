@@ -19,7 +19,7 @@
 #ifndef lint
 #ifndef SABER
 static const char rcsid_main_c[] =
-    "$Id: main.c,v 1.65 1997-10-25 21:47:31 ghudson Exp $";
+    "$Id: main.c,v 1.66 1998-05-27 19:53:59 ghudson Exp $";
 #endif
 #endif
 
@@ -312,6 +312,8 @@ main(argc, argv)
 	    dump_db();
 	if (dump_strings_flag)
 	    dump_strings();
+
+	timer_process();
 
 	readable = interesting;
 	if (msgs_queued()) {
