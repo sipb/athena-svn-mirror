@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.6 2000-07-09 05:31:26 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.7 2000-08-04 23:55:19 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -379,9 +379,9 @@ static void *notify(const Header h, const rpmCallbackType what,
 	  n = (amount == total) ? 50 : 50.0 * amount / total;
 	  for (; ndata->hashmarks_printed < n; ndata->hashmarks_printed++)
 	    putchar('#');
-	  fflush(stdout);
 	  if (amount == total)
 	    putchar('\n');
+	  fflush(stdout);
 	}
       return NULL;
 
