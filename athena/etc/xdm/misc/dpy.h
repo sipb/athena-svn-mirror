@@ -10,7 +10,6 @@ typedef struct _dpy_state dpy_state;
 #endif
 
 dpy_state *	dpy_init(void);
-char *		dpy_consDevice(dpy_state *);
 int		dpy_startX(dpy_state *);
 int		dpy_stopX(dpy_state *);
 int		dpy_startCons(dpy_state *);
