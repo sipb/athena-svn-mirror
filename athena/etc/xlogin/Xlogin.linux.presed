@@ -1,4 +1,4 @@
-! $Id: Xlogin.linux.presed,v 1.10 2000-08-02 21:22:23 ghudson Exp $
+! $Id: Xlogin.linux.presed,v 1.11 2001-01-19 05:40:19 ghudson Exp $
 
 xlogin.wcChildren:		login, savershell, instructions, \
 				warningShell, getSessionShell, queryShell
@@ -218,22 +218,22 @@ xlogin.Geometry: 		580x325
 	<Key>F5:	callbackACT(*lmenuEntry5) \n\
 	<Key>F6:	callbackACT(*lmenuEntry6) \n\
 	<Key>Return:	WcSetValueACT(this.displayCaret: FALSE) \
-			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*pword_input.borderColor: black) \
 			idleReset() \
 			setfocus(*pword_input) \n\
 	<Key>KP_Enter:	WcSetValueACT(this.displayCaret: FALSE) \
-			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*pword_input.borderColor: black) \
 			idleReset() \
 			setfocus(*pword_input) \n\
 	Ctrl<Key>m:	WcSetValueACT(this.displayCaret: FALSE) \
-			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*pword_input.borderColor: black) \
 			idleReset() \
 			setfocus(*pword_input) \n\
 	<Key>Tab:	WcSetValueACT(this.displayCaret: FALSE) \
-			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*pword_input.borderColor: black) \
 			idleReset() \
 			setfocus(*pword_input) \n\
@@ -251,8 +251,8 @@ xlogin.Geometry: 		580x325
 *password*label: 		Password:
 
 *pword_input.wcClassName:	AsciiText
-*pword_input.wcCallback:	WcSetValueCB(this.borderColor: white)
-*pword_input.borderColor: 	white
+*pword_input.wcCallback:	WcSetValueCB(this.borderColor: gray)
+*pword_input.borderColor: 	gray
 *pword_input*length:		128
 *pword_input*string:		
 *pword_input*font:		-adobe-new century schoolbook-bold-r-*-180-75-*
@@ -301,25 +301,25 @@ xlogin.Geometry: 		580x325
 	<Key>F4:	callbackACT(*lmenuEntry4) \n\
 	<Key>F5:	callbackACT(*lmenuEntry5) \n\
 	<Key>F6:	callbackACT(*lmenuEntry6) \n\
-	<Key>Return:	WcSetValueACT(this.borderColor: white) \
+	<Key>Return:	WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*name_input.borderColor: black) \
 			login() \n\
-	<Key>KP_Enter:	WcSetValueACT(this.borderColor: white) \
+	<Key>KP_Enter:	WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*name_input.borderColor: black) \
 			login() \n\
-	Ctrl<Key>m:	WcSetValueACT(this.borderColor: white) \
+	Ctrl<Key>m:	WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*name_input.borderColor: black) \
 			login() \n\
 	<Key>Prior:	signalConsoleACT(show) \n\
 	<Key>Next:	signalConsoleACT(hide) \n\
 	<Key>Up:	WcSetValueACT(this.displayCaret: FALSE) \
-			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*name_input.displayCaret: TRUE) \
 			WcSetValueACT(*name_input.borderColor: black) \
 			idleReset() \
 			setfocus(*name_input) \n\
 	Shift<Key>Tab:	WcSetValueACT(this.displayCaret: FALSE) \
-			WcSetValueACT(this.borderColor: white) \
+			WcSetValueACT(this.borderColor: gray) \
 			WcSetValueACT(*name_input.displayCaret: TRUE) \
 			WcSetValueACT(*name_input.borderColor: black) \
 			idleReset() \
@@ -392,38 +392,38 @@ xlogin.Geometry: 		580x325
 *lmenuEntry6.label:		Start Over
 
 *lmenuEntry1.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: check), \
-			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: )
-*lmenuEntry2.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
+*lmenuEntry2.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry2.leftBitmap: check), \
-			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: Ignore customizations selected)
-*lmenuEntry3.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
+*lmenuEntry3.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry3.leftBitmap: check), \
-			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: Terminal-style login session selected)
-*lmenuEntry4.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
+*lmenuEntry4.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry4.leftBitmap: check), \
-			WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+			WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
 			WcSetValueCB(*selection.label: Mail-check login session selected)
-*lmenuEntry5.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry2.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry3.leftBitmap: white), \
-			WcSetValueCB(*lmenuEntry4.leftBitmap: white), \
+*lmenuEntry5.callback:	WcSetValueCB(*lmenuEntry1.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry2.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry3.leftBitmap: gray), \
+			WcSetValueCB(*lmenuEntry4.leftBitmap: gray), \
 			WcSetValueCB(*lmenuEntry5.leftBitmap: check), \
 			WcSetValueCB(*selection.label: Special login session selected), \
 			WcPopupGrabCB(*getSessionShell), \
 			setfocusCB(*getsession*value)
-*lmenuEntry6.callback:	WcSetValueCB(*pword_input.borderColor: white), \
+*lmenuEntry6.callback:	WcSetValueCB(*pword_input.borderColor: gray), \
 			WcSetValueCB(*name_input.borderColor: black), \
 			WcPopdownCB(*getSessionShell), \
 			resetCB()
@@ -501,6 +501,7 @@ xlogin.Geometry: 		580x325
 *getsession.label:		Please enter the name of a shell script or program:
 *getsession.label.font:		-adobe-new century schoolbook-bold-r-*-180-75-*
 *getsession.wcChildren:		doit, abort
+*getsession*background:		gray
 
 *getsession*value.borderWidth:		2
 *getsession*value.horizDistance:	100
@@ -573,7 +574,7 @@ xlogin.Geometry: 		580x325
 *abort.callback:		WcPopdownCB(*getSessionShell), \
 				setfocusCB(*name_input), \
 				WcSetValueCB(*lmenuEntry1.leftBitmap: check), \
-				WcSetValueCB(*lmenuEntry5.leftBitmap: white), \
+				WcSetValueCB(*lmenuEntry5.leftBitmap: gray), \
 				WcSetValueCB(*selection.label: )
 
 
@@ -652,7 +653,7 @@ xlogin.Geometry: 		580x325
 !   - if only one color is given, it is used for all three visual classes.
 !
 
-*login*background:		white
+*login*background:		gray
 *login*foreground:		black,gray55,black
 
 *login.logo.foreground:		black,gray15,red
@@ -663,18 +664,18 @@ xlogin.Geometry: 		580x325
 ! savershell is the big black window that covers the screen when the xlogin
 ! "screensaver" kicks in.
 !
-*savershell*foreground:		white
+*savershell*foreground:		gray
 *savershell*background:		black
 
 ! hitanykey is the window that bounces around on top of savershell when the
 ! xlogin "screensaver" kicks in.
 !
-*hitanykey*foreground:		white,gray80,gray80
+*hitanykey*foreground:		gray,gray80,gray80
 *hitanykey*background:		black
 
-*hitanykey.logo.foreground:	white,gray75,red
-*hitanykey.version.foreground:	white,gray75,red
-*hitanykey.logo2.foreground:	white,gray75,red
+*hitanykey.logo.foreground:	gray,gray75,red
+*hitanykey.version.foreground:	gray,gray75,red
+*hitanykey.logo2.foreground:	gray,gray75,red
 *hitanykey.logo2.bitmap:	is
 
 *queryShell.borderColor:	black
