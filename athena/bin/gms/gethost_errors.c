@@ -13,16 +13,15 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: gethost_errors.c,v 1.4 1998-12-03 19:38:30 ghudson Exp $";
+static const char rcsid[] = "$Id: gethost_errors.c,v 1.5 1999-09-21 01:41:40 danw Exp $";
 
+#include "globalmessage.h"
 #include "gethost_err.h"
 #include <netdb.h>
 
 extern int h_errno;
 
-typedef int Code_t;
-
-Code_t gethost_error()
+Code_t gethost_error(void)
 {
   init_ghs_err_tbl();
 

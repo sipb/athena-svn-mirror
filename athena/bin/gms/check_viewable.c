@@ -13,17 +13,14 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: check_viewable.c,v 1.7 1998-12-03 19:38:27 ghudson Exp $";
+static const char rcsid[] = "$Id: check_viewable.c,v 1.8 1999-09-21 01:41:39 danw Exp $";
 
 #include "globalmessage.h"
 #include <sys/types.h>
 #include <sys/file.h>
 #include <pwd.h>
 
-Code_t check_viewable(message, checktime, updateuser)
-     char *message;
-     int checktime;		/* should we check the timestamp at all? */
-     int updateuser;		/* should we update the user timestamp file? */
+Code_t check_viewable(char *message, int checktime, int updateuser)
 {
   char *ptr, *usertfile;
   time_t ftime, utime;

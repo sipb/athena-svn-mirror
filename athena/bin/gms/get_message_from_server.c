@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: get_message_from_server.c,v 1.6 1998-12-03 19:38:29 ghudson Exp $";
+static const char rcsid[] = "$Id: get_message_from_server.c,v 1.7 1999-09-21 01:41:40 danw Exp $";
 
 #include "globalmessage.h"
 #include <sys/types.h>
@@ -23,10 +23,8 @@ static const char rcsid[] = "$Id: get_message_from_server.c,v 1.6 1998-12-03 19:
 #include <hesiod.h>
 #include <sys/time.h>
 
-Code_t get_message_from_server(ret_message, ret_message_size, server)
-     char **ret_message;
-     int *ret_message_size;
-     char *server;
+Code_t get_message_from_server(char **ret_message, int *ret_message_size,
+			       char *server)
 {
   struct sockaddr_in server_insocket;
   int sck, stat;
@@ -50,7 +48,7 @@ Code_t get_message_from_server(ret_message, ret_message_size, server)
 
   /* Set the socket port */
   {
-    struct servent *gms_service, *hes_getservbyname();
+    struct servent *gms_service;
     gms_service = getservbyname(GMS_SERV_NAME, GMS_SERV_PROTO);
     if(!gms_service) {
       /* getservbyname failed, fall back... */

@@ -13,15 +13,13 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: get_fallback_file.c,v 1.5 1998-12-03 19:38:28 ghudson Exp $";
+static const char rcsid[] = "$Id: get_fallback_file.c,v 1.6 1999-09-21 01:41:39 danw Exp $";
 
 #include "globalmessage.h"
 #include <sys/types.h>
 
-Code_t get_fallback_file(ret_data, ret_size, message_filename)
-     char **ret_data;
-     int *ret_size;
-     char *message_filename;
+Code_t get_fallback_file(char **ret_data, int *ret_size,
+			 char *message_filename)
 {
   char *message_data;
   int message_filedesc;

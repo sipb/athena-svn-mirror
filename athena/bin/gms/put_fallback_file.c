@@ -13,23 +13,21 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: put_fallback_file.c,v 1.8 1998-12-03 19:38:32 ghudson Exp $";
+static const char rcsid[] = "$Id: put_fallback_file.c,v 1.9 1999-09-21 01:41:40 danw Exp $";
 
 #include "globalmessage.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 
-Code_t put_fallback_file(message_data, message_size, message_filename)
-     char *message_data;
-     int message_size;
-     char *message_filename;
+Code_t put_fallback_file(char *message_data, int message_size,
+			 char *message_filename)
 {
   int errstat;
   int message_filedesc;
   time_t ftime;
   struct timeval tvp[2];
-  int oumask;
+  mode_t oumask;
   
   /* in case we try to NULL out the file... */
   tvp[0].tv_sec = tvp[1].tv_sec = 0;

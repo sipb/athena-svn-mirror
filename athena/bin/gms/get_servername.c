@@ -13,14 +13,13 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: get_servername.c,v 1.4 1998-12-03 19:38:29 ghudson Exp $";
+static const char rcsid[] = "$Id: get_servername.c,v 1.5 1999-09-21 01:41:40 danw Exp $";
 
 #include "globalmessage.h"
 #include <hesiod.h>
 #include "hesiod_err.h"
 
-Code_t get_servername(ret_name)
-     char ***ret_name;		/* pointer to array of string... */
+Code_t get_servername(char ***ret_name)
 {
   char **retval, **_data;	/* for copying out the hesiod data */
   int datacnt, i;		/* number of hesiod records returned */

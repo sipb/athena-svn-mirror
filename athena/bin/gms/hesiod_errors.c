@@ -13,14 +13,13 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: hesiod_errors.c,v 1.4 1998-12-03 19:38:31 ghudson Exp $";
+static const char rcsid[] = "$Id: hesiod_errors.c,v 1.5 1999-09-21 01:41:40 danw Exp $";
 
+#include "globalmessage.h"
 #include "hesiod_err.h"
 #include <hesiod.h>
 
-typedef int Code_t;
-
-Code_t hesiod_error()
+Code_t hesiod_error(void)
 {
   init_hes_err_tbl();
   

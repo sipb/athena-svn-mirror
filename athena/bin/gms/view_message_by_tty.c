@@ -13,12 +13,11 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: view_message_by_tty.c,v 1.4 1998-12-03 19:38:33 ghudson Exp $";
+static const char rcsid[] = "$Id: view_message_by_tty.c,v 1.5 1999-09-21 01:41:41 danw Exp $";
 
 #include "globalmessage.h"
 
-void view_message_by_tty(message)
-     char *message;
+void view_message_by_tty(char *message)
 {
   char *ptr;
 

@@ -13,19 +13,19 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: view_message_by_zephyr.c,v 1.8 1998-12-03 19:38:33 ghudson Exp $";
+static const char rcsid[] = "$Id: view_message_by_zephyr.c,v 1.9 1999-09-21 01:41:41 danw Exp $";
 
 #include "globalmessage.h"
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <syslog.h>
+#include <unistd.h>
 #include <com_err.h>
 
-void view_message_by_zephyr(message)
-     char *message;
+void view_message_by_zephyr(char *message)
 {
-  char *whoami, *getlogin();
+  char *whoami;
   char *ptr;
   
   whoami = getenv("USER");

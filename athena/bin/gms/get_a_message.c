@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: get_a_message.c,v 1.4 1998-12-03 19:38:28 ghudson Exp $";
+static const char rcsid[] = "$Id: get_a_message.c,v 1.5 1999-09-21 01:41:39 danw Exp $";
 
 #include "globalmessage.h"
 #include <syslog.h>
@@ -24,8 +24,7 @@ static const char rcsid[] = "$Id: get_a_message.c,v 1.4 1998-12-03 19:38:28 ghud
  * code of some sort.
  */
 
-Code_t get_a_message(buf)
-     char **buf;
+Code_t get_a_message(char **buf)
 {
   Code_t status;
   int size;

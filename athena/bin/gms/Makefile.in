@@ -1,0 +1,72 @@
+# $Id: Makefile.in,v 1.1 1999-09-21 01:41:38 danw Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+lbindir=@lbindir@
+mandir=@mandir@
+
+CC=@CC@
+DEFS=@DEFS@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS}
+LDFLAGS=@LDFLAGS@
+LIBS=-lhesiod -lcom_err @LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+
+all: get_message messaged
+
+CLIENTOBJS=	get_message.o check_viewable.o gethost_err.o \
+		gethost_errors.o get_a_message.o get_fallback_file.o \
+		get_message_from_server.o get_servername.o \
+		globalmessage_err.o hesiod_err.o hesiod_errors.o \
+		put_fallback_file.o read_to_memory.o \
+		view_message_by_tty.o view_message_by_zephyr.o
+
+SERVEROBJS=	message_daemon.o globalmessage_err.o
+
+get_message: ${CLIENTOBJS}
+	${CC} ${LDFLAGS} -o get_message ${CLIENTOBJS} ${LIBS}
+
+messaged: ${SERVEROBJS}
+	${CC} ${LDFLAGS} -o messaged ${SERVEROBJS} ${LIBS}
+
+globalmessage_err.h globalmessage_err.c: globalmessage_err.et
+	compile_et ${srcdir}/globalmessage_err.et
+
+gethost_err.h gethost_err.c: gethost_err.et
+	compile_et ${srcdir}/gethost_err.et
+
+hesiod_err.h hesiod_err.c: hesiod_err.et
+	compile_et ${srcdir}/hesiod_err.et
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} get_message ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} messaged ${DESTDIR}${sbindir}
+	${INSTALL} -m 444 ${srcdir}/get_message.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f get_message ${CLIENTOBJS}
+	rm -f messaged ${SERVEROBJS}
+	rm -f globalmessage_err.c globalmessage_err.h
+	rm -f gethost_err.c gethost_err.h
+	rm -f hesiod_err.c hesiod_err.h
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
+
+gethost_errors.o: gethost_err.h
+get_message.o message_daemon.o: globalmessage_err.h
+hesiod_errors.o get_servername.o: hesiod_err.h

@@ -13,20 +13,17 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: get_message.c,v 1.8 1998-12-03 19:38:29 ghudson Exp $";
+static const char rcsid[] = "$Id: get_message.c,v 1.9 1999-09-21 01:41:39 danw Exp $";
 
 #include "globalmessage.h"
-void Usage();
+void Usage(char *pname, char *errname);
 
 #include <stdio.h>
 #include <sys/types.h>
 #include <syslog.h>
 #include <com_err.h>
 
-
-int main (argc, argv)
-     int argc;
-     char *argv[];
+int main(int argc, char **argv)
 {
   char **xargv = argv;
   int xargc = argc;
@@ -84,8 +81,7 @@ int main (argc, argv)
   exit(0);
 }
 
-void Usage(pname, errname)
-     char *pname, *errname;
+void Usage(char *pname, char *errname)
 {
   fprintf(stderr, "%s <%s>: Usage: %s [-zephyr|-z] [-new|-n]\n",
 	  pname, errname, pname);
