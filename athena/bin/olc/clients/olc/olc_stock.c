@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.9 1990-04-25 16:26:43 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.10 1990-04-26 21:06:08 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -88,7 +88,7 @@ do_olc_stock(arguments)
 	  continue;
 	}
 
-      arguments = handle_argument(arguments, &Request);
+      arguments = handle_argument(arguments, &Request, &status);
       if(arguments == (char **) NULL)   /* error */
 	return(ERROR);
     }
