@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.4 1990-11-14 16:04:37 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.5 1991-01-23 15:14:05 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.4 1990-11-14 16:04:37 epeisach Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server_v1.c,v 1.5 1991-01-23 15:14:05 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -25,6 +25,10 @@ static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/
 
 extern char qcurrency[];             /* The quota currency */
 char *set_service();
+long uid_add_string();
+
+void Quota_report_log(), Quota_report_group_log(), 
+    Quota_modify_log(), Quota_modify_group_log();
 
 
 quota_error_code QuotaReport_v1(h, auth, qid, qreport, cks)
@@ -46,12 +50,15 @@ quota_report *qreport;
 
 	CHECK_PROTECT();
 
+	syslog(LOG_INFO, "v1 request received");
 	if (QD || !access(SHUTDOWNFILE, F_OK)) return(QDBDOWN);
 
 	service = set_service((char *) qid->service);
 	if(ret=check_krb_auth(h, auth, &ad)) 
 	    return QBADTKTS;
 	make_kname(ad.pname, ad.pinst, ad.prealm, name);
+
+	syslog(LOG_INFO, "v1 request from %x", ad.address);
 
 	if(!is_sacct(name, service))
 	    return QNOAUTH;
@@ -60,7 +67,7 @@ quota_report *qreport;
 
 	/* This machine is authorized to connect */
 
-	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+	parse_username(qid->username, qprincipal, qinstance, qrealm);
 	(void) strncpy(quotarec.name, qprincipal, ANAME_SZ);
 	(void) strncpy(quotarec.instance, qinstance, INST_SZ);
 	(void) strncpy(quotarec.realm, qrealm, REALM_SZ);    
@@ -96,7 +103,7 @@ quota_report *qreport;
 	    return QDBASEERROR;
 	}
 
-	QuotaReport_notify(qid, qreport, &quotarec);
+	(void) QuotaReport_notify(qid, qreport, &quotarec);
 	Quota_report_log(qid, qreport);
 	return 0;
     }
@@ -108,7 +115,7 @@ quota_identifier *qid;
 quota_return_v1 *qret;
     {
 	AUTH_DAT ad;
-	char name[MAX_K_NAME_SZ];
+	unsigned char name[MAX_K_NAME_SZ];
 	char *service;
 	char qprincipal[ANAME_SZ], qinstance[INST_SZ], qrealm[REALM_SZ];
 	char kprincipal[ANAME_SZ], kinstance[INST_SZ], krealm[REALM_SZ];
@@ -130,19 +137,23 @@ quota_return_v1 *qret;
 	qret->currency[0] = NULL;
 	qret->message[0] = NULL;
 
+	syslog(LOG_INFO, "v1 request received");
+
 	if(check_krb_auth(h, auth, &ad))
 	    return QBADTKTS;
 
-	make_kname(ad.pname, ad.pinst, ad.prealm, name);
+	syslog(LOG_INFO, "v1 request from %x", ad.address);
 
-	if(is_suser(name)) authuser = 1;
+	make_kname(ad.pname, ad.pinst, ad.prealm, (char *)name);
 
-	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+	if(is_suser((char *) name)) authuser = 1;
+
+	parse_username(qid->username, qprincipal, qinstance, qrealm);
 	(void) strncpy(quotarec.name, qprincipal, ANAME_SZ);
 	(void) strncpy(quotarec.instance, qinstance, INST_SZ);
 	(void) strncpy(quotarec.realm, qrealm, REALM_SZ);    
 
-	parse_username((char *) name, kprincipal, kinstance, krealm);
+	parse_username(name, kprincipal, kinstance, krealm);
 	if(((strcmp(quotarec.name, kprincipal) != 0) || 
 	    (strcmp(quotarec.instance, kinstance) != 0) ||
 	    (strcmp(quotarec.realm, krealm) != 0)) && (authuser == 0)) 
@@ -206,6 +217,8 @@ quota_value qamount;
 	if(check_krb_auth(h, auth, &ad))
 	    return QBADTKTS;
 
+	syslog(LOG_INFO, "v1 request from %x", ad.address);
+	
 	make_kname(ad.pname, ad.pinst, ad.prealm, name);
 
 	if(!is_suser(name))
@@ -218,7 +231,7 @@ quota_value qamount;
 	if(qamount < 0) 
 	    return QNONEG;
 	
-	parse_username((char *) qid->username, qprincipal, qinstance, qrealm);
+	parse_username(qid->username, qprincipal, qinstance, qrealm);
 
 	/* Handle U_NEW special..., all others require the user to be
 	   present in the database, so get entry... */
@@ -251,7 +264,7 @@ quota_value qamount;
 	       the V1 client did not have the new error messages. */
 	    /* This code is for forward compatibility */
             make_kname(qprincipal, qinstance, qrealm, uname);
-            if ((quotarec.uid = (long) uid_add_string(uname)) < (long)0)
+            if ((quotarec.uid = uid_add_string(uname)) < (long)0)
                 return(QDBASEERROR);
 
 #ifdef DEBUG
