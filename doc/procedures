@@ -1,0 +1,106 @@
+This file contains a description of the process developers should go
+through to get changes into the source tree.  Although it discusses
+the use of CVS, it is not a CVS tutorial; read the CVS info pages
+(available in M-x info in emacs on Athena) for a general introduction
+to CVS.  Areas covered in this file are:
+
+	Checking out a working directory
+	Preparing changes for review, and reviewing changes
+	When to update the doc/news file
+	When to update the doc/third-party file
+
+You should use cvs from the gnu locker with the source repository.
+People without write access to the repository can use "cvs -u" (a
+local modification to CVS) to access the repository without making
+read locks.  If you do not have write access to the repository and you
+want to submit a change, follow the guidelines below up and including
+sending mail to source-reviewers, and note in your mail that your
+reviewer should check in the change because you cannot do so.
+
+Checking out a working directory
+--------------------------------
+
+Set CVSROOT to "/afs/dev.mit.edu/source/repository" before trying to
+check out a working directory.
+
+The entire source tree is very large.  You can check it out with "cvs
+co all", but in almost all cases this would be a big waste of space.
+Simply check out a subdirectory of the source tree with a command like
+"cvs co athena/bin/olc".
+
+CVS knows nothing about AFS permissions, so all directories created
+will have the same permissions as their parent.  It is generally
+safest to do your checkouts in a private area of the filesystem.
+
+Preparing changes for review, and reviewing changes
+---------------------------------------------------
+
+Changes to the doc hierarchy do not typically need to be reviewed;
+notification is typically good enough, since no software will break as
+a result of changes to the source tree documentation.
+
+Be sure to do a "cvs update" in your working directory to merge in
+changes other people may have made.  (You can do a "cvs -n update" to
+see what changes need to be merged in without actually doing
+anything.)  Be sure to test your changes before submitting them for
+review.
+
+Prepare your changes with "cvs diff -c" piped to a file.  (Do not cut
+and paste diffs from an xterm; your tabs will be converted to spaces
+and the diffs will not apply properly.)  Use "cvs diff -c -N" if you
+added new files.  Look over your changes; see if you left anything in
+that you meant to take out, and be sure that you haven't been sloppy
+about indentation, spacing, or comments.  Always be consistent with
+nearby code when making changes.  See the file "standards" in this
+directory for more guidelines about changes to the tree.
+
+Send your diffs, along with a clear description of the change you are
+making, to source-reviewers@mit.edu.
+
+Ideally, at least one person will respond to your mail within a day or
+two, either expressing concerns or signing onto your change.  You
+should wait at least one full working day for people to voice their
+objections.  If you receive objections or requests for further
+information from staff members, you must either satisfy those concerns
+or resolve the issue with the release team before committing your
+change.  If after one day, you have received no objections and someone
+has signed onto your change, you may commit your change, noting who
+reviewed it.  If no one responds within five days, you may commit your
+change with the comment that no one reviewed it in five days.
+
+When reviewing a change, be sure to make your position on the change
+clear.  Say "I object to this change" if you are not merely voicing a
+concern, or "I would like these questions answered before this change
+is committed" if you have asked questions and are not merely curious.
+When your objections are responded to, you should in turn respond in a
+timely fashion saying whether your objections have been satisfied or
+not.  If the dispute appears intractable, say so, so that the issue
+may be brought up before the release team.
+
+If you have reviewed a change carefully and have found nothing wrong
+with it, and no one else has responded to the change, you should sign
+onto the change rather than remaining silent.  You are encouraged to
+try out changes (by checking out your own working directory and
+applying the patch) before signing onto them, but for small, obvious
+changes to big modules the inconvenience outweights the benefit of
+this consideration.
+
+When to update the doc/news file
+--------------------------------
+
+If you have just committed a change which will result in a significant
+user-visible change to the next release, you should add an item to the
+doc/news file.  A bugfix is not a significant user-visible change;
+items in the news file should be restricted to major changes (such as
+upgrades of third-party software or addition of new functionality) or
+changes which could cause people to complain.  The news file will be
+the primary source of information for the release notes during a
+release cycle.
+
+When to update the doc/third-party file
+---------------------------------------
+
+If you add a new piece of third-party software or import a new
+version, you should look over doc/third-party and see if any notes
+should be added or modified.  This file is instrumental in locating
+new versions of software.
