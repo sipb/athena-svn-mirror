@@ -11,10 +11,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.14 1988-06-29 16:51:57 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.15 1988-06-30 18:19:21 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.14 1988-06-29 16:51:57 jtkohl Exp $";
+static char rcsid_ZRetrieveSubscriptions_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZRetSubs.c,v 1.15 1988-06-30 18:19:21 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -60,9 +60,13 @@ static Code_t Z_RetSubs(notice, nsubs)
 	register ZNotice_t *notice;
 	int *nsubs;
 {
-	int i,retval,nrecv,gimmeack;
+	int retval,nrecv,gimmeack;
+	register int i;
 	ZNotice_t retnotice;
 	char *ptr,*end,*ptr2;
+	fd_set read, write, except;
+	struct timeval tv;
+	int gotone;
 
 	retval = ZFlushSubscriptions();
 
@@ -89,17 +93,38 @@ static Code_t Z_RetSubs(notice, nsubs)
 	__subscriptions_list = (ZSubscription_t *) 0;
 
 	while (!nrecv || !gimmeack) {
-		if ((retval = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
-					ZCompareMultiUIDPred,
-					(char *)&notice->z_multiuid))
-		    != ZERR_NONE)
-			return (retval);
+		tv.tv_sec = 0;
+		tv.tv_usec = 500000;
+		for (i=0;i<HM_TIMEOUT*2;i++) { /* 30 secs in 1/2 sec
+						  intervals */
+			gotone = 0;
+			if (select(0, &read, &write, &except, &tv) < 0)
+				return (errno);
+			retval = ZCheckIfNotice(&retnotice,
+						(struct sockaddr_in *)0,
+						ZCompareMultiUIDPred,
+						(char *)&notice->z_multiuid);
+			if (retval == ZERR_NONE) {
+				gotone = 1;
+				break;
+			}
+			if (retval != ZERR_NONOTICE)
+				return(retval);
+		}
+		
+		if (!gotone)
+			return(ETIMEDOUT);
 
 		if (retnotice.z_kind == SERVNAK) {
 			ZFreeNotice(&retnotice);
 			return (ZERR_SERVNAK);
 		}	
-
+		/* non-matching protocol version numbers means the
+		   server is probably an older version--must punt */
+		if (strcmp(notice->z_version,retnotice.z_version)) {
+			ZFreeNotice(&retnotice);
+			return(ZERR_VERS);
+		}
 		if (retnotice.z_kind == SERVACK &&
 		    !strcmp(retnotice.z_opcode,notice->z_opcode)) {
 			ZFreeNotice(&retnotice);

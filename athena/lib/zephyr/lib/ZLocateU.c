@@ -10,10 +10,10 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.18 1988-06-29 16:40:52 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.19 1988-06-30 18:19:07 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.18 1988-06-29 16:40:52 jtkohl Exp $";
+static char rcsid_ZLocateUser_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.19 1988-06-30 18:19:07 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -28,6 +28,10 @@ Code_t ZLocateUser(user, nlocs)
     ZNotice_t notice, retnotice;
     char *ptr, *end;
     int nrecv, ack;
+    fd_set read, write, except;
+    int gotone;
+    struct timeval tv;
+
     retval = ZFlushLocations();
 
     if (retval != ZERR_NONE && retval != ZERR_NOLOCATIONS)
@@ -54,14 +58,37 @@ Code_t ZLocateUser(user, nlocs)
     nrecv = ack = 0;
 
     while (!nrecv || !ack) {
-	    if ((retval = ZIfNotice(&retnotice, (struct sockaddr_in *) 0,
-				    ZCompareMultiUIDPred,
-				    (char *)&notice.z_multiuid)) != ZERR_NONE)
-		    return (retval);
+	    tv.tv_sec = 0;
+	    tv.tv_usec = 500000;
+	    for (i=0;i<HM_TIMEOUT*2;i++) { /* 30 secs in 1/2 sec
+					      intervals */
+		    gotone = 0;
+		    if (select(0, &read, &write, &except, &tv) < 0)
+			    return (errno);
+		    retval = ZCheckIfNotice(&retnotice,
+					    (struct sockaddr_in *)0,
+					    ZCompareMultiUIDPred,
+					    (char *)&notice.z_multiuid);
+		    if (retval == ZERR_NONE) {
+			    gotone = 1;
+			    break;
+		    }
+		    if (retval != ZERR_NONOTICE)
+			    return(retval);
+	    }
+		
+	    if (!gotone)
+		    return(ETIMEDOUT);
 
 	    if (retnotice.z_kind == SERVNAK) {
 		    ZFreeNotice(&retnotice);
 		    return (ZERR_SERVNAK);
+	    }
+	    /* non-matching protocol version numbers means the
+	       server is probably an older version--must punt */
+	    if (strcmp(notice.z_version,retnotice.z_version)) {
+		    ZFreeNotice(&retnotice);
+		    return(ZERR_VERS);
 	    }
 	    if (retnotice.z_kind == SERVACK &&
 		!strcmp(retnotice.z_opcode,LOCATE_LOCATE)) {
