@@ -1,7 +1,7 @@
 /*
  *   Disk quota reporting program.
  *
- *   $Id: quota.c,v 1.22 1995-08-23 19:00:08 cfields Exp $
+ *   $Id: quota.c,v 1.23 1999-01-26 01:40:11 ghudson Exp $
  */
 
 #ifdef POSIX
@@ -39,17 +39,19 @@
 #if defined(ultrix) || defined(_I386) || defined(sgi)
 #include <sys/stat.h>
 #include <sys/quota.h>
+#elif defined(__NetBSD__)
+#include <ufs/ufs/quota.h>
 #else
 #include <ufs/quota.h>
 #endif
 
-#ifdef ultrix
+#if defined(ultrix)
 #include <sys/mount.h>
 #include <fstab.h>
 #include <sys/fs_types.h>
 #define mntent fs_data
 struct fs_data mountbuffer[NMOUNT];
-#else
+#elif !defined(__NetBSD__)
 #include <mntent.h>
 #endif
 
@@ -312,7 +314,7 @@ showquotas(id,name)
 	}
     }
 
-#if defined(SOLARIS)
+#if defined(SOLARIS) || defined(__NetBSD__) || defined(linux)
     /* Don't bother with NFS/UFS yet */
 #else
     
@@ -461,7 +463,7 @@ showquotas(id,name)
 #endif
 
 #endif /* !_IBMR2 */
-#endif /* !SOLARIS */
+#endif /* !SOLARIS || __NetBSD__ || linux */
   
     /* Check afs volumes */
     for(p = attachtab_first; p!=NULL; p=p->next) {
@@ -989,7 +991,7 @@ fmttime(buf, time)
     sprintf(buf, "%.1f %s", (double)time/cunits[i].c_secs, cunits[i].c_str);
 }
 
-#ifdef SOLARIS
+#if defined(SOLARIS) || defined(__NetBSD__) || defined(linux)
 verify_filesystems()
 {
 }
