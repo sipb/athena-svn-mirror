@@ -79,11 +79,11 @@
 /* Define if you have the usleep function.  */
 #undef HAVE_USLEEP
 
-/* Define if you have the <alsa/asoundlib.h> header file.  */
-#undef HAVE_ALSA_ASOUNDLIB_H
-
 /* Define if you have the <CoreAudio/CoreAudio.h> header file.  */
 #undef HAVE_COREAUDIO_COREAUDIO_H
+
+/* Define if you have the <alsa/asoundlib.h> header file.  */
+#undef HAVE_ALSA_ASOUNDLIB_H
 
 /* Define if you have the <dlfcn.h> header file.  */
 #undef HAVE_DLFCN_H

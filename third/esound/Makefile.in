@@ -738,29 +738,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-audio.lo audio.o : audio.c esd.h config.h getopt.h audio_alsa09.c
-clients.o: clients.c esd-server.h esd.h config.h getopt.h
-esd.o: esd.c esd-server.h esd.h config.h getopt.h esd-config.h
-esd_config.lo esd_config.o : esd_config.c esd-config.h getopt.h
-esdcat.o: esdcat.c esd.h getopt.h
-esdctl.o: esdctl.c esd.h getopt.h
-esddsp.lo esddsp.o : esddsp.c config.h getopt.h esd.h
-esdfile.lo esdfile.o : esdfile.c esd.h getopt.h
-esdfilt.o: esdfilt.c esd.h getopt.h
-esdlib.lo esdlib.o : esdlib.c config.h esd.h genrand.h getopt.h
-esdloop.o: esdloop.c esd.h getopt.h
-esdmgr.lo esdmgr.o : esdmgr.c esd.h getopt.h
-esdmon.o: esdmon.c esd.h getopt.h
-esdplay.o: esdplay.c getopt.h esd.h config.h
-esdrec.o: esdrec.c esd.h getopt.h
-esdsample.o: esdsample.c esd.h getopt.h
-filter.o: filter.c esd-server.h esd.h config.h getopt.h
-genrand.lo genrand.o : genrand.c config.h genrand.h getopt.h
-mix.o: mix.c esd-server.h esd.h config.h getopt.h
-players.o: players.c esd-server.h esd.h config.h getopt.h
-proto.o: proto.c esd-server.h esd.h config.h getopt.h
-samples.o: samples.c esd-server.h esd.h config.h getopt.h
-util.lo util.o : util.c config.h esd.h getopt.h
 
 info-am:
 info: info-recursive
