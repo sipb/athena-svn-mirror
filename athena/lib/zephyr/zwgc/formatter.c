@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/formatter.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_formatter_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/formatter.c,v 1.2 1989-11-02 01:56:07 marc Exp $";
+static char rcsid_formatter_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/formatter.c,v 1.3 1989-11-08 15:00:44 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -25,6 +25,8 @@ static char rcsid_formatter_c[] = "$Header: /afs/dev.mit.edu/source/repository/a
 #include "string_dictionary.h"
 #include "formatter.h"
 #include "text_operations.h"
+
+static int pure_text_length(), env_length();
 
 #ifdef notdef
 static character_class atsign_set = { /* '@' = 0x40 */

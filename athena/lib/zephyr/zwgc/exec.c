@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/exec.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_exec_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/exec.c,v 1.2 1989-11-02 01:55:55 marc Exp $";
+static char rcsid_exec_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/exec.c,v 1.3 1989-11-08 14:59:30 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -33,6 +33,8 @@ static char rcsid_exec_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include "port.h"
 #include "variables.h"
 #include "notice.h"
+
+static int exec_subtree(), exec_fields();
 
 /****************************************************************************/
 /*                                                                          */
