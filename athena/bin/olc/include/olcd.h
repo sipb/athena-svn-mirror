@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.30 1991-03-07 13:24:36 lwvanels Exp $
+ *	$Id: olcd.h,v 1.31 1991-03-26 16:58:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -74,6 +74,9 @@
 #define TICKET_FILE		"/usr/spool/olc/tkt.olc"
 #define SRVTAB_FILE		"/usr/lib/olc/srvtab"
 #ifdef ATHENA
+#define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
+#else
+/* Put your realm here.... */
 #define DFLT_SERVER_REALM	"ATHENA.MIT.EDU"
 #endif /* ATHENA */
 #endif /* KERBEROS */
