@@ -3,7 +3,7 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.7 1991-04-23 15:13:45 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.8 1991-06-30 12:24:16 lwvanels Exp $
  *
  *
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
@@ -12,7 +12,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.7 1991-04-23 15:13:45 lwvanels Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/log.c,v 1.8 1991-06-30 12:24:16 lwvanels Exp $";
 #endif
 #endif
 
@@ -29,6 +29,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 #include <netdb.h>
 #include <stdio.h>
 #include <strings.h>
+#include <hesiod.h>
 
 #ifdef NEEDS_SELECT_MACROS
 #define NBBY    8 /* number of bits in a byte */
@@ -41,7 +42,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ol
 
 #endif
 
-#define DEFAULT_SERVICE_NAME "ols"
+#define HESIOD_LOG_TYPE	"tloc"
 
 static int session_id;
 static int fd;
@@ -49,13 +50,12 @@ static int punt = 0;
 static struct sockaddr_in name;
 
 void
-log_startup(type,log_host,port)
+log_startup(type)
      char *type;
-     char *log_host;
-     int port;
 {
   char buf[BUFSIZ];
   char hostnm[MAXHOSTNAMELEN];
+  char log_host[MAXHOSTNAMELEN];
   char *t,*p;
   struct hostent *hp, *gethostbyname();
   struct servent *service;
@@ -63,20 +63,35 @@ log_startup(type,log_host,port)
   fd_set readfds;
   int nfound,len;
   struct timeval timeout;
+  int port;
+#ifdef HESIOD  
+  char **hesinfo;
 
-  /* Find port number if not already defined */
-  if (port == 0) {
-    if ((service = getservbyname(DEFAULT_SERVICE_NAME,"tcp")) ==
-	(struct servent *) NULL) {
-      punt = 1;
-      return;
-    }
-    port = service->s_port;
+/*
+   Get location of usage logger from hesiod
+   If the hesiod info doesn't exist, no logging to be done
+   should be of the form "loggerhost port_num"
+*/
+
+  if ((hesinfo = hes_resolve(type,HESIOD_LOG_TYPE)) == NULL) {
+    punt = 1;
+    return;
   }
-  else 
-    port = htons(port);
-    
 
+  if (p = index(*hesinfo,' ')) {
+    *p++ = '\0';
+    (void) strcpy(log_host,*hesinfo);
+    port = htons(atoi(p));
+  } else {
+    punt = 1;
+    return;
+  }
+#else
+  /* No hesiod, have to hardcode it in */
+  /* insert whatever's appropriate for you */
+  strcpy(log_host,"whatever.foo.bar");
+  port = htons(2051);
+#endif
   if ((fd = socket(AF_INET,SOCK_DGRAM,0)) < 0) {
     punt = 1;
     return;
