@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: gathrun.sh,v 1.1 2001-05-06 15:53:38 ghudson Exp $
+# $Id: gathrun.sh,v 1.2 2001-05-21 16:02:25 ghudson Exp $
 
 # gathrun - Run a program, or put up an error dialog saying that it
 # doesn't exist.
@@ -12,6 +12,7 @@ case $# in
 1)
   locker=$1
   program=$1
+  shift
   ;;
 *)
   locker=$1
