@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.34 1997-12-31 19:28:48 ghudson Exp $
+ * $Id: finger.c,v 1.35 1998-01-03 16:38:35 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.34 1997-12-31 19:28:48 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.35 1998-01-03 16:38:35 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -109,7 +109,7 @@ static char sccsid[] = "@(#)finger.c	5.8 (Berkeley) 3/13/86";
 #define MIT		'M'	/* MIT office */
 #define SAMENAME	'&'	/* repeat login name in real name */
 #define TALKABLE	0220	/* tty is writable if 220 mode */
-#define MAILDIR 	"/usr/spool/mail/"	/* default mail directory */
+#define MAILDIR 	"/var/mail/"	/* default mail directory */
 
 #ifdef HAVE_UTMPX_H
 struct utmpx user;
@@ -166,7 +166,7 @@ char ACCTLOG[] = "/var/adm/wtmp";
 #ifdef _PATH_LASTLOG
 char LASTLOG[] = _PATH_LASTLOG;		/* last login info */
 #else
-char LASTLOG[] = "/usr/adm/lastlog";
+char LASTLOG[] = "/var/adm/lastlog";
 #endif
 
 char PLAN[] = "/.plan";		/* what plan file is */
