@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v $
- *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.3 1992-01-06 15:55:00 probe Exp $
+ *	$Author: miki $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.4 1994-03-25 15:54:12 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_pathcan_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.3 1992-01-06 15:55:00 probe Exp $";
+static char *rcsid_pathcan_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/pathcan.c,v 1.4 1994-03-25 15:54:12 miki Exp $";
 #endif
 
 #include <stdio.h>
@@ -14,7 +14,9 @@ static char *rcsid_pathcan_c = "$Header: /afs/dev.mit.edu/source/repository/athe
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/stat.h>
-
+#ifdef POSIX
+#include <unistd.h>
+#endif
 #define MAXLINKS	16
 
 extern int	errno;
@@ -37,7 +39,9 @@ struct filestack {
 char	*path_canon(infile)
 	char	*infile;
 {
+#ifndef POSIX
 	extern char *getwd();
+#endif
 	static struct filestack	stack[MAXLINKS];
 	int			stkcnt = 0;	/* Stack counter */
 	struct filestack	*stkptr = &stack[0]; /*Always = &stack[stkcnt]*/
@@ -68,7 +72,11 @@ char	*path_canon(infile)
 		 * assume this is happening relative to the current
 		 * directory.
 		 */
+#ifdef POSIX
+                if (getcwd(outpath, sizeof(outpath)) == NULL) {
+#else
 		if (getwd(outpath) == NULL) {
+#endif
 #ifdef TEST
 			printf("getwd returned error, %s", outpath);
 #endif
@@ -100,7 +108,7 @@ char	*path_canon(infile)
 		 * Peel off the next token and bump the pointer
 		 */
 		token = stkptr->ptr;
-		if (cp = index(stkptr->ptr, '/')) {
+		if (cp = strchr(stkptr->ptr, '/')) {
 			*cp = '\0';
 			stkptr->ptr = cp+1;
 		} else
@@ -117,7 +125,7 @@ char	*path_canon(infile)
 		 * outpath, and continue.
 		 */
 		if (!strcmp(token, "..")) {
-			if (cp = rindex(outpath, '/'))
+			if (cp = strrchr(outpath, '/'))
 				*(outpathend = cp) = '\0';
 			continue;
 		}
