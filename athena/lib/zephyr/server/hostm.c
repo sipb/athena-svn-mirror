@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.21 1988-02-28 13:00:55 jtkohl Exp $";
+static char rcsid_hostm_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.22 1988-06-03 14:37:05 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -817,7 +817,6 @@ hostm_dump_hosts(fp)
 FILE *fp;
 {
 	register int i;
-	char buf[512], scratch[64];
 	for (i = 0; i < num_hosts; i++) {
 		(void) fprintf(fp, "%s/%d:\n", 
 			       inet_ntoa((all_hosts[i].host)->zh_addr.sin_addr),
