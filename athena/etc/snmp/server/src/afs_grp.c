@@ -1,15 +1,49 @@
 /*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the AFS (Andrew File System) portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log $
  *
  */
 
-#include "include.h"
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/afs_grp.c,v 1.2 1990-04-26 15:22:30 tom Exp $";
+#endif
 
-#ifdef ATHENA
+#include "include.h"
+#include <mit-copyright.h>
+
+#ifdef MIT
 #ifdef AFS
-#include <krb.h>
+
+/*
+ * This file contains the cache size and directory.
+ */
 
 char *cache_file = "/usr/vice/etc/cacheinfo";
 
+static int crock_cachesize();
+
+/*
+ * Function:    lu_afs()
+ * Description: Top level callback. Supports the following:
+ *                  N_AFSCACHESIZE- (INT) afs cache size
+ * Returns:     BUILD_ERR/BUILD_SUCCESS
+ */
+
+int
 lu_afs(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -39,12 +73,23 @@ lu_afs(varnode, repl, instptr, reqflg)
       repl->val.value.intgr = crock_cachesize();
       return(BUILD_SUCCESS);
     default:
-      syslog (LOG_ERR, "lu_kerberos: bad offset: %d", varnode->offset);
+      syslog (LOG_ERR, "lu_afs: bad offset: %d", varnode->offset);
       return(BUILD_ERR);
     }
 }
 
 
+
+/*
+ * Function:    crock_cachesize()
+ * Description: Reads the cachefile, and returns the cache size.
+ *              The cache description line better be the first line and
+ *              the size after the last semi-colon.
+ * Returns:     size of cache if successful
+ *              0 if error
+ */
+
+static int
 crock_cachesize()
 {
   FILE *fp;
@@ -74,4 +119,4 @@ crock_cachesize()
 }
 
 #endif AFS
-#endif ATHENA
+#endif MIT
