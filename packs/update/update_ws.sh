@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.28 1997-09-02 22:30:25 jweiss Exp $
+# $Id: update_ws.sh,v 1.29 1997-12-06 21:25:47 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -69,15 +69,14 @@ if [ ! -f "$CONFDIR/version" ]; then
 		> "$CONFDIR/version"
 fi
 
-export NEWVERS VERSION
-NEWVERS=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
-VERSION=`awk '{a=$5}; END{print a}' "$CONFDIR/version"`
+newvers=`awk '{a=$5}; END{print a}' /srvd/.rvdinfo`
+version=`awk '{a=$5}; END{print a}' "$CONFDIR/version"`
 
 # A temporary backward compatibility hack, necessary as long as there are
 # 7.7 and 8.0 machines upgrading to the new release.
-case "$VERSION" in
+case "$version" in
 [0-9].[0-9][A-Z])
-	VERSION=`echo $VERSION | awk '{ print substr($1, 1, 3) "." \
+	version=`echo $version | awk '{ print substr($1, 1, 3) "." \
 		index("ABCDEFGHIJKLMNOPQRSTUVWXYZ", substr($1, 4, 1)) - 1; }'`
 	;;
 esac
@@ -104,7 +103,7 @@ fi
 # SGIs are ever brought back to the normal /srvd vs. /os distinction,
 # we can just run /etc/athena/save_cluster_info like we used to before
 # version 1.9 of this file.
-AUTOUPDATE=false /bin/athena/getcluster -b `hostname` "$NEWVERS" > \
+AUTOUPDATE=false /bin/athena/getcluster -b `hostname` "$newvers" > \
 	/var/athena/clusterinfo.bsh.update
 if [ $? -ne 0 -o ! -s /var/athena/clusterinfo.bsh.update ]; then
 	# No updates for machines without cluster info.
@@ -118,9 +117,9 @@ fi
 rm -f /var/athena/clusterinfo.bsh.update
 
 # Check if we're already in the middle of an update.
-if [ "$VERSION" = Update -o "$VERSION" = Reboot ]; then
+if [ "$version" = Update -o "$version" = Reboot ]; then
 	if [ ! -f /var/tmp/update.check ]; then
-		logger -t $HOST -p user.notice at revision $VERSION
+		logger -t $HOST -p user.notice at revision $version
 		touch /var/tmp/update.check
 	fi
 
@@ -132,7 +131,7 @@ fi
 # Find out if the version in /srvd/.rvdinfo is newer than
 # /etc/athena/version.  Distinguish between major, minor, and patch
 # releases so that we can desynchronize patch releases.
-packsnewer=`echo "$NEWVERS $VERSION" | awk '{
+packsnewer=`echo "$newvers $version" | awk '{
 	split($1, v1, ".");
 	split($2, v2, ".");
 	if (v1[1] + 0 > v2[1] + 0)
@@ -192,7 +191,7 @@ if [ "$method" = Auto -a "$AUTOUPDATE" != true -a "$PUBLIC" != true ]; then
 	us to do it for you. Thank you.  -Athena Operations
 EOF
 	if [ ! -f /usr/tmp/update.check ]; then
-		logger -t $HOST -p user.notice at revision $VERSION
+		logger -t $HOST -p user.notice at revision $version
 		cp /dev/null /usr/tmp/update.check
 	fi
 
@@ -286,12 +285,8 @@ if [ "$method" = Auto ]; then
 	echo
 	echo PLEASE DO NOT DISTURB IT WHILE THIS IS IN PROGRESS.
 	echo
-	sh "$LIBDIR/do-update" "$method" < /dev/null 2>&1 \
-		| tee /var/athena/update.log
+	exec sh "$LIBDIR/do-update" "$method" "$version" "$newvers" \
+		< /dev/null 2>&1 | tee /var/athena/update.log
 else
-	sh "$LIBDIR/do-update" "$method" 2>&1 | tee /var/athena/update.log
+	exec sh "$LIBDIR/do-update" "$method" 2>&1 | tee /var/athena/update.log
 fi
-echo "Update partially completed, system will reboot in 15 seconds."
-sync
-sleep 15
-exec reboot
