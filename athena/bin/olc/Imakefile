@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.13 1991-02-25 16:12:57 lwvanels Exp $
+# $Id: Imakefile,v 1.14 1991-03-24 14:49:35 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # Imakefile for top level directory.
@@ -32,11 +32,15 @@ install::
 #endif
 
 mytags::
-	make ${MFLAGS} olc_tags olcd_tags rpd_tags polld_tags
+	make ${MFLAGS} olc_tags olcd_tags rpd_tags polld_tags xolc_tags
 
 olc_tags::
 	$(TAGS) clients/tty//**/*.[ch] clients/lib//**/*.[ch] clients/parser//**/*.[ch] clients/olc//**/*.[ch] common//**/*.[ch] include/olc//**/*.[ch]
 	$(MV) TAGS TAGS.olc
+
+xolc_tags::
+	$(TAGS) clients/lib//**/*.[ch] clients/motif//**/*.[ch] common//**/*.[ch] include/olc//**/*.[ch]
+	$(MV) TAGS TAGS.xolc
 
 olcd_tags::
 	$(TAGS) common//**/*.[ch] include/olc//**/*.[ch] include//**/*.[ch] server/olcd//**/*.[ch]
