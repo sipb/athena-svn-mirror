@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.5 1990-11-16 07:34:47 lwvanels Exp $
+# $Id: Imakefile,v 1.6 1990-11-17 19:10:51 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/Imakefile,v $
 #
 # Imakefile for top level directory.
@@ -24,3 +24,14 @@ world2:
 install::
 	$(RM) $(DESTDIR)/usr/lib/olc
 	ln -s /site/usr/lib/olc $(DESTDIR)/usr/lib/olc
+
+tags::
+	make ${MFLAGS} olc_tags server_tags
+
+olc_tags::
+	$(TAGS) clients/tty//**/*.[ch] clients/lib//**/*.[ch] clients/parser//**/*.[ch] clients/olc//**/*.[ch] common//**/*.[ch] include/olc//**/*.[ch]
+	$(MV) TAGS TAGS.olc
+
+server_tags::
+	$(TAGS) common//**/*.[ch] include/olc//**/*.[ch] server+//**/*.[ch]
+	$(MV) TAGS TAGS.server
