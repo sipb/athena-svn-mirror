@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.1 2002-02-03 15:45:14 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2002-02-03 16:18:07 ghudson Exp $
 
 dist:
 	cp "$$CONFIG_SITE" config.site.athena
@@ -17,4 +17,4 @@ all:
 check:
 
 install:
-	${MAKE} install
+	${MAKE} install DESTDIR="$$SRVD"
