@@ -2,6 +2,15 @@
 
 case "$HOSTTYPE" in
 sun4)
+	echo "/etc/athena/snmpd"			>> "$DEADFILES"
+	echo "/etc/athena/snmpd.conf"			>> "$DEADFILES"
+	echo "/kernel/drv/atalk"			>> "$DEADFILES"
+	echo "/kernel/drv/atalk.conf"			>> "$DEADFILES"
+	echo "/kernel/strmod/adsp"			>> "$DEADFILES"
+	echo "/kernel/strmod/at_atp"			>> "$DEADFILES"
+	echo "/kernel/strmod/ad_sig"			>> "$DEADFILES"
+	echo "/sbin/hostinfo"				>> "$DEADFILES"
+
 	echo "/etc/inet/services"			>> "$CONFCHG"
 	echo "/etc/mail/sendmail.cf"			>> "$CONFCHG"
 	;;
