@@ -509,7 +509,7 @@
 #define CompatibilityFlags /**/
 #endif
 #ifndef TagsCmd
-#define TagsCmd etags
+#define TagsCmd etags -t
 #endif
 #ifndef LoaderLibPrefix
 #define LoaderLibPrefix /**/			/* cray does -l libX11.a */
