@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: syncupdate.c,v 1.2 2000-02-23 16:29:42 ghudson Exp $";
+static const char rcsid[] = "$Id: syncupdate.c,v 1.2.4.1 2001-10-24 13:13:45 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -24,6 +24,10 @@ static const char rcsid[] = "$Id: syncupdate.c,v 1.2 2000-02-23 16:29:42 ghudson
 #include <fcntl.h>
 #include <errno.h>
 
+#ifdef linux
+#include <libgen.h>
+#endif
+
 #ifndef S_IAMB
 #define S_IAMB 0x1FF	/* Access bits part of struct stat st_mode field */
 #endif
@@ -31,11 +35,14 @@ static const char rcsid[] = "$Id: syncupdate.c,v 1.2 2000-02-23 16:29:42 ghudson
 static void copy(const char *source, const char *tempfile);
 static void open_and_sync(const char *filename);
 static void usage(void);
+#ifdef linux
+static void open_dir_and_sync(const char *filename);
+#endif
 
 int main(int argc, char **argv)
 {
   int c;
-  const char *tempfile = NULL, *source, *dest;
+  char *tempfile = NULL, *source, *dest;
 
   while ((c = getopt(argc, argv, "c:")) != EOF)
     {
@@ -70,6 +77,10 @@ int main(int argc, char **argv)
 	      source, dest, strerror(errno));
       exit(1);
     }
+
+#ifdef linux
+  open_dir_and_sync(dirname(dest));
+#endif
 
   exit(0);
 }
@@ -172,7 +183,29 @@ static void open_and_sync(const char *filename)
   close(fd);
 }
 
+#ifdef linux
+/* Despite the implication of the man page that fsync() will only work on
+   RDWR file descriptors, it also works on directories open RDONLY.
+   Since linux fsync() doesn't flush directory entries, force the issue. */
+static void open_dir_and_sync(const char *filename)
+{
+  int fd;
+
+  fd = open(filename, O_RDONLY, 0);
+  if (fd == -1)
+    {
+      fprintf(stderr, "syncupdate: can't open %s: %s\n", filename,
+	      strerror(errno));
+      exit(1);
+    }
+
+  fsync(fd);
+  close(fd);
+}
+#endif
+
 static void usage(void)
 {
   fprintf(stderr, "Usage: syncupdate [-c tempfile] source dest\n");
+  exit(1);
 }
