@@ -83,6 +83,7 @@ chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
 /etc/athena/masks
 /etc/athena/netparams
 /etc/athena/reactivate
+/etc/athena/rpmupdate
 /etc/athena/save_cluster_info
 /etc/athena/shutdown_notify
 /etc/athena/update_ws
