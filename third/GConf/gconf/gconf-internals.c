@@ -2214,8 +2214,10 @@ gconf_handle_oaf_exception(CORBA_Environment* ev, GError** err)
 void
 gconf_nanosleep(gulong useconds)
 {
-  struct timespec ts={tv_sec: (long int)(useconds/1000000),
-                      tv_nsec: (long int)(useconds%1000000)*1000ul};
+  struct timespec ts;
+
+  ts.tv_sec = (long int)(useconds/1000000);
+  ts.tv_nsec = (long int)(useconds%1000000)*1000ul;
   
   nanosleep(&ts,NULL);
 }
