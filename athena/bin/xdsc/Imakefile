@@ -2,7 +2,11 @@
 /**/# Makefile for xdiscuss
 /**/#
 
-/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.3 1991-07-17 13:19:42 sao Exp $";
+/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.4 1991-07-26 12:58:08 sao Exp $";
+
+#ifdef _AUX_SOURCE
+CC=cc -B/usr/lib/big/
+#endif
 
 INSTDIR=$(ATHBINDIR)
 DEFINES= -I.
