@@ -18,12 +18,12 @@
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *	$Id: t_utils.c,v 1.48 1999-05-23 16:04:20 kcr Exp $
+ *	$Id: t_utils.c,v 1.49 1999-06-04 17:36:00 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: t_utils.c,v 1.48 1999-05-23 16:04:20 kcr Exp $";
+static char rcsid[] ="$Id: t_utils.c,v 1.49 1999-06-04 17:36:00 ghudson Exp $";
 #endif
 #endif
 
@@ -567,6 +567,7 @@ get_prompted_input(prompt, buf, buflen, add_to_hist)
   char *line, *p;
   static int done_gl_init = 0;
 
+  rl_readline_name = client_name();
   line = readline(prompt);
 
   if(line)
