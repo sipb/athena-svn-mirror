@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: dustbuster.c,v 1.1 2001-04-30 15:25:44 ghudson Exp $";
+static const char rcsid[] = "$Id: dustbuster.c,v 1.2 2001-05-30 02:15:28 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -32,11 +32,53 @@ static void ttybust(char **argv);
 static void start_child(char **argv);
 static int xhandler(Display *dpy);
 static void child_handler(int signo);
+static int find_signal(const char *signame);
+static void usage(void);
 
+static const char *progname;
 static pid_t child_pid = 0;
+static int sig = SIGHUP;
 
 int main(int argc, char **argv)
 {
+  const char *signame;
+
+  progname = strrchr(argv[0], '/');
+  progname = (progname != NULL) ? progname + 1 : argv[0];
+
+  /* Parse arguments.  Can't use getopt() because glibc's getopt permutes,
+   * and we really don't want to confuse our options with the subcommand
+   * options.
+   */
+  argv++;
+  while (*argv != NULL && **argv == '-')
+    {
+      if ((*argv)[1] == '-')
+	{
+	  argv++;
+	  break;
+	}
+      switch ((*argv)[1])
+	{
+	case 's':
+	  if ((*argv)[2] != '\0')	/* -sSIGNAME */
+	    signame = *argv + 2;
+	  else if (argv[1] == NULL)
+	    usage();
+	  else
+	    signame = *++argv;		/* -s SIGNAME */
+	  sig = find_signal(signame);
+	  argv++;
+	  break;
+
+	default:
+	  usage();
+	  break;
+	}
+    }
+  if (*argv == NULL)
+    usage();
+
   /* We conditionalize on XSESSION (set by the Athena default xsession
    * script) instead of DISPLAY, so that we won't hold open the
    * display when someone does a tty login via ssh with X forwarding.
@@ -57,7 +99,7 @@ static void xbust(char **argv)
   dpy = XOpenDisplay(NULL);
   if (dpy == NULL)
     {
-      fprintf(stderr, "%s: error: can't open display\n", argv[0]);
+      fprintf(stderr, "%s: error: can't open display\n", progname);
       exit(1);
     }
   XSetIOErrorHandler(xhandler);
@@ -81,7 +123,7 @@ static void ttybust(char **argv)
   if (fd == -1)
     {
       fprintf(stderr, "%s: error: can't open controlling tty: %s\n",
-	      argv[0], strerror(errno));
+	      progname, strerror(errno));
       exit(1);
     }
   close(fd);
@@ -97,7 +139,7 @@ static void ttybust(char **argv)
       fd = open("/dev/tty", O_RDWR, 0);
       if (fd == -1)
 	{
-	  kill(child_pid, SIGHUP);
+	  kill(child_pid, sig);
 	  exit(0);
 	}
       close(fd);
@@ -105,8 +147,8 @@ static void ttybust(char **argv)
     }
 }
 
-/* Set up the SIGCHLD handler and start the child process.  argv is
- * the original dustbuster argument vector.  Sets child_pid.
+/* Set up the SIGCHLD handler and start the child process given by
+ * argv.  Sets child_pid.
  */
 static void start_child(char **argv)
 {
@@ -127,7 +169,7 @@ static void start_child(char **argv)
   sigprocmask(SIG_SETMASK, &oset, NULL);
   if (child_pid == -1)
     {
-      fprintf(stderr, "%s: error: can't create subprocess: %s\n", argv[0],
+      fprintf(stderr, "%s: error: can't create subprocess: %s\n", progname,
 	      strerror(errno));
       exit(1);
     }
@@ -135,8 +177,8 @@ static void start_child(char **argv)
   /* In the child, run the specified program. */
   if (child_pid == 0)
     {
-      execvp(argv[1], argv + 1);
-      fprintf(stderr, "%s: error: can't execute %s: %s\n", argv[0], argv[1],
+      execvp(argv[0], argv);
+      fprintf(stderr, "%s: error: can't execute %s: %s\n", progname, argv[0],
 	      strerror(errno));
       _exit(1);
     }
@@ -147,7 +189,7 @@ static void start_child(char **argv)
  */
 static int xhandler(Display *dpy)
 {
-  kill(child_pid, SIGHUP);
+  kill(child_pid, sig);
   exit(0);
 }
 
@@ -158,4 +200,58 @@ static void child_handler(int signo)
   /* If our child died, we're done. */
   if (waitpid(child_pid, &status, WNOHANG) == child_pid)
     exit(WIFEXITED(status) ? WEXITSTATUS(status) : 1);
+}
+
+static int find_signal(const char *signame)
+{
+  struct {
+    char *name;
+    int sig;
+  } signames[] = {
+    { "ABRT",	SIGABRT },
+    { "ALRM",	SIGALRM },
+    { "FPE",	SIGFPE },
+    { "HUP",	SIGHUP },
+    { "ILL",	SIGILL },
+    { "INT",	SIGINT },
+    { "KILL",	SIGKILL },
+    { "PIPE",	SIGPIPE },
+    { "QUIT",	SIGQUIT },
+    { "SEGV",	SIGSEGV },
+    { "TERM",	SIGTERM },
+    { "USR1",	SIGUSR1 },
+    { "USR2",	SIGUSR2 },
+    { "CHLD",	SIGCHLD },
+    { "CONT",	SIGCONT },
+    { "STOP",	SIGSTOP },
+    { "TSTP",	SIGTSTP },
+    { "TTIN",	SIGTTIN },
+    { "TTOU",	SIGTTOU },
+    { "BUS",	SIGBUS }
+  };
+  int i;
+
+  /* Allow numbers. */
+  if (isdigit(*signame))
+    return atoi(signame);
+
+  /* Allow leading "SIG". */
+  if (strncasecmp(signame, "SIG", 3) == 0)
+    signame += 3;
+
+  /* Now find signal name. */
+  for (i = 0; i < sizeof(signames) / sizeof(*signames); i++)
+    {
+      if (strcasecmp(signames[i].name, signame) == 0)
+	return signames[i].sig;
+    }
+
+  fprintf(stderr, "%s: invalid signal name %s\n", progname, signame);
+  exit(1);
+}
+
+static void usage(void)
+{
+  fprintf(stderr, "Usage: %s [-s signame] program args...\n", progname);
+  exit(1);
 }
