@@ -82,4 +82,8 @@
 ! Prevent Solaris /usr/openwin/lib/app-defaults/XTerm from setting key
 ! translations for PageUp, PageDown, etc..  The "XTerm" at the beginning
 ! here is important, or the openwin app-defaults line will take precedence.
-XTerm*VT100*Translations:	#override
+! Also, map BackSpace to ASCII 127, the erase key in the default tty
+! settings.
+XTerm*VT100*Translations:	#override \
+	~Meta			<Key>BackSpace:	string(\177) \n\
+	Meta			<Key>BackSpace:	string(\033\177)
