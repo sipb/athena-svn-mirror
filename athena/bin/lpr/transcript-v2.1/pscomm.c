@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1986,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.15 1996-09-20 02:09:04 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/pscomm.c,v 1.16 1997-02-06 09:07:50 ghudson Exp $";
 #endif
 /* pscomm.c
  *
@@ -85,6 +85,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.15  1996/09/20 02:09:04  ghudson
+ * BSD -> ANSI string and memory functions
+ *
  * Revision 1.14  1995/10/13 21:09:32  cfields
  * Check for null string before %s'ing it.
  *
@@ -666,37 +669,56 @@ main(argc,argv)            /* MAIN ROUTINE */
         fprintf(stderr,"%s: bad magic number, EOF\n", prog);
 	VOIDC fflush(stderr);
 	croak(THROW_AWAY);
-	}
+    }
     debugp((stderr,"%s: magic number is (%11.11s)\n",prog,magic));
     streamin = stdin;
 
-    if (strncmp(magic,"%!PS-Adobe-",11) == 0) {
+    if (strncmp(magic,"\004%!",3) == 0) {
+	/* PS file from a DOS box... strip the ^D and it's ok */
+	memmove(magic,magic+1,magiccnt-1);
+	magiccnt--;
+    }
+
+    if (strncmp(magic,"%!PS-Adobe",10) == 0) {
 	canReverse = TRUE;
     }
     else if (strncmp(magic,"%!",2) == 0) {
 	canReverse = FALSE;
     }
     else {
+	int bad = 0;
 
 	/* here is where you might test for other file type
 	 * e.g., PRESS, imPRESS, DVI, Mac-generated, etc.
 	 */
+
+	if (strncmp(magic,"<MakerFile ",11) == 0) { /* FrameMaker */
+	    bad = 1;
+	}
+	else if (strncmp(magic,"%PDF-",5) == 0) { /* PDF */
+	    bad = 1;
+	}
 
 	/* final sanity check on the text file, to guard
 	 * against arbitrary binary data
 	 */
 
 	for (i = 0; i < magiccnt; i++) {
-	    if (!isascii(magic[i]) || (!isprint(magic[i]) && !isspace(magic[i]))){
-		fprintf(stderr,"%s: Error: spooled binary file rejected\n",prog);
-		VOIDC fflush(stderr);
-		sprintf(mybuf,"%s/bogusmsg.ps",envget("PSLIBDIR"));
-		if ((streamin = freopen(mybuf,"r",stdin)) == NULL) {
-		    croak(THROW_AWAY);
-		}
-		format = 1;
-		goto printit;
+	    if (!isascii(magic[i]) ||
+		(!isprint(magic[i]) && !isspace(magic[i]))) {
+		bad = 1;
 	    }
+	}
+	
+	if (bad) {
+	    fprintf(stderr,"%s: Error: spooled binary file rejected\n",prog);
+	    VOIDC fflush(stderr);
+	    sprintf(mybuf,"%s/bogusmsg.ps",envget("PSLIBDIR"));
+	    if ((streamin = freopen(mybuf,"r",stdin)) == NULL) {
+		croak(THROW_AWAY);
+	    }
+	    format = 1;
+	    goto printit;
 	}
 
 	VOIDC fstat(fileno(stdin), &sbuf);
