@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.20 1991-03-21 11:54:04 raeburn Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.21 1991-03-25 03:18:36 raeburn Exp $ */
 
 #ifndef lint
 static char rcsid_ZParseNotice_c[] =
@@ -277,7 +277,7 @@ Code_t ZParseNotice(buffer, len, notice)
 	next_field (ptr);
     }
     else
-	notice->z_uid = notice->z_multiuid;
+	notice->z_multiuid = notice->z_uid;
 
     for (i=0;i<Z_MAXOTHERFIELDS && numfields;i++,numfields--) {
 	notice->z_other_fields[i] = ptr;
