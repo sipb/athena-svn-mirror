@@ -1,13 +1,13 @@
 #  This file is part of the Project Athena Global Message System.
 #  Created by: Mark W. Eichin <eichin@athena.mit.edu>
 #  $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v $
-#  $Author: probe $
+#  $Author: epeisach $
 # 
 # 	Copyright (c) 1988 by the Massachusetts Institute of Technology.
 # 	For copying and distribution information, see the file
 # 	"mit-copyright.h". 
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.7 1990-05-01 06:06:27 probe Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.8 1990-07-02 15:46:14 epeisach Exp $
 # Generic one project, one target makefile.
 #
 
@@ -30,7 +30,7 @@ INCLUDE= -I.
 ALLSRCS= $(CSRCS) $(ETSRCS)
 
 
-CFLAGS= ${INCLUDE}
+CFLAGS= -O ${INCLUDE}
 
 DEPEND=touch Make.depend; /usr/athena/makedepend -fMake.depend 
 COMPILE_ET=/usr/athena/compile_et
