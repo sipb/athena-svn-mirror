@@ -15,7 +15,7 @@
 
 /* This file implements the main athdir library calls. */
 
-static char rcsid[] = "$Id: athdir.c,v 1.2 1998-05-30 15:58:35 danw Exp $";
+static char rcsid[] = "$Id: athdir.c,v 1.3 1999-02-08 23:11:33 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -233,7 +233,7 @@ char **athdir_get_paths(char *base_path, char *type,
   string_list *path_list = NULL, *compat_list = NULL;
   int t, j, complete, preferredFlavor, want_break;
   struct stat statbuf;
-  char **current_compat, *compat_env;
+  char **current_compat, **mysyscompat = NULL, *compat_env;
 
   /* If sys is NULL, fall back to ATHENA_SYS if it's set, otherwise
    * use the compiled-in value.
@@ -259,7 +259,7 @@ char **athdir_get_paths(char *base_path, char *type,
 	  if (athdir__parse_string(&compat_list, compat_env, ':'))
 	    return NULL;
 	}
-      syscompat = athdir__make_string_array(&compat_list);
+      syscompat = mysyscompat = athdir__make_string_array(&compat_list);
     }
 
   /* If machine is NULL, use whatever was compiled in. */
@@ -374,6 +374,7 @@ char **athdir_get_paths(char *base_path, char *type,
 	break;
     }
 
+  athdir__free_string_array(mysyscompat);
   return athdir__make_string_array(&path_list);
 }
 
