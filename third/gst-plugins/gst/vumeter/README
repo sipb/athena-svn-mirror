@@ -1,4 +1,0 @@
-Very simple sink that finds the max volume of left, right, and total.  
-You can get a pointer to the values for each for quicker access, so you
-can have a GUI updating the display completely independent of the actual
-audio pipeline.
