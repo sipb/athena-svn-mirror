@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.12.2.2 2000-08-01 19:08:03 ghudson Exp $
+# $Id: update_ws.sh,v 1.12.2.3 2001-01-02 16:19:22 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -249,6 +249,7 @@ failupdate() {
 	if [ -d /var/server ]; then
 		mkserv -v update < /dev/null
 	fi
+	rm -f /var/athena/rc.conf.sync
 	echo "Ending update from $oldvers to $newvers at `date`."
 } 2>&1 | tee /var/athena/update.log
 
