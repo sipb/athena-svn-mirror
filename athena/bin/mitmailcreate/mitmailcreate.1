@@ -1,0 +1,49 @@
+.\" 
+.\" $Id: mitmailcreate.1,v 1.1 2004-06-28 19:34:34 rbasch Exp $
+.\"
+.TH MITMAILCREATE 1 
+.SH NAME
+mitmailcreate, mitmailremove, mitmailsubscribe, mitmailunsubscribe \- create, delete, or subscribe or unsubscribe to IMAP mailboxes
+.SH SYNOPSIS
+.B mitmailcreate | mitmailremove | mitmailsubscribe | mitmailunsubscribe
+[
+.B \--debug
+] [
+.B \--help
+] [
+.B \--host
+.I name
+] [
+.B \--mailbox
+.I name
+] [
+.B \--no-subscribe
+]
+.I mailbox [ ... ]
+.SH DESCRIPTION
+The \fImitmailcreate\fR and \fImitmailremove\fR commands can be used to
+create or delete mailboxes on an IMAP server, respectively.  The
+\fImitmailsubscribe\fR and \fImitmailunsubscribe\fR commands can be used
+to subscribe or unsubscribe to mailboxes, respectively.
+.SH OPTIONS
+These commands understand the following options:
+.TP
+.B \--debug
+turn on debugging.
+.TP
+.B \--help
+display usage information and exit.
+.TP
+.B \--host \fIname\fR
+query the given host, instead of the default post office server.
+.TP
+\fImitmailcreate\fR understands the following additional option:
+.TP
+.B \--no-subscribe
+do not subscribe to the newly created mailbox.  By default, the new
+mailbox will be subscribed to automatically.
+.SH ARGUMENTS
+These commands require one or more mailbox name arguments to be given.
+.SH "SEE ALSO"
+mailusage(1), mitmailexp(1),
+imtest(1), RFC\-2060 (Internet Message Access Protocol - Version 4rev1)
