@@ -17,11 +17,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.16 1990-02-27 10:46:25 vanharen Exp $";
+static char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.17 1990-03-01 22:00:16 raeburn Exp $";
 #endif
 
 
@@ -524,7 +525,7 @@ olc_done(fd, request, auth)
 #endif /* STDC */
 {
   KNUCKLE *target;
-  KNUCKLE *requester;
+  KNUCKLE *requester, *consultant;
   char msgbuf[BUF_SIZE];	      /* Message buffer. */
   int status;
   char *text;
@@ -623,10 +624,6 @@ olc_done(fd, request, auth)
 
   text = read_text_from_fd(fd);
 
-#if 0
-  printf("text: %s\n",text);
-#endif
-
   (void) strncpy(target->question->title, text,
 		 sizeof(target->question->title));
   target->question->title[sizeof(target->question->title) - 1] = '\0';
@@ -652,34 +649,28 @@ olc_done(fd, request, auth)
 /*  if(requester->instance > 0 && target->connected == requester)
     deactivate(requester);*/
   
+  consultant = target->connected;
   free_new_messages(target);
   deactivate(target);
-  deactivate(target->connected);
   disconnect_knuckles(target, target->connected);
   free((char *) target->question);
   target->question = (QUESTION *) NULL;
 
-  send_response(fd, SIGNED_OFF);
-
 /*  sub_status(target->connected,BUSY);*/
 
-/****  Quick hack to get around problem....  just sign everybody off.
-  
-  if(is_connected(target))
-    if (is_signed_on(target->connected))
-      {
-	status = match_maker(target->connected);
-	if(status == SUCCESS)
-	  send_response(fd,CONNECTED);
-	else
-	  send_response(fd,SUCCESS);
+  if (consultant) {
+      if (is_signed_on(consultant)) {
+	  status = match_maker(consultant);
+	  if(status == SUCCESS)
+	      send_response(fd,CONNECTED);
+	  else
+	      send_response(fd,SUCCESS);
       }
-    else
-      {
-	send_response(fd, SIGNED_OFF);
-	deactivate(target->connected);
+      else {
+	  send_response(fd, SIGNED_OFF);
+	  deactivate(consultant);
       }
-****/
+  }
 
   needs_backup = TRUE;
   return(SUCCESS);
@@ -700,7 +691,7 @@ olc_cancel(fd, request, auth)
 #endif /* STDC */
 {
   KNUCKLE *target;
-  KNUCKLE *requester;
+  KNUCKLE *requester, *consultant;
   char msgbuf[BUF_SIZE];	      /* Message buffer. */
   int status;
   char *text;
@@ -763,18 +754,18 @@ olc_cancel(fd, request, auth)
 	  log_daemon(target,msgbuf);
 	  sprintf(msgbuf,"Question cancelled by %s %s.\n",
 		  target->title, target->user->username);
-	  if (write_message_to_user(target->connected,msgbuf, NULL_FLAG)
-	      != SUCCESS)
+	  consultant = target->connected;
+	  if (write_message_to_user(consultant,msgbuf, NULL_FLAG) != SUCCESS)
 	    {
 	      (void) strcpy(target->question->title,
 			    "Cancelled question/No consultant present.");
 	      log_daemon(target,"User cancelled question.");
 	      terminate_log_answered(target);
 	      free_new_messages(target);
-	      free_new_messages(target->connected);
+	      free_new_messages(consultant);
 	      deactivate(target);
-	      deactivate(target->connected);
-	      disconnect_knuckles(target, target->connected);
+	      deactivate(consultant);
+	      disconnect_knuckles(target, consultant);
 	      free((char *) target->question);
 	      target->question = (QUESTION *) NULL;
 	    }
@@ -785,6 +776,7 @@ olc_cancel(fd, request, auth)
 
   if((target == requester) && !(owns_question(requester)))
     target = requester->connected;
+  consultant = target->connected;
 
   (void) strcpy(target->question->title, "Cancelled question.");
 #ifdef LOG
@@ -820,21 +812,16 @@ olc_cancel(fd, request, auth)
 
   free_new_messages(target);
   deactivate(target);
-  deactivate(target->connected);
-  disconnect_knuckles(target, target->connected);
+  disconnect_knuckles(target, consultant);
   free((char *) target->question);
   target->question = (QUESTION *) NULL;
 
-  send_response(fd, SIGNED_OFF);
-  
 /*  sub_status(target->connected,BUSY);*/
 
-/****  Quick hack -- just sign everybody off.
-
-  if(is_connected(target))
-    if (is_signed_on(target->connected))
+  if (consultant)
+    if (is_signed_on(consultant))
       {
-	status = match_maker(target->connected);
+	status = match_maker(consultant);
 	if(status == SUCCESS)
 	  send_response(fd,CONNECTED);
 	else
@@ -843,9 +830,8 @@ olc_cancel(fd, request, auth)
     else
       {
 	send_response(fd, SIGNED_OFF);
-	deactivate(target->connected);
+	deactivate(consultant);
       }
-****/
 
   needs_backup = TRUE;
   return(SUCCESS);
@@ -1018,150 +1004,130 @@ olc_forward(fd, request,auth)
      int auth;
 #endif /* STDC */
 {
-  KNUCKLE *target;
-  KNUCKLE *requester;
-  char msgbuf[BUF_SIZE];	         /* Message buffer. */
-  int  status;	                 /* Status flag */
-
-  status = find_knuckle(&(request->requester), &requester);
-  if (status)
-    return(send_response(fd, status));
-
-  if(!isme(request))
-    {
-      status = match_knuckle(request->target.username,
-			     request->target.instance,
-			     &target);
-      if(status)
-	return(send_response(fd,status));
+    KNUCKLE *target, *requester, *consultant;
+    char msgbuf[BUF_SIZE];	         /* Message buffer. */
+    int  status;	                 /* Status flag */
+    
+    status = find_knuckle(&(request->requester), &requester);
+    if (status)
+	return(send_response(fd, status));
+    
+    if(!isme(request)) {
+	status = match_knuckle(request->target.username,
+			       request->target.instance,
+			       &target);
+	if(status)
+	    return(send_response(fd,status));
     }
-  else
-    target = requester;
-
-  if(!(is_allowed(requester->user,GRESOLVE_ACL)) &&  
-     !((is_connected_to(target, requester) && 
-     (owns_question(target)))) &&
-     !(is_me(target,requester) && is_connected(target) && 
-       owns_question(target->connected)))
-    return(send_response(fd, PERMISSION_DENIED));
-
-  if(!is_connected(target))
-    return(send_response(fd, NOT_CONNECTED));
-
-  if(!has_question(target))
-    return(send_response(fd, NO_QUESTION));
-
-  if(target == requester)
-    {
-      if(!is_connected(requester))
-	return(send_response(fd,NOT_CONNECTED));
-      target = requester->connected;
+    else
+	target = requester;
+    
+    if(!(is_allowed(requester->user,GRESOLVE_ACL)) &&  
+       !((is_connected_to(target, requester) && 
+	  (owns_question(target)))) &&
+       !(is_me(target,requester) && is_connected(target) && 
+	 owns_question(target->connected)))
+	return(send_response(fd, PERMISSION_DENIED));
+    
+    if(!is_connected(target))
+	return(send_response(fd, NOT_CONNECTED));
+    
+    if(!has_question(target))
+	return(send_response(fd, NO_QUESTION));
+    
+    if(target == requester) {
+	if(!is_connected(requester))
+	    return(send_response(fd,NOT_CONNECTED));
+	target = requester->connected;
     }
     
-  if(owns_question(requester))  /* cannot for own question */
-    return(send_response(fd,HAS_QUESTION));
+    if(owns_question(requester))  /* cannot for own question */
+	return(send_response(fd,HAS_QUESTION));
+    
+    needs_backup = TRUE;
 
-  needs_backup = TRUE;
-
-  if (is_option(request->options, FORWARD_UNANSWERED) ||
-      target->question->nseen >= MAX_SEEN)
-    {
-      (void) sprintf(msgbuf,
-	     "%s forwarding question of %s to unanswered questions log.",
-	     requester->user->username, target->user->username);
-      log_daemon(target, msgbuf);
-      log_status(msgbuf);
-      
-      (void) write_message_to_user(target,
-				   "You will receive a reply by mail.\n",
-				   NULL_FLAG);
-      (void) sprintf(target->question->title, "%s (unanswered)",
-		     target->question->topic);
-      (void) sprintf(target->question->topic, "oga");
-      terminate_log_unanswered(target);
-      free_new_messages(target);
-      free_new_messages(target->connected);
-      deactivate(target);
-      disconnect_knuckles(target, target->connected);
-      free((char *) target->question);
-      target->question = (QUESTION *) NULL;
-      return(SUCCESS);
+    consultant = target->connected;
+    if (is_option(request->options, FORWARD_UNANSWERED) ||
+	target->question->nseen >= MAX_SEEN) {
+	(void) sprintf(msgbuf,
+		       "%s forwarding question of %s to unanswered questions log.",
+		       requester->user->username, target->user->username);
+	log_daemon(target, msgbuf);
+	log_status(msgbuf);
+	
+	(void) write_message_to_user(target,
+				     "You will receive a reply by mail.\n",
+				     NULL_FLAG);
+	(void) sprintf(target->question->title, "%s (unanswered)",
+		       target->question->topic);
+	(void) sprintf(target->question->topic, "oga");
+	terminate_log_unanswered(target);
+	free_new_messages(target);
+	free_new_messages(consultant);
+	deactivate(target);
+	disconnect_knuckles(target, consultant);
+	free((char *) target->question);
+	target->question = (QUESTION *) NULL;
+	goto handle_off;
     }
-  else
-    {
-      (void) sprintf(msgbuf, "Question forwarded by %s.",
-		     requester->user->username);
-      log_daemon(target,msgbuf);
-      set_status(target,PENDING);
-      
-      (void) write_message_to_user(target,
-	      "Your question is being forwarded to another consultant...\n",
-	       NULL_FLAG);
-      status = match_maker(target);
-      if(status != CONNECTED)
-	{
-	  (void) write_message_to_user(target,
-		       "There is no consultant available right now.\n",
-		       NULL_FLAG);
-	  sprintf(msgbuf,
-		  "%s %s [%d]'s \"%s\" question forwarded (not connected).",
-		  target->title, 
-		  target->user->username,
-		  target->instance,
-		  target->question->topic);
-	  olc_broadcast_message("forward",msgbuf,target->question->topic);
+    else {
+	(void) sprintf(msgbuf, "Question forwarded by %s.",
+		       requester->user->username);
+	log_daemon(target,msgbuf);
+	set_status(target,PENDING);
+	
+	(void) write_message_to_user(target,
+				     "Your question is being forwarded to another consultant...\n",
+				     NULL_FLAG);
+	status = match_maker(target);
+	if(status != CONNECTED) {
+	    (void) write_message_to_user(target,
+					 "There is no consultant available right now.\n",
+					 NULL_FLAG);
+	    sprintf(msgbuf,
+		    "%s %s [%d]'s \"%s\" question forwarded (not connected).",
+		    target->title, 
+		    target->user->username,
+		    target->instance,
+		    target->question->topic);
+	    olc_broadcast_message("forward",msgbuf,target->question->topic);
 	}
     }
-
-#ifdef LOG
-	  sprintf(msgbuf,"%s [%d] forwards %s [%d]",
-		  requester->user->username,requester->instance,
-		  target->user->username,target->instance);
-	  log_status(msgbuf);
-#endif LOG
-
-  if(is_connected(target))
-    {
-      free_new_messages(target->connected);
-      deactivate(target->connected);
-      disconnect_knuckles(target, target->connected);
-    }
-  set_status(target, PENDING);
-  
-  /* handle status recommendations (pending/active by default)*/
-  if(is_option(request->options,STATUS_REFERRED))
-    set_status(target,REFERRED);
-  if(is_option(request->options,STATUS_PICKUP))
-    set_status(target,PICKUP);
     
-  send_response(fd, SIGNED_OFF);
-
-/****  Quick hack -- just sign everybody off...
-  if (is_option(request->options,OFF_OPT))
-    {
-#if 0
-  printf("olc forward options: %d\n",request->options);
-#endif
-
-      if(is_connected(target))
-	sign_off(target->connected);
-      send_response(fd,SIGNED_OFF);
+#ifdef LOG
+    sprintf(msgbuf,"%s [%d] forwards %s [%d]",
+	    requester->user->username,requester->instance,
+	    target->user->username,target->instance);
+    log_status(msgbuf);
+#endif LOG
+    
+    if (consultant) {
+	free_new_messages(consultant);
+	disconnect_knuckles(target, consultant);
     }
-  else
-    if(is_connected(target))
-      if (is_signed_on(target->connected))
-	{
-	  status = match_maker(target->connected);
-	  if(status == SUCCESS)
-	    send_response(fd,CONNECTED);
-	  else
-	    send_response(fd,SUCCESS);
-	}	
-    else
-      send_response(fd,SUCCESS);
-****/
 
-  return(SUCCESS);
+    set_status(target, PENDING);
+    
+    /* handle status recommendations (pending/active by default)*/
+    if(is_option(request->options,STATUS_REFERRED))
+	set_status(target,REFERRED);
+    if(is_option(request->options,STATUS_PICKUP))
+	set_status(target,PICKUP);
+
+handle_off:
+    if (!consultant)
+	return SUCCESS;
+
+    if (is_option(request->options,OFF_OPT)) {
+	sign_off(consultant);
+	return send_response(fd, SIGNED_OFF);
+    }
+    else if (is_signed_on (consultant)) {
+	status = match_maker (consultant);
+	return send_response (fd, status == SUCCESS ? CONNECTED : SUCCESS);
+    }	
+    else
+	return send_response(fd, SUCCESS);
 }
 
 
@@ -1354,15 +1320,23 @@ olc_send(fd, request, auth)
 
   if(target != requester)
     if (write_message_to_user(target,mesg, NULL_FLAG) != SUCCESS)
-      if (owns_question(requester))
-	{
+      if (owns_question(requester)) {
 	  free_new_messages(requester->connected);
 	  set_status(requester, PENDING);
 	  disconnect_knuckles(requester, requester->connected);
-/***********  Something else should go here....  Like match_maker on this
-newly disconnected knuckle (sounds gruesome, doesn't it?).
-***********/
-	}
+	  (void) write_message_to_user (requester,
+					"The OLC server could not contact the consultant you were connected to.\nLooking for another consultant for you....\n",
+					NO_RESPOND);
+	  status = match_maker (requester);
+	  if (status != CONNECTED) {
+	      char *msg = fmt ("Question from %s %s [%d] on \"%s\" has been forwarded.",
+			       requester->title,
+			       requester->user->username, requester->instance,
+			       requester->question->topic);
+	      olc_broadcast_message ("forwarded", msg,
+				     requester->question->topic);
+	  }
+      }
 
 
 #ifdef LOG
