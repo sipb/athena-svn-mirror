@@ -7,6 +7,14 @@ deal with building third-party software.
 Third-party stuff not under third
 ---------------------------------
 
+	* athena/etc/xlogin/bitmaps/menu16
+
+		This is from the X11 release; it probably never
+		changes.  We have a copy of it here because xlogin
+		needs all its bitmaps locally in /etc/athena/login,
+		and fetching it out of the vendor X distribution at
+		build time is contrary to principles.
+
 	* packs/config/named.root
 
 		This is a copy of the named.root file available at
@@ -19,25 +27,17 @@ Third-party stuff not under third
 		when the master copy is inaccessible.  This should be
 		updated at release time.
 
+	* packs/dotfiles/arch/sgi_*/cshrc
+
+		A line to set XUSERFILESEARCHPATH in .cshrc is derived
+		from a piece of the IRIX file /var/X11/xdm/Xsession.dt.
+
 	* packs/dotfiles/{README.mail,dot.cshrc,dot.login,dot.logout,
 		dot.mh_profile,welcome}
 
 		These should be kept in sync with the copies on
 		moira's local disk (/moira/dotfiles/*), which are
 		what actually get copied into new home directories.
-
-	* athena/etc/xdm/xlogin/bitmaps/menu16
-
-		This is from the X11 release; it probably never
-		changes.  We have a copy of it here because xlogin
-		needs all its bitmaps locally in /etc/athena/login,
-		and fetching it out of the vendor X distribution at
-		build time is contrary to principles.
-
-	* packs/dotfiles/arch/sgi_*/cshrc
-
-		A line to set XUSERFILESEARCHPATH in .cshrc is derived
-		from a piece of the IRIX file /var/X11/xdm/Xsession.dt.
 
 	* Modified operating system files
 
