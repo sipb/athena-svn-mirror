@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.36 1991-01-16 09:34:56 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.37 1991-01-21 01:25:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.36 1991-01-16 09:34:56 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.37 1991-01-21 01:25:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -62,6 +62,7 @@ olc_on(fd, request)
   int qcount = 0;
   char msgbuf[BUF_SIZE];
   int status;
+  char st[10];
 
   status = find_knuckle(&(request->requester), &requester);
   if(status != SUCCESS)
@@ -142,8 +143,10 @@ olc_on(fd, request)
 
   strcpy(target->title, target->user->title2);
   sign_on(target,request->options);
-  sprintf(msgbuf,"%s %s (%s [%d]) signed on.",cap(target->title),
-	  target->user->realname, target->user->username, target->instance);
+  OGetStatusString(request->options,st);
+  sprintf(msgbuf,"%s %s (%s [%d]) signed on (%s).",cap(target->title),
+	  target->user->realname, target->user->username, target->instance,
+	  st);
 
 #ifdef LOG
   log_status(msgbuf);
@@ -638,6 +641,8 @@ olc_done(fd, request)
 	  deactivate(consultant);
       }
   }
+  else
+    send_response(fd,SUCCESS);
 
   needs_backup = TRUE;
   return(SUCCESS);
@@ -787,7 +792,8 @@ olc_cancel(fd, request)
     free_new_messages(target->connected);
   free_new_messages(target);
   deactivate(target);
-  disconnect_knuckles(target, consultant);
+  if (consultant != NULL)
+    disconnect_knuckles(target, consultant);
   free((char *) target->question);
   target->question = (QUESTION *) NULL;
 
