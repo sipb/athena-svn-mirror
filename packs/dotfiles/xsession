@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.10 2003-05-20 18:31:14 ghudson Exp $
+# $Id: xsession,v 1.11 2003-06-10 15:26:18 ghudson Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -224,6 +224,8 @@ if (! $?skip_x_startup) then
   endif
 endif
 
+# Maybe start the Disco-Athena daemon.
+if (-r /var/run/athstatusd.sock && ! $?skip_athneteventd) athneteventd
 
 # Run the window-session customizing commands in your ~/.startup.X
 # file.  We want to background this process in case something in the
