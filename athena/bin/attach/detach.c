@@ -1,293 +1,275 @@
-/*	Created by:	Robert French
+/* Copyright 1998 by the Massachusetts Institute of Technology.
  *
- *	$Id: detach.c,v 1.12 1999-01-22 23:08:32 ghudson Exp $
- *
- *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-static char *rcsid_detach_c = "$Id: detach.c,v 1.12 1999-01-22 23:08:32 ghudson Exp $";
+/* This is detach, which is used to detach lockers from workstations. */
 
-#include "attach.h"
-#include <string.h>
+static const char rcsid[] = "$Id: detach.c,v 1.13 1999-02-26 23:13:04 danw Exp $";
 
-/*
- * Detach the filesystem called name.
- */
+#include <netdb.h>
+#include <pwd.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-detach(name)
-    const char *name;
+#include "locker.h"
+#include "agetopt.h"
+
+void usage(void);
+void detach_all(locker_context context, int options);
+void detach_by_host(locker_context context, char *host, int options);
+int detach_attachent(locker_context context, locker_attachent *at,
+		     void *optionsp);
+
+struct agetopt_option detach_options[] = {
+  { "all", 'a', 0 },
+  { "clean", 'C', 0 },
+  { "debug", 'd', 0 },
+  { "explicit", 'e', 0 },
+  { "force", 'f', 0 },
+  { "nozephyr", 'h', 0 },
+  { "host", 'H', 0 },
+  { "lint", 'L', 0 },
+  { "nomap", 'n', 0 },
+  { "override", 'O', 0 },
+  { "quiet", 'q', 0 },
+  { "spoofhost", 's', 1 },
+  { "type", 't', 1 },
+  { "user", 'U', 1 },
+  { "verbose", 'v', 0 },
+  { "noexplicit", 'x', 0 },
+  { "unmap", 'y', 0 },
+  { "zephyr", 'z', 0 },
+  { 0, 0, 0 }
+};
+
+char *whoami;
+int verbose = 1;
+
+enum { DETACH_FILESYSTEM, DETACH_EXPLICIT, DETACH_BY_HOST };
+
+int main(int argc, char **argv)
 {
-    struct _attachtab *atp, at;
-    int status, bymntpt;
-#ifdef ZEPHYR
-    char instbfr[BUFSIZ];
-#endif
-	
-    lock_attachtab();
-    get_attachtab();
-    bymntpt = 0;
-    if (!(atp = attachtab_lookup(name))) {
-	if (!(atp = attachtab_lookup_mntpt(name))) {
-	    unlock_attachtab();
-	    free_attachtab();
-	    fprintf(stderr, "%s: Filesystem \"%s\" is not attached\n", progname, name);
-	    error_status = ERR_DETACHNOTATTACHED;
-	    return (FAILURE);
-	} else
-		bymntpt = 1;
-    }
+  locker_context context;
+  locker_attachent *at;
+  int options = LOCKER_DETACH_DEFAULT_OPTIONS;
+  char *type = NULL;
+  int mode = DETACH_FILESYSTEM, opt, gotname = 0;
+  int status, estatus = 0;
 
-    switch (atp->status) {
-    case STATUS_ATTACHING:
-	if (!force && really_in_use(name)) {
-	    fprintf(stderr, "%s: Filesystem \"%s\" is being attached by another process\n",
-		    progname, name);
-	    error_status = ERR_DETACHINUSE;
-	    unlock_attachtab();
-	    free_attachtab();
-	    return (FAILURE);
-	}
-	/*
-	 * Derelict entry...here might be a good place for attachtab/mtab
-	 * reconciliation.
-	 */
-	break;
-    case STATUS_DETACHING:
-	if (!force && really_in_use(name)) {
-	    fprintf(stderr, "%s: Filesystem \"%s\" already being detached by another process\n",
-		    progname, name);
-	    error_status = ERR_DETACHINUSE;
-	    unlock_attachtab();
-	    free_attachtab();
-	    return (FAILURE);
-	}
-	break;
-    } 
+  whoami = strrchr(argv[0], '/');
+  if (whoami)
+    whoami++;
+  else
+    whoami = argv[0];
 
-    /* Note: attachtab still locked at this point */
-    
-    start_critical_code();
-    if (clean_detach) {
-	    if (clean_attachtab(atp)) {
-		    put_attachtab();
-		    unlock_attachtab();
-		    free_attachtab();
-		    end_critical_code();
-		    return(SUCCESS);
-	    }
-	    /*
-	     * If we fall through, it means we should detach the filesystem
-	     */
-    }
-    if (atp->status == STATUS_ATTACHED) {
-	    if (override) {	/* Override _all_ owners and detach */
-		    atp->nowners = 0;
-		    atp->flags &= ~FLAG_LOCKED;
-		    status = SUCCESS;
-	    } else if (owner_check && !clean_detach) {
-		    if (del_an_owner(atp, owner_uid)) {
-			    int ret = SUCCESS;
-			    fprintf(stderr, "%s: Filesystem \"%s\" wanted by others, not unmounted.\n",
-				    progname, name);
-			    error_status = ERR_ATTACHINUSE;
-			    put_attachtab();
-			    unlock_attachtab();
-			    if (atp->fs->type == TYPE_NFS && do_nfsid)
-				    ret = nfsid(atp->host, atp->hostaddr[0],
-						MOUNTPROC_KUIDUMAP, 1,
-						atp->hesiodname, 0, real_uid);
-			    free_attachtab();
-			    end_critical_code();
-			    return(ret);
-		    }
-		    status = SUCCESS;
-	    }
-	    if (!override && atp->flags & FLAG_LOCKED) {
-		    error_status = ERR_DETACHNOTALLOWED;
-		    if (trusted_user(real_uid))
-		      fprintf(stderr,
-			      "%s: Filesystem \"%s\" locked, use -override to detach it.\n", 
-			      progname, name);
-		    else
-		      fprintf(stderr, "%s: Filesystem \"%s\" locked, can't detach\n", 
-			      progname, name);
-		    put_attachtab();
-		    unlock_attachtab();
-		    free_attachtab();
-		    end_critical_code();
-		    return(FAILURE);
-	    }
-	    
-    }
-    atp->status = STATUS_DETACHING;
-    put_attachtab();
-    mark_in_use(name);
-    at = *atp;
-    unlock_attachtab();
-    free_attachtab();
+  if (locker_init(&context, getuid(), NULL, NULL))
+    exit(1);
 
-    if (at.fs->detach)
-	    status = (at.fs->detach)(&at);
-    else {
-	    fprintf(stderr, "%s: Can't detach filesystem type \"%s\"\n",
-		    progname, at.fs->name);
-	    status = ERR_FATAL;
-	    return(FAILURE);
-    }
-    
-    if (status == SUCCESS) {
-	if (verbose)
-		printf("%s: %s detached\n", progname, at.hesiodname);
-	if (at.fs->flags & AT_FS_MNTPT)
-		rm_mntpt(&at);
-	lock_attachtab();
-	get_attachtab();
-	if (bymntpt)
-	    attachtab_delete(attachtab_lookup_mntpt(at.mntpt));
-	else
-	    attachtab_delete(attachtab_lookup(at.hesiodname));
-	put_attachtab();
-	mark_in_use(NULL);
-	unlock_attachtab();
-	/*
-	 * Do Zephyr stuff as necessary
-	 */
-#ifdef ZEPHYR
-	if (use_zephyr && at.fs->flags & AT_FS_REMOTE) {
-		sprintf(instbfr, "%s:%s", at.host, at.hostdir);
-		zephyr_addsub(instbfr);
-		if (!host_occurs(at.host))
-			zephyr_addsub(at.host);
-        }
-#endif
-	free_attachtab();
-    } else {
-	lock_attachtab();
-	get_attachtab();
-	at.status = STATUS_ATTACHED;
-	attachtab_replace(&at);
-	put_attachtab();
-	mark_in_use(NULL);
-	unlock_attachtab();
-	free_attachtab();
-    }
-    end_critical_code();
-    return (status);
-}
+  /* Wrap another while around the getopt so we can go through
+   * multiple cycles of "[options] lockers...".
+   */
+  while (optind < argc)
+    {
+      while ((opt = attach_getopt(argc, argv, detach_options)) != -1)
+	{
+	  switch (opt)
+	    {
+	    case 'a':
+	      /* backward compatibility: "detach -O -a" implies
+	       * override, but not unlock.
+	       */
+	      detach_all(context, options & ~LOCKER_DETACH_OPT_UNLOCK);
+	      gotname++;
+	      break;
 
-/*
- * Detach all filesystems.  Read through the attachtab and call detach
- * on each one.
- */
+	    case 'C':
+	      options |= LOCKER_DETACH_OPT_CLEAN;
+	      break;
 
-void detach_all()
-{
-    struct _attachtab	*atp, *next;
-    int tempexp;
-    extern struct _attachtab	*attachtab_last, *attachtab_first;
-    struct _fstypes	*fs_type = NULL;
+	    case 'e':
+	      mode = DETACH_EXPLICIT;
+	      break;
 
-    lock_attachtab();
-    get_attachtab();
-    unlock_attachtab();
-    
-    if (filsys_type)
-	    fs_type = get_fs(filsys_type);
-    tempexp = explicit;
-    atp = attachtab_last;
-    attachtab_last = attachtab_first = NULL;
-    while (atp) {
-	    next = atp->prev;
-	    explicit = atp->explicit;
-	    if ((override || !owner_check || clean_detach
-		 || is_an_owner(atp,owner_uid)) &&
-		(!filsys_type || fs_type == atp->fs)) {
-		    if (atp->flags & FLAG_LOCKED) {
-			del_an_owner(atp, owner_uid);
-			lock_attachtab();
-			get_attachtab();
-			attachtab_replace(atp);
-			put_attachtab();
-			unlock_attachtab();
-			fprintf(stderr,
-				"%s: Filesystem \"%s\" locked, not unmounted.\n", 
-				progname, atp->hesiodname);
-		    } else
-			detach(atp->hesiodname);
-	    }
-	    free(atp);
-	    atp = next;
-    }
-    free_attachtab();
-    explicit = tempexp;
-}
+	    case 'h':
+	      options &= ~LOCKER_DETACH_OPT_UNZEPHYR;
+	      break;
 
-/*
- * Detach routine for the NULL filesystem.  This is for cleanup
- * purposes only.
- */
+	    case 'H':
+	      mode = DETACH_BY_HOST;
+	      break;
 
-null_detach(at, mopt, errorout)
-	struct _attachtab *at;
-	struct mntopts	*mopt;
-	int errorout;
-{
-	if (debug_flag)
-		printf("Detaching null filesystem %s...\n", at->hesiodname);
+	    case 'n':
+	      options &= ~LOCKER_DETACH_OPT_UNAUTH;
+	      break;
 
-	return(SUCCESS);
-}
+	    case 'O':
+	      options |= LOCKER_DETACH_OPT_OVERRIDE | LOCKER_DETACH_OPT_UNLOCK;
+	      break;
 
-	
-/*
- * Detach all filesystems from a specified host.  Read through the
- * attachtab and call detach on each one.
- */
+	    case 'q':
+	      verbose = 0;
+	      break;
 
-void detach_host(host)
-    const char *host;
-{
-    struct _attachtab	*atp, *next;
-    int tempexp;
-    extern struct _attachtab	*attachtab_last, *attachtab_first;
-    struct _fstypes	*fs_type = NULL;
-    register int i;
+	    case 't':
+	      type = optarg;
+	      break;
 
-    lock_attachtab();
-    get_attachtab();
-    unlock_attachtab();
-
-    if (filsys_type)
-	fs_type = get_fs(filsys_type);
-    tempexp = explicit;
-    atp = attachtab_last;
-    attachtab_last = attachtab_first = NULL;
-    while (atp) {
-	next = atp->prev;
-	explicit = atp->explicit;
-	if ((override || !owner_check || clean_detach
-	     || is_an_owner(atp,owner_uid)) &&
-	    (!filsys_type || fs_type == atp->fs)) {
-	    for (i=0; i<MAXHOSTS && atp->hostaddr[i].s_addr; i++)
-		if (host_compare(host, inet_ntoa(atp->hostaddr[i]))) {
-		    if (atp->flags & FLAG_LOCKED) {
-			del_an_owner(atp, owner_uid);
-			lock_attachtab();
-			get_attachtab();
-			attachtab_replace(atp);
-			put_attachtab();
-			unlock_attachtab();
-			fprintf(stderr,
-				"%s: Filesystem \"%s\" locked, not unmounted.\n", 
-				progname, atp->hesiodname);
-		    } else
-			detach(atp->hesiodname);
-		    break;
+	    case 'U':
+	      if (getuid() != 0)
+		{
+		  fprintf(stderr, "%s: You are not allowed to use the "
+			  "--user option.\n", whoami);
+		  exit(1);
 		}
+	      else
+		{
+		  uid_t uid;
+		  struct passwd *pw;
+
+		  pw = getpwnam(optarg);
+		  if (!pw)
+		    {
+		      fprintf(stderr, "%s: No such user %s.\n",
+			      whoami, optarg);
+		      exit(1);
+		    }
+		  locker_end(context);
+		  if (locker_init(&context, pw->pw_uid, NULL, NULL))
+		    exit(1);
+		}
+	      break;
+
+	    case 'v':
+	      verbose = 1;
+	      break;
+
+	    case 'x':
+	      mode = DETACH_FILESYSTEM;
+	      break;
+
+	    case 'y':
+	      options |= LOCKER_DETACH_OPT_UNAUTH;
+	      break;
+
+	    case 'z':
+	      options |= LOCKER_DETACH_OPT_UNZEPHYR;
+	      break;
+
+	    case 'd':
+	    case 'f':
+	    case 'L':
+	    case 's':
+	      fprintf(stderr, "%s: The '%c' flag is no longer supported.\n",
+		      whoami, opt);
+	      break;
+
+	    default:
+	      usage();
+	    }
 	}
-	free(atp);
-	atp = next;
+
+      while (optind < argc && argv[optind][0] != '-')
+	{
+	  gotname++;
+	  switch (mode)
+	    {
+	    case DETACH_FILESYSTEM:
+	      if (*argv[optind] == '/')
+		{
+		  status = locker_detach(context, NULL, argv[optind],
+					 options, &at);
+		}
+	      else
+		{
+		  status = locker_detach(context, argv[optind], NULL,
+					 options, &at);
+		}
+	      if (LOCKER_DETACH_SUCCESS(status))
+		{
+		  if (verbose)
+		    printf("%s: %s detached\n", whoami, at->name);
+		  locker_free_attachent(context, at);
+		}
+	      else
+		estatus = 2;
+	      break;
+
+	    case DETACH_EXPLICIT:
+	      status = locker_detach_explicit(context, type, argv[optind],
+					      NULL, options, &at); 
+	      if (LOCKER_DETACH_SUCCESS(status))
+		{
+		  if (verbose)
+		    printf("%s: %s detached\n", whoami, at->name);
+		  locker_free_attachent(context, at);
+		}
+	      else
+		estatus = 2;
+	      break;
+
+	    case DETACH_BY_HOST:
+	      detach_by_host(context, argv[optind], options);
+	      break;
+	    }
+
+	  optind++;
+	}
     }
-    free_attachtab();
-    explicit = tempexp;
+
+  if (!gotname)
+    usage();
+
+  locker_end(context);
+  exit(0);
+}
+
+void detach_by_host(locker_context context, char *host, int options)
+{
+  struct hostent *h;
+
+  h = gethostbyname(host);
+  if (!h)
+    {
+      fprintf(stderr, "%s: Could not resolve hostname \"%s\".\n",
+	      whoami, host);
+      exit(1);
+    }
+  locker_iterate_attachtab(context, locker_check_host, &(h->h_addr),
+			   detach_attachent, &options);
+}
+
+int detach_attachent(locker_context context, locker_attachent *at,
+                     void *optionsp)
+{
+  int status, options = *(int *)optionsp;
+
+  status = locker_detach_attachent(context, at, options);
+  if (status == LOCKER_SUCCESS && verbose)
+    printf("%s: %s detached\n", whoami, at->name);
+}
+
+void detach_all(locker_context context, int options)
+{
+  locker_iterate_attachtab(context, NULL, NULL, detach_attachent, &options);
+}
+
+
+void usage(void)
+{
+  fprintf(stderr, "Usage: detach [options] filesystem ... [options] filesystem ...\n");
+  fprintf(stderr, "       detach [options] -m mountpoint ...\n");
+  fprintf(stderr, "       detach [options] -H host ...\n");
+  fprintf(stderr, "       detach [options] -a\n");
+  exit(1);
 }

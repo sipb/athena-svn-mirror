@@ -1,5 +1,3 @@
-/* $Id: stringlist.h,v 1.1 1998-03-17 03:59:16 cfields Exp $ */
-
 /* Copyright 1998 by the Massachusetts Institute of Technology.
  *
  * Permission to use, copy, modify, and distribute this
@@ -15,20 +13,13 @@
  * without express or implied warranty.
  */
 
-typedef struct {
-  int alloced, length;
-  char **strings;
-} string_list;
+struct agetopt_option {
+  const char *longname;
+  char shortname;
+  int arg;
+};
 
-int sl_add_string(string_list **list, char *string, int front);
-int sl_remove_string(string_list **list, char *string);
-int sl_contains_string(string_list *list, char *string);
+int attach_getopt(int argc, char **argv, struct agetopt_option *options);
 
-int sl_parse_string(string_list **list, char *string, char sep);
-char *sl_grab_string(string_list *list, char separator);
-
-char **sl_grab_string_array(string_list *list);
-
-void sl_free(string_list **list);
-void sl_dump(string_list *list);
-
+extern int optind;
+extern char *optarg;

@@ -1,0 +1,81 @@
+# $Id: Makefile.in,v 1.1 1999-02-26 23:12:56 danw Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+RANLIB=@RANLIB@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+lbindir=@lbindir@
+lsbindir=@lsbindir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+DEFS=@DEFS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+KRB4_LIBS=@KRB4_LIBS@
+REGEX_LIBS=@REGEX_LIBS@
+ZEPHYR_LIBS=-lzephyr
+AFS_LIBS=-lprot -lauth -lrxkad -lubik @AFS_DIR@/lib/afs/util.a -laudit \
+	 -lsys -lrx -llwp -lsys @AFS_DIR@/lib/libdes.a
+ALL_CFLAGS=${WARN_CFLAGS} ${ERROR_CFLAGS} -I. ${CPPFLAGS} ${CFLAGS} ${DEFS}
+ALL_LIBS=-llocker ${AFS_LIBS} ${ZEPHYR_LIBS} ${KRB4_LIBS} ${REGEX_LIBS} \
+	 -lhesiod -lcom_err ${LIBS}
+
+all: attach attachandrun detach fsid zinit
+
+attach: add.o attach.o agetopt.o
+	${CC} ${LDFLAGS} -o attach add.o attach.o agetopt.o -lathdir ${ALL_LIBS}
+
+attachandrun: attachandrun.o
+	${CC} ${LDFLAGS} -o attachandrun attachandrun.o -lathdir ${ALL_LIBS}
+
+detach: detach.o agetopt.o
+	${CC} ${LDFLAGS} -o detach detach.o agetopt.o ${ALL_LIBS}
+
+fsid: fsid.o agetopt.o
+	${CC} ${LDFLAGS} -o fsid fsid.o agetopt.o ${ALL_LIBS}
+
+zinit: zinit.o agetopt.o
+	${CC} ${LDFLAGS} -o zinit zinit.o agetopt.o ${ALL_LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
+	${INSTALL} -m 4755 -o root attach ${DESTDIR}${lbindir}
+	${INSTALL} -m 4755 -o root attachandrun ${DESTDIR}${lbindir}
+	${INSTALL} -m 4755 -o root detach ${DESTDIR}${lbindir}
+	${INSTALL} -m 4755 -o root fsid ${DESTDIR}${lbindir}
+	rm -f ${DESTDIR}${lbindir}/nfsid
+	ln -s fsid ${DESTDIR}${lbindir}/nfsid
+	${INSTALL} -m 4755 -o root zinit ${DESTDIR}${lbindir}
+	rm -f ${DESTDIR}${lsbindir}/zinit
+	ln -s ${lbindir}/zinit ${DESTDIR}${lsbindir}/zinit
+	${INSTALL} -m 644 add.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 attach.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 attachandrun.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 detach.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 644 fsid.1 ${DESTDIR}${mandir}/man1
+	rm -f ${DESTDIR}${mandir}/man1/nfsid.1
+	ln -s fsid.1 ${DESTDIR}${mandir}/man1/nfsid.1
+	${INSTALL} -m 644 zinit.8 ${DESTDIR}${mandir}/man8
+
+clean:
+	rm -f add.o attach.o attachandrun.o detach.o fsid.o zinit.o
+	rm -f agetopt.o attach attachandrun detach fsid zinit
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

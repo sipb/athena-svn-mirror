@@ -1,7 +1,22 @@
-.TH ATTACHANDRUN 1 "2 April 1998"
-.ds ]W MIT Athena
+.\" $Id: attachandrun.1,v 1.3 1999-02-26 23:13:00 danw Exp $
+.\"
+.\" Copyright 1997 by the Massachusetts Institute of Technology.
+.\"
+.\" Permission to use, copy, modify, and distribute this
+.\" software and its documentation for any purpose and without
+.\" fee is hereby granted, provided that the above copyright
+.\" notice appear in all copies and that both that copyright
+.\" notice and this permission notice appear in supporting
+.\" documentation, and that the name of M.I.T. not be used in
+.\" advertising or publicity pertaining to distribution of the
+.\" software without specific, written prior permission.
+.\" M.I.T. makes no representations about the suitability of
+.\" this software for any purpose.  It is provided "as is"
+.\" without express or implied warranty.
+.\"
+.TH ATTACHANDRUN 1
 .SH NAME
-attachandrun - attach a filesystem and run a program from it
+attachandrun \- attach a filesystem and run a program from it
 
 .SH SYNOPSIS
 attachandrun locker program argv0 [argv1 ...]
@@ -13,18 +28,16 @@ directory. Running a program via \fIattachandrun\fR should be
 indistinguishable from running it out of its locker by hand. A typical
 ``attach and run'' script would look like:
 
+.nf
     #!/bin/sh
-.br
     exec /bin/athena/attachandrun moira blanche "$0" "$@"
-
-.SH NOTE
-The programs \fIadd(1)\fP, \fIattach(1)\fP, \fIattachandrun(1)\fP,
-\fIdetach(1)\fP, \fInfsid(1)\fP, and \fIzinit(8)\fP are all really the
-same program.  Typically \fIattachandrun\fR, \fIdetach(1)\fP,
-\fInfsid(1)\fP and \fIzinit(8)\fP (but not \fIadd(1)\fP) are links to
-\fIattach\fP.  Argv[0] is used to determine which one of the programs
-is run.  This may be overridden by specifying -P \fIprogname\fP, where
-\fIprogname\fP should be one of the above five program names.
+.fi
 
 .SH "SEE ALSO"
 attach(1), add(1)
+
+.SH AUTHORS
+Craig Fields, MIT Information Systems
+Dan Winship, MIT Information Systems
+.PP
+Copyright 1998 Massachusetts Institute of Technology

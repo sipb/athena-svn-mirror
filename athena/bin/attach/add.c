@@ -13,33 +13,38 @@
  * without express or implied warranty.
  */
 
-/* This file contains most of the implementation of the add command
- * for attach.
- */
+/* This is the part of attach that is used by the "add" alias. */
 
-static char rcsid[] = "$Id: add.c,v 1.6 1998-10-19 19:14:39 danw Exp $";
+static const char rcsid[] = "$Id: add.c,v 1.7 1999-02-26 23:12:57 danw Exp $";
 
+#include <sys/stat.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <sys/param.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <unistd.h>
+
 #include <athdir.h>
-#include "stringlist.h"
+#include <locker.h>
 
-/* I wanted to get this by including attach.h, but if I do I get a conflict
- * in the declaration of malloc. I decided not to open that can of worms.
- */
-extern char *progname;
+#include "agetopt.h"
 
-/* For debugging output, strings specifying what path is being modified. */
-char *debug_strings[5] = {
-  NULL,
-  "$PATH",
-  "$athena_path",
-  "$MANPATH"
+void add_usage(void);
+void modify_path(char **path, char *elt);
+void print_readable_path(char *path);
+int add_callback(locker_context context, locker_attachent *at, void *arg);
+
+struct agetopt_option add_options[] = {
+  { "verbose", 'v', 0 },
+  { "quiet", 'q', 0 },
+  { "debug", 'd', 0 },
+  { "front", 'f', 0 },
+  { "remove", 'r', 0 },
+  { "print", 'p', 0 },
+  { "warn", 'w', 0 },
+  { "bourne", 'b', 0 },
+  { "path", 'P', 1 },
+  { "attachopts", 'a', 0 }
 };
 
 char *shell_templates[2][2] =
@@ -54,71 +59,278 @@ char *shell_templates[2][2] =
   }
 };
 
-void usage()
-{
-  fprintf(stderr, "Usage: add [-vdfrpwbq] [-P $athena_path] [-a attachflags] "
-	  "[lockername ...]\n");
-  fprintf(stderr, "   or: add [-dfrb] [-P $athena_path] pathname ...\n");
-  exit(1);
-}
+extern char *whoami;
+extern locker_callback attach_callback;
+extern int main(int argc, char **argv);
 
-/* modify_path
- *
- * Modifies "path," a string_list. "changes" are removed from "path"
- * if "remove," are added to the front of "path" (potentially moved)
- * if "front," or otherwise are added to the end of "path" if not
- * already present. "debuginfo," if not NULL, will be used to tag
- * debugging output. If NULL, no debugging output will occur.
- */
-string_list *modify_path(string_list *path, string_list *changes,
-			 int front, int remove, char *debuginfo)
-{
-  char **ptr;
-  int contains;
+static int quiet = 0, give_warnings = 0, remove_from_path = 0;
+static int add_to_front = 0, bourne_shell = 0, use_athena_path = 0;
+static char *path, *manpath;
 
-  if (sl_grab_string_array(changes) != NULL)
+int add_main(int argc, char **argv)
+{
+  int print_path, end_args;
+  int opt;
+
+  print_path = end_args = 0;
+
+  while (!end_args && (opt = attach_getopt(argc, argv, add_options)) != -1)
     {
-      for (ptr = sl_grab_string_array(changes); *ptr != NULL; ptr++)
+      switch (opt)
 	{
-	  contains = sl_contains_string(path, *ptr);
+	case 'q':
+	  quiet = 1;
+	  break;
 
-	  /* If the the list contains this path and we want to remove it
-	   * or move it to the front, remove it.
-	   */
-	  if (contains && (front || remove))
+	case 'f':
+	  add_to_front = 1;
+	  break;
+
+	case 'r':
+	  remove_from_path = 1;
+	  break;
+
+	case 'p':
+	  print_path = 1;
+	  break;
+
+	case 'w':
+	  give_warnings = 1;
+	  break;
+
+	case 'b':
+	  bourne_shell = 1;
+	  break;
+
+	case 'P':
+	  use_athena_path = 1;
+	  path = optarg;
+	  break;
+
+	case 'a':
+	  if (remove_from_path || print_path)
 	    {
-	      sl_remove_string(&path, *ptr);
-	      if (debuginfo != NULL)
-		fprintf(stderr, "%s removed from %s\n", *ptr, debuginfo);
+	      fprintf(stderr, "%s: can't use -a with -r or -p.\n", whoami);
+	      add_usage();
 	    }
-	  else
-	    /* Otherwise, if we're just supposed to add it and it's already
-	     * there, leave it as is and move on.
-	     */
-	    if (contains)
-	      continue;
+	  end_args = 1;
+	  break;
 
-	  /* If we're here and we're not removing, then we're adding to
-	   * the list and the path is not now in the list. So it's time
-	   * to add it.
-	   */
-	  if (!remove)
-	    {
-	      if (sl_add_string(&path, *ptr, front))
-		{
-		  fprintf(stderr, "%s: out of memory in modify_path\n",
-			  progname);
-		  exit(1);
-		}
+	case 'd':
+	case 'v':
+	  fprintf(stderr, "%s: The '%c' flag is no longer supported.\n",
+		  whoami, opt);
+	  break;
 
-	      if (debuginfo != NULL)
-		fprintf(stderr, "%s added to %s of %s\n", *ptr,
-			front ? "front" : "end", debuginfo);
-	    }
+	case '?':
+	  add_usage();
 	}
     }
 
-  return path;
+  if (!path)
+    path = getenv("PATH");
+  if (!path)
+    path = "";
+  path = strdup(path);
+  if (!path)
+    {
+      fprintf(stderr, "%s: Out of memory.\n", whoami);
+      exit(1);
+    }
+  if (use_athena_path && !bourne_shell)
+    {
+      char *p;
+      for (p = path; *p; p++)
+	{
+	  if (*p == ' ')
+	    *p = ':';
+	}
+    }
+  manpath = getenv("MANPATH");
+  if (manpath)
+    manpath = strdup(manpath);
+  else
+    manpath = strdup("");
+
+  /* If no arguments have been directed to attach, or -p was
+   * specified, we output the path in an easier-to-read format and
+   * we're done.
+   */
+  if (argc == optind || print_path)
+    {
+      print_readable_path(path);
+      exit(0);
+    }
+
+  /* If the following args weren't explicitly handed to attach (via
+   * -a), and the first one looks like a pathname, then assume we've
+   * been passed a bunch of pathnames rather than lockernames.
+   */
+  if (!end_args && (argv[optind][0] == '.' || argv[optind][0] == '/'))
+    {
+      struct stat st;
+
+      for (; optind < argc; optind++)
+	{
+	  if (argv[optind][0] != '.' && argv[optind][0] != '/')
+	    {
+	      fprintf(stderr, "%s: only pathnames may be specified when "
+		      "pathnames are being added\n", whoami);
+	      add_usage();
+	    }
+
+	  /* Make sure the directory exists, if we're adding it to the
+	   * path. Otherwise we don't care.
+	   */
+	  if (!remove_from_path && stat(argv[optind], &st) == -1)
+	    {
+	      fprintf(stderr, "%s: no such path: %s\n", whoami,
+		      argv[optind]);
+	    }
+	  else
+	    modify_path(&path, argv[optind]);
+	}
+    }
+  else if (remove_from_path)
+    {
+      locker_context context;
+      int status;
+
+      if (locker_init(&context, getuid(), NULL, NULL))
+	exit(1);
+
+      for (; optind < argc; optind++)
+	{
+	  locker_attachent *at;
+
+	  /* Ignore flags, just look at lockers */
+	  if (argv[optind][0] == '-')
+	    continue;
+
+	  status = locker_read_attachent(context, argv[optind], &at);
+	  if (status != LOCKER_SUCCESS)
+	    continue;
+	  add_callback(context, at, NULL);
+	  locker_free_attachent(context, at);
+	}
+
+      locker_end(context);
+    }
+  else
+    {
+      /* We are adding lockers. */
+
+      attach_callback = add_callback;
+
+      /* Reinvoke attach's main: optind now points to either the first
+       * attach command-line argument or the first locker. Either way,
+       * let attach deal (using our callback), and return to us when
+       * it's done.
+       */
+      main(argc, argv);
+    }
+
+  if (use_athena_path && !bourne_shell)
+    {
+      char *p;
+      for (p = path; *p; p++)
+	{
+	  if (*p == ':')
+	    *p = ' ';
+	}
+    }
+
+  printf(shell_templates[use_athena_path][bourne_shell], path, manpath);
+  free(path);
+  free(manpath);
+  exit(0);
+}
+
+int add_callback(locker_context context, locker_attachent *at, void *arg)
+{
+  char **found, **ptr;
+
+  /* Find the binary directories we want to add to/remove from the path. */
+  found = athdir_get_paths(at->mountpoint, "bin", NULL, NULL, NULL, NULL, 0);
+  if (found)
+    {
+      for (ptr = found; *ptr; ptr++)
+	{
+	  if (!remove_from_path && !athdir_native(*ptr, NULL) && !quiet)
+	    {
+	      fprintf(stderr, "%s: warning: using compatibility for %s\n",
+		      whoami, at->mountpoint);
+	    }
+	  modify_path(&path, *ptr);
+	}
+      athdir_free_paths(found);
+    }
+  else
+    {
+      if (give_warnings)
+	{
+	  fprintf(stderr, "%s: warning: %s has no binary directory\n",
+		  whoami, at->mountpoint);
+	}
+    }
+
+  /* Find the man directories we want to add to/remove from the manpath. */
+  found = athdir_get_paths(at->mountpoint, "man", NULL, NULL, NULL, NULL, 0);
+  if (found)
+    {
+      for (ptr = found; *ptr; ptr++)
+	modify_path(&manpath, *ptr);
+      athdir_free_paths(found);
+    }
+}
+
+void modify_path(char **pathp, char *elt)
+{
+  char *p;
+  int len = strlen(elt);
+
+  /* If we're adding a string to the front of the path, we need
+   * to remove it from the middle first, if it's already there.
+   */
+  if (remove_from_path || add_to_front)
+    {
+      p = *pathp;
+      while (p)
+	{
+	  if (!strncmp(p, elt, len))
+	    {
+	      if (p[len] == ':')
+		len++;
+	      else if (p != *pathp && *(p - 1) == ':')
+		{
+		  p--;
+		  len++;
+		}
+
+	      memmove(p, p + len, strlen(p + len) + 1);
+	    }
+
+	  p = strchr(p, ':');
+	  if (p)
+	    p++;
+	}
+    }
+
+  if (!remove_from_path)
+    {
+      p = malloc(strlen(*pathp) + len + 2);
+      if (!p)
+	{
+	  fprintf(stderr, "%s: Out of memory.\n", whoami);
+	  exit(1);
+	}
+      if (add_to_front)
+	sprintf(p, "%s:%s", elt, *pathp);
+      else
+	sprintf(p, "%s:%s", *pathp, elt);
+      free(*pathp);
+      *pathp = p;
+    }
 }
 
 /* print_readable_path
@@ -139,304 +351,45 @@ string_list *modify_path(string_list *path, string_list *changes,
  * to the shortened path string. So if ATHENA_SYS_COMPAT is set to
  * sun4x_55 while ATHENA_SYS is set to sun4x_56, in the example above
  * "{add gnu*}" would be printed instead of "{add gnu}."
+ *
+ * XXX We could do a less hacky version of this using
+ * locker_iterate_attachtab to get all of the mountpoints. It's not clear
+ * that there's a lot of benefit to this though.
  */
-void print_readable_path(string_list *path)
+void print_readable_path(char *path)
 {
-  string_list *readable_path = NULL;
-  char **ptr, *name, *name_end, *readable_path_string;
-  char name_buf[MAXPATHLEN+10];
+  char *p, *name, *name_end;
 
-  if (sl_grab_string_array(path) != NULL)
+  for (p = strtok(path, ":"); p; p = strtok(NULL, ":"))
     {
-      for (ptr = sl_grab_string_array(path); *ptr != NULL; ptr++)
+      if (p != path)
+	putc(bourne_shell ? ':' : ' ', stderr);
+
+      if (!strncmp(p, "/mit/", 5))
 	{
-	  if (!strncmp(*ptr, "/mit/", 5))
+	  name = p + 5;
+	  name_end = strchr(name, '/');
+	  if (name_end && !strcmp(p + strlen(p) - 3, "bin"))
 	    {
-	      name = *ptr + 5;
-	      name_end = strchr(name, '/');
-	      if (name_end != NULL && !strcmp(*ptr + strlen(*ptr) - 3, "bin"))
-		{
-		  if (athdir_native(name, NULL))
-		    sprintf(name_buf, "{add %.*s}", name_end - name, name);
-		  else
-		    sprintf(name_buf, "{add %.*s*}", name_end - name, name);
-		  if (sl_add_string(&readable_path, name_buf, 0))
-		    {
-		      fprintf(stderr, "%s: out of memory in "
-			      "print_readable_path\n", progname);
-		      exit(1);
-		    }
-		  continue;
-		}
+	      if (athdir_native(name, NULL))
+		fprintf(stderr, "{add %.*s}", name_end - name, name);
+	      else
+		fprintf(stderr, "{add %.*s*}", name_end - name, name);
 	    }
-	  if (sl_add_string(&readable_path, *ptr, 0))
-	    {
-	      fprintf(stderr, "%s: out of memory in print_readable_path\n",
-		      progname);
-	      exit(1);
-	    }
-	}
-
-      readable_path_string = sl_grab_string(readable_path, ' ');
-      if (readable_path_string)
-	{
-	  fprintf(stdout, "%s\n", readable_path_string);
-	  free(readable_path_string);
-	}
-      sl_free(&readable_path);
-    }
-}
-
-int addcmd(int argc, char **argv)
-{
-  int c;
-  int verbose = 0, debug = 0, add_to_front = 0,
-    remove_from_path = 0, print_path = 0, give_warnings = 0,
-    use_athena_path = 0, bourne_shell = 0, end_args = 0, quiet = 0;
-  string_list *path = NULL, *manpath = NULL;
-  string_list *delta_path = NULL, *delta_manpath = NULL;
-  string_list *mountpoint_list = NULL;
-  string_list *attach_args = NULL;
-  char *path_string = NULL, *manpath_string = NULL, *empty_string = "";
-  char path_delimiter = ':';
-  char **found, **mountpoint, **ptr;
-  struct stat statbuf;
-  FILE *shell;
-
-  /* Redirect stdout to stderr, so attach output won't be interpreted
-   * by the shell. Preserve stdout so we can still talk to the shell.
-   */
-  shell = fdopen(dup(STDOUT_FILENO), "w");
-  fflush(stdout);
-  dup2(STDERR_FILENO, STDOUT_FILENO);
-
-  /* Parse the command line... */
-  while (!end_args && (c = getopt(argc, argv, "vdnfrpwbqP:a")) != EOF)
-    switch(c)
-      {
-      case 'v':
-	verbose = 1;
-	break;
-
-      case 'd':
-	debug = 1;
-	break;
-
-      case 'n':
-	fprintf(stderr, "%s: warning: -n no longer required\n", progname);
-	break;
-
-      case 'f':
-	add_to_front = 1;
-	break;
-
-      case 'r':
-	remove_from_path = 1;
-	break;
-
-      case 'p':
-	print_path = 1;
-	break;
-
-      case 'w':
-	give_warnings = 1;
-	break;
-
-      case 'b':
-	bourne_shell = 1;
-	break;
-
-      case 'q':
-	quiet = 1;
-	break;
-
-      case 'P':
-	/* Save the athena_path string off to be parsed later. We won't
-	 * know until we've parsed all of the command-line args whether
-	 * -b has been specified, and that affects show it should be
-	 * parsed.
-	 */
-	if (optarg[0] == '-')
-	  {
-	    fprintf(stderr, "%s: -P requires an argument\n", progname);
-	    usage();
-	  }
-
-	use_athena_path = 1;
-	path_string = optarg;
-
-	break;
-
-      case 'a':
-	/* -a means the remaining arguments go to attach, even if there are
-	 * flags in them.
-	 */
-	end_args = 1;
-	break;
-
-      case '?':
-	usage();
-	break;
-      }
-
-  /* Set up path_string and manpath_string to point to the paths we wish
-   * to manipulate.  path_string may have already been set by the -P
-   * option.
-   */
-  if (!path_string)
-    path_string = getenv("PATH");
-  manpath_string = getenv("MANPATH");
-
-  /* The C shell delimiter for $athena_path is a space. */
-  if (use_athena_path && !bourne_shell)
-    path_delimiter = ' ';
-
-  if (sl_parse_string(&path, path_string, path_delimiter) ||
-      sl_parse_string(&manpath, manpath_string, ':'))
-    {
-      fprintf(stderr, "%s: out of memory (setup)\n", progname);
-      exit(1);
-    }
-
-  /* If no arguments have been directed to attach, or -p was specified,
-   * we output the path in an easier-to-read format and we're done.
-   */
-  if (argc == optind || print_path)
-    {
-      print_readable_path(path);
-      sl_free(&path);
-      sl_free(&manpath);
-      exit(0);
-    }
-
-  /* If the following args weren't explicitly handed to attach (via
-   * -a), and the first one looks like a pathname, then assume we've
-   * been passed a bunch of pathnames rather than lockernames. We
-   * store them directly in delta_path and leave mountpoint_list
-   * empty. This results in the code that processes mountpoint_list
-   * to generate delta_path being skipped.
-   */
-  if (!end_args && (argv[optind][0] == '.' || argv[optind][0] == '/'))
-    {
-      for (; optind < argc; optind++)
-	{
-	  if (argv[optind][0] != '.' && argv[optind][0] != '/')
-	    {
-	      fprintf(stderr, "%s: only pathnames may be specified when "
-		      "pathnames are being added\n", progname);
-	      usage();
-	    }
-
-	  /* Make sure the directory exists, if we're adding it to the
-	   * path. Otherwise we don't care.
-	   */
-	  if (remove_from_path || stat(argv[optind], &statbuf) != -1)
-	    sl_add_string(&delta_path, argv[optind], 0);
 	  else
-	    fprintf(stderr, "%s: no such path: %s\n", progname,
-		    argv[optind]);
-	}
-    }
-  else
-    {      
-      /* We were handed lockernames, so get path information from
-       * attach...
-       */
-
-      /* Create argv for attach... */
-      sl_add_string(&attach_args, "add", 0);
-      if (verbose == 0)
-	sl_add_string(&attach_args, "-q", 0);
-
-      /* The remaining arguments go to attach. */
-      while (optind < argc)
-	{
-	  if (sl_add_string(&attach_args, argv[optind++], 0))
-	    {
-	      fprintf(stderr, "%s: out of memory (optind)\n", progname);
-	      exit(1);
-	    }
-	}
-
-      attachcmd(sl_grab_length(attach_args), sl_grab_string_array(attach_args),
-		&mountpoint_list);
-      sl_free(&attach_args);
-    }
-
-  /* Iterate over the mountpoints attach returned and find the
-   * subdirectories we want. In the end, delta_path and delta_manpath
-   * will contain lists of the paths to be added or removed from the
-   * path and manpath.
-   */
-  for (mountpoint = sl_grab_string_array(mountpoint_list);
-       mountpoint != NULL && *mountpoint != NULL; mountpoint++)
-    {
-      /* Find the binary directories we want to add to/remove from the path. */
-      found = athdir_get_paths(*mountpoint, "bin", NULL, NULL, NULL, NULL, 0);
-      if (found != NULL)
-	{
-	  for (ptr = found; *ptr != NULL; ptr++)
-	    {
-	      if (!remove_from_path && !athdir_native(*ptr, NULL) && !quiet)
-		fprintf(stderr, "%s: warning: using compatibility for %s\n",
-			progname, *mountpoint);
-		
-	      if (sl_add_string(&delta_path, *ptr, 0))
-		{
-		  fprintf(stderr, "%s: out of memory (bin)\n", progname);
-		  exit(1);
-		}
-	    }
-	  athdir_free_paths(found);
+	    fprintf(stderr, "%s", p);
 	}
       else
-	if (give_warnings)
-	  fprintf(stderr, "%s: warning: %s has no binary directory\n",
-		  progname, *mountpoint);
-
-      /* Find the man directories we want to add to/remove from the manpath. */
-      found = athdir_get_paths(*mountpoint, "man", NULL, NULL, NULL, NULL, 0);
-      if (found != NULL)
-	{
-	  for (ptr = found; *ptr != NULL; ptr++)
-	    {
-	      if (sl_add_string(&delta_manpath, *ptr, 0))
-		{
-		  fprintf(stderr, "%s: out of memory (man)\n", progname);
-		  exit(1);
-		}
-	    }
-	  athdir_free_paths(found);
-	}
+	fprintf(stderr, "%s", p);
     }
-  sl_free(&mountpoint_list);
 
-  /* Make the changes to the path lists. */
-  path = modify_path(path, delta_path, add_to_front, remove_from_path,
-		     debug_strings[debug * (use_athena_path + 1)]);
-  sl_free(&delta_path);
+  fprintf(stderr, "\n");
+}
 
-  manpath = modify_path(manpath, delta_manpath,	add_to_front, remove_from_path,
-			debug_strings[debug * 3]);
-  sl_free(&delta_manpath);
 
-  /* Output the shell commands needed to modify the user's path. */
-  path_string = sl_grab_string(path, path_delimiter);
-  if (path_string == NULL)
-    path_string = empty_string;
-
-  manpath_string = sl_grab_string(manpath, ':');
-  if (manpath_string == NULL)
-    manpath_string = empty_string;
-
-  fprintf(shell, shell_templates[use_athena_path][bourne_shell], path_string,
-	  manpath_string);
-
-  if (path_string != empty_string)
-    free(path_string);
-  if (manpath_string != empty_string)
-    free(manpath_string);
-  sl_free(&path);
-  sl_free(&manpath);
-  exit(0);
+void add_usage(void)
+{
+  fprintf(stderr, "Usage: add [-vfrpwbq] [-P $athena_path] [-a attachflags] [lockername ...]\n");
+  fprintf(stderr, "       add [-dfrb] [-P $athena_path] pathname ...\n");
+  exit(1);
 }
