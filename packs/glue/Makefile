@@ -1,11 +1,11 @@
-# $Id: Makefile,v 1.59 2004-03-27 17:00:35 rbasch Exp $
+# $Id: Makefile,v 1.60 2004-04-23 13:52:15 rbasch Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
 ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATHLIBEXECDIR=/usr/athena/libexec
-ATTACHRUN=acroread addusr blanche chfn chpobox chsh dcmmaint gs lastlog \
+ATTACHRUN=acroread addusr blanche chfn chpobox chsh dcmmaint gs gv lastlog \
 	listmaint mailmaint mitch moira mrcheck namespace stanley stella \
 	usermaint show-application show-audio show-binhex show-excel \
 	show-image show-msword show-pdf show-postscript show-text show-video \
@@ -118,6 +118,7 @@ install:
 	install -c -m 555 chsh ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 dcmmaint ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 gs ${DESTDIR}${ATHBINDIR}
+	install -c -m 555 gv ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 help.sh ${DESTDIR}${ATHBINDIR}/help
 	install -c -m 555 htmlview.sh ${DESTDIR}${ATHBINDIR}/htmlview
 	install -c -m 555 ksrvutil.sh ${DESTDIR}${ATHBINDIR}/ksrvutil

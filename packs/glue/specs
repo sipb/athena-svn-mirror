@@ -6,6 +6,7 @@ chpobox		moira
 chsh		moira
 dcmmaint	moira
 gs		ghostscript
+gv		sipb
 lastlog		consult
 listmaint	moira
 mailmaint	moira
