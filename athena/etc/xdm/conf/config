@@ -10,6 +10,6 @@
 #X	/etc/Xsun -v :0  -fp /etc/athena/login/fonts/ -co /etc/athena/login/rgb
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
 #ULTconsole	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /dev/xcons
-login	/etc/athena/xlogin -config /etc/athena/login -display :0.0
-#ULT75login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/athena/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/decwin/75dpi/
-#ULT100login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/100dpi/,/usr/athena/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/decwin/100dpi/
+login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/andrew/X11fonts.75,/usr/athena/lib/X11/fonts/100dpi/
+#ULT75login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/75dpi/,/usr/andrew/X11fonts.75,/usr/athena/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/decwin/75dpi/
+#ULT100login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/athena/lib/X11/fonts/misc/,/usr/athena/lib/X11/fonts/100dpi/,/usr/andrew/X11fonts.100,/usr/athena/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/decwin/100dpi/
