@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static const char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.11 1998-11-30 15:25:16 ghudson Exp $";
+static const char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.12 1998-12-01 16:33:43 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -26,13 +26,12 @@ static const char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/r
 #include <sys/stat.h>
 #include <string.h>
 #include <syslog.h>
+#include <com_err.h>
 
 /*
  * This version of the daemon is run out of inetd, with a conf line of:
  * globalmessage dgram udp wait unswitched nobody /usr/athena/etc/messaged messaged
  */
-
-char *error_message();
 
 #define saddr_list(sin) (unsigned)sin[0],(unsigned)sin[1],(unsigned)sin[2],(unsigned)sin[3]
 int main(argc,argv)

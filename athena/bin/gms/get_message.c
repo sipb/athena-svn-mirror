@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static const char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.6 1998-11-30 15:25:12 ghudson Exp $";
+static const char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.7 1998-12-01 16:33:38 ghudson Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -18,7 +18,7 @@ void Usage();
 #include <stdio.h>
 #include <sys/types.h>
 #include <syslog.h>
-char *error_message();
+#include <com_err.h>
 
 
 int main (argc, argv)
