@@ -1,0 +1,116 @@
+/*
+ *  Imakefile for Athena Dashboard
+ *  Copyright (c) 1991, Massachusetts Institute of Technology
+ *		
+ *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/Imakefile,v $
+ *   $Author: vanharen $ 
+ *
+ * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>. 
+ *
+ */
+
+#include "mit-copyright.h"
+
+#ifndef HaveKerberos
+#define HaveKerberos
+#endif
+
+#ifndef HaveAttach
+#define HaveAttach
+#endif
+
+DASH		=	dash
+DASHRESOURCES	=	Dash
+COMPILE		=	compile_menu
+
+#ifdef _AUX_SOURCE
+M_LIB		=	-lmalloc
+#else
+M_LIB		=
+#endif
+
+#if defined(HaveKerberos)
+K_DEF		=	-DKERBEROS
+K_LIB		=	-lkrb
+K_SRC		=	klist.c
+K_OBJ		=	klist.o
+#else  /* HaveKerberos */
+K_DEF		=
+K_LIB		=
+K_LIST		=
+K_OBJ		=
+#endif /* HaveKerberos */
+
+#if defined(HaveAttach)
+A_DEF		=	-DATTACH
+#else  /* HaveAttach */
+A_DEF		=
+#endif /* HaveAttach */
+
+
+CMP_OBJS        =       compile_menu.o
+CMP_SRCS	=	compile_menu.c
+
+OBJS		=	dash.o ${K_OBJ}
+SRCS		=	dash.c ${K_SRC}
+
+XJLIB		=	../lib/libXj.a
+D_LIBS		=	-L/usr/athena/lib ${XJLIB} ${XLIB} \
+			${XMULIB} ${K_LIB} ${M_LIB}
+CMP_LIBS	=	-L/usr/athena/lib ${XJLIB} -lX11
+
+#if defined(AIXArchitecture)
+DEFINES		=	-DSHAPE ${K_DEF} ${A_DEF} -D_BSD -D_BSD_INCLUDES \
+			-DAIXV=12
+#else
+DEFINES		=	-DSHAPE ${K_DEF} ${A_DEF}
+#endif
+
+INCLUDES	=	-I.. -I/usr/athena/include
+
+
+AllTarget(${COMPILE})
+AllTarget(${DASH})
+
+NormalProgramTarget($(COMPILE),$(CMP_OBJS),$(XJLIB),,$(CMP_LIBS))
+NormalProgramTarget($(DASH),$(OBJS),$(XJLIB),,$(D_LIBS))
+InstallProgram($(DASH),$(ATHBINDIR)/$(DASH))
+
+InstallNonExec(${DASH}.1,${ATHMANDIR}/${DASH}.1)
+InstallNonExec(${DASHRESOURCES},${ATHXAPPDIR}/${DASHRESOURCES})
+InstallNonExec(arrow,${ATHXBITDIR}/arrow)
+InstallNonExec(question,${ATHXBITDIR}/question)
+InstallNonExec(Dash.xbm,${ATHXBITDIR}/Dash.xbm)
+
+DependTarget()
+
+install::
+	. $(ATHVERS); \
+	$(INSTALL) -m 0444 /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)/usr/athena/lib/Dash.fallback
+
+install::
+	${RM} $(DESTDIR)/usr/athena/lib/Dash.menus
+	. $(ATHVERS); \
+	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV $(DESTDIR)/usr/athena/lib/Dash.menus; \
+	ln -s /afs/athena.mit.edu/system/config/dash/`machtype`/Dash.menus.$$ATHMAJV$$ATHMINV.cmp $(DESTDIR)/usr/athena/lib/Dash.menus.cmp
+
+compile_menu.o:	compile_menu.c
+	${CC} -c -DMENU_COMPILER ${CFLAGS} compile_menu.c
+
+clean::
+	${RM} strings
+	${RM} x.c
+
+/* .c.o:
+ *	${CC} ${CFLAGS} -E $*.c | xstr -c -
+ *	${CC} ${CFLAGS} -c x.c
+ *	mv x.o $*.o
+ *	${RM} x.c
+ *
+ *xs.o:
+ *	xstr
+ *	${CC} ${CFLAGS} -c xs.c
+ */
