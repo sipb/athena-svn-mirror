@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.1 1998-12-25 19:33:54 ghudson Exp $
+# $Id: syncconf.sh,v 1.2 1999-04-29 20:54:06 jweiss Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -24,7 +24,7 @@ syncrc()
 		prefix="$uprefix"
 	fi
 	if [ "$1$prefix" = 2S -a ! -h "/etc/rc2.d/S$3$4" ]; then
-		mustreboot=1
+		mustreboot=true
 	fi
 	$maybe rm -f "/etc/rc$1.d/$lprefix$3$4" "/etc/rc$1.d/$uprefix$3$4"
 	$maybe ln -s "../init.d/$4" "/etc/rc$1.d/$prefix$3$4"
@@ -93,6 +93,10 @@ handle()
 	HOSTADDR)
 		oldhost=`cat /etc/nodename`
 		oldaddr=`awk '{ a = $1; } END { print a; }' /etc/inet/hosts`
+		wasdhcp=false
+		if [ -f /etc/dhcp.$NETDEV ]; then
+			wasdhcp=true
+		fi
 
 		move /etc/nodename /etc/nodename.saved
 		move "/etc/hostname.$NETDEV" "/etc/hostname.$NETDEV.saved"
@@ -100,29 +104,43 @@ handle()
 		move /etc/inet/hosts /etc/inet/hosts.saved
 		move /etc/inet/netmasks /etc/inet/netmasks.saved
 
-		set -- `/etc/athena/netparams "$ADDR"`
-		netmask=$1
-		gateway=$4
-
-		# Get the first component of the hostname for the hosts
-		# file.
-		first=`expr "$HOST" : '\([^.]*\)\.'`
-
-		put	/etc/nodename "$HOST"
-		put	"/etc/hostname.$NETDEV" "$HOST"
-		put	/etc/defaultrouter "$gateway"
 		put	/etc/inet/hosts "#"
 		append	/etc/inet/hosts "# Internet host table"
 		append	/etc/inet/hosts "#"
 		append	/etc/inet/hosts "127.0.0.1  localhost loghost"
-		append	/etc/inet/hosts "$ADDR  $HOST $first"
-		put	/etc/inet/netmasks "# Netmask for this host"
-		append	/etc/inet/netmasks "$ADDR	$netmask"
+
+		if [ "$ADDR" = dhcp ]; then
+			$maybe touch /etc/nodename /etc/hostname.$NETDEV
+			$maybe touch /etc/defaultrouter /etc/netmasks
+			put "/etc/dhcp.$NETDEV" "primary"
+		else
+			remove "/etc/dhcp.$NETDEV"
+			set -- `/etc/athena/netparams "$ADDR"`
+			netmask=$1
+			gateway=$4
+
+			# Get the first component of the hostname for the hosts
+			# file.
+			first=`expr "$HOST" : '\([^.]*\)\.'`
+
+			put	/etc/nodename "$HOST"
+			put	"/etc/hostname.$NETDEV" "$HOST"
+			put	/etc/defaultrouter "$gateway"
+			append	/etc/inet/hosts "$ADDR  $HOST $first"
+			put	/etc/inet/netmasks "# Netmask for this host"
+			append	/etc/inet/netmasks "$ADDR	$netmask"
+		fi
 
 		# Hostname configuration happens prior to rc2 scripts on
 		# Solaris.
-		if [ "$HOST" != "$oldhost" -o "$ADDR" != "$oldaddr" ]; then
-			mustreboot=1
+		if [ "$ADDR" = dhcp -a "$wasdhcp" = false ]; then
+			mustreboot=true
+		fi
+		if [ "$ADDR" != dhcp ]; then
+			if [ "$wasdhcp" = true -o "$HOST" != "$oldhost" -o \
+			     "$ADDR" != "$oldaddr" ]; then
+				mustreboot=true
+			fi
 		fi
 		;;
 

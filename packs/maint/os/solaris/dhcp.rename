@@ -1,0 +1,45 @@
+#!/sbin/sh
+# $id:$
+#
+# Guess what our name is if we are using DHCP and it couldn't figure it out.
+#
+
+PATH=/usr/bin:/usr/sbin:/usr/athena/bin
+umask 022
+
+case "$1" in
+start)
+	. /etc/athena/rc.conf
+
+	if [ "$ADDR" = dhcp -a `hostname` = unknown ]; then
+		address=`ifconfig $NETDEV | awk '/inet/ {print $2}'`
+		hostname=`nslookup $address | awk '/Name/ {print $2}'`
+		if [ "x$foo" = x ]; then
+			echo "Unable to determine hostname."
+			exit 1
+		fi
+		hostname $hostname
+		echo "Hostname: $hostname"
+
+		# Get the first component of the hostname for the hosts file.
+		first=`expr "$hostname" : '\([^.]*\)\.'`
+
+		cat > /etc/hosts <<EOF
+#
+# Internet host table
+#
+127.0.0.1	localhost loghost
+$address	$hostname $first
+EOF
+
+	fi
+	;;
+
+stop)
+	;;
+
+*)
+	echo "usage: dhcp.rename {start|stop}"
+	;;
+
+esac
