@@ -19,20 +19,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.39 1994-04-08 13:28:18 miki Exp $
- *	$Author: miki $
+ *	$Id: t_utils.c,v 1.40 1996-07-05 02:44:06 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.39 1994-04-08 13:28:18 miki Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.40 1996-07-05 02:44:06 ghudson Exp $";
 #endif
-#endif
-
-#ifdef _AUX_SOURCE
-#define MORE_PROG "/bin/more"
-#else
-#define MORE_PROG "/usr/ucb/more"
 #endif
 
 #include <mit-copyright.h>
@@ -61,9 +55,9 @@ struct sgttyb mode;
  * Notes:
  *	First, open the file to make sure that it is accessible.  If it
  *	is not, log an error and return.  Otherwise, attempt to execute
- *	"more" to page the file on the terminal.  If this fails, simply
- *	print it line by line. In either case, end by closing the file
- *	and returning.
+ *	the desired pager ($PAGER or "more") to page the file on the
+ *	terminal.  If this fails, simply print it line by line. In either
+ *	case, end by closing the file and returning.
  */
 
 ERRCODE
@@ -72,6 +66,7 @@ display_file(filename)
 {
   FILE *file;                  /* File structure pointer. */
   char line[LINE_SIZE];      /* Input line buffer. */
+  char *pager;
 	
   if ((file = fopen(filename, "r")) == (FILE *)NULL) 
     {
@@ -79,8 +74,11 @@ display_file(filename)
 	      filename);
       return(ERROR);
     }
-  
-  if (call_program(MORE_PROG, filename) == ERROR) 
+
+  pager = getenv("PAGER");
+  if (!pager)
+      pager = "more";
+  if (call_program(pager, filename) == ERROR) 
     {
       while(fgets(line, LINE_SIZE, file) != (char *)NULL)
 	printf("%s", line);
