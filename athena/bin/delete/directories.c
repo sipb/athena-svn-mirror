@@ -1,4 +1,20 @@
 /*
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v $
+ * $Author: jik $
+ * 
+ * This program is part of a package including delete, undelete,
+ * lsdel, expunge and purge.  The software suite is meant as a
+ * replacement for rm which allows for file recovery.
+ * 
+ * Copyright (c) 1989 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h."
+ */
+
+#if !defined(lint) && !defined(SABER)
+     static char rcsid_directories_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/directories.c,v 1.6 1989-01-27 03:13:24 jik Exp $";
+#endif
+
+/*
  * Things that needed to be added:
  *
  * 1) Check to see if the cwd is /, and if so, use only one root node.

@@ -1,8 +1,18 @@
-TARGETS = delete undelete lsdel expunge purge
+#     Copyright 1988 Massachusetts Institute of Technology.
+#
+#     For copying and distribution information, see the file
+#     "mit-copyright.h".
+#
+#     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
+#     $Author: jik $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.3 1989-01-27 03:13:45 jik Exp $
+#
+
+TARGETS = delete undelete expunge purge lsdel
 DESTDIR =
 CC = cc
-CFLAGS = -g
-SRCS = delete.c undelete.c directories.c pattern.c util.c
+CFLAGS = -O
+SRCS = delete.c undelete.c directories.c pattern.c util.c expunge.c
 
 all: $(TARGETS)
 
@@ -18,6 +28,22 @@ delete: delete.o util.o
 
 undelete: undelete.o directories.o util.o pattern.o
 	cc $(CFLAGS) -o undelete undelete.o directories.o util.o pattern.o
+
+saber_undelete:
+	#alias s step
+	#alias n next
+	#load undelete.c directories.c util.c pattern.c
+
+expunge: expunge.o directories.o pattern.o util.o
+	cc $(CFLAGS) -o expunge expunge.o directories.o pattern.o util.o
+
+saber_expunge:
+	#alias s step
+	#alias n next
+	#load expunge.c directories.c pattern.c util.c
+
+purge: expunge
+	ln -s expunge purge
 
 clean:
 	-rm -f *~ *.bak *.o delete undelete lsdel expunge purge
@@ -54,4 +80,12 @@ pattern.o: pattern.h util.h undelete.h
 util.o: /usr/include/stdio.h /usr/include/sys/param.h
 util.o: /usr/include/machine/machparam.h /usr/include/sys/signal.h
 util.o: /usr/include/sys/types.h /usr/include/sys/dir.h
-util.o: /usr/include/strings.h util.h
+util.o: /usr/include/strings.h /usr/include/pwd.h util.h
+expunge.o: /usr/include/stdio.h /usr/include/sys/types.h
+expunge.o: /usr/include/sys/time.h
+# /usr/include/sys/time.h includes:
+#	time.h
+expunge.o: /usr/include/sys/time.h /usr/include/sys/dir.h
+expunge.o: /usr/include/sys/param.h /usr/include/machine/machparam.h
+expunge.o: /usr/include/sys/signal.h /usr/include/strings.h
+expunge.o: /usr/include/sys/stat.h directories.h util.h pattern.h expunge.h
