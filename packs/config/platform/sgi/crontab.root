@@ -1,4 +1,4 @@
-# $Revision: 1.1 $
+# $Revision: 1.2 $
 #
 # The root crontab can be used to perform accounting data collection
 #	and cleanup.
@@ -56,10 +56,18 @@
 # dodisk does the disk accounting 
 0	2	* 	*	4	if /etc/chkconfig acct; then /usr/lib/acct/dodisk > /var/adm/acct/nite/disklog; fi
 #
-# Reorganize file systems
-#
-0	3	*	*	0	if test -x /usr/etc/fsr; then (cd /usr/tmp; /usr/etc/fsr) fi
-#
 # Repair mangled utmp/wtmp entries
 #
 1	0	*	*	*	/usr/sbin/chkutent
+#
+# Reorganize file systems
+#
+# This is probably not all that useful on public workstations.
+# In addition, if we do run it, we have to make it not run over
+# the AFS cache partition.
+#0	3	*	*	0	if test -x /usr/etc/fsr; then (cd /usr/tmp; /usr/etc/fsr) fi
+#
+# Athena additions
+#
+# Clean temporary areas
+20    4       *       *       *       /etc/athena/clean_tmp_areas
