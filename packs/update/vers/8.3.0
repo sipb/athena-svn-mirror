@@ -262,14 +262,4 @@ echo "/etc/athena/athinfo.defs"				>> "$CONFCHG"
 echo "/etc/athena/attach.conf"				>> "$CONFCHG"
 echo "/etc/athena/inetd.conf"				>> "$CONFCHG"
 
-if [ -f /var/athena/attachtab ]; then
-	mv /var/athena/attachtab /var/athena/attachtab.old
-	mkdir /var/athena/attachtab
-	mkdir /var/athena/attachtab/locker
-	mkdir /var/athena/attachtab/mountpoint
-	mkdir /var/athena/attachtab/directory
-	echo "Ignore following messages about old attach.conf options."
-	/srvd/usr/athena/etc/atconvert /var/athena/attachtab.old
-fi
-
 chmod 755 /mit
