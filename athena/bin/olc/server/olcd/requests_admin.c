@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.21 1991-03-28 13:27:18 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.22 1991-03-28 15:06:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.21 1991-03-28 13:27:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.22 1991-03-28 15:06:02 lwvanels Exp $";
 #endif
 #endif
 
@@ -163,7 +163,11 @@ olc_change_motd(fd,request)
     return(status);
 
   status = send_response(fd,read_text_into_file(fd,MOTD_FILE));
+#ifdef DISCUSS
+  /* If using discuss, log motd to it.  If not, you may want to use some */
+  /* other method here. */
   log_motd(requester->user->username);
+#endif
   set_motd_timeout(requester);
   return(status);
 }
