@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.5 1989-04-04 11:22:55 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.6 1989-09-18 14:24:28 jtkohl Exp $
 /**/#
 
 #if defined(DO_SYSLOG) && defined(SYSLOG_COMPAT42)
@@ -34,7 +34,8 @@ SRCS=	access.c \
 	subscr.c \
 	timer.c \
 	uloc.c \
-	kstuff.c
+	kstuff.c \
+	version.c
 
 OBJS= 	zsrv_err.o \
 	access.o \
@@ -49,7 +50,8 @@ OBJS= 	zsrv_err.o \
 	subscr.o \
 	timer.o \
 	uloc.o \
-	kstuff.o
+	kstuff.o \
+	version.c
 
 OTHERSRCS= zsrv_err.et
 CONFIG_FILES= default.subscriptions
