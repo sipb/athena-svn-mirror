@@ -15,14 +15,14 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.17 1987-11-20 12:32:27 jtkohl Exp $";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.18 1987-12-10 22:28:03 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 #endif SABER
 #endif lint
 #ifdef DEBUG
-char version[] = "Zephyr Server (DEBUG) 2.05";
+char version[] = "Zephyr Server (DEBUG) 2.1";
 #else
-char version[] = "Zephyr Server 2.05";
+char version[] = "Zephyr Server 2.1";
 #endif DEBUG
 /*
  * Server loop for Zephyr.
