@@ -13,7 +13,7 @@
 
 #include "zhm.h"
 
-static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.57 1997-10-25 21:47:40 ghudson Exp $";
+static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.58 1998-06-10 22:28:11 ghudson Exp $";
 
 #ifdef HAVE_HESIOD
 int use_hesiod = 0;
@@ -23,11 +23,7 @@ int use_hesiod = 0;
 #define srandom srand48
 #endif
 
-#ifdef _PATH_VARRUN
-#define PIDDIR _PATH_VARRUN
-#else
-#define PIDDIR "/etc/"
-#endif
+#define PIDDIR "/var/athena/"
 
 int hmdebug, rebootflag, errflg, dieflag, inetd, oldpid, nofork;
 int no_server = 1, nservchang, nserv, nclt;
