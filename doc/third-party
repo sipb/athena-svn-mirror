@@ -96,7 +96,7 @@ Distribution sites for software under third
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
 	jot		From NetBSD (ftp.netbsd.org), usr.bin/jot
 	kermit		http://www.columbia.edu/kermit
-	krb5		athena-dist.mit.edu:pub/kerberos
+	krb5*		athena-dist.mit.edu:pub/kerberos
 	lam		From NetBSD (ftp.netbsd.org), usr.bin/lam
 	look		From NetBSD (ftp.netbsd.org), usr.bin/look
 	lprng		ftp.astart.com:pub/LPRng; see below
