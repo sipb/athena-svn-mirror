@@ -59,6 +59,7 @@ struct saver_preferences {
   Time splash_duration;		/* how long the splash screen stays up */
   Time timeout;			/* how much idle time before activation */
   Time lock_timeout;		/* how long after activation locking starts */
+  Time max_idle_time;           /* how long to run before allowing logout */
   Time cycle;			/* how long each hack should run */
   Time passwd_timeout;		/* how much time before pw dialog goes down */
   Time pointer_timeout;		/* how often to check mouse position */

@@ -48,6 +48,7 @@ Widget fade_text;
 Widget fade_ticks_text;
 Widget lock_timeout_text;
 Widget passwd_timeout_text;
+Widget max_idle_text;
 Widget verbose_toggle;
 Widget install_cmap_toggle;
 Widget fade_toggle;
@@ -86,6 +87,7 @@ create_preferences_dialog(Widget parent, Visual *visual, Colormap colormap)
   Widget widget18;
   Widget widget48;
   Widget widget29;
+  Widget widget34;
 
   Widget real_dialog;
   Widget w;
@@ -137,12 +139,16 @@ create_preferences_dialog(Widget parent, Visual *visual, Colormap colormap)
   XtSetArg(al[ac], XmNalignment, XmALIGNMENT_END); ac++;
   widget48 = XmCreateLabel ( preferences_form, "passwdLabel", al, ac );
   ac = 0;
+  XtSetArg(al[ac], XmNalignment, XmALIGNMENT_END); ac++;
+  widget34 = XmCreateLabel ( preferences_form, "maxIdleLabel", al, ac );
+  ac = 0;
   timeout_text = XmCreateTextField ( preferences_form, "timeoutText", al, ac );
   cycle_text = XmCreateTextField ( preferences_form, "cycleText", al, ac );
   fade_text = XmCreateTextField ( preferences_form, "fadeSecondsText", al, ac);
   fade_ticks_text = XmCreateTextField ( preferences_form, "fadeTicksText", al, ac);
   lock_timeout_text = XmCreateTextField ( preferences_form, "passwdText", al, ac);
   passwd_timeout_text = XmCreateTextField ( preferences_form, "lockText", al, ac);
+  max_idle_text = XmCreateTextField ( preferences_form, "maxIdleText", al, ac);
   XtSetArg(al[ac], XmNalignment, XmALIGNMENT_BEGINNING); ac++;
   verbose_toggle = XmCreateToggleButton (preferences_form,"verboseToggle",al,ac);
   ac = 0;
@@ -266,6 +272,20 @@ create_preferences_dialog(Widget parent, Visual *visual, Colormap colormap)
   XtSetValues ( widget48,al, ac );
   ac = 0;
 
+  XtSetArg(al[ac], XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET); ac++;
+  XtSetArg(al[ac], XmNtopOffset, 0); ac++;
+  XtSetArg(al[ac], XmNtopWidget, max_idle_text); ac++;
+  XtSetArg(al[ac], XmNbottomAttachment, XmATTACH_OPPOSITE_WIDGET); ac++;
+  XtSetArg(al[ac], XmNbottomOffset, 0); ac++;
+  XtSetArg(al[ac], XmNbottomWidget, max_idle_text); ac++;
+  XtSetArg(al[ac], XmNleftAttachment, XmATTACH_FORM); ac++;
+  XtSetArg(al[ac], XmNleftOffset, 14); ac++;
+  XtSetArg(al[ac], XmNrightAttachment, XmATTACH_WIDGET); ac++;
+  XtSetArg(al[ac], XmNrightOffset, 4); ac++;
+  XtSetArg(al[ac], XmNrightWidget, max_idle_text); ac++;
+  XtSetValues ( widget34,al, ac );
+  ac = 0;
+
   XtSetArg(al[ac], XmNtopAttachment, XmATTACH_WIDGET); ac++;
   XtSetArg(al[ac], XmNtopOffset, 4); ac++;
   XtSetArg(al[ac], XmNtopWidget, widget13); ac++;
@@ -329,6 +349,17 @@ create_preferences_dialog(Widget parent, Visual *visual, Colormap colormap)
   XtSetArg(al[ac], XmNleftWidget, lock_timeout_text); ac++;
   XtSetArg(al[ac], XmNrightAttachment, XmATTACH_NONE); ac++;
   XtSetValues ( passwd_timeout_text,al, ac );
+  ac = 0;
+
+  XtSetArg(al[ac], XmNtopAttachment, XmATTACH_WIDGET); ac++;
+  XtSetArg(al[ac], XmNtopOffset, 4); ac++;
+  XtSetArg(al[ac], XmNtopWidget, passwd_timeout_text); ac++;
+  XtSetArg(al[ac], XmNbottomAttachment, XmATTACH_NONE); ac++;
+  XtSetArg(al[ac], XmNleftAttachment, XmATTACH_OPPOSITE_WIDGET); ac++;
+  XtSetArg(al[ac], XmNleftOffset, 0); ac++;
+  XtSetArg(al[ac], XmNleftWidget, passwd_timeout_text); ac++;
+  XtSetArg(al[ac], XmNrightAttachment, XmATTACH_NONE); ac++;
+  XtSetValues ( max_idle_text,al, ac );
   ac = 0;
 
   XtSetArg(al[ac], XmNtopAttachment, XmATTACH_WIDGET); ac++;
@@ -403,7 +434,7 @@ create_preferences_dialog(Widget parent, Visual *visual, Colormap colormap)
 
   XtSetArg(al[ac], XmNtopAttachment, XmATTACH_WIDGET); ac++;
   XtSetArg(al[ac], XmNtopOffset, 0); ac++;
-  XtSetArg(al[ac], XmNtopWidget, passwd_timeout_text); ac++;
+  XtSetArg(al[ac], XmNtopWidget, max_idle_text); ac++;
 
   XtSetArg(al[ac], XmNbottomAttachment, XmATTACH_FORM); ac++;
   XtSetArg(al[ac], XmNbottomOffset, 4); ac++;
@@ -424,12 +455,14 @@ create_preferences_dialog(Widget parent, Visual *visual, Colormap colormap)
   children[ac++] = widget17;
   children[ac++] = widget18;
   children[ac++] = widget48;
+  children[ac++] = widget34;
   children[ac++] = timeout_text;
   children[ac++] = cycle_text;
   children[ac++] = fade_text;
   children[ac++] = fade_ticks_text;
   children[ac++] = lock_timeout_text;
   children[ac++] = passwd_timeout_text;
+  children[ac++] = max_idle_text;
   children[ac++] = verbose_toggle;
   children[ac++] = install_cmap_toggle;
   children[ac++] = fade_toggle;

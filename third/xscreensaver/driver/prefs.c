@@ -147,6 +147,7 @@ static const char * const prefs[] = {
   "lockVTs",
   "lockTimeout",
   "passwdTimeout",
+  "maxIdleTime",
   "visualID",
   "installColormap",
   "verbose",
@@ -608,6 +609,7 @@ write_init_file (saver_preferences *p, const char *version_string)
 # endif
       CHECK("lockTimeout")	type = pref_time, t = p->lock_timeout;
       CHECK("passwdTimeout")	type = pref_time, t = p->passwd_timeout;
+      CHECK("maxIdleTime")	type = pref_time, t = p->max_idle_time;
       CHECK("visualID")		type = pref_str,  s =    visual_name;
       CHECK("installColormap")	type = pref_bool, b = p->install_cmap_p;
       CHECK("verbose")		type = pref_bool, b = p->verbose_p;
@@ -767,6 +769,7 @@ load_init_file (saver_preferences *p)
   p->splash_duration = 1000 * get_seconds_resource ("splashDuration", "Time");
   p->timeout         = 1000 * get_minutes_resource ("timeout", "Time");
   p->lock_timeout    = 1000 * get_minutes_resource ("lockTimeout", "Time");
+  p->max_idle_time   = 1000 * get_minutes_resource ("maxIdleTime", "Time");
   p->cycle           = 1000 * get_minutes_resource ("cycle", "Time");
   p->passwd_timeout  = 1000 * get_seconds_resource ("passwdTimeout", "Time");
   p->pointer_timeout = 1000 * get_seconds_resource ("pointerPollTime", "Time");
