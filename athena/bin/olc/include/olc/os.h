@@ -7,22 +7,25 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/os.h,v $
- *	$Id: os.h,v 1.8 1992-01-07 16:48:48 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: os.h,v 1.9 1994-08-14 15:55:15 cfields Exp $
+ *	$Author: cfields $
  */
 
 #include <mit-copyright.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#ifndef DIRSIZ
+#ifdef SOLARIS
+#include <fcntl.h>
+#include <dirent.h>
+#else /* !SOLARIS */
 #include <sys/dir.h>
+#endif /* SOLARIS */
 #if defined(_IBMR2) && defined(ZEPHYR)
 /* Conflict in definitions between AIX's dir.h and zephyr.h for STAT; keep */
 /* the Zephyr one */
 #undef STAT
-#endif
-#endif
+#endif /* IBM */
 #include <sys/resource.h>
 
 #ifndef HAS_ANSI_INCLUDES
