@@ -1,6 +1,6 @@
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.1 1990-11-27 11:52:03 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/io.c,v 1.2 1990-12-02 23:40:37 lwvanels Exp $";
 #endif
 #endif
 
@@ -24,6 +24,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/time.h>
 #include <sys/errno.h>
 
+#ifndef i386
 #ifdef __STDC__
 # define        P(s) s
 #else
@@ -39,8 +40,9 @@ int read P((int d, void *buf, int nbytes));
 int write P((int d, void *buf, int nbytes));
 
 #undef P
-
-
+#else
+extern int errno;
+#endif
 
 
 int
