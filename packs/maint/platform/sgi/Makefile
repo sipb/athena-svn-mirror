@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1997-02-11 19:25:54 ghudson Exp $
+# $Id: Makefile,v 1.6 1997-03-11 18:48:54 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -23,7 +23,7 @@ install:
 	install -c -m 0755 network ${DESTDIR}${INITD}
 	install -c -m 0555 syncconf.sh ${DESTDIR}${ATHRETCDIR}/syncconf
 	rm -f ${DESTDIR}${RC0}/K02axdm
-	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02axdm
+	ln -s ../init.d/axdm ${DESTDIR}${RC0}/K02xdm
 	rm -f ${DESTDIR}${RC0}/K07athena
 	ln -s ../init.d/athena ${DESTDIR}${RC0}/K07athena
 	rm -f ${DESTDIR}${RC0}/K79athena.config
@@ -37,7 +37,7 @@ install:
 	rm -f ${DESTDIR}${RC2}/S93athena
 	ln -s ../init.d/athena ${DESTDIR}${RC2}/S93athena
 	rm -f ${DESTDIR}${RC2}/S98axdm
-	ln -s ../init.d/axdm ${DESTDIR}${RC2}/S98axdm
+	ln -s ../init.d/axdm ${DESTDIR}${RC2}/S98xdm
 
 clean:
 
