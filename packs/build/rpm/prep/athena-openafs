@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cp $1/packs/config/os/linux/CellServDB $2
+cp $1/packs/config/os/linux/ThisCell $2
+cp $1/packs/config/os/linux/cacheinfo $2
+cp $1/packs/maint/config_afs.sh $2
