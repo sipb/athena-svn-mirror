@@ -443,7 +443,7 @@ mk-src.pl. It has the following layout
                                     # as specified
                  proc => <impl type> => sub {}
 
-where $<$impl type$>$ is one of:
+where <impl type> is one of:
 
   cc: for "aspell.h" header file
   cxx: for C++ interface implemented on top of cc interface
@@ -458,7 +458,7 @@ each proc sub should take the following argv
    $data: a subtree of $master_data
    $accum:
 
-$<$options$>$ is one of:
+<options> is one of:
 
   desc: description of the object
   prefix:
@@ -529,8 +529,8 @@ The %info structure is initialized as follows:
 
 In addition to the categories listed above a "methods" catagory by be
 specified in under the class category. A "methods" catagory is created for
-each methods group under the name "$<$methods name$>$ methods" When groups
-is undefined a type name may be specified in place of a category
+each methods group under the name "<methods name> methods" When groups is
+undefined a type name may be specified in place of a category
 
 
 %types
@@ -785,7 +785,7 @@ by readers is not Transparent. A copy that is not "Transparent" is
 called "Opaque".
 
 Examples of suitable formats for Transparent copies include plain ASCII
-without markup, Texinfo input format, LATEX input format, SGML or XML
+without markup, Texinfo input format, L^ATEX input format, SGML or XML
 using a publicly available DTD, and standard-conforming simple HTML
 designed for human modification. Opaque formats include PostScript, PDF,
 proprietary formats that can be read and edited only by proprietary word
@@ -1061,7 +1061,7 @@ The command line arguments were:
 latex2html -split 3 -toc_depth 3 -dir dev-html -long_titles 2 -local_icons
 -show_section_numbers devel.tex
 
-The translation was initiated by Kevin Atkinson on 2002-11-04
+The translation was initiated by Kevin Atkinson on 2004-01-30
 --------------------------------------------------------------------------
 
   * Contents
@@ -1136,4 +1136,4 @@ The translation was initiated by Kevin Atkinson on 2002-11-04
 --------------------------------------------------------------------------
 next_inactive up previous
 
-Kevin Atkinson 2002-11-04
+Kevin Atkinson 2004-01-30

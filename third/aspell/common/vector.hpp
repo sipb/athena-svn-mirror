@@ -16,20 +16,20 @@ namespace acommon
   {
   public:
     void append(T t) {
-      push_back(t);
+      this->push_back(t);
     }
     void append(const T * begin, unsigned int size) {
-      insert(end(), begin, begin+size);
+      insert(this->end(), begin, begin+size);
     }
     T * data() {
-      return &front();
+      return &this->front();
     }
 
     T * pbegin() {
-      return &*begin();
+      return &*this->begin();
     }
     T * pend() {
-      return &*end();
+      return &*this->end();
     }
   };
 }

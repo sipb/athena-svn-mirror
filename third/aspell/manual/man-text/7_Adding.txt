@@ -1,5 +1,5 @@
 next up previous contents
-Next: 8. How Aspell Works Up: GNU Aspell 0.50.3 Previous: 6. Writing
+Next: 8. How Aspell Works Up: GNU Aspell 0.50.5 Previous: 6. Writing
 programs to   Contents
 
 Subsections
@@ -483,6 +483,6 @@ when coming up with suggestions in a future version of Aspell.
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: 8. How Aspell Works Up: GNU Aspell 0.50.3 Previous: 6. Writing
+Next: 8. How Aspell Works Up: GNU Aspell 0.50.5 Previous: 6. Writing
 programs to   Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

@@ -1,9 +1,12 @@
 next up previous contents
-Next: B. To Do Up: GNU Aspell 0.50.3 Previous: 8. How Aspell Works   
+Next: B. To Do Up: GNU Aspell 0.50.5 Previous: 8. How Aspell Works   
 Contents
 
 Subsections
 
+  * Changes from 0.50.4.1 to 0.50.5 (February 10, 2003)
+  * Changes from 0.50.4 to 0.50.4.1 (Oct 11, 2003)
+  * Changes from 0.50.3 to 0.50.4 (Sep 26, 2003)
   * Changes from 0.50.2 to 0.50.3 (Nov 23, 2002)
   * Changes from 0.50.1 to 0.50.2 (Sep 28, 2002)
   * Changes from 0.50 to 0.50.1 (Aug 28, 2002)
@@ -50,6 +53,48 @@ Subsections
 --------------------------------------------------------------------------
 
 A. Changelog
+
+Changes from 0.50.4.1 to 0.50.5 (February 10, 2003)
+
+  * Reworked url filter which fixed several bugs and now accepts "bla.bla/
+    kdkdl" as a url.
+  * Fixed bug in which the url filter was coming before all other filters
+    when it was suppose to come after. This solved a number of problems
+    where the url filter was interfering with other filters.
+  * Small bug fix in SGML filter.
+  * Added code page charsets, ie cp125?.dat.
+  * Added natural (split) keyboard data file as "split.kbd"
+  * Compile fixes for the upcoming Gcc 3.4
+  * Removed Solaris link hack as it was causing more problems than it
+    fixes.
+  * Compile fixes for Sun WorkShop 6 compiler, but there may still be some
+    problems, especially with linking.
+  * Included patch to help compile with Microsoft Visual C++ 6.
+  * Minor manual fixes.
+  * Updated the TODO section to reflect the current progress with the next
+    major version of Aspell (0.51).
+  * Updated to Autoconf 2.59, Automake 1.82, and Libtool 1.5.2.
+
+Changes from 0.50.4 to 0.50.4.1 (Oct 11, 2003)
+
+  * Fixed major bug in pipe mode which caused the last character to be
+    chopped off words before they were stored.
+  * Minor formating fixes in the manual.
+
+Changes from 0.50.3 to 0.50.4 (Sep 26, 2003)
+
+  * Minor changes in URL filter to avoid treating the double quote
+    character as part of the URL, and to avoid treating words ending in
+    more than one period as a URL.
+  * Document fixes in Aspell API
+  * Small compile fixes, including one for GCC 3.3
+  * Updated Win32 section since a port now exists thanks to Thorsten
+    Maerz.
+  * Complain instead of doing nothing or aborting for unimplemented
+    functions in Aspell utility.
+  * Portability bug fixes.
+  * Upgraded to Autoconf 2.57, Automake 1.7.7, Libtool 1.5 (no longer use
+    CVS version of libtool).
 
 Changes from 0.50.2 to 0.50.3 (Nov 23, 2002)
 
@@ -607,6 +652,6 @@ Changes from .10 to .11 (Sep 12, 1998)
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: B. To Do Up: GNU Aspell 0.50.3 Previous: 8. How Aspell Works   
+Next: B. To Do Up: GNU Aspell 0.50.5 Previous: 8. How Aspell Works   
 Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

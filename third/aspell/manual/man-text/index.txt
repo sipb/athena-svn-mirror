@@ -2,11 +2,13 @@ next up previous contents
 Next: Contents   Contents
 
 
-                            GNU Aspell 0.50.3                             
+                            GNU Aspell 0.50.5                             
                                                                           
-                         Copyright (c) 2000-2002                          
+                         Copyright (c) 2000-2004                          
                               Kevin Atkinson                              
                               kevina@gnu.org                              
+
+                            February 10, 2004                             
 
 
 --------------------------------------------------------------------------
@@ -25,11 +27,17 @@ Next: Contents   Contents
       + 2.4 Helping Out
       + 2.5 Compiling & Installing
           o 2.5.1 Generic Install Instructions
-          o 2.5.2 General Problems
-          o 2.5.3 Curses Notes
-          o 2.5.4 Upgrading from Aspell .33/Pspell .12
-          o 2.5.5 Upgrading from a pre-release snapshot
+          o 2.5.2 Curses Notes
+          o 2.5.3 Upgrading from Aspell .33/Pspell .12
+          o 2.5.4 Upgrading from a pre-release snapshot
+          o 2.5.5 Sun WorkShop 6 Compiler Notes
           o 2.5.6 Win32 Notes
+              # 2.5.6.1 Getting
+              # 2.5.6.2 Building
+              # 2.5.6.3 (PD)Curses
+              # 2.5.6.4 Directories
+              # 2.5.6.5 Installer
+              # 2.5.6.6 Win32 consoles
       + 2.6 Using aspell-import
    
   * 3. Basic Usage
@@ -82,7 +90,7 @@ Next: Contents   Contents
       + 5.7 AWLI files
    
   * 6. Writing programs to use Aspell
-      + 6.1 Though the C API
+      + 6.1 Through the C API
           o 6.1.1 Usage
           o 6.1.2 API Reference
           o 6.1.3 Examples
@@ -103,6 +111,9 @@ Next: Contents   Contents
    
   * 8. How Aspell Works
   * A. Changelog
+      + Changes from 0.50.4.1 to 0.50.5 (February 10, 2003)
+      + Changes from 0.50.4 to 0.50.4.1 (Oct 11, 2003)
+      + Changes from 0.50.3 to 0.50.4 (Sep 26, 2003)
       + Changes from 0.50.2 to 0.50.3 (Nov 23, 2002)
       + Changes from 0.50.1 to 0.50.2 (Sep 28, 2002)
       + Changes from 0.50 to 0.50.1 (Aug 28, 2002)
@@ -147,14 +158,16 @@ Next: Contents   Contents
       + Changes from .10 to .11 (Sep 12, 1998)
    
   * B. To Do
-      + B.1 Things that need to be done
-      + B.2 Good ideas that are worth implementing
-      + B.3 Notes and Status of various items
-          o B.3.1 General region skipping
-          o B.3.2 Word skipping by context
-          o B.3.3 Hidden Markov Model
-          o B.3.4 Email the Personal Dictionary
-          o B.3.5 Words With Spaces in Them
+      + B.1 Things that will be done by Aspell 0.51
+      + B.2 Things that need to be done
+      + B.3 Things I would like to get done
+      + B.4 Good ideas that are worth implementing
+      + B.5 Notes and Status of various items
+          o B.5.1 General region skipping
+          o B.5.2 Word skipping by context
+          o B.5.3 Hidden Markov Model
+          o B.5.4 Email the Personal Dictionary
+          o B.5.5 Words With Spaces in Them
    
   * C. Credits
   * D. Glossary and References
@@ -179,4 +192,4 @@ Next: Contents   Contents
 
 --------------------------------------------------------------------------
 
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

@@ -1,5 +1,5 @@
 next up previous contents
-Next: E. Copyright Up: GNU Aspell 0.50.3 Previous: C. Credits   Contents
+Next: E. Copyright Up: GNU Aspell 0.50.5 Previous: C. Credits   Contents
 
 
 D. Glossary and References
@@ -60,5 +60,5 @@ STLPort
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: E. Copyright Up: GNU Aspell 0.50.3 Previous: C. Credits   Contents
-Kevin Atkinson 2002-11-23
+Next: E. Copyright Up: GNU Aspell 0.50.5 Previous: C. Credits   Contents
+Kevin Atkinson 2004-02-10

@@ -1,5 +1,5 @@
 next up previous contents
-Next: 6. Writing programs to Up: GNU Aspell 0.50.3 Previous: 4.
+Next: 6. Writing programs to Up: GNU Aspell 0.50.5 Previous: 4.
 Customizing Aspell   Contents
 
 Subsections
@@ -192,6 +192,6 @@ line which contains the full path of the main word list.
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: 6. Writing programs to Up: GNU Aspell 0.50.3 Previous: 4.
+Next: 6. Writing programs to Up: GNU Aspell 0.50.5 Previous: 4.
 Customizing Aspell   Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

@@ -1,5 +1,5 @@
 next up previous contents
-Next: About this document ... Up: GNU Aspell 0.50.3 Previous: D. Glossary
+Next: About this document ... Up: GNU Aspell 0.50.5 Previous: D. Glossary
 and References   Contents
 
 Subsections
@@ -117,7 +117,7 @@ by readers is not Transparent. A copy that is not "Transparent" is
 called "Opaque".
 
 Examples of suitable formats for Transparent copies include plain ASCII
-without markup, Texinfo input format, LATEX input format, SGML or XML
+without markup, Texinfo input format, L^ATEX input format, SGML or XML
 using a publicly available DTD, and standard-conforming simple HTML
 designed for human modification. Opaque formats include PostScript, PDF,
 proprietary formats that can be read and edited only by proprietary word
@@ -884,6 +884,6 @@ That's all there is to it!
 
 --------------------------------------------------------------------------
 next up previous contents
-Next: About this document ... Up: GNU Aspell 0.50.3 Previous: D. Glossary
+Next: About this document ... Up: GNU Aspell 0.50.5 Previous: D. Glossary
 and References   Contents
-Kevin Atkinson 2002-11-23
+Kevin Atkinson 2004-02-10

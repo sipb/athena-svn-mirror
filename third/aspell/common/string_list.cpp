@@ -86,8 +86,13 @@ namespace acommon {
     if (*cur == 0) {
       return false;
     } else {
-      *prev = (*cur)->next;
-      delete *cur;
+      if (prev != 0) {
+        *prev = (*cur)->next;
+        delete *cur;
+      } else {
+        delete first;
+        first = 0;
+      }
       return true;
     }
   }
