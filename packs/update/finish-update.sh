@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.8 1997-12-06 21:32:12 ghudson Exp $
+# $Id: finish-update.sh,v 1.9 1998-03-27 19:10:22 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -15,18 +15,7 @@
 # this software for any purpose.  It is provided "as is"
 # without express or implied warranty.
 
-export PATH CPUTYPE
-CONFDIR=/etc/athena
-LIBDIR=/srvd/usr/athena/lib/update
-SERVERDIR=/var/server
-PATH=/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR:/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd
-HOSTTYPE=`/bin/athena/machtype`
-CPUTYPE=`/bin/athena/machtype -c`
-CONFCHG=/var/athena/update.confchg
-CONFVARS=/var/athena/update.confvars
-AUXDEVS=/var/athena/update.auxdevs
-OLDBINS=/var/athena/update.oldbins
-DEADFILES=/var/athena/update.deadfiles
+. /srvd/usr/athena/lib/update/update-environment
 
 # We get one argument, the new workstation version we're updating to.
 newvers="$1"
@@ -43,10 +32,11 @@ fi
 
 # Remove the version script state files.
 rm -f "$CONFCHG" "$CONFVARS" "$AUXDEVS" "$OLDBINS" "$DEADFILES"
+rm -f "$LOCALPACKAGES" "$LINKPACKAGES"
 
 echo "Updating version"
 echo "Athena Workstation ($HOSTTYPE) Version $newvers `date`" >> \
-	${CONFDIR}/version
+	$CONFDIR/version
 
 # Re-customize the workstation
 if [ "$PUBLIC" = "true" ]; then

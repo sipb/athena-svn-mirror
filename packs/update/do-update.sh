@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.21 1998-02-09 23:11:34 ghudson Exp $
+# $Id: do-update.sh,v 1.22 1998-03-27 19:10:10 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -15,20 +15,7 @@
 # this software for any purpose.  It is provided "as is"
 # without express or implied warranty.
 
-export CONFCHG CONFVARS AUXDEVS OLDBINS DEADFILES CONFDIR LIBDIR SERVERDIR PATH
-export HOSTTYPE CPUTYPE
-
-CONFCHG=/var/athena/update.confchg
-CONFVARS=/var/athena/update.confvars
-AUXDEVS=/var/athena/update.auxdevs
-OLDBINS=/var/athena/update.oldbins
-DEADFILES=/var/athena/update.deadfiles
-CONFDIR=/etc/athena
-LIBDIR=/srvd/usr/athena/lib/update
-SERVERDIR=/var/server
-PATH=/bin:/etc:/usr/bin:/usr/ucb:/usr/bsd:/os/bin:/os/etc:/srvd/etc/athena:/srvd/bin/athena:/os/usr/bin:/srvd/usr/athena/etc:/os/usr/ucb:/os/usr/bsd:$LIBDIR
-HOSTTYPE=`/bin/athena/machtype`
-CPUTYPE=`/bin/athena/machtype -c`
+. /srvd/usr/athena/lib/update/update-environment
 
 # Get the platform name for Solaris.  "uname -i" is the documented way, but
 # it doesn't work in Solaris 2.4 and prior, and "uname -m" works for now.
@@ -41,9 +28,9 @@ esac
 # We get three arguments: the method by which the machine was rebooted.
 # (possible values are Auto, Manual, and Remote), the current workstation
 # version, and the new version.
-method="$1"
-version="$2"
-newvers="$3"
+method=$1
+version=$2
+newvers=$3
 
 echo "Starting update"
 
@@ -70,11 +57,14 @@ fi
 #	$OLDBINS	A list of binaries to preserve before
 #			tracking
 #	$DEADFILES	A list of local files to be removed
+#	$LOCALPACKAGES	A list of local OS packages to be de/installed
+#	$LINKPACKAGES	A list of linked OS packages to be de/installed
 #	$CONFVARS	Can set variables to "true", including:
 #		NEWUNIX		Update kernel
 #		NEWBOOT		Boot blocks have changed
 #		NEWOS		OS version has changed
 #		TRACKOS		OS files relevant to local disk have changed
+#		MINIROOT	some OS files require a miniroot update
 
 configfiles=`cat $LIBDIR/configfiles`
 
@@ -164,7 +154,7 @@ fi
 echo "Shutting down running services"
 case "$HOSTTYPE" in
 sgi)
-	killall inetd snmpd syslogd snmpd named
+	killall inetd snmpd syslogd named
 	;;
 *)
 	if [ -f /var/athena/inetd.pid ]; then
@@ -182,89 +172,44 @@ sgi)
 	;;
 esac
 
-if [ -s "$OLDBINS" ]; then
-	echo "Making copies of OS binaries we need"
-	mkdir -p /tmp/bin
-	bins="`cat $OLDBINS`"
-	for i in $bins; do
-		cp -p $i /tmp/bin/`basename $i`
-	done
-	PATH=/tmp/bin:$PATH; export PATH
-fi
+# MINIROOT is currently only used for Irix 6.x.
+if [ "$MINIROOT" = true ]; then
+	# Set up a miniroot in the swap partition. We will boot into
+	# it, and update-os will be run from there.
 
-if [ -s "$DEADFILES" ]; then
-	echo "Removing outdated files"
-	dead="`cat $DEADFILES`"
-	for i in $dead; do
-		rm -rf $i
-	done
-fi
+	echo "Suppressing network daemons for reboot"
+	chkconfig -f suppress-network-daemons on
 
-echo "Tracking changes"
-if [ "$TRACKOS" = true ]; then
-	case "$HOSTTYPE" in
-	sgi)
-		/install/install/track -v -F /install -T / -d \
-			-W /install/install/lib
+	sh /srvd/usr/athena/lib/update/setup-swap-boot "$method" "$newvers"
+	case "$?" in
+	0)
+		echo "Rebooting into swap to update OS files..."
 		;;
-	sun4)
-		# Sun ships multiple revisions of OS config files
-		# with the same timestamp, so we must use -c.
-		track -c -v -F /os -T / -d -W /srvd/usr/athena/lib \
-			-s stats/os_rvd slists/os_rvd
-
-		# Bring this architecture's /platform directory local.
-		rm -rf "/platform/$platform"
-		cp -rp "/os/platform/$platform" "/platform/$platform"
+	2)
+		echo "Rebooting to clear swap..."
+		echo "Athena Workstation ($HOSTTYPE) Version" \
+                      "ClearSwap $method $newvers `date`" \
+			>> "$CONFDIR/version"
+		# Make sure this machine knows what the heck to do
+		# with "ClearSwap" in version, since it may not be
+		# updated to a release that understands it yet.
+		cp /srvd/etc/init.d/finish-update /etc/init.d
+		;;
+	*)
+		echo "Please contact Athena Hotline at x3-1410."
+		echo "Thank you. -Athena Operations"
+		exit 0
 		;;
 	esac
-fi
-track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
-rm -f /var/athena/rc.conf.sync
 
-if [ "$NEWOS" = true ]; then
-	case "$HOSTTYPE" in
-	sun4)
-		echo "Copying new system files"
-		cp -p /os/etc/driver_aliases /etc/driver_aliases
-		cp -p /os/etc/name_to_major /etc/name_to_major
-		;;
-	esac
+	echo "Update partially completed, system will reboot in 15 seconds."
+	sync
+	sleep 15
+	exec reboot
 fi
 
-if [ "$NEWUNIX" = true ] ; then
-	echo "Updating kernel"
-	case "$HOSTTYPE" in
-	sun4)
-		echo "Tracking new kernel"        
-		track -c -v -F /os/kernel -T /kernel -d \
-			-W /srvd/usr/athena/lib -s stats/kernel_rvd \
-			slists/kernel_rvd
-		echo "Tracking new usr kernel"        
-		track -c -v -F /os/usr/kernel -T /usr/kernel -d \
-			-W /srvd/usr/athena/lib -s stats/usr_kernel_rvd \
-			slists/usr_kernel_rvd
-		cp -p /srvd/kernel/drv/* /kernel/drv/
-		cp -p /srvd/kernel/fs/* /kernel/fs/
-		cp -p /srvd/kernel/strmod/* /kernel/strmod/
-		;;
-	sgi)
-		/install/install/update
-		;;
-	esac
-fi
-
-if [ "$NEWBOOT" = true ]; then
-	echo "Copying new bootstraps"
-
-	case "$HOSTTYPE" in
-	sun4)
-		/usr/sbin/installboot \
-			"/usr/platform/$platform/lib/fs/ufs/bootblk" \
-			/dev/rdsk/c0t3d0s0
-		;;
-	esac
-fi
+# Not a miniroot update; run update-os here.
+sh /srvd/usr/athena/lib/update/update-os
 
 if [ "$NEWOS" = true ]; then
 	# Reboot to finish update.
@@ -279,17 +224,20 @@ if [ "$NEWOS" = true ]; then
 	echo "Updating version for reboot"
 	echo "Athena Workstation ($HOSTTYPE) Version Reboot" \
 		"$method $newvers `date`" >> "$CONFDIR/version"
-
 	echo "Update partially completed, system will reboot in 15 seconds."
 	sync
 	sleep 15
 	exec reboot
-else
-	sh /srvd/usr/athena/lib/update/finish-update "$newvers"
-	if [ "$method" = Auto ]; then
-		echo "Automatic update done; system will reboot in 15 seconds."
-		sync
-		sleep 15
-		exec reboot
-	fi
 fi
+
+# Not an OS update; run finish-update here.
+sh /srvd/usr/athena/lib/update/finish-update "$newvers"
+if [ "$method" = Auto ]; then
+	echo "Automatic update done; system will reboot in 15 seconds."
+	sync
+	sleep 15
+	exec reboot
+fi
+
+# Not an automatic update; just sync the disk and drop back to the shell.
+sync

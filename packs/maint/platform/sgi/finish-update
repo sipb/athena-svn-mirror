@@ -4,11 +4,13 @@
 
 case "$1" in
 start)
-	if [ `awk '{a=$5} END {print a}' /etc/athena/version` = Reboot ]; then
+	state=`awk '{a=$5} END {print a}' /etc/athena/version`
+	case "$state" in
+	Reboot)
 		method=`awk '{a=$6} END {print a}' /etc/athena/version`
 		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
 
-		if [ ! -r /usr/athena/lib/update/finish-update ]; then
+		if [ ! -r /srvd/usr/athena/lib/update/finish-update ]; then
 			echo "Cannot finish partially completed update."
 			echo "Please contact Athena Hotline at x3-1410.  Thank"
 			echo "you. -Athena Operations"
@@ -43,7 +45,94 @@ start)
 		sleep 15
 		reboot
 		killall rc2
-	fi
+		;;
+
+	ClearSwap)
+		method=`awk '{a=$6} END {print a}' /etc/athena/version`
+		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
+
+		. /srvd/usr/athena/lib/update/update-environment
+		. $CONFDIR/rc.conf
+
+		sh /srvd/usr/athena/lib/update/setup-swap-boot "$method" \
+			"$newvers" 2>&1 | tee -a /var/athena/update.log
+
+		if [ $? -ne 0 ]; then
+			echo "Please contact Athena Hotline at x3-1410."
+			echo "Thank you. -Athena Operations"
+
+			echo "Athena Workstation ($HOSTTYPE) Version Update" \
+				"`date`" >> "$CONFDIR/version"
+			exit 0
+		fi
+
+		sync
+		sleep 15
+		reboot
+		killall rc2
+		;;
+
+	# The following code executes only when booted into the miniroot.
+	BootSwap)
+		method=`awk '{a=$6} END {print a}' /etc/athena/version`
+		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
+
+		CONFVARS=/var/athena/update.confvars
+		. $CONFVARS
+
+		UPDATE_ROOT=/root
+		export UPDATE_ROOT
+		mkdir $UPDATE_ROOT
+		mount $ROOTDEVICE $UPDATE_ROOT
+
+		echo "$UPDATE_ROOT/afs:/usr/vice/cache:30000" \
+			> /usr/vice/etc/cacheinfo
+
+		# Remove any pre-created AFS mountpoint from the miniroot.
+		# We need a symlink there.
+	        rmdir /afs
+
+		# Make symlinks from our real root to the root we're
+		# installing into. For /srvd, /os, and /install, attach
+		# was done into the UPDATE_ROOT before we rebooted to
+		# get here, so we don't have to do the attach again. For
+		# /afs, AFS is going to be mounted in UPDATE_ROOT.
+		for i in /afs /srvd /os /install; do
+			rm -f $i
+			ln -s $UPDATE_ROOT$i $i
+		done
+
+		/etc/init.d/afs start
+
+		. /srvd/usr/athena/lib/update/update-environment
+		. $CONFDIR/rc.conf
+
+		sh /srvd/usr/athena/lib/update/update-os 2>&1 \
+			| tee -a $UPDATE_ROOT/var/athena/update.log
+
+		# Set ourselves up to boot into the root partition again.
+		template="scsi(%d)disk(%d)rdisk(0)partition(%d)"
+		if [ `uname -m` = "IP32" ]; then
+			template="pci(0)$template"
+		fi
+		nvram OSLoadPartition `devnm $UPDATE_ROOT/var | awk -F/ \
+			-v template=$template '{
+			    printf(template, substr($4,4,1), substr($4,6,1),
+				substr($4,8,1)) }'`
+
+		echo "Updating version for reboot"
+		echo "Athena Workstation ($HOSTTYPE) Version Reboot" \
+			"$method $newvers `date`" >> "$CONFDIR/version"
+
+		echo "Update partially completed, system will reboot" \
+			"in 15 seconds."
+
+		sync
+		sleep 15
+		reboot
+		killall rc2
+		;;
+	esac
 	;;
 
 stop)
