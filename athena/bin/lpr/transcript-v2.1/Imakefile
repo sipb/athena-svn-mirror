@@ -2,7 +2,7 @@
    #
    # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
    # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-   # RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Imakefile,v 1.6 1991-07-31 19:20:07 epeisach Exp $
+   # RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Imakefile,v 1.7 1992-05-12 18:09:42 lwvanels Exp $
 */
 
 PSLIBDIR=/usr/athena/lib/ps
@@ -28,6 +28,7 @@ LIBS= -lzephyr -lcom_err -lkrb -ldes $(OLIBS)
 
 programs: all
 
+create_dir($(PSLIBDIR))
 SimpleProgram(pscomm,pscomm.o psutil.o config.o,$(LIBS),$(PSLIBDIR))
 install_script(psif,,$(PSLIBDIR)/psif)
 
