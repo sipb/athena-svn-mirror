@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.1 1993-06-18 14:32:32 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.2 1994-08-15 15:04:10 cfields Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  93/06/18  14:32:32  tom
+ * first cut at solaris port
+ * 
  * Revision 2.0  92/04/22  01:49:35  tom
  * release 7.4
  * 	allowed specification of a domain name in snmpd.conf
@@ -37,7 +40,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.1 1993-06-18 14:32:32 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.c,v 2.2 1994-08-15 15:04:10 cfields Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988.
@@ -49,6 +52,11 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 #include "include.h"
+
+#ifdef SOLARIS
+#include <limits.h>
+#define NGROUPS NGROUPS_MAX
+#endif
 
 /*
  *  This file reads values from the config file and initializes the
