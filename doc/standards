@@ -128,7 +128,7 @@ test expressions:
 	---------------------------	-----
 	empty				-z "$varname"
 	non-empty			-n "$varname"
-	equal to a literal		literal = "$varname"
+	equal to a literal		"$varname" = literal
 	equal to another variable	"$varname" = "$othervarname"
 	set				"${varname+set}" = set
 	not set				"${varname+set}" != set
