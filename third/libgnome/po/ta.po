@@ -1,0 +1,355 @@
+# Tamil translation of libgnome2.
+# Copyright (C) 2001 Free Software Foundation, Inc.
+# Dinesh Nadarajah <n_dinesh@yahoo.com>
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Tamil-libgnome2 2.0\n"
+"POT-Creation-Date: 2002-11-20 15:51+0000\n"
+"PO-Revision-Date: 2002-11-10 09:13-0500\n"
+"Last-Translator: Dinesh Nadarajah <n_dinesh@yahoo.com>\n"
+"Language-Team: Tamil <tamilinix@yahoogroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-data/gnome-2.soundlist.in.h:1
+msgid "Error Messages"
+msgstr "À¢¨Æ ¦ºö¾¢¸û"
+
+#: gnome-data/gnome-2.soundlist.in.h:2
+msgid "GNOME system events"
+msgstr "¸§É¡õ «¨ÁôÒ ¿¢¸ú×¸û"
+
+#: gnome-data/gnome-2.soundlist.in.h:3
+msgid "Informational Messages"
+msgstr "¾¸Åø ¦ºö¾¢¸û"
+
+#: gnome-data/gnome-2.soundlist.in.h:4
+msgid "Login"
+msgstr "¦¾¡¼í¸ø"
+
+#: gnome-data/gnome-2.soundlist.in.h:5
+msgid "Logout"
+msgstr "ÓÊò¾ø"
+
+#: gnome-data/gnome-2.soundlist.in.h:6
+msgid "Miscellaneous Messages"
+msgstr "þ¾Ã ¦ºö¾¢¸û"
+
+#: gnome-data/gnome-2.soundlist.in.h:7
+msgid "Question Dialogs"
+msgstr "§¸ûÅ¢ ¯¨ÃÂ¡¼ø¸û"
+
+#: gnome-data/gnome-2.soundlist.in.h:8
+msgid "Warning Messages"
+msgstr "±îºÃ¢ì¨¸ ¦ºö¾¢¸û"
+
+#: gnome-data/gtk-events-2.soundlist.in.h:1
+msgid "Action button click"
+msgstr "¦ºÂø ¦À¡ò¾¡ý «Óò¾ø"
+
+#: gnome-data/gtk-events-2.soundlist.in.h:2
+msgid "Check box toggled"
+msgstr "´ôÒìÌÈ¢ô ¦ÀðÊ ¿¢¨ÄÁ¡üÈôÀðÎûÇÐ"
+
+#: gnome-data/gtk-events-2.soundlist.in.h:3
+msgid "Menu item activation"
+msgstr "ÀðÊ ¯ÕôÀÊ àñÎ-¦ºö¨¸"
+
+#: gnome-data/gtk-events-2.soundlist.in.h:4
+msgid "User interface events"
+msgstr "ÀÂÉ÷ þ¨¼Ó¸õ ¿¢¸ú×¸û"
+
+#: libgnome/gnome-exec.c:441
+msgid "Cannot find a terminal, using xterm, even if it may not work"
+msgstr "Ó¨ÉÂõ ´ý¨Èì ¸ñÎÀ¢Êì¸ ÓÊÂÅ¢ø¨Ä, §Å¨Ä ¦ºöÂ¡Å¢ð¼¡Öõ, xterm  ÀÂýÀÎòÐõ"
+
+#: libgnome/gnome-gconf.c:174
+msgid "GNOME GConf Support"
+msgstr "¸§É¡õ GConf ¬¾ÃÅÇ¢ôÒ"
+
+#: libgnome/gnome-help.c:167
+msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
+msgstr "GNOME_FILE_DOMAIN_APP_HELP ¸Çõ ¸ñÎÀ¢Êì¸ ÓÊÂÅ¢ø¨Ä"
+
+#: libgnome/gnome-help.c:180
+msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
+msgstr "GNOME_FILE_DOMAIN_HELP ¸Çõ ¸ñÎÀ¢Êì¸ ÓÊÂÅ¢ø¨Ä"
+
+#: libgnome/gnome-help.c:193 libgnome/gnome-help.c:208
+#, c-format
+msgid ""
+"Unable to show help as %s is not a directory.  Please check your "
+"installation."
+msgstr "%s µ÷ «¨¼× þøÄ¡¾¾¡ø, ¯¾Å¢ ¸¡ñÀ¢ì¸ ÓÊÂÅ¢ø¨Ä. ¯í¸û ¿¢ÚÅø ºÃ¢À¡÷ì¸×õ."
+
+#: libgnome/gnome-help.c:217 libgnome/gnome-help.c:233
+#, c-format
+msgid ""
+"Unable to find the help files in either %s or %s.  Please check your "
+"installation"
+msgstr "¯¾Å¢ì §¸¡ôÒ¸¨Ç %s þ§Ä¡ %s þø ¸ñÎÀ¢Êì¸ ÓÊÂÅ¢ø¨Ä. ¯í¸û ¿¢ÚÅø ºÃ¢À¡÷ì¸×õ."
+
+#: libgnome/gnome-help.c:312
+#, c-format
+msgid "Unable to find doc_id %s in the help path"
+msgstr "¯¾Å¢-À¡¨¾Â¢ø doc_id %s ¸ñÎÀ¢Êì¸ ÓÊÂÅ¢ø¨Ä"
+
+#: libgnome/gnome-help.c:333
+#, c-format
+msgid "Help document %s/%s not found"
+msgstr "¯¾Å¢ ¬Å½õ %s/%s ¸¡½Å¢ø¨Ä"
+
+#: libgnome/gnome-i18n.c:85
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#. FIXME: get this from bonobo
+#: libgnome/gnome-init.c:88
+msgid "Bonobo Support"
+msgstr "Bonobo ¬¾ÃÅÇ¢ôÒ"
+
+#: libgnome/gnome-init.c:142
+msgid "Bonobo activation Support"
+msgstr "Bonobo ¦¾¡¼í¸ø ¬¾ÃÅÇ¢ôÒ"
+
+#: libgnome/gnome-init.c:281 libgnome/gnome-init.c:295
+#, c-format
+msgid "Could not create per-user gnome configuration directory `%s': %s\n"
+msgstr "´Õ-ÀÂÉ÷ôÀÊ ¸§É¡õ «¨Á-ÅÊÅ «¨¼× À¨¼ì¸ ÓÊÂÅ¢ø¨Ä `%s': %s\n"
+
+#: libgnome/gnome-init.c:304
+#, c-format
+msgid ""
+"Could not set mode 0700 on private per-user gnome configuration directory `%"
+"s': %s\n"
+msgstr "ÀÂÉ÷ ¸§É¡õ «¨ÁÅÊÅ «¨¼Å¢ý Ó¨È¨Á¨Â 0700Â¡¸ «¨Áì¸ ÓÊÂÅ¢ø¨Ä `%s': %s\n"
+
+#: libgnome/gnome-init.c:311
+#, c-format
+msgid "Could not create gnome accelerators directory `%s': %s\n"
+msgstr "¸§É¡õ ¬÷ÓÎ¸û «¨¼× À¨¼ì¸ ÓÊÂÅ¢ø¨Ä `%s': %s\n"
+
+#: libgnome/gnome-init.c:367
+msgid "Disable sound server usage"
+msgstr "´Ä¢î §º¨ÅÂ¸ ÀÂýÀÎò¾¨Ä Ó¼ìÌ"
+
+#: libgnome/gnome-init.c:370
+msgid "Enable sound server usage"
+msgstr "´Ä¢î §º¨ÅÂ¸ ÀÂýÀÎò¾¨Ä ­ÂÖ¨ÁôÀÎòÐ"
+
+#: libgnome/gnome-init.c:373
+msgid "Host:port on which the sound server to use is running"
+msgstr "´Ä¢î §º¨ÅÂ¸õ ÀÂýÀÎò¾ §ÅñÊÂ Å¢Õó§¾¡õÒ:Ð¨È þÂì¸ôÀÎ¸¢ýÈÐ"
+
+#: libgnome/gnome-init.c:375
+msgid "HOSTNAME:PORT"
+msgstr "Å¢Õó§¾¡õÒ:Ð¨È"
+
+#: libgnome/gnome-init.c:393
+msgid "GNOME Virtual Filesystem"
+msgstr "¸§É¡õ Á¡Â §¸¡ôÒ-«¨ÁôÒ"
+
+#: libgnome/gnome-init.c:414
+msgid "GNOME Library"
+msgstr "¸§É¡õ áÄ¸õ"
+
+#: libgnome/gnome-program.c:426
+msgid "Popt Table"
+msgstr "Popt «ð¼Å¨½"
+
+#: libgnome/gnome-program.c:427
+msgid "The table of options for popt"
+msgstr "«ð¼Å¨½Â¡¸ poptì¸¡É Å¢ÕôÒò §¾÷×¸û"
+
+#: libgnome/gnome-program.c:434
+msgid "Popt Flags"
+msgstr "Popt ¦¸¡Ê¸û"
+
+#: libgnome/gnome-program.c:435
+msgid "The flags to use for popt"
+msgstr "poptì¸¡¸ ÀÂýÀÎò¾ §ÅñÊÂ ¦¸¡Ê¸û"
+
+#: libgnome/gnome-program.c:443
+msgid "Popt Context"
+msgstr "Popt Ýú"
+
+#: libgnome/gnome-program.c:444
+msgid "The popt context pointer that GnomeProgram is using"
+msgstr "GnomeProgram ÀÂýÀÎòÐõ Popt Ýú ÍðÊ"
+
+#: libgnome/gnome-program.c:452
+msgid "Human readable name"
+msgstr "ÁÉ¢¾÷ Å¡º¢ì¸ìÜÊÂ ¦ÀÂ÷"
+
+#: libgnome/gnome-program.c:453
+msgid "Human readable name of this application"
+msgstr "­ó¾ ¿¢ÃÄ¢ý ÁÉ¢¾÷ Å¡º¢ì¸ìÜÊÂ ¦ÀÂ÷"
+
+#: libgnome/gnome-program.c:462
+msgid "GNOME path"
+msgstr "¸§É¡õ À¡¨¾"
+
+#: libgnome/gnome-program.c:463
+msgid "Path in which to look for installed files"
+msgstr "¿¢ÚÅôÀð¼ §¸¡ôÒ¸Ùì¸¡¸ §¾¼§ÅñÊÂ À¡¨¾"
+
+#: libgnome/gnome-program.c:472
+msgid "App ID"
+msgstr "¿¢Ãø «¨¼Â¡Çõ"
+
+#: libgnome/gnome-program.c:473
+msgid "ID string to use for this application"
+msgstr "­ó¾ ¿¢ÃÄ¢ì¸¡¸ ÀÂýÀÎò¾ §ÅñÊÂ «¨¼Â¡Ç ºÃõ"
+
+#: libgnome/gnome-program.c:480
+msgid "App version"
+msgstr "¿¢Ãø À¾¢Åõ"
+
+#: libgnome/gnome-program.c:481
+msgid "Version of this application"
+msgstr "­ó ¿¢ÃÄ¢ý À¾¢Åõ"
+
+#: libgnome/gnome-program.c:488
+msgid "GNOME Prefix"
+msgstr "¸§É¡õ Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:489
+msgid "Prefix where GNOME was installed"
+msgstr "¸§É¡õ ¿¢ÚÅ¢ì¸ôÀð¼ þ¼ò¾¢ý Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:498
+msgid "GNOME Libdir"
+msgstr "¸§É¡õ áÄ¸ôÀ¡¨¾ (Libdir)"
+
+#: libgnome/gnome-program.c:499
+msgid "Library prefix where GNOME was installed"
+msgstr "¸§É¡õ ¿¢ÚÅ¢ì¸ôÀð¼ þ¼ò¾¢ý áÄ¸ Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:508
+msgid "GNOME Datadir"
+msgstr "¸§É¡õ ¾Ã×-À¡¨¾"
+
+#: libgnome/gnome-program.c:509
+msgid "Data prefix where GNOME was installed"
+msgstr "¸§É¡õ ¿¢ÚÅ¢ì¸ôÀð¼ þ¼ò¾¢ý ¾Ã× Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:518
+msgid "GNOME Sysconfdir"
+msgstr "¸§É¡õ Sysconfdir"
+
+#: libgnome/gnome-program.c:519
+msgid "Configuration prefix where GNOME was installed"
+msgstr "¸§É¡õ ¿¢ÚÅ¢ì¸ôÀð¼ þ¼ò¾¢ý «¨ÁÅÊÅ Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:529
+msgid "GNOME App Prefix"
+msgstr "¸§É¡õ ¿¢Ãø Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:530
+msgid "Prefix where this application was installed"
+msgstr "þó¾ ¿¢Ãø ¿¢ÚÅ¢ì¸ôÀð¼ þ¼ò¾¢ý Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:538
+msgid "GNOME App Libdir"
+msgstr "¸§É¡õ ¿¢Ãø Libdir"
+
+#: libgnome/gnome-program.c:539
+msgid "Library prefix where this application was installed"
+msgstr "¸§É¡õ ¿¢ÚÅ¢ì¸ôÀð¼ þ¼ò¾¢ý áÄ¸ Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:548
+msgid "GNOME App Datadir"
+msgstr "¸§É¡õ ¿¢Ãø Datadir"
+
+#: libgnome/gnome-program.c:549
+msgid "Data prefix where this application was installed"
+msgstr "þó¾ ¿¢Ãø ¿¢ÚÅ¢ì¸ôÀð¼ þ¼ò¾¢ý ¾Ã× Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:558
+msgid "GNOME App Sysconfdir"
+msgstr "¸§É¡õ ¿¢Ãø Sysconfdir"
+
+#: libgnome/gnome-program.c:559
+msgid "Configuration prefix where this application was installed"
+msgstr "þó¾ ¿¢Ãø ¿¢ÚÅ¢ì¸ôÀð¼ þ¼ò¾¢ý «¨ÁÅÊÅ Óü§º÷ì¨¸"
+
+#: libgnome/gnome-program.c:568
+msgid "Create Directories"
+msgstr "«¨¼×¸¨Ç ¯ÕÅ¡ìÌ"
+
+#: libgnome/gnome-program.c:569
+msgid "Create standard GNOME directories on startup"
+msgstr "¦¾¡¼íÌõ§À¡Ð ÅÆ¨ÁÂ¡É ¸§É¡õ «¨¼×¸¨Ç À¨¼ì¸×õ"
+
+#: libgnome/gnome-program.c:578
+msgid "Enable Sound"
+msgstr "´Ä¢ þÂÖ¨ÁôÀÎò¾×õ"
+
+#: libgnome/gnome-program.c:579
+msgid "Enable sound on startup"
+msgstr "¦¾¡¼í¸¢ÂÐõ ´Ä¢î §º¨ÅÂ¸ò¨¾ ­ÂÖ¨ÁôÀÎòÐ"
+
+#: libgnome/gnome-program.c:588
+msgid "Espeaker"
+msgstr "Espeaker"
+
+#: libgnome/gnome-program.c:589
+msgid "How to connect to esd"
+msgstr "esd¯¼ý ±ôÀÊ þ¨½ôÒ ¦¸¡ûÅÐ"
+
+#: libgnome/gnome-program.c:1352
+msgid "Help options"
+msgstr "¯¾Å¢ Å¢ÕôÀí¸û"
+
+#: libgnome/gnome-program.c:1357
+msgid "Application options"
+msgstr "¿¢Ãø Å¢ÕôÀí¸û"
+
+#: libgnome/gnome-program.c:1373
+msgid "Dynamic modules to load"
+msgstr "²üÈ §ÅñÊÂ ­ÂíÌ¿¢¨Ä ÜÚ¸û"
+
+#: libgnome/gnome-program.c:1374
+msgid "MODULE1,MODULE2,..."
+msgstr "ÜÚ1,ÜÚ2,..."
+
+#: monikers/GNOME_Moniker_std.server.in.in.h:1
+msgid "Extra Moniker factory"
+msgstr ""
+
+#: monikers/GNOME_Moniker_std.server.in.in.h:2
+msgid "GConf moniker"
+msgstr ""
+
+#: monikers/GNOME_Moniker_std.server.in.in.h:3
+msgid "config indirect moniker"
+msgstr ""
+
+#: monikers/bonobo-config-bag.c:230
+msgid "Unknown type"
+msgstr "¦¾Ã¢Â¡¾ Å¨¸"
+
+#: monikers/bonobo-moniker-conf-indirect.c:44
+#, c-format
+msgid "Key %s not found in configuration"
+msgstr "%s Å¢¨º «¨ÁÅÊÅò¾¢ø ¸¡½Å¢ø¨Ä"
+
+#~ msgid "Help document %s for %s not found"
+#~ msgstr "¯¾Å¢ ¬Å½õ %s (%s ì¸¡¸) ¸ñÎÀ¢Êì¸ ÓÊÂÅ¢ø¨Ä"
+
+#~ msgid "Test option."
+#~ msgstr "Å¢ÕôÀò¨¾ §º¡¾¨É ¦ºöÂ×õ."
+
+#~ msgid "The Application Name"
+#~ msgstr "¿¢Ãø ¦ÀÂ÷"
+
+#~ msgid "Cannot parse: %s"
+#~ msgstr "«Ä¸¼ ÓÊÂÅ¢ø¨Ä: %s"
+
+#~ msgid "Can not bonobo_init"
+#~ msgstr "bonobo_init ÓÊÂ¡Ð"
+
+#~ msgid "Internal error"
+#~ msgstr "¯ûÇ¨Áô À¢¨Æ"

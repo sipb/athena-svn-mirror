@@ -1,0 +1,343 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Free Software Foundation, Inc.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: libgnome\n"
+"POT-Creation-Date: 2002-11-20 15:51+0000\n"
+"PO-Revision-Date: 2002-10-27 13:42+0200\n"
+"Last-Translator: Artis Trops <hornet@navigator.lv>\n"
+"Language-Team: Latvian <ll10nt@os.lv>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: gnome-data/gnome-2.soundlist.in.h:1
+msgid "Error Messages"
+msgstr "Kļūdu Paziņojumi"
+
+#: gnome-data/gnome-2.soundlist.in.h:2
+msgid "GNOME system events"
+msgstr "GNOME sistēmas notikumi"
+
+#: gnome-data/gnome-2.soundlist.in.h:3
+msgid "Informational Messages"
+msgstr "Informējoši Paziņojumi"
+
+#: gnome-data/gnome-2.soundlist.in.h:4
+msgid "Login"
+msgstr "Pieteikties"
+
+#: gnome-data/gnome-2.soundlist.in.h:5
+msgid "Logout"
+msgstr "Atteikties"
+
+#: gnome-data/gnome-2.soundlist.in.h:6
+msgid "Miscellaneous Messages"
+msgstr "Dažādi Paziņojumi"
+
+#: gnome-data/gnome-2.soundlist.in.h:7
+msgid "Question Dialogs"
+msgstr "Jautājumu Dialogi"
+
+#: gnome-data/gnome-2.soundlist.in.h:8
+msgid "Warning Messages"
+msgstr "Brīdinājuma Paziņojumi"
+
+#: gnome-data/gtk-events-2.soundlist.in.h:1
+msgid "Action button click"
+msgstr "Darbības pogas klikšķis"
+
+#: gnome-data/gtk-events-2.soundlist.in.h:2
+msgid "Check box toggled"
+msgstr "Rūtiņu poga ieslēgta"
+
+#: gnome-data/gtk-events-2.soundlist.in.h:3
+msgid "Menu item activation"
+msgstr "Izvēlnes priekšmeta aktivizēšana"
+
+#: gnome-data/gtk-events-2.soundlist.in.h:4
+msgid "User interface events"
+msgstr "Lietotāja saskranes notikumi"
+
+#: libgnome/gnome-exec.c:441
+msgid "Cannot find a terminal, using xterm, even if it may not work"
+msgstr "Nevar atrast termināli, izmantoju xterm, pat ja tas var nestrādāt"
+
+#: libgnome/gnome-gconf.c:174
+msgid "GNOME GConf Support"
+msgstr "GNOME GConf Atbalsts"
+
+#: libgnome/gnome-help.c:167
+msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
+msgstr "Nav iespējams atrast GNOME_FILE_DOMAIN_APP_HEL domēnu"
+
+#: libgnome/gnome-help.c:180
+msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
+msgstr "Neatrodu GNOME_FILE_DOMAIN_HELP domēnu."
+
+#: libgnome/gnome-help.c:193 libgnome/gnome-help.c:208
+#, c-format
+msgid ""
+"Unable to show help as %s is not a directory.  Please check your "
+"installation."
+msgstr ""
+"Nevaru parādīt palīdzību, jo %s nav direktorija. Lūdzu pārbaudi savu "
+"intalēciju."
+
+#: libgnome/gnome-help.c:217 libgnome/gnome-help.c:233
+#, c-format
+msgid ""
+"Unable to find the help files in either %s or %s.  Please check your "
+"installation"
+msgstr ""
+"Nevarēju atrast palīdzības failus ne iekš %s ne %s.  Lūdzu pārbaudi savu "
+"instalāciju"
+
+#: libgnome/gnome-help.c:312
+#, c-format
+msgid "Unable to find doc_id %s in the help path"
+msgstr "Nav iespējams atras doc_id %s palīdzības ceļā"
+
+#: libgnome/gnome-help.c:333
+#, c-format
+msgid "Help document %s/%s not found"
+msgstr "Palīdzības dokuments %s/%s nav atrasts"
+
+#: libgnome/gnome-i18n.c:85
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "lokaalei paaraak daudz aizstaajvaardu, var radiit cilpu"
+
+#. FIXME: get this from bonobo
+#: libgnome/gnome-init.c:88
+msgid "Bonobo Support"
+msgstr "Bonobo Atbalsts"
+
+#: libgnome/gnome-init.c:142
+msgid "Bonobo activation Support"
+msgstr "Bonobo aktivēšanas atbalsts"
+
+#: libgnome/gnome-init.c:281 libgnome/gnome-init.c:295
+#, c-format
+msgid "Could not create per-user gnome configuration directory `%s': %s\n"
+msgstr "Nevar izveidot lietotāja gnome konfiguraacijas direktoriju `%s': %s\n"
+
+#: libgnome/gnome-init.c:304
+#, c-format
+msgid ""
+"Could not set mode 0700 on private per-user gnome configuration directory `%"
+"s': %s\n"
+msgstr ""
+"Nevarēja uzstādīt 0700 režīmu privātajām lietotāju gnome konfigurācijas "
+"direktorijai `%s': %s\n"
+
+#: libgnome/gnome-init.c:311
+#, c-format
+msgid "Could not create gnome accelerators directory `%s': %s\n"
+msgstr "Nevarēja izveidot gnome akseleratoru direktoriju `%s': %s\n"
+
+#: libgnome/gnome-init.c:367
+msgid "Disable sound server usage"
+msgstr "Deaktivizēt skaņas servera izmantošanu"
+
+#: libgnome/gnome-init.c:370
+msgid "Enable sound server usage"
+msgstr "Aktivizēt skaņas servera izmantošanu"
+
+#: libgnome/gnome-init.c:373
+msgid "Host:port on which the sound server to use is running"
+msgstr "Resursdators:ports uz kura strādā izmantojamais skaņas serveris"
+
+#: libgnome/gnome-init.c:375
+msgid "HOSTNAME:PORT"
+msgstr "HOSTNAME:PORT"
+
+#: libgnome/gnome-init.c:393
+msgid "GNOME Virtual Filesystem"
+msgstr "GNOME Virtuālā failu sistēma"
+
+#: libgnome/gnome-init.c:414
+msgid "GNOME Library"
+msgstr "GNOME Bibliotēka"
+
+#: libgnome/gnome-program.c:426
+msgid "Popt Table"
+msgstr "Popt Tabula"
+
+#: libgnome/gnome-program.c:427
+msgid "The table of options for popt"
+msgstr "Popt opciju tabula"
+
+#: libgnome/gnome-program.c:434
+msgid "Popt Flags"
+msgstr "Popt Karogi"
+
+#: libgnome/gnome-program.c:435
+msgid "The flags to use for popt"
+msgstr "Popt lietosšanas karogi"
+
+#: libgnome/gnome-program.c:443
+msgid "Popt Context"
+msgstr "Popt Konteksts"
+
+#: libgnome/gnome-program.c:444
+msgid "The popt context pointer that GnomeProgram is using"
+msgstr "Popt konteksta kursors, kuru lieto GnomeProgramma"
+
+#: libgnome/gnome-program.c:452
+msgid "Human readable name"
+msgstr "Cilvēcīgi izlasāms vārds"
+
+#: libgnome/gnome-program.c:453
+msgid "Human readable name of this application"
+msgstr "Cilvēcīgi izlasāms šīs aplikācijas vārds"
+
+#: libgnome/gnome-program.c:462
+msgid "GNOME path"
+msgstr "GNOME ceļš"
+
+#: libgnome/gnome-program.c:463
+msgid "Path in which to look for installed files"
+msgstr "Celš kurā skatīties pēc instalētajiem ailiem"
+
+#: libgnome/gnome-program.c:472
+msgid "App ID"
+msgstr "App ID"
+
+#: libgnome/gnome-program.c:473
+msgid "ID string to use for this application"
+msgstr "ID virkne šīs aplikācijas lietošanai"
+
+#: libgnome/gnome-program.c:480
+msgid "App version"
+msgstr "App versija"
+
+#: libgnome/gnome-program.c:481
+msgid "Version of this application"
+msgstr "Šīs aplikācijas versija"
+
+#: libgnome/gnome-program.c:488
+msgid "GNOME Prefix"
+msgstr "GNOME prefikss"
+
+#: libgnome/gnome-program.c:489
+msgid "Prefix where GNOME was installed"
+msgstr "Prefikss kur ir ieinstalēts GNOME"
+
+#: libgnome/gnome-program.c:498
+msgid "GNOME Libdir"
+msgstr "GNOME Libdir"
+
+#: libgnome/gnome-program.c:499
+msgid "Library prefix where GNOME was installed"
+msgstr "Biblioteku prefikss kur ir ieinstalēts GNOME"
+
+#: libgnome/gnome-program.c:508
+msgid "GNOME Datadir"
+msgstr "GNOME Datadir"
+
+#: libgnome/gnome-program.c:509
+msgid "Data prefix where GNOME was installed"
+msgstr "Datu prefikss kur ir ieinstalēts GNOME"
+
+#: libgnome/gnome-program.c:518
+msgid "GNOME Sysconfdir"
+msgstr "GNOME Sysconfdir"
+
+#: libgnome/gnome-program.c:519
+msgid "Configuration prefix where GNOME was installed"
+msgstr "Konfigurāciojas prefikss kur ir ieinstalēts GNOME"
+
+#: libgnome/gnome-program.c:529
+msgid "GNOME App Prefix"
+msgstr "GNOME App prefikss"
+
+#: libgnome/gnome-program.c:530
+msgid "Prefix where this application was installed"
+msgstr "Prefikss kur šī aplikācija tika ieinstalēta"
+
+#: libgnome/gnome-program.c:538
+msgid "GNOME App Libdir"
+msgstr "GNOME App Libdir"
+
+#: libgnome/gnome-program.c:539
+msgid "Library prefix where this application was installed"
+msgstr "Bibliotēkas prefikss kur šī aplikācija tika ieinstalēta"
+
+#: libgnome/gnome-program.c:548
+msgid "GNOME App Datadir"
+msgstr "GNOME App Datadir"
+
+#: libgnome/gnome-program.c:549
+msgid "Data prefix where this application was installed"
+msgstr "Data prefikss kur šī aplikācija tika ieinstalēta"
+
+#: libgnome/gnome-program.c:558
+msgid "GNOME App Sysconfdir"
+msgstr "GNOME App Sysconfdir"
+
+#: libgnome/gnome-program.c:559
+msgid "Configuration prefix where this application was installed"
+msgstr "Konfigurācijas prefikss kur šī aplikācija tika ieinstalēta"
+
+#: libgnome/gnome-program.c:568
+msgid "Create Directories"
+msgstr "Izveidot Direktorijas"
+
+#: libgnome/gnome-program.c:569
+msgid "Create standard GNOME directories on startup"
+msgstr "Pie startēšanās izveidot standarta GNOME direktorijas"
+
+#: libgnome/gnome-program.c:578
+msgid "Enable Sound"
+msgstr "Aktivizēt Skaņu"
+
+#: libgnome/gnome-program.c:579
+msgid "Enable sound on startup"
+msgstr "Aktivizēt skaņu pie sāknēšanās"
+
+#: libgnome/gnome-program.c:588
+msgid "Espeaker"
+msgstr "Espeaker"
+
+#: libgnome/gnome-program.c:589
+msgid "How to connect to esd"
+msgstr "Kā pieslēgties pie esd"
+
+#: libgnome/gnome-program.c:1352
+msgid "Help options"
+msgstr "Palīdzības opcijas"
+
+#: libgnome/gnome-program.c:1357
+msgid "Application options"
+msgstr "Aplikacijas opcijas"
+
+#: libgnome/gnome-program.c:1373
+msgid "Dynamic modules to load"
+msgstr "Dinamiskie moduļ, ko ielādēt"
+
+#: libgnome/gnome-program.c:1374
+msgid "MODULE1,MODULE2,..."
+msgstr "Modulis1,Modulis2,..."
+
+#: monikers/GNOME_Moniker_std.server.in.in.h:1
+msgid "Extra Moniker factory"
+msgstr "Papildus Moniker rūpnīca"
+
+#: monikers/GNOME_Moniker_std.server.in.in.h:2
+msgid "GConf moniker"
+msgstr "GConf moniker"
+
+#: monikers/GNOME_Moniker_std.server.in.in.h:3
+msgid "config indirect moniker"
+msgstr "konfigureet moniker netieši"
+
+#: monikers/bonobo-config-bag.c:230
+msgid "Unknown type"
+msgstr "Nezināms tips"
+
+#: monikers/bonobo-moniker-conf-indirect.c:44
+#, c-format
+msgid "Key %s not found in configuration"
+msgstr "Atslēga %s nav atrasta konfigurācijā"
