@@ -1,10 +1,15 @@
 /* 
  * The following instances are supported
+ *	create_dir(dir)
  *	program(program, objs, ldflags, libs, instflags, dest)
  *	foreach_subdirs(name,subdirs)
  *	do_subdirs_no_imakefile(subdirs)
  *	do_subdirs(subdirs)
  */
+
+#define create_dir(dir)							@@\
+install::								@@\
+	sh $(CONFDIR)/mkdirhier.sh $(DESTDIR)/dir
 
 #define program(prog,objs,ldflags,libs,instflags,dest)			@@\
 all::	prog								@@\
