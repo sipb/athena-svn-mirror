@@ -14,6 +14,7 @@
  * Magic number mapping for binary files, used by lpr to avoid
  *   printing objects files.
  */
+#include <sys/types.h>
 
 #ifndef SOLARIS
 #include <a.out.h>
