@@ -3,6 +3,9 @@ static char *sccsid = "@(#)tcp_conn.c	4.1     ULTRIX  9/13/88";
 #endif
 
 #include "lp.h"
+#if defined(POSIX) && !defined(ultrix)
+#include "posix.h"
+#endif
 
 /*
  *		T C P _ c o n n
@@ -39,7 +42,7 @@ char *rhost;
      */
     strcpy(serviceName,"printserver");
     sscanf(rhost,"%[^/]/%[^/]", hostString, serviceName);
-    bzero((char *)&sin, sizeof(sin));
+    memset((char *)&sin, 0, sizeof(sin));
 
     aval = inet_addr(hostString);
     if (aval != -1) {
