@@ -1,7 +1,7 @@
 /* 
- * $Id: from.c,v 1.8 1991-08-08 15:15:54 lwvanels Exp $
+ * $Id: from.c,v 1.9 1991-08-09 17:36:12 epeisach Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: lwvanels $
+ * $Author: epeisach $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.8 1991-08-08 15:15:54 lwvanels Exp $";
+static char *rcsid = "$Id: from.c,v 1.9 1991-08-09 17:36:12 epeisach Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -192,6 +192,7 @@ parse_args(argc,argv)
 	    popmail = 0;
 	  }
 	}
+	return 0;
 }
 
 lusage()
@@ -569,6 +570,9 @@ print_report(headers, num_headers, winlength)
       exit (1);
     }    
   buf1[0] = '\0';
+
+  if (winlength - len - 1 < 1)
+    subject_field = NULL;
 
   if (subject_field)
     strncpy(buf1, subject_field, winlength - len - 1);
