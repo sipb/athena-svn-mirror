@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.19 2001-03-19 20:13:05 rbasch Exp $
+/* $Id: dm.c,v 1.20 2001-06-05 19:30:45 rbasch Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -47,7 +47,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.19 2001-03-19 20:13:05 rbasch Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.20 2001-06-05 19:30:45 rbasch Exp $";
 #endif
 
 /* Process states */
@@ -590,7 +590,6 @@ int main(int argc, char **argv)
 		 login_running, x_running);
 	  (void) sigprocmask(SIG_SETMASK, &sig_zero, NULL);
 	  cleanup(logintty);
-	  x_stop_wait();
 	  _exit(0);
 	}
     }
@@ -623,6 +622,8 @@ static void console_login(char *conf, char *msg)
     kill(xpid, SIGTERM);
 
   x_stop_wait();
+
+  unlink(dmpidf);
 
   p = getconf(conf, "ttylogin");
   if (p == NULL)
@@ -766,7 +767,10 @@ static void cleanup(char *tty)
   if (console_running == RUNNING)
     kill(consolepid, SIGHUP);
   if (x_running == RUNNING)
-    kill(xpid, SIGTERM);
+    {
+      kill(xpid, SIGTERM);
+      x_stop_wait();
+    }
 
   /* Find out what the login name was, so we can feed it to libal. */
   login[0] = '\0';
