@@ -31,6 +31,16 @@
 #  include "rpc_seq.c"  /* only data in module causes probs for MSC */
 #endif
 
+#ifdef MSDOS
+#define PATH_DELIM	'\\'
+#else
+#ifdef vms
+#define PATH_DELIM	']'
+#else
+#define PATH_DELIM	'/'
+#endif
+#endif
+
 /*
  * Byte swapping macros.
  */
@@ -337,17 +347,7 @@ char *text;
 char *file;
 int line;
 {
-    char *p = rindex(file,
-#ifdef MSDOS
-            '\\'
-#else
-#ifdef vms
-            ']'
-#else
-            '/'
-#endif
-#endif
-            );
+    char *p = rindex(file, PATH_DELIM);
 
     eprintf("(rpc) *** FATAL ERROR \"%s\" at %s\\%d ***\n",
             text, p == NULL ? file : p + 1, line);
