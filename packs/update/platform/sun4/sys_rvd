@@ -4,10 +4,11 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.11 1994-06-13 09:31:38 miki Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/sys_rvd,v 1.12 1994-06-16 16:39:24 miki Exp $
 	.:::
 		-> SUNW*
 		*4c
+		demo
 		dev
 		devices
 		etc
@@ -39,13 +40,16 @@ GLOBAL : *.CKP *.local *.pid :
 		ftpusers
 		group
 		hostname.le0
+		-> lp
 		nodename
 		defaultrouter 
 		motd
 		mnttab
+		-> opt
 		path_to_inst
 		passwd
 		oshadow
+		-> security
 		shadow
 		srvtab
 		ups_data
@@ -93,15 +97,13 @@ GLOBAL : *.CKP *.local *.pid :
 	/usr::: 
 		-> 4lib
 		adm
+		-> *able
 		-> aset
 		-> athena
 		-> andrew
-		-> cancel
 		-> ccs
 		-> demo
 		-> dict
-		-> disable
-		-> enable
 		-> etc
 		-> games
 		-> gcc
@@ -109,9 +111,10 @@ GLOBAL : *.CKP *.local *.pid :
 		 kernel
 		 kvm
 		 kvm.4c
+		 lib
+		-> lp*
 		-> local
 		lost+found
-		-> lp*
 		-> net
 		-> new
 		news
@@ -123,6 +126,8 @@ GLOBAL : *.CKP *.local *.pid :
 		-> prototype_user
 		-> pub
 		-> sadm
+		sbin
+		share
 		-> snadm
 		-> ucb*
 		vice
@@ -133,38 +138,61 @@ GLOBAL : *.CKP *.local *.pid :
 		-> accept
 		-> add_drv
 		-> adm*
-		-> all*
-		-> aud*
-		-> asp*
+		-> aspp*
+		-> auditstat
+		-> auditreduce
+		-> auditd
+		-> audit
+		-> cfsadmin
+		-> chroot
 		-> convert*
-		-> deall*
+		-> dispadmin
+		-> edquota
+		-> fuser
 		-> *4x
 		-> group*
+		-> gettable
 		-> host*
 		-> in.c*
 		-> in.f*
+		-> in.rl*
+		-> in.rs*
+		in.routed
+		-> in.ro*
+		-> in.rar*
 		-> in.rdisc
 		-> in.rwhod
-		-> in.rex*
-		-> in.rarpd
-		-> in.tn*
+		-> in.t*
 		-> in.uu*
+		-> install.d
 		-> install4x
+		-> htable
+		-> installf
 		-> ker*
-		-> list*
+		-> key*
 		-> lp*
-		-> make*
-		-> nis*
-		-> nls*
+		-> ni*
+		-> nl*
+		-> ns*
+		-> pass*
 		-> pkg*
 		-> pwconv
 		-> rf*
-		-> snoop
+		-> quot*
+		-> rem_drv
+		-> rpc.n*
+		-> *share*
+		-> *nisd
+		-> *share*
 		-> spray
-		-> swm*
+		-> snoop
 		-> user*
+		-> wall
 		-> whodo
 		-> yp*
+		-> *dump
+		-> rest*
+		-> zdump
 		:
 	/usr/share:::
 		->man
@@ -221,65 +249,134 @@ GLOBAL : *.CKP *.local *.pid :
 		-> s*
 		:		
 	/usr/bin:::
+		-> addbib
 		-> admintool
 		-> acctcom
 		-> aliasadm
 		-> apropos
 		-> at
+		-> atq
 		-> atqm
 		-> atrm
 		-> audio*
+		-> banner
+		-> batch
+		-> bc
 		-> bdiff
+		-> cal
+		-> checkeq
+		-> checknr
+		-> chkey
+		-> ckkeywd
+		-> *range
+		-> ckyorn
+		-> coltbl
+		-> comm
+		-> cpio
+		-> crypt
+		-> csh.sun
+		-> cut
 		-> cancel
+		-> calendar
 		-> catman
 		-> compress
+		-> csplit
+		-> ct
 		-> ctags
+		-> dc
+		-> deroff
+		-> diff*
+		-> dirname
+		-> disp*
+		-> disable
 		-> dos2unix
+		-> dump*
+		-> *expand
+		-> enable
 		-> fdformat
+		-> finger
+		-> fold
+		-> ftp
 		-> fmli
+		-> get*
 		-> graph
+		-> gencat
+		-> head
 		-> indxbib
 		-> join
+		-> infocmp
+		-> ipcrm
+		-> ipcs
 		-> kdestroy*
 		-> keylogin*
 		-> keylogout
+		-> ksrv*
 		-> ksh
-		-> kinit.sun
+		-> k*.sun
+		-> lastcomm
+		-> listusers
+		-> look
  		-> lp*
 		-> lookbib
 		-> man
+		-> mail
 		-> mailstats
 		-> mailx
+		-> mconnect
 		-> new*
+		-> netstat
 		-> nice
 		-> nis*
+		-> nfsstat
 		-> nroff
+		-> od
 		-> page
+		-> paste
+		-> pg
 		-> pkg*
+		-> rcp
 		-> rdist
+		-> rlogin
+		-> rsh
 		-> rksh
+		-> rup*
+		-> rusers
+		-> rwho
 		-> roffbib
 		-> sort*
 		-> spell
 		-> split
 		-> sunview1
+		-> tabs
 		-> talk
+		-> tbl
+		-> tcopy
 		-> tee
+		-> telnet
+		-> tftp
+		-> tic
 		-> time*
 		-> tip
+		-> tplot
 		-> troff
+		-> truss
 		-> ttyhstmgr
 		-> uncompress
 		-> unexpand
+		-> units
 		-> unix2dos
 		-> uu*
+		-> *chrtbl
 		-> whois
 		-> yp*
 		:
 	/usr/lib:::
+		-> adb
 		-> acct
 		-> class
 		-> defaults
+		-> fs/fd
+		-> fs/hsfs
 		-> font
 		-> fonts
 		-> iconv
@@ -289,29 +386,25 @@ GLOBAL : *.CKP *.local *.pid :
 		-> lib*.a
 		-> libkrb.so*
 		-> libnisdb.so*
+		-> *help
 		-> lp*
 		-> locale
 		-> netsvc
+		-> nfs
 		-> nis
 		-> pics
 		-> refer
 		-> sa
+		-> security
 		-> spell
 		-> uucp
+		-> vold
 		:
 	/usr/openwin:::
 		-> SUNW*
-		-> demo
 		-> include
-		-> man
 		-> demo
-		server
-		lib
-		bin
-		share
-		:
-	/usr/openwin/server:::
-		-> etc
+		-> etc/workspace
 		:
 	/usr/openwin/lib:::
 		-> C*
@@ -319,7 +412,6 @@ GLOBAL : *.CKP *.local *.pid :
 		-> a*
 		-> c*
 		-> h*
-		X11	
 		-> lib*.a
 		-> *.ln
 		-> locale
@@ -329,17 +421,25 @@ GLOBAL : *.CKP *.local *.pid :
 		-> xdm*
 		-> xman.help
 		:
-	/usr/openwin/lib/X11:::
-		-> C*
-		-> D*
-		fonts
-		:
+	/usr/openwin/lib/X11::::
 	/usr/openwin/lib/X11/fonts:::
 		-> F*
 		-> S*
+		-> X*
 		-> T*
+		-> enc*
 		-> 100dpi*
 		-> 75dpi*
+		:
+	/usr/openwin/server:::
+		modules
+		:
+	/usr/openwin/server/modules:::
+		-> *cg1*
+		-> *cg2*
+		-> *cg4*
+		-> *cg8*
+		-> *PEX*
 		:
 	/usr/openwin/bin:::
 		-> a*
@@ -387,5 +487,12 @@ GLOBAL : *.CKP *.local *.pid :
 		-> include
 		-> locale
 		-> man
+		-> xnews
 		-> src
+		etc
+		:
+	/usr/openwin/share/etc:::
+		-> keytables
+		-> xnews
+		-> workspace
 		:
