@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.20 2002-11-22 19:36:55 rbasch Exp $
+# $Id: sendbug.sh,v 1.21 2003-07-30 19:16:12 zacheiss Exp $
 
 # save PATH so we can restore it for user's $EDITOR later
 saved_path="$PATH"
@@ -54,7 +54,7 @@ short_version=`expr "$version (" : '\([^(]*[^( ]\) *(.*'`
 machtype=`machtype`
 cpu=`machtype -c`
 hostname=`hostname`
-dpy=`machtype -d`
+dpy=`machtype -d | sed -e 's/^/Display type:		/'`
 
 shell=`awk -F: '/^'$USER':/ { print $7; exit; }' /etc/passwd 2>/dev/null`
 case $shell in
@@ -85,7 +85,7 @@ Subject: $machtype $short_version: $subject
 -------
 System name:		$hostname
 Type and version:	$cpu $version
-Display type:		$dpy
+$dpy
 
 Shell:			$shell
 Window manager:		${WINDOW_MANAGER:-unknown}
