@@ -5,7 +5,7 @@
  *	Created by:	C. Anthony Della Fera
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -23,7 +23,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.8 1991-12-05 15:32:18 lwvanels Exp $";
+static char *rcsid_zshutdown_notify_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/zshutdown_notify.c,v 1.9 1993-09-24 21:26:37 probe Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -117,7 +117,7 @@ main(argc,argv)
 	ptr += strlen(ptr);
     }
 
-    bzero((char *)&notice, sizeof(notice));
+    _BZERO((char *)&notice, sizeof(notice));
 
     notice.z_kind = N_KIND;
     notice.z_port = 0;

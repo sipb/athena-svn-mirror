@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/character_class.c,v $
- *      $Author: jtkohl $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,11 +13,11 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_character_class_c[] = "$Id: character_class.c,v 1.4 1989-11-15 16:34:57 jtkohl Exp $";
+static char rcsid_character_class_c[] = "$Id: character_class.c,v 1.5 1993-09-24 21:31:27 probe Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
-
+#include <zephyr/zephyr.h>
 #include "character_class.h"
 
 /* 
@@ -33,7 +33,7 @@ char * string_to_character_class(str)
 {
     int i;
 
-    bzero(cache, sizeof(cache));
+    _BZERO(cache, sizeof(cache));
 
     for (i=0; i<strlen(str); i++)
       cache[str[i]] = 1;
