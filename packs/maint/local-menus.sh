@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-menus.sh,v 1.3 2001-06-12 17:14:22 ghudson Exp $
+# $Id: local-menus.sh,v 1.4 2003-10-23 23:11:49 ghudson Exp $
 
 # Tar file containing menus (a symlink into the AFS system config area).
 menutar=/usr/athena/share/gnome/athena/menus.tar
@@ -30,8 +30,12 @@ if [ ! -s $menutar ]; then
   fail
 fi
 
-# Nothing to do if $localtar is up to date.
+# Nothing to do if $localtar is up to date.  (Check the $menutar
+# symlink as well as what it points to; after a full release, the
+# target of the symlink might not be newer than the last time we
+# updated, but the symlink itself will be newer.)
 if [ -s $localtar ] && \
+   [ "`find $menutar -newer $localtar`" != $menutar ] && \
    [ "`find $menutar -follow -newer $localtar`" != $menutar ]; then
   exit 0
 fi
