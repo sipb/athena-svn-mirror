@@ -3,16 +3,16 @@
  *
  * $Author: lwvanels $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.5 1991-04-19 00:55:27 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.6 1991-04-23 15:12:31 lwvanels Exp $
  *
-#
-# Copyright (C) 1991 by the Massachusetts Institute of Technology.
-# For copying and distribution information, see the file "mit-copyright.h".
+ *
+ * Copyright (C) 1991 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  **********************************************************************/
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.5 1991-04-19 00:55:27 lwvanels Exp $";
+static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/logger/bbd.c,v 1.6 1991-04-23 15:12:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -26,7 +26,10 @@ static char rcsid_[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/o
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netdb.h>
 #include <stdio.h>
+
+#define SERVICE_NAME "ols"
 
 int log_fd;
 
@@ -89,6 +92,7 @@ handle_startup(s,msg,len,from,logfile)
     
   close(fd);
 
+  write(log_fd,"START ",6);
   write(log_fd,msg,len);
   write(log_fd," ",1);
   write(log_fd,buf,strlen(buf));
@@ -102,20 +106,30 @@ main(argc, argv)
   int nofork = 0;
   int fd;
   struct sockaddr_in name,from;
+  struct servent *service;
   char buf[1024];
   int onoff;
   int len,rlen,i;
+  int port=0;
 
   for (i=1;i<argc;i++) {
     if (!strcmp(argv[i], "-nofork")) {
       nofork = 1;
       continue;
     }
+    if (!strcmp(argv[i], "-port")) {
+      if (i+1 == argc) {
+	fprintf(stderr,"Must specify port number with -port\n");
+	break;
+      }
+      port = atoi(argv[++i]);
+      continue;
+    }
     logfile = argv[i];
   }
 
   if (logfile == NULL) {
-    fprintf(stderr,"usage: bbd [-nofork] logfile\n");
+    fprintf(stderr,"usage: bbd [-nofork] [-port portno] logfile\n");
     exit(1);
   }
 
@@ -176,10 +190,22 @@ main(argc, argv)
     exit(1);
   }
 
-  /* Create name with wildcards */
 
+  /* Find port number if not already defined */
+  if (port == 0) {
+    if ((service = getservbyname(SERVICE_NAME,"tcp")) == (struct servent *)
+	NULL) {
+      syslog(LOG_ERR,"error getting service %s/udp: %m",SERVICE_NAME);
+      exit(1);
+    }
+    port = service->s_port;
+  }
+  else 
+    port = htons(port);
+
+  /* Create name with wildcards */
   name.sin_family = AF_INET;
-  name.sin_port = htons(2052);
+  name.sin_port = port;
 
   onoff = 1;
   if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &onoff, sizeof(int))) {
@@ -201,6 +227,7 @@ main(argc, argv)
     if (buf[0] == 'S')
       handle_startup(fd,&buf[1],rlen,from,logfile);
     else {
+      write(log_fd,"VIEW ",5);
       write(log_fd,&buf[1],rlen);
       write(log_fd,"\n",1);
     }
