@@ -18,7 +18,7 @@
  * file for a user.
  */
 
-static const char rcsid[] = "$Id: access.c,v 1.1 1998-05-07 17:09:39 ghudson Exp $";
+static const char rcsid[] = "$Id: access.c,v 1.2 1998-05-13 01:23:15 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,7 +52,7 @@ int al_get_access(const char *username, char **access, char **text)
 {
   FILE *fp;
   int linesize, haslocal, retval;
-  char *line = NULL;
+  char *line = NULL, *match = NULL;
   const char *p, *q;
   struct passwd *pwd;
 
@@ -81,59 +81,74 @@ int al_get_access(const char *username, char **access, char **text)
   retval = AL_ENOUSER;
   while (al__read_line(fp, &line, &linesize) == 0)
     {
-      p = line;
-
-      /* Ignore comment lines and lines which don't match the username. */
-      if (*p == '#' || (!first_field_match(p, username)
-			&& !(first_field_match(p, "*inpasswd") && haslocal)
-			&& !first_field_match(p, "*")))
-	continue;
-
-      /* Skip to the access bits. */
-      while (*p && !isspace(*p))
-	p++;
-      while (isspace(*p))
-	p++;
-
-      q = p;
-      while (*q && !isspace(*q))
-	q++;
-      if (access)
+      if (*line == '#')
+        continue;
+      if (first_field_match(line, username))
 	{
-	  *access = malloc(q - p + 1);
-	  if (!*access)
-	    {
-	      retval = AL_ENOMEM;
-	      break;
-	    }
-	  memcpy(*access, p, q - p);
-	  (*access)[q - p] = 0;
+	  match = username;
+	  break;
 	}
+      else if (first_field_match(line, "*inpasswd") && haslocal)
+        match = "*inpasswd";
+      else if (first_field_match(line, "*") && !match)
+        match = "*";
+    }  
 
-      if (text)
+  if (match)
+    {
+      rewind(fp);
+      while (al__read_line(fp, &line, &linesize) == 0)
 	{
-	  p = q;
+	  p = line;
+
+	  if (!first_field_match(p, match))
+	    continue;
+
+	  /* Skip to the access bits. */
+	  while (*p && !isspace(*p))
+	    p++;
 	  while (isspace(*p))
 	    p++;
-	  if (*p)
+
+	  q = p;
+	  while (*q && !isspace(*q))
+	    q++;
+	  if (access)
 	    {
-	      *text = malloc(strlen(p) + 1);
-	      if (!*text)
+	      *access = malloc(q - p + 1);
+	      if (!*access)
 		{
-		  if (access)
-		    free(*access);
 		  retval = AL_ENOMEM;
 		  break;
 		}
-	      strcpy(*text, p);
+	      memcpy(*access, p, q - p);
+	      (*access)[q - p] = 0;
 	    }
-	}
 
-      retval = AL_SUCCESS;
-      break;
+	  if (text)
+	    {
+	      p = q;
+	      while (isspace(*p))
+		p++;
+	      if (*p)
+		{
+		  *text = malloc(strlen(p) + 1);
+		  if (!*text)
+		    {
+		      if (access)
+			free(*access);
+		      retval = AL_ENOMEM;
+		      break;
+		    }
+		  strcpy(*text, p);
+		}
+	    }
+
+	  retval = AL_SUCCESS;
+	  break;
+	}
     }
 
-  /* We didn't find the user. */
   free(line);
   fclose(fp);
   return retval;
