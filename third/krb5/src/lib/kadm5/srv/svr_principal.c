@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.4 1999-10-05 16:12:44 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.5 2001-12-05 20:48:08 rbasch Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.4 1999-10-05 16:12:44 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/svr_principal.c,v 1.1.1.5 2001-12-05 20:48:08 rbasch Exp $";
 #endif
 
 #include	<sys/types.h>
@@ -106,12 +106,11 @@ kadm5_create_principal(void *server_handle,
 {
     return
 	kadm5_create_principal_3(server_handle, entry, mask,
-				 FALSE, 0, NULL, password);
+				 0, NULL, password);
 }
 kadm5_ret_t
 kadm5_create_principal_3(void *server_handle,
 			 kadm5_principal_ent_t entry, long mask,
-			 krb5_boolean keepold,
 			 int n_ks_tuple, krb5_key_salt_tuple *ks_tuple,
 			 char *password)
 {
@@ -250,7 +249,7 @@ kadm5_create_principal_3(void *server_handle,
 			   n_ks_tuple?n_ks_tuple:handle->params.num_keysalts,
 			   password,
 			   (mask & KADM5_KVNO)?entry->kvno:1,
-			   keepold, &kdb)) {
+			   FALSE, &kdb)) {
 	krb5_dbe_free_contents(handle->context, &kdb);
 	if (mask & KADM5_POLICY)
 	     (void) kadm5_free_policy_ent(handle->lhandle, &polent);
@@ -975,6 +974,7 @@ int free_history_entry(krb5_context context, osa_pw_hist_ent *hist)
  * array where the next element should be written, and must be [0,
  * adb->old_key_len).
  */
+#define KADM_MOD(x) (x + adb->old_key_next) % adb->old_key_len
 static kadm5_ret_t add_to_history(krb5_context context,
 				  osa_princ_ent_t adb,
 				  kadm5_policy_ent_t pol,
@@ -1002,6 +1002,39 @@ static kadm5_ret_t add_to_history(krb5_context context,
 	  
 	  memset(&adb->old_keys[adb->old_key_len],0,sizeof(osa_pw_hist_ent)); 
      	  adb->old_key_len++;
+     } else if (adb->old_key_len > pol->pw_history_num-1) {
+	 /*
+	  * The policy must have changed!  Shrink the array.
+	  * Can't simply realloc() down, since it might be wrapped.
+	  * To understand the arithmetic below, note that we are
+	  * copying into new positions 0 .. N-1 from old positions
+	  * old_key_next-N .. old_key_next-1, modulo old_key_len,
+	  * where N = pw_history_num - 1 is the length of the
+	  * shortened list.        Matt Crawford, FNAL
+	  */
+	 int j;
+	 histp = (osa_pw_hist_ent *)
+	     malloc((pol->pw_history_num - 1) * sizeof (osa_pw_hist_ent));
+	 if (histp) {
+	     for (i = 0; i < pol->pw_history_num - 1; i++) {
+		 /* We need the number we use the modulus operator on to be
+		    positive, so after subtracting pol->pw_history_num-1, we
+		    add back adb->old_key_len. */
+		 j = KADM_MOD(i - (pol->pw_history_num - 1) + adb->old_key_len);
+		 histp[i] = adb->old_keys[j];
+	     }
+	     /* Now free the ones we don't keep (the oldest ones) */
+	     for (i = 0; i < adb->old_key_len - (pol->pw_history_num - 1); i++)
+		 for (j = 0; j < adb->old_keys[KADM_MOD(i)].n_key_data; j++)
+		     krb5_free_key_data_contents(context,
+				&adb->old_keys[KADM_MOD(i)].key_data[j]);
+	     free((void *)adb->old_keys);
+	     adb->old_keys = histp;
+	     adb->old_key_len = pol->pw_history_num - 1;
+	     adb->old_key_next = 0;
+	 } else {
+	     return(ENOMEM);
+	 }
      }
 
      /* free the old pw history entry if it contains data */
@@ -1018,6 +1051,7 @@ static kadm5_ret_t add_to_history(krb5_context context,
 
      return(0);
 }
+#undef KADM_MOD
 
 kadm5_ret_t
 kadm5_chpass_principal(void *server_handle,
@@ -1433,14 +1467,30 @@ kadm5_setkey_principal(void *server_handle,
 		       krb5_keyblock *keyblocks,
 		       int n_keys)
 {
+    return
+	kadm5_setkey_principal_3(server_handle, principal,
+				 FALSE, 0, NULL,
+				 keyblocks, n_keys);
+}
+
+kadm5_ret_t
+kadm5_setkey_principal_3(void *server_handle,
+			 krb5_principal principal,
+			 krb5_boolean keepold,
+			 int n_ks_tuple, krb5_key_salt_tuple *ks_tuple,
+			 krb5_keyblock *keyblocks,
+			 int n_keys)
+{
     krb5_db_entry		kdb;
     osa_princ_ent_rec		adb;
     krb5_int32			now;
     kadm5_policy_ent_rec	pol;
-    krb5_key_data		*key_data;
+    krb5_key_data		*old_key_data;
+    int				n_old_keys;
     int				i, j, kvno, ret, last_pwd, have_pol = 0;
     kadm5_server_handle_t	handle = server_handle;
     krb5_boolean		similar;
+    krb5_keysalt		keysalt;
 
     CHECK_HANDLE(server_handle);
 
@@ -1459,9 +1509,16 @@ kadm5_setkey_principal(void *server_handle,
 					     &similar))
 		return(ret);
 	    if (similar)
-		return KADM5_SETKEY_DUP_ENCTYPES;
+		if (n_ks_tuple) {
+		    if (ks_tuple[i].ks_salttype == ks_tuple[j].ks_salttype)
+			return KADM5_SETKEY_DUP_ENCTYPES;
+		} else
+		    return KADM5_SETKEY_DUP_ENCTYPES;
 	}
     }
+
+    if (n_ks_tuple != n_keys)
+	return KADM5_SETKEY3_ETYPE_MISMATCH;
 
     if ((ret = kdb_get_entry(handle, principal, &kdb, &adb)))
        return(ret);
@@ -1470,24 +1527,54 @@ kadm5_setkey_principal(void *server_handle,
 	 if (kdb.key_data[i].key_data_kvno > kvno)
 	      kvno = kdb.key_data[i].key_data_kvno;
 
-    if (kdb.key_data != NULL)
-	 cleanup_key_data(handle->context, kdb.n_key_data, kdb.key_data);
+    if (keepold) {
+	old_key_data = kdb.key_data;
+	n_old_keys = kdb.n_key_data;
+    } else {
+	if (kdb.key_data != NULL)
+	    cleanup_key_data(handle->context, kdb.n_key_data, kdb.key_data);
+	n_old_keys = 0;
+	old_key_data = NULL;
+    }
     
-    kdb.key_data = (krb5_key_data*)malloc(n_keys*sizeof(krb5_key_data));
+    kdb.key_data = (krb5_key_data*)malloc((n_keys+n_old_keys)
+					  *sizeof(krb5_key_data));
     if (kdb.key_data == NULL)
 	 return ENOMEM;
-    memset(kdb.key_data, 0, n_keys*sizeof(krb5_key_data));
-    kdb.n_key_data = n_keys;
+    memset(kdb.key_data, 0, (n_keys+n_old_keys)*sizeof(krb5_key_data));
+    kdb.n_key_data = 0;
 
     for (i = 0; i < n_keys; i++) {
-	 if (ret = krb5_dbekd_encrypt_key_data(handle->context,
-					       &master_keyblock,
-					       &keyblocks[i], NULL,
-					       kvno + 1,
-					       &kdb.key_data[i]))
-	      return ret;
+	if (n_ks_tuple) {
+	    keysalt.type = ks_tuple[i].ks_salttype;
+	    keysalt.data.length = 0;
+	    keysalt.data.data = NULL;
+	    if (ks_tuple[i].ks_enctype != keyblocks[i].enctype) {
+		cleanup_key_data(handle->context, kdb.n_key_data,
+				 kdb.key_data);
+		return KADM5_SETKEY3_ETYPE_MISMATCH;
+	    }
+	}
+	ret = krb5_dbekd_encrypt_key_data(handle->context,
+					  &master_keyblock,
+					  &keyblocks[i],
+					  n_ks_tuple ? &keysalt : NULL,
+					  kvno + 1,
+					  &kdb.key_data[i]);
+	if (ret) {
+	    cleanup_key_data(handle->context, kdb.n_key_data, kdb.key_data);
+	    return ret;
+	}
+	kdb.n_key_data++;
     }
 
+    /* copy old key data if necessary */
+    for (i = 0; i < n_old_keys; i++) {
+	kdb.key_data[i+n_keys] = old_key_data[i];
+	memset(&old_key_data[i], 0, sizeof (krb5_key_data));
+	kdb.n_key_data++;
+    }
+    /* assert(kdb.n_key_data == n_keys + n_old_keys) */
     kdb.attributes &= ~KRB5_KDB_REQUIRES_PWCHANGE;
 
     if (ret = krb5_timeofday(handle->context, &now))
@@ -1650,6 +1737,13 @@ kadm5_ret_t kadm5_decrypt_key(void *server_handle,
 					  &master_keyblock, key_data,
 					  keyblock, keysalt))
 	 return ret;
+
+    /*
+     * Coerce the enctype of the output keyblock in case we got an
+     * inexact match on the enctype; this behavior will go away when
+     * the key storage architecture gets redesigned for 1.3.
+     */
+    keyblock->enctype = ktype;
 
     if (kvnop)
 	 *kvnop = key_data->key_data_kvno;

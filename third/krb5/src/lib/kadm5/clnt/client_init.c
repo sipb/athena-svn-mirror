@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.4 1999-10-05 16:12:39 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $
  */
 
 /*
@@ -31,7 +31,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.4 1999-10-05 16:12:39 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $";
 #endif
 
 #include <stdio.h>
@@ -131,6 +131,13 @@ static int preauth_search_list[] = {
      0,			
      KRB5_PADATA_ENC_UNIX_TIME,
      -1
+};
+
+static krb5_enctype enctypes[] = {
+    ENCTYPE_DES3_CBC_SHA1,
+    ENCTYPE_DES_CBC_MD5,
+    ENCTYPE_DES_CBC_CRC,
+    0,
 };
 
 static kadm5_ret_t _kadm5_init_any(char *client_name,
@@ -277,9 +284,15 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 	  goto error;
 
      if (realm) {
+          if(strlen(service_name) + strlen(realm) + 1 >= sizeof(full_service_name)) {
+	      goto error;
+	  }
 	  sprintf(full_service_name, "%s@%s", service_name, realm);
      } else {
 	  /* krb5_princ_realm(creds.client) is not null terminated */
+          if(strlen(service_name) + krb5_princ_realm(handle->context, creds.client)->length + 1 >= sizeof(full_service_name)) {
+	      goto error;
+	  }
 	  strcpy(full_service_name, service_name);
 	  strcat(full_service_name, "@");
 	  strncat(full_service_name, krb5_princ_realm(handle->context,
@@ -345,7 +358,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 	       code = krb5_get_in_tkt_with_password(handle->context,
 						    0, /* no options */
 						    0, /* default addresses */
-						    NULL,
+						    enctypes,
 						    NULL, /* XXX preauth */
 						    pass,
 						    ccache,
@@ -366,7 +379,7 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 		    code = krb5_get_in_tkt_with_keytab(handle->context,
 						       0, /* no options */
 						       0, /* default addrs */
-						       NULL,
+						       enctypes,
 						       NULL, /* XXX preauth */
 						       kt,
 						       ccache,

@@ -1,3 +1,34 @@
+2000-03-16  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdestroy.c: Do not define variables if v4 compatilibilty is not
+	defined.
+
+2000-03-07  Danilo Almeida  <dalmeida@mit.edu>
+
+	* kdestroy.M: Make up-to-date.
+
+	* kdestroy.c: Add support for combining -5 and -4.  Add ability to
+	easily change defaults in terms of whether to use 5, 4 or both.
+	Expand usage info.
+
+2000-02-16  Danilo Almeida  <dalmeida@mit.edu>
+
+	* kdestroy.c: Fix GET_PROGNAME macro to properly return program
+	name under Win32.  Re-indent, turning spaces that should be tabs
+	into tabs.
+
+2000-02-04  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (kdestroy): Fix to build under Unix again.
+
+2000-02-04  Danilo Almeida  <dalmeida@mit.edu>
+
+	* kdestroy.c: Major revamp to support Kerberos 4 compatibility.  Code
+	restructured to allow changes to support Kerberos 4 or Kerberos 5
+	only operation depending on whether dynamic libraries are
+	avialable.  Explicit documentation and support files to make it
+	easy to do this will be forthcoming.
+
 1999-12-03  Danilo Almeida  <dalmeida@mit.edu>
 
 	* Makefile.in: Windows fix for 10/26/99 cleanup.

@@ -1,3 +1,50 @@
+2001-09-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* klist.c (flags_string): Display transit-policy-checked,
+	ok-as-delegate, and anonymous ticket flags.
+
+2000-04-19  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Link in getopt library on Windows.
+
+	* klist.c: Use getopt so that we can parse combined options (e.g.,
+	-an or -45).
+
+2000-03-07  Danilo Almeida  <dalmeida@mit.edu>
+
+	* klist.M: Get man page up-to-date.
+
+	* klist.c: Add support for combining -4 and -5.  Tweak usage info.
+
+2000-02-24  Ezra Peisach  <epeisach@engrailed.mit.edu>
+
+	* klist.c: Include <arpa/inet.h> if present for inet_ntop
+	prototype. Use const for the variable receiving the result of
+	inet_ntop.
+
+2000-02-16  Danilo Almeida  <dalmeida@mit.edu>
+
+	* klist.c: Fix GET_PROGNAME macro to properly return program name
+	under Win32.  Re-indent, turning spaces that should be tabs into
+	tabs.
+
+2000-02-04  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (klist): Fix to build under Unix again.
+
+2000-02-04  Danilo Almeida  <dalmeida@mit.edu>
+
+	* klist.c: Major revamp to support Kerberos 4 compatibility.  Code
+	restructured to allow changes to support Kerberos 4 or Kerberos 5
+	only operation depending on whether dynamic libraries are
+	avialable.  Explicit documentation and support files to make it
+	easy to do this will be forthcoming.
+
+1999-11-02  Ken Raeburn  <raeburn@raeburn.org>
+
+	* klist.c (one_addr): Always use indicated address family and
+	length in gethostbyaddr or getipnodebyaddr calls.
+
 1999-12-03  Danilo Almeida  <dalmeida@mit.edu>
 
 	* Makefile.in: Windows fix for 10/26/99 cleanup.
@@ -8,6 +55,12 @@
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
 	Makefile cleanup. [from wsanchez@apple.com]
+
+1999-10-17  Ken Raeburn  <raeburn@raeburn.org>
+
+	* klist.c (one_addr): Use getipnodebyaddr and inet_ntop if
+	available.  Display ADDRTYPE_INET6 addresses if AF_INET6 is
+	defined.
 
 1999-09-01  Danilo Almeida  <dalmeida@mit.edu>
 

@@ -1,3 +1,27 @@
+2000-06-03  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in(LIBMINOR): Bump library version.
+
+Tue Feb 22 10:23:19 2000  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (clean-unix): Add clean-libobjs.
+
+2000-01-24  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (STLIBOBJS): Properly add gss_libinit.o to permit
+	compiling.
+
+	* configure.in: Add libobj to Makefile frags.
+
+	* gss_libinit.c: Add terminating newline.  Use 0 and 1 instead of
+	false and true.
+
+Fri Jan 21 22:47:00 2000  Miro Jurisic  <meeroh@mit.edu>
+
+	* Makefile.in: added gss_libinit.[co]
+	* gss_libinit.[ch]: new files, contain library initialization
+		and cleanup code
+
 Tue May 18 19:52:56 1999  Danilo Almeida  <dalmeida@mit.edu>
 
 	* Makefile.in: Remove - from recursive Win32 make invocation.

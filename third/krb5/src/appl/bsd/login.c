@@ -620,9 +620,10 @@ int have_v5_tickets (me)
 #endif /* KRB5_GET_TICKETS */
 
 #ifdef KRB4_CONVERT
-try_convert524 (kcontext, me)
-     krb5_context kcontext;
-     krb5_principal me;
+try_convert524(kcontext, me, use_ccache)
+    krb5_context kcontext;
+    krb5_principal me;
+    int use_ccache;
 {
     krb5_principal kpcserver;
     krb5_error_code kpccode;
@@ -633,38 +634,45 @@ try_convert524 (kcontext, me)
 
     /* or do this directly with krb524_convert_creds_kdc */
     krb524_init_ets(kcontext);
-    /* cc->ccache, already set up */
-    /* client->me, already set up */
-    if ((kpccode = krb5_build_principal(kcontext,
-				        &kpcserver, 
-				        krb5_princ_realm(kcontext, me)->length,
-				        krb5_princ_realm(kcontext, me)->data,
-				        "krbtgt",
-				        krb5_princ_realm(kcontext, me)->data,
-					NULL))) {
-      com_err("login/v4", kpccode,
-	      "while creating service principal name");
-      return 0;
-    }
 
-    memset((char *) &increds, 0, sizeof(increds));
-    increds.client = me;
-    increds.server = kpcserver;
-    increds.times.endtime = 0;
-    increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
-    if ((kpccode = krb5_get_credentials(kcontext, 0, 
-					ccache,
-					&increds, 
-					&v5creds))) {
-	com_err("login/v4", kpccode,
-		"getting V5 credentials");
-	return 0;
-    }
-    if ((kpccode = krb524_convert_creds_kdc(kcontext, 
-					    v5creds,
-					    &v4creds))) {
-	com_err("login/v4", kpccode, 
-		"converting to V4 credentials");
+    /* If we have forwarded v5 tickets, retrieve the credentials from
+     * the cache; otherwise, the v5 credentials are in my_creds.
+     */
+    if (use_ccache) {
+	/* cc->ccache, already set up */
+	/* client->me, already set up */
+	kpccode = krb5_build_principal(kcontext, &kpcserver, 
+				       krb5_princ_realm(kcontext, me)->length,
+				       krb5_princ_realm(kcontext, me)->data,
+				       "krbtgt",
+				       krb5_princ_realm(kcontext, me)->data,
+				       NULL);
+	if (kpccode) {
+	    com_err("login/v4", kpccode,
+		    "while creating service principal name");
+	    return 0;
+	}
+
+	memset((char *) &increds, 0, sizeof(increds));
+	increds.client = me;
+	increds.server = kpcserver;
+	increds.times.endtime = 0;
+	increds.keyblock.enctype = ENCTYPE_DES_CBC_CRC;
+	kpccode = krb5_get_credentials(kcontext, 0, ccache,
+				       &increds, &v5creds);
+	krb5_free_principal(kcontext, kpcserver);
+	increds.server = NULL;
+	if (kpccode) {
+	    com_err("login/v4", kpccode, "getting V5 credentials");
+	    return 0;
+	}
+
+	kpccode = krb524_convert_creds_kdc(kcontext, v5creds, &v4creds);
+	krb5_free_creds(kcontext, v5creds);
+    } else
+	kpccode = krb524_convert_creds_kdc(kcontext, &my_creds, &v4creds);
+    if (kpccode) {
+	com_err("login/v4", kpccode, "converting to V4 credentials");
 	return 0;
     }
     /* this is stolen from the v4 kinit */
@@ -914,8 +922,9 @@ afs_login ()
 	struct stat st;
 	/* construct the name */
 	/* get this from profile later */
-	strcpy (aklog_path, KPROGDIR);
-	strcat (aklog_path, "/aklog");
+	aklog_path[sizeof(aklog_path) - 1] = '\0';
+	strncpy (aklog_path, KPROGDIR, sizeof(aklog_path) - 1);
+	strncat (aklog_path, "/aklog", sizeof(aklog_path) - 1 - strlen(aklog_path));
 	/* only run it if we can find it */
 	if (stat (aklog_path, &st) == 0) {
 	    system(aklog_path);
@@ -1449,18 +1458,17 @@ int main(argc, argv)
 #if defined(KRB5_GET_TICKETS) && defined(KRB4_CONVERT)
     if (login_krb4_convert && !got_v4_tickets) {
 	if (got_v5_tickets||forwarded_v5_tickets)
-	    try_convert524 (kcontext, me);
+	    try_convert524(kcontext, me, forwarded_v5_tickets);
     }
 #endif
 
 #ifdef KRB5_GET_TICKETS
     if (login_krb5_get_tickets)
 	dofork();
-    else
 #endif
 #ifdef KRB4_GET_TICKETS
-	if (login_krb4_get_tickets)
-	    dofork();
+    else if (login_krb4_get_tickets)
+	dofork();
 #endif
 
 /* If the user's shell does not do job control we should put it in a
@@ -1588,11 +1596,10 @@ int main(argc, argv)
 #ifdef KRB5_GET_TICKETS
     if (forwarded_v5_tickets)
 	destroy_tickets();
-    else
 #endif
 #ifdef KRB4_GET_TICKETS
-	if (got_v4_tickets)
-	    destroy_tickets();
+    else if (got_v4_tickets)
+        destroy_tickets();
 #endif
 
 #ifdef OQUOTA
@@ -1646,7 +1653,8 @@ int main(argc, argv)
 	    com_err(argv[0], retval, "while storing credentials");
 	}
 
-	krb5_cc_destroy(kcontext, xtra_creds);
+	if (xtra_creds)
+	    krb5_cc_destroy(kcontext, xtra_creds);
     } else if (forwarded_v5_tickets && rewrite_ccache) {
 	if ((retval = krb5_cc_initialize (kcontext, ccache, me))) {
 	    syslog(LOG_ERR,
@@ -2415,9 +2423,21 @@ char *strsave(sp)
 #ifdef _IBMR2
 update_ref_count(int adj)
 {
+    struct passwd *save_pwd;
     static char *empty = "\0";
     char *grp;
     int i;
+
+    /* save pwd before calling getuserattr() */
+    save_pwd = (struct passwd *)malloc(sizeof(struct passwd));
+    save_pwd->pw_name = strdup(pwd->pw_name);
+    save_pwd->pw_passwd = strdup(pwd->pw_passwd);
+    save_pwd->pw_uid = pwd->pw_uid;
+    save_pwd->pw_gid = pwd->pw_gid;
+    save_pwd->pw_gecos = strdup(pwd->pw_gecos);
+    save_pwd->pw_dir = strdup(pwd->pw_dir);
+    save_pwd->pw_shell = strdup(pwd->pw_shell);
+    pwd = save_pwd;
 
     /* Update reference count on all user's temporary groups */
     setuserdb(S_READ|S_WRITE);

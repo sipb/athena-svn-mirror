@@ -11,7 +11,7 @@
 
 # KADM_SUCCESS, as all success codes should be, is zero
 
-ec KADM_RCSID,		"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/v4server/kadm_err.et,v 1.1.1.3 1999-02-09 21:04:46 danw Exp $"
+ec KADM_RCSID,		"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/v4server/kadm_err.et,v 1.1.1.4 2001-12-05 20:47:52 rbasch Exp $"
 # /* Building and unbuilding the packet errors */
 ec KADM_NO_REALM,	"Cannot fetch local realm"
 ec KADM_NO_CRED,	"Unable to fetch credentials"
@@ -54,4 +54,5 @@ ec KADM_INSECURE_PW,	"Insecure password rejected"
 ec KADM_PW_MISMATCH,	"Cleartext password and DES key did not match"
 
 ec KADM_NOT_SERV_PRINC,	"Invalid principal for change srvtab request"
+ec KADM_REALM_TOO_LONG, "Realm name too long"
 end

@@ -1,9 +1,47 @@
+2000-06-21  Danilo Almeida  <dalmeida@mit.edu>
+
+	* win-pre.in: Fix up DNS build flags to correspond to new DNS
+	build flags.  Add support for not using wshelper.
+
+2000-06-08  Tom Yu  <tlyu@mit.edu>
+
+	* config.guess: Update to 2000-05-30 from FSF.
+
+	* config.sub: Update to 2000-05-30 from FSF.
+
+2000-05-03  Tom Yu  <tlyu@mit.edu>
+
+	* libobj.in, pre.in: Put $(LOCALINCLUDES) after $(CPPFLAGS) since
+	$(CPPFLAGS) should have its includes show up first.
+
+2000-03-01  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in (INSTALL_SHLIB): New variable.
+
+	* lib.in (install-shared): Use $(INSTALL_SHLIB)
+
+2000-02-15  Tom Yu  <tlyu@mit.edu>
+
+	* libobj.in: Fix up .c.so and .c.po rules to include $(CFLAGS),
+	which were previously missing.
+
+2000-02-04  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Add KRB524_DEPLIB and KRB524_LIB
+
+2000-01-27  Ken Raeburn  <raeburn@mit.edu>
+
+	* pre.in (KADM_COMM_LIBS): Drop krb5util library.
+
 1999-12-03  Danilo Almeida  <dalmeida@mit.edu>
 
-	* win-pre.in: Update Windows build to work with 10/26/99 change.
-	The only difference between EXE and DLL builds are the
-	DLL_LINKOPTS and EXE_LINKOPTS linker options.  All C flags are the
-	same.
+	* win-pre.in: Pull changes from krb5-1-1 branch: a) Make is so
+	that all C flags are the same and so that the only difference
+	between EXE and DLL builds are the DLL_LINKOPTS and EXE_LINKOPTS
+	linker options.  b) Fix DNS error messages to wshelper instead of
+	version server.  c) Fix DNS flags it does not try to depend on mit
+	dir.  Define NULL so we can do directory existence checks via the
+	shell under both NT and 9x.
 
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
@@ -12,23 +50,10 @@
 	line without losing CPP search patchs and defines. Some associated
 	Makefile cleanup. [from wsanchez@apple.com]
 
-1999-09-14  Danilo Almeida  <dalmeida@mit.edu>
-
-	* win-pre.in: Fix DNS error messages to wshelper instead of
-	version server.
-
-1999-09-08  Danilo Almeida  <dalmeida@mit.edu>
-
-	* win-pre.in: Fix DNS flags it does not try to depend on mit dir.
-	Define NULL so we can do directory existence checks via the shell
-	under both NT and 9x.
-
-1999-08-23  Ken Raeburn  <raeburn@mit.edu>
+1999-09-01  Ken Raeburn  <raeburn@mit.edu>
 
 	* config.guess: Recognize Rhapsody OS.
 	* config.sub: Recognize OS name "rhapsody*".
-
-1999-08-17  Ken Raeburn  <raeburn@mit.edu>
 
 	* post.in (*-recurse): If an error occurs when using -k, report an
 	error after finishing all the subdirectories.

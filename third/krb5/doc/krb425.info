@@ -22,7 +22,7 @@ File: krb425.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up: Top
 Copyright
 *********
 
-Copyright (C) 1985-1999 by the Massachusetts Institute of Technology.
+Copyright (C) 1985-2001 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -211,6 +211,13 @@ v4_instance_convert
      name) which should be translated to some specific hostname (tag
      value) as the second component in a Kerberos V5 principal name.
 
+v4_realm
+     This relation allows the administrator to configure a different
+     realm name to be used when converting V5 principals to V4 ones.
+     This should only be used when running separate V4 and V5 realms,
+     with some external means of password sychronization between the
+     realms.
+
 
 File: krb425.info,  Node: kdc.conf,  Prev: krb5.conf,  Up: Configuration Files
 
@@ -379,10 +386,10 @@ Node: Configuration Files6486
 Node: krb5.conf6785
 Node: libdefaults7192
 Node: realms (krb5.conf)7742
-Node: kdc.conf8484
-Node: Upgrading KDCs8864
-Node: Upgrading Application Servers10584
-Node: Upgrading Client machines13076
-Node: Firewall Considerations13959
+Node: kdc.conf8784
+Node: Upgrading KDCs9164
+Node: Upgrading Application Servers10884
+Node: Upgrading Client machines13376
+Node: Firewall Considerations14259
 
 End Tag Table

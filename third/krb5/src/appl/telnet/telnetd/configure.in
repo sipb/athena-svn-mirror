@@ -23,7 +23,7 @@ fi
 fi
 AC_HEADER_TIME
 AC_CHECK_HEADERS(string.h arpa/nameser.h utmp.h sys/time.h sys/tty.h sac.h sys/ptyvar.h sys/filio.h sys/stream.h sys/utsname.h)
-AC_CHECK_FUNCS(gettosbyname)
+AC_CHECK_FUNCS(gettosbyname vsnprintf)
 dnl Make our operating system-specific security checks and definitions for
 dnl login.
 dnl
@@ -57,15 +57,6 @@ krb5_cv_sys_setpgrp_two=yes,krb5_cv_sys_setpgrp_two=no)])
 AC_MSG_RESULT($krb5_cv_sys_setpgrp_two)
 if test $krb5_cv_sys_setpgrp_two = yes; then
   AC_DEFINE(SETPGRP_TWOARG)
-fi
-dnl
-dnl For the encryption code we need libdes425
-dnl Fix post beta-6
-withval=no
-AC_ARG_WITH([krb4],[],,withval=yes)
-if test $withval = no; then
-	DES425_LIB=-ldes425
-	DES425_DEPLIB='$(TOPLIBD)/libdes425$(DEPLIBEXT)'
 fi
 dnl
 KRB5_BUILD_PROGRAM

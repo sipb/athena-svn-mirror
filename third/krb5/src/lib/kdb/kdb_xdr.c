@@ -222,7 +222,6 @@ krb5_dbe_lookup_mod_princ_data(context, entry, mod_time, mod_princ)
 {
     krb5_tl_data        tl_data;
     krb5_error_code	code;
-    krb5_int32		tmp;
 
     tl_data.tl_data_type = KRB5_TL_MOD_PRINC;
 
@@ -238,7 +237,7 @@ krb5_dbe_lookup_mod_princ_data(context, entry, mod_time, mod_princ)
 
     /* Mod Princ */
     if ((code = krb5_parse_name(context,
-				(const char *) (tl_data.tl_data_contents+4),
+				(krb5_const char *) (tl_data.tl_data_contents+4),
 				mod_princ)))
 	return(code);
 
@@ -725,6 +724,7 @@ krb5_dbe_search_enctype(kcontext, dbentp, start, ktype, stype, kvno, kdatap)
     int			i, index;
     int			maxkvno;
     krb5_key_data	*datap;
+    krb5_error_code	ret;
 
     if (kvno == -1 && stype == -1 && ktype == -1)
 	kvno = 0;
@@ -742,15 +742,25 @@ krb5_dbe_search_enctype(kcontext, dbentp, start, ktype, stype, kvno, kdatap)
     datap = (krb5_key_data *) NULL;
     for (i = *start; i < dbentp->n_key_data; i++) {
         krb5_boolean    similar;
-	krb5_error_code ret;
         krb5_int32      db_stype;
 
+	ret = 0;
 	if (dbentp->key_data[i].key_data_ver > 1) {
 	    db_stype = dbentp->key_data[i].key_data_type[1];
 	} else {
 	    db_stype = KRB5_KDB_SALTTYPE_NORMAL;
 	}
+
+	/*
+	 * Filter out non-permitted enctypes.
+	 */
+	if (!krb5_is_permitted_enctype(kcontext,
+				       dbentp->key_data[i].key_data_type[0])) {
+	    ret = KRB5_KDB_NO_PERMITTED_KEY;
+	    continue;
+	}
 	
+
 	if (ktype >= 0) {
 	    if ((ret = krb5_c_enctype_compare(kcontext, (krb5_enctype) ktype,
 					      dbentp->key_data[i].key_data_type[0],
@@ -777,7 +787,7 @@ krb5_dbe_search_enctype(kcontext, dbentp, start, ktype, stype, kvno, kdatap)
 	}
     }
     if (maxkvno < 0)
-	return ENOENT;
+	return ret ? ret : KRB5_KDB_NO_MATCHING_KEY;
     *kdatap = datap;
     *start = index+1;
     return 0;

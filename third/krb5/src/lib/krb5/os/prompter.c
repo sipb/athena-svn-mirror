@@ -34,12 +34,12 @@ krb5_prompter_posix(krb5_context context,
 
     register char *ptr;
     int scratchchar;
-    krb5_sigtype (*ointrfunc)();
-    krb5_error_code errcode;
+    krb5_sigtype (*volatile ointrfunc)();
+    volatile krb5_error_code errcode;
     int i;
 #ifndef ECHO_PASSWORD
     struct termios echo_control, save_control;
-    int fd;
+    volatile int fd;
 #endif
 
     if (name) {
@@ -117,6 +117,18 @@ krb5_prompter_posix(krb5_context context,
 
 cleanup:
     (void) signal(SIGINT, ointrfunc);
+#ifndef ECHO_PASSWORD
+    if (i < num_prompts) {
+	if (prompts[i].hidden) {
+	    (void)putchar('\n');
+	    if (isatty(fd) == 1) {
+		if ((tcsetattr(fd, TCSANOW, &save_control) == -1
+		     && errcode == 0))
+		    return errno;
+	    }
+	}
+    }
+#endif
     return(errcode);
 }
 #else /* MSDOS */
@@ -229,3 +241,20 @@ krb5_prompter_posix(krb5_context context,
 }
 #endif /* !_WIN32 */
 #endif /* !MSDOS */
+
+void
+krb5int_set_prompt_types(context, types)
+    krb5_context context;
+    krb5_prompt_type *types;
+{
+    context->prompt_types = types;
+}
+
+KRB5_DLLIMP
+krb5_prompt_type*
+KRB5_CALLCONV
+krb5_get_prompt_types(context)
+    krb5_context context;
+{
+    return context->prompt_types;
+}

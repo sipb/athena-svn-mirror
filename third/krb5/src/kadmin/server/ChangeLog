@@ -1,3 +1,36 @@
+2000-06-21  Tom Yu  <tlyu@mit.edu>
+
+	* server_stubs.c: Kludge to rename xdr_free() properly.
+
+2000-05-23  Tom Yu  <tlyu@mit.edu>
+
+	* schpw.c (process_chpw_request): Add new argument to call to
+	chpass_principal_util()
+
+2000-03-16  Ken Raeburn  <raeburn@mit.edu>
+	    Matt Crawford  <crawdad@fnal.gov>
+
+	* server_stubs.c: All callers of acl_check updated to add new
+	restriction argument.  Impose any provided restrictions on add- or
+	modify-principal operations; pass NULL pointer for all other
+	operations including rename-principal.
+
+2000-02-27  Tom Yu  <tlyu@mit.edu>
+
+	* server_stubs.c (create_principal3_1): Remove keepold argument.
+
+2000-02-18  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_rpc_svc.c (kadm_1): Update to include new api functions.
+
+	* ovsec_kadmd.c (log_badverf): Update proc_names.
+
+2000-02-17  Tom Yu  <tlyu@mit.edu>
+
+	* server_stubs.c: Add create_principal3_1, chpass_principal3_1,
+	setkey_principal3_1, and chrand_principal3_1 to do the obvious
+	things.
+
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,

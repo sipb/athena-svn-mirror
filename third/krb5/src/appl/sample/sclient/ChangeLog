@@ -1,3 +1,13 @@
+2001-01-30  Ezra Peisach  <epeisach@mit.edu>
+
+	* sclient.c (main): Do not free auth_context unless
+	set. (krb5-appl/895 from tim.mann@compaq.com)
+
+
+2000-02-25  Ezra Peisach  <epeisach@mit.edu>
+
+	* sclient.c (main): Return type of main should by int, not void.
+
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,

@@ -98,6 +98,12 @@ get_salt_from_key PROTOTYPE((krb5_context, krb5_principal,
 
 void limit_string PROTOTYPE((char *name));
 
+void
+ktypes2str(char *s, size_t len, int nktypes, krb5_enctype *ktype);
+
+void
+rep_etypes2str(char *s, size_t len, krb5_kdc_rep *rep);
+
 /* do_as_req.c */
 krb5_error_code process_as_req PROTOTYPE((krb5_kdc_req *,
 					  const krb5_fulladdr *,
@@ -152,10 +158,17 @@ krb5_error_code return_padata
 	       krb5_key_data *client_key, krb5_keyblock *encrypting_key));
     
 /* replay.c */
-krb5_boolean kdc_check_lookaside PROTOTYPE((krb5_data *, krb5_fulladdr *,
+krb5_boolean kdc_check_lookaside PROTOTYPE((krb5_data *, const krb5_fulladdr *,
 					    krb5_data **));
-void kdc_insert_lookaside PROTOTYPE((krb5_data *, krb5_fulladdr *,
+void kdc_insert_lookaside PROTOTYPE((krb5_data *, const krb5_fulladdr *,
 				     krb5_data *));
+
+/* sock2p.c */
+#ifndef HAVE_INET_NTOP
+/* It's provided by sock2p.c in this case.  */
+extern char *inet_ntop (int, const void *, char *, size_t);
+#endif
+extern void sockaddr2p (const struct sockaddr *, char *, size_t, int *);
 
 /* which way to convert key? */
 #define CONVERT_INTO_DB	0

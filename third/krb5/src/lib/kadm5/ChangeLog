@@ -1,18 +1,92 @@
+2001-10-31  Ezra Peisach  <epeisach@mit.edu>
+
+	* str_conv.c (krb5_string_to_keysalts): When parsing string, allow
+	for extra separator characters (like spaces) between keysalts.
+	[pullup 1.7->1.8 from trunk]
+
+2001-09-25  Ken Raeburn  <raeburn@mit.edu>
+
+	* admin.h (krb5_realm_params): Add fields realm_reject_bad_transit
+	and realm_reject_bad_transit_valid; delete field realm_filler.
+	* alt_prof.c (string_to_boolean, krb5_aprof_get_boolean): New
+	functions.
+	(krb5_read_realm_params): Parse "reject_bad_transit" value as
+	boolean and save it.
+
+2001-09-07  Tom Yu  <tlyu@mit.edu>
+
+	* adb.h: Add btinfo. [pullup from trunk]
+
+2000-05-31  Ken Raeburn  <raeburn@mit.edu>
+
+	* alt_prof.c (kadm5_get_config_params): Include des3 in supported
+	enctypes by default.
+
+2000-05-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* ovsec_glue.c (ovsec_kadm_chpass_principal_util): Use 1024 for
+	hard-coded length, to match existing callers.
+
+2000-05-11  Nalin Dahyabhai  <nalin@redhat.com>
+
+	* admin.h: Add a length parameter to kadm5_chpass_principal_util().
+	* admin_internal.h: Add a length parameter to
+	_kadm5_chpass_principal_util().
+	* chpass_util.c (_kadm5_chpass_principal_util): Add a length parameter,
+	and use it to avoid overflowing "msg_ret".
+	* ovsec_glue.c (ovsec_kadm_chpass_principal_util): Adjust for new
+	parameter in kadm5_chpass_principal_util().
+
+2000-05-01  Nalin Dahyabhai  <nalin@redhat.com>
+
+	* logger.c (klog_com_err_proc): Don't overflow buffer "outbuf".
+
+2000-02-26  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_rpc_xdr.c (xdr_cprinc3_arg): Don't XDR the nonexistent
+	keepold flag.
+
+	* kadm_rpc.h: Remove keepold flag from cprinc3_arg.
+
+	* admin.h: Remove keepold flag from create_principal_3, which was
+	kinda ridiculous.
+
+2000-02-22  Ken Raeburn  <raeburn@mit.edu>
+
+	* Makefile.in (includes): Extract basename of header file to be
+	installed, since Digital UNIX 4.0 native make substitutes the
+	VPATH-derived pathname here.
+
+2000-02-21  Bear Giles  <bgiles@coyotesong.com>
+
+	* alt_prof.c (krb5_read_realm_params): Permit realm supported
+	enctypes to be unspecified, letting the KDC produce defaults.
+	Don't look up enctypes at all if an error is to be returned.
+
+2000-02-18  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_rpc_xdr.c (xdr_chpass3_arg): 
+	(xdr_chrand3_arg): Fix up calls to xdr_array.
+
+2000-02-13  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_rpc_xdr.c: Add xdr functions for new kadm rpc functions.
+
+	* kadm_rpc.h: Add arg structs, prototypes, constants for new kadm
+	rpc functions.
+
+	* kadm_err.et: Add error code KADM5_SETKEY3_ETYPE_MISMATCH.
+
+	* admin.h: Add prototype for setkey_principal_3.
+
+1999-12-01  Ken Raeburn  <raeburn@mit.edu>
+
+	* logger.c (klog_vsyslog): Convert pid_t to long for printing.
+
 1999-11-30  Ken Raeburn  <raeburn@mit.edu>
 
 	* alt_prof.c (kadm5_get_config_params): Fix bug in direction of
 	test while walking through whitespace.  Thanks to Matt Crawford.
-
-1999-10-29  Ken Raeburn  <raeburn@mit.edu>
-
-	* logger.c (klog_com_err_proc, klog_vsyslog): Use proper format
-	strings in syslog() calls too.
-	(lspec_parse_err_1, lspec_parse_err_2, log_file_err,
-	log_device_err, log_ufo_string, log_emerg_string,
-	log_alert_string, log_crit_string, log_err_string,
-	log_warning_string, log_notice_string, log_info_string,
-	log_debug_string): Replace char arrays with macros.
-	(klog_vsyslog): Convert pid_t to long for printing.
 
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
@@ -20,6 +94,16 @@
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
 	Makefile cleanup. [from wsanchez@apple.com]
+
+1999-09-28  Ken Raeburn  <raeburn@mit.edu>
+
+	* logger.c (lspec_parse_err_1, lspec_parse_err_2, log_file_err,
+	log_device_err, log_ufo_string, log_emerg_string,
+	log_alert_string, log_crit_string, log_err_string,
+	log_warning_string, log_notice_string, log_info_string,
+	log_debug_string): Replace char arrays with macros.
+	(klog_com_err_proc, klog_vsyslog): When calling syslog, supply %s
+	format string.
 
 1999-09-23  Ken Raeburn  <raeburn@mit.edu>
 

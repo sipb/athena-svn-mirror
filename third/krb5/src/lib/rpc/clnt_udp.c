@@ -117,7 +117,7 @@ clntudp_bufcreate(raddr, program, version, wait, sockp, sendsz, recvsz)
 	unsigned int recvsz;
 {
 	CLIENT *cl;
-	register struct cu_data *cu;
+	register struct cu_data *cu = 0;
 	struct timeval now;
 	struct rpc_msg call_msg;
 
@@ -379,6 +379,21 @@ send_again:
 		} 
 	}  /* end of valid reply message */
 	else {
+		/*
+		 * It's possible for xdr_replymsg() to fail partway
+		 * through its attempt to decode the result from the
+		 * server. If this happens, it will leave the reply
+		 * structure partially populated with dynamically
+		 * allocated memory. (This can happen if someone uses
+		 * clntudp_bufcreate() to create a CLIENT handle and
+		 * specifies a receive buffer size that is too small.)
+		 * This memory must be free()ed to avoid a leak.
+		 */
+		int op = reply_xdrs.x_op;
+		reply_xdrs.x_op = XDR_FREE;
+		xdr_replymsg(&reply_xdrs, &reply_msg);
+		reply_xdrs.x_op = op;
+		return (RPC_CANTDECODERES);
 		cu->cu_error.re_status = RPC_CANTDECODERES;
 	}
 	return (cu->cu_error.re_status);

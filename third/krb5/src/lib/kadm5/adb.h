@@ -2,7 +2,7 @@
  * Data Types for policys, and principal information that
  * exist in the respective databases.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.4 1999-10-05 16:12:32 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $
  *
  * This file was originally created with rpcgen.
  * It has been hacked up since then.
@@ -44,6 +44,7 @@ typedef struct _osa_adb_db_ent_t {
      int	magic;
      DB		*db;
      HASHINFO	info;
+     BTREEINFO	btinfo;
      char	*filename;
      osa_adb_lock_t lock;
 } osa_adb_db_ent, *osa_adb_db_t, *osa_adb_princ_t, *osa_adb_policy_t;

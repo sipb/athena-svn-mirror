@@ -64,7 +64,7 @@
 #define lspec_parse_err_2	"%s: warning - logging entry syntax error\n"
 #define log_file_err		"%s: error writing to %s\n"
 #define log_device_err		"%s: error writing to %s device\n"
-#define log_ufo_string		"???"
+#define log_ufo_string		"?\?\?" /* nb: avoid trigraphs */
 #define log_emerg_string	"EMERGENCY"
 #define log_alert_string	"ALERT"
 #define log_crit_string		"CRITICAL"
@@ -199,8 +199,9 @@ klog_com_err_proc(whoami, code, format, ap)
 
     /* If reporting an error message, separate it. */
     if (code) {
-	strcat(outbuf, error_message(code));
-	strcat(outbuf, " - ");
+        outbuf[sizeof(outbuf) - 1] = '\0';
+	strncat(outbuf, error_message(code), sizeof(outbuf) - 1 - strlen(outbuf));
+	strncat(outbuf, " - ", sizeof(outbuf) - 1 - strlen(outbuf));
     }
     cp = &outbuf[strlen(outbuf)];
     

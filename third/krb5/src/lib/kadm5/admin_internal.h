@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/admin_internal.h,v 1.1.1.3 1999-02-09 21:00:09 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/admin_internal.h,v 1.1.1.4 2001-12-05 20:48:07 rbasch Exp $
  */
 
 #ifndef __KADM5_ADMIN_INTERNAL_H__
@@ -62,7 +62,8 @@ kadm5_ret_t _kadm5_chpass_principal_util(void *server_handle,
 					 krb5_principal princ,
 					 char *new_pw, 
 					 char **ret_pw,
-					 char *msg_ret);
+					 char *msg_ret,
+					 int msg_len);
 
 /* this is needed by the alt_prof code I stole.  The functions
    maybe shouldn't be named krb5_*, but they are. */

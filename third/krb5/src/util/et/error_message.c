@@ -27,12 +27,17 @@
 #include "com_err.h"
 #include "error_table.h"
 
+#if defined(macintosh) || (defined(__MACH__) && defined(__APPLE__))
+    #include <KerberosSupport/KerberosSupport.h>
+    #include <KerberosSupport/ErrorLib.h>
+#endif
+
 #if defined(_MSDOS) || defined(_WIN32)
 #define HAVE_STRERROR
 #endif
 
 #ifdef macintosh
-#define sys_nerr 100
+#define sys_nerr 100   /* XXX - What is this? */
 #endif
 
 #if !defined(HAVE_STRERROR) && !defined(SYS_ERRLIST_DECLARED)
@@ -44,7 +49,7 @@ extern const int sys_nerr;
 
 static char buffer[ET_EBUFSIZ];
 
-#if (defined(_MSDOS) || defined(_WIN32) || defined(macintosh))
+#if (defined(_MSDOS) || defined(_WIN32) || defined(macintosh) || (defined(__MACH__) && defined(__APPLE__)))
 static struct et_list * _et_list = (struct et_list *) NULL;
 #else
 /* Old interface compatibility */
@@ -143,8 +148,25 @@ KRB5_DLLIMP const char FAR * KRB5_CALLCONV error_message(code)
 		}
 	}
 #endif
-	
+
 oops:
+
+#if TARGET_OS_MAC
+	{
+		/* This may be a Mac OS Toolbox error or an MIT Support Library Error.  Ask ErrorLib */
+		if (GetErrorLongString(code, buffer, ET_EBUFSIZ - 1) == noErr) {
+			return buffer;
+		}
+
+#if TARGET_API_MAC_OSX
+		/* ComErr and ErrorLib don't know about this error, ask the system */
+		/* Of course there's no way to tell if it knew what error it got */
+		return (strerror (code));
+#endif
+
+	}
+#endif
+	
 	cp = buffer;
 	strcpy(cp, "Unknown code ");
 	cp += sizeof("Unknown code ") - 1;

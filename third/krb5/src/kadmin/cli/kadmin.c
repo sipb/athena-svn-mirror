@@ -149,7 +149,7 @@ krb5_error_code kadmin_parse_name(name, principal)
 	if (cp - fullname && *(cp - 1) != '\\')
 	    break;
 	else
-	    cp = strchr(cp, '@');
+	    cp = strchr(cp + 1, '@');
     }
     if (cp == NULL) {
 	strcat(fullname, "@");
@@ -392,8 +392,12 @@ char *kadmin_startup(argc, argv)
 					KADM5_API_VERSION_2,
 					&handle);
     } else if (use_keytab) {
-	 printf("Authenticating as principal %s with keytab %s.\n",
-		princstr, keytab_name);
+	 if (keytab_name)
+	     printf("Authenticating as principal %s with keytab %s.\n",
+		    princstr, keytab_name);
+	 else
+	     printf("Authenticating as principal %s with default keytab.\n",
+		    princstr);
 	 retval = kadm5_init_with_skey(princstr, keytab_name,
 				       KADM5_ADMIN_SERVICE, 
 				       &params,
@@ -516,25 +520,74 @@ void kadmin_cpw(argc, argv)
     static char newpw[1024];
     static char prompt1[1024], prompt2[1024];
     char *canon;
+    char *pwarg = NULL;
+    int n_ks_tuple = 0, keepold = 0, randkey = 0;
+    krb5_key_salt_tuple *ks_tuple = NULL;
     krb5_principal princ;
     
     if (argc < 2) {
 	 goto usage;
     }
-    
-    retval = kadmin_parse_name(argv[argc - 1], &princ);
+    for (argv++, argc--; argc > 1; argc--, argv++) {
+	if (!strcmp("-pw", *argv)) {
+	    argc--;
+	    if (argc < 1) {
+		fprintf(stderr, "change_password: missing password arg\n");
+		goto usage;
+	    }
+	    pwarg = *++argv;
+	    continue;
+	}
+	if (!strcmp("-randkey", *argv)) {
+	    randkey++;
+	    continue;
+	}
+	if (!strcmp("-keepold", *argv)) {
+	    keepold++;
+	    continue;
+	}
+	if (!strcmp("-e", *argv)) {
+	    argc--;
+	    if (argc < 1) {
+		fprintf(stderr,
+			"change_password: missing keysaltlist arg\n");
+		goto usage;
+	    }
+	    retval = krb5_string_to_keysalts(*++argv, ", \t", ":.-", 0,
+					     &ks_tuple, &n_ks_tuple);
+	    if (retval) {
+		com_err("change_password", retval,
+			"while parsing keysalts %s", *argv);
+		return;
+	    }
+	    continue;
+	}
+	goto usage;
+    }
+    retval = kadmin_parse_name(*argv, &princ);
     if (retval) {
 	com_err("change_password", retval, "while parsing principal name");
+	if (ks_tuple != NULL)
+	    free(ks_tuple);
 	return;
     }
     retval = krb5_unparse_name(context, princ, &canon);
     if (retval) {
 	com_err("change_password", retval, "while canonicalizing principal");
 	krb5_free_principal(context, princ);
+	if (ks_tuple != NULL)
+	    free(ks_tuple);
 	return;
     }
-    if ((argc == 4) && (strlen(argv[1]) == 3) && !strcmp("-pw", argv[1])) {
-	retval = kadm5_chpass_principal(handle, princ, argv[2]);
+    if (pwarg != NULL) {
+	if (keepold || ks_tuple != NULL) {
+	    retval = kadm5_chpass_principal_3(handle, princ, keepold,
+					      n_ks_tuple, ks_tuple, pwarg);
+	    if (ks_tuple != NULL)
+		free(ks_tuple);
+	} else {
+	    retval = kadm5_chpass_principal(handle, princ, pwarg);
+	}
 	krb5_free_principal(context, princ);
 	if (retval) {
 	    com_err("change_password", retval,
@@ -545,9 +598,16 @@ void kadmin_cpw(argc, argv)
 	printf("Password for \"%s\" changed.\n", canon);
 	free(canon);
 	return;
-    } else if ((argc == 3) && (strlen(argv[1]) == 8) &&
-	       !strcmp("-randkey", argv[1])) {
-	retval = kadm5_randkey_principal(handle, princ, NULL, NULL);
+    } else if (randkey) {
+	if (keepold || ks_tuple != NULL) {
+	    retval = kadm5_randkey_principal_3(handle, princ, keepold,
+					       n_ks_tuple, ks_tuple,
+					       NULL, NULL);
+	    if (ks_tuple != NULL)
+		free(ks_tuple);
+	} else {
+	    retval = kadm5_randkey_principal(handle, princ, NULL, NULL);
+	}
 	krb5_free_principal(context, princ);
 	if (retval) {
 	    com_err("change_password", retval,
@@ -558,24 +618,34 @@ void kadmin_cpw(argc, argv)
 	printf("Key for \"%s\" randomized.\n", canon);
 	free(canon);
 	return;
-    } else if (argc == 2) {
+    } else if (argc == 1) {
 	int i = sizeof (newpw) - 1;
 	
 	sprintf(prompt1, "Enter password for principal \"%.900s\": ",
-		argv[1]);
+		*argv);
 	sprintf(prompt2,
 		"Re-enter password for principal \"%.900s\": ",
-		argv[1]);
+		*argv);
 	retval = krb5_read_password(context, prompt1, prompt2,
 				    newpw, &i);
 	if (retval) {
 	    com_err("change_password", retval,
 		    "while reading password for \"%s\".", canon);
 	    free(canon);
+	    if (ks_tuple != NULL)
+		free(ks_tuple);
 	    krb5_free_principal(context, princ);
 	    return;
 	}
-	retval = kadm5_chpass_principal(handle, princ, newpw);
+	if (keepold || ks_tuple != NULL) {
+	    retval = kadm5_chpass_principal_3(handle, princ, keepold,
+					      n_ks_tuple, ks_tuple,
+					      newpw);
+	    if (ks_tuple != NULL)
+		free(ks_tuple);
+	} else {
+	    retval = kadm5_chpass_principal(handle, princ, newpw);
+	}
 	krb5_free_principal(context, princ);
 	memset(newpw, 0, sizeof (newpw));
 	if (retval) {
@@ -591,20 +661,26 @@ void kadmin_cpw(argc, argv)
 	free(canon);
 	krb5_free_principal(context, princ);
    usage:
+	if (ks_tuple != NULL)
+	    free(ks_tuple);
 	fprintf(stderr,
-		"usage: change_password [-randkey] [-pw password] "
+		"usage: change_password [-randkey] [-keepold] "
+		"[-e keysaltlist] [-pw password] "
 		"principal\n");
 	return;
    }
 }
 
-int kadmin_parse_princ_args(argc, argv, oprinc, mask, pass, randkey, caller)
+int kadmin_parse_princ_args(argc, argv, oprinc, mask, pass, randkey,
+			    ks_tuple, n_ks_tuple, caller)
     int argc;
     char *argv[];
     kadm5_principal_ent_t oprinc;
     long *mask;
     char **pass;
     int *randkey;
+    krb5_key_salt_tuple **ks_tuple;
+    int *n_ks_tuple;
     char *caller;
 {
     int i, j, attrib_set;
@@ -614,6 +690,8 @@ int kadmin_parse_princ_args(argc, argv, oprinc, mask, pass, randkey, caller)
     
     *mask = 0;
     *pass = NULL;
+    *n_ks_tuple = 0;
+    *ks_tuple = NULL;
     time(&now);
     *randkey = 0;
     for (i = 1; i < argc - 1; i++) {
@@ -722,6 +800,20 @@ int kadmin_parse_princ_args(argc, argv, oprinc, mask, pass, randkey, caller)
 	    ++*randkey;
 	    continue;
 	}
+	if (!strcmp("-e", argv[i])) {
+	    if (++i > argc - 2)
+		return -1;
+	    else {
+		retval = krb5_string_to_keysalts(argv[i], ", \t", ":.-", 0,
+						 ks_tuple, n_ks_tuple);
+		if (retval) {
+		    com_err(caller, retval,
+			    "while parsing keysalts %s", argv[i]);
+		    return -1;
+		}
+	    }
+	    continue;
+	}
 	for (j = 0; j < sizeof (flags) / sizeof (struct pflag); j++) {
 	    if (strlen(argv[i]) == flags[j].flaglen + 1 &&
 		!strcmp(flags[j].flagname,
@@ -762,7 +854,7 @@ void kadmin_addprinc_usage(func)
 {
      fprintf(stderr, "usage: %s [options] principal\n", func);
      fprintf(stderr, "\toptions are:\n");
-     fprintf(stderr, "\t\t[-expire expdate] [-pwexpire pwexpdate] [-maxlife maxtixlife]\n\t\t[-kvno kvno] [-policy policy] [-randkey] [-pw password]\n\t\t[-maxrenewlife maxrenewlife] [{+|-}attribute]\n");
+     fprintf(stderr, "\t\t[-expire expdate] [-pwexpire pwexpdate] [-maxlife maxtixlife]\n\t\t[-kvno kvno] [-policy policy] [-randkey] [-pw password]\n\t\t[-maxrenewlife maxrenewlife]\n\t\t[-e keysaltlist]\n\t\t[{+|-}attribute]\n");
      fprintf(stderr, "\tattributes are:\n");
      fprintf(stderr, "%s%s%s",
 	     "\t\tallow_postdated allow_forwardable allow_tgs_req allow_renewable\n",
@@ -791,6 +883,8 @@ void kadmin_addprinc(argc, argv)
     kadm5_policy_ent_rec defpol;
     long mask;
     int randkey = 0, i;
+    int n_ks_tuple;
+    krb5_key_salt_tuple *ks_tuple;
     char *pass, *canon;
     krb5_error_code retval;
     static char newpw[1024], dummybuf[256];
@@ -807,6 +901,7 @@ void kadmin_addprinc(argc, argv)
     princ.attributes = 0;
     if (kadmin_parse_princ_args(argc, argv,
 				&princ, &mask, &pass, &randkey,
+				&ks_tuple, &n_ks_tuple,
 				"add_principal")) {
 	 kadmin_addprinc_usage("add_principal");
 	 return;
@@ -817,6 +912,8 @@ void kadmin_addprinc(argc, argv)
 	com_err("add_principal",
 		retval, "while canonicalizing principal");
 	krb5_free_principal(context, princ.principal);
+	if (ks_tuple != NULL)
+	    free(ks_tuple);
 	return;
     }
 
@@ -866,22 +963,38 @@ void kadmin_addprinc(argc, argv)
 	pass = newpw;
     }
     mask |= KADM5_PRINCIPAL;
-    retval = kadm5_create_principal(handle, &princ, mask, pass);
+    if (ks_tuple != NULL) {
+	retval = kadm5_create_principal_3(handle, &princ, mask,
+					  n_ks_tuple, ks_tuple, pass);
+    } else {
+	retval = kadm5_create_principal(handle, &princ, mask, pass);
+    }
     if (retval) {
 	com_err("add_principal", retval, "while creating \"%s\".",
 		canon);
 	krb5_free_principal(context, princ.principal);
 	free(canon);
+	if (ks_tuple != NULL)
+	    free(ks_tuple);
 	return;
     }
     if (randkey) {		/* more special stuff for -randkey */
-	retval = kadm5_randkey_principal(handle, princ.principal,
-					 NULL, NULL);
+	if (ks_tuple != NULL) {
+	    retval = kadm5_randkey_principal_3(handle, princ.principal,
+					       FALSE,
+					       n_ks_tuple, ks_tuple,
+					       NULL, NULL);
+	} else {
+	    retval = kadm5_randkey_principal(handle, princ.principal,
+					     NULL, NULL);
+	}
 	if (retval) {
 	    com_err("add_principal", retval,
 		    "while randomizing key for \"%s\".", canon);
 	    krb5_free_principal(context, princ.principal);
 	    free(canon);
+	    if (ks_tuple != NULL)
+		free(ks_tuple);
 	    return;
 	}
 	princ.attributes &= ~KRB5_KDB_DISALLOW_ALL_TIX;	/* clear notix */
@@ -892,11 +1005,15 @@ void kadmin_addprinc(argc, argv)
 		    "while clearing DISALLOW_ALL_TIX for \"%s\".", canon);
 	    krb5_free_principal(context, princ.principal);
 	    free(canon);
+	    if (ks_tuple != NULL)
+		free(ks_tuple);
 	    return;
 	}
     }
     krb5_free_principal(context, princ.principal);
     printf("Principal \"%s\" created.\n", canon);
+    if (ks_tuple != NULL)
+	free(ks_tuple);
     free(canon);
 }
 
@@ -910,6 +1027,8 @@ void kadmin_modprinc(argc, argv)
     krb5_error_code retval;
     char *pass, *canon;
     int randkey = 0;
+    int n_ks_tuple = 0;
+    krb5_key_salt_tuple *ks_tuple;
 
     if (argc < 2) {
 	 kadmin_modprinc_usage("modify_principal");
@@ -945,7 +1064,14 @@ void kadmin_modprinc(argc, argv)
     retval = kadmin_parse_princ_args(argc, argv,
 				     &princ, &mask,
 				     &pass, &randkey,
+				     &ks_tuple, &n_ks_tuple,
 				     "modify_principal");
+    if (ks_tuple != NULL) {
+	free(ks_tuple);
+	kadmin_modprinc_usage("modify_principal");
+	free(canon);
+	return;
+    }
     if (retval) {
 	kadmin_modprinc_usage("modify_principal");
 	free(canon);
@@ -953,6 +1079,13 @@ void kadmin_modprinc(argc, argv)
     }
     if (randkey) {
 	fprintf(stderr, "modify_principal: -randkey not allowed\n");
+	krb5_free_principal(context, princ.principal);
+	free(canon);
+	return;
+    }
+    if (pass) {
+	fprintf(stderr,
+		"modify_principal: -pw not allowed; use change_password\n");
 	krb5_free_principal(context, princ.principal);
 	free(canon);
 	return;

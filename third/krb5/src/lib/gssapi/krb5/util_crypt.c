@@ -51,10 +51,8 @@
 #include <memory.h>
 
 /*
- * $Id: util_crypt.c,v 1.1.1.2 1999-10-05 16:12:21 ghudson Exp $
+ * $Id: util_crypt.c,v 1.1.1.3 2001-12-05 20:48:05 rbasch Exp $
  */
-
-static unsigned char zeros[8] = {0,0,0,0,0,0,0,0};
 
 int
 kg_confounder_size(context, key)
@@ -105,9 +103,10 @@ kg_encrypt_size(context, key, n)
 }
 
 krb5_error_code
-kg_encrypt(context, key, iv, in, out, length)
+kg_encrypt(context, key, usage, iv, in, out, length)
      krb5_context context;
      krb5_keyblock *key;
+     int usage;
      krb5_pointer iv;
      krb5_pointer in;
      krb5_pointer out;
@@ -123,7 +122,10 @@ kg_encrypt(context, key, iv, in, out, length)
 	   return(code);
 
        ivd.length = blocksize;
-       ivd.data = iv;
+       ivd.data = malloc(ivd.length);
+       if (ivd.data == NULL)
+	   return ENOMEM;
+       memcpy(ivd.data, iv, ivd.length);
        pivd = &ivd;
    } else {
        pivd = NULL;
@@ -135,18 +137,19 @@ kg_encrypt(context, key, iv, in, out, length)
    outputd.ciphertext.length = length;
    outputd.ciphertext.data = out;
 
-   return(krb5_c_encrypt(context, key,
-			 /* XXX this routine is only used for the old
-			    bare-des stuff which doesn't use the
-			    key usage */ 0, pivd, &inputd, &outputd));
+   code = krb5_c_encrypt(context, key, usage, pivd, &inputd, &outputd);
+   if (pivd != NULL)
+       krb5_free_data_contents(context, pivd);
+   return code;
 }
 
 /* length is the length of the cleartext. */
 
 krb5_error_code
-kg_decrypt(context, key, iv, in, out, length)
+kg_decrypt(context, key, usage, iv, in, out, length)
      krb5_context context;
      krb5_keyblock *key;
+     int usage;
      krb5_pointer iv;
      krb5_pointer in;
      krb5_pointer out;
@@ -162,7 +165,10 @@ kg_decrypt(context, key, iv, in, out, length)
 	   return(code);
 
        ivd.length = blocksize;
-       ivd.data = iv;
+       ivd.data = malloc(ivd.length);
+       if (ivd.data == NULL)
+	   return ENOMEM;
+       memcpy(ivd.data, iv, ivd.length);
        pivd = &ivd;
    } else {
        pivd = NULL;
@@ -175,8 +181,8 @@ kg_decrypt(context, key, iv, in, out, length)
    outputd.length = length;
    outputd.data = out;
 
-   return(krb5_c_decrypt(context, key,
-			 /* XXX this routine is only used for the old
-			    bare-des stuff which doesn't use the
-			    key usage */ 0, pivd, &inputd, &outputd));
+   code = krb5_c_decrypt(context, key, usage, pivd, &inputd, &outputd);
+   if (pivd != NULL)
+       krb5_free_data_contents(context, pivd);
+   return code;
 }

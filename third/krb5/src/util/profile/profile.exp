@@ -1,7 +1,7 @@
 #
 # Profile library Macintosh export file
 #
-# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/profile/profile.exp,v 1.1.1.1 1999-10-05 16:17:21 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/util/profile/profile.exp,v 1.1.1.2 2001-12-05 20:48:43 rbasch Exp $
 
 profile_init
 profile_init_path

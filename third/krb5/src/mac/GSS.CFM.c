@@ -16,13 +16,10 @@
  * without express or implied warranty.
  */
  
- 
-#include <CodeFragments.h>
- 
-#include "gssapi_err_generic.h"
-#include "gssapi_err_krb5.h"
+#include "gss_libinit.h"
 
-#include "gssapi.h"
+#if TARGET_RT_MAC_CFM
+#include <CodeFragments.h>
 
 OSErr __initializeGSS(CFragInitBlockPtr ibp);
 void __terminateGSS(void);
@@ -30,28 +27,32 @@ void __terminateGSS(void);
 OSErr __initializeGSS(CFragInitBlockPtr ibp)
 {
 	OSErr	err = noErr;
-	
+        
 	/* Do normal init of the shared library */
 	err = __initialize();
-	
+#else
+#define noErr	0
+void __initializeGSS(void);
+void __initializeGSS(void)
+{
+        int	err = noErr;
+#endif
+
 	/* Initialize the error tables */
 	if (err == noErr) {
-	    add_error_table(&et_k5g_error_table);
-	    add_error_table(&et_ggss_error_table);
+		err = gssint_initialize_library ();
 	}
-	
+
+#if TARGET_RT_MAC_CFM
 	return err;
+#endif
 }
 
+#if TARGET_RT_MAC_CFM
 void __terminateGSS(void)
 {
-
-	OM_uint32 maj_stat, min_stat;
-
-	maj_stat = kg_release_defcred (&min_stat);
-	
-    remove_error_table(&et_k5g_error_table);
-    remove_error_table(&et_ggss_error_table);
+	gssint_cleanup_library ();
 
 	__terminate();
 }
+#endif

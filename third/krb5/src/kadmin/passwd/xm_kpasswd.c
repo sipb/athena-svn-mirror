@@ -1,12 +1,12 @@
 /*
  * Copyright 1993-1994 OpenVision Technologies, Inc., All Rights Reserved.
  * 
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/xm_kpasswd.c,v 1.1.1.3 1999-02-09 21:04:09 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/xm_kpasswd.c,v 1.1.1.4 2001-12-05 20:47:47 rbasch Exp $
  *
  *
  */
 
-static char rcsid_2[] = "$Id: xm_kpasswd.c,v 1.1.1.3 1999-02-09 21:04:09 danw Exp $";
+static char rcsid_2[] = "$Id: xm_kpasswd.c,v 1.1.1.4 2001-12-05 20:47:47 rbasch Exp $";
 
 #include <kadm5/admin.h>
 #include <krb5.h>
@@ -111,13 +111,15 @@ motif_com_err (whoami, code, fmt, args)
 
   if (whoami)
     {
-      strcpy(buf, whoami);
-      strcat(buf, ": ");
+      strncpy(buf, whoami, sizeof(buf) - 1);
+      buf[sizeof(buf) - 1] = '\0';
+      strncat(buf, ": ", sizeof(buf) - 1 - strlen(buf));
     }
   if (code)
     {
-      strcat(buf, error_message(code));
-      strcat(buf, " ");
+      buf[sizeof(buf) - 1] = '\0';
+      strncat(buf, error_message(code), sizeof(buf) - 1 - strlen(buf));
+      strncat(buf, " ", sizeof(buf) - 1 - strlen(buf));
     }
   if (fmt)
     {

@@ -80,7 +80,8 @@ extern char realm[];
 #endif /* KRB5_KRB4_COMPAT */
 
 main(argc, argv)
-	char *argv[];
+	volatile int argc;
+	char **volatile argv;
 {
 	register char *cp;
 	int top;
@@ -192,7 +193,8 @@ main(argc, argv)
 		pw = getpwuid(getuid());
 	if (pw != NULL) {
 		home = homedir;
-		(void) strcpy(home, pw->pw_dir);
+		(void) strncpy(home, pw->pw_dir, sizeof(homedir) - 1);
+		homedir[sizeof(homedir) - 1] = '\0';
 	}
 	if (argc > 0) {
 		if (setjmp(toplevel))

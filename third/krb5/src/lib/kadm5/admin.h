@@ -1,7 +1,33 @@
 /*
+ * lib/kadm5/admin.h
+ *
+ * Copyright 2001 by the Massachusetts Institute of Technology.
+ * All Rights Reserved.
+ *
+ * Export of this software from the United States of America may
+ *   require a specific license from the United States Government.
+ *   It is the responsibility of any person or organization contemplating
+ *   export to obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of M.I.T. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ */
+/*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/admin.h,v 1.1.1.4 1999-10-05 16:12:32 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/admin.h,v 1.1.1.5 2001-12-05 20:48:07 rbasch Exp $
  */
 
 #ifndef __KADM5_ADMIN_H__
@@ -234,13 +260,14 @@ typedef struct __krb5_realm_params {
     krb5_timestamp	realm_expiration;
     krb5_flags		realm_flags;
     krb5_key_salt_tuple	*realm_keysalts;
+    unsigned int	realm_reject_bad_transit:1;
     unsigned int	realm_kadmind_port_valid:1;
     unsigned int	realm_enctype_valid:1;
     unsigned int	realm_max_life_valid:1;
     unsigned int	realm_max_rlife_valid:1;
     unsigned int	realm_expiration_valid:1;
     unsigned int	realm_flags_valid:1;
-    unsigned int	realm_filler:7;
+    unsigned int	realm_reject_bad_transit_valid:1;
     krb5_int32		realm_num_keysalts;
 } krb5_realm_params;
 
@@ -305,7 +332,7 @@ kadm5_ret_t    kadm5_create_principal(void *server_handle,
 				      long mask, char *pass);
 kadm5_ret_t    kadm5_create_principal_3(void *server_handle,
 					kadm5_principal_ent_t ent,
-					long mask, krb5_boolean keepold,
+					long mask,
 					int n_ks_tuple,
 					krb5_key_salt_tuple *ks_tuple,
 					char *pass);
@@ -361,6 +388,14 @@ kadm5_ret_t    kadm5_setkey_principal(void *server_handle,
 				      krb5_keyblock *keyblocks,
 				      int n_keys);
 
+kadm5_ret_t    kadm5_setkey_principal_3(void *server_handle,
+					krb5_principal principal,
+					krb5_boolean keepold,
+					int n_ks_tuple,
+					krb5_key_salt_tuple *ks_tuple,
+					krb5_keyblock *keyblocks,
+					int n_keys);
+
 kadm5_ret_t    kadm5_create_policy(void *server_handle,
 				   kadm5_policy_ent_t ent,
 				   long mask);
@@ -403,7 +438,8 @@ kadm5_ret_t    kadm5_chpass_principal_util(void *server_handle,
 					   krb5_principal princ,
 					   char *new_pw, 
 					   char **ret_pw,
-					   char *msg_ret);
+					   char *msg_ret,
+					   int msg_len);
 
 kadm5_ret_t    kadm5_free_principal_ent(void *server_handle,
 					kadm5_principal_ent_t

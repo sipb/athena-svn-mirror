@@ -24,7 +24,7 @@
 #include <memory.h>
 
 /*
- * $Id: util_seed.c,v 1.1.1.2 1999-10-05 16:12:21 ghudson Exp $
+ * $Id: util_seed.c,v 1.1.1.3 2001-12-05 20:48:05 rbasch Exp $
  */
 
 static unsigned char zeros[16] = {0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0};
@@ -47,7 +47,7 @@ kg_make_seed(context, key, seed)
    for (i=0; i<tmpkey->length; i++)
       tmpkey->contents[i] = key->contents[key->length - 1 - i];
 
-   code = kg_encrypt(context, tmpkey, NULL, zeros, seed, 16);
+   code = kg_encrypt(context, tmpkey, KG_USAGE_SEAL, NULL, zeros, seed, 16);
 
    krb5_free_keyblock(context, tmpkey);
 

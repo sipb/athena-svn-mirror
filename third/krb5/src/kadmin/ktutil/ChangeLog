@@ -1,9 +1,25 @@
+2000-05-19  Ken Raeburn  <raeburn@mit.edu>
+
+	* ktutil_funcs.c (ktutil_write_keytab): Reject a filename that's
+	too long.
+
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
 	LOCAL_INCLUDES such that one can override CFLAGS from the command
 	line without losing CPP search patchs and defines. Some associated
 	Makefile cleanup. [from wsanchez@apple.com]
+
+1999-08-17  Geoffrey King  <gjking@mit.edu>
+
+	* ktutil_funcs.c (ktutil_add): Cleanup newly allocated keytab
+	entry and tail of linked list when an error occurs.
+
+1999-08-16  Geoffrey King  <gjking@mit.edu>
+
+	* ktutil.c (ktutil_add_entry):
+	* ktutil_funcs.c (ktutil_add): Implement addent command to allow
+	creation of new keytab entries by specifying a key or password.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

@@ -1,3 +1,25 @@
+2000-05-09  Ken Raeburn  <raeburn@mit.edu>
+
+	* api.2/chpass-principal-v2.exp (test200): Expect an additional
+	key to be reported, since des3 has been added to the list.
+	* api.2/get-principal-v2.exp (test101_102): Likewise.
+	* api.2/randkey-principal-v2.exp (test100): Likewise.
+
+2000-02-08  Tom Yu  <tlyu@mit.edu>
+
+	* api.1/lock.exp: Since a "wait" directive to the command list of
+	the lock_test procedures does not wait for any synchronization,
+	change lock9 to acquire and release a lock before the "wait"
+	directive in order to avoid a race condition where lock9 spawns
+	the ./lock-test but the program has not opened the database prior
+	to lock9_1 acquiring a permanent lock.  This was causing
+	difficult-to-reproduce failures.
+
+2000-02-07  Tom Yu  <tlyu@mit.edu>
+
+	* lib/lib.t: Call kinit and kdestroy with -5 flag to accomodate
+	new behavior.
+
 1999-10-26  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in: Clean up usage of CFLAGS, CPPFLAGS, DEFS, DEFINES,
@@ -5,23 +27,21 @@
 	line without losing CPP search patchs and defines. Some associated
 	Makefile cleanup. [from wsanchez@apple.com]
 
-1999-08-30  Ken Raeburn  <raeburn@mit.edu>
+1999-09-21  Ken Raeburn  <raeburn@mit.edu>
+
+	* api.2/init-v2.exp (test109): Wait for prompt between commands.
+
+1999-09-01  Ken Raeburn  <raeburn@mit.edu>
 
 	* api.2/init-v2.exp (RESOLVE): New variable.
 	(get_hostname): New proc, taken from tests/dejagnu.
 	(test101): Use get_hostname, set a variable in the target process
 	to hold the result, and use that variable in the other commands
-	passed.
+	passed, instead of "localhost".
 
 	* Makefile.in (unit-test-client-body): Pass $(RUNTESTFLAGS) to
 	runtest, so the user can run subsets of the test suite.
 	(unit-test-server-body): Likewise.
-
-1999-08-26  Ken Raeburn  <raeburn@mit.edu>
-
-	* api.2/init-v2.exp (test101): Use local host name instead of
-	"localhost", since address 127.0.0.1 probably won't be listed in
-	credentials.
 
 1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 

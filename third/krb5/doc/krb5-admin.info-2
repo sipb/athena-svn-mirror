@@ -2,6 +2,76 @@ This is Info file krb5-admin.info, produced by Makeinfo version 1.68
 from the input file admin.texinfo.
 
 
+File: krb5-admin.info,  Node: Attributes,  Next: Retrieving a List of Principals,  Prev: Retrieving Information About a Principal,  Up: Retrieving Information About a Principal
+
+Attributes
+..........
+
+To retrieve a listing of the attributes and/or policies associated with
+a principal, use the `kadmin' `get_principal' command, which requires
+the "inquire" administrative privilege.  The syntax is:
+
+     get_principal principal
+
+The `get_principal' command has the alias `getprinc'.
+
+For example, suppose you wanted to view the attributes of the principals
+`jennifer/root@ATHENA.MIT.EDU' and `systest@ATHENA.MIT.EDU'.  You would
+type:
+
+     shell% kadmin
+     kadmin: getprinc jennifer/root
+     Principal: jennifer/root@ATHENA.MIT.EDU
+     Key version: 3
+     Maximum life: 1 day 00:00:00
+     Maximum renewable life: 7 days 00:00:00
+     Master key version: 1
+     Expires: Mon Jan 18 22:14:07 EDT 2038
+     Password expires: Mon Sep 19 14:40:00 EDT 1996
+     Password last changed: Mon Jan 31 02:06:40 EDT 1996
+     Last modified: by joeadmin/admin@ATHENA.MIT.EDU
+     	on Wed Jul 13 18:27:08 EDT 1996
+     Attributes: DISALLOW_FORWARDABLE, DISALLOW_PROXIABLE,
+     	REQUIRES_HW_AUTH
+     Salt type: DEFAULT
+     kadmin:
+
+The `get_principal' command has a `-terse' option, which lists the
+fields as a quoted, tab-separated string.  For example:
+
+     kadmin: getprinc -terse systest
+     systest@ATHENA.MIT.EDU	3	86400	604800	1
+     785926535	753241234	785900000
+     joeadmin/admin@ATHENA.MIT.EDU	786100034	0
+     0
+     kadmin:
+
+
+File: krb5-admin.info,  Node: Retrieving a List of Principals,  Prev: Attributes,  Up: Retrieving Information About a Principal
+
+Retrieving a List of Principals
+...............................
+
+To generate a listing of principals, use the `kadmin' `list_principals'
+command, which requires the "list" privilege.  The syntax is:
+
+     list_principals [expression]
+
+where expression is a shell-style glob expression that can contain the
+characters `*', `?', `[', and `]'.  All policy names matching the
+expression are displayed.  The `list_principals' command has the alias
+`listprincs'.  For example:
+
+     kadmin: listprincs test*
+     test3@mit.edu
+     test2@mit.edu
+     test1@mit.edu
+     testuser@mit.edu
+     kadmin:
+
+If no expression is provided, all principals are printed.
+
+
 File: krb5-admin.info,  Node: Privileges,  Next: Adding or Modifying Principals,  Prev: Retrieving Information About a Principal,  Up: Principals
 
 Privileges
@@ -98,8 +168,7 @@ syntax is:
 
      kadmin: modify_principal [options] principal
 
-`add_principal' has the aliases `addprinc' and `ank'(1).
-`modify_principal' has the alias `modprinc'.
+`add_principal' has the aliases `addprinc' and `ank'(1)
 
 The `add_principal' and `modify_principal' commands take the following
 switches:
@@ -229,16 +298,18 @@ switches:
 
 -randkey
      Sets the key for the principal to a random value (`add_principal'
-     only).  MIT recommends using this option for host keys.  You may
-     also wish to use the kadmin.local command-line options -e
-     "des3-cbc-sha1:normal des-cbc-crc:normal"*Note Kadmin Options:: on
-     the KDC machine itself for host keys and other service keys that
-     are security-critical.
+     only).  MIT recommends using this option for host keys.
 
 -pw password
      Sets the key of the principal to the specified string and does not
      prompt for a password (`add_principal' only).  MIT does not
      recommend using this option.
+
+-e enc:salt...
+     Uses the specified list of enctype-salttype pairs for setting the
+     key of the principal.  The quotes are necessary if there are
+     multiple enctype-salttype pairs.  This will not function against
+     kadmin daemons earlier than krb5-1.2.
 
 If you want to just use the default values, all you need to do is:
 
@@ -277,7 +348,8 @@ explicitly setting the kvno with the `-kvno' option.
 ---------- Footnotes ----------
 
 (1) `ank' was the short form of the equivalent command using the
-deprecated `kadmin5' database administrative tool.  It has been kept
+deprecated `kadmin5' database administrative tool.  It has been kept.
+`modify_principal' has the alias `modprinc'.
 
 
 File: krb5-admin.info,  Node: Deleting Principals,  Next: Changing Passwords,  Prev: Adding or Modifying Principals,  Up: Principals
@@ -302,7 +374,7 @@ causes `delete_principal' not to ask if you're sure.  For example:
      kadmin:
 
 
-File: krb5-admin.info,  Node: Changing Passwords,  Next: Renaming Principals,  Prev: Deleting Principals,  Up: Principals
+File: krb5-admin.info,  Node: Changing Passwords,  Prev: Deleting Principals,  Up: Principals
 
 Changing Passwords
 ------------------
@@ -328,6 +400,12 @@ takes the following options:
      Sets the password to the string password.  MIT does not recommend
      using this option.
 
+-e "enc:salt..."
+     Uses the specified list of enctype-salttype pairs for setting the
+     key of the principal.  The quotes are necessary if there are
+     multiple enctype-salttype pairs.  This will not function against
+     kadmin daemons earlier than krb5-1.2.
+
 For example:
 
      kadmin: cpw david
@@ -338,32 +416,6 @@ For example:
 
 Note that `change_password' will not let you change the password to one
 that is in the principal's password history.
-
-
-File: krb5-admin.info,  Node: Renaming Principals,  Prev: Changing Passwords,  Up: Principals
-
-Renaming Principals
--------------------
-
-To rename a principal, use the kadmin `rename_principal' command, which
-requires both the "add" and "delete" administrative privileges.  The
-syntax is:
-
-     rename_principal [-force] old_principal new_principal
-
-The `rename_principal' command has the alias `renprinc'.
-
-For example:
-
-     kadmin: renprinc test test0
-     Are you sure you want to rename the principal
-     "test@ATHENA.MIT.EDU" to
-     "test0@ATHENA.MIT.EDU"? (yes/no): yes
-     Principal "test@ATHENA.MIT.EDU" renamed to
-     "test0@ATHENA.MIT.EDU".
-     Make sure that you have removed "test@ATHENA.MIT.EDU" from
-     all ACLs before reusing.
-     kadmin:
 
 
 File: krb5-admin.info,  Node: Policies,  Next: Dumping a Kerberos Database to a File,  Prev: Principals,  Up: Administrating Kerberos Database Entries
@@ -513,8 +565,8 @@ Dumping a Kerberos Database to a File
 To dump a Kerberos database into a file, use the `kdb5_util' `dump'
 command on one of the KDCs.  The syntax is:
 
-     kdb5_util dump [-old] [-b6] [-ov] [-verbose] [filename
-     [principals...]]
+     kdb5_util dump [-old] [-b6] [-b7] [-ov] [-verbose]
+     [filename [principals...]]
 
 The `kdb5_util dump' command takes the following options:
 
@@ -525,6 +577,11 @@ The `kdb5_util dump' command takes the following options:
 -b6
      causes the dump to be in the Kerberos 5 Beta 6 format ("kdb5_edit
      load_dump version 3.0").
+
+-b7
+     causes the dump to be in the Kerberos 5 Beta 7 format ("kdb5_util
+     load_dump version 4").  This was the dump format produced on
+     releases prior to 1.2.2.
 
 -ov
      causes the dump to be in ovsec_adm_export format.
@@ -574,8 +631,8 @@ Restoring a Kerberos Database from a Dump File
 To restore a Kerberos database dump from a file, use the `kdb5_util'
 `load' command on one of the KDCs.  The syntax is:
 
-     kdb5_util load [-old] [-b6] [-ov] [-verbose] [-update]
-     dumpfilename dbname [admin_dbname]
+     kdb5_util load [-old] [-b6] [-b7] [-ov] [-verbose]
+     [-update] dumpfilename dbname [admin_dbname]
 
 The `kdb5_util load' command takes the following options:
 
@@ -586,6 +643,10 @@ The `kdb5_util load' command takes the following options:
 -b6
      requires the dump to be in the Kerberos 5 Beta 6 format ("kdb5_edit
      load_dump version 3.0").
+
+-b7
+     requires the dump to be in the Kerberos 5 Beta 7 format ("kdb5_util
+     load_dump version 4").
 
 -ov
      requires the dump to be in ovsec_adm_export format.
@@ -722,6 +783,12 @@ The `ktadd' command takes the following switches:
      use keytab as the keytab file.  Otherwise, `ktadd' will use the
      default keytab file (`/etc/krb5.keytab').
 
+-e "enc:salt..."
+     Uses the specified list of enctype-salttype pairs for setting the
+     key of the principal.  The quotes are necessary if there are
+     multiple enctype-salttype pairs.  This will not function against
+     kadmin daemons earlier than krb5-1.2.
+
 -q
      run in quiet mode.  This causes `ktadd' to display less verbose
      information.
@@ -732,8 +799,9 @@ principal | -glob principal expression
      for the kadmin `list_principals' (*note Retrieving a List of
      Principals::.) command.
 
-For example (The line beginning with => is a continuation of the
-previous line.):
+Here is a sample session, using configuration files that enable only
+`des-cbc-crc' encryption. (The line beginning with => is a continuation
+of the previous line.)
 
      kadmin: ktadd host/daffodil.mit.edu@ATHENA.MIT.EDU
      kadmin: Entry for principal host/daffodil.mit.edu@ATHENA.MIT.EDU with
@@ -994,7 +1062,11 @@ to fill out a Problem Report.
 
 Bug reports that include proposed fixes are especially welcome.  If you
 do include fixes, please send them using either context diffs or unified
-diffs (using `diff -c' or `diff -u', respectively).
+diffs (using `diff -c' or `diff -u', respectively).  Please be careful
+when using "cut and paste" or other such means to copy a patch into a
+bug report; depending on the system being used, that can result in
+converting TAB characters into spaces, which makes applying the patches
+more difficult.
 
 The `krb5-send-pr' program is installed in the directory
 `/usr/local/sbin'.

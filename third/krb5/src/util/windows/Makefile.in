@@ -1,9 +1,12 @@
 BUILDTOP = ..\..
 
-all-windows:: $(OUTPRE)libecho.exe $(OUTPRE)getopt.obj
+all-windows:: $(OUTPRE)libecho.exe $(OUTPRE)getopt.lib
 
 $(OUTPRE)libecho.exe: $(OUTPRE)libecho.obj
-	link -nologo -out:$@ $**
+	link -out:$@ $**
+
+$(OUTPRE)getopt.lib: $(OUTPRE)getopt.obj $(OUTPRE)getopt_long.obj
+	lib -out:$@ $**
 
 install-windows::
 

@@ -29,8 +29,18 @@
 /* Define if Kerberos V4 backwards compatibility should be supported */
 #undef KRB5_KRB4_COMPAT
 
+/* Define if DNS support for finding realms and KDC locations should
+   be compiled in.  */
+#undef KRB5_DNS_LOOKUP
+#undef KRB5_DNS_LOOKUP_KDC
+#undef KRB5_DNS_LOOKUP_REALM
+
 /* Define to `long' if <sys/types.h> doesn't define. */
 #undef time_t
+
+/* Define if we should compile in IPv6 support (even if we may find we
+   can't use it at run time).  */
+#undef KRB5_USE_INET6
 
 /*
  * The stuff following here is taken from util/db2/acconfig.h
