@@ -1,2 +1,3 @@
 #!/bin/sh
-exec ./configure --disable-server --disable-sieve --disable-murder
+exec ./configure --disable-server --disable-sieve --disable-murder \
+    --with-auth=unix
