@@ -28,6 +28,7 @@ nautilus_mime_type_capplet_LDADD =					\
 			$(OAF_LIBS)					\
 			$(INTLLIBS) 					\
 			$(top_builddir)/libgnomevfs/libgnomevfs.la 	\
+			-lgdk_imlib					\
 			-lgdk_pixbuf
 
 

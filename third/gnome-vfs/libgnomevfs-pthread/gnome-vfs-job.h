@@ -141,6 +141,7 @@ typedef struct {
 } GnomeVFSCreateAsChannelOpResult;
 
 typedef struct {
+	int dummy;
 } GnomeVFSCloseOp;
 
 typedef struct {

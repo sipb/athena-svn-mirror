@@ -40,6 +40,8 @@
 #include <unistd.h>
 #include <utime.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-module.h>

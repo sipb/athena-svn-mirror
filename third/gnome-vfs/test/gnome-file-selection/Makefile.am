@@ -41,6 +41,7 @@ gnome_file_selection_test_corba_LDADD =				\
 	main_corba.o						\
 	$(top_builddir)/libgnomevfs/libgnomevfs.la		\
 	$(top_builddir)/libgnomevfs-corba/libgnomevfs-corba.la	\
+	-lgdk_imlib						\
 	$(GNOME_LIBDIR)						\
 	$(GNOMEUI_LIBS)						\
 	$(GNOMEGNORBA_LIBS)                                     \
@@ -53,6 +54,7 @@ gnome_file_selection_test_pthread_LDADD =				\
 	main_pthread.o							\
 	$(top_builddir)/libgnomevfs/libgnomevfs.la			\
 	$(top_builddir)/libgnomevfs-pthread/libgnomevfs-pthread.la	\
+	-lgdk_imlib							\
 	$(GNOME_LIBDIR)							\
 	$(GNOMEUI_LIBS)
 
