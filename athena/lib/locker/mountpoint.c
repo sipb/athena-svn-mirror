@@ -17,7 +17,7 @@
  * creating mountpoints, and the associated security issues.
  */
 
-static const char rcsid[] = "$Id: mountpoint.c,v 1.8.2.1 2000-09-23 19:34:06 ghudson Exp $";
+static const char rcsid[] = "$Id: mountpoint.c,v 1.8.2.2 2000-10-14 17:44:28 ghudson Exp $";
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -165,6 +165,10 @@ int locker__canonicalize_path(locker_context context, int check,
 
 	  if (cur < path)
 	    cur++;		/* "/.." == "/" */
+
+	  cur++;                /* Leave a trailing "/", because end just
+				 * got its leading "/" stripped off
+				 */
 
 	  /* Copy the next component over the previous one. */
 	  strcpy(cur, end + 1);
