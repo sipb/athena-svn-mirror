@@ -6,10 +6,13 @@
 /etc/athena/inetd.conf
 /etc/athena/newsyslog.conf
 /etc/inet/inetd.conf
+/etc/inet/netmasks
 /etc/inet/services
 /etc/ftpusers
 /etc/minor_perm
 /etc/resolv.conf
+/etc/mail/aliases
+/etc/mail/sendmail.cf
 /etc/shells
 /var/spool/cron/crontabs/root
 /etc/syslog.conf
