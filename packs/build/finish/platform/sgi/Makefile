@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1997-04-01 19:16:40 ghudson Exp $
+# $Id: Makefile,v 1.4 1997-04-02 02:56:17 ghudson Exp $
 
 SHELL=/bin/sh
 ATHMANDIR=/usr/athena/man
@@ -10,7 +10,7 @@ check:
 
 install:
 	-mkdir -p ${DESTDIR}${USRETC}
-	install -c -m 555 -o 0 -g 0 snmpd ${DESTDIR}${USRETC}
+	install -c -m 555 snmpd ${DESTDIR}${USRETC}
 	cd ${DESTDIR}${ATHMANDIR} && /usr/lib/makewhatis -M . whatis
 	cd ${DESTDIR}${ATHMANDIR} && for n in 1 2 3 4 5 6 7 8; do \
 		if [ ! -f man$$n/* ]; then \
@@ -28,8 +28,7 @@ install:
 			else \
 				nroff -man $$file > cat$$n/$$base; \
 				chmod 444 cat$$n/$$base; \
-			fi; \
-			chown -h 0.0 cat$$n/$$base; \
+			fi \
 		done \
 	done
 
