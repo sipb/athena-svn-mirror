@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.4 1996-11-08 04:01:34 ghudson Exp $
+# $Id: config.site,v 1.5 1996-12-24 08:34:54 ghudson Exp $
 #
 
 athena=true
@@ -13,6 +13,10 @@ case "${HOSTTYPE}" in
 		CC=cc
 		;;
 esac
+
+# Compile programs with debugging and without optimization, for ease
+# of maintenance.
+CFLAGS=-g
 
 # Set location of X and Motif includes and libraries.
 case "${HOSTTYPE}" in
