@@ -1,5 +1,5 @@
 .\" 
-.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinit.1,v 1.4 1989-11-12 19:25:10 qjb Exp $
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinit.1,v 1.5 1990-10-05 20:51:56 qjb Exp $
 .\" $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/man/rkinit.1,v $
 .\" $Author: qjb $
 .\"
@@ -9,20 +9,26 @@
 .SH NAME
 rkinit \- establish kerberos tickets safely on a remote host
 .SH SYNOPSIS
-.B rkinit host 
+.B rkinit [ host ]
 [ -p
 .B principal 
 ] [ -l 
 .B username
 ] [ -k 
-.B kerberos realm
+.B kerberos_realm
 ] [ -f
-.B ticket file
+.B ticket_file
+] [ -h
+.B remote_host
 ] [ -t
-.B ticket lifetime 
+.B ticket_lifetime 
 ] [ 
 .B \-notimeout 
 ]
+
+A host name must be specified either as the first command line
+argument or following a \-h flag.  If redundant command line
+arguments are given, the last one to appear takes precedence.
 
 .SH DESCRIPTION
 .I rkinit
@@ -124,7 +130,7 @@ is distinct from realm as specified in
 which refers to the realm of the remote tickets.
 
 .TP 
-.B \-f \fIticket file\fR
+.B \-f \fIticket_file\fR
 This option is used to specify the name of the ticket file that
 should be used on the remote host.  Note that if you
 specify a location for the ticket file that is other
@@ -139,7 +145,14 @@ On a UNIX host, this is /tmp/tkt<uid>, where
 <uid> is the user id of the person who owns the remote ticket file.
 
 .TP 
-.B \-t \fIticket lifetime\fR
+.B \-h \fremote_host\fR
+.I remote host
+is the host on which remote tickets are being obtained.  This
+option can be used in place of specifying the host as the first
+command line argument.
+
+.TP 
+.B \-t \fIticket_lifetime\fR
 .I ticket lifetime
 is the lifetime in minutes of the remote tickets.  If it is not
 specified, the default ticket life time (as defined in krb.h) is
