@@ -67,6 +67,7 @@ else
   echo LOGIN=/usr/athena/etc/login.krb5 >> /etc/conf.getty
 fi
 
+%triggerin -- initscripts
 # Force use of getty instead of mingetty
 sed -e s/mingetty/getty/ < /etc/inittab > /tmp/sedout
 mv /tmp/sedout /etc/inittab

@@ -34,8 +34,16 @@ mv $RPM_BUILD_ROOT/usr/athena/man/man8/inetd.8 \
 
 %post
 chkconfig --add athena-inetd
+
+%triggerin -- athena-base
+grep -q ACCESSON /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
+ACCESSON=false;		export ACCESSON		#  Access on by default
+EOF
+
+%triggerin -- netkit-base
 cp /etc/inetd.conf.minimal /etc/inetd.conf
 
+%triggerin -- setup
 ( grep -s -q ^rkinit /etc/services \
 	|| echo "rkinit	2108/tcp	rkinitd	# Remote ticket granting svc."
  grep -s -q ^write /etc/services \
@@ -48,9 +56,6 @@ cp /etc/inetd.conf.minimal /etc/inetd.conf
 	|| echo "gshell		3715/tcp	# gsh service"
 ) >> /etc/services
 
-grep -q ACCESSON /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
-ACCESSON=false;		export ACCESSON		#  Access on by default
-EOF
 
 %files
 /etc/athena/athena-inetd

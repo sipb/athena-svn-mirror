@@ -16,7 +16,7 @@ grep -s -q ^discuss /etc/passwd \
 			-M \
 			discuss
 
-%post
+%triggerin -- setup
 grep -s -q ^discuss /etc/services \
 	|| echo "discuss	2100/tcp	# Networked conferencing." \
 		>> /etc/services

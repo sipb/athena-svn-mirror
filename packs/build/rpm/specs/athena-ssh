@@ -34,6 +34,7 @@ if [ ! -f /etc/ssh_host_key ]; then
 fi
 chkconfig --add athena-sshd
 
+%triggerin -- athena-base
 grep -q SSHD /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 SSHD=false;		export SSHD		#  Secure shell daemon
 EOF

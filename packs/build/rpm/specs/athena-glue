@@ -3,7 +3,7 @@ Summary: Various small attach-and-run scripts and other such things
 Copyright: MIT
 Group: System Environment/Base
 
-%post
+%triggerin -- setup
 ( grep -s -q ^moira_db /etc/services \
 	|| echo "moira_db	775/tcp		# Moira database"
  grep -s -q ^moira_update /etc/services \

@@ -32,6 +32,7 @@ mkdir -p $RPM_BUILD_ROOT/var/athena
 %post
 chkconfig --add athena-xntp
 
+%triggerin -- athena-base
 grep -q TIMESRV /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 TIMESRV=false;		export TIMESRV		#  Time server?
 EOF
