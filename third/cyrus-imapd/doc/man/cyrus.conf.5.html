@@ -1,0 +1,261 @@
+<html>
+<head>
+<meta name="Content-Style" content="text/css">
+</head>
+<body>
+<a href="#NAME">NAME</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#SECTION DESCRIPTIONS">SECTION DESCRIPTIONS</a><br>
+<a href="#EXAMPLE">EXAMPLE</a><br>
+<a href="#ACCESS CONTROL">ACCESS CONTROL</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<!-- Creator     : groff version 1.15  -->
+<!-- CreationDate: Fri Aug 30 14:41:53 2002
+ -->
+<!-- Total number of pages: 2 -->
+<!-- Page: 1 -->
+<!-- left  margin: 100 -->
+<!-- right margin: 750 -->
+<a name="NAME"></a><h2>NAME</h2><p><font size=3>cyrus.conf - Cyrus configuration file</p>
+<a name="DESCRIPTION"></a><h2>DESCRIPTION</h2><p><font size=3><B>/etc/cyrus.conf</B> <font size=3>is the configuration file for the Cyrus <font size=3><B>master</B> <font size=3>process. It defines the startup procedures, services and events to be spawned by <font size=3><B>master</B><font size=3>.</p>
+<p><font size=3>The <font size=3><B>/etc/cyrus.conf</B> <font size=3>file consists of a series of entries divided into sections of the form</p>
+
+<table width="100%"  rules="none"  frame="none"  cols="5">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="20.0000%">
+</td>
+<td valign="top" align="left"  width="8.0000%">
+<p><font size=3><I>section</I> <font size=3>{</p>
+</td>
+<td valign="top" align="left"  width="12.0000%">
+</td>
+<td valign="top" align="left"  width="14.4615%">
+</td>
+<td valign="top" align="left"  width="45.5385%">
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="20.0000%">
+</td>
+<td valign="top" align="left"  width="8.0000%">
+</td>
+<td valign="top" align="left"  width="12.0000%">
+</td>
+<td valign="top" align="left"  width="14.4615%">
+<p><font size=3><I>name arguments<br>
+<span style=" text-indent: 0.5000in;"></span>...<br>
+<span style=" text-indent: 0.5000in;"></span>...<br>
+<span style=" text-indent: 0.5000in;"></span>...</p>
+</I></td>
+<td valign="top" align="left"  width="45.5385%">
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="20.0000%">
+</td>
+<td valign="top" align="left"  width="8.0000%">
+<p><font size=3>}</p>
+</td>
+<td valign="top" align="left"  width="12.0000%">
+</td>
+<td valign="top" align="left"  width="14.4615%">
+</td>
+<td valign="top" align="left"  width="45.5385%">
+</td>
+</tr>
+</table>
+<p><font size=3>where <font size=3><I>section</I> <font size=3>is the name of the section, <font size=3><I>name</I> <font size=3>is the name of the entry and <font size=3><I>arguments</I> <font size=3>is the whitespace-sepa- rated list of arguments for the entry.</p>
+<p><font size=3>Blank lines and lines beginning with ``#'' are ignored.</p>
+<a name="SECTION DESCRIPTIONS"></a><h2>SECTION DESCRIPTIONS</h2><p><font size=3>The paragraphs below detail the three sections (<font size=3><B>START</B><font size=3>, <font size=3><B>SERVICES</B><font size=3>, <font size=3><B>EVENTS</B><font size=3>) that can be placed in the <font size=3><B>/etc/cyrus.conf</B> <font size=3>file. The arguments that are available for each entry within the section are described, and each argument's default value is shown.</p>
+<p><font size=3>Arguments can appear in any order. Some arguments have no default value, these are listed with ``&lt;no default&gt;''. For string arguments, the value MUST be enclosed in double quotes.</p>
+
+<table width="100%"  rules="none"  frame="none"  cols="3">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+<p><font size=3><B><span style=" text-indent: 0.1800in;"></span>START</p>
+</B></td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+</td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+<p><font size=3>This section lists the processes to run before any <font size=3><B>SERVICES</B> <font size=3>are spawned. This section is<br>
+typically used to initialize databases and start long running daemons.</p>
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+<p><font size=3><B>cmd=</B><font size=3>&lt;no default&gt;</p>
+</td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+</td>
+</tr>
+</table>
+<p><font size=3>The command (with options) to spawn as a child process. This string argument is required.</p>
+
+<table width="100%"  rules="none"  frame="none"  cols="3">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+<p><font size=3><B><span style=" text-indent: 0.1800in;"></span>SERVICES</p>
+</B></td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+</td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+<p><font size=3>This section is the heart of the <font size=3><B>/etc/cyrus.conf</B> <font size=3>file. It lists the processes that should be<br>
+spawned to handle client connections made on certain Internet/UNIX sockets.</p>
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+<p><font size=3><B>cmd=</B><font size=3>&lt;no default&gt;</p>
+</td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+</td>
+</tr>
+</table>
+<p><font size=3>The command (with options) to spawn as a child process. This string argument is required.</p>
+<p><font size=3><B>listen=</B><font size=3>&lt;no default&gt;<br>
+<span style=" text-indent: 0.3000in;"></span>The UNIX or internet socket to listen on. This string field is required and takes one of the following forms:</p>
+<p><span style=" text-indent: 0.3000in;"></span><font size=3><I>path<br>
+<span style=" text-indent: 0.3000in;"></span></I>[ <font size=3><I>host</I> <font size=3><B>:</B> <font size=3>] <font size=3><I>port</p>
+</I><p><span style=" text-indent: 0.3000in;"></span><font size=3>where <font size=3><I>path</I> <font size=3>is the explicit path to a UNIX socket, <font size=3><I>host</I> <font size=3>is either the hostname or bracket-enclosed IP address<br>
+<span style=" text-indent: 0.3000in;"></span>of a network interface, and <font size=3><I>port</I> <font size=3>is either a port number or service name (as listed in <font size=3><B>/etc/services</B><font size=3>).</p>
+<p><font size=3><B>proto=</B><font size=3>tcp<br>
+<span style=" text-indent: 0.3000in;"></span>The protocol used for this service (<font size=3><I>tcp</I><font size=3>, <font size=3><I>udp</I><font size=3>). This string argument is optional.</p>
+<p><font size=3><B>prefork=</B><font size=3>0<br>
+<span style=" text-indent: 0.3000in;"></span>The number of instances of this service to always have running and waiting for a connection (for faster initial<br>
+<span style=" text-indent: 0.3000in;"></span>response time). This integer value is optional.</p>
+<p><font size=3><B>maxchild=</B><font size=3>-1<br>
+<span style=" text-indent: 0.3000in;"></span>The maximum number of instances of this service to spawn. A value of -1 means unlimited. This integer<br>
+<span style=" text-indent: 0.3000in;"></span>value is optional.</p>
+
+<table width="100%"  rules="none"  frame="none"  cols="3">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+<p><font size=3><B><span style=" text-indent: 0.1800in;"></span>EVENTS</p>
+</B></td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+</td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+<p><font size=3>This section lists processes that should be run at specific intervals, similar to cron jobs.<br>
+This section is typically used to perform scheduled cleanup/maintenance.</p>
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="16.1538%">
+<p><font size=3><B>cmd=</B><font size=3>&lt;no default&gt;</p>
+</td>
+<td valign="top" align="left"  width="3.8462%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+</td>
+</tr>
+</table>
+<p><font size=3>The command (with options) to spawn as a child process. This string argument is required.<br>
+</p>
+
+<!-- Page: 2  -->
+<!-- left  margin: 100 -->
+<!-- right margin: 750 -->
+<p><font size=3><B>period=</B><font size=3>0<br>
+<span style=" text-indent: 0.3000in;"></span>The interval (in minutes) at which to run the command. This integer value is optional, but SHOULD be a pos-<br>
+<span style=" text-indent: 0.3000in;"></span>itive integer &gt; 10.</p>
+<a name="EXAMPLE"></a><h2>EXAMPLE</h2><p><font size=3># example cyrus.conf</p>
+
+<table width="100%"  rules="none"  frame="none"  cols="4">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="11.8462%">
+<p><font size=3>START {<br>
+<span style=" text-indent: 0.0600in;"></span>recover</p>
+</td>
+<td valign="top" align="left"  width="3.5385%">
+</td>
+<td valign="top" align="left"  width="39.3846%">
+<br>
+<p><font size=3>cmd="ctl_cyrusdb -r"</p>
+</td>
+<td valign="top" align="left"  width="45.2308%">
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="11.8462%">
+<p><font size=3>}</p>
+<p><font size=3>SERVICES {<br>
+<span style=" text-indent: 0.0600in;"></span>imap</p>
+</td>
+<td valign="top" align="left"  width="3.5385%">
+</td>
+<td valign="top" align="left"  width="39.3846%">
+<p><font size=3>cmd="imapd" listen="imap" prefork=1</p>
+</td>
+<td valign="top" align="left"  width="45.2308%">
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="11.8462%">
+<p><font size=3><span style=" text-indent: 0.0600in;"></span>imaps<br>
+<span style=" text-indent: 0.0600in;"></span>lmtpunix<br>
+<span style=" text-indent: 0.0600in;"></span>lmtp<br>
+}</p>
+<p><font size=3>EVENTS {<br>
+<span style=" text-indent: 0.0600in;"></span>checkpoint</p>
+</td>
+<td valign="top" align="left"  width="3.5385%">
+</td>
+<td valign="top" align="left"  width="39.3846%">
+<p><font size=3>cmd="imapd -s" listen="imaps" prefork=0<br>
+cmd="lmtpd" listen="/var/imap/socket/lmtp"<br>
+cmd="lmtpd" listen="localhost:lmtp"</p>
+<p><font size=3>cmd="ctl_cyrusdb -c" period=30</p>
+</td>
+<td valign="top" align="left"  width="45.2308%">
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="11.8462%">
+<p><font size=3><span style=" text-indent: 0.0600in;"></span>delprune<br>
+<span style=" text-indent: 0.0600in;"></span>tlsprune<br>
+}</p>
+</td>
+<td valign="top" align="left"  width="3.5385%">
+</td>
+<td valign="top" align="left"  width="39.3846%">
+<p><font size=3>cmd="ctl_deliver -E 3" period=1440<br>
+cmd="tls_prune" period=1440</p>
+</td>
+<td valign="top" align="left"  width="45.2308%">
+</td>
+</tr>
+</table>
+<br>
+<a name="ACCESS CONTROL"></a><h2>ACCESS CONTROL</h2><p><font size=3>When TCP Wrappers is used to control access to Cyrus services, the <font size=3><I>name</I> <font size=3>of the service entry should be used as the process name in the <font size=3><B>hosts_access(5)</B> <font size=3>table. For instance, in the example above, "imap", "imaps", "lmtpunix" and "lmtp" would be used as the process names. This allows a single daemon such as imapd to be run in different modes or configurations (i.e., SSL and non-SSL enabled) yet still have separate access control rules.</p>
+<a name="SEE ALSO"></a><h2>SEE ALSO</h2><p><font size=3><B>master(8)</B><font size=3>, <font size=3><B>imapd(8)</B><font size=3>, <font size=3><B>pop3d(8)</B><font size=3>, <font size=3><B>lmtpd(8)</B><font size=3>, <font size=3><B>timsieved(8)</B><font size=3>, <font size=3><B>idled(8)</B><font size=3>, <font size=3><B>notifyd(8)</B><font size=3>, <font size=3><B>ctl_cyrusdb(8)</B><font size=3>, <font size=3><B>ctl_deliver(8)</B><font size=3>, <font size=3><B>tls_prune(8)</B><font size=3>, <font size=3><B>hosts_access(5)</B><br>
+</p>
+</body>
+</html>

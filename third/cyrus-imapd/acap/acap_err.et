@@ -1,0 +1,40 @@
+# acap_err.et -- Error codes for the Cyrus ACAP API
+# $Id: acap_err.et,v 1.1.1.1 2002-10-13 18:01:16 ghudson Exp $
+#
+# Copyright 2000 Carnegie Mellon University
+# 
+error_table acap
+
+ec ACAP_FAIL,
+   "Generic ACAP error"
+
+ec ACAP_BAD_PARAM,
+   "Bad parameter passed to ACAP routine"
+
+ec ACAP_URL_NOT_RECOGNIZED,
+   "Invalid ACAP URL"
+
+ec ACAP_NO_CONNECTION,
+   "Remote ACAP server closed connection"
+
+ec ACAP_NOT_SUPPORTED,
+   "ACAP routine not implemented"
+
+ec ACAP_PROTOCOL_ERROR,
+   "Remote ACAP server sent bad protocol"
+
+ec ACAP_NO_AUTHENTICATION,
+   "Unable to authenticate to remote ACAP server"
+
+ec ACAP_NOT_FETCHED,
+   "Requested data not yet fetched"
+
+ec ACAP_NOMEM,
+   "Memory exhausted"
+
+# non-fatal errors
+
+ec ACAP_WOULD_BLOCK,
+   "Requested ACAP operation would block"
+
+end

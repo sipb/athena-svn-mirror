@@ -1,0 +1,317 @@
+# Makefile for cyrus imap server and associated programs
+# $Id: Makefile.in,v 1.1.1.1 2002-10-13 18:02:40 ghudson Exp $
+# 
+# @configure_input@
+# 
+# Copyright (c) 1998-2000 Carnegie Mellon University.  All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer. 
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+#
+# 3. The name "Carnegie Mellon University" must not be used to
+#    endorse or promote products derived from this software without
+#    prior written permission. For permission or any other legal
+#    details, please contact  
+#      Office of Technology Transfer
+#      Carnegie Mellon University
+#      5000 Forbes Avenue
+#      Pittsburgh, PA  15213-3890
+#      (412) 268-4387, fax: (412) 268-7395
+#      tech-transfer@andrew.cmu.edu
+#
+# 4. Redistributions of any form whatsoever must retain the following
+#    acknowledgment:
+#    "This product includes software developed by Computing Services
+#     at Carnegie Mellon University (http://www.cmu.edu/computing/)."
+#
+# CARNEGIE MELLON UNIVERSITY DISCLAIMS ALL WARRANTIES WITH REGARD TO
+# THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS, IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY BE LIABLE
+# FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+# AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING
+# OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# 
+DEFINES=-DSETPROCTITLE
+
+# \Seen state database.  Either 'db' (berkeley db) or 
+# 'local' (legacy flat file).
+SEEN=seen_db.o
+
+# IMAP IDLE mechanism
+IDLE=idle_@WITH_IDLE@.o
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+CC = @CC@
+INSTALL = @INSTALL@
+RANLIB = @RANLIB@
+AWK = @AWK@
+
+CYRUS_USER=@cyrus_user@
+CYRUS_GROUP=@cyrus_group@
+
+DEFS = @DEFS@ @LOCALDEFS@
+CPPFLAGS = -I. -I.. -I../sieve -I$(srcdir) -I$(srcdir)/../lib -I$(srcdir)/../acap -I../acap @COM_ERR_CPPFLAGS@ @SIEVE_CPPFLAGS@ @CPPFLAGS@ @SASLFLAGS@
+IMAP_LIBS = @IMAP_LIBS@
+SIEVE_LIBS = @SIEVE_LIBS@
+IMAP_COM_ERR_LIBS = @IMAP_COM_ERR_LIBS@
+LIB_WRAP = @LIB_WRAP@
+LIBS = $(IMAP_LIBS) $(IMAP_COM_ERR_LIBS)
+DEPLIBS = ../acap/libacap.a ../lib/libcyrus.a @DEPLIBS@
+
+CFLAGS = @CFLAGS@
+LDFLAGS = @LDFLAGS@ @CFLAGS@ @COM_ERR_LDFLAGS@ 
+
+SHELL = /bin/sh
+MAKEDEPEND = @MAKEDEPEND@
+
+COMPILE_ET=@COMPILE_ET@
+
+#
+# Some notes on purify --
+#     you probably want to run the make as the cyrus user as 
+#     purify sets the cache directory based on the user. So,
+#     if you don't, purify can't find the instrumented libraries
+#     and so you don't get any useful information.
+#     It may also help to run purify by hand to instrument any of
+#     the dynamic libraries that may crop up during run time.
+# 
+PURIFY=/usr/local/bin/purify
+PUREOPT= -best-effort -logfile=/tmp/pure/%v.%p.log -always_use_cache_dir -cachedir=/usr/tmp/$(USER)
+QUANTIFY=/usr/local/bin/quantify
+QUANTOPT=-windows=no -filename-prefix=/tmp/quant/%v.%p -write-summary-file= -logfile=/tmp/quant/%v.%p.log
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+cyrus_prefix = @cyrus_prefix@
+
+LOBJS= append.o mailbox.o mboxlist.o mupdate-client.o mboxname.o message.o \
+	config.o imap_err.o mupdate_err.o proc.o setproctitle.o convert_code.o \
+	duplicate.o saslclient.o acapmbox.o signals.o annotate.o \
+	search_engines.o squat.o squat_internal.o mbdump.o \
+	base64.o imapparse.o telemetry.o user.o notify.o $(SEEN) $(IDLE)
+
+IMAPDOBJS=pushstats.o backend.o imapd.o index.o tls.o version.o
+
+PROXYDOBJS=backend.o pushstats.o proxyd.o tls.o version.o 
+
+LMTPOBJS=lmtpstats.o lmtpengine.o tls.o
+
+SERVICE=../master/service.o
+SERVICETHREAD=../master/service-thread.o
+
+PROGS = imapd lmtpd pop3d \
+	fud reconstruct quota mbpath ipurge \
+	cyrdump chk_cyrus cvt_cyrusdb deliver \
+	ctl_mboxlist ctl_deliver ctl_cyrusdb squatter \
+	@IMAP_PROGS@
+
+BUILTSOURCES = imap_err.c imap_err.h pushstats.c pushstats.h \
+	lmtpstats.c lmtpstats.h xversion.h mupdate_err.c mupdate_err.h
+
+all: $(BUILTSOURCES) $(PROGS) $(SUIDPROGS)
+
+pure: imapd.pure lmtpd.pure proxyd.pure mupdate.pure lmtpproxyd.pure
+
+
+install:
+	$(srcdir)/../install-sh -d ${DESTDIR}$(cyrus_prefix)/bin
+	for file in $(PROGS); \
+	do \
+		$(INSTALL) -m 755 $$file $(DESTDIR)$(cyrus_prefix)/bin || exit 1; \
+	done
+	$(INSTALL) -m 755 feedcyrus $(DESTDIR)$(cyrus_prefix)/bin
+
+.c.o:
+	$(CC) -c $(CPPFLAGS) $(DEFS) $(CFLAGS) \
+	$<
+
+xversion.h: xversion
+
+xversion:
+	rm -f version.o
+	AWK=$(AWK) $(srcdir)/xversion.sh
+
+idled: idled.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o idled \
+	 idled.o libimap.a $(DEPLIBS) $(LIBS)
+
+tls_prune: tls_prune.o tls.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o \
+	 $@ tls_prune.o tls.o libimap.a $(DEPLIBS) $(LIBS)
+
+acappush: acappush.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o acappush \
+	 acappush.o libimap.a $(DEPLIBS) $(LIBS)
+
+pushstats.c pushstats.h: pushstats.snmp $(srcdir)/../snmp/snmpgen
+	$(srcdir)/../snmp/snmpgen $(srcdir)/pushstats.snmp
+
+lmtpstats.c lmtpstats.h: lmtpstats.snmp $(srcdir)/../snmp/snmpgen
+	$(srcdir)/../snmp/snmpgen $(srcdir)/lmtpstats.snmp
+
+collectnews: collectnews.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o collectnews collectnews.o libimap.a $(DEPLIBS) \
+	 $(LIBS)
+
+cvt_cyrusdb: cvt_cyrusdb.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o cvt_cyrusdb cvt_cyrusdb.o libimap.a $(DEPLIBS) $(LIBS)
+
+chk_cyrus: chk_cyrus.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o chk_cyrus chk_cyrus.o libimap.a $(DEPLIBS) $(LIBS)
+
+deliver: deliver.o $(LMTPOBJS) libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o deliver deliver.o $(LMTPOBJS) \
+	libimap.a $(DEPLIBS) $(LIBS)
+
+lmtpd: lmtpd.o $(LMTPOBJS) \
+	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(SERVICE)
+	$(CC) $(LDFLAGS) -o lmtpd \
+	 $(SERVICE) lmtpd.o $(LMTPOBJS) \
+	 libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+lmtpd.pure: lmtpd.o $(LMTPOBJS) \
+	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(SERVICE)
+	$(PURIFY) $(PUREOPT) $(CC) $(LDFLAGS) -o lmtpd.pure \
+	 $(SERVICE) lmtpd.o $(LMTPOBJS) \
+	 libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+lmtpproxyd: lmtpproxyd.o $(LMTPOBJS) \
+	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(SERVICE)
+	$(CC) $(LDFLAGS) -o lmtpproxyd \
+	 $(SERVICE) lmtpproxyd.o $(LMTPOBJS) \
+	 libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+lmtpproxyd.pure: lmtpproxyd.o $(LMTPOBJS) \
+	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(SERVICE)
+	$(PURIFY) $(PUREOPT) $(CC) $(LDFLAGS) -o lmtpproxyd.pure \
+	 $(SERVICE) lmtpproxyd.o $(LMTPOBJS) \
+	 libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+ctl_deliver: ctl_deliver.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o \
+	 $@ ctl_deliver.o libimap.a $(DEPLIBS) $(LIBS)
+
+ctl_mboxlist: ctl_mboxlist.o mupdate-client.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o \
+	 $@ ctl_mboxlist.o mupdate-client.o libimap.a $(DEPLIBS) $(LIBS)
+
+ctl_cyrusdb: ctl_cyrusdb.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o \
+	 $@ ctl_cyrusdb.o libimap.a $(DEPLIBS) $(LIBS)
+
+imapd: xversion $(IMAPDOBJS) libimap.a $(DEPLIBS) $(SERVICE)
+	$(CC) $(LDFLAGS) -o imapd \
+	 $(SERVICE) $(IMAPDOBJS) libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+imapd.pure: $(IMAPDOBJS) libimap.a $(DEPLIBS) $(SERVICE)
+	$(PURIFY) $(PUREOPT) $(CC) $(LDFLAGS) -o imapd.pure \
+	 $(SERVICE) $(IMAPDOBJS) libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+imapd.quant: $(IMAPDOBJS) libimap.a $(DEPLIBS) $(SERVICE)
+	$(QUANTIFY) $(QUANTOPT) $(CC) $(LDFLAGS) -o imapd.quant \
+	 $(SERVICE) $(IMAPDOBJS) libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+proxyd: $(PROXYDOBJS) libimap.a $(DEPLIBS) $(SERVICE)
+	$(CC) $(LDFLAGS) -o proxyd \
+	 $(SERVICE) $(PROXYDOBJS) libimap.a \
+	 $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+proxyd.pure: $(PROXYDOBJS) libimap.a $(DEPLIBS) $(SERVICE)
+	$(PURIFY) $(PUREOPT) $(CC) $(LDFLAGS) -o proxyd.pure \
+	 $(SERVICE) $(PROXYDOBJS) libimap.a \
+	 $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+target-acap: target-acap.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o target-acap \
+	 target-acap.o libimap.a $(DEPLIBS) $(LIBS)
+
+sendmail-map: sendmail-map.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o sendmail-map \
+	 sendmail-map.o libimap.a $(DEPLIBS) $(LIBS)
+
+mupdate: mupdate.o mupdate-slave.o mupdate-client.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o mupdate \
+	 $(SERVICETHREAD) mupdate.o mupdate-slave.o mupdate-client.o \
+	 libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP) -lpthread
+
+mupdate.pure: mupdate.o mupdate-slave.o mupdate-client.o libimap.a $(DEPLIBS)
+	$(PURIFY) $(PUREOPT) $(CC) $(LDFLAGS) -o mupdate.pure \
+	 $(SERVICETHREAD) mupdate.o mupdate-slave.o mupdate-client.o \
+	 libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP) -lpthread
+
+pop3d: pop3d.o tls.o libimap.a $(DEPLIBS) $(SERVICE)
+	$(CC) $(LDFLAGS) -o pop3d pop3d.o tls.o $(SERVICE) \
+	 libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+pop3proxyd: pop3proxyd.o tls.o libimap.a $(DEPLIBS) $(SERVICE)
+	$(CC) $(LDFLAGS) -o pop3proxyd pop3proxyd.o tls.o $(SERVICE) \
+	 libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+arbitron: arbitron.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o arbitron arbitron.o libimap.a $(DEPLIBS) $(LIBS)
+
+populateacap: populateacap.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o populateacap populateacap.o libimap.a $(DEPLIBS) $(LIBS)
+
+fud: fud.o libimap.a $(DEPLIBS) $(SERVICE)
+	$(CC) $(LDFLAGS) -o fud $(SERVICE) fud.o libimap.a \
+	$(DEPLIBS) $(LIBS) $(LIB_WRAP)
+
+squatter: squatter.o index.o squat_build.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o squatter squatter.o index.o squat_build.o libimap.a $(DEPLIBS) $(LIBS)
+
+mbpath: mbpath.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o mbpath mbpath.o libimap.a $(DEPLIBS) $(LIBS)
+
+ipurge: ipurge.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o ipurge ipurge.o libimap.a $(DEPLIBS) $(LIBS)
+
+cyrdump: cyrdump.o index.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o cyrdump cyrdump.o index.o libimap.a $(DEPLIBS) $(LIBS)
+
+reconstruct: reconstruct.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o \
+	 reconstruct reconstruct.o libimap.a $(DEPLIBS) $(LIBS)
+
+quota: quota.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o quota quota.o libimap.a $(DEPLIBS) $(LIBS)
+
+krbck: krbck.o libimap.a $(DEPLIBS)
+	$(CC) $(LDFLAGS) -o krbck krbck.o $(DEPLIBS) $(LIBS)
+
+libimap.a: $(LOBJS)
+	rm -f libimap.a
+	ar cr libimap.a $(LOBJS)
+	$(RANLIB) libimap.a
+
+imap_err.h imap_err.c: imap_err.et
+	$(COMPILE_ET) $(srcdir)/imap_err.et
+
+mupdate_err.h mupdate_err.c: mupdate_err.et
+	$(COMPILE_ET) $(srcdir)/mupdate_err.et
+
+clean:
+	rm -f *.o *.a Makefile.bak makedepend.log \
+	$(BUILTSOURCES) $(PROGS) $(SUIDPROGS)
+
+# feedcyrus can't be in the config line because it's generated by configure,
+# and we can't make it without running configure again.
+distclean: clean
+	rm -f Makefile feedcyrus
+
+depend: imap_err.h
+	${MAKEDEPEND} $(CPPFLAGS) $(DEFS) $(CFLAGS) *.c $(srcdir)/*.c 1>makedepend.log 2>&1
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

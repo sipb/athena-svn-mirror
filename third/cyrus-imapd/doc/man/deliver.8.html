@@ -1,0 +1,79 @@
+<html>
+<head>
+<meta name="Content-Style" content="text/css">
+</head>
+<body>
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#NOTES">NOTES</a><br>
+<a href="#FILES">FILES</a><br>
+<a href="#/etc/imapd.conf">/etc/imapd.conf</a><br>
+<a href="#SEE ALSO">SEE ALSO</a><br>
+<a href="#lmtpd(8)">lmtpd(8)</a><br>
+<!-- Creator     : groff version 1.15  -->
+<!-- CreationDate: Fri Aug 30 14:41:53 2002
+ -->
+<!-- Total number of pages: 1 -->
+<!-- Page: 1 -->
+<!-- left  margin: 100 -->
+<!-- right margin: 750 -->
+<a name="NAME"></a><h2>NAME</h2><p><font size=3>deliver - deliver mail to an IMAP mailbox</p>
+<a name="SYNOPSIS"></a><h2>SYNOPSIS</h2>
+<table width="100%"  rules="none"  frame="none"  cols="2">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="41.6923%">
+<p><font size=3><B>deliver</B> <font size=3>[ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] [ <font size=3><B>-d</B> <font size=3>] [ <font size=3><B>-r</B> <font size=3><I>address</I> <font size=3>]<br>
+<span style=" text-indent: 0.2400in;"></span>[ <font size=3><B>-f</B> <font size=3><I>address</I> <font size=3>] [ <font size=3><B>-m</B> <font size=3><I>mailbox</I> <font size=3>] [ <font size=3><B>-a</B> <font size=3><I>auth-id</I> <font size=3>]<br>
+<span style=" text-indent: 0.2400in;"></span>[ <font size=3><B>-q</B> <font size=3>] [ <font size=3><I>userid</I> <font size=3>]...<br>
+<B>deliver</B> <font size=3>[ <font size=3><B>-C</B> <font size=3><I>config-file</I> <font size=3>] <font size=3><B>-l</p>
+</B></td>
+<td valign="top" align="left"  width="58.3077%">
+</td>
+</tr>
+</table>
+<br>
+<a name="DESCRIPTION"></a><h2>DESCRIPTION</h2><p><font size=3><I>Deliver</I> <font size=3>reads a message from the standard input and delivers it to one or more IMAP mailboxes.</p>
+<p><font size=3><I>Deliver</I> <font size=3>reads its configuration options out of the <font size=3><I>imapd.conf</I><font size=3>(5) file unless specified otherwise by <font size=3><B>-C</B><font size=3>.</p>
+<a name="OPTIONS"></a><h2>OPTIONS</h2>
+<table width="100%"  rules="none"  frame="none"  cols="3">
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="12.6154%">
+<p><font size=3><B>-C</B> <font size=3><I>config-file</p>
+</I><p><font size=3><B>-d</p>
+</B><p><font size=3><B>-r</B> <font size=3><I>address</p>
+</I><p><font size=3><B>-f</B> <font size=3><I>address</p>
+</I><p><font size=3><B>-m</B> <font size=3><I>mailbox</p>
+</I></td>
+<td valign="top" align="left"  width="7.3846%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+<p><font size=3>Read configuration options from <font size=3><I>config-file</I><font size=3>.</p>
+<p><font size=3>Ignored for compatability with <font size=3><B>/bin/mail.</p>
+</B><p><font size=3>Insert a <font size=3><B>Return-Path:</B> <font size=3>header containing</p>
+<p><font size=3>Insert a <font size=3><B>Return-Path:</B> <font size=3>header containing</p>
+<p><font size=3>Deliver to <font size=3><I>mailbox</I><font size=3>. If any <font size=3><I>userid</I><font size=3>s are specified, attempts to deliver to user.<font size=3><I>userid</I><font size=3>.<font size=3><I>mailbox</I> <font size=3>for each <font size=3><I>userid</I><font size=3>. If the ACL on any such mailbox does not grant the sender the "p" right or if <font size=3><B>-m</B> <font size=3>is not specified, then delivers to the INBOX for the <font size=3><I>userid</I><font size=3>, regardless of the ACL on the INBOX.</p>
+<p><font size=3>If no <font size=3><I>userid</I><font size=3>s are specified, attempts to deliver to <font size=3><I>mailbox</I><font size=3>. If the ACL on <font size=3><I>mailbox</I> <font size=3>does not grant the sender the "p" right, the delivery fails.</p>
+</td>
+</tr>
+<tr valign="top" align="left">
+<td valign="top" align="left"  width="12.6154%">
+<p><font size=3><B>-a</B> <font size=3><I>auth-id</p>
+</I><p><font size=3><B>-q</p>
+</B><p><font size=3><B>-l</p>
+</B></td>
+<td valign="top" align="left"  width="7.3846%">
+</td>
+<td valign="top" align="left"  width="80.0000%">
+<p><font size=3>Specify the authorization id of the sender. Defaults to "anonymous".</p>
+<p><font size=3>Deliver message even when receiving mailbox is over quota.</p>
+<p><font size=3>Accept messages using the LMTP protocol.</p>
+</td>
+</tr>
+</table>
+<br>
+<a name="NOTES"></a><h2>NOTES</h2><p><font size=3>Depending on the setting of <font size=3><B>reject8bit</B> <font size=3>in <font size=3><B>imapd.conf(5)</B><font size=3>, deliver either rejects messages with 8-bit-set characters in the headers or changes these characters to `X'. This is because such characters can't be interpreted since the character set is not known, although some communities not well-served by US-ASCII assume that those charac- ters can be used to represent characters not present in US-ASCII.</p>
+<p><font size=3>A method for encoding 8-bit-set characters is provided by RFC 2047.</p>
+<a name="FILES"></a><h2>FILES</h2><a name="/etc/imapd.conf"></a><h2>/etc/imapd.conf</h2><a name="SEE ALSO"></a><h2>SEE ALSO</h2><a name="lmtpd(8)"></a><h2>lmtpd(8)</h2></body>
+</html>
