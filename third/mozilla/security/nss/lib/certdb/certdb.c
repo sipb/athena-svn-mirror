@@ -34,7 +34,7 @@
 /*
  * Certificate handling code
  *
- * $Id: certdb.c,v 1.1.1.5 2004-06-30 17:40:38 rbasch Exp $
+ * $Id: certdb.c,v 1.1.1.6 2004-08-09 14:39:01 rbasch Exp $
  */
 
 #include "nssilock.h"
@@ -1136,6 +1136,7 @@ CERT_KeyUsageAndTypeForCertUsage(SECCertUsage usage,
 	    requiredCertType = NS_CERT_TYPE_OBJECT_SIGNING_CA;
 	    break;
 	  case certUsageAnyCA:
+	  case certUsageVerifyCA:
 	  case certUsageStatusResponder:
 	    requiredKeyUsage = KU_KEY_CERT_SIGN;
 	    requiredCertType = NS_CERT_TYPE_OBJECT_SIGNING_CA |
