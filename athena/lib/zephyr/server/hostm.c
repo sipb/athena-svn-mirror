@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hostm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.29 1988-07-19 10:32:22 jtkohl Exp $";
+static char rcsid_hostm_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/hostm.c,v 1.30 1988-07-19 11:59:51 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -371,10 +371,10 @@ losinghost *which;
 	notice.z_message_len = 0;
 
 	/* generate the other fields */
-	retval = ZFormatNotice(notice, &buffer, &len, ZNOAUTH);
+	retval = ZFormatNotice(&notice, &buffer, &len, ZNOAUTH);
 	if (retval != ZERR_NONE)
 	    return;
-	xfree(*buffer);
+	xfree(buffer);
 
 	/* forge a from address */
 	bzero((char *) &who, sizeof(who));
