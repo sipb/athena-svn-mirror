@@ -32,7 +32,7 @@ top of other windows and fully visible on the screen.
 
 \fIbugme\fR is only intended to be run by the global Xsession script.
 On machines where it is to be run (as determined by
-/usr/athena/lib/quickstations), it executes its arguments in a child
+/usr/athena/share/quickstations), it executes its arguments in a child
 process and waits for that process to exit. On machines where it is
 not meant to be run, it simply executes its arguments.
 .SH ENVIRONMENT
@@ -43,7 +43,7 @@ login process if desired.
 \fIbugme\fR's only arguments are the command to be executed and
 its arguments.
 .SH CONFIGURATION
-The file \fI/usr/athena/lib/quickstations\fR contains the list of
+The file \fI/usr/athena/share/quickstations\fR contains the list of
 machines, one hostname per line, on which \fIbugme\fR is to be active.
 Case is ignored, and anything occurring on a line after a hostname
 is also ignored.
@@ -82,9 +82,9 @@ is run should not in principle be idle long enough for screensavers to
 engage.
 .SH FILES
 .PP
-/etc/athena/login/Xsession      invocation of \fIbugme\fR
+/etc/athena/login/Xsession        invocation of \fIbugme\fR
 .br
-/usr/athena/lib/quickstations   list of special machines
+/usr/athena/share/quickstations   list of special machines
 .br
 .SH AUTHOR
 Craig Fields, MIT I/S DCNS
