@@ -41,8 +41,8 @@ fi
 # Claim these devices for the user logging in on the console.
 # They are normally all 666 except for hdsp0control, which is 600.
 #
-chown $USER /dev/audio /dev/hdsp/hdsp0r* /dev/hdsp0master /dev/video /dev/vid /dev/dmrb
-chmod   600 /dev/audio /dev/hdsp/hdsp0r* /dev/hdsp0master /dev/video /dev/vid /dev/dmrb
+chown $USER /dev/audio /dev/hdsp/hdsp0r* /dev/hdsp/hdsp0master /dev/video /dev/vid /dev/dmrb
+chmod   600 /dev/audio /dev/hdsp/hdsp0r* /dev/hdsp/hdsp0master /dev/video /dev/vid /dev/dmrb
 
 #
 # Tell xdm everything is ok
