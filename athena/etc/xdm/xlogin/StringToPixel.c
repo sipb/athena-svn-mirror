@@ -1,5 +1,6 @@
 #include <X11/StringDefs.h>
 #include <stdio.h>
+#include <string.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #include <X11/IntrinsicP.h>
@@ -138,7 +139,7 @@ static Boolean CvtMultiStrToPxl(dpy, args, num_args, fromVal, toVal, closure_ret
      * parse the resource -- if there are 2 or 3 "words", then
      * assign them to the other addresses.
      */
-    if ((ptr = address2 = index(copy, sep))  !=  NULL)
+    if ((ptr = address2 = strchr(copy, sep))  !=  NULL)
       {
 	ptr--;				/* strip trailing spaces off word */
 	while (isspace(*ptr))		/*   before comma */
@@ -149,7 +150,7 @@ static Boolean CvtMultiStrToPxl(dpy, args, num_args, fromVal, toVal, closure_ret
 	while (isspace(*address2))	/*   after comma */
 	  address2++;
 
-	if ((ptr = address3 = index(address2, sep))  !=  NULL)
+	if ((ptr = address3 = strchr(address2, sep))  !=  NULL)
 	  {
 	    ptr--;			/* strip trailing spaces off word */
 	    while (isspace(*ptr))	/*   before comma */
