@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.7 1990-11-28 12:44:04 mar Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.8 1990-11-30 16:37:56 mar Exp $
  *
  * Cleanup script for dialup.
  *
@@ -40,7 +40,7 @@ extern void make_passwd(int,uid_t *, char (*)[16]);
 extern void make_group(int, uid_t *);
 #endif
 
-const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.7 1990-11-28 12:44:04 mar Exp $";
+const char *version = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/cleanup/cleanup.c,v 1.8 1990-11-30 16:37:56 mar Exp $";
 
 #ifdef ultrix
 extern char *sys_errlist[];
@@ -200,9 +200,10 @@ char *argv[];
   if (status = kill_uids(nuid, uids, 0, SIGKILL))
     goto done;
 
-  if (mode == LOGGED_IN)
-    make_passwd(nuid, uids, plist);
-  make_group(nuid, uids);
+  if (mode == LOGGED_IN) {
+      make_passwd(nuid, uids, plist);
+      make_group(nuid, uids);
+  }
   
  done:
   if(unlink(nologin_fn) < 0)
@@ -384,8 +385,9 @@ uid_t *uids;
 #endif
 {
     int r, i, n, match;
-    char buf[1024], *p, *p1, **ret;
+    char buf[10240], *p, *p1, **ret;
     char llist[MAXUSERS][9];
+    struct passwd *pw;
     FILE *new, *old;
 
     /* build list of users in the passwd file */
@@ -393,8 +395,9 @@ uid_t *uids;
 	sprintf(buf, "%d", uids[i]);
 	ret = hes_resolve(buf, "uid");
 	if (ret == NULL || *ret == NULL) {
-	    fprintf(stderr, "cleanup: Couldn't get hesinfo for uid %d, error %d.\n",
-		    uids[i],hes_error());
+	    pw = getpwuid(uids[i]);
+	    if (pw != NULL)
+	      strcpy(llist[i], pw->pw_name);
 	} else if ((p = index(*ret, ':')) == NULL) {
 	    fprintf(stderr, "cleanup: Corrupt password entry for uid %d: \"%s\".\n",
 		    uids[i], *ret);
@@ -422,10 +425,15 @@ uid_t *uids;
     }
 
     /* loop over each line in the group file */
-    while (fgets(buf, BUFSIZ, old)) {
+    while (fgets(buf, sizeof(buf), old)) {
 	/* take out tailing \n */
 	n = strlen(buf);
-	if (n) buf[n - 1] = 0;
+	if (n) {
+	    if (buf[n - 1] == '\n')
+	      buf[n - 1] = 0;
+	    else
+	      fprintf(stderr, "cleanup: warning, too long group entry truncated\n");
+	}
 	if ((p = index(buf, ':')) == 0 ||
 	    (p = index(p+1, ':')) == 0 ||
 	    (p = index(p+1, ':')) == 0) {
