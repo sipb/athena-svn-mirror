@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.9 1990-11-13 18:49:20 lwvanels Exp $
+ *	$Id: init.c,v 1.10 1990-11-16 06:59:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.9 1990-11-13 18:49:20 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.10 1990-11-16 06:59:38 lwvanels Exp $";
 #endif
 #endif
 
@@ -101,8 +101,11 @@ OInitialize()
        (void) strcpy(User.realname, pwent->pw_gecos);
      }
 
-  if (index(User.realname, ',') != 0)
-    *index(User.realname, ',') = '\0';
+  {
+    char *cp;
+    if ((cp = index(User.realname, ',')) != 0)
+      *cp = '\0';
+  }
   
   gethostname(hostname, LINE_SIZE);
   host = gethostbyname(hostname);
