@@ -1,0 +1,153 @@
+.\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfsid.1,v $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/nfsid.1,v 1.1 1990-07-16 07:46:49 jfc Exp $
+.\"	$Author: jfc $
+.\"
+.TH NFSID 1 "25 March 1988"
+.ds ]W MIT Project Athena
+.SH NAME
+.nf
+nfsid \- Perform NFS authorization functions to NFS servers
+.fi
+.SH SYNOPSIS
+.nf
+nfsid [ [ options ] [-f filesystem ...] [host ...] ] ...
+.fi
+.SH DESCRIPTION
+
+\fINfsid\fR is a system program which presents your credentials to an
+NFS server by the use of Kerberos authentication, allowing your
+workstation to access files on the server.  Within Athena, the default
+permissions for a client workstation attempting to access an NFS
+filesystem are those of the user "nobody", meaning that a program
+running on the workstation ordinarily would not be allowed to modify
+any files on the NFS server.  \fINfsid\fR sends a Kerberos
+authentication ticket over to the server which records an association
+between a workstation's IP address and the user's userid.
+
+.PP
+The following arguments to \fInfsid\fR modify its default behavior.
+All arguments are processed \fIin order\fR.  Thus, if a -u option is
+followed by a -m option, the -m option will take precedence.
+
+.IP -map\ or\ -m
+Set the mapping function to "map user".  This is the default, and is
+used to establish a mapping to a server.  It requires that the user be
+authenticated.
+.IP -unmap\ or\ -u
+Set the mapping function to "unmap user".  This is used to remove a
+mapping from a server.
+.IP -purge\ or\ -p
+Set the mapping function to "purge host".  This is used to remove all
+mappings associated with the user's host.
+.IP -purgeuser\ or\ -r
+Set the mapping function to "purge user".  This is used to remove all
+mappings associated with the user on the host.  It requires that the
+user be authenticated.
+.IP -verbose\ or\ -v
+Display verbose information about the mapping operation.  This is the
+default.
+.IP -quiet\ or\ -q
+Don't display verbose information.
+.IP -debug\ or\ -d
+Print debugging information.  This will not normally be useful to users.
+.IP -all\ or\ -a
+Perform the current mapping operation for all hosts associated with
+filesystems in /usr/tmp/attachtab (see \fIattach(1)\fR).  Note that a host
+may be referenced more than once if more than once filesystem is
+located on that host.
+.IP -filsys\ or\ -f
+Perform the current mapping operation for the servers associated with
+the indicated filesystems.  The filesystems are retrieved from
+/usr/tmp/attachtab.
+
+.PP
+If the -f option is not specified, \fInfsid\fR takes a list of hosts
+(either names or internet addresses) as arguments and performs the
+specified mapping function.  If -f is specified, it takes a list of
+filesystem names instead and uses /usr/tmp/attachtab to retrieve the
+server associated with each filesystem.
+
+.SH EXAMPLES
+
+.nf
+nfsid -m CHARON.MIT.EDU -u -f x11
+.fi
+
+Establish a mapping for the user on the host CHARON.MIT.EDU and
+delete a mapping for the user on the host the holds the x11 filesystem.
+
+.nf
+nfsid -q -p -a
+.fi
+
+Purge the host's mappings on all servers that have filesystems mounted
+on the host, but don't display a message after each host is purged.
+
+.SH DIAGNOSTICS
+
+If \fInfsid\fR is executed with only a single filesystem or host
+argument, the exit status will be one of the following:
+.TP 5
+0
+No error encountered.
+.TP 5
+1
+Bad arguments.
+.TP 5
+3
+Internal fatal error.
+.TP 5
+10
+Keberos failure.
+.TP 5
+11
+Host communication failure.
+.TP 5
+12
+Authentication failure.
+.TP 5
+13
+No reserved ports available.
+.TP 5
+20
+A filesystem specified with -f was not attached.
+.TP 5
+21
+A hostname couldn't be resolved.
+.PP
+If more than one filesystem argument is specified, the exit status can
+be either 0, 1, or 3 as listed above, or:
+.TP 5
+2
+Something went wrong with one of the hosts or filesystems.
+.PP
+If an error is encountered while manipulating one filesystem in the
+list, \fInfsid\fR continues with the other filesystems and returns
+the exit status 2 after attempting to map or unmap all the other
+filesystems. 
+
+.SH NOTE
+The programs \fIattach(1)\fR, \fIdetach(1)\fR, \fInfsid(1)\fR, and
+\fIzinit(8)\fR are all really the same program.  Typically
+\fIdetach(1)\fR, \fInfsid(1)\fR and \fIzinit(8)\fR are links to
+\fIattach\fR.  Argv[0] is used to determine which one of the four
+programs are run.  This may be overridden by specifying -P
+\fIprogname\fR, where \fIprogname\fR should be one of the above four
+program names.
+
+.SH FILES
+
+/usr/tmp/attachtab
+
+.SH "SEE ALSO"
+
+\fIattach(1)\fR
+.br
+\fIKerberosintro(3)\fR
+
+.SH AUTHOR
+Robert French, Project Athena
+.br
+Copyright 1988, Massachusetts Institute of Technology
+
+.SH BUGS
