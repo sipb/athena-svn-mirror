@@ -30,7 +30,8 @@ bonobo_application_x_mines_SOURCES = 	\
 bonobo_application_x_mines_LDADD =		\
 	$(top_builddir)/bonobo/libbonobo.la	\
 	$(top_builddir)/bonobo/libbonobox.la	\
-	$(BONOBOX_TEST_LIBS)
+	$(BONOBOX_TEST_LIBS)			\
+	$(INTLLIBS)
 
 #Games_DATA = gnomine.desktop
 

@@ -38,7 +38,8 @@ bin_PROGRAMS = 				\
 moniker_ldadd = 				\
 	$(top_builddir)/bonobo/libbonobo.la	\
 	$(top_builddir)/bonobo/libbonobox.la	\
-	$(BONOBOX_TEST_LIBS)
+	$(BONOBOX_TEST_LIBS)			\
+	$(INTLLIBS)
 
 libmoniker_std_la_SOURCES =			\
 	bonobo-moniker-extender-file.c  	\

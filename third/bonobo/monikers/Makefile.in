@@ -172,7 +172,7 @@ bin_PROGRAMS =  	bonobo-moniker-gunzip 			bonobo-moniker-http			moniker-test
 
 #noinst_PROGRAMS = moniker-control-test moniker-test
 
-moniker_ldadd =  	$(top_builddir)/bonobo/libbonobo.la		$(top_builddir)/bonobo/libbonobox.la		$(BONOBOX_TEST_LIBS)
+moniker_ldadd =  	$(top_builddir)/bonobo/libbonobo.la		$(top_builddir)/bonobo/libbonobox.la		$(BONOBOX_TEST_LIBS)				$(INTLLIBS)
 
 
 libmoniker_std_la_SOURCES =  	bonobo-moniker-extender-file.c  		bonobo-moniker-extender-stream.c  		bonobo-moniker-file.c				bonobo-moniker-item.c				bonobo-moniker-new.c				bonobo-moniker-oaf.c				bonobo-moniker-cache.c				bonobo-stream-cache.h				bonobo-stream-cache.c				bonobo-moniker-query.c				bonobo-moniker-query.h				bonobo-moniker-std.h            		bonobo-moniker-std.c			
