@@ -35,12 +35,6 @@ int nanny_exchangeVars(varlist *vin, varlist **vout)
 
       pc_addport(ps, outport);
       C(pc_wait(&messageOut, ps));	/* create messageOut */
-      while (messageOut->type == PC_SIGNAL)
-	{
-	  pc_freemessage(messageOut);	messageOut = NULL;
-	  C(pc_wait(&messageOut, ps));
-	}
-
       if (messageOut->type == PC_BROKEN)
 	{
 	  syslog(LOG_ERR, "nannylib: pc_wait returns %m");
