@@ -33,6 +33,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <sys/types.h>
 #include <time.h>
 
 #include "bigsignverify.h"
