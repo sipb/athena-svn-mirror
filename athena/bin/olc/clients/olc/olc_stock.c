@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *	$Id: olc_stock.c,v 1.19 1992-02-06 17:07:44 lwvanels Exp $
+ *	$Id: olc_stock.c,v 1.20 1992-02-14 19:27:26 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.19 1992-02-06 17:07:44 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.20 1992-02-14 19:27:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -81,10 +81,9 @@ do_olc_stock(arguments)
  
   OFillRequest(&Request);
 
-  arguments++;
-  while(*arguments != (char *) NULL)
+  for (++arguments; *arguments != (char *) NULL; ++arguments) 
     {
-      if(string_equiv(*arguments,"-t",2))
+      if (string_equiv(*arguments,"-t",2))
 	{
           ++arguments;
 	  if(*arguments==(char *) NULL)
@@ -100,9 +99,19 @@ do_olc_stock(arguments)
 	  continue;
 	}
 
+      if (**arguments != '-') {
+	strcpy(dtopic, *arguments);
+	arguments++;
+      }
+
       arguments = handle_argument(arguments, &Request, &status);
-      if(arguments == (char **) NULL)   /* error */
+
+      if(arguments == (char **) NULL) {  /* error */
+	printf("Usage is: \tstock [-t topic]\n");
 	return(ERROR);
+      }
+      if (*arguments == (char *) NULL)
+	break;
     }
 
   topic = &dtopic[0];
