@@ -1,0 +1,17 @@
+/* $Id: Imakefile,v 1.5 1996-06-07 01:03:17 ghudson Exp $
+ * $Source: /afs/dev.mit.edu/source/repository/athena/bin/newpag/Imakefile,v $
+ */
+
+DEFINES=-I$(AFSDIR)/include
+
+#ifdef SOLARIS
+OSLIBS=-lucb
+#endif
+#ifdef sgi
+OSLIBS=-lsys
+#endif
+
+AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp
+LIBS=-lknet -lkrb $(AFSDIR)/lib/libdes.a -lhesiod -lcom_err $(OSLIBS)
+
+SimpleProgram(newpag,newpag.o,$(AFSLIBS) $(LIBS),$(ATHBINDIR))
