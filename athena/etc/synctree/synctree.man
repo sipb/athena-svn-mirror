@@ -1,4 +1,4 @@
-.TH SYNCTREE 1 "May 6, 1988"
+.TH SYNCTREE 8 "May 6, 1988"
 .UC
 .SH NAME
 synctree \- reconcile directory tree with original
