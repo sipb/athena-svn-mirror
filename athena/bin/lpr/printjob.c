@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: epeisach $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.19 1991-07-11 10:01:10 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.20 1992-11-09 00:54:30 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.19 1991-07-11 10:01:10 epeisach Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.20 1992-11-09 00:54:30 probe Exp $";
 #endif lint
 
 /*
@@ -689,21 +689,12 @@ print(format, file)
 		write(ofd, "\031\1", 2);
 		while ((pid = wait3(&status, WUNTRACED, 0)) > 0 && pid != ofilter)
 			;
-#if defined(_IBMR2) 
-		if (!WIFSTOPPED(status)) {
+		if (pid == -1 || !WIFSTOPPED(status)) {
 			(void) close(fi);
 			syslog(LOG_WARNING, "%s: output filter died (%d)",
 				printer, status);
 			return(REPRINT);
 		}
-#else
-		if (status.w_stopval != WSTOPPED) {
-			(void) close(fi);
-			syslog(LOG_WARNING, "%s: output filter died (%d)",
-				printer, status.w_retcode);
-			return(REPRINT);
-		}
-#endif
 		stopped++;
 	}
 start:
@@ -744,33 +735,19 @@ start:
 #else
 	if (!WIFEXITED(status)) {
 #endif
-#ifndef _IBMR2
-		syslog(LOG_WARNING, "%s: Daemon filter '%c' terminated (%d)",
-			printer, format, status.w_termsig);
-#else
 		syslog(LOG_WARNING, "%s: Daemon filter '%c' terminated (%d)",
 			printer, format, WTERMSIG(status));
-#endif
 		return(ERROR);
 	}
-#ifdef _IBMR2
 	switch (WEXITSTATUS(status)) {
-#else
-	switch (status.w_retcode) {
-#endif
 	case 0:
 		tof = 1;
 		return(OK);
 	case 1:
 		return(REPRINT);
 	default:
-#ifdef _IBMR2
 		syslog(LOG_WARNING, "%s: Daemon filter '%c' exited (%d)",
 			printer, format, WEXITSTATUS(status));
-#else
-		syslog(LOG_WARNING, "%s: Daemon filter '%c' exited (%d)",
-			printer, format, status.w_retcode);
-#endif
 	case 2:
 		return(ERROR);
 	}
