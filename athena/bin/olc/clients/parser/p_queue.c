@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v $
- *	$Id: p_queue.c,v 1.10 1990-11-14 12:34:21 lwvanels Exp $
+ *	$Id: p_queue.c,v 1.11 1991-09-10 11:32:38 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.10 1990-11-14 12:34:21 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.11 1991-09-10 11:32:38 lwvanels Exp $";
 #endif
 #endif
 
@@ -33,6 +33,7 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 
+ERRCODE
 do_olc_queue(arguments)
      char **arguments;
 {
