@@ -1,4 +1,4 @@
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.13 1996-06-27 19:23:01 miki Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/Imakefile,v 1.14 1996-06-28 17:49:20 ghudson Exp $
 # Builds xdm and installs it with Athenized config
 
 #ifdef _AIX
@@ -8,10 +8,10 @@ OSDEFS= -U_BSD -U_BSD_INCLUDES
 OSDEFS= -DSVR4
 #endif
 DEFINES= -I. -DTCPCONN -DUNIXCONN -DXDM -DSETPAG $(OSDEFS)
-AFSLIBS = $(AFSDIR)/lib/afs/libsys.a
+AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lsys -lrx -llwp -lsys
 
 #ifdef sun
-OSLIBS = -lm
+OSLIBS = -lm -lbsd
 #endif
 #ifdef _IBMR2
 OSLIBS = -ls -lodm -lcfg
