@@ -1,0 +1,45 @@
+# $Id: Makefile.in,v 1.1 1999-10-23 19:28:45 danw Exp $
+
+SHELL=/bin/sh
+INSTALL=@INSTALL@
+RANLIB=@RANLIB@
+VPATH=@srcdir@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@ ${WARN_CFLAGS} ${ERROR_CFLAGS}
+DEFS=@DEFS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
+OBJS=athdir.o stringlist.o
+
+all: libathdir.a
+
+libathdir.a: ${OBJS}
+	ar cru $@ ${OBJS}
+	${RANLIB} $@
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${libdir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${includedir}
+	${INSTALL} -m 644 libathdir.a ${DESTDIR}${libdir}
+	${RANLIB} ${DESTDIR}${libdir}/libathdir.a
+	chmod u-w ${DESTDIR}${libdir}/libathdir.a
+	${INSTALL} -m 444 ${srcdir}/athdir.h ${DESTDIR}${includedir}
+
+clean:
+	rm -f ${OBJS} libathdir.a
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile

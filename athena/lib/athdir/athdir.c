@@ -15,7 +15,7 @@
 
 /* This file implements the main athdir library calls. */
 
-static char rcsid[] = "$Id: athdir.c,v 1.5 1999-07-08 16:49:10 ghudson Exp $";
+static const char rcsid[] = "$Id: athdir.c,v 1.6 1999-10-23 19:28:46 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>

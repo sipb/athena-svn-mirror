@@ -17,7 +17,7 @@
  * to be used by software using the athdir library.
  */
 
-static char rcsid[] = "$Id: stringlist.c,v 1.1 1998-03-17 03:43:49 cfields Exp $";
+static const char rcsid[] = "$Id: stringlist.c,v 1.2 1999-10-23 19:28:46 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
