@@ -1,7 +1,7 @@
 /*
  * xquota -  X window system quota display program.
  *
- * $Athena: widgets.c,v 1.2 89/03/21 13:17:50 kit Locked $
+ * $Athena: widgets.c,v 1.3 89/03/28 16:43:36 kit Locked $
  *
  * Copyright 1989 Massachusetts Institute of Technology
  *
@@ -20,7 +20,7 @@
  */
 
 #if ( !defined(lint) && !defined(SABER))
-  static char rcs_version[] = "$Athena: widgets.c,v 1.2 89/03/21 13:17:50 kit Locked $";
+  static char rcs_version[] = "$Athena: widgets.c,v 1.3 89/03/28 16:43:36 kit Locked $";
 #endif
 
 #include <stdio.h>
@@ -101,6 +101,9 @@ char ** argv;
   info->appcon = XtCreateApplicationContext();
   disp = XtOpenDisplay(info->appcon, NULL, NULL, APP_CLASS, quota_options,
 		       XtNumber(quota_options), argc, argv);
+  if (disp == NULL) 
+    XtAppError(info->appcon, "Xquota: Could not open the display.");
+
   LoadApplicationResources(DEFAULTS_FILE, disp);
   shell = XtAppCreateShell(NULL, APP_CLASS, applicationShellWidgetClass,
 			   disp, NULL, (Cardinal) 0);
