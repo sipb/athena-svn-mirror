@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/parser/prseprim.c,v 1.1 1994-09-18 12:56:15 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/parser/prseprim.c,v 1.2 1997-02-27 06:40:52 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/09/18 12:56:15  cfields
+ * Initial revision
+ *
  * Revision 1.1  89/11/03  15:15:40  snmpdev
  * Initial revision
  * 
@@ -138,7 +141,7 @@ strng *strg;				/* string (structure component */
    { *msglen = EMALLOC;
      return((char *)NULL);
    }
-  bcopy(current,strg->str,(int)length);
+  memcpy(strg->str,current,(int)length);
   strg->str[length] = '\0';		/* null terminate */
   strg->len = length;
   current += length;
@@ -267,7 +270,7 @@ struct in_addr *add;			/* ip address (structure component) */
    { *msglen = OUTERR;
      return((char *)NULL);
    }
-  bcopy(current,(char *)&(add->s_addr),(int)length);
+  memset(&(add->s_addr),current,(int)length);
   current += length;
   *msglen -= length; *buflen -= length;
 
@@ -471,7 +474,7 @@ strng *opqe;				/* opaque (structure component */
    { *msglen = EMALLOC;
      return((char *)NULL);
    }
-  bcopy(current,opqe->str,(int)length);
+  memset(opqe->str,current,(int)length);
   opqe->str[length] = '\0';		/* null terminate */
   opqe->len = length;
   current += length;

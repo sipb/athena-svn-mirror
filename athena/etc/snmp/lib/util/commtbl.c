@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/util/commtbl.c,v 1.1 1994-09-18 12:56:43 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/util/commtbl.c,v 1.2 1997-02-27 06:40:59 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/09/18 12:56:43  cfields
+ * Initial revision
+ *
  * Revision 1.1  89/11/03  15:16:17  snmpdev
  * Initial revision
  * 
@@ -92,8 +95,8 @@ short commsz;				/* size of information */
     { mkoccupied(i);			/* it's not vacant anymore */
       commtbl.entry[i].req_id = req_id;	/* fill in request id */
 /* can't do a bcopy of comm, must do it element by element. sigh. */
-      bcopy((char *)&(comm->sin_addr),
-            (char *)&(commtbl.entry[i].comm.sin_addr),sizeof(comm->sin_addr));
+      memcpy(&(comm->sin_addr),&(commtbl.entry[i].comm.sin_addr),
+	     sizeof(comm->sin_addr));
       commtbl.entry[i].comm.sin_family = comm->sin_family;
       commtbl.entry[i].comm.sin_port = comm->sin_port;
       return(0);

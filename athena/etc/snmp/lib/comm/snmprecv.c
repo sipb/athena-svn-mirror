@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/comm/snmprecv.c,v 1.1 1994-09-18 12:56:36 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/comm/snmprecv.c,v 1.2 1997-02-27 06:40:43 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/09/18 12:56:36  cfields
+ * Initial revision
+ *
  * Revision 1.1  89/11/03  15:15:19  snmpdev
  * Initial revision
  * 
@@ -92,7 +95,7 @@ short msgsz;				/* length of message */
      return(NOSVC);			/* return error */
     else				/* initialize local communications */
 /* initialize local socket struct */
-     { bzero((char *)&local,sizeof(local));
+     { memset(&local,0,sizeof(local));
        if(gethostname(hname,HLEN) < 0)
 	return(NOHNAME);
        do				/* get address of local host */
@@ -101,9 +104,9 @@ short msgsz;				/* length of message */
        if(hp == NULL)
 	return(NOHADDR);
 #ifdef NAMED
-       bcopy((char *)&(hp->h_addr),(char *)&local.sin_addr,hp->h_length);
+       memcpy(&local.sin_addr,&(hp->h_addr),hp->h_length);
 #else
-       bcopy((char *)(hp->h_addr),(char *)&local.sin_addr,hp->h_length);
+       memcpy(&local.sin_addr,(hp->h_addr),hp->h_length);
 #endif /* NAMED */
        local.sin_family = AF_INET;	/* want internet messages */
 /* get well-known port */
@@ -128,7 +131,7 @@ short msgsz;				/* length of message */
 
 /* fill in any buffers caller provided */
    if(from != NULL)
-    bcopy((char *)&remote.sin_addr,(char *)from,sizeof(struct in_addr));
+    memcpy(from,&remote.sin_addr,sizeof(struct in_addr));
 
 /* parse top-level message */
    if((msgindex = msgparse(&pktlen,msgbuf,sid,sidlen,&version,&msglen)) < 0)

@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/comm/snmpsend.c,v 1.1 1994-09-18 12:56:34 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/comm/snmpsend.c,v 1.2 1997-02-27 06:40:45 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/09/18 12:56:34  cfields
+ * Initial revision
+ *
  * Revision 1.1  89/11/03  15:15:21  snmpdev
  * Initial revision
  * 
@@ -77,7 +80,7 @@ long timeout;				/* how long to try sending */
    if(service == NULL)			/* this is a reply? */
     return(UNINIT_SOCK);		/* uninitalized socket */
    else					/* we're initializing conversation */
-    { bzero((char *)&local,sizeof(local)); /* empty structure */
+    { memset(&local,0,sizeof(local)); /* empty structure */
       if(gethostname(hname,HLEN) < 0)	/* get local host name */
        return(NOHNAME);
       do
@@ -86,9 +89,9 @@ long timeout;				/* how long to try sending */
       if(hp == NULL)
        return(NOHADDR);
 #ifdef NAMED
-      bcopy((char *)&(hp->h_addr),(char *)&local.sin_addr,hp->h_length);
+      memcpy(&local.sin_addr,&(hp->h_addr),hp->h_length);
 #else
-      bcopy((char *)(hp->h_addr),(char *)&local.sin_addr,hp->h_length);
+      memcpy(&local.sin_addr,hp->h_addr,hp->h_length);
 #endif /* NAMED */
       local.sin_family = AF_INET;	/* use internet family */
       local.sin_port = (short)0;	/* have system find port */
@@ -116,8 +119,8 @@ long timeout;				/* how long to try sending */
 /* create socket structure */
 /* get service */
   if(service != NULL)			/* we're sending to a well-known port */
-   { bzero((char *)&remote,sizeof(remote));
-     bcopy((char *)to,(char *)&remote.sin_addr,sizeof(struct in_addr));
+   { memset(&remote,0,sizeof(remote));
+     memcpy(&remote.sin_addr,to,sizeof(struct in_addr));
      remote.sin_family = AF_INET;	/* internet address family */
      if(strcmp(service,"snmp") == 0)
       remote.sin_port = (short)htons((u_short)SNMPQRY);

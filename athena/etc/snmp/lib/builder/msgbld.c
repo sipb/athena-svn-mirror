@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/builder/msgbld.c,v 1.1 1994-09-18 12:56:31 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/builder/msgbld.c,v 1.2 1997-02-27 06:40:33 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/09/18 12:56:31  cfields
+ * Initial revision
+ *
  * Revision 1.1  89/11/03  15:15:13  snmpdev
  * Initial revision
  * 
@@ -66,7 +69,7 @@ long version;				/* protocol version */
   current -= (sidlen - 1);
   blen -= sidlen;
   len = sidlen;
-  bcopy(sid,current,(int)sidlen);
+  memcpy(current,sid,(int)sidlen);
   current--;
   if((current = bldlen(&len,current,&blen)) == NULL)
    return(len);

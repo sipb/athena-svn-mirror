@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/builder/bldprim.c,v 1.1 1994-09-18 12:56:28 cfields Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/lib/builder/bldprim.c,v 1.2 1997-02-27 06:40:31 ghudson Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  1994/09/18 12:56:28  cfields
+ * Initial revision
+ *
  * Revision 1.1  89/11/03  15:15:08  snmpdev
  * Initial revision
  * 
@@ -175,7 +178,7 @@ strng *str;				/* string to be encoded */
   current -= (str->len-1);
   (*buflen) -= str->len;
   slen = str->len;
-  bcopy(str->str,current,(int)(str->len));
+  memcpy(current,str->str,(int)(str->len));
   current--;
 
 /* put in the length of the string */
@@ -324,7 +327,7 @@ struct in_addr *add;			/* address to be encoded */
   current -= (sizeof(struct in_addr)-1);
   (*buflen) -= sizeof(struct in_addr);
   alen = sizeof(struct in_addr);
-  bcopy((char *)&(add->s_addr),current,sizeof(struct in_addr));
+  memcpy(current,&(add->s_addr),sizeof(struct in_addr));
   current--;
 
 /* put in the length of the string */
@@ -755,7 +758,7 @@ strng *str;				/* string to be encoded */
   current -= (str->len-1);
   (*buflen) -= str->len;
   slen = str->len;
-  bcopy(str->str,current,(int)(str->len));
+  memcpy(current,str->str,(int)(str->len));
   current--;
 
 /* put in the length of the string */
