@@ -1,0 +1,6 @@
+#
+# $Id: irix64.rcf,v 1.1.1.1 2001-03-20 18:02:46 ghudson Exp $
+#
+# IRIX Runtime Configuration File
+#
+MinOsVer="6.5"

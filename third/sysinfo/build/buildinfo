@@ -1,12 +1,9 @@
 #!/bin/sh
+
 #
-# Copyright (c) 1992-1998 Michael A. Cooper.
-# This software may be freely distributed provided it is not sold for 
-# profit and the author is credited appropriately.
-#
-# $Id: buildinfo,v 1.1.1.1 1998-12-24 22:02:58 ghudson Exp $
-#
-# Provide information needed at build time.
+# Copyright (c) 1992-2000 MagniComp 
+# This software may only be used in accordance with the license which is 
+# available as http://www.magnicomp.com/sysinfo/4.0/sysinfo-eu-license.shtml
 #
 
 PATH=/usr/ucb:/usr/bin:/bin:/usr/bsd:$PATH
@@ -24,9 +21,13 @@ PR_OSNAME=0
 PR_KISA=0
 PR_PLATFORM=0
 PR_RTPLATFORM=0
+PR_DISTPLATFORM=0
 PR_DISTNAME=0
+PR_LIBCVER=0
+PR_LIBCNAME=0
 OP_PRODVER=""
 OP_DISTTYPE=""
+OP_WITHOSVER=1
 FL_REAL=0
 
 if [ $# -eq 0 ]; then
@@ -41,6 +42,10 @@ while test $# -ge 1; do
 		;;
 	X-real)
 		FL_REAL=1
+		shift
+		;;
+	X-noosver)
+		OP_WITHOSVER=0
 		shift
 		;;
 	X-apparch)
@@ -83,8 +88,20 @@ while test $# -ge 1; do
 		PR_RTPLATFORM=1
 		shift
 		;;
+	X-distplatform)
+		PR_DISTPLATFORM=1
+		shift
+		;;
 	X-distname)
 		PR_DISTNAME=1
+		shift
+		;;
+	X-libcver)
+		PR_LIBCVER=1
+		shift
+		;;
+	X-libcname)
+		PR_LIBCNAME=1
 		shift
 		;;
 	X-prodver)
@@ -94,6 +111,11 @@ while test $# -ge 1; do
 		;;
 	X-disttype)
 		OP_DISTTYPE=$2
+		shift
+		shift
+		;;
+	X-cfdir)
+		cfdir=$2
 		shift
 		shift
 		;;
@@ -171,7 +193,7 @@ sunos)
     	if [ -x /bin/isainfo ]; then
 	    	kisa="`/bin/isainfo -k`"
 	else
-		kisa="`${unameprog} -p`"
+		kisa="`${unameprog} -p 2> /dev/null`"
 	fi
 	if [ -z "${unameprog}" ]; then
 		echo "No uname program found."
@@ -179,6 +201,9 @@ sunos)
 	fi
 	osver="`${unameprog} -r`"
 	osvernodot=`echo $osver | awk -F. '{print $1 $2}'`
+	;;
+linux)
+	osver="`${unameprog} -r| awk -F. '{printf("%s.%s\n", $1, $2);}'`"
 	;;
 aix)
 	osver="`${unameprog} -v`"
@@ -229,7 +254,7 @@ aix)
     ;;
 hpux)
     # Hard code since we don't know how else to get this
-    apparch="`${unameprog} -m | sed -e 's;/.*;;' -e 's;9000;pa-risc;'`"
+    apparch="`${unameprog} -m | sed -e 's;/.*;;' -e 's;9000;parisc;'`"
     ;;
 sunos)
     if [ "${osmver}" -eq "4" ]; then
@@ -260,27 +285,89 @@ sunos)
 esac
 
 #
+# Get libc info
+#
+case "${osname}" in
+linux)
+    Libc=`ldd /bin/sh | grep libc.so | awk '{print $3}'`
+    LibcVerStr=`strings $Libc | grep -i 'c library'`
+    LibcVer=`echo $LibcVerStr | awk '{print $7}' | sed -e 's;,;;'`
+    if echo $LibcVerStr | grep GNU >/dev/null ; then
+	LibcName="glibc"
+    else
+	LibcName="libc"
+    fi
+    ;;
+*)
+    LibcVer=""
+    ;;
+esac
+
+#
 # Let environment $KISA override
 #
 if [ ! -z "$KISA" ]; then
     kisa="$KISA"
 fi
 
+RequireEachOsVer=0
+RequireEachKarch=0
+if [ ! -z "$cfdir" ]; then
+    RuntimeCF=$cfdir/${osname}.rcf
+    if [ ! -f $RuntimeCF ]; then
+	echo "${Prog}: ${RuntimeCF}: Runtime configuration file is missing." >&2
+	exit 1
+    fi
+
+    #
+    # Source runtime config file
+    #
+    # The following variables are supported by the .rcf file:
+    #
+    #	MinOsVer="X.X"		Minumum OS Version
+    #	MaxOsVer="X.X"		Max OS Version
+    #	RequireEachOsVer=1	Require seperate bin for each OS version
+    #	RequireEachKarch=1	Require seperate bin for each kernel arch
+    #
+    . $RuntimeCF
+fi
+
+#
+# Set Runtime Platform
+#
+if [ $OP_WITHOSVER -gt 0 ]; then
+    rtplatform=${osname}-${osmver}-${apparch}
+else
+    rtplatform=${osname}-${apparch}
+fi
+
+if [ $RequireEachOsVer -gt 0 ]; then
+    if [ $RequireEachKarch -gt 0 ]; then
+	rtplatform=${osname}-${osver}-${kisa}
+    else
+	rtplatform=${osname}-${osver}-${apparch}
+    fi
+fi
+
 #
 # Set the platform name.
 #
 if [ ! -z "$kisa" ]; then
-    platform=${kisa}.${osname}.${osver}
+    platform="${osname}-${osver}-${kisa}"
 else
-    platform=${apparch}.${osname}.${osver}
+    platform="${osname}-${osver}-${apparch}"
 fi
-
-if [ ! -z "$kisa" ]; then
-    rtplatform="${kisa}-${osname}-${osver}"
-else
-    rtplatform="${cpuarch}-${osname}-${osver}"
+#
+# On Linux, libc is key to the platform
+#
+if [ "$osname" = "linux" ]; then
+    if [ ! -z "$LibcName" ]; then
+	platform=${platform}-${LibcName}
+    fi
+    if [ ! -z "$LibcVer" ]; then
+	platform=${platform}-${LibcVer}
+    fi
 fi
-
 
 PRSTR=""
 if [ $PR_ALL -ne 0 -o $PR_OSNAME -ne 0 ]; then
@@ -310,8 +397,19 @@ fi
 if [ $PR_ALL -ne 0 -o $PR_RTPLATFORM -ne 0 ]; then
 	PRSTR="$PRSTR $rtplatform"
 fi
+if [ $PR_ALL -ne 0 -o $PR_DISTPLATFORM -ne 0 ]; then
+	# Special hack for IRIX
+	str=`echo $rtplatform | sed -e 's;irix64-;irix-;'`
+	PRSTR="$PRSTR $str"
+fi
 if [ $PR_ALL -ne 0 -o $PR_KISA -ne 0 ]; then
 	PRSTR="$PRSTR $kisa"
+fi
+if [ $PR_ALL -ne 0 -o $PR_LIBCNAME -ne 0 ]; then
+	PRSTR="$PRSTR $LibcName"
+fi
+if [ $PR_ALL -ne 0 -o $PR_LIBCVER -ne 0 ]; then
+	PRSTR="$PRSTR $LibcVer"
 fi
 
 if [ $PR_DISTNAME -ne 0 ]; then

@@ -1,0 +1,232 @@
+#
+# $Id: Makefile.in,v 1.1.1.1 2001-03-20 18:03:59 ghudson Exp $
+#
+# Makefile.in for "lib"
+#
+
+#
+# Copyright
+#
+
+srcdir 		= @srcdir@
+topsrcdir	= @top_srcdir@
+VPATH 		= @srcdir@
+prefix 		= @prefix@
+exec_prefix	= @exec_prefix@
+LIBDIR		= @libdir@
+CC		= @CC@
+OPT		= @CFLAGS@
+RANLIB		= @RANLIB@
+AR		= @ar@
+
+#
+# Variables from autoconf
+#
+OSNAME 		= @osname@
+
+@VarsMF@
+
+#
+# Functional file groups used by os/lib/*/*.mf
+#
+NetIf-Objs	= $(O)net/netif.o $(O)net/netif-info.o
+Bjhash-Objs	= $(O)bjhash/bjhashtab.o $(O)bjhash/bjlookupa.o \
+			$(O)bjhash/bjrecycle.o
+BSD-Objs	= $(O)os/bsd/bsd.o $(O)os/bsd/sysctl.o \
+			$(O)std/dospart.o \
+			$(O)std/myscsi.o \
+			${NetIf-Objs}
+RPM-Objs	= $(O)os/linux/rpm.o
+
+#
+# OS Specific makefile info
+#
+@OSNAMEmf@
+@OSNAMEMVERmf@
+@OSNAMEVERmf@
+
+BASE 		= libmcsysinfo
+INSTALLNAME	= $(BASE).a
+LibStatic	= $(O)$(BASE).a
+Target		= $(LibStatic)
+
+MISSINGOBJS	= \
+		$(O)missing/ether.o \
+		$(O)missing/kvm.o \
+		$(O)missing/putenv.o \
+		$(O)missing/setenv.o \
+		$(O)missing/setreuid.o \
+		$(O)missing/snprintf.o \
+		$(O)missing/strcasecmp.o \
+		$(O)missing/strdup.o \
+		$(O)missing/strerror.o
+
+#
+# General library files for all platforms.
+#
+OBJS 		= \
+		$(OSOBJS) \
+		$(MISSINGOBJS) \
+		$(Bjhash-Objs) \
+		$(O)common/cf.o \
+		$(O)common/cmd.o \
+		$(O)common/define.o \
+		$(O)common/fileio.o \
+		$(O)common/ident.o \
+		$(O)common/getsizestr.o \
+		$(O)common/mcl.o \
+		$(O)common/mcregex.o \
+		$(O)common/mcsysinfo.o \
+		$(O)common/misc.o \
+		$(O)common/msg.o \
+		$(O)common/namelist.o \
+		$(O)common/psi.o \
+		$(O)common/run-data.o \
+		$(O)common/run.o \
+		$(O)common/runtime.o \
+		$(O)common/signal.o \
+		$(O)common/strutil.o \
+		$(O)common/time.o \
+		$(O)common/var.o \
+		$(O)device/classtype.o \
+		$(O)device/devdefine.o \
+		$(O)device/devdestroy.o \
+		$(O)device/devices.o \
+		$(O)device/disk.o \
+		$(O)device/type.o \
+		$(O)general/getarch.o \
+		$(O)general/getboottime.o \
+		$(O)general/getcpu.o \
+		$(O)general/getcurrenttime.o \
+		$(O)general/gethost.o \
+		$(O)general/getkernver.o \
+		$(O)general/getman.o \
+		$(O)general/getmemory.o \
+		$(O)general/getmisc.o \
+		$(O)general/getmodel.o \
+		$(O)general/getosdist.o \
+		$(O)general/getosname.o \
+		$(O)general/getosver.o \
+		$(O)general/getsysconf.o \
+		$(O)general/getvirtmem.o \
+		$(O)kernel/kernelvars.o \
+		$(O)kernel/mykvm.o \
+		$(O)net/macinfo.o \
+		$(O)partition/partinfo.o \
+		$(O)software/softinfo.o \
+		$(O)std/dlpi.o
+
+HFILES		= \
+		include/cmd.h \
+		include/config-data.h \
+		include/config.h \
+		include/declare.h \
+		include/defs.h \
+		include/dlpi.h \
+		include/dospart.h \
+		include/edid.h \
+		include/myfileio.h \
+		include/mykvm.h \
+		include/mconfig.h \
+		include/mcregex.h \
+		include/myata.h \
+		include/os.h \
+		include/probe.h \
+		include/strutil.h \
+		os/aix/aix.h \
+		os/bsdos/bsdos.h \
+		os/freebsd/freebsd.h \
+		os/hpux/hpux.h \
+		os/irix/irix.h \
+		os/linux/linux.h \
+		os/sunos/kdt.h \
+		os/sunos/obp.h \
+		os/sunos/sunos.h \
+		os/sunos/sunos4.h \
+		os/sunos/sunos5.h
+
+#
+# Names of directories from $(OBJS) that must exist for a compile
+#
+OBJDIRS = os/common os/$(OSNAME) std net missing bjhash device general \
+	get kernel software
+
+#
+# Main MC files we depend upon
+#
+MCHFILES	= \
+		$(srcdir)/../include/mcdefs.h \
+		$(srcdir)/../include/mcsysinfo.h \
+		$(srcdir)/../include/mctypes.h \
+		$(srcdir)/../include/mconfig.h \
+		$(srcdir)/../include/version.h
+
+OSINFO		= @osinfodef@
+DEFINES		= $(OSDEFINES) $(OSINFO)
+INCLUDES	= -I../include \
+			-I$(srcdir)/include \
+			-Ios/$(OSNAME) -I$(srcdir)/os/$(OSNAME) \
+			-I$(srcdir)/../include \
+			$(OSINC)
+CPPFLAGS	= $(INCLUDES) $(DEFINES)
+CFLAGS 		= $(OPT) $(OSCFLAGS) -DHAVE_AUTOCONFIG_H
+
+#
+# Default
+#
+# First we make sure all the directories required for building are present.
+# Then we call make again to build the targets.
+#
+all target:
+	@$(MKDIRHIER) $(OBJDIRS); \
+	$(MAKE) $(MFLAGS) targets
+
+targets: $(LibStatic)
+
+$(LibStatic): $(OBJS)
+	rm -f $@
+	$(AR) rc $@ $(OBJS)
+	@if [ ! -z "$(RANLIB)" -a "$(RANLIB)" != ":" ]; then \
+		echo $(RANLIB) $@; \
+		$(RANLIB) $@; \
+	fi
+
+mcdall: $(LibStatic)
+	Name=`basename $(LibStatic)`; \
+	RTPLATFORM=`$(BUILDINFO) -rtplatform -cfdir ${topsrcdir}/config`; \
+	PLdir=lib/platform/$${RTPLATFORM}; \
+	$(MCDADD) -R $(PROTOROOT) $(INSTALLOPTS) -d $$PLdir \
+		-m 444 -t $$PLdir/$$Name $(Target)
+
+install: $(LibStatic)
+	@$(MKDIRHIER) $(LIBDIR); \
+	RTPLATFORM=`$(BUILDINFO) -rtplatform -cfdir ${srcdir}/../config`; \
+	PLdir=$(LIBDIR)/platform/$${RTPLATFORM}; \
+	Target=$$PLdir/$(INSTALLNAME); \
+	$(MKDIRHIER) $$PLdir; \
+	cmd="$(INSTALLPROG) -c ${INSTALLOWN} -m 444 ${LibStatic} $$Target"; \
+	echo $$cmd; \
+	$$cmd; \
+	if [ ! -z "$(RANLIB)" -a "$(RANLIB)" != ":" ]; then \
+		cmd="$(RANLIB) $$Target"; \
+		echo $$cmd; \
+		$$cmd; \
+	fi
+
+clean:
+	rm -f $(LibStatic) $(OBJS) $(MISSINGOBJS)
+	rm -f *.o $(O)*.o ${LibStatic} buildinfo.c
+	find . -name '*.o' -exec rm -f {} \;
+
+distclean: clean
+	rm -f Makefile
+
+fullclean: distclean
+	rm -f *~ *% \#* core a.out metasysinfo \
+		sysinfo.tar sysinfo.tar.Z sysinfo.tar.gz \
+		*.d */*.d */*/*.d
+	rm -rf $(OUTNAME)
+
+FRC ${OBJS}: $(HFILES) $(MCHFILES) $(OSHFILES)
+
+@RulesMF@

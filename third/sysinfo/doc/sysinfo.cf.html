@@ -1,0 +1,176 @@
+<HTML>
+<BODY>
+<PRE>
+       sysinfo.cf - Configuration File for MagniComp(tm) SysInfo
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <STRONG>ConfDir</STRONG> <EM>PathName</EM>
+
+       <STRONG>Define</STRONG> <STRONG>|</STRONG> <EM>Type</EM> <EM>|</EM> <EM>StringKey</EM> <EM>|</EM> <EM>NumericKey</EM> <EM>|</EM> <EM>Value1</EM> <EM>|</EM> <EM>Value</EM> <EM>2</EM>
+
+       <STRONG>Device</STRONG>  <STRONG>|</STRONG>  <EM>Name</EM>  <EM>|</EM>  <EM>Type</EM><STRONG>/[</STRONG><EM>SubType</EM><STRONG>]</STRONG>  <EM>|</EM>  <EM>NumericID</EM> <EM>|</EM> <EM>Model</EM> <EM>|</EM>
+       <EM>Description</EM> <EM>|</EM> <EM>Flags</EM> <EM>|</EM> <EM>DevFiles</EM>
+
+       <STRONG>Include</STRONG> <EM>FileName</EM>
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <STRONG>sysinfo.cf</STRONG> files are parsed by the  <STRONG>MagniComp(tm)</STRONG>  <STRONG>SysInfo</STRONG>
+       program.   Text  starting with ``#'' and continuing to the
+       end of the line is ignored.  Each line starts with a  spe-
+       cific  keyword as described below.  All leading and trail-
+       ing white space (space and TAB characters) for each  field
+       is removed before parsing.  All keywords are case insensi-
+       tive.  The valid keywords are:
+
+       <STRONG>ConfDir</STRONG> <EM>PathName</EM>
+              Set the name of the directory to look for  configu-
+              ration files in to be <EM>PathName</EM>.  This also sets the
+              value of the <STRONG>${ConfDir}</STRONG> variable available for  use
+              with the <STRONG>Include</STRONG> keyword.  The default is <STRONG>/opt/sys-</STRONG>
+              <STRONG>info/config</STRONG>
+
+       <STRONG>Define</STRONG> <EM>fields</EM>
+              Definetion.  Each field is  seperated  by  a  ``|''
+              character.   Any  fields that are not specified are
+              initialized to NULL.  The <EM>StringKey</EM>  and/or  <EM>Numer-</EM>
+              <EM>icKey</EM>  fields are used in matching search criteria.
+              The specification for each field follows:
+
+              <EM>Type</EM>   Specify the definetion type.  The  following
+                     <EM>Type</EM> values are allowed:
+
+                     <STRONG>CPU,</STRONG>  <STRONG>Category,</STRONG> <STRONG>KArch,</STRONG> <STRONG>Kernel,</STRONG> <STRONG>NetType,</STRONG> <STRONG>OBP,</STRONG>
+                     <STRONG>Part,</STRONG> <STRONG>SysConf,</STRONG> <STRONG>SysModel,</STRONG> <STRONG>TapeInfo,</STRONG> <STRONG>VPD</STRONG>
+
+
+              <EM>StringKey</EM>
+                     A string to use as a key.
+
+              <EM>NumericKey</EM>
+                     A numeric value to use as a key.
+
+              <EM>Value1</EM> A string to return for the entry.
+
+              <EM>Value2</EM> A string to return for the entry.
+
+              Device specification.  Each field is seperated by a
+              ``|'' character.  Any fields that are not specified
+              are initialized to  NULL.   The  specification  for
+              each field follows:
+
+              <EM>Name</EM>   The name of the device.  ( e.g.  <STRONG>sd,</STRONG> <STRONG>cgsix</STRONG> )
+
+              <EM>Type</EM><STRONG>/[</STRONG><EM>SubType</EM><STRONG>]</STRONG>
+                     The type of device.  The <EM>Type</EM> value is  used
+                     to  determine  how  to  <EM>probe</EM> the device and
+                     what device type label to assign to it.   If
+                     <EM>SubType</EM>  is  specified,  then the <EM>Type</EM> field
+                     specifies how to <EM>probe</EM> the  device  and  the
+                     <EM>SubType</EM>  field  specifies  what  device type
+                     label to assign.  The valid keywords are:
+
+                     <STRONG>Bus,</STRONG>   <STRONG>CDROM,</STRONG>   <STRONG>CPU,</STRONG>    <STRONG>Device,</STRONG>    <STRONG>DiskCtlr,</STRONG>
+                     <STRONG>DiskDrive,</STRONG>  <STRONG>FrameBuffer,</STRONG>  <STRONG>Generic,</STRONG> <STRONG>KeyBoard,</STRONG>
+                     <STRONG>Memory,</STRONG> <STRONG>NetIF,</STRONG> <STRONG>Pseudo,</STRONG> <STRONG>TapeCtlr,</STRONG> <STRONG>TapeDrive</STRONG>
+
+
+              <EM>NumericID</EM>
+                     Specifies a unique numeric identifier for  a
+                     particuliar device type.  This field is typ-
+                     ically used to find a device  by  a  numeric
+                     value returned from the kernel.
+
+              <EM>Model</EM>  The device's model.
+
+              <EM>Description</EM>
+                     A description of the device.
+
+              <EM>Flags</EM>  The  <EM>Flags</EM>  field may contain either a valid
+                     keyword or a numeric value.  Numeric  values
+                     are used in a device-type specific manner by
+                     the device type's probe routine.  The  valid
+                     keywords are:
+
+                     <STRONG>DefInfo</STRONG>
+                             Use default device definetion infor-
+                             mation.   Usage  varies  by   device
+                             type.
+
+                      <STRONG>LenCmp</STRONG> Compare device name by length.
+
+                      <STRONG>NoUnit</STRONG> Don't  add  a  unit  number  to  the
+                             device's name.
+
+                      <STRONG>Zombie</STRONG> If the device is present,  treat  it
+                             as  if  it  were alive regardless of
+                             whether the kernel has indicated so.
+
+                     A  list of space seperated device files that
+                     provide access to the device.  Each file may
+                     contain  a <STRONG>`%d'</STRONG> which will be expanded to be
+                     the device's unit number.
+
+       <STRONG>Include</STRONG> <EM>FileName</EM>
+              Read and parse a <STRONG>sysinfo.cf</STRONG> file  called  <EM>FileName.</EM>
+              Parsing  of  the  current  file resumes on the next
+              line when finished with <EM>FileName.</EM>  If <EM>FileName</EM> does
+              not exist, <STRONG>MagniComp(tm)</STRONG> <STRONG>SysInfo</STRONG> will silently con-
+              tinue parsing the current file.  <EM>FileName</EM> may  con-
+              tain variables that are expanded at runtime.  Vari-
+              able names are enclosed inside of <STRONG>${}</STRONG>  or  <STRONG>$()</STRONG>  and
+              are  case insensitive.  The following variables are
+              available:
+
+              <STRONG>${ConfDir}</STRONG>
+                     The path to the <STRONG>MagniComp(tm)</STRONG>  <STRONG>SysInfo</STRONG>  con-
+                     figuration directory.
+
+              <STRONG>${DefConfFile}</STRONG>
+                     The  name of the default <STRONG>sysinfo.cf</STRONG> configu-
+                     ration file.  ( e.g.  <STRONG>Default.cf</STRONG> )
+
+              <STRONG>${OSname}</STRONG>
+                     The name of the operating  system.   (  e.g.
+                     <STRONG>SunOS</STRONG> )
+
+              <STRONG>${OSver}</STRONG>
+                     The operating system version number.  ( e.g.
+                     <STRONG>4.1.3</STRONG> )
+
+              <STRONG>${OSmajver}</STRONG>
+                     The operating system major  version  number.
+                     ( e.g. for <STRONG>4.1.3</STRONG> the value would be <STRONG>4</STRONG> )
+
+
+</PRE>
+<H2>AUTHOR</H2><PRE>
+       Michael A. Cooper
+       MagniComp
+       www.MagniComp.com
+
+
+</PRE>
+<H2>HOME PAGE</H2><PRE>
+       <STRONG>http://www.magnicomp.com/sysinfo</STRONG>
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       sysinfo(1) mcsysinfo(3)
+
+
+</PRE>
+<H2>DIAGNOSTICS</H2><PRE>
+
+</PRE>
+<H2>BUGS</H2><PRE>
+
+
+
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,12 @@
+#
+# $Id: freebsd.mf,v 1.1.1.1 2001-03-20 18:01:49 ghudson Exp $
+#
+# FreeBSD Makefile variables
+#
+OSOBJS		= \
+		$(O)os/freebsd/freebsd.o \
+		$(O)os/freebsd/isa.o \
+		$(O)std/pci.o \
+		${BSD-Objs}
+
+OSCFLAGS	= -I/usr/src/sys

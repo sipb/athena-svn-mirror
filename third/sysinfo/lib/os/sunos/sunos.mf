@@ -1,0 +1,13 @@
+#
+# $Id: sunos.mf,v 1.1.1.1 2001-03-20 18:01:35 ghudson Exp $
+#
+# SunOS common Makefile directives
+#
+SunOS-OS-OBJS		= \
+			$(O)os/sunos/sunos.o \
+			$(O)os/sunos/fb.o \
+			$(O)os/sunos/kbd.o \
+			$(O)os/sunos/kdt.o \
+			$(O)os/sunos/obp.o \
+			${NetIf-Objs}
+

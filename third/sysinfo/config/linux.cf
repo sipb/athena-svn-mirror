@@ -1,17 +1,33 @@
 #
-# $Id: linux.cf,v 1.1.1.1 1998-12-24 22:03:02 ghudson Exp $
+# Copyright (c) 1992-2000 MagniComp 
+# This software may only be used in accordance with the license which is 
+# available as http://www.magnicomp.com/sysinfo/4.0/sysinfo-eu-license.shtml
 #
-# Copyright (c) 1992-1998 Michael A. Cooper.  
-# This software may be freely used and distributed provided it is not
-# sold for profit or used in part or in whole for commercial gain
-# without prior written agreement, and the author is credited
-# appropriately.
+
+#
+# $Id: linux.cf,v 1.1.1.2 2001-03-20 18:02:30 ghudson Exp $
 #
 # 	Linux configuration file for SysInfo
 #
 # Include local (site specific) config file
 #
 include		local.cf
+#
+# Include PCI definetions
+#
+include		pci.cf
+#
+# SCSI definetions
+#
+include		scsi.cf
+#
+# ATA definetions
+#
+include		ata.cf
+#
+# DOS Partitioning info
+#
+include		dospart.cf
 #
 # System Configuration
 #

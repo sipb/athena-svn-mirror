@@ -1,0 +1,22 @@
+#
+# $Id: mcdinfo.template,v 1.1.1.1 2001-03-20 18:02:51 ghudson Exp $
+#
+# MagniComp Distribution Info 
+#
+NAME="@name@"
+VERSION="@version@"
+RELEASE="@release@"
+VENDORNAME="MagniComp"
+URL="http://www.MagniComp.com/sysinfo"
+SUMMARY="Show detailed system information"
+DISTBTIME=@distbtime@
+SIZE=@size@
+OSNAME="@osname@"
+MINOSVERSION="@minosversion@"
+OSVERSION="@minosversion@"
+ARCH="@arch@"
+LIBCNAME="@libcname@"
+MINLIBCVERSION="@minlibcversion@"
+ACCEPTLICENSEFILE="LICENSE.txt"
+ASKFORLICENSEFILE=1
+INSTALLDIR="@installdir@"

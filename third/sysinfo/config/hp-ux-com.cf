@@ -1,11 +1,11 @@
 #
-# $Id: hp-ux-com.cf,v 1.1.1.2 1998-12-24 22:02:59 ghudson Exp $
+# Copyright (c) 1992-2000 MagniComp 
+# This software may only be used in accordance with the license which is 
+# available as http://www.magnicomp.com/sysinfo/4.0/sysinfo-eu-license.shtml
 #
-# Copyright (c) 1992-1998 Michael A. Cooper.  
-# This software may be freely used and distributed provided it is not
-# sold for profit or used in part or in whole for commercial gain
-# without prior written agreement, and the author is credited
-# appropriately.
+
+#
+# $Id: hp-ux-com.cf,v 1.1.1.3 2001-03-20 18:03:29 ghudson Exp $
 #
 # SYSINFO configuration information common to 
 # different HP-UX implementations.
@@ -68,6 +68,28 @@ define|SysConf|_SC_2_UPE	|220	|bool|Supports POSIX.2 User Portability Utilities
 define|SysConf|_SC_2_VERSION	|211	|long|POSIX.2 version supported
 define|SysConf|_SC_RE_DUP_MAX	|207	|long|Max repeated occurrences of RegExp in regcmp(3C)
 define|SysConf|_SC_SECURITY_CLASS|10000	|long|DoD security level
+define|SysConf|_SC_CPU_VERSION   |10001 |long|CPU type this program is running on
+define|SysConf|_SC_IO_TYPE       |10002 |long|I/O system type this system supports
+define|SysConf|_SC_MSEM_LOCKID   |10003 |long|Msemaphore lock unique identifier
+define|SysConf|_SC_MCAS_OFFSET   |10004 |long|Offset on gateway page of mcas_util()
+define|SysConf|_SC_CPU_KEYBITS1  |10005 |long|Hardware key bit information
+define|SysConf|_SC_PROC_RSRC_MGR |10006 |long|Process Resource Manager is configured
+define|SysConf|_SC_EXEC_INTERPRETER_LENGTH  |10008 |long|Length of script header line
+define|SysConf|_SC_SLVM_MAXNODES |10009 |long|Max num of nodes supported by SLVM
+define|SysConf|_SC_SIGRTMIN      |10010 |long|First POSIX.4 Realtime Signal
+define|SysConf|_SC_SIGRTMAX      |10011 |long|Last  POSIX.4 Realtime Signal
+define|SysConf|_SC_LIBC_VERSION  |10012 |long|Libc version
+define|SysConf|_SC_KERNEL_BITS   |10013 |long|Running kernel is 32 or 64bit
+define|SysConf|_SC_KERNEL_IS_BIGENDIAN|10014 |bool|Kernel is big-endian
+define|SysConf|_SC_HW_32_64_CAPABLE   |10015 |bool|HW is capable of running 32bit and/or 64bit OS
+define|SysConf|_SC_INT_MIN        |10016 |long|Minimum value an object of type int can hold
+define|SysConf|_SC_INT_MAX        |10017 |long|Maximum value an object of type int can hold
+define|SysConf|_SC_LONG_MIN       |10018 |long|Minimum value an object of type long can hold
+define|SysConf|_SC_LONG_MAX       |10019 |long|Maximum value an object of type long can hold
+define|SysConf|_SC_SSIZE_MAX      |10020 |long|Maximum value an object of type ssize_t can hold
+define|SysConf|_SC_WORD_BIT       |10021 |long|Number of bits in a word
+define|SysConf|_SC_LONG_BIT       |10022 |long|Number of bits in a long
+define|SysConf|_SC_CPU_CHIP_TYPE  |10023 |long|Encoded CPU chip type from PDC
 define|SysConf|_SC_STREAM_MAX	|100	|long|Max stdio streams per process
 define|SysConf|_SC_TZNAME_MAX	|101	|long|Max bytes in TZ environment variable
 define|SysConf|_SC_XOPEN_CRYPT	|2002	|bool|Supports X/Open Encryption Feature Group

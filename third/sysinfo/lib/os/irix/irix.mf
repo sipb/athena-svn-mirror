@@ -1,0 +1,10 @@
+#
+# $Id: irix.mf,v 1.1.1.1 2001-03-20 18:01:51 ghudson Exp $
+#
+# IRIX Makefile variables
+#
+OSOBJS		= \
+			$(O)os/irix/irix.o \
+			$(O)os/irix/inst.o \
+			$(O)std/myscsi.o \
+			${NetIf-Objs}

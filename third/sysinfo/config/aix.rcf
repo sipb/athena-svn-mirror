@@ -1,0 +1,6 @@
+#
+# $Id: aix.rcf,v 1.1.1.1 2001-03-20 18:02:39 ghudson Exp $
+#
+# AIX Runtime Configuration File
+#
+MinOsVer="4.1"

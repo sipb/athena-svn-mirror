@@ -1,0 +1,108 @@
+#
+# $Revision: 1.1.1.1 $
+#
+# Makefile for SysInfo doc files
+#
+
+prefix		= @prefix@
+srcdir		= @srcdir@
+topsrcdir 	= @top_srcdir@
+VPATH 		= @srcdir@
+MANDIR		= @mandir@
+
+@VarsMF@
+
+#
+# Man sections and directories
+#
+S1		= 1
+S3		= 3
+S5		= 5
+MAN1 		= $(MANDIR)/man${S1}
+MAN3 		= $(MANDIR)/man${S3}
+MAN5 		= $(MANDIR)/man${S5}
+
+#
+# General documentation (other than man pages)
+#
+DOCDIR 		= $(prefix)/doc
+
+MANFILES	= \
+	sysinfo.man mcsysinfo.man sysinfo.cf.man
+MANHTMLFILES	= \
+	$(srcdir)/sysinfo.html $(srcdir)/mcsysinfo.html \
+	$(srcdir)/sysinfo.cf.html
+MANPSFILES	= \
+	$(srcdir)/sysinfo.ps $(srcdir)/mcsysinfo.ps $(srcdir)/sysinfo.cf.ps
+
+DOCFILES = \
+	$(MANHTMLFILES) \
+	$(srcdir)/RELEASE_NOTES.html \
+	$(srcdir)/RELEASE_NOTES.txt
+
+FILES	= \
+	$(MANFILES) $(DOCFILES)
+
+all: $(FILES) $(MANPSFILES)
+
+mcdall: $(MANHTMLFILES) $(MANPSFILES)
+	$(MCDADD) -R $(PROTOROOT) -d $(PROTOMAN1) -m 444  $(INSTALLOWN) \
+		-t man/man${S1}/sysinfo.${S1} \
+		$(srcdir)/sysinfo.man.in
+	$(MCDADD) -R $(PROTOROOT) -d $(PROTOMAN3) -m 444  $(INSTALLOWN) \
+		-t man/man${S3}/mcsysinfo.${S3} \
+		$(srcdir)/mcsysinfo.man.in
+	$(MCDADD) -R $(PROTOROOT) -d $(PROTOMAN5) -m 444  $(INSTALLOWN) \
+		-t man/man${S5}/sysinfo.cf.${S5} \
+		$(srcdir)/sysinfo.cf.man.in
+	$(MCDADD) -R $(PROTOROOT) -d $(PROTODOC) -m 444  $(INSTALLOWN) \
+		-t doc/RELEASE_NOTES.html \
+		$(srcdir)/RELEASE_NOTES.html
+	$(MCDADD) -R $(PROTOROOT) -d $(PROTODOC) -m 444 $(INSTALLOWN) \
+		-t doc/RELEASE_NOTES.txt \
+		$(srcdir)/RELEASE_NOTES.txt
+	@for f in $(MANHTMLFILES) $(MANPSFILES) ; do \
+		b=`echo $$f | sed -e 's;.*/;;'`; \
+		cmd="$(MCDADD) -R $(PROTOROOT) -d $(PROTODOC) \
+			-t doc/$$b -m 444 $(INSTALLOWN) $$f"; \
+		echo $$cmd; \
+		$$cmd; \
+	done
+
+install: $(FILES)
+	@-$(MKDIRHIER) $(MAN1); \
+	$(MKDIRHIER) $(MAN3); \
+	$(MKDIRHIER) $(MAN5); \
+	$(MKDIRHIER) $(DOCDIR); \
+	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) sysinfo.man $(MAN1)/sysinfo.$(S1)"; \
+	echo $$cmd; $$cmd; \
+	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) mcsysinfo.man $(MAN3)/mcsysinfo.$(S3)"; \
+	echo $$cmd; $$cmd; \
+	cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) sysinfo.cf.man $(MAN5)/sysinfo.cf.$(S5)"; \
+	echo $$cmd; $$cmd; \
+	for f in $(DOCFILES) ; do \
+		b=`echo $$f | sed -e 's;.*/;;'`; \
+		cmd="$(INSTALLPROG) -c -m 444 $(INSTALLOWN) $$f $(DOCDIR)/$${b}"; \
+		echo $$cmd; \
+		$$cmd; \
+	done
+
+clean:
+	rm -f *~ core $(MANHTMLFILES) $(MANPSFILES)
+
+distclean: clean
+	rm -f Makefile
+
+fullclean: distclean
+
+FRC:
+
+.SUFFIXES: .man .html .ps $(SUFFIXES)
+
+.man.html:
+	rm -f $@
+	nroff -man $*.man | $(PERL) $(BUILD)/man2html > $@
+
+.man.ps:
+	rm -f $@
+	groff -Tps -man $*.man > $@

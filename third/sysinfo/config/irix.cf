@@ -1,5 +1,11 @@
 #
-# $Id: irix.cf,v 1.1.1.3 1998-12-24 22:03:00 ghudson Exp $
+# Copyright (c) 1992-2000 MagniComp 
+# This software may only be used in accordance with the license which is 
+# available as http://www.magnicomp.com/sysinfo/4.0/sysinfo-eu-license.shtml
+#
+
+#
+# $Id: irix.cf,v 1.1.1.4 2001-03-20 18:03:47 ghudson Exp $
 #
 # SGI IRIX Sysinfo Configuration File
 #
@@ -70,7 +76,18 @@ define|SysConf|_SC_KERN_POINTERS |31    |long|32 or 64 bit kernel value
 # Inventory definetions from <sys/invent.h>
 #
 #
-# CPU Board Types	(INV_IP*)
+# Inventory Items that we do not directly handle in irix.c (INV_*)
+#
+define|InvItem			||18	|Unconnected SCSI LUN	|scsilun
+define|InvItem			||19	|PCI			|pci
+define|InvItem			||20	|PCI (no driver)	|pci
+define|InvItem			||21	|System PROMs		|sysprom
+define|InvItem			||22	|IEEE 1394 (FireWire)	|firewire
+define|InvItem			||23	|Redundant Power Source	|rps
+define|InvItem			||24	|Tensor Processing Unit	|tps
+define|InvItem			||25	|SCSI Helper Class
+#
+# CPU Board Types	(INV_IP*BOARD)
 #
 define|CPUBoard			||1	|R2300 CPU Board	|R2300
 define|CPUBoard			||2	|IP4 CPU Board		|IP4
@@ -93,6 +110,7 @@ define|CPUBoard			||18	|IP32 CPU Board		|IP32
 define|CPUBoard			||19	|IP27 CPU Board		|IP27
 define|CPUBoard			||20	|IP MHSIM Board		|IPMHSIM
 define|CPUBoard			||21	|IP33 CPU Board		|IP33
+define|CPUBoard			||22	|IP35 CPU Board		|IP35
 #
 # SCSI Controller types
 #
@@ -109,6 +127,15 @@ define|scsi-ctlr		||9	|QLogic 1040B
 define|scsi-ctlr		||10	|Adaptec Emerald FibreChannel
 define|scsi-ctlr		||11	|QLogic 1040B Rev 2
 define|scsi-ctlr		||12	|Unknown QLogic
+define|scsi-ctlr		||13	|QLogic 1240
+define|scsi-ctlr		||14	|QLogic 1080
+define|scsi-ctlr		||15	|QLogic 1280
+define|scsi-ctlr		||16	|QLogic 10160
+define|scsi-ctlr		||17	|QLogic 12160
+define|scsi-ctlr		||18	|QLogic 2100 Fibre-Channel
+define|scsi-ctlr		||19	|QLogic 2200 Fibre-Channel
+define|scsi-ctlr		||20	|Prisa HIO Dual Channel
+define|scsi-ctlr		||21	|Prisa PCI-64 Dual Channel
 #
 # Disk and Disk Controllers
 #
@@ -177,14 +204,14 @@ define|ParallelTypes||5	|Onboard Parallel Port			|obplp
 define|ParallelTypes||6	|Onboard EPP/ECP Parallel Port		|eppepcplp
 define|ParallelTypes||7	|External EPP Parallel Peripheral	|epppfd
 #
-# I/O Board Types
+# I/O Board Types (INV_*IO for class INV_IOBD)
 #
 define|IOBoardTypes||1	|Clover 2 I/O Board			|clover
 define|IOBoardTypes||2	|Everest I/O Board			|evio
 define|IOBoardTypes||3	|Origin 200 I/O Board			|o200io
 define|IOBoardTypes||4	|PCI ADAP				|pciadap
 #
-# Bus Types
+# Bus Types (INV_BUS_*)
 #
 define|BusTypes||0	|				|vme	|VME
 define|BusTypes||1	|				|eisa	|EISA
@@ -251,8 +278,11 @@ define|SCSITapeTypes||26	|Sony AIT Tape			|tps
 define|SCSITapeTypes||27	|Philips TD3600 Tape		|tps
 define|SCSITapeTypes||28	|Philips TD3600 Tape Stacker	|tps
 define|SCSITapeTypes||29	|Philips NCTP			|tps
+define|SCSITapeTypes||30	|Sony GY-2120			|tps
+define|SCSITapeTypes||31	|Overland Data L490E		|tps
+define|SCSITapeTypes||32	|StorageTeK 9840		|tps
 #
-# General Graphics Types
+# General Graphics Types (types for class graphics)
 #
 define|GraphicsTypes||1	|GR1 (Eclipse) Graphics			|ECLIPSE
 define|GraphicsTypes||2	|GR1 (Eclipse) 24-bit Graphics		|ECLIPSE
@@ -273,6 +303,7 @@ define|GraphicsTypes||16|InfiniteReality			|IR
 define|GraphicsTypes||17|Moosehead onboard CRIME Graphics	|CRIME
 define|GraphicsTypes||18|Onyx2 InfiniteReality2 Graphics	|IR2
 define|GraphicsTypes||19|Onyx2 Reality Graphics			|IR2LITE
+define|GraphicsTypes||20|Onyx2 InfiniteReality2e Graphics	|IR2E
 #
 # GR1 Graphics States
 #
@@ -371,6 +402,14 @@ define|NetworkTypes||25	|PCI				|ecf	|ETHER100M
 define|NetworkTypes||26	|GIO				|gfe	|ETHER100M
 define|NetworkTypes||27	|VME				|vfe	|ETHER100M
 define|NetworkTypes||28	|Gigabit			|ge	|ETHER1G
+
+define|NetworkTypes||29	|GSN Single xtalk		|gsn	|HIPPI
+define|NetworkTypes||30	|GSN Dual xtalk			|gsn	|HIPPI
+define|NetworkTypes||31	|FORE HE			|he	|ATM
+define|NetworkTypes||32	|FORE PCA			|pca	|ATM
+define|NetworkTypes||33	|FORE VMA			|vma	|ATM
+define|NetworkTypes||34	|FORE ESA			|esa	|ATM
+define|NetworkTypes||35	|FORE GIA			|gia	|ATM
 #	
 # Misc. SCSI device types
 #
@@ -384,7 +423,7 @@ define|SCSITypes||8	|Jukebox/Changer		|changer
 define|SCSITypes||9	|Communications Device		|comm
 define|SCSITypes||32	|RAID Controller		|scsiraid
 #
-# Audio
+# Audio (INV_AUDIO_*)
 #
 define|AudioTypes||0	|Indigo DSP System			|hdsp
 define|AudioTypes||1	|ViGRA 110 Audio Board			|vigra110aud
@@ -393,7 +432,7 @@ define|AudioTypes||3	|HAL2 / Audio Module for Indigo 2	|atwo
 define|AudioTypes||4	|Moosehead AD1843 codec			|athree
 define|AudioTypes||5	|RAD PCI chip				|rad
 #
-# Video Types
+# Video Types (INV_VIDEO_*)
 #
 define|VideoTypes||0	|LIGHT Video				|light
 define|VideoTypes||1	|VS2 Video				|vstwo
@@ -408,6 +447,7 @@ define|VideoTypes||9	|Galileo 1.5				|mgrasvid
 define|VideoTypes||10	|DIVO Video				|divo
 define|VideoTypes||11	|SpeedRacer Pro Video			|racer
 define|VideoTypes||12	|EVO Personal Video			|evo
+define|VideoTypes||13	|XIO XT-HDTV Video			|xio
 #
 # Display Types
 #
@@ -500,3 +540,5 @@ define|SysModels|R10.00,IP30,.*,.*		||Octane
 define|SysModels|R5.00,IP32,.*,.*		||O2 R5K
 define|SysModels|R10.00,IP32,.*,.*		||O2 R10K
 define|SysModels|R10.00,IP27,-,-		||Origin2000
+define|SysModels|R10.00,IP27,.*,.*		||Onyx2
+define|SysModels|R12000,IP35,-,-		||Origin3800

@@ -1,45 +1,36 @@
-#!/bin/sh
-#
-# $Id: mkdirhier,v 1.1.1.1 1998-12-24 22:02:58 ghudson Exp $
-#
-# Make directory hierarchy
-#
+#! /bin/sh
+# mkinstalldirs --- make directory hierarchy
+# Author: Noah Friedman <friedman@prep.ai.mit.edu>
+# Created: 1993-05-16
+# Last modified: 1994-03-25
+# Public domain
 
-dirmode=755
-mkdirprog=mkdir
+errstatus=0
 
-dstdir=$1
+for file in ${1+"$@"} ; do 
+   set fnord `echo ":$file" | sed -ne 's/^:\//#/;s/^://;s/\// /g;s/^#/\//;p'`
+   shift
 
-# Skip lots of stat calls in the usual case.
-if [ -d "$dstdir" ]; then
-    exit 0
-fi
+   pathcomp=
+   for d in ${1+"$@"} ; do
+     pathcomp="$pathcomp$d"
+     case "$pathcomp" in
+       -* ) pathcomp=./$pathcomp ;;
+     esac
 
-defaultIFS='
-'
-IFS="${IFS-${defaultIFS}}"
+     if test ! -d "$pathcomp"; then
+        echo "mkdir $pathcomp" 1>&2
+        mkdir "$pathcomp" > /dev/null 2>&1 || lasterr=$?
+     fi
 
-oIFS="${IFS}"
-# Some sh's can't handle IFS=/ for some reason.
-IFS='%'
-set - `echo ${dstdir} | sed -e 's@/@%@g' -e 's@^%@/@'`
-IFS="${oIFS}"
+     if test ! -d "$pathcomp"; then
+	errstatus=$lasterr
+     fi
 
-pathcomp=''
-
-while [ $# -ne 0 ] ; do
-        pathcomp="${pathcomp}${1}"
-        shift
-
-        if [ ! -d "${pathcomp}" ] ;
-        then
-                $mkdirprog "${pathcomp}"
-                echo $mkdirprog "${pathcomp}"
-		chmod $dirmode "${pathcomp}"
-        else
-                true
-        fi
-
-        pathcomp="${pathcomp}/"
+     pathcomp="$pathcomp/"
+   done
 done
 
+exit $errstatus
+
+# mkinstalldirs ends here
