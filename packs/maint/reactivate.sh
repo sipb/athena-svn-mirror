@@ -1,12 +1,12 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.60.2.2 2001-08-01 14:17:35 ghudson Exp $
+# $Id: reactivate.sh,v 1.60.2.3 2001-09-16 17:54:30 ghudson Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
 
-PATH=/bin:/etc/athena:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb:/usr/bsd; export PATH
+PATH=/bin:/etc/athena:/bin/athena:/usr/bin:/usr/sbin:/usr/ucb:/usr/bsd:/sbin; export PATH
 HOSTTYPE=`/bin/athena/machtype`; export HOSTTYPE
 
 pidfile=/var/athena/reactivate.pid
@@ -208,6 +208,9 @@ if [ sun4 = "$HOSTTYPE" ]; then
 	rm -rf /var/adm/utmp /var/adm/wtmp
 fi
 
+# Clean up socket files left by sawfish.
+rm -rf /tmp/.sawfish-*
+
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
 	if [ "$PUBLIC" = true ]; then
@@ -265,6 +268,18 @@ if [ "$full" = true ]; then
 		else
 			/bin/athena/fs setcrypt off
 		fi
+		# Work around an OpenAFS bug: if a Linux client boots
+		# while its root.afs is unavailable, it will get into
+		# a broken state that can only be fixed by rebooting.
+		# Check for this state and reboot here.
+		if [ "$PUBLIC" = "true" -a "$AFSCLIENT" = "true" ]; then
+			module=`lsmod | grep afs`
+			mounted=`mount | grep afs`
+			if [ -n "$module" -a -z "$mounted" ]; then
+				logger -p user.notice "AFS loaded in kernel but not mounted.  Rebooting."
+				reboot
+			fi
+		fi
 	fi
 fi
 
@@ -304,7 +319,14 @@ if [ "$full" = true ]; then
 	if [ "$PUBLIC" = true -a -f /srvd/.rvdinfo ]; then
 		NEWVERS=`awk '{a=$5} END{print a}' /srvd/.rvdinfo`
 		if [ "$NEWVERS" = "$THISVERS" ]; then
-			/usr/athena/etc/track -q
+			case "$HOSTTYPE" in
+			sun4)
+				/srvd/usr/athena/lib/update/track-srvd
+				;;
+			*)
+				/usr/athena/etc/track -q
+				;;
+			esac
 			cf=`cat /srvd/usr/athena/lib/update/configfiles`
 			for i in $cf; do
 				if [ -f /srvd$i ]; then
