@@ -10,14 +10,14 @@
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.2 1990-12-06 16:46:51 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.3 1990-12-07 15:55:05 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
 extern char	*RunCommand();
 extern char	filebase[];
 extern int	whichTopScreen;
-extern Widget	topW;
+extern Widget	topW, paneW;
 extern TextWidget	bottextW;
 
 static int	replynum;
@@ -51,7 +51,7 @@ int	myreplynum;
 	char		subjectline[80];
 	char		buffer[80];
 	char		*returndata;
-	Widget		paneW, box1W, box2W, button1W, button2W;
+	Widget		localPaneW, box1W, box2W, button1W, button2W;
 
 	if (sendPopupW)
 		return;
@@ -96,7 +96,7 @@ int	myreplynum;
 			n);
 
 	n = 0;
-	paneW = XtCreateManagedWidget(
+	localPaneW = XtCreateManagedWidget(
 			"pane",
 			panedWidgetClass,
 			sendPopupW,
@@ -121,7 +121,7 @@ int	myreplynum;
 	(void) XtCreateManagedWidget(
 			"desctext",
 			asciiTextWidgetClass,
-			paneW,
+			localPaneW,
 			args,
 			n);
 
@@ -130,7 +130,7 @@ int	myreplynum;
 	box1W = XtCreateManagedWidget(
 			"topbox",
 			boxWidgetClass,
-			paneW,
+			localPaneW,
 			args,
 			n);
 
@@ -158,7 +158,7 @@ int	myreplynum;
 	sendTextW = XtCreateManagedWidget(
 			"bodytext",
 			asciiTextWidgetClass,
-			paneW,
+			localPaneW,
 			args,
 			n);
 
@@ -167,7 +167,7 @@ int	myreplynum;
 	box2W = XtCreateManagedWidget(
 			"botbox",
 			boxWidgetClass,
-			paneW,
+			localPaneW,
 			args,
 			n);
 
@@ -828,6 +828,7 @@ Boolean	deathoption;
 			warningPopupW,
 			NULL,
 			0);
+	XtInstallAccelerators(warningPaneW, paneW);
 
 	n = 0;
 	XtSetArg(args[n], XtNlabel, prefix);			n++;
@@ -874,6 +875,8 @@ Boolean	deathoption;
 
 		XtAddCallback (deathButtonW, XtNcallback, DieCB, False);
 	}
+
+	XtInstallAllAccelerators(warningPopupW, paneW);
 
 	XtPopup(warningPopupW, XtGrabNone);
 }
@@ -993,7 +996,7 @@ PutUpHelp()
 {
 	Arg		args[5];
 	unsigned int	n;
-	Widget	paneW, textW, boxW, buttonW;
+	Widget	localPaneW, textW, boxW, buttonW;
 
 	if (helpPopupW)
 		return;
@@ -1006,8 +1009,9 @@ PutUpHelp()
 			args,
 			n);
 
+	XtInstallAccelerators(helpPopupW, paneW);
 	n = 0;
-	paneW = XtCreateManagedWidget(
+	localPaneW = XtCreateManagedWidget(
 			"pane",
 			panedWidgetClass,
 			helpPopupW,
@@ -1015,7 +1019,7 @@ PutUpHelp()
 			n);
 
 	n = 0;
-	XtSetArg(args[n], XtNeditType, XawtextRead);		n++;
+	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
 
 	switch (whichTopScreen) {
 	case MAIN:
@@ -1028,19 +1032,21 @@ PutUpHelp()
 		XtSetArg(args[n], XtNstring, helptext3);	n++;
 		break;
 	}
+
 	textW = XtCreateManagedWidget(
 			"helptext",
 			asciiTextWidgetClass,
-			paneW,
+			localPaneW,
 			args,
 			n);
+	XtInstallAccelerators(textW, paneW);
 
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	boxW = XtCreateManagedWidget(
 			"box",
 			boxWidgetClass,
-			paneW,
+			localPaneW,
 			args,
 			n);
 
@@ -1052,6 +1058,7 @@ PutUpHelp()
 			args,
 			n);
 
+	XtInstallAllAccelerators(helpPopupW, paneW);
 	XtAddCallback (buttonW, XtNcallback, PopDownCB, True);
 	XtPopup(helpPopupW, XtGrabNone);
 }
