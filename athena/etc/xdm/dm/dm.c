@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.62 1998-05-17 03:42:16 ghudson Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.63 1998-06-04 18:26:47 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -37,7 +37,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.62 1998-05-17 03:42:16 ghudson Exp $";
+static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/dm/dm.c,v 1.63 1998-06-04 18:26:47 ghudson Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -68,11 +68,12 @@ static char *rcsid_main = "$Header: /afs/dev.mit.edu/source/repository/athena/et
 #endif
 
 /* flags used by signal handlers */
+pid_t xpid, consolepid, loginpid;
 volatile int alarm_running = NONEXISTENT;
-volatile int xpid, x_running = NONEXISTENT;
-volatile int consolepid, console_running = NONEXISTENT;
+volatile int x_running = NONEXISTENT;
+volatile int console_running = NONEXISTENT;
 volatile int console_tty = 0, console_failed = FALSE;
-volatile int loginpid, login_running = NONEXISTENT;
+volatile int login_running = NONEXISTENT;
 char *logintty;
 
 #if defined(UTMP_FILE)
@@ -107,6 +108,7 @@ static char **parseargs(char *line, char *extra, char *extra1, char *extra2);
 static void console_login(char *conf, char *msg);
 static void start_console(char *line, char **argv);
 static void cleanup(char *tty);
+static pid_t fork_and_store(pid_t *var);
 #ifdef TRACE
 static void trace(char *msg);
 #endif
@@ -338,8 +340,7 @@ int main(int argc, char **argv)
 	fprintf(stderr,"Starting X\n");
 #endif
 	x_running = STARTUP;
-	xpid = fork();
-	switch (xpid) {
+	switch (fork_and_store(&xpid)) {
 	case 0:
 	    if(fcntl(2, F_SETFD, 1) == -1)
 	      close(2);
@@ -455,8 +456,7 @@ int main(int argc, char **argv)
 	login_running = STARTUP;
 	sigact.sa_handler = loginready;
         sigaction(SIGUSR1, &sigact, NULL);
-	loginpid = fork();
-	switch (loginpid) {
+	switch (fork_and_store(&loginpid)) {
 	case 0:
 	    max_fd = sysconf(_SC_OPEN_MAX);
 	    for (file = 0; file < max_fd; file++)
@@ -694,8 +694,7 @@ static void start_console(char *line, char **argv)
 
 
     console_running = RUNNING; 
-    consolepid = fork();
-    switch (consolepid) {
+    switch (fork_and_store(&consolepid)) {
     case 0:
 	/* Close all file descriptors except stdout/stderr */
 	close(0);
@@ -1119,6 +1118,22 @@ static char *getconf(char *file, char *name)
 	return(ret);
     }
     return(NULL);
+}
+
+/* Fork, storing the pid in a variable var and returning the pid.
+ * Make sure that the pid is stored before any SIGCHLD can be
+ * delivered.
+ */
+static pid_t fork_and_store(pid_t *var)
+{
+  sigset_t mask, omask;
+
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCHLD);
+  sigprocmask(SIG_BLOCK, &mask, &omask);
+  *var = fork();
+  sigprocmask(SIG_SETMASK, &omask, NULL);
+  return *var;
 }
 
 #ifdef TRACE
