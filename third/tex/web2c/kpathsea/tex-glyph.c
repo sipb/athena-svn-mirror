@@ -1,142 +1,129 @@
 /* tex-glyph.c: Search for GF/PK files.
 
-Copyright (C) 1993 Karl Berry.
+Copyright (C) 1993, 94, 95, 96 Karl Berry.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #include <kpathsea/config.h>
 
+#include <kpathsea/absolute.h>
 #include <kpathsea/expand.h>
-#include <kpathsea/filefmt.h>
 #include <kpathsea/fontmap.h>
 #include <kpathsea/pathsearch.h>
-#include <kpathsea/tex-font.h>
 #include <kpathsea/tex-glyph.h>
 #include <kpathsea/tex-make.h>
 #include <kpathsea/variable.h>
 
 /* Routines are in bottom-up order.  */
 
-/* Return malloced filename for bitmap font NAME at resolution DPI with
-   extension SUFFIX.  We depend on callers setting the environment
-   variables; we only find the right variable spec to use.  */
+/* Support both cmr10.300pk and dpi300/cmr10.pk.  (Use the latter
+   instead of dpi300\cmr10.pk since DOS supports /'s, but Unix doesn't
+   support \'s.  */
+#define UNIX_BITMAP_SPEC "$KPATHSEA_NAME.$KPATHSEA_DPI$KPATHSEA_FORMAT"
+#define DPI_BITMAP_SPEC  "dpi$KPATHSEA_DPI/$KPATHSEA_NAME.$KPATHSEA_FORMAT"
 
-#ifndef KPATHSEA_BITMAP_NAME
-#ifdef DOS
-/* dpi300\cmr10.pk */
-#define KPATHSEA_BITMAP_NAME \
-  "dpi$KPATHSEA_DPI\\$KPATHSEA_NAME.$KPATHSEA_FORMAT"
-#else
-/* cmr10.300pk */
-#define KPATHSEA_BITMAP_NAME "$KPATHSEA_NAME.$KPATHSEA_DPI$KPATHSEA_FORMAT"
-#endif /* not DOS */
-#endif /* not KPATHSEA_BITMAP_NAME */
-
-static string
-bitmap_name P3C(const_string, name,  unsigned, dpi,  const_string, suffix)
-{
-  string ret;
-  const_string spec = getenv ("KPATHSEA_BITMAP_NAME");
-  
-  /* We could save a speck of time by setting the environment variable
-     to our compile-time default at the beginning of the program, but it
-     it doesn't seem worth the code separation.  */
-  if (!spec)
-    spec = KPATHSEA_BITMAP_NAME;
-  
-  ret = kpse_var_expand (spec);
-
-  return ret;
-}
-
-
-/* Look up FONT_NAME at resolution DPI in PATH, with filename suffix
+/* Look up FONTNAME at resolution DPI in PATH, with filename suffix
    EXTENSION.  Return file found or NULL.  */
 
 static string
-try_format P4C(const_string, font_name,  unsigned, dpi,
-               const_string, path,  const_string, extension)
+try_format P3C(const_string, fontname,  unsigned, dpi,
+               kpse_file_format_type,  format)
 {
-  string name, ret;
+  static const_string bitmap_specs[]
+    = { UNIX_BITMAP_SPEC, DPI_BITMAP_SPEC, NULL };
+  const_string *spec;
+  boolean must_exist;
+  string ret = NULL;
+  const_string path = kpse_format_info[format].path;
+  const_string *sfx;
+  if (!path)
+    path = kpse_init_format (format);
   
-  /* Set the suffix on name we'll be searching for.  */
-  xputenv ("KPATHSEA_FORMAT", extension);
+  /* Set the suffix on the name we'll be searching for.  */
+  sfx = kpse_format_info[format].suffix;
+  if (sfx && *sfx) 
+    xputenv ("KPATHSEA_FORMAT", *sfx);
 
-  name = bitmap_name (font_name, dpi, extension);
-  ret = kpse_path_search (path, name);
-  
-  if (name != ret)
-    free (name);
+  /* OK, the limits on this for loop are a little hokey, but it saves
+     having to repeat the body.  We want to do it once with `must_exist'
+     false to avoid looking on the disk for cmr10.600pk if
+     dpi600/cmr10.pk is in ls-R.  (The time spent in the extra variable
+     expansions and db searches is negligible.)  */
+  for (must_exist = false; !ret && must_exist <= true; must_exist++)
+    {
+      for (spec = bitmap_specs; !ret && *spec; spec++)
+        {
+          string name = kpse_var_expand (*spec);
+          ret = kpse_path_search (path, name, must_exist);
+          if (name != ret)
+            free (name);
+        }
+    }
     
   return ret;
 }
 
-/* Look for FONT_NAME at resolution DPI, using GLYPH_PATHS.  If
-   GLYPH_PATHS[format] is NULL, don't search for that format; otherwise,
-   it is the raw search path to use for that format.  Search the
+/* Look for FONTNAME at resolution DPI in format FORMAT.  Search the
    (entire) PK path first, then the GF path, if we're looking for both.
-   Return the filename found, and (if it's non-NULL) fill in FONT_FILE.  */
+   Return any filename found, and (if we succeeded) fill in GLYPH_FILE.  */
 
 static string
-try_size P4C(const_string, font_name,
-             unsigned, dpi,
-             string *, glyph_paths,
-             kpse_font_file_type *, font_file)
+try_size P4C(const_string, fontname,  unsigned, dpi,
+             kpse_file_format_type, format,
+             kpse_glyph_file_type *, glyph_file)
 {
   kpse_file_format_type format_found;
   string ret;
-  string gf_path = glyph_paths[kpse_gf_format];
-  string pk_path = glyph_paths[kpse_pk_format];
+  boolean try_gf = format == kpse_gf_format || format == kpse_any_glyph_format;
+  boolean try_pk = format == kpse_pk_format || format == kpse_any_glyph_format;
 
   xputenv_int ("KPATHSEA_DPI", dpi);
   
   /* Look for PK first (since it's more likely to be found), then GF.  */
-  ret = pk_path ? try_format (font_name, dpi, pk_path, "pk") : NULL;
+  ret = try_pk ? try_format (fontname, dpi, kpse_pk_format) : NULL;
 
   if (ret != NULL)
     format_found = kpse_pk_format;
   else
     {
-      if (gf_path)
+      if (try_gf)
         {
-          ret = try_format (font_name, dpi, gf_path, "gf");
+          ret = try_format (fontname, dpi, kpse_gf_format);
           format_found = kpse_gf_format;
         }
     }
   
-  if (ret != NULL && font_file)
+  if (ret != NULL && glyph_file)
     { /* Success.  Fill in the return info.  Discard const.  */
-      font_file->name = (string) font_name;
-      font_file->dpi = dpi;
-      font_file->format = format_found;
+      glyph_file->name = (string) fontname;
+      glyph_file->dpi = dpi;
+      glyph_file->format = format_found;
     }
     
   return ret;
 }
 
-/* Look for FONT_NAME at resolution DPI, then at the resolutions within
-   KPSE_BITMAP_TOLERANCE of DPI.  See `try_name' for information on
-   other args and return value.  */
+/* Look for FONTNAME at resolution DPI, then at the resolutions within
+   KPSE_BITMAP_TOLERANCE of DPI.  */
 
 static string
-try_resolution P4C(const_string, font_name,
-                   unsigned, dpi,
-                   string *, glyph_paths,
-                   kpse_font_file_type *, font_file)
+try_resolution P4C(const_string, fontname,  unsigned, dpi,
+                   kpse_file_format_type, format,
+                   kpse_glyph_file_type *, glyph_file)
 {
-  string ret = try_size (font_name, dpi, glyph_paths, font_file);
+  string ret = try_size (fontname, dpi, format, glyph_file);
   
   if (!ret)
     {
@@ -149,68 +136,65 @@ try_resolution P4C(const_string, font_name,
          character features (Tom did this in dvips).  */
       for (r = lower_bound; !ret && r <= upper_bound; r++)
         if (r != dpi)
-          ret = try_size (font_name, r, glyph_paths, font_file);
+          ret = try_size (fontname, r, format, glyph_file);
     }
   
   return ret;
 }
 
-/* Look up FONT_NAME in format FORMAT at DPI in the texfonts.map files
-   that we can find, returning the filename found and FONT_FILE.  */
+/* Look up *FONTNAME_PTR in format FORMAT at DPI in the texfonts.map files
+   that we can find, returning the filename found and GLYPH_FILE.  Also
+   set *FONTNAME_PTR to the real name corresponding to the alias found
+   or the first alias, if that is not an alias itself.  (This allows
+   mktexpk to only deal with real names.)  */
 
 static string
-try_fontmap P4C(const_string, font_name,
-                unsigned, dpi,
-		string *, glyph_paths,
-                kpse_font_file_type *, font_file)
+try_fontmap P4C(string *, fontname_ptr,  unsigned, dpi,
+                kpse_file_format_type, format,
+                kpse_glyph_file_type *, glyph_file)
 {
-  static map_type fontmap = NULL;
   string *mapped_names;
+  string fontname = *fontname_ptr;
   string ret = NULL;
 
-  if (!fontmap)
-    { /* If we wanted to complicate our lives, we could handle separate
-       maps for GF and PK ones.  I don't see that this has any practical
-       utility, though, because if someone wants an alias, most likely
-       the alias should apply to non-glyphs as well as glyphs (let alone
-       to only GF format or PK format).  */
-      const_string map_path = KPSE_GLYPH_PATH ();
-      fontmap = map_create (map_path);
+  mapped_names = kpse_fontmap_lookup (fontname);
+  if (mapped_names) {
+    string mapped_name;
+    string first_name = *mapped_names;
+    while ((mapped_name = *mapped_names++) && !ret) {
+      xputenv ("KPATHSEA_NAME", mapped_name);
+      ret = try_resolution (mapped_name, dpi, format, glyph_file);
     }
-
-  mapped_names = map_lookup (fontmap, font_name);
-  if (mapped_names)
-    {
-      string mapped_name;
-      while ((mapped_name = *mapped_names++) && !ret)
-        {
-          xputenv ("KPATHSEA_NAME", mapped_name);
-          ret = try_resolution (mapped_name, dpi, glyph_paths, font_file);
-        }
+    if (ret) {
+      /* If some alias succeeeded, return that alias.  */
+      *fontname_ptr = xstrdup (mapped_name);
+    /* Return first alias name, unless that itself is an alias,
+       in which case do nothing.  */
+    } else if (!kpse_fontmap_lookup (first_name)) {
+      *fontname_ptr = xstrdup (first_name);
     }
+  } 
 
   return ret;
 }
 
-/* Look for FONT_NAME in `kpse_fallback_resolutions', omitting DPI if we
-   happen across it.  Pass GLYPH_PATHS and FONT_FILE along as usual.
-   Assume `kpse_fallback_resolutions' is sorted.  */
+/* Look for FONTNAME in `kpse_fallback_resolutions', omitting DPI if we
+   happen across it.  Return NULL if nothing found.  Pass GLYPH_FILE
+   along as usual.  Assume `kpse_fallback_resolutions' is sorted.  */
 
 static string
-try_fallback_resolutions P4C(const_string, font_name,
-                             unsigned, dpi,
-                             string *, glyph_paths,
-                             kpse_font_file_type *, font_file)
+try_fallback_resolutions P4C(const_string, fontname,  unsigned, dpi,
+                             kpse_file_format_type, format,
+                             kpse_glyph_file_type *, glyph_file)
 {
   unsigned s;
   int loc, max_loc;
   int lower_loc, upper_loc;
   unsigned lower_diff, upper_diff;
   unsigned closest_diff = UINT_MAX;
-  string ret = NULL; /* Initialize in case the first fallback resolution
-                        is DPI.  */
+  string ret = NULL; /* In case the only fallback resolution is DPI.  */
 
-  /* First find the fallback size closest to DPI.  */
+  /* First find the fallback size closest to DPI, even including DPI.  */
   for (s = 0; kpse_fallback_resolutions[s] != 0; s++)
     {
       unsigned this_diff = abs (kpse_fallback_resolutions[s] - dpi);
@@ -220,18 +204,23 @@ try_fallback_resolutions P4C(const_string, font_name,
           loc = s;
         }
     }
+  if (s == 0)
+    return ret; /* If nothing in list, quit now.  */
+  
   max_loc = s;
   lower_loc = loc - 1;
   upper_loc = loc + 1;
   
   for (;;)
     {
+      unsigned fallback = kpse_fallback_resolutions[loc];
       /* Don't bother to try DPI itself again.  */
-      if (kpse_fallback_resolutions[loc] != dpi)
-        ret = try_resolution (font_name, kpse_fallback_resolutions[loc],
-                              glyph_paths, font_file);
-      if (ret)
-        break;
+      if (fallback != dpi)
+        {
+          ret = try_resolution (fontname, fallback, format, glyph_file);
+          if (ret)
+            break;
+        }
       
       /* That didn't work. How far away are the locs above or below?  */
       lower_diff = lower_loc > -1
@@ -262,108 +251,106 @@ try_fallback_resolutions P4C(const_string, font_name,
 /* See the .h file for description.  This is the entry point.  */
 
 string
-kpse_find_glyph_format P4C(const_string, font_name,
-                           unsigned, dpi,
-                           kpse_file_format_type, format,
-                           kpse_font_file_type *, font_file)
+kpse_find_glyph P4C(const_string, passed_fontname,  unsigned, dpi,
+                    kpse_file_format_type, format,
+                    kpse_glyph_file_type *, glyph_file)
 {
-  string glyph_paths[kpse_any_glyph_format];
   string ret;
-  kpse_source_type source;
+  kpse_glyph_source_type source;
+  string fontname = (string) passed_fontname; /* discard const */
   
-  /* Initialize the path strings for the glyph formats we will try.  */
-  glyph_paths[kpse_gf_format]
-    = format == kpse_any_glyph_format || format == kpse_gf_format
-      ? KPSE_GF_PATH () : NULL;
-  
-  glyph_paths[kpse_pk_format]
-   =  format == kpse_any_glyph_format || format == kpse_pk_format
-      ? KPSE_PK_PATH () : NULL;
-
-
   /* Start the search: try the name we're given.  */
-  source = kpse_source_normal;
-  xputenv ("KPATHSEA_NAME", font_name);
-  ret = try_resolution (font_name, dpi, glyph_paths, font_file);
+  source = kpse_glyph_source_normal;
+  xputenv ("KPATHSEA_NAME", fontname);
+  ret = try_resolution (fontname, dpi, format, glyph_file);
   
-  /* Sorry for the spaghetti logic.  How to improve?  */
-  if (!ret)
-    {
-      /* Maybe FONT_NAME was an alias.  */
-      source = kpse_source_alias;
-      ret = try_fontmap (font_name, dpi, glyph_paths, font_file);
+  /* Try all the various possibilities in order of preference.  */
+  if (!ret) {
+    /* Maybe FONTNAME was an alias.  */
+    source = kpse_glyph_source_alias;
+    ret = try_fontmap (&fontname, dpi, format, glyph_file);
 
-      /* OK, maybe we can create it on the fly with MakeTeXPK.  */
-      if (!ret)
-        {
-          source = kpse_source_maketex;
-          /* `try_resolution' leaves the envvar set randomly.  */
-          xputenv_int ("KPATHSEA_DPI", dpi);
-          ret = kpse_make_tex (format, font_name);
-        }
-       
-      /* If MakeTeX... succeeded, set return struct.  (Doesn't make sense for
-         `kpse_make_tex' to set it, since it can only succeed or fail,
-         unlike the other routines.)  */
-      if (ret)
-        {
-          KPSE_FONT_FILE_DPI (*font_file) = dpi;
-          /* Discarding const here.  */
-          KPSE_FONT_FILE_NAME (*font_file) = (string) font_name;
-        }
-
-      /* If MakeTeX... failed, try any fallback resolutions.  */
-      else
-        {
-          if (kpse_fallback_resolutions)
-            ret = try_fallback_resolutions (font_name, dpi, glyph_paths,
-                                            font_file);
-
-          /* We're down to the font of last resort.  */
-          if (!ret && kpse_fallback_font)
-            {
-              /* As before, first try it at the given size.  */
-              source = kpse_source_fallback;
-              xputenv ("KPATHSEA_NAME", kpse_fallback_font);
-              ret = try_resolution (kpse_fallback_font, dpi,
-                                    glyph_paths, font_file);
-              
-              /* The fallback font at the fallback resolutions.  */
-              if (!ret && kpse_fallback_resolutions)
-                ret = try_fallback_resolutions (kpse_fallback_font, dpi,
-                                               glyph_paths, font_file);
-            }
-        }
+    /* If not an alias, try creating it on the fly with mktexpk,
+       unless FONTNAME is absolute or explicitly relative.  */
+    if (!ret && !kpse_absolute_p (fontname, true)) {
+      source = kpse_glyph_source_maketex;
+      /* `try_resolution' leaves the envvar set randomly.  */
+      xputenv_int ("KPATHSEA_DPI", dpi);
+      ret = kpse_make_tex (format, fontname);
     }
+
+    /* If mktex... succeeded, set return struct.  Doesn't make sense for
+       `kpse_make_tex' to set it, since it can only succeed or fail,
+       unlike the other routines.  */
+    if (ret) {
+      KPSE_GLYPH_FILE_DPI (*glyph_file) = dpi;
+      KPSE_GLYPH_FILE_NAME (*glyph_file) = fontname;
+    }
+
+    /* If mktex... failed, try any fallback resolutions.  */
+    else {
+      if (kpse_fallback_resolutions)
+        ret = try_fallback_resolutions (fontname, dpi, format, glyph_file);
+
+      /* We're down to the font of last resort.  */
+      if (!ret && kpse_fallback_font) {
+        const_string name = kpse_fallback_font;
+        source = kpse_glyph_source_fallback;
+        xputenv ("KPATHSEA_NAME", name);
+
+        /* As before, first try it at the given size.  */
+        ret = try_resolution (name, dpi, format, glyph_file);
+
+        /* The fallback font at the fallback resolutions.  */
+        if (!ret && kpse_fallback_resolutions)
+          ret = try_fallback_resolutions (name, dpi, format, glyph_file);
+      }
+    }
+  }
   
-  /* If RET is null, then the caller must not look at FONT_FILE, so it
-     doesn't matter if we assign something incorrect to it.  */
-  KPSE_FONT_FILE_SOURCE (*font_file) = source;
+  /* If RET is null, then the caller is not supposed to look at GLYPH_FILE,
+     so it doesn't matter if we assign something incorrect.  */
+  KPSE_GLYPH_FILE_SOURCE (*glyph_file) = source;
   
+  if (fontname != passed_fontname)
+    free (fontname);
+
   return ret;
+}
+
+/* The tolerances change whether we base things on DPI1 or DPI2.  */
+
+boolean
+kpse_bitmap_tolerance P2C(double, dpi1,  double, dpi2)
+{
+  unsigned tolerance = KPSE_BITMAP_TOLERANCE (dpi2);
+  unsigned lower_bound = (int) (dpi2 - tolerance) < 0 ? 0 : dpi2 - tolerance;
+  unsigned upper_bound = dpi2 + tolerance;
+
+  return lower_bound <= dpi1 && dpi1 <= upper_bound;
 }
 
 #ifdef TEST
 
 void
-test_find_glyph (const_string font_name, unsigned dpi)
+test_find_glyph (const_string fontname, unsigned dpi)
 {
   string answer;
-  kpse_font_file_type ret;
+  kpse_glyph_file_type ret;
   
-  printf ("\nSearch for %s@%u:\n\t", font_name, dpi);
+  printf ("\nSearch for %s@%u:\n\t", fontname, dpi);
 
-  answer = kpse_find_glyph_format (font_name, dpi,
+  answer = kpse_find_glyph_format (fontname, dpi,
                                    kpse_any_glyph_format, &ret);
   if (answer)
     {
       string format = ret.format == kpse_pk_format ? "pk" : "gf";
       if (!ret.name)
-        ret.name = "(null)";
+        ret.name = "(nil)";
       printf ("%s\n\t(%s@%u, %s)\n", answer, ret.name, ret.dpi, format);
     }
   else
-    puts ("(null)");
+    puts ("(nil)");
 }
 
 
@@ -392,6 +379,6 @@ main ()
 
 /*
 Local variables:
-test-compile-command: "gcc -posix -g -I. -I.. -DTEST tex-glyph.c kpathsea.a"
+test-compile-command: "gcc -g -I. -I.. -DTEST tex-glyph.c kpathsea.a"
 End:
 */

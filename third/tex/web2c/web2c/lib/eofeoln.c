@@ -8,11 +8,16 @@
    Pascal's `eof' builtin.  */
 
 boolean
-eof (file)
-  FILE *file;
+eof P1C(FILE *, file)
 {
   register int c;
 
+  /* If FILE doesn't exist, return false. This happens when, for
+     example, when a user does `mft foo.mf' -- there's no change file,
+     so we never open it, so we end up calling this with a null pointer. */
+  if (!file)
+    return true;
+    
   /* Maybe we're already at the end?  */
   if (feof (file))
     return true;
@@ -30,8 +35,7 @@ eof (file)
 /* Return true on end-of-line in FILE or at the end of FILE, else false.  */
 
 boolean
-eoln (file)
-  FILE *file;
+eoln P1C(FILE*, file)
 {
   register int c;
 

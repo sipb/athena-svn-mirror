@@ -1,26 +1,30 @@
 /* c-stat.h: declarations for using stat(2).
 
-Copyright (C) 1993 Free Software Foundation, Inc.
+Copyright (C) 1993, 96 Free Software Foundation, Inc.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #ifndef KPATHSEA_STAT_H
 #define KPATHSEA_STAT_H
 
 #include <kpathsea/systypes.h>
 #include <sys/stat.h>
+
+#ifdef WIN32
+#include <kpathsea/win32lib.h>
+#endif /* WIN32 */
 
 /* POSIX predicates for testing file attributes.  */
 
@@ -52,11 +56,5 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
 #if !defined (S_ISNWK) && defined (S_IFNWK) /* HP/UX */
 #define S_ISNWK(m) (((m) & S_IFMT) == S_IFNWK)
 #endif
-
-/* Two files are indistinguishable if they are on the same device
-   and have the same inode.  This checks two stat buffers for that.  Cf.
-   the `same_file_p' routine in file-p.c, declared in kpathlib.h.  */
-#define SAME_FILE_P(s1, s2) \
-  ((s1).st_ino == (s2).st_ino && (s1).st_dev == (s2).st_dev)
 
 #endif /* not KPATHSEA_STAT_H */

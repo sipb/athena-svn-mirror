@@ -1,4 +1,4 @@
-.TH MF 1 "23 January 1994"
+.TH MF 1 "27 May 1994" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF M\s-2ETAFONT\s0
@@ -20,15 +20,15 @@
 mf, inimf, virmf \- Metafont, a language for font and logo design
 .SH SYNOPSIS
 .B mf
-[ first line ]
-.PP
-.B inimf
-[ first line ]
-.PP
-.B virmf
-[ first line ]
+.RI [ options ]
+.RI [ commands ]
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 \*(MF reads the program in the specified files
 and outputs font rasters (in
 .I gf
@@ -41,33 +41,48 @@ language is described in
 Like
 \*(TX, \*(MF
 is normally used with a large body of precompiled macros, and font generation
-in particular requires the support of several macro files.  The basic
-program as compiled is called
-.BR inimf ;
-it can be used to precompile macros into a
+in particular requires the support of several macro files.  This
+version of \*(MF looks at its command line to see what name it was
+called under.  Both
+.B inimf
+and
+.B virmf
+are symlinks to the
+.B mf
+executable.  When called as
+.BR inimf
+(or when the
+.B --ini
+option is given) it can be used to precompile macros into a
 .I .base
-file.  The
+file.  When called as
 .B virmf
-variant is used to reload the
-.I .base
-files quickly.  Typically,
-.B virmf
-has links to it by the names of the various base files.
-For example, if you link
-.B virmf
-to
-.B foo
-and then execute the program
-.BR foo ,
-you get the base file
-.IR foo.base .
-You can load a different base by saying, e.g.,
-.IR "virmf \\\\\|&mybase" .
+it will use the
+.I plain
+base.  When called under any other name, \*(MF will use that name as
+the name of the base to use.   For example, when called as
+.B mf
+the
+.I mf
+base is used, which is identical to the
+.I plain
+base.  Other bases than
+.I plain
+are rarely used.
 .PP
-As described in
+The
+.I commands
+given on the command line to the \*(MF program are passed to it as the
+first input line.  (But it is often easier to type extended arguments
+as the first input line, since UNIX shells tend to gobble up or
+misinterpret \*(MF's favorite symbols, like semicolons, unless you
+quote them.)  As described in
 .IR "The \*(MF\^book" ,
-the command line (or first input line) should otherwise begin with a file name
-or a \\\|controlsequence.
+that first line should begin with a filename, a
+.RI \e controlsequence ,
+or a
+.IR &basename .
+.PP
 The normal usage is to say
 .IP
 \fBmf\ \fP '\\\|mode=<printengine>\^;\^ [\^mag=magstep(\fI\^n\fP\^)\^;\^]' input\ \^\fI font \fP
@@ -317,52 +332,7 @@ the journal of the
 \*(TX
 Users Group.
 The local ones in use on this computer should be in
-.IR @MFINPUTDIR@/@LOCALMODES@.mf .
-With only
-.I plain.mf
-and the
-.I modes
-file loaded it is possible to
-create fonts of simple characters, such as those used for the
-\*(MF
-logo, and those used for the \*(LX line and circle fonts,
-but the production of Computer Modern fonts would be speeded by
-making a
-.I cmmf.base
-file (which includes the macros in
-.I cmbase.mf
-as
-well as those in
-.IR plain.mf ).
-.PP
-Several environment variables can be used to set up directory
-paths to search when \*(MF opens a file for input.
-For example, the
-.B csh
-command
-.RS
-.I "setenv MFINPUTS\ .:~me/mylib:@MFINPUTDIR@"
-.RE
-or the
-.B sh
-command sequence
-.RS
-.nf
-.I "MFINPUTS=.:~me/mylib:@MFINPUTDIR@"
-.I "export MFINPUTS"
-.fi
-.RE
-would cause all invocations of \*(MF and its derivatives to look for
-\\\|input files first in the current directory, then in a hypothetical
-user's
-.IR mylib ,
-and finally in the system library.
-Normally, the user will place the command sequence which sets up the
-MFINPUTS environment variable in his or her
-.I .\|login
-or
-.I .\|profile
-file.
+.IR modes.mf .
 .PP
 The
 .I e
@@ -381,11 +351,6 @@ command
 .RS
 \fIsetenv MFEDIT "/usr/ucb/vi +%d %s"\fP
 .RE
-The
-.B ENVIRONMENT
-section below lists
-the relevant environment variables,
-and their defaults.
 .PP
 A convenient file in the library is
 .IR null.mf ,
@@ -407,7 +372,7 @@ If it can't find either, you get no online output.  Otherwise, the value
 of the variable determines the device to use:
 .BR hp2627 ,
 .B sun
-(for SunView),
+(for old SunView),
 .BR tek ,
 .B uniterm
 (for an Atari ST Tek 4014 emulator),
@@ -416,43 +381,96 @@ of the variable determines the device to use:
 Some of these devices may not be supported in all \*(MF
 executables; the choice is made at compilation time.
 .\"=====================================================================
+.SH OPTIONS
+This version of \*(MF understands the following command line options.
+.TP
+.BI --base \ base
+.rb
+Use
+.I base
+as the name of the base to be used, instead of the name by which
+\*(MF was called or a
+.I %&
+line.
+.TP
+.B --help
+.rb
+Print help message and exit.
+.TP
+.B --ini
+.rb
+Be
+.BR inimf ,
+for dumping bases; this is implicitly true if the program is called
+as
+.BR inimf .
+.TP
+.BI --interaction \ mode
+.rb
+Sets the interaction mode.  The mode can be one of
+.IR batchmode ,
+.IR nonstopmode ,
+.IR scrollmode ,
+and
+.IR errorstopmode .
+The meaning of these modes is the same as that of the corresponding
+commands.
+.TP
+.BI --kpathsea-debug \ bitmask
+.rb
+Sets path searching debugging flags according to the bitmask.  See the
+.I Kpathsea
+manual for details.
+.TP
+.BI --maketex \ fmt
+.rb
+Enable
+.RI mktex fmt ,
+where
+.I fmt
+must be
+.IR mf .
+.TP
+.BI --no-maketex \ fmt
+.rb
+Disable
+.RI mktex fmt ,
+where
+.I fmt
+must be
+.IR mf .
+.TP
+.BI --progname \ name
+.rb
+Pretend to be program
+.IR name .
+This affects both the format used and the search paths.
+.TP
+.B --version
+.rb
+Print version information and exit.
+.\"=====================================================================
 .SH ENVIRONMENT
-The default values for all environment variables are set at the
-time of compilation in the file
-.IR kpathsea/paths.h .
 See the Kpathsearch library documentation (the `Path specifications'
-node)
-for the details of the searching.
+node) for the details of how the environment variables are use when
+searching.  The
+.B kpsewhich
+utility can be used to query the values of the variables.
 .PP
 If the environment variable
 TEXMFOUTPUT is set, \*(MF attempts to put its output
 files in it, if they cannot be put in the current directory.  Again, see
 .BR tex (1).
-.TP \w'USE_MAKETEXMF'u+2n
+.TP
 MFINPUTS
 Search path for
 .I input
 and
 .I openin
-files.  Default:
-.br
-.I @DEFAULT_MF_PATH@
-.TP
-MFBASES
-Search path for base files.  Default:
-.I @DEFAULT_BASE_PATH@
-.TP
-MFPOOL
-Search path for \*(MF internal
-strings.  (Used by
-.B inimf
-only.)
-Default:
-.I @DEFAULT_MFPOOL_PATH@
+files.
 .TP
 MFEDIT
-Command template for switching to editor.  Default:
-.I "@EDITOR@"
+Command template for switching to editor.
 .TP
 MFTERM
 Determines the online graphics display. If MFTERM is not set,
@@ -460,12 +478,6 @@ and DISPLAY is set, the Metafont window support for X is used.
 (DISPLAY must be set to a valid X server specification, as usual.)
 If neither MFTERM nor DISPLAY is set, TERM is used to guess the window
 support to use.
-.TP
-MAKETEXMF
-Analogous to \*(TX's MAKETEXTEX, q.v.
-.TP
-USE_MAKETEXMF
-Analogous.
 .\"=====================================================================
 .SH "FONT UTILITIES"
 A number of utility programs are available.
@@ -498,17 +510,17 @@ Formats a source file as shown in
 .IR "Computer Modern Typefaces" .
 .\"=====================================================================
 .SH "FILES"
-.TP \w'@MFINPUTDIR@//plain.mf'u+2n
-.I "@MFPOOLDIR@/mf.pool"
+.TP
+.I "mf.pool"
 Encoded text of \*(MF's messages.
 .TP
-.I "@BASEDIR@/*.base"
+.I *.base
 Predigested \*(MF base files.
 .TP
-.I "@MFINPUTDIR@//plain.mf"
+.I $TEXMFMAIN/metafont/base/plain.mf
 The standard base.
 .TP
-.I "@MFINPUTDIR@//@LOCALMODES@.mf"
+.I $TEXMFMAIN/metafont/misc/modes.mf
 The file of
 .IR mode_def s
 for your site's various printers

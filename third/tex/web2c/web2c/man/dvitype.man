@@ -1,4 +1,4 @@
-.TH DVITYPE 1 "14 December 1993"
+.TH DVITYPE 1 "19 December 1994" "Web2C @VERSION@"
 .\"=====================================================================
 .if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
 .if n .ds TX TeX
@@ -16,9 +16,14 @@
 dvitype \- translate a dvi file for humans
 .SH SYNOPSIS
 .B dvitype
-.I dvi_file_name
+.I dvi_name[.dvi]
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 The
 .B dvitype
 program translates a DVI (DeVice Independent) file output by (for example)
@@ -38,10 +43,10 @@ magnification and resolution of the ``output device'' may be
 changed; and so on. All options are specified with an on-line dialog.
 .PP
 The
-.I dvi_file_name
-on the command line must be complete. The
 .I .dvi
-extension is not supplied if omitted. The output goes to
+extension is supplied if omitted from 
+.IR dvi_name .
+The output goes to
 .IR stdout .
 .\"=====================================================================
 .SH ENVIRONMENT
@@ -49,9 +54,7 @@ The environment variable TEXFONTS is used to search for the TFM files
 used in the DVI file.  See
 .BR tex (1)
 for the details of the searching.
-If TEXFONTS is not set, it uses the system default:
-.br
-.I @DEFAULT_TFM_PATH@
+If TEXFONTS is not set, it uses the system default.
 .\"=====================================================================
 .SH "SEE ALSO"
 .BR gftype (1),
@@ -60,6 +63,10 @@ If TEXFONTS is not set, it uses the system default:
 Donald E. Knuth,
 .IR \*(OXware .
 .\"=====================================================================
+.SH BUGS
+The interactive dialog should be replaced by command-line options, as
+with 
+.BR gftype .
 .SH AUTHORS
 Donald E. Knuth wrote the program.  It was published as part of the
 .I \*(OXware

@@ -1,6 +1,5 @@
-/* This string is appended to all the banners.  */
-#ifndef VERSION_STRING
-#define VERSION_STRING " (C version 6.1)"
-#endif
+#include "c-auto.h"
 
-char *versionstring = VERSION_STRING;
+/* This string is appended to all the banners and used in --version.  */
+
+char *versionstring = WEB2CVERSION;

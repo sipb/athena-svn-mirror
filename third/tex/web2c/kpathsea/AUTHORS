@@ -1,4 +1,10 @@
-Karl Berry and Kathryn Hargreaves wrote all files.
+Karl Berry wrote all files not otherwise marked, with help from Kathryn
+Hargreaves on some of the original versions.
 
-The implementation of the link trick in pathsrch.c is taken from GNU
+Thomas Esser originated most of the MakeTeX... scripts.
+
+The brace expansion code in expand.c was written by Brian Fox and Chet
+Ramey for Bash, the GNU shell.
+
+The implementation of the link trick in pathsearch.c is taken from GNU
 find, implemented by David MacKenzie from Matthew Farwell's suggestion.

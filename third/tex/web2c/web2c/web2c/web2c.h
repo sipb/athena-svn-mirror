@@ -1,9 +1,11 @@
-/* web2c.h: general includes for the `web2c' program itself.  */
+/* web2c.h: general includes for the Web2c program itself.  Public domain.  */
 
 #include "config.h"
 
 #define ex_32 2
 #define ex_real 3
+
+#undef max
 #define max(a,b) ((a>b)?a:b)
 
 extern int indent;
@@ -50,10 +52,28 @@ extern struct sym_entry sym_table[];
 extern int next_sym_free, next_string_free;
 extern int mark_sym_free, mark_string_free;
 
-/* configure figures out how to declare the yytext variable.  */
-DECLARE_YYTEXT
+/* configure tries to figure out lex's convention for yytext.  */
+#ifdef YYTEXT_POINTER
+extern char *yytext;
+#else
+#ifdef YYTEXT_UCHAR
+extern unsigned char yytext[];
+#else
+extern char yytext[];
+#endif
+#endif
 
-extern void find_next_temp(), normal(), new_line(), indent_line(), my_output();
-extern void semicolon(), remove_locals(), mark(), initialize();
-extern int add_to_table(), search_table(), yyerror(), yylex(), yyparse();
-extern void *alloca();
+extern void find_next_temp P1H(void);
+extern void normal P1H(void);
+extern void new_line P1H(void);
+extern void my_output P1H(string);
+extern void semicolon P1H(void);
+extern void remove_locals P1H(void);
+extern void mark P1H(void);
+extern void initialize P1H(void);
+extern int add_to_table P1H(string);
+extern int search_table P1H(const_string);
+extern int yyerror P1H(string);
+
+/* No prototypes for these two. As used, neither takes arguments. */
+extern int yylex(), yyparse();

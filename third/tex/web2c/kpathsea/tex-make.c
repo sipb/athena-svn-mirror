@@ -1,26 +1,29 @@
-/* tex-make.c: Run external programs to make TeX files.
+/* tex-make.c: Run external programs to make TeX-related files.
 
-Copyright (C) 1993 Karl Berry.
+Copyright (C) 1993, 94, 95, 96, 97 Karl Berry.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #include <kpathsea/config.h>
 
 #include <kpathsea/c-fopen.h>
+#include <kpathsea/c-pathch.h>
 #include <kpathsea/concatn.h>
+#include <kpathsea/db.h>
 #include <kpathsea/fn.h>
+#include <kpathsea/magstep.h>
 #include <kpathsea/readable.h>
 #include <kpathsea/tex-make.h>
 #include <kpathsea/variable.h>
@@ -30,278 +33,305 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
    found, if all is successful.  This variable controls whether stderr
    is thrown away.  */
 boolean kpse_make_tex_discard_errors = false;
+
+/* We set the envvar MAKETEX_MAG, which is part of the default spec for
+   MakeTeXPK above, based on KPATHSEA_DPI and MAKETEX_BASE_DPI.  */
 
-
-#define MAKE_TEX_PK_SPEC \
-  "$KPATHSEA_DPI $MAKETEX_BASE_DPI $MAKETEX_MAG $MAKETEX_MODE"
-
-/* We could generalize this to the idea of a ``path spec'', and collect
-   the default paths, environment variables, and whatever else in the
-   same structure.  `kpse_var_expand' could understand ${PARM-word} to
-   go along with it, then the envvar search list itself would be
-   overridable.  Is it worth it?  */
-kpse_make_spec_type kpse_make_specs[] = {
-  /* kpse_gf_format */		{ false, NULL, NULL },
-  /* kpse_pk_format */		{ false, "MakeTeXPK", MAKE_TEX_PK_SPEC },
-  /* kpse_any_glyph_format */	{ false, "MakeTeXPK", MAKE_TEX_PK_SPEC },
-  /* kpse_bib_format */		{ false, NULL, NULL }, 
-  /* kpse_bst_format */		{ false, NULL, NULL }, 
-  /* kpse_mf_format */		{ false, "MakeTeXMF", NULL },
-  /* kpse_tex_format */		{ false, "MakeTeXTeX", NULL },
-  /* kpse_tfm_format */		{ false, "MakeTeXTFM", NULL },
-  /* kpse_vf_format */		{ false, NULL, NULL },
-};
-
-
-/* We assume the script will output the filename it creates (and nothing
-   else) on standard output, and hence run the script with `popen'.  */
-
-string
-kpse_make_tex P2C(kpse_file_format_type, format,  const_string, base_file)
+static void
+set_maketex_mag P1H(void)
 {
-  string ret;
-  kpse_make_spec_type spec;
-  spec = kpse_make_specs[format];
+  char q[MAX_INT_LENGTH * 3 + 3];
+  int m;
+  string dpi_str = getenv ("KPATHSEA_DPI");
+  string bdpi_str = getenv ("MAKETEX_BASE_DPI");
+  unsigned dpi = dpi_str ? atoi (dpi_str) : 0;
+  unsigned bdpi = bdpi_str ? atoi (bdpi_str) : 0;
+
+  /* If the environment variables aren't set, it's a bug.  */
+  assert (dpi != 0 && bdpi != 0);
   
-  if (KPSE_MAKE_SPEC_ENABLED (spec))
-    {
-      FILE *f;
-      const_string prog = KPSE_MAKE_SPEC_PROGRAM (spec);
-      string PROG = uppercasify (prog);
-      string progenv = getenv (PROG);
-      const_string arg_spec = progenv ? progenv : KPSE_MAKE_SPEC_ARGS (spec);
-      string args = arg_spec ? kpse_var_expand (arg_spec) : (string) "";
-      string cmd = concatn (prog, " ", base_file, " ", args, NULL);
-      
-      /* Only way to discard errors is redirect stderr inside another
-         shell; otherwise, if the MakeTeX... script doesn't exist, we
-         will see the `sh: MakeTeX...: not found' error.  */
-      if (kpse_make_tex_discard_errors)
-        {
-          string old_cmd = cmd;
-          cmd = concat3 ("sh -c \"", cmd, "\" 2>/dev/null");
-          free (old_cmd);
-        }
-
-      /* Run the script and prepare to read the output.  */
-      f = popen (cmd, FOPEN_R_MODE);
-      
-      free (PROG);
-      free (cmd);
-      if (strlen (args) > 0)
-        free (args);
-      
-      if (f)
-        {
-          int c;
-          string fn;             /* The final filename.  */
-          unsigned len;          /* And its length.  */
-          fn_type output;
-          output = fn_init ();   /* Collect the script output.  */
-          
-          /* Read all the output and terminate with a null.  */
-          while ((c = getc (f)) != EOF)
-            fn_1grow (&output, c);
-          fn_1grow (&output, 0);
-          
-          /* Maybe should check for `EXIT_SUCCESS' status before even
-             looking at the output?  */
-          if (pclose (f) == -1)
-            FATAL_PERROR (cmd);
-          
-          len = FN_LENGTH (output);
-          fn = FN_STRING (output);
-          
-          /* Remove trailing newlines and returns.  */
-          while (len > 1 && (fn[len - 2] == '\n' || fn[len - 2] == '\r'))
-            {
-              fn[len - 2] = 0;
-              len--;
-            }
-
-          /* If no output from script, return NULL.  Otherwise check
-             what it output.  */
-          ret = len == 1 ? NULL : kpse_readable_file (fn);
-          
-          /* Free the name if we're not returning it.  */
-          if (fn != ret)
-            free (fn);
-        }
-      else
-        /* popen failed.  Maybe should give error (optionally), but for
-           now be silent, to avoid annoying people who purposefully
-           don't have the script installed. */
-        ret = NULL;
-    }
+  /* Fix up for roundoff error.  Hopefully the driver has already fixed
+     up DPI, but may as well be safe, and also get the magstep number.  */
+  (void) kpse_magstep_fix (dpi, bdpi, &m);
+  
+  if (m == 0)
+    sprintf (q, "%d+%d/%d", dpi / bdpi, dpi % bdpi, bdpi);
   else
-    ret = NULL; /* This MakeTeX... program was disabled.  */
-  
-  return ret;
-}
-
-/* Return true magstep N for resolution BDPI.  From dvips.  */
-
-static int
-magstep P2C(int, n,  int, bdpi)
-{
-   register double t;
-   int step;
-   int neg = 0;
-
-   if (n < 0) {
-      neg = 1;
-      n = -n;
-   }
-   if (n & 1) {
-      n &= ~1;
-      t = 1.095445115;
-   } else
-      t = 1.0;
-   while (n > 8) {
-      n -= 8;
-      t = t * 2.0736;
-   }
-   while (n > 0) {
-      n -= 2;
-      t = t * 1.2;
-   }
-
-   step = 0.5 + (neg ? bdpi / t : bdpi * t);
-   return step;
-}
-
-/* Tom Rokicki wrote this code for dvips.  It is in kpathsea now so that
-   we can be sure xdvik and dvipsk use the same code to compute this.
-
-      His comments:
-
-      Here we want to return a string.  If we can find some integer
-      m such that floor(0.5 + bdpi * 1.2 ^ (m/2)) = dpi, we write out
-         magstep(m/2)
-      where m/2 is a decimal number; else we write out
-         dpi/bdpi
-      We do this for the very slight improvement in accuracy that
-      magstep() gives us over the rounded dpi/bdpi.
-
-   Instead of returning a string, we set the envvar MAKETEX_MAG, which
-   is part of the default spec for MakeTeXPK above. (That's why this
-   routine is in this source file.)
-   
-   We allow +-1 when checking if DPI is a given magstep, so that DPI
-   values of 328, 329, and 330 will all translate to magstep(.5).
-   Floating-point computation with the DVI scale factors leads to 328.  */
-
-/* Don't bother trying to use fabs or some other ``standard'' routine
-   which can only cause trouble; just roll our own simple-minded
-   absolute-value function that is all we need.  */
-#define ABS(expr) ((expr) < 0 ? -(expr) : (expr))
-
-void
-kpse_set_maketex_mag P2C(int, dpi,  int, bdpi)
-{
-  int m, n;
-  char q[1000];
-
-  m = 0;
-  if (dpi < bdpi) {
-     for (;;) {
-        m--;
-        n = magstep(m, bdpi);
-        if (ABS (n - dpi) <= 1)
-           break;
-        if (n < dpi || m < -40) {
-           m = 9999;
-           break;
+    { /* m is encoded with LSB being a ``half'' bit (see magstep.h).  Are
+         we making an assumption here about two's complement?  Probably.
+         In any case, if m is negative, we have to put in the sign
+         explicitly, since m/2==0 if m==-1.  */
+      const_string sign = "";
+      if (m < 0)
+        {
+          m *= -1;
+          sign = "-";
         }
-     }
-  } else if (dpi > bdpi) {
-     for (;;) {
-        m++;
-        n = magstep(m, bdpi);
-        if (ABS (n - dpi) <= 1)
-           break;
-        if (n > dpi || m > 40) {
-           m = 9999;
-           break;
-        }
-     }
-  }
-#if defined (DOS) || defined (OS2)
-  {
-    double t;
-
-  /* write out magnification as decimal number ... why? --karl */
-    if (m == 9999) {
-       t = (double)dpi/bdpi;
-    } else {
-       if (m < 0)
-            n = -m;
-       else
-            n = m;
-       if (n & 1) {
-            n &= ~1;
-            t = 1.095445115;
-       } else
-            t = 1.0;
-       while (n > 0) {
-            n -= 2;
-            t = t * 1.2;
-       }
-       if (m < 0)
-            t = 1 / t;
-    }
-    sprintf(q, "%12.9f", t);
-  }
-#else /* not DOS or OS2 */
-  if (m == 9999) {
-     sprintf(q, "%d+%d/%d", dpi/bdpi, dpi%bdpi, bdpi);
-  } else if (m >= 0) {
-     sprintf(q, "magstep\\(%d.%d\\)", m/2, (m&1)*5);
-  } else {
-     sprintf(q, "magstep\\(-%d.%d\\)", (-m)/2, (m&1)*5);
-  }
-#endif /* not DOS or OS2 */
-
+      sprintf (q, "magstep\\(%s%d.%d\\)", sign, m / 2, (m & 1) * 5);
+    }  
   xputenv ("MAKETEX_MAG", q);
 }
 
-/* I don't think it makes much difference whether we check if DPI2 can
-   tolerate DPI1 or the reverse.  */
+/* This mktex... program was disabled, or the script failed.  If this
+   was a font creation (according to FORMAT), append CMD
+   to a file missfont.log in the current directory.  */
 
-boolean
-kpse_check_bitmap_tolerance P2C(double, dpi1,  double, dpi2)
+static void
+misstex P2C(kpse_file_format_type, format,  const_string, cmd)
 {
-  unsigned tolerance = KPSE_BITMAP_TOLERANCE (dpi2);
-  unsigned lower_bound = (int) (dpi2 - tolerance) < 0 ? 0 : dpi2 - tolerance;
-  unsigned upper_bound = dpi2 + tolerance;
+  static FILE *missfont = NULL;
 
-  return lower_bound <= dpi1 && dpi1 <= upper_bound;
+  /* If we weren't trying to make a font, do nothing.  Maybe should
+     allow people to specify what they want recorded?  */
+  if (format > kpse_any_glyph_format && format != kpse_tfm_format
+      && format != kpse_vf_format)
+    return;
+
+  /* If this is the first time, have to open the log file.  But don't
+     bother logging anything if they were discarding errors.  */
+  if (!missfont && !kpse_make_tex_discard_errors) {
+    const_string missfont_name = kpse_var_value ("MISSFONT_LOG");
+    if (!missfont_name || *missfont_name == '1') {
+      missfont_name = "missfont.log"; /* take default name */
+    } else if (missfont_name
+               && (*missfont_name == 0 || *missfont_name == '0')) {
+      missfont_name = NULL; /* user requested no missfont.log */
+    } /* else use user's name */
+
+    missfont = missfont_name ? fopen (missfont_name, FOPEN_A_MODE) : NULL;
+    if (!missfont && kpse_var_value ("TEXMFOUTPUT")) {
+      missfont_name = concat3 (kpse_var_value ("TEXMFOUTPUT"), DIR_SEP_STRING,
+                               missfont_name);
+      missfont = fopen (missfont_name, FOPEN_A_MODE);
+    }
+
+    if (missfont)
+      fprintf (stderr, "kpathsea: Appending font creation commands to %s.\n",
+               missfont_name);
+  }
+  
+  /* Write the command if we have a log file.  */
+  if (missfont) {
+    fputs (cmd, missfont);
+    putc ('\n', missfont);
+  }
+}  
+
+
+/* Assume the script outputs the filename it creates (and nothing
+   else) on standard output; hence, we run the script with `popen'.  */
+
+static string
+maketex P2C(kpse_file_format_type, format,  const_string, passed_cmd)
+{
+  string ret;
+  unsigned i;
+  FILE *f;
+  string cmd = xstrdup (passed_cmd);
+
+#if defined (MSDOS) || defined (WIN32)
+  /* For discarding stderr.  This is so we don't require an MSDOS user
+     to istall a unixy shell (see kpse_make_tex below): they might
+     devise their own ingenious ways of running mktex... even though
+     they don't have such a shell.  */
+  int temp_stderr = -1;
+  int save_stderr = -1;
+#endif
+
+  /* If the user snuck `backquotes` or $(command) substitutions into the
+     name, foil them.  */
+  for (i = 0; i < strlen (cmd); i++) {
+    if (cmd[i] == '`' || (cmd[i] == '$' && cmd[i+1] == '(')) {
+      cmd[i] = '#';
+    }
+  }
+
+  /* Tell the user we are running the script, so they have a clue as to
+     what's going on if something messes up.  But if they asked to
+     discard output, they probably don't want to see this, either.  */
+  if (!kpse_make_tex_discard_errors) {
+    fprintf (stderr, "kpathsea: Running %s\n", cmd);
+  }
+#if defined (MSDOS) || defined (WIN32)
+  else {
+    temp_stderr = open ("NUL", O_WRONLY);
+    if (temp_stderr >= 0) {
+      save_stderr = dup (2);
+      if (save_stderr >= 0)
+        dup2 (temp_stderr, 2);
+    }
+    /* Else they lose: the errors WILL be shown.  However, open/dup
+       aren't supposed to fail in this case, it's just my paranoia. */
+  }
+#endif
+  
+  /* Run the script.  The Amiga has a different interface.  */
+#ifdef AMIGA
+  ret = system (cmd) == 0 ? getenv ("LAST_FONT_CREATED") : NULL;
+#else /* not AMIGA */
+  f = popen (cmd, FOPEN_R_MODE);
+
+#if defined (MSDOS) || defined (WIN32)
+  if (kpse_make_tex_discard_errors) {
+    /* Close /dev/null and revert stderr.  */
+    if (save_stderr >= 0) {
+      dup2 (save_stderr, 2);
+      close (save_stderr);
+    }
+    if (temp_stderr >= 0)
+      close (temp_stderr);
+  }
+#endif
+
+  if (f) {
+    int c;
+    string fn;             /* The final filename.  */
+    unsigned len;          /* And its length.  */
+    fn_type output;
+    output = fn_init ();   /* Collect the script output.  */
+
+    /* Read all the output and terminate with a null.  */
+    while ((c = getc (f)) != EOF)
+      fn_1grow (&output, c);
+    fn_1grow (&output, 0);
+
+    /* Maybe should check for `EXIT_SUCCESS' status before even
+       looking at the output?  In some versions of Linux, pclose fails
+       with ECHILD (No child processes), maybe only if we're being run
+       by lpd.  So don't make this a fatal error.  */
+    if (pclose (f) == -1) {
+      perror ("pclose(mktexpk)");
+      WARNING ("kpathsea: This is probably the Linux pclose bug; continuing");
+    }
+
+    len = FN_LENGTH (output);
+    fn = FN_STRING (output);
+
+    /* Remove trailing newlines and returns.  */
+    while (len > 1 && (fn[len - 2] == '\n' || fn[len - 2] == '\r')) {
+      fn[len - 2] = 0;
+      len--;
+    }
+
+    /* If no output from script, return NULL.  Otherwise check
+       what it output.  */
+    ret = len == 1 ? NULL : kpse_readable_file (fn);
+    if (!ret && len > 1) {
+      WARNING1 ("kpathsea: mktexpk output `%s' instead of a filename", fn);
+    }
+
+    /* Free the name if we're not returning it.  */
+    if (fn != ret)
+      free (fn);
+  } else {
+    /* popen failed.  */
+    perror ("kpathsea");
+    ret = NULL;
+  }
+#endif /* not AMIGA */
+
+  if (ret == NULL)
+    misstex (format, cmd);
+  else
+    kpse_db_insert (ret);
+    
+  return ret;
+}
+
+
+/* Create BASE in FORMAT and return the generated filename, or
+   return NULL.  */
+
+string
+kpse_make_tex P2C(kpse_file_format_type, format,  const_string, base)
+{
+  kpse_format_info_type spec; /* some compilers lack struct initialization */
+  string ret = NULL;
+  
+  spec = kpse_format_info[format];
+  if (!spec.type) { /* Not initialized yet? */
+    kpse_init_format (format);
+    spec = kpse_format_info[format];
+  }
+  
+  if (spec.program && spec.program_enabled_p) {
+    /* See the documentation for the envvars we're dealing with here.  */
+    string args, cmd;
+    const_string prog = spec.program;
+    const_string arg_spec = spec.program_args;
+
+    if (format <= kpse_any_glyph_format)
+      set_maketex_mag ();
+
+    /* Here's an awful kludge: if the mode is `/', mktexpk recognizes
+       it as a special case.  `kpse_prog_init' sets it to this in the
+       first place when no mode is otherwise specified; this is so
+       when the user defines a resolution, they don't also have to
+       specify a mode; instead, mktexpk's guesses will take over.
+       They use / for the value because then when it is expanded as
+       part of the PKFONTS et al. path values, we'll wind up searching
+       all the pk directories.  We put $MAKETEX_MODE in the path
+       values in the first place so that sites with two different
+       devices with the same resolution can find the right fonts; but
+       such sites are uncommon, so they shouldn't make things harder
+       for everyone else.  */
+    args = arg_spec ? kpse_var_expand (arg_spec) : (string) "";
+
+    /* The command is the program name plus the arguments.  */
+    cmd = concatn (prog, " ", args, " ", base, NULL);
+
+    /* Only way to discard errors is redirect stderr inside another
+       shell; otherwise, if the mktex... script doesn't exist, we
+       will see the `sh: mktex...: not found' error.  No point in
+       doing this if we're not actually going to run anything.  */
+#if !defined(MSDOS) && !defined(WIN32) && !defined(AMIGA)
+    /* We don't want to require that a Unix-like shell be installed
+       on MS-DOS or WIN32 systems, so we will redirect stderr by hand
+       (in maketex).  */
+    if (kpse_make_tex_discard_errors) {
+      string old_cmd = cmd;
+#ifdef OS2
+      cmd = concat3 ("cmd /c \"", cmd, "\" 2>/dev/nul");
+#else
+      cmd = concat3 ("sh -c \"", cmd, "\" 2>/dev/null");
+#endif
+      free (old_cmd);
+    }
+#endif
+    
+    ret = maketex (format, cmd);
+
+    free (cmd);
+    if (*args)
+      free (args);
+  }
+
+  return ret;
 }
 
 #ifdef TEST
 
 void
-test_make_tex (kpse_file_format_type fmt, const_string base_file)
+test_make_tex (kpse_file_format_type fmt, const_string base)
 {
   string answer;
   
-  printf ("\nAttempting %s in format %d:\n", base_file, fmt);
+  printf ("\nAttempting %s in format %d:\n", base, fmt);
 
-  answer = kpse_make_tex (fmt, base_file);
-  puts (answer ? answer : "(null)");
+  answer = kpse_make_tex (fmt, base);
+  puts (answer ? answer : "(nil)");
 }
 
 
 int
 main ()
 {
-  xputenv ("MAKETEX_DPI", "781"); /* call MakeTeXPK */
-  xputenv ("MAKETEX_BASE_DPI", "300"); /* call MakeTeXPK */
-  xputenv ("MAKETEX_MAG", "781/300"); /* call MakeTeXPK */
+  xputenv ("KPATHSEA_DPI", "781"); /* call mktexpk */
+  xputenv ("MAKETEX_BASE_DPI", "300"); /* call mktexpk */
   KPSE_MAKE_SPEC_ENABLED (kpse_make_specs[kpse_pk_format]) = true;
   test_make_tex (kpse_pk_format, "cmr10");
 
-  /* Fail with MakeTeXTFM.  */
+  /* Fail with mktextfm.  */
   KPSE_MAKE_SPEC_ENABLED (kpse_make_specs[kpse_tfm_format]) = true;
   test_make_tex (kpse_tfm_format, "foozler99");
   
@@ -316,6 +346,6 @@ main ()
 
 /*
 Local variables:
-test-compile-command: "gcc -posix -g -I. -I.. -DTEST tex-make.c kpathsea.a"
+test-compile-command: "gcc -g -I. -I.. -DTEST tex-make.c kpathsea.a"
 End:
 */

@@ -1,4 +1,4 @@
-.TH MFT 1 "14 December 1993"
+.TH MFT 1 "14 December 1993" "Web2C @VERSION@"
 .\"=====================================================================
 .if n .ds MF Metafont
 .if t .ds MF M\s-2ETAFONT\s0
@@ -39,6 +39,11 @@ or
 ]
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 The
 .B mft
 program creates a \*(TX file from a \*(MF program.
@@ -75,19 +80,9 @@ is automatically used. The
 .I change_file_name
 is not searched for using any paths. The
 .I .mf
-file is searched for
-using the MFINPUTS environment variable if you have set it, or else the
-system default:
-.br
-.I @DEFAULT_MF_PATH@
-.br
-The style file
-is searched for using the TEXINPUTS environment variable; its default
-value is:
-.br
-.I @DEFAULT_TEX_PATH@
-.br
-See
+file is searched for using the MFINPUTS environment variable if you
+have set it, or else the system default.  The style file is searched
+for using the TEXINPUTS environment variable.  See
 .BR tex (1)
 for the details of the searching.
 .PP
@@ -104,16 +99,16 @@ to suppress the reading of a change file, and
 to suppress the reading of a style file.
 .\"=====================================================================
 .SH FILES
-.TP \w'@TEXINPUTDIR@/mftmac.tex'u+2n
-.I @TEXINPUTDIR@/mftmac.tex
+.TP
+.I mftmac.tex
 \*(TX macros used by
 .B mft
 output.
 .TP
-.I @TEXINPUTDIR@/plain.mft
+.I plain.mft
 Default style file.
 .TP
-.I @TEXINPUTDIR@/cmbase.mft
+.I cmbase.mft
 Style file for Computer Modern.
 .\"=====================================================================
 .SH "SEE ALSO"

@@ -1,105 +1,262 @@
-Here is the procedure for getting things running.
+Contents:
 
-1.  Inspect the first section of `lib/c-auto.h.in', and edit if necessary.
+Installation
+  `configure' options
+  Compile-time options
+  Additional targets
+  Trip, trap, and mptrap: Torture tests
+  Runtime options
 
-2a. Edit `Makefile.in' if you want to make changes that will have effect
-    across different runs of `configure'; for example, changing the
-    installation directories. Alternatively, override the make
-    variables on the command line when you run make.
 
-2b. Edit `kpathsea/paths.h.in' to define your local paths. If you do not
-    change these paths, it is possible that your TeX will start up 
-    Very, Very, Slowly. Or the programs won't find any of your fonts or
-    other input files. See kpathsea/INSTALL for more details on changing
-    the default paths.
+Installation
+************
 
-3. Do `sh configure' (or otherwise arrange for `configure' to be run by
-   a Bourne-compatible shell).  If you want to change the prefix or
-   exec_prefix make variables, give the -prefix and -exec-prefix options
-   to configure.  By default, the prefix is the parent directory of the
-   directory where the program `tex' is found, or /usr/local.
-   
-   You can control some of what configure does by setting environment
-   variables before running.  For example, configure normally uses gcc
-   if you have it, otherwise cc; but if the environment variable `CC' is
-   set, its value will be used.  Likewise for `YACC', `LEX', and `CCLD'.
+  Installing Web2c is mostly the same as installing any other
+Kpathsea-using program.  Therefore, for the basic steps involved, *note
+Installation: (kpathsea)Installation..  (A copy is in the file
+`kpathsea/INSTALL'.)
 
-4. Inspect `./Makefile' and `lib/c-auto.h', which `configure' creates,
-   to see if configure's guesses were correct.  Change whatever is
-   necessary; for example, if you want to optimize, change CFLAGS.
-   See ./MACHINES for possibly helpful information.
-   
-5. `make triptrap' to build triptex and trapmf (and some of the other 
-   programs that are needed to run the tests).
+  One peculiarity to Web2c is that the source distribution comes in two
+files: `web.tar.gz' and `web2c.tar.gz'.  You must retrieve and unpack
+them both.  (We have two because the former archive contains the very
+large and seldom-changing original WEB source files.)  *Note
+unixtex.ftp: (kpathsea)unixtex.ftp.
 
-6. `make run-triptrap' to run the tests.  The differences (and many
-   error messages) will show up on your terminal.  If you don't know
-   whether the differences are OK or not, consult tex/TeXtrip/tripman.tex
-   and mf/MFtrap/trapman.tex.  The usual differences are
-   * glue setting being rounded differently in the TeX log;
-   * string usage and maximum values of tables;
-   * the `down4' and `right4' commands in the dvitype output;
-   * the dates and times.
-   All these differences are acceptable.
+  Another peculiarity is the MetaPost program.  Although it has been
+installed previously as `mp', as of Web2c 7.0 the installed name is now
+`mpost', to avoid conflict with the `mp' program that does
+prettyprinting.  This approach was recommended by the MetaPost author,
+John Hobby.  If you as the TeX administrator wish to make it available
+under its shorter name as well, you will have to set up a link or some
+such yourself.  And of course individual users can do the same.
 
-7. `make clean-triptrap' to get rid of the test programs and output.  You
-   need to do this before making the production versions, or the
-   resulting TeX and Metafont will have very small memories.
+  For solutions to common installation problems and information on how
+to report a bug, see the file `kpathsea/BUGS' (*note Bugs:
+(kpathsea)Bugs.).  See also the Web2c home page,
+`http://www.tug.org/web2c'.
 
-8. `make programs' to make the working versions of the remaining programs
-   Alternatively. `make all' combines `programs', `formats', and `manpages'.
+  Points worth repeating:
 
-9. `make formats' to make the TeX fmts and Metafont bases (the Make
-   variables `fmts' and `bases' define the list).  If you don't know
-   what this means, see the section `Format files and preloading' below.
-   
-   Before doing this, the basic .tfm, .tex, and .mf files must be
-   installed, and your search paths (e.g., the environment variables
-   TEXINPUTS, TEXFONTS, etc., or the compile-time defaults in
-   kpathsea/paths.h.in if the variables are unset) must look in those
-   directories.  Also check the value of the localmodes Make variable.
-   
-   If you don't have the tfm/tex/mf files, see the file
-   ftp.cs.umb.edu:pub/tex/FTP.nwc (which also contains tape ordering
-   information). (This file is not included in the distribution because
-   it changes far more frequently than web2c.)
-   
-   You can `make fmts' and `make bases' separately if you prefer.
+   * Before starting the standard compilation and installation you must
+     install the basic fonts, macros, and other library files.  *Note
+     Installation: (kpathsea)Installation.
 
-10. `make manpages' to edit the documentation in `man' for the paths and
-    constants you defined in `Makefile.in' and `c-auto.h.in'.
+   * If you do not wish to use the standard file locations, see *Note
+     Changing search paths: (kpathsea)Changing search paths.
 
-11. `make install-exec' to install the programs.
-    `make install-formats install-bases' to install the formats/bases
-      and to create links to `virtex' and `virmf' for each.
-    `make install-manpages' to install the manual pages.
-    `make install-data' to do install-formats install-bases install-manpages,
-      and to get the pool files and other architecture-independent files.
-    Alternatively, `make install' to install everything.
+   * Some Web2c features are enabled or disabled at `configure' time,
+     as described in the first section below.
 
-12. There are several targets for cleanup:
-    `mostlyclean' if you intend to compile on another
-      architecture.  Since the .c files are intended to be portable,
-      they are not removed.  If the lex/flex situation is going to be
-      different on the next machine, also rm web2c/lex.yy.c.
-    `clean' to remove everything that is normally created by compiling.
-    `distclean' to remove everything that would not be in a distribution. 
-    `realclean' to remove everything that the Makefiles can rebuild.
-    `extraclean' to remove other junk.
+`configure' options
+===================
 
-If you wish to make a single program, the top-level Makefile has
-targets `TeX', `MF', and `BibTeX'. (No targets for the other programs, though.)
+  This section gives pointers to descriptions of the `--with' and
+`--enable' `configure' arguments that Web2c accepts.  Some are specific
+to Web2c, others are generic to all Kpathsea-using programs.
 
-If you don't want to (or can't) run both the trip and trap tests,
-`Makefile' has separate targets `run-trip' and `run-trap', and
-`clean-trip' and `clean-trap'.
+  For a list of all the options `configure' accepts, run `configure
+--help'.  The generic options are listed first, and the
+package-specific options come last.
 
-If you wish to make just the C files (perhaps because you want to take
-them to another system), the top-level Makefile has a target `c-sources'.
+  For a description of the generic options (which mainly allow you to
+specify installation directories) and basic `configure' usage, *note
+Running `configure' scripts: (autoconf)Invoking configure. (a copy is
+in the file `kpathsea/CONFIGURE').
 
-The host labrea.stanford.edu is the ultimate source for those files
-maintained by Knuth (for example, plain.tex).  But do not use labrea for
-any other files! It is very often out of date.
+`--disable-dump-share'
+     Do not make fmt/base/mem files sharable across different endian
+     architectures.  *Note Hardware and memory dumps::.
 
-I strongly suggest using flex and bison (version 2.4.6 and 1.22 were
-current as of this writing) for lex and yacc.
+`--without-maketexmf-default'
+`--without-maketexpk-default'
+`--without-maketextfm-default'
+`--with-maketextex-default'
+     Enable or disable the dynamic generation programs.  *Note MakeTeX
+     configuration: (kpathsea)MakeTeX configuration.  The defaults are
+     the inverse of the options, i.e., everything is enabled except
+     `MakeTeXTeX'.
+
+`--enable-auto-core'
+     Dump `core' if the input file is
+     `HackyInputFileNameForCoreDump.tex'.  *Note Preloaded
+     executables::.
+
+`--enable-shared'
+     Build Kpathsea as a shared library.  *Note Shared library:
+     (kpathsea)Shared library.
+
+`--with-editor=CMD'
+     Change the default editor invoked by the `e' interactive command.
+     *Note Editor invocation::.
+
+`--with-hp2627win'
+`--with-mftalkwin'
+`--with-nextwin'
+`--with-regiswin'
+`--with-suntoolswin'
+`--with-tektronixwin'
+`--with-unitermwin'
+`--with-x'
+`--with-x-toolkit=KIT'
+`--with-x11win'
+`--with-x11'
+     Define Metafont graphics support; by default, no graphics support
+     is enabled.  *Note Online Metafont graphics::.
+
+`--x-includes=DIR'
+`--x-libraries=DIR'
+     Define the locations of the X11 include files and libraries; by
+     default, `configure' does its best to guess).  *Note Optional
+     Features: (autoconf)Optional Features.  A copy is in
+     `kpathsea/CONFIGURE'.
+
+Compile-time options
+====================
+
+  In addition to the `configure' options listed in the previous
+section, there are a few things that can be affected at compile-time
+with C definitions, rather than with `configure'.  Using any of these
+is unusual.
+
+  To specify extra compiler flags (`-DNAME' in this case), the simplest
+thing to do is:
+     make XCFLAGS="CCOPTIONS"
+   You can also set the `CFLAGS' environment variable before running
+`configure'.  *Note configure environment: (kpathsea)configure
+environment.
+
+Anyway, here are the possibilities:
+
+`-DFIXPT'
+`-DNO_MF_ASM'
+     Use the original WEB fixed-point routines for Metafont and MetaPost
+     arithmetic calculations regarding fractions.  By default,
+     assembly-language routines are used on x86 hardware with GNU C
+     (unless `NO_MF_ASM' is defined), and floating-point routines are
+     used otherwise.
+
+`-DIPC_DEBUG'
+     Report on various interprocess communication activities.  *Note
+     IPC and TeX: IPC and TeX.
+
+Additional targets
+==================
+
+  Web2c has several Make targets besides the standard ones.  You can
+invoke these either in the top level directory of the source
+distribution (the one containing `kpathsea/' and `web2c/'), or in the
+`web2c/' directory.
+
+`c-sources'
+     Make only the C files, translated from the Web sources, presumably
+     because you want to take them to a non-Unix machine.
+
+`formats'
+`install-formats'
+     Make or install all the memory dumps (*note Memory dumps::.).  By
+     default, the standard plain formats plus `latex.fmt' are made.  You
+     can add other formats by redefining the `fmts', `bases', and
+     `mems' variables.  See the top of `web2c/Makefile' for the
+     possibilities.
+
+`fmts'
+`install-fmts'
+     Make or install the TeX `.fmt' files. *Note initex invocation::.
+
+`bases'
+`install-bases'
+     Make or install the Metafont `.base' files.  *Note inimf
+     invocation::.
+
+`mems'
+`install-mems'
+     Make or install the MetaPost `.mem' files.  *Note inimpost
+     invocation::.
+
+`triptrap'
+`trip'
+`trap'
+`mptrap'
+     To run the torture tests for TeX, Metafont, and MetaPost
+     (respectively).  See the next section.
+
+Trip, trap, and mptrap: Torture tests
+=====================================
+
+  To validate your TeX, Metafont, and MetaPost executables, run `make
+triptrap'.  This runs the trip, trap, and mptrap "torture tests".  See
+the files `triptrap/tripman.tex', `triptrap/trapman.tex', and
+`triptrap/mptrap.readme' for detailed information and background on the
+tests.
+
+  The differences between your executables' behavior and the standard
+values will show up on your terminal.  The usual differences (these are
+all acceptable) are:
+
+   * string usage and table sizes;
+
+   * glue set ratios;
+
+   * `down4', `right4', and `y4' commands in DVItype output;
+
+   * dates and times.
+
+Any other differences are trouble. The most common culprit in the past
+has been compiler bugs, especially when optimizing.  *Note TeX or
+Metafont failing: (kpathsea)TeX or Metafont failing.
+
+  The files `trip.diffs', `mftrap.diffs', and `mptrap.diffs' in the
+`triptrap' directory show the standard diffs against the original
+output.  If you diff your diffs against these files, you should come up
+clean.  For example
+     make trip >&mytrip.diffs
+     diff triptrap/trip.diffs mytrip.diffs
+
+  To run the tests separately, use the targets `trip', `trap', and
+`mptrap'.
+
+  To run simple tests for all the programs as well as the torture tests,
+run `make check'.  You can compare the output to the distributed file
+`tests/check.log' if you like.
+
+Runtime options
+===============
+
+  Besides the configure- and compile-time options described in the
+previous sections, you can control a number of parameters (in
+particular, array sizes) in the `texmf.cnf' runtime file read by
+Kpathsea (*note Config files: (kpathsea)Config files.).
+
+  Rather than exhaustively listing them here, please see the last
+section of the distributed `kpathsea/texmf.cnf'.  Some of the more
+interesting values:
+
+`main_memory'
+     Total words of memory available, for TeX, Metafont, and MetaPost.
+     Must remake the format file after changing.
+
+`extra_mem_bot'
+     Extra space for "large" TeX data structures: boxes, glue,
+     breakpoints, et al.  If you use PiCTeX, you may well want to set
+     this.
+
+`font_mem_size'
+     Words of font info available for TeX; this is approximately the
+     total size of all TFM files read.
+
+`hash_extra'
+     Additional space for the hash table of control sequence names.
+     Approximately 10,000 control sequences can be stored in the main
+     hash table; if you have a large book with numerous
+     cross-references, this might not be enough, and thus you will want
+     to set `hash_extra'.
+
+  Of course, ideally all arrays would be dynamically expanded as
+necessary, so the only limiting factor would be the amount of swap space
+available.  Unfortunately, implementing this is extremely difficult, as
+the fixed size of arrays is assumed in many places throughout the source
+code.  These runtime limits are a practical compromise between the
+compile-time limits in previous versions, and truly dynamic arrays.  (On
+the other hand, the Web2c BibTeX implementation does do dynamic
+reallocation of some arrays.)
+

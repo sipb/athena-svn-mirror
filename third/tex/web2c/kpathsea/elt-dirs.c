@@ -1,28 +1,28 @@
 /* elt-dirs.c: Translate a path element to its corresponding director{y,ies}.
 
-Copyright (C) 1993 Karl Berry.
+Copyright (C) 1993, 94, 95, 96, 97 Karl Berry.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2, or (at your option)
-any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
+You should have received a copy of the GNU Library General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #include <kpathsea/config.h>
 
 #include <kpathsea/c-pathch.h>
-#include <kpathsea/dir.h>
 #include <kpathsea/expand.h>
 #include <kpathsea/fn.h>
 #include <kpathsea/pathsearch.h>
+#include <kpathsea/xopendir.h>
 
 /* To avoid giving prototypes for all the routines and then their real
    definitions, we give all the subroutines first.  The entry point is
@@ -34,8 +34,9 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
 static void
 dir_list_add P2C(str_llist_type *, l,  const_string, dir)
 {
+  char last_char = dir[strlen (dir) - 1];
   string saved_dir
-    = IS_DIR_SEP (dir[strlen (dir) - 1])
+    = IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)
       ? xstrdup (dir)
       : concat (dir, DIR_SEP_STRING);
   
@@ -54,7 +55,9 @@ checked_dir_list_add P2C(str_llist_type *, l,  const_string, dir)
 
 /* The cache.  Typically, several paths have the same element; for
    example, /usr/local/lib/texmf/fonts//.  We don't want to compute the
-   expansion of such a thing more than once.  */
+   expansion of such a thing more than once.  Even though we also cache
+   the dir_links call, that's not enough -- without this path element
+   caching as well, the execution time doubles.  */
 
 typedef struct
 {
@@ -91,7 +94,7 @@ cached P1C(const_string, key)
   
   for (p = 0; p < cache_length; p++)
     {
-      if (STREQ (the_cache[p].key, key))
+      if (FILESTRCASEEQ (the_cache[p].key, key))
         return the_cache[p].value;
     }
   
@@ -109,19 +112,75 @@ static void expand_elt P3H(str_llist_type *, const_string, unsigned);
    subdirectories of ELT (up to ELT_LENGTH, which must be a /) to
    STR_LIST_PTR.  */
 
+#ifdef WIN32
+/* Shared across recursive calls, it acts like a stack. */
+static char dirname[MAX_PATH];
+#endif
+
 static void
 do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
               unsigned, elt_length,  const_string, post)
 {
+#ifdef WIN32
+  WIN32_FIND_DATA find_file_data;
+  HANDLE hnd;
+  int proceed;
+#else
   DIR *dir;
   struct dirent *e;
+#endif /* not WIN32 */
   fn_type name;
   
   /* Some old compilers don't allow aggregate initialization.  */
   name = fn_copy0 (elt, elt_length);
   
-  assert (IS_DIR_SEP (elt[elt_length - 1]));
+  assert (IS_DIR_SEP (elt[elt_length - 1])
+          || IS_DEVICE_SEP (elt[elt_length - 1]));
   
+#if defined (WIN32)
+  strcpy(dirname, FN_STRING(name));
+  strcat(dirname, "/*.*");         /* "*.*" or "*" -- seems equivalent. */
+  hnd = FindFirstFile(dirname, &find_file_data);
+
+  if (hnd == INVALID_HANDLE_VALUE) {
+    fn_free(&name);
+    return;
+  }
+
+  /* Include top level before subdirectories, if nothing to match.  */
+  if (*post == 0)
+    dir_list_add (str_list_ptr, FN_STRING (name));
+  else {
+    /* If we do have something to match, see if it exists.  For
+       example, POST might be `pk/ljfour', and they might have a
+       directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
+    fn_str_grow (&name, post);
+    expand_elt (str_list_ptr, FN_STRING (name), elt_length);
+    fn_shrink_to (&name, elt_length);
+  }
+  proceed = 1;
+  while (proceed) {
+    if (find_file_data.cFileName[0] != '.') {
+      /* Construct the potential subdirectory name.  */
+      fn_str_grow (&name, find_file_data.cFileName);
+      if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+	unsigned potential_len = FN_LENGTH (name);
+	
+	/* It's a directory, so append the separator.  */
+	fn_str_grow (&name, DIR_SEP_STRING);
+
+	do_subdir (str_list_ptr, FN_STRING (name),
+		   potential_len, post);
+      }
+      fn_shrink_to (&name, elt_length);
+    }
+    proceed = FindNextFile (hnd, &find_file_data);
+  }
+  fn_free (&name);
+  FindClose(hnd);
+
+#else /* not WIN32 */
+
   /* If we can't open it, quit.  */
   dir = opendir (FN_STRING (name));
   if (dir == NULL)
@@ -130,38 +189,38 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
       return;
     }
   
-  /* Include top-level directory before subdirectories.  */
+  /* Include top level before subdirectories, if nothing to match.  */
   if (*post == 0)
     dir_list_add (str_list_ptr, FN_STRING (name));
+  else
+    { /* If we do have something to match, see if it exists.  For
+         example, POST might be `pk/ljfour', and they might have a
+         directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
+      fn_str_grow (&name, post);
+      expand_elt (str_list_ptr, FN_STRING (name), elt_length);
+      fn_shrink_to (&name, elt_length);
+    }
 
   while ((e = readdir (dir)) != NULL)
-    { /* If it's . or .., never mind.  */
-      if (!(e->d_name[0] == '.'
-            && (e->d_name[1] == 0
-                || (e->d_name[1] == '.' && e->d_name[2] == 0))))
+    { /* If it begins with a `.', never mind.  (This allows ``hidden''
+         directories that the algorithm won't find.)  */
+      if (e->d_name[0] != '.')
         {
           int links;
           
           /* Construct the potential subdirectory name.  */
           fn_str_grow (&name, e->d_name);
-          fn_str_grow (&name, DIR_SEP_STRING);
           
           /* If we can't stat it, or if it isn't a directory, continue.  */
           links = dir_links (FN_STRING (name));
 
           if (links >= 0)
             { 
-              unsigned potential_length = FN_LENGTH (name) - 1;
+              unsigned potential_len = FN_LENGTH (name);
               
-              /* NAME is a subdirectory; if POST is non-empty, keep
-                 looking.  */
-              if (*post != 0)
-                {
-                  fn_str_grow (&name, post);
-                  expand_elt (str_list_ptr, FN_STRING (name),
-                              potential_length);
-                }
-
+              /* It's a directory, so append the separator.  */
+              fn_str_grow (&name, DIR_SEP_STRING);
+              
               /* Should we recurse?  To see if the subdirectory is a
                  leaf, check if it has two links (one for . and one for
                  ..).  This means that symbolic links to directories do
@@ -169,24 +228,28 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
                  the only alternative I know of is to stat every entry
                  in the directory, and that is unacceptably slow.
                  
-                 The #ifdef here makes this configurable at
+                 The #ifdef here makes all this configurable at
                  compile-time, so that if we're using VMS directories or
                  some such, we can still find subdirectories, even if it
                  is much slower.  */
-#ifdef UNIX_ST_NLINK
+#ifdef ST_NLINK_TRICK
+#ifdef AMIGA
+              /* With SAS/C++ 6.55 on the Amiga, `stat' sets the `st_nlink'
+                 field to -1 for a file, or to 1 for a directory.  */
+              if (links == 1)
+#else
               if (links > 2)
-#endif
-                { /* All criteria are met; find subdirectories.  */
-                  do_subdir (str_list_ptr, FN_STRING (name),
-                             potential_length, post);
-                }
-#ifdef UNIX_ST_NLINK
-              else 
-#endif
-                   if (*post == 0)
-                /* Nothing more to match, no recursive subdirectories to
+#endif /* not AMIGA */
+#endif /* not ST_NLINK_TRICK */
+                /* All criteria are met; find subdirectories.  */
+                do_subdir (str_list_ptr, FN_STRING (name),
+                           potential_len, post);
+#ifdef ST_NLINK_TRICK
+              else if (*post == 0)
+                /* Nothing to match, no recursive subdirectories to
                    look for: we're done with this branch.  Add it.  */
                 dir_list_add (str_list_ptr, FN_STRING (name));
+#endif
             }
 
           /* Remove the directory entry we just checked from `name'.  */
@@ -196,6 +259,7 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
   
   fn_free (&name);
   xclosedir (dir);
+#endif /* not WIN32 */
 }
 
 
@@ -207,34 +271,28 @@ static void
 expand_elt P3C(str_llist_type *, str_list_ptr,  const_string, elt,
                unsigned, start)
 {
-  boolean found_special = false;
-  const_string dir = elt + start;
+  const_string dir = elt + start, post;
   
   while (*dir != 0)
     {
       if (IS_DIR_SEP (*dir))
         {
-          /* If two consecutive directory separators, find subdirectories.  */
+          /* If two or more consecutive /'s, find subdirectories.  */
           if (IS_DIR_SEP (dir[1]))
             {
-              do_subdir (str_list_ptr, elt, dir - elt + 1, dir + 2);
-              found_special = true;
+	      for (post = dir + 1; IS_DIR_SEP (*post); post++) ;
+              do_subdir (str_list_ptr, elt, dir - elt + 1, post);
+	      return;
             }
-#if 0
-  /* Maybe eventually I'll implement this.  */
-          /* If /?, make following component optional.  */
-          else if (dir[1] == '?')
-            do_optional (str_list_ptr, elt, dir - elt + 1, dir + 2);
-#endif
+
           /* No special stuff at this slash.  Keep going.  */
         }
       
       dir++;
     }
   
-  if (!found_special)
-    /* When we reach the end of ELT, it will be a normal filename.  */
-    checked_dir_list_add (str_list_ptr, elt);
+  /* When we reach the end of ELT, it will be a normal filename.  */
+  checked_dir_list_add (str_list_ptr, elt);
 }
 
 /* Here is the entry point.  Returns directory list for ELT.  */
@@ -245,7 +303,7 @@ kpse_element_dirs P1C(const_string, elt)
   str_llist_type *ret;
 
   /* If given nothing, return nothing.  */
-  if (!elt)
+  if (!elt || !*elt)
     return NULL;
 
   /* If we've already cached the answer for ELT, return it.  */
@@ -256,35 +314,28 @@ kpse_element_dirs P1C(const_string, elt)
   /* We're going to have a real directory list to return.  */
   ret = XTALLOC1 (str_llist_type);
   *ret = NULL;
-  
-  /* If ELT is the empty string, just return cwd.  */
-  if (*elt == 0)
-    { /* Some old compilers do not support aggregate initialization.  */
-      char cwd[3];
-      cwd[0] = '.';
-      cwd[1] = DIR_SEP;
-      cwd[2] = 0;
-      
-      checked_dir_list_add (ret, cwd);
-    }
 
-  /* OK, so much for the trivial cases.  We handle the hard case in
-     a subroutine.  */
-  else
-    {
-      /* If the path starts with ~ or ~user, expand it.  Do this
-         before calling `expand_subdir' or `add_directory', so that
-         we don't expand the same ~ over and over.  */
-      string dir = kpse_expand (elt);
-
-      expand_elt (ret, dir, 0);
-      
-      free (dir);
-    }  
+  /* We handle the hard case in a subroutine.  */
+  expand_elt (ret, elt, 0);
 
   /* Remember the directory list we just found, in case future calls are
      made with the same ELT.  */
   cache (elt, ret);
+
+#ifdef KPSE_DEBUG
+  if (KPSE_DEBUG_P (KPSE_DEBUG_EXPAND))
+    {
+      DEBUGF1 ("path element %s =>", elt);
+      if (ret)
+        {
+          str_llist_elt_type *e;
+          for (e = *ret; e; e = STR_LLIST_NEXT (*e))
+            fprintf (stderr, " %s", STR_LLIST (*e));
+        }
+      putc ('\n', stderr);
+      fflush (stderr);
+    }
+#endif /* KPSE_DEBUG */
 
   return ret;
 }
@@ -296,13 +347,13 @@ print_element_dirs (const_string elt)
 {
   str_llist_type *dirs;
   
-  printf ("Directories of %s:\t", elt ? elt : "(null)");
+  printf ("Directories of %s:\t", elt ? elt : "(nil)");
   fflush (stdout);
   
   dirs = kpse_element_dirs (elt);
   
   if (!dirs)
-    printf ("(null)");
+    printf ("(nil)");
   else
     {
       str_llist_elt_type *dir;
@@ -320,19 +371,27 @@ int
 main ()
 {
   /* DEBUG_SET (DEBUG_STAT); */
-
   /* All lists end with NULL.  */
   print_element_dirs (NULL);	/* */
   print_element_dirs ("");	/* ./ */
   print_element_dirs ("/k");	/* */
-  print_element_dirs (".//");	/* ./ ./kpathsea/ */
+  print_element_dirs (".//");	/* ./ ./archive/ */
+  print_element_dirs (".//archive");	/* ./ ./archive/ */
+#ifdef AMIGA
+  print_element_dirs ("TeXMF:AmiWeb2c/texmf/fonts//"); /* lots */
+  print_element_dirs ("TeXMF:AmiWeb2c/share/texmf/fonts//bakoma"); /* just one */
+  print_element_dirs ("TeXMF:AmiWeb2c/texmf/fonts//"); /* lots again [cache] */
+  print_element_dirs ("TeXMF:");	/* TeXMF: */
+  print_element_dirs ("TeXMF:/");	/* TeXMF: and all subdirs */
+#else /* not AMIGA */
+  print_element_dirs ("/tmp/fonts//");	/* no need to stat anything */
   print_element_dirs ("/usr/local/lib/tex/fonts//");      /* lots */
   print_element_dirs ("/usr/local/lib/tex/fonts//times"); /* just one */
   print_element_dirs ("/usr/local/lib/tex/fonts//"); /* lots again [cache] */
   print_element_dirs ("~karl");		/* tilde expansion */
   print_element_dirs ("$karl");		/* variable expansion */  
   print_element_dirs ("~${LOGNAME}");	/* both */  
-  
+#endif /* not AMIGA */
   return 0;
 }
 
@@ -341,6 +400,6 @@ main ()
 
 /*
 Local variables:
-test-compile-command: "gcc -posix -g -I. -I.. -DTEST elt-dirs.c kpathsea.a"
+test-compile-command: "gcc -g -I. -I.. -DTEST elt-dirs.c kpathsea.a"
 End:
 */

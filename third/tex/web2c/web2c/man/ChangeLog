@@ -1,3 +1,58 @@
+Sat Mar  7 18:16:40 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* omega.man: Add authors list.
+
+	* pdftex.man: Add authors list.
+
+Tue Mar  3 09:07:10 1998  Olaf Weber  <olaf@infovore.xs4all.nl>
+
+	* omega.man: Corrected instructions for subscribing to the omega
+ 	list.
+
+Fri Jan  9 21:14:37 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Include clean.make, add a default target.
+
+Sun Jan  4 15:57:34 1998  Olaf Weber  <infovore@xs4all.nl>
+
+	* Makefile.in: Use man.make to supply rules for manual pages.
+
+	* Makefile.in: Changes to cope with new manual pages.
+
+Tue Dec 30 17:46:24 1997  Olaf Weber  <infovore@xs4all.nl>
+
+	* Changes to all pages in an attempt to get them up-to-date.  Some
+	pages (amslatex, lamstex, slitex, initex, virtex) have been
+	removed.  Some renamed (etex -> eplain).  Some added (etex,
+	pdftex, omega).
+
+Tue Dec 12 16:52:12 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in (sedscript): Correct path for c-auto.h. From Ulrik.
+
+Tue Jun 13 11:31:35 1995  Karl Berry  <karl@cs.umb.edu>
+
+        * Makefile.in: Use ../web2c, not /w.
+
+Mon Dec 19 13:07:24 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * dvitype.man: The .dvi file extended if necessary.
+        * vftovp.man: Similarly.
+
+Sat Dec 17 16:44:49 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * tftopl.man: Both the .tfm and .pl files are extended if
+        necessary now.
+        * vptovf.man: Similarly.
+
+Thu Nov 24 13:42:16 1994  Karl Berry  <karl@cs.umb.edu>
+
+        * bibtex.man: We don't use TEXINPUTS to look for .bst files now.
+
+Mon Feb 21 14:50:51 1994  Karl Berry  (karl@cs.umb.edu)
+
+        * Makefile.in: srcdir changes from simon.
+
 Wed Feb  2 11:00:09 1994  Karl Berry  (karl@cs.umb.edu)
 
         * Version 6.1.

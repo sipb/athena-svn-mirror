@@ -1,16 +1,24 @@
-Donald Knuth conceived and implemented TeX and Metafont.
+Donald Knuth conceived and implemented TeX, Metafont, and WEB.
+John Hobby wrote MetaPost (partially derived from Metafont) and dvitomp.
+Peter Breitenlohner wrote dvicopy.
+Tomas Rokicki wrote gftopk, pktogf, and pktype.
+Frank Liang wrote patgen version 1, and Peter Breitenlohner did patgen 2.
+Oren Patashnik wrote BibTeX.
+Michael Ferguson and Bernd Raichle wrote the MLTeX extensions.
+Ignacio Zabala implemented DOC, the prototype for WEB.
 
-web2c is primarily the product of Tim Morgan <morgan@ics.uci.edu>.
+Howard Trickey and Pavel Curtis initially ported TeX and related
+  programs to Unix.
+Paul Richards initially ported Metafont.
+Pierre MacKay initially ported the MFware programs.
+Richard Furuta initially ported some of the TeXware programs.
+Ulrik Vieth initially adapted MetaPost to Kpathsea.
 
 Tomas Rokicki wrote the original TeX to C program.
-
-Pierre Mackay wrote the original change files for most of the
-Metafontware programs.
-
-Karl Berry <karl@cs.umb.edu> made everything work with the ``8-bit''
-release of TeX and Metafont (version 3 and 2, respectively).  Karl is
-the current maintainer, and is the `I' in most of the code and
-documentation.
+Tim Morgan made most of the subsequent changes.
 
 Dozens of other people have contributed to porting, bug fixes, and other
-improvements.  (The names are recorded in ChangeLog, when I remembered.)
+improvements.  (The names are recorded in the ChangeLogs to the best of
+my knowledgement. Do not hesitate to contact me with corrections.)
+
+K. Berry <kb@mail.tug.org> is the current maintainer.

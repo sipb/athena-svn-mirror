@@ -1,4 +1,4 @@
-.TH VFTOVP 1 "14 December 1993"
+.TH VFTOVP 1 "19 December 1994" "Web2C @VERSION@"
 .\"=====================================================================
 .if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
 .if n .ds TX TeX
@@ -13,7 +13,7 @@
 .if n .ds LX LaTeX
 .\"=====================================================================
 .SH NAME
-vftovp \- convert virtual font (vf) files to virtual property lists
+vftovp \- convert virtual font (vf) files to virtual property lists (vpl)
 .SH SYNOPSIS
 .B vftovp
 [
@@ -22,13 +22,18 @@ vftovp \- convert virtual font (vf) files to virtual property lists
 [
 .B \-verbose
 ]
-.I vf_file_name
-.I tfm_file_name
+.I vf_name[.vf]
+.I tfm_name[.tfm]
 [
-.I vpl_file_name
+.I vpl_name[.vpl]
 ]
 .\"=====================================================================
 .SH DESCRIPTION
+This manual page is not meant to be exhaustive.  The complete
+documentation for this version of \*(TX can be found in the info file
+or manual
+.IR "Web2C: A TeX implementation" .
+.PP
 The
 .B vftovp
 program translates a (program-oriented) virtual font file and its
@@ -37,16 +42,14 @@ Thus, the virtual font can be edited, and its exact contents can be
 displayed mnemonically.  It also serves as a VF-file validating program;
 if no error messages are given, the input files are correct.
 .PP
-The
-.I vpl_file_name
-must be complete; no adding of default extensions is done.
+The filenames are extended with the appropriate extension if necessary.
 .\"=====================================================================
 .SH OPTIONS
 The argument
 .I format
 to
 .B \-charcode-format
-specifies how character codes are output in the PL file.  By
+specifies how character codes are output in the VPL file.  By
 default, only letters and digits are output using the
 .B C
 integer code (i.e., in ASCII); the others are output in octal.  (Unless
@@ -54,7 +57,7 @@ the font's coding scheme starts with
 .B "TeX math sy"
 or
 .BR "TeX math ex" ,
-that is, when all are output in octal.)  If
+when all are output in octal.)  If
 .I format
 is
 .BR ascii ,
@@ -75,12 +78,10 @@ operates silently.  With it, a banner and progress report are printed on
 .SH ENVIRONMENT
 .B vftovp
 looks for
-.I vf_file_name
+.I vf_name
 using the
 environment variable VFFONTS.  If that is not set, it uses the variable
-TEXFONTS.  If that is not set, it uses the system default:
-.br
-.I @DEFAULT_VF_PATH@
+TEXFONTS.  If that is not set, it uses the system default.
 .PP
 See
 .BR tex (1)
