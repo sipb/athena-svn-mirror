@@ -10,6 +10,7 @@
 /etc/inet/inetd.conf
 /etc/inet/services
 /etc/ftpusers
+/etc/ifhp.conf
 /etc/lpd.conf
 /etc/resolv.conf
 /etc/mail/aliases

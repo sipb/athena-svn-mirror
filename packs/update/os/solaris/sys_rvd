@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.5 1999-05-05 16:58:34 danw Exp $
+## $Id: sys_rvd,v 1.6 1999-05-20 21:15:02 mwhitson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -12,6 +12,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		driver_classes.*
 		ftpusers
 		group
+		ifhp.conf
 		lpd.conf
 		mail
 		inet/inetd.conf
