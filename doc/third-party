@@ -76,6 +76,7 @@ There is no single distribution of what we install from TeX.  The
 files we install were retrieved from the CTAN (Comprehensive TeX
 Archive Network) archive, mirrors of which are at several places
 including ftp.duke.edu:/tex-archive and ftp.cdrom.com:pub/tex/ctan.
+A list of CTAN mirrors is available via "finger ctan@ftp.dante.de".
 Here is a list of what we got and what subdirectories they were
 imported into:
 
