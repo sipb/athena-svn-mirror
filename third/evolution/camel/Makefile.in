@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,16 +60,9 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BONOBO_CONF_CFLAGS = @BONOBO_CONF_CFLAGS@
-BONOBO_CONF_LIBS = @BONOBO_CONF_LIBS@
-BONOBO_GNOME_CFLAGS = @BONOBO_GNOME_CFLAGS@
-BONOBO_GNOME_LIBS = @BONOBO_GNOME_LIBS@
-BONOBO_HTML_GNOME_CFLAGS = @BONOBO_HTML_GNOME_CFLAGS@
-BONOBO_HTML_GNOME_LIBS = @BONOBO_HTML_GNOME_LIBS@
-BONOBO_VFS_GNOME_CFLAGS = @BONOBO_VFS_GNOME_CFLAGS@
-BONOBO_VFS_GNOME_LIBS = @BONOBO_VFS_GNOME_LIBS@
 BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -83,15 +76,35 @@ DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
+EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
+EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
+EVOLUTION_ADDRESSBOOK_LIBS = @EVOLUTION_ADDRESSBOOK_LIBS@
+EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
+EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
+EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
+EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
+EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
+EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
+EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
+EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
+EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
+EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
+EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
-EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
-EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
-GAL_CFLAGS = @GAL_CFLAGS@
-GAL_LIBS = @GAL_LIBS@
+E_NAME_CFLAGS = @E_NAME_CFLAGS@
+E_NAME_LIBS = @E_NAME_LIBS@
+E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
+E_UTIL_LIBS = @E_UTIL_LIBS@
+E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
+E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_CONFIG = @GCONF_CONFIG@
+GCONF_LIBS = @GCONF_LIBS@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GENCAT = @GENCAT@
-GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -100,16 +113,14 @@ GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
 GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
 GNOME_CONFIG = @GNOME_CONFIG@
 GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
+GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
+GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
 GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
 GNOME_PREFIX = @GNOME_PREFIX@
-GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
-GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
-GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
-GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
 GTKDOC = @GTKDOC@
@@ -124,6 +135,8 @@ GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
+IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -131,6 +144,7 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
+KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -141,10 +155,10 @@ KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
+LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
+LIBFILTER_LIBS = @LIBFILTER_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-MAILER_CFLAGS = @MAILER_CFLAGS@
-MAILER_LIBS = @MAILER_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -152,8 +166,13 @@ NSPR_CFLAGS = @NSPR_CFLAGS@
 NSPR_LDFLAGS = @NSPR_LDFLAGS@
 NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
+OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
+OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
+OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
+OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -161,6 +180,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PISOCK_CFLAGS = @PISOCK_CFLAGS@
 PISOCK_LIBS = @PISOCK_LIBS@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -171,12 +191,16 @@ SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
+SHELL_CFLAGS = @SHELL_CFLAGS@
+SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
+WOMBAT_LIBS = @WOMBAT_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
 XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
@@ -197,41 +221,266 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 localedir = @localedir@
+privlibdir = @privlibdir@
 
 SUBDIRS = providers tests
 
 libcamelincludedir = $(includedir)/camel
 
-sbin_PROGRAMS = camel-lock-helper
+sbin_PROGRAMS = camel-lock-helper camel-index-control
 
 lib_LTLIBRARIES = libcamel.la
 noinst_LTLIBRARIES = libcamel-static.la
 
-INCLUDES = -I.. -I$(srcdir)/.. 			 	-I$(top_srcdir)/intl			 	-I$(top_srcdir)/e-util			 	$(CAMEL_CFLAGS)				 	$(GNOME_INCLUDEDIR)			 	$(KRB4_CFLAGS)				 	$(NSPR_CFLAGS)				 	$(NSS_CFLAGS)				 	-DCAMEL_SBINDIR=\""$(sbindir)"\"	 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	-DG_LOG_DOMAIN=\"camel\"
+INCLUDES = -I.. -I$(srcdir)/.. 			 	\
+	-I$(top_srcdir)/intl			 	\
+	-I$(top_srcdir)/e-util			 	\
+	-DCAMEL_SBINDIR=\""$(sbindir)"\"	 	\
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" 	\
+	-DG_LOG_DOMAIN=\"camel\"			\
+	$(CAMEL_CFLAGS)
 
 
-libcamel_la_SOURCES =  	broken-date-parser.c				camel-address.c					camel-cipher-context.c				camel-cms-context.c				camel-data-wrapper.c				camel-digest-folder.c				camel-disco-diary.c				camel-disco-folder.c				camel-disco-store.c				camel-exception.c				camel-file-utils.c				camel-filter-driver.c				camel-filter-search.c				camel-folder-search.c				camel-folder-summary.c				camel-folder-thread.c				camel-folder.c					camel-html-parser.c				camel-internet-address.c			camel-lock.c					camel-lock-client.c				camel-medium.c					camel-mime-filter-bestenc.c			camel-mime-filter-basic.c			camel-mime-filter-charset.c			camel-mime-filter-crlf.c			camel-mime-filter-from.c			camel-mime-filter-html.c			camel-mime-filter-index.c			camel-mime-filter-linewrap.c			camel-mime-filter-save.c			camel-mime-filter.c				camel-mime-message.c				camel-mime-parser.c				camel-mime-part-utils.c				camel-mime-part.c				camel-mime-utils.c				camel-movemail.c				camel-multipart.c				camel-object.c					camel-operation.c				camel-pgp-context.c				camel-pgp-mime.c				camel-smime-context.c				camel-smime-utils.c				camel-provider.c				camel-remote-store.c				camel-sasl.c					camel-sasl-anonymous.c				camel-sasl-cram-md5.c				camel-sasl-digest-md5.c				camel-sasl-kerberos4.c				camel-sasl-login.c				camel-sasl-plain.c				camel-sasl-popb4smtp.c				camel-search-private.c				camel-seekable-stream.c				camel-seekable-substream.c			camel-service.c					camel-session.c					camel-store.c					camel-stream-buffer.c				camel-stream-filter.c				camel-stream-fs.c				camel-stream-mem.c				camel-stream-null.c				camel-stream.c					camel-tcp-stream-raw.c				camel-tcp-stream-ssl.c				camel-tcp-stream.c				camel-transport.c				camel-uid-cache.c				camel-url.c					camel-vee-folder.c				camel-vee-store.c				camel-vtrash-folder.c				camel-charset-map.c				camel.c						gstring-util.c					hash-table-utils.c				string-utils.c
+libcamel_la_SOURCES = \
+	broken-date-parser.c			\
+	camel-address.c				\
+	camel-arg.c				\
+	camel-block-file.c			\
+	camel-certdb.c				\
+	camel-charset-map.c			\
+	camel-cipher-context.c			\
+	camel-cms-context.c			\
+	camel-data-cache.c			\
+	camel-data-wrapper.c			\
+	camel-digest-folder.c			\
+	camel-digest-store.c			\
+	camel-digest-summary.c			\
+	camel-disco-diary.c			\
+	camel-disco-folder.c			\
+	camel-disco-store.c			\
+	camel-exception.c			\
+	camel-file-utils.c			\
+	camel-filter-driver.c			\
+	camel-filter-search.c			\
+	camel-folder-search.c			\
+	camel-folder-summary.c			\
+	camel-folder-thread.c			\
+	camel-folder.c				\
+	camel-gpg-context.c			\
+	camel-html-parser.c			\
+	camel-http-stream.c			\
+	camel-index.c				\
+	camel-internet-address.c		\
+	camel-lock.c				\
+	camel-lock-client.c			\
+	camel-medium.c				\
+	camel-mime-filter-bestenc.c		\
+	camel-mime-filter-basic.c		\
+	camel-mime-filter-charset.c		\
+	camel-mime-filter-chomp.c		\
+	camel-mime-filter-canon.c		\
+	camel-mime-filter-crlf.c		\
+	camel-mime-filter-from.c		\
+	camel-mime-filter-html.c		\
+	camel-mime-filter-tohtml.c		\
+	camel-mime-filter-index.c		\
+	camel-mime-filter-linewrap.c		\
+	camel-mime-filter-save.c		\
+	camel-mime-filter.c			\
+	camel-mime-message.c			\
+	camel-mime-parser.c			\
+	camel-mime-part-utils.c			\
+	camel-mime-part.c			\
+	camel-mime-utils.c			\
+	camel-movemail.c			\
+	camel-multipart.c			\
+	camel-multipart-encrypted.c		\
+	camel-multipart-signed.c		\
+	camel-object.c				\
+	camel-operation.c			\
+	camel-partition-table.c			\
+	camel-pgp-mime.c			\
+	camel-smime-context.c			\
+	camel-smime-utils.c			\
+	camel-provider.c			\
+	camel-sasl.c				\
+	camel-sasl-anonymous.c			\
+	camel-sasl-cram-md5.c			\
+	camel-sasl-digest-md5.c			\
+	camel-sasl-kerberos4.c			\
+	camel-sasl-login.c			\
+	camel-sasl-ntlm.c			\
+	camel-sasl-plain.c			\
+	camel-sasl-popb4smtp.c			\
+	camel-search-private.c			\
+	camel-seekable-stream.c			\
+	camel-seekable-substream.c		\
+	camel-service.c				\
+	camel-session.c				\
+	camel-store.c				\
+	camel-store-summary.c			\
+	camel-stream-buffer.c			\
+	camel-stream-filter.c			\
+	camel-stream-fs.c			\
+	camel-stream-mem.c			\
+	camel-stream-null.c			\
+	camel-stream.c				\
+	camel-text-index.c			\
+	camel-tcp-stream-raw.c			\
+	camel-tcp-stream-ssl.c			\
+	camel-tcp-stream-openssl.c		\
+	camel-tcp-stream.c			\
+	camel-transport.c			\
+	camel-uid-cache.c			\
+	camel-url.c				\
+	camel-utf8.c				\
+	camel-vee-folder.c			\
+	camel-vee-store.c			\
+	camel-vtrash-folder.c			\
+	camel.c					\
+	gstring-util.c				\
+	hash-table-utils.c			\
+	string-utils.c
 
 
-libcamelinclude_HEADERS =  	broken-date-parser.h				camel-address.h					camel-charset-map.h				camel-cipher-context.h				camel-cms-context.h				camel-data-wrapper.h				camel-digest-folder.h				camel-disco-diary.h				camel-disco-folder.h				camel-disco-store.h				camel-exception-list.def			camel-exception.h				camel-file-utils.h				camel-filter-driver.h				camel-filter-search.h				camel-folder-search.h				camel-folder-summary.h				camel-folder-thread.h				camel-folder.h					camel-internet-address.h			camel-lock.h					camel-lock-client.h				camel-medium.h					camel-mime-filter-bestenc.h			camel-mime-filter-basic.h			camel-mime-filter-charset.h			camel-mime-filter-crlf.h			camel-mime-filter-from.h			camel-mime-filter-html.h			camel-mime-filter-index.h			camel-mime-filter-linewrap.h			camel-mime-filter-save.h			camel-mime-filter.h				camel-mime-message.h				camel-mime-parser.h				camel-mime-part-utils.h				camel-mime-part.h				camel-mime-utils.h				camel-movemail.h				camel-multipart.h				camel-object.h					camel-operation.h				camel-pgp-context.h				camel-pgp-mime.h				camel-smime-context.h				camel-smime-utils.h				camel-provider.h				camel-remote-store.h				camel-sasl.h					camel-sasl-anonymous.h				camel-sasl-cram-md5.h				camel-sasl-digest-md5.h				camel-sasl-kerberos4.h				camel-sasl-login.h				camel-sasl-plain.h				camel-sasl-popb4smtp.h				camel-seekable-stream.h				camel-seekable-substream.h			camel-service.h					camel-session.h					camel-store.h					camel-stream-buffer.h				camel-stream-filter.h				camel-stream-fs.h				camel-stream-mem.h				camel-stream-null.h				camel-stream.h					camel-tcp-stream-raw.h				camel-tcp-stream-ssl.h				camel-tcp-stream.h				camel-transport.h				camel-types.h					camel-uid-cache.h				camel-url.h					camel-vee-folder.h				camel-vee-store.h				camel-vtrash-folder.h				camel.h						gstring-util.h					hash-table-utils.h				string-utils.h
+libcamelinclude_HEADERS = \
+	broken-date-parser.h			\
+	camel-address.h				\
+	camel-arg.h				\
+	camel-block-file.h			\
+	camel-certdb.h				\
+	camel-charset-map.h			\
+	camel-cipher-context.h			\
+	camel-cms-context.h			\
+	camel-data-cache.h			\
+	camel-data-wrapper.h			\
+	camel-digest-folder.h			\
+	camel-digest-store.h			\
+	camel-digest-summary.h			\
+	camel-disco-diary.h			\
+	camel-disco-folder.h			\
+	camel-disco-store.h			\
+	camel-exception-list.def		\
+	camel-exception.h			\
+	camel-file-utils.h			\
+	camel-filter-driver.h			\
+	camel-filter-search.h			\
+	camel-folder-search.h			\
+	camel-folder-summary.h			\
+	camel-folder-thread.h			\
+	camel-folder.h				\
+	camel-gpg-context.h			\
+	camel-http-stream.h			\
+	camel-index.h				\
+	camel-internet-address.h		\
+	camel-lock.h				\
+	camel-lock-client.h			\
+	camel-medium.h				\
+	camel-mime-filter-bestenc.h		\
+	camel-mime-filter-basic.h		\
+	camel-mime-filter-charset.h		\
+	camel-mime-filter-chomp.h		\
+	camel-mime-filter-canon.h		\
+	camel-mime-filter-crlf.h		\
+	camel-mime-filter-from.h		\
+	camel-mime-filter-html.h		\
+	camel-mime-filter-tohtml.h		\
+	camel-mime-filter-index.h		\
+	camel-mime-filter-linewrap.h		\
+	camel-mime-filter-save.h		\
+	camel-mime-filter.h			\
+	camel-mime-message.h			\
+	camel-mime-parser.h			\
+	camel-mime-part-utils.h			\
+	camel-mime-part.h			\
+	camel-mime-utils.h			\
+	camel-movemail.h			\
+	camel-multipart.h			\
+	camel-multipart-encrypted.h		\
+	camel-multipart-signed.h		\
+	camel-object.h				\
+	camel-operation.h			\
+	camel-partition-table.h			\
+	camel-pgp-mime.h			\
+	camel-smime-context.h			\
+	camel-smime-utils.h			\
+	camel-provider.h			\
+	camel-sasl.h				\
+	camel-sasl-anonymous.h			\
+	camel-sasl-cram-md5.h			\
+	camel-sasl-digest-md5.h			\
+	camel-sasl-kerberos4.h			\
+	camel-sasl-login.h			\
+	camel-sasl-ntlm.h			\
+	camel-sasl-plain.h			\
+	camel-sasl-popb4smtp.h			\
+	camel-seekable-stream.h			\
+	camel-seekable-substream.h		\
+	camel-service.h				\
+	camel-session.h				\
+	camel-store.h				\
+	camel-store-summary.h			\
+	camel-stream-buffer.h			\
+	camel-stream-filter.h			\
+	camel-stream-fs.h			\
+	camel-stream-mem.h			\
+	camel-stream-null.h			\
+	camel-stream.h				\
+	camel-text-index.h			\
+	camel-tcp-stream-raw.h			\
+	camel-tcp-stream-ssl.h			\
+	camel-tcp-stream.h			\
+	camel-transport.h			\
+	camel-types.h				\
+	camel-uid-cache.h			\
+	camel-url.h				\
+	camel-utf8.h				\
+	camel-vee-folder.h			\
+	camel-vee-store.h			\
+	camel-vtrash-folder.h			\
+	camel.h					\
+	gstring-util.h				\
+	hash-table-utils.h			\
+	string-utils.h
 
 
 libcamel_la_LDFLAGS = -version-info 0:0:0 -rpath $(libdir) $(KRB4_LDFLAGS)
 
-libcamel_la_LIBADD = $(top_builddir)/e-util/libeutil.la 	$(CAMEL_LIBS)					$(KRB4_LIBS)					$(NSPR_LDFLAGS)					$(NSS_LDFLAGS) -lhesiod -lares $(RESOLV_LIBS)
+libcamel_la_LIBADD = \
+	$(top_builddir)/e-util/libeutil.la 	\
+	$(CAMEL_LIBS) -lhesiod -lares $(RESOLV_LIBS)
 
 
 libcamel_static_la_SOURCES = $(libcamel_la_SOURCES)
 libcamel_static_la_LIBADD = $(libcamel_la_LIBADD)
 libcamel_static_la_LDFLAGS = --all-static $(KRB4_LDFLAGS)
 
-camel_lock_helper_SOURCES =  	camel-lock-helper.c 				camel-lock-helper.h				camel-lock.c					camel-lock.h
+camel_lock_helper_SOURCES = \
+	camel-lock-helper.c 			\
+	camel-lock-helper.h			\
+	camel-lock.c				\
+	camel-lock.h
 
 
-noinst_HEADERS =  	camel-charset-map-private.h			camel-private.h					camel-search-private.h				camel-html-parser.h
+camel_index_control_SOURCES = \
+	camel-index-control.c
 
 
-EXTRA_DIST =  	README
+camel_index_control_LDADD = \
+	$(libcamel_la_LIBADD)			\
+	libcamel.la				\
+	$(EVOLUTION_MAIL_LIBS)
+
+
+noinst_HEADERS = \
+	camel-charset-map-private.h		\
+	camel-private.h				\
+	camel-search-private.h			\
+	camel-html-parser.h
+
+
+EXTRA_DIST = \
+	README
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -245,63 +494,77 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libcamel_la_DEPENDENCIES =  $(top_builddir)/e-util/libeutil.la
 libcamel_la_OBJECTS =  broken-date-parser.lo camel-address.lo \
-camel-cipher-context.lo camel-cms-context.lo camel-data-wrapper.lo \
-camel-digest-folder.lo camel-disco-diary.lo camel-disco-folder.lo \
+camel-arg.lo camel-block-file.lo camel-certdb.lo camel-charset-map.lo \
+camel-cipher-context.lo camel-cms-context.lo camel-data-cache.lo \
+camel-data-wrapper.lo camel-digest-folder.lo camel-digest-store.lo \
+camel-digest-summary.lo camel-disco-diary.lo camel-disco-folder.lo \
 camel-disco-store.lo camel-exception.lo camel-file-utils.lo \
 camel-filter-driver.lo camel-filter-search.lo camel-folder-search.lo \
 camel-folder-summary.lo camel-folder-thread.lo camel-folder.lo \
-camel-html-parser.lo camel-internet-address.lo camel-lock.lo \
+camel-gpg-context.lo camel-html-parser.lo camel-http-stream.lo \
+camel-index.lo camel-internet-address.lo camel-lock.lo \
 camel-lock-client.lo camel-medium.lo camel-mime-filter-bestenc.lo \
 camel-mime-filter-basic.lo camel-mime-filter-charset.lo \
+camel-mime-filter-chomp.lo camel-mime-filter-canon.lo \
 camel-mime-filter-crlf.lo camel-mime-filter-from.lo \
-camel-mime-filter-html.lo camel-mime-filter-index.lo \
-camel-mime-filter-linewrap.lo camel-mime-filter-save.lo \
-camel-mime-filter.lo camel-mime-message.lo camel-mime-parser.lo \
-camel-mime-part-utils.lo camel-mime-part.lo camel-mime-utils.lo \
-camel-movemail.lo camel-multipart.lo camel-object.lo camel-operation.lo \
-camel-pgp-context.lo camel-pgp-mime.lo camel-smime-context.lo \
-camel-smime-utils.lo camel-provider.lo camel-remote-store.lo \
+camel-mime-filter-html.lo camel-mime-filter-tohtml.lo \
+camel-mime-filter-index.lo camel-mime-filter-linewrap.lo \
+camel-mime-filter-save.lo camel-mime-filter.lo camel-mime-message.lo \
+camel-mime-parser.lo camel-mime-part-utils.lo camel-mime-part.lo \
+camel-mime-utils.lo camel-movemail.lo camel-multipart.lo \
+camel-multipart-encrypted.lo camel-multipart-signed.lo camel-object.lo \
+camel-operation.lo camel-partition-table.lo camel-pgp-mime.lo \
+camel-smime-context.lo camel-smime-utils.lo camel-provider.lo \
 camel-sasl.lo camel-sasl-anonymous.lo camel-sasl-cram-md5.lo \
 camel-sasl-digest-md5.lo camel-sasl-kerberos4.lo camel-sasl-login.lo \
-camel-sasl-plain.lo camel-sasl-popb4smtp.lo camel-search-private.lo \
-camel-seekable-stream.lo camel-seekable-substream.lo camel-service.lo \
-camel-session.lo camel-store.lo camel-stream-buffer.lo \
+camel-sasl-ntlm.lo camel-sasl-plain.lo camel-sasl-popb4smtp.lo \
+camel-search-private.lo camel-seekable-stream.lo \
+camel-seekable-substream.lo camel-service.lo camel-session.lo \
+camel-store.lo camel-store-summary.lo camel-stream-buffer.lo \
 camel-stream-filter.lo camel-stream-fs.lo camel-stream-mem.lo \
-camel-stream-null.lo camel-stream.lo camel-tcp-stream-raw.lo \
-camel-tcp-stream-ssl.lo camel-tcp-stream.lo camel-transport.lo \
-camel-uid-cache.lo camel-url.lo camel-vee-folder.lo camel-vee-store.lo \
-camel-vtrash-folder.lo camel-charset-map.lo camel.lo gstring-util.lo \
+camel-stream-null.lo camel-stream.lo camel-text-index.lo \
+camel-tcp-stream-raw.lo camel-tcp-stream-ssl.lo \
+camel-tcp-stream-openssl.lo camel-tcp-stream.lo camel-transport.lo \
+camel-uid-cache.lo camel-url.lo camel-utf8.lo camel-vee-folder.lo \
+camel-vee-store.lo camel-vtrash-folder.lo camel.lo gstring-util.lo \
 hash-table-utils.lo string-utils.lo
 libcamel_static_la_DEPENDENCIES =  $(top_builddir)/e-util/libeutil.la
 libcamel_static_la_OBJECTS =  broken-date-parser.lo camel-address.lo \
-camel-cipher-context.lo camel-cms-context.lo camel-data-wrapper.lo \
-camel-digest-folder.lo camel-disco-diary.lo camel-disco-folder.lo \
+camel-arg.lo camel-block-file.lo camel-certdb.lo camel-charset-map.lo \
+camel-cipher-context.lo camel-cms-context.lo camel-data-cache.lo \
+camel-data-wrapper.lo camel-digest-folder.lo camel-digest-store.lo \
+camel-digest-summary.lo camel-disco-diary.lo camel-disco-folder.lo \
 camel-disco-store.lo camel-exception.lo camel-file-utils.lo \
 camel-filter-driver.lo camel-filter-search.lo camel-folder-search.lo \
 camel-folder-summary.lo camel-folder-thread.lo camel-folder.lo \
-camel-html-parser.lo camel-internet-address.lo camel-lock.lo \
+camel-gpg-context.lo camel-html-parser.lo camel-http-stream.lo \
+camel-index.lo camel-internet-address.lo camel-lock.lo \
 camel-lock-client.lo camel-medium.lo camel-mime-filter-bestenc.lo \
 camel-mime-filter-basic.lo camel-mime-filter-charset.lo \
+camel-mime-filter-chomp.lo camel-mime-filter-canon.lo \
 camel-mime-filter-crlf.lo camel-mime-filter-from.lo \
-camel-mime-filter-html.lo camel-mime-filter-index.lo \
-camel-mime-filter-linewrap.lo camel-mime-filter-save.lo \
-camel-mime-filter.lo camel-mime-message.lo camel-mime-parser.lo \
-camel-mime-part-utils.lo camel-mime-part.lo camel-mime-utils.lo \
-camel-movemail.lo camel-multipart.lo camel-object.lo camel-operation.lo \
-camel-pgp-context.lo camel-pgp-mime.lo camel-smime-context.lo \
-camel-smime-utils.lo camel-provider.lo camel-remote-store.lo \
+camel-mime-filter-html.lo camel-mime-filter-tohtml.lo \
+camel-mime-filter-index.lo camel-mime-filter-linewrap.lo \
+camel-mime-filter-save.lo camel-mime-filter.lo camel-mime-message.lo \
+camel-mime-parser.lo camel-mime-part-utils.lo camel-mime-part.lo \
+camel-mime-utils.lo camel-movemail.lo camel-multipart.lo \
+camel-multipart-encrypted.lo camel-multipart-signed.lo camel-object.lo \
+camel-operation.lo camel-partition-table.lo camel-pgp-mime.lo \
+camel-smime-context.lo camel-smime-utils.lo camel-provider.lo \
 camel-sasl.lo camel-sasl-anonymous.lo camel-sasl-cram-md5.lo \
 camel-sasl-digest-md5.lo camel-sasl-kerberos4.lo camel-sasl-login.lo \
-camel-sasl-plain.lo camel-sasl-popb4smtp.lo camel-search-private.lo \
-camel-seekable-stream.lo camel-seekable-substream.lo camel-service.lo \
-camel-session.lo camel-store.lo camel-stream-buffer.lo \
+camel-sasl-ntlm.lo camel-sasl-plain.lo camel-sasl-popb4smtp.lo \
+camel-search-private.lo camel-seekable-stream.lo \
+camel-seekable-substream.lo camel-service.lo camel-session.lo \
+camel-store.lo camel-store-summary.lo camel-stream-buffer.lo \
 camel-stream-filter.lo camel-stream-fs.lo camel-stream-mem.lo \
-camel-stream-null.lo camel-stream.lo camel-tcp-stream-raw.lo \
-camel-tcp-stream-ssl.lo camel-tcp-stream.lo camel-transport.lo \
-camel-uid-cache.lo camel-url.lo camel-vee-folder.lo camel-vee-store.lo \
-camel-vtrash-folder.lo camel-charset-map.lo camel.lo gstring-util.lo \
+camel-stream-null.lo camel-stream.lo camel-text-index.lo \
+camel-tcp-stream-raw.lo camel-tcp-stream-ssl.lo \
+camel-tcp-stream-openssl.lo camel-tcp-stream.lo camel-transport.lo \
+camel-uid-cache.lo camel-url.lo camel-utf8.lo camel-vee-folder.lo \
+camel-vee-store.lo camel-vtrash-folder.lo camel.lo gstring-util.lo \
 hash-table-utils.lo string-utils.lo
-sbin_PROGRAMS =  camel-lock-helper$(EXEEXT)
+sbin_PROGRAMS =  camel-lock-helper$(EXEEXT) camel-index-control$(EXEEXT)
 PROGRAMS =  $(sbin_PROGRAMS)
 
 camel_lock_helper_OBJECTS =  camel-lock-helper.$(OBJEXT) \
@@ -309,6 +572,10 @@ camel-lock.$(OBJEXT)
 camel_lock_helper_LDADD = $(LDADD)
 camel_lock_helper_DEPENDENCIES = 
 camel_lock_helper_LDFLAGS = 
+camel_index_control_OBJECTS =  camel-index-control.$(OBJEXT)
+camel_index_control_DEPENDENCIES =  $(top_builddir)/e-util/libeutil.la \
+libcamel.la
+camel_index_control_LDFLAGS = 
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -323,8 +590,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libcamel_la_SOURCES) $(libcamel_static_la_SOURCES) $(camel_lock_helper_SOURCES)
-OBJECTS = $(libcamel_la_OBJECTS) $(libcamel_static_la_OBJECTS) $(camel_lock_helper_OBJECTS)
+SOURCES = $(libcamel_la_SOURCES) $(libcamel_static_la_SOURCES) $(camel_lock_helper_SOURCES) $(camel_index_control_SOURCES)
+OBJECTS = $(libcamel_la_OBJECTS) $(libcamel_static_la_OBJECTS) $(camel_lock_helper_OBJECTS) $(camel_index_control_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -450,6 +717,10 @@ camel-lock-helper$(EXEEXT): $(camel_lock_helper_OBJECTS) $(camel_lock_helper_DEP
 	@rm -f camel-lock-helper$(EXEEXT)
 	$(LINK) $(camel_lock_helper_LDFLAGS) $(camel_lock_helper_OBJECTS) $(camel_lock_helper_LDADD) $(LIBS)
 
+camel-index-control$(EXEEXT): $(camel_index_control_OBJECTS) $(camel_index_control_DEPENDENCIES)
+	@rm -f camel-index-control$(EXEEXT)
+	$(LINK) $(camel_index_control_LDFLAGS) $(camel_index_control_OBJECTS) $(camel_index_control_LDADD) $(LIBS)
+
 install-libcamelincludeHEADERS: $(libcamelinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libcamelincludedir)
@@ -501,7 +772,7 @@ maintainer-clean-recursive:
 	dot_seen=no; \
 	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
 	  rev="$$subdir $$rev"; \
-	  test "$$subdir" = "." && dot_seen=yes; \
+	  test "$$subdir" != "." || dot_seen=yes; \
 	done; \
 	test "$$dot_seen" = "no" && rev=". $$rev"; \
 	target=`echo $@ | sed s/-recursive//`; \
@@ -579,7 +850,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-
 info-am:
 info: info-recursive
 dvi-am:
@@ -707,22 +977,6 @@ install-exec-hook:
 	else \
 	    echo "No user to chown to"; \
 	fi
-
-#noinst_PROGRAMS =				\
-#	camel-mime-filter-from
-#
-#camel_mime_filter_from_SOURCES = 		\
-#	camel-mime-filter-from.c
-#
-#camel_mime_filter_from_LDADD = 		\
-#	../camel/libcamel.la			\
-#	../e-util/libeutil.la			\
-#	../libibex/libibex.la			\
-#	$(GNOME_LIBDIR)				\
-#	$(GNOMEUI_LIBS)				\
-#	$(INTLLIBS)				\
-#	$(PTHREAD_LIB)				\
-#	$(EXTRA_GNOME_LIBS)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -26,10 +26,11 @@
 #include <config.h>
 #endif
 
-#include <ctype.h>
+#include <sys/types.h>
 #include <dirent.h>
 #include <errno.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "camel-imap-message-cache.h"
 #include "camel-data-wrapper.h"
@@ -188,11 +189,6 @@ camel_imap_message_cache_new (const char *path, CamelFolderSummary *summary,
 		g_ptr_array_remove_index_fast (deletes, 0);
 	}
 	g_ptr_array_free (deletes, TRUE);
-
-	if (camel_exception_is_set (ex)) {
-		camel_object_unref (CAMEL_OBJECT (cache));
-		return NULL;
-	}
 
 	return cache;
 }
@@ -397,31 +393,42 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
  * @cache: the cache
  * @uid: the UID of the data to get
  * @part_spec: the part_spec of the data to get
+ * @ex: exception
  *
  * Return value: a CamelStream containing the cached data (which the
  * caller must unref), or %NULL if that data is not cached.
  **/
 CamelStream *
 camel_imap_message_cache_get (CamelImapMessageCache *cache, const char *uid,
-			      const char *part_spec)
+			      const char *part_spec, CamelException *ex)
 {
 	CamelStream *stream;
 	char *path, *key;
-
+	
+	if (uid[0] == 0)
+		return NULL;
+	
 	path = g_strdup_printf ("%s/%s.%s", cache->path, uid, part_spec);
 	key = strrchr (path, '/') + 1;
 	stream = g_hash_table_lookup (cache->parts, key);
 	if (stream) {
 		camel_stream_reset (CAMEL_STREAM (stream));
 		camel_object_ref (CAMEL_OBJECT (stream));
+		g_free (path);
 		return stream;
 	}
-
+	
 	stream = camel_stream_fs_new_with_name (path, O_RDONLY, 0);
-	if (stream)
+	if (stream) {
 		cache_put (cache, uid, key, stream);
+	} else {
+		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
+				      _("Failed to cache %s: %s"),
+				      part_spec, g_strerror (errno));
+	}
+	
 	g_free (path);
-
+	
 	return stream;
 }
 
@@ -511,17 +518,19 @@ camel_imap_message_cache_copy (CamelImapMessageCache *source,
 	CamelStream *stream;
 	char *part;
 	int i;
-
+	
 	subparts = g_hash_table_lookup (source->parts, source_uid);
 	if (!subparts || !subparts->len)
 		return;
-
+	
 	for (i = 0; i < subparts->len; i++) {
 		part = strchr (subparts->pdata[i], '.');
 		if (!part++)
 			continue;
-		stream = camel_imap_message_cache_get (source, source_uid, part);
-		camel_imap_message_cache_insert_stream (dest, dest_uid, part, stream, ex);
-		camel_object_unref (CAMEL_OBJECT (stream));
+		
+		if ((stream = camel_imap_message_cache_get (source, source_uid, part, ex))) {
+			camel_imap_message_cache_insert_stream (dest, dest_uid, part, stream, ex);
+			camel_object_unref (CAMEL_OBJECT (stream));
+		}
 	}
 }

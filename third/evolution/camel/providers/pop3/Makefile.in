@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -60,16 +60,9 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-BONOBO_CONF_CFLAGS = @BONOBO_CONF_CFLAGS@
-BONOBO_CONF_LIBS = @BONOBO_CONF_LIBS@
-BONOBO_GNOME_CFLAGS = @BONOBO_GNOME_CFLAGS@
-BONOBO_GNOME_LIBS = @BONOBO_GNOME_LIBS@
-BONOBO_HTML_GNOME_CFLAGS = @BONOBO_HTML_GNOME_CFLAGS@
-BONOBO_HTML_GNOME_LIBS = @BONOBO_HTML_GNOME_LIBS@
-BONOBO_VFS_GNOME_CFLAGS = @BONOBO_VFS_GNOME_CFLAGS@
-BONOBO_VFS_GNOME_LIBS = @BONOBO_VFS_GNOME_LIBS@
 BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
 CAMEL_CFLAGS = @CAMEL_CFLAGS@
+CAMEL_INCLUDEDIR = @CAMEL_INCLUDEDIR@
 CAMEL_LIBS = @CAMEL_LIBS@
 CAMEL_LOCK_HELPER_GROUP = @CAMEL_LOCK_HELPER_GROUP@
 CAMEL_LOCK_HELPER_USER = @CAMEL_LOCK_HELPER_USER@
@@ -83,15 +76,35 @@ DB3_LDADD = @DB3_LDADD@
 DLLTOOL = @DLLTOOL@
 DTAPPINTEGRATE = @DTAPPINTEGRATE@
 ECHO = @ECHO@
+EVOLUTION_ADDRESSBOOK_CFLAGS = @EVOLUTION_ADDRESSBOOK_CFLAGS@
+EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS = @EVOLUTION_ADDRESSBOOK_CONDUIT_CFLAGS@
+EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS = @EVOLUTION_ADDRESSBOOK_CONDUIT_LIBS@
+EVOLUTION_ADDRESSBOOK_LIBS = @EVOLUTION_ADDRESSBOOK_LIBS@
+EVOLUTION_CALENDAR_CFLAGS = @EVOLUTION_CALENDAR_CFLAGS@
+EVOLUTION_CALENDAR_CONDUIT_CFLAGS = @EVOLUTION_CALENDAR_CONDUIT_CFLAGS@
+EVOLUTION_CALENDAR_CONDUIT_LIBS = @EVOLUTION_CALENDAR_CONDUIT_LIBS@
+EVOLUTION_CALENDAR_LIBS = @EVOLUTION_CALENDAR_LIBS@
+EVOLUTION_DATADIR = @EVOLUTION_DATADIR@
 EVOLUTION_DIR = @EVOLUTION_DIR@
+EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS = @EVOLUTION_EXECUTIVE_SUMMARY_CFLAGS@
+EVOLUTION_EXECUTIVE_SUMMARY_LIBS = @EVOLUTION_EXECUTIVE_SUMMARY_LIBS@
+EVOLUTION_INCLUDEDIR = @EVOLUTION_INCLUDEDIR@
+EVOLUTION_LIBDIR = @EVOLUTION_LIBDIR@
+EVOLUTION_MAIL_CFLAGS = @EVOLUTION_MAIL_CFLAGS@
+EVOLUTION_MAIL_LIBS = @EVOLUTION_MAIL_LIBS@
 EXEEXT = @EXEEXT@
-EXTRA_GNOME_CFLAGS = @EXTRA_GNOME_CFLAGS@
-EXTRA_GNOME_LIBS = @EXTRA_GNOME_LIBS@
-GAL_CFLAGS = @GAL_CFLAGS@
-GAL_LIBS = @GAL_LIBS@
+E_NAME_CFLAGS = @E_NAME_CFLAGS@
+E_NAME_LIBS = @E_NAME_LIBS@
+E_UTIL_CFLAGS = @E_UTIL_CFLAGS@
+E_UTIL_LIBS = @E_UTIL_LIBS@
+E_WIDGETS_CFLAGS = @E_WIDGETS_CFLAGS@
+E_WIDGETS_LIBS = @E_WIDGETS_LIBS@
+GCONF_CFLAGS = @GCONF_CFLAGS@
+GCONF_CONFIG = @GCONF_CONFIG@
+GCONF_LIBS = @GCONF_LIBS@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GENCAT = @GENCAT@
-GLIB_CFLAGS = @GLIB_CFLAGS@
-GLIB_LIBS = @GLIB_LIBS@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMEGNORBA_LIBS = @GNOMEGNORBA_LIBS@
@@ -100,16 +113,14 @@ GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
 GNOME_CAPPLET_LIBS = @GNOME_CAPPLET_LIBS@
 GNOME_CONFIG = @GNOME_CONFIG@
 GNOME_DOCKLETS_LIBS = @GNOME_DOCKLETS_LIBS@
+GNOME_FULL_CFLAGS = @GNOME_FULL_CFLAGS@
+GNOME_FULL_LIBS = @GNOME_FULL_LIBS@
 GNOME_INCLUDEDIR = @GNOME_INCLUDEDIR@
 GNOME_LIBDIR = @GNOME_LIBDIR@
 GNOME_LIBS = @GNOME_LIBS@
 GNOME_PILOT_CFLAGS = @GNOME_PILOT_CFLAGS@
 GNOME_PILOT_LIBS = @GNOME_PILOT_LIBS@
 GNOME_PREFIX = @GNOME_PREFIX@
-GNOME_PRINT_CFLAGS = @GNOME_PRINT_CFLAGS@
-GNOME_PRINT_LIBS = @GNOME_PRINT_LIBS@
-GNOME_VFS_CFLAGS = @GNOME_VFS_CFLAGS@
-GNOME_VFS_LIBS = @GNOME_VFS_LIBS@
 GNORBA_CFLAGS = @GNORBA_CFLAGS@
 GNORBA_LIBS = @GNORBA_LIBS@
 GTKDOC = @GTKDOC@
@@ -124,6 +135,8 @@ GT_NO = @GT_NO@
 GT_YES = @GT_YES@
 HAVE_JW = @HAVE_JW@
 HTML_DIR = @HTML_DIR@
+IMPORTERS_CFLAGS = @IMPORTERS_CFLAGS@
+IMPORTERS_LIBS = @IMPORTERS_LIBS@
 INCLUDE_LOCALE_H = @INCLUDE_LOCALE_H@
 INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
@@ -131,6 +144,7 @@ INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
 INTLTOOL_PERL = @INTLTOOL_PERL@
 JW = @JW@
+KDECONFIG = @KDECONFIG@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
@@ -141,10 +155,10 @@ KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
+LIBFILTER_CFLAGS = @LIBFILTER_CFLAGS@
+LIBFILTER_LIBS = @LIBFILTER_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-MAILER_CFLAGS = @MAILER_CFLAGS@
-MAILER_LIBS = @MAILER_LIBS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
@@ -152,8 +166,13 @@ NSPR_CFLAGS = @NSPR_CFLAGS@
 NSPR_LDFLAGS = @NSPR_LDFLAGS@
 NSS_CFLAGS = @NSS_CFLAGS@
 NSS_LDFLAGS = @NSS_LDFLAGS@
+OAF_SHLIB_PREFIX = @OAF_SHLIB_PREFIX@
+OAF_SHLIB_SUFFIX = @OAF_SHLIB_SUFFIX@
+OAF_SHLIB_TYPE = @OAF_SHLIB_TYPE@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OPENSSL_CFLAGS = @OPENSSL_CFLAGS@
+OPENSSL_LDFLAGS = @OPENSSL_LDFLAGS@
 ORBIT_CFLAGS = @ORBIT_CFLAGS@
 ORBIT_CONFIG = @ORBIT_CONFIG@
 ORBIT_IDL = @ORBIT_IDL@
@@ -161,6 +180,7 @@ ORBIT_LIBS = @ORBIT_LIBS@
 PACKAGE = @PACKAGE@
 PISOCK_CFLAGS = @PISOCK_CFLAGS@
 PISOCK_LIBS = @PISOCK_LIBS@
+PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
@@ -170,12 +190,16 @@ SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
 SENDMAIL = @SENDMAIL@
+SHELL_CFLAGS = @SHELL_CFLAGS@
+SHELL_LIBS = @SHELL_LIBS@
 STRIP = @STRIP@
 THREADS_CFLAGS = @THREADS_CFLAGS@
 THREADS_LIBS = @THREADS_LIBS@
 USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WOMBAT_CFLAGS = @WOMBAT_CFLAGS@
+WOMBAT_LIBS = @WOMBAT_LIBS@
 XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
 XML_I18N_MERGE = @XML_I18N_MERGE@
 XML_I18N_MERGE_DESKTOP_RULE = @XML_I18N_MERGE_DESKTOP_RULE@
@@ -196,22 +220,23 @@ cflags_set = @cflags_set@
 cxxflags_set = @cxxflags_set@
 l = @l@
 localedir = @localedir@
+privlibdir = @privlibdir@
 
 libcamelpop3includedir = $(includedir)/camel
 
 camel_provider_LTLIBRARIES = libcamelpop3.la
 camel_provider_DATA = libcamelpop3.urls
 
-INCLUDES =  	-I..						-I$(srcdir)/..					-I$(srcdir)/../../..			        -I$(includedir)					-I$(top_srcdir)/intl				-I$(top_srcdir)/camel				-I$(top_srcdir)/e-util				$(CAMEL_CFLAGS)					$(GNOME_INCLUDEDIR)				$(KRB4_CFLAGS)					$(GTK_INCLUDEDIR)				-DG_LOG_DOMAIN=\"camel-pop3-provider\"
+INCLUDES =  	-I..						-I$(srcdir)/..					-I$(srcdir)/../../..			        -I$(includedir)					-I$(top_srcdir)/intl				-I$(top_srcdir)/camel				-I$(top_srcdir)/e-util				$(CAMEL_CFLAGS)					$(GNOME_INCLUDEDIR)				$(GTK_INCLUDEDIR)				-DG_LOG_DOMAIN=\"camel-pop3-provider\"
 
 
-libcamelpop3_la_SOURCES =  	camel-pop3-folder.c				camel-pop3-provider.c				camel-pop3-store.c
+libcamelpop3_la_SOURCES =  	camel-pop3-engine.c				camel-pop3-folder.c				camel-pop3-provider.c				camel-pop3-stream.c				camel-pop3-store.c
 
 
-libcamelpop3include_HEADERS =  	camel-pop3-folder.h				camel-pop3-store.h
+libcamelpop3include_HEADERS =  	camel-pop3-engine.h				camel-pop3-folder.h				camel-pop3-stream.h				camel-pop3-store.h
 
 
-libcamelpop3_la_LDFLAGS = $(KRB4_LDFLAGS) -version-info 0:0:0
+libcamelpop3_la_LDFLAGS = -avoid-version -module
 
 libcamelpop3_la_LIBADD = $(KRB4_LIBS) $(top_builddir)/e-util/libeutil.la
 
@@ -227,8 +252,8 @@ CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libcamelpop3_la_DEPENDENCIES =  $(top_builddir)/e-util/libeutil.la
-libcamelpop3_la_OBJECTS =  camel-pop3-folder.lo camel-pop3-provider.lo \
-camel-pop3-store.lo
+libcamelpop3_la_OBJECTS =  camel-pop3-engine.lo camel-pop3-folder.lo \
+camel-pop3-provider.lo camel-pop3-stream.lo camel-pop3-store.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -383,7 +408,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
+	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
 
 mostlyclean-tags:
 
@@ -409,6 +434,80 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+camel-pop3-engine.lo camel-pop3-engine.o : camel-pop3-engine.c \
+	../../../config.h camel-pop3-engine.h \
+	../../../camel/camel-object.h ../../../camel/camel-arg.h \
+	../../../camel/camel-types.h ../../../e-util/e-msgport.h \
+	camel-pop3-stream.h ../../../camel/camel-stream.h \
+	../../../camel/camel-service.h ../../../camel/camel-url.h \
+	../../../camel/camel-provider.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-operation.h ../../../camel/camel-sasl.h
+camel-pop3-folder.lo camel-pop3-folder.o : camel-pop3-folder.c \
+	../../../config.h camel-pop3-folder.h \
+	../../../camel/camel-folder.h ../../../camel/camel-object.h \
+	../../../camel/camel-arg.h ../../../camel/camel-types.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h \
+	../../../camel/camel-stream.h ../../../camel/camel-index.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def camel-pop3-store.h \
+	../../../camel/camel-store.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-operation.h camel-pop3-engine.h \
+	../../../e-util/e-msgport.h camel-pop3-stream.h \
+	../../../camel/camel-stream-mem.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-stream-filter.h \
+	../../../camel/camel-mime-message.h \
+	../../../camel/camel-mime-part.h ../../../camel/camel-medium.h \
+	../../../camel/camel-data-wrapper.h \
+	../../../camel/camel-internet-address.h \
+	../../../camel/camel-address.h \
+	../../../camel/camel-mime-filter-bestenc.h \
+	../../../camel/camel-charset-map.h \
+	../../../camel/camel-data-cache.h ../../../e-util/md5-utils.h
+camel-pop3-provider.lo camel-pop3-provider.o : camel-pop3-provider.c \
+	../../../config.h camel-pop3-store.h \
+	../../../camel/camel-types.h ../../../camel/camel-store.h \
+	../../../camel/camel-object.h ../../../camel/camel-arg.h \
+	../../../camel/camel-service.h ../../../camel/camel-url.h \
+	../../../camel/camel-provider.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def \
+	../../../camel/camel-operation.h camel-pop3-engine.h \
+	../../../e-util/e-msgport.h camel-pop3-stream.h \
+	../../../camel/camel-stream.h ../../../camel/camel-session.h \
+	../../../camel/camel-sasl.h
+camel-pop3-store.lo camel-pop3-store.o : camel-pop3-store.c \
+	../../../config.h ../../../camel/camel-operation.h \
+	camel-pop3-store.h ../../../camel/camel-types.h \
+	../../../camel/camel-store.h ../../../camel/camel-object.h \
+	../../../camel/camel-arg.h ../../../camel/camel-service.h \
+	../../../camel/camel-url.h ../../../camel/camel-provider.h \
+	../../../camel/camel-exception.h \
+	../../../camel/camel-exception-list.def camel-pop3-engine.h \
+	../../../e-util/e-msgport.h camel-pop3-stream.h \
+	../../../camel/camel-stream.h camel-pop3-folder.h \
+	../../../camel/camel-folder.h \
+	../../../camel/camel-folder-summary.h \
+	../../../camel/camel-mime-parser.h \
+	../../../camel/camel-mime-utils.h \
+	../../../camel/camel-mime-filter.h ../../../camel/camel-index.h \
+	../../../camel/camel-stream-buffer.h \
+	../../../camel/camel-seekable-stream.h \
+	../../../camel/camel-session.h ../../../e-util/md5-utils.h \
+	../../../camel/camel-sasl.h ../../../camel/camel-data-cache.h \
+	../../../camel/camel-tcp-stream.h \
+	../../../camel/camel-tcp-stream-raw.h \
+	../../../camel/camel-tcp-stream-ssl.h
+camel-pop3-stream.lo camel-pop3-stream.o : camel-pop3-stream.c \
+	../../../config.h camel-pop3-stream.h \
+	../../../camel/camel-stream.h ../../../camel/camel-object.h \
+	../../../camel/camel-arg.h ../../../camel/camel-types.h
 
 info-am:
 info: info-am

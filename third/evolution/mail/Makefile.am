@@ -1,8 +1,10 @@
 SUBDIRS = importers
 
-bin_PROGRAMS =	evolution-mail
+bin_PROGRAMS = 				\
+	evolution-mail			\
+	evolution-mail-upgrade
 
-importerdir = $(libdir)/evolution/evolution-mail-importers/$(VERSION)
+importerdir = $(privlibdir)/evolution-mail-importers
 
 INCLUDES = \
 	-I$(top_srcdir)/widgets				\
@@ -16,11 +18,14 @@ INCLUDES = \
 	-I$(top_srcdir)/shell				\
 	-I$(top_srcdir)/shell/importer			\
 	-I$(top_builddir)/shell/importer		\
-	$(MAILER_CFLAGS)				\
+	-I$(top_srcdir)/addressbook/backend		\
+	-I$(top_builddir)/addressbook/backend		\
+	$(EVOLUTION_MAIL_CFLAGS)				\
 	-DEVOLUTION_DATADIR=\""$(datadir)"\"		\
 	-DEVOLUTION_GLADEDIR=\""$(gladedir)"\"		\
 	-DEVOLUTION_ETSPECDIR=\""$(etspecdir)"\"	\
 	-DEVOLUTION_ICONSDIR=\""$(iconsdir)"\"		\
+	-DEVOLUTION_IMAGES=\""$(datadir)/images/evolution"\"	\
 	-DEVOLUTION_BUTTONSDIR=\""$(buttonsdir)"\"	\
 	-DEVOLUTION_LOCALEDIR=\""$(localedir)"\"	\
 	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"	\
@@ -28,21 +33,28 @@ INCLUDES = \
 	-DG_LOG_DOMAIN=\"evolution-mail\"
 
 EVOLUTION_MAIL_CORBA_GENERATED = \
-	Mail.h			\
-	Mail-common.c		\
-	Mail-skels.c		\
-	Mail-stubs.c
+	Mailer.h		\
+	Mailer-common.c		\
+	Mailer-skels.c		\
+	Mailer-stubs.c
 
-if ENABLE_NNTP
-EVOLUTION_MAIL_NNTP  =                  \
-	mail-account-editor-news.c	\
-	mail-account-editor-news.h	
-endif
+SPELL_IDL = Spell.idl
 
+IDL_GENERATED = 		\
+	Spell.h			\
+	Spell-common.c		\
+	Spell-skels.c		\
+	Spell-stubs.c
+
+$(IDL_GENERATED): $(SPELL_IDL)
+	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl -I `$(GNOME_CONFIG) --cflags idl` \
+	-I `$(GNOME_CONFIG) --datadir`/idl $(srcdir)/Spell.idl
+
+Spell-impl.o: Spell.h
 
 evolution_mail_SOURCES =		\
 	$(EVOLUTION_MAIL_CORBA_GENERATED)	\
-	$(EVOLUTION_MAIL_NNTP)          \
+	$(IDL_GENERATED)		\
 	component-factory.c		\
 	component-factory.h		\
 	e-searching-tokenizer.c		\
@@ -54,6 +66,7 @@ evolution_mail_SOURCES =		\
 	folder-browser-ui.c		\
 	folder-browser-ui.h		\
 	folder-info.c			\
+	folder-info.h			\
 	mail-accounts.c			\
 	mail-accounts.h			\
 	mail-account-editor.c		\
@@ -64,10 +77,16 @@ evolution_mail_SOURCES =		\
 	mail-autofilter.h		\
 	mail-callbacks.c		\
 	mail-callbacks.h		\
+	mail-composer-prefs.c		\
+	mail-composer-prefs.h		\
+	mail-font-prefs.c		\
+	mail-font-prefs.h		\
 	mail-config.c			\
 	mail-config.h			\
 	mail-config-druid.c		\
 	mail-config-druid.h		\
+	mail-config-factory.c		\
+	mail-config-factory.h		\
 	mail-crypto.c			\
 	mail-crypto.h			\
 	mail-display.c			\
@@ -86,6 +105,8 @@ evolution_mail_SOURCES =		\
 	mail-offline-handler.h		\
 	mail-ops.c			\
 	mail-ops.h			\
+	mail-preferences.c		\
+	mail-preferences.h		\
 	mail-search.c			\
 	mail-search.h			\
 	mail-search-dialogue.c		\
@@ -94,6 +115,8 @@ evolution_mail_SOURCES =		\
 	mail-send-recv.h		\
 	mail-session.c			\
 	mail-session.h			\
+	mail-signature-editor.c		\
+	mail-signature-editor.h		\
 	mail-stream-gtkhtml.c		\
 	mail-stream-gtkhtml.h		\
 	mail-tools.c			\
@@ -106,6 +129,10 @@ evolution_mail_SOURCES =		\
 	main.c				\
 	message-list.c			\
 	message-list.h			\
+	message-tag-editor.c		\
+	message-tag-editor.h		\
+	message-tag-followup.c		\
+	message-tag-followup.h		\
 	subscribe-dialog.c		\
 	subscribe-dialog.h		\
 	mail.h
@@ -116,17 +143,23 @@ evolution_mail_LDADD = 					\
 	$(top_builddir)/e-util/libeutil.la		\
 	$(top_builddir)/shell/libeshell.la		\
 	$(top_builddir)/widgets/misc/libemiscwidgets.a	\
+	$(top_builddir)/widgets/misc/libefilterbar.a	\
 	$(top_builddir)/addressbook/backend/ebook/libebook.la	\
-	$(top_builddir)/libversit/libversit.la		\
+	$(top_builddir)/libversit/libversit.a		\
 	$(top_builddir)/e-util/ename/libename.la	\
-	$(top_builddir)/libibex/libibex.la		\
 	$(top_builddir)/filter/libfilter.la		\
 	$(top_builddir)/shell/importer/libevolution-importer.la				\
 	$(top_builddir)/widgets/menus/libmenus.la	\
-	$(MAILER_LIBS)
+	$(EVOLUTION_MAIL_LIBS)
 
 evolution_mail_LDFLAGS =				\
 	-export-dynamic
+
+evolution_mail_upgrade_SOURCES = upgrade-mailer.c
+evolution_mail_upgrade_LDADD = 				\
+	$(top_builddir)/camel/libcamel.la 		\
+	$(top_builddir)/e-util/libeutil.la 		\
+	$(EVOLUTION_MAIL_LIBS)
 
 oafdir = $(datadir)/oaf
 oaf_in_files = GNOME_Evolution_Mail.oaf.in
@@ -135,26 +168,28 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 @XML_I18N_MERGE_OAF_RULE@
 
 gladedir   = $(datadir)/evolution/glade
-glade_DATA = mail-config.glade local-config.glade subscribe-dialog.glade
+glade_DATA = mail-config.glade local-config.glade subscribe-dialog.glade message-tags.glade
 
 etspecdir = $(datadir)/evolution/etspec/
-etspec_DATA = message-list.etspec subscribe-dialog.etspec
+etspec_DATA = mail-accounts.etspec message-list.etspec subscribe-dialog.etspec
 
 iconsdir = $(datadir)/images/evolution
 buttonsdir = $(datadir)/images/evolution/buttons
 
-$(EVOLUTION_MAIL_CORBA_GENERATED): Mail.idl 
+idldir = $(datadir)/idl
+idl_DATA = Mailer.idl
+
+$(EVOLUTION_MAIL_CORBA_GENERATED): Mailer.idl 
 	$(ORBIT_IDL) -I $(srcdir) -I $(datadir)/idl -I `$(GNOME_CONFIG) --cflags idl` \
-	-I `$(GNOME_CONFIG) --datadir`/idl $(srcdir)/Mail.idl
+	-I `$(GNOME_CONFIG) --datadir`/idl $(srcdir)/Mailer.idl
 
 EXTRA_DIST = 				\
-	Mail.idl 			\
+	Mailer.idl 			\
+	$(SPELL_IDL)			\
 	$(glade_DATA)			\
 	$(oaf_in_files)			\
 	$(oaf_DATA)			\
-	$(etspec_DATA) 			\
-	mail-account-editor-news.c 	\
-	mail-account-editor-news.h 	
+	$(etspec_DATA)
 
 if ENABLE_PURIFY
 PLINK = $(LIBTOOL) --mode=link $(PURIFY) $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
@@ -167,8 +202,8 @@ evolution-mail.pure: evolution-mail
 
 endif
 
-BUILT_SOURCES = $(EVOLUTION_MAIL_CORBA_GENERATED)
-CLEANFILES = $(BUILT_SOURCES)
-
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)
+
+BUILT_SOURCES = $(EVOLUTION_MAIL_CORBA_GENERATED)
+CLEANFILES = $(BUILT_SOURCES) $(IDL_GENERATED)

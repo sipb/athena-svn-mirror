@@ -76,6 +76,9 @@ struct _ShortcutGroup {
 
 	/* A list of shortcuts.  */
 	GSList *shortcuts;
+
+	/* Whether to use small icons for this group.  */
+	unsigned int use_small_icons : 1;
 };
 typedef struct _ShortcutGroup ShortcutGroup;
 
@@ -91,11 +94,8 @@ struct _EShortcutsPrivate {
 	/* Whether these shortcuts need to be saved to disk.  */
 	gboolean dirty;
 
-	/* The storage set to which these shortcuts are associated.  */
-	EStorageSet *storage_set;
-
-	/* The folder type registry.  */
-	EFolderTypeRegistry *folder_type_registry;
+	/* The shell that is associated with these shortcuts.  */
+	EShell *shell;
 
 	/* Total number of groups.  */
 	int num_groups;
@@ -111,6 +111,7 @@ enum {
 	NEW_GROUP,
 	REMOVE_GROUP,
 	RENAME_GROUP,
+	GROUP_CHANGE_ICON_SIZE,
 	NEW_SHORTCUT,
 	REMOVE_SHORTCUT,
 	UPDATE_SHORTCUT,
@@ -127,7 +128,8 @@ static EShortcutItem *
 shortcut_item_new (const char *uri,
 		   const char *name,
 		   int unread_count,
-		   const char *type)
+		   const char *type,
+		   const char *custom_icon_name)
 {
 	EShortcutItem *new;
 
@@ -135,10 +137,11 @@ shortcut_item_new (const char *uri,
 		name = g_basename (uri);
 
 	new = g_new (EShortcutItem, 1);
-	new->uri  = g_strdup (uri);
-	new->name = g_strdup (name);
-	new->type = g_strdup (type);
-	new->unread_count = unread_count;
+	new->uri              = g_strdup (uri);
+	new->name             = g_strdup (name);
+	new->type             = g_strdup (type);
+	new->custom_icon_name = g_strdup (custom_icon_name);
+	new->unread_count     = unread_count;
 
 	return new;
 }
@@ -148,38 +151,33 @@ shortcut_item_update (EShortcutItem *shortcut_item,
 		      const char *uri,
 		      const char *name,
 		      int unread_count,
-		      const char *type)
+		      const char *type,
+		      const char *custom_icon_name)
 {
 	gboolean changed = FALSE;
 
 	if (name == NULL)
 		name = g_basename (uri);
 
-	if (shortcut_item->uri == NULL || uri == NULL ||
-	    strcmp (shortcut_item->uri, uri) != 0) {
-		g_free (shortcut_item->uri);
-		shortcut_item->uri  = g_strdup (uri);
-		changed = TRUE;
-	}
-
-	if (shortcut_item->name == NULL || name == NULL ||
-	    strcmp (shortcut_item->name, name) != 0) {
-		g_free (shortcut_item->name);
-		shortcut_item->name  = g_strdup (name);
-		changed = TRUE;
-	}
-
 	if (shortcut_item->unread_count != unread_count) {
 		shortcut_item->unread_count = unread_count;
-		changed = FALSE;
-	}
-
-	if (shortcut_item->type == NULL || type == NULL ||
-	    strcmp (shortcut_item->type, type) != 0) {
-		g_free (shortcut_item->type);
-		shortcut_item->type  = g_strdup (type);
 		changed = TRUE;
 	}
+
+#define UPDATE_STRING(member)					\
+	if (shortcut_item->member == NULL || member == NULL ||	\
+	    strcmp (shortcut_item->member, member) != 0) {	\
+		g_free (shortcut_item->member);			\
+		shortcut_item->member  = g_strdup (member);	\
+		changed = TRUE;					\
+	}
+
+	UPDATE_STRING (uri);
+	UPDATE_STRING (name);
+	UPDATE_STRING (type);
+	UPDATE_STRING (custom_icon_name);
+
+#undef UPDATE_STRING
 
 	return changed;
 }
@@ -200,8 +198,9 @@ shortcut_group_new (const char *title)
 	ShortcutGroup *new;
 
 	new = g_new (ShortcutGroup, 1);
-	new->title     = g_strdup (title);
-	new->shortcuts = NULL;
+	new->title           = g_strdup (title);
+	new->shortcuts       = NULL;
+	new->use_small_icons = FALSE;
 
 	return new;
 }
@@ -231,17 +230,18 @@ update_shortcut_and_emit_signal (EShortcuts *shortcuts,
 				 const char *uri,
 				 const char *name,
 				 int unread_count,
-				 const char *type)
+				 const char *type,
+				 const char *custom_icon_name)
 {
 	/* Only thing that changed was the unread count */
 	if (shortcut_item->unread_count != unread_count
-	    && !shortcut_item_update (shortcut_item, uri, name, unread_count, type)) {
+	    && !shortcut_item_update (shortcut_item, uri, name, unread_count, type, custom_icon_name)) {
 		gtk_signal_emit (GTK_OBJECT (shortcuts), signals[UPDATE_SHORTCUT], group_num, num);
 		return FALSE;
 	}
 
 	/* Unread count is the same, but other stuff changed */
-	else if (shortcut_item_update (shortcut_item, uri, name, unread_count, type)) {
+	else if (shortcut_item_update (shortcut_item, uri, name, unread_count, type, custom_icon_name)) {
 		gtk_signal_emit (GTK_OBJECT (shortcuts), signals[UPDATE_SHORTCUT], group_num, num);
 		return TRUE;
 	}
@@ -307,6 +307,7 @@ load_shortcuts (EShortcuts *shortcuts,
 	for (p = root->childs; p != NULL; p = p->next) {
 		ShortcutGroup *shortcut_group;
 		xmlChar *shortcut_group_title;
+		xmlChar *icon_size;
 
 		if (strcmp ((char *) p->name, "group") != 0)
 			continue;
@@ -318,61 +319,59 @@ load_shortcuts (EShortcuts *shortcuts,
 		shortcut_group = shortcut_group_new (shortcut_group_title);
 		xmlFree (shortcut_group_title);
 
+		icon_size = xmlGetProp (p, "icon_size");
+		if (icon_size != NULL && strcmp (icon_size, "small") == 0)
+			shortcut_group->use_small_icons = TRUE;
+		else
+			shortcut_group->use_small_icons = FALSE;
+		xmlFree (icon_size);
+
 		for (q = p->childs; q != NULL; q = q->next) {
 			EShortcutItem *shortcut_item;
 			xmlChar *uri;
 			xmlChar *name;
 			xmlChar *type;
+			xmlChar *icon;
+			char *path;
 
 			if (strcmp ((char *) q->name, "item") != 0)
 				continue;
 
 			uri  = xmlNodeListGetString (doc, q->childs, 1);
-			name = xmlGetProp (q, "name");
-			type = xmlGetProp (q, "type");
+			if (uri == NULL)
+				continue;
 
-			if (uri != NULL && strncmp (uri, E_SHELL_URI_PREFIX, E_SHELL_URI_PREFIX_LEN) == 0) {
+			if (e_shell_parse_uri (priv->shell, uri, &path, NULL)) {
 				EFolder *folder;
 
-				folder = e_storage_set_get_folder (priv->storage_set, uri + E_SHELL_URI_PREFIX_LEN);
+				folder = e_storage_set_get_folder (e_shell_get_storage_set (priv->shell), path);
 				if (folder != NULL) {
-					if (type != NULL)
-						xmlFree (type);
+					name = xmlMemStrdup (e_folder_get_name (folder));
 					type = xmlMemStrdup (e_folder_get_type_string (folder));
+
+					if (e_folder_get_custom_icon_name (folder) != NULL)
+						icon = xmlMemStrdup (e_folder_get_custom_icon_name (folder));
+					else
+						icon = NULL;
 				} else {
-					EStorage *storage;
-					const char *storage_type;
-
-					storage = e_storage_set_get_storage (priv->storage_set,
-									     uri + E_SHELL_URI_PREFIX_LEN + 1);
-					if (storage != NULL) {
-						if (type != NULL)
-							xmlFree (type);
-						storage_type = e_storage_get_toplevel_node_type (storage);
-
-						if (storage_type == NULL)
-							type = NULL;
-						else
-							type = xmlMemStrdup (storage_type);
-
-						if (name != NULL)
-							xmlFree (name);
-
-						name = xmlMemStrdup (e_storage_get_display_name (storage));
-					}
+					name = xmlGetProp (q, "name");
+					type = xmlGetProp (q, "type");
+					icon = xmlGetProp (q, "icon");
 				}
 
-				shortcut_item = shortcut_item_new (uri, name, 0, type);
+				shortcut_item = shortcut_item_new (uri, name, 0, type, icon);
 				shortcut_group->shortcuts = g_slist_prepend (shortcut_group->shortcuts,
 									     shortcut_item);
+
+				if (name != NULL)
+					xmlFree (name);
+				if (type != NULL)
+					xmlFree (type);
+				if (icon != NULL)
+					xmlFree (icon);
 			}
 
-			if (uri != NULL)
-				xmlFree (uri);
-			if (name != NULL)
-				xmlFree (name);
-			if (type != NULL)
-				xmlFree (type);
+			xmlFree (uri);
 		}
 
 		shortcut_group->shortcuts = g_slist_reverse (shortcut_group->shortcuts);
@@ -418,6 +417,11 @@ save_shortcuts (EShortcuts *shortcuts,
 
 		xmlSetProp (group_node, (xmlChar *) "title", group->title);
 
+		if (group->use_small_icons)
+			xmlSetProp (group_node, (xmlChar *) "icon_size", "small");
+		else
+			xmlSetProp (group_node, (xmlChar *) "icon_size", "large");
+
 		for (q = group->shortcuts; q != NULL; q = q->next) {
 			EShortcutItem *shortcut;
 			xmlNode *shortcut_node;
@@ -432,6 +436,8 @@ save_shortcuts (EShortcuts *shortcuts,
 			if (shortcut->type != NULL)
 				xmlSetProp (shortcut_node, (xmlChar *) "type", shortcut->type);
 
+			if (shortcut->custom_icon_name != NULL)
+				xmlSetProp (shortcut_node, (xmlChar *) "icon", shortcut->custom_icon_name);
 		}
 	}
 
@@ -504,7 +510,7 @@ update_shortcuts_by_path (EShortcuts *shortcuts,
 	gboolean changed = FALSE;
 
 	priv = shortcuts->priv;
-	folder = e_storage_set_get_folder (priv->storage_set, path);
+	folder = e_storage_set_get_folder (e_shell_get_storage_set (priv->shell), path);
 
 	evolution_uri = g_strconcat (E_SHELL_URI_PREFIX, path, NULL);
 
@@ -527,7 +533,8 @@ update_shortcuts_by_path (EShortcuts *shortcuts,
 									   evolution_uri,
 									   shortcut_item->name,
 									   e_folder_get_unread_count (folder),
-									   e_folder_get_type_string (folder));
+									   e_folder_get_type_string (folder),
+									   e_folder_get_custom_icon_name (folder));
 			}
 		}
 	}
@@ -614,7 +621,7 @@ storage_set_updated_folder_callback (EStorageSet *storage_set,
 /* GtkObject methods.  */
 
 static void
-destroy (GtkObject *object)
+impl_destroy (GtkObject *object)
 {
 	EShortcuts *shortcuts;
 	EShortcutsPrivate *priv;
@@ -623,12 +630,6 @@ destroy (GtkObject *object)
 	priv = shortcuts->priv;
 
 	g_free (priv->file_name);
-
-	if (priv->storage_set != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->storage_set));
-
-	if (priv->folder_type_registry != NULL)
-		gtk_object_unref (GTK_OBJECT (priv->folder_type_registry));
 
 	unload_shortcuts (shortcuts);
 
@@ -650,7 +651,7 @@ class_init (EShortcutsClass *klass)
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass*) klass;
-	object_class->destroy = destroy;
+	object_class->destroy = impl_destroy;
 
 	parent_class = gtk_type_class (gtk_object_get_type ());
 
@@ -681,6 +682,16 @@ class_init (EShortcutsClass *klass)
 				  GTK_TYPE_NONE, 2,
 				  GTK_TYPE_INT,
 				  GTK_TYPE_STRING);
+
+	signals[GROUP_CHANGE_ICON_SIZE]
+		= gtk_signal_new ("group_change_icon_size",
+				  GTK_RUN_FIRST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (EShortcutsClass, group_change_icon_size),
+				  gtk_marshal_NONE__INT_INT,
+				  GTK_TYPE_NONE, 2,
+				  GTK_TYPE_INT,
+				  GTK_TYPE_INT);
 
 	signals[NEW_SHORTCUT]
 		= gtk_signal_new ("new_shortcut",
@@ -724,35 +735,35 @@ init (EShortcuts *shortcuts)
 	priv = g_new (EShortcutsPrivate, 1);
 
 	priv->file_name      = NULL;
-	priv->storage_set    = NULL;
 	priv->num_groups     = 0;
 	priv->groups         = NULL;
 	priv->views          = NULL;
 	priv->dirty          = 0;
 	priv->save_idle_id   = 0;
+	priv->shell          = NULL;
 
 	shortcuts->priv = priv;
 }
 
 
 void
-e_shortcuts_construct (EShortcuts  *shortcuts,
-		       EStorageSet *storage_set,
-		       EFolderTypeRegistry *folder_type_registry)
+e_shortcuts_construct (EShortcuts *shortcuts,
+		       EShell *shell)
 {
 	EShortcutsPrivate *priv;
+	EStorageSet *storage_set;
 
-	g_return_if_fail (shortcuts != NULL);
 	g_return_if_fail (E_IS_SHORTCUTS (shortcuts));
-	g_return_if_fail (storage_set != NULL);
-	g_return_if_fail (E_IS_STORAGE_SET (storage_set));
+	g_return_if_fail (E_IS_SHELL (shell));
 
 	GTK_OBJECT_UNSET_FLAGS (GTK_OBJECT (shortcuts), GTK_FLOATING);
 
 	priv = shortcuts->priv;
 
-	gtk_object_ref (GTK_OBJECT (storage_set));
-	priv->storage_set = storage_set;
+	/* Don't ref it so we don't create a circular dependency.  */
+	priv->shell = shell;
+
+	storage_set = e_shell_get_storage_set (shell);
 
 	gtk_signal_connect_while_alive (GTK_OBJECT (storage_set), "new_folder",
 					GTK_SIGNAL_FUNC (storage_set_new_folder_callback),
@@ -760,23 +771,19 @@ e_shortcuts_construct (EShortcuts  *shortcuts,
 	gtk_signal_connect_while_alive (GTK_OBJECT (storage_set), "updated_folder",
 					GTK_SIGNAL_FUNC (storage_set_updated_folder_callback),
 					shortcuts, GTK_OBJECT (shortcuts));
-
-	gtk_object_ref (GTK_OBJECT (folder_type_registry));
-	priv->folder_type_registry = folder_type_registry;
 }
 
 EShortcuts *
-e_shortcuts_new (EStorageSet *storage_set,
-		 EFolderTypeRegistry *folder_type_registry,
-		 const char *file_name)
+e_shortcuts_new_from_file (EShell *shell,
+			   const char *file_name)
 {
 	EShortcuts *new;
 
-	g_return_val_if_fail (storage_set != NULL, NULL);
-	g_return_val_if_fail (E_IS_STORAGE_SET (storage_set), NULL);
+	g_return_val_if_fail (E_IS_SHELL (shell), NULL);
+	g_return_val_if_fail (file_name != NULL, NULL);
 
 	new = gtk_type_new (e_shortcuts_get_type ());
-	e_shortcuts_construct (new, storage_set, folder_type_registry);
+	e_shortcuts_construct (new, shell);
 
 	if (! e_shortcuts_load (new, file_name))
 		new->priv->file_name = g_strdup (file_name);
@@ -840,13 +847,13 @@ e_shortcuts_get_shortcuts_in_group (EShortcuts *shortcuts,
 }
 
 
-EStorageSet *
-e_shortcuts_get_storage_set (EShortcuts *shortcuts)
+EShell *
+e_shortcuts_get_shell (EShortcuts *shortcuts)
 {
 	g_return_val_if_fail (shortcuts != NULL, NULL);
 	g_return_val_if_fail (E_IS_SHORTCUTS (shortcuts), NULL);
 
-	return shortcuts->priv->storage_set;
+	return shortcuts->priv->shell;
 }
 
 
@@ -981,7 +988,8 @@ e_shortcuts_add_shortcut (EShortcuts *shortcuts,
 			  const char *uri,
 			  const char *name,
 			  int unread_count,
-			  const char *type)
+			  const char *type,
+			  const char *custom_icon_name)
 {
 	EShortcutsPrivate *priv;
 	ShortcutGroup *group;
@@ -1001,7 +1009,7 @@ e_shortcuts_add_shortcut (EShortcuts *shortcuts,
 	if (num == -1)
 		num = g_slist_length (group->shortcuts);
 
-	item = shortcut_item_new (uri, name, unread_count, type);
+	item = shortcut_item_new (uri, name, unread_count, type, custom_icon_name);
 
 	group->shortcuts = g_slist_insert (group->shortcuts, item, num);
 
@@ -1017,7 +1025,8 @@ e_shortcuts_update_shortcut (EShortcuts *shortcuts,
 			     const char *uri,
 			     const char *name,
 			     int unread_count,
-			     const char *type)
+			     const char *type,
+			     const char *custom_icon_name)
 {
 	EShortcutItem *shortcut_item;
 
@@ -1026,12 +1035,40 @@ e_shortcuts_update_shortcut (EShortcuts *shortcuts,
 
 	shortcut_item = get_item (shortcuts, group_num, num);
 
-	update_shortcut_and_emit_signal (shortcuts, shortcut_item, group_num, num, uri, name, unread_count, type);
+	update_shortcut_and_emit_signal (shortcuts, shortcut_item, group_num, num,
+					 uri, name, unread_count, type, custom_icon_name);
 
 	make_dirty (shortcuts);
 }
 
 
+void
+e_shortcuts_add_default_shortcuts (EShortcuts *shortcuts,
+				   int group_num)
+{
+	char *utf;
+
+	utf = e_utf8_from_locale_string (_("Summary"));
+	e_shortcuts_add_shortcut (shortcuts, 0, -1, E_SUMMARY_URI, utf, 0, "summary", NULL);
+	g_free (utf);
+
+	utf = e_utf8_from_locale_string (_("Inbox"));
+	e_shortcuts_add_shortcut (shortcuts, 0, -1, "default:mail", utf, 0, "mail", "inbox");
+	g_free (utf);
+
+	utf = e_utf8_from_locale_string (_("Calendar"));
+	e_shortcuts_add_shortcut (shortcuts, 0, -1, "default:calendar", utf, 0, "calendar", NULL);
+	g_free (utf);
+
+	utf = e_utf8_from_locale_string (_("Tasks"));
+	e_shortcuts_add_shortcut (shortcuts, 0, -1, "default:tasks", utf, 0, "tasks", NULL);
+	g_free (utf);
+
+	utf = e_utf8_from_locale_string (_("Contacts"));
+	e_shortcuts_add_shortcut (shortcuts, 0, -1, "default:contacts", utf, 0, "contacts", NULL);
+	g_free (utf);
+}
+
 void
 e_shortcuts_add_default_group (EShortcuts *shortcuts)
 {
@@ -1044,23 +1081,7 @@ e_shortcuts_add_default_group (EShortcuts *shortcuts)
 	e_shortcuts_add_group (shortcuts, -1, utf);
 	g_free (utf);
 
-	/* FIXME: Inbox shortcut should point to something else for
-           people who won't care about using /Local Folders/Inbox */
-	utf = e_utf8_from_locale_string (_("Summary"));
-	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/summary", utf, 0, "summary");
-	g_free (utf);
-	utf = e_utf8_from_locale_string (_("Inbox"));
-	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/MIT mail/INBOX", utf, 0, "mail");
-	g_free (utf);
-	utf = e_utf8_from_locale_string (_("Calendar"));
-	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/local/Calendar", utf, 0, "calendar");
-	g_free (utf);
-	utf = e_utf8_from_locale_string (_("Tasks"));
-	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/local/Tasks", utf, 0, "tasks");
-	g_free (utf);
-	utf = e_utf8_from_locale_string (_("Contacts"));
-	e_shortcuts_add_shortcut (shortcuts, 0, -1, "evolution:/local/Contacts", utf, 0, "contacts");
-	g_free (utf);
+	e_shortcuts_add_default_shortcuts (shortcuts, -1);
 }
 
 void
@@ -1164,6 +1185,90 @@ e_shortcuts_get_group_title (EShortcuts *shortcuts,
 	group = (ShortcutGroup *) group_element->data;
 
 	return group->title;
+}
+
+void
+e_shortcuts_set_group_uses_small_icons  (EShortcuts *shortcuts,
+					 int group_num,
+					 gboolean use_small_icons)
+{
+	EShortcutsPrivate *priv;
+	ShortcutGroup *group;
+	GSList *group_element;
+
+	g_return_if_fail (E_IS_SHORTCUTS (shortcuts));
+
+	priv = shortcuts->priv;
+
+	group_element = g_slist_nth (priv->groups, group_num);
+	if (group_element == NULL)
+		return;
+
+	group = (ShortcutGroup *) group_element->data;
+
+	use_small_icons = !! use_small_icons;
+	if (group->use_small_icons != use_small_icons) {
+		group->use_small_icons = use_small_icons;
+		gtk_signal_emit (GTK_OBJECT (shortcuts), signals[GROUP_CHANGE_ICON_SIZE],
+				 group_num, use_small_icons);
+
+		make_dirty (shortcuts);
+	}
+}
+
+gboolean
+e_shortcuts_get_group_uses_small_icons  (EShortcuts *shortcuts,
+					 int group_num)
+{
+	EShortcutsPrivate *priv;
+	ShortcutGroup *group;
+	GSList *group_element;
+
+	g_return_val_if_fail (E_IS_SHORTCUTS (shortcuts), FALSE);
+
+	priv = shortcuts->priv;
+
+	group_element = g_slist_nth (priv->groups, group_num);
+	if (group_element == NULL)
+		return FALSE;
+
+	group = (ShortcutGroup *) group_element->data;
+	return group->use_small_icons;
+}
+
+
+void
+e_shortcuts_update_shortcuts_for_changed_uri (EShortcuts *shortcuts,
+					      const char *old_uri,
+					      const char *new_uri)
+{
+	EShortcutsPrivate *priv;
+	GSList *p;
+
+	g_return_if_fail (E_IS_SHORTCUTS (shortcuts));
+	g_return_if_fail (old_uri != NULL);
+	g_return_if_fail (new_uri != NULL);
+
+	priv = shortcuts->priv;
+
+	for (p = priv->groups; p != NULL; p = p->next) {
+		ShortcutGroup *group;
+		GSList *q;
+
+		group = (ShortcutGroup *) p->data;
+		for (q = group->shortcuts; q != NULL; q = q->next) {
+			EShortcutItem *item;
+
+			item = (EShortcutItem *) q->data;
+
+			if (strcmp (item->uri, old_uri) == 0) {
+				g_free (item->uri);
+				item->uri = g_strdup (new_uri);
+
+				make_dirty (shortcuts);
+			}
+		}
+	}
 }
 
 

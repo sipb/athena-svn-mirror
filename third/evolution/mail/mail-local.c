@@ -37,9 +37,10 @@
 #include <libgnomeui/gnome-dialog-util.h>
 #include <glade/glade.h>
 
-#include "gal/widgets/e-gui-utils.h"
 #include "e-util/e-path.h"
-#include "gal/util/e-unicode-i18n.h"
+#include <gal/widgets/e-gui-utils.h>
+#include <gal/util/e-unicode-i18n.h>
+#include <gal/util/e-xml-utils.h>
 
 #include "Evolution.h"
 #include "evolution-storage.h"
@@ -52,7 +53,6 @@
 #include "mail.h"
 #include "mail-local.h"
 #include "mail-tools.h"
-#include "folder-browser.h"
 #include "mail-mt.h"
 #include "mail-folder-cache.h"
 #include "mail-vfolder.h"
@@ -111,6 +111,7 @@ typedef struct {
 	CamelFolder *real_folder;
 	CamelStore *real_store;
 
+	char *description;
 	char *real_path;
 
 	struct _local_meta *meta;
@@ -198,14 +199,14 @@ free_metainfo(struct _local_meta *meta)
 }
 
 static gboolean
-save_metainfo(struct _local_meta *meta)
+save_metainfo (struct _local_meta *meta)
 {
 	xmlDocPtr doc;
 	xmlNodePtr root, node;
 	int ret;
-
+	
 	d(printf("Saving folder metainfo to : %s\n", meta->path));
-
+	
 	doc = xmlNewDoc("1.0");
 	root = xmlNewDocNode(doc, NULL, "folderinfo", NULL);
 	xmlDocSetRootElement(doc, root);
@@ -214,11 +215,12 @@ save_metainfo(struct _local_meta *meta)
 	xmlSetProp(node, "type", meta->format);
 	xmlSetProp(node, "name", meta->name);
 	xmlSetProp(node, "index", meta->indexed?"1":"0");
-
-	ret = xmlSaveFile(meta->path, doc);
-	xmlFreeDoc(doc);
-
-	return ret;
+	
+	ret = e_xml_save_file (meta->path, doc);
+	
+	xmlFreeDoc (doc);
+	
+	return ret == -1 ? FALSE : TRUE;
 }
 
 static CamelFolderClass *mlf_parent_class = NULL;
@@ -275,7 +277,7 @@ mlf_expunge(CamelFolder *folder, CamelException *ex)
 }
 
 static void
-mlf_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, CamelException *ex)
+mlf_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMessageInfo *info, char **appended_uid, CamelException *ex)
 {
 	MailLocalFolder *mlf = MAIL_LOCAL_FOLDER(folder);
 	CamelFolder *f;
@@ -285,7 +287,7 @@ mlf_append_message(CamelFolder *folder, CamelMimeMessage *message, const CamelMe
 	camel_object_ref((CamelObject *)f);
 	LOCAL_FOLDER_UNLOCK(mlf);
 
-	camel_folder_append_message(f, message, info, ex);
+	camel_folder_append_message(f, message, info, appended_uid, ex);
 	camel_object_unref((CamelObject *)f);
 }
 
@@ -516,6 +518,48 @@ mlf_set_folder(MailLocalFolder *mlf, guint32 flags, CamelException *ex)
 	return TRUE;
 }
 
+static int
+mlf_getv(CamelObject *object, CamelException *ex, CamelArgGetV *args)
+{
+	CamelFolder *folder = (CamelFolder *)object;
+	MailLocalFolder *mlf = (MailLocalFolder *)object;
+	int i, count=args->argc;
+	guint32 tag;
+
+	for (i=0;i<args->argc;i++) {
+		CamelArgGet *arg = &args->argv[i];
+		
+		tag = arg->tag;
+		
+		switch (tag & CAMEL_ARG_TAG) {
+			/* CamelObject args */
+		case CAMEL_OBJECT_ARG_DESCRIPTION:
+			if (mlf->description == NULL) {
+				int pathlen;
+
+				/* string to describe a local folder as the location of a message */
+				pathlen = strlen(evolution_dir) + strlen("local") + 1;
+				if (strlen(folder->full_name) > pathlen)
+					mlf->description = g_strdup_printf(U_("Local folders/%s"), folder->full_name+pathlen);
+				else
+					mlf->description = g_strdup_printf(U_("Local folders/%s"), folder->name);
+			}
+			*arg->ca_str = mlf->description;
+			break;
+		default:
+			count--;
+			continue;
+		}
+
+		arg->tag = (tag & CAMEL_ARG_TYPE) | CAMEL_ARG_IGNORE;
+	}
+
+	if (count)
+		return ((CamelObjectClass *)mlf_parent_class)->getv(object, ex, args);
+
+	return 0;
+}
+
 static void 
 mlf_class_init (CamelObjectClass *camel_object_class)
 {
@@ -537,10 +581,12 @@ mlf_class_init (CamelObjectClass *camel_object_class)
 	camel_folder_class->set_message_user_tag = mlf_set_message_user_tag;
 
 	camel_folder_class->rename = mlf_rename;
+
+	camel_object_class->getv = mlf_getv;
 }
 
 static void
-mlf_init (CamelObject *obj)
+mlf_init (CamelObject *obj, CamelObjectClass *klass)
 {
 	MailLocalFolder *mlf = MAIL_LOCAL_FOLDER (obj);
 
@@ -558,6 +604,8 @@ mlf_finalize (CamelObject *obj)
 		mlf_unset_folder(mlf);
 
 	free_metainfo(mlf->meta);
+	
+	g_free (mlf->real_path);
 	
 #ifdef ENABLE_THREADS
 	g_mutex_free (mlf->real_folder_lock);
@@ -589,12 +637,9 @@ mail_local_folder_construct(MailLocalFolder *mlf, MailLocalStore  *parent_store,
 {
 	const char *name;
 	char *metapath;
-
-	name = strrchr(full_name, '/');
-	if (name == NULL)
-		name = full_name;
-	name = name + 1;
-
+	
+	name = g_basename (full_name);
+	
 	d(printf("constructing local folder: full = %s, name = %s\n", full_name, name));
 
 	camel_folder_construct(CAMEL_FOLDER (mlf), CAMEL_STORE(parent_store), full_name, name);
@@ -691,7 +736,7 @@ mail_local_folder_reconfigure (MailLocalFolder *mlf, const char *new_format, int
 	camel_folder_freeze(mlf->real_folder);
 
 	uids = camel_folder_get_uids(fromfolder);
-	camel_folder_move_messages_to(fromfolder, uids, mlf->real_folder, ex);
+	camel_folder_transfer_messages_to(fromfolder, uids, mlf->real_folder, NULL, TRUE, ex);
 	camel_folder_free_uids(fromfolder, uids);
 	if (camel_exception_is_set(ex))
 		goto cleanup;
@@ -709,7 +754,7 @@ mail_local_folder_reconfigure (MailLocalFolder *mlf, const char *new_format, int
 	if (save_metainfo(mlf->meta) == FALSE) {
 		camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 				      _("Cannot save folder metainfo; "
-					"you'll probably find you can't\n"
+					"you may find you can't\n"
 					"open this folder anymore: %s: %s"),
 				      mlf->meta->path, strerror(errno));
 	}
@@ -762,7 +807,7 @@ mls_get_folder(CamelStore *store, const char *folder_name, guint32 flags, CamelE
 	}
 
 	if (flags & CAMEL_STORE_FOLDER_CREATE) {
-		if (save_metainfo(folder->meta) == -1) {
+		if (save_metainfo(folder->meta) == FALSE) {
 			camel_exception_setv (ex, CAMEL_EXCEPTION_SYSTEM,
 					      _("Cannot save folder metainfo to %s: %s"),
 					      folder->meta->path, strerror(errno));
@@ -1095,7 +1140,6 @@ mail_local_provider_init (void)
 	/* Register with Camel to handle file: URLs */
 	local_provider.object_types[CAMEL_PROVIDER_STORE] = MAIL_LOCAL_STORE_TYPE;
 
-	local_provider.service_cache = g_hash_table_new (non_hash, non_equal);
 	local_provider.url_hash = non_hash;
 	local_provider.url_equal = non_equal;
 	camel_session_register_provider (session, &local_provider);
@@ -1263,7 +1307,9 @@ mail_local_storage_startup (EvolutionShellClient *shellclient, const char *evolu
 struct _reconfigure_msg {
 	struct _mail_msg msg;
 
-	FolderBrowser *fb;
+	char *uri;
+	CamelFolder *folder;
+
 	char *newtype;
 	unsigned int index_body:1;
 	GtkWidget *frame;
@@ -1271,7 +1317,9 @@ struct _reconfigure_msg {
 	GtkWidget *cancel;
 	GtkWidget *check_index_body;
 	GtkOptionMenu *optionlist;
-	CamelFolder *folder_out;
+
+	void (*done)(const char *uri, CamelFolder *folder, void*data);
+	void *done_data;
 };
 
 /* hash table of folders that the user has a reconfig-folder dialog for */
@@ -1283,7 +1331,7 @@ reconfigure_folder_describe (struct _mail_msg *mm, int done)
 	struct _reconfigure_msg *m = (struct _reconfigure_msg *)mm;
 	
 	return g_strdup_printf (_("Changing folder \"%s\" to \"%s\" format"),
-				m->fb->uri,
+				camel_folder_get_full_name (m->folder),
 				m->newtype);
 }
 
@@ -1291,25 +1339,10 @@ static void
 reconfigure_folder_reconfigure (struct _mail_msg *mm)
 {
 	struct _reconfigure_msg *m = (struct _reconfigure_msg *)mm;
-	CamelFolder *local_folder = NULL;
 
-	d(printf("reconfiguring folder: %s to type %s\n", m->fb->uri, m->newtype));
+	d(printf("reconfiguring folder: %s to type %s\n", m->uri, m->newtype));
 	
-	if (strncmp (m->fb->uri, "file:", 5)) {
-		camel_exception_setv (&mm->ex, CAMEL_EXCEPTION_SERVICE_UNAVAILABLE,
-				      _("%s may not be reconfigured because it is not a local folder"), 
-				      m->fb->uri);
-		return;
-	}
-
-	local_folder = mail_tool_uri_to_folder (m->fb->uri, 0, &mm->ex);
-	if (camel_exception_is_set (&mm->ex)) {
-		g_warning ("Can't resolve URI \"%s\" for reconfiguration!", m->fb->uri);
-		return;
-	}
-
-	mail_local_folder_reconfigure (MAIL_LOCAL_FOLDER (local_folder), m->newtype, m->index_body, &mm->ex);
-	m->folder_out = local_folder;
+	mail_local_folder_reconfigure (MAIL_LOCAL_FOLDER (m->folder), m->newtype, m->index_body, &mm->ex);
 }
 
 static void
@@ -1323,7 +1356,8 @@ reconfigure_folder_reconfigured (struct _mail_msg *mm)
 				      "you may need to repair it manually."));
 	}
 
-	message_list_set_folder (m->fb->message_list, m->folder_out, FALSE);
+	if (m->done)
+		m->done(m->uri, m->folder, m->done_data);
 }
 
 static void
@@ -1332,16 +1366,16 @@ reconfigure_folder_free (struct _mail_msg *mm)
 	struct _reconfigure_msg *m = (struct _reconfigure_msg *)mm;
 
 	/* remove this folder from our hash since we are done with it */
-	g_hash_table_remove (reconfigure_folder_hash, m->fb->folder);
+	g_hash_table_remove (reconfigure_folder_hash, m->folder);
 	if (g_hash_table_size (reconfigure_folder_hash) == 0) {
 		/* additional cleanup */
 		g_hash_table_destroy (reconfigure_folder_hash);
 		reconfigure_folder_hash = NULL;
 	}
 
-	if (m->folder_out)
-		camel_object_unref (CAMEL_OBJECT (m->folder_out));
-	gtk_object_unref (GTK_OBJECT (m->fb));
+	if (m->folder)
+		camel_object_unref (CAMEL_OBJECT (m->folder));
+	g_free(m->uri);
 	g_free (m->newtype);
 }
 
@@ -1357,12 +1391,6 @@ reconfigure_clicked (GnomeDialog *dialog, int button, struct _reconfigure_msg *m
 {
 	if (button == 0) {
 		GtkWidget *menu, *item;
-		
-		/* hack to clear the message list during update */
-		/* we need to do this because the message list caches
-		 * CamelMessageInfos from the old folder. */
-		message_list_set_folder(m->fb->message_list, NULL, FALSE);
-		
 		menu = gtk_option_menu_get_menu(m->optionlist);
 		item = gtk_menu_get_active(GTK_MENU(menu));
 		m->newtype = g_strdup(gtk_object_get_data((GtkObject *)item, "type"));
@@ -1373,68 +1401,70 @@ reconfigure_clicked (GnomeDialog *dialog, int button, struct _reconfigure_msg *m
 		gtk_widget_set_sensitive (m->cancel, FALSE);
 		
 		e_thread_put (mail_thread_queued, (EMsg *)m);
-	} else
+	} else {
+		if (m->done)
+			m->done(m->uri, NULL, m->done_data);
 		mail_msg_free ((struct _mail_msg *)m);
+	}
 	
 	if (button != -1)
 		gnome_dialog_close (dialog);
 }
 
-void
-mail_local_reconfigure_folder (FolderBrowser *fb)
+static void
+reconfigure_got_folder(char *uri, CamelFolder *folder, void *data)
 {
 	GladeXML *gui;
 	GnomeDialog *gd;
-	struct _reconfigure_msg *m;
+	struct _reconfigure_msg *m = data;
 	char *title;
 	GList *p;
 	GtkWidget *menu;
 	char *currentformat;
 	int index=0, history=0;
 
-	if (fb->folder == NULL) {
+	if (folder == NULL
+	    || !MAIL_IS_LOCAL_FOLDER (folder)) {
 		g_warning ("Trying to reconfigure nonexistant folder");
+		/* error display ? */
+		if (m->done)
+			m->done(uri, NULL, m->done_data);
+		mail_msg_free((struct _mail_msg *)m);
 		return;
 	}
 	
 	if (!reconfigure_folder_hash)
 		reconfigure_folder_hash = g_hash_table_new (NULL, NULL);
 	
-	if ((gd = g_hash_table_lookup (reconfigure_folder_hash, fb->folder))) {
+	if ((gd = g_hash_table_lookup (reconfigure_folder_hash, folder))) {
 		gdk_window_raise (GTK_WIDGET (gd)->window);
+		if (m->done)
+			m->done(uri, NULL, m->done_data);
+		mail_msg_free((struct _mail_msg *)m);
 		return;
 	}
-	
-	/* check if we can work on this folder */
-	if (!MAIL_IS_LOCAL_FOLDER (fb->folder)) {
-		e_notice (NULL, GNOME_MESSAGE_BOX_WARNING,
-			  _("You cannot change the format of a non-local folder."));
-		return;
-	}
-	
-	m = mail_msg_new (&reconfigure_folder_op, NULL, sizeof (*m));
 	
 	gui = glade_xml_new (EVOLUTION_GLADEDIR "/local-config.glade", "dialog_format");
 	gd = (GnomeDialog *)glade_xml_get_widget (gui, "dialog_format");
 	
 	title = g_strdup_printf (_("Reconfigure /%s"),
-				 camel_folder_get_full_name (fb->folder));
+				 camel_folder_get_full_name (folder));
 	gtk_window_set_title (GTK_WINDOW (gd), title);
 	g_free (title);
-	
+
+	m->uri = g_strdup(uri);
 	m->frame = glade_xml_get_widget (gui, "frame_format");
 	m->apply = glade_xml_get_widget (gui, "apply_format");
 	m->cancel = glade_xml_get_widget (gui, "cancel_format");
 	m->optionlist = (GtkOptionMenu *)glade_xml_get_widget (gui, "option_format");
 	m->check_index_body = glade_xml_get_widget (gui, "check_index_body");
 	m->newtype = NULL;
-	m->fb = fb;
-	m->folder_out = NULL;
-	gtk_object_ref (GTK_OBJECT (fb));
+	m->folder = folder;
+	camel_object_ref(folder);
 
 	/* dynamically create the folder type list from camel */
 	/* we assume the list is static and never freed */
-	currentformat = MAIL_LOCAL_FOLDER (fb->folder)->meta->format;
+	currentformat = MAIL_LOCAL_FOLDER (folder)->meta->format;
 	p = camel_session_list_providers(session, TRUE);
 	menu = gtk_menu_new();
 	while (p) {
@@ -1461,15 +1491,35 @@ mail_local_reconfigure_folder (FolderBrowser *fb)
 	gtk_option_menu_remove_menu (GTK_OPTION_MENU(m->optionlist));
 	gtk_option_menu_set_menu (GTK_OPTION_MENU(m->optionlist), menu);
 	gtk_option_menu_set_history(GTK_OPTION_MENU(m->optionlist), history);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(m->check_index_body), MAIL_LOCAL_FOLDER (fb->folder)->meta->indexed);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(m->check_index_body), MAIL_LOCAL_FOLDER (folder)->meta->indexed);
 
 	gtk_label_set_text ((GtkLabel *)glade_xml_get_widget (gui, "label_format"),
-			    MAIL_LOCAL_FOLDER (fb->folder)->meta->format);
+			    MAIL_LOCAL_FOLDER (folder)->meta->format);
 	
 	gtk_signal_connect (GTK_OBJECT (gd), "clicked", reconfigure_clicked, m);
 	gtk_object_unref (GTK_OBJECT (gui));
 	
-	g_hash_table_insert (reconfigure_folder_hash, (gpointer) fb->folder, (gpointer) gd);
+	g_hash_table_insert (reconfigure_folder_hash, (gpointer) folder, (gpointer) gd);
 	
-	gnome_dialog_run (GNOME_DIALOG (gd));
+	gtk_widget_show((GtkWidget *)gd);
+}
+
+void
+mail_local_reconfigure_folder(const char *uri, void (*done)(const char *uri, CamelFolder *folder, void *data), void *done_data)
+{
+	struct _reconfigure_msg *m;
+
+	if (strncmp(uri, "file:", 5) != 0) {
+		e_notice (NULL, GNOME_MESSAGE_BOX_WARNING,
+			  _("You cannot change the format of a non-local folder."));
+		if (done) 
+			done(uri, NULL, done_data);
+		return;
+	}
+
+	m = mail_msg_new (&reconfigure_folder_op, NULL, sizeof (*m));
+	m->done = done;
+	m->done_data = done_data;
+
+	mail_get_folder(uri, 0, reconfigure_got_folder, m, mail_thread_new);
 }
