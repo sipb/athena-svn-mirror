@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 1.1 1990-04-26 16:36:08 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 1.2 1990-05-26 13:37:50 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  90/04/26  16:36:08  tom
+ * Initial revision
+ * 
  * Revision 1.1  89/11/03  15:42:50  snmpdev
  * Initial revision
  * 
@@ -24,7 +27,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 1.1 1990-04-26 16:36:08 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ip_grp.c,v 1.2 1990-05-26 13:37:50 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -341,7 +344,11 @@ find_a_rt(rtaddr, srte, msgflgs)
 	int msgflgs;
 {
 	struct rtentry *rte1, tmprt;
+#ifdef ULTRIX3
+        struct rtentry **rtehash, mb, *next;
+#else
 	struct mbuf **rtehash, mb, *next;
+#endif
 	struct sockaddr_in *sin;
 	int hashsize, foundit = 0, i;
 	struct in_addr tmpsa;
@@ -413,6 +420,16 @@ find_a_rt(rtaddr, srte, msgflgs)
 	 */
 dohost:
 	for (i = 0; i < hashsize; i++) {
+#ifdef ULTRIX3
+               for (next = rtehash[i]; next != NULL; next = mb.rt_next) {
+                       (void)lseek(kmem, (long)next, L_SET);
+                       if (read(kmem, (char *)&mb, sizeof(struct rtentry)) != sizeof(struct rtentry)) {
+                               syslog(LOG_ERR, "find_a_rt: read mb: %m");
+                               return(BUILD_ERR);
+                       }
+                       rte1 = &mb;
+
+#else
 		for (next = rtehash[i]; next != NULL; next = mb.m_next) {
 			(void)lseek(kmem, (long)next, L_SET);
 			if (read(kmem, (char *)&mb, MMINOFF+sizeof(struct rtentry)) != (MMINOFF+sizeof(struct rtentry))) {
@@ -420,6 +437,7 @@ dohost:
 				return(BUILD_ERR);
 			}
 			rte1 = mtod(&mb, struct rtentry *);
+#endif
 			if (rte1->rt_dst.sa_family != AF_INET)
 				continue;
 			sin = (struct sockaddr_in *)&rte1->rt_dst;
