@@ -1,7 +1,7 @@
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v $
 #	$Author: ilham $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.7 1990-07-13 14:12:57 ilham Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/Makefile,v 1.6 1990-07-13 10:17:16 ilham Exp $
 #
 #
 #     Copyright 1990 Massachusetts Institute of Technology.
@@ -153,7 +153,7 @@ clean:
 
 depend: ${SRCS} ${CSRCS} ${LSRCS}
 	touch Make.depend; mkdep -fMake.depend ${CFLAGS} ${SRCS} \
-	${CSRCS} ${LSRCS} ${DBSRCS}
+	${CSRCS} ${LSRCS}
 
 printcap.c:
 	rm -f printcap.c
