@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.34 2000-03-20 20:34:54 rbasch Exp $
+# $Id: do-update.sh,v 1.35 2000-04-12 15:41:27 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -209,21 +209,24 @@ else
 	fi
 fi
 
-# MINIROOT is currently only used for Irix 6.x.
 if [ "$MINIROOT" = true ]; then
 	# Set up a miniroot in the swap partition. We will boot into
 	# it, and update-os will be run from there.
 
-	echo "Suppressing network daemons for reboot"
-	chkconfig -f suppress-network-daemons on
+	case "$HOSTTYPE" in
+	sgi)
+		echo "Suppressing network daemons for reboot"
+		chkconfig -f suppress-network-daemons on
 
-	# Note the volume header must be updated before the miniroot
-	# can boot (Irix only).
-	if [ "$NEWBOOT" = true ]; then
-		# Make sure the volume header has an up-to-date sash.
-		echo "Updating sash volume directory entry..."
-		dvhtool -v creat /install/lib/sash sash
-	fi
+		# Note the volume header must be updated before the miniroot
+		# can boot (Irix only).
+		if [ "$NEWBOOT" = true ]; then
+			# Make sure the volume header has an up-to-date sash.
+			echo "Updating sash volume directory entry..."
+			dvhtool -v creat /install/lib/sash sash
+		fi
+		;;
+	esac
 
 	sh /srvd/usr/athena/lib/update/setup-swap-boot "$method" "$newvers"
 	case "$?" in
