@@ -1,9 +1,9 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/zinit.8,v $
-.\"	$Author: ghudson $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zinit.8,v 1.6 1997-04-01 01:01:44 ghudson Exp $
+.\"	$Author: cfields $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/zinit.8,v 1.7 1998-03-17 04:03:38 cfields Exp $
 .\"
 .\"
-.TH ZINIT 8 "July 15, 1990" "MIT Project Athena"
+.TH ZINIT 8 "7 March 1998" "MIT Project Athena"
 .ds ]W MIT Project Athena
 .SH NAME
 zinit \- zephyr login initialization program
@@ -43,12 +43,12 @@ and
 have the same meaning as in \fIattach(1)\fR.
 
 .SH NOTE
-The programs \fIattach(1)\fR, \fIdetach(1)\fR, \fInfsid(1)\fR, and
-\fIzinit(8)\fR are all really the same program.  Typically
-\fIdetach(1)\fR, \fInfsid(1)\fR and \fIzinit(8)\fR are links to
-\fIattach\fR.  Argv[0] is used to determine which one of the four
-programs are run.  This may be overridden by specifying -P
-\fIprogname\fR, where \fIprogname\fR should be one of the above four
+The programs \fIadd(1)\fP, \fIattach(1)\fP, \fIdetach(1)\fP, \fInfsid(1)\fP,
+and \fIzinit(8)\fP are all really the same program.  Typically
+\fIdetach(1)\fP, \fInfsid(1)\fP and \fIzinit(8)\fP (but not \fIadd(1)\fP)
+are links to \fIattach\fP.  Argv[0] is used to determine which one of the
+programs is run.  This may be overridden by specifying -P
+\fIprogname\fP, where \fIprogname\fP should be one of the above five
 program names.
 
 .SH SEE ALSO
