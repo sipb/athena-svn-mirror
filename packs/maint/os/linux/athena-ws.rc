@@ -85,6 +85,15 @@ case "$1" in
 		echo
 	fi
 
+	# Convert the RPM database to RPM 4.x format if necessary.
+	if [ -f /var/lib/rpm/packages.rpm -a ! -f /var/lib/rpm/Packages ]; then
+		case `rpm -q --queryformat '%{VERSION}'` in
+		4.*)
+			echo -n Rebuilding RPM db:
+			rpm --rebuilddb && success rebuild || failure rebuild
+			;;
+		esac
+	fi
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
