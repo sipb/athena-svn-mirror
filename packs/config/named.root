@@ -1,3 +1,6 @@
+; The first part of this file is taken wholesale from Internic.
+; Afterwards we have the Hesiod root servers.
+
 ;       This file holds the information on root name servers needed to
 ;       initialize cache of Internet domain name servers
 ;       (e.g. reference this file in the "cache  .  <file>"
@@ -81,3 +84,18 @@ L.ROOT-SERVERS.NET.      3600000      A     198.32.64.12
 .                        3600000      NS    M.ROOT-SERVERS.NET.
 M.ROOT-SERVERS.NET.      3600000      A     202.12.27.33
 ; End of File
+
+;
+; Root HS servers
+;
+.			3600000	HS	NS	BITSY.MIT.EDU.
+			3600000	HS	NS	W20NS.MIT.EDU.
+			3600000	HS	NS	STRAWB.MIT.EDU.
+BITSY.MIT.EDU.		3600000	HS	A	18.72.0.3
+W20NS.MIT.EDU.		3600000	HS	A	18.70.0.160
+STRAWB.MIT.EDU.		3600000	HS	A	18.71.0.151
+; IN records for HS servers
+; Required for some implementations of gethostbyname using C_ANY/T_A queries.
+BITSY.MIT.EDU.		3600000	IN	A	18.72.0.3
+W20NS.MIT.EDU.		3600000	IN	A	18.70.0.160
+STRAWB.MIT.EDU.		3600000	IN	A	18.71.0.151
