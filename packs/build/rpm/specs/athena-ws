@@ -456,6 +456,10 @@ if [ ! -f /etc/sysconfig/i18n ]; then
   chmod 644 /etc/sysconfig/i18n
 fi
 
+if ! grep -q '^SYSFONT=' /etc/sysconfig/i18n ; then
+  echo 'SYSFONT="lat0-sun16"' >> /etc/sysconfig/i18n
+fi
+
 %preun
 if [ $1 = 0 ]; then
   chkconfig --del athena-ws
