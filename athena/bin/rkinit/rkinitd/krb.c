@@ -1,13 +1,13 @@
 /* 
- * $Id: krb.c,v 1.4 1990-08-09 15:29:31 qjb Exp $
+ * $Id: krb.c,v 1.5 1993-04-30 18:10:01 miki Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
- * $Author: qjb $
+ * $Author: miki $
  *
  * This file contains all of the kerberos part of rkinitd.
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.4 1990-08-09 15:29:31 qjb Exp $";
+static char *rcsid = "$Id: krb.c,v 1.5 1993-04-30 18:10:01 miki Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -16,6 +16,9 @@ static char *rcsid = "$Id: krb.c,v 1.4 1990-08-09 15:29:31 qjb Exp $";
 #include <syslog.h>
 #include <netinet/in.h>
 #include <setjmp.h>
+#ifdef SYSV
+#include <netdb.h>
+#endif
 #include <pwd.h>
 #include <krb.h>
 #include <des.h>
@@ -303,7 +306,11 @@ static int validate_user(aname, inst, realm, username, errmsg)
      * Set real uid to owner of ticket file.  The library takes care
      * of making the appropriate change. 
      */
+#ifdef SOLARIS
+    if (setreuid(pwnam->pw_uid) < 0) {
+#else
     if (setruid(pwnam->pw_uid) < 0) {
+#endif
 	sprintf(errmsg,	"Failure setting ruid to %d: %s\n", pwnam->pw_uid,
 		sys_errlist[errno]);
 	strcpy(errbuf, errmsg);
