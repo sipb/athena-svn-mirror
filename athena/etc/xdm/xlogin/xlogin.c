@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.77 1998-10-02 17:41:57 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.78 1998-11-06 18:49:21 ghudson Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -607,7 +607,7 @@ static void start_reactivate(data, timerid)
       while (read(file, (char *) &utmp, sizeof(utmp)) > 0)
 	{
 	  if (utmp.ut_name[0] != 0
-#ifdef SYSV
+#ifdef USER_PROCESS
 	      && utmp.ut_type == USER_PROCESS
 #endif
 	      )
