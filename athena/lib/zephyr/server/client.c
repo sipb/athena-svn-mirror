@@ -17,7 +17,7 @@
 
 #if !defined (lint) && !defined (SABER)
 static const char rcsid_client_c[] =
-"$Id: client.c,v 1.32 1998-09-03 01:37:33 ghudson Exp $";
+"$Id: client.c,v 1.33 1998-10-13 17:12:04 ghudson Exp $";
 #endif
 
 /*
@@ -187,8 +187,8 @@ client_dump_clients(fp)
 
     for (i = 0; i < HASHSIZE; i++) {
 	for (client = client_bucket[i]; client; client = client->next) {
-	    fprintf(fp, "\t%d (%s):\n", ntohs(client->addr.sin_port),
-		    client->principal->string);
+	    fprintf(fp, "%s/%d (%s):\n", inet_ntoa(client->addr.sin_addr),
+		    ntohs(client->addr.sin_port), client->principal->string);
 	    subscr_dump_subs(fp, client->subs);
 	}
     }

@@ -16,7 +16,7 @@
 
 #ifndef lint
 #ifndef SABER
-static const char rcsid_subscr_c[] = "$Id: subscr.c,v 1.54 1998-07-16 14:55:09 ghudson Exp $";
+static const char rcsid_subscr_c[] = "$Id: subscr.c,v 1.55 1998-10-13 17:12:05 ghudson Exp $";
 #endif
 #endif
 
@@ -1006,7 +1006,7 @@ subscr_dump_subs(fp, subs)
 	return;
 
     for (; subs; subs = subs->next) {
-	fputs("\t\t'", fp);
+	fputs("\t'", fp);
 	dump_quote(subs->dest.classname->string, fp);
 	fputs("' '", fp);
 	dump_quote(subs->dest.inst->string, fp);
