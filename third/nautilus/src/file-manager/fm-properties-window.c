@@ -2492,8 +2492,13 @@ get_target_file (NautilusFile *file)
 		 * that seems fine since the links we care about are
 		 * all on the desktop.
 		 */
-		if (nautilus_file_is_local (file)) {
-			uri = nautilus_file_get_uri (file);
+		/* Athena local change:  Allow any "file:" link, to support
+		 * the case where the desktop (i.e. home) directory is
+		 * in AFS.
+		 */
+		uri = nautilus_file_get_uri (file);
+		if (eel_str_has_prefix (uri, "file:") ||
+		    nautilus_file_is_local (file)) {
 
 			switch (nautilus_link_local_get_link_type (uri, NULL)) {
 			case NAUTILUS_LINK_MOUNT:
@@ -2509,8 +2514,8 @@ get_target_file (NautilusFile *file)
 				break;
 			}
 			
-			g_free (uri);
 		}
+		g_free (uri);
 	}
 
 	if (target_file != NULL) {
