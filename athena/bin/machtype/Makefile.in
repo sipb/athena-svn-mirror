@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.2 2000-04-24 15:08:39 rbasch Exp $
+# $Id: Makefile.in,v 1.2.2.1 2000-06-22 21:27:37 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -21,8 +21,17 @@ LIBS=@LIBS@
 ALL_CFLAGS=${CPPFLAGS} ${CFLAGS} ${DEFS}
 INSTALLFLAGS=@INSTALLFLAGS@
 
-OBJS=machtype.o @OS_OBJS@
+# Used for creating the script, if that's what we're doing.
+ATHENA_MAJOR_VERSION=@ATHENA_MAJOR_VERSION@
+ATHENA_MINOR_VERSION=@ATHENA_MINOR_VERSION@
+ATHENA_SYS=@ATHENA_SYS@
+ATHENA_SYS_COMPAT=@ATHENA_SYS_COMPAT@
+
+OS_SCRIPT=@OS_SCRIPT@
 TARGET=@TARGET@
+OS_OBJS=@OS_OBJS@
+OBJS=machtype.o ${OS_OBJS}
+at=@
 
 all: ${TARGET}
 
@@ -31,6 +40,14 @@ machtype: ${OBJS}
 
 .c.o:
 	${CC} -c ${ALL_CFLAGS} $<
+
+machtype.sh: ${OS_SCRIPT}
+	rm -f $@
+	sed -e 's/${at}ATHENA_MAJOR_VERSION${at}/${ATHENA_MAJOR_VERSION}/' \
+	    -e 's/${at}ATHENA_MINOR_VERSION${at}/${ATHENA_MINOR_VERSION}/' \
+	    -e 's/${at}ATHENA_SYS${at}/${ATHENA_SYS}/' \
+	    -e 's/${at}ATHENA_SYS_COMPAT${at}/${ATHENA_SYS_COMPAT}/' \
+	    ${OS_SCRIPT} > $@
 
 check:
 
@@ -42,7 +59,7 @@ install:
 	${INSTALL} -m 444 ${srcdir}/machtype.1 ${DESTDIR}${mandir}/man1
 
 clean:
-	rm -f machtype ${OBJS}
+	rm -f ${TARGET} ${OBJS}
 
 distclean: clean
 	rm -f config.cache config.log config.status Makefile
