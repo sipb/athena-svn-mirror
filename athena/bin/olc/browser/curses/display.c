@@ -48,11 +48,13 @@ static char *rcsid_display_c = "$Header: ";
 ERRCODE
 init_display()
 {
-  initscr();
+  if (! initscr())
+    return(ERROR);
   crmode();
   echo();
   clear();
   refresh();
+  return(SUCCESS);
 }
 
 /* Function:	center() centers a line on the display.  The line is
