@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v 1.3 1990-07-10 20:38:27 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v 1.4 1990-11-08 09:53:32 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger.h,v $ */
 /* $Author: epeisach $ */
 
@@ -104,8 +104,8 @@ typedef struct {
    with NDBM/DBM incompatibilities 
 */
 
-#if defined(ultrix) && defined(NULL)
-/* The idiots redefine NULL in dbm.h */
+#if defined(ultrix) && defined(NULL) && !defined(NDBM)
+/* The idiots redefine NULL in dbm.h under ultrix3.1*/
 #undef NULL
 #endif
 
