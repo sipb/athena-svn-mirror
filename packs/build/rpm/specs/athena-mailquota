@@ -1,0 +1,10 @@
+Name: athena-mailquota
+Summary: Display post office resource usage and limits
+License: MIT
+Group: Applications/Communications
+
+Requires: athena-hesinfo athena-perl athena-cyrus-imap-client
+
+%description
+The mailquota program prints out a user's mail resource usage and limits
+on the post office server.
