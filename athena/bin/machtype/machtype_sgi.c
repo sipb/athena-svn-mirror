@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.1 1995-09-05 09:38:57 cfields Exp $
+ *	$Id: machtype_sgi.c,v 1.2 1995-12-11 01:28:17 cfields Exp $
  *	$Locker:  $
  */
 
@@ -418,13 +418,20 @@ void do_INV_GRAPHICS(inventory_t *i)
 {
         if (i->inv_type == INV_NEWPORT ) {
                 if (i->inv_state == INV_NEWPORT_24 ) {
-                        fprintf(stdout,"NG1\n");
+                        fprintf(stdout,"XL-24\n");
                 } else if (i->inv_state == INV_NEWPORT_XL ) {
                         fprintf(stdout,"XL\n");
                 } else {
                         fprintf(stdout,"NG1\n");
                 }
-        } else {
+        } else if (i->inv_type == INV_GR2 ) {
+		if ((i->inv_state & ~INV_GR2_INDY) == INV_GR2_ELAN ) {
+			/* an EXPRESS is an EXPRESS of course of course
+			   except when you are a GR3-XZ */
+			fprintf(stdout,"GR3-XZ\n");
+		} else 
+			fprintf(stdout,"UNKNOWN video\n");
+	} else {
                 fprintf(stdout,"UNKNOWN video\n");
         }
 }
