@@ -1839,13 +1839,6 @@ if test "$enable_locking" = yes; then
 fi
 
 
-if test \! -z "$includedir" ; then 
-  INCLUDES="-I$includedir"
-fi
-
-if test \! -z "$libdir" ; then
-  LDFLAGS="$LDFLAGS -L$libdir"
-fi
 
 
 ##### should have options to override the DEPEND crap, I guess...
