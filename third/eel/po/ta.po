@@ -5,75 +5,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tamil eel2 - 1.7\n"
-"POT-Creation-Date: 2002-12-09 13:16+0100\n"
+"POT-Creation-Date: 2002-11-18 17:48-0500\n"
 "PO-Revision-Date: 2001-09-25 21:36-0400\n"
 "Last-Translator: Manjushree Thandu <manjushree_c@yahoo.com>\n"
 "Language-Team: Tamil <tamilinix@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
-msgid "X"
-msgstr ""
-
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
-msgid "Y"
-msgstr ""
-
-#: eel/eel-editable-label.c:360
-msgid "Text"
-msgstr ""
-
-#: eel/eel-editable-label.c:361
-msgid "The text of the label."
-msgstr ""
-
-#: eel/eel-editable-label.c:367
-msgid "Justification"
-msgstr ""
-
-#: eel/eel-editable-label.c:368
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-
-#: eel/eel-editable-label.c:376
-msgid "Line wrap"
-msgstr ""
-
-#: eel/eel-editable-label.c:377
-msgid "If set, wrap lines if the text becomes too wide."
-msgstr ""
-
-#: eel/eel-editable-label.c:384
-#, fuzzy
-msgid "Cursor Position"
-msgstr "Â§Â¸Ã»Ã…Â¢"
-
-#: eel/eel-editable-label.c:385
-msgid "The current position of the insertion cursor in chars."
-msgstr ""
-
-#: eel/eel-editable-label.c:394
-#, fuzzy
-msgid "Selection Bound"
-msgstr " Â¦Â¾Â¡Â¢Ã— Â¦ÂºÃ¶Ã‚Ã…Â¢Ã¸Â¨Ã„"
-
-#: eel/eel-editable-label.c:395
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
-msgstr ""
-
-#: eel/eel-editable-label.c:3030
-msgid "Select All"
-msgstr ""
-
-#: eel/eel-editable-label.c:3041
-msgid "Input Methods"
-msgstr ""
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -81,7 +19,7 @@ msgid ""
 "GConf error:\n"
 "  %s"
 msgstr ""
-"GConf Ã€Â¢Â¨Ã†:\n"
+"GConf À¢¨Æ:\n"
 "  %s"
 
 #: eel/eel-gconf-extensions.c:87
@@ -91,13 +29,13 @@ msgid ""
 "  %s\n"
 "All further errors shown only on terminal"
 msgstr ""
-"GConf Ã€Â¢Â¨Ã†:\n"
+"GConf À¢¨Æ:\n"
 "  %s\n"
-"Â­Ã‰Â¢ Ã…Ã•Ãµ Ã€Â¢Â¨Ã†Â¸Ã» Ã“Â¨Ã‰Ã‚Â¾Â¢Ã¸ ÃÃ°ÃÂ§Ã Â¸Â¡Ã±Ã€Â¢Ã¬Â¸Ã´Ã€ÃÃµ"
+"­É¢ ÅÕõ À¢¨Æ¸û Ó¨ÉÂ¾¢ø ÁğÎ§Á ¸¡ñÀ¢ì¸ôÀÎõ"
 
 #: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
-msgstr "GConf Ã€Â¢Â¨Ã†"
+msgstr "GConf À¢¨Æ"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
@@ -105,133 +43,133 @@ msgstr "GConf Ã€Â¢Â¨Ã†"
 #.
 #: eel/eel-glib-extensions.c:1128
 msgid "01/01/00, 01:00 AM"
-msgstr "01/01/00, 01:00 Â¸Â¡Â¨Ã„"
+msgstr "01/01/00, 01:00 ¸¡¨Ä"
 
 #. The second one is "%-m/%-d/%-y, %-I:%M %p".
 #: eel/eel-glib-extensions.c:1130
 msgid "1/1/00, 1:00 AM"
-msgstr "01/1/00, 1:00 Â¸Â¡Â¨Ã„"
+msgstr "01/1/00, 1:00 ¸¡¨Ä"
 
 #. The third one is "%_m/%_d/%_y, %_I:%M %p".
 #: eel/eel-glib-extensions.c:1132
 msgid " 1/ 1/00,  1:00 AM"
-msgstr "01/1/00, 1:00 Â¸Â¡Â¨Ã„"
+msgstr "01/1/00, 1:00 ¸¡¨Ä"
 
-#: eel/eel-gnome-extensions.c:285
+#: eel/eel-gnome-extensions.c:611
 msgid "No image was selected.  You must click on an image to select it."
-msgstr "Â¯Ã•Ã…Ãµ Â²ÃÃµ Â¦Â¾Â¡Â¢Ã— Â¦ÂºÃ¶Ã‚Ã…Â¢Ã¸Â¨Ã„. Ã€ÃŠÃÃµ Â¦Â¾Â¡Â¢Ã— Â¦ÂºÃ¶Ã‚ Â«Â¾Ã½ Â§ÃÃ¸ Â¸Â¢Ã‡Â¢Ã¬ Â¦ÂºÃ¶Ã‚Ã—Ãµ."
+msgstr "¯ÕÅõ ²Ğõ ¦¾¡¢× ¦ºöÂÅ¢ø¨Ä. ÀÊÁõ ¦¾¡¢× ¦ºöÂ «¾ı §Áø ¸¢Ç¢ì ¦ºöÂ×õ."
 
-#: eel/eel-gnome-extensions.c:286
+#: eel/eel-gnome-extensions.c:612
 msgid "No selection made"
-msgstr " Â¦Â¾Â¡Â¢Ã— Â¦ÂºÃ¶Ã‚Ã…Â¢Ã¸Â¨Ã„"
+msgstr " ¦¾¡¢× ¦ºöÂÅ¢ø¨Ä"
 
 #: eel/eel-password-dialog.c:203
 #, fuzzy
 msgid "_Username:"
-msgstr "Ã€Ã‚Ã‰Ã·Â¦Ã€Ã‚Ã·:"
+msgstr "ÀÂÉ÷¦ÀÂ÷:"
 
 #: eel/eel-password-dialog.c:210
 #, fuzzy
 msgid "_Password:"
-msgstr "Â¸Â¼Ã—Ã® Â¦ÂºÂ¡Ã¸:"
+msgstr "¸¼×î ¦º¡ø:"
 
 #: eel/eel-password-dialog.c:237
 msgid "Remember this password"
-msgstr "Â­Ã³Â¾ Â¸Â¼Ã—Ã® Â¦ÂºÂ¡Ã¸Â¨Ã„ Â¿Â¢Â¨Ã‰Ã…Â¢Ã¸ Â¨Ã…Ã¬Â¸Ã—Ãµ"
-
-#: eel/eel-preferences-box.c:365
-msgid "Cat_egories:"
-msgstr ""
+msgstr "­ó¾ ¸¼×î ¦º¡ø¨Ä ¿¢¨ÉÅ¢ø ¨Åì¸×õ"
 
 #: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
-msgstr "Â¾Â¸Ã…Ã¸"
+msgstr "¾¸Åø"
 
 #: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550
 msgid "Details"
-msgstr "Ã…Â¢Ã…ÃƒÃ­Â¸Ã»"
+msgstr "Å¢ÅÃí¸û"
 
 #: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "Â²Ã®ÂºÃƒÂ¢Ã¬Â¨Â¸"
+msgstr "²îºÃ¢ì¨¸"
 
 #: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
-msgstr "Ã€Â¢Â¨Ã†"
+msgstr "À¢¨Æ"
 
 #: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
-msgstr "Â§Â¸Ã»Ã…Â¢"
+msgstr "§¸ûÅ¢"
 
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
 msgstr ""
 
+#, fuzzy
+#~ msgid "position"
+#~ msgstr "§¸ûÅ¢"
+
 #~ msgid "_Move here"
-#~ msgstr "Â­Ã­Â§Â¸ Â¿Â¸Ã·Ã²Ã"
+#~ msgstr "­í§¸ ¿¸÷òĞ"
 
 #~ msgid "_Copy here"
-#~ msgstr "Â­Ã­Â§Â¸ Â¿Â¸Ã¸ Â¬Ã¬ÃŒ"
+#~ msgstr "­í§¸ ¿¸ø ¬ìÌ"
 
 #~ msgid "_Link here"
-#~ msgstr "Â­Ã­Â§Â¸ Â­Â¨Â½Ã¬Â¸Ã—Ãµ"
+#~ msgstr "­í§¸ ­¨½ì¸×õ"
 
 #~ msgid "Cancel"
-#~ msgstr "Â¿Â£Ã¬ÃŒ"
+#~ msgstr "¿£ìÌ"
 
 #~ msgid "Normal"
-#~ msgstr "Â­Ã‚Ã¸Ã’"
+#~ msgstr "­ÂøÒ"
 
 #~ msgid "Unknown"
-#~ msgstr "Â¦Â¾ÃƒÂ¢Ã‚Â¡Ã"
+#~ msgstr "¦¾Ã¢Â¡Ğ"
 
 #~ msgid "Bold"
-#~ msgstr "Â¾ÃŠÃ²Â¾"
+#~ msgstr "¾Êò¾"
 
 #~ msgid "Book"
-#~ msgstr "Ã’Ã²Â¾Â¸Ãµ"
+#~ msgstr "Òò¾¸õ"
 
 #~ msgid "Black"
-#~ msgstr "Â¸Ã•Ã´Ã’"
+#~ msgstr "¸ÕôÒ"
 
 #~ msgid "Demibold"
-#~ msgstr "Â¦Â¸Â¡Ã¯ÂºÃµ Â¾ÃŠÃ²Â¾"
+#~ msgstr "¦¸¡ïºõ ¾Êò¾"
 
 #~ msgid "Light"
-#~ msgstr "Â¦ÃÃ¸Ã„Â¢Ã‚"
+#~ msgstr "¦ÁøÄ¢Â"
 
 #~ msgid "Italic"
-#~ msgstr "ÂºÂ¡Ã¶Ã—"
+#~ msgstr "º¡ö×"
 
 #~ msgid "Oblique"
-#~ msgstr "ÂºÂ¡Ã¶Ã—"
+#~ msgstr "º¡ö×"
 
 #~ msgid "Reverse Italic"
-#~ msgstr "Ã€Â¢Ã½Â§Ã‰Â¡Ã°Â¼ ÂºÂ¡Ã¶Ã—"
+#~ msgstr "À¢ı§É¡ğ¼ º¡ö×"
 
 #~ msgid "Reverse Oblique"
-#~ msgstr "Ã€Â¢Ã½Â§Ã‰Â¡Ã°Â¼ ÂºÂ¡Ã¶Ã—"
+#~ msgstr "À¢ı§É¡ğ¼ º¡ö×"
 
 #~ msgid "Other"
-#~ msgstr "ÃÃ¼ÃˆÂ¨Ã…"
+#~ msgstr "ÁüÈ¨Å"
 
 #~ msgid "Condensed"
-#~ msgstr "ÃŒÃˆÂ¢Â¸Â¢Ã‚"
+#~ msgstr "ÌÈ¢¸¢Â"
 
 #~ msgid "Semicondensed"
-#~ msgstr "Ã€Â¡Â¾Â¢ ÃŒÃˆÂ¢Â¸Â¢Ã‚"
+#~ msgstr "À¡¾¢ ÌÈ¢¸¢Â"
 
 #~ msgid "More..."
-#~ msgstr "Â§ÃÃ–Ãµ..."
+#~ msgstr "§ÁÖõ..."
 
 #~ msgid " -_,;.?/&"
 #~ msgstr "-_,;.?/&"
 
 #~ msgid "Beginner"
-#~ msgstr "ÃÃ…Ã¬Â¸Â¿Â¢Â¨Ã„"
+#~ msgstr "ĞÅì¸¿¢¨Ä"
 
 #~ msgid "Intermediate"
-#~ msgstr "Â¿ÃÂ¿Â¢Â¨Ã„"
+#~ msgstr "¿Î¿¢¨Ä"
 
 #~ msgid "Advanced"
-#~ msgstr "Â¯Ã‚Ã·Â¿Â¢Â¨Ã„"
+#~ msgstr "¯Â÷¿¢¨Ä"

@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "eel-background.h"
+
 #include "eel-gdk-extensions.h"
 #include "eel-gdk-pixbuf-extensions.h"
 #include "eel-glib-extensions.h"
@@ -31,41 +32,15 @@
 #include "eel-gtk-macros.h"
 #include "eel-lib-self-check-functions.h"
 #include "eel-string.h"
-#include "eel-marshal.h"
-#include "eel-types.h"
-#include "eel-type-builtins.h"
 #include <gtk/gtkprivate.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 #include <libart_lgpl/art_rgb.h>
-#include <eel/eel-canvas.h>
-#include <eel/eel-canvas-util.h>
+#include <libgnomecanvas/gnome-canvas-util.h>
+#include <libgnomecanvas/gnome-canvas.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <math.h>
 #include <stdio.h>
-
-/* FIXME: This could really be eliminated now */
-typedef struct {
-	/* 24-bit RGB buffer for rendering */
-	guchar *buf;
-
-	/* Rectangle describing the rendering area */
-	ArtIRect rect;
-
-	/* Rowstride for the buffer */
-	int buf_rowstride;
-
-	/* Background color, given as 0xrrggbb */
-	guint32 bg_color;
-
-	/* Invariant: at least one of the following flags is true. */
-
-	/* Set when the render rectangle area is the solid color bg_color */
-	unsigned int is_bg : 1;
-
-	/* Set when the render rectangle area is represented by the buf */
-	unsigned int is_buf : 1;
-} EelCanvasBuf;
 
 static void     eel_background_class_init                (gpointer       klass);
 static void     eel_background_init                      (gpointer       object,
@@ -75,20 +50,12 @@ static void     eel_background_start_loading_image       (EelBackground *backgro
 							  gboolean       emit_appearance_change,
 							  gboolean       load_async);
 static gboolean eel_background_is_image_load_in_progress (EelBackground *background);
-static void     eel_background_draw_to_canvas            (EelBackground *background,
-							  EelCanvasBuf  *buffer,
-							  int            entire_width,
-							  int            entire_height);
-static void     eel_background_draw_aa                   (EelBackground *background,
-							  EelCanvasBuf  *buffer);
-					  
 
 EEL_CLASS_BOILERPLATE (EelBackground, eel_background, GTK_TYPE_OBJECT)
 
 enum {
 	APPEARANCE_CHANGED,
 	SETTINGS_CHANGED,
-	DETERMINE_IMAGE_PLACEMENT,
 	IMAGE_LOADING_DONE,
 	RESET,
 	LAST_SIGNAL
@@ -137,8 +104,6 @@ struct EelBackgroundDetails {
 	int background_entire_height;
 	GdkColor background_color;
 	gboolean background_changes_with_size;
-
-	gboolean use_base;
 };
 
 static void
@@ -149,8 +114,6 @@ eel_background_class_init (gpointer klass)
 
 	object_class = G_OBJECT_CLASS (klass);
 	background_class = EEL_BACKGROUND_CLASS (klass);
-
-	eel_type_init ();
 
 	signals[APPEARANCE_CHANGED] =
 		g_signal_new ("appearance_changed",
@@ -169,19 +132,9 @@ eel_background_class_init (gpointer klass)
 			      G_STRUCT_OFFSET (EelBackgroundClass,
 					       settings_changed),
 			      NULL, NULL,
-			      g_cclosure_marshal_VOID__INT,
+			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE,
-			      1, G_TYPE_INT);
-	signals[DETERMINE_IMAGE_PLACEMENT] = 
-		g_signal_new ("determine_image_placement",
-			      G_TYPE_FROM_CLASS (object_class),
-			      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
-			      G_STRUCT_OFFSET (EelBackgroundClass,
-					       determine_image_placement),
-			      NULL, NULL,
-			      eel_marshal_ENUM__INT_INT,
-			      EEL_TYPE_BACKGROUND_IMAGE_PLACEMENT,
-			      2, G_TYPE_INT, G_TYPE_INT);
+			      0);
 	signals[IMAGE_LOADING_DONE] =
 		g_signal_new ("image_loading_done",
 			      G_TYPE_FROM_CLASS (object_class),
@@ -304,7 +257,7 @@ eel_background_set_image_placement (EelBackground              *background,
 {
 	if (eel_background_set_image_placement_no_emit (background, new_placement)) {
 		g_signal_emit (G_OBJECT (background),
-			       signals[SETTINGS_CHANGED], 0, GDK_ACTION_COPY);
+			       signals[SETTINGS_CHANGED], 0);
 		g_signal_emit (G_OBJECT (background),
 			       signals[APPEARANCE_CHANGED], 0);
 	}
@@ -404,7 +357,7 @@ eel_background_ensure_gradient_buffered (EelBackground *background, int dest_wid
 }
 
 static void
-canvas_gradient_helper_v (const EelCanvasBuf *buf, const art_u8 *gradient_buff)
+canvas_gradient_helper_v (const GnomeCanvasBuf *buf, const art_u8 *gradient_buff)
 {
 	int width  = buf->rect.x1 - buf->rect.x0;
 	int height = buf->rect.y1 - buf->rect.y0;
@@ -424,7 +377,7 @@ canvas_gradient_helper_v (const EelCanvasBuf *buf, const art_u8 *gradient_buff)
 }
 
 static void
-canvas_gradient_helper_h (const EelCanvasBuf *buf, const art_u8 *gradient_buff)
+canvas_gradient_helper_h (const GnomeCanvasBuf *buf, const art_u8 *gradient_buff)
 {
 	int width  = buf->rect.x1 - buf->rect.x0;
 	int height = buf->rect.y1 - buf->rect.y0;
@@ -443,26 +396,7 @@ canvas_gradient_helper_h (const EelCanvasBuf *buf, const art_u8 *gradient_buff)
 }
 
 static void
-fill_rgb (EelCanvasBuf *buf, art_u8 r, art_u8 g, art_u8 b)
-{
-	art_u8 *dst = buf->buf;
-	int width = buf->rect.x1 - buf->rect.x0;
-	int height = buf->rect.y1 - buf->rect.y0;
-
-	if (buf->buf_rowstride == width * 3) {
-	 	art_rgb_fill_run (dst, r, g, b, width * height);
-	} else {
-		art_u8 *dst_limit = dst + height * buf->buf_rowstride;
-		while (dst < dst_limit) {
-	 		art_rgb_fill_run (dst, r, g, b, width);
-			dst += buf->buf_rowstride;
-		}
-	}
-}
-
-
-static void
-fill_canvas_from_gradient_buffer (const EelCanvasBuf *buf, const EelBackground *background)
+fill_canvas_from_gradient_buffer (const GnomeCanvasBuf *buf, const EelBackground *background)
 {
 	g_return_if_fail (background->details->gradient_buffer != NULL);
 
@@ -480,24 +414,24 @@ fill_canvas_from_gradient_buffer (const EelCanvasBuf *buf, const EelBackground *
 	if (background->details->gradient_is_horizontal) {
 		if (buf->rect.x1 > background->details->gradient_num_pixels) {
 			art_u8 *rgb888 = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
-			EelCanvasBuf gradient = *buf;
-			EelCanvasBuf overflow = *buf;
+			GnomeCanvasBuf gradient = *buf;
+			GnomeCanvasBuf overflow = *buf;
 			gradient.rect.x1 =  gradient.rect.x0 < background->details->gradient_num_pixels ? background->details->gradient_num_pixels : gradient.rect.x0;
 			overflow.buf += (gradient.rect.x1 - gradient.rect.x0) * 3;
 			overflow.rect.x0 = gradient.rect.x1;
-			fill_rgb (&overflow, rgb888[0], rgb888[1], rgb888[2]);
+			eel_gnome_canvas_fill_rgb (&overflow, rgb888[0], rgb888[1], rgb888[2]);
 			canvas_gradient_helper_h (&gradient, background->details->gradient_buffer);
 			return;
 		}
 	} else {
 		if (buf->rect.y1 > background->details->gradient_num_pixels) {
 			art_u8 *rgb888 = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
-			EelCanvasBuf gradient = *buf;
-			EelCanvasBuf overflow = *buf;
+			GnomeCanvasBuf gradient = *buf;
+			GnomeCanvasBuf overflow = *buf;
 			gradient.rect.y1 = gradient.rect.y0 < background->details->gradient_num_pixels ? background->details->gradient_num_pixels : gradient.rect.y0;
 			overflow.buf += (gradient.rect.y1 - gradient.rect.y0) * gradient.buf_rowstride;
 			overflow.rect.y0 = gradient.rect.y1;
-			fill_rgb (&overflow, rgb888[0], rgb888[1], rgb888[2]);
+			eel_gnome_canvas_fill_rgb (&overflow, rgb888[0], rgb888[1], rgb888[2]);
 			canvas_gradient_helper_v (&gradient, background->details->gradient_buffer);
 			return;
 		}
@@ -509,7 +443,7 @@ fill_canvas_from_gradient_buffer (const EelCanvasBuf *buf, const EelBackground *
 /* Initializes a pseudo-canvas buf so canvas drawing routines can be used to draw into a pixbuf.
  */
 static void
-canvas_buf_from_pixbuf (EelCanvasBuf* buf, GdkPixbuf *pixbuf, int x, int y, int width, int height)
+canvas_buf_from_pixbuf (GnomeCanvasBuf* buf, GdkPixbuf *pixbuf, int x, int y, int width, int height)
 {
 	buf->buf =  gdk_pixbuf_get_pixels (pixbuf);
 	buf->buf_rowstride =  gdk_pixbuf_get_rowstride (pixbuf);
@@ -685,18 +619,6 @@ get_pixmap_size (EelBackground    *background,
 	return FALSE;
 }
 
-gboolean
-eel_background_get_suggested_pixmap_size (EelBackground    *background,
-					  int               entire_width,
-					  int               entire_height,
-					  int              *pixmap_width,
-					  int              *pixmap_height)
-{
-	gboolean changes_with_size;
-
-	return get_pixmap_size (background, entire_width, entire_height,
-                         pixmap_width, pixmap_height, &changes_with_size);
-}
 
 static void
 eel_background_unrealize (EelBackground *background)
@@ -709,7 +631,7 @@ eel_background_unrealize (EelBackground *background)
 	background->details->background_entire_height = 0;
 }
 
-static gboolean
+static void
 eel_background_ensure_realized (EelBackground *background, GdkWindow *window,
 				int entire_width, int entire_height)
 {
@@ -720,7 +642,6 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window,
 	GdkGC *gc;
 	GtkWidget *widget;
 	GtkStyle *style;
-	gboolean changed;
 
 	/* Try to parse the color spec.  If we fail, default to the style's color */
 
@@ -734,12 +655,7 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window,
 		g_assert (widget != NULL);
 
 		style = gtk_widget_get_style (widget);
-
-		if (background->details->use_base) {
-			background->details->background_color = style->base[GTK_STATE_NORMAL];
-		} else {
-			background->details->background_color = style->bg[GTK_STATE_NORMAL];
-		}
+		background->details->background_color = style->bg[GTK_STATE_NORMAL];
 	}
 
 	g_free (start_color_spec);
@@ -749,21 +665,20 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window,
 	 */
 	if (background->details->background_pixmap != NULL &&
 	    !background->details->background_changes_with_size) {
-		return FALSE;
+		return;
 	}
 
 	/* If the window size is the same as last time, don't update */
 	if (entire_width == background->details->background_entire_width &&
 	    entire_height == background->details->background_entire_height) {
-		return FALSE;
+		return;
 	}
 
 	if (background->details->background_pixmap != NULL) {
 		g_object_unref (background->details->background_pixmap);
 		background->details->background_pixmap = NULL;
 	}
-
-	changed = FALSE;
+	
 	if (get_pixmap_size (background, entire_width, entire_height,
 			      &pixmap_width, &pixmap_height, &background->details->background_changes_with_size)) {
 		pixmap = gdk_pixmap_new (window, pixmap_width, pixmap_height, -1);
@@ -774,13 +689,10 @@ eel_background_ensure_realized (EelBackground *background, GdkWindow *window,
 				     pixmap_width, pixmap_height);
 		g_object_unref (gc);
 		background->details->background_pixmap = pixmap;
-		changed = TRUE;
 	}
 
 	background->details->background_entire_width = entire_width;
 	background->details->background_entire_height = entire_height;
-	
-	return changed;
 }
 
 GdkPixmap *
@@ -886,10 +798,10 @@ eel_background_draw (EelBackground *background,
 	int x_canvas, y_canvas;
 	int width, height;
 	
-	EelCanvasBuf buffer;
+	GnomeCanvasBuf buffer;
 	GdkPixbuf *pixbuf;
 
-	/* Non-aa background drawing is done by faking up a EelCanvasBuf
+	/* Non-aa background drawing is done by faking up a GnomeCanvasBuf
 	 * and passing it to the aa code.
 	 *
 	 * The width and height were chosen to match those used by gnome-canvas
@@ -949,7 +861,7 @@ eel_background_draw_to_pixbuf (EelBackground *background,
 			       int entire_width,
 			       int entire_height)
 {
-	EelCanvasBuf fake_buffer;
+	GnomeCanvasBuf fake_buffer;
 
 	g_return_if_fail (background != NULL);
 	g_return_if_fail (pixbuf != NULL);
@@ -962,143 +874,9 @@ eel_background_draw_to_pixbuf (EelBackground *background,
 				       entire_height);
 }
 
-static void
-canvas_draw_pixbuf_helper (art_u8 *dst, int dst_rowstride,
-			   const art_u8 *src, int src_rowstride,
-			   int copy_width, int copy_height)
-{
-	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
-	int dst_bytes_per_row = copy_width * 3;
-	
-	while (dst < dst_limit) {
- 		memcpy (dst, src, dst_bytes_per_row);
-		dst += dst_rowstride;
-		src += src_rowstride;
-	}
-}
-
-static void
-canvas_draw_pixbuf_helper_alpha (art_u8 *dst, int dst_rowstride,
-				 const art_u8 *src, int src_rowstride,
-				 int copy_width, int copy_height)
-{
-	art_u8 *dst_limit = dst + copy_height * dst_rowstride;
-	int dst_bytes_per_row = copy_width * 3;
-	
-	while (dst < dst_limit) {
-	
-		art_u8 *dst_p = dst;
-		art_u8 *dst_p_limit = dst + dst_bytes_per_row;
-		
-		const art_u8 *src_p = src;
-		
-		while (dst_p < dst_p_limit) {
-			int alpha = src_p[3];
-			if (alpha) {
-				if (alpha == 255) {
-					dst_p[0] = src_p[0];
-					dst_p[1] = src_p[1];
-					dst_p[2] = src_p[2];
-				} else {
-		  			int tmp;
-					art_u8 bg_r = dst_p[0];
-					art_u8 bg_g = dst_p[1];
-					art_u8 bg_b = dst_p[2];
-
-					tmp = (src_p[0] - bg_r) * alpha;
-					dst_p[0] = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
-					tmp = (src_p[1] - bg_g) * alpha;
-					dst_p[1] = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
-					tmp = (src_p[2] - bg_b) * alpha;
-					dst_p[2] = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);		  
-				}
-			}
-			
-			dst_p += 3;
-			src_p += 4;
-		}
-		
-		dst += dst_rowstride;
-		src += src_rowstride;
-	}
-}
-
-/* Draws a pixbuf into a canvas update buffer (unscaled). The x,y coords are the location
- * of the pixbuf in canvas space (NOT relative to the canvas buffer).
- */
-static void
-canvas_draw_pixbuf (EelCanvasBuf *buf, const GdkPixbuf *pixbuf, int x, int y)
-{
-	art_u8 *dst;
-	int pixbuf_width, pixbuf_height;
-
-	/* copy_left/top/right/bottom define the rect of the pixbuf (pixbuf relative)
-	 * we will copy into the canvas buffer
-	 */
-	int copy_left, copy_top, copy_right, copy_bottom;
-	
-	dst = buf->buf;
-
-	pixbuf_width = gdk_pixbuf_get_width (pixbuf);
-	pixbuf_height = gdk_pixbuf_get_height (pixbuf);
-
-	if (x > buf->rect.x0) {
-		copy_left = 0;
-		dst += (x - buf->rect.x0) * 3;
-	} else {
-		copy_left = buf->rect.x0 - x;
-	}
-	
-	if (x + pixbuf_width > buf->rect.x1) {
-		copy_right = buf->rect.x1 - x;
-	} else {
-		copy_right = pixbuf_width;		
-	}
-	
-	if (copy_left >= copy_right) {
-		return;
-	}
-	
-	if (y > buf->rect.y0) {
-		dst += (y - buf->rect.y0) * buf->buf_rowstride;
-		copy_top = 0;
-	} else {
-		copy_top = buf->rect.y0 - y;
-	}
-	
-	if (y + pixbuf_height > buf->rect.y1) {
-		copy_bottom = buf->rect.y1 - y;
-	} else {
-		copy_bottom = pixbuf_height;		
-	}
-
-	if (copy_top >= copy_bottom) {
-		return;
-	}
-
-	if (gdk_pixbuf_get_has_alpha (pixbuf)) {
-		canvas_draw_pixbuf_helper_alpha (
-			dst,
-			buf->buf_rowstride,
-			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 4 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
-			gdk_pixbuf_get_rowstride (pixbuf),
-			copy_right - copy_left,
-			copy_bottom - copy_top);
-	} else {
-		canvas_draw_pixbuf_helper (
-			dst,
-			buf->buf_rowstride,
-			gdk_pixbuf_get_pixels (pixbuf) + copy_left * 3 + copy_top * gdk_pixbuf_get_rowstride (pixbuf),
-			gdk_pixbuf_get_rowstride (pixbuf),
-			copy_right - copy_left,
-			copy_bottom - copy_top);
-	}
-}
-
-
 /* fill the canvas buffer with a tiled pixbuf */
 static void
-draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, EelCanvasBuf *buffer)
+draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 {
 	int x, y;
 	int start_x, start_y;
@@ -1112,14 +890,14 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, EelCanvasBuf *buffer)
 
 	for (y = start_y; y < buffer->rect.y1; y += tile_height) {
 		for (x = start_x; x < buffer->rect.x1; x += tile_width) {
-			canvas_draw_pixbuf (buffer, pixbuf, x, y);
+			eel_gnome_canvas_draw_pixbuf (buffer, pixbuf, x, y);
 		}
 	}
 }
 
 /* draw the background on the anti-aliased canvas */
 void
-eel_background_draw_aa (EelBackground *background, EelCanvasBuf *buffer)
+eel_background_draw_aa (EelBackground *background, GnomeCanvasBuf *buffer)
 {	
 	g_return_if_fail (EEL_IS_BACKGROUND (background));
 
@@ -1137,10 +915,10 @@ eel_background_draw_aa (EelBackground *background, EelCanvasBuf *buffer)
 	     buffer->rect.x1  > (background->details->image_rect_x + background->details->image_rect_width) ||
 	     buffer->rect.y1  > (background->details->image_rect_y + background->details->image_rect_height)) {
 		if (background->details->is_solid_color) {
-			fill_rgb (buffer,
-				  background->details->solid_color.red >> 8,
-				  background->details->solid_color.green >> 8,
-				  background->details->solid_color.blue >> 8);
+			eel_gnome_canvas_fill_rgb (buffer,
+							background->details->solid_color.red >> 8,
+							background->details->solid_color.green >> 8,
+							background->details->solid_color.blue >> 8);
 		} else {
 			fill_canvas_from_gradient_buffer (buffer, background);
 		}
@@ -1160,10 +938,10 @@ eel_background_draw_aa (EelBackground *background, EelCanvasBuf *buffer)
 			/* Since the image has already been scaled, all these cases
 			 * can be treated identically.
 			 */
-			canvas_draw_pixbuf (buffer,
-					    background->details->image,
-					    background->details->image_rect_x,
-					    background->details->image_rect_y);
+			eel_gnome_canvas_draw_pixbuf (buffer,
+							   background->details->image,
+							   background->details->image_rect_x,
+							   background->details->image_rect_y);
 			break;
 		}
 	}
@@ -1174,7 +952,7 @@ eel_background_draw_aa (EelBackground *background, EelCanvasBuf *buffer)
 
 void
 eel_background_draw_to_canvas (EelBackground *background,
-			       EelCanvasBuf *buffer,
+			       GnomeCanvasBuf *buffer,
 			       int entire_width,
 			       int entire_height)
 {
@@ -1214,20 +992,12 @@ eel_background_set_color_no_emit (EelBackground *background,
 	return TRUE;
 }
 
-/* Use style->base as the default color instead of bg */
-void
-eel_background_set_use_base (EelBackground *background,
-			     gboolean use_base)
-{
-	background->details->use_base = use_base;
-}
-
 void
 eel_background_set_color (EelBackground *background,
 			  const char *color)
 {
 	if (eel_background_set_color_no_emit (background, color)) {
-		g_signal_emit (G_OBJECT (background), signals[SETTINGS_CHANGED], 0, GDK_ACTION_COPY);
+		g_signal_emit (G_OBJECT (background), signals[SETTINGS_CHANGED], 0);
 		if (!eel_background_image_totally_obscures (background)) {
 			g_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED], 0);
 		}
@@ -1249,30 +1019,17 @@ eel_background_load_image_callback (GnomeVFSResult error,
 
 	/* Just ignore errors. */
 	if (pixbuf != NULL) {
-#if 0
-		EelBackgroundImagePlacement style;
-#endif
-
 		g_object_ref (pixbuf);
 		background->details->image = pixbuf;
 		background->details->image_width_unscaled = gdk_pixbuf_get_width (pixbuf);
 		background->details->image_height_unscaled = gdk_pixbuf_get_height (pixbuf);
-
-#if 0
-		style = EEL_BACKGROUND_TILED;
-		g_signal_emit (background, signals[DETERMINE_IMAGE_PLACEMENT], 0,
-			       gdk_pixbuf_get_width (pixbuf),
-			       gdk_pixbuf_get_height (pixbuf),
-			       &style);
-		eel_background_set_image_placement_no_emit (background, style);
-#endif
 	}
 
-	g_signal_emit (background, signals[IMAGE_LOADING_DONE], 0,
+	g_signal_emit (G_OBJECT (background), signals[IMAGE_LOADING_DONE], 0,
 		       pixbuf != NULL || background->details->image_uri == NULL);
 
 	if (background->details->emit_after_load) {
-		g_signal_emit (background, signals[APPEARANCE_CHANGED], 0);
+		g_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED], 0);
 	}
 }
 
@@ -1330,7 +1087,6 @@ eel_background_set_image_uri_helper (EelBackground *background,
 	g_return_val_if_fail (EEL_IS_BACKGROUND (background), FALSE);
 
 	if (eel_strcmp (background->details->image_uri, image_uri) == 0) {
-		background->details->emit_after_load = emit_appearance_change;
 		return FALSE;
 	}
 
@@ -1347,7 +1103,7 @@ eel_background_set_image_uri_helper (EelBackground *background,
 	eel_background_start_loading_image (background, emit_appearance_change, load_async);
 	
 	if (emit_setting_change) {
-		g_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED], 0, GDK_ACTION_COPY);
+		g_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED], 0);
 	}
 
 	return TRUE;
@@ -1365,34 +1121,22 @@ eel_background_set_image_uri_sync (EelBackground *background, const char *image_
 	eel_background_set_image_uri_helper (background, image_uri, TRUE, TRUE, FALSE);
 }
 
-typedef struct 
-{
-	char *color;
-	GdkDragAction action;
-} ImageLoadingData;
-
 static void
-set_image_and_color_image_loading_done_callback (EelBackground *background, gboolean successful_load, ImageLoadingData *data)
+set_image_and_color_image_loading_done_callback (EelBackground *background, gboolean successful_load, char *color)
 {
 	g_signal_handlers_disconnect_by_func
 		(G_OBJECT (background),
-		 G_CALLBACK (set_image_and_color_image_loading_done_callback), data);
+		 G_CALLBACK (set_image_and_color_image_loading_done_callback), color);
 
-	eel_background_set_color_no_emit (background, data->color);
+	eel_background_set_color_no_emit (background, color);
 
+	g_free (color);
+	
 	/* We always emit , even if the color didn't change, because the image change
 	 * relies on us doing it here.
 	 */
-
-	g_signal_emit (background, signals[SETTINGS_CHANGED], 0, data->action);
-
-	if (!background->details->emit_after_load) {
-		g_signal_emit (background, signals[APPEARANCE_CHANGED], 0);
-	}
-
-	g_free (data->color);
-	g_free (data);
-	
+	g_signal_emit (G_OBJECT (background), signals[SETTINGS_CHANGED], 0);
+	g_signal_emit (G_OBJECT (background), signals[APPEARANCE_CHANGED], 0);
 }
 
 /* Use this fn to set both the image and color and avoid flash. The color isn't
@@ -1400,27 +1144,25 @@ set_image_and_color_image_loading_done_callback (EelBackground *background, gboo
  * before then, it will use the old color and image.
  */
 static void
-eel_background_set_image_uri_and_color (EelBackground *background, GdkDragAction action, const char *image_uri, const char *color)
+eel_background_set_image_uri_and_color (EelBackground *background, const char *image_uri, const char *color)
 {
-	ImageLoadingData *data;
-	
+	char *color_copy;
+
 	if (eel_strcmp (background->details->color, color) == 0 &&
 	    eel_strcmp (background->details->image_uri, image_uri) == 0) {
 		return;
 	}
 
-	data = g_new0 (ImageLoadingData, 1);
-	data->color = g_strdup (color);
-	data->action = action;
+	color_copy = g_strdup (color);
 
 	g_signal_connect (background, "image_loading_done",
-			  G_CALLBACK (set_image_and_color_image_loading_done_callback), data);
+			  G_CALLBACK (set_image_and_color_image_loading_done_callback), color_copy);
 			    
 	/* set_image_and_color_image_loading_done_callback must always be called
 	 * because we rely on it to:
 	 *  - disconnect the image_loading_done signal handler
 	 *  - emit SETTINGS_CHANGED & APPEARANCE_CHANGED
-	 *  - free data
+	 *  - free color_copy
 	 *  - prevent the common cold
 	 */
 	     
@@ -1429,13 +1171,12 @@ eel_background_set_image_uri_and_color (EelBackground *background, GdkDragAction
 	 * call set_image_and_color_image_loading_done_callback ourselves.
 	 */
 	if (!eel_background_set_image_uri_helper (background, image_uri, FALSE, FALSE, TRUE)) {
-		set_image_and_color_image_loading_done_callback (background, TRUE, data);
+		set_image_and_color_image_loading_done_callback (background, TRUE, color_copy);
 	}
 }
 
 void
 eel_background_receive_dropped_background_image (EelBackground *background,
-						 GdkDragAction action,
 						 const char *image_uri)
 {
 	/* Currently, we only support tiled images. So we set the placement.
@@ -1444,7 +1185,7 @@ eel_background_receive_dropped_background_image (EelBackground *background,
 	 */
 	eel_background_set_image_placement_no_emit (background, EEL_BACKGROUND_TILED);
 	
-	eel_background_set_image_uri_and_color (background, action, image_uri, NULL);
+	eel_background_set_image_uri_and_color (background, image_uri, NULL);
 }
 
 /**
@@ -1488,32 +1229,24 @@ eel_background_reset (EelBackground *background)
 }
 
 static void
-draw_background_callback (EelCanvas *canvas, 
+draw_background_callback (GnomeCanvas *canvas, GdkDrawable *drawable,
 			  int x, int y, int width, int height)
 {
 	EelBackground *background;
 	GdkGCValuesMask value_mask;
-	GdkDrawable *drawable;
 	GdkGCValues gc_values;
 	GdkGC *gc;
-	gboolean bg_changed;
 
 	background = eel_get_widget_background (GTK_WIDGET (canvas));
 	if (background == NULL) {
 		return;
 	}
 
-	drawable = canvas->layout.bin_window;
 	
-	bg_changed = eel_background_ensure_realized (background, GTK_WIDGET (canvas)->window,
-						     MAX (GTK_LAYOUT (canvas)->hadjustment->upper, GTK_WIDGET (canvas)->allocation.width),
-						     MAX (GTK_LAYOUT (canvas)->vadjustment->upper, GTK_WIDGET (canvas)->allocation.height));
+	eel_background_ensure_realized (background, GTK_WIDGET (canvas)->window,
+					MAX (GTK_LAYOUT (canvas)->hadjustment->upper, GTK_WIDGET (canvas)->allocation.width),
+					MAX (GTK_LAYOUT (canvas)->vadjustment->upper, GTK_WIDGET (canvas)->allocation.height));
 
-	if (bg_changed) {
-		/* The background changed, issue a full redraw */
-		/* This is needed to handle gradients that grow on resize */
-		gtk_widget_queue_draw (GTK_WIDGET (canvas));
-	}
 
 	/* Create a new gc each time.
 	 * If this is a speed problem, we can create one and keep it around,
@@ -1522,8 +1255,8 @@ draw_background_callback (EelCanvas *canvas,
 	 */
 	if (background->details->background_pixmap != NULL) {
 		gc_values.tile = background->details->background_pixmap;
-		gc_values.ts_x_origin = 0;
-		gc_values.ts_y_origin = 0;
+		gc_values.ts_x_origin = -x;
+		gc_values.ts_y_origin = -y;
 		gc_values.fill = GDK_TILED;
 		value_mask = GDK_GC_FILL | GDK_GC_TILE |
 			GDK_GC_TS_X_ORIGIN | GDK_GC_TS_Y_ORIGIN;
@@ -1535,11 +1268,31 @@ draw_background_callback (EelCanvas *canvas,
 	}
 		
     	gc = gdk_gc_new_with_values (drawable, &gc_values, value_mask);
-	gdk_draw_rectangle (drawable, gc, TRUE, x, y, width, height);
+	gdk_draw_rectangle (drawable, gc, TRUE, 0, 0, width, height);
 	g_object_unref (gc);
 
 	/* We don't want the draw from the base class to happen. */
 	g_signal_stop_emission_by_name (canvas, "draw_background");
+}
+
+static void
+render_background_callback (GnomeCanvas *canvas, GnomeCanvasBuf *buffer)
+{
+	EelBackground *background;
+			
+	background = eel_get_widget_background (GTK_WIDGET (canvas));
+	if (background == NULL) {
+		return;
+	}
+
+	eel_background_pre_draw (background,
+				 GTK_WIDGET (canvas)->allocation.width,
+				 GTK_WIDGET (canvas)->allocation.height);
+
+	eel_background_draw_aa (background, buffer);
+	
+	/* We don't want the render from the base class to happen. */
+	g_signal_stop_emission_by_name (canvas, "render_background");
 }
 
 static void
@@ -1550,7 +1303,6 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	GdkColor color;
 	int window_width;
 	int window_height;
-	GdkWindow *window;
 	gboolean changes_with_size;
 
 	if (!GTK_WIDGET_REALIZED (widget)) {
@@ -1569,17 +1321,11 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 	style = gtk_widget_get_style (widget);
 	
 	gdk_rgb_find_color (style->colormap, &color);
-
-	if (EEL_IS_CANVAS (widget)) {
-		window = GTK_LAYOUT (widget)->bin_window;
-	} else {
-		window = widget->window;
-	}
 	
 	if (pixmap && !changes_with_size) {
-		gdk_window_set_back_pixmap (window, pixmap, FALSE);
+		gdk_window_set_back_pixmap (widget->window, pixmap, FALSE);
 	} else {
-		gdk_window_set_background (window, &color);
+		gdk_window_set_background (widget->window, &color);
 	}
 
 	if (pixmap) {
@@ -1590,15 +1336,19 @@ eel_background_set_up_widget (EelBackground *background, GtkWidget *widget)
 static void
 eel_background_set_up_canvas (GtkWidget *widget)
 {
-	if (!EEL_IS_CANVAS (widget)) {
+	if (!GNOME_IS_CANVAS (widget)) {
 		return;
 	}
 	if (g_object_get_data (G_OBJECT (widget), "eel_background_canvas_is_set_up") != NULL) {
 		return;
 	}
 
+	gnome_canvas_set_dither (GNOME_CANVAS (widget), GDK_RGB_DITHER_MAX);
+
 	g_signal_connect (widget, "draw_background",
 			  G_CALLBACK (draw_background_callback), NULL);
+	g_signal_connect (widget, "render_background",
+			  G_CALLBACK (render_background_callback), NULL);
 
 	g_object_set_data (G_OBJECT (widget), "eel_background_canvas_is_set_up", widget);
 }
@@ -1759,7 +1509,6 @@ eel_background_is_dark (EelBackground *background)
 void
 eel_background_receive_dropped_color (EelBackground *background,
 				      GtkWidget *widget,
-				      GdkDragAction action,
 				      int drop_location_x,
 				      int drop_location_y,
 				      const GtkSelectionData *selection_data)
@@ -1806,7 +1555,7 @@ eel_background_receive_dropped_color (EelBackground *background,
 	
 	g_free (color_spec);
 
-	eel_background_set_image_uri_and_color (background, action, NULL, new_gradient_spec);
+	eel_background_set_image_uri_and_color (background, NULL, new_gradient_spec);
 
 	g_free (new_gradient_spec);
 }

@@ -1867,9 +1867,9 @@ eel_self_check_vfs_extensions (void)
 	 */
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("file:trash"), "file:trash");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("//trash"), "file:///trash");
-	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("file:"), "file:///");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("file:"), "file:");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("trash"), "file:///trash");
-	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("glorp:"), "glorp:///");
+	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("glorp:"), "glorp:");
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("TRASH:XXX"), EEL_TRASH_URI);
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("trash:xxx"), EEL_TRASH_URI);
 	EEL_CHECK_STRING_RESULT (eel_make_uri_canonical ("GNOME-TRASH:XXX"), EEL_TRASH_URI);
@@ -1925,7 +1925,7 @@ eel_self_check_vfs_extensions (void)
 #undef TEST_PARTIAL
 
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display (""), "/");
-	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display (":"), ":///");
+	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display (":"), ":");
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///h/user"), "/h/user");
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///%68/user/foo%2ehtml"), "/h/user/foo.html");
 	EEL_CHECK_STRING_RESULT (eel_format_uri_for_display ("file:///h/user/foo.html#fragment"), "file:///h/user/foo.html#fragment");

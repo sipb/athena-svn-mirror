@@ -6,76 +6,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: eel CVS-HEAD\n"
-"POT-Creation-Date: 2002-12-09 13:16+0100\n"
-"PO-Revision-Date: 2002-12-06 16:22+0100\n"
-"Last-Translator: Andras Timar <timar@gnome.hu>\n"
+"POT-Creation-Date: 2002-11-18 17:48-0500\n"
+"PO-Revision-Date: 2002-08-09 17:22+0200\n"
+"Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
-msgid "X"
-msgstr "X"
-
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
-msgid "Y"
-msgstr "Y"
-
-#: eel/eel-editable-label.c:360
-msgid "Text"
-msgstr "Szöveg"
-
-#: eel/eel-editable-label.c:361
-msgid "The text of the label."
-msgstr "A címke szövege"
-
-#: eel/eel-editable-label.c:367
-msgid "Justification"
-msgstr "Igazítás"
-
-#: eel/eel-editable-label.c:368
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-"A címke szövege sorainak igazítása egymáshoz. Ez NINCS hatással a címke "
-"elhelyezkedésére. Erre lásd a GtkMisc::xalign-t."
-
-#: eel/eel-editable-label.c:376
-msgid "Line wrap"
-msgstr "Sortörés"
-
-#: eel/eel-editable-label.c:377
-msgid "If set, wrap lines if the text becomes too wide."
-msgstr "Ha be van állítva, a sorok törnek, ha a szöveg túl hosszú."
-
-#: eel/eel-editable-label.c:384
-msgid "Cursor Position"
-msgstr "Kurzorpozíció"
-
-#: eel/eel-editable-label.c:385
-msgid "The current position of the insertion cursor in chars."
-msgstr "A beszúrási kurzor aktuális helyzete karakterben mérve."
-
-# components/help/converters/gnome-db2html2/sect-elements.c:1028
-#: eel/eel-editable-label.c:394
-msgid "Selection Bound"
-msgstr "Kijelölés mérete"
-
-#: eel/eel-editable-label.c:395
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
-msgstr "A kijelölés másik végének távolsága a kurzortól karakterben mérve."
-
-#: eel/eel-editable-label.c:3030
-msgid "Select All"
-msgstr "Mindet kijelöli"
-
-#: eel/eel-editable-label.c:3041
-msgid "Input Methods"
-msgstr "Beviteli módok"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -124,12 +61,12 @@ msgstr "1/1/00, 1:00"
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00"
 
-#: eel/eel-gnome-extensions.c:285
+#: eel/eel-gnome-extensions.c:611
 msgid "No image was selected.  You must click on an image to select it."
 msgstr "Nincs kijelölt kép. Kattints egy képre annak kijelöléséhez."
 
 # components/help/converters/gnome-db2html2/sect-elements.c:1028
-#: eel/eel-gnome-extensions.c:286
+#: eel/eel-gnome-extensions.c:612
 msgid "No selection made"
 msgstr "Nincs kijelölés"
 
@@ -147,15 +84,11 @@ msgstr "_Jelszó:"
 msgid "Remember this password"
 msgstr "Jelszó mentése"
 
-#: eel/eel-preferences-box.c:365
-msgid "Cat_egories:"
-msgstr "_Kategóriák:"
-
 # components/help/hyperbola-filefmt.c:675
 # libnautilus-extensions/nautilus-stock-dialogs.c:509
 #: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
-msgstr "Infó"
+msgstr "GNU Infó"
 
 # libnautilus-extensions/nautilus-stock-dialogs.c:572
 #: eel/eel-stock-dialogs.c:492 eel/eel-stock-dialogs.c:550

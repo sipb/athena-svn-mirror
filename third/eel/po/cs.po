@@ -1,80 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
 # George Lebl <jirka@5z.com>, 2001.
-# Miloslav Trmac <mitr@volny.cz>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Eel\n"
-"POT-Creation-Date: 2002-12-09 13:16+0100\n"
-"PO-Revision-Date: 2002-12-02 20:52+0100\n"
-"Last-Translator: Miloslav Trmac <jirka@5z.com>\n"
+"POT-Creation-Date: 2002-11-18 17:48-0500\n"
+"PO-Revision-Date: 2001-05-09 15:36-0700\n"
+"Last-Translator: George Lebl <jirka@5z.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: eel/eel-canvas.c:1185 eel/eel-canvas.c:1186
-msgid "X"
-msgstr "X"
-
-#: eel/eel-canvas.c:1192 eel/eel-canvas.c:1193
-msgid "Y"
-msgstr "Y"
-
-#: eel/eel-editable-label.c:360
-msgid "Text"
-msgstr "Text"
-
-#: eel/eel-editable-label.c:361
-msgid "The text of the label."
-msgstr "Text jmenovky"
-
-#: eel/eel-editable-label.c:367
-msgid "Justification"
-msgstr "Zarovn√°n√≠"
-
-#: eel/eel-editable-label.c:368
-msgid ""
-"The alignment of the lines in the text of the label relative to each other. "
-"This does NOT affect the alignment of the label within its allocation. See "
-"GtkMisc::xalign for that."
-msgstr ""
-"Relativn√≠ zarovn√°n√≠ ≈ô√°dk≈Ø textu jmenovky navz√°jem. Toto NEM√Å vliv na "
-"zarovn√°n√≠ jmenovky v jej√≠ alokaci. K tomu pou≈æijte GtkMisc::xalign."
-
-#: eel/eel-editable-label.c:376
-msgid "Line wrap"
-msgstr "L√°m√°n√≠ ≈ô√°dk≈Ø"
-
-#: eel/eel-editable-label.c:377
-msgid "If set, wrap lines if the text becomes too wide."
-msgstr "Je-li nastaveno, zalomovat ≈ô√°dky, je-li text p≈ô√≠li≈° ≈°irok√Ω."
-
-#: eel/eel-editable-label.c:384
-msgid "Cursor Position"
-msgstr "Pozice kurzoru"
-
-#: eel/eel-editable-label.c:385
-msgid "The current position of the insertion cursor in chars."
-msgstr "Aktu√°ln√≠ pozice vkl√°dac√≠ho kurzoru ve znac√≠ch."
-
-#: eel/eel-editable-label.c:394
-msgid "Selection Bound"
-msgstr "Hranice v√Ωbƒõru"
-
-#: eel/eel-editable-label.c:395
-msgid ""
-"The position of the opposite end of the selection from the cursor in chars."
-msgstr "Pozice konce v√Ωbƒõru vzd√°lenƒõj≈°√≠ho od kurzoru ve znac√≠ch."
-
-#: eel/eel-editable-label.c:3030
-msgid "Select All"
-msgstr "Vybrat v≈°e"
-
-#: eel/eel-editable-label.c:3041
-msgid "Input Methods"
-msgstr "Vstupn√≠ metody"
 
 #: eel/eel-gconf-extensions.c:83
 #, c-format
@@ -94,7 +31,7 @@ msgid ""
 msgstr ""
 "GConf chyba:\n"
 "  %s\n"
-"V≈°echny dal≈°√≠ chyby uk√°z√°ny na termin√°lu"
+"Vπechny dalπÌ chyby uk·z·ny na termin·lu"
 
 #: eel/eel-gconf-extensions.c:91
 msgid "GConf Error"
@@ -118,19 +55,19 @@ msgstr "1/1/00, 1:00 "
 msgid " 1/ 1/00,  1:00 AM"
 msgstr " 1/ 1/00,  1:00 "
 
-#: eel/eel-gnome-extensions.c:285
+#: eel/eel-gnome-extensions.c:611
 msgid "No image was selected.  You must click on an image to select it."
 msgstr ""
-"≈Ω√°dn√Ω obr√°zek nebyl vybr√°n.  Abyste vybrali obr√°zek, mus√≠te na nejak√Ω "
+"Æ·dn˝ obr·zek nebyl vybr·n.  Abyste vybrali obr·zek, musÌte na nejak˝ "
 "kliknout"
 
-#: eel/eel-gnome-extensions.c:286
+#: eel/eel-gnome-extensions.c:612
 msgid "No selection made"
-msgstr "Nic nevybr√°no"
+msgstr "Nic nevybr·no"
 
 #: eel/eel-password-dialog.c:203
 msgid "_Username:"
-msgstr "_U≈æivatel:"
+msgstr "_Uæivatel:"
 
 #: eel/eel-password-dialog.c:210
 msgid "_Password:"
@@ -139,10 +76,6 @@ msgstr "_Heslo:"
 #: eel/eel-password-dialog.c:237
 msgid "Remember this password"
 msgstr "Zapamatujte si toto heslo"
-
-#: eel/eel-preferences-box.c:365
-msgid "Cat_egories:"
-msgstr "Kat_egorie:"
 
 #: eel/eel-stock-dialogs.c:457 eel/eel-stock-dialogs.c:490
 msgid "Info"
@@ -154,7 +87,7 @@ msgstr "Detaily"
 
 #: eel/eel-stock-dialogs.c:515
 msgid "Warning"
-msgstr "Varov√°n√≠"
+msgstr "Varov·nÌ"
 
 #: eel/eel-stock-dialogs.c:526 eel/eel-stock-dialogs.c:548
 msgid "Error"
@@ -162,74 +95,81 @@ msgstr "Chyba"
 
 #: eel/eel-stock-dialogs.c:584 eel/eel-stock-dialogs.c:617
 msgid "Question"
-msgstr "Ot√°zka"
+msgstr "Ot·zka"
 
 #: eel/eel-vfs-extensions.c:687
 msgid " (invalid Unicode)"
-msgstr " (neplatn√Ω Unicode)"
+msgstr " (neplatn˝ Unicode)"
+
+#, fuzzy
+#~ msgid "position"
+#~ msgstr "Ot·zka"
 
 #~ msgid "_Move here"
-#~ msgstr "_P≈ôesunout sem"
+#~ msgstr "_P¯esunout sem"
 
 #~ msgid "_Copy here"
-#~ msgstr "_Kop√≠rovat sem"
+#~ msgstr "_KopÌrovat sem"
 
 #~ msgid "_Link here"
 #~ msgstr "_Odkaz sem"
 
 #~ msgid "Cancel"
-#~ msgstr "Zru≈°it"
+#~ msgstr "Zruπit"
 
 #~ msgid "Normal"
-#~ msgstr "Norm√°ln√≠"
+#~ msgstr "Norm·lnÌ"
 
 #~ msgid "Unknown"
-#~ msgstr "Nezn√°m√©"
+#~ msgstr "Nezn·mÈ"
 
 #~ msgid "Bold"
-#~ msgstr "Tuƒçn√©"
+#~ msgstr "TuËnÈ"
 
 #~ msgid "Book"
 #~ msgstr "Book"
 
 #~ msgid "Black"
-#~ msgstr "ƒåern√©"
+#~ msgstr "»ernÈ"
 
 #~ msgid "Demibold"
-#~ msgstr "Polotuƒçn√©"
+#~ msgstr "PolotuËnÈ"
 
 #~ msgid "Light"
-#~ msgstr "Tenk√©"
+#~ msgstr "TenkÈ"
 
 #~ msgid "Italic"
-#~ msgstr "Kurz√≠va"
+#~ msgstr "KurzÌva"
 
 #~ msgid "Oblique"
-#~ msgstr "≈†ikm√©"
+#~ msgstr "©ikmÈ"
 
 #~ msgid "Reverse Italic"
-#~ msgstr "Opaƒçn√° kurz√≠va"
+#~ msgstr "OpaËn· kurzÌva"
 
 #~ msgid "Reverse Oblique"
-#~ msgstr "Opaƒçn√© ≈°ikm√©"
+#~ msgstr "OpaËnÈ πikmÈ"
 
 #~ msgid "Other"
-#~ msgstr "Jin√©"
+#~ msgstr "JinÈ"
 
 #~ msgid "Condensed"
-#~ msgstr "Zkondezovan√©"
+#~ msgstr "ZkondezovanÈ"
 
 #~ msgid "Semicondensed"
-#~ msgstr "Semikondezovan√©"
+#~ msgstr "SemikondezovanÈ"
 
 #~ msgid "More..."
-#~ msgstr "V√≠ce..."
+#~ msgstr "VÌce..."
+
+#~ msgid " -_,;.?/&"
+#~ msgstr " -_,;.?/&"
 
 #~ msgid "Beginner"
-#~ msgstr "Zaƒç√°teƒçn√≠k"
+#~ msgstr "ZaË·teËnÌk"
 
 #~ msgid "Intermediate"
-#~ msgstr "Pr≈Ømƒõrn√Ω"
+#~ msgstr "Pr˘mÏrn˝"
 
 #~ msgid "Advanced"
-#~ msgstr "Pokroƒçil√Ω"
+#~ msgstr "PokroËil˝"

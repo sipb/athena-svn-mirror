@@ -87,17 +87,10 @@ void       eel_radio_button_group_set_active_index           (EelRadioButtonGrou
 void       eel_radio_button_group_set_entry_pixbuf           (EelRadioButtonGroup *button_group,
 							      guint                entry_index,
 							      GdkPixbuf           *pixbuf);
-
 /* Set an item's description. */
 void       eel_radio_button_group_set_entry_description_text (EelRadioButtonGroup *button_group,
 							      guint                entry_index,
 							      const char          *description);
-
-/* Set an item's accessible description */
-void       eel_radio_button_group_set_entry_accessible_description (EelRadioButtonGroup *button_group,
-								    guint                index,
-								    const char          *description);
-
 void       eel_radio_button_group_clear                      (EelRadioButtonGroup *button_group);
 
 G_END_DECLS
