@@ -1,9 +1,9 @@
 /*
- * $Id: except.c,v 4.12 1999-08-13 00:15:11 danw Exp $
+ * $Id: except.c,v 4.13 2001-08-16 14:42:55 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: except.c,v 4.12 1999-08-13 00:15:11 danw Exp $";
+static char *rcsid = "$Id: except.c,v 4.13 2001-08-16 14:42:55 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -26,6 +26,7 @@ int entnum;
 	List_element **except, *q;
 	char retval = NORMALCASE, *tail, *wholename;
 	unsigned int k;
+	int litcount, mostlit;
 	Entry *e = &entries[ entnum], *g = &entries[ 0];
 
 	if (( type == S_IFBLK || type == S_IFCHR) && ! incl_devs)
@@ -66,11 +67,18 @@ int entnum;
 	 *	the global list is chained to the end of e->patterns,
 	 *	during subscription-list parsing.
 	 */
-	else for( q = e->patterns; q; q = NEXT( q))
-		if ( match( TEXT( q), tail)) {
-			retval = FLAG( q);
-			break;
+	else {
+		mostlit = -1;
+		for( q = e->patterns; q; q = NEXT( q)) {
+			if ( match( TEXT( q), tail)) {
+				litcount = pat_literal_count( TEXT( q));
+				if ( litcount > mostlit) {
+					mostlit = litcount;
+					retval = FLAG( q);
+				}
+			}
 		}
+	}
 	/* now, retval has been computed.
 	 * if it's not NORMALCASE, we've had a match:
 	 * either tail is to be a link to the exporter's filesystem,
@@ -257,6 +265,25 @@ duplicate( word, entnum) char *word; int entnum; {
 	 */
 	if ( entnum) return( duplicate( word, 0));
 	return( 0);
+}
+
+pat_literal_count ( pat)
+char *pat;
+{
+	int count = 0;
+
+	for ( ; *pat; pat++) {
+		if ( *pat == '[') {
+			/* Skip to the ']' and don't count. */
+			while ( *pat && *pat != ']') {
+				if ( *pat == '\\' && pat[1])
+					pat++;
+				pat++;
+			}
+		} else if ( *pat != '\\' && *pat != '?' && *pat != '*')
+			count++;
+	}
+	return( count);
 }
 
 /*-
