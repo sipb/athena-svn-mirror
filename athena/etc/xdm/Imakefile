@@ -1,5 +1,9 @@
 /*
- * $Id: Imakefile,v 1.4 1992-04-28 16:56:53 lwvanels Exp $
+ * $Id: Imakefile,v 1.5 1993-04-29 17:00:08 vrt Exp $
  */
 
+#if !defined(SOLARIS)
 #define ISUBDIRS wcl dm xdm xlogin console conf 
+#else
+#define ISUBDIRS wcl dm xlogin console conf 
+#endif
