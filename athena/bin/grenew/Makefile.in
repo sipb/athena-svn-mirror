@@ -1,5 +1,5 @@
 # modified from /mit/source/athena/bin/panel-wrapper
-# $Id: Makefile.in,v 1.5 2004-03-12 20:31:22 zacheiss Exp $
+# $Id: Makefile.in,v 1.6 2004-04-27 22:25:20 mwhitson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -18,8 +18,8 @@ CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@
 LIBS=@KRB5_LIBS@ @KRB4_LIBS@ @LIBS@
-ALL_CFLAGS=`gnome-config --cflags gnomeui` ${CPPFLAGS} ${CFLAGS} ${DEFS}
-ALL_LIBS=`gnome-config --libs gnomeui` ${LIBS}
+ALL_CFLAGS=`pkg-config --cflags gtk+-2.0` ${CPPFLAGS} ${CFLAGS} ${DEFS}
+ALL_LIBS=`pkg-config --libs gtk+-2.0` ${LIBS}
 
 all: grenew 
 

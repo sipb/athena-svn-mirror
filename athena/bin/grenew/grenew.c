@@ -1,12 +1,10 @@
 /* Renew a credentials cache using a graphical interface. Much of the source
  * is modified from that of kinit.
  *
- * $Id: grenew.c,v 1.4 2002-06-13 18:44:22 mwhitson Exp $
+ * $Id: grenew.c,v 1.5 2004-04-27 22:25:21 mwhitson Exp $
  */
 
 #include <gtk/gtk.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-messagebox.h>
 #include <krb5.h>
 #include <kerberosIV/krb.h>
 #include <string.h>
@@ -14,12 +12,13 @@
 #include <com_err.h>
 
 char *progname = NULL;
-char *name = NULL;
+const char *name = NULL;
 
 static void quit();
 static void do_error_dialog(char *msg);
 static void do_fatal_dialog(char *msg);
-static void do_renew(GtkWidget * widget, GtkWidget * entry);
+static void do_renew(GtkWidget *widget, GtkWidget *entry);
+static void dialog_response_cb(GtkWidget *w, gint response, GtkWidget *entry);
 static void create_window();
 int try_krb4(krb5_context kcontext, krb5_principal me, char *password,
 	     krb5_deltat lifetime);
@@ -33,20 +32,22 @@ int krb524_convert_creds_kdc(krb5_context kcontext,
 
 static void quit()
 {
-  gtk_exit(0);
+  exit(0);
 }
 
 static void do_error_dialog(char *msg)
 {
   static GtkWidget *window = NULL;
 
-  if (window != NULL)
+  if (window)
     gtk_widget_destroy(window);
-  window = gnome_message_box_new(msg, GNOME_MESSAGE_BOX_ERROR, 
-				 GNOME_STOCK_BUTTON_OK, NULL);
-  gtk_signal_connect(GTK_OBJECT(window), "destroy",
-		     GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-		     &window);
+  window = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_WARNING,
+				  GTK_BUTTONS_OK, msg);
+  g_signal_connect(G_OBJECT(window), "response",
+		   G_CALLBACK(gtk_widget_destroy), NULL);
+  g_signal_connect(G_OBJECT(window), "destroy",
+		   G_CALLBACK(gtk_widget_destroyed), &window);
+  g_object_set(G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
   gtk_widget_show(window);
 }
@@ -56,15 +57,18 @@ static void do_fatal_dialog(char *msg)
   GtkWidget *window;
 
   msg = g_strdup_printf("Fatal Error:\n\n%s", msg);
-  window = gnome_message_box_new(msg, GNOME_MESSAGE_BOX_ERROR,
-				 GNOME_STOCK_BUTTON_OK, NULL);
-  gnome_dialog_button_connect(GNOME_DIALOG(window), 0,
-			      GTK_SIGNAL_FUNC(quit), NULL);
+  window = gtk_message_dialog_new(NULL, 
+				  GTK_DIALOG_MODAL,
+				  GTK_MESSAGE_ERROR,
+				  GTK_BUTTONS_OK, msg);
+  g_signal_connect(G_OBJECT(window), "response",
+		   G_CALLBACK(quit), NULL);
+  g_object_set(G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
   gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
   gtk_widget_show(window);
 }
 
-static void do_renew(GtkWidget * widget, GtkWidget * entry)
+static void do_renew(GtkWidget *widget, GtkWidget *entry)
 {
   char *pass;
   krb5_error_code code;
@@ -158,8 +162,18 @@ static void do_renew(GtkWidget * widget, GtkWidget * entry)
     {
       system("fsid -a > /dev/null");
       system("zctl load /dev/null > /dev/null");
-      gtk_exit(0);
+      exit(0);
     }
+}
+
+static void dialog_response_cb(GtkWidget *w, gint response, GtkWidget *entry)
+{
+  gtk_widget_grab_focus(GTK_WIDGET(entry));
+
+  if (response == GTK_RESPONSE_OK)
+    do_renew(w, entry);
+  else
+    quit();
 }
 
 static void create_window()
@@ -167,33 +181,38 @@ static void create_window()
   GtkWidget *window;
   GtkWidget *label;
   GtkWidget *entry;
+  GtkWidget *button;
 
-  window = gnome_dialog_new("Renewing Authentication", GNOME_STOCK_BUTTON_OK, 
-			    GNOME_STOCK_BUTTON_CANCEL, NULL);
+  window = gtk_dialog_new_with_buttons("Renewing authentication", 
+				       NULL, 0,
+				       GTK_STOCK_OK, 
+				       GTK_RESPONSE_OK,
+				       GTK_STOCK_CANCEL,
+				       GTK_RESPONSE_CANCEL,
+				       NULL);
 
-  gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-		     GTK_SIGNAL_FUNC(quit), NULL);
+  g_object_set(G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
+  gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
   label = gtk_label_new("Type your password now to renew your authentication "
 			"to the system, which expires every 10 hours.");
   gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
   gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-  gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(window)->vbox), label, TRUE, TRUE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(window)->vbox), label, TRUE, TRUE, 0);
   gtk_widget_show(label);
 
   entry = gtk_entry_new();
   gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
-  gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(window)->vbox), entry, TRUE, TRUE, 0);
-  gtk_signal_connect(GTK_OBJECT(entry), "activate",
-		     GTK_SIGNAL_FUNC(do_renew), entry);
-  gtk_widget_show(entry);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(window)->vbox), entry, TRUE, TRUE, 0);
   gtk_widget_grab_focus(entry);
+  gtk_widget_show(entry);
 
-  gnome_dialog_button_connect(GNOME_DIALOG(window), 0,
-			      GTK_SIGNAL_FUNC(do_renew), entry);
-  gnome_dialog_button_connect(GNOME_DIALOG(window), 1,
-			      GTK_SIGNAL_FUNC(quit), NULL);
-  gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+  g_signal_connect_object(G_OBJECT(entry), "activate",
+			  G_CALLBACK(do_renew), entry, 0);
+  g_signal_connect_object(G_OBJECT(window), "response", 
+			  G_CALLBACK(dialog_response_cb), entry, 0);
+  g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(quit), NULL);
+
   gtk_widget_show(window);
 }
 
@@ -310,11 +329,7 @@ int try_convert524(kcontext, ccache)
 
 int main(int argc, char **argv)
 {
-  if (gnome_init("grenew", "", argc, argv) != 0)
-    {
-      fprintf(stderr, "grenew: could not inititalize GNOME library.\n");
-      exit(1);
-    }
+  gtk_init(&argc, &argv);
 
   progname = g_get_prgname();
   if (argc > 1)
