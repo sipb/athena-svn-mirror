@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPending.c,v 1.3 1987-07-01 04:37:38 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPending.c,v 1.4 1987-07-29 15:01:43 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -18,10 +18,17 @@
 
 int ZPending()
 {
-	if (ZGetFD() < 0)
+	int retval;
+	
+	if (ZGetFD() < 0) {
+		errno = ZERR_NOPORT;
 		return (-1);
-
-	(void) Z_ReadEnqueue();
+	}
+	
+	if ((retval = Z_ReadEnqueue()) != ZERR_NONE) {
+		errno = retval;
+		return (-1);
+	} 
 	
 	return(ZQLength());
 }
