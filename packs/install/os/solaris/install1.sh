@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.27 2003-08-21 00:48:46 jweiss Exp $
+### $Id: install1.sh,v 1.28 2003-11-20 22:35:13 miki Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -441,8 +441,8 @@ chmod a+r cacheinfo
 echo "Making an /afs repository"
 mkdir /tmp/afs
 echo "Loading afs in the kernel"
-modload /kernel/misc/nfssrv
-modload /kernel/fs/afs
+modload /kernel/misc/sparcv9/nfssrv
+modload /kernel/fs/sparcv9/afs
 echo "Starting afsd "
 /etc/afsd -nosettime -daemons 4
 type=install; export type
