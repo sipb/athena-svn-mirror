@@ -2,6 +2,12 @@
 
 case "$HOSTTYPE" in
 sun4)
+  MACHINE=`/bin/athena/machtype -c`
+  ed -s /etc/athena/rc.conf << EOS
+/^MACHINE/s|=[^;]*|=$MACHINE|
+w
+q
+EOS
   ;;
 
 sgi)
