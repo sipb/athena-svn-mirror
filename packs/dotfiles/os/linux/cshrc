@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.9 2001-05-30 19:10:37 ghudson Exp $
+# $Id: cshrc,v 1.10 2001-06-05 19:33:28 rbasch Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -47,6 +47,7 @@ if (! $?ENV_SET) then
 	umask 077				# Strictly protect files
 						#  (does not apply in AFS)
 	unlimit coredumpsize            	# Don't allow coredumps
+	setenv GNOME_DISABLE_CRASH_DIALOG 1
 	setenv MORE -s		  		# Default "more" behavior
 						# we are now down to -s 
 						# because -d is wrong.
