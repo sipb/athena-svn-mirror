@@ -25,4 +25,4 @@ partitions	prtvtoc `mount | sed -n -e 's/^\/ on \([^ ]*\).*$/\1/p'`
 interfaces	netstat -in
 routes		netstat -rn
 listeners	netstat -an -f inet -P tcp | grep 'LISTEN$'
-login		test ! -f /etc/nologin; echo $?
+login		test -f /etc/nologin; echo $?

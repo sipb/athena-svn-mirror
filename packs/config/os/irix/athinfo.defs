@@ -25,7 +25,7 @@ partitions	prtvtoc /dev/root
 interfaces	netstat -in
 routes		netstat -rn
 listeners	netstat -an -f inet | awk '$NF == "LISTEN"'
-login		test ! -f /etc/nologin; echo $?
+login		test -f /etc/nologin; echo $?
 hinv		/sbin/hinv -v
 instmach	/usr/sbin/inst -H
 instmachinv	cat /var/inst/.machine_inventory
