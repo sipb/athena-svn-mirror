@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v $
- *	$Id: motd.c,v 1.8 1990-11-13 14:29:18 lwvanels Exp $
+ *	$Id: motd.c,v 1.9 1991-01-03 15:38:31 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v 1.8 1990-11-13 14:29:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/motd.c,v 1.9 1991-01-03 15:38:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,14 +34,14 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 
 /*
- * Function:	OGetMOTD() 
+ * Function:	OGetFile() 
  * Description: Gets the motd.
  * Returns:	ERRCODE
  */
 
 
 ERRCODE
-OGetMOTD(Request,type,file)
+OGetFile(Request,type,file)
      REQUEST *Request;
      int type;
      char *file;
@@ -49,7 +49,6 @@ OGetMOTD(Request,type,file)
   int fd;
   int status;
 
-  Request->request_type = OLC_MOTD;
   set_option(Request->options, type);
   status = open_connection_to_daemon(Request, &fd);
   if(status)
@@ -74,13 +73,13 @@ OGetMOTD(Request,type,file)
 
 
 /*
- * Function:	OChangeMotd() 
+ * Function:	OChangeFile() 
  * Description: Changes the MOTD.
  * Returns:	ERRCODE
  */
 
 ERRCODE
-OChangeMOTD(Request, type, file)
+OChangeFile(Request, type, file)
      REQUEST *Request;
      int type;
      char *file;
@@ -88,7 +87,6 @@ OChangeMOTD(Request, type, file)
   int fd;
   int status;
   
-  Request->request_type = OLC_CHANGE_MOTD;
   set_option(Request->options, type);
 
   status = open_connection_to_daemon(Request, &fd);
