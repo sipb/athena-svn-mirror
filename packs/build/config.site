@@ -1,11 +1,11 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.33 2001-04-04 22:39:11 ghudson Exp $
+# $Id: config.site,v 1.34 2001-09-11 23:40:42 ghudson Exp $
 #
 
 athena=true
 
 # OS-specific shared-library rules, and other hacks
-case "$HOSTTYPE" in
+case "$ATHENA_HOSTTYPE" in
 sgi)
   SHARED_LDFLAGS="-Wl,-rpath,/usr/athena/lib"
   ;;
