@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.2 1987-06-23 17:32:39 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMakeAscii.c,v 1.3 1987-06-24 04:20:38 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -19,7 +19,7 @@
 Code_t ZMakeAscii(ptr,len,field,num)
 	char *ptr;
 	int len;
-	char *field;
+	unsigned char *field;
 	int num;
 {
 	int i;
@@ -28,7 +28,7 @@ Code_t ZMakeAscii(ptr,len,field,num)
 		if (!(i%4)) {
 			if (len < 3+(i!=0))
 				return (ZERR_FIELDLEN);
-			sprintf(*ptr,"%s0x",i?" ":"");
+			sprintf(ptr,"%s0x",i?" ":"");
 			ptr += 2+(i!=0);
 			len -= 2+(i!=0);
 		} 

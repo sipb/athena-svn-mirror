@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.3 1987-06-12 17:18:37 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZOpenPort.c,v 1.4 1987-06-24 04:21:07 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -18,7 +18,7 @@
 #include <sys/socket.h>
 
 Code_t ZOpenPort(port)
-	int	*port;
+	u_short	*port;
 {
 	int retval;
 	struct sockaddr_in bindin;

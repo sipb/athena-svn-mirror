@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.2 1987-06-23 16:14:02 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZLocateU.c,v 1.3 1987-06-24 04:20:30 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -45,7 +45,8 @@ Code_t ZLocateUser(user,nlocs)
 		return (retval);
 
 	if ((retval = ZIfNotice(buffer,sizeof buffer,&retnotice,&auth,
-				locate_pred,&notice.z_uid)) != ZERR_NONE)
+				locate_pred,(char *)&notice.z_uid)) !=
+	    ZERR_NONE)
 		return (retval);
 
 	if (retnotice.z_kind != SERVACK)

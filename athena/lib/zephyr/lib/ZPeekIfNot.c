@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.2 1987-06-23 16:58:07 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZPeekIfNot.c,v 1.3 1987-06-24 04:21:31 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -49,11 +49,9 @@ Code_t ZPeekIfNotice(buffer,buffer_len,notice,auth,predicate,args)
 				return (ZERR_PKTLEN);
 			bcopy(qptr->packet,buffer,qptr->packet_len);
 			if ((retval = ZParseNotice(buffer,qptr->packet_len,
-						   notice,auth))
+						   notice,auth,&qptr->from))
 			    != ZERR_NONE)
 				return (retval);
-			if (auth)
-				*auth = tmpauth;
 			return (ZERR_NONE);
 		} 
 		/* Grunch! */
