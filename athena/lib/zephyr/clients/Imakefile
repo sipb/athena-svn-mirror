@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.2 1988-11-22 09:35:07 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.3 1989-01-23 16:48:10 jtkohl Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
@@ -30,7 +30,7 @@ SUBDIRS = zaway zctl zinit zleave zlocate \
 #ifdef OLD_ATHENA_COMPAT
 SHELLSCRIPTS= zlogout zhide zwgc
 
-install_shell_scripts(SHELLSCRIPTS, $(CLIENTDIR))
+install_shell_scripts(SHELLSCRIPTS,$(CLIENTDIR))
 
 install::
 	rm -f ${DESTDIR}${CLIENTDIR}/zlogin
