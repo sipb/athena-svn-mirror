@@ -1,4 +1,4 @@
-# $Id: packages,v 1.77 1999-04-27 22:43:22 ghudson Exp $
+# $Id: packages,v 1.78 1999-05-05 01:26:01 kcr Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -20,6 +20,7 @@ athena/bin/imake		solaris
 packs/build/setup
 third/afsbin
 athena/lib/et
+third/readline
 athena/lib/ss
 athena/lib/hesiod
 athena/lib/ares
