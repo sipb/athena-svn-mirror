@@ -11,9 +11,9 @@ environment information from the
 .I hesiod
 nameserver,
 and writes that information into two files:
-.I /etc/athena/clusterinfo,
+.I /var/athena/clusterinfo,
 and
-.I /etc/athena/clusterinfo.bsh.
+.I /var/athena/clusterinfo.bsh.
 The first of these files is used
 to set C shell environment variables,
 while the second file sets Bourne shell variables.
@@ -58,12 +58,12 @@ If the call to
 fails,
 .I save_cluster_info
 will not change the workstation's current
-.I /etc/athena/clusterinfo
+.I /var/athena/clusterinfo
 and
-.I /etc/athena/clusterinfo.bsh
+.I /var/athena/clusterinfo.bsh
 files.
 .SH FILES
-/etc/athena/clusterinfo
-/etc/athena/clusterinfo.bsh
+/var/athena/clusterinfo
+/var/athena/clusterinfo.bsh
 .SH SEE ALSO
 getcluster(8), reactivate(8), hesiod(3)
