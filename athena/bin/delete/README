@@ -19,11 +19,9 @@ they didn't want to delete (Hell, I've done it :-).
 I've personally compiled these sources under Vax 4.3BSD, IBM AOS 4.3,
 Mach on the NeXT Machine (with the "-bsd" flag to the compiler),
 Ultrix 3.1 on the DECstation 3100, SunOS 4.0, A/UX, and HP-UX, and I
-assume they should compile with minimal trouble on other architectures
-(However, I've been told that there may be some problems compiling on
-POSIX-compliant architectures; they're being worked on.).  If you make
-it compile on another platform and you have to make changes, please
-send me patches.
+assume they should compile with minimal trouble on other
+architectures.  If you make it compile on another platform and you
+have to make changes, please send me patches.
 
 
 			 WHAT YOU NEED TO DO
@@ -52,33 +50,33 @@ make the Makefile work for you.
    compile_et executable if you haven't installed it somewhere in your
    search path.
 
-3. If your system is SYSV-like (e.g. it uses strchr and strrchr
+3. If you want to be able to build dependencies, then change DEPEND to
+   the name of the program on your system that knows how to do that.
+
+4. If your system is SYSV-like (e.g. it uses strchr and strrchr
    instead of index and rindex, or it has memcpy and doesn't have
    bcopy), and your compile doesn't define the symbol SYSV
    automatically, then put "-DSYSV" in the DEFINES variable.
 
-4. You probably won't want to include AFS support, in which case you
-   should empty all the variables starting with "AFS".  If you do want
-   to support AFS, then set the variables appropriately.
+5. If you want to support Andrew File System (AFS) mountpoint
+   detection, and you have AFS include files and libraries available
+   to you, then uncomment the variables starting with "AFS" and set
+   them appropriately.
 
 
 			   COM_ERR LIBRARY
 
 In order to compile delete, you need to get your hands on the com_err
 package, which was written by members of the MIT Student Information
-Processing Board (SIPB); it should be archived in the same place
-delete is.  You should compile the library and compile_et utility that
-comes with it and then either install them in a "standard location" on
-your machine or modify the delete Makefile so that it knows where they
-are.  The delete Makefile does not compile them by default, since they
-are already compiled and installed at Athena, so you should compile
-and install them separately from delete etc.
-
-The files texinfo.tex and com_err.texinfo in the et sources are
-compressed and uuencoded because they have control characters in them.
-They have to be uudecoded and uncompressed before using them.  Neither
-of them is necessary for just building the library and using it to
-build delete et al -- they are just documentation about the library.
+Processing Board (SIPB).  If com_err isn't available from the place
+from which you got the delete sources, you can get it from volume 22
+of the comp.sources.unix archives, under the name "et".  You should
+compile the library and compile_et utility that comes with it and then
+either install them in a "standard location" on your machine or modify
+the delete Makefile so that it knows where they are.  The delete
+Makefile does not compile them by default, since they are already
+compiled and installed at Athena, so you should compile and install
+them separately from delete.
 
 
 			     FINAL NOTES
@@ -90,8 +88,8 @@ My address:
 Jonathan Kamens			              USnail:
 MIT Project Athena				11 Ashford Terrace
 jik@Athena.MIT.EDU				Allston, MA  02134
-Office: 617-253-8495			      Home: 617-782-0710
+Office: 617-253-8085			      Home: 617-782-0710
 
 P.S. Please see the file "mit-copyright.h" for copying and
-redistribution information.  Copyright 1989 Massachusetts Institute of
+redistribution information.  Copyright 1991 Massachusetts Institute of
 Technology.  All Rights Reserved.  Etc.
