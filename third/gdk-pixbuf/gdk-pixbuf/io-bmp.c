@@ -225,6 +225,23 @@ gdk_pixbuf__bmp_image_load(FILE *f)
 	return pb;
 }
 
+/* Picks up a 32-bit little-endian integer starting at the specified location.
+ * Does it by hand instead of dereferencing a simple (gint *) cast due to
+ * alignment constraints many platforms.
+ */
+static int
+lsb_32 (guchar *src)
+{
+	return src[0] | (src[1] << 8) | (src[2] << 16) | (src[3] << 24);
+}
+
+/* Same as above, but for 16-bit little-endian integers. */
+static short
+lsb_16 (guchar *src)
+{
+	return src[0] | (src[1] << 8);
+}
+
 static gboolean
 DecodeHeader (unsigned char *BFH, unsigned char *BIH,
 	      struct bmp_progressive_state *State)
@@ -233,8 +250,8 @@ DecodeHeader (unsigned char *BFH, unsigned char *BIH,
 
         /* FIXME this is totally unrobust against bogus image data. */
 
-	if (State->BufferSize < GUINT32_FROM_LE (* (guint32 *) &BIH[0]) + 14) {
-		State->BufferSize = GUINT32_FROM_LE (* (guint32 *) &BIH[0]) + 14;
+	if (State->BufferSize < lsb_32 (&BIH[0]) + 14) {
+		State->BufferSize = lsb_32 (&BIH[0]) + 14;
 		State->buff = realloc (State->buff, State->BufferSize);
 		if (State->buff == NULL) {
 #if 0
@@ -253,16 +270,16 @@ DecodeHeader (unsigned char *BFH, unsigned char *BIH,
 	DumpBIH(BIH);
 #endif
 
-	State->Header.size = GUINT32_FROM_LE (* (guint32 *) &BIH[0]);
+	State->Header.size = lsb_32 (&BIH[0]);
 	if (State->Header.size == 40) {
-		State->Header.width = GINT32_FROM_LE (* (gint32 *) &BIH[4]);
-		State->Header.height = GINT32_FROM_LE (* (gint32 *) &BIH[8]);
-		State->Header.depth = GUINT16_FROM_LE (* (guint16 *) &BIH[14]);
-		State->Compressed = GUINT32_FROM_LE (* (guint32 *) &BIH[16]);
+		State->Header.width = lsb_32 (&BIH[4]);
+		State->Header.height = lsb_32 (&BIH[8]);
+		State->Header.depth = lsb_16 (&BIH[14]);
+		State->Compressed = lsb_32 (&BIH[16]);
 	} else if (State->Header.size == 12) {
-		State->Header.width = GUINT16_FROM_LE (* (guint16 *) &BIH[4]);
-		State->Header.height = GUINT16_FROM_LE (* (guint16 *) &BIH[6]);
-		State->Header.depth = GUINT16_FROM_LE (* (guint16 *) &BIH[10]);
+		State->Header.width = lsb_16 (&BIH[4]);
+		State->Header.height = lsb_16 (&BIH[6]);
+		State->Header.depth = lsb_16 (&BIH[10]);
 		State->Compressed = BI_RGB;
 	} else {
 #if 0
@@ -372,7 +389,7 @@ DecodeHeader (unsigned char *BFH, unsigned char *BIH,
 	State->BufferDone = 0;
 	if (State->Type <= 8) {
 		State->read_state = READ_STATE_PALETTE;
-		State->BufferSize = GUINT32_FROM_LE (* (guint32 *) &BFH[10]) - 14 - State->Header.size;
+		State->BufferSize = lsb_32 (&BFH[10]) - 14 - State->Header.size;
 	} else if (State->Compressed == BI_RGB) {
 		State->read_state = READ_STATE_DATA;
 		State->BufferSize = State->LineWidth;
