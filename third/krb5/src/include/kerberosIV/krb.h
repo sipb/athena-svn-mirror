@@ -351,10 +351,6 @@ typedef struct msg_dat MSG_DAT;
 #define K_FLAG_6                /* reserved */
 #define K_FLAG_7                /* reserved, bit 7 --> msb */
 
-#ifndef PC
-char *tkt_string();
-#endif	/* PC */
-
 #ifdef	OLDNAMES
 #define krb_mk_req	mk_ap_req
 #define krb_rd_req	rd_ap_req
@@ -587,7 +583,7 @@ int krb_kntoln PROTOTYPE((AUTH_DAT *, char *));
 /* krb_err_txt.c */
 
 /* krb_get_in_tkt.c */
-int krb_get_in_tkt PROTOTYPE((char *, char *, char *, char *, char *, int , int (*key_proc )(), int (*decrypt_proc )(), char *));
+int krb_get_in_tkt PROTOTYPE((char *, char *, char *, char *, char *, int , key_proc_type key_proc, decrypt_tkt_type decrypt_proc, char *));
 
 /* kuserok.c */
 int kuserok PROTOTYPE((AUTH_DAT *, char *));
