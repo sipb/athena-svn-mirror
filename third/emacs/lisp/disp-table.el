@@ -161,7 +161,7 @@ X frame."
   (aset standard-display-table c
 	(vector 
 	 (if window-system
-	     (logior uc (lsh (face-id (internal-find-face 'underline)) 8))
+	     (logior uc (lsh (face-id (internal-find-face 'underline)) 19))
 	   (create-glyph (concat "\e[4m" (char-to-string uc) "\e[m"))))))
 
 ;; Allocate a glyph code to display by sending STRING to the terminal.
@@ -176,22 +176,63 @@ X frame."
   (1- (length glyph-table)))
 
 ;;;###autoload
-(defun standard-display-european (arg)
+(defun standard-display-european (arg &optional auto)
   "Toggle display of European characters encoded with ISO 8859.
+This function is semi-obsolete; it is better to use
+`set-language-environment' and `set-terminal-coding-system',
+coupled with the `--unibyte' option if you prefer to use unibyte characters.
+
 When enabled, characters in the range of 160 to 255 display not
-as octal escapes, but as accented characters.
-With prefix argument, enable European character display iff arg is positive."
+as octal escapes, but as accented characters.  Codes 146 and 160
+display as apostrophe and space, even though they are not the ASCII
+codes for apostrophe and space.
+
+With prefix argument, enable European character display iff arg is positive.
+
+Normally, this function turns off `enable-multibyte-characters'
+for subsequently created Emacs buffers, and for `*scratch*.
+This is because users who call this function
+probably want to edit European characters in single-byte mode."
+
+  ;; If the optional argument AUTO is non-nil, this function
+  ;; does not alter `enable-multibyte-characters'.
+  ;; AUTO also specifies, in this case, the coding system for terminal output.
+  ;; The AUTO argument is meant for use by startup.el only.
+  ;; which is why it is not in the doc string.
   (interactive "P")
   (if (or (<= (prefix-numeric-value arg) 0)
 	  (and (null arg)
 	       (char-table-p standard-display-table)
 	       ;; Test 161, because 160 displays as a space.
 	       (equal (aref standard-display-table 161) [161])))
-      (standard-display-default 160 255)
-    (standard-display-8bit 160 255)
-    ;; Make non-line-break space display as a plain space.
-    ;; Most X fonts do the wrong thing for code 160.
-    (aset standard-display-table 160 [32])))
+      (progn
+	(standard-display-default 160 255)
+	(unless (memq window-system '(x w32))
+	  (set-terminal-coding-system nil)))
+    ;; If the user does this explicitly,
+    ;; turn off multibyte chars for more compatibility.
+    (unless auto
+      (setq-default enable-multibyte-characters nil)
+      (if (get-buffer "*scratch*")
+	  (with-current-buffer "*scratch*"
+	    (set-buffer-multibyte nil))))
+    ;; If the user does this explicitly,
+    ;; switch to Latin-1 language environment
+    ;; unless some other has been specified.
+    (unless auto
+      (if (equal current-language-environment "English")
+	  (set-language-environment "latin-1")))
+    (unless (or noninteractive (memq window-system '(x w32)))
+      ;; Send those codes literally to a non-X terminal.
+      ;; If AUTO is nil, we are using single-byte characters,
+      ;; so it doesn't matter which one we use.
+      (set-terminal-coding-system
+       (cond ((not (equal current-language-environment "English"))
+	      (intern (downcase current-language-environment)))
+	     ((eq auto t) 'latin-1)
+	     ((symbolp auto) (or auto 'latin-1))
+	     ((stringp auto) (intern auto)))))
+    (standard-display-european-internal)))
 
 (provide 'disp-table)
 

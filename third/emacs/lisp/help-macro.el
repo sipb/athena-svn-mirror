@@ -3,6 +3,7 @@
 ;; Copyright (C) 1993, 1994 Free Software Foundation, Inc.
 
 ;; Author: Lynn Slater <lrs@indetech.com>
+;; Maintainer: FSF
 ;; Created: : Mon Oct  1 11:42:39 1990
 ;; Adapted-By: ESR
 
@@ -104,6 +105,9 @@ and then returns."
 		   (progn
 		     (setcdr local-map (, helped-map))
 		     (define-key local-map [t] 'undefined)
+		     ;; Make the scroll bar keep working normally.
+		     (define-key local-map [vertical-scroll-bar]
+		       (lookup-key global-map [vertical-scroll-bar]))
 		     (if three-step-help
 			 (progn
 			   (setq key (let ((overriding-local-map local-map))
@@ -123,12 +127,13 @@ and then returns."
 					 prev-frame))
 				(setq new-frame (window-frame (selected-window))
 				      config nil))
+			   (setq buffer-read-only nil)
 			   (erase-buffer)
 			   (insert help-screen)
 			   (help-mode)
 			   (goto-char (point-min))
 			   (while (or (memq char (append help-event-list
-							 (cons help-char '(?? ?\C-v ?\ ?\177 delete backspace ?\M-v))))
+							 (cons help-char '(?? ?\C-v ?\ ?\177 delete backspace vertical-scroll-bar ?\M-v))))
 				      (eq (car-safe char) 'switch-frame)
 				      (equal key "\M-v"))
 			     (condition-case nil
@@ -148,8 +153,14 @@ and then returns."
 					  (format "Type one of the options listed%s: "
 						  (if (pos-visible-in-window-p
 						       (point-max))
-						      "" " or Space to scroll")))
-				     char (aref key 0))))))
+						      "" ", or SPACE or DEL to scroll")))
+				     char (aref key 0)))
+
+			     ;; If this is a scroll bar command, just run it.
+			     (when (eq char 'vertical-scroll-bar)
+			       (command-execute (lookup-key local-map key) nil key)))))
+		     ;; We don't need the prompt any more.
+		     (message "")
 		     ;; Mouse clicks are not part of the help feature,
 		     ;; so reexecute them in the standard environment.
 		     (if (listp char)

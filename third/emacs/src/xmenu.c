@@ -41,7 +41,6 @@ Boston, MA 02111-1307, USA.  */
 #include "window.h"
 #include "keyboard.h"
 #include "blockinput.h"
-#include "puresize.h"
 #include "buffer.h"
 
 #ifdef MSDOS
@@ -86,15 +85,14 @@ Boston, MA 02111-1307, USA.  */
 #define FALSE 0
 #endif /* no TRUE */
 
+Lisp_Object Vmenu_updating_frame;
+
 Lisp_Object Qdebug_on_next_call;
 
-Lisp_Object Qmenu_alias;
-
-extern Lisp_Object Qmenu_enable;
 extern Lisp_Object Qmenu_bar;
 extern Lisp_Object Qmouse_click, Qevent_kind;
 
-extern Lisp_Object Vdefine_key_rebound_commands;
+extern Lisp_Object QCtoggle, QCradio;
 
 extern Lisp_Object Voverriding_local_map;
 extern Lisp_Object Voverriding_local_map_menu_flag;
@@ -115,6 +113,7 @@ void popup_get_selection ();
 static Lisp_Object xmenu_show ();
 static void keymap_panes ();
 static void single_keymap_panes ();
+static void single_menu_item ();
 static void list_of_panes ();
 static void list_of_items ();
 
@@ -337,152 +336,6 @@ push_menu_item (name, enable, key, def, equiv)
   XVECTOR (menu_items)->contents[menu_items_used++] = def;
 }
 
-/* Figure out the current keyboard equivalent of a menu item ITEM1.
-   The item string for menu display should be ITEM_STRING.
-   Store the equivalent keyboard key sequence's
-   textual description into *DESCRIP_PTR.
-   Also cache them in the item itself.
-   Return the real definition to execute.  */
-
-static Lisp_Object
-menu_item_equiv_key (item_string, item1, descrip_ptr)
-     Lisp_Object item_string;
-     Lisp_Object item1;
-     Lisp_Object *descrip_ptr;
-{
-  /* This is the real definition--the function to run.  */
-  Lisp_Object def;
-  /* This is the sublist that records cached equiv key data
-     so we can save time.  */
-  Lisp_Object cachelist;
-  /* These are the saved equivalent keyboard key sequence
-     and its key-description.  */
-  Lisp_Object savedkey, descrip;
-  Lisp_Object def1;
-  int changed = 0;
-  struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
-
-  /* If a help string follows the item string, skip it.  */
-  if (CONSP (XCONS (item1)->cdr)
-      && STRINGP (XCONS (XCONS (item1)->cdr)->car))
-    item1 = XCONS (item1)->cdr;
-
-  def = Fcdr (item1);
-
-  /* Get out the saved equivalent-keyboard-key info.  */
-  cachelist = savedkey = descrip = Qnil;
-  if (CONSP (def) && CONSP (XCONS (def)->car)
-      && (NILP (XCONS (XCONS (def)->car)->car)
-	  || VECTORP (XCONS (XCONS (def)->car)->car)))
-    {
-      cachelist = XCONS (def)->car;
-      def = XCONS (def)->cdr;
-      savedkey = XCONS (cachelist)->car;
-      descrip = XCONS (cachelist)->cdr;
-    }
-
-  GCPRO4 (def, def1, savedkey, descrip);
-
-  /* Is it still valid?  */
-  def1 = Qnil;
-  if (!NILP (savedkey))
-    def1 = Fkey_binding (savedkey, Qnil);
-  /* If not, update it.  */
-  if (! EQ (def1, def)
-      /* If the command is an alias for another
-         (such as easymenu.el and lmenu.el set it up),
-         check if the original command matches the cached command.  */
-      && !(SYMBOLP (def) && SYMBOLP (XSYMBOL (def)->function)
-           && EQ (def1, XSYMBOL (def)->function))
-      /* If something had no key binding before, don't recheck it
-	 because that is too slow--except if we have a list of rebound
-	 commands in Vdefine_key_rebound_commands, do recheck any command
-	 that appears in that list.  */
-      && (NILP (cachelist) || !NILP (savedkey)
-	  || (! EQ (Qt, Vdefine_key_rebound_commands)
-	      && !NILP (Fmemq (def, Vdefine_key_rebound_commands)))))
-    {
-      changed = 1;
-      descrip = Qnil;
-      /* If the command is an alias for another
-	 (such as easymenu.el and lmenu.el set it up),
-	 see if the original command name has equivalent keys.  */
-      if (SYMBOLP (def) && SYMBOLP (XSYMBOL (def)->function)
-	  && ! NILP (Fget (def, Qmenu_alias)))
-	savedkey = Fwhere_is_internal (XSYMBOL (def)->function,
-				       Qnil, Qt, Qnil);
-      else
-	/* Otherwise look up the specified command itself.
-	   We don't try both, because that makes easymenu menus slow.  */
-	savedkey = Fwhere_is_internal (def, Qnil, Qt, Qnil);
-
-      if (!NILP (savedkey))
-	{
-	  descrip = Fkey_description (savedkey);
-	  descrip = concat2 (make_string ("  (", 3), descrip);
-	  descrip = concat2 (descrip, make_string (")", 1));
-	}
-    }
-
-  /* Cache the data we just got in a sublist of the menu binding.  */
-  if (NILP (cachelist))
-    {
-      CHECK_IMPURE (item1);
-      XCONS (item1)->cdr = Fcons (Fcons (savedkey, descrip), def);
-    }
-  else if (changed)
-    {
-      XCONS (cachelist)->car = savedkey;
-      XCONS (cachelist)->cdr = descrip;
-    }
-
-  UNGCPRO;
-  *descrip_ptr = descrip;
-  return def;
-}
-
-/* This is used as the handler when calling internal_condition_case_1.  */
-
-static Lisp_Object
-menu_item_enabled_p_1 (arg)
-     Lisp_Object arg;
-{
-  /* If we got a quit from within the menu computation,
-     quit all the way out of it.  This takes care of C-] in the debugger.  */
-  if (CONSP (arg) && EQ (XCONS (arg)->car, Qquit))
-    Fsignal (Qquit, Qnil);
-
-  return Qnil;
-}
-
-/* Return non-nil if the command DEF is enabled when used as a menu item.
-   This is based on looking for a menu-enable property.
-   If NOTREAL is set, don't bother really computing this.  */
-
-static Lisp_Object
-menu_item_enabled_p (def, notreal)
-     Lisp_Object def;
-     int notreal;
-{
-  Lisp_Object enabled, tem;
-
-  enabled = Qt;
-  if (notreal)
-    return enabled;
-  if (SYMBOLP (def))
-    {
-      /* No property, or nil, means enable.
-	 Otherwise, enable if value is not nil.  */
-      tem = Fget (def, Qmenu_enable);
-      if (!NILP (tem))
-	/* (condition-case nil (eval tem)
-	   (error nil))  */
-	enabled = internal_condition_case_1 (Feval, tem, Qerror,
-					     menu_item_enabled_p_1);
-    }
-  return enabled;
-}
-
 /* Look through KEYMAPS, a vector of keymaps that is NMAPS long,
    and generate menu panes for them in menu_items.
    If NOTREAL is nonzero,
@@ -502,7 +355,7 @@ keymap_panes (keymaps, nmaps, notreal)
      But don't make a pane that is empty--ignore that map instead.
      P is the number of panes we have made so far.  */
   for (mapno = 0; mapno < nmaps; mapno++)
-    single_keymap_panes (keymaps[mapno], Qnil, Qnil, notreal);
+    single_keymap_panes (keymaps[mapno], Qnil, Qnil, notreal, 10);
 
   finish_menu_items ();
 }
@@ -511,94 +364,46 @@ keymap_panes (keymaps, nmaps, notreal)
    It handles one keymap, KEYMAP.
    The other arguments are passed along
    or point to local variables of the previous function.
-   If NOTREAL is nonzero,
-   don't bother really computing whether an item is enabled.  */
+   If NOTREAL is nonzero, only check for equivalent key bindings, don't
+   evaluate expressions in menu items and don't make any menu.
+
+   If we encounter submenus deeper than MAXDEPTH levels, ignore them.  */
 
 static void
-single_keymap_panes (keymap, pane_name, prefix, notreal)
+single_keymap_panes (keymap, pane_name, prefix, notreal, maxdepth)
      Lisp_Object keymap;
      Lisp_Object pane_name;
      Lisp_Object prefix;
      int notreal;
+     int maxdepth;
 {
-  Lisp_Object pending_maps;
-  Lisp_Object tail, item, item1, item_string, table;
-  struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
+  Lisp_Object pending_maps = Qnil;
+  Lisp_Object tail, item;
+  struct gcpro gcpro1, gcpro2;
+  int notbuttons = 0;
 
-  pending_maps = Qnil;
+  if (maxdepth <= 0)
+    return;
 
   push_menu_pane (pane_name, prefix);
 
+#ifndef HAVE_BOXES
+  /* Remember index for first item in this pane so we can go back and
+     add a prefix when (if) we see the first button.  After that, notbuttons
+     is set to 0, to mark that we have seen a button and all non button
+     items need a prefix.  */
+  notbuttons = menu_items_used;
+#endif
+
   for (tail = keymap; CONSP (tail); tail = XCONS (tail)->cdr)
     {
-      /* Look at each key binding, and if it has a menu string,
-	 make a menu item from it.  */
+      GCPRO2 (keymap, pending_maps);
+      /* Look at each key binding, and if it is a menu item add it
+	 to this menu.  */
       item = XCONS (tail)->car;
       if (CONSP (item))
-	{
-	  item1 = XCONS (item)->cdr;
-	  if (CONSP (item1))
-	    {
-	      item_string = XCONS (item1)->car;
-	      if (STRINGP (item_string))
-		{
-		  /* This is the real definition--the function to run.  */
-		  Lisp_Object def;
-		  /* These are the saved equivalent keyboard key sequence
-		     and its key-description.  */
-		  Lisp_Object descrip;
-		  Lisp_Object tem, enabled;
-
-		  /* GCPRO because ...enabled_p will call eval
-		     and ..._equiv_key may autoload something.
-		     Protecting KEYMAP preserves everything we use;
-		     aside from that, must protect whatever might be
-		     a string.  Since there's no GCPRO5, we refetch
-		     item_string instead of protecting it.  */
-		  descrip = def = Qnil;
-		  GCPRO4 (keymap, pending_maps, def, descrip);
-
-		  def = menu_item_equiv_key (item_string, item1, &descrip);
-		  enabled = menu_item_enabled_p (def, notreal);
-
-		  UNGCPRO;
-
-		  item_string = XCONS (item1)->car;
-
-		  tem = Fkeymapp (def);
-		  if (XSTRING (item_string)->data[0] == '@' && !NILP (tem))
-		    pending_maps = Fcons (Fcons (def, Fcons (item_string, XCONS (item)->car)),
-					  pending_maps);
-		  else
-		    {
-		      Lisp_Object submap;
-		      GCPRO4 (keymap, pending_maps, descrip, item_string);
-		      submap = get_keymap_1 (def, 0, 1);
-		      UNGCPRO;
-#ifndef USE_X_TOOLKIT
-		      /* Indicate visually that this is a submenu.  */
-		      if (!NILP (submap))
-			item_string = concat2 (item_string,
-					       build_string (" >"));
-#endif
-		      /* If definition is nil, pass nil as the key.  */
-		      push_menu_item (item_string, enabled,
-				      XCONS (item)->car, def,
-				      descrip);
-#ifdef USE_X_TOOLKIT
-		      /* Display a submenu using the toolkit.  */
-		      if (! NILP (submap))
-			{
-			  push_submenu_start ();
-			  single_keymap_panes (submap, Qnil,
-					       XCONS (item)->car, notreal);
-			  push_submenu_end ();
-			}
-#endif
-		    }
-		}
-	    }
-	}
+	single_menu_item (XCONS (item)->car, XCONS (item)->cdr,
+			  &pending_maps, notreal, maxdepth, &notbuttons);
       else if (VECTORP (item))
 	{
 	  /* Loop over the char values represented in the vector.  */
@@ -608,67 +413,11 @@ single_keymap_panes (keymap, pane_name, prefix, notreal)
 	    {
 	      Lisp_Object character;
 	      XSETFASTINT (character, c);
-	      item1 = XVECTOR (item)->contents[c];
-	      if (CONSP (item1))
-		{
-		  item_string = XCONS (item1)->car;
-		  if (STRINGP (item_string))
-		    {
-		      Lisp_Object def;
-
-		      /* These are the saved equivalent keyboard key sequence
-			 and its key-description.  */
-		      Lisp_Object descrip;
-		      Lisp_Object tem, enabled;
-
-		      /* GCPRO because ...enabled_p will call eval
-			 and ..._equiv_key may autoload something.
-			 Protecting KEYMAP preserves everything we use;
-			 aside from that, must protect whatever might be
-			 a string.  Since there's no GCPRO5, we refetch
-			 item_string instead of protecting it.  */
-		      GCPRO4 (keymap, pending_maps, def, descrip);
-		      descrip = def = Qnil;
-
-		      def = menu_item_equiv_key (item_string, item1, &descrip);
-		      enabled = menu_item_enabled_p (def, notreal);
-
-		      UNGCPRO;
-
-		      item_string = XCONS (item1)->car;
-
-		      tem = Fkeymapp (def);
-		      if (XSTRING (item_string)->data[0] == '@' && !NILP (tem))
-			pending_maps = Fcons (Fcons (def, Fcons (item_string, character)),
-					      pending_maps);
-		      else
-			{
-			  Lisp_Object submap;
-			  GCPRO4 (keymap, pending_maps, descrip, item_string);
-			  submap = get_keymap_1 (def, 0, 1);
-			  UNGCPRO;
-#ifndef USE_X_TOOLKIT
-			  if (!NILP (submap))
-			    item_string = concat2 (item_string,
-						   build_string (" >"));
-#endif
-			  /* If definition is nil, pass nil as the key.  */
-			  push_menu_item (item_string, enabled, character,
-					  def, descrip);
-#ifdef USE_X_TOOLKIT
-			  if (! NILP (submap))
-			    {
-			      push_submenu_start ();
-			      single_keymap_panes (submap, Qnil,
-						   character, notreal);
-			      push_submenu_end ();
-			    }
-#endif
-			}
-		    }
-		}
+	      single_menu_item (character, XVECTOR (item)->contents[c],
+				&pending_maps, notreal, maxdepth, &notbuttons);
 	    }
 	}
+      UNGCPRO;
     }
 
   /* Process now any submenus which want to be panes at this level.  */
@@ -681,9 +430,147 @@ single_keymap_panes (keymap, pane_name, prefix, notreal)
       /* We no longer discard the @ from the beginning of the string here.
 	 Instead, we do this in xmenu_show.  */
       single_keymap_panes (Fcar (elt), string,
-			   XCONS (eltcdr)->cdr, notreal);
+			   XCONS (eltcdr)->cdr, notreal, maxdepth - 1);
       pending_maps = Fcdr (pending_maps);
     }
+}
+
+/* This is a subroutine of single_keymap_panes that handles one
+   keymap entry.
+   KEY is a key in a keymap and ITEM is its binding. 
+   PENDING_MAPS_PTR points to a list of keymaps waiting to be made into
+   separate panes.
+   If NOTREAL is nonzero, only check for equivalent key bindings, don't
+   evaluate expressions in menu items and don't make any menu.
+   If we encounter submenus deeper than MAXDEPTH levels, ignore them.
+   NOTBUTTONS_PTR is only used when simulating toggle boxes and radio
+   buttons.  It points to variable notbuttons in single_keymap_panes,
+   which keeps track of if we have seen a button in this menu or not.  */
+
+static void
+single_menu_item (key, item, pending_maps_ptr, notreal, maxdepth,
+		  notbuttons_ptr)
+     Lisp_Object key, item;
+     Lisp_Object *pending_maps_ptr;
+     int maxdepth, notreal;
+     int *notbuttons_ptr;
+{
+  Lisp_Object def, map, item_string, enabled;
+  struct gcpro gcpro1, gcpro2;
+  int res;
+  
+  /* Parse the menu item and leave the result in item_properties.  */
+  GCPRO2 (key, item);
+  res = parse_menu_item (item, notreal, 0);
+  UNGCPRO;
+  if (!res)
+    return;			/* Not a menu item.  */
+
+  map = XVECTOR (item_properties)->contents[ITEM_PROPERTY_MAP];
+  
+  if (notreal)
+    {
+      /* We don't want to make a menu, just traverse the keymaps to
+	 precompute equivalent key bindings.  */
+      if (!NILP (map))
+	single_keymap_panes (map, Qnil, key, 1, maxdepth - 1);
+      return;
+    }
+
+  enabled = XVECTOR (item_properties)->contents[ITEM_PROPERTY_ENABLE];
+  item_string = XVECTOR (item_properties)->contents[ITEM_PROPERTY_NAME]; 
+
+  if (!NILP (map) && XSTRING (item_string)->data[0] == '@')
+    {
+      if (!NILP (enabled))
+	/* An enabled separate pane. Remember this to handle it later.  */
+	*pending_maps_ptr = Fcons (Fcons (map, Fcons (item_string, key)),
+				   *pending_maps_ptr);
+      return;
+    }
+
+#ifndef HAVE_BOXES
+  /* Simulate radio buttons and toggle boxes by putting a prefix in
+     front of them.  */
+  {
+    Lisp_Object prefix = Qnil;
+    Lisp_Object type = XVECTOR (item_properties)->contents[ITEM_PROPERTY_TYPE];
+    if (!NILP (type))
+      {
+	Lisp_Object selected
+	  = XVECTOR (item_properties)->contents[ITEM_PROPERTY_SELECTED];
+
+	if (*notbuttons_ptr)
+	  /* The first button. Line up previous items in this menu.  */
+	  {
+	    int index = *notbuttons_ptr; /* Index for first item this menu.  */
+	    int submenu = 0;
+	    Lisp_Object tem;
+	    while (index < menu_items_used)
+	      {
+		tem
+		  = XVECTOR (menu_items)->contents[index + MENU_ITEMS_ITEM_NAME];
+		if (NILP (tem))
+		  {
+		    index++;
+		    submenu++;		/* Skip sub menu.  */
+		  }
+		else if (EQ (tem, Qlambda))
+		  {
+		    index++;
+		    submenu--;		/* End sub menu.  */
+		  }
+		else if (EQ (tem, Qt))
+		  index += 3;		/* Skip new pane marker. */
+		else if (EQ (tem, Qquote))
+		  index++;		/* Skip a left, right divider. */
+		else
+		  {
+		    if (!submenu && XSTRING (tem)->data[0] != '\0'
+			&& XSTRING (tem)->data[0] != '-')
+		      XVECTOR (menu_items)->contents[index + MENU_ITEMS_ITEM_NAME]
+			= concat2 (build_string ("    "), tem);
+		    index += MENU_ITEMS_ITEM_LENGTH;
+		  }
+	      }
+	    *notbuttons_ptr = 0;
+	  }
+
+	/* Calculate prefix, if any, for this item.  */
+	if (EQ (type, QCtoggle))
+	  prefix = build_string (NILP (selected) ? "[ ] " : "[X] ");
+	else if (EQ (type, QCradio))
+	  prefix = build_string (NILP (selected) ? "( ) " : "(*) ");
+      }
+    /* Not a button. If we have earlier buttons, then we need a prefix.  */
+    else if (!*notbuttons_ptr && XSTRING (item_string)->data[0] != '\0'
+	     && XSTRING (item_string)->data[0] != '-')
+      prefix = build_string ("    ");
+
+    if (!NILP (prefix))
+      item_string = concat2 (prefix, item_string);
+  }
+#endif /* not HAVE_BOXES */
+ 
+#ifndef USE_X_TOOLKIT
+  if (!NILP(map))
+    /* Indicate visually that this is a submenu.  */
+    item_string = concat2 (item_string, build_string (" >"));
+#endif
+
+  push_menu_item (item_string, enabled, key,
+		  XVECTOR (item_properties)->contents[ITEM_PROPERTY_DEF],
+		  XVECTOR (item_properties)->contents[ITEM_PROPERTY_KEYEQ]);
+
+#ifdef USE_X_TOOLKIT
+  /* Display a submenu using the toolkit.  */
+  if (! (NILP (map) || NILP (enabled)))
+    {
+      push_submenu_start ();
+      single_keymap_panes (map, Qnil, key, 0, maxdepth - 1);
+      push_submenu_end ();
+    }
+#endif
 }
 
 /* Push all the panes and items of a menu described by the
@@ -753,10 +640,14 @@ The menu items come from key bindings that have a menu string as well as\n\
 a definition; actually, the \"definition\" in such a key binding looks like\n\
 \(STRING . REAL-DEFINITION).  To give the menu a title, put a string into\n\
 the keymap as a top-level element.\n\n\
+If REAL-DEFINITION is nil, that puts a nonselectable string in the menu.\n\
+Otherwise, REAL-DEFINITION should be a valid key binding definition.\n\
+\n\
 You can also use a list of keymaps as MENU.\n\
   Then each keymap makes a separate pane.\n\
 When MENU is a keymap or a list of keymaps, the return value\n\
 is a list of events.\n\n\
+\n\
 Alternatively, you can specify a menu of multiple panes\n\
   with a list of the form (TITLE PANE1 PANE2...),\n\
 where each pane is a list of form (TITLE ITEM1 ITEM2...).\n\
@@ -795,7 +686,7 @@ cached information about equivalent key sequences.")
 	  /* Use the mouse's current position.  */
 	  FRAME_PTR new_f = selected_frame;
 	  Lisp_Object bar_window;
-	  int part;
+	  enum scroll_bar_part part;
 	  unsigned long time;
 
 	  if (mouse_position_hook)
@@ -846,8 +737,10 @@ cached information about equivalent key sequences.")
 	  CHECK_LIVE_WINDOW (window, 0);
 	  f = XFRAME (WINDOW_FRAME (XWINDOW (window)));
 
-	  xpos = (FONT_WIDTH (f->output_data.x->font) * XWINDOW (window)->left);
-	  ypos = (f->output_data.x->line_height * XWINDOW (window)->top);
+	  xpos = (FONT_WIDTH (f->output_data.x->font)
+		  * XFASTINT (XWINDOW (window)->left));
+	  ypos = (f->output_data.x->line_height
+		  * XFASTINT (XWINDOW (window)->top));
 	}
       else
 	/* ??? Not really clean; should be CHECK_WINDOW_OR_FRAME,
@@ -856,7 +749,10 @@ cached information about equivalent key sequences.")
 
       xpos += XINT (x);
       ypos += XINT (y);
+
+      XSETFRAME (Vmenu_updating_frame, f);
     }
+  Vmenu_updating_frame = Qnil;
 #endif /* HAVE_MENUS */
 
   title = Qnil;
@@ -880,6 +776,8 @@ cached information about equivalent key sequences.")
       /* Search for a string appearing directly as an element of the keymap.
 	 That string is the title of the menu.  */
       prompt = map_prompt (keymap);
+      if (NILP (title) && !NILP (prompt))
+	title = prompt;
 
       /* Make that be the pane title of the first pane.  */
       if (!NILP (prompt) && menu_items_n_panes >= 0)
@@ -1127,8 +1025,12 @@ popup_get_selection (initial_event, dpyinfo, id)
       else if (event.type == KeyPress
 	       && dpyinfo->display == event.xbutton.display)
 	{
-	  popup_activated_flag = 0;
-	  break;
+	  KeySym keysym = XLookupKeysym (&event.xkey, 0);
+	  if (!IsModifierKey (keysym))
+	    {
+	      popup_activated_flag = 0;
+	      break;
+	    }
 	}
       /* Button presses outside the menu also pop it down.  */
       else if (event.type == ButtonPress
@@ -1193,6 +1095,7 @@ popup_get_selection (initial_event, dpyinfo, id)
    passing it to the toolkit right away, is that we can safely
    execute Lisp code.  */
    
+void
 x_activate_menubar (f)
      FRAME_PTR f;
 {
@@ -1418,7 +1321,7 @@ single_submenu (item_key, item_name, maps)
 	  push_menu_item (item_name, Qt, item_key, mapvec[i], Qnil);
 	}
       else
-	single_keymap_panes (mapvec[i], item_name, item_key, 0);
+	single_keymap_panes (mapvec[i], item_name, item_key, 0, 10);
     }
 
   /* Create a tree of widget_value objects
@@ -1616,6 +1519,8 @@ set_frame_menubar (f, first_time, deep_p)
   int i;
   LWLIB_ID id;
 
+  XSETFRAME (Vmenu_updating_frame, f);
+
   if (f->output_data.x->id == 0)
     f->output_data.x->id = next_menubar_widget_id++;
   id = f->output_data.x->id;
@@ -1650,13 +1555,18 @@ set_frame_menubar (f, first_time, deep_p)
 	= (Lisp_Object *) alloca (previous_menu_items_used
 				  * sizeof (Lisp_Object));
 
+      /* If we are making a new widget, its contents are empty,
+	 do always reinitialize them.  */
+      if (! menubar_widget)
+	previous_menu_items_used = 0;
+
       buffer = XWINDOW (FRAME_SELECTED_WINDOW (f))->buffer;
       specbind (Qinhibit_quit, Qt);
       /* Don't let the debugger step into this code
 	 because it is not reentrant.  */
       specbind (Qdebug_on_next_call, Qnil);
 
-      record_unwind_protect (Fstore_match_data, Fmatch_data ());
+      record_unwind_protect (Fset_match_data, Fmatch_data (Qnil, Qnil));
       if (NILP (Voverriding_local_map_menu_flag))
 	{
 	  specbind (Qoverriding_terminal_local_map, Qnil);
@@ -1716,7 +1626,7 @@ set_frame_menubar (f, first_time, deep_p)
 
       for (i = 0; i < previous_menu_items_used; i++)
 	if (menu_items_used == i
-	    || (previous_items[i] != XVECTOR (menu_items)->contents[i]))
+	    || (!EQ (previous_items[i], XVECTOR (menu_items)->contents[i])))
 	  break;
       if (i == menu_items_used && i == previous_menu_items_used && i != 0)
 	{
@@ -1814,6 +1724,8 @@ set_frame_menubar (f, first_time, deep_p)
 	    + f->output_data.x->menubar_widget->core.border_width)
 	 : 0);
 
+#if 0 /* Experimentally, we now get the right results
+	 for -geometry -0-0 without this.  24 Aug 96, rms.  */
 #ifdef USE_LUCID
     if (FRAME_EXTERNAL_MENU_BAR (f))
       {
@@ -1823,6 +1735,7 @@ set_frame_menubar (f, first_time, deep_p)
         menubar_size += ibw;
       }
 #endif /* USE_LUCID */
+#endif /* 0 */
 
     f->output_data.x->menubar_height = menubar_size;
   }
@@ -1860,6 +1773,8 @@ free_frame_menubar (f)
   int id;
 
   menubar_widget = f->output_data.x->menubar_widget;
+
+  f->output_data.x->menubar_height = 0;
   
   if (menubar_widget)
     {
@@ -2300,7 +2215,7 @@ xdialog_show (f, keymaps, title, error)
 	    i++;
 	    continue;
 	  }
-	if (nb_buttons >= 10)
+	if (nb_buttons >= 9)
 	  {
 	    free_menubar_widget_value_tree (first_wv);
 	    *error = "Too many dialog items";
@@ -2526,7 +2441,7 @@ xmenu_show (f, x, y, for_click, keymaps, title, error)
 		  j++;
 		  continue;
 		}
-	      width = XSTRING (item)->size;
+	      width = STRING_BYTES (XSTRING (item));
 	      if (width > maxwidth)
 		maxwidth = width;
 
@@ -2549,7 +2464,7 @@ xmenu_show (f, x, y, for_click, keymaps, title, error)
 	    = XVECTOR (menu_items)->contents[i + MENU_ITEMS_ITEM_EQUIV_KEY];
 	  if (!NILP (descrip))
 	    {
-	      int gap = maxwidth - XSTRING (item_name)->size;
+	      int gap = maxwidth - STRING_BYTES (XSTRING (item_name));
 #ifdef C_ALLOCA
 	      Lisp_Object spacer;
 	      spacer = Fmake_string (make_number (gap), make_number (' '));
@@ -2561,14 +2476,14 @@ xmenu_show (f, x, y, for_click, keymaps, title, error)
 		 to reduce gc needs.  */
 	      item_data
 		= (unsigned char *) alloca (maxwidth
-					    + XSTRING (descrip)->size + 1);
+					    + STRING_BYTES (XSTRING (descrip)) + 1);
 	      bcopy (XSTRING (item_name)->data, item_data,
-		     XSTRING (item_name)->size);
+		     STRING_BYTES (XSTRING (item_name)));
 	      for (j = XSTRING (item_name)->size; j < maxwidth; j++)
 		item_data[j] = ' ';
 	      bcopy (XSTRING (descrip)->data, item_data + j,
-		     XSTRING (descrip)->size);
-	      item_data[j + XSTRING (descrip)->size] = 0;
+		     STRING_BYTES (XSTRING (descrip)));
+	      item_data[j + STRING_BYTES (XSTRING (descrip))] = 0;
 #endif
 	    }
 	  else
@@ -2692,16 +2607,19 @@ xmenu_show (f, x, y, for_click, keymaps, title, error)
 
 #endif /* HAVE_MENUS */
 
+void
 syms_of_xmenu ()
 {
   staticpro (&menu_items);
   menu_items = Qnil;
 
-  Qmenu_alias = intern ("menu-alias");
-  staticpro (&Qmenu_alias);
-
   Qdebug_on_next_call = intern ("debug-on-next-call");
   staticpro (&Qdebug_on_next_call);
+
+  DEFVAR_LISP ("menu-updating-frame", &Vmenu_updating_frame,
+    "Frame for which we are updating a menu.\n\
+The enable predicate for a menu command should check this variable.");
+  Vmenu_updating_frame = Qnil;
 
 #ifdef USE_X_TOOLKIT
   widget_id_tick = (1<<16);	

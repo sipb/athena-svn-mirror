@@ -34,24 +34,34 @@ extern int display_completed;
 #endif
 
 #ifdef HAVE_NTGUI
-#include "win32.h"
+#include "w32gui.h"
 #endif
 
 #ifdef HAVE_FACES
 struct face
   {
     /* If this is non-zero, it is a GC we can use without modification
-       to represent this face.  */
+       to represent this face.  Used only for ASCII characters.  */
     GC gc;
-  
+
+    /* GC used for non-ASCII characters.  */
+    GC non_ascii_gc;
+
     /* Pixel value for foreground color.  */
     EMACS_UINT foreground;
   
     /* Pixel value for background color.  */
     EMACS_UINT background;
   
-    /* Font used for this face.  */
+    /* Font used for this face.  If any fontset is set for this face,
+       this points to a `font' slot of the struct `font_info' for an
+       ASCII font of the fontset.  In that case, we should not call
+       XFreeFont on it because the font may still be used somewhere
+       else.  */
     XFontStruct *font;
+
+    /* Fontset ID if any fontset is set for this face, else -1.  */
+    int fontset;
   
     /* Background stipple or bitmap used for this face.  */
     Pixmap stipple;
@@ -70,9 +80,11 @@ typedef struct face *FACE;
 
 #define FACE_HAS_GC(f) ((f)->gc)
 #define FACE_GC(f) ((f)->gc)
+#define FACE_NON_ASCII_GC(f) ((f)->non_ascii_gc)
 #define FACE_FOREGROUND(f) ((f)->foreground)
 #define FACE_BACKGROUND(f) ((f)->background)
 #define FACE_FONT(f) ((f)->font)
+#define FACE_FONTSET(f) ((f)->fontset)
 #define FACE_STIPPLE(f) ((f)->stipple)
 #define FACE_UNDERLINE_P(f) ((f)->underline)
 
@@ -99,9 +111,7 @@ typedef int FACE;
 
 struct frame_glyphs
   {
-#ifdef MULTI_FRAME
     struct  frame *frame;	/* Frame these glyphs belong to.  */
-#endif /* MULTI_FRAME */
     int height;
     int width;
 
@@ -177,7 +187,61 @@ struct frame_glyphs
     int *total_charstarts;
   };
 
-extern void get_display_line ();
-extern Lisp_Object sit_for ();
+extern void redraw_frame P_ ((struct frame *));
+extern void redraw_garbaged_frames P_ ((void));
+extern void free_frame_glyphs P_ ((struct frame *, struct frame_glyphs *));
+extern void remake_frame_glyphs P_ ((struct frame *));
+extern void cancel_line P_ ((int, struct frame *));
+extern void clear_frame_records P_ ((struct frame *));
+extern void init_desired_glyphs P_ ((struct frame *));
+extern void get_display_line P_ ((struct frame *, int, int));
+extern int scroll_frame_lines P_ ((struct frame *, int, int, int, int));
+extern void preserve_other_columns P_ ((struct window *));
+extern void adjust_window_charstarts P_ ((struct window *, int, int));
+extern void verify_charstarts P_ ((struct window *));
+extern void cancel_my_columns P_ ((struct window *));
+extern int direct_output_for_insert P_ ((int));
+extern int direct_output_forward_char P_ ((int));
+extern int update_frame P_ ((struct frame *, int, int));
+extern void quit_error_check P_ ((void));
+extern int scrolling P_ ((struct frame *));
+extern int buffer_posn_from_coords P_ ((struct window *, int, int));
+extern void do_pending_window_change P_ ((void));
+extern void change_frame_size P_ ((struct frame *, int, int, int, int));
+extern void bitch_at_user P_ ((void));
+
+/* Defined in term.c */
+extern void ring_bell P_ ((void));
+extern void set_terminal_modes P_ ((void));
+extern void reset_terminal_modes P_ ((void));
+extern void update_begin P_ ((struct frame *));
+extern void update_end P_ ((struct frame *));
+extern void set_terminal_window P_ ((int));
+extern void set_scroll_region P_ ((int, int));
+extern void turn_off_insert P_ ((void));
+extern void turn_off_highlight P_ ((void));
+extern void background_highlight P_ ((void));
+extern void reassert_line_highlight P_ ((int, int));
+extern void change_line_highlight P_ ((int, int, int));
+extern void cursor_to P_ ((int, int));
+extern void clear_frame P_ ((void));
+extern void clear_end_of_line P_ ((int));
+extern void clear_end_of_line_raw P_ ((int));
+extern void write_glyphs P_ ((GLYPH *, int));
+extern void insert_glyphs P_ ((GLYPH *, int));
+extern void delete_glyphs P_ ((int));
+extern void ins_del_lines P_ ((int, int));
+extern int string_cost P_ ((char *));
+extern int per_line_cost P_ ((char *));
+extern void calculate_costs P_ ((struct frame *));
+extern void term_init P_ ((char *));
+extern void fatal P_ ((/* char *, ... */));
+
+/* Defined in scroll.c */
+extern int scrolling_max_lines_saved P_ ((int, int, int *, int *, int *));
+extern int scroll_cost P_ ((struct frame *, int, int, int));
+extern void do_line_insertion_deletion_costs P_ ((struct frame *, char *,
+						  char *, char *, char *,
+						  char *, char *, int));
 
 #endif /* not _DISPEXTERN_H_ */

@@ -29,7 +29,7 @@ Boston, MA 02111-1307, USA.  */
 /* #define UNIPLUS */
 /* #define USG5 */
 #define USG
-/* #define BSD */
+/* #define BSD_SYSTEM */
 #define LINUX
 
 /* SYSTEM_TYPE should indicate the kind of system you are using.
@@ -47,6 +47,9 @@ Boston, MA 02111-1307, USA.  */
 #if LINUX_VERSION_CODE > 0x10200
 #define LINUX_SIGIO_DOES_WORK
 #endif /* LINUX_VERSION_CODE > 0x10200 */
+#if LINUX_VERSION_CODE >= 0x20000
+#define LINUX_MAP_SHARED_DOES_WORK
+#endif /* LINUX_VERSION_CODE >= 0x20000 */
 #endif /* HAVE_LINUX_VERSION_H */
 #endif /* emacs */
 #endif /* NOT_C_CODE */
@@ -160,7 +163,11 @@ Boston, MA 02111-1307, USA.  */
 /* Here is how to find X Windows.  LD_SWITCH_X_SITE_AUX gives an -R option
    says where to find X windows at run time.  */
 
+#ifdef __mips__
+#define LD_SWITCH_SYSTEM -G 0 LD_SWITCH_X_SITE_AUX
+#else
 #define LD_SWITCH_SYSTEM LD_SWITCH_X_SITE_AUX
+#endif /* __mips__ */
 #endif /* __ELF__ */
 
 /* As of version 1.1.51, Linux did not actually implement SIGIO.
@@ -239,7 +246,9 @@ Boston, MA 02111-1307, USA.  */
 
 #ifdef __ELF__
 #define UNEXEC unexelf.o
+#ifndef LINUX_MAP_SHARED_DOES_WORK
 #define UNEXEC_USE_MAP_PRIVATE
+#endif
 #endif
 
 #ifdef LINUX_QMAGIC
@@ -292,4 +301,4 @@ Boston, MA 02111-1307, USA.  */
    actually set a process group. */
 
 #define BSD_PGRPS
-#define setpgrp(pid,pgid) setpgid((pid),(pgid))
+#define setpgrp(pid,pgid) setpgid(pid,pgid)

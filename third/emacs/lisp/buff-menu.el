@@ -67,11 +67,12 @@
     ()
   (setq Buffer-menu-mode-map (make-keymap))
   (suppress-keymap Buffer-menu-mode-map t)
-  (define-key Buffer-menu-mode-map "q" 'Buffer-menu-quit)
+  (define-key Buffer-menu-mode-map "q" 'quit-window)
   (define-key Buffer-menu-mode-map "v" 'Buffer-menu-select)
   (define-key Buffer-menu-mode-map "2" 'Buffer-menu-2-window)
   (define-key Buffer-menu-mode-map "1" 'Buffer-menu-1-window)
   (define-key Buffer-menu-mode-map "f" 'Buffer-menu-this-window)
+  (define-key Buffer-menu-mode-map "e" 'Buffer-menu-this-window)
   (define-key Buffer-menu-mode-map "\C-m" 'Buffer-menu-this-window)
   (define-key Buffer-menu-mode-map "o" 'Buffer-menu-other-window)
   (define-key Buffer-menu-mode-map "\C-o" 'Buffer-menu-switch-other-window)
@@ -91,7 +92,8 @@
   (define-key Buffer-menu-mode-map "m" 'Buffer-menu-mark)
   (define-key Buffer-menu-mode-map "t" 'Buffer-menu-visit-tags-table)
   (define-key Buffer-menu-mode-map "%" 'Buffer-menu-toggle-read-only)
-  (define-key Buffer-menu-mode-map "g" 'revert-buffer)
+  (define-key Buffer-menu-mode-map "b" 'Buffer-menu-bury)
+  (define-key Buffer-menu-mode-map "g" 'Buffer-menu-revert)
   (define-key Buffer-menu-mode-map [mouse-2] 'Buffer-menu-mouse-select)
 )
 
@@ -123,7 +125,9 @@ Letters do not insert themselves; instead, they are commands.
 \\[Buffer-menu-unmark] -- remove all kinds of marks from current line.
   With prefix argument, also move up one line.
 \\[Buffer-menu-backup-unmark] -- back up a line and remove marks.
-\\[Buffer-menu-toggle-read-only] -- toggle read-only status of buffer on this line."
+\\[Buffer-menu-toggle-read-only] -- toggle read-only status of buffer on this line.
+\\[Buffer-menu-revert] -- update the list of buffers.
+\\[Buffer-menu-bury] -- bury the buffer listed on this line."
   (kill-all-local-variables)
   (use-local-map Buffer-menu-mode-map)
   (setq major-mode 'Buffer-menu-mode)
@@ -133,6 +137,11 @@ Letters do not insert themselves; instead, they are commands.
   (setq truncate-lines t)
   (setq buffer-read-only t)
   (run-hooks 'buffer-menu-mode-hook))
+
+(defun Buffer-menu-revert ()
+  "Update the list of buffers."
+  (interactive)
+  (revert-buffer))
 
 (defun Buffer-menu-revert-function (ignore1 ignore2)
   (list-buffers))
@@ -174,14 +183,6 @@ Type q immediately to make the buffer menu go away."
   (switch-to-buffer-other-window (list-buffers-noselect arg))
   (message
    "Commands: d, s, x, u; f, o, 1, 2, m, v; ~, %%; q to quit; ? for help."))
-
-(defun Buffer-menu-quit ()
-  "Quit the buffer menu."
-  (interactive)
-  (let ((buffer (current-buffer)))
-    ;; Switch away from the buffer menu and bury it.
-    (switch-to-buffer (other-buffer))
-    (bury-buffer buffer)))
 
 (defun Buffer-menu-mark ()
   "Mark buffer on this line for being displayed by \\<Buffer-menu-mode-map>\\[Buffer-menu-select] command."
@@ -419,6 +420,21 @@ The current window remains selected."
             (delete-char 1)
             (insert char))))))
 
+(defun Buffer-menu-bury ()
+  "Bury the buffer listed on this line."
+  (interactive)
+  (beginning-of-line)
+  (if (looking-at " [-M]")		;header lines
+      (ding)
+    (save-excursion
+      (beginning-of-line)
+      (bury-buffer (Buffer-menu-buffer t))
+      (let ((line (buffer-substring (point) (progn (forward-line 1) (point))))
+            (buffer-read-only nil))
+        (delete-region (point) (progn (forward-line -1) (point)))
+        (goto-char (point-max))
+        (insert line))
+      (message "Buried buffer moved to the end"))))
 
 
 (define-key ctl-x-map "\C-b" 'list-buffers)

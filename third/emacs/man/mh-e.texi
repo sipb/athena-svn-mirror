@@ -1,11 +1,16 @@
 \input texinfo   @c -*-texinfo-*-
-@c $Id: mh-e.texi,v 1.1.1.1 1996-09-26 01:01:13 ghudson Exp $
+@c $Id: mh-e.texi,v 1.1.1.2 1998-12-16 20:11:10 ghudson Exp $
 @c %**start of header
 @setfilename ../info/mh-e
 @settitle mh-e
 @c %**end of header
 
 @setchapternewpage odd
+
+@dircategory Editors
+@direntry
+* MH-E: (mh-e).		Emacs interface to the MH mail system.
+@end direntry
 
 @c Version variables.
 @set EDITION 1.2
@@ -2068,7 +2073,7 @@ not, you can order a printed manual, which has the desirable side-effect
 of helping to support the Free Software Foundation which made all this
 great software available.  You can find an order form by running
 @kbd{C-h C-d}, or you can request an order form from
-@i{gnu@@prep.ai.mit.edu}.}
+@i{gnu@@gnu.org}.}
 @end iftex
 @ifinfo
 @footnote{Perhaps you can find the online version of @ref{Top, The GNU
@@ -2077,7 +2082,7 @@ If not, you can order a printed manual, which has the desirable
 side-effect of helping to support the Free Software Foundation which
 made all this great software available.  You can find an order form by
 running @kbd{C-h C-d}, or you can request an order form from
-@i{gnu@@prep.ai.mit.edu}.}
+@i{gnu@@gnu.org}.}
 @end ifinfo
 and you can look at the code itself for examples.  Look in the Emacs
 Lisp directory on your system (such as @file{/usr/local/lib/emacs/lisp})
@@ -3678,7 +3683,7 @@ mh-mhn-args
 
 @display
 Copyright @copyright{} 1989, 1991 Free Software Foundation, Inc.
-675 Mass Ave, Cambridge, MA 02139, USA
+59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Everyone is permitted to copy and distribute verbatim copies
 of this license document, but changing it is not allowed.
@@ -4022,9 +4027,9 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE@.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 @end smallexample
 
 Also add information on how to contact you by electronic and paper mail.

@@ -24,7 +24,21 @@ Boston, MA 02111-1307, USA.  */
 #include <config.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#ifdef STDC_HEADERS
+#include <float.h>
+#endif
+
 #include "lisp.h"
+
+#ifndef DBL_MAX_10_EXP
+#define DBL_MAX_10_EXP 308 /* IEEE double */
+#endif
+
+/* Since we use the macro CHAR_HEAD_P, we have to include this, but
+   don't have to include others because CHAR_HEAD_P does not contains
+   another macro.  */
+#include "charset.h"
 
 extern long *xmalloc (), *xrealloc ();
 
@@ -40,6 +54,7 @@ static int doprnt1 ();
    String arguments are passed as C strings.
    Integers are passed as C integers.  */
 
+int
 doprnt (buffer, bufsize, format, format_end, nargs, args)
      char *buffer;
      register int bufsize;
@@ -54,6 +69,7 @@ doprnt (buffer, bufsize, format, format_end, nargs, args)
 /* Like doprnt except that strings in ARGS are passed
    as Lisp_Object.  */
 
+int
 doprnt_lisp (buffer, bufsize, format, format_end, nargs, args)
      char *buffer;
      register int bufsize;
@@ -80,10 +96,10 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
   register char *bufptr = buffer; /* Pointer into output buffer.. */
 
   /* Use this for sprintf unless we need something really big.  */
-  char tembuf[100];
+  char tembuf[DBL_MAX_10_EXP + 100];
 
   /* Size of sprintf_buffer.  */
-  int size_allocated = 100;
+  int size_allocated = sizeof (tembuf);
 
   /* Buffer to use for sprintf.  Either tembuf or same as BIG_BUFFER.  */
   char *sprintf_buffer = tembuf;
@@ -92,12 +108,12 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
   char *big_buffer = 0;
 
   register int tem;
-  char *string;
+  unsigned char *string;
   char fixed_buffer[20];	/* Default buffer for small formatting. */
   char *fmtcpy;
   int minlen;
   int size;			/* Field width factor; e.g., %90d */
-  char charbuf[2];		/* Used for %c.  */
+  unsigned char charbuf[5];	/* Used for %c.  */
 
   if (format_end == 0)
     format_end = format + strlen (format);
@@ -114,31 +130,48 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
     {
       if (*fmt == '%')	/* Check for a '%' character */
 	{
-	  int size_bound;
+	  int size_bound = 0;
+	  int width;		/* Columns occupied by STRING.  */
 
 	  fmt++;
 	  /* Copy this one %-spec into fmtcpy.  */
-	  string = fmtcpy;
+	  string = (unsigned char *)fmtcpy;
 	  *string++ = '%';
 	  while (1)
 	    {
 	      *string++ = *fmt;
-	      if (! (*fmt >= '0' && *fmt <= '9')
-		  && *fmt != '-' && *fmt != ' '&& *fmt != '.')
+	      if ('0' <= *fmt && *fmt <= '9')
+		{
+		  /* Get an idea of how much space we might need.
+		     This might be a field width or a precision; e.g.
+		     %1.1000f and %1000.1f both might need 1000+ bytes.
+		     Parse the width or precision, checking for overflow.  */
+		  int n = *fmt - '0';
+		  while ('0' <= fmt[1] && fmt[1] <= '9')
+		    {
+		      if (n * 10 / 10 != n
+			  || (n = n * 10 + (fmt[1] - '0')) < 0)
+			error ("Format width or precision too large");
+		      *string++ = *++fmt;
+		    }
+
+		  if (size_bound < n)
+		    size_bound = n;
+		}
+	      else if (*fmt == '-' || *fmt == ' ' || *fmt == '.')
+		;
+	      else
 		break;
 	      fmt++;
 	    }
 	  *string = 0;
-	  /* Get an idea of how much space we might need.  */
-	  size_bound = atoi (&fmtcpy[1]);
 
-	  /* Avoid pitfall of negative "size" parameter ("%-200d"). */
+	  /* Make the size bound large enough to handle floating point formats
+	     with large numbers.  */
+	  size_bound += DBL_MAX_10_EXP + 50;
+
 	  if (size_bound < 0)
-	    size_bound = -size_bound;
-	  size_bound += 50;
-
-	  if (size_bound > (((unsigned) 1) << (BITS_PER_INT - 1)))
-	    error ("Format padding too large");
+	    error ("Format width or precision too large");
 
 	  /* Make sure we have that much.  */
 	  if (size_bound > size_allocated)
@@ -174,7 +207,7 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
 		abort ();
 	      sprintf (sprintf_buffer, fmtcpy, args[cnt++]);
 	      /* Now copy into final output, truncating as nec.  */
-	      string = sprintf_buffer;
+	      string = (unsigned char *)sprintf_buffer;
 	      goto doit;
 
 	    case 'f':
@@ -188,7 +221,7 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
 		u.half[1] = args[cnt++];
 		sprintf (sprintf_buffer, fmtcpy, u.d);
 		/* Now copy into final output, truncating as nec.  */
-		string = sprintf_buffer;
+		string = (unsigned char *)sprintf_buffer;
 		goto doit;
 	      }
 
@@ -201,24 +234,30 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
 		minlen = atoi (&fmtcpy[1]);
 	      if (lispstrings)
 		{
-		  string = (char *) XSTRING (((Lisp_Object *) args)[cnt])->data;
-		  tem = XSTRING (((Lisp_Object *) args)[cnt])->size;
+		  string = ((struct Lisp_String *)args[cnt])->data;
+		  tem = ((struct Lisp_String *)args[cnt])->size;
 		  cnt++;
 		}
 	      else
 		{
-		  string = args[cnt++];
+		  string = (unsigned char *)args[cnt++];
 		  tem = strlen (string);
 		}
+	      width = strwidth (string, tem);
 	      goto doit1;
 
 	      /* Copy string into final output, truncating if no room.  */
 	    doit:
-	      tem = strlen (string);
+	      /* Coming here means STRING contains ASCII only.  */
+	      width = tem = strlen (string);
 	    doit1:
+	      /* We have already calculated:
+		 TEM -- length of STRING,
+		 WIDTH -- columns occupied by STRING when displayed, and
+		 MINLEN -- minimum columns of the output.  */
 	      if (minlen > 0)
 		{
-		  while (minlen > tem && bufsize > 0)
+		  while (minlen > width && bufsize > 0)
 		    {
 		      *bufptr++ = ' ';
 		      bufsize--;
@@ -227,13 +266,21 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
 		  minlen = 0;
 		}
 	      if (tem > bufsize)
-		tem = bufsize;
-	      bcopy (string, bufptr, tem);
+		{
+		  /* Truncate the string at character boundary.  */
+		  tem = bufsize;
+		  while (!CHAR_HEAD_P (string[tem - 1])) tem--;
+		  bcopy (string, bufptr, tem);
+		  /* We must calculate WIDTH again.  */
+		  width = strwidth (bufptr, tem);
+		}
+	      else
+		bcopy (string, bufptr, tem);
 	      bufptr += tem;
 	      bufsize -= tem;
 	      if (minlen < 0)
 		{
-		  while (minlen < - tem && bufsize > 0)
+		  while (minlen < - width && bufsize > 0)
 		    {
 		      *bufptr++ = ' ';
 		      bufsize--;
@@ -246,9 +293,10 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
 	    case 'c':
 	      if (cnt == nargs)
 		error ("not enough arguments for format string");
-	      *charbuf = (EMACS_INT) args[cnt++];
-	      string = charbuf;
-	      tem = 1;
+	      tem = CHAR_STRING ((int) (EMACS_INT) args[cnt], charbuf, string);
+	      cnt++;
+	      string[tem] = 0;
+	      width = strwidth (string, tem);
 	      if (fmtcpy[1] != 'c')
 		minlen = atoi (&fmtcpy[1]);
 	      goto doit1;
@@ -257,8 +305,20 @@ doprnt1 (lispstrings, buffer, bufsize, format, format_end, nargs, args)
 	      fmt--;    /* Drop thru and this % will be treated as normal */
 	    }
 	}
-      *bufptr++ = *fmt++;	/* Just some characters; Copy 'em */
-      bufsize--;
+
+      {
+	/* Just some character; Copy it if the whole multi-byte form
+	   fit in the buffer.  */
+	char *save_bufptr = bufptr;
+
+	do { *bufptr++ = *fmt++; }
+	while (--bufsize > 0 && !CHAR_HEAD_P (*fmt));
+	if (!CHAR_HEAD_P (*fmt))
+	  {
+	    bufptr = save_bufptr;
+	    break;
+	  }
+      }
     };
 
   /* If we had to malloc something, free it.  */

@@ -20,7 +20,15 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;;; Code:
+(defvar custom-declare-variable-list nil
+  "Record `defcustom' calls made before `custom.el' is loaded to handle them.
+Each element of this list holds the arguments to one call to `defcustom'.")
 
+;; Use this, rather than defcustom, in subr.el and other files loaded
+;; before custom.el.
+(defun custom-declare-variable-early (&rest arguments)
+  (setq custom-declare-variable-list
+	(cons arguments custom-declare-variable-list)))
 
 ;;;; Lisp language features.
 
@@ -43,17 +51,66 @@ BODY should be a list of lisp expressions."
   ;; depend on backquote.el.
   (list 'function (cons 'lambda cdr)))
 
-;;(defmacro defun-inline (name args &rest body)
-;;  "Create an \"inline defun\" (actually a macro).
-;;Use just like `defun'."
-;;  (nconc (list 'defmacro name '(&rest args))
-;;	 (if (stringp (car body))
-;;	     (prog1 (list (car body))
-;;	       (setq body (or (cdr body) body))))
-;;	 (list (list 'cons (list 'quote
-;;				 (cons 'lambda (cons args body)))
-;;		     'args))))
+(defmacro when (cond &rest body)
+  "(when COND BODY...): if COND yields non-nil, do BODY, else return nil."
+  (list 'if cond (cons 'progn body)))
+(put 'when 'lisp-indent-function 1)
+(put 'when 'edebug-form-spec '(&rest form))
 
+(defmacro unless (cond &rest body)
+  "(unless COND BODY...): if COND yields nil, do BODY, else return nil."
+  (cons 'if (cons cond (cons nil body))))
+(put 'unless 'lisp-indent-function 1)
+(put 'unless 'edebug-form-spec '(&rest form))
+
+(defsubst caar (x)
+  "Return the car of the car of X."
+  (car (car x)))
+
+(defsubst cadr (x)
+  "Return the car of the cdr of X."
+  (car (cdr x)))
+
+(defsubst cdar (x)
+  "Return the cdr of the car of X."
+  (cdr (car x)))
+
+(defsubst cddr (x)
+  "Return the cdr of the cdr of X."
+  (cdr (cdr x)))
+
+(defun last (x &optional n)
+  "Return the last link of the list X.  Its car is the last element.
+If X is nil, return nil.
+If N is non-nil, return the Nth-to-last link of X.
+If N is bigger than the length of X, return X."
+  (if n
+      (let ((m 0) (p x))
+	(while (consp p)
+	  (setq m (1+ m) p (cdr p)))
+	(if (<= n 0) p
+	  (if (< n m) (nthcdr (- m n) x) x)))
+    (while (cdr x)
+      (setq x (cdr x)))
+    x))
+
+(defun assoc-default (key alist &optional test default)
+  "Find object KEY in a pseudo-alist ALIST.
+ALIST is a list of conses or objects.  Each element (or the element's car,
+if it is a cons) is compared with KEY by evaluating (TEST (car elt) KEY).
+If that is non-nil, the element matches;
+then `assoc-default' returns the element's cdr, if it is a cons,
+or DEFAULT if the element is not a cons.
+
+If no element matches, the value is nil.
+If TEST is omitted or nil, `equal' is used."
+  (let (found (tail alist) value)
+    (while (and tail (not found))
+      (let ((elt (car tail)))
+	(when (funcall (or test 'equal) (if (consp elt) (car elt) elt) key)
+	  (setq found t value (if (consp elt) (cdr elt) default))))
+      (setq tail (cdr tail)))
+    value))
 
 ;;;; Keymap support.
 
@@ -125,7 +182,11 @@ in KEYMAP as NEWDEF those chars which are defined as OLDDEF in OLDMAP."
 	      (while (and (symbolp inner-def)
 			  (fboundp inner-def))
 		(setq inner-def (symbol-function inner-def)))
-	      (if (eq defn olddef)
+	      (if (or (eq defn olddef)
+		      ;; Compare with equal if definition is a key sequence.
+		      ;; That is useful for operating on function-key-map.
+		      (and (or (stringp defn) (vectorp defn))
+			   (equal defn olddef)))
 		  (define-key keymap prefix1 (nconc (nreverse skipped) newdef))
 		(if (and (keymapp defn)
 			 ;; Avoid recursively scanning
@@ -141,7 +202,7 @@ in KEYMAP as NEWDEF those chars which are defined as OLDDEF in OLDMAP."
 		    (substitute-key-definition olddef newdef keymap
 					       inner-def
 					       prefix1)))))
-	(if (arrayp (car scan))
+	(if (vectorp (car scan))
 	    (let* ((array (car scan))
 		   (len (length array))
 		   (i 0))
@@ -162,7 +223,9 @@ in KEYMAP as NEWDEF those chars which are defined as OLDDEF in OLDMAP."
 		    (while (and (symbolp inner-def)
 				(fboundp inner-def))
 		      (setq inner-def (symbol-function inner-def)))
-		    (if (eq defn olddef)
+		    (if (or (eq defn olddef)
+			    (and (or (stringp defn) (vectorp defn))
+				 (equal defn olddef)))
 			(define-key keymap prefix1
 			  (nconc (nreverse skipped) newdef))
 		      (if (and (keymapp defn)
@@ -174,17 +237,59 @@ in KEYMAP as NEWDEF those chars which are defined as OLDDEF in OLDMAP."
 			  (substitute-key-definition olddef newdef keymap
 						     inner-def
 						     prefix1)))))
-		(setq i (1+ i))))))
+		(setq i (1+ i))))
+	  (if (char-table-p (car scan))
+	      (map-char-table
+	       (function (lambda (char defn)
+			   (let ()
+			     ;; The inside of this let duplicates exactly
+			     ;; the inside of the previous let,
+			     ;; except that it uses set-char-table-range
+			     ;; instead of define-key.
+			     (aset vec1 0 char)
+			     (aset prefix1 (length prefix) char)
+			     (let (inner-def skipped)
+			       ;; Skip past menu-prompt.
+			       (while (stringp (car-safe defn))
+				 (setq skipped (cons (car defn) skipped))
+				 (setq defn (cdr defn)))
+			       (and (consp defn) (consp (car defn))
+				    (setq defn (cdr defn)))
+			       (setq inner-def defn)
+			       (while (and (symbolp inner-def)
+					   (fboundp inner-def))
+				 (setq inner-def (symbol-function inner-def)))
+			       (if (or (eq defn olddef)
+				       (and (or (stringp defn) (vectorp defn))
+					    (equal defn olddef)))
+				   (define-key keymap prefix1
+				     (nconc (nreverse skipped) newdef))
+				 (if (and (keymapp defn)
+					  (let ((elt (lookup-key keymap prefix1)))
+					    (or (null elt)
+						(keymapp elt)))
+					  (not (memq inner-def
+						     key-substitution-in-progress)))
+				     (substitute-key-definition olddef newdef keymap
+								inner-def
+								prefix1)))))))
+	       (car scan)))))
       (setq scan (cdr scan)))))
 
 (defun define-key-after (keymap key definition after)
   "Add binding in KEYMAP for KEY => DEFINITION, right after AFTER's binding.
 This is like `define-key' except that the binding for KEY is placed
 just after the binding for the event AFTER, instead of at the beginning
-of the map.
-The order matters when the keymap is used as a menu.
+of the map.  Note that AFTER must be an event type (like KEY), NOT a command
+\(like DEFINITION).
+
+If AFTER is t, the new binding goes at the end of the keymap.
+
 KEY must contain just one event type--that is to say, it must be
-a string or vector of length 1."
+a string or vector of length 1.
+
+The order of bindings in a keymap matters when it is used as a menu."
+
   (or (keymapp keymap)
       (signal 'wrong-type-argument (list 'keymapp keymap)))
   (if (> (length key) 1)
@@ -198,7 +303,8 @@ a string or vector of length 1."
       ;; When we reach AFTER's binding, insert the new binding after.
       ;; If we reach an inherited keymap, insert just before that.
       ;; If we reach the end of this keymap, insert at the end.
-      (if (or (eq (car-safe (car tail)) after)
+      (if (or (and (eq (car-safe (car tail)) after)
+		   (not (eq after t)))
 	      (eq (car (cdr tail)) 'keymap)
 	      (null (cdr tail)))
 	  (progn
@@ -213,22 +319,21 @@ a string or vector of length 1."
 	    (setq inserted t)))
       (setq tail (cdr tail)))))
 
+(defmacro kbd (keys)
+  "Convert KEYS to the internal Emacs key representation.
+KEYS should be a string constant in the format used for
+saving keyboard macros (see `insert-kbd-macro')."
+  (read-kbd-macro keys))
+
+(put 'keyboard-translate-table 'char-table-extra-slots 0)
+
 (defun keyboard-translate (from to)
   "Translate character FROM to TO at a low level.
 This function creates a `keyboard-translate-table' if necessary
 and then modifies one entry in it."
-  (or (arrayp keyboard-translate-table)
-      (setq keyboard-translate-table ""))
-  (if (or (> from (length keyboard-translate-table))
-	  (> to   (length keyboard-translate-table)))
-      (progn
-	(let* ((i (length keyboard-translate-table))
-	       (table (concat keyboard-translate-table
-			      (make-string (- 256 i) 0))))
-	  (while (< i 256)
-	    (aset table i i)
-	    (setq i (1+ i)))
-	  (setq keyboard-translate-table table))))
+  (or (char-table-p keyboard-translate-table)
+      (setq keyboard-translate-table
+	    (make-char-table 'keyboard-translate-table nil)))
   (aset keyboard-translate-table from to))
 
 
@@ -422,6 +527,16 @@ as returned by the `event-start' and `event-end' functions."
 (defalias 'buffer-flush-undo 'buffer-disable-undo)
 (defalias 'eval-current-buffer 'eval-buffer)
 (defalias 'compiled-function-p 'byte-code-function-p)
+(defalias 'define-function 'defalias)
+
+(defun sref (string byte-index)
+  "Obsolete function returning a character in STRING at BYTE-INDEX.
+Please convert your programs to use `aref' with character-base index."
+  (let ((byte 0) (char 0))
+    (while (< byte byte-index)
+      (setq byte (+ byte (char-bytes (aref string char)))
+	    char (1+ char)))
+    (aref string char)))
 
 ;; Some programs still use this as a function.
 (defun baud-rate ()
@@ -437,7 +552,6 @@ Please convert your programs to use the variable `baud-rate' directly."
 (defalias 'string= 'string-equal)
 (defalias 'string< 'string-lessp)
 (defalias 'move-marker 'set-marker)
-(defalias 'eql 'eq)
 (defalias 'not 'null)
 (defalias 'rplaca 'setcar)
 (defalias 'rplacd 'setcdr)
@@ -447,19 +561,13 @@ Please convert your programs to use the variable `baud-rate' directly."
 (defalias 'search-forward-regexp (symbol-function 're-search-forward))
 (defalias 'search-backward-regexp (symbol-function 're-search-backward))
 (defalias 'int-to-string 'number-to-string)
-(defalias 'set-match-data 'store-match-data)
+(defalias 'store-match-data 'set-match-data)
 
 ;;; Should this be an obsolete name?  If you decide it should, you get
 ;;; to go through all the sources and change them.
 (defalias 'string-to-int 'string-to-number)
 
 ;;;; Hook manipulation functions.
-
-;; We used to have this variable so that C code knew how to run hooks.  That
-;; calling convention is made obsolete now the hook running functions are in C.
-(defconst run-hooks 'run-hooks
-  "Variable by which C primitives find the function `run-hooks'.
-Don't change it.  Don't use it either; use the hook running C primitives.")
 
 (defun make-local-hook (hook)
   "Make the hook HOOK local to the current buffer.
@@ -513,7 +621,7 @@ function, it is changed to a list of functions."
 	  (and (local-variable-if-set-p hook)
 	       (not (memq t (symbol-value hook)))))
       ;; Alter the local value only.
-      (or (if (consp function)
+      (or (if (or (consp function) (byte-code-function-p function))
 	      (member function (symbol-value hook))
 	    (memq function (symbol-value hook)))
 	  (set hook 
@@ -522,7 +630,7 @@ function, it is changed to a list of functions."
 		 (cons function (symbol-value hook)))))
     ;; Alter the global value (which is also the only value,
     ;; if the hook doesn't have a local value).
-    (or (if (consp function)
+    (or (if (or (consp function) (byte-code-function-p function))
 	    (member function (default-value hook))
 	  (memq function (default-value hook)))
 	(set-default hook 
@@ -542,7 +650,7 @@ This makes no difference if the hook is not buffer-local.
 To make a hook variable buffer-local, always use
 `make-local-hook', not `make-local-variable'."
   (if (or (not (boundp hook))		;unbound symbol, or
-	  (not (default-boundp 'hook))
+	  (not (default-boundp hook))
 	  (null (symbol-value hook))	;value is nil, or
 	  (null function))		;function is nil, then
       nil				;Do nothing.
@@ -574,8 +682,9 @@ until a certain package is loaded, you should put the call to `add-to-list'
 into a hook function that will be run only after loading the package.
 `eval-after-load' provides one way to do this.  In some cases
 other hooks, such as major mode hooks, can do the job."
-  (or (member element (symbol-value list-var))
-      (set list-var (cons element (symbol-value list-var)))))
+  (if (member element (symbol-value list-var))
+      (symbol-value list-var)
+    (set list-var (cons element (symbol-value list-var)))))
 
 ;;;; Specifying things to do after certain files are loaded.
 
@@ -607,34 +716,104 @@ FILE should be the name of a library, with no directory name."
 
 ;;;; Input and display facilities.
 
+(defvar read-quoted-char-radix 8
+  "*Radix for \\[quoted-insert] and other uses of `read-quoted-char'.
+Legitimate radix values are 8, 10 and 16.")
+
+(custom-declare-variable-early
+ 'read-quoted-char-radix 8 
+ "*Radix for \\[quoted-insert] and other uses of `read-quoted-char'.
+Legitimate radix values are 8, 10 and 16."
+  :type '(choice (const 8) (const 10) (const 16))
+  :group 'editing-basics)
+
 (defun read-quoted-char (&optional prompt)
-  "Like `read-char', except that if the first character read is an octal
-digit, we read up to two more octal digits and return the character
-represented by the octal number consisting of those digits.
-Optional argument PROMPT specifies a string to use to prompt the user."
-  (let ((message-log-max nil) (count 0) (code 0) char)
-    (while (< count 3)
-      (let ((inhibit-quit (zerop count))
+  "Like `read-char', but do not allow quitting.
+Also, if the first character read is an octal digit,
+we read any number of octal digits and return the
+specified character code.  Any nondigit terminates the sequence.
+If the terminator is RET, it is discarded;
+any other terminator is used itself as input.
+
+The optional argument PROMPT specifies a string to use to prompt the user.
+The variable `read-quoted-char-radix' controls which radix to use
+for numeric input."
+  (let ((message-log-max nil) done (first t) (code 0) char)
+    (while (not done)
+      (let ((inhibit-quit first)
 	    ;; Don't let C-h get the help message--only help function keys.
 	    (help-char nil)
 	    (help-form
 	     "Type the special character you want to use,
-or three octal digits representing its character code."))
-	(and prompt (message "%s-" prompt))
-	(setq char (read-char))
+or the octal character code.
+RET terminates the character code and is discarded;
+any other non-digit terminates the character code and is then used as input."))
+	(setq char (read-event (and prompt (format "%s-" prompt)) t))
 	(if inhibit-quit (setq quit-flag nil)))
+      ;; Translate TAB key into control-I ASCII character, and so on.
+      (and char
+	   (let ((translated (lookup-key function-key-map (vector char))))
+	     (if (arrayp translated)
+		 (setq char (aref translated 0)))))
       (cond ((null char))
-	    ((and (<= ?0 char) (<= char ?7))
-	     (setq code (+ (* code 8) (- char ?0))
-		   count (1+ count))
+	    ((not (integerp char))
+	     (setq unread-command-events (list char)
+		   done t))
+	    ((/= (logand char ?\M-\^@) 0)
+	     ;; Turn a meta-character into a character with the 0200 bit set.
+	     (setq code (logior (logand char (lognot ?\M-\^@)) 128)
+		   done t))
+	    ((and (<= ?0 char) (< char (+ ?0 (min 10 read-quoted-char-radix))))
+	     (setq code (+ (* code read-quoted-char-radix) (- char ?0)))
 	     (and prompt (setq prompt (message "%s %c" prompt char))))
-	    ((> count 0)
-	     (setq unread-command-events (list char) count 259))
-	    (t (setq code char count 259))))
-    ;; Turn a meta-character into a character with the 0200 bit set.
-    (logior (if (/= (logand code ?\M-\^@) 0) 128 0)
-	    (logand 255 code))))
+	    ((and (<= ?a (downcase char))
+		  (< (downcase char) (+ ?a -10 (min 26 read-quoted-char-radix))))
+	     (setq code (+ (* code read-quoted-char-radix)
+			   (+ 10 (- (downcase char) ?a))))
+	     (and prompt (setq prompt (message "%s %c" prompt char))))
+	    ((and (not first) (eq char ?\C-m))
+	     (setq done t))
+	    ((not first)
+	     (setq unread-command-events (list char)
+		   done t))
+	    (t (setq code char
+		     done t)))
+      (setq first nil))
+    code))
 
+(defun read-passwd (prompt &optional confirm default)
+  "Read a password, prompting with PROMPT.  Echo `.' for each character typed.
+End with RET, LFD, or ESC.  DEL or C-h rubs out.  C-u kills line.
+Optional argument CONFIRM, if non-nil, then read it twice to make sure.
+Optional DEFAULT is a default password to use instead of empty input."
+  (if confirm
+      (let (success)
+	(while (not success)
+	  (let ((first (read-passwd prompt nil default))
+		(second (read-passwd "Confirm password: " nil default)))
+	    (if (equal first second)
+		(setq success first)
+	      (message "Password not repeated accurately; please start over")
+	      (sit-for 1))))
+	success)
+    (let ((pass nil)
+	  (c 0)
+	  (echo-keystrokes 0)
+	  (cursor-in-echo-area t))
+      (while (progn (message "%s%s"
+			     prompt
+			     (make-string (length pass) ?.))
+		    (setq c (read-char))
+		    (and (/= c ?\r) (/= c ?\n) (/= c ?\e)))
+	(if (= c ?\C-u)
+	    (setq pass "")
+	  (if (and (/= c ?\b) (/= c ?\177))
+	      (setq pass (concat pass (char-to-string c)))
+	    (if (> (length pass) 0)
+		(setq pass (substring pass 0 -1))))))
+      (message nil)
+      (or pass default ""))))
+
 (defun force-mode-line-update (&optional all)
   "Force the mode-line of the current buffer to be redisplayed.
 With optional non-nil ALL, force redisplay of all mode-lines."
@@ -664,7 +843,7 @@ If MESSAGE is nil, instructions to type EXIT-CHAR are displayed there."
 	    (insert-before-markers string)
 	    (setq insert-end (point))
 	    ;; If the message end is off screen, recenter now.
-	    (if (> (window-end) insert-end)
+	    (if (< (window-end nil t) insert-end)
 		(recenter (/ (window-height) 2)))
 	    ;; If that pushed message start off the screen,
 	    ;; scroll to start it at the top of the screen.
@@ -690,6 +869,12 @@ If MESSAGE is nil, instructions to type EXIT-CHAR are displayed there."
 ;; A number of major modes set this locally.
 ;; Give it a global value to avoid compiler warnings.
 (defvar font-lock-defaults nil)
+
+(defvar suspend-hook nil
+  "Normal hook run by `suspend-emacs', before suspending.")
+
+(defvar suspend-resume-hook nil
+  "Normal hook run by `suspend-emacs', after Emacs is continued.")
 
 ;; Avoid compiler warnings about this variable,
 ;; which has a special meaning on certain system types.
@@ -746,14 +931,87 @@ Wildcards and redirection are handled as usual in the shell."
    (t
     (start-process name buffer shell-file-name shell-command-switch
 		   (mapconcat 'identity args " ")))))
+
+(defmacro with-current-buffer (buffer &rest body)
+  "Execute the forms in BODY with BUFFER as the current buffer.
+The value returned is the value of the last form in BODY.
+See also `with-temp-buffer'."
+  `(save-current-buffer
+    (set-buffer ,buffer)
+    ,@body))
 
+(defmacro with-temp-file (file &rest forms)
+  "Create a new buffer, evaluate FORMS there, and write the buffer to FILE.
+The value of the last form in FORMS is returned, like `progn'.
+See also `with-temp-buffer'."
+  (let ((temp-file (make-symbol "temp-file"))
+	(temp-buffer (make-symbol "temp-buffer")))
+    `(let ((,temp-file ,file)
+	   (,temp-buffer
+	    (get-buffer-create (generate-new-buffer-name " *temp file*"))))
+       (unwind-protect
+	   (prog1
+	       (with-current-buffer ,temp-buffer
+		 ,@forms)
+	     (with-current-buffer ,temp-buffer
+	       (widen)
+	       (write-region (point-min) (point-max) ,temp-file nil 0)))
+	 (and (buffer-name ,temp-buffer)
+	      (kill-buffer ,temp-buffer))))))
+
+(defmacro with-temp-buffer (&rest forms)
+  "Create a temporary buffer, and evaluate FORMS there like `progn'.
+See also `with-temp-file' and `with-output-to-string'."
+  (let ((temp-buffer (make-symbol "temp-buffer")))
+    `(let ((,temp-buffer
+	    (get-buffer-create (generate-new-buffer-name " *temp*"))))
+       (unwind-protect
+	   (with-current-buffer ,temp-buffer
+	     ,@forms)
+	 (and (buffer-name ,temp-buffer)
+	      (kill-buffer ,temp-buffer))))))
+
+(defmacro with-output-to-string (&rest body)
+  "Execute BODY, return the text it sent to `standard-output', as a string."
+  `(let ((standard-output
+	  (get-buffer-create (generate-new-buffer-name " *string-output*"))))
+     (let ((standard-output standard-output))
+       ,@body)
+     (with-current-buffer standard-output
+       (prog1
+	   (buffer-string)
+	 (kill-buffer nil)))))
+
+(defmacro combine-after-change-calls (&rest body)
+  "Execute BODY, but don't call the after-change functions till the end.
+If BODY makes changes in the buffer, they are recorded
+and the functions on `after-change-functions' are called several times
+when BODY is finished.
+The return value is the value of the last form in BODY.
+
+If `before-change-functions' is non-nil, then calls to the after-change
+functions can't be deferred, so in that case this macro has no effect.
+
+Do not alter `after-change-functions' or `before-change-functions'
+in BODY."
+  `(unwind-protect
+       (let ((combine-after-change-calls t))
+	 . ,body)
+     (combine-after-change-execute)))
+
+
+(defvar save-match-data-internal)
+
+;; We use save-match-data-internal as the local variable because
+;; that works ok in practice (people should not use that variable elsewhere).
+;; We used to use an uninterned symbol; the compiler handles that properly
+;; now, but it generates slower code.
 (defmacro save-match-data (&rest body)
   "Execute the BODY forms, restoring the global value of the match data."
-  (let ((original (make-symbol "match-data")))
-    (list 'let (list (list original '(match-data)))
-	  (list 'unwind-protect
-		(cons 'progn body)
-		(list 'store-match-data original)))))
+  `(let ((save-match-data-internal (match-data)))
+       (unwind-protect
+	   (progn ,@body)
+	 (set-match-data save-match-data-internal))))
 
 (defun match-string (num &optional string)
   "Return string of text matched by last search.
@@ -766,6 +1024,55 @@ STRING should be given if the last search was by `string-match' on STRING."
 	  (substring string (match-beginning num) (match-end num))
 	(buffer-substring (match-beginning num) (match-end num)))))
 
+(defun match-string-no-properties (num &optional string)
+  "Return string of text matched by last search, without text properties.
+NUM specifies which parenthesized expression in the last regexp.
+ Value is nil if NUMth pair didn't match, or there were less than NUM pairs.
+Zero means the entire text matched by the whole regexp or whole string.
+STRING should be given if the last search was by `string-match' on STRING."
+  (if (match-beginning num)
+      (if string
+	  (let ((result
+		 (substring string (match-beginning num) (match-end num))))
+	    (set-text-properties 0 (length result) nil result)
+	    result)
+	(buffer-substring-no-properties (match-beginning num)
+					(match-end num)))))
+
+(defun split-string (string &optional separators)
+  "Splits STRING into substrings where there are matches for SEPARATORS.
+Each match for SEPARATORS is a splitting point.
+The substrings between the splitting points are made into a list
+which is returned.
+If SEPARATORS is absent, it defaults to \"[ \\f\\t\\n\\r\\v]+\".
+
+If there is match for SEPARATORS at the beginning of STRING, we do not
+include a null substring for that.  Likewise, if there is a match
+at the end of STRING, we don't include a null substring for that."
+  (let ((rexp (or separators "[ \f\t\n\r\v]+"))
+	(start 0)
+	notfirst
+	(list nil))
+    (while (and (string-match rexp string
+			      (if (and notfirst
+				       (= start (match-beginning 0))
+				       (< start (length string)))
+				  (1+ start) start))
+		(< (match-beginning 0) (length string)))
+      (setq notfirst t)
+      (or (eq (match-beginning 0) 0)
+	  (and (eq (match-beginning 0) (match-end 0))
+	       (eq (match-beginning 0) start))
+	  (setq list
+		(cons (substring string start (match-beginning 0))
+		      list)))
+      (setq start (match-end 0)))
+    (or (eq start (length string))
+	(setq list
+	      (cons (substring string start)
+		    list)))
+    (nreverse list)))
+
 (defun shell-quote-argument (argument)
   "Quote an argument for passing as argument to an inferior shell."
   (if (eq system-type 'ms-dos)
@@ -773,20 +1080,24 @@ STRING should be given if the last search was by `string-match' on STRING."
       argument
     (if (eq system-type 'windows-nt)
 	(concat "\"" argument "\"")
-      ;; Quote everything except POSIX filename characters.
-      ;; This should be safe enough even for really weird shells.
-      (let ((result "") (start 0) end)
-	(while (string-match "[^-0-9a-zA-Z_./]" argument start)
-	  (setq end (match-beginning 0)
-		result (concat result (substring argument start end)
-			       "\\" (substring argument end (1+ end)))
-		start (1+ end)))
-	(concat result (substring argument start))))))
+      (if (equal argument "")
+	  "''"
+	;; Quote everything except POSIX filename characters.
+	;; This should be safe enough even for really weird shells.
+	(let ((result "") (start 0) end)
+	  (while (string-match "[^-0-9a-zA-Z_./]" argument start)
+	    (setq end (match-beginning 0)
+		  result (concat result (substring argument start end)
+				 "\\" (substring argument end (1+ end)))
+		  start (1+ end)))
+	  (concat result (substring argument start)))))))
 
 (defun make-syntax-table (&optional oldtable)
   "Return a new syntax table.
-It inherits all letters and control characters from the standard
-syntax table; other characters are copied from the standard syntax table."
+If OLDTABLE is non-nil, copy OLDTABLE.
+Otherwise, create a syntax table which inherits
+all letters and control characters from the standard syntax table;
+other characters are copied from the standard syntax table."
   (if oldtable
       (copy-syntax-table oldtable)
     (let ((table (copy-syntax-table))
@@ -808,27 +1119,47 @@ syntax table; other characters are copied from the standard syntax table."
 	(aset table i nil)
 	(setq i (1+ i)))
       table)))
+
+(defun add-to-invisibility-spec (arg)
+  "Add elements to `buffer-invisibility-spec'.
+See documentation for `buffer-invisibility-spec' for the kind of elements
+that can be added."
+  (cond
+   ((or (null buffer-invisibility-spec) (eq buffer-invisibility-spec t))
+	(setq buffer-invisibility-spec (list arg)))
+   (t
+    (setq buffer-invisibility-spec
+	  (cons arg buffer-invisibility-spec)))))
+
+(defun remove-from-invisibility-spec (arg)
+  "Remove elements from `buffer-invisibility-spec'."
+  (if buffer-invisibility-spec
+    (setq buffer-invisibility-spec (delete arg buffer-invisibility-spec))))
 
 (defun global-set-key (key command)
   "Give KEY a global binding as COMMAND.
-COMMAND is a symbol naming an interactively-callable function.
-KEY is a key sequence (a string or vector of characters or event types).
-Non-ASCII characters with codes above 127 (such as ISO Latin-1)
-can be included if you use a vector.
-Note that if KEY has a local binding in the current buffer
-that local binding will continue to shadow any global binding."
+COMMAND is the command definition to use; usually it is
+a symbol naming an interactively-callable function.
+KEY is a key sequence; noninteractively, it is a string or vector
+of characters or event types, and non-ASCII characters with codes
+above 127 (such as ISO Latin-1) can be included if you use a vector.
+
+Note that if KEY has a local binding in the current buffer,
+that local binding will continue to shadow any global binding
+that you make with this function."
   (interactive "KSet key globally: \nCSet key %s to command: ")
   (or (vectorp key) (stringp key)
       (signal 'wrong-type-argument (list 'arrayp key)))
-  (define-key (current-global-map) key command)
-  nil)
+  (define-key (current-global-map) key command))
 
 (defun local-set-key (key command)
   "Give KEY a local binding as COMMAND.
-COMMAND is a symbol naming an interactively-callable function.
-KEY is a key sequence (a string or vector of characters or event types).
-Non-ASCII characters with codes above 127 (such as ISO Latin-1)
-can be included if you use a vector.
+COMMAND is the command definition to use; usually it is
+a symbol naming an interactively-callable function.
+KEY is a key sequence; noninteractively, it is a string or vector
+of characters or event types, and non-ASCII characters with codes
+above 127 (such as ISO Latin-1) can be included if you use a vector.
+
 The binding goes in the current buffer's local map,
 which in most cases is shared with all other buffers in the same major mode."
   (interactive "KSet key locally: \nCSet key %s locally to command: ")
@@ -837,8 +1168,7 @@ which in most cases is shared with all other buffers in the same major mode."
 	(use-local-map (setq map (make-sparse-keymap))))
     (or (vectorp key) (stringp key)
 	(signal 'wrong-type-argument (list 'arrayp key)))
-    (define-key map key command))
-  nil)
+    (define-key map key command)))
 
 (defun global-unset-key (key)
   "Remove global binding of KEY.
@@ -863,6 +1193,12 @@ configuration."
   (and (consp object)
        (eq (car object) 'frame-configuration)))
 
+(defun functionp (object)
+  "Non-nil if OBJECT is a type of object that can be called as a function."
+  (or (subrp object) (byte-code-function-p object)
+      (eq (car-safe object) 'lambda)
+      (and (symbolp object) (fboundp object))))
+
 ;; now in fns.c
 ;(defun nth (n list)
 ;  "Returns the Nth element of LIST.
@@ -884,4 +1220,3 @@ configuration."
 ;  alist)
 
 ;;; subr.el ends here
-

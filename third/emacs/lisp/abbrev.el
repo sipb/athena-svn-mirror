@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1985, 1986, 1987, 1992 Free Software Foundation, Inc.
 
-;; Keywords: abbrev
+;; Keywords: abbrev convenience
 
 ;; This file is part of GNU Emacs.
 
@@ -27,9 +27,13 @@
 
 ;;; Code:
 
-(defconst only-global-abbrevs nil "\
-*t means user plans to use global abbrevs only.
-Makes the commands to define mode-specific abbrevs define global ones instead.")
+(defcustom only-global-abbrevs nil 
+  "*t means user plans to use global abbrevs only.
+This makes the commands that normally define mode-specific abbrevs
+define global abbrevs instead."
+  :type 'boolean
+  :group 'abbrev-mode
+  :group 'convenience)
 
 (defun abbrev-mode (arg)
   "Toggle abbrev mode.
@@ -41,6 +45,17 @@ and be replaced by its expansion."
 	(if (null arg) (not abbrev-mode)
 	  (> (prefix-numeric-value arg) 0)))
   (force-mode-line-update))
+
+(defcustom abbrev-mode nil
+  "Toggle abbrev mode.
+In abbrev mode, inserting an abbreviation causes it to expand
+and be replaced by its expansion.
+You must modify via \\[customize] for this variable to have an effect."
+  :set (lambda (symbol value)
+	 (abbrev-mode (if value 1 0)))
+  :type 'boolean
+  :group 'abbrev-mode)
+
 
 (defvar edit-abbrevs-map nil
   "Keymap used in edit-abbrevs.")

@@ -1,5 +1,10 @@
-This is Info file ../info/vip, produced by Makeinfo-1.55 from the input
-file vip.texi.
+This is Info file ../info/vip, produced by Makeinfo version 1.68 from
+the input file vip.texi.
+
+INFO-DIR-SECTION Editors
+START-INFO-DIR-ENTRY
+* VIP: (vip).		An older VI-emulation for Emacs.
+END-INFO-DIR-ENTRY
 
 Distribution
 ************
@@ -21,54 +26,54 @@ versions.
 
 
 Indirect:
-vip-1: 721
-vip-2: 49772
+vip-1: 843
+vip-2: 49919
 
 Tag Table:
 (Indirect)
-Node: Top721
-Node: Survey1707
-Node: Basic Concepts2192
-Node: Loading VIP3816
-Node: Modes in VIP4550
-Node: Emacs Mode7092
-Node: Vi Mode7446
-Node: Insert Mode7754
-Node: Differences from Vi8373
-Node: Undoing9367
-Node: Changing9722
-Node: Searching10332
-Node: z Command11042
-Node: Counts11373
-Node: Marking11874
-Node: Region Commands12374
-Node: New Commands13042
-Node: New Bindings15791
-Node: Window Commands17953
-Node: Buffer Commands18418
-Node: File Commands18898
-Node: Misc Commands19260
-Node: Vi Commands19671
-Node: Numeric Arguments20609
-Node: Important Keys21099
-Node: Buffers and Windows22837
-Node: Files25054
-Node: Viewing the Buffer28279
-Node: Mark Commands30168
-Node: Motion Commands31022
-Node: Searching and Replacing36547
-Node: Modifying Commands38814
-Node: Delete Commands40284
-Node: Yank Commands41983
-Node: Put Back Commands42863
-Node: Change Commands44312
-Node: Repeating and Undoing Modifications45327
-Node: Other Vi Commands46142
-Node: Commands in Insert Mode49772
-Node: Ex Commands51837
-Node: Ex Command Reference53012
-Node: Customization59496
-Node: Customizing Constants59913
-Node: Customizing Key Bindings61233
+Node: Top843
+Node: Survey1829
+Node: Basic Concepts2314
+Node: Loading VIP3963
+Node: Modes in VIP4697
+Node: Emacs Mode7245
+Node: Vi Mode7599
+Node: Insert Mode7907
+Node: Differences from Vi8530
+Node: Undoing9524
+Node: Changing9879
+Node: Searching10497
+Node: z Command11210
+Node: Counts11543
+Node: Marking12046
+Node: Region Commands12546
+Node: New Commands13214
+Node: New Bindings15965
+Node: Window Commands18131
+Node: Buffer Commands18596
+Node: File Commands19076
+Node: Misc Commands19438
+Node: Vi Commands19849
+Node: Numeric Arguments20787
+Node: Important Keys21277
+Node: Buffers and Windows23021
+Node: Files25248
+Node: Viewing the Buffer28491
+Node: Mark Commands30392
+Node: Motion Commands31229
+Node: Searching and Replacing36754
+Node: Modifying Commands39025
+Node: Delete Commands40427
+Node: Yank Commands42128
+Node: Put Back Commands43008
+Node: Change Commands44457
+Node: Repeating and Undoing Modifications45474
+Node: Other Vi Commands46289
+Node: Commands in Insert Mode49919
+Node: Ex Commands51988
+Node: Ex Command Reference53161
+Node: Customization59625
+Node: Customizing Constants60042
+Node: Customizing Key Bindings61364
 
 End Tag Table

@@ -1,5 +1,5 @@
 /* X Selection processing for Emacs.
-   Copyright (C) 1993, 1994, 1995, 1996 Free Software Foundation.
+   Copyright (C) 1993, 1994, 1995, 1996, 1997 Free Software Foundation.
 
 This file is part of GNU Emacs.
 
@@ -27,12 +27,18 @@ Boston, MA 02111-1307, USA.  */
 #include "dispextern.h"	/* frame.h seems to want this */
 #include "frame.h"	/* Need this to get the X window of selected_frame */
 #include "blockinput.h"
+#include "buffer.h"
+#include "charset.h"
+#include "coding.h"
+#include "process.h"
 
 #define CUT_BUFFER_SUPPORT
 
 Lisp_Object QPRIMARY, QSECONDARY, QSTRING, QINTEGER, QCLIPBOARD, QTIMESTAMP,
   QTEXT, QDELETE, QMULTIPLE, QINCR, QEMACS_TMP, QTARGETS, QATOM, QNULL,
   QATOM_PAIR;
+
+Lisp_Object QCOMPOUND_TEXT;	/* This is a type of selection.  */
 
 #ifdef CUT_BUFFER_SUPPORT
 Lisp_Object QCUT_BUFFER0, QCUT_BUFFER1, QCUT_BUFFER2, QCUT_BUFFER3,
@@ -41,6 +47,12 @@ Lisp_Object QCUT_BUFFER0, QCUT_BUFFER1, QCUT_BUFFER2, QCUT_BUFFER3,
 
 static Lisp_Object Vx_lost_selection_hooks;
 static Lisp_Object Vx_sent_selection_hooks;
+/* Coding system for communicating with other X clients via cutbuffer,
+   selection, and clipboard.  */
+static Lisp_Object Vselection_coding_system;
+
+/* Coding system for the next communicating with other X clients.  */
+static Lisp_Object Vnext_selection_coding_system;
 
 /* If this is a smaller number than the max-request-size of the display,
    emacs will use INCR selection transfer when the selection is larger
@@ -110,6 +122,7 @@ symbol_to_x_atom (dpyinfo, display, sym)
   if (EQ (sym, QCLIPBOARD)) return dpyinfo->Xatom_CLIPBOARD;
   if (EQ (sym, QTIMESTAMP)) return dpyinfo->Xatom_TIMESTAMP;
   if (EQ (sym, QTEXT))	    return dpyinfo->Xatom_TEXT;
+  if (EQ (sym, QCOMPOUND_TEXT)) return dpyinfo->Xatom_COMPOUND_TEXT;
   if (EQ (sym, QDELETE))    return dpyinfo->Xatom_DELETE;
   if (EQ (sym, QMULTIPLE))  return dpyinfo->Xatom_MULTIPLE;
   if (EQ (sym, QINCR))	    return dpyinfo->Xatom_INCR;
@@ -188,6 +201,8 @@ x_atom_to_symbol (dpyinfo, display, atom)
     return QTIMESTAMP;
   if (atom == dpyinfo->Xatom_TEXT)
     return QTEXT;
+  if (atom == dpyinfo->Xatom_COMPOUND_TEXT)
+    return QCOMPOUND_TEXT;
   if (atom == dpyinfo->Xatom_DELETE)
     return QDELETE;
   if (atom == dpyinfo->Xatom_MULTIPLE)
@@ -229,15 +244,16 @@ x_own_selection (selection_name, selection_value)
   Time time = last_event_timestamp;
   Atom selection_atom;
   struct x_display_info *dpyinfo = FRAME_X_DISPLAY_INFO (selected_frame);
+  int count;
 
   CHECK_SYMBOL (selection_name, 0);
   selection_atom = symbol_to_x_atom (dpyinfo, display, selection_name);
 
   BLOCK_INPUT;
-  x_catch_errors (display);
+  count = x_catch_errors (display);
   XSetSelectionOwner (display, selection_atom, selecting_window, time);
   x_check_errors (display, "Can't set selection: %s");
-  x_uncatch_errors (display);
+  x_uncatch_errors (display, count);
   UNBLOCK_INPUT;
 
   /* Now update the local cache */
@@ -504,6 +520,7 @@ x_reply_selection_request (event, format, data, size, type)
   int format_bytes = format/8;
   int max_bytes = SELECTION_QUANTUM (display);
   struct x_display_info *dpyinfo = x_display_info_for_display (display);
+  int count;
 
   if (max_bytes > MAX_SELECTION_QUANTUM)
     max_bytes = MAX_SELECTION_QUANTUM;
@@ -520,7 +537,7 @@ x_reply_selection_request (event, format, data, size, type)
 
   /* #### XChangeProperty can generate BadAlloc, and we must handle it! */
   BLOCK_INPUT;
-  x_catch_errors (display);
+  count = x_catch_errors (display);
 
   /* Store the data on the requested property.
      If the selection is large, only store the first N bytes of it.
@@ -542,7 +559,6 @@ x_reply_selection_request (event, format, data, size, type)
       /* Send an INCR selection.  */
       struct prop_location *wait_object;
       int had_errors;
-      int count = specpdl_ptr - specpdl;
       Lisp_Object frame;
 
       frame = some_frame_on_display (dpyinfo);
@@ -624,12 +640,10 @@ x_reply_selection_request (event, format, data, size, type)
 
       XChangeProperty (display, window, reply.property, type, format,
 		       PropModeReplace, data, 0);
-
-      unbind_to (count, Qnil);
     }
 
   XFlush (display);
-  x_uncatch_errors (display);
+  x_uncatch_errors (display, count);
   UNBLOCK_INPUT;
 }
 
@@ -720,10 +734,10 @@ x_handle_selection_request (event)
       /* Indicate we have successfully processed this event.  */
       x_selection_current_request = 0;
 
-      /* Use free, not XFree, because lisp_data_to_selection_data
+      /* Use xfree, not XFree, because lisp_data_to_selection_data
 	 calls xmalloc itself.  */
       if (!nofree)
-	free (data);
+	xfree (data);
     }
   unbind_to (count, Qnil);
 
@@ -894,7 +908,7 @@ static struct prop_location *
 expect_property_change (display, window, property, state)
      Display *display;
      Window window;
-     Lisp_Object property;
+     Atom property;
      int state;
 {
   struct prop_location *pl
@@ -926,7 +940,7 @@ unexpect_property_change (location)
 	    prev->next = rest->next;
 	  else
 	    property_change_wait_list = rest->next;
-	  free (rest);
+	  xfree (rest);
 	  return;
 	}
       prev = rest;
@@ -1015,7 +1029,7 @@ x_handle_property_notify (event)
 	    prev->next = rest->next;
 	  else
 	    property_change_wait_list = rest->next;
-	  free (rest);
+	  xfree (rest);
 	  return;
 	}
       prev = rest;
@@ -1102,7 +1116,7 @@ x_get_foreign_selection (selection_symbol, target_type)
   Atom selection_atom = symbol_to_x_atom (dpyinfo, display, selection_symbol);
   Atom type_atom;
   int secs, usecs;
-  int count = specpdl_ptr - specpdl;
+  int count;
   Lisp_Object frame;
 
   if (CONSP (target_type))
@@ -1111,7 +1125,7 @@ x_get_foreign_selection (selection_symbol, target_type)
     type_atom = symbol_to_x_atom (dpyinfo, display, target_type);
 
   BLOCK_INPUT;
-  x_catch_errors (display);
+  count = x_catch_errors (display);
   XConvertSelection (display, selection_atom, type_atom, target_property,
 		     requestor_window, requestor_time);
   XFlush (display);
@@ -1142,8 +1156,7 @@ x_get_foreign_selection (selection_symbol, target_type)
 
   BLOCK_INPUT;
   x_check_errors (display, "Cannot get selection: %s");
-  x_uncatch_errors (display);
-  unbind_to (count, Qnil);
+  x_uncatch_errors (display, count);
   UNBLOCK_INPUT;
 
   if (NILP (XCONS (reading_selection_reply)->car))
@@ -1160,7 +1173,7 @@ x_get_foreign_selection (selection_symbol, target_type)
 
 /* Subroutines of x_get_window_property_as_lisp_data */
 
-/* Use free, not XFree, to free the data obtained with this function.  */
+/* Use xfree, not XFree, to free the data obtained with this function.  */
 
 static void
 x_get_window_property (display, window, property, data_ret, bytes_ret,
@@ -1243,7 +1256,7 @@ x_get_window_property (display, window, property, data_ret, bytes_ret,
   *bytes_ret = offset;
 }
 
-/* Use free, not XFree, to free the data obtained with this function.  */
+/* Use xfree, not XFree, to free the data obtained with this function.  */
 
 static void
 receive_incremental_selection (display, window, property, target_type,
@@ -1305,9 +1318,9 @@ receive_incremental_selection (display, window, property, target_type,
 	  if (! waiting_for_other_props_on_window (display, window))
 	    XSelectInput (display, window, STANDARD_EVENT_SET);
 	  unexpect_property_change (wait_object);
-	  /* Use free, not XFree, because x_get_window_property
+	  /* Use xfree, not XFree, because x_get_window_property
 	     calls xmalloc itself.  */
-	  if (tmp_data) free (tmp_data);
+	  if (tmp_data) xfree (tmp_data);
 	  break;
 	}
 
@@ -1332,9 +1345,9 @@ receive_incremental_selection (display, window, property, target_type,
 	}
       bcopy (tmp_data, (*data_ret) + offset, tmp_size_bytes);
       offset += tmp_size_bytes;
-      /* Use free, not XFree, because x_get_window_property
+      /* Use xfree, not XFree, because x_get_window_property
 	 calls xmalloc itself.  */
-      free (tmp_data);
+      xfree (tmp_data);
     }
 }
 
@@ -1368,20 +1381,19 @@ x_get_window_property_as_lisp_data (display, window, property, target_type,
       there_is_a_selection_owner
 	= XGetSelectionOwner (display, selection_atom);
       UNBLOCK_INPUT;
-      while (1) /* Note debugger can no longer return, so this is obsolete */
-	Fsignal (Qerror,
-		 there_is_a_selection_owner ?
-		 Fcons (build_string ("selection owner couldn't convert"),
+      Fsignal (Qerror,
+	       there_is_a_selection_owner
+	       ? Fcons (build_string ("selection owner couldn't convert"),
 			actual_type
 			? Fcons (target_type,
 				 Fcons (x_atom_to_symbol (dpyinfo, display,
 							  actual_type),
 					Qnil))
 			: Fcons (target_type, Qnil))
-		 : Fcons (build_string ("no selection"),
-			  Fcons (x_atom_to_symbol (dpyinfo, display,
-						   selection_atom),
-				 Qnil)));
+	       : Fcons (build_string ("no selection"),
+			Fcons (x_atom_to_symbol (dpyinfo, display,
+						 selection_atom),
+			       Qnil)));
     }
   
   if (actual_type == dpyinfo->Xatom_INCR)
@@ -1390,9 +1402,9 @@ x_get_window_property_as_lisp_data (display, window, property, target_type,
 
       unsigned int min_size_bytes = * ((unsigned int *) data);
       BLOCK_INPUT;
-      /* Use free, not XFree, because x_get_window_property
+      /* Use xfree, not XFree, because x_get_window_property
 	 calls xmalloc itself.  */
-      free ((char *) data);
+      xfree ((char *) data);
       UNBLOCK_INPUT;
       receive_incremental_selection (display, window, property, target_type,
 				     min_size_bytes, &data, &bytes,
@@ -1410,9 +1422,9 @@ x_get_window_property_as_lisp_data (display, window, property, target_type,
   val = selection_data_to_lisp_data (display, data, bytes,
 				     actual_type, actual_format);
   
-  /* Use free, not XFree, because x_get_window_property
+  /* Use xfree, not XFree, because x_get_window_property
      calls xmalloc itself.  */
-  free ((char *) data);
+  xfree ((char *) data);
   return val;
 }
 
@@ -1457,8 +1469,68 @@ selection_data_to_lisp_data (display, data, size, type, format)
 
   /* Convert any 8-bit data to a string, for compactness.  */
   else if (format == 8)
-    return make_string ((char *) data, size);
+    {
+      Lisp_Object str;
+      int require_encoding = 0;
 
+      if (
+#if 1
+	  1
+#else
+	  ! NILP (buffer_defaults.enable_multibyte_characters)
+#endif
+	  )
+	{
+	  /* If TYPE is `TEXT' or `COMPOUND_TEXT', we should decode
+	     DATA to Emacs internal format because DATA may be encoded
+	     in compound text format.  In addtion, if TYPE is `STRING'
+	     and DATA contains any 8-bit Latin-1 code, we should also
+	     decode it.  */
+	  if (type == dpyinfo->Xatom_TEXT
+	      || type == dpyinfo->Xatom_COMPOUND_TEXT)
+	    require_encoding = 1;
+	  else if (type == XA_STRING)
+	    {
+	      int i;
+	      for (i = 0; i < size; i++)
+		{
+		  if (data[i] >= 0x80)
+		    {
+		      require_encoding = 1;
+		      break;
+		    }
+		}
+	    }
+	}
+      if (!require_encoding)
+	{
+	  str = make_unibyte_string ((char *) data, size);
+	  Vlast_coding_system_used = Qraw_text;
+	}
+      else
+	{
+	  int bufsize;
+	  unsigned char *buf;
+	  struct coding_system coding;
+
+	  if (NILP (Vnext_selection_coding_system))
+	    Vnext_selection_coding_system = Vselection_coding_system;
+	  setup_coding_system
+	    (Fcheck_coding_system(Vnext_selection_coding_system), &coding);
+	  Vnext_selection_coding_system = Qnil;
+          coding.mode |= CODING_MODE_LAST_BLOCK;
+	  bufsize = decoding_buffer_size (&coding, size);
+	  buf = (unsigned char *) xmalloc (bufsize);
+	  decode_coding (&coding, data, buf, size, bufsize);
+	  size = (coding.fake_multibyte
+		  ? multibyte_chars_in_text (buf, coding.produced)
+		  : coding.produced_char);
+	  str = make_string_from_bytes ((char *) buf, size, coding.produced);
+	  xfree (buf);
+	  Vlast_coding_system_used = coding.symbol;
+	}
+      return str;
+    }
   /* Convert a single atom to a Lisp_Symbol.  Convert a set of atoms to
      a vector of symbols.
    */
@@ -1469,10 +1541,11 @@ selection_data_to_lisp_data (display, data, size, type, format)
 	return x_atom_to_symbol (dpyinfo, display, *((Atom *) data));
       else
 	{
-	  Lisp_Object v = Fmake_vector (size / sizeof (Atom), 0);
+	  Lisp_Object v = Fmake_vector (make_number (size / sizeof (Atom)),
+					make_number (0));
 	  for (i = 0; i < size / sizeof (Atom); i++)
-	    Faset (v, i, x_atom_to_symbol (dpyinfo, display,
-					   ((Atom *) data) [i]));
+	    Faset (v, make_number (i),
+		   x_atom_to_symbol (dpyinfo, display, ((Atom *) data) [i]));
 	  return v;
 	}
     }
@@ -1492,29 +1565,30 @@ selection_data_to_lisp_data (display, data, size, type, format)
   else if (format == 16)
     {
       int i;
-      Lisp_Object v = Fmake_vector (size / 4, 0);
-      for (i = 0; i < size / 4; i++)
+      Lisp_Object v;
+      v = Fmake_vector (make_number (size / 2), make_number (0));
+      for (i = 0; i < size / 2; i++)
 	{
 	  int j = (int) ((unsigned short *) data) [i];
-	  Faset (v, i, make_number (j));
+	  Faset (v, make_number (i), make_number (j));
 	}
       return v;
     }
   else
     {
       int i;
-      Lisp_Object v = Fmake_vector (size / 4, 0);
+      Lisp_Object v = Fmake_vector (make_number (size / 4), make_number (0));
       for (i = 0; i < size / 4; i++)
 	{
 	  unsigned long j = ((unsigned long *) data) [i];
-	  Faset (v, i, long_to_cons (j));
+	  Faset (v, make_number (i), long_to_cons (j));
 	}
       return v;
     }
 }
 
 
-/* Use free, not XFree, to free the data obtained with this function.  */
+/* Use xfree, not XFree, to free the data obtained with this function.  */
 
 static void
 lisp_data_to_selection_data (display, obj,
@@ -1550,11 +1624,62 @@ lisp_data_to_selection_data (display, obj,
     }
   else if (STRINGP (obj))
     {
+      /* Since we are now handling multilingual text, we must consider
+	 sending back compound text.  */
+      int charsets[MAX_CHARSET + 1];
+      int num;
+
       *format_ret = 8;
-      *size_ret = XSTRING (obj)->size;
+      *size_ret = STRING_BYTES (XSTRING (obj));
       *data_ret = XSTRING (obj)->data;
-      *nofree_ret = 1;
-      if (NILP (type)) type = QSTRING;
+      bzero (charsets, (MAX_CHARSET + 1) * sizeof (int));
+      num = ((*size_ret <= 1	/* Check the possibility of short cut.  */
+	      || !STRING_MULTIBYTE (obj)
+	      || *size_ret == XSTRING (obj)->size)
+	     ? 0
+	     : find_charset_in_str (*data_ret, *size_ret, charsets, Qnil, 1));
+
+      if (!num || (num == 1 && charsets[CHARSET_ASCII]))
+	{
+	  /* No multibyte character in OBJ.  We need not encode it.  */
+	  *nofree_ret = 1;
+	  if (NILP (type)) type = QSTRING;
+	  Vlast_coding_system_used = Qraw_text;
+	}
+      else
+	{
+	  /* We must encode contents of OBJ to compound text format.
+             The format is compatible with what the target `STRING'
+             expects if OBJ contains only ASCII and Latin-1
+             characters.  */
+	  int bufsize;
+	  unsigned char *buf;
+	  struct coding_system coding;
+
+	  if (NILP (Vnext_selection_coding_system))
+	    Vnext_selection_coding_system = Vselection_coding_system;
+	  setup_coding_system
+	    (Fcheck_coding_system (Vnext_selection_coding_system), &coding);
+	  Vnext_selection_coding_system = Qnil;
+	  coding.mode |= CODING_MODE_LAST_BLOCK;
+	  bufsize = encoding_buffer_size (&coding, *size_ret);
+	  buf = (unsigned char *) xmalloc (bufsize);
+	  encode_coding (&coding, *data_ret, buf, *size_ret, bufsize);
+	  *size_ret = coding.produced;
+	  *data_ret = buf;
+          if (charsets[charset_latin_iso8859_1]
+	      && (num == 1 || (num == 2 && charsets[CHARSET_ASCII])))
+	    {
+	      /* Ok, we can return it as `STRING'.  */
+	      if (NILP (type)) type = QSTRING;
+	    }
+	  else
+	    {
+	      /* We must return it as `COMPOUND_TEXT'.  */
+	      if (NILP (type)) type = QCOMPOUND_TEXT;
+	    }
+	  Vlast_coding_system_used = coding.symbol;
+	}
     }
   else if (SYMBOLP (obj))
     {
@@ -1708,7 +1833,7 @@ clean_local_selection_data (obj)
       Lisp_Object copy;
       if (size == 1)
 	return clean_local_selection_data (XVECTOR (obj)->contents [0]);
-      copy = Fmake_vector (size, Qnil);
+      copy = Fmake_vector (make_number (size), Qnil);
       for (i = 0; i < size; i++)
 	XVECTOR (copy)->contents [i]
 	  = clean_local_selection_data (XVECTOR (obj)->contents [i]);
@@ -1736,9 +1861,8 @@ x_handle_selection_notify (event)
 }
 
 
-DEFUN ("x-own-selection-internal",
-       Fx_own_selection_internal, Sx_own_selection_internal,
-  2, 2, 0,
+DEFUN ("x-own-selection-internal", Fx_own_selection_internal,
+  Sx_own_selection_internal, 2, 2, 0,
   "Assert an X selection of the given TYPE with the given VALUE.\n\
 TYPE is a symbol, typically `PRIMARY', `SECONDARY', or `CLIPBOARD'.\n\
 \(Those are literal upper-case symbol names, since that's what X expects.)\n\
@@ -1759,8 +1883,8 @@ anything that the functions on `selection-converter-alist' know about.")
    simply return our selection value.  If we are not the owner, this
    will block until all of the data has arrived.  */
 
-DEFUN ("x-get-selection-internal",
-  Fx_get_selection_internal, Sx_get_selection_internal, 2, 2, 0,
+DEFUN ("x-get-selection-internal", Fx_get_selection_internal,
+  Sx_get_selection_internal, 2, 2, 0,
   "Return text selected from some X window.\n\
 SELECTION is a symbol, typically `PRIMARY', `SECONDARY', or `CLIPBOARD'.\n\
 \(Those are literal upper-case symbol names, since that's what X expects.)\n\
@@ -1807,8 +1931,8 @@ TYPE is the type of data desired, typically `STRING'.")
   return val;
 }
 
-DEFUN ("x-disown-selection-internal",
-  Fx_disown_selection_internal, Sx_disown_selection_internal, 1, 2, 0,
+DEFUN ("x-disown-selection-internal", Fx_disown_selection_internal,
+  Sx_disown_selection_internal, 1, 2, 0,
   "If we own the selection SELECTION, disown it.\n\
 Disowning it means there is no such selection.")
   (selection, time)
@@ -1817,7 +1941,7 @@ Disowning it means there is no such selection.")
 {
   Time timestamp;
   Atom selection_atom;
-  XSelectionClearEvent event;
+  struct selection_input_event event;
   Display *display;
   struct x_display_info *dpyinfo;
 
@@ -1847,7 +1971,7 @@ Disowning it means there is no such selection.")
   SELECTION_EVENT_DISPLAY (&event) = display;
   SELECTION_EVENT_SELECTION (&event) = selection_atom;
   SELECTION_EVENT_TIME (&event) = timestamp;
-  x_handle_selection_clear (&event);
+  x_handle_selection_clear ((struct input_event *) &event);
 
   return Qt;
 }
@@ -1992,7 +2116,8 @@ DEFUN ("x-get-cut-buffer-internal", Fx_get_cut_buffer_internal,
 
   x_get_window_property (display, window, buffer_atom, &data, &bytes,
 			 &type, &format, &size, 0);
-  if (!data) return Qnil;
+  if (!data || !format)
+    return Qnil;
   
   if (format != 8 || type != XA_STRING)
     Fsignal (Qerror,
@@ -2001,9 +2126,9 @@ DEFUN ("x-get-cut-buffer-internal", Fx_get_cut_buffer_internal,
 			   Fcons (make_number (format), Qnil))));
 
   ret = (bytes ? make_string ((char *) data, bytes) : Qnil);
-  /* Use free, not XFree, because x_get_window_property
+  /* Use xfree, not XFree, because x_get_window_property
      calls xmalloc itself.  */
-  free (data);
+  xfree (data);
   return ret;
 }
 
@@ -2035,7 +2160,7 @@ DEFUN ("x-store-cut-buffer-internal", Fx_store_cut_buffer_internal,
   buffer_atom = symbol_to_x_atom (FRAME_X_DISPLAY_INFO (selected_frame),
 				  display, buffer);
   data = (unsigned char *) XSTRING (string)->data;
-  bytes = XSTRING (string)->size;
+  bytes = STRING_BYTES (XSTRING (string));
   bytes_remaining = bytes;
 
   if (! FRAME_X_DISPLAY_INFO (selected_frame)->cut_buffers_initialized)
@@ -2070,8 +2195,8 @@ DEFUN ("x-store-cut-buffer-internal", Fx_store_cut_buffer_internal,
 
 DEFUN ("x-rotate-cut-buffers-internal", Fx_rotate_cut_buffers_internal,
   Sx_rotate_cut_buffers_internal, 1, 1, 0,
-  "Rotate the values of the cut buffers by the given number of steps;\n\
-positive means move values forward, negative means backward.")
+  "Rotate the values of the cut buffers by the given number of step.\n\
+Positive means shift the values forward, negative means backward.")
   (n)
      Lisp_Object n;
 {
@@ -2136,7 +2261,7 @@ syms_of_xselect ()
   staticpro (&Vselection_alist);
 
   DEFVAR_LISP ("selection-converter-alist", &Vselection_converter_alist,
-  "An alist associating X Windows selection-types with functions.\n\
+    "An alist associating X Windows selection-types with functions.\n\
 These functions are called to convert the selection, with three args:\n\
 the name of the selection (typically `PRIMARY', `SECONDARY', or `CLIPBOARD');\n\
 a desired type to which the selection should be converted;\n\
@@ -2151,7 +2276,7 @@ and there is no meaningful selection value.");
   Vselection_converter_alist = Qnil;
 
   DEFVAR_LISP ("x-lost-selection-hooks", &Vx_lost_selection_hooks,
-  "A list of functions to be called when Emacs loses an X selection.\n\
+    "A list of functions to be called when Emacs loses an X selection.\n\
 \(This happens when some other X client makes its own selection\n\
 or when a Lisp program explicitly clears the selection.)\n\
 The functions are called with one argument, the selection type\n\
@@ -2159,7 +2284,7 @@ The functions are called with one argument, the selection type\n\
   Vx_lost_selection_hooks = Qnil;
 
   DEFVAR_LISP ("x-sent-selection-hooks", &Vx_sent_selection_hooks,
-  "A list of functions to be called when Emacs answers a selection request.\n\
+    "A list of functions to be called when Emacs answers a selection request.\n\
 The functions are called with four arguments:\n\
   - the selection name (typically `PRIMARY', `SECONDARY', or `CLIPBOARD');\n\
   - the selection-type which Emacs was asked to convert the\n\
@@ -2172,8 +2297,23 @@ This hook doesn't let you change the behavior of Emacs's selection replies,\n\
 it merely informs you that they have happened.");
   Vx_sent_selection_hooks = Qnil;
 
+  DEFVAR_LISP ("selection-coding-system", &Vselection_coding_system,
+    "Coding system for communicating with other X clients.\n\
+When sending or receiving text via cut_buffer, selection, and clipboard,\n\
+the text is encoded or decoded by this coding system.\n\
+A default value is `compound-text'");
+  Vselection_coding_system = intern ("compound-text");
+
+  DEFVAR_LISP ("next-selection-coding-system", &Vnext_selection_coding_system,
+    "Coding system for the next communication with other X clients.\n\
+Usually, `selection-coding-system' is used for communicating with\n\
+other X clients.   But, if this variable is set, it is used for the\n\
+next communication only.   After the communication, this variable is\n\
+set to nil.");
+  Vnext_selection_coding_system = Qnil;
+
   DEFVAR_INT ("x-selection-timeout", &x_selection_timeout,
-   "Number of milliseconds to wait for a selection reply.\n\
+    "Number of milliseconds to wait for a selection reply.\n\
 If the selection owner doesn't reply in this time, we give up.\n\
 A value of 0 means wait as long as necessary.  This is initialized from the\n\
 \"*selectionTimeout\" resource.");
@@ -2186,6 +2326,7 @@ A value of 0 means wait as long as necessary.  This is initialized from the\n\
   QCLIPBOARD = intern ("CLIPBOARD");	staticpro (&QCLIPBOARD);
   QTIMESTAMP = intern ("TIMESTAMP");	staticpro (&QTIMESTAMP);
   QTEXT      = intern ("TEXT"); 	staticpro (&QTEXT);
+  QCOMPOUND_TEXT = intern ("COMPOUND_TEXT"); staticpro (&QCOMPOUND_TEXT);
   QTIMESTAMP = intern ("TIMESTAMP");	staticpro (&QTIMESTAMP);
   QDELETE    = intern ("DELETE");	staticpro (&QDELETE);
   QMULTIPLE  = intern ("MULTIPLE");	staticpro (&QMULTIPLE);

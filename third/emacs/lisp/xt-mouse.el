@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 1994 Free Software Foundation
 
-;; Author: Per Abrahamsen <abraham@iesd.auc.dk>
+;; Author: Per Abrahamsen <abraham@dina.kvl.dk>
 ;; Keywords: mouse, terminals
 
 ;; This file is part of GNU Emacs.
@@ -86,7 +86,7 @@
 		     ;; Generate a drag event.
 		     (if (symbolp down-where)
 			 0
-		       (list (intern (concat "drag-mouse-" (+ 1 xterm-mouse-last)))
+		       (list (intern (format "drag-mouse-%d" (+ 1 xterm-mouse-last)))
 			     down-data click-data))
 		     )))
 	    (if (and (symbolp down-where)
@@ -132,9 +132,9 @@
 		    (point))
 		where))
 	 (mouse (intern (if (eq type 3)
-			    (concat "mouse-" (+ 1 xterm-mouse-last))
+			    (format "mouse-%d" (+ 1 xterm-mouse-last))
 			  (setq xterm-mouse-last type)
-			  (concat "down-mouse-" (+ 1 type))))))
+			  (format "down-mouse-%d" (+ 1 type))))))
     (setq xterm-mouse-x x
 	  xterm-mouse-y y)
     (list mouse

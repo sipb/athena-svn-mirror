@@ -22,7 +22,7 @@
 #						  9-6-94
 !include makefile.def
 
-ALL		= $(BLD)\addpm.exe $(BLD)\runemacs.exe
+ALL		= $(BLD)\addpm.exe $(BLD)\ddeclient.exe $(BLD)\runemacs.exe $(BLD)\cmdproxy.exe
 !if $(MSVCNT11)
 TRES		= $(BLD)\emacs.res
 !else
@@ -37,6 +37,18 @@ $(BLD)\addpm.obj: addpm.c
 $(BLD)\addpm.exe: $(BLD)\addpm.obj
 		  $(LINK) -out:$@ -subsystem:console -entry:mainCRTStartup \
 		  $(SYS_LDFLAGS) $** $(BASE_LIBS) $(ADVAPI32) user32.lib
+
+ddeclient:	  $(BLD) $(BLD)\ddeclient.exe
+$(BLD)\ddeclient.obj: ddeclient.c
+$(BLD)\ddeclient.exe: $(BLD)\ddeclient.obj
+		  $(LINK) -out:$@ -subsystem:console -entry:mainCRTStartup \
+		  $(SYS_LDFLAGS) $** $(BASE_LIBS) $(ADVAPI32) user32.lib
+
+cmdproxy:	  $(BLD) $(BLD)\cmdproxy.exe
+$(BLD)\cmdproxy.obj: cmdproxy.c
+$(BLD)\cmdproxy.exe: $(BLD)\cmdproxy.obj
+		  $(LINK) -out:$@ -subsystem:console -entry:mainCRTStartup \
+		  $(SYS_LDFLAGS) $** $(BASE_LIBS) user32.lib
 
 #
 # The resource file.  NT 3.10 requires the use of cvtres; even though
@@ -71,18 +83,30 @@ all:		$(BLD) $(ALL)
 		$(BUILD_CMD)
 		cd ..\nt
 
+$(INSTALL_DIR)\bin:
+		- mkdir $(INSTALL_DIR)\bin
 
-emacs.bat:	emacs.bat.in
-		echo @echo off > emacs.bat
+$(INSTALL_DIR)\bin\emacs.bat:	emacs.bat.in
+		echo @echo off > $@
 		echo REM !!! Warning: This file automatically generated !!! >> emacs.bat
-		echo set emacs_dir=$(INSTALL_DIR)>> emacs.bat
-		type emacs.bat.in >> emacs.bat
+		echo set emacs_dir=$(INSTALL_DIR)>> $@
+		type emacs.bat.in >> $@
+
+$(INSTALL_DIR)\bin\debug.bat:	debug.bat.in
+		echo @echo off > $@
+		echo REM !!! Warning: This file automatically generated !!! >> debug.bat
+		echo set emacs_dir=$(INSTALL_DIR)>> $@
+		type debug.bat.in >> $@
+
+batch_files: $(INSTALL_DIR)\bin \
+	     $(INSTALL_DIR)\bin\emacs.bat \
+	     $(INSTALL_DIR)\bin\debug.bat
 
 #
 # Build and install emacs in INSTALL_DIR
 #
 INSTALL_CMD	= $(MAKE) -f makefile.nt install
-install:	all emacs.bat
+install:	all batch_files
 		- mkdir $(INSTALL_DIR)
 		cd ..\lib-src
 		$(INSTALL_CMD)
@@ -91,8 +115,9 @@ install:	all emacs.bat
 		cd ..\lisp
 		$(INSTALL_CMD)
 		cd ..\nt		
-		- $(CP) emacs.bat $(INSTALL_DIR)\bin
 		- $(CP) $(BLD)\addpm.exe $(INSTALL_DIR)\bin
+		- $(CP) $(BLD)\ddeclient.exe $(INSTALL_DIR)\bin
+		- $(CP) $(BLD)\cmdproxy.exe $(INSTALL_DIR)\bin
 		- $(CP) $(BLD)\runemacs.exe $(INSTALL_DIR)\bin
 		- $(ADDPM) $(INSTALL_DIR)
 		- $(DEL) ..\same-dir.tst
@@ -106,11 +131,10 @@ install:	all emacs.bat
 # This installs executables from ..\bin into the installation directory
 # without building anything.
 #
-fast_install:
+fast_install:	batch_files
 		- mkdir $(INSTALL_DIR)\data
 		$(CP) ..\lib-src\DOC $(INSTALL_DIR)\etc
 		- mkdir $(INSTALL_DIR)\bin
-		- $(CP) emacs.bat $(INSTALL_DIR)\bin
 		- $(CP) $(BLD)\addpm.exe $(INSTALL_DIR)\bin
 		- $(CP) $(BLD)\runemacs.exe $(INSTALL_DIR)\bin
 		- $(DEL) ..\same-dir.tst
@@ -131,6 +155,7 @@ real_install:
 		- mkdir $(INSTALL_DIR)\info
 		- mkdir $(INSTALL_DIR)\lock
 		- mkdir $(INSTALL_DIR)\data
+		- mkdir $(INSTALL_DIR)\site-lisp
 		if not exist ..\same-dir.tst $(CP_DIR) ..\etc $(INSTALL_DIR)\etc
 		if not exist ..\same-dir.tst $(CP_DIR) ..\info $(INSTALL_DIR)\info
 		- $(DEL) ..\same-dir.tst
@@ -141,11 +166,16 @@ real_install:
 # 
 CLEAN_CMD	= $(MAKE) -f makefile.nt clean
 clean:;		- $(DEL) *~ *.pdb
+		- $(DEL) *.orig
+		- $(DEL) *.rej
+		- $(DEL) *.crlf
 		- $(DEL_TREE) deleted
-		- $(DEL_TREE) $(OBJDIR)
+		- $(DEL_TREE) obj
+		- $(DEL_TREE) obj-spd
 		- $(DEL_TREE) ..\bin
 		- $(DEL) ..\etc\DOC ..\etc\DOC-X
 		- $(DEL) emacs.bat
+		- $(DEL) debug.bat
 		cd ..\lib-src
 		$(CLEAN_CMD)
 		cd ..\src

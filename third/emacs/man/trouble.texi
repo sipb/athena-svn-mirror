@@ -1,5 +1,5 @@
 @c This is part of the Emacs manual.
-@c Copyright (C) 1985, 1986, 1987, 1993, 1994, 1995 Free Software Foundation, Inc.
+@c Copyright (C) 1985, 86, 87, 93, 94, 95, 1997 Free Software Foundation, Inc.
 @c See file emacs.texi for copying conditions.
 @iftex
 @chapter Dealing with Common Problems
@@ -16,6 +16,7 @@ also considered.
 
 @table @kbd
 @item C-g
+@itemx C-@key{BREAK} (MS-DOS)
 Quit.  Cancel running or partially typed command.
 @item C-]
 Abort innermost recursive editing level and cancel the command which
@@ -47,6 +48,12 @@ ring (or maybe both).  Quitting an incremental search does special
 things documented under searching; in general, it may take two
 successive @kbd{C-g} characters to get out of a search
 (@pxref{Incremental Search}).
+
+  On MS-DOS, the character @kbd{C-@key{BREAK}} serves as a quit character
+like @kbd{C-g}.  The reason is that it is not feasible, on MS-DOS, to
+recognize @kbd{C-g} while a command is running, between interactions
+with the user.  By contrast, it @emph{is} feasible to recognize
+@kbd{C-@key{BREAK}} at all times.  @xref{MS-DOS Input}.
 
   @kbd{C-g} works by setting the variable @code{quit-flag} to @code{t}
 the instant @kbd{C-g} is typed; Emacs Lisp checks this variable
@@ -82,7 +89,7 @@ argument, you can cancel that argument with @kbd{C-g} and remain in the
 recursive edit.
 
 @findex keyboard-escape-quit
-@kindex @key{ESC} @key{ESC} @key{ESC}
+@kindex ESC ESC ESC
   The command @kbd{@key{ESC} @key{ESC} @key{ESC}}
 (@code{keyboard-escape-quit}) can either quit or abort.  This key was
 defined because @key{ESC} is used to ``get out'' in many PC programs.
@@ -273,7 +280,8 @@ checking @code{quit-flag}, a special feature causes Emacs to be suspended
 immediately if you type a second @kbd{C-g} while the flag is already set,
 so you can always get out of GNU Emacs.  Normally Emacs recognizes and
 clears @code{quit-flag} (and quits!) quickly enough to prevent this from
-happening.
+happening.  (On MS-DOS and compatible systems, type @kbd{C-@key{BREAK}}
+twice.)
 
   When you resume Emacs after a suspension caused by multiple @kbd{C-g}, it
 asks two questions before going back to what it had been doing:
@@ -304,6 +312,11 @@ Presumably the quit you requested will happen soon.
   The double-@kbd{C-g} feature is turned off when Emacs is running under
 the X Window System, since you can use the window manager to kill Emacs
 or to create another window and run another program.
+
+  On MS-DOS and compatible systems, the emergency escape feature is
+sometimes unavailable, even if you press @kbd{C-@key{BREAK}} twice, when
+some system call (MS-DOS or BIOS) hangs, or when Emacs is stuck in a
+very tight endless loop (in C code, @strong{not} in Lisp code).
 
 @node Total Frustration
 @subsection Help for Total Frustration
@@ -356,12 +369,13 @@ wrong thing but the problem corrects itself if you type @kbd{C-l}, it is a
 case of incorrect display updating.
 
   Taking forever to complete a command can be a bug, but you must make
-certain that it was really Emacs's fault.  Some commands simply take a long
-time.  Type @kbd{C-g} and then @kbd{C-h l} to see whether the input Emacs
-received was what you intended to type; if the input was such that you
-@emph{know} it should have been processed quickly, report a bug.  If you
-don't know whether the command should take a long time, find out by looking
-in the manual or by asking for assistance.
+certain that it was really Emacs's fault.  Some commands simply take a
+long time.  Type @kbd{C-g} (@kbd{C-@key{BREAK}} on MS-DOS) and then @kbd{C-h l}
+to see whether the input Emacs received was what you intended to type;
+if the input was such that you @emph{know} it should have been processed
+quickly, report a bug.  If you don't know whether the command should
+take a long time, find out by looking in the manual or by asking for
+assistance.
 
   If a command you are familiar with causes an Emacs error message in a
 case where its usual definition ought to be reasonable, it is probably a
@@ -401,28 +415,29 @@ report it in a way which is useful.  What is most useful is an exact
 description of what commands you type, starting with the shell command to
 run Emacs, until the problem happens.
 
-  The most important principle in reporting a bug is to report @emph{facts},
-not hypotheses or categorizations.  It is always easier to report the facts,
-but people seem to prefer to strain to posit explanations and report
-them instead.  If the explanations are based on guesses about how Emacs is
-implemented, they will be useless; we will have to try to figure out what
-the facts must have been to lead to such speculations.  Sometimes this is
-impossible.  But in any case, it is unnecessary work for us.
+  The most important principle in reporting a bug is to report
+@emph{facts}.  Hypotheses and verbal descriptions are no substitute for
+the detailed raw data.  Reporting the facts is straightforward, but many
+people strain to posit explanations and report them instead of the
+facts.  If the explanations are based on guesses about how Emacs is
+implemented, they will be useless; meanwhile, lacking the facts, we will
+have no real information about the bug.
 
   For example, suppose that you type @kbd{C-x C-f /glorp/baz.ugh
 @key{RET}}, visiting a file which (you know) happens to be rather large,
-and Emacs prints out @samp{I feel pretty today}.  The best way to report
-the bug is with a sentence like the preceding one, because it gives all the
-facts and nothing but the facts.
+and Emacs displayed @samp{I feel pretty today}.  The best way to report
+the bug is with a sentence like the preceding one, because it gives all
+the facts.
 
-  Do not assume that the problem is due to the size of the file and say,
-``When I visit a large file, Emacs prints out @samp{I feel pretty today}.''
-This is what we mean by ``guessing explanations''.  The problem is just as
-likely to be due to the fact that there is a @samp{z} in the file name.  If
-this is so, then when we got your report, we would try out the problem with
-some ``large file'', probably with no @samp{z} in its name, and not find
-anything wrong.  There is no way in the world that we could guess that we
-should try visiting a file with a @samp{z} in its name.
+  A bad way would be to assume that the problem is due to the size of
+the file and say, ``I visited a large file, and Emacs displayed @samp{I
+feel pretty today}.''  This is what we mean by ``guessing
+explanations.''  The problem is just as likely to be due to the fact
+that there is a @samp{z} in the file name.  If this is so, then when we
+got your report, we would try out the problem with some ``large file,''
+probably with no @samp{z} in its name, and not see any problem.  There
+is no way in the world that we could guess that we should try visiting a
+file with a @samp{z} in its name.
 
   Alternatively, the problem might be due to the fact that the file starts
 with exactly 25 spaces.  For this reason, you should make sure that you
@@ -437,12 +452,17 @@ Similarly, rather than saying ``if I have three characters on the line,''
 say ``after I type @kbd{@key{RET} A B C @key{RET} C-p},'' if that is
 the way you entered the text.@refill
 
+  So please don't guess any explanations when you report a bug.  If you
+want to actually @emph{debug} the problem, and report explanations that
+are more than guesses, that is useful---but please include the facts as
+well.
+
 @node Checklist
 @subsection Checklist for Bug Reports
 
 @cindex reporting bugs
   The best way to send a bug report is to mail it electronically to the
-Emacs maintainers at @samp{bug-gnu-emacs@@prep.ai.mit.edu}.  (If you
+Emacs maintainers at @samp{bug-gnu-emacs@@gnu.org}.  (If you
 want to suggest a change as an improvement, use the same address.)
 
   If you'd like to read the bug reports, you can find them on the
@@ -616,7 +636,7 @@ Check whether any programs you have loaded into the Lisp world,
 including your @file{.emacs} file, set any variables that may affect the
 functioning of Emacs.  Also, see whether the problem happens in a
 freshly started Emacs without loading your @file{.emacs} file (start
-Emacs with the @code{-q} switch to prevent loading the init file.)  If
+Emacs with the @code{-q} switch to prevent loading the init file).  If
 the problem does @emph{not} occur then, you must report the precise
 contents of any programs that you must load into the Lisp world in order
 to cause the problem to occur.
@@ -699,6 +719,11 @@ of @code{Ffuncall} says how many arguments @code{Ffuncall} received;
 these include the Lisp function itself and the arguments for that
 function.
 
+The file @file{src/.gdbinit} includes several other commands that are
+useful for examining the data types and contents of Lisp objects.  These
+commands work at a lower level than @code{pr}, and are less convenient,
+but they may work even when @code{pr} does not.
+
 @item
 If the symptom of the bug is that Emacs fails to respond, don't assume
 Emacs is ``hung''---it may instead be in an infinite loop.  To find out
@@ -738,7 +763,7 @@ Often people who encounter a bug spend a lot of time investigating
 which changes to the input file will make the bug go away and which
 changes will not affect it.
 
-This is often time consuming and not very useful, because the way we
+This is often time-consuming and not very useful, because the way we
 will find the bug is by running a single example under the debugger with
 breakpoints, not by pure deduction from a series of examples.  You might
 as well save time by not searching for additional examples.
@@ -751,15 +776,17 @@ However, simplification is not vital; if you can't do this or don't have
 time to try, please report the bug with your original test case.
 
 @item
-A system call trace of Emacs execution.
+A system-call trace of Emacs execution.
 
-System call traces are very useful for certain special kinds of
+System-call traces are very useful for certain special kinds of
 debugging, but in most cases they give little useful information.  It is
 therefore strange that many people seem to think that @emph{the} way to
-report information about a crash is to send a system call trace.
+report information about a crash is to send a system-call trace.  Perhaps
+this is a habit formed from experience debugging programs that don't
+have source code or debugging symbols.
 
 In most programs, a backtrace is normally far, far more informative than
-a system call trace.  Even in Emacs, a simple backtrace is generally
+a system-call trace.  Even in Emacs, a simple backtrace is generally
 more informative, though to give full information you should supplement
 the backtrace by displaying variable values and printing them as Lisp
 objects with @code{pr} (see above).
@@ -857,6 +884,13 @@ making diffs of C code.  This shows the name of the function that each
 change occurs in.
 
 @item
+Avoid any ambiguity as to which is the old version and which is the new.
+Please make the old version the first argument to diff, and the new
+version the second argument.  And please give one version or the other a
+name that indicates whether it is the old version or your new changed
+one.
+
+@item
 Write the change log entries for your changes.  This is both to save us
 the extra work of writing them, and to help explain your changes so we
 can understand them.
@@ -902,14 +936,14 @@ form that is clearly safe to install.
 
 If you would like to help pretest Emacs releases to assure they work
 well, or if you would like to work on improving Emacs, please contact
-the maintainers at @code{bug-gnu-emacs@@prep.ai.mit.edu}.  A pretester
+the maintainers at @code{bug-gnu-emacs@@gnu.org}.  A pretester
 should be prepared to investigate bugs as well as report them.  If you'd
 like to work on improving Emacs, please ask for suggested projects or
 suggest your own ideas.
 
 If you have already written an improvement, please tell us about it.  If
 you have not yet started work, it is useful to contact
-@code{bug-gnu-emacs@@prep.ai.mit.edu} before you start; it might be
+@code{bug-gnu-emacs@@gnu.org} before you start; it might be
 possible to suggest ways to make your extension fit in better with the
 rest of Emacs.
 
@@ -922,7 +956,7 @@ ways to find it:
 @itemize @bullet
 @item
 Send a message to the mailing list
-@code{help-gnu-emacs@@prep.ai.mit.edu}, or post your request on
+@code{help-gnu-emacs@@gnu.org}, or post your request on
 newsgroup @code{gnu.emacs.help}.  (This mailing list and newsgroup
 interconnect, so it does not matter which one you use.)
 

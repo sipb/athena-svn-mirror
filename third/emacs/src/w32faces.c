@@ -1,4 +1,4 @@
-/* "Face" primitives.
+/* "Face" primitives on the Microsoft W32 API.
    Copyright (C) 1993, 1994, 1995 Free Software Foundation.
 
 This file is part of GNU Emacs.
@@ -18,7 +18,7 @@ along with GNU Emacs; see the file COPYING.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
-/* Ported xfaces.c for win32 - Kevin Gallo */
+/* Ported xfaces.c for w32 - Kevin Gallo */
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -139,6 +139,9 @@ static int new_computed_face ( /* FRAME_PTR, struct face * */ );
 static int intern_computed_face ( /* FRAME_PTR, struct face * */ );
 static void ensure_face_ready ( /* FRAME_PTR, int id */ );
 void recompute_basic_faces ( /* FRAME_PTR f */ );
+static void merge_face_list ( /* FRAME_PTR, struct face *, Lisp_Object */ );
+
+extern Lisp_Object Qforeground_color, Qbackground_color;
 
 /* Allocating, copying, and comparing struct faces.  */
 
@@ -227,7 +230,7 @@ load_font (f, name)
 
   CHECK_STRING (name, 0);
   BLOCK_INPUT;
-  font = win32_load_font (FRAME_WIN32_DISPLAY_INFO (f), (char *) XSTRING (name)->data);
+  font = w32_load_font (FRAME_W32_DISPLAY_INFO (f), (char *) XSTRING (name)->data);
   UNBLOCK_INPUT;
 
   if (! font)
@@ -245,7 +248,7 @@ unload_font (f, font)
     return;
 
   BLOCK_INPUT;
-  win32_unload_font (FRAME_WIN32_DISPLAY_INFO (f), font);
+  w32_unload_font (FRAME_W32_DISPLAY_INFO (f), font);
   UNBLOCK_INPUT;
 }
 
@@ -373,14 +376,13 @@ init_frame_faces (f)
   new_computed_face (f, FRAME_PARAM_FACES (f)[1]);
   recompute_basic_faces (f);
 
-#ifdef MULTI_FRAME
   /* Find another frame.  */
   {
     Lisp_Object tail, frame, result;
     
     result = Qnil;
     FOR_EACH_FRAME (tail, frame)
-      if (FRAME_WIN32_P (XFRAME (frame))
+      if (FRAME_W32_P (XFRAME (frame))
 	  && XFRAME (frame) != f)
 	{
 	  result = frame;
@@ -402,7 +404,6 @@ init_frame_faces (f)
 	    ensure_face_ready (f, i);
       }
   }
-#endif /* MULTI_FRAME */
 }
 
 
@@ -548,21 +549,21 @@ frame_update_line_height (f)
      FRAME_PTR f;
 {
   int i;
-  int biggest = FONT_HEIGHT (f->output_data.win32->font);
+  int biggest = FONT_HEIGHT (f->output_data.w32->font);
 
-  for (i = 0; i < f->output_data.win32->n_param_faces; i++)
-    if (f->output_data.win32->param_faces[i] != 0
-	&& f->output_data.win32->param_faces[i]->font != (XFontStruct *) FACE_DEFAULT)
+  for (i = 0; i < f->output_data.w32->n_param_faces; i++)
+    if (f->output_data.w32->param_faces[i] != 0
+	&& f->output_data.w32->param_faces[i]->font != (XFontStruct *) FACE_DEFAULT)
       {
-	int height = FONT_HEIGHT (f->output_data.win32->param_faces[i]->font);
+	int height = FONT_HEIGHT (f->output_data.w32->param_faces[i]->font);
 	if (height > biggest)
 	  biggest = height;
       }
 
-  if (biggest == f->output_data.win32->line_height)
+  if (biggest == f->output_data.w32->line_height)
     return 0;
 
-  f->output_data.win32->line_height = biggest;
+  f->output_data.w32->line_height = biggest;
   return 1;
 }
 
@@ -665,7 +666,6 @@ compute_glyph_face_1 (f, face_name, current_face)
    the time this function can take.
 
    If MOUSE is nonzero, use the character's mouse-face, not its face.  */
-
 int
 compute_char_face (f, w, pos, region_beg, region_end, endptr, limit, mouse)
      struct frame *f;
@@ -748,82 +748,23 @@ compute_char_face (f, w, pos, region_beg, region_end, endptr, limit, mouse)
 
   compute_base_face (f, &face);
 
-  if (CONSP (prop))
-    {
-      /* We have a list of faces, merge them in reverse order */
-      Lisp_Object length = Flength (prop);
-      int len = XINT (length);
-      Lisp_Object *faces;
-
-      /* Put them into an array */
-      faces = (Lisp_Object *) alloca (len * sizeof (Lisp_Object));
-      for (j = 0; j < len; j++)
-	{
-	  faces[j] = Fcar (prop);
-	  prop = Fcdr (prop);
-	}
-      /* So that we can merge them in the reverse order */
-      for (j = len - 1; j >= 0; j--)
-	{
-	  facecode = face_name_id_number (f, faces[j]);
-	  if (facecode >= 0 && facecode < FRAME_N_PARAM_FACES (f)
-	      && FRAME_PARAM_FACES (f) [facecode] != 0)
-	    merge_faces (FRAME_PARAM_FACES (f) [facecode], &face);
-	}
-    }
-  else if (!NILP (prop))
-    {
-      facecode = face_name_id_number (f, prop);
-      if (facecode >= 0 && facecode < FRAME_N_PARAM_FACES (f)
-	  && FRAME_PARAM_FACES (f) [facecode] != 0)
-	merge_faces (FRAME_PARAM_FACES (f) [facecode], &face);
-    }
+  merge_face_list (f, &face, prop);
 
   noverlays = sort_overlays (overlay_vec, noverlays, w);
 
   /* Now merge the overlay data in that order.  */
   for (i = 0; i < noverlays; i++)
     {
+      Lisp_Object oend;
+      int oendpos;
+
       prop = Foverlay_get (overlay_vec[i], propname);
-      if (CONSP (prop))
-	{
-	  /* We have a list of faces, merge them in reverse order */
-	  Lisp_Object length = Flength (prop);
-	  int len = XINT (length);
-	  Lisp_Object *faces;
-	  int i;
+      merge_face_list (f, &face, prop);
 
-	  /* Put them into an array */
-	  faces = (Lisp_Object *) alloca (len * sizeof (Lisp_Object));
-	  for (j = 0; j < len; j++)
-	    {
-	      faces[j] = Fcar (prop);
-	      prop = Fcdr (prop);
-	    }
-	  /* So that we can merge them in the reverse order */
-	  for (j = len - 1; j >= 0; j--)
-	    {
-	      facecode = face_name_id_number (f, faces[j]);
-	      if (facecode >= 0 && facecode < FRAME_N_PARAM_FACES (f)
-		  && FRAME_PARAM_FACES (f) [facecode] != 0)
-		merge_faces (FRAME_PARAM_FACES (f) [facecode], &face);
-	    }
-	}
-      else if (!NILP (prop))
-	{
-	  Lisp_Object oend;
-	  int oendpos;
-
-	  facecode = face_name_id_number (f, prop);
-	  if (facecode >= 0 && facecode < FRAME_N_PARAM_FACES (f)
-	      && FRAME_PARAM_FACES (f) [facecode] != 0)
-	    merge_faces (FRAME_PARAM_FACES (f)[facecode], &face);
-
-	  oend = OVERLAY_END (overlay_vec[i]);
-	  oendpos = OVERLAY_POSITION (oend);
-	  if (oendpos < endpos)
-	    endpos = oendpos;
-	}
+      oend = OVERLAY_END (overlay_vec[i]);
+      oendpos = OVERLAY_POSITION (oend);
+      if (oendpos < endpos)
+	endpos = oendpos;
     }
 
   if (pos >= region_beg && pos < region_end)
@@ -838,6 +779,61 @@ compute_char_face (f, w, pos, region_beg, region_end, endptr, limit, mouse)
 
   return intern_computed_face (f, &face);
 }
+
+static void
+merge_face_list (f, face, prop)
+     FRAME_PTR f;
+     struct face *face;
+     Lisp_Object prop;
+{
+  Lisp_Object length;
+  int len;
+  Lisp_Object *faces;
+  int j;
+
+  if (CONSP (prop)
+      && ! STRINGP (XCONS (prop)->cdr))
+    {
+      /* We have a list of faces, merge them in reverse order.  */
+
+      length = Fsafe_length (prop);
+      len = XFASTINT (length);
+
+      /* Put them into an array.  */
+      faces = (Lisp_Object *) alloca (len * sizeof (Lisp_Object));
+      for (j = 0; j < len; j++)
+	{
+	  faces[j] = Fcar (prop);
+	  prop = Fcdr (prop);
+	}
+      /* So that we can merge them in the reverse order.  */
+    }
+  else
+    {
+      faces = (Lisp_Object *) alloca (sizeof (Lisp_Object));
+      faces[0] = prop;
+      len = 1;
+    }
+
+  for (j = len - 1; j >= 0; j--)
+    {
+      if (CONSP (faces[j]))
+	{
+	  if (EQ (XCONS (faces[j])->car, Qbackground_color))
+	    face->background = load_color (f, XCONS (faces[j])->cdr);
+	  if (EQ (XCONS (faces[j])->car, Qforeground_color))
+	    face->foreground = load_color (f, XCONS (faces[j])->cdr);
+	}
+      else
+	{
+	  int facecode = face_name_id_number (f, faces[j]);
+	  if (facecode >= 0 && facecode < FRAME_N_PARAM_FACES (f)
+	      && FRAME_PARAM_FACES (f) [facecode] != 0)
+	    merge_faces (FRAME_PARAM_FACES (f) [facecode], face);
+	}
+    }
+}
+
 
 /* Recompute the GC's for the default and modeline faces.
    We call this after changing frame parameters on which those GC's
@@ -904,7 +900,7 @@ DEFUN ("make-face-internal", Fmake_face_internal, Smake_face_internal, 1, 1, 0,
 
   FOR_EACH_FRAME (rest, frame)
     {
-      if (FRAME_WIN32_P (XFRAME (frame)))
+      if (FRAME_W32_P (XFRAME (frame)))
 	ensure_face_ready (XFRAME (frame), id);
     }
   return Qnil;
@@ -931,7 +927,7 @@ DEFUN ("set-face-attribute-internal", Fset_face_attribute_internal,
   if (id < 0 || id >= next_face_id)
     error ("Face id out of range");
 
-  if (! FRAME_WIN32_P (f))
+  if (! FRAME_W32_P (f))
     return Qnil;
 
   ensure_face_ready (f, id);
@@ -940,7 +936,7 @@ DEFUN ("set-face-attribute-internal", Fset_face_attribute_internal,
   if (EQ (attr_name, intern ("font")))
     {
       XFontStruct *font = load_font (f, attr_value);
-      if (face->font != f->output_data.win32->font)
+      if (face->font != f->output_data.w32->font)
 	unload_font (f, face->font);
       face->font = font;
       if (frame_update_line_height (f))
@@ -1026,7 +1022,7 @@ face_name_id_number (f, name)
 /* Emacs initialization.  */
 
 void
-syms_of_win32faces ()
+syms_of_w32faces ()
 {
   Qface = intern ("face");
   staticpro (&Qface);

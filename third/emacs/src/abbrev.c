@@ -1,5 +1,5 @@
 /* Primitives for word-abbrev mode.
-   Copyright (C) 1985, 1986, 1993 Free Software Foundation, Inc.
+   Copyright (C) 1985, 1986, 1993, 1996, 1998 Free Software Foundation, Inc.
 
 This file is part of GNU Emacs.
 
@@ -104,18 +104,20 @@ DEFUN ("clear-abbrev-table", Fclear_abbrev_table, Sclear_abbrev_table, 1, 1, 0,
 
 DEFUN ("define-abbrev", Fdefine_abbrev, Sdefine_abbrev, 3, 5, 0,
   "Define an abbrev in TABLE named NAME, to expand to EXPANSION and call HOOK.\n\
-NAME and EXPANSION are strings.\n\
+NAME must be a string.\n\
+EXPANSION should usually be a string.\n\
 To undefine an abbrev, define it with EXPANSION = nil.\n\
 If HOOK is non-nil, it should be a function of no arguments;\n\
-it is called after EXPANSION is inserted.")
+it is called after EXPANSION is inserted.\n\
+If EXPANSION is not a string, the abbrev is a special one,\n\
+ which does not expand in the usual way but only runs HOOK.")
   (table, name, expansion, hook, count)
      Lisp_Object table, name, expansion, hook, count;
 {
   Lisp_Object sym, oexp, ohook, tem;
   CHECK_VECTOR (table, 0);
   CHECK_STRING (name, 1);
-  if (!NILP (expansion))
-    CHECK_STRING (expansion, 2);
+
   if (NILP (count))
     count = make_number (0);
   else
@@ -212,11 +214,12 @@ then ABBREV is looked up in that table only.")
 DEFUN ("expand-abbrev", Fexpand_abbrev, Sexpand_abbrev, 0, 0, "",
   "Expand the abbrev before point, if there is an abbrev there.\n\
 Effective when explicitly called even when `abbrev-mode' is nil.\n\
-Returns t if expansion took place.")
+Returns the abbrev symbol, if expansion took place.")
   ()
 {
   register char *buffer, *p;
-  register int wordstart, wordend, idx;
+  int wordstart, wordend;
+  register int wordstart_byte, wordend_byte, idx;
   int whitecnt;
   int uccount = 0, lccount = 0;
   register Lisp_Object sym;
@@ -224,15 +227,14 @@ Returns t if expansion took place.")
   int oldmodiff = MODIFF;
   Lisp_Object value;
 
+  value = Qnil;
+
   if (!NILP (Vrun_hooks))
     call1 (Vrun_hooks, Qpre_abbrev_expand_hook);
-  /* If the hook changes the buffer, treat that as having "done an
-     expansion".  */
-  value = (MODIFF != oldmodiff ? Qt : Qnil);
 
   wordstart = 0;
-  if (!(BUFFERP (Vabbrev_start_location_buffer) &&
-	XBUFFER (Vabbrev_start_location_buffer) == current_buffer))
+  if (!(BUFFERP (Vabbrev_start_location_buffer)
+	&& XBUFFER (Vabbrev_start_location_buffer) == current_buffer))
     Vabbrev_start_location = Qnil;
   if (!NILP (Vabbrev_start_location))
     {
@@ -242,30 +244,38 @@ Returns t if expansion took place.")
       Vabbrev_start_location = Qnil;
       if (wordstart < BEGV || wordstart > ZV)
 	wordstart = 0;
-      if (wordstart && wordstart != ZV && FETCH_CHAR (wordstart) == '-')
-	del_range (wordstart, wordstart + 1);
+      if (wordstart && wordstart != ZV)
+	{
+	  wordstart_byte = CHAR_TO_BYTE (wordstart);
+	  if (FETCH_BYTE (wordstart_byte) == '-')
+	    del_range (wordstart, wordstart + 1);
+	}
     }
   if (!wordstart)
-    wordstart = scan_words (point, -1);
+    wordstart = scan_words (PT, -1);
 
   if (!wordstart)
     return value;
 
+  wordstart_byte = CHAR_TO_BYTE (wordstart);
   wordend = scan_words (wordstart, 1);
   if (!wordend)
     return value;
 
-  if (wordend > point)
-    wordend = point;
-  whitecnt = point - wordend;
+  if (wordend > PT)
+    wordend = PT;
+
+  wordend_byte = CHAR_TO_BYTE (wordend);
+  whitecnt = PT - wordend;
   if (wordend <= wordstart)
     return value;
 
-  p = buffer = (char *) alloca (wordend - wordstart);
+  p = buffer = (char *) alloca (wordend_byte - wordstart_byte);
 
-  for (idx = wordstart; idx < wordend; idx++)
+  for (idx = wordstart_byte; idx < wordend_byte; idx++)
     {
-      register int c = FETCH_CHAR (idx);
+      /* ??? This loop needs to go by characters!  */
+      register int c = FETCH_BYTE (idx);
       if (UPPERCASEP (c))
 	c = DOWNCASE (c), uccount++;
       else if (! NOCASEP (c))
@@ -274,11 +284,13 @@ Returns t if expansion took place.")
     }
 
   if (VECTORP (current_buffer->abbrev_table))
-    sym = oblookup (current_buffer->abbrev_table, buffer, p - buffer);
+    sym = oblookup (current_buffer->abbrev_table, buffer,
+		    wordend - wordstart, wordend_byte - wordstart_byte);
   else
     XSETFASTINT (sym, 0);
   if (INTEGERP (sym) || NILP (XSYMBOL (sym)->value))
-    sym = oblookup (Vglobal_abbrev_table, buffer, p - buffer);
+    sym = oblookup (Vglobal_abbrev_table, buffer,
+		    wordend - wordstart, wordend_byte - wordstart_byte);
   if (INTEGERP (sym) || NILP (XSYMBOL (sym)->value))
     return value;
 
@@ -289,59 +301,70 @@ Returns t if expansion took place.")
       SET_PT (wordend);
       Fundo_boundary ();
     }
-  SET_PT (wordstart);
+
   Vlast_abbrev_text
     = Fbuffer_substring (make_number (wordstart), make_number (wordend));
-  del_range (wordstart, wordend);
 
-  /* Now sym is the abbrev symbol. */
+  /* Now sym is the abbrev symbol.  */
   Vlast_abbrev = sym;
+  value = sym;
   last_abbrev_point = wordstart;
 
   if (INTEGERP (XSYMBOL (sym)->plist))
     XSETINT (XSYMBOL (sym)->plist,
 	     XINT (XSYMBOL (sym)->plist) + 1);	/* Increment use count */
 
+  /* If this abbrev has an expansion, delete the abbrev
+     and insert the expansion.  */
   expansion = XSYMBOL (sym)->value;
-  insert_from_string (expansion, 0, XSTRING (expansion)->size, 1);
-  SET_PT (point + whitecnt);
-
-  if (uccount && !lccount)
+  if (STRINGP (expansion))
     {
-      /* Abbrev was all caps */
-      /* If expansion is multiple words, normally capitalize each word */
-      /* This used to be if (!... && ... >= ...) Fcapitalize; else Fupcase
-	 but Megatest 68000 compiler can't handle that */
-      if (!abbrev_all_caps)
-	if (scan_words (point, -1) > scan_words (wordstart, 1))
-	  {
-	    Fupcase_initials_region (make_number (wordstart),
-				     make_number (point));
-	    goto caped;
-	  }
-      /* If expansion is one word, or if user says so, upcase it all. */
-      Fupcase_region (make_number (wordstart), make_number (point));
-    caped: ;
-    }
-  else if (uccount)
-    {
-      /* Abbrev included some caps.  Cap first initial of expansion */
-      int pos = wordstart;
+      SET_PT (wordstart);
 
-      /* Find the initial.  */
-      while (pos < point
-	     && SYNTAX (*BUF_CHAR_ADDRESS (current_buffer, pos)) != Sword)
-	pos++;
+      del_range_both (wordstart, wordstart_byte, wordend, wordend_byte, 1);
 
-      /* Change just that.  */
-      Fupcase_initials_region (make_number (pos), make_number (pos + 1));
+      insert_from_string (expansion, 0, 0, XSTRING (expansion)->size,
+			  STRING_BYTES (XSTRING (expansion)), 1);
+      SET_PT (PT + whitecnt);
+
+      if (uccount && !lccount)
+	{
+	  /* Abbrev was all caps */
+	  /* If expansion is multiple words, normally capitalize each word */
+	  /* This used to be if (!... && ... >= ...) Fcapitalize; else Fupcase
+	     but Megatest 68000 compiler can't handle that */
+	  if (!abbrev_all_caps)
+	    if (scan_words (PT, -1) > scan_words (wordstart, 1))
+	      {
+		Fupcase_initials_region (make_number (wordstart),
+					 make_number (PT));
+		goto caped;
+	      }
+	  /* If expansion is one word, or if user says so, upcase it all. */
+	  Fupcase_region (make_number (wordstart), make_number (PT));
+	caped: ;
+	}
+      else if (uccount)
+	{
+	  /* Abbrev included some caps.  Cap first initial of expansion */
+	  int pos = wordstart_byte;
+
+	  /* Find the initial.  */
+	  while (pos < PT_BYTE
+		 && SYNTAX (*BUF_BYTE_ADDRESS (current_buffer, pos)) != Sword)
+	    pos++;
+
+	  /* Change just that.  */
+	  pos = BYTE_TO_CHAR (pos);
+	  Fupcase_initials_region (make_number (pos), make_number (pos + 1));
+	}
     }
 
   hook = XSYMBOL (sym)->function;
   if (!NILP (hook))
     call0 (hook);
 
-  return Qt;
+  return value;
 }
 
 DEFUN ("unexpand-abbrev", Funexpand_abbrev, Sunexpand_abbrev, 0, 0, "",
@@ -350,7 +373,7 @@ This differs from ordinary undo in that other editing done since then\n\
 is not undone.")
   ()
 {
-  int opoint = point;
+  int opoint = PT;
   int adjust = 0;
   if (last_abbrev_point < BEGV
       || last_abbrev_point > ZV)
@@ -361,22 +384,26 @@ is not undone.")
       /* This isn't correct if Vlast_abbrev->function was used
          to do the expansion */
       Lisp_Object val;
+      int zv_before;
+
       val = XSYMBOL (Vlast_abbrev)->value;
       if (!STRINGP (val))
 	error ("value of abbrev-symbol must be a string");
-      adjust = XSTRING (val)->size;
-      del_range (point, point + adjust);
+      zv_before = ZV;
+      del_range_byte (PT_BYTE, PT_BYTE + STRING_BYTES (XSTRING (val)), 1);
       /* Don't inherit properties here; just copy from old contents.  */
-      insert_from_string (Vlast_abbrev_text, 0,
-			  XSTRING (Vlast_abbrev_text)->size, 0);
-      adjust -= XSTRING (Vlast_abbrev_text)->size;
+      insert_from_string (Vlast_abbrev_text, 0, 0,
+			  XSTRING (Vlast_abbrev_text)->size,
+			  STRING_BYTES (XSTRING (Vlast_abbrev_text)), 0);
       Vlast_abbrev_text = Qnil;
+      /* Total number of characters deleted.  */
+      adjust = ZV - zv_before;
     }
-  SET_PT (last_abbrev_point < opoint ? opoint - adjust : opoint);
+  SET_PT (last_abbrev_point < opoint ? opoint + adjust : opoint);
   return Qnil;
 }
 
-static
+static void
 write_abbrev (sym, stream)
      Lisp_Object sym, stream;
 {
@@ -395,7 +422,7 @@ write_abbrev (sym, stream)
   insert (")\n", 2);
 }
 
-static
+static void
 describe_abbrev (sym, stream)
      Lisp_Object sym, stream;
 {
@@ -417,9 +444,8 @@ describe_abbrev (sym, stream)
   Fterpri (stream);
 }
 
-DEFUN ("insert-abbrev-table-description",
-  Finsert_abbrev_table_description, Sinsert_abbrev_table_description,
-  1, 2, 0,
+DEFUN ("insert-abbrev-table-description", Finsert_abbrev_table_description,
+  Sinsert_abbrev_table_description, 1, 2, 0,
   "Insert before point a full description of abbrev table named NAME.\n\
 NAME is a symbol whose value is an abbrev table.\n\
 If optional 2nd arg READABLE is non-nil, a human-readable description\n\
@@ -491,6 +517,7 @@ of the form (ABBREVNAME EXPANSION HOOK USECOUNT).")
   return Qnil;
 }
 
+void
 syms_of_abbrev ()
 {
   DEFVAR_LISP ("abbrev-table-name-list", &Vabbrev_table_name_list,

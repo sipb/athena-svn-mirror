@@ -1,1207 +1,1079 @@
-This is Info file ../info/emacs, produced by Makeinfo-1.63 from the
-input file emacs.texi.
+This is Info file ../info/emacs, produced by Makeinfo version 1.68 from
+the input file emacs.texi.
+
+   This is the thirteenth edition of the `GNU Emacs Manual', updated
+for Emacs version 20.3
+
+INFO-DIR-SECTION Editors
+START-INFO-DIR-ENTRY
+* Emacs: (emacs).	The extensible self-documenting text editor.
+END-INFO-DIR-ENTRY
+
+   Published by the Free Software Foundation 59 Temple Place, Suite 330
+Boston, MA  02111-1307 USA
+
+   Copyright (C) 1985, 1986, 1987, 1993, 1994, 1995, 1996, 1997, 1998
+Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled "The GNU Manifesto", "Distribution" and "GNU
+General Public License" are included exactly as in the original, and
+provided that the entire resulting derived work is distributed under the
+terms of a permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the sections entitled "The GNU Manifesto",
+"Distribution" and "GNU General Public License" may be included in a
+translation approved by the Free Software Foundation instead of in the
+original English.
 
 
-File: emacs,  Node: Rmail Output,  Next: Rmail Labels,  Prev: Rmail Files,  Up: Rmail
+File: emacs,  Node: Lisp Libraries,  Next: Lisp Interaction,  Prev: Executing Lisp,  Up: Building
 
-Copying Messages Out to Files
-=============================
-
-   These commands copy messages from an Rmail file into another file.
-
-`o FILE RET'
-     Append a copy of the current message to the file FILE, using Rmail
-     file format by default (`rmail-output-to-rmail-file').
-
-`C-o FILE RET'
-     Append a copy of the current message to the file FILE, using
-     system inbox file format by default (`rmail-output').
-
-   The commands `o' and `C-o' copy the current message into a specified
-file.  This file may be an Rmail file or it may be in system inbox
-format; the output commands ascertain the file's format and write the
-copied message in that format.
-
-   The `o' and `C-o' commands differ in two ways: each has its own
-separate default file name, and each specifies a choice of format to
-use when the file does not already exist.  The `o' command uses Rmail
-format when it creates a new file, while `C-o' uses system inbox format
-for a new file.  The default file name for `o' is the file name used
-last with `o', and the default file name for `C-o' is the file name
-used last with `C-o'.
-
-   If the output file is an Rmail file currently visited in an Emacs
-buffer, the output commands copy the message into that buffer.  It is
-up to you to save the buffer eventually in its file.
-
-   You can also output a message to an Rmail file chosen with a menu.
-Choose first the menu bar Classify item, then from the Classify menu
-choose the Output Rmail Menu item; then choose the Rmail file you want.
-This outputs the current message to that file, like the `o' command.
-The variables `rmail-secondary-file-directory' and
-`rmail-secondary-file-regexp' specify which files to offer in the menu:
-the first variable says which directory to find them in; the second
-says which files in that directory to offer (all those that match the
-regular expression).
-
-   Copying a message gives the original copy of the message the `filed'
-attribute, so that `filed' appears in the mode line when such a message
-is current.  If you like to keep just a single copy of every mail
-message, set the variable `rmail-delete-after-output' to `t'; then the
-`o' and `C-o' commands delete the original message after copying it.
-(You can undelete the original afterward if you wish.)
-
-   Copying messages into files in system inbox format uses the header
-fields that are displayed in Rmail at the time.  Thus, if you use the
-`t' command to view the entire header and then copy the message, the
-entire header is copied.  *Note Rmail Display::.
-
-   The variable `rmail-output-file-alist' lets you specify intelligent
-defaults for the output file, based on the contents of the current
-message.  The value should be a list whose elements have this form:
-
-     (REGEXP . NAME-EXP)
-
-If there's a match for REGEXP in the current message, then the default
-file name for output is NAME-EXP.  If multiple elements match the
-message, the first matching element decides the default file name.  The
-subexpression NAME-EXP may be a string constant giving the file name to
-use, or more generally it may be any Lisp expression that returns a
-file name as a string.  `rmail-output-file-alist' applies to both `o'
-and `C-o'.
-
-
-File: emacs,  Node: Rmail Labels,  Next: Rmail Reply,  Prev: Rmail Output,  Up: Rmail
-
-Labels
-======
-
-   Each message can have various "labels" assigned to it as a means of
-classification.  Each label has a name; different names are different
-labels.  Any given label is either present or absent on a particular
-message.  A few label names have standard meanings and are given to
-messages automatically by Rmail when appropriate; these special labels
-are called "attributes".  All other labels are assigned only by users.
-
-`a LABEL RET'
-     Assign the label LABEL to the current message (`rmail-add-label').
-
-`k LABEL RET'
-     Remove the label LABEL from the current message
-     (`rmail-kill-label').
-
-`C-M-n LABELS RET'
-     Move to the next message that has one of the labels LABELS
-     (`rmail-next-labeled-message').
-
-`C-M-p LABELS RET'
-     Move to the previous message that has one of the labels LABELS
-     (`rmail-previous-labeled-message').
-
-`C-M-l LABELS RET'
-     Make a summary of all messages containing any of the labels LABELS
-     (`rmail-summary-by-labels').
-
-   The `a' (`rmail-add-label') and `k' (`rmail-kill-label') commands
-allow you to assign or remove any label on the current message.  If the
-LABEL argument is empty, it means to assign or remove the same label
-most recently assigned or removed.
-
-   Once you have given messages labels to classify them as you wish,
-there are two ways to use the labels: in moving and in summaries.
-
-   The command `C-M-n LABELS RET' (`rmail-next-labeled-message') moves
-to the next message that has one of the labels LABELS.  The argument
-LABELS specifies one or more label names, separated by commas.  `C-M-p'
-(`rmail-previous-labeled-message') is similar, but moves backwards to
-previous messages.  A numeric argument to either command serves as a
-repeat count.
-
-   The command `C-M-l LABELS RET' (`rmail-summary-by-labels') displays
-a summary containing only the messages that have at least one of a
-specified set of labels.  The argument LABELS is one or more label
-names, separated by commas.  *Note Rmail Summary::, for information on
-summaries.
-
-   If the LABELS argument to `C-M-n', `C-M-p' or `C-M-l' is empty, it
-means to use the last set of labels specified for any of these commands.
-
-   Some labels such as `deleted' and `filed' have built-in meanings and
-are assigned to or removed from messages automatically at appropriate
-times; these labels are called "attributes".  Here is a list of Rmail
-attributes:
-
-`unseen'
-     Means the message has never been current.  Assigned to messages
-     when they come from an inbox file, and removed when a message is
-     made current.  When you start Rmail, it initially shows the first
-     message that has this attribute.
-
-`deleted'
-     Means the message is deleted.  Assigned by deletion commands and
-     removed by undeletion commands (*note Rmail Deletion::.).
-
-`filed'
-     Means the message has been copied to some other file.  Assigned by
-     the file output commands (*note Rmail Files::.).
-
-`answered'
-     Means you have mailed an answer to the message.  Assigned by the
-     `r' command (`rmail-reply').  *Note Rmail Reply::.
-
-`forwarded'
-     Means you have forwarded the message.  Assigned by the `f' command
-     (`rmail-forward').  *Note Rmail Reply::.
-
-`edited'
-     Means you have edited the text of the message within Rmail.  *Note
-     Rmail Editing::.
-
-`resent'
-     Means you have resent the message.  Assigned by the command `M-x
-     rmail-resend'.  *Note Rmail Reply::.
-
-   All other labels are assigned or removed only by the user, and have
-no standard meaning.
-
-
-File: emacs,  Node: Rmail Reply,  Next: Rmail Summary,  Prev: Rmail Labels,  Up: Rmail
-
-Sending Replies
-===============
-
-   Rmail has several commands that use Mail mode to send outgoing mail.
-*Note Sending Mail::, for information on using Mail mode.  What are
-documented here are the special commands of Rmail for entering Mail
-mode.  Note that the usual keys for sending mail--`C-x m', `C-x 4 m',
-and `C-x 5 m'--are available in Rmail mode and work just as they
-usually do.
-
-`m'
-     Send a message (`rmail-mail').
-
-`c'
-     Continue editing already started outgoing message
-     (`rmail-continue').
-
-`r'
-     Send a reply to the current Rmail message (`rmail-reply').
-
-`f'
-     Forward current message to other users (`rmail-forward').
-
-`C-u f'
-     Resend the current message to other users (`rmail-resend').
-
-`M-m'
-     Try sending a bounced message a second time
-     (`rmail-retry-failure').
-
-   The most common reason to send a message while in Rmail is to reply
-to the message you are reading.  To do this, type `r' (`rmail-reply').
-This displays the `*mail*' buffer in another window, much like `C-x 4
-m', but preinitializes the `Subject', `To', `CC' and `In-reply-to'
-header fields based on the message you are replying to.  The `To' field
-starts out as the address of the person who sent the message you
-received, and the `CC' field starts out with all the other recipients
-of that message.
-
-   You can exclude certain recipients from being placed automatically in
-the `CC', using the variable `rmail-dont-reply-to-names'.  Its value
-should be a regular expression (as a string); any recipient that the
-regular expression matches, is excluded from the `CC' field.  The
-default value matches your own name, and any name starting with
-`info-'.  (Those names are excluded because there is a convention of
-using them for large mailing lists to broadcast announcements.)
-
-   To omit the `CC' field completely for a particular reply, enter the
-reply command with a numeric argument: `C-u r' or `1 r'.
-
-   Once the `*mail*' buffer has been initialized, editing and sending
-the mail goes as usual (*note Sending Mail::.).  You can edit the
-presupplied header fields if they are not right for you.  You can also
-use the commands of Mail mode (*note Mail Mode::.), including `C-c C-y'
-which yanks in the message that you are replying to.  You can switch to
-the Rmail buffer, select a different message there, switch back, and
-yank the new current message.
-
-   Sometimes a message does not reach its destination.  Mailers usually
-send the failed message back to you, enclosed in a "failure message".
-The Rmail command `M-m' (`rmail-retry-failure') prepares to send the
-same message a second time: it sets up a `*mail*' buffer with the same
-text and header fields as before.  If you type `C-c C-c' right away,
-you send the message again exactly the same as the first time.
-Alternatively, you can edit the text or headers and then send it.  The
-variable `rmail-retry-ignored-headers', in the same format as
-`rmail-ignored-headers' (*note Rmail Display::.), controls which
-headers are stripped from the failed message when retrying it; it
-defaults to nil.
-
-   Another frequent reason to send mail in Rmail is to "forward" the
-current message to other users.  `f' (`rmail-forward') makes this easy
-by preinitializing the `*mail*' buffer with the current message as the
-text, and a subject designating a forwarded message.  All you have to
-do is fill in the recipients and send.  When you forward a message,
-recipients get a message which is "from" you, and which has the
-original message in its contents.
-
-   Forwarding a message encloses it between two delimiter lines.  It
-also modifies every line that starts with a dash, by inserting `- ' at
-the start of the line.  When you receive a forwarded message, if it
-contains something besides ordinary text--for example, program source
-code--you might find it useful to undo that transformation.  You can do
-this by selecting the forwarded message and typing `M-x
-unforward-rmail-message'.  This command extracts the original forwarded
-message, deleting the inserted `- ' strings, and inserts it into the
-Rmail file as a separate message immediately following the current one.
-
-   "Resending" is an alternative similar to forwarding; the difference
-is that resending sends a message that is "from" the original sender,
-just as it reached you--with a few added header fields `Resent-from'
-and `Resent-to' to indicate that it came via you.  To resend a message
-in Rmail, use `C-u f'.  (`f' runs `rmail-forward', which is programmed
-to invoke `rmail-resend' if you provide a numeric argument.)
-
-   The `m' (`rmail-mail') command is used to start editing an outgoing
-message that is not a reply.  It leaves the header fields empty.  Its
-only difference from `C-x 4 m' is that it makes the Rmail buffer
-accessible for `C-c C-y', just as `r' does.  Thus, `m' can be used to
-reply to or forward a message; it can do anything `r' or `f' can do.
-
-   The `c' (`rmail-continue') command resumes editing the `*mail*'
-buffer, to finish editing an outgoing message you were already
-composing, or to alter a message you have sent.
-
-   If you set the variable `rmail-mail-new-frame' to a non-`nil' value,
-then all the Rmail commands to start sending a message create a new
-frame to edit it in.  This frame is deleted when you send the message,
-or when you use the `Don't Send' item in the `Mail' menu.
-
-
-File: emacs,  Node: Rmail Summary,  Next: Rmail Sorting,  Prev: Rmail Reply,  Up: Rmail
-
-Summaries
-=========
-
-   A "summary" is a buffer containing one line per message to give you
-an overview of the mail in an Rmail file.  Each line shows the message
-number, the sender, the labels, and the subject.  Almost all Rmail
-commands are valid in the summary buffer also; these apply to the
-message described by the current line of the summary.  Moving point in
-the summary buffer selects messages as you move to their summary lines.
-
-   A summary buffer applies to a single Rmail file only; if you are
-editing multiple Rmail files, each one can have its own summary buffer.
-The summary buffer name is made by appending `-summary' to the Rmail
-buffer's name.  Normally only one summary buffer is displayed at a time.
-
-* Menu:
-
-* Rmail Make Summary::	     Making various sorts of summaries.
-* Rmail Summary Edit::	     Manipulating messages from the summary.
-
-
-File: emacs,  Node: Rmail Make Summary,  Next: Rmail Summary Edit,  Up: Rmail Summary
-
-Making Summaries
-----------------
-
-   Here are the commands to create a summary for the current Rmail file.
-Once the Rmail file has a summary buffer, changes in the Rmail file
-(such as deleting or expunging messages, and getting new mail)
-automatically update the summary.
-
-`h'
-`C-M-h'
-     Summarize all messages (`rmail-summary').
-
-`l LABELS RET'
-`C-M-l LABELS RET'
-     Summarize message that have one or more of the specified labels
-     (`rmail-summary-by-labels').
-
-`C-M-r RCPTS RET'
-     Summarize messages that have one or more of the specified
-     recipients (`rmail-summary-by-recipients').
-
-`C-M-t TOPIC RET'
-     Summarize messages that have a match for the specified regexp
-     TOPIC in their subjects (`rmail-summary-by-topic').
-
-   The `h' or `C-M-h' (`rmail-summary') command fills the summary buffer
-for the current Rmail file with a summary of all the messages in the
-file.  It then displays and selects the summary buffer in another
-window.
-
-   `C-M-l LABELS RET' (`rmail-summary-by-labels') makes a partial
-summary mentioning only the messages that have one or more of the
-labels LABELS.  LABELS should contain label names separated by commas.
-
-   `C-M-r RCPTS RET' (`rmail-summary-by-recipients') makes a partial
-summary mentioning only the messages that have one or more of the
-recipients RCPTS.  RCPTS should contain mailing addresses separated by
-commas.
-
-   `C-M-t TOPIC RET' (`rmail-summary-by-topic') makes a partial summary
-mentioning only the messages whose subjects have a match for the
-regular expression TOPIC.
-
-   Note that there is only one summary buffer for any Rmail file;
-making one kind of summary discards any previously made summary.
-
-   The variable `rmail-summary-window-size' says how many lines to use
-for the summary window.
-
-
-File: emacs,  Node: Rmail Summary Edit,  Prev: Rmail Make Summary,  Up: Rmail Summary
-
-Editing in Summaries
---------------------
-
-   You can use the Rmail summary buffer to do almost anything you can do
-in the Rmail buffer itself.  In fact, once you have a summary buffer,
-there's no need to switch back to the Rmail buffer.
-
-   You can select and display various messages in the Rmail buffer, from
-the summary buffer, just by moving point in the summary buffer to
-different lines.  It doesn't matter what Emacs command you use to move
-point; whichever line point is on at the end of the command, that
-message is selected in the Rmail buffer.
-
-   Almost all Rmail commands work in the summary buffer as well as in
-the Rmail buffer.  Thus, `d' in the summary buffer deletes the current
-message, `u' undeletes, and `x' expunges.  `o' and `C-o' output the
-current message to a file; `r' starts a reply to it.  You can scroll
-the current message while remaining in the summary buffer using SPC and
-DEL.
-
-   The Rmail commands to move between messages also work in the summary
-buffer, but with a twist: they move through the set of messages included
-in the summary.  They also ensure the Rmail buffer appears on the screen
-(unlike cursor motion commands, which update the contents of the Rmail
-buffer but don't display it in a window unless it already appears).
-Here is a list of these commands:
-
-`n'
-     Move to next line, skipping lines saying `deleted', and select its
-     message.
-
-`p'
-     Move to previous line, skipping lines saying `deleted', and select
-     its message.
-
-`M-n'
-     Move to next line and select its message.
-
-`M-p'
-     Move to previous line and select its message.
-
-`>'
-     Move to the last line, and select its message.
-
-`<'
-     Move to the first line, and select its message.
-
-`M-s PATTERN RET'
-     Search through messages for PATTERN starting with the current
-     message; select the message found, and move point in the summary
-     buffer to that message's line.
-
-   Deletion, undeletion, and getting new mail, and even selection of a
-different message all update the summary buffer when you do them in the
-Rmail buffer.  If the variable `rmail-redisplay-summary' is non-`nil',
-these actions also bring the summary buffer back onto the screen.
-
-   When you are finished using the summary, type `w'
-(`rmail-summary-wipe') to delete the summary buffer's window.  You can
-also exit Rmail while in the summary: `q' (`rmail-summary-quit')
-deletes the summary window, then exits from Rmail by saving the Rmail
-file and switching to another buffer.
-
-
-File: emacs,  Node: Rmail Sorting,  Next: Rmail Display,  Prev: Rmail Summary,  Up: Rmail
-
-Sorting the Rmail File
-======================
-
-`M-x rmail-sort-by-date'
-     Sort messages of current Rmail file by date.
-
-`M-x rmail-sort-by-subject'
-     Sort messages of current Rmail file by subject.
-
-`M-x rmail-sort-by-author'
-     Sort messages of current Rmail file by author's name.
-
-`M-x rmail-sort-by-recipient'
-     Sort messages of current Rmail file by recipient's names.
-
-`M-x rmail-sort-by-correspondent'
-     Sort messages of current Rmail file by the name of the other
-     correspondent.
-
-`M-x rmail-sort-by-lines'
-     Sort messages of current Rmail file by size (number of lines).
-
-`M-x rmail-sort-by-keywords RET LABELS RET'
-     Sort messages of current Rmail file by labels.  The argument
-     LABELS should be a comma-separated list of labels.  The order of
-     these labels specifies the order of messages; messages with the
-     first label come first, messages with the second label come
-     second, and so on.  Messages which have none of these labels come
-     last.
-
-   The Rmail sort commands perform a *stable sort*: if there is no
-reason to prefer either one of two messages, their order remains
-unchanged.  You can use this to sort by more than one criterion.  For
-example, if you use `rmail-sort-by-date' and then
-`rmail-sort-by-author', messages from the same author appear in order
-by date.
-
-   With a numeric argument, all these commands reverse the order of
-comparison.  This means they sort messages from newest to oldest, from
-biggest to smallest, or in reverse alphabetical order.
-
-
-File: emacs,  Node: Rmail Display,  Next: Rmail Editing,  Prev: Rmail Sorting,  Up: Rmail
-
-Display of Messages
-===================
-
-   Rmail reformats the header of each message before displaying it for
-the first time.  Reformatting hides uninteresting header fields to
-reduce clutter.  You can use the `t' command to show the entire header
-or to repeat the header reformatting operation.
-
-`t'
-     Toggle display of complete header (`rmail-toggle-header').
-
-   Reformatting the header involves deleting most header fields, on the
-grounds that they are not interesting.  The variable
-`rmail-ignored-headers' holds a regular expression that specifies which
-header fields to hide in this way--if it matches the beginning of a
-header field, that whole field is hidden.
-
-   Rmail saves the complete original header before reformatting; to see
-it, use the `t' command (`rmail-toggle-header').  This discards the
-reformatted headers of the current message and displays it with the
-original header.  Repeating `t' reformats the message again.  Selecting
-the message again also reformats.
-
-   One consequence of this is that if you edit the reformatted header
-(using `e'; *note Rmail Editing::.), subsequent use of `t' will discard
-your edits.  On the other hand, if you use `e' after `t', to edit the
-original (unreformatted) header, those changes are permanent.
-
-   When used with a window system that supports multiple fonts, Rmail
-highlights certain header fields that are especially interesting--by
-default, the `From' and `Subject' fields.  The variable
-`rmail-highlighted-headers' holds a regular expression that specifies
-the header fields to highlight; if it matches the beginning of a header
-field, that whole field is highlighted.
-
-   If you specify unusual colors for your text foreground and
-background, the colors used for highlighting may not go well with them.
-If so, specify different colors for the `highlight' face.  That is
-worth doing because the `highlight' face is used for other kinds of
-highlighting as well.  *Note Faces::, for how to do this.
-
-   To turn off highlighting entirely in Rmail, set
-`rmail-highlighted-headers' to `nil'.
-
-
-File: emacs,  Node: Rmail Editing,  Next: Rmail Digest,  Prev: Rmail Display,  Up: Rmail
-
-Editing Within a Message
-========================
-
-   Most of the usual Emacs commands are available in Rmail mode, though
-a few, such as `C-M-n' and `C-M-h', are redefined by Rmail for other
-purposes.  However, the Rmail buffer is normally read only, and most of
-the letters are redefined as Rmail commands.  If you want to edit the
-text of a message, you must use the Rmail command `e'.
-
-`e'
-     Edit the current message as ordinary text.
-
-   The `e' command (`rmail-edit-current-message') switches from Rmail
-mode into Rmail Edit mode, another major mode which is nearly the same
-as Text mode.  The mode line indicates this change.
-
-   In Rmail Edit mode, letters insert themselves as usual and the Rmail
-commands are not available.  When you are finished editing the message
-and are ready to go back to Rmail, type `C-c C-c', which switches back
-to Rmail mode.  Alternatively, you can return to Rmail mode but cancel
-all the editing that you have done, by typing `C-c C-]'.
-
-   Entering Rmail Edit mode runs the hook `text-mode-hook'; then it
-runs the hook `rmail-edit-mode-hook' (*note Hooks::.).  It adds the
-attribute `edited' to the message.
-
-
-File: emacs,  Node: Rmail Digest,  Next: Out of Rmail,  Prev: Rmail Editing,  Up: Rmail
-
-Digest Messages
-===============
-
-   A "digest message" is a message which exists to contain and carry
-several other messages.  Digests are used on some moderated mailing
-lists; all the messages that arrive for the list during a period of time
-such as one day are put inside a single digest which is then sent to the
-subscribers.  Transmitting the single digest uses much less computer
-time than transmitting the individual messages even though the total
-size is the same, because the per-message overhead in network mail
-transmission is considerable.
-
-   When you receive a digest message, the most convenient way to read
-it is to "undigestify" it: to turn it back into many individual
-messages.  Then you can read and delete the individual messages as it
-suits you.
-
-   To do this, select the digest message and type the command `M-x
-undigestify-rmail-message'.  This extracts the submessages as separate
-Rmail messages, and inserts them following the digest.  The digest
-message itself is flagged as deleted.
-
-
-File: emacs,  Node: Out of Rmail,  Next: Rmail Rot13,  Prev: Rmail Digest,  Up: Rmail
-
-Converting an Rmail File to Inbox Format
-========================================
-
-   The command `M-x unrmail' converts a file in Rmail format to inbox
-format (also known as the system mailbox format), so that you can use it
-with other mail-editing tools.  You must specify two arguments, the name
-of the Rmail file and the name to use for the converted file.  `M-x
-unrmail' does not alter the Rmail file itself.
-
-
-File: emacs,  Node: Rmail Rot13,  Prev: Out of Rmail,  Up: Rmail
-
-Reading Rot13 Messages
-======================
-
-   Mailing list messages that might offend some readers are sometimes
-encoded in a simple code called "rot13"--so named because it rotates
-the alphabet by 13 letters.  This code is not for secrecy, as it
-provides none; rather, it enables those who might be offended to avoid
-ever seeing the real text of the message.
-
-   To view a buffer using the rot13 code, use the command `M-x
-rot13-other-window'.  This displays the current buffer in another window
-which applies the code when displaying the text.
-
-
-File: emacs,  Node: Dired,  Next: Calendar/Diary,  Prev: Rmail,  Up: Top
-
-Dired, the Directory Editor
-***************************
-
-   Dired makes an Emacs buffer containing a listing of a directory, and
-optionally some of its subdirectories as well.  You can use the normal
-Emacs commands to move around in this buffer, and special Dired commands
-to operate on the files listed.
-
-* Menu:
-
-* Enter: Dired Enter.         How to invoke Dired.
-* Commands: Dired Commands.   Commands in the Dired buffer.
-* Deletion: Dired Deletion.   Deleting files with Dired.
-* Flagging Many Files::       Flagging files based on their names.
-* Visit: Dired Visiting.      Other file operations through Dired.
-* Marks vs Flags::	      Flagging for deletion vs marking.
-* Operating on Files::	      How to copy, rename, print, compress, etc.
-			        either one file or several files.
-* Shell Commands in Dired::   Running a shell command on the marked files.
-* Transforming File Names::   Using patterns to rename multiple files.
-* Comparison in Dired::	      Running `diff' by way of Dired.
-* Subdirectories in Dired::   Adding subdirectories to the Dired buffer.
-* Subdirectory Motion::	      Moving across subdirectories, and up and down.
-* Hiding Subdirectories::     Making subdirectories visible or invisible.
-* Updating: Dired Updating.   Discarding lines for files of no interest.
-* Find: Dired and Find.	      Using `find' to choose the files for Dired.
-
-
-File: emacs,  Node: Dired Enter,  Next: Dired Commands,  Up: Dired
-
-Entering Dired
-==============
-
-   To invoke Dired, do `C-x d' or `M-x dired'.  The command reads a
-directory name or wildcard file name pattern as a minibuffer argument
-to specify which files to list.  Where `dired' differs from
-`list-directory' is in putting the buffer into Dired mode so that the
-special commands of Dired are available.
-
-   The variable `dired-listing-switches' specifies the options to give
-to `ls' for listing directory; this string *must* contain `-l'.  If you
-use a numeric prefix argument with the `dired' command, you can specify
-the `ls' switches with the minibuffer after you finish entering the
-directory specification.
-
-   To display the Dired buffer in another window rather than in the
-selected window, use `C-x 4 d' (`dired-other-window)' instead of `C-x
-d'.  `C-x 5 d' (`dired-other-frame') uses a separate frame to display
-the Dired buffer.
-
-
-File: emacs,  Node: Dired Commands,  Next: Dired Deletion,  Prev: Dired Enter,  Up: Dired
-
-Commands in the Dired Buffer
-============================
-
-   The Dired buffer is "read-only", and inserting text in it is not
-useful, so ordinary printing characters such as `d' and `x' are used
-for special Dired commands.  Some Dired commands "mark" or "flag" the
-"current file" (that is, the file on the current line); other commands
-operate on the marked files or on the flagged files.
-
-   All the usual Emacs cursor motion commands are available in Dired
-buffers.  Some special purpose cursor motion commands are also
-provided.  The keys `C-n' and `C-p' are redefined to put the cursor at
-the beginning of the file name on the line, rather than at the
-beginning of the line.
-
-   For extra convenience, SPC and `n' in Dired are equivalent to `C-n'.
-`p' is equivalent to `C-p'.  (Moving by lines is so common in Dired
-that it deserves to be easy to type.)  DEL (move up and unflag) is
-often useful simply for moving up.
-
-
-File: emacs,  Node: Dired Deletion,  Next: Flagging Many Files,  Prev: Dired Commands,  Up: Dired
-
-Deleting Files with Dired
-=========================
-
-   The primary use of Dired is to "flag" files for deletion and then
-delete the files previously flagged.
-
-`d'
-     Flag this file for deletion.
-
-`u'
-     Remove deletion flag on this line.
-
-`DEL'
-     Move point to previous line and remove the deletion flag on that
-     line.
-
-`x'
-     Delete the files that are flagged for deletion.
-
-   You can flag a file for deletion by moving to the line describing the
-file and typing `d'.  The deletion flag is visible as a `D' at the
-beginning of the line.  This command moves point to the next line, so
-that repeated `d' commands flag successive files.  A numeric argument
-serves as a repeat count.
-
-   The files are flagged for deletion rather than deleted immediately to
-reduce the danger of deleting a file accidentally.  Until you direct
-Dired to expunge the flagged files, you can remove deletion flags using
-the commands `u' and DEL.  `u' works just like `d', but removes flags
-rather than making flags.  DEL moves upward, removing flags; it is like
-`u' with numeric argument automatically negated.
-
-   To delete the flagged files, type `x' (`dired-expunge').  This
-command first displays a list of all the file names flagged for
-deletion, and requests confirmation with `yes'.  If you confirm, Dired
-deletes the flagged files, then deletes their lines from the text of
-the Dired buffer.  The shortened Dired buffer remains selected.
-
-   If you answer `no' or quit with `C-g' when asked to confirm, you
-return immediately to Dired, with the deletion flags still present in
-the buffer, and no files actually deleted.
-
-
-File: emacs,  Node: Flagging Many Files,  Next: Dired Visiting,  Prev: Dired Deletion,  Up: Dired
-
-Flagging Many Files
-===================
-
-`#'
-     Flag all auto-save files (files whose names start and end with `#')
-     for deletion (*note Auto Save::.).
-
-`~'
-     Flag all backup files (files whose names end with `~') for deletion
-     (*note Backup::.).
-
-`. (Period)'
-     Flag excess numeric backup files for deletion.  The oldest and
-     newest few backup files of any one file are exempt; the middle
-     ones are flagged.
-
-`% d REGEXP RET'
-     Flag for deletion all files whose names match the regular
-     expression REGEXP (`dired-flag-files-regexp').
-
-   The `#', `~' and `.' commands flag many files for deletion, based on
-their file names.  These commands are useful precisely because they do
-not actually delete any files; you can remove the deletion flags from
-any flagged files that you really wish to keep.
-
-   `#' flags for deletion all files whose names look like auto-save
-files (*note Auto Save::.)--that is, files whose names begin and end
-with `#'.  `~' flags for deletion all files whose names say they are
-backup files (*note Backup::.)--that is, whose names end in `~'.
-
-   `.' (Period) flags just some of the backup files for deletion: all
-but the oldest few and newest few backups of any one file.  Normally
-`dired-kept-versions' (*not* `kept-new-versions'; that applies only
-when saving) specifies the number of newest versions of each file to
-keep, and `kept-old-versions' specifies the number of oldest versions
-to keep.
-
-   Period with a positive numeric argument, as in `C-u 3 .', specifies
-the number of newest versions to keep, overriding
-`dired-kept-versions'.  A negative numeric argument overrides
-`kept-old-versions', using minus the value of the argument to specify
-the number of oldest versions of each file to keep.
-
-   The `% d' command flags all files whose names match a specified
-regular expression (`dired-flag-files-regexp').  Only the non-directory
-part of the file name is used in matching.  You can use `^' and `$' to
-anchor matches.  You can exclude subdirectories by hiding them (*note
-Hiding Subdirectories::.).
-
-
-File: emacs,  Node: Dired Visiting,  Next: Marks vs Flags,  Prev: Flagging Many Files,  Up: Dired
-
-Visiting Files in Dired
-=======================
-
-   There are several Dired commands for visiting or examining the files
-listed in the Dired buffer.  All of them apply to the current line's
-file; if that file is really a directory, these commands invoke Dired on
-that subdirectory (making a separate Dired buffer).
-
-`f'
-     Visit the file described on the current line, like typing `C-x C-f'
-     and supplying that file name (`dired-find-file').  *Note
-     Visiting::.
-
-`RET'
-     Equivalent to `f'.
-
-`o'
-     Like `f', but uses another window to display the file's buffer
-     (`dired-find-file-other-window').  The Dired buffer remains visible
-     in the first window.  This is like using `C-x 4 C-f' to visit the
-     file.  *Note Windows::.
-
-`C-o'
-     Visit the file described on the current line, and display the
-     buffer in another window, but do not select that window
-     (`dired-display-file').
-
-`Mouse-2'
-     Visit the file named by the line you click on
-     (`dired-mouse-find-file-other-window').  This uses another window
-     to display the file, like the `o' command.
-
-`v'
-     View the file described on the current line, using `M-x view-file'
-     (`dired-view-file').
-
-     Viewing a file is like visiting it, but is slanted toward moving
-     around in the file conveniently and does not allow changing the
-     file.  *Note View File: Misc File Ops.
-
-
-File: emacs,  Node: Marks vs Flags,  Next: Operating on Files,  Prev: Dired Visiting,  Up: Dired
-
-Dired Marks vs. Flags
-=====================
-
-   Instead of flagging a file with `D', you can "mark" the file with
-some other character (usually `*').  Most Dired commands to operate on
-files, aside from "expunge" (`x'), look for files marked with `*'.
-
-   Here are some commands for marking with `*' (and also for
-unmarking).  (*Note Dired Deletion::, for commands to flag and unflag
-files.)
-
-`m'
-     Mark the current file with `*' (`dired-mark').  With a numeric
-     argument N, mark the next N files starting with the current file.
-     (If N is negative, mark the previous -N files.)
-
-`*'
-     Mark all executable files with `*' (`dired-mark-executables').
-     With a numeric argument, unmark all those files.
-
-`@'
-     Mark all symbolic links with `*' (`dired-mark-symlinks').  With a
-     numeric argument, unmark all those files.
-
-`/'
-     Mark with `*' all files which are actually directories, except for
-     `.' and `..' (`dired-mark-directories').  With a numeric argument,
-     unmark all those files.
-
-`M-DEL MARKCHAR'
-     Remove all marks that use the character MARKCHAR
-     (`dired-unmark-all-files').  If you specify RET as MARKCHAR, this
-     command removes all marks, no matter what the marker character is.
-
-     With a numeric argument, this command queries about each marked
-     file, asking whether to remove its mark.  You can answer `y'
-     meaning yes, `n' meaning no, `!' to remove the marks from the
-     remaining files without asking about them.
-
-`c OLD NEW'
-     Replace all marks that use the character OLD with marks that use
-     the character NEW (`dired-change-marks').  This command is the
-     primary way to create or use marks other than `*' or `D'.  The
-     arguments are single characters--do not use RET to terminate them.
-
-     You can use almost any character as a mark character by means of
-     this command, to distinguish various classes of files.  If OLD is a
-     space (` '), then the command operates on all unmarked files; if
-     NEW is a space, then the command unmarks the files it acts on.
-
-     To illustrate the power of this command, here is how to put `*'
-     marks on all the files that are unmarked, while unmarking all
-     those that have `*' marks:
-
-          c * t  c SPC *  c t SPC
-
-`% m REGEXP RET'
-     Mark (with `*') all files whose names match the regular expression
-     REGEXP (`dired-mark-files-regexp').  `% m' is like `% d', except
-     that it marks files with `*' instead of flagging with `D'.  *Note
-     Flagging Many Files::.
-
-     Only the non-directory part of the file name is used in matching.
-     Use `^' and `$' to anchor matches.  Exclude subdirectories by
-     hiding them (*note Hiding Subdirectories::.).
-
-
-File: emacs,  Node: Operating on Files,  Next: Shell Commands in Dired,  Prev: Marks vs Flags,  Up: Dired
-
-Operating on Files
-==================
-
-   This section describes the basic Dired commands to operate on one
-file or several files.  All of these commands are capital letters; all
-of them use the minibuffer, either to read an argument or to ask for
-confirmation, before they act.  All use the following convention to
-decide which files to manipulate:
-
-   * If you give the command a numeric prefix argument N, it operates
-     on the next N files, starting with the current file.  (If N is
-     negative, the command operates on the -N files preceding the
-     current line.)
-
-   * Otherwise, if some files are marked with `*', the command operates
-     on all those files.
-
-   * Otherwise, the command operates on the current file only.
-
-   Here are the file-manipulating commands that operate on files in this
-way.  (Some other Dired commands, such as `!' and the `%' commands,
-also use these conventions to decide which files to work on.)
-
-`C NEW RET'
-     Copy the specified files (`dired-do-copy').  The argument NEW is
-     the directory to copy into, or (if copying a single file) the new
-     name.
-
-     If `dired-copy-preserve-time' is non-`nil', then copying with this
-     command sets the modification time of the new file to be the same
-     as that of the old file.
-
-`R NEW RET'
-     Rename the specified files (`dired-do-rename').  The argument NEW
-     is the directory to rename into, or (if renaming a single file)
-     the new name.
-
-     Dired automatically changes the visited file name of buffers
-     associated with renamed files so that they refer to the new names.
-
-`H NEW RET'
-     Make hard links to the specified files (`dired-do-hardlink').  The
-     argument NEW is the directory to make the links in, or (if making
-     just one link) the name to give the link.
-
-`S NEW RET'
-     Make symbolic links to the specified files (`dired-do-symlink').
-     The argument NEW is the directory to make the links in, or (if
-     making just one link) the name to give the link.
-
-`M MODESPEC RET'
-     Change the mode (also called "permission bits") of the specified
-     files (`dired-do-chmod').  This uses the `chmod' program, so
-     MODESPEC can be any argument that `chmod' can handle.
-
-`G NEWGROUP RET'
-     Change the group of the specified files to NEWGROUP
-     (`dired-do-chgrp').
-
-`O NEWOWNER RET'
-     Change the owner of the specified files to NEWOWNER
-     (`dired-do-chown').  (On most systems, only the superuser can do
-     this.)
-
-     The variable `dired-chown-program' specifies the name of the
-     program to use to do the work (different systems put `chown' in
-     different places).
-
-`P COMMAND RET'
-     Print the specified files (`dired-do-print').  You must specify the
-     command to print them with, but the minibuffer starts out with a
-     suitable guess made using the variables `lpr-command' and
-     `lpr-switches' (the same variables that `lpr-file' uses; *note
-     Hardcopy::.).
-
-`Z'
-     Compress or uncompress the specified files (`dired-do-compress').
-     If the file appears to be a compressed file, it is uncompressed;
-     otherwise, it is compressed.
-
-`L'
-     Load the specified Emacs Lisp files (`dired-do-load').  *Note Lisp
-     Libraries::.
-
-`B'
-     Byte compile the specified Emacs Lisp files
-     (`dired-do-byte-compile').  *Note Byte Compilation: (elisp)Byte
-     Compilation.
-
-`A REGEXP RET'
-     Search all the specified files for the regular expression REGEXP
-     (`dired-do-search').
-
-     This command is a variant of `tags-search'.  The search stops at
-     the first match it finds; use `M-,' to resume the search and find
-     the next match.  *Note Tags Search::.
-
-`Q FROM RET TO RET'
-     Perform `query-replace-regexp' on each of the specified files,
-     replacing matches for FROM (a regular expression) with the string
-     TO (`dired-do-query-replace').
-
-     This command is a variant of `tags-query-replace'.  If you exit the
-     query replace loop, you can use `M-,' to resume the scan and
-     replace more matches.  *Note Tags Search::.
-
-   One special file-operation command is `+'
-(`dired-create-directory').  This command reads a directory name and
-creates the directory if it does not already exist.
-
-
-File: emacs,  Node: Shell Commands in Dired,  Next: Transforming File Names,  Prev: Operating on Files,  Up: Dired
-
-Shell Commands in Dired
-=======================
-
-   The dired command `!' (`dired-do-shell-command') reads a shell
-command string in the minibuffer and runs that shell command on all the
-specified files.  There are two ways of applying a shell command to
-multiple files:
-
-   * If you use `*' in the shell command, then it runs just once, with
-     the list of file names substituted for the `*'.  The order of file
-     names is the order of appearance in the Dired buffer.
-
-     Thus, `! tar cf foo.tar * RET' runs `tar' on the entire list of
-     file names, putting them into one tar file `foo.tar'.
-
-   * If the command string doesn't contain `*', then it runs once *for
-     each file*, with the file name added at the end.
-
-     For example, `! uudecode RET' runs `uudecode' on each file.
-
-   What if you want to run the shell command once for each file but with
-the file name inserted in the middle?  Or if you want to use the file
-names in a more complicated fashion?  Use a shell loop.  For example,
-this shell command would run `uuencode' on each of the specified files,
-writing the output into a corresponding `.uu' file:
-
-     for file in *; uuencode $file $file >$file.uu; done
-
-   The working directory for the shell command is the top level
-directory of the Dired buffer.
-
-   The `!' command does not attempt to update the Dired buffer to show
-new or modified files, because it doesn't really understand shell
-commands, and does not know what files the shell command changed.  Use
-the `g' command to update the Dired buffer (*note Dired Updating::.).
-
-
-File: emacs,  Node: Transforming File Names,  Next: Comparison in Dired,  Prev: Shell Commands in Dired,  Up: Dired
-
-Transforming File Names in Dired
+Libraries of Lisp Code for Emacs
 ================================
 
-   Here are commands that alter file names in a systematic way:
+   Lisp code for Emacs editing commands is stored in files whose names
+conventionally end in `.el'.  This ending tells Emacs to edit them in
+Emacs-Lisp mode (*note Executing Lisp::.).
 
-`% u'
-     Rename each of the selected files to an upper case name
-     (`dired-upcase').  If the old file names are `Foo' and `bar', the
-     new names are `FOO' and `BAR'.
+   To execute a file of Emacs Lisp code, use `M-x load-file'.  This
+command reads a file name using the minibuffer and then executes the
+contents of that file as Lisp code.  It is not necessary to visit the
+file first; in any case, this command reads the file as found on disk,
+not text in an Emacs buffer.
 
-`% l'
-     Rename each of the selected files to a lower case name
-     (`dired-downcase').  If the old file names are `Foo' and `bar',
-     the new names are `foo' and `bar'.
+   Once a file of Lisp code is installed in the Emacs Lisp library
+directories, users can load it using `M-x load-library'.  Programs can
+load it by calling `load-library', or with `load', a more primitive
+function that is similar but accepts some additional arguments.
 
-`% R FROM RET TO RET'
-`% C FROM RET TO RET'
-`% H FROM RET TO RET'
-`% S FROM RET TO RET'
-     These four commands rename, copy, make hard links and make soft
-     links, in each case computing the new name by regular expression
-     substitution from the name of the old file.
+   `M-x load-library' differs from `M-x load-file' in that it searches
+a sequence of directories and tries three file names in each directory.
+Suppose your argument is LIB; the three names are `LIB.elc', `LIB.el',
+and lastly just `LIB'.  If `LIB.elc' exists, it is by convention the
+result of compiling `LIB.el'; it is better to load the compiled file,
+since it will load and run faster.
 
-   The four regular expression substitution commands effectively perform
-a search-and-replace on the selected file names in the Dired buffer.
-They read two arguments: a regular expression FROM, and a substitution
-pattern TO.
+   If `load-library' finds that `LIB.el' is newer than `LIB.elc' file,
+it prints a warning, because it's likely that somebody made changes to
+the `.el' file and forgot to recompile it.
 
-   The commands match each "old" file name against the regular
-expression FROM, and then replace the matching part with TO.  You can
-use `\&' and `\DIGIT' in TO to refer to all or part of what the pattern
-matched in the old file name, as in `query-replace-regexp' (*note Query
-Replace::.).  If the regular expression matches more than once in a
-file name, only the first match is replaced.
+   Because the argument to `load-library' is usually not in itself a
+valid file name, file name completion is not available.  Indeed, when
+using this command, you usually do not know exactly what file name will
+be used.
 
-   For example, `% R ^.*$ RET x-\& RET' renames each selected file by
-prepending `x-' to its name.  The inverse of this, removing `x-' from
-the front of each file name, is also possible: one method is `% R
-^x-\(.*\)$ RET \1 RET'; another is `% R ^x- RET RET'.  (Use `^' and `$'
-to anchor matches that should span the whole filename.)
+   The sequence of directories searched by `M-x load-library' is
+specified by the variable `load-path', a list of strings that are
+directory names.  The default value of the list contains the directory
+where the Lisp code for Emacs itself is stored.  If you have libraries
+of your own, put them in a single directory and add that directory to
+`load-path'.  `nil' in this list stands for the current default
+directory, but it is probably not a good idea to put `nil' in the list.
+If you find yourself wishing that `nil' were in the list, most likely
+what you really want to do is use `M-x load-file' this once.
 
-   Normally, the replacement process does not consider the files'
-directory names; it operates on the file name within the directory.  If
-you specify a numeric argument of zero, then replacement affects the
-entire absolute file name including directory name.
+   Often you do not have to give any command to load a library, because
+the commands defined in the library are set up to "autoload" that
+library.  Trying to run any of those commands calls `load' to load the
+library; this replaces the autoload definitions with the real ones from
+the library.
 
-   Often you will want to apply the command to all files matching the
-same REGEXP that you use in the command.  To do this, mark those files
-with `% m REGEXP RET', then use the same regular expression in the
-command to operate on the files.  To make this easier, the `%' commands
-to operate on files use the last regular expression specified in any
-`%' command as a default.
-
-
-File: emacs,  Node: Comparison in Dired,  Next: Subdirectories in Dired,  Prev: Transforming File Names,  Up: Dired
-
-File Comparison with Dired
-==========================
-
-   Here are two Dired commands that compare specified files using
-`diff'.
-
-`='
-     Compare the current file (the file at point) with another file
-     (the file at the mark) using the `diff' program (`dired-diff').
-     The file at the mark is the first argument of `diff', and the file
-     at point is the second argument.
-
-`M-='
-     Compare the current file with its latest backup file
-     (`dired-backup-diff').  If the current file is itself a backup,
-     compare it with the file it is a backup of; this way, you can
-     compare a file with any backup version of your choice.
-
-     The backup file is the first file given to `diff'.
+   Emacs Lisp code can be compiled into byte-code which loads faster,
+takes up less space when loaded, and executes faster.  *Note Byte
+Compilation: (elisp)Byte Compilation.  By convention, the compiled code
+for a library goes in a separate file whose name consists of the
+library source file with `c' appended.  Thus, the compiled code for
+`foo.el' goes in `foo.elc'.  That's why `load-library' searches for
+`.elc' files first.
 
 
-File: emacs,  Node: Subdirectories in Dired,  Next: Subdirectory Motion,  Prev: Comparison in Dired,  Up: Dired
+File: emacs,  Node: Lisp Eval,  Next: External Lisp,  Prev: Lisp Interaction,  Up: Building
 
-Subdirectories in Dired
-=======================
+Evaluating Emacs-Lisp Expressions
+=================================
 
-   A Dired buffer displays just one directory in the normal case; but
-you can optionally include its subdirectories as well.
+   Lisp programs intended to be run in Emacs should be edited in
+Emacs-Lisp mode; this happens automatically for file names ending in
+`.el'.  By contrast, Lisp mode itself is used for editing Lisp programs
+intended for other Lisp systems.  To switch to Emacs-Lisp mode
+explicitly, use the command `M-x emacs-lisp-mode'.
 
-   The simplest way to include multiple directories in one Dired buffer
-is to specify the options `-lR' for running `ls'.  (If you give a
-numeric argument when you run Dired, then you can specify these options
-in the minibuffer.)  That produces a recursive directory listing showing
-all subdirectories at all levels.
+   For testing of Lisp programs to run in Emacs, it is often useful to
+evaluate part of the program as it is found in the Emacs buffer.  For
+example, after changing the text of a Lisp function definition,
+evaluating the definition installs the change for future calls to the
+function.  Evaluation of Lisp expressions is also useful in any kind of
+editing, for invoking noninteractive functions (functions that are not
+commands).
 
-   But usually all the subdirectories are too many; usually you will
-prefer to include specific subdirectories only.  You can do this with
-the `i' command:
+`M-:'
+     Read a single Lisp expression in the minibuffer, evaluate it, and
+     print the value in the echo area (`eval-expression').
 
-`i'
-     Insert the contents of a subdirectory later in the buffer.
+`C-x C-e'
+     Evaluate the Lisp expression before point, and print the value in
+     the echo area (`eval-last-sexp').
 
-   Use the `i' (`dired-maybe-insert-subdir') command on a line that
-describes a file which is a directory.  It inserts the contents of that
-directory into the same Dired buffer, and moves there.  Inserted
-subdirectory contents follow the top-level directory of the Dired
-buffer, just as they do in `ls -lR' output.
+`C-M-x'
+     Evaluate the defun containing or after point, and print the value
+     in the echo area (`eval-defun').
 
-   If the subdirectory's contents are already present in the buffer, the
-`i' command just moves to it.
+`M-x eval-region'
+     Evaluate all the Lisp expressions in the region.
 
-   In either case, `i' sets the Emacs mark before moving, so `C-u
-C-SPC' takes you back to the old position in the buffer (the line
-describing that subdirectory).
+`M-x eval-current-buffer'
+     Evaluate all the Lisp expressions in the buffer.
 
-   Use the `l' command (`dired-do-redisplay') to update the
-subdirectory's contents.  Use `k' to delete the subdirectory.  *Note
-Dired Updating::.
+   `M-:' (`eval-expression') is the most basic command for evaluating a
+Lisp expression interactively.  It reads the expression using the
+minibuffer, so you can execute any expression on a buffer regardless of
+what the buffer contains.  When the expression is evaluated, the current
+buffer is once again the buffer that was current when `M-:' was typed.
+
+   In Emacs-Lisp mode, the key `C-M-x' is bound to the command
+`eval-defun', which parses the defun containing or following point as a
+Lisp expression and evaluates it.  The value is printed in the echo
+area.  This command is convenient for installing in the Lisp environment
+changes that you have just made in the text of a function definition.
+
+   `C-M-x' treats `defvar' expressions specially.  Normally, evaluating
+a `defvar' expression does nothing if the variable it defines already
+has a value.  But `C-M-x' unconditionally resets the variable to the
+initial value specified in the `defvar' expression.  This special
+feature is convenient for debugging Lisp programs.
+
+   The command `C-x C-e' (`eval-last-sexp') evaluates the Lisp
+expression preceding point in the buffer, and displays the value in the
+echo area.  It is available in all major modes, not just Emacs-Lisp
+mode.  It does not treat `defvar' specially.
+
+   If `C-M-x', `C-x C-e', or `M-:' is given a numeric argument, it
+inserts the value into the current buffer at point, rather than
+displaying it in the echo area.  The argument's value does not matter.
+
+   The most general command for evaluating Lisp expressions from a
+buffer is `eval-region'.  `M-x eval-region' parses the text of the
+region as one or more Lisp expressions, evaluating them one by one.
+`M-x eval-current-buffer' is similar but evaluates the entire buffer.
+This is a reasonable way to install the contents of a file of Lisp code
+that you are just ready to test.  Later, as you find bugs and change
+individual functions, use `C-M-x' on each function that you change.
+This keeps the Lisp world in step with the source file.
 
 
-File: emacs,  Node: Subdirectory Motion,  Next: Hiding Subdirectories,  Prev: Subdirectories in Dired,  Up: Dired
+File: emacs,  Node: Lisp Interaction,  Next: Lisp Eval,  Prev: Lisp Libraries,  Up: Building
 
-Moving Over Subdirectories
-==========================
+Lisp Interaction Buffers
+========================
 
-   When a Dired buffer lists subdirectories, you can use the page motion
-commands `C-x [' and `C-x ]' to move by entire directories.
+   The buffer `*scratch*' which is selected when Emacs starts up is
+provided for evaluating Lisp expressions interactively inside Emacs.
 
-   The following commands move across, up and down in the tree of
-directories within one Dired buffer.  They move to "directory header
-lines", which are the lines that give a directory's name, at the
-beginning of the directory's contents.
+   The simplest way to use the `*scratch*' buffer is to insert Lisp
+expressions and type `C-j' after each expression.  This command reads
+the Lisp expression before point, evaluates it, and inserts the value
+in printed representation before point.  The result is a complete
+typescript of the expressions you have evaluated and their values.
 
-`C-M-n'
-     Go to next subdirectory header line, regardless of level
-     (`dired-next-subdir').
+   The `*scratch*' buffer's major mode is Lisp Interaction mode, which
+is the same as Emacs-Lisp mode except for the binding of `C-j'.
 
-`C-M-p'
-     Go to previous subdirectory header line, regardless of level
-     (`dired-prev-subdir').
+   The rationale for this feature is that Emacs must have a buffer when
+it starts up, but that buffer is not useful for editing files since a
+new buffer is made for every file that you visit.  The Lisp interpreter
+typescript is the most useful thing I can think of for the initial
+buffer to do.  Type `M-x lisp-interaction-mode' to put the current
+buffer in Lisp Interaction mode.
 
-`C-M-u'
-     Go up to the parent directory's header line (`dired-tree-up').
-
-`C-M-d'
-     Go down in the directory tree, to the first subdirectory's header
-     line (`dired-tree-down').
+   An alternative way of evaluating Emacs Lisp expressions interactively
+is to use Inferior Emacs-Lisp mode, which provides an interface rather
+like Shell mode (*note Shell Mode::.) for evaluating Emacs Lisp
+expressions.  Type `M-x ielm' to create an `*ielm*' buffer which uses
+this mode.
 
 
-File: emacs,  Node: Hiding Subdirectories,  Next: Dired Updating,  Prev: Subdirectory Motion,  Up: Dired
+File: emacs,  Node: External Lisp,  Prev: Lisp Eval,  Up: Building
 
-Hiding Subdirectories
-=====================
+Running an External Lisp
+========================
 
-   "Hiding" a subdirectory means to make it invisible, except for its
-header line, via selective display (*note Selective Display::.).
+   Emacs has facilities for running programs in other Lisp systems.
+You can run a Lisp process as an inferior of Emacs, and pass
+expressions to it to be evaluated.  You can also pass changed function
+definitions directly from the Emacs buffers in which you edit the Lisp
+programs to the inferior Lisp process.
 
-`$'
-     Hide or reveal the subdirectory that point is in, and move point
-     to the next subdirectory (`dired-hide-subdir').  A numeric
-     argument serves as a repeat count.
+   To run an inferior Lisp process, type `M-x run-lisp'.  This runs the
+program named `lisp', the same program you would run by typing `lisp'
+as a shell command, with both input and output going through an Emacs
+buffer named `*lisp*'.  That is to say, any "terminal output" from Lisp
+will go into the buffer, advancing point, and any "terminal input" for
+Lisp comes from text in the buffer.  (You can change the name of the
+Lisp executable file by setting the variable `inferior-lisp-program'.)
 
-`M-$'
-     Hide all subdirectories in this Dired buffer, leaving only their
-     header lines (`dired-hide-all').  Or, if any subdirectory is
-     currently hidden, make all subdirectories visible again.  You can
-     use this command to get an overview in very deep directory trees
-     or to move quickly to subdirectories far away.
+   To give input to Lisp, go to the end of the buffer and type the
+input, terminated by <RET>.  The `*lisp*' buffer is in Inferior Lisp
+mode, which combines the special characteristics of Lisp mode with most
+of the features of Shell mode (*note Shell Mode::.).  The definition of
+<RET> to send a line to a subprocess is one of the features of Shell
+mode.
 
-   Ordinary Dired commands never consider files inside a hidden
-subdirectory.  For example, the commands to operate on marked files
-ignore files in hidden directories even if they are marked.  Thus you
-can use hiding to temporarily exclude subdirectories from operations
-without having to remove the markers.
+   For the source files of programs to run in external Lisps, use Lisp
+mode.  This mode can be selected with `M-x lisp-mode', and is used
+automatically for files whose names end in `.l', `.lsp', or `.lisp', as
+most Lisp systems usually expect.
 
-   The subdirectory hiding commands toggle; that is, they hide what was
-visible, and show what was hidden.
+   When you edit a function in a Lisp program you are running, the
+easiest way to send the changed definition to the inferior Lisp process
+is the key `C-M-x'.  In Lisp mode, this runs the function
+`lisp-eval-defun', which finds the defun around or following point and
+sends it as input to the Lisp process.  (Emacs can send input to any
+inferior process regardless of what buffer is current.)
+
+   Contrast the meanings of `C-M-x' in Lisp mode (for editing programs
+to be run in another Lisp system) and Emacs-Lisp mode (for editing Lisp
+programs to be run in Emacs): in both modes it has the effect of
+installing the function definition that point is in, but the way of
+doing so is different according to where the relevant Lisp environment
+is found.  *Note Executing Lisp::.
+
+
+File: emacs,  Node: Abbrevs,  Next: Picture,  Prev: Building,  Up: Top
+
+Abbrevs
+*******
+
+   A defined "abbrev" is a word which "expands", if you insert it, into
+some different text.  Abbrevs are defined by the user to expand in
+specific ways.  For example, you might define `foo' as an abbrev
+expanding to `find outer otter'.  Then you would be able to insert
+`find outer otter ' into the buffer by typing `f o o <SPC>'.
+
+   A second kind of abbreviation facility is called "dynamic abbrev
+expansion".  You use dynamic abbrev expansion with an explicit command
+to expand the letters in the buffer before point by looking for other
+words in the buffer that start with those letters.  *Note Dynamic
+Abbrevs::.
+
+* Menu:
+
+* Abbrev Concepts::   Fundamentals of defined abbrevs.
+* Defining Abbrevs::  Defining an abbrev, so it will expand when typed.
+* Expanding Abbrevs:: Controlling expansion: prefixes, canceling expansion.
+* Editing Abbrevs::   Viewing or editing the entire list of defined abbrevs.
+* Saving Abbrevs::    Saving the entire list of abbrevs for another session.
+* Dynamic Abbrevs::   Abbreviations for words already in the buffer.
+* Dabbrev Customization:: What is a word, for dynamic abbrevs.  Case handling.
+
+
+File: emacs,  Node: Abbrev Concepts,  Next: Defining Abbrevs,  Up: Abbrevs
+
+Abbrev Concepts
+===============
+
+   An "abbrev" is a word which has been defined to "expand" into a
+specified "expansion".  When you insert a word-separator character
+following the abbrev, that expands the abbrev--replacing the abbrev
+with its expansion.  For example, if `foo' is defined as an abbrev
+expanding to `find outer otter', then you can insert `find outer
+otter.' into the buffer by typing `f o o .'.
+
+   Abbrevs expand only when Abbrev mode (a minor mode) is enabled.
+Disabling Abbrev mode does not cause abbrev definitions to be forgotten,
+but they do not expand until Abbrev mode is enabled again.  The command
+`M-x abbrev-mode' toggles Abbrev mode; with a numeric argument, it
+turns Abbrev mode on if the argument is positive, off otherwise.  *Note
+Minor Modes::.  `abbrev-mode' is also a variable; Abbrev mode is on
+when the variable is non-`nil'.  The variable `abbrev-mode'
+automatically becomes local to the current buffer when it is set.
+
+   Abbrev definitions can be "mode-specific"--active only in one major
+mode.  Abbrevs can also have "global" definitions that are active in
+all major modes.  The same abbrev can have a global definition and
+various mode-specific definitions for different major modes.  A
+mode-specific definition for the current major mode overrides a global
+definition.
+
+   Abbrevs can be defined interactively during the editing session.
+Lists of abbrev definitions can also be saved in files and reloaded in
+later sessions.  Some users keep extensive lists of abbrevs that they
+load in every session.
+
+
+File: emacs,  Node: Defining Abbrevs,  Next: Expanding Abbrevs,  Prev: Abbrev Concepts,  Up: Abbrevs
+
+Defining Abbrevs
+================
+
+`C-x a g'
+     Define an abbrev, using one or more words before point as its
+     expansion (`add-global-abbrev').
+
+`C-x a l'
+     Similar, but define an abbrev specific to the current major mode
+     (`add-mode-abbrev').
+
+`C-x a i g'
+     Define a word in the buffer as an abbrev
+     (`inverse-add-global-abbrev').
+
+`C-x a i l'
+     Define a word in the buffer as a mode-specific abbrev
+     (`inverse-add-mode-abbrev').
+
+`M-x kill-all-abbrevs'
+     This command discards all abbrev definitions currently in effect,
+     leaving a blank slate.
+
+   The usual way to define an abbrev is to enter the text you want the
+abbrev to expand to, position point after it, and type `C-x a g'
+(`add-global-abbrev').  This reads the abbrev itself using the
+minibuffer, and then defines it as an abbrev for one or more words
+before point.  Use a numeric argument to say how many words before
+point should be taken as the expansion.  For example, to define the
+abbrev `foo' as mentioned above, insert the text `find outer otter' and
+then type `C-u 3 C-x a g f o o <RET>'.
+
+   An argument of zero to `C-x a g' means to use the contents of the
+region as the expansion of the abbrev being defined.
+
+   The command `C-x a l' (`add-mode-abbrev') is similar, but defines a
+mode-specific abbrev.  Mode-specific abbrevs are active only in a
+particular major mode.  `C-x a l' defines an abbrev for the major mode
+in effect at the time `C-x a l' is typed.  The arguments work the same
+as for `C-x a g'.
+
+   If the text already in the buffer is the abbrev, rather than its
+expansion, use command `C-x a i g' (`inverse-add-global-abbrev')
+instead of `C-x a g', or use `C-x a i l' (`inverse-add-mode-abbrev')
+instead of `C-x a l'.  These commands are called "inverse" because they
+invert the meaning of the two text strings they use (one from the
+buffer and one read with the minibuffer).
+
+   To change the definition of an abbrev, just define a new definition.
+When the abbrev has a prior definition, the abbrev definition commands
+ask for confirmation for replacing it.
+
+   To remove an abbrev definition, give a negative argument to the
+abbrev definition command: `C-u - C-x a g' or `C-u - C-x a l'.  The
+former removes a global definition, while the latter removes a
+mode-specific definition.
+
+   `M-x kill-all-abbrevs' removes all the abbrev definitions there are,
+both global and local.
+
+
+File: emacs,  Node: Expanding Abbrevs,  Next: Editing Abbrevs,  Prev: Defining Abbrevs,  Up: Abbrevs
+
+Controlling Abbrev Expansion
+============================
+
+   An abbrev expands whenever it is present in the buffer just before
+point and you type a self-inserting whitespace or punctuation character
+(<SPC>, comma, etc.).  More precisely, any character that is not a word
+constituent expands an abbrev, and any word-constituent character can
+be part of an abbrev.  The most common way to use an abbrev is to
+insert it and then insert a punctuation character to expand it.
+
+   Abbrev expansion preserves case; thus, `foo' expands into `find
+outer otter'; `Foo' into `Find outer otter', and `FOO' into `FIND OUTER
+OTTER' or `Find Outer Otter' according to the variable
+`abbrev-all-caps' (a non-`nil' value chooses the first of the two
+expansions).
+
+   These commands are used to control abbrev expansion:
+
+`M-''
+     Separate a prefix from a following abbrev to be expanded
+     (`abbrev-prefix-mark').
+
+`C-x a e'
+     Expand the abbrev before point (`expand-abbrev').  This is
+     effective even when Abbrev mode is not enabled.
+
+`M-x expand-region-abbrevs'
+     Expand some or all abbrevs found in the region.
+
+   You may wish to expand an abbrev with a prefix attached; for example,
+if `cnst' expands into `construction', you might want to use it to
+enter `reconstruction'.  It does not work to type `recnst', because
+that is not necessarily a defined abbrev.  What you can do is use the
+command `M-'' (`abbrev-prefix-mark') in between the prefix `re' and the
+abbrev `cnst'.  First, insert `re'.  Then type `M-''; this inserts a
+hyphen in the buffer to indicate that it has done its work.  Then
+insert the abbrev `cnst'; the buffer now contains `re-cnst'.  Now
+insert a non-word character to expand the abbrev `cnst' into
+`construction'.  This expansion step also deletes the hyphen that
+indicated `M-'' had been used.  The result is the desired
+`reconstruction'.
+
+   If you actually want the text of the abbrev in the buffer, rather
+than its expansion, you can accomplish this by inserting the following
+punctuation with `C-q'.  Thus, `foo C-q ,' leaves `foo,' in the buffer.
+
+   If you expand an abbrev by mistake, you can undo the expansion and
+bring back the abbrev itself by typing `C-_' to undo (*note Undo::.).
+This also undoes the insertion of the non-word character that expanded
+the abbrev.  If the result you want is the terminating non-word
+character plus the unexpanded abbrev, you must reinsert the terminating
+character, quoting it with `C-q'.  You can also use the command `M-x
+unexpand-abbrev' to cancel the last expansion without deleting the
+terminating character.
+
+   `M-x expand-region-abbrevs' searches through the region for defined
+abbrevs, and for each one found offers to replace it with its expansion.
+This command is useful if you have typed in text using abbrevs but
+forgot to turn on Abbrev mode first.  It may also be useful together
+with a special set of abbrev definitions for making several global
+replacements at once.  This command is effective even if Abbrev mode is
+not enabled.
+
+   Expanding an abbrev runs the hook `pre-abbrev-expand-hook' (*note
+Hooks::.).
+
+
+File: emacs,  Node: Editing Abbrevs,  Next: Saving Abbrevs,  Prev: Expanding Abbrevs,  Up: Abbrevs
+
+Examining and Editing Abbrevs
+=============================
+
+`M-x list-abbrevs'
+     Display a list of all abbrev definitions.
+
+`M-x edit-abbrevs'
+     Edit a list of abbrevs; you can add, alter or remove definitions.
+
+   The output from `M-x list-abbrevs' looks like this:
+
+     (lisp-mode-abbrev-table)
+     "dk"	       0    "define-key"
+     (global-abbrev-table)
+     "dfn"	       0    "definition"
+
+(Some blank lines of no semantic significance, and some other abbrev
+tables, have been omitted.)
+
+   A line containing a name in parentheses is the header for abbrevs in
+a particular abbrev table; `global-abbrev-table' contains all the global
+abbrevs, and the other abbrev tables that are named after major modes
+contain the mode-specific abbrevs.
+
+   Within each abbrev table, each nonblank line defines one abbrev.  The
+word at the beginning of the line is the abbrev.  The number that
+follows is the number of times the abbrev has been expanded.  Emacs
+keeps track of this to help you see which abbrevs you actually use, so
+that you can eliminate those that you don't use often.  The string at
+the end of the line is the expansion.
+
+   `M-x edit-abbrevs' allows you to add, change or kill abbrev
+definitions by editing a list of them in an Emacs buffer.  The list has
+the same format described above.  The buffer of abbrevs is called
+`*Abbrevs*', and is in Edit-Abbrevs mode.  Type `C-c C-c' in this
+buffer to install the abbrev definitions as specified in the
+buffer--and delete any abbrev definitions not listed.
+
+   The command `edit-abbrevs' is actually the same as `list-abbrevs'
+except that it selects the buffer `*Abbrevs*' whereas `list-abbrevs'
+merely displays it in another window.
+
+
+File: emacs,  Node: Saving Abbrevs,  Next: Dynamic Abbrevs,  Prev: Editing Abbrevs,  Up: Abbrevs
+
+Saving Abbrevs
+==============
+
+   These commands allow you to keep abbrev definitions between editing
+sessions.
+
+`M-x write-abbrev-file <RET> FILE <RET>'
+     Write a file FILE describing all defined abbrevs.
+
+`M-x read-abbrev-file <RET> FILE <RET>'
+     Read the file FILE and define abbrevs as specified therein.
+
+`M-x quietly-read-abbrev-file <RET> FILE <RET>'
+     Similar but do not display a message about what is going on.
+
+`M-x define-abbrevs'
+     Define abbrevs from definitions in current buffer.
+
+`M-x insert-abbrevs'
+     Insert all abbrevs and their expansions into current buffer.
+
+   `M-x write-abbrev-file' reads a file name using the minibuffer and
+then writes a description of all current abbrev definitions into that
+file.  This is used to save abbrev definitions for use in a later
+session.  The text stored in the file is a series of Lisp expressions
+that, when executed, define the same abbrevs that you currently have.
+
+   `M-x read-abbrev-file' reads a file name using the minibuffer and
+then reads the file, defining abbrevs according to the contents of the
+file.  `M-x quietly-read-abbrev-file' is the same except that it does
+not display a message in the echo area saying that it is doing its
+work; it is actually useful primarily in the `.emacs' file.  If an
+empty argument is given to either of these functions, they use the file
+name specified in the variable `abbrev-file-name', which is by default
+`"~/.abbrev_defs"'.
+
+   Emacs will offer to save abbrevs automatically if you have changed
+any of them, whenever it offers to save all files (for `C-x s' or `C-x
+C-c').  This feature can be inhibited by setting the variable
+`save-abbrevs' to `nil'.
+
+   The commands `M-x insert-abbrevs' and `M-x define-abbrevs' are
+similar to the previous commands but work on text in an Emacs buffer.
+`M-x insert-abbrevs' inserts text into the current buffer before point,
+describing all current abbrev definitions; `M-x define-abbrevs' parses
+the entire current buffer and defines abbrevs accordingly.
+
+
+File: emacs,  Node: Dynamic Abbrevs,  Next: Dabbrev Customization,  Prev: Saving Abbrevs,  Up: Abbrevs
+
+Dynamic Abbrev Expansion
+========================
+
+   The abbrev facility described above operates automatically as you
+insert text, but all abbrevs must be defined explicitly.  By contrast,
+"dynamic abbrevs" allow the meanings of abbrevs to be determined
+automatically from the contents of the buffer, but dynamic abbrev
+expansion happens only when you request it explicitly.
+
+`M-/'
+     Expand the word in the buffer before point as a "dynamic abbrev",
+     by searching in the buffer for words starting with that
+     abbreviation (`dabbrev-expand').
+
+`C-M-/'
+     Complete the word before point as a dynamic abbrev
+     (`dabbrev-completion').
+
+   For example, if the buffer contains `does this follow ' and you type
+`f o M-/', the effect is to insert `follow' because that is the last
+word in the buffer that starts with `fo'.  A numeric argument to `M-/'
+says to take the second, third, etc. distinct expansion found looking
+backward from point.  Repeating `M-/' searches for an alternative
+expansion by looking farther back.  After scanning all the text before
+point, it searches the text after point.  The variable `dabbrev-limit',
+if non-`nil', specifies how far in the buffer to search for an
+expansion.
+
+   After scanning the current buffer, `M-/' normally searches other
+buffers, unless you have set `dabbrev-check-all-buffers' to `nil'.
+
+   A negative argument to `M-/', as in `C-u - M-/', says to search
+first for expansions after point, and second for expansions before
+point.  If you repeat the `M-/' to look for another expansion, do not
+specify an argument.  This tries all the expansions after point and
+then the expansions before point.
+
+   After you have expanded a dynamic abbrev, you can copy additional
+words that follow the expansion in its original context.  Simply type
+`<SPC> M-/' for each word you want to copy.  The spacing and
+punctuation between words is copied along with the words.
+
+   The command `C-M-/' (`dabbrev-completion') performs completion of a
+dynamic abbreviation.  Instead of trying the possible expansions one by
+one, it finds all of them, then inserts the text that they have in
+common.  If they have nothing in common, `C-M-/' displays a list of
+completions, from which you can select a choice in the usual manner.
+*Note Completion::.
+
+   Dynamic abbrev expansion is completely independent of Abbrev mode;
+the expansion of a word with `M-/' is completely independent of whether
+it has a definition as an ordinary abbrev.
+
+
+File: emacs,  Node: Dabbrev Customization,  Prev: Dynamic Abbrevs,  Up: Abbrevs
+
+Customizing Dynamic Abbreviation
+================================
+
+   Normally, dynamic abbrev expansion ignores case when searching for
+expansions.  That is, the expansion need not agree in case with the word
+you are expanding.
+
+   This feature is controlled by the variable
+`dabbrev-case-fold-search'.  If it is `t', case is ignored in this
+search; if `nil', the word and the expansion must match in case.  If
+the value of `dabbrev-case-fold-search' is `case-fold-search', which is
+true by default, then the variable `case-fold-search' controls whether
+to ignore case while searching for expansions.
+
+   Normally, dynamic abbrev expansion preserves the case pattern *of
+the abbrev you have typed*, by converting the expansion to that case
+pattern.
+
+   The variable `dabbrev-case-replace' controls whether to preserve the
+case pattern of the abbrev.  If it is `t', the abbrev's case pattern is
+preserved in most cases; if `nil', the expansion is always copied
+verbatim.  If the value of `dabbrev-case-replace' is `case-replace',
+which is true by default, then the variable `case-replace' controls
+whether to copy the expansion verbatim.
+
+   However, if the expansion contains a complex mixed case pattern, and
+the abbrev matches this pattern as far as it goes, then the expansion is
+always copied verbatim, regardless of those variables.  Thus, for
+example, if the buffer contains `variableWithSillyCasePattern', and you
+type `v a M-/', it copies the expansion verbatim including its case
+pattern.
+
+   The variable `dabbrev-abbrev-char-regexp', if non-`nil', controls
+which characters are considered part of a word, for dynamic expansion
+purposes.  The regular expression must match just one character, never
+two or more.  The same regular expression also determines which
+characters are part of an expansion.  The value `nil' has a special
+meaning: abbreviations are made of word characters, but expansions are
+made of word and symbol characters.
+
+   In shell scripts and makefiles, a variable name is sometimes prefixed
+with `$' and sometimes not.  Major modes for this kind of text can
+customize dynamic abbreviation to handle optional prefixes by setting
+the variable `dabbrev-abbrev-skip-leading-regexp'.  Its value should be
+a regular expression that matches the optional prefix that dynamic
+abbreviation should ignore.
+
+
+File: emacs,  Node: Picture,  Next: Sending Mail,  Prev: Abbrevs,  Up: Top
+
+Editing Pictures
+****************
+
+   To edit a picture made out of text characters (for example, a picture
+of the division of a register into fields, as a comment in a program),
+use the command `M-x edit-picture' to enter Picture mode.
+
+   In Picture mode, editing is based on the "quarter-plane" model of
+text, according to which the text characters lie studded on an area that
+stretches infinitely far to the right and downward.  The concept of the
+end of a line does not exist in this model; the most you can say is
+where the last nonblank character on the line is found.
+
+   Of course, Emacs really always considers text as a sequence of
+characters, and lines really do have ends.  But Picture mode replaces
+the most frequently-used commands with variants that simulate the
+quarter-plane model of text.  They do this by inserting spaces or by
+converting tabs to spaces.
+
+   Most of the basic editing commands of Emacs are redefined by Picture
+mode to do essentially the same thing but in a quarter-plane way.  In
+addition, Picture mode defines various keys starting with the `C-c'
+prefix to run special picture editing commands.
+
+   One of these keys, `C-c C-c', is pretty important.  Often a picture
+is part of a larger file that is usually edited in some other major
+mode.  `M-x edit-picture' records the name of the previous major mode
+so you can use the `C-c C-c' command (`picture-mode-exit') later to go
+back to that mode.  `C-c C-c' also deletes spaces from the ends of
+lines, unless given a numeric argument.
+
+   The special commands of Picture mode all work in other modes
+(provided the `picture' library is loaded), but are not bound to keys
+except in Picture mode.  The descriptions below talk of moving "one
+column" and so on, but all the picture mode commands handle numeric
+arguments as their normal equivalents do.
+
+   Turning on Picture mode runs the hook `picture-mode-hook' (*note
+Hooks::.).
+
+* Menu:
+
+* Basic Picture::         Basic concepts and simple commands of Picture Mode.
+* Insert in Picture::     Controlling direction of cursor motion
+                            after "self-inserting" characters.
+* Tabs in Picture::       Various features for tab stops and indentation.
+* Rectangles in Picture:: Clearing and superimposing rectangles.
+
+
+File: emacs,  Node: Basic Picture,  Next: Insert in Picture,  Prev: Picture,  Up: Picture
+
+Basic Editing in Picture Mode
+=============================
+
+   Most keys do the same thing in Picture mode that they usually do, but
+do it in a quarter-plane style.  For example, `C-f' is rebound to run
+`picture-forward-column', a command which moves point one column to the
+right, inserting a space if necessary so that the actual end of the
+line makes no difference.  `C-b' is rebound to run
+`picture-backward-column', which always moves point left one column,
+converting a tab to multiple spaces if necessary.  `C-n' and `C-p' are
+rebound to run `picture-move-down' and `picture-move-up', which can
+either insert spaces or convert tabs as necessary to make sure that
+point stays in exactly the same column.  `C-e' runs
+`picture-end-of-line', which moves to after the last nonblank character
+on the line.  There is no need to change `C-a', as the choice of screen
+model does not affect beginnings of lines.
+
+   Insertion of text is adapted to the quarter-plane screen model
+through the use of Overwrite mode (*note Minor Modes::.).
+Self-inserting characters replace existing text, column by column,
+rather than pushing existing text to the right.  <RET> runs
+`picture-newline', which just moves to the beginning of the following
+line so that new text will replace that line.
+
+   Picture mode provides erasure instead of deletion and killing of
+text.  <DEL> (`picture-backward-clear-column') replaces the preceding
+character with a space rather than removing it; this moves point
+backwards.  `C-d' (`picture-clear-column') replaces the next character
+or characters with spaces, but does not move point.  (If you want to
+clear characters to spaces and move forward over them, use <SPC>.)
+`C-k' (`picture-clear-line') really kills the contents of lines, but
+does not delete the newlines from the buffer.
+
+   To do actual insertion, you must use special commands.  `C-o'
+(`picture-open-line') creates a blank line after the current line; it
+never splits a line.  `C-M-o' (`split-line') makes sense in Picture
+mode, so it is not changed.  `C-j' (`picture-duplicate-line') inserts
+below the current line another line with the same contents.
+
+   To do actual deletion in Picture mode, use `C-w', `C-c C-d' (which
+is defined as `delete-char', as `C-d' is in other modes), or one of the
+picture rectangle commands (*note Rectangles in Picture::.).
+
+
+File: emacs,  Node: Insert in Picture,  Next: Tabs in Picture,  Prev: Basic Picture,  Up: Picture
+
+Controlling Motion after Insert
+===============================
+
+   Since "self-inserting" characters in Picture mode overwrite and move
+point, there is no essential restriction on how point should be moved.
+Normally point moves right, but you can specify any of the eight
+orthogonal or diagonal directions for motion after a "self-inserting"
+character.  This is useful for drawing lines in the buffer.
+
+`C-c <'
+     Move left after insertion (`picture-movement-left').
+
+`C-c >'
+     Move right after insertion (`picture-movement-right').
+
+`C-c ^'
+     Move up after insertion (`picture-movement-up').
+
+`C-c .'
+     Move down after insertion (`picture-movement-down').
+
+`C-c `'
+     Move up and left ("northwest") after insertion
+     (`picture-movement-nw').
+
+`C-c ''
+     Move up and right ("northeast") after insertion
+     (`picture-movement-ne').
+
+`C-c /'
+     Move down and left ("southwest") after insertion
+     (`picture-movement-sw').
+
+`C-c \'
+     Move down and right ("southeast") after insertion
+     (`picture-movement-se').
+
+   Two motion commands move based on the current Picture insertion
+direction.  The command `C-c C-f' (`picture-motion') moves in the same
+direction as motion after "insertion" currently does, while `C-c C-b'
+(`picture-motion-reverse') moves in the opposite direction.
+
+
+File: emacs,  Node: Tabs in Picture,  Next: Rectangles in Picture,  Prev: Insert in Picture,  Up: Picture
+
+Picture Mode Tabs
+=================
+
+   Two kinds of tab-like action are provided in Picture mode.  Use
+`M-<TAB>' (`picture-tab-search') for context-based tabbing.  With no
+argument, it moves to a point underneath the next "interesting"
+character that follows whitespace in the previous nonblank line.
+"Next" here means "appearing at a horizontal position greater than the
+one point starts out at."  With an argument, as in `C-u M-<TAB>', this
+command moves to the next such interesting character in the current
+line.  `M-<TAB>' does not change the text; it only moves point.
+"Interesting" characters are defined by the variable
+`picture-tab-chars', which should define a set of characters.  The
+syntax for this variable is like the syntax used inside of `[...]' in a
+regular expression--but without the `[' and the `]'.  Its default value
+is `"!-~"'.
+
+   <TAB> itself runs `picture-tab', which operates based on the current
+tab stop settings; it is the Picture mode equivalent of
+`tab-to-tab-stop'.  Normally it just moves point, but with a numeric
+argument it clears the text that it moves over.
+
+   The context-based and tab-stop-based forms of tabbing are brought
+together by the command `C-c <TAB>' (`picture-set-tab-stops').  This
+command sets the tab stops to the positions which `M-<TAB>' would
+consider significant in the current line.  The use of this command,
+together with <TAB>, can get the effect of context-based tabbing.  But
+`M-<TAB>' is more convenient in the cases where it is sufficient.
+
+   It may be convenient to prevent use of actual tab characters in
+pictures.  For example, this prevents `C-x <TAB>' from messing up the
+picture.  You can do this by setting the variable `indent-tabs-mode' to
+`nil'.  *Note Just Spaces::.
+
+
+File: emacs,  Node: Rectangles in Picture,  Prev: Tabs in Picture,  Up: Picture
+
+Picture Mode Rectangle Commands
+===============================
+
+   Picture mode defines commands for working on rectangular pieces of
+the text in ways that fit with the quarter-plane model.  The standard
+rectangle commands may also be useful (*note Rectangles::.).
+
+`C-c C-k'
+     Clear out the region-rectangle with spaces
+     (`picture-clear-rectangle').  With argument, delete the text.
+
+`C-c C-w R'
+     Similar but save rectangle contents in register R first
+     (`picture-clear-rectangle-to-register').
+
+`C-c C-y'
+     Copy last killed rectangle into the buffer by overwriting, with
+     upper left corner at point (`picture-yank-rectangle').  With
+     argument, insert instead.
+
+`C-c C-x R'
+     Similar, but use the rectangle in register R
+     (`picture-yank-rectangle-from-register').
+
+   The picture rectangle commands `C-c C-k' (`picture-clear-rectangle')
+and `C-c C-w' (`picture-clear-rectangle-to-register') differ from the
+standard rectangle commands in that they normally clear the rectangle
+instead of deleting it; this is analogous with the way `C-d' is changed
+in Picture mode.
+
+   However, deletion of rectangles can be useful in Picture mode, so
+these commands delete the rectangle if given a numeric argument.  `C-c
+C-k' either with or without a numeric argument saves the rectangle for
+`C-c C-y'.
+
+   The Picture mode commands for yanking rectangles differ from the
+standard ones in overwriting instead of inserting.  This is the same way
+that Picture mode insertion of other text differs from other modes.
+`C-c C-y' (`picture-yank-rectangle') inserts (by overwriting) the
+rectangle that was most recently killed, while `C-c C-x'
+(`picture-yank-rectangle-from-register') does likewise for the
+rectangle found in a specified register.
+
+
+File: emacs,  Node: Sending Mail,  Next: Rmail,  Prev: Picture,  Up: Top
+
+Sending Mail
+************
+
+   To send a message in Emacs, you start by typing a command (`C-x m')
+to select and initialize the `*mail*' buffer.  Then you edit the text
+and headers of the message in this buffer, and type another command
+(`C-c C-s' or `C-c C-c') to send the message.
+
+`C-x m'
+     Begin composing a message to send (`compose-mail').
+
+`C-x 4 m'
+     Likewise, but display the message in another window
+     (`compose-mail-other-window').
+
+`C-x 5 m'
+     Likewise, but make a new frame (`compose-mail-other-frame').
+
+`C-c C-s'
+     In Mail mode, send the message (`mail-send').
+
+`C-c C-c'
+     Send the message and bury the mail buffer (`mail-send-and-exit').
+
+   The command `C-x m' (`compose-mail') selects a buffer named `*mail*'
+and initializes it with the skeleton of an outgoing message.  `C-x 4 m'
+(`compose-mail-other-window') selects the `*mail*' buffer in a
+different window, leaving the previous current buffer visible.  `C-x 5
+m' (`compose-mail-other-frame') creates a new frame to select the
+`*mail*' buffer.
+
+   Because the mail-composition buffer is an ordinary Emacs buffer, you
+can switch to other buffers while in the middle of composing mail, and
+switch back later (or never).  If you use the `C-x m' command again
+when you have been composing another message but have not sent it, you
+are asked to confirm before the old message is erased.  If you answer
+`n', the `*mail*' buffer is left selected with its old contents, so you
+can finish the old message and send it.  `C-u C-x m' is another way to
+do this.  Sending the message marks the `*mail*' buffer "unmodified,"
+which avoids the need for confirmation when `C-x m' is next used.
+
+   If you are composing a message in the `*mail*' buffer and want to
+send another message before finishing the first, rename the `*mail*'
+buffer using `M-x rename-uniquely' (*note Misc Buffer::.).  Then you
+can use `C-x m' or its variants described above to make a new `*mail*'
+buffer.  Once you've done that, you can work with each mail buffer
+independently.
+
+* Menu:
+
+* Format: Mail Format.	     Format of the mail being composed.
+* Headers: Mail Headers.     Details of permitted mail header fields.
+* Aliases: Mail Aliases.     Abbreviating and grouping mail addresses.
+* Mode: Mail Mode.	     Special commands for editing mail being composed.
+* Spook: Distracting NSA.    How to distract the NSA's attention.
+* Mail Methods::             Using alternative mail-composition methods.
+
+
+File: emacs,  Node: Mail Format,  Next: Mail Headers,  Up: Sending Mail
+
+The Format of the Mail Buffer
+=============================
+
+   In addition to the "text" or "body", a message has "header fields"
+which say who sent it, when, to whom, why, and so on.  Some header
+fields, such as `Date' and `Sender', are created automatically when you
+send the message.  Others, such as the recipient names, must be
+specified by you in order to send the message properly.
+
+   Mail mode provides a few commands to help you edit some header
+fields, and some are preinitialized in the buffer automatically at
+times.  You can insert and edit header fields using ordinary editing
+commands.
+
+   The line in the buffer that says
+
+     --text follows this line--
+
+is a special delimiter that separates the headers you have specified
+from the text.  Whatever follows this line is the text of the message;
+the headers precede it.  The delimiter line itself does not appear in
+the message actually sent.  The text used for the delimiter line is
+controlled by the variable `mail-header-separator'.
+
+   Here is an example of what the headers and text in the mail buffer
+might look like.
+
+     To: gnu@gnu.org
+     CC: lungfish@spam.org, byob@spam.org
+     Subject: The Emacs Manual
+     --Text follows this line--
+     Please ignore this message.
+
+
+File: emacs,  Node: Mail Headers,  Next: Mail Aliases,  Prev: Mail Format,  Up: Sending Mail
+
+Mail Header Fields
+==================
+
+   A header field in the mail buffer starts with a field name at the
+beginning of a line, terminated by a colon.  Upper and lower case are
+equivalent in field names (and in mailing addresses also).  After the
+colon and optional whitespace comes the contents of the field.
+
+   You can use any name you like for a header field, but normally people
+use only standard field names with accepted meanings.  Here is a table
+of fields commonly used in outgoing messages.
+
+`To'
+     This field contains the mailing addresses to which the message is
+     addressed.  If you list more than one address, use commas, not
+     spaces, to separate them.
+
+`Subject'
+     The contents of the `Subject' field should be a piece of text that
+     says what the message is about.  The reason `Subject' fields are
+     useful is that most mail-reading programs can provide a summary of
+     messages, listing the subject of each message but not its text.
+
+`CC'
+     This field contains additional mailing addresses to send the
+     message to, like `To' except that these readers should not regard
+     the message as directed at them.
+
+`BCC'
+     This field contains additional mailing addresses to send the
+     message to, which should not appear in the header of the message
+     actually sent.  Copies sent this way are called "blind carbon
+     copies".
+
+     To send a blind carbon copy of every outgoing message to yourself,
+     set the variable `mail-self-blind' to `t'.
+
+`FCC'
+     This field contains the name of one file and directs Emacs to
+     append a copy of the message to that file when you send the
+     message.  If the file is in Rmail format, Emacs writes the message
+     in Rmail format; otherwise, Emacs writes the message in system
+     mail file format.
+
+     To put a fixed file name in the `FCC' field each time you start
+     editing an outgoing message, set the variable
+     `mail-archive-file-name' to that file name.  Unless you remove the
+     `FCC' field before sending, the message will be written into that
+     file when it is sent.
+
+`From'
+     Use the `From' field to say who you are, when the account you are
+     using to send the mail is not your own.  The contents of the `From'
+     field should be a valid mailing address, since replies will
+     normally go there.  If you don't specify the `From' field
+     yourself, Emacs uses the value of `user-mail-address' as the
+     default.
+
+`Reply-to'
+     Use this field to direct replies to a different address.  Most
+     mail-reading programs (including Rmail) automatically send replies
+     to the `Reply-to' address in preference to the `From' address.  By
+     adding a `Reply-to' field to your header, you can work around any
+     problems your `From' address may cause for replies.
+
+     To put a fixed `Reply-to' address into every outgoing message, set
+     the variable `mail-default-reply-to' to that address (as a string).
+     Then `mail' initializes the message with a `Reply-to' field as
+     specified.  You can delete or alter that header field before you
+     send the message, if you wish.  When Emacs starts up, if the
+     environment variable `REPLYTO' is set, `mail-default-reply-to' is
+     initialized from that environment variable.
+
+`In-reply-to'
+     This field contains a piece of text describing a message you are
+     replying to.  Some mail systems can use this information to
+     correlate related pieces of mail.  Normally this field is filled
+     in by Rmail when you reply to a message in Rmail, and you never
+     need to think about it (*note Rmail::.).
+
+`References'
+     This field lists the message IDs of related previous messages.
+     Rmail sets up this field automatically when you reply to a message.
+
+   The `To', `CC', `BCC' and `FCC' header fields can appear any number
+of times, and each such header field can contain multiple addresses,
+separated by commas.  This way, you can specify any number of places to
+send the message.  A `To', `CC', or `BCC' field can also have
+continuation lines: one or more lines starting with whitespace,
+following the starting line of the field, are considered part of the
+field.  Here's an example of a `To' field with a continuation line:
+
+     To: foo@here.net, this@there.net,
+       me@gnu.cambridge.mass.usa.earth.spiral3281
+
+   When you send the message, if you didn't write a `From' field
+yourself, Emacs puts in one for you.  The variable `mail-from-style'
+controls the format:
+
+`nil'
+     Use just the email address, as in `king@grassland.com'.
+
+`parens'
+     Use both email address and full name, as in `king@grassland.com
+     (Elvis Parsley)'.
+
+`angles'
+     Use both email address and full name, as in `Elvis Parsley
+     <king@grassland.com>'.
+
+`system-default'
+     Allow the system to insert the `From' field.
 

@@ -112,6 +112,9 @@ struct window
     /* Non-nil means next redisplay must use the value of start
        set up for it in advance.  Set by scrolling commands.  */
     Lisp_Object force_start;
+    /* Non-nil means we have explicitly changed the value of start,
+       but that the next redisplay is not obliged to use the new value.  */
+    Lisp_Object optional_new_start;
     /* Number of columns display within the window is scrolled to the left.  */
     Lisp_Object hscroll;
     /* Number saying how recently window was selected */
@@ -122,6 +125,8 @@ struct window
     Lisp_Object temslot;
     /* text.modified of displayed buffer as of last time display completed */
     Lisp_Object last_modified;
+    /* BUF_OVERLAY_MODIFIED of displayed buffer as of last complete update.  */
+    Lisp_Object last_overlay_modified;
     /* Value of point at that time */
     Lisp_Object last_point;
     /* Non-nil if the buffer was "modified" when the window
@@ -186,6 +191,42 @@ struct window
 
 #define MINI_WINDOW_P(W)  (!EQ ((W)->mini_p, Qnil))
 
+/* Return the frame column at which the text in window W starts.
+   This is different from the `left' field because it does not include
+   a left-hand scroll bar if any.  */
+   
+#define WINDOW_LEFT_MARGIN(W) \
+     (XFASTINT ((W)->left) \
+      + FRAME_LEFT_SCROLL_BAR_WIDTH (XFRAME (WINDOW_FRAME (W))))
+
+/* Return the frame column before window W ends.
+   This includes a right-hand scroll bar, if any.  */
+
+#define WINDOW_RIGHT_EDGE(W) \
+     (XFASTINT ((W)->left) + XFASTINT ((W)->width))
+
+/* Return the frame column before which the text in window W ends.
+   This is different from WINDOW_RIGHT_EDGE because it does not include
+   a scroll bar or window-separating line on the right edge.  */
+
+#define WINDOW_RIGHT_MARGIN(W)						    \
+  (WINDOW_RIGHT_EDGE (W)						    \
+   - (! FRAME_HAS_VERTICAL_SCROLL_BARS (XFRAME (WINDOW_FRAME (W)))	    \
+      ? ((WINDOW_RIGHTMOST_P (W)) ? 0 : 1)			    	    \
+      : FRAME_HAS_VERTICAL_SCROLL_BARS_ON_RIGHT (XFRAME (WINDOW_FRAME (W))) \
+      ? FRAME_SCROLL_BAR_COLS (XFRAME (WINDOW_FRAME (W)))		    \
+      : 0))
+
+/* 1 if window W takes up the full width of its frame.  */ 
+
+#define WINDOW_FULL_WIDTH_P(W) \
+     (XFASTINT ((W)->width) == FRAME_WINDOW_WIDTH (XFRAME (WINDOW_FRAME (W))))
+
+/* 1 if window W's has no other windows to its right in its frame.  */ 
+
+#define WINDOW_RIGHTMOST_P(W) \
+     (WINDOW_RIGHT_EDGE (W) == FRAME_WINDOW_WIDTH (XFRAME (WINDOW_FRAME (W))))
+     
 /* This is the window in which the terminal's cursor should
    be left when nothing is being done with it.  This must
    always be a leaf window, and its buffer is selected by
@@ -226,13 +267,20 @@ extern Lisp_Object Vmouse_window;
 /* Last mouse-click event (nil if no mouse support).  */
 extern Lisp_Object Vmouse_event;
 
-extern Lisp_Object Fnext_window ();
-extern Lisp_Object Fselect_window ();
-extern Lisp_Object Fdisplay_buffer ();
-extern Lisp_Object Fset_window_buffer ();
-extern Lisp_Object make_window ();
-extern Lisp_Object window_from_coordinates ();
-extern Lisp_Object Fwindow_dedicated_p ();
+EXFUN (Fnext_window, 3);
+EXFUN (Fselect_window, 1);
+EXFUN (Fdisplay_buffer, 3);
+EXFUN (Fset_window_buffer, 2);
+extern Lisp_Object make_window P_ ((void));
+extern void delete_window P_ ((Lisp_Object));
+extern Lisp_Object window_from_coordinates P_ ((struct frame *, int, int, int *));
+EXFUN (Fwindow_dedicated_p, 1);
+extern int window_height P_ ((Lisp_Object));
+extern int window_width P_ ((Lisp_Object));
+extern void set_window_height P_ ((Lisp_Object, int, int));
+extern void set_window_width P_ ((Lisp_Object, int, int));
+extern void change_window_height P_ ((int, int));
+extern void delete_all_subwindows P_ ((struct window *));
 
 /* Prompt to display in front of the minibuffer contents.  */
 extern Lisp_Object minibuf_prompt;
@@ -282,6 +330,11 @@ extern int end_unchanged;
    contain no useful information.  */
 extern int unchanged_modified;
 
+/* BUF_OVERLAY_MODIFF of current buffer, as of last redisplay that finished;
+   if it matches BUF_OVERLAY_MODIFF, beg_unchanged and end_unchanged
+   contain no useful information.  */
+extern int overlay_unchanged_modified;
+
 /* Nonzero if BEGV - BEG or Z - ZV of current buffer has changed
    since last redisplay that finished.  */
 extern int clip_changed;
@@ -296,4 +349,4 @@ extern int buffer_shared;
 
 /* If *ROWS or *COLS are too small a size for FRAME, set them to the
    minimum allowable size.  */
-extern void check_frame_size ( /* FRAME_PTR frame, int *rows, int *cols */ );
+extern void check_frame_size P_ ((struct frame *frame, int *rows, int *cols));

@@ -1,6 +1,6 @@
 #include "copyright.h"
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/Internal.c,v 1.1.1.1 1996-09-26 00:59:44 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/Internal.c,v 1.1.1.2 1998-12-16 20:07:55 ghudson Exp $ */
 /* Copyright    Massachusetts Institute of Technology    1985	*/
 
 /*
@@ -370,7 +370,7 @@ _XMGetSelectionPtr(p_ptr, s_num)
     register int s_num;		/* Index number of the selection to find. */
 {
     register XMSelect *s_ptr;	/* Selection pointer to be returned. */
-    register int i;		/* Loop counter. *./
+    register int i;		/* Loop counter. */
     
     /*
      * Is the selection number out of range?
