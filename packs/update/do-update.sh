@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.45 2004-04-05 16:26:27 rbasch Exp $
+# $Id: do-update.sh,v 1.46 2004-05-25 17:22:55 rbasch Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -247,6 +247,10 @@ core_list=/tmp/core_list$$
 
 pkgdir="/srvd/pkg/$newvers"
 install_order="$pkgdir/.order-version"
+if [ ! -s "$install_order" ]; then
+	echo "Cannot find $install_order, aborting update." 1>&2
+	exit 1
+fi
 
 rm -rf $old_list $new_list $old_verlist $new_verlist $add_list $core_list
 
