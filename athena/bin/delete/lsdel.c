@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.5 1989-05-04 14:18:18 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.6 1989-09-11 04:34:06 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -41,7 +41,7 @@ char *argv[];
      extern char *optarg;
      extern int optind;
      int arg;
-
+     
      whoami = lastpart(argv[0]);
      error_buf = malloc(strlen(whoami) + MAXPATHLEN + 3);
      if (! error_buf) {
@@ -104,7 +104,7 @@ int num;
      int num_found, total = 0;
      char *file_re;
      int status = 0;
-     
+
      if (initialize_tree())
 	  exit(1);
      
@@ -115,27 +115,25 @@ int num;
 	  }
 	  else {
 	       start_dir = "";
-	       if ((*args[num - 1] == '.') && (! *(args[num - 1] + 1)))
-		    file_re = parse_pattern("*");
-	       else
-		    file_re = parse_pattern(args[num - 1]);
+	       file_re = parse_pattern(args[num - 1]);
 	  }
 	  if (! file_re)
 	       return(ERROR_MASK);
 
 	  found_files = get_the_files(start_dir, file_re, &num_found);
-	  free(file_re);
 	  total += num_found;
 	  if (num_found)
 	       num_found = process_files(found_files, num_found);
 	  else {
 	       /* What we do at this point depends on exactly what the
-	        * file_re is.  There are three possible conditions:
-		* 1. It's an existing directory.  Print nothing.
-		* 2. It doesn't exist in deleted form, and there are
-		*    no wildcards in it.  Then we print "not found."
-		* 3. It does't exist, but there are wildcards in it.
-		*    Then we print "no match."
+	        * file_re is.  There are several possible conditions:
+		* 1. file_re has no wildcards in it, which means that
+		*    if we couldn't find it, that means it doesn't
+		*    exist.  Print a not found error.
+		* 2. file_re is an existing directory, with no deleted
+		*    files in it.  Print nothing.
+		* 3. file_re doesn't exist, and there are wildcards in
+		*    it.  Print "no match".
 		* None of these are considered error conditions, so we
 		* don't set the error flag.
 		*/
@@ -150,6 +148,7 @@ int num;
 			    whoami, args[num-1]);
 	       }
 	  }
+	  free(file_re);
      }
      if (total) {
 	  list_files();
