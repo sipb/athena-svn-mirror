@@ -14,10 +14,6 @@
 #define HOSTTYPE "sun4"
 #endif
 
-#ifdef sgi
-#define HOSTTYPE "sgi"
-#endif
-
 /* Common macros. */
 #define file_exists(f) (access((f), F_OK) == 0)
 #define ROOT 0

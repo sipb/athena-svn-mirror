@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.15 2004-05-16 21:30:19 ghudson Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.16 2004-06-16 16:56:49 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -100,22 +100,14 @@ static const char rcsid[] = "$Id: verify.c,v 1.15 2004-05-16 21:30:19 ghudson Ex
 #ifdef SOLARIS
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
 #else
-#ifdef sgi
-char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/usr/bin:/bin:/etc:/usr/etc:/usr/bin/X11:/usr/andrew/bin:.";
-#else
 #if defined(__NetBSD__) || defined(__linux__)
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:/usr/andrew/bin:.";
 #else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 #endif
 #endif
-#endif
 
 int al_pid;
-
-#ifdef NANNY
-extern FILE *xdmstream;
-#endif
 
 static char *get_tickets(char *username, char *password);
 static void abort_verify(void *user);
@@ -132,7 +124,7 @@ extern pid_t attach_pid, attachhelp_pid, quota_pid;
 extern int attach_state, attachhelp_state, errno;
 extern sigset_t sig_zero;
 
-#if defined(HAVE_AFS) && !defined(NANNY)
+#ifdef HAVE_AFS
 /* If we call setpag() when AFS is not loaded, we will get a SIGSYS,
  * at least on systems which have SIGSYS.
  */
@@ -180,13 +172,8 @@ char *dologin(char *user, char *passwd, int option, char *script,
   struct passwd *pwd;
   struct group *gr;
   struct utimbuf times;
-  long salt;
-  char saltc[2], c;
   char **environment;
   char fixed_tty[16], *p;
-#ifdef NANNY
-  char *newargv[4];
-#endif
   int i;
   /* state variables: */
   int local_ok = FALSE;		/* verified from local password file */
@@ -336,7 +323,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
 	  fprintf(stderr, "Unable to fork to check your mail.\n");
 	  break;
 	case 0:
-	  if (set_uid_and_caps(pwd) != 0)
+	  if (setuid(pwd->pw_uid) != 0)
 	    {
 	      fprintf(stderr, "Unable to set user ID to check your mail.\n");
 	      _exit(-1);
@@ -354,16 +341,11 @@ char *dologin(char *user, char *passwd, int option, char *script,
 		      "session or logout now?", abort_verify, NULL);
 	}
     }
-#if defined(HAVE_AFS) && !defined(NANNY) /* not appropriate for SGI system */
+#ifdef HAVE_AFS
   try_setpag();
 #endif
 
-#ifdef NANNY
-  if (nanny_getNannyPid(&al_pid))
-    return lose("failed to get pid from nanny");
-#else
   al_pid = getpid();
-#endif
 
   if (!local_acct)
     {
@@ -446,7 +428,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
       fprintf(stderr, "Unable to fork to check your filesystem quota.\n");
       break;
     case 0:
-      if (set_uid_and_caps(pwd) != 0)
+      if (setuid(pwd->pw_uid) != 0)
 	{
 	  fprintf(stderr,
 		  "Unable to set user ID to check your filesystem quota.\n");
@@ -542,21 +524,14 @@ char *dologin(char *user, char *passwd, int option, char *script,
   environment[i++] = strdup(errbuf);
   PASSENV("TZ");
 
-#ifdef NANNY
-  PASSENV("XAUTHORITY");
-#endif
-
   environment[i++] = NULL;
 
-#ifndef NANNY /* nanny handles this on SGI */
   add_utmp(user, tty, display);
-#endif
   if (pwd->pw_uid == ROOT)
     syslog(LOG_CRIT, "ROOT LOGIN on tty %s", tty ? tty : "X");
   else
     syslog(LOG_INFO, "%s LOGIN on tty %s", user, tty ? tty : "X");
 
-#ifndef NANNY /* nanny/xdm does all this on SGI too... */
   /* Set the owner and modtime on the tty. */
   sprintf(errbuf, "/dev/%s", tty);
   gr = getgrnam("tty");
@@ -587,10 +562,9 @@ char *dologin(char *user, char *passwd, int option, char *script,
     return(lose("Unable to set your login credentials.\n"));
 #endif
 
-  i = set_uid_and_caps(pwd);
+  i = setuid(pwd->pw_uid);
   if (i)
     return lose("Unable to set your user ID.\n");
-#endif /* not NANNY */
 
   if (chdir(pwd->pw_dir))
     fprintf(stderr, "Unable to connect to your home directory.\n");
@@ -598,21 +572,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
   /* Stuff first arg for xsession into a string. */
   sprintf(errbuf, "%d", option);
 
-#ifdef NANNY
-  /* Output username and environment information and let xdm log us in. */
-  fprintf(xdmstream, "%s", pwd->pw_name);
-  fputc(0, xdmstream);
-
-  newargv[0] = errbuf;
-  newargv[1] = script;
-  newargv[2] = NULL;
-  if (nanny_setupUser(pwd->pw_name, environment, newargv))
-    return lose("failed to setup for login");
-
-  exit(0);
-#else
   execle(session, "sh", errbuf, script, NULL, environment);
-#endif /* NANNY */
 
   return lose("Failed to start session.");
 }

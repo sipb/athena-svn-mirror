@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.27 2004-03-27 03:06:18 ghudson Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.28 2004-06-16 16:56:51 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -31,11 +31,6 @@ static const char rcsid[] = "$Id: xlogin.c,v 1.27 2004-03-27 03:06:18 ghudson Ex
 #include <unistd.h>
 #include <utmp.h>
 #include <time.h>
-
-#ifdef sgi
-#include <capability.h>
-#include <sys/capability.h>
-#endif
 
 #include <X11/Intrinsic.h>
 #include <X11/Shell.h>
@@ -69,12 +64,6 @@ static const char rcsid[] = "$Id: xlogin.c,v 1.27 2004-03-27 03:06:18 ghudson Ex
 
 #ifndef BACKGROUND_COLOR
 #define BACKGROUND_COLOR "#5e738f"
-#endif
-
-#ifdef NANNY
-char athconsole[64];
-FILE *xdmstream;
-int xdmfd;
 #endif
 
 #define OWL_AWAKE 0
@@ -129,8 +118,6 @@ static void idleResetCB(Widget w, XtPointer s, XtPointer unused);
 
 static void localErrorHandler(String s);
 static void do_motd(void);
-
-static void ensure_process_capabilities(void);
 
 static int is_reactivating(void);
 static int wait_for_reactivate(void);
@@ -304,49 +291,8 @@ int main(int argc, char **argv)
   long acc = 0;
   int pid;
   extern char **environ;
-#ifdef NANNY
-  int fdflags;
-#endif
 
   sigemptyset(&sig_zero);
-
-#ifdef NANNY
-  /* Get stderr and stdout for our own uses - we don't want them going
-   * through various paths of xdm. Under Irix, xdm does a lot of the
-   * actually logging-in; it calls xlogin with stdout a pipe it listens
-   * to to determine whom to log in. We need this communication, but we
-   * also want stdout to work correctly (out to console). So we make
-   * a copy of the stdout stream, and then reopen stdout to whatever
-   * tty we belong to (or /dev/console, if that doesn't work).
-   */
-  if (nanny_getTty(athconsole, sizeof(athconsole)))
-    strcpy(athconsole, "/dev/console");
-
-  xdmfd = dup(fileno(stdout));
-  if (xdmfd != -1)
-    {
-      xdmstream = fdopen(xdmfd, "w");
-      if (xdmstream == NULL)
-	{
-	  close(xdmfd);
-	  xdmstream = stdout;
-	}
-      else if (NULL == freopen(athconsole, "w", stdout))
-	(void)freopen("/dev/console", "w", stdout);
-    }
-  else
-    xdmstream = stdout; /* Some stuff will break, but better than losing. */
-  /* Actually, losing gracefully might be wise... */
-
-  fdflags = fcntl(fileno(xdmstream), F_GETFD);
-  if (fdflags != -1)
-    fcntl(fileno(xdmstream), F_SETFD, fdflags | FD_CLOEXEC);
-
-  if (NULL == freopen(athconsole, "w", stderr))
-    (void)freopen("/dev/console", "w", stderr);
-  /* if (stderr == NULL)
-     tough luck; */
-#endif
 
   /* Have to find this argument before initializing the toolkit.
    * We set both XUSERFILESEARCHPATH and XENVIRONMENT.  The effect is
@@ -387,7 +333,6 @@ int main(int argc, char **argv)
 
   set_background(dpy);
 
-#ifndef NANNY
   /* Tell the display manager we're ready, just like the X server
    * handshake. This code used to be right before XtMainLoop. However,
    * under Ultrix dm is required to open /dev/xcons and manually pipe
@@ -403,7 +348,6 @@ int main(int argc, char **argv)
   sigaction(SIGUSR1, NULL, &osigact);
   if (osigact.sa_handler == SIG_IGN)
     kill(getppid(), SIGUSR1);
-#endif /* not NANNY */
 
   /* Invoke the Xreset script.  This should ensure that the various user
    * devices (e.g. audio) are chown'ed to root.
@@ -589,9 +533,6 @@ int main(int argc, char **argv)
 	}
       XtFree(orig_dpy);
     }
-
-  /* Ensure that we have the proper capabilities. */
-  ensure_process_capabilities();
 
   larv_set_busy(0);
 
@@ -941,10 +882,6 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
   else
     {
       setFontPath();
-#ifdef NANNY
-      /* We obtained the tty earlier from nanny. */
-      resources.tty = athconsole + 5;
-#endif
 
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
 		   0, 0, 0, 0,
@@ -985,26 +922,6 @@ char *lose(char *msg)
 static void focusACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   Widget target;
-
-#ifdef sgi
-  static int done_once = 0;
-
-  /* This crock works around the an invalid argument error on the
-   * XSetInputFocus() call below the very first time it is called,
-   * only when running on the RIOS.  We still don't know just what
-   * causes it.
-   * I sure wish I'd modified this comment when I added sgi to
-   * the ifdef the first time. I should try taking it back out to
-   * find out.
-   */
-  if (done_once == 0)
-    {
-      done_once++;
-      XSync(dpy, FALSE);
-      sleep(1);
-      XSync(dpy, FALSE);
-    }
-#endif
 
   target = WcFullNameToWidget(appShell, p[0]);
   XSetInputFocus(dpy, XtWindow(target), RevertToPointerRoot, CurrentTime);
@@ -1057,9 +974,6 @@ static void runACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   char **argv;
   int i;
-#ifdef NANNY
-  extern char **environ;
-#endif
   struct passwd *pw;
 
   unfocusACT(w, event, p, n);
@@ -1114,20 +1028,6 @@ static void runACT(Widget w, XEvent *event, String *p, Cardinal *n)
   psetenv("SHELL", "/bin/sh", 1);
   psetenv("DISPLAY", ":0", 1);
 
-#ifdef NANNY
-  psetenv("PRELOGIN", "true", 1);
-  if (nanny_setupUser("nobody", environ, argv))
-    {
-      fprintf(stderr, "Unable to set up for 'nobody' app\n");
-      return;
-    }
-
-  fprintf(xdmstream, "%s", "nobody");
-  fputc(0, xdmstream);
-
-  larv_set_busy(1);
-  exit(0);
-#else
   pw = getpwnam("nobody");
   if (!pw)
     {
@@ -1137,7 +1037,7 @@ static void runACT(Widget w, XEvent *event, String *p, Cardinal *n)
   setgroups(sizeof(def_grplist)/sizeof(gid_t), def_grplist);
 
   setgid(def_grplist[0]);
-  if (set_uid_and_caps(pw) != 0)
+  if (setuid(pw->pw_uid) != 0)
     {
       fprintf(stderr, "Unable to set user id.\n");
       return;
@@ -1146,7 +1046,6 @@ static void runACT(Widget w, XEvent *event, String *p, Cardinal *n)
   execv("/bin/sh", argv);
   fprintf(stderr, "XLogin: unable to exec /bin/sh\n");
   _exit(3);
-#endif
 }
 
 static void runCB(Widget w, XtPointer s, XtPointer unused)
@@ -1204,36 +1103,19 @@ static void commandCB(Widget w, XtPointer s, XtPointer unused)
 
 static void restartCB(Widget w, XtPointer s, XtPointer unused)
 {
-#ifdef NANNY
-  /* On IRIX, we must tell nanny to restart X. */
-  nanny_restartX();
-#endif
   exit(0);
 }
 
 static void windowShutdownCB(Widget w, XtPointer s, XtPointer unused)
 {
   larv_set_busy(1);
-#ifdef NANNY
-  /* If this returns 0, the X server has been killed and it's time
-   * to go. If not, we should probably pop up a dialog box.
-   */
-  if (!nanny_setConsoleMode())
-    exit(0);
-#else
   exit(3);
-#endif
 }
 
 static void windowShutdownACT(Widget w, XEvent *event, String *p, Cardinal *n)
 {
   larv_set_busy(1);
-#ifdef NANNY
-  if (!nanny_setConsoleMode())
-    exit(0);
-#else
   exit(3);
-#endif
 }
 
 static void sigconsACT(Widget w, XEvent *event, String *p, Cardinal *n)
@@ -1915,91 +1797,6 @@ static void setFontPath(void)
     }
 
   XSetFontPath(dpy, dirlist, ndirs);
-}
-
-/* Ensure we will be able to set process capabilities after we
- * setuid().  Currently implemented only on IRIX.
- */
-static void ensure_process_capabilities(void)
-{
-#ifdef sgi
-  if (cap_envl(0, CAP_SETPCAP, (cap_value_t) 0) == -1)
-    fprintf(stderr, "xlogin: Insufficient privilege\n");
-#endif
-  return;
-}
-
-/* This function sets the user ID and capabilities for the uid and
- * user name in the given passwd structure.  Capabilities support
- * is currently implemented only for IRIX.
- * The function returns 0 for success, -1 upon failure.
- */
-int set_uid_and_caps(struct passwd *pw)
-{
-#ifdef sgi
-  struct user_cap *user_cap;
-  char *def_cap;
-  cap_t cap = NULL, ocap;
-  cap_value_t capval;
-
-  /* If capabilities are supported, look up the user's default capability
-   * set; use an empty set if no capabilities are defined for the user.
-   */
-  if (sysconf(_SC_CAP) > 0)
-    {
-      user_cap = sgi_getcapabilitybyname(pw->pw_name);
-      def_cap = (user_cap != NULL ? user_cap->ca_default : "all=");
-      cap = cap_from_text(def_cap);
-      if (user_cap != NULL)
-	{
-	  free(user_cap->ca_name);
-	  free(user_cap->ca_default);
-	  free(user_cap->ca_allowed);
-	  free(user_cap);
-	}
-      if (cap == NULL)
-	{
-	  fprintf(stderr,
-		  "Cannot convert user capabilities: %s\n",
-		  strerror(errno));
-	  return -1;
-	}
-    }
-
-  /* Become the user. */
-  if (setuid(pw->pw_uid) != 0)
-    {
-      if (cap != NULL)
-	cap_free(cap);
-      return -1;
-    }
-
-  /* Acquire the privilege to set process capabilities, and set
-   * the user's cap's.  At this point, cap will be non-null if
-   * capabilities are supported.
-   */
-  if (cap != NULL)
-    {
-      capval = CAP_SETPCAP;
-      ocap = cap_acquire(1, &capval);
-      if (cap_set_proc(cap) == -1)
-	{
-	  fprintf(stderr,
-		  "Cannot set process capabilities: %s\n",
-		  strerror(errno));
-	  cap_surrender(ocap);
-	  cap_free(cap);
-	  return -1;
-	}
-      cap_free(cap);
-      cap_free(ocap);
-    }
-
-  return 0;
-
-#else
-  return setuid(pw->pw_uid);
-#endif
 }
 
 /* Execute the given script in a child process, using the given
