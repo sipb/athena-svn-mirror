@@ -1,15 +1,16 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.0 1987-12-01 16:54:14 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.1 1987-12-03 19:04:50 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.0 1987-12-01 16:54:14 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.1 1987-12-03 19:04:50 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
 
 #include <sys/types.h>
+#include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/dir.h>
 #include <sys/param.h>
@@ -63,7 +64,7 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #define BUFLEN 1024
 #define BLOCKSIZE 1024
 #define LINELEN 256
-#define MAXLINES 100
+#define MAXLINES 300
 #define WORDLEN 20
 #define WORDMAX 128
 #define ENTRYMAX 256
@@ -106,8 +107,8 @@ extern int verboseflag;
 extern int writeflag;
 extern int entnum;
 extern int entrycnt;
-extern int stackmax;
-extern int maxlines;
+extern unsigned stackmax;
+extern unsigned maxlines;
 
 #define	IS_LIST		1
 #define NO_LIST		0
@@ -136,15 +137,17 @@ extern FILE *yyin,*yyout;
 
 extern int access();
 
-#define TYPE( statbuf) ((statbuf).st_mode & S_IFMT)
-#define MODE( statbuf) ((statbuf).st_mode & 07777)
-#define TIME( statbuf)  (long)(statbuf).st_mtime
-#define UID( statbuf)   (statbuf).st_uid
-#define GID( statbuf)   (statbuf).st_gid
-#define DEV( statbuf)   (statbuf).st_dev
+#define TYPE( statbuf) ((int )(statbuf).st_mode & S_IFMT)
+#define MODE( statbuf) ((int )(statbuf).st_mode & 07777)
+#define TIME( statbuf) ((long)(statbuf).st_mtime)
+#define UID( statbuf)  ((int )(statbuf).st_uid)
+#define GID( statbuf)  ((int )(statbuf).st_gid)
+#define DEV( statbuf)  ((int )(statbuf).st_dev)
 
-char *gets(),*malloc(),*index(),*realloc(),*rindex();
-int strcmp(),strncmp();
+char *gets(),*malloc(),*realloc(),*re_comp();
+char *index(),*rindex(),*strcat(),*strncat(),*strcpy(),*strncpy();
+int strcmp(),strncmp(),strlen();
+long time();
 extern char errmsg[];
 
 /* track's internal functions which need decl's */
