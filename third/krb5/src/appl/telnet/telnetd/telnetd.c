@@ -928,11 +928,13 @@ void doit(who)
 	int ptynum;
 	int on = 1;
 	char user_name[256];
-long retval;
+	long retval;
+	FILE *msg;
+
 	/*
 	 * Find an available pty to use.
 	 */
-pty_init();
+	pty_init();
 	
 
 	if ((retval = pty_getpty(&pty, line, 20)) != 0 )
@@ -979,6 +981,15 @@ pty_init();
 
 	(void) gethostname(host_name, sizeof (host_name));
 	hostname = host_name;
+
+	if (msg = fopen(PRELOGIN_MESSAGE, "r")) {
+		char buf[100];
+
+		while (fgets(buf, sizeof(buf), msg))
+			writenet(buf, strlen(buf));
+		netflush();
+		fclose(msg);
+	}
 
 #if	defined(AUTHENTICATION) || defined(ENCRYPTION)
 	auth_encrypt_init(hostname, host, "TELNETD", 1);
