@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.13 2000-03-15 15:11:39 rbasch Exp $
+# $Id: bashrc,v 1.14 2000-08-23 19:06:09 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -179,7 +179,7 @@ if [ "${PS1+set}" = set ]; then
 	fi
 	PS1="athena$ "
 	HISTSIZE=20
-	CDPATH=~
+	CDPATH=.:~
 fi
 
 # Fix coredumpsize limit in case it was reset
