@@ -9,24 +9,24 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Cursor.c,v $
- *      $Id: Cursor.c,v 1.1 1991-03-06 15:46:51 lwvanels Exp $
+ *      $Id: Cursor.c,v 1.2 1991-09-10 14:45:33 lwvanels Exp $
  *      $Author: lwvanels $
  */
 
 #include <Xm/Mu.h>
 
-extern Widget toplevel, w_send_form;
+extern Widget xolc, w_send_form;
 
 void
 SetCursor(wait)
      int wait;
 {
   if (wait) {
-    MuSetWaitCursor(toplevel);
+    MuSetWaitCursor(xolc);
     MuSetWaitCursor(w_send_form);
   }
   else {
-    MuSetStandardCursor(toplevel);
+    MuSetStandardCursor(xolc);
     MuSetStandardCursor(w_send_form);
   }
 }
