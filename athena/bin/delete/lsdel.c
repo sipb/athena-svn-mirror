@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.4 1989-03-27 12:07:13 jik Exp $";
+     static char rcsid_lsdel_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/lsdel.c,v 1.5 1989-05-04 14:18:18 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -115,7 +115,10 @@ int num;
 	  }
 	  else {
 	       start_dir = "";
-	       file_re = parse_pattern(args[num - 1]);
+	       if ((*args[num - 1] == '.') && (! *(args[num - 1] + 1)))
+		    file_re = parse_pattern("*");
+	       else
+		    file_re = parse_pattern(args[num - 1]);
 	  }
 	  if (! file_re)
 	       return(ERROR_MASK);
