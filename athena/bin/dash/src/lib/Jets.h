@@ -319,6 +319,7 @@ typedef struct _RootClassRec *RootJetClass;
 #define PS2 "ps2"
 #define RSAIX "rsaix"
 #define SUN4 "sun4"
+#define SGI "sgi"
 #define UNKNOWN "unknown"
 
 #define VAXNUM 1<<0
@@ -327,6 +328,7 @@ typedef struct _RootClassRec *RootJetClass;
 #define PS2NUM 1<<3
 #define RSAIXNUM 1<<4
 #define SUN4NUM 1<<5
+#define SGINUM 1<<6
 #define UNKNOWNNUM 1<<15
 
 #if defined(VAX_ARCH)
@@ -353,8 +355,14 @@ typedef struct _RootClassRec *RootJetClass;
 #define MACHTYPE SUN4
 #define MACHNUM SUN4NUM
 #else
-#define MACHTYPE UNKNOWN
-#define MACHNUM UNKNOWNNUM
+#if defined(SGI_ARCH)
+#define MACHTYPE SGI
+#define MACHNUM SGINUM
+#else
+You really need to get a machine type here, or fix an existing one.
+/* #define MACHTYPE UNKNOWN This isn't a very good idea.
+   #define MACHNUM UNKNOWNNUM */
+#endif				/* sgi */
 #endif				/* sun */
 #endif				/* rs */
 #endif				/* ps2 */
