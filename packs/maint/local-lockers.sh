@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: local-lockers.sh,v 1.2 2002-11-12 22:55:51 ghudson Exp $
+# $Id: local-lockers.sh,v 1.3 2002-12-03 00:10:15 rbasch Exp $
 
 # local-lockers - Bring lockers local using athlsync
 
@@ -41,7 +41,7 @@ for l in `awk '/^[^#]/ { print; }' $conf`; do
   validpath=$validdir/$l
   if [ -n "$path" ] && [ -d "$path" ]; then
     space=`athlsync -s "$path" "$localpath"`
-    freespace=`df -k $localdir | awk '{print $(NF-2);}'`
+    freespace=`df -k $localdir | awk '{ av = $(NF-2); } END { print av; }'`
     if [ -n "$space" ] && [ "$freespace" -ge `expr "$space" + $margin` ]; then
       # Sync and validate the local copy.
       if athlsync "$path" "$localpath"; then
